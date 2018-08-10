@@ -1,6 +1,8 @@
 # Pac-Man (in progress)
 A Pac-Man game implementation with an emphasis on state machines. Implements the global game control as well as the Pac-Man and ghost control using explicit state machines in a declarative way.
 
+<img src="doc/pacman.png"/>
+
 To illustrate, this is the game control state machine:
 
 ```java
@@ -95,3 +97,19 @@ To illustrate, this is the game control state machine:
 		.endStateMachine();
 
 ```
+
+Other features:
+- Entity states and timers can be shown at runtime
+- Entity routes can be shown at runtime
+- Configurable entity navigation behaviour
+
+Example:
+```java
+		Ghost ghost = new Ghost(Ghosts.Blinky, pacMan, game, game.maze.blinkyHome, Top4.E, RED_GHOST);
+		ghost.setNavigation(Ghost.State.AGGRO, chase(pacMan));
+		ghost.setNavigation(Ghost.State.AFRAID, flee(pacMan));
+		ghost.setNavigation(Ghost.State.DEAD, goHome());
+		ghost.setNavigation(Ghost.State.SAFE, bounce());
+```
+
+
