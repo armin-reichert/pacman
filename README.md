@@ -174,4 +174,5 @@ ghost.setNavigation(Ghost.State.DEAD, goHome());
 ghost.setNavigation(Ghost.State.SAFE, bounce());
 ```
 
+The individual behaviours are implemented as simple classes implementing a common interface. Behaviours which need to compute routes in the maze can just call the method **Maze.findPath(Tile source, Tile target)** which runs the A* algorithm on the underlying grid graph.
 
