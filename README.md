@@ -1,4 +1,4 @@
-# Pac-Man
+# Pac-Man (in progress)
 A Pac-Man game implementation with an emphasis on state machines. Implements the global game control as well as the Pac-Man and ghost control using explicit state machines in a declarative way.
 
 To illustrate, this is the game control state machine:
