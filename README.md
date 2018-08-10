@@ -98,6 +98,66 @@ To illustrate, this is the game control state machine:
 
 ```
 
+The processing of all used state machines (game control, Pac-Man, ghosts) can be traced separately. If a state machine processes an event and does not find a suitable state transition, a runtime exception is thrown. This helps in filling gaps in the state machine definitions.
+
+Example trace:
+```java
+Aug 10, 2018 6:10:06 PM de.amr.games.pacman.controller.event.core.EventManager publishEvent
+INFORMATION: [GameActorEvents] publishing event 'PacManGhostCollisionEvent(Blinky)'
+Aug 10, 2018 6:10:06 PM de.amr.statemachine.StateMachineTracer firingTransition
+INFORMATION: [GameControl] stays 'PLAYING' on 'PacManGhostCollisionEvent(Blinky)'
+Aug 10, 2018 6:10:06 PM de.amr.statemachine.StateMachineTracer firingTransition
+INFORMATION: [Ghost Pinky] changing from 'HOME' to 'SAFE'
+Aug 10, 2018 6:10:06 PM de.amr.statemachine.StateMachineTracer exitingState
+INFORMATION: [Ghost Pinky] exiting state 'HOME'
+Aug 10, 2018 6:10:06 PM de.amr.statemachine.StateMachineTracer enteringState
+INFORMATION: [Ghost Pinky] entering state 'SAFE'
+Aug 10, 2018 6:10:06 PM de.amr.statemachine.StateMachineTracer firingTransition
+INFORMATION: [GameControl] changing from 'PLAYING' to 'PACMAN_DYING' on 'PacManKilledEvent(Blinky)'
+Aug 10, 2018 6:10:06 PM de.amr.statemachine.StateMachineTracer exitingState
+INFORMATION: [GameControl] exiting state 'PLAYING'
+Aug 10, 2018 6:10:06 PM de.amr.statemachine.StateMachineTracer firingTransition
+INFORMATION: [Pac-Man] changing from 'VULNERABLE' to 'DYING' on 'PacManKilledEvent(Blinky)'
+Aug 10, 2018 6:10:06 PM de.amr.statemachine.StateMachineTracer exitingState
+INFORMATION: [Pac-Man] exiting state 'VULNERABLE'
+Aug 10, 2018 6:10:06 PM de.amr.statemachine.StateMachineTracer enteringState
+INFORMATION: [Pac-Man] entering state 'DYING'
+Aug 10, 2018 6:10:06 PM de.amr.games.pacman.controller.GameController$PlayingState onPacManKilled
+INFORMATION: PacMan killed by Blinky at (21,23)
+Aug 10, 2018 6:10:06 PM de.amr.statemachine.StateMachineTracer enteringState
+INFORMATION: [GameControl] entering state 'PACMAN_DYING'
+Aug 10, 2018 6:10:09 PM de.amr.statemachine.StateMachineTracer firingTransition
+INFORMATION: [Pac-Man] stays 'DYING'
+Aug 10, 2018 6:10:09 PM de.amr.games.pacman.controller.event.core.EventManager publishEvent
+INFORMATION: [GameActorEvents] publishing event 'PacManDiedEvent'
+Aug 10, 2018 6:10:09 PM de.amr.statemachine.StateMachineTracer firingTransition
+INFORMATION: [GameControl] changing from 'PACMAN_DYING' to 'PLAYING' on 'PacManDiedEvent'
+Aug 10, 2018 6:10:09 PM de.amr.statemachine.StateMachineTracer exitingState
+INFORMATION: [GameControl] exiting state 'PACMAN_DYING'
+Aug 10, 2018 6:10:09 PM de.amr.statemachine.StateMachineTracer enteringInitialState
+INFORMATION: [Pac-Man] entering initial state 'SAFE'
+Aug 10, 2018 6:10:09 PM de.amr.statemachine.StateMachineTracer enteringInitialState
+INFORMATION: [Ghost Blinky] entering initial state 'HOME'
+Aug 10, 2018 6:10:09 PM de.amr.statemachine.StateMachineTracer enteringInitialState
+INFORMATION: [Ghost Pinky] entering initial state 'HOME'
+Aug 10, 2018 6:10:09 PM de.amr.statemachine.StateMachineTracer enteringState
+INFORMATION: [GameControl] entering state 'PLAYING'
+Aug 10, 2018 6:10:09 PM de.amr.statemachine.StateMachineTracer firingTransition
+INFORMATION: [Ghost Blinky] changing from 'HOME' to 'SAFE'
+Aug 10, 2018 6:10:09 PM de.amr.statemachine.StateMachineTracer exitingState
+INFORMATION: [Ghost Blinky] exiting state 'HOME'
+Aug 10, 2018 6:10:09 PM de.amr.statemachine.StateMachineTracer enteringState
+INFORMATION: [Ghost Blinky] entering state 'SAFE' for 2,00 seconds (120 frames)
+Aug 10, 2018 6:10:09 PM de.amr.statemachine.StateMachineTracer firingTransition
+INFORMATION: [Ghost Pinky] changing from 'HOME' to 'SAFE'
+Aug 10, 2018 6:10:09 PM de.amr.statemachine.StateMachineTracer exitingState
+INFORMATION: [Ghost Pinky] exiting state 'HOME'
+Aug 10, 2018 6:10:09 PM de.amr.statemachine.StateMachineTracer enteringState
+INFORMATION: [Ghost Pinky] entering state 'SAFE' for 2,00 seconds (120 frames)
+Aug 10, 2018 6:10:09 PM de.amr.easy.game.Application pause
+INFORMATION: Application paused.
+```
+
 Other features:
 - Entity states and timers can be shown at runtime
 - Entity routes can be shown at runtime
