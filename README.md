@@ -104,12 +104,14 @@ Other features:
 - Configurable entity navigation behaviour
 
 Example:
+
+Blinky's navigation behaviour is defined as follows:
 ```java
-		Ghost ghost = new Ghost(Ghosts.Blinky, pacMan, game, game.maze.blinkyHome, Top4.E, RED_GHOST);
-		ghost.setNavigation(Ghost.State.AGGRO, chase(pacMan));
-		ghost.setNavigation(Ghost.State.AFRAID, flee(pacMan));
-		ghost.setNavigation(Ghost.State.DEAD, goHome());
-		ghost.setNavigation(Ghost.State.SAFE, bounce());
+Ghost ghost = new Ghost(Ghosts.Blinky, pacMan, game, game.maze.blinkyHome, Top4.E, RED_GHOST);
+ghost.setNavigation(Ghost.State.AGGRO, chase(pacMan));
+ghost.setNavigation(Ghost.State.AFRAID, flee(pacMan));
+ghost.setNavigation(Ghost.State.DEAD, goHome());
+ghost.setNavigation(Ghost.State.SAFE, bounce());
 ```
 
 
