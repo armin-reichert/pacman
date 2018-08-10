@@ -27,7 +27,7 @@ public class PacManApp extends Application {
 		settings.width = 28 * PacManGameUI.TS;
 		settings.height = 36 * PacManGameUI.TS;
 		settings.scale = scale;
-		settings.title = "Armin's PacMan";
+		settings.title = "Armin's Pac-Man";
 	}
 
 	@Override
