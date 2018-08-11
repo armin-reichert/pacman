@@ -232,7 +232,7 @@ ghost.setNavigation(Ghost.State.DEAD, goHome());
 ghost.setNavigation(Ghost.State.SAFE, bounce());
 ```
 
-The individual behaviours are implemented as simple classes implementing a common interface. Behaviours which need to compute routes in the maze can just call the method **Maze.findPath(Tile source, Tile target)** which runs the A* path finder on the underlying grid graph (which is completely useless for this kind of graph but sounds better than BFS :-).
+The individual behaviours are implemented as simple classes implementing a common interface. Behaviours which need to compute routes in the maze can just call the method **Maze.findPath(Tile source, Tile target)** which runs the A* path finder on the underlying grid graph (which is completely useless for such a maze, but it sounds better than BFS :-).
 
 ```java
 public List<Tile> findPath(Tile source, Tile target) {
