@@ -111,7 +111,7 @@ public class PacMan extends MazeMover<PacMan.State> {
 
 				.state(SAFE)
 					.onEntry(this::initPacMan)
-					.timeoutAfter(() -> game.sec(0.25f))
+					.timeoutAfter(() -> 1)
 
 				.state(VULNERABLE)
 					.onTick(this::inspectMaze)

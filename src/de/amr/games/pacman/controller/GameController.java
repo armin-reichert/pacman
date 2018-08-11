@@ -288,7 +288,7 @@ public class GameController implements Controller {
 	}
 
 	private class ChangingLevelState extends StateObject<PlayState, GameEvent> {
-
+		
 		@Override
 		public void onEntry() {
 			currentView.setMazeFlashing(true);
@@ -296,23 +296,20 @@ public class GameController implements Controller {
 
 		@Override
 		public void onTick() {
-			if (getRemaining() == getDuration() / 2) {
-				nextLevel();
+			boolean timeForChange = getRemaining() == getDuration() / 2; 
+			if (timeForChange) {
+				game.nextLevel();
+				actors.init();
 				currentView.showInfo("Ready!", Color.YELLOW);
 				currentView.setMazeFlashing(false);
 				currentView.enableAnimation(false);
-			} else if (isTerminated()) {
-				currentView.hideInfo();
-				currentView.enableAnimation(true);
 			}
 		}
-
-		private void nextLevel() {
-			game.level += 1;
-			game.foodEaten = 0;
-			game.ghostsKilledInSeries = 0;
-			game.maze.resetFood();
-			actors.init();
+		
+		@Override
+		public void onExit() {
+			currentView.hideInfo();
+			currentView.enableAnimation(true);
 		}
 	}
 

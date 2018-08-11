@@ -168,15 +168,21 @@ public class Game {
 	public Game(Maze maze, IntSupplier fnTicksPerSecond) {
 		this.maze = maze;
 		this.fnTicksPerSecond = fnTicksPerSecond;
+		foodTotal = maze.getFoodCount();
 		baseSpeed = tps(8f);
 	}
 
 	public void init() {
-		maze.resetFood();
-		level = 1;
-		score = 0;
 		livesRemaining = 3;
-		foodTotal = maze.getFoodCount();
+		score = 0;
+		level = 1;
+		foodEaten = 0;
+		ghostsKilledInSeries = 0;
+	}
+	
+	public void nextLevel() {
+		maze.resetFood();
+		level += 1;
 		foodEaten = 0;
 		ghostsKilledInSeries = 0;
 	}
