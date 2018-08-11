@@ -98,6 +98,50 @@ To illustrate, this is the game control state machine:
 
 ```
 
+The states of this state machine are implemented as separate (inner) classes. However, this is not necessary in simpler cases and is the decision of the implementor.
+
+Pac-Man's state machine looks like this:
+
+```java
+		StateMachine.define(State.class, GameEvent.class)
+				
+			.description("[Pac-Man]")
+			.initialState(SAFE)
+
+			.states()
+
+				.state(SAFE)
+					.onEntry(this::initPacMan)
+					.timeoutAfter(() -> game.sec(0.25f))
+
+				.state(VULNERABLE)
+					.onTick(this::inspectMaze)
+					
+				.state(STEROIDS)
+					.onTick(() -> {	inspectMaze(); checkHealth(); })
+					.timeoutAfter(game::getPacManSteroidTime)
+
+				.state(DYING)
+					.onEntry(() -> s_current = s_dying)
+					.timeoutAfter(() -> game.sec(2))
+
+			.transitions()
+
+					.when(SAFE).then(VULNERABLE).onTimeout()
+					
+					.when(VULNERABLE).then(DYING).on(PacManKilledEvent.class)
+	
+					.when(VULNERABLE).then(STEROIDS).on(PacManGainsPowerEvent.class)
+	
+					.when(STEROIDS).on(PacManGainsPowerEvent.class).act(() -> brain.resetTimer())
+	
+					.when(STEROIDS).then(VULNERABLE).onTimeout().act(() -> events.publishEvent(new PacManLostPowerEvent()))
+	
+					.when(DYING).onTimeout().act(e -> events.publishEvent(new PacManDiedEvent()))
+
+		.endStateMachine();
+```
+
 The processing of all used state machines (game control, Pac-Man, ghosts) can be traced separately. If a state machine processes an event and does not find a suitable state transition, a runtime exception is thrown. This helps in filling gaps in the state machine definitions.
 
 Example trace:
