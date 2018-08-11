@@ -9,6 +9,9 @@ import static de.amr.games.pacman.model.BonusSymbol.KEY;
 import static de.amr.games.pacman.model.BonusSymbol.PEACH;
 import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 import java.util.function.IntSupplier;
 
 import de.amr.games.pacman.actor.Ghost;
@@ -38,8 +41,11 @@ public class Game {
 	public final Counter ghostsKilledInSeries = new Counter();
 	private int level;
 	private long foodTotal;
+	public final List<BonusSymbol> levelCounter = new LinkedList<>();
+	
 	private float baseSpeed;
-
+	private final Random rnd = new Random();
+	
 	public Game(Maze maze, IntSupplier fnTicksPerSecond) {
 		this.maze = maze;
 		this.fnTicksPerSecond = fnTicksPerSecond;
@@ -50,16 +56,21 @@ public class Game {
 	public void init() {
 		lives.set(3);
 		score.set(0);
-		level = 1;
 		foodEaten.set(0);
 		ghostsKilledInSeries.set(0);
+		level = 1;
+		levelCounter.add(0, getBonusSymbol());
 	}
 
 	public void nextLevel() {
 		maze.resetFood();
-		level += 1;
 		foodEaten.set(0);
 		ghostsKilledInSeries.set(0);
+		level += 1;
+		levelCounter.add(0, getBonusSymbol());
+		if (levelCounter.size() == 8) {
+			levelCounter.remove(levelCounter.size() - 1);
+		}
 	}
 
 	public int getLevel() {
@@ -152,7 +163,7 @@ public class Game {
 	}
 
 	public int getBonusTime() {
-		return sec(9);
+		return sec(9f + rnd.nextFloat());
 	}
 
 	public float getGhostSpeed(MazeMover<Ghost.State> ghost) {

@@ -134,6 +134,10 @@ public class PacManSprites {
 	public Sprite symbol(BonusSymbol symbol) {
 		return new Sprite(symbolMap.get(symbol));
 	}
+	
+	public BufferedImage symbolImage(BonusSymbol symbol) {
+		return symbolMap.get(symbol);
+	}
 
 	public Sprite pacManFull() {
 		return new Sprite(pacManFull);
