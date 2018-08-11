@@ -51,12 +51,15 @@ public class GameController implements Controller {
 	private final Cast actors;
 	private final PacManGameUI currentView;
 	private final StateMachine<PlayState, GameEvent> gameControl;
+	private final IntSupplier fnFrequency;
 
 	public GameController(IntSupplier fnFrequency) {
+		this.fnFrequency = fnFrequency;
 		maze = new Maze(Assets.text("maze.txt"));
 		game = new Game(maze, fnFrequency);
 		actors = new Cast(game);
-		currentView = new ExtendedGamePanel(new BasicGamePanel(maze.numCols() * PacManGameUI.TS, (maze.numRows() + 5) * PacManGameUI.TS, game, actors));
+		currentView = new ExtendedGamePanel(
+				new BasicGamePanel(maze.numCols() * Game.TS, (maze.numRows() + 5) * Game.TS, game, actors));
 		gameControl = createGameControl();
 		actors.addObserver(gameControl::process);
 	}
@@ -69,13 +72,13 @@ public class GameController implements Controller {
 	@Override
 	public void init() {
 		logger.setLevel(Level.INFO);
-		actors.getPacMan().getStateMachine().traceTo(logger, game.fnTicksPerSecond);
-		actors.getGhosts().map(Ghost::getStateMachine).forEach(sm -> sm.traceTo(logger, game.fnTicksPerSecond));
+		actors.getPacMan().getStateMachine().traceTo(logger, fnFrequency);
+		actors.getGhosts().map(Ghost::getStateMachine).forEach(sm -> sm.traceTo(logger, fnFrequency));
 		actors.setActive(actors.getBlinky(), true);
 		actors.setActive(actors.getPinky(), false);
 		actors.setActive(actors.getInky(), false);
 		actors.setActive(actors.getClyde(), false);
-		gameControl.traceTo(logger, game.fnTicksPerSecond);
+		gameControl.traceTo(logger, fnFrequency);
 		gameControl.init();
 	}
 
@@ -170,11 +173,11 @@ public class GameController implements Controller {
 					
 				.when(PACMAN_DYING).then(GAME_OVER)
 					.on(PacManDiedEvent.class)
-					.condition(() -> game.livesRemaining == 0)
+					.condition(() -> game.getLivesRemaining() == 0)
 					
 				.when(PACMAN_DYING).then(PLAYING)
 					.on(PacManDiedEvent.class)
-					.condition(() -> game.livesRemaining > 0)
+					.condition(() -> game.getLivesRemaining() > 0)
 					.act(() -> actors.init())
 			
 				.when(GAME_OVER).then(READY)
@@ -258,7 +261,7 @@ public class GameController implements Controller {
 			actors.getBonus().ifPresent(bonus -> {
 				logger.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(), bonus.getValue()));
 				bonus.setHonored();
-				game.score += bonus.getValue();
+				game.score(bonus.getValue());
 				currentView.setBonusTimer(game.sec(1));
 			});
 		}
@@ -266,29 +269,29 @@ public class GameController implements Controller {
 		private void onFoodFound(GameEvent event) {
 			FoodFoundEvent e = (FoodFoundEvent) event;
 			game.maze.setContent(e.tile, Content.EATEN);
-			game.foodEaten += 1;
-			int oldGameScore = game.score;
-			game.score += game.getFoodValue(e.food);
-			if (oldGameScore < Game.EXTRALIFE_SCORE && game.score >= Game.EXTRALIFE_SCORE) {
-				game.livesRemaining += 1;
+			game.addFoodEaten();
+			int oldGameScore = game.getScore();
+			game.score(game.getFoodValue(e.food));
+			if (oldGameScore < Game.SCORE_FOR_EXTRA_LIFE && game.getScore() >= Game.SCORE_FOR_EXTRA_LIFE) {
+				game.addLife();
 			}
-			if (game.foodEaten == game.foodTotal) {
+			if (game.getFoodEaten() == game.getFoodTotal()) {
 				gameControl.enqueue(new LevelCompletedEvent());
 				return;
 			}
-			if (game.foodEaten == Game.FOOD_EATEN_BONUS_1 || game.foodEaten == Game.FOOD_EATEN_BONUS_2) {
+			if (game.getFoodEaten() == Game.FOOD_EATEN_FOR_BONUS_1 || game.getFoodEaten() == Game.FOOD_EATEN_FOR_BONUS_2) {
 				actors.addBonus(game.getBonusSymbol(), game.getBonusValue());
 				currentView.setBonusTimer(game.getBonusTime());
 			}
 			if (e.food == Content.ENERGIZER) {
-				game.ghostsKilledInSeries = 0;
+				game.resetGhostsKilledInSeries();
 				gameControl.enqueue(new PacManGainsPowerEvent());
 			}
 		}
 	}
 
 	private class ChangingLevelState extends StateObject<PlayState, GameEvent> {
-		
+
 		@Override
 		public void onEntry() {
 			currentView.setMazeFlashing(true);
@@ -296,7 +299,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onTick() {
-			boolean timeForChange = getRemaining() == getDuration() / 2; 
+			boolean timeForChange = getRemaining() == getDuration() / 2;
 			if (timeForChange) {
 				game.nextLevel();
 				actors.init();
@@ -305,7 +308,7 @@ public class GameController implements Controller {
 				currentView.enableAnimation(false);
 			}
 		}
-		
+
 		@Override
 		public void onExit() {
 			currentView.hideInfo();
@@ -318,7 +321,7 @@ public class GameController implements Controller {
 		@Override
 		public void onEntry() {
 			actors.getPacMan().visibility = () -> false;
-			game.score += game.getGhostValue();
+			game.score(game.getGhostValue());
 		}
 
 		@Override
@@ -328,7 +331,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onExit() {
-			game.ghostsKilledInSeries += 1;
+			game.addGhostKilledInSeries();
 			actors.getPacMan().visibility = () -> true;
 		}
 	}
@@ -347,7 +350,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onExit() {
-			game.livesRemaining -= 1;
+			game.removeLife();
 			actors.getActiveGhosts().forEach(ghost -> ghost.visibility = () -> true);
 		}
 	}

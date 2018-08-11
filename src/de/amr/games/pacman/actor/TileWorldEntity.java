@@ -5,17 +5,22 @@ import static java.lang.Math.round;
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.entity.GameEntity;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.view.PacManGameUI;
 
-public abstract class MazeEntity extends GameEntity {
-
+/**
+ * Common base class for entities that are located in a tile based world.
+ * 
+ * @author Armin Reichert
+ */
+public abstract class TileWorldEntity extends GameEntity {
+	
 	public int row() {
-		return round(tf.getY() + getHeight() / 2) / PacManGameUI.TS;
+		return round(tf.getY() + getHeight() / 2) / Game.TS;
 	}
 
 	public int col() {
-		return round(tf.getX() + getWidth() / 2) / PacManGameUI.TS;
+		return round(tf.getX() + getWidth() / 2) / Game.TS;
 	}
 
 	public Tile getTile() {
@@ -27,11 +32,11 @@ public abstract class MazeEntity extends GameEntity {
 	}
 
 	public void placeAt(int col, int row) {
-		tf.moveTo(col * PacManGameUI.TS, row * PacManGameUI.TS);
+		tf.moveTo(col * Game.TS, row * Game.TS);
 	}
 
 	public boolean isExactlyOverTile() {
-		return round(tf.getX()) % PacManGameUI.TS == 0 && round(tf.getY()) % PacManGameUI.TS == 0;
+		return round(tf.getX()) % Game.TS == 0 && round(tf.getY()) % Game.TS == 0;
 	}
 
 	@Override
@@ -46,11 +51,11 @@ public abstract class MazeEntity extends GameEntity {
 
 	@Override
 	public int getWidth() {
-		return PacManGameUI.TS;
+		return Game.TS;
 	}
 
 	@Override
 	public int getHeight() {
-		return PacManGameUI.TS;
+		return Game.TS;
 	}
 }

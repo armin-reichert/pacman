@@ -6,8 +6,6 @@ import de.amr.easy.game.view.ViewController;
 
 public interface PacManGameUI extends ViewController {
 
-	int TS = 16;
-	
 	PacManSprites SPRITES = new PacManSprites();
 
 	void enableAnimation(boolean enable);

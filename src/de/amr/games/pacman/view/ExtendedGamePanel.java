@@ -20,6 +20,7 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.controller.event.game.GhostKilledEvent;
 import de.amr.games.pacman.model.Content;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.StateObject;
 
@@ -33,14 +34,14 @@ public class ExtendedGamePanel extends BasicGamePanel {
 	private static Image createGridImage(int numRows, int numCols) {
 		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
 				.getDefaultConfiguration();
-		Image image = conf.createCompatibleImage(numCols * PacManGameUI.TS, numRows * PacManGameUI.TS + 1, Transparency.TRANSLUCENT);
+		Image image = conf.createCompatibleImage(numCols * Game.TS, numRows * Game.TS + 1, Transparency.TRANSLUCENT);
 		Graphics g = image.getGraphics();
 		g.setColor(Color.LIGHT_GRAY);
 		for (int row = 0; row <= numRows; ++row) {
-			g.drawLine(0, row * PacManGameUI.TS, numCols * PacManGameUI.TS, row * PacManGameUI.TS);
+			g.drawLine(0, row * Game.TS, numCols * Game.TS, row * Game.TS);
 		}
 		for (int col = 1; col < numCols; ++col) {
-			g.drawLine(col * PacManGameUI.TS, 0, col * PacManGameUI.TS, numRows * PacManGameUI.TS);
+			g.drawLine(col * Game.TS, 0, col * Game.TS, numRows * Game.TS);
 		}
 		return image;
 	}
@@ -106,7 +107,7 @@ public class ExtendedGamePanel extends BasicGamePanel {
 	private void eatPellets() {
 		game.maze.tiles().filter(tile -> game.maze.getContent(tile) == Content.PELLET).forEach(tile -> {
 			game.maze.setContent(tile, Content.EATEN);
-			game.foodEaten += 1;
+			game.addFoodEaten();
 		});
 	}
 
@@ -136,7 +137,7 @@ public class ExtendedGamePanel extends BasicGamePanel {
 		PacMan pacMan = actors.getPacMan();
 		drawText(g, Color.YELLOW, pacMan.tf.getX(), pacMan.tf.getY(), pacManState(pacMan));
 		actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> {
-			drawText(g, ghostColor(ghost), ghost.tf.getX() - PacManGameUI.TS, ghost.tf.getY(), ghostState(ghost));
+			drawText(g, ghostColor(ghost), ghost.tf.getX() - Game.TS, ghost.tf.getY(), ghostState(ghost));
 		});
 		g.translate(-base.mazeUI.tf.getX(), -base.mazeUI.tf.getY());
 	}
@@ -177,8 +178,8 @@ public class ExtendedGamePanel extends BasicGamePanel {
 	private void drawText(Graphics2D g, Color color, float x, float y, String text) {
 		g.translate(x, y);
 		g.setColor(color);
-		g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, PacManGameUI.TS / 2));
-		g.drawString(text, 0, -PacManGameUI.TS / 2);
+		g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, Game.TS / 2));
+		g.drawString(text, 0, -Game.TS / 2);
 		g.translate(-x, -y);
 	}
 
@@ -201,17 +202,17 @@ public class ExtendedGamePanel extends BasicGamePanel {
 			g.translate(base.mazeUI.tf.getX(), base.mazeUI.tf.getY());
 			for (int i = 0; i < path.size() - 1; ++i) {
 				Tile u = path.get(i), v = path.get(i + 1);
-				int u1 = u.col * PacManGameUI.TS + PacManGameUI.TS / 2;
-				int u2 = u.row * PacManGameUI.TS + PacManGameUI.TS / 2;
-				int v1 = v.col * PacManGameUI.TS + PacManGameUI.TS / 2;
-				int v2 = v.row * PacManGameUI.TS + PacManGameUI.TS / 2;
+				int u1 = u.col * Game.TS + Game.TS / 2;
+				int u2 = u.row * Game.TS + Game.TS / 2;
+				int v1 = v.col * Game.TS + Game.TS / 2;
+				int v2 = v.row * Game.TS + Game.TS / 2;
 				g.drawLine(u1, u2, v1, v2);
 			}
 			// Target tile
 			Tile tile = path.get(path.size() - 1);
-			g.translate(tile.col * PacManGameUI.TS, tile.row * PacManGameUI.TS);
-			g.fillRect(PacManGameUI.TS / 4, PacManGameUI.TS / 4, PacManGameUI.TS / 2, PacManGameUI.TS / 2);
-			g.translate(-tile.col * PacManGameUI.TS, -tile.row * PacManGameUI.TS);
+			g.translate(tile.col * Game.TS, tile.row * Game.TS);
+			g.fillRect(Game.TS / 4, Game.TS / 4, Game.TS / 2, Game.TS / 2);
+			g.translate(-tile.col * Game.TS, -tile.row * Game.TS);
 			g.translate(-base.mazeUI.tf.getX(), -base.mazeUI.tf.getY());
 		}
 	}

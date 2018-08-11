@@ -6,9 +6,10 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.model.BonusSymbol;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.view.PacManGameUI;
 
-public class Bonus extends MazeEntity {
+public class Bonus extends TileWorldEntity {
 
 	private static final int[] BONUS_POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
@@ -26,7 +27,7 @@ public class Bonus extends MazeEntity {
 		if (index < 0) {
 			throw new IllegalArgumentException("Illegal bonus value: " + value);
 		}
-		int size = 2 * PacManGameUI.TS;
+		int size = 2 * Game.TS;
 		s_symbol = PacManGameUI.SPRITES.symbol(symbol).scale(size);
 		s_points = PacManGameUI.SPRITES.pinkNumber(index).scale(size);
 	}
@@ -54,9 +55,9 @@ public class Bonus extends MazeEntity {
 	
 	@Override
 	public void draw(Graphics2D g) {
-		g.translate(PacManGameUI.TS / 2, PacManGameUI.TS / 2);
+		g.translate(Game.TS / 2, Game.TS / 2);
 		super.draw(g);
-		g.translate(-PacManGameUI.TS / 2, -PacManGameUI.TS / 2);
+		g.translate(-Game.TS / 2, -Game.TS / 2);
 	}
 
 	@Override

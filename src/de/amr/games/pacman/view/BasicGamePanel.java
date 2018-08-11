@@ -28,10 +28,10 @@ public class BasicGamePanel implements PacManGameUI {
 		this.height = height;
 		this.game = game;
 		this.actors = actors;
-		font = Assets.storeTrueTypeFont("scoreFont", "arcadeclassic.ttf", Font.PLAIN, PacManGameUI.TS * 3 / 2);
+		font = Assets.storeTrueTypeFont("scoreFont", "arcadeclassic.ttf", Font.PLAIN, Game.TS * 3 / 2);
 		lifeImage = PacManGameUI.SPRITES.pacManWalking(Top4.W).frame(1);
 		mazeUI = new MazePanel(game.maze, actors);
-		mazeUI.tf.moveTo(0, 3 * PacManGameUI.TS);
+		mazeUI.tf.moveTo(0, 3 * Game.TS);
 	}
 
 	@Override
@@ -58,23 +58,28 @@ public class BasicGamePanel implements PacManGameUI {
 		return this;
 	}
 
+	@Override
 	public void enableAnimation(boolean enable) {
 		mazeUI.enableAnimation(enable);
 	}
 
+	@Override
 	public void setBonusTimer(int ticks) {
 		mazeUI.setBonusTimer(ticks);
 	}
 
+	@Override
 	public void setMazeFlashing(boolean flashing) {
 		mazeUI.setFlashing(flashing);
 	}
 
+	@Override
 	public void showInfo(String text, Color color) {
 		infoText = text;
 		infoTextColor = color;
 	}
 
+	@Override
 	public void hideInfo() {
 		this.infoText = null;
 	}
@@ -83,16 +88,16 @@ public class BasicGamePanel implements PacManGameUI {
 	public void draw(Graphics2D g) {
 		g.setColor(Color.WHITE);
 		g.setFont(font);
-		g.drawString("SCORE", PacManGameUI.TS, PacManGameUI.TS);
-		g.drawString(String.format("%06d", game.score), PacManGameUI.TS, PacManGameUI.TS * 2);
-		g.drawString("LEVEL " + game.level, 20 * PacManGameUI.TS, PacManGameUI.TS);
-		g.translate(0, getHeight() - 2 * PacManGameUI.TS);
-		for (int i = 0; i < game.livesRemaining; ++i) {
+		g.drawString("SCORE", Game.TS, Game.TS);
+		g.drawString(String.format("%06d", game.getScore()), Game.TS, Game.TS * 2);
+		g.drawString("LEVEL " + game.getLevel(), 20 * Game.TS, Game.TS);
+		g.translate(0, getHeight() - 2 * Game.TS);
+		for (int i = 0; i < game.getLivesRemaining(); ++i) {
 			g.translate(i * lifeImage.getWidth(null), 0);
 			g.drawImage(lifeImage, 0, 0, null);
 			g.translate(-i * lifeImage.getWidth(null), 0);
 		}
-		g.translate(0, -getHeight() + 2 * PacManGameUI.TS);
+		g.translate(0, -getHeight() + 2 * Game.TS);
 		mazeUI.draw(g);
 		if (infoText != null) {
 			drawInfoText(g);
@@ -105,7 +110,7 @@ public class BasicGamePanel implements PacManGameUI {
 		g2.setFont(Assets.font("scoreFont"));
 		g2.setColor(infoTextColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(infoText, g2).getBounds();
-		g2.translate((width - box.width) / 2, (game.maze.bonusTile.row + 1) * PacManGameUI.TS);
+		g2.translate((width - box.width) / 2, (game.maze.bonusTile.row + 1) * Game.TS);
 		g2.drawString(infoText, 0, 0);
 		g2.dispose();
 	}

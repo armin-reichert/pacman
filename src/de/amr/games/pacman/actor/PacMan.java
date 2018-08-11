@@ -27,6 +27,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.PacManGameUI;
 import de.amr.statemachine.StateMachine;
+import de.amr.statemachine.StateObject;
 
 public class PacMan extends MazeMover<PacMan.State> {
 
@@ -40,7 +41,7 @@ public class PacMan extends MazeMover<PacMan.State> {
 		super(game.maze, game.maze.pacManHome, new EnumMap<>(State.class));
 		this.game = game;
 		brain = buildStateMachine();
-		createSprites(2 * PacManGameUI.TS);
+		createSprites(2 * Game.TS);
 	}
 
 	public void setEventManager(EventManager<GameEvent> events) {
@@ -72,6 +73,12 @@ public class PacMan extends MazeMover<PacMan.State> {
 	@Override
 	public Sprite currentSprite() {
 		return s_current;
+	}
+
+	@Override
+	public void move() {
+		super.move();
+		s_current = s_walking_to[getDir()];
 	}
 
 	// Pac-Man behavior
@@ -113,11 +120,9 @@ public class PacMan extends MazeMover<PacMan.State> {
 					.onEntry(this::initPacMan)
 					.timeoutAfter(() -> 1)
 
-				.state(VULNERABLE)
-					.onTick(this::inspectMaze)
+				.state(VULNERABLE).impl(new VulnerableState())
 					
-				.state(STEROIDS)
-					.onTick(() -> {	inspectMaze(); checkHealth(); })
+				.state(STEROIDS).impl(new SteroidsState())
 					.timeoutAfter(game::getPacManSteroidTime)
 
 				.state(DYING)
@@ -142,63 +147,73 @@ public class PacMan extends MazeMover<PacMan.State> {
 		/* @formatter:on */
 	}
 
-	// Pac-Man activities
+	// Pac-Man states
+	
+	private class VulnerableState extends StateObject<State, GameEvent> {
+		
+		@Override
+		public void onTick() {
+			if (pauseTicks > 0) {
+				--pauseTicks;
+				return;
+			}
+			inspectMaze();
+		}
+		
+		protected void inspectMaze() {
+			move();
+			if (isOutsideMaze()) {
+				return;
+			}
 
-	@Override
-	public void move() {
-		super.move();
-		s_current = s_walking_to[getDir()];
+			// Ghost collision?
+			Optional<Ghost> collidingGhost = world.getActiveGhosts()
+			/*@formatter:off*/
+					.filter(ghost -> ghost.getTile().equals(getTile()))
+					.filter(ghost -> ghost.getState() != Ghost.State.DEAD)
+					.filter(ghost -> ghost.getState() != Ghost.State.DYING)
+					.filter(ghost -> ghost.getState() != Ghost.State.SAFE)
+					.findFirst();
+			/*@formatter:on*/
+			if (collidingGhost.isPresent()) {
+				events.publishEvent(new PacManGhostCollisionEvent(collidingGhost.get()));
+				return;
+			}
+
+			// Unhonored bonus?
+			Optional<Bonus> activeBonus = world.getBonus()
+			/*@formatter:off*/
+					.filter(bonus -> !bonus.isHonored())
+					.filter(bonus -> bonus.getTile().equals(getTile()));
+			/*@formatter:on*/
+			if (activeBonus.isPresent()) {
+				Bonus bonus = activeBonus.get();
+				events.publishEvent(new BonusFoundEvent(bonus.getSymbol(), bonus.getValue()));
+				return;
+			}
+
+			// Food?
+			Tile tile = getTile();
+			char content = maze.getContent(tile);
+			if (content == Content.PELLET || content == Content.ENERGIZER) {
+				pauseTicks = (content == Content.PELLET ? 1 : 3);
+				events.publishEvent(new FoodFoundEvent(tile, content));
+			}
+		}		
+		
 	}
-
-	private void checkHealth() {
-		if (brain.stateTimeExpiredPct(50)) {
-			// TODO this can occur multiple times or getting missed!
-			events.publishEvent(new PacManGettingWeakerEvent());
-		}
-	}
-
-	private void inspectMaze() {
-		if (pauseTicks > 0) {
-			--pauseTicks;
-			return;
-		}
-		move();
-		if (isOutsideMaze()) {
-			return;
-		}
-
-		// Ghost collision?
-		Optional<Ghost> collidingGhost = world.getActiveGhosts()
-		/*@formatter:off*/
-				.filter(ghost -> ghost.getTile().equals(getTile()))
-				.filter(ghost -> ghost.getState() != Ghost.State.DEAD)
-				.filter(ghost -> ghost.getState() != Ghost.State.DYING)
-				.filter(ghost -> ghost.getState() != Ghost.State.SAFE)
-				.findFirst();
-		/*@formatter:on*/
-		if (collidingGhost.isPresent()) {
-			events.publishEvent(new PacManGhostCollisionEvent(collidingGhost.get()));
-			return;
-		}
-
-		// Unhonored bonus?
-		Optional<Bonus> activeBonus = world.getBonus()
-		/*@formatter:off*/
-				.filter(bonus -> !bonus.isHonored())
-				.filter(bonus -> bonus.getTile().equals(getTile()));
-		/*@formatter:on*/
-		if (activeBonus.isPresent()) {
-			Bonus bonus = activeBonus.get();
-			events.publishEvent(new BonusFoundEvent(bonus.getSymbol(), bonus.getValue()));
-			return;
-		}
-
-		// Food?
-		Tile tile = getTile();
-		char content = maze.getContent(tile);
-		if (content == Content.PELLET || content == Content.ENERGIZER) {
-			pauseTicks = (content == Content.PELLET ? 1 : 3);
-			events.publishEvent(new FoodFoundEvent(tile, content));
+	
+	private class SteroidsState extends VulnerableState {
+		@Override
+		public void onTick() {
+			if (pauseTicks > 0) {
+				--pauseTicks;
+				return;
+			}
+			inspectMaze();
+			if (getRemaining() == getDuration() / 2) {
+				events.publishEvent(new PacManGettingWeakerEvent());
+			}
 		}
 	}
 }

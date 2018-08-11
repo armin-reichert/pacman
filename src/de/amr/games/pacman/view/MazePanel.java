@@ -13,6 +13,7 @@ import de.amr.easy.game.sprite.CyclicAnimation;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 
 public class MazePanel extends GameEntity {
@@ -57,12 +58,12 @@ public class MazePanel extends GameEntity {
 
 	@Override
 	public int getWidth() {
-		return maze.numCols() * PacManGameUI.TS;
+		return maze.numCols() * Game.TS;
 	}
 
 	@Override
 	public int getHeight() {
-		return maze.numRows() * PacManGameUI.TS;
+		return maze.numRows() * Game.TS;
 	}
 
 	public void setFlashing(boolean on) {
@@ -97,9 +98,9 @@ public class MazePanel extends GameEntity {
 	private void drawActors(Graphics2D g) {
 		actors.getBonus().ifPresent(bonus -> {
 			bonus.placeAt(maze.bonusTile);
-			g.translate(0, -PacManGameUI.TS/2);
+			g.translate(0, -Game.TS/2);
 			bonus.draw(g);
-			g.translate(0, PacManGameUI.TS/2);
+			g.translate(0, Game.TS/2);
 		});
 		actors.getPacMan().draw(g);
 		actors.getActiveGhosts().filter(ghost -> ghost.getState() != Ghost.State.DYING).forEach(ghost -> ghost.draw(g));
@@ -110,10 +111,10 @@ public class MazePanel extends GameEntity {
 		maze.tiles().forEach(tile -> {
 			char c = maze.getContent(tile);
 			if (c == EATEN || c == ENERGIZER && energizerBlinking.currentFrame() % 2 != 0) {
-				g.translate(tile.col * PacManGameUI.TS, tile.row * PacManGameUI.TS);
+				g.translate(tile.col * Game.TS, tile.row * Game.TS);
 				g.setColor(Color.BLACK);
-				g.fillRect(0, 0, PacManGameUI.TS, PacManGameUI.TS);
-				g.translate(-tile.col * PacManGameUI.TS, -tile.row * PacManGameUI.TS);
+				g.fillRect(0, 0, Game.TS, Game.TS);
+				g.translate(-tile.col * Game.TS, -tile.row * Game.TS);
 			}
 		});
 	}

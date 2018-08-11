@@ -14,24 +14,53 @@ import java.util.function.IntSupplier;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.view.PacManGameUI;
 
+/**
+ * The model of the Pac-Man game.
+ * 
+ * @author Armin Reichert
+ */
 public class Game {
 
-	public static final int FOOD_EATEN_BONUS_1 = 70;
-	public static final int FOOD_EATEN_BONUS_2 = 170;
-	public static final int EXTRALIFE_SCORE = 10_000;
-	public static final int[] GHOST_POINTS = new int[] { 200, 400, 800, 1600 };
+	/** Tile size used throughout the game. */
+	public static final int TS = 16;
+
+	public static final int FOOD_EATEN_FOR_BONUS_1 = 70;
+	public static final int FOOD_EATEN_FOR_BONUS_2 = 170;
+	public static final int SCORE_FOR_EXTRA_LIFE = 10_000;
+	public static final int[] KILLED_GHOST_POINTS = new int[] { 200, 400, 800, 1600 };
+
+	public final Maze maze;
+	private final IntSupplier fnTicksPerSecond;
+	private int level;
+	private int score;
+	private int livesRemaining;
+	private long foodTotal;
+	private int foodEaten;
+	private int ghostsKilledInSeries;
+
+	private float baseSpeed;
 
 	enum DataColumn {
-		BonusSymbol, BonusValue, PacManSpeed, PacManDotsSpeed, GhostSpeed, GhostTunnelSpeed, Elroy1DotsLeft,
-		Elroy1Speed, Elroy2DotsLeft, Elroy2Speed, PacManSteroidSpeed, PacManSteroidDotsSpeed, GhostAfraidSpeed,
-		PacManSteroidSeconds, NumFlashes
+		BonusSymbol,
+		BonusValue,
+		PacManSpeed,
+		PacManDotsSpeed,
+		GhostSpeed,
+		GhostTunnelSpeed,
+		Elroy1DotsLeft,
+		Elroy1Speed,
+		Elroy2DotsLeft,
+		Elroy2Speed,
+		PacManSteroidSpeed,
+		PacManSteroidDotsSpeed,
+		GhostAfraidSpeed,
+		PacManSteroidSeconds,
+		NumFlashes
 	};
 
 	/**
-	 * @see <a href=
-	 *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>
+	 * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>
 	 */
 	private static final Object[][] DATA = {
 	/*@formatter:off*/
@@ -67,7 +96,7 @@ public class Game {
 
 	/** Tiles per second. */
 	private float tps(float value) {
-		return (value * PacManGameUI.TS) / fnTicksPerSecond.getAsInt();
+		return (value * Game.TS) / fnTicksPerSecond.getAsInt();
 	}
 
 	/** Ticks representing the given seconds. */
@@ -92,7 +121,7 @@ public class Game {
 	}
 
 	public int getGhostValue() {
-		return GHOST_POINTS[ghostsKilledInSeries];
+		return KILLED_GHOST_POINTS[ghostsKilledInSeries];
 	}
 
 	public float getGhostSpeed(MazeMover<Ghost.State> ghost) {
@@ -146,7 +175,7 @@ public class Game {
 	}
 
 	public int getLevelChangingTime() {
-		int value = levelData(DataColumn.NumFlashes); 
+		int value = levelData(DataColumn.NumFlashes);
 		return sec(value);
 	}
 
@@ -154,16 +183,7 @@ public class Game {
 		return sec(2);
 	}
 
-	public final Maze maze;
-	public final IntSupplier fnTicksPerSecond;
-	public int level;
-	public int score;
-	public int livesRemaining;
-	public long foodTotal;
-	public int foodEaten;
-	public int ghostsKilledInSeries;
-
-	private float baseSpeed;
+	//
 
 	public Game(Maze maze, IntSupplier fnTicksPerSecond) {
 		this.maze = maze;
@@ -179,11 +199,63 @@ public class Game {
 		foodEaten = 0;
 		ghostsKilledInSeries = 0;
 	}
-	
+
 	public void nextLevel() {
 		maze.resetFood();
 		level += 1;
 		foodEaten = 0;
 		ghostsKilledInSeries = 0;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void score(int points) {
+		score += points;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public int getLivesRemaining() {
+		return livesRemaining;
+	}
+
+	public void addLife() {
+		livesRemaining += 1;
+	}
+
+	public void removeLife() {
+		livesRemaining -= 1;
+	}
+
+	public int getGhostsKilledInSeries() {
+		return ghostsKilledInSeries;
+	}
+	
+	public void resetGhostsKilledInSeries() {
+		ghostsKilledInSeries = 0;
+	}
+	
+	public void addGhostKilledInSeries() {
+		ghostsKilledInSeries += 1;
+	}
+
+	public int getFoodEaten() {
+		return foodEaten;
+	}
+	
+	public void resetFoodEaten() {
+		foodEaten = 0;
+	}
+	
+	public void addFoodEaten() {
+		foodEaten += 1;
+	}
+
+	public long getFoodTotal() {
+		return foodTotal;
 	}
 }

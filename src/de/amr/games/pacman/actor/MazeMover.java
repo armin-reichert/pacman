@@ -12,17 +12,22 @@ import java.util.function.Function;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.controller.event.game.GameEvent;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.routing.Navigation;
 import de.amr.games.pacman.routing.impl.NavigationSystem;
-import de.amr.games.pacman.view.PacManGameUI;
 import de.amr.statemachine.StateMachine;
 
 /**
+ * Common base class for Pac-Man and ghosts. Knows about the rules of moving through the maze
+ * and allows to configure the navigation behavior by state.
+ * 
+ * @author Armin Reichert 
+ *
  * @param <S> maze mover state type
  */
-public abstract class MazeMover<S> extends MazeEntity {
+public abstract class MazeMover<S> extends TileWorldEntity {
 
 	private static final int TELEPORT_TILES = 6;
 
@@ -161,13 +166,13 @@ public abstract class MazeMover<S> extends MazeEntity {
 		float x = nextPosition.x, y = nextPosition.y;
 		switch (dir) {
 		case Top4.W:
-			return new Tile(round(x) / PacManGameUI.TS, current.row);
+			return new Tile(round(x) / Game.TS, current.row);
 		case Top4.E:
-			return new Tile(round(x + getWidth()) / PacManGameUI.TS, current.row);
+			return new Tile(round(x + getWidth()) / Game.TS, current.row);
 		case Top4.N:
-			return new Tile(current.col, round(y) / PacManGameUI.TS);
+			return new Tile(current.col, round(y) / Game.TS);
 		case Top4.S:
-			return new Tile(current.col, round(y + getHeight()) / PacManGameUI.TS);
+			return new Tile(current.col, round(y + getHeight()) / Game.TS);
 		default:
 			throw new IllegalArgumentException("Illegal direction: " + dir);
 		}

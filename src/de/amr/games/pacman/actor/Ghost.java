@@ -64,7 +64,7 @@ public class Ghost extends MazeMover<Ghost.State> {
 	private Sprite s_numbers[] = new Sprite[4];
 
 	private void createSprites(int color) {
-		int size = 2 * PacManGameUI.TS;
+		int size = 2 * Game.TS;
 		TOPOLOGY.dirs().forEach(dir -> {
 			s_color[dir] = PacManGameUI.SPRITES.ghostColored(color, dir).scale(size);
 			s_eyes[dir] = PacManGameUI.SPRITES.ghostEyes(dir).scale(size);
@@ -122,7 +122,7 @@ public class Ghost extends MazeMover<Ghost.State> {
 						.onTick(() -> {	move();	s_current = s_eyes[getDir()]; })
 					
 					.state(DYING)
-						.onEntry(() -> s_current = s_numbers[game.ghostsKilledInSeries] )
+						.onEntry(() -> s_current = s_numbers[game.getGhostsKilledInSeries()] )
 						.timeoutAfter(game::getGhostDyingTime)
 					
 					.state(SAFE)
