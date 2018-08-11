@@ -5,7 +5,7 @@ public interface Content {
 	// Structure
 	static final char WALL = '#';
 	static final char DOOR = 'D';
-	static final char TUNNEL = 'T';
+	static final char TELEPORT = 'T';
 
 	// Position markers
 	static final char POS_BONUS = '$';

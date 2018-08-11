@@ -156,7 +156,7 @@ public class Game {
 	}
 
 	public float getGhostSpeed(MazeMover<Ghost.State> ghost) {
-		if (maze.getContent(ghost.getTile()) == Content.TUNNEL) {
+		if (maze.getContent(ghost.getTile()) == Content.TELEPORT) {
 			return baseSpeed * (float) levelData(DataColumn.GhostTunnelSpeed);
 		}
 		switch (ghost.getState()) {
