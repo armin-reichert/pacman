@@ -29,7 +29,7 @@ public class Maze {
 
 	public static final Topology TOPOLOGY = new Top4();
 
-	public Tile pacManHome, blinkyHome, pinkyHome, inkyHome, clydeHome, infoTile;
+	public Tile pacManHome, blinkyHome, pinkyHome, inkyHome, clydeHome, bonusTile;
 
 	private final String[] data;
 	private int foodCount;
@@ -57,7 +57,7 @@ public class Maze {
 				} else if (c == POS_CLYDE) {
 					clydeHome = new Tile(col, row);
 				} else if (c == POS_BONUS) {
-					infoTile = new Tile(col, row);
+					bonusTile = new Tile(col, row);
 				} else if (c == POS_PACMAN) {
 					pacManHome = new Tile(col, row);
 				} else if (c == PELLET || c == ENERGIZER) {
