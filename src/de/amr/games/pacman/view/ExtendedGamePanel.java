@@ -107,7 +107,7 @@ public class ExtendedGamePanel extends BasicGamePanel {
 	private void eatPellets() {
 		game.maze.tiles().filter(tile -> game.maze.getContent(tile) == Content.PELLET).forEach(tile -> {
 			game.maze.setContent(tile, Content.EATEN);
-			game.addFoodEaten();
+			game.foodEaten.add(1);
 		});
 	}
 

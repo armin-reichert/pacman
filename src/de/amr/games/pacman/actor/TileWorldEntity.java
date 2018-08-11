@@ -14,7 +14,7 @@ import de.amr.games.pacman.model.Tile;
  * @author Armin Reichert
  */
 public abstract class TileWorldEntity extends GameEntity {
-	
+
 	public int row() {
 		return round(tf.getY() + getHeight() / 2) / Game.TS;
 	}

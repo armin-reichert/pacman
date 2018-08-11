@@ -18,8 +18,10 @@ import java.util.stream.Stream;
 /**
  * A finite state machine.
  *
- * @param <S> type for identifying states, for example an enumeration type.
- * @param <E> type of inputs (events).
+ * @param <S>
+ *          type for identifying states, for example an enumeration type.
+ * @param <E>
+ *          type of inputs (events).
  * 
  * @author Armin Reichert
  */
@@ -46,7 +48,8 @@ public class StateMachine<S, E> {
 	/**
 	 * Creates a new state machine.
 	 * 
-	 * @param stateLabelType type for state identifiers
+	 * @param stateLabelType
+	 *                         type for state identifiers
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public StateMachine(Class<S> stateLabelType) {
@@ -59,7 +62,8 @@ public class StateMachine<S, E> {
 	/**
 	 * Forwards tracing to the given logger.
 	 * 
-	 * @param log a logger
+	 * @param log
+	 *              a logger
 	 */
 	public void traceTo(Logger log, IntSupplier fnTicksPerSecond) {
 		tracer = new StateMachineTracer<>(this, log, fnTicksPerSecond);
@@ -75,7 +79,8 @@ public class StateMachine<S, E> {
 	/**
 	 * Sets the description for this state machine.
 	 * 
-	 * @param description description text (used by tracing)
+	 * @param description
+	 *                      description text (used by tracing)
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -84,7 +89,8 @@ public class StateMachine<S, E> {
 	/**
 	 * Sets the initial state for this state machine.
 	 * 
-	 * @param initialState initial state
+	 * @param initialState
+	 *                       initial state
 	 */
 	public void setInitialState(S initialState) {
 		if (initialState == null) {
@@ -104,14 +110,18 @@ public class StateMachine<S, E> {
 	/**
 	 * Adds a state transition.
 	 * 
-	 * @param from      transition source state
-	 * @param to        transition target state
-	 * @param guard     condition guarding transition or {@code  null} for always
-	 *                  fulfilled
-	 * @param action    action for transition or {@code null} for no action
-	 * @param eventType type of event for transition or {@code null} for no event
-	 *                  condition
-	 * @param timeout   if transition is fired on a timeout
+	 * @param from
+	 *                    transition source state
+	 * @param to
+	 *                    transition target state
+	 * @param guard
+	 *                    condition guarding transition or {@code  null} for always fulfilled
+	 * @param action
+	 *                    action for transition or {@code null} for no action
+	 * @param eventType
+	 *                    type of event for transition or {@code null} for no event condition
+	 * @param timeout
+	 *                    if transition is fired on a timeout
 	 */
 	public void addTransition(S from, S to, BooleanSupplier guard, Consumer<E> action, Class<? extends E> eventType,
 			boolean timeout) {
@@ -133,7 +143,8 @@ public class StateMachine<S, E> {
 	/**
 	 * Adds an input ("event") to the queue of this state machine.
 	 * 
-	 * @param event some input/event
+	 * @param event
+	 *                some input/event
 	 */
 	public void enqueue(E event) {
 		Objects.nonNull(event);
@@ -143,7 +154,8 @@ public class StateMachine<S, E> {
 	/**
 	 * Processes the given event.
 	 * 
-	 * @param event some input / event
+	 * @param event
+	 *                some input / event
 	 */
 	public void process(E event) {
 		Objects.nonNull(event);
@@ -154,7 +166,8 @@ public class StateMachine<S, E> {
 	/**
 	 * Tells if the state machine is in any of the given states.
 	 * 
-	 * @param states non-empty list of state labels
+	 * @param states
+	 *                 non-empty list of state labels
 	 * @return <code>true</code> if the state machine is in any of the given states
 	 */
 	@SuppressWarnings("unchecked")
@@ -181,10 +194,10 @@ public class StateMachine<S, E> {
 	}
 
 	/**
-	 * Returns the state object with the given identifier. The state object is
-	 * created on demand.
+	 * Returns the state object with the given identifier. The state object is created on demand.
 	 * 
-	 * @param state a state identifier
+	 * @param state
+	 *                a state identifier
 	 * @return the state object for the given state identifier
 	 */
 	@SuppressWarnings("unchecked")
@@ -198,8 +211,10 @@ public class StateMachine<S, E> {
 	/**
 	 * Replaces the state object for the given state by the given object.
 	 * 
-	 * @param state       state identifier
-	 * @param stateObject state object
+	 * @param state
+	 *                      state identifier
+	 * @param stateObject
+	 *                      state object
 	 * @return the new state object
 	 */
 	public <C extends StateObject<S, E>> C replaceState(S state, C stateObject) {
@@ -210,13 +225,13 @@ public class StateMachine<S, E> {
 	}
 
 	/**
-	 * Tells if the time expired for the current stat is the given percentage of the
-	 * state's total time.
+	 * Tells if the time expired for the current stat is the given percentage of the state's total time.
 	 * 
-	 * @param pct percentage value to check for
+	 * @param pct
+	 *              percentage value to check for
 	 * 
-	 * @return {@code true} if the given percentage of the state's time has been
-	 *         consumed. If the current state has no timer returns {@code false}.
+	 * @return {@code true} if the given percentage of the state's time has been consumed. If the
+	 *         current state has no timer returns {@code false}.
 	 */
 	public boolean stateTimeExpiredPct(int pct) {
 		StateObject<S, E> stateObject = currentStateObject();
@@ -232,8 +247,8 @@ public class StateMachine<S, E> {
 	}
 
 	/**
-	 * Initializes this state machine by switching to the initial state and
-	 * executing the initial state's (optional) entry action.
+	 * Initializes this state machine by switching to the initial state and executing the initial
+	 * state's (optional) entry action.
 	 */
 	public void init() {
 		tracer.enteringInitialState(initialState);
@@ -264,8 +279,8 @@ public class StateMachine<S, E> {
 				fireTransition(match.get(), event);
 			} else {
 				tracer.unhandledEvent(event);
-				throw new IllegalStateException(String.format("%s: No transition defined in state '%s' for event '%s'",
-						description, currentState, event));
+				throw new IllegalStateException(
+						String.format("%s: No transition defined in state '%s' for event '%s'", description, currentState, event));
 			}
 			eventQ.poll();
 		}

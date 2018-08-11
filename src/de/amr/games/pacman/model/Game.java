@@ -31,17 +31,66 @@ public class Game {
 	public static final int[] KILLED_GHOST_POINTS = new int[] { 200, 400, 800, 1600 };
 
 	public final Maze maze;
-	private final IntSupplier fnTicksPerSecond;
+	public final IntSupplier fnTicksPerSecond;
+	public final Counter score = new Counter();
+	public final Counter lives = new Counter();
+	public final Counter foodEaten = new Counter();
+	public final Counter ghostsKilledInSeries = new Counter();
 	private int level;
-	private int score;
-	private int livesRemaining;
 	private long foodTotal;
-	private int foodEaten;
-	private int ghostsKilledInSeries;
-
 	private float baseSpeed;
 
-	enum DataColumn {
+	public Game(Maze maze, IntSupplier fnTicksPerSecond) {
+		this.maze = maze;
+		this.fnTicksPerSecond = fnTicksPerSecond;
+		foodTotal = maze.getFoodCount();
+		baseSpeed = tps(8f);
+	}
+
+	public void init() {
+		lives.set(3);
+		score.set(0);
+		level = 1;
+		foodEaten.set(0);
+		ghostsKilledInSeries.set(0);
+	}
+
+	public void nextLevel() {
+		maze.resetFood();
+		level += 1;
+		foodEaten.set(0);
+		ghostsKilledInSeries.set(0);
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public int getFoodValue(char food) {
+		return food == Content.PELLET ? 10 : food == Content.ENERGIZER ? 50 : 0;
+	}
+
+	public int getGhostValue() {
+		return KILLED_GHOST_POINTS[ghostsKilledInSeries.get()];
+	}
+
+	public long getFoodTotal() {
+		return foodTotal;
+	}
+
+	/** Ticks representing the given seconds. */
+	public int sec(float seconds) {
+		return Math.round(fnTicksPerSecond.getAsInt() * seconds);
+	}
+
+	/** Tiles per second. */
+	private float tps(float value) {
+		return (value * Game.TS) / fnTicksPerSecond.getAsInt();
+	}
+
+	// Level data
+
+	private enum DataColumn {
 		BonusSymbol,
 		BonusValue,
 		PacManSpeed,
@@ -94,16 +143,6 @@ public class Game {
 		return (T) DATA[level][column.ordinal()];
 	}
 
-	/** Tiles per second. */
-	private float tps(float value) {
-		return (value * Game.TS) / fnTicksPerSecond.getAsInt();
-	}
-
-	/** Ticks representing the given seconds. */
-	public int sec(float seconds) {
-		return Math.round(fnTicksPerSecond.getAsInt() * seconds);
-	}
-
 	public BonusSymbol getBonusSymbol() {
 		return levelData(DataColumn.BonusSymbol);
 	}
@@ -114,14 +153,6 @@ public class Game {
 
 	public int getBonusTime() {
 		return sec(9);
-	}
-
-	public int getFoodValue(char food) {
-		return food == Content.PELLET ? 10 : food == Content.ENERGIZER ? 50 : 0;
-	}
-
-	public int getGhostValue() {
-		return KILLED_GHOST_POINTS[ghostsKilledInSeries];
 	}
 
 	public float getGhostSpeed(MazeMover<Ghost.State> ghost) {
@@ -181,81 +212,5 @@ public class Game {
 
 	public int getReadyTime() {
 		return sec(2);
-	}
-
-	//
-
-	public Game(Maze maze, IntSupplier fnTicksPerSecond) {
-		this.maze = maze;
-		this.fnTicksPerSecond = fnTicksPerSecond;
-		foodTotal = maze.getFoodCount();
-		baseSpeed = tps(8f);
-	}
-
-	public void init() {
-		livesRemaining = 3;
-		score = 0;
-		level = 1;
-		foodEaten = 0;
-		ghostsKilledInSeries = 0;
-	}
-
-	public void nextLevel() {
-		maze.resetFood();
-		level += 1;
-		foodEaten = 0;
-		ghostsKilledInSeries = 0;
-	}
-
-	public int getScore() {
-		return score;
-	}
-
-	public void score(int points) {
-		score += points;
-	}
-
-	public int getLevel() {
-		return level;
-	}
-
-	public int getLivesRemaining() {
-		return livesRemaining;
-	}
-
-	public void addLife() {
-		livesRemaining += 1;
-	}
-
-	public void removeLife() {
-		livesRemaining -= 1;
-	}
-
-	public int getGhostsKilledInSeries() {
-		return ghostsKilledInSeries;
-	}
-	
-	public void resetGhostsKilledInSeries() {
-		ghostsKilledInSeries = 0;
-	}
-	
-	public void addGhostKilledInSeries() {
-		ghostsKilledInSeries += 1;
-	}
-
-	public int getFoodEaten() {
-		return foodEaten;
-	}
-	
-	public void resetFoodEaten() {
-		foodEaten = 0;
-	}
-	
-	public void addFoodEaten() {
-		foodEaten += 1;
-	}
-
-	public long getFoodTotal() {
-		return foodTotal;
 	}
 }

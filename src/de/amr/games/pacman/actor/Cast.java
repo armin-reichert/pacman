@@ -151,15 +151,15 @@ public class Cast implements PacManWorld {
 	public Stream<Ghost> getGhosts() {
 		return Stream.of(blinky, pinky, inky, clyde);
 	}
-	
+
 	public void addBonus(BonusSymbol symbol, int value) {
 		bonus = new Bonus(symbol, value);
 	}
-	
+
 	public void removeBonus() {
 		bonus = null;
 	}
-	
+
 	@Override
 	public Optional<Bonus> getBonus() {
 		return Optional.ofNullable(bonus);

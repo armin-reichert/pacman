@@ -27,8 +27,7 @@ public class StateMachineTracer<S> {
 	}
 
 	public void unhandledEvent(Object event) {
-		log.info(String.format("%s in state %s could not handle '%s'", sm.getDescription(),
-				sm.currentState(), event));
+		log.info(String.format("%s in state %s could not handle '%s'", sm.getDescription(), sm.currentState(), event));
 	}
 
 	public void enteringInitialState(S initialState) {

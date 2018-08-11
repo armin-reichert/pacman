@@ -122,7 +122,7 @@ public class Ghost extends MazeMover<Ghost.State> {
 						.onTick(() -> {	move();	s_current = s_eyes[getDir()]; })
 					
 					.state(DYING)
-						.onEntry(() -> s_current = s_numbers[game.getGhostsKilledInSeries()] )
+						.onEntry(() -> s_current = s_numbers[game.ghostsKilledInSeries.get()] )
 						.timeoutAfter(game::getGhostDyingTime)
 					
 					.state(SAFE)

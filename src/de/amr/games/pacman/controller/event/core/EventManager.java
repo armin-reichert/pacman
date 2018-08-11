@@ -6,7 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class EventManager<E> {
-	
+
 	private final String description;
 	private final Set<Observer<E>> observers = new LinkedHashSet<>();
 

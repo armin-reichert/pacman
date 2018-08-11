@@ -115,7 +115,7 @@ public class PacManSprites {
 		for (int j = 0; j < 3; ++j) {
 			pinkNumbers[5 + j] = $(512, 160 + j * 16, 2 * 16, 16);
 		}
-		
+
 		Application.logger.info("Pac-Man sprite images extracted");
 	}
 

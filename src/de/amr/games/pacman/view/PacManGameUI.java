@@ -11,11 +11,11 @@ public interface PacManGameUI extends ViewController {
 	void enableAnimation(boolean enable);
 
 	void showInfo(String text, Color color);
-	
+
 	void hideInfo();
-	
+
 	void setBonusTimer(int ticks);
-	
+
 	void setMazeFlashing(boolean flashing);
 
 }

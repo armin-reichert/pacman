@@ -20,12 +20,13 @@ import de.amr.games.pacman.routing.impl.NavigationSystem;
 import de.amr.statemachine.StateMachine;
 
 /**
- * Common base class for Pac-Man and ghosts. Knows about the rules of moving through the maze
- * and allows to configure the navigation behavior by state.
+ * Common base class for Pac-Man and ghosts. Knows about the rules of moving through the maze and
+ * allows to configure the navigation behavior by state.
  * 
- * @author Armin Reichert 
+ * @author Armin Reichert
  *
- * @param <S> maze mover state type
+ * @param <S>
+ *          maze mover state type
  */
 public abstract class MazeMover<S> extends TileWorldEntity {
 
@@ -122,7 +123,7 @@ public abstract class MazeMover<S> extends TileWorldEntity {
 			placeAt(getTile());
 		}
 	}
-	
+
 	private void teleport() {
 		Tile tile = getTile();
 		if (tile.col > (maze.numCols() - 1) + TELEPORT_TILES) {

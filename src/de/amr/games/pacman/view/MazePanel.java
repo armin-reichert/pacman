@@ -73,7 +73,7 @@ public class MazePanel extends GameEntity {
 	public void setBonusTimer(int ticks) {
 		bonusTimer = ticks;
 	}
-	
+
 	@Override
 	public void enableAnimation(boolean enable) {
 		super.enableAnimation(enable);
@@ -98,9 +98,9 @@ public class MazePanel extends GameEntity {
 	private void drawActors(Graphics2D g) {
 		actors.getBonus().ifPresent(bonus -> {
 			bonus.placeAt(maze.bonusTile);
-			g.translate(0, -Game.TS/2);
+			g.translate(0, -Game.TS / 2);
 			bonus.draw(g);
-			g.translate(0, Game.TS/2);
+			g.translate(0, Game.TS / 2);
 		});
 		actors.getPacMan().draw(g);
 		actors.getActiveGhosts().filter(ghost -> ghost.getState() != Ghost.State.DYING).forEach(ghost -> ghost.draw(g));

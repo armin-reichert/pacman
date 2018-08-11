@@ -39,7 +39,7 @@ public class Bonus extends TileWorldEntity {
 	public BonusSymbol getSymbol() {
 		return symbol;
 	}
-	
+
 	public boolean isHonored() {
 		return honored;
 	}
@@ -52,7 +52,7 @@ public class Bonus extends TileWorldEntity {
 	public Sprite currentSprite() {
 		return honored ? s_points : s_symbol;
 	}
-	
+
 	@Override
 	public void draw(Graphics2D g) {
 		g.translate(Game.TS / 2, Game.TS / 2);

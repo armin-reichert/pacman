@@ -89,10 +89,10 @@ public class BasicGamePanel implements PacManGameUI {
 		g.setColor(Color.WHITE);
 		g.setFont(font);
 		g.drawString("SCORE", Game.TS, Game.TS);
-		g.drawString(String.format("%06d", game.getScore()), Game.TS, Game.TS * 2);
+		g.drawString(String.format("%06d", game.score.get()), Game.TS, Game.TS * 2);
 		g.drawString("LEVEL " + game.getLevel(), 20 * Game.TS, Game.TS);
 		g.translate(0, getHeight() - 2 * Game.TS);
-		for (int i = 0; i < game.getLivesRemaining(); ++i) {
+		for (int i = 0; i < game.lives.get(); ++i) {
 			g.translate(i * lifeImage.getWidth(null), 0);
 			g.drawImage(lifeImage, 0, 0, null);
 			g.translate(-i * lifeImage.getWidth(null), 0);

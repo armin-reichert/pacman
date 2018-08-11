@@ -148,9 +148,9 @@ public class PacMan extends MazeMover<PacMan.State> {
 	}
 
 	// Pac-Man states
-	
+
 	private class VulnerableState extends StateObject<State, GameEvent> {
-		
+
 		@Override
 		public void onTick() {
 			if (pauseTicks > 0) {
@@ -159,7 +159,7 @@ public class PacMan extends MazeMover<PacMan.State> {
 			}
 			inspectMaze();
 		}
-		
+
 		protected void inspectMaze() {
 			move();
 			if (isOutsideMaze()) {
@@ -199,11 +199,12 @@ public class PacMan extends MazeMover<PacMan.State> {
 				pauseTicks = (content == Content.PELLET ? 1 : 3);
 				events.publishEvent(new FoodFoundEvent(tile, content));
 			}
-		}		
-		
+		}
+
 	}
-	
+
 	private class SteroidsState extends VulnerableState {
+
 		@Override
 		public void onTick() {
 			if (pauseTicks > 0) {
