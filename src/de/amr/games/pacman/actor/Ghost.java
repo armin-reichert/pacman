@@ -146,6 +146,7 @@ public class Ghost extends MazeMover<Ghost.State> {
 					.stay(SAFE).on(PacManGainsPowerEvent.class)
 					.stay(SAFE).on(PacManGettingWeakerEvent.class)
 					.stay(SAFE).on(PacManLostPowerEvent.class)
+					.stay(SAFE).on(GhostKilledEvent.class)
 						
 					.when(AGGRO).on(PacManGainsPowerEvent.class).then(AFRAID)
 						

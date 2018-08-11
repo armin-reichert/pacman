@@ -24,51 +24,40 @@ public class Game {
 	public static final int[] GHOST_POINTS = new int[] { 200, 400, 800, 1600 };
 
 	enum DataColumn {
-		BonusSymbol,
-		BonusValue,
-		PacManSpeed,
-		PacManDotsSpeed,
-		GhostSpeed,
-		GhostTunnelSpeed,
-		Elroy1DotsLeft,
-		Elroy1Speed,
-		Elroy2DotsLeft,
-		Elroy2Speed,
-		PacManSteroidSpeed,
-		PacManSteroidDotsSpeed,
-		GhostAfraidSpeed,
-		PacManSteroidSeconds,
-		NumFlashes
+		BonusSymbol, BonusValue, PacManSpeed, PacManDotsSpeed, GhostSpeed, GhostTunnelSpeed, Elroy1DotsLeft,
+		Elroy1Speed, Elroy2DotsLeft, Elroy2Speed, PacManSteroidSpeed, PacManSteroidDotsSpeed, GhostAfraidSpeed,
+		PacManSteroidSeconds, NumFlashes
 	};
 
 	/**
-	 * @see <a href="http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>
+	 * @see <a href=
+	 *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>
 	 */
 	private static final Object[][] DATA = {
 	/*@formatter:off*/
-		{}, 
-		{ CHERRIES,    100,  .80f, .71f, .75f, .40f,  20, .8f, 10,  .85f, .90f, .79f, .50f, 6, 5 },
-		{ STRAWBERRY,  300,  .90f, .79f, .85f, .45f,  30, .8f, 15,  .95f, .95f, .83f, .55f, 5, 5 },
-		{ PEACH,       500,  .90f, .79f, .85f, .45f,  40, .8f, 20,  .95f, .95f, .83f, .55f, 4, 5 },
-		{ PEACH,       500,  .90f, .79f, .85f, .50f,  40, .8f, 20,  .95f, .95f, .83f, .55f, 3, 5 },
-		{ APPLE,       700,    1f, .87f, .95f, .50f,  40, .8f, 20, .105f,   1f, .87f, .60f, 2, 5 },
-		{ APPLE,       700,    1f, .87f, .95f, .50f,  50, .8f, 25, .105f,   1f, .87f, .60f, 5, 5 },
-		{ GRAPES,     1000,    1f, .87f, .95f, .50f,  50, .8f, 25, .105f,   1f, .87f, .60f, 2, 5 },
-		{ GRAPES,     1000,    1f, .87f, .95f, .50f,  50, .8f, 25, .105f,   1f, .87f, .60f, 2, 5 },
-		{ GALAXIAN,   2000,    1f, .87f, .95f, .50f,  60, .8f, 30, .105f,   1f, .87f, .60f, 1, 3 },
-		{ GALAXIAN,   2000,    1f, .87f, .95f, .50f,  60, .8f, 30, .105f,   1f, .87f, .60f, 5, 5 },
-		{ BELL,       3000,    1f, .87f, .95f, .50f,  60, .8f, 30, .105f,   1f, .87f, .60f, 2, 5 },
-		{ BELL,       3000,    1f, .87f, .95f, .50f,  80, .8f, 40, .105f,   1f, .87f, .60f, 1, 3 },
-		{ KEY,        5000,    1f, .87f, .95f, .50f,  80, .8f, 40, .105f,   1f, .87f, .60f, 1, 3 },
-		{ KEY,        5000,    1f, .87f, .95f, .50f,  80, .8f, 40, .105f,   1f, .87f, .60f, 3, 5 },
-		{ KEY,        5000,    1f, .87f, .95f, .50f, 100, .8f, 50, .105f,   1f, .87f, .60f, 1, 3 },
-		{ KEY,        5000,    1f, .87f, .95f, .50f, 100, .8f, 50, .105f,   0f,   0f,   0f, 0, 0 },
-		{ KEY,        5000,    1f, .87f, .95f, .50f, 100, .8f, 50, .105f,   1f, .87f, .60f, 1, 3 },
-		{ KEY,        5000,    1f, .87f, .95f, .50f, 100, .8f, 50, .105f,   0f,   0f,   0f, 0, 0 },
-		{ KEY,        5000,    1f, .87f, .95f, .50f, 120, .8f, 60, .105f,   0f,   0f,   0f, 0, 0 },
-		{ KEY,        5000,    1f, .87f, .95f, .50f, 120, .8f, 60, .105f,   0f,   0f,   0f, 0, 0 },
-		{ KEY,        5000,  .90f, .79f, .95f, .50f, 120, .8f, 60, .105f,   0f,   0f,   0f, 0, 0 },
-		/*@formatter:on*/
+	{ /* not used */},
+	{ CHERRIES,           100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6,   5 },
+	{ STRAWBERRY,         300,  .90f, .79f, .85f, .45f,  30, .8f,  15,  .95f, .95f, .83f, .55f,   5,   5 },
+	{ PEACH,              500,  .90f, .79f, .85f, .45f,  40, .8f,  20,  .95f, .95f, .83f, .55f,   4,   5 },
+	{ PEACH,              500,  .90f, .79f, .85f, .50f,  40, .8f,  20,  .95f, .95f, .83f, .55f,   3,   5 },
+	{ APPLE,              700,    1f, .87f, .95f, .50f,  40, .8f,  20, .105f,   1f, .87f, .60f,   2,   5 },
+	{ APPLE,              700,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   5,   5 },
+	{ GRAPES,            1000,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   2,   5 },
+	{ GRAPES,            1000,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   2,   5 },
+	{ GALAXIAN,          2000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   1,   3 },
+	{ GALAXIAN,          2000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   5,   5 },
+	{ BELL,              3000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   2,   5 },
+	{ BELL,              3000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   1,   3 },
+	{ KEY,               5000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   1,   3 },
+	{ KEY,               5000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   3,   5 },
+	{ KEY,               5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   1f, .87f, .60f,   1,   3 },
+	{ KEY,               5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   0f,   0f,   0f,   0,   0 },
+	{ KEY,               5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   1f, .87f, .60f,   1,   3 },
+	{ KEY,               5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   0f,   0f,   0f,   0,   0 },
+	{ KEY,               5000,    1f, .87f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0,   0 },
+	{ KEY,               5000,    1f, .87f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0,   0 },
+	{ KEY,               5000,  .90f, .79f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0,   0 },
+	/*@formatter:on*/
 	};
 
 	@SuppressWarnings("unchecked")
@@ -99,13 +88,7 @@ public class Game {
 	}
 
 	public int getFoodValue(char food) {
-		if (food == Content.PELLET) {
-			return 10;
-		}
-		if (food == Content.ENERGIZER) {
-			return 50;
-		}
-		return 0;
+		return food == Content.PELLET ? 10 : food == Content.ENERGIZER ? 50 : 0;
 	}
 
 	public int getGhostValue() {
@@ -154,8 +137,8 @@ public class Game {
 	}
 
 	public int getPacManSteroidTime() {
-		int seconds = levelData(DataColumn.PacManSteroidSeconds); 
-		return sec(seconds);
+		int value = levelData(DataColumn.PacManSteroidSeconds);
+		return sec(value);
 	}
 
 	public int getPacManDyingTime() {
@@ -163,19 +146,19 @@ public class Game {
 	}
 
 	public int getLevelChangingTime() {
-		int numFlashes = levelData(DataColumn.NumFlashes);
-		return sec(numFlashes);
+		int value = levelData(DataColumn.NumFlashes); 
+		return sec(value);
 	}
 
 	public int getReadyTime() {
 		return sec(2);
 	}
 
-	public final IntSupplier fnTicksPerSecond;
 	public final Maze maze;
+	public final IntSupplier fnTicksPerSecond;
 	public int level;
-	public int livesRemaining;
 	public int score;
+	public int livesRemaining;
 	public long foodTotal;
 	public int foodEaten;
 	public int ghostsKilledInSeries;
@@ -183,17 +166,17 @@ public class Game {
 	private float baseSpeed;
 
 	public Game(Maze maze, IntSupplier fnTicksPerSecond) {
-		this.fnTicksPerSecond = fnTicksPerSecond;
 		this.maze = maze;
+		this.fnTicksPerSecond = fnTicksPerSecond;
 		baseSpeed = tps(8f);
 	}
 
 	public void init() {
 		maze.resetFood();
-		foodTotal = maze.getFoodCount();
 		level = 1;
-		livesRemaining = 3;
 		score = 0;
+		livesRemaining = 3;
+		foodTotal = maze.getFoodCount();
 		foodEaten = 0;
 		ghostsKilledInSeries = 0;
 	}
