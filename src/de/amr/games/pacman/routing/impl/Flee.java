@@ -12,30 +12,32 @@ import de.amr.games.pacman.routing.Navigation;
 class Flee implements Navigation {
 
 	private final MazeMover<?> chaser;
+	private final Maze maze;
+	private final List<Tile> corners = new ArrayList<>();
 
 	public Flee(MazeMover<?> chaser) {
 		this.chaser = chaser;
-	}
-
-	@Override
-	public MazeRoute computeRoute(MazeMover<?> refugee) {
-		Maze maze = refugee.maze;
-		List<Tile> corners = new ArrayList<>();
+		maze = chaser.maze;
 		corners.add(new Tile(1, 1));
 		corners.add(new Tile(maze.numCols() - 2, 1));
 		corners.add(new Tile(1, maze.numRows() - 2));
 		corners.add(new Tile(maze.numCols() - 2, maze.numRows() - 2));
+	}
+
+	@Override
+	public MazeRoute computeRoute(MazeMover<?> refugee) {
 		RouteData route = new RouteData();
-		if (!maze.isValidTile(chaser.getTile()) || !maze.isValidTile(refugee.getTile())) {
+		if (chaser.isOutsideMaze() || refugee.isOutsideMaze()) {
+			// chaser or refugee is teleporting
 			route.dir = refugee.getNextDir();
-			return route; // either chaser or refugee is teleporting
+			return route;
 		}
-		int max = 0;
+		int maxDist = 0;
 		Tile farestCorner = null;
 		for (Tile corner : corners) {
-			int d = maze.findPath(chaser.getTile(), corner).size();
-			if (d > max) {
-				max = d;
+			int dist = maze.findPath(chaser.getTile(), corner).size();
+			if (dist > maxDist) {
+				maxDist = dist;
 				farestCorner = corner;
 			}
 		}

@@ -148,6 +148,7 @@ public class Ghost extends MazeMover<Ghost.State> {
 					.stay(SAFE).on(PacManLostPowerEvent.class)
 					.stay(SAFE).on(GhostKilledEvent.class)
 						
+					.when(AGGRO).on(GhostKilledEvent.class).then(DEAD) // used for cheating
 					.when(AGGRO).on(PacManGainsPowerEvent.class).then(AFRAID)
 						
 					.stay(AFRAID).on(PacManGettingWeakerEvent.class).act(e -> s_current = s_blinking)
