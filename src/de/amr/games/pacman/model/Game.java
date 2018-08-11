@@ -28,7 +28,7 @@ public class Game {
 	public static final int FOOD_EATEN_FOR_BONUS_1 = 70;
 	public static final int FOOD_EATEN_FOR_BONUS_2 = 170;
 	public static final int SCORE_FOR_EXTRA_LIFE = 10_000;
-	public static final int[] KILLED_GHOST_POINTS = new int[] { 200, 400, 800, 1600 };
+	public static final int[] KILLED_GHOST_POINTS = { 200, 400, 800, 1600 };
 
 	public final Maze maze;
 	public final IntSupplier fnTicksPerSecond;
