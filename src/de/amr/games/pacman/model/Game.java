@@ -43,7 +43,7 @@ public class Game {
 	public Game(Maze maze, IntSupplier fnTicksPerSecond) {
 		this.maze = maze;
 		this.fnTicksPerSecond = fnTicksPerSecond;
-		foodTotal = maze.getFoodCount();
+		foodTotal = maze.getFoodTotal();
 		baseSpeed = tps(8f);
 	}
 

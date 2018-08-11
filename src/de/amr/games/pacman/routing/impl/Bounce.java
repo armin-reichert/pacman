@@ -2,7 +2,7 @@ package de.amr.games.pacman.routing.impl;
 
 import static de.amr.games.pacman.model.Content.DOOR;
 import static de.amr.games.pacman.model.Content.WALL;
-import static de.amr.games.pacman.model.Maze.TOPOLOGY;
+import static de.amr.games.pacman.model.Maze.FOUR_DIRECTIONS;
 
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.model.Tile;
@@ -14,7 +14,7 @@ class Bounce implements Navigation {
 	@Override
 	public MazeRoute computeRoute(MazeMover<?> bouncer) {
 		RouteData route = new RouteData();
-		route.dir = isReflected(bouncer) ? TOPOLOGY.inv(bouncer.getDir()) : bouncer.getDir();
+		route.dir = isReflected(bouncer) ? FOUR_DIRECTIONS.inv(bouncer.getDir()) : bouncer.getDir();
 		return route;
 	}
 

@@ -3,7 +3,6 @@ package de.amr.games.pacman.model;
 public interface Content {
 
 	// Structure
-	static final char EMPTY = ' ';
 	static final char WALL = '#';
 	static final char DOOR = 'D';
 	static final char TUNNEL = 'T';

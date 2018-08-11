@@ -1,6 +1,5 @@
 package de.amr.games.pacman.model;
 
-import static de.amr.games.pacman.model.Content.EMPTY;
 import static de.amr.games.pacman.model.Content.ENERGIZER;
 import static de.amr.games.pacman.model.Content.PELLET;
 import static de.amr.games.pacman.model.Content.POS_BLINKY;
@@ -21,33 +20,47 @@ import java.util.stream.Stream;
 import de.amr.easy.graph.api.GraphTraversal;
 import de.amr.easy.graph.api.UndirectedEdge;
 import de.amr.easy.graph.impl.traversal.AStarTraversal;
+import de.amr.easy.grid.api.GridGraph2D;
 import de.amr.easy.grid.api.Topology;
 import de.amr.easy.grid.impl.GridGraph;
 import de.amr.easy.grid.impl.Top4;
 
+/**
+ * The original Pac-Man maze. It is represented by a grid graph which may store content and can be
+ * used by path finding algorithms.
+ * 
+ * @author Armin Reichert
+ * 
+ * @see GridGraph2D
+ * @see AStarTraversal
+ */
 public class Maze {
 
-	public static final Topology TOPOLOGY = new Top4();
+	public static final Topology FOUR_DIRECTIONS = new Top4();
 
-	public Tile pacManHome, blinkyHome, pinkyHome, inkyHome, clydeHome, bonusTile;
+	public Tile pacManHome;
+	public Tile blinkyHome;
+	public Tile pinkyHome;
+	public Tile inkyHome;
+	public Tile clydeHome;
+	public Tile bonusTile;
 
-	private final String[] data;
-	private int foodCount;
+	private final String[] originalData;
+	private int foodTotal;
+
 	private final GridGraph<Character, Integer> graph;
 
-	public void resetFood() {
-		graph.clearVertexLabels();
-	}
-
 	public Maze(String map) {
-		data = map.split("\n");
-		int numCols = data[0].length(), numRows = data.length;
-		graph = new GridGraph<>(numCols, numRows, TOPOLOGY, v -> EMPTY, (u, v) -> 1, UndirectedEdge::new);
-		graph.setDefaultVertexLabel(v -> data(graph.row(v), graph.col(v)));
-		foodCount = 0;
+		originalData = map.split("\n");
+		int numCols = originalData[0].length(), numRows = originalData.length;
+		
+		graph = new GridGraph<>(numCols, numRows, FOUR_DIRECTIONS, v -> null, (u, v) -> 1, UndirectedEdge::new);
+		graph.setDefaultVertexLabel(v -> originalData(graph.row(v), graph.col(v)));
+		
+		foodTotal = 0;
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				char c = data(row, col);
+				char c = originalData(row, col);
 				if (c == POS_BLINKY) {
 					blinkyHome = new Tile(col, row);
 				} else if (c == POS_PINKY) {
@@ -61,19 +74,19 @@ public class Maze {
 				} else if (c == POS_PACMAN) {
 					pacManHome = new Tile(col, row);
 				} else if (c == PELLET || c == ENERGIZER) {
-					foodCount += 1;
+					foodTotal += 1;
 				}
 			}
 		}
 		graph.fill();
 		graph.edges().filter(edge -> {
 			int u = edge.either(), v = edge.other();
-			return data(graph.row(u), graph.col(u)) == WALL || data(graph.row(v), graph.col(v)) == WALL;
+			return originalData(graph.row(u), graph.col(u)) == WALL || originalData(graph.row(v), graph.col(v)) == WALL;
 		}).forEach(graph::removeEdge);
 	}
 
-	private char data(int row, int col) {
-		return data[row].charAt(col);
+	private char originalData(int row, int col) {
+		return originalData[row].charAt(col);
 	}
 
 	public GridGraph<Character, Integer> getGraph() {
@@ -96,8 +109,12 @@ public class Maze {
 		return graph.isValidCol(tile.col) && graph.isValidRow(tile.row);
 	}
 
-	public int getFoodCount() {
-		return foodCount;
+	public void resetFood() {
+		graph.clearVertexLabels();
+	}
+
+	public int getFoodTotal() {
+		return foodTotal;
 	}
 
 	public char getContent(int col, int row) {
@@ -105,7 +122,7 @@ public class Maze {
 	}
 
 	public char getContent(Tile tile) {
-		return isValidTile(tile) ? graph.get(cell(tile)) : Content.EMPTY;
+		return isValidTile(tile) ? graph.get(cell(tile)) : ' ';
 	}
 
 	public void setContent(Tile tile, char c) {
@@ -152,5 +169,4 @@ public class Maze {
 	public Tile tile(int cell) {
 		return new Tile(graph.col(cell), graph.row(cell));
 	}
-
 }

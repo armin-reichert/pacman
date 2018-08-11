@@ -3,7 +3,7 @@ package de.amr.games.pacman.actor;
 import static de.amr.easy.game.math.Vector2f.smul;
 import static de.amr.easy.game.math.Vector2f.sum;
 import static de.amr.games.pacman.model.Content.WALL;
-import static de.amr.games.pacman.model.Maze.TOPOLOGY;
+import static de.amr.games.pacman.model.Maze.FOUR_DIRECTIONS;
 import static java.lang.Math.round;
 
 import java.util.Map;
@@ -155,7 +155,7 @@ public abstract class MazeMover<S> extends TileWorldEntity {
 		if (maze.getContent(next) == WALL) {
 			return false;
 		}
-		if (goal == TOPOLOGY.right(dir) || goal == TOPOLOGY.left(dir)) {
+		if (goal == FOUR_DIRECTIONS.right(dir) || goal == FOUR_DIRECTIONS.left(dir)) {
 			placeAt(getTile()); // TODO this is not 100% correct
 			return isExactlyOverTile();
 		}
@@ -180,7 +180,7 @@ public abstract class MazeMover<S> extends TileWorldEntity {
 	}
 
 	private Vector2f computePosition(int dir) {
-		Vector2f v_dir = Vector2f.of(TOPOLOGY.dx(dir), TOPOLOGY.dy(dir));
+		Vector2f v_dir = Vector2f.of(FOUR_DIRECTIONS.dx(dir), FOUR_DIRECTIONS.dy(dir));
 		return sum(tf.getPosition(), smul(getSpeed(), v_dir));
 	}
 }

@@ -7,7 +7,7 @@ import static de.amr.games.pacman.actor.Ghost.State.DYING;
 import static de.amr.games.pacman.actor.Ghost.State.HOME;
 import static de.amr.games.pacman.actor.Ghost.State.SAFE;
 import static de.amr.games.pacman.actor.Ghost.State.SCATTERING;
-import static de.amr.games.pacman.model.Maze.TOPOLOGY;
+import static de.amr.games.pacman.model.Maze.FOUR_DIRECTIONS;
 
 import java.util.EnumMap;
 import java.util.stream.Stream;
@@ -65,7 +65,7 @@ public class Ghost extends MazeMover<Ghost.State> {
 
 	private void createSprites(int color) {
 		int size = 2 * Game.TS;
-		TOPOLOGY.dirs().forEach(dir -> {
+		FOUR_DIRECTIONS.dirs().forEach(dir -> {
 			s_color[dir] = PacManGameUI.SPRITES.ghostColored(color, dir).scale(size);
 			s_eyes[dir] = PacManGameUI.SPRITES.ghostEyes(dir).scale(size);
 		});
