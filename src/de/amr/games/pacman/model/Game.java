@@ -70,7 +70,7 @@ public class Game {
 		return food == Content.PELLET ? 10 : food == Content.ENERGIZER ? 50 : 0;
 	}
 
-	public int getGhostValue() {
+	public int getKilledGhostValue() {
 		return KILLED_GHOST_POINTS[ghostsKilledInSeries.get()];
 	}
 
@@ -90,7 +90,7 @@ public class Game {
 
 	// Level data
 
-	private enum DataColumn {
+	private enum Field {
 		BonusSymbol,
 		BonusValue,
 		PacManSpeed,
@@ -139,16 +139,16 @@ public class Game {
 	};
 
 	@SuppressWarnings("unchecked")
-	private <T> T levelData(DataColumn column) {
+	private <T> T levelData(Field column) {
 		return (T) DATA[level][column.ordinal()];
 	}
 
 	public BonusSymbol getBonusSymbol() {
-		return levelData(DataColumn.BonusSymbol);
+		return levelData(Field.BonusSymbol);
 	}
 
 	public int getBonusValue() {
-		return levelData(DataColumn.BonusValue);
+		return levelData(Field.BonusValue);
 	}
 
 	public int getBonusTime() {
@@ -156,22 +156,22 @@ public class Game {
 	}
 
 	public float getGhostSpeed(MazeMover<Ghost.State> ghost) {
-		if (maze.getContent(ghost.getTile()) == Content.TELEPORT) {
-			return baseSpeed * (float) levelData(DataColumn.GhostTunnelSpeed);
+		if (maze.getContent(ghost.getTile()) == Content.TUNNEL) {
+			return baseSpeed * (float) levelData(Field.GhostTunnelSpeed);
 		}
 		switch (ghost.getState()) {
 		case AGGRO:
-			return baseSpeed * (float) levelData(DataColumn.GhostSpeed);
+			return baseSpeed * (float) levelData(Field.GhostSpeed);
 		case DYING:
 			return 0;
 		case DEAD:
 			return baseSpeed * 1.5f;
 		case AFRAID:
-			return baseSpeed * (float) levelData(DataColumn.GhostAfraidSpeed);
+			return baseSpeed * (float) levelData(Field.GhostAfraidSpeed);
 		case SAFE:
 			return baseSpeed * 0.75f;
 		case SCATTERING:
-			return baseSpeed * (float) levelData(DataColumn.GhostSpeed);
+			return baseSpeed * (float) levelData(Field.GhostSpeed);
 		default:
 			throw new IllegalStateException();
 		}
@@ -186,9 +186,9 @@ public class Game {
 		case SAFE:
 			return 0;
 		case VULNERABLE:
-			return baseSpeed * (float) levelData(DataColumn.PacManSpeed);
+			return baseSpeed * (float) levelData(Field.PacManSpeed);
 		case STEROIDS:
-			return baseSpeed * (float) levelData(DataColumn.PacManSteroidSpeed);
+			return baseSpeed * (float) levelData(Field.PacManSteroidSpeed);
 		case DYING:
 			return 0;
 		default:
@@ -197,7 +197,7 @@ public class Game {
 	}
 
 	public int getPacManSteroidTime() {
-		int value = levelData(DataColumn.PacManSteroidSeconds);
+		int value = levelData(Field.PacManSteroidSeconds);
 		return sec(value);
 	}
 
@@ -206,7 +206,7 @@ public class Game {
 	}
 
 	public int getLevelChangingTime() {
-		int value = levelData(DataColumn.NumFlashes);
+		int value = levelData(Field.NumFlashes);
 		return sec(value);
 	}
 

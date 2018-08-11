@@ -319,7 +319,7 @@ public class GameController implements Controller {
 		@Override
 		public void onEntry() {
 			actors.getPacMan().visibility = () -> false;
-			game.score.add(game.getGhostValue());
+			game.score.add(game.getKilledGhostValue());
 		}
 
 		@Override
