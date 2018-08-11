@@ -117,12 +117,12 @@ public class PacMan extends MazeMover<PacMan.State> {
 					.onTick(this::inspectMaze)
 					
 				.state(STEROIDS)
-						.onTick(() -> {	inspectMaze(); checkHealth(); })
-						.timeoutAfter(game::getPacManSteroidTime)
+					.onTick(() -> {	inspectMaze(); checkHealth(); })
+					.timeoutAfter(game::getPacManSteroidTime)
 
 				.state(DYING)
-						.onEntry(() -> s_current = s_dying)
-						.timeoutAfter(() -> game.sec(2))
+					.onEntry(() -> s_current = s_dying)
+					.timeoutAfter(() -> game.sec(2))
 
 			.transitions()
 
