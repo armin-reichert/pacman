@@ -128,7 +128,7 @@ public class PacManSprites {
 	}
 
 	public Sprite mazeFlashing() {
-		return new Sprite(mazeEmpty, mazeWhite).animate(CYCLIC, 250);
+		return new Sprite(mazeEmpty, mazeWhite).animate(CYCLIC, 100);
 	}
 
 	public Sprite symbol(BonusSymbol symbol) {
@@ -144,7 +144,7 @@ public class PacManSprites {
 	}
 
 	public Sprite pacManWalking(int dir) {
-		return new Sprite(pacManWalking[dir]).animate(BACK_AND_FORTH, 80);
+		return new Sprite(pacManWalking[dir]).animate(BACK_AND_FORTH, 100);
 	}
 
 	public Sprite pacManDying() {

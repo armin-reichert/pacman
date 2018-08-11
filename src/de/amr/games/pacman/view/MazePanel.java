@@ -32,7 +32,7 @@ public class MazePanel extends GameEntity {
 		s_maze_normal = PacManGameUI.SPRITES.mazeFull().scale(getWidth(), getHeight());
 		s_maze_flashing = PacManGameUI.SPRITES.mazeFlashing().scale(getWidth(), getHeight());
 		energizerBlinking = new CyclicAnimation(2);
-		energizerBlinking.setFrameDuration(250);
+		energizerBlinking.setFrameDuration(500);
 	}
 
 	@Override

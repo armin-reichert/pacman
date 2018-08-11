@@ -217,8 +217,7 @@ public class Game {
 	}
 
 	public int getLevelChangingTime() {
-		int value = levelData(Field.NumFlashes);
-		return sec(value);
+		return sec(2);
 	}
 
 	public int getReadyTime() {
