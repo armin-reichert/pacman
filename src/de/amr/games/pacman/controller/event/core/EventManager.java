@@ -1,6 +1,6 @@
 package de.amr.games.pacman.controller.event.core;
 
-import static de.amr.easy.game.Application.logger;
+import static de.amr.easy.game.Application.LOGGER;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -23,7 +23,7 @@ public class EventManager<E> {
 	}
 
 	public void publishEvent(E event) {
-		logger.info(String.format("%s publishing event '%s'", description, event));
+		LOGGER.info(String.format("%s publishing event '%s'", description, event));
 		observers.forEach(observer -> observer.observe(event));
 	}
 }

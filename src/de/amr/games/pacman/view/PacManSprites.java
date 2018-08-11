@@ -116,7 +116,7 @@ public class PacManSprites {
 			pinkNumbers[5 + j] = $(512, 160 + j * 16, 2 * 16, 16);
 		}
 
-		Application.logger.info("Pac-Man sprite images extracted");
+		Application.LOGGER.info("Pac-Man sprite images extracted");
 	}
 
 	public Sprite mazeEmpty() {

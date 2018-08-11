@@ -17,7 +17,7 @@ public class PacManApp extends Application {
 			try {
 				scale = Float.parseFloat(args[0]);
 			} catch (NumberFormatException e) {
-				Application.logger.info("Illegal scaling value: " + args[0]);
+				Application.LOGGER.info("Illegal scaling value: " + args[0]);
 			}
 		}
 		launch(new PacManApp(scale));
@@ -32,6 +32,6 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new GameController(pulse::getFrequency));
+		setController(new GameController());
 	}
 }

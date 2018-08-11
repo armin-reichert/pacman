@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view;
 
-import static de.amr.easy.game.Application.logger;
+import static de.amr.easy.game.Application.LOGGER;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -68,7 +68,7 @@ public class ExtendedGamePanel extends BasicGamePanel {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_L)) {
-			logger.setLevel(logger.getLevel() == Level.OFF ? Level.INFO : Level.OFF);
+			LOGGER.setLevel(LOGGER.getLevel() == Level.OFF ? Level.INFO : Level.OFF);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_G)) {
 			showGrid = !showGrid;

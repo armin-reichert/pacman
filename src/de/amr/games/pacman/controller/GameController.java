@@ -1,6 +1,6 @@
 package de.amr.games.pacman.controller;
 
-import static de.amr.easy.game.Application.logger;
+import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.games.pacman.controller.GameController.PlayState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.GameController.PlayState.GAME_OVER;
 import static de.amr.games.pacman.controller.GameController.PlayState.GHOST_DYING;
@@ -10,9 +10,9 @@ import static de.amr.games.pacman.controller.GameController.PlayState.READY;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.util.function.IntSupplier;
 import java.util.logging.Level;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.Controller;
@@ -52,9 +52,9 @@ public class GameController implements Controller {
 	private final PacManGameUI currentView;
 	private final StateMachine<PlayState, GameEvent> gameControl;
 
-	public GameController(IntSupplier fnFrequency) {
+	public GameController() {
 		maze = new Maze(Assets.text("maze.txt"));
-		game = new Game(maze, fnFrequency);
+		game = new Game(maze, Application.PULSE::getFrequency);
 		actors = new Cast(game);
 		currentView = new ExtendedGamePanel(
 				new BasicGamePanel(maze.numCols() * Game.TS, (maze.numRows() + 5) * Game.TS, game, actors));
@@ -69,14 +69,14 @@ public class GameController implements Controller {
 
 	@Override
 	public void init() {
-		logger.setLevel(Level.INFO);
-		actors.getPacMan().getStateMachine().traceTo(logger, game.fnTicksPerSecond);
-		actors.getGhosts().map(Ghost::getStateMachine).forEach(sm -> sm.traceTo(logger, game.fnTicksPerSecond));
+		LOGGER.setLevel(Level.INFO);
+		actors.getPacMan().getStateMachine().traceTo(LOGGER, game.fnTicksPerSecond);
+		actors.getGhosts().map(Ghost::getStateMachine).forEach(sm -> sm.traceTo(LOGGER, game.fnTicksPerSecond));
 		actors.setActive(actors.getBlinky(), true);
 		actors.setActive(actors.getPinky(), false);
 		actors.setActive(actors.getInky(), false);
 		actors.setActive(actors.getClyde(), false);
-		gameControl.traceTo(logger, game.fnTicksPerSecond);
+		gameControl.traceTo(LOGGER, game.fnTicksPerSecond);
 		gameControl.init();
 	}
 
@@ -230,7 +230,7 @@ public class GameController implements Controller {
 		private void onPacManKilled(GameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
 			actors.getPacMan().processEvent(e);
-			logger.info(() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
+			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
 		}
 
 		private void onPacManGainsPower(GameEvent event) {
@@ -252,12 +252,12 @@ public class GameController implements Controller {
 		private void onGhostKilled(GameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
 			e.ghost.processEvent(e);
-			logger.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
+			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
 		}
 
 		private void onBonusFound(GameEvent event) {
 			actors.getBonus().ifPresent(bonus -> {
-				logger.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(), bonus.getValue()));
+				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(), bonus.getValue()));
 				bonus.setHonored();
 				game.score.add(bonus.getValue());
 				currentView.setBonusTimer(game.sec(1));
