@@ -132,6 +132,7 @@ public class Maze {
 	public List<Tile> findPath(Tile source, Tile target) {
 		if (isValidTile(source) && isValidTile(target)) {
 			GraphTraversal pathfinder = new AStarTraversal<>(graph, edge -> 1, graph::manhattan);
+//			GraphTraversal pathfinder = new BreadthFirstTraversal<>(graph);
 			pathfinder.traverseGraph(cell(source), cell(target));
 			return pathfinder.path(cell(target)).stream().map(this::tile).collect(Collectors.toList());
 		}
