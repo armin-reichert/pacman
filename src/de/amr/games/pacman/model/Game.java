@@ -53,13 +53,12 @@ public class Game {
 	}
 
 	public void init() {
-		score.set(0);
 		lives.set(3);
 		levelCounter.clear();
 		level = 0;
 		nextLevel();
 	}
-
+	
 	public void nextLevel() {
 		maze.resetFood();
 		foodEaten.set(0);

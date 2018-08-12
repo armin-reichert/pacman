@@ -33,6 +33,7 @@ import de.amr.games.pacman.controller.event.game.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.game.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Content;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.HighScore;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.view.BasicGamePanel;
 import de.amr.games.pacman.view.ExtendedGamePanel;
@@ -190,6 +191,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onEntry() {
+			HighScore.load();
 			game.init();
 			actors.init();
 			currentView.enableAnimation(false);
@@ -366,6 +368,7 @@ public class GameController implements Controller {
 		public void onEntry() {
 			currentView.enableAnimation(false);
 			currentView.showInfo("Game Over!", Color.RED);
+			HighScore.save(game.score.get(), game.getLevel());
 		}
 
 		@Override
