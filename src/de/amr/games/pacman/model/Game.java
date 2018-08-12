@@ -59,7 +59,8 @@ public class Game {
 		foodEaten.set(0);
 		ghostsKilledInSeries.set(0);
 		level = 1;
-		levelCounter.add(0, getBonusSymbol());
+		levelCounter.clear();
+		levelCounter.add(getBonusSymbol());
 	}
 
 	public void nextLevel() {
