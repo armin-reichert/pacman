@@ -36,7 +36,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.HighScore;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.view.ExtendedGamePanel;
-import de.amr.games.pacman.view.GamePanel;
+import de.amr.games.pacman.view.PacManGameUI;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
 
@@ -49,7 +49,7 @@ public class GameController implements Controller {
 	private final Maze maze;
 	private final Game game;
 	private final Cast actors;
-	private final GamePanel gameView;
+	private final PacManGameUI gameView;
 	private final StateMachine<PlayState, GameEvent> gameControl;
 
 	public GameController() {
