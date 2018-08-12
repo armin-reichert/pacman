@@ -127,10 +127,10 @@ public abstract class MazeMover<S> extends TileWorldEntity {
 	private void teleport() {
 		Tile tile = getTile();
 		if (tile.col > (maze.numCols() - 1) + TELEPORT_TILES) {
-			// return to the maze from the left
+			// reenter maze from the left
 			placeAt(0, tile.row);
 		} else if (tile.col < -TELEPORT_TILES) {
-			// return to the maze from the right
+			// reenter maze from the right
 			placeAt(maze.numCols() - 1, tile.row);
 		} else {
 			tf.moveTo(computePosition(dir));

@@ -86,11 +86,6 @@ public class PacMan extends MazeMover<PacMan.State> {
 
 	public enum State {
 		SAFE, VULNERABLE, STEROIDS, DYING
-	};
-
-	@Override
-	public void init() {
-		brain.init();
 	}
 
 	@Override
