@@ -73,6 +73,10 @@ public class MazePanel extends GameEntity {
 	public void setBonusTimer(int ticks) {
 		bonusTimer = ticks;
 	}
+	
+	public Cast getActors() {
+		return actors;
+	}
 
 	@Override
 	public void enableAnimation(boolean enable) {

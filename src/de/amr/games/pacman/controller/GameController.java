@@ -35,8 +35,8 @@ import de.amr.games.pacman.model.Content;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.HighScore;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.view.GamePanel;
 import de.amr.games.pacman.view.ExtendedGamePanel;
+import de.amr.games.pacman.view.GamePanel;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
 
@@ -49,15 +49,14 @@ public class GameController implements Controller {
 	private final Maze maze;
 	private final Game game;
 	private final Cast actors;
-	private final ExtendedGamePanel gameView;
+	private final GamePanel gameView;
 	private final StateMachine<PlayState, GameEvent> gameControl;
 
 	public GameController() {
 		maze = new Maze(Assets.text("maze.txt"));
 		game = new Game(maze, Application.PULSE::getFrequency);
 		actors = new Cast(game);
-		gameView = new ExtendedGamePanel(
-				new GamePanel(maze.numCols() * Game.TS, (maze.numRows() + 5) * Game.TS, game, actors));
+		gameView = new ExtendedGamePanel(maze.numCols() * Game.TS, (maze.numRows() + 5) * Game.TS, game, actors);
 		gameControl = createGameControl();
 		actors.addObserver(gameControl::process);
 	}
@@ -71,8 +70,7 @@ public class GameController implements Controller {
 	public void init() {
 		LOGGER.setLevel(Level.INFO);
 		actors.getPacMan().getStateMachine().traceTo(LOGGER, game.fnTicksPerSecond);
-		actors.getGhosts().map(Ghost::getStateMachine)
-				.forEach(sm -> sm.traceTo(LOGGER, game.fnTicksPerSecond));
+		actors.getGhosts().map(Ghost::getStateMachine).forEach(sm -> sm.traceTo(LOGGER, game.fnTicksPerSecond));
 		actors.setActive(actors.getPinky(), false);
 		actors.setActive(actors.getInky(), false);
 		actors.setActive(actors.getClyde(), false);
@@ -231,8 +229,7 @@ public class GameController implements Controller {
 		private void onPacManKilled(GameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
 			actors.getPacMan().processEvent(e);
-			LOGGER.info(
-					() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
+			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
 		}
 
 		private void onPacManGainsPower(GameEvent event) {
@@ -254,14 +251,12 @@ public class GameController implements Controller {
 		private void onGhostKilled(GameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
 			e.ghost.processEvent(e);
-			LOGGER
-					.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
+			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
 		}
 
 		private void onBonusFound(GameEvent event) {
 			actors.getBonus().ifPresent(bonus -> {
-				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(),
-						bonus.getValue()));
+				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(), bonus.getValue()));
 				bonus.setHonored();
 				game.score.add(bonus.getValue());
 				gameView.setBonusTimer(game.sec(1));
@@ -274,16 +269,14 @@ public class GameController implements Controller {
 			game.foodEaten.add(1);
 			int oldGameScore = game.score.get();
 			game.score.add(game.getFoodValue(e.food));
-			if (oldGameScore < Game.SCORE_FOR_EXTRA_LIFE
-					&& game.score.get() >= Game.SCORE_FOR_EXTRA_LIFE) {
+			if (oldGameScore < Game.SCORE_FOR_EXTRA_LIFE && game.score.get() >= Game.SCORE_FOR_EXTRA_LIFE) {
 				game.lives.add(1);
 			}
 			if (game.foodEaten.get() == game.getFoodTotal()) {
 				gameControl.enqueue(new LevelCompletedEvent());
 				return;
 			}
-			if (game.foodEaten.get() == Game.FOOD_EATEN_FOR_BONUS_1
-					|| game.foodEaten.get() == Game.FOOD_EATEN_FOR_BONUS_2) {
+			if (game.foodEaten.get() == Game.FOOD_EATEN_FOR_BONUS_1 || game.foodEaten.get() == Game.FOOD_EATEN_FOR_BONUS_2) {
 				actors.addBonus(game.getBonusSymbol(), game.getBonusValue());
 				gameView.setBonusTimer(game.getBonusTime());
 			}
@@ -330,8 +323,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onTick() {
-			actors.getActiveGhosts().filter(ghost -> ghost.getState() == Ghost.State.DYING)
-					.forEach(Ghost::update);
+			actors.getActiveGhosts().filter(ghost -> ghost.getState() == Ghost.State.DYING).forEach(Ghost::update);
 		}
 
 		@Override

@@ -16,6 +16,7 @@ import java.util.logging.Level;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
+import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.controller.event.game.GhostKilledEvent;
@@ -32,10 +33,9 @@ import de.amr.statemachine.StateObject;
 public class ExtendedGamePanel extends GamePanel {
 
 	private static Image createGridImage(int numRows, int numCols) {
-		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment()
-				.getDefaultScreenDevice().getDefaultConfiguration();
-		Image image = conf.createCompatibleImage(numCols * Game.TS, numRows * Game.TS + 1,
-				Transparency.TRANSLUCENT);
+		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+				.getDefaultConfiguration();
+		Image image = conf.createCompatibleImage(numCols * Game.TS, numRows * Game.TS + 1, Transparency.TRANSLUCENT);
 		Graphics g = image.getGraphics();
 		g.setColor(Color.LIGHT_GRAY);
 		for (int row = 0; row <= numRows; ++row) {
@@ -49,15 +49,13 @@ public class ExtendedGamePanel extends GamePanel {
 
 	private static final String INFTY = Character.toString('\u221E');
 
-	private final GamePanel base;
 	private final Image gridImage;
 	private boolean showGrid;
 	private boolean showRoutes;
 	private boolean showStates;
 
-	public ExtendedGamePanel(GamePanel base) {
-		super(base.width, base.height, base.game, base.actors);
-		this.base = base;
+	public ExtendedGamePanel(int width, int height, Game game, Cast actors) {
+		super(width, height, game, actors);
 		gridImage = createGridImage(game.maze.numRows(), game.maze.numCols());
 	}
 
@@ -129,19 +127,19 @@ public class ExtendedGamePanel extends GamePanel {
 	}
 
 	private void drawGrid(Graphics2D g) {
-		g.translate(base.mazeUI.tf.getX(), base.mazeUI.tf.getY());
+		g.translate(mazePanel.tf.getX(), mazePanel.tf.getY());
 		g.drawImage(gridImage, 0, 0, null);
-		g.translate(-base.mazeUI.tf.getX(), -base.mazeUI.tf.getY());
+		g.translate(-mazePanel.tf.getX(), -mazePanel.tf.getY());
 	}
 
 	private void drawEntityStates(Graphics2D g) {
-		g.translate(base.mazeUI.tf.getX(), base.mazeUI.tf.getY());
+		g.translate(mazePanel.tf.getX(), mazePanel.tf.getY());
 		PacMan pacMan = actors.getPacMan();
 		drawText(g, Color.YELLOW, pacMan.tf.getX(), pacMan.tf.getY(), pacManState(pacMan));
 		actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> {
 			drawText(g, ghostColor(ghost), ghost.tf.getX() - Game.TS, ghost.tf.getY(), ghostState(ghost));
 		});
-		g.translate(-base.mazeUI.tf.getX(), -base.mazeUI.tf.getY());
+		g.translate(-mazePanel.tf.getX(), -mazePanel.tf.getY());
 	}
 
 	private String pacManState(PacMan pacMan) {
@@ -153,8 +151,8 @@ public class ExtendedGamePanel extends GamePanel {
 
 	private String ghostState(Ghost ghost) {
 		StateObject<?, ?> state = ghost.getStateMachine().currentStateObject();
-		return state.getDuration() != StateObject.ENDLESS ? String.format("%s(%s,%d|%d)",
-				ghost.getName(), state.id(), state.getRemaining(), state.getDuration())
+		return state.getDuration() != StateObject.ENDLESS
+				? String.format("%s(%s,%d|%d)", ghost.getName(), state.id(), state.getRemaining(), state.getDuration())
 				: String.format("%s(%s,%s)", ghost.getName(), state.id(), INFTY);
 	}
 
@@ -188,12 +186,12 @@ public class ExtendedGamePanel extends GamePanel {
 	private void drawPacManTilePosition(Graphics2D g) {
 		PacMan pacMan = actors.getPacMan();
 		if (pacMan.isExactlyOverTile()) {
-			g.translate(base.mazeUI.tf.getX(), base.mazeUI.tf.getY());
+			g.translate(mazePanel.tf.getX(), mazePanel.tf.getY());
 			g.translate(pacMan.tf.getX(), pacMan.tf.getY());
 			g.setColor(Color.GREEN);
 			g.drawRect(0, 0, pacMan.getWidth(), pacMan.getHeight());
 			g.translate(-pacMan.tf.getX(), -pacMan.tf.getY());
-			g.translate(-base.mazeUI.tf.getX(), -base.mazeUI.tf.getY());
+			g.translate(-mazePanel.tf.getX(), -mazePanel.tf.getY());
 		}
 	}
 
@@ -201,7 +199,7 @@ public class ExtendedGamePanel extends GamePanel {
 		List<Tile> path = ghost.getNavigation().computeRoute(ghost).getPath();
 		if (path.size() > 1) {
 			g.setColor(ghostColor(ghost));
-			g.translate(base.mazeUI.tf.getX(), base.mazeUI.tf.getY());
+			g.translate(mazePanel.tf.getX(), mazePanel.tf.getY());
 			for (int i = 0; i < path.size() - 1; ++i) {
 				Tile u = path.get(i), v = path.get(i + 1);
 				int u1 = u.col * Game.TS + Game.TS / 2;
@@ -215,7 +213,7 @@ public class ExtendedGamePanel extends GamePanel {
 			g.translate(tile.col * Game.TS, tile.row * Game.TS);
 			g.fillRect(Game.TS / 4, Game.TS / 4, Game.TS / 2, Game.TS / 2);
 			g.translate(-tile.col * Game.TS, -tile.row * Game.TS);
-			g.translate(-base.mazeUI.tf.getX(), -base.mazeUI.tf.getY());
+			g.translate(-mazePanel.tf.getX(), -mazePanel.tf.getY());
 		}
 	}
 }
