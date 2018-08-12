@@ -1,5 +1,7 @@
 package de.amr.games.pacman.actor;
 
+import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
+
 import java.awt.Graphics2D;
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -16,20 +18,13 @@ public class Bonus extends TileWorldEntity {
 	private BonusSymbol symbol;
 	private int value;
 	private boolean honored;
-	private Sprite s_symbol;
-	private Sprite s_points;
+	private Sprite sprite;
 
 	public Bonus(BonusSymbol symbol, int value) {
 		this.symbol = symbol;
 		this.value = value;
 		this.honored = false;
-		int index = Arrays.binarySearch(BONUS_POINTS, value);
-		if (index < 0) {
-			throw new IllegalArgumentException("Illegal bonus value: " + value);
-		}
-		int size = 2 * Game.TS;
-		s_symbol = PacManGameUI.SPRITES.symbol(symbol).scale(size);
-		s_points = PacManGameUI.SPRITES.pinkNumber(index).scale(size);
+		sprite = SPRITES.symbol(symbol).scale(2 * Game.TS);
 	}
 
 	public int getValue() {
@@ -46,11 +41,16 @@ public class Bonus extends TileWorldEntity {
 
 	public void setHonored() {
 		honored = true;
+		int index = Arrays.binarySearch(BONUS_POINTS, value);
+		if (index < 0) {
+			throw new IllegalArgumentException("Illegal bonus value: " + value);
+		}
+		sprite = PacManGameUI.SPRITES.pinkNumber(index).scale(2 * Game.TS);
 	}
 
 	@Override
 	public Sprite currentSprite() {
-		return honored ? s_points : s_symbol;
+		return sprite;
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class Bonus extends TileWorldEntity {
 
 	@Override
 	public Stream<Sprite> getSprites() {
-		return Stream.of(s_points, s_symbol);
+		return Stream.of(sprite);
 	}
 
 	@Override
