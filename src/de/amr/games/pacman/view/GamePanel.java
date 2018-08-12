@@ -13,7 +13,7 @@ import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.HighScore;
 
-public class BasicGamePanel implements PacManGameUI {
+public class GamePanel implements PacManGameUI {
 
 	protected final int width, height;
 	protected final Game game;
@@ -24,7 +24,7 @@ public class BasicGamePanel implements PacManGameUI {
 	protected String infoText;
 	protected Color infoTextColor;
 
-	public BasicGamePanel(int width, int height, Game game, Cast actors) {
+	public GamePanel(int width, int height, Game game, Cast actors) {
 		this.width = width;
 		this.height = height;
 		this.game = game;

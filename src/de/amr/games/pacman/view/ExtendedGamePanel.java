@@ -29,7 +29,7 @@ import de.amr.statemachine.StateObject;
  * 
  * @author Armin Reichert
  */
-public class ExtendedGamePanel extends BasicGamePanel {
+public class ExtendedGamePanel extends GamePanel {
 
 	private static Image createGridImage(int numRows, int numCols) {
 		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment()
@@ -49,13 +49,13 @@ public class ExtendedGamePanel extends BasicGamePanel {
 
 	private static final String INFTY = Character.toString('\u221E');
 
-	private final BasicGamePanel base;
+	private final GamePanel base;
 	private final Image gridImage;
 	private boolean showGrid;
 	private boolean showRoutes;
 	private boolean showStates;
 
-	public ExtendedGamePanel(BasicGamePanel base) {
+	public ExtendedGamePanel(GamePanel base) {
 		super(base.width, base.height, base.game, base.actors);
 		this.base = base;
 		gridImage = createGridImage(game.maze.numRows(), game.maze.numCols());

@@ -35,9 +35,8 @@ import de.amr.games.pacman.model.Content;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.HighScore;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.view.BasicGamePanel;
+import de.amr.games.pacman.view.GamePanel;
 import de.amr.games.pacman.view.ExtendedGamePanel;
-import de.amr.games.pacman.view.PacManGameUI;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
 
@@ -50,22 +49,22 @@ public class GameController implements Controller {
 	private final Maze maze;
 	private final Game game;
 	private final Cast actors;
-	private final PacManGameUI currentView;
+	private final ExtendedGamePanel gameView;
 	private final StateMachine<PlayState, GameEvent> gameControl;
 
 	public GameController() {
 		maze = new Maze(Assets.text("maze.txt"));
 		game = new Game(maze, Application.PULSE::getFrequency);
 		actors = new Cast(game);
-		currentView = new ExtendedGamePanel(
-				new BasicGamePanel(maze.numCols() * Game.TS, (maze.numRows() + 5) * Game.TS, game, actors));
+		gameView = new ExtendedGamePanel(
+				new GamePanel(maze.numCols() * Game.TS, (maze.numRows() + 5) * Game.TS, game, actors));
 		gameControl = createGameControl();
 		actors.addObserver(gameControl::process);
 	}
 
 	@Override
 	public View currentView() {
-		return currentView;
+		return gameView;
 	}
 
 	@Override
@@ -84,7 +83,7 @@ public class GameController implements Controller {
 	@Override
 	public void update() {
 		gameControl.update();
-		currentView.update();
+		gameView.update();
 	}
 
 	private PlayingState playingState() {
@@ -193,14 +192,14 @@ public class GameController implements Controller {
 			HighScore.load();
 			game.init();
 			actors.init();
-			currentView.enableAnimation(false);
-			currentView.showInfo("Ready!", Color.YELLOW);
+			gameView.enableAnimation(false);
+			gameView.showInfo("Ready!", Color.YELLOW);
 		}
 
 		@Override
 		public void onExit() {
-			currentView.enableAnimation(true);
-			currentView.hideInfo();
+			gameView.enableAnimation(true);
+			gameView.hideInfo();
 		}
 	}
 
@@ -265,7 +264,7 @@ public class GameController implements Controller {
 						bonus.getValue()));
 				bonus.setHonored();
 				game.score.add(bonus.getValue());
-				currentView.setBonusTimer(game.sec(1));
+				gameView.setBonusTimer(game.sec(1));
 			});
 		}
 
@@ -286,7 +285,7 @@ public class GameController implements Controller {
 			if (game.foodEaten.get() == Game.FOOD_EATEN_FOR_BONUS_1
 					|| game.foodEaten.get() == Game.FOOD_EATEN_FOR_BONUS_2) {
 				actors.addBonus(game.getBonusSymbol(), game.getBonusValue());
-				currentView.setBonusTimer(game.getBonusTime());
+				gameView.setBonusTimer(game.getBonusTime());
 			}
 			if (e.food == Content.ENERGIZER) {
 				game.ghostsKilledInSeries.set(0);
@@ -299,7 +298,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onEntry() {
-			currentView.setMazeFlashing(true);
+			gameView.setMazeFlashing(true);
 		}
 
 		@Override
@@ -308,16 +307,16 @@ public class GameController implements Controller {
 			if (timeForChange) {
 				game.nextLevel();
 				actors.init();
-				currentView.showInfo("Ready!", Color.YELLOW);
-				currentView.setMazeFlashing(false);
-				currentView.enableAnimation(false);
+				gameView.showInfo("Ready!", Color.YELLOW);
+				gameView.setMazeFlashing(false);
+				gameView.enableAnimation(false);
 			}
 		}
 
 		@Override
 		public void onExit() {
-			currentView.hideInfo();
-			currentView.enableAnimation(true);
+			gameView.hideInfo();
+			gameView.enableAnimation(true);
 		}
 	}
 
@@ -365,14 +364,14 @@ public class GameController implements Controller {
 
 		@Override
 		public void onEntry() {
-			currentView.enableAnimation(false);
-			currentView.showInfo("Game Over!", Color.RED);
+			gameView.enableAnimation(false);
+			gameView.showInfo("Game Over!", Color.RED);
 			HighScore.save(game.score.get(), game.getLevel());
 		}
 
 		@Override
 		public void onExit() {
-			currentView.hideInfo();
+			gameView.hideInfo();
 		}
 	}
 }
