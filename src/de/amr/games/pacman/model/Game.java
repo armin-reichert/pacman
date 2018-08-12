@@ -105,20 +105,20 @@ public class Game {
 
 	private enum Field {
 		BonusSymbol,
-		BonusValue,
-		PacManSpeed,
-		PacManDotsSpeed,
-		GhostSpeed,
-		GhostTunnelSpeed,
-		Elroy1DotsLeft,
-		Elroy1Speed,
-		Elroy2DotsLeft,
-		Elroy2Speed,
-		PacManSteroidSpeed,
-		PacManSteroidDotsSpeed,
-		GhostAfraidSpeed,
-		PacManSteroidSeconds,
-		NumFlashes
+		iBonusValue,
+		fPacManSpeed,
+		fPacManDotsSpeed,
+		fGhostSpeed,
+		fGhostTunnelSpeed,
+		iElroy1DotsLeft,
+		fElroy1Speed,
+		iElroy2DotsLeft,
+		fElroy2Speed,
+		fPacManSteroidSpeed,
+		fPacManSteroidDotsSpeed,
+		fGhostAfraidSpeed,
+		iPacManSteroidSeconds,
+		iNumFlashes
 	};
 
 	/**
@@ -151,17 +151,25 @@ public class Game {
 	/*@formatter:on*/
 	};
 
+	private float fLevelData(Field field) {
+		return (float) DATA[level][field.ordinal()];
+	}
+
+	private int iLevelData(Field field) {
+		return (int) DATA[level][field.ordinal()];
+	}
+
 	@SuppressWarnings("unchecked")
-	private <T> T levelData(Field column) {
-		return (T) DATA[level][column.ordinal()];
+	private <T> T oLevelData(Field field) {
+		return (T) DATA[level][field.ordinal()];
 	}
 
 	public BonusSymbol getBonusSymbol() {
-		return levelData(Field.BonusSymbol);
+		return oLevelData(Field.BonusSymbol);
 	}
 
 	public int getBonusValue() {
-		return levelData(Field.BonusValue);
+		return iLevelData(Field.iBonusValue);
 	}
 
 	public int getBonusTime() {
@@ -170,21 +178,21 @@ public class Game {
 
 	public float getGhostSpeed(MazeMover<Ghost.State> ghost) {
 		if (maze.getContent(ghost.getTile()) == Content.TUNNEL) {
-			return speed((float) levelData(Field.GhostTunnelSpeed));
+			return speed(fLevelData(Field.fGhostTunnelSpeed));
 		}
 		switch (ghost.getState()) {
 		case AGGRO:
-			return speed((float) levelData(Field.GhostSpeed));
+			return speed(fLevelData(Field.fGhostSpeed));
 		case DYING:
 			return 0;
 		case DEAD:
 			return speed(1.5f);
 		case AFRAID:
-			return speed((float) levelData(Field.GhostAfraidSpeed));
+			return speed(fLevelData(Field.fGhostAfraidSpeed));
 		case SAFE:
 			return speed(0.75f);
 		case SCATTERING:
-			return speed((float) levelData(Field.GhostSpeed));
+			return speed(fLevelData(Field.fGhostSpeed));
 		default:
 			throw new IllegalStateException();
 		}
@@ -199,9 +207,9 @@ public class Game {
 		case SAFE:
 			return 0;
 		case VULNERABLE:
-			return speed((float) levelData(Field.PacManSpeed));
+			return speed(fLevelData(Field.fPacManSpeed));
 		case STEROIDS:
-			return speed((float) levelData(Field.PacManSteroidSpeed));
+			return speed(fLevelData(Field.fPacManSteroidSpeed));
 		case DYING:
 			return 0;
 		default:
@@ -210,8 +218,7 @@ public class Game {
 	}
 
 	public int getPacManSteroidTime() {
-		int value = levelData(Field.PacManSteroidSeconds);
-		return sec(value);
+		return sec(iLevelData(Field.iPacManSteroidSeconds));
 	}
 
 	public int getPacManDyingTime() {
