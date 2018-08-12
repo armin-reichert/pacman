@@ -63,11 +63,11 @@ public class PacManSprites {
 		// Pac-Man
 		pacManFull = $(488, 0);
 
+		int[] dirs = { Top4.E, Top4.W, Top4.N, Top4.S };
 		pacManWalking = new BufferedImage[4][];
-		pacManWalking[Top4.E] = new BufferedImage[] { $(456, 0), $(472, 0), pacManFull };
-		pacManWalking[Top4.W] = new BufferedImage[] { $(456, 16), $(472, 16), pacManFull };
-		pacManWalking[Top4.N] = new BufferedImage[] { $(456, 32), $(472, 32), pacManFull };
-		pacManWalking[Top4.S] = new BufferedImage[] { $(456, 48), $(472, 48), pacManFull };
+		for (int dir = 0; dir < 4; ++dir) {
+			pacManWalking[dirs[dir]] = new BufferedImage[] { $(456, dir * 16), $(472, dir * 16), pacManFull };
+		}
 
 		pacManDying = new BufferedImage[12];
 		for (int i = 0; i < 12; ++i) {
@@ -181,17 +181,8 @@ public class PacManSprites {
 	}
 
 	public Sprite ghostEyes(int dir) {
-		switch (dir) {
-		case Top4.E:
-			return new Sprite(ghostEyes[0]);
-		case Top4.W:
-			return new Sprite(ghostEyes[1]);
-		case Top4.N:
-			return new Sprite(ghostEyes[2]);
-		case Top4.S:
-			return new Sprite(ghostEyes[3]);
-		}
-		throw new IllegalArgumentException("Illegal direction: " + dir);
+		int[] dirs = { Top4.E, Top4.W, Top4.N, Top4.S };
+		return new Sprite(ghostEyes[dirs[dir]]);
 	}
 
 	public Sprite greenNumber(int i) {
