@@ -54,6 +54,7 @@ public class Game {
 	}
 
 	public void init() {
+		maze.resetFood();
 		lives.set(3);
 		score.set(0);
 		foodEaten.set(0);
