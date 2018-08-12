@@ -78,8 +78,8 @@ public class Ghost extends MazeMover<Ghost.State> {
 
 	@Override
 	public Stream<Sprite> getSprites() {
-		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes), Stream.of(s_awed, s_blinking))
-				.flatMap(s -> s);
+		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes),
+				Stream.of(s_awed, s_blinking)).flatMap(s -> s);
 	}
 
 	@Override

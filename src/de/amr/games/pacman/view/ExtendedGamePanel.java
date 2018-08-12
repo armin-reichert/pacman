@@ -32,9 +32,10 @@ import de.amr.statemachine.StateObject;
 public class ExtendedGamePanel extends BasicGamePanel {
 
 	private static Image createGridImage(int numRows, int numCols) {
-		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-				.getDefaultConfiguration();
-		Image image = conf.createCompatibleImage(numCols * Game.TS, numRows * Game.TS + 1, Transparency.TRANSLUCENT);
+		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment()
+				.getDefaultScreenDevice().getDefaultConfiguration();
+		Image image = conf.createCompatibleImage(numCols * Game.TS, numRows * Game.TS + 1,
+				Transparency.TRANSLUCENT);
 		Graphics g = image.getGraphics();
 		g.setColor(Color.LIGHT_GRAY);
 		for (int row = 0; row <= numRows; ++row) {
@@ -152,8 +153,8 @@ public class ExtendedGamePanel extends BasicGamePanel {
 
 	private String ghostState(Ghost ghost) {
 		StateObject<?, ?> state = ghost.getStateMachine().currentStateObject();
-		return state.getDuration() != StateObject.ENDLESS
-				? String.format("%s(%s,%d|%d)", ghost.getName(), state.id(), state.getRemaining(), state.getDuration())
+		return state.getDuration() != StateObject.ENDLESS ? String.format("%s(%s,%d|%d)",
+				ghost.getName(), state.id(), state.getRemaining(), state.getDuration())
 				: String.format("%s(%s,%s)", ghost.getName(), state.id(), INFTY);
 	}
 

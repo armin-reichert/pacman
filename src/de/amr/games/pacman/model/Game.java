@@ -39,29 +39,25 @@ public class Game {
 	public final Counter lives = new Counter();
 	public final Counter foodEaten = new Counter();
 	public final Counter ghostsKilledInSeries = new Counter();
-	private int level;
-	private long foodTotal;
 	public final List<BonusSymbol> levelCounter = new LinkedList<>();
-	
-	private float baseSpeed;
+	private final long foodTotal;
+	private int level;
+	private final float baseSpeed;
 	private final Random rnd = new Random();
-	
+
 	public Game(Maze maze, IntSupplier fnTicksPerSecond) {
 		this.maze = maze;
 		this.fnTicksPerSecond = fnTicksPerSecond;
-		foodTotal = maze.getFoodTotal();
 		baseSpeed = tps(8f);
+		foodTotal = maze.getFoodTotal();
 	}
 
 	public void init() {
-		maze.resetFood();
-		lives.set(3);
 		score.set(0);
-		foodEaten.set(0);
-		ghostsKilledInSeries.set(0);
-		level = 1;
+		lives.set(3);
 		levelCounter.clear();
-		levelCounter.add(getBonusSymbol());
+		level = 0;
+		nextLevel();
 	}
 
 	public void nextLevel() {
@@ -99,6 +95,10 @@ public class Game {
 	/** Tiles per second. */
 	private float tps(float value) {
 		return (value * Game.TS) / fnTicksPerSecond.getAsInt();
+	}
+
+	private float speed(float relativeSpeed) {
+		return baseSpeed * relativeSpeed;
 	}
 
 	// Level data
@@ -170,21 +170,21 @@ public class Game {
 
 	public float getGhostSpeed(MazeMover<Ghost.State> ghost) {
 		if (maze.getContent(ghost.getTile()) == Content.TUNNEL) {
-			return baseSpeed * (float) levelData(Field.GhostTunnelSpeed);
+			return speed((float) levelData(Field.GhostTunnelSpeed));
 		}
 		switch (ghost.getState()) {
 		case AGGRO:
-			return baseSpeed * (float) levelData(Field.GhostSpeed);
+			return speed((float) levelData(Field.GhostSpeed));
 		case DYING:
 			return 0;
 		case DEAD:
-			return baseSpeed * 1.5f;
+			return speed(1.5f);
 		case AFRAID:
-			return baseSpeed * (float) levelData(Field.GhostAfraidSpeed);
+			return speed((float) levelData(Field.GhostAfraidSpeed));
 		case SAFE:
-			return baseSpeed * 0.75f;
+			return speed(0.75f);
 		case SCATTERING:
-			return baseSpeed * (float) levelData(Field.GhostSpeed);
+			return speed((float) levelData(Field.GhostSpeed));
 		default:
 			throw new IllegalStateException();
 		}
@@ -199,9 +199,9 @@ public class Game {
 		case SAFE:
 			return 0;
 		case VULNERABLE:
-			return baseSpeed * (float) levelData(Field.PacManSpeed);
+			return speed((float) levelData(Field.PacManSpeed));
 		case STEROIDS:
-			return baseSpeed * (float) levelData(Field.PacManSteroidSpeed);
+			return speed((float) levelData(Field.PacManSteroidSpeed));
 		case DYING:
 			return 0;
 		default:

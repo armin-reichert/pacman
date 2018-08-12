@@ -60,7 +60,8 @@ public class PacMan extends MazeMover<PacMan.State> {
 	private Sprite s_current;
 
 	private void createSprites(int size) {
-		FOUR_DIRECTIONS.dirs().forEach(dir -> s_walking_to[dir] = PacManGameUI.SPRITES.pacManWalking(dir).scale(size));
+		FOUR_DIRECTIONS.dirs()
+				.forEach(dir -> s_walking_to[dir] = PacManGameUI.SPRITES.pacManWalking(dir).scale(size));
 		s_dying = PacManGameUI.SPRITES.pacManDying().scale(size);
 		s_full = PacManGameUI.SPRITES.pacManFull().scale(size);
 	}

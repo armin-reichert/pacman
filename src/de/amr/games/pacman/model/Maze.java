@@ -53,10 +53,11 @@ public class Maze {
 	public Maze(String map) {
 		originalData = map.split("\n");
 		int numCols = originalData[0].length(), numRows = originalData.length;
-		
-		graph = new GridGraph<>(numCols, numRows, FOUR_DIRECTIONS, v -> null, (u, v) -> 1, UndirectedEdge::new);
+
+		graph = new GridGraph<>(numCols, numRows, FOUR_DIRECTIONS, v -> null, (u, v) -> 1,
+				UndirectedEdge::new);
 		graph.setDefaultVertexLabel(v -> originalData(graph.row(v), graph.col(v)));
-		
+
 		foodTotal = 0;
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
@@ -81,7 +82,8 @@ public class Maze {
 		graph.fill();
 		graph.edges().filter(edge -> {
 			int u = edge.either(), v = edge.other();
-			return originalData(graph.row(u), graph.col(u)) == WALL || originalData(graph.row(v), graph.col(v)) == WALL;
+			return originalData(graph.row(u), graph.col(u)) == WALL
+					|| originalData(graph.row(v), graph.col(v)) == WALL;
 		}).forEach(graph::removeEdge);
 	}
 

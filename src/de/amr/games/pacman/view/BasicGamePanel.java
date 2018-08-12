@@ -99,7 +99,8 @@ public class BasicGamePanel implements PacManGameUI {
 		}
 		for (int i = 0, n = game.levelCounter.size(); i < n; ++i) {
 			g.translate(getWidth() - (n - i) * 2 * Game.TS, 0);
-			g.drawImage(SPRITES.symbolImage(game.levelCounter.get(i)), 0, 0, 2 * Game.TS, 2 * Game.TS, null);
+			g.drawImage(SPRITES.symbolImage(game.levelCounter.get(i)), 0, 0, 2 * Game.TS, 2 * Game.TS,
+					null);
 			g.translate(-getWidth() + (n - i) * 2 * Game.TS, 0);
 		}
 		g.translate(0, -getHeight() + 2 * Game.TS);

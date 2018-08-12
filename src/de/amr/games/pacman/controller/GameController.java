@@ -71,7 +71,8 @@ public class GameController implements Controller {
 	public void init() {
 		LOGGER.setLevel(Level.INFO);
 		actors.getPacMan().getStateMachine().traceTo(LOGGER, game.fnTicksPerSecond);
-		actors.getGhosts().map(Ghost::getStateMachine).forEach(sm -> sm.traceTo(LOGGER, game.fnTicksPerSecond));
+		actors.getGhosts().map(Ghost::getStateMachine)
+				.forEach(sm -> sm.traceTo(LOGGER, game.fnTicksPerSecond));
 		actors.setActive(actors.getBlinky(), true);
 		actors.setActive(actors.getPinky(), false);
 		actors.setActive(actors.getInky(), false);
@@ -230,7 +231,8 @@ public class GameController implements Controller {
 		private void onPacManKilled(GameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
 			actors.getPacMan().processEvent(e);
-			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
+			LOGGER.info(
+					() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
 		}
 
 		private void onPacManGainsPower(GameEvent event) {
@@ -252,12 +254,14 @@ public class GameController implements Controller {
 		private void onGhostKilled(GameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
 			e.ghost.processEvent(e);
-			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
+			LOGGER
+					.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
 		}
 
 		private void onBonusFound(GameEvent event) {
 			actors.getBonus().ifPresent(bonus -> {
-				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(), bonus.getValue()));
+				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(),
+						bonus.getValue()));
 				bonus.setHonored();
 				game.score.add(bonus.getValue());
 				currentView.setBonusTimer(game.sec(1));
@@ -270,14 +274,16 @@ public class GameController implements Controller {
 			game.foodEaten.add(1);
 			int oldGameScore = game.score.get();
 			game.score.add(game.getFoodValue(e.food));
-			if (oldGameScore < Game.SCORE_FOR_EXTRA_LIFE && game.score.get() >= Game.SCORE_FOR_EXTRA_LIFE) {
+			if (oldGameScore < Game.SCORE_FOR_EXTRA_LIFE
+					&& game.score.get() >= Game.SCORE_FOR_EXTRA_LIFE) {
 				game.lives.add(1);
 			}
 			if (game.foodEaten.get() == game.getFoodTotal()) {
 				gameControl.enqueue(new LevelCompletedEvent());
 				return;
 			}
-			if (game.foodEaten.get() == Game.FOOD_EATEN_FOR_BONUS_1 || game.foodEaten.get() == Game.FOOD_EATEN_FOR_BONUS_2) {
+			if (game.foodEaten.get() == Game.FOOD_EATEN_FOR_BONUS_1
+					|| game.foodEaten.get() == Game.FOOD_EATEN_FOR_BONUS_2) {
 				actors.addBonus(game.getBonusSymbol(), game.getBonusValue());
 				currentView.setBonusTimer(game.getBonusTime());
 			}
@@ -324,7 +330,8 @@ public class GameController implements Controller {
 
 		@Override
 		public void onTick() {
-			actors.getActiveGhosts().filter(ghost -> ghost.getState() == Ghost.State.DYING).forEach(Ghost::update);
+			actors.getActiveGhosts().filter(ghost -> ghost.getState() == Ghost.State.DYING)
+					.forEach(Ghost::update);
 		}
 
 		@Override
