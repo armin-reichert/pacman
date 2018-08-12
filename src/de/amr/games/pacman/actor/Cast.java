@@ -15,6 +15,7 @@ import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.awt.event.KeyEvent.VK_UP;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -98,6 +99,7 @@ public class Cast implements PacManWorld {
 		pinky = createPinky(game, pacMan);
 		inky = createInky(game, pacMan);
 		clyde = createClyde(game, pacMan);
+		activeGhosts.addAll(Arrays.asList(blinky, pinky, inky, clyde));
 	}
 
 	public void addObserver(Observer<GameEvent> observer) {

@@ -74,7 +74,6 @@ public class GameController implements Controller {
 		actors.getPacMan().getStateMachine().traceTo(LOGGER, game.fnTicksPerSecond);
 		actors.getGhosts().map(Ghost::getStateMachine)
 				.forEach(sm -> sm.traceTo(LOGGER, game.fnTicksPerSecond));
-		actors.setActive(actors.getBlinky(), true);
 		actors.setActive(actors.getPinky(), false);
 		actors.setActive(actors.getInky(), false);
 		actors.setActive(actors.getClyde(), false);
