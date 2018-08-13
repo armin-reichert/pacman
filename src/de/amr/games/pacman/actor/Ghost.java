@@ -23,7 +23,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.StateMachine;
 
-public class Ghost extends MazeMover<Ghost.State> {
+public class Ghost extends ControlledMazeMover<Ghost.State, GameEvent> {
 
 	private final Game game;
 	private final StateMachine<State, GameEvent> brain;
@@ -45,12 +45,16 @@ public class Ghost extends MazeMover<Ghost.State> {
 		return name;
 	}
 
+	@Override
+	public float getSpeed() {
+		return game.getGhostSpeed(this);
+	}
+
 	private void initGhost() {
 		placeAt(homeTile);
 		setDir(initialDir);
 		setNextDir(initialDir);
 		getSprites().forEach(Sprite::resetAnimation);
-		setSpeed(game::getGhostSpeed);
 		sprite = s_color[getDir()];
 	}
 
@@ -77,8 +81,8 @@ public class Ghost extends MazeMover<Ghost.State> {
 
 	@Override
 	public Stream<Sprite> getSprites() {
-		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes),
-				Stream.of(s_awed, s_blinking)).flatMap(s -> s);
+		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes), Stream.of(s_awed, s_blinking))
+				.flatMap(s -> s);
 	}
 
 	@Override

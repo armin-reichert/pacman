@@ -6,86 +6,34 @@ import static de.amr.games.pacman.model.Content.WALL;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static java.lang.Math.round;
 
-import java.util.Map;
-import java.util.function.Function;
-
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.controller.event.game.GameEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.routing.Navigation;
-import de.amr.games.pacman.routing.impl.NavigationSystem;
-import de.amr.statemachine.StateMachine;
 
 /**
- * Common base class for Pac-Man and ghosts. Knows about the rules of moving through the maze and
- * allows to configure the navigation behavior by state.
+ * Knows about the rules of moving through the maze.
  * 
  * @author Armin Reichert
- *
- * @param <S>
- *          maze mover state type
  */
-public abstract class MazeMover<S> extends TileWorldEntity {
+public abstract class MazeMover extends TileWorldEntity {
 
 	private static final int TELEPORT_TILES = 6;
 
 	public final Maze maze;
 	public final Tile homeTile;
-	private final Map<S, Navigation> navigation;
-	private Function<MazeMover<S>, Float> fnSpeed;
 	private int dir;
 	private int nextDir;
 
-	protected MazeMover(Maze maze, Tile homeTile, Map<S, Navigation> navigation) {
+	protected MazeMover(Maze maze, Tile homeTile) {
 		this.maze = maze;
 		this.homeTile = homeTile;
-		this.navigation = navigation;
-		this.fnSpeed = mover -> 0f;
-	}
-
-	// State machine
-
-	protected abstract StateMachine<S, GameEvent> getStateMachine();
-
-	public S getState() {
-		return getStateMachine().currentState();
-	}
-
-	@Override
-	public void init() {
-		getStateMachine().init();
-	}
-
-	@Override
-	public void update() {
-		getStateMachine().update();
-	}
-
-	public void processEvent(GameEvent e) {
-		getStateMachine().enqueue(e);
-		getStateMachine().update();
 	}
 
 	// Movement
 
-	public void setNavigation(S state, Navigation navigation) {
-		this.navigation.put(state, navigation);
-	}
-
-	public Navigation getNavigation() {
-		return navigation.getOrDefault(getState(), NavigationSystem.forward());
-	}
-
-	public float getSpeed() {
-		return fnSpeed.apply(this);
-	}
-
-	public void setSpeed(Function<MazeMover<S>, Float> fnSpeed) {
-		this.fnSpeed = fnSpeed;
-	}
+	public abstract float getSpeed();
 
 	public int getDir() {
 		return dir;
@@ -103,6 +51,10 @@ public abstract class MazeMover<S> extends TileWorldEntity {
 		this.nextDir = dir;
 	}
 
+	public int computeNextDir() {
+		return nextDir;
+	}
+
 	public boolean isOutsideMaze() {
 		Tile tile = getTile();
 		return tile.row < 0 || tile.row >= maze.numRows() || tile.col < 0 || tile.col >= maze.numCols();
@@ -113,7 +65,7 @@ public abstract class MazeMover<S> extends TileWorldEntity {
 			teleport();
 			return;
 		}
-		nextDir = getNavigation().computeRoute(this).getDirection();
+		nextDir = computeNextDir();
 		if (canMove(nextDir)) {
 			dir = nextDir;
 		}

@@ -29,7 +29,7 @@ import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
 
-public class PacMan extends MazeMover<PacMan.State> {
+public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 
 	private final Game game;
 	private final StateMachine<State, GameEvent> brain;
@@ -91,11 +91,16 @@ public class PacMan extends MazeMover<PacMan.State> {
 	public StateMachine<State, GameEvent> getStateMachine() {
 		return brain;
 	}
+	
+	@Override
+	public float getSpeed() {
+		return game.getPacManSpeed(this);
+	}
+
 
 	private void initPacMan() {
 		placeAt(homeTile);
 		setNextDir(Top4.E);
-		setSpeed(game::getPacManSpeed);
 		getSprites().forEach(Sprite::resetAnimation);
 		sprite = s_full;
 		pauseTicks = 0;

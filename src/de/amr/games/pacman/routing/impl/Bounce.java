@@ -12,13 +12,13 @@ import de.amr.games.pacman.routing.Navigation;
 class Bounce implements Navigation {
 
 	@Override
-	public MazeRoute computeRoute(MazeMover<?> bouncer) {
+	public MazeRoute computeRoute(MazeMover bouncer) {
 		RouteData route = new RouteData();
 		route.dir = isReflected(bouncer) ? NESW.inv(bouncer.getDir()) : bouncer.getDir();
 		return route;
 	}
 
-	private boolean isReflected(MazeMover<?> bouncer) {
+	private boolean isReflected(MazeMover bouncer) {
 		Tile nextTile = bouncer.computeNextTile(bouncer.getTile(), bouncer.getDir());
 		if (nextTile.equals(bouncer.getTile())) {
 			return false;

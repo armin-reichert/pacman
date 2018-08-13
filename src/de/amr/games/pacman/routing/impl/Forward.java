@@ -7,7 +7,7 @@ import de.amr.games.pacman.routing.Navigation;
 class Forward implements Navigation {
 
 	@Override
-	public MazeRoute computeRoute(MazeMover<?> mover) {
+	public MazeRoute computeRoute(MazeMover mover) {
 		RouteData result = new RouteData();
 		result.dir = mover.getNextDir();
 		return result;

@@ -13,7 +13,7 @@ import de.amr.games.pacman.routing.Navigation;
 class StayBehind implements Navigation {
 
 	@Override
-	public MazeRoute computeRoute(MazeMover<?> mover) {
+	public MazeRoute computeRoute(MazeMover mover) {
 		RouteData result = new RouteData();
 		result.dir = randomElement(
 				Maze.NESW.dirs().filter(dir -> dir != Maze.NESW.inv(mover.getDir())))

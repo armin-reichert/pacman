@@ -5,7 +5,7 @@ import de.amr.games.pacman.routing.Navigation;
 
 public interface NavigationSystem {
 
-	public static Navigation ambush(MazeMover<?> victim) {
+	public static Navigation ambush(MazeMover victim) {
 		return new Ambush(victim);
 	}
 
@@ -13,11 +13,11 @@ public interface NavigationSystem {
 		return new Bounce();
 	}
 
-	public static Navigation chase(MazeMover<?> victim) {
+	public static Navigation chase(MazeMover victim) {
 		return new Chase(victim);
 	}
 
-	public static Navigation flee(MazeMover<?> chaser) {
+	public static Navigation flee(MazeMover chaser) {
 		return new Flee(chaser);
 	}
 

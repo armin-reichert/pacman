@@ -18,7 +18,7 @@ class FollowKeyboard implements Navigation {
 	}
 
 	@Override
-	public MazeRoute computeRoute(MazeMover<?> mover) {
+	public MazeRoute computeRoute(MazeMover mover) {
 		RouteData result = new RouteData();
 		result.dir = mover.getNextDir();
 		if (Keyboard.keyDown(nesw[0])) {

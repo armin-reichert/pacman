@@ -15,7 +15,6 @@ import java.util.Random;
 import java.util.function.IntSupplier;
 
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
 
 /**
@@ -194,7 +193,7 @@ public class Game {
 		return sec(9f + rnd.nextFloat());
 	}
 
-	public float getGhostSpeed(MazeMover<Ghost.State> ghost) {
+	public float getGhostSpeed(Ghost ghost) {
 		if (maze.getContent(ghost.getTile()) == Content.TUNNEL) {
 			return speed(fValue(Field.fGhostTunnelSpeed));
 		}
@@ -220,7 +219,7 @@ public class Game {
 		return sec(0.5f);
 	}
 
-	public float getPacManSpeed(MazeMover<PacMan.State> pacMan) {
+	public float getPacManSpeed(PacMan pacMan) {
 		switch (pacMan.getState()) {
 		case SAFE:
 			return 0;

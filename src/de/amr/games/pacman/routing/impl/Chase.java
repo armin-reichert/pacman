@@ -9,14 +9,14 @@ import de.amr.games.pacman.routing.Navigation;
  */
 class Chase implements Navigation {
 
-	private final MazeMover<?> victim;
+	private final MazeMover victim;
 
-	public Chase(MazeMover<?> victim) {
+	public Chase(MazeMover victim) {
 		this.victim = victim;
 	}
 
 	@Override
-	public MazeRoute computeRoute(MazeMover<?> chaser) {
+	public MazeRoute computeRoute(MazeMover chaser) {
 		RouteData route = new RouteData();
 		if (victim.isOutsideMaze()) {
 			route.dir = chaser.getNextDir();
