@@ -24,7 +24,7 @@ And then you maybe become frustrated and you lose interest. Or you gove it a las
 
 Or you will watch all these introductions and tutorials about state machines and the different ways of implementing them. From basic switch-statements to object-oriented "state pattern"-based implementations, function pointers in C, C++, ready-made libraries like [Appcelerate](http://www.appccelerate.com/) and code generating tools, in the end you have to decide for something.
 
-The more low-level implementations of state machines (switches, function pointers) are the most performant ones but as long a you achieve the performance goals for your game (60 frames/updates per second), you can use whatever implementation you like. And if you want to make your code understandable to other people for learning purposes it is certainly not the best way to go. 
+The more low-level implementations of state machines (switches, function pointers) are the most performant ones but as long a you achieve the performance goals for your game (60 frames/updates per second), you can use whatever implementation you like. And if you want to make your code understandable to other people for learning purposes it is certainly not the best way to choose the low-level ones. 
 
 For that reason I decided to start from the ground up (the theoretical base which are Mealy-machines) and build my own state machine implementation. Of course, I could have used something existing like [Stateless4j](https://github.com/oxo42/stateless4j).
 
