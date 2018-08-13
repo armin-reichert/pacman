@@ -18,7 +18,7 @@ This can become a real mess very quickly if you don't have an idea to do this in
 
 Or you will look into the code of others who have implemented Pac-Man, often with impressive results and little code. And you will look into their code, understand some parts but not get the whole picture because they have implemented certain concepts like state machines in their code but not in a way that helps you to understand the complete working of the game. From a practical point this is completely ok, often the underlying concepts somehow melt into the implementation and can only be recognized later if you have an idea what the implementor was trying to do. But often, the concepts are only realized half-way or abandoned during the implementation to get the thing finally running.
 
-
+And then you maybe become frustrated and you lose interest. Or you gove it a last try and search the internet again. And you will find articles about using state machines in game in general and also in the Pac-Man game. You will find introdutory courses in AI where Pac-Man is used as a test ground for implementing AI agents. This is certainly very interesting but it doesn't help you with your own Pac-Man implementation because these agents are programmed against some predefined Pac-Man frameowrk and cannot just be used inside yout own game. And it also doesn't help you with the control of the overall game play.
 
 
 A Pac-Man game implementation with an emphasis on state machines. Implements the global game control as well as the Pac-Man and ghost control using explicit state machines in a declarative way.
