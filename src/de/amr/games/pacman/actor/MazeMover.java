@@ -13,13 +13,11 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * An entity that knows about the rules of moving through a maze.
+ * An entity that knows how to move over the tiles of the maze.
  * 
  * @author Armin Reichert
  */
 public abstract class MazeMover extends TileWorldEntity {
-
-	private static final int TELEPORT_TILES = 6;
 
 	public final Maze maze;
 	public final Tile homeTile;
@@ -30,8 +28,6 @@ public abstract class MazeMover extends TileWorldEntity {
 		this.maze = maze;
 		this.homeTile = homeTile;
 	}
-
-	// Movement
 
 	public abstract float getSpeed();
 
@@ -51,7 +47,7 @@ public abstract class MazeMover extends TileWorldEntity {
 		this.nextDir = dir;
 	}
 
-	public int computeNextDir() {
+	public int getIntendedNextDir() {
 		return nextDir;
 	}
 
@@ -65,7 +61,7 @@ public abstract class MazeMover extends TileWorldEntity {
 			teleport();
 			return;
 		}
-		nextDir = computeNextDir();
+		nextDir = getIntendedNextDir();
 		if (canMove(nextDir)) {
 			dir = nextDir;
 		}
@@ -78,10 +74,10 @@ public abstract class MazeMover extends TileWorldEntity {
 
 	private void teleport() {
 		Tile tile = getTile();
-		if (tile.col > (maze.numCols() - 1) + TELEPORT_TILES) {
+		if (tile.col > (maze.numCols() - 1) + maze.getTeleportLength()) {
 			// reenter maze from the left
 			placeAt(0, tile.row);
-		} else if (tile.col < -TELEPORT_TILES) {
+		} else if (tile.col < -maze.getTeleportLength()) {
 			// reenter maze from the right
 			placeAt(maze.numCols() - 1, tile.row);
 		} else {
@@ -89,26 +85,19 @@ public abstract class MazeMover extends TileWorldEntity {
 		}
 	}
 
-	public boolean canMove(int goal) {
+	public boolean canMove(int targetDir) {
 		if (isOutsideMaze()) {
 			return true;
 		}
-		Tile current = getTile();
-		if (goal == Top4.W && current.col <= 0) {
-			return true; // enter teleport space on the left
-		}
-		if (goal == Top4.E && current.col >= maze.numCols() - 1) {
-			return true; // enter teleport space on the right
-		}
-		Tile next = computeNextTile(current, goal);
+		Tile current = getTile(), next = computeNextTile(current, targetDir);
 		if (next.equals(current)) {
-			return true; // move doesn't leave current tile
+			return true;
 		}
 		if (maze.getContent(next) == WALL) {
 			return false;
 		}
-		if (goal == NESW.right(dir) || goal == NESW.left(dir)) {
-			placeAt(getTile()); // TODO this is not 100% correct
+		if (targetDir == NESW.right(dir) || targetDir == NESW.left(dir)) {
+			placeAt(getTile()); // TODO this is not correct
 			return isExactlyOverTile();
 		}
 		return true;
@@ -132,7 +121,8 @@ public abstract class MazeMover extends TileWorldEntity {
 	}
 
 	private Vector2f computePosition(int dir) {
-		Vector2f v_dir = Vector2f.of(NESW.dx(dir), NESW.dy(dir));
-		return sum(tf.getPosition(), smul(getSpeed(), v_dir));
+		Vector2f direction = Vector2f.of(NESW.dx(dir), NESW.dy(dir));
+		Vector2f velocity = smul(getSpeed(), direction);
+		return sum(tf.getPosition(), velocity);
 	}
 }

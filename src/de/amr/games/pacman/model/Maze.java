@@ -37,7 +37,7 @@ import de.amr.easy.grid.impl.Top4;
 public class Maze {
 
 	public static final Topology NESW = new Top4();
-
+	
 	public Tile pacManHome;
 	public Tile blinkyHome;
 	public Tile pinkyHome;
@@ -108,6 +108,10 @@ public class Maze {
 		return graph.numRows();
 	}
 
+	public int getTeleportLength() {
+		return 6;
+	}
+	
 	public Stream<Tile> tiles() {
 		return graph.vertices().mapToObj(this::tile);
 	}
