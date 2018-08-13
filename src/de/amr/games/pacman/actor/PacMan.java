@@ -1,9 +1,9 @@
 package de.amr.games.pacman.actor;
 
 import static de.amr.games.pacman.actor.PacMan.State.DYING;
-import static de.amr.games.pacman.actor.PacMan.State.SAFE;
-import static de.amr.games.pacman.actor.PacMan.State.STEROIDS;
-import static de.amr.games.pacman.actor.PacMan.State.VULNERABLE;
+import static de.amr.games.pacman.actor.PacMan.State.HOME;
+import static de.amr.games.pacman.actor.PacMan.State.GREEDY;
+import static de.amr.games.pacman.actor.PacMan.State.HUNGRY;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
@@ -106,7 +106,7 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 	// State machine
 
 	public enum State {
-		SAFE, VULNERABLE, STEROIDS, DYING
+		HOME, HUNGRY, GREEDY, DYING
 	}
 
 	@Override
@@ -120,19 +120,19 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 		StateMachine.define(State.class, GameEvent.class)
 				
 			.description("[Pac-Man]")
-			.initialState(SAFE)
+			.initialState(HOME)
 
 			.states()
 
-				.state(SAFE)
+				.state(HOME)
 					.onEntry(this::initPacMan)
 
-				.state(VULNERABLE)
-					.impl(new VulnerableState())
+				.state(HUNGRY)
+					.impl(new HungryState())
 					
-				.state(STEROIDS)
-					.impl(new SteroidsState())
-					.timeoutAfter(game::getPacManSteroidTime)
+				.state(GREEDY)
+					.impl(new GreedyState())
+					.timeoutAfter(game::getPacManGreedyTime)
 
 				.state(DYING)
 					.onEntry(() -> sprite = s_dying)
@@ -140,15 +140,15 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 
 			.transitions()
 
-					.when(SAFE).then(VULNERABLE)
+					.when(HOME).then(HUNGRY)
 					
-					.when(VULNERABLE).then(DYING).on(PacManKilledEvent.class)
+					.when(HUNGRY).then(DYING).on(PacManKilledEvent.class)
 	
-					.when(VULNERABLE).then(STEROIDS).on(PacManGainsPowerEvent.class)
+					.when(HUNGRY).then(GREEDY).on(PacManGainsPowerEvent.class)
 	
-					.when(STEROIDS).on(PacManGainsPowerEvent.class).act(() -> controller.resetTimer())
+					.when(GREEDY).on(PacManGainsPowerEvent.class).act(() -> controller.resetTimer())
 	
-					.when(STEROIDS).then(VULNERABLE).onTimeout().act(() -> events.publishEvent(new PacManLostPowerEvent()))
+					.when(GREEDY).then(HUNGRY).onTimeout().act(() -> events.publishEvent(new PacManLostPowerEvent()))
 	
 					.when(DYING).onTimeout().act(e -> events.publishEvent(new PacManDiedEvent()))
 
@@ -158,7 +158,7 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 
 	// Pac-Man states
 
-	private class VulnerableState extends StateObject<State, GameEvent> {
+	private class HungryState extends StateObject<State, GameEvent> {
 
 		@Override
 		public void onTick() {
@@ -204,7 +204,7 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 		}
 	}
 
-	private class SteroidsState extends VulnerableState {
+	private class GreedyState extends HungryState {
 
 		@Override
 		public void onTick() {

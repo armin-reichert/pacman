@@ -110,10 +110,10 @@ public class Game {
 		fElroy1Speed,
 		iElroy2DotsLeft,
 		fElroy2Speed,
-		fPacManSteroidSpeed,
-		fPacManSteroidDotsSpeed,
+		fPacManPowerSpeed,
+		fPacManPowerDotsSpeed,
 		fGhostAfraidSpeed,
-		iPacManSteroidSeconds,
+		iPacManPowerSeconds,
 		iNumFlashes
 	};
 
@@ -226,12 +226,12 @@ public class Game {
 
 	public float getPacManSpeed(PacMan pacMan) {
 		switch (pacMan.getState()) {
-		case SAFE:
+		case HOME:
 			return 0;
-		case VULNERABLE:
+		case HUNGRY:
 			return speed(fValue(Field.fPacManSpeed));
-		case STEROIDS:
-			return speed(fValue(Field.fPacManSteroidSpeed));
+		case GREEDY:
+			return speed(fValue(Field.fPacManPowerSpeed));
 		case DYING:
 			return 0;
 		default:
@@ -239,8 +239,8 @@ public class Game {
 		}
 	}
 
-	public int getPacManSteroidTime() {
-		return sec(iValue(Field.iPacManSteroidSeconds));
+	public int getPacManGreedyTime() {
+		return sec(iValue(Field.iPacManPowerSeconds));
 	}
 
 	public int getPacManDyingTime() {

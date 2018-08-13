@@ -144,11 +144,11 @@ public class Ghost extends ControlledMazeMover<Ghost.State, GameEvent> {
 					.when(HOME).then(SAFE)
 
 					.when(SAFE)
-						.onTimeout().condition(() -> pacMan.getState() != PacMan.State.STEROIDS)
+						.onTimeout().condition(() -> pacMan.getState() != PacMan.State.GREEDY)
 						.then(AGGRO)
 						
 					.when(SAFE)
-						.onTimeout().condition(() -> pacMan.getState() == PacMan.State.STEROIDS)
+						.onTimeout().condition(() -> pacMan.getState() == PacMan.State.GREEDY)
 						.then(AFRAID)
 						
 					.stay(SAFE).on(PacManGainsPowerEvent.class)

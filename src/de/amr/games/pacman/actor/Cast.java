@@ -39,8 +39,8 @@ public class Cast implements PacManWorld {
 	private static PacMan createPacMan(Game game, EventManager<GameEvent> events) {
 		PacMan pacMan = new PacMan(game);
 		Navigation keySteering = followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
-		pacMan.setNavigation(PacMan.State.VULNERABLE, keySteering);
-		pacMan.setNavigation(PacMan.State.STEROIDS, keySteering);
+		pacMan.setNavigation(PacMan.State.HUNGRY, keySteering);
+		pacMan.setNavigation(PacMan.State.GREEDY, keySteering);
 		pacMan.setEventManager(events);
 		return pacMan;
 	}
