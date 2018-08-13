@@ -4,7 +4,7 @@ import static de.amr.games.pacman.model.Content.WALL;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.actor.TileWorldMover;
+import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.routing.MazeRoute;
@@ -15,14 +15,14 @@ import de.amr.games.pacman.routing.Navigation;
  */
 class Ambush implements Navigation {
 
-	private final TileWorldMover victim;
+	private final MazeMover victim;
 
-	public Ambush(TileWorldMover victim) {
+	public Ambush(MazeMover victim) {
 		this.victim = victim;
 	}
 
 	@Override
-	public MazeRoute computeRoute(TileWorldMover ambusher) {
+	public MazeRoute computeRoute(MazeMover ambusher) {
 		RouteData route = new RouteData();
 		if (victim.isOutsideMaze()) {
 			route.dir = ambusher.getNextDir();
@@ -39,7 +39,7 @@ class Ambush implements Navigation {
 		return route;
 	}
 
-	private Optional<Tile> ahead(int n, TileWorldMover refugee) {
+	private Optional<Tile> ahead(int n, MazeMover refugee) {
 		Tile current = refugee.getTile();
 		for (int i = 0; i < n; ++i) {
 			Optional<Tile> next = refugee.maze.neighborTile(current, refugee.getDir());

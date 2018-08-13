@@ -23,21 +23,26 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.StateMachine;
 
+/**
+ * A ghost.
+ * 
+ * @author Armin Reichert
+ */
 public class Ghost extends ControlledMazeMover<Ghost.State, GameEvent> {
 
+	private final StateMachine<State, GameEvent> controller;
 	private final Game game;
-	private final StateMachine<State, GameEvent> brain;
 	private final Cast.Ghosts name;
 	private final PacMan pacMan;
 	private final int initialDir;
 
 	public Ghost(Cast.Ghosts name, PacMan pacMan, Game game, Tile home, int initialDir, int color) {
 		super(game.maze, home, new EnumMap<>(State.class));
-		this.game = game;
-		this.pacMan = pacMan;
 		this.name = name;
+		this.pacMan = pacMan;
+		this.game = game;
 		this.initialDir = initialDir;
-		brain = buildStateMachine();
+		controller = buildStateMachine();
 		createSprites(color);
 	}
 
@@ -98,7 +103,7 @@ public class Ghost extends ControlledMazeMover<Ghost.State, GameEvent> {
 
 	@Override
 	public StateMachine<State, GameEvent> getStateMachine() {
-		return brain;
+		return controller;
 	}
 
 	private StateMachine<State, GameEvent> buildStateMachine() {

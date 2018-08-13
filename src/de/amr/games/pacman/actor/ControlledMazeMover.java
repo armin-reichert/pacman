@@ -8,7 +8,17 @@ import de.amr.games.pacman.routing.Navigation;
 import de.amr.games.pacman.routing.impl.NavigationSystem;
 import de.amr.statemachine.StateMachine;
 
-public abstract class ControlledMazeMover<S, E> extends TileWorldMover {
+/**
+ * A maze mover that is controlled by a state machine.
+ * 
+ * @author Armin Reichert
+ *
+ * @param <S>
+ *          state identifier type
+ * @param <E>
+ *          event type
+ */
+public abstract class ControlledMazeMover<S, E> extends MazeMover {
 
 	private final Map<S, Navigation> navigationMap;
 
@@ -33,8 +43,8 @@ public abstract class ControlledMazeMover<S, E> extends TileWorldMover {
 		getStateMachine().update();
 	}
 
-	public void processEvent(E e) {
-		getStateMachine().enqueue(e);
+	public void processEvent(E event) {
+		getStateMachine().enqueue(event);
 		getStateMachine().update();
 	}
 

@@ -29,10 +29,16 @@ import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
 
+/**
+ * The one and only.
+ * 
+ * @author Armin Reichert
+ *
+ */
 public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 
 	private final Game game;
-	private final StateMachine<State, GameEvent> brain;
+	private final StateMachine<State, GameEvent> controller;
 	private EventManager<GameEvent> events;
 	private PacManWorld world;
 	private int pauseTicks;
@@ -40,7 +46,7 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 	public PacMan(Game game) {
 		super(game.maze, game.maze.pacManHome, new EnumMap<>(State.class));
 		this.game = game;
-		brain = buildStateMachine();
+		controller = buildStateMachine();
 		createSprites();
 	}
 
@@ -51,13 +57,20 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 	public void setWorld(PacManWorld world) {
 		this.world = world;
 	}
+	
+	@Override
+	public void move() {
+		super.move();
+		sprite = s_walking_to[getDir()];
+	}
 
-	// Pac-Man look
+	// Sprites
 
+	private Sprite sprite;
+	
 	private Sprite s_walking_to[] = new Sprite[4];
 	private Sprite s_dying;
 	private Sprite s_full;
-	private Sprite sprite;
 
 	private void createSprites() {
 		NESW.dirs().forEach(dir -> s_walking_to[dir] = SPRITES.pacManWalking(dir));
@@ -75,13 +88,7 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 		return sprite;
 	}
 
-	@Override
-	public void move() {
-		super.move();
-		sprite = s_walking_to[getDir()];
-	}
-
-	// Pac-Man behavior
+	// State machine
 
 	public enum State {
 		SAFE, VULNERABLE, STEROIDS, DYING
@@ -89,7 +96,7 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 
 	@Override
 	public StateMachine<State, GameEvent> getStateMachine() {
-		return brain;
+		return controller;
 	}
 	
 	@Override
@@ -137,7 +144,7 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 	
 					.when(VULNERABLE).then(STEROIDS).on(PacManGainsPowerEvent.class)
 	
-					.when(STEROIDS).on(PacManGainsPowerEvent.class).act(() -> brain.resetTimer())
+					.when(STEROIDS).on(PacManGainsPowerEvent.class).act(() -> controller.resetTimer())
 	
 					.when(STEROIDS).then(VULNERABLE).onTimeout().act(() -> events.publishEvent(new PacManLostPowerEvent()))
 	

@@ -3,7 +3,7 @@ package de.amr.games.pacman.routing.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.amr.games.pacman.actor.TileWorldMover;
+import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.routing.MazeRoute;
@@ -11,11 +11,11 @@ import de.amr.games.pacman.routing.Navigation;
 
 class Flee implements Navigation {
 
-	private final TileWorldMover chaser;
+	private final MazeMover chaser;
 	private final Maze maze;
 	private final List<Tile> corners = new ArrayList<>();
 
-	public Flee(TileWorldMover chaser) {
+	public Flee(MazeMover chaser) {
 		this.chaser = chaser;
 		maze = chaser.maze;
 		corners.add(new Tile(1, 1));
@@ -25,7 +25,7 @@ class Flee implements Navigation {
 	}
 
 	@Override
-	public MazeRoute computeRoute(TileWorldMover refugee) {
+	public MazeRoute computeRoute(MazeMover refugee) {
 		RouteData route = new RouteData();
 		if (chaser.isOutsideMaze() || refugee.isOutsideMaze()) {
 			// chaser or refugee is teleporting

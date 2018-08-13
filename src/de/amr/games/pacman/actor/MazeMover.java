@@ -13,11 +13,11 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * An entity that knows about the rules of moving through a tile-based world like a maze.
+ * An entity that knows about the rules of moving through a maze.
  * 
  * @author Armin Reichert
  */
-public abstract class TileWorldMover extends TileWorldEntity {
+public abstract class MazeMover extends TileWorldEntity {
 
 	private static final int TELEPORT_TILES = 6;
 
@@ -26,7 +26,7 @@ public abstract class TileWorldMover extends TileWorldEntity {
 	private int dir;
 	private int nextDir;
 
-	protected TileWorldMover(Maze maze, Tile homeTile) {
+	protected MazeMover(Maze maze, Tile homeTile) {
 		this.maze = maze;
 		this.homeTile = homeTile;
 	}
