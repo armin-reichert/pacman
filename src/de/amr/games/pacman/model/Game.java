@@ -27,7 +27,7 @@ public class Game {
 	/** Tile size. */
 	public static final int TS = 8;
 
-	public static final int[] KILLED_GHOST_POINTS = { 200, 400, 800, 1600 };
+	private static final int[] KILLED_GHOST_POINTS = { 200, 400, 800, 1600 };
 
 	public final Maze maze;
 	public final IntSupplier fnTicksPerSecond;
