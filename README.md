@@ -28,7 +28,7 @@ The more low-level implementations of state machines (switches, function pointer
 
 For that reason I decided to start from the ground up (the theoretical base which are Mealy-machines) and build my own state machine implementation. Of course, I could have used something existing like [Stateless4j](https://github.com/oxo42/stateless4j).
 
-Whatever decision you take, the important thing IMHO is that you take a decision at all and do not reinvent the implementation for each use case! And now you can concentrate on the "real" stuff: 
+Whatever decision you take, the important thing IMHO is that you take a decision and stick to it, do not reinvent the state machine implementation for each use case from scratch! And now you can concentrate on the "real" stuff: 
 
 Which entities in the Pac-man game are candidates for getting controlled by state machines. And you will be surprised how many parts of your program suddenly will be state machine candidates: of course Pac-Man and the four ghosts, but also the global game control, maybe also the screen selection logic or also simpler entities in your game. It is interesting to look at your program parts through the state machine glasses and decide where an explicit state machine becomes useful in contrast to implicit ones (variables, methods, control-flow statements).
 
