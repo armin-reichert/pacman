@@ -28,14 +28,10 @@ public abstract class TileWorldEntity extends GameEntity {
 	}
 
 	public void placeAt(Tile tile) {
-		placeAt(tile.col, tile.row);
-	}
-
-	public void placeAt(Tile tile, float offsetx, float offsety) {
-		placeAt(tile.col, tile.row);
+		tf.moveTo(tile.col * Game.TS + tile.xOffset, tile.row * Game.TS + tile.yOffset);
 	}
 	
-	public void placeAt(float col, float row) {
+	public void placeAt(int col, int row) {
 		tf.moveTo(col * Game.TS, row * Game.TS);
 	}
 

@@ -66,14 +66,19 @@ public class Maze {
 					blinkyHome = new Tile(col, row);
 				} else if (c == POS_PINKY) {
 					pinkyHome = new Tile(col, row);
+					pinkyHome.xOffset = Game.TS / 2;
 				} else if (c == POS_INKY) {
 					inkyHome = new Tile(col, row);
+					inkyHome.xOffset = Game.TS / 2;
 				} else if (c == POS_CLYDE) {
 					clydeHome = new Tile(col, row);
+					clydeHome.xOffset = Game.TS / 2;
 				} else if (c == POS_BONUS) {
 					bonusTile = new Tile(col, row);
+					bonusTile.xOffset = Game.TS / 2;
 				} else if (c == POS_PACMAN) {
 					pacManHome = new Tile(col, row);
+					pacManHome.xOffset = Game.TS / 2;
 				} else if (c == PELLET || c == ENERGIZER) {
 					foodTotal += 1;
 				}

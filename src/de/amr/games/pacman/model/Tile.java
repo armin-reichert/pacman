@@ -4,6 +4,8 @@ public class Tile {
 
 	public final int col;
 	public final int row;
+	public float xOffset;
+	public float yOffset;
 
 	public Tile(int col, int row) {
 		this.col = col;
@@ -27,6 +29,9 @@ public class Tile {
 
 	@Override
 	public String toString() {
+		if (xOffset != 0 || yOffset != 0) {
+			return String.format("(%d+%.2f, %d+%.2f)", col, xOffset, row, yOffset);
+		}
 		return String.format("(%d,%d)", col, row);
 	}
 }

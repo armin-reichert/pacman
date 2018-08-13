@@ -160,6 +160,9 @@ public class GameController implements Controller {
 					
 				.when(CHANGING_LEVEL).then(PLAYING)
 					.onTimeout()
+					
+				.stay(CHANGING_LEVEL)
+					.on(PacManGettingWeakerEvent.class)
 			
 				.stay(GHOST_DYING)
 					.on(PacManGettingWeakerEvent.class)
