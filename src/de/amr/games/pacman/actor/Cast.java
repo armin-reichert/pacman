@@ -36,10 +36,6 @@ import de.amr.games.pacman.routing.Navigation;
  */
 public class Cast implements PacManWorld {
 
-	public enum Ghosts {
-		Blinky, Pinky, Inky, Clyde
-	}
-
 	private static PacMan createPacMan(Game game, EventManager<GameEvent> events) {
 		PacMan pacMan = new PacMan(game);
 		Navigation keySteering = followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
@@ -50,7 +46,7 @@ public class Cast implements PacManWorld {
 	}
 
 	private static Ghost createBlinky(Game game, PacMan pacMan) {
-		Ghost ghost = new Ghost(Ghosts.Blinky, pacMan, game, game.maze.blinkyHome, Top4.E, RED_GHOST);
+		Ghost ghost = new Ghost(GhostName.Blinky, pacMan, game, game.maze.blinkyHome, Top4.E, RED_GHOST);
 		ghost.setNavigation(Ghost.State.AGGRO, chase(pacMan));
 		ghost.setNavigation(Ghost.State.AFRAID, flee(pacMan));
 		ghost.setNavigation(Ghost.State.DEAD, goHome());
@@ -59,7 +55,7 @@ public class Cast implements PacManWorld {
 	}
 
 	private static Ghost createPinky(Game game, PacMan pacMan) {
-		Ghost ghost = new Ghost(Ghosts.Pinky, pacMan, game, game.maze.pinkyHome, Top4.S, PINK_GHOST);
+		Ghost ghost = new Ghost(GhostName.Pinky, pacMan, game, game.maze.pinkyHome, Top4.S, PINK_GHOST);
 		ghost.setNavigation(Ghost.State.AGGRO, ambush(pacMan));
 		ghost.setNavigation(Ghost.State.AFRAID, flee(pacMan));
 		ghost.setNavigation(Ghost.State.DEAD, goHome());
@@ -68,7 +64,7 @@ public class Cast implements PacManWorld {
 	}
 
 	private static Ghost createInky(Game game, PacMan pacMan) {
-		Ghost ghost = new Ghost(Ghosts.Inky, pacMan, game, game.maze.inkyHome, Top4.N, TURQUOISE_GHOST);
+		Ghost ghost = new Ghost(GhostName.Inky, pacMan, game, game.maze.inkyHome, Top4.N, TURQUOISE_GHOST);
 		ghost.setNavigation(Ghost.State.AGGRO, ambush(pacMan)); // TODO
 		ghost.setNavigation(Ghost.State.AFRAID, flee(pacMan));
 		ghost.setNavigation(Ghost.State.DEAD, goHome());
@@ -77,7 +73,7 @@ public class Cast implements PacManWorld {
 	}
 
 	private static Ghost createClyde(Game game, PacMan pacMan) {
-		Ghost ghost = new Ghost(Ghosts.Clyde, pacMan, game, game.maze.clydeHome, Top4.N, ORANGE_GHOST);
+		Ghost ghost = new Ghost(GhostName.Clyde, pacMan, game, game.maze.clydeHome, Top4.N, ORANGE_GHOST);
 		ghost.setNavigation(Ghost.State.AGGRO, ambush(pacMan)); // TODO
 		ghost.setNavigation(Ghost.State.AFRAID, flee(pacMan));
 		ghost.setNavigation(Ghost.State.DEAD, goHome());
@@ -88,11 +84,11 @@ public class Cast implements PacManWorld {
 	private final EventManager<GameEvent> events;
 	private final PacMan pacMan;
 	private final Ghost blinky, pinky, inky, clyde;
-	private final Set<Ghost> activeGhosts = new HashSet<>();
+	private final Set<Ghost> activeGhosts = new HashSet<>(4);
 	private Bonus bonus;
 
 	public Cast(Game game) {
-		events = new EventManager<>("[GameActorEvents]");
+		events = new EventManager<>("[ActorEvents]");
 		pacMan = createPacMan(game, events);
 		pacMan.setWorld(this);
 		blinky = createBlinky(game, pacMan);
@@ -100,6 +96,12 @@ public class Cast implements PacManWorld {
 		inky = createInky(game, pacMan);
 		clyde = createClyde(game, pacMan);
 		activeGhosts.addAll(Arrays.asList(blinky, pinky, inky, clyde));
+	}
+
+	public void init() {
+		pacMan.init();
+		activeGhosts.forEach(Ghost::init);
+		removeBonus();
 	}
 
 	public void addObserver(Observer<GameEvent> observer) {
@@ -122,21 +124,18 @@ public class Cast implements PacManWorld {
 		return clyde;
 	}
 
-	public void init() {
-		pacMan.init();
-		activeGhosts.forEach(Ghost::init);
-		removeBonus();
-	}
-
 	public PacMan getPacMan() {
 		return pacMan;
 	}
 
-	public boolean isGhostActive(Ghost ghost) {
+	public boolean isActive(Ghost ghost) {
 		return activeGhosts.contains(ghost);
 	}
 
 	public void setActive(Ghost ghost, boolean active) {
+		if (active == isActive(ghost)) {
+			return;
+		}
 		if (active) {
 			activeGhosts.add(ghost);
 			ghost.init();

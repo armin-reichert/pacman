@@ -32,11 +32,11 @@ public class Ghost extends ControlledMazeMover<Ghost.State, GameEvent> {
 
 	private final StateMachine<State, GameEvent> controller;
 	private final Game game;
-	private final Cast.Ghosts name;
+	private final GhostName name;
 	private final PacMan pacMan;
 	private final int initialDir;
 
-	public Ghost(Cast.Ghosts name, PacMan pacMan, Game game, Tile home, int initialDir, int color) {
+	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, int initialDir, int color) {
 		super(game.maze, home, new EnumMap<>(State.class));
 		this.name = name;
 		this.pacMan = pacMan;
@@ -46,7 +46,7 @@ public class Ghost extends ControlledMazeMover<Ghost.State, GameEvent> {
 		createSprites(color);
 	}
 
-	public Cast.Ghosts getName() {
+	public GhostName getName() {
 		return name;
 	}
 

@@ -157,7 +157,7 @@ public class ExtendedGamePanel extends GamePanel {
 	}
 
 	private void toggleGhostActivity(Ghost ghost) {
-		actors.setActive(ghost, !actors.isGhostActive(ghost));
+		actors.setActive(ghost, !actors.isActive(ghost));
 	}
 
 	private static Color ghostColor(Ghost ghost) {
