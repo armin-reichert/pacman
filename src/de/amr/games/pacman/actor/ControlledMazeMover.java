@@ -8,7 +8,7 @@ import de.amr.games.pacman.routing.Navigation;
 import de.amr.games.pacman.routing.impl.NavigationSystem;
 import de.amr.statemachine.StateMachine;
 
-public abstract class ControlledMazeMover<S, E> extends MazeMover {
+public abstract class ControlledMazeMover<S, E> extends TileWorldMover {
 
 	private final Map<S, Navigation> navigationMap;
 

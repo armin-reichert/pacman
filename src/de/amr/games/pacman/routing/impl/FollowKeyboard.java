@@ -2,7 +2,7 @@ package de.amr.games.pacman.routing.impl;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.actor.MazeMover;
+import de.amr.games.pacman.actor.TileWorldMover;
 import de.amr.games.pacman.routing.MazeRoute;
 import de.amr.games.pacman.routing.Navigation;
 
@@ -18,7 +18,7 @@ class FollowKeyboard implements Navigation {
 	}
 
 	@Override
-	public MazeRoute computeRoute(MazeMover mover) {
+	public MazeRoute computeRoute(TileWorldMover mover) {
 		RouteData result = new RouteData();
 		result.dir = mover.getNextDir();
 		if (Keyboard.keyDown(nesw[0])) {

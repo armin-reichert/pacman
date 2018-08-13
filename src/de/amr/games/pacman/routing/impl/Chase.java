@@ -1,6 +1,6 @@
 package de.amr.games.pacman.routing.impl;
 
-import de.amr.games.pacman.actor.MazeMover;
+import de.amr.games.pacman.actor.TileWorldMover;
 import de.amr.games.pacman.routing.MazeRoute;
 import de.amr.games.pacman.routing.Navigation;
 
@@ -9,14 +9,14 @@ import de.amr.games.pacman.routing.Navigation;
  */
 class Chase implements Navigation {
 
-	private final MazeMover victim;
+	private final TileWorldMover victim;
 
-	public Chase(MazeMover victim) {
+	public Chase(TileWorldMover victim) {
 		this.victim = victim;
 	}
 
 	@Override
-	public MazeRoute computeRoute(MazeMover chaser) {
+	public MazeRoute computeRoute(TileWorldMover chaser) {
 		RouteData route = new RouteData();
 		if (victim.isOutsideMaze()) {
 			route.dir = chaser.getNextDir();
