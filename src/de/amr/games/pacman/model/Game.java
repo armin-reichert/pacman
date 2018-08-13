@@ -32,6 +32,7 @@ public class Game {
 	public final Maze maze;
 	public final IntSupplier fnTicksPerSecond;
 	public final Counter score = new Counter();
+	public final HighScore hiscore = new HighScore(this);
 	public final Counter lives = new Counter();
 	public final Counter foodEaten = new Counter();
 	public final Counter ghostsKilledInSeries = new Counter();

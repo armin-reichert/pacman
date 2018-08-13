@@ -11,7 +11,6 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.HighScore;
 
 public class GamePanel implements PacManGameUI {
 
@@ -93,9 +92,9 @@ public class GamePanel implements PacManGameUI {
 		g.drawString(String.format("%06d", game.score.get()), Game.TS, Game.TS * 2);
 		g.drawString(String.format("LEVEL %2d", game.getLevel()), 22 * Game.TS, Game.TS);
 		g.drawString("HISCORE", 10 * Game.TS, Game.TS);
-		g.drawString(String.format("%06d", HighScore.getScore()), 10 * Game.TS, Game.TS * 2);
+		g.drawString(String.format("%06d", game.hiscore.getScore()), 10 * Game.TS, Game.TS * 2);
 		g.setColor(Color.YELLOW);
-		g.drawString(String.format("L%d", HighScore.getLevel()), 16 * Game.TS, Game.TS * 2);
+		g.drawString(String.format("L%d", game.hiscore.getLevel()), 16 * Game.TS, Game.TS * 2);
 		// Lives
 		g.translate(0, getHeight() - 2 * Game.TS);
 		for (int i = 0; i < game.lives.get(); ++i) {

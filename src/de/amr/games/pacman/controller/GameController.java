@@ -192,7 +192,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onEntry() {
-			HighScore.load();
+			game.hiscore.load();
 			game.init();
 			actors.init();
 			gameView.enableAnimation(false);
@@ -360,7 +360,7 @@ public class GameController implements Controller {
 		public void onEntry() {
 			gameView.enableAnimation(false);
 			gameView.showInfo("Game Over!", Color.RED);
-			HighScore.save(game.score.get(), game.getLevel());
+			game.hiscore.save();
 		}
 
 		@Override

@@ -11,13 +11,17 @@ import de.amr.easy.game.Application;
 
 public class HighScore {
 
-	private static final File FILE = new File(new File(System.getProperty("user.home")),
-			"pacman.hiscore.xml");
+	private static final File FILE = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
 
-	private static int score;
-	private static int level;
+	private final Game game;
+	private int score;
+	private int level;
 
-	public static void load() {
+	public HighScore(Game game) {
+		this.game = game;
+	}
+
+	public void load() {
 		Properties prop = new Properties();
 		try {
 			prop.loadFromXML(new FileInputStream(FILE));
@@ -30,7 +34,7 @@ public class HighScore {
 		level = Integer.valueOf(prop.getProperty("level", "0"));
 	}
 
-	private static void store() {
+	private void store() {
 		Properties prop = new Properties();
 		prop.setProperty("score", String.valueOf(score));
 		prop.setProperty("level", String.valueOf(level));
@@ -43,21 +47,21 @@ public class HighScore {
 		}
 	}
 
-	public static void save(int newScore, int newLevel) {
-		if (newScore >= score) {
-			score = newScore;
-			if (newLevel >= level) {
-				level = newLevel;
+	public void save() {
+		if (game.score.get() >= score) {
+			score = game.score.get();
+			if (game.getLevel() >= level) {
+				level = game.getLevel();
 			}
 		}
 		store();
 	}
 
-	public static int getScore() {
+	public int getScore() {
 		return score;
 	}
 
-	public static int getLevel() {
+	public int getLevel() {
 		return level;
 	}
 }
