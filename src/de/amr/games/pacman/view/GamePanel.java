@@ -92,9 +92,9 @@ public class GamePanel implements PacManGameUI {
 		g.drawString(String.format("%06d", game.score.get()), Game.TS, Game.TS * 2);
 		g.drawString(String.format("LEVEL %2d", game.getLevel()), 22 * Game.TS, Game.TS);
 		g.drawString("HISCORE", 10 * Game.TS, Game.TS);
-		g.drawString(String.format("%06d", game.hiscore.getScore()), 10 * Game.TS, Game.TS * 2);
+		g.drawString(String.format("%06d", game.score.getHiscore()), 10 * Game.TS, Game.TS * 2);
 		g.setColor(Color.YELLOW);
-		g.drawString(String.format("L%d", game.hiscore.getLevel()), 16 * Game.TS, Game.TS * 2);
+		g.drawString(String.format("L%d", game.score.getLevel()), 16 * Game.TS, Game.TS * 2);
 		// Lives
 		g.translate(0, getHeight() - 2 * Game.TS);
 		for (int i = 0; i < game.lives.get(); ++i) {

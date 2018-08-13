@@ -9,34 +9,37 @@ import java.util.Properties;
 
 import de.amr.easy.game.Application;
 
-public class HighScore {
+public class ScoreCounter extends Counter {
 
 	private static final File FILE = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
 
 	private final Game game;
-	private int score;
+	private int hiscore;
 	private int level;
 
-	public HighScore(Game game) {
+	public ScoreCounter(Game game) {
 		this.game = game;
+		hiscore = 0;
+		level = 1;
 	}
 
 	public void load() {
+		set(0);
 		Properties prop = new Properties();
 		try {
 			prop.loadFromXML(new FileInputStream(FILE));
 		} catch (FileNotFoundException e) {
-			store();
+			save(0);
 		} catch (IOException e) {
 			Application.LOGGER.info("Could not load hiscore file");
 		}
-		score = Integer.valueOf(prop.getProperty("score", "0"));
+		hiscore = Integer.valueOf(prop.getProperty("score", "0"));
 		level = Integer.valueOf(prop.getProperty("level", "0"));
 	}
 
-	private void store() {
+	public void save(int level) {
 		Properties prop = new Properties();
-		prop.setProperty("score", String.valueOf(score));
+		prop.setProperty("score", String.valueOf(hiscore));
 		prop.setProperty("level", String.valueOf(level));
 		try {
 			prop.storeToXML(new FileOutputStream(FILE), "Pac-Man Highscore");
@@ -47,18 +50,29 @@ public class HighScore {
 		}
 	}
 
-	public void save() {
-		if (game.score.get() >= score) {
-			score = game.score.get();
-			if (game.getLevel() >= level) {
+	@Override
+	public void add(int n) {
+		super.add(n);
+		update();
+	}
+
+	@Override
+	public void sub(int n) {
+		super.sub(n);
+		update();
+	}
+
+	private void update() {
+		if (get() >= hiscore) {
+			hiscore = get();
+			if (game.getLevel() > level) {
 				level = game.getLevel();
 			}
 		}
-		store();
 	}
 
-	public int getScore() {
-		return score;
+	public int getHiscore() {
+		return hiscore;
 	}
 
 	public int getLevel() {

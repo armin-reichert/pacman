@@ -31,8 +31,7 @@ public class Game {
 
 	public final Maze maze;
 	public final IntSupplier fnTicksPerSecond;
-	public final Counter score = new Counter();
-	public final HighScore hiscore = new HighScore(this);
+	public final ScoreCounter score = new ScoreCounter(this);
 	public final Counter lives = new Counter();
 	public final Counter foodEaten = new Counter();
 	public final Counter ghostsKilledInSeries = new Counter();
@@ -161,7 +160,7 @@ public class Game {
 			ghostsKilledInSeries.set(0);
 		}
 	}
-	
+
 	public int getFoodValue(char food) {
 		return food == Content.PELLET ? 10 : food == Content.ENERGIZER ? 50 : 0;
 	}

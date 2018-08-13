@@ -189,7 +189,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onEntry() {
-			game.hiscore.load();
+			game.score.load();
 			game.init();
 			actors.init();
 			gameView.enableAnimation(false);
@@ -353,7 +353,7 @@ public class GameController implements Controller {
 		public void onEntry() {
 			gameView.enableAnimation(false);
 			gameView.showInfo("Game Over!", Color.RED);
-			game.hiscore.save();
+			game.score.save(game.getLevel());
 		}
 
 		@Override

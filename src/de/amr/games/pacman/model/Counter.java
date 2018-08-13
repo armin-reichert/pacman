@@ -2,7 +2,7 @@ package de.amr.games.pacman.model;
 
 public class Counter {
 
-	protected int count;
+	private int count;
 
 	public void set(int n) {
 		count = n;
