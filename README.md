@@ -282,4 +282,8 @@ I hope this project fulfils the following goals:
 - Provide a base for exchanging my custom state machines by other libraries
 - Provide a reference implementation for your own Pac-Man game
 
+Additional ideas:
+
+It would certainly be useful to decouple the UI and the game model / control logic completely to enable an easy replacement of the UI to get a reusable Pac-Man Java library. Want to give it a try?
+
 Armin Reichert
