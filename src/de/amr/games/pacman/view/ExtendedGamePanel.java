@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
-import java.awt.Image;
 import java.awt.Transparency;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -32,7 +31,7 @@ import de.amr.statemachine.StateObject;
  */
 public class ExtendedGamePanel extends GamePanel {
 
-	private static Image createGridImage(int numRows, int numCols) {
+	private static BufferedImage createGridImage(int numRows, int numCols) {
 		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
 				.getDefaultConfiguration();
 		BufferedImage image = conf.createCompatibleImage(numCols * Game.TS, numRows * Game.TS + 1,
@@ -50,7 +49,7 @@ public class ExtendedGamePanel extends GamePanel {
 
 	private static final String INFTY = Character.toString('\u221E');
 
-	private final Image gridImage;
+	private final BufferedImage gridImage;
 	private boolean showGrid;
 	private boolean showRoutes;
 	private boolean showStates;
