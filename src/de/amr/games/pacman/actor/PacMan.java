@@ -4,7 +4,7 @@ import static de.amr.games.pacman.actor.PacMan.State.DYING;
 import static de.amr.games.pacman.actor.PacMan.State.SAFE;
 import static de.amr.games.pacman.actor.PacMan.State.STEROIDS;
 import static de.amr.games.pacman.actor.PacMan.State.VULNERABLE;
-import static de.amr.games.pacman.model.Maze.FOUR_DIRS;
+import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
 import java.util.EnumMap;
@@ -60,7 +60,7 @@ public class PacMan extends MazeMover<PacMan.State> {
 	private Sprite sprite;
 
 	private void createSprites() {
-		FOUR_DIRS.dirs().forEach(dir -> s_walking_to[dir] = SPRITES.pacManWalking(dir));
+		NESW.dirs().forEach(dir -> s_walking_to[dir] = SPRITES.pacManWalking(dir));
 		s_dying = SPRITES.pacManDying();
 		s_full = SPRITES.pacManFull();
 	}

@@ -16,7 +16,7 @@ class StayBehind implements Navigation {
 	public MazeRoute computeRoute(MazeMover<?> mover) {
 		RouteData result = new RouteData();
 		result.dir = randomElement(
-				Maze.FOUR_DIRS.dirs().filter(dir -> dir != Maze.FOUR_DIRS.inv(mover.getDir())))
+				Maze.NESW.dirs().filter(dir -> dir != Maze.NESW.inv(mover.getDir())))
 						.getAsInt();
 		return result;
 	}

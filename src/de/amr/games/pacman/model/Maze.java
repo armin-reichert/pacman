@@ -36,7 +36,7 @@ import de.amr.easy.grid.impl.Top4;
  */
 public class Maze {
 
-	public static final Topology FOUR_DIRS = new Top4();
+	public static final Topology NESW = new Top4();
 
 	public Tile pacManHome;
 	public Tile blinkyHome;
@@ -54,7 +54,7 @@ public class Maze {
 		originalData = map.split("\n");
 		int numCols = originalData[0].length(), numRows = originalData.length;
 
-		graph = new GridGraph<>(numCols, numRows, FOUR_DIRS, v -> null, (u, v) -> 1,
+		graph = new GridGraph<>(numCols, numRows, NESW, v -> null, (u, v) -> 1,
 				UndirectedEdge::new);
 		graph.setDefaultVertexLabel(v -> originalData(graph.row(v), graph.col(v)));
 
