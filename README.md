@@ -4,11 +4,17 @@ Pac-Man? Really? How uncool!
 
 For the average school boy in 2018, a retro game like Pac-Man probably seems to be the most boring and uncool thing you can imagine. These cool kids implement their own 3D shooters with real and unreal engines in less than a week, don't they?
 
-Well, some of them maybe really can do that. I can't. But I think that for most young people with an interest in computer programming also such a simple(?) old-school game like Pac-Man can be really instructive. And for me personally, it brings back a lot of memories. My favorite and also the only computer game I played regularly was "Snack Attack on my Apple II compatible computer which I bought in 1984 spending almost everything I had saved at the age of 17.
+Well, some of them maybe really can do that. I can't. But I think that for most young people with an interest in computer programming also a simple (really?) old-school game like Pac-Man can be very instructive. And for me personally, it brings back a lot of memories. My favorite and also the only computer game I played regularly was ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM)  on my Apple II compatible computer. On a green monitor, no colors. But what a sound!
    
+A game like Pac-Man is interesting for different reasons. First, it isn't as trivial as "Pong" for example. Programming "Pong" is surely a good start. Programming a game loop, updating and drawing paddles, ball movement, collisions with walls and paddles are good stuff for starters. The next step probably are "Breakout" variants with differnt kinds of targets, waves of targets, levels, special balls and so on. 
 
+Pac-Man is then another level. It offers several new challenges. First, the representation of the maze and the correct movement of the characters in the maze is not trivial. Pac-Man is moved through the maze using the keyboard and you can press the key for the intended direction before Pac-Man reaches the position where it can really turn towards that direction. You can spend a lot of time to get this right (or at least almost right).
 
+Another task is the animation and rendering of Pac-Man and the ghosts. You have to deal with sprites and different kinds of animation. Really try to do all this stuff from the ground up instead of using predefined libraries. It's much more fun getting this right by yourself.
 
+If you have these basics gotten right, your characters can move correctly through the maze, you are challenged with making this the "real" game. What are the states of the game? Which events lead you from one state to the other? How to implement the different ghost behaviours? How to coordinate the game play?
+
+This can become a real mess very quickly if you don't have an idea to structure this! 
 
 
 A Pac-Man game implementation with an emphasis on state machines. Implements the global game control as well as the Pac-Man and ghost control using explicit state machines in a declarative way.
