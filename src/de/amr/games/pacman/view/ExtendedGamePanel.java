@@ -4,13 +4,13 @@ import static de.amr.easy.game.Application.LOGGER;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Transparency;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -35,9 +35,10 @@ public class ExtendedGamePanel extends GamePanel {
 	private static Image createGridImage(int numRows, int numCols) {
 		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
 				.getDefaultConfiguration();
-		Image image = conf.createCompatibleImage(numCols * Game.TS, numRows * Game.TS + 1, Transparency.TRANSLUCENT);
-		Graphics g = image.getGraphics();
-		g.setColor(Color.LIGHT_GRAY);
+		BufferedImage image = conf.createCompatibleImage(numCols * Game.TS, numRows * Game.TS + 1,
+				Transparency.TRANSLUCENT);
+		Graphics2D g = image.createGraphics();
+		g.setColor(Color.GRAY);
 		for (int row = 0; row <= numRows; ++row) {
 			g.drawLine(0, row * Game.TS, numCols * Game.TS, row * Game.TS);
 		}

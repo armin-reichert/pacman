@@ -2,14 +2,11 @@ package de.amr.games.pacman.actor;
 
 import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
-import java.awt.Graphics2D;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.model.BonusSymbol;
-import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.view.PacManGameUI;
 
 public class Bonus extends TileWorldEntity {
 
@@ -24,7 +21,7 @@ public class Bonus extends TileWorldEntity {
 		this.symbol = symbol;
 		this.value = value;
 		this.honored = false;
-		sprite = SPRITES.symbol(symbol).scale(2 * Game.TS);
+		sprite = SPRITES.symbol(symbol);
 	}
 
 	public int getValue() {
@@ -45,17 +42,12 @@ public class Bonus extends TileWorldEntity {
 		if (index < 0) {
 			throw new IllegalArgumentException("Illegal bonus value: " + value);
 		}
-		sprite = PacManGameUI.SPRITES.pinkNumber(index).scale(2 * Game.TS);
+		sprite = SPRITES.pinkNumber(index);
 	}
 
 	@Override
 	public Sprite currentSprite() {
 		return sprite;
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
-		super.draw(g);
 	}
 
 	@Override
