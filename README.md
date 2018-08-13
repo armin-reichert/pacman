@@ -136,38 +136,37 @@ Pac-Man's state machine looks like this:
 StateMachine.define(State.class, GameEvent.class)
         
     .description("[Pac-Man]")
-    .initialState(SAFE)
+    .initialState(HOME)
 
     .states()
 
-        .state(SAFE)
+        .state(HOME)
             .onEntry(this::initPacMan)
-            .timeoutAfter(() -> game.sec(0.25f))
 
-        .state(VULNERABLE)
-            .onTick(this::inspectMaze)
+        .state(HUNGRY)
+            .impl(new HungryState())
             
-        .state(STEROIDS)
-                .onTick(() -> {	inspectMaze(); checkHealth(); })
-                .timeoutAfter(game::getPacManSteroidTime)
+        .state(GREEDY)
+            .impl(new GreedyState())
+            .timeoutAfter(game::getPacManGreedyTime)
 
         .state(DYING)
-                .onEntry(() -> s_current = s_dying)
-                .timeoutAfter(() -> game.sec(2))
+            .onEntry(() -> sprite = s_dying)
+            .timeoutAfter(() -> game.sec(2))
 
     .transitions()
 
-            .when(SAFE).then(VULNERABLE).onTimeout()
-            
-            .when(VULNERABLE).then(DYING).on(PacManKilledEvent.class)
+        .when(HOME).then(HUNGRY)
+        
+        .when(HUNGRY).then(DYING).on(PacManKilledEvent.class)
 
-            .when(VULNERABLE).then(STEROIDS).on(PacManGainsPowerEvent.class)
+        .when(HUNGRY).then(GREEDY).on(PacManGainsPowerEvent.class)
 
-            .when(STEROIDS).on(PacManGainsPowerEvent.class).act(() -> brain.resetTimer())
+        .when(GREEDY).on(PacManGainsPowerEvent.class).act(() -> controller.resetTimer())
 
-            .when(STEROIDS).then(VULNERABLE).onTimeout().act(() -> events.publishEvent(new PacManLostPowerEvent()))
+        .when(GREEDY).then(HUNGRY).onTimeout().act(() -> events.publishEvent(new PacManLostPowerEvent()))
 
-            .when(DYING).onTimeout().act(e -> events.publishEvent(new PacManDiedEvent()))
+        .when(DYING).onTimeout().act(e -> events.publishEvent(new PacManDiedEvent()))
 
 .endStateMachine();
 ```
