@@ -67,29 +67,13 @@ public class Game {
 		}
 	}
 
-	public int getLevel() {
-		return level;
-	}
-
-	public int getFoodValue(char food) {
-		return food == Content.PELLET ? 10 : food == Content.ENERGIZER ? 50 : 0;
-	}
-
-	public int getKilledGhostValue() {
-		return KILLED_GHOST_POINTS[ghostsKilledInSeries.get()];
-	}
-
-	public boolean allFoodEaten() {
-		return foodEaten.get() == foodTotal;
-	}
-
 	/** Ticks representing the given seconds. */
 	public int sec(float seconds) {
 		return Math.round(fnTicksPerSecond.getAsInt() * seconds);
 	}
 
 	/** Tiles per second. */
-	private float tps(float value) {
+	public float tps(float value) {
 		return (value * Game.TS) / fnTicksPerSecond.getAsInt();
 	}
 
@@ -160,6 +144,10 @@ public class Game {
 		return (T) LEVELS[level][field.ordinal()];
 	}
 
+	public int getLevel() {
+		return level;
+	}
+
 	public void eatFoodAt(Tile tile) {
 		char food = maze.getContent(tile);
 		int value = getFoodValue(food);
@@ -174,6 +162,14 @@ public class Game {
 		}
 	}
 	
+	public int getFoodValue(char food) {
+		return food == Content.PELLET ? 10 : food == Content.ENERGIZER ? 50 : 0;
+	}
+
+	public boolean allFoodEaten() {
+		return foodEaten.get() == foodTotal;
+	}
+
 	public int getDigestionTicks(char food) {
 		return food == Content.ENERGIZER ? 3 : 1;
 	}
@@ -222,6 +218,10 @@ public class Game {
 
 	public int getGhostDyingTime() {
 		return sec(0.5f);
+	}
+
+	public int getKilledGhostValue() {
+		return KILLED_GHOST_POINTS[ghostsKilledInSeries.get()];
 	}
 
 	public float getPacManSpeed(PacMan pacMan) {
