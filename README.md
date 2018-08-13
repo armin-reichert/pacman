@@ -1,4 +1,16 @@
-# Pac-Man State Machines (in progress)
+# Pac-Man (in progress)
+
+Pac-Man? Really? How uncool!
+
+For the average school boy in 2018, a retro game like Pac-Man probably seems to be the most boring and uncool thing you can imagine. These cool kids implement their own 3D shooters with real and unreal engines in less than a week, don't they?
+
+Well, some of them maybe really can do that. I can't. But I think that for most young people with an interest in computer programming also such a simple(?) old-school game like Pac-Man can be really instructive. And for me personally, it brings back a lot of memories. My favorite and also the only computer game I played regularly was "Snack Attack on my Apple II compatible computer which I bought in 1984 spending almost everything I had saved at the age of 17.
+   
+
+
+
+
+
 A Pac-Man game implementation with an emphasis on state machines. Implements the global game control as well as the Pac-Man and ghost control using explicit state machines in a declarative way.
 
 <img src="doc/pacman.png"/>
