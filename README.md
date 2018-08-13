@@ -1,4 +1,6 @@
-# Pac-Man (in progress)
+# Pac-Man with an emphasis on state machines (in progress)
+
+<img src="doc/pacman.png"/>
 
 Pac-Man? Really? How uncool!
 
@@ -18,14 +20,17 @@ This can become a real mess very quickly if you don't have an idea to do this in
 
 Or you will look into the code of others who have implemented Pac-Man, often with impressive results and little code. And you will look into their code, understand some parts but not get the whole picture because they have implemented certain concepts like state machines in their code but not in a way that helps you to understand the complete working of the game. From a practical point this is completely ok, often the underlying concepts somehow melt into the implementation and can only be recognized later if you have an idea what the implementor was trying to do. But often, the concepts are only realized half-way or abandoned during the implementation to get the thing finally running.
 
-And then you maybe become frustrated and you lose interest. Or you gove it a last try and search the internet again. And you will find articles about using state machines in game in general and also in the Pac-Man game. You will find introdutory courses in AI where Pac-Man is used as a test ground for implementing AI agents. This is certainly very interesting but it doesn't help you with your own Pac-Man implementation because these agents are programmed against some predefined Pac-Man frameowrk and cannot just be used inside yout own game. And it also doesn't help you with the control of the overall game play.
+And then you maybe become frustrated and you lose interest. Or you gove it a last try and search the internet again. And you will find articles about using state machines in game in general and also in the Pac-Man game. You will find introductory computer science courses on AI where Pac-Man is used as a test ground for implementing AI agents. This is certainly very interesting but it doesn't help you with your own Pac-Man implementation because these agents are programmed against some predefined Pac-Man frameowrk and cannot just be used inside yout own game. And it also doesn't help you with the control of the overall game play.
 
+Or you will find all these introductions ans tutorials about state machines and the different ways of implementing them. From basic switch-statements to object-oriented "state pattern"-based implementations, function pointers in C, C++, ready-made libraries like [Appcelerate](http://www.appccelerate.com/) and code generating tools, in the end you have to decide for something.
 
-A Pac-Man game implementation with an emphasis on state machines. Implements the global game control as well as the Pac-Man and ghost control using explicit state machines in a declarative way.
+The more low-level implementations of state machines (switches, function pointers) are the most performant ones but as long a you achieve the performance goals for your game (60 frames/updates per second), you can use whatever implementation you like. And if you want to make your code understandable to other people for learning purposes it is certainly not the best way to go. 
 
-<img src="doc/pacman.png"/>
+For that reason I decided to start from the ground up (the theoretical base which are Mealy-machines) and build my own state machine implementation. Of course, I could have used something existing like [Stateless4j](https://github.com/oxo42/stateless4j).
 
-To illustrate, this is the game control state machine:
+If you have decided how your state machines will get implemented, you can concentrate on the real stuff: Which entities in the Pac-man game are candidates for getting controlled by state machines. And you will be surprised how many parts of your program accidentally will be candidates: of course Pac-Man and the four ghosts, but also the global game control, maybe also the screen selection logic or also simpler entities in your game. It is interesting to look at your program parts through the state machine glasses and decide where an explicit state machine becomes useful in contrast to implicit ones (variables, methods, control-flow statements).
+
+In the implementation of Pac-Man shown here, I decided to implement the global game control as well as the Pac-Man and ghost control by state machines. These controls are sufficiently complex to be modelled/implemented explicitly. The state machine implementation allows (similarly to the mentioned Stateless4j) to define your state machines inside your code in a declarative way. This is achieved by using the "builder pattern". Further, the overhead of embedding client code into the state machine definitions is reduced by the possibility to use lambda expressions (anonymous functions) or function/method references. This allows for a smooth integration of state machines in your program. You have the flexibility to write your code inline inside the state machine hooks (onEntry, onExit, on(event), onTimeout), or to delegate this to separate classes/methods. You can also just use the predefined state objects or if needed define the state objects in separate classes, maybe with additional methods and state. This is for example used in the implementation of the overall game control:
 
 ```java
 StateMachine.define(PlayState.class, GameEvent.class)
