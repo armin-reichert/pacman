@@ -173,6 +173,10 @@ public class Game {
 			ghostsKilledInSeries.set(0);
 		}
 	}
+	
+	public int getDigestionTicks(char food) {
+		return food == Content.ENERGIZER ? 3 : 1;
+	}
 
 	private boolean checkExtraLife(int oldScore, int newScore) {
 		return oldScore < 10_000 && 10_000 <= newScore;

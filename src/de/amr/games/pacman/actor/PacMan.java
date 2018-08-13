@@ -41,7 +41,7 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 	private final StateMachine<State, GameEvent> controller;
 	private EventManager<GameEvent> events;
 	private PacManWorld world;
-	private int pauseTicks;
+	private int digestionTicks;
 
 	public PacMan(Game game) {
 		super(game.maze, game.maze.pacManHome, new EnumMap<>(State.class));
@@ -88,6 +88,21 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 		return sprite;
 	}
 
+	// Others
+
+	@Override
+	public float getSpeed() {
+		return game.getPacManSpeed(this);
+	}
+
+	private void initPacMan() {
+		digestionTicks = 0;
+		placeAt(homeTile);
+		setNextDir(Top4.E);
+		getSprites().forEach(Sprite::resetAnimation);
+		sprite = s_full;
+	}
+
 	// State machine
 
 	public enum State {
@@ -97,19 +112,6 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 	@Override
 	public StateMachine<State, GameEvent> getStateMachine() {
 		return controller;
-	}
-
-	@Override
-	public float getSpeed() {
-		return game.getPacManSpeed(this);
-	}
-
-	private void initPacMan() {
-		placeAt(homeTile);
-		setNextDir(Top4.E);
-		getSprites().forEach(Sprite::resetAnimation);
-		sprite = s_full;
-		pauseTicks = 0;
 	}
 
 	private StateMachine<State, GameEvent> buildStateMachine() {
@@ -124,11 +126,12 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 
 				.state(SAFE)
 					.onEntry(this::initPacMan)
-					.timeoutAfter(() -> 1)
 
-				.state(VULNERABLE).impl(new VulnerableState())
+				.state(VULNERABLE)
+					.impl(new VulnerableState())
 					
-				.state(STEROIDS).impl(new SteroidsState())
+				.state(STEROIDS)
+					.impl(new SteroidsState())
 					.timeoutAfter(game::getPacManSteroidTime)
 
 				.state(DYING)
@@ -137,7 +140,7 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 
 			.transitions()
 
-					.when(SAFE).then(VULNERABLE).onTimeout()
+					.when(SAFE).then(VULNERABLE)
 					
 					.when(VULNERABLE).then(DYING).on(PacManKilledEvent.class)
 	
@@ -159,8 +162,8 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 
 		@Override
 		public void onTick() {
-			if (pauseTicks > 0) {
-				--pauseTicks;
+			if (digestionTicks > 0) {
+				--digestionTicks;
 				return;
 			}
 			inspectMaze();
@@ -171,53 +174,41 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 			if (isOutsideMaze()) {
 				return;
 			}
-
+			Tile tile = getTile();
 			// Ghost collision?
 			Optional<Ghost> collidingGhost = world.getActiveGhosts()
 			/*@formatter:off*/
-					.filter(ghost -> ghost.getTile().equals(getTile()))
-					.filter(ghost -> ghost.getState() != Ghost.State.DEAD)
-					.filter(ghost -> ghost.getState() != Ghost.State.DYING)
-					.filter(ghost -> ghost.getState() != Ghost.State.SAFE)
-					.findFirst();
+				.filter(ghost -> ghost.getTile().equals(tile))
+				.filter(ghost -> ghost.getState() != Ghost.State.DEAD)
+				.filter(ghost -> ghost.getState() != Ghost.State.DYING)
+				.filter(ghost -> ghost.getState() != Ghost.State.SAFE)
+				.findFirst();
 			/*@formatter:on*/
 			if (collidingGhost.isPresent()) {
 				events.publishEvent(new PacManGhostCollisionEvent(collidingGhost.get()));
 				return;
 			}
-
 			// Unhonored bonus?
-			Optional<Bonus> activeBonus = world.getBonus()
-			/*@formatter:off*/
-					.filter(bonus -> !bonus.isHonored())
-					.filter(bonus -> bonus.getTile().equals(getTile()));
-			/*@formatter:on*/
+			Optional<Bonus> activeBonus = world.getBonus().filter(bonus -> bonus.getTile().equals(tile))
+					.filter(bonus -> !bonus.isHonored());
 			if (activeBonus.isPresent()) {
-				Bonus bonus = activeBonus.get();
-				events.publishEvent(new BonusFoundEvent(bonus.getSymbol(), bonus.getValue()));
+				events.publishEvent(new BonusFoundEvent(activeBonus.get().getSymbol(), activeBonus.get().getValue()));
 				return;
 			}
-
 			// Food?
-			Tile tile = getTile();
-			char content = maze.getContent(tile);
-			if (content == Content.PELLET || content == Content.ENERGIZER) {
-				pauseTicks = (content == Content.PELLET ? 1 : 3);
-				events.publishEvent(new FoodFoundEvent(tile, content));
+			char food = maze.getContent(tile);
+			if (food == Content.PELLET || food == Content.ENERGIZER) {
+				digestionTicks = game.getDigestionTicks(food);
+				events.publishEvent(new FoodFoundEvent(tile, food));
 			}
 		}
-
 	}
 
 	private class SteroidsState extends VulnerableState {
 
 		@Override
 		public void onTick() {
-			if (pauseTicks > 0) {
-				--pauseTicks;
-				return;
-			}
-			inspectMaze();
+			super.onTick();
 			if (getRemaining() == getDuration() / 2) {
 				events.publishEvent(new PacManGettingWeakerEvent());
 			}
