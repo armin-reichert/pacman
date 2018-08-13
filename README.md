@@ -262,17 +262,33 @@ ghost.setNavigation(Ghost.State.DEAD, goHome());
 ghost.setNavigation(Ghost.State.SAFE, bounce());
 ```
 
-The individual behaviours are implemented as simple classes implementing a common interface. Behaviours which need to compute routes in the maze can just call the method **Maze.findPath(Tile source, Tile target)** which runs the A* path finder on the underlying grid graph (which is completely useless for such a maze, but it sounds better than BFS :-).
+The individual behaviours are implemented as reusable classes implementing a common interface. Behaviours which need to compute routes in the maze can just call the method **Maze.findPath(Tile source, Tile target)** which runs the A* path finder on the underlying grid graph (which is completely useless for such a maze, but it sounds better than BFS :-).
+
+This is the "chase(victim)" behavior implementation:
 
 ```java
-public List<Tile> findPath(Tile source, Tile target) {
-	if (isValidTile(source) && isValidTile(target)) {
-		GraphTraversal pathfinder = new AStarTraversal<>(graph, edge -> 1, graph::manhattan);
-//		GraphTraversal pathfinder = new BreadthFirstTraversal<>(graph);
-		pathfinder.traverseGraph(cell(source), cell(target));
-		return pathfinder.path(cell(target)).stream().map(this::tile).collect(Collectors.toList());
+/**
+ * Chasing a refugee through the maze.
+ */
+class Chase implements Navigation {
+
+	private final MazeMover<?> victim;
+
+	public Chase(MazeMover<?> victim) {
+		this.victim = victim;
 	}
-	return Collections.emptyList();
+
+	@Override
+	public MazeRoute computeRoute(MazeMover<?> chaser) {
+		RouteData route = new RouteData();
+		if (victim.isOutsideMaze()) {
+			route.dir = chaser.getNextDir();
+			return route;
+		}
+		route.path = chaser.maze.findPath(chaser.getTile(), victim.getTile());
+		route.dir = chaser.maze.alongPath(route.path).orElse(chaser.getNextDir());
+		return route;
+	}
 }
 ```
 
