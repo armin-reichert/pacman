@@ -7,7 +7,8 @@ import static de.amr.games.pacman.actor.Ghost.State.DYING;
 import static de.amr.games.pacman.actor.Ghost.State.HOME;
 import static de.amr.games.pacman.actor.Ghost.State.SAFE;
 import static de.amr.games.pacman.actor.Ghost.State.SCATTERING;
-import static de.amr.games.pacman.model.Maze.FOUR_DIRECTIONS;
+import static de.amr.games.pacman.model.Maze.FOUR_DIRS;
+import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
 import java.util.EnumMap;
 import java.util.stream.Stream;
@@ -20,7 +21,6 @@ import de.amr.games.pacman.controller.event.game.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.game.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.view.PacManGameUI;
 import de.amr.statemachine.StateMachine;
 
 public class Ghost extends MazeMover<Ghost.State> {
@@ -51,12 +51,12 @@ public class Ghost extends MazeMover<Ghost.State> {
 		setNextDir(initialDir);
 		getSprites().forEach(Sprite::resetAnimation);
 		setSpeed(game::getGhostSpeed);
-		s_current = s_color[getDir()];
+		sprite = s_color[getDir()];
 	}
 
 	// Sprites
 
-	private Sprite s_current;
+	private Sprite sprite;
 	private Sprite s_color[] = new Sprite[4];
 	private Sprite s_eyes[] = new Sprite[4];
 	private Sprite s_awed;
@@ -64,16 +64,15 @@ public class Ghost extends MazeMover<Ghost.State> {
 	private Sprite s_numbers[] = new Sprite[4];
 
 	private void createSprites(int color) {
-		int size = 2 * Game.TS;
-		FOUR_DIRECTIONS.dirs().forEach(dir -> {
-			s_color[dir] = PacManGameUI.SPRITES.ghostColored(color, dir).scale(size);
-			s_eyes[dir] = PacManGameUI.SPRITES.ghostEyes(dir).scale(size);
+		FOUR_DIRS.dirs().forEach(dir -> {
+			s_color[dir] = SPRITES.ghostColored(color, dir);
+			s_eyes[dir] = SPRITES.ghostEyes(dir);
 		});
 		for (int i = 0; i < 4; ++i) {
-			s_numbers[i] = PacManGameUI.SPRITES.greenNumber(i).scale(size);
+			s_numbers[i] = SPRITES.greenNumber(i);
 		}
-		s_awed = PacManGameUI.SPRITES.ghostAwed().scale(size);
-		s_blinking = PacManGameUI.SPRITES.ghostBlinking().scale(size);
+		s_awed = SPRITES.ghostAwed();
+		s_blinking = SPRITES.ghostBlinking();
 	}
 
 	@Override
@@ -84,7 +83,7 @@ public class Ghost extends MazeMover<Ghost.State> {
 
 	@Override
 	public Sprite currentSprite() {
-		return s_current;
+		return sprite;
 	}
 
 	// State machine
@@ -112,21 +111,21 @@ public class Ghost extends MazeMover<Ghost.State> {
 						.onEntry(this::initGhost)
 					
 					.state(AFRAID)
-						.onEntry(() -> s_current = s_awed)
+						.onEntry(() -> sprite = s_awed)
 						.onTick(() -> move())
 					
 					.state(AGGRO)
-						.onTick(() -> {	move();	s_current = s_color[getDir()]; })
+						.onTick(() -> {	move();	sprite = s_color[getDir()]; })
 					
 					.state(DEAD)
-						.onTick(() -> {	move();	s_current = s_eyes[getDir()]; })
+						.onTick(() -> {	move();	sprite = s_eyes[getDir()]; })
 					
 					.state(DYING)
-						.onEntry(() -> s_current = s_numbers[game.ghostsKilledInSeries.get()] )
+						.onEntry(() -> sprite = s_numbers[game.ghostsKilledInSeries.get()] )
 						.timeoutAfter(game::getGhostDyingTime)
 					
 					.state(SAFE)
-						.onTick(() -> {	move();	s_current = s_color[getDir()]; })
+						.onTick(() -> {	move();	sprite = s_color[getDir()]; })
 						.timeoutAfter(() -> game.sec(2))
 					
 					.state(SCATTERING) //TODO
@@ -151,7 +150,7 @@ public class Ghost extends MazeMover<Ghost.State> {
 					.when(AGGRO).on(GhostKilledEvent.class).then(DEAD) // used for cheating
 					.when(AGGRO).on(PacManGainsPowerEvent.class).then(AFRAID)
 						
-					.stay(AFRAID).on(PacManGettingWeakerEvent.class).act(e -> s_current = s_blinking)
+					.stay(AFRAID).on(PacManGettingWeakerEvent.class).act(e -> sprite = s_blinking)
 					.stay(AFRAID).on(PacManGainsPowerEvent.class)
 					.when(AFRAID).on(PacManLostPowerEvent.class).then(AGGRO)
 					.when(AFRAID).on(GhostKilledEvent.class).then(DYING)

@@ -16,7 +16,7 @@ class Moody implements Navigation {
 	public MazeRoute computeRoute(MazeMover<?> mover) {
 		RouteData result = new RouteData();
 		result.dir = randomElement(
-				Maze.FOUR_DIRECTIONS.dirs().filter(dir -> dir != Maze.FOUR_DIRECTIONS.inv(mover.getDir())))
+				Maze.FOUR_DIRS.dirs().filter(dir -> dir != Maze.FOUR_DIRS.inv(mover.getDir())))
 						.getAsInt();
 		return result;
 	}

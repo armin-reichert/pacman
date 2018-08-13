@@ -12,7 +12,7 @@ import de.amr.games.pacman.model.Game;
 public class PacManApp extends Application {
 
 	public static void main(String[] args) {
-		float scale = 1f;
+		float scale = 2f;
 		if (args.length > 0) {
 			try {
 				scale = Float.parseFloat(args[0]);

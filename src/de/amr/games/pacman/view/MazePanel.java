@@ -2,6 +2,7 @@ package de.amr.games.pacman.view;
 
 import static de.amr.games.pacman.model.Content.EATEN;
 import static de.amr.games.pacman.model.Content.ENERGIZER;
+import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -29,8 +30,8 @@ public class MazePanel extends GameEntity {
 	public MazePanel(Maze maze, Cast actors) {
 		this.maze = maze;
 		this.actors = actors;
-		s_maze_normal = PacManGameUI.SPRITES.mazeFull().scale(getWidth(), getHeight());
-		s_maze_flashing = PacManGameUI.SPRITES.mazeFlashing().scale(getWidth(), getHeight());
+		s_maze_normal = SPRITES.mazeFull();
+		s_maze_flashing = SPRITES.mazeFlashing();
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(500);
 	}
@@ -73,17 +74,13 @@ public class MazePanel extends GameEntity {
 	public void setBonusTimer(int ticks) {
 		bonusTimer = ticks;
 	}
-	
-	public Cast getActors() {
-		return actors;
-	}
 
 	@Override
 	public void enableAnimation(boolean enable) {
 		super.enableAnimation(enable);
-		energizerBlinking.setEnabled(enable);
 		actors.getPacMan().enableAnimation(enable);
 		actors.getActiveGhosts().forEach(ghost -> ghost.enableAnimation(enable));
+		energizerBlinking.setEnabled(enable);
 	}
 
 	@Override
@@ -98,13 +95,11 @@ public class MazePanel extends GameEntity {
 		}
 		g.translate(-tf.getX(), -tf.getY());
 	}
-
+	
 	private void drawActors(Graphics2D g) {
 		actors.getBonus().ifPresent(bonus -> {
-			bonus.placeAt(maze.bonusTile);
-			g.translate(0, -Game.TS / 2);
+			bonus.placeAt(maze.bonusTile, -Game.TS / 2, -Game.TS/4);
 			bonus.draw(g);
-			g.translate(0, Game.TS / 2);
 		});
 		actors.getPacMan().draw(g);
 		actors.getActiveGhosts().filter(ghost -> ghost.getState() != Ghost.State.DYING)

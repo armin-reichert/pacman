@@ -25,8 +25,8 @@ import de.amr.games.pacman.actor.PacMan;
  */
 public class Game {
 
-	/** Tile size used throughout the game. */
-	public static final int TS = 16;
+	/** Tile size. */
+	public static final int TS = 8  ;
 
 	public static final int FOOD_EATEN_FOR_BONUS_1 = 70;
 	public static final int FOOD_EATEN_FOR_BONUS_2 = 170;

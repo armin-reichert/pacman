@@ -4,7 +4,8 @@ import static de.amr.games.pacman.actor.PacMan.State.DYING;
 import static de.amr.games.pacman.actor.PacMan.State.SAFE;
 import static de.amr.games.pacman.actor.PacMan.State.STEROIDS;
 import static de.amr.games.pacman.actor.PacMan.State.VULNERABLE;
-import static de.amr.games.pacman.model.Maze.FOUR_DIRECTIONS;
+import static de.amr.games.pacman.model.Maze.FOUR_DIRS;
+import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
 import java.util.EnumMap;
 import java.util.Optional;
@@ -25,7 +26,6 @@ import de.amr.games.pacman.controller.event.game.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Content;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.view.PacManGameUI;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
 
@@ -41,7 +41,7 @@ public class PacMan extends MazeMover<PacMan.State> {
 		super(game.maze, game.maze.pacManHome, new EnumMap<>(State.class));
 		this.game = game;
 		brain = buildStateMachine();
-		createSprites(2 * Game.TS);
+		createSprites();
 	}
 
 	public void setEventManager(EventManager<GameEvent> events) {
@@ -57,13 +57,12 @@ public class PacMan extends MazeMover<PacMan.State> {
 	private Sprite s_walking_to[] = new Sprite[4];
 	private Sprite s_dying;
 	private Sprite s_full;
-	private Sprite s_current;
+	private Sprite sprite;
 
-	private void createSprites(int size) {
-		FOUR_DIRECTIONS.dirs()
-				.forEach(dir -> s_walking_to[dir] = PacManGameUI.SPRITES.pacManWalking(dir).scale(size));
-		s_dying = PacManGameUI.SPRITES.pacManDying().scale(size);
-		s_full = PacManGameUI.SPRITES.pacManFull().scale(size);
+	private void createSprites() {
+		FOUR_DIRS.dirs().forEach(dir -> s_walking_to[dir] = SPRITES.pacManWalking(dir));
+		s_dying = SPRITES.pacManDying();
+		s_full = SPRITES.pacManFull();
 	}
 
 	@Override
@@ -73,13 +72,13 @@ public class PacMan extends MazeMover<PacMan.State> {
 
 	@Override
 	public Sprite currentSprite() {
-		return s_current;
+		return sprite;
 	}
 
 	@Override
 	public void move() {
 		super.move();
-		s_current = s_walking_to[getDir()];
+		sprite = s_walking_to[getDir()];
 	}
 
 	// Pac-Man behavior
@@ -98,7 +97,7 @@ public class PacMan extends MazeMover<PacMan.State> {
 		setNextDir(Top4.E);
 		setSpeed(game::getPacManSpeed);
 		getSprites().forEach(Sprite::resetAnimation);
-		s_current = s_full;
+		sprite = s_full;
 		pauseTicks = 0;
 	}
 
@@ -122,7 +121,7 @@ public class PacMan extends MazeMover<PacMan.State> {
 					.timeoutAfter(game::getPacManSteroidTime)
 
 				.state(DYING)
-					.onEntry(() -> s_current = s_dying)
+					.onEntry(() -> sprite = s_dying)
 					.timeoutAfter(() -> game.sec(2))
 
 			.transitions()

@@ -55,9 +55,7 @@ public class Bonus extends TileWorldEntity {
 
 	@Override
 	public void draw(Graphics2D g) {
-		g.translate(Game.TS / 2, Game.TS / 2);
 		super.draw(g);
-		g.translate(-Game.TS / 2, -Game.TS / 2);
 	}
 
 	@Override
