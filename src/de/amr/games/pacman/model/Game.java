@@ -26,11 +26,8 @@ import de.amr.games.pacman.actor.PacMan;
 public class Game {
 
 	/** Tile size. */
-	public static final int TS = 8  ;
+	public static final int TS = 8;
 
-	public static final int FOOD_EATEN_FOR_BONUS_1 = 70;
-	public static final int FOOD_EATEN_FOR_BONUS_2 = 170;
-	public static final int SCORE_FOR_EXTRA_LIFE = 10_000;
 	public static final int[] KILLED_GHOST_POINTS = { 200, 400, 800, 1600 };
 
 	public final Maze maze;
@@ -58,7 +55,7 @@ public class Game {
 		level = 0;
 		nextLevel();
 	}
-	
+
 	public void nextLevel() {
 		maze.resetFood();
 		foodEaten.set(0);
@@ -82,8 +79,8 @@ public class Game {
 		return KILLED_GHOST_POINTS[ghostsKilledInSeries.get()];
 	}
 
-	public long getFoodTotal() {
-		return foodTotal;
+	public boolean allFoodEaten() {
+		return foodEaten.get() == foodTotal;
 	}
 
 	/** Ticks representing the given seconds. */
@@ -161,6 +158,28 @@ public class Game {
 	@SuppressWarnings("unchecked")
 	private <T> T oValue(Field field) {
 		return (T) LEVELS[level][field.ordinal()];
+	}
+
+	public void eatFoodAt(Tile tile) {
+		char food = maze.getContent(tile);
+		int value = getFoodValue(food);
+		if (checkExtraLife(score.get(), score.get() + value)) {
+			lives.add(1);
+		}
+		score.add(value);
+		maze.setContent(tile, Content.EATEN);
+		foodEaten.add(1);
+		if (food == Content.ENERGIZER) {
+			ghostsKilledInSeries.set(0);
+		}
+	}
+
+	private boolean checkExtraLife(int oldScore, int newScore) {
+		return oldScore < 10_000 && 10_000 <= newScore;
+	}
+
+	public boolean isBonusReached() {
+		return foodEaten.get() == 70 || foodEaten.get() == 170;
 	}
 
 	public BonusSymbol getBonusSymbol() {

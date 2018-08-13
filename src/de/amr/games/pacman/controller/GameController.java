@@ -7,6 +7,7 @@ import static de.amr.games.pacman.controller.GameController.PlayState.GHOST_DYIN
 import static de.amr.games.pacman.controller.GameController.PlayState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.GameController.PlayState.PLAYING;
 import static de.amr.games.pacman.controller.GameController.PlayState.READY;
+import static de.amr.games.pacman.model.Content.ENERGIZER;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -31,7 +32,6 @@ import de.amr.games.pacman.controller.event.game.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.game.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.game.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.game.PacManLostPowerEvent;
-import de.amr.games.pacman.model.Content;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.HighScore;
 import de.amr.games.pacman.model.Maze;
@@ -56,7 +56,8 @@ public class GameController implements Controller {
 		maze = new Maze(Assets.text("maze.txt"));
 		game = new Game(maze, Application.PULSE::getFrequency);
 		actors = new Cast(game);
-		gameView = new ExtendedGamePanel(maze.numCols() * Game.TS, (maze.numRows() + 5) * Game.TS, game, actors);
+		gameView = new ExtendedGamePanel(maze.numCols() * Game.TS, (maze.numRows() + 5) * Game.TS, game,
+				actors);
 		gameControl = createGameControl();
 		actors.addObserver(gameControl::process);
 	}
@@ -70,7 +71,8 @@ public class GameController implements Controller {
 	public void init() {
 		LOGGER.setLevel(Level.INFO);
 		actors.getPacMan().getStateMachine().traceTo(LOGGER, game.fnTicksPerSecond);
-		actors.getGhosts().map(Ghost::getStateMachine).forEach(sm -> sm.traceTo(LOGGER, game.fnTicksPerSecond));
+		actors.getGhosts().map(Ghost::getStateMachine)
+				.forEach(sm -> sm.traceTo(LOGGER, game.fnTicksPerSecond));
 		actors.setActive(actors.getPinky(), false);
 		actors.setActive(actors.getInky(), false);
 		actors.setActive(actors.getClyde(), false);
@@ -232,7 +234,8 @@ public class GameController implements Controller {
 		private void onPacManKilled(GameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
 			actors.getPacMan().processEvent(e);
-			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
+			LOGGER.info(
+					() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
 		}
 
 		private void onPacManGainsPower(GameEvent event) {
@@ -254,12 +257,14 @@ public class GameController implements Controller {
 		private void onGhostKilled(GameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
 			e.ghost.processEvent(e);
-			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
+			LOGGER
+					.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
 		}
 
 		private void onBonusFound(GameEvent event) {
 			actors.getBonus().ifPresent(bonus -> {
-				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(), bonus.getValue()));
+				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(),
+						bonus.getValue()));
 				bonus.setHonored();
 				game.score.add(bonus.getValue());
 				gameView.setBonusTimer(game.sec(1));
@@ -268,24 +273,17 @@ public class GameController implements Controller {
 
 		private void onFoodFound(GameEvent event) {
 			FoodFoundEvent e = (FoodFoundEvent) event;
-			game.maze.setContent(e.tile, Content.EATEN);
-			game.foodEaten.add(1);
-			int oldGameScore = game.score.get();
-			game.score.add(game.getFoodValue(e.food));
-			if (oldGameScore < Game.SCORE_FOR_EXTRA_LIFE && game.score.get() >= Game.SCORE_FOR_EXTRA_LIFE) {
-				game.lives.add(1);
-			}
-			if (game.foodEaten.get() == game.getFoodTotal()) {
+			game.eatFoodAt(e.tile);
+			if (game.allFoodEaten()) {
 				gameControl.enqueue(new LevelCompletedEvent());
-				return;
-			}
-			if (game.foodEaten.get() == Game.FOOD_EATEN_FOR_BONUS_1 || game.foodEaten.get() == Game.FOOD_EATEN_FOR_BONUS_2) {
-				actors.addBonus(game.getBonusSymbol(), game.getBonusValue());
-				gameView.setBonusTimer(game.getBonusTime());
-			}
-			if (e.food == Content.ENERGIZER) {
-				game.ghostsKilledInSeries.set(0);
-				gameControl.enqueue(new PacManGainsPowerEvent());
+			} else {
+				if (e.food == ENERGIZER) {
+					gameControl.enqueue(new PacManGainsPowerEvent());
+				}
+				if (game.isBonusReached()) {
+					actors.addBonus(game.getBonusSymbol(), game.getBonusValue());
+					gameView.setBonusTimer(game.getBonusTime());
+				}
 			}
 		}
 	}
@@ -326,7 +324,8 @@ public class GameController implements Controller {
 
 		@Override
 		public void onTick() {
-			actors.getActiveGhosts().filter(ghost -> ghost.getState() == Ghost.State.DYING).forEach(Ghost::update);
+			actors.getActiveGhosts().filter(ghost -> ghost.getState() == Ghost.State.DYING)
+					.forEach(Ghost::update);
 		}
 
 		@Override
