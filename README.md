@@ -28,7 +28,7 @@ The more low-level implementations of state machines (switches, function pointer
 
 For that reason I decided to start from the ground up (the theoretical base which are Mealy-machines) and build my own state machine implementation. Of course, I could have used something existing like [Stateless4j](https://github.com/oxo42/stateless4j).
 
-If you have decided how your state machines will get implemented, you can concentrate on the real stuff: Which entities in the Pac-man game are candidates for getting controlled by state machines. And you will be surprised how many parts of your program accidentally will be candidates: of course Pac-Man and the four ghosts, but also the global game control, maybe also the screen selection logic or also simpler entities in your game. It is interesting to look at your program parts through the state machine glasses and decide where an explicit state machine becomes useful in contrast to implicit ones (variables, methods, control-flow statements).
+If you have decided how your state machines will get implemented, you can concentrate on the real stuff: Which entities in the Pac-man game are candidates for getting controlled by state machines. And you will be surprised how many parts of your program suddenly will be state machine candidates: of course Pac-Man and the four ghosts, but also the global game control, maybe also the screen selection logic or also simpler entities in your game. It is interesting to look at your program parts through the state machine glasses and decide where an explicit state machine becomes useful in contrast to implicit ones (variables, methods, control-flow statements).
 
 In the implementation of Pac-Man shown here, I decided to implement the global game control as well as the Pac-Man and ghost control by state machines. These controls are sufficiently complex to be modelled/implemented explicitly. The state machine implementation allows (similarly to the mentioned Stateless4j) to define your state machines inside your code in a declarative way. This is achieved by using the "builder pattern". Further, the overhead of embedding client code into the state machine definitions is reduced by the possibility to use lambda expressions (anonymous functions) or function/method references. This allows for a smooth integration of state machines in your program. You have the flexibility to write your code inline inside the state machine hooks (onEntry, onExit, on(event), onTimeout), or to delegate this to separate classes/methods. You can also just use the predefined state objects or if needed define the state objects in separate classes, maybe with additional methods and state. This is for example used in the implementation of the overall game control:
 
@@ -168,7 +168,7 @@ StateMachine.define(State.class, GameEvent.class)
 .endStateMachine();
 ```
 
-The processing of all used state machines (game control, Pac-Man, ghosts) can be traced separately. If a state machine processes an event and does not find a suitable state transition, a runtime exception is thrown. This helps in filling gaps in the state machine definitions.
+The processing of all used state machines can be traced to some logger. If a state machine processes an event and does not find a suitable state transition, a runtime exception is thrown. This is very useful for finding gaps in the state machine definitions because you will get a direct hint what is missing in your control logic. Without explicit state machines your program would probably just misbehave but give no information on the why and where.
 
 Example trace:
 
@@ -271,3 +271,11 @@ public List<Tile> findPath(Tile source, Tile target) {
 	return Collections.emptyList();
 }
 ```
+
+I hope this project fulfils the following goals:
+- Provide a readable implementation of the Pac-Man game with code that is fun to read
+- Motivate the use of explicit state machines in your code
+- Provide a base for exchanging my custom state machines by other libraries
+- Provide a reference implementation for your own Pac-Man game
+
+Armin Reichert
