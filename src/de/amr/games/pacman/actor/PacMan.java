@@ -57,7 +57,7 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 	public void setWorld(PacManWorld world) {
 		this.world = world;
 	}
-	
+
 	@Override
 	public void move() {
 		super.move();
@@ -67,7 +67,7 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 	// Sprites
 
 	private Sprite sprite;
-	
+
 	private Sprite s_walking_to[] = new Sprite[4];
 	private Sprite s_dying;
 	private Sprite s_full;
@@ -98,12 +98,11 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 	public StateMachine<State, GameEvent> getStateMachine() {
 		return controller;
 	}
-	
+
 	@Override
 	public float getSpeed() {
 		return game.getPacManSpeed(this);
 	}
-
 
 	private void initPacMan() {
 		placeAt(homeTile);

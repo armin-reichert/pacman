@@ -37,7 +37,7 @@ import de.amr.easy.grid.impl.Top4;
 public class Maze {
 
 	public static final Topology NESW = new Top4();
-	
+
 	public Tile pacManHome;
 	public Tile blinkyHome;
 	public Tile pinkyHome;
@@ -54,8 +54,7 @@ public class Maze {
 		originalData = map.split("\n");
 		int numCols = originalData[0].length(), numRows = originalData.length;
 
-		graph = new GridGraph<>(numCols, numRows, NESW, v -> null, (u, v) -> 1,
-				UndirectedEdge::new);
+		graph = new GridGraph<>(numCols, numRows, NESW, v -> null, (u, v) -> 1, UndirectedEdge::new);
 		graph.setDefaultVertexLabel(v -> originalData(graph.row(v), graph.col(v)));
 
 		foodTotal = 0;
@@ -87,8 +86,7 @@ public class Maze {
 		graph.fill();
 		graph.edges().filter(edge -> {
 			int u = edge.either(), v = edge.other();
-			return originalData(graph.row(u), graph.col(u)) == WALL
-					|| originalData(graph.row(v), graph.col(v)) == WALL;
+			return originalData(graph.row(u), graph.col(u)) == WALL || originalData(graph.row(v), graph.col(v)) == WALL;
 		}).forEach(graph::removeEdge);
 	}
 
@@ -111,7 +109,7 @@ public class Maze {
 	public int getTeleportLength() {
 		return 6;
 	}
-	
+
 	public Stream<Tile> tiles() {
 		return graph.vertices().mapToObj(this::tile);
 	}

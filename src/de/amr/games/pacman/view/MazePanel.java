@@ -95,17 +95,15 @@ public class MazePanel extends GameEntity {
 		}
 		g.translate(-tf.getX(), -tf.getY());
 	}
-	
+
 	private void drawActors(Graphics2D g) {
 		actors.getBonus().ifPresent(bonus -> {
 			bonus.placeAt(maze.bonusTile);
 			bonus.draw(g);
 		});
 		actors.getPacMan().draw(g);
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() != Ghost.State.DYING)
-				.forEach(ghost -> ghost.draw(g));
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() == Ghost.State.DYING)
-				.forEach(ghost -> ghost.draw(g));
+		actors.getActiveGhosts().filter(ghost -> ghost.getState() != Ghost.State.DYING).forEach(ghost -> ghost.draw(g));
+		actors.getActiveGhosts().filter(ghost -> ghost.getState() == Ghost.State.DYING).forEach(ghost -> ghost.draw(g));
 	}
 
 	private void drawFood(Graphics2D g) {

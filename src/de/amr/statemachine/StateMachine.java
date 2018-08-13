@@ -27,8 +27,7 @@ import java.util.stream.Stream;
  */
 public class StateMachine<S, E> {
 
-	public static <SS, EE> StateMachineBuilder<SS, EE> define(Class<SS> stateLabelType,
-			Class<EE> eventType) {
+	public static <SS, EE> StateMachineBuilder<SS, EE> define(Class<SS> stateLabelType, Class<EE> eventType) {
 		return new StateMachineBuilder<>(stateLabelType);
 	}
 
@@ -124,8 +123,8 @@ public class StateMachine<S, E> {
 	 * @param timeout
 	 *                    if transition is fired on a timeout
 	 */
-	public void addTransition(S from, S to, BooleanSupplier guard, Consumer<E> action,
-			Class<? extends E> eventType, boolean timeout) {
+	public void addTransition(S from, S to, BooleanSupplier guard, Consumer<E> action, Class<? extends E> eventType,
+			boolean timeout) {
 		Objects.nonNull(from);
 		Objects.nonNull(to);
 		if (guard == null) {
@@ -136,8 +135,7 @@ public class StateMachine<S, E> {
 			};
 		}
 		if (timeout && eventType != null) {
-			throw new IllegalStateException(
-					"Cannot specify timeout and event condition on same transition");
+			throw new IllegalStateException("Cannot specify timeout and event condition on same transition");
 		}
 		transitionsFrom(from).add(new Transition<>(this, from, to, guard, action, eventType, timeout));
 	}
@@ -227,8 +225,7 @@ public class StateMachine<S, E> {
 	}
 
 	/**
-	 * Tells if the time expired for the current stat is the given percentage of the state's total
-	 * time.
+	 * Tells if the time expired for the current stat is the given percentage of the state's total time.
 	 * 
 	 * @param pct
 	 *              percentage value to check for
@@ -241,8 +238,7 @@ public class StateMachine<S, E> {
 		if (stateObject.timerTotalTicks == StateObject.ENDLESS) {
 			return false;
 		}
-		float expiredFraction = 1f
-				- (float) stateObject.ticksRemaining / (float) stateObject.timerTotalTicks;
+		float expiredFraction = 1f - (float) stateObject.ticksRemaining / (float) stateObject.timerTotalTicks;
 		return 100 * expiredFraction == pct;
 	}
 
@@ -268,8 +264,7 @@ public class StateMachine<S, E> {
 		E event = eventQ.peek();
 		if (event == null) {
 			// find transition without event
-			Optional<Transition<S, E>> match = transitionsFrom(currentState).stream()
-					.filter(this::canFire).findFirst();
+			Optional<Transition<S, E>> match = transitionsFrom(currentState).stream().filter(this::canFire).findFirst();
 			if (match.isPresent()) {
 				fireTransition(match.get(), event);
 			} else {
@@ -279,15 +274,13 @@ public class StateMachine<S, E> {
 			}
 		} else {
 			// find transition for current event
-			Optional<Transition<S, E>> match = transitionsFrom(currentState).stream()
-					.filter(this::canFire).findFirst();
+			Optional<Transition<S, E>> match = transitionsFrom(currentState).stream().filter(this::canFire).findFirst();
 			if (match.isPresent()) {
 				fireTransition(match.get(), event);
 			} else {
 				tracer.unhandledEvent(event);
 				throw new IllegalStateException(
-						String.format("%s: No transition defined in state '%s' for event '%s'", description,
-								currentState, event));
+						String.format("%s: No transition defined in state '%s' for event '%s'", description, currentState, event));
 			}
 			eventQ.poll();
 		}
