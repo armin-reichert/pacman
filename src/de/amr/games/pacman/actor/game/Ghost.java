@@ -82,7 +82,7 @@ public class Ghost extends ControlledMazeMover<GhostState, GameEvent> {
 			s_numbers[i] = SPRITES.greenNumber(i);
 		}
 		s_awed = SPRITES.ghostAwed();
-		s_blinking = SPRITES.ghostBlinking();
+		s_blinking = SPRITES.ghostFlashing();
 	}
 
 	@Override

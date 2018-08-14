@@ -202,8 +202,7 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 			Optional<Bonus> activeBonus = world.getBonus().filter(bonus -> bonus.getTile().equals(tile))
 					.filter(bonus -> !bonus.isHonored());
 			if (activeBonus.isPresent()) {
-				events.publishEvent(
-						new BonusFoundEvent(activeBonus.get().getSymbol(), activeBonus.get().getValue()));
+				events.publishEvent(new BonusFoundEvent(activeBonus.get().getSymbol(), activeBonus.get().getValue()));
 				return;
 			}
 			// Food?
@@ -220,7 +219,7 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 		@Override
 		public void onTick() {
 			super.onTick();
-			if (getRemaining() == getDuration() / 2) {
+			if (getRemaining() == game.getPacManGettingWeakerRemainingTime()) {
 				events.publishEvent(new PacManGettingWeakerEvent());
 			}
 		}

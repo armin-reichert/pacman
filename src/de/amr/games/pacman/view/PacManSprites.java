@@ -31,7 +31,7 @@ public class PacManSprites {
 	private final BufferedImage pacManDying[];
 	private final BufferedImage ghostNormal[][];
 	private final BufferedImage ghostAwed[];
-	private final BufferedImage ghostBlinking[];
+	private final BufferedImage ghostFlashing[];
 	private final BufferedImage ghostEyes[];
 	private final BufferedImage greenNumbers[];
 	private final BufferedImage pinkNumbers[];
@@ -87,9 +87,9 @@ public class PacManSprites {
 			ghostAwed[i] = $(584 + i * 16, 64);
 		}
 
-		ghostBlinking = new BufferedImage[4];
+		ghostFlashing = new BufferedImage[4];
 		for (int i = 0; i < 4; ++i) {
-			ghostBlinking[i] = $(584 + i * 16, 64);
+			ghostFlashing[i] = $(584 + i * 16, 64);
 		}
 
 		ghostEyes = new BufferedImage[4];
@@ -176,8 +176,8 @@ public class PacManSprites {
 		return new Sprite(ghostAwed).animate(CYCLIC, 200);
 	}
 
-	public Sprite ghostBlinking() {
-		return new Sprite(ghostBlinking).animate(CYCLIC, 100);
+	public Sprite ghostFlashing() {
+		return new Sprite(ghostFlashing).animate(CYCLIC, 250);
 	}
 
 	public Sprite ghostEyes(int dir) {
