@@ -4,6 +4,8 @@ import static de.amr.easy.game.sprite.AnimationType.BACK_AND_FORTH;
 import static de.amr.easy.game.sprite.AnimationType.CYCLIC;
 import static de.amr.easy.game.sprite.AnimationType.LINEAR;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -51,7 +53,8 @@ public class PacManSprites {
 		// Mazes
 		mazeFull = $(0, 0, 224, 248);
 		mazeEmpty = $(228, 0, 224, 248);
-		mazeWhite = Assets.image("maze_white.png");
+		int blue = -14605825; // debugger told me this
+		mazeWhite = changeColor(mazeEmpty, blue, Color.WHITE.getRGB());
 
 		// Symbols for bonuses
 		int offset = 0;
@@ -65,8 +68,9 @@ public class PacManSprites {
 
 		int[] dirs = { Top4.E, Top4.W, Top4.N, Top4.S };
 		pacManWalking = new BufferedImage[4][];
-		for (int dir = 0; dir < 4; ++dir) {
-			pacManWalking[dirs[dir]] = new BufferedImage[] { $(456, dir * 16), $(472, dir * 16), pacManFull };
+		for (int d = 0; d < 4; ++d) {
+			pacManWalking[dirs[d]] = new BufferedImage[] { $(456, d * 16), $(456, d * 16), $(456, d * 16), $(472, d * 16),
+					$(488, 0) };
 		}
 
 		pacManDying = new BufferedImage[12];
@@ -119,6 +123,21 @@ public class PacManSprites {
 		Application.LOGGER.info("Pac-Man sprite images extracted");
 	}
 
+	private BufferedImage changeColor(BufferedImage src, int from, int to) {
+		BufferedImage copy = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+		Graphics2D g = copy.createGraphics();
+		g.drawImage(src, 0, 0, null);
+		for (int x = 0; x < copy.getWidth(); ++x) {
+			for (int y = 0; y < copy.getHeight(); ++y) {
+				if (copy.getRGB(x, y) == from) {
+					copy.setRGB(x, y, to);
+				}
+			}
+		}
+		g.dispose();
+		return copy;
+	}
+
 	public Sprite mazeEmpty() {
 		return new Sprite(mazeEmpty);
 	}
@@ -144,7 +163,7 @@ public class PacManSprites {
 	}
 
 	public Sprite pacManWalking(int dir) {
-		return new Sprite(pacManWalking[dir]).animate(BACK_AND_FORTH, 100);
+		return new Sprite(pacManWalking[dir]).animate(BACK_AND_FORTH, 30);
 	}
 
 	public Sprite pacManDying() {
