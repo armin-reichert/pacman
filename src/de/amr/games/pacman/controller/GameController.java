@@ -189,7 +189,6 @@ public class GameController implements Controller {
 
 		@Override
 		public void onEntry() {
-			game.score.load();
 			game.init();
 			actors.init();
 			gameView.enableAnimation(false);

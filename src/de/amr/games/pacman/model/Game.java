@@ -49,6 +49,7 @@ public class Game {
 	}
 
 	public void init() {
+		score.load();
 		lives.set(3);
 		levelCounter.clear();
 		level = 0;
