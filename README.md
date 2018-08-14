@@ -138,45 +138,53 @@ StateMachine.define(PlayState.class, GameEvent.class)
 
 The states of this state machine are implemented as separate (inner) classes. However, this is not necessary in simpler cases and is the decision of the implementor.
 
-Pac-Man's state machine looks like this:
+Pac-Man's state machine:
 
 ```java
-StateMachine.define(State.class, GameEvent.class)
-        
-    .description("[Pac-Man]")
-    .initialState(HOME)
+		StateMachine.define(PacManState.class, GameEvent.class)
+				
+			.description("[Pac-Man]")
+			.initialState(HOME)
 
-    .states()
+			.states()
 
-        .state(HOME)
-            .onEntry(this::initPacMan)
+				.state(HOME)
+					.onEntry(this::initPacMan)
+	
+				.state(HUNGRY)
+					.impl(new HungryState())
+					
+				.state(GREEDY)
+					.impl(new GreedyState())
+					.timeoutAfter(game::getPacManGreedyTime)
+	
+				.state(DYING)
+					.onEntry(() -> sprite = s_dying)
+					.timeoutAfter(() -> game.sec(2))
 
-        .state(HUNGRY)
-            .impl(new HungryState())
-            
-        .state(GREEDY)
-            .impl(new GreedyState())
-            .timeoutAfter(game::getPacManGreedyTime)
+			.transitions()
 
-        .state(DYING)
-            .onEntry(() -> sprite = s_dying)
-            .timeoutAfter(() -> game.sec(2))
+				.when(HOME).then(HUNGRY)
+				
+				.when(HUNGRY).then(DYING)
+					.on(PacManKilledEvent.class)
+	
+				.when(HUNGRY).then(GREEDY)
+					.on(PacManGainsPowerEvent.class)
+	
+				.stay(GREEDY)
+					.on(PacManGainsPowerEvent.class)
+					.act(() -> controller.resetTimer())
+	
+				.when(GREEDY).then(HUNGRY)
+					.onTimeout()
+					.act(() -> events.publishEvent(new PacManLostPowerEvent()))
+	
+				.stay(DYING)
+					.onTimeout()
+					.act(e -> events.publishEvent(new PacManDiedEvent()))
 
-    .transitions()
-
-        .when(HOME).then(HUNGRY)
-        
-        .when(HUNGRY).then(DYING).on(PacManKilledEvent.class)
-
-        .when(HUNGRY).then(GREEDY).on(PacManGainsPowerEvent.class)
-
-        .when(GREEDY).on(PacManGainsPowerEvent.class).act(() -> controller.resetTimer())
-
-        .when(GREEDY).then(HUNGRY).onTimeout().act(() -> events.publishEvent(new PacManLostPowerEvent()))
-
-        .when(DYING).onTimeout().act(e -> events.publishEvent(new PacManDiedEvent()))
-
-.endStateMachine();
+		.endStateMachine();
 ```
 
 The processing of all used state machines can be traced to some logger. If a state machine processes an event and does not find a suitable state transition, a runtime exception is thrown. This is very useful for finding gaps in the state machine definitions because you will get a direct hint what is missing in your control logic. Without explicit state machines your program would probably just misbehave but give no information on the why and where.
