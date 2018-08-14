@@ -1,6 +1,6 @@
 package de.amr.games.pacman.routing;
 
-import de.amr.games.pacman.actor.MazeMover;
+import de.amr.games.pacman.actor.core.MazeMover;
 
 public interface Navigation {
 

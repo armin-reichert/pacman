@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor;
+package de.amr.games.pacman.actor.game;
 
 import static de.amr.games.pacman.routing.impl.NavigationSystem.ambush;
 import static de.amr.games.pacman.routing.impl.NavigationSystem.bounce;

@@ -12,8 +12,8 @@ import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.sprite.Animation;
 import de.amr.easy.game.sprite.CyclicAnimation;
 import de.amr.easy.game.sprite.Sprite;
-import de.amr.games.pacman.actor.Cast;
-import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.actor.game.Cast;
+import de.amr.games.pacman.actor.game.GhostState;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 

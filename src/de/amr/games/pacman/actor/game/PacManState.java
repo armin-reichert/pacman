@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor;
+package de.amr.games.pacman.actor.game;
 
 public enum PacManState {
 	HOME, HUNGRY, GREEDY, DYING

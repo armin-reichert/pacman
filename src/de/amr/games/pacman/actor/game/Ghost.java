@@ -1,12 +1,12 @@
-package de.amr.games.pacman.actor;
+package de.amr.games.pacman.actor.game;
 
-import static de.amr.games.pacman.actor.GhostState.AFRAID;
-import static de.amr.games.pacman.actor.GhostState.AGGRO;
-import static de.amr.games.pacman.actor.GhostState.DEAD;
-import static de.amr.games.pacman.actor.GhostState.DYING;
-import static de.amr.games.pacman.actor.GhostState.HOME;
-import static de.amr.games.pacman.actor.GhostState.SAFE;
-import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.actor.game.GhostState.AFRAID;
+import static de.amr.games.pacman.actor.game.GhostState.AGGRO;
+import static de.amr.games.pacman.actor.game.GhostState.DEAD;
+import static de.amr.games.pacman.actor.game.GhostState.DYING;
+import static de.amr.games.pacman.actor.game.GhostState.HOME;
+import static de.amr.games.pacman.actor.game.GhostState.SAFE;
+import static de.amr.games.pacman.actor.game.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
@@ -14,6 +14,7 @@ import java.util.EnumMap;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.sprite.Sprite;
+import de.amr.games.pacman.actor.core.ControlledMazeMover;
 import de.amr.games.pacman.controller.event.game.GameEvent;
 import de.amr.games.pacman.controller.event.game.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.game.PacManGainsPowerEvent;

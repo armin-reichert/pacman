@@ -15,9 +15,9 @@ import java.util.logging.Level;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.actor.Cast;
-import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.actor.game.Cast;
+import de.amr.games.pacman.actor.game.Ghost;
+import de.amr.games.pacman.actor.game.PacMan;
 import de.amr.games.pacman.controller.event.game.GhostKilledEvent;
 import de.amr.games.pacman.model.Content;
 import de.amr.games.pacman.model.Game;

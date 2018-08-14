@@ -1,9 +1,9 @@
-package de.amr.games.pacman.actor;
+package de.amr.games.pacman.actor.game;
 
-import static de.amr.games.pacman.actor.PacManState.DYING;
-import static de.amr.games.pacman.actor.PacManState.GREEDY;
-import static de.amr.games.pacman.actor.PacManState.HOME;
-import static de.amr.games.pacman.actor.PacManState.HUNGRY;
+import static de.amr.games.pacman.actor.game.PacManState.DYING;
+import static de.amr.games.pacman.actor.game.PacManState.GREEDY;
+import static de.amr.games.pacman.actor.game.PacManState.HOME;
+import static de.amr.games.pacman.actor.game.PacManState.HUNGRY;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
+import de.amr.games.pacman.actor.core.ControlledMazeMover;
 import de.amr.games.pacman.controller.event.core.EventManager;
 import de.amr.games.pacman.controller.event.game.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.game.FoodFoundEvent;

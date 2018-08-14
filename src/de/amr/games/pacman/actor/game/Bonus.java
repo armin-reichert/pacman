@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor;
+package de.amr.games.pacman.actor.game;
 
 import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.sprite.Sprite;
+import de.amr.games.pacman.actor.core.TileWorldEntity;
 import de.amr.games.pacman.model.BonusSymbol;
 
 public class Bonus extends TileWorldEntity {
