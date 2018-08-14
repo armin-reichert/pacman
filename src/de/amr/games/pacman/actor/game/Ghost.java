@@ -127,7 +127,7 @@ public class Ghost extends ControlledMazeMover<GhostState, GameEvent> {
 						.onTick(() -> {	move();	sprite = s_eyes[getDir()]; })
 					
 					.state(DYING)
-						.onEntry(() -> sprite = s_numbers[game.ghostsKilledInSeries.get()] )
+						.onEntry(() -> sprite = s_numbers[game.ghostsKilledInSeries - 1] )
 						.timeoutAfter(game::getGhostDyingTime)
 					
 					.state(SAFE)

@@ -18,7 +18,8 @@ import de.amr.games.pacman.actor.game.GhostState;
 import de.amr.games.pacman.actor.game.PacManState;
 
 /**
- * The model of the Pac-Man game.
+ * The model of the Pac-Man game. Contains the current game state, the level data and implements the
+ * "business logic" for playing the game.
  * 
  * @author Armin Reichert
  */
@@ -27,30 +28,23 @@ public class Game {
 	/** Tile size. */
 	public static final int TS = 8;
 
-	private static final int[] KILLED_GHOST_POINTS = { 200, 400, 800, 1600 };
-
 	public final Maze maze;
-	public final IntSupplier fnTicksPerSecond;
+	public final IntSupplier fnTicksPerSec;
 	public final ScoreCounter score = new ScoreCounter(this);
-	public final Counter lives = new Counter();
-	public final Counter foodEaten = new Counter();
-	public final Counter ghostsKilledInSeries = new Counter();
-	public final List<BonusSymbol> levelCounter = new LinkedList<>();
-	private final long foodTotal;
+	public int lives;
+	public int foodEaten;
+	public int ghostsKilledInSeries;
 	private int level;
-	private final float baseSpeed;
-	private final Random rnd = new Random();
+	public final List<BonusSymbol> levelCounter = new LinkedList<>();
 
-	public Game(Maze maze, IntSupplier fnTicksPerSecond) {
+	public Game(Maze maze, IntSupplier fnTicksPerSec) {
 		this.maze = maze;
-		this.fnTicksPerSecond = fnTicksPerSecond;
-		baseSpeed = 8f * Game.TS / 60; // 8 tiles per second at 60 Hz
-		foodTotal = maze.getFoodTotal();
+		this.fnTicksPerSec = fnTicksPerSec;
 	}
 
 	public void init() {
 		score.load();
-		lives.set(3);
+		lives = 3;
 		levelCounter.clear();
 		level = 0;
 		nextLevel();
@@ -58,8 +52,8 @@ public class Game {
 
 	public void nextLevel() {
 		maze.resetFood();
-		foodEaten.set(0);
-		ghostsKilledInSeries.set(0);
+		foodEaten = 0;
+		ghostsKilledInSeries = 0;
 		level += 1;
 		levelCounter.add(0, getBonusSymbol());
 		if (levelCounter.size() == 8) {
@@ -67,18 +61,18 @@ public class Game {
 		}
 	}
 
-	/** Ticks representing the given seconds. */
+	/**
+	 * Return the number of ticks representing the given seconds at the current pulse frequency.
+	 * 
+	 * @return number of ticks corresponding to given seconds
+	 */
 	public int sec(float seconds) {
-		return Math.round(fnTicksPerSecond.getAsInt() * seconds);
-	}
-
-	/** Tiles per second. */
-	public float tps(float value) {
-		return (value * Game.TS) / fnTicksPerSecond.getAsInt();
+		return Math.round(fnTicksPerSec.getAsInt() * seconds);
 	}
 
 	private float speed(float relativeSpeed) {
-		return baseSpeed * relativeSpeed;
+		// base speed = 8 tiles/second at 60 Hz
+		return 8f * Game.TS / 60 * relativeSpeed;
 	}
 
 	// Level data
@@ -151,14 +145,14 @@ public class Game {
 	public void eatFoodAt(Tile tile) {
 		char food = maze.getContent(tile);
 		int value = getFoodValue(food);
-		if (checkExtraLife(score.get(), score.get() + value)) {
-			lives.add(1);
+		if (checkExtraLife(score.getScore(), score.getScore() + value)) {
+			lives += 1;
 		}
 		score.add(value);
 		maze.setContent(tile, Content.EATEN);
-		foodEaten.add(1);
+		foodEaten += 1;
 		if (food == Content.ENERGIZER) {
-			ghostsKilledInSeries.set(0);
+			ghostsKilledInSeries = 0;
 		}
 	}
 
@@ -167,7 +161,7 @@ public class Game {
 	}
 
 	public boolean allFoodEaten() {
-		return foodEaten.get() == foodTotal;
+		return foodEaten == maze.getFoodTotal();
 	}
 
 	public int getDigestionTicks(char food) {
@@ -179,7 +173,7 @@ public class Game {
 	}
 
 	public boolean isBonusReached() {
-		return foodEaten.get() == 70 || foodEaten.get() == 170;
+		return foodEaten == 70 || foodEaten == 170;
 	}
 
 	public BonusSymbol getBonusSymbol() {
@@ -191,7 +185,7 @@ public class Game {
 	}
 
 	public int getBonusTime() {
-		return sec(9f + rnd.nextFloat());
+		return sec(9f + new Random().nextFloat());
 	}
 
 	public float getGhostSpeed(GhostState ghostState, boolean inTunnel) {
@@ -219,7 +213,12 @@ public class Game {
 	}
 
 	public int getKilledGhostValue() {
-		return KILLED_GHOST_POINTS[ghostsKilledInSeries.get()];
+		int n = ghostsKilledInSeries, value = 200;
+		while (n > 1) {
+			value *= 2;
+			n -= 1;
+		}
+		return value;
 	}
 
 	public float getPacManSpeed(PacManState pacManState) {

@@ -9,11 +9,12 @@ import java.util.Properties;
 
 import de.amr.easy.game.Application;
 
-public class ScoreCounter extends Counter {
+public class ScoreCounter {
 
 	private static final File FILE = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
 
 	private final Game game;
+	private int score;
 	private int hiscore;
 	private int level;
 
@@ -24,7 +25,7 @@ public class ScoreCounter extends Counter {
 	}
 
 	public void load() {
-		set(0);
+		score = 0;
 		Properties prop = new Properties();
 		try {
 			prop.loadFromXML(new FileInputStream(FILE));
@@ -50,25 +51,22 @@ public class ScoreCounter extends Counter {
 		}
 	}
 
-	@Override
 	public void add(int n) {
-		super.add(n);
-		update();
+		score += n;
+		checkHiscore();
 	}
 
-	@Override
-	public void sub(int n) {
-		super.sub(n);
-		update();
-	}
-
-	private void update() {
-		if (get() >= hiscore) {
-			hiscore = get();
+	private void checkHiscore() {
+		if (score >= hiscore) {
+			hiscore = score;
 			if (game.getLevel() > level) {
 				level = game.getLevel();
 			}
 		}
+	}
+
+	public int getScore() {
+		return score;
 	}
 
 	public int getHiscore() {

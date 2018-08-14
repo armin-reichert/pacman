@@ -69,12 +69,12 @@ public class GameController implements Controller {
 	@Override
 	public void init() {
 		LOGGER.setLevel(Level.INFO);
-		actors.getPacMan().getStateMachine().traceTo(LOGGER, game.fnTicksPerSecond);
-		actors.getGhosts().map(Ghost::getStateMachine).forEach(sm -> sm.traceTo(LOGGER, game.fnTicksPerSecond));
+		actors.getPacMan().getStateMachine().traceTo(LOGGER, game.fnTicksPerSec);
+		actors.getGhosts().map(Ghost::getStateMachine).forEach(sm -> sm.traceTo(LOGGER, game.fnTicksPerSec));
 		actors.setActive(actors.getPinky(), false);
 		actors.setActive(actors.getInky(), false);
 		actors.setActive(actors.getClyde(), false);
-		gameControl.traceTo(LOGGER, game.fnTicksPerSecond);
+		gameControl.traceTo(LOGGER, game.fnTicksPerSec);
 		gameControl.init();
 	}
 
@@ -172,11 +172,11 @@ public class GameController implements Controller {
 					
 				.when(PACMAN_DYING).then(GAME_OVER)
 					.on(PacManDiedEvent.class)
-					.condition(() -> game.lives.get() == 0)
+					.condition(() -> game.lives == 0)
 					
 				.when(PACMAN_DYING).then(PLAYING)
 					.on(PacManDiedEvent.class)
-					.condition(() -> game.lives.get() > 0)
+					.condition(() -> game.lives > 0)
 					.act(() -> actors.init())
 			
 				.when(GAME_OVER).then(READY)
@@ -219,8 +219,7 @@ public class GameController implements Controller {
 			}
 			if (pacManState == PacManState.GREEDY) {
 				GhostState ghostState = e.ghost.getState();
-				if (ghostState == GhostState.AFRAID || ghostState == GhostState.AGGRO
-						|| ghostState == GhostState.SCATTERING) {
+				if (ghostState == GhostState.AFRAID || ghostState == GhostState.AGGRO || ghostState == GhostState.SCATTERING) {
 					gameControl.enqueue(new GhostKilledEvent(e.ghost));
 				}
 				return;
@@ -252,6 +251,7 @@ public class GameController implements Controller {
 
 		private void onGhostKilled(GameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
+			game.ghostsKilledInSeries += 1;
 			e.ghost.processEvent(e);
 			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
 		}
@@ -315,6 +315,8 @@ public class GameController implements Controller {
 		public void onEntry() {
 			actors.getPacMan().visibility = () -> false;
 			game.score.add(game.getKilledGhostValue());
+			LOGGER.info(String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
+					game.ghostsKilledInSeries));
 		}
 
 		@Override
@@ -324,7 +326,6 @@ public class GameController implements Controller {
 
 		@Override
 		public void onExit() {
-			game.ghostsKilledInSeries.add(1);
 			actors.getPacMan().visibility = () -> true;
 		}
 	}
@@ -343,7 +344,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onExit() {
-			game.lives.sub(1);
+			game.lives -= 1;
 			actors.getActiveGhosts().forEach(ghost -> ghost.visibility = () -> true);
 		}
 	}
