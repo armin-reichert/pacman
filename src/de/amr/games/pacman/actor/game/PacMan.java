@@ -180,9 +180,6 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 
 		protected void inspectMaze() {
 			move();
-			if (isOutsideMaze()) {
-				return;
-			}
 			Tile tile = getTile();
 			// Ghost collision?
 			Optional<Ghost> collidingGhost = world.getActiveGhosts()
@@ -195,6 +192,9 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 			/*@formatter:on*/
 			if (collidingGhost.isPresent()) {
 				events.publishEvent(new PacManGhostCollisionEvent(collidingGhost.get()));
+				return;
+			}
+			if (isOutsideMaze()) {
 				return;
 			}
 			// Unhonored bonus?

@@ -62,15 +62,13 @@ public abstract class MazeMover extends TileWorldEntity {
 	}
 
 	public void move() {
-		if (isOutsideMaze()) {
-			teleport();
-			return;
-		}
 		nextDir = getIntendedNextDir();
 		if (canMove(nextDir)) {
 			dir = nextDir;
 		}
-		if (canMove(dir)) {
+		if (isOutsideMaze()) {
+			teleport();
+		} else if (canMove(dir)) {
 			tf.moveTo(computePosition(dir));
 		} else {
 			placeAt(getTile());
@@ -92,7 +90,8 @@ public abstract class MazeMover extends TileWorldEntity {
 
 	public boolean canMove(int targetDir) {
 		if (isOutsideMaze()) {
-			return true;
+			// when teleporting, direction can only be inversed
+			return targetDir == dir || targetDir == NESW.inv(dir);
 		}
 		Tile current = getTile(), next = computeNextTile(current, targetDir);
 		if (next.equals(current)) {
