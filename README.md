@@ -277,9 +277,11 @@ ghost.setNavigation(Ghost.State.DEAD, goHome());
 ghost.setNavigation(Ghost.State.SAFE, bounce());
 ```
 
-The individual behaviours are implemented as reusable classes implementing a common interface. Behaviours which need to compute routes in the maze can just call the method **Maze.findPath(Tile source, Tile target)** which runs the A* path finder on the underlying grid graph (which is completely useless for such a maze, but it sounds better than BFS :-).
+The move behaviours are implemented as reusable classes with a common interface. Behaviours which need to compute shortest routes in the maze can just call the method **Maze.findPath(Tile source, Tile target)**.
 
-This is the "chase(victim)" behavior implementation:
+This method runs the A* path finding algorithm on the underlying grid graph (which is rather useless in this case but hey, it sounds cooler than BFS :-). You might ask why A* is "useless" here: it's because the Pac-Man maze here is represented a grid-like graph where the distance between vertices (tiles) is always the same. So a Dijkstra or even A* path finding algorithm will just degenerate to plain breadt-first search (correct my if I'm wrong). Of course you could represent the graph differently, for example by vertices only for crossings and weighted edges for passages. In that case, Dijkstra or A* would be more useful.
+
+As an example, this is the *chase(victim)* code:
 
 ```java
 /**
@@ -307,14 +309,14 @@ class Chase implements Navigation {
 }
 ```
 
-I hope this project fulfils the following goals:
-- Provide a readable implementation of the Pac-Man game with code that is fun to read
-- Motivate the use of explicit state machines in your code
-- Provide a base for exchanging my custom state machines by other libraries
-- Provide a reference implementation for your own Pac-Man game
+## Summary
 
-Additional ideas:
+I hope this project fulfils these goals:
+- Provide a clean, readable implementation of a Pac-Man like game
+- Motivate usage of explicit state machines in your code
+- Provide a base for trying different state machine implementations
+- Provide a template for your own Pac-Man game
 
-It would certainly be useful to decouple the UI and the game model / control logic completely to enable an easy replacement of the UI to get a reusable Pac-Man Java library. Want to give it a try?
+It would certainly also be useful to further decouple the UI from the game model and controller to enable an easy replacement of the complete UI.
 
-Armin Reichert
+*Armin Reichert, August 2018*
