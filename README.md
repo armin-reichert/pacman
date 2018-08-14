@@ -44,7 +44,7 @@ Of course, Pac-Man and the four ghosts, but also the global game control, maybe 
 
 In the implementation here, I decided to implement the global game control as well as the Pac-Man and ghost control by state machines. Their control logic is sufficiently complex for being modelled/implemented explicitly. My state machine implementation allows (similarly to e.g. Stateless4j) to define your state machines inside in a declarative way. This is achieved by using the "builder pattern". Further, the overhead of embedding client code into the state machine definitions is reduced by the possibility to use lambda expressions (anonymous functions) or function/method references. This allows for a smooth integration of state machines in your program. You have the flexibility to write your code inline inside the state machine hooks (onEntry, onExit, onTick, on(event), onTimeout), or to delegate to separate classes/methods. You can either use the predefined state objects or define your own state objects in separate classes, with additional methods and variables. 
 
-Sounds godd, but how does that look in the code? Here is the implementation of the global game control:
+Sounds all well and nice, but how does that look in the real code? Here is the implementation of the global game control:
 
 ```java
 StateMachine.define(PlayState.class, GameEvent.class)
