@@ -20,7 +20,8 @@ import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.controller.event.game.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.game.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.game.GameEvent;
@@ -212,14 +213,14 @@ public class GameController implements Controller {
 
 		private void onPacManGhostCollision(GameEvent event) {
 			PacManGhostCollisionEvent e = (PacManGhostCollisionEvent) event;
-			PacMan.State pacManState = actors.getPacMan().getState();
-			if (pacManState == PacMan.State.DYING) {
+			PacManState pacManState = actors.getPacMan().getState();
+			if (pacManState == PacManState.DYING) {
 				return;
 			}
-			if (pacManState == PacMan.State.GREEDY) {
-				Ghost.State ghostState = e.ghost.getState();
-				if (ghostState == Ghost.State.AFRAID || ghostState == Ghost.State.AGGRO
-						|| ghostState == Ghost.State.SCATTERING) {
+			if (pacManState == PacManState.GREEDY) {
+				GhostState ghostState = e.ghost.getState();
+				if (ghostState == GhostState.AFRAID || ghostState == GhostState.AGGRO
+						|| ghostState == GhostState.SCATTERING) {
 					gameControl.enqueue(new GhostKilledEvent(e.ghost));
 				}
 				return;
@@ -285,6 +286,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onEntry() {
+			actors.getPacMan().setFullSprite();
 			gameView.setMazeFlashing(true);
 		}
 
@@ -317,7 +319,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onTick() {
-			actors.getActiveGhosts().filter(ghost -> ghost.getState() == Ghost.State.DYING).forEach(Ghost::update);
+			actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(Ghost::update);
 		}
 
 		@Override

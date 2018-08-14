@@ -13,7 +13,7 @@ import de.amr.easy.game.sprite.Animation;
 import de.amr.easy.game.sprite.CyclicAnimation;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.actor.Cast;
-import de.amr.games.pacman.actor.Ghost;
+import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 
@@ -88,6 +88,7 @@ public class MazePanel extends GameEntity {
 		g.translate(tf.getX(), tf.getY());
 		if (flashing) {
 			s_maze_flashing.draw(g);
+			actors.getPacMan().draw(g);
 		} else {
 			s_maze_normal.draw(g);
 			drawFood(g);
@@ -102,8 +103,8 @@ public class MazePanel extends GameEntity {
 			bonus.draw(g);
 		});
 		actors.getPacMan().draw(g);
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() != Ghost.State.DYING).forEach(ghost -> ghost.draw(g));
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() == Ghost.State.DYING).forEach(ghost -> ghost.draw(g));
+		actors.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));
+		actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(ghost -> ghost.draw(g));
 	}
 
 	private void drawFood(Graphics2D g) {

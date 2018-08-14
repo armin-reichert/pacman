@@ -1,12 +1,12 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.games.pacman.actor.Ghost.State.AFRAID;
-import static de.amr.games.pacman.actor.Ghost.State.AGGRO;
-import static de.amr.games.pacman.actor.Ghost.State.DEAD;
-import static de.amr.games.pacman.actor.Ghost.State.DYING;
-import static de.amr.games.pacman.actor.Ghost.State.HOME;
-import static de.amr.games.pacman.actor.Ghost.State.SAFE;
-import static de.amr.games.pacman.actor.Ghost.State.SCATTERING;
+import static de.amr.games.pacman.actor.GhostState.AFRAID;
+import static de.amr.games.pacman.actor.GhostState.AGGRO;
+import static de.amr.games.pacman.actor.GhostState.DEAD;
+import static de.amr.games.pacman.actor.GhostState.DYING;
+import static de.amr.games.pacman.actor.GhostState.HOME;
+import static de.amr.games.pacman.actor.GhostState.SAFE;
+import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
@@ -28,16 +28,16 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends ControlledMazeMover<Ghost.State, GameEvent> {
+public class Ghost extends ControlledMazeMover<GhostState, GameEvent> {
 
-	private final StateMachine<State, GameEvent> controller;
+	private final StateMachine<GhostState, GameEvent> controller;
 	private final Game game;
 	private final GhostName name;
 	private final PacMan pacMan;
 	private final int initialDir;
 
 	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, int initialDir, int color) {
-		super(game.maze, home, new EnumMap<>(State.class));
+		super(game.maze, home, new EnumMap<>(GhostState.class));
 		this.name = name;
 		this.pacMan = pacMan;
 		this.game = game;
@@ -52,7 +52,7 @@ public class Ghost extends ControlledMazeMover<Ghost.State, GameEvent> {
 
 	@Override
 	public float getSpeed() {
-		return game.getGhostSpeed(this);
+		return game.getGhostSpeed(getState(), isInsideTunnel());
 	}
 
 	private void initGhost() {
@@ -86,8 +86,8 @@ public class Ghost extends ControlledMazeMover<Ghost.State, GameEvent> {
 
 	@Override
 	public Stream<Sprite> getSprites() {
-		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes), Stream.of(s_awed, s_blinking))
-				.flatMap(s -> s);
+		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes),
+				Stream.of(s_awed, s_blinking)).flatMap(s -> s);
 	}
 
 	@Override
@@ -97,19 +97,15 @@ public class Ghost extends ControlledMazeMover<Ghost.State, GameEvent> {
 
 	// State machine
 
-	public enum State {
-		HOME, AGGRO, SCATTERING, AFRAID, DYING, DEAD, SAFE
-	}
-
 	@Override
-	public StateMachine<State, GameEvent> getStateMachine() {
+	public StateMachine<GhostState, GameEvent> getStateMachine() {
 		return controller;
 	}
 
-	private StateMachine<State, GameEvent> buildStateMachine() {
+	private StateMachine<GhostState, GameEvent> buildStateMachine() {
 		return
 		/*@formatter:off*/
-		StateMachine.define(State.class, GameEvent.class)
+		StateMachine.define(GhostState.class, GameEvent.class)
 			 
 			.description(String.format("[Ghost %s]", getName()))
 			.initialState(HOME)
@@ -144,11 +140,11 @@ public class Ghost extends ControlledMazeMover<Ghost.State, GameEvent> {
 					.when(HOME).then(SAFE)
 
 					.when(SAFE)
-						.onTimeout().condition(() -> pacMan.getState() != PacMan.State.GREEDY)
+						.onTimeout().condition(() -> pacMan.getState() != PacManState.GREEDY)
 						.then(AGGRO)
 						
 					.when(SAFE)
-						.onTimeout().condition(() -> pacMan.getState() == PacMan.State.GREEDY)
+						.onTimeout().condition(() -> pacMan.getState() == PacManState.GREEDY)
 						.then(AFRAID)
 						
 					.stay(SAFE).on(PacManGainsPowerEvent.class)

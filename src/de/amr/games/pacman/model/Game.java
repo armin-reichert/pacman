@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.IntSupplier;
 
-import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.actor.PacManState;
 
 /**
  * The model of the Pac-Man game.
@@ -194,23 +194,21 @@ public class Game {
 		return sec(9f + rnd.nextFloat());
 	}
 
-	public float getGhostSpeed(Ghost ghost) {
-		if (maze.getContent(ghost.getTile()) == Content.TUNNEL) {
-			return speed(fValue(Field.fGhostTunnelSpeed));
-		}
-		switch (ghost.getState()) {
+	public float getGhostSpeed(GhostState ghostState, boolean inTunnel) {
+		float tunnelSpeed = speed(fValue(Field.fGhostTunnelSpeed));
+		switch (ghostState) {
 		case AGGRO:
-			return speed(fValue(Field.fGhostSpeed));
+			return inTunnel ? tunnelSpeed : speed(fValue(Field.fGhostSpeed));
 		case DYING:
 			return 0;
 		case DEAD:
 			return speed(1.5f);
 		case AFRAID:
-			return speed(fValue(Field.fGhostAfraidSpeed));
+			return inTunnel ? tunnelSpeed : speed(fValue(Field.fGhostAfraidSpeed));
 		case SAFE:
 			return speed(0.75f);
 		case SCATTERING:
-			return speed(fValue(Field.fGhostSpeed));
+			return inTunnel ? tunnelSpeed : speed(fValue(Field.fGhostSpeed));
 		default:
 			throw new IllegalStateException();
 		}
@@ -224,8 +222,8 @@ public class Game {
 		return KILLED_GHOST_POINTS[ghostsKilledInSeries.get()];
 	}
 
-	public float getPacManSpeed(PacMan pacMan) {
-		switch (pacMan.getState()) {
+	public float getPacManSpeed(PacManState pacManState) {
+		switch (pacManState) {
 		case HOME:
 			return 0;
 		case HUNGRY:
@@ -248,10 +246,10 @@ public class Game {
 	}
 
 	public int getLevelChangingTime() {
-		return sec(2);
+		return sec(3);
 	}
 
 	public int getReadyTime() {
-		return sec(2);
+		return sec(3);
 	}
 }

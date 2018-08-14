@@ -1,9 +1,9 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.games.pacman.actor.PacMan.State.DYING;
-import static de.amr.games.pacman.actor.PacMan.State.HOME;
-import static de.amr.games.pacman.actor.PacMan.State.GREEDY;
-import static de.amr.games.pacman.actor.PacMan.State.HUNGRY;
+import static de.amr.games.pacman.actor.PacManState.DYING;
+import static de.amr.games.pacman.actor.PacManState.GREEDY;
+import static de.amr.games.pacman.actor.PacManState.HOME;
+import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
@@ -35,16 +35,16 @@ import de.amr.statemachine.StateObject;
  * @author Armin Reichert
  *
  */
-public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
+public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 
 	private final Game game;
-	private final StateMachine<State, GameEvent> controller;
+	private final StateMachine<PacManState, GameEvent> controller;
 	private EventManager<GameEvent> events;
 	private PacManWorld world;
 	private int digestionTicks;
 
 	public PacMan(Game game) {
-		super(game.maze, game.maze.pacManHome, new EnumMap<>(State.class));
+		super(game.maze, game.maze.pacManHome, new EnumMap<>(PacManState.class));
 		this.game = game;
 		controller = buildStateMachine();
 		createSprites();
@@ -88,11 +88,15 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 		return sprite;
 	}
 
+	public void setFullSprite() {
+		sprite = s_full;
+	}
+
 	// Others
 
 	@Override
 	public float getSpeed() {
-		return game.getPacManSpeed(this);
+		return game.getPacManSpeed(getState());
 	}
 
 	private void initPacMan() {
@@ -105,19 +109,15 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 
 	// State machine
 
-	public enum State {
-		HOME, HUNGRY, GREEDY, DYING
-	}
-
 	@Override
-	public StateMachine<State, GameEvent> getStateMachine() {
+	public StateMachine<PacManState, GameEvent> getStateMachine() {
 		return controller;
 	}
 
-	private StateMachine<State, GameEvent> buildStateMachine() {
+	private StateMachine<PacManState, GameEvent> buildStateMachine() {
 		return
 		/* @formatter:off */
-		StateMachine.define(State.class, GameEvent.class)
+		StateMachine.define(PacManState.class, GameEvent.class)
 				
 			.description("[Pac-Man]")
 			.initialState(HOME)
@@ -158,7 +158,7 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 
 	// Pac-Man states
 
-	private class HungryState extends StateObject<State, GameEvent> {
+	private class HungryState extends StateObject<PacManState, GameEvent> {
 
 		@Override
 		public void onTick() {
@@ -179,9 +179,9 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 			Optional<Ghost> collidingGhost = world.getActiveGhosts()
 			/*@formatter:off*/
 				.filter(ghost -> ghost.getTile().equals(tile))
-				.filter(ghost -> ghost.getState() != Ghost.State.DEAD)
-				.filter(ghost -> ghost.getState() != Ghost.State.DYING)
-				.filter(ghost -> ghost.getState() != Ghost.State.SAFE)
+				.filter(ghost -> ghost.getState() != GhostState.DEAD)
+				.filter(ghost -> ghost.getState() != GhostState.DYING)
+				.filter(ghost -> ghost.getState() != GhostState.SAFE)
 				.findFirst();
 			/*@formatter:on*/
 			if (collidingGhost.isPresent()) {
@@ -192,7 +192,8 @@ public class PacMan extends ControlledMazeMover<PacMan.State, GameEvent> {
 			Optional<Bonus> activeBonus = world.getBonus().filter(bonus -> bonus.getTile().equals(tile))
 					.filter(bonus -> !bonus.isHonored());
 			if (activeBonus.isPresent()) {
-				events.publishEvent(new BonusFoundEvent(activeBonus.get().getSymbol(), activeBonus.get().getValue()));
+				events.publishEvent(
+						new BonusFoundEvent(activeBonus.get().getSymbol(), activeBonus.get().getValue()));
 				return;
 			}
 			// Food?

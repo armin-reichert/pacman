@@ -8,6 +8,7 @@ import static java.lang.Math.round;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
+import de.amr.games.pacman.model.Content;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
@@ -49,6 +50,10 @@ public abstract class MazeMover extends TileWorldEntity {
 
 	public int getIntendedNextDir() {
 		return nextDir;
+	}
+	
+	public boolean isInsideTunnel() {
+		return maze.getContent(getTile()) == Content.TUNNEL;
 	}
 
 	public boolean isOutsideMaze() {
