@@ -42,7 +42,9 @@ Which entities in the Pac-Man game are candidates for getting controlled by stat
 
 Of course, Pac-Man and the four ghosts, but also the global game control, maybe also the screen selection logic or even simpler entities in your game. It is interesting to look at your program parts through the state machine glasses and find out where an explicit state machine becomes useful in contrast to just using variables, methods and control-flow statements in free-style.
 
-In the implementation of Pac-Man shown here, I decided to implement the global game control as well as the Pac-Man and ghost control by state machines. These controls are sufficiently complex to be modelled/implemented explicitly. The state machine implementation allows (similarly to the mentioned Stateless4j) to define your state machines inside your code in a declarative way. This is achieved by using the "builder pattern". Further, the overhead of embedding client code into the state machine definitions is reduced by the possibility to use lambda expressions (anonymous functions) or function/method references. This allows for a smooth integration of state machines in your program. You have the flexibility to write your code inline inside the state machine hooks (onEntry, onExit, on(event), onTimeout), or to delegate this to separate classes/methods. You can also just use the predefined state objects or if needed define the state objects in separate classes, maybe with additional methods and state. This is for example used in the implementation of the overall game control:
+In the implementation here, I decided to implement the global game control as well as the Pac-Man and ghost control by state machines. Their control logic is sufficiently complex for being modelled/implemented explicitly. My state machine implementation allows (similarly to e.g. Stateless4j) to define your state machines inside in a declarative way. This is achieved by using the "builder pattern". Further, the overhead of embedding client code into the state machine definitions is reduced by the possibility to use lambda expressions (anonymous functions) or function/method references. This allows for a smooth integration of state machines in your program. You have the flexibility to write your code inline inside the state machine hooks (onEntry, onExit, onTick, on(event), onTimeout), or to delegate to separate classes/methods. You can either use the predefined state objects or define your own state objects in separate classes, with additional methods and variables. 
+
+Sounds godd, but how does that look in the code? Here is the implementation of the global game control:
 
 ```java
 StateMachine.define(PlayState.class, GameEvent.class)
@@ -136,7 +138,7 @@ StateMachine.define(PlayState.class, GameEvent.class)
 .endStateMachine();
 ```
 
-The states of this state machine are implemented as separate (inner) classes. However, this is not necessary in simpler cases and is the decision of the implementor.
+The states of this state machine are implemented as separate (inner) classes. However, this is not necessary in simpler cases and is the decision of the implementor. Isn't this clear and readable code?
 
 Pac-Man's state machine:
 
