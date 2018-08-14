@@ -99,9 +99,9 @@ public class GamePanel implements PacManGameUI {
 		// Lives
 		g.translate(0, getHeight() - 2 * Game.TS);
 		for (int i = 0; i < game.lives; ++i) {
-			g.translate(i * lifeImage.getWidth(null), 0);
+			g.translate((2 - i) * lifeImage.getWidth(null), 0);
 			g.drawImage(lifeImage, 0, 0, null);
-			g.translate(-i * lifeImage.getWidth(null), 0);
+			g.translate((i - 2) * lifeImage.getWidth(null), 0);
 		}
 		// Level counter
 		for (int i = 0, n = game.levelCounter.size(); i < n; ++i) {

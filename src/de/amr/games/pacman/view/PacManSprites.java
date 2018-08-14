@@ -69,8 +69,7 @@ public class PacManSprites {
 		int[] dirs = { Top4.E, Top4.W, Top4.N, Top4.S };
 		pacManWalking = new BufferedImage[4][];
 		for (int d = 0; d < 4; ++d) {
-			pacManWalking[dirs[d]] = new BufferedImage[] { $(456, d * 16), $(456, d * 16), $(456, d * 16), $(472, d * 16),
-					$(488, 0) };
+			pacManWalking[dirs[d]] = new BufferedImage[] { $(456, d * 16), $(472, d * 16), $(488, 0) };
 		}
 
 		pacManDying = new BufferedImage[12];
@@ -163,7 +162,7 @@ public class PacManSprites {
 	}
 
 	public Sprite pacManWalking(int dir) {
-		return new Sprite(pacManWalking[dir]).animate(BACK_AND_FORTH, 30);
+		return new Sprite(pacManWalking[dir]).animate(BACK_AND_FORTH, 100);
 	}
 
 	public Sprite pacManDying() {
