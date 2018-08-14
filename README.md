@@ -42,7 +42,7 @@ Which entities in the Pac-Man game are candidates for getting controlled by stat
 
 Of course, Pac-Man and the four ghosts, but also the global game control, maybe also the screen selection logic or even simpler entities in your game. It is interesting to look at your program parts through the state machine glasses and find out where an explicit state machine becomes useful in contrast to just using variables, methods and control-flow statements in free-style.
 
-I decided to implement the global game control as well as the Pac-Man and ghost control by state machines. Their control logic is sufficiently complex for being modelled/implemented explicitly. My implementation allows (similarly to e.g. Stateless4j) to define your state machines in a declarative way (*builder pattern*). Further, the overhead of embedding client code into the state machine definitions is reduced by the possibility to use lambda expressions (anonymous functions) or function/method references. This allows for a smooth integration of state machines in your program. You have the flexibility to write your code inline inside the state machine hooks (onEntry, onExit, onTick, on(event), onTimeout), or to delegate to separate classes/methods. You can either use the predefined state objects or define your own state objects in separate classes, with additional methods and variables. 
+I decided to implement the global game control as well as the Pac-Man and ghost control by state machines. Their control logic is sufficiently complex for being modelled/implemented explicitly. My implementation allows (similarly to e.g. Stateless4j) to define your state machines in a declarative way (*builder pattern*). Further, the overhead of embedding client code into the state machine definitions is reduced by the possibility to use lambda expressions (anonymous functions) or function/method references. This allows for a smooth integration of state machines in your program. You have the flexibility to write your code inline inside the state machine hooks (*onEntry, onExit, onTick, on(event), onTimeout*), or to delegate to separate classes/methods. You can either use the predefined state objects or define your own state objects in separate classes, with additional methods and variables. 
 
 Sounds all well and nice, but how does that look in the real code? Here is the implementation of the global game control:
 
@@ -264,8 +264,8 @@ Example trace:
 ```
 
 Other features:
-- Entity states and timers can be switched on/off at runtime (key 's')
-- Entity routes can be switched on/off at runtime (key 'r')
+- Display of entity states and timers can be switched on/off at runtime (key 's')
+- Display of entity routes can be switched on/off at runtime (key 'r')
 - Ghosts can be switched on/off (keys 'b', 'p', 'i', 'c')
 - Game can be paused (CTRL+p) and frame rate can be changed at runtime (F2 opens dialog)
 
