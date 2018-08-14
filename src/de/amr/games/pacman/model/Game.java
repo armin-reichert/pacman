@@ -211,7 +211,7 @@ public class Game {
 	public int getGhostDyingTime() {
 		return sec(1f);
 	}
-	
+
 	public int getGhostNumFlashes() {
 		return iValue(Field.iNumFlashes);
 	}
@@ -243,7 +243,7 @@ public class Game {
 	public int getPacManGreedyTime() {
 		return sec(iValue(Field.iPacManPowerSeconds));
 	}
-	
+
 	public int getPacManGettingWeakerRemainingTime() {
 		return sec(getGhostNumFlashes());
 	}

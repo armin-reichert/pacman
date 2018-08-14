@@ -19,10 +19,9 @@ import de.amr.games.pacman.model.BonusSymbol;
 
 public class PacManSprites {
 
-	public static final int RED_GHOST = 0;
-	public static final int PINK_GHOST = 1;
-	public static final int TURQUOISE_GHOST = 2;
-	public static final int ORANGE_GHOST = 3;
+	public enum GhostColor {
+		RED, PINK, TURQUOISE, ORANGE
+	}
 
 	private final BufferedImage sheet;
 	private final BufferedImage mazeEmpty;
@@ -169,20 +168,20 @@ public class PacManSprites {
 		return new Sprite(pacManDying).animate(LINEAR, 100);
 	}
 
-	public Sprite ghostColored(int color, int direction) {
+	public Sprite ghostColored(GhostColor color, int direction) {
 		BufferedImage[] frames;
 		switch (direction) {
 		case Top4.E:
-			frames = Arrays.copyOfRange(ghostNormal[color], 0, 2);
+			frames = Arrays.copyOfRange(ghostNormal[color.ordinal()], 0, 2);
 			break;
 		case Top4.W:
-			frames = Arrays.copyOfRange(ghostNormal[color], 2, 4);
+			frames = Arrays.copyOfRange(ghostNormal[color.ordinal()], 2, 4);
 			break;
 		case Top4.N:
-			frames = Arrays.copyOfRange(ghostNormal[color], 4, 6);
+			frames = Arrays.copyOfRange(ghostNormal[color.ordinal()], 4, 6);
 			break;
 		case Top4.S:
-			frames = Arrays.copyOfRange(ghostNormal[color], 6, 8);
+			frames = Arrays.copyOfRange(ghostNormal[color.ordinal()], 6, 8);
 			break;
 		default:
 			throw new IllegalArgumentException("Illegal direction: " + direction);

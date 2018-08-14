@@ -22,6 +22,7 @@ import de.amr.games.pacman.controller.event.game.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.game.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.view.PacManSprites.GhostColor;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -37,7 +38,7 @@ public class Ghost extends ControlledMazeMover<GhostState, GameEvent> {
 	private final PacMan pacMan;
 	private final int initialDir;
 
-	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, int initialDir, int color) {
+	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, int initialDir, GhostColor color) {
 		super(game.maze, home, new EnumMap<>(GhostState.class));
 		this.name = name;
 		this.pacMan = pacMan;
@@ -73,7 +74,7 @@ public class Ghost extends ControlledMazeMover<GhostState, GameEvent> {
 	private Sprite s_blinking;
 	private Sprite s_numbers[] = new Sprite[4];
 
-	private void createSprites(int color) {
+	private void createSprites(GhostColor color) {
 		NESW.dirs().forEach(dir -> {
 			s_color[dir] = SPRITES.ghostColored(color, dir);
 			s_eyes[dir] = SPRITES.ghostEyes(dir);
@@ -87,8 +88,8 @@ public class Ghost extends ControlledMazeMover<GhostState, GameEvent> {
 
 	@Override
 	public Stream<Sprite> getSprites() {
-		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes),
-				Stream.of(s_awed, s_blinking)).flatMap(s -> s);
+		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes), Stream.of(s_awed, s_blinking))
+				.flatMap(s -> s);
 	}
 
 	@Override

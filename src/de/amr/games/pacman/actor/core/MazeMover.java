@@ -51,7 +51,7 @@ public abstract class MazeMover extends TileWorldEntity {
 	public int getIntendedNextDir() {
 		return nextDir;
 	}
-	
+
 	public boolean isInsideTunnel() {
 		return maze.getContent(getTile()) == Content.TUNNEL;
 	}

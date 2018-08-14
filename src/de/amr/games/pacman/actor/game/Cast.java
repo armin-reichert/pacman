@@ -6,10 +6,6 @@ import static de.amr.games.pacman.routing.impl.NavigationSystem.chase;
 import static de.amr.games.pacman.routing.impl.NavigationSystem.flee;
 import static de.amr.games.pacman.routing.impl.NavigationSystem.followKeyboard;
 import static de.amr.games.pacman.routing.impl.NavigationSystem.goHome;
-import static de.amr.games.pacman.view.PacManSprites.ORANGE_GHOST;
-import static de.amr.games.pacman.view.PacManSprites.PINK_GHOST;
-import static de.amr.games.pacman.view.PacManSprites.RED_GHOST;
-import static de.amr.games.pacman.view.PacManSprites.TURQUOISE_GHOST;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -28,6 +24,7 @@ import de.amr.games.pacman.controller.event.game.GameEvent;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.routing.Navigation;
+import de.amr.games.pacman.view.PacManSprites.GhostColor;
 
 /**
  * Factory and container for the game actors.
@@ -46,7 +43,7 @@ public class Cast implements PacManWorld {
 	}
 
 	private static Ghost createBlinky(Game game, PacMan pacMan) {
-		Ghost ghost = new Ghost(GhostName.Blinky, pacMan, game, game.maze.blinkyHome, Top4.E, RED_GHOST);
+		Ghost ghost = new Ghost(GhostName.Blinky, pacMan, game, game.maze.blinkyHome, Top4.E, GhostColor.RED);
 		ghost.setNavigation(GhostState.AGGRO, chase(pacMan));
 		ghost.setNavigation(GhostState.AFRAID, flee(pacMan));
 		ghost.setNavigation(GhostState.DEAD, goHome());
@@ -55,7 +52,7 @@ public class Cast implements PacManWorld {
 	}
 
 	private static Ghost createPinky(Game game, PacMan pacMan) {
-		Ghost ghost = new Ghost(GhostName.Pinky, pacMan, game, game.maze.pinkyHome, Top4.S, PINK_GHOST);
+		Ghost ghost = new Ghost(GhostName.Pinky, pacMan, game, game.maze.pinkyHome, Top4.S, GhostColor.PINK);
 		ghost.setNavigation(GhostState.AGGRO, ambush(pacMan));
 		ghost.setNavigation(GhostState.AFRAID, flee(pacMan));
 		ghost.setNavigation(GhostState.DEAD, goHome());
@@ -64,7 +61,7 @@ public class Cast implements PacManWorld {
 	}
 
 	private static Ghost createInky(Game game, PacMan pacMan) {
-		Ghost ghost = new Ghost(GhostName.Inky, pacMan, game, game.maze.inkyHome, Top4.N, TURQUOISE_GHOST);
+		Ghost ghost = new Ghost(GhostName.Inky, pacMan, game, game.maze.inkyHome, Top4.N, GhostColor.TURQUOISE);
 		ghost.setNavigation(GhostState.AGGRO, ambush(pacMan)); // TODO
 		ghost.setNavigation(GhostState.AFRAID, flee(pacMan));
 		ghost.setNavigation(GhostState.DEAD, goHome());
@@ -73,7 +70,7 @@ public class Cast implements PacManWorld {
 	}
 
 	private static Ghost createClyde(Game game, PacMan pacMan) {
-		Ghost ghost = new Ghost(GhostName.Clyde, pacMan, game, game.maze.clydeHome, Top4.N, ORANGE_GHOST);
+		Ghost ghost = new Ghost(GhostName.Clyde, pacMan, game, game.maze.clydeHome, Top4.N, GhostColor.ORANGE);
 		ghost.setNavigation(GhostState.AGGRO, ambush(pacMan)); // TODO
 		ghost.setNavigation(GhostState.AFRAID, flee(pacMan));
 		ghost.setNavigation(GhostState.DEAD, goHome());
