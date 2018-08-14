@@ -44,7 +44,7 @@ public class Game {
 	public Game(Maze maze, IntSupplier fnTicksPerSecond) {
 		this.maze = maze;
 		this.fnTicksPerSecond = fnTicksPerSecond;
-		baseSpeed = tps(8f);
+		baseSpeed = 8f * Game.TS / 60; // 8 tiles per second at 60 Hz
 		foodTotal = maze.getFoodTotal();
 	}
 
