@@ -63,6 +63,7 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 	public void move() {
 		super.move();
 		sprite = s_walking_to[getDir()];
+		sprite.enableAnimation(canMove(getDir()));
 	}
 
 	// Sprites
