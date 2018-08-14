@@ -8,7 +8,7 @@ For the average school kid in 2018, a retro game like Pac-Man probably seems lik
 
 Well, some of them probably even can do that (I can't). But I think that for many young people with an interest in computer programming also a simple (?) old-school game like Pac-Man can be very instructive. And for me personally, it brings back  memories because the only computer game I played regularly was ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), then running on my Apple II compatible computer in 1984. On a green monitor, no colors. But what a sound!
 
-Note: This is not for the kind of kid that just wants to program something somehow quick-and-dirty. Or for those that start with something like Unity for implementing Pac-Man. I want to address young people with an interest in writing code instead of using tools.
+Note: If you are the kind of kid that just wants to program something, somehow, quick-and-dirty, this is not the right place for you. Also, if you are somebody who doesn't start with less than a game engine like Unity for implementing Pac-Man. I want to address people with an interest in writing code instead of using tools.
    
 For a beginner in programming, a game like Pac-Man can be interesting for different reasons. First, it isn't as trivial as "Pong" for example. Programming "Pong" is surely a good start. Programming a game loop, updating and drawing paddles, ball movement, collisions with walls and paddles are good stuff for starters. The next step probably are "Breakout" variants with different kinds of targets, waves, levels, special balls and so on. 
 
