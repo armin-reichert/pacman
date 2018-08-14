@@ -282,7 +282,7 @@ ghost.setNavigation(Ghost.State.SAFE, bounce());
 
 The move behaviours are implemented as reusable classes with a common interface. Behaviours which need to compute shortest routes in the maze can just call the method *Maze.findPath(Tile source, Tile target)*.
 
-This method runs the A* path finding algorithm on the underlying grid graph (which is rather useless in this case but hey, it sounds cooler than BFS :-). You might ask why A* is "useless" here: it's because the Pac-Man maze here is represented a grid-like graph where the distance between vertices (tiles) is always the same. So a Dijkstra or even A* path finding algorithm will just degenerate to plain breadt-first search (correct my if I'm wrong). Of course you could represent the graph differently, for example by vertices only for crossings and weighted edges for passages. In that case, Dijkstra or A* would be more useful.
+This method runs the A* path finding algorithm on the underlying grid graph (which is rather useless in this case but hey, it sounds cooler than BFS :-). You might ask why A* is "useless" here: it's because the Pac-Man maze is internally represented as a (grid) graph where the distance between two neighbor vertices (tiles) is always the same. Thus the Dijkstra or A* path finding algorithms will just degenerate to Breadth-first Search (correct my if I'm wrong). Of course you could represent the graph differently, for example with vertices only for crossings and weighted edges for passages. In that case, Dijkstra or A* would be more useful.
 
 As an example, this is the *chase(victim)* code:
 
