@@ -143,15 +143,23 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 
 				.when(HOME).then(HUNGRY)
 				
-				.when(HUNGRY).then(DYING).on(PacManKilledEvent.class)
+				.when(HUNGRY).then(DYING)
+					.on(PacManKilledEvent.class)
 	
-				.when(HUNGRY).then(GREEDY).on(PacManGainsPowerEvent.class)
+				.when(HUNGRY).then(GREEDY)
+					.on(PacManGainsPowerEvent.class)
 	
-				.stay(GREEDY).on(PacManGainsPowerEvent.class).act(() -> controller.resetTimer())
+				.stay(GREEDY)
+					.on(PacManGainsPowerEvent.class)
+					.act(() -> controller.resetTimer())
 	
-				.when(GREEDY).then(HUNGRY).onTimeout().act(() -> events.publishEvent(new PacManLostPowerEvent()))
+				.when(GREEDY).then(HUNGRY)
+					.onTimeout()
+					.act(() -> events.publishEvent(new PacManLostPowerEvent()))
 	
-				.stay(DYING).onTimeout().act(e -> events.publishEvent(new PacManDiedEvent()))
+				.stay(DYING)
+					.onTimeout()
+					.act(e -> events.publishEvent(new PacManDiedEvent()))
 
 		.endStateMachine();
 		/* @formatter:on */
