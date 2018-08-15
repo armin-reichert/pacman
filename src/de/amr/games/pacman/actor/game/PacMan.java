@@ -45,7 +45,7 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 	private int digestionTicks;
 
 	public PacMan(Game game) {
-		super(game.maze, game.maze.pacManHome, new EnumMap<>(PacManState.class));
+		super(game.maze, new EnumMap<>(PacManState.class));
 		this.game = game;
 		controller = buildStateMachine();
 		createSprites();
@@ -105,10 +105,15 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 	public float getSpeed() {
 		return game.getPacManSpeed(getState());
 	}
+	
+	@Override
+	public Tile getHome() {
+		return maze.pacManHome;
+	}
 
 	private void initPacMan() {
 		digestionTicks = 0;
-		placeAt(homeTile);
+		placeAt(getHome());
 		setNextDir(Top4.E);
 		getSprites().forEach(Sprite::resetAnimation);
 		sprite = s_full;

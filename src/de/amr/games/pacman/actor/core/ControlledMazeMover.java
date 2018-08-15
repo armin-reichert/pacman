@@ -3,7 +3,6 @@ package de.amr.games.pacman.actor.core;
 import java.util.Map;
 
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.routing.Navigation;
 import de.amr.games.pacman.routing.impl.NavigationSystem;
 import de.amr.statemachine.StateMachine;
@@ -22,8 +21,8 @@ public abstract class ControlledMazeMover<S, E> extends MazeMover {
 
 	private final Map<S, Navigation> navigationMap;
 
-	public ControlledMazeMover(Maze maze, Tile homeTile, Map<S, Navigation> navigationMap) {
-		super(maze, homeTile);
+	protected ControlledMazeMover(Maze maze, Map<S, Navigation> navigationMap) {
+		super(maze);
 		this.navigationMap = navigationMap;
 	}
 

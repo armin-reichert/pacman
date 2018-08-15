@@ -21,14 +21,14 @@ import de.amr.games.pacman.model.Tile;
 public abstract class MazeMover extends TileWorldEntity {
 
 	public final Maze maze;
-	public final Tile homeTile;
 	private int dir;
 	private int nextDir;
 
-	protected MazeMover(Maze maze, Tile homeTile) {
+	protected MazeMover(Maze maze) {
 		this.maze = maze;
-		this.homeTile = homeTile;
 	}
+	
+	public abstract Tile getHome();
 
 	public abstract float getSpeed();
 
@@ -67,7 +67,7 @@ public abstract class MazeMover extends TileWorldEntity {
 		if (maze.isTeleportSpace(getTile())) {
 			teleport();
 			return;
-		} 
+		}
 		if (canMove(dir)) {
 			tf.moveTo(computePosition(dir));
 		} else {
@@ -88,7 +88,7 @@ public abstract class MazeMover extends TileWorldEntity {
 			return canWalkThroughDoor(next);
 		}
 		if (targetDir == NESW.right(dir) || targetDir == NESW.left(dir)) {
-			//TODO this is not nice
+			// TODO this is not nice
 			return targetDir == Top4.N || targetDir == Top4.S ? getAlignmentX() <= 1 : getAlignmentY() <= 1;
 		}
 		return true;

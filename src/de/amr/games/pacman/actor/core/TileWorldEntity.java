@@ -15,16 +15,18 @@ import de.amr.games.pacman.model.Tile;
  */
 public abstract class TileWorldEntity extends GameEntity {
 
-	public int row() {
-		return round(tf.getY() + getHeight() / 2) / Game.TS;
+	@Override
+	public int getWidth() {
+		return Game.TS;
 	}
 
-	public int col() {
-		return round(tf.getX() + getWidth() / 2) / Game.TS;
+	@Override
+	public int getHeight() {
+		return Game.TS;
 	}
 
 	public Tile getTile() {
-		return new Tile(col(), row());
+		return new Tile(round(tf.getX() + getWidth() / 2) / Game.TS, round(tf.getY() + getHeight() / 2) / Game.TS);
 	}
 
 	public void placeAt(Tile tile) {
@@ -38,32 +40,22 @@ public abstract class TileWorldEntity extends GameEntity {
 	public boolean isGridAligned() {
 		return getAlignmentX() == 0 && getAlignmentY() == 0;
 	}
-	
+
 	public int getAlignmentX() {
 		return round(tf.getX()) % Game.TS;
 	}
-	
+
 	public int getAlignmentY() {
 		return round(tf.getY()) % Game.TS;
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		// by default, draw sprite centered over collision box
+		// draw sprite centered over collision box
 		int dx = (getWidth() - currentSprite().getWidth()) / 2;
 		int dy = (getHeight() - currentSprite().getHeight()) / 2;
 		g.translate(dx, dy);
 		super.draw(g);
 		g.translate(-dx, -dy);
-	}
-
-	@Override
-	public int getWidth() {
-		return Game.TS;
-	}
-
-	@Override
-	public int getHeight() {
-		return Game.TS;
 	}
 }

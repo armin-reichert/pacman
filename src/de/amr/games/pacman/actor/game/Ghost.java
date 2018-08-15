@@ -14,7 +14,6 @@ import java.util.EnumMap;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.sprite.Sprite;
-import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.core.ControlledMazeMover;
 import de.amr.games.pacman.controller.event.game.GameEvent;
 import de.amr.games.pacman.controller.event.game.GhostKilledEvent;
@@ -37,13 +36,15 @@ public class Ghost extends ControlledMazeMover<GhostState, GameEvent> {
 	private final Game game;
 	private final GhostName name;
 	private final PacMan pacMan;
+	private final Tile home;
 	private final int initialDir;
 
 	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, int initialDir, GhostColor color) {
-		super(game.maze, home, new EnumMap<>(GhostState.class));
+		super(game.maze, new EnumMap<>(GhostState.class));
 		this.name = name;
 		this.pacMan = pacMan;
 		this.game = game;
+		this.home = home;
 		this.initialDir = initialDir;
 		controller = buildStateMachine();
 		createSprites(color);
@@ -54,18 +55,23 @@ public class Ghost extends ControlledMazeMover<GhostState, GameEvent> {
 	}
 
 	@Override
+	public Tile getHome() {
+		return home;
+	}
+
+	@Override
 	public float getSpeed() {
 		return game.getGhostSpeed(getState(), getTile());
 	}
 
 	private void initGhost() {
-		placeAt(homeTile);
+		placeAt(home);
 		setDir(initialDir);
 		setNextDir(initialDir);
 		getSprites().forEach(Sprite::resetAnimation);
 		sprite = s_color[getDir()];
 	}
-	
+
 	@Override
 	protected boolean canWalkThroughDoor(Tile door) {
 		return getState() == GhostState.DEAD || getTile().row >= door.row;
@@ -173,11 +179,7 @@ public class Ghost extends ControlledMazeMover<GhostState, GameEvent> {
 					.stay(DEAD).on(PacManGainsPowerEvent.class)
 					.stay(DEAD).on(PacManGettingWeakerEvent.class)
 					.stay(DEAD).on(PacManLostPowerEvent.class)
-					.when(DEAD).condition(() -> getTile().equals(homeTile)).then(SAFE)
-						.act(() -> {
-							placeAt(homeTile);
-							setDir(Top4.N);
-						})
+					.when(DEAD).condition(() -> getTile().equals(home)).then(SAFE).act(this::initGhost)
 
 		.endStateMachine();
 		/*@formatter:on*/
