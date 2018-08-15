@@ -20,10 +20,7 @@ class Bounce implements Navigation {
 
 	private boolean isReflected(MazeMover bouncer) {
 		Tile nextTile = bouncer.computeNextTile(bouncer.getTile(), bouncer.getDir());
-		if (nextTile.equals(bouncer.getTile())) {
-			return false;
-		}
-		char c = bouncer.maze.getContent(nextTile);
-		return c == WALL || c == DOOR;
+		char content = bouncer.getMaze().getContent(nextTile);
+		return content == WALL || content == DOOR;
 	}
 }

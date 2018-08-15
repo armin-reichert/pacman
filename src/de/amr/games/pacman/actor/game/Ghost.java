@@ -21,6 +21,7 @@ import de.amr.games.pacman.controller.event.game.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.game.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.game.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.PacManSprites.GhostColor;
 import de.amr.statemachine.StateMachine;
@@ -40,7 +41,7 @@ public class Ghost extends ControlledMazeMover<GhostState, GameEvent> {
 	private final int initialDir;
 
 	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, int initialDir, GhostColor color) {
-		super(game.maze, new EnumMap<>(GhostState.class));
+		super(new EnumMap<>(GhostState.class));
 		this.name = name;
 		this.pacMan = pacMan;
 		this.game = game;
@@ -48,6 +49,11 @@ public class Ghost extends ControlledMazeMover<GhostState, GameEvent> {
 		this.initialDir = initialDir;
 		controller = buildStateMachine();
 		createSprites(color);
+	}
+
+	@Override
+	public Maze getMaze() {
+		return game.maze;
 	}
 
 	public GhostName getName() {

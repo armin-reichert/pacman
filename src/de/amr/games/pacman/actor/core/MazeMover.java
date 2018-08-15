@@ -14,20 +14,17 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * An entity that knows how to move over the tiles of the maze.
+ * An entity that knows how to move inside a tile-based maze.
  * 
  * @author Armin Reichert
  */
 public abstract class MazeMover extends TileWorldEntity {
 
-	public final Maze maze;
 	private int dir;
 	private int nextDir;
 
-	protected MazeMover(Maze maze) {
-		this.maze = maze;
-	}
-	
+	public abstract Maze getMaze();
+
 	public abstract Tile getHome();
 
 	public abstract float getSpeed();
@@ -64,7 +61,7 @@ public abstract class MazeMover extends TileWorldEntity {
 			}
 			dir = nextDir;
 		}
-		if (maze.isTeleportSpace(getTile())) {
+		if (getMaze().isTeleportSpace(getTile())) {
 			teleport();
 			return;
 		}
@@ -77,14 +74,14 @@ public abstract class MazeMover extends TileWorldEntity {
 
 	public boolean canMove(int targetDir) {
 		Tile current = getTile(), next = computeNextTile(current, targetDir);
-		if (maze.isTeleportSpace(current)) {
+		if (getMaze().isTeleportSpace(current)) {
 			// in teleport space direction can only be reversed
 			return targetDir == dir || targetDir == NESW.inv(dir);
 		}
-		if (maze.getContent(next) == WALL) {
+		if (getMaze().getContent(next) == WALL) {
 			return false;
 		}
-		if (maze.getContent(next) == DOOR) {
+		if (getMaze().getContent(next) == DOOR) {
 			return canWalkThroughDoor(next);
 		}
 		if (targetDir == NESW.right(dir) || targetDir == NESW.left(dir)) {
@@ -113,12 +110,12 @@ public abstract class MazeMover extends TileWorldEntity {
 
 	private void teleport() {
 		Tile tile = getTile();
-		if (tile.col > (maze.numCols() - 1) + maze.getTeleportLength()) {
+		if (tile.col > (getMaze().numCols() - 1) + getMaze().getTeleportLength()) {
 			// reenter maze from the left
 			placeAt(0, tile.row);
-		} else if (tile.col < -maze.getTeleportLength()) {
+		} else if (tile.col < -getMaze().getTeleportLength()) {
 			// reenter maze from the right
-			placeAt(maze.numCols() - 1, tile.row);
+			placeAt(getMaze().numCols() - 1, tile.row);
 		} else {
 			tf.moveTo(computePosition(dir));
 		}

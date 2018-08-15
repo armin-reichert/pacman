@@ -17,7 +17,7 @@ class Flee implements Navigation {
 
 	public Flee(MazeMover chaser) {
 		this.chaser = chaser;
-		maze = chaser.maze;
+		maze = chaser.getMaze();
 		corners.add(new Tile(1, 1));
 		corners.add(new Tile(maze.numCols() - 2, 1));
 		corners.add(new Tile(1, maze.numRows() - 2));

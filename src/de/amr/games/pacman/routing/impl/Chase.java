@@ -11,22 +11,21 @@ import de.amr.games.pacman.routing.Navigation;
 class Chase implements Navigation {
 
 	private final MazeMover victim;
-	private final Maze maze;
 
 	public Chase(MazeMover victim) {
 		this.victim = victim;
-		maze = victim.maze;
 	}
 
 	@Override
 	public MazeRoute computeRoute(MazeMover chaser) {
+		Maze maze = chaser.getMaze();
 		MazeRoute route = new MazeRoute();
 		if (maze.isTeleportSpace(victim.getTile())) {
 			route.dir = chaser.getNextDir();
 			return route;
 		}
-		route.path = chaser.maze.findPath(chaser.getTile(), victim.getTile());
-		route.dir = chaser.maze.alongPath(route.path).orElse(chaser.getNextDir());
+		route.path = maze.findPath(chaser.getTile(), victim.getTile());
+		route.dir = maze.alongPath(route.path).orElse(chaser.getNextDir());
 		return route;
 	}
 }

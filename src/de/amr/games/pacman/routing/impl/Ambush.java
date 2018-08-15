@@ -20,7 +20,7 @@ class Ambush implements Navigation {
 
 	public Ambush(MazeMover victim) {
 		this.victim = victim;
-		this.maze = victim.maze;
+		this.maze = victim.getMaze();
 	}
 
 	@Override
@@ -43,7 +43,7 @@ class Ambush implements Navigation {
 	private Optional<Tile> ahead(int n, MazeMover refugee) {
 		Tile current = refugee.getTile();
 		for (int i = 0; i < n; ++i) {
-			Optional<Tile> next = refugee.maze.neighborTile(current, refugee.getDir());
+			Optional<Tile> next = maze.neighborTile(current, refugee.getDir());
 			if (next.isPresent()) {
 				current = next.get();
 			}

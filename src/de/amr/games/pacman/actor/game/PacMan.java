@@ -26,6 +26,7 @@ import de.amr.games.pacman.controller.event.game.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.game.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Content;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
@@ -45,10 +46,15 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 	private int digestionTicks;
 
 	public PacMan(Game game) {
-		super(game.maze, new EnumMap<>(PacManState.class));
+		super(new EnumMap<>(PacManState.class));
 		this.game = game;
 		controller = buildStateMachine();
 		createSprites();
+	}
+
+	@Override
+	public Maze getMaze() {
+		return game.maze;
 	}
 
 	public void setEventManager(EventManager<GameEvent> events) {
@@ -105,10 +111,10 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 	public float getSpeed() {
 		return game.getPacManSpeed(getState());
 	}
-	
+
 	@Override
 	public Tile getHome() {
-		return maze.pacManHome;
+		return getMaze().pacManHome;
 	}
 
 	private void initPacMan() {
@@ -205,7 +211,7 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 				events.publish(new PacManGhostCollisionEvent(collidingGhost.get()));
 				return;
 			}
-			if (maze.isTeleportSpace(tile)) {
+			if (getMaze().isTeleportSpace(tile)) {
 				return;
 			}
 			// Unhonored bonus?
@@ -216,7 +222,7 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 				return;
 			}
 			// Food?
-			char food = maze.getContent(tile);
+			char food = getMaze().getContent(tile);
 			if (food == Content.PELLET || food == Content.ENERGIZER) {
 				digestionTicks = game.getDigestionTicks(food);
 				events.publish(new FoodFoundEvent(tile, food));
