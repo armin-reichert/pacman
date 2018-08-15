@@ -114,8 +114,12 @@ public class Maze {
 		return graph.vertices().mapToObj(this::tile);
 	}
 
-	public boolean isValidTile(Tile tile) {
+	private boolean isValidTile(Tile tile) {
 		return graph.isValidCol(tile.col) && graph.isValidRow(tile.row);
+	}
+
+	public boolean isTeleportSpace(Tile tile) {
+		return !isValidTile(tile);
 	}
 
 	public void resetFood() {
@@ -168,8 +172,6 @@ public class Maze {
 	public OptionalInt alongPath(List<Tile> path) {
 		return path.size() < 2 ? OptionalInt.empty() : direction(path.get(0), path.get(1));
 	}
-
-	// convert between vertex numbers ("cells") and tiles
 
 	public int cell(Tile tile) {
 		return graph.cell(tile.col, tile.row);

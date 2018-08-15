@@ -188,21 +188,22 @@ public class Game {
 		return sec(9f + new Random().nextFloat());
 	}
 
-	public float getGhostSpeed(GhostState ghostState, boolean inTunnel) {
+	public float getGhostSpeed(GhostState ghostState, Tile tile) {
+		boolean tunnel = maze.isTeleportSpace(tile) || maze.getContent(tile) == Content.TUNNEL;
 		float tunnelSpeed = speed(fValue(Field.fGhostTunnelSpeed));
 		switch (ghostState) {
 		case AGGRO:
-			return inTunnel ? tunnelSpeed : speed(fValue(Field.fGhostSpeed));
+			return tunnel ? tunnelSpeed : speed(fValue(Field.fGhostSpeed));
 		case DYING:
 			return 0;
 		case DEAD:
 			return speed(1.5f);
 		case AFRAID:
-			return inTunnel ? tunnelSpeed : speed(fValue(Field.fGhostAfraidSpeed));
+			return tunnel ? tunnelSpeed : speed(fValue(Field.fGhostAfraidSpeed));
 		case SAFE:
 			return speed(0.75f);
 		case SCATTERING:
-			return inTunnel ? tunnelSpeed : speed(fValue(Field.fGhostSpeed));
+			return tunnel ? tunnelSpeed : speed(fValue(Field.fGhostSpeed));
 		default:
 			throw new IllegalStateException();
 		}

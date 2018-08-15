@@ -54,7 +54,7 @@ public class Ghost extends ControlledMazeMover<GhostState, GameEvent> {
 
 	@Override
 	public float getSpeed() {
-		return game.getGhostSpeed(getState(), isInsideTunnel());
+		return game.getGhostSpeed(getState(), getTile());
 	}
 
 	private void initGhost() {

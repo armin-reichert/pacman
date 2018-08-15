@@ -27,8 +27,7 @@ class Flee implements Navigation {
 	@Override
 	public MazeRoute computeRoute(MazeMover refugee) {
 		MazeRoute route = new MazeRoute();
-		if (chaser.isOutsideMaze() || refugee.isOutsideMaze()) {
-			// chaser or refugee is teleporting
+		if (maze.isTeleportSpace(chaser.getTile()) || maze.isTeleportSpace(refugee.getTile())) {
 			route.dir = refugee.getNextDir();
 			return route;
 		}

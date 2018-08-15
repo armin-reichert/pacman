@@ -42,7 +42,7 @@ public class ScoreCounter {
 		}
 		store();
 	}
-	
+
 	private void store() {
 		prop.setProperty("score", String.valueOf(hiscore));
 		prop.setProperty("level", String.valueOf(level));

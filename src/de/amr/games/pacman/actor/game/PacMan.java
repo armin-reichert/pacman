@@ -65,7 +65,7 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 		sprite = s_walking_to[getDir()];
 		sprite.enableAnimation(canMove(getDir()));
 	}
-	
+
 	@Override
 	protected boolean canWalkThroughDoor() {
 		return false;
@@ -200,7 +200,7 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 				events.publish(new PacManGhostCollisionEvent(collidingGhost.get()));
 				return;
 			}
-			if (isOutsideMaze()) {
+			if (maze.isTeleportSpace(tile)) {
 				return;
 			}
 			// Unhonored bonus?

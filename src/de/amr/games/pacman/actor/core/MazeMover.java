@@ -9,7 +9,6 @@ import static java.lang.Math.round;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.model.Content;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
@@ -53,13 +52,8 @@ public abstract class MazeMover extends TileWorldEntity {
 		return nextDir;
 	}
 
-	public boolean isInsideTunnel() {
-		return maze.getContent(getTile()) == Content.TUNNEL;
-	}
-
-	public boolean isOutsideMaze() {
-		Tile tile = getTile();
-		return tile.row < 0 || tile.row >= maze.numRows() || tile.col < 0 || tile.col >= maze.numCols();
+	protected boolean canWalkThroughDoor() {
+		return true;
 	}
 
 	public void move() {
@@ -67,7 +61,7 @@ public abstract class MazeMover extends TileWorldEntity {
 		if (canMove(nextDir)) {
 			dir = nextDir;
 		}
-		if (isOutsideMaze()) {
+		if (maze.isTeleportSpace(getTile())) {
 			teleport();
 		} else if (canMove(dir)) {
 			tf.moveTo(computePosition(dir));
@@ -76,29 +70,12 @@ public abstract class MazeMover extends TileWorldEntity {
 		}
 	}
 
-	private void teleport() {
-		Tile tile = getTile();
-		if (tile.col > (maze.numCols() - 1) + maze.getTeleportLength()) {
-			// reenter maze from the left
-			placeAt(0, tile.row);
-		} else if (tile.col < -maze.getTeleportLength()) {
-			// reenter maze from the right
-			placeAt(maze.numCols() - 1, tile.row);
-		} else {
-			tf.moveTo(computePosition(dir));
-		}
-	}
-	
-	protected boolean canWalkThroughDoor() {
-		return true;
-	}
-
 	public boolean canMove(int targetDir) {
-		if (isOutsideMaze()) {
-			// when teleporting, direction can only be inversed
+		Tile current = getTile(), next = computeNextTile(current, targetDir);
+		if (maze.isTeleportSpace(current)) {
+			// in teleport space direction can only be reversed
 			return targetDir == dir || targetDir == NESW.inv(dir);
 		}
-		Tile current = getTile(), next = computeNextTile(current, targetDir);
 		if (next.equals(current)) {
 			return true;
 		}
@@ -129,6 +106,19 @@ public abstract class MazeMover extends TileWorldEntity {
 			return new Tile(current.col, round(y + getHeight()) / Game.TS);
 		default:
 			throw new IllegalArgumentException("Illegal direction: " + dir);
+		}
+	}
+
+	private void teleport() {
+		Tile tile = getTile();
+		if (tile.col > (maze.numCols() - 1) + maze.getTeleportLength()) {
+			// reenter maze from the left
+			placeAt(0, tile.row);
+		} else if (tile.col < -maze.getTeleportLength()) {
+			// reenter maze from the right
+			placeAt(maze.numCols() - 1, tile.row);
+		} else {
+			tf.moveTo(computePosition(dir));
 		}
 	}
 
