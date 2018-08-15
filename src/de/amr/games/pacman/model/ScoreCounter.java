@@ -11,39 +11,43 @@ import de.amr.easy.game.Application;
 
 public class ScoreCounter {
 
-	private static final File FILE = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
-
 	private final Game game;
+	private Properties prop = new Properties();
+	private File file;
 	private int score;
 	private int hiscore;
-	private int level;
+	private int level = 1;
+	private boolean newHiscore;
 
 	public ScoreCounter(Game game) {
 		this.game = game;
-		hiscore = 0;
-		level = 1;
+		file = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
 	}
 
 	public void load() {
-		score = 0;
-		Properties prop = new Properties();
 		try {
-			prop.loadFromXML(new FileInputStream(FILE));
+			prop.loadFromXML(new FileInputStream(file));
 		} catch (FileNotFoundException e) {
-			save(0);
+			store();
 		} catch (IOException e) {
 			Application.LOGGER.info("Could not load hiscore file");
 		}
 		hiscore = Integer.valueOf(prop.getProperty("score", "0"));
-		level = Integer.valueOf(prop.getProperty("level", "0"));
+		level = Integer.valueOf(prop.getProperty("level", "1"));
 	}
 
-	public void save(int level) {
-		Properties prop = new Properties();
+	public void save() {
+		if (!newHiscore) {
+			return;
+		}
+		store();
+	}
+	
+	private void store() {
 		prop.setProperty("score", String.valueOf(hiscore));
 		prop.setProperty("level", String.valueOf(level));
 		try {
-			prop.storeToXML(new FileOutputStream(FILE), "Pac-Man Highscore");
+			prop.storeToXML(new FileOutputStream(file), "Pac-Man Highscore");
 		} catch (FileNotFoundException e) {
 			Application.LOGGER.info("Could not find hiscore file");
 		} catch (IOException e) {
@@ -51,17 +55,21 @@ public class ScoreCounter {
 		}
 	}
 
-	public void add(int n) {
-		score += n;
+	public void set(int n) {
+		score = n;
 		checkHiscore();
+
+	}
+
+	public void add(int n) {
+		set(score + n);
 	}
 
 	private void checkHiscore() {
-		if (score >= hiscore) {
+		if (score > hiscore) {
+			newHiscore = true;
 			hiscore = score;
-			if (game.getLevel() > level) {
-				level = game.getLevel();
-			}
+			level = game.getLevel();
 		}
 	}
 
@@ -73,7 +81,7 @@ public class ScoreCounter {
 		return hiscore;
 	}
 
-	public int getLevel() {
+	public int getHiscoreLevel() {
 		return level;
 	}
 }

@@ -355,7 +355,7 @@ public class GameController implements Controller {
 		public void onEntry() {
 			gameView.enableAnimation(false);
 			gameView.showInfo("Game Over!", Color.RED);
-			game.score.save(game.getLevel());
+			game.score.save();
 		}
 
 		@Override
