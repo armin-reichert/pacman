@@ -272,6 +272,7 @@ Other features:
 - Display of entity states and timers can be switched on/off at runtime (key 's')
 - Display of entity routes can be switched on/off at runtime (key 'r')
 - Ghosts can be switched on/off (keys 'b', 'p', 'i', 'c')
+- Movement on grid can be debugged (key 'g' shows grid and actor alignments)
 - Game can be paused (CTRL+p) and frame rate can be changed at runtime (F2 opens dialog)
 
 The navigation behavior of the actors is implemented modularly (*strategy pattern*) and can easily be changed.
