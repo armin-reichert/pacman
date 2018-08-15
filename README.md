@@ -1,4 +1,6 @@
-# Pac-Man (with an emphasis on state machines, in progress)
+# An easily understandable Pac-Man implementation         
+
+(This is work in progress)
 
 <img src="doc/pacman.png"/>
 
