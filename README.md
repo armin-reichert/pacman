@@ -143,9 +143,9 @@ StateMachine.define(PlayState.class, GameEvent.class)
 .endStateMachine();
 ```
 
-The states of this state machine are implemented as separate (inner) classes. However, this is not necessary in simpler cases and is the decision of the implementor. Isn't this clear and readable code?
+The states of this state machine are implemented as separate (inner) classes. However, this is not necessary in simpler cases and is the decision of the implementor.
 
-Pac-Man's state machine:
+Pac-Man's state machine is implemented as follows:
 
 ```java
 StateMachine.define(PacManState.class, GameEvent.class)
