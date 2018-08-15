@@ -48,93 +48,96 @@ Sounds all well and nice, but how does that look in the real code? Here is the i
 
 ```java
 StateMachine.define(PlayState.class, GameEvent.class)
-    
-    .description("[GameControl]")
-    .initialState(READY)
-    
-    .states()
-    
-        .state(READY)
-            .impl(new ReadyState())
-            .timeoutAfter(game::getReadyTime)
-        
-        .state(PLAYING)
-            .impl(new PlayingState())
-        
-        .state(CHANGING_LEVEL)
-            .impl(new ChangingLevelState())
-            .timeoutAfter(game::getLevelChangingTime)
-        
-        .state(GHOST_DYING)
-            .impl(new GhostDyingState())
-            .timeoutAfter(game::getGhostDyingTime)
-        
-        .state(PACMAN_DYING)
-            .impl(new PacManDyingState())
-        
-        .state(GAME_OVER)
-            .impl(new GameOverState())
 
-    .transitions()
-        
-        .when(READY).then(PLAYING).onTimeout()
-            
-        .stay(PLAYING)
-            .on(FoodFoundEvent.class)
-            .act(e -> playingState().onFoodFound(e))
-            
-        .stay(PLAYING)
-            .on(BonusFoundEvent.class)
-            .act(e -> playingState().onBonusFound(e))
-            
-        .stay(PLAYING)
-            .on(PacManGhostCollisionEvent.class)
-            .act(e -> playingState().onPacManGhostCollision(e))
-            
-        .stay(PLAYING)
-            .on(PacManGainsPowerEvent.class)
-            .act(e -> playingState().onPacManGainsPower(e))
-            
-        .stay(PLAYING)
-            .on(PacManGettingWeakerEvent.class)
-            .act(e -> playingState().onPacManGettingWeaker(e))
-            
-        .stay(PLAYING)
-            .on(PacManLostPowerEvent.class)
-            .act(e -> playingState().onPacManLostPower(e))
-    
-        .when(PLAYING).then(GHOST_DYING)
-            .on(GhostKilledEvent.class)
-            .act(e -> playingState().onGhostKilled(e))
-            
-        .when(PLAYING).then(PACMAN_DYING)
-            .on(PacManKilledEvent.class)
-            .act(e -> playingState().onPacManKilled(e))
-            
-        .when(PLAYING).then(CHANGING_LEVEL)
-            .on(LevelCompletedEvent.class)
-            
-        .when(CHANGING_LEVEL).then(PLAYING)
-            .onTimeout()
-    
-        .stay(GHOST_DYING)
-            .on(PacManGettingWeakerEvent.class)
-        
-        .when(GHOST_DYING).then(PLAYING)
-            .onTimeout()
-            
-        .when(PACMAN_DYING).then(GAME_OVER)
-            .on(PacManDiedEvent.class)
-            .condition(() -> game.livesRemaining == 0)
-            
-        .when(PACMAN_DYING).then(PLAYING)
-            .on(PacManDiedEvent.class)
-            .condition(() -> game.livesRemaining > 0)
-            .act(() -> actors.init())
-    
-        .when(GAME_OVER).then(READY)
-            .condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
-                    
+	.description("[GameControl]")
+	.initialState(READY)
+
+	.states()
+
+		.state(READY)
+			.impl(new ReadyState())
+			.timeoutAfter(game::getReadyTime)
+
+		.state(PLAYING)
+			.impl(new PlayingState())
+
+		.state(CHANGING_LEVEL)
+			.impl(new ChangingLevelState())
+			.timeoutAfter(game::getLevelChangingTime)
+
+		.state(GHOST_DYING)
+			.impl(new GhostDyingState())
+			.timeoutAfter(game::getGhostDyingTime)
+
+		.state(PACMAN_DYING)
+			.impl(new PacManDyingState())
+
+		.state(GAME_OVER)
+			.impl(new GameOverState())
+
+	.transitions()
+
+		.when(READY).then(PLAYING).onTimeout()
+
+		.stay(PLAYING)
+			.on(FoodFoundEvent.class)
+			.act(e -> playingState().onFoodFound(e))
+
+		.stay(PLAYING)
+			.on(BonusFoundEvent.class)
+			.act(e -> playingState().onBonusFound(e))
+
+		.stay(PLAYING)
+			.on(PacManGhostCollisionEvent.class)
+			.act(e -> playingState().onPacManGhostCollision(e))
+
+		.stay(PLAYING)
+			.on(PacManGainsPowerEvent.class)
+			.act(e -> playingState().onPacManGainsPower(e))
+
+		.stay(PLAYING)
+			.on(PacManGettingWeakerEvent.class)
+			.act(e -> playingState().onPacManGettingWeaker(e))
+
+		.stay(PLAYING)
+			.on(PacManLostPowerEvent.class)
+			.act(e -> playingState().onPacManLostPower(e))
+
+		.when(PLAYING).then(GHOST_DYING)
+			.on(GhostKilledEvent.class)
+			.act(e -> playingState().onGhostKilled(e))
+
+		.when(PLAYING).then(PACMAN_DYING)
+			.on(PacManKilledEvent.class)
+			.act(e -> playingState().onPacManKilled(e))
+
+		.when(PLAYING).then(CHANGING_LEVEL)
+			.on(LevelCompletedEvent.class)
+
+		.when(CHANGING_LEVEL).then(PLAYING)
+			.onTimeout()
+
+		.stay(CHANGING_LEVEL)
+			.on(PacManGettingWeakerEvent.class)
+
+		.stay(GHOST_DYING)
+			.on(PacManGettingWeakerEvent.class)
+
+		.when(GHOST_DYING).then(PLAYING)
+			.onTimeout()
+
+		.when(PACMAN_DYING).then(GAME_OVER)
+			.on(PacManDiedEvent.class)
+			.condition(() -> game.lives == 0)
+
+		.when(PACMAN_DYING).then(PLAYING)
+			.on(PacManDiedEvent.class)
+			.condition(() -> game.lives > 0)
+			.act(() -> actors.init())
+
+		.when(GAME_OVER).then(READY)
+			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+
 .endStateMachine();
 ```
 
@@ -143,50 +146,50 @@ The states of this state machine are implemented as separate (inner) classes. Ho
 Pac-Man's state machine:
 
 ```java
-		StateMachine.define(PacManState.class, GameEvent.class)
-				
-			.description("[Pac-Man]")
-			.initialState(HOME)
+StateMachine.define(PacManState.class, GameEvent.class)
 
-			.states()
+	.description("[Pac-Man]")
+	.initialState(HOME)
 
-				.state(HOME)
-					.onEntry(this::initPacMan)
-	
-				.state(HUNGRY)
-					.impl(new HungryState())
-					
-				.state(GREEDY)
-					.impl(new GreedyState())
-					.timeoutAfter(game::getPacManGreedyTime)
-	
-				.state(DYING)
-					.onEntry(() -> sprite = s_dying)
-					.timeoutAfter(() -> game.sec(2))
+	.states()
 
-			.transitions()
+		.state(HOME)
+			.onEntry(this::initPacMan)
 
-				.when(HOME).then(HUNGRY)
-				
-				.when(HUNGRY).then(DYING)
-					.on(PacManKilledEvent.class)
-	
-				.when(HUNGRY).then(GREEDY)
-					.on(PacManGainsPowerEvent.class)
-	
-				.stay(GREEDY)
-					.on(PacManGainsPowerEvent.class)
-					.act(() -> controller.resetTimer())
-	
-				.when(GREEDY).then(HUNGRY)
-					.onTimeout()
-					.act(() -> events.publishEvent(new PacManLostPowerEvent()))
-	
-				.stay(DYING)
-					.onTimeout()
-					.act(e -> events.publishEvent(new PacManDiedEvent()))
+		.state(HUNGRY)
+			.impl(new HungryState())
 
-		.endStateMachine();
+		.state(GREEDY)
+			.impl(new GreedyState())
+			.timeoutAfter(game::getPacManGreedyTime)
+
+		.state(DYING)
+			.onEntry(() -> sprite = s_dying)
+			.timeoutAfter(() -> game.sec(2))
+
+	.transitions()
+
+		.when(HOME).then(HUNGRY)
+
+		.when(HUNGRY).then(DYING)
+			.on(PacManKilledEvent.class)
+
+		.when(HUNGRY).then(GREEDY)
+			.on(PacManGainsPowerEvent.class)
+
+		.stay(GREEDY)
+			.on(PacManGainsPowerEvent.class)
+			.act(() -> controller.resetTimer())
+
+		.when(GREEDY).then(HUNGRY)
+			.onTimeout()
+			.act(() -> events.publish(new PacManLostPowerEvent()))
+
+		.stay(DYING)
+			.onTimeout()
+			.act(e -> events.publish(new PacManDiedEvent()))
+
+.endStateMachine();
 ```
 
 The processing of all used state machines can be traced to some logger. If a state machine processes an event and does not find a suitable state transition, a runtime exception is thrown. This is very useful for finding gaps in the state machine definitions because you will get a direct hint what is missing in your control logic. Without explicit state machines your program would probably just misbehave but give no information on the why and where.
@@ -273,11 +276,11 @@ The navigation behavior of the actors is implemented modularly (*strategy patter
 
 Blinky's navigation behaviour is defined as follows:
 ```java
-Ghost ghost = new Ghost(Ghosts.Blinky, pacMan, game, game.maze.blinkyHome, Top4.E, RED_GHOST);
-ghost.setNavigation(Ghost.State.AGGRO, chase(pacMan));
-ghost.setNavigation(Ghost.State.AFRAID, flee(pacMan));
-ghost.setNavigation(Ghost.State.DEAD, goHome());
-ghost.setNavigation(Ghost.State.SAFE, bounce());
+Ghost ghost = new Ghost(GhostName.Blinky, pacMan, game, game.maze.blinkyHome, Top4.E, GhostColor.RED);
+ghost.setNavigation(GhostState.AGGRO, chase(pacMan));
+ghost.setNavigation(GhostState.AFRAID, flee(pacMan));
+ghost.setNavigation(GhostState.DEAD, goHome());
+ghost.setNavigation(GhostState.SAFE, bounce());
 ```
 
 The move behaviours are implemented as reusable classes with a common interface. Behaviours which need to compute shortest routes in the maze can just call the method *Maze.findPath(Tile source, Tile target)*.
@@ -287,19 +290,16 @@ This method runs the A* path finding algorithm on the underlying grid graph (whi
 As an example, this is the *chase(victim)* code:
 
 ```java
-/**
- * Chasing a refugee through the maze.
- */
 class Chase implements Navigation {
 
-	private final MazeMover<?> victim;
+	private final MazeMover victim;
 
-	public Chase(MazeMover<?> victim) {
+	public Chase(MazeMover victim) {
 		this.victim = victim;
 	}
 
 	@Override
-	public MazeRoute computeRoute(MazeMover<?> chaser) {
+	public MazeRoute computeRoute(MazeMover chaser) {
 		MazeRoute route = new MazeRoute();
 		if (victim.isOutsideMaze()) {
 			route.dir = chaser.getNextDir();
@@ -314,11 +314,7 @@ class Chase implements Navigation {
 
 ## Summary
 
-I hope this project fulfils these goals:
-- Provide a clean, readable implementation of a Pac-Man like game
-- Motivate usage of explicit state machines in your code
-- Provide a base for trying different state machine implementations
-- Provide a template for your own Pac-Man game
+The goal of this project was to implement a Pac-Man like game in a way that also beginning programmers can fully understand how the game is working. Therefore I tried to structure the game according to the MVC pattern and to separate the control logic into explicit state machines. The state machines are defined in a declarative way instead of writing the down as switch-statements or other low-level implementations. The game uses a very simple game library but it should not be too difficult to write these infrastructure parts (game loop, window etc.) from scratch. 
 
 It would certainly also be useful to further decouple the UI from the game model and controller to enable an easy replacement of the complete UI.
 
