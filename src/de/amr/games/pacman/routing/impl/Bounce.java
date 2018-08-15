@@ -13,7 +13,7 @@ class Bounce implements Navigation {
 
 	@Override
 	public MazeRoute computeRoute(MazeMover bouncer) {
-		RouteData route = new RouteData();
+		MazeRoute route = new MazeRoute();
 		route.dir = isReflected(bouncer) ? NESW.inv(bouncer.getDir()) : bouncer.getDir();
 		return route;
 	}

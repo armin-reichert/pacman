@@ -300,7 +300,7 @@ class Chase implements Navigation {
 
 	@Override
 	public MazeRoute computeRoute(MazeMover<?> chaser) {
-		RouteData route = new RouteData();
+		MazeRoute route = new MazeRoute();
 		if (victim.isOutsideMaze()) {
 			route.dir = chaser.getNextDir();
 			return route;

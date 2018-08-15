@@ -1,12 +1,13 @@
 package de.amr.games.pacman.routing;
 
+import java.util.Collections;
 import java.util.List;
 
 import de.amr.games.pacman.model.Tile;
 
-public interface MazeRoute {
+public class MazeRoute {
 
-	int getDirection();
+	public int dir;
 
-	List<Tile> getPath();
+	public List<Tile> path = Collections.emptyList();
 }

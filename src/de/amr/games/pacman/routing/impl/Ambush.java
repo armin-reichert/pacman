@@ -16,19 +16,20 @@ import de.amr.games.pacman.routing.Navigation;
 class Ambush implements Navigation {
 
 	private final MazeMover victim;
+	private final Maze maze;
 
 	public Ambush(MazeMover victim) {
 		this.victim = victim;
+		this.maze = victim.maze;
 	}
 
 	@Override
 	public MazeRoute computeRoute(MazeMover ambusher) {
-		RouteData route = new RouteData();
+		MazeRoute route = new MazeRoute();
 		if (victim.isOutsideMaze()) {
 			route.dir = ambusher.getNextDir();
 			return route;
 		}
-		Maze maze = victim.maze;
 		Optional<Tile> fourAhead = ahead(4, victim);
 		if (fourAhead.isPresent() && maze.getContent(fourAhead.get()) != WALL) {
 			route.path = maze.findPath(ambusher.getTile(), fourAhead.get());

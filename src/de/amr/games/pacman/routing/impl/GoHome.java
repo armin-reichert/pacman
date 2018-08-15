@@ -8,7 +8,7 @@ class GoHome implements Navigation {
 
 	@Override
 	public MazeRoute computeRoute(MazeMover mover) {
-		RouteData route = new RouteData();
+		MazeRoute route = new MazeRoute();
 		route.path = mover.maze.findPath(mover.getTile(), mover.homeTile);
 		route.dir = mover.maze.alongPath(route.path).orElse(mover.getNextDir());
 		return route;

@@ -196,7 +196,7 @@ public class ExtendedGamePanel extends GamePanel {
 	}
 
 	private void drawRoute(Graphics2D g, Ghost ghost) {
-		List<Tile> path = ghost.getNavigation().computeRoute(ghost).getPath();
+		List<Tile> path = ghost.getNavigation().computeRoute(ghost).path;
 		if (path.size() > 1) {
 			g.setColor(ghostColor(ghost));
 			g.translate(mazePanel.tf.getX(), mazePanel.tf.getY());
