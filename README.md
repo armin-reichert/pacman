@@ -314,7 +314,7 @@ class Chase implements Navigation {
 
 ## Summary
 
-The goal of this project was to implement a Pac-Man like game in a way that also beginning programmers can fully understand how the game is working. Therefore I tried to structure the game according to the MVC pattern and to separate the control logic into explicit state machines. The state machines are defined in a declarative way instead of writing the down as switch-statements or other low-level implementations. The game uses a very simple game library but it should not be too difficult to write these infrastructure parts (game loop, window etc.) from scratch. 
+The goal of this project was to implement a Pac-Man like game in a way that also beginning programmers can fully understand how the game is working. Therefore I tried to structure the game according to the MVC pattern and to separate the control logic into explicit state machines. The state machines are defined in a declarative way instead of writing them down as switch-statements or other low-level implementations. The game uses a very simple game library but it should not be too difficult to write these infrastructure parts (game loop, window etc.) from scratch. 
 
 It would certainly also be useful to further decouple the UI from the game model and controller to enable an easy replacement of the complete UI.
 
