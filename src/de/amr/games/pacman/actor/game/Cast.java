@@ -101,8 +101,8 @@ public class Cast implements PacManWorld {
 		removeBonus();
 	}
 
-	public void subscribe(Consumer<GameEvent> observer) {
-		events.subscribe(observer);
+	public void subscribe(Consumer<GameEvent> subscriber) {
+		events.subscribe(subscriber);
 	}
 
 	public Ghost getBlinky() {
