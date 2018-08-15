@@ -52,21 +52,26 @@ public abstract class MazeMover extends TileWorldEntity {
 		return nextDir;
 	}
 
-	protected boolean canWalkThroughDoor() {
+	protected boolean canWalkThroughDoor(Tile door) {
 		return true;
 	}
 
 	public void move() {
 		nextDir = getIntendedNextDir();
 		if (canMove(nextDir)) {
+			if (nextDir == NESW.left(dir) || nextDir == NESW.right(dir)) {
+				placeAt(getTile()); // align on tile
+			}
 			dir = nextDir;
 		}
 		if (maze.isTeleportSpace(getTile())) {
 			teleport();
-		} else if (canMove(dir)) {
+			return;
+		} 
+		if (canMove(dir)) {
 			tf.moveTo(computePosition(dir));
 		} else {
-			placeAt(getTile());
+			placeAt(getTile()); // align on tile
 		}
 	}
 
@@ -76,18 +81,15 @@ public abstract class MazeMover extends TileWorldEntity {
 			// in teleport space direction can only be reversed
 			return targetDir == dir || targetDir == NESW.inv(dir);
 		}
-		if (next.equals(current)) {
-			return true;
-		}
 		if (maze.getContent(next) == WALL) {
 			return false;
 		}
 		if (maze.getContent(next) == DOOR) {
-			return canWalkThroughDoor();
+			return canWalkThroughDoor(next);
 		}
 		if (targetDir == NESW.right(dir) || targetDir == NESW.left(dir)) {
-			placeAt(getTile()); // TODO this is not correct
-			return isGridAligned();
+			//TODO this is not nice
+			return targetDir == Top4.N || targetDir == Top4.S ? getAlignmentX() <= 1 : getAlignmentY() <= 1;
 		}
 		return true;
 	}

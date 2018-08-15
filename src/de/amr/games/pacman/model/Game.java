@@ -197,7 +197,7 @@ public class Game {
 		case DYING:
 			return 0;
 		case DEAD:
-			return speed(1.5f);
+			return speed(0.5f + new Random().nextFloat());
 		case AFRAID:
 			return tunnel ? tunnelSpeed : speed(fValue(Field.fGhostAfraidSpeed));
 		case SAFE:

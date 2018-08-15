@@ -117,8 +117,8 @@ public class ExtendedGamePanel extends GamePanel {
 		super.draw(g);
 		if (showGrid) {
 			drawGrid(g);
-			drawActorPosition(actors.getPacMan(), g);
-			actors.getActiveGhosts().forEach(ghost -> drawActorPosition(ghost, g));
+			drawActorGridAlignment(actors.getPacMan(), g);
+			actors.getActiveGhosts().forEach(ghost -> drawActorGridAlignment(ghost, g));
 		}
 		if (showRoutes) {
 			actors.getActiveGhosts().forEach(ghost -> drawRoute(g, ghost));
@@ -185,16 +185,16 @@ public class ExtendedGamePanel extends GamePanel {
 		g.translate(-x, -y);
 	}
 
-	private void drawActorPosition(MazeMover actor, Graphics2D g) {
+	private void drawActorGridAlignment(MazeMover actor, Graphics2D g) {
 		g.setColor(Color.GREEN);
 		g.translate(mazePanel.tf.getX(), mazePanel.tf.getY());
 		g.translate(actor.tf.getX(), actor.tf.getY());
 		int w = actor.getWidth(), h = actor.getHeight();
-		if (actor.isAlignedY()) {
+		if (actor.getAlignmentY() == 0) {
 			g.drawLine(0, 0, w, 0);
 			g.drawLine(0, h, w, h);
 		}
-		if (actor.isAlignedX()) {
+		if (actor.getAlignmentX() == 0) {
 			g.drawLine(0, 0, 0, h);
 			g.drawLine(w, 0, w, h);
 		}

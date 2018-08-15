@@ -67,7 +67,7 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 	}
 
 	@Override
-	protected boolean canWalkThroughDoor() {
+	protected boolean canWalkThroughDoor(Tile door) {
 		return false;
 	}
 

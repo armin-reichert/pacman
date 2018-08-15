@@ -14,6 +14,7 @@ import java.util.EnumMap;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.sprite.Sprite;
+import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.core.ControlledMazeMover;
 import de.amr.games.pacman.controller.event.game.GameEvent;
 import de.amr.games.pacman.controller.event.game.GhostKilledEvent;
@@ -63,6 +64,11 @@ public class Ghost extends ControlledMazeMover<GhostState, GameEvent> {
 		setNextDir(initialDir);
 		getSprites().forEach(Sprite::resetAnimation);
 		sprite = s_color[getDir()];
+	}
+	
+	@Override
+	protected boolean canWalkThroughDoor(Tile door) {
+		return getState() == GhostState.DEAD || getTile().row >= door.row;
 	}
 
 	// Sprites
@@ -154,19 +160,24 @@ public class Ghost extends ControlledMazeMover<GhostState, GameEvent> {
 					.stay(SAFE).on(PacManLostPowerEvent.class)
 					.stay(SAFE).on(GhostKilledEvent.class)
 						
-					.when(AGGRO).on(GhostKilledEvent.class).then(DEAD) // used for cheating
 					.when(AGGRO).on(PacManGainsPowerEvent.class).then(AFRAID)
+					.when(AGGRO).on(GhostKilledEvent.class).then(DEAD) // used for cheating
 						
-					.stay(AFRAID).on(PacManGettingWeakerEvent.class).act(e -> sprite = s_blinking)
 					.stay(AFRAID).on(PacManGainsPowerEvent.class)
+					.stay(AFRAID).on(PacManGettingWeakerEvent.class).act(e -> sprite = s_blinking)
 					.when(AFRAID).on(PacManLostPowerEvent.class).then(AGGRO)
 					.when(AFRAID).on(GhostKilledEvent.class).then(DYING)
 						
 					.when(DYING).then(DEAD).onTimeout()
 						
+					.stay(DEAD).on(PacManGainsPowerEvent.class)
 					.stay(DEAD).on(PacManGettingWeakerEvent.class)
 					.stay(DEAD).on(PacManLostPowerEvent.class)
 					.when(DEAD).condition(() -> getTile().equals(homeTile)).then(SAFE)
+						.act(() -> {
+							placeAt(homeTile);
+							setDir(Top4.N);
+						})
 
 		.endStateMachine();
 		/*@formatter:on*/

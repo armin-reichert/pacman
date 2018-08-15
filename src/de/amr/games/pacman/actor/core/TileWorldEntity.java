@@ -36,15 +36,15 @@ public abstract class TileWorldEntity extends GameEntity {
 	}
 
 	public boolean isGridAligned() {
-		return isAlignedX() && isAlignedY();
+		return getAlignmentX() == 0 && getAlignmentY() == 0;
 	}
 	
-	public boolean isAlignedX() {
-		return round(tf.getX()) % Game.TS == 0;
+	public int getAlignmentX() {
+		return round(tf.getX()) % Game.TS;
 	}
 	
-	public boolean isAlignedY() {
-		return round(tf.getY()) % Game.TS == 0;
+	public int getAlignmentY() {
+		return round(tf.getY()) % Game.TS;
 	}
 
 	@Override
