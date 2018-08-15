@@ -35,8 +35,16 @@ public abstract class TileWorldEntity extends GameEntity {
 		tf.moveTo(col * Game.TS, row * Game.TS);
 	}
 
-	public boolean isExactlyOverTile() {
-		return round(tf.getX()) % Game.TS == 0 && round(tf.getY()) % Game.TS == 0;
+	public boolean isGridAligned() {
+		return isAlignedX() && isAlignedY();
+	}
+	
+	public boolean isAlignedX() {
+		return round(tf.getX()) % Game.TS == 0;
+	}
+	
+	public boolean isAlignedY() {
+		return round(tf.getY()) % Game.TS == 0;
 	}
 
 	@Override

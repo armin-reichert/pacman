@@ -87,7 +87,7 @@ public abstract class MazeMover extends TileWorldEntity {
 		}
 		if (targetDir == NESW.right(dir) || targetDir == NESW.left(dir)) {
 			placeAt(getTile()); // TODO this is not correct
-			return isExactlyOverTile();
+			return isGridAligned();
 		}
 		return true;
 	}

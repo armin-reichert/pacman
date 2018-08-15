@@ -15,6 +15,7 @@ import java.util.logging.Level;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
+import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.actor.game.Cast;
 import de.amr.games.pacman.actor.game.Ghost;
 import de.amr.games.pacman.actor.game.PacMan;
@@ -37,7 +38,7 @@ public class ExtendedGamePanel extends GamePanel {
 		BufferedImage image = conf.createCompatibleImage(numCols * Game.TS, numRows * Game.TS + 1,
 				Transparency.TRANSLUCENT);
 		Graphics2D g = image.createGraphics();
-		g.setColor(Color.GRAY);
+		g.setColor(Color.DARK_GRAY);
 		for (int row = 0; row <= numRows; ++row) {
 			g.drawLine(0, row * Game.TS, numCols * Game.TS, row * Game.TS);
 		}
@@ -116,7 +117,8 @@ public class ExtendedGamePanel extends GamePanel {
 		super.draw(g);
 		if (showGrid) {
 			drawGrid(g);
-			drawPacManTilePosition(g);
+			drawActorPosition(actors.getPacMan(), g);
+			actors.getActiveGhosts().forEach(ghost -> drawActorPosition(ghost, g));
 		}
 		if (showRoutes) {
 			actors.getActiveGhosts().forEach(ghost -> drawRoute(g, ghost));
@@ -183,16 +185,21 @@ public class ExtendedGamePanel extends GamePanel {
 		g.translate(-x, -y);
 	}
 
-	private void drawPacManTilePosition(Graphics2D g) {
-		PacMan pacMan = actors.getPacMan();
-		if (pacMan.isExactlyOverTile()) {
-			g.translate(mazePanel.tf.getX(), mazePanel.tf.getY());
-			g.translate(pacMan.tf.getX(), pacMan.tf.getY());
-			g.setColor(Color.GREEN);
-			g.drawRect(0, 0, pacMan.getWidth(), pacMan.getHeight());
-			g.translate(-pacMan.tf.getX(), -pacMan.tf.getY());
-			g.translate(-mazePanel.tf.getX(), -mazePanel.tf.getY());
+	private void drawActorPosition(MazeMover actor, Graphics2D g) {
+		g.setColor(Color.GREEN);
+		g.translate(mazePanel.tf.getX(), mazePanel.tf.getY());
+		g.translate(actor.tf.getX(), actor.tf.getY());
+		int w = actor.getWidth(), h = actor.getHeight();
+		if (actor.isAlignedY()) {
+			g.drawLine(0, 0, w, 0);
+			g.drawLine(0, h, w, h);
 		}
+		if (actor.isAlignedX()) {
+			g.drawLine(0, 0, 0, h);
+			g.drawLine(w, 0, w, h);
+		}
+		g.translate(-actor.tf.getX(), -actor.tf.getY());
+		g.translate(-mazePanel.tf.getX(), -mazePanel.tf.getY());
 	}
 
 	private void drawRoute(Graphics2D g, Ghost ghost) {
