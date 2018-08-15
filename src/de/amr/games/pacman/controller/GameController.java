@@ -58,7 +58,7 @@ public class GameController implements Controller {
 		actors = new Cast(game);
 		gameView = new ExtendedGamePanel(maze.numCols() * Game.TS, (maze.numRows() + 5) * Game.TS, game, actors);
 		gameControl = createGameControl();
-		actors.subscribe(gameControl::process);
+		actors.events.subscribe(gameControl::process);
 	}
 
 	@Override

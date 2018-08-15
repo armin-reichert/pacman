@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import de.amr.easy.grid.impl.Top4;
@@ -78,7 +77,7 @@ public class Cast implements PacManWorld {
 		return ghost;
 	}
 
-	private final EventManager<GameEvent> events;
+	public final EventManager<GameEvent> events;
 	private final PacMan pacMan;
 	private final Ghost blinky, pinky, inky, clyde;
 	private final Set<Ghost> activeGhosts = new HashSet<>(4);
@@ -99,10 +98,6 @@ public class Cast implements PacManWorld {
 		pacMan.init();
 		activeGhosts.forEach(Ghost::init);
 		removeBonus();
-	}
-
-	public void subscribe(Consumer<GameEvent> subscriber) {
-		events.subscribe(subscriber);
 	}
 
 	public Ghost getBlinky() {
