@@ -156,11 +156,11 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 	
 				.when(GREEDY).then(HUNGRY)
 					.onTimeout()
-					.act(() -> events.publishEvent(new PacManLostPowerEvent()))
+					.act(() -> events.publish(new PacManLostPowerEvent()))
 	
 				.stay(DYING)
 					.onTimeout()
-					.act(e -> events.publishEvent(new PacManDiedEvent()))
+					.act(e -> events.publish(new PacManDiedEvent()))
 
 		.endStateMachine();
 		/* @formatter:on */
@@ -192,7 +192,7 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 				.findFirst();
 			/*@formatter:on*/
 			if (collidingGhost.isPresent()) {
-				events.publishEvent(new PacManGhostCollisionEvent(collidingGhost.get()));
+				events.publish(new PacManGhostCollisionEvent(collidingGhost.get()));
 				return;
 			}
 			if (isOutsideMaze()) {
@@ -202,14 +202,14 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 			Optional<Bonus> activeBonus = world.getBonus().filter(bonus -> bonus.getTile().equals(tile))
 					.filter(bonus -> !bonus.isHonored());
 			if (activeBonus.isPresent()) {
-				events.publishEvent(new BonusFoundEvent(activeBonus.get().getSymbol(), activeBonus.get().getValue()));
+				events.publish(new BonusFoundEvent(activeBonus.get().getSymbol(), activeBonus.get().getValue()));
 				return;
 			}
 			// Food?
 			char food = maze.getContent(tile);
 			if (food == Content.PELLET || food == Content.ENERGIZER) {
 				digestionTicks = game.getDigestionTicks(food);
-				events.publishEvent(new FoodFoundEvent(tile, food));
+				events.publish(new FoodFoundEvent(tile, food));
 			}
 		}
 	}
@@ -220,7 +220,7 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 		public void onTick() {
 			super.onTick();
 			if (getRemaining() == game.getPacManGettingWeakerRemainingTime()) {
-				events.publishEvent(new PacManGettingWeakerEvent());
+				events.publish(new PacManGettingWeakerEvent());
 			}
 		}
 	}

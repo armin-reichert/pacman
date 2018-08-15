@@ -15,11 +15,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.controller.event.core.EventManager;
-import de.amr.games.pacman.controller.event.core.Observer;
 import de.amr.games.pacman.controller.event.game.GameEvent;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
@@ -101,8 +101,8 @@ public class Cast implements PacManWorld {
 		removeBonus();
 	}
 
-	public void addObserver(Observer<GameEvent> observer) {
-		events.addObserver(observer);
+	public void subscribe(Consumer<GameEvent> observer) {
+		events.subscribe(observer);
 	}
 
 	public Ghost getBlinky() {
