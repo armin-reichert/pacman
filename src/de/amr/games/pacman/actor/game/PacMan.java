@@ -9,6 +9,7 @@ import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
@@ -16,7 +17,7 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.actor.core.ControlledMazeMover;
+import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.controller.event.core.EventManager;
 import de.amr.games.pacman.controller.event.game.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.game.FoodFoundEvent;
@@ -31,6 +32,8 @@ import de.amr.games.pacman.model.Content;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.routing.Navigation;
+import de.amr.games.pacman.routing.impl.NavigationSystem;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
 
@@ -38,22 +41,22 @@ import de.amr.statemachine.StateObject;
  * The one and only.
  * 
  * @author Armin Reichert
- *
  */
-public class PacMan extends ControlledMazeMover<PacManState> {
+public class PacMan extends MazeMover {
 
 	private final Game game;
 	private final StateMachine<PacManState, GameEvent> controller;
+	private final Map<PacManState, Navigation> navigationMap;
 	private final EventManager<GameEvent> events;
 	private final PacManWorld world;
 	private int digestionTicks;
 
 	public PacMan(Game game, PacManWorld world) {
-		super(new EnumMap<>(PacManState.class));
 		this.world = world;
 		this.game = game;
 		events = new EventManager<>("[PacMan]");
 		controller = buildStateMachine();
+		navigationMap = new EnumMap<>(PacManState.class);
 		createSprites();
 	}
 
@@ -73,6 +76,18 @@ public class PacMan extends ControlledMazeMover<PacManState> {
 	@Override
 	public float getSpeed() {
 		return game.getPacManSpeed(getState());
+	}
+
+	// Navigation and movement
+
+	public void setNavigation(PacManState state, Navigation navigation) {
+		navigationMap.put(state, navigation);
+	}
+
+	@Override
+	public int supplyIntendedDir() {
+		Navigation nav = navigationMap.getOrDefault(getState(), NavigationSystem.forward());
+		return nav.computeRoute(this).dir;
 	}
 
 	@Override
@@ -135,7 +150,6 @@ public class PacMan extends ControlledMazeMover<PacManState> {
 		controller.update();
 	}
 
-	@Override
 	public PacManState getState() {
 		return controller.currentState();
 	}
@@ -201,8 +215,6 @@ public class PacMan extends ControlledMazeMover<PacManState> {
 		.endStateMachine();
 		/* @formatter:on */
 	}
-
-	// Pac-Man states
 
 	private class HungryState extends StateObject<PacManState, GameEvent> {
 

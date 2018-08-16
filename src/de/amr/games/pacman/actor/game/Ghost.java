@@ -12,11 +12,12 @@ import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.sprite.Sprite;
-import de.amr.games.pacman.actor.core.ControlledMazeMover;
+import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.controller.event.game.GameEvent;
 import de.amr.games.pacman.controller.event.game.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.game.PacManGainsPowerEvent;
@@ -25,6 +26,8 @@ import de.amr.games.pacman.controller.event.game.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.routing.Navigation;
+import de.amr.games.pacman.routing.impl.NavigationSystem;
 import de.amr.games.pacman.view.PacManSprites.GhostColor;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
@@ -34,9 +37,10 @@ import de.amr.statemachine.StateObject;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends ControlledMazeMover<GhostState> {
+public class Ghost extends MazeMover {
 
 	private final StateMachine<GhostState, GameEvent> controller;
+	private final Map<GhostState, Navigation> navigationMap;
 	private final Game game;
 	private final GhostName name;
 	private final PacMan pacMan;
@@ -44,15 +48,38 @@ public class Ghost extends ControlledMazeMover<GhostState> {
 	private final int initialDir;
 
 	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, int initialDir, GhostColor color) {
-		super(new EnumMap<>(GhostState.class));
 		this.name = name;
 		this.pacMan = pacMan;
 		this.game = game;
 		this.home = home;
 		this.initialDir = initialDir;
 		controller = buildStateMachine();
+		navigationMap = new EnumMap<>(GhostState.class);
 		createSprites(color);
 	}
+
+	// Navigation
+
+	public void setNavigation(GhostState state, Navigation navigation) {
+		navigationMap.put(state, navigation);
+	}
+
+	public Navigation getNavigation() {
+		return navigationMap.get(getState());
+	}
+
+	@Override
+	public int supplyIntendedDir() {
+		Navigation nav = navigationMap.getOrDefault(getState(), NavigationSystem.forward());
+		return nav.computeRoute(this).dir;
+	}
+
+	@Override
+	protected boolean canWalkThroughDoor(Tile door) {
+		return getState() == GhostState.DEAD || getTile().row >= door.row;
+	}
+
+	// Accessors
 
 	@Override
 	public Maze getMaze() {
@@ -70,19 +97,6 @@ public class Ghost extends ControlledMazeMover<GhostState> {
 	@Override
 	public float getSpeed() {
 		return game.getGhostSpeed(getState(), getTile());
-	}
-
-	private void initGhost() {
-		placeAtTile(home, TS / 2, 0);
-		setDir(initialDir);
-		setNextDir(initialDir);
-		getSprites().forEach(Sprite::resetAnimation);
-		sprite = s_color[getDir()];
-	}
-
-	@Override
-	protected boolean canWalkThroughDoor(Tile door) {
-		return getState() == GhostState.DEAD || getTile().row >= door.row;
 	}
 
 	// Sprites
@@ -118,18 +132,25 @@ public class Ghost extends ControlledMazeMover<GhostState> {
 	}
 
 	// State machine
-	
+
+	private void initGhost() {
+		placeAtTile(home, TS / 2, 0);
+		setDir(initialDir);
+		setNextDir(initialDir);
+		getSprites().forEach(Sprite::resetAnimation);
+		sprite = s_color[getDir()];
+	}
+
 	@Override
 	public void init() {
 		controller.init();
 	}
-	
+
 	@Override
 	public void update() {
 		controller.update();
 	}
 
-	@Override
 	public GhostState getState() {
 		return controller.currentState();
 	}
