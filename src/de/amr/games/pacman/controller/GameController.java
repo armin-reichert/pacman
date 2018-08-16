@@ -70,7 +70,7 @@ public class GameController implements Controller {
 	public void init() {
 		LOGGER.setLevel(Level.INFO);
 		actors.getPacMan().traceTo(LOGGER);
-		actors.getGhosts().forEach(sm -> sm.traceTo(LOGGER));
+		actors.getGhosts().forEach(ghost -> ghost.traceTo(LOGGER));
 		actors.setActive(actors.getPinky(), false);
 		actors.setActive(actors.getInky(), false);
 		actors.setActive(actors.getClyde(), false);
