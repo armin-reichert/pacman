@@ -1,7 +1,7 @@
 package de.amr.games.pacman.model;
 
 /**
- * A tile represents a position inside a tile-based world.
+ * A tile coordinate.
  * 
  * @author Armin Reichert
  */
@@ -9,18 +9,10 @@ public class Tile {
 
 	public final int col;
 	public final int row;
-	public final float xOffset;
-	public final float yOffset;
 
-	public Tile(int col, int row, float xOffset, float yOffset) {
+	public Tile(int col, int row) {
 		this.col = col;
 		this.row = row;
-		this.xOffset = xOffset;
-		this.yOffset = yOffset;
-	}
-	
-	public Tile(int col, int row) {
-		this(col, row, 0, 0);
 	}
 
 	@Override
@@ -40,9 +32,6 @@ public class Tile {
 
 	@Override
 	public String toString() {
-		if (xOffset != 0 || yOffset != 0) {
-			return String.format("(%d+%.2f, %d+%.2f)", col, xOffset, row, yOffset);
-		}
 		return String.format("(%d,%d)", col, row);
 	}
 }

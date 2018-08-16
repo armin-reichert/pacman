@@ -4,6 +4,7 @@ import static de.amr.games.pacman.actor.game.PacManState.DYING;
 import static de.amr.games.pacman.actor.game.PacManState.GREEDY;
 import static de.amr.games.pacman.actor.game.PacManState.HOME;
 import static de.amr.games.pacman.actor.game.PacManState.HUNGRY;
+import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
@@ -119,7 +120,7 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 
 	private void initPacMan() {
 		digestionTicks = 0;
-		placeAt(getHome());
+		placeAtTile(getHome(), TS / 2, 0);
 		setNextDir(Top4.E);
 		getSprites().forEach(Sprite::resetAnimation);
 		sprite = s_full;

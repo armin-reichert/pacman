@@ -9,7 +9,6 @@ import static de.amr.games.pacman.model.Content.POS_INKY;
 import static de.amr.games.pacman.model.Content.POS_PACMAN;
 import static de.amr.games.pacman.model.Content.POS_PINKY;
 import static de.amr.games.pacman.model.Content.WALL;
-import static de.amr.games.pacman.model.Game.TS;
 
 import java.util.Collections;
 import java.util.List;
@@ -63,17 +62,17 @@ public class Maze {
 			for (int col = 0; col < numCols; ++col) {
 				char c = originalData(row, col);
 				if (c == POS_BLINKY) {
-					blinkyHome = new Tile(col, row, TS / 2, 0);
+					blinkyHome = new Tile(col, row);
 				} else if (c == POS_PINKY) {
-					pinkyHome = new Tile(col, row, TS / 2, 0);
+					pinkyHome = new Tile(col, row);
 				} else if (c == POS_INKY) {
-					inkyHome = new Tile(col, row, TS / 2, 0);
+					inkyHome = new Tile(col, row);
 				} else if (c == POS_CLYDE) {
-					clydeHome = new Tile(col, row, TS / 2, 0);
+					clydeHome = new Tile(col, row);
 				} else if (c == POS_BONUS) {
-					bonusTile = new Tile(col, row, TS / 2, 0);
+					bonusTile = new Tile(col, row);
 				} else if (c == POS_PACMAN) {
-					pacManHome = new Tile(col, row, TS / 2, 0);
+					pacManHome = new Tile(col, row);
 				} else if (c == PELLET || c == ENERGIZER) {
 					foodTotal += 1;
 				}

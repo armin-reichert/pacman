@@ -4,12 +4,12 @@ import static de.amr.easy.game.math.Vector2f.smul;
 import static de.amr.easy.game.math.Vector2f.sum;
 import static de.amr.games.pacman.model.Content.DOOR;
 import static de.amr.games.pacman.model.Content.WALL;
+import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static java.lang.Math.round;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
@@ -57,7 +57,7 @@ public abstract class MazeMover extends TileWorldEntity {
 		nextDir = getIntendedNextDir();
 		if (canMove(nextDir)) {
 			if (nextDir == NESW.left(dir) || nextDir == NESW.right(dir)) {
-				placeAt(getTile()); // align on tile
+				placeAtTile(getTile(), 0, 0); // align on tile
 			}
 			dir = nextDir;
 		}
@@ -68,7 +68,7 @@ public abstract class MazeMover extends TileWorldEntity {
 		if (canMove(dir)) {
 			tf.moveTo(computePosition(dir));
 		} else {
-			placeAt(getTile()); // align on tile
+			placeAtTile(getTile(), 0, 0); // align on tile
 		}
 	}
 
@@ -96,13 +96,13 @@ public abstract class MazeMover extends TileWorldEntity {
 		float x = nextPosition.x, y = nextPosition.y;
 		switch (dir) {
 		case Top4.W:
-			return new Tile(round(x) / Game.TS, current.row);
+			return new Tile(round(x) / TS, current.row);
 		case Top4.E:
-			return new Tile(round(x + getWidth()) / Game.TS, current.row);
+			return new Tile(round(x + getWidth()) / TS, current.row);
 		case Top4.N:
-			return new Tile(current.col, round(y) / Game.TS);
+			return new Tile(current.col, round(y) / TS);
 		case Top4.S:
-			return new Tile(current.col, round(y + getHeight()) / Game.TS);
+			return new Tile(current.col, round(y + getHeight()) / TS);
 		default:
 			throw new IllegalArgumentException("Illegal direction: " + dir);
 		}
@@ -112,10 +112,10 @@ public abstract class MazeMover extends TileWorldEntity {
 		Tile tile = getTile();
 		if (tile.col > (getMaze().numCols() - 1) + getMaze().getTeleportLength()) {
 			// reenter maze from the left
-			placeAt(0, tile.row);
+			tf.moveTo(0, tile.row * TS);
 		} else if (tile.col < -getMaze().getTeleportLength()) {
 			// reenter maze from the right
-			placeAt(getMaze().numCols() - 1, tile.row);
+			tf.moveTo((getMaze().numCols() - 1) * TS, tile.row * TS);
 		} else {
 			tf.moveTo(computePosition(dir));
 		}

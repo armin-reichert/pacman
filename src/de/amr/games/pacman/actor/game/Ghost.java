@@ -7,6 +7,7 @@ import static de.amr.games.pacman.actor.game.GhostState.DYING;
 import static de.amr.games.pacman.actor.game.GhostState.HOME;
 import static de.amr.games.pacman.actor.game.GhostState.SAFE;
 import static de.amr.games.pacman.actor.game.GhostState.SCATTERING;
+import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
@@ -71,7 +72,7 @@ public class Ghost extends ControlledMazeMover<GhostState, GameEvent> {
 	}
 
 	private void initGhost() {
-		placeAt(home);
+		placeAtTile(home, TS / 2, 0);
 		setDir(initialDir);
 		setNextDir(initialDir);
 		getSprites().forEach(Sprite::resetAnimation);
@@ -182,10 +183,14 @@ public class Ghost extends ControlledMazeMover<GhostState, GameEvent> {
 						
 					.when(DYING).then(DEAD).onTimeout()
 						
+					.when(DEAD).then(SAFE)
+						.condition(() -> getTile().equals(home))
+						.act(this::initGhost)
+					
 					.stay(DEAD).on(PacManGainsPowerEvent.class)
 					.stay(DEAD).on(PacManGettingWeakerEvent.class)
 					.stay(DEAD).on(PacManLostPowerEvent.class)
-					.when(DEAD).condition(() -> getTile().equals(home)).then(SAFE).act(this::initGhost)
+					.stay(DEAD).on(GhostKilledEvent.class) // happens only when cheating
 
 		.endStateMachine();
 		/*@formatter:on*/

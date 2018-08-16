@@ -29,12 +29,8 @@ public abstract class TileWorldEntity extends GameEntity {
 		return new Tile(round(tf.getX() + getWidth() / 2) / TS, round(tf.getY() + getHeight() / 2) / TS);
 	}
 
-	public void placeAt(Tile tile) {
-		tf.moveTo(tile.col * TS + tile.xOffset, tile.row * TS + tile.yOffset);
-	}
-
-	public void placeAt(int col, int row) {
-		tf.moveTo(col * TS, row * TS);
+	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
+		tf.moveTo(tile.col * TS + xOffset, tile.row * TS + yOffset);
 	}
 
 	public boolean isGridAligned() {

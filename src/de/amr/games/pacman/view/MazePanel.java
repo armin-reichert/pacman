@@ -2,6 +2,7 @@ package de.amr.games.pacman.view;
 
 import static de.amr.games.pacman.model.Content.EATEN;
 import static de.amr.games.pacman.model.Content.ENERGIZER;
+import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
 import java.awt.Color;
@@ -99,7 +100,7 @@ public class MazePanel extends GameEntity {
 
 	private void drawActors(Graphics2D g) {
 		actors.getBonus().ifPresent(bonus -> {
-			bonus.placeAt(maze.bonusTile);
+			bonus.placeAtTile(maze.bonusTile, TS / 2, 0);
 			bonus.draw(g);
 		});
 		actors.getPacMan().draw(g);
