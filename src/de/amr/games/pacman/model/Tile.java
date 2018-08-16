@@ -1,15 +1,26 @@
 package de.amr.games.pacman.model;
 
+/**
+ * A tile represents a position inside a tile-based world.
+ * 
+ * @author Armin Reichert
+ */
 public class Tile {
 
 	public final int col;
 	public final int row;
-	public float xOffset;
-	public float yOffset;
+	public final float xOffset;
+	public final float yOffset;
 
-	public Tile(int col, int row) {
+	public Tile(int col, int row, float xOffset, float yOffset) {
 		this.col = col;
 		this.row = row;
+		this.xOffset = xOffset;
+		this.yOffset = yOffset;
+	}
+	
+	public Tile(int col, int row) {
+		this(col, row, 0, 0);
 	}
 
 	@Override
