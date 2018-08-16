@@ -10,6 +10,7 @@ import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
 import java.util.EnumMap;
 import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.sprite.Sprite;
@@ -38,7 +39,7 @@ import de.amr.statemachine.StateObject;
  * @author Armin Reichert
  *
  */
-public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
+public class PacMan extends ControlledMazeMover<PacManState> {
 
 	private final Game game;
 	private final StateMachine<PacManState, GameEvent> controller;
@@ -129,8 +130,30 @@ public class PacMan extends ControlledMazeMover<PacManState, GameEvent> {
 	// State machine
 
 	@Override
-	public StateMachine<PacManState, GameEvent> getStateMachine() {
-		return controller;
+	public void init() {
+		controller.init();
+	}
+
+	@Override
+	public void update() {
+		controller.update();
+	}
+
+	@Override
+	public PacManState getState() {
+		return controller.currentState();
+	}
+
+	public void processEvent(GameEvent e) {
+		controller.process(e);
+	}
+
+	public StateObject<PacManState, GameEvent> currentStateObject() {
+		return controller.currentStateObject();
+	}
+
+	public void traceTo(Logger logger) {
+		controller.traceTo(logger, game.fnTicksPerSec);
 	}
 
 	private StateMachine<PacManState, GameEvent> buildStateMachine() {

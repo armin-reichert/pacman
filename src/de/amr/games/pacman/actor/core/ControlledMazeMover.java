@@ -4,25 +4,24 @@ import java.util.Map;
 
 import de.amr.games.pacman.routing.Navigation;
 import de.amr.games.pacman.routing.impl.NavigationSystem;
-import de.amr.statemachine.StateMachine;
 
 /**
- * A maze mover that is controlled by a state machine.
+ * A maze mover whose navigation is controlled by its state.
  * 
  * @author Armin Reichert
  *
  * @param <S>
  *          state identifier type
- * @param <E>
- *          event type
  */
-public abstract class ControlledMazeMover<S, E> extends MazeMover {
+public abstract class ControlledMazeMover<S> extends MazeMover {
 
 	private final Map<S, Navigation> navigationMap;
 
 	protected ControlledMazeMover(Map<S, Navigation> navigationMap) {
 		this.navigationMap = navigationMap;
 	}
+
+	public abstract S getState();
 
 	public Navigation getNavigation() {
 		return navigationMap.getOrDefault(getState(), NavigationSystem.forward());
@@ -35,26 +34,5 @@ public abstract class ControlledMazeMover<S, E> extends MazeMover {
 	@Override
 	public int supplyIntendedDir() {
 		return getNavigation().computeRoute(this).dir;
-	}
-
-	protected abstract StateMachine<S, E> getStateMachine();
-
-	public S getState() {
-		return getStateMachine().currentState();
-	}
-
-	@Override
-	public void init() {
-		getStateMachine().init();
-	}
-
-	@Override
-	public void update() {
-		getStateMachine().update();
-	}
-
-	public void processEvent(E event) {
-		getStateMachine().enqueue(event);
-		getStateMachine().update();
 	}
 }

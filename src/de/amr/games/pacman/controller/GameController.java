@@ -69,8 +69,8 @@ public class GameController implements Controller {
 	@Override
 	public void init() {
 		LOGGER.setLevel(Level.INFO);
-		actors.getPacMan().getStateMachine().traceTo(LOGGER, game.fnTicksPerSec);
-		actors.getGhosts().map(Ghost::getStateMachine).forEach(sm -> sm.traceTo(LOGGER, game.fnTicksPerSec));
+		actors.getPacMan().traceTo(LOGGER);
+		actors.getGhosts().forEach(sm -> sm.traceTo(LOGGER));
 		actors.setActive(actors.getPinky(), false);
 		actors.setActive(actors.getInky(), false);
 		actors.setActive(actors.getClyde(), false);

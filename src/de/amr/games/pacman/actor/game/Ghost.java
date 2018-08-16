@@ -12,6 +12,7 @@ import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
 import java.util.EnumMap;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.sprite.Sprite;
@@ -26,13 +27,14 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.PacManSprites.GhostColor;
 import de.amr.statemachine.StateMachine;
+import de.amr.statemachine.StateObject;
 
 /**
  * A ghost.
  * 
  * @author Armin Reichert
  */
-public class Ghost extends ControlledMazeMover<GhostState, GameEvent> {
+public class Ghost extends ControlledMazeMover<GhostState> {
 
 	private final StateMachine<GhostState, GameEvent> controller;
 	private final Game game;
@@ -117,10 +119,32 @@ public class Ghost extends ControlledMazeMover<GhostState, GameEvent> {
 	}
 
 	// State machine
+	
+	@Override
+	public void init() {
+		controller.init();
+	}
+	
+	@Override
+	public void update() {
+		controller.update();
+	}
 
 	@Override
-	public StateMachine<GhostState, GameEvent> getStateMachine() {
-		return controller;
+	public GhostState getState() {
+		return controller.currentState();
+	}
+
+	public StateObject<GhostState, GameEvent> currentStateObject() {
+		return controller.currentStateObject();
+	}
+
+	public void processEvent(GameEvent e) {
+		controller.process(e);
+	}
+
+	public void traceTo(Logger logger) {
+		controller.traceTo(logger, game.fnTicksPerSec);
 	}
 
 	private StateMachine<GhostState, GameEvent> buildStateMachine() {

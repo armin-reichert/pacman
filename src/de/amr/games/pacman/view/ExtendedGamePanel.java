@@ -145,14 +145,14 @@ public class ExtendedGamePanel extends GamePanel {
 	}
 
 	private String pacManState(PacMan pacMan) {
-		StateObject<?, ?> state = pacMan.getStateMachine().currentStateObject();
+		StateObject<?, ?> state = pacMan.currentStateObject();
 		return state.getDuration() != StateObject.ENDLESS
 				? String.format("(%s,%d|%d)", state.id(), state.getRemaining(), state.getDuration())
 				: String.format("(%s,%s)", state.id(), INFTY);
 	}
 
 	private String ghostState(Ghost ghost) {
-		StateObject<?, ?> state = ghost.getStateMachine().currentStateObject();
+		StateObject<?, ?> state = ghost.currentStateObject();
 		return state.getDuration() != StateObject.ENDLESS
 				? String.format("%s(%s,%d|%d)", ghost.getName(), state.id(), state.getRemaining(), state.getDuration())
 				: String.format("%s(%s,%s)", ghost.getName(), state.id(), INFTY);
