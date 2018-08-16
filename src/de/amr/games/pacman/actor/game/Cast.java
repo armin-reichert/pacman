@@ -5,7 +5,7 @@ import static de.amr.games.pacman.routing.impl.NavigationSystem.bounce;
 import static de.amr.games.pacman.routing.impl.NavigationSystem.chase;
 import static de.amr.games.pacman.routing.impl.NavigationSystem.flee;
 import static de.amr.games.pacman.routing.impl.NavigationSystem.followKeyboard;
-import static de.amr.games.pacman.routing.impl.NavigationSystem.goHome;
+import static de.amr.games.pacman.routing.impl.NavigationSystem.go;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -42,7 +42,7 @@ public class Cast implements PacManWorld {
 		Ghost ghost = new Ghost(GhostName.Blinky, pacMan, game, game.maze.blinkyHome, Top4.E, GhostColor.RED);
 		ghost.setNavigation(GhostState.AGGRO, chase(pacMan));
 		ghost.setNavigation(GhostState.AFRAID, flee(pacMan));
-		ghost.setNavigation(GhostState.DEAD, goHome());
+		ghost.setNavigation(GhostState.DEAD, go(game.maze.blinkyHome));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;
 	}
@@ -51,25 +51,25 @@ public class Cast implements PacManWorld {
 		Ghost ghost = new Ghost(GhostName.Pinky, pacMan, game, game.maze.pinkyHome, Top4.S, GhostColor.PINK);
 		ghost.setNavigation(GhostState.AGGRO, ambush(pacMan));
 		ghost.setNavigation(GhostState.AFRAID, flee(pacMan));
-		ghost.setNavigation(GhostState.DEAD, goHome());
+		ghost.setNavigation(GhostState.DEAD, go(game.maze.pinkyHome));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;
 	}
 
 	private static Ghost createInky(Game game, PacMan pacMan) {
 		Ghost ghost = new Ghost(GhostName.Inky, pacMan, game, game.maze.inkyHome, Top4.N, GhostColor.TURQUOISE);
-		ghost.setNavigation(GhostState.AGGRO, ambush(pacMan)); // TODO
+		ghost.setNavigation(GhostState.AGGRO, flee(pacMan)); // TODO
 		ghost.setNavigation(GhostState.AFRAID, flee(pacMan));
-		ghost.setNavigation(GhostState.DEAD, goHome());
+		ghost.setNavigation(GhostState.DEAD, go(game.maze.inkyHome));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;
 	}
 
 	private static Ghost createClyde(Game game, PacMan pacMan) {
 		Ghost ghost = new Ghost(GhostName.Clyde, pacMan, game, game.maze.clydeHome, Top4.N, GhostColor.ORANGE);
-		ghost.setNavigation(GhostState.AGGRO, ambush(pacMan)); // TODO
+		ghost.setNavigation(GhostState.AGGRO, flee(pacMan)); // TODO
 		ghost.setNavigation(GhostState.AFRAID, flee(pacMan));
-		ghost.setNavigation(GhostState.DEAD, goHome());
+		ghost.setNavigation(GhostState.DEAD, go(game.maze.clydeHome));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;
 	}

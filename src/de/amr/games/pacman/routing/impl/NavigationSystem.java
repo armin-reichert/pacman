@@ -1,6 +1,7 @@
 package de.amr.games.pacman.routing.impl;
 
 import de.amr.games.pacman.actor.core.MazeMover;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.routing.Navigation;
 
 public interface NavigationSystem {
@@ -29,8 +30,8 @@ public interface NavigationSystem {
 		return new Forward();
 	}
 
-	public static Navigation goHome() {
-		return new GoHome();
+	public static Navigation go(Tile target) {
+		return new Go(target);
 	}
 
 	public static Navigation moody() {

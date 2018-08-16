@@ -66,6 +66,15 @@ public class PacMan extends ControlledMazeMover<PacManState> {
 		return game.maze;
 	}
 
+	public Tile getHome() {
+		return getMaze().pacManHome;
+	}
+
+	@Override
+	public float getSpeed() {
+		return game.getPacManSpeed(getState());
+	}
+
 	@Override
 	public void move() {
 		super.move();
@@ -106,17 +115,7 @@ public class PacMan extends ControlledMazeMover<PacManState> {
 		sprite = s_full;
 	}
 
-	// Others
-
-	@Override
-	public float getSpeed() {
-		return game.getPacManSpeed(getState());
-	}
-
-	@Override
-	public Tile getHome() {
-		return getMaze().pacManHome;
-	}
+	// State machine
 
 	private void initPacMan() {
 		digestionTicks = 0;
@@ -125,8 +124,6 @@ public class PacMan extends ControlledMazeMover<PacManState> {
 		getSprites().forEach(Sprite::resetAnimation);
 		sprite = s_full;
 	}
-
-	// State machine
 
 	@Override
 	public void init() {

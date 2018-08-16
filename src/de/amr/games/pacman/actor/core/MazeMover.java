@@ -25,8 +25,6 @@ public abstract class MazeMover extends TileWorldEntity {
 
 	public abstract Maze getMaze();
 
-	public abstract Tile getHome();
-
 	public abstract float getSpeed();
 
 	public int getDir() {

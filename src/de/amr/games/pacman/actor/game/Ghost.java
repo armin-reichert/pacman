@@ -63,7 +63,6 @@ public class Ghost extends ControlledMazeMover<GhostState> {
 		return name;
 	}
 
-	@Override
 	public Tile getHome() {
 		return home;
 	}
