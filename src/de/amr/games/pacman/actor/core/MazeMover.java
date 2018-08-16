@@ -45,7 +45,7 @@ public abstract class MazeMover extends TileWorldEntity {
 		this.nextDir = dir;
 	}
 
-	public int getIntendedNextDir() {
+	public int supplyIntendedDir() {
 		return nextDir;
 	}
 
@@ -54,7 +54,7 @@ public abstract class MazeMover extends TileWorldEntity {
 	}
 
 	public void move() {
-		nextDir = getIntendedNextDir();
+		nextDir = supplyIntendedDir();
 		if (canMove(nextDir)) {
 			if (nextDir == NESW.left(dir) || nextDir == NESW.right(dir)) {
 				placeAtTile(getTile(), 0, 0); // align on tile

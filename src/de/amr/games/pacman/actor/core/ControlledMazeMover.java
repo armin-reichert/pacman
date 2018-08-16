@@ -54,7 +54,7 @@ public abstract class ControlledMazeMover<S, E> extends MazeMover {
 	}
 
 	@Override
-	public int getIntendedNextDir() {
+	public int supplyIntendedDir() {
 		return getNavigation().computeRoute(this).dir;
 	}
 }
