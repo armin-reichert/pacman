@@ -10,6 +10,7 @@ import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
 import java.util.EnumMap;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -43,28 +44,26 @@ public class PacMan extends ControlledMazeMover<PacManState> {
 
 	private final Game game;
 	private final StateMachine<PacManState, GameEvent> controller;
-	private EventManager<GameEvent> events;
-	private PacManWorld world;
+	private final EventManager<GameEvent> events;
+	private final PacManWorld world;
 	private int digestionTicks;
 
-	public PacMan(Game game) {
+	public PacMan(Game game, PacManWorld world) {
 		super(new EnumMap<>(PacManState.class));
+		this.world = world;
 		this.game = game;
+		events = new EventManager<>("[PacMan]");
 		controller = buildStateMachine();
 		createSprites();
+	}
+
+	public void subscribe(Consumer<GameEvent> subscriber) {
+		events.subscribe(subscriber);
 	}
 
 	@Override
 	public Maze getMaze() {
 		return game.maze;
-	}
-
-	public void setEventManager(EventManager<GameEvent> events) {
-		this.events = events;
-	}
-
-	public void setWorld(PacManWorld world) {
-		this.world = world;
 	}
 
 	@Override

@@ -18,8 +18,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.controller.event.core.EventManager;
-import de.amr.games.pacman.controller.event.game.GameEvent;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.routing.Navigation;
@@ -32,12 +30,11 @@ import de.amr.games.pacman.view.PacManSprites.GhostColor;
  */
 public class Cast implements PacManWorld {
 
-	private static PacMan createPacMan(Game game, EventManager<GameEvent> events) {
-		PacMan pacMan = new PacMan(game);
+	private static PacMan createPacMan(Game game, PacManWorld world) {
+		PacMan pacMan = new PacMan(game, world);
 		Navigation keySteering = followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
 		pacMan.setNavigation(PacManState.HUNGRY, keySteering);
 		pacMan.setNavigation(PacManState.GREEDY, keySteering);
-		pacMan.setEventManager(events);
 		return pacMan;
 	}
 
@@ -77,16 +74,13 @@ public class Cast implements PacManWorld {
 		return ghost;
 	}
 
-	public final EventManager<GameEvent> events;
 	private final PacMan pacMan;
 	private final Ghost blinky, pinky, inky, clyde;
 	private final Set<Ghost> activeGhosts = new HashSet<>(4);
 	private Bonus bonus;
 
 	public Cast(Game game) {
-		events = new EventManager<>("[ActorEvents]");
-		pacMan = createPacMan(game, events);
-		pacMan.setWorld(this);
+		pacMan = createPacMan(game, this);
 		blinky = createBlinky(game, pacMan);
 		pinky = createPinky(game, pacMan);
 		inky = createInky(game, pacMan);
