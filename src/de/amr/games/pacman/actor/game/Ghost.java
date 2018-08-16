@@ -65,13 +65,12 @@ public class Ghost extends MazeMover {
 	}
 
 	public Navigation getNavigation() {
-		return navigationMap.get(getState());
+		return navigationMap.getOrDefault(getState(), NavigationSystem.forward());
 	}
 
 	@Override
 	public int supplyIntendedDir() {
-		Navigation nav = navigationMap.getOrDefault(getState(), NavigationSystem.forward());
-		return nav.computeRoute(this).dir;
+		return getNavigation().computeRoute(this).dir;
 	}
 
 	@Override
