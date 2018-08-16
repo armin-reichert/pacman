@@ -24,6 +24,19 @@ public abstract class ControlledMazeMover<S, E> extends MazeMover {
 		this.navigationMap = navigationMap;
 	}
 
+	public Navigation getNavigation() {
+		return navigationMap.getOrDefault(getState(), NavigationSystem.forward());
+	}
+
+	public void setNavigation(S state, Navigation navigation) {
+		navigationMap.put(state, navigation);
+	}
+
+	@Override
+	public int supplyIntendedDir() {
+		return getNavigation().computeRoute(this).dir;
+	}
+
 	protected abstract StateMachine<S, E> getStateMachine();
 
 	public S getState() {
@@ -43,18 +56,5 @@ public abstract class ControlledMazeMover<S, E> extends MazeMover {
 	public void processEvent(E event) {
 		getStateMachine().enqueue(event);
 		getStateMachine().update();
-	}
-
-	public void setNavigation(S state, Navigation navigation) {
-		navigationMap.put(state, navigation);
-	}
-
-	public Navigation getNavigation() {
-		return navigationMap.getOrDefault(getState(), NavigationSystem.forward());
-	}
-
-	@Override
-	public int supplyIntendedDir() {
-		return getNavigation().computeRoute(this).dir;
 	}
 }
