@@ -274,6 +274,8 @@ Other features:
 - Ghosts can be switched on/off (keys 'b', 'p', 'i', 'c')
 - Movement on grid can be debugged (key 'g' shows grid and actor alignments)
 - Game can be paused (CTRL+p) and frame rate can be changed at runtime (F2 opens dialog)
+- Key 'k' kills all ghosts
+- Key 'e' eats all pellets
 
 The navigation behavior of the actors is implemented modularly (*strategy pattern*) and can easily be changed.
 
