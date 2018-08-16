@@ -8,30 +8,35 @@ import de.amr.games.pacman.routing.Navigation;
 
 class FollowKeyboard implements Navigation {
 
-	private final int[] nesw;
+	private final int keyN, keyE, keyS, keyW;
 
-	public FollowKeyboard(int... nesw) {
-		if (nesw.length != 4) {
-			throw new IllegalArgumentException("Must specify 4 keyboard codes for steering");
+	/**
+	 * @param keys
+	 *               keyboard codes for North, East, South, West
+	 */
+	public FollowKeyboard(int... keys) {
+		if (keys.length != 4) {
+			throw new IllegalArgumentException("Must specify 4 key codes for keyboard steering");
 		}
-		this.nesw = nesw;
+		keyN = keys[0];
+		keyE = keys[1];
+		keyS = keys[2];
+		keyW = keys[3];
 	}
 
 	@Override
 	public MazeRoute computeRoute(MazeMover mover) {
 		MazeRoute result = new MazeRoute();
-		result.dir = mover.getNextDir();
-		if (Keyboard.keyDown(nesw[0])) {
+		if (Keyboard.keyDown(keyN)) {
 			result.dir = Top4.N;
-		}
-		if (Keyboard.keyDown(nesw[1])) {
+		} else if (Keyboard.keyDown(keyE)) {
 			result.dir = Top4.E;
-		}
-		if (Keyboard.keyDown(nesw[2])) {
+		} else if (Keyboard.keyDown(keyS)) {
 			result.dir = Top4.S;
-		}
-		if (Keyboard.keyDown(nesw[3])) {
+		} else if (Keyboard.keyDown(keyW)) {
 			result.dir = Top4.W;
+		} else {
+			result.dir = mover.getNextDir();
 		}
 		return result;
 	}
