@@ -6,10 +6,12 @@ import static java.lang.Math.round;
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.entity.GameEntity;
+import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Common base class for entities that are located in a tile based world.
+ * An entity with the size of one tile that understands tile coordinates. The sprite (if any) which
+ * can be of a different size than one tile is drawn centered over the collision box.
  * 
  * @author Armin Reichert
  */
@@ -25,6 +27,9 @@ public abstract class TileWorldEntity extends GameEntity {
 		return TS;
 	}
 
+	/**
+	 * @return the tile containing the center of the collision box.
+	 */
 	public Tile getTile() {
 		return new Tile(round(tf.getX() + getWidth() / 2) / TS, round(tf.getY() + getHeight() / 2) / TS);
 	}
@@ -33,7 +38,7 @@ public abstract class TileWorldEntity extends GameEntity {
 		tf.moveTo(tile.col * TS + xOffset, tile.row * TS + yOffset);
 	}
 
-	public boolean isGridAligned() {
+	public boolean isAligned() {
 		return getAlignmentX() == 0 && getAlignmentY() == 0;
 	}
 
@@ -47,11 +52,14 @@ public abstract class TileWorldEntity extends GameEntity {
 
 	@Override
 	public void draw(Graphics2D g) {
-		// draw sprite centered over collision box
-		int dx = (getWidth() - currentSprite().getWidth()) / 2;
-		int dy = (getHeight() - currentSprite().getHeight()) / 2;
-		g.translate(dx, dy);
-		super.draw(g);
-		g.translate(-dx, -dy);
+		Sprite sprite = currentSprite();
+		if (sprite != null) {
+			// center sprite over collision box
+			int dx = (getWidth() - sprite.getWidth()) / 2;
+			int dy = (getHeight() - sprite.getHeight()) / 2;
+			g.translate(dx, dy);
+			super.draw(g);
+			g.translate(-dx, -dy);
+		}
 	}
 }
