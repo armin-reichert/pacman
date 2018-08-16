@@ -72,40 +72,40 @@ public abstract class MazeMover extends TileWorldEntity {
 		}
 	}
 
-	public boolean canMove(int targetDir) {
-		Tile current = getTile(), next = computeNextTile(current, targetDir);
+	public boolean canMove(int d) {
 		if (inTeleportSpace()) {
 			// in teleport space direction can only be reversed
-			return targetDir == dir || targetDir == NESW.inv(dir);
+			return d == dir || d == NESW.inv(dir);
 		}
+		Tile next = computeTileAfterMove(d);
 		if (getMaze().getContent(next) == WALL) {
 			return false;
 		}
 		if (getMaze().getContent(next) == DOOR) {
 			return canWalkThroughDoor(next);
 		}
-		if (targetDir == NESW.right(dir) || targetDir == NESW.left(dir)) {
-			// TODO this is not nice
-			return targetDir == Top4.N || targetDir == Top4.S ? getAlignmentX() <= 1 : getAlignmentY() <= 1;
+		// around corner?
+		if (d == NESW.right(dir) || d == NESW.left(dir)) {
+			// TODO this is ugly
+			return d == Top4.N || d == Top4.S ? getAlignmentX() <= 1 : getAlignmentY() <= 1;
 		}
 		return true;
 	}
 
-	public Tile computeNextTile(Tile current, int dir) {
-		Vector2f nextPosition = positionAfterMove(dir);
-		float x = nextPosition.x, y = nextPosition.y;
-		switch (dir) {
+	public Tile computeTileAfterMove(int d) {
+		Tile current = getTile();
+		Vector2f pos = positionAfterMove(d);
+		switch (d) {
 		case Top4.W:
-			return new Tile(round(x) / TS, current.row);
+			return new Tile(round(pos.x) / TS, current.row);
 		case Top4.E:
-			return new Tile(round(x + getWidth()) / TS, current.row);
+			return new Tile(round(pos.x + getWidth()) / TS, current.row);
 		case Top4.N:
-			return new Tile(current.col, round(y) / TS);
+			return new Tile(current.col, round(pos.y) / TS);
 		case Top4.S:
-			return new Tile(current.col, round(y + getHeight()) / TS);
-		default:
-			throw new IllegalArgumentException("Illegal direction: " + dir);
+			return new Tile(current.col, round(pos.y + getHeight()) / TS);
 		}
+		throw new IllegalArgumentException("Illegal direction: " + d);
 	}
 
 	private boolean inTeleportSpace() {
