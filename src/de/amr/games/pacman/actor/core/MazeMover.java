@@ -61,7 +61,7 @@ public abstract class MazeMover extends TileWorldEntity {
 			}
 			dir = nextDir;
 		}
-		if (getMaze().isTeleportSpace(getTile())) {
+		if (inTeleportSpace()) {
 			teleport();
 			return;
 		}
@@ -74,7 +74,7 @@ public abstract class MazeMover extends TileWorldEntity {
 
 	public boolean canMove(int targetDir) {
 		Tile current = getTile(), next = computeNextTile(current, targetDir);
-		if (getMaze().isTeleportSpace(current)) {
+		if (inTeleportSpace()) {
 			// in teleport space direction can only be reversed
 			return targetDir == dir || targetDir == NESW.inv(dir);
 		}
@@ -106,6 +106,10 @@ public abstract class MazeMover extends TileWorldEntity {
 		default:
 			throw new IllegalArgumentException("Illegal direction: " + dir);
 		}
+	}
+
+	private boolean inTeleportSpace() {
+		return getMaze().isTeleportSpace(getTile());
 	}
 
 	/**
