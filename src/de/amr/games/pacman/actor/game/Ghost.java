@@ -104,7 +104,7 @@ public class Ghost extends MazeMover {
 	private Sprite s_color[] = new Sprite[4];
 	private Sprite s_eyes[] = new Sprite[4];
 	private Sprite s_awed;
-	private Sprite s_blinking;
+	private Sprite s_flashing;
 	private Sprite s_numbers[] = new Sprite[4];
 
 	private void createSprites(GhostColor color) {
@@ -116,12 +116,12 @@ public class Ghost extends MazeMover {
 			s_numbers[i] = SPRITES.greenNumber(i);
 		}
 		s_awed = SPRITES.ghostAwed();
-		s_blinking = SPRITES.ghostFlashing();
+		s_flashing = SPRITES.ghostFlashing();
 	}
 
 	@Override
 	public Stream<Sprite> getSprites() {
-		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes), Stream.of(s_awed, s_blinking))
+		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes), Stream.of(s_awed, s_flashing))
 				.flatMap(s -> s);
 	}
 
@@ -220,7 +220,7 @@ public class Ghost extends MazeMover {
 					.when(AGGRO).on(GhostKilledEvent.class).then(DEAD) // used for cheating
 						
 					.stay(AFRAID).on(PacManGainsPowerEvent.class)
-					.stay(AFRAID).on(PacManGettingWeakerEvent.class).act(e -> sprite = s_blinking)
+					.stay(AFRAID).on(PacManGettingWeakerEvent.class).act(e -> sprite = s_flashing)
 					.when(AFRAID).on(PacManLostPowerEvent.class).then(AGGRO)
 					.when(AFRAID).on(GhostKilledEvent.class).then(DYING)
 						
