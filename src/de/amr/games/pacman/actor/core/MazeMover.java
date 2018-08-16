@@ -66,7 +66,7 @@ public abstract class MazeMover extends TileWorldEntity {
 			return;
 		}
 		if (canMove(dir)) {
-			tf.moveTo(computePosition(dir));
+			tf.moveTo(positionAfterMove(dir));
 		} else {
 			placeAtTile(getTile(), 0, 0); // align on tile
 		}
@@ -92,7 +92,7 @@ public abstract class MazeMover extends TileWorldEntity {
 	}
 
 	public Tile computeNextTile(Tile current, int dir) {
-		Vector2f nextPosition = computePosition(dir);
+		Vector2f nextPosition = positionAfterMove(dir);
 		float x = nextPosition.x, y = nextPosition.y;
 		switch (dir) {
 		case Top4.W:
@@ -108,22 +108,23 @@ public abstract class MazeMover extends TileWorldEntity {
 		}
 	}
 
+	/**
+	 * "Teleport": leave the maze on the left or right side, run over a certain number of tiles in
+	 * "teleport space", then reenter the maze on the opposite side.
+	 */
 	private void teleport() {
 		Tile tile = getTile();
-		if (tile.col > (getMaze().numCols() - 1) + getMaze().getTeleportLength()) {
-			// reenter maze from the left
-			tf.moveTo(0, tile.row * TS);
-		} else if (tile.col < -getMaze().getTeleportLength()) {
-			// reenter maze from the right
-			tf.moveTo((getMaze().numCols() - 1) * TS, tile.row * TS);
+		int left = 0, right = getMaze().numCols() - 1, length = getMaze().getTeleportLength();
+		if (tile.col > right + length) {
+			tf.moveTo(left * TS, tile.row * TS);
+		} else if (tile.col < left - length) {
+			tf.moveTo(right * TS, tile.row * TS);
 		} else {
-			tf.moveTo(computePosition(dir));
+			tf.moveTo(positionAfterMove(dir));
 		}
 	}
 
-	private Vector2f computePosition(int dir) {
-		Vector2f direction = Vector2f.of(NESW.dx(dir), NESW.dy(dir));
-		Vector2f velocity = smul(getSpeed(), direction);
-		return sum(tf.getPosition(), velocity);
+	private Vector2f positionAfterMove(int dir) {
+		return sum(tf.getPosition(), smul(getSpeed(), Vector2f.of(NESW.dx(dir), NESW.dy(dir))));
 	}
 }
