@@ -1,11 +1,11 @@
 package de.amr.games.pacman.actor.core;
 
+import static de.amr.games.pacman.model.Game.TS;
 import static java.lang.Math.round;
 
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.entity.GameEntity;
-import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -17,24 +17,24 @@ public abstract class TileWorldEntity extends GameEntity {
 
 	@Override
 	public int getWidth() {
-		return Game.TS;
+		return TS;
 	}
 
 	@Override
 	public int getHeight() {
-		return Game.TS;
+		return TS;
 	}
 
 	public Tile getTile() {
-		return new Tile(round(tf.getX() + getWidth() / 2) / Game.TS, round(tf.getY() + getHeight() / 2) / Game.TS);
+		return new Tile(round(tf.getX() + getWidth() / 2) / TS, round(tf.getY() + getHeight() / 2) / TS);
 	}
 
 	public void placeAt(Tile tile) {
-		tf.moveTo(tile.col * Game.TS + tile.xOffset, tile.row * Game.TS + tile.yOffset);
+		tf.moveTo(tile.col * TS + tile.xOffset, tile.row * TS + tile.yOffset);
 	}
 
 	public void placeAt(int col, int row) {
-		tf.moveTo(col * Game.TS, row * Game.TS);
+		tf.moveTo(col * TS, row * TS);
 	}
 
 	public boolean isGridAligned() {
@@ -42,11 +42,11 @@ public abstract class TileWorldEntity extends GameEntity {
 	}
 
 	public int getAlignmentX() {
-		return round(tf.getX()) % Game.TS;
+		return round(tf.getX()) % TS;
 	}
 
 	public int getAlignmentY() {
-		return round(tf.getY()) % Game.TS;
+		return round(tf.getY()) % TS;
 	}
 
 	@Override
