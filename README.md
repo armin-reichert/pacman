@@ -322,6 +322,10 @@ class Chase implements Navigation {
 }
 ```
 
+## References
+- [GameInternals Understanding Pac-Man Ghost Behavior](http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior)
+- [Gamasutra The Pac-Man Dossier](http://www.gamasutra.com/view/feature/3938/the_pacman_dossier.php)
+
 ## Summary
 
 The goal of this project is to implement a Pac-Man like game in a way that also beginners can fully understand how the game is working. The implementation follows the MVC pattern and separates the control logic for the actors and the game play into explicit state machines. The state machines are defined in a declarative way. A very simple game library is used for the basic game features (windowing, game loop) but it should not be too difficult to write these infrastructure parts from scratch or use any other game library instead.
