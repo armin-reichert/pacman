@@ -2,9 +2,9 @@ package de.amr.games.pacman.actor.game;
 
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.ambush;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.bounce;
-import static de.amr.games.pacman.navigation.impl.NavigationSystem.chase;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.flee;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.followKeyboard;
+import static de.amr.games.pacman.navigation.impl.NavigationSystem.followTargetTile;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.go;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
@@ -41,7 +41,7 @@ public class Cast implements PacManWorld {
 
 	private static Ghost createBlinky(Game game, PacMan pacMan, Tile home) {
 		Ghost ghost = new Ghost(GhostName.Blinky, pacMan, game, home, Top4.E, GhostColor.RED);
-		ghost.setNavigation(GhostState.AGGRO, chase(pacMan));
+		ghost.setNavigation(GhostState.AGGRO, followTargetTile(() -> pacMan.getTile()));
 		ghost.setNavigation(GhostState.AFRAID, flee(pacMan));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());
@@ -59,7 +59,7 @@ public class Cast implements PacManWorld {
 
 	private static Ghost createInky(Game game, PacMan pacMan, Tile home) {
 		Ghost ghost = new Ghost(GhostName.Inky, pacMan, game, home, Top4.N, GhostColor.TURQUOISE);
-		ghost.setNavigation(GhostState.AGGRO, flee(pacMan)); // TODO
+		ghost.setNavigation(GhostState.AGGRO, followTargetTile(() -> pacMan.getTile())); // TODO
 		ghost.setNavigation(GhostState.AFRAID, flee(pacMan));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());

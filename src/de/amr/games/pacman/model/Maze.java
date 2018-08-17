@@ -44,6 +44,7 @@ public class Maze {
 	private Tile inkyHome;
 	private Tile clydeHome;
 	private Tile bonusTile;
+	private int tunnelRow;
 
 	private final String[] originalData;
 	private int foodTotal;
@@ -73,6 +74,8 @@ public class Maze {
 					bonusTile = new Tile(col, row);
 				} else if (c == POS_PACMAN) {
 					pacManHome = new Tile(col, row);
+				} else if (c == Content.TUNNEL) {
+					tunnelRow = row;
 				} else if (c == PELLET || c == ENERGIZER) {
 					foodTotal += 1;
 				}
@@ -137,8 +140,16 @@ public class Maze {
 		return bonusTile;
 	}
 
+	public int getTunnelRow() {
+		return tunnelRow;
+	}
+
 	public boolean isTeleportSpace(Tile tile) {
 		return !isValidTile(tile);
+	}
+
+	public boolean isTunnel(Tile tile) {
+		return getContent(tile) == Content.TUNNEL;
 	}
 
 	public boolean isIntersection(Tile tile) {
@@ -186,7 +197,7 @@ public class Maze {
 		return graph.direction(cell(t1), cell(t2));
 	}
 
-	public boolean hasAdjacentTile(Tile t1, Tile t2) {
+	public boolean areAdjacentTiles(Tile t1, Tile t2) {
 		return graph.adjacent(cell(t1), cell(t2));
 	}
 
@@ -207,6 +218,10 @@ public class Maze {
 			return pathfinder.path(cell(target)).stream().map(this::tile).collect(Collectors.toList());
 		}
 		return Collections.emptyList();
+	}
+
+	public int euclidean2(Tile t1, Tile t2) {
+		return graph.euclidean2(cell(t1), cell(t2));
 	}
 
 	public OptionalInt alongPath(List<Tile> path) {
