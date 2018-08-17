@@ -323,8 +323,8 @@ class Chase implements Navigation {
 ```
 
 ## References
-- [GameInternals Understanding Pac-Man Ghost Behavior](http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior)
-- [Gamasutra The Pac-Man Dossier](http://www.gamasutra.com/view/feature/3938/the_pacman_dossier.php)
+- [GameInternals - Understanding Pac-Man Ghost Behavior](http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior)
+- [Gamasutra - The Pac-Man Dossier](http://www.gamasutra.com/view/feature/3938/the_pacman_dossier.php)
 
 ## Summary
 
