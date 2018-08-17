@@ -295,7 +295,7 @@ The move behaviours are implemented as reusable classes with a common interface.
 
 This method runs the A* path finding algorithm on the underlying grid graph (which is rather useless in this case but hey, it sounds cooler than BFS :-). You might ask why A* is "useless" here: it's because the Pac-Man maze is internally represented as a (grid) graph where the distance between two neighbor vertices (tiles) is always the same. Thus the Dijkstra or A* path finding algorithms will just degenerate to Breadth-first Search (correct my if I'm wrong). Of course you could represent the graph differently, for example with vertices only for crossings and weighted edges for passages. In that case, Dijkstra or A* would be more useful.
 
-As an example, this is the *chase(victim)* code:
+As an example, this is the  class implementing the *chase(victim)* behavior:
 
 ```java
 class Chase implements Navigation {
@@ -324,7 +324,7 @@ class Chase implements Navigation {
 
 ## Summary
 
-The goal of this project is to implement a Pac-Man like game in a way that also beginners can fully understand how the game is working. The implementation follows the MVC pattern and separates the control logic for the actors and the game play into explicit state machines. The state machines are defined in a declarative way. A very simple game library is used for the basic game features (windowing, game loop) but it should not be too difficult to write these infrastructure parts (game loop, window etc.) from scratch or use any other game library instead.
+The goal of this project is to implement a Pac-Man like game in a way that also beginners can fully understand how the game is working. The implementation follows the MVC pattern and separates the control logic for the actors and the game play into explicit state machines. The state machines are defined in a declarative way. A very simple game library is used for the basic game features (windowing, game loop) but it should not be too difficult to write these infrastructure parts from scratch or use any other game library instead.
 
 It would certainly also be useful to further decouple the UI from the game model and controller to enable an easy replacement of the complete UI.
 
