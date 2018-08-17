@@ -198,74 +198,77 @@ The processing of all used state machines can be traced to some logger. If a sta
 
 Example trace:
 
-```java
-[2018-08-11 11:05:49:049] Application PacManApp created. 
-[2018-08-11 11:05:49:237] Application shell created. 
-[2018-08-11 11:05:49:315] Window-mode: 448x576 
-[2018-08-11 11:05:49:315] Default view initialized. 
-[2018-08-11 11:05:49:752] Pac-Man sprite images extracted 
-[2018-08-11 11:05:49:924] Set controller to: de.amr.games.pacman.controller.GameController@6b32d068 
-[2018-08-11 11:05:49:942] [Ghost Blinky] entering initial state 'HOME' 
-[2018-08-11 11:05:49:942] [GameControl] entering initial state 'READY' 
-[2018-08-11 11:05:49:942] [Pac-Man] entering initial state 'SAFE' 
-[2018-08-11 11:05:49:942] [Ghost Blinky] entering initial state 'HOME' 
-[2018-08-11 11:05:49:942] Initialized controller: de.amr.games.pacman.controller.GameController@6b32d068 
-[2018-08-11 11:05:49:942] Application initialized. 
-[2018-08-11 11:05:49:942] Pulse started. 
-[2018-08-11 11:05:52:038] [GameControl] changing from 'READY' to 'PLAYING' 
-[2018-08-11 11:05:52:038] [GameControl] exiting state 'READY' 
-[2018-08-11 11:05:52:041] [GameControl] entering state 'PLAYING' 
-[2018-08-11 11:05:52:056] [Ghost Blinky] changing from 'HOME' to 'SAFE' 
-[2018-08-11 11:05:52:056] [Ghost Blinky] exiting state 'HOME' 
-[2018-08-11 11:05:52:056] [Ghost Blinky] entering state 'SAFE' 
-[2018-08-11 11:05:52:074] [Pac-Man] changing from 'SAFE' to 'VULNERABLE' 
-[2018-08-11 11:05:52:074] [Pac-Man] exiting state 'SAFE' 
-[2018-08-11 11:05:52:074] [Pac-Man] entering state 'VULNERABLE' 
-[2018-08-11 11:05:52:318] [GameActorEvents] publishing event 'FoodFound(Pellet)' 
-[2018-08-11 11:05:52:318] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)' 
-[2018-08-11 11:05:52:506] [GameActorEvents] publishing event 'FoodFound(Pellet)' 
-[2018-08-11 11:05:52:506] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)' 
-[2018-08-11 11:05:52:681] [GameActorEvents] publishing event 'FoodFound(Pellet)' 
-[2018-08-11 11:05:52:681] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)' 
-[2018-08-11 11:05:52:853] [GameActorEvents] publishing event 'FoodFound(Pellet)' 
-[2018-08-11 11:05:52:853] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)' 
-[2018-08-11 11:05:53:039] [GameActorEvents] publishing event 'FoodFound(Pellet)' 
-[2018-08-11 11:05:53:039] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)' 
-[2018-08-11 11:05:53:216] [GameActorEvents] publishing event 'FoodFound(Pellet)' 
-[2018-08-11 11:05:53:216] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)' 
-[2018-08-11 11:05:53:404] [GameActorEvents] publishing event 'FoodFound(Pellet)' 
-[2018-08-11 11:05:53:404] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)' 
-[2018-08-11 11:05:54:147] [Ghost Blinky] changing from 'SAFE' to 'AGGRO' 
-[2018-08-11 11:05:54:147] [Ghost Blinky] exiting state 'SAFE' 
-[2018-08-11 11:05:54:149] [Ghost Blinky] entering state 'AGGRO' 
-[2018-08-11 11:05:57:611] [GameActorEvents] publishing event 'PacManGhostCollisionEvent(Blinky)' 
-[2018-08-11 11:05:57:614] [GameControl] stays 'PLAYING' on 'PacManGhostCollisionEvent(Blinky)' 
-[2018-08-11 11:05:57:630] [GameControl] changing from 'PLAYING' to 'PACMAN_DYING' on 'PacManKilledEvent(Blinky)' 
-[2018-08-11 11:05:57:630] [GameControl] exiting state 'PLAYING' 
-[2018-08-11 11:05:57:630] [Pac-Man] changing from 'VULNERABLE' to 'DYING' on 'PacManKilledEvent(Blinky)' 
-[2018-08-11 11:05:57:630] [Pac-Man] exiting state 'VULNERABLE' 
-[2018-08-11 11:05:57:630] [Pac-Man] entering state 'DYING' 
-[2018-08-11 11:05:57:630] PacMan killed by Blinky at (21,23) 
-[2018-08-11 11:05:57:630] [GameControl] entering state 'PACMAN_DYING' 
-[2018-08-11 11:05:59:748] [Pac-Man] stays 'DYING' 
-[2018-08-11 11:05:59:748] [GameActorEvents] publishing event 'PacManDiedEvent' 
-[2018-08-11 11:05:59:750] [GameControl] changing from 'PACMAN_DYING' to 'PLAYING' on 'PacManDiedEvent' 
-[2018-08-11 11:05:59:751] [GameControl] exiting state 'PACMAN_DYING' 
-[2018-08-11 11:05:59:751] [Pac-Man] entering initial state 'SAFE' 
-[2018-08-11 11:05:59:751] [Ghost Blinky] entering initial state 'HOME' 
-[2018-08-11 11:05:59:751] [GameControl] entering state 'PLAYING' 
-[2018-08-11 11:05:59:766] [Ghost Blinky] changing from 'HOME' to 'SAFE' 
-[2018-08-11 11:05:59:766] [Ghost Blinky] exiting state 'HOME' 
-[2018-08-11 11:05:59:766] [Ghost Blinky] entering state 'SAFE' for 2,00 seconds (120 frames) 
-[2018-08-11 11:05:59:783] [Pac-Man] changing from 'SAFE' to 'VULNERABLE' 
-[2018-08-11 11:05:59:783] [Pac-Man] exiting state 'SAFE' 
-[2018-08-11 11:05:59:783] [Pac-Man] entering state 'VULNERABLE' 
-[2018-08-11 11:06:01:826] [Ghost Blinky] changing from 'SAFE' to 'AGGRO' 
-[2018-08-11 11:06:01:826] [Ghost Blinky] exiting state 'SAFE' 
-[2018-08-11 11:06:01:827] [Ghost Blinky] entering state 'AGGRO' 
-[2018-08-11 11:06:04:528] Application window closing, app will exit... 
-[2018-08-11 11:06:04:544] Application terminated. 
-
+```
+[2018-08-17 06:18:21:240] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)'
+[2018-08-17 06:18:21:411] [PacMan] publishing event 'FoodFound(Pellet)'
+[2018-08-17 06:18:21:411] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)'
+[2018-08-17 06:18:24:053] [PacMan] publishing event 'BonusFound(CHERRIES,100)'
+[2018-08-17 06:18:24:053] [GameControl] stays 'PLAYING' on 'BonusFound(CHERRIES,100)'
+[2018-08-17 06:18:24:053] PacMan found bonus CHERRIES of value 100
+[2018-08-17 06:18:25:552] [PacMan] publishing event 'FoodFound(Pellet)'
+[2018-08-17 06:18:25:552] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)'
+[2018-08-17 06:18:25:752] [PacMan] publishing event 'FoodFound(Pellet)'
+[2018-08-17 06:18:25:752] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)'
+[2018-08-17 06:18:25:921] [PacMan] publishing event 'FoodFound(Pellet)'
+[2018-08-17 06:18:25:921] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)'
+[2018-08-17 06:18:26:103] [PacMan] publishing event 'FoodFound(Pellet)'
+[2018-08-17 06:18:26:103] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)'
+[2018-08-17 06:18:26:274] [PacMan] publishing event 'FoodFound(Pellet)'
+[2018-08-17 06:18:26:274] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)'
+[2018-08-17 06:18:26:434] [PacMan] publishing event 'FoodFound(Pellet)'
+[2018-08-17 06:18:26:434] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)'
+[2018-08-17 06:18:27:101] [PacMan] publishing event 'PacManGhostCollisionEvent(Blinky)'
+[2018-08-17 06:18:27:101] [GameControl] stays 'PLAYING' on 'PacManGhostCollisionEvent(Blinky)'
+[2018-08-17 06:18:27:118] [GameControl] changing from 'PLAYING' to 'PACMAN_DYING' on 'PacManKilledEvent(Blinky)'
+[2018-08-17 06:18:27:118] [GameControl] exiting state 'PLAYING'
+[2018-08-17 06:18:27:118] [Pac-Man] changing from 'HUNGRY' to 'DYING' on 'PacManKilledEvent(Blinky)'
+[2018-08-17 06:18:27:118] [Pac-Man] exiting state 'HUNGRY'
+[2018-08-17 06:18:27:118] [Pac-Man] entering state 'DYING'
+[2018-08-17 06:18:27:118] PacMan killed by Blinky at (21,12)
+[2018-08-17 06:18:27:118] [GameControl] entering state 'PACMAN_DYING'
+[2018-08-17 06:18:29:145] [Pac-Man] stays 'DYING'
+[2018-08-17 06:18:29:145] [PacMan] publishing event 'PacManDiedEvent'
+[2018-08-17 06:18:29:145] [GameControl] changing from 'PACMAN_DYING' to 'PLAYING' on 'PacManDiedEvent'
+[2018-08-17 06:18:29:145] [GameControl] exiting state 'PACMAN_DYING'
+[2018-08-17 06:18:29:145] [Pac-Man] entering initial state 'HOME'
+[2018-08-17 06:18:29:145] [Ghost Blinky] entering initial state 'HOME'
+[2018-08-17 06:18:29:160] [GameControl] entering state 'PLAYING'
+[2018-08-17 06:18:29:160] [Pac-Man] changing from 'HOME' to 'HUNGRY'
+[2018-08-17 06:18:29:160] [Pac-Man] exiting state 'HOME'
+[2018-08-17 06:18:29:160] [Pac-Man] entering state 'HUNGRY'
+[2018-08-17 06:18:29:176] [Ghost Blinky] changing from 'HOME' to 'SAFE'
+[2018-08-17 06:18:29:176] [Ghost Blinky] exiting state 'HOME'
+[2018-08-17 06:18:29:176] [Ghost Blinky] entering state 'SAFE' for 2,00 seconds (120 frames)
+[2018-08-17 06:18:31:190] [Ghost Blinky] changing from 'SAFE' to 'AGGRO'
+[2018-08-17 06:18:31:190] [Ghost Blinky] exiting state 'SAFE'
+[2018-08-17 06:18:31:190] [Ghost Blinky] entering state 'AGGRO'
+[2018-08-17 06:18:34:865] [PacMan] publishing event 'PacManGhostCollisionEvent(Blinky)'
+[2018-08-17 06:18:34:865] [GameControl] stays 'PLAYING' on 'PacManGhostCollisionEvent(Blinky)'
+[2018-08-17 06:18:34:883] [GameControl] changing from 'PLAYING' to 'PACMAN_DYING' on 'PacManKilledEvent(Blinky)'
+[2018-08-17 06:18:34:883] [GameControl] exiting state 'PLAYING'
+[2018-08-17 06:18:34:883] [Pac-Man] changing from 'HUNGRY' to 'DYING' on 'PacManKilledEvent(Blinky)'
+[2018-08-17 06:18:34:883] [Pac-Man] exiting state 'HUNGRY'
+[2018-08-17 06:18:34:883] [Pac-Man] entering state 'DYING' for 2,00 seconds (120 frames)
+[2018-08-17 06:18:34:883] PacMan killed by Blinky at (21,23)
+[2018-08-17 06:18:34:883] [GameControl] entering state 'PACMAN_DYING'
+[2018-08-17 06:18:36:912] [Pac-Man] stays 'DYING'
+[2018-08-17 06:18:36:912] [PacMan] publishing event 'PacManDiedEvent'
+[2018-08-17 06:18:36:912] [GameControl] changing from 'PACMAN_DYING' to 'PLAYING' on 'PacManDiedEvent'
+[2018-08-17 06:18:36:912] [GameControl] exiting state 'PACMAN_DYING'
+[2018-08-17 06:18:36:912] [Pac-Man] entering initial state 'HOME'
+[2018-08-17 06:18:36:912] [Ghost Blinky] entering initial state 'HOME'
+[2018-08-17 06:18:36:912] [GameControl] entering state 'PLAYING'
+[2018-08-17 06:18:36:928] [Pac-Man] changing from 'HOME' to 'HUNGRY'
+[2018-08-17 06:18:36:928] [Pac-Man] exiting state 'HOME'
+[2018-08-17 06:18:36:928] [Pac-Man] entering state 'HUNGRY'
+[2018-08-17 06:18:36:928] [Ghost Blinky] changing from 'HOME' to 'SAFE'
+[2018-08-17 06:18:36:928] [Ghost Blinky] exiting state 'HOME'
+[2018-08-17 06:18:36:928] [Ghost Blinky] entering state 'SAFE' for 2,00 seconds (120 frames)
+[2018-08-17 06:18:38:973] [Ghost Blinky] changing from 'SAFE' to 'AGGRO'
+[2018-08-17 06:18:38:973] [Ghost Blinky] exiting state 'SAFE'
+[2018-08-17 06:18:38:973] [Ghost Blinky] entering state 'AGGRO'
+[2018-08-17 06:18:41:393] Application window closing, app will exit...
+[2018-08-17 06:18:41:401] Application terminated.
 ```
 
 Other features:
