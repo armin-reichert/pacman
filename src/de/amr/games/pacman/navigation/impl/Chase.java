@@ -6,7 +6,7 @@ import de.amr.games.pacman.navigation.MazeRoute;
 import de.amr.games.pacman.navigation.Navigation;
 
 /**
- * Chasing a refugee through the maze.
+ * Chasing a victim through the maze.
  */
 class Chase implements Navigation {
 
@@ -18,14 +18,15 @@ class Chase implements Navigation {
 
 	@Override
 	public MazeRoute computeRoute(MazeMover chaser) {
-		Maze maze = chaser.getMaze();
 		MazeRoute route = new MazeRoute();
-		if (maze.isTeleportSpace(victim.getTile())) {
+		Maze maze = chaser.getMaze();
+		if (victim.inTeleportSpace()) {
+			// chaser cannot see victim
 			route.dir = chaser.getNextDir();
-			return route;
+		} else {
+			route.path = maze.findPath(chaser.getTile(), victim.getTile());
+			route.dir = maze.alongPath(route.path).orElse(chaser.getNextDir());
 		}
-		route.path = maze.findPath(chaser.getTile(), victim.getTile());
-		route.dir = maze.alongPath(route.path).orElse(chaser.getNextDir());
 		return route;
 	}
 }

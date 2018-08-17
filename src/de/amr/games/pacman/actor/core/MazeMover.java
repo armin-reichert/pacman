@@ -106,7 +106,7 @@ public abstract class MazeMover extends TileWorldEntity {
 		throw new IllegalArgumentException("Illegal direction: " + d);
 	}
 
-	private boolean inTeleportSpace() {
+	public boolean inTeleportSpace() {
 		return getMaze().isTeleportSpace(getTile());
 	}
 
