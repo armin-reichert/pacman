@@ -1,6 +1,7 @@
 package de.amr.games.pacman.view;
 
 import static de.amr.easy.game.Application.LOGGER;
+import static de.amr.games.pacman.model.Game.TS;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -23,6 +24,7 @@ import de.amr.games.pacman.controller.event.game.GhostKilledEvent;
 import de.amr.games.pacman.model.Content;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.navigation.MazeRoute;
 import de.amr.statemachine.StateObject;
 
 /**
@@ -35,15 +37,14 @@ public class ExtendedGamePanel extends GamePanel {
 	private static BufferedImage createGridImage(int numRows, int numCols) {
 		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
 				.getDefaultConfiguration();
-		BufferedImage image = conf.createCompatibleImage(numCols * Game.TS, numRows * Game.TS + 1,
-				Transparency.TRANSLUCENT);
+		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1, Transparency.TRANSLUCENT);
 		Graphics2D g = image.createGraphics();
 		g.setColor(Color.DARK_GRAY);
 		for (int row = 0; row <= numRows; ++row) {
-			g.drawLine(0, row * Game.TS, numCols * Game.TS, row * Game.TS);
+			g.drawLine(0, row * TS, numCols * TS, row * TS);
 		}
 		for (int col = 1; col < numCols; ++col) {
-			g.drawLine(col * Game.TS, 0, col * Game.TS, numRows * Game.TS);
+			g.drawLine(col * TS, 0, col * TS, numRows * TS);
 		}
 		return image;
 	}
@@ -139,7 +140,7 @@ public class ExtendedGamePanel extends GamePanel {
 		PacMan pacMan = actors.getPacMan();
 		drawText(g, Color.YELLOW, pacMan.tf.getX(), pacMan.tf.getY(), pacManState(pacMan));
 		actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> {
-			drawText(g, ghostColor(ghost), ghost.tf.getX() - Game.TS, ghost.tf.getY(), ghostState(ghost));
+			drawText(g, ghostColor(ghost), ghost.tf.getX() - TS, ghost.tf.getY(), ghostState(ghost));
 		});
 		g.translate(-mazePanel.tf.getX(), -mazePanel.tf.getY());
 	}
@@ -180,8 +181,8 @@ public class ExtendedGamePanel extends GamePanel {
 	private void drawText(Graphics2D g, Color color, float x, float y, String text) {
 		g.translate(x, y);
 		g.setColor(color);
-		g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, Game.TS / 2));
-		g.drawString(text, 0, -Game.TS / 2);
+		g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, TS / 2));
+		g.drawString(text, 0, -TS / 2);
 		g.translate(-x, -y);
 	}
 
@@ -203,24 +204,32 @@ public class ExtendedGamePanel extends GamePanel {
 	}
 
 	private void drawRoute(Graphics2D g, Ghost ghost) {
-		List<Tile> path = ghost.getNavigation().computeRoute(ghost).path;
+		g.setColor(ghostColor(ghost));
+		g.translate(mazePanel.tf.getX(), mazePanel.tf.getY());
+		MazeRoute route = ghost.getNavigation().computeRoute(ghost);
+		List<Tile> path = route.path;
+
 		if (path.size() > 1) {
-			g.setColor(ghostColor(ghost));
-			g.translate(mazePanel.tf.getX(), mazePanel.tf.getY());
 			for (int i = 0; i < path.size() - 1; ++i) {
 				Tile u = path.get(i), v = path.get(i + 1);
-				int u1 = u.col * Game.TS + Game.TS / 2;
-				int u2 = u.row * Game.TS + Game.TS / 2;
-				int v1 = v.col * Game.TS + Game.TS / 2;
-				int v2 = v.row * Game.TS + Game.TS / 2;
+				int u1 = u.col * TS + TS / 2;
+				int u2 = u.row * TS + TS / 2;
+				int v1 = v.col * TS + TS / 2;
+				int v2 = v.row * TS + TS / 2;
 				g.drawLine(u1, u2, v1, v2);
 			}
-			// Target tile
-			Tile tile = path.get(path.size() - 1);
-			g.translate(tile.col * Game.TS, tile.row * Game.TS);
-			g.fillRect(Game.TS / 4, Game.TS / 4, Game.TS / 2, Game.TS / 2);
-			g.translate(-tile.col * Game.TS, -tile.row * Game.TS);
-			g.translate(-mazePanel.tf.getX(), -mazePanel.tf.getY());
+			Tile targetTile = path.get(path.size() - 1);
+			g.translate(targetTile.col * TS, targetTile.row * TS);
+			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
+			g.translate(-targetTile.col * TS, -targetTile.row * TS);
+		} else if (route.targetTile != null) {
+			g.drawLine((int)ghost.getCenter().x, (int)ghost.getCenter().y, route.targetTile.col * TS + TS / 2,
+					route.targetTile.row * TS + TS / 2);
+			g.translate(route.targetTile.col * TS, route.targetTile.row * TS);
+			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
+			g.translate(-route.targetTile.col * TS, -route.targetTile.row * TS);
 		}
+
+		g.translate(-mazePanel.tf.getX(), -mazePanel.tf.getY());
 	}
 }

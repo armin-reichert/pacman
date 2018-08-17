@@ -71,9 +71,10 @@ public class GameController implements Controller {
 		LOGGER.setLevel(Level.INFO);
 		actors.getPacMan().traceTo(LOGGER);
 		actors.getGhosts().forEach(ghost -> ghost.traceTo(LOGGER));
-		actors.setActive(actors.getPinky(), false);
+//		actors.setActive(actors.getBlinky(), false);
+//		actors.setActive(actors.getPinky(), false);
 		actors.setActive(actors.getInky(), false);
-		actors.setActive(actors.getClyde(), false);
+//		actors.setActive(actors.getClyde(), false);
 		gameControl.traceTo(LOGGER, game.fnTicksPerSec);
 		gameControl.init();
 	}
