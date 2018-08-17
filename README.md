@@ -308,14 +308,15 @@ class Chase implements Navigation {
 
 	@Override
 	public MazeRoute computeRoute(MazeMover chaser) {
-		Maze maze = chaser.getMaze();
 		MazeRoute route = new MazeRoute();
-		if (maze.isTeleportSpace(victim.getTile())) {
+		Maze maze = chaser.getMaze();
+		if (victim.inTeleportSpace()) {
+			// chaser cannot see victim
 			route.dir = chaser.getNextDir();
-			return route;
+		} else {
+			route.path = maze.findPath(chaser.getTile(), victim.getTile());
+			route.dir = maze.alongPath(route.path).orElse(chaser.getNextDir());
 		}
-		route.path = maze.findPath(chaser.getTile(), victim.getTile());
-		route.dir = maze.alongPath(route.path).orElse(chaser.getNextDir());
 		return route;
 	}
 }
@@ -323,7 +324,7 @@ class Chase implements Navigation {
 
 ## Summary
 
-The goal of this project was to implement a Pac-Man like game in a way that also beginning programmers can fully understand how the game is working. Therefore I tried to structure the game according to the MVC pattern and to separate the control logic into explicit state machines. The state machines are defined in a declarative way instead of writing them down as switch-statements or other low-level implementations. The game uses a very simple game library but it should not be too difficult to write these infrastructure parts (game loop, window etc.) from scratch. 
+The goal of this project is to implement a Pac-Man like game in a way that also beginners can fully understand how the game is working. The implementation follows the MVC pattern and separates the control logic for the actors and the game play into explicit state machines. The state machines are defined in a declarative way. A very simple game library is used for the basic game features (windowing, game loop) but it should not be too difficult to write these infrastructure parts (game loop, window etc.) from scratch or use any other game library instead.
 
 It would certainly also be useful to further decouple the UI from the game model and controller to enable an easy replacement of the complete UI.
 
