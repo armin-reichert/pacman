@@ -68,30 +68,30 @@ public abstract class MazeMover extends TileWorldEntity {
 		}
 	}
 
-	public boolean canMove(int d) {
+	public boolean canMove(int dir) {
 		if (inTeleportSpace()) {
 			// in teleport space direction can only be reversed
-			return d == currentDir || d == NESW.inv(currentDir);
+			return dir == currentDir || dir == NESW.inv(currentDir);
 		}
-		Tile next = computeTileAfterMove(d);
+		Tile next = computeTileAfterMove(dir);
 		if (getMaze().getContent(next) == WALL) {
 			return false;
 		}
 		if (getMaze().getContent(next) == DOOR) {
 			return canWalkThroughDoor(next);
 		}
-		// around corner?
-		if (d == NESW.right(currentDir) || d == NESW.left(currentDir)) {
-			// TODO this is ugly
-			return d == Top4.N || d == Top4.S ? getAlignmentX() <= 1 : getAlignmentY() <= 1;
+		// turn left or right?
+		if (isTurn(currentDir, dir)) {
+			// TODO this is somewhat dubios but seems to work
+			return dir == Top4.N || dir == Top4.S ? getAlignmentX() <= 1 : getAlignmentY() <= 1;
 		}
 		return true;
 	}
 
-	public Tile computeTileAfterMove(int d) {
+	public Tile computeTileAfterMove(int dir) {
 		Tile current = getTile();
-		Vector2f pos = positionAfterMove(d);
-		switch (d) {
+		Vector2f pos = positionAfterMove(dir);
+		switch (dir) {
 		case Top4.W:
 			return new Tile(round(pos.x) / TS, current.row);
 		case Top4.E:
@@ -101,7 +101,7 @@ public abstract class MazeMover extends TileWorldEntity {
 		case Top4.S:
 			return new Tile(current.col, round(pos.y + getHeight()) / TS);
 		}
-		throw new IllegalArgumentException("Illegal direction: " + d);
+		throw new IllegalArgumentException("Illegal direction: " + dir);
 	}
 
 	public boolean inTeleportSpace() {
