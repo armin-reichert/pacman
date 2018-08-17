@@ -1,7 +1,6 @@
 package de.amr.games.pacman.test;
 
 import static de.amr.games.pacman.model.Content.DOOR;
-import static de.amr.games.pacman.model.Content.ENERGIZER;
 import static de.amr.games.pacman.model.Content.PELLET;
 import static de.amr.games.pacman.model.Content.TUNNEL;
 import static de.amr.games.pacman.model.Content.WALL;
@@ -21,6 +20,7 @@ import de.amr.easy.grid.ui.swing.rendering.GridCanvas;
 import de.amr.easy.grid.ui.swing.rendering.GridRenderer;
 import de.amr.easy.grid.ui.swing.rendering.WallPassageGridRenderer;
 import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.Tile;
 
 public class BoardPreview extends JFrame {
 
@@ -49,7 +49,6 @@ public class BoardPreview extends JFrame {
 		Map<Character, Color> colors = new HashMap<>();
 		colors.put(WALL, Color.BLUE);
 		colors.put(PELLET, Color.WHITE);
-		colors.put(ENERGIZER, Color.PINK);
 		colors.put(DOOR, Color.ORANGE);
 		colors.put(TUNNEL, Color.GRAY);
 		ConfigurableGridRenderer r = new WallPassageGridRenderer();
@@ -57,7 +56,11 @@ public class BoardPreview extends JFrame {
 		r.fnPassageWidth = () -> TS - 1;
 		r.fnPassageColor = (cell, dir) -> Color.WHITE;
 		r.fnCellBgColor = cell -> {
-			if (maze.isIntersection(maze.tile(cell))) {
+			Tile tile = maze.tile(cell);
+			if (maze.inGhostHouse(tile)) {
+				return Color.CYAN;
+			}
+			if (maze.isIntersection(tile)) {
 				return Color.GREEN;
 			}
 			return colors.getOrDefault(maze.getGraph().get(cell), Color.WHITE);

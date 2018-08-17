@@ -112,27 +112,27 @@ public class Maze {
 	private boolean isValidTile(Tile tile) {
 		return graph.isValidCol(tile.col) && graph.isValidRow(tile.row);
 	}
-	
+
 	public Tile getPacManHome() {
 		return pacManHome;
 	}
-	
+
 	public Tile getBlinkyHome() {
 		return blinkyHome;
 	}
-	
+
 	public Tile getPinkyHome() {
 		return pinkyHome;
 	}
-	
+
 	public Tile getInkyHome() {
 		return inkyHome;
 	}
-	
+
 	public Tile getClydeHome() {
 		return clydeHome;
 	}
-	
+
 	public Tile getBonusTile() {
 		return bonusTile;
 	}
@@ -140,9 +140,26 @@ public class Maze {
 	public boolean isTeleportSpace(Tile tile) {
 		return !isValidTile(tile);
 	}
-	
+
 	public boolean isIntersection(Tile tile) {
-		return graph.degree(cell(tile)) > 2;
+		int cell = cell(tile);
+		if (graph.degree(cell) < 3) {
+			return false;
+		}
+		// exceptions:
+		if (graph.get(cell) == Content.DOOR || inGhostHouse(tile)) {
+			return false;
+		}
+		int leftNb = graph.neighbor(cell, Top4.W).getAsInt();
+		int rightNb = graph.neighbor(cell, Top4.E).getAsInt();
+		if (rightNb == cell(pacManHome) || rightNb == cell(blinkyHome) || graph.get(leftNb) == ')') {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean inGhostHouse(Tile tile) {
+		return Math.abs(tile.row - inkyHome.row) <= 1 && tile.col >= inkyHome.col && tile.col <= clydeHome.col + 1;
 	}
 
 	public void resetFood() {
