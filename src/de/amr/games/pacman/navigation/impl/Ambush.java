@@ -43,7 +43,7 @@ class Ambush implements Navigation {
 	private Optional<Tile> ahead(int n, MazeMover refugee) {
 		Tile current = refugee.getTile();
 		for (int i = 0; i < n; ++i) {
-			Optional<Tile> next = maze.neighborTile(current, refugee.getDir());
+			Optional<Tile> next = maze.neighborTile(current, refugee.getCurrentDir());
 			if (next.isPresent()) {
 				current = next.get();
 			}

@@ -93,12 +93,12 @@ public class PacMan extends MazeMover {
 	@Override
 	public void move() {
 		super.move();
-		sprite = s_walking_to[getDir()];
-		sprite.enableAnimation(canMove(getDir()));
+		sprite = s_walking_to[getCurrentDir()];
+		sprite.enableAnimation(canMove(getCurrentDir()));
 	}
 
 	@Override
-	protected boolean canWalkThroughDoor(Tile door) {
+	public boolean canWalkThroughDoor(Tile door) {
 		return false;
 	}
 

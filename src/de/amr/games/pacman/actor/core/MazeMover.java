@@ -20,19 +20,23 @@ import de.amr.games.pacman.model.Tile;
  */
 public abstract class MazeMover extends TileWorldEntity {
 
-	private int dir;
+	private int currentDir;
 	private int nextDir;
 
 	public abstract Maze getMaze();
 
+	public abstract boolean canWalkThroughDoor(Tile door);
+
+	public abstract int supplyIntendedDir();
+
 	public abstract float getSpeed();
 
-	public int getDir() {
-		return dir;
+	public int getCurrentDir() {
+		return currentDir;
 	}
 
-	public void setDir(int dir) {
-		this.dir = dir;
+	public void setCurrentDir(int dir) {
+		this.currentDir = dir;
 	}
 
 	public int getNextDir() {
@@ -43,37 +47,31 @@ public abstract class MazeMover extends TileWorldEntity {
 		this.nextDir = dir;
 	}
 
-	public int supplyIntendedDir() {
-		return nextDir;
-	}
-
-	protected boolean canWalkThroughDoor(Tile door) {
-		return true;
+	private boolean isTurn(int current, int next) {
+		return next == NESW.left(current) || next == NESW.right(current);
 	}
 
 	public void move() {
 		nextDir = supplyIntendedDir();
 		if (canMove(nextDir)) {
-			if (nextDir == NESW.left(dir) || nextDir == NESW.right(dir)) {
-				placeAtTile(getTile(), 0, 0); // align on tile
+			if (isTurn(currentDir, nextDir)) {
+				align();
 			}
-			dir = nextDir;
+			currentDir = nextDir;
 		}
 		if (inTeleportSpace()) {
 			teleport();
-			return;
-		}
-		if (canMove(dir)) {
-			tf.moveTo(positionAfterMove(dir));
+		} else if (canMove(currentDir)) {
+			tf.moveTo(positionAfterMove(currentDir));
 		} else {
-			placeAtTile(getTile(), 0, 0); // align on tile
+			align();
 		}
 	}
 
 	public boolean canMove(int d) {
 		if (inTeleportSpace()) {
 			// in teleport space direction can only be reversed
-			return d == dir || d == NESW.inv(dir);
+			return d == currentDir || d == NESW.inv(currentDir);
 		}
 		Tile next = computeTileAfterMove(d);
 		if (getMaze().getContent(next) == WALL) {
@@ -83,7 +81,7 @@ public abstract class MazeMover extends TileWorldEntity {
 			return canWalkThroughDoor(next);
 		}
 		// around corner?
-		if (d == NESW.right(dir) || d == NESW.left(dir)) {
+		if (d == NESW.right(currentDir) || d == NESW.left(currentDir)) {
 			// TODO this is ugly
 			return d == Top4.N || d == Top4.S ? getAlignmentX() <= 1 : getAlignmentY() <= 1;
 		}
@@ -122,7 +120,7 @@ public abstract class MazeMover extends TileWorldEntity {
 		} else if (tile.col < left - length) {
 			tf.moveTo(right * TS, tile.row * TS);
 		} else {
-			tf.moveTo(positionAfterMove(dir));
+			tf.moveTo(positionAfterMove(currentDir));
 		}
 	}
 

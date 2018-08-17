@@ -1,8 +1,8 @@
 package de.amr.games.pacman.actor.game;
 
 import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
+import static java.util.Arrays.binarySearch;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.sprite.Sprite;
@@ -11,17 +11,22 @@ import de.amr.games.pacman.model.BonusSymbol;
 
 public class Bonus extends TileWorldEntity {
 
-	private static final int[] BONUS_POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+	private static final int[] POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
-	private BonusSymbol symbol;
-	private int value;
+	private final BonusSymbol symbol;
+	private final int value;
+	private final int index;
 	private boolean honored;
 	private Sprite sprite;
 
 	public Bonus(BonusSymbol symbol, int value) {
+		index = binarySearch(POINTS, value);
+		if (index < 0) {
+			throw new IllegalArgumentException("Illegal bonus value: " + value);
+		}
 		this.symbol = symbol;
 		this.value = value;
-		this.honored = false;
+		honored = false;
 		sprite = SPRITES.symbol(symbol);
 	}
 
@@ -38,12 +43,10 @@ public class Bonus extends TileWorldEntity {
 	}
 
 	public void setHonored() {
-		honored = true;
-		int index = Arrays.binarySearch(BONUS_POINTS, value);
-		if (index < 0) {
-			throw new IllegalArgumentException("Illegal bonus value: " + value);
+		if (!honored) {
+			honored = true;
+			sprite = SPRITES.pinkNumber(index);
 		}
-		sprite = SPRITES.pinkNumber(index);
 	}
 
 	@Override

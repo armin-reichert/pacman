@@ -74,7 +74,7 @@ public class Ghost extends MazeMover {
 	}
 
 	@Override
-	protected boolean canWalkThroughDoor(Tile door) {
+	public boolean canWalkThroughDoor(Tile door) {
 		return getState() == GhostState.DEAD || getTile().row >= door.row;
 	}
 
@@ -134,10 +134,10 @@ public class Ghost extends MazeMover {
 
 	private void initGhost() {
 		placeAtTile(home, TS / 2, 0);
-		setDir(initialDir);
+		setCurrentDir(initialDir);
 		setNextDir(initialDir);
 		getSprites().forEach(Sprite::resetAnimation);
-		sprite = s_color[getDir()];
+		sprite = s_color[getCurrentDir()];
 	}
 
 	@Override
@@ -184,17 +184,17 @@ public class Ghost extends MazeMover {
 						.onTick(() -> move())
 					
 					.state(AGGRO)
-						.onTick(() -> {	move();	sprite = s_color[getDir()]; })
+						.onTick(() -> {	move();	sprite = s_color[getCurrentDir()]; })
 					
 					.state(DEAD)
-						.onTick(() -> {	move();	sprite = s_eyes[getDir()]; })
+						.onTick(() -> {	move();	sprite = s_eyes[getCurrentDir()]; })
 					
 					.state(DYING)
 						.onEntry(() -> sprite = s_numbers[game.ghostsKilledInSeries - 1] )
 						.timeoutAfter(game::getGhostDyingTime)
 					
 					.state(SAFE)
-						.onTick(() -> {	move();	sprite = s_color[getDir()]; })
+						.onTick(() -> {	move();	sprite = s_color[getCurrentDir()]; })
 						.timeoutAfter(() -> game.sec(2))
 					
 					.state(SCATTERING) //TODO
