@@ -1,4 +1,4 @@
-package de.amr.games.pacman.routing.impl;
+package de.amr.games.pacman.navigation.impl;
 
 import static de.amr.games.pacman.model.Content.WALL;
 
@@ -7,8 +7,8 @@ import java.util.Optional;
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.routing.MazeRoute;
-import de.amr.games.pacman.routing.Navigation;
+import de.amr.games.pacman.navigation.MazeRoute;
+import de.amr.games.pacman.navigation.Navigation;
 
 /**
  * Ambush the victim in the maze.

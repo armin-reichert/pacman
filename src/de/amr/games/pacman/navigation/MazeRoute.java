@@ -1,4 +1,4 @@
-package de.amr.games.pacman.routing;
+package de.amr.games.pacman.navigation;
 
 import java.util.Collections;
 import java.util.List;

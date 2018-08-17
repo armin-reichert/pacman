@@ -1,11 +1,11 @@
 package de.amr.games.pacman.actor.game;
 
-import static de.amr.games.pacman.routing.impl.NavigationSystem.ambush;
-import static de.amr.games.pacman.routing.impl.NavigationSystem.bounce;
-import static de.amr.games.pacman.routing.impl.NavigationSystem.chase;
-import static de.amr.games.pacman.routing.impl.NavigationSystem.flee;
-import static de.amr.games.pacman.routing.impl.NavigationSystem.followKeyboard;
-import static de.amr.games.pacman.routing.impl.NavigationSystem.go;
+import static de.amr.games.pacman.navigation.impl.NavigationSystem.ambush;
+import static de.amr.games.pacman.navigation.impl.NavigationSystem.bounce;
+import static de.amr.games.pacman.navigation.impl.NavigationSystem.chase;
+import static de.amr.games.pacman.navigation.impl.NavigationSystem.flee;
+import static de.amr.games.pacman.navigation.impl.NavigationSystem.followKeyboard;
+import static de.amr.games.pacman.navigation.impl.NavigationSystem.go;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -21,7 +21,7 @@ import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.routing.Navigation;
+import de.amr.games.pacman.navigation.Navigation;
 import de.amr.games.pacman.view.PacManSprites.GhostColor;
 
 /**

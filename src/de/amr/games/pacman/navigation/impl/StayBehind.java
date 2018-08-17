@@ -1,11 +1,11 @@
-package de.amr.games.pacman.routing.impl;
+package de.amr.games.pacman.navigation.impl;
 
 import static de.amr.easy.util.StreamUtils.randomElement;
 
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.routing.MazeRoute;
-import de.amr.games.pacman.routing.Navigation;
+import de.amr.games.pacman.navigation.MazeRoute;
+import de.amr.games.pacman.navigation.Navigation;
 
 /**
  * Clyde's behaviour.

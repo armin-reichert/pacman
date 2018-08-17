@@ -32,8 +32,8 @@ import de.amr.games.pacman.model.Content;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.routing.Navigation;
-import de.amr.games.pacman.routing.impl.NavigationSystem;
+import de.amr.games.pacman.navigation.Navigation;
+import de.amr.games.pacman.navigation.impl.NavigationSystem;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
 
