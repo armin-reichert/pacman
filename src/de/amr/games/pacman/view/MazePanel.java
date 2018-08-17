@@ -100,7 +100,7 @@ public class MazePanel extends GameEntity {
 
 	private void drawActors(Graphics2D g) {
 		actors.getBonus().ifPresent(bonus -> {
-			bonus.placeAtTile(maze.bonusTile, TS / 2, 0);
+			bonus.placeAtTile(maze.getBonusTile(), TS / 2, 0);
 			bonus.draw(g);
 		});
 		actors.getPacMan().draw(g);

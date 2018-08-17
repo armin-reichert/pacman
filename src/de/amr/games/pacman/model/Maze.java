@@ -38,12 +38,12 @@ public class Maze {
 
 	public static final Topology NESW = new Top4();
 
-	public Tile pacManHome;
-	public Tile blinkyHome;
-	public Tile pinkyHome;
-	public Tile inkyHome;
-	public Tile clydeHome;
-	public Tile bonusTile;
+	private Tile pacManHome;
+	private Tile blinkyHome;
+	private Tile pinkyHome;
+	private Tile inkyHome;
+	private Tile clydeHome;
+	private Tile bonusTile;
 
 	private final String[] originalData;
 	private int foodTotal;
@@ -112,9 +112,37 @@ public class Maze {
 	private boolean isValidTile(Tile tile) {
 		return graph.isValidCol(tile.col) && graph.isValidRow(tile.row);
 	}
+	
+	public Tile getPacManHome() {
+		return pacManHome;
+	}
+	
+	public Tile getBlinkyHome() {
+		return blinkyHome;
+	}
+	
+	public Tile getPinkyHome() {
+		return pinkyHome;
+	}
+	
+	public Tile getInkyHome() {
+		return inkyHome;
+	}
+	
+	public Tile getClydeHome() {
+		return clydeHome;
+	}
+	
+	public Tile getBonusTile() {
+		return bonusTile;
+	}
 
 	public boolean isTeleportSpace(Tile tile) {
 		return !isValidTile(tile);
+	}
+	
+	public boolean isIntersection(Tile tile) {
+		return graph.degree(cell(tile)) > 2;
 	}
 
 	public void resetFood() {

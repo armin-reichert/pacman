@@ -124,7 +124,7 @@ public class GamePanel implements PacManGameUI {
 		g2.setFont(Assets.font("scoreFont"));
 		g2.setColor(infoTextColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(infoText, g2).getBounds();
-		g2.translate((width - box.width) / 2, (game.maze.bonusTile.row + 1) * Game.TS);
+		g2.translate((width - box.width) / 2, (game.maze.getBonusTile().row + 1) * Game.TS);
 		g2.drawString(infoText, 0, 0);
 		g2.dispose();
 	}

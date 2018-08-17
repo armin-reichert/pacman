@@ -49,14 +49,19 @@ public class BoardPreview extends JFrame {
 		Map<Character, Color> colors = new HashMap<>();
 		colors.put(WALL, Color.BLUE);
 		colors.put(PELLET, Color.WHITE);
-		colors.put(ENERGIZER, Color.GREEN);
+		colors.put(ENERGIZER, Color.PINK);
 		colors.put(DOOR, Color.ORANGE);
 		colors.put(TUNNEL, Color.GRAY);
 		ConfigurableGridRenderer r = new WallPassageGridRenderer();
 		r.fnCellSize = () -> TS;
 		r.fnPassageWidth = () -> TS - 1;
 		r.fnPassageColor = (cell, dir) -> Color.WHITE;
-		r.fnCellBgColor = cell -> colors.getOrDefault(maze.getGraph().get(cell), Color.WHITE);
+		r.fnCellBgColor = cell -> {
+			if (maze.isIntersection(maze.tile(cell))) {
+				return Color.GREEN;
+			}
+			return colors.getOrDefault(maze.getGraph().get(cell), Color.WHITE);
+		};
 		r.fnText = cell -> String.valueOf(maze.getGraph().get(cell));
 		r.fnTextFont = () -> new Font("Arial Bold", Font.BOLD, TS / 2);
 		return r;
