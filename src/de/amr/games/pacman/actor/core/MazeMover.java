@@ -88,6 +88,13 @@ public abstract class MazeMover extends TileWorldEntity {
 		return true;
 	}
 
+	/**
+	 * Computes the possibly adjusted tile position after a move in the given direction.
+	 * 
+	 * @param dir
+	 *              move direction
+	 * @return the tile after a move in that direction
+	 */
 	public Tile computeTileAfterMove(int dir) {
 		Tile current = getTile();
 		Vector2f pos = positionAfterMove(dir);
