@@ -95,22 +95,27 @@ public class Cast implements PacManWorld {
 		removeBonus();
 	}
 
+	@Override
 	public Ghost getBlinky() {
 		return blinky;
 	}
 
+	@Override
 	public Ghost getPinky() {
 		return pinky;
 	}
 
+	@Override
 	public Ghost getInky() {
 		return inky;
 	}
 
+	@Override
 	public Ghost getClyde() {
 		return clyde;
 	}
 
+	@Override
 	public PacMan getPacMan() {
 		return pacMan;
 	}
