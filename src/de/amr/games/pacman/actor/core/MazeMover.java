@@ -109,16 +109,18 @@ public abstract class MazeMover extends TileWorldEntity {
 	}
 
 	/**
-	 * "Teleport": leave the maze on the left or right side, run over a certain number of tiles in
-	 * "teleport space", then reenter the maze on the opposite side.
+	 * "Teleport"
+	 * 
+	 * Leaves the maze on the left or right side, runs in "teleport space", reenters the maze on the
+	 * opposite side.
 	 */
 	private void teleport() {
-		Tile tile = getTile();
-		int left = 0, right = getMaze().numCols() - 1, length = getMaze().getTeleportLength();
-		if (tile.col > right + length) {
-			tf.moveTo(left * TS, tile.row * TS);
-		} else if (tile.col < left - length) {
-			tf.moveTo(right * TS, tile.row * TS);
+		int right = getMaze().numCols() - 1;
+		int len = getMaze().getTeleportLength();
+		if (tf.getX() > (right + len) * TS) {
+			tf.setX(0);
+		} else if (tf.getX() < -len * TS) {
+			tf.setX(right * TS);
 		} else {
 			tf.moveTo(positionAfterMove(currentDir));
 		}
