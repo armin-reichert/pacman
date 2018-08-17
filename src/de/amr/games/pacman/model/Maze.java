@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import de.amr.easy.graph.api.GraphTraversal;
 import de.amr.easy.graph.api.UndirectedEdge;
 import de.amr.easy.graph.impl.traversal.AStarTraversal;
+import de.amr.easy.graph.impl.traversal.BreadthFirstTraversal;
 import de.amr.easy.grid.api.GridGraph2D;
 import de.amr.easy.grid.api.Topology;
 import de.amr.easy.grid.impl.GridGraph;
@@ -38,6 +39,8 @@ public class Maze {
 
 	public static final Topology NESW = new Top4();
 
+	private final String[] originalData;
+	private final GridGraph<Character, Integer> graph;
 	private Tile pacManHome;
 	private Tile blinkyHome;
 	private Tile pinkyHome;
@@ -45,20 +48,11 @@ public class Maze {
 	private Tile clydeHome;
 	private Tile bonusTile;
 	private int tunnelRow;
-
-	private final String[] originalData;
 	private int foodTotal;
-
-	private final GridGraph<Character, Integer> graph;
 
 	public Maze(String map) {
 		originalData = map.split("\n");
 		int numCols = originalData[0].length(), numRows = originalData.length;
-
-		graph = new GridGraph<>(numCols, numRows, NESW, v -> null, (u, v) -> 1, UndirectedEdge::new);
-		graph.setDefaultVertexLabel(v -> originalData(graph.row(v), graph.col(v)));
-
-		foodTotal = 0;
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
 				char c = originalData(row, col);
@@ -81,6 +75,8 @@ public class Maze {
 				}
 			}
 		}
+		graph = new GridGraph<>(numCols, numRows, NESW, v -> null, (u, v) -> 1, UndirectedEdge::new);
+		graph.setDefaultVertexLabel(v -> originalData(graph.row(v), graph.col(v)));
 		graph.fill();
 		graph.edges().filter(edge -> {
 			int u = edge.either(), v = edge.other();
@@ -92,7 +88,7 @@ public class Maze {
 		return originalData[row].charAt(col);
 	}
 
-	public GridGraph<Character, Integer> getGraph() {
+	public GridGraph2D<Character, Integer> getGraph() {
 		return graph;
 	}
 
@@ -189,8 +185,8 @@ public class Maze {
 		return isValidTile(tile) ? graph.get(cell(tile)) : ' ';
 	}
 
-	public void setContent(Tile tile, char c) {
-		graph.set(cell(tile), c);
+	public void setEatenFood(Tile tile) {
+		graph.set(cell(tile), Content.EATEN);
 	}
 
 	public OptionalInt direction(Tile t1, Tile t2) {
@@ -212,8 +208,8 @@ public class Maze {
 
 	public List<Tile> findPath(Tile source, Tile target) {
 		if (isValidTile(source) && isValidTile(target)) {
-			GraphTraversal pathfinder = new AStarTraversal<>(graph, edge -> 1, graph::manhattan);
-			// GraphTraversal pathfinder = new BreadthFirstTraversal<>(graph);
+			// GraphTraversal pathfinder = new AStarTraversal<>(graph, edge -> 1, graph::manhattan);
+			GraphTraversal pathfinder = new BreadthFirstTraversal<>(graph);
 			pathfinder.traverseGraph(cell(source), cell(target));
 			return pathfinder.path(cell(target)).stream().map(this::tile).collect(Collectors.toList());
 		}

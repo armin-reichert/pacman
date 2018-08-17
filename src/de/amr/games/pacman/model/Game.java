@@ -149,7 +149,7 @@ public class Game {
 			lives += 1;
 		}
 		score.add(value);
-		maze.setContent(tile, Content.EATEN);
+		maze.setEatenFood(tile);
 		foodEaten += 1;
 		if (food == Content.ENERGIZER) {
 			ghostsKilledInSeries = 0;

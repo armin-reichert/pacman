@@ -107,7 +107,7 @@ public class ExtendedGamePanel extends GamePanel {
 
 	private void eatPellets() {
 		game.maze.tiles().filter(tile -> game.maze.getContent(tile) == Content.PELLET).forEach(tile -> {
-			game.maze.setContent(tile, Content.EATEN);
+			game.maze.setEatenFood(tile);
 			game.foodEaten += 1;
 			game.score.add(game.getFoodValue(Content.PELLET));
 		});
@@ -223,7 +223,7 @@ public class ExtendedGamePanel extends GamePanel {
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-targetTile.col * TS, -targetTile.row * TS);
 		} else if (route.targetTile != null) {
-			g.drawLine((int)ghost.getCenter().x, (int)ghost.getCenter().y, route.targetTile.col * TS + TS / 2,
+			g.drawLine((int) ghost.getCenter().x, (int) ghost.getCenter().y, route.targetTile.col * TS + TS / 2,
 					route.targetTile.row * TS + TS / 2);
 			g.translate(route.targetTile.col * TS, route.targetTile.row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
