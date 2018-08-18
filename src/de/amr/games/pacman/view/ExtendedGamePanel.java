@@ -33,6 +33,14 @@ import de.amr.statemachine.StateObject;
  */
 public class ExtendedGamePanel extends GamePanel {
 
+	private static final String INFTY = Character.toString('\u221E');
+
+	private final BufferedImage gridImage;
+
+	private boolean showGrid = true;
+	private boolean showRoutes = true;
+	private boolean showStates = true;
+
 	private static BufferedImage createGridImage(int numRows, int numCols) {
 		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment()
 				.getDefaultScreenDevice().getDefaultConfiguration();
@@ -48,13 +56,6 @@ public class ExtendedGamePanel extends GamePanel {
 		}
 		return image;
 	}
-
-	private static final String INFTY = Character.toString('\u221E');
-
-	private final BufferedImage gridImage;
-	private boolean showGrid;
-	private boolean showRoutes;
-	private boolean showStates;
 
 	public ExtendedGamePanel(int width, int height, Game game, Cast actors) {
 		super(width, height, game, actors);

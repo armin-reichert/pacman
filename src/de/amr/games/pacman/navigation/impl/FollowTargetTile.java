@@ -31,6 +31,8 @@ import de.amr.games.pacman.navigation.Navigation;
  * direction and move back to the left. The implication of this restriction is that whenever a ghost
  * enters a tile with only two exits, it will always continue in the same direction. </cite>
  * </p>
+ * 
+ * TODO: does not yet work 100% correctly, ghost in some cases still reverses direction
  */
 public class FollowTargetTile implements Navigation {
 
@@ -40,58 +42,58 @@ public class FollowTargetTile implements Navigation {
 		this.targetTileSupplier = targetTileSupplier;
 	}
 
-	private Tile getTargetTile(Maze maze) {
-		Tile targetTile = targetTileSupplier.get();
-		if (maze.isTeleportSpace(targetTile)) {
-			targetTile = new Tile(0, maze.getTunnelRow());
-		}
-		return targetTile;
-	}
-
 	@Override
 	public MazeRoute computeRoute(MazeMover follower) {
 		Maze maze = follower.getMaze();
 		int currentDir = follower.getCurrentDir();
 		Tile currentTile = follower.getTile();
-		Tile targetTile = getTargetTile(maze);
+		LOGGER.info(String.format("Current tile: %s, dir:%d", currentTile, currentDir));
+
+		Tile targetTile = targetTileSupplier.get();
+		if (maze.isTeleportSpace(targetTile)) {
+			targetTile = targetTile.col > maze.numCols() - 1 ? new Tile(maze.numCols() - 1, maze.getTunnelRow())
+					: new Tile(0, maze.getTunnelRow());
+		}
 
 		MazeRoute route = new MazeRoute();
 		route.dir = currentDir; // default: keep current move direction
 		route.targetTile = targetTile;
 
-		// Special cases: 
-		
-		// Leaving the ghost house. Not sure what original game does in that case.
-		if (maze.inGhostHouse(currentTile) || maze.isDoor(currentTile)) {
-			route.path = maze.findPath(currentTile, targetTile);
-			route.dir = maze.alongPath(route.path).orElse(currentDir);
-			return route;
-		}
-
-		// Keep move direction
 		if (follower.inTunnel() || follower.inTeleportSpace()) {
 			return route;
 		}
 
-		// Find neighbor tile with least Euclidean distance to target tile
-//		LOGGER.info(String.format("Current tile: %s, dir:%d", currentTile, currentDir));
-		/*@formatter:off*/
-		NESW.dirs()
-			.filter(dir -> dir != NESW.inv(currentDir))
-			.mapToObj(dir -> maze.neighborTile(currentTile, dir))
-			.filter(Optional::isPresent)
-			.map(Optional::get)
-			.filter(tile -> !maze.isDoor(tile))
-			.filter(tile -> !maze.isWall(tile))
-			.sorted((t1, t2) -> Integer.compare(maze.euclidean2(t1, targetTile), maze.euclidean2(t2, targetTile)))
-			.findFirst()
-			.ifPresent(tile -> {
+		if (follower.inGhostHouse()) {
+			selectTileClosestTo(maze.getBlinkyHome(), follower, true).ifPresent(tile -> {
 				int dir = maze.direction(currentTile, tile).getAsInt();
 				route.dir = dir;
-//				LOGGER.info(String.format("Next tile:    %s, dir:%d", tile, dir));
+				LOGGER.info(String.format("Next tile:    %s, dir:%d", tile, route.dir));
 			});
-		/*@formatter:on*/
+			return route;
+		}
 
+		selectTileClosestTo(targetTile, follower, false).ifPresent(tile -> {
+			int dir = maze.direction(currentTile, tile).getAsInt();
+			route.dir = dir;
+			LOGGER.info(String.format("Next tile:    %s, dir:%d", tile, route.dir));
+		});
 		return route;
+	}
+
+	private Optional<Tile> selectTileClosestTo(Tile targetTile, MazeMover follower, boolean doorOpen) {
+		Maze maze = follower.getMaze();
+		Tile currentTile = follower.getTile();
+		int currentDir = follower.getCurrentDir();
+		return NESW.dirs().boxed()
+		/*@formatter:off*/
+			.filter(dir -> dir != NESW.inv(currentDir))
+			.map(dir -> maze.neighborTile(currentTile, dir))
+			.filter(Optional::isPresent)
+			.map(Optional::get)
+			.filter(tile -> !maze.isWall(tile))
+			.filter(tile -> !maze.isDoor(tile) || doorOpen)
+			.sorted((t1, t2) -> Integer.compare(maze.euclidean2(t1, targetTile), maze.euclidean2(t2, targetTile)))
+			.findFirst();
+		/*@formatter:on*/
 	}
 }

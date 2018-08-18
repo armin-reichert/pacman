@@ -30,6 +30,7 @@ public class Maze {
 	private static final char WALL = '#';
 	private static final char DOOR = 'D';
 	private static final char TUNNEL = 'T';
+	private static final char TELEPORT = '~';
 
 	private static final char PELLET = '.';
 	private static final char ENERGIZER = '*';
@@ -146,6 +147,9 @@ public class Maze {
 	}
 
 	private char getContent(Tile tile) {
+		if (isTeleportSpace(tile)) {
+			return TELEPORT;
+		}
 		return graph.get(cell(tile));
 	}
 
