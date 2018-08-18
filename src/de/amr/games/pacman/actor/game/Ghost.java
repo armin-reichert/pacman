@@ -220,7 +220,7 @@ public class Ghost extends MazeMover {
 					.stay(SAFE).on(GhostKilledEvent.class)
 						
 					.when(AGGRO).on(PacManGainsPowerEvent.class).then(AFRAID)
-					.when(AGGRO).on(GhostKilledEvent.class).then(DEAD) // used for cheating
+					.when(AGGRO).on(GhostKilledEvent.class).then(DEAD) // cheating-mode
 						
 					.stay(AFRAID).on(PacManGainsPowerEvent.class)
 					.stay(AFRAID).on(PacManGettingWeakerEvent.class).act(e -> sprite = s_flashing)
@@ -228,6 +228,8 @@ public class Ghost extends MazeMover {
 					.when(AFRAID).on(GhostKilledEvent.class).then(DYING)
 						
 					.when(DYING).then(DEAD).onTimeout()
+					.stay(DYING).on(PacManGainsPowerEvent.class) // cheating-mode
+					.stay(DYING).on(PacManGettingWeakerEvent.class) // cheating-mode
 						
 					.when(DEAD).then(SAFE)
 						.condition(() -> getTile().equals(home))

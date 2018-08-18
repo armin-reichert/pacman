@@ -1,5 +1,6 @@
 package de.amr.games.pacman.model;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -29,7 +30,7 @@ public class Game {
 	private int foodEaten;
 	private int ghostsKilledByEnergizer;
 	private int level;
-	public final List<BonusSymbol> levelCounter = new LinkedList<>();
+	private final List<BonusSymbol> levelCounter = new LinkedList<>();
 
 	public Game(Maze maze, IntSupplier fnTicksPerSec) {
 		this.maze = maze;
@@ -69,10 +70,12 @@ public class Game {
 		return 8f * Game.TS / 60 * relativeSpeed;
 	}
 
-	// Level data
-
 	public int getLevel() {
 		return level;
+	}
+
+	public List<BonusSymbol> getLevelCounter() {
+		return Collections.unmodifiableList(levelCounter);
 	}
 
 	public void eatFoodAtTile(Tile tile) {
@@ -103,11 +106,11 @@ public class Game {
 	public int getDigestionTicks(Tile tile) {
 		return maze.isEnergizer(tile) ? 3 : 1;
 	}
-	
+
 	public int getLives() {
 		return lives;
 	}
-	
+
 	public void removeLife() {
 		lives -= 1;
 	}
@@ -170,12 +173,11 @@ public class Game {
 		}
 		return value;
 	}
-	
-	
+
 	public int getGhostsKilledByEnergizer() {
 		return ghostsKilledByEnergizer;
 	}
-	
+
 	public void addGhostKilled() {
 		ghostsKilledByEnergizer += 1;
 	}
