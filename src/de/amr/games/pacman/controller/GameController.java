@@ -7,7 +7,6 @@ import static de.amr.games.pacman.controller.GameController.PlayState.GHOST_DYIN
 import static de.amr.games.pacman.controller.GameController.PlayState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.GameController.PlayState.PLAYING;
 import static de.amr.games.pacman.controller.GameController.PlayState.READY;
-import static de.amr.games.pacman.model.Food.ENERGIZER;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -56,7 +55,8 @@ public class GameController implements Controller {
 		maze = new Maze(Assets.text("maze.txt"));
 		game = new Game(maze, Application.PULSE::getFrequency);
 		actors = new Cast(game);
-		gameView = new ExtendedGamePanel(maze.numCols() * Game.TS, (maze.numRows() + 5) * Game.TS, game, actors);
+		gameView = new ExtendedGamePanel(maze.numCols() * Game.TS, (maze.numRows() + 5) * Game.TS, game,
+				actors);
 		gameControl = createGameControl();
 		actors.getPacMan().subscribe(gameControl::process);
 	}
@@ -71,10 +71,10 @@ public class GameController implements Controller {
 		LOGGER.setLevel(Level.INFO);
 		actors.getPacMan().traceTo(LOGGER);
 		actors.getGhosts().forEach(ghost -> ghost.traceTo(LOGGER));
-//		actors.setActive(actors.getBlinky(), false);
-//		actors.setActive(actors.getPinky(), false);
+		// actors.setActive(actors.getBlinky(), false);
+		// actors.setActive(actors.getPinky(), false);
 		actors.setActive(actors.getInky(), false);
-//		actors.setActive(actors.getClyde(), false);
+		// actors.setActive(actors.getClyde(), false);
 		gameControl.traceTo(LOGGER, game.fnTicksPerSec);
 		gameControl.init();
 	}
@@ -220,7 +220,8 @@ public class GameController implements Controller {
 			}
 			if (pacManState == PacManState.GREEDY) {
 				GhostState ghostState = e.ghost.getState();
-				if (ghostState == GhostState.AFRAID || ghostState == GhostState.AGGRO || ghostState == GhostState.SCATTERING) {
+				if (ghostState == GhostState.AFRAID || ghostState == GhostState.AGGRO
+						|| ghostState == GhostState.SCATTERING) {
 					gameControl.enqueue(new GhostKilledEvent(e.ghost));
 				}
 				return;
@@ -231,7 +232,8 @@ public class GameController implements Controller {
 		private void onPacManKilled(GameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
 			actors.getPacMan().processEvent(e);
-			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
+			LOGGER.info(
+					() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
 		}
 
 		private void onPacManGainsPower(GameEvent event) {
@@ -254,12 +256,14 @@ public class GameController implements Controller {
 			GhostKilledEvent e = (GhostKilledEvent) event;
 			game.ghostsKilledInSeries += 1;
 			e.ghost.processEvent(e);
-			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
+			LOGGER
+					.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
 		}
 
 		private void onBonusFound(GameEvent event) {
 			actors.getBonus().ifPresent(bonus -> {
-				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(), bonus.getValue()));
+				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(),
+						bonus.getValue()));
 				bonus.setHonored();
 				game.score.add(bonus.getValue());
 				gameView.setBonusTimer(game.sec(1));
@@ -272,7 +276,7 @@ public class GameController implements Controller {
 			if (game.allFoodEaten()) {
 				gameControl.enqueue(new LevelCompletedEvent());
 			} else {
-				if (e.food == ENERGIZER) {
+				if (e.energizer) {
 					gameControl.enqueue(new PacManGainsPowerEvent());
 				}
 				if (game.isBonusReached()) {
@@ -316,13 +320,14 @@ public class GameController implements Controller {
 		public void onEntry() {
 			actors.getPacMan().visibility = () -> false;
 			game.score.add(game.getKilledGhostValue());
-			LOGGER.info(String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
-					game.ghostsKilledInSeries));
+			LOGGER.info(String.format("Scored %d points for killing ghost #%d",
+					game.getKilledGhostValue(), game.ghostsKilledInSeries));
 		}
 
 		@Override
 		public void onTick() {
-			actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(Ghost::update);
+			actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
+					.forEach(Ghost::update);
 		}
 
 		@Override

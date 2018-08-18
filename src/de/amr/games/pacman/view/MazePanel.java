@@ -1,7 +1,5 @@
 package de.amr.games.pacman.view;
 
-import static de.amr.games.pacman.model.Food.EATEN;
-import static de.amr.games.pacman.model.Food.ENERGIZER;
 import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
@@ -104,14 +102,16 @@ public class MazePanel extends GameEntity {
 			bonus.draw(g);
 		});
 		actors.getPacMan().draw(g);
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(ghost -> ghost.draw(g));
+		actors.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
+				.forEach(ghost -> ghost.draw(g));
+		actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
+				.forEach(ghost -> ghost.draw(g));
 	}
 
 	private void drawFood(Graphics2D g) {
 		maze.tiles().forEach(tile -> {
-			char c = maze.getContent(tile);
-			if (c == EATEN || c == ENERGIZER && energizerBlinking.currentFrame() % 2 != 0) {
+			if (maze.isFoodEaten(tile)
+					|| maze.isEnergizer(tile) && energizerBlinking.currentFrame() % 2 != 0) {
 				g.translate(tile.col * Game.TS, tile.row * Game.TS);
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, Game.TS, Game.TS);

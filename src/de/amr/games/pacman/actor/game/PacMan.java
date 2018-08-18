@@ -28,7 +28,6 @@ import de.amr.games.pacman.controller.event.game.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.game.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.game.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.game.PacManLostPowerEvent;
-import de.amr.games.pacman.model.Food;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
@@ -250,14 +249,14 @@ public class PacMan extends MazeMover {
 			Optional<Bonus> activeBonus = world.getBonus().filter(bonus -> bonus.getTile().equals(tile))
 					.filter(bonus -> !bonus.isHonored());
 			if (activeBonus.isPresent()) {
-				events.publish(new BonusFoundEvent(activeBonus.get().getSymbol(), activeBonus.get().getValue()));
+				events.publish(
+						new BonusFoundEvent(activeBonus.get().getSymbol(), activeBonus.get().getValue()));
 				return;
 			}
 			// Food?
-			char food = getMaze().getContent(tile);
-			if (food == Food.PELLET || food == Food.ENERGIZER) {
-				digestionTicks = game.getDigestionTicks(food);
-				events.publish(new FoodFoundEvent(tile, food));
+			if (getMaze().isFood(tile)) {
+				digestionTicks = game.getDigestionTicks(tile);
+				events.publish(new FoodFoundEvent(tile, getMaze().isEnergizer(tile)));
 			}
 		}
 	}

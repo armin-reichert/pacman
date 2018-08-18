@@ -143,29 +143,32 @@ public class Game {
 	}
 
 	public void eatFoodAt(Tile tile) {
-		char food = maze.getContent(tile);
-		int value = getFoodValue(food);
+		if (!maze.isFood(tile)) {
+			throw new IllegalArgumentException("No food at tile " + tile);
+		}
+		boolean energizer = maze.isEnergizer(tile);
+		if (energizer) {
+			ghostsKilledInSeries = 0;
+		}
+		maze.hideFood(tile);
+		foodEaten += 1;
+		int value = getFoodValue(energizer);
 		if (checkExtraLife(score.getScore(), score.getScore() + value)) {
 			lives += 1;
 		}
 		score.add(value);
-		maze.setEatenFood(tile);
-		foodEaten += 1;
-		if (food == Food.ENERGIZER) {
-			ghostsKilledInSeries = 0;
-		}
 	}
 
-	public int getFoodValue(char food) {
-		return food == Food.PELLET ? 10 : food == Food.ENERGIZER ? 50 : 0;
+	public int getFoodValue(boolean energizer) {
+		return energizer ? 50 : 10;
 	}
 
 	public boolean allFoodEaten() {
 		return foodEaten == maze.getFoodTotal();
 	}
 
-	public int getDigestionTicks(char food) {
-		return food == Food.ENERGIZER ? 3 : 1;
+	public int getDigestionTicks(Tile tile) {
+		return maze.isEnergizer(tile) ? 3 : 1;
 	}
 
 	private boolean checkExtraLife(int oldScore, int newScore) {

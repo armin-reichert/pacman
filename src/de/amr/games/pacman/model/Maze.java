@@ -1,8 +1,5 @@
 package de.amr.games.pacman.model;
 
-import static de.amr.games.pacman.model.Food.ENERGIZER;
-import static de.amr.games.pacman.model.Food.PELLET;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +34,10 @@ public class Maze {
 	private static final char DOOR = 'D';
 	private static final char TUNNEL = 'T';
 
+	private static final char PELLET = '.';
+	private static final char ENERGIZER = '*';
+	private static final char EATEN = ':';
+	
 	// Position markers
 	private static final char POS_BONUS = '$';
 	private static final char POS_PACMAN = 'O';
@@ -187,6 +188,22 @@ public class Maze {
 				&& tile.col <= clydeHome.col + 1;
 	}
 
+	public boolean isPellet(Tile tile) {
+		return getContent(tile) == PELLET;
+	}
+	
+	public boolean isEnergizer(Tile tile) {
+		return getContent(tile) == ENERGIZER;
+	}
+	
+	public boolean isFood(Tile tile) {
+		return isPellet(tile) || isEnergizer(tile);
+	}
+	
+	public boolean isFoodEaten(Tile tile) {
+		return getContent(tile) == EATEN;
+	}
+	
 	public void resetFood() {
 		graph.clearVertexLabels();
 	}
@@ -203,8 +220,8 @@ public class Maze {
 		return isValidTile(tile) ? graph.get(cell(tile)) : ' ';
 	}
 
-	public void setEatenFood(Tile tile) {
-		graph.set(cell(tile), Food.EATEN);
+	public void hideFood(Tile tile) {
+		graph.set(cell(tile), EATEN);
 	}
 
 	public OptionalInt direction(Tile t1, Tile t2) {

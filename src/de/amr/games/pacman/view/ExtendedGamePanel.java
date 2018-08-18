@@ -21,7 +21,6 @@ import de.amr.games.pacman.actor.game.Cast;
 import de.amr.games.pacman.actor.game.Ghost;
 import de.amr.games.pacman.actor.game.PacMan;
 import de.amr.games.pacman.controller.event.game.GhostKilledEvent;
-import de.amr.games.pacman.model.Food;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.MazeRoute;
@@ -35,9 +34,10 @@ import de.amr.statemachine.StateObject;
 public class ExtendedGamePanel extends GamePanel {
 
 	private static BufferedImage createGridImage(int numRows, int numCols) {
-		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-				.getDefaultConfiguration();
-		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1, Transparency.TRANSLUCENT);
+		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment()
+				.getDefaultScreenDevice().getDefaultConfiguration();
+		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1,
+				Transparency.TRANSLUCENT);
 		Graphics2D g = image.createGraphics();
 		g.setColor(Color.DARK_GRAY);
 		for (int row = 0; row <= numRows; ++row) {
@@ -106,10 +106,10 @@ public class ExtendedGamePanel extends GamePanel {
 	}
 
 	private void eatPellets() {
-		game.maze.tiles().filter(tile -> game.maze.getContent(tile) == Food.PELLET).forEach(tile -> {
-			game.maze.setEatenFood(tile);
+		game.maze.tiles().filter(tile -> game.maze.isPellet(tile)).forEach(tile -> {
+			game.score.add(game.getFoodValue(false));
+			game.maze.hideFood(tile);
 			game.foodEaten += 1;
-			game.score.add(game.getFoodValue(Food.PELLET));
 		});
 	}
 
@@ -154,8 +154,8 @@ public class ExtendedGamePanel extends GamePanel {
 
 	private String ghostState(Ghost ghost) {
 		StateObject<?, ?> state = ghost.currentStateObject();
-		return state.getDuration() != StateObject.ENDLESS
-				? String.format("%s(%s,%d|%d)", ghost.getName(), state.id(), state.getRemaining(), state.getDuration())
+		return state.getDuration() != StateObject.ENDLESS ? String.format("%s(%s,%d|%d)",
+				ghost.getName(), state.id(), state.getRemaining(), state.getDuration())
 				: String.format("%s(%s,%s)", ghost.getName(), state.id(), INFTY);
 	}
 
@@ -223,8 +223,8 @@ public class ExtendedGamePanel extends GamePanel {
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-targetTile.col * TS, -targetTile.row * TS);
 		} else if (route.targetTile != null) {
-			g.drawLine((int) ghost.getCenter().x, (int) ghost.getCenter().y, route.targetTile.col * TS + TS / 2,
-					route.targetTile.row * TS + TS / 2);
+			g.drawLine((int) ghost.getCenter().x, (int) ghost.getCenter().y,
+					route.targetTile.col * TS + TS / 2, route.targetTile.row * TS + TS / 2);
 			g.translate(route.targetTile.col * TS, route.targetTile.row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-route.targetTile.col * TS, -route.targetTile.row * TS);
