@@ -147,6 +147,14 @@ public class Maze {
 	public boolean isTunnel(Tile tile) {
 		return getContent(tile) == Content.TUNNEL;
 	}
+	
+	public boolean isWall(Tile tile) {
+		return getContent(tile) == Content.WALL;
+	}
+	
+	public boolean isDoor(Tile tile) {
+		return getContent(tile) == Content.DOOR;
+	}
 
 	public boolean isIntersection(Tile tile) {
 		int cell = cell(tile);

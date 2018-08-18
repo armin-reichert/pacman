@@ -2,8 +2,6 @@ package de.amr.games.pacman.actor.core;
 
 import static de.amr.easy.game.math.Vector2f.smul;
 import static de.amr.easy.game.math.Vector2f.sum;
-import static de.amr.games.pacman.model.Content.DOOR;
-import static de.amr.games.pacman.model.Content.WALL;
 import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static java.lang.Math.round;
@@ -74,10 +72,10 @@ public abstract class MazeMover extends TileWorldEntity {
 			return dir == currentDir || dir == NESW.inv(currentDir);
 		}
 		Tile next = computeTileAfterMove(dir);
-		if (getMaze().getContent(next) == WALL) {
+		if (getMaze().isWall(next)) {
 			return false;
 		}
-		if (getMaze().getContent(next) == DOOR) {
+		if (getMaze().isDoor(next)) {
 			return canWalkThroughDoor(next);
 		}
 		// turn left or right?

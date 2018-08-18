@@ -1,13 +1,12 @@
 package de.amr.games.pacman.navigation.impl;
 
+import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.games.pacman.model.Maze.NESW;
 
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import de.amr.easy.game.Application;
 import de.amr.games.pacman.actor.core.MazeMover;
-import de.amr.games.pacman.model.Content;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.MazeRoute;
@@ -63,7 +62,7 @@ public class FollowTargetTile implements Navigation {
 		// Special cases: 
 		
 		// Leaving the ghost house. Not sure what original game does in that case.
-		if (maze.inGhostHouse(currentTile) || maze.getContent(currentTile) == Content.DOOR) {
+		if (maze.inGhostHouse(currentTile) || maze.isDoor(currentTile)) {
 			route.path = maze.findPath(currentTile, targetTile);
 			route.dir = maze.alongPath(route.path).orElse(currentDir);
 			return route;
@@ -75,24 +74,21 @@ public class FollowTargetTile implements Navigation {
 		}
 
 		// Find neighbor tile with least Euclidean distance to target tile
-		Application.LOGGER.info(String.format("Current tile: %s, dir:%d", currentTile, currentDir));
+		LOGGER.info(String.format("Current tile: %s, dir:%d", currentTile, currentDir));
 		/*@formatter:off*/
 		NESW.dirs()
 			.filter(dir -> dir != NESW.inv(currentDir))
 			.mapToObj(dir -> maze.neighborTile(currentTile, dir))
 			.filter(Optional::isPresent)
 			.map(Optional::get)
-			.filter(tile -> maze.getContent(tile) != Content.DOOR)
-			.filter(tile -> maze.areAdjacentTiles(currentTile, tile))
+			.filter(tile -> !maze.isDoor(tile))
+			.filter(tile -> !maze.isWall(tile))
 			.sorted((t1, t2) -> Integer.compare(maze.euclidean2(t1, targetTile), maze.euclidean2(t2, targetTile)))
-			.peek(tile -> Application.LOGGER.info("Next tile: " + tile.toString()))
 			.findFirst()
 			.ifPresent(tile -> {
 				int dir = maze.direction(currentTile, tile).getAsInt();
-				if (dir == NESW.inv(currentDir)) {
-					Application.LOGGER.info("Reversed direction!?");
-				}
 				route.dir = dir;
+				LOGGER.info(String.format("Next tile:    %s, dir:%d", tile, dir));
 			});
 		/*@formatter:on*/
 

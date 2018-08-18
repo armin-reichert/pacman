@@ -1,7 +1,5 @@
 package de.amr.games.pacman.navigation.impl;
 
-import static de.amr.games.pacman.model.Content.WALL;
-
 import java.util.Optional;
 
 import de.amr.games.pacman.actor.core.MazeMover;
@@ -31,7 +29,7 @@ class Ambush implements Navigation {
 			return route;
 		}
 		Optional<Tile> fourAhead = ahead(4, victim);
-		if (fourAhead.isPresent() && maze.getContent(fourAhead.get()) != WALL) {
+		if (fourAhead.isPresent() && !maze.isWall(fourAhead.get())) {
 			route.path = maze.findPath(ambusher.getTile(), fourAhead.get());
 		} else {
 			route.path = maze.findPath(ambusher.getTile(), victim.getTile());

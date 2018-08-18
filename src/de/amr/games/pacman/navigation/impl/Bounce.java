@@ -1,7 +1,5 @@
 package de.amr.games.pacman.navigation.impl;
 
-import static de.amr.games.pacman.model.Content.DOOR;
-import static de.amr.games.pacman.model.Content.WALL;
 import static de.amr.games.pacman.model.Maze.NESW;
 
 import de.amr.games.pacman.actor.core.MazeMover;
@@ -14,13 +12,10 @@ class Bounce implements Navigation {
 	@Override
 	public MazeRoute computeRoute(MazeMover bouncer) {
 		MazeRoute route = new MazeRoute();
-		route.dir = isReflected(bouncer) ? NESW.inv(bouncer.getCurrentDir()) : bouncer.getCurrentDir();
+		int currentDir = bouncer.getCurrentDir();
+		Tile next = bouncer.computeTileAfterMove(currentDir);
+		boolean reflected = bouncer.getMaze().isDoor(next) || bouncer.getMaze().isWall(next);
+		route.dir = reflected ? NESW.inv(currentDir) : currentDir;
 		return route;
-	}
-
-	private boolean isReflected(MazeMover bouncer) {
-		Tile nextTile = bouncer.computeTileAfterMove(bouncer.getCurrentDir());
-		char content = bouncer.getMaze().getContent(nextTile);
-		return content == WALL || content == DOOR;
 	}
 }

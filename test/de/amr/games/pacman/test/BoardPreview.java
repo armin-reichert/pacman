@@ -1,15 +1,8 @@
 package de.amr.games.pacman.test;
 
-import static de.amr.games.pacman.model.Content.DOOR;
-import static de.amr.games.pacman.model.Content.PELLET;
-import static de.amr.games.pacman.model.Content.TUNNEL;
-import static de.amr.games.pacman.model.Content.WALL;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -24,7 +17,7 @@ import de.amr.games.pacman.model.Tile;
 
 public class BoardPreview extends JFrame {
 
-	static int TS = 32;
+	static int TS = 16;
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(BoardPreview::new);
@@ -46,24 +39,28 @@ public class BoardPreview extends JFrame {
 	}
 
 	private GridRenderer createRenderer() {
-		Map<Character, Color> colors = new HashMap<>();
-		colors.put(WALL, Color.BLUE);
-		colors.put(PELLET, Color.WHITE);
-		colors.put(DOOR, Color.ORANGE);
-		colors.put(TUNNEL, Color.GRAY);
 		ConfigurableGridRenderer r = new WallPassageGridRenderer();
 		r.fnCellSize = () -> TS;
 		r.fnPassageWidth = () -> TS - 1;
 		r.fnPassageColor = (cell, dir) -> Color.WHITE;
 		r.fnCellBgColor = cell -> {
 			Tile tile = maze.tile(cell);
+			if (maze.isWall(tile)) {
+				return Color.BLUE;
+			}
+			if (maze.isTunnel(tile)) {
+				return Color.DARK_GRAY;
+			}
 			if (maze.inGhostHouse(tile)) {
 				return Color.CYAN;
 			}
 			if (maze.isIntersection(tile)) {
 				return Color.GREEN;
 			}
-			return colors.getOrDefault(maze.getGraph().get(cell), Color.WHITE);
+			if (maze.isDoor(tile)) {
+				return Color.ORANGE;
+			}
+			return Color.WHITE;
 		};
 		r.fnText = cell -> String.valueOf(maze.getGraph().get(cell));
 		r.fnTextFont = () -> new Font("Arial Bold", Font.BOLD, TS / 2);

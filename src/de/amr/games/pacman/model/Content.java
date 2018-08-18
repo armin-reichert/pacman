@@ -1,6 +1,6 @@
 package de.amr.games.pacman.model;
 
-public interface Content {
+public class Content {
 
 	// Structure
 	static final char WALL = '#';
@@ -16,7 +16,7 @@ public interface Content {
 	static final char POS_CLYDE = 'C';
 
 	// Food
-	static final char PELLET = '.';
-	static final char ENERGIZER = '*';
-	static final char EATEN = ':';
+	public static final char PELLET = '.';
+	public static final char ENERGIZER = '*';
+	public static final char EATEN = ':';
 }
