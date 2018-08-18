@@ -173,11 +173,11 @@ public class GameController implements Controller {
 					
 				.when(PACMAN_DYING).then(GAME_OVER)
 					.on(PacManDiedEvent.class)
-					.condition(() -> game.lives == 0)
+					.condition(() -> game.getLives() == 0)
 					
 				.when(PACMAN_DYING).then(PLAYING)
 					.on(PacManDiedEvent.class)
-					.condition(() -> game.lives > 0)
+					.condition(() -> game.getLives() > 0)
 					.act(() -> actors.init())
 			
 				.when(GAME_OVER).then(READY)
@@ -349,7 +349,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onExit() {
-			game.lives -= 1;
+			game.removeLife();
 			actors.getActiveGhosts().forEach(ghost -> ghost.visibility = () -> true);
 		}
 	}

@@ -25,7 +25,7 @@ public class Game {
 	public final Maze maze;
 	public final IntSupplier fnTicksPerSec;
 	public final ScoreCounter score = new ScoreCounter(this);
-	public int lives;
+	private int lives;
 	public int foodEaten;
 	public int ghostsKilledByEnergizer;
 	private int level;
@@ -102,6 +102,14 @@ public class Game {
 
 	public int getDigestionTicks(Tile tile) {
 		return maze.isEnergizer(tile) ? 3 : 1;
+	}
+	
+	public int getLives() {
+		return lives;
+	}
+	
+	public void removeLife() {
+		lives -= 1;
 	}
 
 	private boolean checkExtraLife(int oldScore, int newScore) {
