@@ -23,32 +23,39 @@ public class Game {
 	/** Tile size. */
 	public static final int TS = 8;
 
-	public final Maze maze;
+	/** The frequency of the game clock. Used for tracing. */
 	public final IntSupplier fnTicksPerSec;
-	public final ScoreCounter score = new ScoreCounter(this);
+	
+	/** The maze. */
+	public final Maze maze;
+
+	/** The game score including highscore management. */
+	public final Score score;
+	
 	private int lives;
-	private int foodEaten;
-	private int ghostsKilledByEnergizer;
+	private int eaten;
+	private int ghostsKilled;
 	private int level;
 	private final List<BonusSymbol> levelCounter = new LinkedList<>();
 
 	public Game(Maze maze, IntSupplier fnTicksPerSec) {
 		this.maze = maze;
 		this.fnTicksPerSec = fnTicksPerSec;
+		score = new Score(this);
 	}
 
 	public void init() {
-		score.load();
 		lives = 3;
-		levelCounter.clear();
 		level = 0;
+		levelCounter.clear();
+		score.load();
 		nextLevel();
 	}
 
 	public void nextLevel() {
 		maze.resetFood();
-		foodEaten = 0;
-		ghostsKilledByEnergizer = 0;
+		eaten = 0;
+		ghostsKilled = 0;
 		level += 1;
 		levelCounter.add(0, getBonusSymbol());
 		if (levelCounter.size() == 8) {
@@ -57,8 +64,6 @@ public class Game {
 	}
 
 	/**
-	 * Return the number of ticks representing the given seconds at the current pulse frequency.
-	 * 
 	 * @return number of ticks corresponding to given seconds
 	 */
 	public int sec(float seconds) {
@@ -84,23 +89,19 @@ public class Game {
 		}
 		boolean energizer = maze.isEnergizer(tile);
 		if (energizer) {
-			ghostsKilledByEnergizer = 0;
+			ghostsKilled = 0;
 		}
 		maze.hideFood(tile);
-		foodEaten += 1;
-		int value = getFoodValue(energizer);
-		if (checkExtraLife(score.getScore(), score.getScore() + value)) {
+		eaten += 1;
+		int value = energizer ? 50 : 10;
+		if (score.getScore() < 10_000 && 10_000 < score.getScore() + value) {
 			lives += 1;
 		}
 		score.add(value);
 	}
 
-	public int getFoodValue(boolean energizer) {
-		return energizer ? 50 : 10;
-	}
-
 	public boolean allFoodEaten() {
-		return foodEaten == maze.getFoodTotal();
+		return eaten == maze.getFoodTotal();
 	}
 
 	public int getDigestionTicks(Tile tile) {
@@ -115,12 +116,8 @@ public class Game {
 		lives -= 1;
 	}
 
-	private boolean checkExtraLife(int oldScore, int newScore) {
-		return oldScore < 10_000 && 10_000 <= newScore;
-	}
-
 	public boolean isBonusReached() {
-		return foodEaten == 70 || foodEaten == 170;
+		return eaten == 70 || eaten == 170;
 	}
 
 	public BonusSymbol getBonusSymbol() {
@@ -166,7 +163,7 @@ public class Game {
 	}
 
 	public int getKilledGhostValue() {
-		int n = ghostsKilledByEnergizer, value = 200;
+		int n = ghostsKilled, value = 200;
 		while (n > 1) {
 			value *= 2;
 			n -= 1;
@@ -175,11 +172,11 @@ public class Game {
 	}
 
 	public int getGhostsKilledByEnergizer() {
-		return ghostsKilledByEnergizer;
+		return ghostsKilled;
 	}
 
 	public void addGhostKilled() {
-		ghostsKilledByEnergizer += 1;
+		ghostsKilled += 1;
 	}
 
 	public float getPacManSpeed(PacManState pacManState) {

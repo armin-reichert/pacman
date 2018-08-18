@@ -9,7 +9,7 @@ import java.util.Properties;
 
 import de.amr.easy.game.Application;
 
-public class ScoreCounter {
+public class Score {
 
 	private final Game game;
 	private Properties prop = new Properties();
@@ -19,7 +19,7 @@ public class ScoreCounter {
 	private int level = 1;
 	private boolean newHiscore;
 
-	public ScoreCounter(Game game) {
+	public Score(Game game) {
 		this.game = game;
 		file = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
 	}
