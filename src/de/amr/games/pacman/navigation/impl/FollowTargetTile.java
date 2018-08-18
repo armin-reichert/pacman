@@ -2,11 +2,10 @@ package de.amr.games.pacman.navigation.impl;
 
 import static de.amr.games.pacman.model.Maze.NESW;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
+import de.amr.easy.game.Application;
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Content;
 import de.amr.games.pacman.model.Maze;
@@ -53,44 +52,49 @@ public class FollowTargetTile implements Navigation {
 	@Override
 	public MazeRoute computeRoute(MazeMover follower) {
 		Maze maze = follower.getMaze();
+		int currentDir = follower.getCurrentDir();
+		Tile currentTile = follower.getTile();
+		Tile targetTile = getTargetTile(maze);
 
 		MazeRoute route = new MazeRoute();
-		route.dir = follower.getCurrentDir(); // default: keep current move direction
-		route.targetTile = getTargetTile(maze);
+		route.dir = currentDir; // default: keep current move direction
+		route.targetTile = targetTile;
 
-		Tile currentTile = follower.getTile();
-
-		// Special case: leaving the ghost house. Not sure what original game does in that case.
+		// Special cases: 
+		
+		// Leaving the ghost house. Not sure what original game does in that case.
 		if (maze.inGhostHouse(currentTile) || maze.getContent(currentTile) == Content.DOOR) {
-			route.path = maze.findPath(currentTile, route.targetTile);
-			route.dir = maze.alongPath(route.path).orElse(follower.getCurrentDir());
+			route.path = maze.findPath(currentTile, targetTile);
+			route.dir = maze.alongPath(route.path).orElse(currentDir);
 			return route;
 		}
 
+		// Keep move direction
 		if (follower.inTunnel() || follower.inTeleportSpace()) {
 			return route;
 		}
 
 		// Find neighbor tile with least Euclidean distance to target tile
+		Application.LOGGER.info(String.format("Current tile: %s, dir:%d", currentTile, currentDir));
 		/*@formatter:off*/
-		List<Tile> neighbors = NESW.dirs()
-			.filter(dir -> dir != NESW.inv(follower.getCurrentDir()))
+		NESW.dirs()
+			.filter(dir -> dir != NESW.inv(currentDir))
 			.mapToObj(dir -> maze.neighborTile(currentTile, dir))
 			.filter(Optional::isPresent)
 			.map(Optional::get)
+			.filter(tile -> maze.getContent(tile) != Content.DOOR)
 			.filter(tile -> maze.areAdjacentTiles(currentTile, tile))
-			.filter(neighbor -> maze.getContent(neighbor) != Content.DOOR)
-			.sorted((t1, t2) -> Integer.compare(maze.euclidean2(t1, route.targetTile), maze.euclidean2(t2, route.targetTile)))
-			.collect(Collectors.toList());
+			.sorted((t1, t2) -> Integer.compare(maze.euclidean2(t1, targetTile), maze.euclidean2(t2, targetTile)))
+			.peek(tile -> Application.LOGGER.info("Next tile: " + tile.toString()))
+			.findFirst()
+			.ifPresent(tile -> {
+				int dir = maze.direction(currentTile, tile).getAsInt();
+				if (dir == NESW.inv(currentDir)) {
+					Application.LOGGER.info("Reversed direction!?");
+				}
+				route.dir = dir;
+			});
 		/*@formatter:on*/
-
-		// Application.LOGGER.info("Current:" + currentTile);
-		// neighbors.forEach(tile -> Application.LOGGER.info(tile.toString()));
-
-		if (neighbors.size() > 0) {
-			Tile bestChoice = neighbors.get(0);
-			route.dir = maze.direction(currentTile, bestChoice).getAsInt();
-		}
 
 		return route;
 	}
