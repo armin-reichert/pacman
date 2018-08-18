@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 
 import de.amr.easy.graph.api.GraphTraversal;
 import de.amr.easy.graph.api.UndirectedEdge;
-import de.amr.easy.graph.impl.traversal.AStarTraversal;
 import de.amr.easy.graph.impl.traversal.BreadthFirstTraversal;
 import de.amr.easy.grid.api.GridGraph2D;
 import de.amr.easy.grid.api.Topology;
@@ -23,13 +22,11 @@ import de.amr.easy.grid.impl.Top4;
  * @author Armin Reichert
  * 
  * @see GridGraph2D
- * @see AStarTraversal
  */
 public class Maze {
 
 	public static final Topology NESW = new Top4();
 
-	// Structure
 	private static final char WALL = '#';
 	private static final char DOOR = 'D';
 	private static final char TUNNEL = 'T';
@@ -37,8 +34,7 @@ public class Maze {
 	private static final char PELLET = '.';
 	private static final char ENERGIZER = '*';
 	private static final char EATEN = ':';
-	
-	// Position markers
+
 	private static final char POS_BONUS = '$';
 	private static final char POS_PACMAN = 'O';
 	private static final char POS_BLINKY = 'B';
@@ -47,7 +43,7 @@ public class Maze {
 	private static final char POS_CLYDE = 'C';
 	private static final char POS_ENDMARKER = ')';
 
-	private final String[] originalData;
+	private final String[] map;
 	private final GridGraph<Character, Integer> graph;
 	private Tile pacManHome;
 	private Tile blinkyHome;
@@ -58,12 +54,12 @@ public class Maze {
 	private int tunnelRow;
 	private int foodTotal;
 
-	public Maze(String map) {
-		originalData = map.split("\n");
-		int numCols = originalData[0].length(), numRows = originalData.length;
+	public Maze(String mapText) {
+		map = mapText.split("\n");
+		int numCols = map[0].length(), numRows = map.length;
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				char c = originalData(row, col);
+				char c = map(row, col);
 				if (c == POS_BLINKY) {
 					blinkyHome = new Tile(col, row);
 				} else if (c == POS_PINKY) {
@@ -84,17 +80,17 @@ public class Maze {
 			}
 		}
 		graph = new GridGraph<>(numCols, numRows, NESW, v -> null, (u, v) -> 1, UndirectedEdge::new);
-		graph.setDefaultVertexLabel(v -> originalData(graph.row(v), graph.col(v)));
+		graph.setDefaultVertexLabel(v -> map(graph.row(v), graph.col(v)));
 		graph.fill();
+		// remove all edges into walls
 		graph.edges().filter(edge -> {
 			int u = edge.either(), v = edge.other();
-			return originalData(graph.row(u), graph.col(u)) == WALL
-					|| originalData(graph.row(v), graph.col(v)) == WALL;
+			return map(graph.row(u), graph.col(u)) == WALL || map(graph.row(v), graph.col(v)) == WALL;
 		}).forEach(graph::removeEdge);
 	}
 
-	private char originalData(int row, int col) {
-		return originalData[row].charAt(col);
+	private char map(int row, int col) {
+		return map[row].charAt(col);
 	}
 
 	public GridGraph2D<Character, Integer> getGraph() {
@@ -149,6 +145,10 @@ public class Maze {
 		return tunnelRow;
 	}
 
+	private char getContent(Tile tile) {
+		return graph.get(cell(tile));
+	}
+
 	public boolean isTeleportSpace(Tile tile) {
 		return !isValidTile(tile);
 	}
@@ -191,19 +191,19 @@ public class Maze {
 	public boolean isPellet(Tile tile) {
 		return getContent(tile) == PELLET;
 	}
-	
+
 	public boolean isEnergizer(Tile tile) {
 		return getContent(tile) == ENERGIZER;
 	}
-	
+
 	public boolean isFood(Tile tile) {
 		return isPellet(tile) || isEnergizer(tile);
 	}
-	
-	public boolean isFoodEaten(Tile tile) {
+
+	public boolean isEatenFood(Tile tile) {
 		return getContent(tile) == EATEN;
 	}
-	
+
 	public void resetFood() {
 		graph.clearVertexLabels();
 	}
@@ -212,24 +212,12 @@ public class Maze {
 		return foodTotal;
 	}
 
-	public char getContent(int col, int row) {
-		return graph.get(graph.cell(col, row));
-	}
-
-	public char getContent(Tile tile) {
-		return isValidTile(tile) ? graph.get(cell(tile)) : ' ';
-	}
-
-	public void hideFood(Tile tile) {
+	void hideFood(Tile tile) {
 		graph.set(cell(tile), EATEN);
 	}
 
 	public OptionalInt direction(Tile t1, Tile t2) {
 		return graph.direction(cell(t1), cell(t2));
-	}
-
-	public boolean areAdjacentTiles(Tile t1, Tile t2) {
-		return graph.adjacent(cell(t1), cell(t2));
 	}
 
 	public Optional<Tile> neighborTile(Tile tile, int dir) {

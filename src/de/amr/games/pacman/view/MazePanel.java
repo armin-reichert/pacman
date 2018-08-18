@@ -110,7 +110,7 @@ public class MazePanel extends GameEntity {
 
 	private void drawFood(Graphics2D g) {
 		maze.tiles().forEach(tile -> {
-			if (maze.isFoodEaten(tile)
+			if (maze.isEatenFood(tile)
 					|| maze.isEnergizer(tile) && energizerBlinking.currentFrame() % 2 != 0) {
 				g.translate(tile.col * Game.TS, tile.row * Game.TS);
 				g.setColor(Color.BLACK);
