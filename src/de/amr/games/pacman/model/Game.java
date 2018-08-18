@@ -1,14 +1,5 @@
 package de.amr.games.pacman.model;
 
-import static de.amr.games.pacman.model.BonusSymbol.APPLE;
-import static de.amr.games.pacman.model.BonusSymbol.BELL;
-import static de.amr.games.pacman.model.BonusSymbol.CHERRIES;
-import static de.amr.games.pacman.model.BonusSymbol.GALAXIAN;
-import static de.amr.games.pacman.model.BonusSymbol.GRAPES;
-import static de.amr.games.pacman.model.BonusSymbol.KEY;
-import static de.amr.games.pacman.model.BonusSymbol.PEACH;
-import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -16,10 +7,13 @@ import java.util.function.IntSupplier;
 
 import de.amr.games.pacman.actor.game.GhostState;
 import de.amr.games.pacman.actor.game.PacManState;
+import de.amr.games.pacman.model.LevelTable.TableColumn;
 
 /**
- * The model of the Pac-Man game. Contains the current game state, the level data and implements the
- * "business logic" for playing the game.
+ * The "model" (in MVC speak) of the Pac-Man game.
+ * 
+ * <p>
+ * Contains the current game state and defines the "business logic" for playing the game.
  * 
  * @author Armin Reichert
  */
@@ -77,67 +71,6 @@ public class Game {
 
 	// Level data
 
-	private enum Field {
-		BonusSymbol,
-		iBonusValue,
-		fPacManSpeed,
-		fPacManDotsSpeed,
-		fGhostSpeed,
-		fGhostTunnelSpeed,
-		iElroy1DotsLeft,
-		fElroy1Speed,
-		iElroy2DotsLeft,
-		fElroy2Speed,
-		fPacManPowerSpeed,
-		fPacManPowerDotsSpeed,
-		fGhostAfraidSpeed,
-		iPacManPowerSeconds,
-		iNumFlashes
-	};
-
-	/**
-	 * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>
-	 */
-	private static final Object[][] LEVELS = {
-	/*@formatter:off*/
-	{ /* not used */},
-	{ CHERRIES,           100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6,   5 },
-	{ STRAWBERRY,         300,  .90f, .79f, .85f, .45f,  30, .8f,  15,  .95f, .95f, .83f, .55f,   5,   5 },
-	{ PEACH,              500,  .90f, .79f, .85f, .45f,  40, .8f,  20,  .95f, .95f, .83f, .55f,   4,   5 },
-	{ PEACH,              500,  .90f, .79f, .85f, .50f,  40, .8f,  20,  .95f, .95f, .83f, .55f,   3,   5 },
-	{ APPLE,              700,    1f, .87f, .95f, .50f,  40, .8f,  20, .105f,   1f, .87f, .60f,   2,   5 },
-	{ APPLE,              700,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   5,   5 },
-	{ GRAPES,            1000,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   2,   5 },
-	{ GRAPES,            1000,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   2,   5 },
-	{ GALAXIAN,          2000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   1,   3 },
-	{ GALAXIAN,          2000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   5,   5 },
-	{ BELL,              3000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   2,   5 },
-	{ BELL,              3000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   1,   3 },
-	{ KEY,               5000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   1,   3 },
-	{ KEY,               5000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   3,   5 },
-	{ KEY,               5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   1f, .87f, .60f,   1,   3 },
-	{ KEY,               5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   0f,   0f,   0f,   0,   0 },
-	{ KEY,               5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   1f, .87f, .60f,   1,   3 },
-	{ KEY,               5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   0f,   0f,   0f,   0,   0 },
-	{ KEY,               5000,    1f, .87f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0,   0 },
-	{ KEY,               5000,    1f, .87f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0,   0 },
-	{ KEY,               5000,  .90f, .79f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0,   0 },
-	/*@formatter:on*/
-	};
-
-	private float fValue(Field field) {
-		return (float) LEVELS[level][field.ordinal()];
-	}
-
-	private int iValue(Field field) {
-		return (int) LEVELS[level][field.ordinal()];
-	}
-
-	@SuppressWarnings("unchecked")
-	private <T> T oValue(Field field) {
-		return (T) LEVELS[level][field.ordinal()];
-	}
-
 	public int getLevel() {
 		return level;
 	}
@@ -180,11 +113,11 @@ public class Game {
 	}
 
 	public BonusSymbol getBonusSymbol() {
-		return oValue(Field.BonusSymbol);
+		return LevelTable.objValue(level, TableColumn.BonusSymbol);
 	}
 
 	public int getBonusValue() {
-		return iValue(Field.iBonusValue);
+		return LevelTable.intValue(level, TableColumn.iBonusValue);
 	}
 
 	public int getBonusTime() {
@@ -193,20 +126,21 @@ public class Game {
 
 	public float getGhostSpeed(GhostState ghostState, Tile tile) {
 		boolean tunnel = maze.isTeleportSpace(tile) || maze.isTunnel(tile);
-		float tunnelSpeed = speed(fValue(Field.fGhostTunnelSpeed));
+		float tunnelSpeed = speed(LevelTable.floatValue(level, TableColumn.fGhostTunnelSpeed));
 		switch (ghostState) {
 		case AGGRO:
-			return tunnel ? tunnelSpeed : speed(fValue(Field.fGhostSpeed));
+			return tunnel ? tunnelSpeed : speed(LevelTable.floatValue(level, TableColumn.fGhostSpeed));
 		case DYING:
 			return 0;
 		case DEAD:
 			return speed(0.5f + new Random().nextFloat());
 		case AFRAID:
-			return tunnel ? tunnelSpeed : speed(fValue(Field.fGhostAfraidSpeed));
+			return tunnel ? tunnelSpeed
+					: speed(LevelTable.floatValue(level, TableColumn.fGhostAfraidSpeed));
 		case SAFE:
 			return speed(0.75f);
 		case SCATTERING:
-			return tunnel ? tunnelSpeed : speed(fValue(Field.fGhostSpeed));
+			return tunnel ? tunnelSpeed : speed(LevelTable.floatValue(level, TableColumn.fGhostSpeed));
 		default:
 			throw new IllegalStateException();
 		}
@@ -217,7 +151,7 @@ public class Game {
 	}
 
 	public int getGhostNumFlashes() {
-		return iValue(Field.iNumFlashes);
+		return LevelTable.intValue(level, TableColumn.iNumFlashes);
 	}
 
 	public int getKilledGhostValue() {
@@ -234,9 +168,9 @@ public class Game {
 		case HOME:
 			return 0;
 		case HUNGRY:
-			return speed(fValue(Field.fPacManSpeed));
+			return speed(LevelTable.floatValue(level, TableColumn.fPacManSpeed));
 		case GREEDY:
-			return speed(fValue(Field.fPacManPowerSpeed));
+			return speed(LevelTable.floatValue(level, TableColumn.fPacManPowerSpeed));
 		case DYING:
 			return 0;
 		default:
@@ -245,7 +179,7 @@ public class Game {
 	}
 
 	public int getPacManGreedyTime() {
-		return sec(iValue(Field.iPacManPowerSeconds));
+		return sec(LevelTable.intValue(level, TableColumn.iPacManPowerSeconds));
 	}
 
 	public int getPacManGettingWeakerRemainingTime() {
