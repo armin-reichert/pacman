@@ -320,7 +320,7 @@ public class GameController implements Controller {
 			actors.getPacMan().visibility = () -> false;
 			game.score.add(game.getKilledGhostValue());
 			LOGGER.info(String.format("Scored %d points for killing ghost #%d",
-					game.getKilledGhostValue(), game.ghostsKilledByEnergizer));
+					game.getKilledGhostValue(), game.getGhostsKilledByEnergizer()));
 		}
 
 		@Override

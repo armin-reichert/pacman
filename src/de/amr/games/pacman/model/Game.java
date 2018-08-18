@@ -27,7 +27,7 @@ public class Game {
 	public final ScoreCounter score = new ScoreCounter(this);
 	private int lives;
 	private int foodEaten;
-	public int ghostsKilledByEnergizer;
+	private int ghostsKilledByEnergizer;
 	private int level;
 	public final List<BonusSymbol> levelCounter = new LinkedList<>();
 
@@ -169,6 +169,15 @@ public class Game {
 			n -= 1;
 		}
 		return value;
+	}
+	
+	
+	public int getGhostsKilledByEnergizer() {
+		return ghostsKilledByEnergizer;
+	}
+	
+	public void addGhostKilled() {
+		ghostsKilledByEnergizer += 1;
 	}
 
 	public float getPacManSpeed(PacManState pacManState) {

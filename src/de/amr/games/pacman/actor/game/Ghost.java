@@ -191,8 +191,8 @@ public class Ghost extends MazeMover {
 					
 					.state(DYING)
 						.onEntry(() -> {
-							sprite = s_numbers[game.ghostsKilledByEnergizer]; 
-							game.ghostsKilledByEnergizer += 1;
+							sprite = s_numbers[game.getGhostsKilledByEnergizer()]; 
+							game.addGhostKilled();
 						})
 						.timeoutAfter(game::getGhostDyingTime)
 					
