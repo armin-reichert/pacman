@@ -74,7 +74,7 @@ public class FollowTargetTile implements Navigation {
 		}
 
 		// Find neighbor tile with least Euclidean distance to target tile
-		LOGGER.info(String.format("Current tile: %s, dir:%d", currentTile, currentDir));
+//		LOGGER.info(String.format("Current tile: %s, dir:%d", currentTile, currentDir));
 		/*@formatter:off*/
 		NESW.dirs()
 			.filter(dir -> dir != NESW.inv(currentDir))
@@ -88,7 +88,7 @@ public class FollowTargetTile implements Navigation {
 			.ifPresent(tile -> {
 				int dir = maze.direction(currentTile, tile).getAsInt();
 				route.dir = dir;
-				LOGGER.info(String.format("Next tile:    %s, dir:%d", tile, dir));
+//				LOGGER.info(String.format("Next tile:    %s, dir:%d", tile, dir));
 			});
 		/*@formatter:on*/
 

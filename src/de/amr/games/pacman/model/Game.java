@@ -20,22 +20,31 @@ import de.amr.games.pacman.model.LevelTable.TableColumn;
  */
 public class Game {
 
-	/** Tile size. */
+	/** The maze tile size (8px). */
 	public static final int TS = 8;
 
 	/** The frequency of the game clock. Used for tracing. */
 	public final IntSupplier fnTicksPerSec;
-	
+
 	/** The maze. */
 	private final Maze maze;
 
 	/** The game score including highscore management. */
 	public final Score score;
-	
+
+	/** Pac-Man's remaining lives. */
 	private int lives;
+
+	/** Pellets + energizers eaten in current level. */
 	private int eaten;
+
+	/** Ghosts killed using current energizer. */
 	private int ghostsKilled;
+
+	/** Current level. */
 	private int level;
+
+	/** Level counter symbols. */
 	private final List<BonusSymbol> levelCounter = new LinkedList<>();
 
 	public Game(Maze maze, IntSupplier fnTicksPerSec) {
@@ -74,7 +83,7 @@ public class Game {
 		// base speed = 8 tiles/second at 60 Hz
 		return 8f * Game.TS / 60 * relativeSpeed;
 	}
-	
+
 	public Maze getMaze() {
 		return maze;
 	}
@@ -95,21 +104,21 @@ public class Game {
 		if (energizer) {
 			ghostsKilled = 0;
 		}
-		maze.hideFood(tile);
 		eaten += 1;
 		int value = energizer ? 50 : 10;
 		if (score.getScore() < 10_000 && 10_000 < score.getScore() + value) {
 			lives += 1;
 		}
 		score.add(value);
+		maze.hideFood(tile);
 	}
 
 	public boolean allFoodEaten() {
 		return eaten == maze.getFoodTotal();
 	}
 
-	public int getDigestionTicks(Tile tile) {
-		return maze.isEnergizer(tile) ? 3 : 1;
+	public int getDigestionTicks(boolean energizer) {
+		return energizer ? 3 : 1;
 	}
 
 	public int getLives() {
@@ -167,10 +176,9 @@ public class Game {
 	}
 
 	public int getKilledGhostValue() {
-		int n = ghostsKilled, value = 200;
-		while (n > 1) {
+		int value = 200;
+		for (int i = 1; i < ghostsKilled; ++i) {
 			value *= 2;
-			n -= 1;
 		}
 		return value;
 	}

@@ -255,8 +255,9 @@ public class PacMan extends MazeMover {
 			}
 			// Food?
 			if (getMaze().isFood(tile)) {
-				digestionTicks = game.getDigestionTicks(tile);
-				events.publish(new FoodFoundEvent(tile, getMaze().isEnergizer(tile)));
+				boolean energizer = getMaze().isEnergizer(tile);
+				digestionTicks = game.getDigestionTicks(energizer);
+				events.publish(new FoodFoundEvent(tile, energizer));
 			}
 		}
 	}
