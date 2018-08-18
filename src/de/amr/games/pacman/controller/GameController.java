@@ -45,14 +45,13 @@ public class GameController implements Controller {
 		READY, PLAYING, GHOST_DYING, PACMAN_DYING, CHANGING_LEVEL, GAME_OVER
 	}
 
-	private final Maze maze;
 	private final Game game;
 	private final Cast actors;
 	private final PacManGameUI gameView;
 	private final StateMachine<PlayState, GameEvent> gameControl;
 
 	public GameController() {
-		maze = new Maze(Assets.text("maze.txt"));
+		Maze maze = new Maze(Assets.text("maze.txt"));
 		game = new Game(maze, Application.PULSE::getFrequency);
 		actors = new Cast(game);
 		gameView = new ExtendedGamePanel(maze.numCols() * Game.TS, (maze.numRows() + 5) * Game.TS, game,
