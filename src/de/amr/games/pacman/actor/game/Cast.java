@@ -82,10 +82,10 @@ public class Cast implements PacManWorld {
 
 	public Cast(Game game) {
 		pacMan = createPacMan(game, this);
-		blinky = createBlinky(game, pacMan, game.maze.getBlinkyHome());
-		pinky = createPinky(game, pacMan, game.maze.getPinkyHome());
-		inky = createInky(game, pacMan, game.maze.getInkyHome());
-		clyde = createClyde(game, pacMan, game.maze.getClydeHome());
+		blinky = createBlinky(game, pacMan, game.getMaze().getBlinkyHome());
+		pinky = createPinky(game, pacMan, game.getMaze().getPinkyHome());
+		inky = createInky(game, pacMan, game.getMaze().getInkyHome());
+		clyde = createClyde(game, pacMan, game.getMaze().getClydeHome());
 		activeGhosts.addAll(Arrays.asList(blinky, pinky, inky, clyde));
 	}
 

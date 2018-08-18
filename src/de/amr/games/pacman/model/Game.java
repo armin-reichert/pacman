@@ -27,7 +27,7 @@ public class Game {
 	public final IntSupplier fnTicksPerSec;
 	
 	/** The maze. */
-	public final Maze maze;
+	private final Maze maze;
 
 	/** The game score including highscore management. */
 	public final Score score;
@@ -73,6 +73,10 @@ public class Game {
 	private float speed(float relativeSpeed) {
 		// base speed = 8 tiles/second at 60 Hz
 		return 8f * Game.TS / 60 * relativeSpeed;
+	}
+	
+	public Maze getMaze() {
+		return maze;
 	}
 
 	public int getLevel() {

@@ -28,7 +28,7 @@ public class GamePanel implements PacManGameUI {
 		this.game = game;
 		this.actors = actors;
 		lifeImage = SPRITES.pacManWalking(Top4.W).frame(1);
-		mazePanel = new MazePanel(game.maze, actors);
+		mazePanel = new MazePanel(game.getMaze(), actors);
 		mazePanel.tf.moveTo(0, 3 * Game.TS);
 		Assets.storeTrueTypeFont("scoreFont", "arcadeclassic.ttf", Font.PLAIN, Game.TS * 3 / 2);
 	}
@@ -124,7 +124,7 @@ public class GamePanel implements PacManGameUI {
 		g2.setFont(Assets.font("scoreFont"));
 		g2.setColor(infoTextColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(infoText, g2).getBounds();
-		g2.translate((width - box.width) / 2, (game.maze.getBonusTile().row + 1) * Game.TS);
+		g2.translate((width - box.width) / 2, (game.getMaze().getBonusTile().row + 1) * Game.TS);
 		g2.drawString(infoText, 0, 0);
 		g2.dispose();
 	}

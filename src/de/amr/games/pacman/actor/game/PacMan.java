@@ -65,7 +65,7 @@ public class PacMan extends MazeMover {
 
 	@Override
 	public Maze getMaze() {
-		return game.maze;
+		return game.getMaze();
 	}
 
 	public Tile getHome() {

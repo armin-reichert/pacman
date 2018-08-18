@@ -58,7 +58,7 @@ public class ExtendedGamePanel extends GamePanel {
 
 	public ExtendedGamePanel(int width, int height, Game game, Cast actors) {
 		super(width, height, game, actors);
-		gridImage = createGridImage(game.maze.numRows(), game.maze.numCols());
+		gridImage = createGridImage(game.getMaze().numRows(), game.getMaze().numCols());
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class ExtendedGamePanel extends GamePanel {
 	}
 
 	private void eatAllPellets() {
-		game.maze.tiles().filter(game.maze::isPellet).forEach(game::eatFoodAtTile);
+		game.getMaze().tiles().filter(game.getMaze()::isPellet).forEach(game::eatFoodAtTile);
 	}
 
 	@Override

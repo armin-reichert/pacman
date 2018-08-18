@@ -82,7 +82,7 @@ public class Ghost extends MazeMover {
 
 	@Override
 	public Maze getMaze() {
-		return game.maze;
+		return game.getMaze();
 	}
 
 	public GhostName getName() {
