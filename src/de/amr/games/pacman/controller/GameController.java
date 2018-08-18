@@ -39,6 +39,11 @@ import de.amr.games.pacman.view.PacManGameUI;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
 
+/**
+ * The main controller for the Pac-Man game.
+ * 
+ * @author Armin Reichert
+ */
 public class GameController implements Controller {
 
 	public enum PlayState {
