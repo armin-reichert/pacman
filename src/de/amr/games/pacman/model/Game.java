@@ -26,7 +26,7 @@ public class Game {
 	public final IntSupplier fnTicksPerSec;
 	public final ScoreCounter score = new ScoreCounter(this);
 	private int lives;
-	public int foodEaten;
+	private int foodEaten;
 	public int ghostsKilledByEnergizer;
 	private int level;
 	public final List<BonusSymbol> levelCounter = new LinkedList<>();
@@ -75,7 +75,7 @@ public class Game {
 		return level;
 	}
 
-	public void eatFoodAt(Tile tile) {
+	public void eatFoodAtTile(Tile tile) {
 		if (!maze.isFood(tile)) {
 			throw new IllegalArgumentException("No food at tile " + tile);
 		}

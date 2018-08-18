@@ -271,7 +271,7 @@ public class GameController implements Controller {
 
 		private void onFoodFound(GameEvent event) {
 			FoodFoundEvent e = (FoodFoundEvent) event;
-			game.eatFoodAt(e.tile);
+			game.eatFoodAtTile(e.tile);
 			if (game.allFoodEaten()) {
 				gameControl.enqueue(new LevelCompletedEvent());
 			} else {

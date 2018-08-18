@@ -84,7 +84,7 @@ public class ExtendedGamePanel extends GamePanel {
 			killActiveGhosts();
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_E)) {
-			eatPellets();
+			eatAllPellets();
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
 			toggleGhostActivity(actors.getBlinky());
@@ -105,12 +105,8 @@ public class ExtendedGamePanel extends GamePanel {
 		actors.getActiveGhosts().forEach(ghost -> ghost.processEvent(new GhostKilledEvent(ghost)));
 	}
 
-	private void eatPellets() {
-		game.maze.tiles().filter(tile -> game.maze.isPellet(tile)).forEach(tile -> {
-			game.score.add(game.getFoodValue(false));
-			game.maze.hideFood(tile);
-			game.foodEaten += 1;
-		});
+	private void eatAllPellets() {
+		game.maze.tiles().filter(game.maze::isPellet).forEach(game::eatFoodAtTile);
 	}
 
 	@Override
