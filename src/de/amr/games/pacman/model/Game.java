@@ -145,10 +145,10 @@ public class Game {
 		return sec(9f + new Random().nextFloat());
 	}
 
-	public float getGhostSpeed(GhostState ghostState, Tile tile) {
+	public float getGhostSpeed(GhostState state, Tile tile) {
 		boolean tunnel = maze.isTeleportSpace(tile) || maze.isTunnel(tile);
 		float tunnelSpeed = speed(LevelTable.floatValue(level, TableColumn.fGhostTunnelSpeed));
-		switch (ghostState) {
+		switch (state) {
 		case AGGRO:
 			return tunnel ? tunnelSpeed : speed(LevelTable.floatValue(level, TableColumn.fGhostSpeed));
 		case DYING:
@@ -191,8 +191,8 @@ public class Game {
 		ghostsKilled += 1;
 	}
 
-	public float getPacManSpeed(PacManState pacManState) {
-		switch (pacManState) {
+	public float getPacManSpeed(PacManState state) {
+		switch (state) {
 		case HOME:
 			return 0;
 		case HUNGRY:
