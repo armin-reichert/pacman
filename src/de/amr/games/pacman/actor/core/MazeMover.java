@@ -72,7 +72,7 @@ public abstract class MazeMover extends TileWorldEntity {
 			return dir == currentDir || dir == NESW.inv(currentDir);
 		}
 		Tile next = computeTileAfterMove(dir);
-		if (getMaze().isTeleportSpace(next)) {
+		if (getMaze().inTeleportSpace(next)) {
 			return true;
 		}
 		if (getMaze().isWall(next)) {
@@ -113,7 +113,7 @@ public abstract class MazeMover extends TileWorldEntity {
 	}
 
 	public boolean inTeleportSpace() {
-		return getMaze().isTeleportSpace(getTile());
+		return getMaze().inTeleportSpace(getTile());
 	}
 
 	public boolean inTunnel() {

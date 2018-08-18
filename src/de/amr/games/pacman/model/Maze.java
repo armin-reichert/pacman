@@ -147,13 +147,13 @@ public class Maze {
 	}
 
 	private char getContent(Tile tile) {
-		if (isTeleportSpace(tile)) {
+		if (inTeleportSpace(tile)) {
 			return TELEPORT;
 		}
 		return graph.get(cell(tile));
 	}
 
-	public boolean isTeleportSpace(Tile tile) {
+	public boolean inTeleportSpace(Tile tile) {
 		return !isValidTile(tile);
 	}
 

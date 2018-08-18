@@ -242,7 +242,7 @@ public class PacMan extends MazeMover {
 				events.publish(new PacManGhostCollisionEvent(collidingGhost.get()));
 				return;
 			}
-			if (getMaze().isTeleportSpace(tile)) {
+			if (getMaze().inTeleportSpace(tile)) {
 				return;
 			}
 			// Unhonored bonus?

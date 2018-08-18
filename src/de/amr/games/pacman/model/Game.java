@@ -146,7 +146,7 @@ public class Game {
 	}
 
 	public float getGhostSpeed(GhostState state, Tile tile) {
-		boolean tunnel = maze.isTeleportSpace(tile) || maze.isTunnel(tile);
+		boolean tunnel = maze.inTeleportSpace(tile) || maze.isTunnel(tile);
 		float tunnelSpeed = speed(LevelTable.floatValue(level, TableColumn.fGhostTunnelSpeed));
 		switch (state) {
 		case AGGRO:

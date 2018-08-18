@@ -1,6 +1,5 @@
 package de.amr.games.pacman.navigation.impl;
 
-import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.games.pacman.model.Maze.NESW;
 
 import java.util.Optional;
@@ -45,15 +44,17 @@ public class FollowTargetTile implements Navigation {
 	@Override
 	public MazeRoute computeRoute(MazeMover follower) {
 		Maze maze = follower.getMaze();
+
+		// compute target tile
+		Tile targetTile = targetTileSupplier.get();
+		if (maze.inTeleportSpace(targetTile)) {
+			int entry = targetTile.col > maze.numCols() - 1 ? maze.numCols() - 1 : 0;
+			targetTile = new Tile(entry, maze.getTunnelRow());
+		}
+
 		int currentDir = follower.getCurrentDir();
 		Tile currentTile = follower.getTile();
-		LOGGER.info(String.format("Current tile: %s, dir:%d", currentTile, currentDir));
-
-		Tile targetTile = targetTileSupplier.get();
-		if (maze.isTeleportSpace(targetTile)) {
-			targetTile = targetTile.col > maze.numCols() - 1 ? new Tile(maze.numCols() - 1, maze.getTunnelRow())
-					: new Tile(0, maze.getTunnelRow());
-		}
+		// LOGGER.info(String.format("Current tile: %s, dir:%d", currentTile, currentDir));
 
 		MazeRoute route = new MazeRoute();
 		route.dir = currentDir; // default: keep current move direction
@@ -67,7 +68,7 @@ public class FollowTargetTile implements Navigation {
 			selectTileClosestTo(maze.getBlinkyHome(), follower, true).ifPresent(tile -> {
 				int dir = maze.direction(currentTile, tile).getAsInt();
 				route.dir = dir;
-				LOGGER.info(String.format("Next tile:    %s, dir:%d", tile, route.dir));
+				// LOGGER.info(String.format("Next tile: %s, dir:%d", tile, route.dir));
 			});
 			return route;
 		}
@@ -75,7 +76,7 @@ public class FollowTargetTile implements Navigation {
 		selectTileClosestTo(targetTile, follower, false).ifPresent(tile -> {
 			int dir = maze.direction(currentTile, tile).getAsInt();
 			route.dir = dir;
-			LOGGER.info(String.format("Next tile:    %s, dir:%d", tile, route.dir));
+			// LOGGER.info(String.format("Next tile: %s, dir:%d", tile, route.dir));
 		});
 		return route;
 	}
