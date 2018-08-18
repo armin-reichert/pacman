@@ -254,7 +254,6 @@ public class GameController implements Controller {
 
 		private void onGhostKilled(GameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
-			game.ghostsKilledInSeries += 1;
 			e.ghost.processEvent(e);
 			LOGGER
 					.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
@@ -321,7 +320,7 @@ public class GameController implements Controller {
 			actors.getPacMan().visibility = () -> false;
 			game.score.add(game.getKilledGhostValue());
 			LOGGER.info(String.format("Scored %d points for killing ghost #%d",
-					game.getKilledGhostValue(), game.ghostsKilledInSeries));
+					game.getKilledGhostValue(), game.ghostsKilledByEnergizer));
 		}
 
 		@Override

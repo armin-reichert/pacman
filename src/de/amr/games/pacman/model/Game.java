@@ -33,7 +33,7 @@ public class Game {
 	public final ScoreCounter score = new ScoreCounter(this);
 	public int lives;
 	public int foodEaten;
-	public int ghostsKilledInSeries;
+	public int ghostsKilledByEnergizer;
 	private int level;
 	public final List<BonusSymbol> levelCounter = new LinkedList<>();
 
@@ -53,7 +53,7 @@ public class Game {
 	public void nextLevel() {
 		maze.resetFood();
 		foodEaten = 0;
-		ghostsKilledInSeries = 0;
+		ghostsKilledByEnergizer = 0;
 		level += 1;
 		levelCounter.add(0, getBonusSymbol());
 		if (levelCounter.size() == 8) {
@@ -148,7 +148,7 @@ public class Game {
 		}
 		boolean energizer = maze.isEnergizer(tile);
 		if (energizer) {
-			ghostsKilledInSeries = 0;
+			ghostsKilledByEnergizer = 0;
 		}
 		maze.hideFood(tile);
 		foodEaten += 1;
@@ -221,7 +221,7 @@ public class Game {
 	}
 
 	public int getKilledGhostValue() {
-		int n = ghostsKilledInSeries, value = 200;
+		int n = ghostsKilledByEnergizer, value = 200;
 		while (n > 1) {
 			value *= 2;
 			n -= 1;
