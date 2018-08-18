@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view;
 
-import static de.amr.games.pacman.model.Content.EATEN;
-import static de.amr.games.pacman.model.Content.ENERGIZER;
+import static de.amr.games.pacman.model.Food.EATEN;
+import static de.amr.games.pacman.model.Food.ENERGIZER;
 import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 

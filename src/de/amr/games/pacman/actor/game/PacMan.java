@@ -28,7 +28,7 @@ import de.amr.games.pacman.controller.event.game.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.game.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.game.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.game.PacManLostPowerEvent;
-import de.amr.games.pacman.model.Content;
+import de.amr.games.pacman.model.Food;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
@@ -255,7 +255,7 @@ public class PacMan extends MazeMover {
 			}
 			// Food?
 			char food = getMaze().getContent(tile);
-			if (food == Content.PELLET || food == Content.ENERGIZER) {
+			if (food == Food.PELLET || food == Food.ENERGIZER) {
 				digestionTicks = game.getDigestionTicks(food);
 				events.publish(new FoodFoundEvent(tile, food));
 			}

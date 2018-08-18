@@ -1,6 +1,6 @@
 package de.amr.games.pacman.controller.event.game;
 
-import static de.amr.games.pacman.model.Content.PELLET;
+import static de.amr.games.pacman.model.Food.PELLET;
 
 import de.amr.games.pacman.model.Tile;
 

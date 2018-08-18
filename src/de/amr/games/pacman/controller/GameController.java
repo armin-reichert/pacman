@@ -7,7 +7,7 @@ import static de.amr.games.pacman.controller.GameController.PlayState.GHOST_DYIN
 import static de.amr.games.pacman.controller.GameController.PlayState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.GameController.PlayState.PLAYING;
 import static de.amr.games.pacman.controller.GameController.PlayState.READY;
-import static de.amr.games.pacman.model.Content.ENERGIZER;
+import static de.amr.games.pacman.model.Food.ENERGIZER;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;

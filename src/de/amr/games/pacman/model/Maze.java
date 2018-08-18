@@ -1,14 +1,7 @@
 package de.amr.games.pacman.model;
 
-import static de.amr.games.pacman.model.Content.ENERGIZER;
-import static de.amr.games.pacman.model.Content.PELLET;
-import static de.amr.games.pacman.model.Content.POS_BLINKY;
-import static de.amr.games.pacman.model.Content.POS_BONUS;
-import static de.amr.games.pacman.model.Content.POS_CLYDE;
-import static de.amr.games.pacman.model.Content.POS_INKY;
-import static de.amr.games.pacman.model.Content.POS_PACMAN;
-import static de.amr.games.pacman.model.Content.POS_PINKY;
-import static de.amr.games.pacman.model.Content.WALL;
+import static de.amr.games.pacman.model.Food.ENERGIZER;
+import static de.amr.games.pacman.model.Food.PELLET;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +32,20 @@ public class Maze {
 
 	public static final Topology NESW = new Top4();
 
+	// Structure
+	private static final char WALL = '#';
+	private static final char DOOR = 'D';
+	private static final char TUNNEL = 'T';
+
+	// Position markers
+	private static final char POS_BONUS = '$';
+	private static final char POS_PACMAN = 'O';
+	private static final char POS_BLINKY = 'B';
+	private static final char POS_INKY = 'I';
+	private static final char POS_PINKY = 'P';
+	private static final char POS_CLYDE = 'C';
+	private static final char POS_ENDMARKER = ')';
+
 	private final String[] originalData;
 	private final GridGraph<Character, Integer> graph;
 	private Tile pacManHome;
@@ -68,7 +75,7 @@ public class Maze {
 					bonusTile = new Tile(col, row);
 				} else if (c == POS_PACMAN) {
 					pacManHome = new Tile(col, row);
-				} else if (c == Content.TUNNEL) {
+				} else if (c == TUNNEL) {
 					tunnelRow = row;
 				} else if (c == PELLET || c == ENERGIZER) {
 					foodTotal += 1;
@@ -80,7 +87,8 @@ public class Maze {
 		graph.fill();
 		graph.edges().filter(edge -> {
 			int u = edge.either(), v = edge.other();
-			return originalData(graph.row(u), graph.col(u)) == WALL || originalData(graph.row(v), graph.col(v)) == WALL;
+			return originalData(graph.row(u), graph.col(u)) == WALL
+					|| originalData(graph.row(v), graph.col(v)) == WALL;
 		}).forEach(graph::removeEdge);
 	}
 
@@ -145,15 +153,15 @@ public class Maze {
 	}
 
 	public boolean isTunnel(Tile tile) {
-		return getContent(tile) == Content.TUNNEL;
+		return getContent(tile) == TUNNEL;
 	}
-	
+
 	public boolean isWall(Tile tile) {
-		return getContent(tile) == Content.WALL;
+		return getContent(tile) == WALL;
 	}
-	
+
 	public boolean isDoor(Tile tile) {
-		return getContent(tile) == Content.DOOR;
+		return getContent(tile) == DOOR;
 	}
 
 	public boolean isIntersection(Tile tile) {
@@ -162,19 +170,21 @@ public class Maze {
 			return false;
 		}
 		// exceptions:
-		if (graph.get(cell) == Content.DOOR || inGhostHouse(tile)) {
+		if (graph.get(cell) == DOOR || inGhostHouse(tile)) {
 			return false;
 		}
 		int leftNb = graph.neighbor(cell, Top4.W).getAsInt();
 		int rightNb = graph.neighbor(cell, Top4.E).getAsInt();
-		if (rightNb == cell(pacManHome) || rightNb == cell(blinkyHome) || graph.get(leftNb) == ')') {
+		if (rightNb == cell(pacManHome) || rightNb == cell(blinkyHome)
+				|| graph.get(leftNb) == POS_ENDMARKER) {
 			return false;
 		}
 		return true;
 	}
 
 	public boolean inGhostHouse(Tile tile) {
-		return Math.abs(tile.row - inkyHome.row) <= 1 && tile.col >= inkyHome.col && tile.col <= clydeHome.col + 1;
+		return Math.abs(tile.row - inkyHome.row) <= 1 && tile.col >= inkyHome.col
+				&& tile.col <= clydeHome.col + 1;
 	}
 
 	public void resetFood() {
@@ -194,7 +204,7 @@ public class Maze {
 	}
 
 	public void setEatenFood(Tile tile) {
-		graph.set(cell(tile), Content.EATEN);
+		graph.set(cell(tile), Food.EATEN);
 	}
 
 	public OptionalInt direction(Tile t1, Tile t2) {

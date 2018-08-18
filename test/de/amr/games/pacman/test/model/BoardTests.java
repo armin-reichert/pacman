@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test.model;
 
-import static de.amr.games.pacman.model.Content.ENERGIZER;
-import static de.amr.games.pacman.model.Content.PELLET;
+import static de.amr.games.pacman.model.Food.ENERGIZER;
+import static de.amr.games.pacman.model.Food.PELLET;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

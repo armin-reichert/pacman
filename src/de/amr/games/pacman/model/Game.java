@@ -151,13 +151,13 @@ public class Game {
 		score.add(value);
 		maze.setEatenFood(tile);
 		foodEaten += 1;
-		if (food == Content.ENERGIZER) {
+		if (food == Food.ENERGIZER) {
 			ghostsKilledInSeries = 0;
 		}
 	}
 
 	public int getFoodValue(char food) {
-		return food == Content.PELLET ? 10 : food == Content.ENERGIZER ? 50 : 0;
+		return food == Food.PELLET ? 10 : food == Food.ENERGIZER ? 50 : 0;
 	}
 
 	public boolean allFoodEaten() {
@@ -165,7 +165,7 @@ public class Game {
 	}
 
 	public int getDigestionTicks(char food) {
-		return food == Content.ENERGIZER ? 3 : 1;
+		return food == Food.ENERGIZER ? 3 : 1;
 	}
 
 	private boolean checkExtraLife(int oldScore, int newScore) {
@@ -189,7 +189,7 @@ public class Game {
 	}
 
 	public float getGhostSpeed(GhostState ghostState, Tile tile) {
-		boolean tunnel = maze.isTeleportSpace(tile) || maze.getContent(tile) == Content.TUNNEL;
+		boolean tunnel = maze.isTeleportSpace(tile) || maze.isTunnel(tile);
 		float tunnelSpeed = speed(fValue(Field.fGhostTunnelSpeed));
 		switch (ghostState) {
 		case AGGRO:

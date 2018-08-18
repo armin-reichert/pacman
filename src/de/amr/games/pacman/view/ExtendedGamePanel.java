@@ -21,7 +21,7 @@ import de.amr.games.pacman.actor.game.Cast;
 import de.amr.games.pacman.actor.game.Ghost;
 import de.amr.games.pacman.actor.game.PacMan;
 import de.amr.games.pacman.controller.event.game.GhostKilledEvent;
-import de.amr.games.pacman.model.Content;
+import de.amr.games.pacman.model.Food;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.MazeRoute;
@@ -106,10 +106,10 @@ public class ExtendedGamePanel extends GamePanel {
 	}
 
 	private void eatPellets() {
-		game.maze.tiles().filter(tile -> game.maze.getContent(tile) == Content.PELLET).forEach(tile -> {
+		game.maze.tiles().filter(tile -> game.maze.getContent(tile) == Food.PELLET).forEach(tile -> {
 			game.maze.setEatenFood(tile);
 			game.foodEaten += 1;
-			game.score.add(game.getFoodValue(Content.PELLET));
+			game.score.add(game.getFoodValue(Food.PELLET));
 		});
 	}
 
