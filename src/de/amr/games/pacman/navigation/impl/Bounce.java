@@ -13,7 +13,7 @@ class Bounce implements Navigation {
 	public MazeRoute computeRoute(MazeMover bouncer) {
 		MazeRoute route = new MazeRoute();
 		int currentDir = bouncer.getCurrentDir();
-		Tile next = bouncer.computeAdjustedTileAfterMove(currentDir);
+		Tile next = bouncer.computeTileAfterMove(currentDir);
 		boolean reflected = bouncer.getMaze().isDoor(next) || bouncer.getMaze().isWall(next);
 		route.dir = reflected ? NESW.inv(currentDir) : currentDir;
 		return route;

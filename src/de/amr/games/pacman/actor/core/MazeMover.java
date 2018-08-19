@@ -65,7 +65,7 @@ public abstract class MazeMover extends TileWorldEntity {
 		if (inTeleportSpace()) {
 			return dir == currentDir || dir == NESW.inv(currentDir);
 		}
-		Tile next = computeAdjustedTileAfterMove(dir);
+		Tile next = computeTileAfterMove(dir);
 		if (getMaze().isWall(next)) {
 			return false;
 		}
@@ -112,13 +112,13 @@ public abstract class MazeMover extends TileWorldEntity {
 	}
 
 	/**
-	 * Computes the possibly adjusted tile position after a move in the given direction.
+	 * Computes the tile position after a move in the given direction.
 	 * 
 	 * @param dir
 	 *              move direction
 	 * @return the tile after a move in that direction
 	 */
-	public Tile computeAdjustedTileAfterMove(int dir) {
+	public Tile computeTileAfterMove(int dir) {
 		Tile current = getTile();
 		Vector2f pos = positionAfterMove(dir);
 		switch (dir) {
