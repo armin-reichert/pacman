@@ -184,12 +184,25 @@ public class StateMachine<S, E> {
 	public S currentState() {
 		return currentState;
 	}
+	
+	/**
+	 * Sets state machine into given state. Use this only for testing.
+	 * 
+	 * @param state
+	 */
+	public void setState(S state) {
+		currentState = state;
+		currentStateObject().onEntry();
+	}
 
 	/**
 	 * 
 	 * @return the state object of the current state
 	 */
 	public <C extends StateObject<S, E>> C currentStateObject() {
+		if (currentState == null) {
+			throw new IllegalStateException("Cannot access current state object, state machine has not been initialzed");
+		}
 		return state(currentState);
 	}
 

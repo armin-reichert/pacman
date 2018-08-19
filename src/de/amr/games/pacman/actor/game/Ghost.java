@@ -153,6 +153,13 @@ public class Ghost extends MazeMover {
 	public GhostState getState() {
 		return controller.currentState();
 	}
+	
+	/**
+	 * Use this only for testing.
+	 */
+	public void setState(GhostState state) {
+		controller.setState(state);
+	}
 
 	public StateObject<GhostState, GameEvent> getStateObject() {
 		return controller.currentStateObject();
@@ -200,7 +207,8 @@ public class Ghost extends MazeMover {
 					.state(DEAD)
 						.onTick(() -> {	move();	sprite = s_eyes[getCurrentDir()]; })
 					
-					.state(SCATTERING) //TODO
+					.state(SCATTERING)
+						.onTick(() -> {	move();	sprite = s_color[getCurrentDir()]; })
 				
 			.transitions()
 

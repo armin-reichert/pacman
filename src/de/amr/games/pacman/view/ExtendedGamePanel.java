@@ -42,10 +42,9 @@ public class ExtendedGamePanel extends GamePanel {
 	private boolean showStates = true;
 
 	private static BufferedImage createGridImage(int numRows, int numCols) {
-		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment()
-				.getDefaultScreenDevice().getDefaultConfiguration();
-		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1,
-				Transparency.TRANSLUCENT);
+		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+				.getDefaultConfiguration();
+		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1, Transparency.TRANSLUCENT);
 		Graphics2D g = image.createGraphics();
 		g.setColor(Color.DARK_GRAY);
 		for (int row = 0; row <= numRows; ++row) {
@@ -106,7 +105,7 @@ public class ExtendedGamePanel extends GamePanel {
 		actors.getActiveGhosts().forEach(ghost -> ghost.processEvent(new GhostKilledEvent(ghost)));
 	}
 
-	private void eatAllPellets() {
+	public void eatAllPellets() {
 		game.getMaze().tiles().filter(game.getMaze()::isPellet).forEach(game::eatFoodAtTile);
 	}
 
@@ -132,9 +131,13 @@ public class ExtendedGamePanel extends GamePanel {
 
 	private void drawEntityStates(Graphics2D g) {
 		PacMan pacMan = actors.getPacMan();
-		drawText(g, Color.YELLOW, pacMan.tf.getX(), pacMan.tf.getY(), pacManState(pacMan));
+		if (pacMan.getState() != null) {
+			drawText(g, Color.YELLOW, pacMan.tf.getX(), pacMan.tf.getY(), pacManState(pacMan));
+		}
 		actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> {
-			drawText(g, ghostColor(ghost), ghost.tf.getX() - TS, ghost.tf.getY(), ghostState(ghost));
+			if (ghost.getState() != null) {
+				drawText(g, ghostColor(ghost), ghost.tf.getX() - TS, ghost.tf.getY(), ghostState(ghost));
+			}
 		});
 	}
 
@@ -147,8 +150,8 @@ public class ExtendedGamePanel extends GamePanel {
 
 	private String ghostState(Ghost ghost) {
 		StateObject<?, ?> state = ghost.getStateObject();
-		return state.getDuration() != StateObject.ENDLESS ? String.format("%s(%s,%d|%d)",
-				ghost.getName(), state.id(), state.getRemaining(), state.getDuration())
+		return state.getDuration() != StateObject.ENDLESS
+				? String.format("%s(%s,%d|%d)", ghost.getName(), state.id(), state.getRemaining(), state.getDuration())
 				: String.format("%s(%s,%s)", ghost.getName(), state.id(), INFTY);
 	}
 
@@ -213,8 +216,8 @@ public class ExtendedGamePanel extends GamePanel {
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-targetTile.col * TS, -targetTile.row * TS);
 		} else if (route.targetTile != null) {
-			g.drawLine((int) ghost.getCenter().x, (int) ghost.getCenter().y,
-					route.targetTile.col * TS + TS / 2, route.targetTile.row * TS + TS / 2);
+			g.drawLine((int) ghost.getCenter().x, (int) ghost.getCenter().y, route.targetTile.col * TS + TS / 2,
+					route.targetTile.row * TS + TS / 2);
 			g.translate(route.targetTile.col * TS, route.targetTile.row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-route.targetTile.col * TS, -route.targetTile.row * TS);

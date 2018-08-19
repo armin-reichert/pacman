@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 /**
- * 
  * @param <E>
  *          event type
  */

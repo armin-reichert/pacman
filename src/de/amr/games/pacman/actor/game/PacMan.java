@@ -47,6 +47,7 @@ public class PacMan extends MazeMover {
 	private final StateMachine<PacManState, GameEvent> controller;
 	private final Map<PacManState, Navigation> navigationMap;
 	private final EventManager<GameEvent> events;
+	private boolean eventsEnabled;
 	private final PacManWorld world;
 	private int digestionTicks;
 
@@ -54,14 +55,33 @@ public class PacMan extends MazeMover {
 		this.world = world;
 		this.game = game;
 		events = new EventManager<>("[PacMan]");
+		eventsEnabled = true;
 		controller = buildStateMachine();
 		navigationMap = new EnumMap<>(PacManState.class);
 		createSprites();
 	}
 
+	// Eventing
+
 	public void subscribe(Consumer<GameEvent> subscriber) {
 		events.subscribe(subscriber);
 	}
+
+	public EventManager<GameEvent> getEvents() {
+		return events;
+	}
+
+	public void setEventsEnabled(boolean eventsEnabled) {
+		this.eventsEnabled = eventsEnabled;
+	}
+
+	private void publishEvent(GameEvent event) {
+		if (eventsEnabled) {
+			events.publish(event);
+		}
+	}
+
+	// Accessors
 
 	@Override
 	public Maze getMaze() {
@@ -205,11 +225,11 @@ public class PacMan extends MazeMover {
 	
 				.when(GREEDY).then(HUNGRY)
 					.onTimeout()
-					.act(() -> events.publish(new PacManLostPowerEvent()))
+					.act(() -> publishEvent(new PacManLostPowerEvent()))
 	
 				.stay(DYING)
 					.onTimeout()
-					.act(e -> events.publish(new PacManDiedEvent()))
+					.act(e -> publishEvent(new PacManDiedEvent()))
 
 		.endStateMachine();
 		/* @formatter:on */
@@ -229,6 +249,11 @@ public class PacMan extends MazeMover {
 		protected void inspectMaze() {
 			move();
 			Tile tile = getTile();
+			
+			if (!eventsEnabled) {
+				return;
+			}
+			
 			// Ghost collision?
 			Optional<Ghost> collidingGhost = world.getActiveGhosts()
 			/*@formatter:off*/
@@ -239,25 +264,23 @@ public class PacMan extends MazeMover {
 				.findFirst();
 			/*@formatter:on*/
 			if (collidingGhost.isPresent()) {
-				events.publish(new PacManGhostCollisionEvent(collidingGhost.get()));
+				publishEvent(new PacManGhostCollisionEvent(collidingGhost.get()));
 				return;
 			}
-			if (getMaze().inTeleportSpace(tile)) {
-				return;
-			}
+			
 			// Unhonored bonus?
 			Optional<Bonus> activeBonus = world.getBonus().filter(bonus -> bonus.getTile().equals(tile))
 					.filter(bonus -> !bonus.isHonored());
 			if (activeBonus.isPresent()) {
-				events.publish(
-						new BonusFoundEvent(activeBonus.get().getSymbol(), activeBonus.get().getValue()));
+				publishEvent(new BonusFoundEvent(activeBonus.get().getSymbol(), activeBonus.get().getValue()));
 				return;
 			}
+			
 			// Food?
 			if (getMaze().isFood(tile)) {
 				boolean energizer = getMaze().isEnergizer(tile);
 				digestionTicks = game.getDigestionTicks(energizer);
-				events.publish(new FoodFoundEvent(tile, energizer));
+				publishEvent(new FoodFoundEvent(tile, energizer));
 			}
 		}
 	}
@@ -268,7 +291,7 @@ public class PacMan extends MazeMover {
 		public void onTick() {
 			super.onTick();
 			if (getRemaining() == game.getPacManGettingWeakerRemainingTime()) {
-				events.publish(new PacManGettingWeakerEvent());
+				publishEvent(new PacManGettingWeakerEvent());
 			}
 		}
 	}
