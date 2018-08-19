@@ -97,7 +97,7 @@ public class PacMan extends MazeMover {
 	}
 
 	@Override
-	public boolean canWalkThroughDoor(Tile door) {
+	public boolean canEnterDoor(Tile door) {
 		return false;
 	}
 

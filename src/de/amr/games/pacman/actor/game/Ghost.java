@@ -74,7 +74,7 @@ public class Ghost extends MazeMover {
 	}
 
 	@Override
-	public boolean canWalkThroughDoor(Tile door) {
+	public boolean canEnterDoor(Tile door) {
 		return getState() == GhostState.DEAD || getTile().row >= door.row;
 	}
 

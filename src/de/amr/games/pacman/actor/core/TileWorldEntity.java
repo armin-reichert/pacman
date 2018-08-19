@@ -17,6 +17,10 @@ import de.amr.games.pacman.model.Tile;
  */
 public abstract class TileWorldEntity extends GameEntity {
 
+	public static Tile getTile(float x, float y) {
+		return new Tile(round(x + TS / 2) / TS, round(y + TS / 2) / TS);
+	}
+
 	@Override
 	public int getWidth() {
 		return TS;
@@ -31,7 +35,7 @@ public abstract class TileWorldEntity extends GameEntity {
 	 * @return the tile containing the center of the collision box.
 	 */
 	public Tile getTile() {
-		return new Tile(round(tf.getX() + getWidth() / 2) / TS, round(tf.getY() + getHeight() / 2) / TS);
+		return getTile(tf.getX(), tf.getY());
 	}
 
 	public void placeAtTile(Tile tile, float xOffset, float yOffset) {

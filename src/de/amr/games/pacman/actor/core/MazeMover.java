@@ -23,7 +23,7 @@ public abstract class MazeMover extends TileWorldEntity {
 
 	public abstract Maze getMaze();
 
-	public abstract boolean canWalkThroughDoor(Tile door);
+	public abstract boolean canEnterDoor(Tile door);
 
 	public abstract int supplyIntendedDir();
 
@@ -45,8 +45,38 @@ public abstract class MazeMover extends TileWorldEntity {
 		this.nextDir = dir;
 	}
 
-	private boolean isTurn(int current, int next) {
-		return next == NESW.left(current) || next == NESW.right(current);
+	private boolean isTurn(int currentDir, int nextDir) {
+		return nextDir == NESW.left(currentDir) || nextDir == NESW.right(currentDir);
+	}
+
+	public boolean inTeleportSpace() {
+		return getMaze().inTeleportSpace(getTile());
+	}
+
+	public boolean inTunnel() {
+		return getMaze().isTunnel(getTile());
+	}
+
+	public boolean inGhostHouse() {
+		return getMaze().inGhostHouse(getTile());
+	}
+
+	public boolean canMove(int dir) {
+		if (inTeleportSpace()) {
+			return dir == currentDir || dir == NESW.inv(currentDir);
+		}
+		Tile next = computeAdjustedTileAfterMove(dir);
+		if (getMaze().isWall(next)) {
+			return false;
+		}
+		if (getMaze().isDoor(next)) {
+			return canEnterDoor(next);
+		}
+		if (isTurn(currentDir, dir)) {
+			// TODO this is somewhat dubios but seems to work
+			return dir == Top4.N || dir == Top4.S ? getAlignmentX() <= 1 : getAlignmentY() <= 1;
+		}
+		return true;
 	}
 
 	public void move() {
@@ -57,36 +87,28 @@ public abstract class MazeMover extends TileWorldEntity {
 			}
 			currentDir = nextDir;
 		}
-		if (inTeleportSpace()) {
-			teleport();
-		} else if (canMove(currentDir)) {
+		if (canMove(currentDir)) {
 			tf.moveTo(positionAfterMove(currentDir));
+			teleportIfPossible();
 		} else {
 			align();
 		}
 	}
 
-	public boolean canMove(int dir) {
-		if (inTeleportSpace()) {
-			// in teleport space direction can only be reversed
-			return dir == currentDir || dir == NESW.inv(currentDir);
+	/**
+	 * "Teleport".
+	 * 
+	 * Leaves the maze on the left or right side, runs in "teleport space", reenters the maze on the
+	 * opposite side.
+	 */
+	private void teleportIfPossible() {
+		int right = getMaze().numCols() - 1;
+		int len = getMaze().getTeleportLength();
+		if (tf.getX() > (right + len) * TS) {
+			tf.setX(0);
+		} else if (tf.getX() < -len * TS) {
+			tf.setX(right * TS);
 		}
-		Tile next = computeTileAfterMove(dir);
-		if (getMaze().inTeleportSpace(next)) {
-			return true;
-		}
-		if (getMaze().isWall(next)) {
-			return false;
-		}
-		if (getMaze().isDoor(next)) {
-			return canWalkThroughDoor(next);
-		}
-		// turn left or right?
-		if (isTurn(currentDir, dir)) {
-			// TODO this is somewhat dubios but seems to work
-			return dir == Top4.N || dir == Top4.S ? getAlignmentX() <= 1 : getAlignmentY() <= 1;
-		}
-		return true;
 	}
 
 	/**
@@ -96,7 +118,7 @@ public abstract class MazeMover extends TileWorldEntity {
 	 *              move direction
 	 * @return the tile after a move in that direction
 	 */
-	public Tile computeTileAfterMove(int dir) {
+	public Tile computeAdjustedTileAfterMove(int dir) {
 		Tile current = getTile();
 		Vector2f pos = positionAfterMove(dir);
 		switch (dir) {
@@ -112,37 +134,7 @@ public abstract class MazeMover extends TileWorldEntity {
 		throw new IllegalArgumentException("Illegal direction: " + dir);
 	}
 
-	public boolean inTeleportSpace() {
-		return getMaze().inTeleportSpace(getTile());
-	}
-
-	public boolean inTunnel() {
-		return getMaze().isTunnel(getTile());
-	}
-	
-	public boolean inGhostHouse() {
-		return getMaze().inGhostHouse(getTile());
-	}
-
-	/**
-	 * "Teleport"
-	 * 
-	 * Leaves the maze on the left or right side, runs in "teleport space", reenters the maze on the
-	 * opposite side.
-	 */
-	private void teleport() {
-		int right = getMaze().numCols() - 1;
-		int len = getMaze().getTeleportLength();
-		if (tf.getX() > (right + len) * TS) {
-			tf.setX(0);
-		} else if (tf.getX() < -len * TS) {
-			tf.setX(right * TS);
-		} else {
-			tf.moveTo(positionAfterMove(currentDir));
-		}
-	}
-
-	private Vector2f positionAfterMove(int dir) {
+	public Vector2f positionAfterMove(int dir) {
 		return sum(tf.getPosition(), smul(getSpeed(), Vector2f.of(NESW.dx(dir), NESW.dy(dir))));
 	}
 }

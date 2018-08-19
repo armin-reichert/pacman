@@ -5,6 +5,7 @@ import static de.amr.games.pacman.model.Maze.NESW;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import de.amr.easy.game.Application;
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
@@ -54,7 +55,6 @@ public class FollowTargetTile implements Navigation {
 
 		int currentDir = follower.getCurrentDir();
 		Tile currentTile = follower.getTile();
-		// LOGGER.info(String.format("Current tile: %s, dir:%d", currentTile, currentDir));
 
 		MazeRoute route = new MazeRoute();
 		route.dir = currentDir; // default: keep current move direction
@@ -68,20 +68,26 @@ public class FollowTargetTile implements Navigation {
 			selectTileClosestTo(maze.getBlinkyHome(), follower, true).ifPresent(tile -> {
 				int dir = maze.direction(currentTile, tile).getAsInt();
 				route.dir = dir;
-				// LOGGER.info(String.format("Next tile: %s, dir:%d", tile, route.dir));
+				Application.LOGGER.info(String.format("Current tile: %s, dir:%d", currentTile, currentDir));
+				Application.LOGGER.info(String.format("Next tile:    %s, dir:%d", tile, route.dir));
 			});
 			return route;
 		}
 
-		selectTileClosestTo(targetTile, follower, false).ifPresent(tile -> {
-			int dir = maze.direction(currentTile, tile).getAsInt();
-			route.dir = dir;
-			// LOGGER.info(String.format("Next tile: %s, dir:%d", tile, route.dir));
-		});
+		if (maze.isIntersection(currentTile) || !follower.canMove(currentDir)) {
+			selectTileClosestTo(targetTile, follower, false).ifPresent(tile -> {
+				int dir = maze.direction(currentTile, tile).getAsInt();
+				route.dir = dir;
+				Application.LOGGER.info(String.format("Current tile: %s, dir:%d", currentTile, currentDir));
+				Application.LOGGER.info(String.format("Next tile:    %s, dir:%d", tile, route.dir));
+			});
+		}
+
 		return route;
 	}
 
-	private Optional<Tile> selectTileClosestTo(Tile targetTile, MazeMover follower, boolean doorOpen) {
+	private Optional<Tile> selectTileClosestTo(Tile targetTile, MazeMover follower,
+			boolean doorOpen) {
 		Maze maze = follower.getMaze();
 		Tile currentTile = follower.getTile();
 		int currentDir = follower.getCurrentDir();
