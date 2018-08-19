@@ -42,7 +42,7 @@ public class Cast implements PacManWorld {
 	private static Ghost createBlinky(Game game, PacMan pacMan, Tile home) {
 		Ghost ghost = new Ghost(GhostName.Blinky, pacMan, game, home, Top4.E, GhostColor.RED);
 		ghost.setNavigation(GhostState.AGGRO, followTargetTile(() -> pacMan.getTile()));
-		ghost.setNavigation(GhostState.AFRAID, flee(pacMan));
+		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;
@@ -51,7 +51,7 @@ public class Cast implements PacManWorld {
 	private static Ghost createPinky(Game game, PacMan pacMan, Tile home) {
 		Ghost ghost = new Ghost(GhostName.Pinky, pacMan, game, home, Top4.S, GhostColor.PINK);
 		ghost.setNavigation(GhostState.AGGRO, ambush(pacMan));
-		ghost.setNavigation(GhostState.AFRAID, flee(pacMan));
+		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;
@@ -60,7 +60,7 @@ public class Cast implements PacManWorld {
 	private static Ghost createInky(Game game, PacMan pacMan, Tile home) {
 		Ghost ghost = new Ghost(GhostName.Inky, pacMan, game, home, Top4.N, GhostColor.TURQUOISE);
 		ghost.setNavigation(GhostState.AGGRO, followTargetTile(() -> pacMan.getTile())); // TODO
-		ghost.setNavigation(GhostState.AFRAID, flee(pacMan));
+		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;
@@ -69,7 +69,7 @@ public class Cast implements PacManWorld {
 	private static Ghost createClyde(Game game, PacMan pacMan, Tile home) {
 		Ghost ghost = new Ghost(GhostName.Clyde, pacMan, game, home, Top4.N, GhostColor.ORANGE);
 		ghost.setNavigation(GhostState.AGGRO, flee(pacMan)); // TODO
-		ghost.setNavigation(GhostState.AFRAID, flee(pacMan));
+		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;

@@ -150,7 +150,7 @@ public class ExtendedGamePanel extends GamePanel {
 	}
 
 	private String ghostState(Ghost ghost) {
-		StateObject<?, ?> state = ghost.currentStateObject();
+		StateObject<?, ?> state = ghost.getStateObject();
 		return state.getDuration() != StateObject.ENDLESS ? String.format("%s(%s,%d|%d)",
 				ghost.getName(), state.id(), state.getRemaining(), state.getDuration())
 				: String.format("%s(%s,%s)", ghost.getName(), state.id(), INFTY);

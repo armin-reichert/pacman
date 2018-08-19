@@ -155,7 +155,7 @@ public class Game {
 			return 0;
 		case DEAD:
 			return speed(0.5f + new Random().nextFloat());
-		case AFRAID:
+		case FRIGHTENED:
 			return tunnel ? tunnelSpeed
 					: speed(LevelTable.floatValue(level, TableColumn.fGhostAfraidSpeed));
 		case SAFE:

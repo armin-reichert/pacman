@@ -1,6 +1,6 @@
 package de.amr.games.pacman.actor.game;
 
-import static de.amr.games.pacman.actor.game.GhostState.AFRAID;
+import static de.amr.games.pacman.actor.game.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.game.GhostState.AGGRO;
 import static de.amr.games.pacman.actor.game.GhostState.DEAD;
 import static de.amr.games.pacman.actor.game.GhostState.DYING;
@@ -103,7 +103,7 @@ public class Ghost extends MazeMover {
 	private Sprite sprite;
 	private Sprite s_color[] = new Sprite[4];
 	private Sprite s_eyes[] = new Sprite[4];
-	private Sprite s_awed;
+	private Sprite s_frightened;
 	private Sprite s_flashing;
 	private Sprite s_numbers[] = new Sprite[4];
 
@@ -115,13 +115,13 @@ public class Ghost extends MazeMover {
 		for (int i = 0; i < 4; ++i) {
 			s_numbers[i] = SPRITES.greenNumber(i);
 		}
-		s_awed = SPRITES.ghostAwed();
+		s_frightened = SPRITES.ghostFrightened();
 		s_flashing = SPRITES.ghostFlashing();
 	}
 
 	@Override
 	public Stream<Sprite> getSprites() {
-		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes), Stream.of(s_awed, s_flashing))
+		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes), Stream.of(s_frightened, s_flashing))
 				.flatMap(s -> s);
 	}
 
@@ -137,7 +137,7 @@ public class Ghost extends MazeMover {
 		setCurrentDir(initialDir);
 		setNextDir(initialDir);
 		getSprites().forEach(Sprite::resetAnimation);
-		sprite = s_color[getCurrentDir()];
+		sprite = s_color[initialDir];
 	}
 
 	@Override
@@ -154,7 +154,7 @@ public class Ghost extends MazeMover {
 		return controller.currentState();
 	}
 
-	public StateObject<GhostState, GameEvent> currentStateObject() {
+	public StateObject<GhostState, GameEvent> getStateObject() {
 		return controller.currentStateObject();
 	}
 
@@ -179,26 +179,26 @@ public class Ghost extends MazeMover {
 					.state(HOME)
 						.onEntry(this::initGhost)
 					
-					.state(AFRAID)
-						.onEntry(() -> sprite = s_awed)
-						.onTick(() -> move())
+					.state(SAFE)
+						.timeoutAfter(() -> game.sec(2))
+						.onTick(() -> {	move();	sprite = s_color[getCurrentDir()]; })
 					
 					.state(AGGRO)
 						.onTick(() -> {	move();	sprite = s_color[getCurrentDir()]; })
 					
-					.state(DEAD)
-						.onTick(() -> {	move();	sprite = s_eyes[getCurrentDir()]; })
+					.state(FRIGHTENED)
+						.onEntry(() -> sprite = s_frightened)
+						.onTick(() -> move())
 					
 					.state(DYING)
+						.timeoutAfter(game::getGhostDyingTime)
 						.onEntry(() -> {
 							sprite = s_numbers[game.getGhostsKilledByEnergizer()]; 
 							game.addGhostKilled();
 						})
-						.timeoutAfter(game::getGhostDyingTime)
 					
-					.state(SAFE)
-						.onTick(() -> {	move();	sprite = s_color[getCurrentDir()]; })
-						.timeoutAfter(() -> game.sec(2))
+					.state(DEAD)
+						.onTick(() -> {	move();	sprite = s_eyes[getCurrentDir()]; })
 					
 					.state(SCATTERING) //TODO
 				
@@ -206,26 +206,24 @@ public class Ghost extends MazeMover {
 
 					.when(HOME).then(SAFE)
 
-					.when(SAFE)
+					.when(SAFE).then(AGGRO)
 						.onTimeout().condition(() -> pacMan.getState() != PacManState.GREEDY)
-						.then(AGGRO)
 						
-					.when(SAFE)
+					.when(SAFE).then(FRIGHTENED)
 						.onTimeout().condition(() -> pacMan.getState() == PacManState.GREEDY)
-						.then(AFRAID)
-						
+
 					.stay(SAFE).on(PacManGainsPowerEvent.class)
 					.stay(SAFE).on(PacManGettingWeakerEvent.class)
 					.stay(SAFE).on(PacManLostPowerEvent.class)
 					.stay(SAFE).on(GhostKilledEvent.class)
 						
-					.when(AGGRO).on(PacManGainsPowerEvent.class).then(AFRAID)
-					.when(AGGRO).on(GhostKilledEvent.class).then(DEAD) // cheating-mode
+					.when(AGGRO).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
+					.when(AGGRO).then(DEAD).on(GhostKilledEvent.class) // cheating-mode
 						
-					.stay(AFRAID).on(PacManGainsPowerEvent.class)
-					.stay(AFRAID).on(PacManGettingWeakerEvent.class).act(e -> sprite = s_flashing)
-					.when(AFRAID).on(PacManLostPowerEvent.class).then(AGGRO)
-					.when(AFRAID).on(GhostKilledEvent.class).then(DYING)
+					.stay(FRIGHTENED).on(PacManGainsPowerEvent.class)
+					.stay(FRIGHTENED).on(PacManGettingWeakerEvent.class).act(e -> sprite = s_flashing)
+					.when(FRIGHTENED).then(AGGRO).on(PacManLostPowerEvent.class)
+					.when(FRIGHTENED).then(DYING).on(GhostKilledEvent.class)
 						
 					.when(DYING).then(DEAD).onTimeout()
 					.stay(DYING).on(PacManGainsPowerEvent.class) // cheating-mode
@@ -238,7 +236,7 @@ public class Ghost extends MazeMover {
 					.stay(DEAD).on(PacManGainsPowerEvent.class)
 					.stay(DEAD).on(PacManGettingWeakerEvent.class)
 					.stay(DEAD).on(PacManLostPowerEvent.class)
-					.stay(DEAD).on(GhostKilledEvent.class) // happens only when cheating
+					.stay(DEAD).on(GhostKilledEvent.class) // cheating-mode
 
 		.endStateMachine();
 		/*@formatter:on*/

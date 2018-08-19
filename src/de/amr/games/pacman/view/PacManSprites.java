@@ -189,7 +189,7 @@ public class PacManSprites {
 		return new Sprite(frames).animate(BACK_AND_FORTH, 300);
 	}
 
-	public Sprite ghostAwed() {
+	public Sprite ghostFrightened() {
 		return new Sprite(ghostAwed).animate(CYCLIC, 200);
 	}
 
