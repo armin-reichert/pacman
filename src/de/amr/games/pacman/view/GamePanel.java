@@ -32,8 +32,8 @@ public class GamePanel implements PacManGameUI {
 		this.actors = actors;
 		lifeImage = SPRITES.pacManWalking(Top4.W).frame(1);
 		mazePanel = new MazePanel(game.getMaze(), actors);
-		mazePanel.tf.moveTo(0, 3 * Game.TS);
-		Assets.storeTrueTypeFont("scoreFont", "arcadeclassic.ttf", Font.PLAIN, Game.TS * 3 / 2);
+		mazePanel.tf.moveTo(0, 3 * TS);
+		Assets.storeTrueTypeFont("scoreFont", "arcadeclassic.ttf", Font.PLAIN, TS * 3 / 2);
 	}
 
 	@Override
@@ -91,18 +91,21 @@ public class GamePanel implements PacManGameUI {
 	@Override
 	public void draw(Graphics2D g) {
 		g.setFont(Assets.font("scoreFont"));
-		g.setColor(Color.WHITE);
 		// Scores
-		g.drawString("SCORE", Game.TS, Game.TS);
-		g.drawString(String.format("%-6d", game.score.getScore()), Game.TS, Game.TS * 2);
-		g.drawString(String.format("LEVEL %2d", game.getLevel()), 22 * Game.TS, Game.TS);
-		g.drawString("HIGH", 10 * Game.TS, Game.TS);
-		g.drawString("SCORE", 14 * Game.TS, Game.TS);
-		g.drawString(String.format("%-6d", game.score.getHiscore()), 10 * Game.TS, Game.TS * 2);
+		g.setColor(Color.WHITE);
+		g.drawString("SCORE", TS, TS);
+		g.drawString(String.format("%-6d", game.score.getScore()), TS, TS * 2);
+		g.drawString(String.format("LEVEL %2d", game.getLevel()), 22 * TS, TS);
+		g.drawString("HIGH", 10 * TS, TS);
+		g.drawString("SCORE", 14 * TS, TS);
+		g.drawString(String.format("%-6d", game.score.getHiscore()), 10 * TS, TS * 2);
 		g.setColor(Color.YELLOW);
-		g.drawString(String.format("L%d", game.score.getHiscoreLevel()), 16 * Game.TS, Game.TS * 2);
+		g.drawString(String.format("L%d", game.score.getHiscoreLevel()), 16 * TS, TS * 2);
+		g.setColor(Color.WHITE);
+		g.drawString(String.format("%d", game.getEaten()), 22 * TS, TS * 2);
+		
 		// Lives
-		g.translate(0, getHeight() - 2 * Game.TS);
+		g.translate(0, getHeight() - 2 * TS);
 		for (int i = 0; i < game.getLives(); ++i) {
 			g.translate((2 - i) * lifeImage.getWidth(null), 0);
 			g.drawImage(lifeImage, 0, 0, null);
@@ -110,11 +113,11 @@ public class GamePanel implements PacManGameUI {
 		}
 		// Level counter
 		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
-			g.translate(getWidth() - (n - i) * 2 * Game.TS, 0);
-			g.drawImage(SPRITES.symbolImage(game.getLevelCounter().get(i)), 0, 0, 2 * Game.TS, 2 * Game.TS, null);
-			g.translate(-getWidth() + (n - i) * 2 * Game.TS, 0);
+			g.translate(getWidth() - (n - i) * 2 * TS, 0);
+			g.drawImage(SPRITES.symbolImage(game.getLevelCounter().get(i)), 0, 0, 2 * TS, 2 * TS, null);
+			g.translate(-getWidth() + (n - i) * 2 * TS, 0);
 		}
-		g.translate(0, -getHeight() + 2 * Game.TS);
+		g.translate(0, -getHeight() + 2 * TS);
 		// Maze
 		mazePanel.draw(g);
 		// Actors
@@ -143,7 +146,7 @@ public class GamePanel implements PacManGameUI {
 		g2.setFont(Assets.font("scoreFont"));
 		g2.setColor(infoTextColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(infoText, g2).getBounds();
-		g2.translate((width - box.width) / 2, (game.getMaze().getBonusTile().row + 1) * Game.TS);
+		g2.translate((width - box.width) / 2, (game.getMaze().getBonusTile().row + 1) * TS);
 		g2.drawString(infoText, 0, 0);
 		g2.dispose();
 	}

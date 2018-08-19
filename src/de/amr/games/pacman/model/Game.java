@@ -116,6 +116,10 @@ public class Game {
 	public boolean allFoodEaten() {
 		return eaten == maze.getFoodTotal();
 	}
+	
+	public int getEaten() {
+		return eaten;
+	}
 
 	public int getDigestionTicks(boolean energizer) {
 		return energizer ? 3 : 1;
