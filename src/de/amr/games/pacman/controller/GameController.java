@@ -59,7 +59,7 @@ public class GameController implements Controller {
 		Maze maze = new Maze(Assets.text("maze.txt"));
 		game = new Game(maze, Application.PULSE::getFrequency);
 		actors = new Cast(game);
-		gameView = new ExtendedGamePanel(maze.numCols() * Game.TS, (maze.numRows() + 5) * Game.TS, game,
+		gameView = new ExtendedGamePanel(maze.numCols() * Game.TS, maze.numRows() * Game.TS, game,
 				actors);
 		gameControl = createGameControl();
 		actors.getPacMan().subscribe(gameControl::process);

@@ -1,5 +1,7 @@
 package de.amr.games.pacman.view;
 
+import static de.amr.games.pacman.model.Game.TS;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -10,6 +12,7 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.View;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.game.Cast;
+import de.amr.games.pacman.actor.game.GhostState;
 import de.amr.games.pacman.model.Game;
 
 public class GamePanel implements PacManGameUI {
@@ -60,6 +63,8 @@ public class GamePanel implements PacManGameUI {
 	@Override
 	public void enableAnimation(boolean enable) {
 		mazePanel.enableAnimation(enable);
+		actors.getPacMan().enableAnimation(enable);
+		actors.getActiveGhosts().forEach(ghost -> ghost.enableAnimation(enable));
 	}
 
 	@Override
@@ -112,10 +117,24 @@ public class GamePanel implements PacManGameUI {
 		g.translate(0, -getHeight() + 2 * Game.TS);
 		// Maze
 		mazePanel.draw(g);
+		// Actors
+		drawActors(g);
 		// Info text
 		if (infoText != null) {
 			drawInfoText(g);
 		}
+	}
+	
+	private void drawActors(Graphics2D g) {
+		actors.getBonus().ifPresent(bonus -> {
+			bonus.placeAtTile(game.getMaze().getBonusTile(), TS / 2, 0);
+			bonus.draw(g);
+		});
+		actors.getPacMan().draw(g);
+		actors.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
+				.forEach(ghost -> ghost.draw(g));
+		actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
+				.forEach(ghost -> ghost.draw(g));
 	}
 
 	private void drawInfoText(Graphics2D g) {

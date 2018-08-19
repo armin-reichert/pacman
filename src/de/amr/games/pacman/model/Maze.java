@@ -16,8 +16,11 @@ import de.amr.easy.grid.impl.GridGraph;
 import de.amr.easy.grid.impl.Top4;
 
 /**
- * The original Pac-Man maze. It is represented by a grid graph which may store content and can be
- * used by path finding algorithms.
+ * The original Pac-Man maze.
+ * 
+ * <p>
+ * It is represented by a (grid) graph which may store content and can be used by path finding
+ * algorithms.
  * 
  * @author Armin Reichert
  * 
@@ -30,7 +33,7 @@ public class Maze {
 	private static final char WALL = '#';
 	private static final char DOOR = 'D';
 	private static final char TUNNEL = 'T';
-	private static final char TELEPORT = '~';
+	private static final char SPACE = ' ';
 
 	private static final char PELLET = '.';
 	private static final char ENERGIZER = '*';
@@ -107,7 +110,7 @@ public class Maze {
 	}
 
 	public int getTeleportLength() {
-		return 6;
+		return 4;
 	}
 
 	public Stream<Tile> tiles() {
@@ -116,6 +119,22 @@ public class Maze {
 
 	private boolean isValidTile(Tile tile) {
 		return graph.isValidCol(tile.col) && graph.isValidRow(tile.row);
+	}
+
+	public Tile getTopLeftCorner() {
+		return new Tile(1, 4);
+	}
+
+	public Tile getTopRightCorner() {
+		return new Tile(numCols() - 2, 4);
+	}
+
+	public Tile getBottomLeftCorner() {
+		return new Tile(1, numRows() - 4);
+	}
+
+	public Tile getBottomRightCorner() {
+		return new Tile(numCols() - 2, numRows() - 4);
 	}
 
 	public Tile getPacManHome() {
@@ -148,7 +167,7 @@ public class Maze {
 
 	private char getContent(Tile tile) {
 		if (inTeleportSpace(tile)) {
-			return TELEPORT;
+			return SPACE;
 		}
 		return graph.get(cell(tile));
 	}

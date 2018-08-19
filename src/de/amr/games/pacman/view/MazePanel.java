@@ -12,8 +12,6 @@ import de.amr.easy.game.sprite.Animation;
 import de.amr.easy.game.sprite.CyclicAnimation;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.actor.game.Cast;
-import de.amr.games.pacman.actor.game.GhostState;
-import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 
 public class MazePanel extends GameEntity {
@@ -58,12 +56,12 @@ public class MazePanel extends GameEntity {
 
 	@Override
 	public int getWidth() {
-		return maze.numCols() * Game.TS;
+		return maze.numCols() * TS;
 	}
 
 	@Override
 	public int getHeight() {
-		return maze.numRows() * Game.TS;
+		return maze.numRows() * TS;
 	}
 
 	public void setFlashing(boolean on) {
@@ -77,46 +75,29 @@ public class MazePanel extends GameEntity {
 	@Override
 	public void enableAnimation(boolean enable) {
 		super.enableAnimation(enable);
-		actors.getPacMan().enableAnimation(enable);
-		actors.getActiveGhosts().forEach(ghost -> ghost.enableAnimation(enable));
 		energizerBlinking.setEnabled(enable);
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		g.translate(tf.getX(), tf.getY());
 		if (flashing) {
+			g.translate(tf.getX(), tf.getY());
 			s_maze_flashing.draw(g);
 			actors.getPacMan().draw(g);
+			g.translate(-tf.getX(), -tf.getY());
 		} else {
+			g.translate(tf.getX(), tf.getY());
 			s_maze_normal.draw(g);
-			drawFood(g);
-			drawActors(g);
+			g.translate(-tf.getX(), -tf.getY());
+			maze.tiles().forEach(tile -> {
+				if (maze.isEatenFood(tile)
+						|| maze.isEnergizer(tile) && energizerBlinking.currentFrame() % 2 != 0) {
+					g.translate(tile.col * TS, tile.row * TS);
+					g.setColor(Color.BLACK);
+					g.fillRect(0, 0, TS, TS);
+					g.translate(-tile.col * TS, -tile.row * TS);
+				}
+			});
 		}
-		g.translate(-tf.getX(), -tf.getY());
-	}
-
-	private void drawActors(Graphics2D g) {
-		actors.getBonus().ifPresent(bonus -> {
-			bonus.placeAtTile(maze.getBonusTile(), TS / 2, 0);
-			bonus.draw(g);
-		});
-		actors.getPacMan().draw(g);
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
-				.forEach(ghost -> ghost.draw(g));
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
-				.forEach(ghost -> ghost.draw(g));
-	}
-
-	private void drawFood(Graphics2D g) {
-		maze.tiles().forEach(tile -> {
-			if (maze.isEatenFood(tile)
-					|| maze.isEnergizer(tile) && energizerBlinking.currentFrame() % 2 != 0) {
-				g.translate(tile.col * Game.TS, tile.row * Game.TS);
-				g.setColor(Color.BLACK);
-				g.fillRect(0, 0, Game.TS, Game.TS);
-				g.translate(-tile.col * Game.TS, -tile.row * Game.TS);
-			}
-		});
 	}
 }
