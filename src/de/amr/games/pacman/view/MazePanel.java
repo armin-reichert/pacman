@@ -99,4 +99,10 @@ public class MazePanel extends GameEntity {
 			});
 		}
 	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
 }

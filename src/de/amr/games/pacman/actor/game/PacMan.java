@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.core.MazeMover;
+import de.amr.games.pacman.actor.core.StateMachineControlled;
 import de.amr.games.pacman.controller.event.core.EventManager;
 import de.amr.games.pacman.controller.event.game.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.game.FoodFoundEvent;
@@ -41,7 +42,7 @@ import de.amr.statemachine.StateObject;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends MazeMover {
+public class PacMan extends MazeMover implements StateMachineControlled<PacManState, GameEvent> {
 
 	private final Game game;
 	private final StateMachine<PacManState, GameEvent> controller;
@@ -59,6 +60,14 @@ public class PacMan extends MazeMover {
 		controller = buildStateMachine();
 		navigationMap = new EnumMap<>(PacManState.class);
 		createSprites();
+	}
+
+	private void initPacMan() {
+		digestionTicks = 0;
+		placeAtTile(getHome(), TS / 2, 0);
+		setNextDir(Top4.E);
+		getSprites().forEach(Sprite::resetAnimation);
+		sprite = s_full;
 	}
 
 	// Eventing
@@ -151,38 +160,13 @@ public class PacMan extends MazeMover {
 
 	// State machine
 
-	private void initPacMan() {
-		digestionTicks = 0;
-		placeAtTile(getHome(), TS / 2, 0);
-		setNextDir(Top4.E);
-		getSprites().forEach(Sprite::resetAnimation);
-		sprite = s_full;
-	}
-
-	@Override
-	public void init() {
-		controller.init();
-	}
-
-	@Override
-	public void update() {
-		controller.update();
-	}
-
-	public PacManState getState() {
-		return controller.currentState();
-	}
-
-	public void processEvent(GameEvent e) {
-		controller.process(e);
-	}
-
-	public StateObject<PacManState, GameEvent> currentStateObject() {
-		return controller.currentStateObject();
-	}
-
 	public void traceTo(Logger logger) {
 		controller.traceTo(logger, game.fnTicksPerSec);
+	}
+
+	@Override
+	public StateMachine<PacManState, GameEvent> getStateMachine() {
+		return controller;
 	}
 
 	private StateMachine<PacManState, GameEvent> buildStateMachine() {
@@ -249,11 +233,11 @@ public class PacMan extends MazeMover {
 		protected void inspectMaze() {
 			move();
 			Tile tile = getTile();
-			
+
 			if (!eventsEnabled) {
 				return;
 			}
-			
+
 			// Ghost collision?
 			Optional<Ghost> collidingGhost = world.getActiveGhosts()
 			/*@formatter:off*/
@@ -267,15 +251,16 @@ public class PacMan extends MazeMover {
 				publishEvent(new PacManGhostCollisionEvent(collidingGhost.get()));
 				return;
 			}
-			
+
 			// Unhonored bonus?
 			Optional<Bonus> activeBonus = world.getBonus().filter(bonus -> bonus.getTile().equals(tile))
 					.filter(bonus -> !bonus.isHonored());
 			if (activeBonus.isPresent()) {
-				publishEvent(new BonusFoundEvent(activeBonus.get().getSymbol(), activeBonus.get().getValue()));
+				publishEvent(
+						new BonusFoundEvent(activeBonus.get().getSymbol(), activeBonus.get().getValue()));
 				return;
 			}
-			
+
 			// Food?
 			if (getMaze().isFood(tile)) {
 				boolean energizer = getMaze().isEnergizer(tile);

@@ -63,4 +63,16 @@ public class Bonus extends TileWorldEntity {
 	public String toString() {
 		return String.format("Bonus(%s,%d)", symbol, value);
 	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update() {
+		// TODO Auto-generated method stub
+		
+	}
 }
