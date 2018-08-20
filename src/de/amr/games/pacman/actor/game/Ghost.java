@@ -82,8 +82,14 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 	}
 
 	@Override
-	public boolean canEnterDoor(Tile door) {
-		return getState() == GhostState.DEAD || getTile().row >= door.row;
+	public boolean canTraverseDoor(Tile door) {
+		if (getState() == GhostState.SAFE) {
+			return false;
+		}
+		if (getState() == GhostState.DEAD) {
+			return true;
+		}
+		return inGhostHouse();
 	}
 
 	@Override

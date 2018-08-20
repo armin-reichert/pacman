@@ -136,7 +136,7 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 	}
 
 	@Override
-	public boolean canEnterDoor(Tile door) {
+	public boolean canTraverseDoor(Tile door) {
 		return false;
 	}
 
