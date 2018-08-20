@@ -140,7 +140,7 @@ public class Maze {
 		return graph.vertices().mapToObj(this::tile);
 	}
 
-	private boolean isValidTile(Tile tile) {
+	public boolean isValidTile(Tile tile) {
 		return graph.isValidCol(tile.col) && graph.isValidRow(tile.row);
 	}
 
@@ -212,7 +212,7 @@ public class Maze {
 	}
 
 	public boolean inTeleportSpace(Tile tile) {
-		return !isValidTile(tile);
+		return tile.row == tunnelRow && tile.col < 0 || tile.col > numCols() - 1;
 	}
 
 	public boolean isTunnel(Tile tile) {

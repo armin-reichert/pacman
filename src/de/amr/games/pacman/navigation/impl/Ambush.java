@@ -1,51 +1,23 @@
 package de.amr.games.pacman.navigation.impl;
 
-import java.util.Optional;
+import static de.amr.games.pacman.model.Maze.NESW;
 
 import de.amr.games.pacman.actor.core.MazeMover;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.navigation.MazeRoute;
-import de.amr.games.pacman.navigation.Navigation;
 
 /**
  * Ambush the victim in the maze.
  */
-class Ambush implements Navigation {
+class Ambush extends FollowTargetTile {
 
-	private final MazeMover victim;
-	private final Maze maze;
+	private static Tile aheadOf(MazeMover mover, int n) {
+		Tile moverLocation = mover.getTile();
+		int currentDir = mover.getCurrentDir();
+		Tile target = new Tile(moverLocation.col + 4 * NESW.dx(currentDir), moverLocation.row + 4 * NESW.dy(currentDir));
+		return mover.getMaze().isValidTile(target) ? target : moverLocation;
+	}
 
 	public Ambush(MazeMover victim) {
-		this.victim = victim;
-		this.maze = victim.getMaze();
-	}
-
-	@Override
-	public MazeRoute computeRoute(MazeMover ambusher) {
-		MazeRoute route = new MazeRoute();
-		if (maze.inTeleportSpace(victim.getTile())) {
-			route.dir = ambusher.getNextDir();
-			return route;
-		}
-		Optional<Tile> fourAhead = ahead(4, victim);
-		if (fourAhead.isPresent() && !maze.isWall(fourAhead.get())) {
-			route.path = maze.findPath(ambusher.getTile(), fourAhead.get());
-		} else {
-			route.path = maze.findPath(ambusher.getTile(), victim.getTile());
-		}
-		route.dir = maze.alongPath(route.path).orElse(ambusher.getNextDir());
-		return route;
-	}
-
-	private Optional<Tile> ahead(int n, MazeMover refugee) {
-		Tile current = refugee.getTile();
-		for (int i = 0; i < n; ++i) {
-			Optional<Tile> next = maze.neighborTile(current, refugee.getCurrentDir());
-			if (next.isPresent()) {
-				current = next.get();
-			}
-		}
-		return Optional.of(current);
+		super(victim.getMaze(), () -> aheadOf(victim, 4));
 	}
 }
