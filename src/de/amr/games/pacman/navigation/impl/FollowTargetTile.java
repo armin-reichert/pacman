@@ -86,8 +86,7 @@ public class FollowTargetTile implements Navigation {
 		return route;
 	}
 
-	private Optional<Tile> selectTileClosestTo(Tile targetTile, MazeMover follower,
-			boolean doorOpen) {
+	private Optional<Tile> selectTileClosestTo(Tile targetTile, MazeMover follower, boolean doorOpen) {
 		Maze maze = follower.getMaze();
 		Tile currentTile = follower.getTile();
 		int currentDir = follower.getCurrentDir();

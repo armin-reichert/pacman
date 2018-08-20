@@ -10,6 +10,6 @@ public class MazeRoute {
 	public int dir;
 
 	public List<Tile> path = Collections.emptyList();
-	
-	public Tile targetTile; 
+
+	public Tile targetTile;
 }

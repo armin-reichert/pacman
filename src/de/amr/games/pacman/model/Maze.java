@@ -199,16 +199,14 @@ public class Maze {
 		}
 		int leftNb = graph.neighbor(cell, Top4.W).getAsInt();
 		int rightNb = graph.neighbor(cell, Top4.E).getAsInt();
-		if (rightNb == cell(pacManHome) || rightNb == cell(blinkyHome)
-				|| graph.get(leftNb) == POS_ENDMARKER) {
+		if (rightNb == cell(pacManHome) || rightNb == cell(blinkyHome) || graph.get(leftNb) == POS_ENDMARKER) {
 			return false;
 		}
 		return true;
 	}
 
 	public boolean inGhostHouse(Tile tile) {
-		return Math.abs(tile.row - inkyHome.row) <= 1 && tile.col >= inkyHome.col
-				&& tile.col <= clydeHome.col + 1;
+		return Math.abs(tile.row - inkyHome.row) <= 1 && tile.col >= inkyHome.col && tile.col <= clydeHome.col + 1;
 	}
 
 	public boolean isPellet(Tile tile) {

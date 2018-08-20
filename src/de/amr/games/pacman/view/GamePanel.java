@@ -144,10 +144,8 @@ public class GamePanel implements PacManGameUI {
 			bonus.draw(g);
 		});
 		actors.getPacMan().draw(g);
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
-				.forEach(ghost -> ghost.draw(g));
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
-				.forEach(ghost -> ghost.draw(g));
+		actors.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));
+		actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(ghost -> ghost.draw(g));
 	}
 
 	private void drawInfoText(Graphics2D g) {

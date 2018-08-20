@@ -184,7 +184,7 @@ public class StateMachine<S, E> {
 	public S currentState() {
 		return currentState;
 	}
-	
+
 	/**
 	 * Sets state machine into given state. Use this only for testing.
 	 * 

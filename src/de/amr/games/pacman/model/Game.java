@@ -116,7 +116,7 @@ public class Game {
 	public boolean allFoodEaten() {
 		return eaten == maze.getFoodTotal();
 	}
-	
+
 	public int getFoodRemaining() {
 		return maze.getFoodTotal() - eaten;
 	}
@@ -160,8 +160,7 @@ public class Game {
 		case DEAD:
 			return speed(0.5f + new Random().nextFloat());
 		case FRIGHTENED:
-			return tunnel ? tunnelSpeed
-					: speed(LevelTable.floatValue(level, TableColumn.fGhostAfraidSpeed));
+			return tunnel ? tunnelSpeed : speed(LevelTable.floatValue(level, TableColumn.fGhostAfraidSpeed));
 		case SAFE:
 			return speed(0.75f);
 		case SCATTERING:
