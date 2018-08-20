@@ -280,7 +280,7 @@ Other features:
 - Key 'k' kills all ghosts
 - Key 'e' eats all pellets
 
-The navigation behavior of the actors is implemented modularly (*strategy pattern*) and can easily be changed.
+The navigation behavior of the actors is implemented modularly (*strategy pattern*) and can easily be changed. 
 
 Blinky's navigation behaviour is defined as follows:
 ```java
@@ -291,36 +291,39 @@ ghost.setNavigation(GhostState.DEAD, go(home));
 ghost.setNavigation(GhostState.SAFE, bounce());
 ```
 
-The move behaviours are implemented as reusable classes with a common interface. Behaviours which need to compute shortest routes in the maze can just call the method *Maze.findPath(Tile source, Tile target)*.
+There is a general *followTargetTile* behavior which is used by different special behaviors like *scattering*, *ambushing* or *chasing*.
 
-This method runs the A* path finding algorithm on the underlying grid graph (which is rather useless in this case but hey, it sounds cooler than BFS :-). You might ask why A* is "useless" here: it's because the Pac-Man maze is internally represented as a (grid) graph where the distance between two neighbor vertices (tiles) is always the same. Thus the Dijkstra or A* path finding algorithms will just degenerate to Breadth-first Search (correct my if I'm wrong). Of course you could represent the graph differently, for example with vertices only for crossings and weighted edges for passages. In that case, Dijkstra or A* would be more useful.
 
-As an example, this is the  class implementing the *chase(victim)* behavior:
+To illustrate, this is the implementation of the *chase* behavior:
 
 ```java
-class Chase implements Navigation {
-
-	private final MazeMover victim;
+class Chase extends FollowTargetTile {
 
 	public Chase(MazeMover victim) {
-		this.victim = victim;
-	}
-
-	@Override
-	public MazeRoute computeRoute(MazeMover chaser) {
-		MazeRoute route = new MazeRoute();
-		Maze maze = chaser.getMaze();
-		if (victim.inTeleportSpace()) {
-			// chaser cannot see victim
-			route.dir = chaser.getNextDir();
-		} else {
-			route.path = maze.findPath(chaser.getTile(), victim.getTile());
-			route.dir = maze.alongPath(route.path).orElse(chaser.getNextDir());
-		}
-		return route;
+		super(victim.getMaze(), victim::getTile);
 	}
 }
 ```
+
+And this is *ambush*:
+
+```java
+class Ambush extends FollowTargetTile {
+
+	private static Tile aheadOf(MazeMover mover, int n) {
+		Tile moverTile = mover.getTile();
+		int moverDir = mover.getCurrentDir();
+		Tile target = new Tile(moverTile.col + 4 * NESW.dx(moverDir), moverTile.row + 4 * NESW.dy(moverDir));
+		return mover.getMaze().isValidTile(target) ? target : moverTile;
+	}
+
+	public Ambush(MazeMover victim) {
+		super(victim.getMaze(), () -> aheadOf(victim, 4));
+	}
+}
+```
+
+The move behaviours are implemented as reusable classes with a common interface. Behaviours can compute shortest routes in the maze by a call to the method *Maze.findPath(Tile source, Tile target)*. This method runs an A* or BFS algorithm on the underlying grid graph (A* sounds cooler than BFS :-). A* is rather useless here because the maze is represented by a (grid) graph where the distance between two vertices (neighbor tiles) is always equal. Thus the Dijkstra or A* path finding algorithms will just degenerate to BFS (correct my if I'm wrong). Of course you could represent the graph differently, for example with vertices only for crossings and weighted edges for passages. In that case, Dijkstra or A* would be useful.
 
 ## References
 - [GameInternals - Understanding Pac-Man Ghost Behavior](http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior)
@@ -328,8 +331,8 @@ class Chase implements Navigation {
 
 ## Summary
 
-The goal of this project is to implement a Pac-Man like game in a way that also beginners can fully understand how the game is working. The implementation follows the MVC pattern and separates the control logic for the actors and the game play into explicit state machines. The state machines are defined in a declarative way. A very simple game library is used for the basic game features (windowing, game loop) but it should not be too difficult to write these infrastructure parts from scratch or use any other game library instead.
+The goal of this project is to implement a Pac-Man like game in a way that also beginners can fully understand how the game is working. The implementation follows the MVC pattern and separates the control logic for the actors and the game play into explicit state machines. The state machines are defined in a declarative way. 
 
-It would certainly also be useful to further decouple the UI from the game model and controller to enable an easy replacement of the complete UI.
+A very simple game library is used for the basic game features (windowing, game loop) but it should not be too difficult to write these infrastructure parts from scratch or use any other game library instead. It would certainly also be useful to further decouple the UI from the game model and controller to enable an easy replacement of the complete UI.
 
 *Armin Reichert, August 2018*
