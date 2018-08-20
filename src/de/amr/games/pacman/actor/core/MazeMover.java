@@ -6,7 +6,6 @@ import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static java.lang.Math.round;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.Maze;
@@ -45,7 +44,6 @@ public abstract class MazeMover extends TileWorldEntity {
 	public void setNextDir(int dir) {
 		if (dir != nextDir) {
 			nextDir = dir;
-			Application.LOGGER.info("Next dir set to: " + dir);
 		}
 	}
 

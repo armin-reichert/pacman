@@ -43,6 +43,8 @@ public class Cast implements PacManWorld {
 		Ghost ghost = new Ghost(GhostName.Blinky, pacMan, game, home, Top4.E, GhostColor.RED);
 		ghost.setNavigation(GhostState.AGGRO, followTargetTile(game.getMaze(), () -> pacMan.getTile()));
 		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
+		ghost.setNavigation(GhostState.SCATTERING,
+				followTargetTile(game.getMaze(), () -> game.getMaze().getBlinkyScatteringTarget()));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;
@@ -52,6 +54,8 @@ public class Cast implements PacManWorld {
 		Ghost ghost = new Ghost(GhostName.Pinky, pacMan, game, home, Top4.S, GhostColor.PINK);
 		ghost.setNavigation(GhostState.AGGRO, ambush(pacMan));
 		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
+		ghost.setNavigation(GhostState.SCATTERING,
+				followTargetTile(game.getMaze(), () -> game.getMaze().getPinkyScatteringTarget()));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;
@@ -61,6 +65,8 @@ public class Cast implements PacManWorld {
 		Ghost ghost = new Ghost(GhostName.Inky, pacMan, game, home, Top4.N, GhostColor.TURQUOISE);
 		ghost.setNavigation(GhostState.AGGRO, followTargetTile(game.getMaze(), () -> pacMan.getTile())); // TODO
 		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
+		ghost.setNavigation(GhostState.SCATTERING,
+				followTargetTile(game.getMaze(), () -> game.getMaze().getInkyScatteringTarget()));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;
@@ -70,6 +76,8 @@ public class Cast implements PacManWorld {
 		Ghost ghost = new Ghost(GhostName.Clyde, pacMan, game, home, Top4.N, GhostColor.ORANGE);
 		ghost.setNavigation(GhostState.AGGRO, flee(pacMan)); // TODO
 		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
+		ghost.setNavigation(GhostState.SCATTERING,
+				followTargetTile(game.getMaze(), () -> game.getMaze().getClydeScatteringTarget()));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;

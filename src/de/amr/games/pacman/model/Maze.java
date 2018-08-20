@@ -39,13 +39,17 @@ public class Maze {
 	private static final char ENERGIZER = '*';
 	private static final char EATEN = ':';
 
-	private static final char POS_BONUS = '$';
-	private static final char POS_PACMAN = 'O';
-	private static final char POS_BLINKY = 'B';
-	private static final char POS_INKY = 'I';
-	private static final char POS_PINKY = 'P';
-	private static final char POS_CLYDE = 'C';
-	private static final char POS_ENDMARKER = ')';
+	private static final char BONUS = '$';
+	private static final char PACMAN_HOME = 'O';
+	private static final char BLINKY_HOME = 'B';
+	private static final char BLINKY_ST = 'b';
+	private static final char INKY_HOME = 'I';
+	private static final char INKY_ST = 'i';
+	private static final char PINKY_HOME = 'P';
+	private static final char PINKY_ST = 'p';
+	private static final char CLYDE_HOME = 'C';
+	private static final char CLYDE_ST = 'c';
+	private static final char ENDMARKER = ')';
 
 	private final String[] map;
 	private final GridGraph<Character, Integer> graph;
@@ -54,6 +58,10 @@ public class Maze {
 	private Tile pinkyHome;
 	private Tile inkyHome;
 	private Tile clydeHome;
+	private Tile blinkyScatteringTarget;
+	private Tile pinkyScatteringTarget;
+	private Tile inkyScatteringTarget;
+	private Tile clydeScatteringTarget;
 	private Tile bonusTile;
 	private int tunnelRow;
 	private int foodTotal;
@@ -64,18 +72,27 @@ public class Maze {
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
 				char c = map(row, col);
-				if (c == POS_BLINKY) {
-					blinkyHome = new Tile(col, row);
-				} else if (c == POS_PINKY) {
-					pinkyHome = new Tile(col, row);
-				} else if (c == POS_INKY) {
-					inkyHome = new Tile(col, row);
-				} else if (c == POS_CLYDE) {
-					clydeHome = new Tile(col, row);
-				} else if (c == POS_BONUS) {
-					bonusTile = new Tile(col, row);
-				} else if (c == POS_PACMAN) {
-					pacManHome = new Tile(col, row);
+				Tile tile = new Tile(col, row);
+				if (c == BLINKY_HOME) {
+					blinkyHome = tile;
+				} else if (c == PINKY_HOME) {
+					pinkyHome = tile;
+				} else if (c == INKY_HOME) {
+					inkyHome = tile;
+				} else if (c == CLYDE_HOME) {
+					clydeHome = tile;
+				} else if (c == BONUS) {
+					bonusTile = tile;
+				} else if (c == PACMAN_HOME) {
+					pacManHome = tile;
+				} else if (c == BLINKY_ST) {
+					blinkyScatteringTarget = tile;
+				} else if (c == PINKY_ST) {
+					pinkyScatteringTarget = tile;
+				} else if (c == INKY_ST) {
+					inkyScatteringTarget = tile;
+				} else if (c == CLYDE_ST) {
+					clydeScatteringTarget = tile;
 				} else if (c == TUNNEL) {
 					tunnelRow = row;
 				} else if (c == PELLET || c == ENERGIZER) {
@@ -84,13 +101,19 @@ public class Maze {
 			}
 		}
 		graph = new GridGraph<>(numCols, numRows, NESW, v -> null, (u, v) -> 1, UndirectedEdge::new);
-		graph.setDefaultVertexLabel(v -> map(graph.row(v), graph.col(v)));
+		graph.setDefaultVertexLabel(v ->
+
+		map(graph.row(v), graph.col(v)));
 		graph.fill();
 		// remove all edges into walls
 		graph.edges().filter(edge -> {
+
 			int u = edge.either(), v = edge.other();
-			return map(graph.row(u), graph.col(u)) == WALL || map(graph.row(v), graph.col(v)) == WALL;
+			return
+
+			map(graph.row(u), graph.col(u)) == WALL || map(graph.row(v), graph.col(v)) == WALL;
 		}).forEach(graph::removeEdge);
+
 	}
 
 	private char map(int row, int col) {
@@ -135,6 +158,22 @@ public class Maze {
 
 	public Tile getBottomRightCorner() {
 		return new Tile(numCols() - 2, numRows() - 4);
+	}
+
+	public Tile getBlinkyScatteringTarget() {
+		return blinkyScatteringTarget;
+	}
+
+	public Tile getPinkyScatteringTarget() {
+		return pinkyScatteringTarget;
+	}
+
+	public Tile getInkyScatteringTarget() {
+		return inkyScatteringTarget;
+	}
+
+	public Tile getClydeScatteringTarget() {
+		return clydeScatteringTarget;
 	}
 
 	public Tile getPacManHome() {
@@ -199,7 +238,7 @@ public class Maze {
 		}
 		int leftNb = graph.neighbor(cell, Top4.W).getAsInt();
 		int rightNb = graph.neighbor(cell, Top4.E).getAsInt();
-		if (rightNb == cell(pacManHome) || rightNb == cell(blinkyHome) || graph.get(leftNb) == POS_ENDMARKER) {
+		if (rightNb == cell(pacManHome) || rightNb == cell(blinkyHome) || graph.get(leftNb) == ENDMARKER) {
 			return false;
 		}
 		return true;

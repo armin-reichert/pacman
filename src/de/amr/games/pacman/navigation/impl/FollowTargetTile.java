@@ -2,6 +2,7 @@ package de.amr.games.pacman.navigation.impl;
 
 import static de.amr.games.pacman.model.Maze.NESW;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Supplier;
@@ -47,8 +48,9 @@ public class FollowTargetTile implements Navigation {
 	@Override
 	public MazeRoute computeRoute(MazeMover follower) {
 
-		// compute target tile
 		Tile targetTile = targetTileSupplier.get();
+		Objects.requireNonNull(targetTile, "Target tile may not be NULL");
+		
 		if (maze.inTeleportSpace(targetTile)) {
 			int col = targetTile.col > maze.numCols() - 1 ? maze.numCols() - 1 : 0;
 			targetTile = new Tile(col, maze.getTunnelRow());

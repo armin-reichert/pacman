@@ -58,7 +58,7 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 		createSprites(color);
 	}
 
-	private void initGhost() {
+	public void initGhost() {
 		placeAtTile(home, TS / 2, 0);
 		setCurrentDir(initialDir);
 		setNextDir(initialDir);
