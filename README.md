@@ -285,8 +285,9 @@ The navigation behavior of the actors is implemented modularly (*strategy patter
 Blinky's navigation behaviour is defined as follows:
 ```java
 Ghost ghost = new Ghost(GhostName.Blinky, pacMan, game, home, Top4.E, GhostColor.RED);
-ghost.setNavigation(GhostState.AGGRO, chase(pacMan));
-ghost.setNavigation(GhostState.AFRAID, flee(pacMan));
+ghost.setNavigation(GhostState.AGGRO, followTargetTile(game.getMaze(), () -> pacMan.getTile()));
+ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
+ghost.setNavigation(GhostState.SCATTERING, followTargetTile(game.getMaze(), () -> game.getMaze().getBlinkyScatteringTarget()));
 ghost.setNavigation(GhostState.DEAD, go(home));
 ghost.setNavigation(GhostState.SAFE, bounce());
 ```
