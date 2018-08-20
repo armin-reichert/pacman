@@ -125,8 +125,10 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 				align();
 			}
 			setCurrentDir(getNextDir());
-		} 
-		super.move();
+		}
+		if (canMove(getCurrentDir())) {
+			super.move();
+		}
 		int dir = supplyIntendedDir();
 		if (dir != -1) {
 			setNextDir(dir);

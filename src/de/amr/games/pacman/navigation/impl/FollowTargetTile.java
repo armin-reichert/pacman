@@ -48,7 +48,7 @@ public class FollowTargetTile implements Navigation {
 
 		Tile targetTile = targetTileSupplier.get();
 		Objects.requireNonNull(targetTile, "Target tile may not be NULL");
-		
+
 		if (maze.inTeleportSpace(targetTile)) {
 			int col = targetTile.col > maze.numCols() - 1 ? maze.numCols() - 1 : 0;
 			targetTile = new Tile(col, maze.getTunnelRow());
@@ -58,7 +58,6 @@ public class FollowTargetTile implements Navigation {
 		Tile currentTile = follower.getTile();
 
 		MazeRoute route = new MazeRoute();
-		route.dir = -1;
 		route.targetTile = targetTile;
 
 		if (follower.inTunnel() || follower.inTeleportSpace()) {
@@ -67,20 +66,8 @@ public class FollowTargetTile implements Navigation {
 		}
 
 		if (follower.inGhostHouse()) {
-			Optional<Integer> dir = findBestDir(follower, maze.getBlinkyHome(), currentTile, currentDir);
-			if (dir.isPresent()) {
-				route.dir = dir.get();
-			}
+			route.dir = findBestDir(follower, maze.getBlinkyHome(), currentTile, currentDir).get();
 			return route;
-		}
-
-		Tile nextTile = maze.neighborTile(currentTile, currentDir).get();
-		if (maze.isIntersection(nextTile)) {
-			Optional<Integer> dir = findBestDir(follower, targetTile, nextTile, currentDir);
-			if (dir.isPresent()) {
-				route.dir = dir.get();
-				return route;
-			}
 		}
 
 		if (!follower.canMove(currentDir)) {
@@ -96,6 +83,13 @@ public class FollowTargetTile implements Navigation {
 			}
 		}
 
+		Tile nextTile = maze.neighborTile(currentTile, currentDir).get();
+		if (maze.isIntersection(nextTile)) {
+			route.dir = findBestDir(follower, targetTile, nextTile, currentDir).get();
+			return route;
+		}
+
+		route.dir = -1;
 		return route;
 	}
 

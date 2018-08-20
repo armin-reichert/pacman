@@ -150,7 +150,6 @@ public class GamePanel implements PacManGameUI {
 
 	private void drawInfoText(Graphics2D g) {
 		Graphics2D g2 = (Graphics2D) g.create();
-		g2.translate(mazePanel.tf.getX(), mazePanel.tf.getY());
 		g2.setFont(Assets.font("scoreFont"));
 		g2.setColor(infoTextColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(infoText, g2).getBounds();
