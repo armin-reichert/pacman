@@ -44,7 +44,6 @@ public class ScatteringTestView implements Controller {
 	public void update() {
 		gamePanel.update();
 		actors.getActiveGhosts().forEach(Ghost::update);
-		actors.getPacMan().update();
 	}
 
 	@Override
