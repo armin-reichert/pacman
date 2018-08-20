@@ -58,6 +58,14 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 		createSprites(color);
 	}
 
+	private void initGhost() {
+		placeAtTile(home, TS / 2, 0);
+		setCurrentDir(initialDir);
+		setNextDir(initialDir);
+		getSprites().forEach(Sprite::resetAnimation);
+		sprite = s_color[initialDir];
+	}
+
 	// Navigation
 
 	public void setNavigation(GhostState state, Navigation navigation) {
@@ -135,14 +143,6 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 	@Override
 	public StateMachine<GhostState, GameEvent> getStateMachine() {
 		return controller;
-	}
-
-	private void initGhost() {
-		placeAtTile(home, TS / 2, 0);
-		setCurrentDir(initialDir);
-		setNextDir(initialDir);
-		getSprites().forEach(Sprite::resetAnimation);
-		sprite = s_color[initialDir];
 	}
 
 	public void traceTo(Logger logger) {
