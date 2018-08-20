@@ -1,9 +1,9 @@
 package de.amr.games.pacman.actor.game;
 
-import static de.amr.games.pacman.actor.game.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.game.GhostState.AGGRO;
 import static de.amr.games.pacman.actor.game.GhostState.DEAD;
 import static de.amr.games.pacman.actor.game.GhostState.DYING;
+import static de.amr.games.pacman.actor.game.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.game.GhostState.HOME;
 import static de.amr.games.pacman.actor.game.GhostState.SAFE;
 import static de.amr.games.pacman.actor.game.GhostState.SCATTERING;
@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.actor.core.MazeMover;
+import de.amr.games.pacman.actor.core.StateMachineControlled;
 import de.amr.games.pacman.controller.event.game.GameEvent;
 import de.amr.games.pacman.controller.event.game.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.game.PacManGainsPowerEvent;
@@ -30,14 +31,13 @@ import de.amr.games.pacman.navigation.Navigation;
 import de.amr.games.pacman.navigation.impl.NavigationSystem;
 import de.amr.games.pacman.view.PacManSprites.GhostColor;
 import de.amr.statemachine.StateMachine;
-import de.amr.statemachine.StateObject;
 
 /**
- * A ghost.
+ * shost.
  * 
  * @author Armin Reichert
  */
-public class Ghost extends MazeMover {
+public class Ghost extends MazeMover implements StateMachineControlled<GhostState, GameEvent> {
 
 	private final StateMachine<GhostState, GameEvent> controller;
 	private final Map<GhostState, Navigation> navigationMap;
@@ -47,7 +47,8 @@ public class Ghost extends MazeMover {
 	private final Tile home;
 	private final int initialDir;
 
-	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, int initialDir, GhostColor color) {
+	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, int initialDir,
+			GhostColor color) {
 		this.name = name;
 		this.pacMan = pacMan;
 		this.game = game;
@@ -121,8 +122,8 @@ public class Ghost extends MazeMover {
 
 	@Override
 	public Stream<Sprite> getSprites() {
-		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes), Stream.of(s_frightened, s_flashing))
-				.flatMap(s -> s);
+		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes),
+				Stream.of(s_frightened, s_flashing)).flatMap(s -> s);
 	}
 
 	@Override
@@ -132,41 +133,17 @@ public class Ghost extends MazeMover {
 
 	// State machine
 
+	@Override
+	public StateMachine<GhostState, GameEvent> getStateMachine() {
+		return controller;
+	}
+
 	private void initGhost() {
 		placeAtTile(home, TS / 2, 0);
 		setCurrentDir(initialDir);
 		setNextDir(initialDir);
 		getSprites().forEach(Sprite::resetAnimation);
 		sprite = s_color[initialDir];
-	}
-
-	@Override
-	public void init() {
-		controller.init();
-	}
-
-	@Override
-	public void update() {
-		controller.update();
-	}
-
-	public GhostState getState() {
-		return controller.currentState();
-	}
-	
-	/**
-	 * Use this only for testing.
-	 */
-	public void setState(GhostState state) {
-		controller.setState(state);
-	}
-
-	public StateObject<GhostState, GameEvent> getStateObject() {
-		return controller.currentStateObject();
-	}
-
-	public void processEvent(GameEvent e) {
-		controller.process(e);
 	}
 
 	public void traceTo(Logger logger) {
