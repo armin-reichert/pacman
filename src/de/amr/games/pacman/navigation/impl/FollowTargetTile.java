@@ -32,8 +32,6 @@ import de.amr.games.pacman.navigation.Navigation;
  * direction and move back to the left. The implication of this restriction is that whenever a ghost
  * enters a tile with only two exits, it will always continue in the same direction. </cite>
  * </p>
- * 
- * TODO: does not yet work 100% correctly, ghost in some cases still reverses direction
  */
 public class FollowTargetTile implements Navigation {
 
