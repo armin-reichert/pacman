@@ -33,7 +33,7 @@ import de.amr.games.pacman.view.PacManSprites.GhostColor;
 import de.amr.statemachine.StateMachine;
 
 /**
- * shost.
+ * A ghost.
  * 
  * @author Armin Reichert
  */
