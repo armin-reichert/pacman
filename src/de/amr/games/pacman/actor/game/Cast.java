@@ -41,7 +41,7 @@ public class Cast implements PacManWorld {
 
 	private static Ghost createBlinky(Game game, PacMan pacMan, Tile home) {
 		Ghost ghost = new Ghost(GhostName.Blinky, pacMan, game, home, Top4.E, GhostColor.RED);
-		ghost.setNavigation(GhostState.AGGRO, followTargetTile(() -> pacMan.getTile()));
+		ghost.setNavigation(GhostState.AGGRO, followTargetTile(game.getMaze(), () -> pacMan.getTile()));
 		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());
@@ -59,7 +59,7 @@ public class Cast implements PacManWorld {
 
 	private static Ghost createInky(Game game, PacMan pacMan, Tile home) {
 		Ghost ghost = new Ghost(GhostName.Inky, pacMan, game, home, Top4.N, GhostColor.TURQUOISE);
-		ghost.setNavigation(GhostState.AGGRO, followTargetTile(() -> pacMan.getTile())); // TODO
+		ghost.setNavigation(GhostState.AGGRO, followTargetTile(game.getMaze(), () -> pacMan.getTile())); // TODO
 		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());

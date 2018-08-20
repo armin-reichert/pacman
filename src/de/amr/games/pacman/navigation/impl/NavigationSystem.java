@@ -3,6 +3,7 @@ package de.amr.games.pacman.navigation.impl;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.core.MazeMover;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.Navigation;
 
@@ -28,8 +29,8 @@ public interface NavigationSystem {
 		return new FollowKeyboard(nesw);
 	}
 
-	public static Navigation followTargetTile(Supplier<Tile> targetTileSupplier) {
-		return new FollowTargetTile(targetTileSupplier);
+	public static Navigation followTargetTile(Maze maze, Supplier<Tile> targetTileSupplier) {
+		return new FollowTargetTile(maze, targetTileSupplier);
 	}
 
 	public static Navigation forward() {

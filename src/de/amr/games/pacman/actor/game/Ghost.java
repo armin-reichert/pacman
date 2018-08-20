@@ -86,6 +86,21 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 		return getState() == GhostState.DEAD || getTile().row >= door.row;
 	}
 
+	@Override
+	public void move() {
+		if (canMove(getNextDir())) {
+			if (isTurn(getCurrentDir(), getNextDir())) {
+				align();
+			}
+			setCurrentDir(getNextDir());
+		}
+		super.move();
+		int dir = supplyIntendedDir();
+		if (dir != -1) {
+			setNextDir(dir);
+		}
+	}
+
 	// Accessors
 
 	@Override

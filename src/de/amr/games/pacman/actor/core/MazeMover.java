@@ -6,6 +6,7 @@ import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static java.lang.Math.round;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.Maze;
@@ -42,10 +43,13 @@ public abstract class MazeMover extends TileWorldEntity {
 	}
 
 	public void setNextDir(int dir) {
-		this.nextDir = dir;
+		if (dir != nextDir) {
+			nextDir = dir;
+			Application.LOGGER.info("Next dir set to: " + dir);
+		}
 	}
 
-	private boolean isTurn(int currentDir, int nextDir) {
+	public boolean isTurn(int currentDir, int nextDir) {
 		return nextDir == NESW.left(currentDir) || nextDir == NESW.right(currentDir);
 	}
 
@@ -61,38 +65,67 @@ public abstract class MazeMover extends TileWorldEntity {
 		return getMaze().inGhostHouse(getTile());
 	}
 
-	public boolean canMove(int dir) {
-		if (inTeleportSpace()) {
-			return dir == currentDir || dir == NESW.inv(currentDir);
+	public void move() {
+		if (canMove(currentDir)) {
+			tf.setVelocity(velocity(currentDir));
+			tf.move();
+			teleportIfPossible();
 		}
-		Tile next = computeTileAfterMove(dir);
-		if (getMaze().isWall(next)) {
-			return false;
-		}
-		if (getMaze().isDoor(next)) {
-			return canEnterDoor(next);
-		}
-		if (isTurn(currentDir, dir)) {
-			// TODO this is somewhat dubios but seems to work
-			return dir == Top4.N || dir == Top4.S ? getAlignmentX() <= 1 : getAlignmentY() <= 1;
-		}
-		return true;
 	}
 
-	public void move() {
-		nextDir = supplyIntendedDir();
-		if (canMove(nextDir)) {
-			if (isTurn(currentDir, nextDir)) {
-				align();
-			}
-			currentDir = nextDir;
+	public boolean canMove(int dir) {
+		Vector2f v = velocity(dir);
+		switch (dir) {
+		case Top4.E:
+			return canMoveRight(v);
+		case Top4.W:
+			return canMoveLeft(v);
+		case Top4.N:
+			return canMoveUp(v);
+		case Top4.S:
+			return canMoveDown(v);
 		}
-		if (canMove(currentDir)) {
-			tf.moveTo(positionAfterMove(currentDir));
-			teleportIfPossible();
-		} else {
-			align();
-		}
+		throw new IllegalArgumentException("Illegal direction: " + dir);
+	}
+
+	public boolean canEnterTile(Tile tile) {
+		return !getMaze().isWall(tile) || (getMaze().isDoor(tile) && canEnterDoor(tile));
+	}
+
+	private boolean canMoveRight(Vector2f v) {
+		int col = Math.round(tf.getX() + getWidth() / 2) / TS;
+		int row = Math.round(tf.getY() + getHeight() / 2) / TS;
+		int newCol = Math.round(tf.getX() + getWidth()) / TS;
+		return newCol == col || canEnterTile(new Tile(newCol, row));
+	}
+
+	private boolean canMoveLeft(Vector2f v) {
+		int col = Math.round(tf.getX()) / TS;
+		int row = Math.round(tf.getY() + getHeight() / 2) / TS;
+		int newCol = Math.round(tf.getX() + v.x) / TS;
+		return newCol == col || canEnterTile(new Tile(newCol, row));
+	}
+
+	private boolean canMoveUp(Vector2f v) {
+		int col = Math.round(tf.getX() + getWidth() / 2) / TS;
+		int row = Math.round(tf.getY() + getHeight() / 2) / TS;
+		int newRow = Math.round(tf.getY() + v.y) / TS;
+		return newRow == row || canEnterTile(new Tile(col, newRow));
+	}
+
+	private boolean canMoveDown(Vector2f v) {
+		int col = Math.round(tf.getX() + getWidth() / 2) / TS;
+		int row = Math.round(tf.getY() + getHeight() / 2) / TS;
+		int newRow = Math.round(tf.getY() + getHeight()) / TS;
+		return newRow == row || canEnterTile(new Tile(col, newRow));
+	}
+
+	public Vector2f positionAfterMove(int dir) {
+		return sum(tf.getPosition(), velocity(dir));
+	}
+
+	private Vector2f velocity(int dir) {
+		return smul(getSpeed(), Vector2f.of(NESW.dx(dir), NESW.dy(dir)));
 	}
 
 	/**
@@ -118,7 +151,7 @@ public abstract class MazeMover extends TileWorldEntity {
 	 *              move direction
 	 * @return the tile after a move in that direction
 	 */
-	public Tile computeTileAfterMove(int dir) {
+	public Tile tileAfterMove(int dir) {
 		Tile current = getTile();
 		Vector2f pos = positionAfterMove(dir);
 		switch (dir) {
@@ -132,9 +165,5 @@ public abstract class MazeMover extends TileWorldEntity {
 			return new Tile(current.col, round(pos.y + getHeight()) / TS);
 		}
 		throw new IllegalArgumentException("Illegal direction: " + dir);
-	}
-
-	public Vector2f positionAfterMove(int dir) {
-		return sum(tf.getPosition(), smul(getSpeed(), Vector2f.of(NESW.dx(dir), NESW.dy(dir))));
 	}
 }

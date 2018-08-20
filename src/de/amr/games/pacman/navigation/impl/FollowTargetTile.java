@@ -3,9 +3,9 @@ package de.amr.games.pacman.navigation.impl;
 import static de.amr.games.pacman.model.Maze.NESW;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.function.Supplier;
 
-import de.amr.easy.game.Application;
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
@@ -36,70 +36,82 @@ import de.amr.games.pacman.navigation.Navigation;
  */
 public class FollowTargetTile implements Navigation {
 
-	private Supplier<Tile> targetTileSupplier;
+	private final Maze maze;
+	private final Supplier<Tile> targetTileSupplier;
 
-	public FollowTargetTile(Supplier<Tile> targetTileSupplier) {
+	public FollowTargetTile(Maze maze, Supplier<Tile> targetTileSupplier) {
+		this.maze = maze;
 		this.targetTileSupplier = targetTileSupplier;
 	}
 
 	@Override
 	public MazeRoute computeRoute(MazeMover follower) {
-		Maze maze = follower.getMaze();
 
 		// compute target tile
 		Tile targetTile = targetTileSupplier.get();
 		if (maze.inTeleportSpace(targetTile)) {
-			int entry = targetTile.col > maze.numCols() - 1 ? maze.numCols() - 1 : 0;
-			targetTile = new Tile(entry, maze.getTunnelRow());
+			int col = targetTile.col > maze.numCols() - 1 ? maze.numCols() - 1 : 0;
+			targetTile = new Tile(col, maze.getTunnelRow());
 		}
 
 		int currentDir = follower.getCurrentDir();
 		Tile currentTile = follower.getTile();
 
 		MazeRoute route = new MazeRoute();
-		route.dir = currentDir; // default: keep current move direction
+		route.dir = -1;
 		route.targetTile = targetTile;
 
 		if (follower.inTunnel() || follower.inTeleportSpace()) {
+			route.dir = currentDir;
 			return route;
 		}
 
 		if (follower.inGhostHouse()) {
-			selectTileClosestTo(maze.getBlinkyHome(), follower, true).ifPresent(tile -> {
-				int dir = maze.direction(currentTile, tile).getAsInt();
-				route.dir = dir;
-				Application.LOGGER.info(String.format("Current tile: %s, dir:%d", currentTile, currentDir));
-				Application.LOGGER.info(String.format("Next tile:    %s, dir:%d", tile, route.dir));
-			});
+			Optional<Integer> dir = findBestDir(follower, maze.getBlinkyHome(), currentTile, currentDir);
+			if (dir.isPresent()) {
+				route.dir = dir.get();
+			}
 			return route;
 		}
 
-		if (maze.isIntersection(currentTile) || !follower.canMove(currentDir)) {
-			selectTileClosestTo(targetTile, follower, false).ifPresent(tile -> {
-				int dir = maze.direction(currentTile, tile).getAsInt();
-				route.dir = dir;
-				Application.LOGGER.info(String.format("Current tile: %s, dir:%d", currentTile, currentDir));
-				Application.LOGGER.info(String.format("Next tile:    %s, dir:%d", tile, route.dir));
-			});
+		Tile nextTile = maze.neighborTile(currentTile, currentDir).get();
+		if (maze.isIntersection(nextTile)) {
+			Optional<Integer> dir = findBestDir(follower, targetTile, nextTile, currentDir);
+			if (dir.isPresent()) {
+				route.dir = dir.get();
+				return route;
+			}
+		}
+
+		if (!follower.canMove(currentDir)) {
+			int toLeft = NESW.left(currentDir);
+			if (follower.canEnterTile(maze.neighborTile(currentTile, toLeft).get())) {
+				route.dir = toLeft;
+				return route;
+			}
+			int toRight = NESW.right(currentDir);
+			if (follower.canEnterTile(maze.neighborTile(currentTile, toRight).get())) {
+				route.dir = toRight;
+				return route;
+			}
 		}
 
 		return route;
 	}
 
-	private Optional<Tile> selectTileClosestTo(Tile targetTile, MazeMover follower, boolean doorOpen) {
-		Maze maze = follower.getMaze();
-		Tile currentTile = follower.getTile();
-		int currentDir = follower.getCurrentDir();
+	private Optional<Integer> findBestDir(MazeMover mover, Tile targetTile, Tile from, int currentDir) {
 		return NESW.dirs().boxed()
 		/*@formatter:off*/
 			.filter(dir -> dir != NESW.inv(currentDir))
-			.map(dir -> maze.neighborTile(currentTile, dir))
+			.map(dir -> maze.neighborTile(from, dir))
 			.filter(Optional::isPresent)
 			.map(Optional::get)
-			.filter(tile -> !maze.isWall(tile))
-			.filter(tile -> !maze.isDoor(tile) || doorOpen)
+			.filter(mover::canEnterTile)
 			.sorted((t1, t2) -> Integer.compare(maze.euclidean2(t1, targetTile), maze.euclidean2(t2, targetTile)))
-			.findFirst();
+			.map(tile -> maze.direction(from, tile))
+			.map(OptionalInt::getAsInt)
+			.findFirst()
+			;
 		/*@formatter:on*/
 	}
 }

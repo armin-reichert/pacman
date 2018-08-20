@@ -4,6 +4,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
+import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.game.Cast;
 import de.amr.games.pacman.actor.game.GhostState;
 import de.amr.games.pacman.model.Game;
@@ -27,17 +28,26 @@ public class ScatteringTestView implements Controller {
 
 	@Override
 	public void init() {
+		Application.PULSE.setFrequency(10);
 		game.init();
 		Tile scatteringTarget = new Tile(2, 0);
-		actors.getPinky().setNavigation(GhostState.SCATTERING, NavigationSystem.followTargetTile(() -> scatteringTarget));
+		actors.getPinky().setNavigation(GhostState.SCATTERING,
+				NavigationSystem.followTargetTile(game.getMaze(), () -> scatteringTarget));
 		actors.getPinky().init();
+		actors.getPinky().placeAtTile(game.getMaze().getBlinkyHome(), Game.TS/2, 0);
+		actors.getPinky().setCurrentDir(Top4.E);
+		actors.getPinky().setNextDir(Top4.E);
 		actors.getPinky().setState(GhostState.SCATTERING);
+		actors.getPacMan().init();
+		actors.getPacMan().setEventsEnabled(false);
+		actors.getPacMan().setCurrentDir(Top4.E);
 	}
 
 	@Override
 	public void update() {
 		gamePanel.update();
 		actors.getPinky().update();
+		actors.getPacMan().update();
 	}
 
 	@Override

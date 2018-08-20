@@ -36,7 +36,7 @@ class FollowKeyboard implements Navigation {
 		} else if (Keyboard.keyDown(keyW)) {
 			result.dir = Top4.W;
 		} else {
-			result.dir = mover.getNextDir();
+			result.dir = -1;
 		}
 		return result;
 	}
