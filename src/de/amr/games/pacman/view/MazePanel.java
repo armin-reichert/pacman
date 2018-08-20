@@ -83,7 +83,6 @@ public class MazePanel extends GameEntity {
 		if (flashing) {
 			g.translate(tf.getX(), tf.getY());
 			s_maze_flashing.draw(g);
-			actors.getPacMan().draw(g);
 			g.translate(-tf.getX(), -tf.getY());
 		} else {
 			g.translate(tf.getX(), tf.getY());

@@ -90,20 +90,30 @@ public class GamePanel implements PacManGameUI {
 
 	@Override
 	public void draw(Graphics2D g) {
+
+		// Score
+		int score = game.score.getScore();
 		g.setFont(Assets.font("scoreFont"));
-		// Scores
-		g.setColor(Color.WHITE);
+		g.setColor(Color.YELLOW);
 		g.drawString("SCORE", TS, TS);
-		g.drawString(String.format("%-6d", game.score.getScore()), TS, TS * 2);
+		g.setColor(Color.WHITE);
+		g.drawString(String.format("%07d", score), TS, 2 * TS);
 		g.drawString(String.format("LEVEL %2d", game.getLevel()), 22 * TS, TS);
+
+		// Highscore
+		g.setColor(Color.YELLOW);
 		g.drawString("HIGH", 10 * TS, TS);
 		g.drawString("SCORE", 14 * TS, TS);
-		g.drawString(String.format("%-6d", game.score.getHiscore()), 10 * TS, TS * 2);
-		g.setColor(Color.YELLOW);
-		g.drawString(String.format("L%d", game.score.getHiscoreLevel()), 16 * TS, TS * 2);
 		g.setColor(Color.WHITE);
-		g.drawString(String.format("%d", game.getEaten()), 22 * TS, TS * 2);
-		
+		g.drawString(String.format("%07d", game.score.getHiscore()), 10 * TS, 2 * TS);
+		g.drawString(String.format("L%d", game.score.getHiscoreLevel()), 16 * TS, 2 * TS);
+
+		// Food remaining
+		g.setColor(Color.PINK);
+		g.fillRect(22 * TS + 2, TS + 2, 4, 4);
+		g.setColor(Color.WHITE);
+		g.drawString(String.format("%d", game.getFoodRemaining()), 23 * TS, 2 * TS);
+
 		// Lives
 		g.translate(0, getHeight() - 2 * TS);
 		for (int i = 0; i < game.getLives(); ++i) {
@@ -111,6 +121,7 @@ public class GamePanel implements PacManGameUI {
 			g.drawImage(lifeImage, 0, 0, null);
 			g.translate((i - 2) * lifeImage.getWidth(null), 0);
 		}
+
 		// Level counter
 		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
 			g.translate(getWidth() - (n - i) * 2 * TS, 0);
@@ -118,16 +129,15 @@ public class GamePanel implements PacManGameUI {
 			g.translate(-getWidth() + (n - i) * 2 * TS, 0);
 		}
 		g.translate(0, -getHeight() + 2 * TS);
-		// Maze
+
 		mazePanel.draw(g);
-		// Actors
 		drawActors(g);
-		// Info text
+
 		if (infoText != null) {
 			drawInfoText(g);
 		}
 	}
-	
+
 	private void drawActors(Graphics2D g) {
 		actors.getBonus().ifPresent(bonus -> {
 			bonus.placeAtTile(game.getMaze().getBonusTile(), TS / 2, 0);

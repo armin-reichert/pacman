@@ -75,10 +75,10 @@ public class GameController implements Controller {
 		LOGGER.setLevel(Level.INFO);
 		actors.getPacMan().traceTo(LOGGER);
 		actors.getGhosts().forEach(ghost -> ghost.traceTo(LOGGER));
-		 actors.setActive(actors.getBlinky(), false);
-		 actors.setActive(actors.getPinky(), false);
-//		actors.setActive(actors.getInky(), false);
-		 actors.setActive(actors.getClyde(), false);
+		actors.setActive(actors.getBlinky(), false);
+		actors.setActive(actors.getPinky(), false);
+		// actors.setActive(actors.getInky(), false);
+		actors.setActive(actors.getClyde(), false);
 		gameControl.traceTo(LOGGER, game.fnTicksPerSec);
 		gameControl.init();
 	}
@@ -295,6 +295,7 @@ public class GameController implements Controller {
 		@Override
 		public void onEntry() {
 			actors.getPacMan().setFullSprite();
+			actors.getActiveGhosts().forEach(ghost -> ghost.visibility = () -> false);
 			gameView.setMazeFlashing(true);
 		}
 
@@ -304,6 +305,7 @@ public class GameController implements Controller {
 			if (timeForChange) {
 				game.nextLevel();
 				actors.init();
+				actors.getActiveGhosts().forEach(ghost -> ghost.visibility = () -> true);
 				gameView.showInfo("Ready!", Color.YELLOW);
 				gameView.setMazeFlashing(false);
 				gameView.enableAnimation(false);

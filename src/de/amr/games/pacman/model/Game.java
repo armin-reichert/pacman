@@ -117,8 +117,8 @@ public class Game {
 		return eaten == maze.getFoodTotal();
 	}
 	
-	public int getEaten() {
-		return eaten;
+	public int getFoodRemaining() {
+		return maze.getFoodTotal() - eaten;
 	}
 
 	public int getDigestionTicks(boolean energizer) {
