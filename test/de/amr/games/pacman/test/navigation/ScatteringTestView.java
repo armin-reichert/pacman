@@ -4,7 +4,6 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
-import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.game.Cast;
 import de.amr.games.pacman.actor.game.Ghost;
 import de.amr.games.pacman.actor.game.GhostState;
@@ -29,15 +28,12 @@ public class ScatteringTestView implements Controller {
 	public void init() {
 		Application.PULSE.setFrequency(60);
 		game.init();
-
+		actors.getPacMan().initPacMan();
+		actors.getPacMan().setEventsEnabled(false);
 		actors.getActiveGhosts().forEach(ghost -> {
 			ghost.initGhost();
 			ghost.setState(GhostState.SCATTERING);
 		});
-
-		actors.getPacMan().init();
-		actors.getPacMan().setEventsEnabled(false);
-		actors.getPacMan().setCurrentDir(Top4.E);
 	}
 
 	@Override

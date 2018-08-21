@@ -5,8 +5,8 @@ import static de.amr.games.pacman.navigation.impl.NavigationSystem.bounce;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.chase;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.flee;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.followKeyboard;
-import static de.amr.games.pacman.navigation.impl.NavigationSystem.followTargetTile;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.go;
+import static de.amr.games.pacman.navigation.impl.NavigationSystem.scatter;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -44,8 +44,7 @@ public class Cast implements PacManWorld {
 		Ghost ghost = new Ghost(GhostName.Blinky, pacMan, game, home, Top4.E, GhostColor.RED);
 		ghost.setNavigation(GhostState.AGGRO, chase(pacMan));
 		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
-		ghost.setNavigation(GhostState.SCATTERING,
-				followTargetTile(game.getMaze(), () -> game.getMaze().getBlinkyScatteringTarget()));
+		ghost.setNavigation(GhostState.SCATTERING, scatter(game.getMaze(), GhostName.Blinky));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;
@@ -55,8 +54,7 @@ public class Cast implements PacManWorld {
 		Ghost ghost = new Ghost(GhostName.Pinky, pacMan, game, home, Top4.S, GhostColor.PINK);
 		ghost.setNavigation(GhostState.AGGRO, ambush(pacMan));
 		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
-		ghost.setNavigation(GhostState.SCATTERING,
-				followTargetTile(game.getMaze(), () -> game.getMaze().getPinkyScatteringTarget()));
+		ghost.setNavigation(GhostState.SCATTERING, scatter(game.getMaze(), GhostName.Pinky));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;
@@ -66,8 +64,7 @@ public class Cast implements PacManWorld {
 		Ghost ghost = new Ghost(GhostName.Inky, pacMan, game, home, Top4.N, GhostColor.TURQUOISE);
 		ghost.setNavigation(GhostState.AGGRO, chase(pacMan)); // TODO
 		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
-		ghost.setNavigation(GhostState.SCATTERING,
-				followTargetTile(game.getMaze(), () -> game.getMaze().getInkyScatteringTarget()));
+		ghost.setNavigation(GhostState.SCATTERING, scatter(game.getMaze(), GhostName.Inky));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;
@@ -77,8 +74,7 @@ public class Cast implements PacManWorld {
 		Ghost ghost = new Ghost(GhostName.Clyde, pacMan, game, home, Top4.N, GhostColor.ORANGE);
 		ghost.setNavigation(GhostState.AGGRO, flee(pacMan)); // TODO
 		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
-		ghost.setNavigation(GhostState.SCATTERING,
-				followTargetTile(game.getMaze(), () -> game.getMaze().getClydeScatteringTarget()));
+		ghost.setNavigation(GhostState.SCATTERING, scatter(game.getMaze(), GhostName.Clyde));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;

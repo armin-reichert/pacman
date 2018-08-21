@@ -62,7 +62,7 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 		createSprites();
 	}
 
-	private void initPacMan() {
+	public void initPacMan() {
 		digestionTicks = 0;
 		placeAtTile(getHome(), TS / 2, 0);
 		setNextDir(Top4.E);

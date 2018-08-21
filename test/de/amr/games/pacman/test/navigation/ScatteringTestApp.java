@@ -12,7 +12,7 @@ public class ScatteringTestApp extends Application {
 	public ScatteringTestApp() {
 		settings.width = 28 * Game.TS;
 		settings.height = 36 * Game.TS;
-		settings.scale = 3;
+		settings.scale = 2;
 		settings.title = "Scattering";
 	}
 
@@ -20,5 +20,4 @@ public class ScatteringTestApp extends Application {
 	public void init() {
 		setController(new ScatteringTestView(settings.width, settings.height));
 	}
-
 }
