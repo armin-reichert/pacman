@@ -134,7 +134,7 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 			setNextDir(dir);
 		}
 		sprite = s_walking_to[getCurrentDir()];
-		sprite.enableAnimation(canMove(getCurrentDir()));
+		sprite.enableAnimation(!isStuck());
 	}
 
 	@Override

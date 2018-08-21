@@ -71,8 +71,8 @@ public abstract class MazeMover extends TileWorldEntity {
 		return true;
 	}
 
-	public boolean canMove() {
-		return canMove(currentDir);
+	public boolean isStuck() {
+		return !canMove(currentDir);
 	}
 
 	public boolean canMove(int dir) {

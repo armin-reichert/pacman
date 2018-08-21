@@ -89,7 +89,7 @@ public class FollowTargetTile implements Navigation {
 		}
 
 		// decide to turn left or right if stuck
-		if (!mover.canMove(currentDir)) {
+		if (mover.isStuck()) {
 			int toLeft = NESW.left(currentDir);
 			if (mover.canEnterTile(maze.neighborTile(currentTile, toLeft).get())) {
 				route.dir = toLeft;

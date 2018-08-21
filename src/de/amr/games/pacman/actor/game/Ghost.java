@@ -101,7 +101,7 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 			}
 			setCurrentDir(getNextDir());
 		}
-		if (canMove(getCurrentDir())) {
+		if (!isStuck()) {
 			super.move();
 		}
 		int dir = supplyIntendedDir();
