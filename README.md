@@ -1,6 +1,6 @@
 # An easily understandable Pac-Man implementation         
 
-(This is work in progress)
+(work in progress)
 
 <img src="doc/pacman.png"/>
 
@@ -288,14 +288,12 @@ Blinky's navigation behaviour is defined as follows:
 ```java
 ghost.setNavigation(GhostState.AGGRO, chase(pacMan));
 ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
-ghost.setNavigation(GhostState.SCATTERING,
-		followTargetTile(game.getMaze(), () -> game.getMaze().getBlinkyScatteringTarget()));
+ghost.setNavigation(GhostState.SCATTERING, scatter(game.getMaze(), GhostName.Blinky));
 ghost.setNavigation(GhostState.DEAD, go(home));
 ghost.setNavigation(GhostState.SAFE, bounce());
 ```
 
-There is a general *followTargetTile* behavior which is used by different special behaviors like *scattering*, *ambushing* or *chasing*.
-
+There is a general *followTargetTile* behavior which is used by different special behaviors like *scatter*, *ambush* or *chase*.
 
 To illustrate, this is the implementation of the *chase* behavior:
 
@@ -308,7 +306,7 @@ class Chase extends FollowTargetTile {
 }
 ```
 
-And this is *ambush*:
+This is *ambush*, Pinks's attack behavior:
 
 ```java
 class Ambush extends FollowTargetTile {
@@ -326,7 +324,34 @@ class Ambush extends FollowTargetTile {
 }
 ```
 
-The move behaviours are implemented as reusable classes with a common interface. Behaviours can compute shortest routes in the maze by a call to the method *Maze.findPath(Tile source, Tile target)*. This method runs an A* or BFS algorithm on the underlying grid graph (A* sounds cooler than BFS :-). A* is rather useless here because the maze is represented by a (grid) graph where the distance between two vertices (neighbor tiles) is always equal. Thus the Dijkstra or A* path finding algorithms will just degenerate to BFS (correct my if I'm wrong). Of course you could represent the graph differently, for example with vertices only for crossings and weighted edges for passages. In that case, Dijkstra or A* would be useful.
+And finally, this is *scatter* where each ghost cycles around the block in its scatter corner;
+
+
+```java
+public class Scatter extends FollowTargetTile {
+
+	public Scatter(Maze maze, GhostName ghostName) {
+		super(maze, () -> getScatteringTarget(maze, ghostName));
+	}
+
+	private static Tile getScatteringTarget(Maze maze, GhostName ghostName) {
+		switch (ghostName) {
+		case Blinky:
+			return maze.getBlinkyScatteringTarget();
+		case Clyde:
+			return maze.getClydeScatteringTarget();
+		case Inky:
+			return maze.getInkyScatteringTarget();
+		case Pinky:
+			return maze.getPinkyScatteringTarget();
+		}
+		throw new IllegalArgumentException("Illegal ghost name: " + ghostName);
+	}
+```
+
+The move behaviours are implemented as reusable classes with a common interface *Navigation*. For simulating the behavior of the original Pac-Man game no graph based path finding is needed but the *followTargetTile* behavior is use as a common base.
+
+Shortest routes in the maze graph could also be compututed using the method *Maze.findPath(Tile source, Tile target)*. This method runs an A* or BFS algorithm on the underlying grid graph (A* sounds cooler than BFS :-). A* is rather useless here because the maze is represented by a (grid) graph where the distance between two vertices (neighbor tiles) is always equal. Thus the Dijkstra or A* path finding algorithms will just degenerate to BFS (correct my if I'm wrong). Of course you could represent the graph differently, for example with vertices only for crossings and weighted edges for passages. In that case, Dijkstra or A* would be useful.
 
 ## Additional program features
 
