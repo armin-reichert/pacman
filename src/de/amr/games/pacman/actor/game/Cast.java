@@ -44,7 +44,7 @@ public class Cast implements PacManWorld {
 		Ghost ghost = new Ghost(GhostName.Blinky, pacMan, game, home, Top4.E, GhostColor.RED);
 		ghost.setNavigation(GhostState.AGGRO, chase(pacMan));
 		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
-		ghost.setNavigation(GhostState.SCATTERING, scatter(game.getMaze(), GhostName.Blinky));
+		ghost.setNavigation(GhostState.SCATTERING, scatter(game.getMaze(), ghost.getName()));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;
@@ -54,7 +54,7 @@ public class Cast implements PacManWorld {
 		Ghost ghost = new Ghost(GhostName.Pinky, pacMan, game, home, Top4.S, GhostColor.PINK);
 		ghost.setNavigation(GhostState.AGGRO, ambush(pacMan));
 		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
-		ghost.setNavigation(GhostState.SCATTERING, scatter(game.getMaze(), GhostName.Pinky));
+		ghost.setNavigation(GhostState.SCATTERING, scatter(game.getMaze(), ghost.getName()));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;
@@ -64,7 +64,7 @@ public class Cast implements PacManWorld {
 		Ghost ghost = new Ghost(GhostName.Inky, pacMan, game, home, Top4.N, GhostColor.TURQUOISE);
 		ghost.setNavigation(GhostState.AGGRO, chase(pacMan)); // TODO
 		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
-		ghost.setNavigation(GhostState.SCATTERING, scatter(game.getMaze(), GhostName.Inky));
+		ghost.setNavigation(GhostState.SCATTERING, scatter(game.getMaze(), ghost.getName()));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;
@@ -74,7 +74,7 @@ public class Cast implements PacManWorld {
 		Ghost ghost = new Ghost(GhostName.Clyde, pacMan, game, home, Top4.N, GhostColor.ORANGE);
 		ghost.setNavigation(GhostState.AGGRO, flee(pacMan)); // TODO
 		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
-		ghost.setNavigation(GhostState.SCATTERING, scatter(game.getMaze(), GhostName.Clyde));
+		ghost.setNavigation(GhostState.SCATTERING, scatter(game.getMaze(), ghost.getName()));
 		ghost.setNavigation(GhostState.DEAD, go(home));
 		ghost.setNavigation(GhostState.SAFE, bounce());
 		return ghost;
