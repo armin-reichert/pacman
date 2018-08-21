@@ -1,6 +1,7 @@
 package de.amr.games.pacman;
 
 import de.amr.easy.game.Application;
+import de.amr.easy.game.ui.FullScreen;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.model.Game;
 
@@ -28,6 +29,8 @@ public class PacManApp extends Application {
 		settings.height = 36 * Game.TS;
 		settings.scale = scale;
 		settings.title = "Armin's Pac-Man";
+		settings.fullScreenMode = FullScreen.Mode(800, 600, 32);
+		settings.fullScreenOnStart = false;
 	}
 
 	@Override
