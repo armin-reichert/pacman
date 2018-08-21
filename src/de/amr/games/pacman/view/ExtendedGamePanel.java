@@ -37,9 +37,9 @@ public class ExtendedGamePanel extends GamePanel {
 
 	private final BufferedImage gridImage;
 
-	private boolean showGrid = false;
-	private boolean showRoutes = false;
-	private boolean showStates = false;
+	public boolean showGrid = false;
+	public boolean showRoutes = false;
+	public boolean showStates = false;
 
 	private static BufferedImage createGridImage(int numRows, int numCols) {
 		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()

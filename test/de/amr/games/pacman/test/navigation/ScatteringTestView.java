@@ -22,6 +22,7 @@ public class ScatteringTestView implements Controller {
 		game = new Game(maze, Application.PULSE::getFrequency);
 		actors = new Cast(game);
 		gamePanel = new ExtendedGamePanel(width, height, game, actors);
+		gamePanel.showRoutes = true;
 	}
 
 	@Override
