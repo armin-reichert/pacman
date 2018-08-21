@@ -5,7 +5,7 @@ import de.amr.games.pacman.model.Tile;
 
 public class Scatter extends FollowTargetTile {
 
-	public Scatter(Maze maze, Tile targetTile) {
-		super(maze, () -> targetTile);
+	public Scatter(Maze maze, Tile scatteringTarget) {
+		super(maze, () -> scatteringTarget);
 	}
 }
