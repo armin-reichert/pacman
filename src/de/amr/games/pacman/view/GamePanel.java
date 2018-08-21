@@ -98,6 +98,7 @@ public class GamePanel implements PacManGameUI {
 		g.drawString("SCORE", TS, TS);
 		g.setColor(Color.WHITE);
 		g.drawString(String.format("%07d", score), TS, 2 * TS);
+		g.setColor(Color.YELLOW);
 		g.drawString(String.format("LEVEL %2d", game.getLevel()), 22 * TS, TS);
 
 		// Highscore
