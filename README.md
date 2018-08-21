@@ -332,8 +332,8 @@ And this is *scatter* where each ghost cycles around the block in its scattering
 ```java
 public class Scatter extends FollowTargetTile {
 
-	public Scatter(Maze maze, Tile targetTile) {
-		super(maze, () -> targetTile);
+	public Scatter(Maze maze, Tile scatteringTarget) {
+		super(maze, () -> scatteringTarget);
 	}
 }
 ```
