@@ -4,13 +4,16 @@ import java.util.function.IntSupplier;
 import java.util.logging.Logger;
 
 /**
+ * A tracer for the state machine operations.
  * 
  * @author Armin Reichert
  *
- * @param <S>
- *          state identifier type
+ * @param   <S>
+ *            state identifier type
+ * @param E
+ *            event type
  */
-public class StateMachineTracer<S> {
+public class StateMachineTracer<S, E> implements StateMachineListener<S, E> {
 
 	private final StateMachine<S, ?> sm;
 	private final Logger log;
@@ -22,19 +25,23 @@ public class StateMachineTracer<S> {
 		this.fnTicksPerSecond = fnTicksPerSecond;
 	}
 
+	@Override
 	public void stateCreated(S state) {
 		log.info(String.format("%s created state '%s'", sm.getDescription(), state));
 	}
 
-	public void unhandledEvent(Object event) {
+	@Override
+	public void unhandledEvent(E event) {
 		log.info(String.format("%s in state %s could not handle '%s'", sm.getDescription(),
 				sm.currentState(), event));
 	}
 
+	@Override
 	public void enteringInitialState(S initialState) {
 		log.info(String.format("%s entering initial state '%s'", sm.getDescription(), initialState));
 	}
 
+	@Override
 	public void enteringState(S enteredState) {
 		if (sm.state(enteredState).getDuration() != StateObject.ENDLESS) {
 			float seconds = sm.state(enteredState).getDuration() / fnTicksPerSecond.getAsInt();
@@ -45,11 +52,13 @@ public class StateMachineTracer<S> {
 		}
 	}
 
+	@Override
 	public void exitingState(S exitedState) {
 		log.info(String.format("%s exiting state '%s'", sm.getDescription(), exitedState));
 	}
 
-	public void firingTransition(Transition<?, ?> t) {
+	@Override
+	public void firingTransition(Transition<S, E> t) {
 		if (t.getEvent() == null) {
 			if (t.from != t.to) {
 				log.info(String.format("%s changing from '%s' to '%s'", sm.getDescription(), t.from, t.to));
