@@ -282,9 +282,18 @@ Example trace:
 
 ## Configurable navigation
 
-The navigation behavior of the actors is implemented modularly (*strategy pattern*) and can easily be changed. 
+The navigation behavior of the actors is implemented modularly (*strategy pattern*) and can easily be changed.
 
-Blinky's navigation behaviour is defined as follows:
+Pac-Man is controlled by keyboard steering:
+
+```java
+PacMan pacMan = new PacMan(game, world);
+Navigation keySteering = followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
+pacMan.setNavigation(PacManState.HUNGRY, keySteering);
+pacMan.setNavigation(PacManState.GREEDY, keySteering);
+```
+
+Blinky's navigation behaviour:
 ```java
 ghost.setNavigation(GhostState.AGGRO, chase(pacMan));
 ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
@@ -295,7 +304,7 @@ ghost.setNavigation(GhostState.SAFE, bounce());
 
 There is a general *followTargetTile* behavior which is used by different special behaviors like *scatter*, *ambush* or *chase*.
 
-To illustrate, this is the implementation of the *chase* behavior:
+The *chase* behavior:
 
 ```java
 class Chase extends FollowTargetTile {
@@ -306,7 +315,7 @@ class Chase extends FollowTargetTile {
 }
 ```
 
-This is *ambush*, Pinks's attack behavior:
+This is *ambush*, Pinkys's attacking behavior:
 
 ```java
 class Ambush extends FollowTargetTile {
@@ -324,8 +333,7 @@ class Ambush extends FollowTargetTile {
 }
 ```
 
-And finally, this is *scatter* where each ghost cycles around the block in its scatter corner;
-
+And this is *scatter* where each ghost cycles around the block in its scattering corner:
 
 ```java
 public class Scatter extends FollowTargetTile {
