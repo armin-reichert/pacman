@@ -268,7 +268,8 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 			Optional<Bonus> activeBonus = world.getBonus().filter(bonus -> bonus.getTile().equals(tile))
 					.filter(bonus -> !bonus.isHonored());
 			if (activeBonus.isPresent()) {
-				publishEvent(new BonusFoundEvent(activeBonus.get().getSymbol(), activeBonus.get().getValue()));
+				publishEvent(
+						new BonusFoundEvent(activeBonus.get().getSymbol(), activeBonus.get().getValue()));
 				return;
 			}
 

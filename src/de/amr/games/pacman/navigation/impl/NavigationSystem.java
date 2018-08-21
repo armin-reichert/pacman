@@ -3,7 +3,8 @@ package de.amr.games.pacman.navigation.impl;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.core.MazeMover;
-import de.amr.games.pacman.actor.game.GhostName;
+import de.amr.games.pacman.actor.game.Ghost;
+import de.amr.games.pacman.actor.game.PacMan;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.Navigation;
@@ -42,12 +43,12 @@ public interface NavigationSystem {
 		return new Go(target);
 	}
 
-	public static Navigation moody() {
-		return new Moody();
+	public static Navigation moody(Ghost inky, Ghost blinky, PacMan pacMan) {
+		return new Moody(inky, blinky, pacMan);
 	}
 
-	public static Navigation scatter(Maze maze, GhostName ghostName) {
-		return new Scatter(maze, ghostName);
+	public static Navigation scatter(Maze maze, Tile targetTile) {
+		return new Scatter(maze, targetTile);
 	}
 
 	public static Navigation stayBehind() {

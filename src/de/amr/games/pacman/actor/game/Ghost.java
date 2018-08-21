@@ -47,7 +47,8 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 	private final Tile home;
 	private final int initialDir;
 
-	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, int initialDir, GhostColor color) {
+	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, int initialDir,
+			GhostColor color) {
 		this.name = name;
 		this.pacMan = pacMan;
 		this.game = game;
@@ -152,8 +153,8 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 
 	@Override
 	public Stream<Sprite> getSprites() {
-		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes), Stream.of(s_frightened, s_flashing))
-				.flatMap(s -> s);
+		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes),
+				Stream.of(s_frightened, s_flashing)).flatMap(s -> s);
 	}
 
 	@Override

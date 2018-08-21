@@ -1,5 +1,14 @@
 package de.amr.games.pacman.actor.game;
 
+import static de.amr.games.pacman.actor.game.GhostName.Blinky;
+import static de.amr.games.pacman.actor.game.GhostName.Clyde;
+import static de.amr.games.pacman.actor.game.GhostName.Inky;
+import static de.amr.games.pacman.actor.game.GhostName.Pinky;
+import static de.amr.games.pacman.actor.game.GhostState.AGGRO;
+import static de.amr.games.pacman.actor.game.GhostState.DEAD;
+import static de.amr.games.pacman.actor.game.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.actor.game.GhostState.SAFE;
+import static de.amr.games.pacman.actor.game.GhostState.SCATTERING;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.ambush;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.bounce;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.chase;
@@ -21,8 +30,9 @@ import java.util.stream.Stream;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.navigation.Navigation;
+import de.amr.games.pacman.navigation.impl.NavigationSystem;
 import de.amr.games.pacman.view.PacManSprites.GhostColor;
 
 /**
@@ -32,66 +42,68 @@ import de.amr.games.pacman.view.PacManSprites.GhostColor;
  */
 public class Cast implements PacManWorld {
 
-	private static PacMan createPacMan(Game game, PacManWorld world) {
-		PacMan pacMan = new PacMan(game, world);
+	private void configurePacMan() {
 		Navigation keySteering = followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
 		pacMan.setNavigation(PacManState.HUNGRY, keySteering);
 		pacMan.setNavigation(PacManState.GREEDY, keySteering);
-		return pacMan;
 	}
 
-	private static Ghost createBlinky(Game game, PacMan pacMan, Tile home) {
-		Ghost ghost = new Ghost(GhostName.Blinky, pacMan, game, home, Top4.E, GhostColor.RED);
-		ghost.setNavigation(GhostState.AGGRO, chase(pacMan));
-		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
-		ghost.setNavigation(GhostState.SCATTERING, scatter(game.getMaze(), ghost.getName()));
-		ghost.setNavigation(GhostState.DEAD, go(home));
-		ghost.setNavigation(GhostState.SAFE, bounce());
-		return ghost;
+	private void configureBlinky(Maze maze) {
+		blinky.setNavigation(AGGRO, chase(pacMan));
+		blinky.setNavigation(FRIGHTENED, flee(pacMan));
+		blinky.setNavigation(SCATTERING, scatter(maze, maze.getBlinkyScatteringTarget()));
+		blinky.setNavigation(DEAD, go(blinky.getHome()));
+		blinky.setNavigation(SAFE, bounce());
 	}
 
-	private static Ghost createPinky(Game game, PacMan pacMan, Tile home) {
-		Ghost ghost = new Ghost(GhostName.Pinky, pacMan, game, home, Top4.S, GhostColor.PINK);
-		ghost.setNavigation(GhostState.AGGRO, ambush(pacMan));
-		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
-		ghost.setNavigation(GhostState.SCATTERING, scatter(game.getMaze(), ghost.getName()));
-		ghost.setNavigation(GhostState.DEAD, go(home));
-		ghost.setNavigation(GhostState.SAFE, bounce());
-		return ghost;
+	private void configurePinky(Maze maze) {
+		pinky.setNavigation(AGGRO, ambush(pacMan));
+		pinky.setNavigation(FRIGHTENED, flee(pacMan));
+		pinky.setNavigation(SCATTERING, scatter(game.getMaze(), maze.getPinkyScatteringTarget()));
+		pinky.setNavigation(DEAD, go(pinky.getHome()));
+		pinky.setNavigation(SAFE, bounce());
 	}
 
-	private static Ghost createInky(Game game, PacMan pacMan, Tile home) {
-		Ghost ghost = new Ghost(GhostName.Inky, pacMan, game, home, Top4.N, GhostColor.TURQUOISE);
-		ghost.setNavigation(GhostState.AGGRO, chase(pacMan)); // TODO
-		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
-		ghost.setNavigation(GhostState.SCATTERING, scatter(game.getMaze(), ghost.getName()));
-		ghost.setNavigation(GhostState.DEAD, go(home));
-		ghost.setNavigation(GhostState.SAFE, bounce());
-		return ghost;
+	private void configureInky(Maze maze) {
+		inky.setNavigation(AGGRO, NavigationSystem.moody(inky, blinky, pacMan));
+		inky.setNavigation(FRIGHTENED, flee(pacMan));
+		inky.setNavigation(SCATTERING, scatter(game.getMaze(), maze.getInkyScatteringTarget()));
+		inky.setNavigation(DEAD, go(inky.getHome()));
+		inky.setNavigation(SAFE, bounce());
 	}
 
-	private static Ghost createClyde(Game game, PacMan pacMan, Tile home) {
-		Ghost ghost = new Ghost(GhostName.Clyde, pacMan, game, home, Top4.N, GhostColor.ORANGE);
-		ghost.setNavigation(GhostState.AGGRO, flee(pacMan)); // TODO
-		ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
-		ghost.setNavigation(GhostState.SCATTERING, scatter(game.getMaze(), ghost.getName()));
-		ghost.setNavigation(GhostState.DEAD, go(home));
-		ghost.setNavigation(GhostState.SAFE, bounce());
-		return ghost;
+	private void configureClyde(Maze maze) {
+		clyde.setNavigation(AGGRO, flee(pacMan)); // TODO
+		clyde.setNavigation(FRIGHTENED, flee(pacMan));
+		clyde.setNavigation(SCATTERING, scatter(game.getMaze(), maze.getClydeScatteringTarget()));
+		clyde.setNavigation(DEAD, go(clyde.getHome()));
+		clyde.setNavigation(SAFE, bounce());
 	}
 
+	private final Game game;
 	private final PacMan pacMan;
 	private final Ghost blinky, pinky, inky, clyde;
 	private final Set<Ghost> activeGhosts = new HashSet<>(4);
 	private Bonus bonus;
 
 	public Cast(Game game) {
-		pacMan = createPacMan(game, this);
-		blinky = createBlinky(game, pacMan, game.getMaze().getBlinkyHome());
-		pinky = createPinky(game, pacMan, game.getMaze().getPinkyHome());
-		inky = createInky(game, pacMan, game.getMaze().getInkyHome());
-		clyde = createClyde(game, pacMan, game.getMaze().getClydeHome());
+		this.game = game;
+		Maze maze = game.getMaze();
+
+		pacMan = new PacMan(game, this);
+
+		blinky = new Ghost(Blinky, pacMan, game, maze.getBlinkyHome(), Top4.E, GhostColor.RED);
+		pinky = new Ghost(Pinky, pacMan, game, maze.getPinkyHome(), Top4.S, GhostColor.PINK);
+		inky = new Ghost(Inky, pacMan, game, maze.getInkyHome(), Top4.N, GhostColor.TURQUOISE);
+		clyde = new Ghost(Clyde, pacMan, game, maze.getClydeHome(), Top4.N, GhostColor.ORANGE);
+
 		activeGhosts.addAll(Arrays.asList(blinky, pinky, inky, clyde));
+
+		configurePacMan();
+		configureBlinky(maze);
+		configurePinky(maze);
+		configureInky(maze);
+		configureClyde(maze);
 	}
 
 	public void init() {

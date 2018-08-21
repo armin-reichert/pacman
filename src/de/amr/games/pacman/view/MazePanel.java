@@ -89,7 +89,8 @@ public class MazePanel extends GameEntity {
 			s_maze_normal.draw(g);
 			g.translate(-tf.getX(), -tf.getY());
 			maze.tiles().forEach(tile -> {
-				if (maze.isEatenFood(tile) || maze.isEnergizer(tile) && energizerBlinking.currentFrame() % 2 != 0) {
+				if (maze.isEatenFood(tile)
+						|| maze.isEnergizer(tile) && energizerBlinking.currentFrame() % 2 != 0) {
 					g.translate(tile.col * TS, tile.row * TS);
 					g.setColor(Color.BLACK);
 					g.fillRect(0, 0, TS, TS);

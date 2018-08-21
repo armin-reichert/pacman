@@ -250,7 +250,7 @@ public class Maze {
 	public boolean isIntersection(Tile tile) {
 		return intersections.contains(tile);
 	}
-	
+
 	public boolean isRestrictedIntersection(Tile tile) {
 		return restrictedIntersections.contains(tile);
 	}

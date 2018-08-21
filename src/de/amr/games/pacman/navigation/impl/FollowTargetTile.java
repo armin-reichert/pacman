@@ -37,6 +37,13 @@ import de.amr.games.pacman.navigation.Navigation;
  */
 public class FollowTargetTile implements Navigation {
 
+	static Tile aheadOf(MazeMover mover, int n) {
+		Tile tile = mover.getTile();
+		int dir = mover.getCurrentDir();
+		Tile target = new Tile(tile.col + n * NESW.dx(dir), tile.row + n * NESW.dy(dir));
+		return mover.getMaze().isValidTile(target) ? target : tile;
+	}
+
 	private final Maze maze;
 	private final Supplier<Tile> targetTileSupplier;
 

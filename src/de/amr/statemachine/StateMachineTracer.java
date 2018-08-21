@@ -27,7 +27,8 @@ public class StateMachineTracer<S> {
 	}
 
 	public void unhandledEvent(Object event) {
-		log.info(String.format("%s in state %s could not handle '%s'", sm.getDescription(), sm.currentState(), event));
+		log.info(String.format("%s in state %s could not handle '%s'", sm.getDescription(),
+				sm.currentState(), event));
 	}
 
 	public void enteringInitialState(S initialState) {
@@ -37,8 +38,8 @@ public class StateMachineTracer<S> {
 	public void enteringState(S enteredState) {
 		if (sm.state(enteredState).getDuration() != StateObject.ENDLESS) {
 			float seconds = sm.state(enteredState).getDuration() / fnTicksPerSecond.getAsInt();
-			log.info(String.format("%s entering state '%s' for %.2f seconds (%d frames)", sm.getDescription(), enteredState,
-					seconds, sm.state(enteredState).getDuration()));
+			log.info(String.format("%s entering state '%s' for %.2f seconds (%d frames)",
+					sm.getDescription(), enteredState, seconds, sm.state(enteredState).getDuration()));
 		} else {
 			log.info(String.format("%s entering state '%s'", sm.getDescription(), enteredState));
 		}
@@ -57,8 +58,8 @@ public class StateMachineTracer<S> {
 			}
 		} else {
 			if (t.from != t.to) {
-				log.info(
-						String.format("%s changing from '%s' to '%s' on '%s'", sm.getDescription(), t.from, t.to, t.getEvent()));
+				log.info(String.format("%s changing from '%s' to '%s' on '%s'", sm.getDescription(), t.from,
+						t.to, t.getEvent()));
 			} else {
 				log.info(String.format("%s stays '%s' on '%s'", sm.getDescription(), t.from, t.getEvent()));
 			}
