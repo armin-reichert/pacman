@@ -1,6 +1,6 @@
-# An easily understandable Pac-Man implementation         
+# A comprehensible Pac-Man implementation based on finite state machines          
 
-(work in progress)
+(Work in progress)
 
 <img src="doc/pacman.png"/>
 
