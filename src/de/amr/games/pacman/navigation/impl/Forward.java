@@ -9,7 +9,7 @@ class Forward implements Navigation {
 	@Override
 	public MazeRoute computeRoute(MazeMover mover) {
 		MazeRoute result = new MazeRoute();
-		result.dir = mover.getNextDir();
+		result.dir = mover.getCurrentDir();
 		return result;
 	}
 }
