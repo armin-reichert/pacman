@@ -65,7 +65,7 @@ public class Cast implements PacManWorld {
 	}
 
 	private void configureInky(Maze maze) {
-		inky.setNavigation(AGGRO, NavigationSystem.moody(inky, blinky, pacMan));
+		inky.setNavigation(AGGRO, NavigationSystem.moody(blinky, pacMan));
 		inky.setNavigation(FRIGHTENED, flee(pacMan));
 		inky.setNavigation(SCATTERING, scatter(game.getMaze(), maze.getInkyScatteringTarget()));
 		inky.setNavigation(DEAD, go(inky.getHome()));

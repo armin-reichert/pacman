@@ -43,8 +43,8 @@ public interface NavigationSystem {
 		return new Go(target);
 	}
 
-	public static Navigation moody(Ghost inky, Ghost blinky, PacMan pacMan) {
-		return new Moody(inky, blinky, pacMan);
+	public static Navigation moody(Ghost blinky, PacMan pacMan) {
+		return new Moody(blinky, pacMan);
 	}
 
 	public static Navigation scatter(Maze maze, Tile targetTile) {
