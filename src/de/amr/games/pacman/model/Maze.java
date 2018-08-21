@@ -1,9 +1,11 @@
 package de.amr.games.pacman.model;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -49,7 +51,6 @@ public class Maze {
 	private static final char PINKY_ST = 'p';
 	private static final char CLYDE_HOME = 'C';
 	private static final char CLYDE_ST = 'c';
-	private static final char ENDMARKER = ')';
 
 	private final String[] map;
 	private final GridGraph<Character, Integer> graph;
@@ -65,6 +66,8 @@ public class Maze {
 	private Tile bonusTile;
 	private int tunnelRow;
 	private int foodTotal;
+	private Set<Tile> intersections = new HashSet<>();
+	private Set<Tile> restrictedIntersections = new HashSet<>();
 
 	public Maze(String mapText) {
 		map = mapText.split("\n");
@@ -100,6 +103,7 @@ public class Maze {
 				}
 			}
 		}
+
 		graph = new GridGraph<>(numCols, numRows, NESW, v -> null, (u, v) -> 1, UndirectedEdge::new);
 		graph.setDefaultVertexLabel(v ->
 
@@ -107,13 +111,29 @@ public class Maze {
 		graph.fill();
 		// remove all edges into walls
 		graph.edges().filter(edge -> {
-
 			int u = edge.either(), v = edge.other();
-			return
-
-			map(graph.row(u), graph.col(u)) == WALL || map(graph.row(v), graph.col(v)) == WALL;
+			return map(graph.row(u), graph.col(u)) == WALL || map(graph.row(v), graph.col(v)) == WALL;
 		}).forEach(graph::removeEdge);
 
+		graph.vertices()
+		//@formatter:off
+			.filter(cell -> graph.degree(cell) >= 3)
+			.filter(cell -> graph.get(cell) != DOOR)
+			.filter(cell -> !inGhostHouse(tile(cell)))
+			.filter(cell -> !tile(cell).equals(blinkyHome))
+			.filter(cell -> !tile(cell).equals(new Tile(blinkyHome.col+1, blinkyHome.row)))
+			//@formatter:on
+				.forEach(cell -> {
+					Tile tile = tile(cell);
+					if (blinkyHome.equals(new Tile(tile.col + 1, tile.row))
+							|| blinkyHome.equals(new Tile(tile.col - 2, tile.row))
+							|| pacManHome.equals(new Tile(tile.col + 1, tile.row))
+							|| pacManHome.equals(new Tile(tile.col - 2, tile.row))) {
+						restrictedIntersections.add(tile);
+					} else {
+						intersections.add(tile);
+					}
+				});
 	}
 
 	private char map(int row, int col) {
@@ -228,24 +248,16 @@ public class Maze {
 	}
 
 	public boolean isIntersection(Tile tile) {
-		int cell = cell(tile);
-		if (graph.degree(cell) < 3) {
-			return false;
-		}
-		// exceptions:
-		if (graph.get(cell) == DOOR || inGhostHouse(tile)) {
-			return false;
-		}
-		int leftNb = graph.neighbor(cell, Top4.W).getAsInt();
-		int rightNb = graph.neighbor(cell, Top4.E).getAsInt();
-		if (rightNb == cell(pacManHome) || rightNb == cell(blinkyHome) || graph.get(leftNb) == ENDMARKER) {
-			return false;
-		}
-		return true;
+		return intersections.contains(tile);
+	}
+	
+	public boolean isRestrictedIntersection(Tile tile) {
+		return restrictedIntersections.contains(tile);
 	}
 
 	public boolean inGhostHouse(Tile tile) {
-		return Math.abs(tile.row - inkyHome.row) <= 1 && tile.col >= inkyHome.col && tile.col <= clydeHome.col + 1;
+		return Math.abs(tile.row - inkyHome.row) <= 1 && tile.col >= inkyHome.col
+				&& tile.col <= clydeHome.col + 1;
 	}
 
 	public boolean isPellet(Tile tile) {

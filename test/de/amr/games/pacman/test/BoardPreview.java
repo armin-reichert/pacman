@@ -57,8 +57,11 @@ public class BoardPreview extends JFrame {
 			if (maze.isIntersection(tile)) {
 				return Color.GREEN;
 			}
+			if (maze.isRestrictedIntersection(tile)) {
+				return Color.YELLOW;
+			}
 			if (maze.isDoor(tile)) {
-				return Color.ORANGE;
+				return Color.PINK;
 			}
 			return Color.WHITE;
 		};
