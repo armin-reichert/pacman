@@ -11,10 +11,10 @@ import de.amr.games.pacman.model.Tile;
 class Ambush extends FollowTargetTile {
 
 	private static Tile aheadOf(MazeMover mover, int n) {
-		Tile moverTile = mover.getTile();
-		int moverDir = mover.getCurrentDir();
-		Tile target = new Tile(moverTile.col + 4 * NESW.dx(moverDir), moverTile.row + 4 * NESW.dy(moverDir));
-		return mover.getMaze().isValidTile(target) ? target : moverTile;
+		Tile tile = mover.getTile();
+		int dir = mover.getCurrentDir();
+		Tile target = new Tile(tile.col + n * NESW.dx(dir), tile.row + n * NESW.dy(dir));
+		return mover.getMaze().isValidTile(target) ? target : tile;
 	}
 
 	public Ambush(MazeMover victim) {
