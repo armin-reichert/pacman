@@ -357,7 +357,7 @@ public class Scatter extends FollowTargetTile {
 	}
 ```
 
-<img src="doc/scatter.png"/>
+<img src="doc/scattering.png"/>
 
 The move behaviours are implemented as reusable classes with a common interface *Navigation*. For simulating the behavior of the original Pac-Man game no graph based path finding is needed but the *followTargetTile* behavior is use as a common base.
 
