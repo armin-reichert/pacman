@@ -90,7 +90,35 @@ public class GamePanel implements PacManGameUI {
 
 	@Override
 	public void draw(Graphics2D g) {
+		drawScores(g);
+		drawLives(g);
+		drawLevelCounter(g);
+		mazePanel.draw(g);
+		drawActors(g);
+		drawInfoText(g);
+	}
 
+	protected void drawLevelCounter(Graphics2D g) {
+		g.translate(0, getHeight() - 2 * TS);
+		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
+			g.translate(getWidth() - (n - i) * 2 * TS, 0);
+			g.drawImage(SPRITES.symbolImage(game.getLevelCounter().get(i)), 0, 0, 2 * TS, 2 * TS, null);
+			g.translate(-getWidth() + (n - i) * 2 * TS, 0);
+		}
+		g.translate(0, -getHeight() + 2 * TS);
+	}
+
+	protected void drawLives(Graphics2D g) {
+		g.translate(0, getHeight() - 2 * TS);
+		for (int i = 0; i < game.getLives(); ++i) {
+			g.translate((2 - i) * lifeImage.getWidth(null), 0);
+			g.drawImage(lifeImage, 0, 0, null);
+			g.translate((i - 2) * lifeImage.getWidth(null), 0);
+		}
+		g.translate(0, -getHeight() + 2 * TS);
+	}
+
+	protected void drawScores(Graphics2D g) {
 		// Score
 		int score = game.score.getScore();
 		g.setFont(Assets.font("scoreFont"));
@@ -114,42 +142,24 @@ public class GamePanel implements PacManGameUI {
 		g.fillRect(22 * TS + 2, TS + 2, 4, 4);
 		g.setColor(Color.WHITE);
 		g.drawString(String.format("%d", game.getFoodRemaining()), 23 * TS, 2 * TS);
-
-		// Lives
-		g.translate(0, getHeight() - 2 * TS);
-		for (int i = 0; i < game.getLives(); ++i) {
-			g.translate((2 - i) * lifeImage.getWidth(null), 0);
-			g.drawImage(lifeImage, 0, 0, null);
-			g.translate((i - 2) * lifeImage.getWidth(null), 0);
-		}
-
-		// Level counter
-		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
-			g.translate(getWidth() - (n - i) * 2 * TS, 0);
-			g.drawImage(SPRITES.symbolImage(game.getLevelCounter().get(i)), 0, 0, 2 * TS, 2 * TS, null);
-			g.translate(-getWidth() + (n - i) * 2 * TS, 0);
-		}
-		g.translate(0, -getHeight() + 2 * TS);
-
-		mazePanel.draw(g);
-		drawActors(g);
-
-		if (infoText != null) {
-			drawInfoText(g);
-		}
 	}
 
-	private void drawActors(Graphics2D g) {
+	protected void drawActors(Graphics2D g) {
 		actors.getBonus().ifPresent(bonus -> {
 			bonus.placeAtTile(game.getMaze().getBonusTile(), TS / 2, 0);
 			bonus.draw(g);
 		});
 		actors.getPacMan().draw(g);
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(ghost -> ghost.draw(g));
+		actors.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
+				.forEach(ghost -> ghost.draw(g));
+		actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
+				.forEach(ghost -> ghost.draw(g));
 	}
 
-	private void drawInfoText(Graphics2D g) {
+	protected void drawInfoText(Graphics2D g) {
+		if (infoText == null) {
+			return;
+		}
 		Graphics2D g2 = (Graphics2D) g.create();
 		g2.setFont(Assets.font("scoreFont"));
 		g2.setColor(infoTextColor);

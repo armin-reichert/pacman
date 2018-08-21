@@ -23,6 +23,9 @@ public class ScatteringTestView implements Controller {
 		actors = new Cast(game);
 		gamePanel = new ExtendedGamePanel(width, height, game, actors);
 		gamePanel.showRoutes = true;
+		gamePanel.showScores = false;
+		gamePanel.showLives = false;
+		gamePanel.showLevelCounter = false;
 	}
 
 	@Override
