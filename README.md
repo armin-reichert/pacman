@@ -293,13 +293,14 @@ pacMan.setNavigation(PacManState.HUNGRY, keySteering);
 pacMan.setNavigation(PacManState.GREEDY, keySteering);
 ```
 
-Blinky's navigation behaviour:
+Configuration of Blinky's navigation behaviour:
+
 ```java
-ghost.setNavigation(GhostState.AGGRO, chase(pacMan));
-ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
-ghost.setNavigation(GhostState.SCATTERING, scatter(game.getMaze(), GhostName.Blinky));
-ghost.setNavigation(GhostState.DEAD, go(home));
-ghost.setNavigation(GhostState.SAFE, bounce());
+blinky.setNavigation(AGGRO, chase(pacMan));
+blinky.setNavigation(FRIGHTENED, flee(pacMan));
+blinky.setNavigation(SCATTERING, scatter(maze, maze.getBlinkyScatteringTarget()));
+blinky.setNavigation(DEAD, go(blinky.getHome()));
+blinky.setNavigation(SAFE, bounce());
 ```
 
 There is a general *followTargetTile* behavior which is used by different special behaviors like *scatter*, *ambush* or *chase*.
@@ -320,13 +321,6 @@ This is *ambush*, Pinkys's attacking behavior:
 ```java
 class Ambush extends FollowTargetTile {
 
-	private static Tile aheadOf(MazeMover mover, int n) {
-		Tile tile = mover.getTile();
-		int dir = mover.getCurrentDir();
-		Tile target = new Tile(tile.col + n * NESW.dx(dir), tile.row + n * NESW.dy(dir));
-		return mover.getMaze().isValidTile(target) ? target : tile;
-	}
-
 	public Ambush(MazeMover victim) {
 		super(victim.getMaze(), () -> aheadOf(victim, 4));
 	}
@@ -338,23 +332,10 @@ And this is *scatter* where each ghost cycles around the block in its scattering
 ```java
 public class Scatter extends FollowTargetTile {
 
-	public Scatter(Maze maze, GhostName ghostName) {
-		super(maze, () -> getScatteringTarget(maze, ghostName));
+	public Scatter(Maze maze, Tile targetTile) {
+		super(maze, () -> targetTile);
 	}
-
-	private static Tile getScatteringTarget(Maze maze, GhostName ghostName) {
-		switch (ghostName) {
-		case Blinky:
-			return maze.getBlinkyScatteringTarget();
-		case Clyde:
-			return maze.getClydeScatteringTarget();
-		case Inky:
-			return maze.getInkyScatteringTarget();
-		case Pinky:
-			return maze.getPinkyScatteringTarget();
-		}
-		throw new IllegalArgumentException("Illegal ghost name: " + ghostName);
-	}
+}
 ```
 
 <img src="doc/scattering.png"/>
