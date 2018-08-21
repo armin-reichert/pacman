@@ -357,6 +357,8 @@ public class Scatter extends FollowTargetTile {
 	}
 ```
 
+<img src="doc/scatter.png"/>
+
 The move behaviours are implemented as reusable classes with a common interface *Navigation*. For simulating the behavior of the original Pac-Man game no graph based path finding is needed but the *followTargetTile* behavior is use as a common base.
 
 Shortest routes in the maze graph can be computed using the method *Maze.findPath(Tile source, Tile target)*. This method runs an A* or BFS algorithm on the underlying grid graph (A* sounds cooler than BFS :-). A* is rather useless here because the maze is represented by a (grid) graph where the distance between two vertices (neighbor tiles) is always equal. Thus the Dijkstra or A* path finding algorithms will just degenerate to BFS (correct my if I'm wrong). Of course you could represent the graph differently, for example with vertices only for crossings and weighted edges for passages. In that case, Dijkstra or A* would be useful.
