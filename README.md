@@ -286,10 +286,10 @@ The navigation behavior of the actors is implemented modularly (*strategy patter
 
 Blinky's navigation behaviour is defined as follows:
 ```java
-Ghost ghost = new Ghost(GhostName.Blinky, pacMan, game, home, Top4.E, GhostColor.RED);
-ghost.setNavigation(GhostState.AGGRO, followTargetTile(game.getMaze(), () -> pacMan.getTile()));
+ghost.setNavigation(GhostState.AGGRO, chase(pacMan));
 ghost.setNavigation(GhostState.FRIGHTENED, flee(pacMan));
-ghost.setNavigation(GhostState.SCATTERING, followTargetTile(game.getMaze(), () -> game.getMaze().getBlinkyScatteringTarget()));
+ghost.setNavigation(GhostState.SCATTERING,
+		followTargetTile(game.getMaze(), () -> game.getMaze().getBlinkyScatteringTarget()));
 ghost.setNavigation(GhostState.DEAD, go(home));
 ghost.setNavigation(GhostState.SAFE, bounce());
 ```
@@ -314,10 +314,10 @@ And this is *ambush*:
 class Ambush extends FollowTargetTile {
 
 	private static Tile aheadOf(MazeMover mover, int n) {
-		Tile moverTile = mover.getTile();
-		int moverDir = mover.getCurrentDir();
-		Tile target = new Tile(moverTile.col + 4 * NESW.dx(moverDir), moverTile.row + 4 * NESW.dy(moverDir));
-		return mover.getMaze().isValidTile(target) ? target : moverTile;
+		Tile tile = mover.getTile();
+		int dir = mover.getCurrentDir();
+		Tile target = new Tile(tile.col + n * NESW.dx(dir), tile.row + n * NESW.dy(dir));
+		return mover.getMaze().isValidTile(target) ? target : tile;
 	}
 
 	public Ambush(MazeMover victim) {
