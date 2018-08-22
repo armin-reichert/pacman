@@ -40,21 +40,29 @@ public class FollowTargetTile implements Navigation {
 	public static Tile aheadOf(MazeMover mover, int n) {
 		Tile tile = mover.getTile();
 		int dir = mover.getCurrentDir();
-		Tile target = new Tile(tile.col + n * NESW.dx(dir), tile.row + n * NESW.dy(dir));
-		return mover.getMaze().isValidTile(target) ? target : tile;
+		Tile target = aheadOf(tile, dir, n);
+		while (n > 0 && !mover.getMaze().isValidTile(target)) {
+			n -= 1;
+			target = aheadOf(tile, dir, n);
+		}
+		return n > 0 ? target : tile;
+	}
+	
+	private static Tile aheadOf(Tile tile, int dir, int n) {
+		return new Tile(tile.col + n * NESW.dx(dir), tile.row + n * NESW.dy(dir));
 	}
 
-	private final Maze maze;
 	private final Supplier<Tile> targetTileSupplier;
 
-	public FollowTargetTile(Maze maze, Supplier<Tile> targetTileSupplier) {
-		this.maze = maze;
+	public FollowTargetTile(Supplier<Tile> targetTileSupplier) {
 		this.targetTileSupplier = targetTileSupplier;
 	}
 
 	@Override
 	public MazeRoute computeRoute(MazeMover mover) {
 
+		Maze maze = mover.getMaze();
+		
 		// ask for next target tile
 		Tile targetTile = targetTileSupplier.get();
 		Objects.requireNonNull(targetTile, "Target tile must not be NULL");
@@ -131,6 +139,7 @@ public class FollowTargetTile implements Navigation {
 
 	private Optional<Integer> findBestDir(MazeMover mover, Tile targetTile, Tile fromTile,
 			Stream<Integer> dirChoices) {
+		Maze maze = mover.getMaze();
 		/*@formatter:off*/
 		return dirChoices
 			.map(dir -> maze.neighborTile(fromTile, dir))

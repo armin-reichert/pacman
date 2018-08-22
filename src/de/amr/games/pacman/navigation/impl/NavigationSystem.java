@@ -7,7 +7,6 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.actor.game.Ghost;
 import de.amr.games.pacman.actor.game.PacMan;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.Navigation;
 
@@ -19,7 +18,7 @@ import de.amr.games.pacman.navigation.Navigation;
 public interface NavigationSystem {
 
 	public static Navigation ambush(MazeMover victim) {
-		return new FollowTargetTile(victim.getMaze(), () -> aheadOf(victim, 4));
+		return new FollowTargetTile(() -> aheadOf(victim, 4));
 	}
 
 	public static Navigation bounce() {
@@ -27,7 +26,7 @@ public interface NavigationSystem {
 	}
 
 	public static Navigation chase(MazeMover victim) {
-		return new FollowTargetTile(victim.getMaze(), victim::getTile);
+		return new FollowTargetTile(victim::getTile);
 	}
 
 	public static Navigation flee(MazeMover chaser) {
@@ -38,8 +37,8 @@ public interface NavigationSystem {
 		return new FollowKeyboard(nesw);
 	}
 
-	public static Navigation followTargetTile(Maze maze, Supplier<Tile> targetTileSupplier) {
-		return new FollowTargetTile(maze, targetTileSupplier);
+	public static Navigation followTargetTile(Supplier<Tile> targetTileSupplier) {
+		return new FollowTargetTile(targetTileSupplier);
 	}
 
 	public static Navigation forward() {
@@ -50,12 +49,12 @@ public interface NavigationSystem {
 		return new FollowPath(target);
 	}
 
-	public static Navigation moody(Ghost blinky, PacMan pacMan) {
-		return new Moody(blinky, pacMan);
+	public static Navigation inkyChaseBehavior(Ghost blinky, PacMan pacMan) {
+		return new FollowTargetTile(() -> InkyChaseBehavior.computeTarget(blinky, pacMan));
 	}
 
-	public static Navigation scatter(Maze maze, Tile scatteringTarget) {
-		return new FollowTargetTile(maze, () -> scatteringTarget);
+	public static Navigation scatter(Tile scatteringTarget) {
+		return new FollowTargetTile(() -> scatteringTarget);
 	}
 
 	public static Navigation stayBehind() {

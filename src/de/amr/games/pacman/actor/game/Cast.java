@@ -15,6 +15,7 @@ import static de.amr.games.pacman.navigation.impl.NavigationSystem.chase;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.flee;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.followKeyboard;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.go;
+import static de.amr.games.pacman.navigation.impl.NavigationSystem.inkyChaseBehavior;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.scatter;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
@@ -32,7 +33,6 @@ import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.navigation.Navigation;
-import de.amr.games.pacman.navigation.impl.NavigationSystem;
 import de.amr.games.pacman.view.PacManSprites.GhostColor;
 
 /**
@@ -71,7 +71,7 @@ public class Cast implements PacManWorld {
 	private void configureBlinky(Maze maze) {
 		blinky.setNavigation(AGGRO, chase(pacMan));
 		blinky.setNavigation(FRIGHTENED, flee(pacMan));
-		blinky.setNavigation(SCATTERING, scatter(maze, maze.getBlinkyScatteringTarget()));
+		blinky.setNavigation(SCATTERING, scatter(maze.getBlinkyScatteringTarget()));
 		blinky.setNavigation(DEAD, go(blinky.getHome()));
 		blinky.setNavigation(SAFE, bounce());
 	}
@@ -79,15 +79,15 @@ public class Cast implements PacManWorld {
 	private void configurePinky(Maze maze) {
 		pinky.setNavigation(AGGRO, ambush(pacMan));
 		pinky.setNavigation(FRIGHTENED, flee(pacMan));
-		pinky.setNavigation(SCATTERING, scatter(maze, maze.getPinkyScatteringTarget()));
+		pinky.setNavigation(SCATTERING, scatter(maze.getPinkyScatteringTarget()));
 		pinky.setNavigation(DEAD, go(pinky.getHome()));
 		pinky.setNavigation(SAFE, bounce());
 	}
 
 	private void configureInky(Maze maze) {
-		inky.setNavigation(AGGRO, NavigationSystem.moody(blinky, pacMan));
+		inky.setNavigation(AGGRO, inkyChaseBehavior(blinky, pacMan));
 		inky.setNavigation(FRIGHTENED, flee(pacMan));
-		inky.setNavigation(SCATTERING, scatter(maze, maze.getInkyScatteringTarget()));
+		inky.setNavigation(SCATTERING, scatter(maze.getInkyScatteringTarget()));
 		inky.setNavigation(DEAD, go(inky.getHome()));
 		inky.setNavigation(SAFE, bounce());
 	}
@@ -95,7 +95,7 @@ public class Cast implements PacManWorld {
 	private void configureClyde(Maze maze) {
 		clyde.setNavigation(AGGRO, flee(pacMan)); // TODO
 		clyde.setNavigation(FRIGHTENED, flee(pacMan));
-		clyde.setNavigation(SCATTERING, scatter(maze, maze.getClydeScatteringTarget()));
+		clyde.setNavigation(SCATTERING, scatter(maze.getClydeScatteringTarget()));
 		clyde.setNavigation(DEAD, go(clyde.getHome()));
 		clyde.setNavigation(SAFE, bounce());
 	}

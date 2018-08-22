@@ -24,19 +24,15 @@ import de.amr.games.pacman.model.Tile;
  * The tile that this new, extended vector ends on will be Inky’s actual target.</cite>
  * </p>
  */
-class Moody extends FollowTargetTile {
+class InkyChaseBehavior {
 
-	private static Tile computeTarget(Ghost blinky, PacMan pacMan) {
+	static Tile computeTarget(Ghost blinky, PacMan pacMan) {
 		Maze maze = pacMan.getMaze();
 		Tile from = blinky.getTile();
-		Tile to = aheadOf(pacMan, 2);
+		Tile to = FollowTargetTile.aheadOf(pacMan, 2);
 		Tile target = new Tile(2 * to.col - from.col, 2 * to.row - from.row);
 		int row = Math.min(Math.max(0, target.row), maze.numRows() - 1);
 		int col = Math.min(Math.max(0, target.col), maze.numCols() - 1);
 		return new Tile(col, row);
-	}
-
-	public Moody(Ghost blinky, PacMan pacMan) {
-		super(pacMan.getMaze(), () -> computeTarget(blinky, pacMan));
 	}
 }
