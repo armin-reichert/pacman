@@ -42,12 +42,14 @@ import de.amr.games.pacman.view.PacManSprites.GhostColor;
  */
 public class Cast implements PacManWorld {
 
+	private final Game game;
 	private final PacMan pacMan;
 	private final Ghost blinky, pinky, inky, clyde;
 	private final Set<Ghost> activeGhosts = new HashSet<>(4);
 	private Bonus bonus;
 
 	public Cast(Game game) {
+		this.game = game;
 		Maze maze = game.getMaze();
 		pacMan = new PacMan(game, this);
 		blinky = new Ghost(Blinky, pacMan, game, maze.getBlinkyHome(), Top4.E, GhostColor.RED);
@@ -98,6 +100,8 @@ public class Cast implements PacManWorld {
 		clyde.setNavigation(SCATTERING, scatter(maze.getClydeScatteringTarget()));
 		clyde.setNavigation(DEAD, go(clyde.getHome()));
 		clyde.setNavigation(SAFE, bounce());
+		// TODO: condition is only correct for first game level
+		clyde.fnCanLeaveHouse = () -> game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
 	}
 
 	public void init() {

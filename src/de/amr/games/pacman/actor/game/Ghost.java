@@ -13,6 +13,7 @@ import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -46,6 +47,7 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 	private final PacMan pacMan;
 	private final Tile home;
 	private final int initialDir;
+	BooleanSupplier fnCanLeaveHouse;
 
 	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, int initialDir,
 			GhostColor color) {
@@ -54,6 +56,7 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 		this.game = game;
 		this.home = home;
 		this.initialDir = initialDir;
+		fnCanLeaveHouse = () -> getStateObject().isTerminated();
 		controller = buildStateMachine();
 		navigationMap = new EnumMap<>(GhostState.class);
 		createSprites(color);
@@ -215,10 +218,10 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 					.when(HOME).then(SAFE)
 
 					.when(SAFE).then(AGGRO)
-						.onTimeout().condition(() -> pacMan.getState() != PacManState.GREEDY)
+						.condition(() -> fnCanLeaveHouse.getAsBoolean() && pacMan.getState() != PacManState.GREEDY)
 						
 					.when(SAFE).then(FRIGHTENED)
-						.onTimeout().condition(() -> pacMan.getState() == PacManState.GREEDY)
+						.condition(() -> fnCanLeaveHouse.getAsBoolean() && pacMan.getState() == PacManState.GREEDY)
 
 					.stay(SAFE).on(PacManGainsPowerEvent.class)
 					.stay(SAFE).on(PacManGettingWeakerEvent.class)
