@@ -235,7 +235,7 @@ public class Maze {
 		return tile.row == tunnelRow && tile.col < 0 || tile.col > numCols() - 1;
 	}
 
-	public boolean isTunnel(Tile tile) {
+	public boolean inTunnel(Tile tile) {
 		return getContent(tile) == TUNNEL;
 	}
 

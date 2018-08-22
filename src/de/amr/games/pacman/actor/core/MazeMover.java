@@ -54,7 +54,7 @@ public abstract class MazeMover extends TileWorldEntity {
 	}
 
 	public boolean inTunnel() {
-		return getMaze().isTunnel(getTile());
+		return getMaze().inTunnel(getTile());
 	}
 
 	public boolean inGhostHouse() {
