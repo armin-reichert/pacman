@@ -303,44 +303,35 @@ blinky.setNavigation(DEAD, go(blinky.getHome()));
 blinky.setNavigation(SAFE, bounce());
 ```
 
-There is a general *followTargetTile* behavior which is used by different special behaviors like *scatter*, *ambush* or *chase*.
+There is a general *followTargetTile* behavior which makes it trivial to implement the ghost behaviors like *scatter*, *ambush* or *chase*.
 
-The *chase* behavior:
+The *chase* behavior is just:
 
 ```java
-class Chase extends FollowTargetTile {
-
-	public Chase(MazeMover victim) {
-		super(victim.getMaze(), victim::getTile);
-	}
+public static Navigation chase(MazeMover victim) {
+	return new FollowTargetTile(victim.getMaze(), victim::getTile);
 }
 ```
 
-This is *ambush*, Pinkys's attacking behavior:
+*ambush*, Pinkys's attacking behavior:
 
 ```java
-class Ambush extends FollowTargetTile {
-
-	public Ambush(MazeMover victim) {
-		super(victim.getMaze(), () -> aheadOf(victim, 4));
-	}
+public static Navigation ambush(MazeMover victim) {
+	return new FollowTargetTile(victim.getMaze(), () -> aheadOf(victim, 4));
 }
 ```
 
-And this is *scatter* where each ghost cycles around the block in its scattering corner:
+*scatter* where each ghost cycles around the block in its dedicated corner:
 
 ```java
-public class Scatter extends FollowTargetTile {
-
-	public Scatter(Maze maze, Tile scatteringTarget) {
-		super(maze, () -> scatteringTarget);
-	}
+public static Navigation scatter(Maze maze, Tile scatteringTarget) {
+	return new FollowTargetTile(maze, () -> scatteringTarget);
 }
 ```
 
 <img src="doc/scattering.png"/>
 
-The move behaviours are implemented as reusable classes with a common interface *Navigation*. For simulating the behavior of the original Pac-Man game no graph based path finding is needed but the *followTargetTile* behavior is use as a common base.
+For simulating the ghost behavior in the original Pac-Man game no graph based path finding is needed but the *followTargetTile* behavior is used allo over the place. As an example for path finding based behavior, the *flee* behavior has been implemented differently from the original game. 
 
 Shortest routes in the maze graph can be computed using the method *Maze.findPath(Tile source, Tile target)*. This method runs an A* or BFS algorithm on the underlying grid graph (A* sounds cooler than BFS :-). A* is rather useless here because the maze is represented by a (grid) graph where the distance between two vertices (neighbor tiles) is always equal. Thus the Dijkstra or A* path finding algorithms will just degenerate to BFS (correct my if I'm wrong). Of course you could represent the graph differently, for example with vertices only for crossings and weighted edges for passages. In that case, Dijkstra or A* would be useful.
 
