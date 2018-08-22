@@ -298,7 +298,7 @@ Configuration of Blinky's navigation behaviour:
 ```java
 blinky.setNavigation(AGGRO, chase(pacMan));
 blinky.setNavigation(FRIGHTENED, flee(pacMan));
-blinky.setNavigation(SCATTERING, scatter(maze, maze.getBlinkyScatteringTarget()));
+blinky.setNavigation(SCATTERING, scatter(maze.getBlinkyScatteringTarget()));
 blinky.setNavigation(DEAD, go(blinky.getHome()));
 blinky.setNavigation(SAFE, bounce());
 ```
@@ -309,7 +309,7 @@ The *chase* behavior is just:
 
 ```java
 public static Navigation chase(MazeMover victim) {
-	return new FollowTargetTile(victim.getMaze(), victim::getTile);
+	return new FollowTargetTile(victim::getTile);
 }
 ```
 
@@ -317,15 +317,15 @@ This is *ambush*, Pinkys's attacking behavior:
 
 ```java
 public static Navigation ambush(MazeMover victim) {
-	return new FollowTargetTile(victim.getMaze(), () -> aheadOf(victim, 4));
+	return new FollowTargetTile(() -> aheadOf(victim, 4));
 }
 ```
 
 And finally *scatter*, where each ghost visits its dedicated corner and cycles around the block:
 
 ```java
-public static Navigation scatter(Maze maze, Tile scatteringTarget) {
-	return new FollowTargetTile(maze, () -> scatteringTarget);
+public static Navigation scatter(Tile scatteringTarget) {
+	return new FollowTargetTile(() -> scatteringTarget);
 }
 ```
 
