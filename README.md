@@ -321,6 +321,18 @@ public static Navigation ambush(MazeMover victim) {
 }
 ```
 
+Clyde in chase mode targets Pac-Man if he is more than 8 tiles (straight line distance) away, if he is closer, he targets his scattering tile in the lower left corner:
+
+```java
+class ClydeChaseBehavior {
+
+	static Tile computeTarget(Ghost clyde, PacMan pacMan) {
+		double d = Vector2f.dist(clyde.getCenter(), pacMan.getCenter());
+		return d >= 8 * Game.TS ? pacMan.getTile() : clyde.getMaze().getClydeScatteringTarget();
+	}
+}
+```
+
 And finally *scatter*, where each ghost visits its dedicated corner and cycles around the block:
 
 ```java
