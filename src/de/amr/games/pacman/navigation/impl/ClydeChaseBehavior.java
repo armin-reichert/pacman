@@ -32,7 +32,7 @@ import de.amr.games.pacman.model.Tile;
  * maintain in Scatter mode. </cite>
  * </p>
  */
-public class ClydeChaseBehavior {
+class ClydeChaseBehavior {
 
 	static Tile computeTarget(Ghost clyde, PacMan pacMan) {
 		double d = Vector2f.dist(clyde.getCenter(), pacMan.getCenter());
