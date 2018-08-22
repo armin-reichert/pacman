@@ -53,6 +53,10 @@ public interface NavigationSystem {
 		return new FollowTargetTile(() -> InkyChaseBehavior.computeTarget(blinky, pacMan));
 	}
 
+	public static Navigation clydeChaseBehavior(Ghost clyde, PacMan pacMan) {
+		return new FollowTargetTile(() -> ClydeChaseBehavior.computeTarget(clyde, pacMan));
+	}
+	
 	public static Navigation scatter(Tile scatteringTarget) {
 		return new FollowTargetTile(() -> scatteringTarget);
 	}

@@ -12,6 +12,7 @@ import static de.amr.games.pacman.actor.game.GhostState.SCATTERING;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.ambush;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.bounce;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.chase;
+import static de.amr.games.pacman.navigation.impl.NavigationSystem.clydeChaseBehavior;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.flee;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.followKeyboard;
 import static de.amr.games.pacman.navigation.impl.NavigationSystem.go;
@@ -95,7 +96,7 @@ public class Cast implements PacManWorld {
 	}
 
 	private void configureClyde(Maze maze) {
-		clyde.setNavigation(AGGRO, flee(pacMan)); // TODO
+		clyde.setNavigation(AGGRO, clydeChaseBehavior(clyde, pacMan));
 		clyde.setNavigation(FRIGHTENED, flee(pacMan));
 		clyde.setNavigation(SCATTERING, scatter(maze.getClydeScatteringTarget()));
 		clyde.setNavigation(DEAD, go(clyde.getHome()));
