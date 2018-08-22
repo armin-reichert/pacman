@@ -239,20 +239,16 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 				--digestionTicks;
 				return;
 			}
-			inspectMaze();
+			move();
+			if (eventsEnabled) {
+				inspectTile(getTile());
+			}
 		}
 
-		protected void inspectMaze() {
-			move();
-			Tile tile = getTile();
-
-			if (!eventsEnabled) {
-				return;
-			}
-
+		protected void inspectTile(Tile tile) {
 			// Ghost collision?
-			Optional<Ghost> collidingGhost = world.getActiveGhosts()
 			/*@formatter:off*/
+			Optional<Ghost> collidingGhost = world.getActiveGhosts()
 				.filter(ghost -> ghost.getTile().equals(tile))
 				.filter(ghost -> ghost.getState() != GhostState.DEAD)
 				.filter(ghost -> ghost.getState() != GhostState.DYING)
@@ -265,11 +261,14 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 			}
 
 			// Unhonored bonus?
-			Optional<Bonus> activeBonus = world.getBonus().filter(bonus -> bonus.getTile().equals(tile))
+			/*@formatter:off*/
+			Optional<Bonus> activeBonus = world.getBonus()
+					.filter(bonus -> bonus.getTile().equals(tile))
 					.filter(bonus -> !bonus.isHonored());
+			/*@formatter:on*/
 			if (activeBonus.isPresent()) {
-				publishEvent(
-						new BonusFoundEvent(activeBonus.get().getSymbol(), activeBonus.get().getValue()));
+				Bonus bonus = activeBonus.get();
+				publishEvent(new BonusFoundEvent(bonus.getSymbol(), bonus.getValue()));
 				return;
 			}
 
