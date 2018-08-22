@@ -313,7 +313,7 @@ public static Navigation chase(MazeMover victim) {
 }
 ```
 
-*ambush*, Pinkys's attacking behavior:
+This is *ambush*, Pinkys's attacking behavior:
 
 ```java
 public static Navigation ambush(MazeMover victim) {
@@ -321,7 +321,7 @@ public static Navigation ambush(MazeMover victim) {
 }
 ```
 
-*scatter* where each ghost cycles around the block in its dedicated corner:
+And finally *scatter*, where each ghost visits its dedicated corner and cycles around the block:
 
 ```java
 public static Navigation scatter(Maze maze, Tile scatteringTarget) {
@@ -331,7 +331,7 @@ public static Navigation scatter(Maze maze, Tile scatteringTarget) {
 
 <img src="doc/scattering.png"/>
 
-For simulating the ghost behavior in the original Pac-Man game no graph based path finding is needed but the *followTargetTile* behavior is used allo over the place. As an example for path finding based behavior, the *flee* behavior has been implemented differently from the original game. 
+For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed, the *followTargetTile* behavior is sufficient. As an example how graph path finding could be used, the *flee* behavior has been implemented differently from the original game. 
 
 Shortest routes in the maze graph can be computed using the method *Maze.findPath(Tile source, Tile target)*. This method runs an A* or BFS algorithm on the underlying grid graph (A* sounds cooler than BFS :-). A* is rather useless here because the maze is represented by a (grid) graph where the distance between two vertices (neighbor tiles) is always equal. Thus the Dijkstra or A* path finding algorithms will just degenerate to BFS (correct my if I'm wrong). Of course you could represent the graph differently, for example with vertices only for crossings and weighted edges for passages. In that case, Dijkstra or A* would be useful.
 
