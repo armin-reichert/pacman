@@ -31,6 +31,7 @@ public class MazePanel extends GameEntity {
 		s_maze_flashing = SPRITES.mazeFlashing();
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(500);
+		energizerBlinking.setEnabled(false);
 	}
 
 	@Override

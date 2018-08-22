@@ -227,6 +227,6 @@ public class Game {
 	}
 
 	public int getReadyTime() {
-		return sec(3);
+		return sec(1);
 	}
 }

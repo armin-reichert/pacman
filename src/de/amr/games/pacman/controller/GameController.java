@@ -3,6 +3,7 @@ package de.amr.games.pacman.controller;
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.games.pacman.controller.GameController.PlayState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.GameController.PlayState.GAME_OVER;
+import static de.amr.games.pacman.controller.GameController.PlayState.GET_READY;
 import static de.amr.games.pacman.controller.GameController.PlayState.GHOST_DYING;
 import static de.amr.games.pacman.controller.GameController.PlayState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.GameController.PlayState.PLAYING;
@@ -47,7 +48,7 @@ import de.amr.statemachine.StateObject;
 public class GameController implements Controller {
 
 	public enum PlayState {
-		READY, PLAYING, GHOST_DYING, PACMAN_DYING, CHANGING_LEVEL, GAME_OVER
+		GET_READY, READY, PLAYING, GHOST_DYING, PACMAN_DYING, CHANGING_LEVEL, GAME_OVER
 	}
 
 	private final Game game;
@@ -95,10 +96,13 @@ public class GameController implements Controller {
 		StateMachine.define(PlayState.class, GameEvent.class)
 			
 			.description("[GameControl]")
-			.initialState(READY)
+			.initialState(GET_READY)
 			
 			.states()
-			
+				
+				.state(GET_READY)
+					.onEntry(() -> gameView.showInfo("Press   ENTER   to   start!", Color.YELLOW))
+				
 				.state(READY)
 					.impl(new ReadyState())
 					.timeoutAfter(game::getReadyTime)
@@ -121,6 +125,9 @@ public class GameController implements Controller {
 					.impl(new GameOverState())
 	
 			.transitions()
+			
+				.when(GET_READY).then(READY)
+					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_ENTER))
 				
 				.when(READY).then(PLAYING).onTimeout()
 					
