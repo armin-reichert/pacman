@@ -11,6 +11,11 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.Navigation;
 
+/**
+ * Factory for navigation behaviors.
+ * 
+ * @author Armin Reichert
+ */
 public interface NavigationSystem {
 
 	public static Navigation ambush(MazeMover victim) {
