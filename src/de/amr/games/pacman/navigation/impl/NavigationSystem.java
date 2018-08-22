@@ -1,5 +1,7 @@
 package de.amr.games.pacman.navigation.impl;
 
+import static de.amr.games.pacman.navigation.impl.FollowTargetTile.aheadOf;
+
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.core.MazeMover;
@@ -12,7 +14,7 @@ import de.amr.games.pacman.navigation.Navigation;
 public interface NavigationSystem {
 
 	public static Navigation ambush(MazeMover victim) {
-		return new Ambush(victim);
+		return new FollowTargetTile(victim.getMaze(), () -> aheadOf(victim, 4));
 	}
 
 	public static Navigation bounce() {
@@ -20,7 +22,7 @@ public interface NavigationSystem {
 	}
 
 	public static Navigation chase(MazeMover victim) {
-		return new Chase(victim);
+		return new FollowTargetTile(victim.getMaze(), victim::getTile);
 	}
 
 	public static Navigation flee(MazeMover chaser) {
@@ -40,15 +42,15 @@ public interface NavigationSystem {
 	}
 
 	public static Navigation go(Tile target) {
-		return new Go(target);
+		return new FollowPath(target);
 	}
 
 	public static Navigation moody(Ghost blinky, PacMan pacMan) {
 		return new Moody(blinky, pacMan);
 	}
 
-	public static Navigation scatter(Maze maze, Tile targetTile) {
-		return new Scatter(maze, targetTile);
+	public static Navigation scatter(Maze maze, Tile scatteringTarget) {
+		return new FollowTargetTile(maze, () -> scatteringTarget);
 	}
 
 	public static Navigation stayBehind() {

@@ -6,11 +6,11 @@ import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.MazeRoute;
 import de.amr.games.pacman.navigation.Navigation;
 
-class Go implements Navigation {
+class FollowPath implements Navigation {
 
 	private final Tile target;
 
-	public Go(Tile target) {
+	public FollowPath(Tile target) {
 		this.target = target;
 	}
 
