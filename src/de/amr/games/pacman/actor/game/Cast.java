@@ -42,6 +42,32 @@ import de.amr.games.pacman.view.PacManSprites.GhostColor;
  */
 public class Cast implements PacManWorld {
 
+	private final Game game;
+	private final PacMan pacMan;
+	private final Ghost blinky, pinky, inky, clyde;
+	private final Set<Ghost> activeGhosts = new HashSet<>(4);
+	private Bonus bonus;
+
+	public Cast(Game game) {
+		this.game = game;
+		Maze maze = game.getMaze();
+
+		pacMan = new PacMan(game, this);
+
+		blinky = new Ghost(Blinky, pacMan, game, maze.getBlinkyHome(), Top4.E, GhostColor.RED);
+		pinky = new Ghost(Pinky, pacMan, game, maze.getPinkyHome(), Top4.S, GhostColor.PINK);
+		inky = new Ghost(Inky, pacMan, game, maze.getInkyHome(), Top4.N, GhostColor.TURQUOISE);
+		clyde = new Ghost(Clyde, pacMan, game, maze.getClydeHome(), Top4.N, GhostColor.ORANGE);
+
+		activeGhosts.addAll(Arrays.asList(blinky, pinky, inky, clyde));
+
+		configurePacMan();
+		configureBlinky(maze);
+		configurePinky(maze);
+		configureInky(maze);
+		configureClyde(maze);
+	}
+
 	private void configurePacMan() {
 		Navigation keySteering = followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
 		pacMan.setNavigation(PacManState.HUNGRY, keySteering);
@@ -78,32 +104,6 @@ public class Cast implements PacManWorld {
 		clyde.setNavigation(SCATTERING, scatter(game.getMaze(), maze.getClydeScatteringTarget()));
 		clyde.setNavigation(DEAD, go(clyde.getHome()));
 		clyde.setNavigation(SAFE, bounce());
-	}
-
-	private final Game game;
-	private final PacMan pacMan;
-	private final Ghost blinky, pinky, inky, clyde;
-	private final Set<Ghost> activeGhosts = new HashSet<>(4);
-	private Bonus bonus;
-
-	public Cast(Game game) {
-		this.game = game;
-		Maze maze = game.getMaze();
-
-		pacMan = new PacMan(game, this);
-
-		blinky = new Ghost(Blinky, pacMan, game, maze.getBlinkyHome(), Top4.E, GhostColor.RED);
-		pinky = new Ghost(Pinky, pacMan, game, maze.getPinkyHome(), Top4.S, GhostColor.PINK);
-		inky = new Ghost(Inky, pacMan, game, maze.getInkyHome(), Top4.N, GhostColor.TURQUOISE);
-		clyde = new Ghost(Clyde, pacMan, game, maze.getClydeHome(), Top4.N, GhostColor.ORANGE);
-
-		activeGhosts.addAll(Arrays.asList(blinky, pinky, inky, clyde));
-
-		configurePacMan();
-		configureBlinky(maze);
-		configurePinky(maze);
-		configureInky(maze);
-		configureClyde(maze);
 	}
 
 	public void init() {
