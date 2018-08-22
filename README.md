@@ -51,7 +51,7 @@ Of course, Pac-Man and the four ghosts, but also the global game control, maybe 
 
 I decided to implement the global game control as well as the Pac-Man and ghost control by state machines. Their control logic is sufficiently complex for being modelled/implemented explicitly. My implementation allows (similarly to e.g. Stateless4j) to define your state machines in a declarative way (*builder pattern*). Further, the overhead of embedding client code into the state machine definitions is reduced by the possibility to use lambda expressions (anonymous functions) or function/method references. This allows for a smooth integration of state machines in your program. You have the flexibility to write your code inline inside the state machine hooks (*onEntry, onExit, onTick, on(event), onTimeout*), or to delegate to separate classes/methods. You can either use the predefined state objects or define your own state objects in separate classes, with additional methods and variables. 
 
-## State-machines in practice
+## State machines in practice
 
 Sounds all well and nice, but how does that look in the real code? Here is the implementation of the global game control:
 
@@ -333,7 +333,7 @@ public static Navigation scatter(Maze maze, Tile scatteringTarget) {
 
 For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed, the *followTargetTile* behavior is sufficient. As an example how graph path finding could be used, the *flee* behavior has been implemented differently from the original game. 
 
-Shortest routes in the maze graph can be computed using the method *Maze.findPath(Tile source, Tile target)*. This method runs an A* or BFS algorithm on the underlying grid graph (A* sounds cooler than BFS :-). A* is rather useless here because the maze is represented by a (grid) graph where the distance between two vertices (neighbor tiles) is always equal. Thus the Dijkstra or A* path finding algorithms will just degenerate to BFS (correct my if I'm wrong). Of course you could represent the graph differently, for example with vertices only for crossings and weighted edges for passages. In that case, Dijkstra or A* would be useful.
+Shortest routes in the maze graph can be computed using the method *Maze.findPath(Tile source, Tile target)*. This method runs an A* or BFS algorithm on the underlying grid graph (A* sounds cooler than BFS :-). A* is rather useless here because the maze is represented by a (grid) graph where the distance between two vertices (neighbor tiles) is always equal. Thus the Dijkstra or A* path finding algorithms will just degenerate to BFS (correct me if I'm wrong). Of course you could represent the graph differently, for example with vertices only for crossings and weighted edges for passages. In that case, Dijkstra or A* would be useful.
 
 ## Additional program features
 
@@ -348,6 +348,9 @@ Shortest routes in the maze graph can be computed using the method *Maze.findPat
 
 
 ## References
+
+This work would not have been possible without these invaluable sources of information:
+
 - [GameInternals - Understanding Pac-Man Ghost Behavior](http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior)
 - [Gamasutra - The Pac-Man Dossier](http://www.gamasutra.com/view/feature/3938/the_pacman_dossier.php)
 
