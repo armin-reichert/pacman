@@ -15,7 +15,7 @@ import static de.amr.games.pacman.navigation.NavigationSystem.chase;
 import static de.amr.games.pacman.navigation.NavigationSystem.clydeChaseBehavior;
 import static de.amr.games.pacman.navigation.NavigationSystem.flee;
 import static de.amr.games.pacman.navigation.NavigationSystem.followKeyboard;
-import static de.amr.games.pacman.navigation.NavigationSystem.go;
+import static de.amr.games.pacman.navigation.NavigationSystem.followPath;
 import static de.amr.games.pacman.navigation.NavigationSystem.inkyChaseBehavior;
 import static de.amr.games.pacman.navigation.NavigationSystem.scatter;
 import static java.awt.event.KeyEvent.VK_DOWN;
@@ -75,7 +75,7 @@ public class Cast implements PacManWorld {
 		blinky.setNavigation(AGGRO, chase(pacMan));
 		blinky.setNavigation(FRIGHTENED, flee(pacMan));
 		blinky.setNavigation(SCATTERING, scatter(maze.getBlinkyScatteringTarget()));
-		blinky.setNavigation(DEAD, go(blinky.getHome()));
+		blinky.setNavigation(DEAD, followPath(blinky.getHome()));
 		blinky.setNavigation(SAFE, bounce());
 	}
 
@@ -83,7 +83,7 @@ public class Cast implements PacManWorld {
 		pinky.setNavigation(AGGRO, ambush(pacMan));
 		pinky.setNavigation(FRIGHTENED, flee(pacMan));
 		pinky.setNavigation(SCATTERING, scatter(maze.getPinkyScatteringTarget()));
-		pinky.setNavigation(DEAD, go(pinky.getHome()));
+		pinky.setNavigation(DEAD, followPath(pinky.getHome()));
 		pinky.setNavigation(SAFE, bounce());
 	}
 
@@ -91,7 +91,7 @@ public class Cast implements PacManWorld {
 		inky.setNavigation(AGGRO, inkyChaseBehavior(blinky, pacMan));
 		inky.setNavigation(FRIGHTENED, flee(pacMan));
 		inky.setNavigation(SCATTERING, scatter(maze.getInkyScatteringTarget()));
-		inky.setNavigation(DEAD, go(inky.getHome()));
+		inky.setNavigation(DEAD, followPath(inky.getHome()));
 		inky.setNavigation(SAFE, bounce());
 	}
 
@@ -99,7 +99,7 @@ public class Cast implements PacManWorld {
 		clyde.setNavigation(AGGRO, clydeChaseBehavior(clyde, pacMan));
 		clyde.setNavigation(FRIGHTENED, flee(pacMan));
 		clyde.setNavigation(SCATTERING, scatter(maze.getClydeScatteringTarget()));
-		clyde.setNavigation(DEAD, go(clyde.getHome()));
+		clyde.setNavigation(DEAD, followPath(clyde.getHome()));
 		clyde.setNavigation(SAFE, bounce());
 		// TODO: condition is only correct for first game level
 		clyde.fnCanLeaveHouse = () -> game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);

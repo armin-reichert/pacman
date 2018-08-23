@@ -1,5 +1,7 @@
 package de.amr.games.pacman.navigation;
 
+import static de.amr.games.pacman.model.Maze.NESW;
+
 import java.util.function.Supplier;
 
 import de.amr.easy.game.math.Vector2f;
@@ -18,11 +20,15 @@ import de.amr.games.pacman.model.Tile;
 public interface NavigationSystem {
 
 	public static Navigation ambush(MazeMover victim) {
-		return new FollowTargetTile(() -> NavigationSystem.aheadOf(victim, 4));
+		return new FollowTargetTile(() -> aheadOf(victim, 4));
 	}
 
 	public static Navigation bounce() {
-		return new Bounce();
+		return bouncer -> {
+			MazeRoute route = new MazeRoute();
+			route.dir = bouncer.isStuck() ? NESW.inv(bouncer.getCurrentDir()) : bouncer.getCurrentDir();
+			return route;
+		};
 	}
 
 	public static Navigation chase(MazeMover victim) {
@@ -37,16 +43,20 @@ public interface NavigationSystem {
 		return new FollowKeyboard(nesw);
 	}
 
+	public static Navigation followPath(Tile target) {
+		return new FollowPath(target);
+	}
+
 	public static Navigation followTargetTile(Supplier<Tile> targetTileSupplier) {
 		return new FollowTargetTile(targetTileSupplier);
 	}
 
 	public static Navigation forward() {
-		return new Forward();
-	}
-
-	public static Navigation go(Tile target) {
-		return new FollowPath(target);
+		return mover -> {
+			MazeRoute route = new MazeRoute();
+			route.dir = mover.getCurrentDir();
+			return route;
+		};
 	}
 
 	/**
@@ -130,13 +140,15 @@ public interface NavigationSystem {
 	 *         tiles ahead an so on.
 	 */
 	static Tile aheadOf(MazeMover mover, int n) {
+		Maze maze = mover.getMaze();
 		Tile tile = mover.getTile();
-		int dir = mover.getCurrentDir();
-		Tile target = tile.tileTowards(dir, n);
-		while (n >= 0 && !mover.getMaze().isValidTile(target)) {
+		while (n >= 0) {
+			Tile target = tile.tileTowards(mover.getCurrentDir(), n);
+			if (maze.isValidTile(target)) {
+				return target;
+			}
 			n -= 1;
-			target = tile.tileTowards(dir, n);
 		}
-		return target;
+		return tile;
 	}
 }
