@@ -299,17 +299,27 @@ pacMan.setNavigation(PacManState.HUNGRY, keySteering);
 pacMan.setNavigation(PacManState.GREEDY, keySteering);
 ```
 
-Configuration of Blinky's navigation behaviour (the other ghosts are similarly configured):
+Configuration of ghost behavior:
 
 ```java
+// common ghost behavior
+Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
+	ghost.setNavigation(FRIGHTENED, flee(pacMan));
+	ghost.setNavigation(SCATTERING, scatter(ghost.getScatteringTarget()));
+	ghost.setNavigation(DEAD, followPath(ghost.getHome()));
+	ghost.setNavigation(SAFE, bounce());
+});
+
+// individual ghost behavior
 blinky.setNavigation(AGGRO, chase(pacMan));
-blinky.setNavigation(FRIGHTENED, flee(pacMan));
-blinky.setNavigation(SCATTERING, scatter(maze.getBlinkyScatteringTarget()));
-blinky.setNavigation(DEAD, go(blinky.getHome()));
-blinky.setNavigation(SAFE, bounce());
+pinky.setNavigation(AGGRO, ambush(pacMan));
+inky.setNavigation(AGGRO, inkyChaseBehavior(blinky, pacMan));
+clyde.setNavigation(AGGRO, clydeChaseBehavior(clyde, pacMan));
+clyde.fnCanLeaveHouse = () -> game.getLevel() > 1
+		|| game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
 ```
 
-There is a general *followTargetTile* behavior which makes it trivial to implement the ghost behaviors like *scatter*, *ambush* or *chase*.
+There is a general *followTargetTile* behavior which makes it trivial to implement the single ghost behaviors like *scatter*, *ambush*, *chase* and so on.
 
 Blinky's *chase* behavior is to directly target Pac-Man:
 
