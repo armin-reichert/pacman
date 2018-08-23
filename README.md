@@ -305,7 +305,7 @@ Configuration of ghost behavior:
 // common ghost behavior
 Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
 	ghost.setNavigation(FRIGHTENED, flee(pacMan));
-	ghost.setNavigation(SCATTERING, scatter(ghost.getScatteringTarget()));
+	ghost.setNavigation(SCATTERING, followTargetTile(() -> ghost.getScatteringTarget()));
 	ghost.setNavigation(DEAD, followPath(ghost.getHome()));
 	ghost.setNavigation(SAFE, bounce());
 });
@@ -319,7 +319,7 @@ clyde.fnCanLeaveHouse = () -> game.getLevel() > 1
 		|| game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
 ```
 
-There is a general *followTargetTile* behavior which makes it trivial to implement the single ghost behaviors like *scatter*, *ambush*, *chase* and so on.
+The general *followTargetTile* behavior makes it rather trivial to implement the single ghost behaviors like *scatter*, *ambush*, *chase* and so on.
 
 Blinky's *chase* behavior is to directly target Pac-Man:
 
@@ -329,7 +329,7 @@ public static Navigation chase(MazeMover victim) {
 }
 ```
 
-Pinky, the *ambusher* targets the position 4 tiles ahead of Pac-Man (in the original game there is an overflow error that leads to a different behavior):
+Pinky, the *ambusher*, targets the position 4 tiles ahead of Pac-Man (in the original game there is an overflow error that leads to a different behavior):
 
 ```java
 public static Navigation ambush(MazeMover victim) {
@@ -366,14 +366,6 @@ public static Navigation clydeChaseBehavior(Ghost clyde, PacMan pacMan) {
 }
 ```
 
-And finally *scatter*, where each ghost visits its dedicated corner and cycles around the block:
-
-```java
-public static Navigation scatter(Tile scatteringTarget) {
-	return new FollowTargetTile(() -> scatteringTarget);
-}
-```
-
 <img src="doc/scattering.png"/>
 
 For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed, the *followTargetTile* behavior is sufficient. As an example how graph path finding could be used, the *flee* behavior has been implemented differently from the original game. 
@@ -401,8 +393,10 @@ This work would not have been possible without these invaluable sources of infor
 
 ## Summary
 
-The goal of this project is to implement a Pac-Man like game in a way that also beginners can fully understand how the game is working. The implementation follows the MVC pattern and separates the control logic for the actors and the game play into explicit state machines. The state machines are defined in a declarative way. 
+The goal of this project is to implement a Pac-Man game in a way that also beginners can **fully** understand how the game is working. The implementation here follows the MVC pattern and separates the control logic for the actors and the game play into explicit state machines. The state machines are defined in a declarative way using the builder pattern. 
 
-A very simple game library is used for the basic game features (windowing, game loop) but it should not be too difficult to write these infrastructure parts from scratch or use any other game library instead. It would certainly also be useful to further decouple the UI from the game model and controller to enable an easy replacement of the complete UI.
+A very simple game library is used for the basic game infrastructure (active rendering, game loop) but it is not difficult to write these infrastructure parts from scratch or use some real game library instead. It would certainly also be useful to further decouple the UI from the game model and controller to enable an easy replacement of the complete UI.
+
+Any comments are welcome!
 
 *Armin Reichert, August 2018*
