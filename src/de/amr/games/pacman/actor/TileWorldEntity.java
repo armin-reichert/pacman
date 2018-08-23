@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor.core;
+package de.amr.games.pacman.actor;
 
 import static de.amr.games.pacman.model.Game.TS;
 import static java.lang.Math.round;

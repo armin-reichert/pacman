@@ -2,7 +2,7 @@ package de.amr.games.pacman.navigation;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.actor.core.MazeMover;
+import de.amr.games.pacman.actor.MazeMover;
 
 class FollowKeyboard implements Navigation {
 

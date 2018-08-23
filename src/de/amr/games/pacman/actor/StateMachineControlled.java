@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor.core;
+package de.amr.games.pacman.actor;
 
 import de.amr.easy.game.view.Controller;
 import de.amr.statemachine.StateMachine;

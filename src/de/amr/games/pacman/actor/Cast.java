@@ -1,14 +1,14 @@
-package de.amr.games.pacman.actor.game;
+package de.amr.games.pacman.actor;
 
-import static de.amr.games.pacman.actor.game.GhostName.Blinky;
-import static de.amr.games.pacman.actor.game.GhostName.Clyde;
-import static de.amr.games.pacman.actor.game.GhostName.Inky;
-import static de.amr.games.pacman.actor.game.GhostName.Pinky;
-import static de.amr.games.pacman.actor.game.GhostState.AGGRO;
-import static de.amr.games.pacman.actor.game.GhostState.DEAD;
-import static de.amr.games.pacman.actor.game.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.actor.game.GhostState.SAFE;
-import static de.amr.games.pacman.actor.game.GhostState.SCATTERING;
+import static de.amr.games.pacman.actor.GhostName.Blinky;
+import static de.amr.games.pacman.actor.GhostName.Clyde;
+import static de.amr.games.pacman.actor.GhostName.Inky;
+import static de.amr.games.pacman.actor.GhostName.Pinky;
+import static de.amr.games.pacman.actor.GhostState.AGGRO;
+import static de.amr.games.pacman.actor.GhostState.DEAD;
+import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.actor.GhostState.SAFE;
+import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.navigation.NavigationSystem.ambush;
 import static de.amr.games.pacman.navigation.NavigationSystem.bounce;
 import static de.amr.games.pacman.navigation.NavigationSystem.chase;

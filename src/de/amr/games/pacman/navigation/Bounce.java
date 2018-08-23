@@ -2,7 +2,7 @@ package de.amr.games.pacman.navigation;
 
 import static de.amr.games.pacman.model.Maze.NESW;
 
-import de.amr.games.pacman.actor.core.MazeMover;
+import de.amr.games.pacman.actor.MazeMover;
 
 class Bounce implements Navigation {
 

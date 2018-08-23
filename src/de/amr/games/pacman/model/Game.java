@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.IntSupplier;
 
-import de.amr.games.pacman.actor.game.GhostState;
-import de.amr.games.pacman.actor.game.PacManState;
+import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.model.LevelTable.TableColumn;
 
 /**

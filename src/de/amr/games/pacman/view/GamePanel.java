@@ -11,8 +11,8 @@ import java.awt.Rectangle;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.View;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.actor.game.Cast;
-import de.amr.games.pacman.actor.game.GhostState;
+import de.amr.games.pacman.actor.Cast;
+import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.Game;
 
 public class GamePanel implements PacManGameUI {

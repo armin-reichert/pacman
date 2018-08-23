@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor.game;
+package de.amr.games.pacman.actor;
 
 import java.util.Optional;
 import java.util.stream.Stream;
