@@ -40,15 +40,11 @@ public class ExtendedGamePanel extends GamePanel {
 	public boolean showGrid = false;
 	public boolean showRoutes = false;
 	public boolean showStates = false;
-	public boolean showScores = true;
-	public boolean showLives = true;
-	public boolean showLevelCounter = true;
 
 	private static BufferedImage createGridImage(int numRows, int numCols) {
-		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment()
-				.getDefaultScreenDevice().getDefaultConfiguration();
-		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1,
-				Transparency.TRANSLUCENT);
+		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+				.getDefaultConfiguration();
+		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1, Transparency.TRANSLUCENT);
 		Graphics2D g = image.createGraphics();
 		g.setColor(Color.DARK_GRAY);
 		for (int row = 0; row <= numRows; ++row) {
@@ -115,20 +111,7 @@ public class ExtendedGamePanel extends GamePanel {
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (showScores) {
-			drawScores(g);
-		}
-		if (showLives) {
-			drawLives(g);
-		}
-		if (showLevelCounter) {
-			drawLevelCounter(g);
-		}
-
-		mazePanel.draw(g);
-		drawActors(g);
-		drawInfoText(g);
-
+		super.draw(g);
 		if (showGrid) {
 			drawGrid(g);
 			drawActorGridAlignment(actors.getPacMan(), g);
@@ -167,8 +150,8 @@ public class ExtendedGamePanel extends GamePanel {
 
 	private String ghostState(Ghost ghost) {
 		StateObject<?, ?> state = ghost.getStateObject();
-		return state.getDuration() != StateObject.ENDLESS ? String.format("%s(%s,%d|%d)",
-				ghost.getName(), state.id(), state.getRemaining(), state.getDuration())
+		return state.getDuration() != StateObject.ENDLESS
+				? String.format("%s(%s,%d|%d)", ghost.getName(), state.id(), state.getRemaining(), state.getDuration())
 				: String.format("%s(%s,%s)", ghost.getName(), state.id(), INFTY);
 	}
 
@@ -233,8 +216,8 @@ public class ExtendedGamePanel extends GamePanel {
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-targetTile.col * TS, -targetTile.row * TS);
 		} else if (route.targetTile != null) {
-			g.drawLine((int) ghost.getCenter().x, (int) ghost.getCenter().y,
-					route.targetTile.col * TS + TS / 2, route.targetTile.row * TS + TS / 2);
+			g.drawLine((int) ghost.getCenter().x, (int) ghost.getCenter().y, route.targetTile.col * TS + TS / 2,
+					route.targetTile.row * TS + TS / 2);
 			g.translate(route.targetTile.col * TS, route.targetTile.row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-route.targetTile.col * TS, -route.targetTile.row * TS);

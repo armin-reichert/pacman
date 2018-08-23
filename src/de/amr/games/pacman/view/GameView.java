@@ -17,5 +17,6 @@ public interface GameView extends ViewController {
 	void setBonusTimer(int ticks);
 
 	void setMazeFlashing(boolean flashing);
-
+	
+	void setScoresVisible(boolean visible);
 }

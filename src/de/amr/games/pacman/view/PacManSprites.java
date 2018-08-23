@@ -190,11 +190,11 @@ public class PacManSprites {
 	}
 
 	public Sprite ghostFrightened() {
-		return new Sprite(ghostAwed).animate(CYCLIC, 200);
+		return new Sprite(ghostAwed).animate(CYCLIC, 300);
 	}
 
 	public Sprite ghostFlashing() {
-		return new Sprite(ghostFlashing).animate(CYCLIC, 250);
+		return new Sprite(ghostFlashing).animate(CYCLIC, 300);
 	}
 
 	public Sprite ghostEyes(int dir) {

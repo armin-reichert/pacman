@@ -62,7 +62,7 @@ public class GameController implements Controller {
 		actors = new Cast(game);
 		gameView = new ExtendedGamePanel(maze.numCols() * Game.TS, maze.numRows() * Game.TS, game,
 				actors);
-		gameControl = createGameControl();
+		gameControl = buildStateMachine();
 		actors.getPacMan().subscribe(gameControl::process);
 	}
 
@@ -90,7 +90,7 @@ public class GameController implements Controller {
 		return gameControl.state(PLAYING);
 	}
 
-	private StateMachine<PlayState, GameEvent> createGameControl() {
+	private StateMachine<PlayState, GameEvent> buildStateMachine() {
 		return
 		//@formatter:off
 		StateMachine.define(PlayState.class, GameEvent.class)
@@ -101,7 +101,10 @@ public class GameController implements Controller {
 			.states()
 				
 				.state(GET_READY)
-					.onEntry(() -> gameView.showInfo("Press   ENTER   to   start!", Color.YELLOW))
+					.onEntry(() -> {
+						gameView.setScoresVisible(false);
+						gameView.showInfo("Press   ENTER   to   start!", Color.YELLOW);
+					})
 				
 				.state(READY)
 					.impl(new ReadyState())
@@ -200,6 +203,7 @@ public class GameController implements Controller {
 		public void onEntry() {
 			game.init();
 			actors.init();
+			gameView.setScoresVisible(true);
 			gameView.enableAnimation(false);
 			gameView.showInfo("Ready!", Color.YELLOW);
 		}

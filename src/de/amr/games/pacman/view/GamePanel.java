@@ -17,6 +17,7 @@ import de.amr.games.pacman.model.Game;
 
 public class GamePanel implements GameView {
 
+	private boolean scoresVisible;
 	protected final int width, height;
 	protected final Game game;
 	protected final Cast actors;
@@ -88,11 +89,18 @@ public class GamePanel implements GameView {
 		this.infoText = null;
 	}
 
+	public boolean isScoresVisible() {
+		return scoresVisible;
+	}
+
+	@Override
+	public void setScoresVisible(boolean scoresVisible) {
+		this.scoresVisible = scoresVisible;
+	}
+
 	@Override
 	public void draw(Graphics2D g) {
 		drawScores(g);
-		drawLives(g);
-		drawLevelCounter(g);
 		mazePanel.draw(g);
 		drawActors(g);
 		drawInfoText(g);
@@ -119,29 +127,34 @@ public class GamePanel implements GameView {
 	}
 
 	protected void drawScores(Graphics2D g) {
-		// Score
-		int score = game.score.getScore();
-		g.setFont(Assets.font("scoreFont"));
-		g.setColor(Color.YELLOW);
-		g.drawString("SCORE", TS, TS);
-		g.setColor(Color.WHITE);
-		g.drawString(String.format("%07d", score), TS, 2 * TS);
-		g.setColor(Color.YELLOW);
-		g.drawString(String.format("LEVEL %2d", game.getLevel()), 22 * TS, TS);
+		if (scoresVisible) {
+			// Points score
+			int score = game.score.getScore();
+			g.setFont(Assets.font("scoreFont"));
+			g.setColor(Color.YELLOW);
+			g.drawString("SCORE", TS, TS);
+			g.setColor(Color.WHITE);
+			g.drawString(String.format("%07d", score), TS, 2 * TS);
+			g.setColor(Color.YELLOW);
+			g.drawString(String.format("LEVEL %2d", game.getLevel()), 22 * TS, TS);
 
-		// Highscore
-		g.setColor(Color.YELLOW);
-		g.drawString("HIGH", 10 * TS, TS);
-		g.drawString("SCORE", 14 * TS, TS);
-		g.setColor(Color.WHITE);
-		g.drawString(String.format("%07d", game.score.getHiscore()), 10 * TS, 2 * TS);
-		g.drawString(String.format("L%d", game.score.getHiscoreLevel()), 16 * TS, 2 * TS);
+			// High score
+			g.setColor(Color.YELLOW);
+			g.drawString("HIGH", 10 * TS, TS);
+			g.drawString("SCORE", 14 * TS, TS);
+			g.setColor(Color.WHITE);
+			g.drawString(String.format("%07d", game.score.getHiscore()), 10 * TS, 2 * TS);
+			g.drawString(String.format("L%d", game.score.getHiscoreLevel()), 16 * TS, 2 * TS);
 
-		// Food remaining
-		g.setColor(Color.PINK);
-		g.fillRect(22 * TS + 2, TS + 2, 4, 4);
-		g.setColor(Color.WHITE);
-		g.drawString(String.format("%d", game.getFoodRemaining()), 23 * TS, 2 * TS);
+			// Food remaining score
+			g.setColor(Color.PINK);
+			g.fillRect(22 * TS + 2, TS + 2, 4, 4);
+			g.setColor(Color.WHITE);
+			g.drawString(String.format("%d", game.getFoodRemaining()), 23 * TS, 2 * TS);
+
+			drawLives(g);
+			drawLevelCounter(g);
+		}
 	}
 
 	protected void drawActors(Graphics2D g) {
@@ -150,10 +163,8 @@ public class GamePanel implements GameView {
 			bonus.draw(g);
 		});
 		actors.getPacMan().draw(g);
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
-				.forEach(ghost -> ghost.draw(g));
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
-				.forEach(ghost -> ghost.draw(g));
+		actors.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));
+		actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawInfoText(Graphics2D g) {
