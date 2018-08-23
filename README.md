@@ -299,7 +299,7 @@ pacMan.setNavigation(PacManState.HUNGRY, keySteering);
 pacMan.setNavigation(PacManState.GREEDY, keySteering);
 ```
 
-Configuration of Blinky's navigation behaviour:
+Configuration of Blinky's navigation behaviour (the other ghosts are similarly configured):
 
 ```java
 blinky.setNavigation(AGGRO, chase(pacMan));
@@ -311,7 +311,7 @@ blinky.setNavigation(SAFE, bounce());
 
 There is a general *followTargetTile* behavior which makes it trivial to implement the ghost behaviors like *scatter*, *ambush* or *chase*.
 
-The *chase* behavior is just:
+Blinky's *chase* behavior is to directly target Pac-Man:
 
 ```java
 public static Navigation chase(MazeMover victim) {
@@ -319,7 +319,7 @@ public static Navigation chase(MazeMover victim) {
 }
 ```
 
-This is *ambush*, Pinkys's attacking behavior:
+Pinky, the *ambusher* targets the position 4 tiles ahead of Pac-Man (in the original game there is an overflow error that leads to a different behavior):
 
 ```java
 public static Navigation ambush(MazeMover victim) {
@@ -370,16 +370,16 @@ For simulating the ghost behavior from the original Pac-Man game, no graph based
 
 Shortest routes in the maze graph can be computed using the method *Maze.findPath(Tile source, Tile target)*. This method runs an A* or BFS algorithm on the underlying grid graph (A* sounds cooler than BFS :-). A* is rather useless here because the maze is represented by a (grid) graph where the distance between two vertices (neighbor tiles) is always equal. Thus the Dijkstra or A* path finding algorithms will just degenerate to BFS (correct me if I'm wrong). Of course you could represent the graph differently, for example with vertices only for crossings and weighted edges for passages. In that case, Dijkstra or A* would be useful.
 
-## Additional program features
+## Additional features
 
 - Display of entity states and timers can be switched on/off at runtime (key 's')
 - Display of entity routes can be switched on/off at runtime (key 'r')
 - Ghosts can be switched on/off (keys 'b', 'p', 'i', 'c')
 - Key 'k' kills all ghosts
 - Key 'e' eats all pellets
-- Movement on grid can be debugged (key 'g' shows grid and actor alignments)
-- Game can be paused (CTRL+p) and frame rate can be changed at runtime (F2 opens dialog)
-- F11 toggles between window and full-screen exclusive mode (may cause bluescreen :-)
+- Alignment of movers on the grid can be visualized (key 'g')
+- Game can be paused (CTRL+p) and game loop frequency can be changed (F2 opens dialog)
+- F11 toggles between window and full-screen exclusive mode (warning: may cause bluescreen!)
 
 
 ## References
