@@ -1,4 +1,4 @@
-package de.amr.games.pacman.controller.event;
+package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.LOGGER;
 
