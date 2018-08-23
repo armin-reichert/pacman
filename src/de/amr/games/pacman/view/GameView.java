@@ -4,7 +4,7 @@ import java.awt.Color;
 
 import de.amr.easy.game.view.ViewController;
 
-public interface PacManGameUI extends ViewController {
+public interface GameView extends ViewController {
 
 	PacManSprites SPRITES = new PacManSprites();
 

@@ -9,7 +9,7 @@ import static de.amr.games.pacman.actor.GhostState.SAFE;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
-import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
+import static de.amr.games.pacman.view.GameView.SPRITES;
 
 import java.util.EnumMap;
 import java.util.Map;

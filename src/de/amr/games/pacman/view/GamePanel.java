@@ -15,7 +15,7 @@ import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.Game;
 
-public class GamePanel implements PacManGameUI {
+public class GamePanel implements GameView {
 
 	protected final int width, height;
 	protected final Game game;

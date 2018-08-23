@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view;
 
 import static de.amr.games.pacman.model.Game.TS;
-import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
+import static de.amr.games.pacman.view.GameView.SPRITES;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

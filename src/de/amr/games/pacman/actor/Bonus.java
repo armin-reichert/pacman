@@ -1,6 +1,6 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.games.pacman.view.PacManGameUI.SPRITES;
+import static de.amr.games.pacman.view.GameView.SPRITES;
 import static java.util.Arrays.binarySearch;
 
 import java.util.stream.Stream;

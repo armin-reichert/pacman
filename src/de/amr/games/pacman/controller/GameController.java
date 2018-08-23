@@ -36,7 +36,7 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.view.ExtendedGamePanel;
-import de.amr.games.pacman.view.PacManGameUI;
+import de.amr.games.pacman.view.GameView;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
 
@@ -53,7 +53,7 @@ public class GameController implements Controller {
 
 	private final Game game;
 	private final Cast actors;
-	private final PacManGameUI gameView;
+	private final GameView gameView;
 	private final StateMachine<PlayState, GameEvent> gameControl;
 
 	public GameController() {
