@@ -337,7 +337,9 @@ public static Navigation ambush(MazeMover victim) {
 }
 ```
 
-Inky takes the position two tiles ahead of Pac-Mann and draws an imaginary arrow from Blinky's position to that position. This arrow is then doubled and the arrow head will be Inky's target tile:
+Inky's target tile is computed as follows:
+
+Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man: `V = (P - B)`. Add the double of this vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` and you get Inky's target:
 
 ```java
 public static Navigation inkyChaseBehavior(Ghost blinky, PacMan pacMan) {
