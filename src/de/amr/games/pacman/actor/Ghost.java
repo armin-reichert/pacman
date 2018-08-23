@@ -45,15 +45,17 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 	private final GhostName name;
 	private final PacMan pacMan;
 	private final Tile home;
+	private final Tile scatteringTarget;
 	private final int initialDir;
 	BooleanSupplier fnCanLeaveHouse;
 
-	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, int initialDir,
-			GhostColor color) {
+	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, Tile scatteringTarget,
+			int initialDir, GhostColor color) {
 		this.name = name;
 		this.pacMan = pacMan;
 		this.game = game;
 		this.home = home;
+		this.scatteringTarget = scatteringTarget;
 		this.initialDir = initialDir;
 		fnCanLeaveHouse = () -> getStateObject().isTerminated();
 		controller = buildStateMachine();
@@ -82,6 +84,10 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 
 	public Tile getHome() {
 		return home;
+	}
+
+	public Tile getScatteringTarget() {
+		return scatteringTarget;
 	}
 
 	@Override
@@ -118,7 +124,7 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 	// Sprites
 
 	private Sprite sprite;
-	
+
 	private Sprite s_color[] = new Sprite[4];
 	private Sprite s_eyes[] = new Sprite[4];
 	private Sprite s_frightened;

@@ -43,66 +43,44 @@ import de.amr.games.pacman.view.PacManSprites.GhostColor;
  */
 public class Cast implements PacManWorld {
 
-	private final Game game;
 	private final PacMan pacMan;
 	private final Ghost blinky, pinky, inky, clyde;
 	private final Set<Ghost> activeGhosts = new HashSet<>(4);
 	private Bonus bonus;
 
 	public Cast(Game game) {
-		this.game = game;
 		Maze maze = game.getMaze();
 		pacMan = new PacMan(game, this);
-		blinky = new Ghost(Blinky, pacMan, game, maze.getBlinkyHome(), Top4.E, GhostColor.RED);
-		pinky = new Ghost(Pinky, pacMan, game, maze.getPinkyHome(), Top4.S, GhostColor.PINK);
-		inky = new Ghost(Inky, pacMan, game, maze.getInkyHome(), Top4.N, GhostColor.TURQUOISE);
-		clyde = new Ghost(Clyde, pacMan, game, maze.getClydeHome(), Top4.N, GhostColor.ORANGE);
-		configurePacMan();
-		configureBlinky(maze);
-		configurePinky(maze);
-		configureInky(maze);
-		configureClyde(maze);
+		blinky = new Ghost(Blinky, pacMan, game, maze.getBlinkyHome(), maze.getBlinkyScatteringTarget(),
+				Top4.E, GhostColor.RED);
+		pinky = new Ghost(Pinky, pacMan, game, maze.getPinkyHome(), maze.getPinkyScatteringTarget(),
+				Top4.S, GhostColor.PINK);
+		inky = new Ghost(Inky, pacMan, game, maze.getInkyHome(), maze.getInkyScatteringTarget(), Top4.N,
+				GhostColor.TURQUOISE);
+		clyde = new Ghost(Clyde, pacMan, game, maze.getClydeHome(), maze.getClydeScatteringTarget(),
+				Top4.N, GhostColor.ORANGE);
 		activeGhosts.addAll(Arrays.asList(blinky, pinky, inky, clyde));
-	}
 
-	private void configurePacMan() {
+		// configure actor behavior
 		Navigation keySteering = followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
 		pacMan.setNavigation(PacManState.HUNGRY, keySteering);
 		pacMan.setNavigation(PacManState.GREEDY, keySteering);
-	}
 
-	private void configureBlinky(Maze maze) {
+		// common ghost behavior
+		Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
+			ghost.setNavigation(FRIGHTENED, flee(pacMan));
+			ghost.setNavigation(SCATTERING, scatter(ghost.getScatteringTarget()));
+			ghost.setNavigation(DEAD, followPath(ghost.getHome()));
+			ghost.setNavigation(SAFE, bounce());
+		});
+
+		// individual ghost behavior
 		blinky.setNavigation(AGGRO, chase(pacMan));
-		blinky.setNavigation(FRIGHTENED, flee(pacMan));
-		blinky.setNavigation(SCATTERING, scatter(maze.getBlinkyScatteringTarget()));
-		blinky.setNavigation(DEAD, followPath(blinky.getHome()));
-		blinky.setNavigation(SAFE, bounce());
-	}
-
-	private void configurePinky(Maze maze) {
 		pinky.setNavigation(AGGRO, ambush(pacMan));
-		pinky.setNavigation(FRIGHTENED, flee(pacMan));
-		pinky.setNavigation(SCATTERING, scatter(maze.getPinkyScatteringTarget()));
-		pinky.setNavigation(DEAD, followPath(pinky.getHome()));
-		pinky.setNavigation(SAFE, bounce());
-	}
-
-	private void configureInky(Maze maze) {
 		inky.setNavigation(AGGRO, inkyChaseBehavior(blinky, pacMan));
-		inky.setNavigation(FRIGHTENED, flee(pacMan));
-		inky.setNavigation(SCATTERING, scatter(maze.getInkyScatteringTarget()));
-		inky.setNavigation(DEAD, followPath(inky.getHome()));
-		inky.setNavigation(SAFE, bounce());
-	}
-
-	private void configureClyde(Maze maze) {
 		clyde.setNavigation(AGGRO, clydeChaseBehavior(clyde, pacMan));
-		clyde.setNavigation(FRIGHTENED, flee(pacMan));
-		clyde.setNavigation(SCATTERING, scatter(maze.getClydeScatteringTarget()));
-		clyde.setNavigation(DEAD, followPath(clyde.getHome()));
-		clyde.setNavigation(SAFE, bounce());
-		// TODO: condition is only correct for first game level
-		clyde.fnCanLeaveHouse = () -> game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
+		clyde.fnCanLeaveHouse = () -> game.getLevel() > 1
+				|| game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
 	}
 
 	public void init() {
