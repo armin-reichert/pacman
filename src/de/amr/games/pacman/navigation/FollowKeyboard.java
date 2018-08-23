@@ -8,18 +8,11 @@ class FollowKeyboard implements Navigation {
 
 	private final int keyN, keyE, keyS, keyW;
 
-	/**
-	 * @param keys
-	 *               keyboard codes for North, East, South, West
-	 */
-	public FollowKeyboard(int... keys) {
-		if (keys.length != 4) {
-			throw new IllegalArgumentException("Must specify 4 key codes for keyboard steering");
-		}
-		keyN = keys[0];
-		keyE = keys[1];
-		keyS = keys[2];
-		keyW = keys[3];
+	public FollowKeyboard(int keyN, int keyE, int keyS, int keyW) {
+		this.keyN = keyN;
+		this.keyE = keyE;
+		this.keyS = keyS;
+		this.keyW = keyW;
 	}
 
 	@Override
