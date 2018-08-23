@@ -1,10 +1,11 @@
-package de.amr.games.pacman.view;
+package de.amr.games.pacman.view.theme;
 
 import static de.amr.easy.game.sprite.AnimationType.BACK_AND_FORTH;
 import static de.amr.easy.game.sprite.AnimationType.CYCLIC;
 import static de.amr.easy.game.sprite.AnimationType.LINEAR;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
@@ -17,11 +18,7 @@ import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.BonusSymbol;
 
-public class PacManSprites {
-
-	public enum GhostColor {
-		RED, PINK, TURQUOISE, ORANGE
-	}
+public class ClassicPacManTheme implements PacManAssets {
 
 	private final BufferedImage sheet;
 	private final BufferedImage mazeEmpty;
@@ -46,7 +43,7 @@ public class PacManSprites {
 		return $(x, y, 16, 16);
 	}
 
-	public PacManSprites() {
+	public ClassicPacManTheme() {
 		sheet = Assets.readImage("sprites.png");
 
 		// Mazes
@@ -117,6 +114,9 @@ public class PacManSprites {
 		for (int j = 0; j < 3; ++j) {
 			pinkNumbers[5 + j] = $(512, 160 + j * 16, 2 * 16, 16);
 		}
+		
+		// Text font
+		Assets.storeTrueTypeFont("font.arcadeclassic", "arcadeclassic.ttf", Font.PLAIN, 12);
 
 		Application.LOGGER.info("Pac-Man sprite images extracted");
 	}
@@ -136,38 +136,47 @@ public class PacManSprites {
 		return copy;
 	}
 
+	@Override
 	public Sprite mazeEmpty() {
 		return new Sprite(mazeEmpty);
 	}
 
+	@Override
 	public Sprite mazeFull() {
 		return new Sprite(mazeFull);
 	}
 
+	@Override
 	public Sprite mazeFlashing() {
 		return new Sprite(mazeEmpty, mazeWhite).animate(CYCLIC, 100);
 	}
 
+	@Override
 	public Sprite symbol(BonusSymbol symbol) {
 		return new Sprite(symbolMap.get(symbol));
 	}
 
+	@Override
 	public BufferedImage symbolImage(BonusSymbol symbol) {
 		return symbolMap.get(symbol);
 	}
 
+	@Override
 	public Sprite pacManFull() {
 		return new Sprite(pacManFull);
 	}
 
+	@Override
 	public Sprite pacManWalking(int dir) {
 		return new Sprite(pacManWalking[dir]).animate(BACK_AND_FORTH, 100);
 	}
 
+	@Override
 	public Sprite pacManDying() {
 		return new Sprite(pacManDying).animate(LINEAR, 100);
 	}
 
+	@Override
 	public Sprite ghostColored(GhostColor color, int direction) {
 		BufferedImage[] frames;
 		switch (direction) {
@@ -189,24 +198,34 @@ public class PacManSprites {
 		return new Sprite(frames).animate(BACK_AND_FORTH, 300);
 	}
 
+	@Override
 	public Sprite ghostFrightened() {
 		return new Sprite(ghostAwed).animate(CYCLIC, 300);
 	}
 
+	@Override
 	public Sprite ghostFlashing() {
 		return new Sprite(ghostFlashing).animate(CYCLIC, 300);
 	}
 
+	@Override
 	public Sprite ghostEyes(int dir) {
 		int[] dirs = { Top4.E, Top4.W, Top4.N, Top4.S };
 		return new Sprite(ghostEyes[dirs[dir]]);
 	}
 
+	@Override
 	public Sprite greenNumber(int i) {
 		return new Sprite(greenNumbers[i]);
 	}
 
+	@Override
 	public Sprite pinkNumber(int i) {
 		return new Sprite(pinkNumbers[i]);
+	}
+	
+	@Override
+	public Font textFont() {
+		return Assets.font("font.arcadeclassic");
 	}
 }

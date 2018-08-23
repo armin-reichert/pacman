@@ -34,7 +34,7 @@ import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.navigation.Navigation;
-import de.amr.games.pacman.view.PacManSprites.GhostColor;
+import de.amr.games.pacman.view.theme.GhostColor;
 
 /**
  * Factory and container for the game actors.
@@ -51,14 +51,14 @@ public class Cast implements PacManWorld {
 	public Cast(Game game) {
 		Maze maze = game.getMaze();
 		pacMan = new PacMan(game, this);
-		blinky = new Ghost(Blinky, pacMan, game, maze.getBlinkyHome(), maze.getBlinkyScatteringTarget(),
-				Top4.E, GhostColor.RED);
-		pinky = new Ghost(Pinky, pacMan, game, maze.getPinkyHome(), maze.getPinkyScatteringTarget(),
-				Top4.S, GhostColor.PINK);
+		blinky = new Ghost(Blinky, pacMan, game, maze.getBlinkyHome(), maze.getBlinkyScatteringTarget(), Top4.E,
+				GhostColor.RED);
+		pinky = new Ghost(Pinky, pacMan, game, maze.getPinkyHome(), maze.getPinkyScatteringTarget(), Top4.S,
+				GhostColor.PINK);
 		inky = new Ghost(Inky, pacMan, game, maze.getInkyHome(), maze.getInkyScatteringTarget(), Top4.N,
 				GhostColor.TURQUOISE);
-		clyde = new Ghost(Clyde, pacMan, game, maze.getClydeHome(), maze.getClydeScatteringTarget(),
-				Top4.N, GhostColor.ORANGE);
+		clyde = new Ghost(Clyde, pacMan, game, maze.getClydeHome(), maze.getClydeScatteringTarget(), Top4.N,
+				GhostColor.ORANGE);
 		activeGhosts.addAll(Arrays.asList(blinky, pinky, inky, clyde));
 
 		// configure actor behavior
@@ -79,8 +79,7 @@ public class Cast implements PacManWorld {
 		pinky.setNavigation(AGGRO, ambush(pacMan));
 		inky.setNavigation(AGGRO, inkyChaseBehavior(blinky, pacMan));
 		clyde.setNavigation(AGGRO, clydeChaseBehavior(clyde, pacMan));
-		clyde.fnCanLeaveHouse = () -> game.getLevel() > 1
-				|| game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
+		clyde.fnCanLeaveHouse = () -> game.getLevel() > 1 || game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
 	}
 
 	public void init() {

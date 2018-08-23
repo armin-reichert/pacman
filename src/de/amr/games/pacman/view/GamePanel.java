@@ -3,21 +3,20 @@ package de.amr.games.pacman.view;
 import static de.amr.games.pacman.model.Game.TS;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 
-import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.View;
+import de.amr.easy.game.view.ViewController;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.view.theme.PacManTheme;
 
-public class GamePanel implements GameView {
+public class GamePanel implements ViewController {
 
-	private boolean scoresVisible;
 	protected final int width, height;
 	protected final Game game;
 	protected final Cast actors;
@@ -25,16 +24,16 @@ public class GamePanel implements GameView {
 	protected final Image lifeImage;
 	protected String infoText;
 	protected Color infoTextColor;
+	protected boolean scoresVisible;
 
 	public GamePanel(int width, int height, Game game, Cast actors) {
 		this.width = width;
 		this.height = height;
 		this.game = game;
 		this.actors = actors;
-		lifeImage = SPRITES.pacManWalking(Top4.W).frame(1);
+		lifeImage = PacManTheme.ASSETS.pacManWalking(Top4.W).frame(1);
 		mazePanel = new MazePanel(game.getMaze(), actors);
 		mazePanel.tf.moveTo(0, 3 * TS);
-		Assets.storeTrueTypeFont("scoreFont", "arcadeclassic.ttf", Font.PLAIN, TS * 3 / 2);
 	}
 
 	@Override
@@ -61,30 +60,25 @@ public class GamePanel implements GameView {
 		return this;
 	}
 
-	@Override
 	public void enableAnimation(boolean enable) {
 		mazePanel.enableAnimation(enable);
 		actors.getPacMan().enableAnimation(enable);
 		actors.getActiveGhosts().forEach(ghost -> ghost.enableAnimation(enable));
 	}
 
-	@Override
 	public void setBonusTimer(int ticks) {
 		mazePanel.setBonusTimer(ticks);
 	}
 
-	@Override
 	public void setMazeFlashing(boolean flashing) {
 		mazePanel.setFlashing(flashing);
 	}
 
-	@Override
 	public void showInfo(String text, Color color) {
 		infoText = text;
 		infoTextColor = color;
 	}
 
-	@Override
 	public void hideInfo() {
 		this.infoText = null;
 	}
@@ -93,7 +87,6 @@ public class GamePanel implements GameView {
 		return scoresVisible;
 	}
 
-	@Override
 	public void setScoresVisible(boolean scoresVisible) {
 		this.scoresVisible = scoresVisible;
 	}
@@ -110,7 +103,7 @@ public class GamePanel implements GameView {
 		g.translate(0, getHeight() - 2 * TS);
 		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
 			g.translate(getWidth() - (n - i) * 2 * TS, 0);
-			g.drawImage(SPRITES.symbolImage(game.getLevelCounter().get(i)), 0, 0, 2 * TS, 2 * TS, null);
+			g.drawImage(PacManTheme.ASSETS.symbolImage(game.getLevelCounter().get(i)), 0, 0, 2 * TS, 2 * TS, null);
 			g.translate(-getWidth() + (n - i) * 2 * TS, 0);
 		}
 		g.translate(0, -getHeight() + 2 * TS);
@@ -130,7 +123,7 @@ public class GamePanel implements GameView {
 		if (scoresVisible) {
 			// Points score
 			int score = game.score.getScore();
-			g.setFont(Assets.font("scoreFont"));
+			g.setFont(PacManTheme.ASSETS.textFont());
 			g.setColor(Color.YELLOW);
 			g.drawString("SCORE", TS, TS);
 			g.setColor(Color.WHITE);
@@ -172,7 +165,7 @@ public class GamePanel implements GameView {
 			return;
 		}
 		Graphics2D g2 = (Graphics2D) g.create();
-		g2.setFont(Assets.font("scoreFont"));
+		g2.setFont(PacManTheme.ASSETS.textFont());
 		g2.setColor(infoTextColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(infoText, g2).getBounds();
 		g2.translate((width - box.width) / 2, (game.getMaze().getBonusTile().row + 1) * TS);

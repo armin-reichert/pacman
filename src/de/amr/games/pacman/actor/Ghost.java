@@ -9,7 +9,6 @@ import static de.amr.games.pacman.actor.GhostState.SAFE;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
-import static de.amr.games.pacman.view.GameView.SPRITES;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -29,7 +28,8 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.Navigation;
 import de.amr.games.pacman.navigation.NavigationSystem;
-import de.amr.games.pacman.view.PacManSprites.GhostColor;
+import de.amr.games.pacman.view.theme.GhostColor;
+import de.amr.games.pacman.view.theme.PacManTheme;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -49,8 +49,8 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 	private final int initialDir;
 	BooleanSupplier fnCanLeaveHouse;
 
-	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, Tile scatteringTarget,
-			int initialDir, GhostColor color) {
+	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, Tile scatteringTarget, int initialDir,
+			GhostColor color) {
 		this.name = name;
 		this.pacMan = pacMan;
 		this.game = game;
@@ -133,20 +133,20 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 
 	private void createSprites(GhostColor color) {
 		NESW.dirs().forEach(dir -> {
-			s_color[dir] = SPRITES.ghostColored(color, dir);
-			s_eyes[dir] = SPRITES.ghostEyes(dir);
+			s_color[dir] = PacManTheme.ASSETS.ghostColored(color, dir);
+			s_eyes[dir] = PacManTheme.ASSETS.ghostEyes(dir);
 		});
 		for (int i = 0; i < 4; ++i) {
-			s_numbers[i] = SPRITES.greenNumber(i);
+			s_numbers[i] = PacManTheme.ASSETS.greenNumber(i);
 		}
-		s_frightened = SPRITES.ghostFrightened();
-		s_flashing = SPRITES.ghostFlashing();
+		s_frightened = PacManTheme.ASSETS.ghostFrightened();
+		s_flashing = PacManTheme.ASSETS.ghostFlashing();
 	}
 
 	@Override
 	public Stream<Sprite> getSprites() {
-		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes),
-				Stream.of(s_frightened, s_flashing)).flatMap(s -> s);
+		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes), Stream.of(s_frightened, s_flashing))
+				.flatMap(s -> s);
 	}
 
 	@Override

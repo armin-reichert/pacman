@@ -2,6 +2,7 @@ package de.amr.games.pacman.test.navigation;
 
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.view.theme.PacManTheme;
 
 public class ScatteringTestApp extends Application {
 
@@ -18,6 +19,7 @@ public class ScatteringTestApp extends Application {
 
 	@Override
 	public void init() {
+		PacManTheme.init();
 		setController(new ScatteringTestView(settings.width, settings.height));
 	}
 }

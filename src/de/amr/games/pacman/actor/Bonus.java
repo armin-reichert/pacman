@@ -1,12 +1,12 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.games.pacman.view.GameView.SPRITES;
 import static java.util.Arrays.binarySearch;
 
 import java.util.stream.Stream;
 
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.model.BonusSymbol;
+import de.amr.games.pacman.view.theme.PacManTheme;
 
 public class Bonus extends TileWorldEntity {
 
@@ -26,7 +26,7 @@ public class Bonus extends TileWorldEntity {
 		this.symbol = symbol;
 		this.value = value;
 		honored = false;
-		sprite = SPRITES.symbol(symbol);
+		sprite = PacManTheme.ASSETS.symbol(symbol);
 	}
 
 	public int getValue() {
@@ -44,7 +44,7 @@ public class Bonus extends TileWorldEntity {
 	public void setHonored() {
 		if (!honored) {
 			honored = true;
-			sprite = SPRITES.pinkNumber(index);
+			sprite = PacManTheme.ASSETS.pinkNumber(index);
 		}
 	}
 
@@ -65,13 +65,9 @@ public class Bonus extends TileWorldEntity {
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-
 	}
 }

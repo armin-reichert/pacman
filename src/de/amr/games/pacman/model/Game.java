@@ -225,8 +225,4 @@ public class Game {
 	public int getLevelChangingTime() {
 		return sec(3);
 	}
-
-	public int getReadyTime() {
-		return sec(1);
-	}
 }

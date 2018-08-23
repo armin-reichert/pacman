@@ -1,7 +1,6 @@
 package de.amr.games.pacman.view;
 
 import static de.amr.games.pacman.model.Game.TS;
-import static de.amr.games.pacman.view.GameView.SPRITES;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -13,6 +12,7 @@ import de.amr.easy.game.sprite.CyclicAnimation;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.view.theme.PacManTheme;
 
 public class MazePanel extends GameEntity {
 
@@ -27,8 +27,8 @@ public class MazePanel extends GameEntity {
 	public MazePanel(Maze maze, Cast actors) {
 		this.maze = maze;
 		this.actors = actors;
-		s_maze_normal = SPRITES.mazeFull();
-		s_maze_flashing = SPRITES.mazeFlashing();
+		s_maze_normal = PacManTheme.ASSETS.mazeFull();
+		s_maze_flashing = PacManTheme.ASSETS.mazeFlashing();
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(500);
 		energizerBlinking.setEnabled(false);
@@ -90,8 +90,7 @@ public class MazePanel extends GameEntity {
 			s_maze_normal.draw(g);
 			g.translate(-tf.getX(), -tf.getY());
 			maze.tiles().forEach(tile -> {
-				if (maze.isEatenFood(tile)
-						|| maze.isEnergizer(tile) && energizerBlinking.currentFrame() % 2 != 0) {
+				if (maze.isEatenFood(tile) || maze.isEnergizer(tile) && energizerBlinking.currentFrame() % 2 != 0) {
 					g.translate(tile.col * TS, tile.row * TS);
 					g.setColor(Color.BLACK);
 					g.fillRect(0, 0, TS, TS);

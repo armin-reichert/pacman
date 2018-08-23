@@ -4,6 +4,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.ui.FullScreen;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.view.theme.PacManTheme;
 
 /**
  * Pac-Man game.
@@ -35,6 +36,7 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
+		PacManTheme.init();
 		setController(new GameController());
 	}
 }
