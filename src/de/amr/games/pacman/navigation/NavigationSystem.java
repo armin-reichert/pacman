@@ -1,4 +1,4 @@
-package de.amr.games.pacman.navigation.impl;
+package de.amr.games.pacman.navigation;
 
 import java.util.function.Supplier;
 
@@ -9,7 +9,6 @@ import de.amr.games.pacman.actor.game.PacMan;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.navigation.Navigation;
 
 /**
  * Factory for navigation behaviors.

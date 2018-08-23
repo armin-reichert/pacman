@@ -1,10 +1,8 @@
-package de.amr.games.pacman.navigation.impl;
+package de.amr.games.pacman.navigation;
 
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.navigation.MazeRoute;
-import de.amr.games.pacman.navigation.Navigation;
 
 class FollowPath implements Navigation {
 

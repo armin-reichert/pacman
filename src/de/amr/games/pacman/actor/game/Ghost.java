@@ -29,7 +29,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.Navigation;
-import de.amr.games.pacman.navigation.impl.NavigationSystem;
+import de.amr.games.pacman.navigation.NavigationSystem;
 import de.amr.games.pacman.view.PacManSprites.GhostColor;
 import de.amr.statemachine.StateMachine;
 
