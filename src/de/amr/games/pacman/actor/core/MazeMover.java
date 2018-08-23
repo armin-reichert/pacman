@@ -104,13 +104,25 @@ public abstract class MazeMover extends TileWorldEntity {
 	}
 
 	public void move() {
-		tf.setVelocity(velocity(currentDir));
-		tf.move();
-		// check exit from teleport space
-		if (tf.getX() > (getMaze().numCols() - 1 + getMaze().getTeleportLength()) * TS) {
-			tf.setX(0);
-		} else if (tf.getX() < -getMaze().getTeleportLength() * TS) {
-			tf.setX((getMaze().numCols() - 1) * TS);
+		if (canMove(getNextDir())) {
+			if (isTurn(getCurrentDir(), getNextDir())) {
+				align();
+			}
+			setCurrentDir(getNextDir());
+		}
+		if (!isStuck()) {
+			tf.setVelocity(velocity(currentDir));
+			tf.move();
+			// check exit from teleport space
+			if (tf.getX() > (getMaze().numCols() - 1 + getMaze().getTeleportLength()) * TS) {
+				tf.setX(0);
+			} else if (tf.getX() < -getMaze().getTeleportLength() * TS) {
+				tf.setX((getMaze().numCols() - 1) * TS);
+			}
+		}
+		int dir = supplyIntendedDir();
+		if (dir != -1) {
+			setNextDir(dir);
 		}
 	}
 

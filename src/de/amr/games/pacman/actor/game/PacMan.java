@@ -47,9 +47,9 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 	private final Game game;
 	private final StateMachine<PacManState, GameEvent> controller;
 	private final Map<PacManState, Navigation> navigationMap;
+	private final PacManWorld world;
 	private final EventManager<GameEvent> events;
 	private boolean eventsEnabled;
-	private final PacManWorld world;
 	private int digestionTicks;
 
 	public PacMan(Game game, PacManWorld world) {
@@ -112,34 +112,25 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 		navigationMap.put(state, navigation);
 	}
 
-	@Override
-	public int supplyIntendedDir() {
-		Navigation nav = navigationMap.getOrDefault(getState(), NavigationSystem.forward());
-		return nav.computeRoute(this).dir;
+	public Navigation getNavigation() {
+		return navigationMap.getOrDefault(getState(), NavigationSystem.forward());
 	}
 
 	@Override
-	public void move() {
-		if (canMove(getNextDir())) {
-			if (isTurn(getCurrentDir(), getNextDir())) {
-				align();
-			}
-			setCurrentDir(getNextDir());
-		}
-		if (!isStuck()) {
-			super.move();
-		}
-		int dir = supplyIntendedDir();
-		if (dir != -1) {
-			setNextDir(dir);
-		}
-		sprite = s_walking_to[getCurrentDir()];
-		sprite.enableAnimation(!isStuck());
+	public int supplyIntendedDir() {
+		return getNavigation().computeRoute(this).dir;
 	}
 
 	@Override
 	public boolean canTraverseDoor(Tile door) {
 		return false;
+	}
+
+	@Override
+	public void move() {
+		super.move();
+		sprite = s_walking_to[getCurrentDir()];
+		sprite.enableAnimation(!isStuck());
 	}
 
 	// Sprites
@@ -172,13 +163,13 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 
 	// State machine
 
-	public void traceTo(Logger logger) {
-		controller.traceTo(logger, game.fnTicksPerSec);
-	}
-
 	@Override
 	public StateMachine<PacManState, GameEvent> getStateMachine() {
 		return controller;
+	}
+
+	public void traceTo(Logger logger) {
+		controller.traceTo(logger, game.fnTicksPerSec);
 	}
 
 	private StateMachine<PacManState, GameEvent> buildStateMachine() {

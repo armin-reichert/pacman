@@ -40,9 +40,9 @@ import de.amr.statemachine.StateMachine;
  */
 public class Ghost extends MazeMover implements StateMachineControlled<GhostState, GameEvent> {
 
+	private final Game game;
 	private final StateMachine<GhostState, GameEvent> controller;
 	private final Map<GhostState, Navigation> navigationMap;
-	private final Game game;
 	private final GhostName name;
 	private final PacMan pacMan;
 	private final Tile home;
@@ -70,7 +70,27 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 		sprite = s_color[initialDir];
 	}
 
-	// Navigation
+	// Accessors
+
+	@Override
+	public Maze getMaze() {
+		return game.getMaze();
+	}
+
+	public GhostName getName() {
+		return name;
+	}
+
+	public Tile getHome() {
+		return home;
+	}
+
+	@Override
+	public float getSpeed() {
+		return game.getGhostSpeed(getState(), getTile());
+	}
+
+	// Navigation and movement
 
 	public void setNavigation(GhostState state, Navigation navigation) {
 		navigationMap.put(state, navigation);
@@ -96,46 +116,10 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 		return inGhostHouse();
 	}
 
-	@Override
-	public void move() {
-		if (canMove(getNextDir())) {
-			if (isTurn(getCurrentDir(), getNextDir())) {
-				align();
-			}
-			setCurrentDir(getNextDir());
-		}
-		if (!isStuck()) {
-			super.move();
-		}
-		int dir = supplyIntendedDir();
-		if (dir != -1) {
-			setNextDir(dir);
-		}
-	}
-
-	// Accessors
-
-	@Override
-	public Maze getMaze() {
-		return game.getMaze();
-	}
-
-	public GhostName getName() {
-		return name;
-	}
-
-	public Tile getHome() {
-		return home;
-	}
-
-	@Override
-	public float getSpeed() {
-		return game.getGhostSpeed(getState(), getTile());
-	}
-
 	// Sprites
 
 	private Sprite sprite;
+	
 	private Sprite s_color[] = new Sprite[4];
 	private Sprite s_eyes[] = new Sprite[4];
 	private Sprite s_frightened;
