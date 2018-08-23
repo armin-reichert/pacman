@@ -43,76 +43,65 @@ public class FollowTargetTile implements Navigation {
 
 	@Override
 	public MazeRoute computeRoute(MazeMover mover) {
+		MazeRoute route = new MazeRoute();
 
 		Maze maze = mover.getMaze();
-		
+		int moverDir = mover.getCurrentDir();
+		Tile moverTile = mover.getTile();
+
+		// keep direction when in tunnel or teleport space
+		if (mover.inTunnel() || mover.inTeleportSpace()) {
+			route.dir = moverDir;
+			return route;
+		}
+
 		// ask for next target tile
 		Tile targetTile = targetTileSupplier.get();
 		Objects.requireNonNull(targetTile, "Target tile must not be NULL");
 
-		// if target tile lies in teleport space, take tunnel entry at left or right
+		// if target tile is located in teleport space, use suitable tunnel entry
 		if (maze.inTeleportSpace(targetTile)) {
-			int tunnelEntryCol = targetTile.col > (maze.numCols() - 1) ? (maze.numCols() - 1) : 0;
-			targetTile = new Tile(tunnelEntryCol, maze.getTunnelRow());
+			int entryCol = targetTile.col > (maze.numCols() - 1) ? (maze.numCols() - 1) : 0;
+			targetTile = new Tile(entryCol, maze.getTunnelRow());
 		}
-
-		// create route object for result
-		MazeRoute route = new MazeRoute();
 		route.targetTile = targetTile;
 
-		int currentDir = mover.getCurrentDir();
-		Tile currentTile = mover.getTile();
-
-		// keep direction when in tunnel or teleport space
-		if (mover.inTunnel() || mover.inTeleportSpace()) {
-			route.dir = currentDir;
-			return route;
-		}
-
-		// leave ghost house by going to Blinky's home tile
+		// leave ghost house by following route to Blinky's home tile
 		if (mover.inGhostHouse()) {
-			Optional<Integer> choice = findBestDir(mover, maze.getBlinkyHome(), currentTile,
-					Stream.of(currentDir, NESW.left(currentDir), NESW.right(currentDir)));
+			Optional<Integer> choice = findBestDir(mover, maze.getBlinkyHome(), moverTile,
+					Stream.of(moverDir, NESW.left(moverDir), NESW.right(moverDir)));
 			if (choice.isPresent()) {
 				route.dir = choice.get();
 			}
 			return route;
 		}
 
-		// decide to turn left or right if stuck
+		// if stuck, check if turning left or right is possible
 		if (mover.isStuck()) {
-			int toLeft = NESW.left(currentDir);
-			if (mover.canEnterTile(maze.neighborTile(currentTile, toLeft).get())) {
+			int toLeft = NESW.left(moverDir);
+			if (mover.canEnterTile(maze.neighborTile(moverTile, toLeft).get())) {
 				route.dir = toLeft;
 				return route;
 			}
-			int toRight = NESW.right(currentDir);
-			if (mover.canEnterTile(maze.neighborTile(currentTile, toRight).get())) {
+			int toRight = NESW.right(moverDir);
+			if (mover.canEnterTile(maze.neighborTile(moverTile, toRight).get())) {
 				route.dir = toRight;
 				return route;
 			}
 		}
 
 		// decide where to go if the next tile is an intersection
-		Tile nextTile = maze.neighborTile(currentTile, currentDir).get();
-		if (maze.isIntersection(nextTile)) {
-			Optional<Integer> choice = findBestDir(mover, targetTile, nextTile,
-					Stream.of(currentDir, NESW.left(currentDir), NESW.right(currentDir)));
+		Tile nextTile = moverTile.tileTowards(moverDir);
+		boolean free = maze.isFreeIntersection(nextTile);
+		boolean notUp = maze.isNotUpIntersection(nextTile);
+		if (free || notUp) {
+			Stream<Integer> choices = Stream.of(moverDir, NESW.left(moverDir), NESW.right(moverDir))
+					.filter(dir -> free || dir != Top4.N);
+			Optional<Integer> choice = findBestDir(mover, targetTile, nextTile, choices);
 			if (choice.isPresent()) {
 				route.dir = choice.get();
+				return route;
 			}
-			return route;
-		}
-
-		// same for restricted intersections except that going upwards (Top4.N) is forbidden
-		if (maze.isRestrictedIntersection(nextTile)) {
-			Optional<Integer> choice = findBestDir(mover, targetTile, nextTile,
-					Stream.of(currentDir, NESW.left(currentDir), NESW.right(currentDir))
-							.filter(dir -> dir != Top4.N));
-			if (choice.isPresent()) {
-				route.dir = choice.get();
-			}
-			return route;
 		}
 
 		// no direction could be determined

@@ -66,8 +66,8 @@ public class Maze {
 	private Tile bonusTile;
 	private int tunnelRow;
 	private int foodTotal;
-	private Set<Tile> intersections = new HashSet<>();
-	private Set<Tile> restrictedIntersections = new HashSet<>();
+	private Set<Tile> freeIntersections = new HashSet<>();
+	private Set<Tile> notUpIntersections = new HashSet<>();
 
 	public Maze(String mapText) {
 		map = mapText.split("\n");
@@ -129,9 +129,9 @@ public class Maze {
 							|| blinkyHome.equals(new Tile(tile.col - 2, tile.row))
 							|| pacManHome.equals(new Tile(tile.col + 1, tile.row))
 							|| pacManHome.equals(new Tile(tile.col - 2, tile.row))) {
-						restrictedIntersections.add(tile);
+						notUpIntersections.add(tile);
 					} else {
-						intersections.add(tile);
+						freeIntersections.add(tile);
 					}
 				});
 	}
@@ -247,12 +247,12 @@ public class Maze {
 		return getContent(tile) == DOOR;
 	}
 
-	public boolean isIntersection(Tile tile) {
-		return intersections.contains(tile);
+	public boolean isFreeIntersection(Tile tile) {
+		return freeIntersections.contains(tile);
 	}
 
-	public boolean isRestrictedIntersection(Tile tile) {
-		return restrictedIntersections.contains(tile);
+	public boolean isNotUpIntersection(Tile tile) {
+		return notUpIntersections.contains(tile);
 	}
 
 	public boolean inGhostHouse(Tile tile) {
