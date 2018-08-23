@@ -286,11 +286,11 @@ Example trace:
 [2018-08-17 06:18:41:401] Application terminated.
 ```
 
-## Configurable navigation
+## Configurable navigation behavior (aka AI)
 
-The navigation behavior of the actors is implemented modularly (*strategy pattern*) and can easily be changed.
+The navigation behavior of the actors is implemented modularly (*strategy pattern*) and can easily be configured.
 
-Pac-Man is controlled by keyboard steering:
+Pac-Man is controlled by the keyboard:
 
 ```java
 PacMan pacMan = new PacMan(game, world);
@@ -327,15 +327,32 @@ public static Navigation ambush(MazeMover victim) {
 }
 ```
 
+Inky takes the position two tiles ahead of Pac-Mann and draws an imaginary arrow from Blinky's position to that position. This arrow is then doubled and the arrow head will be Inky's target tile:
+
+```java
+public static Navigation inkyChaseBehavior(Ghost blinky, PacMan pacMan) {
+	return new FollowTargetTile(() -> {
+		Maze maze = pacMan.getMaze();
+		Tile blinkyPosition = blinky.getTile();
+		Tile aheadPacMan = aheadOf(pacMan, 2);
+		Tile target = new Tile(2 * aheadPacMan.col - blinkyPosition.col,
+				2 * aheadPacMan.row - blinkyPosition.row);
+		int row = Math.min(Math.max(0, target.row), maze.numRows() - 1);
+		int col = Math.min(Math.max(0, target.col), maze.numCols() - 1);
+		return new Tile(col, row);
+	});
+}
+```
+
 Clyde in chase mode targets Pac-Man if he is more than 8 tiles (straight line distance) away, if he is closer, he targets his scattering tile in the lower left corner:
 
 ```java
-class ClydeChaseBehavior {
-
-	static Tile computeTarget(Ghost clyde, PacMan pacMan) {
+public static Navigation clydeChaseBehavior(Ghost clyde, PacMan pacMan) {
+	return new FollowTargetTile(() -> {
 		double d = Vector2f.dist(clyde.getCenter(), pacMan.getCenter());
 		return d >= 8 * Game.TS ? pacMan.getTile() : clyde.getMaze().getClydeScatteringTarget();
-	}
+
+	});
 }
 ```
 
