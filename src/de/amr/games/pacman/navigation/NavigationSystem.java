@@ -39,8 +39,8 @@ public interface NavigationSystem {
 		return new Flee(chaser);
 	}
 
-	public static Navigation followKeyboard(int n, int e, int s, int w) {
-		return new FollowKeyboard(n, e, s, w);
+	public static Navigation followKeyboard(int keyN, int keyE, int keyS, int keyW) {
+		return new FollowKeyboard(keyN, keyE, keyS, keyW);
 	}
 
 	public static Navigation followPath(Tile target) {
