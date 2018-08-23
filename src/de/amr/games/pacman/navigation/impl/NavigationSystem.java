@@ -74,7 +74,7 @@ public interface NavigationSystem {
 		return new FollowTargetTile(() -> {
 			Maze maze = pacMan.getMaze();
 			Tile blinkyPosition = blinky.getTile();
-			Tile aheadPacMan = NavigationSystem.aheadOf(pacMan, 2);
+			Tile aheadPacMan = aheadOf(pacMan, 2);
 			Tile target = new Tile(2 * aheadPacMan.col - blinkyPosition.col,
 					2 * aheadPacMan.row - blinkyPosition.row);
 			int row = Math.min(Math.max(0, target.row), maze.numRows() - 1);
