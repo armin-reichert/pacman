@@ -1,5 +1,6 @@
 package de.amr.games.pacman.actor;
 
+import static de.amr.games.pacman.actor.PacManState.DEAD;
 import static de.amr.games.pacman.actor.PacManState.DYING;
 import static de.amr.games.pacman.actor.PacManState.GREEDY;
 import static de.amr.games.pacman.actor.PacManState.HOME;
@@ -21,7 +22,6 @@ import de.amr.games.pacman.controller.StateMachineControlled;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GameEvent;
-import de.amr.games.pacman.controller.event.PacManDiedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
@@ -213,9 +213,8 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 					.onTimeout()
 					.act(() -> publishEvent(new PacManLostPowerEvent()))
 	
-				.stay(DYING)
+				.when(DYING).then(DEAD)
 					.onTimeout()
-					.act(e -> publishEvent(new PacManDiedEvent()))
 
 		.endStateMachine();
 		/* @formatter:on */

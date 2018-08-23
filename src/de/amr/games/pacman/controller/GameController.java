@@ -28,7 +28,6 @@ import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GameEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
-import de.amr.games.pacman.controller.event.PacManDiedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
@@ -185,12 +184,10 @@ public class GameController implements Controller {
 					.onTimeout()
 					
 				.when(PACMAN_DYING).then(GAME_OVER)
-					.on(PacManDiedEvent.class)
-					.condition(() -> game.getLives() == 0)
+					.condition(() -> actors.getPacMan().getState() == PacManState.DEAD && game.getLives() == 0)
 					
 				.when(PACMAN_DYING).then(PLAYING)
-					.on(PacManDiedEvent.class)
-					.condition(() -> game.getLives() > 0)
+					.condition(() -> actors.getPacMan().getState() == PacManState.DEAD && game.getLives() > 0)
 					.act(() -> actors.init())
 			
 				.when(GAME_OVER).then(READY)
@@ -202,25 +199,16 @@ public class GameController implements Controller {
 
 	private class ReadyState extends StateObject<PlayState, GameEvent> {
 
-		private boolean readyForRumble;
-		
 		@Override
 		public void onEntry() {
 			game.init();
+			actors.init();
+			game.removeLife();
 			playView.setScoresVisible(true);
 			playView.enableAnimation(false);
+			playView.showInfo("Ready!", Color.YELLOW);
 		}
 		
-		@Override
-		public void onTick() {
-			if (getRemaining() == getDuration() / 2 && !readyForRumble) {
-				actors.init();
-				game.removeLife();
-				playView.showInfo("Ready!", Color.YELLOW);
-				readyForRumble = true;
-			}
-		}
-
 		@Override
 		public void onExit() {
 			playView.enableAnimation(true);
