@@ -16,8 +16,8 @@ import static de.amr.games.pacman.navigation.NavigationSystem.clydeChaseBehavior
 import static de.amr.games.pacman.navigation.NavigationSystem.flee;
 import static de.amr.games.pacman.navigation.NavigationSystem.followKeyboard;
 import static de.amr.games.pacman.navigation.NavigationSystem.followPath;
+import static de.amr.games.pacman.navigation.NavigationSystem.followTargetTile;
 import static de.amr.games.pacman.navigation.NavigationSystem.inkyChaseBehavior;
-import static de.amr.games.pacman.navigation.NavigationSystem.scatter;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -69,7 +69,7 @@ public class Cast implements PacManWorld {
 		// common ghost behavior
 		Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
 			ghost.setNavigation(FRIGHTENED, flee(pacMan));
-			ghost.setNavigation(SCATTERING, scatter(ghost.getScatteringTarget()));
+			ghost.setNavigation(SCATTERING, followTargetTile(() -> ghost.getScatteringTarget()));
 			ghost.setNavigation(DEAD, followPath(ghost.getHome()));
 			ghost.setNavigation(SAFE, bounce());
 		});

@@ -126,10 +126,6 @@ public interface NavigationSystem {
 		});
 	}
 
-	public static Navigation scatter(Tile scatteringTarget) {
-		return new FollowTargetTile(() -> scatteringTarget);
-	}
-
 	/**
 	 * @param mover
 	 *                a maze mover
