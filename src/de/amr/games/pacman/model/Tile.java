@@ -1,5 +1,7 @@
 package de.amr.games.pacman.model;
 
+import static de.amr.games.pacman.model.Maze.NESW;
+
 /**
  * A tile coordinate.
  * 
@@ -34,4 +36,29 @@ public class Tile {
 	public String toString() {
 		return String.format("(%d,%d)", col, row);
 	}
+
+	/**
+	 * @param dir
+	 *              some direction
+	 * @param n
+	 *              number of tiles
+	 * @return tile that lies <code>n</code> tiles away from the given tile towards the given
+	 *         direction. This can be an invalid tile position.
+	 */
+	public Tile tileTowards(int dir, int n) {
+		if (n < 0) {
+			throw new IllegalArgumentException("Number of tiles must not be negative");
+		}
+		return new Tile(col + n * NESW.dx(dir), row + n * NESW.dy(dir));
+	}
+
+	/**
+	 * @param dir
+	 *              some direction
+	 * @return neighbor towards the given direction. This can be an invalid tile position.
+	 */
+	public Tile tileTowards(int dir) {
+		return tileTowards(dir, 1);
+	}
+
 }

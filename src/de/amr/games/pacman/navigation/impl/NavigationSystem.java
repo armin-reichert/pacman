@@ -1,7 +1,5 @@
 package de.amr.games.pacman.navigation.impl;
 
-import static de.amr.games.pacman.model.Maze.NESW;
-
 import java.util.function.Supplier;
 
 import de.amr.easy.game.math.Vector2f;
@@ -77,7 +75,8 @@ public interface NavigationSystem {
 			Maze maze = pacMan.getMaze();
 			Tile blinkyPosition = blinky.getTile();
 			Tile aheadPacMan = NavigationSystem.aheadOf(pacMan, 2);
-			Tile target = new Tile(2 * aheadPacMan.col - blinkyPosition.col, 2 * aheadPacMan.row - blinkyPosition.row);
+			Tile target = new Tile(2 * aheadPacMan.col - blinkyPosition.col,
+					2 * aheadPacMan.row - blinkyPosition.row);
 			int row = Math.min(Math.max(0, target.row), maze.numRows() - 1);
 			int col = Math.min(Math.max(0, target.col), maze.numCols() - 1);
 			return new Tile(col, row);
@@ -122,22 +121,23 @@ public interface NavigationSystem {
 		return new FollowTargetTile(() -> scatteringTarget);
 	}
 
-	public static Navigation stayBehind() {
-		return new StayBehind();
-	}
-
+	/**
+	 * @param mover
+	 *                a maze mover
+	 * @param n
+	 *                number of tiles
+	 * @return the tile which lies <code>n</code> tiles ahead of the mover wrt its current move
+	 *         direction. If this position is outside the maze, returns the tile <code>(n-1)</code>
+	 *         tiles ahead an so on.
+	 */
 	static Tile aheadOf(MazeMover mover, int n) {
 		Tile tile = mover.getTile();
 		int dir = mover.getCurrentDir();
-		Tile target = NavigationSystem.aheadOf(tile, dir, n);
-		while (n > 0 && !mover.getMaze().isValidTile(target)) {
+		Tile target = tile.tileTowards(dir, n);
+		while (n >= 0 && !mover.getMaze().isValidTile(target)) {
 			n -= 1;
-			target = NavigationSystem.aheadOf(tile, dir, n);
+			target = tile.tileTowards(dir, n);
 		}
-		return n > 0 ? target : tile;
-	}
-
-	static Tile aheadOf(Tile tile, int dir, int n) {
-		return new Tile(tile.col + n * NESW.dx(dir), tile.row + n * NESW.dy(dir));
+		return target;
 	}
 }
