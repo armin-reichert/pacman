@@ -13,9 +13,20 @@ public class Title extends GameEntity {
 	public Title() {
 		sprite = new Sprite(Assets.image("title.png"));
 	}
+	
+	public void start() {
+		init();
+		tf.setVelocityY(-2f);
+	}
+	
+	public void stop() {
+		tf.setVelocityY(0);
+	}
 
 	@Override
 	public void init() {
+		tf.setY(288);
+		hCenter(224);
 	}
 
 	@Override

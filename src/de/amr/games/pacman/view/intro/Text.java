@@ -28,7 +28,7 @@ public class Text extends GameEntity {
 		g.setFont(font);
 		g.drawString(text, 0, 16);
 		g.dispose();
-		sprite = new Sprite(image, null).animate(AnimationType.BACK_AND_FORTH, 1000);
+		sprite = new Sprite(image, null).animate(AnimationType.BACK_AND_FORTH, 250);
 	}
 
 	@Override

@@ -34,50 +34,41 @@ public class IntroPanel implements ViewController {
 	
 			.states()
 			
-				.state(0) // scroll title image from bottom into view
-					.onEntry(() -> {
-						entities.add(title = new Title());
-						title.tf.setVelocityY(-0.8f);
-						title.tf.setY(getHeight());
-						title.hCenter(getWidth());
-					})
-					
-					
-				.state(1) // show blinking start text and chasing
+					.state(0) // scroll title image from bottom into view
+						.onEntry(() -> {
+							entities.add(title = new Title());
+							title.start();
+						})
+						
+					.state(1) // ghosts chasing Pac-Man
+						.onEntry(() -> {
+							entities.add(ghostsChasingPacMan = new GhostsChasingPacMan());
+							ghostsChasingPacMan.start();
+						})
+						.onExit(() -> entities.remove(ghostsChasingPacMan))
+						
+					.state(2) // Pac-Man chasing ghosts
+						.onEntry(() -> {
+							entities.add(pacManChasingGhosts = new PacManChasingGhosts());
+							pacManChasingGhosts.start();
+						})
+						.onExit(() -> entities.remove(pacManChasingGhosts))
+						
+					.state(3) // wait
 					.onEntry(() -> {
 						entities.add(startText = new Text("Press SPACE to start!", 16));
-						entities.add(ghostsChasingPacMan = new GhostsChasingPacMan());
-						entities.add(pacManChasingGhosts = new PacManChasingGhosts());
 						startText.center(width, height);
-						ghostsChasingPacMan.tf.moveTo(width, 100);
-						ghostsChasingPacMan.tf.setVelocityX(-0.8f);
-						pacManChasingGhosts.tf.moveTo(-80,  200);
-						pacManChasingGhosts.tf.setVelocityX(0);
 					})
 					
 			.transitions()
 
-			.when(0).then(1)
-				.condition(() -> title.tf.getY() < 10)
-				.act(() -> title.tf.setVelocityY(0))
-				
-			.stay(1)
-				.condition(() -> ghostsChasingPacMan.tf.getX() < -80)
-				.act(() -> {
-					ghostsChasingPacMan.tf.moveTo(width, 100);
-					ghostsChasingPacMan.tf.setVelocityX(0);
-					pacManChasingGhosts.tf.moveTo(-80,  200);
-					pacManChasingGhosts.tf.setVelocityX(0.8f);
-				})
-				
-			.stay(1)
-				.condition(() -> pacManChasingGhosts.tf.getX() > width)
-				.act(() -> {
-					pacManChasingGhosts.tf.moveTo(-80,  200);
-					pacManChasingGhosts.tf.setVelocityX(0);
-					ghostsChasingPacMan.tf.moveTo(width, 100);
-					ghostsChasingPacMan.tf.setVelocityX(-0.8f);
-				})
+					.when(0).then(1)
+						.condition(() -> title.tf.getY() < 10)
+						.act(() -> title.stop())
+						
+					.when(1).then(2).condition(() -> ghostsChasingPacMan.isComplete())
+						
+					.when(2).then(3).condition(() -> pacManChasingGhosts.isComplete())
 				
 		.endStateMachine();
 	  /*@formatter:on*/

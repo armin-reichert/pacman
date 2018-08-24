@@ -22,6 +22,20 @@ public class GhostsChasingPacMan extends GameEntity {
 		ghosts[3] = PacManTheme.ASSETS.ghostColored(GhostColor.ORANGE, Top4.W);
 	}
 
+	public void start() {
+		init();
+		tf.setVelocityX(-1f);
+	}
+
+	public void stop() {
+		init();
+		tf.setVelocityX(0);
+	}
+
+	public boolean isComplete() {
+		return tf.getX() < -80;
+	}
+
 	@Override
 	public void draw(Graphics2D g) {
 		g.translate(tf.getX(), tf.getY());
@@ -36,6 +50,7 @@ public class GhostsChasingPacMan extends GameEntity {
 
 	@Override
 	public void init() {
+		tf.moveTo(288, 100);
 	}
 
 	@Override
