@@ -14,8 +14,8 @@ public class IntroPanel implements ViewController {
 	private final int height;
 	private final StateMachine<Integer, Void> animation;
 	private Set<GameEntity> entities = new HashSet<>();
-	private Title title;
-	private Text startText;
+	private PacManLogo title;
+	private BlinkingStartText startText;
 	private GhostsChasingPacMan ghostsChasingPacMan;
 	private PacManChasingGhosts pacManChasingGhosts;
 
@@ -29,36 +29,42 @@ public class IntroPanel implements ViewController {
 		return
 		/*@formatter:off*/
 		StateMachine.define(Integer.class, Void.class)
-			.description("")
+			.description("IntroPanel")
 			.initialState(0)
 	
 			.states()
 			
-					.state(0) // scroll title image from bottom into view
+					.state(0) // Scroll Pac-Man logo into view
 						.onEntry(() -> {
-							entities.add(title = new Title());
+							entities.add(title = new PacManLogo());
 							title.start();
 						})
 						
-					.state(1) // ghosts chasing Pac-Man
+					.state(1) // Show ghosts chasing Pac-Man
 						.onEntry(() -> {
 							entities.add(ghostsChasingPacMan = new GhostsChasingPacMan());
 							ghostsChasingPacMan.start();
 						})
-						.onExit(() -> entities.remove(ghostsChasingPacMan))
+						.onExit(() -> {
+							ghostsChasingPacMan.stop();
+							ghostsChasingPacMan.hCenter(width);
+						})
 						
-					.state(2) // Pac-Man chasing ghosts
+					.state(2) // Show Pac-Man chasing ghosts
 						.onEntry(() -> {
 							entities.add(pacManChasingGhosts = new PacManChasingGhosts());
 							pacManChasingGhosts.start();
 						})
-						.onExit(() -> entities.remove(pacManChasingGhosts))
+						.onExit(() -> {
+							pacManChasingGhosts.stop();
+							pacManChasingGhosts.hCenter(width);
+						})
 						
-					.state(3) // wait
-					.onEntry(() -> {
-						entities.add(startText = new Text("Press SPACE to start!", 16));
-						startText.center(width, height);
-					})
+					.state(3) // Show blinking text
+						.onEntry(() -> {
+							entities.add(startText = new BlinkingStartText("Press SPACE to start!", 16));
+							startText.center(width, height);
+						})
 					
 			.transitions()
 

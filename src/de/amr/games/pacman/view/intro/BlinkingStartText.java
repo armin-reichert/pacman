@@ -11,24 +11,29 @@ import de.amr.easy.game.sprite.AnimationType;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.theme.PacManTheme;
 
-public class Text extends GameEntity {
+public class BlinkingStartText extends GameEntity {
 
 	private Sprite sprite;
 
-	public Text(String text, float fontSize) {
+	public BlinkingStartText(String text, float fontSize) {
 		Font font = PacManTheme.ASSETS.textFont().deriveFont(fontSize);
 		BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = image.createGraphics();
 		g.setFont(font);
 		int w = g.getFontMetrics().stringWidth(text);
 		g.dispose();
-		image = new BufferedImage(w, 16, BufferedImage.TYPE_INT_RGB);
+		image = new BufferedImage(w, (int)fontSize, BufferedImage.TYPE_INT_RGB);
 		g = image.createGraphics();
-		g.setColor(Color.YELLOW);
+		g.setColor(Color.PINK);
 		g.setFont(font);
 		g.drawString(text, 0, 16);
 		g.dispose();
-		sprite = new Sprite(image, null).animate(AnimationType.BACK_AND_FORTH, 250);
+		sprite = new Sprite(image, null).animate(AnimationType.BACK_AND_FORTH, 400);
+	}
+	
+	@Override
+	public int getHeight() {
+		return 16; //TODO
 	}
 
 	@Override

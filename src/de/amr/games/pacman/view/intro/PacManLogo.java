@@ -6,11 +6,11 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.sprite.Sprite;
 
-public class Title extends GameEntity {
+public class PacManLogo extends GameEntity {
 
 	private Sprite sprite;
 
-	public Title() {
+	public PacManLogo() {
 		sprite = new Sprite(Assets.image("title.png"));
 	}
 	

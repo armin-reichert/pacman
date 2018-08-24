@@ -47,6 +47,11 @@ public class GhostsChasingPacMan extends GameEntity {
 		}
 		g.translate(-tf.getX(), -tf.getY());
 	}
+	
+	@Override
+	public int getWidth() {
+		return 80;
+	}
 
 	@Override
 	public void init() {

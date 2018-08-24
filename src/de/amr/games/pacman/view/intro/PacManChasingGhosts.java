@@ -50,6 +50,11 @@ public class PacManChasingGhosts extends GameEntity {
 		g.translate(-pacManX, 0);
 		g.translate(-tf.getX(), -tf.getY());
 	}
+	
+	@Override
+	public int getWidth() {
+		return 5*gap;
+	}
 
 	@Override
 	public void init() {
