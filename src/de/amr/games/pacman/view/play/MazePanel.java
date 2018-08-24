@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view;
+package de.amr.games.pacman.view.play;
 
 import static de.amr.games.pacman.model.Game.TS;
 
@@ -12,7 +12,7 @@ import de.amr.easy.game.sprite.CyclicAnimation;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.view.theme.PacManTheme;
+import de.amr.games.pacman.theme.PacManTheme;
 
 public class MazePanel extends GameEntity {
 

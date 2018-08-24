@@ -35,8 +35,8 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.view.ExtendedGamePanel;
-import de.amr.games.pacman.view.IntroPanel;
+import de.amr.games.pacman.view.intro.IntroPanel;
+import de.amr.games.pacman.view.play.ExtendedGamePanel;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
 

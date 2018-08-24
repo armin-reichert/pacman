@@ -9,7 +9,7 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.view.ExtendedGamePanel;
+import de.amr.games.pacman.view.play.ExtendedGamePanel;
 
 public class ScatteringTestView implements Controller {
 

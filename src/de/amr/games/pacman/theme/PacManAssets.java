@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme;
+package de.amr.games.pacman.theme;
 
 import java.awt.Font;
 import java.awt.image.BufferedImage;

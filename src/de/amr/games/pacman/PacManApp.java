@@ -4,7 +4,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.ui.FullScreen;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.view.theme.PacManTheme;
+import de.amr.games.pacman.theme.PacManTheme;
 
 /**
  * Pac-Man game.

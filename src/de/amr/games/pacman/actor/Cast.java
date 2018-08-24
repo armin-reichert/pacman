@@ -34,7 +34,7 @@ import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.navigation.Navigation;
-import de.amr.games.pacman.view.theme.GhostColor;
+import de.amr.games.pacman.theme.GhostColor;
 
 /**
  * Factory and container for the game actors.

@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.model.BonusSymbol;
-import de.amr.games.pacman.view.theme.PacManTheme;
+import de.amr.games.pacman.theme.PacManTheme;
 
 public class Bonus extends TileWorldEntity {
 

@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view;
+package de.amr.games.pacman.view.intro;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -9,20 +9,40 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.sprite.AnimationType;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.game.view.ViewController;
-import de.amr.games.pacman.view.theme.PacManTheme;
+import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.statemachine.StateMachine;
 
 public class IntroPanel implements ViewController {
 
 	private final int width;
 	private final int height;
+	
+	private final StateMachine<Integer, Void> timeline;
+	
 	private final Image titleImage;
 	private final Sprite startText;
 
 	public IntroPanel(int width, int height) {
 		this.width = width;
 		this.height = height;
+		timeline = buildStateMachine();
 		titleImage = Assets.image("title.png");
 		startText = createBlinkingText("Press SPACE to start");
+	}
+
+	private StateMachine<Integer, Void> buildStateMachine() {
+		return 
+		/*@formatter:off*/
+		StateMachine.define(Integer.class, Void.class)
+		.description("")
+		.initialState(0)
+		.states()
+			.state(0)
+				.onEntry(() -> {
+				})
+		.transitions()
+		.endStateMachine();
+	  /*@formatter:on*/			
 	}
 
 	@Override

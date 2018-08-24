@@ -32,7 +32,7 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.Navigation;
 import de.amr.games.pacman.navigation.NavigationSystem;
-import de.amr.games.pacman.view.theme.PacManTheme;
+import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
 
