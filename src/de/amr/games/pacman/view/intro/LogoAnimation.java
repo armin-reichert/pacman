@@ -6,12 +6,23 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.sprite.Sprite;
 
-public class PacManLogo extends GameEntity {
+/**
+ * An animation scrolling the Pac-Man logo into the visible area.
+ * 
+ * @author Armin Reichert
+ */
+public class LogoAnimation extends GameEntity {
 
+	private final int panelWidth;
+	private final int panelHeight;
+	private final int stopPosition;
 	private Sprite sprite;
 
-	public PacManLogo() {
-		sprite = new Sprite(Assets.image("title.png"));
+	public LogoAnimation(int width, int height, int stopPosition) {
+		this.panelWidth = width;
+		this.panelHeight = height;
+		this.stopPosition = stopPosition;
+		sprite = new Sprite(Assets.image("logo.png"));
 	}
 	
 	public void start() {
@@ -24,13 +35,13 @@ public class PacManLogo extends GameEntity {
 	}
 	
 	public boolean isCompleted() {
-		return tf.getY() < 20;
+		return tf.getY() <= stopPosition;
 	}
 
 	@Override
 	public void init() {
-		tf.setY(288);
-		hCenter(224);
+		tf.setY(panelHeight);
+		hCenter(panelWidth);
 	}
 
 	@Override
@@ -47,5 +58,4 @@ public class PacManLogo extends GameEntity {
 	public Stream<Sprite> getSprites() {
 		return Stream.of(sprite);
 	}
-
 }

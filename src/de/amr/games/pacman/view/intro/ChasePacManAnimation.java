@@ -9,12 +9,14 @@ import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.PacManTheme;
 
-public class GhostsChasingPacMan extends GameEntity {
+public class ChasePacManAnimation extends GameEntity {
 
+	private final int panelWidth;
 	private final Sprite pacMan;
 	private final Sprite ghosts[] = new Sprite[4];
 
-	public GhostsChasingPacMan() {
+	public ChasePacManAnimation(int width) {
+		this.panelWidth = width;
 		pacMan = PacManTheme.ASSETS.pacManWalking(Top4.W);
 		ghosts[0] = PacManTheme.ASSETS.ghostColored(GhostColor.RED, Top4.W);
 		ghosts[1] = PacManTheme.ASSETS.ghostColored(GhostColor.PINK, Top4.W);
@@ -24,7 +26,7 @@ public class GhostsChasingPacMan extends GameEntity {
 
 	@Override
 	public void init() {
-		tf.setX(288);
+		tf.setX(panelWidth);
 	}
 
 	@Override
@@ -34,7 +36,7 @@ public class GhostsChasingPacMan extends GameEntity {
 
 	public void start() {
 		init();
-		tf.setVelocityX(-1f);
+		tf.setVelocityX(-1.5f);
 	}
 
 	public void stop() {

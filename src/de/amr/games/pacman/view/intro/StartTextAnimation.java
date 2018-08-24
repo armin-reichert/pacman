@@ -11,13 +11,18 @@ import de.amr.easy.game.sprite.AnimationType;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.theme.PacManTheme;
 
-public class BlinkingStartText extends GameEntity {
+/**
+ * Animation showing blinking text for game start.
+ * 
+ * @author Armin Reichert
+ */
+public class StartTextAnimation extends GameEntity {
 
 	private final Sprite sprite;
 	private final int width;
 	private final float fontSize;
 
-	public BlinkingStartText(String text, float fontSize) {
+	public StartTextAnimation(String text, float fontSize) {
 		this.fontSize = fontSize;
 		Font font = PacManTheme.ASSETS.textFont().deriveFont(fontSize);
 		// compute image bounds
@@ -35,15 +40,6 @@ public class BlinkingStartText extends GameEntity {
 		g.dispose();
 		sprite = new Sprite(image, null).animate(AnimationType.BACK_AND_FORTH, 750);
 	}
-	
-//	@Override
-//	public void draw(Graphics2D g) {
-//		super.draw(g);
-//		g.translate(tf.getX(), tf.getY());
-//		g.setColor(Color.WHITE);
-//		g.drawRect(0, 0, getWidth(), getHeight());
-//		g.translate(-tf.getX(), -tf.getY());
-//	}
 
 	@Override
 	public int getWidth() {

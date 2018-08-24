@@ -8,26 +8,36 @@ import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.theme.PacManTheme;
 
-public class PacManGhostsPoints extends GameEntity {
+/**
+ * An animation showing Pac-Man and the four ghosts frightened and showing the points scored
+ * for the ghosts.
+ * 
+ * @author Armin Reichert
+ */
+public class GhostPointsAnimation extends GameEntity {
 
-	private Sprite pacMan;
-	private Sprite ghost;
-	private Sprite[] points = new Sprite[4];
-	private int killed;
+	private final Sprite pacMan;
+	private final Sprite ghost;
+	private final Sprite[] points = new Sprite[4];
+	private int killedIndex;
 	private int timer;
 
-	public PacManGhostsPoints() {
+	public GhostPointsAnimation() {
 		pacMan = PacManTheme.ASSETS.pacManWalking(Top4.E);
 		ghost = PacManTheme.ASSETS.ghostFrightened();
 		for (int i = 0; i < 4; ++i) {
 			points[i] = PacManTheme.ASSETS.greenNumber(i);
 		}
 	}
+	
+	private void resetTimer() {
+		timer = 90;
+	}
 
 	@Override
 	public void init() {
-		killed = -1;
-		timer = 60;
+		killedIndex = -1;
+	  resetTimer();
 	}
 
 	public void start() {
@@ -44,33 +54,30 @@ public class PacManGhostsPoints extends GameEntity {
 	@Override
 	public void draw(Graphics2D g) {
 		g.translate(tf.getX(), tf.getY());
+		pacMan.draw(g);
 		for (int i = 0; i < 4; ++i) {
-			g.translate(16 * (i + 1), 0);
-			if (i <= killed) {
+			g.translate(18 * (i + 1), 0);
+			if (i <= killedIndex) {
 				points[i].draw(g);
 			} else {
 				ghost.draw(g);
 			}
-			g.translate(-16 * (i + 1), 0);
+			g.translate(-18 * (i + 1), 0);
 		}
-		pacMan.draw(g);
 		g.translate(-tf.getX(), -tf.getY());
 	}
 
 	@Override
 	public int getWidth() {
-		return 5 * 16;
+		return 5 * 18;
 	}
 
 	@Override
 	public void update() {
 		timer -= 1;
-		if (timer == 0) {
-			killed += 1;
-			if (killed == 4) {
-				killed = -1;
-			}
-			timer = 60;
+		if (timer <= 0) {
+			killedIndex = killedIndex < 4 ? killedIndex + 1 : -1;
+			resetTimer();
 		}
 	}
 
