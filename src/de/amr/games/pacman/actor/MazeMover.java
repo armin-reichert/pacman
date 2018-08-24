@@ -62,6 +62,12 @@ public abstract class MazeMover extends TileWorldEntity {
 	}
 
 	public boolean canEnterTile(Tile tile) {
+		if (getMaze().inTeleportSpace(tile)) {
+			return true;
+		}
+		if (!getMaze().isValidTile(tile)) {
+			return false;
+		}
 		if (getMaze().isWall(tile)) {
 			return false;
 		}

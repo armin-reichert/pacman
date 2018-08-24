@@ -228,11 +228,14 @@ public class Maze {
 		if (inTeleportSpace(tile)) {
 			return SPACE;
 		}
+		if (!isValidTile(tile)) {
+			throw new IllegalArgumentException("Cannot access maze content for invalid tile: " + tile);
+		}
 		return graph.get(cell(tile));
 	}
 
 	public boolean inTeleportSpace(Tile tile) {
-		return tile.row == tunnelRow && tile.col < 0 || tile.col > numCols() - 1;
+		return tile.row == tunnelRow && (tile.col < 0 || tile.col > numCols() - 1);
 	}
 
 	public boolean inTunnel(Tile tile) {
