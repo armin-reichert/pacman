@@ -22,6 +22,10 @@ public class PacManLogo extends GameEntity {
 	public void stop() {
 		tf.setVelocityY(0);
 	}
+	
+	public boolean isCompleted() {
+		return tf.getY() < 20;
+	}
 
 	@Override
 	public void init() {
