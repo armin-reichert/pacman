@@ -1,48 +1,61 @@
 package de.amr.games.pacman.view.intro;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
+import java.util.HashSet;
+import java.util.Set;
 
-import de.amr.easy.game.assets.Assets;
-import de.amr.easy.game.sprite.AnimationType;
-import de.amr.easy.game.sprite.Sprite;
+import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.view.ViewController;
-import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.statemachine.StateMachine;
 
 public class IntroPanel implements ViewController {
 
 	private final int width;
 	private final int height;
-	
-	private final StateMachine<Integer, Void> timeline;
-	
-	private final Image titleImage;
-	private final Sprite startText;
+	private final StateMachine<Integer, Void> animation;
+	private Set<GameEntity> entities = new HashSet<>();
+	private Title title;
+	private Text startText;
 
 	public IntroPanel(int width, int height) {
 		this.width = width;
 		this.height = height;
-		timeline = buildStateMachine();
-		titleImage = Assets.image("title.png");
-		startText = createBlinkingText("Press SPACE to start");
+		animation = buildStateMachine();
 	}
 
 	private StateMachine<Integer, Void> buildStateMachine() {
-		return 
+		return
 		/*@formatter:off*/
 		StateMachine.define(Integer.class, Void.class)
-		.description("")
-		.initialState(0)
-		.states()
-			.state(0)
-				.onEntry(() -> {
-				})
-		.transitions()
+			.description("")
+			.initialState(0)
+	
+			.states()
+			
+				.state(0)
+					.onEntry(() -> {
+						title = new Title();
+						title.tf.setVelocityY(-0.8f);
+						title.tf.setY(getHeight());
+						title.hCenter(getWidth());
+						entities.add(title);
+					})
+					.onTick(() -> title.update())
+					
+					
+				.state(1)
+					.onEntry(() -> {
+						startText = new Text("Press SPACE to start!", 16);
+						startText.center(width, height);
+						entities.add(startText);
+					})
+					
+			.transitions()
+
+			.when(0).then(1).condition(() -> title.tf.getY() < 10)
+
 		.endStateMachine();
-	  /*@formatter:on*/			
+	  /*@formatter:on*/
 	}
 
 	@Override
@@ -54,31 +67,19 @@ public class IntroPanel implements ViewController {
 	public int getHeight() {
 		return height;
 	}
-	
-	private Sprite createBlinkingText(String text) {
-		BufferedImage image = new BufferedImage(width, 32, BufferedImage.TYPE_INT_RGB);
-		Graphics2D g = image.createGraphics();
-		g.setColor(Color.YELLOW);
-		g.setFont(PacManTheme.ASSETS.textFont().deriveFont(16f));
-		int w = g.getFontMetrics().stringWidth(text);
-		g.drawString(text, (width - w) / 2, 16f);
-		g.dispose();
-		return new Sprite(image, null).animate(AnimationType.BACK_AND_FORTH, 1000);
-	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		g.drawImage(titleImage, (width - titleImage.getWidth(null)) / 2, 0, null);
-		g.translate(0, getHeight()/2);
-		startText.draw(g);
-		g.translate(0, -getHeight()/2);
+		entities.forEach(e -> e.draw(g));
 	}
 
 	@Override
 	public void init() {
+		animation.init();
 	}
 
 	@Override
 	public void update() {
+		animation.update();
 	}
 }

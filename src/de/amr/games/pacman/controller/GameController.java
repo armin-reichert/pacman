@@ -3,7 +3,7 @@ package de.amr.games.pacman.controller;
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.games.pacman.controller.GameController.PlayState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.GameController.PlayState.GAME_OVER;
-import static de.amr.games.pacman.controller.GameController.PlayState.GET_READY;
+import static de.amr.games.pacman.controller.GameController.PlayState.INTRO;
 import static de.amr.games.pacman.controller.GameController.PlayState.GHOST_DYING;
 import static de.amr.games.pacman.controller.GameController.PlayState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.GameController.PlayState.PLAYING;
@@ -48,7 +48,7 @@ import de.amr.statemachine.StateObject;
 public class GameController implements Controller {
 
 	public enum PlayState {
-		GET_READY, READY, PLAYING, GHOST_DYING, PACMAN_DYING, CHANGING_LEVEL, GAME_OVER
+		INTRO, READY, PLAYING, GHOST_DYING, PACMAN_DYING, CHANGING_LEVEL, GAME_OVER
 	}
 
 	private final Game game;
@@ -68,6 +68,13 @@ public class GameController implements Controller {
 		playView = new ExtendedGamePanel(width, height, game, actors);
 		gameControl = buildStateMachine();
 		actors.getPacMan().subscribe(gameControl::process);
+	}
+	
+	private void selectView(ViewController view) {
+		if (currentView != view) {
+			currentView = view;
+			currentView.init();
+		}
 	}
 
 	@Override
@@ -100,12 +107,12 @@ public class GameController implements Controller {
 		StateMachine.define(PlayState.class, GameEvent.class)
 			
 			.description("[GameControl]")
-			.initialState(GET_READY)
+			.initialState(INTRO)
 			
 			.states()
 				
-				.state(GET_READY)
-					.onEntry(() -> currentView = introView)
+				.state(INTRO)
+					.onEntry(() -> selectView(introView))
 				
 				.state(READY)
 					.impl(new ReadyState())
@@ -130,9 +137,9 @@ public class GameController implements Controller {
 	
 			.transitions()
 			
-				.when(GET_READY).then(READY)
+				.when(INTRO).then(READY)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
-					.act(() -> currentView = playView)
+					.act(() -> selectView(playView))
 				
 				.when(READY).then(PLAYING).onTimeout()
 					
