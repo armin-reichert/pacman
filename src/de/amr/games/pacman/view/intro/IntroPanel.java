@@ -16,6 +16,8 @@ public class IntroPanel implements ViewController {
 	private Set<GameEntity> entities = new HashSet<>();
 	private Title title;
 	private Text startText;
+	private GhostsChasingPacMan ghostsChasingPacMan;
+	private PacManChasingGhosts pacManChasingGhosts;
 
 	public IntroPanel(int width, int height) {
 		this.width = width;
@@ -32,28 +34,51 @@ public class IntroPanel implements ViewController {
 	
 			.states()
 			
-				.state(0)
+				.state(0) // scroll title image from bottom into view
 					.onEntry(() -> {
-						title = new Title();
+						entities.add(title = new Title());
 						title.tf.setVelocityY(-0.8f);
 						title.tf.setY(getHeight());
 						title.hCenter(getWidth());
-						entities.add(title);
 					})
-					.onTick(() -> title.update())
 					
 					
-				.state(1)
+				.state(1) // show blinking start text and chasing
 					.onEntry(() -> {
-						startText = new Text("Press SPACE to start!", 16);
+						entities.add(startText = new Text("Press SPACE to start!", 16));
+						entities.add(ghostsChasingPacMan = new GhostsChasingPacMan());
+						entities.add(pacManChasingGhosts = new PacManChasingGhosts());
 						startText.center(width, height);
-						entities.add(startText);
+						ghostsChasingPacMan.tf.moveTo(width, 100);
+						ghostsChasingPacMan.tf.setVelocityX(-0.8f);
+						pacManChasingGhosts.tf.moveTo(-80,  200);
+						pacManChasingGhosts.tf.setVelocityX(0);
 					})
 					
 			.transitions()
 
-			.when(0).then(1).condition(() -> title.tf.getY() < 10)
-
+			.when(0).then(1)
+				.condition(() -> title.tf.getY() < 10)
+				.act(() -> title.tf.setVelocityY(0))
+				
+			.stay(1)
+				.condition(() -> ghostsChasingPacMan.tf.getX() < -80)
+				.act(() -> {
+					ghostsChasingPacMan.tf.moveTo(width, 100);
+					ghostsChasingPacMan.tf.setVelocityX(0);
+					pacManChasingGhosts.tf.moveTo(-80,  200);
+					pacManChasingGhosts.tf.setVelocityX(0.8f);
+				})
+				
+			.stay(1)
+				.condition(() -> pacManChasingGhosts.tf.getX() > width)
+				.act(() -> {
+					pacManChasingGhosts.tf.moveTo(-80,  200);
+					pacManChasingGhosts.tf.setVelocityX(0);
+					ghostsChasingPacMan.tf.moveTo(width, 100);
+					ghostsChasingPacMan.tf.setVelocityX(-0.8f);
+				})
+				
 		.endStateMachine();
 	  /*@formatter:on*/
 	}
@@ -81,5 +106,6 @@ public class IntroPanel implements ViewController {
 	@Override
 	public void update() {
 		animation.update();
+		entities.forEach(GameEntity::update);
 	}
 }
