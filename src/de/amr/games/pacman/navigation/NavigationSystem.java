@@ -79,7 +79,7 @@ public interface NavigationSystem {
 	 * </p>
 	 */
 	public static Navigation chaseLikeInky(Ghost blinky, PacMan pacMan) {
-		return new FollowTargetTile(() -> {
+		return followTargetTile(() -> {
 			Tile b = blinky.getTile();
 			Tile p = aheadOf(pacMan, 2);
 			Tile target = new Tile(2 * p.col - b.col, 2 * p.row - b.row);
@@ -118,7 +118,7 @@ public interface NavigationSystem {
 	 * </p>
 	 */
 	public static Navigation chaseLikeClyde(Ghost clyde, PacMan pacMan) {
-		return new FollowTargetTile(() -> {
+		return followTargetTile(() -> {
 			double d = Vector2f.dist(clyde.getCenter(), pacMan.getCenter());
 			return d >= 8 * Game.TS ? pacMan.getTile() : clyde.getMaze().getClydeScatteringTarget();
 
