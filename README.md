@@ -312,21 +312,20 @@ Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
 });
 
 // individual ghost behavior
-blinky.setNavigation(AGGRO, chase(pacMan));
+blinky.setNavigation(AGGRO, attackDirectly(pacMan));
 pinky.setNavigation(AGGRO, ambush(pacMan));
-inky.setNavigation(AGGRO, inkyChaseBehavior(blinky, pacMan));
-clyde.setNavigation(AGGRO, clydeChaseBehavior(clyde, pacMan));
-clyde.fnCanLeaveHouse = () -> game.getLevel() > 1
-		|| game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
+inky.setNavigation(AGGRO, chaseLikeInky(blinky, pacMan));
+clyde.setNavigation(AGGRO, chaseLikeClyde(clyde, pacMan));
+clyde.fnCanLeaveHouse = () -> game.getLevel() > 1 || game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
 ```
 
-The general *followTargetTile* behavior makes it rather trivial to implement the single ghost behaviors like *scatter*, *ambush*, *chase* and so on.
+The general *followTargetTile* behavior makes it trivial to implement the individual ghost behaviors *scatter*, *ambush*, *attackDirectly* and so on.
 
-Blinky's *chase* behavior is to directly target Pac-Man:
+Blinky's chase behavior is to directly target Pac-Man:
 
 ```java
-public static Navigation chase(MazeMover victim) {
-	return new FollowTargetTile(victim::getTile);
+public static Navigation attackDirectly(MazeMover victim) {
+	return followTargetTile(victim::getTile);
 }
 ```
 
@@ -334,7 +333,7 @@ Pinky, the *ambusher*, targets the position 4 tiles ahead of Pac-Man (in the ori
 
 ```java
 public static Navigation ambush(MazeMover victim) {
-	return new FollowTargetTile(() -> aheadOf(victim, 4));
+	return followTargetTile(() -> aheadOf(victim, 4));
 }
 ```
 
@@ -343,13 +342,13 @@ Inky's target tile is computed as follows:
 Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man: `V = (P - B)`. Add the double of this vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` and you get Inky's target:
 
 ```java
-public static Navigation inkyChaseBehavior(Ghost blinky, PacMan pacMan) {
+public static Navigation chaseLikeInky(Ghost blinky, PacMan pacMan) {
 	return new FollowTargetTile(() -> {
+		Tile b = blinky.getTile();
+		Tile p = aheadOf(pacMan, 2);
+		Tile target = new Tile(2 * p.col - b.col, 2 * p.row - b.row);
+		// TODO: correctly project target tile to border
 		Maze maze = pacMan.getMaze();
-		Tile blinkyPosition = blinky.getTile();
-		Tile aheadPacMan = aheadOf(pacMan, 2);
-		Tile target = new Tile(2 * aheadPacMan.col - blinkyPosition.col,
-				2 * aheadPacMan.row - blinkyPosition.row);
 		int row = Math.min(Math.max(0, target.row), maze.numRows() - 1);
 		int col = Math.min(Math.max(0, target.col), maze.numCols() - 1);
 		return new Tile(col, row);
@@ -357,35 +356,33 @@ public static Navigation inkyChaseBehavior(Ghost blinky, PacMan pacMan) {
 }
 ```
 
-Clyde in chase mode targets Pac-Man if he is more than 8 tiles (straight line distance) away, if he is closer, he targets his scattering tile in the lower left corner:
+Clyde targets Pac-Man if he is more than 8 tiles (straight line distance) away. If closer, he goes into scattering mode:
 
 ```java
-public static Navigation clydeChaseBehavior(Ghost clyde, PacMan pacMan) {
+public static Navigation chaseLikeClyde(Ghost clyde, PacMan pacMan) {
 	return new FollowTargetTile(() -> {
 		double d = Vector2f.dist(clyde.getCenter(), pacMan.getCenter());
 		return d >= 8 * Game.TS ? pacMan.getTile() : clyde.getMaze().getClydeScatteringTarget();
 
 	});
-}
 ```
 
 <img src="doc/scattering.png"/>
 
-For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed, the *followTargetTile* behavior is sufficient. As an example how graph path finding could be used, the *flee* behavior has been implemented differently from the original game. 
+For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed, the *followTargetTile* behavior is sufficient. To give an example how graph based path finding can be used, the *flee* behavior has been implemented differently from the original game.
 
 Shortest routes in the maze graph can be computed using the method *Maze.findPath(Tile source, Tile target)*. This method runs an A* or BFS algorithm on the underlying grid graph (A* sounds cooler than BFS :-). A* is rather useless here because the maze is represented by a (grid) graph where the distance between two vertices (neighbor tiles) is always equal. Thus the Dijkstra or A* path finding algorithms will just degenerate to BFS (correct me if I'm wrong). Of course you could represent the graph differently, for example with vertices only for crossings and weighted edges for passages. In that case, Dijkstra or A* would be useful.
 
 ## Additional features
 
-- Display of entity states and timers can be switched on/off at runtime (key 's')
-- Display of entity routes can be switched on/off at runtime (key 'r')
-- Ghosts can be switched on/off (keys 'b', 'p', 'i', 'c')
-- Key 'k' kills all ghosts
-- Key 'e' eats all pellets
-- Alignment of movers on the grid can be visualized (key 'g')
+- Display of actor states and timers can be switched on/off at runtime (key 's')
+- Display of actor routes can be switched on/off at runtime (key 'r')
+- Ghosts can enabled/disabled during the game (keys 'b', 'p', 'i', 'c')
+- Cheat key 'k' kills all ghosts
+- Cheat key 'e' eats all pellets
+- Alignment of actors on the grid can be visualized (key 'g')
 - Game can be paused (CTRL+p) and game loop frequency can be changed (F2 opens dialog)
-- F11 toggles between window and full-screen exclusive mode (warning: may cause bluescreen!)
-
+- F11 toggles between window and full-screen exclusive mode (warning: may cause bluescreen with some graphic drivers!)
 
 ## References
 
@@ -400,6 +397,6 @@ The goal of this project is to implement a Pac-Man game in a way that also begin
 
 A very simple game library is used for the basic game infrastructure (active rendering, game loop) but it is not difficult to write these infrastructure parts from scratch or use some real game library instead. It would certainly also be useful to further decouple the UI from the game model and controller to enable an easy replacement of the complete UI.
 
-Any comments are welcome!
+Comments are welcome.
 
 *Armin Reichert, August 2018*
