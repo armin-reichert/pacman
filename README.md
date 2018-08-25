@@ -291,6 +291,8 @@ Example trace:
 
 The navigation behavior of the actors is implemented modularly (*strategy pattern*) and can easily be configured.
 
+### Pac-Man
+
 Pac-Man is controlled by the keyboard:
 
 ```java
@@ -300,6 +302,7 @@ pacMan.setNavigation(PacManState.HUNGRY, keySteering);
 pacMan.setNavigation(PacManState.GREEDY, keySteering);
 ```
 
+### Ghosts
 Configuration of ghost behavior:
 
 ```java
@@ -321,6 +324,8 @@ clyde.fnCanLeaveHouse = () -> game.getLevel() > 1 || game.getFoodRemaining() < (
 
 The general *followTargetTile* behavior makes it trivial to implement the individual ghost behaviors *scatter*, *ambush*, *attackDirectly* and so on.
 
+### Blinky
+
 Blinky's chase behavior is to directly target Pac-Man:
 
 ```java
@@ -331,6 +336,8 @@ public static Navigation attackDirectly(MazeMover victim) {
 
 <img src="doc/blinky.png"/>
 
+### Pinky
+
 Pinky, the *ambusher*, targets the position 4 tiles ahead of Pac-Man (in the original game there is an overflow error that leads to a different behavior):
 
 ```java
@@ -340,6 +347,8 @@ public static Navigation ambush(MazeMover victim) {
 ```
 
 <img src="doc/pinky.png"/>
+
+### Inky
 
 Inky's target tile is computed as follows:
 
@@ -360,6 +369,8 @@ public static Navigation chaseLikeInky(Ghost blinky, PacMan pacMan) {
 }
 ```
 
+### Clyde
+
 Clyde targets Pac-Man if he is more than 8 tiles (straight line distance) away. If closer, he goes into scattering mode:
 
 ```java
@@ -372,9 +383,13 @@ public static Navigation chaseLikeClyde(Ghost clyde, PacMan pacMan) {
 
 <img src="doc/clyde.png"/>
 
+### Scattering
+
 In *scatter* mode, the ghosts target their special scattering target tile outside of the maze. The ghost move behavior then lead to them cycling around the wall block in that corner.
 
 <img src="doc/scattering.png"/>
+
+### Path finding
 
 For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed, the *followTargetTile* behavior is sufficient. To give an example how graph based path finding can be used, the *flee* behavior has been implemented differently from the original game.
 
