@@ -1,9 +1,6 @@
 package de.amr.games.pacman;
 
-import java.util.Arrays;
-
 import de.amr.easy.game.Application;
-import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.ui.FullScreen;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.model.Game;
@@ -40,16 +37,6 @@ public class PacManApp extends Application {
 	@Override
 	public void init() {
 		PacManTheme.init();
-		loadSounds();
 		setController(new GameController());
-	}
-
-	private void loadSounds() {
-		//@formatter:off
-		Arrays.asList("die", "eat-fruit", "eat-ghost", "eat-pill", "eating", "extra-life", 
-				"insert-coin", "ready", "siren", "waza").stream()
-			.map(name -> "sfx/" + name + ".mp3")
-			.map(path -> Assets.sound(path));
-		//@formatter:on
 	}
 }

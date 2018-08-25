@@ -114,11 +114,14 @@ public class ClassicPacManTheme implements PacManAssets {
 		for (int j = 0; j < 3; ++j) {
 			pinkNumbers[5 + j] = $(512, 160 + j * 16, 2 * 16, 16);
 		}
+		Application.LOGGER.info("Pac-Man sprite images extracted");
 		
 		// Text font
 		Assets.storeTrueTypeFont("font.arcadeclassic", "arcadeclassic.ttf", Font.PLAIN, 12);
 
-		Application.LOGGER.info("Pac-Man sprite images extracted");
+		// Sounds
+		loadSounds();
+		Application.LOGGER.info("Pac-Man sounds loaded");
 	}
 
 	private BufferedImage changeColor(BufferedImage src, int from, int to) {
@@ -228,4 +231,14 @@ public class ClassicPacManTheme implements PacManAssets {
 	public Font textFont() {
 		return Assets.font("font.arcadeclassic");
 	}
+	
+	private void loadSounds() {
+		//@formatter:off
+		Arrays.asList("die", "eat-fruit", "eat-ghost", "eat-pill", "eating", "extra-life", 
+				"insert-coin", "ready", "siren", "waza").stream()
+			.map(name -> "sfx/" + name + ".mp3")
+			.map(path -> Assets.sound(path));
+		//@formatter:on
+	}
+	
 }
