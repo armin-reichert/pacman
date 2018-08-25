@@ -329,6 +329,8 @@ public static Navigation attackDirectly(MazeMover victim) {
 }
 ```
 
+<img src="doc/blinky.png"/>
+
 Pinky, the *ambusher*, targets the position 4 tiles ahead of Pac-Man (in the original game there is an overflow error that leads to a different behavior):
 
 ```java
@@ -336,6 +338,8 @@ public static Navigation ambush(MazeMover victim) {
 	return followTargetTile(() -> aheadOf(victim, 4));
 }
 ```
+
+<img src="doc/pinky.png"/>
 
 Inky's target tile is computed as follows:
 
