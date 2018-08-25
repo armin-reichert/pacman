@@ -206,7 +206,7 @@ public class ExtendedGamePanel extends GamePanel {
 	private void drawRoute(Graphics2D g, Ghost ghost) {
 		g.setColor(ghostColor(ghost));
 		MazeRoute route = ghost.getNavigation().computeRoute(ghost);
-		List<Tile> path = route.path;
+		List<Tile> path = route.getPath();
 
 		if (path.size() > 1) {
 			for (int i = 0; i < path.size() - 1; ++i) {
@@ -221,12 +221,12 @@ public class ExtendedGamePanel extends GamePanel {
 			g.translate(targetTile.col * TS, targetTile.row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-targetTile.col * TS, -targetTile.row * TS);
-		} else if (route.targetTile != null) {
+		} else if (route.getTargetTile() != null) {
 			g.drawLine((int) ghost.getCenter().x, (int) ghost.getCenter().y,
-					route.targetTile.col * TS + TS / 2, route.targetTile.row * TS + TS / 2);
-			g.translate(route.targetTile.col * TS, route.targetTile.row * TS);
+					route.getTargetTile().col * TS + TS / 2, route.getTargetTile().row * TS + TS / 2);
+			g.translate(route.getTargetTile().col * TS, route.getTargetTile().row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
-			g.translate(-route.targetTile.col * TS, -route.targetTile.row * TS);
+			g.translate(-route.getTargetTile().col * TS, -route.getTargetTile().row * TS);
 		}
 
 		if (ghost.getName() == GhostName.Clyde && ghost.getState() == GhostState.AGGRO) {

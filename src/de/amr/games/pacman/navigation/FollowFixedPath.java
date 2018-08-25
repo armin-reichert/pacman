@@ -22,12 +22,12 @@ class FollowFixedPath implements Navigation {
 
 	@Override
 	public MazeRoute computeRoute(MazeMover mover) {
-		MazeRoute route = new MazeRoute();
 		if (path.size() > 0 && !path.get(0).equals(mover.getTile())) {
 			path.remove(0);
 		}
-		route.path = path;
-		route.dir = mover.getMaze().alongPath(path).orElse(mover.getCurrentDir());
+		MazeRoute route = new MazeRoute();
+		route.setPath(path);
+		route.setDir(mover.getMaze().alongPath(path).orElse(mover.getCurrentDir()));
 		return route;
 	}
 

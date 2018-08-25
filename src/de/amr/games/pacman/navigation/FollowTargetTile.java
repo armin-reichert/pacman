@@ -52,7 +52,7 @@ public class FollowTargetTile implements Navigation {
 
 		// keep direction when in tunnel or teleport space
 		if (mover.inTunnel() || mover.inTeleportSpace()) {
-			route.dir = moverDir;
+			route.setDir(moverDir);
 			return route;
 		}
 
@@ -65,14 +65,14 @@ public class FollowTargetTile implements Navigation {
 			int entryCol = targetTile.col > (maze.numCols() - 1) ? (maze.numCols() - 1) : 0;
 			targetTile = new Tile(entryCol, maze.getTunnelRow());
 		}
-		route.targetTile = targetTile;
+		route.setTargetTile(targetTile);
 
 		// leave ghost house by following route to Blinky's home tile
 		if (mover.inGhostHouse()) {
 			Optional<Integer> choice = findBestDir(mover, maze.getBlinkyHome(), moverTile,
 					Stream.of(moverDir, NESW.left(moverDir), NESW.right(moverDir)));
 			if (choice.isPresent()) {
-				route.dir = choice.get();
+				route.setDir(choice.get());
 			}
 			return route;
 		}
@@ -81,7 +81,7 @@ public class FollowTargetTile implements Navigation {
 		for (int dir : Arrays.asList(Top4.N, Top4.E, Top4.S, Top4.W)) {
 			Tile neighborTile = maze.neighborTile(moverTile, dir).get();
 			if (neighborTile.equals(targetTile)) {
-				route.dir = dir;
+				route.setDir(dir);
 				return route;
 			}
 		}
@@ -90,12 +90,12 @@ public class FollowTargetTile implements Navigation {
 		if (mover.isStuck()) {
 			int toLeft = NESW.left(moverDir);
 			if (mover.canEnterTile(maze.neighborTile(moverTile, toLeft).get())) {
-				route.dir = toLeft;
+				route.setDir(toLeft);
 				return route;
 			}
 			int toRight = NESW.right(moverDir);
 			if (mover.canEnterTile(maze.neighborTile(moverTile, toRight).get())) {
-				route.dir = toRight;
+				route.setDir(toRight);
 				return route;
 			}
 		}
@@ -105,7 +105,7 @@ public class FollowTargetTile implements Navigation {
 			Stream<Integer> choices = Stream.of(Top4.W, Top4.S, Top4.E);
 			Optional<Integer> choice = findBestDir(mover, targetTile, moverTile, choices);
 			if (choice.isPresent()) {
-				route.dir = choice.get();
+				route.setDir(choice.get());
 				return route;
 			}
 		}
@@ -119,13 +119,13 @@ public class FollowTargetTile implements Navigation {
 					.filter(dir -> free || dir != Top4.N);
 			Optional<Integer> choice = findBestDir(mover, targetTile, nextTile, choices);
 			if (choice.isPresent()) {
-				route.dir = choice.get();
+				route.setDir(choice.get());
 				return route;
 			}
 		}
 
 		// no direction could be determined
-		route.dir = -1;
+		route.setDir(-1);
 		return route;
 	}
 

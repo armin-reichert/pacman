@@ -107,7 +107,7 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 
 	@Override
 	public int supplyIntendedDir() {
-		return getNavigation().computeRoute(this).dir;
+		return getNavigation().computeRoute(this).getDir();
 	}
 
 	@Override

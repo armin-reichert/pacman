@@ -30,13 +30,9 @@ public interface NavigationSystem {
 	}
 
 	public static Navigation bounce() {
-		return bouncer -> {
-			MazeRoute route = new MazeRoute();
-			route.dir = bouncer.isStuck() ? NESW.inv(bouncer.getCurrentDir()) : bouncer.getCurrentDir();
-			return route;
-		};
+		return bouncer -> new MazeRoute(bouncer.isStuck() ? NESW.inv(bouncer.getCurrentDir()) : bouncer.getCurrentDir());
 	}
-	
+
 	public static Navigation flee(MazeMover refugee, MazeMover chaser) {
 		return new EscapeIntoCorner(chaser);
 	}
@@ -45,15 +41,15 @@ public interface NavigationSystem {
 		return mover -> {
 			MazeRoute result = new MazeRoute();
 			if (Keyboard.keyDown(keyUp)) {
-				result.dir = Top4.N;
+				result.setDir(Top4.N);
 			} else if (Keyboard.keyDown(keyRight)) {
-				result.dir = Top4.E;
+				result.setDir(Top4.E);
 			} else if (Keyboard.keyDown(keyDown)) {
-				result.dir = Top4.S;
+				result.setDir(Top4.S);
 			} else if (Keyboard.keyDown(keyLeft)) {
-				result.dir = Top4.W;
+				result.setDir(Top4.W);
 			} else {
-				result.dir = -1;
+				result.setDir(-1);
 			}
 			return result;
 		};
@@ -62,12 +58,12 @@ public interface NavigationSystem {
 	public static Navigation followPath(Tile target) {
 		return mover -> {
 			MazeRoute route = new MazeRoute();
-			route.path = mover.getMaze().findPath(mover.getTile(), target);
-			route.dir = mover.getMaze().alongPath(route.path).orElse(-1);
+			route.setPath(mover.getMaze().findPath(mover.getTile(), target));
+			route.setDir(mover.getMaze().alongPath(route.getPath()).orElse(-1));
 			return route;
 		};
 	}
-	
+
 	public static Navigation followFixedPath(Tile target) {
 		return new FollowFixedPath(target);
 	}
@@ -77,11 +73,7 @@ public interface NavigationSystem {
 	}
 
 	public static Navigation keepDirection() {
-		return mover -> {
-			MazeRoute route = new MazeRoute();
-			route.dir = mover.getCurrentDir();
-			return route;
-		};
+		return mover -> new MazeRoute(mover.getCurrentDir());
 	}
 
 	/**
@@ -158,7 +150,7 @@ public interface NavigationSystem {
 	 *         direction. If this position is outside the maze, returns the tile <code>(n-1)</code>
 	 *         tiles ahead an so on.
 	 */
-	static Tile aheadOf(MazeMover mover, int n) {
+	public static Tile aheadOf(MazeMover mover, int n) {
 		Maze maze = mover.getMaze();
 		Tile tile = mover.getTile();
 		while (n >= 0) {

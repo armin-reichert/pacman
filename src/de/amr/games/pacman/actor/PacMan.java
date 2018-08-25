@@ -117,7 +117,7 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 
 	@Override
 	public int supplyIntendedDir() {
-		return getNavigation().computeRoute(this).dir;
+		return getNavigation().computeRoute(this).getDir();
 	}
 
 	@Override
