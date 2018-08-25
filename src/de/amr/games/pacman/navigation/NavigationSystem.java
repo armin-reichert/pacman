@@ -1,11 +1,11 @@
 package de.amr.games.pacman.navigation;
 
+import static de.amr.easy.game.math.Vector2f.dist;
 import static de.amr.games.pacman.model.Maze.NESW;
 
 import java.util.function.Supplier;
 
 import de.amr.easy.game.input.Keyboard;
-import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.MazeMover;
@@ -135,10 +135,8 @@ public interface NavigationSystem {
 	 * </p>
 	 */
 	public static Navigation chaseLikeClyde(Ghost clyde, PacMan pacMan) {
-		return followTargetTile(() -> {
-			double d = Vector2f.dist(clyde.getCenter(), pacMan.getCenter());
-			return d >= 8 * Game.TS ? pacMan.getTile() : clyde.getScatteringTarget();
-		});
+		return followTargetTile(() -> dist(clyde.getCenter(), pacMan.getCenter()) >= 8 * Game.TS ? pacMan.getTile()
+				: clyde.getScatteringTarget());
 	}
 
 	/**
