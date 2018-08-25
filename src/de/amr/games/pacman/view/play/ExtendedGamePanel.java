@@ -119,7 +119,7 @@ public class ExtendedGamePanel extends GamePanel {
 	public void draw(Graphics2D g) {
 		super.draw(g);
 		if (showGrid) {
-			drawGrid(g);
+			g.drawImage(gridImage, 0, 0, null);
 			drawActorGridAlignment(actors.getPacMan(), g);
 			actors.getActiveGhosts().forEach(ghost -> drawActorGridAlignment(ghost, g));
 		}
@@ -129,10 +129,6 @@ public class ExtendedGamePanel extends GamePanel {
 		if (showStates) {
 			drawEntityStates(g);
 		}
-	}
-
-	private void drawGrid(Graphics2D g) {
-		g.drawImage(gridImage, 0, 0, null);
 	}
 
 	private void drawEntityStates(Graphics2D g) {

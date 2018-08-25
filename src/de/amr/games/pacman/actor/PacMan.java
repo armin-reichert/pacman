@@ -7,6 +7,7 @@ import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
+import static de.amr.games.pacman.navigation.NavigationSystem.keepDirection;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -31,7 +32,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.Navigation;
-import de.amr.games.pacman.navigation.NavigationSystem;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
@@ -112,7 +112,7 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 	}
 
 	public Navigation getNavigation() {
-		return navigationMap.getOrDefault(getState(), NavigationSystem.forward());
+		return navigationMap.getOrDefault(getState(), keepDirection());
 	}
 
 	@Override

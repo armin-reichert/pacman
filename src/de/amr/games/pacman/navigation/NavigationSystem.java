@@ -4,7 +4,9 @@ import static de.amr.games.pacman.model.Maze.NESW;
 
 import java.util.function.Supplier;
 
+import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
@@ -39,12 +41,31 @@ public interface NavigationSystem {
 		return new EscapeIntoCorner(chaser);
 	}
 
-	public static Navigation followKeyboard(int keyN, int keyE, int keyS, int keyW) {
-		return new FollowKeyboard(keyN, keyE, keyS, keyW);
+	public static Navigation followKeyboard(int keyUp, int keyRight, int keyDown, int keyLeft) {
+		return mover -> {
+			MazeRoute result = new MazeRoute();
+			if (Keyboard.keyDown(keyUp)) {
+				result.dir = Top4.N;
+			} else if (Keyboard.keyDown(keyRight)) {
+				result.dir = Top4.E;
+			} else if (Keyboard.keyDown(keyDown)) {
+				result.dir = Top4.S;
+			} else if (Keyboard.keyDown(keyLeft)) {
+				result.dir = Top4.W;
+			} else {
+				result.dir = -1;
+			}
+			return result;
+		};
 	}
 
 	public static Navigation followPath(Tile target) {
-		return new FollowPath(target);
+		return mover -> {
+			MazeRoute route = new MazeRoute();
+			route.path = mover.getMaze().findPath(mover.getTile(), target);
+			route.dir = mover.getMaze().alongPath(route.path).orElse(-1);
+			return route;
+		};
 	}
 	
 	public static Navigation followFixedPath(Tile target) {
@@ -55,7 +76,7 @@ public interface NavigationSystem {
 		return new FollowTargetTile(targetTileSupplier);
 	}
 
-	public static Navigation forward() {
+	public static Navigation keepDirection() {
 		return mover -> {
 			MazeRoute route = new MazeRoute();
 			route.dir = mover.getCurrentDir();
