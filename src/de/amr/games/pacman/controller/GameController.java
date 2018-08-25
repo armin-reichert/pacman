@@ -36,7 +36,7 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.view.intro.IntroPanel;
+import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.play.ExtendedGamePanel;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
@@ -55,7 +55,7 @@ public class GameController implements Controller {
 	private final Game game;
 	private final Cast actors;
 	private final ExtendedGamePanel playView;
-	private final IntroPanel introView;
+	private final IntroView introView;
 	private final StateMachine<PlayState, GameEvent> gameControl;
 	private ViewController currentView;
 
@@ -65,7 +65,7 @@ public class GameController implements Controller {
 		actors = new Cast(game);
 		int width = maze.numCols() * Game.TS;
 		int height = maze.numRows() * Game.TS;
-		introView = new IntroPanel(width, height);
+		introView = new IntroView(width, height);
 		playView = new ExtendedGamePanel(width, height, game, actors);
 		gameControl = buildStateMachine();
 		actors.getPacMan().subscribe(gameControl::process);
@@ -145,7 +145,7 @@ public class GameController implements Controller {
 			.transitions()
 			
 				.when(INTRO).then(READY)
-					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+					.condition(() -> introView.isComplete())
 					.act(() -> selectView(playView))
 				
 				.when(READY).then(PLAYING).onTimeout()
