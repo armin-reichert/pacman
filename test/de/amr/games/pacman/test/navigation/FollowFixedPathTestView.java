@@ -44,7 +44,7 @@ public class FollowFixedPathTestView implements Controller {
 		actors.getBlinky().setState(GhostState.AGGRO);
 		currentIndex = 0;
 		actors.getBlinky().setNavigation(GhostState.AGGRO, NavigationSystem.followFixedPath(targets.get(0)));
-		actors.getBlinky().getNavigation().prepareRoute(actors.getBlinky());
+		actors.getBlinky().getNavigation().computeStaticRoute(actors.getBlinky());
 	}
 	
 	private void nextTarget() {
@@ -53,7 +53,7 @@ public class FollowFixedPathTestView implements Controller {
 			currentIndex = 0;
 		}
 		actors.getBlinky().setNavigation(GhostState.AGGRO, NavigationSystem.followFixedPath(targets.get(currentIndex)));
-		actors.getBlinky().getNavigation().prepareRoute(actors.getBlinky());
+		actors.getBlinky().getNavigation().computeStaticRoute(actors.getBlinky());
 	}
 
 	@Override

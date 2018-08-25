@@ -16,7 +16,7 @@ class EscapeIntoCorner extends FollowFixedPath {
 	}
 
 	@Override
-	public void prepareRoute(MazeMover refugee) {
+	public void computeStaticRoute(MazeMover refugee) {
 		target = chooseCorner(refugee.getMaze(), chaser.getTile());
 		path = refugee.getMaze().findPath(refugee.getTile(), target);
 	}

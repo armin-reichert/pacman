@@ -193,7 +193,7 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 					.state(FRIGHTENED)
 						.onEntry(() -> {
 							sprite = s_frightened; 
-							getNavigation().prepareRoute(this); 
+							getNavigation().computeStaticRoute(this); 
 						})
 						.onTick(() -> move())
 					
@@ -205,7 +205,7 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 						})
 					
 					.state(DEAD)
-						.onEntry(() -> getNavigation().prepareRoute(this))
+						.onEntry(() -> getNavigation().computeStaticRoute(this))
 						.onTick(() -> {	
 							move();
 							sprite = s_eyes[getCurrentDir()];

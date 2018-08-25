@@ -32,7 +32,7 @@ class FollowFixedPath implements Navigation {
 	}
 
 	@Override
-	public void prepareRoute(MazeMover mover) {
+	public void computeStaticRoute(MazeMover mover) {
 		path = mover.getMaze().findPath(mover.getTile(), target);
 	}
 }

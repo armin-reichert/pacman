@@ -6,6 +6,6 @@ public interface Navigation {
 
 	MazeRoute computeRoute(MazeMover mover);
 
-	default void prepareRoute(MazeMover mover) {
+	default void computeStaticRoute(MazeMover mover) {
 	}
 }
