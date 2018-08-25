@@ -370,7 +370,7 @@ public static Navigation chaseLikeClyde(Ghost clyde, PacMan pacMan) {
 	});
 ```
 
-<img src="doc/intro.png"/>
+<img src="doc/clyde.png"/>
 
 In *scatter* mode, the ghosts target their special scattering target tile outside of the maze. The ghost move behavior then lead to them cycling around the wall block in that corner.
 
