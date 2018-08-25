@@ -77,26 +77,13 @@ public class FollowTargetTile implements Navigation {
 			return route;
 		}
 
-		// check if target tile is a neighbor tile of the current tile
-		for (int dir : Arrays.asList(Top4.N, Top4.E, Top4.S, Top4.W)) {
-			Tile neighborTile = maze.neighborTile(moverTile, dir).get();
-			if (neighborTile.equals(targetTile)) {
-				route.setDir(dir);
-				return route;
-			}
-		}
-		
 		// if stuck, check if turning left or right is possible
 		if (mover.isStuck()) {
-			int toLeft = NESW.left(moverDir);
-			if (mover.canEnterTile(maze.neighborTile(moverTile, toLeft).get())) {
-				route.setDir(toLeft);
-				return route;
-			}
-			int toRight = NESW.right(moverDir);
-			if (mover.canEnterTile(maze.neighborTile(moverTile, toRight).get())) {
-				route.setDir(toRight);
-				return route;
+			for (int turn : Arrays.asList(NESW.left(moverDir), NESW.right(moverDir))) {
+				if (mover.canEnterTile(maze.neighborTile(moverTile, turn).get())) {
+					route.setDir(turn);
+					return route;
+				}
 			}
 		}
 

@@ -22,7 +22,7 @@ import de.amr.games.pacman.model.Tile;
 public interface NavigationSystem {
 
 	public static Navigation ambush(MazeMover victim) {
-		return followTargetTile(() -> aheadOf(victim, 4));
+		return followTargetTile(() -> victim.ahead(4));
 	}
 
 	public static Navigation attackDirectly(MazeMover victim) {
@@ -98,7 +98,7 @@ public interface NavigationSystem {
 	public static Navigation chaseLikeInky(Ghost blinky, PacMan pacMan) {
 		return followTargetTile(() -> {
 			Tile b = blinky.getTile();
-			Tile p = aheadOf(pacMan, 2);
+			Tile p = pacMan.ahead(2);
 			Tile target = new Tile(2 * p.col - b.col, 2 * p.row - b.row);
 			// TODO: correctly project target tile to border
 			Maze maze = pacMan.getMaze();
@@ -137,27 +137,5 @@ public interface NavigationSystem {
 	public static Navigation chaseLikeClyde(Ghost clyde, PacMan pacMan) {
 		return followTargetTile(() -> dist(clyde.getCenter(), pacMan.getCenter()) >= 8 * Game.TS ? pacMan.getTile()
 				: clyde.getScatteringTarget());
-	}
-
-	/**
-	 * @param mover
-	 *                a maze mover
-	 * @param n
-	 *                number of tiles
-	 * @return the tile which lies <code>n</code> tiles ahead of the mover wrt its current move
-	 *         direction. If this position is outside the maze, returns the tile <code>(n-1)</code>
-	 *         tiles ahead an so on.
-	 */
-	public static Tile aheadOf(MazeMover mover, int n) {
-		Maze maze = mover.getMaze();
-		Tile tile = mover.getTile();
-		while (n >= 0) {
-			Tile target = tile.tileTowards(mover.getCurrentDir(), n);
-			if (maze.isValidTile(target)) {
-				return target;
-			}
-			n -= 1;
-		}
-		return tile;
 	}
 }

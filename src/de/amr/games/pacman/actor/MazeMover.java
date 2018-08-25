@@ -135,4 +135,23 @@ public abstract class MazeMover extends TileWorldEntity {
 	private Vector2f velocity(int dir) {
 		return smul(getSpeed(), Vector2f.of(NESW.dx(dir), NESW.dy(dir)));
 	}
+	
+	/**
+	 * @param n
+	 *                number of tiles
+	 * @return the tile which lies <code>n</code> tiles ahead of the mover wrt its current move
+	 *         direction. If this position is outside the maze, returns the tile <code>(n-1)</code>
+	 *         tiles ahead etc.
+	 */
+	public Tile ahead(int n) {
+		Tile tile = getTile();
+		while (n >= 0) {
+			Tile ahead = tile.tileTowards(getCurrentDir(), n);
+			if (getMaze().isValidTile(ahead)) {
+				return ahead;
+			}
+			n -= 1;
+		}
+		return tile;
+	}
 }
