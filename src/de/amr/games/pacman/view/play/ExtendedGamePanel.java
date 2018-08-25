@@ -21,6 +21,7 @@ import de.amr.easy.game.view.View;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostName;
+import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -227,7 +228,7 @@ public class ExtendedGamePanel extends GamePanel {
 			g.translate(-route.targetTile.col * TS, -route.targetTile.row * TS);
 		}
 
-		if (ghost.getName() == GhostName.Clyde) {
+		if (ghost.getName() == GhostName.Clyde && ghost.getState() == GhostState.AGGRO) {
 			Vector2f center = ghost.getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.drawOval((int) center.x - 4 * TS, (int) center.y - 4 * TS, 8 * TS, 8 * TS);
