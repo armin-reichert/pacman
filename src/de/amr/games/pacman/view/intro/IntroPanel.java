@@ -21,10 +21,10 @@ public class IntroPanel implements ViewController {
 	private final String url = "Visit https://github.com/armin-reichert/pacman";
 	private final int width;
 	private final int height;
-	
+
 	private final StateMachine<Integer, Void> fsm;
 	private Set<GameEntity> entities = new HashSet<>();
-	
+
 	private LogoAnimation logo;
 	private StartTextAnimation startText;
 	private ChasePacManAnimation chasePacManAnimation;
@@ -71,6 +71,7 @@ public class IntroPanel implements ViewController {
 							chaseGhostsAnimation.start();
 						})
 						.onExit(() -> {
+							chaseGhostsAnimation.stop();
 							entities.remove(chaseGhostsAnimation);
 						})
 						
@@ -114,9 +115,11 @@ public class IntroPanel implements ViewController {
 		if (fsm.currentState() == 3) {
 			g.setColor(Color.LIGHT_GRAY);
 			g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 8));
-			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+					RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			g.drawString(url, (getWidth() - g.getFontMetrics().stringWidth(url)) / 2, getHeight() - 16);
-			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+					RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 		}
 	}
 

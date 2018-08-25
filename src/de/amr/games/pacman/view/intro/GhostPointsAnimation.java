@@ -3,6 +3,7 @@ package de.amr.games.pacman.view.intro;
 import java.awt.Graphics2D;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
@@ -76,7 +77,10 @@ public class GhostPointsAnimation extends GameEntity {
 	public void update() {
 		timer -= 1;
 		if (timer <= 0) {
-			killedIndex = killedIndex < 4 ? killedIndex + 1 : -1;
+			killedIndex = killedIndex < 3 ? killedIndex + 1 : -1;
+			if (killedIndex != -1) {
+				Assets.sound("sfx/eat-ghost.mp3").play();
+			}
 			resetTimer();
 		}
 	}

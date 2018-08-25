@@ -15,6 +15,7 @@ import java.util.logging.Level;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
+import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
@@ -112,11 +113,17 @@ public class GameController implements Controller {
 			.states()
 				
 				.state(INTRO)
-					.onEntry(() -> selectView(introView))
+					.onEntry(() -> {
+						selectView(introView);
+						Assets.sound("sfx/insert-coin.mp3").play();
+					})
+					.onExit(() -> {
+						Assets.sounds().forEach(Sound::stop);
+					})
 				
 				.state(READY)
 					.impl(new ReadyState())
-					.timeoutAfter(() -> game.sec(3))
+					.timeoutAfter(() -> game.sec(4.5f))
 				
 				.state(PLAYING)
 					.impl(new PlayingState())
@@ -214,6 +221,7 @@ public class GameController implements Controller {
 			playView.setScoresVisible(true);
 			playView.enableAnimation(false);
 			playView.showInfo("Ready!", Color.YELLOW);
+			Assets.sound("sfx/ready.mp3").play();
 		}
 		
 		@Override
@@ -357,6 +365,7 @@ public class GameController implements Controller {
 		@Override
 		public void onEntry() {
 			actors.getActiveGhosts().forEach(ghost -> ghost.visibility = () -> false);
+			Assets.sound("sfx/die.mp3").play();
 		}
 
 		@Override
