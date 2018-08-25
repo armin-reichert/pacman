@@ -120,8 +120,7 @@ public interface NavigationSystem {
 	public static Navigation chaseLikeClyde(Ghost clyde, PacMan pacMan) {
 		return followTargetTile(() -> {
 			double d = Vector2f.dist(clyde.getCenter(), pacMan.getCenter());
-			return d >= 8 * Game.TS ? pacMan.getTile() : clyde.getMaze().getClydeScatteringTarget();
-
+			return d >= 8 * Game.TS ? pacMan.getTile() : clyde.getScatteringTarget();
 		});
 	}
 
