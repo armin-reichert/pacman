@@ -3,7 +3,6 @@ package de.amr.games.pacman.view.intro;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,6 +10,7 @@ import java.util.Set;
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.ViewController;
+import de.amr.games.pacman.view.widgets.Link;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -20,7 +20,8 @@ import de.amr.statemachine.StateMachine;
  */
 public class IntroView implements ViewController {
 
-	private static final String LINK = "Visit https://github.com/armin-reichert/pacman";
+	private static final String LINK_TEXT = "Visit me on GitHub!";
+	private static final String LINK_URL = "https://github.com/armin-reichert/pacman";
 
 	private final int width;
 	private final int height;
@@ -92,6 +93,11 @@ public class IntroView implements ViewController {
 						startTextAnimation.tf.setY(150);
 						startTextAnimation.hCenter(width);
 						startTextAnimation.enableAnimation(true);
+						Link link = new Link(LINK_TEXT, new Font("Arial", Font.PLAIN, 8), Color.LIGHT_GRAY);
+						link.setURL(LINK_URL);
+						entities.add(link);
+						link.tf.setY(getHeight() - 20);
+						link.hCenter(getWidth());
 					})
 					
 				.state(4) // Complete	
@@ -124,19 +130,6 @@ public class IntroView implements ViewController {
 	@Override
 	public void draw(Graphics2D g) {
 		entities.forEach(e -> e.draw(g));
-		if (fsm.currentState() == 3) {
-			drawLinkText(g);
-		}
-	}
-
-	protected void drawLinkText(Graphics2D g) {
-		g.setColor(Color.LIGHT_GRAY);
-		g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 6));
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.drawString(LINK, (getWidth() - g.getFontMetrics().stringWidth(LINK)) / 2, getHeight() - 6);
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-				RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 	}
 
 	@Override
