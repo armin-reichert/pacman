@@ -231,7 +231,7 @@ public class ExtendedGamePanel extends GamePanel {
 		if (ghost.getName() == GhostName.Clyde && ghost.getState() == GhostState.AGGRO) {
 			Vector2f center = ghost.getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			g.drawOval((int) center.x - 4 * TS, (int) center.y - 4 * TS, 8 * TS, 8 * TS);
+			g.drawOval((int) center.x - 8 * TS, (int) center.y - 8 * TS, 16 * TS, 16 * TS);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		}
 	}
