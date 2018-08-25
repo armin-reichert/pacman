@@ -27,7 +27,7 @@ public class ClassicPacManTheme implements PacManAssets {
 	private final BufferedImage pacManFull;
 	private final BufferedImage pacManWalking[][];
 	private final BufferedImage pacManDying[];
-	private final BufferedImage ghostNormal[][];
+	private final BufferedImage ghostColored[][];
 	private final BufferedImage ghostAwed[];
 	private final BufferedImage ghostFlashing[];
 	private final BufferedImage ghostEyes[];
@@ -62,10 +62,11 @@ public class ClassicPacManTheme implements PacManAssets {
 		// Pac-Man
 		pacManFull = $(488, 0);
 
-		int[] dirs = { Top4.E, Top4.W, Top4.N, Top4.S };
+		// E, W, N, S -> 0(N), 1(E), 2(S), 3(W)
+		int permuted[] = { 1, 3, 0, 2 };
 		pacManWalking = new BufferedImage[4][];
 		for (int d = 0; d < 4; ++d) {
-			pacManWalking[dirs[d]] = new BufferedImage[] { $(456, d * 16), $(472, d * 16), $(488, 0) };
+			pacManWalking[permuted[d]] = new BufferedImage[] { $(456, d * 16), $(472, d * 16), $(488, 0) };
 		}
 
 		pacManDying = new BufferedImage[12];
@@ -74,10 +75,10 @@ public class ClassicPacManTheme implements PacManAssets {
 		}
 
 		// Ghosts
-		ghostNormal = new BufferedImage[4][8];
+		ghostColored = new BufferedImage[4][8];
 		for (int color = 0; color < 4; ++color) {
 			for (int i = 0; i < 8; ++i) {
-				ghostNormal[color][i] = $(456 + i * 16, 64 + color * 16);
+				ghostColored[color][i] = $(456 + i * 16, 64 + color * 16);
 			}
 		}
 
@@ -92,8 +93,8 @@ public class ClassicPacManTheme implements PacManAssets {
 		}
 
 		ghostEyes = new BufferedImage[4];
-		for (int i = 0; i < 4; ++i) {
-			ghostEyes[i] = $(584 + i * 16, 80);
+		for (int d = 0; d < 4; ++d) {
+			ghostEyes[permuted[d]] = $(584 + d * 16, 80);
 		}
 
 		// Green numbers (200, 400, 800, 1600)
@@ -115,7 +116,7 @@ public class ClassicPacManTheme implements PacManAssets {
 			pinkNumbers[5 + j] = $(512, 160 + j * 16, 2 * 16, 16);
 		}
 		Application.LOGGER.info("Pac-Man sprite images extracted");
-		
+
 		// Text font
 		Assets.storeTrueTypeFont("font.arcadeclassic", "arcadeclassic.ttf", Font.PLAIN, 12);
 
@@ -184,16 +185,16 @@ public class ClassicPacManTheme implements PacManAssets {
 		BufferedImage[] frames;
 		switch (direction) {
 		case Top4.E:
-			frames = Arrays.copyOfRange(ghostNormal[color.ordinal()], 0, 2);
+			frames = Arrays.copyOfRange(ghostColored[color.ordinal()], 0, 2);
 			break;
 		case Top4.W:
-			frames = Arrays.copyOfRange(ghostNormal[color.ordinal()], 2, 4);
+			frames = Arrays.copyOfRange(ghostColored[color.ordinal()], 2, 4);
 			break;
 		case Top4.N:
-			frames = Arrays.copyOfRange(ghostNormal[color.ordinal()], 4, 6);
+			frames = Arrays.copyOfRange(ghostColored[color.ordinal()], 4, 6);
 			break;
 		case Top4.S:
-			frames = Arrays.copyOfRange(ghostNormal[color.ordinal()], 6, 8);
+			frames = Arrays.copyOfRange(ghostColored[color.ordinal()], 6, 8);
 			break;
 		default:
 			throw new IllegalArgumentException("Illegal direction: " + direction);
@@ -213,8 +214,7 @@ public class ClassicPacManTheme implements PacManAssets {
 
 	@Override
 	public Sprite ghostEyes(int dir) {
-		int[] dirs = { Top4.E, Top4.W, Top4.N, Top4.S };
-		return new Sprite(ghostEyes[dirs[dir]]);
+		return new Sprite(ghostEyes[dir]);
 	}
 
 	@Override
@@ -226,12 +226,12 @@ public class ClassicPacManTheme implements PacManAssets {
 	public Sprite pinkNumber(int i) {
 		return new Sprite(pinkNumbers[i]);
 	}
-	
+
 	@Override
 	public Font textFont() {
 		return Assets.font("font.arcadeclassic");
 	}
-	
+
 	private void loadSounds() {
 		//@formatter:off
 		Arrays.asList("die", "eat-fruit", "eat-ghost", "eat-pill", "eating", "extra-life", 
@@ -240,5 +240,5 @@ public class ClassicPacManTheme implements PacManAssets {
 			.map(path -> Assets.sound(path));
 		//@formatter:on
 	}
-	
+
 }

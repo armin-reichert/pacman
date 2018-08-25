@@ -180,13 +180,21 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 					
 					.state(SAFE)
 						.timeoutAfter(() -> game.sec(2))
-						.onTick(() -> {	move();	sprite = s_color[getCurrentDir()]; })
+						.onTick(() -> {
+							if (getName() != GhostName.Blinky) {
+								move();	
+								sprite = s_color[getCurrentDir()]; 
+							}
+						})
 					
 					.state(AGGRO)
 						.onTick(() -> {	move();	sprite = s_color[getCurrentDir()]; })
 					
 					.state(FRIGHTENED)
-						.onEntry(() -> sprite = s_frightened)
+						.onEntry(() -> {
+							sprite = s_frightened; 
+							getNavigation().prepareRoute(this); 
+						})
 						.onTick(() -> move())
 					
 					.state(DYING)
@@ -197,10 +205,17 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 						})
 					
 					.state(DEAD)
-						.onTick(() -> {	move();	sprite = s_eyes[getCurrentDir()]; })
+						.onEntry(() -> getNavigation().prepareRoute(this))
+						.onTick(() -> {	
+							move();
+							sprite = s_eyes[getCurrentDir()];
+						})
 					
 					.state(SCATTERING)
-						.onTick(() -> {	move();	sprite = s_color[getCurrentDir()]; })
+						.onTick(() -> {
+							move();	
+							sprite = s_color[getCurrentDir()]; 
+						})
 				
 			.transitions()
 
@@ -230,7 +245,7 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 					.stay(DYING).on(PacManGettingWeakerEvent.class) // cheating-mode
 						
 					.when(DEAD).then(SAFE)
-						.condition(() -> getTile().equals(home))
+						.condition(() -> (getName() == GhostName.Blinky && getTile().equals(home)) || inGhostHouse())
 						.act(this::initGhost)
 					
 					.stay(DEAD).on(PacManGainsPowerEvent.class)

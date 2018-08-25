@@ -1,45 +1,55 @@
 package de.amr.games.pacman.navigation;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
-class Flee implements Navigation {
+class EscapeIntoCorner implements Navigation {
 
 	private final MazeMover chaser;
-	private final Maze maze;
-	private final List<Tile> corners = new ArrayList<>();
+	private Tile corner;
 
-	public Flee(MazeMover chaser) {
+	public static Tile chooseCorner(MazeMover refugee, MazeMover chaser) {
+		Maze maze = chaser.getMaze();
+		List<Tile> corners = Arrays.asList(maze.getTopLeftCorner(), maze.getTopRightCorner(), maze.getBottomLeftCorner(),
+				maze.getBottomRightCorner());
+
+		Tile chaserTile = chaser.getTile();
+		boolean left = chaserTile.col <= maze.numCols() / 2, right = !left;
+		boolean top = chaserTile.row <= maze.numRows() / 2, bottom = !top;
+		Tile forbiddenCorner;
+		if (top && left) {
+			forbiddenCorner = maze.getTopLeftCorner();
+		} else if (bottom && left) {
+			forbiddenCorner = maze.getBottomLeftCorner();
+		} else if (top && right) {
+			forbiddenCorner = maze.getTopRightCorner();
+		} else if (bottom && right) {
+			forbiddenCorner = maze.getBottomRightCorner();
+		} else {
+			forbiddenCorner = null;
+		}
+		return corners.stream().filter(corner -> !corner.equals(forbiddenCorner)).findFirst().get();
+	}
+
+	public EscapeIntoCorner(MazeMover chaser) {
 		this.chaser = chaser;
-		maze = chaser.getMaze();
-		corners.add(maze.getTopLeftCorner());
-		corners.add(maze.getTopRightCorner());
-		corners.add(maze.getBottomLeftCorner());
-		corners.add(maze.getBottomRightCorner());
 	}
 
 	@Override
 	public MazeRoute computeRoute(MazeMover refugee) {
 		MazeRoute route = new MazeRoute();
-		if (maze.inTeleportSpace(chaser.getTile()) || maze.inTeleportSpace(refugee.getTile())) {
-			route.dir = refugee.getNextDir();
-			return route;
-		}
-		int maxDist = 0;
-		Tile farestCorner = null;
-		for (Tile corner : corners) {
-			int dist = maze.findPath(chaser.getTile(), corner).size();
-			if (dist > maxDist) {
-				maxDist = dist;
-				farestCorner = corner;
-			}
-		}
-		route.path = maze.findPath(refugee.getTile(), farestCorner);
-		route.dir = maze.alongPath(route.path).orElse(refugee.getNextDir());
+		Maze maze = refugee.getMaze();
+		corner = chooseCorner(refugee, chaser);
+		route.path = maze.findPath(refugee.getTile(), corner);
+		route.dir = maze.alongPath(route.path).orElse(refugee.getCurrentDir());
 		return route;
+	}
+
+	@Override
+	public void prepareRoute(MazeMover refugee) {
 	}
 }

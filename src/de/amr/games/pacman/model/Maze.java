@@ -252,6 +252,10 @@ public class Maze {
 	public boolean isDoor(Tile tile) {
 		return getContent(tile) == DOOR;
 	}
+	
+	public boolean isGhostHouseEntry(Tile tile) {
+		return isValidTile(tile) && isDoor(neighborTile(tile, Top4.S).get());
+	}
 
 	public boolean isFreeIntersection(Tile tile) {
 		return freeIntersections.contains(tile);

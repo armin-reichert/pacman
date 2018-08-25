@@ -34,9 +34,9 @@ public interface NavigationSystem {
 			return route;
 		};
 	}
-
-	public static Navigation flee(MazeMover chaser) {
-		return new Flee(chaser);
+	
+	public static Navigation flee(MazeMover refugee, MazeMover chaser) {
+		return new EscapeIntoCorner(chaser);
 	}
 
 	public static Navigation followKeyboard(int keyN, int keyE, int keyS, int keyW) {
@@ -45,6 +45,10 @@ public interface NavigationSystem {
 
 	public static Navigation followPath(Tile target) {
 		return new FollowPath(target);
+	}
+	
+	public static Navigation followFixedPath(Tile target) {
+		return new FollowFixedPath(target);
 	}
 
 	public static Navigation followTargetTile(Supplier<Tile> targetTileSupplier) {

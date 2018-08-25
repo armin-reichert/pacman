@@ -139,6 +139,9 @@ public class IntroView implements ViewController {
 
 	@Override
 	public void update() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
+			fsm.setState(4);
+		}
 		fsm.update();
 		entities.forEach(GameEntity::update);
 	}

@@ -2,6 +2,7 @@ package de.amr.games.pacman.navigation;
 
 import static de.amr.games.pacman.model.Maze.NESW;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -76,6 +77,15 @@ public class FollowTargetTile implements Navigation {
 			return route;
 		}
 
+		// check if target tile is a neighbor tile of the current tile
+		for (int dir : Arrays.asList(Top4.N, Top4.E, Top4.S, Top4.W)) {
+			Tile neighborTile = maze.neighborTile(moverTile, dir).get();
+			if (neighborTile.equals(targetTile)) {
+				route.dir = dir;
+				return route;
+			}
+		}
+		
 		// if stuck, check if turning left or right is possible
 		if (mover.isStuck()) {
 			int toLeft = NESW.left(moverDir);
@@ -86,6 +96,16 @@ public class FollowTargetTile implements Navigation {
 			int toRight = NESW.right(moverDir);
 			if (mover.canEnterTile(maze.neighborTile(moverTile, toRight).get())) {
 				route.dir = toRight;
+				return route;
+			}
+		}
+
+		// decide where to go at ghosthouse door
+		if (maze.isGhostHouseEntry(moverTile)) {
+			Stream<Integer> choices = Stream.of(Top4.W, Top4.S, Top4.E);
+			Optional<Integer> choice = findBestDir(mover, targetTile, moverTile, choices);
+			if (choice.isPresent()) {
+				route.dir = choice.get();
 				return route;
 			}
 		}
@@ -109,8 +129,7 @@ public class FollowTargetTile implements Navigation {
 		return route;
 	}
 
-	private Optional<Integer> findBestDir(MazeMover mover, Tile targetTile, Tile fromTile,
-			Stream<Integer> dirChoices) {
+	private Optional<Integer> findBestDir(MazeMover mover, Tile targetTile, Tile fromTile, Stream<Integer> dirChoices) {
 		Maze maze = mover.getMaze();
 		/*@formatter:off*/
 		return dirChoices

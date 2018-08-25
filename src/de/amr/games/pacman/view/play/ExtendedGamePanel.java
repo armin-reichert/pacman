@@ -12,6 +12,7 @@ import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -155,9 +156,13 @@ public class ExtendedGamePanel extends GamePanel {
 
 	private String ghostState(Ghost ghost) {
 		StateObject<?, ?> state = ghost.getStateObject();
-		return state.getDuration() != StateObject.ENDLESS ? String.format("%s(%s,%d|%d)",
-				ghost.getName(), state.id(), state.getRemaining(), state.getDuration())
-				: String.format("%s(%s,%s)", ghost.getName(), state.id(), INFTY);
+		return state.getDuration() != StateObject.ENDLESS ? String.format("%s(%s,%d|%d)[%s]",
+				ghost.getName(), state.id(), state.getRemaining(), state.getDuration(), dirName(ghost.getCurrentDir()))
+				: String.format("%s(%s,%s)[%s]", ghost.getName(), state.id(), INFTY, dirName(ghost.getCurrentDir()));
+	}
+	
+	private String dirName(int dir) {
+		return Arrays.asList("N","E","S","W").get(dir);
 	}
 
 	private void toggleGhostActivity(Ghost ghost) {

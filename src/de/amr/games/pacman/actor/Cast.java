@@ -10,14 +10,13 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.SAFE;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.navigation.NavigationSystem.ambush;
-import static de.amr.games.pacman.navigation.NavigationSystem.bounce;
 import static de.amr.games.pacman.navigation.NavigationSystem.attackDirectly;
+import static de.amr.games.pacman.navigation.NavigationSystem.bounce;
 import static de.amr.games.pacman.navigation.NavigationSystem.chaseLikeClyde;
+import static de.amr.games.pacman.navigation.NavigationSystem.chaseLikeInky;
 import static de.amr.games.pacman.navigation.NavigationSystem.flee;
 import static de.amr.games.pacman.navigation.NavigationSystem.followKeyboard;
-import static de.amr.games.pacman.navigation.NavigationSystem.followPath;
 import static de.amr.games.pacman.navigation.NavigationSystem.followTargetTile;
-import static de.amr.games.pacman.navigation.NavigationSystem.chaseLikeInky;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -68,9 +67,9 @@ public class Cast implements PacManWorld {
 
 		// common ghost behavior
 		Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
-			ghost.setNavigation(FRIGHTENED, flee(pacMan));
+			ghost.setNavigation(FRIGHTENED, flee(ghost, pacMan));
 			ghost.setNavigation(SCATTERING, followTargetTile(() -> ghost.getScatteringTarget()));
-			ghost.setNavigation(DEAD, followPath(ghost.getHome()));
+			ghost.setNavigation(DEAD, followTargetTile(() -> ghost.getHome()));
 			ghost.setNavigation(SAFE, bounce());
 		});
 

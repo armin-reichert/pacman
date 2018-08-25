@@ -6,10 +6,14 @@ import de.amr.games.pacman.model.Tile;
 
 class FollowPath implements Navigation {
 
-	private final Tile target;
+	protected Tile target;
 
 	public FollowPath(Tile target) {
 		this.target = target;
+	}
+	
+	protected FollowPath() {
+		
 	}
 
 	@Override
