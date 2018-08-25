@@ -20,7 +20,11 @@ import de.amr.games.pacman.model.Tile;
 public interface NavigationSystem {
 
 	public static Navigation ambush(MazeMover victim) {
-		return new FollowTargetTile(() -> aheadOf(victim, 4));
+		return followTargetTile(() -> aheadOf(victim, 4));
+	}
+
+	public static Navigation attackDirectly(MazeMover victim) {
+		return followTargetTile(victim::getTile);
 	}
 
 	public static Navigation bounce() {
@@ -29,10 +33,6 @@ public interface NavigationSystem {
 			route.dir = bouncer.isStuck() ? NESW.inv(bouncer.getCurrentDir()) : bouncer.getCurrentDir();
 			return route;
 		};
-	}
-
-	public static Navigation chase(MazeMover victim) {
-		return new FollowTargetTile(victim::getTile);
 	}
 
 	public static Navigation flee(MazeMover chaser) {
@@ -78,7 +78,7 @@ public interface NavigationSystem {
 	 * The tile that this new, extended vector ends on will be Inky’s actual target.</cite>
 	 * </p>
 	 */
-	public static Navigation inkyChaseBehavior(Ghost blinky, PacMan pacMan) {
+	public static Navigation chaseLikeInky(Ghost blinky, PacMan pacMan) {
 		return new FollowTargetTile(() -> {
 			Tile b = blinky.getTile();
 			Tile p = aheadOf(pacMan, 2);
@@ -117,7 +117,7 @@ public interface NavigationSystem {
 	 * maintain in Scatter mode. </cite>
 	 * </p>
 	 */
-	public static Navigation clydeChaseBehavior(Ghost clyde, PacMan pacMan) {
+	public static Navigation chaseLikeClyde(Ghost clyde, PacMan pacMan) {
 		return new FollowTargetTile(() -> {
 			double d = Vector2f.dist(clyde.getCenter(), pacMan.getCenter());
 			return d >= 8 * Game.TS ? pacMan.getTile() : clyde.getMaze().getClydeScatteringTarget();

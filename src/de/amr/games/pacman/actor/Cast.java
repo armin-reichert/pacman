@@ -11,13 +11,13 @@ import static de.amr.games.pacman.actor.GhostState.SAFE;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.navigation.NavigationSystem.ambush;
 import static de.amr.games.pacman.navigation.NavigationSystem.bounce;
-import static de.amr.games.pacman.navigation.NavigationSystem.chase;
-import static de.amr.games.pacman.navigation.NavigationSystem.clydeChaseBehavior;
+import static de.amr.games.pacman.navigation.NavigationSystem.attackDirectly;
+import static de.amr.games.pacman.navigation.NavigationSystem.chaseLikeClyde;
 import static de.amr.games.pacman.navigation.NavigationSystem.flee;
 import static de.amr.games.pacman.navigation.NavigationSystem.followKeyboard;
 import static de.amr.games.pacman.navigation.NavigationSystem.followPath;
 import static de.amr.games.pacman.navigation.NavigationSystem.followTargetTile;
-import static de.amr.games.pacman.navigation.NavigationSystem.inkyChaseBehavior;
+import static de.amr.games.pacman.navigation.NavigationSystem.chaseLikeInky;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -75,10 +75,10 @@ public class Cast implements PacManWorld {
 		});
 
 		// individual ghost behavior
-		blinky.setNavigation(AGGRO, chase(pacMan));
+		blinky.setNavigation(AGGRO, attackDirectly(pacMan));
 		pinky.setNavigation(AGGRO, ambush(pacMan));
-		inky.setNavigation(AGGRO, inkyChaseBehavior(blinky, pacMan));
-		clyde.setNavigation(AGGRO, clydeChaseBehavior(clyde, pacMan));
+		inky.setNavigation(AGGRO, chaseLikeInky(blinky, pacMan));
+		clyde.setNavigation(AGGRO, chaseLikeClyde(clyde, pacMan));
 		clyde.fnCanLeaveHouse = () -> game.getLevel() > 1 || game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
 	}
 
