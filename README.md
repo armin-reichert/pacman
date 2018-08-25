@@ -2,7 +2,7 @@
 
 (Work in progress)
 
-<img src="doc/pacman.png"/>
+<img src="doc/intro.png"/>
 
 ## Pac-Man? Really? How uncool!
 
@@ -287,6 +287,8 @@ Example trace:
 ```
 
 ## Configurable navigation behavior (aka AI)
+
+<img src="doc/pacman.png"/>
 
 The navigation behavior of the actors is implemented modularly (*strategy pattern*) and can easily be configured.
 
