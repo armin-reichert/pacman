@@ -366,6 +366,10 @@ public static Navigation chaseLikeClyde(Ghost clyde, PacMan pacMan) {
 	});
 ```
 
+<img src="doc/intro.png"/>
+
+In *scatter* mode, the ghosts target their special scattering target tile outside of the maze. The ghost move behavior then lead to them cycling around the wall block in that corner.
+
 <img src="doc/scattering.png"/>
 
 For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed, the *followTargetTile* behavior is sufficient. To give an example how graph based path finding can be used, the *flee* behavior has been implemented differently from the original game.
