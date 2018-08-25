@@ -362,8 +362,7 @@ Clyde targets Pac-Man if he is more than 8 tiles (straight line distance) away. 
 public static Navigation chaseLikeClyde(Ghost clyde, PacMan pacMan) {
 	return followTargetTile(() -> {
 		double d = Vector2f.dist(clyde.getCenter(), pacMan.getCenter());
-		return d >= 8 * Game.TS ? pacMan.getTile() : clyde.getMaze().getClydeScatteringTarget();
-
+		return d >= 8 * Game.TS ? pacMan.getTile() : clyde.getScatteringTarget();
 	});
 ```
 
