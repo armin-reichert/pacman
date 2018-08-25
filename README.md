@@ -59,16 +59,16 @@ Sounds all well and nice, but how does that look in the real code? Here is the i
 StateMachine.define(PlayState.class, GameEvent.class)
 
 	.description("[GameControl]")
-	.initialState(GET_READY)
+	.initialState(INTRO)
 
 	.states()
 
-		.state(GET_READY)
-			.onEntry(() -> gameView.showInfo("Press   ENTER   to   start!", Color.YELLOW))
+		.state(INTRO)
+			.onEntry(() -> selectView(introView))
 
 		.state(READY)
 			.impl(new ReadyState())
-			.timeoutAfter(game::getReadyTime)
+			.timeoutAfter(() -> game.sec(3))
 
 		.state(PLAYING)
 			.impl(new PlayingState())
@@ -89,8 +89,9 @@ StateMachine.define(PlayState.class, GameEvent.class)
 
 	.transitions()
 
-		.when(GET_READY).then(READY)
-			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_ENTER))
+		.when(INTRO).then(READY)
+			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+			.act(() -> selectView(playView))
 
 		.when(READY).then(PLAYING).onTimeout()
 
@@ -142,12 +143,10 @@ StateMachine.define(PlayState.class, GameEvent.class)
 			.onTimeout()
 
 		.when(PACMAN_DYING).then(GAME_OVER)
-			.on(PacManDiedEvent.class)
-			.condition(() -> game.getLives() == 0)
+			.condition(() -> actors.getPacMan().getState() == PacManState.DEAD && game.getLives() == 0)
 
 		.when(PACMAN_DYING).then(PLAYING)
-			.on(PacManDiedEvent.class)
-			.condition(() -> game.getLives() > 0)
+			.condition(() -> actors.getPacMan().getState() == PacManState.DEAD && game.getLives() > 0)
 			.act(() -> actors.init())
 
 		.when(GAME_OVER).then(READY)
