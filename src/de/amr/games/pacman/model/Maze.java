@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.graph.api.GraphTraversal;
 import de.amr.easy.graph.api.UndirectedEdge;
 import de.amr.easy.graph.impl.traversal.BreadthFirstTraversal;
@@ -68,6 +69,8 @@ public class Maze {
 	private int foodTotal;
 	private Set<Tile> freeIntersections = new HashSet<>();
 	private Set<Tile> notUpIntersections = new HashSet<>();
+	
+	private long pathFinderCount;
 
 	public Maze(String mapText) {
 		map = mapText.split("\n");
@@ -309,6 +312,10 @@ public class Maze {
 			// GraphTraversal pathfinder = new AStarTraversal<>(graph, edge -> 1, graph::manhattan);
 			GraphTraversal pathfinder = new BreadthFirstTraversal<>(graph);
 			pathfinder.traverseGraph(cell(source), cell(target));
+			pathFinderCount += 1;
+			if (pathFinderCount % 100 == 0) {
+				Application.LOGGER.info(String.format("%d'th pathfinding executed", pathFinderCount));
+			}
 			return pathfinder.path(cell(target)).stream().map(this::tile).collect(Collectors.toList());
 		}
 		return Collections.emptyList();
