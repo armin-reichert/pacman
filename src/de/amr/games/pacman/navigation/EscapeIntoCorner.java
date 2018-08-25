@@ -1,55 +1,32 @@
 package de.amr.games.pacman.navigation;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.stream.Stream;
 
+import de.amr.easy.util.StreamUtils;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
-class EscapeIntoCorner implements Navigation {
+class EscapeIntoCorner extends FollowFixedPath {
 
 	private final MazeMover chaser;
-	private Tile corner;
-
-	public static Tile chooseCorner(MazeMover refugee, MazeMover chaser) {
-		Maze maze = chaser.getMaze();
-		List<Tile> corners = Arrays.asList(maze.getTopLeftCorner(), maze.getTopRightCorner(), maze.getBottomLeftCorner(),
-				maze.getBottomRightCorner());
-
-		Tile chaserTile = chaser.getTile();
-		boolean left = chaserTile.col <= maze.numCols() / 2, right = !left;
-		boolean top = chaserTile.row <= maze.numRows() / 2, bottom = !top;
-		Tile forbiddenCorner;
-		if (top && left) {
-			forbiddenCorner = maze.getTopLeftCorner();
-		} else if (bottom && left) {
-			forbiddenCorner = maze.getBottomLeftCorner();
-		} else if (top && right) {
-			forbiddenCorner = maze.getTopRightCorner();
-		} else if (bottom && right) {
-			forbiddenCorner = maze.getBottomRightCorner();
-		} else {
-			forbiddenCorner = null;
-		}
-		return corners.stream().filter(corner -> !corner.equals(forbiddenCorner)).findFirst().get();
-	}
 
 	public EscapeIntoCorner(MazeMover chaser) {
 		this.chaser = chaser;
 	}
 
 	@Override
-	public MazeRoute computeRoute(MazeMover refugee) {
-		MazeRoute route = new MazeRoute();
-		Maze maze = refugee.getMaze();
-		corner = chooseCorner(refugee, chaser);
-		route.path = maze.findPath(refugee.getTile(), corner);
-		route.dir = maze.alongPath(route.path).orElse(refugee.getCurrentDir());
-		return route;
+	public void prepareRoute(MazeMover refugee) {
+		target = chooseCorner(refugee.getMaze(), chaser.getTile());
+		path = refugee.getMaze().findPath(refugee.getTile(), target);
 	}
 
-	@Override
-	public void prepareRoute(MazeMover refugee) {
+	private Tile chooseCorner(Maze maze, Tile chaserTile) {
+		boolean top = chaserTile.row <= maze.numRows() / 2;
+		if (top) {
+			return StreamUtils.permute(Stream.of(maze.getBottomLeftCorner(), maze.getBottomRightCorner())).findAny().get();
+		} else {
+			return StreamUtils.permute(Stream.of(maze.getTopLeftCorner(), maze.getTopRightCorner())).findAny().get();
+		}
 	}
 }
