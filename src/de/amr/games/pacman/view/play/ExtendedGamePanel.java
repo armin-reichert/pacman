@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
+import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -15,9 +16,11 @@ import java.util.List;
 import java.util.logging.Level;
 
 import de.amr.easy.game.input.Keyboard;
+import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
+import de.amr.games.pacman.actor.GhostName;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -42,9 +45,10 @@ public class ExtendedGamePanel extends GamePanel {
 	public boolean showStates = false;
 
 	private static BufferedImage createGridImage(int numRows, int numCols) {
-		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-				.getDefaultConfiguration();
-		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1, Transparency.TRANSLUCENT);
+		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment()
+				.getDefaultScreenDevice().getDefaultConfiguration();
+		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1,
+				Transparency.TRANSLUCENT);
 		Graphics2D g = image.createGraphics();
 		g.setColor(Color.DARK_GRAY);
 		for (int row = 0; row <= numRows; ++row) {
@@ -150,8 +154,8 @@ public class ExtendedGamePanel extends GamePanel {
 
 	private String ghostState(Ghost ghost) {
 		StateObject<?, ?> state = ghost.getStateObject();
-		return state.getDuration() != StateObject.ENDLESS
-				? String.format("%s(%s,%d|%d)", ghost.getName(), state.id(), state.getRemaining(), state.getDuration())
+		return state.getDuration() != StateObject.ENDLESS ? String.format("%s(%s,%d|%d)",
+				ghost.getName(), state.id(), state.getRemaining(), state.getDuration())
 				: String.format("%s(%s,%s)", ghost.getName(), state.id(), INFTY);
 	}
 
@@ -216,11 +220,18 @@ public class ExtendedGamePanel extends GamePanel {
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-targetTile.col * TS, -targetTile.row * TS);
 		} else if (route.targetTile != null) {
-			g.drawLine((int) ghost.getCenter().x, (int) ghost.getCenter().y, route.targetTile.col * TS + TS / 2,
-					route.targetTile.row * TS + TS / 2);
+			g.drawLine((int) ghost.getCenter().x, (int) ghost.getCenter().y,
+					route.targetTile.col * TS + TS / 2, route.targetTile.row * TS + TS / 2);
 			g.translate(route.targetTile.col * TS, route.targetTile.row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-route.targetTile.col * TS, -route.targetTile.row * TS);
+		}
+
+		if (ghost.getName() == GhostName.Clyde) {
+			Vector2f center = ghost.getCenter();
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.drawOval((int) center.x - 4 * TS, (int) center.y - 4 * TS, 8 * TS, 8 * TS);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		}
 	}
 }
