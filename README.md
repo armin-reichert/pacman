@@ -322,11 +322,11 @@ clyde.setNavigation(AGGRO, chaseLikeClyde(clyde, pacMan));
 clyde.fnCanLeaveHouse = () -> game.getLevel() > 1 || game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
 ```
 
-The general *followTargetTile* behavior makes it trivial to implement the individual ghost behaviors *scatter*, *ambush*, *attackDirectly* and so on.
+The general *followTargetTile* behavior makes it trivial to implement the individual ghost behaviors *scatter*, *ambush*, *attackcDirectly* and so on.
 
 ### Blinky
 
-Blinky's chase behavior is to directly target Pac-Man:
+Blinky's chase behavior is to directly attack Pac-Man:
 
 ```java
 public static Navigation attackDirectly(MazeMover victim) {
@@ -342,7 +342,7 @@ Pinky, the *ambusher*, targets the position 4 tiles ahead of Pac-Man (in the ori
 
 ```java
 public static Navigation ambush(MazeMover victim) {
-	return followTargetTile(() -> aheadOf(victim, 4));
+	return followTargetTile(() -> victim.ahead(4));
 }
 ```
 
@@ -358,7 +358,7 @@ Consider the vector `V` from Blinky's position `B` to the position `P` two tiles
 public static Navigation chaseLikeInky(Ghost blinky, PacMan pacMan) {
 	return followTargetTile(() -> {
 		Tile b = blinky.getTile();
-		Tile p = aheadOf(pacMan, 2);
+		Tile p = pacMan.ahead(2);
 		Tile target = new Tile(2 * p.col - b.col, 2 * p.row - b.row);
 		// TODO: correctly project target tile to border
 		Maze maze = pacMan.getMaze();
@@ -375,23 +375,22 @@ Clyde targets Pac-Man if he is more than 8 tiles (straight line distance) away. 
 
 ```java
 public static Navigation chaseLikeClyde(Ghost clyde, PacMan pacMan) {
-	return followTargetTile(() -> {
-		double d = Vector2f.dist(clyde.getCenter(), pacMan.getCenter());
-		return d >= 8 * Game.TS ? pacMan.getTile() : clyde.getScatteringTarget();
-	});
+	return followTargetTile(() -> dist(clyde.getCenter(), pacMan.getCenter()) >= 8 * Game.TS 
+		? pacMan.getTile()
+		: clyde.getScatteringTarget());
 ```
 
 <img src="doc/clyde.png"/>
 
 ### Scattering
 
-In *scatter* mode, the ghosts target their special scattering target tile outside of the maze. The ghost move behavior then lead to them cycling around the wall block in that corner.
+In *scatter* mode, each ghost tries to reach his scattering target tile outside of the maze which results in a cyclic movement around the block in that corner.
 
 <img src="doc/scattering.png"/>
 
 ### Path finding
 
-For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed, the *followTargetTile* behavior is sufficient. To give an example how graph based path finding can be used, the *flee* behavior has been implemented differently from the original game.
+For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed, the *followTargetTile* behavior is sufficient. To also give an example how graph based path finding can be used, the *flee* behavior has been implemented differently from the original game.
 
 Shortest routes in the maze graph can be computed using the method *Maze.findPath(Tile source, Tile target)*. This method runs an A* or BFS algorithm on the underlying grid graph (A* sounds cooler than BFS :-). A* is rather useless here because the maze is represented by a (grid) graph where the distance between two vertices (neighbor tiles) is always equal. Thus the Dijkstra or A* path finding algorithms will just degenerate to BFS (correct me if I'm wrong). Of course you could represent the graph differently, for example with vertices only for crossings and weighted edges for passages. In that case, Dijkstra or A* would be useful.
 
