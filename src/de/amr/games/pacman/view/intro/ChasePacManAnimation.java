@@ -3,7 +3,6 @@ package de.amr.games.pacman.view.intro;
 import java.awt.Graphics2D;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
@@ -37,13 +36,13 @@ public class ChasePacManAnimation extends GameEntity {
 
 	public void start() {
 		init();
-		tf.setVelocityX(-1.5f);
-		Assets.sound("sfx/siren.mp3").loop();
+		tf.setVelocityX(-1.2f);
+		PacManThemes.THEME.soundSiren().loop();
 	}
 
 	public void stop() {
 		tf.setVelocityX(0);
-		Assets.sound("sfx/siren.mp3").stop();
+		PacManThemes.THEME.soundSiren().stop();
 	}
 
 	public boolean isComplete() {
@@ -66,7 +65,7 @@ public class ChasePacManAnimation extends GameEntity {
 		}
 		g.translate(-tf.getX(), -tf.getY());
 	}
-	
+
 	@Override
 	public Sprite currentSprite() {
 		return null;

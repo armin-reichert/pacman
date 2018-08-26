@@ -21,6 +21,11 @@ import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.PacManThemes;
 
+/**
+ * Simple play view without bells and whistles.
+ * 
+ * @author Armin Reichert
+ */
 public class PlayView implements ViewController, PacManWorld {
 
 	protected final int width, height;
@@ -66,7 +71,7 @@ public class PlayView implements ViewController, PacManWorld {
 		actors.getPacMan().enableAnimation(enable);
 		actors.getActiveGhosts().forEach(ghost -> ghost.enableAnimation(enable));
 	}
-	
+
 	public void setActors(Cast actors) {
 		this.actors = actors;
 	}
@@ -141,31 +146,18 @@ public class PlayView implements ViewController, PacManWorld {
 
 	@Override
 	public void draw(Graphics2D g) {
-		drawScores(g);
 		mazeView.draw(g);
 		drawActors(g);
 		drawInfoText(g);
+		drawScores(g);
 	}
 
-	protected void drawLevelCounter(Graphics2D g) {
-		g.translate(0, getHeight() - 2 * TS);
-		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
-			g.translate(getWidth() - (n - i) * 2 * TS, 0);
-			g.drawImage(PacManThemes.THEME.symbolImage(game.getLevelCounter().get(i)), 0, 0, 2 * TS,
-					2 * TS, null);
-			g.translate(-getWidth() + (n - i) * 2 * TS, 0);
-		}
-		g.translate(0, -getHeight() + 2 * TS);
-	}
-
-	protected void drawLives(Graphics2D g) {
-		g.translate(0, getHeight() - 2 * TS);
-		for (int i = 0; i < game.getLives(); ++i) {
-			g.translate((2 - i) * lifeImage.getWidth(null), 0);
-			g.drawImage(lifeImage, 0, 0, null);
-			g.translate((i - 2) * lifeImage.getWidth(null), 0);
-		}
-		g.translate(0, -getHeight() + 2 * TS);
+	protected void drawActors(Graphics2D g) {
+		actors.getPacMan().draw(g);
+		actors.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
+				.forEach(ghost -> ghost.draw(g));
+		actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
+				.forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {
@@ -199,12 +191,25 @@ public class PlayView implements ViewController, PacManWorld {
 		}
 	}
 
-	protected void drawActors(Graphics2D g) {
-		actors.getPacMan().draw(g);
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
-				.forEach(ghost -> ghost.draw(g));
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
-				.forEach(ghost -> ghost.draw(g));
+	protected void drawLives(Graphics2D g) {
+		g.translate(0, getHeight() - 2 * TS);
+		for (int i = 0; i < game.getLives(); ++i) {
+			g.translate((2 - i) * lifeImage.getWidth(null), 0);
+			g.drawImage(lifeImage, 0, 0, null);
+			g.translate((i - 2) * lifeImage.getWidth(null), 0);
+		}
+		g.translate(0, -getHeight() + 2 * TS);
+	}
+
+	protected void drawLevelCounter(Graphics2D g) {
+		g.translate(0, getHeight() - 2 * TS);
+		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
+			g.translate(getWidth() - (n - i) * 2 * TS, 0);
+			g.drawImage(PacManThemes.THEME.symbolImage(game.getLevelCounter().get(i)), 0, 0, 2 * TS,
+					2 * TS, null);
+			g.translate(-getWidth() + (n - i) * 2 * TS, 0);
+		}
+		g.translate(0, -getHeight() + 2 * TS);
 	}
 
 	protected void drawInfoText(Graphics2D g) {
@@ -219,5 +224,4 @@ public class PlayView implements ViewController, PacManWorld {
 		g2.drawString(infoText, 0, 0);
 		g2.dispose();
 	}
-
 }

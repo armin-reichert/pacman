@@ -23,6 +23,7 @@ public class StartTextAnimation extends GameEntity {
 	private final float fontSize;
 
 	public StartTextAnimation(String text, float fontSize) {
+		text = text.replace(" ", "   "); // font spacing not sufficient
 		this.fontSize = fontSize;
 		Font font = PacManThemes.THEME.textFont().deriveFont(fontSize);
 		// compute image bounds

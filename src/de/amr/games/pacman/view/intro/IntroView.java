@@ -20,25 +20,42 @@ import de.amr.statemachine.StateMachine;
  */
 public class IntroView implements ViewController {
 
-	private static final String LINK_TEXT = "Visit me on GitHub!";
+	private static final String LINK_TEXT = "Visit on GitHub!";
 	private static final String LINK_URL = "https://github.com/armin-reichert/pacman";
 
 	private final int width;
 	private final int height;
 
 	private final StateMachine<Integer, Void> fsm;
-	private final Set<GameEntity> entities = new HashSet<>();
+	private final Set<GameEntity> visible = new HashSet<>();
 
-	private LogoAnimation logoAnimation;
-	private StartTextAnimation startTextAnimation;
-	private ChasePacManAnimation chasePacManAnimation;
-	private ChaseGhostsAnimation chaseGhostsAnimation;
-	private GhostPointsAnimation ghostPointsAnimation;
+	private final LogoAnimation logoAnimation;
+	private final StartTextAnimation startTextAnimation;
+	private final Link link;
+	private final ChasePacManAnimation chasePacManAnimation;
+	private final ChaseGhostsAnimation chaseGhostsAnimation;
+	private final GhostPointsAnimation ghostPointsAnimation;
+
+	private int repeatTimer;
 
 	public IntroView(int width, int height) {
 		this.width = width;
 		this.height = height;
 		fsm = buildStateMachine();
+		logoAnimation = new LogoAnimation(width, height, 20);
+		chasePacManAnimation = new ChasePacManAnimation(width);
+		chaseGhostsAnimation = new ChaseGhostsAnimation(width);
+		ghostPointsAnimation = new GhostPointsAnimation();
+		startTextAnimation = new StartTextAnimation("Press SPACE to start!", 16);
+		link = new Link(LINK_TEXT, new Font("Arial", Font.PLAIN, 8), Color.LIGHT_GRAY);
+	}
+
+	private void show(GameEntity e) {
+		visible.add(e);
+	}
+
+	private void hide(GameEntity e) {
+		visible.remove(e);
 	}
 
 	private StateMachine<Integer, Void> buildStateMachine() {
@@ -53,68 +70,74 @@ public class IntroView implements ViewController {
 			
 				.state(0) // Scroll Pac-Man logo into view
 					.onEntry(() -> {
-						entities.add(logoAnimation = new LogoAnimation(width, height, 20));
+						show(logoAnimation);
 						logoAnimation.start();
 					})
 					.onExit(() -> {
 						logoAnimation.stop();
 					})
 					
-				.state(1) // Show ghosts chasing Pac-Man
+				.state(1) // Show ghosts chasing Pac-Man and vice-versa
 					.onEntry(() -> {
-						entities.add(chasePacManAnimation = new ChasePacManAnimation(width));
 						chasePacManAnimation.tf.setY(100);
+						show(chasePacManAnimation);
 						chasePacManAnimation.start();
+
+						chaseGhostsAnimation.tf.setY(200);
+						chaseGhostsAnimation.start();
+						show(chaseGhostsAnimation);
 					})
 					.onExit(() -> {
 						chasePacManAnimation.stop();
 						chasePacManAnimation.init();
 						chasePacManAnimation.hCenter(width);
-					})
-					
-				.state(2) // Show Pac-Man chasing ghosts
-					.onEntry(() -> {
-						entities.add(chaseGhostsAnimation = new ChaseGhostsAnimation(width));
-						chaseGhostsAnimation.tf.setY(200);
-						chaseGhostsAnimation.start();
-					})
-					.onExit(() -> {
+						
 						chaseGhostsAnimation.stop();
-						entities.remove(chaseGhostsAnimation);
 					})
 					
-				.state(3) // Show ghost points animation and blinking text
+				.state(2) // Show ghost points animation and blinking text
 					.onEntry(() -> {
-						entities.add(ghostPointsAnimation = new GhostPointsAnimation());
 						ghostPointsAnimation.tf.setY(200);
 						ghostPointsAnimation.hCenter(width);
 						ghostPointsAnimation.start();
-						entities.add(startTextAnimation = new StartTextAnimation("Press SPACE to start!", 16));
+						show(ghostPointsAnimation);
+						
 						startTextAnimation.tf.setY(150);
 						startTextAnimation.hCenter(width);
 						startTextAnimation.enableAnimation(true);
-						Link link = new Link(LINK_TEXT, new Font("Arial", Font.PLAIN, 8), Color.LIGHT_GRAY);
+						show(startTextAnimation);
+						
 						link.setURL(LINK_URL);
-						entities.add(link);
 						link.tf.setY(getHeight() - 20);
 						link.hCenter(getWidth());
+						show(link);
+						
+						repeatTimer = 1000;
+					})
+					.onExit(() -> {
+						ghostPointsAnimation.stop();
+						hide(ghostPointsAnimation);
+						
+					})
+					.onTick(() -> {
+						repeatTimer -= 1;
 					})
 					
-				.state(4) // Complete	
+				.state(42) // Complete	
 					
 			.transitions()
 
 				.when(0).then(1).condition(() -> logoAnimation.isCompleted())
-				.when(1).then(2).condition(() -> chasePacManAnimation.isComplete())
-				.when(2).then(3).condition(() -> chaseGhostsAnimation.isComplete())
-				.when(3).then(4).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+				.when(1).then(2).condition(() -> chasePacManAnimation.isComplete() && chaseGhostsAnimation.isComplete())
+				.when(2).then(1).condition(() -> repeatTimer == 0)
+				.when(3).then(42).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 				
 		.endStateMachine();
 	  /*@formatter:on*/
 	}
 
 	public boolean isComplete() {
-		return fsm.currentState() == 4;
+		return fsm.currentState() == 42;
 	}
 
 	@Override
@@ -129,7 +152,7 @@ public class IntroView implements ViewController {
 
 	@Override
 	public void draw(Graphics2D g) {
-		entities.forEach(e -> e.draw(g));
+		visible.forEach(e -> e.draw(g));
 	}
 
 	@Override
@@ -143,6 +166,6 @@ public class IntroView implements ViewController {
 			fsm.setState(4);
 		}
 		fsm.update();
-		entities.forEach(GameEntity::update);
+		visible.forEach(GameEntity::update);
 	}
 }

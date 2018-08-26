@@ -3,7 +3,6 @@ package de.amr.games.pacman.view.intro;
 import java.awt.Graphics2D;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
@@ -47,12 +46,12 @@ public class ChaseGhostsAnimation extends GameEntity {
 	public void start() {
 		init();
 		tf.setVelocityX(.8f);
-		Assets.sound("sfx/waza.mp3").loop();
+		PacManThemes.THEME.soundWaza().loop();
 	}
 
 	public void stop() {
 		tf.setVelocityX(0);
-		Assets.sound("sfx/waza.mp3").stop();
+		PacManThemes.THEME.soundWaza().stop();
 	}
 
 	@Override
