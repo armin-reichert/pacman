@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.model.BonusSymbol;
-import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.theme.PacManThemes;
 
 public class Bonus extends TileWorldEntity {
 
@@ -26,7 +26,7 @@ public class Bonus extends TileWorldEntity {
 		this.symbol = symbol;
 		this.value = value;
 		honored = false;
-		sprite = PacManTheme.ASSETS.symbol(symbol);
+		sprite = PacManThemes.THEME.symbol(symbol);
 	}
 
 	public int getValue() {
@@ -44,7 +44,7 @@ public class Bonus extends TileWorldEntity {
 	public void setHonored() {
 		if (!honored) {
 			honored = true;
-			sprite = PacManTheme.ASSETS.pinkNumber(index);
+			sprite = PacManThemes.THEME.pinkNumber(index);
 		}
 	}
 

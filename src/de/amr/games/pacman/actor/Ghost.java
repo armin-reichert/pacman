@@ -29,7 +29,7 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.Navigation;
 import de.amr.games.pacman.theme.GhostColor;
-import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.theme.PacManThemes;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -133,14 +133,14 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 
 	private void createSprites(GhostColor color) {
 		NESW.dirs().forEach(dir -> {
-			s_color[dir] = PacManTheme.ASSETS.ghostColored(color, dir);
-			s_eyes[dir] = PacManTheme.ASSETS.ghostEyes(dir);
+			s_color[dir] = PacManThemes.THEME.ghostColored(color, dir);
+			s_eyes[dir] = PacManThemes.THEME.ghostEyes(dir);
 		});
 		for (int i = 0; i < 4; ++i) {
-			s_numbers[i] = PacManTheme.ASSETS.greenNumber(i);
+			s_numbers[i] = PacManThemes.THEME.greenNumber(i);
 		}
-		s_frightened = PacManTheme.ASSETS.ghostFrightened();
-		s_flashing = PacManTheme.ASSETS.ghostFlashing();
+		s_frightened = PacManThemes.THEME.ghostFrightened();
+		s_flashing = PacManThemes.THEME.ghostFlashing();
 	}
 
 	@Override

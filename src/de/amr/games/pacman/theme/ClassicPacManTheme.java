@@ -18,7 +18,7 @@ import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.BonusSymbol;
 
-public class ClassicPacManTheme implements PacManAssets {
+public class ClassicPacManTheme implements PacManTheme {
 
 	private final BufferedImage sheet;
 	private final BufferedImage mazeEmpty;

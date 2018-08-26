@@ -2,7 +2,8 @@ package de.amr.games.pacman.test.navigation;
 
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.theme.ClassicPacManTheme;
+import de.amr.games.pacman.theme.PacManThemes;
 
 
 public class FollowFixedPathTestApp extends Application {
@@ -20,7 +21,7 @@ public class FollowFixedPathTestApp extends Application {
 
 	@Override
 	public void init() {
-		PacManTheme.init();
+		PacManThemes.use(ClassicPacManTheme.class);
 		setController(new FollowFixedPathTestView(settings.width, settings.height));
 	}
 

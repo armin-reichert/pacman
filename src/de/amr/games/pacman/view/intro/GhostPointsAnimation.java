@@ -7,7 +7,7 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.theme.PacManThemes;
 
 /**
  * An animation showing Pac-Man and the four ghosts frightened and showing the points scored
@@ -24,10 +24,10 @@ public class GhostPointsAnimation extends GameEntity {
 	private int timer;
 
 	public GhostPointsAnimation() {
-		pacMan = PacManTheme.ASSETS.pacManWalking(Top4.E);
-		ghost = PacManTheme.ASSETS.ghostFrightened();
+		pacMan = PacManThemes.THEME.pacManWalking(Top4.E);
+		ghost = PacManThemes.THEME.ghostFrightened();
 		for (int i = 0; i < 4; ++i) {
-			points[i] = PacManTheme.ASSETS.greenNumber(i);
+			points[i] = PacManThemes.THEME.greenNumber(i);
 		}
 	}
 	

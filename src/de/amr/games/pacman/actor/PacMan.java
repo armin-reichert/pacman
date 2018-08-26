@@ -32,7 +32,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.Navigation;
-import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.theme.PacManThemes;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
 
@@ -144,9 +144,9 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 	private Sprite s_full;
 
 	private void createSprites() {
-		NESW.dirs().forEach(dir -> s_walking_to[dir] = PacManTheme.ASSETS.pacManWalking(dir));
-		s_dying = PacManTheme.ASSETS.pacManDying();
-		s_full = PacManTheme.ASSETS.pacManFull();
+		NESW.dirs().forEach(dir -> s_walking_to[dir] = PacManThemes.THEME.pacManWalking(dir));
+		s_dying = PacManThemes.THEME.pacManDying();
+		s_full = PacManThemes.THEME.pacManFull();
 	}
 
 	@Override

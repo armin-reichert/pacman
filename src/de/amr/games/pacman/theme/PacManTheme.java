@@ -1,10 +1,40 @@
 package de.amr.games.pacman.theme;
 
-public class PacManTheme {
+import java.awt.Font;
+import java.awt.image.BufferedImage;
 
-	public static PacManAssets ASSETS;
+import de.amr.easy.game.sprite.Sprite;
+import de.amr.games.pacman.model.BonusSymbol;
+
+public interface PacManTheme {
+
+	Sprite mazeEmpty();
+
+	Sprite mazeFull();
+
+	Sprite mazeFlashing();
+
+	Sprite symbol(BonusSymbol symbol);
+
+	BufferedImage symbolImage(BonusSymbol symbol);
+
+	Sprite pacManFull();
+
+	Sprite pacManWalking(int dir);
+
+	Sprite pacManDying();
+
+	Sprite ghostColored(GhostColor color, int direction);
+
+	Sprite ghostFrightened();
+
+	Sprite ghostFlashing();
+
+	Sprite ghostEyes(int dir);
+
+	Sprite greenNumber(int i);
+
+	Sprite pinkNumber(int i);
 	
-	public static void init() {
-		ASSETS = new ClassicPacManTheme();
-	}
+	Font textFont();
 }

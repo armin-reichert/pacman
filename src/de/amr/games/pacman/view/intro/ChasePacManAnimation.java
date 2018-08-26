@@ -8,7 +8,7 @@ import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.theme.GhostColor;
-import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.theme.PacManThemes;
 
 public class ChasePacManAnimation extends GameEntity {
 
@@ -18,11 +18,11 @@ public class ChasePacManAnimation extends GameEntity {
 
 	public ChasePacManAnimation(int width) {
 		this.panelWidth = width;
-		pacMan = PacManTheme.ASSETS.pacManWalking(Top4.W);
-		ghosts[0] = PacManTheme.ASSETS.ghostColored(GhostColor.RED, Top4.W);
-		ghosts[1] = PacManTheme.ASSETS.ghostColored(GhostColor.PINK, Top4.W);
-		ghosts[2] = PacManTheme.ASSETS.ghostColored(GhostColor.TURQUOISE, Top4.W);
-		ghosts[3] = PacManTheme.ASSETS.ghostColored(GhostColor.ORANGE, Top4.W);
+		pacMan = PacManThemes.THEME.pacManWalking(Top4.W);
+		ghosts[0] = PacManThemes.THEME.ghostColored(GhostColor.RED, Top4.W);
+		ghosts[1] = PacManThemes.THEME.ghostColored(GhostColor.PINK, Top4.W);
+		ghosts[2] = PacManThemes.THEME.ghostColored(GhostColor.TURQUOISE, Top4.W);
+		ghosts[3] = PacManThemes.THEME.ghostColored(GhostColor.ORANGE, Top4.W);
 	}
 
 	@Override

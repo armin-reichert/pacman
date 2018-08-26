@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.sprite.AnimationType;
 import de.amr.easy.game.sprite.Sprite;
-import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.theme.PacManThemes;
 
 /**
  * Animation showing blinking text for game start.
@@ -24,7 +24,7 @@ public class StartTextAnimation extends GameEntity {
 
 	public StartTextAnimation(String text, float fontSize) {
 		this.fontSize = fontSize;
-		Font font = PacManTheme.ASSETS.textFont().deriveFont(fontSize);
+		Font font = PacManThemes.THEME.textFont().deriveFont(fontSize);
 		// compute image bounds
 		BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = image.createGraphics();

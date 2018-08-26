@@ -13,7 +13,7 @@ import de.amr.easy.game.sprite.CyclicAnimation;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.theme.PacManThemes;
 
 public class MazePanel extends GameEntity {
 
@@ -27,8 +27,8 @@ public class MazePanel extends GameEntity {
 
 	public MazePanel(Maze maze) {
 		this.maze = maze;
-		s_maze_normal = PacManTheme.ASSETS.mazeFull();
-		s_maze_flashing = PacManTheme.ASSETS.mazeFlashing();
+		s_maze_normal = PacManThemes.THEME.mazeFull();
+		s_maze_flashing = PacManThemes.THEME.mazeFlashing();
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(500);
 		energizerBlinking.setEnabled(false);

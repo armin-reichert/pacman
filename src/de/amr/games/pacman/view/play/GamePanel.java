@@ -20,7 +20,7 @@ import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManWorld;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.theme.PacManThemes;
 
 public class GamePanel implements ViewController, PacManWorld {
 
@@ -38,7 +38,7 @@ public class GamePanel implements ViewController, PacManWorld {
 		this.height = height;
 		this.game = game;
 		this.actors = actors;
-		lifeImage = PacManTheme.ASSETS.pacManWalking(Top4.W).frame(1);
+		lifeImage = PacManThemes.THEME.pacManWalking(Top4.W).frame(1);
 		mazePanel = new MazePanel(game.getMaze());
 		mazePanel.tf.moveTo(0, 3 * TS);
 	}
@@ -154,7 +154,7 @@ public class GamePanel implements ViewController, PacManWorld {
 		g.translate(0, getHeight() - 2 * TS);
 		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
 			g.translate(getWidth() - (n - i) * 2 * TS, 0);
-			g.drawImage(PacManTheme.ASSETS.symbolImage(game.getLevelCounter().get(i)), 0, 0, 2 * TS,
+			g.drawImage(PacManThemes.THEME.symbolImage(game.getLevelCounter().get(i)), 0, 0, 2 * TS,
 					2 * TS, null);
 			g.translate(-getWidth() + (n - i) * 2 * TS, 0);
 		}
@@ -175,7 +175,7 @@ public class GamePanel implements ViewController, PacManWorld {
 		if (scoresVisible) {
 			// Points score
 			int score = game.score.getScore();
-			g.setFont(PacManTheme.ASSETS.textFont());
+			g.setFont(PacManThemes.THEME.textFont());
 			g.setColor(Color.YELLOW);
 			g.drawString("SCORE", TS, TS);
 			g.setColor(Color.WHITE);
@@ -215,7 +215,7 @@ public class GamePanel implements ViewController, PacManWorld {
 			return;
 		}
 		Graphics2D g2 = (Graphics2D) g.create();
-		g2.setFont(PacManTheme.ASSETS.textFont());
+		g2.setFont(PacManThemes.THEME.textFont());
 		g2.setColor(infoTextColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(infoText, g2).getBounds();
 		g2.translate((width - box.width) / 2, (game.getMaze().getBonusTile().row + 1) * TS);
