@@ -10,6 +10,7 @@ import java.util.Set;
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.ViewController;
+import de.amr.games.pacman.theme.PacManThemes;
 import de.amr.games.pacman.view.widgets.Link;
 import de.amr.statemachine.StateMachine;
 
@@ -47,7 +48,7 @@ public class IntroView implements ViewController {
 		chaseGhostsAnimation = new ChaseGhostsAnimation(width);
 		ghostPointsAnimation = new GhostPointsAnimation();
 		startTextAnimation = new StartTextAnimation("Press SPACE to start!", 16);
-		link = new Link(LINK_TEXT, new Font("Arial", Font.PLAIN, 8), Color.LIGHT_GRAY);
+		link = new Link(LINK_TEXT, PacManThemes.THEME.textFont().deriveFont(8f), Color.LIGHT_GRAY);
 		link.setURL(LINK_URL);
 	}
 
@@ -82,6 +83,7 @@ public class IntroView implements ViewController {
 						show(chasePacManAnimation);
 						chaseGhostsAnimation.tf.setY(200);
 						show(chaseGhostsAnimation);
+						hide(startTextAnimation);
 						chaseGhostsAnimation.start();
 						chasePacManAnimation.start();
 					})
@@ -131,7 +133,7 @@ public class IntroView implements ViewController {
 				.when(2).then(1)
 					.condition(() -> repeatTimer == 0)
 				
-				.when(3).then(42)
+				.when(2).then(42)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 				
 		.endStateMachine();
