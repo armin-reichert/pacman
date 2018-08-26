@@ -6,16 +6,23 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.easy.grid.impl.Top4;
+import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Cast;
+import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.actor.PacManWorld;
+import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.PacManTheme;
 
-public class GamePanel implements ViewController {
+public class GamePanel implements ViewController, PacManWorld {
 
 	protected final int width, height;
 	protected final Game game;
@@ -32,7 +39,7 @@ public class GamePanel implements ViewController {
 		this.game = game;
 		this.actors = actors;
 		lifeImage = PacManTheme.ASSETS.pacManWalking(Top4.W).frame(1);
-		mazePanel = new MazePanel(game.getMaze(), actors);
+		mazePanel = new MazePanel(game.getMaze());
 		mazePanel.tf.moveTo(0, 3 * TS);
 	}
 
@@ -48,6 +55,7 @@ public class GamePanel implements ViewController {
 
 	@Override
 	public void init() {
+		mazePanel.init();
 	}
 
 	@Override
@@ -66,8 +74,51 @@ public class GamePanel implements ViewController {
 		actors.getActiveGhosts().forEach(ghost -> ghost.enableAnimation(enable));
 	}
 
+	@Override
+	public Stream<Ghost> getActiveGhosts() {
+		return actors.getActiveGhosts();
+	}
+
+	@Override
+	public Ghost getBlinky() {
+		return actors.getBlinky();
+	}
+
+	@Override
+	public Ghost getClyde() {
+		return actors.getClyde();
+	}
+
+	@Override
+	public Ghost getInky() {
+		return actors.getInky();
+	}
+
+	@Override
+	public Ghost getPinky() {
+		return actors.getPinky();
+	}
+
+	@Override
+	public PacMan getPacMan() {
+		return actors.getPacMan();
+	}
+
+	@Override
+	public Optional<Bonus> getBonus() {
+		return mazePanel.getBonus();
+	}
+
 	public void setBonusTimer(int ticks) {
 		mazePanel.setBonusTimer(ticks);
+	}
+
+	public void setBonus(BonusSymbol symbol, int value) {
+		mazePanel.setBonus(new Bonus(symbol, value));
+	}
+
+	public void removeBonus() {
+		mazePanel.setBonus(null);
 	}
 
 	public void setMazeFlashing(boolean flashing) {
@@ -103,7 +154,8 @@ public class GamePanel implements ViewController {
 		g.translate(0, getHeight() - 2 * TS);
 		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
 			g.translate(getWidth() - (n - i) * 2 * TS, 0);
-			g.drawImage(PacManTheme.ASSETS.symbolImage(game.getLevelCounter().get(i)), 0, 0, 2 * TS, 2 * TS, null);
+			g.drawImage(PacManTheme.ASSETS.symbolImage(game.getLevelCounter().get(i)), 0, 0, 2 * TS,
+					2 * TS, null);
 			g.translate(-getWidth() + (n - i) * 2 * TS, 0);
 		}
 		g.translate(0, -getHeight() + 2 * TS);
@@ -151,13 +203,11 @@ public class GamePanel implements ViewController {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		actors.getBonus().ifPresent(bonus -> {
-			bonus.placeAtTile(game.getMaze().getBonusTile(), TS / 2, 0);
-			bonus.draw(g);
-		});
 		actors.getPacMan().draw(g);
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(ghost -> ghost.draw(g));
+		actors.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
+				.forEach(ghost -> ghost.draw(g));
+		actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
+				.forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawInfoText(Graphics2D g) {

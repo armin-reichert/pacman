@@ -24,12 +24,10 @@ import static java.awt.event.KeyEvent.VK_UP;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.navigation.Navigation;
@@ -40,25 +38,23 @@ import de.amr.games.pacman.theme.GhostColor;
  * 
  * @author Armin Reichert
  */
-public class Cast implements PacManWorld {
+public class Cast {
 
 	private final PacMan pacMan;
 	private final Ghost blinky, pinky, inky, clyde;
 	private final Set<Ghost> activeGhosts = new HashSet<>(4);
-	private Bonus bonus;
 
 	public Cast(Game game) {
 		Maze maze = game.getMaze();
-		pacMan = new PacMan(game, this);
-		blinky = new Ghost(Blinky, pacMan, game, maze.getBlinkyHome(), maze.getBlinkyScatteringTarget(), Top4.E,
-				GhostColor.RED);
-		pinky = new Ghost(Pinky, pacMan, game, maze.getPinkyHome(), maze.getPinkyScatteringTarget(), Top4.S,
-				GhostColor.PINK);
+		pacMan = new PacMan(game);
+		blinky = new Ghost(Blinky, pacMan, game, maze.getBlinkyHome(), maze.getBlinkyScatteringTarget(),
+				Top4.E, GhostColor.RED);
+		pinky = new Ghost(Pinky, pacMan, game, maze.getPinkyHome(), maze.getPinkyScatteringTarget(),
+				Top4.S, GhostColor.PINK);
 		inky = new Ghost(Inky, pacMan, game, maze.getInkyHome(), maze.getInkyScatteringTarget(), Top4.N,
 				GhostColor.TURQUOISE);
-		clyde = new Ghost(Clyde, pacMan, game, maze.getClydeHome(), maze.getClydeScatteringTarget(), Top4.N,
-				GhostColor.ORANGE);
-		activeGhosts.addAll(Arrays.asList(blinky, pinky, inky, clyde));
+		clyde = new Ghost(Clyde, pacMan, game, maze.getClydeHome(), maze.getClydeScatteringTarget(),
+				Top4.N, GhostColor.ORANGE);
 
 		// configure actor behavior
 		Navigation keySteering = followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
@@ -78,36 +74,33 @@ public class Cast implements PacManWorld {
 		pinky.setNavigation(AGGRO, ambush(pacMan));
 		inky.setNavigation(AGGRO, chaseLikeInky(blinky, pacMan));
 		clyde.setNavigation(AGGRO, chaseLikeClyde(clyde, pacMan));
-		clyde.fnCanLeaveHouse = () -> game.getLevel() > 1 || game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
+		clyde.fnCanLeaveHouse = () -> game.getLevel() > 1
+				|| game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
+
+		activeGhosts.addAll(Arrays.asList(blinky, pinky, inky, clyde));
 	}
 
 	public void init() {
 		pacMan.init();
 		activeGhosts.forEach(Ghost::init);
-		removeBonus();
 	}
 
-	@Override
 	public Ghost getBlinky() {
 		return blinky;
 	}
 
-	@Override
 	public Ghost getPinky() {
 		return pinky;
 	}
 
-	@Override
 	public Ghost getInky() {
 		return inky;
 	}
 
-	@Override
 	public Ghost getClyde() {
 		return clyde;
 	}
 
-	@Override
 	public PacMan getPacMan() {
 		return pacMan;
 	}
@@ -128,25 +121,11 @@ public class Cast implements PacManWorld {
 		}
 	}
 
-	@Override
 	public Stream<Ghost> getActiveGhosts() {
 		return activeGhosts.stream();
 	}
 
 	public Stream<Ghost> getGhosts() {
 		return Stream.of(blinky, pinky, inky, clyde);
-	}
-
-	public void addBonus(BonusSymbol symbol, int value) {
-		bonus = new Bonus(symbol, value);
-	}
-
-	public void removeBonus() {
-		bonus = null;
-	}
-
-	@Override
-	public Optional<Bonus> getBonus() {
-		return Optional.ofNullable(bonus);
 	}
 }

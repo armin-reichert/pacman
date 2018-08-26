@@ -46,13 +46,12 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 	private final Game game;
 	private final StateMachine<PacManState, GameEvent> controller;
 	private final Map<PacManState, Navigation> navigationMap;
-	private final PacManWorld world;
 	private final EventManager<GameEvent> events;
 	private boolean eventsEnabled;
 	private int digestionTicks;
+	private PacManWorld world;
 
-	public PacMan(Game game, PacManWorld world) {
-		this.world = world;
+	public PacMan(Game game) {
 		this.game = game;
 		events = new EventManager<>("[PacMan]");
 		eventsEnabled = true;
@@ -67,6 +66,10 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 		setNextDir(Top4.E);
 		getSprites().forEach(Sprite::resetAnimation);
 		sprite = s_full;
+	}
+	
+	public void setWorld(PacManWorld world) {
+		this.world = world;
 	}
 
 	// Eventing

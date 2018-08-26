@@ -69,6 +69,7 @@ public class GameController implements Controller {
 		playView = new ExtendedGamePanel(width, height, game, actors);
 		gameControl = buildStateMachine();
 		actors.getPacMan().subscribe(gameControl::process);
+		actors.getPacMan().setWorld(playView);
 	}
 	
 	private void selectView(ViewController view) {
@@ -202,7 +203,7 @@ public class GameController implements Controller {
 					
 				.when(PACMAN_DYING).then(PLAYING)
 					.condition(() -> actors.getPacMan().getState() == PacManState.DEAD && game.getLives() > 0)
-					.act(() -> actors.init())
+					.act(() -> { playView.init(); actors.init(); })
 			
 				.when(GAME_OVER).then(READY)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
@@ -216,8 +217,9 @@ public class GameController implements Controller {
 		@Override
 		public void onEntry() {
 			game.init();
-			actors.init();
 			game.removeLife();
+			actors.init();
+			playView.init();
 			playView.setScoresVisible(true);
 			playView.enableAnimation(false);
 			playView.showInfo("Ready!", Color.YELLOW);
@@ -285,7 +287,7 @@ public class GameController implements Controller {
 		}
 
 		private void onBonusFound(GameEvent event) {
-			actors.getBonus().ifPresent(bonus -> {
+			playView.getBonus().ifPresent(bonus -> {
 				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(), bonus.getValue()));
 				bonus.setHonored();
 				game.score.add(bonus.getValue());
@@ -303,7 +305,7 @@ public class GameController implements Controller {
 					gameControl.enqueue(new PacManGainsPowerEvent());
 				}
 				if (game.isBonusReached()) {
-					actors.addBonus(game.getBonusSymbol(), game.getBonusValue());
+					playView.setBonus(game.getBonusSymbol(), game.getBonusValue());
 					playView.setBonusTimer(game.getBonusTime());
 				}
 			}
@@ -326,6 +328,7 @@ public class GameController implements Controller {
 				game.nextLevel();
 				actors.init();
 				actors.getActiveGhosts().forEach(ghost -> ghost.visibility = () -> true);
+				playView.init();
 				playView.showInfo("Ready!", Color.YELLOW);
 				playView.setMazeFlashing(false);
 				playView.enableAnimation(false);
