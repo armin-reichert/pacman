@@ -1,5 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.stream.Stream;
 
@@ -51,12 +52,15 @@ public class ChasePacManAnimation extends GameEntity {
 
 	@Override
 	public int getWidth() {
-		return 80;
+		return 88;
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
 		g.translate(tf.getX(), tf.getY());
+		g.setColor(Color.PINK);
+		g.fillRect(7, 7, 2, 2);
+		g.translate(8, 0);
 		pacMan.draw(g);
 		for (int i = 0; i < ghosts.length; ++i) {
 			g.translate(16 * (i + 1), 0);
