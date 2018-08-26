@@ -1,7 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
@@ -24,10 +23,13 @@ public class IntroView implements ViewController {
 	private static final String LINK_TEXT = "Visit on GitHub!";
 	private static final String LINK_URL = "https://github.com/armin-reichert/pacman";
 
+	private static final int COMPLETE = 42;
+	
 	private final int width;
 	private final int height;
 
 	private final StateMachine<Integer, Void> fsm;
+	
 	private final Set<GameEntity> visible = new HashSet<>();
 
 	private final LogoAnimation logoAnimation;
@@ -120,7 +122,7 @@ public class IntroView implements ViewController {
 						repeatTimer -= 1;
 					})
 					
-				.state(42) // Complete	
+				.state(COMPLETE)
 					
 			.transitions()
 
@@ -133,7 +135,7 @@ public class IntroView implements ViewController {
 				.when(2).then(1)
 					.condition(() -> repeatTimer == 0)
 				
-				.when(2).then(42)
+				.when(2).then(COMPLETE)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 				
 		.endStateMachine();
@@ -141,7 +143,7 @@ public class IntroView implements ViewController {
 	}
 
 	public boolean isComplete() {
-		return fsm.currentState() == 42;
+		return fsm.currentState() == COMPLETE;
 	}
 
 	@Override
@@ -167,7 +169,7 @@ public class IntroView implements ViewController {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
-			fsm.setState(4);
+			fsm.setState(COMPLETE);
 		}
 		fsm.update();
 		visible.forEach(GameEntity::update);
