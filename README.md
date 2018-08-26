@@ -322,7 +322,7 @@ clyde.setNavigation(AGGRO, chaseLikeClyde(clyde, pacMan));
 clyde.fnCanLeaveHouse = () -> game.getLevel() > 1 || game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
 ```
 
-The general *followTargetTile* behavior makes it trivial to implement the individual ghost behaviors *scatter*, *ambush*, *attackcDirectly* and so on.
+With the general *followTargetTile* behavior available, the individual behaviors *scatter*, *ambush*, *attackDirectly* etc. are trivial to implement:
 
 ### Blinky
 
@@ -352,7 +352,7 @@ public static Navigation ambush(MazeMover victim) {
 
 Inky's target tile is computed as follows:
 
-Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man: `V = (P - B)`. Add the double of this vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` and you get Inky's target:
+Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man, so `V = (P - B)`. Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
 public static Navigation chaseLikeInky(Ghost blinky, PacMan pacMan) {
@@ -371,7 +371,7 @@ public static Navigation chaseLikeInky(Ghost blinky, PacMan pacMan) {
 
 ### Clyde
 
-Clyde targets Pac-Man if he is more than 8 tiles (straight line distance) away. If closer, he goes into scattering mode:
+Clyde attacks Pac-Man directly (like Blink) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he goes into scattering mode:
 
 ```java
 public static Navigation chaseLikeClyde(Ghost clyde, PacMan pacMan) {
@@ -414,9 +414,9 @@ This work would not have been possible without these invaluable sources of infor
 
 ## Summary
 
-The goal of this project is to implement a Pac-Man game in a way that also beginners can **fully** understand how the game is working. The implementation here follows the MVC pattern and separates the control logic for the actors and the game play into explicit state machines. The state machines are defined in a declarative way using the builder pattern. 
+The goal of this project is to implement a Pac-Man game in a way that also beginners can more easily understand how the game is working. The implementation given tries to achieve this by following the MVC pattern and separating the control logic for the actors and the game play into explicit state machines. The state machines are defined in a declarative way using the builder pattern.
 
-A very simple game library is used for the basic game infrastructure (active rendering, game loop) but it is not difficult to write these infrastructure parts from scratch or use some real game library instead. It would certainly also be useful to further decouple the UI from the game model and controller to enable an easy replacement of the complete UI.
+A very simple home-grown library is used for the basic game infrastructure (active rendering, game loop etc.) but it is not difficult to write these infrastructure parts from scratch or use some real game library instead. It would also be useful to even further decouple the UI from the model and controller to enable an easy replacement of the complete UI.
 
 Comments are welcome.
 
