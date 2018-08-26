@@ -230,14 +230,14 @@ public class GameController implements Controller {
 			playView.init();
 			playView.setScoresVisible(true);
 			playView.enableAnimation(false);
-			playView.showInfo("Ready!", Color.YELLOW);
+			playView.showInfoText("Ready!", Color.YELLOW);
 			THEME.soundReady().play();
 		}
 
 		@Override
 		public void onExit() {
 			playView.enableAnimation(true);
-			playView.hideInfo();
+			playView.hideInfoText();
 		}
 	}
 
@@ -340,7 +340,7 @@ public class GameController implements Controller {
 				actors.init();
 				actors.getActiveGhosts().forEach(ghost -> ghost.visibility = () -> true);
 				playView.init();
-				playView.showInfo("Ready!", Color.YELLOW);
+				playView.showInfoText("Ready!", Color.YELLOW);
 				playView.setMazeFlashing(false);
 				playView.enableAnimation(false);
 			}
@@ -348,7 +348,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onExit() {
-			playView.hideInfo();
+			playView.hideInfoText();
 			playView.enableAnimation(true);
 		}
 	}
@@ -400,13 +400,13 @@ public class GameController implements Controller {
 		@Override
 		public void onEntry() {
 			playView.enableAnimation(false);
-			playView.showInfo("Game Over!", Color.RED);
+			playView.showInfoText("Game Over!", Color.RED);
 			game.score.save();
 		}
 
 		@Override
 		public void onExit() {
-			playView.hideInfo();
+			playView.hideInfoText();
 		}
 	}
 }

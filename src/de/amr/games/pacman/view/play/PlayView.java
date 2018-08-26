@@ -122,12 +122,12 @@ public class PlayView implements ViewController, PacManWorld {
 		mazeView.setFlashing(flashing);
 	}
 
-	public void showInfo(String text, Color color) {
+	public void showInfoText(String text, Color color) {
 		infoText = text;
 		infoTextColor = color;
 	}
 
-	public void hideInfo() {
+	public void hideInfoText() {
 		this.infoText = null;
 	}
 
