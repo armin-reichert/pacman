@@ -11,9 +11,11 @@ import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
+import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.BonusSymbol;
@@ -66,7 +68,8 @@ public class ClassicPacManTheme implements PacManTheme {
 		int permuted[] = { 1, 3, 0, 2 };
 		pacManWalking = new BufferedImage[4][];
 		for (int d = 0; d < 4; ++d) {
-			pacManWalking[permuted[d]] = new BufferedImage[] { $(456, d * 16), $(472, d * 16), $(488, 0) };
+			pacManWalking[permuted[d]] = new BufferedImage[] { $(456, d * 16), $(472, d * 16),
+					$(488, 0) };
 		}
 
 		pacManDying = new BufferedImage[12];
@@ -115,14 +118,14 @@ public class ClassicPacManTheme implements PacManTheme {
 		for (int j = 0; j < 3; ++j) {
 			pinkNumbers[5 + j] = $(512, 160 + j * 16, 2 * 16, 16);
 		}
-		Application.LOGGER.info("Pac-Man sprite images extracted");
+		Application.LOGGER.info("Pac-Man sprites extracted.");
 
 		// Text font
 		Assets.storeTrueTypeFont("font.arcadeclassic", "arcadeclassic.ttf", Font.PLAIN, 12);
 
 		// Sounds
-		loadSounds();
-		Application.LOGGER.info("Pac-Man sounds loaded");
+		allSounds();
+		Application.LOGGER.info("Pac-Man sounds loaded.");
 	}
 
 	private BufferedImage changeColor(BufferedImage src, int from, int to) {
@@ -232,13 +235,63 @@ public class ClassicPacManTheme implements PacManTheme {
 		return Assets.font("font.arcadeclassic");
 	}
 
-	private void loadSounds() {
-		//@formatter:off
-		Arrays.asList("die", "eat-fruit", "eat-ghost", "eat-pill", "eating", "extra-life", 
-				"insert-coin", "ready", "siren", "waza").stream()
-			.map(name -> "sfx/" + name + ".mp3")
-			.map(path -> Assets.sound(path));
-		//@formatter:on
+	private Sound sound(String name) {
+		return Assets.sound("sfx/" + name + ".mp3");
 	}
 
+	@Override
+	public Stream<Sound> allSounds() {
+		return Stream.of(soundDie(), soundEatFruit(), soundEatGhost(), soundEating(), soundEatPill(),
+				soundExtraLife(), soundInsertCoin(), soundReady(), soundSiren(), soundWaza());
+	}
+
+	@Override
+	public Sound soundDie() {
+		return sound("die");
+	}
+
+	@Override
+	public Sound soundEatFruit() {
+		return sound("eat-fruit");
+	}
+
+	@Override
+	public Sound soundEatGhost() {
+		return sound("eat-ghost");
+	}
+
+	@Override
+	public Sound soundEatPill() {
+		return sound("eat-pill");
+	}
+
+	@Override
+	public Sound soundEating() {
+		return sound("eating");
+	}
+
+	@Override
+	public Sound soundExtraLife() {
+		return sound("extra-life");
+	}
+
+	@Override
+	public Sound soundInsertCoin() {
+		return sound("insert-coin");
+	}
+
+	@Override
+	public Sound soundReady() {
+		return sound("ready");
+	}
+
+	@Override
+	public Sound soundSiren() {
+		return sound("siren");
+	}
+
+	@Override
+	public Sound soundWaza() {
+		return sound("waza");
+	}
 }

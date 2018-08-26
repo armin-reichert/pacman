@@ -8,6 +8,7 @@ import static de.amr.games.pacman.controller.GameController.PlayState.INTRO;
 import static de.amr.games.pacman.controller.GameController.PlayState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.GameController.PlayState.PLAYING;
 import static de.amr.games.pacman.controller.GameController.PlayState.READY;
+import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -116,10 +117,10 @@ public class GameController implements Controller {
 				.state(INTRO)
 					.onEntry(() -> {
 						selectView(introView);
-						Assets.sound("sfx/insert-coin.mp3").play();
+						THEME.soundInsertCoin().play();
 					})
 					.onExit(() -> {
-						Assets.sounds().forEach(Sound::stop);
+						THEME.allSounds().forEach(Sound::stop);
 					})
 				
 				.state(READY)
@@ -223,7 +224,7 @@ public class GameController implements Controller {
 			playView.setScoresVisible(true);
 			playView.enableAnimation(false);
 			playView.showInfo("Ready!", Color.YELLOW);
-			Assets.sound("sfx/ready.mp3").play();
+			THEME.soundReady().play();
 		}
 		
 		@Override
@@ -368,7 +369,7 @@ public class GameController implements Controller {
 		@Override
 		public void onEntry() {
 			actors.getActiveGhosts().forEach(ghost -> ghost.visibility = () -> false);
-			Assets.sound("sfx/die.mp3").play();
+			THEME.soundDie().play();
 		}
 
 		@Override
