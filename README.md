@@ -296,7 +296,7 @@ The navigation behavior of the actors is implemented modularly (*strategy patter
 Pac-Man is controlled by the keyboard:
 
 ```java
-PacMan pacMan = new PacMan(game, world);
+PacMan pacMan = new PacMan(game);
 Navigation keySteering = followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
 pacMan.setNavigation(PacManState.HUNGRY, keySteering);
 pacMan.setNavigation(PacManState.GREEDY, keySteering);
