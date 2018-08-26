@@ -25,6 +25,7 @@ import static java.awt.event.KeyEvent.VK_UP;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import de.amr.easy.grid.impl.Top4;
@@ -127,5 +128,10 @@ public class Cast {
 
 	public Stream<Ghost> getGhosts() {
 		return Stream.of(blinky, pinky, inky, clyde);
+	}
+	
+	public void traceTo(Logger logger) {
+		pacMan.traceTo(logger);
+		getGhosts().forEach(ghost -> ghost.traceTo(logger));
 	}
 }

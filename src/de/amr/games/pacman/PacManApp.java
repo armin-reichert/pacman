@@ -1,5 +1,7 @@
 package de.amr.games.pacman;
 
+import java.util.logging.Level;
+
 import de.amr.easy.game.Application;
 import de.amr.easy.game.ui.FullScreen;
 import de.amr.games.pacman.controller.GameController;
@@ -15,6 +17,7 @@ import de.amr.games.pacman.theme.PacManThemes;
 public class PacManApp extends Application {
 
 	public static void main(String[] args) {
+		LOGGER.setLevel(Level.INFO);
 		float scale = 2f;
 		if (args.length > 0) {
 			try {

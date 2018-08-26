@@ -22,7 +22,7 @@ public class FollowFixedPathTestApp extends Application {
 	@Override
 	public void init() {
 		PacManThemes.use(ClassicPacManTheme.class);
-		setController(new FollowFixedPathTestView(settings.width, settings.height));
+		setController(new FollowFixedPathTestController(settings.width, settings.height));
 	}
 
 }

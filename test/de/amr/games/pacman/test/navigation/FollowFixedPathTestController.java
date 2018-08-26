@@ -13,61 +13,67 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.NavigationSystem;
-import de.amr.games.pacman.view.play.ExtendedGamePanel;
+import de.amr.games.pacman.view.play.PlayViewX;
 
-public class FollowFixedPathTestView implements Controller {
+public class FollowFixedPathTestController implements Controller {
 
 	private final Game game;
-	private final ExtendedGamePanel gamePanel;
+	private final PlayViewX view;
 	private final Cast actors;
 	private final List<Tile> targets;
 	private int currentIndex;
 
-	public FollowFixedPathTestView(int width, int height) {
+	public FollowFixedPathTestController(int width, int height) {
 		Maze maze = new Maze(Assets.text("maze.txt"));
 		game = new Game(maze, Application.PULSE::getFrequency);
 		actors = new Cast(game);
-		targets = Arrays.asList(maze.getBottomRightCorner(), maze.getBottomLeftCorner(), maze.getTopLeftCorner(),
-				maze.getBottomRightCorner());
-		gamePanel = new ExtendedGamePanel(width, height, game, actors);
-		gamePanel.showRoutes = true;
-		gamePanel.setScoresVisible(false);
+		targets = Arrays.asList(maze.getBottomRightCorner(), maze.getBottomLeftCorner(),
+				maze.getTopLeftCorner(), maze.getTopRightCorner());
+		view = new PlayViewX(width, height, game);
+		view.setActors(actors);
+		view.showRoutes = true;
+		view.showGrid = false;
+		view.showStates = true;
+		view.setScoresVisible(true);
 	}
 
 	@Override
 	public void init() {
 		Application.PULSE.setFrequency(60);
 		game.init();
+		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
 		actors.getPacMan().initPacMan();
 		actors.getPacMan().setEventsEnabled(false);
 		actors.getBlinky().initGhost();
 		actors.getBlinky().setState(GhostState.AGGRO);
 		currentIndex = 0;
-		actors.getBlinky().setNavigation(GhostState.AGGRO, NavigationSystem.followFixedPath(targets.get(0)));
+		actors.getBlinky().setNavigation(GhostState.AGGRO,
+				NavigationSystem.followFixedPath(targets.get(0)));
 		actors.getBlinky().getNavigation().computeStaticRoute(actors.getBlinky());
 	}
-	
+
 	private void nextTarget() {
 		currentIndex += 1;
 		if (currentIndex == targets.size()) {
 			currentIndex = 0;
+			game.setLevel(game.getLevel() + 1);
 		}
-		actors.getBlinky().setNavigation(GhostState.AGGRO, NavigationSystem.followFixedPath(targets.get(currentIndex)));
+		actors.getBlinky().setNavigation(GhostState.AGGRO,
+				NavigationSystem.followFixedPath(targets.get(currentIndex)));
 		actors.getBlinky().getNavigation().computeStaticRoute(actors.getBlinky());
 	}
 
 	@Override
 	public void update() {
-		gamePanel.update();
 		actors.getBlinky().update();
 		if (actors.getBlinky().getTile().equals(targets.get(currentIndex))) {
 			nextTarget();
 		}
+		view.update();
 	}
 
 	@Override
 	public View currentView() {
-		return gamePanel;
+		return view;
 	}
-
 }

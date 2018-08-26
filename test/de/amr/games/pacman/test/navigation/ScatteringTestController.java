@@ -9,26 +9,27 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.view.play.ExtendedGamePanel;
+import de.amr.games.pacman.view.play.PlayViewX;
 
-public class ScatteringTestView implements Controller {
+public class ScatteringTestController implements Controller {
 
 	private final Game game;
-	private final ExtendedGamePanel gamePanel;
+	private final PlayViewX view;
 	private final Cast actors;
 
-	public ScatteringTestView(int width, int height) {
+	public ScatteringTestController(int width, int height) {
 		Maze maze = new Maze(Assets.text("maze.txt"));
 		game = new Game(maze, Application.PULSE::getFrequency);
 		actors = new Cast(game);
-		gamePanel = new ExtendedGamePanel(width, height, game, actors);
-		gamePanel.showRoutes = true;
-		gamePanel.setScoresVisible(false);
+		view = new PlayViewX(width, height, game);
+		view.setActors(actors);
+		view.showRoutes = true;
+		view.showStates = true;
+		view.setScoresVisible(false);
 	}
 
 	@Override
 	public void init() {
-		Application.PULSE.setFrequency(60);
 		game.init();
 		actors.getPacMan().initPacMan();
 		actors.getPacMan().setEventsEnabled(false);
@@ -36,16 +37,17 @@ public class ScatteringTestView implements Controller {
 			ghost.initGhost();
 			ghost.setState(GhostState.SCATTERING);
 		});
+		Application.PULSE.setFrequency(60);
 	}
 
 	@Override
 	public void update() {
-		gamePanel.update();
 		actors.getActiveGhosts().forEach(Ghost::update);
+		view.update();
 	}
 
 	@Override
 	public View currentView() {
-		return gamePanel;
+		return view;
 	}
 }

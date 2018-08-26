@@ -15,7 +15,7 @@ import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.theme.PacManThemes;
 
-public class MazePanel extends GameEntity {
+public class MazeView extends GameEntity {
 
 	private final Maze maze;
 	private final Animation energizerBlinking;
@@ -25,7 +25,7 @@ public class MazePanel extends GameEntity {
 	private Bonus bonus;
 	private int bonusTimer;
 
-	public MazePanel(Maze maze) {
+	public MazeView(Maze maze) {
 		this.maze = maze;
 		s_maze_normal = PacManThemes.THEME.mazeFull();
 		s_maze_flashing = PacManThemes.THEME.mazeFlashing();

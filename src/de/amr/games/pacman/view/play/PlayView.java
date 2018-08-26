@@ -9,7 +9,6 @@ import java.awt.Rectangle;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Bonus;
@@ -22,25 +21,24 @@ import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.PacManThemes;
 
-public class GamePanel implements ViewController, PacManWorld {
+public class PlayView implements ViewController, PacManWorld {
 
 	protected final int width, height;
 	protected final Game game;
-	protected final Cast actors;
-	protected final MazePanel mazePanel;
+	protected final MazeView mazeView;
 	protected final Image lifeImage;
+	protected Cast actors;
 	protected String infoText;
 	protected Color infoTextColor;
 	protected boolean scoresVisible;
 
-	public GamePanel(int width, int height, Game game, Cast actors) {
+	public PlayView(int width, int height, Game game) {
 		this.width = width;
 		this.height = height;
 		this.game = game;
-		this.actors = actors;
 		lifeImage = PacManThemes.THEME.pacManWalking(Top4.W).frame(1);
-		mazePanel = new MazePanel(game.getMaze());
-		mazePanel.tf.moveTo(0, 3 * TS);
+		mazeView = new MazeView(game.getMaze());
+		mazeView.tf.moveTo(0, 3 * TS);
 	}
 
 	@Override
@@ -55,23 +53,22 @@ public class GamePanel implements ViewController, PacManWorld {
 
 	@Override
 	public void init() {
-		mazePanel.init();
+		mazeView.init();
 	}
 
 	@Override
 	public void update() {
-		mazePanel.update();
-	}
-
-	@Override
-	public View currentView() {
-		return this;
+		mazeView.update();
 	}
 
 	public void enableAnimation(boolean enable) {
-		mazePanel.enableAnimation(enable);
+		mazeView.enableAnimation(enable);
 		actors.getPacMan().enableAnimation(enable);
 		actors.getActiveGhosts().forEach(ghost -> ghost.enableAnimation(enable));
+	}
+	
+	public void setActors(Cast actors) {
+		this.actors = actors;
 	}
 
 	@Override
@@ -106,23 +103,23 @@ public class GamePanel implements ViewController, PacManWorld {
 
 	@Override
 	public Optional<Bonus> getBonus() {
-		return mazePanel.getBonus();
+		return mazeView.getBonus();
 	}
 
 	public void setBonusTimer(int ticks) {
-		mazePanel.setBonusTimer(ticks);
+		mazeView.setBonusTimer(ticks);
 	}
 
 	public void setBonus(BonusSymbol symbol, int value) {
-		mazePanel.setBonus(new Bonus(symbol, value));
+		mazeView.setBonus(new Bonus(symbol, value));
 	}
 
 	public void removeBonus() {
-		mazePanel.setBonus(null);
+		mazeView.setBonus(null);
 	}
 
 	public void setMazeFlashing(boolean flashing) {
-		mazePanel.setFlashing(flashing);
+		mazeView.setFlashing(flashing);
 	}
 
 	public void showInfo(String text, Color color) {
@@ -145,7 +142,7 @@ public class GamePanel implements ViewController, PacManWorld {
 	@Override
 	public void draw(Graphics2D g) {
 		drawScores(g);
-		mazePanel.draw(g);
+		mazeView.draw(g);
 		drawActors(g);
 		drawInfoText(g);
 	}

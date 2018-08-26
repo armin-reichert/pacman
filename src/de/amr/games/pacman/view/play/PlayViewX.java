@@ -12,14 +12,12 @@ import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
-import de.amr.easy.game.view.View;
-import de.amr.games.pacman.actor.Cast;
+import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostName;
 import de.amr.games.pacman.actor.GhostState;
@@ -32,11 +30,23 @@ import de.amr.games.pacman.navigation.MazeRoute;
 import de.amr.statemachine.StateObject;
 
 /**
- * Game panel subclass displaying internal info (states, routes etc.).
+ * An extended play view.
+ * 
+ * <p>
+ * Features:
+ * <ul>
+ * <li>Key 'l' toggles logging on/off
+ * <li>Can display grid and alignment of actors (key 'g')
+ * <li>Can display actor state (key 's')
+ * <li>Can display actor routes (key 'r')
+ * <li>Can switch ghosts on and off (keys 'b', 'p', 'i', 'c')
+ * <li>Cheat key 'k' kills all active ghosts
+ * <li>Cheat key 'e' eats all normal pellets
+ * </ul>
  * 
  * @author Armin Reichert
  */
-public class ExtendedGamePanel extends GamePanel {
+public class PlayViewX extends PlayView {
 
 	private static final String INFTY = Character.toString('\u221E');
 
@@ -62,14 +72,9 @@ public class ExtendedGamePanel extends GamePanel {
 		return image;
 	}
 
-	public ExtendedGamePanel(int width, int height, Game game, Cast actors) {
-		super(width, height, game, actors);
+	public PlayViewX(int width, int height, Game game) {
+		super(width, height, game);
 		gridImage = createGridImage(game.getMaze().numRows(), game.getMaze().numCols());
-	}
-
-	@Override
-	public View currentView() {
-		return this;
 	}
 
 	@Override
@@ -93,16 +98,16 @@ public class ExtendedGamePanel extends GamePanel {
 			eatAllPellets();
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
-			toggleGhostActivity(actors.getBlinky());
+			toggleGhost(actors.getBlinky());
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_P)) {
-			toggleGhostActivity(actors.getPinky());
+			toggleGhost(actors.getPinky());
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_I)) {
-			toggleGhostActivity(actors.getInky());
+			toggleGhost(actors.getInky());
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_C)) {
-			toggleGhostActivity(actors.getClyde());
+			toggleGhost(actors.getClyde());
 		}
 		super.update();
 	}
@@ -120,11 +125,12 @@ public class ExtendedGamePanel extends GamePanel {
 		super.draw(g);
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
-			drawActorGridAlignment(actors.getPacMan(), g);
-			actors.getActiveGhosts().forEach(ghost -> drawActorGridAlignment(ghost, g));
+			drawActorAlignment(actors.getPacMan(), g);
+			actors.getActiveGhosts().filter(Ghost::isVisible)
+					.forEach(ghost -> drawActorAlignment(ghost, g));
 		}
 		if (showRoutes) {
-			actors.getActiveGhosts().forEach(ghost -> drawRoute(g, ghost));
+			actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> drawRoute(g, ghost));
 		}
 		if (showStates) {
 			drawEntityStates(g);
@@ -152,16 +158,14 @@ public class ExtendedGamePanel extends GamePanel {
 
 	private String ghostState(Ghost ghost) {
 		StateObject<?, ?> state = ghost.getStateObject();
-		return state.getDuration() != StateObject.ENDLESS ? String.format("%s(%s,%d|%d)[%s]",
-				ghost.getName(), state.id(), state.getRemaining(), state.getDuration(), dirName(ghost.getCurrentDir()))
-				: String.format("%s(%s,%s)[%s]", ghost.getName(), state.id(), INFTY, dirName(ghost.getCurrentDir()));
-	}
-	
-	private String dirName(int dir) {
-		return Arrays.asList("N","E","S","W").get(dir);
+		return state.getDuration() != StateObject.ENDLESS
+				? String.format("%s(%s,%d|%d)[%s]", ghost.getName(), state.id(), state.getRemaining(),
+						state.getDuration(), Top4.name(ghost.getCurrentDir()))
+				: String.format("%s(%s,%s)[%s]", ghost.getName(), state.id(), INFTY,
+						Top4.name(ghost.getCurrentDir()));
 	}
 
-	private void toggleGhostActivity(Ghost ghost) {
+	private void toggleGhost(Ghost ghost) {
 		actors.setActive(ghost, !actors.isActive(ghost));
 	}
 
@@ -188,7 +192,7 @@ public class ExtendedGamePanel extends GamePanel {
 		g.translate(-x, -y);
 	}
 
-	private void drawActorGridAlignment(MazeMover actor, Graphics2D g) {
+	private void drawActorAlignment(MazeMover actor, Graphics2D g) {
 		g.setColor(Color.GREEN);
 		g.translate(actor.tf.getX(), actor.tf.getY());
 		int w = actor.getWidth(), h = actor.getHeight();
