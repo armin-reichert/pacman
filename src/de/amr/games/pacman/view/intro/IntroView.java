@@ -48,6 +48,7 @@ public class IntroView implements ViewController {
 		ghostPointsAnimation = new GhostPointsAnimation();
 		startTextAnimation = new StartTextAnimation("Press SPACE to start!", 16);
 		link = new Link(LINK_TEXT, new Font("Arial", Font.PLAIN, 8), Color.LIGHT_GRAY);
+		link.setURL(LINK_URL);
 	}
 
 	private void show(GameEntity e) {
@@ -68,38 +69,33 @@ public class IntroView implements ViewController {
 	
 			.states()
 			
-				.state(0) // Scroll Pac-Man logo into view
+				.state(0) // Scroll image into view
 					.onEntry(() -> {
 						show(logoAnimation);
 						logoAnimation.start();
 					})
-					.onExit(() -> {
-						logoAnimation.stop();
-					})
+					.onExit(() -> logoAnimation.stop())
 					
 				.state(1) // Show ghosts chasing Pac-Man and vice-versa
 					.onEntry(() -> {
 						chasePacManAnimation.tf.setY(100);
 						show(chasePacManAnimation);
-						chasePacManAnimation.start();
-
 						chaseGhostsAnimation.tf.setY(200);
-						chaseGhostsAnimation.start();
 						show(chaseGhostsAnimation);
+						chaseGhostsAnimation.start();
+						chasePacManAnimation.start();
 					})
 					.onExit(() -> {
 						chasePacManAnimation.stop();
+						chaseGhostsAnimation.stop();
 						chasePacManAnimation.init();
 						chasePacManAnimation.hCenter(width);
-						
-						chaseGhostsAnimation.stop();
 					})
 					
 				.state(2) // Show ghost points animation and blinking text
 					.onEntry(() -> {
 						ghostPointsAnimation.tf.setY(200);
 						ghostPointsAnimation.hCenter(width);
-						ghostPointsAnimation.start();
 						show(ghostPointsAnimation);
 						
 						startTextAnimation.tf.setY(150);
@@ -107,17 +103,16 @@ public class IntroView implements ViewController {
 						startTextAnimation.enableAnimation(true);
 						show(startTextAnimation);
 						
-						link.setURL(LINK_URL);
 						link.tf.setY(getHeight() - 20);
 						link.hCenter(getWidth());
 						show(link);
 						
 						repeatTimer = 1000;
+						ghostPointsAnimation.start();
 					})
 					.onExit(() -> {
 						ghostPointsAnimation.stop();
 						hide(ghostPointsAnimation);
-						
 					})
 					.onTick(() -> {
 						repeatTimer -= 1;
@@ -127,10 +122,17 @@ public class IntroView implements ViewController {
 					
 			.transitions()
 
-				.when(0).then(1).condition(() -> logoAnimation.isCompleted())
-				.when(1).then(2).condition(() -> chasePacManAnimation.isComplete() && chaseGhostsAnimation.isComplete())
-				.when(2).then(1).condition(() -> repeatTimer == 0)
-				.when(3).then(42).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+				.when(0).then(1)
+					.condition(() -> logoAnimation.isCompleted())
+				
+				.when(1).then(2)
+					.condition(() -> chasePacManAnimation.isComplete() && chaseGhostsAnimation.isComplete())
+				
+				.when(2).then(1)
+					.condition(() -> repeatTimer == 0)
+				
+				.when(3).then(42)
+					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 				
 		.endStateMachine();
 	  /*@formatter:on*/
