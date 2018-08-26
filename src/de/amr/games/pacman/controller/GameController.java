@@ -36,6 +36,7 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.theme.PacManThemes;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.play.PlayViewX;
 import de.amr.statemachine.StateMachine;
@@ -242,6 +243,16 @@ public class GameController implements Controller {
 	}
 
 	private class PlayingState extends StateObject<PlayState, GameEvent> {
+		
+		@Override
+		public void onEntry() {
+			PacManThemes.THEME.soundWaza().loop();
+		}
+		
+		@Override
+		public void onExit() {
+			PacManThemes.THEME.soundWaza().stop();
+		}
 
 		@Override
 		public void onTick() {
@@ -292,6 +303,7 @@ public class GameController implements Controller {
 		private void onGhostKilled(GameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
 			e.ghost.processEvent(e);
+			PacManThemes.THEME.soundEatGhost().play();
 			LOGGER
 					.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
 		}
@@ -300,6 +312,7 @@ public class GameController implements Controller {
 			playView.getBonus().ifPresent(bonus -> {
 				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(),
 						bonus.getValue()));
+				PacManThemes.THEME.soundEatFruit().play();
 				bonus.setHonored();
 				game.score.add(bonus.getValue());
 				playView.setBonusTimer(game.sec(1));
@@ -308,7 +321,12 @@ public class GameController implements Controller {
 
 		private void onFoodFound(GameEvent event) {
 			FoodFoundEvent e = (FoodFoundEvent) event;
+			PacManThemes.THEME.soundEatPill().play();
+			int lives = game.getLives();
 			game.eatFoodAtTile(e.tile);
+			if (lives < game.getLives()) {
+				PacManThemes.THEME.soundExtraLife().play();
+			}
 			if (game.allFoodEaten()) {
 				gameControl.enqueue(new LevelCompletedEvent());
 			} else {
