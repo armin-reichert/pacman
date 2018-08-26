@@ -1,4 +1,4 @@
-## A comprehensible Pac-Man implementation based on finite state machines          
+# A comprehensible Pac-Man implementation based on finite state machines          
 
 (Work in progress)
 
@@ -371,7 +371,7 @@ public static Navigation chaseLikeInky(Ghost blinky, PacMan pacMan) {
 
 ### Clyde
 
-Clyde attacks Pac-Man directly (like Blink) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he goes into scattering mode:
+Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he goes into scattering mode:
 
 ```java
 public static Navigation chaseLikeClyde(Ghost clyde, PacMan pacMan) {
