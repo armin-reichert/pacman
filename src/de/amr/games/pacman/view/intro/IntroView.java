@@ -32,7 +32,7 @@ public class IntroView implements ViewController {
 	private Color background = new Color(0, 23, 61);
 
 	private final StateMachine<Integer, Void> fsm;
-	private final Set<ViewController> visibleViews = new HashSet<>();
+	private final Set<ViewController> actors = new HashSet<>();
 
 	private final ScrollingLogo logo;
 	private final BlinkingText startText;
@@ -65,11 +65,11 @@ public class IntroView implements ViewController {
 	}
 
 	private void show(ViewController view) {
-		visibleViews.add(view);
+		actors.add(view);
 	}
 
 	private void hide(ViewController view) {
-		visibleViews.remove(view);
+		actors.remove(view);
 	}
 
 	private StateMachine<Integer, Void> buildStateMachine() {
@@ -122,11 +122,8 @@ public class IntroView implements ViewController {
 			.transitions()
 
 				.when(0).then(1).condition(() -> logo.isAnimationCompleted())
-				
 				.when(1).then(2).condition(() -> chasePacMan.isAnimationCompleted() && chaseGhosts.isAnimationCompleted())
-				
 				.when(2).then(1).onTimeout()
-				
 				.when(2).then(COMPLETE).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 				
 		.endStateMachine();
@@ -151,7 +148,7 @@ public class IntroView implements ViewController {
 	public void draw(Graphics2D g) {
 		g.setColor(background);
 		g.fillRect(0, 0, getWidth(), getHeight());
-		visibleViews.forEach(e -> e.draw(g));
+		actors.forEach(e -> e.draw(g));
 	}
 
 	@Override
@@ -165,6 +162,6 @@ public class IntroView implements ViewController {
 			fsm.setState(COMPLETE);
 		}
 		fsm.update();
-		visibleViews.forEach(ViewController::update);
+		actors.forEach(ViewController::update);
 	}
 }
