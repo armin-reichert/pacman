@@ -261,9 +261,9 @@ Example trace:
 [2018-08-17 06:18:29:176] [Ghost Blinky] changing from 'HOME' to 'SAFE'
 [2018-08-17 06:18:29:176] [Ghost Blinky] exiting state 'HOME'
 [2018-08-17 06:18:29:176] [Ghost Blinky] entering state 'SAFE' for 2,00 seconds (120 frames)
-[2018-08-17 06:18:31:190] [Ghost Blinky] changing from 'SAFE' to 'AGGRO'
+[2018-08-17 06:18:31:190] [Ghost Blinky] changing from 'SAFE' to 'CHASING'
 [2018-08-17 06:18:31:190] [Ghost Blinky] exiting state 'SAFE'
-[2018-08-17 06:18:31:190] [Ghost Blinky] entering state 'AGGRO'
+[2018-08-17 06:18:31:190] [Ghost Blinky] entering state 'CHASING'
 [2018-08-17 06:18:34:865] [PacMan] publishing event 'PacManGhostCollisionEvent(Blinky)'
 [2018-08-17 06:18:34:865] [GameControl] stays 'PLAYING' on 'PacManGhostCollisionEvent(Blinky)'
 [2018-08-17 06:18:34:883] [GameControl] changing from 'PLAYING' to 'PACMAN_DYING' on 'PacManKilledEvent(Blinky)'
@@ -286,9 +286,9 @@ Example trace:
 [2018-08-17 06:18:36:928] [Ghost Blinky] changing from 'HOME' to 'SAFE'
 [2018-08-17 06:18:36:928] [Ghost Blinky] exiting state 'HOME'
 [2018-08-17 06:18:36:928] [Ghost Blinky] entering state 'SAFE' for 2,00 seconds (120 frames)
-[2018-08-17 06:18:38:973] [Ghost Blinky] changing from 'SAFE' to 'AGGRO'
+[2018-08-17 06:18:38:973] [Ghost Blinky] changing from 'SAFE' to 'CHASING'
 [2018-08-17 06:18:38:973] [Ghost Blinky] exiting state 'SAFE'
-[2018-08-17 06:18:38:973] [Ghost Blinky] entering state 'AGGRO'
+[2018-08-17 06:18:38:973] [Ghost Blinky] entering state 'CHASING'
 [2018-08-17 06:18:41:393] Application window closing, app will exit...
 [2018-08-17 06:18:41:401] Application terminated.
 ```
@@ -342,7 +342,7 @@ public default Navigation<T> attackDirectly(MazeMover victim) {
 	return followTargetTile(victim::getTile);
 }
 
-blinky.setMoveBehavior(AGGRO, blinky.attackDirectly(pacMan));
+blinky.setMoveBehavior(CHASING, blinky.attackDirectly(pacMan));
 ```
 
 <img src="doc/blinky.png"/>
@@ -356,7 +356,7 @@ public default Navigation<T> ambush(MazeMover victim, int n) {
 	return followTargetTile(() -> victim.ahead(n));
 }
 
-pinky.setMoveBehavior(AGGRO, pinky.ambush(pacMan, 4));
+pinky.setMoveBehavior(CHASING, pinky.ambush(pacMan, 4));
 ```
 
 <img src="doc/pinky.png"/>
@@ -382,7 +382,7 @@ public default Navigation<T> attackWithPartner(Ghost partner, PacMan pacMan) {
 	});
 }
 
-inky.setMoveBehavior(AGGRO, inky.attackWithPartner(blinky, pacMan));
+inky.setMoveBehavior(CHASING, inky.attackWithPartner(blinky, pacMan));
 ```
 
 <img src="doc/inky.png"/>
@@ -398,7 +398,7 @@ public default Navigation<T> attackAndReject(Ghost attacker, PacMan pacMan, int 
 					: attacker.getScatteringTarget());
 }
 
-clyde.setMoveBehavior(AGGRO, clyde.attackAndReject(clyde, pacMan, 8 * Game.TS));
+clyde.setMoveBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * Game.TS));
 ```
 
 <img src="doc/clyde.png"/>
