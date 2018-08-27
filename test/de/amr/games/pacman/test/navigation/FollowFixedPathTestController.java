@@ -47,7 +47,7 @@ public class FollowFixedPathTestController implements Controller {
 		actors.getBlinky().setState(GhostState.AGGRO);
 		currentIndex = 0;
 		actors.getBlinky().setMoveBehavior(GhostState.AGGRO,
-				actors.getBlinky().followFixedPath(targets.get(0)));
+				actors.getBlinky().followStaticRoute(targets.get(0)));
 		actors.getBlinky().getMoveBehavior().computeStaticRoute(actors.getBlinky());
 	}
 
@@ -58,7 +58,7 @@ public class FollowFixedPathTestController implements Controller {
 			game.setLevel(game.getLevel() + 1);
 		}
 		actors.getBlinky().setMoveBehavior(GhostState.AGGRO,
-				actors.getBlinky().followFixedPath(targets.get(currentIndex)));
+				actors.getBlinky().followStaticRoute(targets.get(currentIndex)));
 		actors.getBlinky().getMoveBehavior().computeStaticRoute(actors.getBlinky());
 	}
 
