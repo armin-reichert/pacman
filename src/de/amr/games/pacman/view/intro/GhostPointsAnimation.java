@@ -1,8 +1,9 @@
 package de.amr.games.pacman.view.intro;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.BitSet;
-import java.util.Random;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.Application;
@@ -22,9 +23,11 @@ public class GhostPointsAnimation extends GameEntity {
 	private final Sprite pacMan;
 	private final Sprite ghost;
 	private final Sprite[] points = new Sprite[4];
-	private final Random rnd = new Random();
 	private final BitSet killed = new BitSet(4);
-	private int timer;
+	private int killNext = 0;
+	private int ghostTimer;
+	private int energizerTimer;
+	private boolean energizer;
 
 	public GhostPointsAnimation() {
 		pacMan = PacManThemes.THEME.pacManWalking(Top4.E);
@@ -32,46 +35,50 @@ public class GhostPointsAnimation extends GameEntity {
 		for (int i = 0; i < 4; ++i) {
 			points[i] = PacManThemes.THEME.greenNumber(i);
 		}
-		timer = -1;
+		ghostTimer = -1;
 	}
 
-	private void resetTimer() {
-		timer = (2 + rnd.nextInt(2)) * Application.PULSE.getFrequency();
+	private void resetGhostTimer() {
+		ghostTimer = Application.PULSE.secToTicks(2);
 	}
 
 	@Override
 	public void init() {
 		killed.clear();
+		killNext = 0;
+		energizer = true;
 	}
 
 	public void start() {
 		init();
-		resetTimer();
+		resetGhostTimer();
+		energizerTimer = Application.PULSE.secToTicks(0.5f);
 	}
 
 	public void stop() {
-		timer = -1;
+		ghostTimer = -1;
 	}
 
 	@Override
 	public void update() {
-		if (timer > 0) {
-			timer -= 1;
-			return;
+		if (ghostTimer > 0) {
+			ghostTimer -= 1;
 		}
-		if (killed.cardinality() == 4) {
-			init();
-			resetTimer();
-			return;
+		if (energizerTimer > 0) {
+			energizerTimer -= 1;
 		}
-		if (timer == 0) {
-			int killNext = rnd.nextInt(4);
-			while (killed.get(killNext)) {
-				killNext = rnd.nextInt(4);
-			}
+		if (energizerTimer == 0) {
+			energizer = !energizer;
+			energizerTimer = Application.PULSE.secToTicks(0.5f);
+		}
+		if (ghostTimer == 0) {
 			killed.set(killNext);
+			killNext = (killNext + 1) % 4;
 			PacManThemes.THEME.soundEatGhost().play();
-			resetTimer();
+			resetGhostTimer();
+			if (killed.cardinality() == 4) {
+				init();
+			}
 		}
 	}
 
@@ -82,15 +89,28 @@ public class GhostPointsAnimation extends GameEntity {
 	@Override
 	public void draw(Graphics2D g) {
 		g.translate(tf.getX(), tf.getY());
+		int x = 0;
 		pacMan.draw(g);
+		x += 12;
+		g.translate(x, 0);
+		if (energizer) {
+			g.setColor(Color.PINK);
+			g.fillOval(4, 4, 8, 8);
+		} else {
+			g.setColor(Color.PINK);
+			g.setFont(new Font("Arial", Font.PLAIN, 6));
+			g.drawString("50", 4, 10);
+		}
+		g.translate(-x, 0);
 		for (int i = 0; i < 4; ++i) {
-			g.translate(18 * (i + 1), 0);
+			x += 18;
+			g.translate(x, 0);
 			if (killed.get(i)) {
 				points[i].draw(g);
 			} else {
 				ghost.draw(g);
 			}
-			g.translate(-18 * (i + 1), 0);
+			g.translate(-x, 0);
 		}
 		g.translate(-tf.getX(), -tf.getY());
 	}
