@@ -64,9 +64,9 @@ public class Cast {
 
 		// individual ghost behavior
 		blinky.setMoveBehavior(AGGRO, blinky.attackDirectly(pacMan));
-		pinky.setMoveBehavior(AGGRO, blinky.ambush(pacMan));
+		pinky.setMoveBehavior(AGGRO, pinky.ambush(pacMan, 4));
 		inky.setMoveBehavior(AGGRO, inky.attackWithPartner(blinky, pacMan));
-		clyde.setMoveBehavior(AGGRO, clyde.attackAndReject(clyde, pacMan));
+		clyde.setMoveBehavior(AGGRO, clyde.attackAndReject(clyde, pacMan, 8 * Game.TS));
 		clyde.fnCanLeaveHouse = () -> game.getLevel() > 1
 				|| game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
 
