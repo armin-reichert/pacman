@@ -110,19 +110,19 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 		return game.getPacManSpeed(getState());
 	}
 
-	// Navigation and movement
+	// Movement
 
-	public void setNavigation(PacManState state, Navigation<PacMan> navigation) {
+	public void setMoveBehavior(PacManState state, Navigation<PacMan> navigation) {
 		navigationMap.put(state, navigation);
 	}
 
-	public Navigation<PacMan> getNavigation() {
+	public Navigation<PacMan> getMoveBehavior() {
 		return navigationMap.getOrDefault(getState(), keepDirection());
 	}
 
 	@Override
 	public int supplyIntendedDir() {
-		return getNavigation().computeRoute(this).getDir();
+		return getMoveBehavior().computeRoute(this).getDir();
 	}
 
 	@Override

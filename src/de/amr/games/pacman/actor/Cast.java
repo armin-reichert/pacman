@@ -4,8 +4,11 @@ import static de.amr.games.pacman.actor.GhostName.Blinky;
 import static de.amr.games.pacman.actor.GhostName.Clyde;
 import static de.amr.games.pacman.actor.GhostName.Inky;
 import static de.amr.games.pacman.actor.GhostName.Pinky;
-import static de.amr.games.pacman.actor.GhostState.*;
+import static de.amr.games.pacman.actor.GhostState.AGGRO;
+import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.actor.GhostState.SAFE;
+import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -48,22 +51,22 @@ public class Cast {
 
 		// configure actor behavior
 		Navigation<PacMan> keySteering = pacMan.followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
-		pacMan.setNavigation(PacManState.HUNGRY, keySteering);
-		pacMan.setNavigation(PacManState.GREEDY, keySteering);
+		pacMan.setMoveBehavior(PacManState.HUNGRY, keySteering);
+		pacMan.setMoveBehavior(PacManState.GREEDY, keySteering);
 
 		// common ghost behavior
 		Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
-			ghost.setNavigation(FRIGHTENED, ghost.flee(pacMan));
-			ghost.setNavigation(SCATTERING, ghost.followTargetTile(() -> ghost.getScatteringTarget()));
-			ghost.setNavigation(DEAD, ghost.followTargetTile(() -> ghost.getHome()));
-			ghost.setNavigation(SAFE, ghost.bounce());
+			ghost.setMoveBeahavior(FRIGHTENED, ghost.flee(pacMan));
+			ghost.setMoveBeahavior(SCATTERING, ghost.followTargetTile(() -> ghost.getScatteringTarget()));
+			ghost.setMoveBeahavior(DEAD, ghost.followTargetTile(() -> ghost.getHome()));
+			ghost.setMoveBeahavior(SAFE, ghost.bounce());
 		});
 
 		// individual ghost behavior
-		blinky.setNavigation(AGGRO, blinky.attackDirectly(pacMan));
-		pinky.setNavigation(AGGRO, blinky.ambush(pacMan));
-		inky.setNavigation(AGGRO, inky.attackWithPartner(blinky, pacMan));
-		clyde.setNavigation(AGGRO, clyde.attackAndReject(clyde, pacMan));
+		blinky.setMoveBeahavior(AGGRO, blinky.attackDirectly(pacMan));
+		pinky.setMoveBeahavior(AGGRO, blinky.ambush(pacMan));
+		inky.setMoveBeahavior(AGGRO, inky.attackWithPartner(blinky, pacMan));
+		clyde.setMoveBeahavior(AGGRO, clyde.attackAndReject(clyde, pacMan));
 		clyde.fnCanLeaveHouse = () -> game.getLevel() > 1
 				|| game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
 

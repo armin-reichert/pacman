@@ -96,19 +96,19 @@ public class Ghost extends MazeMover
 		return game.getGhostSpeed(getState(), getTile());
 	}
 
-	// Navigation and movement
+	// Movement
 
-	public void setNavigation(GhostState state, Navigation<Ghost> navigation) {
+	public void setMoveBeahavior(GhostState state, Navigation<Ghost> navigation) {
 		navigationMap.put(state, navigation);
 	}
 
-	public Navigation<Ghost> getNavigation() {
+	public Navigation<Ghost> getMoveBehavior() {
 		return navigationMap.getOrDefault(getState(), keepDirection());
 	}
 
 	@Override
 	public int supplyIntendedDir() {
-		return getNavigation().computeRoute(this).getDir();
+		return getMoveBehavior().computeRoute(this).getDir();
 	}
 
 	@Override
@@ -194,7 +194,7 @@ public class Ghost extends MazeMover
 					.state(FRIGHTENED)
 						.onEntry(() -> {
 							sprite = s_frightened; 
-							getNavigation().computeStaticRoute(this); 
+							getMoveBehavior().computeStaticRoute(this); 
 						})
 						.onTick(() -> move())
 					
@@ -206,7 +206,7 @@ public class Ghost extends MazeMover
 						})
 					
 					.state(DEAD)
-						.onEntry(() -> getNavigation().computeStaticRoute(this))
+						.onEntry(() -> getMoveBehavior().computeStaticRoute(this))
 						.onTick(() -> {	
 							move();
 							sprite = s_eyes[getCurrentDir()];
