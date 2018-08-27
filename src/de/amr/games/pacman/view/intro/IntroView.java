@@ -6,11 +6,11 @@ import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.theme.PacManThemes;
-import de.amr.games.pacman.view.widgets.Link;
+import de.amr.games.pacman.view.core.BlinkingText;
+import de.amr.games.pacman.view.core.Link;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -24,17 +24,16 @@ public class IntroView implements ViewController {
 	private static final String LINK_URL = "https://github.com/armin-reichert/pacman";
 
 	private static final int COMPLETE = 42;
-	
+
 	private final int width;
 	private final int height;
 	private Color background = new Color(0, 23, 61);
 
 	private final StateMachine<Integer, Void> fsm;
-	
-	private final Set<GameEntity> visible = new HashSet<>();
+	private final Set<ViewController> visibleViews = new HashSet<>();
 
-	private final LogoAnimation logoAnimation;
-	private final StartTextAnimation startTextAnimation;
+	private final ScrollingLogo logoAnimation;
+	private final BlinkingText startTextAnimation;
 	private final Link link;
 	private final ChasePacManAnimation chasePacManAnimation;
 	private final ChaseGhostsAnimation chaseGhostsAnimation;
@@ -46,21 +45,21 @@ public class IntroView implements ViewController {
 		this.width = width;
 		this.height = height;
 		fsm = buildStateMachine();
-		logoAnimation = new LogoAnimation(width, height, 20);
+		logoAnimation = new ScrollingLogo(width, height);
 		chasePacManAnimation = new ChasePacManAnimation(width);
 		chaseGhostsAnimation = new ChaseGhostsAnimation(width);
 		ghostPointsAnimation = new GhostPointsAnimation();
-		startTextAnimation = new StartTextAnimation("Press SPACE to start!", 18, background);
+		startTextAnimation = new BlinkingText("Press SPACE to start!", 18, background);
 		link = new Link(LINK_TEXT, PacManThemes.THEME.textFont().deriveFont(8f), Color.LIGHT_GRAY);
 		link.setURL(LINK_URL);
 	}
 
-	private void show(GameEntity e) {
-		visible.add(e);
+	private void show(ViewController view) {
+		visibleViews.add(view);
 	}
 
-	private void hide(GameEntity e) {
-		visible.remove(e);
+	private void hide(ViewController view) {
+		visibleViews.remove(view);
 	}
 
 	private StateMachine<Integer, Void> buildStateMachine() {
@@ -78,7 +77,6 @@ public class IntroView implements ViewController {
 						show(logoAnimation);
 						logoAnimation.start();
 					})
-					.onExit(() -> logoAnimation.stop())
 					
 				.state(1) // Show ghosts chasing Pac-Man and vice-versa
 					.onEntry(() -> {
@@ -129,9 +127,10 @@ public class IntroView implements ViewController {
 
 				.when(0).then(1)
 					.condition(() -> logoAnimation.isCompleted())
+					.act(() -> logoAnimation.tf.setVelocityY(0))
 				
 				.when(1).then(2)
-					.condition(() -> chasePacManAnimation.isComplete() && chaseGhostsAnimation.isComplete())
+					.condition(() -> chasePacManAnimation.isCompleted() && chaseGhostsAnimation.isCompleted())
 				
 				.when(2).then(1)
 					.condition(() -> repeatTimer == 0)
@@ -161,7 +160,7 @@ public class IntroView implements ViewController {
 	public void draw(Graphics2D g) {
 		g.setColor(background);
 		g.fillRect(0, 0, getWidth(), getHeight());
-		visible.forEach(e -> e.draw(g));
+		visibleViews.forEach(e -> e.draw(g));
 	}
 
 	@Override
@@ -175,6 +174,6 @@ public class IntroView implements ViewController {
 			fsm.setState(COMPLETE);
 		}
 		fsm.update();
-		visible.forEach(GameEntity::update);
+		visibleViews.forEach(ViewController::update);
 	}
 }

@@ -11,8 +11,9 @@ import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.PacManThemes;
+import de.amr.games.pacman.view.core.ViewAnimation;
 
-public class ChasePacManAnimation extends GameEntity {
+public class ChasePacManAnimation extends GameEntity implements ViewAnimation {
 
 	private final int panelWidth;
 	private final Sprite pacMan;
@@ -46,6 +47,7 @@ public class ChasePacManAnimation extends GameEntity {
 		}
 	}
 
+	@Override
 	public void start() {
 		init();
 		tf.setVelocityX(-1.2f);
@@ -57,7 +59,8 @@ public class ChasePacManAnimation extends GameEntity {
 		PacManThemes.THEME.soundSiren().stop();
 	}
 
-	public boolean isComplete() {
+	@Override
+	public boolean isCompleted() {
 		return tf.getX() < -getWidth();
 	}
 

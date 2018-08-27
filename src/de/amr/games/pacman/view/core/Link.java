@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.widgets;
+package de.amr.games.pacman.view.core;
 
 import java.awt.Color;
 import java.awt.Font;

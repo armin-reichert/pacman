@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.intro;
+package de.amr.games.pacman.view.core;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -12,11 +12,11 @@ import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.theme.PacManThemes;
 
 /**
- * Animation showing blinking text for game start.
+ * Animation showing blinking text.
  * 
  * @author Armin Reichert
  */
-public class StartTextAnimation extends GameEntity {
+public class BlinkingText extends GameEntity implements ViewAnimation {
 
 	private Sprite sprite;
 	private String text;
@@ -25,7 +25,7 @@ public class StartTextAnimation extends GameEntity {
 	private int width;
 	private int height;
 
-	public StartTextAnimation(String text, float fontSize, Color background) {
+	public BlinkingText(String text, float fontSize, Color background) {
 		this.text = text.replace(" ", "   "); // font spacing not sufficient
 		this.font = PacManThemes.THEME.textFont().deriveFont(fontSize);
 		this.background = background;
@@ -61,13 +61,10 @@ public class StartTextAnimation extends GameEntity {
 	public int getHeight() {
 		return height;
 	}
-
+	
 	@Override
-	public void init() {
-	}
-
-	@Override
-	public void update() {
+	public boolean isCompleted() {
+		return false;
 	}
 
 	@Override
@@ -85,5 +82,17 @@ public class StartTextAnimation extends GameEntity {
 		g.setColor(background);
 		g.fillRect(0, 0, getWidth(), getHeight());
 		super.draw(g);
+	}
+
+	@Override
+	public void init() {
+	}
+
+	@Override
+	public void start() {
+	}
+
+	@Override
+	public void update() {
 	}
 }

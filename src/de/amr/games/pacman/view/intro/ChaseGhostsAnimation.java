@@ -7,13 +7,14 @@ import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.theme.PacManThemes;
+import de.amr.games.pacman.view.core.ViewAnimation;
 
 /**
  * An animation showing Pac-Man chasing the ghosts and scoring points for each killed ghost.
  * 
  * @author Armin Reichert
  */
-public class ChaseGhostsAnimation extends GameEntity {
+public class ChaseGhostsAnimation extends GameEntity implements ViewAnimation {
 
 	private final int panelWidth;
 	private final Sprite pacMan;
@@ -43,6 +44,7 @@ public class ChaseGhostsAnimation extends GameEntity {
 		ghostsKilled = 0;
 	}
 
+	@Override
 	public void start() {
 		init();
 		tf.setVelocityX(.8f);
@@ -73,7 +75,8 @@ public class ChaseGhostsAnimation extends GameEntity {
 		}
 	}
 
-	public boolean isComplete() {
+	@Override
+	public boolean isCompleted() {
 		return tf.getX() > panelWidth;
 	}
 
