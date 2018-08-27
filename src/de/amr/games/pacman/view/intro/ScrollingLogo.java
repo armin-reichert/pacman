@@ -19,13 +19,18 @@ public class ScrollingLogo extends ScrollingImage {
 		hCenter(parentWidth);
 		tf.setY(parentHeight);
 	}
-	
+
 	@Override
 	public void startAnimation() {
 		init();
 		tf.setVelocityY(-2f);
 	}
-	
+
+	@Override
+	public void stopAnimation() {
+		tf.setVelocityY(0);
+	}
+
 	@Override
 	public boolean isAnimationCompleted() {
 		return tf.getY() <= 20;

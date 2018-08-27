@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.view.core.BlinkingText;
@@ -114,7 +115,7 @@ public class IntroView implements ViewController {
 						link.hCenter(getWidth());
 						show(link);
 						
-						repeatTimer = 1000;
+						repeatTimer = Application.PULSE.secToTicks(10);
 						ghostPoints.start();
 					})
 					.onExit(() -> {
@@ -131,7 +132,7 @@ public class IntroView implements ViewController {
 
 				.when(0).then(1)
 					.condition(() -> logo.isAnimationCompleted())
-					.act(() -> logo.tf.setVelocityY(0))
+					.act(() -> logo.stopAnimation())
 				
 				.when(1).then(2)
 					.condition(() -> chasePacMan.isAnimationCompleted() && chaseGhosts.isAnimationCompleted())
