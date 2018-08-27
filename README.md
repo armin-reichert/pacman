@@ -293,11 +293,17 @@ Example trace:
 [2018-08-17 06:18:41:401] Application terminated.
 ```
 
+
 ## Configurable navigation behavior (aka AI)
+
+The game gets some of its entertainment factor from the diversity of the four ghosts. 
+Especially, each of the ghosts has its own specific attack behavior. In this implementation, 
+these differences in behavior are not realized by subclassing
+but by configuration (This would theoretically allow to exchange behaviors at runtime). For each ghost
+state there is a move behavior assigned that is used whenever the ghost is moving in that state.
 
 <img src="doc/pacman.png"/>
 
-The navigation behavior of the actors is implemented modularly (*strategy pattern*) and can easily be configured.
 
 ### Pac-Man
 
@@ -311,7 +317,7 @@ pacMan.setMoveBehavior(PacManState.GREEDY, followKeyboard);
 ```
 
 ### Ghosts
-Configuration of ghost behavior:
+The ghosts behave identically in some of their states:
 
 ```java
 	// common ghost behavior
@@ -321,15 +327,11 @@ Configuration of ghost behavior:
 		ghost.setMoveBehavior(DEAD, ghost.followTargetTile(() -> ghost.getHome()));
 		ghost.setMoveBehavior(SAFE, ghost.bounce());
 	});
-
-	// individual ghost behavior
-	blinky.setMoveBehavior(AGGRO, blinky.attackDirectly(pacMan));
-	pinky.setMoveBehavior(AGGRO, pinky.ambush(pacMan, 4));
-	inky.setMoveBehavior(AGGRO, inky.attackWithPartner(blinky, pacMan));
-	clyde.setMoveBehavior(AGGRO, clyde.attackAndReject(clyde, pacMan, 8 * Game.TS));
 ```
 
-With the general *followTargetTile* behavior available, the individual behaviors *scatter*, *ambush*, *attackDirectly* etc. are trivial to implement:
+The *chase* behavior is different for each ghost as explained below. Using the common *followTargetTile* behavior, 
+the implementation of the individual behaviors like *scatter*, *ambush*, *attackDirectly*, 
+*attackWithPartner* etc. becomes trivial.
 
 ### Blinky
 
@@ -340,6 +342,7 @@ public default Navigation<T> attackDirectly(MazeMover victim) {
 	return followTargetTile(victim::getTile);
 }
 
+blinky.setMoveBehavior(AGGRO, blinky.attackDirectly(pacMan));
 ```
 
 <img src="doc/blinky.png"/>
@@ -352,6 +355,8 @@ Pinky, the *ambusher*, targets the position 4 tiles ahead of Pac-Man (in the ori
 public default Navigation<T> ambush(MazeMover victim, int n) {
 	return followTargetTile(() -> victim.ahead(n));
 }
+
+pinky.setMoveBehavior(AGGRO, pinky.ambush(pacMan, 4));
 ```
 
 <img src="doc/pinky.png"/>
@@ -376,6 +381,8 @@ public default Navigation<T> attackWithPartner(Ghost partner, PacMan pacMan) {
 		return new Tile(col, row);
 	});
 }
+
+inky.setMoveBehavior(AGGRO, inky.attackWithPartner(blinky, pacMan));
 ```
 
 <img src="doc/inky.png"/>
@@ -390,6 +397,8 @@ public default Navigation<T> attackAndReject(Ghost attacker, PacMan pacMan, int 
 			() -> dist(attacker.getCenter(), pacMan.getCenter()) >= distance ? pacMan.getTile()
 					: attacker.getScatteringTarget());
 }
+
+clyde.setMoveBehavior(AGGRO, clyde.attackAndReject(clyde, pacMan, 8 * Game.TS));
 ```
 
 <img src="doc/clyde.png"/>
@@ -398,9 +407,14 @@ public default Navigation<T> attackAndReject(Ghost attacker, PacMan pacMan, int 
 
 In *scatter* mode, each ghost tries to reach his scattering target tile outside of the maze which results in a cyclic movement around the block in that corner.
 
+```java
+ghost.setMoveBehavior(SCATTERING, ghost.followTargetTile(() -> ghost.getScatteringTarget()));
+```
+
 <img src="doc/scattering.png"/>
 
-### Path finding
+
+## Graph based path finding
 
 For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed, the *followTargetTile* behavior is sufficient. To also give an example how graph based path finding can be used, the *flee* behavior has been implemented differently from the original game.
 
