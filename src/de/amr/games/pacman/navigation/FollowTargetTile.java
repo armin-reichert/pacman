@@ -62,8 +62,7 @@ public class FollowTargetTile<T extends MazeMover> implements Navigation<T> {
 
 		// if target tile is located in teleport space, use suitable tunnel entry
 		if (maze.inTeleportSpace(targetTile)) {
-			int entryCol = targetTile.col > (maze.numCols() - 1) ? (maze.numCols() - 1) : 0;
-			targetTile = new Tile(entryCol, maze.getTunnelRow());
+			targetTile = targetTile.col < 0 ? maze.getLeftTunnelEntry() : maze.getRightTunnelEntry();
 		}
 		route.setTargetTile(targetTile);
 

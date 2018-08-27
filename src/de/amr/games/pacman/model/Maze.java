@@ -228,6 +228,14 @@ public class Maze {
 	public int getTunnelRow() {
 		return tunnelRow;
 	}
+	
+	public Tile getLeftTunnelEntry() {
+		return new Tile(0, tunnelRow);
+	}
+	
+	public Tile getRightTunnelEntry() {
+		return new Tile(numCols() - 1, tunnelRow);
+	}
 
 	private char getContent(Tile tile) {
 		if (inTeleportSpace(tile)) {
