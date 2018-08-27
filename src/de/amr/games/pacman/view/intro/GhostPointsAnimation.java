@@ -98,8 +98,8 @@ public class GhostPointsAnimation extends GameEntity {
 			g.fillOval(4, 4, 8, 8);
 		} else {
 			g.setColor(Color.PINK);
-			g.setFont(new Font("Arial", Font.PLAIN, 6));
-			g.drawString("50", 4, 10);
+			g.setFont(new Font("Arial", Font.BOLD, 8));
+			g.drawString("50", 4, 12);
 		}
 		g.translate(-x, 0);
 		for (int i = 0; i < 4; ++i) {

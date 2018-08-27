@@ -1,5 +1,7 @@
 package de.amr.games.pacman.view.intro;
 
+import static de.amr.games.pacman.theme.PacManThemes.THEME;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -8,7 +10,6 @@ import java.util.Set;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.ViewController;
-import de.amr.games.pacman.theme.PacManThemes;
 import de.amr.games.pacman.view.core.BlinkingText;
 import de.amr.games.pacman.view.core.Link;
 import de.amr.statemachine.StateMachine;
@@ -49,8 +50,8 @@ public class IntroView implements ViewController {
 		chasePacManAnimation = new ChasePacManAnimation(width);
 		chaseGhostsAnimation = new ChaseGhostsAnimation(width);
 		ghostPointsAnimation = new GhostPointsAnimation();
-		startTextAnimation = new BlinkingText("Press SPACE to start!", 18, background);
-		link = new Link(LINK_TEXT, PacManThemes.THEME.textFont().deriveFont(8f), Color.LIGHT_GRAY);
+		startTextAnimation = new BlinkingText().set("Press SPACE to start!", THEME.textFont(18), background, Color.PINK);
+		link = new Link(LINK_TEXT, THEME.textFont(8), Color.LIGHT_GRAY);
 		link.setURL(LINK_URL);
 	}
 

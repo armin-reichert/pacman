@@ -77,8 +77,8 @@ public class ChasePacManAnimation extends GameEntity implements ViewAnimation {
 		if (pill) {
 			g.fillRect(7, 7, 2, 2);
 		} else {
-			g.setFont(new Font("Arial", Font.PLAIN, 6));
-			g.drawString("10", 2, 10);
+			g.setFont(new Font("Arial", Font.BOLD, 8));
+			g.drawString("10", 0, 10);
 		}
 		x = 10;
 		g.translate(x, 0);

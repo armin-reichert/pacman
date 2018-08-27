@@ -39,6 +39,10 @@ public interface PacManTheme {
 	Sprite pinkNumber(int i);
 	
 	Font textFont();
+	
+	default Font textFont(int size) {
+		return textFont().deriveFont((float) size);
+	}
 
 	Sound soundDie();
 	
