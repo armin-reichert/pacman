@@ -1,9 +1,11 @@
 package de.amr.games.pacman.view.intro;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
@@ -15,6 +17,8 @@ public class ChasePacManAnimation extends GameEntity {
 	private final int panelWidth;
 	private final Sprite pacMan;
 	private final Sprite ghosts[] = new Sprite[4];
+	private int pillTimer;
+	private boolean pill;
 
 	public ChasePacManAnimation(int width) {
 		this.panelWidth = width;
@@ -23,16 +27,23 @@ public class ChasePacManAnimation extends GameEntity {
 		ghosts[1] = PacManThemes.THEME.ghostColored(GhostColor.PINK, Top4.W);
 		ghosts[2] = PacManThemes.THEME.ghostColored(GhostColor.TURQUOISE, Top4.W);
 		ghosts[3] = PacManThemes.THEME.ghostColored(GhostColor.ORANGE, Top4.W);
+		pill = true;
 	}
 
 	@Override
 	public void init() {
 		tf.setX(panelWidth);
+		pillTimer = Application.PULSE.secToTicks(0.5f);
 	}
 
 	@Override
 	public void update() {
 		tf.move();
+		--pillTimer;
+		if (pillTimer == 0) {
+			pill = !pill;
+			pillTimer = Application.PULSE.secToTicks(0.5f);
+		}
 	}
 
 	public void start() {
@@ -57,15 +68,24 @@ public class ChasePacManAnimation extends GameEntity {
 
 	@Override
 	public void draw(Graphics2D g) {
+		int x = 0;
 		g.translate(tf.getX(), tf.getY());
 		g.setColor(Color.PINK);
-		g.fillRect(7, 7, 2, 2);
-		g.translate(8, 0);
+		if (pill) {
+			g.fillRect(7, 7, 2, 2);
+		} else {
+			g.setFont(new Font("Arial", Font.PLAIN, 6));
+			g.drawString("10", 2, 10);
+		}
+		x = 10;
+		g.translate(x, 0);
 		pacMan.draw(g);
+		g.translate(-x, 0);
 		for (int i = 0; i < ghosts.length; ++i) {
-			g.translate(16 * (i + 1), 0);
+			x += 16;
+			g.translate(x, 0);
 			ghosts[i].draw(g);
-			g.translate(-16 * (i + 1), 0);
+			g.translate(-x, 0);
 		}
 		g.translate(-tf.getX(), -tf.getY());
 	}

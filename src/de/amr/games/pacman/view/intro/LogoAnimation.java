@@ -15,27 +15,14 @@ public class LogoAnimation extends GameEntity {
 
 	private final int panelWidth;
 	private final int panelHeight;
-	private final int stopPosition;
+	private final int stopY;
 	private Sprite sprite;
 
-	public LogoAnimation(int width, int height, int stopPosition) {
-		this.panelWidth = width;
-		this.panelHeight = height;
-		this.stopPosition = stopPosition;
+	public LogoAnimation(int panelWidth, int panelHeight, int stopY) {
+		this.panelWidth = panelWidth;
+		this.panelHeight = panelHeight;
+		this.stopY = stopY;
 		sprite = new Sprite(Assets.image("logo.png"));
-	}
-	
-	public void start() {
-		init();
-		tf.setVelocityY(-2f);
-	}
-	
-	public void stop() {
-		tf.setVelocityY(0);
-	}
-	
-	public boolean isCompleted() {
-		return tf.getY() <= stopPosition;
 	}
 
 	@Override
@@ -47,6 +34,19 @@ public class LogoAnimation extends GameEntity {
 	@Override
 	public void update() {
 		tf.move();
+	}
+
+	public void start() {
+		init();
+		tf.setVelocityY(-2f);
+	}
+
+	public void stop() {
+		tf.setVelocityY(0);
+	}
+
+	public boolean isCompleted() {
+		return tf.getY() <= stopY;
 	}
 
 	@Override
