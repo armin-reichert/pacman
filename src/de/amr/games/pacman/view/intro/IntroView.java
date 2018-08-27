@@ -33,12 +33,12 @@ public class IntroView implements ViewController {
 	private final StateMachine<Integer, Void> fsm;
 	private final Set<ViewController> visibleViews = new HashSet<>();
 
-	private final ScrollingLogo logoAnimation;
-	private final BlinkingText startTextAnimation;
+	private final ScrollingLogo logo;
+	private final BlinkingText startText;
+	private final ChasePacManAnimation chasePacMan;
+	private final ChaseGhostsAnimation chaseGhosts;
+	private final GhostPointsAnimation ghostPoints;
 	private final Link link;
-	private final ChasePacManAnimation chasePacManAnimation;
-	private final ChaseGhostsAnimation chaseGhostsAnimation;
-	private final GhostPointsAnimation ghostPointsAnimation;
 
 	private int repeatTimer;
 
@@ -46,11 +46,11 @@ public class IntroView implements ViewController {
 		this.width = width;
 		this.height = height;
 		fsm = buildStateMachine();
-		logoAnimation = new ScrollingLogo(width, height);
-		chasePacManAnimation = new ChasePacManAnimation(width);
-		chaseGhostsAnimation = new ChaseGhostsAnimation(width);
-		ghostPointsAnimation = new GhostPointsAnimation();
-		startTextAnimation = new BlinkingText().set("Press SPACE to start!", THEME.textFont(18), background, Color.PINK);
+		logo = new ScrollingLogo(width, height);
+		chasePacMan = new ChasePacManAnimation(width);
+		chaseGhosts = new ChaseGhostsAnimation(width);
+		ghostPoints = new GhostPointsAnimation();
+		startText = new BlinkingText().set("Press SPACE to start!", THEME.textFont(18), background, Color.PINK);
 		link = new Link(LINK_TEXT, THEME.textFont(8), Color.LIGHT_GRAY);
 		link.setURL(LINK_URL);
 	}
@@ -73,50 +73,53 @@ public class IntroView implements ViewController {
 	
 			.states()
 			
-				.state(0) // Scroll image into view
+				.state(0) // Scroll logo into view
 					.onEntry(() -> {
-						show(logoAnimation);
-						logoAnimation.startAnimation();
+						show(logo);
+						logo.startAnimation();
 					})
 					
 				.state(1) // Show ghosts chasing Pac-Man and vice-versa
 					.onEntry(() -> {
-						chasePacManAnimation.tf.setY(100);
-						show(chasePacManAnimation);
-						chaseGhostsAnimation.tf.setY(200);
-						show(chaseGhostsAnimation);
-						hide(startTextAnimation);
-						chaseGhostsAnimation.startAnimation();
-						chasePacManAnimation.startAnimation();
+						hide(startText);
+
+						chasePacMan.tf.setY(100);
+						show(chasePacMan);
+						chasePacMan.startAnimation();
+						
+						chaseGhosts.tf.setY(200);
+						show(chaseGhosts);
+						chaseGhosts.startAnimation();
 					})
 					.onExit(() -> {
-						chasePacManAnimation.stopAnimation();
-						chaseGhostsAnimation.stopAnimation();
-						chasePacManAnimation.init();
-						chasePacManAnimation.hCenter(width);
+						chasePacMan.stopAnimation();
+						chasePacMan.init();
+						chasePacMan.hCenter(width);
+
+						chaseGhosts.stopAnimation();
 					})
 					
 				.state(2) // Show ghost points animation and blinking text
 					.onEntry(() -> {
-						ghostPointsAnimation.tf.setY(200);
-						ghostPointsAnimation.hCenter(width);
-						show(ghostPointsAnimation);
+						ghostPoints.tf.setY(200);
+						ghostPoints.hCenter(width);
+						show(ghostPoints);
 						
-						startTextAnimation.tf.setY(150);
-						startTextAnimation.hCenter(width);
-						startTextAnimation.enableAnimation(true);
-						show(startTextAnimation);
+						startText.tf.setY(150);
+						startText.hCenter(width);
+						startText.enableAnimation(true);
+						show(startText);
 						
 						link.tf.setY(getHeight() - 20);
 						link.hCenter(getWidth());
 						show(link);
 						
 						repeatTimer = 1000;
-						ghostPointsAnimation.start();
+						ghostPoints.start();
 					})
 					.onExit(() -> {
-						ghostPointsAnimation.stop();
-						hide(ghostPointsAnimation);
+						ghostPoints.stop();
+						hide(ghostPoints);
 					})
 					.onTick(() -> {
 						repeatTimer -= 1;
@@ -127,11 +130,11 @@ public class IntroView implements ViewController {
 			.transitions()
 
 				.when(0).then(1)
-					.condition(() -> logoAnimation.isAnimationCompleted())
-					.act(() -> logoAnimation.tf.setVelocityY(0))
+					.condition(() -> logo.isAnimationCompleted())
+					.act(() -> logo.tf.setVelocityY(0))
 				
 				.when(1).then(2)
-					.condition(() -> chasePacManAnimation.isAnimationCompleted() && chaseGhostsAnimation.isAnimationCompleted())
+					.condition(() -> chasePacMan.isAnimationCompleted() && chaseGhosts.isAnimationCompleted())
 				
 				.when(2).then(1)
 					.condition(() -> repeatTimer == 0)
