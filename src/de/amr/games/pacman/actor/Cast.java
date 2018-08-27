@@ -56,17 +56,17 @@ public class Cast {
 
 		// common ghost behavior
 		Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
-			ghost.setMoveBeahavior(FRIGHTENED, ghost.flee(pacMan));
-			ghost.setMoveBeahavior(SCATTERING, ghost.followTargetTile(() -> ghost.getScatteringTarget()));
-			ghost.setMoveBeahavior(DEAD, ghost.followTargetTile(() -> ghost.getHome()));
-			ghost.setMoveBeahavior(SAFE, ghost.bounce());
+			ghost.setMoveBehavior(FRIGHTENED, ghost.flee(pacMan));
+			ghost.setMoveBehavior(SCATTERING, ghost.followTargetTile(() -> ghost.getScatteringTarget()));
+			ghost.setMoveBehavior(DEAD, ghost.followTargetTile(() -> ghost.getHome()));
+			ghost.setMoveBehavior(SAFE, ghost.bounce());
 		});
 
 		// individual ghost behavior
-		blinky.setMoveBeahavior(AGGRO, blinky.attackDirectly(pacMan));
-		pinky.setMoveBeahavior(AGGRO, blinky.ambush(pacMan));
-		inky.setMoveBeahavior(AGGRO, inky.attackWithPartner(blinky, pacMan));
-		clyde.setMoveBeahavior(AGGRO, clyde.attackAndReject(clyde, pacMan));
+		blinky.setMoveBehavior(AGGRO, blinky.attackDirectly(pacMan));
+		pinky.setMoveBehavior(AGGRO, blinky.ambush(pacMan));
+		inky.setMoveBehavior(AGGRO, inky.attackWithPartner(blinky, pacMan));
+		clyde.setMoveBehavior(AGGRO, clyde.attackAndReject(clyde, pacMan));
 		clyde.fnCanLeaveHouse = () -> game.getLevel() > 1
 				|| game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
 

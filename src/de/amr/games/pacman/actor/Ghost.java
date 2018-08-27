@@ -98,7 +98,7 @@ public class Ghost extends MazeMover
 
 	// Movement
 
-	public void setMoveBeahavior(GhostState state, Navigation<Ghost> navigation) {
+	public void setMoveBehavior(GhostState state, Navigation<Ghost> navigation) {
 		navigationMap.put(state, navigation);
 	}
 
