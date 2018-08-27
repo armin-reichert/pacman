@@ -27,6 +27,7 @@ public class IntroView implements ViewController {
 	
 	private final int width;
 	private final int height;
+	private Color background = new Color(0, 23, 61);
 
 	private final StateMachine<Integer, Void> fsm;
 	
@@ -49,7 +50,7 @@ public class IntroView implements ViewController {
 		chasePacManAnimation = new ChasePacManAnimation(width);
 		chaseGhostsAnimation = new ChaseGhostsAnimation(width);
 		ghostPointsAnimation = new GhostPointsAnimation();
-		startTextAnimation = new StartTextAnimation("Press SPACE to start!", 16);
+		startTextAnimation = new StartTextAnimation("Press SPACE to start!", 18, background);
 		link = new Link(LINK_TEXT, PacManThemes.THEME.textFont().deriveFont(8f), Color.LIGHT_GRAY);
 		link.setURL(LINK_URL);
 	}
@@ -158,6 +159,8 @@ public class IntroView implements ViewController {
 
 	@Override
 	public void draw(Graphics2D g) {
+		g.setColor(background);
+		g.fillRect(0, 0, getWidth(), getHeight());
 		visible.forEach(e -> e.draw(g));
 	}
 

@@ -18,26 +18,36 @@ import de.amr.games.pacman.theme.PacManThemes;
  */
 public class StartTextAnimation extends GameEntity {
 
-	private final Sprite sprite;
-	private final int width;
-	private final float fontSize;
+	private Sprite sprite;
+	private String text;
+	private Font font;
+	private Color background;
+	private int width;
+	private int height;
 
-	public StartTextAnimation(String text, float fontSize) {
-		text = text.replace(" ", "   "); // font spacing not sufficient
-		this.fontSize = fontSize;
-		Font font = PacManThemes.THEME.textFont().deriveFont(fontSize);
+	public StartTextAnimation(String text, float fontSize, Color background) {
+		this.text = text.replace(" ", "   "); // font spacing not sufficient
+		this.font = PacManThemes.THEME.textFont().deriveFont(fontSize);
+		this.background = background;
+		createSprite();
+	}
+	
+	private void createSprite() {
 		// compute image bounds
 		BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = image.createGraphics();
 		g.setFont(font);
 		width = g.getFontMetrics().stringWidth(text);
+		height = font.getSize();
 		g.dispose();
 		// create correctly sized image
-		image = new BufferedImage(width, (int) fontSize, BufferedImage.TYPE_INT_RGB);
+		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		g = image.createGraphics();
+		g.setColor(background);
+		g.fillRect(0, 0, width, height);
 		g.setColor(Color.PINK);
 		g.setFont(font);
-		g.drawString(text, 0, 16);
+		g.drawString(text, 0, height);
 		g.dispose();
 		sprite = new Sprite(image, null).animate(AnimationType.BACK_AND_FORTH, 750);
 	}
@@ -49,7 +59,7 @@ public class StartTextAnimation extends GameEntity {
 
 	@Override
 	public int getHeight() {
-		return (int) fontSize;
+		return height;
 	}
 
 	@Override
@@ -68,5 +78,12 @@ public class StartTextAnimation extends GameEntity {
 	@Override
 	public Stream<Sprite> getSprites() {
 		return Stream.of(sprite);
+	}
+	
+	@Override
+	public void draw(Graphics2D g) {
+		g.setColor(background);
+		g.fillRect(0, 0, getWidth(), getHeight());
+		super.draw(g);
 	}
 }
