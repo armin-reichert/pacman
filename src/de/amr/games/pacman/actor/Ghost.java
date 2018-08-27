@@ -9,7 +9,6 @@ import static de.amr.games.pacman.actor.GhostState.SAFE;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
-import static de.amr.games.pacman.navigation.NavigationSystem.keepDirection;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -28,6 +27,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.Navigation;
+import de.amr.games.pacman.navigation.NavigationSystem;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.PacManThemes;
 import de.amr.statemachine.StateMachine;
@@ -37,11 +37,12 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends MazeMover implements StateMachineControlled<GhostState, GameEvent> {
+public class Ghost extends MazeMover
+		implements StateMachineControlled<GhostState, GameEvent>, NavigationSystem<Ghost> {
 
 	private final Game game;
 	private final StateMachine<GhostState, GameEvent> controller;
-	private final Map<GhostState, Navigation> navigationMap;
+	private final Map<GhostState, Navigation<Ghost>> navigationMap;
 	private final GhostName name;
 	private final PacMan pacMan;
 	private final Tile home;
@@ -49,8 +50,8 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 	private final int initialDir;
 	BooleanSupplier fnCanLeaveHouse;
 
-	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, Tile scatteringTarget, int initialDir,
-			GhostColor color) {
+	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, Tile scatteringTarget,
+			int initialDir, GhostColor color) {
 		this.name = name;
 		this.pacMan = pacMan;
 		this.game = game;
@@ -97,11 +98,11 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 
 	// Navigation and movement
 
-	public void setNavigation(GhostState state, Navigation navigation) {
+	public void setNavigation(GhostState state, Navigation<Ghost> navigation) {
 		navigationMap.put(state, navigation);
 	}
 
-	public Navigation getNavigation() {
+	public Navigation<Ghost> getNavigation() {
 		return navigationMap.getOrDefault(getState(), keepDirection());
 	}
 
@@ -145,8 +146,8 @@ public class Ghost extends MazeMover implements StateMachineControlled<GhostStat
 
 	@Override
 	public Stream<Sprite> getSprites() {
-		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes), Stream.of(s_frightened, s_flashing))
-				.flatMap(s -> s);
+		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes),
+				Stream.of(s_frightened, s_flashing)).flatMap(s -> s);
 	}
 
 	@Override

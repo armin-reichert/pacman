@@ -7,7 +7,7 @@ import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
-class EscapeIntoCorner extends FollowFixedPath {
+class EscapeIntoCorner<T extends MazeMover> extends FollowFixedPath<T> {
 
 	private final MazeMover chaser;
 
@@ -16,7 +16,7 @@ class EscapeIntoCorner extends FollowFixedPath {
 	}
 
 	@Override
-	public void computeStaticRoute(MazeMover refugee) {
+	public void computeStaticRoute(T refugee) {
 		target = chooseCorner(refugee.getMaze(), chaser.getTile());
 		path = refugee.getMaze().findPath(refugee.getTile(), target);
 	}

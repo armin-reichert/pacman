@@ -7,7 +7,6 @@ import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
-import static de.amr.games.pacman.navigation.NavigationSystem.keepDirection;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -32,6 +31,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.Navigation;
+import de.amr.games.pacman.navigation.NavigationSystem;
 import de.amr.games.pacman.theme.PacManThemes;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
@@ -41,11 +41,13 @@ import de.amr.statemachine.StateObject;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends MazeMover implements StateMachineControlled<PacManState, GameEvent> {
+public class PacMan extends MazeMover implements StateMachineControlled<PacManState, GameEvent>,
+	NavigationSystem<PacMan>
+{
 
 	private final Game game;
 	private final StateMachine<PacManState, GameEvent> controller;
-	private final Map<PacManState, Navigation> navigationMap;
+	private final Map<PacManState, Navigation<PacMan>> navigationMap;
 	private final EventManager<GameEvent> events;
 	private boolean eventsEnabled;
 	private int digestionTicks;
@@ -110,11 +112,11 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 
 	// Navigation and movement
 
-	public void setNavigation(PacManState state, Navigation navigation) {
+	public void setNavigation(PacManState state, Navigation<PacMan> navigation) {
 		navigationMap.put(state, navigation);
 	}
 
-	public Navigation getNavigation() {
+	public Navigation<PacMan> getNavigation() {
 		return navigationMap.getOrDefault(getState(), keepDirection());
 	}
 

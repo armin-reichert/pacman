@@ -7,7 +7,7 @@ import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.model.Tile;
 
 //TODO: does not yet work 100%
-class FollowFixedPath implements Navigation {
+class FollowFixedPath<T extends MazeMover> implements Navigation<T> {
 
 	protected Tile target;
 	protected List<Tile> path = Collections.emptyList();
@@ -21,7 +21,7 @@ class FollowFixedPath implements Navigation {
 	}
 
 	@Override
-	public MazeRoute computeRoute(MazeMover mover) {
+	public MazeRoute computeRoute(T mover) {
 		if (path.size() > 0 && !path.get(0).equals(mover.getTile())) {
 			path.remove(0);
 		}
@@ -32,7 +32,7 @@ class FollowFixedPath implements Navigation {
 	}
 
 	@Override
-	public void computeStaticRoute(MazeMover mover) {
+	public void computeStaticRoute(T mover) {
 		path = mover.getMaze().findPath(mover.getTile(), target);
 	}
 }

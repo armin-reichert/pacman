@@ -15,29 +15,29 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Factory for navigation behaviors.
+ * Mixin for navigation behaviors. This is an alternative to a fat MazeMover base class.
  * 
  * @author Armin Reichert
  */
-public interface NavigationSystem {
+public interface NavigationSystem<T extends MazeMover> {
 
-	public static Navigation ambush(MazeMover victim) {
+	public default Navigation<T> ambush(MazeMover victim) {
 		return followTargetTile(() -> victim.ahead(4));
 	}
 
-	public static Navigation attackDirectly(MazeMover victim) {
+	public default Navigation<T> attackDirectly(MazeMover victim) {
 		return followTargetTile(victim::getTile);
 	}
 
-	public static Navigation bounce() {
+	public default Navigation<T> bounce() {
 		return bouncer -> new MazeRoute(bouncer.isStuck() ? NESW.inv(bouncer.getCurrentDir()) : bouncer.getCurrentDir());
 	}
 
-	public static Navigation flee(MazeMover refugee, MazeMover chaser) {
-		return new EscapeIntoCorner(chaser);
+	public default Navigation<T> flee(MazeMover refugee, MazeMover chaser) {
+		return new EscapeIntoCorner<T>(chaser);
 	}
 
-	public static Navigation followKeyboard(int keyUp, int keyRight, int keyDown, int keyLeft) {
+	public default Navigation<T> followKeyboard(int keyUp, int keyRight, int keyDown, int keyLeft) {
 		return mover -> {
 			MazeRoute result = new MazeRoute();
 			if (Keyboard.keyDown(keyUp)) {
@@ -55,7 +55,7 @@ public interface NavigationSystem {
 		};
 	}
 
-	public static Navigation followPath(Tile target) {
+	public default Navigation<T> followPath(Tile target) {
 		return mover -> {
 			MazeRoute route = new MazeRoute();
 			route.setPath(mover.getMaze().findPath(mover.getTile(), target));
@@ -64,15 +64,15 @@ public interface NavigationSystem {
 		};
 	}
 
-	public static Navigation followFixedPath(Tile target) {
-		return new FollowFixedPath(target);
+	public default Navigation<T> followFixedPath(Tile target) {
+		return new FollowFixedPath<T>(target);
 	}
 
-	public static Navigation followTargetTile(Supplier<Tile> targetTileSupplier) {
-		return new FollowTargetTile(targetTileSupplier);
+	public default Navigation<T> followTargetTile(Supplier<Tile> targetTileSupplier) {
+		return new FollowTargetTile<T>(targetTileSupplier);
 	}
 
-	public static Navigation keepDirection() {
+	public default Navigation<T> keepDirection() {
 		return mover -> new MazeRoute(mover.getCurrentDir());
 	}
 
@@ -95,7 +95,7 @@ public interface NavigationSystem {
 	 * The tile that this new, extended vector ends on will be Inky’s actual target.</cite>
 	 * </p>
 	 */
-	public static Navigation chaseLikeInky(Ghost blinky, PacMan pacMan) {
+	public default Navigation<T> chaseLikeInky(Ghost blinky, PacMan pacMan) {
 		return followTargetTile(() -> {
 			Tile b = blinky.getTile();
 			Tile p = pacMan.ahead(2);
@@ -134,7 +134,7 @@ public interface NavigationSystem {
 	 * maintain in Scatter mode. </cite>
 	 * </p>
 	 */
-	public static Navigation chaseLikeClyde(Ghost clyde, PacMan pacMan) {
+	public default Navigation<T> chaseLikeClyde(Ghost clyde, PacMan pacMan) {
 		return followTargetTile(() -> dist(clyde.getCenter(), pacMan.getCenter()) >= 8 * Game.TS ? pacMan.getTile()
 				: clyde.getScatteringTarget());
 	}

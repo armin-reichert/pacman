@@ -34,7 +34,7 @@ import de.amr.games.pacman.model.Tile;
  * enters a tile with only two exits, it will always continue in the same direction. </cite>
  * </p>
  */
-public class FollowTargetTile implements Navigation {
+public class FollowTargetTile<T extends MazeMover> implements Navigation<T> {
 
 	private final Supplier<Tile> targetTileSupplier;
 
@@ -43,7 +43,7 @@ public class FollowTargetTile implements Navigation {
 	}
 
 	@Override
-	public MazeRoute computeRoute(MazeMover mover) {
+	public MazeRoute computeRoute(T mover) {
 		MazeRoute route = new MazeRoute();
 
 		Maze maze = mover.getMaze();

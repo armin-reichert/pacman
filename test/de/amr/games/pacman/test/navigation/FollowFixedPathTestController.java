@@ -12,7 +12,6 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.navigation.NavigationSystem;
 import de.amr.games.pacman.view.play.PlayViewX;
 
 public class FollowFixedPathTestController implements Controller {
@@ -48,7 +47,7 @@ public class FollowFixedPathTestController implements Controller {
 		actors.getBlinky().setState(GhostState.AGGRO);
 		currentIndex = 0;
 		actors.getBlinky().setNavigation(GhostState.AGGRO,
-				NavigationSystem.followFixedPath(targets.get(0)));
+				actors.getBlinky().followFixedPath(targets.get(0)));
 		actors.getBlinky().getNavigation().computeStaticRoute(actors.getBlinky());
 	}
 
@@ -59,7 +58,7 @@ public class FollowFixedPathTestController implements Controller {
 			game.setLevel(game.getLevel() + 1);
 		}
 		actors.getBlinky().setNavigation(GhostState.AGGRO,
-				NavigationSystem.followFixedPath(targets.get(currentIndex)));
+				actors.getBlinky().followFixedPath(targets.get(currentIndex)));
 		actors.getBlinky().getNavigation().computeStaticRoute(actors.getBlinky());
 	}
 
