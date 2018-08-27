@@ -21,13 +21,13 @@ public class ScrollingLogo extends ScrollingImage {
 	}
 	
 	@Override
-	public void start() {
+	public void startAnimation() {
 		init();
 		tf.setVelocityY(-2f);
 	}
 	
 	@Override
-	public boolean isCompleted() {
+	public boolean isAnimationCompleted() {
 		return tf.getY() <= 20;
 	}
 }

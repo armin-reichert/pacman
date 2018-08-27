@@ -48,19 +48,20 @@ public class ChasePacManAnimation extends GameEntity implements ViewAnimation {
 	}
 
 	@Override
-	public void start() {
+	public void startAnimation() {
 		init();
 		tf.setVelocityX(-1.2f);
 		PacManThemes.THEME.soundSiren().loop();
 	}
 
-	public void stop() {
+	@Override
+	public void stopAnimation() {
 		tf.setVelocityX(0);
 		PacManThemes.THEME.soundSiren().stop();
 	}
 
 	@Override
-	public boolean isCompleted() {
+	public boolean isAnimationCompleted() {
 		return tf.getX() < -getWidth();
 	}
 
@@ -75,7 +76,7 @@ public class ChasePacManAnimation extends GameEntity implements ViewAnimation {
 		g.translate(tf.getX(), tf.getY());
 		g.setColor(Color.PINK);
 		if (pill) {
-			g.fillRect(7, 7, 2, 2);
+			g.fillRect(6, 6, 2, 2);
 		} else {
 			g.setFont(new Font("Arial", Font.BOLD, 8));
 			g.drawString("10", 0, 10);

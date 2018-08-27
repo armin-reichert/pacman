@@ -76,7 +76,7 @@ public class IntroView implements ViewController {
 				.state(0) // Scroll image into view
 					.onEntry(() -> {
 						show(logoAnimation);
-						logoAnimation.start();
+						logoAnimation.startAnimation();
 					})
 					
 				.state(1) // Show ghosts chasing Pac-Man and vice-versa
@@ -86,12 +86,12 @@ public class IntroView implements ViewController {
 						chaseGhostsAnimation.tf.setY(200);
 						show(chaseGhostsAnimation);
 						hide(startTextAnimation);
-						chaseGhostsAnimation.start();
-						chasePacManAnimation.start();
+						chaseGhostsAnimation.startAnimation();
+						chasePacManAnimation.startAnimation();
 					})
 					.onExit(() -> {
-						chasePacManAnimation.stop();
-						chaseGhostsAnimation.stop();
+						chasePacManAnimation.stopAnimation();
+						chaseGhostsAnimation.stopAnimation();
 						chasePacManAnimation.init();
 						chasePacManAnimation.hCenter(width);
 					})
@@ -127,11 +127,11 @@ public class IntroView implements ViewController {
 			.transitions()
 
 				.when(0).then(1)
-					.condition(() -> logoAnimation.isCompleted())
+					.condition(() -> logoAnimation.isAnimationCompleted())
 					.act(() -> logoAnimation.tf.setVelocityY(0))
 				
 				.when(1).then(2)
-					.condition(() -> chasePacManAnimation.isCompleted() && chaseGhostsAnimation.isCompleted())
+					.condition(() -> chasePacManAnimation.isAnimationCompleted() && chaseGhostsAnimation.isAnimationCompleted())
 				
 				.when(2).then(1)
 					.condition(() -> repeatTimer == 0)

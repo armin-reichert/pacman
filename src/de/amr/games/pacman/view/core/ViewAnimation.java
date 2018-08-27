@@ -3,12 +3,23 @@ package de.amr.games.pacman.view.core;
 
 public interface ViewAnimation {
 	
-	void init();
+	default void initAnimation() {
+		
+	}
 	
-	void start();
+	default void startAnimation() {
+		
+	}
 	
-	void update();
+	default void stopAnimation() {
+		
+	}
 	
-	boolean isCompleted();
-
+	default void updateAnimation() {
+		
+	}
+	
+	default boolean isAnimationCompleted() {
+		return false;
+	}
 }

@@ -112,7 +112,7 @@ public class BlinkingText extends GameEntity implements ViewAnimation {
 	}
 	
 	@Override
-	public boolean isCompleted() {
+	public boolean isAnimationCompleted() {
 		return false;
 	}
 
@@ -131,17 +131,5 @@ public class BlinkingText extends GameEntity implements ViewAnimation {
 		g.setColor(background);
 		g.fillRect(0, 0, getWidth(), getHeight());
 		super.draw(g);
-	}
-
-	@Override
-	public void init() {
-	}
-
-	@Override
-	public void start() {
-	}
-
-	@Override
-	public void update() {
 	}
 }
