@@ -314,19 +314,19 @@ pacMan.setMoveBehavior(PacManState.GREEDY, followKeyboard);
 Configuration of ghost behavior:
 
 ```java
-// common ghost behavior
-Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
-	ghost.setMoveBehavior(FRIGHTENED, ghost.flee(pacMan));
-	ghost.setMoveBehavior(SCATTERING, ghost.followTargetTile(() -> ghost.getScatteringTarget()));
-	ghost.setMoveBehavior(DEAD, ghost.followTargetTile(() -> ghost.getHome()));
-	ghost.setMoveBehavior(SAFE, ghost.bounce());
-});
+	// common ghost behavior
+	Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
+		ghost.setMoveBehavior(FRIGHTENED, ghost.flee(pacMan));
+		ghost.setMoveBehavior(SCATTERING, ghost.followTargetTile(() -> ghost.getScatteringTarget()));
+		ghost.setMoveBehavior(DEAD, ghost.followTargetTile(() -> ghost.getHome()));
+		ghost.setMoveBehavior(SAFE, ghost.bounce());
+	});
 
-// individual ghost behavior
-blinky.setMoveBehavior(AGGRO, blinky.attackDirectly(pacMan));
-pinky.setMoveBehavior(AGGRO, blinky.ambush(pacMan));
-inky.setMoveBehavior(AGGRO, inky.attackWithPartner(blinky, pacMan));
-clyde.setMoveBehavior(AGGRO, clyde.attackAndReject(clyde, pacMan));
+	// individual ghost behavior
+	blinky.setMoveBehavior(AGGRO, blinky.attackDirectly(pacMan));
+	pinky.setMoveBehavior(AGGRO, pinky.ambush(pacMan, 4));
+	inky.setMoveBehavior(AGGRO, inky.attackWithPartner(blinky, pacMan));
+	clyde.setMoveBehavior(AGGRO, clyde.attackAndReject(clyde, pacMan, 8 * Game.TS));
 ```
 
 With the general *followTargetTile* behavior available, the individual behaviors *scatter*, *ambush*, *attackDirectly* etc. are trivial to implement:
@@ -336,9 +336,10 @@ With the general *followTargetTile* behavior available, the individual behaviors
 Blinky's chase behavior is to directly attack Pac-Man:
 
 ```java
-public static Navigation attackDirectly(MazeMover victim) {
+public default Navigation<T> attackDirectly(MazeMover victim) {
 	return followTargetTile(victim::getTile);
 }
+
 ```
 
 <img src="doc/blinky.png"/>
@@ -348,8 +349,8 @@ public static Navigation attackDirectly(MazeMover victim) {
 Pinky, the *ambusher*, targets the position 4 tiles ahead of Pac-Man (in the original game there is an overflow error that leads to a different behavior):
 
 ```java
-public static Navigation ambush(MazeMover victim) {
-	return followTargetTile(() -> victim.ahead(4));
+public default Navigation<T> ambush(MazeMover victim, int n) {
+	return followTargetTile(() -> victim.ahead(n));
 }
 ```
 
@@ -362,11 +363,12 @@ Inky's target tile is computed as follows:
 Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man, so `V = (P - B)`. Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-public static Navigation chaseLikeInky(Ghost blinky, PacMan pacMan) {
+public default Navigation<T> attackWithPartner(Ghost partner, PacMan pacMan) {
 	return followTargetTile(() -> {
-		Tile b = blinky.getTile();
-		Tile p = pacMan.ahead(2);
-		Tile target = new Tile(2 * p.col - b.col, 2 * p.row - b.row);
+		Tile partnerTile = partner.getTile();
+		Tile pacManTile = pacMan.ahead(2);
+		Tile target = new Tile(2 * pacManTile.col - partnerTile.col,
+				2 * pacManTile.row - partnerTile.row);
 		// TODO: correctly project target tile to border
 		Maze maze = pacMan.getMaze();
 		int row = Math.min(Math.max(0, target.row), maze.numRows() - 1);
@@ -383,10 +385,11 @@ public static Navigation chaseLikeInky(Ghost blinky, PacMan pacMan) {
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he goes into scattering mode:
 
 ```java
-public static Navigation chaseLikeClyde(Ghost clyde, PacMan pacMan) {
-	return followTargetTile(() -> dist(clyde.getCenter(), pacMan.getCenter()) >= 8 * Game.TS 
-		? pacMan.getTile()
-		: clyde.getScatteringTarget());
+public default Navigation<T> attackAndReject(Ghost attacker, PacMan pacMan, int distance) {
+	return followTargetTile(
+			() -> dist(attacker.getCenter(), pacMan.getCenter()) >= distance ? pacMan.getTile()
+					: attacker.getScatteringTarget());
+}
 ```
 
 <img src="doc/clyde.png"/>
