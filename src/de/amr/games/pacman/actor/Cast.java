@@ -49,10 +49,10 @@ public class Cast {
 		clyde = new Ghost(Clyde, pacMan, game, maze.getClydeHome(), maze.getClydeScatteringTarget(),
 				Top4.N, GhostColor.ORANGE);
 
-		// configure actor behavior
-		Navigation<PacMan> keySteering = pacMan.followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
-		pacMan.setMoveBehavior(PacManState.HUNGRY, keySteering);
-		pacMan.setMoveBehavior(PacManState.GREEDY, keySteering);
+		// Pac-Man behavior
+		Navigation<PacMan> followKeyboard = pacMan.followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
+		pacMan.setMoveBehavior(PacManState.HUNGRY, followKeyboard);
+		pacMan.setMoveBehavior(PacManState.GREEDY, followKeyboard);
 
 		// common ghost behavior
 		Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
