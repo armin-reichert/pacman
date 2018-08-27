@@ -304,10 +304,10 @@ The navigation behavior of the actors is implemented modularly (*strategy patter
 Pac-Man is controlled by the keyboard:
 
 ```java
-PacMan pacMan = new PacMan(game);
-Navigation keySteering = followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
-pacMan.setNavigation(PacManState.HUNGRY, keySteering);
-pacMan.setNavigation(PacManState.GREEDY, keySteering);
+// Pac-Man behavior
+Navigation<PacMan> followKeyboard = pacMan.followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
+pacMan.setMoveBehavior(PacManState.HUNGRY, followKeyboard);
+pacMan.setMoveBehavior(PacManState.GREEDY, followKeyboard);
 ```
 
 ### Ghosts
@@ -316,18 +316,17 @@ Configuration of ghost behavior:
 ```java
 // common ghost behavior
 Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
-	ghost.setNavigation(FRIGHTENED, flee(pacMan));
-	ghost.setNavigation(SCATTERING, followTargetTile(() -> ghost.getScatteringTarget()));
-	ghost.setNavigation(DEAD, followPath(ghost.getHome()));
-	ghost.setNavigation(SAFE, bounce());
+	ghost.setMoveBehavior(FRIGHTENED, ghost.flee(pacMan));
+	ghost.setMoveBehavior(SCATTERING, ghost.followTargetTile(() -> ghost.getScatteringTarget()));
+	ghost.setMoveBehavior(DEAD, ghost.followTargetTile(() -> ghost.getHome()));
+	ghost.setMoveBehavior(SAFE, ghost.bounce());
 });
 
 // individual ghost behavior
-blinky.setNavigation(AGGRO, attackDirectly(pacMan));
-pinky.setNavigation(AGGRO, ambush(pacMan));
-inky.setNavigation(AGGRO, chaseLikeInky(blinky, pacMan));
-clyde.setNavigation(AGGRO, chaseLikeClyde(clyde, pacMan));
-clyde.fnCanLeaveHouse = () -> game.getLevel() > 1 || game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
+blinky.setMoveBehavior(AGGRO, blinky.attackDirectly(pacMan));
+pinky.setMoveBehavior(AGGRO, blinky.ambush(pacMan));
+inky.setMoveBehavior(AGGRO, inky.attackWithPartner(blinky, pacMan));
+clyde.setMoveBehavior(AGGRO, clyde.attackAndReject(clyde, pacMan));
 ```
 
 With the general *followTargetTile* behavior available, the individual behaviors *scatter*, *ambush*, *attackDirectly* etc. are trivial to implement:
