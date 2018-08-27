@@ -1,16 +1,17 @@
 package de.amr.games.pacman.view.intro;
 
+import static de.amr.easy.game.Application.PULSE;
+import static de.amr.games.pacman.theme.PacManThemes.THEME;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.BitSet;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.theme.PacManThemes;
 
 /**
  * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the
@@ -23,23 +24,28 @@ public class GhostPointsAnimation extends GameEntity {
 	private final Sprite pacMan;
 	private final Sprite ghost;
 	private final Sprite[] points = new Sprite[4];
-	private final BitSet killed = new BitSet(4);
+	private final BitSet killed = new BitSet(5);
 	private int killNext = 0;
 	private int ghostTimer;
 	private int energizerTimer;
 	private boolean energizer;
 
 	public GhostPointsAnimation() {
-		pacMan = PacManThemes.THEME.pacManWalking(Top4.E);
-		ghost = PacManThemes.THEME.ghostFrightened();
+		pacMan = THEME.pacManWalking(Top4.E);
+		ghost = THEME.ghostFrightened();
 		for (int i = 0; i < 4; ++i) {
-			points[i] = PacManThemes.THEME.greenNumber(i);
+			points[i] = THEME.greenNumber(i);
 		}
 		ghostTimer = -1;
 	}
 
 	private void resetGhostTimer() {
-		ghostTimer = Application.PULSE.secToTicks(2);
+		ghostTimer = PULSE.secToTicks(1);
+	}
+
+	private void resetEnergizerTimer() {
+		energizerTimer = PULSE.secToTicks(0.5f);
+		;
 	}
 
 	@Override
@@ -52,7 +58,7 @@ public class GhostPointsAnimation extends GameEntity {
 	public void start() {
 		init();
 		resetGhostTimer();
-		energizerTimer = Application.PULSE.secToTicks(0.5f);
+		resetEnergizerTimer();
 	}
 
 	public void stop() {
@@ -64,21 +70,22 @@ public class GhostPointsAnimation extends GameEntity {
 		if (ghostTimer > 0) {
 			ghostTimer -= 1;
 		}
+		if (ghostTimer == 0) {
+			killed.set(killNext);
+			killNext = killNext + 1;
+			if (killed.cardinality() == 5) {
+				stop();
+			} else {
+				THEME.soundEatGhost().play();
+				resetGhostTimer();
+			}
+		}
 		if (energizerTimer > 0) {
 			energizerTimer -= 1;
 		}
 		if (energizerTimer == 0) {
 			energizer = !energizer;
-			energizerTimer = Application.PULSE.secToTicks(0.5f);
-		}
-		if (ghostTimer == 0) {
-			killed.set(killNext);
-			killNext = (killNext + 1) % 4;
-			PacManThemes.THEME.soundEatGhost().play();
-			resetGhostTimer();
-			if (killed.cardinality() == 4) {
-				init();
-			}
+			resetEnergizerTimer();
 		}
 	}
 

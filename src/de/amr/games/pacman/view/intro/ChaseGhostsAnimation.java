@@ -1,12 +1,14 @@
 package de.amr.games.pacman.view.intro;
 
+import static de.amr.games.pacman.theme.PacManThemes.THEME;
+
 import java.awt.Graphics2D;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.entity.GameEntity;
+import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.theme.PacManThemes;
 import de.amr.games.pacman.view.core.ViewAnimation;
 
 /**
@@ -16,22 +18,29 @@ import de.amr.games.pacman.view.core.ViewAnimation;
  */
 public class ChaseGhostsAnimation extends GameEntity implements ViewAnimation {
 
-	private final int panelWidth;
 	private final Sprite pacMan;
 	private final Sprite ghost;
 	private final Sprite[] points = new Sprite[4];
+	private Vector2f startPosition;
+	private Vector2f endPosition;
 	private final boolean[] killed = new boolean[4];
-
 	private float pacManX;
 	private int ghostsKilled;
 
-	public ChaseGhostsAnimation(int panelWidth) {
-		this.panelWidth = panelWidth;
-		pacMan = PacManThemes.THEME.pacManWalking(Top4.E);
-		ghost = PacManThemes.THEME.ghostFrightened();
+	public ChaseGhostsAnimation() {
+		pacMan = THEME.pacManWalking(Top4.E);
+		ghost = THEME.ghostFrightened();
 		for (int i = 0; i < 4; ++i) {
-			points[i] = PacManThemes.THEME.greenNumber(i);
+			points[i] = THEME.greenNumber(i);
 		}
+	}
+
+	public void setStartPosition(float x, float y) {
+		this.startPosition = Vector2f.of(x, y);
+	}
+
+	public void setEndPosition(float x, float y) {
+		this.endPosition = Vector2f.of(x, y);
 	}
 
 	@Override
@@ -39,32 +48,32 @@ public class ChaseGhostsAnimation extends GameEntity implements ViewAnimation {
 		for (int i = 0; i < 4; i++) {
 			killed[i] = false;
 		}
-		tf.setX(-getWidth());
 		pacManX = 0;
 		ghostsKilled = 0;
+		tf.moveTo(startPosition);
 	}
 
 	@Override
 	public void startAnimation() {
 		init();
 		tf.setVelocityX(.8f);
-		PacManThemes.THEME.soundWaza().loop();
+		THEME.soundWaza().loop();
 	}
 
 	@Override
 	public void stopAnimation() {
 		tf.setVelocityX(0);
-		PacManThemes.THEME.soundWaza().stop();
+		THEME.soundWaza().stop();
 	}
 
 	@Override
 	public void update() {
 		if (tf.getVelocityX() > 0) {
 			tf.move();
-			if (tf.getX() < 0) {
+			if (tf.getX() + getWidth() < 0) {
 				return;
 			}
-			pacManX += 0.5f;
+			pacManX += 0.3f;
 			if (ghostsKilled < 4) {
 				int x = (int) pacManX + 4;
 				if (x % 16 == 0) {
@@ -78,7 +87,7 @@ public class ChaseGhostsAnimation extends GameEntity implements ViewAnimation {
 
 	@Override
 	public boolean isAnimationCompleted() {
-		return tf.getX() > panelWidth;
+		return tf.getX() > endPosition.x;
 	}
 
 	@Override

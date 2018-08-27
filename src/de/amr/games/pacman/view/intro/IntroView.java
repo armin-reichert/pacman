@@ -1,5 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
+import static de.amr.easy.game.Application.PULSE;
 import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.awt.Color;
@@ -8,7 +9,6 @@ import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.view.core.BlinkingText;
@@ -41,19 +41,27 @@ public class IntroView implements ViewController {
 	private final GhostPointsAnimation ghostPoints;
 	private final Link link;
 
-	private int repeatTimer;
-
 	public IntroView(int width, int height) {
 		this.width = width;
 		this.height = height;
 		fsm = buildStateMachine();
 		logo = new ScrollingLogo(width, height);
-		chasePacMan = new ChasePacManAnimation(width);
-		chaseGhosts = new ChaseGhostsAnimation(width);
+		chasePacMan = new ChasePacManAnimation();
+		chasePacMan.setStartPosition(width, 100);
+		chasePacMan.setEndPosition(-chasePacMan.getWidth(), 100);
+		chaseGhosts = new ChaseGhostsAnimation();
+		chaseGhosts.setStartPosition(-chaseGhosts.getWidth(), 200);
+		chaseGhosts.setEndPosition(width, 200);
 		ghostPoints = new GhostPointsAnimation();
+		ghostPoints.tf.setY(200);
+		ghostPoints.hCenter(width);
 		startText = new BlinkingText().set("Press SPACE to start!", THEME.textFont(18), background, Color.PINK);
+		startText.tf.setY(150);
+		startText.hCenter(width);
 		link = new Link(LINK_TEXT, THEME.textFont(8), Color.LIGHT_GRAY);
 		link.setURL(LINK_URL);
+		link.tf.setY(height - 20);
+		link.hCenter(width);
 	}
 
 	private void show(ViewController view) {
@@ -79,16 +87,13 @@ public class IntroView implements ViewController {
 						show(logo);
 						logo.startAnimation();
 					})
+					.onExit(() -> logo.stopAnimation())
 					
 				.state(1) // Show ghosts chasing Pac-Man and vice-versa
 					.onEntry(() -> {
 						hide(startText);
-
-						chasePacMan.tf.setY(100);
 						show(chasePacMan);
 						chasePacMan.startAnimation();
-						
-						chaseGhosts.tf.setY(200);
 						show(chaseGhosts);
 						chaseGhosts.startAnimation();
 					})
@@ -96,52 +101,33 @@ public class IntroView implements ViewController {
 						chasePacMan.stopAnimation();
 						chasePacMan.init();
 						chasePacMan.hCenter(width);
-
 						chaseGhosts.stopAnimation();
 					})
 					
 				.state(2) // Show ghost points animation and blinking text
+					.timeoutAfter(() -> PULSE.secToTicks(6))
 					.onEntry(() -> {
-						ghostPoints.tf.setY(200);
-						ghostPoints.hCenter(width);
 						show(ghostPoints);
-						
-						startText.tf.setY(150);
-						startText.hCenter(width);
-						startText.enableAnimation(true);
 						show(startText);
-						
-						link.tf.setY(getHeight() - 20);
-						link.hCenter(getWidth());
 						show(link);
-						
-						repeatTimer = Application.PULSE.secToTicks(10);
 						ghostPoints.start();
 					})
 					.onExit(() -> {
 						ghostPoints.stop();
 						hide(ghostPoints);
 					})
-					.onTick(() -> {
-						repeatTimer -= 1;
-					})
 					
 				.state(COMPLETE)
 					
 			.transitions()
 
-				.when(0).then(1)
-					.condition(() -> logo.isAnimationCompleted())
-					.act(() -> logo.stopAnimation())
+				.when(0).then(1).condition(() -> logo.isAnimationCompleted())
 				
-				.when(1).then(2)
-					.condition(() -> chasePacMan.isAnimationCompleted() && chaseGhosts.isAnimationCompleted())
+				.when(1).then(2).condition(() -> chasePacMan.isAnimationCompleted() && chaseGhosts.isAnimationCompleted())
 				
-				.when(2).then(1)
-					.condition(() -> repeatTimer == 0)
+				.when(2).then(1).onTimeout()
 				
-				.when(2).then(COMPLETE)
-					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+				.when(2).then(COMPLETE).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 				
 		.endStateMachine();
 	  /*@formatter:on*/
