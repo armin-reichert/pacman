@@ -33,7 +33,7 @@ public interface NavigationSystem<T extends MazeMover> {
 		return bouncer -> new MazeRoute(bouncer.isStuck() ? NESW.inv(bouncer.getCurrentDir()) : bouncer.getCurrentDir());
 	}
 
-	public default Navigation<T> flee(MazeMover refugee, MazeMover chaser) {
+	public default Navigation<T> flee(MazeMover chaser) {
 		return new EscapeIntoCorner<T>(chaser);
 	}
 

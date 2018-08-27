@@ -53,7 +53,7 @@ public class Cast {
 
 		// common ghost behavior
 		Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
-			ghost.setNavigation(FRIGHTENED, ghost.flee(ghost, pacMan));
+			ghost.setNavigation(FRIGHTENED, ghost.flee(pacMan));
 			ghost.setNavigation(SCATTERING, ghost.followTargetTile(() -> ghost.getScatteringTarget()));
 			ghost.setNavigation(DEAD, ghost.followTargetTile(() -> ghost.getHome()));
 			ghost.setNavigation(SAFE, ghost.bounce());
