@@ -4,7 +4,7 @@ import static de.amr.games.pacman.actor.GhostName.Blinky;
 import static de.amr.games.pacman.actor.GhostName.Clyde;
 import static de.amr.games.pacman.actor.GhostName.Inky;
 import static de.amr.games.pacman.actor.GhostName.Pinky;
-import static de.amr.games.pacman.actor.GhostState.AGGRO;
+import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.SAFE;
@@ -63,10 +63,10 @@ public class Cast {
 		});
 
 		// individual ghost behavior
-		blinky.setMoveBehavior(AGGRO, blinky.attackDirectly(pacMan));
-		pinky.setMoveBehavior(AGGRO, pinky.ambush(pacMan, 4));
-		inky.setMoveBehavior(AGGRO, inky.attackWithPartner(blinky, pacMan));
-		clyde.setMoveBehavior(AGGRO, clyde.attackAndReject(clyde, pacMan, 8 * Game.TS));
+		blinky.setMoveBehavior(CHASING, blinky.attackDirectly(pacMan));
+		pinky.setMoveBehavior(CHASING, pinky.ambush(pacMan, 4));
+		inky.setMoveBehavior(CHASING, inky.attackWithPartner(blinky, pacMan));
+		clyde.setMoveBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * Game.TS));
 		clyde.fnCanLeaveHouse = () -> game.getLevel() > 1
 				|| game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
 

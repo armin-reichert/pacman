@@ -320,13 +320,13 @@ pacMan.setMoveBehavior(PacManState.GREEDY, followKeyboard);
 The ghosts behave identically in some of their states:
 
 ```java
-	// common ghost behavior
-	Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
-		ghost.setMoveBehavior(FRIGHTENED, ghost.flee(pacMan));
-		ghost.setMoveBehavior(SCATTERING, ghost.followTargetTile(() -> ghost.getScatteringTarget()));
-		ghost.setMoveBehavior(DEAD, ghost.followTargetTile(() -> ghost.getHome()));
-		ghost.setMoveBehavior(SAFE, ghost.bounce());
-	});
+// common ghost behavior
+Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
+	ghost.setMoveBehavior(FRIGHTENED, ghost.flee(pacMan));
+	ghost.setMoveBehavior(SCATTERING, ghost.followTargetTile(() -> ghost.getScatteringTarget()));
+	ghost.setMoveBehavior(DEAD, ghost.followTargetTile(() -> ghost.getHome()));
+	ghost.setMoveBehavior(SAFE, ghost.bounce());
+});
 ```
 
 The *chase* behavior is different for each ghost as explained below. Using the common *followTargetTile* behavior, 

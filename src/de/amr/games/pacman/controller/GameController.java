@@ -268,7 +268,7 @@ public class GameController implements Controller {
 			}
 			if (pacManState == PacManState.GREEDY) {
 				GhostState ghostState = e.ghost.getState();
-				if (ghostState == GhostState.FRIGHTENED || ghostState == GhostState.AGGRO
+				if (ghostState == GhostState.FRIGHTENED || ghostState == GhostState.CHASING
 						|| ghostState == GhostState.SCATTERING) {
 					gameControl.enqueue(new GhostKilledEvent(e.ghost));
 				}

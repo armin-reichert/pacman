@@ -157,7 +157,7 @@ public class Game {
 		boolean tunnel = maze.inTeleportSpace(tile) || maze.inTunnel(tile);
 		float tunnelSpeed = speed(LevelTable.floatValue(level, TableColumn.fGhostTunnelSpeed));
 		switch (state) {
-		case AGGRO:
+		case CHASING:
 			return tunnel ? tunnelSpeed : speed(LevelTable.floatValue(level, TableColumn.fGhostSpeed));
 		case DYING:
 			return 0;

@@ -233,7 +233,7 @@ public class PlayViewX extends PlayView {
 			g.translate(-route.getTargetTile().col * TS, -route.getTargetTile().row * TS);
 		}
 
-		if (ghost.getName() == GhostName.Clyde && ghost.getState() == GhostState.AGGRO) {
+		if (ghost.getName() == GhostName.Clyde && ghost.getState() == GhostState.CHASING) {
 			Vector2f center = ghost.getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.drawOval((int) center.x - 8 * TS, (int) center.y - 8 * TS, 16 * TS, 16 * TS);

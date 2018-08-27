@@ -1,6 +1,6 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.games.pacman.actor.GhostState.AGGRO;
+import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.DYING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
@@ -188,7 +188,7 @@ public class Ghost extends MazeMover
 							}
 						})
 					
-					.state(AGGRO)
+					.state(CHASING)
 						.onTick(() -> {	move();	sprite = s_color[getCurrentDir()]; })
 					
 					.state(FRIGHTENED)
@@ -222,7 +222,7 @@ public class Ghost extends MazeMover
 
 					.when(HOME).then(SAFE)
 
-					.when(SAFE).then(AGGRO)
+					.when(SAFE).then(CHASING)
 						.condition(() -> fnCanLeaveHouse.getAsBoolean() && pacMan.getState() != PacManState.GREEDY)
 						
 					.when(SAFE).then(FRIGHTENED)
@@ -233,12 +233,12 @@ public class Ghost extends MazeMover
 					.stay(SAFE).on(PacManLostPowerEvent.class)
 					.stay(SAFE).on(GhostKilledEvent.class)
 						
-					.when(AGGRO).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
-					.when(AGGRO).then(DEAD).on(GhostKilledEvent.class) // cheating-mode
+					.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
+					.when(CHASING).then(DEAD).on(GhostKilledEvent.class) // cheating-mode
 						
 					.stay(FRIGHTENED).on(PacManGainsPowerEvent.class)
 					.stay(FRIGHTENED).on(PacManGettingWeakerEvent.class).act(e -> sprite = s_flashing)
-					.when(FRIGHTENED).then(AGGRO).on(PacManLostPowerEvent.class)
+					.when(FRIGHTENED).then(CHASING).on(PacManLostPowerEvent.class)
 					.when(FRIGHTENED).then(DYING).on(GhostKilledEvent.class)
 						
 					.when(DYING).then(DEAD).onTimeout()
