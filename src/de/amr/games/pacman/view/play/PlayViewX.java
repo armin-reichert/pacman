@@ -138,11 +138,11 @@ public class PlayViewX extends PlayView {
 	private void drawEntityStates(Graphics2D g) {
 		PacMan pacMan = actors.getPacMan();
 		if (pacMan.getState() != null) {
-			drawText(g, Color.YELLOW, pacMan.tf().getX(), pacMan.tf().getY(), pacManState(pacMan));
+			drawText(g, Color.YELLOW, pacMan.getTransform().getX(), pacMan.getTransform().getY(), pacManState(pacMan));
 		}
 		actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> {
 			if (ghost.getState() != null) {
-				drawText(g, ghostColor(ghost), ghost.tf().getX() - TS, ghost.tf().getY(), ghostState(ghost));
+				drawText(g, ghostColor(ghost), ghost.getTransform().getX() - TS, ghost.getTransform().getY(), ghostState(ghost));
 			}
 		});
 	}
@@ -191,7 +191,7 @@ public class PlayViewX extends PlayView {
 
 	private void drawActorAlignment(Actor actor, Graphics2D g) {
 		g.setColor(Color.GREEN);
-		g.translate(actor.tf().getX(), actor.tf().getY());
+		g.translate(actor.getTransform().getX(), actor.getTransform().getY());
 		int w = actor.getWidth(), h = actor.getHeight();
 		if (actor.getAlignmentY() == 0) {
 			g.drawLine(0, 0, w, 0);
@@ -201,7 +201,7 @@ public class PlayViewX extends PlayView {
 			g.drawLine(0, 0, 0, h);
 			g.drawLine(w, 0, w, h);
 		}
-		g.translate(-actor.tf().getX(), -actor.tf().getY());
+		g.translate(-actor.getTransform().getX(), -actor.getTransform().getY());
 	}
 
 	private void drawRoute(Graphics2D g, Ghost ghost) {
@@ -223,7 +223,7 @@ public class PlayViewX extends PlayView {
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-targetTile.col * TS, -targetTile.row * TS);
 		} else if (route.getTargetTile() != null) {
-			g.drawLine((int) ghost.getCenter().x, (int) ghost.getCenter().y, route.getTargetTile().col * TS + TS / 2,
+			g.drawLine((int) ghost.getTransform().getCenter().x, (int) ghost.getTransform().getCenter().y, route.getTargetTile().col * TS + TS / 2,
 					route.getTargetTile().row * TS + TS / 2);
 			g.translate(route.getTargetTile().col * TS, route.getTargetTile().row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
@@ -231,7 +231,7 @@ public class PlayViewX extends PlayView {
 		}
 
 		if (ghost == actors.getClyde() && ghost.getState() == GhostState.CHASING) {
-			Vector2f center = ghost.getCenter();
+			Vector2f center = ghost.getTransform().getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.drawOval((int) center.x - 8 * TS, (int) center.y - 8 * TS, 16 * TS, 16 * TS);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);

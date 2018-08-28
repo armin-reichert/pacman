@@ -72,7 +72,7 @@ public interface NavigationSystem<T extends Actor> {
 	 */
 	public default Navigation<T> attackAndReject(Ghost attacker, PacMan pacMan, int distance) {
 		return headFor(
-				() -> dist(attacker.getCenter(), pacMan.getCenter()) >= distance ? pacMan.getTile()
+				() -> dist(attacker.getTransform().getCenter(), pacMan.getTransform().getCenter()) >= distance ? pacMan.getTile()
 						: attacker.getScatteringTarget());
 	}
 
@@ -145,7 +145,7 @@ public interface NavigationSystem<T extends Actor> {
 	 * @return flight behavior
 	 */
 	public default Navigation<T> flee(Actor attacker) {
-		return new EscapeIntoCorner<T>(attacker);
+		return new EscapeIntoCorner<>(attacker);
 	}
 
 	/**
@@ -206,7 +206,7 @@ public interface NavigationSystem<T extends Actor> {
 	 * @return behavior following a static route
 	 */
 	public default Navigation<T> followStaticRoute(Tile target) {
-		return new FollowFixedPath<T>(target);
+		return new FollowFixedPath<>(target);
 	}
 
 	/**
@@ -218,7 +218,7 @@ public interface NavigationSystem<T extends Actor> {
 	 * @return behavior head for the tile computed by the supplier
 	 */
 	public default Navigation<T> headFor(Supplier<Tile> targetTileSupplier) {
-		return new FollowTargetTile<T>(targetTileSupplier);
+		return new FollowTargetTile<>(targetTileSupplier);
 	}
 
 	/**

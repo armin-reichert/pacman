@@ -89,7 +89,7 @@ public interface Actor extends Controller, TileAwareView {
 
 	default boolean canMove(int dir) {
 		int col, row, newCol, newRow;
-		Transform tf = tf();
+		Transform tf = getTransform();
 		Vector2f v = velocity(dir);
 		switch (dir) {
 		case Top4.E:
@@ -124,7 +124,7 @@ public interface Actor extends Controller, TileAwareView {
 			setCurrentDir(getNextDir());
 		}
 		if (!isStuck()) {
-			Transform tf = tf();
+			Transform tf = getTransform();
 			tf.setVelocity(velocity(getCurrentDir()));
 			tf.move();
 			// check exit from teleport space

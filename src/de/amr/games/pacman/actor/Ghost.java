@@ -65,6 +65,8 @@ public class Ghost extends GameEntityUsingSprites
 		this.scatteringTarget = scatteringTarget;
 		this.initialDir = initialDir;
 		visible = true;
+		tf.setWidth(Game.TS);
+		tf.setHeight(Game.TS);
 		fnCanLeaveHouse = () -> getStateObject().isTerminated();
 		controller = buildStateMachine(name);
 		navigationMap = new EnumMap<>(GhostState.class);
@@ -82,7 +84,7 @@ public class Ghost extends GameEntityUsingSprites
 	// Accessors
 
 	@Override
-	public Transform tf() {
+	public Transform getTransform() {
 		return tf;
 	}
 

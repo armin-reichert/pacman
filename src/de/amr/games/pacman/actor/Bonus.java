@@ -52,9 +52,9 @@ public class Bonus extends GameEntityUsingSprites implements TileAwareView {
 			sprite = PacManThemes.THEME.pinkNumber(index);
 		}
 	}
-
+	
 	@Override
-	public Transform tf() {
+	public Transform getTransform() {
 		return tf;
 	}
 
@@ -71,6 +71,16 @@ public class Bonus extends GameEntityUsingSprites implements TileAwareView {
 	@Override
 	public Stream<Sprite> getSprites() {
 		return Stream.of(sprite);
+	}
+
+	@Override
+	public int getWidth() {
+		return sprite.getWidth();
+	}
+
+	@Override
+	public int getHeight() {
+		return sprite.getHeight();
 	}
 
 	@Override

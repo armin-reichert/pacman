@@ -59,6 +59,8 @@ public class PacMan extends GameEntityUsingSprites
 
 	public PacMan(Game game) {
 		this.game = game;
+		tf.setWidth(Game.TS);
+		tf.setHeight(Game.TS);
 		events = new EventManager<>("[PacMan]");
 		visible = true;
 		eventsEnabled = true;
@@ -102,7 +104,7 @@ public class PacMan extends GameEntityUsingSprites
 	// Accessors
 
 	@Override
-	public Transform tf() {
+	public Transform getTransform() {
 		return tf;
 	}
 
