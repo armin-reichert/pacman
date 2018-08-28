@@ -1,6 +1,5 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.easy.game.math.Vector2f.smul;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static java.lang.Math.round;
 
@@ -20,6 +19,14 @@ import de.amr.games.pacman.view.core.TileAwareView;
  * @author Armin Reichert
  */
 public interface Actor extends Controller, TileAwareView {
+
+	int getCurrentDir();
+
+	void setCurrentDir(int dir);
+
+	int getNextDir();
+
+	void setNextDir(int dir);
 
 	Maze getMaze();
 
@@ -43,14 +50,6 @@ public interface Actor extends Controller, TileAwareView {
 	default int getHeight() {
 		return getTileSize();
 	}
-
-	int getCurrentDir();
-
-	void setCurrentDir(int dir);
-
-	int getNextDir();
-
-	void setNextDir(int dir);
 
 	default boolean isTurn(int currentDir, int nextDir) {
 		return nextDir == NESW.left(currentDir) || nextDir == NESW.right(currentDir);
@@ -111,7 +110,7 @@ public interface Actor extends Controller, TileAwareView {
 		case Top4.S:
 			col = tileCoord(tf.getX());
 			row = tileCoord(tf.getY());
-			newRow = Math.round(tf.getY() + getHeight()) / getTileSize();
+			newRow = round(tf.getY() + getHeight()) / getTileSize();
 			return newRow == row || canEnterTile(new Tile(col, newRow));
 		}
 		throw new IllegalArgumentException("Illegal direction: " + dir);
@@ -142,7 +141,7 @@ public interface Actor extends Controller, TileAwareView {
 	}
 
 	default Vector2f velocity(int dir) {
-		return smul(getSpeed(), Vector2f.of(NESW.dx(dir), NESW.dy(dir)));
+		return Vector2f.smul(getSpeed(), Vector2f.of(NESW.dx(dir), NESW.dy(dir)));
 	}
 
 	/**
