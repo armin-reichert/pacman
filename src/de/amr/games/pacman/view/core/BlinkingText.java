@@ -47,6 +47,14 @@ public class BlinkingText extends GameEntityUsingSprites implements ViewAnimatio
 		createSprite();
 		return this;
 	}
+	
+	@Override
+	public void init() {
+	}
+	
+	@Override
+	public void update() {
+	}
 
 	public void setText(String text) {
 		Objects.requireNonNull(text);
