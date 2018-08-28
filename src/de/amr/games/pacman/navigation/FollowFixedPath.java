@@ -3,11 +3,11 @@ package de.amr.games.pacman.navigation;
 import java.util.Collections;
 import java.util.List;
 
-import de.amr.games.pacman.actor.MazeMover;
+import de.amr.games.pacman.actor.Actor;
 import de.amr.games.pacman.model.Tile;
 
 //TODO: does not yet work 100%
-class FollowFixedPath<T extends MazeMover> implements Navigation<T> {
+class FollowFixedPath<T extends Actor> implements Navigation<T> {
 
 	protected Tile target;
 	protected List<Tile> path = Collections.emptyList();

@@ -3,15 +3,15 @@ package de.amr.games.pacman.navigation;
 import java.util.stream.Stream;
 
 import de.amr.easy.util.StreamUtils;
-import de.amr.games.pacman.actor.MazeMover;
+import de.amr.games.pacman.actor.Actor;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
-class EscapeIntoCorner<T extends MazeMover> extends FollowFixedPath<T> {
+class EscapeIntoCorner<T extends Actor> extends FollowFixedPath<T> {
 
-	private final MazeMover chaser;
+	private final Actor chaser;
 
-	public EscapeIntoCorner(MazeMover chaser) {
+	public EscapeIntoCorner(Actor chaser) {
 		this.chaser = chaser;
 	}
 

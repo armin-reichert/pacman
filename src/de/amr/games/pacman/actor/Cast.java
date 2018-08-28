@@ -36,7 +36,7 @@ public class Cast {
 
 	private final PacMan pacMan;
 	private final Ghost blinky, pinky, inky, clyde;
-	private final Set<MazeMover> activeActors = new HashSet<>();
+	private final Set<Actor> activeActors = new HashSet<>();
 
 	public Cast(Game game) {
 		Maze maze = game.getMaze();
@@ -98,11 +98,11 @@ public class Cast {
 		return pacMan;
 	}
 
-	public boolean isActive(MazeMover actor) {
+	public boolean isActive(Actor actor) {
 		return activeActors.contains(actor);
 	}
 
-	public void setActive(MazeMover actor, boolean active) {
+	public void setActive(Actor actor, boolean active) {
 		if (active == isActive(actor)) {
 			return;
 		}

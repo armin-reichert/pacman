@@ -7,7 +7,6 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.HOME;
 import static de.amr.games.pacman.actor.GhostState.SAFE;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
 
 import java.awt.Graphics2D;
@@ -17,6 +16,8 @@ import java.util.function.BooleanSupplier;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.entity.GameEntity;
+import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.controller.StateMachineControlled;
 import de.amr.games.pacman.controller.event.GameEvent;
@@ -38,8 +39,8 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends MazeMover
-		implements StateMachineControlled<GhostState, GameEvent>, NavigationSystem<Ghost> {
+public class Ghost extends GameEntity
+		implements Actor, StateMachineControlled<GhostState, GameEvent>, NavigationSystem<Ghost> {
 
 	private final Game game;
 	private final StateMachine<GhostState, GameEvent> controller;
@@ -49,6 +50,9 @@ public class Ghost extends MazeMover
 	private final Tile home;
 	private final Tile scatteringTarget;
 	private final int initialDir;
+	private int currentDir;
+	private int nextDir;
+
 	BooleanSupplier fnCanLeaveHouse;
 
 	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, Tile scatteringTarget,
@@ -66,7 +70,7 @@ public class Ghost extends MazeMover
 	}
 
 	public void initGhost() {
-		placeAtTile(home, TS / 2, 0);
+		placeAtTile(home, getTileSize() / 2, 0);
 		setCurrentDir(initialDir);
 		setNextDir(initialDir);
 		getSprites().forEach(Sprite::resetAnimation);
@@ -76,8 +80,8 @@ public class Ghost extends MazeMover
 	// Accessors
 
 	@Override
-	public int getTileSize() {
-		return Game.TS;
+	public Transform getTransform() {
+		return tf;
 	}
 
 	@Override
@@ -100,6 +104,26 @@ public class Ghost extends MazeMover
 	@Override
 	public float getSpeed() {
 		return game.getGhostSpeed(getState(), getTile());
+	}
+
+	@Override
+	public int getCurrentDir() {
+		return currentDir;
+	}
+
+	@Override
+	public void setCurrentDir(int currentDir) {
+		this.currentDir = currentDir;
+	}
+
+	@Override
+	public int getNextDir() {
+		return nextDir;
+	}
+
+	@Override
+	public void setNextDir(int nextDir) {
+		this.nextDir = nextDir;
 	}
 
 	// Movement

@@ -5,7 +5,6 @@ import static de.amr.games.pacman.actor.PacManState.DYING;
 import static de.amr.games.pacman.actor.PacManState.GREEDY;
 import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
-import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
 
 import java.awt.Graphics2D;
@@ -16,6 +15,8 @@ import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.entity.GameEntity;
+import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.controller.EventManager;
@@ -42,13 +43,15 @@ import de.amr.statemachine.StateObject;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends MazeMover
-		implements StateMachineControlled<PacManState, GameEvent>, NavigationSystem<PacMan> {
+public class PacMan extends GameEntity
+		implements Actor, StateMachineControlled<PacManState, GameEvent>, NavigationSystem<PacMan> {
 
 	private final Game game;
 	private final StateMachine<PacManState, GameEvent> controller;
 	private final Map<PacManState, Navigation<PacMan>> navigationMap;
 	private final EventManager<GameEvent> events;
+	private int currentDir;
+	private int nextDir;
 	private boolean eventsEnabled;
 	private int digestionTicks;
 	private PacManWorld world;
@@ -64,7 +67,7 @@ public class PacMan extends MazeMover
 
 	public void initPacMan() {
 		digestionTicks = 0;
-		placeAtTile(getHome(), TS / 2, 0);
+		placeAtTile(getHome(), getTileSize() / 2, 0);
 		setNextDir(Top4.E);
 		getSprites().forEach(Sprite::resetAnimation);
 		sprite = s_full;
@@ -97,8 +100,8 @@ public class PacMan extends MazeMover
 	// Accessors
 
 	@Override
-	public int getTileSize() {
-		return Game.TS;
+	public Transform getTransform() {
+		return tf;
 	}
 
 	@Override
@@ -113,6 +116,26 @@ public class PacMan extends MazeMover
 	@Override
 	public float getSpeed() {
 		return game.getPacManSpeed(getState());
+	}
+
+	@Override
+	public int getCurrentDir() {
+		return currentDir;
+	}
+
+	@Override
+	public void setCurrentDir(int currentDir) {
+		this.currentDir = currentDir;
+	}
+
+	@Override
+	public int getNextDir() {
+		return nextDir;
+	}
+
+	@Override
+	public void setNextDir(int nextDir) {
+		this.nextDir = nextDir;
 	}
 
 	// Movement
@@ -133,13 +156,6 @@ public class PacMan extends MazeMover
 	@Override
 	public boolean canTraverseDoor(Tile door) {
 		return false;
-	}
-
-	@Override
-	public void move() {
-		super.move();
-		sprite = s_walking_to[getCurrentDir()];
-		sprite.enableAnimation(!isStuck());
 	}
 
 	// Sprites
@@ -168,6 +184,11 @@ public class PacMan extends MazeMover
 
 	public void setFullSprite() {
 		sprite = s_full;
+	}
+	
+	private void updateSprite() {
+		sprite = s_walking_to[getCurrentDir()];
+		sprite.enableAnimation(!isStuck());
 	}
 
 	@Override
@@ -248,6 +269,7 @@ public class PacMan extends MazeMover
 				return;
 			}
 			move();
+			updateSprite();
 			if (world != null && eventsEnabled) {
 				inspectTile(world, getTile());
 			}

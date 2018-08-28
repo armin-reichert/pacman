@@ -21,7 +21,7 @@ import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostName;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.MazeMover;
+import de.amr.games.pacman.actor.Actor;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.model.Game;
@@ -192,9 +192,9 @@ public class PlayViewX extends PlayView {
 		g.translate(-x, -y);
 	}
 
-	private void drawActorAlignment(MazeMover actor, Graphics2D g) {
+	private void drawActorAlignment(Actor actor, Graphics2D g) {
 		g.setColor(Color.GREEN);
-		g.translate(actor.tf.getX(), actor.tf.getY());
+		g.translate(actor.getTransform().getX(), actor.getTransform().getY());
 		int w = actor.getWidth(), h = actor.getHeight();
 		if (actor.getAlignmentY() == 0) {
 			g.drawLine(0, 0, w, 0);
@@ -204,7 +204,7 @@ public class PlayViewX extends PlayView {
 			g.drawLine(0, 0, 0, h);
 			g.drawLine(w, 0, w, h);
 		}
-		g.translate(-actor.tf.getX(), -actor.tf.getY());
+		g.translate(-actor.getTransform().getX(), -actor.getTransform().getY());
 	}
 
 	private void drawRoute(Graphics2D g, Ghost ghost) {

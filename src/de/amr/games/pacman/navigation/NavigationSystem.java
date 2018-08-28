@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.MazeMover;
+import de.amr.games.pacman.actor.Actor;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
@@ -18,7 +18,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public interface NavigationSystem<T extends MazeMover> {
+public interface NavigationSystem<T extends Actor> {
 
 	/**
 	 * Ambushes the victim by targeting the tile which is the given number of tiles ahead of the
@@ -31,7 +31,7 @@ public interface NavigationSystem<T extends MazeMover> {
 	 *                 is outside of the maze, the tile <code>(n - 1)</code> ahead is used etc.
 	 * @return ambush behavior
 	 */
-	public default Navigation<T> ambush(MazeMover victim, int n) {
+	public default Navigation<T> ambush(Actor victim, int n) {
 		return headFor(() -> victim.ahead(n));
 	}
 
@@ -83,7 +83,7 @@ public interface NavigationSystem<T extends MazeMover> {
 	 *                 the attacked maze mover
 	 * @return direct attack behavior
 	 */
-	public default Navigation<T> attackDirectly(MazeMover victim) {
+	public default Navigation<T> attackDirectly(Actor victim) {
 		return headFor(victim::getTile);
 	}
 
@@ -144,7 +144,7 @@ public interface NavigationSystem<T extends MazeMover> {
 	 *                   the attacker
 	 * @return flight behavior
 	 */
-	public default Navigation<T> flee(MazeMover attacker) {
+	public default Navigation<T> flee(Actor attacker) {
 		return new EscapeIntoCorner<T>(attacker);
 	}
 
@@ -199,7 +199,7 @@ public interface NavigationSystem<T extends MazeMover> {
 
 	/**
 	 * Lets the maze mover follow a static path to the target. The static path is computed when the
-	 * method {@link Navigation#computeStaticRoute(MazeMover)} is called.
+	 * method {@link Navigation#computeStaticRoute(Actor)} is called.
 	 * 
 	 * @param target
 	 *                 the target tile
