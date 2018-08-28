@@ -81,6 +81,11 @@ public class ChasePacManAnimation extends GameEntity implements ViewAnimation {
 	public int getWidth() {
 		return 88;
 	}
+	
+	@Override
+	public int getHeight() {
+		return 16;
+	}
 
 	@Override
 	public void draw(Graphics2D g) {

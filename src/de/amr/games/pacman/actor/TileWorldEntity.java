@@ -3,10 +3,8 @@ package de.amr.games.pacman.actor;
 import static de.amr.games.pacman.model.Game.TS;
 import static java.lang.Math.round;
 
-import java.awt.Graphics2D;
-
-import de.amr.easy.game.entity.GameEntity;
-import de.amr.easy.game.sprite.Sprite;
+import de.amr.easy.game.entity.Transform;
+import de.amr.easy.game.view.View;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -15,59 +13,52 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public abstract class TileWorldEntity extends GameEntity {
+public interface TileWorldEntity extends View {
 
 	public static Tile getTile(float x, float y) {
 		return new Tile(round(x + TS / 2) / TS, round(y + TS / 2) / TS);
 	}
 
 	@Override
-	public int getWidth() {
+	default int getWidth() {
 		return TS;
 	}
 
 	@Override
-	public int getHeight() {
+	default int getHeight() {
 		return TS;
 	}
+
+	Transform getTransform();
 
 	/**
 	 * @return the tile containing the center of the collision box.
 	 */
-	public Tile getTile() {
+	default Tile getTile() {
+		Transform tf = getTransform();
 		return getTile(tf.getX(), tf.getY());
 	}
 
-	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
+	default void placeAtTile(Tile tile, float xOffset, float yOffset) {
+		Transform tf = getTransform();
 		tf.moveTo(tile.col * TS + xOffset, tile.row * TS + yOffset);
 	}
 
-	public void align() {
+	default void align() {
 		placeAtTile(getTile(), 0, 0);
 	}
 
-	public boolean isAligned() {
+	default boolean isAligned() {
 		return getAlignmentX() == 0 && getAlignmentY() == 0;
 	}
 
-	public int getAlignmentX() {
+	default int getAlignmentX() {
+		Transform tf = getTransform();
 		return round(tf.getX()) % TS;
 	}
 
-	public int getAlignmentY() {
+	default int getAlignmentY() {
+		Transform tf = getTransform();
 		return round(tf.getY()) % TS;
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
-		Sprite sprite = currentSprite();
-		if (sprite != null) {
-			// center sprite over collision box
-			int dx = (getWidth() - sprite.getWidth()) / 2;
-			int dy = (getHeight() - sprite.getHeight()) / 2;
-			g.translate(dx, dy);
-			super.draw(g);
-			g.translate(-dx, -dy);
-		}
 	}
 }

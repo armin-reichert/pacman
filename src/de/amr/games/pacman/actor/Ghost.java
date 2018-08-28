@@ -10,6 +10,7 @@ import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
 
+import java.awt.Graphics2D;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
@@ -153,6 +154,15 @@ public class Ghost extends MazeMover
 	@Override
 	public Sprite currentSprite() {
 		return sprite;
+	}
+	
+	@Override
+	public void draw(Graphics2D g) {
+		float dx = tf.getX() - (sprite.getWidth() - getWidth()) / 2;
+		float dy = tf.getY() - (sprite.getHeight() - getHeight()) / 2;
+		g.translate(dx, dy);
+		sprite.draw(g);
+		g.translate(-dx, -dy);
 	}
 
 	// State machine

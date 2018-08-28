@@ -2,13 +2,16 @@ package de.amr.games.pacman.actor;
 
 import static java.util.Arrays.binarySearch;
 
+import java.awt.Graphics2D;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.entity.GameEntity;
+import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.theme.PacManThemes;
 
-public class Bonus extends TileWorldEntity {
+public class Bonus extends GameEntity implements TileWorldEntity {
 
 	private static final int[] POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
@@ -49,6 +52,11 @@ public class Bonus extends TileWorldEntity {
 	}
 
 	@Override
+	public Transform getTransform() {
+		return tf;
+	}
+
+	@Override
 	public Sprite currentSprite() {
 		return sprite;
 	}
@@ -56,6 +64,15 @@ public class Bonus extends TileWorldEntity {
 	@Override
 	public Stream<Sprite> getSprites() {
 		return Stream.of(sprite);
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		float dx = tf.getX() - (sprite.getWidth() - getWidth()) / 2;
+		float dy = tf.getY() - (sprite.getHeight() - getHeight()) / 2;
+		g.translate(dx, dy);
+		sprite.draw(g);
+		g.translate(-dx, -dy);
 	}
 
 	@Override

@@ -112,6 +112,11 @@ public class ChaseGhostsAnimation extends GameEntity implements ViewAnimation {
 	public int getWidth() {
 		return 5 * 18;
 	}
+	
+	@Override
+	public int getHeight() {
+		return 18;
+	}
 
 	@Override
 	public Sprite currentSprite() {

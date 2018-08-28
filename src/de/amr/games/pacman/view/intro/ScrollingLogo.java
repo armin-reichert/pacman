@@ -13,6 +13,16 @@ public class ScrollingLogo extends ScrollingImage {
 		this.parentWidth = parentWidth;
 		this.parentHeight = parentHeight;
 	}
+	
+	@Override
+	public int getWidth() {
+		return currentSprite().getWidth();
+	}
+	
+	@Override
+	public int getHeight() {
+		return currentSprite().getHeight();
+	}
 
 	@Override
 	public void init() {

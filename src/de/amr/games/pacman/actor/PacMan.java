@@ -8,6 +8,7 @@ import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
 
+import java.awt.Graphics2D;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
@@ -41,9 +42,8 @@ import de.amr.statemachine.StateObject;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends MazeMover implements StateMachineControlled<PacManState, GameEvent>,
-	NavigationSystem<PacMan>
-{
+public class PacMan extends MazeMover
+		implements StateMachineControlled<PacManState, GameEvent>, NavigationSystem<PacMan> {
 
 	private final Game game;
 	private final StateMachine<PacManState, GameEvent> controller;
@@ -69,7 +69,7 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 		getSprites().forEach(Sprite::resetAnimation);
 		sprite = s_full;
 	}
-	
+
 	public void setWorld(PacManWorld world) {
 		this.world = world;
 	}
@@ -163,6 +163,15 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 
 	public void setFullSprite() {
 		sprite = s_full;
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		float dx = tf.getX() - (sprite.getWidth() - getWidth()) / 2;
+		float dy = tf.getY() - (sprite.getHeight() - getHeight()) / 2;
+		g.translate(dx, dy);
+		sprite.draw(g);
+		g.translate(-dx, -dy);
 	}
 
 	// State machine

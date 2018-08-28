@@ -4,8 +4,11 @@ import static de.amr.easy.game.math.Vector2f.smul;
 import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
 
+import de.amr.easy.game.entity.GameEntity;
+import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
@@ -14,10 +17,15 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public abstract class MazeMover extends TileWorldEntity {
+public abstract class MazeMover extends GameEntity implements TileWorldEntity {
 
 	private int currentDir;
 	private int nextDir;
+
+	@Override
+	public Transform getTransform() {
+		return tf;
+	}
 
 	public abstract Maze getMaze();
 
@@ -26,6 +34,16 @@ public abstract class MazeMover extends TileWorldEntity {
 	public abstract int supplyIntendedDir();
 
 	public abstract float getSpeed();
+
+	@Override
+	public int getWidth() {
+		return Game.TS;
+	}
+
+	@Override
+	public int getHeight() {
+		return Game.TS;
+	}
 
 	public int getCurrentDir() {
 		return currentDir;
@@ -135,10 +153,10 @@ public abstract class MazeMover extends TileWorldEntity {
 	private Vector2f velocity(int dir) {
 		return smul(getSpeed(), Vector2f.of(NESW.dx(dir), NESW.dy(dir)));
 	}
-	
+
 	/**
 	 * @param n
-	 *                number of tiles
+	 *            number of tiles
 	 * @return the tile which lies <code>n</code> tiles ahead of the mover wrt its current move
 	 *         direction. If this position is outside the maze, returns the tile <code>(n-1)</code>
 	 *         tiles ahead etc.
