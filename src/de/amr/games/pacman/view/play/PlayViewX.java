@@ -18,10 +18,10 @@ import java.util.logging.Level;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.GhostName;
-import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.Actor;
+import de.amr.games.pacman.actor.Cast;
+import de.amr.games.pacman.actor.Ghost;
+import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.model.Game;
@@ -57,10 +57,9 @@ public class PlayViewX extends PlayView {
 	public boolean showStates = false;
 
 	private static BufferedImage createGridImage(int numRows, int numCols) {
-		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment()
-				.getDefaultScreenDevice().getDefaultConfiguration();
-		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1,
-				Transparency.TRANSLUCENT);
+		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+				.getDefaultConfiguration();
+		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1, Transparency.TRANSLUCENT);
 		Graphics2D g = image.createGraphics();
 		g.setColor(Color.DARK_GRAY);
 		for (int row = 0; row <= numRows; ++row) {
@@ -126,8 +125,7 @@ public class PlayViewX extends PlayView {
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
 			drawActorAlignment(actors.getPacMan(), g);
-			actors.getActiveGhosts().filter(Ghost::isVisible)
-					.forEach(ghost -> drawActorAlignment(ghost, g));
+			actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> drawActorAlignment(ghost, g));
 		}
 		if (showRoutes) {
 			actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> drawRoute(g, ghost));
@@ -159,10 +157,9 @@ public class PlayViewX extends PlayView {
 	private String ghostState(Ghost ghost) {
 		StateObject<?, ?> state = ghost.getStateObject();
 		return state.getDuration() != StateObject.ENDLESS
-				? String.format("%s(%s,%d|%d)[%s]", ghost.getName(), state.id(), state.getRemaining(),
-						state.getDuration(), Top4.name(ghost.getCurrentDir()))
-				: String.format("%s(%s,%s)[%s]", ghost.getName(), state.id(), INFTY,
-						Top4.name(ghost.getCurrentDir()));
+				? String.format("%s(%s,%d|%d)[%s]", ghost.getName(), state.id(), state.getRemaining(), state.getDuration(),
+						Top4.name(ghost.getCurrentDir()))
+				: String.format("%s(%s,%s)[%s]", ghost.getName(), state.id(), INFTY, Top4.name(ghost.getCurrentDir()));
 	}
 
 	private void toggleGhost(Ghost ghost) {
@@ -171,13 +168,13 @@ public class PlayViewX extends PlayView {
 
 	private static Color ghostColor(Ghost ghost) {
 		switch (ghost.getName()) {
-		case Blinky:
+		case Cast.BLINKY:
 			return Color.RED;
-		case Pinky:
+		case Cast.PINKY:
 			return Color.PINK;
-		case Inky:
+		case Cast.INKY:
 			return new Color(64, 224, 208);
-		case Clyde:
+		case Cast.CLYDE:
 			return Color.ORANGE;
 		default:
 			throw new IllegalArgumentException();
@@ -226,14 +223,14 @@ public class PlayViewX extends PlayView {
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-targetTile.col * TS, -targetTile.row * TS);
 		} else if (route.getTargetTile() != null) {
-			g.drawLine((int) ghost.getCenter().x, (int) ghost.getCenter().y,
-					route.getTargetTile().col * TS + TS / 2, route.getTargetTile().row * TS + TS / 2);
+			g.drawLine((int) ghost.getCenter().x, (int) ghost.getCenter().y, route.getTargetTile().col * TS + TS / 2,
+					route.getTargetTile().row * TS + TS / 2);
 			g.translate(route.getTargetTile().col * TS, route.getTargetTile().row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-route.getTargetTile().col * TS, -route.getTargetTile().row * TS);
 		}
 
-		if (ghost.getName() == GhostName.Clyde && ghost.getState() == GhostState.CHASING) {
+		if (ghost == actors.getClyde() && ghost.getState() == GhostState.CHASING) {
 			Vector2f center = ghost.getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.drawOval((int) center.x - 8 * TS, (int) center.y - 8 * TS, 16 * TS, 16 * TS);

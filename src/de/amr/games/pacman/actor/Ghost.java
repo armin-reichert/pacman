@@ -42,10 +42,10 @@ import de.amr.statemachine.StateMachine;
 public class Ghost extends GameEntity
 		implements Actor, StateMachineControlled<GhostState, GameEvent>, NavigationSystem<Ghost> {
 
+	private final String name;
 	private final Game game;
 	private final StateMachine<GhostState, GameEvent> controller;
 	private final Map<GhostState, Navigation<Ghost>> navigationMap;
-	private final GhostName name;
 	private final PacMan pacMan;
 	private final Tile home;
 	private final Tile scatteringTarget;
@@ -55,8 +55,8 @@ public class Ghost extends GameEntity
 
 	BooleanSupplier fnCanLeaveHouse;
 
-	public Ghost(GhostName name, PacMan pacMan, Game game, Tile home, Tile scatteringTarget,
-			int initialDir, GhostColor color) {
+	public Ghost(String name, PacMan pacMan, Game game, Tile home, Tile scatteringTarget, int initialDir,
+			GhostColor color) {
 		this.name = name;
 		this.pacMan = pacMan;
 		this.game = game;
@@ -64,7 +64,7 @@ public class Ghost extends GameEntity
 		this.scatteringTarget = scatteringTarget;
 		this.initialDir = initialDir;
 		fnCanLeaveHouse = () -> getStateObject().isTerminated();
-		controller = buildStateMachine();
+		controller = buildStateMachine(name);
 		navigationMap = new EnumMap<>(GhostState.class);
 		createSprites(color);
 	}
@@ -84,13 +84,13 @@ public class Ghost extends GameEntity
 		return tf;
 	}
 
+	public String getName() {
+		return name;
+	}
+
 	@Override
 	public Maze getMaze() {
 		return game.getMaze();
-	}
-
-	public GhostName getName() {
-		return name;
 	}
 
 	public Tile getHome() {
@@ -176,8 +176,8 @@ public class Ghost extends GameEntity
 
 	@Override
 	public Stream<Sprite> getSprites() {
-		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes),
-				Stream.of(s_frightened, s_flashing)).flatMap(s -> s);
+		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes), Stream.of(s_frightened, s_flashing))
+				.flatMap(s -> s);
 	}
 
 	@Override
@@ -208,12 +208,12 @@ public class Ghost extends GameEntity
 		controller.traceTo(logger, game.fnTicksPerSec);
 	}
 
-	private StateMachine<GhostState, GameEvent> buildStateMachine() {
+	private StateMachine<GhostState, GameEvent> buildStateMachine(String ghostName) {
 		return
 		/*@formatter:off*/
 		StateMachine.define(GhostState.class, GameEvent.class)
 			 
-			.description(String.format("[Ghost %s]", getName()))
+			.description(String.format("[Ghost %s]", ghostName))
 			.initialState(HOME)
 		
 			.states()
@@ -224,7 +224,7 @@ public class Ghost extends GameEntity
 					.state(SAFE)
 						.timeoutAfter(() -> game.sec(2))
 						.onTick(() -> {
-							if (getName() != GhostName.Blinky) {
+							if (!ghostName.equals("Blinky")) { //TODO better solution
 								move();	
 								sprite = s_color[getCurrentDir()]; 
 							}
@@ -288,7 +288,8 @@ public class Ghost extends GameEntity
 					.stay(DYING).on(PacManGettingWeakerEvent.class) // cheating-mode
 						
 					.when(DEAD).then(SAFE)
-						.condition(() -> (getName() == GhostName.Blinky && getTile().equals(home)) || inGhostHouse())
+						//TODO: better solution
+						.condition(() -> (ghostName.equals("Blinky") && getTile().equals(home)) || inGhostHouse())
 						.act(this::initGhost)
 					
 					.stay(DEAD).on(PacManGainsPowerEvent.class)
