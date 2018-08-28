@@ -16,15 +16,12 @@ public interface TilePlacedEntity {
 
 	Transform getTransform();
 
-	default int tileCoord(float absoluteCoord) {
-		return round(absoluteCoord + getTileSize() / 2) / getTileSize();
+	default int tileCenter(float coord) {
+		return round(coord + getTileSize() / 2) / getTileSize();
 	}
 
-	/**
-	 * @return the tile containing the center of the entity's collision box.
-	 */
 	default Tile getTile() {
-		return new Tile(tileCoord(getTransform().getX()), tileCoord(getTransform().getY()));
+		return new Tile(tileCenter(getTransform().getX()), tileCenter(getTransform().getY()));
 	}
 
 	default void placeAt(Tile tile, float xOffset, float yOffset) {

@@ -83,23 +83,23 @@ public interface Actor extends Controller, TilePlacedEntity {
 		Vector2f v = velocity(dir);
 		switch (dir) {
 		case Top4.E:
-			col = tileCoord(tf.getX());
-			row = tileCoord(tf.getY());
+			col = tileCenter(tf.getX());
+			row = tileCenter(tf.getY());
 			newCol = round(tf.getX() + tf.getWidth()) / getTileSize();
 			return newCol == col || canEnterTile(new Tile(newCol, row));
 		case Top4.W:
 			col = round(tf.getX()) / getTileSize();
-			row = tileCoord(tf.getY());
+			row = tileCenter(tf.getY());
 			newCol = round(tf.getX() + v.x) / getTileSize();
 			return newCol == col || canEnterTile(new Tile(newCol, row));
 		case Top4.N:
-			col = tileCoord(tf.getX());
-			row = tileCoord(tf.getY());
+			col = tileCenter(tf.getX());
+			row = tileCenter(tf.getY());
 			newRow = round(tf.getY() + v.y) / getTileSize();
 			return newRow == row || canEnterTile(new Tile(col, newRow));
 		case Top4.S:
-			col = tileCoord(tf.getX());
-			row = tileCoord(tf.getY());
+			col = tileCenter(tf.getX());
+			row = tileCenter(tf.getY());
 			newRow = round(tf.getY() + tf.getHeight()) / getTileSize();
 			return newRow == row || canEnterTile(new Tile(col, newRow));
 		}
