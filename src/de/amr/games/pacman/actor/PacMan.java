@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.entity.GameEntity;
+import de.amr.easy.game.entity.GameEntityUsingSprites;
 import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
@@ -43,7 +43,7 @@ import de.amr.statemachine.StateObject;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends GameEntity
+public class PacMan extends GameEntityUsingSprites
 		implements Actor, StateMachineControlled<PacManState, GameEvent>, NavigationSystem<PacMan> {
 
 	private final Game game;
@@ -52,6 +52,7 @@ public class PacMan extends GameEntity
 	private final EventManager<GameEvent> events;
 	private int currentDir;
 	private int nextDir;
+	private boolean visible;
 	private boolean eventsEnabled;
 	private int digestionTicks;
 	private PacManWorld world;
@@ -59,6 +60,7 @@ public class PacMan extends GameEntity
 	public PacMan(Game game) {
 		this.game = game;
 		events = new EventManager<>("[PacMan]");
+		visible = true;
 		eventsEnabled = true;
 		controller = buildStateMachine();
 		navigationMap = new EnumMap<>(PacManState.class);
@@ -111,6 +113,14 @@ public class PacMan extends GameEntity
 
 	public Tile getHome() {
 		return getMaze().getPacManHome();
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 
 	@Override
@@ -185,7 +195,7 @@ public class PacMan extends GameEntity
 	public void setFullSprite() {
 		sprite = s_full;
 	}
-	
+
 	private void updateSprite() {
 		sprite = s_walking_to[getCurrentDir()];
 		sprite.enableAnimation(!isStuck());

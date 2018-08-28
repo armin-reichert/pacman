@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.entity.GameEntity;
+import de.amr.easy.game.entity.GameEntityUsingSprites;
 import de.amr.easy.game.sprite.AnimationType;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.theme.PacManThemes;
@@ -17,7 +17,7 @@ import de.amr.games.pacman.theme.PacManThemes;
  * 
  * @author Armin Reichert
  */
-public class BlinkingText extends GameEntity implements ViewAnimation {
+public class BlinkingText extends GameEntityUsingSprites implements ViewAnimation {
 
 	private Sprite sprite;
 	private String text;
@@ -98,7 +98,7 @@ public class BlinkingText extends GameEntity implements ViewAnimation {
 		g.setFont(font);
 		g.drawString(patchedText, 0, height);
 		g.dispose();
-		sprite = new Sprite(image, null).animate(AnimationType.BACK_AND_FORTH, 500 );
+		sprite = new Sprite(image, null).animate(AnimationType.BACK_AND_FORTH, 500);
 	}
 
 	@Override

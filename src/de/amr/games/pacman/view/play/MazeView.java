@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.entity.GameEntity;
+import de.amr.easy.game.entity.GameEntityUsingSprites;
 import de.amr.easy.game.sprite.Animation;
 import de.amr.easy.game.sprite.CyclicAnimation;
 import de.amr.easy.game.sprite.Sprite;
@@ -15,7 +15,7 @@ import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.theme.PacManThemes;
 
-public class MazeView extends GameEntity {
+public class MazeView extends GameEntityUsingSprites {
 
 	private final Maze maze;
 	private final Animation energizerBlinking;
@@ -99,8 +99,7 @@ public class MazeView extends GameEntity {
 			s_maze_normal.draw(g);
 			g.translate(-tf.getX(), -tf.getY());
 			maze.tiles().forEach(tile -> {
-				if (maze.isEatenFood(tile)
-						|| maze.isEnergizer(tile) && energizerBlinking.currentFrame() % 2 != 0) {
+				if (maze.isEatenFood(tile) || maze.isEnergizer(tile) && energizerBlinking.currentFrame() % 2 != 0) {
 					g.translate(tile.col * TS, tile.row * TS);
 					g.setColor(Color.BLACK);
 					g.fillRect(0, 0, TS, TS);

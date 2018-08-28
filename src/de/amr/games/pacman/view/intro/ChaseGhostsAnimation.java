@@ -3,7 +3,6 @@ package de.amr.games.pacman.view.intro;
 import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.awt.Graphics2D;
-import java.util.stream.Stream;
 
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.math.Vector2f;
@@ -112,19 +111,9 @@ public class ChaseGhostsAnimation extends GameEntity implements ViewAnimation {
 	public int getWidth() {
 		return 5 * 18;
 	}
-	
+
 	@Override
 	public int getHeight() {
 		return 18;
-	}
-
-	@Override
-	public Sprite currentSprite() {
-		return null;
-	}
-
-	@Override
-	public Stream<Sprite> getSprites() {
-		return Stream.empty();
 	}
 }

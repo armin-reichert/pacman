@@ -11,12 +11,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.input.Mouse;
-import de.amr.easy.game.sprite.Sprite;
 
 public class Link extends GameEntity {
 
@@ -96,16 +94,6 @@ public class Link extends GameEntity {
 	}
 
 	@Override
-	public Sprite currentSprite() {
-		return null;
-	}
-
-	@Override
-	public Stream<Sprite> getSprites() {
-		return Stream.empty();
-	}
-
-	@Override
 	public int getWidth() {
 		return width;
 	}
@@ -120,11 +108,9 @@ public class Link extends GameEntity {
 		g.translate(tf.getX(), tf.getY());
 		g.setColor(color);
 		g.setFont(font);
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		g.drawString(text, 0, g.getFontMetrics().getAscent());
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-				RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 		g.translate(-tf.getX(), -tf.getY());
 	}
 

@@ -6,7 +6,6 @@ import static de.amr.games.pacman.theme.PacManThemes.THEME;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.util.stream.Stream;
 
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.math.Vector2f;
@@ -81,7 +80,7 @@ public class ChasePacManAnimation extends GameEntity implements ViewAnimation {
 	public int getWidth() {
 		return 88;
 	}
-	
+
 	@Override
 	public int getHeight() {
 		return 16;
@@ -109,15 +108,5 @@ public class ChasePacManAnimation extends GameEntity implements ViewAnimation {
 			g.translate(-x, 0);
 		}
 		g.translate(-tf.getX(), -tf.getY());
-	}
-
-	@Override
-	public Sprite currentSprite() {
-		return null;
-	}
-
-	@Override
-	public Stream<Sprite> getSprites() {
-		return Stream.empty();
 	}
 }

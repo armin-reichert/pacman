@@ -357,7 +357,7 @@ public class GameController implements Controller {
 		@Override
 		public void onEntry() {
 			actors.getPacMan().setFullSprite();
-			actors.getActiveGhosts().forEach(ghost -> ghost.visibility = () -> false);
+			actors.getActiveGhosts().forEach(ghost -> ghost.setVisible(false));
 			playView.setMazeFlashing(true);
 		}
 
@@ -367,7 +367,7 @@ public class GameController implements Controller {
 			if (timeForChange) {
 				game.nextLevel();
 				actors.init();
-				actors.getActiveGhosts().forEach(ghost -> ghost.visibility = () -> true);
+				actors.getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
 				playView.init();
 				playView.showInfoText("Ready!", Color.YELLOW);
 				playView.setMazeFlashing(false);
@@ -386,7 +386,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onEntry() {
-			actors.getPacMan().visibility = () -> false;
+			actors.getPacMan().setVisible(false);
 			game.score.add(game.getKilledGhostValue());
 			LOGGER.info(String.format("Scored %d points for killing ghost #%d",
 					game.getKilledGhostValue(), game.getGhostsKilledByEnergizer()));
@@ -400,7 +400,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onExit() {
-			actors.getPacMan().visibility = () -> true;
+			actors.getPacMan().setVisible(true);
 		}
 	}
 
@@ -408,7 +408,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onEntry() {
-			actors.getActiveGhosts().forEach(ghost -> ghost.visibility = () -> false);
+			actors.getActiveGhosts().forEach(ghost -> ghost.setVisible(false));
 			THEME.soundDie().play();
 		}
 
@@ -420,7 +420,7 @@ public class GameController implements Controller {
 		@Override
 		public void onExit() {
 			game.removeLife();
-			actors.getActiveGhosts().forEach(ghost -> ghost.visibility = () -> true);
+			actors.getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
 		}
 	}
 

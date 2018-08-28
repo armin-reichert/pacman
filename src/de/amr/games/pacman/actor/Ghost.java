@@ -16,7 +16,7 @@ import java.util.function.BooleanSupplier;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.entity.GameEntity;
+import de.amr.easy.game.entity.GameEntityUsingSprites;
 import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.controller.StateMachineControlled;
@@ -39,7 +39,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends GameEntity
+public class Ghost extends GameEntityUsingSprites
 		implements Actor, StateMachineControlled<GhostState, GameEvent>, NavigationSystem<Ghost> {
 
 	private final String name;
@@ -52,6 +52,7 @@ public class Ghost extends GameEntity
 	private final int initialDir;
 	private int currentDir;
 	private int nextDir;
+	private boolean visible;
 
 	BooleanSupplier fnCanLeaveHouse;
 
@@ -63,6 +64,7 @@ public class Ghost extends GameEntity
 		this.home = home;
 		this.scatteringTarget = scatteringTarget;
 		this.initialDir = initialDir;
+		visible = true;
 		fnCanLeaveHouse = () -> getStateObject().isTerminated();
 		controller = buildStateMachine(name);
 		navigationMap = new EnumMap<>(GhostState.class);
@@ -99,6 +101,14 @@ public class Ghost extends GameEntity
 
 	public Tile getScatteringTarget() {
 		return scatteringTarget;
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 
 	@Override

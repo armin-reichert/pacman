@@ -3,7 +3,7 @@ package de.amr.games.pacman.view.core;
 import java.awt.Image;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.entity.GameEntity;
+import de.amr.easy.game.entity.GameEntityUsingSprites;
 import de.amr.easy.game.sprite.Sprite;
 
 /**
@@ -11,7 +11,7 @@ import de.amr.easy.game.sprite.Sprite;
  * 
  * @author Armin Reichert
  */
-public abstract class ScrollingImage extends GameEntity implements ViewAnimation {
+public abstract class ScrollingImage extends GameEntityUsingSprites implements ViewAnimation {
 
 	private Sprite sprite;
 
