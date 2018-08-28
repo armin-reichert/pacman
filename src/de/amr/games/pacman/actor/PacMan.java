@@ -102,7 +102,7 @@ public class PacMan extends GameEntityUsingSprites
 	// Accessors
 
 	@Override
-	public Transform getTransform() {
+	public Transform tf() {
 		return tf;
 	}
 

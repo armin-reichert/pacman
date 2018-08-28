@@ -138,11 +138,11 @@ public class PlayViewX extends PlayView {
 	private void drawEntityStates(Graphics2D g) {
 		PacMan pacMan = actors.getPacMan();
 		if (pacMan.getState() != null) {
-			drawText(g, Color.YELLOW, pacMan.tf.getX(), pacMan.tf.getY(), pacManState(pacMan));
+			drawText(g, Color.YELLOW, pacMan.tf().getX(), pacMan.tf().getY(), pacManState(pacMan));
 		}
 		actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> {
 			if (ghost.getState() != null) {
-				drawText(g, ghostColor(ghost), ghost.tf.getX() - TS, ghost.tf.getY(), ghostState(ghost));
+				drawText(g, ghostColor(ghost), ghost.tf().getX() - TS, ghost.tf().getY(), ghostState(ghost));
 			}
 		});
 	}
@@ -191,7 +191,7 @@ public class PlayViewX extends PlayView {
 
 	private void drawActorAlignment(Actor actor, Graphics2D g) {
 		g.setColor(Color.GREEN);
-		g.translate(actor.getTransform().getX(), actor.getTransform().getY());
+		g.translate(actor.tf().getX(), actor.tf().getY());
 		int w = actor.getWidth(), h = actor.getHeight();
 		if (actor.getAlignmentY() == 0) {
 			g.drawLine(0, 0, w, 0);
@@ -201,7 +201,7 @@ public class PlayViewX extends PlayView {
 			g.drawLine(0, 0, 0, h);
 			g.drawLine(w, 0, w, h);
 		}
-		g.translate(-actor.getTransform().getX(), -actor.getTransform().getY());
+		g.translate(-actor.tf().getX(), -actor.tf().getY());
 	}
 
 	private void drawRoute(Graphics2D g, Ghost ghost) {

@@ -54,7 +54,7 @@ public class Bonus extends GameEntityUsingSprites implements TileAwareView {
 	}
 
 	@Override
-	public Transform getTransform() {
+	public Transform tf() {
 		return tf;
 	}
 

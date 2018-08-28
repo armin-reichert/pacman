@@ -15,7 +15,7 @@ public interface TileAwareView extends View {
 
 	int getTileSize();
 
-	Transform getTransform();
+	Transform tf();
 
 	@Override
 	default int getWidth() {
@@ -35,12 +35,12 @@ public interface TileAwareView extends View {
 	 * @return the tile containing the center of the entity's collision box.
 	 */
 	default Tile getTile() {
-		Transform tf = getTransform();
+		Transform tf = tf();
 		return new Tile(tileCoord(tf.getX()), tileCoord(tf.getY()));
 	}
 
 	default void placeAtTile(Tile tile, float xOffset, float yOffset) {
-		Transform tf = getTransform();
+		Transform tf = tf();
 		tf.moveTo(tile.col * getTileSize() + xOffset, tile.row * getTileSize() + yOffset);
 	}
 
@@ -53,12 +53,12 @@ public interface TileAwareView extends View {
 	}
 
 	default int getAlignmentX() {
-		Transform tf = getTransform();
+		Transform tf = tf();
 		return round(tf.getX()) % getTileSize();
 	}
 
 	default int getAlignmentY() {
-		Transform tf = getTransform();
+		Transform tf = tf();
 		return round(tf.getY()) % getTileSize();
 	}
 }

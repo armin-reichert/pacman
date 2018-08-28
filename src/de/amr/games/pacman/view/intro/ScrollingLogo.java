@@ -26,7 +26,7 @@ public class ScrollingLogo extends ScrollingImage {
 
 	@Override
 	public void init() {
-		hCenter(parentWidth);
+		centerHorizontally(parentWidth);
 		tf.setY(parentHeight);
 	}
 
