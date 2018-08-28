@@ -64,7 +64,7 @@ Lambda expressions (anonymous functions) and function references allow to embed 
 Sounds all well and nice, but how does that look in the real code? Here is the implementation of the global game control:
 
 ```java
-StateMachine.define(PlayState.class, GameEvent.class)
+StateMachine.define(GameState.class, GameEvent.class)
 	
 	.description("[GameControl]")
 	.initialState(INTRO)
