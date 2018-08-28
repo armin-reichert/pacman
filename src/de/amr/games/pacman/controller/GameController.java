@@ -38,6 +38,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.theme.PacManThemes;
 import de.amr.games.pacman.view.intro.IntroView;
+import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.play.PlayViewX;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
@@ -52,16 +53,15 @@ public class GameController implements Controller {
 	// Model
 	private final Game game;
 
-	// View
-	private final PlayViewX playView;
-	private final IntroView introView;
+	// View(s)
 	private ViewController currentView;
+	private IntroView introView;
+	private PlayViewX playView;
 
-	// Controller
+	// Controller(s)
 	public enum PlayState {
 		INTRO, READY, PLAYING, GHOST_DYING, PACMAN_DYING, CHANGING_LEVEL, GAME_OVER
 	}
-
 	private final StateMachine<PlayState, GameEvent> gameControl;
 	private final Cast actors;
 
@@ -73,16 +73,28 @@ public class GameController implements Controller {
 		gameControl.traceTo(LOGGER, game.fnTicksPerSec);
 
 		actors = new Cast(game);
-		actors.getPacMan().subscribe(gameControl::process);
 		actors.traceTo(LOGGER);
+		actors.getPacMan().subscribe(gameControl::process);
+	}
 
-		int width = maze.numCols() * Game.TS;
-		int height = maze.numRows() * Game.TS;
-		introView = new IntroView(width, height);
-		playView = new PlayViewX(width, height, game);
-		playView.setActors(actors);
-
-		actors.getPacMan().setWorld(playView);
+	private IntroView getIntroView(Game game) {
+		if (introView == null) {
+			int width = game.getMaze().numCols() * Game.TS;
+			int height = game.getMaze().numRows() * Game.TS;
+			introView = new IntroView(width, height);
+		}
+		return introView;
+	}
+	
+	private PlayView getPlayView(Game game) {
+		if (playView == null) {
+			int width = game.getMaze().numCols() * Game.TS;
+			int height = game.getMaze().numRows() * Game.TS;
+			playView = new PlayViewX(width, height, game);
+			playView.setActors(actors);
+			actors.getPacMan().setWorld(playView);
+		}
+		return playView;
 	}
 
 	private void setCurrentView(ViewController view) {
@@ -124,7 +136,7 @@ public class GameController implements Controller {
 				
 				.state(INTRO)
 					.onEntry(() -> {
-						setCurrentView(introView);
+						setCurrentView(getIntroView(game));
 						THEME.soundInsertCoin().play();
 					})
 					.onExit(() -> {
@@ -156,7 +168,7 @@ public class GameController implements Controller {
 			
 				.when(INTRO).then(READY)
 					.condition(() -> introView.isComplete())
-					.act(() -> setCurrentView(playView))
+					.act(() -> setCurrentView(getPlayView(game)))
 				
 				.when(READY).then(PLAYING).onTimeout()
 					

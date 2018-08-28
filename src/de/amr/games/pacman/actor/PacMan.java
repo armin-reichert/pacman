@@ -234,12 +234,12 @@ public class PacMan extends MazeMover implements StateMachineControlled<PacManSt
 				return;
 			}
 			move();
-			if (eventsEnabled) {
-				inspectTile(getTile());
+			if (world != null && eventsEnabled) {
+				inspectTile(world, getTile());
 			}
 		}
 
-		protected void inspectTile(Tile tile) {
+		protected void inspectTile(PacManWorld world, Tile tile) {
 			// Ghost collision?
 			/*@formatter:off*/
 			Optional<Ghost> collidingGhost = world.getActiveGhosts()
