@@ -6,7 +6,7 @@ import de.amr.easy.game.entity.Transform;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Mixin for game entities which are aware of a tiled environment.
+ * Mixin for game entities which are placed on tiles.
  * 
  * @author Armin Reichert
  */
@@ -16,21 +16,19 @@ public interface TilePlacedEntity {
 
 	Transform getTransform();
 
-	default int tileCoord(float f) {
-		return round(f + getTileSize() / 2) / getTileSize();
+	default int tileCoord(float absoluteCoord) {
+		return round(absoluteCoord + getTileSize() / 2) / getTileSize();
 	}
 
 	/**
 	 * @return the tile containing the center of the entity's collision box.
 	 */
 	default Tile getTile() {
-		Transform tf = getTransform();
-		return new Tile(tileCoord(tf.getX()), tileCoord(tf.getY()));
+		return new Tile(tileCoord(getTransform().getX()), tileCoord(getTransform().getY()));
 	}
 
 	default void placeAt(Tile tile, float xOffset, float yOffset) {
-		Transform tf = getTransform();
-		tf.moveTo(tile.col * getTileSize() + xOffset, tile.row * getTileSize() + yOffset);
+		getTransform().moveTo(tile.col * getTileSize() + xOffset, tile.row * getTileSize() + yOffset);
 	}
 
 	default void align() {
@@ -42,12 +40,10 @@ public interface TilePlacedEntity {
 	}
 
 	default int getAlignmentX() {
-		Transform tf = getTransform();
-		return round(tf.getX()) % getTileSize();
+		return round(getTransform().getX()) % getTileSize();
 	}
 
 	default int getAlignmentY() {
-		Transform tf = getTransform();
-		return round(tf.getY()) % getTileSize();
+		return round(getTransform().getY()) % getTileSize();
 	}
 }
