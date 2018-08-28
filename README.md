@@ -323,13 +323,13 @@ The ghosts behave identically in some of their states:
 // common ghost behavior
 Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
 	ghost.setMoveBehavior(FRIGHTENED, ghost.flee(pacMan));
-	ghost.setMoveBehavior(SCATTERING, ghost.followTargetTile(() -> ghost.getScatteringTarget()));
-	ghost.setMoveBehavior(DEAD, ghost.followTargetTile(() -> ghost.getHome()));
+	ghost.setMoveBehavior(SCATTERING, ghost.headFor(() -> ghost.getScatteringTarget()));
+	ghost.setMoveBehavior(DEAD, ghost.headFor(() -> ghost.getHome()));
 	ghost.setMoveBehavior(SAFE, ghost.bounce());
 });
 ```
 
-The *chase* behavior is different for each ghost as explained below. Using the common *followTargetTile* behavior, 
+The *chase* behavior is different for each ghost as explained below. Using the common *headFor* behavior, 
 the implementation of the individual behaviors like *scatter*, *ambush*, *attackDirectly*, 
 *attackWithPartner* etc. becomes trivial.
 
@@ -339,7 +339,7 @@ Blinky's chase behavior is to directly attack Pac-Man:
 
 ```java
 public default Navigation<T> attackDirectly(MazeMover victim) {
-	return followTargetTile(victim::getTile);
+	return headFor(victim::getTile);
 }
 
 blinky.setMoveBehavior(CHASING, blinky.attackDirectly(pacMan));
@@ -353,7 +353,7 @@ Pinky, the *ambusher*, targets the position 4 tiles ahead of Pac-Man (in the ori
 
 ```java
 public default Navigation<T> ambush(MazeMover victim, int n) {
-	return followTargetTile(() -> victim.ahead(n));
+	return headFor(() -> victim.ahead(n));
 }
 
 pinky.setMoveBehavior(CHASING, pinky.ambush(pacMan, 4));
@@ -369,7 +369,7 @@ Consider the vector `V` from Blinky's position `B` to the position `P` two tiles
 
 ```java
 public default Navigation<T> attackWithPartner(Ghost partner, PacMan pacMan) {
-	return followTargetTile(() -> {
+	return headFor(() -> {
 		Tile partnerTile = partner.getTile();
 		Tile pacManTile = pacMan.ahead(2);
 		Tile target = new Tile(2 * pacManTile.col - partnerTile.col,
@@ -393,7 +393,7 @@ Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from 
 
 ```java
 public default Navigation<T> attackAndReject(Ghost attacker, PacMan pacMan, int distance) {
-	return followTargetTile(
+	return headFor(
 			() -> dist(attacker.getCenter(), pacMan.getCenter()) >= distance ? pacMan.getTile()
 					: attacker.getScatteringTarget());
 }
@@ -408,7 +408,7 @@ clyde.setMoveBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * Game.TS)
 In *scatter* mode, each ghost tries to reach his scattering target tile outside of the maze which results in a cyclic movement around the block in that corner.
 
 ```java
-ghost.setMoveBehavior(SCATTERING, ghost.followTargetTile(() -> ghost.getScatteringTarget()));
+ghost.setMoveBehavior(SCATTERING, ghost.headFor(() -> ghost.getScatteringTarget()));
 ```
 
 <img src="doc/scattering.png"/>
@@ -416,7 +416,7 @@ ghost.setMoveBehavior(SCATTERING, ghost.followTargetTile(() -> ghost.getScatteri
 
 ## Graph based path finding
 
-For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed, the *followTargetTile* behavior is sufficient. To also give an example how graph based path finding can be used, the *flee* behavior has been implemented differently from the original game.
+For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed, the *headFor* behavior is sufficient. To also give an example how graph based path finding can be used, the *flee* behavior has been implemented differently from the original game.
 
 Shortest routes in the maze graph can be computed using the method *Maze.findPath(Tile source, Tile target)*. This method runs an A* or BFS algorithm on the underlying grid graph (A* sounds cooler than BFS :-). A* is rather useless here because the maze is represented by a (grid) graph where the distance between two vertices (neighbor tiles) is always equal. Thus the Dijkstra or A* path finding algorithms will just degenerate to BFS (correct me if I'm wrong). Of course you could represent the graph differently, for example with vertices only for crossings and weighted edges for passages. In that case, Dijkstra or A* would be useful.
 
