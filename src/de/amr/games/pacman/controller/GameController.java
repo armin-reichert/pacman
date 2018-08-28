@@ -1,13 +1,13 @@
 package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.LOGGER;
-import static de.amr.games.pacman.controller.GameController.PlayState.CHANGING_LEVEL;
-import static de.amr.games.pacman.controller.GameController.PlayState.GAME_OVER;
-import static de.amr.games.pacman.controller.GameController.PlayState.GHOST_DYING;
-import static de.amr.games.pacman.controller.GameController.PlayState.INTRO;
-import static de.amr.games.pacman.controller.GameController.PlayState.PACMAN_DYING;
-import static de.amr.games.pacman.controller.GameController.PlayState.PLAYING;
-import static de.amr.games.pacman.controller.GameController.PlayState.READY;
+import static de.amr.games.pacman.controller.GameController.GameState.CHANGING_LEVEL;
+import static de.amr.games.pacman.controller.GameController.GameState.GAME_OVER;
+import static de.amr.games.pacman.controller.GameController.GameState.GHOST_DYING;
+import static de.amr.games.pacman.controller.GameController.GameState.INTRO;
+import static de.amr.games.pacman.controller.GameController.GameState.PACMAN_DYING;
+import static de.amr.games.pacman.controller.GameController.GameState.PLAYING;
+import static de.amr.games.pacman.controller.GameController.GameState.READY;
 import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.awt.Color;
@@ -36,7 +36,6 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.theme.PacManThemes;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.play.PlayViewX;
@@ -59,10 +58,10 @@ public class GameController implements Controller {
 	private PlayViewX playView;
 
 	// Controller(s)
-	public enum PlayState {
+	public enum GameState {
 		INTRO, READY, PLAYING, GHOST_DYING, PACMAN_DYING, CHANGING_LEVEL, GAME_OVER
 	}
-	private final StateMachine<PlayState, GameEvent> gameControl;
+	private final StateMachine<GameState, GameEvent> gameControl;
 	private final Cast actors;
 
 	public GameController() {
@@ -124,10 +123,10 @@ public class GameController implements Controller {
 		return gameControl.state(PLAYING);
 	}
 
-	private StateMachine<PlayState, GameEvent> buildStateMachine() {
+	private StateMachine<GameState, GameEvent> buildStateMachine() {
 		return
 		//@formatter:off
-		StateMachine.define(PlayState.class, GameEvent.class)
+		StateMachine.define(GameState.class, GameEvent.class)
 			
 			.description("[GameControl]")
 			.initialState(INTRO)
@@ -233,7 +232,7 @@ public class GameController implements Controller {
 		//@formatter:on
 	}
 
-	private class ReadyState extends StateObject<PlayState, GameEvent> {
+	private class ReadyState extends StateObject<GameState, GameEvent> {
 
 		@Override
 		public void onEntry() {
@@ -254,16 +253,16 @@ public class GameController implements Controller {
 		}
 	}
 
-	private class PlayingState extends StateObject<PlayState, GameEvent> {
+	private class PlayingState extends StateObject<GameState, GameEvent> {
 		
 		@Override
 		public void onEntry() {
-			PacManThemes.THEME.soundWaza().loop();
+			THEME.soundWaza().loop();
 		}
 		
 		@Override
 		public void onExit() {
-			PacManThemes.THEME.soundWaza().stop();
+			THEME.soundWaza().stop();
 		}
 
 		@Override
@@ -315,7 +314,7 @@ public class GameController implements Controller {
 		private void onGhostKilled(GameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
 			e.ghost.processEvent(e);
-			PacManThemes.THEME.soundEatGhost().play();
+			THEME.soundEatGhost().play();
 			LOGGER
 					.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
 		}
@@ -324,7 +323,7 @@ public class GameController implements Controller {
 			playView.getBonus().ifPresent(bonus -> {
 				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(),
 						bonus.getValue()));
-				PacManThemes.THEME.soundEatFruit().play();
+				THEME.soundEatFruit().play();
 				bonus.setHonored();
 				game.score.add(bonus.getValue());
 				playView.setBonusTimer(game.sec(1));
@@ -333,11 +332,11 @@ public class GameController implements Controller {
 
 		private void onFoodFound(GameEvent event) {
 			FoodFoundEvent e = (FoodFoundEvent) event;
-			PacManThemes.THEME.soundEatPill().play();
+			THEME.soundEatPill().play();
 			int lives = game.getLives();
 			game.eatFoodAtTile(e.tile);
 			if (lives < game.getLives()) {
-				PacManThemes.THEME.soundExtraLife().play();
+				THEME.soundExtraLife().play();
 			}
 			if (game.allFoodEaten()) {
 				gameControl.enqueue(new LevelCompletedEvent());
@@ -353,7 +352,7 @@ public class GameController implements Controller {
 		}
 	}
 
-	private class ChangingLevelState extends StateObject<PlayState, GameEvent> {
+	private class ChangingLevelState extends StateObject<GameState, GameEvent> {
 
 		@Override
 		public void onEntry() {
@@ -383,7 +382,7 @@ public class GameController implements Controller {
 		}
 	}
 
-	private class GhostDyingState extends StateObject<PlayState, GameEvent> {
+	private class GhostDyingState extends StateObject<GameState, GameEvent> {
 
 		@Override
 		public void onEntry() {
@@ -405,7 +404,7 @@ public class GameController implements Controller {
 		}
 	}
 
-	private class PacManDyingState extends StateObject<PlayState, GameEvent> {
+	private class PacManDyingState extends StateObject<GameState, GameEvent> {
 
 		@Override
 		public void onEntry() {
@@ -425,7 +424,7 @@ public class GameController implements Controller {
 		}
 	}
 
-	private class GameOverState extends StateObject<PlayState, GameEvent> {
+	private class GameOverState extends StateObject<GameState, GameEvent> {
 
 		@Override
 		public void onEntry() {
