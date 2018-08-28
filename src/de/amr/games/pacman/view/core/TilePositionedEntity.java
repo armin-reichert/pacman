@@ -3,7 +3,6 @@ package de.amr.games.pacman.view.core;
 import static java.lang.Math.round;
 
 import de.amr.easy.game.entity.Transform;
-import de.amr.easy.game.view.View;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -11,7 +10,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public interface TileAwareView extends View {
+public interface TilePositionedEntity {
 
 	int getTileSize();
 

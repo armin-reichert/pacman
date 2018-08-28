@@ -11,9 +11,9 @@ import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.PacManThemes;
-import de.amr.games.pacman.view.core.TileAwareView;
+import de.amr.games.pacman.view.core.TilePositionedEntity;
 
-public class Bonus extends GameEntityUsingSprites implements TileAwareView {
+public class Bonus extends GameEntityUsingSprites implements TilePositionedEntity {
 
 	private static final int[] POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
@@ -31,6 +31,8 @@ public class Bonus extends GameEntityUsingSprites implements TileAwareView {
 		this.symbol = symbol;
 		this.value = value;
 		honored = false;
+		tf.setWidth(Game.TS);
+		tf.setHeight(Game.TS);
 		sprite = PacManThemes.THEME.symbol(symbol);
 	}
 
@@ -85,8 +87,8 @@ public class Bonus extends GameEntityUsingSprites implements TileAwareView {
 
 	@Override
 	public void draw(Graphics2D g) {
-		float dx = tf.getX() - (sprite.getWidth() - getWidth()) / 2;
-		float dy = tf.getY() - (sprite.getHeight() - getHeight()) / 2;
+		float dx = tf.getX() - (getWidth() - tf.getWidth()) / 2;
+		float dy = tf.getY() - (getHeight() - tf.getHeight()) / 2;
 		g.translate(dx, dy);
 		sprite.draw(g);
 		g.translate(-dx, -dy);

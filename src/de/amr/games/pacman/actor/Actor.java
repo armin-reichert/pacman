@@ -10,15 +10,15 @@ import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.view.core.TileAwareView;
+import de.amr.games.pacman.view.core.TilePositionedEntity;
 
 /**
- * Mixin for actors in Pac-Man. Actors know how to move in the maze and can be controlled
- * by supplying the intended move direction at suitable points in time.
+ * Mixin for actors in Pac-Man. Actors know how to move in the maze and can be controlled by
+ * supplying the intended move direction at suitable points in time.
  * 
  * @author Armin Reichert
  */
-public interface Actor extends Controller, TileAwareView {
+public interface Actor extends Controller, TilePositionedEntity {
 
 	int getCurrentDir();
 
@@ -39,16 +39,6 @@ public interface Actor extends Controller, TileAwareView {
 	@Override
 	default int getTileSize() {
 		return Game.TS;
-	}
-
-	@Override
-	default int getWidth() {
-		return getTileSize();
-	}
-
-	@Override
-	default int getHeight() {
-		return getTileSize();
 	}
 
 	default boolean isTurn(int currentDir, int nextDir) {
@@ -95,7 +85,7 @@ public interface Actor extends Controller, TileAwareView {
 		case Top4.E:
 			col = tileCoord(tf.getX());
 			row = tileCoord(tf.getY());
-			newCol = round(tf.getX() + getWidth()) / getTileSize();
+			newCol = round(tf.getX() + tf.getWidth()) / getTileSize();
 			return newCol == col || canEnterTile(new Tile(newCol, row));
 		case Top4.W:
 			col = round(tf.getX()) / getTileSize();
@@ -110,7 +100,7 @@ public interface Actor extends Controller, TileAwareView {
 		case Top4.S:
 			col = tileCoord(tf.getX());
 			row = tileCoord(tf.getY());
-			newRow = round(tf.getY() + getHeight()) / getTileSize();
+			newRow = round(tf.getY() + tf.getHeight()) / getTileSize();
 			return newRow == row || canEnterTile(new Tile(col, newRow));
 		}
 		throw new IllegalArgumentException("Illegal direction: " + dir);

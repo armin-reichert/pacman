@@ -18,7 +18,6 @@ import java.util.logging.Level;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.actor.Actor;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
@@ -27,6 +26,7 @@ import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.MazeRoute;
+import de.amr.games.pacman.view.core.TilePositionedEntity;
 import de.amr.statemachine.StateObject;
 
 /**
@@ -142,7 +142,8 @@ public class PlayViewX extends PlayView {
 		}
 		actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> {
 			if (ghost.getState() != null) {
-				drawText(g, ghostColor(ghost), ghost.getTransform().getX() - TS, ghost.getTransform().getY(), ghostState(ghost));
+				drawText(g, ghostColor(ghost), ghost.getTransform().getX() - TS, ghost.getTransform().getY(),
+						ghostState(ghost));
 			}
 		});
 	}
@@ -189,10 +190,10 @@ public class PlayViewX extends PlayView {
 		g.translate(-x, -y);
 	}
 
-	private void drawActorAlignment(Actor actor, Graphics2D g) {
+	private void drawActorAlignment(TilePositionedEntity actor, Graphics2D g) {
 		g.setColor(Color.GREEN);
 		g.translate(actor.getTransform().getX(), actor.getTransform().getY());
-		int w = actor.getWidth(), h = actor.getHeight();
+		int w = actor.getTransform().getWidth(), h = actor.getTransform().getHeight();
 		if (actor.getAlignmentY() == 0) {
 			g.drawLine(0, 0, w, 0);
 			g.drawLine(0, h, w, h);
@@ -223,8 +224,8 @@ public class PlayViewX extends PlayView {
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-targetTile.col * TS, -targetTile.row * TS);
 		} else if (route.getTargetTile() != null) {
-			g.drawLine((int) ghost.getTransform().getCenter().x, (int) ghost.getTransform().getCenter().y, route.getTargetTile().col * TS + TS / 2,
-					route.getTargetTile().row * TS + TS / 2);
+			g.drawLine((int) ghost.getTransform().getCenter().x, (int) ghost.getTransform().getCenter().y,
+					route.getTargetTile().col * TS + TS / 2, route.getTargetTile().row * TS + TS / 2);
 			g.translate(route.getTargetTile().col * TS, route.getTargetTile().row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-route.getTargetTile().col * TS, -route.getTargetTile().row * TS);

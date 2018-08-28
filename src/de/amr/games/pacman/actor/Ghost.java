@@ -88,6 +88,16 @@ public class Ghost extends GameEntityUsingSprites
 		return tf;
 	}
 
+	@Override
+	public int getWidth() {
+		return currentSprite().getWidth();
+	}
+
+	@Override
+	public int getHeight() {
+		return currentSprite().getHeight();
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -202,8 +212,8 @@ public class Ghost extends GameEntityUsingSprites
 		if (sprite == null) {
 			return;
 		}
-		float dx = tf.getX() - (sprite.getWidth() - getWidth()) / 2;
-		float dy = tf.getY() - (sprite.getHeight() - getHeight()) / 2;
+		float dx = tf.getX() - (getWidth() - tf.getWidth()) / 2;
+		float dy = tf.getY() - (getHeight() - tf.getHeight()) / 2;
 		g.translate(dx, dy);
 		sprite.draw(g);
 		g.translate(-dx, -dy);
