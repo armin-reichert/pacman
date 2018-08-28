@@ -59,20 +59,20 @@ public class ChasePacManAnimation extends GameEntity implements ViewAnimation {
 	}
 
 	@Override
-	public void startAnimation() {
+	public void start() {
 		init();
 		tf.setVelocityX(-1.2f);
 		THEME.soundSiren().loop();
 	}
 
 	@Override
-	public void stopAnimation() {
+	public void stop() {
 		tf.setVelocityX(0);
 		THEME.soundSiren().stop();
 	}
 
 	@Override
-	public boolean isAnimationCompleted() {
+	public boolean isCompleted() {
 		return tf.getX() < endPosition.x;
 	}
 

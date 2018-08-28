@@ -85,23 +85,23 @@ public class IntroView implements ViewController {
 				.state(0) // Scroll logo into view
 					.onEntry(() -> {
 						show(logo);
-						logo.startAnimation();
+						logo.start();
 					})
-					.onExit(() -> logo.stopAnimation())
+					.onExit(() -> logo.stop())
 					
 				.state(1) // Show ghosts chasing Pac-Man and vice-versa
 					.onEntry(() -> {
 						hide(startText);
 						show(chasePacMan);
-						chasePacMan.startAnimation();
+						chasePacMan.start();
 						show(chaseGhosts);
-						chaseGhosts.startAnimation();
+						chaseGhosts.start();
 					})
 					.onExit(() -> {
-						chasePacMan.stopAnimation();
+						chasePacMan.stop();
 						chasePacMan.init();
 						chasePacMan.centerHorizontally(width);
-						chaseGhosts.stopAnimation();
+						chaseGhosts.stop();
 					})
 					
 				.state(2) // Show ghost points animation and blinking text
@@ -121,8 +121,8 @@ public class IntroView implements ViewController {
 					
 			.transitions()
 
-				.when(0).then(1).condition(() -> logo.isAnimationCompleted())
-				.when(1).then(2).condition(() -> chasePacMan.isAnimationCompleted() && chaseGhosts.isAnimationCompleted())
+				.when(0).then(1).condition(() -> logo.isCompleted())
+				.when(1).then(2).condition(() -> chasePacMan.isCompleted() && chaseGhosts.isCompleted())
 				.when(2).then(1).onTimeout()
 				.when(2).then(COMPLETE).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 				

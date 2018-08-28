@@ -17,7 +17,7 @@ import de.amr.games.pacman.theme.PacManThemes;
  * 
  * @author Armin Reichert
  */
-public class BlinkingText extends GameEntityUsingSprites implements ViewAnimation {
+public class BlinkingText extends GameEntityUsingSprites {
 
 	private Sprite sprite;
 	private String text;
@@ -117,11 +117,6 @@ public class BlinkingText extends GameEntityUsingSprites implements ViewAnimatio
 	@Override
 	public int getHeight() {
 		return height;
-	}
-
-	@Override
-	public boolean isAnimationCompleted() {
-		return false;
 	}
 
 	@Override

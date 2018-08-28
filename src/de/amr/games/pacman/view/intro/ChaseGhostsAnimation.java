@@ -53,14 +53,14 @@ public class ChaseGhostsAnimation extends GameEntity implements ViewAnimation {
 	}
 
 	@Override
-	public void startAnimation() {
+	public void start() {
 		init();
 		tf.setVelocityX(.8f);
 		THEME.soundWaza().loop();
 	}
 
 	@Override
-	public void stopAnimation() {
+	public void stop() {
 		tf.setVelocityX(0);
 		THEME.soundWaza().stop();
 	}
@@ -85,7 +85,7 @@ public class ChaseGhostsAnimation extends GameEntity implements ViewAnimation {
 	}
 
 	@Override
-	public boolean isAnimationCompleted() {
+	public boolean isCompleted() {
 		return tf.getX() > endPosition.x;
 	}
 

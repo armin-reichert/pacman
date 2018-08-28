@@ -1,25 +1,12 @@
 package de.amr.games.pacman.view.core;
 
+import de.amr.easy.game.view.ViewController;
 
-public interface ViewAnimation {
-	
-	default void initAnimation() {
-		
-	}
-	
-	default void startAnimation() {
-		
-	}
-	
-	default void stopAnimation() {
-		
-	}
-	
-	default void updateAnimation() {
-		
-	}
-	
-	default boolean isAnimationCompleted() {
-		return false;
-	}
+public interface ViewAnimation extends ViewController {
+
+	void start();
+
+	void stop();
+
+	boolean isCompleted();
 }
