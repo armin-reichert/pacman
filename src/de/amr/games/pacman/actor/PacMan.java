@@ -193,6 +193,9 @@ public class PacMan extends GameEntity
 
 	@Override
 	public void draw(Graphics2D g) {
+		if (sprite == null) {
+			return;
+		}
 		float dx = tf.getX() - (sprite.getWidth() - getWidth()) / 2;
 		float dy = tf.getY() - (sprite.getHeight() - getHeight()) / 2;
 		g.translate(dx, dy);

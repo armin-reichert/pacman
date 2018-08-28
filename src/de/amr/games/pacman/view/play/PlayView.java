@@ -153,7 +153,9 @@ public class PlayView implements ViewController, PacManWorld {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		actors.getPacMan().draw(g);
+		if (actors.isActive(actors.getPacMan())) {
+			actors.getPacMan().draw(g);
+		}
 		actors.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
 				.forEach(ghost -> ghost.draw(g));
 		actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)

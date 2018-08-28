@@ -2,6 +2,7 @@ package de.amr.games.pacman.actor;
 
 import static de.amr.easy.game.math.Vector2f.smul;
 import static de.amr.games.pacman.model.Maze.NESW;
+import static java.lang.Math.round;
 
 import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.math.Vector2f;
@@ -93,23 +94,23 @@ public interface Actor extends Controller, TileAwareView {
 		Vector2f v = velocity(dir);
 		switch (dir) {
 		case Top4.E:
-			col = Math.round(tf.getX() + getWidth() / 2) / getTileSize();
-			row = Math.round(tf.getY() + getHeight() / 2) / getTileSize();
-			newCol = Math.round(tf.getX() + getWidth()) / getTileSize();
+			col = tileCoord(tf.getX());
+			row = tileCoord(tf.getY());
+			newCol = round(tf.getX() + getWidth()) / getTileSize();
 			return newCol == col || canEnterTile(new Tile(newCol, row));
 		case Top4.W:
-			col = Math.round(tf.getX()) / getTileSize();
-			row = Math.round(tf.getY() + getHeight() / 2) / getTileSize();
-			newCol = Math.round(tf.getX() + v.x) / getTileSize();
+			col = round(tf.getX()) / getTileSize();
+			row = tileCoord(tf.getY());
+			newCol = round(tf.getX() + v.x) / getTileSize();
 			return newCol == col || canEnterTile(new Tile(newCol, row));
 		case Top4.N:
-			col = Math.round(tf.getX() + getWidth() / 2) / getTileSize();
-			row = Math.round(tf.getY() + getHeight() / 2) / getTileSize();
-			newRow = Math.round(tf.getY() + v.y) / getTileSize();
+			col = tileCoord(tf.getX());
+			row = tileCoord(tf.getY());
+			newRow = round(tf.getY() + v.y) / getTileSize();
 			return newRow == row || canEnterTile(new Tile(col, newRow));
 		case Top4.S:
-			col = Math.round(tf.getX() + getWidth() / 2) / getTileSize();
-			row = Math.round(tf.getY() + getHeight() / 2) / getTileSize();
+			col = tileCoord(tf.getX());
+			row = tileCoord(tf.getY());
 			newRow = Math.round(tf.getY() + getHeight()) / getTileSize();
 			return newRow == row || canEnterTile(new Tile(col, newRow));
 		}
