@@ -65,101 +65,107 @@ Sounds all well and nice, but how does that look in the real code? Here is the i
 
 ```java
 StateMachine.define(PlayState.class, GameEvent.class)
-
+	
 	.description("[GameControl]")
 	.initialState(INTRO)
-
+	
 	.states()
-
+		
 		.state(INTRO)
-			.onEntry(() -> selectView(introView))
-
+			.onEntry(() -> {
+				setCurrentView(getIntroView(game));
+				THEME.soundInsertCoin().play();
+			})
+			.onExit(() -> {
+				THEME.allSounds().forEach(Sound::stop);
+			})
+		
 		.state(READY)
 			.impl(new ReadyState())
-			.timeoutAfter(() -> game.sec(3))
-
+			.timeoutAfter(() -> game.sec(4.5f))
+		
 		.state(PLAYING)
 			.impl(new PlayingState())
-
+		
 		.state(CHANGING_LEVEL)
 			.impl(new ChangingLevelState())
 			.timeoutAfter(game::getLevelChangingTime)
-
+		
 		.state(GHOST_DYING)
 			.impl(new GhostDyingState())
 			.timeoutAfter(game::getGhostDyingTime)
-
+		
 		.state(PACMAN_DYING)
 			.impl(new PacManDyingState())
-
+		
 		.state(GAME_OVER)
 			.impl(new GameOverState())
 
 	.transitions()
-
+	
 		.when(INTRO).then(READY)
-			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
-			.act(() -> selectView(playView))
-
+			.condition(() -> introView.isComplete())
+			.act(() -> setCurrentView(getPlayView(game)))
+		
 		.when(READY).then(PLAYING).onTimeout()
-
+			
 		.stay(PLAYING)
 			.on(FoodFoundEvent.class)
 			.act(e -> playingState().onFoodFound(e))
-
+			
 		.stay(PLAYING)
 			.on(BonusFoundEvent.class)
 			.act(e -> playingState().onBonusFound(e))
-
+			
 		.stay(PLAYING)
 			.on(PacManGhostCollisionEvent.class)
 			.act(e -> playingState().onPacManGhostCollision(e))
-
+			
 		.stay(PLAYING)
 			.on(PacManGainsPowerEvent.class)
 			.act(e -> playingState().onPacManGainsPower(e))
-
+			
 		.stay(PLAYING)
 			.on(PacManGettingWeakerEvent.class)
 			.act(e -> playingState().onPacManGettingWeaker(e))
-
+			
 		.stay(PLAYING)
 			.on(PacManLostPowerEvent.class)
 			.act(e -> playingState().onPacManLostPower(e))
-
+	
 		.when(PLAYING).then(GHOST_DYING)
 			.on(GhostKilledEvent.class)
 			.act(e -> playingState().onGhostKilled(e))
-
+			
 		.when(PLAYING).then(PACMAN_DYING)
 			.on(PacManKilledEvent.class)
 			.act(e -> playingState().onPacManKilled(e))
-
+			
 		.when(PLAYING).then(CHANGING_LEVEL)
 			.on(LevelCompletedEvent.class)
-
+			
 		.when(CHANGING_LEVEL).then(PLAYING)
 			.onTimeout()
-
+			
 		.stay(CHANGING_LEVEL)
 			.on(PacManGettingWeakerEvent.class)
-
+	
 		.stay(GHOST_DYING)
 			.on(PacManGettingWeakerEvent.class)
-
+		
 		.when(GHOST_DYING).then(PLAYING)
 			.onTimeout()
-
+			
 		.when(PACMAN_DYING).then(GAME_OVER)
 			.condition(() -> actors.getPacMan().getState() == PacManState.DEAD && game.getLives() == 0)
-
+			
 		.when(PACMAN_DYING).then(PLAYING)
 			.condition(() -> actors.getPacMan().getState() == PacManState.DEAD && game.getLives() > 0)
-			.act(() -> actors.init())
-
+			.act(() -> { playView.init(); actors.init(); })
+	
 		.when(GAME_OVER).then(READY)
 			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
-
+					
 .endStateMachine();
 ```
 
@@ -169,7 +175,7 @@ Pac-Man's state machine is implemented as follows:
 
 ```java
 StateMachine.define(PacManState.class, GameEvent.class)
-
+		
 	.description("[Pac-Man]")
 	.initialState(HOME)
 
@@ -180,7 +186,7 @@ StateMachine.define(PacManState.class, GameEvent.class)
 
 		.state(HUNGRY)
 			.impl(new HungryState())
-
+			
 		.state(GREEDY)
 			.impl(new GreedyState())
 			.timeoutAfter(game::getPacManGreedyTime)
@@ -192,7 +198,7 @@ StateMachine.define(PacManState.class, GameEvent.class)
 	.transitions()
 
 		.when(HOME).then(HUNGRY)
-
+		
 		.when(HUNGRY).then(DYING)
 			.on(PacManKilledEvent.class)
 
@@ -205,11 +211,10 @@ StateMachine.define(PacManState.class, GameEvent.class)
 
 		.when(GREEDY).then(HUNGRY)
 			.onTimeout()
-			.act(() -> events.publish(new PacManLostPowerEvent()))
+			.act(() -> publishEvent(new PacManLostPowerEvent()))
 
-		.stay(DYING)
+		.when(DYING).then(DEAD)
 			.onTimeout()
-			.act(e -> events.publish(new PacManDiedEvent()))
 
 .endStateMachine();
 ```
