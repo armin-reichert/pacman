@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.view.Controller;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
@@ -35,7 +36,7 @@ public class Cast {
 
 	private final PacMan pacMan;
 	private final Ghost blinky, pinky, inky, clyde;
-	private final Set<Ghost> activeGhosts = new HashSet<>(4);
+	private final Set<MazeMover> activeActors = new HashSet<>();
 
 	public Cast(Game game) {
 		Maze maze = game.getMaze();
@@ -70,12 +71,11 @@ public class Cast {
 		clyde.fnCanLeaveHouse = () -> game.getLevel() > 1
 				|| game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
 
-		activeGhosts.addAll(Arrays.asList(blinky, pinky, inky, clyde));
+		activeActors.addAll(Arrays.asList(pacMan, blinky, pinky, inky, clyde));
 	}
 
 	public void init() {
-		pacMan.init();
-		activeGhosts.forEach(Ghost::init);
+		activeActors.forEach(Controller::init);
 	}
 
 	public Ghost getBlinky() {
@@ -98,24 +98,24 @@ public class Cast {
 		return pacMan;
 	}
 
-	public boolean isActive(Ghost ghost) {
-		return activeGhosts.contains(ghost);
+	public boolean isActive(MazeMover actor) {
+		return activeActors.contains(actor);
 	}
 
-	public void setActive(Ghost ghost, boolean active) {
-		if (active == isActive(ghost)) {
+	public void setActive(MazeMover actor, boolean active) {
+		if (active == isActive(actor)) {
 			return;
 		}
 		if (active) {
-			activeGhosts.add(ghost);
-			ghost.init();
+			activeActors.add(actor);
+			actor.init();
 		} else {
-			activeGhosts.remove(ghost);
+			activeActors.remove(actor);
 		}
 	}
 
 	public Stream<Ghost> getActiveGhosts() {
-		return activeGhosts.stream();
+		return getGhosts().filter(this::isActive);
 	}
 
 	public Stream<Ghost> getGhosts() {
