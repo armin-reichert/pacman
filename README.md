@@ -408,7 +408,7 @@ clyde.setMoveBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * Game.TS)
 In *scatter* mode, each ghost tries to reach his scattering target tile outside of the maze which results in a cyclic movement around the block in that corner.
 
 ```java
-ghost.setMoveBehavior(SCATTERING, ghost.headFor(() -> ghost.getScatteringTarget()));
+ghost.setMoveBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
 ```
 
 <img src="doc/scattering.png"/>
