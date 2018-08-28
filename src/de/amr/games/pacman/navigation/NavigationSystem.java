@@ -32,7 +32,7 @@ public interface NavigationSystem<T extends MazeMover> {
 	 * @return ambush behavior
 	 */
 	public default Navigation<T> ambush(MazeMover victim, int n) {
-		return followTargetTile(() -> victim.ahead(n));
+		return headFor(() -> victim.ahead(n));
 	}
 
 	/**
@@ -71,7 +71,7 @@ public interface NavigationSystem<T extends MazeMover> {
 	 *                   Otherwise it directly attacks PacMan.
 	 */
 	public default Navigation<T> attackAndReject(Ghost attacker, PacMan pacMan, int distance) {
-		return followTargetTile(
+		return headFor(
 				() -> dist(attacker.getCenter(), pacMan.getCenter()) >= distance ? pacMan.getTile()
 						: attacker.getScatteringTarget());
 	}
@@ -84,7 +84,7 @@ public interface NavigationSystem<T extends MazeMover> {
 	 * @return direct attack behavior
 	 */
 	public default Navigation<T> attackDirectly(MazeMover victim) {
-		return followTargetTile(victim::getTile);
+		return headFor(victim::getTile);
 	}
 
 	/**
@@ -114,7 +114,7 @@ public interface NavigationSystem<T extends MazeMover> {
 	 * @return partner attack behavior
 	 */
 	public default Navigation<T> attackWithPartner(Ghost partner, PacMan pacMan) {
-		return followTargetTile(() -> {
+		return headFor(() -> {
 			Tile partnerTile = partner.getTile();
 			Tile pacManTile = pacMan.ahead(2);
 			Tile target = new Tile(2 * pacManTile.col - partnerTile.col,
@@ -210,13 +210,14 @@ public interface NavigationSystem<T extends MazeMover> {
 	}
 
 	/**
-	 * Follows the route to the target tile by chosing the best direction at every intersection.
+	 * Tries to reach the possibly unreachable target tile by chosing the best direction at every
+	 * intersection.
 	 * 
 	 * @param targetTileSupplier
 	 *                             function supplying the target tile at time of decision
-	 * @return behavior following the route to the tile computed by the supplier
+	 * @return behavior head for the tile computed by the supplier
 	 */
-	public default Navigation<T> followTargetTile(Supplier<Tile> targetTileSupplier) {
+	public default Navigation<T> headFor(Supplier<Tile> targetTileSupplier) {
 		return new FollowTargetTile<T>(targetTileSupplier);
 	}
 
