@@ -74,7 +74,7 @@ public class Ghost extends GameEntityUsingSprites
 	}
 
 	public void initGhost() {
-		placeAtTile(home, getTileSize() / 2, 0);
+		placeAt(home, getTileSize() / 2, 0);
 		setCurrentDir(initialDir);
 		setNextDir(initialDir);
 		getSprites().forEach(Sprite::resetAnimation);

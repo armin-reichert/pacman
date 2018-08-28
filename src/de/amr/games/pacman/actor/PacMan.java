@@ -71,7 +71,7 @@ public class PacMan extends GameEntityUsingSprites
 
 	public void initPacMan() {
 		digestionTicks = 0;
-		placeAtTile(getHome(), getTileSize() / 2, 0);
+		placeAt(getHome(), getTileSize() / 2, 0);
 		setNextDir(Top4.E);
 		getSprites().forEach(Sprite::resetAnimation);
 		sprite = s_full;

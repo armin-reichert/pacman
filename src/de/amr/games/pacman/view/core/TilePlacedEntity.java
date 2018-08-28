@@ -28,13 +28,13 @@ public interface TilePlacedEntity {
 		return new Tile(tileCoord(tf.getX()), tileCoord(tf.getY()));
 	}
 
-	default void placeAtTile(Tile tile, float xOffset, float yOffset) {
+	default void placeAt(Tile tile, float xOffset, float yOffset) {
 		Transform tf = getTransform();
 		tf.moveTo(tile.col * getTileSize() + xOffset, tile.row * getTileSize() + yOffset);
 	}
 
 	default void align() {
-		placeAtTile(getTile(), 0, 0);
+		placeAt(getTile(), 0, 0);
 	}
 
 	default boolean isAligned() {
