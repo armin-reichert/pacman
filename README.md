@@ -323,8 +323,8 @@ The ghosts behave identically in some of their states:
 // common ghost behavior
 Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
 	ghost.setMoveBehavior(FRIGHTENED, ghost.flee(pacMan));
-	ghost.setMoveBehavior(SCATTERING, ghost.headFor(() -> ghost.getScatteringTarget()));
-	ghost.setMoveBehavior(DEAD, ghost.headFor(() -> ghost.getHome()));
+	ghost.setMoveBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
+	ghost.setMoveBehavior(DEAD, ghost.headFor(ghost::getHome));
 	ghost.setMoveBehavior(SAFE, ghost.bounce());
 });
 ```
