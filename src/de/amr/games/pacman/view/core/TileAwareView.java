@@ -1,6 +1,5 @@
-package de.amr.games.pacman.actor;
+package de.amr.games.pacman.view.core;
 
-import static de.amr.games.pacman.model.Game.TS;
 import static java.lang.Math.round;
 
 import de.amr.easy.game.entity.Transform;
@@ -8,40 +7,38 @@ import de.amr.easy.game.view.View;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * An entity with the size of one tile that understands tile coordinates. The sprite (if any) which
- * can be of a different size than one tile is drawn centered over the collision box.
+ * Mixin for game entities which are aware of a tiled environment.
  * 
  * @author Armin Reichert
  */
-public interface TileWorldEntity extends View {
+public interface TileAwareView extends View {
 
-	public static Tile getTile(float x, float y) {
-		return new Tile(round(x + TS / 2) / TS, round(y + TS / 2) / TS);
-	}
+	int getTileSize();
+
+	Transform getTransform();
 
 	@Override
 	default int getWidth() {
-		return TS;
+		return getTileSize();
 	}
 
 	@Override
 	default int getHeight() {
-		return TS;
+		return getTileSize();
 	}
 
-	Transform getTransform();
-
 	/**
-	 * @return the tile containing the center of the collision box.
+	 * @return the tile containing the center of the entity collision box.
 	 */
 	default Tile getTile() {
 		Transform tf = getTransform();
-		return getTile(tf.getX(), tf.getY());
+		return new Tile(round(tf.getX() + getTileSize() / 2) / getTileSize(),
+				round(tf.getY() + getTileSize() / 2) / getTileSize());
 	}
 
 	default void placeAtTile(Tile tile, float xOffset, float yOffset) {
 		Transform tf = getTransform();
-		tf.moveTo(tile.col * TS + xOffset, tile.row * TS + yOffset);
+		tf.moveTo(tile.col * getTileSize() + xOffset, tile.row * getTileSize() + yOffset);
 	}
 
 	default void align() {
@@ -54,11 +51,11 @@ public interface TileWorldEntity extends View {
 
 	default int getAlignmentX() {
 		Transform tf = getTransform();
-		return round(tf.getX()) % TS;
+		return round(tf.getX()) % getTileSize();
 	}
 
 	default int getAlignmentY() {
 		Transform tf = getTransform();
-		return round(tf.getY()) % TS;
+		return round(tf.getY()) % getTileSize();
 	}
 }

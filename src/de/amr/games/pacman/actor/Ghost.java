@@ -76,6 +76,11 @@ public class Ghost extends MazeMover
 	// Accessors
 
 	@Override
+	public int getTileSize() {
+		return Game.TS;
+	}
+
+	@Override
 	public Maze getMaze() {
 		return game.getMaze();
 	}
@@ -155,7 +160,7 @@ public class Ghost extends MazeMover
 	public Sprite currentSprite() {
 		return sprite;
 	}
-	
+
 	@Override
 	public void draw(Graphics2D g) {
 		float dx = tf.getX() - (sprite.getWidth() - getWidth()) / 2;

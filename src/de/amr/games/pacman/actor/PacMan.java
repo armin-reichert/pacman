@@ -97,6 +97,11 @@ public class PacMan extends MazeMover
 	// Accessors
 
 	@Override
+	public int getTileSize() {
+		return Game.TS;
+	}
+
+	@Override
 	public Maze getMaze() {
 		return game.getMaze();
 	}

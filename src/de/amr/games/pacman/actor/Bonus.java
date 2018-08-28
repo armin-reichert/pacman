@@ -9,9 +9,11 @@ import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.model.BonusSymbol;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.PacManThemes;
+import de.amr.games.pacman.view.core.TileAwareView;
 
-public class Bonus extends GameEntity implements TileWorldEntity {
+public class Bonus extends GameEntity implements TileAwareView {
 
 	private static final int[] POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
@@ -54,6 +56,11 @@ public class Bonus extends GameEntity implements TileWorldEntity {
 	@Override
 	public Transform getTransform() {
 		return tf;
+	}
+	
+	@Override
+	public int getTileSize() {
+		return Game.TS;
 	}
 
 	@Override

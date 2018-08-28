@@ -11,13 +11,14 @@ import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.view.core.TileAwareView;
 
 /**
  * An entity that knows how to move inside a tile-based maze.
  * 
  * @author Armin Reichert
  */
-public abstract class MazeMover extends GameEntity implements TileWorldEntity {
+public abstract class MazeMover extends GameEntity implements TileAwareView {
 
 	private int currentDir;
 	private int nextDir;
