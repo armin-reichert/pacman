@@ -248,6 +248,7 @@ public class PacMan extends GameEntityUsingSprites
 
 				.state(HOME)
 					.onEntry(this::initPacMan)
+					.timeoutAfter(() -> game.sec(0.25f))
 	
 				.state(HUNGRY)
 					.impl(new HungryState())
@@ -262,7 +263,7 @@ public class PacMan extends GameEntityUsingSprites
 
 			.transitions()
 
-				.when(HOME).then(HUNGRY)
+				.when(HOME).then(HUNGRY).onTimeout()
 				
 				.when(HUNGRY).then(DYING)
 					.on(PacManKilledEvent.class)
