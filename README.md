@@ -343,7 +343,7 @@ the implementation of the individual behaviors like *scatter*, *ambush*, *attack
 Blinky's chase behavior is to directly attack Pac-Man:
 
 ```java
-public default Navigation<T> attackDirectly(MazeMover victim) {
+public default Navigation<T> attackDirectly(Actor victim) {
 	return headFor(victim::getTile);
 }
 
@@ -357,7 +357,7 @@ blinky.setMoveBehavior(CHASING, blinky.attackDirectly(pacMan));
 Pinky, the *ambusher*, targets the position 4 tiles ahead of Pac-Man (in the original game there is an overflow error that leads to a different behavior):
 
 ```java
-public default Navigation<T> ambush(MazeMover victim, int n) {
+public default Navigation<T> ambush(Actor victim, int n) {
 	return headFor(() -> victim.ahead(n));
 }
 
