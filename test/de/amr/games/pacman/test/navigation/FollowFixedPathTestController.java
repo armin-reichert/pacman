@@ -27,7 +27,8 @@ public class FollowFixedPathTestController implements Controller {
 		game = new Game(maze, Application.PULSE::getFrequency);
 		actors = new Cast(game);
 		targets = Arrays.asList(maze.getBottomRightCorner(), maze.getBottomLeftCorner(),
-				maze.getTopLeftCorner(), maze.getTopRightCorner());
+				maze.getLeftTunnelEntry(), maze.getTopLeftCorner(), maze.getTopRightCorner(),
+				maze.getRightTunnelEntry());
 		view = new PlayViewX(width, height, game);
 		view.setActors(actors);
 		view.showRoutes = true;
