@@ -31,8 +31,8 @@ public class ScatteringTestController implements Controller {
 	@Override
 	public void init() {
 		game.init();
-		actors.getPacMan().initPacMan();
-		actors.getPacMan().setEventsEnabled(false);
+		actors.pacMan.initPacMan();
+		actors.pacMan.setEventsEnabled(false);
 		actors.getActiveGhosts().forEach(ghost -> {
 			ghost.initGhost();
 			ghost.setState(GhostState.SCATTERING);

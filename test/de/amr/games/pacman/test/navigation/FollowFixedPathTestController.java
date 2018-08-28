@@ -42,12 +42,12 @@ public class FollowFixedPathTestController implements Controller {
 		targetIndex = 0;
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
-		actors.setActive(actors.getPacMan(), false);
-		actors.getBlinky().initGhost();
-		actors.getBlinky().setState(GhostState.CHASING);
-		actors.getBlinky().setMoveBehavior(GhostState.CHASING,
-				actors.getBlinky().followStaticRoute(targets.get(0)));
-		actors.getBlinky().getMoveBehavior().computeStaticRoute(actors.getBlinky());
+		actors.setActive(actors.pacMan, false);
+		actors.blinky.initGhost();
+		actors.blinky.setState(GhostState.CHASING);
+		actors.blinky.setMoveBehavior(GhostState.CHASING,
+				actors.blinky.followStaticRoute(targets.get(0)));
+		actors.blinky.getMoveBehavior().computeStaticRoute(actors.blinky);
 	}
 
 	private void nextTarget() {
@@ -56,15 +56,15 @@ public class FollowFixedPathTestController implements Controller {
 			targetIndex = 0;
 			game.setLevel(game.getLevel() + 1);
 		}
-		actors.getBlinky().setMoveBehavior(GhostState.CHASING,
-				actors.getBlinky().followStaticRoute(targets.get(targetIndex)));
-		actors.getBlinky().getMoveBehavior().computeStaticRoute(actors.getBlinky());
+		actors.blinky.setMoveBehavior(GhostState.CHASING,
+				actors.blinky.followStaticRoute(targets.get(targetIndex)));
+		actors.blinky.getMoveBehavior().computeStaticRoute(actors.blinky);
 	}
 
 	@Override
 	public void update() {
-		actors.getBlinky().update();
-		if (actors.getBlinky().getTile().equals(targets.get(targetIndex))) {
+		actors.blinky.update();
+		if (actors.blinky.getTile().equals(targets.get(targetIndex))) {
 			nextTarget();
 		}
 		view.update();

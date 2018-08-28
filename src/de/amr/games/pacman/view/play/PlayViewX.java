@@ -97,16 +97,16 @@ public class PlayViewX extends PlayView {
 			eatAllPellets();
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
-			toggleGhost(actors.getBlinky());
+			toggleGhost(actors.blinky);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_P)) {
-			toggleGhost(actors.getPinky());
+			toggleGhost(actors.pinky);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_I)) {
-			toggleGhost(actors.getInky());
+			toggleGhost(actors.inky);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_C)) {
-			toggleGhost(actors.getClyde());
+			toggleGhost(actors.clyde);
 		}
 		super.update();
 	}
@@ -124,7 +124,7 @@ public class PlayViewX extends PlayView {
 		super.draw(g);
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
-			drawActorAlignment(actors.getPacMan(), g);
+			drawActorAlignment(actors.pacMan, g);
 			actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> drawActorAlignment(ghost, g));
 		}
 		if (showRoutes) {
@@ -136,9 +136,9 @@ public class PlayViewX extends PlayView {
 	}
 
 	private void drawEntityStates(Graphics2D g) {
-		PacMan pacMan = actors.getPacMan();
-		if (pacMan.getState() != null) {
-			drawText(g, Color.YELLOW, pacMan.getTransform().getX(), pacMan.getTransform().getY(), pacManState(pacMan));
+		if (actors.pacMan.getState() != null) {
+			drawText(g, Color.YELLOW, actors.pacMan.getTransform().getX(), actors.pacMan.getTransform().getY(),
+					pacManState(actors.pacMan));
 		}
 		actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> {
 			if (ghost.getState() != null) {
@@ -231,7 +231,7 @@ public class PlayViewX extends PlayView {
 			g.translate(-route.getTargetTile().col * TS, -route.getTargetTile().row * TS);
 		}
 
-		if (ghost == actors.getClyde() && ghost.getState() == GhostState.CHASING) {
+		if (ghost == actors.clyde && ghost.getState() == GhostState.CHASING) {
 			Vector2f center = ghost.getTransform().getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.drawOval((int) center.x - 8 * TS, (int) center.y - 8 * TS, 16 * TS, 16 * TS);

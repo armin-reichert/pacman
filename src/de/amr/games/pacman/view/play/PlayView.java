@@ -15,7 +15,6 @@ import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManWorld;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
@@ -68,7 +67,7 @@ public class PlayView implements ViewController, PacManWorld {
 
 	public void enableAnimation(boolean enable) {
 		mazeView.enableAnimation(enable);
-		actors.getPacMan().enableAnimation(enable);
+		actors.pacMan.enableAnimation(enable);
 		actors.getActiveGhosts().forEach(ghost -> ghost.enableAnimation(enable));
 	}
 
@@ -79,31 +78,6 @@ public class PlayView implements ViewController, PacManWorld {
 	@Override
 	public Stream<Ghost> getActiveGhosts() {
 		return actors.getActiveGhosts();
-	}
-
-	@Override
-	public Ghost getBlinky() {
-		return actors.getBlinky();
-	}
-
-	@Override
-	public Ghost getClyde() {
-		return actors.getClyde();
-	}
-
-	@Override
-	public Ghost getInky() {
-		return actors.getInky();
-	}
-
-	@Override
-	public Ghost getPinky() {
-		return actors.getPinky();
-	}
-
-	@Override
-	public PacMan getPacMan() {
-		return actors.getPacMan();
 	}
 
 	@Override
@@ -153,8 +127,8 @@ public class PlayView implements ViewController, PacManWorld {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		if (actors.isActive(actors.getPacMan())) {
-			actors.getPacMan().draw(g);
+		if (actors.isActive(actors.pacMan)) {
+			actors.pacMan.draw(g);
 		}
 		actors.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
 				.forEach(ghost -> ghost.draw(g));

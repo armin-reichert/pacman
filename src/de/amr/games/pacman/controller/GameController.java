@@ -73,7 +73,7 @@ public class GameController implements Controller {
 
 		actors = new Cast(game);
 		actors.traceTo(LOGGER);
-		actors.getPacMan().subscribe(gameControl::process);
+		actors.pacMan.subscribe(gameControl::process);
 	}
 
 	private IntroView getIntroView(Game game) {
@@ -91,7 +91,7 @@ public class GameController implements Controller {
 			int height = game.getMaze().numRows() * Game.TS;
 			playView = new PlayViewX(width, height, game);
 			playView.setActors(actors);
-			actors.getPacMan().setWorld(playView);
+			actors.pacMan.setWorld(playView);
 		}
 		return playView;
 	}
@@ -219,10 +219,10 @@ public class GameController implements Controller {
 					.onTimeout()
 					
 				.when(PACMAN_DYING).then(GAME_OVER)
-					.condition(() -> actors.getPacMan().getState() == PacManState.DEAD && game.getLives() == 0)
+					.condition(() -> actors.pacMan.getState() == PacManState.DEAD && game.getLives() == 0)
 					
 				.when(PACMAN_DYING).then(PLAYING)
-					.condition(() -> actors.getPacMan().getState() == PacManState.DEAD && game.getLives() > 0)
+					.condition(() -> actors.pacMan.getState() == PacManState.DEAD && game.getLives() > 0)
 					.act(() -> { playView.init(); actors.init(); })
 			
 				.when(GAME_OVER).then(READY)
@@ -267,13 +267,13 @@ public class GameController implements Controller {
 
 		@Override
 		public void onTick() {
-			actors.getPacMan().update();
+			actors.pacMan.update();
 			actors.getActiveGhosts().forEach(Ghost::update);
 		}
 
 		private void onPacManGhostCollision(GameEvent event) {
 			PacManGhostCollisionEvent e = (PacManGhostCollisionEvent) event;
-			PacManState pacManState = actors.getPacMan().getState();
+			PacManState pacManState = actors.pacMan.getState();
 			if (pacManState == PacManState.DYING) {
 				return;
 			}
@@ -290,14 +290,14 @@ public class GameController implements Controller {
 
 		private void onPacManKilled(GameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
-			actors.getPacMan().processEvent(e);
+			actors.pacMan.processEvent(e);
 			LOGGER.info(
 					() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
 		}
 
 		private void onPacManGainsPower(GameEvent event) {
 			PacManGainsPowerEvent e = (PacManGainsPowerEvent) event;
-			actors.getPacMan().processEvent(e);
+			actors.pacMan.processEvent(e);
 			actors.getActiveGhosts().forEach(ghost -> ghost.processEvent(e));
 		}
 
@@ -356,7 +356,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onEntry() {
-			actors.getPacMan().setFullSprite();
+			actors.pacMan.setFullSprite();
 			actors.getActiveGhosts().forEach(ghost -> ghost.setVisible(false));
 			playView.setMazeFlashing(true);
 		}
@@ -386,7 +386,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onEntry() {
-			actors.getPacMan().setVisible(false);
+			actors.pacMan.setVisible(false);
 			game.score.add(game.getKilledGhostValue());
 			LOGGER.info(String.format("Scored %d points for killing ghost #%d",
 					game.getKilledGhostValue(), game.getGhostsKilledByEnergizer()));
@@ -400,7 +400,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onExit() {
-			actors.getPacMan().setVisible(true);
+			actors.pacMan.setVisible(true);
 		}
 	}
 
@@ -414,7 +414,7 @@ public class GameController implements Controller {
 
 		@Override
 		public void onTick() {
-			actors.getPacMan().update();
+			actors.pacMan.update();
 		}
 
 		@Override

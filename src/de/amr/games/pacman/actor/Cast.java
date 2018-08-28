@@ -10,9 +10,8 @@ import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.awt.event.KeyEvent.VK_UP;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -36,31 +35,31 @@ public class Cast {
 	public static final String INKY = "Inky";
 	public static final String CLYDE = "Clyde";
 
-	private final Map<String, Actor> actorMap = new HashMap<>();
+	public final PacMan pacMan;
+	public final Ghost blinky, pinky, inky, clyde;
+
 	private final Set<Actor> activeActors = new HashSet<>();
 
 	public Cast(Game game) {
 		Maze maze = game.getMaze();
 
 		// Pac-Man
-		PacMan pacMan = new PacMan(game);
+		pacMan = new PacMan(game);
 
 		// The ghosts
-		Ghost blinky = new Ghost(BLINKY, pacMan, game, maze.getBlinkyHome(), maze.getBlinkyScatteringTarget(), Top4.E,
+		blinky = new Ghost(BLINKY, pacMan, game, maze.getBlinkyHome(), maze.getBlinkyScatteringTarget(), Top4.E,
 				GhostColor.RED);
 
-		Ghost pinky = new Ghost(PINKY, pacMan, game, maze.getPinkyHome(), maze.getPinkyScatteringTarget(), Top4.S,
+		pinky = new Ghost(PINKY, pacMan, game, maze.getPinkyHome(), maze.getPinkyScatteringTarget(), Top4.S,
 				GhostColor.PINK);
 
-		Ghost inky = new Ghost(INKY, pacMan, game, maze.getInkyHome(), maze.getInkyScatteringTarget(), Top4.N,
+		inky = new Ghost(INKY, pacMan, game, maze.getInkyHome(), maze.getInkyScatteringTarget(), Top4.N,
 				GhostColor.TURQUOISE);
 
-		Ghost clyde = new Ghost(CLYDE, pacMan, game, maze.getClydeHome(), maze.getClydeScatteringTarget(), Top4.N,
+		clyde = new Ghost(CLYDE, pacMan, game, maze.getClydeHome(), maze.getClydeScatteringTarget(), Top4.N,
 				GhostColor.ORANGE);
 
-		actorMap.put(PACMAN, pacMan);
-		Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> actorMap.put(ghost.getName(), ghost));
-		activeActors.addAll(actorMap.values());
+		activeActors.addAll(Arrays.asList(pacMan, blinky, pinky, inky, clyde));
 
 		// Define the navigation behavior ("AI")
 
@@ -91,26 +90,6 @@ public class Cast {
 		activeActors.forEach(Actor::init);
 	}
 
-	public Ghost getBlinky() {
-		return (Ghost) actorMap.get(BLINKY);
-	}
-
-	public Ghost getPinky() {
-		return (Ghost) actorMap.get(PINKY);
-	}
-
-	public Ghost getInky() {
-		return (Ghost) actorMap.get(INKY);
-	}
-
-	public Ghost getClyde() {
-		return (Ghost) actorMap.get(CLYDE);
-	}
-
-	public PacMan getPacMan() {
-		return (PacMan) actorMap.get(PACMAN);
-	}
-
 	public boolean isActive(Actor actor) {
 		return activeActors.contains(actor);
 	}
@@ -132,11 +111,11 @@ public class Cast {
 	}
 
 	public Stream<Ghost> getGhosts() {
-		return Stream.of(getBlinky(), getPinky(), getInky(), getClyde());
+		return Stream.of(blinky, pinky, inky, clyde);
 	}
 
 	public void traceTo(Logger logger) {
-		getPacMan().traceTo(logger);
+		pacMan.traceTo(logger);
 		getGhosts().forEach(ghost -> ghost.traceTo(logger));
 	}
 }
