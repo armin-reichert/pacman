@@ -10,7 +10,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public interface TilePositionedEntity {
+public interface TilePlacedEntity {
 
 	int getTileSize();
 

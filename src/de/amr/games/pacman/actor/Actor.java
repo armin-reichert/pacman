@@ -10,7 +10,7 @@ import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.view.core.TilePositionedEntity;
+import de.amr.games.pacman.view.core.TilePlacedEntity;
 
 /**
  * Mixin for actors in Pac-Man. Actors know how to move in the maze and can be controlled by
@@ -18,7 +18,7 @@ import de.amr.games.pacman.view.core.TilePositionedEntity;
  * 
  * @author Armin Reichert
  */
-public interface Actor extends Controller, TilePositionedEntity {
+public interface Actor extends Controller, TilePlacedEntity {
 
 	int getCurrentDir();
 

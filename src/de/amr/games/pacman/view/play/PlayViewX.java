@@ -26,7 +26,7 @@ import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.MazeRoute;
-import de.amr.games.pacman.view.core.TilePositionedEntity;
+import de.amr.games.pacman.view.core.TilePlacedEntity;
 import de.amr.statemachine.StateObject;
 
 /**
@@ -190,7 +190,7 @@ public class PlayViewX extends PlayView {
 		g.translate(-x, -y);
 	}
 
-	private void drawActorAlignment(TilePositionedEntity actor, Graphics2D g) {
+	private void drawActorAlignment(TilePlacedEntity actor, Graphics2D g) {
 		g.setColor(Color.GREEN);
 		g.translate(actor.getTransform().getX(), actor.getTransform().getY());
 		int w = actor.getTransform().getWidth(), h = actor.getTransform().getHeight();

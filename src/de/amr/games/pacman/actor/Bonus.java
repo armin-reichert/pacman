@@ -11,9 +11,9 @@ import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.PacManThemes;
-import de.amr.games.pacman.view.core.TilePositionedEntity;
+import de.amr.games.pacman.view.core.TilePlacedEntity;
 
-public class Bonus extends GameEntityUsingSprites implements TilePositionedEntity {
+public class Bonus extends GameEntityUsingSprites implements TilePlacedEntity {
 
 	private static final int[] POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
