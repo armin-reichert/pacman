@@ -51,7 +51,7 @@ public class FollowTargetTile<T extends Actor> implements Navigation<T> {
 		Tile moverTile = mover.getTile();
 
 		// keep direction when in tunnel or teleport space
-		if (mover.inTunnel() || mover.inTeleportSpace()) {
+		if (mover.inTeleportSpace() || mover.inTunnel()) {
 			route.setDir(moverDir);
 			return route;
 		}
