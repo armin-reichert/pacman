@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.sprite.Sprite;
-import de.amr.games.pacman.controller.StateMachineControlled;
+import de.amr.games.pacman.controller.StateMachineClient;
 import de.amr.games.pacman.controller.event.GameEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -37,7 +37,7 @@ import de.amr.statemachine.StateMachine;
  * @author Armin Reichert
  */
 public class Ghost extends Actor
-		implements StateMachineControlled<GhostState, GameEvent>, NavigationSystem<Ghost> {
+		implements StateMachineClient<GhostState, GameEvent>, NavigationSystem<Ghost> {
 
 	private final String name;
 	private final Game game;

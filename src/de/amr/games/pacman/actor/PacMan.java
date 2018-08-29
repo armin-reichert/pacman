@@ -18,7 +18,7 @@ import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.controller.EventManager;
-import de.amr.games.pacman.controller.StateMachineControlled;
+import de.amr.games.pacman.controller.StateMachineClient;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GameEvent;
@@ -41,7 +41,7 @@ import de.amr.statemachine.StateObject;
  * @author Armin Reichert
  */
 public class PacMan extends Actor
-		implements StateMachineControlled<PacManState, GameEvent>, NavigationSystem<PacMan> {
+		implements StateMachineClient<PacManState, GameEvent>, NavigationSystem<PacMan> {
 
 	private final Game game;
 	private final StateMachine<PacManState, GameEvent> controller;
