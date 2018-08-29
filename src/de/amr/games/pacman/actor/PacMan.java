@@ -53,8 +53,6 @@ public class PacMan extends Actor
 
 	public PacMan(Game game) {
 		this.game = game;
-		tf.setWidth(Game.TS);
-		tf.setHeight(Game.TS);
 		events = new EventManager<>("[PacMan]");
 		eventsEnabled = true;
 		controller = buildStateMachine();

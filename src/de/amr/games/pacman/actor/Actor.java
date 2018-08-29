@@ -30,6 +30,8 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 	public Actor() {
 		visible = true;
 		currentDir = nextDir = Top4.E;
+		tf.setWidth(getTileSize());
+		tf.setHeight(getTileSize());
 	}
 
 	public boolean isVisible() {

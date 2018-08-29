@@ -58,8 +58,6 @@ public class Ghost extends Actor
 		this.home = home;
 		this.scatteringTarget = scatteringTarget;
 		this.initialDir = initialDir;
-		tf.setWidth(Game.TS);
-		tf.setHeight(Game.TS);
 		fnCanLeaveHouse = () -> getStateObject().isTerminated();
 		controller = buildStateMachine(name);
 		navigationMap = new EnumMap<>(GhostState.class);
