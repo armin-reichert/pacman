@@ -22,8 +22,6 @@ public class BlinkingText extends GameEntityUsingSprites {
 	private Font font;
 	private Color background;
 	private Color color;
-	private int width;
-	private int height;
 
 	public BlinkingText() {
 		this.text = "";
@@ -44,14 +42,6 @@ public class BlinkingText extends GameEntityUsingSprites {
 		this.color = color;
 		createSprite();
 		return this;
-	}
-
-	@Override
-	public void init() {
-	}
-
-	@Override
-	public void update() {
 	}
 
 	public void setText(String text) {
@@ -91,9 +81,10 @@ public class BlinkingText extends GameEntityUsingSprites {
 		if (font.getFontName().equals("ArcadeClassic")) {
 			patchedText = text.replace(" ", "    ");
 		}
-		width = g.getFontMetrics().stringWidth(patchedText);
-		width = width == 0 ? 1 : width;
-		height = font.getSize();
+		int width = Math.max(1, g.getFontMetrics().stringWidth(patchedText));
+		int height = font.getSize();
+		tf.setWidth(width);
+		tf.setHeight(height);
 		g.dispose();
 		// create correctly sized image
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -111,7 +102,7 @@ public class BlinkingText extends GameEntityUsingSprites {
 	@Override
 	public void draw(Graphics2D g) {
 		g.setColor(background);
-		g.fillRect(0, 0, getWidth(), getHeight());
+		g.fillRect(0, 0, currentSprite().getWidth(), currentSprite().getHeight());
 		super.draw(g);
 	}
 }

@@ -15,6 +15,8 @@ public abstract class ScrollingImage extends GameEntityUsingSprites implements V
 	public ScrollingImage(Image image) {
 		addSprite("s_image", new Sprite(image));
 		setCurrentSprite("s_image");
+		tf.setWidth(currentSprite().getWidth());
+		tf.setHeight(currentSprite().getHeight());
 	}
 
 	@Override

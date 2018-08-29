@@ -30,6 +30,8 @@ public class ChasePacManAnimation extends GameEntity implements ViewAnimation {
 		ghosts[2] = THEME.ghostColored(GhostColor.TURQUOISE, Top4.W);
 		ghosts[3] = THEME.ghostColored(GhostColor.ORANGE, Top4.W);
 		pill = true;
+		tf.setWidth(88);
+		tf.setHeight(16);
 	}
 
 	public void setStartPosition(float x, float y) {
@@ -74,16 +76,6 @@ public class ChasePacManAnimation extends GameEntity implements ViewAnimation {
 	@Override
 	public boolean isCompleted() {
 		return tf.getX() < endPosition.x;
-	}
-
-	@Override
-	public int getWidth() {
-		return 88;
-	}
-
-	@Override
-	public int getHeight() {
-		return 16;
 	}
 
 	@Override

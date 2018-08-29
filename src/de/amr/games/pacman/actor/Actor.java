@@ -184,8 +184,8 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 	@Override
 	public void draw(Graphics2D g) {
 		if (isVisible() && currentSprite() != null) {
-			float dx = tf.getX() - (getWidth() - tf.getWidth()) / 2;
-			float dy = tf.getY() - (getHeight() - tf.getHeight()) / 2;
+			float dx = tf.getX() - (currentSprite().getWidth() - tf.getWidth()) / 2;
+			float dy = tf.getY() - (currentSprite().getHeight() - tf.getHeight()) / 2;
 			g.translate(dx, dy);
 			currentSprite().draw(g);
 			g.translate(-dx, -dy);

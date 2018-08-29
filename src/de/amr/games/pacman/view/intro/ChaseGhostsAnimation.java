@@ -32,6 +32,8 @@ public class ChaseGhostsAnimation extends GameEntity implements ViewAnimation {
 		for (int i = 0; i < 4; ++i) {
 			points[i] = THEME.greenNumber(i);
 		}
+		tf.setWidth(5 * 18);
+		tf.setHeight(18);
 	}
 
 	public void setStartPosition(float x, float y) {
@@ -69,7 +71,7 @@ public class ChaseGhostsAnimation extends GameEntity implements ViewAnimation {
 	public void update() {
 		if (tf.getVelocityX() > 0) {
 			tf.move();
-			if (tf.getX() + getWidth() < 0) {
+			if (tf.getX() + tf.getWidth() < 0) {
 				return;
 			}
 			pacManX += 0.3f;
@@ -105,15 +107,5 @@ public class ChaseGhostsAnimation extends GameEntity implements ViewAnimation {
 		pacMan.draw(g);
 		g.translate(-pacManX, 0);
 		g.translate(-tf.getX(), -tf.getY());
-	}
-
-	@Override
-	public int getWidth() {
-		return 5 * 18;
-	}
-
-	@Override
-	public int getHeight() {
-		return 18;
 	}
 }

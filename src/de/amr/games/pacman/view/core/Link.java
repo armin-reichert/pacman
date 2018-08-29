@@ -19,8 +19,6 @@ import de.amr.easy.game.view.ViewController;
 
 public class Link extends GameEntity implements ViewController {
 
-	private int width;
-	private int height;
 	private String text;
 	private Font font;
 	private Color color;
@@ -95,16 +93,6 @@ public class Link extends GameEntity implements ViewController {
 	}
 
 	@Override
-	public int getWidth() {
-		return width;
-	}
-
-	@Override
-	public int getHeight() {
-		return height;
-	}
-
-	@Override
 	public void draw(Graphics2D g) {
 		g.translate(tf.getX(), tf.getY());
 		g.setColor(color);
@@ -122,13 +110,13 @@ public class Link extends GameEntity implements ViewController {
 		Graphics2D g = img.createGraphics();
 		g.setFont(font);
 		FontMetrics fm = g.getFontMetrics();
-		width = fm.stringWidth(text);
-		height = fm.getHeight();
+		tf.setWidth(fm.stringWidth(text));
+		tf.setHeight(fm.getHeight());
 		g.dispose();
 	}
 
 	private void openURL() {
-		// TODO only works under Windows OS
+		// TODO only works under Windows
 		try {
 			Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
 		} catch (IOException e) {

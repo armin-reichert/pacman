@@ -37,6 +37,8 @@ public class GhostPointsAnimation extends GameEntity implements ViewController {
 			points[i] = THEME.greenNumber(i);
 		}
 		ghostTimer = -1;
+		tf.setWidth(90);
+		tf.setHeight(18);
 	}
 
 	private void resetGhostTimer() {
@@ -120,15 +122,5 @@ public class GhostPointsAnimation extends GameEntity implements ViewController {
 			g.translate(-x, 0);
 		}
 		g.translate(-tf.getX(), -tf.getY());
-	}
-
-	@Override
-	public int getWidth() {
-		return 5 * 18;
-	}
-
-	@Override
-	public int getHeight() {
-		return 18;
 	}
 }

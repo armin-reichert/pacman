@@ -48,14 +48,15 @@ public class IntroView implements ViewController {
 		logo = new ScrollingLogo(width, height);
 		chasePacMan = new ChasePacManAnimation();
 		chasePacMan.setStartPosition(width, 100);
-		chasePacMan.setEndPosition(-chasePacMan.getWidth(), 100);
+		chasePacMan.setEndPosition(-chasePacMan.tf().getWidth(), 100);
 		chaseGhosts = new ChaseGhostsAnimation();
-		chaseGhosts.setStartPosition(-chaseGhosts.getWidth(), 200);
+		chaseGhosts.setStartPosition(-chaseGhosts.tf().getWidth(), 200);
 		chaseGhosts.setEndPosition(width, 200);
 		ghostPoints = new GhostPointsAnimation();
 		ghostPoints.tf().setY(200);
 		ghostPoints.centerHorizontally(width);
-		startText = new BlinkingText().set("Press SPACE to start!", THEME.textFont(18), background, Color.PINK);
+		startText = new BlinkingText().set("Press SPACE to start!", THEME.textFont(18), background,
+				Color.PINK);
 		startText.tf().setY(150);
 		startText.centerHorizontally(width);
 		link = new Link(LINK_TEXT, THEME.textFont(8), Color.LIGHT_GRAY);
@@ -135,19 +136,9 @@ public class IntroView implements ViewController {
 	}
 
 	@Override
-	public int getWidth() {
-		return width;
-	}
-
-	@Override
-	public int getHeight() {
-		return height;
-	}
-
-	@Override
 	public void draw(Graphics2D g) {
 		g.setColor(background);
-		g.fillRect(0, 0, getWidth(), getHeight());
+		g.fillRect(0, 0, width, height);
 		actors.forEach(e -> e.draw(g));
 	}
 
