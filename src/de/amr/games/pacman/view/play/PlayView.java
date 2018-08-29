@@ -43,7 +43,7 @@ public class PlayView implements View,Controller, PacManWorld {
 		this.game = game;
 		lifeImage = PacManThemes.THEME.pacManWalking(Top4.W).frame(1);
 		mazeView = new MazeView(game.getMaze());
-		mazeView.tf().moveTo(0, 3 * TS);
+		mazeView.tf.moveTo(0, 3 * TS);
 	}
 
 	@Override
@@ -57,9 +57,9 @@ public class PlayView implements View,Controller, PacManWorld {
 	}
 
 	public void enableAnimation(boolean enable) {
-		mazeView.enableAnimation(enable);
-		actors.pacMan.enableAnimation(enable);
-		actors.getActiveGhosts().forEach(ghost -> ghost.enableAnimation(enable));
+		mazeView.enableSprites(enable);
+		actors.pacMan.enableSprites(enable);
+		actors.getActiveGhosts().forEach(ghost -> ghost.enableSprites(enable));
 	}
 
 	public void setActors(Cast actors) {

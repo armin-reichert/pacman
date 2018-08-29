@@ -49,19 +49,19 @@ public class IntroView implements View, Controller {
 		logo = new ScrollingLogo(width, height);
 		chasePacMan = new ChasePacManAnimation();
 		chasePacMan.setStartPosition(width, 100);
-		chasePacMan.setEndPosition(-chasePacMan.tf().getWidth(), 100);
+		chasePacMan.setEndPosition(-chasePacMan.tf.getWidth(), 100);
 		chaseGhosts = new ChaseGhostsAnimation();
-		chaseGhosts.setStartPosition(-chaseGhosts.tf().getWidth(), 200);
+		chaseGhosts.setStartPosition(-chaseGhosts.tf.getWidth(), 200);
 		chaseGhosts.setEndPosition(width, 200);
 		ghostPoints = new GhostPointsAnimation();
-		ghostPoints.tf().setY(200);
+		ghostPoints.tf.setY(200);
 		ghostPoints.centerHorizontally(width);
 		startText = new BlinkingText().set("Press SPACE to start!", THEME.textFont(18), background, Color.PINK);
-		startText.tf().setY(150);
+		startText.tf.setY(150);
 		startText.centerHorizontally(width);
 		link = new Link(LINK_TEXT, THEME.textFont(8), Color.LIGHT_GRAY);
 		link.setURL(LINK_URL);
-		link.tf().setY(height - 20);
+		link.tf.setY(height - 20);
 		link.centerHorizontally(width);
 	}
 

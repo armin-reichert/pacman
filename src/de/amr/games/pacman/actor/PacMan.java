@@ -136,9 +136,9 @@ public class PacMan extends Actor
 	// Sprites
 
 	private void createSprites() {
-		NESW.dirs().forEach(dir -> addSprite("s_walking_" + dir, THEME.pacManWalking(dir)));
-		addSprite("s_dying", THEME.pacManDying());
-		addSprite("s_full", THEME.pacManFull());
+		NESW.dirs().forEach(dir -> setSprite("s_walking_" + dir, THEME.pacManWalking(dir)));
+		setSprite("s_dying", THEME.pacManDying());
+		setSprite("s_full", THEME.pacManFull());
 		setCurrentSprite("s_full");
 	}
 

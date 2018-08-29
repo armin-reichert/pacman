@@ -23,8 +23,8 @@ public class MazeView extends GameEntityUsingSprites {
 
 	public MazeView(Maze maze) {
 		this.maze = maze;
-		addSprite("s_normal", THEME.mazeFull());
-		addSprite("s_flashing", THEME.mazeFlashing());
+		setSprite("s_normal", THEME.mazeFull());
+		setSprite("s_flashing", THEME.mazeFlashing());
 		setCurrentSprite("s_normal");
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(500);
@@ -61,8 +61,8 @@ public class MazeView extends GameEntityUsingSprites {
 	}
 
 	@Override
-	public void enableAnimation(boolean enable) {
-		super.enableAnimation(enable);
+	public void enableSprites(boolean enable) {
+		super.enableSprites(enable);
 		energizerBlinking.setEnabled(enable);
 	}
 

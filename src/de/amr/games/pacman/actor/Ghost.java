@@ -130,14 +130,14 @@ public class Ghost extends Actor
 
 	private void createSprites(GhostColor color) {
 		NESW.dirs().forEach(dir -> {
-			addSprite("s_color_" + dir, THEME.ghostColored(color, dir));
-			addSprite("s_eyes_" + dir, THEME.ghostEyes(dir));
+			setSprite("s_color_" + dir, THEME.ghostColored(color, dir));
+			setSprite("s_eyes_" + dir, THEME.ghostEyes(dir));
 		});
 		for (int i = 0; i < 4; ++i) {
-			addSprite("s_numbers_" + i, THEME.greenNumber(i));
+			setSprite("s_numbers_" + i, THEME.greenNumber(i));
 		}
-		addSprite("s_frightened", THEME.ghostFrightened());
-		addSprite("s_flashing", THEME.ghostFlashing());
+		setSprite("s_frightened", THEME.ghostFrightened());
+		setSprite("s_flashing", THEME.ghostFlashing());
 		setCurrentSprite("s_color_" + getCurrentDir());
 	}
 
