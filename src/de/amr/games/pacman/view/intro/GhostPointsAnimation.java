@@ -10,8 +10,9 @@ import java.util.BitSet;
 
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.sprite.Sprite;
-import de.amr.easy.game.view.ViewController;
+import de.amr.easy.game.view.View;
 import de.amr.easy.grid.impl.Top4;
+import de.amr.games.pacman.view.core.AnimationController;
 
 /**
  * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the
@@ -19,7 +20,7 @@ import de.amr.easy.grid.impl.Top4;
  * 
  * @author Armin Reichert
  */
-public class GhostPointsAnimation extends GameEntity implements ViewController {
+public class GhostPointsAnimation extends GameEntity implements AnimationController, View {
 
 	private final Sprite pacMan;
 	private final Sprite ghost;
@@ -57,14 +58,21 @@ public class GhostPointsAnimation extends GameEntity implements ViewController {
 		energizer = true;
 	}
 
+	@Override
 	public void start() {
 		init();
 		resetGhostTimer();
 		resetEnergizerTimer();
 	}
 
+	@Override
 	public void stop() {
 		ghostTimer = -1;
+	}
+
+	@Override
+	public boolean isCompleted() {
+		return false;
 	}
 
 	@Override

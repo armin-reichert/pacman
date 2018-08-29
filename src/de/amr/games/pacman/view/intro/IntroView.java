@@ -10,7 +10,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.amr.easy.game.input.Keyboard;
-import de.amr.easy.game.view.ViewController;
+import de.amr.easy.game.view.Controller;
+import de.amr.easy.game.view.View;
 import de.amr.games.pacman.view.core.BlinkingText;
 import de.amr.games.pacman.view.core.Link;
 import de.amr.statemachine.StateMachine;
@@ -20,7 +21,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class IntroView implements ViewController {
+public class IntroView implements View, Controller {
 
 	private static final String LINK_TEXT = "Visit on GitHub!";
 	private static final String LINK_URL = "https://github.com/armin-reichert/pacman";
@@ -32,7 +33,7 @@ public class IntroView implements ViewController {
 	private Color background = new Color(0, 23, 61);
 
 	private final StateMachine<Integer, Void> fsm;
-	private final Set<ViewController> actors = new HashSet<>();
+	private final Set<View> animations = new HashSet<>();
 
 	private final ScrollingLogo logo;
 	private final BlinkingText startText;
@@ -55,8 +56,7 @@ public class IntroView implements ViewController {
 		ghostPoints = new GhostPointsAnimation();
 		ghostPoints.tf().setY(200);
 		ghostPoints.centerHorizontally(width);
-		startText = new BlinkingText().set("Press SPACE to start!", THEME.textFont(18), background,
-				Color.PINK);
+		startText = new BlinkingText().set("Press SPACE to start!", THEME.textFont(18), background, Color.PINK);
 		startText.tf().setY(150);
 		startText.centerHorizontally(width);
 		link = new Link(LINK_TEXT, THEME.textFont(8), Color.LIGHT_GRAY);
@@ -65,12 +65,12 @@ public class IntroView implements ViewController {
 		link.centerHorizontally(width);
 	}
 
-	private void show(ViewController view) {
-		actors.add(view);
+	private void show(View view) {
+		animations.add(view);
 	}
 
-	private void hide(ViewController view) {
-		actors.remove(view);
+	private void hide(View view) {
+		animations.remove(view);
 	}
 
 	private StateMachine<Integer, Void> buildStateMachine() {
@@ -139,7 +139,7 @@ public class IntroView implements ViewController {
 	public void draw(Graphics2D g) {
 		g.setColor(background);
 		g.fillRect(0, 0, width, height);
-		actors.forEach(e -> e.draw(g));
+		animations.forEach(e -> e.draw(g));
 	}
 
 	@Override
@@ -153,6 +153,6 @@ public class IntroView implements ViewController {
 			fsm.setState(COMPLETE);
 		}
 		fsm.update();
-		actors.forEach(ViewController::update);
+		animations.forEach(animation -> ((Controller) animation).update());
 	}
 }

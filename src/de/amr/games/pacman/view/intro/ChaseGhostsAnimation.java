@@ -7,15 +7,16 @@ import java.awt.Graphics2D;
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.sprite.Sprite;
+import de.amr.easy.game.view.View;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.view.core.ViewAnimation;
+import de.amr.games.pacman.view.core.AnimationController;
 
 /**
  * An animation showing Pac-Man chasing the ghosts and scoring points for each killed ghost.
  * 
  * @author Armin Reichert
  */
-public class ChaseGhostsAnimation extends GameEntity implements ViewAnimation {
+public class ChaseGhostsAnimation extends GameEntity implements View, AnimationController {
 
 	private final Sprite pacMan;
 	private final Sprite ghost;

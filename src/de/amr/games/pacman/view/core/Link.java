@@ -15,9 +15,9 @@ import java.util.Objects;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.input.Mouse;
-import de.amr.easy.game.view.ViewController;
+import de.amr.easy.game.view.View;
 
-public class Link extends GameEntity implements ViewController {
+public class Link extends GameEntity implements View {
 
 	private String text;
 	private Font font;
@@ -97,11 +97,9 @@ public class Link extends GameEntity implements ViewController {
 		g.translate(tf.getX(), tf.getY());
 		g.setColor(color);
 		g.setFont(font);
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		g.drawString(text, 0, g.getFontMetrics().getAscent());
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-				RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 		g.translate(-tf.getX(), -tf.getY());
 	}
 

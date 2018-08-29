@@ -10,11 +10,12 @@ import java.awt.Graphics2D;
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.sprite.Sprite;
+import de.amr.easy.game.view.View;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.theme.GhostColor;
-import de.amr.games.pacman.view.core.ViewAnimation;
+import de.amr.games.pacman.view.core.AnimationController;
 
-public class ChasePacManAnimation extends GameEntity implements ViewAnimation {
+public class ChasePacManAnimation extends GameEntity implements AnimationController, View {
 
 	private final Sprite pacMan;
 	private final Sprite ghosts[] = new Sprite[4];

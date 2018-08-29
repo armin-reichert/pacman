@@ -10,7 +10,7 @@ import de.amr.easy.game.sprite.Sprite;
  * 
  * @author Armin Reichert
  */
-public abstract class ScrollingImage extends GameEntityUsingSprites implements ViewAnimation {
+public abstract class ScrollingImage extends GameEntityUsingSprites implements AnimationController {
 
 	public ScrollingImage(Image image) {
 		addSprite("s_image", new Sprite(image));

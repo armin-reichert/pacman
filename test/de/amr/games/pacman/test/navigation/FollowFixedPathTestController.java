@@ -5,8 +5,8 @@ import java.util.List;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
-import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
+import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.Game;
@@ -14,7 +14,7 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayViewX;
 
-public class FollowFixedPathTestController implements Controller {
+public class FollowFixedPathTestController implements VisualController {
 
 	private final Game game;
 	private final PlayViewX view;

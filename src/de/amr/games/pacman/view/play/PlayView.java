@@ -9,7 +9,8 @@ import java.awt.Rectangle;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.view.ViewController;
+import de.amr.easy.game.view.Controller;
+import de.amr.easy.game.view.View;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Cast;
@@ -25,7 +26,7 @@ import de.amr.games.pacman.theme.PacManThemes;
  * 
  * @author Armin Reichert
  */
-public class PlayView implements ViewController, PacManWorld {
+public class PlayView implements View,Controller, PacManWorld {
 
 	protected final int width, height;
 	protected final Game game;

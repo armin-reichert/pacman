@@ -1,8 +1,8 @@
 package de.amr.games.pacman.view.core;
 
-import de.amr.easy.game.view.ViewController;
+import de.amr.easy.game.view.Controller;
 
-public interface ViewAnimation extends ViewController {
+public interface AnimationController extends Controller {
 
 	void start();
 
