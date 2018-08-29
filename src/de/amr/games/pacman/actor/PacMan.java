@@ -44,7 +44,7 @@ public class PacMan extends Actor
 		implements StateMachineClient<PacManState, GameEvent>, NavigationSystem<PacMan> {
 
 	private final Game game;
-	private final StateMachine<PacManState, GameEvent> controller;
+	private final StateMachine<PacManState, GameEvent> fsm;
 	private final Map<PacManState, Navigation<PacMan>> navigationMap;
 	private final EventManager<GameEvent> events;
 	private boolean eventsEnabled;
@@ -55,7 +55,7 @@ public class PacMan extends Actor
 		this.game = game;
 		events = new EventManager<>("[PacMan]");
 		eventsEnabled = true;
-		controller = buildStateMachine();
+		fsm = buildStateMachine();
 		navigationMap = new EnumMap<>(PacManState.class);
 		createSprites();
 	}
@@ -155,21 +155,21 @@ public class PacMan extends Actor
 
 	@Override
 	public void init() {
-		controller.init();
+		fsm.init();
 	}
 
 	@Override
 	public void update() {
-		controller.update();
+		fsm.update();
 	}
 
 	@Override
 	public StateMachine<PacManState, GameEvent> getStateMachine() {
-		return controller;
+		return fsm;
 	}
 
 	public void traceTo(Logger logger) {
-		controller.traceTo(logger, game.fnTicksPerSec);
+		fsm.traceTo(logger, game.fnTicksPerSec);
 	}
 
 	private StateMachine<PacManState, GameEvent> buildStateMachine() {
@@ -209,7 +209,7 @@ public class PacMan extends Actor
 	
 				.stay(GREEDY)
 					.on(PacManGainsPowerEvent.class)
-					.act(() -> controller.resetTimer())
+					.act(() -> fsm.resetTimer())
 	
 				.when(GREEDY).then(HUNGRY)
 					.onTimeout()
