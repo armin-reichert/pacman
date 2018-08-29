@@ -1,6 +1,5 @@
 package de.amr.games.pacman.controller;
 
-import de.amr.easy.game.view.Controller;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
 
@@ -14,19 +13,9 @@ import de.amr.statemachine.StateObject;
  * @param <E>
  *          event type
  */
-public interface StateMachineControlled<S, E> extends Controller {
+public interface StateMachineControlled<S, E>  {
 
 	StateMachine<S, E> getStateMachine();
-
-	@Override
-	default void init() {
-		getStateMachine().init();
-	}
-
-	@Override
-	default void update() {
-		getStateMachine().update();
-	}
 
 	default S getState() {
 		return getStateMachine().currentState();

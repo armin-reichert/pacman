@@ -15,16 +15,6 @@ public class ScrollingLogo extends ScrollingImage {
 	}
 
 	@Override
-	public int getWidth() {
-		return currentSprite().getWidth();
-	}
-
-	@Override
-	public int getHeight() {
-		return currentSprite().getHeight();
-	}
-
-	@Override
 	public void init() {
 		centerHorizontally(parentWidth);
 		tf.setY(parentHeight);

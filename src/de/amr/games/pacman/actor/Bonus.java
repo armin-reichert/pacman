@@ -3,11 +3,9 @@ package de.amr.games.pacman.actor;
 import static java.util.Arrays.binarySearch;
 
 import java.awt.Graphics2D;
-import java.util.stream.Stream;
 
 import de.amr.easy.game.entity.GameEntityUsingSprites;
 import de.amr.easy.game.entity.Transform;
-import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.PacManThemes;
@@ -21,7 +19,6 @@ public class Bonus extends GameEntityUsingSprites implements TilePlacedEntity {
 	private final int value;
 	private final int index;
 	private boolean honored;
-	private Sprite sprite;
 
 	public Bonus(BonusSymbol symbol, int value) {
 		index = binarySearch(POINTS, value);
@@ -33,7 +30,9 @@ public class Bonus extends GameEntityUsingSprites implements TilePlacedEntity {
 		honored = false;
 		tf.setWidth(Game.TS);
 		tf.setHeight(Game.TS);
-		sprite = PacManThemes.THEME.symbol(symbol);
+		addSprite("s_symbol", PacManThemes.THEME.symbol(symbol));
+		addSprite("s_number", PacManThemes.THEME.pinkNumber(index));
+		setCurrentSprite("s_symbol");
 	}
 
 	public int getValue() {
@@ -51,10 +50,10 @@ public class Bonus extends GameEntityUsingSprites implements TilePlacedEntity {
 	public void setHonored() {
 		if (!honored) {
 			honored = true;
-			sprite = PacManThemes.THEME.pinkNumber(index);
+			setCurrentSprite("s_number");
 		}
 	}
-	
+
 	@Override
 	public Transform getTransform() {
 		return tf;
@@ -66,44 +65,16 @@ public class Bonus extends GameEntityUsingSprites implements TilePlacedEntity {
 	}
 
 	@Override
-	public Sprite currentSprite() {
-		return sprite;
-	}
-
-	@Override
-	public Stream<Sprite> getSprites() {
-		return Stream.of(sprite);
-	}
-
-	@Override
-	public int getWidth() {
-		return sprite.getWidth();
-	}
-
-	@Override
-	public int getHeight() {
-		return sprite.getHeight();
-	}
-
-	@Override
 	public void draw(Graphics2D g) {
 		float dx = tf.getX() - (getWidth() - tf.getWidth()) / 2;
 		float dy = tf.getY() - (getHeight() - tf.getHeight()) / 2;
 		g.translate(dx, dy);
-		sprite.draw(g);
+		currentSprite().draw(g);
 		g.translate(-dx, -dy);
 	}
 
 	@Override
 	public String toString() {
 		return String.format("Bonus(%s,%d)", symbol, value);
-	}
-
-	@Override
-	public void init() {
-	}
-
-	@Override
-	public void update() {
 	}
 }

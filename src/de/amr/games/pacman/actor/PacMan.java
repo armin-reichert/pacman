@@ -6,6 +6,7 @@ import static de.amr.games.pacman.actor.PacManState.GREEDY;
 import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.model.Maze.NESW;
+import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.awt.Graphics2D;
 import java.util.EnumMap;
@@ -13,7 +14,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 import de.amr.easy.game.entity.GameEntityUsingSprites;
 import de.amr.easy.game.entity.Transform;
@@ -34,7 +34,6 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.Navigation;
 import de.amr.games.pacman.navigation.NavigationSystem;
-import de.amr.games.pacman.theme.PacManThemes;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateObject;
 
@@ -74,7 +73,7 @@ public class PacMan extends GameEntityUsingSprites
 		placeAt(getHome(), getTileSize() / 2, 0);
 		setNextDir(Top4.E);
 		getSprites().forEach(Sprite::resetAnimation);
-		sprite = s_full;
+		setCurrentSprite("s_full");
 	}
 
 	public void setWorld(PacManWorld world) {
@@ -106,16 +105,6 @@ public class PacMan extends GameEntityUsingSprites
 	@Override
 	public Transform getTransform() {
 		return tf;
-	}
-	
-	@Override
-	public int getWidth() {
-		return currentSprite().getWidth();
-	}
-	
-	@Override
-	public int getHeight() {
-		return currentSprite().getHeight();
 	}
 
 	@Override
@@ -182,50 +171,44 @@ public class PacMan extends GameEntityUsingSprites
 
 	// Sprites
 
-	private Sprite sprite;
-
-	private Sprite s_walking_to[] = new Sprite[4];
-	private Sprite s_dying;
-	private Sprite s_full;
-
 	private void createSprites() {
-		NESW.dirs().forEach(dir -> s_walking_to[dir] = PacManThemes.THEME.pacManWalking(dir));
-		s_dying = PacManThemes.THEME.pacManDying();
-		s_full = PacManThemes.THEME.pacManFull();
-	}
-
-	@Override
-	public Stream<Sprite> getSprites() {
-		return Stream.of(Stream.of(s_walking_to), Stream.of(s_dying, s_full)).flatMap(s -> s);
-	}
-
-	@Override
-	public Sprite currentSprite() {
-		return sprite;
+		NESW.dirs().forEach(dir -> addSprite("s_walking_" + dir, THEME.pacManWalking(dir)));
+		addSprite("s_dying", THEME.pacManDying());
+		addSprite("s_full", THEME.pacManFull());
+		setCurrentSprite("s_full");
 	}
 
 	public void setFullSprite() {
-		sprite = s_full;
+		setCurrentSprite("s_full");
 	}
 
 	private void updateSprite() {
-		sprite = s_walking_to[getCurrentDir()];
-		sprite.enableAnimation(!isStuck());
+		setCurrentSprite("s_walking_" + getCurrentDir());
+		currentSprite().enableAnimation(!isStuck());
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (sprite == null) {
-			return;
+		if (visible && currentSprite() != null) {
+			float dx = tf.getX() - (getWidth() - tf.getWidth()) / 2;
+			float dy = tf.getY() - (getHeight() - tf.getHeight()) / 2;
+			g.translate(dx, dy);
+			currentSprite().draw(g);
+			g.translate(-dx, -dy);
 		}
-		float dx = tf.getX() - (getWidth() - tf.getWidth()) / 2;
-		float dy = tf.getY() - (getHeight() - tf.getHeight()) / 2;
-		g.translate(dx, dy);
-		sprite.draw(g);
-		g.translate(-dx, -dy);
 	}
 
 	// State machine
+
+	@Override
+	public void init() {
+		controller.init();
+	}
+
+	@Override
+	public void update() {
+		controller.update();
+	}
 
 	@Override
 	public StateMachine<PacManState, GameEvent> getStateMachine() {
@@ -258,7 +241,7 @@ public class PacMan extends GameEntityUsingSprites
 					.timeoutAfter(game::getPacManGreedyTime)
 	
 				.state(DYING)
-					.onEntry(() -> sprite = s_dying)
+					.onEntry(() -> setCurrentSprite("s_dying"))
 					.timeoutAfter(() -> game.sec(2))
 
 			.transitions()

@@ -1,7 +1,6 @@
 package de.amr.games.pacman.view.core;
 
 import java.awt.Image;
-import java.util.stream.Stream;
 
 import de.amr.easy.game.entity.GameEntityUsingSprites;
 import de.amr.easy.game.sprite.Sprite;
@@ -13,24 +12,13 @@ import de.amr.easy.game.sprite.Sprite;
  */
 public abstract class ScrollingImage extends GameEntityUsingSprites implements ViewAnimation {
 
-	private Sprite sprite;
-
 	public ScrollingImage(Image image) {
-		sprite = new Sprite(image);
+		addSprite("s_image", new Sprite(image));
+		setCurrentSprite("s_image");
 	}
 
 	@Override
 	public void update() {
 		tf.move();
-	}
-
-	@Override
-	public Sprite currentSprite() {
-		return sprite;
-	}
-
-	@Override
-	public Stream<Sprite> getSprites() {
-		return Stream.of(sprite);
 	}
 }

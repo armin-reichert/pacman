@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import de.amr.easy.game.entity.GameEntityUsingSprites;
 import de.amr.easy.game.sprite.AnimationType;
@@ -19,7 +18,6 @@ import de.amr.games.pacman.theme.PacManThemes;
  */
 public class BlinkingText extends GameEntityUsingSprites {
 
-	private Sprite sprite;
 	private String text;
 	private Font font;
 	private Color background;
@@ -47,11 +45,11 @@ public class BlinkingText extends GameEntityUsingSprites {
 		createSprite();
 		return this;
 	}
-	
+
 	@Override
 	public void init() {
 	}
-	
+
 	@Override
 	public void update() {
 	}
@@ -81,7 +79,7 @@ public class BlinkingText extends GameEntityUsingSprites {
 	}
 
 	public void setBlinkTime(int millis) {
-		sprite.animate(AnimationType.BACK_AND_FORTH, millis);
+		currentSprite().animate(AnimationType.BACK_AND_FORTH, millis);
 	}
 
 	private void createSprite() {
@@ -106,27 +104,8 @@ public class BlinkingText extends GameEntityUsingSprites {
 		g.setFont(font);
 		g.drawString(patchedText, 0, height);
 		g.dispose();
-		sprite = new Sprite(image, null).animate(AnimationType.BACK_AND_FORTH, 500);
-	}
-
-	@Override
-	public int getWidth() {
-		return width;
-	}
-
-	@Override
-	public int getHeight() {
-		return height;
-	}
-
-	@Override
-	public Sprite currentSprite() {
-		return sprite;
-	}
-
-	@Override
-	public Stream<Sprite> getSprites() {
-		return Stream.of(sprite);
+		addSprite("s_text", new Sprite(image, null).animate(AnimationType.BACK_AND_FORTH, 500));
+		setCurrentSprite("s_text");
 	}
 
 	@Override

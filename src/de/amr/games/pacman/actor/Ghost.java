@@ -8,13 +8,13 @@ import static de.amr.games.pacman.actor.GhostState.HOME;
 import static de.amr.games.pacman.actor.GhostState.SAFE;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Maze.NESW;
+import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.awt.Graphics2D;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 import de.amr.easy.game.entity.GameEntityUsingSprites;
 import de.amr.easy.game.entity.Transform;
@@ -31,7 +31,6 @@ import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.Navigation;
 import de.amr.games.pacman.navigation.NavigationSystem;
 import de.amr.games.pacman.theme.GhostColor;
-import de.amr.games.pacman.theme.PacManThemes;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -56,8 +55,8 @@ public class Ghost extends GameEntityUsingSprites
 
 	BooleanSupplier fnCanLeaveHouse;
 
-	public Ghost(String name, PacMan pacMan, Game game, Tile home, Tile scatteringTarget, int initialDir,
-			GhostColor color) {
+	public Ghost(String name, PacMan pacMan, Game game, Tile home, Tile scatteringTarget,
+			int initialDir, GhostColor color) {
 		this.name = name;
 		this.pacMan = pacMan;
 		this.game = game;
@@ -78,7 +77,7 @@ public class Ghost extends GameEntityUsingSprites
 		setCurrentDir(initialDir);
 		setNextDir(initialDir);
 		getSprites().forEach(Sprite::resetAnimation);
-		sprite = s_color[initialDir];
+		setCurrentSprite("s_color_" + initialDir);
 	}
 
 	// Accessors
@@ -86,16 +85,6 @@ public class Ghost extends GameEntityUsingSprites
 	@Override
 	public Transform getTransform() {
 		return tf;
-	}
-
-	@Override
-	public int getWidth() {
-		return currentSprite().getWidth();
-	}
-
-	@Override
-	public int getHeight() {
-		return currentSprite().getHeight();
 	}
 
 	public String getName() {
@@ -176,50 +165,41 @@ public class Ghost extends GameEntityUsingSprites
 
 	// Sprites
 
-	private Sprite sprite;
-
-	private Sprite s_color[] = new Sprite[4];
-	private Sprite s_eyes[] = new Sprite[4];
-	private Sprite s_frightened;
-	private Sprite s_flashing;
-	private Sprite s_numbers[] = new Sprite[4];
-
 	private void createSprites(GhostColor color) {
 		NESW.dirs().forEach(dir -> {
-			s_color[dir] = PacManThemes.THEME.ghostColored(color, dir);
-			s_eyes[dir] = PacManThemes.THEME.ghostEyes(dir);
+			addSprite("s_color_" + dir, THEME.ghostColored(color, dir));
+			addSprite("s_eyes_" + dir, THEME.ghostEyes(dir));
 		});
 		for (int i = 0; i < 4; ++i) {
-			s_numbers[i] = PacManThemes.THEME.greenNumber(i);
+			addSprite("s_numbers_" + i, THEME.greenNumber(i));
 		}
-		s_frightened = PacManThemes.THEME.ghostFrightened();
-		s_flashing = PacManThemes.THEME.ghostFlashing();
-	}
-
-	@Override
-	public Stream<Sprite> getSprites() {
-		return Stream.of(Stream.of(s_color), Stream.of(s_numbers), Stream.of(s_eyes), Stream.of(s_frightened, s_flashing))
-				.flatMap(s -> s);
-	}
-
-	@Override
-	public Sprite currentSprite() {
-		return sprite;
+		addSprite("s_frightened", THEME.ghostFrightened());
+		addSprite("s_flashing", THEME.ghostFlashing());
+		setCurrentSprite("s_color_" + getCurrentDir());
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (sprite == null) {
-			return;
+		if (visible && currentSprite() != null) {
+			float dx = tf.getX() - (getWidth() - tf.getWidth()) / 2;
+			float dy = tf.getY() - (getHeight() - tf.getHeight()) / 2;
+			g.translate(dx, dy);
+			currentSprite().draw(g);
+			g.translate(-dx, -dy);
 		}
-		float dx = tf.getX() - (getWidth() - tf.getWidth()) / 2;
-		float dy = tf.getY() - (getHeight() - tf.getHeight()) / 2;
-		g.translate(dx, dy);
-		sprite.draw(g);
-		g.translate(-dx, -dy);
 	}
 
 	// State machine
+
+	@Override
+	public void init() {
+		controller.init();
+	}
+
+	@Override
+	public void update() {
+		controller.update();
+	}
 
 	@Override
 	public StateMachine<GhostState, GameEvent> getStateMachine() {
@@ -248,16 +228,19 @@ public class Ghost extends GameEntityUsingSprites
 						.onTick(() -> {
 							if (!ghostName.equals("Blinky")) { //TODO better solution
 								move();	
-								sprite = s_color[getCurrentDir()]; 
+								setCurrentSprite("s_color_" + getCurrentDir()); 
 							}
 						})
 					
 					.state(CHASING)
-						.onTick(() -> {	move();	sprite = s_color[getCurrentDir()]; })
+						.onTick(() -> {	
+							move();	
+							setCurrentSprite("s_color_" + getCurrentDir()); 
+						})
 					
 					.state(FRIGHTENED)
 						.onEntry(() -> {
-							sprite = s_frightened; 
+							setCurrentSprite("s_frightened"); 
 							getMoveBehavior().computeStaticRoute(this); 
 						})
 						.onTick(() -> move())
@@ -265,7 +248,7 @@ public class Ghost extends GameEntityUsingSprites
 					.state(DYING)
 						.timeoutAfter(game::getGhostDyingTime)
 						.onEntry(() -> {
-							sprite = s_numbers[game.getGhostsKilledByEnergizer()]; 
+							setCurrentSprite("s_numbers_" + game.getGhostsKilledByEnergizer()); 
 							game.addGhostKilled();
 						})
 					
@@ -273,13 +256,13 @@ public class Ghost extends GameEntityUsingSprites
 						.onEntry(() -> getMoveBehavior().computeStaticRoute(this))
 						.onTick(() -> {	
 							move();
-							sprite = s_eyes[getCurrentDir()];
+							setCurrentSprite("s_eyes_" + getCurrentDir());
 						})
 					
 					.state(SCATTERING)
 						.onTick(() -> {
 							move();	
-							sprite = s_color[getCurrentDir()]; 
+							setCurrentSprite("s_color_" + getCurrentDir()); 
 						})
 				
 			.transitions()
@@ -301,7 +284,7 @@ public class Ghost extends GameEntityUsingSprites
 					.when(CHASING).then(DEAD).on(GhostKilledEvent.class) // cheating-mode
 						
 					.stay(FRIGHTENED).on(PacManGainsPowerEvent.class)
-					.stay(FRIGHTENED).on(PacManGettingWeakerEvent.class).act(e -> sprite = s_flashing)
+					.stay(FRIGHTENED).on(PacManGettingWeakerEvent.class).act(e -> setCurrentSprite("s_flashing"))
 					.when(FRIGHTENED).then(CHASING).on(PacManLostPowerEvent.class)
 					.when(FRIGHTENED).then(DYING).on(GhostKilledEvent.class)
 						
