@@ -10,6 +10,7 @@ import java.util.BitSet;
 
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.sprite.Sprite;
+import de.amr.easy.game.view.ViewController;
 import de.amr.easy.grid.impl.Top4;
 
 /**
@@ -18,7 +19,7 @@ import de.amr.easy.grid.impl.Top4;
  * 
  * @author Armin Reichert
  */
-public class GhostPointsAnimation extends GameEntity {
+public class GhostPointsAnimation extends GameEntity implements ViewController {
 
 	private final Sprite pacMan;
 	private final Sprite ghost;
