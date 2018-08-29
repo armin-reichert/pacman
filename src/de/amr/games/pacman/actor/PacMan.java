@@ -8,14 +8,12 @@ import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
-import java.awt.Graphics2D;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
-import de.amr.easy.game.entity.GameEntityUsingSprites;
 import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
@@ -42,16 +40,13 @@ import de.amr.statemachine.StateObject;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends GameEntityUsingSprites
-		implements Actor, StateMachineControlled<PacManState, GameEvent>, NavigationSystem<PacMan> {
+public class PacMan extends Actor
+		implements StateMachineControlled<PacManState, GameEvent>, NavigationSystem<PacMan> {
 
 	private final Game game;
 	private final StateMachine<PacManState, GameEvent> controller;
 	private final Map<PacManState, Navigation<PacMan>> navigationMap;
 	private final EventManager<GameEvent> events;
-	private int currentDir;
-	private int nextDir;
-	private boolean visible;
 	private boolean eventsEnabled;
 	private int digestionTicks;
 	private PacManWorld world;
@@ -61,7 +56,6 @@ public class PacMan extends GameEntityUsingSprites
 		tf.setWidth(Game.TS);
 		tf.setHeight(Game.TS);
 		events = new EventManager<>("[PacMan]");
-		visible = true;
 		eventsEnabled = true;
 		controller = buildStateMachine();
 		navigationMap = new EnumMap<>(PacManState.class);
@@ -116,37 +110,9 @@ public class PacMan extends GameEntityUsingSprites
 		return getMaze().getPacManHome();
 	}
 
-	public boolean isVisible() {
-		return visible;
-	}
-
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
-
 	@Override
 	public float getSpeed() {
 		return game.getPacManSpeed(getState());
-	}
-
-	@Override
-	public int getCurrentDir() {
-		return currentDir;
-	}
-
-	@Override
-	public void setCurrentDir(int currentDir) {
-		this.currentDir = currentDir;
-	}
-
-	@Override
-	public int getNextDir() {
-		return nextDir;
-	}
-
-	@Override
-	public void setNextDir(int nextDir) {
-		this.nextDir = nextDir;
 	}
 
 	// Movement
@@ -185,17 +151,6 @@ public class PacMan extends GameEntityUsingSprites
 	private void updateSprite() {
 		setCurrentSprite("s_walking_" + getCurrentDir());
 		currentSprite().enableAnimation(!isStuck());
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
-		if (visible && currentSprite() != null) {
-			float dx = tf.getX() - (getWidth() - tf.getWidth()) / 2;
-			float dy = tf.getY() - (getHeight() - tf.getHeight()) / 2;
-			g.translate(dx, dy);
-			currentSprite().draw(g);
-			g.translate(-dx, -dy);
-		}
 	}
 
 	// State machine

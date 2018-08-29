@@ -43,6 +43,8 @@ public class FollowFixedPathTestController implements Controller {
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
 		actors.setActive(actors.pacMan, false);
+		actors.getGhosts().filter(ghost -> ghost != actors.blinky)
+				.forEach(ghost -> actors.setActive(ghost, false));
 		actors.blinky.initGhost();
 		actors.blinky.setState(GhostState.CHASING);
 		actors.blinky.setMoveBehavior(GhostState.CHASING,

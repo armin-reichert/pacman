@@ -3,9 +3,11 @@ package de.amr.games.pacman.actor;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static java.lang.Math.round;
 
+import java.awt.Graphics2D;
+
+import de.amr.easy.game.entity.GameEntityUsingSprites;
 import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.math.Vector2f;
-import de.amr.easy.game.view.Controller;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
@@ -13,51 +15,77 @@ import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.core.TilePlacedEntity;
 
 /**
- * Mixin for actors in Pac-Man. Actors know how to move in the maze and can be controlled by
- * supplying the intended move direction at suitable points in time.
+ * Actors know how to move in the maze and can be controlled by supplying the intended move
+ * direction at suitable points in time.
  * 
  * @author Armin Reichert
  */
-public interface Actor extends Controller, TilePlacedEntity {
+public abstract class Actor extends GameEntityUsingSprites implements TilePlacedEntity {
 
-	int getCurrentDir();
+	private boolean visible;
+	private int currentDir;
+	private int nextDir;
+	
+	
+	public Actor() {
+		visible = true;
+		currentDir = nextDir = Top4.E;
+	}
 
-	void setCurrentDir(int dir);
+	public boolean isVisible() {
+		return visible;
+	}
 
-	int getNextDir();
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
 
-	void setNextDir(int dir);
+	public int getCurrentDir() {
+		return currentDir;
+	}
 
-	Maze getMaze();
+	public void setCurrentDir(int currentDir) {
+		this.currentDir = currentDir;
+	}
 
-	boolean canTraverseDoor(Tile door);
+	public int getNextDir() {
+		return nextDir;
+	}
 
-	int supplyIntendedDir();
+	public void setNextDir(int nextDir) {
+		this.nextDir = nextDir;
+	}
 
-	float getSpeed();
+	public abstract Maze getMaze();
+
+	public abstract boolean canTraverseDoor(Tile door);
+
+	public abstract int supplyIntendedDir();
+
+	public abstract float getSpeed();
 
 	@Override
-	default int getTileSize() {
+	public int getTileSize() {
 		return Game.TS;
 	}
 
-	default boolean isTurn(int currentDir, int nextDir) {
+	public boolean isTurn(int currentDir, int nextDir) {
 		return nextDir == NESW.left(currentDir) || nextDir == NESW.right(currentDir);
 	}
 
-	default boolean inTeleportSpace() {
+	public boolean inTeleportSpace() {
 		return getMaze().inTeleportSpace(getTile());
 	}
 
-	default boolean inTunnel() {
+	public boolean inTunnel() {
 		return getMaze().inTunnel(getTile());
 	}
 
-	default boolean inGhostHouse() {
+	public boolean inGhostHouse() {
 		return getMaze().inGhostHouse(getTile());
 	}
 
-	default boolean canEnterTile(Tile tile) {
+	public boolean canEnterTile(Tile tile) {
 		if (getMaze().inTeleportSpace(tile)) {
 			return true;
 		}
@@ -73,11 +101,11 @@ public interface Actor extends Controller, TilePlacedEntity {
 		return true;
 	}
 
-	default boolean isStuck() {
+	public boolean isStuck() {
 		return !canMove(getCurrentDir());
 	}
 
-	default boolean canMove(int dir) {
+	public boolean canMove(int dir) {
 		int col, row, newCol, newRow;
 		Transform tf = getTransform();
 		Vector2f v = velocity(dir);
@@ -106,7 +134,7 @@ public interface Actor extends Controller, TilePlacedEntity {
 		throw new IllegalArgumentException("Illegal direction: " + dir);
 	}
 
-	default void move() {
+	public void move() {
 		if (canMove(getNextDir())) {
 			if (isTurn(getCurrentDir(), getNextDir())) {
 				align();
@@ -130,7 +158,7 @@ public interface Actor extends Controller, TilePlacedEntity {
 		}
 	}
 
-	default Vector2f velocity(int dir) {
+	public Vector2f velocity(int dir) {
 		return Vector2f.smul(getSpeed(), Vector2f.of(NESW.dx(dir), NESW.dy(dir)));
 	}
 
@@ -141,7 +169,7 @@ public interface Actor extends Controller, TilePlacedEntity {
 	 *         direction. If this position is outside the maze, returns the tile <code>(n-1)</code>
 	 *         tiles ahead etc.
 	 */
-	default Tile ahead(int n) {
+	public Tile ahead(int n) {
 		Tile tile = getTile();
 		while (n >= 0) {
 			Tile ahead = tile.tileTowards(getCurrentDir(), n);
@@ -152,4 +180,16 @@ public interface Actor extends Controller, TilePlacedEntity {
 		}
 		return tile;
 	}
+	
+	@Override
+	public void draw(Graphics2D g) {
+		if (isVisible() && currentSprite() != null) {
+			float dx = tf.getX() - (getWidth() - tf.getWidth()) / 2;
+			float dy = tf.getY() - (getHeight() - tf.getHeight()) / 2;
+			g.translate(dx, dy);
+			currentSprite().draw(g);
+			g.translate(-dx, -dy);
+		}
+	}
+	
 }

@@ -25,6 +25,7 @@ public class MazeView extends GameEntityUsingSprites {
 		this.maze = maze;
 		addSprite("s_normal", THEME.mazeFull());
 		addSprite("s_flashing", THEME.mazeFlashing());
+		setCurrentSprite("s_normal");
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(500);
 		energizerBlinking.setEnabled(false);

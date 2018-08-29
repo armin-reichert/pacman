@@ -10,13 +10,11 @@ import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
-import java.awt.Graphics2D;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.logging.Logger;
 
-import de.amr.easy.game.entity.GameEntityUsingSprites;
 import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.controller.StateMachineControlled;
@@ -38,8 +36,8 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends GameEntityUsingSprites
-		implements Actor, StateMachineControlled<GhostState, GameEvent>, NavigationSystem<Ghost> {
+public class Ghost extends Actor
+		implements StateMachineControlled<GhostState, GameEvent>, NavigationSystem<Ghost> {
 
 	private final String name;
 	private final Game game;
@@ -49,9 +47,6 @@ public class Ghost extends GameEntityUsingSprites
 	private final Tile home;
 	private final Tile scatteringTarget;
 	private final int initialDir;
-	private int currentDir;
-	private int nextDir;
-	private boolean visible;
 
 	BooleanSupplier fnCanLeaveHouse;
 
@@ -63,7 +58,6 @@ public class Ghost extends GameEntityUsingSprites
 		this.home = home;
 		this.scatteringTarget = scatteringTarget;
 		this.initialDir = initialDir;
-		visible = true;
 		tf.setWidth(Game.TS);
 		tf.setHeight(Game.TS);
 		fnCanLeaveHouse = () -> getStateObject().isTerminated();
@@ -104,39 +98,10 @@ public class Ghost extends GameEntityUsingSprites
 		return scatteringTarget;
 	}
 
-	public boolean isVisible() {
-		return visible;
-	}
-
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
-
 	@Override
 	public float getSpeed() {
 		return game.getGhostSpeed(getState(), getTile());
 	}
-
-	@Override
-	public int getCurrentDir() {
-		return currentDir;
-	}
-
-	@Override
-	public void setCurrentDir(int currentDir) {
-		this.currentDir = currentDir;
-	}
-
-	@Override
-	public int getNextDir() {
-		return nextDir;
-	}
-
-	@Override
-	public void setNextDir(int nextDir) {
-		this.nextDir = nextDir;
-	}
-
 	// Movement
 
 	public void setMoveBehavior(GhostState state, Navigation<Ghost> navigation) {
@@ -176,17 +141,6 @@ public class Ghost extends GameEntityUsingSprites
 		addSprite("s_frightened", THEME.ghostFrightened());
 		addSprite("s_flashing", THEME.ghostFlashing());
 		setCurrentSprite("s_color_" + getCurrentDir());
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
-		if (visible && currentSprite() != null) {
-			float dx = tf.getX() - (getWidth() - tf.getWidth()) / 2;
-			float dy = tf.getY() - (getHeight() - tf.getHeight()) / 2;
-			g.translate(dx, dy);
-			currentSprite().draw(g);
-			g.translate(-dx, -dy);
-		}
 	}
 
 	// State machine

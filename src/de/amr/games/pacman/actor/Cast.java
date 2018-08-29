@@ -104,6 +104,7 @@ public class Cast {
 		} else {
 			activeActors.remove(actor);
 		}
+		actor.setVisible(active);
 	}
 
 	public Stream<Ghost> getActiveGhosts() {
