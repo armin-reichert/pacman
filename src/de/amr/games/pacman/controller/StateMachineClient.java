@@ -13,7 +13,7 @@ import de.amr.statemachine.StateObject;
  * @param <E>
  *          event type
  */
-public interface StateMachineClient<S, E>  {
+public interface StateMachineClient<S, E> {
 
 	StateMachine<S, E> getStateMachine();
 

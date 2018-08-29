@@ -68,7 +68,8 @@ public class ClassicPacManTheme implements PacManTheme {
 		int permuted[] = { 1, 3, 0, 2 };
 		pacManWalking = new BufferedImage[4][];
 		for (int d = 0; d < 4; ++d) {
-			pacManWalking[permuted[d]] = new BufferedImage[] { $(456, d * 16), $(472, d * 16), $(488, 0) };
+			pacManWalking[permuted[d]] = new BufferedImage[] { $(456, d * 16), $(472, d * 16),
+					$(488, 0) };
 		}
 
 		pacManDying = new BufferedImage[12];
@@ -240,8 +241,8 @@ public class ClassicPacManTheme implements PacManTheme {
 
 	@Override
 	public Stream<Sound> allSounds() {
-		return Stream.of(soundDie(), soundEatFruit(), soundEatGhost(), soundEating(), soundEatPill(), soundExtraLife(),
-				soundInsertCoin(), soundReady(), soundSiren(), soundWaza());
+		return Stream.of(soundDie(), soundEatFruit(), soundEatGhost(), soundEating(), soundEatPill(),
+				soundExtraLife(), soundInsertCoin(), soundReady(), soundSiren(), soundWaza());
 	}
 
 	@Override

@@ -61,6 +61,7 @@ public class GameController implements Controller {
 	public enum GameState {
 		INTRO, READY, PLAYING, GHOST_DYING, PACMAN_DYING, CHANGING_LEVEL, GAME_OVER
 	}
+
 	private final StateMachine<GameState, GameEvent> gameControl;
 	private final Cast actors;
 
@@ -84,7 +85,7 @@ public class GameController implements Controller {
 		}
 		return introView;
 	}
-	
+
 	private PlayView getPlayView(Game game) {
 		if (playView == null) {
 			int width = game.getMaze().numCols() * Game.TS;
@@ -254,12 +255,12 @@ public class GameController implements Controller {
 	}
 
 	private class PlayingState extends StateObject<GameState, GameEvent> {
-		
+
 		@Override
 		public void onEntry() {
 			THEME.soundWaza().loop();
 		}
-		
+
 		@Override
 		public void onExit() {
 			THEME.soundWaza().stop();

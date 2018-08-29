@@ -57,9 +57,10 @@ public class PlayViewX extends PlayView {
 	public boolean showStates = false;
 
 	private static BufferedImage createGridImage(int numRows, int numCols) {
-		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-				.getDefaultConfiguration();
-		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1, Transparency.TRANSLUCENT);
+		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment()
+				.getDefaultScreenDevice().getDefaultConfiguration();
+		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1,
+				Transparency.TRANSLUCENT);
 		Graphics2D g = image.createGraphics();
 		g.setColor(Color.DARK_GRAY);
 		for (int row = 0; row <= numRows; ++row) {
@@ -125,7 +126,8 @@ public class PlayViewX extends PlayView {
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
 			drawActorAlignment(actors.pacMan, g);
-			actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> drawActorAlignment(ghost, g));
+			actors.getActiveGhosts().filter(Ghost::isVisible)
+					.forEach(ghost -> drawActorAlignment(ghost, g));
 		}
 		if (showRoutes) {
 			actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> drawRoute(g, ghost));
@@ -137,13 +139,13 @@ public class PlayViewX extends PlayView {
 
 	private void drawEntityStates(Graphics2D g) {
 		if (actors.pacMan.getState() != null) {
-			drawText(g, Color.YELLOW, actors.pacMan.getTransform().getX(), actors.pacMan.getTransform().getY(),
-					pacManState(actors.pacMan));
+			drawText(g, Color.YELLOW, actors.pacMan.getTransform().getX(),
+					actors.pacMan.getTransform().getY(), pacManState(actors.pacMan));
 		}
 		actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> {
 			if (ghost.getState() != null) {
-				drawText(g, ghostColor(ghost), ghost.getTransform().getX() - TS, ghost.getTransform().getY(),
-						ghostState(ghost));
+				drawText(g, ghostColor(ghost), ghost.getTransform().getX() - TS,
+						ghost.getTransform().getY(), ghostState(ghost));
 			}
 		});
 	}
@@ -158,9 +160,10 @@ public class PlayViewX extends PlayView {
 	private String ghostState(Ghost ghost) {
 		StateObject<?, ?> state = ghost.getStateObject();
 		return state.getDuration() != StateObject.ENDLESS
-				? String.format("%s(%s,%d|%d)[%s]", ghost.getName(), state.id(), state.getRemaining(), state.getDuration(),
-						Top4.name(ghost.getCurrentDir()))
-				: String.format("%s(%s,%s)[%s]", ghost.getName(), state.id(), INFTY, Top4.name(ghost.getCurrentDir()));
+				? String.format("%s(%s,%d|%d)[%s]", ghost.getName(), state.id(), state.getRemaining(),
+						state.getDuration(), Top4.name(ghost.getCurrentDir()))
+				: String.format("%s(%s,%s)[%s]", ghost.getName(), state.id(), INFTY,
+						Top4.name(ghost.getCurrentDir()));
 	}
 
 	private void toggleGhost(Ghost ghost) {

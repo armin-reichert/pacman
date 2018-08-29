@@ -15,9 +15,9 @@ class FollowFixedPath<T extends Actor> implements Navigation<T> {
 	public FollowFixedPath(Tile target) {
 		this.target = target;
 	}
-	
+
 	protected FollowFixedPath() {
-		
+
 	}
 
 	@Override

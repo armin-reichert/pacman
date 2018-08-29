@@ -47,17 +47,17 @@ public class Cast {
 		pacMan = new PacMan(game);
 
 		// The ghosts
-		blinky = new Ghost(BLINKY, pacMan, game, maze.getBlinkyHome(), maze.getBlinkyScatteringTarget(), Top4.E,
-				GhostColor.RED);
+		blinky = new Ghost(BLINKY, pacMan, game, maze.getBlinkyHome(), maze.getBlinkyScatteringTarget(),
+				Top4.E, GhostColor.RED);
 
-		pinky = new Ghost(PINKY, pacMan, game, maze.getPinkyHome(), maze.getPinkyScatteringTarget(), Top4.S,
-				GhostColor.PINK);
+		pinky = new Ghost(PINKY, pacMan, game, maze.getPinkyHome(), maze.getPinkyScatteringTarget(),
+				Top4.S, GhostColor.PINK);
 
 		inky = new Ghost(INKY, pacMan, game, maze.getInkyHome(), maze.getInkyScatteringTarget(), Top4.N,
 				GhostColor.TURQUOISE);
 
-		clyde = new Ghost(CLYDE, pacMan, game, maze.getClydeHome(), maze.getClydeScatteringTarget(), Top4.N,
-				GhostColor.ORANGE);
+		clyde = new Ghost(CLYDE, pacMan, game, maze.getClydeHome(), maze.getClydeScatteringTarget(),
+				Top4.N, GhostColor.ORANGE);
 
 		activeActors.addAll(Arrays.asList(pacMan, blinky, pinky, inky, clyde));
 
@@ -83,7 +83,8 @@ public class Cast {
 		clyde.setMoveBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * Game.TS));
 
 		// Other game rules
-		clyde.fnCanLeaveHouse = () -> game.getLevel() > 1 || game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
+		clyde.fnCanLeaveHouse = () -> game.getLevel() > 1
+				|| game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
 	}
 
 	public void init() {

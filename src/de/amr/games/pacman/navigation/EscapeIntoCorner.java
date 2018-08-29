@@ -24,9 +24,11 @@ class EscapeIntoCorner<T extends Actor> extends FollowFixedPath<T> {
 	private Tile chooseCorner(Maze maze, Tile chaserTile) {
 		boolean top = chaserTile.row <= maze.numRows() / 2;
 		if (top) {
-			return StreamUtils.permute(Stream.of(maze.getBottomLeftCorner(), maze.getBottomRightCorner())).findAny().get();
+			return StreamUtils.permute(Stream.of(maze.getBottomLeftCorner(), maze.getBottomRightCorner()))
+					.findAny().get();
 		} else {
-			return StreamUtils.permute(Stream.of(maze.getTopLeftCorner(), maze.getTopRightCorner())).findAny().get();
+			return StreamUtils.permute(Stream.of(maze.getTopLeftCorner(), maze.getTopRightCorner()))
+					.findAny().get();
 		}
 	}
 }

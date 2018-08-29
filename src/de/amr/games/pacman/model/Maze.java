@@ -71,7 +71,7 @@ public class Maze {
 	private int foodTotal;
 	private Set<Tile> freeIntersections = new HashSet<>();
 	private Set<Tile> notUpIntersections = new HashSet<>();
-	
+
 	private long pathFinderCount;
 
 	public Maze(String mapText) {
@@ -228,11 +228,11 @@ public class Maze {
 	public int getTunnelRow() {
 		return tunnelRow;
 	}
-	
+
 	public Tile getLeftTunnelEntry() {
 		return new Tile(0, tunnelRow);
 	}
-	
+
 	public Tile getRightTunnelEntry() {
 		return new Tile(numCols() - 1, tunnelRow);
 	}
@@ -262,7 +262,7 @@ public class Maze {
 	public boolean isDoor(Tile tile) {
 		return getContent(tile) == DOOR;
 	}
-	
+
 	public boolean isGhostHouseEntry(Tile tile) {
 		return isValidTile(tile) && isDoor(neighborTile(tile, Top4.S).get());
 	}

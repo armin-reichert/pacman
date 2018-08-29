@@ -115,7 +115,8 @@ public class FollowTargetTile<T extends Actor> implements Navigation<T> {
 		return route;
 	}
 
-	private Optional<Integer> findBestDir(Actor mover, Tile targetTile, Tile fromTile, Stream<Integer> dirChoices) {
+	private Optional<Integer> findBestDir(Actor mover, Tile targetTile, Tile fromTile,
+			Stream<Integer> dirChoices) {
 		Maze maze = mover.getMaze();
 		/*@formatter:off*/
 		return dirChoices

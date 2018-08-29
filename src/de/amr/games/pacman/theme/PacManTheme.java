@@ -37,32 +37,32 @@ public interface PacManTheme {
 	Sprite greenNumber(int i);
 
 	Sprite pinkNumber(int i);
-	
+
 	Font textFont();
-	
+
 	default Font textFont(int size) {
 		return textFont().deriveFont((float) size);
 	}
 
 	Sound soundDie();
-	
+
 	Sound soundEatFruit();
-	
+
 	Sound soundEatGhost();
-	
+
 	Sound soundEatPill();
-	
+
 	Sound soundEating();
-	
+
 	Sound soundExtraLife();
-	
+
 	Sound soundInsertCoin();
-	
+
 	Sound soundReady();
-	
+
 	Sound soundSiren();
-	
+
 	Sound soundWaza();
-	
+
 	Stream<Sound> allSounds();
 }

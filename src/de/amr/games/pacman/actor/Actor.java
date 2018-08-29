@@ -25,8 +25,7 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 	private boolean visible;
 	private int currentDir;
 	private int nextDir;
-	
-	
+
 	public Actor() {
 		visible = true;
 		currentDir = nextDir = Top4.E;
@@ -182,7 +181,7 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 		}
 		return tile;
 	}
-	
+
 	@Override
 	public void draw(Graphics2D g) {
 		if (isVisible() && currentSprite() != null) {
@@ -193,5 +192,4 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 			g.translate(-dx, -dy);
 		}
 	}
-	
 }

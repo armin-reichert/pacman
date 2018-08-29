@@ -7,8 +7,8 @@ import java.util.function.Supplier;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.Actor;
+import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
@@ -71,8 +71,8 @@ public interface NavigationSystem<T extends Actor> {
 	 *                   Otherwise it directly attacks PacMan.
 	 */
 	public default Navigation<T> attackAndReject(Ghost attacker, PacMan pacMan, int distance) {
-		return headFor(
-				() -> dist(attacker.getTransform().getCenter(), pacMan.getTransform().getCenter()) >= distance ? pacMan.getTile()
+		return headFor(() -> dist(attacker.getTransform().getCenter(),
+				pacMan.getTransform().getCenter()) >= distance ? pacMan.getTile()
 						: attacker.getScatteringTarget());
 	}
 
