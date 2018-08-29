@@ -73,8 +73,9 @@ public class GameController implements VisualController {
 		gameControl.traceTo(LOGGER, game.fnTicksPerSec);
 
 		actors = new Cast(game);
-		actors.traceTo(LOGGER);
+		actors.pacMan.traceTo(LOGGER);
 		actors.pacMan.subscribe(gameControl::process);
+		actors.getGhosts().forEach(ghost -> ghost.traceTo(LOGGER));
 	}
 
 	private IntroView getIntroView(Game game) {

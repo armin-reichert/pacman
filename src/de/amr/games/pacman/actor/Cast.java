@@ -13,7 +13,6 @@ import static java.awt.event.KeyEvent.VK_UP;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import de.amr.easy.grid.impl.Top4;
@@ -47,17 +46,17 @@ public class Cast {
 		pacMan = new PacMan(game);
 
 		// The ghosts
-		blinky = new Ghost(BLINKY, pacMan, game, maze.getBlinkyHome(), maze.getBlinkyScatteringTarget(),
-				Top4.E, GhostColor.RED);
+		blinky = new Ghost(BLINKY, pacMan, game, maze.getBlinkyHome(), maze.getBlinkyScatteringTarget(), Top4.E,
+				GhostColor.RED);
 
-		pinky = new Ghost(PINKY, pacMan, game, maze.getPinkyHome(), maze.getPinkyScatteringTarget(),
-				Top4.S, GhostColor.PINK);
+		pinky = new Ghost(PINKY, pacMan, game, maze.getPinkyHome(), maze.getPinkyScatteringTarget(), Top4.S,
+				GhostColor.PINK);
 
 		inky = new Ghost(INKY, pacMan, game, maze.getInkyHome(), maze.getInkyScatteringTarget(), Top4.N,
 				GhostColor.TURQUOISE);
 
-		clyde = new Ghost(CLYDE, pacMan, game, maze.getClydeHome(), maze.getClydeScatteringTarget(),
-				Top4.N, GhostColor.ORANGE);
+		clyde = new Ghost(CLYDE, pacMan, game, maze.getClydeHome(), maze.getClydeScatteringTarget(), Top4.N,
+				GhostColor.ORANGE);
 
 		activeActors.addAll(Arrays.asList(pacMan, blinky, pinky, inky, clyde));
 
@@ -69,7 +68,7 @@ public class Cast {
 		pacMan.setMoveBehavior(PacManState.GREEDY, followKeyboard);
 
 		// Common ghost behavior
-		Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
+		getGhosts().forEach(ghost -> {
 			ghost.setMoveBehavior(FRIGHTENED, ghost.flee(pacMan));
 			ghost.setMoveBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
 			ghost.setMoveBehavior(DEAD, ghost.headFor(ghost::getHome));
@@ -83,8 +82,15 @@ public class Cast {
 		clyde.setMoveBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * Game.TS));
 
 		// Other game rules
-		clyde.fnCanLeaveHouse = () -> game.getLevel() > 1
-				|| game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
+		clyde.fnCanLeaveHouse = () -> game.getLevel() > 1 || game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
+	}
+
+	public Stream<Ghost> getGhosts() {
+		return Stream.of(blinky, pinky, inky, clyde);
+	}
+	
+	public Stream<Ghost> getActiveGhosts() {
+		return getGhosts().filter(this::isActive);
 	}
 
 	public void init() {
@@ -106,18 +112,5 @@ public class Cast {
 			activeActors.remove(actor);
 		}
 		actor.setVisible(active);
-	}
-
-	public Stream<Ghost> getActiveGhosts() {
-		return getGhosts().filter(this::isActive);
-	}
-
-	public Stream<Ghost> getGhosts() {
-		return Stream.of(blinky, pinky, inky, clyde);
-	}
-
-	public void traceTo(Logger logger) {
-		pacMan.traceTo(logger);
-		getGhosts().forEach(ghost -> ghost.traceTo(logger));
 	}
 }
