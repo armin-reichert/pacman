@@ -22,11 +22,13 @@ import de.amr.games.pacman.view.core.TilePlacedEntity;
  */
 public abstract class Actor extends GameEntityUsingSprites implements TilePlacedEntity {
 
+	protected final Game game;
 	private boolean visible;
 	private int currentDir;
 	private int nextDir;
 
-	public Actor() {
+	public Actor(Game game) {
+		this.game = game;
 		visible = true;
 		currentDir = nextDir = Top4.E;
 		tf.setWidth(getTileSize());
@@ -57,13 +59,20 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 		this.nextDir = nextDir;
 	}
 
-	public abstract Maze getMaze();
+	public Maze getMaze() {
+		return game.getMaze();
+	}
 
 	public abstract boolean canTraverseDoor(Tile door);
 
 	public abstract int supplyIntendedDir();
 
 	public abstract float getSpeed();
+
+	@Override
+	public Transform getTransform() {
+		return tf;
+	}
 
 	@Override
 	public int getTileSize() {

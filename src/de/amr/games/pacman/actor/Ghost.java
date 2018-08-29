@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.logging.Logger;
 
-import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.controller.StateMachineClient;
 import de.amr.games.pacman.controller.event.GameEvent;
@@ -24,7 +23,6 @@ import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.Navigation;
 import de.amr.games.pacman.navigation.NavigationSystem;
@@ -36,11 +34,9 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Actor
-		implements StateMachineClient<GhostState, GameEvent>, NavigationSystem<Ghost> {
+public class Ghost extends Actor implements StateMachineClient<GhostState, GameEvent>, NavigationSystem<Ghost> {
 
 	private final String name;
-	private final Game game;
 	private final StateMachine<GhostState, GameEvent> controller;
 	private final Map<GhostState, Navigation<Ghost>> navigationMap;
 	private final PacMan pacMan;
@@ -50,11 +46,11 @@ public class Ghost extends Actor
 
 	BooleanSupplier fnCanLeaveHouse;
 
-	public Ghost(String name, PacMan pacMan, Game game, Tile home, Tile scatteringTarget,
-			int initialDir, GhostColor color) {
+	public Ghost(String name, PacMan pacMan, Game game, Tile home, Tile scatteringTarget, int initialDir,
+			GhostColor color) {
+		super(game);
 		this.name = name;
 		this.pacMan = pacMan;
-		this.game = game;
 		this.home = home;
 		this.scatteringTarget = scatteringTarget;
 		this.initialDir = initialDir;
@@ -74,18 +70,8 @@ public class Ghost extends Actor
 
 	// Accessors
 
-	@Override
-	public Transform getTransform() {
-		return tf;
-	}
-
 	public String getName() {
 		return name;
-	}
-
-	@Override
-	public Maze getMaze() {
-		return game.getMaze();
 	}
 
 	public Tile getHome() {

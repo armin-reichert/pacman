@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
-import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.controller.EventManager;
@@ -28,7 +27,6 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.Navigation;
 import de.amr.games.pacman.navigation.NavigationSystem;
@@ -40,10 +38,8 @@ import de.amr.statemachine.StateObject;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends Actor
-		implements StateMachineClient<PacManState, GameEvent>, NavigationSystem<PacMan> {
+public class PacMan extends Actor implements StateMachineClient<PacManState, GameEvent>, NavigationSystem<PacMan> {
 
-	private final Game game;
 	private final StateMachine<PacManState, GameEvent> fsm;
 	private final Map<PacManState, Navigation<PacMan>> navigationMap;
 	private final EventManager<GameEvent> events;
@@ -52,7 +48,7 @@ public class PacMan extends Actor
 	private PacManWorld world;
 
 	public PacMan(Game game) {
-		this.game = game;
+		super(game);
 		events = new EventManager<>("[PacMan]");
 		eventsEnabled = true;
 		fsm = buildStateMachine();
@@ -93,16 +89,6 @@ public class PacMan extends Actor
 	}
 
 	// Accessors
-
-	@Override
-	public Transform getTransform() {
-		return tf;
-	}
-
-	@Override
-	public Maze getMaze() {
-		return game.getMaze();
-	}
 
 	public Tile getHome() {
 		return getMaze().getPacManHome();
