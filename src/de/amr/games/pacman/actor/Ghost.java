@@ -233,8 +233,10 @@ public class Ghost extends Actor
 					.stay(SAFE).on(GhostKilledEvent.class)
 						
 					.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
-					.when(CHASING).then(DEAD).on(GhostKilledEvent.class) // cheating-mode
-						
+					.when(CHASING).then(DYING).on(GhostKilledEvent.class) // cheating-mode
+
+					.when(SCATTERING).then(DYING).on(GhostKilledEvent.class) // cheating-mode
+					
 					.stay(FRIGHTENED).on(PacManGainsPowerEvent.class)
 					.stay(FRIGHTENED).on(PacManGettingWeakerEvent.class).act(e -> setCurrentSprite("s_flashing"))
 					.when(FRIGHTENED).then(CHASING).on(PacManLostPowerEvent.class)
