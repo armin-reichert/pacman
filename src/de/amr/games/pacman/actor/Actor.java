@@ -113,7 +113,7 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 		return !inTeleportSpace() && !canMove(getCurrentDir());
 	}
 
-	public boolean canMove(int dir) {
+	private boolean canMove(int dir) {
 		int col, row, colNext, rowNext;
 		Vector2f v = velocity(dir);
 		Vector2f center = tf.getCenter();
@@ -190,9 +190,10 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (isVisible() && currentSprite() != null) {
-			float dx = tf.getX() - (currentSprite().getWidth() - tf.getWidth()) / 2;
-			float dy = tf.getY() - (currentSprite().getHeight() - tf.getHeight()) / 2;
+		if (visible && currentSprite() != null) {
+			Vector2f center = tf.getCenter();
+			float dx = center.x - currentSprite().getWidth() / 2;
+			float dy = center.y - currentSprite().getHeight() / 2;
 			g.translate(dx, dy);
 			currentSprite().draw(g);
 			g.translate(-dx, -dy);
