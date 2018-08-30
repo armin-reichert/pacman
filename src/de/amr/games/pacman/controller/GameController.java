@@ -19,7 +19,7 @@ import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
-import de.amr.easy.game.view.VisualController;
+import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
@@ -47,7 +47,7 @@ import de.amr.statemachine.StateObject;
  * 
  * @author Armin Reichert
  */
-public class GameController implements VisualController {
+public class GameController implements ViewController {
 
 	// Model
 	private final Game game;

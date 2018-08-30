@@ -3,7 +3,7 @@ package de.amr.games.pacman.test.navigation;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.View;
-import de.amr.easy.game.view.VisualController;
+import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
@@ -11,7 +11,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.view.play.PlayViewX;
 
-public class ScatteringTestController implements VisualController {
+public class ScatteringTestController implements ViewController {
 
 	private final Game game;
 	private final PlayViewX view;
