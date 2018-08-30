@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.intro;
 
 import de.amr.easy.game.assets.Assets;
-import de.amr.games.pacman.view.core.ScrollingImage;
+import de.amr.easy.game.controls.ScrollingImage;
 
 public class ScrollingLogo extends ScrollingImage {
 

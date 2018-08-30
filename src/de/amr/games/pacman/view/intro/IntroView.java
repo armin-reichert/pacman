@@ -9,11 +9,11 @@ import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.amr.easy.game.controls.BlinkingText;
+import de.amr.easy.game.controls.Link;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.view.core.BlinkingText;
-import de.amr.games.pacman.view.core.Link;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -58,6 +58,7 @@ public class IntroView implements View, Controller {
 		ghostPoints.centerHorizontally(width);
 		startText = new BlinkingText().set("Press SPACE to start!", THEME.textFont(18), background,
 				Color.PINK);
+		startText.setSpaceExpansion(3);
 		startText.tf.setY(150);
 		startText.centerHorizontally(width);
 		link = new Link(LINK_TEXT, THEME.textFont(8), Color.LIGHT_GRAY);

@@ -7,13 +7,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 
+import de.amr.easy.game.controls.AnimationController;
 import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.game.view.View;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.theme.GhostColor;
-import de.amr.games.pacman.view.core.AnimationController;
 
 public class ChasePacManAnimation extends GameEntity implements AnimationController, View {
 
