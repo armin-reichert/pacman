@@ -56,8 +56,8 @@ public class IntroView implements View, Controller {
 		ghostPoints = new GhostPointsAnimation();
 		ghostPoints.tf.setY(200);
 		ghostPoints.centerHorizontally(width);
-		startText = new BlinkingText().set("Press SPACE to start!", THEME.textFont(18), background,
-				Color.PINK);
+		startText = BlinkingText.create().text("Press SPACE to start!").font(THEME.textFont(18)).background(background)
+				.color(Color.PINK).build();
 		startText.setSpaceExpansion(3);
 		startText.tf.setY(150);
 		startText.centerHorizontally(width);
