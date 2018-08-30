@@ -9,8 +9,10 @@ import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.controls.BlinkingText;
 import de.amr.easy.game.controls.Link;
+import de.amr.easy.game.controls.ScrollingImage;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
@@ -35,7 +37,7 @@ public class IntroView implements View, Controller {
 	private final StateMachine<Integer, Void> fsm;
 	private final Set<View> animations = new HashSet<>();
 
-	private final ScrollingLogo logo;
+	private final ScrollingImage logo;
 	private final BlinkingText startText;
 	private final ChasePacManAnimation chasePacMan;
 	private final ChaseGhostsAnimation chaseGhosts;
@@ -46,7 +48,11 @@ public class IntroView implements View, Controller {
 		this.width = width;
 		this.height = height;
 		fsm = buildStateMachine();
-		logo = new ScrollingLogo(width, height);
+		logo = new ScrollingImage(Assets.image("logo.png"));
+		logo.centerHorizontally(width);
+		logo.tf.setY(height);
+		logo.setSpeedY(-2f);
+		logo.setCompletion(() -> logo.tf.getY() <= 20);
 		chasePacMan = new ChasePacManAnimation();
 		chasePacMan.setStartPosition(width, 100);
 		chasePacMan.setEndPosition(-chasePacMan.tf.getWidth(), 100);
