@@ -20,10 +20,6 @@ public interface TilePlacedEntity {
 	default int tile(float xy) {
 		return round(xy) / getTileSize();
 	}
-	
-	default int tileCenter(float coord) {
-		return tile(coord + getTileSize()/2);
-	}
 
 	default Tile getTile() {
 		Vector2f center = tf().getCenter();

@@ -118,25 +118,26 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 	public boolean canMove(int dir) {
 		int col, row, newCol, newRow;
 		Vector2f v = velocity(dir);
+		Vector2f center = tf.getCenter();
 		switch (dir) {
 		case Top4.E:
-			col = tileCenter(tf.getX());
-			row = tileCenter(tf.getY());
+			col = tile(center.x);
+			row = tile(center.y);
 			newCol = round(tf.getX() + tf.getWidth()) / getTileSize();
 			return newCol == col || canEnterTile(new Tile(newCol, row));
 		case Top4.W:
 			col = round(tf.getX()) / getTileSize();
-			row = tileCenter(tf.getY());
+			row = tile(center.y);
 			newCol = round(tf.getX() + v.x) / getTileSize();
 			return newCol == col || canEnterTile(new Tile(newCol, row));
 		case Top4.N:
-			col = tileCenter(tf.getX());
-			row = tileCenter(tf.getY());
+			col = tile(center.x);
+			row = tile(center.y);
 			newRow = round(tf.getY() + v.y) / getTileSize();
 			return newRow == row || canEnterTile(new Tile(col, newRow));
 		case Top4.S:
-			col = tileCenter(tf.getX());
-			row = tileCenter(tf.getY());
+			col = tile(center.x);
+			row = tile(center.y);
 			newRow = round(tf.getY() + tf.getHeight()) / getTileSize();
 			return newRow == row || canEnterTile(new Tile(col, newRow));
 		}
