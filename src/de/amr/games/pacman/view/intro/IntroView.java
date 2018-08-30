@@ -61,7 +61,7 @@ public class IntroView implements View, Controller {
 		startText.setSpaceExpansion(3);
 		startText.tf.setY(150);
 		startText.centerHorizontally(width);
-		link = new Link(LINK_TEXT, THEME.textFont(8), Color.LIGHT_GRAY);
+		link = Link.create().text(LINK_TEXT).font(THEME.textFont(8)).color(Color.LIGHT_GRAY).build();
 		link.setURL(LINK_URL);
 		link.tf.setY(height - 20);
 		link.centerHorizontally(width);
