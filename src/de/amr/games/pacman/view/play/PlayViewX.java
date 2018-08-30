@@ -139,13 +139,13 @@ public class PlayViewX extends PlayView {
 
 	private void drawEntityStates(Graphics2D g) {
 		if (actors.pacMan.getState() != null) {
-			drawText(g, Color.YELLOW, actors.pacMan.tf().getX(),
-					actors.pacMan.tf().getY(), pacManState(actors.pacMan));
+			drawText(g, Color.YELLOW, actors.pacMan.tf().getX(), actors.pacMan.tf().getY(),
+					pacManState(actors.pacMan));
 		}
 		actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> {
 			if (ghost.getState() != null) {
-				drawText(g, ghostColor(ghost), ghost.tf().getX() - TS,
-						ghost.tf().getY(), ghostState(ghost));
+				drawText(g, ghostColor(ghost), ghost.tf().getX() - TS, ghost.tf().getY(),
+						ghostState(ghost));
 			}
 		});
 	}

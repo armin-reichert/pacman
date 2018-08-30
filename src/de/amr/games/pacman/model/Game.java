@@ -200,7 +200,7 @@ public class Game {
 	}
 
 	public float getPacManSpeed(PacManState state) {
-		
+
 		switch (state) {
 		case HOME:
 			return 0;

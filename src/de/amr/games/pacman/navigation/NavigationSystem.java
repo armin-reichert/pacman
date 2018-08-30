@@ -71,9 +71,9 @@ public interface NavigationSystem<T extends Actor> {
 	 *                   Otherwise it directly attacks PacMan.
 	 */
 	public default Navigation<T> attackAndReject(Ghost attacker, PacMan pacMan, int distance) {
-		return headFor(() -> dist(attacker.tf().getCenter(),
-				pacMan.tf().getCenter()) >= distance ? pacMan.getTile()
-						: attacker.getScatteringTarget());
+		return headFor(() -> dist(attacker.tf().getCenter(), pacMan.tf().getCenter()) >= distance
+				? pacMan.getTile()
+				: attacker.getScatteringTarget());
 	}
 
 	/**

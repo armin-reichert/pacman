@@ -101,7 +101,7 @@ public class GameController implements VisualController {
 	private void setCurrentView(View view) {
 		if (currentView != view) {
 			currentView = view;
-			((Controller)currentView).init();
+			((Controller) currentView).init();
 		}
 	}
 
@@ -118,7 +118,7 @@ public class GameController implements VisualController {
 	@Override
 	public void update() {
 		gameControl.update();
-		((Controller)currentView).update();
+		((Controller) currentView).update();
 	}
 
 	private PlayingState playingState() {
@@ -293,7 +293,8 @@ public class GameController implements VisualController {
 		private void onPacManKilled(GameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
 			actors.pacMan.processEvent(e);
-			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
+			LOGGER.info(
+					() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
 		}
 
 		private void onPacManGainsPower(GameEvent event) {
@@ -316,12 +317,14 @@ public class GameController implements VisualController {
 			GhostKilledEvent e = (GhostKilledEvent) event;
 			e.ghost.processEvent(e);
 			THEME.soundEatGhost().play();
-			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
+			LOGGER
+					.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
 		}
 
 		private void onBonusFound(GameEvent event) {
 			playView.getBonus().ifPresent(bonus -> {
-				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(), bonus.getValue()));
+				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(),
+						bonus.getValue()));
 				THEME.soundEatFruit().play();
 				bonus.setHonored();
 				game.score.add(bonus.getValue());
@@ -387,13 +390,14 @@ public class GameController implements VisualController {
 		public void onEntry() {
 			actors.pacMan.setVisible(false);
 			game.score.add(game.getKilledGhostValue());
-			LOGGER.info(String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
-					game.getGhostsKilledByEnergizer()));
+			LOGGER.info(String.format("Scored %d points for killing ghost #%d",
+					game.getKilledGhostValue(), game.getGhostsKilledByEnergizer()));
 		}
 
 		@Override
 		public void onTick() {
-			actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(Ghost::update);
+			actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
+					.forEach(Ghost::update);
 		}
 
 		@Override

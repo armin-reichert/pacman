@@ -38,7 +38,8 @@ import de.amr.statemachine.StateObject;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends Actor implements StateMachineClient<PacManState, GameEvent>, NavigationSystem<PacMan> {
+public class PacMan extends Actor
+		implements StateMachineClient<PacManState, GameEvent>, NavigationSystem<PacMan> {
 
 	private final StateMachine<PacManState, GameEvent> fsm;
 	private final Map<PacManState, Navigation<PacMan>> navigationMap;

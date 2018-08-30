@@ -5,7 +5,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.theme.PacManThemes;
 
-
 public class FollowFixedPathTestApp extends Application {
 
 	public static void main(String[] args) {

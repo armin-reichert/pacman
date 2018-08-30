@@ -34,7 +34,8 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Actor implements StateMachineClient<GhostState, GameEvent>, NavigationSystem<Ghost> {
+public class Ghost extends Actor
+		implements StateMachineClient<GhostState, GameEvent>, NavigationSystem<Ghost> {
 
 	private final String name;
 	private final StateMachine<GhostState, GameEvent> controller;
@@ -46,8 +47,8 @@ public class Ghost extends Actor implements StateMachineClient<GhostState, GameE
 
 	BooleanSupplier fnCanLeaveHouse;
 
-	public Ghost(String name, PacMan pacMan, Game game, Tile home, Tile scatteringTarget, int initialDir,
-			GhostColor color) {
+	public Ghost(String name, PacMan pacMan, Game game, Tile home, Tile scatteringTarget,
+			int initialDir, GhostColor color) {
 		super(game);
 		this.name = name;
 		this.pacMan = pacMan;

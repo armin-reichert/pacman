@@ -26,7 +26,7 @@ import de.amr.games.pacman.theme.PacManThemes;
  * 
  * @author Armin Reichert
  */
-public class PlayView implements View,Controller, PacManWorld {
+public class PlayView implements View, Controller, PacManWorld {
 
 	protected final int width, height;
 	protected final Game game;
