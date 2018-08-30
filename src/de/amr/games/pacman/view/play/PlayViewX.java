@@ -18,7 +18,6 @@ import java.util.logging.Level;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
@@ -172,13 +171,13 @@ public class PlayViewX extends PlayView {
 
 	private static Color ghostColor(Ghost ghost) {
 		switch (ghost.getName()) {
-		case Cast.BLINKY:
+		case "Blinky":
 			return Color.RED;
-		case Cast.PINKY:
+		case "Pinky":
 			return Color.PINK;
-		case Cast.INKY:
+		case "Inky":
 			return new Color(64, 224, 208);
-		case Cast.CLYDE:
+		case "Clyde":
 			return Color.ORANGE;
 		default:
 			throw new IllegalArgumentException();

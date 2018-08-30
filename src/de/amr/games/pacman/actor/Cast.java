@@ -28,12 +28,6 @@ import de.amr.games.pacman.theme.GhostColor;
  */
 public class Cast {
 
-	public static final String PACMAN = "Pac-Man";
-	public static final String BLINKY = "Blinky";
-	public static final String PINKY = "Pinky";
-	public static final String INKY = "Inky";
-	public static final String CLYDE = "Clyde";
-
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
 
@@ -46,16 +40,16 @@ public class Cast {
 		pacMan = new PacMan(game);
 
 		// The ghosts
-		blinky = new Ghost(BLINKY, pacMan, game, maze.getBlinkyHome(), maze.getBlinkyScatteringTarget(),
-				Top4.E, GhostColor.RED);
+		blinky = new Ghost("Blinky", pacMan, game, maze.getBlinkyHome(),
+				maze.getBlinkyScatteringTarget(), Top4.E, GhostColor.RED);
 
-		pinky = new Ghost(PINKY, pacMan, game, maze.getPinkyHome(), maze.getPinkyScatteringTarget(),
+		pinky = new Ghost("Pinky", pacMan, game, maze.getPinkyHome(), maze.getPinkyScatteringTarget(),
 				Top4.S, GhostColor.PINK);
 
-		inky = new Ghost(INKY, pacMan, game, maze.getInkyHome(), maze.getInkyScatteringTarget(), Top4.N,
-				GhostColor.TURQUOISE);
+		inky = new Ghost("Inky", pacMan, game, maze.getInkyHome(), maze.getInkyScatteringTarget(),
+				Top4.N, GhostColor.TURQUOISE);
 
-		clyde = new Ghost(CLYDE, pacMan, game, maze.getClydeHome(), maze.getClydeScatteringTarget(),
+		clyde = new Ghost("Clyde", pacMan, game, maze.getClydeHome(), maze.getClydeScatteringTarget(),
 				Top4.N, GhostColor.ORANGE);
 
 		activeActors.addAll(Arrays.asList(pacMan, blinky, pinky, inky, clyde));
