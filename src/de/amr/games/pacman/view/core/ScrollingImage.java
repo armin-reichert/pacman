@@ -13,7 +13,7 @@ import de.amr.easy.game.sprite.Sprite;
 public abstract class ScrollingImage extends GameEntityUsingSprites implements AnimationController {
 
 	public ScrollingImage(Image image) {
-		setSprite("s_image", new Sprite(image));
+		setSprite("s_image", Sprite.of(image));
 		setCurrentSprite("s_image");
 		tf.setWidth(currentSprite().getWidth());
 		tf.setHeight(currentSprite().getHeight());

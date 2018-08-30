@@ -95,7 +95,7 @@ public class BlinkingText extends GameEntityUsingSprites {
 		g.setFont(font);
 		g.drawString(patchedText, 0, height);
 		g.dispose();
-		setSprite("s_text", new Sprite(image, null).animate(AnimationType.BACK_AND_FORTH, 500));
+		setSprite("s_text", Sprite.of(image, null).animate(AnimationType.BACK_AND_FORTH, 500));
 		setCurrentSprite("s_text");
 	}
 

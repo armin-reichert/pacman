@@ -145,22 +145,22 @@ public class ClassicPacManTheme implements PacManTheme {
 
 	@Override
 	public Sprite mazeEmpty() {
-		return new Sprite(mazeEmpty);
+		return Sprite.of(mazeEmpty);
 	}
 
 	@Override
 	public Sprite mazeFull() {
-		return new Sprite(mazeFull);
+		return Sprite.of(mazeFull);
 	}
 
 	@Override
 	public Sprite mazeFlashing() {
-		return new Sprite(mazeEmpty, mazeWhite).animate(CYCLIC, 100);
+		return Sprite.of(mazeEmpty, mazeWhite).animate(CYCLIC, 100);
 	}
 
 	@Override
 	public Sprite symbol(BonusSymbol symbol) {
-		return new Sprite(symbolMap.get(symbol));
+		return Sprite.of(symbolMap.get(symbol));
 	}
 
 	@Override
@@ -170,17 +170,17 @@ public class ClassicPacManTheme implements PacManTheme {
 
 	@Override
 	public Sprite pacManFull() {
-		return new Sprite(pacManFull);
+		return Sprite.of(pacManFull);
 	}
 
 	@Override
 	public Sprite pacManWalking(int dir) {
-		return new Sprite(pacManWalking[dir]).animate(BACK_AND_FORTH, 100);
+		return Sprite.of(pacManWalking[dir]).animate(BACK_AND_FORTH, 100);
 	}
 
 	@Override
 	public Sprite pacManDying() {
-		return new Sprite(pacManDying).animate(LINEAR, 100);
+		return Sprite.of(pacManDying).animate(LINEAR, 100);
 	}
 
 	@Override
@@ -202,32 +202,32 @@ public class ClassicPacManTheme implements PacManTheme {
 		default:
 			throw new IllegalArgumentException("Illegal direction: " + direction);
 		}
-		return new Sprite(frames).animate(BACK_AND_FORTH, 300);
+		return Sprite.of(frames).animate(BACK_AND_FORTH, 300);
 	}
 
 	@Override
 	public Sprite ghostFrightened() {
-		return new Sprite(ghostAwed).animate(CYCLIC, 300);
+		return Sprite.of(ghostAwed).animate(CYCLIC, 300);
 	}
 
 	@Override
 	public Sprite ghostFlashing() {
-		return new Sprite(ghostFlashing).animate(CYCLIC, 300);
+		return Sprite.of(ghostFlashing).animate(CYCLIC, 300);
 	}
 
 	@Override
 	public Sprite ghostEyes(int dir) {
-		return new Sprite(ghostEyes[dir]);
+		return Sprite.of(ghostEyes[dir]);
 	}
 
 	@Override
 	public Sprite greenNumber(int i) {
-		return new Sprite(greenNumbers[i]);
+		return Sprite.of(greenNumbers[i]);
 	}
 
 	@Override
 	public Sprite pinkNumber(int i) {
-		return new Sprite(pinkNumbers[i]);
+		return Sprite.of(pinkNumbers[i]);
 	}
 
 	@Override
