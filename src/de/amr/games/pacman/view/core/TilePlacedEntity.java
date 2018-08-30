@@ -3,6 +3,7 @@ package de.amr.games.pacman.view.core;
 import static java.lang.Math.round;
 
 import de.amr.easy.game.entity.Transform;
+import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -16,12 +17,17 @@ public interface TilePlacedEntity {
 
 	Transform tf();
 
+	default int tile(float xy) {
+		return round(xy) / getTileSize();
+	}
+	
 	default int tileCenter(float coord) {
-		return round(coord + getTileSize() / 2) / getTileSize();
+		return tile(coord + getTileSize()/2);
 	}
 
 	default Tile getTile() {
-		return new Tile(tileCenter(tf().getX()), tileCenter(tf().getY()));
+		Vector2f center = tf().getCenter();
+		return new Tile(tile(center.x), tile(center.y));
 	}
 
 	default void placeAt(Tile tile, float xOffset, float yOffset) {
