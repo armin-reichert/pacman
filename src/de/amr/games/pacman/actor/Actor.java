@@ -112,7 +112,7 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 	}
 
 	public boolean isStuck() {
-		return !canMove(getCurrentDir());
+		return !inTeleportSpace() && !canMove(getCurrentDir());
 	}
 
 	public boolean canMove(int dir) {
@@ -156,10 +156,10 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 			tf.setVelocity(velocity(getCurrentDir()));
 			tf.move();
 			// check exit from teleport space
-			if (tf.getX() > (getMaze().numCols() - 1 + getMaze().getTeleportLength()) * getTileSize()) {
-				tf.setX(0);
-			} else if (tf.getX() < -getMaze().getTeleportLength() * getTileSize()) {
-				tf.setX((getMaze().numCols() - 1) * getTileSize());
+			if (tf.getX() + tf.getWidth() < 0) {
+				tf.setX(getMaze().numCols() * getTileSize());
+			} else if (tf.getX() > (getMaze().numCols()) * getTileSize()) {
+				tf.setX(-tf.getWidth());
 			}
 		}
 		int dir = supplyIntendedDir();

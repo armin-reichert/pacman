@@ -157,10 +157,6 @@ public class Maze {
 		return graph.numRows();
 	}
 
-	public int getTeleportLength() {
-		return 4;
-	}
-
 	public Stream<Tile> tiles() {
 		return graph.vertices().mapToObj(this::tile);
 	}
@@ -248,7 +244,7 @@ public class Maze {
 	}
 
 	public boolean inTeleportSpace(Tile tile) {
-		return tile.row == tunnelRow && (tile.col < 0 || tile.col > numCols() - 1);
+		return tile.row == tunnelRow && (tile.col == -1 || tile.col == numCols());
 	}
 
 	public boolean inTunnel(Tile tile) {
