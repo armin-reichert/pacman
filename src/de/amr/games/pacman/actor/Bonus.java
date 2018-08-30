@@ -9,7 +9,6 @@ import de.amr.easy.game.entity.Transform;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.PacManThemes;
-import de.amr.games.pacman.view.core.TilePlacedEntity;
 
 public class Bonus extends GameEntityUsingSprites implements TilePlacedEntity {
 

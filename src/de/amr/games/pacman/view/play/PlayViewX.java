@@ -22,11 +22,11 @@ import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.actor.TilePlacedEntity;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.MazeRoute;
-import de.amr.games.pacman.view.core.TilePlacedEntity;
 import de.amr.statemachine.StateObject;
 
 /**

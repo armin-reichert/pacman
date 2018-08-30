@@ -11,7 +11,6 @@ import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.view.core.TilePlacedEntity;
 
 /**
  * Actors know how to move in the maze and can be controlled by supplying the intended move
