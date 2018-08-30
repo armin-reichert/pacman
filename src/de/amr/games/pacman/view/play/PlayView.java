@@ -67,7 +67,7 @@ public class PlayView implements View, Controller, PacManWorld {
 	}
 
 	@Override
-	public Stream<Ghost> getActiveGhosts() {
+	public Stream<Ghost> getGhosts() {
 		return actors.getActiveGhosts();
 	}
 

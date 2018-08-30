@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 
 public interface PacManWorld {
 
-	Stream<Ghost> getActiveGhosts();
+	Stream<Ghost> getGhosts();
 
 	Optional<Bonus> getBonus();
 }

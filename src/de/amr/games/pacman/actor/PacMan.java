@@ -227,7 +227,7 @@ public class PacMan extends Actor
 		protected void inspectTile(PacManWorld world, Tile tile) {
 			// Ghost collision?
 			/*@formatter:off*/
-			Optional<Ghost> collidingGhost = world.getActiveGhosts()
+			Optional<Ghost> collidingGhost = world.getGhosts()
 				.filter(ghost -> ghost.getTile().equals(tile))
 				.filter(ghost -> ghost.getState() != GhostState.DEAD)
 				.filter(ghost -> ghost.getState() != GhostState.DYING)
