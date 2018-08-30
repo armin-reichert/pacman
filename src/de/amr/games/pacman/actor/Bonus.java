@@ -55,7 +55,7 @@ public class Bonus extends GameEntityUsingSprites implements TilePlacedEntity {
 	}
 
 	@Override
-	public Transform getTransform() {
+	public Transform tf() {
 		return tf;
 	}
 

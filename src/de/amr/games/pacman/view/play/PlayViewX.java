@@ -139,13 +139,13 @@ public class PlayViewX extends PlayView {
 
 	private void drawEntityStates(Graphics2D g) {
 		if (actors.pacMan.getState() != null) {
-			drawText(g, Color.YELLOW, actors.pacMan.getTransform().getX(),
-					actors.pacMan.getTransform().getY(), pacManState(actors.pacMan));
+			drawText(g, Color.YELLOW, actors.pacMan.tf().getX(),
+					actors.pacMan.tf().getY(), pacManState(actors.pacMan));
 		}
 		actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> {
 			if (ghost.getState() != null) {
-				drawText(g, ghostColor(ghost), ghost.getTransform().getX() - TS,
-						ghost.getTransform().getY(), ghostState(ghost));
+				drawText(g, ghostColor(ghost), ghost.tf().getX() - TS,
+						ghost.tf().getY(), ghostState(ghost));
 			}
 		});
 	}
@@ -195,8 +195,8 @@ public class PlayViewX extends PlayView {
 
 	private void drawActorAlignment(TilePlacedEntity actor, Graphics2D g) {
 		g.setColor(Color.GREEN);
-		g.translate(actor.getTransform().getX(), actor.getTransform().getY());
-		int w = actor.getTransform().getWidth(), h = actor.getTransform().getHeight();
+		g.translate(actor.tf().getX(), actor.tf().getY());
+		int w = actor.tf().getWidth(), h = actor.tf().getHeight();
 		if (actor.getAlignmentY() == 0) {
 			g.drawLine(0, 0, w, 0);
 			g.drawLine(0, h, w, h);
@@ -205,7 +205,7 @@ public class PlayViewX extends PlayView {
 			g.drawLine(0, 0, 0, h);
 			g.drawLine(w, 0, w, h);
 		}
-		g.translate(-actor.getTransform().getX(), -actor.getTransform().getY());
+		g.translate(-actor.tf().getX(), -actor.tf().getY());
 	}
 
 	private void drawRoute(Graphics2D g, Ghost ghost) {
@@ -227,7 +227,7 @@ public class PlayViewX extends PlayView {
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-targetTile.col * TS, -targetTile.row * TS);
 		} else if (route.getTargetTile() != null) {
-			g.drawLine((int) ghost.getTransform().getCenter().x, (int) ghost.getTransform().getCenter().y,
+			g.drawLine((int) ghost.tf().getCenter().x, (int) ghost.tf().getCenter().y,
 					route.getTargetTile().col * TS + TS / 2, route.getTargetTile().row * TS + TS / 2);
 			g.translate(route.getTargetTile().col * TS, route.getTargetTile().row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
@@ -235,7 +235,7 @@ public class PlayViewX extends PlayView {
 		}
 
 		if (ghost == actors.clyde && ghost.getState() == GhostState.CHASING) {
-			Vector2f center = ghost.getTransform().getCenter();
+			Vector2f center = ghost.tf().getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.drawOval((int) center.x - 8 * TS, (int) center.y - 8 * TS, 16 * TS, 16 * TS);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);

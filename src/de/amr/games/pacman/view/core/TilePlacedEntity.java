@@ -14,18 +14,18 @@ public interface TilePlacedEntity {
 
 	int getTileSize();
 
-	Transform getTransform();
+	Transform tf();
 
 	default int tileCenter(float coord) {
 		return round(coord + getTileSize() / 2) / getTileSize();
 	}
 
 	default Tile getTile() {
-		return new Tile(tileCenter(getTransform().getX()), tileCenter(getTransform().getY()));
+		return new Tile(tileCenter(tf().getX()), tileCenter(tf().getY()));
 	}
 
 	default void placeAt(Tile tile, float xOffset, float yOffset) {
-		getTransform().moveTo(tile.col * getTileSize() + xOffset, tile.row * getTileSize() + yOffset);
+		tf().moveTo(tile.col * getTileSize() + xOffset, tile.row * getTileSize() + yOffset);
 	}
 
 	default void align() {
@@ -37,10 +37,10 @@ public interface TilePlacedEntity {
 	}
 
 	default int getAlignmentX() {
-		return round(getTransform().getX()) % getTileSize();
+		return round(tf().getX()) % getTileSize();
 	}
 
 	default int getAlignmentY() {
-		return round(getTransform().getY()) % getTileSize();
+		return round(tf().getY()) % getTileSize();
 	}
 }

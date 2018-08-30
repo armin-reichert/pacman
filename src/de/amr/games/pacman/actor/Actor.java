@@ -70,7 +70,7 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 	public abstract float getSpeed();
 
 	@Override
-	public Transform getTransform() {
+	public Transform tf() {
 		return tf;
 	}
 
@@ -117,7 +117,7 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 
 	public boolean canMove(int dir) {
 		int col, row, newCol, newRow;
-		Transform tf = getTransform();
+		Transform tf = tf();
 		Vector2f v = velocity(dir);
 		switch (dir) {
 		case Top4.E:
@@ -152,7 +152,7 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 			setCurrentDir(getNextDir());
 		}
 		if (!isStuck()) {
-			Transform tf = getTransform();
+			Transform tf = tf();
 			tf.setVelocity(velocity(getCurrentDir()));
 			tf.move();
 			// check exit from teleport space
