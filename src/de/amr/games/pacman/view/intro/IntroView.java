@@ -6,6 +6,7 @@ import static de.amr.games.pacman.theme.PacManThemes.THEME;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,7 +39,7 @@ public class IntroView implements View, Controller {
 	private final Set<View> animations = new HashSet<>();
 
 	private final ScrollingImage logo;
-	private final BlinkingText startText;
+	private final BlinkingText pressSpace;
 	private final ChasePacManAnimation chasePacMan;
 	private final ChaseGhostsAnimation chaseGhosts;
 	private final GhostPointsAnimation ghostPoints;
@@ -62,79 +63,71 @@ public class IntroView implements View, Controller {
 		ghostPoints = new GhostPointsAnimation();
 		ghostPoints.tf.setY(200);
 		ghostPoints.centerHorizontally(width);
-		startText = BlinkingText.create().text("Press SPACE to start!").font(THEME.textFont(18)).background(background)
+		pressSpace = BlinkingText.create().text("Press SPACE to start!").font(THEME.textFont(18)).background(background)
 				.color(Color.PINK).build();
-		startText.setSpaceExpansion(3);
-		startText.tf.setY(150);
-		startText.centerHorizontally(width);
+		pressSpace.setSpaceExpansion(3);
+		pressSpace.tf.setY(150);
+		pressSpace.centerHorizontally(width);
 		link = Link.create().text(LINK_TEXT).font(THEME.textFont(8)).color(Color.LIGHT_GRAY).build();
 		link.setURL(LINK_URL);
 		link.tf.setY(height - 20);
 		link.centerHorizontally(width);
 	}
 
-	private void show(View view) {
-		animations.add(view);
+	private void show(View... views) {
+		Arrays.stream(views).forEach(animations::add);
 	}
 
-	private void hide(View view) {
-		animations.remove(view);
+	private void hide(View... views) {
+		Arrays.stream(views).forEach(animations::remove);
 	}
 
 	private StateMachine<Integer, Void> buildStateMachine() {
 		return
 		/*@formatter:off*/
 		StateMachine.define(Integer.class, Void.class)
-
 			.description("IntroAnimation")
 			.initialState(0)
-	
 			.states()
-			
-				.state(0) // Scroll logo into view
-					.onEntry(() -> {
-						show(logo);
-						logo.start();
-					})
+
+				.state(0)
+					// Scroll logo into view
+					.onEntry(() -> { show(logo); logo.start(); })
 					.onExit(() -> logo.stop())
-					
-				.state(1) // Show ghosts chasing Pac-Man and vice-versa
+
+				.state(1)
+					// Show ghosts chasing Pac-Man and vice-versa
 					.onEntry(() -> {
-						hide(startText);
-						show(chasePacMan);
+						show(chasePacMan, chaseGhosts);
 						chasePacMan.start();
-						show(chaseGhosts);
 						chaseGhosts.start();
 					})
 					.onExit(() -> {
 						chasePacMan.stop();
-						chasePacMan.init();
 						chasePacMan.centerHorizontally(width);
 						chaseGhosts.stop();
 					})
 					
-				.state(2) // Show ghost points animation and blinking text
+				.state(2)
+					// Show ghost points animation and blinking text
 					.timeoutAfter(() -> PULSE.secToTicks(6))
 					.onEntry(() -> {
-						show(ghostPoints);
-						show(startText);
-						show(link);
+						show(ghostPoints, pressSpace, link);
 						ghostPoints.start();
 					})
 					.onExit(() -> {
 						ghostPoints.stop();
-						hide(ghostPoints);
+						hide(ghostPoints, pressSpace);
 					})
 					
 				.state(COMPLETE)
 					
 			.transitions()
-
 				.when(0).then(1).condition(() -> logo.isCompleted())
 				.when(1).then(2).condition(() -> chasePacMan.isCompleted() && chaseGhosts.isCompleted())
 				.when(2).then(1).onTimeout()
 				.when(2).then(COMPLETE).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
-				
+
 		.endStateMachine();
 	  /*@formatter:on*/
 	}
@@ -159,7 +152,8 @@ public class IntroView implements View, Controller {
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
 			fsm.setState(COMPLETE);
-		}
+			return;
+		} 
 		fsm.update();
 		animations.forEach(animation -> ((Controller) animation).update());
 	}
