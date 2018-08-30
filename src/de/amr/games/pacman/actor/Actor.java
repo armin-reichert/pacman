@@ -1,7 +1,6 @@
 package de.amr.games.pacman.actor;
 
 import static de.amr.games.pacman.model.Maze.NESW;
-import static java.lang.Math.round;
 
 import java.awt.Graphics2D;
 
@@ -116,30 +115,30 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 	}
 
 	public boolean canMove(int dir) {
-		int col, row, newCol, newRow;
+		int col, row, colNext, rowNext;
 		Vector2f v = velocity(dir);
 		Vector2f center = tf.getCenter();
 		switch (dir) {
 		case Top4.E:
 			col = tile(center.x);
 			row = tile(center.y);
-			newCol = round(tf.getX() + tf.getWidth()) / getTileSize();
-			return newCol == col || canEnterTile(new Tile(newCol, row));
+			colNext = tile(tf.getX() + tf.getWidth() /* + v.x */);
+			return colNext == col || canEnterTile(new Tile(colNext, row));
 		case Top4.W:
-			col = round(tf.getX()) / getTileSize();
+			col = tile(tf.getX());
 			row = tile(center.y);
-			newCol = round(tf.getX() + v.x) / getTileSize();
-			return newCol == col || canEnterTile(new Tile(newCol, row));
+			colNext = tile(tf.getX() + v.x);
+			return colNext == col || canEnterTile(new Tile(colNext, row));
 		case Top4.N:
 			col = tile(center.x);
 			row = tile(center.y);
-			newRow = round(tf.getY() + v.y) / getTileSize();
-			return newRow == row || canEnterTile(new Tile(col, newRow));
+			rowNext = tile(tf.getY() + v.y);
+			return rowNext == row || canEnterTile(new Tile(col, rowNext));
 		case Top4.S:
 			col = tile(center.x);
 			row = tile(center.y);
-			newRow = round(tf.getY() + tf.getHeight()) / getTileSize();
-			return newRow == row || canEnterTile(new Tile(col, newRow));
+			rowNext = tile(tf.getY() + tf.getHeight() /* + v.y */);
+			return rowNext == row || canEnterTile(new Tile(col, rowNext));
 		}
 		throw new IllegalArgumentException("Illegal direction: " + dir);
 	}
