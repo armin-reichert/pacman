@@ -63,8 +63,8 @@ public class IntroView implements View, Controller {
 		ghostPoints = new GhostPointsAnimation();
 		ghostPoints.tf.setY(200);
 		ghostPoints.centerHorizontally(width);
-		pressSpace = BlinkingText.create().text("Press SPACE to start!").font(THEME.textFont(18)).background(background)
-				.color(Color.PINK).build();
+		pressSpace = BlinkingText.create().text("Press SPACE to start!").blinkTimeMillis(1000).font(THEME.textFont(18))
+				.background(background).color(Color.PINK).build();
 		pressSpace.setSpaceExpansion(3);
 		pressSpace.tf.setY(150);
 		pressSpace.centerHorizontally(width);
@@ -153,7 +153,7 @@ public class IntroView implements View, Controller {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
 			fsm.setState(COMPLETE);
 			return;
-		} 
+		}
 		fsm.update();
 		animations.forEach(animation -> ((Controller) animation).update());
 	}
