@@ -18,7 +18,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public abstract class Actor extends GameEntityUsingSprites implements TilePlacedEntity {
+public abstract class Actor extends GameEntityUsingSprites implements TilePlacement {
 
 	protected final Game game;
 	private boolean visible;
@@ -119,24 +119,24 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 		Vector2f center = tf.getCenter();
 		switch (dir) {
 		case Top4.E:
-			col = tile(center.x);
-			row = tile(center.y);
-			colNext = tile(tf.getX() + tf.getWidth() /* + v.x */);
+			col = tileCoord(center.x);
+			row = tileCoord(center.y);
+			colNext = tileCoord(tf.getX() + tf.getWidth() /* + v.x */);
 			return colNext == col || canEnterTile(new Tile(colNext, row));
 		case Top4.W:
-			col = tile(tf.getX());
-			row = tile(center.y);
-			colNext = tile(tf.getX() + v.x);
+			col = tileCoord(tf.getX());
+			row = tileCoord(center.y);
+			colNext = tileCoord(tf.getX() + v.x);
 			return colNext == col || canEnterTile(new Tile(colNext, row));
 		case Top4.N:
-			col = tile(center.x);
-			row = tile(center.y);
-			rowNext = tile(tf.getY() + v.y);
+			col = tileCoord(center.x);
+			row = tileCoord(center.y);
+			rowNext = tileCoord(tf.getY() + v.y);
 			return rowNext == row || canEnterTile(new Tile(col, rowNext));
 		case Top4.S:
-			col = tile(center.x);
-			row = tile(center.y);
-			rowNext = tile(tf.getY() + tf.getHeight() /* + v.y */);
+			col = tileCoord(center.x);
+			row = tileCoord(center.y);
+			rowNext = tileCoord(tf.getY() + tf.getHeight() /* + v.y */);
 			return rowNext == row || canEnterTile(new Tile(col, rowNext));
 		}
 		throw new IllegalArgumentException("Illegal direction: " + dir);
@@ -145,7 +145,7 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 	public void move() {
 		if (canMove(getNextDir())) {
 			if (isTurn(getCurrentDir(), getNextDir())) {
-				align();
+				alignOverTile();
 			}
 			setCurrentDir(getNextDir());
 		}

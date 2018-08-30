@@ -21,7 +21,7 @@ import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.actor.TilePlacedEntity;
+import de.amr.games.pacman.actor.TilePlacement;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
@@ -192,15 +192,15 @@ public class PlayViewX extends PlayView {
 		g.translate(-x, -y);
 	}
 
-	private void drawActorAlignment(TilePlacedEntity actor, Graphics2D g) {
+	private void drawActorAlignment(TilePlacement actor, Graphics2D g) {
 		g.setColor(Color.GREEN);
 		g.translate(actor.tf().getX(), actor.tf().getY());
 		int w = actor.tf().getWidth(), h = actor.tf().getHeight();
-		if (actor.getAlignmentY() == 0) {
+		if (actor.getTileAlignmentY() == 0) {
 			g.drawLine(0, 0, w, 0);
 			g.drawLine(0, h, w, h);
 		}
-		if (actor.getAlignmentX() == 0) {
+		if (actor.getTileAlignmentX() == 0) {
 			g.drawLine(0, 0, 0, h);
 			g.drawLine(w, 0, w, h);
 		}
