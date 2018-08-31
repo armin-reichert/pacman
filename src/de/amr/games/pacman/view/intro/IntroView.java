@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.amr.easy.game.assets.Assets;
+import de.amr.easy.game.controls.AnimationController;
 import de.amr.easy.game.controls.BlinkingText;
 import de.amr.easy.game.controls.Link;
 import de.amr.easy.game.controls.ScrollingImage;
@@ -82,6 +83,14 @@ public class IntroView implements View, Controller {
 		Arrays.stream(views).forEach(animations::remove);
 	}
 
+	private void start(AnimationController... animations) {
+		Arrays.stream(animations).forEach(AnimationController::start);
+	}
+
+	private void stop(AnimationController... animations) {
+		Arrays.stream(animations).forEach(AnimationController::stop);
+	}
+
 	private StateMachine<Integer, Void> buildStateMachine() {
 		return
 		/*@formatter:off*/
@@ -99,13 +108,11 @@ public class IntroView implements View, Controller {
 					// Show ghosts chasing Pac-Man and vice-versa
 					.onEntry(() -> {
 						show(chasePacMan, chaseGhosts);
-						chasePacMan.start();
-						chaseGhosts.start();
+						start(chasePacMan, chaseGhosts);
 					})
 					.onExit(() -> {
-						chasePacMan.stop();
+						stop(chasePacMan, chaseGhosts);
 						chasePacMan.tf.centerX(width);
-						chaseGhosts.stop();
 					})
 					
 				.state(2)
