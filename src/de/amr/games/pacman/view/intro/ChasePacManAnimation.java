@@ -45,7 +45,7 @@ public class ChasePacManAnimation extends GameEntity implements AnimationControl
 
 	@Override
 	public void init() {
-		tf.moveTo(startPosition);
+		tf.setPosition(startPosition);
 		pillTimer = PULSE.secToTicks(0.5f);
 	}
 

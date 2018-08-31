@@ -27,7 +27,7 @@ public interface TilePlacement {
 	}
 
 	default void placeAt(Tile tile, float xOffset, float yOffset) {
-		tf().moveTo(tile.col * getTileSize() + xOffset, tile.row * getTileSize() + yOffset);
+		tf().setPosition(tile.col * getTileSize() + xOffset, tile.row * getTileSize() + yOffset);
 	}
 
 	default void alignOverTile() {

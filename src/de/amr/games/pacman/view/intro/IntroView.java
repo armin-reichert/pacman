@@ -50,7 +50,7 @@ public class IntroView implements View, Controller {
 		this.height = height;
 		fsm = buildStateMachine();
 		logo = new ScrollingImage(Assets.image("logo.png"));
-		logo.centerHorizontally(width);
+		logo.tf.centerX(width);
 		logo.tf.setY(height);
 		logo.setSpeedY(-2f);
 		logo.setCompletion(() -> logo.tf.getY() <= 20);
@@ -62,16 +62,16 @@ public class IntroView implements View, Controller {
 		chaseGhosts.setEndPosition(width, 200);
 		ghostPoints = new GhostPointsAnimation();
 		ghostPoints.tf.setY(200);
-		ghostPoints.centerHorizontally(width);
+		ghostPoints.tf.centerX(width);
 		pressSpace = BlinkingText.create().text("Press SPACE to start!").blinkTimeMillis(1000).font(THEME.textFont(18))
 				.background(background).color(Color.PINK).build();
 		pressSpace.setSpaceExpansion(3);
 		pressSpace.tf.setY(150);
-		pressSpace.centerHorizontally(width);
+		pressSpace.tf.centerX(width);
 		link = Link.create().text(LINK_TEXT).font(THEME.textFont(8)).color(Color.LIGHT_GRAY).build();
 		link.setURL(LINK_URL);
 		link.tf.setY(height - 20);
-		link.centerHorizontally(width);
+		link.tf.centerX(width);
 	}
 
 	private void show(View... views) {
@@ -104,7 +104,7 @@ public class IntroView implements View, Controller {
 					})
 					.onExit(() -> {
 						chasePacMan.stop();
-						chasePacMan.centerHorizontally(width);
+						chasePacMan.tf.centerX(width);
 						chaseGhosts.stop();
 					})
 					

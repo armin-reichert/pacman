@@ -43,7 +43,7 @@ public class PlayView implements View, Controller, PacManWorld {
 		this.game = game;
 		lifeImage = PacManThemes.THEME.pacManWalking(Top4.W).frame(1);
 		mazeView = new MazeView(game.getMaze());
-		mazeView.tf.moveTo(0, 3 * TS);
+		mazeView.tf.setPosition(0, 3 * TS);
 	}
 
 	@Override

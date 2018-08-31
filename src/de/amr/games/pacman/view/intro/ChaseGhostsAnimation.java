@@ -52,7 +52,7 @@ public class ChaseGhostsAnimation extends GameEntity implements View, AnimationC
 		}
 		pacManX = 0;
 		ghostsKilled = 0;
-		tf.moveTo(startPosition);
+		tf.setPosition(startPosition);
 	}
 
 	@Override
