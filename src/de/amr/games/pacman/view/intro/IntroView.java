@@ -117,7 +117,7 @@ public class IntroView implements View, Controller {
 					
 				.state(2)
 					// Show ghost points animation and blinking text
-					.timeoutAfter(() -> CLOCK.secToTicks(6))
+					.timeoutAfter(() -> CLOCK.sec(6))
 					.onEntry(() -> {
 						show(ghostPoints, pressSpace, link);
 						ghostPoints.start();

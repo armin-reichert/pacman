@@ -46,7 +46,7 @@ public class ChasePacManAnimation extends GameEntity implements AnimationControl
 	@Override
 	public void init() {
 		tf.setPosition(startPosition);
-		pillTimer = CLOCK.secToTicks(0.5f);
+		pillTimer = CLOCK.sec(0.5f);
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class ChasePacManAnimation extends GameEntity implements AnimationControl
 		}
 		if (pillTimer == 0) {
 			pill = !pill;
-			pillTimer = CLOCK.secToTicks(0.5f);
+			pillTimer = CLOCK.sec(0.5f);
 		}
 	}
 

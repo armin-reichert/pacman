@@ -43,11 +43,11 @@ public class GhostPointsAnimation extends GameEntity implements AnimationControl
 	}
 
 	private void resetGhostTimer() {
-		ghostTimer = CLOCK.secToTicks(1);
+		ghostTimer = CLOCK.sec(1);
 	}
 
 	private void resetEnergizerTimer() {
-		energizerTimer = CLOCK.secToTicks(0.5f);
+		energizerTimer = CLOCK.sec(0.5f);
 		;
 	}
 
