@@ -24,7 +24,7 @@ public class FollowFixedPathTestController implements ViewController {
 
 	public FollowFixedPathTestController(int width, int height) {
 		Maze maze = new Maze(Assets.text("maze.txt"));
-		game = new Game(maze, Application.PULSE::getFrequency);
+		game = new Game(maze, Application.CLOCK::getFrequency);
 		actors = new Cast(game);
 		targets = Arrays.asList(maze.getBottomRightCorner(), maze.getBottomLeftCorner(),
 				maze.getLeftTunnelEntry(), maze.getTopLeftCorner(), maze.getBlinkyHome(),

@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
-import static de.amr.easy.game.Application.PULSE;
+import static de.amr.easy.game.Application.CLOCK;
 import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.awt.Color;
@@ -43,11 +43,11 @@ public class GhostPointsAnimation extends GameEntity implements AnimationControl
 	}
 
 	private void resetGhostTimer() {
-		ghostTimer = PULSE.secToTicks(1);
+		ghostTimer = CLOCK.secToTicks(1);
 	}
 
 	private void resetEnergizerTimer() {
-		energizerTimer = PULSE.secToTicks(0.5f);
+		energizerTimer = CLOCK.secToTicks(0.5f);
 		;
 	}
 

@@ -67,7 +67,7 @@ public class GameController implements ViewController {
 
 	public GameController() {
 		Maze maze = new Maze(Assets.text("maze.txt"));
-		game = new Game(maze, Application.PULSE::getFrequency);
+		game = new Game(maze, Application.CLOCK::getFrequency);
 
 		gameControl = buildStateMachine();
 		gameControl.traceTo(LOGGER, game.fnTicksPerSec);

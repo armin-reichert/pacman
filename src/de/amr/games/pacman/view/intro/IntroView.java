@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
-import static de.amr.easy.game.Application.PULSE;
+import static de.amr.easy.game.Application.CLOCK;
 import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.awt.Color;
@@ -102,7 +102,7 @@ public class IntroView implements View, Controller {
 				.state(0)
 					// Scroll logo into view
 					.onEntry(() -> { show(logo); logo.start(); })
-					.onExit(logo::stop)
+					.onExit(() -> logo.stop())
 
 				.state(1)
 					// Show ghosts chasing Pac-Man and vice-versa
@@ -117,7 +117,7 @@ public class IntroView implements View, Controller {
 					
 				.state(2)
 					// Show ghost points animation and blinking text
-					.timeoutAfter(() -> PULSE.secToTicks(6))
+					.timeoutAfter(() -> CLOCK.secToTicks(6))
 					.onEntry(() -> {
 						show(ghostPoints, pressSpace, link);
 						ghostPoints.start();
@@ -130,7 +130,7 @@ public class IntroView implements View, Controller {
 				.state(COMPLETE)
 					
 			.transitions()
-				.when(0).then(1).condition(logo::isCompleted)
+				.when(0).then(1).condition(() -> logo.isCompleted())
 				.when(1).then(2).condition(() -> chasePacMan.isCompleted() && chaseGhosts.isCompleted())
 				.when(2).then(1).onTimeout()
 				.when(2).then(COMPLETE).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))

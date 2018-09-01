@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
-import static de.amr.easy.game.Application.PULSE;
+import static de.amr.easy.game.Application.CLOCK;
 import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.awt.Color;
@@ -46,7 +46,7 @@ public class ChasePacManAnimation extends GameEntity implements AnimationControl
 	@Override
 	public void init() {
 		tf.setPosition(startPosition);
-		pillTimer = PULSE.secToTicks(0.5f);
+		pillTimer = CLOCK.secToTicks(0.5f);
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class ChasePacManAnimation extends GameEntity implements AnimationControl
 		}
 		if (pillTimer == 0) {
 			pill = !pill;
-			pillTimer = PULSE.secToTicks(0.5f);
+			pillTimer = CLOCK.secToTicks(0.5f);
 		}
 	}
 
