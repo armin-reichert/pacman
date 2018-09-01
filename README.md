@@ -61,7 +61,62 @@ Lambda expressions (anonymous functions) and function references allow to embed 
 
 ## State machines in practice
 
-Sounds all well and nice, but how does that look in the real code? Here is the implementation of the global game control:
+Sounds all well and nice, but how does that look in the real code? 
+
+The intro view shows some animations that have to be coordinated using timers and stop conditions. This
+is an obvious candidate for using a state machine. This state machine has no events but only uses timers,
+so we specify *Void* as event type. The states are identified by numbers:
+
+```java
+	StateMachine.define(Integer.class, Void.class)
+		.description("IntroAnimation")
+		.initialState(0)
+		.states()
+
+			.state(0)
+				// Scroll logo into view
+				.onEntry(() -> { show(logo); logo.start(); })
+				.onExit(logo::stop)
+
+			.state(1)
+				// Show ghosts chasing Pac-Man and vice-versa
+				.onEntry(() -> {
+					show(chasePacMan, chaseGhosts);
+					start(chasePacMan, chaseGhosts);
+				})
+				.onExit(() -> {
+					stop(chasePacMan, chaseGhosts);
+					chasePacMan.tf.centerX(width);
+				})
+				
+			.state(2)
+				// Show ghost points animation and blinking text
+				.timeoutAfter(() -> PULSE.secToTicks(6))
+				.onEntry(() -> {
+					show(ghostPoints, pressSpace, link);
+					ghostPoints.start();
+				})
+				.onExit(() -> {
+					ghostPoints.stop();
+					hide(ghostPoints, pressSpace);
+				})
+				
+			.state(COMPLETE)
+				
+		.transitions()
+			.when(0).then(1).condition(logo::isCompleted)
+			.when(1).then(2).condition(() -> chasePacMan.isCompleted() && chaseGhosts.isCompleted())
+			.when(2).then(1).onTimeout()
+			.when(2).then(COMPLETE).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+
+	.endStateMachine();
+```
+
+A more complex state machine is used for defining the global game control. It processes game events which
+are created during the game play, for example when Pac-Man finds food or meets ghosts. Also the different
+game states like changing the level or the dying animations of Pac-Man and the ghosts are controlled by this
+state machine. Further, the individual states are implemented by subclasses of the generic state class. This
+has the advantage that actions which are state-specific can be realized as methods of the subclass.
 
 ```java
 StateMachine.define(GameState.class, GameEvent.class)
