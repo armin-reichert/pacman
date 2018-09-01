@@ -16,7 +16,6 @@ import java.util.function.BooleanSupplier;
 import java.util.logging.Logger;
 
 import de.amr.easy.game.sprite.Sprite;
-import de.amr.games.pacman.controller.StateMachineClient;
 import de.amr.games.pacman.controller.event.GameEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -28,6 +27,7 @@ import de.amr.games.pacman.navigation.Navigation;
 import de.amr.games.pacman.navigation.NavigationSystem;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.statemachine.StateMachine;
+import de.amr.statemachine.StateMachineClient;
 
 /**
  * A ghost.
