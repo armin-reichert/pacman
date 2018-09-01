@@ -3,7 +3,6 @@ package de.amr.games.pacman.test.navigation;
 import java.util.Arrays;
 import java.util.List;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
@@ -24,7 +23,7 @@ public class FollowFixedPathTestController implements ViewController {
 
 	public FollowFixedPathTestController(int width, int height) {
 		Maze maze = new Maze(Assets.text("maze.txt"));
-		game = new Game(maze, Application.CLOCK::getFrequency);
+		game = new Game(maze);
 		actors = new Cast(game);
 		targets = Arrays.asList(maze.getBottomRightCorner(), maze.getBottomLeftCorner(),
 				maze.getLeftTunnelEntry(), maze.getTopLeftCorner(), maze.getBlinkyHome(),

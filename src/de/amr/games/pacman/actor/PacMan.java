@@ -1,5 +1,6 @@
 package de.amr.games.pacman.actor;
 
+import static de.amr.easy.game.Application.CLOCK;
 import static de.amr.games.pacman.actor.PacManState.DEAD;
 import static de.amr.games.pacman.actor.PacManState.DYING;
 import static de.amr.games.pacman.actor.PacManState.GREEDY;
@@ -29,9 +30,9 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.Navigation;
 import de.amr.games.pacman.navigation.NavigationSystem;
+import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateMachineClient;
-import de.amr.statemachine.State;
 
 /**
  * The one and only.
@@ -156,7 +157,7 @@ public class PacMan extends Actor
 	}
 
 	public void traceTo(Logger logger) {
-		fsm.traceTo(logger, game.fnTicksPerSec);
+		fsm.traceTo(logger, CLOCK::getFrequency);
 	}
 
 	private StateMachine<PacManState, GameEvent> buildStateMachine() {
@@ -171,7 +172,7 @@ public class PacMan extends Actor
 
 				.state(HOME)
 					.onEntry(this::initPacMan)
-					.timeoutAfter(() -> game.sec(0.25f))
+					.timeoutAfter(() -> CLOCK.sec(0.25f))
 	
 				.state(HUNGRY)
 					.impl(new HungryState())
@@ -182,7 +183,7 @@ public class PacMan extends Actor
 	
 				.state(DYING)
 					.onEntry(() -> setCurrentSprite("s_dying"))
-					.timeoutAfter(() -> game.sec(2))
+					.timeoutAfter(() -> CLOCK.sec(2))
 
 			.transitions()
 

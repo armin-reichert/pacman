@@ -1,5 +1,6 @@
 package de.amr.games.pacman.controller;
 
+import static de.amr.easy.game.Application.CLOCK;
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.games.pacman.controller.GameController.GameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.GameController.GameState.GAME_OVER;
@@ -13,7 +14,6 @@ import static de.amr.games.pacman.theme.PacManThemes.THEME;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
@@ -39,8 +39,8 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.play.PlayViewX;
-import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.State;
+import de.amr.statemachine.StateMachine;
 
 /**
  * The main controller of the Pac-Man game.
@@ -67,10 +67,10 @@ public class GameController implements ViewController {
 
 	public GameController() {
 		Maze maze = new Maze(Assets.text("maze.txt"));
-		game = new Game(maze, Application.CLOCK::getFrequency);
+		game = new Game(maze);
 
 		gameControl = buildStateMachine();
-		gameControl.traceTo(LOGGER, game.fnTicksPerSec);
+		gameControl.traceTo(LOGGER, CLOCK::getFrequency);
 
 		actors = new Cast(game);
 		actors.pacMan.traceTo(LOGGER);
@@ -146,7 +146,7 @@ public class GameController implements ViewController {
 				
 				.state(READY)
 					.impl(new ReadyState())
-					.timeoutAfter(() -> game.sec(4.5f))
+					.timeoutAfter(() -> CLOCK.sec(4.5f))
 				
 				.state(PLAYING)
 					.impl(new PlayingState())
@@ -293,8 +293,7 @@ public class GameController implements ViewController {
 		private void onPacManKilled(GameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
 			actors.pacMan.processEvent(e);
-			LOGGER.info(
-					() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
+			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
 		}
 
 		private void onPacManGainsPower(GameEvent event) {
@@ -317,18 +316,17 @@ public class GameController implements ViewController {
 			GhostKilledEvent e = (GhostKilledEvent) event;
 			e.ghost.processEvent(e);
 			THEME.soundEatGhost().play();
-			LOGGER
-					.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
+			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
 		}
 
 		private void onBonusFound(GameEvent event) {
 			playView.getBonus().ifPresent(bonus -> {
-				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(),
-						bonus.getValue()));
+				LOGGER.info(
+						() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(), bonus.getValue()));
 				THEME.soundEatFruit().play();
 				bonus.setHonored();
 				game.score.add(bonus.getValue());
-				playView.setBonusTimer(game.sec(1));
+				playView.setBonusTimer(CLOCK.sec(1));
 			});
 		}
 
@@ -390,14 +388,13 @@ public class GameController implements ViewController {
 		public void onEntry() {
 			actors.pacMan.setVisible(false);
 			game.score.add(game.getKilledGhostValue());
-			LOGGER.info(String.format("Scored %d points for killing ghost #%d",
-					game.getKilledGhostValue(), game.getGhostsKilledByEnergizer()));
+			LOGGER.info(String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
+					game.getGhostsKilledByEnergizer()));
 		}
 
 		@Override
 		public void onTick() {
-			actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
-					.forEach(Ghost::update);
+			actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(Ghost::update);
 		}
 
 		@Override

@@ -19,7 +19,7 @@ public class ScatteringTestController implements ViewController {
 
 	public ScatteringTestController(int width, int height) {
 		Maze maze = new Maze(Assets.text("maze.txt"));
-		game = new Game(maze, Application.CLOCK::getFrequency);
+		game = new Game(maze);
 		actors = new Cast(game);
 		view = new PlayViewX(width, height, game);
 		view.setActors(actors);

@@ -1,10 +1,11 @@
 package de.amr.games.pacman.model;
 
+import static de.amr.easy.game.Application.CLOCK;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.function.IntSupplier;
 
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManState;
@@ -22,9 +23,6 @@ public class Game {
 
 	/** The maze tile size (8px). */
 	public static final int TS = 8;
-
-	/** The frequency of the game clock. Used for tracing. */
-	public final IntSupplier fnTicksPerSec;
 
 	/** The maze. */
 	private final Maze maze;
@@ -47,9 +45,8 @@ public class Game {
 	/** Level counter symbols. */
 	private final List<BonusSymbol> levelCounter = new LinkedList<>();
 
-	public Game(Maze maze, IntSupplier fnTicksPerSec) {
+	public Game(Maze maze) {
 		this.maze = maze;
-		this.fnTicksPerSec = fnTicksPerSec;
 		score = new Score(this);
 	}
 
@@ -70,13 +67,6 @@ public class Game {
 		if (levelCounter.size() == 8) {
 			levelCounter.remove(levelCounter.size() - 1);
 		}
-	}
-
-	/**
-	 * @return number of ticks corresponding to given seconds
-	 */
-	public int sec(float seconds) {
-		return Math.round(fnTicksPerSec.getAsInt() * seconds);
 	}
 
 	private float speed(float relativeSpeed) {
@@ -150,7 +140,7 @@ public class Game {
 	}
 
 	public int getBonusTime() {
-		return sec(9f + new Random().nextFloat());
+		return CLOCK.sec(9f + new Random().nextFloat());
 	}
 
 	public float getGhostSpeed(GhostState state, Tile tile) {
@@ -164,8 +154,7 @@ public class Game {
 		case DEAD:
 			return speed(0.5f + new Random().nextFloat());
 		case FRIGHTENED:
-			return tunnel ? tunnelSpeed
-					: speed(LevelTable.floatValue(level, TableColumn.fGhostAfraidSpeed));
+			return tunnel ? tunnelSpeed : speed(LevelTable.floatValue(level, TableColumn.fGhostAfraidSpeed));
 		case SAFE:
 			return speed(0.75f);
 		case SCATTERING:
@@ -176,7 +165,7 @@ public class Game {
 	}
 
 	public int getGhostDyingTime() {
-		return sec(1f);
+		return CLOCK.sec(1f);
 	}
 
 	public int getGhostNumFlashes() {
@@ -216,18 +205,18 @@ public class Game {
 	}
 
 	public int getPacManGreedyTime() {
-		return sec(LevelTable.intValue(level, TableColumn.iPacManPowerSeconds));
+		return CLOCK.sec(LevelTable.intValue(level, TableColumn.iPacManPowerSeconds));
 	}
 
 	public int getPacManGettingWeakerRemainingTime() {
-		return sec(getGhostNumFlashes());
+		return CLOCK.sec(getGhostNumFlashes());
 	}
 
 	public int getPacManDyingTime() {
-		return sec(2);
+		return CLOCK.sec(2);
 	}
 
 	public int getLevelChangingTime() {
-		return sec(3);
+		return CLOCK.sec(3);
 	}
 }
