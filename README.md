@@ -137,7 +137,7 @@ StateMachine.define(GameState.class, GameEvent.class)
 		
 		.state(READY)
 			.impl(new ReadyState())
-			.timeoutAfter(() -> game.sec(4.5f))
+			.timeoutAfter(() -> CLOCK.sec(4.5f))
 		
 		.state(PLAYING)
 			.impl(new PlayingState())
@@ -248,7 +248,7 @@ StateMachine.define(PacManState.class, GameEvent.class)
 
 		.state(DYING)
 			.onEntry(() -> sprite = s_dying)
-			.timeoutAfter(() -> game.sec(2))
+			.timeoutAfter(() -> CLOCK.sec(2))
 
 	.transitions()
 
