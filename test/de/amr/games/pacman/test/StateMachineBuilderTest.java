@@ -38,10 +38,10 @@ public class StateMachineBuilderTest {
 		/*@formatter:on*/
 
 		sm.init();
-		assertTrue(sm.currentState().equals("A"));
+		assertTrue(sm.getState().equals("A"));
 
 		sm.enqueue(new EventX());
 		sm.update();
-		assertTrue(sm.currentState().equals("B"));
+		assertTrue(sm.getState().equals("B"));
 	}
 }

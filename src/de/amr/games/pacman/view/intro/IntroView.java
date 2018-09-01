@@ -140,7 +140,7 @@ public class IntroView implements View, Controller {
 	}
 
 	public boolean isComplete() {
-		return fsm.currentState() == COMPLETE;
+		return fsm.getState() == COMPLETE;
 	}
 
 	@Override
