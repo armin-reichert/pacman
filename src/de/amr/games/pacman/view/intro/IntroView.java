@@ -34,7 +34,7 @@ public class IntroView implements View, Controller {
 
 	private final int width;
 	private final int height;
-	private Color background = new Color(0, 23, 61);
+	private final Color background;
 
 	private final StateMachine<Integer, Void> fsm;
 	private final Set<View> animations = new HashSet<>();
@@ -49,6 +49,7 @@ public class IntroView implements View, Controller {
 	public IntroView(int width, int height) {
 		this.width = width;
 		this.height = height;
+		background = new Color(0, 23, 61);
 		fsm = buildStateMachine();
 		logo = new ScrollingImage(Assets.image("logo.png"));
 		logo.tf.centerX(width);
@@ -64,13 +65,12 @@ public class IntroView implements View, Controller {
 		ghostPoints = new GhostPointsAnimation();
 		ghostPoints.tf.setY(200);
 		ghostPoints.tf.centerX(width);
-		pressSpace = BlinkingText.create().text("Press SPACE to start!").blinkTimeMillis(1000).font(THEME.textFont(18))
-				.background(background).color(Color.PINK).build();
-		pressSpace.setSpaceExpansion(3);
+		pressSpace = BlinkingText.create().text("Press SPACE to start!").spaceExpansion(3).blinkTimeMillis(1000)
+				.font(THEME.textFont(18)).background(background).color(Color.PINK).build();
 		pressSpace.tf.setY(150);
 		pressSpace.tf.centerX(width);
-		link = Link.create().text(LINK_TEXT).font(THEME.textFont(8)).color(Color.LIGHT_GRAY).build();
-		link.setURL(LINK_URL);
+		link = Link.create().text(LINK_TEXT).url(LINK_URL).font(THEME.textFont(8)).color(Color.LIGHT_GRAY)
+				.build();
 		link.tf.setY(height - 20);
 		link.tf.centerX(width);
 	}
@@ -102,7 +102,7 @@ public class IntroView implements View, Controller {
 				.state(0)
 					// Scroll logo into view
 					.onEntry(() -> { show(logo); logo.start(); })
-					.onExit(() -> logo.stop())
+					.onExit(logo::stop)
 
 				.state(1)
 					// Show ghosts chasing Pac-Man and vice-versa
@@ -130,7 +130,7 @@ public class IntroView implements View, Controller {
 				.state(COMPLETE)
 					
 			.transitions()
-				.when(0).then(1).condition(() -> logo.isCompleted())
+				.when(0).then(1).condition(logo::isCompleted)
 				.when(1).then(2).condition(() -> chasePacMan.isCompleted() && chaseGhosts.isCompleted())
 				.when(2).then(1).onTimeout()
 				.when(2).then(COMPLETE).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
@@ -141,13 +141,6 @@ public class IntroView implements View, Controller {
 
 	public boolean isComplete() {
 		return fsm.getState() == COMPLETE;
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
-		g.setColor(background);
-		g.fillRect(0, 0, width, height);
-		animations.forEach(e -> e.draw(g));
 	}
 
 	@Override
@@ -163,5 +156,12 @@ public class IntroView implements View, Controller {
 		}
 		fsm.update();
 		animations.forEach(animation -> ((Controller) animation).update());
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		g.setColor(background);
+		g.fillRect(0, 0, width, height);
+		animations.forEach(animation -> animation.draw(g));
 	}
 }
