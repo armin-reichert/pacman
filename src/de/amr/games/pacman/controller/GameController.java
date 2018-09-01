@@ -40,7 +40,7 @@ import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.play.PlayViewX;
 import de.amr.statemachine.StateMachine;
-import de.amr.statemachine.StateObject;
+import de.amr.statemachine.State;
 
 /**
  * The main controller of the Pac-Man game.
@@ -234,7 +234,7 @@ public class GameController implements ViewController {
 		//@formatter:on
 	}
 
-	private class ReadyState extends StateObject<GameState, GameEvent> {
+	private class ReadyState extends State<GameState, GameEvent> {
 
 		@Override
 		public void onEntry() {
@@ -255,7 +255,7 @@ public class GameController implements ViewController {
 		}
 	}
 
-	private class PlayingState extends StateObject<GameState, GameEvent> {
+	private class PlayingState extends State<GameState, GameEvent> {
 
 		@Override
 		public void onEntry() {
@@ -354,7 +354,7 @@ public class GameController implements ViewController {
 		}
 	}
 
-	private class ChangingLevelState extends StateObject<GameState, GameEvent> {
+	private class ChangingLevelState extends State<GameState, GameEvent> {
 
 		@Override
 		public void onEntry() {
@@ -384,7 +384,7 @@ public class GameController implements ViewController {
 		}
 	}
 
-	private class GhostDyingState extends StateObject<GameState, GameEvent> {
+	private class GhostDyingState extends State<GameState, GameEvent> {
 
 		@Override
 		public void onEntry() {
@@ -406,7 +406,7 @@ public class GameController implements ViewController {
 		}
 	}
 
-	private class PacManDyingState extends StateObject<GameState, GameEvent> {
+	private class PacManDyingState extends State<GameState, GameEvent> {
 
 		@Override
 		public void onEntry() {
@@ -426,7 +426,7 @@ public class GameController implements ViewController {
 		}
 	}
 
-	private class GameOverState extends StateObject<GameState, GameEvent> {
+	private class GameOverState extends State<GameState, GameEvent> {
 
 		@Override
 		public void onEntry() {

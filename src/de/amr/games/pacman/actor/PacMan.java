@@ -31,7 +31,7 @@ import de.amr.games.pacman.navigation.Navigation;
 import de.amr.games.pacman.navigation.NavigationSystem;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateMachineClient;
-import de.amr.statemachine.StateObject;
+import de.amr.statemachine.State;
 
 /**
  * The one and only.
@@ -209,7 +209,7 @@ public class PacMan extends Actor
 		/* @formatter:on */
 	}
 
-	private class HungryState extends StateObject<PacManState, GameEvent> {
+	private class HungryState extends State<PacManState, GameEvent> {
 
 		@Override
 		public void onTick() {

@@ -26,7 +26,7 @@ import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.MazeRoute;
-import de.amr.statemachine.StateObject;
+import de.amr.statemachine.State;
 
 /**
  * An extended play view.
@@ -150,15 +150,15 @@ public class PlayViewX extends PlayView {
 	}
 
 	private String pacManState(PacMan pacMan) {
-		StateObject<?, ?> state = pacMan.getStateObject();
-		return state.getDuration() != StateObject.ENDLESS
+		State<?, ?> state = pacMan.getStateObject();
+		return state.getDuration() != State.ENDLESS
 				? String.format("(%s,%d|%d)", state.id(), state.getRemaining(), state.getDuration())
 				: String.format("(%s,%s)", state.id(), INFTY);
 	}
 
 	private String ghostState(Ghost ghost) {
-		StateObject<?, ?> state = ghost.getStateObject();
-		return state.getDuration() != StateObject.ENDLESS
+		State<?, ?> state = ghost.getStateObject();
+		return state.getDuration() != State.ENDLESS
 				? String.format("%s(%s,%d|%d)[%s]", ghost.getName(), state.id(), state.getRemaining(),
 						state.getDuration(), Top4.name(ghost.getCurrentDir()))
 				: String.format("%s(%s,%s)[%s]", ghost.getName(), state.id(), INFTY,

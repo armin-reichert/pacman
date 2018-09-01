@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import de.amr.statemachine.StateMachine;
-import de.amr.statemachine.StateObject;
+import de.amr.statemachine.State;
 
 public class StateMachineBuilderTest {
 
@@ -16,7 +16,7 @@ public class StateMachineBuilderTest {
 
 	}
 
-	class StateB extends StateObject<String, Event> {
+	class StateB extends State<String, Event> {
 	}
 
 	@Test
