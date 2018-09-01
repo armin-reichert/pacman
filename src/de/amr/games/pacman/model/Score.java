@@ -16,11 +16,12 @@ public class Score {
 	private File file;
 	private int score;
 	private int hiscore;
-	private int level = 1;
+	private int level;
 	private boolean newHiscore;
 
 	public Score(Game game) {
 		this.game = game;
+		level = 1;
 		file = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
 	}
 
@@ -32,6 +33,7 @@ public class Score {
 		} catch (IOException e) {
 			Application.LOGGER.info("Could not load hiscore file");
 		}
+		score = 0;
 		hiscore = Integer.valueOf(prop.getProperty("score", "0"));
 		level = Integer.valueOf(prop.getProperty("level", "1"));
 	}
