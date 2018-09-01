@@ -91,7 +91,7 @@ so we specify *Void* as event type. The states are identified by numbers:
 				
 			.state(2)
 				// Show ghost points animation and blinking text
-				.timeoutAfter(() -> PULSE.secToTicks(6))
+				.timeoutAfter(() -> CLOCK.sec(6))
 				.onEntry(() -> {
 					show(ghostPoints, pressSpace, link);
 					ghostPoints.start();
