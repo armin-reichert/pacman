@@ -14,7 +14,7 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.controls.AnimationController;
 import de.amr.easy.game.controls.BlinkingText;
 import de.amr.easy.game.controls.Link;
-import de.amr.easy.game.controls.ScrollingImage;
+import de.amr.easy.game.controls.ScrollableImage;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
@@ -39,7 +39,7 @@ public class IntroView implements View, Controller {
 	private final StateMachine<Integer, Void> fsm;
 	private final Set<View> animations = new HashSet<>();
 
-	private final ScrollingImage logo;
+	private final ScrollableImage logo;
 	private final BlinkingText pressSpace;
 	private final ChasePacManAnimation chasePacMan;
 	private final ChaseGhostsAnimation chaseGhosts;
@@ -51,7 +51,7 @@ public class IntroView implements View, Controller {
 		this.height = height;
 		background = new Color(0, 23, 61);
 		fsm = buildStateMachine();
-		logo = new ScrollingImage(Assets.image("logo.png"));
+		logo = new ScrollableImage(Assets.image("logo.png"));
 		logo.tf.centerX(width);
 		logo.tf.setY(height);
 		logo.setSpeedY(-2f);
