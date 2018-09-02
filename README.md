@@ -41,7 +41,7 @@ Maybe you will also find introductions and tutorials about *(finite) state machi
 
 The more low-level implementations of state machines (switches, function pointers) are the most performant ones but as long a you achieve the performance goals for your game (60 frames/updates per second), you can use whatever implementation you like. And if you want to make your code understandable to other people for learning purposes it is certainly not the best way to choose the low-level ones. 
 
-I decided to build my own state machine implementation along the lines of Mealy machines with guarded conditions and transition actions. Of course, I could have used some existing framework, but eating your own dog food is more fun.
+I decided to build my own [state machine implementation](https://github.com/armin-reichert/statemachine) along the lines of Mealy machines with guarded conditions and transition actions. Of course, I could have used some existing framework, but eating your own dog food is more fun.
 
 Whatever decision you take, the important thing IMHO is that you take a decision and stick to it, do not reinvent the state machine implementation for each use case from scratch! And now you can concentrate on the "real" stuff: 
 
