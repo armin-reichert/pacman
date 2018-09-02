@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,7 +12,6 @@ import java.util.stream.Stream;
 import de.amr.easy.game.Application;
 import de.amr.easy.graph.api.GraphTraversal;
 import de.amr.easy.graph.api.UndirectedEdge;
-import de.amr.easy.graph.impl.traversal.AStarTraversal;
 import de.amr.easy.graph.impl.traversal.BreadthFirstTraversal;
 import de.amr.easy.grid.api.GridGraph2D;
 import de.amr.easy.grid.api.Topology;
@@ -319,9 +317,9 @@ public class Maze {
 
 	public List<Tile> findPath(Tile source, Tile target) {
 		if (isValidTile(source) && isValidTile(target)) {
-			GraphTraversal pathfinder = new Random().nextBoolean()
-					? new AStarTraversal<>(graph, edge -> 1, graph::manhattan)
-					: new BreadthFirstTraversal<>(graph);
+			GraphTraversal pathfinder =
+					// new Random().nextBoolean()? new AStarTraversal<>(graph, edge -> 1, graph::manhattan):
+					new BreadthFirstTraversal<>(graph);
 			pathfinder.traverseGraph(cell(source), cell(target));
 			pathFinderCount += 1;
 			if (pathFinderCount % 100 == 0) {
