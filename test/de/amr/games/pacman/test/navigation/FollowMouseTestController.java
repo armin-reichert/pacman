@@ -42,6 +42,7 @@ public class FollowMouseTestController implements ViewController {
 		actors.setActive(actors.clyde, false);
 		actors.setActive(actors.pacMan, false);
 		actors.blinky.init();
+		actors.blinky.setMoveBehavior(GhostState.CHASING, actors.blinky.followDynamicRoute(() -> mouseTile));
 	}
 
 	@Override
@@ -55,7 +56,6 @@ public class FollowMouseTestController implements ViewController {
 		if (Mouse.moved()) {
 			int x = Mouse.getX(), y = Mouse.getY();
 			mouseTile = new Tile(x / Game.TS, y / Game.TS);
-			actors.blinky.setMoveBehavior(GhostState.CHASING, actors.blinky.followDynamicRoute(mouseTile));
 			Application.LOGGER.info(mouseTile.toString());
 		}
 	}

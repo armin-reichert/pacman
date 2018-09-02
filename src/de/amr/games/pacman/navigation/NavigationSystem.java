@@ -21,14 +21,14 @@ import de.amr.games.pacman.model.Tile;
 public interface NavigationSystem<T extends Actor> {
 
 	/**
-	 * Ambushes the victim by targeting the tile which is the given number of tiles ahead of the
-	 * victim position.
+	 * Ambushes the victim by targeting the tile which is the given number of tiles ahead of the victim
+	 * position.
 	 * 
 	 * @param victim
 	 *                 the attacked maze mover
 	 * @param n
-	 *                 the number of tiles ahead of the victim in its current direction. If this tile
-	 *                 is outside of the maze, the tile <code>(n - 1)</code> ahead is used etc.
+	 *                 the number of tiles ahead of the victim in its current direction. If this tile is
+	 *                 outside of the maze, the tile <code>(n - 1)</code> ahead is used etc.
 	 * @return ambush behavior
 	 */
 	public default Navigation<T> ambush(Actor victim, int n) {
@@ -55,8 +55,8 @@ public interface NavigationSystem<T extends Actor> {
 	 * whenever he gets too close. On the diagram above, the X marks on the path represent the points
 	 * where Clyde’s mode switches. If Pac-Man somehow managed to remain stationary in that position,
 	 * Clyde would indefinitely loop around that T-shaped area. As long as the player is not in the
-	 * lower-left corner of the maze, Clyde can be avoided completely by simply ensuring that you do
-	 * not block his “escape route” back to his corner. While Pac-Man is within eight tiles of the
+	 * lower-left corner of the maze, Clyde can be avoided completely by simply ensuring that you do not
+	 * block his “escape route” back to his corner. While Pac-Man is within eight tiles of the
 	 * lower-left corner, Clyde’s path will end up in exactly the same loop as he would eventually
 	 * maintain in Scatter mode. </cite>
 	 * </p>
@@ -66,14 +66,14 @@ public interface NavigationSystem<T extends Actor> {
 	 * @param pacMan
 	 *                   the attacked Pac-Man
 	 * @param distance
-	 *                   if the distance of the attacker to Pac-Man is less than this distance
-	 *                   (measured in pixels), it rejects and moves to its scattering position.
-	 *                   Otherwise it directly attacks PacMan.
+	 *                   if the distance of the attacker to Pac-Man is less than this distance (measured
+	 *                   in pixels), it rejects and moves to its scattering position. Otherwise it
+	 *                   directly attacks PacMan.
 	 */
 	public default Navigation<T> attackAndReject(Ghost attacker, PacMan pacMan, int distance) {
-		return headFor(() -> dist(attacker.tf().getCenter(), pacMan.tf().getCenter()) >= distance
-				? pacMan.getTile()
-				: attacker.getScatteringTarget());
+		return headFor(
+				() -> dist(attacker.tf().getCenter(), pacMan.tf().getCenter()) >= distance ? pacMan.getTile()
+						: attacker.getScatteringTarget());
 	}
 
 	/**
@@ -99,12 +99,11 @@ public interface NavigationSystem<T extends Actor> {
 	 * <p>
 	 * <cite>Inky is difficult to predict, because he is the only one of the ghosts that uses a factor
 	 * other than Pac-Man’s position/orientation when determining his target tile. Inky actually uses
-	 * both Pac-Man’s position/facing as well as Blinky’s (the red ghost’s) position in his
-	 * calculation. To locate Inky’s target, we first start by selecting the position two tiles in
-	 * front of Pac-Man in his current direction of travel, similar to Pinky’s targeting method. From
-	 * there, imagine drawing a vector from Blinky’s position to this tile, and then doubling the
-	 * length of the vector. The tile that this new, extended vector ends on will be Inky’s actual
-	 * target.</cite>
+	 * both Pac-Man’s position/facing as well as Blinky’s (the red ghost’s) position in his calculation.
+	 * To locate Inky’s target, we first start by selecting the position two tiles in front of Pac-Man
+	 * in his current direction of travel, similar to Pinky’s targeting method. From there, imagine
+	 * drawing a vector from Blinky’s position to this tile, and then doubling the length of the vector.
+	 * The tile that this new, extended vector ends on will be Inky’s actual target.</cite>
 	 * </p>
 	 * 
 	 * @param partner
@@ -117,8 +116,7 @@ public interface NavigationSystem<T extends Actor> {
 		return headFor(() -> {
 			Tile partnerTile = partner.getTile();
 			Tile pacManTile = pacMan.ahead(2);
-			Tile target = new Tile(2 * pacManTile.col - partnerTile.col,
-					2 * pacManTile.row - partnerTile.row);
+			Tile target = new Tile(2 * pacManTile.col - partnerTile.col, 2 * pacManTile.row - partnerTile.row);
 			// TODO: correctly project target tile to border
 			Maze maze = pacMan.getMaze();
 			int row = Math.min(Math.max(0, target.row), maze.numRows() - 1);
@@ -180,18 +178,18 @@ public interface NavigationSystem<T extends Actor> {
 	}
 
 	/**
-	 * Lets the maze mover follow the path to the given target. The path is computed on the graph of
-	 * the maze and updated every time the move direction is queried. This can lead to lots of path
-	 * finder calls.
+	 * Lets the maze mover follow the path to the given target. The path is computed on the graph of the
+	 * maze and updated every time the move direction is queried. This can lead to lots of path finder
+	 * calls.
 	 * 
 	 * @param target
-	 *                 target tile (must be inside maze or teleport space)
+	 *                 target tile supplier (tile must be inside maze or teleport space)
 	 * @return behavior following the path to the target
 	 */
-	public default Navigation<T> followDynamicRoute(Tile target) {
+	public default Navigation<T> followDynamicRoute(Supplier<Tile> targetSupplier) {
 		return mover -> {
 			MazeRoute route = new MazeRoute();
-			route.setPath(mover.getMaze().findPath(mover.getTile(), target));
+			route.setPath(mover.getMaze().findPath(mover.getTile(), targetSupplier.get()));
 			route.setDir(mover.getMaze().alongPath(route.getPath()).orElse(-1));
 			return route;
 		};
