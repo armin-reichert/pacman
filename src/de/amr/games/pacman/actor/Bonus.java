@@ -31,7 +31,7 @@ public class Bonus extends GameEntityUsingSprites implements TilePlacement {
 		tf.setHeight(Game.TS);
 		setSprite("s_symbol", PacManThemes.THEME.symbol(symbol));
 		setSprite("s_number", PacManThemes.THEME.pinkNumber(index));
-		setCurrentSprite("s_symbol");
+		setSelectedSprite("s_symbol");
 	}
 
 	public int getValue() {
@@ -49,7 +49,7 @@ public class Bonus extends GameEntityUsingSprites implements TilePlacement {
 	public void setHonored() {
 		if (!honored) {
 			honored = true;
-			setCurrentSprite("s_number");
+			setSelectedSprite("s_number");
 		}
 	}
 
@@ -65,10 +65,10 @@ public class Bonus extends GameEntityUsingSprites implements TilePlacement {
 
 	@Override
 	public void draw(Graphics2D g) {
-		float dx = tf.getX() - (currentSprite().getWidth() - tf.getWidth()) / 2;
-		float dy = tf.getY() - (currentSprite().getHeight() - tf.getHeight()) / 2;
+		float dx = tf.getX() - (getSelectedSprite().getWidth() - tf.getWidth()) / 2;
+		float dy = tf.getY() - (getSelectedSprite().getHeight() - tf.getHeight()) / 2;
 		g.translate(dx, dy);
-		currentSprite().draw(g);
+		getSelectedSprite().draw(g);
 		g.translate(-dx, -dy);
 	}
 

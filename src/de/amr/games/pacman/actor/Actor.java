@@ -190,12 +190,12 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlacem
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (visible && currentSprite() != null) {
+		if (visible && getSelectedSprite() != null) {
 			Vector2f center = tf.getCenter();
-			float dx = center.x - currentSprite().getWidth() / 2;
-			float dy = center.y - currentSprite().getHeight() / 2;
+			float dx = center.x - getSelectedSprite().getWidth() / 2;
+			float dy = center.y - getSelectedSprite().getHeight() / 2;
 			g.translate(dx, dy);
-			currentSprite().draw(g);
+			getSelectedSprite().draw(g);
 			g.translate(-dx, -dy);
 		}
 	}

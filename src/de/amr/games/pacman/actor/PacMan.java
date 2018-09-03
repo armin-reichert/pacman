@@ -63,7 +63,7 @@ public class PacMan extends Actor
 		placeAt(getHome(), getTileSize() / 2, 0);
 		setNextDir(Top4.E);
 		getSprites().forEach(Sprite::resetAnimation);
-		setCurrentSprite("s_full");
+		setSelectedSprite("s_full");
 	}
 
 	public void setWorld(PacManWorld world) {
@@ -127,16 +127,16 @@ public class PacMan extends Actor
 		NESW.dirs().forEach(dir -> setSprite("s_walking_" + dir, THEME.pacManWalking(dir)));
 		setSprite("s_dying", THEME.pacManDying());
 		setSprite("s_full", THEME.pacManFull());
-		setCurrentSprite("s_full");
+		setSelectedSprite("s_full");
 	}
 
 	public void setFullSprite() {
-		setCurrentSprite("s_full");
+		setSelectedSprite("s_full");
 	}
 
 	private void updateSprite() {
-		setCurrentSprite("s_walking_" + getCurrentDir());
-		currentSprite().enableAnimation(!isStuck());
+		setSelectedSprite("s_walking_" + getCurrentDir());
+		getSelectedSprite().enableAnimation(!isStuck());
 	}
 
 	// State machine
@@ -182,7 +182,7 @@ public class PacMan extends Actor
 					.timeoutAfter(game::getPacManGreedyTime)
 	
 				.state(DYING)
-					.onEntry(() -> setCurrentSprite("s_dying"))
+					.onEntry(() -> setSelectedSprite("s_dying"))
 					.timeoutAfter(() -> CLOCK.sec(2))
 
 			.transitions()

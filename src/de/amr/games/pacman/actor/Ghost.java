@@ -67,7 +67,7 @@ public class Ghost extends Actor
 		setCurrentDir(initialDir);
 		setNextDir(initialDir);
 		getSprites().forEach(Sprite::resetAnimation);
-		setCurrentSprite("s_color_" + initialDir);
+		setSelectedSprite("s_color_" + initialDir);
 	}
 
 	// Accessors
@@ -126,7 +126,7 @@ public class Ghost extends Actor
 		}
 		setSprite("s_frightened", THEME.ghostFrightened());
 		setSprite("s_flashing", THEME.ghostFlashing());
-		setCurrentSprite("s_color_" + getCurrentDir());
+		setSelectedSprite("s_color_" + getCurrentDir());
 	}
 
 	// State machine
@@ -168,19 +168,19 @@ public class Ghost extends Actor
 						.onTick(() -> {
 							if (!ghostName.equals("Blinky")) { //TODO better solution
 								move();	
-								setCurrentSprite("s_color_" + getCurrentDir()); 
+								setSelectedSprite("s_color_" + getCurrentDir()); 
 							}
 						})
 					
 					.state(CHASING)
 						.onTick(() -> {	
 							move();	
-							setCurrentSprite("s_color_" + getCurrentDir()); 
+							setSelectedSprite("s_color_" + getCurrentDir()); 
 						})
 					
 					.state(FRIGHTENED)
 						.onEntry(() -> {
-							setCurrentSprite("s_frightened"); 
+							setSelectedSprite("s_frightened"); 
 							getMoveBehavior().computeStaticRoute(this); 
 						})
 						.onTick(() -> move())
@@ -188,7 +188,7 @@ public class Ghost extends Actor
 					.state(DYING)
 						.timeoutAfter(game::getGhostDyingTime)
 						.onEntry(() -> {
-							setCurrentSprite("s_numbers_" + game.getGhostsKilledByEnergizer()); 
+							setSelectedSprite("s_numbers_" + game.getGhostsKilledByEnergizer()); 
 							game.addGhostKilled();
 						})
 					
@@ -196,13 +196,13 @@ public class Ghost extends Actor
 						.onEntry(() -> getMoveBehavior().computeStaticRoute(this))
 						.onTick(() -> {	
 							move();
-							setCurrentSprite("s_eyes_" + getCurrentDir());
+							setSelectedSprite("s_eyes_" + getCurrentDir());
 						})
 					
 					.state(SCATTERING)
 						.onTick(() -> {
 							move();	
-							setCurrentSprite("s_color_" + getCurrentDir()); 
+							setSelectedSprite("s_color_" + getCurrentDir()); 
 						})
 				
 			.transitions()
@@ -226,7 +226,7 @@ public class Ghost extends Actor
 					.when(SCATTERING).then(DYING).on(GhostKilledEvent.class) // cheating-mode
 					
 					.stay(FRIGHTENED).on(PacManGainsPowerEvent.class)
-					.stay(FRIGHTENED).on(PacManGettingWeakerEvent.class).act(e -> setCurrentSprite("s_flashing"))
+					.stay(FRIGHTENED).on(PacManGettingWeakerEvent.class).act(e -> setSelectedSprite("s_flashing"))
 					.when(FRIGHTENED).then(CHASING).on(PacManLostPowerEvent.class)
 					.when(FRIGHTENED).then(DYING).on(GhostKilledEvent.class)
 						

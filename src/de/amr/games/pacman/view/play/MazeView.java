@@ -25,7 +25,7 @@ public class MazeView extends GameEntityUsingSprites {
 		this.maze = maze;
 		setSprite("s_normal", THEME.mazeFull());
 		setSprite("s_flashing", THEME.mazeFlashing());
-		setCurrentSprite("s_normal");
+		setSelectedSprite("s_normal");
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(500);
 		energizerBlinking.setEnabled(false);
@@ -44,7 +44,7 @@ public class MazeView extends GameEntityUsingSprites {
 
 	public void setFlashing(boolean on) {
 		flashing = on;
-		setCurrentSprite(flashing ? "s_flashing" : "s_normal");
+		setSelectedSprite(flashing ? "s_flashing" : "s_normal");
 	}
 
 	public void setBonus(Bonus bonus) {
@@ -69,7 +69,7 @@ public class MazeView extends GameEntityUsingSprites {
 	@Override
 	public void draw(Graphics2D g) {
 		g.translate(tf.getX(), tf.getY());
-		currentSprite().draw(g);
+		getSelectedSprite().draw(g);
 		g.translate(-tf.getX(), -tf.getY());
 		if (!flashing) {
 			maze.tiles().forEach(tile -> {
