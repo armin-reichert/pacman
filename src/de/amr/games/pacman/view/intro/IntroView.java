@@ -27,8 +27,8 @@ import de.amr.statemachine.StateMachine;
  */
 public class IntroView implements View, Controller {
 
-	private static final String LINK_TEXT = "Visit on GitHub!";
-	private static final String LINK_URL = "https://github.com/armin-reichert/pacman";
+	private static final String GITHUB_TEXT = "Visit on GitHub!";
+	private static final String GITHUB_URL = "https://github.com/armin-reichert/pacman";
 
 	private static final int COMPLETE = 42;
 
@@ -44,7 +44,7 @@ public class IntroView implements View, Controller {
 	private final ChasePacManAnimation chasePacMan;
 	private final ChaseGhostsAnimation chaseGhosts;
 	private final GhostPointsAnimation ghostPoints;
-	private final Link link;
+	private final Link visitGitHub;
 
 	public IntroView(int width, int height) {
 		this.width = width;
@@ -69,10 +69,10 @@ public class IntroView implements View, Controller {
 				.font(THEME.textFont(18)).background(background).color(Color.PINK).build();
 		pressSpace.tf.setY(150);
 		pressSpace.tf.centerX(width);
-		link = Link.create().text(LINK_TEXT).url(LINK_URL).font(THEME.textFont(8)).color(Color.LIGHT_GRAY)
+		visitGitHub = Link.create().text(GITHUB_TEXT).url(GITHUB_URL).font(THEME.textFont(8)).color(Color.LIGHT_GRAY)
 				.build();
-		link.tf.setY(height - 20);
-		link.tf.centerX(width);
+		visitGitHub.tf.setY(height - 20);
+		visitGitHub.tf.centerX(width);
 	}
 
 	private void show(View... views) {
@@ -119,7 +119,7 @@ public class IntroView implements View, Controller {
 					// Show ghost points animation and blinking text
 					.timeoutAfter(() -> CLOCK.sec(6))
 					.onEntry(() -> {
-						show(ghostPoints, pressSpace, link);
+						show(ghostPoints, pressSpace, visitGitHub);
 						ghostPoints.start();
 					})
 					.onExit(() -> {
