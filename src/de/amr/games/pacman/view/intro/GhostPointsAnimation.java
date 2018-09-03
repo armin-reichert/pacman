@@ -48,7 +48,6 @@ public class GhostPointsAnimation extends GameEntity implements AnimationControl
 
 	private void resetEnergizerTimer() {
 		energizerTimer = CLOCK.sec(0.5f);
-		;
 	}
 
 	@Override

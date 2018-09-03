@@ -2,6 +2,7 @@ package de.amr.games.pacman.navigation;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.Actor;
 import de.amr.games.pacman.model.Tile;
@@ -9,11 +10,11 @@ import de.amr.games.pacman.model.Tile;
 //TODO: does not yet work 100%
 class FollowFixedPath<T extends Actor> implements Navigation<T> {
 
-	protected Tile target;
+	protected Supplier<Tile> targetTileSupplier;
 	protected List<Tile> path = Collections.emptyList();
 
-	public FollowFixedPath(Tile target) {
-		this.target = target;
+	public FollowFixedPath(Supplier<Tile> targetTileSupplier) {
+		this.targetTileSupplier = targetTileSupplier;
 	}
 
 	protected FollowFixedPath() {
@@ -33,6 +34,6 @@ class FollowFixedPath<T extends Actor> implements Navigation<T> {
 
 	@Override
 	public void computeStaticRoute(T mover) {
-		path = mover.getMaze().findPath(mover.getTile(), target);
+		path = mover.getMaze().findPath(mover.getTile(), targetTileSupplier.get());
 	}
 }
