@@ -21,7 +21,7 @@ public class FollowMouseTestApp extends Application {
 	@Override
 	public void init() {
 		PacManThemes.use(ClassicPacManTheme.class);
-		setController(new FollowMouseTestController(settings.width, settings.height));
+		setController(new FollowMouseTestController());
 	}
 
 }
