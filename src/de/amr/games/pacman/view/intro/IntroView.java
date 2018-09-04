@@ -26,18 +26,15 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class IntroView implements View, Controller {
+public class IntroView extends StateMachine<Integer, Void> implements View, Controller {
 
 	private static final String GITHUB_TEXT = "Visit on GitHub!";
 	private static final String GITHUB_URL = "https://github.com/armin-reichert/pacman";
-
-	private static final int COMPLETE = 42;
 
 	private final int width;
 	private final int height;
 	private final Color background;
 
-	private final StateMachine<Integer, Void> fsm;
 	private final Set<View> animations = new HashSet<>();
 
 	private final ScrollableImage logo;
@@ -48,10 +45,10 @@ public class IntroView implements View, Controller {
 	private final Link visitGitHub;
 
 	public IntroView() {
-		this.width = app().settings.width;
-		this.height = app().settings.height;
+		super(Integer.class);
+		width = app().settings.width;
+		height = app().settings.height;
 		background = new Color(0, 23, 61);
-		fsm = buildStateMachine();
 		logo = new ScrollableImage(Assets.image("logo.png"));
 		logo.tf.centerX(width);
 		logo.tf.setY(height);
@@ -74,6 +71,7 @@ public class IntroView implements View, Controller {
 				.color(Color.LIGHT_GRAY).build();
 		visitGitHub.tf.setY(height - 20);
 		visitGitHub.tf.centerX(width);
+		buildStateMachine();
 	}
 
 	private void show(View... views) {
@@ -92,10 +90,9 @@ public class IntroView implements View, Controller {
 		Arrays.stream(animations).forEach(AnimationController::stop);
 	}
 
-	private StateMachine<Integer, Void> buildStateMachine() {
-		return
+	private void buildStateMachine() {
 		/*@formatter:off*/
-		StateMachine.define(Integer.class, Void.class)
+		define()
 			.description("IntroAnimation")
 			.initialState(0)
 			.states()
@@ -128,34 +125,29 @@ public class IntroView implements View, Controller {
 						hide(ghostPoints, pressSpace);
 					})
 					
-				.state(COMPLETE)
+				.state(42)
 					
 			.transitions()
 				.when(0).then(1).condition(() -> logo.isCompleted())
 				.when(1).then(2).condition(() -> chasePacMan.isCompleted() && chaseGhosts.isCompleted())
 				.when(2).then(1).onTimeout()
-				.when(2).then(COMPLETE).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+				.when(2).then(42).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 
 		.endStateMachine();
 	  /*@formatter:on*/
 	}
-
+	
 	public boolean isComplete() {
-		return fsm.getState() == COMPLETE;
-	}
-
-	@Override
-	public void init() {
-		fsm.init();
+		return getState() == 42;
 	}
 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
-			fsm.setState(COMPLETE);
+			setState(42);
 			return;
 		}
-		fsm.update();
+		super.update();
 		animations.forEach(animation -> ((Controller) animation).update());
 	}
 
