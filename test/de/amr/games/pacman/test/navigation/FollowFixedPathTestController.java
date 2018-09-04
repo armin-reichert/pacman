@@ -1,7 +1,5 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.easy.game.Application.app;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,7 +28,7 @@ public class FollowFixedPathTestController implements ViewController {
 		targets = Arrays.asList(maze.getBottomRightCorner(), maze.getBottomLeftCorner(),
 				maze.getLeftTunnelEntry(), maze.getTopLeftCorner(), maze.getBlinkyHome(), maze.getTopRightCorner(),
 				maze.getRightTunnelEntry(), maze.getPacManHome());
-		view = new PlayViewX(app().settings.width, app().settings.height, game);
+		view = new PlayViewX(game);
 		view.setActors(actors);
 		view.showRoutes = true;
 		view.showGrid = false;
@@ -48,7 +46,8 @@ public class FollowFixedPathTestController implements ViewController {
 				.forEach(ghost -> actors.setActive(ghost, false));
 		actors.blinky.initGhost();
 		actors.blinky.setState(GhostState.CHASING);
-		actors.blinky.setMoveBehavior(GhostState.CHASING, actors.blinky.followStaticRoute(() -> targets.get(targetIndex)));
+		actors.blinky.setMoveBehavior(GhostState.CHASING,
+				actors.blinky.followStaticRoute(() -> targets.get(targetIndex)));
 		actors.blinky.getMoveBehavior().computeStaticRoute(actors.blinky);
 	}
 

@@ -1,7 +1,5 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.easy.game.Application.app;
-
 import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.View;
@@ -23,7 +21,7 @@ public class ScatteringTestController implements ViewController {
 		Maze maze = new Maze(Assets.text("maze.txt"));
 		game = new Game(maze);
 		actors = new Cast(game);
-		view = new PlayViewX(app().settings.width, app().settings.height, game);
+		view = new PlayViewX(game);
 		view.setActors(actors);
 		view.showRoutes = true;
 		view.showStates = true;

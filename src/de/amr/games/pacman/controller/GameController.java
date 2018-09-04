@@ -2,13 +2,13 @@ package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.CLOCK;
 import static de.amr.easy.game.Application.LOGGER;
-import static de.amr.games.pacman.controller.GameController.GameState.CHANGING_LEVEL;
-import static de.amr.games.pacman.controller.GameController.GameState.GAME_OVER;
-import static de.amr.games.pacman.controller.GameController.GameState.GHOST_DYING;
-import static de.amr.games.pacman.controller.GameController.GameState.INTRO;
-import static de.amr.games.pacman.controller.GameController.GameState.PACMAN_DYING;
-import static de.amr.games.pacman.controller.GameController.GameState.PLAYING;
-import static de.amr.games.pacman.controller.GameController.GameState.READY;
+import static de.amr.games.pacman.controller.GameState.CHANGING_LEVEL;
+import static de.amr.games.pacman.controller.GameState.GAME_OVER;
+import static de.amr.games.pacman.controller.GameState.GHOST_DYING;
+import static de.amr.games.pacman.controller.GameState.INTRO;
+import static de.amr.games.pacman.controller.GameState.PACMAN_DYING;
+import static de.amr.games.pacman.controller.GameState.PLAYING;
+import static de.amr.games.pacman.controller.GameState.READY;
 import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.awt.Color;
@@ -47,52 +47,38 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class GameController implements ViewController {
+public class GameController extends StateMachine<GameState, GameEvent> implements ViewController {
 
-	// Model
 	private final Game game;
+	private final Cast actors;
 
-	// View(s)
+	public GameController() {
+		super(GameState.class);
+		game = new Game(new Maze(Assets.text("maze.txt")));
+		actors = new Cast(game);
+		actors.pacMan.traceTo(LOGGER);
+		actors.pacMan.subscribe(this::process);
+		actors.getGhosts().forEach(ghost -> ghost.traceTo(LOGGER));
+		buildStateMachine();
+		traceTo(LOGGER, CLOCK::getFrequency);
+	}
+
+	// Views
+
 	private View currentView;
 	private IntroView introView;
 	private PlayViewX playView;
 
-	// Controller(s)
-	public enum GameState {
-		INTRO, READY, PLAYING, GHOST_DYING, PACMAN_DYING, CHANGING_LEVEL, GAME_OVER
-	}
-
-	private final StateMachine<GameState, GameEvent> gameControl;
-	private final Cast actors;
-
-	public GameController() {
-		Maze maze = new Maze(Assets.text("maze.txt"));
-		game = new Game(maze);
-
-		gameControl = new StateMachine<>(GameState.class);
-		gameControl.traceTo(LOGGER, CLOCK::getFrequency);
-		buildStateMachine();
-
-		actors = new Cast(game);
-		actors.pacMan.traceTo(LOGGER);
-		actors.pacMan.subscribe(gameControl::process);
-		actors.getGhosts().forEach(ghost -> ghost.traceTo(LOGGER));
-	}
-
-	private IntroView getIntroView(Game game) {
+	private IntroView getIntroView() {
 		if (introView == null) {
-			int width = game.getMaze().numCols() * Game.TS;
-			int height = game.getMaze().numRows() * Game.TS;
-			introView = new IntroView(width, height);
+			introView = new IntroView();
 		}
 		return introView;
 	}
 
-	private PlayView getPlayView(Game game) {
+	private PlayView getPlayView() {
 		if (playView == null) {
-			int width = game.getMaze().numCols() * Game.TS;
-			int height = game.getMaze().numRows() * Game.TS;
-			playView = new PlayViewX(width, height, game);
+			playView = new PlayViewX(game);
 			playView.setActors(actors);
 			actors.pacMan.setWorld(playView);
 		}
@@ -112,24 +98,19 @@ public class GameController implements ViewController {
 	}
 
 	@Override
-	public void init() {
-		gameControl.init();
-	}
-
-	@Override
 	public void update() {
-		gameControl.update();
+		super.update();
 		((Controller) currentView).update();
 	}
 
 	// allow typed access to state methods during construction of state machine
 	private PlayingState playingState() {
-		return gameControl.state(PLAYING);
+		return state(PLAYING);
 	}
 
 	private void buildStateMachine() {
 		//@formatter:off
-		gameControl.define()
+		define()
 			
 			.description("[GameControl]")
 			.initialState(INTRO)
@@ -138,7 +119,7 @@ public class GameController implements ViewController {
 				
 				.state(INTRO)
 					.onEntry(() -> {
-						setCurrentView(getIntroView(game));
+						setCurrentView(getIntroView());
 						THEME.soundInsertCoin().play();
 					})
 					.onExit(() -> {
@@ -170,7 +151,7 @@ public class GameController implements ViewController {
 			
 				.when(INTRO).then(READY)
 					.condition(() -> introView.isComplete())
-					.act(() -> setCurrentView(getPlayView(game)))
+					.act(() -> setCurrentView(getPlayView()))
 				
 				.when(READY).then(PLAYING).onTimeout()
 					
@@ -284,11 +265,11 @@ public class GameController implements ViewController {
 				GhostState ghostState = e.ghost.getState();
 				if (ghostState == GhostState.FRIGHTENED || ghostState == GhostState.CHASING
 						|| ghostState == GhostState.SCATTERING) {
-					gameControl.enqueue(new GhostKilledEvent(e.ghost));
+					enqueue(new GhostKilledEvent(e.ghost));
 				}
 				return;
 			}
-			gameControl.enqueue(new PacManKilledEvent(e.ghost));
+			enqueue(new PacManKilledEvent(e.ghost));
 		}
 
 		private void onPacManKilled(GameEvent event) {
@@ -340,10 +321,10 @@ public class GameController implements ViewController {
 				THEME.soundExtraLife().play();
 			}
 			if (game.allFoodEaten()) {
-				gameControl.enqueue(new LevelCompletedEvent());
+				enqueue(new LevelCompletedEvent());
 			} else {
 				if (e.energizer) {
-					gameControl.enqueue(new PacManGainsPowerEvent());
+					enqueue(new PacManGainsPowerEvent());
 				}
 				if (game.isBonusReached()) {
 					playView.setBonus(game.getBonusSymbol(), game.getBonusValue());

@@ -1,5 +1,6 @@
 package de.amr.games.pacman.view.play;
 
+import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.Game.TS;
 
 import java.awt.Color;
@@ -37,9 +38,9 @@ public class PlayView implements View, Controller, PacManWorld {
 	protected Color infoTextColor;
 	protected boolean scoresVisible;
 
-	public PlayView(int width, int height, Game game) {
-		this.width = width;
-		this.height = height;
+	public PlayView(Game game) {
+		this.width = app().settings.width;
+		this.height = app().settings.height;
 		this.game = game;
 		lifeImage = PacManThemes.THEME.pacManWalking(Top4.W).frame(1);
 		mazeView = new MazeView(game.getMaze());
@@ -172,8 +173,7 @@ public class PlayView implements View, Controller, PacManWorld {
 		g.translate(0, height - 2 * TS);
 		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
 			g.translate(width - (n - i) * 2 * TS, 0);
-			g.drawImage(PacManThemes.THEME.symbolImage(game.getLevelCounter().get(i)), 0, 0, 2 * TS,
-					2 * TS, null);
+			g.drawImage(PacManThemes.THEME.symbolImage(game.getLevelCounter().get(i)), 0, 0, 2 * TS, 2 * TS, null);
 			g.translate(-width + (n - i) * 2 * TS, 0);
 		}
 		g.translate(0, -height + 2 * TS);

@@ -56,8 +56,8 @@ public class PlayViewX extends PlayView {
 	public boolean showStates = false;
 
 	private static BufferedImage createGridImage(int numRows, int numCols) {
-		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment()
-				.getDefaultScreenDevice().getDefaultConfiguration();
+		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+				.getDefaultConfiguration();
 		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1,
 				Transparency.TRANSLUCENT);
 		Graphics2D g = image.createGraphics();
@@ -71,8 +71,8 @@ public class PlayViewX extends PlayView {
 		return image;
 	}
 
-	public PlayViewX(int width, int height, Game game) {
-		super(width, height, game);
+	public PlayViewX(Game game) {
+		super(game);
 		gridImage = createGridImage(game.getMaze().numRows(), game.getMaze().numCols());
 	}
 
@@ -125,8 +125,7 @@ public class PlayViewX extends PlayView {
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
 			drawActorAlignment(actors.pacMan, g);
-			actors.getActiveGhosts().filter(Ghost::isVisible)
-					.forEach(ghost -> drawActorAlignment(ghost, g));
+			actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> drawActorAlignment(ghost, g));
 		}
 		if (showRoutes) {
 			actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> drawRoute(g, ghost));
@@ -143,8 +142,7 @@ public class PlayViewX extends PlayView {
 		}
 		actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> {
 			if (ghost.getState() != null) {
-				drawText(g, ghostColor(ghost), ghost.tf().getX() - TS, ghost.tf().getY(),
-						ghostState(ghost));
+				drawText(g, ghostColor(ghost), ghost.tf().getX() - TS, ghost.tf().getY(), ghostState(ghost));
 			}
 		});
 	}

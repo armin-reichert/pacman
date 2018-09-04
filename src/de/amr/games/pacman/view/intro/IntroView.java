@@ -1,6 +1,7 @@
 package de.amr.games.pacman.view.intro;
 
 import static de.amr.easy.game.Application.CLOCK;
+import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.awt.Color;
@@ -46,9 +47,9 @@ public class IntroView implements View, Controller {
 	private final GhostPointsAnimation ghostPoints;
 	private final Link visitGitHub;
 
-	public IntroView(int width, int height) {
-		this.width = width;
-		this.height = height;
+	public IntroView() {
+		this.width = app().settings.width;
+		this.height = app().settings.height;
 		background = new Color(0, 23, 61);
 		fsm = buildStateMachine();
 		logo = new ScrollableImage(Assets.image("logo.png"));
@@ -69,8 +70,8 @@ public class IntroView implements View, Controller {
 				.font(THEME.textFont(18)).background(background).color(Color.PINK).build();
 		pressSpace.tf.setY(150);
 		pressSpace.tf.centerX(width);
-		visitGitHub = Link.create().text(GITHUB_TEXT).url(GITHUB_URL).font(THEME.textFont(8)).color(Color.LIGHT_GRAY)
-				.build();
+		visitGitHub = Link.create().text(GITHUB_TEXT).url(GITHUB_URL).font(THEME.textFont(8))
+				.color(Color.LIGHT_GRAY).build();
 		visitGitHub.tf.setY(height - 20);
 		visitGitHub.tf.centerX(width);
 	}
