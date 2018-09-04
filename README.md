@@ -119,7 +119,7 @@ state machine. Further, the individual states are implemented by subclasses of t
 has the advantage that actions which are state-specific can be realized as methods of the subclass.
 
 ```java
-StateMachine.define(GameState.class, GameEvent.class)
+gameControl.define()
 	
 	.description("[GameControl]")
 	.initialState(INTRO)
@@ -166,35 +166,35 @@ StateMachine.define(GameState.class, GameEvent.class)
 			
 		.stay(PLAYING)
 			.on(FoodFoundEvent.class)
-			.act(e -> playingState().onFoodFound(e))
+			.act(playingState()::onFoodFound)
 			
 		.stay(PLAYING)
 			.on(BonusFoundEvent.class)
-			.act(e -> playingState().onBonusFound(e))
+			.act(playingState()::onBonusFound)
 			
 		.stay(PLAYING)
 			.on(PacManGhostCollisionEvent.class)
-			.act(e -> playingState().onPacManGhostCollision(e))
+			.act(playingState()::onPacManGhostCollision)
 			
 		.stay(PLAYING)
 			.on(PacManGainsPowerEvent.class)
-			.act(e -> playingState().onPacManGainsPower(e))
+			.act(playingState()::onPacManGainsPower)
 			
 		.stay(PLAYING)
 			.on(PacManGettingWeakerEvent.class)
-			.act(e -> playingState().onPacManGettingWeaker(e))
+			.act(playingState()::onPacManGettingWeaker)
 			
 		.stay(PLAYING)
 			.on(PacManLostPowerEvent.class)
-			.act(e -> playingState().onPacManLostPower(e))
+			.act(playingState()::onPacManLostPower)
 	
 		.when(PLAYING).then(GHOST_DYING)
 			.on(GhostKilledEvent.class)
-			.act(e -> playingState().onGhostKilled(e))
+			.act(playingState()::onGhostKilled)
 			
 		.when(PLAYING).then(PACMAN_DYING)
 			.on(PacManKilledEvent.class)
-			.act(e -> playingState().onPacManKilled(e))
+			.act(playingState()::onPacManKilled)
 			
 		.when(PLAYING).then(CHANGING_LEVEL)
 			.on(LevelCompletedEvent.class)
@@ -212,10 +212,10 @@ StateMachine.define(GameState.class, GameEvent.class)
 			.onTimeout()
 			
 		.when(PACMAN_DYING).then(GAME_OVER)
-			.condition(() -> actors.getPacMan().getState() == PacManState.DEAD && game.getLives() == 0)
+			.condition(() -> actors.pacMan.getState() == PacManState.DEAD && game.getLives() == 0)
 			
 		.when(PACMAN_DYING).then(PLAYING)
-			.condition(() -> actors.getPacMan().getState() == PacManState.DEAD && game.getLives() > 0)
+			.condition(() -> actors.pacMan.getState() == PacManState.DEAD && game.getLives() > 0)
 			.act(() -> { playView.init(); actors.init(); })
 	
 		.when(GAME_OVER).then(READY)
