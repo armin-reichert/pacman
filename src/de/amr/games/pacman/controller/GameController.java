@@ -69,8 +69,9 @@ public class GameController implements ViewController {
 		Maze maze = new Maze(Assets.text("maze.txt"));
 		game = new Game(maze);
 
-		gameControl = buildStateMachine();
+		gameControl = new StateMachine<>(GameState.class);
 		gameControl.traceTo(LOGGER, CLOCK::getFrequency);
+		buildStateMachine();
 
 		actors = new Cast(game);
 		actors.pacMan.traceTo(LOGGER);
@@ -121,14 +122,14 @@ public class GameController implements ViewController {
 		((Controller) currentView).update();
 	}
 
+	// allow typed access to state methods during construction of state machine
 	private PlayingState playingState() {
 		return gameControl.state(PLAYING);
 	}
 
-	private StateMachine<GameState, GameEvent> buildStateMachine() {
-		return
+	private void buildStateMachine() {
 		//@formatter:off
-		StateMachine.define(GameState.class, GameEvent.class)
+		gameControl.define()
 			
 			.description("[GameControl]")
 			.initialState(INTRO)
@@ -175,35 +176,35 @@ public class GameController implements ViewController {
 					
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
-					.act(e -> playingState().onFoodFound(e))
+					.act(playingState()::onFoodFound)
 					
 				.stay(PLAYING)
 					.on(BonusFoundEvent.class)
-					.act(e -> playingState().onBonusFound(e))
+					.act(playingState()::onBonusFound)
 					
 				.stay(PLAYING)
 					.on(PacManGhostCollisionEvent.class)
-					.act(e -> playingState().onPacManGhostCollision(e))
+					.act(playingState()::onPacManGhostCollision)
 					
 				.stay(PLAYING)
 					.on(PacManGainsPowerEvent.class)
-					.act(e -> playingState().onPacManGainsPower(e))
+					.act(playingState()::onPacManGainsPower)
 					
 				.stay(PLAYING)
 					.on(PacManGettingWeakerEvent.class)
-					.act(e -> playingState().onPacManGettingWeaker(e))
+					.act(playingState()::onPacManGettingWeaker)
 					
 				.stay(PLAYING)
 					.on(PacManLostPowerEvent.class)
-					.act(e -> playingState().onPacManLostPower(e))
+					.act(playingState()::onPacManLostPower)
 			
 				.when(PLAYING).then(GHOST_DYING)
 					.on(GhostKilledEvent.class)
-					.act(e -> playingState().onGhostKilled(e))
+					.act(playingState()::onGhostKilled)
 					
 				.when(PLAYING).then(PACMAN_DYING)
 					.on(PacManKilledEvent.class)
-					.act(e -> playingState().onPacManKilled(e))
+					.act(playingState()::onPacManKilled)
 					
 				.when(PLAYING).then(CHANGING_LEVEL)
 					.on(LevelCompletedEvent.class)
