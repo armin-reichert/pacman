@@ -33,6 +33,8 @@ import de.amr.games.pacman.model.Tile;
  * direction and move back to the left. The implication of this restriction is that whenever a ghost
  * enters a tile with only two exits, it will always continue in the same direction. </cite>
  * </p>
+ * 
+ * @author Armin Reichert
  */
 public class FollowTargetTile<T extends Actor> implements Navigation<T> {
 
@@ -44,11 +46,10 @@ public class FollowTargetTile<T extends Actor> implements Navigation<T> {
 
 	@Override
 	public MazeRoute computeRoute(T mover) {
-		MazeRoute route = new MazeRoute();
-
-		Maze maze = mover.getMaze();
-		int moverDir = mover.getCurrentDir();
-		Tile moverTile = mover.getTile();
+		final MazeRoute route = new MazeRoute();
+		final Maze maze = mover.getMaze();
+		final int moverDir = mover.getCurrentDir();
+		final Tile moverTile = mover.getTile();
 
 		// keep direction when in tunnel or teleport space
 		if (mover.inTeleportSpace() || mover.inTunnel()) {
@@ -56,7 +57,7 @@ public class FollowTargetTile<T extends Actor> implements Navigation<T> {
 			return route;
 		}
 
-		// ask for next target tile
+		// ask for current target tile
 		Tile targetTile = targetTileSupplier.get();
 		Objects.requireNonNull(targetTile, "Target tile must not be NULL");
 
@@ -68,7 +69,7 @@ public class FollowTargetTile<T extends Actor> implements Navigation<T> {
 
 		// leave ghost house by following route to Blinky's home tile
 		if (mover.inGhostHouse()) {
-			Optional<Integer> choice = findBestDir(mover, maze.getBlinkyHome(), moverTile,
+			Optional<Integer> choice = findBestDir(mover, moverTile, maze.getBlinkyHome(),
 					Stream.of(moverDir, NESW.left(moverDir), NESW.right(moverDir)));
 			if (choice.isPresent()) {
 				route.setDir(choice.get());
@@ -89,7 +90,7 @@ public class FollowTargetTile<T extends Actor> implements Navigation<T> {
 		// decide where to go at ghosthouse door
 		if (maze.isGhostHouseEntry(moverTile)) {
 			Stream<Integer> choices = Stream.of(Top4.W, Top4.S, Top4.E);
-			Optional<Integer> choice = findBestDir(mover, targetTile, moverTile, choices);
+			Optional<Integer> choice = findBestDir(mover, moverTile, targetTile, choices);
 			if (choice.isPresent()) {
 				route.setDir(choice.get());
 				return route;
@@ -103,7 +104,7 @@ public class FollowTargetTile<T extends Actor> implements Navigation<T> {
 		if (free || notUp) {
 			Stream<Integer> choices = Stream.of(moverDir, NESW.left(moverDir), NESW.right(moverDir))
 					.filter(dir -> free || dir != Top4.N);
-			Optional<Integer> choice = findBestDir(mover, targetTile, nextTile, choices);
+			Optional<Integer> choice = findBestDir(mover, nextTile, targetTile, choices);
 			if (choice.isPresent()) {
 				route.setDir(choice.get());
 				return route;
@@ -115,16 +116,15 @@ public class FollowTargetTile<T extends Actor> implements Navigation<T> {
 		return route;
 	}
 
-	private Optional<Integer> findBestDir(Actor mover, Tile targetTile, Tile fromTile,
-			Stream<Integer> dirChoices) {
-		Maze maze = mover.getMaze();
+	private Optional<Integer> findBestDir(Actor mover, Tile from, Tile to, Stream<Integer> choices) {
+		final Maze maze = mover.getMaze();
 		/*@formatter:off*/
-		return dirChoices
-			.map(dir -> maze.neighborTile(fromTile, dir))
+		return choices
+			.map(dir -> maze.neighborTile(from, dir))
 			.filter(Optional::isPresent).map(Optional::get)
 			.filter(mover::canEnterTile)
-			.sorted((t1, t2) -> Integer.compare(maze.euclidean2(t1, targetTile), maze.euclidean2(t2, targetTile)))
-			.map(tile -> maze.direction(fromTile, tile))
+			.sorted((t1, t2) -> Integer.compare(maze.euclidean2(t1, to), maze.euclidean2(t2, to)))
+			.map(tile -> maze.direction(from, tile))
 			.map(OptionalInt::getAsInt)
 			.findFirst();
 		/*@formatter:on*/
