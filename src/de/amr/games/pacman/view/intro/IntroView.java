@@ -34,9 +34,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 	private final int width;
 	private final int height;
 	private final Color background;
-
 	private final Set<View> animations = new HashSet<>();
-
 	private final ScrollableImage logo;
 	private final BlinkingText pressSpace;
 	private final ChasePacManAnimation chasePacMan;
@@ -145,7 +143,6 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
 			setState(42);
-			return;
 		}
 		super.update();
 		animations.forEach(animation -> ((Controller) animation).update());
