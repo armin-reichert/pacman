@@ -1,6 +1,6 @@
 package de.amr.games.pacman.model;
 
-import static de.amr.easy.game.Application.CLOCK;
+import static de.amr.easy.game.Application.app;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -140,7 +140,7 @@ public class Game {
 	}
 
 	public int getBonusTime() {
-		return CLOCK.sec(9f + new Random().nextFloat());
+		return app().clock.sec(9f + new Random().nextFloat());
 	}
 
 	public float getGhostSpeed(GhostState state, Tile tile) {
@@ -165,7 +165,7 @@ public class Game {
 	}
 
 	public int getGhostDyingTime() {
-		return CLOCK.sec(1f);
+		return app().clock.sec(1f);
 	}
 
 	public int getGhostNumFlashes() {
@@ -205,18 +205,18 @@ public class Game {
 	}
 
 	public int getPacManGreedyTime() {
-		return CLOCK.sec(LevelTable.intValue(level, TableColumn.iPacManPowerSeconds));
+		return app().clock.sec(LevelTable.intValue(level, TableColumn.iPacManPowerSeconds));
 	}
 
 	public int getPacManGettingWeakerRemainingTime() {
-		return CLOCK.sec(getGhostNumFlashes());
+		return app().clock.sec(getGhostNumFlashes());
 	}
 
 	public int getPacManDyingTime() {
-		return CLOCK.sec(2);
+		return app().clock.sec(2);
 	}
 
 	public int getLevelChangingTime() {
-		return CLOCK.sec(3);
+		return app().clock.sec(3);
 	}
 }

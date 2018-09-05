@@ -1,6 +1,5 @@
 package de.amr.games.pacman.view.intro;
 
-import static de.amr.easy.game.Application.CLOCK;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
@@ -113,7 +112,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 					
 				.state(2)
 					// Show ghost points animation and blinking text
-					.timeoutAfter(() -> CLOCK.sec(6))
+					.timeoutAfter(() -> app().clock.sec(6))
 					.onEntry(() -> {
 						show(ghostPoints, pressSpace, visitGitHub);
 						ghostPoints.start();

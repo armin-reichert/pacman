@@ -1,6 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
-import de.amr.easy.game.Application;
+import static de.amr.easy.game.Application.app;
+
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
@@ -36,7 +37,7 @@ public class ScatteringTestController implements ViewController {
 			ghost.initGhost();
 			ghost.setState(GhostState.SCATTERING);
 		});
-		Application.CLOCK.setFrequency(60);
+		app().clock.setFrequency(60);
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.easy.game.Application.CLOCK;
+import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.DYING;
@@ -147,7 +147,7 @@ public class Ghost extends Actor
 	}
 
 	public void traceTo(Logger logger) {
-		controller.traceTo(logger, CLOCK::getFrequency);
+		controller.traceTo(logger, app().clock::getFrequency);
 	}
 
 	private StateMachine<GhostState, GameEvent> buildStateMachine(String ghostName) {
@@ -164,7 +164,7 @@ public class Ghost extends Actor
 						.onEntry(this::initGhost)
 					
 					.state(SAFE)
-						.timeoutAfter(() -> CLOCK.sec(2))
+						.timeoutAfter(() -> app().clock.sec(2))
 						.onTick(() -> {
 							if (!ghostName.equals("Blinky")) { //TODO better solution
 								move();	

@@ -1,7 +1,7 @@
 package de.amr.games.pacman.controller;
 
-import static de.amr.easy.game.Application.CLOCK;
 import static de.amr.easy.game.Application.LOGGER;
+import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.controller.GameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.GameState.GAME_OVER;
 import static de.amr.games.pacman.controller.GameState.GHOST_DYING;
@@ -60,7 +60,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		actors.pacMan.subscribe(this::process);
 		actors.getGhosts().forEach(ghost -> ghost.traceTo(LOGGER));
 		buildStateMachine();
-		traceTo(LOGGER, CLOCK::getFrequency);
+		traceTo(LOGGER, app().clock::getFrequency);
 	}
 
 	// Views
@@ -128,7 +128,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 				
 				.state(READY)
 					.impl(new ReadyState())
-					.timeoutAfter(() -> CLOCK.sec(4.5f))
+					.timeoutAfter(() -> app().clock.sec(4.5f))
 				
 				.state(PLAYING)
 					.impl(new PlayingState())
@@ -308,7 +308,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 				THEME.soundEatFruit().play();
 				bonus.setHonored();
 				game.score.add(bonus.getValue());
-				playView.setBonusTimer(CLOCK.sec(1));
+				playView.setBonusTimer(app().clock.sec(1));
 			});
 		}
 
