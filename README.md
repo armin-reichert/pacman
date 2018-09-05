@@ -37,23 +37,23 @@ And then you maybe become totally frustrated and lose interest. Or you give it a
 
 ## State machines to the rescue
 
-Maybe you will also find introductions and tutorials about *(finite) state machines* and the different possibilities of implementing them. From basic switch-statements to object-oriented "state pattern"-based implementations, function pointers in C, C++, ready-made libraries like [Appcelerate](http://www.appccelerate.com/), [Stateless4j](https://github.com/oxo42/stateless4j) or [Squirrel](http://hekailiang.github.io/squirrel/). Now you are totally confused about how to proceed but to make progress you have to take a decision.
+You will maybe read tutorials about *(finite) state machines* and the different possibilities of implementing them: from basic switch-statements, function pointers (C, C++) to object-oriented "state pattern"-based implementations. There are also ready-to-use libraries like [Appcelerate](http://www.appccelerate.com/), [Stateless4j](https://github.com/oxo42/stateless4j) or [Squirrel](http://hekailiang.github.io/squirrel/). What should you do? 
 
-The more low-level implementations of state machines (switches, function pointers) are the most performant ones but as long a you achieve the performance goals for your game (60 frames/updates per second), you can use whatever implementation you like. And if you want to make your code understandable to other people for learning purposes it is certainly not the best way to choose the low-level ones. 
+The low-level implementations using switch-statements or function pointers (if your programming language supports this) are the most performant ones but as long a you achieve the performance goals for your game (60 frames/updates per second) you can use whatever you like. Of course, using  a higher-level implementation should make your code more readable and easier to maintain.
 
-I decided to build my own [state machine implementation](https://github.com/armin-reichert/statemachine) along the lines of Mealy machines with guarded conditions and transition actions. Of course, I could have used some existing framework, but eating your own dog food is more fun.
+I decided to write my own [state machine implementation](https://github.com/armin-reichert/statemachine), which was a good exercise and really fun because of the availability of lambda expressions and method references.
 
-Whatever decision you take, the important thing IMHO is that you take a decision and stick to it, do not reinvent the state machine implementation for each use case from scratch! And now you can concentrate on the "real" stuff: 
+After you have decided which implementation you want to use for your state machines you can finally focus on the game itself.
 
-Which entities in the Pac-Man game are candidates for getting controlled by state machines? You will be surprised how many parts of your program suddenly will look like state machines to you: 
+Which entities in the Pac-Man game are candidates for getting controlled by state machines?
 
-Of course, Pac-Man and the four ghosts, but also the global game control, maybe also the screen selection logic or even simpler entities in your game. It is interesting to look at your program parts through the state machine glasses and find out where an explicit state machine becomes useful in contrast to just using variables, methods and control-flow statements in free-style.
+Of course, Pac-Man and the four ghosts, but also the global game control, maybe also the screen selection logic or even simpler entities in your game. It is interesting to look at your program parts through the state machine glasses and find out where an explicit state machine becomes useful.
 
-In the provided implementation, there are a number of explicit state machines:
-- Global game controller ([GameController](src/de/amr/games/pacman/controller/GameController.java))
+In the provided implementation, there are the following explicit state machines:
+- Game controller ([GameController](src/de/amr/games/pacman/controller/GameController.java))
 - Pac-Man controller ([Pac-Man](src/de/amr/games/pacman/actor/PacMan.java))
-- Ghost controllers ([Ghost](src/de/amr/games/pacman/actor/Ghost.java))
-- Intro view animation controller ([IntroView](src/de/amr/games/pacman/view/intro/IntroView.java))
+- Ghost controller ([Ghost](src/de/amr/games/pacman/actor/Ghost.java))
+- Intro view controller ([IntroView](src/de/amr/games/pacman/view/intro/IntroView.java))
 
 The state machines are "implemented" in a declarative way (*builder pattern*). In essence, you write a single large expression representing the complete state graph together with node and edge annotations (actions, conditions, event conditions, timers).
 
