@@ -68,48 +68,48 @@ is an obvious candidate for using a state machine. This state machine has no eve
 so we specify *Void* as event type. The states are identified by numbers:
 
 ```java
-	StateMachine.define(Integer.class, Void.class)
-		.description("IntroAnimation")
-		.initialState(0)
-		.states()
+StateMachine.define(Integer.class, Void.class)
+	.description("IntroAnimation")
+	.initialState(0)
+	.states()
 
-			.state(0)
-				// Scroll logo into view
-				.onEntry(() -> { show(logo); logo.start(); })
-				.onExit(logo::stop)
+		.state(0)
+			// Scroll logo into view
+			.onEntry(() -> { show(logo); logo.start(); })
+			.onExit(logo::stop)
 
-			.state(1)
-				// Show ghosts chasing Pac-Man and vice-versa
-				.onEntry(() -> {
-					show(chasePacMan, chaseGhosts);
-					start(chasePacMan, chaseGhosts);
-				})
-				.onExit(() -> {
-					stop(chasePacMan, chaseGhosts);
-					chasePacMan.tf.centerX(width);
-				})
-				
-			.state(2)
-				// Show ghost points animation and blinking text
-				.timeoutAfter(() -> CLOCK.sec(6))
-				.onEntry(() -> {
-					show(ghostPoints, pressSpace, link);
-					ghostPoints.start();
-				})
-				.onExit(() -> {
-					ghostPoints.stop();
-					hide(ghostPoints, pressSpace);
-				})
-				
-			.state(COMPLETE)
-				
-		.transitions()
-			.when(0).then(1).condition(logo::isCompleted)
-			.when(1).then(2).condition(() -> chasePacMan.isCompleted() && chaseGhosts.isCompleted())
-			.when(2).then(1).onTimeout()
-			.when(2).then(COMPLETE).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+		.state(1)
+			// Show ghosts chasing Pac-Man and vice-versa
+			.onEntry(() -> {
+				show(chasePacMan, chaseGhosts);
+				start(chasePacMan, chaseGhosts);
+			})
+			.onExit(() -> {
+				stop(chasePacMan, chaseGhosts);
+				chasePacMan.tf.centerX(width);
+			})
+			
+		.state(2)
+			// Show ghost points animation and blinking text
+			.timeoutAfter(() -> CLOCK.sec(6))
+			.onEntry(() -> {
+				show(ghostPoints, pressSpace, link);
+				ghostPoints.start();
+			})
+			.onExit(() -> {
+				ghostPoints.stop();
+				hide(ghostPoints, pressSpace);
+			})
+			
+		.state(COMPLETE)
+			
+	.transitions()
+		.when(0).then(1).condition(logo::isCompleted)
+		.when(1).then(2).condition(() -> chasePacMan.isCompleted() && chaseGhosts.isCompleted())
+		.when(2).then(1).onTimeout()
+		.when(2).then(COMPLETE).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 
-	.endStateMachine();
+.endStateMachine();
 ```
 
 A more complex state machine is used for defining the global game control. It processes game events which
