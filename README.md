@@ -478,7 +478,20 @@ ghost.setMoveBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
 
 For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed, the *headFor* behavior is sufficient. To also give an example how graph based path finding can be used, the *flee* behavior has been implemented differently from the original game.
 
-Shortest routes in the maze graph can be computed using the method *Maze.findPath(Tile source, Tile target)*. This method randomly choses between the [A-Star](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html) and a simple Breadth-first-search and runs this algorithm on the underlying grid graph. A-Star sounds cooler than BFS but is in fact useless in this use-case because the maze is represented by a graph where the distance between two adjacent vertices (neighbor tiles) is always the same. Thus the A* or Dijkstra path finding algorithms will just degenerate to BFS (correct me if I'm wrong). Of course one could represent the graph differently, for example with vertices only for crossings and weighted edges for passages, then Dijkstra or A* would become useful.
+Shortest paths in the maze graph can be computed using the method *Maze.findPath(Tile source, Tile target)*. 
+This method runs a Breadth-First-Search on the underlying grid graph to compute the shortest path. The used
+[graph library](https://github.com/armin-reichert/graph) provides also more sophisticated search algorithms
+like Dijkstra or [A-Star](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html) that could be used by just changing a single line of code in the Maze class:
+
+```java
+GraphTraversal pathfinder =
+//		new AStarTraversal<>(graph, edge -> 1, graph::manhattan);
+		new BreadthFirstTraversal<>(graph);
+```
+
+A-Star certainly sounds cooler than BFS, but is completely useless in this use-case because the maze is represented by a graph where the distance between two adjacent vertices (neighbor tiles) is always the same. Thus the A* or Dijkstra path finding algorithms would just degenerate to plain BFS (correct me if I'm wrong). 
+
+Of course one could represent the graph differently, for example with vertices only for crossings and weighted edges for passages, in which case Dijkstra or A* would become useful.
 
 ## Additional features
 
