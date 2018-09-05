@@ -119,109 +119,109 @@ state machine. Further, the individual states are implemented by subclasses of t
 has the advantage that actions which are state-specific can be realized as methods of the subclass.
 
 ```java
-		define()
-			
-			.description("[GameControl]")
-			.initialState(INTRO)
-			
-			.states()
-				
-				.state(INTRO)
-					.onEntry(() -> {
-						setCurrentView(getIntroView());
-						THEME.soundInsertCoin().play();
-					})
-					.onExit(() -> {
-						THEME.allSounds().forEach(Sound::stop);
-					})
-				
-				.state(READY)
-					.impl(new ReadyState())
-					.timeoutAfter(() -> CLOCK.sec(4.5f))
-				
-				.state(PLAYING)
-					.impl(new PlayingState())
-				
-				.state(CHANGING_LEVEL)
-					.impl(new ChangingLevelState())
-					.timeoutAfter(game::getLevelChangingTime)
-				
-				.state(GHOST_DYING)
-					.impl(new GhostDyingState())
-					.timeoutAfter(game::getGhostDyingTime)
-				
-				.state(PACMAN_DYING)
-					.impl(new PacManDyingState())
-				
-				.state(GAME_OVER)
-					.impl(new GameOverState())
+define()
 	
-			.transitions()
+	.description("[GameControl]")
+	.initialState(INTRO)
+	
+	.states()
+		
+		.state(INTRO)
+			.onEntry(() -> {
+				setCurrentView(getIntroView());
+				THEME.soundInsertCoin().play();
+			})
+			.onExit(() -> {
+				THEME.allSounds().forEach(Sound::stop);
+			})
+		
+		.state(READY)
+			.impl(new ReadyState())
+			.timeoutAfter(() -> CLOCK.sec(4.5f))
+		
+		.state(PLAYING)
+			.impl(new PlayingState())
+		
+		.state(CHANGING_LEVEL)
+			.impl(new ChangingLevelState())
+			.timeoutAfter(game::getLevelChangingTime)
+		
+		.state(GHOST_DYING)
+			.impl(new GhostDyingState())
+			.timeoutAfter(game::getGhostDyingTime)
+		
+		.state(PACMAN_DYING)
+			.impl(new PacManDyingState())
+		
+		.state(GAME_OVER)
+			.impl(new GameOverState())
+
+	.transitions()
+	
+		.when(INTRO).then(READY)
+			.condition(() -> introView.isComplete())
+			.act(() -> setCurrentView(getPlayView()))
+		
+		.when(READY).then(PLAYING).onTimeout()
 			
-				.when(INTRO).then(READY)
-					.condition(() -> introView.isComplete())
-					.act(() -> setCurrentView(getPlayView()))
-				
-				.when(READY).then(PLAYING).onTimeout()
-					
-				.stay(PLAYING)
-					.on(FoodFoundEvent.class)
-					.act(playingState()::onFoodFound)
-					
-				.stay(PLAYING)
-					.on(BonusFoundEvent.class)
-					.act(playingState()::onBonusFound)
-					
-				.stay(PLAYING)
-					.on(PacManGhostCollisionEvent.class)
-					.act(playingState()::onPacManGhostCollision)
-					
-				.stay(PLAYING)
-					.on(PacManGainsPowerEvent.class)
-					.act(playingState()::onPacManGainsPower)
-					
-				.stay(PLAYING)
-					.on(PacManGettingWeakerEvent.class)
-					.act(playingState()::onPacManGettingWeaker)
-					
-				.stay(PLAYING)
-					.on(PacManLostPowerEvent.class)
-					.act(playingState()::onPacManLostPower)
+		.stay(PLAYING)
+			.on(FoodFoundEvent.class)
+			.act(playingState()::onFoodFound)
 			
-				.when(PLAYING).then(GHOST_DYING)
-					.on(GhostKilledEvent.class)
-					.act(playingState()::onGhostKilled)
-					
-				.when(PLAYING).then(PACMAN_DYING)
-					.on(PacManKilledEvent.class)
-					.act(playingState()::onPacManKilled)
-					
-				.when(PLAYING).then(CHANGING_LEVEL)
-					.on(LevelCompletedEvent.class)
-					
-				.when(CHANGING_LEVEL).then(PLAYING)
-					.onTimeout()
-					
-				.stay(CHANGING_LEVEL)
-					.on(PacManGettingWeakerEvent.class)
+		.stay(PLAYING)
+			.on(BonusFoundEvent.class)
+			.act(playingState()::onBonusFound)
 			
-				.stay(GHOST_DYING)
-					.on(PacManGettingWeakerEvent.class)
-				
-				.when(GHOST_DYING).then(PLAYING)
-					.onTimeout()
-					
-				.when(PACMAN_DYING).then(GAME_OVER)
-					.condition(() -> actors.pacMan.getState() == PacManState.DEAD && game.getLives() == 0)
-					
-				.when(PACMAN_DYING).then(PLAYING)
-					.condition(() -> actors.pacMan.getState() == PacManState.DEAD && game.getLives() > 0)
-					.act(() -> { playView.init(); actors.init(); })
+		.stay(PLAYING)
+			.on(PacManGhostCollisionEvent.class)
+			.act(playingState()::onPacManGhostCollision)
 			
-				.when(GAME_OVER).then(READY)
-					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
-							
-		.endStateMachine();
+		.stay(PLAYING)
+			.on(PacManGainsPowerEvent.class)
+			.act(playingState()::onPacManGainsPower)
+			
+		.stay(PLAYING)
+			.on(PacManGettingWeakerEvent.class)
+			.act(playingState()::onPacManGettingWeaker)
+			
+		.stay(PLAYING)
+			.on(PacManLostPowerEvent.class)
+			.act(playingState()::onPacManLostPower)
+	
+		.when(PLAYING).then(GHOST_DYING)
+			.on(GhostKilledEvent.class)
+			.act(playingState()::onGhostKilled)
+			
+		.when(PLAYING).then(PACMAN_DYING)
+			.on(PacManKilledEvent.class)
+			.act(playingState()::onPacManKilled)
+			
+		.when(PLAYING).then(CHANGING_LEVEL)
+			.on(LevelCompletedEvent.class)
+			
+		.when(CHANGING_LEVEL).then(PLAYING)
+			.onTimeout()
+			
+		.stay(CHANGING_LEVEL)
+			.on(PacManGettingWeakerEvent.class)
+	
+		.stay(GHOST_DYING)
+			.on(PacManGettingWeakerEvent.class)
+		
+		.when(GHOST_DYING).then(PLAYING)
+			.onTimeout()
+			
+		.when(PACMAN_DYING).then(GAME_OVER)
+			.condition(() -> actors.pacMan.getState() == PacManState.DEAD && game.getLives() == 0)
+			
+		.when(PACMAN_DYING).then(PLAYING)
+			.condition(() -> actors.pacMan.getState() == PacManState.DEAD && game.getLives() > 0)
+			.act(() -> { playView.init(); actors.init(); })
+	
+		.when(GAME_OVER).then(READY)
+			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+					
+.endStateMachine();
 ```
 
 The states of this state machine are implemented as separate (inner) classes. However, this is not necessary in simpler cases and is the decision of the implementor.
