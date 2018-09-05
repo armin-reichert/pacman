@@ -32,6 +32,13 @@ public class MazeView extends GameEntityUsingSprites {
 	}
 
 	@Override
+	public void init() {
+		bonus = null;
+		bonusTimer = 0;
+		setFlashing(false);
+	}
+
+	@Override
 	public void update() {
 		if (bonusTimer > 0) {
 			bonusTimer -= 1;
@@ -85,11 +92,5 @@ public class MazeView extends GameEntityUsingSprites {
 				bonus.draw(g);
 			}
 		}
-	}
-
-	@Override
-	public void init() {
-		bonus = null;
-		setFlashing(false);
 	}
 }
