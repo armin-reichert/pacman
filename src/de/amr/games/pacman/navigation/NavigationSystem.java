@@ -143,7 +143,7 @@ public interface NavigationSystem<T extends Actor> {
 	 * @return flight behavior
 	 */
 	public default Navigation<T> flee(Actor attacker) {
-		return new EscapeIntoCorner<>(attacker);
+		return new EscapeIntoCorner<>(attacker::getTile);
 	}
 
 	/**

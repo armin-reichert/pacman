@@ -7,7 +7,6 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.actor.Actor;
 import de.amr.games.pacman.model.Tile;
 
-//TODO: does not yet work 100%
 class FollowFixedPath<T extends Actor> implements Navigation<T> {
 
 	protected Supplier<Tile> targetTileSupplier;
@@ -17,13 +16,12 @@ class FollowFixedPath<T extends Actor> implements Navigation<T> {
 		this.targetTileSupplier = targetTileSupplier;
 	}
 
-	protected FollowFixedPath() {
-
-	}
-
 	@Override
 	public MazeRoute computeRoute(T mover) {
-		if (path.size() > 0 && !path.get(0).equals(mover.getTile())) {
+		if (path.size() == 0 || mover.getTile().equals(path.get(path.size() - 1))) {
+			computeStaticRoute(mover);
+		}
+		if (!mover.getTile().equals(path.get(0))) {
 			path.remove(0);
 		}
 		MazeRoute route = new MazeRoute();
