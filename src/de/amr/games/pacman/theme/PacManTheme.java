@@ -10,59 +10,59 @@ import de.amr.games.pacman.model.BonusSymbol;
 
 public interface PacManTheme {
 
-	Sprite mazeEmpty();
+	Sprite spr_emptyMaze();
 
-	Sprite mazeFull();
+	Sprite spr_fullMaze();
 
-	Sprite mazeFlashing();
+	Sprite spr_flashingMaze();
 
-	Sprite symbol(BonusSymbol symbol);
+	Sprite spr_bonusSymbol(BonusSymbol symbol);
 
-	BufferedImage symbolImage(BonusSymbol symbol);
+	BufferedImage img_bonusSymbol(BonusSymbol symbol);
 
-	Sprite pacManFull();
+	Sprite spr_pacManFull();
 
-	Sprite pacManWalking(int dir);
+	Sprite spr_pacManWalking(int dir);
 
-	Sprite pacManDying();
+	Sprite spr_pacManDying();
 
-	Sprite ghostColored(GhostColor color, int direction);
+	Sprite spr_ghostColored(GhostColor color, int direction);
 
-	Sprite ghostFrightened();
+	Sprite spr_ghostFrightened();
 
-	Sprite ghostFlashing();
+	Sprite spr_ghostFlashing();
 
-	Sprite ghostEyes(int dir);
+	Sprite spr_ghostEyes(int dir);
 
-	Sprite greenNumber(int i);
+	Sprite spr_greenNumber(int i);
 
-	Sprite pinkNumber(int i);
+	Sprite spr_pinkNumber(int i);
 
-	Font textFont();
+	Font fnt_text();
 
-	default Font textFont(int size) {
-		return textFont().deriveFont((float) size);
+	default Font fnt_text(int size) {
+		return fnt_text().deriveFont((float) size);
 	}
 
-	Sound soundDie();
+	Sound snd_die();
 
-	Sound soundEatFruit();
+	Sound snd_eatFruit();
 
-	Sound soundEatGhost();
+	Sound snd_eatGhost();
 
-	Sound soundEatPill();
+	Sound snd_eatPill();
 
-	Sound soundEating();
+	Sound snd_eating();
 
-	Sound soundExtraLife();
+	Sound snd_extraLife();
 
-	Sound soundInsertCoin();
+	Sound snd_insertCoin();
 
-	Sound soundReady();
+	Sound snd_ready();
 
-	Sound soundSiren();
+	Sound snd_siren();
 
-	Sound soundWaza();
+	Sound snd_waza();
 
-	Stream<Sound> allSounds();
+	Stream<Sound> snd_allSounds();
 }

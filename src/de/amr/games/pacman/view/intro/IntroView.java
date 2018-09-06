@@ -61,10 +61,10 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		ghostPoints.tf.setY(200);
 		ghostPoints.tf.centerX(width);
 		pressSpace = BlinkingText.create().text("Press SPACE to start!").spaceExpansion(3).blinkTimeMillis(1000)
-				.font(THEME.textFont(18)).background(background).color(Color.PINK).build();
+				.font(THEME.fnt_text(18)).background(background).color(Color.PINK).build();
 		pressSpace.tf.setY(150);
 		pressSpace.tf.centerX(width);
-		visitGitHub = Link.create().text(GITHUB_TEXT).url(GITHUB_URL).font(THEME.textFont(8))
+		visitGitHub = Link.create().text(GITHUB_TEXT).url(GITHUB_URL).font(THEME.fnt_text(8))
 				.color(Color.LIGHT_GRAY).build();
 		visitGitHub.tf.setY(height - 20);
 		visitGitHub.tf.centerX(width);

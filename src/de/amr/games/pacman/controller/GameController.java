@@ -120,10 +120,10 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 				.state(INTRO)
 					.onEntry(() -> {
 						setCurrentView(getIntroView());
-						THEME.soundInsertCoin().play();
+						THEME.snd_insertCoin().play();
 					})
 					.onExit(() -> {
-						THEME.allSounds().forEach(Sound::stop);
+						THEME.snd_allSounds().forEach(Sound::stop);
 					})
 				
 				.state(READY)
@@ -227,7 +227,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 			playView.setScoresVisible(true);
 			playView.enableAnimation(false);
 			playView.showInfoText("Ready!", Color.YELLOW);
-			THEME.soundReady().play();
+			THEME.snd_ready().play();
 		}
 
 		@Override
@@ -241,12 +241,12 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 
 		@Override
 		public void onEntry() {
-			THEME.soundWaza().loop();
+			THEME.snd_waza().loop();
 		}
 
 		@Override
 		public void onExit() {
-			THEME.soundWaza().stop();
+			THEME.snd_waza().stop();
 		}
 
 		@Override
@@ -297,7 +297,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		private void onGhostKilled(GameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
 			e.ghost.processEvent(e);
-			THEME.soundEatGhost().play();
+			THEME.snd_eatGhost().play();
 			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
 		}
 
@@ -305,7 +305,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 			playView.getBonus().ifPresent(bonus -> {
 				LOGGER.info(
 						() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(), bonus.getValue()));
-				THEME.soundEatFruit().play();
+				THEME.snd_eatFruit().play();
 				bonus.setHonored();
 				game.score.add(bonus.getValue());
 				playView.setBonusTimer(app().clock.sec(1));
@@ -314,11 +314,11 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 
 		private void onFoodFound(GameEvent event) {
 			FoodFoundEvent e = (FoodFoundEvent) event;
-			THEME.soundEatPill().play();
+			THEME.snd_eatPill().play();
 			int lives = game.getLives();
 			game.eatFoodAtTile(e.tile);
 			if (lives < game.getLives()) {
-				THEME.soundExtraLife().play();
+				THEME.snd_extraLife().play();
 			}
 			if (game.allFoodEaten()) {
 				enqueue(new LevelCompletedEvent());
@@ -390,7 +390,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		@Override
 		public void onEntry() {
 			actors.getActiveGhosts().forEach(ghost -> ghost.setVisible(false));
-			THEME.soundDie().play();
+			THEME.snd_die().play();
 		}
 
 		@Override

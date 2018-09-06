@@ -124,9 +124,9 @@ public class PacMan extends Actor
 	// Sprites
 
 	private void createSprites() {
-		NESW.dirs().forEach(dir -> setSprite("s_walking_" + dir, THEME.pacManWalking(dir)));
-		setSprite("s_dying", THEME.pacManDying());
-		setSprite("s_full", THEME.pacManFull());
+		NESW.dirs().forEach(dir -> setSprite("s_walking_" + dir, THEME.spr_pacManWalking(dir)));
+		setSprite("s_dying", THEME.spr_pacManDying());
+		setSprite("s_full", THEME.spr_pacManFull());
 		setSelectedSprite("s_full");
 	}
 
@@ -161,9 +161,8 @@ public class PacMan extends Actor
 	}
 
 	private StateMachine<PacManState, GameEvent> buildStateMachine() {
-		return
 		/* @formatter:off */
-		StateMachine.define(PacManState.class, GameEvent.class)
+		return StateMachine.define(PacManState.class, GameEvent.class)
 				
 			.description("[Pac-Man]")
 			.initialState(HOME)

@@ -124,7 +124,7 @@ public class ClassicPacManTheme implements PacManTheme {
 		Assets.storeTrueTypeFont("font.arcadeclassic", "arcadeclassic.ttf", Font.PLAIN, 12);
 
 		// Sounds
-		allSounds();
+		snd_allSounds();
 		Application.LOGGER.info("Pac-Man sounds loaded.");
 	}
 
@@ -144,47 +144,47 @@ public class ClassicPacManTheme implements PacManTheme {
 	}
 
 	@Override
-	public Sprite mazeEmpty() {
+	public Sprite spr_emptyMaze() {
 		return Sprite.of(mazeEmpty);
 	}
 
 	@Override
-	public Sprite mazeFull() {
+	public Sprite spr_fullMaze() {
 		return Sprite.of(mazeFull);
 	}
 
 	@Override
-	public Sprite mazeFlashing() {
+	public Sprite spr_flashingMaze() {
 		return Sprite.of(mazeEmpty, mazeWhite).animate(CYCLIC, 100);
 	}
 
 	@Override
-	public Sprite symbol(BonusSymbol symbol) {
+	public Sprite spr_bonusSymbol(BonusSymbol symbol) {
 		return Sprite.of(symbolMap.get(symbol));
 	}
 
 	@Override
-	public BufferedImage symbolImage(BonusSymbol symbol) {
+	public BufferedImage img_bonusSymbol(BonusSymbol symbol) {
 		return symbolMap.get(symbol);
 	}
 
 	@Override
-	public Sprite pacManFull() {
+	public Sprite spr_pacManFull() {
 		return Sprite.of(pacManFull);
 	}
 
 	@Override
-	public Sprite pacManWalking(int dir) {
+	public Sprite spr_pacManWalking(int dir) {
 		return Sprite.of(pacManWalking[dir]).animate(BACK_AND_FORTH, 100);
 	}
 
 	@Override
-	public Sprite pacManDying() {
+	public Sprite spr_pacManDying() {
 		return Sprite.of(pacManDying).animate(LINEAR, 100);
 	}
 
 	@Override
-	public Sprite ghostColored(GhostColor color, int direction) {
+	public Sprite spr_ghostColored(GhostColor color, int direction) {
 		BufferedImage[] frames;
 		switch (direction) {
 		case Top4.E:
@@ -206,32 +206,32 @@ public class ClassicPacManTheme implements PacManTheme {
 	}
 
 	@Override
-	public Sprite ghostFrightened() {
+	public Sprite spr_ghostFrightened() {
 		return Sprite.of(ghostAwed).animate(CYCLIC, 300);
 	}
 
 	@Override
-	public Sprite ghostFlashing() {
+	public Sprite spr_ghostFlashing() {
 		return Sprite.of(ghostFlashing).animate(CYCLIC, 300);
 	}
 
 	@Override
-	public Sprite ghostEyes(int dir) {
+	public Sprite spr_ghostEyes(int dir) {
 		return Sprite.of(ghostEyes[dir]);
 	}
 
 	@Override
-	public Sprite greenNumber(int i) {
+	public Sprite spr_greenNumber(int i) {
 		return Sprite.of(greenNumbers[i]);
 	}
 
 	@Override
-	public Sprite pinkNumber(int i) {
+	public Sprite spr_pinkNumber(int i) {
 		return Sprite.of(pinkNumbers[i]);
 	}
 
 	@Override
-	public Font textFont() {
+	public Font fnt_text() {
 		return Assets.font("font.arcadeclassic");
 	}
 
@@ -240,58 +240,58 @@ public class ClassicPacManTheme implements PacManTheme {
 	}
 
 	@Override
-	public Stream<Sound> allSounds() {
-		return Stream.of(soundDie(), soundEatFruit(), soundEatGhost(), soundEating(), soundEatPill(),
-				soundExtraLife(), soundInsertCoin(), soundReady(), soundSiren(), soundWaza());
+	public Stream<Sound> snd_allSounds() {
+		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eating(), snd_eatPill(),
+				snd_extraLife(), snd_insertCoin(), snd_ready(), snd_siren(), snd_waza());
 	}
 
 	@Override
-	public Sound soundDie() {
+	public Sound snd_die() {
 		return sound("die");
 	}
 
 	@Override
-	public Sound soundEatFruit() {
+	public Sound snd_eatFruit() {
 		return sound("eat-fruit");
 	}
 
 	@Override
-	public Sound soundEatGhost() {
+	public Sound snd_eatGhost() {
 		return sound("eat-ghost");
 	}
 
 	@Override
-	public Sound soundEatPill() {
+	public Sound snd_eatPill() {
 		return sound("eat-pill");
 	}
 
 	@Override
-	public Sound soundEating() {
+	public Sound snd_eating() {
 		return sound("eating");
 	}
 
 	@Override
-	public Sound soundExtraLife() {
+	public Sound snd_extraLife() {
 		return sound("extra-life");
 	}
 
 	@Override
-	public Sound soundInsertCoin() {
+	public Sound snd_insertCoin() {
 		return sound("insert-coin");
 	}
 
 	@Override
-	public Sound soundReady() {
+	public Sound snd_ready() {
 		return sound("ready");
 	}
 
 	@Override
-	public Sound soundSiren() {
+	public Sound snd_siren() {
 		return sound("siren");
 	}
 
 	@Override
-	public Sound soundWaza() {
+	public Sound snd_waza() {
 		return sound("waza");
 	}
 }

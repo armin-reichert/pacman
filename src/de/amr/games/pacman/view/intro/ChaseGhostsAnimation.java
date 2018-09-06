@@ -28,10 +28,10 @@ public class ChaseGhostsAnimation extends GameEntity implements View, AnimationC
 	private int ghostsKilled;
 
 	public ChaseGhostsAnimation() {
-		pacMan = THEME.pacManWalking(Top4.E);
-		ghost = THEME.ghostFrightened();
+		pacMan = THEME.spr_pacManWalking(Top4.E);
+		ghost = THEME.spr_ghostFrightened();
 		for (int i = 0; i < 4; ++i) {
-			points[i] = THEME.greenNumber(i);
+			points[i] = THEME.spr_greenNumber(i);
 		}
 		tf.setWidth(5 * 18);
 		tf.setHeight(18);
@@ -59,13 +59,13 @@ public class ChaseGhostsAnimation extends GameEntity implements View, AnimationC
 	public void start() {
 		init();
 		tf.setVelocityX(.8f);
-		THEME.soundWaza().loop();
+		THEME.snd_waza().loop();
 	}
 
 	@Override
 	public void stop() {
 		tf.setVelocityX(0);
-		THEME.soundWaza().stop();
+		THEME.snd_waza().stop();
 	}
 
 	@Override

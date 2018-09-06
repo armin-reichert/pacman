@@ -118,14 +118,14 @@ public class Ghost extends Actor
 
 	private void createSprites(GhostColor color) {
 		NESW.dirs().forEach(dir -> {
-			setSprite("s_color_" + dir, THEME.ghostColored(color, dir));
-			setSprite("s_eyes_" + dir, THEME.ghostEyes(dir));
+			setSprite("s_color_" + dir, THEME.spr_ghostColored(color, dir));
+			setSprite("s_eyes_" + dir, THEME.spr_ghostEyes(dir));
 		});
 		for (int i = 0; i < 4; ++i) {
-			setSprite("s_numbers_" + i, THEME.greenNumber(i));
+			setSprite("s_numbers_" + i, THEME.spr_greenNumber(i));
 		}
-		setSprite("s_frightened", THEME.ghostFrightened());
-		setSprite("s_flashing", THEME.ghostFlashing());
+		setSprite("s_frightened", THEME.spr_ghostFrightened());
+		setSprite("s_flashing", THEME.spr_ghostFlashing());
 		setSelectedSprite("s_color_" + getCurrentDir());
 	}
 
@@ -151,9 +151,8 @@ public class Ghost extends Actor
 	}
 
 	private StateMachine<GhostState, GameEvent> buildStateMachine(String ghostName) {
-		return
 		/*@formatter:off*/
-		StateMachine.define(GhostState.class, GameEvent.class)
+		return StateMachine.define(GhostState.class, GameEvent.class)
 			 
 			.description(String.format("[Ghost %s]", ghostName))
 			.initialState(HOME)

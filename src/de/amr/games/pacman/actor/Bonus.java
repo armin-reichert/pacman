@@ -29,8 +29,8 @@ public class Bonus extends GameEntityUsingSprites implements TilePlacement {
 		honored = false;
 		tf.setWidth(getTileSize());
 		tf.setHeight(getTileSize());
-		setSprite("s_symbol", THEME.symbol(symbol));
-		setSprite("s_number", THEME.pinkNumber(index));
+		setSprite("s_symbol", THEME.spr_bonusSymbol(symbol));
+		setSprite("s_number", THEME.spr_pinkNumber(index));
 		setSelectedSprite("s_symbol");
 	}
 

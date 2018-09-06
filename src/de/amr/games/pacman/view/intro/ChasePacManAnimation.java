@@ -25,11 +25,11 @@ public class ChasePacManAnimation extends GameEntity implements AnimationControl
 	private boolean pill;
 
 	public ChasePacManAnimation() {
-		pacMan = THEME.pacManWalking(Top4.W);
-		ghosts[0] = THEME.ghostColored(GhostColor.RED, Top4.W);
-		ghosts[1] = THEME.ghostColored(GhostColor.PINK, Top4.W);
-		ghosts[2] = THEME.ghostColored(GhostColor.TURQUOISE, Top4.W);
-		ghosts[3] = THEME.ghostColored(GhostColor.ORANGE, Top4.W);
+		pacMan = THEME.spr_pacManWalking(Top4.W);
+		ghosts[0] = THEME.spr_ghostColored(GhostColor.RED, Top4.W);
+		ghosts[1] = THEME.spr_ghostColored(GhostColor.PINK, Top4.W);
+		ghosts[2] = THEME.spr_ghostColored(GhostColor.TURQUOISE, Top4.W);
+		ghosts[3] = THEME.spr_ghostColored(GhostColor.ORANGE, Top4.W);
 		pill = true;
 		tf.setWidth(88);
 		tf.setHeight(16);
@@ -65,13 +65,13 @@ public class ChasePacManAnimation extends GameEntity implements AnimationControl
 	public void start() {
 		init();
 		tf.setVelocityX(-1.2f);
-		THEME.soundSiren().loop();
+		THEME.snd_siren().loop();
 	}
 
 	@Override
 	public void stop() {
 		tf.setVelocityX(0);
-		THEME.soundSiren().stop();
+		THEME.snd_siren().stop();
 	}
 
 	@Override
