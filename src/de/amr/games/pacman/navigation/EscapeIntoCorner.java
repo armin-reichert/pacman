@@ -1,6 +1,5 @@
 package de.amr.games.pacman.navigation;
 
-import java.util.Random;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.Actor;
@@ -14,11 +13,11 @@ class EscapeIntoCorner<T extends Actor> extends FollowFixedPath<T> {
 	public EscapeIntoCorner(Supplier<Tile> chaserTileSupplier) {
 		super(chaserTileSupplier);
 	}
-	
+
 	@Override
 	public MazeRoute computeRoute(T refugee) {
 		while (target == null || target.equals(refugee.getTile())) {
-			target = chooseCorner(refugee.getMaze()); 
+			target = chooseCorner(refugee.getMaze());
 		}
 		return super.computeRoute(refugee);
 	}
@@ -27,19 +26,19 @@ class EscapeIntoCorner<T extends Actor> extends FollowFixedPath<T> {
 	public void computeStaticRoute(T refugee) {
 		Tile target = chooseCorner(refugee.getMaze());
 		while (target.equals(refugee.getTile())) {
-			target = chooseCorner(refugee.getMaze()); 
+			target = chooseCorner(refugee.getMaze());
 		}
 		path = refugee.getMaze().findPath(refugee.getTile(), target);
 	}
 
 	private Tile chooseCorner(Maze maze) {
 		Tile chaserTile = targetTileSupplier.get();
-		boolean inUpperMazeHalf = chaserTile.row < maze.numRows() / 2;
-		Random rnd = new Random();
-		if (inUpperMazeHalf) {
-			return rnd.nextBoolean() ? maze.getBottomLeftCorner() : maze.getBottomRightCorner();
+		boolean chaserTop = chaserTile.row < maze.numRows() / 2;
+		boolean chaserLeft = chaserTile.col < maze.numRows() / 2;
+		if (chaserTop) {
+			return chaserLeft ? maze.getBottomRightCorner() : maze.getBottomLeftCorner();
 		} else {
-			return rnd.nextBoolean() ? maze.getTopLeftCorner() : maze.getTopRightCorner();
+			return chaserLeft ? maze.getTopRightCorner() : maze.getTopLeftCorner();
 		}
 	}
 }
