@@ -334,6 +334,10 @@ public class Maze {
 		return graph.euclidean2(cell(t1), cell(t2));
 	}
 
+	public int manhattan(Tile t1, Tile t2) {
+		return graph.manhattan(cell(t1), cell(t2));
+	}
+	
 	public OptionalInt alongPath(List<Tile> path) {
 		return path.size() < 2 ? OptionalInt.empty() : direction(path.get(0), path.get(1));
 	}

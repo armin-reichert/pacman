@@ -180,7 +180,7 @@ public class Ghost extends Actor
 					.state(FRIGHTENED)
 						.onEntry(() -> {
 							setSelectedSprite("s_frightened"); 
-							getMoveBehavior().computeStaticRoute(this); 
+							getMoveBehavior().computePath(this); 
 						})
 						.onTick(() -> move())
 					
@@ -192,7 +192,7 @@ public class Ghost extends Actor
 						})
 					
 					.state(DEAD)
-						.onEntry(() -> getMoveBehavior().computeStaticRoute(this))
+						.onEntry(() -> getMoveBehavior().computePath(this))
 						.onTick(() -> {	
 							move();
 							setSelectedSprite("s_eyes_" + getCurrentDir());

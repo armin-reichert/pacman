@@ -19,7 +19,7 @@ class FollowFixedPath<T extends Actor> implements Navigation<T> {
 	@Override
 	public MazeRoute computeRoute(T mover) {
 		if (path.size() == 0 || mover.getTile().equals(path.get(path.size() - 1))) {
-			computeStaticRoute(mover);
+			computePath(mover);
 		}
 		if (!mover.getTile().equals(path.get(0))) {
 			path.remove(0);
@@ -31,7 +31,7 @@ class FollowFixedPath<T extends Actor> implements Navigation<T> {
 	}
 
 	@Override
-	public void computeStaticRoute(T mover) {
+	public void computePath(T mover) {
 		path = mover.getMaze().findPath(mover.getTile(), targetTileSupplier.get());
 	}
 }
