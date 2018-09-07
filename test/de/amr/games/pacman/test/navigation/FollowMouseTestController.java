@@ -25,9 +25,9 @@ public class FollowMouseTestController implements ViewController {
 		actors = new Cast(game);
 		view = new PlayViewX(game);
 		view.setActors(actors);
-		view.showRoutes = true;
-		view.showGrid = false;
-		view.showStates = true;
+		view.setShowRoutes(true);
+		view.setShowGrid(false);
+		view.setShowStates(true);
 		view.setScoresVisible(false);
 	}
 

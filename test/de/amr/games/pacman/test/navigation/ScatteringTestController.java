@@ -24,8 +24,8 @@ public class ScatteringTestController implements ViewController {
 		actors = new Cast(game);
 		view = new PlayViewX(game);
 		view.setActors(actors);
-		view.showRoutes = true;
-		view.showStates = true;
+		view.setShowRoutes(true);
+		view.setShowStates(true);
 		view.setScoresVisible(false);
 	}
 

@@ -50,10 +50,9 @@ public class PlayViewX extends PlayView {
 	private static final String INFTY = Character.toString('\u221E');
 
 	private final BufferedImage gridImage;
-
-	public boolean showGrid = false;
-	public boolean showRoutes = false;
-	public boolean showStates = false;
+	private boolean showGrid = false;
+	private boolean showRoutes = false;
+	private boolean showStates = false;
 
 	private static BufferedImage createGridImage(int numRows, int numCols) {
 		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
@@ -74,6 +73,31 @@ public class PlayViewX extends PlayView {
 	public PlayViewX(Game game) {
 		super(game);
 		gridImage = createGridImage(game.getMaze().numRows(), game.getMaze().numCols());
+	}
+
+	public void setShowGrid(boolean showGrid) {
+		this.showGrid = showGrid;
+	}
+
+	public void setShowRoutes(boolean showRoutes) {
+		this.showRoutes = showRoutes;
+	}
+
+	public void setShowStates(boolean showStates) {
+		this.showStates = showStates;
+	}
+	
+	
+	public boolean isShowGrid() {
+		return showGrid;
+	}
+	
+	public boolean isShowRoutes() {
+		return showRoutes;
+	}
+	
+	public boolean isShowStates() {
+		return showStates;
 	}
 
 	@Override
