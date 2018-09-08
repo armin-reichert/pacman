@@ -318,7 +318,7 @@ public class Maze {
 	public List<Tile> findPath(Tile source, Tile target) {
 		if (isValidTile(source) && isValidTile(target)) {
 			GraphTraversal pathfinder =
-					// new Random().nextBoolean()? new AStarTraversal<>(graph, edge -> 1, graph::manhattan):
+					// new AStarTraversal<>(graph, edge -> 1, graph::manhattan);
 					new BreadthFirstTraversal<>(graph);
 			pathfinder.traverseGraph(cell(source), cell(target));
 			pathFinderCount += 1;
