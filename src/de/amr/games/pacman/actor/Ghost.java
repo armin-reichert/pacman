@@ -276,6 +276,8 @@ public class Ghost extends Actor
 					.when(DYING).then(DEAD).onTimeout()
 					.stay(DYING).on(PacManGainsPowerEvent.class) // cheating-mode
 					.stay(DYING).on(PacManGettingWeakerEvent.class) // cheating-mode
+					.stay(DYING).on(StartScatteringEvent.class).act(() -> nextAttackState = SCATTERING)
+					.stay(DYING).on(StartChasingEvent.class).act(() -> nextAttackState = CHASING)
 						
 					.when(DEAD).then(SAFE)
 						//TODO: better solution
@@ -286,6 +288,8 @@ public class Ghost extends Actor
 					.stay(DEAD).on(PacManGettingWeakerEvent.class)
 					.stay(DEAD).on(PacManLostPowerEvent.class)
 					.stay(DEAD).on(GhostKilledEvent.class) // cheating-mode
+					.stay(DEAD).on(StartScatteringEvent.class).act(() -> nextAttackState = SCATTERING)
+					.stay(DEAD).on(StartChasingEvent.class).act(() -> nextAttackState = CHASING)
 
 		.endStateMachine();
 		/*@formatter:on*/
