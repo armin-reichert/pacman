@@ -67,6 +67,10 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		scatterChaseController = new ScatterChaseController(this);
 		scatterChaseController.traceTo(LOGGER, app().clock::getFrequency);
 	}
+	
+	public Game getGame() {
+		return game;
+	}
 
 	// Views
 
