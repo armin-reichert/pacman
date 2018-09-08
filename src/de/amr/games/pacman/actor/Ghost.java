@@ -232,6 +232,8 @@ public class Ghost extends Actor
 					.when(DYING).then(DEAD).onTimeout()
 					.stay(DYING).on(PacManGainsPowerEvent.class) // cheating-mode
 					.stay(DYING).on(PacManGettingWeakerEvent.class) // cheating-mode
+					.stay(DYING).on(PacManLostPowerEvent.class) // cheating-mode
+					.stay(DYING).on(GhostKilledEvent.class) // cheating-mode
 						
 					.when(DEAD).then(SAFE)
 						//TODO: better solution
