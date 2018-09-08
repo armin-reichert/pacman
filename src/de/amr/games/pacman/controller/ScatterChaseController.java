@@ -48,81 +48,27 @@ public class ScatterChaseController extends StateMachine<String, Void> implement
 	private int getScatterTicks(int wave) {
 		int level = gameControl.getGame().getLevel();
 		if (level == 1) {
-			if (wave == 0) {
-				return app().clock.sec(7);
-			}
-			if (wave == 1) {
-				return app().clock.sec(7);
-			}
-			if (wave == 2) {
-				return app().clock.sec(5);
-			}
-			return app().clock.sec(5);
+			return app().clock.sec(wave <= 1 ? 7 : 5);
 		}
 		// levels 2-4
 		if (2 <= level && level <= 4) {
-			if (wave == 0) {
-				return app().clock.sec(7);
-			}
-			if (wave == 1) {
-				return app().clock.sec(7);
-			}
-			if (wave == 2) {
-				return app().clock.sec(5);
-			}
-			return 1;
+			return wave <= 1 ? app().clock.sec(7) : wave == 2 ? app().clock.sec(5) : 1;
 		}
 		// levels 5+
-		if (wave == 0) {
-			return app().clock.sec(5);
-		}
-		if (wave == 1) {
-			return app().clock.sec(5);
-		}
-		if (wave == 2) {
-			return app().clock.sec(5);
-		}
-		return 1;
+		return wave <= 2 ? app().clock.sec(5) : 1;
 	}
 
 	private int getChaseTicks(int wave) {
 		int level = gameControl.getGame().getLevel();
 		if (level == 1) {
-			if (wave == 0) {
-				return app().clock.sec(20);
-			}
-			if (wave == 1) {
-				return app().clock.sec(20);
-			}
-			if (wave == 2) {
-				return app().clock.sec(20);
-			}
-			return Integer.MAX_VALUE;
+			return wave <= 2 ? app().clock.sec(20) : Integer.MAX_VALUE;
 		}
 		// levels 2-4
 		if (2 <= level && level <= 4) {
-			if (wave == 0) {
-				return app().clock.sec(20);
-			}
-			if (wave == 1) {
-				return app().clock.sec(20);
-			}
-			if (wave == 2) {
-				return app().clock.sec(1033);
-			}
-			return Integer.MAX_VALUE;
+			return wave <= 1 ? app().clock.sec(20) : wave == 2 ? app().clock.sec(1033) : Integer.MAX_VALUE;
 		}
 		// levels 5+
-		if (wave == 0) {
-			return app().clock.sec(20);
-		}
-		if (wave == 1) {
-			return app().clock.sec(20);
-		}
-		if (wave == 2) {
-			return app().clock.sec(1037);
-		}
-		return Integer.MAX_VALUE;
+		return wave <= 1 ? app().clock.sec(20) : wave == 2 ? app().clock.sec(1037) : Integer.MAX_VALUE;
 	}
 
 	private void fireStartChasing() {
