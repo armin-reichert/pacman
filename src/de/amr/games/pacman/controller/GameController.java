@@ -34,6 +34,8 @@ import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
+import de.amr.games.pacman.controller.event.StartChasingEvent;
+import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.view.intro.IntroView;
@@ -51,6 +53,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 
 	private final Game game;
 	private final Cast actors;
+	private final ScatterChaseController scatterChaseController;
 
 	public GameController() {
 		super(GameState.class);
@@ -61,6 +64,8 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		actors.getGhosts().forEach(ghost -> ghost.traceTo(LOGGER));
 		buildStateMachine();
 		traceTo(LOGGER, app().clock::getFrequency);
+		scatterChaseController = new ScatterChaseController(this);
+		scatterChaseController.traceTo(LOGGER, app().clock::getFrequency);
 	}
 
 	// Views
@@ -156,6 +161,14 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 				.when(READY).then(PLAYING).onTimeout()
 					
 				.stay(PLAYING)
+					.on(StartChasingEvent.class)
+					.act(playingState()::onStartChasing)
+					
+				.stay(PLAYING)
+					.on(StartScatteringEvent.class)
+					.act(playingState()::onStartScattering)
+					
+				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
 					.act(playingState()::onFoodFound)
 					
@@ -207,7 +220,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 					
 				.when(PACMAN_DYING).then(PLAYING)
 					.condition(() -> actors.pacMan.getState() == PacManState.DEAD && game.getLives() > 0)
-					.act(() -> { playView.init(); actors.init(); })
+					.act(() -> { playView.init(); actors.init(); scatterChaseController.init(); })
 			
 				.when(GAME_OVER).then(READY)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
@@ -241,6 +254,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 
 		@Override
 		public void onEntry() {
+			scatterChaseController.init();
 			THEME.snd_waza().loop();
 		}
 
@@ -251,8 +265,17 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 
 		@Override
 		public void onTick() {
+			scatterChaseController.update();
 			actors.pacMan.update();
 			actors.getActiveGhosts().forEach(Ghost::update);
+		}
+
+		private void onStartChasing(GameEvent event) {
+			actors.getActiveGhosts().forEach(ghost -> ghost.processEvent(event));
+		}
+
+		private void onStartScattering(GameEvent event) {
+			actors.getActiveGhosts().forEach(ghost -> ghost.processEvent(event));
 		}
 
 		private void onPacManGhostCollision(GameEvent event) {
@@ -361,6 +384,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		public void onExit() {
 			playView.hideInfoText();
 			playView.enableAnimation(true);
+			scatterChaseController.init();
 		}
 	}
 
