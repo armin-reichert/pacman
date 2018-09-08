@@ -212,7 +212,7 @@ public class ClassicPacManTheme implements PacManTheme {
 
 	@Override
 	public Sprite spr_ghostFlashing() {
-		return Sprite.of(ghostFlashing).animate(CYCLIC, 300);
+		return Sprite.of(ghostFlashing).animate(CYCLIC, 100);
 	}
 
 	@Override

@@ -209,7 +209,7 @@ public class Game {
 	}
 
 	public int getPacManGettingWeakerRemainingTime() {
-		return app().clock.sec(getGhostNumFlashes());
+		return app().clock.sec(getGhostNumFlashes() * 400 / 1000);
 	}
 
 	public int getPacManDyingTime() {
