@@ -46,7 +46,7 @@ public class ClassicPacManTheme implements PacManTheme {
 	}
 
 	public ClassicPacManTheme() {
-		sheet = Assets.readImage("sprites.png");
+		sheet = Assets.readImage("arcade_pacman_sprites.png");
 
 		// Mazes
 		mazeFull = $(0, 0, 224, 248);
