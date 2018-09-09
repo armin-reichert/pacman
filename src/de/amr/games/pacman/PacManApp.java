@@ -23,7 +23,7 @@ public class PacManApp extends Application {
 			try {
 				scale = Float.parseFloat(args[0]);
 			} catch (NumberFormatException e) {
-				Application.LOGGER.info("Illegal scaling value: " + args[0]);
+				LOGGER.info("Illegal scaling value: " + args[0]);
 			}
 		}
 		launch(new PacManApp(scale));
