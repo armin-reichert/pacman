@@ -260,12 +260,10 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		@Override
 		public void onEntry() {
 			scatterChaseController.init();
-			THEME.snd_waza().loop();
 		}
 
 		@Override
 		public void onExit() {
-			THEME.snd_waza().stop();
 		}
 
 		@Override

@@ -100,7 +100,7 @@ public class Game {
 		}
 		eaten += 1;
 		int value = energizer ? 50 : 10;
-		if (score.getScore() < 10_000 && 10_000 < score.getScore() + value) {
+		if (score.getScore() < 10_000 && 10_000 <= score.getScore() + value) {
 			lives += 1;
 		}
 		score.add(value);
