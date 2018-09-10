@@ -251,6 +251,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		public void onExit() {
 			playView.enableAnimation(true);
 			playView.hideInfoText();
+			THEME.snd_bgmusic().loop();
 		}
 	}
 
@@ -345,6 +346,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 			int lives = game.getLives();
 			game.eatFoodAtTile(e.tile);
 			if (lives < game.getLives()) {
+				LOGGER.info("Extra life!");
 				THEME.snd_extraLife().play();
 			}
 			if (game.allFoodEaten()) {
@@ -440,6 +442,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 			playView.enableAnimation(false);
 			playView.showInfoText("Game Over!", Color.RED);
 			game.score.save();
+			THEME.snd_bgmusic().stop();
 		}
 
 		@Override

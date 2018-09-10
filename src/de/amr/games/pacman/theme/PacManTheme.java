@@ -44,6 +44,8 @@ public interface PacManTheme {
 		return fnt_text().deriveFont((float) size);
 	}
 
+	Sound snd_bgmusic();
+	
 	Sound snd_die();
 
 	Sound snd_eatFruit();
