@@ -1,11 +1,13 @@
 package de.amr.games.pacman.navigation;
 
 import static de.amr.easy.game.math.Vector2f.dist;
+import static de.amr.games.pacman.model.Game.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
 
 import java.util.function.Supplier;
 
 import de.amr.easy.game.input.Keyboard;
+import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Actor;
 import de.amr.games.pacman.actor.Ghost;
@@ -31,7 +33,7 @@ public interface NavigationSystem<T extends Actor> {
 	 *                 outside of the maze, the tile <code>(n - 1)</code> ahead is used etc.
 	 * @return ambush behavior
 	 */
-	public default Navigation<T> ambush(Actor victim, int n) {
+	default Navigation<T> ambush(Actor victim, int n) {
 		return headFor(() -> victim.ahead(n));
 	}
 
@@ -70,7 +72,7 @@ public interface NavigationSystem<T extends Actor> {
 	 *                   in pixels), it rejects and moves to its scattering position. Otherwise it
 	 *                   directly attacks PacMan.
 	 */
-	public default Navigation<T> attackAndReject(Ghost attacker, PacMan pacMan, int distance) {
+	default Navigation<T> attackAndReject(Ghost attacker, PacMan pacMan, int distance) {
 		return headFor(
 				() -> dist(attacker.tf().getCenter(), pacMan.tf().getCenter()) >= distance ? pacMan.getTile()
 						: attacker.getScatteringTarget());
@@ -83,7 +85,7 @@ public interface NavigationSystem<T extends Actor> {
 	 *                 the attacked maze mover
 	 * @return direct attack behavior
 	 */
-	public default Navigation<T> attackDirectly(Actor victim) {
+	default Navigation<T> attackDirectly(Actor victim) {
 		return headFor(victim::getTile);
 	}
 
@@ -112,16 +114,14 @@ public interface NavigationSystem<T extends Actor> {
 	 *                  the attacked Pac-Man
 	 * @return partner attack behavior
 	 */
-	public default Navigation<T> attackWithPartner(Ghost partner, PacMan pacMan) {
+	default Navigation<T> attackWithPartner(Ghost partner, PacMan pacMan) {
 		return headFor(() -> {
-			Tile partnerTile = partner.getTile();
-			Tile pacManTile = pacMan.ahead(2);
-			Tile target = new Tile(2 * pacManTile.col - partnerTile.col, 2 * pacManTile.row - partnerTile.row);
-			// TODO: correctly project target tile to border
-			Maze maze = pacMan.getMaze();
-			int row = Math.min(Math.max(0, target.row), maze.numRows() - 1);
-			int col = Math.min(Math.max(0, target.col), maze.numCols() - 1);
-			return new Tile(col, row);
+			Maze maze = partner.getMaze();
+			Tile strut = pacMan.ahead(2);
+			Vector2f b = partner.tf.getCenter();
+			Vector2f p = Vector2f.of(strut.col * TS + TS / 2, strut.row * TS + TS / 2);
+			Vector2f s = computeExactInkyTarget(b, p, maze.numCols() * TS, maze.numRows() * TS);
+			return new Tile((int) (s.x - 1) / TS, (int) (s.y - 1) / TS);
 		});
 	}
 
@@ -130,7 +130,7 @@ public interface NavigationSystem<T extends Actor> {
 	 * 
 	 * @return bouncing behavior
 	 */
-	public default Navigation<T> bounce() {
+	default Navigation<T> bounce() {
 		return bouncer -> new MazeRoute(
 				bouncer.isStuck() ? NESW.inv(bouncer.getCurrentDir()) : bouncer.getCurrentDir());
 	}
@@ -142,7 +142,7 @@ public interface NavigationSystem<T extends Actor> {
 	 *                   the attacker
 	 * @return flight behavior
 	 */
-	public default Navigation<T> flee(Actor attacker) {
+	default Navigation<T> flee(Actor attacker) {
 		return new EscapeIntoCorner<>(attacker::getTile);
 	}
 
@@ -159,7 +159,7 @@ public interface NavigationSystem<T extends Actor> {
 	 *                   key code for left movement
 	 * @return keyboard steering behavior
 	 */
-	public default Navigation<T> followKeyboard(int keyUp, int keyRight, int keyDown, int keyLeft) {
+	default Navigation<T> followKeyboard(int keyUp, int keyRight, int keyDown, int keyLeft) {
 		return mover -> {
 			MazeRoute result = new MazeRoute();
 			if (Keyboard.keyDown(keyUp)) {
@@ -186,7 +186,7 @@ public interface NavigationSystem<T extends Actor> {
 	 *                 target tile supplier (tile must be inside maze or teleport space)
 	 * @return behavior following the path to the target
 	 */
-	public default Navigation<T> followDynamicRoute(Supplier<Tile> targetSupplier) {
+	default Navigation<T> followDynamicRoute(Supplier<Tile> targetSupplier) {
 		return mover -> {
 			MazeRoute route = new MazeRoute();
 			route.setPath(mover.getMaze().findPath(mover.getTile(), targetSupplier.get()));
@@ -200,10 +200,10 @@ public interface NavigationSystem<T extends Actor> {
 	 * method {@link Navigation#computePath(Actor)} is called.
 	 * 
 	 * @param targetTileSupplier
-	 *                 function supplying the target tile at time of decision
+	 *                             function supplying the target tile at time of decision
 	 * @return behavior following a static route
 	 */
-	public default Navigation<T> followStaticRoute(Supplier<Tile> targetTileSupplier) {
+	default Navigation<T> followStaticRoute(Supplier<Tile> targetTileSupplier) {
 		return new FollowFixedPath<>(targetTileSupplier);
 	}
 
@@ -215,7 +215,7 @@ public interface NavigationSystem<T extends Actor> {
 	 *                             function supplying the target tile at time of decision
 	 * @return behavior head for the tile computed by the supplier
 	 */
-	public default Navigation<T> headFor(Supplier<Tile> targetTileSupplier) {
+	default Navigation<T> headFor(Supplier<Tile> targetTileSupplier) {
 		return new FollowTargetTile<>(targetTileSupplier);
 	}
 
@@ -224,7 +224,84 @@ public interface NavigationSystem<T extends Actor> {
 	 * 
 	 * @return behavior keeping the current move direction
 	 */
-	public default Navigation<T> keepDirection() {
+	default Navigation<T> keepDirection() {
 		return mover -> new MazeRoute(mover.getCurrentDir());
+	}
+
+	/**
+	 * Computes the point where the doubled vector from b to p ends (if inside the maze) or touches the maze bounds.
+	 * 
+	 * @param b
+	 *            vector start point (Blinky position)
+	 * @param p
+	 *            vector head (Pac-Man position + 2 tiles)
+	 * @param w
+	 *            width of bounding box (maze width)
+	 * @param h
+	 *            height of bounding box (maze height)
+	 * 
+	 * @return point where doubled vector from b to p ends or projection point on maze border
+	 */
+	static Vector2f computeExactInkyTarget(Vector2f b, Vector2f p, int w, int h) {
+
+		float dx = 2 * (p.x - b.x);
+		float dy = 2 * (p.y - b.y);
+
+		// check if target is inside maze
+		Vector2f t = Vector2f.of(b.x + dx, b.y + dy);
+		if (0 <= t.x && t.x < w && 0 <= t.y && t.y < h) {
+			// LOGGER.info(String.format("Target inside maze at (%.2f | %.2f)", t.x, t.y));
+			return t;
+		}
+
+		// compute point where maze border is touched
+		float lambda;
+		float sx, sy;
+
+		// 1. lower border
+		lambda = (h - b.y) / dy;
+		if (lambda > 0 && Float.isFinite(lambda)) {
+			sx = b.x + lambda * dx;
+			sy = h;
+			// LOGGER.info(String.format("Lower border touched at (%.2f | %.2f)", sx, sy));
+			if (0 <= sx && sx < w) {
+				return Vector2f.of(sx, sy);
+			}
+		}
+
+		// 2. right border
+		lambda = (w - b.x) / dx;
+		if (lambda > 0 && Float.isFinite(lambda)) {
+			sx = w;
+			sy = (b.y + lambda * dy);
+			// LOGGER.info(String.format("Right border touched at (%.2f | %.2f)", sx, sy));
+			if (0 <= sy && sy < h) {
+				return Vector2f.of(sx, sy);
+			}
+		}
+
+		// 3. upper border
+		lambda = -b.y / dy;
+		if (lambda > 0 && Float.isFinite(lambda)) {
+			sx = b.x + lambda * dx;
+			sy = 0;
+			// LOGGER.info(String.format("Upper border touched at (%.2f | %.2f)", sx, sy));
+			if (0 <= sx && sx < w) {
+				return Vector2f.of(sx, sy);
+			}
+		}
+
+		// 4. left border
+		lambda = -b.x / dx;
+		if (lambda > 0 && Float.isFinite(lambda)) {
+			sx = 0;
+			sy = b.y + lambda * dy;
+			// LOGGER.info(String.format("Left border touched at (%.2f | %.2f)", sx, sy));
+			if (0 <= sy && sy < h) {
+				return Vector2f.of(sx, sy);
+			}
+		}
+
+		return Vector2f.of(t.x, t.y);
 	}
 }
