@@ -46,6 +46,8 @@ public interface PacManTheme {
 
 	Sound snd_bgmusic();
 	
+	Sound snd_gameover();
+	
 	Sound snd_die();
 
 	Sound snd_eatFruit();

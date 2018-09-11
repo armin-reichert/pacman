@@ -444,11 +444,13 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 			playView.showInfoText("Game Over!", Color.RED);
 			game.score.saveHiscore();
 			THEME.snd_bgmusic().stop();
+			THEME.snd_gameover().loop();
 		}
 
 		@Override
 		public void onExit() {
 			playView.hideInfoText();
+			THEME.snd_gameover().stop();
 		}
 	}
 }
