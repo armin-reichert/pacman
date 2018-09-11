@@ -2,6 +2,7 @@ package de.amr.games.pacman.view.play;
 
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.Game.TS;
+import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -10,6 +11,7 @@ import java.awt.Rectangle;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.easy.grid.impl.Top4;
@@ -42,7 +44,7 @@ public class PlayView implements View, Controller, PacManWorld {
 		this.width = app().settings.width;
 		this.height = app().settings.height;
 		this.game = game;
-		lifeImage = PacManThemes.THEME.spr_pacManWalking(Top4.W).frame(1);
+		lifeImage = THEME.spr_pacManWalking(Top4.W).frame(1);
 		mazeView = new MazeView(game.getMaze());
 		mazeView.tf.setPosition(0, 3 * TS);
 	}
@@ -50,6 +52,7 @@ public class PlayView implements View, Controller, PacManWorld {
 	@Override
 	public void init() {
 		mazeView.init();
+		Application.LOGGER.info("Pac-Man sounds loaded.");
 	}
 
 	@Override

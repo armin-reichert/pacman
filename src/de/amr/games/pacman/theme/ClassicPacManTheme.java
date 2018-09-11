@@ -122,10 +122,6 @@ public class ClassicPacManTheme implements PacManTheme {
 
 		// Text font
 		Assets.storeTrueTypeFont("font.arcadeclassic", "arcadeclassic.ttf", Font.PLAIN, 12);
-
-		// Sounds
-		snd_allSounds();
-		Application.LOGGER.info("Pac-Man sounds loaded.");
 	}
 
 	private BufferedImage changeColor(BufferedImage src, int from, int to) {
@@ -241,7 +237,7 @@ public class ClassicPacManTheme implements PacManTheme {
 
 	@Override
 	public Stream<Sound> snd_allSounds() {
-		return Stream.of(snd_bgmusic(), snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eating(), snd_eatPill(),
+		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eating(), snd_eatPill(),
 				snd_extraLife(), snd_insertCoin(), snd_ready(), snd_siren(), snd_waza());
 	}
 	

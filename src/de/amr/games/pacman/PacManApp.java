@@ -1,5 +1,8 @@
 package de.amr.games.pacman;
 
+import static de.amr.games.pacman.theme.PacManThemes.THEME;
+
+import java.awt.EventQueue;
 import java.util.logging.Level;
 
 import de.amr.easy.game.Application;
@@ -26,6 +29,8 @@ public class PacManApp extends Application {
 				LOGGER.info("Illegal scaling value: " + args[0]);
 			}
 		}
+		PacManThemes.use(ClassicPacManTheme.class);
+		EventQueue.invokeLater(()->THEME.snd_bgmusic()); // TODO
 		launch(new PacManApp(scale));
 	}
 
@@ -40,7 +45,6 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
-		PacManThemes.use(ClassicPacManTheme.class);
 		setController(new GameController());
 	}
 }

@@ -130,9 +130,6 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 						setCurrentView(getIntroView());
 						THEME.snd_insertCoin().play();
 					})
-					.onExit(() -> {
-						THEME.snd_allSounds().forEach(Sound::stop);
-					})
 				
 				.state(READY)
 					.impl(new ReadyState())
@@ -232,7 +229,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 	}
 
 	private class ReadyState extends State<GameState, GameEvent> {
-		
+
 		{
 			// just to demonstrate that timer can also be set here
 			setTimer(() -> app().clock.sec(4.5f));
@@ -247,6 +244,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 			playView.setScoresVisible(true);
 			playView.enableAnimation(false);
 			playView.showInfoText("Ready!", Color.YELLOW);
+			THEME.snd_allSounds().forEach(Sound::stop);
 			THEME.snd_ready().play();
 		}
 
