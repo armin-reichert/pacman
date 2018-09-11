@@ -235,7 +235,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		
 		{
 			// just to demonstrate that timer can also be set here
-			setDuration(() -> app().clock.sec(4.5f));
+			setTimer(() -> app().clock.sec(4.5f));
 		}
 
 		@Override
@@ -375,7 +375,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 
 		@Override
 		public void onTick() {
-			boolean timeForChange = getRemaining() == getDuration() / 2;
+			boolean timeForChange = getTicksRemaining() == getDuration() / 2;
 			if (timeForChange) {
 				game.nextLevel();
 				actors.init();

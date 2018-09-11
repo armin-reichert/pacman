@@ -265,7 +265,7 @@ public class PacMan extends Actor
 		@Override
 		public void onTick() {
 			super.onTick();
-			if (getRemaining() == game.getPacManGettingWeakerRemainingTime()) {
+			if (getTicksRemaining() == game.getPacManGettingWeakerRemainingTime()) {
 				publishEvent(new PacManGettingWeakerEvent());
 			}
 		}
