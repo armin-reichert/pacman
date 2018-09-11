@@ -193,8 +193,8 @@ public interface NavigationSystem<T extends Actor> {
 	default Navigation<T> followDynamicRoute(Supplier<Tile> targetSupplier) {
 		return mover -> {
 			MazeRoute route = new MazeRoute();
-			route.setPath(mover.getMaze().findPath(mover.getTile(), targetSupplier.get()));
-			route.setDir(mover.getMaze().alongPath(route.getPath()).orElse(-1));
+			route.setTiles(mover.getMaze().findPath(mover.getTile(), targetSupplier.get()));
+			route.setDir(mover.getMaze().alongPath(route.getTiles()).orElse(-1));
 			return route;
 		};
 	}

@@ -25,7 +25,7 @@ class FollowFixedPath<T extends Actor> implements Navigation<T> {
 			path.remove(0);
 		}
 		MazeRoute route = new MazeRoute();
-		route.setPath(path);
+		route.setTiles(path);
 		route.setDir(mover.getMaze().alongPath(path).orElse(mover.getCurrentDir()));
 		return route;
 	}
