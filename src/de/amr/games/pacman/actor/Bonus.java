@@ -10,7 +10,7 @@ import de.amr.easy.game.entity.Transform;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
 
-public class Bonus extends GameEntityUsingSprites implements TilePlacement {
+public class Bonus extends GameEntityUsingSprites implements TilePlacedEntity {
 
 	private static final int[] POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 

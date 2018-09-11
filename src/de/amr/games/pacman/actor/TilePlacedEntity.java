@@ -11,7 +11,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public interface TilePlacement {
+public interface TilePlacedEntity {
 
 	int getTileSize();
 

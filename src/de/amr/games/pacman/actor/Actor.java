@@ -18,7 +18,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public abstract class Actor extends GameEntityUsingSprites implements TilePlacement {
+public abstract class Actor extends GameEntityUsingSprites implements TilePlacedEntity {
 
 	protected final Game game;
 	private boolean visible;
