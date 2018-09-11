@@ -16,24 +16,28 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Mixin for navigation behaviors. This is an alternative to a fat base class.
+ * Collection of actor navigation behaviors. Actors implementing this mixin-interface get access to
+ * all the implemented behaviors.
  * 
  * @author Armin Reichert
+ * 
+ * @param <T>
+ *          the actor type
  */
-public interface NavigationSystem<T extends Actor> {
+public interface ActorNavigationSystem<T extends Actor> {
 
 	/**
-	 * Ambushes the victim by targeting the tile which is the given number of tiles ahead of the victim
-	 * position.
+	 * Ambushes the victim by heading for the tile the given number of tiles ahead of the victim's
+	 * current position.
 	 * 
 	 * @param victim
-	 *                 the attacked maze mover
+	 *                 the ambushed actor
 	 * @param n
 	 *                 the number of tiles ahead of the victim in its current direction. If this tile is
-	 *                 outside of the maze, the tile <code>(n - 1)</code> ahead is used etc.
+	 *                 located outside of the maze, the tile <code>(n - 1)</code> ahead is used etc.
 	 * @return ambush behavior
 	 */
-	default Navigation<T> ambush(Actor victim, int n) {
+	default ActorNavigation<T> ambush(Actor victim, int n) {
 		return headFor(() -> victim.ahead(n));
 	}
 
@@ -41,7 +45,7 @@ public interface NavigationSystem<T extends Actor> {
 	 * Clyde's chase behavior as described <a href=
 	 * "http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior">here</a>.
 	 * 
-	 * <P>
+	 * <p>
 	 * <cite> The unique feature of Clyde’s targeting is that it has two separate modes which he
 	 * constantly switches back and forth between, based on his proximity to Pac-Man. Whenever Clyde
 	 * needs to determine his target tile, he first calculates his distance from Pac-Man. If he is
@@ -64,40 +68,35 @@ public interface NavigationSystem<T extends Actor> {
 	 * </p>
 	 * 
 	 * @param attacker
-	 *                   the attacker e.g. Clyde
+	 *                   the attacker (Clyde)
 	 * @param pacMan
-	 *                   the attacked Pac-Man
+	 *                   the attacked actor (Pac-Man)
 	 * @param distance
 	 *                   if the distance of the attacker to Pac-Man is less than this distance (measured
-	 *                   in pixels), it rejects and moves to its scattering position. Otherwise it
-	 *                   directly attacks PacMan.
+	 *                   in pixels), the attacker rejects and heads for its scattering position.
+	 *                   Otherwise it directly attacks PacMan.
 	 */
-	default Navigation<T> attackAndReject(Ghost attacker, PacMan pacMan, int distance) {
-		return headFor(
-				() -> dist(attacker.tf().getCenter(), pacMan.tf().getCenter()) >= distance ? pacMan.getTile()
-						: attacker.getScatteringTarget());
+	default ActorNavigation<T> attackAndReject(Ghost attacker, PacMan pacMan, int distance) {
+		return headFor(() -> dist(attacker.tf.getCenter(), pacMan.tf.getCenter()) >= distance ? pacMan.getTile()
+				: attacker.getScatteringTarget());
 	}
 
 	/**
 	 * Attacks the victim directly by targeting the victim's current position.
 	 * 
 	 * @param victim
-	 *                 the attacked maze mover
-	 * @return direct attack behavior
+	 *                 the attacked actor
+	 * 
+	 * @return behavior of attacking the victim directly
 	 */
-	default Navigation<T> attackDirectly(Actor victim) {
+	default ActorNavigation<T> attackDirectly(Actor victim) {
 		return headFor(victim::getTile);
 	}
 
 	/**
 	 * Inky's behaviour as described <a href=
 	 * "http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior">here</a>.
-	 * <p>
-	 * <cite> The blue ghost is nicknamed Inky, and remains inside the ghost house for a short time on
-	 * the first level, not joining the chase until Pac-Man has managed to consume at least 30 of the
-	 * dots. His English personality description is bashful, while in Japanese he is referred to as
-	 * kimagure, or “whimsical”.
-	 * </p>
+	 * 
 	 * <p>
 	 * <cite>Inky is difficult to predict, because he is the only one of the ghosts that uses a factor
 	 * other than Pac-Man’s position/orientation when determining his target tile. Inky actually uses
@@ -109,12 +108,13 @@ public interface NavigationSystem<T extends Actor> {
 	 * </p>
 	 * 
 	 * @param partner
-	 *                  the maze mover which assists in computing the target tile (e.g. Blinky)
+	 *                  the ghost which assists in attacking (Blinky)
 	 * @param pacMan
 	 *                  the attacked Pac-Man
-	 * @return partner attack behavior
+	 * 
+	 * @return behavior where Pac-Man is attacked with help of partner ghost
 	 */
-	default Navigation<T> attackWithPartner(Ghost partner, PacMan pacMan) {
+	default ActorNavigation<T> attackWithPartner(Ghost partner, PacMan pacMan) {
 		return headFor(() -> {
 			Maze maze = partner.getMaze();
 			int w = maze.numCols() * TS;
@@ -123,6 +123,7 @@ public interface NavigationSystem<T extends Actor> {
 			Vector2f b = partner.tf.getCenter();
 			Vector2f p = Vector2f.of(strut.col * TS + TS / 2, strut.row * TS + TS / 2);
 			Vector2f s = computeExactInkyTarget(b, p, w, h);
+			// ensure target tile is inside maze
 			int sx = s.x < w ? (int) s.x : w - 1;
 			int sy = s.y < h ? (int) s.y : h - 1;
 			return new Tile(sx / TS, sy / TS);
@@ -130,111 +131,10 @@ public interface NavigationSystem<T extends Actor> {
 	}
 
 	/**
-	 * Lets the maze mover bounce between walls.
-	 * 
-	 * @return bouncing behavior
-	 */
-	default Navigation<T> bounce() {
-		return bouncer -> new MazeRoute(
-				bouncer.isStuck() ? NESW.inv(bouncer.getCurrentDir()) : bouncer.getCurrentDir());
-	}
-
-	/**
-	 * Lets the maze mover flee from the given attacker.
-	 * 
-	 * @param attacker
-	 *                   the attacker
-	 * @return flight behavior
-	 */
-	default Navigation<T> flee(Actor attacker) {
-		return new EscapeIntoCorner<>(attacker::getTile);
-	}
-
-	/**
-	 * Lets the maze mover follow the keyboard input.
-	 * 
-	 * @param keyUp
-	 *                   key code for upwards movement e.g. KeyEvent.VK_UP
-	 * @param keyRight
-	 *                   key code for right movement
-	 * @param keyDown
-	 *                   key code for down movement
-	 * @param keyLeft
-	 *                   key code for left movement
-	 * @return keyboard steering behavior
-	 */
-	default Navigation<T> followKeyboard(int keyUp, int keyRight, int keyDown, int keyLeft) {
-		return mover -> {
-			MazeRoute result = new MazeRoute();
-			if (Keyboard.keyDown(keyUp)) {
-				result.setDir(Top4.N);
-			} else if (Keyboard.keyDown(keyRight)) {
-				result.setDir(Top4.E);
-			} else if (Keyboard.keyDown(keyDown)) {
-				result.setDir(Top4.S);
-			} else if (Keyboard.keyDown(keyLeft)) {
-				result.setDir(Top4.W);
-			} else {
-				result.setDir(-1);
-			}
-			return result;
-		};
-	}
-
-	/**
-	 * Lets the maze mover follow the path to the given target. The path is computed on the graph of the
-	 * maze and updated every time the move direction is queried. This can lead to lots of path finder
-	 * calls.
-	 * 
-	 * @param target
-	 *                 target tile supplier (tile must be inside maze or teleport space)
-	 * @return behavior following the path to the target
-	 */
-	default Navigation<T> followDynamicRoute(Supplier<Tile> targetSupplier) {
-		return mover -> {
-			MazeRoute route = new MazeRoute();
-			route.setTiles(mover.getMaze().findPath(mover.getTile(), targetSupplier.get()));
-			route.setDir(mover.getMaze().alongPath(route.getTiles()).orElse(-1));
-			return route;
-		};
-	}
-
-	/**
-	 * Lets the maze mover follow a static path to the target. The static path is computed when the
-	 * method {@link Navigation#computeStaticPath(Actor)} is called.
-	 * 
-	 * @param targetTileSupplier
-	 *                             function supplying the target tile at time of decision
-	 * @return behavior following a static route
-	 */
-	default Navigation<T> followStaticRoute(Supplier<Tile> targetTileSupplier) {
-		return new FollowFixedPath<>(targetTileSupplier);
-	}
-
-	/**
-	 * Tries to reach the possibly unreachable target tile by chosing the best direction at every
-	 * intersection.
-	 * 
-	 * @param targetTileSupplier
-	 *                             function supplying the target tile at time of decision
-	 * @return behavior head for the tile computed by the supplier
-	 */
-	default Navigation<T> headFor(Supplier<Tile> targetTileSupplier) {
-		return new FollowTargetTile<>(targetTileSupplier);
-	}
-
-	/**
-	 * Keeps the current move direction.
-	 * 
-	 * @return behavior keeping the current move direction
-	 */
-	default Navigation<T> keepDirection() {
-		return mover -> new MazeRoute(mover.getCurrentDir());
-	}
-
-	/**
 	 * Computes the point where the doubled vector from b to p ends (if inside the maze) or touches the
 	 * maze bounds.
+	 * 
+	 * TODO there surely is a much simpler way
 	 * 
 	 * @param b
 	 *            vector start point (Blinky position)
@@ -308,5 +208,109 @@ public interface NavigationSystem<T extends Actor> {
 		}
 
 		return Vector2f.of(t.x, t.y);
+	}
+
+	/**
+	 * Lets the actor bounce between walls or other inaccessible tiles.
+	 * 
+	 * @return bouncing behavior
+	 */
+	default ActorNavigation<T> bounce() {
+		return bouncer -> new MazeRoute(
+				bouncer.isStuck() ? NESW.inv(bouncer.getCurrentDir()) : bouncer.getCurrentDir());
+	}
+
+	/**
+	 * Lets the maze mover flee from the given attacker by trying to escape to some safe maze corner.
+	 * 
+	 * @param attacker
+	 *                   the attacker
+	 * @return flight behavior
+	 */
+	default ActorNavigation<T> flee(Actor attacker) {
+		return new EscapeIntoCorner<>(attacker::getTile);
+	}
+
+	/**
+	 * Lets the actor follow the direction entered usin the keyboard.
+	 * 
+	 * @param keyUp
+	 *                   key code for upwards movement e.g. KeyEvent.VK_UP
+	 * @param keyRight
+	 *                   key code for right movement
+	 * @param keyDown
+	 *                   key code for down movement
+	 * @param keyLeft
+	 *                   key code for left movement
+	 * 
+	 * @return behavior following the keyboard
+	 */
+	default ActorNavigation<T> followKeyboard(int keyUp, int keyRight, int keyDown, int keyLeft) {
+		return mover -> {
+			MazeRoute result = new MazeRoute();
+			if (Keyboard.keyDown(keyUp)) {
+				result.setDir(Top4.N);
+			} else if (Keyboard.keyDown(keyRight)) {
+				result.setDir(Top4.E);
+			} else if (Keyboard.keyDown(keyDown)) {
+				result.setDir(Top4.S);
+			} else if (Keyboard.keyDown(keyLeft)) {
+				result.setDir(Top4.W);
+			} else {
+				result.setDir(-1);
+			}
+			return result;
+		};
+	}
+
+	/**
+	 * Lets the actor dynamically follow the path to the given target. The path is computed on the graph
+	 * of the maze and updated every time the move direction is queried. This can lead to lots of path
+	 * finder calls!
+	 * 
+	 * @param target
+	 *                 target tile supplier (this tile must be inside the maze or teleport space!)
+	 * @return behavior following the path to the target
+	 */
+	default ActorNavigation<T> followDynamicRoute(Supplier<Tile> targetSupplier) {
+		return mover -> {
+			MazeRoute route = new MazeRoute();
+			route.setTiles(mover.getMaze().findPath(mover.getTile(), targetSupplier.get()));
+			route.setDir(mover.getMaze().alongPath(route.getTiles()).orElse(-1));
+			return route;
+		};
+	}
+
+	/**
+	 * Lets the actor follow a static route to the target. The path of that route is computed by calling
+	 * the method {@link ActorNavigation#computeStaticPath(Actor)}.
+	 * 
+	 * @param targetTileSupplier
+	 *                             function supplying the target tile at time of decision
+	 * @return behavior following a static route
+	 */
+	default ActorNavigation<T> followStaticRoute(Supplier<Tile> targetTileSupplier) {
+		return new FollowFixedPath<>(targetTileSupplier);
+	}
+
+	/**
+	 * Tries to reach a (possibly unreachable) target tile by chosing the best direction at every
+	 * intersection.
+	 * 
+	 * @param targetTileSupplier
+	 *                             function supplying the target tile at time of decision
+	 * @return behavior heading for the target tile 
+	 */
+	default ActorNavigation<T> headFor(Supplier<Tile> targetTileSupplier) {
+		return new FollowTargetTile<>(targetTileSupplier);
+	}
+
+	/**
+	 * Keeps the current move direction.
+	 * 
+	 * @return behavior keeping the current move direction
+	 */
+	default ActorNavigation<T> keepDirection() {
+		return mover -> new MazeRoute(mover.getCurrentDir());
 	}
 }

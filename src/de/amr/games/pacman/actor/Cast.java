@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.navigation.Navigation;
+import de.amr.games.pacman.navigation.ActorNavigation;
 import de.amr.games.pacman.theme.GhostColor;
 
 /**
@@ -57,7 +57,7 @@ public class Cast {
 		// Define the navigation behavior ("AI")
 
 		// Pac-Man is controlled by the keyboard
-		Navigation<PacMan> followKeyboard = pacMan.followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
+		ActorNavigation<PacMan> followKeyboard = pacMan.followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
 		pacMan.setMoveBehavior(PacManState.HUNGRY, followKeyboard);
 		pacMan.setMoveBehavior(PacManState.GREEDY, followKeyboard);
 

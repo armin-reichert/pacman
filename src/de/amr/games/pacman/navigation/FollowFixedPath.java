@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.actor.Actor;
 import de.amr.games.pacman.model.Tile;
 
-class FollowFixedPath<T extends Actor> implements Navigation<T> {
+class FollowFixedPath<T extends Actor> implements ActorNavigation<T> {
 
 	protected Supplier<Tile> targetTileSupplier;
 	protected List<Tile> path = Collections.emptyList();

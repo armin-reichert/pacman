@@ -36,7 +36,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public class FollowTargetTile<T extends Actor> implements Navigation<T> {
+public class FollowTargetTile<T extends Actor> implements ActorNavigation<T> {
 
 	private final Supplier<Tile> targetTileSupplier;
 

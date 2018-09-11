@@ -14,8 +14,8 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.navigation.Navigation;
-import de.amr.games.pacman.navigation.NavigationSystem;
+import de.amr.games.pacman.navigation.ActorNavigation;
+import de.amr.games.pacman.navigation.ActorNavigationSystem;
 import de.amr.games.pacman.view.play.PlayViewX;
 
 public class InkyChaseTestController implements ViewController {
@@ -53,12 +53,12 @@ public class InkyChaseTestController implements ViewController {
 		});
 	}
 
-	private Navigation<Ghost> attackWithBlinky(int w, int h) {
+	private ActorNavigation<Ghost> attackWithBlinky(int w, int h) {
 		return actors.inky.headFor(() -> {
 			Vector2f b = actors.blinky.tf.getCenter();
 			Tile strut = actors.pacMan.ahead(2);
 			Vector2f p = Vector2f.of(strut.col * TS + TS / 2, strut.row * TS + TS / 2);
-			Vector2f s = NavigationSystem.computeExactInkyTarget(b, p, w, h);
+			Vector2f s = ActorNavigationSystem.computeExactInkyTarget(b, p, w, h);
 			LOGGER.info(String.format("Target point is (%f | %f)", s.x, s.y));
 			Tile targetTile = tileFromVector(s.x, s.y);
 			LOGGER.info(String.format("Target tile is %s", targetTile));
