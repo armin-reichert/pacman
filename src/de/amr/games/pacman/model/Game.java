@@ -152,7 +152,7 @@ public class Game {
 		case DYING:
 			return 0;
 		case DEAD:
-			return speed(0.5f + new Random().nextFloat());
+			return speed(1.5f);
 		case FRIGHTENED:
 			return tunnel ? tunnelSpeed : speed(LevelTable.floatValue(level, TableColumn.fGhostAfraidSpeed));
 		case SAFE:
@@ -165,7 +165,7 @@ public class Game {
 	}
 
 	public int getGhostDyingTime() {
-		return app().clock.sec(1f);
+		return app().clock.sec(0.75f);
 	}
 
 	public int getGhostNumFlashes() {

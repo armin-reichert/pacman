@@ -67,7 +67,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		scatterChaseController = new ScatterChaseController(this);
 		scatterChaseController.traceTo(LOGGER, app().clock::getFrequency);
 	}
-	
+
 	public Game getGame() {
 		return game;
 	}
@@ -404,7 +404,9 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 
 		@Override
 		public void onTick() {
-			actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(Ghost::update);
+			actors.getActiveGhosts()
+					.filter(ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
+					.forEach(Ghost::update);
 		}
 
 		@Override
