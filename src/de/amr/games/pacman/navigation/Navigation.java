@@ -6,6 +6,6 @@ public interface Navigation<T extends Actor> {
 
 	MazeRoute computeRoute(T mover);
 
-	default void computePath(T mover) {
+	default void computeStaticPath(T mover) {
 	}
 }

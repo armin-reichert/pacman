@@ -201,7 +201,7 @@ public interface NavigationSystem<T extends Actor> {
 
 	/**
 	 * Lets the maze mover follow a static path to the target. The static path is computed when the
-	 * method {@link Navigation#computePath(Actor)} is called.
+	 * method {@link Navigation#computeStaticPath(Actor)} is called.
 	 * 
 	 * @param targetTileSupplier
 	 *                             function supplying the target tile at time of decision
