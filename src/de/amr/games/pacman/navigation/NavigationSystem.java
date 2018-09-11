@@ -117,11 +117,15 @@ public interface NavigationSystem<T extends Actor> {
 	default Navigation<T> attackWithPartner(Ghost partner, PacMan pacMan) {
 		return headFor(() -> {
 			Maze maze = partner.getMaze();
+			int w = maze.numCols() * TS;
+			int h = maze.numRows() * TS;
 			Tile strut = pacMan.ahead(2);
 			Vector2f b = partner.tf.getCenter();
 			Vector2f p = Vector2f.of(strut.col * TS + TS / 2, strut.row * TS + TS / 2);
-			Vector2f s = computeExactInkyTarget(b, p, maze.numCols() * TS, maze.numRows() * TS);
-			return new Tile((int) (s.x - 1) / TS, (int) (s.y - 1) / TS);
+			Vector2f s = computeExactInkyTarget(b, p, w, h);
+			int sx = s.x < w ? (int) s.x : w - 1;
+			int sy = s.y < h ? (int) s.y : h - 1;
+			return new Tile(sx / TS, sy / TS);
 		});
 	}
 
@@ -229,7 +233,8 @@ public interface NavigationSystem<T extends Actor> {
 	}
 
 	/**
-	 * Computes the point where the doubled vector from b to p ends (if inside the maze) or touches the maze bounds.
+	 * Computes the point where the doubled vector from b to p ends (if inside the maze) or touches the
+	 * maze bounds.
 	 * 
 	 * @param b
 	 *            vector start point (Blinky position)
