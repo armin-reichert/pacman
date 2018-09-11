@@ -442,7 +442,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		public void onEntry() {
 			playView.enableAnimation(false);
 			playView.showInfoText("Game Over!", Color.RED);
-			game.score.save();
+			game.score.saveHiscore();
 			THEME.snd_bgmusic().stop();
 		}
 

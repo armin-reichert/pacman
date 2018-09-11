@@ -1,5 +1,7 @@
 package de.amr.games.pacman.model;
 
+import static de.amr.easy.game.Application.LOGGER;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -7,83 +9,74 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import de.amr.easy.game.Application;
-
 public class Score {
 
-	private final Game game;
-	private Properties prop = new Properties();
+	private Game game;
 	private File file;
-	private int score;
-	private int hiscore;
-	private int level;
-	private boolean newHiscore;
+	private int points;
+	private int hiscorePoints;
+	private int hiscoreLevel;
 
 	public Score(Game game) {
 		this.game = game;
-		level = 1;
 		file = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
 	}
 
-	public void load() {
+	public void loadHiscore() {
+		points = 0;
+		Properties prop = new Properties();
 		try {
 			prop.loadFromXML(new FileInputStream(file));
+			hiscorePoints = Integer.valueOf(prop.getProperty("score"));
+			hiscoreLevel = Integer.valueOf(prop.getProperty("level"));
 		} catch (FileNotFoundException e) {
-			store();
+			// create new score file
+			hiscoreLevel = 1;
+			hiscorePoints = 0;
+			save();
 		} catch (IOException e) {
-			Application.LOGGER.info("Could not load hiscore file");
+			LOGGER.info("Could not load score file");
+			throw new RuntimeException(e);
 		}
-		score = 0;
-		hiscore = Integer.valueOf(prop.getProperty("score", "0"));
-		level = Integer.valueOf(prop.getProperty("level", "1"));
 	}
 
-	public void save() {
-		if (!newHiscore) {
-			return;
-		}
-		store();
-	}
-
-	private void store() {
-		prop.setProperty("score", String.valueOf(hiscore));
-		prop.setProperty("level", String.valueOf(level));
+	private void save() {
+		Properties prop = new Properties();
+		prop.setProperty("score", String.valueOf(hiscorePoints));
+		prop.setProperty("level", String.valueOf(hiscoreLevel));
 		try {
 			prop.storeToXML(new FileOutputStream(file), "Pac-Man Highscore");
-		} catch (FileNotFoundException e) {
-			Application.LOGGER.info("Could not find hiscore file");
 		} catch (IOException e) {
-			Application.LOGGER.info("Could not save hiscore file");
+			LOGGER.info("Could not save score file");
+			throw new RuntimeException(e);
 		}
+	}
+
+	public void saveHiscore() {
+		save();
 	}
 
 	public void set(int n) {
-		score = n;
-		checkHiscore();
-
-	}
-
-	public void add(int n) {
-		set(score + n);
-	}
-
-	private void checkHiscore() {
-		if (score > hiscore) {
-			newHiscore = true;
-			hiscore = score;
-			level = game.getLevel();
+		points = n;
+		if (points > hiscorePoints) {
+			hiscorePoints = points;
+			hiscoreLevel = game.getLevel();
 		}
 	}
 
-	public int getScore() {
-		return score;
+	public void add(int n) {
+		set(points + n);
 	}
 
-	public int getHiscore() {
-		return hiscore;
+	public int getPoints() {
+		return points;
+	}
+
+	public int getHiscorePoints() {
+		return hiscorePoints;
 	}
 
 	public int getHiscoreLevel() {
-		return level;
+		return hiscoreLevel;
 	}
 }

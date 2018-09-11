@@ -54,7 +54,7 @@ public class Game {
 		lives = 3;
 		level = 0;
 		levelCounter.clear();
-		score.load();
+		score.loadHiscore();
 		nextLevel();
 	}
 
@@ -100,7 +100,7 @@ public class Game {
 		}
 		eaten += 1;
 		int value = energizer ? 50 : 10;
-		if (score.getScore() < 10000 && 10000 <= score.getScore() + value) {
+		if (score.getPoints() < 10000 && 10000 <= score.getPoints() + value) {
 			lives += 1;
 		}
 		score.add(value);
