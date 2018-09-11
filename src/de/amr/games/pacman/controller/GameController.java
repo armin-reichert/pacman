@@ -111,7 +111,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		((Controller) currentView).update();
 	}
 
-	// allow typed access to state methods during construction of state machine
+	// typed access to playing state implementation (needed for method references etc.)
 	private PlayingState playingState() {
 		return state(PLAYING);
 	}
@@ -120,7 +120,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		//@formatter:off
 		define()
 			
-			.description("[GameControl]")
+			.description("[Pac-Man Game Control]")
 			.initialState(INTRO)
 			
 			.states()
@@ -136,7 +136,6 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 				
 				.state(READY)
 					.impl(new ReadyState())
-					.timeoutAfter(() -> app().clock.sec(4.5f))
 				
 				.state(PLAYING)
 					.impl(new PlayingState())
@@ -233,6 +232,11 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 	}
 
 	private class ReadyState extends State<GameState, GameEvent> {
+		
+		{
+			// just to demonstrate that timer can also be set here
+			setDuration(() -> app().clock.sec(4.5f));
+		}
 
 		@Override
 		public void onEntry() {
