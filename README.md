@@ -400,7 +400,8 @@ Blinky's chase behavior is to directly attack Pac-Man:
 ```java
 default ActorNavigation<T> attackDirectly(Actor victim) {
 	return headFor(victim::getTile);
-}```
+}
+```
 
 ```java
 blinky.setMoveBehavior(CHASING, blinky.attackDirectly(pacMan));
@@ -415,7 +416,8 @@ Pinky, the *ambusher*, targets the position 4 tiles ahead of Pac-Man (in the ori
 ```java
 default ActorNavigation<T> ambush(Actor victim, int n) {
 	return headFor(() -> victim.ahead(n));
-}```
+}
+```
 
 ```java
 pinky.setMoveBehavior(CHASING, pinky.ambush(pacMan, 4));
