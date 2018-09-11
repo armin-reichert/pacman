@@ -8,19 +8,23 @@ import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.statemachine.StateMachine;
 
 /**
+ * Controller for starting the scattering and chase phases.
+ * 
+ * @author Armin Reichert
+ * 
  * @see <a href=
  *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=3">Gamasutra</a>
  */
-public class ScatterChaseController extends StateMachine<String, Void> implements Controller {
+public class ScatterChaseTimer extends StateMachine<String, Void> implements Controller {
 
 	private final GameController gameControl;
 
-	public ScatterChaseController(GameController gameControl) {
+	public ScatterChaseTimer(GameController gameControl) {
 		super(String.class);
 		this.gameControl = gameControl;
 		/*@formatter:off*/
 		define()
-			.description("[ScatterChaseControl]")
+			.description("[ScatterChaseTimer]")
 			.initialState("init")
 		.states()
 			.state("init")

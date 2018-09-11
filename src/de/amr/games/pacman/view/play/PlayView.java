@@ -65,6 +65,7 @@ public class PlayView implements View, Controller, PacManWorld {
 
 	public void setActors(Cast actors) {
 		this.actors = actors;
+		actors.pacMan.setWorld(this);
 	}
 
 	@Override

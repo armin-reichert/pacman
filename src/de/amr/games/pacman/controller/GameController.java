@@ -53,7 +53,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 
 	private final Game game;
 	private final Cast actors;
-	private final ScatterChaseController scatterChaseController;
+	private final ScatterChaseTimer scatterChaseTimer;
 
 	public GameController() {
 		super(GameState.class);
@@ -64,8 +64,8 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		actors.getGhosts().forEach(ghost -> ghost.traceTo(LOGGER));
 		buildStateMachine();
 		traceTo(LOGGER, app().clock::getFrequency);
-		scatterChaseController = new ScatterChaseController(this);
-		scatterChaseController.traceTo(LOGGER, app().clock::getFrequency);
+		scatterChaseTimer = new ScatterChaseTimer(this);
+		scatterChaseTimer.traceTo(LOGGER, app().clock::getFrequency);
 	}
 
 	public Game getGame() {
@@ -89,7 +89,6 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		if (playView == null) {
 			playView = new PlayViewX(game);
 			playView.setActors(actors);
-			actors.pacMan.setWorld(playView);
 		}
 		return playView;
 	}
@@ -224,7 +223,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 					
 				.when(PACMAN_DYING).then(PLAYING)
 					.condition(() -> actors.pacMan.getState() == PacManState.DEAD && game.getLives() > 0)
-					.act(() -> { playView.init(); actors.init(); scatterChaseController.init(); })
+					.act(() -> { playView.init(); actors.init(); scatterChaseTimer.init(); })
 			
 				.when(GAME_OVER).then(READY)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
@@ -259,7 +258,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 
 		@Override
 		public void onEntry() {
-			scatterChaseController.init();
+			scatterChaseTimer.init();
 		}
 
 		@Override
@@ -268,7 +267,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 
 		@Override
 		public void onTick() {
-			scatterChaseController.update();
+			scatterChaseTimer.update();
 			actors.pacMan.update();
 			actors.getActiveGhosts().forEach(Ghost::update);
 		}
@@ -388,7 +387,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		public void onExit() {
 			playView.hideInfoText();
 			playView.enableAnimation(true);
-			scatterChaseController.init();
+			scatterChaseTimer.init();
 		}
 	}
 
