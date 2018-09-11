@@ -486,9 +486,12 @@ ghost.setMoveBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
 
 ## Graph based path finding
 
-For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed, the *headFor* behavior is uses all over the place instead. To also give an example how graph based path finding could be used, 
-the *flee* behavior has been implemented differently from the original game. Here the flleing ghost selects a safe corner
+For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed but the *headFor* 
+behavior can be used all over the place. To also give an example how graph based path finding can be used, 
+the *flee* behavior has been implemented differently from the original game: a fleeing ghost choses a safe corner
 by checking the path to each maze corner and selecting the path with the largest distance to Pac-Man's current position.
+The distance of a path from Pac-Man's position is defined as the minimum distance of any tile on the path from Pac-Man's
+position.
 
 Shortest paths in the maze graph can be computed with the method *Maze.findPath(Tile source, Tile target)*. 
 This method runs a Breadth-First-Search on the underlying grid graph to compute the shortest path. The used
