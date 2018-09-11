@@ -371,8 +371,7 @@ state there is a move behavior assigned that is used whenever the ghost is movin
 Pac-Man is controlled by the keyboard:
 
 ```java
-// Pac-Man behavior
-Navigation<PacMan> followKeyboard = pacMan.followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
+ActorNavigation<PacMan> followKeyboard = pacMan.followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
 pacMan.setMoveBehavior(PacManState.HUNGRY, followKeyboard);
 pacMan.setMoveBehavior(PacManState.GREEDY, followKeyboard);
 ```
@@ -382,7 +381,7 @@ The ghosts behave identically in some of their states:
 
 ```java
 // common ghost behavior
-Stream.of(blinky, pinky, inky, clyde).forEach(ghost -> {
+getGhosts().forEach(ghost -> {
 	ghost.setMoveBehavior(FRIGHTENED, ghost.flee(pacMan));
 	ghost.setMoveBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
 	ghost.setMoveBehavior(DEAD, ghost.headFor(ghost::getHome));
@@ -399,10 +398,11 @@ the implementation of the individual behaviors like *scatter*, *ambush*, *attack
 Blinky's chase behavior is to directly attack Pac-Man:
 
 ```java
-public default Navigation<T> attackDirectly(Actor victim) {
+default ActorNavigation<T> attackDirectly(Actor victim) {
 	return headFor(victim::getTile);
-}
+}```
 
+```java
 blinky.setMoveBehavior(CHASING, blinky.attackDirectly(pacMan));
 ```
 
@@ -413,10 +413,11 @@ blinky.setMoveBehavior(CHASING, blinky.attackDirectly(pacMan));
 Pinky, the *ambusher*, targets the position 4 tiles ahead of Pac-Man (in the original game there is an overflow error that leads to a different behavior):
 
 ```java
-public default Navigation<T> ambush(Actor victim, int n) {
+default ActorNavigation<T> ambush(Actor victim, int n) {
 	return headFor(() -> victim.ahead(n));
-}
+}```
 
+```java
 pinky.setMoveBehavior(CHASING, pinky.ambush(pacMan, 4));
 ```
 
@@ -429,20 +430,24 @@ Inky's target tile is computed as follows:
 Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man, so `V = (P - B)`. Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-public default Navigation<T> attackWithPartner(Ghost partner, PacMan pacMan) {
+default ActorNavigation<T> attackWithPartner(Ghost partner, PacMan pacMan) {
 	return headFor(() -> {
-		Tile partnerTile = partner.getTile();
-		Tile pacManTile = pacMan.ahead(2);
-		Tile target = new Tile(2 * pacManTile.col - partnerTile.col,
-				2 * pacManTile.row - partnerTile.row);
-		// TODO: correctly project target tile to border
-		Maze maze = pacMan.getMaze();
-		int row = Math.min(Math.max(0, target.row), maze.numRows() - 1);
-		int col = Math.min(Math.max(0, target.col), maze.numCols() - 1);
-		return new Tile(col, row);
+		Maze maze = partner.getMaze();
+		int w = maze.numCols() * TS;
+		int h = maze.numRows() * TS;
+		Tile strut = pacMan.ahead(2);
+		Vector2f b = partner.tf.getCenter();
+		Vector2f p = Vector2f.of(strut.col * TS + TS / 2, strut.row * TS + TS / 2);
+		Vector2f s = computeExactInkyTarget(b, p, w, h);
+		// ensure target tile is inside maze
+		int sx = s.x < w ? (int) s.x : w - 1;
+		int sy = s.y < h ? (int) s.y : h - 1;
+		return new Tile(sx / TS, sy / TS);
 	});
 }
+```
 
+```java
 inky.setMoveBehavior(CHASING, inky.attackWithPartner(blinky, pacMan));
 ```
 
@@ -453,12 +458,14 @@ inky.setMoveBehavior(CHASING, inky.attackWithPartner(blinky, pacMan));
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he goes into scattering mode:
 
 ```java
-public default Navigation<T> attackAndReject(Ghost attacker, PacMan pacMan, int distance) {
-	return headFor(
-			() -> dist(attacker.getCenter(), pacMan.getCenter()) >= distance ? pacMan.getTile()
-					: attacker.getScatteringTarget());
+default ActorNavigation<T> attackAndReject(Ghost attacker, PacMan pacMan, int distance) {
+	return headFor(() -> dist(attacker.tf.getCenter(), pacMan.tf.getCenter()) >= distance 
+		? pacMan.getTile()
+		: attacker.getScatteringTarget());
 }
+```
 
+```java
 clyde.setMoveBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * Game.TS));
 ```
 
@@ -477,9 +484,11 @@ ghost.setMoveBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
 
 ## Graph based path finding
 
-For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed, the *headFor* behavior is sufficient. To also give an example how graph based path finding can be used, the *flee* behavior has been implemented differently from the original game.
+For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed, the *headFor* behavior is uses all over the place instead. To also give an example how graph based path finding could be used, 
+the *flee* behavior has been implemented differently from the original game. Here the flleing ghost selects a safe corner
+by checking the path to each maze corner and selecting the path with the largest distance to Pac-Man's current position.
 
-Shortest paths in the maze graph can be computed using the method *Maze.findPath(Tile source, Tile target)*. 
+Shortest paths in the maze graph can be computed with the method *Maze.findPath(Tile source, Tile target)*. 
 This method runs a Breadth-First-Search on the underlying grid graph to compute the shortest path. The used
 [graph library](https://github.com/armin-reichert/graph) provides also more sophisticated search algorithms
 like Dijkstra or [A-Star](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html) that could be used by just changing a single line of code in the Maze class:
@@ -490,7 +499,7 @@ GraphTraversal pathfinder =
 		new BreadthFirstTraversal<>(graph);
 ```
 
-A-Star certainly sounds cooler than BFS, but is completely useless in this use-case because the maze is represented by a graph where the distance between two adjacent vertices (neighbor tiles) is always the same. Thus the A* or Dijkstra path finding algorithms would just degenerate to plain BFS (correct me if I'm wrong). 
+A-Star certainly sounds "cooler" than BFS, but is completely useless in this use-case because the maze is represented by a graph where the distance between two adjacent vertices (neighbor tiles) is always the same. Thus the A* or Dijkstra path finding algorithms would just degenerate to plain BFS (correct me if I'm wrong). 
 
 Of course one could represent the graph differently, for example with vertices only for crossings and weighted edges for passages, in which case Dijkstra or A* would become useful.
 
