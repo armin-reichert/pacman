@@ -64,10 +64,6 @@ public class Score {
 		}
 	}
 
-	public void add(int n) {
-		set(points + n);
-	}
-
 	public int getPoints() {
 		return points;
 	}

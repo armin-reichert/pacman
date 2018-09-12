@@ -28,7 +28,7 @@ public class Game {
 	private final Maze maze;
 
 	/** The game score including highscore management. */
-	public final Score score;
+	private final Score score;
 
 	/** Pac-Man's remaining lives. */
 	private int lives;
@@ -48,6 +48,33 @@ public class Game {
 	public Game(Maze maze) {
 		this.maze = maze;
 		score = new Score(this);
+	}
+
+	public int getPoints() {
+		return score.getPoints();
+	}
+
+	public boolean addPoints(int points) {
+		int oldScore = score.getPoints();
+		int newScore = oldScore + points;
+		score.set(newScore);
+		if (oldScore < 10000 && 10000 <= newScore) {
+			lives += 1;
+			return true;
+		}
+		return false;
+	}
+
+	public void saveHiscore() {
+		score.saveHiscore();
+	}
+
+	public int getHiscorePoints() {
+		return score.getHiscorePoints();
+	}
+
+	public int getHiscoreLevel() {
+		return score.getHiscoreLevel();
 	}
 
 	public void init() {
@@ -90,7 +117,7 @@ public class Game {
 		return Collections.unmodifiableList(levelCounter);
 	}
 
-	public void eatFoodAtTile(Tile tile) {
+	public int eatFoodAtTile(Tile tile) {
 		if (!maze.isFood(tile)) {
 			throw new IllegalArgumentException("No food at tile " + tile);
 		}
@@ -99,12 +126,8 @@ public class Game {
 			ghostsKilled = 0;
 		}
 		eaten += 1;
-		int value = energizer ? 50 : 10;
-		if (score.getPoints() < 10000 && 10000 <= score.getPoints() + value) {
-			lives += 1;
-		}
-		score.add(value);
 		maze.hideFood(tile);
+		return energizer ? 50 : 10;
 	}
 
 	public boolean allFoodEaten() {

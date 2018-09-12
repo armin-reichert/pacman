@@ -334,7 +334,10 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 						() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(), bonus.getValue()));
 				THEME.snd_eatFruit().play();
 				bonus.setHonored();
-				game.score.add(bonus.getValue());
+				boolean extraLife = game.addPoints(bonus.getValue());
+				if (extraLife) {
+					THEME.snd_extraLife().play();
+				}
 				playView.setBonusTimer(app().clock.sec(1));
 			});
 		}
@@ -342,22 +345,21 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		private void onFoodFound(GameEvent event) {
 			FoodFoundEvent e = (FoodFoundEvent) event;
 			THEME.snd_eatPill().play();
-			int lives = game.getLives();
-			game.eatFoodAtTile(e.tile);
-			if (lives < game.getLives()) {
-				LOGGER.info("Extra life!");
+			int points = game.eatFoodAtTile(e.tile);
+			boolean extraLife = game.addPoints(points);
+			if (extraLife) {
 				THEME.snd_extraLife().play();
 			}
 			if (game.allFoodEaten()) {
 				enqueue(new LevelCompletedEvent());
-			} else {
-				if (e.energizer) {
-					enqueue(new PacManGainsPowerEvent());
-				}
-				if (game.isBonusReached()) {
-					playView.setBonus(game.getBonusSymbol(), game.getBonusValue());
-					playView.setBonusTimer(game.getBonusTime());
-				}
+				return;
+			}
+			if (game.isBonusReached()) {
+				playView.setBonus(game.getBonusSymbol(), game.getBonusValue());
+				playView.setBonusTimer(game.getBonusTime());
+			}
+			if (e.energizer) {
+				enqueue(new PacManGainsPowerEvent());
 			}
 		}
 	}
@@ -398,7 +400,10 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		@Override
 		public void onEntry() {
 			actors.pacMan.setVisible(false);
-			game.score.add(game.getKilledGhostValue());
+			boolean extraLife = game.addPoints(game.getKilledGhostValue());
+			if (extraLife) {
+				THEME.snd_extraLife().play();
+			}
 			LOGGER.info(String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
 					game.getGhostsKilledByEnergizer()));
 		}
@@ -442,7 +447,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		public void onEntry() {
 			playView.enableAnimation(false);
 			playView.showInfoText("Game Over!", Color.RED);
-			game.score.saveHiscore();
+			game.saveHiscore();
 			THEME.snd_bgmusic().stop();
 			THEME.snd_gameover().loop();
 		}
