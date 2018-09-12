@@ -69,7 +69,6 @@ public class Ghost extends Actor
 		setNextDir(initialDir);
 		getSprites().forEach(Sprite::resetAnimation);
 		setSelectedSprite("s_color_" + initialDir);
-		nextAttackState = null;
 	}
 
 	// Accessors
@@ -133,7 +132,7 @@ public class Ghost extends Actor
 			setSprite("s_eyes_" + dir, THEME.spr_ghostEyes(dir));
 		});
 		for (int i = 0; i < 4; ++i) {
-			setSprite("s_numbers_" + i, THEME.spr_greenNumber(i));
+			setSprite("s_value" + i, THEME.spr_greenNumber(i));
 		}
 		setSprite("s_frightened", THEME.spr_ghostFrightened());
 		setSprite("s_flashing", THEME.spr_ghostFlashing());
@@ -165,128 +164,125 @@ public class Ghost extends Actor
 		
 			.states()
 
-					.state(HOME)
-						.onEntry(this::initGhost)
-					
-					.state(SAFE)
-						.timeoutAfter(() -> app().clock.sec(2))
-						.onTick(() -> {
-							if (!ghostName.equals("Blinky")) { //TODO better solution
-								move();	
-								setSelectedSprite("s_color_" + getCurrentDir()); 
-							}
-						})
-					
-					.state(SCATTERING)
-						.onTick(() -> {
-							move();	
-							setSelectedSprite("s_color_" + getCurrentDir()); 
-						})
+				.state(HOME)
+					.onEntry(this::initGhost)
 				
-					.state(CHASING)
-						.onTick(() -> {	
-							move();	
-							setSelectedSprite("s_color_" + getCurrentDir()); 
-						})
-					
-					.state(FRIGHTENED)
-						.onEntry(() -> {
-							setSelectedSprite("s_frightened"); 
-							getMoveBehavior().computeStaticPath(this); 
-						})
-						.onTick(() -> move())
-					
-					.state(DYING)
-						.timeoutAfter(game::getGhostDyingTime)
-						.onEntry(() -> {
-							setSelectedSprite("s_numbers_" + game.getGhostsKilledByEnergizer()); 
-							game.addGhostKilled();
-						})
-					
-					.state(DEAD)
-						.onEntry(() -> getMoveBehavior().computeStaticPath(this))
-						.onTick(() -> {	
-							move();
-							setSelectedSprite("s_eyes_" + getCurrentDir());
-						})
+				.state(SAFE)
+					.timeoutAfter(() -> app().clock.sec(2))
+					.onTick(() -> {
+						move();	
+						setSelectedSprite("s_color_" + getCurrentDir()); 
+					})
+				
+				.state(SCATTERING)
+					.onTick(() -> {
+						move();	
+						setSelectedSprite("s_color_" + getCurrentDir()); 
+					})
+			
+				.state(CHASING)
+					.onTick(() -> {	
+						move();	
+						setSelectedSprite("s_color_" + getCurrentDir()); 
+					})
+				
+				.state(FRIGHTENED)
+					.onEntry(() -> {
+						setSelectedSprite("s_frightened"); 
+						getMoveBehavior().computeStaticPath(this); 
+					})
+					.onTick(this::move)
+				
+				.state(DYING)
+					.timeoutAfter(game::getGhostDyingTime)
+					.onEntry(() -> {
+						setSelectedSprite("s_value" + game.getGhostsKilledByEnergizer()); 
+						game.addGhostKilled();
+					})
+				
+				.state(DEAD)
+					.onEntry(() -> getMoveBehavior().computeStaticPath(this))
+					.onTick(() -> {	
+						move();
+						setSelectedSprite("s_eyes_" + getCurrentDir());
+					})
 					
 			.transitions()
 
-					.when(HOME).then(SAFE)
-					
-					.stay(HOME).on(StartScatteringEvent.class).act(() -> nextAttackState = SCATTERING)
-					.stay(HOME).on(StartChasingEvent.class).act(() -> nextAttackState = CHASING)
+				.when(HOME).then(SAFE)
+				
+				.stay(HOME).on(StartScatteringEvent.class).act(() -> nextAttackState = SCATTERING)
+				.stay(HOME).on(StartChasingEvent.class).act(() -> nextAttackState = CHASING)
 
-					.when(SAFE).then(FRIGHTENED)
-						.condition(() -> canLeaveHouse() && isPacManGreedy())
+				.when(SAFE).then(FRIGHTENED)
+					.condition(() -> canLeaveHouse() && isPacManGreedy())
 
-					.when(SAFE).then(SCATTERING)
-						.condition(() -> canLeaveHouse() && !isPacManGreedy() && nextAttackState == SCATTERING)
-						
-					.when(SAFE).then(CHASING)
-						.condition(() -> canLeaveHouse() && !isPacManGreedy() && nextAttackState == CHASING)
+				.when(SAFE).then(SCATTERING)
+					.condition(() -> canLeaveHouse() && !isPacManGreedy() && nextAttackState == SCATTERING)
 					
-					.stay(SAFE)
-						.on(StartChasingEvent.class)
-						.condition(() -> !canLeaveHouse())
-						.act(() -> nextAttackState = CHASING)
+				.when(SAFE).then(CHASING)
+					.condition(() -> canLeaveHouse() && !isPacManGreedy() && nextAttackState == CHASING)
+				
+				.stay(SAFE)
+					.on(StartChasingEvent.class)
+					.condition(() -> !canLeaveHouse())
+					.act(() -> nextAttackState = CHASING)
+				
+				.when(SAFE).then(CHASING)
+					.on(StartChasingEvent.class)
+					.condition(() -> canLeaveHouse())
+				
+				.stay(SAFE)
+					.on(StartScatteringEvent.class)
+					.condition(() -> !canLeaveHouse())
+					.act(() -> nextAttackState = SCATTERING)
 					
-					.when(SAFE).then(CHASING)
-						.on(StartChasingEvent.class)
-						.condition(() -> canLeaveHouse())
+				.when(SAFE).then(SCATTERING)
+					.on(StartScatteringEvent.class)
+					.condition(() -> canLeaveHouse())
 					
-					.stay(SAFE)
-						.on(StartScatteringEvent.class)
-						.condition(() -> !canLeaveHouse())
-						.act(() -> nextAttackState = SCATTERING)
-						
-					.when(SAFE).then(SCATTERING)
-						.on(StartScatteringEvent.class)
-						.condition(() -> canLeaveHouse())
-						
-					.stay(SAFE).on(PacManGainsPowerEvent.class)
-					.stay(SAFE).on(PacManGettingWeakerEvent.class)
-					.stay(SAFE).on(PacManLostPowerEvent.class)
-					.stay(SAFE).on(GhostKilledEvent.class)
-			
-					.stay(CHASING).on(StartChasingEvent.class)
-					.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
-					.when(CHASING).then(DYING).on(GhostKilledEvent.class) // cheating-mode
-					.when(CHASING).then(SCATTERING).on(StartScatteringEvent.class)
+				.stay(SAFE).on(PacManGainsPowerEvent.class)
+				.stay(SAFE).on(PacManGettingWeakerEvent.class)
+				.stay(SAFE).on(PacManLostPowerEvent.class)
+				.stay(SAFE).on(GhostKilledEvent.class)
+		
+				.stay(CHASING).on(StartChasingEvent.class)
+				.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
+				.when(CHASING).then(DYING).on(GhostKilledEvent.class) // cheating-mode
+				.when(CHASING).then(SCATTERING).on(StartScatteringEvent.class)
 
-					.stay(SCATTERING).on(StartScatteringEvent.class)
-					.stay(SCATTERING).on(PacManGettingWeakerEvent.class)
-					.when(SCATTERING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
-					.when(SCATTERING).then(DYING).on(GhostKilledEvent.class) // cheating-mode
-					.when(SCATTERING).then(CHASING).on(StartChasingEvent.class)
+				.stay(SCATTERING).on(StartScatteringEvent.class)
+				.stay(SCATTERING).on(PacManGettingWeakerEvent.class)
+				.when(SCATTERING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
+				.when(SCATTERING).then(DYING).on(GhostKilledEvent.class) // cheating-mode
+				.when(SCATTERING).then(CHASING).on(StartChasingEvent.class)
+				
+				.stay(FRIGHTENED).on(PacManGainsPowerEvent.class)
+				.stay(FRIGHTENED).on(PacManGettingWeakerEvent.class).act(e -> setSelectedSprite("s_flashing"))
+				.stay(FRIGHTENED).on(StartScatteringEvent.class).act(() -> nextAttackState = SCATTERING)
+				.stay(FRIGHTENED).on(StartChasingEvent.class).act(() -> nextAttackState = CHASING)
+				
+				.when(FRIGHTENED).then(CHASING).on(PacManLostPowerEvent.class)
+				.when(FRIGHTENED).then(DYING).on(GhostKilledEvent.class)
 					
-					.stay(FRIGHTENED).on(PacManGainsPowerEvent.class)
-					.stay(FRIGHTENED).on(PacManGettingWeakerEvent.class).act(e -> setSelectedSprite("s_flashing"))
-					.stay(FRIGHTENED).on(StartScatteringEvent.class).act(() -> nextAttackState = SCATTERING)
-					.stay(FRIGHTENED).on(StartChasingEvent.class).act(() -> nextAttackState = CHASING)
+				.when(DYING).then(DEAD).onTimeout()
+				.stay(DYING).on(PacManGainsPowerEvent.class) // cheating-mode
+				.stay(DYING).on(PacManGettingWeakerEvent.class) // cheating-mode
+				.stay(DYING).on(PacManLostPowerEvent.class) // cheating-mode
+				.stay(DYING).on(GhostKilledEvent.class) // cheating-mode
+				.stay(DYING).on(StartScatteringEvent.class).act(() -> nextAttackState = SCATTERING)
+				.stay(DYING).on(StartChasingEvent.class).act(() -> nextAttackState = CHASING)
 					
-					.when(FRIGHTENED).then(CHASING).on(PacManLostPowerEvent.class)
-					.when(FRIGHTENED).then(DYING).on(GhostKilledEvent.class)
-						
-					.when(DYING).then(DEAD).onTimeout()
-					.stay(DYING).on(PacManGainsPowerEvent.class) // cheating-mode
-					.stay(DYING).on(PacManGettingWeakerEvent.class) // cheating-mode
-					.stay(DYING).on(PacManLostPowerEvent.class) // cheating-mode
-					.stay(DYING).on(GhostKilledEvent.class) // cheating-mode
-					.stay(DYING).on(StartScatteringEvent.class).act(() -> nextAttackState = SCATTERING)
-					.stay(DYING).on(StartChasingEvent.class).act(() -> nextAttackState = CHASING)
-						
-					.when(DEAD).then(SAFE)
-						//TODO: better solution
-						.condition(() -> (ghostName.equals("Blinky") && getTile().equals(home)) || inGhostHouse())
-						.act(this::initGhost)
-					
-					.stay(DEAD).on(PacManGainsPowerEvent.class)
-					.stay(DEAD).on(PacManGettingWeakerEvent.class)
-					.stay(DEAD).on(PacManLostPowerEvent.class)
-					.stay(DEAD).on(GhostKilledEvent.class) // cheating-mode
-					.stay(DEAD).on(StartScatteringEvent.class).act(() -> nextAttackState = SCATTERING)
-					.stay(DEAD).on(StartChasingEvent.class).act(() -> nextAttackState = CHASING)
+				.when(DEAD).then(SAFE)
+					.condition(() -> inGhostHouse())
+					.act(this::initGhost)
+				
+				.stay(DEAD).on(PacManGainsPowerEvent.class)
+				.stay(DEAD).on(PacManGettingWeakerEvent.class)
+				.stay(DEAD).on(PacManLostPowerEvent.class)
+				.stay(DEAD).on(GhostKilledEvent.class) // cheating-mode
+				.stay(DEAD).on(StartScatteringEvent.class).act(() -> nextAttackState = SCATTERING)
+				.stay(DEAD).on(StartChasingEvent.class).act(() -> nextAttackState = CHASING)
 
 		.endStateMachine();
 		/*@formatter:on*/

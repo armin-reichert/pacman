@@ -70,6 +70,7 @@ public class Cast {
 		});
 
 		// Individual ghost behavior
+		blinky.setMoveBehavior(DEAD, blinky.headFor(() -> maze.getPinkyHome()));
 		blinky.setMoveBehavior(CHASING, blinky.attackDirectly(pacMan));
 		pinky.setMoveBehavior(CHASING, pinky.ambush(pacMan, 4));
 		inky.setMoveBehavior(CHASING, inky.attackWithPartner(blinky, pacMan));
