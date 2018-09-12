@@ -40,7 +40,7 @@ public class Ghost extends Actor
 		implements StateMachineClient<GhostState, GameEvent>, ActorNavigationSystem<Ghost> {
 
 	private final String name;
-	private final StateMachine<GhostState, GameEvent> controller;
+	private final StateMachine<GhostState, GameEvent> fsm;
 	private final Map<GhostState, ActorNavigation<Ghost>> navigationMap;
 	private final PacMan pacMan;
 	private final Tile home;
@@ -58,7 +58,7 @@ public class Ghost extends Actor
 		this.scatteringTarget = scatteringTarget;
 		this.initialDir = initialDir;
 		fnCanLeaveHouse = () -> getStateObject().isTerminated();
-		controller = buildStateMachine(name);
+		fsm = buildStateMachine(name);
 		navigationMap = new EnumMap<>(GhostState.class);
 		createSprites(color);
 	}
@@ -143,17 +143,17 @@ public class Ghost extends Actor
 
 	@Override
 	public void init() {
-		controller.init();
+		fsm.init();
 	}
 
 	@Override
 	public void update() {
-		controller.update();
+		fsm.update();
 	}
 
 	@Override
 	public StateMachine<GhostState, GameEvent> getStateMachine() {
-		return controller;
+		return fsm;
 	}
 
 	private StateMachine<GhostState, GameEvent> buildStateMachine(String ghostName) {
