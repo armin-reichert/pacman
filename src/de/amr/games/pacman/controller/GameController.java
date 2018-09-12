@@ -59,12 +59,13 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		super(GameState.class);
 		game = new Game(new Maze(Assets.text("maze.txt")));
 		actors = new Cast(game);
-		actors.pacMan.traceTo(LOGGER);
 		actors.pacMan.subscribe(this::process);
-		actors.getGhosts().forEach(ghost -> ghost.traceTo(LOGGER));
 		buildStateMachine();
-		traceTo(LOGGER, app().clock::getFrequency);
 		scatterChaseTimer = new ScatterChaseTimer(this);
+		// tracing
+		actors.pacMan.getStateMachine().traceTo(LOGGER, app().clock::getFrequency);
+		actors.getGhosts().forEach(ghost -> ghost.getStateMachine().traceTo(LOGGER, app().clock::getFrequency));
+		traceTo(LOGGER, app().clock::getFrequency);
 		scatterChaseTimer.traceTo(LOGGER, app().clock::getFrequency);
 	}
 

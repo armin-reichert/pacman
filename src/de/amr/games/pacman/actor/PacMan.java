@@ -13,7 +13,6 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
 
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
@@ -154,10 +153,6 @@ public class PacMan extends Actor
 	@Override
 	public StateMachine<PacManState, GameEvent> getStateMachine() {
 		return fsm;
-	}
-
-	public void traceTo(Logger logger) {
-		fsm.traceTo(logger, app().clock::getFrequency);
 	}
 
 	private StateMachine<PacManState, GameEvent> buildStateMachine() {

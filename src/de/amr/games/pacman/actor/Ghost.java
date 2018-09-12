@@ -14,7 +14,6 @@ import static de.amr.games.pacman.theme.PacManThemes.THEME;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
-import java.util.logging.Logger;
 
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.controller.event.GameEvent;
@@ -48,7 +47,6 @@ public class Ghost extends Actor
 	private final Tile scatteringTarget;
 	private final int initialDir;
 	private GhostState nextAttackState; // chasing or scattering
-
 	BooleanSupplier fnCanLeaveHouse;
 
 	public Ghost(String name, PacMan pacMan, Game game, Tile home, Tile scatteringTarget, int initialDir,
@@ -92,6 +90,7 @@ public class Ghost extends Actor
 	public float getSpeed() {
 		return game.getGhostSpeed(getState(), getTile());
 	}
+
 	// Movement
 
 	public void setMoveBehavior(GhostState state, ActorNavigation<Ghost> navigation) {
@@ -138,7 +137,6 @@ public class Ghost extends Actor
 		}
 		setSprite("s_frightened", THEME.spr_ghostFrightened());
 		setSprite("s_flashing", THEME.spr_ghostFlashing());
-		setSelectedSprite("s_color_" + getCurrentDir());
 	}
 
 	// State machine
@@ -156,10 +154,6 @@ public class Ghost extends Actor
 	@Override
 	public StateMachine<GhostState, GameEvent> getStateMachine() {
 		return controller;
-	}
-
-	public void traceTo(Logger logger) {
-		controller.traceTo(logger, app().clock::getFrequency);
 	}
 
 	private StateMachine<GhostState, GameEvent> buildStateMachine(String ghostName) {
