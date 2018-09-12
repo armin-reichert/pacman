@@ -261,6 +261,7 @@ public class Ghost extends Actor
 					.when(CHASING).then(SCATTERING).on(StartScatteringEvent.class)
 
 					.stay(SCATTERING).on(StartScatteringEvent.class)
+					.stay(SCATTERING).on(PacManGettingWeakerEvent.class)
 					.when(SCATTERING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
 					.when(SCATTERING).then(DYING).on(GhostKilledEvent.class) // cheating-mode
 					.when(SCATTERING).then(CHASING).on(StartChasingEvent.class)
