@@ -127,6 +127,14 @@ public class Ghost extends Actor
 	private boolean isPacManGreedy() {
 		return pacMan.getState() == PacManState.GREEDY;
 	}
+	
+	private void rememberChasing() {
+		nextAttackState = CHASING;
+	}
+	
+	private void rememberScattering() {
+		nextAttackState = SCATTERING;
+	}
 
 	// Sprites
 
@@ -215,56 +223,63 @@ public class Ghost extends Actor
 
 				.when(HOME).then(SAFE)
 				
-				.stay(HOME).on(StartScatteringEvent.class).act(() -> nextAttackState = SCATTERING)
-				.stay(HOME).on(StartChasingEvent.class).act(() -> nextAttackState = CHASING)
-
-				.when(SAFE).then(FRIGHTENED)
-					.condition(() -> canLeaveHouse() && isPacManGreedy())
-
-				.when(SAFE).then(SCATTERING)
-					.condition(() -> canLeaveHouse() && !isPacManGreedy() && nextAttackState == SCATTERING)
-					
-				.when(SAFE).then(CHASING)
-					.condition(() -> canLeaveHouse() && !isPacManGreedy() && nextAttackState == CHASING)
+				.stay(HOME)
+					.on(StartScatteringEvent.class)
+					.act(this::rememberScattering)
 				
+				.stay(HOME)
+					.on(StartChasingEvent.class)
+					.act(this::rememberChasing)
+
 				.stay(SAFE)
 					.on(StartChasingEvent.class)
 					.condition(() -> !canLeaveHouse())
-					.act(() -> nextAttackState = CHASING)
+					.act(this::rememberChasing)
 				
 				.when(SAFE).then(CHASING)
 					.on(StartChasingEvent.class)
 					.condition(() -> canLeaveHouse())
+					.act(this::rememberChasing)
 				
 				.stay(SAFE)
 					.on(StartScatteringEvent.class)
 					.condition(() -> !canLeaveHouse())
-					.act(() -> nextAttackState = SCATTERING)
+					.act(this::rememberScattering)
 					
 				.when(SAFE).then(SCATTERING)
 					.on(StartScatteringEvent.class)
 					.condition(() -> canLeaveHouse())
+					.act(this::rememberScattering)
 					
 				.stay(SAFE).on(PacManGainsPowerEvent.class)
 				.stay(SAFE).on(PacManGettingWeakerEvent.class)
 				.stay(SAFE).on(PacManLostPowerEvent.class)
 				.stay(SAFE).on(GhostKilledEvent.class)
-		
+				
+				.when(SAFE).then(FRIGHTENED)
+					.condition(() -> canLeaveHouse() && isPacManGreedy())
+
+				.when(SAFE).then(SCATTERING)
+					.condition(() -> canLeaveHouse() && nextAttackState == SCATTERING)
+				
+				.when(SAFE).then(CHASING)
+					.condition(() -> canLeaveHouse() && nextAttackState == CHASING)
+				
 				.stay(CHASING).on(StartChasingEvent.class)
 				.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
 				.when(CHASING).then(DYING).on(GhostKilledEvent.class) // cheating-mode
-				.when(CHASING).then(SCATTERING).on(StartScatteringEvent.class)
+				.when(CHASING).then(SCATTERING).on(StartScatteringEvent.class).act(this::rememberScattering)
 
 				.stay(SCATTERING).on(StartScatteringEvent.class)
 				.stay(SCATTERING).on(PacManGettingWeakerEvent.class)
 				.when(SCATTERING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
 				.when(SCATTERING).then(DYING).on(GhostKilledEvent.class) // cheating-mode
-				.when(SCATTERING).then(CHASING).on(StartChasingEvent.class)
+				.when(SCATTERING).then(CHASING).on(StartChasingEvent.class).act(this::rememberChasing)
 				
 				.stay(FRIGHTENED).on(PacManGainsPowerEvent.class)
 				.stay(FRIGHTENED).on(PacManGettingWeakerEvent.class).act(e -> setSelectedSprite("s_flashing"))
-				.stay(FRIGHTENED).on(StartScatteringEvent.class).act(() -> nextAttackState = SCATTERING)
-				.stay(FRIGHTENED).on(StartChasingEvent.class).act(() -> nextAttackState = CHASING)
+				.stay(FRIGHTENED).on(StartScatteringEvent.class).act(this::rememberScattering)
+				.stay(FRIGHTENED).on(StartChasingEvent.class).act(this::rememberChasing)
 				
 				.when(FRIGHTENED).then(CHASING).on(PacManLostPowerEvent.class)
 				.when(FRIGHTENED).then(DYING).on(GhostKilledEvent.class)
@@ -274,8 +289,8 @@ public class Ghost extends Actor
 				.stay(DYING).on(PacManGettingWeakerEvent.class) // cheating-mode
 				.stay(DYING).on(PacManLostPowerEvent.class) // cheating-mode
 				.stay(DYING).on(GhostKilledEvent.class) // cheating-mode
-				.stay(DYING).on(StartScatteringEvent.class).act(() -> nextAttackState = SCATTERING)
-				.stay(DYING).on(StartChasingEvent.class).act(() -> nextAttackState = CHASING)
+				.stay(DYING).on(StartScatteringEvent.class).act(this::rememberScattering)
+				.stay(DYING).on(StartChasingEvent.class).act(this::rememberChasing)
 					
 				.when(DEAD).then(SAFE)
 					.condition(() -> inGhostHouse())
@@ -285,8 +300,8 @@ public class Ghost extends Actor
 				.stay(DEAD).on(PacManGettingWeakerEvent.class)
 				.stay(DEAD).on(PacManLostPowerEvent.class)
 				.stay(DEAD).on(GhostKilledEvent.class) // cheating-mode
-				.stay(DEAD).on(StartScatteringEvent.class).act(() -> nextAttackState = SCATTERING)
-				.stay(DEAD).on(StartChasingEvent.class).act(() -> nextAttackState = CHASING)
+				.stay(DEAD).on(StartScatteringEvent.class).act(this::rememberScattering)
+				.stay(DEAD).on(StartChasingEvent.class).act(this::rememberChasing)
 
 		.endStateMachine();
 		/*@formatter:on*/
