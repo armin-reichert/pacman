@@ -282,77 +282,146 @@ The processing of all used state machines can be traced to some logger. If a sta
 Example trace:
 
 ```
-[2018-08-17 06:18:21:240] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)'
-[2018-08-17 06:18:21:411] [PacMan] publishing event 'FoodFound(Pellet)'
-[2018-08-17 06:18:21:411] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)'
-[2018-08-17 06:18:24:053] [PacMan] publishing event 'BonusFound(CHERRIES,100)'
-[2018-08-17 06:18:24:053] [GameControl] stays 'PLAYING' on 'BonusFound(CHERRIES,100)'
-[2018-08-17 06:18:24:053] PacMan found bonus CHERRIES of value 100
-[2018-08-17 06:18:25:552] [PacMan] publishing event 'FoodFound(Pellet)'
-[2018-08-17 06:18:25:552] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)'
-[2018-08-17 06:18:25:752] [PacMan] publishing event 'FoodFound(Pellet)'
-[2018-08-17 06:18:25:752] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)'
-[2018-08-17 06:18:25:921] [PacMan] publishing event 'FoodFound(Pellet)'
-[2018-08-17 06:18:25:921] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)'
-[2018-08-17 06:18:26:103] [PacMan] publishing event 'FoodFound(Pellet)'
-[2018-08-17 06:18:26:103] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)'
-[2018-08-17 06:18:26:274] [PacMan] publishing event 'FoodFound(Pellet)'
-[2018-08-17 06:18:26:274] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)'
-[2018-08-17 06:18:26:434] [PacMan] publishing event 'FoodFound(Pellet)'
-[2018-08-17 06:18:26:434] [GameControl] stays 'PLAYING' on 'FoodFound(Pellet)'
-[2018-08-17 06:18:27:101] [PacMan] publishing event 'PacManGhostCollisionEvent(Blinky)'
-[2018-08-17 06:18:27:101] [GameControl] stays 'PLAYING' on 'PacManGhostCollisionEvent(Blinky)'
-[2018-08-17 06:18:27:118] [GameControl] changing from 'PLAYING' to 'PACMAN_DYING' on 'PacManKilledEvent(Blinky)'
-[2018-08-17 06:18:27:118] [GameControl] exiting state 'PLAYING'
-[2018-08-17 06:18:27:118] [Pac-Man] changing from 'HUNGRY' to 'DYING' on 'PacManKilledEvent(Blinky)'
-[2018-08-17 06:18:27:118] [Pac-Man] exiting state 'HUNGRY'
-[2018-08-17 06:18:27:118] [Pac-Man] entering state 'DYING'
-[2018-08-17 06:18:27:118] PacMan killed by Blinky at (21,12)
-[2018-08-17 06:18:27:118] [GameControl] entering state 'PACMAN_DYING'
-[2018-08-17 06:18:29:145] [Pac-Man] stays 'DYING'
-[2018-08-17 06:18:29:145] [PacMan] publishing event 'PacManDiedEvent'
-[2018-08-17 06:18:29:145] [GameControl] changing from 'PACMAN_DYING' to 'PLAYING' on 'PacManDiedEvent'
-[2018-08-17 06:18:29:145] [GameControl] exiting state 'PACMAN_DYING'
-[2018-08-17 06:18:29:145] [Pac-Man] entering initial state 'HOME'
-[2018-08-17 06:18:29:145] [Ghost Blinky] entering initial state 'HOME'
-[2018-08-17 06:18:29:160] [GameControl] entering state 'PLAYING'
-[2018-08-17 06:18:29:160] [Pac-Man] changing from 'HOME' to 'HUNGRY'
-[2018-08-17 06:18:29:160] [Pac-Man] exiting state 'HOME'
-[2018-08-17 06:18:29:160] [Pac-Man] entering state 'HUNGRY'
-[2018-08-17 06:18:29:176] [Ghost Blinky] changing from 'HOME' to 'SAFE'
-[2018-08-17 06:18:29:176] [Ghost Blinky] exiting state 'HOME'
-[2018-08-17 06:18:29:176] [Ghost Blinky] entering state 'SAFE' for 2,00 seconds (120 frames)
-[2018-08-17 06:18:31:190] [Ghost Blinky] changing from 'SAFE' to 'CHASING'
-[2018-08-17 06:18:31:190] [Ghost Blinky] exiting state 'SAFE'
-[2018-08-17 06:18:31:190] [Ghost Blinky] entering state 'CHASING'
-[2018-08-17 06:18:34:865] [PacMan] publishing event 'PacManGhostCollisionEvent(Blinky)'
-[2018-08-17 06:18:34:865] [GameControl] stays 'PLAYING' on 'PacManGhostCollisionEvent(Blinky)'
-[2018-08-17 06:18:34:883] [GameControl] changing from 'PLAYING' to 'PACMAN_DYING' on 'PacManKilledEvent(Blinky)'
-[2018-08-17 06:18:34:883] [GameControl] exiting state 'PLAYING'
-[2018-08-17 06:18:34:883] [Pac-Man] changing from 'HUNGRY' to 'DYING' on 'PacManKilledEvent(Blinky)'
-[2018-08-17 06:18:34:883] [Pac-Man] exiting state 'HUNGRY'
-[2018-08-17 06:18:34:883] [Pac-Man] entering state 'DYING' for 2,00 seconds (120 frames)
-[2018-08-17 06:18:34:883] PacMan killed by Blinky at (21,23)
-[2018-08-17 06:18:34:883] [GameControl] entering state 'PACMAN_DYING'
-[2018-08-17 06:18:36:912] [Pac-Man] stays 'DYING'
-[2018-08-17 06:18:36:912] [PacMan] publishing event 'PacManDiedEvent'
-[2018-08-17 06:18:36:912] [GameControl] changing from 'PACMAN_DYING' to 'PLAYING' on 'PacManDiedEvent'
-[2018-08-17 06:18:36:912] [GameControl] exiting state 'PACMAN_DYING'
-[2018-08-17 06:18:36:912] [Pac-Man] entering initial state 'HOME'
-[2018-08-17 06:18:36:912] [Ghost Blinky] entering initial state 'HOME'
-[2018-08-17 06:18:36:912] [GameControl] entering state 'PLAYING'
-[2018-08-17 06:18:36:928] [Pac-Man] changing from 'HOME' to 'HUNGRY'
-[2018-08-17 06:18:36:928] [Pac-Man] exiting state 'HOME'
-[2018-08-17 06:18:36:928] [Pac-Man] entering state 'HUNGRY'
-[2018-08-17 06:18:36:928] [Ghost Blinky] changing from 'HOME' to 'SAFE'
-[2018-08-17 06:18:36:928] [Ghost Blinky] exiting state 'HOME'
-[2018-08-17 06:18:36:928] [Ghost Blinky] entering state 'SAFE' for 2,00 seconds (120 frames)
-[2018-08-17 06:18:38:973] [Ghost Blinky] changing from 'SAFE' to 'CHASING'
-[2018-08-17 06:18:38:973] [Ghost Blinky] exiting state 'SAFE'
-[2018-08-17 06:18:38:973] [Ghost Blinky] entering state 'CHASING'
-[2018-08-17 06:18:41:393] Application window closing, app will exit...
-[2018-08-17 06:18:41:401] Application terminated.
-```
+C:\Users\armin\Desktop>java -jar pacman.jar
+[2018-09-13 10:50:35:355] Pac-Man sprites extracted.
+[2018-09-13 10:50:35:419] Pac-Man theme created.
+[2018-09-13 10:50:35:434] Clock frequency set to 60 Hz
+[2018-09-13 10:50:35:434] Application PacManApp created.
+[2018-09-13 10:50:38:068] Application shell created.
+[2018-09-13 10:50:38:114] Window-mode: 224x288
+[2018-09-13 10:50:38:152] Default view initialized.
+[2018-09-13 10:50:38:337] Set controller to: de.amr.games.pacman.controller.GameController@7f851e79
+[2018-09-13 10:50:38:337] [Game] entering initial state:
+[2018-09-13 10:50:38:337] [Game] entering state 'INTRO'
+[2018-09-13 10:50:38:368] IntroAnimation entering initial state:
+[2018-09-13 10:50:38:368] IntroAnimation entering state '0'
+[2018-09-13 10:50:38:368] Initialized controller: de.amr.games.pacman.controller.GameController@7f851e79
+[2018-09-13 10:50:38:368] Application initialized.
+[2018-09-13 10:50:38:368] Clock running with 60 ticks/sec.
+[2018-09-13 10:50:40:655] IntroAnimation changing from '0' to '1'
+[2018-09-13 10:50:40:660] IntroAnimation exiting state '0'
+[2018-09-13 10:50:40:670] IntroAnimation entering state '1'
+[2018-09-13 10:50:42:102] [Game] changing from 'INTRO' to 'READY'
+[2018-09-13 10:50:42:102] [Game] exiting state 'INTRO'
+[2018-09-13 10:50:42:102] Pac-Man sounds loaded.
+[2018-09-13 10:50:42:110] [Game] entering state 'READY' for 4,00 seconds (270 frames)
+[2018-09-13 10:50:42:153] [Inky] entering initial state:
+[2018-09-13 10:50:42:153] [Inky] entering state 'HOME'
+[2018-09-13 10:50:42:160] [Clyde] entering initial state:
+[2018-09-13 10:50:42:160] [Clyde] entering state 'HOME'
+[2018-09-13 10:50:42:160] [Pac-Man] entering initial state:
+[2018-09-13 10:50:42:160] [Pac-Man] entering state 'HOME' for 0,00 seconds (15 frames)
+[2018-09-13 10:50:42:160] [Pinky] entering initial state:
+[2018-09-13 10:50:42:160] [Pinky] entering state 'HOME'
+[2018-09-13 10:50:42:160] [Blinky] entering initial state:
+[2018-09-13 10:50:42:160] [Blinky] entering state 'HOME'
+[2018-09-13 10:50:42:160] Pac-Man sounds loaded.
+[2018-09-13 10:50:46:800] [Game] changing from 'READY' to 'PLAYING' on timeout
+[2018-09-13 10:50:46:800] [Game] exiting state 'READY'
+[2018-09-13 10:50:46:800] [Game] entering state 'PLAYING'
+[2018-09-13 10:50:46:800] [GhostAttackTimer] entering initial state:
+[2018-09-13 10:50:46:810] [GhostAttackTimer] entering state 'init'
+[2018-09-13 10:50:46:810] [GhostAttackTimer] changing from 'init' to 's0'
+[2018-09-13 10:50:46:810] [GhostAttackTimer] exiting state 'init'
+[2018-09-13 10:50:46:824] [GhostAttackTimer] entering state 's0' for 7,00 seconds (420 frames)
+[2018-09-13 10:50:46:833] [Blinky] changing from 'HOME' to 'SAFE'
+[2018-09-13 10:50:46:833] [Blinky] exiting state 'HOME'
+[2018-09-13 10:50:46:833] [Blinky] entering state 'SAFE' for 2,00 seconds (120 frames)
+[2018-09-13 10:50:46:843] [Pinky] changing from 'HOME' to 'SAFE'
+[2018-09-13 10:50:46:843] [Pinky] exiting state 'HOME'
+[2018-09-13 10:50:46:843] [Pinky] entering state 'SAFE' for 2,00 seconds (120 frames)
+[2018-09-13 10:50:46:843] [Inky] changing from 'HOME' to 'SAFE'
+[2018-09-13 10:50:46:850] [Inky] exiting state 'HOME'
+[2018-09-13 10:50:46:850] [Inky] entering state 'SAFE' for 2,00 seconds (120 frames)
+[2018-09-13 10:50:46:850] [Clyde] changing from 'HOME' to 'SAFE'
+[2018-09-13 10:50:46:850] [Clyde] exiting state 'HOME'
+[2018-09-13 10:50:46:850] [Clyde] entering state 'SAFE' for 2,00 seconds (120 frames)
+[2018-09-13 10:50:46:850] [Game] stays 'PLAYING' on 'StartScatteringEvent'
+[2018-09-13 10:50:46:850] [Blinky] stays 'SAFE' on 'StartScatteringEvent'
+[2018-09-13 10:50:46:850] [Pinky] stays 'SAFE' on 'StartScatteringEvent'
+[2018-09-13 10:50:46:850] [Inky] stays 'SAFE' on 'StartScatteringEvent'
+[2018-09-13 10:50:46:864] [Clyde] stays 'SAFE' on 'StartScatteringEvent'
+[2018-09-13 10:50:47:123] [Pac-Man] changing from 'HOME' to 'HUNGRY' on timeout
+[2018-09-13 10:50:47:123] [Pac-Man] exiting state 'HOME'
+[2018-09-13 10:50:47:123] [Pac-Man] entering state 'HUNGRY'
+[2018-09-13 10:50:47:316] [PacMan] publishing event 'FoodFound(Pellet)'
+[2018-09-13 10:50:47:316] [Game] stays 'PLAYING' on 'FoodFound(Pellet)'
+[2018-09-13 10:50:47:511] [PacMan] publishing event 'FoodFound(Pellet)'
+[2018-09-13 10:50:47:511] [Game] stays 'PLAYING' on 'FoodFound(Pellet)'
+[2018-09-13 10:50:47:684] [PacMan] publishing event 'FoodFound(Pellet)'
+[2018-09-13 10:50:47:684] [Game] stays 'PLAYING' on 'FoodFound(Pellet)'
+[2018-09-13 10:50:47:859] [PacMan] publishing event 'FoodFound(Pellet)'
+[2018-09-13 10:50:47:860] [Game] stays 'PLAYING' on 'FoodFound(Pellet)'
+[2018-09-13 10:50:48:052] [PacMan] publishing event 'FoodFound(Pellet)'
+[2018-09-13 10:50:48:052] [Game] stays 'PLAYING' on 'FoodFound(Pellet)'
+[2018-09-13 10:50:48:225] [PacMan] publishing event 'FoodFound(Pellet)'
+[2018-09-13 10:50:48:225] [Game] stays 'PLAYING' on 'FoodFound(Pellet)'
+[2018-09-13 10:50:48:416] [PacMan] publishing event 'FoodFound(Pellet)'
+[2018-09-13 10:50:48:416] [Game] stays 'PLAYING' on 'FoodFound(Pellet)'
+[2018-09-13 10:50:49:010] [Blinky] changing from 'SAFE' to 'SCATTERING'
+[2018-09-13 10:50:49:010] [Blinky] exiting state 'SAFE'
+[2018-09-13 10:50:49:013] [Blinky] entering state 'SCATTERING'
+[2018-09-13 10:50:49:013] [Pinky] changing from 'SAFE' to 'SCATTERING'
+[2018-09-13 10:50:49:020] [Pinky] exiting state 'SAFE'
+[2018-09-13 10:50:49:020] [Pinky] entering state 'SCATTERING'
+[2018-09-13 10:50:49:020] [Inky] changing from 'SAFE' to 'SCATTERING'
+[2018-09-13 10:50:49:020] [Inky] exiting state 'SAFE'
+[2018-09-13 10:50:49:020] [Inky] entering state 'SCATTERING'
+[2018-09-13 10:50:52:742] [PacMan] publishing event 'PacManGhostCollisionEvent(Inky)'
+[2018-09-13 10:50:52:742] [Game] stays 'PLAYING' on 'PacManGhostCollisionEvent(Inky)'
+[2018-09-13 10:50:52:759] [Game] changing from 'PLAYING' to 'PACMAN_DYING' on 'PacManKilledEvent(Inky)'
+[2018-09-13 10:50:52:760] [Game] exiting state 'PLAYING'
+[2018-09-13 10:50:52:760] [Pac-Man] changing from 'HUNGRY' to 'DYING' on 'PacManKilledEvent(Inky)'
+[2018-09-13 10:50:52:760] [Pac-Man] exiting state 'HUNGRY'
+[2018-09-13 10:50:52:760] [Pac-Man] entering state 'DYING' for 2,00 seconds (120 frames)
+[2018-09-13 10:50:52:770] PacMan killed by Inky at (21,26)
+[2018-09-13 10:50:52:770] [Game] entering state 'PACMAN_DYING'
+[2018-09-13 10:50:54:895] [Pac-Man] changing from 'DYING' to 'DEAD' on timeout
+[2018-09-13 10:50:54:895] [Pac-Man] exiting state 'DYING'
+[2018-09-13 10:50:54:895] [Pac-Man] entering state 'DEAD'
+[2018-09-13 10:50:54:912] [Game] changing from 'PACMAN_DYING' to 'PLAYING'
+[2018-09-13 10:50:54:912] [Game] exiting state 'PACMAN_DYING'
+[2018-09-13 10:50:54:912] Pac-Man sounds loaded.
+[2018-09-13 10:50:54:912] [Inky] entering initial state:
+[2018-09-13 10:50:54:912] [Inky] entering state 'HOME'
+[2018-09-13 10:50:54:920] [Clyde] entering initial state:
+[2018-09-13 10:50:54:921] [Clyde] entering state 'HOME'
+[2018-09-13 10:50:54:921] [Pac-Man] entering initial state:
+[2018-09-13 10:50:54:921] [Pac-Man] entering state 'HOME' for 0,00 seconds (15 frames)
+[2018-09-13 10:50:54:921] [Pinky] entering initial state:
+[2018-09-13 10:50:54:921] [Pinky] entering state 'HOME'
+[2018-09-13 10:50:54:930] [Blinky] entering initial state:
+[2018-09-13 10:50:54:930] [Blinky] entering state 'HOME'
+[2018-09-13 10:50:54:930] [GhostAttackTimer] entering initial state:
+[2018-09-13 10:50:54:940] [GhostAttackTimer] entering state 'init'
+[2018-09-13 10:50:54:940] [Game] entering state 'PLAYING'
+[2018-09-13 10:50:54:940] [GhostAttackTimer] entering initial state:
+[2018-09-13 10:50:54:940] [GhostAttackTimer] entering state 'init'
+[2018-09-13 10:50:54:950] [GhostAttackTimer] changing from 'init' to 's0'
+[2018-09-13 10:50:54:954] [GhostAttackTimer] exiting state 'init'
+[2018-09-13 10:50:54:954] [GhostAttackTimer] entering state 's0' for 7,00 seconds (420 frames)
+[2018-09-13 10:50:54:954] [Blinky] changing from 'HOME' to 'SAFE'
+[2018-09-13 10:50:54:960] [Blinky] exiting state 'HOME'
+[2018-09-13 10:50:54:960] [Blinky] entering state 'SAFE' for 2,00 seconds (120 frames)
+[2018-09-13 10:50:54:960] [Pinky] changing from 'HOME' to 'SAFE'
+[2018-09-13 10:50:54:960] [Pinky] exiting state 'HOME'
+[2018-09-13 10:50:54:960] [Pinky] entering state 'SAFE' for 2,00 seconds (120 frames)
+[2018-09-13 10:50:54:970] [Inky] changing from 'HOME' to 'SAFE'
+[2018-09-13 10:50:54:970] [Inky] exiting state 'HOME'
+[2018-09-13 10:50:54:980] [Inky] entering state 'SAFE' for 2,00 seconds (120 frames)
+[2018-09-13 10:50:54:980] [Clyde] changing from 'HOME' to 'SAFE'
+[2018-09-13 10:50:54:980] [Clyde] exiting state 'HOME'
+[2018-09-13 10:50:54:980] [Clyde] entering state 'SAFE' for 2,00 seconds (120 frames)
+[2018-09-13 10:50:54:980] [Game] stays 'PLAYING' on 'StartScatteringEvent'
+[2018-09-13 10:50:54:990] [Blinky] stays 'SAFE' on 'StartScatteringEvent'
+[2018-09-13 10:50:54:990] [Pinky] stays 'SAFE' on 'StartScatteringEvent'
+[2018-09-13 10:50:54:990] [Inky] stays 'SAFE' on 'StartScatteringEvent'
+[2018-09-13 10:50:55:000] [Clyde] stays 'SAFE' on 'StartScatteringEvent'
+[2018-09-13 10:50:55:253] [Pac-Man] changing from 'HOME' to 'HUNGRY' on timeout
+[2018-09-13 10:50:55:253] [Pac-Man] exiting state 'HOME'
+[2018-09-13 10:50:55:253] [Pac-Man] entering state 'HUNGRY'
+[2018-09-13 10:50:56:256] Application window closing, app will exit...
+[2018-09-13 10:50:56:275] Application terminated.```
 
 
 ## Configurable navigation behavior (aka AI)
