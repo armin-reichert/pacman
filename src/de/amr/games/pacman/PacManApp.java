@@ -46,11 +46,12 @@ public class PacManApp extends Application {
 			throw new RuntimeException(e);
 		}
 		LOGGER.info(String.format("Theme '%s' created.", THEME.getClass().getSimpleName()));
-		EventQueue.invokeLater(() -> PacManApp.THEME.snd_allSounds()); // preload all sounds on EDT
+		EventQueue.invokeLater(() -> THEME.snd_clips_all()); // preload all clips
 	}
 
 	@Override
 	public void init() {
+		EventQueue.invokeLater(() -> THEME.snd_music_all());
 		setController(new GameController());
 	}
 }
