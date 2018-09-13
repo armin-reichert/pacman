@@ -84,6 +84,10 @@ public class Ghost extends Actor
 	public Tile getScatteringTarget() {
 		return scatteringTarget;
 	}
+	
+	public GhostState getNextAttackState() {
+		return nextAttackState;
+	}
 
 	@Override
 	public float getSpeed() {

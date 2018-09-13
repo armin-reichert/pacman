@@ -17,7 +17,6 @@ import java.util.logging.Level;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
-import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
@@ -86,16 +85,15 @@ public class PlayViewX extends PlayView {
 	public void setShowStates(boolean showStates) {
 		this.showStates = showStates;
 	}
-	
-	
+
 	public boolean isShowGrid() {
 		return showGrid;
 	}
-	
+
 	public boolean isShowRoutes() {
 		return showRoutes;
 	}
-	
+
 	public boolean isShowStates() {
 		return showStates;
 	}
@@ -180,11 +178,11 @@ public class PlayViewX extends PlayView {
 
 	private String ghostState(Ghost ghost) {
 		State<?, ?> state = ghost.getStateObject();
+		GhostState nextAttackState = ghost.getNextAttackState();
 		return state.getDuration() != State.ENDLESS
 				? String.format("%s(%s,%d|%d)[%s]", ghost.getName(), state.id(), state.getTicksRemaining(),
-						state.getDuration(), Top4.name(ghost.getCurrentDir()))
-				: String.format("%s(%s,%s)[%s]", ghost.getName(), state.id(), INFTY,
-						Top4.name(ghost.getCurrentDir()));
+						state.getDuration(), nextAttackState)
+				: String.format("%s(%s,%s)[%s]", ghost.getName(), state.id(), INFTY, nextAttackState);
 	}
 
 	private void toggleGhost(Ghost ghost) {
