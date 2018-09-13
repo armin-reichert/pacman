@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.games.pacman.controller.event.GameEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -29,16 +30,15 @@ import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.ActorNavigation;
 import de.amr.games.pacman.navigation.ActorNavigationSystem;
 import de.amr.games.pacman.theme.GhostColor;
+import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
-import de.amr.statemachine.StateMachineClient;
 
 /**
  * A ghost.
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Actor
-		implements StateMachineClient<GhostState, GameEvent>, ActorNavigationSystem<Ghost> {
+public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 
 	private final String name;
 	private final StateMachine<GhostState, GameEvent> fsm;
@@ -58,8 +58,8 @@ public class Ghost extends Actor
 		this.home = home;
 		this.scatteringTarget = scatteringTarget;
 		this.initialDir = initialDir;
-		fnCanLeaveHouse = () -> getStateObject().isTerminated();
 		fsm = buildStateMachine(name);
+		fnCanLeaveHouse = () -> fsm.state().isTerminated();
 		navigationMap = new EnumMap<>(GhostState.class);
 		createSprites(color);
 	}
@@ -148,6 +148,8 @@ public class Ghost extends Actor
 
 	@Override
 	public void init() {
+		super.init();
+		fsm.traceTo(Application.LOGGER, Application.app().clock::getFrequency);
 		fsm.init();
 	}
 
@@ -156,11 +158,22 @@ public class Ghost extends Actor
 		fsm.update();
 	}
 
-	@Override
-	public StateMachine<GhostState, GameEvent> getStateMachine() {
-		return fsm;
+	public GhostState getState() {
+		return fsm.getState();
 	}
-
+	
+	public State<GhostState, GameEvent> getStateObject() {
+		return fsm.state();
+	}
+	
+	public void setState(GhostState state) {
+		fsm.setState(state);
+	}
+	
+	public void processEvent(GameEvent event) {
+		fsm.process(event);
+	}
+	
 	private StateMachine<GhostState, GameEvent> buildStateMachine(String ghostName) {
 		/*@formatter:off*/
 		return StateMachine.define(GhostState.class, GameEvent.class)

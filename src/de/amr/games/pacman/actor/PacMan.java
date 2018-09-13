@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.controller.EventManager;
@@ -31,15 +32,13 @@ import de.amr.games.pacman.navigation.ActorNavigation;
 import de.amr.games.pacman.navigation.ActorNavigationSystem;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
-import de.amr.statemachine.StateMachineClient;
 
 /**
  * The one and only.
  * 
  * @author Armin Reichert
  */
-public class PacMan extends Actor
-		implements StateMachineClient<PacManState, GameEvent>, ActorNavigationSystem<PacMan> {
+public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 
 	private final StateMachine<PacManState, GameEvent> fsm;
 	private final Map<PacManState, ActorNavigation<PacMan>> navigationMap;
@@ -142,6 +141,8 @@ public class PacMan extends Actor
 
 	@Override
 	public void init() {
+		super.init();
+		fsm.traceTo(Application.LOGGER, Application.app().clock::getFrequency);
 		fsm.init();
 	}
 
@@ -150,9 +151,16 @@ public class PacMan extends Actor
 		fsm.update();
 	}
 
-	@Override
-	public StateMachine<PacManState, GameEvent> getStateMachine() {
-		return fsm;
+	public PacManState getState() {
+		return fsm.getState();
+	}
+	
+	public State<PacManState, GameEvent> getStateObject() {
+		return fsm.state();
+	}
+	
+	public void processEvent(GameEvent event) {
+		fsm.process(event);
 	}
 
 	private StateMachine<PacManState, GameEvent> buildStateMachine() {

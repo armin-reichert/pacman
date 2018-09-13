@@ -30,7 +30,7 @@ public class PacManApp extends Application {
 			}
 		}
 		PacManThemes.use(ClassicPacManTheme.class);
-		EventQueue.invokeLater(()->THEME.snd_allSounds()); // preload all sounds on EDT
+		EventQueue.invokeLater(() -> THEME.snd_allSounds()); // preload all sounds on EDT
 		launch(new PacManApp(scale));
 	}
 

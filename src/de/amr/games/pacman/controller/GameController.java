@@ -14,6 +14,7 @@ import static de.amr.games.pacman.theme.PacManThemes.THEME;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
@@ -62,11 +63,6 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		actors.pacMan.subscribe(this::process);
 		buildStateMachine();
 		ghostAttackTimer = new GhostAttackTimer(this);
-		// tracing
-		actors.pacMan.getStateMachine().traceTo(LOGGER, app().clock::getFrequency);
-		actors.getGhosts().forEach(ghost -> ghost.getStateMachine().traceTo(LOGGER, app().clock::getFrequency));
-		traceTo(LOGGER, app().clock::getFrequency);
-		ghostAttackTimer.traceTo(LOGGER, app().clock::getFrequency);
 	}
 
 	public Game getGame() {
@@ -108,6 +104,12 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 	@Override
 	public View currentView() {
 		return currentView;
+	}
+	
+	@Override
+	public void init() {
+		super.init();
+		traceTo(Application.LOGGER, Application.app().clock::getFrequency);
 	}
 
 	@Override

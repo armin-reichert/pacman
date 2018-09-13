@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.controls.AnimationController;
 import de.amr.easy.game.controls.BlinkingText;
@@ -66,8 +67,8 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		pressSpace.tf.setY(150);
 		pressSpace.tf.centerX(width);
 		f11Hint = BlinkingText.create().text("F11 Toggle Fullscreen").spaceExpansion(3)
-				.blinkTimeMillis(Integer.MAX_VALUE)
-				.font(THEME.fnt_text(12)).background(background).color(Color.PINK).build();
+				.blinkTimeMillis(Integer.MAX_VALUE).font(THEME.fnt_text(12)).background(background).color(Color.PINK)
+				.build();
 		f11Hint.tf.setY(height - 40);
 		f11Hint.tf.centerX(width);
 		visitGitHub = Link.create().text(GITHUB_TEXT).url(GITHUB_URL).font(THEME.fnt_text(8))
@@ -96,7 +97,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 	private void buildStateMachine() {
 		/*@formatter:off*/
 		define()
-			.description("IntroAnimation")
+			.description("[Intro]")
 			.initialState(0)
 			.states()
 
@@ -139,9 +140,15 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		.endStateMachine();
 	  /*@formatter:on*/
 	}
-	
+
 	public boolean isComplete() {
 		return getState() == 42;
+	}
+
+	@Override
+	public void init() {
+		super.init();
+		traceTo(Application.LOGGER, Application.app().clock::getFrequency);
 	}
 
 	@Override
