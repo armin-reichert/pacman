@@ -2,7 +2,6 @@ package de.amr.games.pacman.view.play;
 
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.Game.TS;
-import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -15,6 +14,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.easy.grid.impl.Top4;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
@@ -22,7 +22,6 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManWorld;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.theme.PacManThemes;
 
 /**
  * Simple play view without bells and whistles.
@@ -44,7 +43,7 @@ public class PlayView implements View, Controller, PacManWorld {
 		this.width = app().settings.width;
 		this.height = app().settings.height;
 		this.game = game;
-		lifeImage = THEME.spr_pacManWalking(Top4.W).frame(1);
+		lifeImage = PacManApp.THEME.spr_pacManWalking(Top4.W).frame(1);
 		mazeView = new MazeView(game.getMaze());
 		mazeView.tf.setPosition(0, 3 * TS);
 	}
@@ -136,7 +135,7 @@ public class PlayView implements View, Controller, PacManWorld {
 		if (scoresVisible) {
 			// Points score
 			int score = game.getPoints();
-			g.setFont(PacManThemes.THEME.fnt_text());
+			g.setFont(PacManApp.THEME.fnt_text());
 			g.setColor(Color.YELLOW);
 			g.drawString("SCORE", TS, TS);
 			g.setColor(Color.WHITE);
@@ -177,7 +176,7 @@ public class PlayView implements View, Controller, PacManWorld {
 		g.translate(0, height - 2 * TS);
 		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
 			g.translate(width - (n - i) * 2 * TS, 0);
-			g.drawImage(PacManThemes.THEME.img_bonusSymbol(game.getLevelCounter().get(i)), 0, 0, 2 * TS, 2 * TS, null);
+			g.drawImage(PacManApp.THEME.img_bonusSymbol(game.getLevelCounter().get(i)), 0, 0, 2 * TS, 2 * TS, null);
 			g.translate(-width + (n - i) * 2 * TS, 0);
 		}
 		g.translate(0, -height + 2 * TS);
@@ -188,7 +187,7 @@ public class PlayView implements View, Controller, PacManWorld {
 			return;
 		}
 		Graphics2D g2 = (Graphics2D) g.create();
-		g2.setFont(PacManThemes.THEME.fnt_text());
+		g2.setFont(PacManApp.THEME.fnt_text());
 		g2.setColor(infoTextColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(infoText, g2).getBounds();
 		g2.translate((width - box.width) / 2, (game.getMaze().getBonusTile().row + 1) * TS);

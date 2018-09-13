@@ -7,7 +7,6 @@ import static de.amr.games.pacman.actor.PacManState.GREEDY;
 import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.model.Maze.NESW;
-import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -17,6 +16,7 @@ import java.util.function.Consumer;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.EventManager;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -122,9 +122,9 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 	// Sprites
 
 	private void createSprites() {
-		NESW.dirs().forEach(dir -> setSprite("s_walking_" + dir, THEME.spr_pacManWalking(dir)));
-		setSprite("s_dying", THEME.spr_pacManDying());
-		setSprite("s_full", THEME.spr_pacManFull());
+		NESW.dirs().forEach(dir -> setSprite("s_walking_" + dir, PacManApp.THEME.spr_pacManWalking(dir)));
+		setSprite("s_dying", PacManApp.THEME.spr_pacManDying());
+		setSprite("s_full", PacManApp.THEME.spr_pacManFull());
 		setSelectedSprite("s_full");
 	}
 

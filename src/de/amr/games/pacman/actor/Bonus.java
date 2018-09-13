@@ -1,12 +1,12 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.games.pacman.theme.PacManThemes.THEME;
 import static java.util.Arrays.binarySearch;
 
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.entity.GameEntityUsingSprites;
 import de.amr.easy.game.entity.Transform;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
 
@@ -29,8 +29,8 @@ public class Bonus extends GameEntityUsingSprites implements TilePlacedEntity {
 		honored = false;
 		tf.setWidth(getTileSize());
 		tf.setHeight(getTileSize());
-		setSprite("s_symbol", THEME.spr_bonusSymbol(symbol));
-		setSprite("s_number", THEME.spr_pinkNumber(index));
+		setSprite("s_symbol", PacManApp.THEME.spr_bonusSymbol(symbol));
+		setSprite("s_number", PacManApp.THEME.spr_pinkNumber(index));
 		setSelectedSprite("s_symbol");
 	}
 

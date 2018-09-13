@@ -1,7 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -19,6 +18,7 @@ import de.amr.easy.game.controls.ScrollableImage;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
+import de.amr.games.pacman.PacManApp;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -63,15 +63,15 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		ghostPoints.tf.setY(200);
 		ghostPoints.tf.centerX(width);
 		pressSpace = BlinkingText.create().text("Press SPACE to start!").spaceExpansion(3).blinkTimeMillis(1000)
-				.font(THEME.fnt_text(18)).background(background).color(Color.PINK).build();
+				.font(PacManApp.THEME.fnt_text(18)).background(background).color(Color.PINK).build();
 		pressSpace.tf.setY(150);
 		pressSpace.tf.centerX(width);
 		f11Hint = BlinkingText.create().text("F11 Toggle Fullscreen").spaceExpansion(3)
-				.blinkTimeMillis(Integer.MAX_VALUE).font(THEME.fnt_text(12)).background(background).color(Color.PINK)
+				.blinkTimeMillis(Integer.MAX_VALUE).font(PacManApp.THEME.fnt_text(12)).background(background).color(Color.PINK)
 				.build();
 		f11Hint.tf.setY(height - 40);
 		f11Hint.tf.centerX(width);
-		visitGitHub = Link.create().text(GITHUB_TEXT).url(GITHUB_URL).font(THEME.fnt_text(8))
+		visitGitHub = Link.create().text(GITHUB_TEXT).url(GITHUB_URL).font(PacManApp.THEME.fnt_text(8))
 				.color(Color.LIGHT_GRAY).build();
 		visitGitHub.tf.setY(height - 20);
 		visitGitHub.tf.centerX(width);

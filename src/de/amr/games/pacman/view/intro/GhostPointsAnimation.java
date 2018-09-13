@@ -1,7 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -13,6 +12,7 @@ import de.amr.easy.game.entity.GameEntity;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.game.view.View;
 import de.amr.easy.grid.impl.Top4;
+import de.amr.games.pacman.PacManApp;
 
 /**
  * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the
@@ -32,10 +32,10 @@ public class GhostPointsAnimation extends GameEntity implements AnimationControl
 	private boolean energizer;
 
 	public GhostPointsAnimation() {
-		pacMan = THEME.spr_pacManWalking(Top4.E);
-		ghost = THEME.spr_ghostFrightened();
+		pacMan = PacManApp.THEME.spr_pacManWalking(Top4.E);
+		ghost = PacManApp.THEME.spr_ghostFrightened();
 		for (int i = 0; i < 4; ++i) {
-			points[i] = THEME.spr_greenNumber(i);
+			points[i] = PacManApp.THEME.spr_greenNumber(i);
 		}
 		ghostTimer = -1;
 		tf.setWidth(90);
@@ -85,7 +85,7 @@ public class GhostPointsAnimation extends GameEntity implements AnimationControl
 			if (killed.cardinality() == 5) {
 				stop();
 			} else {
-				THEME.snd_eatGhost().play();
+				PacManApp.THEME.snd_eatGhost().play();
 				resetGhostTimer();
 			}
 		}

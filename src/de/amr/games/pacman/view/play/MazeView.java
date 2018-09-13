@@ -1,7 +1,6 @@
 package de.amr.games.pacman.view.play;
 
 import static de.amr.games.pacman.model.Game.TS;
-import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -10,6 +9,7 @@ import java.util.Optional;
 import de.amr.easy.game.entity.GameEntityUsingSprites;
 import de.amr.easy.game.sprite.Animation;
 import de.amr.easy.game.sprite.CyclicAnimation;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.model.Maze;
 
@@ -23,8 +23,8 @@ public class MazeView extends GameEntityUsingSprites {
 
 	public MazeView(Maze maze) {
 		this.maze = maze;
-		setSprite("s_normal", THEME.spr_fullMaze());
-		setSprite("s_flashing", THEME.spr_flashingMaze());
+		setSprite("s_normal", PacManApp.THEME.spr_fullMaze());
+		setSprite("s_flashing", PacManApp.THEME.spr_flashingMaze());
 		setSelectedSprite("s_normal");
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(500);

@@ -9,7 +9,6 @@ import static de.amr.games.pacman.actor.GhostState.HOME;
 import static de.amr.games.pacman.actor.GhostState.SAFE;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Maze.NESW;
-import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -18,6 +17,7 @@ import java.util.function.Supplier;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.sprite.Sprite;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.event.GameEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -59,6 +59,7 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 		this.scatteringTarget = scatteringTarget;
 		this.initialDir = initialDir;
 		fsm = buildStateMachine(name);
+		fnNextAttackState = () -> getState();
 		fnCanLeaveHouse = () -> fsm.state().isTerminated();
 		navigationMap = new EnumMap<>(GhostState.class);
 		createSprites(color);
@@ -134,14 +135,14 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 
 	private void createSprites(GhostColor color) {
 		NESW.dirs().forEach(dir -> {
-			setSprite("s_color_" + dir, THEME.spr_ghostColored(color, dir));
-			setSprite("s_eyes_" + dir, THEME.spr_ghostEyes(dir));
+			setSprite("s_color_" + dir, PacManApp.THEME.spr_ghostColored(color, dir));
+			setSprite("s_eyes_" + dir, PacManApp.THEME.spr_ghostEyes(dir));
 		});
 		for (int i = 0; i < 4; ++i) {
-			setSprite("s_value" + i, THEME.spr_greenNumber(i));
+			setSprite("s_value" + i, PacManApp.THEME.spr_greenNumber(i));
 		}
-		setSprite("s_frightened", THEME.spr_ghostFrightened());
-		setSprite("s_flashing", THEME.spr_ghostFlashing());
+		setSprite("s_frightened", PacManApp.THEME.spr_ghostFrightened());
+		setSprite("s_flashing", PacManApp.THEME.spr_ghostFlashing());
 	}
 
 	// State machine

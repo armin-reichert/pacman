@@ -1,7 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.theme.PacManThemes.THEME;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -13,6 +12,7 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.game.view.View;
 import de.amr.easy.grid.impl.Top4;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.theme.GhostColor;
 
 public class ChasePacManAnimation extends GameEntity implements AnimationController, View {
@@ -25,11 +25,11 @@ public class ChasePacManAnimation extends GameEntity implements AnimationControl
 	private boolean pill;
 
 	public ChasePacManAnimation() {
-		pacMan = THEME.spr_pacManWalking(Top4.W);
-		ghosts[0] = THEME.spr_ghostColored(GhostColor.RED, Top4.W);
-		ghosts[1] = THEME.spr_ghostColored(GhostColor.PINK, Top4.W);
-		ghosts[2] = THEME.spr_ghostColored(GhostColor.TURQUOISE, Top4.W);
-		ghosts[3] = THEME.spr_ghostColored(GhostColor.ORANGE, Top4.W);
+		pacMan = PacManApp.THEME.spr_pacManWalking(Top4.W);
+		ghosts[0] = PacManApp.THEME.spr_ghostColored(GhostColor.RED, Top4.W);
+		ghosts[1] = PacManApp.THEME.spr_ghostColored(GhostColor.PINK, Top4.W);
+		ghosts[2] = PacManApp.THEME.spr_ghostColored(GhostColor.TURQUOISE, Top4.W);
+		ghosts[3] = PacManApp.THEME.spr_ghostColored(GhostColor.ORANGE, Top4.W);
 		pill = true;
 		tf.setWidth(88);
 		tf.setHeight(16);
@@ -65,13 +65,13 @@ public class ChasePacManAnimation extends GameEntity implements AnimationControl
 	public void start() {
 		init();
 		tf.setVelocityX(-1.2f);
-		THEME.snd_siren().loop();
+		PacManApp.THEME.snd_siren().loop();
 	}
 
 	@Override
 	public void stop() {
 		tf.setVelocityX(0);
-		THEME.snd_siren().stop();
+		PacManApp.THEME.snd_siren().stop();
 	}
 
 	@Override

@@ -59,7 +59,7 @@ public class InkyChaseTestController implements ViewController {
 			Tile strut = actors.pacMan.ahead(2);
 			Vector2f p = Vector2f.of(strut.col * TS + TS / 2, strut.row * TS + TS / 2);
 			Vector2f s = ActorNavigationSystem.computeExactInkyTarget(b, p, w, h);
-			LOGGER.info(String.format("Target point is (%f | %f)", s.x, s.y));
+			LOGGER.info(String.format("Target point is (%.2f | %.2f)", s.x, s.y));
 			Tile targetTile = tileFromVector(s.x, s.y);
 			LOGGER.info(String.format("Target tile is %s", targetTile));
 			return targetTile;

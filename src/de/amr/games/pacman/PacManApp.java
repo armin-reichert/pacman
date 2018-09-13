@@ -1,7 +1,5 @@
 package de.amr.games.pacman;
 
-import static de.amr.games.pacman.theme.PacManThemes.THEME;
-
 import java.awt.EventQueue;
 import java.util.logging.Level;
 
@@ -10,7 +8,7 @@ import de.amr.easy.game.ui.FullScreen;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
-import de.amr.games.pacman.theme.PacManThemes;
+import de.amr.games.pacman.theme.PacManTheme;
 
 /**
  * Pac-Man game.
@@ -29,10 +27,10 @@ public class PacManApp extends Application {
 				LOGGER.info("Illegal scaling value: " + args[0]);
 			}
 		}
-		PacManThemes.use(ClassicPacManTheme.class);
-		EventQueue.invokeLater(() -> THEME.snd_allSounds()); // preload all sounds on EDT
 		launch(new PacManApp(scale));
 	}
+
+	public static PacManTheme THEME;
 
 	public PacManApp(float scale) {
 		settings.width = 28 * Game.TS;
@@ -41,6 +39,14 @@ public class PacManApp extends Application {
 		settings.title = "Armin's Pac-Man";
 		settings.fullScreenMode = FullScreen.Mode(800, 600, 32);
 		settings.fullScreenOnStart = false;
+		try {
+			THEME = ClassicPacManTheme.class.newInstance();
+		} catch (Exception e) {
+			LOGGER.info("Could not create theme");
+			throw new RuntimeException(e);
+		}
+		LOGGER.info(String.format("Theme '%s' created.", THEME.getClass().getSimpleName()));
+		EventQueue.invokeLater(() -> PacManApp.THEME.snd_allSounds()); // preload all sounds on EDT
 	}
 
 	@Override

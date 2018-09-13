@@ -1,7 +1,5 @@
 package de.amr.games.pacman.view.intro;
 
-import static de.amr.games.pacman.theme.PacManThemes.THEME;
-
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.controls.AnimationController;
@@ -10,6 +8,7 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.game.view.View;
 import de.amr.easy.grid.impl.Top4;
+import de.amr.games.pacman.PacManApp;
 
 /**
  * An animation showing Pac-Man chasing the ghosts and scoring points for each killed ghost.
@@ -28,10 +27,10 @@ public class ChaseGhostsAnimation extends GameEntity implements View, AnimationC
 	private int ghostsKilled;
 
 	public ChaseGhostsAnimation() {
-		pacMan = THEME.spr_pacManWalking(Top4.E);
-		ghost = THEME.spr_ghostFrightened();
+		pacMan = PacManApp.THEME.spr_pacManWalking(Top4.E);
+		ghost = PacManApp.THEME.spr_ghostFrightened();
 		for (int i = 0; i < 4; ++i) {
-			points[i] = THEME.spr_greenNumber(i);
+			points[i] = PacManApp.THEME.spr_greenNumber(i);
 		}
 		tf.setWidth(5 * 18);
 		tf.setHeight(18);
@@ -59,13 +58,13 @@ public class ChaseGhostsAnimation extends GameEntity implements View, AnimationC
 	public void start() {
 		init();
 		tf.setVelocityX(.8f);
-		THEME.snd_waza().loop();
+		PacManApp.THEME.snd_waza().loop();
 	}
 
 	@Override
 	public void stop() {
 		tf.setVelocityX(0);
-		THEME.snd_waza().stop();
+		PacManApp.THEME.snd_waza().stop();
 	}
 
 	@Override
