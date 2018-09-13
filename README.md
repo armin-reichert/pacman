@@ -419,8 +419,8 @@ C:\Users\armin\Desktop>java -jar pacman.jar
 [2018-09-13 10:50:55:253] [Pac-Man] exiting state 'HOME'
 [2018-09-13 10:50:55:253] [Pac-Man] entering state 'HUNGRY'
 [2018-09-13 10:50:56:256] Application window closing, app will exit...
-[2018-09-13 10:50:56:275] Application terminated.```
-
+[2018-09-13 10:50:56:275] Application terminated.
+```
 
 ## Configurable navigation behavior (aka AI)
 
