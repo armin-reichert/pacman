@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.Application;
@@ -30,7 +31,7 @@ public class ClassicPacManTheme implements PacManTheme {
 	private final BufferedImage pacManWalking[][];
 	private final BufferedImage pacManDying[];
 	private final BufferedImage ghostColored[][];
-	private final BufferedImage ghostAwed[];
+	private final BufferedImage ghostFrightened[];
 	private final BufferedImage ghostFlashing[];
 	private final BufferedImage ghostEyes[];
 	private final BufferedImage greenNumbers[];
@@ -45,6 +46,10 @@ public class ClassicPacManTheme implements PacManTheme {
 		return $(x, y, 16, 16);
 	}
 
+	private BufferedImage[] hstrip(int n, int x, int y) {
+		return IntStream.range(0, n).mapToObj(i -> $(x + i * 16, y)).toArray(BufferedImage[]::new);
+	}
+
 	public ClassicPacManTheme() {
 		sheet = Assets.readImage("arcade_pacman_sprites.png");
 
@@ -55,10 +60,10 @@ public class ClassicPacManTheme implements PacManTheme {
 		mazeWhite = changeColor(mazeEmpty, blue, Color.WHITE.getRGB());
 
 		// Symbols for bonuses
-		int offset = 0;
-		for (BonusSymbol symbol : BonusSymbol.values()) {
-			symbolMap.put(symbol, $(488 + offset, 48));
-			offset += 16;
+		BonusSymbol[] symbols = BonusSymbol.values();
+		BufferedImage[] symbolImages = hstrip(8, 488, 48);
+		for (int i = 0; i < 8; ++i) {
+			symbolMap.put(symbols[i], symbolImages[i]);
 		}
 
 		// Pac-Man
@@ -71,10 +76,7 @@ public class ClassicPacManTheme implements PacManTheme {
 			pacManWalking[permuted[d]] = new BufferedImage[] { $(456, d * 16), $(472, d * 16), $(488, 0) };
 		}
 
-		pacManDying = new BufferedImage[12];
-		for (int i = 0; i < 12; ++i) {
-			pacManDying[i] = $(488 + i * 16, 0);
-		}
+		pacManDying = hstrip(12, 488, 0);
 
 		// Ghosts
 		ghostColored = new BufferedImage[4][8];
@@ -84,15 +86,8 @@ public class ClassicPacManTheme implements PacManTheme {
 			}
 		}
 
-		ghostAwed = new BufferedImage[2];
-		for (int i = 0; i < 2; ++i) {
-			ghostAwed[i] = $(584 + i * 16, 64);
-		}
-
-		ghostFlashing = new BufferedImage[4];
-		for (int i = 0; i < 4; ++i) {
-			ghostFlashing[i] = $(584 + i * 16, 64);
-		}
+		ghostFrightened = hstrip(2, 584, 64);
+		ghostFlashing = hstrip(4, 584, 64);
 
 		ghostEyes = new BufferedImage[4];
 		for (int d = 0; d < 4; ++d) {
@@ -100,10 +95,7 @@ public class ClassicPacManTheme implements PacManTheme {
 		}
 
 		// Green numbers (200, 400, 800, 1600)
-		greenNumbers = new BufferedImage[4];
-		for (int i = 0; i < 4; ++i) {
-			greenNumbers[i] = $(456 + i * 16, 128);
-		}
+		greenNumbers = hstrip(4, 456, 128);
 
 		// Pink numbers
 		pinkNumbers = new BufferedImage[8];
@@ -202,7 +194,7 @@ public class ClassicPacManTheme implements PacManTheme {
 
 	@Override
 	public Sprite spr_ghostFrightened() {
-		return Sprite.of(ghostAwed).animate(CYCLIC, 300);
+		return Sprite.of(ghostFrightened).animate(CYCLIC, 300);
 	}
 
 	@Override
