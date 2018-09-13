@@ -125,7 +125,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		//@formatter:off
 		define()
 			
-			.description("[Pac-Man Game Control]")
+			.description("[Game]")
 			.initialState(INTRO)
 			
 			.states()
