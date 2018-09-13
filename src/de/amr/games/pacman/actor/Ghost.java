@@ -165,7 +165,7 @@ public class Ghost extends Actor
 		/*@formatter:off*/
 		return StateMachine.define(GhostState.class, GameEvent.class)
 			 
-			.description(String.format("[Ghost %s]", ghostName))
+			.description(String.format("[%s]", ghostName))
 			.initialState(HOME)
 		
 			.states()
