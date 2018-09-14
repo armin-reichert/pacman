@@ -160,29 +160,29 @@ public class PlayViewX extends PlayView {
 	private void drawEntityStates(Graphics2D g) {
 		if (actors.pacMan.getState() != null) {
 			drawText(g, Color.YELLOW, actors.pacMan.tf().getX(), actors.pacMan.tf().getY(),
-					pacManState(actors.pacMan));
+					pacManStateText(actors.pacMan));
 		}
 		actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> {
 			if (ghost.getState() != null) {
-				drawText(g, ghostColor(ghost), ghost.tf().getX() - TS, ghost.tf().getY(), ghostState(ghost));
+				drawText(g, ghostColor(ghost), ghost.tf().getX(), ghost.tf().getY(), ghostStateText(ghost));
 			}
 		});
 	}
 
-	private String pacManState(PacMan pacMan) {
+	private String pacManStateText(PacMan pacMan) {
 		State<?, ?> state = pacMan.getStateObject();
 		return state.getDuration() != State.ENDLESS
 				? String.format("(%s,%d|%d)", state.id(), state.getTicksRemaining(), state.getDuration())
 				: String.format("(%s,%s)", state.id(), INFTY);
 	}
 
-	private String ghostState(Ghost ghost) {
+	private String ghostStateText(Ghost ghost) {
 		State<?, ?> state = ghost.getStateObject();
 		GhostState nextAttackState = ghost.getNextAttackState();
-		return state.getDuration() != State.ENDLESS
-				? String.format("%s(%s,%d|%d)[%s]", ghost.getName(), state.id(), state.getTicksRemaining(),
-						state.getDuration(), nextAttackState)
-				: String.format("%s(%s,%s)[%s]", ghost.getName(), state.id(), INFTY, nextAttackState);
+		String name = ghost.getState() == GhostState.DEAD ? ghost.getName() : "";
+		return state.getDuration() != State.ENDLESS ? String.format("%s(%s,%d|%d)[%s]", name, state.id(),
+				state.getTicksRemaining(), state.getDuration(), nextAttackState)
+				: String.format("%s(%s,%s)[%s]", name, state.id(), INFTY, nextAttackState);
 	}
 
 	private void toggleGhost(Ghost ghost) {
@@ -207,8 +207,9 @@ public class PlayViewX extends PlayView {
 	private void drawText(Graphics2D g, Color color, float x, float y, String text) {
 		g.translate(x, y);
 		g.setColor(color);
-		g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, TS / 2));
-		g.drawString(text, 0, -TS / 2);
+		g.setFont(new Font("Arial Narrow", Font.PLAIN, 6));
+		int width = g.getFontMetrics().stringWidth(text);
+		g.drawString(text, -width / 2, -TS / 2);
 		g.translate(-x, -y);
 	}
 
