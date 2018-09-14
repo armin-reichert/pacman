@@ -120,7 +120,7 @@ has the advantage that actions which are state-specific can be realized as metho
 ```java
 define()
 	
-	.description("[GameControl]")
+	.description("[Game]")
 	.initialState(INTRO)
 	
 	.states()
@@ -128,15 +128,11 @@ define()
 		.state(INTRO)
 			.onEntry(() -> {
 				setCurrentView(getIntroView());
-				THEME.soundInsertCoin().play();
-			})
-			.onExit(() -> {
-				THEME.allSounds().forEach(Sound::stop);
+				THEME.snd_insertCoin().play();
 			})
 		
 		.state(READY)
 			.impl(new ReadyState())
-			.timeoutAfter(() -> CLOCK.sec(4.5f))
 		
 		.state(PLAYING)
 			.impl(new PlayingState())
@@ -162,6 +158,14 @@ define()
 			.act(() -> setCurrentView(getPlayView()))
 		
 		.when(READY).then(PLAYING).onTimeout()
+			
+		.stay(PLAYING)
+			.on(StartChasingEvent.class)
+			.act(playingState()::onStartChasing)
+			
+		.stay(PLAYING)
+			.on(StartScatteringEvent.class)
+			.act(playingState()::onStartScattering)
 			
 		.stay(PLAYING)
 			.on(FoodFoundEvent.class)
@@ -215,7 +219,7 @@ define()
 			
 		.when(PACMAN_DYING).then(PLAYING)
 			.condition(() -> actors.pacMan.getState() == PacManState.DEAD && game.getLives() > 0)
-			.act(() -> { playView.init(); actors.init(); })
+			.act(() -> { playView.init(); actors.init(); ghostAttackTimer.init(); })
 	
 		.when(GAME_OVER).then(READY)
 			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
