@@ -585,12 +585,12 @@ Of course one could represent the graph differently, for example with vertices o
 
 - Display of actor states and timers can be switched on/off at runtime (key 's')
 - Display of actor routes can be switched on/off at runtime (key 'r')
-- Ghosts can enabled/disabled during the game (keys 'b', 'p', 'i', 'c')
+- Ghosts can be enabled/disabled during the game (keys 'b', 'p', 'i', 'c')
 - Cheat key 'k' kills all ghosts
-- Cheat key 'e' eats all pellets
+- Cheat key 'e' eats all normal pellets
 - Alignment of actors on the grid can be visualized (key 'g')
 - Game can be paused (CTRL+p) and game loop frequency can be changed (F2 opens dialog)
-- F11 toggles between window and full-screen exclusive mode (warning: may cause bluescreen with some graphic drivers!)
+- F11 toggles between window and full-screen exclusive mode (may cause bluescreen with some graphic drivers!)
 
 ## References
 
