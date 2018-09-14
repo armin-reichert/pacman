@@ -232,7 +232,7 @@ The states of this state machine are implemented as separate (inner) classes. Ho
 Pac-Man's state machine is implemented as follows:
 
 ```java
-StateMachine.define(PacManState.class, GameEvent.class)
+return StateMachine.define(PacManState.class, GameEvent.class)
 		
 	.description("[Pac-Man]")
 	.initialState(HOME)
@@ -241,6 +241,7 @@ StateMachine.define(PacManState.class, GameEvent.class)
 
 		.state(HOME)
 			.onEntry(this::initPacMan)
+			.timeoutAfter(() -> app().clock.sec(0.25f))
 
 		.state(HUNGRY)
 			.impl(new HungryState())
@@ -250,12 +251,12 @@ StateMachine.define(PacManState.class, GameEvent.class)
 			.timeoutAfter(game::getPacManGreedyTime)
 
 		.state(DYING)
-			.onEntry(() -> sprite = s_dying)
-			.timeoutAfter(() -> CLOCK.sec(2))
+			.onEntry(() -> setSelectedSprite("s_dying"))
+			.timeoutAfter(() -> app().clock.sec(2))
 
 	.transitions()
 
-		.when(HOME).then(HUNGRY)
+		.when(HOME).then(HUNGRY).onTimeout()
 		
 		.when(HUNGRY).then(DYING)
 			.on(PacManKilledEvent.class)
@@ -265,7 +266,7 @@ StateMachine.define(PacManState.class, GameEvent.class)
 
 		.stay(GREEDY)
 			.on(PacManGainsPowerEvent.class)
-			.act(() -> controller.resetTimer())
+			.act(() -> fsm.resetTimer())
 
 		.when(GREEDY).then(HUNGRY)
 			.onTimeout()
