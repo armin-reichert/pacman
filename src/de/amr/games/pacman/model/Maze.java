@@ -54,7 +54,7 @@ public class Maze {
 	private static final char CLYDE_ST = 'c';
 
 	private final String[] map;
-	private final GridGraph<Character, Integer> graph;
+	private final GridGraph<Character, Void> graph;
 	private Tile pacManHome;
 	private Tile blinkyHome;
 	private Tile pinkyHome;
@@ -70,7 +70,7 @@ public class Maze {
 	private Set<Tile> freeIntersections = new HashSet<>();
 	private Set<Tile> notUpIntersections = new HashSet<>();
 
-	private long pathFinderCount;
+	private long pathFinderCalls;
 
 	public Maze(String mapText) {
 		map = mapText.split("\n");
@@ -107,24 +107,20 @@ public class Maze {
 			}
 		}
 
-		graph = new GridGraph<>(numCols, numRows, NESW, v -> null, (u, v) -> 1, UndirectedEdge::new);
-		graph.setDefaultVertexLabel(v ->
-
-		map(graph.row(v), graph.col(v)));
+		graph = new GridGraph<>(numCols, numRows, NESW, v -> null, (u, v) -> null, UndirectedEdge::new);
+		graph.setDefaultVertexLabel(v -> map(graph.row(v), graph.col(v)));
 		graph.fill();
-		// remove all edges into walls
-		graph.edges().filter(edge -> {
-			int u = edge.either(), v = edge.other();
-			return map(graph.row(u), graph.col(u)) == WALL || map(graph.row(v), graph.col(v)) == WALL;
-		}).forEach(graph::removeEdge);
-
+		// remove all edges from/to walls
+		graph.edges().filter(edge -> graph.get(edge.either()) == WALL || graph.get(edge.other()) == WALL)
+				.forEach(graph::removeEdge);
+		// identify intersections (free intersections vs. intersections where ghosts cannot move up)
 		graph.vertices()
 		//@formatter:off
 			.filter(cell -> graph.degree(cell) >= 3)
 			.filter(cell -> graph.get(cell) != DOOR)
 			.filter(cell -> !inGhostHouse(tile(cell)))
 			.filter(cell -> !tile(cell).equals(blinkyHome))
-			.filter(cell -> !tile(cell).equals(new Tile(blinkyHome.col+1, blinkyHome.row)))
+			.filter(cell -> !tile(cell).equals(new Tile(blinkyHome.col + 1, blinkyHome.row)))
 			//@formatter:on
 				.forEach(cell -> {
 					Tile tile = tile(cell);
@@ -143,7 +139,7 @@ public class Maze {
 		return map[row].charAt(col);
 	}
 
-	public GridGraph2D<Character, Integer> getGraph() {
+	public GridGraph2D<Character, Void> getGraph() {
 		return graph;
 	}
 
@@ -321,9 +317,9 @@ public class Maze {
 					// new AStarTraversal<>(graph, edge -> 1, graph::manhattan);
 					new BreadthFirstTraversal<>(graph);
 			pathfinder.traverseGraph(cell(source), cell(target));
-			pathFinderCount += 1;
-			if (pathFinderCount % 100 == 0) {
-				Application.LOGGER.info(String.format("%d'th pathfinding executed", pathFinderCount));
+			pathFinderCalls += 1;
+			if (pathFinderCalls % 100 == 0) {
+				Application.LOGGER.info(String.format("%d'th pathfinding executed", pathFinderCalls));
 			}
 			return pathfinder.path(cell(target)).stream().map(this::tile).collect(Collectors.toList());
 		}
@@ -337,7 +333,7 @@ public class Maze {
 	public int manhattan(Tile t1, Tile t2) {
 		return graph.manhattan(cell(t1), cell(t2));
 	}
-	
+
 	public OptionalInt alongPath(List<Tile> path) {
 		return path.size() < 2 ? OptionalInt.empty() : direction(path.get(0), path.get(1));
 	}
