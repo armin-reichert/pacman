@@ -1,6 +1,5 @@
 package de.amr.games.pacman;
 
-import java.awt.EventQueue;
 import java.util.logging.Level;
 
 import de.amr.easy.game.Application;
@@ -13,12 +12,28 @@ import de.amr.games.pacman.theme.PacManTheme;
 /**
  * Pac-Man game.
  * 
+ * @see <a href="https://github.com/armin-reichert/pacman">GitHub</a>
+ * 
  * @author Armin Reichert
  */
 public class PacManApp extends Application {
 
+	public static PacManTheme THEME;
+
 	public static void main(String[] args) {
 		LOGGER.setLevel(Level.INFO);
+		// load theme and audio clips before UI is displayed
+		try {
+			THEME = ClassicPacManTheme.class.newInstance();
+			LOGGER.info(String.format("Theme '%s' created.", THEME.getClass().getSimpleName()));
+			LOGGER.info("Loading audio clips...");
+			THEME.snd_clips_all();
+			LOGGER.info("Audio clips loaded.");
+		} catch (Exception e) {
+			LOGGER.info("Could not create theme.");
+			throw new RuntimeException(e);
+		}
+		// check if scale factor was specified on command line
 		float scale = 2f;
 		if (args.length > 0) {
 			try {
@@ -30,8 +45,6 @@ public class PacManApp extends Application {
 		launch(new PacManApp(scale));
 	}
 
-	public static PacManTheme THEME;
-
 	public PacManApp(float scale) {
 		settings.width = 28 * Game.TS;
 		settings.height = 36 * Game.TS;
@@ -39,19 +52,10 @@ public class PacManApp extends Application {
 		settings.title = "Armin's Pac-Man";
 		settings.fullScreenMode = FullScreen.Mode(800, 600, 32);
 		settings.fullScreenOnStart = false;
-		try {
-			THEME = ClassicPacManTheme.class.newInstance();
-		} catch (Exception e) {
-			LOGGER.info("Could not create theme");
-			throw new RuntimeException(e);
-		}
-		LOGGER.info(String.format("Theme '%s' created.", THEME.getClass().getSimpleName()));
-		EventQueue.invokeLater(() -> THEME.snd_clips_all()); // preload all clips
 	}
 
 	@Override
 	public void init() {
-		EventQueue.invokeLater(() -> THEME.snd_music_all());
 		setController(new GameController());
 	}
 }

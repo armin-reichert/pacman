@@ -12,6 +12,7 @@ import static de.amr.games.pacman.controller.GameState.PLAYING;
 import static de.amr.games.pacman.controller.GameState.READY;
 
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.event.KeyEvent;
 
 import de.amr.easy.game.Application;
@@ -110,6 +111,12 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 	public void init() {
 		super.init();
 		traceTo(Application.LOGGER, Application.app().clock::getFrequency);
+		// A trick to load the background music during the intro animation
+		EventQueue.invokeLater(() -> {
+			Application.LOGGER.info("Loading background music...");
+			THEME.snd_music_all();
+			Application.LOGGER.info("Pac-Man music loaded.");
+		});
 	}
 
 	@Override

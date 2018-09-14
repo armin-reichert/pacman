@@ -10,7 +10,6 @@ import java.awt.Rectangle;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.easy.grid.impl.Top4;
@@ -51,7 +50,6 @@ public class PlayView implements View, Controller, PacManWorld {
 	@Override
 	public void init() {
 		mazeView.init();
-		Application.LOGGER.info("Pac-Man sounds loaded.");
 	}
 
 	@Override
