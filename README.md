@@ -449,7 +449,7 @@ pacMan.setMoveBehavior(PacManState.GREEDY, followKeyboard);
 ```
 
 ### Ghosts
-The ghosts behave identically in some of their states:
+The ghosts behave identically in most of their states:
 
 ```java
 // common ghost behavior
@@ -461,13 +461,12 @@ getGhosts().forEach(ghost -> {
 });
 ```
 
-The *chase* behavior is different for each ghost as explained below. Using the common *headFor* behavior, 
-the implementation of the individual behaviors like *scatter*, *ambush*, *attackDirectly*, 
-*attackWithPartner* etc. becomes trivial.
+The *chase* behavior however is different for each ghost as explained below. 
+Having the common *headFor* behavior implemented, the implementation of the individual behaviors like *scatter*, *ambush*, *attackDirectly*, *attackWithPartner* etc. becomes trivial.
 
-### Blinky
+### Blinky (the red ghost)
 
-Blinky's chase behavior is to directly attack Pac-Man:
+Blinky's chase behavior is to directly attack Pac-Man. This is just two lines of code:
 
 ```java
 default ActorNavigation<T> attackDirectly(Actor victim) {
@@ -497,9 +496,9 @@ pinky.setMoveBehavior(CHASING, pinky.ambush(pacMan, 4));
 
 <img src="doc/pinky.png"/>
 
-### Inky
+### Inky (the turquoise ghost)
 
-Inky's target tile is computed as follows:
+Inky's attack target is computed as follows:
 
 Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man, so `V = (P - B)`. Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
@@ -527,7 +526,7 @@ inky.setMoveBehavior(CHASING, inky.attackWithPartner(blinky, pacMan));
 
 <img src="doc/inky.png"/>
 
-### Clyde
+### Clyde (the orange ghost)
 
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he goes into scattering mode:
 
@@ -547,7 +546,7 @@ clyde.setMoveBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * Game.TS)
 
 ### Scattering
 
-In *scatter* mode, each ghost tries to reach his scattering target tile outside of the maze which results in a cyclic movement around the block in that corner.
+In *scatter* mode, each ghost tries to reach his scattering target tile outside of the maze which results in a cyclic movement around the block in that corner. Also a one liner:
 
 ```java
 ghost.setMoveBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
