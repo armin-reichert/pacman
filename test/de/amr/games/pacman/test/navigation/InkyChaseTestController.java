@@ -28,8 +28,7 @@ public class InkyChaseTestController implements ViewController {
 		Maze maze = new Maze(Assets.text("maze.txt"));
 		game = new Game(maze);
 		actors = new Cast(game);
-		view = new PlayViewX(game);
-		view.setActors(actors);
+		view = new PlayViewX(game, actors);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
 		view.setShowStates(true);

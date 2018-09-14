@@ -22,17 +22,6 @@ public class PacManApp extends Application {
 
 	public static void main(String[] args) {
 		LOGGER.setLevel(Level.INFO);
-		// load theme and audio clips before UI is displayed
-		try {
-			THEME = ClassicPacManTheme.class.newInstance();
-			LOGGER.info(String.format("Theme '%s' created.", THEME.getClass().getSimpleName()));
-			LOGGER.info("Loading audio clips...");
-			THEME.snd_clips_all();
-			LOGGER.info("Audio clips loaded.");
-		} catch (Exception e) {
-			LOGGER.info("Could not create theme.");
-			throw new RuntimeException(e);
-		}
 		// check if scale factor was specified on command line
 		float scale = 2f;
 		if (args.length > 0) {
@@ -52,6 +41,13 @@ public class PacManApp extends Application {
 		settings.title = "Armin's Pac-Man";
 		settings.fullScreenMode = FullScreen.Mode(800, 600, 32);
 		settings.fullScreenOnStart = false;
+		try {
+			THEME = ClassicPacManTheme.class.newInstance();
+			LOGGER.info(String.format("Theme '%s' created.", THEME.getClass().getSimpleName()));
+		} catch (Exception e) {
+			LOGGER.info("Could not create theme.");
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

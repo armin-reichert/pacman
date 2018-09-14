@@ -33,15 +33,17 @@ public class PlayView implements View, Controller, PacManWorld {
 	protected final Game game;
 	protected final MazeView mazeView;
 	protected final Image lifeImage;
-	protected Cast actors;
+	protected final Cast actors;
 	protected String infoText;
 	protected Color infoTextColor;
 	protected boolean scoresVisible;
 
-	public PlayView(Game game) {
+	public PlayView(Game game, Cast actors) {
 		this.width = app().settings.width;
 		this.height = app().settings.height;
 		this.game = game;
+		this.actors = actors;
+		actors.pacMan.setWorld(this);
 		lifeImage = PacManApp.THEME.spr_pacManWalking(Top4.W).frame(1);
 		mazeView = new MazeView(game.getMaze());
 		mazeView.tf.setPosition(0, 3 * TS);
@@ -61,11 +63,6 @@ public class PlayView implements View, Controller, PacManWorld {
 		mazeView.enableSprites(enable);
 		actors.pacMan.enableSprites(enable);
 		actors.getActiveGhosts().forEach(ghost -> ghost.enableSprites(enable));
-	}
-
-	public void setActors(Cast actors) {
-		this.actors = actors;
-		actors.pacMan.setWorld(this);
 	}
 
 	@Override

@@ -17,6 +17,7 @@ import java.util.logging.Level;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
+import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
@@ -69,8 +70,8 @@ public class PlayViewX extends PlayView {
 		return image;
 	}
 
-	public PlayViewX(Game game) {
-		super(game);
+	public PlayViewX(Game game, Cast actors) {
+		super(game, actors);
 		gridImage = createGridImage(game.getMaze().numRows(), game.getMaze().numCols());
 	}
 

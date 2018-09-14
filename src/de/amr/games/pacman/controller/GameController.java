@@ -89,8 +89,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 
 	private PlayView getPlayView() {
 		if (playView == null) {
-			playView = new PlayViewX(game);
-			playView.setActors(actors);
+			playView = new PlayViewX(game, actors);
 		}
 		return playView;
 	}
@@ -111,7 +110,10 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 	public void init() {
 		super.init();
 		traceTo(Application.LOGGER, Application.app().clock::getFrequency);
-		// A trick to load the background music during the intro animation
+		LOGGER.info("Loading audio clips...");
+		THEME.snd_clips_all();
+		LOGGER.info("Audio clips loaded.");
+		// A trick to load the background music without delay during the intro animation
 		EventQueue.invokeLater(() -> {
 			Application.LOGGER.info("Loading background music...");
 			THEME.snd_music_all();

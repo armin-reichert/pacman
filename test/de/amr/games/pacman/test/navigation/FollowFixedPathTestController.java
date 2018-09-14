@@ -28,8 +28,7 @@ public class FollowFixedPathTestController implements ViewController {
 		targets = Arrays.asList(maze.getBottomRightCorner(), maze.getBottomLeftCorner(),
 				maze.getLeftTunnelEntry(), maze.getTopLeftCorner(), maze.getBlinkyHome(), maze.getTopRightCorner(),
 				maze.getRightTunnelEntry(), maze.getPacManHome());
-		view = new PlayViewX(game);
-		view.setActors(actors);
+		view = new PlayViewX(game, actors);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
 		view.setShowStates(true);
