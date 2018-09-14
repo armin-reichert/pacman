@@ -544,6 +544,8 @@ clyde.setMoveBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * Game.TS)
 
 <img src="doc/clyde.png"/>
 
+The visualization of the attack behavior can be toggled during the running game by pressing the key 'r'.
+
 ### Scattering
 
 In *scatter* mode, each ghost tries to reach his scattering target tile outside of the maze which results in a cyclic movement around the block in that corner. Also a one liner:
