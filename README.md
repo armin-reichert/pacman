@@ -603,7 +603,7 @@ This work would not have been possible without these invaluable sources of infor
 
 The goal of this project is to implement a Pac-Man game in a way that also beginners can more easily understand how the game is working. The implementation given tries to achieve this by following the MVC pattern and separating the control logic for the actors and the game play into explicit state machines. The state machines are defined in a declarative way using the builder pattern.
 
-A very simple home-grown library is used for the basic game infrastructure (active rendering, game loop etc.) but it is not difficult to write these infrastructure parts from scratch or use some real game library instead. It would also be useful to even further decouple the UI from the model and controller to enable an easy replacement of the complete UI.
+A very simple home-grown library is used for the basic game infrastructure (active rendering, game loop, full-screen mode, keyboard and mouse handling etc.) but it is not too difficult to write these infrastructure parts from scratch or use some real game library instead. It would also be useful to even further decouple the UI from the model and controller to enable an easy replacement of the complete UI.
 
 Comments are welcome.
 
