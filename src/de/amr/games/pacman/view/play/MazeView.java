@@ -23,9 +23,9 @@ public class MazeView extends GameEntityUsingSprites {
 
 	public MazeView(Maze maze) {
 		this.maze = maze;
-		setSprite("s_normal", PacManApp.THEME.spr_fullMaze());
-		setSprite("s_flashing", PacManApp.THEME.spr_flashingMaze());
-		setSelectedSprite("s_normal");
+		sprites.set("s_normal", PacManApp.THEME.spr_fullMaze());
+		sprites.set("s_flashing", PacManApp.THEME.spr_flashingMaze());
+		sprites.select("s_normal");
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(500);
 		energizerBlinking.setEnabled(false);
@@ -51,7 +51,7 @@ public class MazeView extends GameEntityUsingSprites {
 
 	public void setFlashing(boolean on) {
 		flashing = on;
-		setSelectedSprite(flashing ? "s_flashing" : "s_normal");
+		sprites.select(flashing ? "s_flashing" : "s_normal");
 	}
 
 	public void setBonus(Bonus bonus) {
@@ -67,16 +67,15 @@ public class MazeView extends GameEntityUsingSprites {
 		bonusTimer = ticks;
 	}
 
-	@Override
 	public void enableSprites(boolean enable) {
-		super.enableSprites(enable);
+		sprites.enableAnimation(enable);
 		energizerBlinking.setEnabled(enable);
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
 		g.translate(tf.getX(), tf.getY());
-		getSelectedSprite().draw(g);
+		sprites.current().draw(g);
 		g.translate(-tf.getX(), -tf.getY());
 		if (!flashing) {
 			maze.tiles().forEach(tile -> {

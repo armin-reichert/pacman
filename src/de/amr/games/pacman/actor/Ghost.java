@@ -69,8 +69,8 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 		placeAtTile(home, getTileSize() / 2, 0);
 		setCurrentDir(initialDir);
 		setNextDir(initialDir);
-		getSprites().forEach(Sprite::resetAnimation);
-		setSelectedSprite("s_color_" + initialDir);
+		sprites.forEach(Sprite::resetAnimation);
+		sprites.select("s_color_" + initialDir);
 	}
 
 	// Accessors
@@ -135,14 +135,14 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 
 	private void setSprites(GhostColor color) {
 		NESW.dirs().forEach(dir -> {
-			setSprite("s_color_" + dir, PacManApp.THEME.spr_ghostColored(color, dir));
-			setSprite("s_eyes_" + dir, PacManApp.THEME.spr_ghostEyes(dir));
+			sprites.set("s_color_" + dir, PacManApp.THEME.spr_ghostColored(color, dir));
+			sprites.set("s_eyes_" + dir, PacManApp.THEME.spr_ghostEyes(dir));
 		});
 		for (int i = 0; i < 4; ++i) {
-			setSprite("s_value" + i, PacManApp.THEME.spr_greenNumber(i));
+			sprites.set("s_value" + i, PacManApp.THEME.spr_greenNumber(i));
 		}
-		setSprite("s_frightened", PacManApp.THEME.spr_ghostFrightened());
-		setSprite("s_flashing", PacManApp.THEME.spr_ghostFlashing());
+		sprites.set("s_frightened", PacManApp.THEME.spr_ghostFrightened());
+		sprites.set("s_flashing", PacManApp.THEME.spr_ghostFlashing());
 	}
 
 	// State machine
@@ -191,24 +191,24 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 					.timeoutAfter(() -> app().clock.sec(2))
 					.onTick(() -> {
 						move();	
-						setSelectedSprite("s_color_" + getCurrentDir()); 
+						sprites.select("s_color_" + getCurrentDir()); 
 					})
 				
 				.state(SCATTERING)
 					.onTick(() -> {
 						move();	
-						setSelectedSprite("s_color_" + getCurrentDir()); 
+						sprites.select("s_color_" + getCurrentDir()); 
 					})
 			
 				.state(CHASING)
 					.onTick(() -> {	
 						move();	
-						setSelectedSprite("s_color_" + getCurrentDir()); 
+						sprites.select("s_color_" + getCurrentDir()); 
 					})
 				
 				.state(FRIGHTENED)
 					.onEntry(() -> {
-						setSelectedSprite("s_frightened"); 
+						sprites.select("s_frightened"); 
 						getMoveBehavior().computeStaticPath(this); 
 					})
 					.onTick(this::move)
@@ -216,7 +216,7 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 				.state(DYING)
 					.timeoutAfter(game::getGhostDyingTime)
 					.onEntry(() -> {
-						setSelectedSprite("s_value" + game.getGhostsKilledByEnergizer()); 
+						sprites.select("s_value" + game.getGhostsKilledByEnergizer()); 
 						game.addGhostKilled();
 					})
 				
@@ -224,7 +224,7 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 					.onEntry(() -> getMoveBehavior().computeStaticPath(this))
 					.onTick(() -> {	
 						move();
-						setSelectedSprite("s_eyes_" + getCurrentDir());
+						sprites.select("s_eyes_" + getCurrentDir());
 					})
 					
 			.transitions()
@@ -279,7 +279,7 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 				.when(SCATTERING).then(CHASING).on(StartChasingEvent.class)
 				
 				.stay(FRIGHTENED).on(PacManGainsPowerEvent.class)
-				.stay(FRIGHTENED).on(PacManGettingWeakerEvent.class).act(e -> setSelectedSprite("s_flashing"))
+				.stay(FRIGHTENED).on(PacManGettingWeakerEvent.class).act(e -> sprites.select("s_flashing"))
 				.stay(FRIGHTENED).on(StartScatteringEvent.class)
 				.stay(FRIGHTENED).on(StartChasingEvent.class)
 				

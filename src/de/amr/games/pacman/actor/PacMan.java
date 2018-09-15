@@ -58,8 +58,8 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 		digestionTicks = 0;
 		placeAtTile(getHomeTile(), getTileSize() / 2, 0);
 		setNextDir(Top4.E);
-		getSprites().forEach(Sprite::resetAnimation);
-		setSelectedSprite("s_full");
+		sprites.forEach(Sprite::resetAnimation);
+		sprites.select("s_full");
 	}
 
 	public void setWorld(PacManWorld world) {
@@ -110,19 +110,19 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 	// Sprites
 
 	private void setSprites() {
-		NESW.dirs().forEach(dir -> setSprite("s_walking_" + dir, THEME.spr_pacManWalking(dir)));
-		setSprite("s_dying", THEME.spr_pacManDying());
-		setSprite("s_full", THEME.spr_pacManFull());
-		setSelectedSprite("s_full");
+		NESW.dirs().forEach(dir -> sprites.set("s_walking_" + dir, THEME.spr_pacManWalking(dir)));
+		sprites.set("s_dying", THEME.spr_pacManDying());
+		sprites.set("s_full", THEME.spr_pacManFull());
+		sprites.select("s_full");
 	}
 
 	public void setFullSprite() {
-		setSelectedSprite("s_full");
+		sprites.select("s_full");
 	}
 
 	private void updateWalkingSprite() {
-		setSelectedSprite("s_walking_" + getCurrentDir());
-		getSelectedSprite().enableAnimation(!isStuck());
+		sprites.select("s_walking_" + getCurrentDir());
+		sprites.current().enableAnimation(!isStuck());
 	}
 
 	// State machine
@@ -171,7 +171,7 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 					.timeoutAfter(game::getPacManGreedyTime)
 	
 				.state(DYING)
-					.onEntry(() -> setSelectedSprite("s_dying"))
+					.onEntry(() -> sprites.select("s_dying"))
 					.timeoutAfter(() -> app().clock.sec(2))
 
 			.transitions()

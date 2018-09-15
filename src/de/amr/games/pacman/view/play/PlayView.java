@@ -61,8 +61,8 @@ public class PlayView implements View, Controller, PacManWorld {
 
 	public void enableAnimation(boolean enable) {
 		mazeView.enableSprites(enable);
-		actors.pacMan.enableSprites(enable);
-		actors.getActiveGhosts().forEach(ghost -> ghost.enableSprites(enable));
+		actors.pacMan.sprites.enableAnimation(enable);
+		actors.getActiveGhosts().forEach(ghost -> ghost.sprites.enableAnimation(enable));
 	}
 
 	@Override
