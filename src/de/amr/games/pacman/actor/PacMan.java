@@ -100,6 +100,12 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 	public boolean canTraverseDoor(Tile door) {
 		return false;
 	}
+	
+	@Override
+	public void move() {
+		super.move();
+		updateWalkingSprite();
+	}
 
 	// Sprites
 
@@ -202,7 +208,6 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 				return;
 			}
 			move();
-			updateWalkingSprite();
 			if (world != null && getEventManager().isEnabled()) {
 				inspectTile(world, getTile());
 			}
