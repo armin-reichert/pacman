@@ -42,15 +42,13 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 
 	private final StateMachine<PacManState, GameEvent> fsm;
 	private final Map<PacManState, ActorNavigation<PacMan>> navigationMap;
-	private final EventManager<GameEvent> events;
-	private boolean eventsEnabled;
+	private final EventManager<GameEvent> eventManager;
 	private int digestionTicks;
 	private PacManWorld world;
 
 	public PacMan(Game game) {
 		super(game);
-		events = new EventManager<>("[PacMan]");
-		eventsEnabled = true;
+		eventManager = new EventManager<>("[PacMan]");
 		fsm = buildStateMachine();
 		navigationMap = new EnumMap<>(PacManState.class);
 		createSprites();
@@ -71,21 +69,11 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 	// Eventing
 
 	public void subscribe(Consumer<GameEvent> subscriber) {
-		events.subscribe(subscriber);
+		eventManager.subscribe(subscriber);
 	}
 
-	public EventManager<GameEvent> getEvents() {
-		return events;
-	}
-
-	public void setEventsEnabled(boolean eventsEnabled) {
-		this.eventsEnabled = eventsEnabled;
-	}
-
-	private void publishEvent(GameEvent event) {
-		if (eventsEnabled) {
-			events.publish(event);
-		}
+	public EventManager<GameEvent> getEventManager() {
+		return eventManager;
 	}
 
 	// Accessors
@@ -154,11 +142,11 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 	public PacManState getState() {
 		return fsm.getState();
 	}
-	
+
 	public State<PacManState, GameEvent> getStateObject() {
 		return fsm.state();
 	}
-	
+
 	public void processEvent(GameEvent event) {
 		fsm.process(event);
 	}
@@ -203,7 +191,7 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 	
 				.when(GREEDY).then(HUNGRY)
 					.onTimeout()
-					.act(() -> publishEvent(new PacManLostPowerEvent()))
+					.act(() -> getEventManager().publish(new PacManLostPowerEvent()))
 	
 				.when(DYING).then(DEAD)
 					.onTimeout()
@@ -222,7 +210,7 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 			}
 			move();
 			updateSprite();
-			if (world != null && eventsEnabled) {
+			if (world != null && getEventManager().isEnabled()) {
 				inspectTile(world, getTile());
 			}
 		}
@@ -238,7 +226,7 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 				.findFirst();
 			/*@formatter:on*/
 			if (collidingGhost.isPresent()) {
-				publishEvent(new PacManGhostCollisionEvent(collidingGhost.get()));
+				getEventManager().publish(new PacManGhostCollisionEvent(collidingGhost.get()));
 				return;
 			}
 
@@ -250,7 +238,7 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 			/*@formatter:on*/
 			if (activeBonus.isPresent()) {
 				Bonus bonus = activeBonus.get();
-				publishEvent(new BonusFoundEvent(bonus.getSymbol(), bonus.getValue()));
+				getEventManager().publish(new BonusFoundEvent(bonus.getSymbol(), bonus.getValue()));
 				return;
 			}
 
@@ -258,7 +246,7 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 			if (getMaze().isFood(tile)) {
 				boolean energizer = getMaze().isEnergizer(tile);
 				digestionTicks = game.getDigestionTicks(energizer);
-				publishEvent(new FoodFoundEvent(tile, energizer));
+				getEventManager().publish(new FoodFoundEvent(tile, energizer));
 			}
 		}
 	}
@@ -269,7 +257,7 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 		public void onTick() {
 			super.onTick();
 			if (getTicksRemaining() == game.getPacManGettingWeakerRemainingTime()) {
-				publishEvent(new PacManGettingWeakerEvent());
+				getEventManager().publish(new PacManGettingWeakerEvent());
 			}
 		}
 	}
