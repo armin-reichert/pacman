@@ -56,7 +56,7 @@ public class MazeView extends GameEntityUsingSprites {
 
 	public void setBonus(Bonus bonus) {
 		this.bonus = bonus;
-		bonus.placeAt(maze.getBonusTile(), TS / 2, 0);
+		bonus.placeAtTile(maze.getBonusTile(), TS / 2, 0);
 	}
 
 	public Optional<Bonus> getBonus() {

@@ -1,6 +1,8 @@
 package de.amr.games.pacman.actor;
 
+import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
+import static de.amr.games.pacman.PacManApp.THEME;
 import static de.amr.games.pacman.actor.PacManState.DEAD;
 import static de.amr.games.pacman.actor.PacManState.DYING;
 import static de.amr.games.pacman.actor.PacManState.GREEDY;
@@ -11,12 +13,9 @@ import static de.amr.games.pacman.model.Maze.NESW;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.sprite.Sprite;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.EventManager;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -43,20 +42,21 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 	private final StateMachine<PacManState, GameEvent> fsm;
 	private final Map<PacManState, ActorNavigation<PacMan>> navigationMap;
 	private final EventManager<GameEvent> eventManager;
-	private int digestionTicks;
 	private PacManWorld world;
+	private int digestionTicks;
 
 	public PacMan(Game game) {
 		super(game);
-		eventManager = new EventManager<>("[PacMan]");
 		fsm = buildStateMachine();
+		fsm.traceTo(LOGGER, app().clock::getFrequency);
 		navigationMap = new EnumMap<>(PacManState.class);
-		createSprites();
+		eventManager = new EventManager<>("[PacMan]");
+		setSprites();
 	}
 
 	public void initPacMan() {
 		digestionTicks = 0;
-		placeAt(getHome(), getTileSize() / 2, 0);
+		placeAtTile(getHomeTile(), getTileSize() / 2, 0);
 		setNextDir(Top4.E);
 		getSprites().forEach(Sprite::resetAnimation);
 		setSelectedSprite("s_full");
@@ -66,19 +66,13 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 		this.world = world;
 	}
 
-	// Eventing
-
-	public void subscribe(Consumer<GameEvent> subscriber) {
-		eventManager.subscribe(subscriber);
-	}
+	// Accessors
 
 	public EventManager<GameEvent> getEventManager() {
 		return eventManager;
 	}
 
-	// Accessors
-
-	public Tile getHome() {
+	public Tile getHomeTile() {
 		return getMaze().getPacManHome();
 	}
 
@@ -109,10 +103,10 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 
 	// Sprites
 
-	private void createSprites() {
-		NESW.dirs().forEach(dir -> setSprite("s_walking_" + dir, PacManApp.THEME.spr_pacManWalking(dir)));
-		setSprite("s_dying", PacManApp.THEME.spr_pacManDying());
-		setSprite("s_full", PacManApp.THEME.spr_pacManFull());
+	private void setSprites() {
+		NESW.dirs().forEach(dir -> setSprite("s_walking_" + dir, THEME.spr_pacManWalking(dir)));
+		setSprite("s_dying", THEME.spr_pacManDying());
+		setSprite("s_full", THEME.spr_pacManFull());
 		setSelectedSprite("s_full");
 	}
 
@@ -120,7 +114,7 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 		setSelectedSprite("s_full");
 	}
 
-	private void updateSprite() {
+	private void updateWalkingSprite() {
 		setSelectedSprite("s_walking_" + getCurrentDir());
 		getSelectedSprite().enableAnimation(!isStuck());
 	}
@@ -130,7 +124,6 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 	@Override
 	public void init() {
 		super.init();
-		fsm.traceTo(Application.LOGGER, Application.app().clock::getFrequency);
 		fsm.init();
 	}
 
@@ -209,7 +202,7 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 				return;
 			}
 			move();
-			updateSprite();
+			updateWalkingSprite();
 			if (world != null && getEventManager().isEnabled()) {
 				inspectTile(world, getTile());
 			}

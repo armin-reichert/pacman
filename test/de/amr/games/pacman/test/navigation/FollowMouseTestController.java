@@ -32,7 +32,7 @@ public class FollowMouseTestController implements ViewController {
 
 	@Override
 	public void init() {
-		mouseTile = actors.pacMan.getHome();
+		mouseTile = actors.pacMan.getHomeTile();
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
 		actors.setActive(actors.blinky, true);

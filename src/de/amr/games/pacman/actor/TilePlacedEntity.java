@@ -26,12 +26,12 @@ public interface TilePlacedEntity {
 		return new Tile(tileCoord(center.x), tileCoord(center.y));
 	}
 
-	default void placeAt(Tile tile, float xOffset, float yOffset) {
+	default void placeAtTile(Tile tile, float xOffset, float yOffset) {
 		tf().setPosition(tile.col * getTileSize() + xOffset, tile.row * getTileSize() + yOffset);
 	}
 
 	default void alignOverTile() {
-		placeAt(getTile(), 0, 0);
+		placeAtTile(getTile(), 0, 0);
 	}
 
 	default boolean isAlignedOverTile() {

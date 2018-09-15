@@ -62,11 +62,11 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 		fnNextAttackState = () -> getState();
 		fnCanLeaveHouse = () -> fsm.state().isTerminated();
 		navigationMap = new EnumMap<>(GhostState.class);
-		createSprites(color);
+		setSprites(color);
 	}
 
 	public void initGhost() {
-		placeAt(home, getTileSize() / 2, 0);
+		placeAtTile(home, getTileSize() / 2, 0);
 		setCurrentDir(initialDir);
 		setNextDir(initialDir);
 		getSprites().forEach(Sprite::resetAnimation);
@@ -79,7 +79,7 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 		return name;
 	}
 
-	public Tile getHome() {
+	public Tile getHomeTile() {
 		return home;
 	}
 
@@ -133,7 +133,7 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 
 	// Sprites
 
-	private void createSprites(GhostColor color) {
+	private void setSprites(GhostColor color) {
 		NESW.dirs().forEach(dir -> {
 			setSprite("s_color_" + dir, PacManApp.THEME.spr_ghostColored(color, dir));
 			setSprite("s_eyes_" + dir, PacManApp.THEME.spr_ghostEyes(dir));

@@ -61,7 +61,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		super(GameState.class);
 		game = new Game(new Maze(Assets.text("maze.txt")));
 		actors = new Cast(game);
-		actors.pacMan.subscribe(this::process);
+		actors.pacMan.getEventManager().subscribe(this::process);
 		buildStateMachine();
 		ghostAttackTimer = new GhostAttackTimer(this);
 	}
