@@ -251,7 +251,7 @@ return StateMachine.define(PacManState.class, GameEvent.class)
 			.timeoutAfter(game::getPacManGreedyTime)
 
 		.state(DYING)
-			.onEntry(() -> setSelectedSprite("s_dying"))
+			.onEntry(() -> sprites.select("s_dying"))
 			.timeoutAfter(() -> app().clock.sec(2))
 
 	.transitions()
@@ -270,7 +270,7 @@ return StateMachine.define(PacManState.class, GameEvent.class)
 
 		.when(GREEDY).then(HUNGRY)
 			.onTimeout()
-			.act(() -> publishEvent(new PacManLostPowerEvent()))
+			.act(() -> getEventManager().publish(new PacManLostPowerEvent()))
 
 		.when(DYING).then(DEAD)
 			.onTimeout()
