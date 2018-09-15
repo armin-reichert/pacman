@@ -100,7 +100,7 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 	public boolean canTraverseDoor(Tile door) {
 		return false;
 	}
-	
+
 	@Override
 	public void move() {
 		super.move();
@@ -203,24 +203,34 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 
 		@Override
 		public void onTick() {
-			if (digestionTicks > 0) {
-				--digestionTicks;
-				return;
-			}
-			move();
-			if (world != null && getEventManager().isEnabled()) {
-				inspectTile(world, getTile());
+			if (mustDigest()) {
+				digest();
+			} else {
+				move();
+				inspectWorld();
 			}
 		}
 
-		protected void inspectTile(PacManWorld world, Tile tile) {
-			// Ghost collision?
+		private boolean mustDigest() {
+			return digestionTicks > 0;
+		}
+
+		private void digest() {
+			digestionTicks -= 1;
+		}
+
+		protected void inspectWorld() {
+			if (world == null || !getEventManager().isEnabled()) {
+				return;
+			}
+			Tile tile = getTile();
+
 			/*@formatter:off*/
 			Optional<Ghost> collidingGhost = world.getGhosts()
-				.filter(ghost -> ghost.getTile().equals(tile))
 				.filter(ghost -> ghost.getState() != GhostState.DEAD)
 				.filter(ghost -> ghost.getState() != GhostState.DYING)
 				.filter(ghost -> ghost.getState() != GhostState.SAFE)
+				.filter(ghost -> ghost.getTile().equals(tile))
 				.findFirst();
 			/*@formatter:on*/
 			if (collidingGhost.isPresent()) {
@@ -228,7 +238,6 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 				return;
 			}
 
-			// Unhonored bonus?
 			/*@formatter:off*/
 			Optional<Bonus> activeBonus = world.getBonus()
 					.filter(bonus -> bonus.getTile().equals(tile))
@@ -240,7 +249,6 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 				return;
 			}
 
-			// Food?
 			if (getMaze().isFood(tile)) {
 				boolean energizer = getMaze().isEnergizer(tile);
 				digestionTicks = game.getDigestionTicks(energizer);
