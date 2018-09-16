@@ -96,7 +96,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 
 	private void buildStateMachine() {
 		/*@formatter:off*/
-		define()
+		beginStateMachine()
 			.description("[Intro]")
 			.initialState(0)
 			.states()

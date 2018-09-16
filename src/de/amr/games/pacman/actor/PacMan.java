@@ -152,7 +152,7 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 
 	private StateMachine<PacManState, GameEvent> buildStateMachine() {
 		/* @formatter:off */
-		return StateMachine.define(PacManState.class, GameEvent.class)
+		return StateMachine.beginStateMachine(PacManState.class, GameEvent.class)
 				
 			.description("[Pac-Man]")
 			.initialState(HOME)

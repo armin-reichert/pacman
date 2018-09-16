@@ -22,7 +22,7 @@ public class StateMachineBuilderTest {
 	@Test
 	public void test() {
 		/*@formatter:off*/
-		StateMachine<String, Event> sm = StateMachine.define(String.class, Event.class)
+		StateMachine<String, Event> sm = StateMachine.beginStateMachine(String.class, Event.class)
 			.description("SampleFSM")
 			.initialState("A")
 			.states()

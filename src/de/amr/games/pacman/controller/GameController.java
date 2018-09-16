@@ -143,7 +143,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 
 	private void buildStateMachine() {
 		//@formatter:off
-		define()
+		beginStateMachine()
 			
 			.description("[Game]")
 			.initialState(INTRO)

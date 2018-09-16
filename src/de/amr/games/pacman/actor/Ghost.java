@@ -177,7 +177,7 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 	
 	private StateMachine<GhostState, GameEvent> buildStateMachine(String ghostName) {
 		/*@formatter:off*/
-		return StateMachine.define(GhostState.class, GameEvent.class)
+		return StateMachine.beginStateMachine(GhostState.class, GameEvent.class)
 			 
 			.description(String.format("[%s]", ghostName))
 			.initialState(HOME)
