@@ -403,9 +403,8 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 			boolean timeForChange = getTicksRemaining() == getDuration() / 2;
 			if (timeForChange) {
 				game.nextLevel();
-				actors.init();
+				resetScene();
 				actors.getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
-				playView.init();
 				playView.showInfoText("Ready!", Color.YELLOW);
 				playView.setMazeFlashing(false);
 				playView.enableAnimation(false);
@@ -416,7 +415,6 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		public void onExit() {
 			playView.hideInfoText();
 			playView.enableAnimation(true);
-			ghostAttackTimer.init();
 		}
 	}
 
