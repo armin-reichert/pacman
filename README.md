@@ -583,6 +583,7 @@ Of course one could represent the graph differently, for example with vertices o
 
 ## Additional features
 
+- Speed can be changed during game ('1' = normal, '2' = fast, '3' = very fast)
 - Display of actor states and timers can be switched on/off at runtime (key 's')
 - Display of actor routes can be switched on/off at runtime (key 'r')
 - Ghosts can be enabled/disabled during the game (keys 'b', 'p', 'i', 'c')
