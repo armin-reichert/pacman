@@ -427,7 +427,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 			if (extraLife) {
 				THEME.snd_extraLife().play();
 			}
-			LOGGER.info(String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
+			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
 					game.getGhostsKilledByEnergizer()));
 		}
 
