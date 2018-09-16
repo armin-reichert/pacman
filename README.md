@@ -67,15 +67,15 @@ is an obvious candidate for using a state machine. This state machine has no eve
 so we specify *Void* as event type. The states are identified by numbers:
 
 ```java
-StateMachine.define(Integer.class, Void.class)
-	.description("IntroAnimation")
+beginStateMachine()
+	.description("[Intro]")
 	.initialState(0)
 	.states()
 
 		.state(0)
 			// Scroll logo into view
 			.onEntry(() -> { show(logo); logo.start(); })
-			.onExit(logo::stop)
+			.onExit(() -> logo.stop())
 
 		.state(1)
 			// Show ghosts chasing Pac-Man and vice-versa
@@ -90,9 +90,9 @@ StateMachine.define(Integer.class, Void.class)
 			
 		.state(2)
 			// Show ghost points animation and blinking text
-			.timeoutAfter(() -> CLOCK.sec(6))
+			.timeoutAfter(() -> app().clock.sec(6))
 			.onEntry(() -> {
-				show(ghostPoints, pressSpace, link);
+				show(ghostPoints, pressSpace, f11Hint, visitGitHub);
 				ghostPoints.start();
 			})
 			.onExit(() -> {
@@ -100,13 +100,13 @@ StateMachine.define(Integer.class, Void.class)
 				hide(ghostPoints, pressSpace);
 			})
 			
-		.state(COMPLETE)
+		.state(42)
 			
 	.transitions()
-		.when(0).then(1).condition(logo::isCompleted)
+		.when(0).then(1).condition(() -> logo.isCompleted())
 		.when(1).then(2).condition(() -> chasePacMan.isCompleted() && chaseGhosts.isCompleted())
 		.when(2).then(1).onTimeout()
-		.when(2).then(COMPLETE).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+		.when(2).then(42).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 
 .endStateMachine();
 ```
@@ -118,7 +118,7 @@ state machine. Further, the individual states are implemented by subclasses of t
 has the advantage that actions which are state-specific can be realized as methods of the subclass.
 
 ```java
-define()
+beginStateMachine()
 	
 	.description("[Game]")
 	.initialState(INTRO)
@@ -215,11 +215,11 @@ define()
 			.onTimeout()
 			
 		.when(PACMAN_DYING).then(GAME_OVER)
-			.condition(() -> actors.pacMan.getState() == PacManState.DEAD && game.getLives() == 0)
+			.condition(() -> isPacManDead() && game.getLives() == 0)
 			
 		.when(PACMAN_DYING).then(PLAYING)
-			.condition(() -> actors.pacMan.getState() == PacManState.DEAD && game.getLives() > 0)
-			.act(() -> { playView.init(); actors.init(); ghostAttackTimer.init(); })
+			.condition(() -> isPacManDead() && game.getLives() > 0)
+			.act(this::resetScene)
 	
 		.when(GAME_OVER).then(READY)
 			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
@@ -232,7 +232,7 @@ The states of this state machine are implemented as separate (inner) classes. Ho
 Pac-Man's state machine is implemented as follows:
 
 ```java
-return StateMachine.define(PacManState.class, GameEvent.class)
+.beginStateMachine(PacManState.class, GameEvent.class)
 		
 	.description("[Pac-Man]")
 	.initialState(HOME)
