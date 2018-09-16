@@ -15,7 +15,6 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.KeyEvent;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
@@ -109,15 +108,15 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 	@Override
 	public void init() {
 		super.init();
-		traceTo(Application.LOGGER, Application.app().clock::getFrequency);
+		traceTo(LOGGER, app().clock::getFrequency);
 		LOGGER.info("Loading audio clips...");
 		THEME.snd_clips_all();
 		LOGGER.info("Audio clips loaded.");
 		// A trick to load the background music without delay during the intro animation
 		EventQueue.invokeLater(() -> {
-			Application.LOGGER.info("Loading background music...");
+			LOGGER.info("Loading background music...");
 			THEME.snd_music_all();
-			Application.LOGGER.info("Pac-Man music loaded.");
+			LOGGER.info("Background music loaded.");
 		});
 	}
 
@@ -130,6 +129,16 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 	// typed access to playing state implementation (needed for method references etc.)
 	private PlayingState playingState() {
 		return state(PLAYING);
+	}
+
+	private boolean isPacManDead() {
+		return actors.pacMan.getState() == PacManState.DEAD;
+	}
+
+	private void resetScene() {
+		playView.init();
+		actors.init();
+		ghostAttackTimer.init();
 	}
 
 	private void buildStateMachine() {
@@ -231,11 +240,11 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 					.onTimeout()
 					
 				.when(PACMAN_DYING).then(GAME_OVER)
-					.condition(() -> actors.pacMan.getState() == PacManState.DEAD && game.getLives() == 0)
+					.condition(() -> isPacManDead() && game.getLives() == 0)
 					
 				.when(PACMAN_DYING).then(PLAYING)
-					.condition(() -> actors.pacMan.getState() == PacManState.DEAD && game.getLives() > 0)
-					.act(() -> { playView.init(); actors.init(); ghostAttackTimer.init(); })
+					.condition(() -> isPacManDead() && game.getLives() > 0)
+					.act(this::resetScene)
 			
 				.when(GAME_OVER).then(READY)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
@@ -246,8 +255,8 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 
 	private class ReadyState extends State<GameState, GameEvent> {
 
+		// just to demonstrate that timer can also be set here
 		{
-			// just to demonstrate that timer can also be set here
 			setTimer(() -> app().clock.sec(4.5f));
 		}
 
@@ -255,8 +264,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		public void onEntry() {
 			game.init();
 			game.removeLife();
-			actors.init();
-			playView.init();
+			resetScene();
 			playView.setScoresVisible(true);
 			playView.enableAnimation(false);
 			playView.showInfoText("Ready!", Color.YELLOW);
