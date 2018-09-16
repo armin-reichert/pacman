@@ -67,7 +67,7 @@ is an obvious candidate for using a state machine. This state machine has no eve
 so we specify *Void* as event type. The states are identified by numbers:
 
 ```java
-beginStateMachine()
+.beginStateMachine()
 	.description("[Intro]")
 	.initialState(0)
 	.states()
@@ -118,7 +118,7 @@ state machine. Further, the individual states are implemented by subclasses of t
 has the advantage that actions which are state-specific can be realized as methods of the subclass.
 
 ```java
-beginStateMachine()
+.beginStateMachine()
 	
 	.description("[Game]")
 	.initialState(INTRO)
