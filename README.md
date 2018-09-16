@@ -49,7 +49,7 @@ Of course, Pac-Man and the four ghosts, but also the global game control, maybe 
 
 In the provided implementation, there are the following explicit state machines:
 - Game controller ([GameController](src/de/amr/games/pacman/controller/GameController.java))
-- Scattering/chasing phases controller ([ScatterChaseTimer](src/de/amr/games/pacman/controller/ScatterChaseTimer.java))
+- Ghost attack controller ([GhostAttackTimer](src/de/amr/games/pacman/controller/GhostAttackTimer.java))
 - Pac-Man controller ([Pac-Man](src/de/amr/games/pacman/actor/PacMan.java))
 - Ghost controller ([Ghost](src/de/amr/games/pacman/actor/Ghost.java))
 - Intro view controller ([IntroView](src/de/amr/games/pacman/view/intro/IntroView.java))
