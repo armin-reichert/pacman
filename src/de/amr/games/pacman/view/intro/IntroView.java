@@ -38,6 +38,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 	private final ScrollableImage logo;
 	private final BlinkingText pressSpace;
 	private final BlinkingText f11Hint;
+	private final BlinkingText speedHint;
 	private final ChasePacManAnimation chasePacMan;
 	private final ChaseGhostsAnimation chaseGhosts;
 	private final GhostPointsAnimation ghostPoints;
@@ -67,10 +68,15 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		pressSpace.tf.setY(150);
 		pressSpace.tf.centerX(width);
 		f11Hint = BlinkingText.create().text("F11 Toggle Fullscreen").spaceExpansion(3)
-				.blinkTimeMillis(Integer.MAX_VALUE).font(PacManApp.THEME.fnt_text(12)).background(background).color(Color.PINK)
-				.build();
-		f11Hint.tf.setY(height - 40);
+				.blinkTimeMillis(Integer.MAX_VALUE).font(PacManApp.THEME.fnt_text(12)).background(background)
+				.color(Color.PINK).build();
+		f11Hint.tf.setY(height - 60);
 		f11Hint.tf.centerX(width);
+		speedHint = BlinkingText.create().text("Normal 1   Fast 2   Insane 3").spaceExpansion(3)
+				.blinkTimeMillis(Integer.MAX_VALUE).font(PacManApp.THEME.fnt_text(12)).background(background)
+				.color(Color.PINK).build();
+		speedHint.tf.setY(height - 40);
+		speedHint.tf.centerX(width);
 		visitGitHub = Link.create().text(GITHUB_TEXT).url(GITHUB_URL).font(PacManApp.THEME.fnt_text(8))
 				.color(Color.LIGHT_GRAY).build();
 		visitGitHub.tf.setY(height - 20);
@@ -121,7 +127,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 					// Show ghost points animation and blinking text
 					.timeoutAfter(() -> app().clock.sec(6))
 					.onEntry(() -> {
-						show(ghostPoints, pressSpace, f11Hint, visitGitHub);
+						show(ghostPoints, pressSpace, f11Hint, speedHint, visitGitHub);
 						ghostPoints.start();
 					})
 					.onExit(() -> {

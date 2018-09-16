@@ -122,8 +122,21 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 
 	@Override
 	public void update() {
+		checkSpeedChange();
 		super.update();
 		((Controller) currentView).update();
+	}
+	
+	private void checkSpeedChange() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
+			app().clock.setFrequency(60);
+		}
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
+			app().clock.setFrequency(80);
+		}
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
+			app().clock.setFrequency(100);
+		}
 	}
 
 	// typed access to playing state implementation (needed for method references etc.)
