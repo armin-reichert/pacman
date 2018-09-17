@@ -188,6 +188,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 				
 				.state(GAME_OVER)
 					.impl(new GameOverState())
+					.timeoutAfter(() -> app().clock.sec(60))
 	
 			.transitions()
 			
@@ -261,6 +262,9 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 			
 				.when(GAME_OVER).then(READY)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+					
+				.when(GAME_OVER).then(INTRO)
+					.onTimeout()
 							
 		.endStateMachine();
 		//@formatter:on
