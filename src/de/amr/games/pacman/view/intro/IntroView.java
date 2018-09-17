@@ -79,7 +79,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		speedHint.tf.centerX(width);
 		visitGitHub = Link.create().text(GITHUB_TEXT).url(GITHUB_URL).font(PacManApp.THEME.fnt_text(8))
 				.color(Color.LIGHT_GRAY).build();
-		visitGitHub.tf.setY(height - 20);
+		visitGitHub.tf.setY(height - 10);
 		visitGitHub.tf.centerX(width);
 		buildStateMachine();
 	}
