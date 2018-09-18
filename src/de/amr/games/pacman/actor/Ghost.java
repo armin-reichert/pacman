@@ -274,6 +274,7 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 
 				.stay(SCATTERING).on(StartScatteringEvent.class)
 				.stay(SCATTERING).on(PacManGettingWeakerEvent.class)
+				.stay(SCATTERING).on(PacManLostPowerEvent.class)
 				.when(SCATTERING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
 				.when(SCATTERING).then(DYING).on(GhostKilledEvent.class) // cheating-mode
 				.when(SCATTERING).then(CHASING).on(StartChasingEvent.class)
