@@ -1,5 +1,6 @@
 package de.amr.games.pacman;
 
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
 import de.amr.easy.game.Application;
@@ -22,7 +23,18 @@ public class PacManApp extends Application {
 
 	public static void main(String[] args) {
 		LOGGER.setLevel(Level.INFO);
-		launch(new PacManApp(), args);
+		try {
+			THEME = ClassicPacManTheme.class.newInstance();
+			LOGGER.info(String.format("Theme '%s' created.", THEME.getClass().getSimpleName()));
+			LOGGER.info("Loading audio clips...");
+			THEME.snd_clips_all();
+			LOGGER.info("Audio clips loaded.");
+			LOGGER.info("Loading background music...");
+			Executors.newSingleThreadExecutor().submit((() -> THEME.snd_music_all()));
+			launch(new PacManApp(), args);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public PacManApp() {
@@ -32,13 +44,6 @@ public class PacManApp extends Application {
 		settings.title = "Armin's Pac-Man";
 		settings.fullScreenMode = FullScreen.Mode(800, 600, 32);
 		settings.fullScreenOnStart = false;
-		try {
-			THEME = ClassicPacManTheme.class.newInstance();
-			LOGGER.info(String.format("Theme '%s' created.", THEME.getClass().getSimpleName()));
-		} catch (Exception e) {
-			LOGGER.info("Could not create theme.");
-			throw new RuntimeException(e);
-		}
 	}
 
 	@Override

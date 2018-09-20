@@ -12,7 +12,6 @@ import static de.amr.games.pacman.controller.GameState.PLAYING;
 import static de.amr.games.pacman.controller.GameState.READY;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.event.KeyEvent;
 
 import de.amr.easy.game.assets.Assets;
@@ -109,15 +108,6 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 	public void init() {
 		super.init();
 		traceTo(LOGGER, app().clock::getFrequency);
-		LOGGER.info("Loading audio clips...");
-		THEME.snd_clips_all();
-		LOGGER.info("Audio clips loaded.");
-		// A trick to load the background music without delay during the intro animation
-		EventQueue.invokeLater(() -> {
-			LOGGER.info("Loading background music...");
-			THEME.snd_music_all();
-			LOGGER.info("Background music loaded.");
-		});
 	}
 
 	@Override
@@ -126,7 +116,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		super.update();
 		((Controller) currentView).update();
 	}
-	
+
 	private void checkSpeedChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
 			app().clock.setFrequency(60);
