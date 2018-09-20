@@ -168,11 +168,12 @@ public class PlayView implements View, Controller, PacManWorld {
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
+		int mazeWidth = mazeView.sprites.current().getWidth();
 		g.translate(0, height - 2 * TS);
 		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
-			g.translate(width - (n - i) * 2 * TS, 0);
+			g.translate(mazeWidth - (n - i) * 2 * TS, 0);
 			g.drawImage(PacManApp.THEME.img_bonusSymbol(game.getLevelCounter().get(i)), 0, 0, 2 * TS, 2 * TS, null);
-			g.translate(-width + (n - i) * 2 * TS, 0);
+			g.translate(-mazeWidth + (n - i) * 2 * TS, 0);
 		}
 		g.translate(0, -height + 2 * TS);
 	}
@@ -181,11 +182,12 @@ public class PlayView implements View, Controller, PacManWorld {
 		if (infoText == null) {
 			return;
 		}
+		int mazeWidth = mazeView.sprites.current().getWidth();
 		Graphics2D g2 = (Graphics2D) g.create();
 		g2.setFont(PacManApp.THEME.fnt_text());
 		g2.setColor(infoTextColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(infoText, g2).getBounds();
-		g2.translate((width - box.width) / 2, (game.getMaze().getBonusTile().row + 1) * TS);
+		g2.translate((mazeWidth - box.width) / 2, (game.getMaze().getBonusTile().row + 1) * TS);
 		g2.drawString(infoText, 0, 0);
 		g2.dispose();
 	}
