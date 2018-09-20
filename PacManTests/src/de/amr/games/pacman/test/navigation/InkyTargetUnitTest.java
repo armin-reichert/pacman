@@ -7,7 +7,7 @@ import org.junit.Test;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.navigation.ActorNavigationSystem;
 
-public class InkyTargetTest {
+public class InkyTargetUnitTest {
 	
 	@Test
 	public void testInkyTarget() {
