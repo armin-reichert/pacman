@@ -583,6 +583,10 @@ Of course one could represent the graph differently, for example with vertices o
 
 ## Additional features
 
+- Command-line arguments for
+  - Scaling: 'java -jar pacman.jar -scale 2.5'
+  - Full-screen exclusive mode: 'java -jar pacman.jar -fullscreen'
+  - Window title: 'java -jar pacman.jar -title "Who the f*@!* is Armin?"'
 - Speed can be changed during game ('1' = normal, '2' = fast, '3' = very fast)
 - Display of actor states and timers can be switched on/off at runtime (key 's')
 - Display of actor routes can be switched on/off at runtime (key 'r')
