@@ -9,7 +9,6 @@ public class FollowFixedPathTestApp extends PacManApp {
 	}
 
 	public FollowFixedPathTestApp() {
-		super(2);
 		settings.title = "Follow Fixed Path";
 	}
 

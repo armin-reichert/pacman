@@ -9,7 +9,6 @@ public class EscapeIntoCornerTestApp extends PacManApp {
 	}
 
 	public EscapeIntoCornerTestApp() {
-		super(2);
 		settings.title = "Escape Into Corner";
 	}
 

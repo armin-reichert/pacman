@@ -22,22 +22,13 @@ public class PacManApp extends Application {
 
 	public static void main(String[] args) {
 		LOGGER.setLevel(Level.INFO);
-		// check if scale factor was specified on command line
-		float scale = 2f;
-		if (args.length > 0) {
-			try {
-				scale = Float.parseFloat(args[0]);
-			} catch (NumberFormatException e) {
-				LOGGER.info("Illegal scaling value: " + args[0]);
-			}
-		}
-		launch(new PacManApp(scale));
+		launch(new PacManApp(), args);
 	}
 
-	public PacManApp(float scale) {
+	public PacManApp() {
 		settings.width = 28 * Game.TS;
 		settings.height = 36 * Game.TS;
-		settings.scale = scale;
+		settings.scale = 2;
 		settings.title = "Armin's Pac-Man";
 		settings.fullScreenMode = FullScreen.Mode(800, 600, 32);
 		settings.fullScreenOnStart = false;

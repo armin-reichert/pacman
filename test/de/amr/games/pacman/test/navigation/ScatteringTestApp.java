@@ -9,7 +9,6 @@ public class ScatteringTestApp extends PacManApp {
 	}
 
 	public ScatteringTestApp() {
-		super(2);
 		settings.title = "Scattering";
 	}
 

@@ -9,7 +9,6 @@ public class InkyChaseTestApp extends PacManApp {
 	}
 
 	public InkyChaseTestApp() {
-		super(2);
 		settings.title = "Inky Chasing";
 	}
 

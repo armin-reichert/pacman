@@ -9,7 +9,6 @@ public class FollowMouseTestApp extends PacManApp {
 	}
 
 	public FollowMouseTestApp() {
-		super(2);
 		settings.title = "Follow Mouse";
 	}
 

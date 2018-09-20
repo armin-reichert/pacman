@@ -1,8 +1,8 @@
 package de.amr.games.pacman.view.play;
 
+import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.Game.TS;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Optional;
 
@@ -81,7 +81,7 @@ public class MazeView extends GameEntityUsingSprites {
 			maze.tiles().forEach(tile -> {
 				if (maze.isEatenFood(tile) || maze.isEnergizer(tile) && energizerBlinking.currentFrame() % 2 != 0) {
 					g.translate(tile.col * TS, tile.row * TS);
-					g.setColor(Color.BLACK);
+					g.setColor(app().settings.bgColor);
 					g.fillRect(0, 0, TS + 1, TS + 1);
 					g.translate(-tile.col * TS, -tile.row * TS);
 				}
