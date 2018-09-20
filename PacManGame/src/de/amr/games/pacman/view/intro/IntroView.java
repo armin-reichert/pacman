@@ -1,8 +1,10 @@
 package de.amr.games.pacman.view.intro;
 
 import static de.amr.easy.game.Application.app;
+import static de.amr.games.pacman.PacManApp.THEME;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
@@ -18,7 +20,6 @@ import de.amr.easy.game.controls.ScrollableImage;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.PacManApp;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -38,7 +39,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 	private final ScrollableImage logo;
 	private final BlinkingText pressSpace;
 	private final BlinkingText f11Hint;
-	private final BlinkingText speedHint;
+	private final BlinkingText[] speedHint;
 	private final ChasePacManAnimation chasePacMan;
 	private final ChaseGhostsAnimation chaseGhosts;
 	private final GhostPointsAnimation ghostPoints;
@@ -64,21 +65,29 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		ghostPoints.tf.setY(200);
 		ghostPoints.tf.centerX(width);
 		pressSpace = BlinkingText.create().text("Press SPACE to start!").spaceExpansion(3).blinkTimeMillis(1000)
-				.font(PacManApp.THEME.fnt_text(18)).background(background).color(Color.PINK).build();
-		pressSpace.tf.setY(150);
+				.font(THEME.fnt_text(18)).background(background).color(Color.YELLOW).build();
+		pressSpace.tf.setY(130);
 		pressSpace.tf.centerX(width);
 		f11Hint = BlinkingText.create().text("F11 Toggle Fullscreen").spaceExpansion(3)
-				.blinkTimeMillis(Integer.MAX_VALUE).font(PacManApp.THEME.fnt_text(12)).background(background)
+				.blinkTimeMillis(Integer.MAX_VALUE).font(THEME.fnt_text(12)).background(background)
 				.color(Color.PINK).build();
-		f11Hint.tf.setY(height - 60);
+		f11Hint.tf.setY(pressSpace.tf.getY() + 30);
 		f11Hint.tf.centerX(width);
-		speedHint = BlinkingText.create().text("Normal 1   Fast 2   Insane 3").spaceExpansion(3)
-				.blinkTimeMillis(Integer.MAX_VALUE).font(PacManApp.THEME.fnt_text(12)).background(background)
-				.color(Color.PINK).build();
-		speedHint.tf.setY(height - 40);
-		speedHint.tf.centerX(width);
-		visitGitHub = Link.create().text(GITHUB_TEXT).url(GITHUB_URL).font(PacManApp.THEME.fnt_text(8))
-				.color(Color.LIGHT_GRAY).build();
+		speedHint = new BlinkingText[3];
+		speedHint[0] = BlinkingText.create().text("Normal 1").spaceExpansion(3).blinkTimeMillis(Integer.MAX_VALUE)
+				.font(THEME.fnt_text(12)).background(background).color(Color.PINK).build();
+		speedHint[0].tf.setY(height - 40);
+		speedHint[0].tf.setX(20);
+		speedHint[1] = BlinkingText.create().text("Fast 2").spaceExpansion(3).blinkTimeMillis(Integer.MAX_VALUE)
+				.font(THEME.fnt_text(12)).background(background).color(Color.PINK).build();
+		speedHint[1].tf.setY(height - 40);
+		speedHint[1].tf.centerX(width);
+		speedHint[2] = BlinkingText.create().text("Insane 3").spaceExpansion(3).blinkTimeMillis(Integer.MAX_VALUE)
+				.font(THEME.fnt_text(12)).background(background).color(Color.PINK).build();
+		speedHint[2].tf.setY(height - 40);
+		speedHint[2].tf.setX(width - 20 - speedHint[2].tf.getWidth());
+		visitGitHub = Link.create().text(GITHUB_TEXT).url(GITHUB_URL)
+				.font(new Font(Font.SANS_SERIF, Font.BOLD, 6)).color(Color.LIGHT_GRAY).build();
 		visitGitHub.tf.setY(height - 10);
 		visitGitHub.tf.centerX(width);
 		buildStateMachine();
@@ -127,7 +136,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 					// Show ghost points animation and blinking text
 					.timeoutAfter(() -> app().clock.sec(6))
 					.onEntry(() -> {
-						show(ghostPoints, pressSpace, f11Hint, speedHint, visitGitHub);
+						show(ghostPoints, pressSpace, f11Hint, speedHint[0], speedHint[1],speedHint[2],visitGitHub);
 						ghostPoints.start();
 					})
 					.onExit(() -> {
@@ -164,6 +173,9 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		}
 		super.update();
 		animations.forEach(animation -> ((Controller) animation).update());
+		for (int i = 0; i < 3; ++i) {
+			speedHint[i].setColor(app().clock.getFrequency() == 60 + 20*i ? Color.YELLOW : Color.PINK);
+		}
 	}
 
 	@Override
