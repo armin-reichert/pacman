@@ -583,11 +583,11 @@ Of course one could represent the graph differently, for example with vertices o
 
 ## Additional features
 
-- The following command-line arguments are available (java -jar pacman.jar arguments...)
-  - Scaling, e.g.: -scale 2.5
-  - Full-screen mode on start: -fullscreen
-  - Full-screen resolution, e.g.: -fullscreenMode 800,600,32
-  - Window title e.g.: -title "Pac-Man Game"
+- The following command-line arguments are available (`java -jar pacman.jar arguments...`)
+  - Scaling, e.g.: `-scale 2.5`
+  - Full-screen mode on start: `-fullscreen`
+  - Full-screen resolution, e.g.: `-fullscreenMode 800,600,32`
+  - Window title e.g.: `-title "Pac-Man Game"`
 - Speed can be changed during game ('1' = normal, '2' = fast, '3' = very fast)
 - Display of actor states and timers can be switched on/off at runtime (key 's')
 - Display of actor routes can be switched on/off at runtime (key 'r')
