@@ -12,9 +12,9 @@ import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
 /**
  * Level-specific game data.
  */
-class LevelTable {
+class Level {
 
-	public enum TableColumn {
+	public enum Property {
 		BonusSymbol,
 		iBonusValue,
 		fPacManSpeed,
@@ -35,7 +35,7 @@ class LevelTable {
 	/**
 	 * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>
 	 */
-	private static final Object[][] TABLE = {
+	private static final Object[][] VALUES = {
 	/*@formatter:off*/
 	{ /* not used */},
 	{ CHERRIES,           100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6,   5 },
@@ -62,16 +62,16 @@ class LevelTable {
 	/*@formatter:on*/
 	};
 
-	static float floatValue(int row, TableColumn col) {
-		return (float) TABLE[row][col.ordinal()];
+	static float floatValue(int row, Property col) {
+		return (float) VALUES[row][col.ordinal()];
 	}
 
-	static int intValue(int row, TableColumn col) {
-		return (int) TABLE[row][col.ordinal()];
+	static int intValue(int row, Property col) {
+		return (int) VALUES[row][col.ordinal()];
 	}
 
 	@SuppressWarnings("unchecked")
-	static <T> T objValue(int row, TableColumn col) {
-		return (T) TABLE[row][col.ordinal()];
+	static <T> T objValue(int row, Property col) {
+		return (T) VALUES[row][col.ordinal()];
 	}
 }

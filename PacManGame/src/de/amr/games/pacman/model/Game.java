@@ -9,7 +9,7 @@ import java.util.Random;
 
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManState;
-import de.amr.games.pacman.model.LevelTable.TableColumn;
+import de.amr.games.pacman.model.Level.Property;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.
@@ -98,7 +98,7 @@ public class Game {
 
 	private float speed(float relativeSpeed) {
 		// base speed = 8 tiles/second at 60 Hz
-		return 8f * Game.TS / 60 * relativeSpeed;
+		return 8f * TS / 60 * relativeSpeed;
 	}
 
 	public Maze getMaze() {
@@ -155,11 +155,11 @@ public class Game {
 	}
 
 	public BonusSymbol getBonusSymbol() {
-		return LevelTable.objValue(level, TableColumn.BonusSymbol);
+		return Level.objValue(level, Property.BonusSymbol);
 	}
 
 	public int getBonusValue() {
-		return LevelTable.intValue(level, TableColumn.iBonusValue);
+		return Level.intValue(level, Property.iBonusValue);
 	}
 
 	public int getBonusTime() {
@@ -168,20 +168,20 @@ public class Game {
 
 	public float getGhostSpeed(GhostState state, Tile tile) {
 		boolean tunnel = maze.inTeleportSpace(tile) || maze.inTunnel(tile);
-		float tunnelSpeed = speed(LevelTable.floatValue(level, TableColumn.fGhostTunnelSpeed));
+		float tunnelSpeed = speed(Level.floatValue(level, Property.fGhostTunnelSpeed));
 		switch (state) {
 		case CHASING:
-			return tunnel ? tunnelSpeed : speed(LevelTable.floatValue(level, TableColumn.fGhostSpeed));
+			return tunnel ? tunnelSpeed : speed(Level.floatValue(level, Property.fGhostSpeed));
 		case DYING:
 			return 0;
 		case DEAD:
 			return speed(1.5f);
 		case FRIGHTENED:
-			return tunnel ? tunnelSpeed : speed(LevelTable.floatValue(level, TableColumn.fGhostAfraidSpeed));
+			return tunnel ? tunnelSpeed : speed(Level.floatValue(level, Property.fGhostAfraidSpeed));
 		case SAFE:
 			return speed(0.75f);
 		case SCATTERING:
-			return tunnel ? tunnelSpeed : speed(LevelTable.floatValue(level, TableColumn.fGhostSpeed));
+			return tunnel ? tunnelSpeed : speed(Level.floatValue(level, Property.fGhostSpeed));
 		default:
 			throw new IllegalStateException();
 		}
@@ -192,7 +192,7 @@ public class Game {
 	}
 
 	public int getGhostNumFlashes() {
-		return LevelTable.intValue(level, TableColumn.iNumFlashes);
+		return Level.intValue(level, Property.iNumFlashes);
 	}
 
 	public int getKilledGhostValue() {
@@ -212,15 +212,14 @@ public class Game {
 	}
 
 	public float getPacManSpeed(PacManState state) {
-
 		switch (state) {
-		case HOME:
-			return 0;
 		case HUNGRY:
-			return speed(LevelTable.floatValue(level, TableColumn.fPacManSpeed));
+			return speed(Level.floatValue(level, Property.fPacManSpeed));
 		case GREEDY:
-			return speed(LevelTable.floatValue(level, TableColumn.fPacManPowerSpeed));
+			return speed(Level.floatValue(level, Property.fPacManPowerSpeed));
+		case HOME:
 		case DYING:
+		case DEAD:
 			return 0;
 		default:
 			throw new IllegalStateException();
@@ -228,7 +227,7 @@ public class Game {
 	}
 
 	public int getPacManGreedyTime() {
-		return app().clock.sec(LevelTable.intValue(level, TableColumn.iPacManPowerSeconds));
+		return app().clock.sec(Level.intValue(level, Property.iPacManPowerSeconds));
 	}
 
 	public int getPacManGettingWeakerRemainingTime() {
