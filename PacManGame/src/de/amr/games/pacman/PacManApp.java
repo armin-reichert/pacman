@@ -25,7 +25,7 @@ public class PacManApp extends Application {
 	public static void main(String[] args) {
 		LOGGER.setLevel(Level.INFO);
 		try {
-			THEME = ClassicPacManTheme.class.newInstance();
+			THEME = new ClassicPacManTheme();
 			LOGGER.info(String.format("Theme '%s' created.", THEME.getClass().getSimpleName()));
 			LOGGER.info("Loading audio clips...");
 			THEME.snd_clips_all();
