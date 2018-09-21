@@ -27,10 +27,10 @@ public class ChaseGhostsAnimation extends GameEntity implements View, AnimationC
 	private int ghostsKilled;
 
 	public ChaseGhostsAnimation() {
-		pacMan = PacManApp.THEME.spr_pacManWalking(Top4.E);
-		ghost = PacManApp.THEME.spr_ghostFrightened();
+		pacMan = PacManApp.theme.spr_pacManWalking(Top4.E);
+		ghost = PacManApp.theme.spr_ghostFrightened();
 		for (int i = 0; i < 4; ++i) {
-			points[i] = PacManApp.THEME.spr_greenNumber(i);
+			points[i] = PacManApp.theme.spr_greenNumber(i);
 		}
 		tf.setWidth(5 * 18);
 		tf.setHeight(18);
@@ -58,13 +58,13 @@ public class ChaseGhostsAnimation extends GameEntity implements View, AnimationC
 	public void start() {
 		init();
 		tf.setVelocityX(.8f);
-		PacManApp.THEME.snd_waza().loop();
+		PacManApp.theme.snd_waza().loop();
 	}
 
 	@Override
 	public void stop() {
 		tf.setVelocityX(0);
-		PacManApp.THEME.snd_waza().stop();
+		PacManApp.theme.snd_waza().stop();
 	}
 
 	@Override

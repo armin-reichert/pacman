@@ -2,7 +2,7 @@ package de.amr.games.pacman.actor;
 
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.PacManApp.THEME;
+import static de.amr.games.pacman.PacManApp.theme;
 import static de.amr.games.pacman.actor.PacManState.DEAD;
 import static de.amr.games.pacman.actor.PacManState.DYING;
 import static de.amr.games.pacman.actor.PacManState.GREEDY;
@@ -110,9 +110,9 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 	// Sprites
 
 	private void setSprites() {
-		NESW.dirs().forEach(dir -> sprites.set("s_walking_" + dir, THEME.spr_pacManWalking(dir)));
-		sprites.set("s_dying", THEME.spr_pacManDying());
-		sprites.set("s_full", THEME.spr_pacManFull());
+		NESW.dirs().forEach(dir -> sprites.set("s_walking_" + dir, theme.spr_pacManWalking(dir)));
+		sprites.set("s_dying", theme.spr_pacManDying());
+		sprites.set("s_full", theme.spr_pacManFull());
 		sprites.select("s_full");
 	}
 

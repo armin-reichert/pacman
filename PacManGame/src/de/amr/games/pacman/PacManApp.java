@@ -20,19 +20,19 @@ import de.amr.games.pacman.theme.PacManTheme;
  */
 public class PacManApp extends Application {
 
-	public static PacManTheme THEME;
+	public static PacManTheme theme;
 
 	public static void main(String[] args) {
 		LOGGER.setLevel(Level.INFO);
 		try {
-			THEME = new ClassicPacManTheme();
-			LOGGER.info(String.format("Theme '%s' created.", THEME.getClass().getSimpleName()));
+			theme = new ClassicPacManTheme();
+			LOGGER.info(String.format("Theme '%s' created.", theme.getClass().getSimpleName()));
 			LOGGER.info("Loading audio clips...");
-			THEME.snd_clips_all();
+			theme.snd_clips_all();
 			LOGGER.info("Audio clips loaded.");
 			runAsync(() -> {
 				LOGGER.info("Loading background music...");
-				THEME.snd_music_all();
+				theme.snd_music_all();
 			}).thenAccept(result -> LOGGER.info("Music loaded."));
 			launch(new PacManApp(), args);
 		} catch (Exception e) {

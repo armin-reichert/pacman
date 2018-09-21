@@ -135,14 +135,14 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 
 	private void setSprites(GhostColor color) {
 		NESW.dirs().forEach(dir -> {
-			sprites.set("s_color_" + dir, PacManApp.THEME.spr_ghostColored(color, dir));
-			sprites.set("s_eyes_" + dir, PacManApp.THEME.spr_ghostEyes(dir));
+			sprites.set("s_color_" + dir, PacManApp.theme.spr_ghostColored(color, dir));
+			sprites.set("s_eyes_" + dir, PacManApp.theme.spr_ghostEyes(dir));
 		});
 		for (int i = 0; i < 4; ++i) {
-			sprites.set("s_value" + i, PacManApp.THEME.spr_greenNumber(i));
+			sprites.set("s_value" + i, PacManApp.theme.spr_greenNumber(i));
 		}
-		sprites.set("s_frightened", PacManApp.THEME.spr_ghostFrightened());
-		sprites.set("s_flashing", PacManApp.THEME.spr_ghostFlashing());
+		sprites.set("s_frightened", PacManApp.theme.spr_ghostFrightened());
+		sprites.set("s_flashing", PacManApp.theme.spr_ghostFlashing());
 	}
 
 	// State machine

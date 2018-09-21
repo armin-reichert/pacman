@@ -29,8 +29,8 @@ public class Bonus extends GameEntityUsingSprites implements TilePlacedEntity {
 		honored = false;
 		tf.setWidth(getTileSize());
 		tf.setHeight(getTileSize());
-		sprites.set("s_symbol", PacManApp.THEME.spr_bonusSymbol(symbol));
-		sprites.set("s_number", PacManApp.THEME.spr_pinkNumber(index));
+		sprites.set("s_symbol", PacManApp.theme.spr_bonusSymbol(symbol));
+		sprites.set("s_number", PacManApp.theme.spr_pinkNumber(index));
 		sprites.select("s_symbol");
 	}
 

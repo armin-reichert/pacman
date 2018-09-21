@@ -25,11 +25,11 @@ public class ChasePacManAnimation extends GameEntity implements AnimationControl
 	private boolean pill;
 
 	public ChasePacManAnimation() {
-		pacMan = PacManApp.THEME.spr_pacManWalking(Top4.W);
-		ghosts[0] = PacManApp.THEME.spr_ghostColored(GhostColor.RED, Top4.W);
-		ghosts[1] = PacManApp.THEME.spr_ghostColored(GhostColor.PINK, Top4.W);
-		ghosts[2] = PacManApp.THEME.spr_ghostColored(GhostColor.TURQUOISE, Top4.W);
-		ghosts[3] = PacManApp.THEME.spr_ghostColored(GhostColor.ORANGE, Top4.W);
+		pacMan = PacManApp.theme.spr_pacManWalking(Top4.W);
+		ghosts[0] = PacManApp.theme.spr_ghostColored(GhostColor.RED, Top4.W);
+		ghosts[1] = PacManApp.theme.spr_ghostColored(GhostColor.PINK, Top4.W);
+		ghosts[2] = PacManApp.theme.spr_ghostColored(GhostColor.TURQUOISE, Top4.W);
+		ghosts[3] = PacManApp.theme.spr_ghostColored(GhostColor.ORANGE, Top4.W);
 		pill = true;
 		tf.setWidth(88);
 		tf.setHeight(16);
@@ -65,13 +65,13 @@ public class ChasePacManAnimation extends GameEntity implements AnimationControl
 	public void start() {
 		init();
 		tf.setVelocityX(-1.2f);
-		PacManApp.THEME.snd_siren().loop();
+		PacManApp.theme.snd_siren().loop();
 	}
 
 	@Override
 	public void stop() {
 		tf.setVelocityX(0);
-		PacManApp.THEME.snd_siren().stop();
+		PacManApp.theme.snd_siren().stop();
 	}
 
 	@Override

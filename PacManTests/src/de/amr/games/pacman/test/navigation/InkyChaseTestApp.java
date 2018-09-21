@@ -9,9 +9,9 @@ public class InkyChaseTestApp extends PacManApp {
 
 	public static void main(String[] args) {
 		try {
-			THEME = ClassicPacManTheme.class.newInstance();
-			LOGGER.info(String.format("Theme '%s' created.", THEME.getClass().getSimpleName()));
-			Executors.newSingleThreadExecutor().submit((() -> THEME.snd_music_all()));
+			theme = ClassicPacManTheme.class.newInstance();
+			LOGGER.info(String.format("Theme '%s' created.", theme.getClass().getSimpleName()));
+			Executors.newSingleThreadExecutor().submit((() -> theme.snd_music_all()));
 			launch(new InkyChaseTestApp());
 		} catch (Exception e) {
 			throw new RuntimeException(e);

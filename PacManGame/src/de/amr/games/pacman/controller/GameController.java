@@ -2,7 +2,7 @@ package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.PacManApp.THEME;
+import static de.amr.games.pacman.PacManApp.theme;
 import static de.amr.games.pacman.controller.GameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.GameState.GAME_OVER;
 import static de.amr.games.pacman.controller.GameState.GHOST_DYING;
@@ -156,7 +156,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 				.state(INTRO)
 					.onEntry(() -> {
 						setCurrentView(getIntroView());
-						THEME.snd_insertCoin().play();
+						theme.snd_insertCoin().play();
 					})
 				
 				.state(READY)
@@ -275,16 +275,16 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 			playView.setScoresVisible(true);
 			playView.enableAnimation(false);
 			playView.showInfoText("Ready!", Color.YELLOW);
-			THEME.snd_clips_all().forEach(Sound::stop);
-			THEME.snd_music_all().forEach(Sound::stop);
-			THEME.snd_ready().play();
+			theme.snd_clips_all().forEach(Sound::stop);
+			theme.snd_music_all().forEach(Sound::stop);
+			theme.snd_ready().play();
 		}
 
 		@Override
 		public void onExit() {
 			playView.enableAnimation(true);
 			playView.hideInfoText();
-			THEME.snd_music_play().loop();
+			theme.snd_music_play().loop();
 		}
 	}
 
@@ -356,7 +356,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		private void onGhostKilled(GameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
 			e.ghost.processEvent(e);
-			THEME.snd_eatGhost().play();
+			theme.snd_eatGhost().play();
 			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
 		}
 
@@ -364,11 +364,11 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 			playView.getBonus().ifPresent(bonus -> {
 				LOGGER.info(
 						() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(), bonus.getValue()));
-				THEME.snd_eatFruit().play();
+				theme.snd_eatFruit().play();
 				bonus.setHonored();
 				boolean extraLife = game.addPoints(bonus.getValue());
 				if (extraLife) {
-					THEME.snd_extraLife().play();
+					theme.snd_extraLife().play();
 				}
 				playView.setBonusTimer(app().clock.sec(1));
 			});
@@ -376,11 +376,11 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 
 		private void onFoodFound(GameEvent event) {
 			FoodFoundEvent e = (FoodFoundEvent) event;
-			THEME.snd_eatPill().play();
+			theme.snd_eatPill().play();
 			int points = game.eatFoodAtTile(e.tile);
 			boolean extraLife = game.addPoints(points);
 			if (extraLife) {
-				THEME.snd_extraLife().play();
+				theme.snd_extraLife().play();
 			}
 			if (game.allFoodEaten()) {
 				enqueue(new LevelCompletedEvent());
@@ -432,7 +432,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 			actors.pacMan.setVisible(false);
 			boolean extraLife = game.addPoints(game.getKilledGhostValue());
 			if (extraLife) {
-				THEME.snd_extraLife().play();
+				theme.snd_extraLife().play();
 			}
 			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
 					game.getGhostsKilledByEnergizer()));
@@ -456,7 +456,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		@Override
 		public void onEntry() {
 			actors.getActiveGhosts().forEach(ghost -> ghost.setVisible(false));
-			THEME.snd_die().play();
+			theme.snd_die().play();
 		}
 
 		@Override
@@ -478,14 +478,14 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 			playView.enableAnimation(false);
 			playView.showInfoText("Game Over!", Color.RED);
 			game.saveHiscore();
-			THEME.snd_music_play().stop();
-			THEME.snd_music_gameover().loop();
+			theme.snd_music_play().stop();
+			theme.snd_music_gameover().loop();
 		}
 
 		@Override
 		public void onExit() {
 			playView.hideInfoText();
-			THEME.snd_music_gameover().stop();
+			theme.snd_music_gameover().stop();
 		}
 	}
 }

@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.intro;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.PacManApp.THEME;
+import static de.amr.games.pacman.PacManApp.theme;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -70,12 +70,12 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		ghostPoints.tf.centerX(width);
 
 		pressSpace = BlinkingText.create().text("Press SPACE to start!").spaceExpansion(3).blinkTimeMillis(1000)
-				.font(THEME.fnt_text(18)).background(background).color(Color.YELLOW).build();
+				.font(theme.fnt_text(18)).background(background).color(Color.YELLOW).build();
 		pressSpace.tf.setY(130);
 		pressSpace.tf.centerX(width);
 
 		f11Hint = BlinkingText.create().text("F11 Toggle Fullscreen").spaceExpansion(3)
-				.blinkTimeMillis(Integer.MAX_VALUE).font(THEME.fnt_text(12)).background(background).color(Color.PINK)
+				.blinkTimeMillis(Integer.MAX_VALUE).font(theme.fnt_text(12)).background(background).color(Color.PINK)
 				.build();
 		f11Hint.tf.setY(pressSpace.tf.getY() + 30);
 		f11Hint.tf.centerX(width);
@@ -84,7 +84,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		String[] texts = { "Normal 1", "Fast 2", "Insane 3" };
 		for (int i = 0; i < texts.length; ++i) {
 			speedHint[i] = BlinkingText.create().text(texts[i]).spaceExpansion(3).blinkTimeMillis(Integer.MAX_VALUE)
-					.font(THEME.fnt_text(12)).background(background).color(Color.PINK).build();
+					.font(theme.fnt_text(12)).background(background).color(Color.PINK).build();
 			speedHint[i].tf.setY(height - 40);
 		}
 		speedHint[0].tf.setX(20);

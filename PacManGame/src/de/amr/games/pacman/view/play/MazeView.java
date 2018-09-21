@@ -23,8 +23,8 @@ public class MazeView extends GameEntityUsingSprites {
 
 	public MazeView(Maze maze) {
 		this.maze = maze;
-		sprites.set("s_normal", PacManApp.THEME.spr_fullMaze());
-		sprites.set("s_flashing", PacManApp.THEME.spr_flashingMaze());
+		sprites.set("s_normal", PacManApp.theme.spr_fullMaze());
+		sprites.set("s_flashing", PacManApp.theme.spr_flashingMaze());
 		sprites.select("s_normal");
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(500);

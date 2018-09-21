@@ -32,10 +32,10 @@ public class GhostPointsAnimation extends GameEntity implements AnimationControl
 	private boolean energizer;
 
 	public GhostPointsAnimation() {
-		pacMan = PacManApp.THEME.spr_pacManWalking(Top4.E);
-		ghost = PacManApp.THEME.spr_ghostFrightened();
+		pacMan = PacManApp.theme.spr_pacManWalking(Top4.E);
+		ghost = PacManApp.theme.spr_ghostFrightened();
 		for (int i = 0; i < 4; ++i) {
-			points[i] = PacManApp.THEME.spr_greenNumber(i);
+			points[i] = PacManApp.theme.spr_greenNumber(i);
 		}
 		ghostTimer = -1;
 		tf.setWidth(90);
@@ -85,7 +85,7 @@ public class GhostPointsAnimation extends GameEntity implements AnimationControl
 			if (killed.cardinality() == 5) {
 				stop();
 			} else {
-				PacManApp.THEME.snd_eatGhost().play();
+				PacManApp.theme.snd_eatGhost().play();
 				resetGhostTimer();
 			}
 		}
