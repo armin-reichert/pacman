@@ -40,7 +40,7 @@ public class Score {
 		}
 	}
 
-	private void save() {
+	public void save() {
 		Properties prop = new Properties();
 		prop.setProperty("score", String.valueOf(hiscorePoints));
 		prop.setProperty("level", String.valueOf(hiscoreLevel));
@@ -50,10 +50,6 @@ public class Score {
 			LOGGER.info("Could not save score file");
 			throw new RuntimeException(e);
 		}
-	}
-
-	public void saveHiscore() {
-		save();
 	}
 
 	public void set(int n) {

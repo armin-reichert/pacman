@@ -65,8 +65,8 @@ public class Game {
 		return false;
 	}
 
-	public void saveHiscore() {
-		score.saveHiscore();
+	public void saveScore() {
+		score.save();
 	}
 
 	public int getHiscorePoints() {

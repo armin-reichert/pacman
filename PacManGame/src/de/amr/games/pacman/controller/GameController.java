@@ -477,7 +477,7 @@ public class GameController extends StateMachine<GameState, GameEvent> implement
 		public void onEntry() {
 			playView.enableAnimation(false);
 			playView.showInfoText("Game Over!", Color.RED);
-			game.saveHiscore();
+			game.saveScore();
 			theme.snd_music_play().stop();
 			theme.snd_music_gameover().loop();
 		}
