@@ -1,6 +1,7 @@
 package de.amr.games.pacman;
 
-import java.util.concurrent.Executors;
+import static java.util.concurrent.CompletableFuture.runAsync;
+
 import java.util.logging.Level;
 
 import de.amr.easy.game.Application;
@@ -29,8 +30,10 @@ public class PacManApp extends Application {
 			LOGGER.info("Loading audio clips...");
 			THEME.snd_clips_all();
 			LOGGER.info("Audio clips loaded.");
-			LOGGER.info("Loading background music...");
-			Executors.newSingleThreadExecutor().submit((() -> THEME.snd_music_all()));
+			runAsync(() -> {
+				LOGGER.info("Loading background music...");
+				THEME.snd_music_all();
+			}).thenAccept(result -> LOGGER.info("Music loaded."));
 			launch(new PacManApp(), args);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
