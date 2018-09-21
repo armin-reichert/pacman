@@ -50,46 +50,52 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		width = app().settings.width;
 		height = app().settings.height;
 		background = new Color(0, 23, 61);
+
 		logo = new ScrollableImage(Assets.image("logo.png"));
 		logo.tf.centerX(width);
 		logo.tf.setY(height);
 		logo.setSpeedY(-2f);
 		logo.setCompletion(() -> logo.tf.getY() <= 20);
+
 		chasePacMan = new ChasePacManAnimation();
 		chasePacMan.setStartPosition(width, 100);
 		chasePacMan.setEndPosition(-chasePacMan.tf.getWidth(), 100);
+
 		chaseGhosts = new ChaseGhostsAnimation();
 		chaseGhosts.setStartPosition(-chaseGhosts.tf.getWidth(), 200);
 		chaseGhosts.setEndPosition(width, 200);
+
 		ghostPoints = new GhostPointsAnimation();
 		ghostPoints.tf.setY(200);
 		ghostPoints.tf.centerX(width);
+
 		pressSpace = BlinkingText.create().text("Press SPACE to start!").spaceExpansion(3).blinkTimeMillis(1000)
 				.font(THEME.fnt_text(18)).background(background).color(Color.YELLOW).build();
 		pressSpace.tf.setY(130);
 		pressSpace.tf.centerX(width);
+
 		f11Hint = BlinkingText.create().text("F11 Toggle Fullscreen").spaceExpansion(3)
-				.blinkTimeMillis(Integer.MAX_VALUE).font(THEME.fnt_text(12)).background(background)
-				.color(Color.PINK).build();
+				.blinkTimeMillis(Integer.MAX_VALUE).font(THEME.fnt_text(12)).background(background).color(Color.PINK)
+				.build();
 		f11Hint.tf.setY(pressSpace.tf.getY() + 30);
 		f11Hint.tf.centerX(width);
+
 		speedHint = new BlinkingText[3];
-		speedHint[0] = BlinkingText.create().text("Normal 1").spaceExpansion(3).blinkTimeMillis(Integer.MAX_VALUE)
-				.font(THEME.fnt_text(12)).background(background).color(Color.PINK).build();
-		speedHint[0].tf.setY(height - 40);
+		String[] texts = { "Normal 1", "Fast 2", "Insane 3" };
+		for (int i = 0; i < texts.length; ++i) {
+			speedHint[i] = BlinkingText.create().text(texts[i]).spaceExpansion(3).blinkTimeMillis(Integer.MAX_VALUE)
+					.font(THEME.fnt_text(12)).background(background).color(Color.PINK).build();
+			speedHint[i].tf.setY(height - 40);
+		}
 		speedHint[0].tf.setX(20);
-		speedHint[1] = BlinkingText.create().text("Fast 2").spaceExpansion(3).blinkTimeMillis(Integer.MAX_VALUE)
-				.font(THEME.fnt_text(12)).background(background).color(Color.PINK).build();
-		speedHint[1].tf.setY(height - 40);
 		speedHint[1].tf.centerX(width);
-		speedHint[2] = BlinkingText.create().text("Insane 3").spaceExpansion(3).blinkTimeMillis(Integer.MAX_VALUE)
-				.font(THEME.fnt_text(12)).background(background).color(Color.PINK).build();
-		speedHint[2].tf.setY(height - 40);
 		speedHint[2].tf.setX(width - 20 - speedHint[2].tf.getWidth());
+
 		visitGitHub = Link.create().text(GITHUB_TEXT).url(GITHUB_URL)
 				.font(new Font(Font.SANS_SERIF, Font.BOLD, 6)).color(Color.LIGHT_GRAY).build();
 		visitGitHub.tf.setY(height - 10);
 		visitGitHub.tf.centerX(width);
+
 		buildStateMachine();
 	}
 
@@ -174,7 +180,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		super.update();
 		animations.forEach(animation -> ((Controller) animation).update());
 		for (int i = 0; i < 3; ++i) {
-			speedHint[i].setColor(app().clock.getFrequency() == 60 + 20*i ? Color.YELLOW : Color.PINK);
+			speedHint[i].setColor(app().clock.getFrequency() == 60 + 20 * i ? Color.YELLOW : Color.PINK);
 		}
 	}
 
