@@ -232,7 +232,7 @@ public interface ActorNavigationSystem<T extends Actor> {
 	}
 
 	/**
-	 * Lets the actor follow the direction entered usin the keyboard.
+	 * Lets the actor follow the direction entered using the keyboard.
 	 * 
 	 * @param keyUp
 	 *                   key code for upwards movement e.g. KeyEvent.VK_UP
@@ -243,7 +243,7 @@ public interface ActorNavigationSystem<T extends Actor> {
 	 * @param keyLeft
 	 *                   key code for left movement
 	 * 
-	 * @return behavior following the keyboard
+	 * @return behavior following direction entered with the keyboard
 	 */
 	default ActorNavigation<T> followKeyboard(int keyUp, int keyRight, int keyDown, int keyLeft) {
 		return mover -> {
@@ -272,7 +272,7 @@ public interface ActorNavigationSystem<T extends Actor> {
 	 *                 target tile supplier (this tile must be inside the maze or teleport space!)
 	 * @return behavior following the path to the target
 	 */
-	default ActorNavigation<T> followDynamicRoute(Supplier<Tile> targetSupplier) {
+	default ActorNavigation<T> followRoute(Supplier<Tile> targetSupplier) {
 		return mover -> {
 			MazeRoute route = new MazeRoute();
 			route.setPath(mover.getMaze().findPath(mover.getTile(), targetSupplier.get()));
@@ -289,7 +289,7 @@ public interface ActorNavigationSystem<T extends Actor> {
 	 *                             function supplying the target tile at time of decision
 	 * @return behavior following a static route
 	 */
-	default ActorNavigation<T> followStaticRoute(Supplier<Tile> targetTileSupplier) {
+	default ActorNavigation<T> followFixedPath(Supplier<Tile> targetTileSupplier) {
 		return new FollowFixedPath<>(targetTileSupplier);
 	}
 
@@ -299,7 +299,7 @@ public interface ActorNavigationSystem<T extends Actor> {
 	 * 
 	 * @param targetTileSupplier
 	 *                             function supplying the target tile at time of decision
-	 * @return behavior heading for the target tile 
+	 * @return behavior heading for the target tile
 	 */
 	default ActorNavigation<T> headFor(Supplier<Tile> targetTileSupplier) {
 		return new FollowTargetTile<>(targetTileSupplier);
