@@ -7,7 +7,8 @@ import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Encapsulates the data for taking a route through the maze.
+ * Represents a route through the maze. For dynamic routes (where the direction to be taken is
+ * queried at each crossing), the path may be empty. For fixed routes it is computed only once.
  * 
  * @author Armin Reichert
  */
@@ -17,7 +18,7 @@ public class MazeRoute {
 	private int dir;
 
 	/** (Optional) The route as a list of tiles. */
-	private List<Tile> tiles = Collections.emptyList();
+	private List<Tile> path = Collections.emptyList();
 
 	/** The target tile of this route. */
 	private Tile targetTile;
@@ -30,9 +31,10 @@ public class MazeRoute {
 	}
 
 	/**
-	 * Creates a route following the given direction. The path is not defined.
+	 * Creates a route following the given direction. The path is empty.
 	 * 
-	 * @param dir route direction
+	 * @param dir
+	 *              route direction
 	 */
 	public MazeRoute(int dir) {
 		this.dir = dir;
@@ -58,18 +60,18 @@ public class MazeRoute {
 	/**
 	 * @return the (optional) list of tiles defining this route.
 	 */
-	public List<Tile> getTiles() {
-		return Collections.unmodifiableList(tiles);
+	public List<Tile> getPath() {
+		return Collections.unmodifiableList(path);
 	}
 
 	/**
-	 * Sets the route path as a list of tiles.
+	 * Sets the path (as a list of tiles) for this route.
 	 * 
 	 * @param path
 	 *               tile list defining the path
 	 */
-	public void setTiles(List<Tile> path) {
-		this.tiles = path;
+	public void setPath(List<Tile> path) {
+		this.path = path;
 	}
 
 	/**

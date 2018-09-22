@@ -275,15 +275,15 @@ public interface ActorNavigationSystem<T extends Actor> {
 	default ActorNavigation<T> followDynamicRoute(Supplier<Tile> targetSupplier) {
 		return mover -> {
 			MazeRoute route = new MazeRoute();
-			route.setTiles(mover.getMaze().findPath(mover.getTile(), targetSupplier.get()));
-			route.setDir(mover.getMaze().alongPath(route.getTiles()).orElse(-1));
+			route.setPath(mover.getMaze().findPath(mover.getTile(), targetSupplier.get()));
+			route.setDir(mover.getMaze().alongPath(route.getPath()).orElse(-1));
 			return route;
 		};
 	}
 
 	/**
 	 * Lets the actor follow a static route to the target. The path of that route is computed by calling
-	 * the method {@link ActorNavigation#computeStaticPath(Actor)}.
+	 * the method {@link ActorNavigation#computePath(Actor)}.
 	 * 
 	 * @param targetTileSupplier
 	 *                             function supplying the target tile at time of decision

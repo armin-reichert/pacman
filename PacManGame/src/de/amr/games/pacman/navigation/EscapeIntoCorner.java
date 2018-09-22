@@ -16,7 +16,7 @@ class EscapeIntoCorner<T extends Actor> extends FollowFixedPath<T> {
 	}
 
 	@Override
-	public void computeStaticPath(T refugee) {
+	public void computePath(T refugee) {
 		Maze maze = refugee.getMaze();
 		Tile target = refugee.getTile();
 		while (target.equals(refugee.getTile())) {

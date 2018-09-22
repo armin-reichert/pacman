@@ -19,7 +19,7 @@ public interface ActorNavigation<T extends Actor> {
 	 *                the moving actor
 	 * @return the route the actor should take
 	 */
-	MazeRoute computeRoute(T actor);
+	MazeRoute getRoute(T actor);
 
 	/**
 	 * Triggers computation of a static path for the actor. The concrete implementation can then store
@@ -29,6 +29,6 @@ public interface ActorNavigation<T extends Actor> {
 	 * @param actor
 	 *                the moving actor
 	 */
-	default void computeStaticPath(T actor) {
+	default void computePath(T actor) {
 	}
 }

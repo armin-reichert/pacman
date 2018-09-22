@@ -109,7 +109,7 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 
 	@Override
 	public int supplyIntendedDir() {
-		return getMoveBehavior().computeRoute(this).getDir();
+		return getMoveBehavior().getRoute(this).getDir();
 	}
 
 	@Override
@@ -209,7 +209,7 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 				.state(FRIGHTENED)
 					.onEntry(() -> {
 						sprites.select("s_frightened"); 
-						getMoveBehavior().computeStaticPath(this); 
+						getMoveBehavior().computePath(this); 
 					})
 					.onTick(this::move)
 				
@@ -221,7 +221,7 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 					})
 				
 				.state(DEAD)
-					.onEntry(() -> getMoveBehavior().computeStaticPath(this))
+					.onEntry(() -> getMoveBehavior().computePath(this))
 					.onTick(() -> {	
 						move();
 						sprites.select("s_eyes_" + getCurrentDir());
