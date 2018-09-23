@@ -48,7 +48,7 @@ Which entities in the Pac-Man game are candidates for getting controlled by stat
 Of course, Pac-Man and the four ghosts, but also the global game control, maybe also the screen selection logic or even simpler entities in your game. It is interesting to look at your program parts through the state machine glasses and find out where an explicit state machine becomes useful.
 
 In the provided implementation, there are the following explicit state machines:
-- Game controller ([GameController](PacManGame/src/de/amr/games/pacman/controller/GameController.java))
+- Game controller ([PacManGameController](PacManGame/src/de/amr/games/pacman/controller/PacManGameController.java))
 - Ghost attack controller ([GhostAttackTimer](PacManGame/src/de/amr/games/pacman/controller/GhostAttackTimer.java))
 - Pac-Man controller ([Pac-Man](PacManGame/src/de/amr/games/pacman/actor/PacMan.java))
 - Ghost controller ([Ghost](PacManGame/src/de/amr/games/pacman/actor/Ghost.java))
