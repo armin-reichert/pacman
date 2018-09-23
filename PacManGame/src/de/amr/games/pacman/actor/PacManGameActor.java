@@ -2,7 +2,7 @@ package de.amr.games.pacman.actor;
 
 import static de.amr.games.pacman.model.Maze.NESW;
 
-import de.amr.easy.game.entity.GameEntityUsingSprites;
+import de.amr.easy.game.entity.SpriteBasedGameEntity;
 import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
@@ -16,7 +16,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public abstract class PacManGameActor extends GameEntityUsingSprites implements TilePlacedEntity {
+public abstract class PacManGameActor extends SpriteBasedGameEntity implements TilePlacedEntity {
 
 	/** The current move direction. */
 	private int currentDir;

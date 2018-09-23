@@ -4,13 +4,13 @@ import static java.util.Arrays.binarySearch;
 
 import java.awt.Graphics2D;
 
-import de.amr.easy.game.entity.GameEntityUsingSprites;
+import de.amr.easy.game.entity.SpriteBasedGameEntity;
 import de.amr.easy.game.entity.Transform;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.PacManGame;
 
-public class Bonus extends GameEntityUsingSprites implements TilePlacedEntity {
+public class Bonus extends SpriteBasedGameEntity implements TilePlacedEntity {
 
 	private static final int[] POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
