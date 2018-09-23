@@ -1,8 +1,8 @@
 package de.amr.games.pacman.theme;
 
-import static de.amr.easy.game.sprite.AnimationType.BACK_AND_FORTH;
-import static de.amr.easy.game.sprite.AnimationType.CYCLIC;
-import static de.amr.easy.game.sprite.AnimationType.LINEAR;
+import static de.amr.easy.game.ui.sprites.AnimationType.BACK_AND_FORTH;
+import static de.amr.easy.game.ui.sprites.AnimationType.CYCLIC;
+import static de.amr.easy.game.ui.sprites.AnimationType.LINEAR;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.Sound;
-import de.amr.easy.game.sprite.Sprite;
+import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.BonusSymbol;
 

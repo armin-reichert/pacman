@@ -13,11 +13,11 @@ import java.util.Set;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
-import de.amr.easy.game.controls.AnimationController;
-import de.amr.easy.game.controls.BlinkingText;
-import de.amr.easy.game.controls.Link;
-import de.amr.easy.game.controls.ScrollableImage;
 import de.amr.easy.game.input.Keyboard;
+import de.amr.easy.game.ui.widgets.BlinkingText;
+import de.amr.easy.game.ui.widgets.Link;
+import de.amr.easy.game.ui.widgets.ScrollableImage;
+import de.amr.easy.game.view.AnimationController;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.statemachine.StateMachine;

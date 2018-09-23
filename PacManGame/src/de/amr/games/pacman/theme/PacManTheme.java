@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.Sound;
-import de.amr.easy.game.sprite.Sprite;
+import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.model.BonusSymbol;
 
 public interface PacManTheme {

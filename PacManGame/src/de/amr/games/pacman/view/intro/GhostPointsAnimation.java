@@ -7,9 +7,9 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.BitSet;
 
-import de.amr.easy.game.controls.AnimationController;
 import de.amr.easy.game.entity.GameEntity;
-import de.amr.easy.game.sprite.Sprite;
+import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.easy.game.view.AnimationController;
 import de.amr.easy.game.view.View;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.PacManApp;

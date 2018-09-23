@@ -7,8 +7,8 @@ import java.awt.Graphics2D;
 import java.util.Optional;
 
 import de.amr.easy.game.entity.GameEntityUsingSprites;
-import de.amr.easy.game.sprite.Animation;
-import de.amr.easy.game.sprite.CyclicAnimation;
+import de.amr.easy.game.ui.sprites.Animation;
+import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.model.Maze;
