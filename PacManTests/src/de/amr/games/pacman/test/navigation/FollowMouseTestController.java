@@ -26,23 +26,24 @@ public class FollowMouseTestController implements ViewController {
 		view = new PlayViewX(game, actors);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
-		view.setShowStates(true);
+		view.setShowStates(false);
 		view.setScoresVisible(false);
 	}
 
 	@Override
 	public void init() {
 		mouseTile = actors.pacMan.getHomeTile();
+		actors.pacMan.placeAtTile(mouseTile, 0, 0);
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
 		actors.setActive(actors.blinky, true);
 		actors.setActive(actors.pinky, false);
 		actors.setActive(actors.inky, false);
 		actors.setActive(actors.clyde, false);
-		actors.setActive(actors.pacMan, false);
+		actors.setActive(actors.pacMan, true);
 		actors.blinky.init();
 		actors.blinky.setState(GhostState.CHASING);
-		actors.blinky.setMoveBehavior(GhostState.CHASING, actors.blinky.followDynamicRoute(() -> mouseTile));
+		actors.blinky.setMoveBehavior(GhostState.CHASING, actors.blinky.followRoute(() -> mouseTile));
 	}
 
 	@Override
@@ -56,6 +57,7 @@ public class FollowMouseTestController implements ViewController {
 		if (Mouse.moved()) {
 			int x = Mouse.getX(), y = Mouse.getY();
 			mouseTile = new Tile(x / Game.TS, y / Game.TS);
+			actors.pacMan.placeAtTile(mouseTile, 0, 0);
 			Application.LOGGER.info(mouseTile.toString());
 		}
 	}

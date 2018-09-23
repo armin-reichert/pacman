@@ -93,7 +93,7 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 
 	@Override
 	public int supplyIntendedDir() {
-		return getMoveBehavior().computeRoute(this).getDir();
+		return getMoveBehavior().getRoute(this).getDir();
 	}
 
 	@Override

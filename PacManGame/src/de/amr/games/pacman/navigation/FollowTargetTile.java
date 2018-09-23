@@ -45,7 +45,7 @@ public class FollowTargetTile<T extends Actor> implements ActorNavigation<T> {
 	}
 
 	@Override
-	public MazeRoute computeRoute(T mover) {
+	public MazeRoute getRoute(T mover) {
 		final MazeRoute route = new MazeRoute();
 		final Maze maze = mover.getMaze();
 		final int moverDir = mover.getCurrentDir();

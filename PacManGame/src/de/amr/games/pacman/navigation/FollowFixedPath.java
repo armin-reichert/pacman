@@ -7,6 +7,14 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.actor.Actor;
 import de.amr.games.pacman.model.Tile;
 
+/**
+ * Computes a fixed path and lets the mover follow this path until the target tile is reached.
+ *
+ * @author Armin Reichert
+ *
+ * @param <T>
+ *          actor type, for example Ghost
+ */
 class FollowFixedPath<T extends Actor> implements ActorNavigation<T> {
 
 	protected Supplier<Tile> targetTileSupplier;
@@ -17,21 +25,21 @@ class FollowFixedPath<T extends Actor> implements ActorNavigation<T> {
 	}
 
 	@Override
-	public MazeRoute computeRoute(T mover) {
+	public MazeRoute getRoute(T mover) {
 		if (path.size() == 0 || mover.getTile().equals(path.get(path.size() - 1))) {
-			computeStaticPath(mover);
+			computePath(mover);
 		}
-		if (!mover.getTile().equals(path.get(0))) {
+		while (path.size() > 0 && !mover.getTile().equals(path.get(0))) {
 			path.remove(0);
 		}
 		MazeRoute route = new MazeRoute();
-		route.setTiles(path);
+		route.setPath(path);
 		route.setDir(mover.getMaze().alongPath(path).orElse(mover.getCurrentDir()));
 		return route;
 	}
 
 	@Override
-	public void computeStaticPath(T mover) {
+	public void computePath(T mover) {
 		path = mover.getMaze().findPath(mover.getTile(), targetTileSupplier.get());
 	}
 }

@@ -31,7 +31,7 @@ public class FollowFixedPathTestController implements ViewController {
 		view = new PlayViewX(game, actors);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
-		view.setShowStates(true);
+		view.setShowStates(false);
 		view.setScoresVisible(false);
 	}
 
@@ -46,8 +46,8 @@ public class FollowFixedPathTestController implements ViewController {
 		actors.blinky.initGhost();
 		actors.blinky.setState(GhostState.CHASING);
 		actors.blinky.setMoveBehavior(GhostState.CHASING,
-				actors.blinky.followStaticRoute(() -> targets.get(targetIndex)));
-		actors.blinky.getMoveBehavior().computeStaticPath(actors.blinky);
+				actors.blinky.followFixedPath(() -> targets.get(targetIndex)));
+		actors.blinky.getMoveBehavior().computePath(actors.blinky);
 	}
 
 	private void nextTarget() {
