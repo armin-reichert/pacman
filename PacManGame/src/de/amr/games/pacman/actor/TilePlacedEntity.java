@@ -1,5 +1,6 @@
 package de.amr.games.pacman.actor;
 
+import static de.amr.games.pacman.model.Maze.NESW;
 import static java.lang.Math.round;
 
 import de.amr.easy.game.entity.Transform;
@@ -45,4 +46,9 @@ public interface TilePlacedEntity {
 	default int getTileAlignmentY() {
 		return round(tf().getY()) % getTileSize();
 	}
+
+	default boolean isTurn(int currentDir, int nextDir) {
+		return nextDir == NESW.left(currentDir) || nextDir == NESW.right(currentDir);
+	}
+
 }

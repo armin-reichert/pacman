@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.actor.Actor;
+import de.amr.games.pacman.actor.PacManGameActor;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -15,7 +15,7 @@ import de.amr.games.pacman.model.Tile;
  * @param <T>
  *          actor type, for example Ghost
  */
-class FollowFixedPath<T extends Actor> implements ActorNavigation<T> {
+class FollowFixedPath<T extends PacManGameActor> implements ActorNavigation<T> {
 
 	protected Supplier<Tile> targetTileSupplier;
 	protected List<Tile> path = Collections.emptyList();

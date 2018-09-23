@@ -1,6 +1,6 @@
 package de.amr.games.pacman.navigation;
 
-import de.amr.games.pacman.actor.Actor;
+import de.amr.games.pacman.actor.PacManGameActor;
 
 /**
  * Navigation behavior of actors.
@@ -10,7 +10,7 @@ import de.amr.games.pacman.actor.Actor;
  * @param <T>
  *          actor type
  */
-public interface ActorNavigation<T extends Actor> {
+public interface ActorNavigation<T extends PacManGameActor> {
 
 	/**
 	 * Computes the route the actor should take when this method is called.

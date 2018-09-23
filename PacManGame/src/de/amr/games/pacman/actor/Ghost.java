@@ -39,7 +39,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
+public class Ghost extends PacManGameActor implements ActorNavigationSystem<Ghost> {
 
 	private final PacManGame game;
 	private final String name;

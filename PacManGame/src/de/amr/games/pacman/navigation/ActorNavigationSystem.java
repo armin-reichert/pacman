@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.actor.Actor;
+import de.amr.games.pacman.actor.PacManGameActor;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.model.Maze;
@@ -24,7 +24,7 @@ import de.amr.games.pacman.model.Tile;
  * @param <T>
  *          the actor type
  */
-public interface ActorNavigationSystem<T extends Actor> {
+public interface ActorNavigationSystem<T extends PacManGameActor> {
 
 	/**
 	 * Ambushes the victim by heading for the tile the given number of tiles ahead of the victim's
@@ -37,7 +37,7 @@ public interface ActorNavigationSystem<T extends Actor> {
 	 *                 located outside of the maze, the tile <code>(n - 1)</code> ahead is used etc.
 	 * @return ambush behavior
 	 */
-	default ActorNavigation<T> ambush(Actor victim, int n) {
+	default ActorNavigation<T> ambush(PacManGameActor victim, int n) {
 		return headFor(() -> victim.ahead(n));
 	}
 
@@ -89,7 +89,7 @@ public interface ActorNavigationSystem<T extends Actor> {
 	 * 
 	 * @return behavior of attacking the victim directly
 	 */
-	default ActorNavigation<T> attackDirectly(Actor victim) {
+	default ActorNavigation<T> attackDirectly(PacManGameActor victim) {
 		return headFor(victim::getTile);
 	}
 
@@ -227,7 +227,7 @@ public interface ActorNavigationSystem<T extends Actor> {
 	 *                   the attacker
 	 * @return flight behavior
 	 */
-	default ActorNavigation<T> flee(Actor attacker) {
+	default ActorNavigation<T> flee(PacManGameActor attacker) {
 		return new EscapeIntoCorner<>(attacker::getTile);
 	}
 
@@ -283,7 +283,7 @@ public interface ActorNavigationSystem<T extends Actor> {
 
 	/**
 	 * Lets the actor follow a static route to the target. The path of that route is computed by calling
-	 * the method {@link ActorNavigation#computePath(Actor)}.
+	 * the method {@link ActorNavigation#computePath(PacManGameActor)}.
 	 * 
 	 * @param targetTileSupplier
 	 *                             function supplying the target tile at time of decision

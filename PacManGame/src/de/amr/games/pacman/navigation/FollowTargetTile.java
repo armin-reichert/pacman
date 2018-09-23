@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.actor.Actor;
+import de.amr.games.pacman.actor.PacManGameActor;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
@@ -36,7 +36,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public class FollowTargetTile<T extends Actor> implements ActorNavigation<T> {
+public class FollowTargetTile<T extends PacManGameActor> implements ActorNavigation<T> {
 
 	private final Supplier<Tile> targetTileSupplier;
 
@@ -116,7 +116,7 @@ public class FollowTargetTile<T extends Actor> implements ActorNavigation<T> {
 		return route;
 	}
 
-	private Optional<Integer> findBestDir(Actor mover, Tile from, Tile to, Stream<Integer> choices) {
+	private Optional<Integer> findBestDir(PacManGameActor mover, Tile from, Tile to, Stream<Integer> choices) {
 		final Maze maze = mover.getMaze();
 		/*@formatter:off*/
 		return choices

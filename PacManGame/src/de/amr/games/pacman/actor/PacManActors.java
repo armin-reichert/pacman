@@ -31,7 +31,7 @@ public class PacManActors {
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
 
-	private final Set<Actor> activeActors = new HashSet<>();
+	private final Set<PacManGameActor> activeActors = new HashSet<>();
 
 	public PacManActors(PacManGame game) {
 		Maze maze = game.getMaze();
@@ -90,14 +90,14 @@ public class PacManActors {
 	}
 
 	public void init() {
-		activeActors.forEach(Actor::init);
+		activeActors.forEach(PacManGameActor::init);
 	}
 
-	public boolean isActive(Actor actor) {
+	public boolean isActive(PacManGameActor actor) {
 		return activeActors.contains(actor);
 	}
 
-	public void setActive(Actor actor, boolean active) {
+	public void setActive(PacManGameActor actor, boolean active) {
 		if (active == isActive(actor)) {
 			return;
 		}

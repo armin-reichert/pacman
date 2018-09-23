@@ -2,42 +2,42 @@ package de.amr.games.pacman.actor;
 
 import static de.amr.games.pacman.model.Maze.NESW;
 
-import java.awt.Graphics2D;
-
 import de.amr.easy.game.entity.GameEntityUsingSprites;
 import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Actors know how to move in the maze and can be controlled by supplying the intended move
- * direction at suitable points in time.
+ * Base class for Pac-Man and the ghosts. An actor knows how to move in the maze and its movement
+ * can be controlled by supplying the intended move direction at suitable points in time.
  * 
  * @author Armin Reichert
  */
-public abstract class Actor extends GameEntityUsingSprites implements TilePlacedEntity {
+public abstract class PacManGameActor extends GameEntityUsingSprites implements TilePlacedEntity {
 
-	private boolean visible;
+	/** The current move direction. */
 	private int currentDir;
+
+	/** The indended move direction which will be used as soon as turning becomes possible. */
 	private int nextDir;
 
-	public Actor() {
-		visible = true;
+	public PacManGameActor() {
 		currentDir = nextDir = Top4.E;
+		// collision box size is one tile
 		tf.setWidth(getTileSize());
 		tf.setHeight(getTileSize());
 	}
 
-	public boolean isVisible() {
-		return visible;
-	}
+	public abstract Maze getMaze();
 
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
+	public abstract boolean canTraverseDoor(Tile door);
+
+	public abstract int supplyIntendedDir();
+
+	public abstract float getSpeed();
 
 	public int getCurrentDir() {
 		return currentDir;
@@ -55,14 +55,6 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 		this.nextDir = nextDir;
 	}
 
-	public abstract Maze getMaze();
-
-	public abstract boolean canTraverseDoor(Tile door);
-
-	public abstract int supplyIntendedDir();
-
-	public abstract float getSpeed();
-
 	@Override
 	public Transform tf() {
 		return tf;
@@ -71,10 +63,6 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 	@Override
 	public int getTileSize() {
 		return PacManGame.TS;
-	}
-
-	public boolean isTurn(int currentDir, int nextDir) {
-		return nextDir == NESW.left(currentDir) || nextDir == NESW.right(currentDir);
 	}
 
 	public boolean inTeleportSpace() {
@@ -139,14 +127,14 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 	}
 
 	public void move() {
-		if (canMove(getNextDir())) {
-			if (isTurn(getCurrentDir(), getNextDir())) {
+		if (canMove(nextDir)) {
+			if (isTurn(currentDir, nextDir)) {
 				alignOverTile();
 			}
-			setCurrentDir(getNextDir());
+			setCurrentDir(nextDir);
 		}
 		if (!isStuck()) {
-			tf.setVelocity(velocity(getCurrentDir()));
+			tf.setVelocity(velocity(currentDir));
 			tf.move();
 			// check exit from teleport space
 			if (tf.getX() + tf.getWidth() < 0) {
@@ -173,26 +161,14 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 	 *         tiles ahead etc.
 	 */
 	public Tile ahead(int n) {
-		Tile tile = getTile();
+		final Tile current = getTile();
 		while (n >= 0) {
-			Tile ahead = tile.tileTowards(getCurrentDir(), n);
+			Tile ahead = current.tileTowards(currentDir, n);
 			if (getMaze().isValidTile(ahead)) {
 				return ahead;
 			}
 			n -= 1;
 		}
-		return tile;
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
-		if (visible && sprites.current() != null) {
-			Vector2f center = tf.getCenter();
-			float dx = center.x - sprites.current().getWidth() / 2;
-			float dy = center.y - sprites.current().getHeight() / 2;
-			g.translate(dx, dy);
-			sprites.current().draw(g);
-			g.translate(-dx, -dy);
-		}
+		return current;
 	}
 }
