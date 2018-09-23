@@ -5,23 +5,23 @@ import static de.amr.easy.game.Application.app;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
-import de.amr.games.pacman.actor.Cast;
+import de.amr.games.pacman.actor.PacManActors;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.view.play.PlayViewX;
 
 public class ScatteringTestController implements ViewController {
 
-	private final Game game;
+	private final PacManGame game;
 	private final PlayViewX view;
-	private final Cast actors;
+	private final PacManActors actors;
 
 	public ScatteringTestController() {
 		Maze maze = new Maze(Assets.text("maze.txt"));
-		game = new Game(maze);
-		actors = new Cast(game);
+		game = new PacManGame(maze);
+		actors = new PacManActors(game);
 		view = new PlayViewX(game, actors);
 		view.setShowRoutes(true);
 		view.setShowStates(true);

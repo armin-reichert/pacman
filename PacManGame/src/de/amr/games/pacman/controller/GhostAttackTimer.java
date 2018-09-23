@@ -19,9 +19,9 @@ import de.amr.statemachine.StateMachine;
  */
 public class GhostAttackTimer extends StateMachine<String, Void> implements Controller {
 
-	private final GameController gameControl;
+	private final PacManGameController gameControl;
 
-	public GhostAttackTimer(GameController gameControl) {
+	public GhostAttackTimer(PacManGameController gameControl) {
 		super(String.class);
 		this.gameControl = gameControl;
 		gameControl.getActors().getGhosts().forEach(ghost -> ghost.fnNextAttackState = this::getGhostAttackState);

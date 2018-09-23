@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.navigation.ActorNavigation;
 import de.amr.games.pacman.theme.GhostColor;
@@ -26,14 +26,14 @@ import de.amr.games.pacman.theme.GhostColor;
  * 
  * @author Armin Reichert
  */
-public class Cast {
+public class PacManActors {
 
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
 
 	private final Set<Actor> activeActors = new HashSet<>();
 
-	public Cast(Game game) {
+	public PacManActors(PacManGame game) {
 		Maze maze = game.getMaze();
 
 		// Pac-Man
@@ -74,7 +74,7 @@ public class Cast {
 		blinky.setMoveBehavior(CHASING, blinky.attackDirectly(pacMan));
 		pinky.setMoveBehavior(CHASING, pinky.ambush(pacMan, 4));
 		inky.setMoveBehavior(CHASING, inky.attackWithPartner(blinky, pacMan));
-		clyde.setMoveBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * Game.TS));
+		clyde.setMoveBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * PacManGame.TS));
 
 		// Other game rules
 		clyde.fnCanLeaveHouse = () -> game.getLevel() > 1

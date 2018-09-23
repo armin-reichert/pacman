@@ -19,7 +19,7 @@ import de.amr.games.pacman.model.Level.Property;
  * 
  * @author Armin Reichert
  */
-public class Game {
+public class PacManGame {
 
 	/** The maze tile size (8px). */
 	public static final int TS = 8;
@@ -45,7 +45,7 @@ public class Game {
 	/** Level counter symbols. */
 	private final List<BonusSymbol> levelCounter = new LinkedList<>();
 
-	public Game(Maze maze) {
+	public PacManGame(Maze maze) {
 		this.maze = maze;
 		score = new Score(this);
 	}

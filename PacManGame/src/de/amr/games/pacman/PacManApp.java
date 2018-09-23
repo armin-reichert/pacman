@@ -6,8 +6,8 @@ import java.util.logging.Level;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.ui.FullScreenMode;
-import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.theme.PacManTheme;
 
@@ -41,8 +41,8 @@ public class PacManApp extends Application {
 	}
 
 	public PacManApp() {
-		settings.width = 28 * Game.TS;
-		settings.height = 36 * Game.TS;
+		settings.width = 28 * PacManGame.TS;
+		settings.height = 36 * PacManGame.TS;
 		settings.scale = 2;
 		settings.title = "Armin's Pac-Man";
 		settings.fullScreenMode = new FullScreenMode(800, 600, 32);
@@ -51,6 +51,6 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new GameController());
+		setController(new PacManGameController());
 	}
 }

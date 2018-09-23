@@ -25,7 +25,8 @@ import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.ActorNavigation;
 import de.amr.games.pacman.navigation.ActorNavigationSystem;
@@ -39,14 +40,15 @@ import de.amr.statemachine.StateMachine;
  */
 public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 
+	private final PacManGame game;
 	private final StateMachine<PacManState, GameEvent> fsm;
 	private final Map<PacManState, ActorNavigation<PacMan>> navigationMap;
 	private final EventManager<GameEvent> eventManager;
 	private PacManWorld world;
 	private int digestionTicks;
 
-	public PacMan(Game game) {
-		super(game);
+	public PacMan(PacManGame game) {
+		this.game = game;
 		fsm = buildStateMachine();
 		fsm.traceTo(LOGGER, app().clock::getFrequency);
 		navigationMap = new EnumMap<>(PacManState.class);
@@ -70,6 +72,11 @@ public class PacMan extends Actor implements ActorNavigationSystem<PacMan> {
 
 	public EventManager<GameEvent> getEventManager() {
 		return eventManager;
+	}
+
+	@Override
+	public Maze getMaze() {
+		return game.getMaze();
 	}
 
 	public Tile getHomeTile() {

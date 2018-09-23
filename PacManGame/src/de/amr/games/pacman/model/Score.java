@@ -11,13 +11,13 @@ import java.util.Properties;
 
 public class Score {
 
-	private Game game;
+	private PacManGame game;
 	private File file;
 	private int points;
 	private int hiscorePoints;
 	private int hiscoreLevel;
 
-	public Score(Game game) {
+	public Score(PacManGame game) {
 		this.game = game;
 		file = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
 	}

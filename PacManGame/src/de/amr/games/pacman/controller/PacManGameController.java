@@ -20,7 +20,7 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
-import de.amr.games.pacman.actor.Cast;
+import de.amr.games.pacman.actor.PacManActors;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManState;
@@ -36,7 +36,7 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.play.PlayView;
@@ -49,26 +49,26 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class GameController extends StateMachine<GameState, GameEvent> implements ViewController {
+public class PacManGameController extends StateMachine<GameState, GameEvent> implements ViewController {
 
-	private final Game game;
-	private final Cast actors;
+	private final PacManGame game;
+	private final PacManActors actors;
 	private final GhostAttackTimer ghostAttackTimer;
 
-	public GameController() {
+	public PacManGameController() {
 		super(GameState.class);
-		game = new Game(new Maze(Assets.text("maze.txt")));
-		actors = new Cast(game);
+		game = new PacManGame(new Maze(Assets.text("maze.txt")));
+		actors = new PacManActors(game);
 		actors.pacMan.getEventManager().subscribe(this::process);
 		buildStateMachine();
 		ghostAttackTimer = new GhostAttackTimer(this);
 	}
 
-	public Game getGame() {
+	public PacManGame getGame() {
 		return game;
 	}
 
-	public Cast getActors() {
+	public PacManActors getActors() {
 		return actors;
 	}
 

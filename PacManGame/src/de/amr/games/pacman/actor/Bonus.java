@@ -8,7 +8,7 @@ import de.amr.easy.game.entity.GameEntityUsingSprites;
 import de.amr.easy.game.entity.Transform;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.model.BonusSymbol;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.PacManGame;
 
 public class Bonus extends GameEntityUsingSprites implements TilePlacedEntity {
 
@@ -60,7 +60,7 @@ public class Bonus extends GameEntityUsingSprites implements TilePlacedEntity {
 
 	@Override
 	public int getTileSize() {
-		return Game.TS;
+		return PacManGame.TS;
 	}
 
 	@Override

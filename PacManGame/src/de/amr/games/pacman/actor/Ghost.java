@@ -25,7 +25,8 @@ import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.ActorNavigation;
 import de.amr.games.pacman.navigation.ActorNavigationSystem;
@@ -40,6 +41,7 @@ import de.amr.statemachine.StateMachine;
  */
 public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 
+	private final PacManGame game;
 	private final String name;
 	private final StateMachine<GhostState, GameEvent> fsm;
 	private final Map<GhostState, ActorNavigation<Ghost>> navigationMap;
@@ -50,9 +52,9 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 	public Supplier<GhostState> fnNextAttackState; // chasing or scattering
 	public BooleanSupplier fnCanLeaveHouse;
 
-	public Ghost(String name, PacMan pacMan, Game game, Tile home, Tile scatteringTarget, int initialDir,
+	public Ghost(String name, PacMan pacMan, PacManGame game, Tile home, Tile scatteringTarget, int initialDir,
 			GhostColor color) {
-		super(game);
+		this.game = game;
 		this.name = name;
 		this.pacMan = pacMan;
 		this.home = home;
@@ -77,6 +79,11 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 
 	public String getName() {
 		return name;
+	}
+	
+	@Override
+	public Maze getMaze() {
+		return game.getMaze();
 	}
 
 	public Tile getHomeTile() {
@@ -162,19 +169,19 @@ public class Ghost extends Actor implements ActorNavigationSystem<Ghost> {
 	public GhostState getState() {
 		return fsm.getState();
 	}
-	
+
 	public State<GhostState, GameEvent> getStateObject() {
 		return fsm.state();
 	}
-	
+
 	public void setState(GhostState state) {
 		fsm.setState(state);
 	}
-	
+
 	public void processEvent(GameEvent event) {
 		fsm.process(event);
 	}
-	
+
 	private StateMachine<GhostState, GameEvent> buildStateMachine(String ghostName) {
 		/*@formatter:off*/
 		return StateMachine.beginStateMachine(GhostState.class, GameEvent.class)

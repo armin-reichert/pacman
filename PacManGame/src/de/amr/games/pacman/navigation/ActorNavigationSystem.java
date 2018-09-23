@@ -1,7 +1,7 @@
 package de.amr.games.pacman.navigation;
 
 import static de.amr.easy.game.math.Vector2f.dist;
-import static de.amr.games.pacman.model.Game.TS;
+import static de.amr.games.pacman.model.PacManGame.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
 
 import java.util.function.Supplier;

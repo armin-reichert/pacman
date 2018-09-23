@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.play;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.model.Game.TS;
+import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.awt.Graphics2D;
 import java.util.Optional;

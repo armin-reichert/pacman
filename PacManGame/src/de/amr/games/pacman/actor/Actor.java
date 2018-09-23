@@ -8,7 +8,7 @@ import de.amr.easy.game.entity.GameEntityUsingSprites;
 import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
@@ -20,13 +20,11 @@ import de.amr.games.pacman.model.Tile;
  */
 public abstract class Actor extends GameEntityUsingSprites implements TilePlacedEntity {
 
-	protected final Game game;
 	private boolean visible;
 	private int currentDir;
 	private int nextDir;
 
-	public Actor(Game game) {
-		this.game = game;
+	public Actor() {
 		visible = true;
 		currentDir = nextDir = Top4.E;
 		tf.setWidth(getTileSize());
@@ -57,9 +55,7 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 		this.nextDir = nextDir;
 	}
 
-	public Maze getMaze() {
-		return game.getMaze();
-	}
+	public abstract Maze getMaze();
 
 	public abstract boolean canTraverseDoor(Tile door);
 
@@ -74,7 +70,7 @@ public abstract class Actor extends GameEntityUsingSprites implements TilePlaced
 
 	@Override
 	public int getTileSize() {
-		return Game.TS;
+		return PacManGame.TS;
 	}
 
 	public boolean isTurn(int currentDir, int nextDir) {

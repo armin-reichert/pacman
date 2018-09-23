@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.play;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.model.Game.TS;
+import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -15,12 +15,12 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Bonus;
-import de.amr.games.pacman.actor.Cast;
+import de.amr.games.pacman.actor.PacManActors;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManWorld;
 import de.amr.games.pacman.model.BonusSymbol;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.PacManGame;
 
 /**
  * Simple play view without bells and whistles.
@@ -30,15 +30,15 @@ import de.amr.games.pacman.model.Game;
 public class PlayView implements View, Controller, PacManWorld {
 
 	protected final int width, height;
-	protected final Game game;
+	protected final PacManGame game;
 	protected final MazeView mazeView;
 	protected final Image lifeImage;
-	protected final Cast actors;
+	protected final PacManActors actors;
 	protected String infoText;
 	protected Color infoTextColor;
 	protected boolean scoresVisible;
 
-	public PlayView(Game game, Cast actors) {
+	public PlayView(PacManGame game, PacManActors actors) {
 		this.width = app().settings.width;
 		this.height = app().settings.height;
 		this.game = game;

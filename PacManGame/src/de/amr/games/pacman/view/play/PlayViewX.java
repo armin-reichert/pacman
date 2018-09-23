@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.play;
 
 import static de.amr.easy.game.Application.LOGGER;
-import static de.amr.games.pacman.model.Game.TS;
+import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -17,13 +17,13 @@ import java.util.logging.Level;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.actor.Cast;
+import de.amr.games.pacman.actor.PacManActors;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.TilePlacedEntity;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.MazeRoute;
 import de.amr.statemachine.State;
@@ -70,7 +70,7 @@ public class PlayViewX extends PlayView {
 		return image;
 	}
 
-	public PlayViewX(Game game, Cast actors) {
+	public PlayViewX(PacManGame game, PacManActors actors) {
 		super(game, actors);
 		gridImage = createGridImage(game.getMaze().numRows(), game.getMaze().numCols());
 	}
