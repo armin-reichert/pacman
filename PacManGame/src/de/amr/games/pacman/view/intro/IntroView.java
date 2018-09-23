@@ -14,7 +14,7 @@ import java.util.Set;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.easy.game.ui.widgets.BlinkingText;
+import de.amr.easy.game.ui.widgets.SingleLineText;
 import de.amr.easy.game.ui.widgets.Link;
 import de.amr.easy.game.ui.widgets.ScrollableImage;
 import de.amr.easy.game.view.AnimationController;
@@ -37,9 +37,9 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 	private final Color background;
 	private final Set<View> animations = new HashSet<>();
 	private final ScrollableImage logo;
-	private final BlinkingText pressSpace;
-	private final BlinkingText f11Hint;
-	private final BlinkingText[] speedHint;
+	private final SingleLineText pressSpace;
+	private final SingleLineText f11Hint;
+	private final SingleLineText[] speedHint;
 	private final ChasePacManAnimation chasePacMan;
 	private final ChaseGhostsAnimation chaseGhosts;
 	private final GhostPointsAnimation ghostPoints;
@@ -69,21 +69,21 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		ghostPoints.tf.setY(200);
 		ghostPoints.tf.centerX(width);
 
-		pressSpace = BlinkingText.create().text("Press SPACE to start!").spaceExpansion(3).blinkTimeMillis(1000)
+		pressSpace = SingleLineText.create().text("Press SPACE to start!").spaceExpansion(3).blinkTimeMillis(1000)
 				.font(theme.fnt_text(18)).background(background).color(Color.YELLOW).build();
 		pressSpace.tf.setY(130);
 		pressSpace.tf.centerX(width);
 
-		f11Hint = BlinkingText.create().text("F11 Toggle Fullscreen").spaceExpansion(3)
+		f11Hint = SingleLineText.create().text("F11 Toggle Fullscreen").spaceExpansion(3)
 				.blinkTimeMillis(Integer.MAX_VALUE).font(theme.fnt_text(12)).background(background).color(Color.PINK)
 				.build();
 		f11Hint.tf.setY(pressSpace.tf.getY() + 30);
 		f11Hint.tf.centerX(width);
 
-		speedHint = new BlinkingText[3];
+		speedHint = new SingleLineText[3];
 		String[] texts = { "Normal 1", "Fast 2", "Insane 3" };
 		for (int i = 0; i < texts.length; ++i) {
-			speedHint[i] = BlinkingText.create().text(texts[i]).spaceExpansion(3).blinkTimeMillis(Integer.MAX_VALUE)
+			speedHint[i] = SingleLineText.create().text(texts[i]).spaceExpansion(3).blinkTimeMillis(Integer.MAX_VALUE)
 					.font(theme.fnt_text(12)).background(background).color(Color.PINK).build();
 			speedHint[i].tf.setY(height - 40);
 		}
