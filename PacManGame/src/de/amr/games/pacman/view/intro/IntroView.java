@@ -14,9 +14,9 @@ import java.util.Set;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.easy.game.ui.widgets.SingleLineText;
-import de.amr.easy.game.ui.widgets.Link;
-import de.amr.easy.game.ui.widgets.ScrollableImage;
+import de.amr.easy.game.ui.widgets.LinkWidget;
+import de.amr.easy.game.ui.widgets.ScrollableImageWidget;
+import de.amr.easy.game.ui.widgets.TextWidget;
 import de.amr.easy.game.view.AnimationController;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
@@ -36,14 +36,14 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 	private final int height;
 	private final Color background;
 	private final Set<View> animations = new HashSet<>();
-	private final ScrollableImage logo;
-	private final SingleLineText pressSpace;
-	private final SingleLineText f11Hint;
-	private final SingleLineText[] speedHint;
+	private final ScrollableImageWidget logo;
+	private final TextWidget pressSpace;
+	private final TextWidget f11Hint;
+	private final TextWidget[] speedHint;
 	private final ChasePacManAnimation chasePacMan;
 	private final ChaseGhostsAnimation chaseGhosts;
 	private final GhostPointsAnimation ghostPoints;
-	private final Link visitGitHub;
+	private final LinkWidget visitGitHub;
 
 	public IntroView() {
 		super(Integer.class);
@@ -51,7 +51,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		height = app().settings.height;
 		background = new Color(0, 23, 61);
 
-		logo = new ScrollableImage(Assets.image("logo.png"));
+		logo = new ScrollableImageWidget(Assets.image("logo.png"));
 		logo.tf.centerX(width);
 		logo.tf.setY(height);
 		logo.setSpeedY(-2f);
@@ -69,21 +69,21 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		ghostPoints.tf.setY(200);
 		ghostPoints.tf.centerX(width);
 
-		pressSpace = SingleLineText.create().text("Press SPACE to start!").spaceExpansion(3).blinkTimeMillis(1000)
+		pressSpace = TextWidget.create().text("Press SPACE to start!").spaceExpansion(3).blinkTimeMillis(1000)
 				.font(theme.fnt_text(18)).background(background).color(Color.YELLOW).build();
 		pressSpace.tf.setY(130);
 		pressSpace.tf.centerX(width);
 
-		f11Hint = SingleLineText.create().text("F11 Toggle Fullscreen").spaceExpansion(3)
+		f11Hint = TextWidget.create().text("F11 Toggle Fullscreen").spaceExpansion(3)
 				.blinkTimeMillis(Integer.MAX_VALUE).font(theme.fnt_text(12)).background(background).color(Color.PINK)
 				.build();
 		f11Hint.tf.setY(pressSpace.tf.getY() + 30);
 		f11Hint.tf.centerX(width);
 
-		speedHint = new SingleLineText[3];
+		speedHint = new TextWidget[3];
 		String[] texts = { "Normal 1", "Fast 2", "Insane 3" };
 		for (int i = 0; i < texts.length; ++i) {
-			speedHint[i] = SingleLineText.create().text(texts[i]).spaceExpansion(3).blinkTimeMillis(Integer.MAX_VALUE)
+			speedHint[i] = TextWidget.create().text(texts[i]).spaceExpansion(3).blinkTimeMillis(Integer.MAX_VALUE)
 					.font(theme.fnt_text(12)).background(background).color(Color.PINK).build();
 			speedHint[i].tf.setY(height - 40);
 		}
@@ -91,7 +91,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		speedHint[1].tf.centerX(width);
 		speedHint[2].tf.setX(width - 20 - speedHint[2].tf.getWidth());
 
-		visitGitHub = Link.create().text(GITHUB_TEXT).url(GITHUB_URL)
+		visitGitHub = LinkWidget.create().text(GITHUB_TEXT).url(GITHUB_URL)
 				.font(new Font(Font.SANS_SERIF, Font.BOLD, 6)).color(Color.LIGHT_GRAY).build();
 		visitGitHub.tf.setY(height - 10);
 		visitGitHub.tf.centerX(width);
