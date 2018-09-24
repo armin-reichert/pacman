@@ -15,7 +15,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.widgets.LinkWidget;
-import de.amr.easy.game.ui.widgets.ScrollableImageWidget;
+import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.TextWidget;
 import de.amr.easy.game.view.AnimationController;
 import de.amr.easy.game.view.Controller;
@@ -36,7 +36,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 	private final int height;
 	private final Color background;
 	private final Set<View> animations = new HashSet<>();
-	private final ScrollableImageWidget logo;
+	private final ImageWidget logo;
 	private final TextWidget pressSpace;
 	private final TextWidget f11Hint;
 	private final TextWidget[] speedHint;
@@ -51,10 +51,10 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		height = app().settings.height;
 		background = new Color(0, 23, 61);
 
-		logo = new ScrollableImageWidget(Assets.image("logo.png"));
+		logo = new ImageWidget(Assets.image("logo.png"));
 		logo.tf.centerX(width);
 		logo.tf.setY(height);
-		logo.setSpeedY(-2f);
+		logo.tf.setVelocityY(-2f);
 		logo.setCompletion(() -> logo.tf.getY() <= 20);
 
 		chasePacMan = new ChasePacManAnimation();
