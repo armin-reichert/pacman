@@ -62,20 +62,20 @@ public class ChasePacManAnimation extends AbstractGameEntity implements Animatio
 	}
 
 	@Override
-	public void start() {
+	public void startAnimation() {
 		init();
 		tf.setVelocityX(-1.2f);
 		PacManApp.theme.snd_siren().loop();
 	}
 
 	@Override
-	public void stop() {
+	public void stopAnimation() {
 		tf.setVelocityX(0);
 		PacManApp.theme.snd_siren().stop();
 	}
 
 	@Override
-	public boolean isCompleted() {
+	public boolean isAnimationCompleted() {
 		return tf.getX() < endPosition.x;
 	}
 

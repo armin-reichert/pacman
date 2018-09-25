@@ -108,11 +108,11 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 	}
 
 	private void start(AnimationController... animations) {
-		Arrays.stream(animations).forEach(AnimationController::start);
+		Arrays.stream(animations).forEach(AnimationController::startAnimation);
 	}
 
 	private void stop(AnimationController... animations) {
-		Arrays.stream(animations).forEach(AnimationController::stop);
+		Arrays.stream(animations).forEach(AnimationController::stopAnimation);
 	}
 
 	private void buildStateMachine() {
@@ -124,8 +124,8 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 
 				.state(0)
 					// Scroll logo into view
-					.onEntry(() -> { show(logo); logo.start(); })
-					.onExit(() -> logo.stop())
+					.onEntry(() -> { show(logo); logo.startAnimation(); })
+					.onExit(() -> logo.stopAnimation())
 
 				.state(1)
 					// Show ghosts chasing Pac-Man and vice-versa
@@ -143,18 +143,18 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 					.timeoutAfter(() -> app().clock.sec(6))
 					.onEntry(() -> {
 						show(ghostPoints, pressSpace, f11Hint, speedHint[0], speedHint[1],speedHint[2],visitGitHub);
-						ghostPoints.start();
+						ghostPoints.startAnimation();
 					})
 					.onExit(() -> {
-						ghostPoints.stop();
+						ghostPoints.stopAnimation();
 						hide(ghostPoints, pressSpace);
 					})
 					
 				.state(42)
 					
 			.transitions()
-				.when(0).then(1).condition(() -> logo.isCompleted())
-				.when(1).then(2).condition(() -> chasePacMan.isCompleted() && chaseGhosts.isCompleted())
+				.when(0).then(1).condition(() -> logo.isAnimationCompleted())
+				.when(1).then(2).condition(() -> chasePacMan.isAnimationCompleted() && chaseGhosts.isAnimationCompleted())
 				.when(2).then(1).onTimeout()
 				.when(2).then(42).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 

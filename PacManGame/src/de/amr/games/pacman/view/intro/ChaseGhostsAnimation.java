@@ -55,16 +55,21 @@ public class ChaseGhostsAnimation extends AbstractGameEntity implements View, An
 	}
 
 	@Override
-	public void start() {
+	public void startAnimation() {
 		init();
 		tf.setVelocityX(.8f);
 		PacManApp.theme.snd_waza().loop();
 	}
 
 	@Override
-	public void stop() {
+	public void stopAnimation() {
 		tf.setVelocityX(0);
 		PacManApp.theme.snd_waza().stop();
+	}
+
+	@Override
+	public boolean isAnimationCompleted() {
+		return tf.getX() > endPosition.x;
 	}
 
 	@Override
@@ -84,11 +89,6 @@ public class ChaseGhostsAnimation extends AbstractGameEntity implements View, An
 				}
 			}
 		}
-	}
-
-	@Override
-	public boolean isCompleted() {
-		return tf.getX() > endPosition.x;
 	}
 
 	@Override

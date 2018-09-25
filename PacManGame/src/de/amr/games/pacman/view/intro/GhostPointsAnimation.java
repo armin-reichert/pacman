@@ -58,19 +58,19 @@ public class GhostPointsAnimation extends AbstractGameEntity implements Animatio
 	}
 
 	@Override
-	public void start() {
+	public void startAnimation() {
 		init();
 		resetGhostTimer();
 		resetEnergizerTimer();
 	}
 
 	@Override
-	public void stop() {
+	public void stopAnimation() {
 		ghostTimer = -1;
 	}
 
 	@Override
-	public boolean isCompleted() {
+	public boolean isAnimationCompleted() {
 		return false;
 	}
 
@@ -83,7 +83,7 @@ public class GhostPointsAnimation extends AbstractGameEntity implements Animatio
 			killed.set(killNext);
 			killNext = killNext + 1;
 			if (killed.cardinality() == 5) {
-				stop();
+				stopAnimation();
 			} else {
 				PacManApp.theme.snd_eatGhost().play();
 				resetGhostTimer();
@@ -96,10 +96,6 @@ public class GhostPointsAnimation extends AbstractGameEntity implements Animatio
 			energizer = !energizer;
 			resetEnergizerTimer();
 		}
-	}
-
-	public boolean isComplete() {
-		return false;
 	}
 
 	@Override
