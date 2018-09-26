@@ -7,7 +7,7 @@ public class InkyChaseTestApp extends PacManApp {
 
 	public static void main(String[] args) {
 		theme = new ClassicPacManTheme();
-		launch(new InkyChaseTestApp());
+		launch(new InkyChaseTestApp(), args);
 	}
 
 	public InkyChaseTestApp() {

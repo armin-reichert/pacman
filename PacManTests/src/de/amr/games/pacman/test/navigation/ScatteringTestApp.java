@@ -7,7 +7,7 @@ public class ScatteringTestApp extends PacManApp {
 
 	public static void main(String[] args) {
 		theme = new ClassicPacManTheme();
-		launch(new ScatteringTestApp());
+		launch(new ScatteringTestApp(), args);
 	}
 
 	public ScatteringTestApp() {
