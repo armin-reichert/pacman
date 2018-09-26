@@ -1,5 +1,6 @@
 package de.amr.games.pacman.controller;
 
+import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 
 import de.amr.easy.game.view.Controller;
@@ -50,6 +51,7 @@ public class GhostAttackTimer extends StateMachine<String, Void> implements Cont
 			.when("s3").then("c3").onTimeout().act(this::fireStartChasing)
 		.endStateMachine();
 		/*@formatter:on*/
+		traceTo(LOGGER, app().clock::getFrequency);
 	}
 
 	private void fireStartChasing() {
