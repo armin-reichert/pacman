@@ -595,8 +595,9 @@ Of course one could represent the graph differently, for example with vertices o
 - Cheat key 'k' kills all ghosts
 - Cheat key 'e' eats all normal pellets
 - Alignment of actors on the grid can be visualized (key 'g')
-- Game can be paused (CTRL+p) and game loop frequency can be changed (F2 opens dialog)
-- F11 toggles between window and full-screen exclusive mode (may cause bluescreen with some graphic drivers!)
+- Game can be paused/resumed (CTRL+p)
+- Game loop frequency and screen resulution can be changed (key F2)
+- Key F11 toggles between window and full-screen exclusive mode
 
 ## References
 
