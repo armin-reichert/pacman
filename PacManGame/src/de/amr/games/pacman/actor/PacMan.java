@@ -268,6 +268,16 @@ public class PacMan extends PacManGameActor implements ActorNavigationSystem<Pac
 	private class GreedyState extends HungryState {
 
 		@Override
+		public void onEntry() {
+			theme.snd_waza().loop();
+		}
+
+		@Override
+		public void onExit() {
+			theme.snd_waza().stop();
+		}
+
+		@Override
 		public void onTick() {
 			super.onTick();
 			if (getTicksRemaining() == game.getPacManGettingWeakerRemainingTime()) {

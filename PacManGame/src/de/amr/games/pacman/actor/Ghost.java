@@ -208,6 +208,8 @@ public class Ghost extends PacManGameActor implements ActorNavigationSystem<Ghos
 					})
 			
 				.state(CHASING)
+					.onEntry(() -> PacManApp.theme.snd_siren().loop())
+					.onExit(() -> PacManApp.theme.snd_siren().stop())
 					.onTick(() -> {	
 						move();	
 						sprites.select("s_color_" + getCurrentDir()); 

@@ -456,6 +456,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		@Override
 		public void onEntry() {
 			actors.getActiveGhosts().forEach(ghost -> ghost.setVisible(false));
+			theme.snd_clips_all().forEach(Sound::stop);
 			theme.snd_die().play();
 		}
 
