@@ -5,11 +5,11 @@ import static de.amr.easy.game.Application.app;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
-import de.amr.games.pacman.actor.PacManActors;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.actor.PacManActors;
 import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayViewX;
 
 public class ScatteringTestController implements ViewController {
@@ -23,6 +23,7 @@ public class ScatteringTestController implements ViewController {
 		game = new PacManGame(maze);
 		actors = new PacManActors(game);
 		view = new PlayViewX(game, actors);
+		view.setShowGrid(true);
 		view.setShowRoutes(true);
 		view.setShowStates(true);
 		view.setScoresVisible(false);
@@ -31,6 +32,7 @@ public class ScatteringTestController implements ViewController {
 	@Override
 	public void init() {
 		game.init();
+		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
 		actors.pacMan.setVisible(false);
 		actors.getActiveGhosts().forEach(ghost -> {
 			ghost.initGhost();

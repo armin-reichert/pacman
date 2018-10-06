@@ -147,7 +147,9 @@ public class PlayViewX extends PlayView {
 		super.draw(g);
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
-			drawActorAlignment(actors.pacMan, g);
+			if (actors.pacMan.isVisible()) {
+				drawActorAlignment(actors.pacMan, g);
+			}
 			actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> drawActorAlignment(ghost, g));
 		}
 		if (showRoutes) {
@@ -159,7 +161,7 @@ public class PlayViewX extends PlayView {
 	}
 
 	private void drawEntityStates(Graphics2D g) {
-		if (actors.pacMan.getState() != null) {
+		if (actors.pacMan.getState() != null && actors.pacMan.isVisible()) {
 			drawText(g, Color.YELLOW, actors.pacMan.tf().getX(), actors.pacMan.tf().getY(),
 					pacManStateText(actors.pacMan));
 		}
