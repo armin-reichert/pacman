@@ -21,12 +21,12 @@ public abstract class PacManGameActor extends SpriteBasedGameEntity implements T
 	/** The current move direction. */
 	private int currentDir;
 
-	/** The indended move direction which will be used as soon as turning becomes possible. */
+	/** The indended move direction, actor turns to this direction as soon as possible. */
 	private int nextDir;
 
 	public PacManGameActor() {
 		currentDir = nextDir = Top4.E;
-		// collision box size is one tile
+		// set collision box size
 		tf.setWidth(getTileSize());
 		tf.setHeight(getTileSize());
 	}
@@ -94,47 +94,54 @@ public abstract class PacManGameActor extends SpriteBasedGameEntity implements T
 	}
 
 	public boolean isStuck() {
-		return !inTeleportSpace() && !canMove(getCurrentDir());
+		if (inTeleportSpace()) {
+			return false;
+		}
+		return possibleMovement(getCurrentDir()).length() == 0;
 	}
 
-	private boolean canMove(int dir) {
-		int col, row, colNext, rowNext;
-		Vector2f v = velocity(dir);
-		Vector2f center = tf.getCenter();
+	/*
+	 * Computes how far this actor can move towards the given direction. 
+	 */
+	private Vector2f possibleMovement(int dir) {
+		final Tile currentTile = getTile();
+		final Tile neighborTile = currentTile.tileTowards(dir);
+		final Vector2f fullVelocity = Vector2f.smul(getSpeed(), Vector2f.of(NESW.dx(dir), NESW.dy(dir))); 
+		if (inTeleportSpace()) {
+			return dir == Top4.E || dir == Top4.W ? fullVelocity : Vector2f.NULL;
+		}
+		if (canEnterTile(neighborTile)) {
+			return fullVelocity;
+		}
 		switch (dir) {
 		case Top4.E:
-			col = tileCoord(center.x);
-			row = tileCoord(center.y);
-			colNext = tileCoord(tf.getX() + tf.getWidth() /* + v.x */);
-			return colNext == col || canEnterTile(new Tile(colNext, row));
+			float right = tf.getX() + tf.getWidth();
+			return Vector2f.of(neighborTile.col * getTileSize() - right, 0);
 		case Top4.W:
-			col = tileCoord(tf.getX());
-			row = tileCoord(center.y);
-			colNext = tileCoord(tf.getX() + v.x);
-			return colNext == col || canEnterTile(new Tile(colNext, row));
+			float left = tf.getX();
+			return Vector2f.of(currentTile.col * getTileSize() - left, 0);
 		case Top4.N:
-			col = tileCoord(center.x);
-			row = tileCoord(center.y);
-			rowNext = tileCoord(tf.getY() + v.y);
-			return rowNext == row || canEnterTile(new Tile(col, rowNext));
+			float top = tf.getY();
+			return Vector2f.of(0, currentTile.row * getTileSize() - top);
 		case Top4.S:
-			col = tileCoord(center.x);
-			row = tileCoord(center.y);
-			rowNext = tileCoord(tf.getY() + tf.getHeight() /* + v.y */);
-			return rowNext == row || canEnterTile(new Tile(col, rowNext));
+			float bottom = tf.getY() + tf.getHeight();
+			return Vector2f.of(0, neighborTile.row * getTileSize() - bottom);
 		}
-		throw new IllegalArgumentException("Illegal direction: " + dir);
+		throw new IllegalArgumentException("Illegal move direction: " + dir);
 	}
 
 	public void move() {
-		if (canMove(nextDir)) {
+		// can we change the move direction?
+		if (possibleMovement(nextDir).length() > 0) {
 			if (isTurn(currentDir, nextDir)) {
 				alignOverTile();
 			}
 			setCurrentDir(nextDir);
 		}
-		if (!isStuck()) {
-			tf.setVelocity(velocity(currentDir));
+		// move towards the current direction
+		Vector2f possibleMovement = possibleMovement(currentDir);
+		if (possibleMovement.length() > 0) {
+			tf.setVelocity(possibleMovement);
 			tf.move();
 			// check exit from teleport space
 			if (tf.getX() + tf.getWidth() < 0) {
@@ -147,10 +154,6 @@ public abstract class PacManGameActor extends SpriteBasedGameEntity implements T
 		if (dir != -1) {
 			setNextDir(dir);
 		}
-	}
-
-	public Vector2f velocity(int dir) {
-		return Vector2f.smul(getSpeed(), Vector2f.of(NESW.dx(dir), NESW.dy(dir)));
 	}
 
 	/**
