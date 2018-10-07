@@ -22,13 +22,7 @@ public class PacManApp extends Application {
 
 	public static void main(String[] args) {
 		LOGGER.setLevel(Level.INFO);
-		try {
-			theme = new ClassicPacManTheme();
-			LOGGER.info(String.format("Theme '%s' created.", theme.getClass().getSimpleName()));
-			launch(new PacManApp(), args);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		launch(new PacManApp(), args);
 	}
 
 	public PacManApp() {
@@ -36,8 +30,9 @@ public class PacManApp extends Application {
 		settings.height = 36 * PacManGame.TS;
 		settings.scale = 2;
 		settings.title = "Armin's Pac-Man";
-		settings.fullScreenMode = new DisplayMode(800, 600, 32, DisplayMode.REFRESH_RATE_UNKNOWN);
+		settings.fullScreenMode = new DisplayMode(800, 600, 32, 60);
 		settings.fullScreenOnStart = false;
+		theme = new ClassicPacManTheme();
 		setIcon(theme.spr_ghostFrightened().frame(0));
 	}
 

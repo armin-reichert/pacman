@@ -123,6 +123,8 @@ public class ClassicPacManTheme implements PacManTheme {
 			LOGGER.info("Loading music...");
 			snd_music_all();
 		}).thenAccept(result -> LOGGER.info("Music loaded."));
+
+		LOGGER.info(String.format("Theme '%s' created.", getClass().getSimpleName()));
 	}
 
 	private BufferedImage changeColor(BufferedImage src, int from, int to) {
