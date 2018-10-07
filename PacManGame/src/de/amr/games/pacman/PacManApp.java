@@ -1,7 +1,5 @@
 package de.amr.games.pacman;
 
-import static java.util.concurrent.CompletableFuture.runAsync;
-
 import java.awt.DisplayMode;
 import java.util.logging.Level;
 
@@ -27,13 +25,6 @@ public class PacManApp extends Application {
 		try {
 			theme = new ClassicPacManTheme();
 			LOGGER.info(String.format("Theme '%s' created.", theme.getClass().getSimpleName()));
-			LOGGER.info("Loading audio clips...");
-			theme.snd_clips_all();
-			LOGGER.info("Audio clips loaded.");
-			runAsync(() -> {
-				LOGGER.info("Loading background music...");
-				theme.snd_music_all();
-			}).thenAccept(result -> LOGGER.info("Music loaded."));
 			launch(new PacManApp(), args);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -47,6 +38,7 @@ public class PacManApp extends Application {
 		settings.title = "Armin's Pac-Man";
 		settings.fullScreenMode = new DisplayMode(800, 600, 32, DisplayMode.REFRESH_RATE_UNKNOWN);
 		settings.fullScreenOnStart = false;
+		setIcon(theme.spr_ghostFrightened().frame(0));
 	}
 
 	@Override

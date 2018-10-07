@@ -1,8 +1,10 @@
 package de.amr.games.pacman.theme;
 
+import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.ui.sprites.AnimationType.BACK_AND_FORTH;
 import static de.amr.easy.game.ui.sprites.AnimationType.CYCLIC;
 import static de.amr.easy.game.ui.sprites.AnimationType.LINEAR;
+import static java.util.concurrent.CompletableFuture.runAsync;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -113,6 +115,14 @@ public class ClassicPacManTheme implements PacManTheme {
 
 		// Text font
 		Assets.storeTrueTypeFont("font.arcadeclassic", "arcadeclassic.ttf", Font.PLAIN, 12);
+
+		// Load sound clips
+		snd_clips_all();
+		LOGGER.info("Audio clips loaded.");
+		runAsync(() -> {
+			LOGGER.info("Loading music...");
+			snd_music_all();
+		}).thenAccept(result -> LOGGER.info("Music loaded."));
 	}
 
 	private BufferedImage changeColor(BufferedImage src, int from, int to) {

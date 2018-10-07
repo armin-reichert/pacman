@@ -284,6 +284,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		public void onExit() {
 			playView.enableAnimation(true);
 			playView.hideInfoText();
+			theme.snd_music_play().volume(app().settings.bgMusicVolume / 100f);
 			theme.snd_music_play().loop();
 		}
 	}
