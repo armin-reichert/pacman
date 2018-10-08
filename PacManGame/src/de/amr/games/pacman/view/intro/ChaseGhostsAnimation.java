@@ -3,7 +3,7 @@ package de.amr.games.pacman.view.intro;
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.Application;
-import de.amr.easy.game.entity.AbstractGameEntity;
+import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.view.AnimationController;
@@ -16,7 +16,7 @@ import de.amr.games.pacman.theme.PacManTheme;
  * 
  * @author Armin Reichert
  */
-public class ChaseGhostsAnimation extends AbstractGameEntity implements View, AnimationController {
+public class ChaseGhostsAnimation extends Entity implements View, AnimationController {
 
 	private final Sprite pacMan;
 	private final Sprite ghost;

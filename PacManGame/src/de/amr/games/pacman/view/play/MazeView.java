@@ -7,14 +7,14 @@ import java.awt.Graphics2D;
 import java.util.Optional;
 
 import de.amr.easy.game.Application;
-import de.amr.easy.game.entity.SpriteBasedGameEntity;
+import de.amr.easy.game.entity.SpriteEntity;
 import de.amr.easy.game.ui.sprites.Animation;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.theme.PacManTheme;
 
-public class MazeView extends SpriteBasedGameEntity {
+public class MazeView extends SpriteEntity {
 
 	private final Maze maze;
 	private final Animation energizerBlinking;

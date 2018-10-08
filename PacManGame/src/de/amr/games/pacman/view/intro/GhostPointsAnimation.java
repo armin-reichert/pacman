@@ -8,7 +8,7 @@ import java.awt.Graphics2D;
 import java.util.BitSet;
 
 import de.amr.easy.game.Application;
-import de.amr.easy.game.entity.AbstractGameEntity;
+import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.view.AnimationController;
 import de.amr.easy.game.view.View;
@@ -21,7 +21,7 @@ import de.amr.games.pacman.theme.PacManTheme;
  * 
  * @author Armin Reichert
  */
-public class GhostPointsAnimation extends AbstractGameEntity implements AnimationController, View {
+public class GhostPointsAnimation extends Entity implements AnimationController, View {
 
 	private final Sprite pacMan;
 	private final Sprite ghost;
