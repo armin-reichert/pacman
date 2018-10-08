@@ -7,7 +7,6 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.PacManActors;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayViewX;
@@ -16,13 +15,11 @@ public class ScatteringTestController implements ViewController {
 
 	private final PacManGame game;
 	private final PlayViewX view;
-	private final PacManActors actors;
 
 	public ScatteringTestController() {
 		Maze maze = new Maze(Assets.text("maze.txt"));
 		game = new PacManGame(maze);
-		actors = new PacManActors(game);
-		view = new PlayViewX(game, actors);
+		view = new PlayViewX(game);
 		view.setShowGrid(true);
 		view.setShowRoutes(true);
 		view.setShowStates(true);
@@ -33,8 +30,8 @@ public class ScatteringTestController implements ViewController {
 	public void init() {
 		game.init();
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
-		actors.pacMan.setVisible(false);
-		actors.getActiveGhosts().forEach(ghost -> {
+		game.getActors().getPacMan().setVisible(false);
+		game.getActors().getActiveGhosts().forEach(ghost -> {
 			ghost.initGhost();
 			ghost.setState(GhostState.SCATTERING);
 		});
@@ -43,7 +40,7 @@ public class ScatteringTestController implements ViewController {
 
 	@Override
 	public void update() {
-		actors.getActiveGhosts().forEach(Ghost::update);
+		game.getActors().getActiveGhosts().forEach(Ghost::update);
 		view.update();
 	}
 

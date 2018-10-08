@@ -17,7 +17,6 @@ import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.PacManActors;
 import de.amr.games.pacman.actor.PacManWorld;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.PacManGame;
@@ -34,17 +33,15 @@ public class PlayView implements View, Controller, PacManWorld {
 	protected final PacManGame game;
 	protected final MazeView mazeView;
 	protected final Image lifeImage;
-	protected final PacManActors actors;
 	protected String infoText;
 	protected Color infoTextColor;
 	protected boolean scoresVisible;
 
-	public PlayView(PacManGame game, PacManActors actors) {
+	public PlayView(PacManGame game) {
 		this.width = app().settings.width;
 		this.height = app().settings.height;
 		this.game = game;
-		this.actors = actors;
-		actors.pacMan.setWorld(this);
+		game.getActors().getPacMan().setWorld(this);
 		lifeImage = getTheme().spr_pacManWalking(Top4.W).frame(1);
 		mazeView = new MazeView(game.getMaze());
 		mazeView.tf.setPosition(0, 3 * TS);
@@ -67,13 +64,13 @@ public class PlayView implements View, Controller, PacManWorld {
 
 	public void enableAnimation(boolean enable) {
 		mazeView.enableSprites(enable);
-		actors.pacMan.sprites.enableAnimation(enable);
-		actors.getActiveGhosts().forEach(ghost -> ghost.sprites.enableAnimation(enable));
+		game.getActors().getPacMan().sprites.enableAnimation(enable);
+		game.getActors().getActiveGhosts().forEach(ghost -> ghost.sprites.enableAnimation(enable));
 	}
 
 	@Override
 	public Stream<Ghost> getGhosts() {
-		return actors.getActiveGhosts();
+		return game.getActors().getActiveGhosts();
 	}
 
 	@Override
@@ -123,12 +120,12 @@ public class PlayView implements View, Controller, PacManWorld {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		if (actors.isActive(actors.pacMan)) {
-			actors.pacMan.draw(g);
+		if (game.getActors().isActive(game.getActors().getPacMan())) {
+			game.getActors().getPacMan().draw(g);
 		}
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
+		game.getActors().getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
 				.forEach(ghost -> ghost.draw(g));
-		actors.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
+		game.getActors().getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
 				.forEach(ghost -> ghost.draw(g));
 	}
 

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.actor.PacManActors;
 import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.model.Level.Property;
 
@@ -26,6 +27,9 @@ public class PacManGame {
 
 	/** The maze. */
 	private final Maze maze;
+
+	/** The actors. */
+	private final PacManActors actors;
 
 	/** The game score including highscore management. */
 	private final Score score;
@@ -47,7 +51,12 @@ public class PacManGame {
 
 	public PacManGame(Maze maze) {
 		this.maze = maze;
+		actors = new PacManActors(this);
 		score = new Score(this);
+	}
+
+	public PacManActors getActors() {
+		return actors;
 	}
 
 	public int getPoints() {

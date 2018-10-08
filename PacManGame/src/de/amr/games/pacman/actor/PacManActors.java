@@ -16,8 +16,8 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.navigation.ActorNavigation;
 import de.amr.games.pacman.theme.GhostColor;
 
@@ -28,9 +28,8 @@ import de.amr.games.pacman.theme.GhostColor;
  */
 public class PacManActors {
 
-	public final PacMan pacMan;
-	public final Ghost blinky, pinky, inky, clyde;
-
+	private final PacMan pacMan;
+	private final Ghost blinky, pinky, inky, clyde;
 	private final Set<PacManGameActor> activeActors = new HashSet<>();
 
 	public PacManActors(PacManGame game) {
@@ -40,17 +39,17 @@ public class PacManActors {
 		pacMan = new PacMan(game);
 
 		// The ghosts
-		blinky = new Ghost("Blinky", pacMan, game, maze.getBlinkyHome(),
-				maze.getBlinkyScatteringTarget(), Top4.E, GhostColor.RED);
+		blinky = new Ghost("Blinky", pacMan, game, maze.getBlinkyHome(), maze.getBlinkyScatteringTarget(), Top4.E,
+				GhostColor.RED);
 
-		pinky = new Ghost("Pinky", pacMan, game, maze.getPinkyHome(), maze.getPinkyScatteringTarget(),
-				Top4.S, GhostColor.PINK);
+		pinky = new Ghost("Pinky", pacMan, game, maze.getPinkyHome(), maze.getPinkyScatteringTarget(), Top4.S,
+				GhostColor.PINK);
 
-		inky = new Ghost("Inky", pacMan, game, maze.getInkyHome(), maze.getInkyScatteringTarget(),
-				Top4.N, GhostColor.TURQUOISE);
+		inky = new Ghost("Inky", pacMan, game, maze.getInkyHome(), maze.getInkyScatteringTarget(), Top4.N,
+				GhostColor.TURQUOISE);
 
-		clyde = new Ghost("Clyde", pacMan, game, maze.getClydeHome(), maze.getClydeScatteringTarget(),
-				Top4.N, GhostColor.ORANGE);
+		clyde = new Ghost("Clyde", pacMan, game, maze.getClydeHome(), maze.getClydeScatteringTarget(), Top4.N,
+				GhostColor.ORANGE);
 
 		activeActors.addAll(Arrays.asList(pacMan, blinky, pinky, inky, clyde));
 
@@ -79,6 +78,26 @@ public class PacManActors {
 		// Other game rules
 		clyde.fnCanLeaveHouse = () -> game.getLevel() > 1
 				|| game.getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
+	}
+
+	public PacMan getPacMan() {
+		return pacMan;
+	}
+
+	public Ghost getBlinky() {
+		return blinky;
+	}
+
+	public Ghost getPinky() {
+		return pinky;
+	}
+
+	public Ghost getInky() {
+		return inky;
+	}
+
+	public Ghost getClyde() {
+		return clyde;
 	}
 
 	public Stream<Ghost> getGhosts() {

@@ -17,7 +17,6 @@ import java.util.logging.Level;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.actor.PacManActors;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
@@ -70,8 +69,8 @@ public class PlayViewX extends PlayView {
 		return image;
 	}
 
-	public PlayViewX(PacManGame game, PacManActors actors) {
-		super(game, actors);
+	public PlayViewX(PacManGame game) {
+		super(game);
 		gridImage = createGridImage(game.getMaze().numRows(), game.getMaze().numCols());
 	}
 
@@ -120,22 +119,22 @@ public class PlayViewX extends PlayView {
 			eatAllPellets();
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
-			toggleGhost(actors.blinky);
+			toggleGhost(game.getActors().getBlinky());
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_P)) {
-			toggleGhost(actors.pinky);
+			toggleGhost(game.getActors().getPinky());
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_I)) {
-			toggleGhost(actors.inky);
+			toggleGhost(game.getActors().getInky());
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_C)) {
-			toggleGhost(actors.clyde);
+			toggleGhost(game.getActors().getClyde());
 		}
 		super.update();
 	}
 
 	private void killActiveGhosts() {
-		actors.getActiveGhosts().forEach(ghost -> ghost.processEvent(new GhostKilledEvent(ghost)));
+		game.getActors().getActiveGhosts().forEach(ghost -> ghost.processEvent(new GhostKilledEvent(ghost)));
 	}
 
 	public void eatAllPellets() {
@@ -147,13 +146,14 @@ public class PlayViewX extends PlayView {
 		super.draw(g);
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
-			if (actors.pacMan.isVisible()) {
-				drawActorAlignment(actors.pacMan, g);
+			if (game.getActors().getPacMan().isVisible()) {
+				drawActorAlignment(game.getActors().getPacMan(), g);
 			}
-			actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> drawActorAlignment(ghost, g));
+			game.getActors().getActiveGhosts().filter(Ghost::isVisible)
+					.forEach(ghost -> drawActorAlignment(ghost, g));
 		}
 		if (showRoutes) {
-			actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> drawRoute(g, ghost));
+			game.getActors().getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> drawRoute(g, ghost));
 		}
 		if (showStates) {
 			drawEntityStates(g);
@@ -161,11 +161,11 @@ public class PlayViewX extends PlayView {
 	}
 
 	private void drawEntityStates(Graphics2D g) {
-		if (actors.pacMan.getState() != null && actors.pacMan.isVisible()) {
-			drawText(g, Color.YELLOW, actors.pacMan.tf().getX(), actors.pacMan.tf().getY(),
-					pacManStateText(actors.pacMan));
+		if (game.getActors().getPacMan().getState() != null && game.getActors().getPacMan().isVisible()) {
+			drawText(g, Color.YELLOW, game.getActors().getPacMan().tf().getX(),
+					game.getActors().getPacMan().tf().getY(), pacManStateText(game.getActors().getPacMan()));
 		}
-		actors.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> {
+		game.getActors().getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> {
 			if (ghost.getState() != null) {
 				drawText(g, ghostColor(ghost), ghost.tf().getX(), ghost.tf().getY(), ghostStateText(ghost));
 			}
@@ -189,7 +189,7 @@ public class PlayViewX extends PlayView {
 	}
 
 	private void toggleGhost(Ghost ghost) {
-		actors.setActive(ghost, !actors.isActive(ghost));
+		game.getActors().setActive(ghost, !game.getActors().isActive(ghost));
 	}
 
 	private static Color ghostColor(Ghost ghost) {
@@ -257,7 +257,7 @@ public class PlayViewX extends PlayView {
 			g.translate(-route.getTargetTile().col * TS, -route.getTargetTile().row * TS);
 		}
 
-		if (ghost == actors.clyde && ghost.getState() == GhostState.CHASING) {
+		if (ghost == game.getActors().getClyde() && ghost.getState() == GhostState.CHASING) {
 			Vector2f center = ghost.tf().getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.drawOval((int) center.x - 8 * TS, (int) center.y - 8 * TS, 16 * TS, 16 * TS);
