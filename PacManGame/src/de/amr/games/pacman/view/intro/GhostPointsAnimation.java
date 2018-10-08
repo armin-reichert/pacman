@@ -7,12 +7,13 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.BitSet;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.AbstractGameEntity;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.view.AnimationController;
 import de.amr.easy.game.view.View;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.PacManApp;
+import de.amr.games.pacman.theme.PacManTheme;
 
 /**
  * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the
@@ -32,14 +33,18 @@ public class GhostPointsAnimation extends AbstractGameEntity implements Animatio
 	private boolean energizer;
 
 	public GhostPointsAnimation() {
-		pacMan = PacManApp.theme.spr_pacManWalking(Top4.E);
-		ghost = PacManApp.theme.spr_ghostFrightened();
+		pacMan = getTheme().spr_pacManWalking(Top4.E);
+		ghost = getTheme().spr_ghostFrightened();
 		for (int i = 0; i < 4; ++i) {
-			points[i] = PacManApp.theme.spr_greenNumber(i);
+			points[i] = getTheme().spr_greenNumber(i);
 		}
 		ghostTimer = -1;
 		tf.setWidth(90);
 		tf.setHeight(18);
+	}
+
+	private PacManTheme getTheme() {
+		return Application.app().settings.get("theme");
 	}
 
 	private void resetGhostTimer() {
@@ -85,7 +90,7 @@ public class GhostPointsAnimation extends AbstractGameEntity implements Animatio
 			if (killed.cardinality() == 5) {
 				stopAnimation();
 			} else {
-				PacManApp.theme.snd_eatGhost().play();
+				getTheme().snd_eatGhost().play();
 				resetGhostTimer();
 			}
 		}

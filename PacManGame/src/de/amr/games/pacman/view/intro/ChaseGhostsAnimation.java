@@ -2,13 +2,14 @@ package de.amr.games.pacman.view.intro;
 
 import java.awt.Graphics2D;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.AbstractGameEntity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.view.AnimationController;
 import de.amr.easy.game.view.View;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.PacManApp;
+import de.amr.games.pacman.theme.PacManTheme;
 
 /**
  * An animation showing Pac-Man chasing the ghosts and scoring points for each killed ghost.
@@ -27,13 +28,17 @@ public class ChaseGhostsAnimation extends AbstractGameEntity implements View, An
 	private int ghostsKilled;
 
 	public ChaseGhostsAnimation() {
-		pacMan = PacManApp.theme.spr_pacManWalking(Top4.E);
-		ghost = PacManApp.theme.spr_ghostFrightened();
+		pacMan = getTheme().spr_pacManWalking(Top4.E);
+		ghost = getTheme().spr_ghostFrightened();
 		for (int i = 0; i < 4; ++i) {
-			points[i] = PacManApp.theme.spr_greenNumber(i);
+			points[i] = getTheme().spr_greenNumber(i);
 		}
 		tf.setWidth(5 * 18);
 		tf.setHeight(18);
+	}
+	
+	private PacManTheme getTheme() {
+		return Application.app().settings.get("theme");
 	}
 
 	public void setStartPosition(float x, float y) {
@@ -58,13 +63,13 @@ public class ChaseGhostsAnimation extends AbstractGameEntity implements View, An
 	public void startAnimation() {
 		init();
 		tf.setVelocityX(.8f);
-		PacManApp.theme.snd_eatPill().loop();
+		getTheme().snd_eatPill().loop();
 	}
 
 	@Override
 	public void stopAnimation() {
 		tf.setVelocityX(0);
-		PacManApp.theme.snd_eatPill().stop();
+		getTheme().snd_eatPill().stop();
 	}
 
 	@Override

@@ -4,11 +4,12 @@ import static java.util.Arrays.binarySearch;
 
 import java.awt.Graphics2D;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.SpriteBasedGameEntity;
 import de.amr.easy.game.entity.Transform;
-import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.theme.PacManTheme;
 
 public class Bonus extends SpriteBasedGameEntity implements TilePlacedEntity {
 
@@ -29,8 +30,9 @@ public class Bonus extends SpriteBasedGameEntity implements TilePlacedEntity {
 		honored = false;
 		tf.setWidth(getTileSize());
 		tf.setHeight(getTileSize());
-		sprites.set("s_symbol", PacManApp.theme.spr_bonusSymbol(symbol));
-		sprites.set("s_number", PacManApp.theme.spr_pinkNumber(index));
+		PacManTheme theme = Application.app().settings.get("theme");
+		sprites.set("s_symbol", theme.spr_bonusSymbol(symbol));
+		sprites.set("s_number", theme.spr_pinkNumber(index));
 		sprites.select("s_symbol");
 	}
 

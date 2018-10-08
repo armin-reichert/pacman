@@ -17,7 +17,6 @@ import java.util.function.Supplier;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.event.GameEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -25,12 +24,13 @@ import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.ActorNavigation;
 import de.amr.games.pacman.navigation.ActorNavigationSystem;
 import de.amr.games.pacman.theme.GhostColor;
+import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
@@ -80,7 +80,7 @@ public class Ghost extends PacManGameActor implements ActorNavigationSystem<Ghos
 	public String getName() {
 		return name;
 	}
-	
+
 	@Override
 	public Maze getMaze() {
 		return game.getMaze();
@@ -102,6 +102,10 @@ public class Ghost extends PacManGameActor implements ActorNavigationSystem<Ghos
 	@Override
 	public float getSpeed() {
 		return game.getGhostSpeed(getState(), getTile());
+	}
+
+	public PacManTheme getTheme() {
+		return app().settings.get("theme");
 	}
 
 	// Movement
@@ -142,14 +146,14 @@ public class Ghost extends PacManGameActor implements ActorNavigationSystem<Ghos
 
 	private void setSprites(GhostColor color) {
 		NESW.dirs().forEach(dir -> {
-			sprites.set("s_color_" + dir, PacManApp.theme.spr_ghostColored(color, dir));
-			sprites.set("s_eyes_" + dir, PacManApp.theme.spr_ghostEyes(dir));
+			sprites.set("s_color_" + dir, getTheme().spr_ghostColored(color, dir));
+			sprites.set("s_eyes_" + dir, getTheme().spr_ghostEyes(dir));
 		});
 		for (int i = 0; i < 4; ++i) {
-			sprites.set("s_value" + i, PacManApp.theme.spr_greenNumber(i));
+			sprites.set("s_value" + i, getTheme().spr_greenNumber(i));
 		}
-		sprites.set("s_frightened", PacManApp.theme.spr_ghostFrightened());
-		sprites.set("s_flashing", PacManApp.theme.spr_ghostFlashing());
+		sprites.set("s_frightened", getTheme().spr_ghostFrightened());
+		sprites.set("s_flashing", getTheme().spr_ghostFlashing());
 	}
 
 	// State machine
@@ -208,8 +212,8 @@ public class Ghost extends PacManGameActor implements ActorNavigationSystem<Ghos
 					})
 			
 				.state(CHASING)
-					.onEntry(() -> PacManApp.theme.snd_siren().loop())
-					.onExit(() -> PacManApp.theme.snd_siren().stop())
+					.onEntry(() -> getTheme().snd_siren().loop())
+					.onExit(() -> getTheme().snd_siren().stop())
 					.onTick(() -> {	
 						move();	
 						sprites.select("s_color_" + getCurrentDir()); 

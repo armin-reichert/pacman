@@ -18,8 +18,6 @@ import de.amr.games.pacman.theme.PacManTheme;
  */
 public class PacManApp extends Application {
 
-	public static PacManTheme theme;
-
 	public static void main(String[] args) {
 		LOGGER.setLevel(Level.INFO);
 		launch(new PacManApp(), args);
@@ -32,7 +30,8 @@ public class PacManApp extends Application {
 		settings.title = "Armin's Pac-Man";
 		settings.fullScreenMode = new DisplayMode(800, 600, 32, 60);
 		settings.fullScreenOnStart = false;
-		theme = new ClassicPacManTheme();
+		PacManTheme theme = new ClassicPacManTheme();
+		settings.set("theme", theme);
 		setIcon(theme.spr_ghostFrightened().frame(0));
 	}
 

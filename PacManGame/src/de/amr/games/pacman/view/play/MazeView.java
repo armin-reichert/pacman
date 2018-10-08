@@ -6,12 +6,13 @@ import static de.amr.games.pacman.model.PacManGame.TS;
 import java.awt.Graphics2D;
 import java.util.Optional;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.SpriteBasedGameEntity;
 import de.amr.easy.game.ui.sprites.Animation;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
-import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.theme.PacManTheme;
 
 public class MazeView extends SpriteBasedGameEntity {
 
@@ -23,12 +24,16 @@ public class MazeView extends SpriteBasedGameEntity {
 
 	public MazeView(Maze maze) {
 		this.maze = maze;
-		sprites.set("s_normal", PacManApp.theme.spr_fullMaze());
-		sprites.set("s_flashing", PacManApp.theme.spr_flashingMaze());
+		sprites.set("s_normal", getTheme().spr_fullMaze());
+		sprites.set("s_flashing", getTheme().spr_flashingMaze());
 		sprites.select("s_normal");
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(500);
 		energizerBlinking.setEnabled(false);
+	}
+
+	private PacManTheme getTheme() {
+		return Application.app().settings.get("theme");
 	}
 
 	@Override

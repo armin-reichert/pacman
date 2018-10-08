@@ -1,5 +1,6 @@
 package de.amr.games.pacman.test.navigation;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
@@ -7,6 +8,7 @@ import de.amr.games.pacman.actor.PacManActors;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.play.PlayViewX;
 
 public class PacManMovementTestController implements ViewController {
@@ -26,14 +28,18 @@ public class PacManMovementTestController implements ViewController {
 		view.setScoresVisible(false);
 	}
 
+	private PacManTheme getTheme() {
+		return Application.app().settings.get("theme");
+	}
+
 	@Override
 	public void init() {
 		game.setLevel(1);
-//		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
+		// game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
 		actors.pacMan.getEventManager().subscribe(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
-				PacManMovementTestApp.theme.snd_eatPill().play();
+				getTheme().snd_eatPill().play();
 				game.getMaze().hideFood(foodFound.tile);
 			}
 		});

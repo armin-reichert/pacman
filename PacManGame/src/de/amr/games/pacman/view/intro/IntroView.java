@@ -1,7 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.PacManApp.theme;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -14,12 +13,13 @@ import java.util.Set;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.ui.widgets.ImageWidget;
+import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.ui.widgets.TextWidget;
 import de.amr.easy.game.view.AnimationController;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
+import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -50,6 +50,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		width = app().settings.width;
 		height = app().settings.height;
 		background = new Color(0, 23, 61);
+		PacManTheme theme = app().settings.get("theme");
 
 		logo = new ImageWidget(Assets.image("logo.png"));
 		logo.tf.centerX(width);

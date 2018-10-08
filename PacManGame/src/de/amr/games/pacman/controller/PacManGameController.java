@@ -2,7 +2,6 @@ package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.PacManApp.theme;
 import static de.amr.games.pacman.controller.GameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.GameState.GAME_OVER;
 import static de.amr.games.pacman.controller.GameState.GHOST_DYING;
@@ -38,6 +37,7 @@ import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.play.PlayViewX;
@@ -71,6 +71,10 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 	public PacManActors getActors() {
 		return actors;
+	}
+
+	public PacManTheme getTheme() {
+		return app().settings.get("theme");
 	}
 
 	// Views
@@ -156,7 +160,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 				.state(INTRO)
 					.onEntry(() -> {
 						setCurrentView(getIntroView());
-						theme.snd_insertCoin().play();
+						getTheme().snd_insertCoin().play();
 					})
 				
 				.state(READY)
@@ -275,17 +279,17 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			playView.setScoresVisible(true);
 			playView.enableAnimation(false);
 			playView.showInfoText("Ready!", Color.YELLOW);
-			theme.snd_clips_all().forEach(Sound::stop);
-			theme.snd_music_all().forEach(Sound::stop);
-			theme.snd_ready().play();
+			getTheme().snd_clips_all().forEach(Sound::stop);
+			getTheme().snd_music_all().forEach(Sound::stop);
+			getTheme().snd_ready().play();
 		}
 
 		@Override
 		public void onExit() {
 			playView.enableAnimation(true);
 			playView.hideInfoText();
-			theme.snd_music_play().volume(0.5f);
-			theme.snd_music_play().loop();
+			getTheme().snd_music_play().volume(0.5f);
+			getTheme().snd_music_play().loop();
 		}
 	}
 
@@ -357,7 +361,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		private void onGhostKilled(GameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
 			e.ghost.processEvent(e);
-			theme.snd_eatGhost().play();
+			getTheme().snd_eatGhost().play();
 			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
 		}
 
@@ -365,11 +369,11 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			playView.getBonus().ifPresent(bonus -> {
 				LOGGER.info(
 						() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(), bonus.getValue()));
-				theme.snd_eatFruit().play();
+				getTheme().snd_eatFruit().play();
 				bonus.setHonored();
 				boolean extraLife = game.addPoints(bonus.getValue());
 				if (extraLife) {
-					theme.snd_extraLife().play();
+					getTheme().snd_extraLife().play();
 				}
 				playView.setBonusTimer(app().clock.sec(1));
 			});
@@ -377,11 +381,11 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 		private void onFoodFound(GameEvent event) {
 			FoodFoundEvent e = (FoodFoundEvent) event;
-			theme.snd_eatPill().play();
+			getTheme().snd_eatPill().play();
 			int points = game.eatFoodAtTile(e.tile);
 			boolean extraLife = game.addPoints(points);
 			if (extraLife) {
-				theme.snd_extraLife().play();
+				getTheme().snd_extraLife().play();
 			}
 			if (game.allFoodEaten()) {
 				enqueue(new LevelCompletedEvent());
@@ -433,7 +437,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			actors.pacMan.setVisible(false);
 			boolean extraLife = game.addPoints(game.getKilledGhostValue());
 			if (extraLife) {
-				theme.snd_extraLife().play();
+				getTheme().snd_extraLife().play();
 			}
 			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
 					game.getGhostsKilledByEnergizer()));
@@ -457,8 +461,8 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		@Override
 		public void onEntry() {
 			actors.getActiveGhosts().forEach(ghost -> ghost.setVisible(false));
-			theme.snd_clips_all().forEach(Sound::stop);
-			theme.snd_die().play();
+			getTheme().snd_clips_all().forEach(Sound::stop);
+			getTheme().snd_die().play();
 		}
 
 		@Override
@@ -480,14 +484,14 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			playView.enableAnimation(false);
 			playView.showInfoText("Game Over!", Color.RED);
 			game.saveScore();
-			theme.snd_music_play().stop();
-			theme.snd_music_gameover().loop();
+			getTheme().snd_music_play().stop();
+			getTheme().snd_music_gameover().loop();
 		}
 
 		@Override
 		public void onExit() {
 			playView.hideInfoText();
-			theme.snd_music_gameover().stop();
+			getTheme().snd_music_gameover().stop();
 		}
 	}
 }

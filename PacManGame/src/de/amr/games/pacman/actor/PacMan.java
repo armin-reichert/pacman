@@ -2,7 +2,6 @@ package de.amr.games.pacman.actor;
 
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.PacManApp.theme;
 import static de.amr.games.pacman.actor.PacManState.DEAD;
 import static de.amr.games.pacman.actor.PacManState.DYING;
 import static de.amr.games.pacman.actor.PacManState.GREEDY;
@@ -25,11 +24,12 @@ import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.ActorNavigation;
 import de.amr.games.pacman.navigation.ActorNavigationSystem;
+import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
@@ -88,6 +88,10 @@ public class PacMan extends PacManGameActor implements ActorNavigationSystem<Pac
 		return game.getPacManSpeed(getState());
 	}
 
+	public PacManTheme getTheme() {
+		return app().settings.get("theme");
+	}
+
 	// Movement
 
 	public void setMoveBehavior(PacManState state, ActorNavigation<PacMan> navigation) {
@@ -117,9 +121,9 @@ public class PacMan extends PacManGameActor implements ActorNavigationSystem<Pac
 	// Sprites
 
 	private void setSprites() {
-		NESW.dirs().forEach(dir -> sprites.set("s_walking_" + dir, theme.spr_pacManWalking(dir)));
-		sprites.set("s_dying", theme.spr_pacManDying());
-		sprites.set("s_full", theme.spr_pacManFull());
+		NESW.dirs().forEach(dir -> sprites.set("s_walking_" + dir, getTheme().spr_pacManWalking(dir)));
+		sprites.set("s_dying", getTheme().spr_pacManDying());
+		sprites.set("s_full", getTheme().spr_pacManFull());
 		sprites.select("s_full");
 	}
 
@@ -269,12 +273,12 @@ public class PacMan extends PacManGameActor implements ActorNavigationSystem<Pac
 
 		@Override
 		public void onEntry() {
-			theme.snd_waza().loop();
+			getTheme().snd_waza().loop();
 		}
 
 		@Override
 		public void onExit() {
-			theme.snd_waza().stop();
+			getTheme().snd_waza().stop();
 		}
 
 		@Override
