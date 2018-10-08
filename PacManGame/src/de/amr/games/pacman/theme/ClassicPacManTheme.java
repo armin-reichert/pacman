@@ -4,7 +4,6 @@ import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.ui.sprites.AnimationType.BACK_AND_FORTH;
 import static de.amr.easy.game.ui.sprites.AnimationType.CYCLIC;
 import static de.amr.easy.game.ui.sprites.AnimationType.LINEAR;
-import static java.util.concurrent.CompletableFuture.runAsync;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -13,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -117,9 +117,7 @@ public class ClassicPacManTheme implements PacManTheme {
 		Assets.storeTrueTypeFont("font.arcadeclassic", "arcadeclassic.ttf", Font.PLAIN, 12);
 
 		// Load sound clips
-		snd_clips_all();
-		LOGGER.info("Audio clips loaded.");
-		runAsync(() -> {
+		CompletableFuture.runAsync(() -> {
 			LOGGER.info("Loading music...");
 			snd_music_all();
 		}).thenAccept(result -> LOGGER.info("Music loaded."));
@@ -160,11 +158,6 @@ public class ClassicPacManTheme implements PacManTheme {
 	@Override
 	public Sprite spr_bonusSymbol(BonusSymbol symbol) {
 		return Sprite.of(symbolMap.get(symbol));
-	}
-
-	@Override
-	public BufferedImage img_bonusSymbol(BonusSymbol symbol) {
-		return symbolMap.get(symbol);
 	}
 
 	@Override
@@ -235,12 +228,16 @@ public class ClassicPacManTheme implements PacManTheme {
 	}
 
 	private Sound sound(String name) {
-		return Assets.sound("sfx/" + name + ".mp3");
+		return sound(name, "mp3");
+	}
+
+	private Sound sound(String name, String type) {
+		return Assets.sound("sfx/" + name + "." + type);
 	}
 
 	@Override
 	public Stream<Sound> snd_clips_all() {
-		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eating(), snd_eatPill(), snd_extraLife(),
+		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eatPill(), snd_extraLife(),
 				snd_insertCoin(), snd_ready(), snd_siren(), snd_waza());
 	}
 
@@ -276,12 +273,7 @@ public class ClassicPacManTheme implements PacManTheme {
 
 	@Override
 	public Sound snd_eatPill() {
-		return sound("eat-pill");
-	}
-
-	@Override
-	public Sound snd_eating() {
-		return sound("eating");
+		return sound("pacman_eat", "wav");
 	}
 
 	@Override

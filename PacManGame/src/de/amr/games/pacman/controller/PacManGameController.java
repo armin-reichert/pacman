@@ -20,9 +20,9 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
-import de.amr.games.pacman.actor.PacManActors;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.actor.PacManActors;
 import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -36,8 +36,8 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.play.PlayViewX;
@@ -60,8 +60,9 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		game = new PacManGame(new Maze(Assets.text("maze.txt")));
 		actors = new PacManActors(game);
 		actors.pacMan.getEventManager().subscribe(this::process);
-		buildStateMachine();
 		ghostAttackTimer = new GhostAttackTimer(this);
+		buildStateMachine();
+		traceTo(LOGGER, app().clock::getFrequency);
 	}
 
 	public PacManGame getGame() {
@@ -107,7 +108,6 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 	@Override
 	public void init() {
 		super.init();
-		traceTo(LOGGER, app().clock::getFrequency);
 	}
 
 	@Override
@@ -284,7 +284,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		public void onExit() {
 			playView.enableAnimation(true);
 			playView.hideInfoText();
-			theme.snd_music_play().volume(app().settings.bgMusicVolume / 100f);
+			theme.snd_music_play().volume(0.5f);
 			theme.snd_music_play().loop();
 		}
 	}

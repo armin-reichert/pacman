@@ -58,13 +58,13 @@ public class ChaseGhostsAnimation extends AbstractGameEntity implements View, An
 	public void startAnimation() {
 		init();
 		tf.setVelocityX(.8f);
-		PacManApp.theme.snd_waza().loop();
+		PacManApp.theme.snd_eatPill().loop();
 	}
 
 	@Override
 	public void stopAnimation() {
 		tf.setVelocityX(0);
-		PacManApp.theme.snd_waza().stop();
+		PacManApp.theme.snd_eatPill().stop();
 	}
 
 	@Override

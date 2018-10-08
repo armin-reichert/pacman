@@ -294,7 +294,7 @@ public class Maze {
 		return foodTotal;
 	}
 
-	void hideFood(Tile tile) {
+	public void hideFood(Tile tile) {
 		graph.set(cell(tile), EATEN);
 	}
 

@@ -4,6 +4,7 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.PacManActors;
+import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayViewX;
@@ -28,7 +29,14 @@ public class PacManMovementTestController implements ViewController {
 	@Override
 	public void init() {
 		game.setLevel(1);
-		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
+//		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
+		actors.pacMan.getEventManager().subscribe(event -> {
+			if (event.getClass() == FoodFoundEvent.class) {
+				FoodFoundEvent foodFound = (FoodFoundEvent) event;
+				PacManMovementTestApp.theme.snd_eatPill().play();
+				game.getMaze().hideFood(foodFound.tile);
+			}
+		});
 		actors.setActive(actors.blinky, false);
 		actors.setActive(actors.pinky, false);
 		actors.setActive(actors.inky, false);

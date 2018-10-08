@@ -1,7 +1,6 @@
 package de.amr.games.pacman.theme;
 
 import java.awt.Font;
-import java.awt.image.BufferedImage;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.Sound;
@@ -17,8 +16,6 @@ public interface PacManTheme {
 	Sprite spr_flashingMaze();
 
 	Sprite spr_bonusSymbol(BonusSymbol symbol);
-
-	BufferedImage img_bonusSymbol(BonusSymbol symbol);
 
 	Sprite spr_pacManFull();
 
@@ -55,8 +52,6 @@ public interface PacManTheme {
 	Sound snd_eatGhost();
 
 	Sound snd_eatPill();
-
-	Sound snd_eating();
 
 	Sound snd_extraLife();
 
