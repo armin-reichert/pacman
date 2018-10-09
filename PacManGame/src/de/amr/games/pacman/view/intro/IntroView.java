@@ -144,7 +144,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 					// Show ghost points animation and blinking text
 					.timeoutAfter(() -> app().clock.sec(6))
 					.onEntry(() -> {
-						show(ghostPoints, pressSpace, f11Hint, speedHint[0], speedHint[1],speedHint[2],visitGitHub);
+						show(ghostPoints, pressSpace, f11Hint, speedHint[0], speedHint[1], speedHint[2], visitGitHub);
 						ghostPoints.startAnimation();
 					})
 					.onExit(() -> {
@@ -155,10 +155,18 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 				.state(42)
 					
 			.transitions()
-				.when(0).then(1).condition(() -> logo.isAnimationCompleted())
-				.when(1).then(2).condition(() -> chasePacMan.isAnimationCompleted() && chaseGhosts.isAnimationCompleted())
-				.when(2).then(1).onTimeout()
-				.when(2).then(42).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+				
+				.when(0).then(1)
+					.condition(() -> logo.isAnimationCompleted())
+				
+				.when(1).then(2)
+					.condition(() -> chasePacMan.isAnimationCompleted() && chaseGhosts.isAnimationCompleted())
+				
+				.when(2).then(1)
+					.onTimeout()
+				
+				.when(2).then(42)
+					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 
 		.endStateMachine();
 	  /*@formatter:on*/

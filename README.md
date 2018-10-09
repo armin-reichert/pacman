@@ -69,15 +69,15 @@ is an obvious candidate for using a state machine. This state machine has no eve
 so we specify *Void* as event type. The states are identified by numbers:
 
 ```java
-.beginStateMachine()
+beginStateMachine()
 	.description("[Intro]")
 	.initialState(0)
 	.states()
 
 		.state(0)
 			// Scroll logo into view
-			.onEntry(() -> { show(logo); logo.start(); })
-			.onExit(() -> logo.stop())
+			.onEntry(() -> { show(logo); logo.startAnimation(); })
+			.onExit(() -> logo.stopAnimation())
 
 		.state(1)
 			// Show ghosts chasing Pac-Man and vice-versa
@@ -94,21 +94,29 @@ so we specify *Void* as event type. The states are identified by numbers:
 			// Show ghost points animation and blinking text
 			.timeoutAfter(() -> app().clock.sec(6))
 			.onEntry(() -> {
-				show(ghostPoints, pressSpace, f11Hint, visitGitHub);
-				ghostPoints.start();
+				show(ghostPoints, pressSpace, f11Hint, speedHint[0], speedHint[1], speedHint[2], visitGitHub);
+				ghostPoints.startAnimation();
 			})
 			.onExit(() -> {
-				ghostPoints.stop();
+				ghostPoints.stopAnimation();
 				hide(ghostPoints, pressSpace);
 			})
 			
 		.state(42)
 			
 	.transitions()
-		.when(0).then(1).condition(() -> logo.isCompleted())
-		.when(1).then(2).condition(() -> chasePacMan.isCompleted() && chaseGhosts.isCompleted())
-		.when(2).then(1).onTimeout()
-		.when(2).then(42).condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+		
+		.when(0).then(1)
+			.condition(() -> logo.isAnimationCompleted())
+		
+		.when(1).then(2)
+			.condition(() -> chasePacMan.isAnimationCompleted() && chaseGhosts.isAnimationCompleted())
+		
+		.when(2).then(1)
+			.onTimeout()
+		
+		.when(2).then(42)
+			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 
 .endStateMachine();
 ```
