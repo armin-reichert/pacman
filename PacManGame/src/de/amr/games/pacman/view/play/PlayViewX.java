@@ -1,6 +1,5 @@
 package de.amr.games.pacman.view.play;
 
-import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.awt.Color;
@@ -13,7 +12,6 @@ import java.awt.Transparency;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
-import java.util.logging.Level;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
@@ -100,9 +98,6 @@ public class PlayViewX extends PlayView {
 
 	@Override
 	public void update() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_L)) {
-			LOGGER.setLevel(LOGGER.getLevel() == Level.OFF ? Level.INFO : Level.OFF);
-		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_G)) {
 			showGrid = !showGrid;
 		}

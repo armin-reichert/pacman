@@ -12,6 +12,7 @@ import static de.amr.games.pacman.controller.GameState.READY;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.logging.Level;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.Sound;
@@ -109,6 +110,15 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 	@Override
 	public void update() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_L)) {
+			if (LOGGER.getLevel() == Level.OFF) {
+				LOGGER.setLevel(Level.INFO);
+				LOGGER.info("Logging enabled");
+			} else {
+				LOGGER.info("Logging disabled");
+				LOGGER.setLevel(Level.OFF);
+			}
+		}
 		checkSpeedChange();
 		super.update();
 		((Controller) currentView).update();

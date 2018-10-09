@@ -98,6 +98,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		visitGitHub.tf.centerX(width);
 
 		buildStateMachine();
+		traceTo(Application.LOGGER, Application.app().clock::getFrequency);
 	}
 
 	private void show(View... views) {
@@ -170,7 +171,6 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 	@Override
 	public void init() {
 		super.init();
-		traceTo(Application.LOGGER, Application.app().clock::getFrequency);
 	}
 
 	@Override
