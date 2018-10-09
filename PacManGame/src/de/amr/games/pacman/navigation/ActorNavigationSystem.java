@@ -1,17 +1,17 @@
 package de.amr.games.pacman.navigation;
 
 import static de.amr.easy.game.math.Vector2f.dist;
-import static de.amr.games.pacman.model.PacManGame.TS;
 import static de.amr.games.pacman.model.Maze.NESW;
+import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.util.function.Supplier;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.actor.PacManGameActor;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.actor.PacManGameActor;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 

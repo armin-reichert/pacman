@@ -36,23 +36,23 @@ public class InkyChaseTestController implements ViewController {
 	public void init() {
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
-		game.getActors().setActive(game.getActors().getPacMan(), true);
-		game.getActors().getPacMan().init();
-		game.getActors().setActive(game.getActors().getPinky(), false);
-		game.getActors().setActive(game.getActors().getClyde(), false);
+		game.setActive(game.getPacMan(), true);
+		game.getPacMan().init();
+		game.setActive(game.getPinky(), false);
+		game.setActive(game.getClyde(), false);
 		int width = app().settings.width;
 		int height = app().settings.height;
-		game.getActors().getInky().setMoveBehavior(GhostState.CHASING, attackWithBlinky(width, height));
-		game.getActors().getActiveGhosts().forEach(ghost -> {
+		game.getInky().setMoveBehavior(GhostState.CHASING, attackWithBlinky(width, height));
+		game.getActiveGhosts().forEach(ghost -> {
 			ghost.init();
 			ghost.setState(GhostState.CHASING);
 		});
 	}
 
 	private ActorNavigation<Ghost> attackWithBlinky(int w, int h) {
-		return game.getActors().getInky().headFor(() -> {
-			Vector2f b = game.getActors().getBlinky().tf.getCenter();
-			Tile strut = game.getActors().getPacMan().ahead(2);
+		return game.getInky().headFor(() -> {
+			Vector2f b = game.getBlinky().tf.getCenter();
+			Tile strut = game.getPacMan().ahead(2);
 			Vector2f p = Vector2f.of(strut.col * TS + TS / 2, strut.row * TS + TS / 2);
 			Vector2f s = ActorNavigationSystem.computeExactInkyTarget(b, p, w, h);
 			LOGGER.info(String.format("Target point is (%.2f | %.2f)", s.x, s.y));
@@ -74,8 +74,8 @@ public class InkyChaseTestController implements ViewController {
 
 	@Override
 	public void update() {
-		game.getActors().getPacMan().update();
-		game.getActors().getActiveGhosts().forEach(Ghost::update);
+		game.getPacMan().update();
+		game.getActiveGhosts().forEach(Ghost::update);
 		view.update();
 	}
 

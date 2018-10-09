@@ -1,16 +1,34 @@
 package de.amr.games.pacman.model;
 
 import static de.amr.easy.game.Application.app;
+import static de.amr.games.pacman.actor.GhostState.CHASING;
+import static de.amr.games.pacman.actor.GhostState.DEAD;
+import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.actor.GhostState.SAFE;
+import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+import static java.awt.event.KeyEvent.VK_DOWN;
+import static java.awt.event.KeyEvent.VK_LEFT;
+import static java.awt.event.KeyEvent.VK_RIGHT;
+import static java.awt.event.KeyEvent.VK_UP;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.stream.Stream;
 
+import de.amr.easy.grid.impl.Top4;
+import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.PacManActors;
+import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.actor.PacManGameActor;
 import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.model.Level.Property;
+import de.amr.games.pacman.navigation.ActorNavigation;
+import de.amr.games.pacman.theme.GhostColor;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.
@@ -22,14 +40,17 @@ import de.amr.games.pacman.model.Level.Property;
  */
 public class PacManGame {
 
-	/** The maze tile size (8px). */
+	/** The tile size (8px). */
 	public static final int TS = 8;
 
-	/** The maze. */
 	private final Maze maze;
 
-	/** The actors. */
-	private final PacManActors actors;
+	private final PacMan pacMan;
+
+	private final Ghost blinky, pinky, inky, clyde;
+
+	/** The currently active actors. Actors can be toggled during the game. */
+	private final Set<PacManGameActor> activeActors = new HashSet<>();
 
 	/** The game score including highscore management. */
 	private final Score score;
@@ -51,12 +72,99 @@ public class PacManGame {
 
 	public PacManGame(Maze maze) {
 		this.maze = maze;
-		actors = new PacManActors(this);
 		score = new Score(this);
+
+		// Pac-Man
+		pacMan = new PacMan(this);
+
+		// The ghosts
+		blinky = new Ghost("Blinky", pacMan, this, maze.getBlinkyHome(), maze.getBlinkyScatteringTarget(), Top4.E,
+				GhostColor.RED);
+
+		pinky = new Ghost("Pinky", pacMan, this, maze.getPinkyHome(), maze.getPinkyScatteringTarget(), Top4.S,
+				GhostColor.PINK);
+
+		inky = new Ghost("Inky", pacMan, this, maze.getInkyHome(), maze.getInkyScatteringTarget(), Top4.N,
+				GhostColor.TURQUOISE);
+
+		clyde = new Ghost("Clyde", pacMan, this, maze.getClydeHome(), maze.getClydeScatteringTarget(), Top4.N,
+				GhostColor.ORANGE);
+
+		activeActors.addAll(Arrays.asList(pacMan, blinky, pinky, inky, clyde));
+
+		// Define the navigation behavior ("AI")
+
+		// Pac-Man is controlled by the keyboard
+		ActorNavigation<PacMan> followKeyboard = pacMan.followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
+		pacMan.setMoveBehavior(PacManState.HUNGRY, followKeyboard);
+		pacMan.setMoveBehavior(PacManState.GREEDY, followKeyboard);
+
+		// Common ghost behavior
+		getGhosts().forEach(ghost -> {
+			ghost.setMoveBehavior(FRIGHTENED, ghost.flee(pacMan));
+			ghost.setMoveBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
+			ghost.setMoveBehavior(DEAD, ghost.headFor(ghost::getHomeTile));
+			ghost.setMoveBehavior(SAFE, ghost.bounce());
+		});
+
+		// Individual ghost behavior
+		blinky.setMoveBehavior(DEAD, blinky.headFor(() -> maze.getPinkyHome()));
+		blinky.setMoveBehavior(CHASING, blinky.attackDirectly(pacMan));
+		pinky.setMoveBehavior(CHASING, pinky.ambush(pacMan, 4));
+		inky.setMoveBehavior(CHASING, inky.attackWithPartner(blinky, pacMan));
+		clyde.setMoveBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * PacManGame.TS));
+
+		// Other game rules
+		clyde.fnCanLeaveHouse = () -> getLevel() > 1 || getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
 	}
 
-	public PacManActors getActors() {
-		return actors;
+	public PacMan getPacMan() {
+		return pacMan;
+	}
+
+	public Ghost getBlinky() {
+		return blinky;
+	}
+
+	public Ghost getPinky() {
+		return pinky;
+	}
+
+	public Ghost getInky() {
+		return inky;
+	}
+
+	public Ghost getClyde() {
+		return clyde;
+	}
+
+	public Stream<Ghost> getGhosts() {
+		return Stream.of(blinky, pinky, inky, clyde);
+	}
+
+	public Stream<Ghost> getActiveGhosts() {
+		return getGhosts().filter(this::isActive);
+	}
+
+	public void initActors() {
+		activeActors.forEach(PacManGameActor::init);
+	}
+
+	public boolean isActive(PacManGameActor actor) {
+		return activeActors.contains(actor);
+	}
+
+	public void setActive(PacManGameActor actor, boolean active) {
+		if (active == isActive(actor)) {
+			return;
+		}
+		if (active) {
+			activeActors.add(actor);
+			actor.init();
+		} else {
+			activeActors.remove(actor);
+		}
+		actor.setVisible(active);
 	}
 
 	public int getPoints() {

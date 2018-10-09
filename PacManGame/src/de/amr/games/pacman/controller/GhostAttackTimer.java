@@ -25,8 +25,7 @@ public class GhostAttackTimer extends StateMachine<String, Void> implements Cont
 	public GhostAttackTimer(PacManGameController gameControl) {
 		super(String.class);
 		this.gameControl = gameControl;
-		gameControl.getGame().getActors().getGhosts()
-				.forEach(ghost -> ghost.fnNextAttackState = this::getGhostAttackState);
+		gameControl.getGame().getGhosts().forEach(ghost -> ghost.fnNextAttackState = this::getGhostAttackState);
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("[GhostAttackTimer]")

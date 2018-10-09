@@ -20,8 +20,8 @@ public class EscapeIntoCornerTestController implements ViewController {
 	public EscapeIntoCornerTestController() {
 		Maze maze = new Maze(Assets.text("maze.txt"));
 		game = new PacManGame(maze);
-		pacMan = game.getActors().getPacMan();
-		blinky = game.getActors().getBlinky();
+		pacMan = game.getPacMan();
+		blinky = game.getBlinky();
 		view = new PlayViewX(game);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
@@ -33,10 +33,9 @@ public class EscapeIntoCornerTestController implements ViewController {
 	public void init() {
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
-		game.getActors().setActive(pacMan, true);
+		game.setActive(pacMan, true);
 		pacMan.init();
-		game.getActors().getGhosts().filter(ghost -> ghost != blinky)
-				.forEach(ghost -> game.getActors().setActive(ghost, false));
+		game.getGhosts().filter(ghost -> ghost != blinky).forEach(ghost -> game.setActive(ghost, false));
 		blinky.initGhost();
 		blinky.setState(GhostState.FRIGHTENED);
 	}

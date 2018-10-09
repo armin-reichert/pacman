@@ -24,8 +24,8 @@ public class FollowMouseTestController implements ViewController {
 	public FollowMouseTestController() {
 		Maze maze = new Maze(Assets.text("maze.txt"));
 		game = new PacManGame(maze);
-		pacMan = game.getActors().getPacMan();
-		blinky = game.getActors().getBlinky();
+		pacMan = game.getPacMan();
+		blinky = game.getBlinky();
 		view = new PlayViewX(game);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
@@ -39,9 +39,9 @@ public class FollowMouseTestController implements ViewController {
 		pacMan.placeAtTile(mouseTile, 0, 0);
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
-		game.getActors().getGhosts().forEach(ghost -> game.getActors().setActive(ghost, false));
-		game.getActors().setActive(blinky, true);
-		game.getActors().setActive(pacMan, true);
+		game.getGhosts().forEach(ghost -> game.setActive(ghost, false));
+		game.setActive(blinky, true);
+		game.setActive(pacMan, true);
 		blinky.init();
 		blinky.setState(GhostState.CHASING);
 		blinky.setMoveBehavior(GhostState.CHASING, blinky.followRoute(() -> mouseTile));
