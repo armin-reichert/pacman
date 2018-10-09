@@ -57,7 +57,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 	public PacManGameController() {
 		super(GameState.class);
 		game = new PacManGame(new Maze(Assets.text("maze.txt")));
-		game.getPacMan().getEventManager().subscribe(this::process);
+		game.getPacMan().getEventManager().addListener(this::process);
 		ghostAttackTimer = new GhostAttackTimer(this);
 		buildStateMachine();
 		traceTo(LOGGER, app().clock::getFrequency);
@@ -282,8 +282,9 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			playView.setScoresVisible(true);
 			playView.enableAnimation(false);
 			playView.showInfoText("Ready!", Color.YELLOW);
+			getTheme().music_playing().stop();
+			getTheme().music_gameover().stop();
 			getTheme().snd_clips_all().forEach(Sound::stop);
-			getTheme().snd_music_all().forEach(Sound::stop);
 			getTheme().snd_ready().play();
 		}
 
@@ -291,8 +292,8 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		public void onExit() {
 			playView.enableAnimation(true);
 			playView.hideInfoText();
-			getTheme().snd_music_play().volume(0.5f);
-			getTheme().snd_music_play().loop();
+			getTheme().music_playing().volume(0.5f);
+			getTheme().music_playing().loop();
 		}
 	}
 
@@ -488,14 +489,14 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			playView.enableAnimation(false);
 			playView.showInfoText("Game Over!", Color.RED);
 			game.saveScore();
-			getTheme().snd_music_play().stop();
-			getTheme().snd_music_gameover().loop();
+			getTheme().music_playing().stop();
+			getTheme().music_gameover().loop();
 		}
 
 		@Override
 		public void onExit() {
 			playView.hideInfoText();
-			getTheme().snd_music_gameover().stop();
+			getTheme().music_gameover().stop();
 		}
 	}
 }

@@ -119,7 +119,8 @@ public class ClassicPacManTheme implements PacManTheme {
 		// Load sound clips
 		CompletableFuture.runAsync(() -> {
 			LOGGER.info("Loading music...");
-			snd_music_all();
+			music_playing();
+			music_gameover();
 		}).thenAccept(result -> LOGGER.info("Music loaded."));
 
 		LOGGER.info(String.format("Theme '%s' created.", getClass().getSimpleName()));
@@ -242,17 +243,12 @@ public class ClassicPacManTheme implements PacManTheme {
 	}
 
 	@Override
-	public Stream<Sound> snd_music_all() {
-		return Stream.of(snd_music_play(), snd_music_gameover());
-	}
-
-	@Override
-	public Sound snd_music_play() {
+	public Sound music_playing() {
 		return sound("bgmusic");
 	}
 
 	@Override
-	public Sound snd_music_gameover() {
+	public Sound music_gameover() {
 		return sound("ending");
 	}
 

@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 /**
- * Manages a list of subscribers which are informed about events published by some object.
+ * Manages a list of event listeners which are informed about events published by some object.
  * 
  * @param <E>
  *          event type
@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 public class EventManager<E> {
 
 	private final String description;
-	private final Set<Consumer<E>> subscribers = new LinkedHashSet<>();
+	private final Set<Consumer<E>> listeners = new LinkedHashSet<>();
 	private boolean enabled;
 
 	public EventManager(String description) {
@@ -23,18 +23,18 @@ public class EventManager<E> {
 		enabled = true;
 	}
 
-	public void subscribe(Consumer<E> subscriber) {
-		subscribers.add(subscriber);
+	public void addListener(Consumer<E> l) {
+		listeners.add(l);
 	}
 
-	public void unsubscribe(Consumer<E> subscriber) {
-		subscribers.remove(subscriber);
+	public void removeListener(Consumer<E> l) {
+		listeners.remove(l);
 	}
 
 	public void publish(E event) {
 		if (enabled) {
 			LOGGER.info(String.format("%s publishing event '%s'", description, event));
-			subscribers.forEach(subscriber -> subscriber.accept(event));
+			listeners.forEach(subscriber -> subscriber.accept(event));
 		}
 	}
 

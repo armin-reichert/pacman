@@ -41,9 +41,13 @@ public interface PacManTheme {
 		return fnt_text().deriveFont((float) size);
 	}
 
-	Sound snd_music_play();
+	// Background music
 	
-	Sound snd_music_gameover();
+	Sound music_playing();
+	
+	Sound music_gameover();
+	
+	// Clips
 	
 	Sound snd_die();
 
@@ -64,7 +68,5 @@ public interface PacManTheme {
 	Sound snd_waza();
 
 	Stream<Sound> snd_clips_all();
-	
-	Stream<Sound> snd_music_all();
 	
 }
