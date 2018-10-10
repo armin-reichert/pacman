@@ -71,36 +71,36 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		return app().settings.get("theme");
 	}
 
-	// Views
+	// Screens
 
-	private View currentView;
-	private IntroView introView;
-	private PlayViewX playView;
+	private Controller currentScreen;
+	private IntroView introScreen;
+	private PlayViewX playScreen;
 
-	private IntroView getIntroView() {
-		if (introView == null) {
-			introView = new IntroView();
+	private IntroView getIntroScreen() {
+		if (introScreen == null) {
+			introScreen = new IntroView();
 		}
-		return introView;
+		return introScreen;
 	}
 
-	private PlayView getPlayView() {
-		if (playView == null) {
-			playView = new PlayViewX(game);
+	private PlayView getPlayScreen() {
+		if (playScreen == null) {
+			playScreen = new PlayViewX(game);
 		}
-		return playView;
+		return playScreen;
 	}
 
-	private void setCurrentView(View view) {
-		if (currentView != view) {
-			currentView = view;
-			((Controller) currentView).init();
+	private void setScreen(Controller screen) {
+		if (currentScreen != screen) {
+			currentScreen = screen;
+			currentScreen.init();
 		}
 	}
 
 	@Override
 	public View currentView() {
-		return currentView;
+		return (View) currentScreen;
 	}
 
 	@Override
@@ -110,6 +110,13 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 	@Override
 	public void update() {
+		checkLoggingChange();
+		checkSpeedChange();
+		super.update();
+		currentScreen.update();
+	}
+
+	private void checkLoggingChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_L)) {
 			if (LOGGER.getLevel() == Level.OFF) {
 				LOGGER.setLevel(Level.INFO);
@@ -119,9 +126,6 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 				LOGGER.setLevel(Level.OFF);
 			}
 		}
-		checkSpeedChange();
-		super.update();
-		((Controller) currentView).update();
 	}
 
 	private void checkSpeedChange() {
@@ -136,7 +140,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		}
 	}
 
-	// typed access to playing state implementation (needed for method references etc.)
+	/* Typed accessor for playing state (needed for method references etc.) */
 	private PlayingState playingState() {
 		return state(PLAYING);
 	}
@@ -146,7 +150,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 	}
 
 	private void resetScene() {
-		playView.init();
+		playScreen.init();
 		game.initActors();
 		ghostAttackTimer.init();
 	}
@@ -162,7 +166,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 				
 				.state(INTRO)
 					.onEntry(() -> {
-						setCurrentView(getIntroView());
+						setScreen(getIntroScreen());
 						getTheme().snd_insertCoin().play();
 					})
 				
@@ -190,8 +194,8 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			.transitions()
 			
 				.when(INTRO).then(READY)
-					.condition(() -> introView.isComplete())
-					.act(() -> setCurrentView(getPlayView()))
+					.condition(() -> introScreen.isComplete())
+					.act(() -> setScreen(getPlayScreen()))
 				
 				.when(READY).then(PLAYING).onTimeout()
 					
@@ -279,9 +283,9 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			game.init();
 			game.removeLife();
 			resetScene();
-			playView.setScoresVisible(true);
-			playView.enableAnimation(false);
-			playView.showInfoText("Ready!", Color.YELLOW);
+			playScreen.setScoresVisible(true);
+			playScreen.enableAnimation(false);
+			playScreen.showInfoText("Ready!", Color.YELLOW);
 			getTheme().music_playing().stop();
 			getTheme().music_gameover().stop();
 			getTheme().snd_clips_all().forEach(Sound::stop);
@@ -290,8 +294,8 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 		@Override
 		public void onExit() {
-			playView.enableAnimation(true);
-			playView.hideInfoText();
+			playScreen.enableAnimation(true);
+			playScreen.hideInfoText();
 			getTheme().music_playing().volume(0.5f);
 			getTheme().music_playing().loop();
 		}
@@ -342,8 +346,8 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 		private void onPacManKilled(GameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
-			game.getPacMan().processEvent(e);
 			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
+			game.getPacMan().processEvent(e);
 		}
 
 		private void onPacManGainsPower(GameEvent event) {
@@ -364,13 +368,13 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 		private void onGhostKilled(GameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
-			e.ghost.processEvent(e);
-			getTheme().snd_eatGhost().play();
 			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
+			getTheme().snd_eatGhost().play();
+			e.ghost.processEvent(e);
 		}
 
 		private void onBonusFound(GameEvent event) {
-			playView.getBonus().ifPresent(bonus -> {
+			playScreen.getBonus().ifPresent(bonus -> {
 				LOGGER.info(
 						() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(), bonus.getValue()));
 				getTheme().snd_eatFruit().play();
@@ -379,7 +383,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 				if (extraLife) {
 					getTheme().snd_extraLife().play();
 				}
-				playView.setBonusTimer(app().clock.sec(1));
+				playScreen.setBonusTimer(app().clock.sec(1));
 			});
 		}
 
@@ -396,8 +400,8 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 				return;
 			}
 			if (game.isBonusReached()) {
-				playView.setBonus(game.getBonusSymbol(), game.getBonusValue());
-				playView.setBonusTimer(game.getBonusTime());
+				playScreen.setBonus(game.getBonusSymbol(), game.getBonusValue());
+				playScreen.setBonusTimer(game.getBonusTime());
 			}
 			if (e.energizer) {
 				enqueue(new PacManGainsPowerEvent());
@@ -411,7 +415,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		public void onEntry() {
 			game.getPacMan().setFullSprite();
 			game.getActiveGhosts().forEach(ghost -> ghost.setVisible(false));
-			playView.setMazeFlashing(true);
+			playScreen.setMazeFlashing(true);
 			getTheme().snd_clips_all().forEach(Sound::stop);
 		}
 
@@ -422,16 +426,16 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 				game.nextLevel();
 				resetScene();
 				game.getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
-				playView.showInfoText("Ready!", Color.YELLOW);
-				playView.setMazeFlashing(false);
-				playView.enableAnimation(false);
+				playScreen.showInfoText("Ready!", Color.YELLOW);
+				playScreen.setMazeFlashing(false);
+				playScreen.enableAnimation(false);
 			}
 		}
 
 		@Override
 		public void onExit() {
-			playView.hideInfoText();
-			playView.enableAnimation(true);
+			playScreen.hideInfoText();
+			playScreen.enableAnimation(true);
 		}
 	}
 
@@ -486,8 +490,8 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 		@Override
 		public void onEntry() {
-			playView.enableAnimation(false);
-			playView.showInfoText("Game Over!", Color.RED);
+			playScreen.enableAnimation(false);
+			playScreen.showInfoText("Game Over!", Color.RED);
 			game.saveScore();
 			getTheme().music_playing().stop();
 			getTheme().music_gameover().loop();
@@ -495,7 +499,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 		@Override
 		public void onExit() {
-			playView.hideInfoText();
+			playScreen.hideInfoText();
 			getTheme().music_gameover().stop();
 		}
 	}
