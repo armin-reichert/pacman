@@ -4,13 +4,11 @@ import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.PacManGame.TS;
 
-import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.ActorNavigation;
@@ -23,8 +21,7 @@ public class InkyChaseTestController implements ViewController {
 	private final PlayViewX view;
 
 	public InkyChaseTestController() {
-		Maze maze = new Maze(Assets.text("maze.txt"));
-		game = new PacManGame(maze);
+		game = new PacManGame();
 		view = new PlayViewX(game);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);

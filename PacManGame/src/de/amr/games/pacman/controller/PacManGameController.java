@@ -14,7 +14,6 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.logging.Level;
 
-import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.Controller;
@@ -35,7 +34,6 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.intro.IntroView;
@@ -56,7 +54,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 	public PacManGameController() {
 		super(GameState.class);
-		game = new PacManGame(new Maze(Assets.text("maze.txt")));
+		game = new PacManGame();
 		game.getPacMan().getEventManager().addListener(this::process);
 		ghostAttackTimer = new GhostAttackTimer(this);
 		buildStateMachine();

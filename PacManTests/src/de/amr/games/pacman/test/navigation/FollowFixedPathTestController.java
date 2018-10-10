@@ -3,13 +3,11 @@ package de.amr.games.pacman.test.navigation;
 import java.util.Arrays;
 import java.util.List;
 
-import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayViewX;
@@ -24,13 +22,13 @@ public class FollowFixedPathTestController implements ViewController {
 	private int targetIndex;
 
 	public FollowFixedPathTestController() {
-		Maze maze = new Maze(Assets.text("maze.txt"));
-		game = new PacManGame(maze);
+		game = new PacManGame();
 		pacMan = game.getPacMan();
 		blinky = game.getBlinky();
-		targets = Arrays.asList(maze.getBottomRightCorner(), maze.getBottomLeftCorner(),
-				maze.getLeftTunnelEntry(), maze.getTopLeftCorner(), maze.getBlinkyHome(), maze.getTopRightCorner(),
-				maze.getRightTunnelEntry(), maze.getPacManHome());
+		targets = Arrays.asList(game.getMaze().getBottomRightCorner(), game.getMaze().getBottomLeftCorner(),
+				game.getMaze().getLeftTunnelEntry(), game.getMaze().getTopLeftCorner(),
+				game.getMaze().getBlinkyHome(), game.getMaze().getTopRightCorner(),
+				game.getMaze().getRightTunnelEntry(), game.getMaze().getPacManHome());
 		view = new PlayViewX(game);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);

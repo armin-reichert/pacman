@@ -1,14 +1,12 @@
 package de.amr.games.pacman.test.navigation;
 
 import de.amr.easy.game.Application;
-import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.input.Mouse;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayViewX;
@@ -22,8 +20,7 @@ public class FollowMouseTestController implements ViewController {
 	private Tile mouseTile;
 
 	public FollowMouseTestController() {
-		Maze maze = new Maze(Assets.text("maze.txt"));
-		game = new PacManGame(maze);
+		game = new PacManGame();
 		pacMan = game.getPacMan();
 		blinky = game.getBlinky();
 		view = new PlayViewX(game);

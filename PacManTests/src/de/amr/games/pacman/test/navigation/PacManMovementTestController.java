@@ -1,11 +1,9 @@
 package de.amr.games.pacman.test.navigation;
 
 import de.amr.easy.game.Application;
-import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.play.PlayViewX;
@@ -16,8 +14,7 @@ public class PacManMovementTestController implements ViewController {
 	private final PlayViewX view;
 
 	public PacManMovementTestController() {
-		Maze maze = new Maze(Assets.text("maze.txt"));
-		game = new PacManGame(maze);
+		game = new PacManGame();
 		view = new PlayViewX(game);
 		view.setShowRoutes(true);
 		view.setShowGrid(true);
