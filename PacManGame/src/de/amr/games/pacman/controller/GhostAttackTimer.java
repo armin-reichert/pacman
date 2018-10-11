@@ -2,9 +2,12 @@ package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
+import static de.amr.games.pacman.controller.GhostAttackTimer.GhostAttackState.CHASING;
+import static de.amr.games.pacman.controller.GhostAttackTimer.GhostAttackState.SCATTERING;
 
 import de.amr.easy.game.view.Controller;
 import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.controller.GhostAttackTimer.GhostAttackState;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.statemachine.StateMachine;
@@ -18,86 +21,92 @@ import de.amr.statemachine.StateMachine;
  * @see <a href=
  *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=3">Gamasutra</a>
  */
-public class GhostAttackTimer extends StateMachine<String, Void> implements Controller {
+public class GhostAttackTimer extends StateMachine<GhostAttackState, Void> implements Controller {
+
+	public enum GhostAttackState {
+		SCATTERING, CHASING
+	}
 
 	private final PacManGameController gameControl;
+	private int wave;
 
 	public GhostAttackTimer(PacManGameController gameControl) {
-		super(String.class);
+		super(GhostAttackState.class);
 		this.gameControl = gameControl;
-		gameControl.getGame().getGhosts().forEach(ghost -> ghost.fnNextAttackState = this::getGhostAttackState);
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("[GhostAttackTimer]")
-			.initialState("init")
+			.initialState(SCATTERING)
 		.states()
-			.state("init")
-			.state("s0").timeoutAfter(() -> getScatterTicks(0))
-			.state("c0").timeoutAfter(() -> getChaseTicks(0))
-			.state("s1").timeoutAfter(() -> getScatterTicks(1))
-			.state("c1").timeoutAfter(() -> getChaseTicks(1))
-			.state("s2").timeoutAfter(() -> getScatterTicks(2))
-			.state("c2").timeoutAfter(() -> getChaseTicks(2))
-			.state("s3").timeoutAfter(() -> getScatterTicks(3))
-			.state("c3").timeoutAfter(() -> getChaseTicks(3))
+			.state(SCATTERING).timeoutAfter(() -> getScatteringTicks())
+			.state(CHASING).timeoutAfter(() -> getChasingTicks())
 		.transitions()
-			.when("init").then("s0").act(this::fireStartScattering)
-			.when("s0").then("c0").onTimeout().act(this::fireStartChasing)
-			.when("c0").then("s1").onTimeout().act(this::fireStartScattering)
-			.when("s1").then("c1").onTimeout().act(this::fireStartChasing)
-			.when("c1").then("s2").onTimeout().act(this::fireStartScattering)
-			.when("s2").then("c2").onTimeout().act(this::fireStartChasing)
-			.when("c2").then("s3").onTimeout().act(this::fireStartScattering)
-			.when("s3").then("c3").onTimeout().act(this::fireStartChasing)
+			.when(SCATTERING).then(CHASING)
+				.onTimeout()
+				.act(this::startChasing)
+			.when(CHASING).then(SCATTERING)
+				.onTimeout()
+				.act(() -> { wave += 1; startScattering(); })
 		.endStateMachine();
 		/*@formatter:on*/
 		traceTo(LOGGER, app().clock::getFrequency);
 	}
 
-	private void fireStartChasing() {
+	@Override
+	public void init() {
+		super.init();
+		wave = 0;
+		startScattering();
+	}
+
+	private int sec(float seconds) {
+		return app().clock.sec(seconds);
+	}
+
+	private void startChasing() {
+		LOGGER.info("Start chasing, wave " + wave);
 		gameControl.enqueue(new StartChasingEvent());
 	}
 
-	private void fireStartScattering() {
+	private void startScattering() {
+		LOGGER.info("Start scattering, wave " + wave);
 		gameControl.enqueue(new StartScatteringEvent());
 	}
 
-	private GhostState getGhostAttackState() {
-		if (getState() == null || getState().equals(getInitialState())) {
-			return GhostState.SCATTERING; // default
-		}
-		if (getState().startsWith("s")) {
+	public GhostState getGhostAttackState() {
+		switch (getState()) {
+		case SCATTERING:
 			return GhostState.SCATTERING;
-		}
-		if (getState().startsWith("c")) {
+		case CHASING:
 			return GhostState.CHASING;
+		default:
+			throw new IllegalStateException();
 		}
-		throw new IllegalStateException();
 	}
 
-	private int getScatterTicks(int wave) {
+	private int getScatteringTicks() {
 		int level = gameControl.getGame().getLevel();
 		if (level == 1) {
-			return app().clock.sec(wave <= 1 ? 7 : 5);
+			return sec(wave <= 1 ? 7 : 5);
 		}
 		// levels 2-4
 		if (2 <= level && level <= 4) {
-			return wave <= 1 ? app().clock.sec(7) : wave == 2 ? app().clock.sec(5) : 1;
+			return wave <= 1 ? sec(7) : wave == 2 ? sec(5) : 1;
 		}
 		// levels 5+
-		return wave <= 2 ? app().clock.sec(5) : 1;
+		return wave <= 2 ? sec(5) : 1;
 	}
 
-	private int getChaseTicks(int wave) {
+	private int getChasingTicks() {
 		int level = gameControl.getGame().getLevel();
 		if (level == 1) {
-			return wave <= 2 ? app().clock.sec(20) : Integer.MAX_VALUE;
+			return wave <= 2 ? sec(20) : Integer.MAX_VALUE;
 		}
 		// levels 2-4
 		if (2 <= level && level <= 4) {
-			return wave <= 1 ? app().clock.sec(20) : wave == 2 ? app().clock.sec(1033) : Integer.MAX_VALUE;
+			return wave <= 1 ? sec(20) : wave == 2 ? sec(1033) : Integer.MAX_VALUE;
 		}
 		// levels 5+
-		return wave <= 1 ? app().clock.sec(20) : wave == 2 ? app().clock.sec(1037) : Integer.MAX_VALUE;
+		return wave <= 1 ? sec(20) : wave == 2 ? sec(1037) : Integer.MAX_VALUE;
 	}
 }
