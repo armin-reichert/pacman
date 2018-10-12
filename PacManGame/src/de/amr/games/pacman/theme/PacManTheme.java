@@ -64,6 +64,8 @@ public interface PacManTheme {
 	Sound snd_ready();
 
 	Sound snd_siren();
+	
+	Sound snd_ghost_dead();
 
 	Sound snd_waza();
 

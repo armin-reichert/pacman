@@ -234,10 +234,19 @@ public class Ghost extends PacManGameActor implements ActorNavigationSystem<Ghos
 					})
 				
 				.state(DEAD)
-					.onEntry(() -> getMoveBehavior().computePath(this))
+					.onEntry(() -> {
+						getMoveBehavior().computePath(this);
+						getTheme().snd_ghost_dead().loop();
+					})
 					.onTick(() -> {	
 						move();
 						sprites.select("s_eyes_" + getCurrentDir());
+					})
+					.onExit(() -> {
+						if (game.getActiveGhosts().filter(ghost -> ghost != this)
+								.noneMatch(ghost -> ghost.getState() == DEAD)) {
+							getTheme().snd_ghost_dead().stop();
+						}
 					})
 					
 			.transitions()
