@@ -24,7 +24,6 @@ import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.ActorNavigation;
@@ -40,15 +39,13 @@ import de.amr.statemachine.StateMachine;
  */
 public class PacMan extends PacManGameActor implements ActorNavigationSystem<PacMan> {
 
-	private final PacManGame game;
 	private final StateMachine<PacManState, GameEvent> fsm;
 	private final Map<PacManState, ActorNavigation<PacMan>> navigationMap;
 	private final EventManager<GameEvent> eventManager;
 	private PacManWorld world;
-	private int digestionTicks;
 
 	public PacMan(PacManGame game) {
-		this.game = game;
+		super(game);
 		fsm = buildStateMachine();
 		fsm.traceTo(LOGGER, app().clock::getFrequency);
 		navigationMap = new EnumMap<>(PacManState.class);
@@ -57,7 +54,6 @@ public class PacMan extends PacManGameActor implements ActorNavigationSystem<Pac
 	}
 
 	public void initPacMan() {
-		digestionTicks = 0;
 		placeAtTile(getHomeTile(), getTileSize() / 2, 0);
 		setNextDir(Top4.E);
 		sprites.forEach(Sprite::resetAnimation);
@@ -74,18 +70,13 @@ public class PacMan extends PacManGameActor implements ActorNavigationSystem<Pac
 		return eventManager;
 	}
 
-	@Override
-	public Maze getMaze() {
-		return game.getMaze();
-	}
-
 	public Tile getHomeTile() {
 		return getMaze().getPacManHome();
 	}
 
 	@Override
 	public float getSpeed() {
-		return game.getPacManSpeed(getState());
+		return getGame().getPacManSpeed(getState());
 	}
 
 	public PacManTheme getTheme() {
@@ -180,7 +171,7 @@ public class PacMan extends PacManGameActor implements ActorNavigationSystem<Pac
 					
 				.state(GREEDY)
 					.impl(new GreedyState())
-					.timeoutAfter(game::getPacManGreedyTime)
+					.timeoutAfter(getGame()::getPacManGreedyTime)
 	
 				.state(DYING)
 					.onEntry(() -> sprites.select("s_dying"))
@@ -212,6 +203,13 @@ public class PacMan extends PacManGameActor implements ActorNavigationSystem<Pac
 	}
 
 	private class HungryState extends State<PacManState, GameEvent> {
+
+		private int digestionTicks;
+
+		@Override
+		public void onEntry() {
+			digestionTicks = 0;
+		}
 
 		@Override
 		public void onTick() {
@@ -263,7 +261,7 @@ public class PacMan extends PacManGameActor implements ActorNavigationSystem<Pac
 
 			if (getMaze().isFood(tile)) {
 				boolean energizer = getMaze().isEnergizer(tile);
-				digestionTicks = game.getDigestionTicks(energizer);
+				digestionTicks = getGame().getDigestionTicks(energizer);
 				getEventManager().publish(new FoodFoundEvent(tile, energizer));
 			}
 		}
@@ -284,7 +282,7 @@ public class PacMan extends PacManGameActor implements ActorNavigationSystem<Pac
 		@Override
 		public void onTick() {
 			super.onTick();
-			if (getTicksRemaining() == game.getPacManGettingWeakerRemainingTime()) {
+			if (getTicksRemaining() == getGame().getPacManGettingWeakerRemainingTime()) {
 				getEventManager().publish(new PacManGettingWeakerEvent());
 			}
 		}

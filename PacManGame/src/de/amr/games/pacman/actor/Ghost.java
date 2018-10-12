@@ -24,7 +24,6 @@ import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.ActorNavigation;
@@ -41,7 +40,6 @@ import de.amr.statemachine.StateMachine;
  */
 public class Ghost extends PacManGameActor implements ActorNavigationSystem<Ghost> {
 
-	private final PacManGame game;
 	private final String name;
 	private final StateMachine<GhostState, GameEvent> fsm;
 	private final Map<GhostState, ActorNavigation<Ghost>> navigationMap;
@@ -54,7 +52,7 @@ public class Ghost extends PacManGameActor implements ActorNavigationSystem<Ghos
 
 	public Ghost(String name, PacMan pacMan, PacManGame game, Tile home, Tile scatteringTarget, int initialDir,
 			GhostColor color) {
-		this.game = game;
+		super(game);
 		this.name = name;
 		this.pacMan = pacMan;
 		this.home = home;
@@ -81,11 +79,6 @@ public class Ghost extends PacManGameActor implements ActorNavigationSystem<Ghos
 		return name;
 	}
 
-	@Override
-	public Maze getMaze() {
-		return game.getMaze();
-	}
-
 	public Tile getHomeTile() {
 		return home;
 	}
@@ -101,7 +94,7 @@ public class Ghost extends PacManGameActor implements ActorNavigationSystem<Ghos
 
 	@Override
 	public float getSpeed() {
-		return game.getGhostSpeed(getState(), getTile());
+		return getGame().getGhostSpeed(getState(), getTile());
 	}
 
 	public PacManTheme getTheme() {
@@ -227,10 +220,10 @@ public class Ghost extends PacManGameActor implements ActorNavigationSystem<Ghos
 					.onTick(this::move)
 				
 				.state(DYING)
-					.timeoutAfter(game::getGhostDyingTime)
+					.timeoutAfter(getGame()::getGhostDyingTime)
 					.onEntry(() -> {
-						sprites.select("s_value" + game.getGhostsKilledByEnergizer()); 
-						game.addGhostKilled();
+						sprites.select("s_value" + getGame().getGhostsKilledByEnergizer()); 
+						getGame().addGhostKilled();
 					})
 				
 				.state(DEAD)
@@ -243,7 +236,7 @@ public class Ghost extends PacManGameActor implements ActorNavigationSystem<Ghos
 						sprites.select("s_eyes_" + getCurrentDir());
 					})
 					.onExit(() -> {
-						if (game.getActiveGhosts().filter(ghost -> ghost != this)
+						if (getGame().getActiveGhosts().filter(ghost -> ghost != this)
 								.noneMatch(ghost -> ghost.getState() == DEAD)) {
 							getTheme().snd_ghost_dead().stop();
 						}

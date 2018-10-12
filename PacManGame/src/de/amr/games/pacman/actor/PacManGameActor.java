@@ -18,26 +18,52 @@ import de.amr.games.pacman.model.Tile;
  */
 public abstract class PacManGameActor extends SpriteEntity implements TilePlacedEntity {
 
-	/** The current move direction. */
+	private final PacManGame game;
+
+	/** Current move direction. See {@link Top4} for direction values. */
 	private int currentDir;
 
 	/** The indended move direction, actor turns to this direction as soon as possible. */
 	private int nextDir;
 
-	public PacManGameActor() {
+	protected PacManGameActor(PacManGame game) {
+		this.game = game;
 		currentDir = nextDir = Top4.E;
-		// set collision box size
+		// collision box size:
 		tf.setWidth(getTileSize());
 		tf.setHeight(getTileSize());
 	}
 
-	public abstract Maze getMaze();
-
+	/**
+	 * Tells if this actor can traverse the door at the given tile position.
+	 * 
+	 * @param door
+	 *               tile with door
+	 * @return {@code true} if actor can traverse door in its current state
+	 */
 	public abstract boolean canTraverseDoor(Tile door);
 
+	/**
+	 * Supplies the intended move direction which will be taken as soon as possible.
+	 * 
+	 * @return intended direction
+	 */
 	public abstract int supplyIntendedDir();
 
+	/**
+	 * Returns the current move speed in pixels per tick.
+	 * 
+	 * @return move speed (pixels per tick)
+	 */
 	public abstract float getSpeed();
+
+	public PacManGame getGame() {
+		return game;
+	}
+
+	public Maze getMaze() {
+		return game.getMaze();
+	}
 
 	public int getCurrentDir() {
 		return currentDir;
@@ -97,21 +123,21 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 		if (inTeleportSpace()) {
 			return false;
 		}
-		return possibleMovement(getCurrentDir()).length() == 0;
+		return possibleMove(getCurrentDir()).length() == 0;
 	}
 
 	/*
-	 * Computes how far this actor can move towards the given direction. 
+	 * Computes how far this actor can move towards the given direction.
 	 */
-	private Vector2f possibleMovement(int dir) {
+	private Vector2f possibleMove(int dir) {
 		final Tile currentTile = getTile();
 		final Tile neighborTile = currentTile.tileTowards(dir);
-		final Vector2f fullVelocity = Vector2f.smul(getSpeed(), Vector2f.of(NESW.dx(dir), NESW.dy(dir))); 
+		final Vector2f fullMove = Vector2f.smul(getSpeed(), Vector2f.of(NESW.dx(dir), NESW.dy(dir)));
 		if (inTeleportSpace()) {
-			return dir == Top4.E || dir == Top4.W ? fullVelocity : Vector2f.NULL;
+			return dir == Top4.E || dir == Top4.W ? fullMove : Vector2f.NULL;
 		}
 		if (canEnterTile(neighborTile)) {
-			return fullVelocity;
+			return fullMove;
 		}
 		switch (dir) {
 		case Top4.E:
@@ -131,25 +157,26 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 	}
 
 	public void move() {
-		// can we change the move direction?
-		if (possibleMovement(nextDir).length() > 0) {
+		// can we turn towards the intended direction?
+		if (possibleMove(nextDir).length() > 0) {
 			if (isTurn(currentDir, nextDir)) {
 				alignOverTile();
 			}
 			setCurrentDir(nextDir);
 		}
-		// move towards the current direction
-		Vector2f possibleMovement = possibleMovement(currentDir);
-		if (possibleMovement.length() > 0) {
-			tf.setVelocity(possibleMovement);
+		// move towards the current direction as far as possible
+		Vector2f possibleMove = possibleMove(currentDir);
+		if (possibleMove.length() > 0) {
+			tf.setVelocity(possibleMove);
 			tf.move();
-			// check exit from teleport space
+			// check for exit from teleport space
 			if (tf.getX() + tf.getWidth() < 0) {
 				tf.setX(getMaze().numCols() * getTileSize());
 			} else if (tf.getX() > (getMaze().numCols()) * getTileSize()) {
 				tf.setX(-tf.getWidth());
 			}
 		}
+		// query intended direction
 		int dir = supplyIntendedDir();
 		if (dir != -1) {
 			setNextDir(dir);
@@ -159,7 +186,7 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 	/**
 	 * @param n
 	 *            number of tiles
-	 * @return the tile which lies <code>n</code> tiles ahead of the mover wrt its current move
+	 * @return the tile located <code>n</code> tiles ahead of the actor towards its current move
 	 *         direction. If this position is outside the maze, returns the tile <code>(n-1)</code>
 	 *         tiles ahead etc.
 	 */
