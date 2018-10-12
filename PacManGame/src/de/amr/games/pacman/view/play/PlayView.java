@@ -187,7 +187,7 @@ public class PlayView implements View, Controller, PacManWorld {
 		}
 		int mazeWidth = mazeView.sprites.current().getWidth();
 		Graphics2D g2 = (Graphics2D) g.create();
-		g2.setFont(getTheme().fnt_text());
+		g2.setFont(getTheme().fnt_text(14));
 		g2.setColor(infoTextColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(infoText, g2).getBounds();
 		g2.translate((mazeWidth - box.width) / 2, (game.getMaze().getBonusTile().row + 1) * TS);
