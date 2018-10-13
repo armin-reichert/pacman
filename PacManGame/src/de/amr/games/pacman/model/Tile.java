@@ -42,8 +42,8 @@ public class Tile {
 	 *              some direction
 	 * @param n
 	 *              number of tiles
-	 * @return tile that lies <code>n</code> tiles away from the given tile towards the given
-	 *         direction. This can be an invalid tile position.
+	 * @return tile that lies <code>n</code> tiles away from the given tile towards the given direction.
+	 *         This can be an invalid tile position.
 	 */
 	public Tile tileTowards(int dir, int n) {
 		if (n < 0) {

@@ -7,7 +7,6 @@ import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import de.amr.easy.game.assets.Assets;
 import de.amr.easy.grid.ui.swing.rendering.ConfigurableGridRenderer;
 import de.amr.easy.grid.ui.swing.rendering.GridCanvas;
 import de.amr.easy.grid.ui.swing.rendering.GridRenderer;
@@ -26,7 +25,7 @@ public class BoardPreview extends JFrame {
 	private Maze maze;
 
 	public BoardPreview() {
-		maze = new Maze(Assets.text("maze.txt"));
+		maze = new Maze();
 		setTitle("Pac-Man Maze Preview");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		GridCanvas canvas = new GridCanvas(maze.getGraph(), TS);

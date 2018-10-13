@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.Application;
+import de.amr.easy.game.assets.Assets;
 import de.amr.easy.graph.api.GraphTraversal;
 import de.amr.easy.graph.api.UndirectedEdge;
 import de.amr.easy.graph.impl.traversal.BreadthFirstTraversal;
@@ -37,21 +38,9 @@ public class Maze {
 	private static final char DOOR = 'D';
 	private static final char TUNNEL = 'T';
 	private static final char SPACE = ' ';
-
 	private static final char PELLET = '.';
 	private static final char ENERGIZER = '*';
 	private static final char EATEN = ':';
-
-	private static final char BONUS = '$';
-	private static final char PACMAN_HOME = 'O';
-	private static final char BLINKY_HOME = 'B';
-	private static final char BLINKY_ST = 'b';
-	private static final char INKY_HOME = 'I';
-	private static final char INKY_ST = 'i';
-	private static final char PINKY_HOME = 'P';
-	private static final char PINKY_ST = 'p';
-	private static final char CLYDE_HOME = 'C';
-	private static final char CLYDE_ST = 'c';
 
 	private final String[] map;
 	private final GridGraph<Character, Void> graph;
@@ -72,32 +61,32 @@ public class Maze {
 
 	private long pathFinderCalls;
 
-	public Maze(String mapText) {
-		map = mapText.split("\n");
+	public Maze() {
+		map = Assets.text("maze.txt").split("\n");
 		int numCols = map[0].length(), numRows = map.length;
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
 				char c = map(row, col);
 				Tile tile = new Tile(col, row);
-				if (c == BLINKY_HOME) {
+				if (c == 'B') {
 					blinkyHome = tile;
-				} else if (c == PINKY_HOME) {
+				} else if (c == 'P') {
 					pinkyHome = tile;
-				} else if (c == INKY_HOME) {
+				} else if (c == 'I') {
 					inkyHome = tile;
-				} else if (c == CLYDE_HOME) {
+				} else if (c == 'C') {
 					clydeHome = tile;
-				} else if (c == BONUS) {
+				} else if (c == '$') {
 					bonusTile = tile;
-				} else if (c == PACMAN_HOME) {
+				} else if (c == 'O') {
 					pacManHome = tile;
-				} else if (c == BLINKY_ST) {
+				} else if (c == 'b') {
 					blinkyScatteringTarget = tile;
-				} else if (c == PINKY_ST) {
+				} else if (c == 'p') {
 					pinkyScatteringTarget = tile;
-				} else if (c == INKY_ST) {
+				} else if (c == 'i') {
 					inkyScatteringTarget = tile;
-				} else if (c == CLYDE_ST) {
+				} else if (c == 'c') {
 					clydeScatteringTarget = tile;
 				} else if (c == TUNNEL) {
 					tunnelRow = row;

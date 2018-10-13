@@ -36,7 +36,7 @@ public class ChaseGhostsAnimation extends Entity implements View, AnimationContr
 		tf.setWidth(5 * 18);
 		tf.setHeight(18);
 	}
-	
+
 	private PacManTheme getTheme() {
 		return Application.app().settings.get("theme");
 	}

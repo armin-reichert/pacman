@@ -42,13 +42,13 @@ public interface PacManTheme {
 	}
 
 	// Background music
-	
+
 	Sound music_playing();
-	
+
 	Sound music_gameover();
-	
+
 	// Clips
-	
+
 	Sound snd_die();
 
 	Sound snd_eatFruit();
@@ -64,11 +64,11 @@ public interface PacManTheme {
 	Sound snd_ready();
 
 	Sound snd_siren();
-	
+
 	Sound snd_ghost_dead();
 
 	Sound snd_waza();
 
 	Stream<Sound> snd_clips_all();
-	
+
 }

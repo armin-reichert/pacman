@@ -20,7 +20,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.assets.Assets;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
@@ -72,7 +71,7 @@ public class PacManGame {
 	private final List<BonusSymbol> levelCounter = new LinkedList<>();
 
 	public PacManGame() {
-		maze = new Maze(Assets.text("maze.txt"));
+		maze = new Maze();
 		score = new Score(this);
 
 		// Pac-Man

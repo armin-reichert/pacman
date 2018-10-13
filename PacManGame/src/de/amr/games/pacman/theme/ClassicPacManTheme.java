@@ -286,7 +286,7 @@ public class ClassicPacManTheme implements PacManTheme {
 	public Sound snd_ready() {
 		return sound("ready");
 	}
-	
+
 	@Override
 	public Sound snd_ghost_dead() {
 		return sound("ghost_dead", "wav");
