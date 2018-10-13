@@ -99,8 +99,8 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorNavigat
 
 		// decide where to go if the next tile is an intersection
 		Tile nextTile = moverTile.tileTowards(moverDir);
-		boolean free = maze.isFreeIntersection(nextTile);
-		boolean notUp = maze.isNotUpIntersection(nextTile);
+		boolean free = maze.isUnrestrictedIntersection(nextTile);
+		boolean notUp = maze.isUpwardsBlockedIntersection(nextTile);
 		if (free || notUp) {
 			Stream<Integer> choices = Stream.of(moverDir, NESW.left(moverDir), NESW.right(moverDir))
 					.filter(dir -> free || dir != Top4.N);

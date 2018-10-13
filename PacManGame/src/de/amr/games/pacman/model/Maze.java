@@ -24,7 +24,8 @@ import de.amr.easy.grid.impl.Top4;
  * 
  * <p>
  * It is represented by a (grid) graph which may store content and can be used by path finding
- * algorithms.
+ * algorithms. The original Pac-Man "AI" does not need a graph structure but we use also path
+ * finding in a graph for the game.
  * 
  * @author Armin Reichert
  * 
@@ -32,6 +33,7 @@ import de.amr.easy.grid.impl.Top4;
  */
 public class Maze {
 
+	/** The four move directions: NORTH, EAST, SOUTH and WEST. */
 	public static final Topology NESW = new Top4();
 
 	private static final char WALL = '#';
@@ -56,8 +58,8 @@ public class Maze {
 	private Tile bonusTile;
 	private int tunnelRow;
 	private int foodTotal;
-	private Set<Tile> freeIntersections = new HashSet<>();
-	private Set<Tile> notUpIntersections = new HashSet<>();
+	private Set<Tile> unrestrictedIS = new HashSet<>();
+	private Set<Tile> upwardsBlockedIS = new HashSet<>();
 
 	private long pathFinderCalls;
 
@@ -111,30 +113,34 @@ public class Maze {
 			}
 		}
 
+		// The graph represents the maze and stores the maze content inside its vertices.
 		graph = new GridGraph<>(numCols, numRows, NESW, v -> null, (u, v) -> null, UndirectedEdge::new);
 		graph.setDefaultVertexLabel(v -> map(graph.row(v), graph.col(v)));
+		
+		// Add graph edges
 		graph.fill();
-		// remove all edges from/to walls
+		// remove edges into walls
 		graph.edges().filter(edge -> graph.get(edge.either()) == WALL || graph.get(edge.other()) == WALL)
 				.forEach(graph::removeEdge);
-		// identify intersections (free intersections vs. intersections where ghosts cannot move up)
+
+		// separate intersections (unrestricted vs. intersections where ghost cannot move upwards)
 		graph.vertices()
 		//@formatter:off
-			.filter(cell -> graph.degree(cell) >= 3)
-			.filter(cell -> graph.get(cell) != DOOR)
-			.filter(cell -> !inGhostHouse(tile(cell)))
-			.filter(cell -> !tile(cell).equals(blinkyHome))
-			.filter(cell -> !tile(cell).equals(new Tile(blinkyHome.col + 1, blinkyHome.row)))
-			//@formatter:on
+				.filter(cell -> graph.degree(cell) >= 3)
+				.filter(cell -> graph.get(cell) != DOOR)
+				.filter(cell -> !inGhostHouse(tile(cell)))
+				.filter(cell -> !tile(cell).equals(blinkyHome))
+				.filter(cell -> !tile(cell).equals(new Tile(blinkyHome.col + 1, blinkyHome.row)))
+		//@formatter:on
 				.forEach(cell -> {
 					Tile tile = tile(cell);
 					if (blinkyHome.equals(new Tile(tile.col + 1, tile.row))
 							|| blinkyHome.equals(new Tile(tile.col - 2, tile.row))
 							|| pacManHome.equals(new Tile(tile.col + 1, tile.row))
 							|| pacManHome.equals(new Tile(tile.col - 2, tile.row))) {
-						notUpIntersections.add(tile);
+						upwardsBlockedIS.add(tile);
 					} else {
-						freeIntersections.add(tile);
+						unrestrictedIS.add(tile);
 					}
 				});
 	}
@@ -236,7 +242,7 @@ public class Maze {
 			return SPACE;
 		}
 		if (!isValidTile(tile)) {
-			throw new IllegalArgumentException("Cannot access maze content for invalid tile: " + tile);
+			throw new IllegalArgumentException("Cannot access maze content, invalid tile: " + tile);
 		}
 		return graph.get(cell(tile));
 	}
@@ -261,12 +267,12 @@ public class Maze {
 		return isValidTile(tile) && isDoor(neighborTile(tile, Top4.S).get());
 	}
 
-	public boolean isFreeIntersection(Tile tile) {
-		return freeIntersections.contains(tile);
+	public boolean isUnrestrictedIntersection(Tile tile) {
+		return unrestrictedIS.contains(tile);
 	}
 
-	public boolean isNotUpIntersection(Tile tile) {
-		return notUpIntersections.contains(tile);
+	public boolean isUpwardsBlockedIntersection(Tile tile) {
+		return upwardsBlockedIS.contains(tile);
 	}
 
 	public boolean inGhostHouse(Tile tile) {
