@@ -66,32 +66,47 @@ public class Maze {
 		int numCols = map[0].length(), numRows = map.length;
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				char c = map(row, col);
 				Tile tile = new Tile(col, row);
-				if (c == 'B') {
-					blinkyHome = tile;
-				} else if (c == 'P') {
-					pinkyHome = tile;
-				} else if (c == 'I') {
-					inkyHome = tile;
-				} else if (c == 'C') {
-					clydeHome = tile;
-				} else if (c == '$') {
-					bonusTile = tile;
-				} else if (c == 'O') {
+				switch (map(row, col)) {
+				case 'O':
 					pacManHome = tile;
-				} else if (c == 'b') {
+					break;
+				case 'B':
+					blinkyHome = tile;
+					break;
+				case 'P':
+					pinkyHome = tile;
+					break;
+				case 'I':
+					inkyHome = tile;
+					break;
+				case 'C':
+					clydeHome = tile;
+					break;
+				case 'b':
 					blinkyScatteringTarget = tile;
-				} else if (c == 'p') {
+					break;
+				case 'p':
 					pinkyScatteringTarget = tile;
-				} else if (c == 'i') {
+					break;
+				case 'i':
 					inkyScatteringTarget = tile;
-				} else if (c == 'c') {
+					break;
+				case 'c':
 					clydeScatteringTarget = tile;
-				} else if (c == TUNNEL) {
+					break;
+				case '$':
+					bonusTile = tile;
+					break;
+				case TUNNEL:
 					tunnelRow = row;
-				} else if (c == PELLET || c == ENERGIZER) {
+					break;
+				case PELLET:
+				case ENERGIZER:
 					foodTotal += 1;
+					break;
+				default:
+					break;
 				}
 			}
 		}
