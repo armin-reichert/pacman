@@ -128,7 +128,7 @@ state machine. Further, the individual states are implemented by subclasses of t
 has the advantage that actions which are state-specific can be realized as methods of the subclass.
 
 ```java
-.beginStateMachine()
+beginStateMachine()
 	
 	.description("[Game]")
 	.initialState(INTRO)
@@ -137,8 +137,8 @@ has the advantage that actions which are state-specific can be realized as metho
 		
 		.state(INTRO)
 			.onEntry(() -> {
-				setCurrentView(getIntroView());
-				THEME.snd_insertCoin().play();
+				setScreen(getIntroScreen());
+				getTheme().snd_insertCoin().play();
 			})
 		
 		.state(READY)
@@ -160,12 +160,13 @@ has the advantage that actions which are state-specific can be realized as metho
 		
 		.state(GAME_OVER)
 			.impl(new GameOverState())
+			.timeoutAfter(() -> app().clock.sec(60))
 
 	.transitions()
 	
 		.when(INTRO).then(READY)
-			.condition(() -> introView.isComplete())
-			.act(() -> setCurrentView(getPlayView()))
+			.condition(() -> introScreen.isComplete())
+			.act(() -> setScreen(getPlayScreen()))
 		
 		.when(READY).then(PLAYING).onTimeout()
 			
@@ -233,6 +234,9 @@ has the advantage that actions which are state-specific can be realized as metho
 	
 		.when(GAME_OVER).then(READY)
 			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+			
+		.when(GAME_OVER).then(INTRO)
+			.onTimeout()
 					
 .endStateMachine();
 ```
@@ -258,7 +262,7 @@ Pac-Man's state machine is implemented as follows:
 			
 		.state(GREEDY)
 			.impl(new GreedyState())
-			.timeoutAfter(game::getPacManGreedyTime)
+			.timeoutAfter(getGame()::getPacManGreedyTime)
 
 		.state(DYING)
 			.onEntry(() -> sprites.select("s_dying"))
@@ -453,7 +457,7 @@ state there is a move behavior assigned that is used whenever the ghost is movin
 Pac-Man is controlled by the keyboard:
 
 ```java
-ActorNavigation<PacMan> followKeyboard = pacMan.followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
+ActorBehavior<PacMan> followKeyboard = pacMan.followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
 pacMan.setMoveBehavior(PacManState.HUNGRY, followKeyboard);
 pacMan.setMoveBehavior(PacManState.GREEDY, followKeyboard);
 ```
@@ -462,11 +466,10 @@ pacMan.setMoveBehavior(PacManState.GREEDY, followKeyboard);
 The ghosts behave identically in most of their states:
 
 ```java
-// common ghost behavior
 getGhosts().forEach(ghost -> {
 	ghost.setMoveBehavior(FRIGHTENED, ghost.flee(pacMan));
 	ghost.setMoveBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
-	ghost.setMoveBehavior(DEAD, ghost.headFor(ghost::getHome));
+	ghost.setMoveBehavior(DEAD, ghost.headFor(ghost::getHomeTile));
 	ghost.setMoveBehavior(SAFE, ghost.bounce());
 });
 ```
@@ -479,7 +482,7 @@ Having the common *headFor* behavior implemented, the implementation of the indi
 Blinky's chase behavior is to directly attack Pac-Man. This is just two lines of code:
 
 ```java
-default ActorNavigation<T> attackDirectly(Actor victim) {
+default ActorBehavior<T> attackDirectly(PacManGameActor victim) {
 	return headFor(victim::getTile);
 }
 ```
@@ -495,8 +498,8 @@ blinky.setMoveBehavior(CHASING, blinky.attackDirectly(pacMan));
 Pinky, the *ambusher*, targets the position 4 tiles ahead of Pac-Man (in the original game there is an overflow error that leads to a different behavior):
 
 ```java
-default ActorNavigation<T> ambush(Actor victim, int n) {
-	return headFor(() -> victim.ahead(n));
+default ActorBehavior<T> ambush(PacManGameActor victim, int numTilesAhead) {
+	return headFor(() -> victim.ahead(numTilesAhead));
 }
 ```
 
@@ -513,21 +516,21 @@ Inky's attack target is computed as follows:
 Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man, so `V = (P - B)`. Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-default ActorNavigation<T> attackWithPartner(Ghost partner, PacMan pacMan) {
+default ActorBehavior<T> attackWithPartnerGhost(Ghost partnerGhost, PacMan pacMan) {
 	return headFor(() -> {
-		Maze maze = partner.getMaze();
-		int w = maze.numCols() * TS;
-		int h = maze.numRows() * TS;
+		Maze maze = partnerGhost.getMaze();
+		int mazeWidth = maze.numCols() * TS;
+		int mazeHeight = maze.numRows() * TS;
 		Tile strut = pacMan.ahead(2);
-		Vector2f b = partner.tf.getCenter();
-		Vector2f p = Vector2f.of(strut.col * TS + TS / 2, strut.row * TS + TS / 2);
-		Vector2f s = computeExactInkyTarget(b, p, w, h);
+		Vector2f partnerPosition = partnerGhost.tf.getCenter();
+		Vector2f strutPosition = Vector2f.of(strut.col * TS + TS / 2, strut.row * TS + TS / 2);
+		Vector2f targetPosition = doubledArrowTargetPosition(partnerPosition, strutPosition, mazeWidth,
+				mazeHeight);
 		// ensure target tile is inside maze
-		int sx = s.x < w ? (int) s.x : w - 1;
-		int sy = s.y < h ? (int) s.y : h - 1;
-		return new Tile(sx / TS, sy / TS);
+		int x = targetPosition.x < mazeWidth ? (int) targetPosition.x : mazeWidth - 1;
+		int y = targetPosition.y < mazeHeight ? (int) targetPosition.y : mazeHeight - 1;
+		return new Tile(x / TS, y / TS);
 	});
-}
 ```
 
 ```java
@@ -538,13 +541,13 @@ inky.setMoveBehavior(CHASING, inky.attackWithPartner(blinky, pacMan));
 
 ### Clyde (the orange ghost)
 
-Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he goes into scattering mode:
+Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. 
+If closer, he goes into scattering mode:
 
 ```java
-default ActorNavigation<T> attackAndReject(Ghost attacker, PacMan pacMan, int distance) {
-	return headFor(() -> dist(attacker.tf.getCenter(), pacMan.tf.getCenter()) >= distance 
-		? pacMan.getTile()
-		: attacker.getScatteringTarget());
+default ActorBehavior<T> attackAndReject(Ghost attacker, PacMan pacMan, int distance) {
+	return headFor(() -> dist(attacker.tf.getCenter(), pacMan.tf.getCenter()) >= distance ? pacMan.getTile()
+			: attacker.getScatteringTarget());
 }
 ```
 
@@ -621,10 +624,10 @@ This work would not have been possible without these invaluable sources of infor
 The goal of this project is to implement a Pac-Man game in a way that also beginners 
 should be able to fully understand the game's inner workings. The implementation tries to achieve this by following the MVC pattern and by using explicit finite state machines for the control logic of the actors and the game. The state machines are defined in a declarative way using the builder pattern. The program code tries to be as clear as possible and use good naming all over the place.
 
-A simple home-grown library is used for the basic game infrastructure (active rendering, game loop, full-screen mode, keyboard and mouse handling etc.) but it is not too difficult to write these infrastructure parts from scratch or use some real game library instead. 
+A simple, home-grown library is used for the basic game infrastructure (active rendering, game loop, full-screen mode, keyboard and mouse handling etc.), but it is not too difficult to write these infrastructure parts from scratch or use some real game library instead. 
 
-It would also be useful to further decouple UI, model and controller to enable an easy replacement of the complete UI or to replace the state machine implementations by some predefined library like Squirrel etc.
+It would also be useful to further decouple UI, model and controller to enable an easy replacement of the complete UI or to replace the state machine implementations by some predefined library like Squirrel.
 
 Comments are welcome!
 
-*Armin Reichert, August 2018*
+*Armin Reichert, October 2018*
