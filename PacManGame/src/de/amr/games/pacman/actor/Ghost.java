@@ -205,8 +205,8 @@ public class Ghost extends PacManGameActor implements ActorBehaviors<Ghost> {
 					})
 			
 				.state(CHASING)
-					.onEntry(() -> getTheme().snd_siren().loop())
-					.onExit(() -> getTheme().snd_siren().stop())
+					.onEntry(() -> getTheme().snd_ghost_chase().loop())
+					.onExit(() -> getTheme().snd_ghost_chase().stop())
 					.onTick(() -> {	
 						move();	
 						sprites.select("s_color_" + getCurrentDir()); 
