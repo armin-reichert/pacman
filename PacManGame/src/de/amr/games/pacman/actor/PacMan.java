@@ -26,8 +26,8 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.navigation.ActorNavigation;
-import de.amr.games.pacman.navigation.ActorNavigationSystem;
+import de.amr.games.pacman.navigation.ActorBehavior;
+import de.amr.games.pacman.navigation.ActorBehaviors;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
@@ -37,10 +37,10 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends PacManGameActor implements ActorNavigationSystem<PacMan> {
+public class PacMan extends PacManGameActor implements ActorBehaviors<PacMan> {
 
 	private final StateMachine<PacManState, GameEvent> fsm;
-	private final Map<PacManState, ActorNavigation<PacMan>> navigationMap;
+	private final Map<PacManState, ActorBehavior<PacMan>> navigationMap;
 	private final EventManager<GameEvent> eventManager;
 	private PacManWorld world;
 
@@ -85,11 +85,11 @@ public class PacMan extends PacManGameActor implements ActorNavigationSystem<Pac
 
 	// Movement
 
-	public void setMoveBehavior(PacManState state, ActorNavigation<PacMan> navigation) {
+	public void setMoveBehavior(PacManState state, ActorBehavior<PacMan> navigation) {
 		navigationMap.put(state, navigation);
 	}
 
-	public ActorNavigation<PacMan> getMoveBehavior() {
+	public ActorBehavior<PacMan> getMoveBehavior() {
 		return navigationMap.getOrDefault(getState(), keepDirection());
 	}
 

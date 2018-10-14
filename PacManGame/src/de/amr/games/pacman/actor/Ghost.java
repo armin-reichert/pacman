@@ -26,8 +26,8 @@ import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.navigation.ActorNavigation;
-import de.amr.games.pacman.navigation.ActorNavigationSystem;
+import de.amr.games.pacman.navigation.ActorBehavior;
+import de.amr.games.pacman.navigation.ActorBehaviors;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.statemachine.State;
@@ -38,11 +38,11 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends PacManGameActor implements ActorNavigationSystem<Ghost> {
+public class Ghost extends PacManGameActor implements ActorBehaviors<Ghost> {
 
 	private final String name;
 	private final StateMachine<GhostState, GameEvent> fsm;
-	private final Map<GhostState, ActorNavigation<Ghost>> navigationMap;
+	private final Map<GhostState, ActorBehavior<Ghost>> navigationMap;
 	private final PacMan pacMan;
 	private final Tile home;
 	private final Tile scatteringTarget;
@@ -103,11 +103,11 @@ public class Ghost extends PacManGameActor implements ActorNavigationSystem<Ghos
 
 	// Movement
 
-	public void setMoveBehavior(GhostState state, ActorNavigation<Ghost> navigation) {
+	public void setMoveBehavior(GhostState state, ActorBehavior<Ghost> navigation) {
 		navigationMap.put(state, navigation);
 	}
 
-	public ActorNavigation<Ghost> getMoveBehavior() {
+	public ActorBehavior<Ghost> getMoveBehavior() {
 		return navigationMap.getOrDefault(getState(), keepDirection());
 	}
 

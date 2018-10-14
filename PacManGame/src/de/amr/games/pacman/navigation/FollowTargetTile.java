@@ -36,7 +36,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public class FollowTargetTile<T extends PacManGameActor> implements ActorNavigation<T> {
+public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavior<T> {
 
 	private final Supplier<Tile> targetTileSupplier;
 
@@ -45,15 +45,15 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorNavigat
 	}
 
 	@Override
-	public MazeRoute getRoute(T mover) {
+	public MazeRoute getRoute(T actor) {
 		final MazeRoute route = new MazeRoute();
-		final Maze maze = mover.getMaze();
-		final int moverDir = mover.getCurrentDir();
-		final Tile moverTile = mover.getTile();
+		final Maze maze = actor.getMaze();
+		final int actorDir = actor.getCurrentDir();
+		final Tile actorTile = actor.getTile();
 
-		// keep direction when in tunnel or teleport space
-		if (mover.inTeleportSpace() || mover.inTunnel()) {
-			route.setDir(moverDir);
+		// keep direction in teleport space and tunnel
+		if (actor.inTeleportSpace() || actor.inTunnel()) {
+			route.setDir(actorDir);
 			return route;
 		}
 
@@ -68,9 +68,9 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorNavigat
 		route.setTargetTile(targetTile);
 
 		// leave ghost house by following route to Blinky's home tile
-		if (mover.inGhostHouse()) {
-			Optional<Integer> choice = findBestDir(mover, moverTile, maze.getBlinkyHome(),
-					Stream.of(moverDir, NESW.left(moverDir), NESW.right(moverDir)));
+		if (actor.inGhostHouse()) {
+			Optional<Integer> choice = findBestDir(actor, actorTile, maze.getBlinkyHome(),
+					Stream.of(actorDir, NESW.left(actorDir), NESW.right(actorDir)));
 			if (choice.isPresent()) {
 				route.setDir(choice.get());
 			}
@@ -78,9 +78,9 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorNavigat
 		}
 
 		// if stuck, check if turning left or right is possible
-		if (mover.isStuck()) {
-			for (int turn : Arrays.asList(NESW.left(moverDir), NESW.right(moverDir))) {
-				if (mover.canEnterTile(maze.neighborTile(moverTile, turn).get())) {
+		if (actor.isStuck()) {
+			for (int turn : Arrays.asList(NESW.left(actorDir), NESW.right(actorDir))) {
+				if (actor.canEnterTile(maze.neighborTile(actorTile, turn).get())) {
 					route.setDir(turn);
 					return route;
 				}
@@ -88,9 +88,9 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorNavigat
 		}
 
 		// decide where to go at ghosthouse door
-		if (maze.isGhostHouseEntry(moverTile)) {
+		if (maze.isGhostHouseEntry(actorTile)) {
 			Stream<Integer> choices = Stream.of(Top4.W, Top4.S, Top4.E);
-			Optional<Integer> choice = findBestDir(mover, moverTile, targetTile, choices);
+			Optional<Integer> choice = findBestDir(actor, actorTile, targetTile, choices);
 			if (choice.isPresent()) {
 				route.setDir(choice.get());
 				return route;
@@ -98,13 +98,13 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorNavigat
 		}
 
 		// decide where to go if the next tile is an intersection
-		Tile nextTile = moverTile.tileTowards(moverDir);
+		Tile nextTile = actorTile.tileTowards(actorDir);
 		boolean free = maze.isUnrestrictedIntersection(nextTile);
 		boolean notUp = maze.isUpwardsBlockedIntersection(nextTile);
 		if (free || notUp) {
-			Stream<Integer> choices = Stream.of(moverDir, NESW.left(moverDir), NESW.right(moverDir))
+			Stream<Integer> choices = Stream.of(actorDir, NESW.left(actorDir), NESW.right(actorDir))
 					.filter(dir -> free || dir != Top4.N);
-			Optional<Integer> choice = findBestDir(mover, nextTile, targetTile, choices);
+			Optional<Integer> choice = findBestDir(actor, nextTile, targetTile, choices);
 			if (choice.isPresent()) {
 				route.setDir(choice.get());
 				return route;
@@ -116,13 +116,13 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorNavigat
 		return route;
 	}
 
-	private Optional<Integer> findBestDir(PacManGameActor mover, Tile from, Tile to, Stream<Integer> choices) {
-		final Maze maze = mover.getMaze();
+	private Optional<Integer> findBestDir(PacManGameActor actor, Tile from, Tile to, Stream<Integer> choices) {
+		final Maze maze = actor.getMaze();
 		/*@formatter:off*/
 		return choices
 			.map(dir -> maze.neighborTile(from, dir))
 			.filter(Optional::isPresent).map(Optional::get)
-			.filter(mover::canEnterTile)
+			.filter(actor::canEnterTile)
 			.sorted((t1, t2) -> Integer.compare(maze.euclidean2(t1, to), maze.euclidean2(t2, to)))
 			.map(tile -> maze.direction(from, tile))
 			.map(OptionalInt::getAsInt)

@@ -27,7 +27,7 @@ import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameActor;
 import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.model.Level.Property;
-import de.amr.games.pacman.navigation.ActorNavigation;
+import de.amr.games.pacman.navigation.ActorBehavior;
 import de.amr.games.pacman.theme.GhostColor;
 
 /**
@@ -95,7 +95,7 @@ public class PacManGame {
 		// Define the navigation behavior ("AI")
 
 		// Pac-Man is controlled by the keyboard
-		ActorNavigation<PacMan> followKeyboard = pacMan.followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
+		ActorBehavior<PacMan> followKeyboard = pacMan.followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
 		pacMan.setMoveBehavior(PacManState.HUNGRY, followKeyboard);
 		pacMan.setMoveBehavior(PacManState.GREEDY, followKeyboard);
 
@@ -111,7 +111,7 @@ public class PacManGame {
 		blinky.setMoveBehavior(DEAD, blinky.headFor(() -> maze.getPinkyHome()));
 		blinky.setMoveBehavior(CHASING, blinky.attackDirectly(pacMan));
 		pinky.setMoveBehavior(CHASING, pinky.ambush(pacMan, 4));
-		inky.setMoveBehavior(CHASING, inky.attackWithPartner(blinky, pacMan));
+		inky.setMoveBehavior(CHASING, inky.attackWithPartnerGhost(blinky, pacMan));
 		clyde.setMoveBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * PacManGame.TS));
 
 		// Other game rules

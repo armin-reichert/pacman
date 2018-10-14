@@ -10,7 +10,7 @@ import de.amr.games.pacman.actor.PacManGameActor;
  * @param <T>
  *          actor type
  */
-public interface ActorNavigation<T extends PacManGameActor> {
+public interface ActorBehavior<T extends PacManGameActor> {
 
 	/**
 	 * Computes the route the actor should take when this method is called.

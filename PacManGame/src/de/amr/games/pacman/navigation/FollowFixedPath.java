@@ -15,7 +15,7 @@ import de.amr.games.pacman.model.Tile;
  * @param <T>
  *          actor type, for example Ghost
  */
-class FollowFixedPath<T extends PacManGameActor> implements ActorNavigation<T> {
+class FollowFixedPath<T extends PacManGameActor> implements ActorBehavior<T> {
 
 	protected Supplier<Tile> targetTileSupplier;
 	protected List<Tile> path = Collections.emptyList();
