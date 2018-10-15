@@ -96,23 +96,23 @@ public class PacManGame {
 
 		// Pac-Man is controlled by the keyboard
 		ActorBehavior<PacMan> followKeyboard = pacMan.followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
-		pacMan.setMoveBehavior(PacManState.HUNGRY, followKeyboard);
-		pacMan.setMoveBehavior(PacManState.GREEDY, followKeyboard);
+		pacMan.setBehavior(PacManState.HUNGRY, followKeyboard);
+		pacMan.setBehavior(PacManState.GREEDY, followKeyboard);
 
 		// Common ghost behavior
 		getGhosts().forEach(ghost -> {
-			ghost.setMoveBehavior(FRIGHTENED, ghost.flee(pacMan));
-			ghost.setMoveBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
-			ghost.setMoveBehavior(DEAD, ghost.headFor(ghost::getHomeTile));
-			ghost.setMoveBehavior(SAFE, ghost.bounce());
+			ghost.setBehavior(FRIGHTENED, ghost.flee(pacMan));
+			ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
+			ghost.setBehavior(DEAD, ghost.headFor(ghost::getHomeTile));
+			ghost.setBehavior(SAFE, ghost.bounce());
 		});
 
 		// Individual ghost behavior
-		blinky.setMoveBehavior(DEAD, blinky.headFor(() -> maze.getPinkyHome()));
-		blinky.setMoveBehavior(CHASING, blinky.attackDirectly(pacMan));
-		pinky.setMoveBehavior(CHASING, pinky.ambush(pacMan, 4));
-		inky.setMoveBehavior(CHASING, inky.attackWithPartnerGhost(blinky, pacMan));
-		clyde.setMoveBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * PacManGame.TS));
+		blinky.setBehavior(DEAD, blinky.headFor(() -> maze.getPinkyHome()));
+		blinky.setBehavior(CHASING, blinky.attackDirectly(pacMan));
+		pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
+		inky.setBehavior(CHASING, inky.attackWithPartnerGhost(blinky, pacMan));
+		clyde.setBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * PacManGame.TS));
 
 		// Other game rules
 		clyde.fnCanLeaveHouse = () -> getLevel() > 1 || getFoodRemaining() < (66 * maze.getFoodTotal() / 100);

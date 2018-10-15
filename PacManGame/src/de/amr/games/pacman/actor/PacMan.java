@@ -40,7 +40,7 @@ import de.amr.statemachine.StateMachine;
 public class PacMan extends PacManGameActor implements ActorBehaviors<PacMan> {
 
 	private final StateMachine<PacManState, GameEvent> fsm;
-	private final Map<PacManState, ActorBehavior<PacMan>> navigationMap;
+	private final Map<PacManState, ActorBehavior<PacMan>> behaviorMap;
 	private final EventManager<GameEvent> eventManager;
 	private PacManWorld world;
 
@@ -48,13 +48,13 @@ public class PacMan extends PacManGameActor implements ActorBehaviors<PacMan> {
 		super(game);
 		fsm = buildStateMachine();
 		fsm.traceTo(LOGGER, app().clock::getFrequency);
-		navigationMap = new EnumMap<>(PacManState.class);
+		behaviorMap = new EnumMap<>(PacManState.class);
 		eventManager = new EventManager<>("[PacMan]");
 		setSprites();
 	}
 
 	public void initPacMan() {
-		placeAtTile(getHomeTile(), getTileSize() / 2, 0);
+		placeAtTile(getMaze().getPacManHome(), getTileSize() / 2, 0);
 		setNextDir(Top4.E);
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("s_full");
@@ -70,10 +70,6 @@ public class PacMan extends PacManGameActor implements ActorBehaviors<PacMan> {
 		return eventManager;
 	}
 
-	public Tile getHomeTile() {
-		return getMaze().getPacManHome();
-	}
-
 	@Override
 	public float getSpeed() {
 		return getGame().getPacManSpeed(getState());
@@ -85,17 +81,17 @@ public class PacMan extends PacManGameActor implements ActorBehaviors<PacMan> {
 
 	// Movement
 
-	public void setMoveBehavior(PacManState state, ActorBehavior<PacMan> navigation) {
-		navigationMap.put(state, navigation);
+	public void setBehavior(PacManState state, ActorBehavior<PacMan> behavior) {
+		behaviorMap.put(state, behavior);
 	}
 
-	public ActorBehavior<PacMan> getMoveBehavior() {
-		return navigationMap.getOrDefault(getState(), keepDirection());
+	public ActorBehavior<PacMan> getBehavior() {
+		return behaviorMap.getOrDefault(getState(), keepDirection());
 	}
 
 	@Override
 	public int supplyIntendedDir() {
-		return getMoveBehavior().getRoute(this).getDir();
+		return getBehavior().getRoute(this).getDir();
 	}
 
 	@Override

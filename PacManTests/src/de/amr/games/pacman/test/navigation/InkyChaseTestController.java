@@ -39,7 +39,7 @@ public class InkyChaseTestController implements ViewController {
 		game.setActive(game.getClyde(), false);
 		int width = app().settings.width;
 		int height = app().settings.height;
-		game.getInky().setMoveBehavior(GhostState.CHASING, attackWithBlinky(width, height));
+		game.getInky().setBehavior(GhostState.CHASING, attackWithBlinky(width, height));
 		game.getActiveGhosts().forEach(ghost -> {
 			ghost.init();
 			ghost.setState(GhostState.CHASING);

@@ -227,7 +227,7 @@ public class PlayViewX extends PlayView {
 
 	private void drawRoute(Graphics2D g, Ghost ghost) {
 		g.setColor(ghostColor(ghost));
-		MazeRoute route = ghost.getMoveBehavior().getRoute(ghost);
+		MazeRoute route = ghost.getBehavior().getRoute(ghost);
 		List<Tile> path = route.getPath();
 
 		if (path.size() > 1) {

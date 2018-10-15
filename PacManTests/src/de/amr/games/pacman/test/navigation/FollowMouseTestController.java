@@ -32,7 +32,7 @@ public class FollowMouseTestController implements ViewController {
 
 	@Override
 	public void init() {
-		mouseTile = pacMan.getHomeTile();
+		mouseTile = game.getMaze().getPacManHome();
 		pacMan.placeAtTile(mouseTile, 0, 0);
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
@@ -41,7 +41,7 @@ public class FollowMouseTestController implements ViewController {
 		game.setActive(pacMan, true);
 		blinky.init();
 		blinky.setState(GhostState.CHASING);
-		blinky.setMoveBehavior(GhostState.CHASING, blinky.followRoute(() -> mouseTile));
+		blinky.setBehavior(GhostState.CHASING, blinky.followRoute(() -> mouseTile));
 	}
 
 	@Override

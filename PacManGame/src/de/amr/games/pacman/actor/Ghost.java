@@ -42,7 +42,7 @@ public class Ghost extends PacManGameActor implements ActorBehaviors<Ghost> {
 
 	private final String name;
 	private final StateMachine<GhostState, GameEvent> fsm;
-	private final Map<GhostState, ActorBehavior<Ghost>> navigationMap;
+	private final Map<GhostState, ActorBehavior<Ghost>> behaviorMap;
 	private final PacMan pacMan;
 	private final Tile home;
 	private final Tile scatteringTarget;
@@ -59,9 +59,10 @@ public class Ghost extends PacManGameActor implements ActorBehaviors<Ghost> {
 		this.scatteringTarget = scatteringTarget;
 		this.initialDir = initialDir;
 		fsm = buildStateMachine(name);
+		fsm.traceTo(Application.LOGGER, Application.app().clock::getFrequency);
 		fnNextAttackState = () -> getState();
 		fnCanLeaveHouse = () -> fsm.state().isTerminated();
-		navigationMap = new EnumMap<>(GhostState.class);
+		behaviorMap = new EnumMap<>(GhostState.class);
 		setSprites(color);
 	}
 
@@ -101,19 +102,19 @@ public class Ghost extends PacManGameActor implements ActorBehaviors<Ghost> {
 		return app().settings.get("theme");
 	}
 
-	// Movement
+	// Behavior
 
-	public void setMoveBehavior(GhostState state, ActorBehavior<Ghost> navigation) {
-		navigationMap.put(state, navigation);
+	public void setBehavior(GhostState state, ActorBehavior<Ghost> behavior) {
+		behaviorMap.put(state, behavior);
 	}
 
-	public ActorBehavior<Ghost> getMoveBehavior() {
-		return navigationMap.getOrDefault(getState(), keepDirection());
+	public ActorBehavior<Ghost> getBehavior() {
+		return behaviorMap.getOrDefault(getState(), keepDirection());
 	}
 
 	@Override
 	public int supplyIntendedDir() {
-		return getMoveBehavior().getRoute(this).getDir();
+		return getBehavior().getRoute(this).getDir();
 	}
 
 	@Override
@@ -153,8 +154,6 @@ public class Ghost extends PacManGameActor implements ActorBehaviors<Ghost> {
 
 	@Override
 	public void init() {
-		super.init();
-		fsm.traceTo(Application.LOGGER, Application.app().clock::getFrequency);
 		fsm.init();
 	}
 
@@ -215,7 +214,7 @@ public class Ghost extends PacManGameActor implements ActorBehaviors<Ghost> {
 				.state(FRIGHTENED)
 					.onEntry(() -> {
 						sprites.select("s_frightened"); 
-						getMoveBehavior().computePath(this); 
+						getBehavior().computePath(this); 
 					})
 					.onTick(this::move)
 				
@@ -228,7 +227,7 @@ public class Ghost extends PacManGameActor implements ActorBehaviors<Ghost> {
 				
 				.state(DEAD)
 					.onEntry(() -> {
-						getMoveBehavior().computePath(this);
+						getBehavior().computePath(this);
 						getTheme().snd_ghost_dead().loop();
 					})
 					.onTick(() -> {	
