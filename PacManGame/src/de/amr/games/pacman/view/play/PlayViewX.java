@@ -214,11 +214,11 @@ public class PlayViewX extends PlayView {
 		g.setColor(Color.GREEN);
 		g.translate(actor.tf().getX(), actor.tf().getY());
 		int w = actor.tf().getWidth(), h = actor.tf().getHeight();
-		if (actor.getTileAlignmentY() == 0) {
+		if (actor.getAlignmentY() == 0) {
 			g.drawLine(0, 0, w, 0);
 			g.drawLine(0, h, w, h);
 		}
-		if (actor.getTileAlignmentX() == 0) {
+		if (actor.getAlignmentX() == 0) {
 			g.drawLine(0, 0, 0, h);
 			g.drawLine(w, 0, w, h);
 		}

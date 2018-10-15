@@ -159,8 +159,8 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 	public void move() {
 		// can we turn towards the intended direction?
 		if (possibleMove(nextDir).length() > 0) {
-			if (isTurn(currentDir, nextDir)) {
-				alignOverTile();
+			if (nextDir == NESW.left(currentDir) || nextDir == NESW.right(currentDir)) {
+				align();
 			}
 			setCurrentDir(nextDir);
 		}
@@ -191,14 +191,14 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 	 *         tiles ahead etc.
 	 */
 	public Tile ahead(int n) {
-		final Tile current = getTile();
+		final Tile tile = getTile();
 		while (n >= 0) {
-			Tile ahead = current.tileTowards(currentDir, n);
+			Tile ahead = tile.tileTowards(currentDir, n);
 			if (getMaze().isValidTile(ahead)) {
 				return ahead;
 			}
 			n -= 1;
 		}
-		return current;
+		return tile;
 	}
 }
