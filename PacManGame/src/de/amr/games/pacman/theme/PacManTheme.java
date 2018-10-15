@@ -46,6 +46,8 @@ public interface PacManTheme {
 	Sound music_playing();
 
 	Sound music_gameover();
+	
+	void loadMusic();
 
 	// Clips
 

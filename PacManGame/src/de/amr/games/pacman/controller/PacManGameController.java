@@ -166,6 +166,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 					.onEntry(() -> {
 						setScreen(getIntroScreen());
 						getTheme().snd_insertCoin().play();
+						getTheme().loadMusic();
 					})
 				
 				.state(READY)

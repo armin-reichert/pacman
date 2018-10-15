@@ -116,13 +116,6 @@ public class ClassicPacManTheme implements PacManTheme {
 		// Text font
 		Assets.storeTrueTypeFont("font.arcadeclassic", "arcadeclassic.ttf", Font.PLAIN, 12);
 
-		// Load sound clips
-		CompletableFuture.runAsync(() -> {
-			LOGGER.info("Loading music...");
-			music_playing();
-			music_gameover();
-		}).thenAccept(result -> LOGGER.info("Music loaded."));
-
 		LOGGER.info(String.format("Theme '%s' created.", getClass().getSimpleName()));
 	}
 
@@ -250,6 +243,15 @@ public class ClassicPacManTheme implements PacManTheme {
 	@Override
 	public Sound music_gameover() {
 		return sound("ending");
+	}
+
+	@Override
+	public void loadMusic() {
+		CompletableFuture.runAsync(() -> {
+			LOGGER.info("Loading music...");
+			music_playing();
+			music_gameover();
+		}).thenAccept(result -> LOGGER.info("Music loaded."));
 	}
 
 	@Override
