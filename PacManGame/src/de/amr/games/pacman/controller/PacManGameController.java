@@ -285,8 +285,6 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			playScreen.setScoresVisible(true);
 			playScreen.enableAnimation(false);
 			playScreen.showInfoText("Ready!", Color.YELLOW);
-			getTheme().music_playing().stop();
-			getTheme().music_gameover().stop();
 			getTheme().snd_clips_all().forEach(Sound::stop);
 			getTheme().snd_ready().play();
 		}
