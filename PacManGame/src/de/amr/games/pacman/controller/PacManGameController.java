@@ -56,8 +56,8 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		super(GameState.class);
 		game = new PacManGame();
 		game.getPacMan().getEventManager().addListener(this::process);
-		ghostAttackTimer = new GhostAttackTimer(this);
-		game.getGhosts().forEach(ghost -> ghost.fnNextAttackState = ghostAttackTimer::getGhostAttackState);
+		ghostAttackTimer = new GhostAttackTimer(game, this);
+		game.getGhosts().forEach(ghost -> ghost.fnNextAttackState = ghostAttackTimer::getState);
 		buildStateMachine();
 		traceTo(LOGGER, app().clock::getFrequency);
 	}
@@ -103,11 +103,6 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 	}
 
 	@Override
-	public void init() {
-		super.init();
-	}
-
-	@Override
 	public void update() {
 		checkLoggingChange();
 		checkSpeedChange();
@@ -148,9 +143,9 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		return game.getPacMan().getState() == PacManState.DEAD;
 	}
 
-	private void resetScene() {
-		playScreen.init();
+	private void resetPlayScreen() {
 		game.initActors();
+		getPlayScreen().init();
 	}
 
 	private void buildStateMachine() {
@@ -193,7 +188,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			.transitions()
 			
 				.when(INTRO).then(READY)
-					.condition(() -> introScreen.isComplete())
+					.condition(() -> getIntroScreen().isComplete())
 					.act(() -> setScreen(getPlayScreen()))
 				
 				.when(READY).then(PLAYING).onTimeout()
@@ -258,7 +253,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 					
 				.when(PACMAN_DYING).then(PLAYING)
 					.condition(() -> isPacManDead() && game.getLives() > 0)
-					.act(this::resetScene)
+					.act(this::resetPlayScreen)
 			
 				.when(GAME_OVER).then(READY)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
@@ -281,18 +276,18 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		public void onEntry() {
 			game.init();
 			game.removeLife();
-			resetScene();
-			playScreen.setScoresVisible(true);
-			playScreen.enableAnimation(false);
-			playScreen.showInfoText("Ready!", Color.YELLOW);
+			resetPlayScreen();
+			getPlayScreen().setScoresVisible(true);
+			getPlayScreen().enableAnimation(false);
+			getPlayScreen().showInfoText("Ready!", Color.YELLOW);
 			getTheme().snd_clips_all().forEach(Sound::stop);
 			getTheme().snd_ready().play();
 		}
 
 		@Override
 		public void onExit() {
-			playScreen.enableAnimation(true);
-			playScreen.hideInfoText();
+			getPlayScreen().enableAnimation(true);
+			getPlayScreen().hideInfoText();
 			getTheme().music_playing().volume(0.5f);
 			getTheme().music_playing().loop();
 		}
@@ -371,7 +366,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		}
 
 		private void onBonusFound(GameEvent event) {
-			playScreen.getBonus().ifPresent(bonus -> {
+			getPlayScreen().getBonus().ifPresent(bonus -> {
 				LOGGER.info(
 						() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(), bonus.getValue()));
 				getTheme().snd_eatFruit().play();
@@ -380,7 +375,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 				if (extraLife) {
 					getTheme().snd_extraLife().play();
 				}
-				playScreen.setBonusTimer(app().clock.sec(1));
+				getPlayScreen().setBonusTimer(app().clock.sec(1));
 			});
 		}
 
@@ -397,8 +392,8 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 				return;
 			}
 			if (game.isBonusReached()) {
-				playScreen.setBonus(game.getBonusSymbol(), game.getBonusValue());
-				playScreen.setBonusTimer(game.getBonusTime());
+				getPlayScreen().setBonus(game.getBonusSymbol(), game.getBonusValue());
+				getPlayScreen().setBonusTimer(game.getBonusTime());
 			}
 			if (e.energizer) {
 				enqueue(new PacManGainsPowerEvent());
@@ -412,7 +407,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		public void onEntry() {
 			game.getPacMan().setFullSprite();
 			game.getActiveGhosts().forEach(ghost -> ghost.setVisible(false));
-			playScreen.setMazeFlashing(true);
+			getPlayScreen().setMazeFlashing(true);
 			getTheme().snd_clips_all().forEach(Sound::stop);
 		}
 
@@ -421,18 +416,18 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			boolean timeForChange = getTicksRemaining() == getDuration() / 2;
 			if (timeForChange) {
 				game.nextLevel();
-				resetScene();
+				resetPlayScreen();
 				game.getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
-				playScreen.showInfoText("Ready!", Color.YELLOW);
-				playScreen.setMazeFlashing(false);
-				playScreen.enableAnimation(false);
+				getPlayScreen().showInfoText("Ready!", Color.YELLOW);
+				getPlayScreen().setMazeFlashing(false);
+				getPlayScreen().enableAnimation(false);
 			}
 		}
 
 		@Override
 		public void onExit() {
-			playScreen.hideInfoText();
-			playScreen.enableAnimation(true);
+			getPlayScreen().hideInfoText();
+			getPlayScreen().enableAnimation(true);
 		}
 	}
 
@@ -487,8 +482,8 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 		@Override
 		public void onEntry() {
-			playScreen.enableAnimation(false);
-			playScreen.showInfoText("Game Over!", Color.RED);
+			getPlayScreen().enableAnimation(false);
+			getPlayScreen().showInfoText("Game Over!", Color.RED);
 			game.saveScore();
 			getTheme().music_playing().stop();
 			getTheme().music_gameover().loop();
@@ -496,7 +491,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 		@Override
 		public void onExit() {
-			playScreen.hideInfoText();
+			getPlayScreen().hideInfoText();
 			getTheme().music_gameover().stop();
 		}
 	}
