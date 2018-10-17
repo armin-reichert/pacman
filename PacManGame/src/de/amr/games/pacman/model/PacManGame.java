@@ -39,6 +39,10 @@ import de.amr.games.pacman.theme.GhostColor;
  */
 public class PacManGame {
 
+	private static int sec(float seconds) {
+		return app().clock.sec(seconds);
+	}
+
 	/** The tile size (8px). */
 	public static final int TS = 8;
 
@@ -233,6 +237,10 @@ public class PacManGame {
 		return Collections.unmodifiableList(levelCounter);
 	}
 
+	public int getLevelChangingTime() {
+		return sec(3);
+	}
+
 	public int eatFoodAtTile(Tile tile) {
 		if (!maze.isFood(tile)) {
 			throw new IllegalArgumentException("No food at tile " + tile);
@@ -279,7 +287,7 @@ public class PacManGame {
 	}
 
 	public int getBonusTime() {
-		return app().clock.sec(9f + new Random().nextFloat());
+		return sec(9f + new Random().nextFloat());
 	}
 
 	public float getGhostSpeed(Ghost ghost) {
@@ -305,7 +313,7 @@ public class PacManGame {
 	}
 
 	public int getGhostDyingTime() {
-		return app().clock.sec(0.75f);
+		return sec(0.75f);
 	}
 
 	public int getGhostNumFlashes() {
@@ -344,18 +352,14 @@ public class PacManGame {
 	}
 
 	public int getPacManGreedyTime() {
-		return app().clock.sec(Level.intValue(level, Property.iPacManPowerSeconds));
+		return sec(Level.intValue(level, Property.iPacManPowerSeconds));
 	}
 
 	public int getPacManGettingWeakerRemainingTime() {
-		return app().clock.sec(getGhostNumFlashes() * 400 / 1000);
+		return sec(getGhostNumFlashes() * 400 / 1000);
 	}
 
 	public int getPacManDyingTime() {
-		return app().clock.sec(2);
-	}
-
-	public int getLevelChangingTime() {
-		return app().clock.sec(3);
+		return sec(2);
 	}
 }
