@@ -72,7 +72,7 @@ public class PacMan extends PacManGameActor implements ActorBehaviors<PacMan> {
 
 	@Override
 	public float getSpeed() {
-		return getGame().getPacManSpeed(getState());
+		return getGame().getPacManSpeed(this);
 	}
 
 	public PacManTheme getTheme() {

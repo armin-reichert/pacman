@@ -328,8 +328,8 @@ public class PacManGame {
 		ghostsKilled += 1;
 	}
 
-	public float getPacManSpeed(PacManState state) {
-		switch (state) {
+	public float getPacManSpeed(PacMan pacMan) {
+		switch (pacMan.getState()) {
 		case HUNGRY:
 			return speed(Level.floatValue(level, Property.fPacManSpeed));
 		case GREEDY:
