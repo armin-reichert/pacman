@@ -217,8 +217,8 @@ public class PacManGame {
 	}
 
 	private float speed(float relativeSpeed) {
-		// base speed = 8 tiles/second at 60 Hz
-		return 8f * TS / 60 * relativeSpeed;
+		// TODO what is the real base speed in tiles/second at 60 Hz?
+		return 9f * TS / 60 * relativeSpeed;
 	}
 
 	public Maze getMaze() {
