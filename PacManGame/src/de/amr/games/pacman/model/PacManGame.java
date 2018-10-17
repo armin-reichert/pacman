@@ -22,7 +22,6 @@ import java.util.stream.Stream;
 
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameActor;
 import de.amr.games.pacman.actor.PacManState;
@@ -283,10 +282,11 @@ public class PacManGame {
 		return app().clock.sec(9f + new Random().nextFloat());
 	}
 
-	public float getGhostSpeed(GhostState state, Tile tile) {
+	public float getGhostSpeed(Ghost ghost) {
+		Tile tile = ghost.getTile();
 		boolean tunnel = maze.inTeleportSpace(tile) || maze.inTunnel(tile);
 		float tunnelSpeed = speed(Level.floatValue(level, Property.fGhostTunnelSpeed));
-		switch (state) {
+		switch (ghost.getState()) {
 		case CHASING:
 			return tunnel ? tunnelSpeed : speed(Level.floatValue(level, Property.fGhostSpeed));
 		case DYING:

@@ -95,7 +95,7 @@ public class Ghost extends PacManGameActor implements ActorBehaviors<Ghost> {
 
 	@Override
 	public float getSpeed() {
-		return getGame().getGhostSpeed(getState(), getTile());
+		return getGame().getGhostSpeed(this);
 	}
 
 	public PacManTheme getTheme() {
