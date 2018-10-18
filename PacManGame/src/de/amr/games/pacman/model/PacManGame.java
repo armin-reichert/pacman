@@ -81,7 +81,7 @@ public class PacManGame {
 		pacMan = new PacMan(this);
 
 		// The ghosts
-		blinky = new Ghost("Blinky", pacMan, this, maze.getBlinkyHome(), maze.getBlinkyScatteringTarget(), Top4.E,
+		blinky = new Ghost("Blinky", pacMan, this, maze.getBlinkyHome(), maze.getBlinkyScatteringTarget(), Top4.S,
 				GhostColor.RED);
 
 		pinky = new Ghost("Pinky", pacMan, this, maze.getPinkyHome(), maze.getPinkyScatteringTarget(), Top4.S,
@@ -115,10 +115,15 @@ public class PacManGame {
 		blinky.setBehavior(CHASING, blinky.attackDirectly(pacMan));
 		pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
 		inky.setBehavior(CHASING, inky.attackWithPartnerGhost(blinky, pacMan));
-		clyde.setBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * PacManGame.TS));
+		clyde.setBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * TS));
 
-		// Other game rules
-		clyde.fnCanLeaveHouse = () -> getLevel() > 1 || getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
+		// Other game rules. TODO: make these complete
+		clyde.fnCanLeaveHouse = () -> {
+			if (!clyde.getStateObject().isTerminated()) {
+				return false; // wait for timeout
+			}
+			return getLevel() > 1 || getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
+		};
 	}
 
 	public PacMan getPacMan() {
@@ -314,6 +319,20 @@ public class PacManGame {
 
 	public int getGhostDyingTime() {
 		return sec(0.75f);
+	}
+
+	// TODO implement this correctly
+	public int getGhostSafeTime(Ghost ghost) {
+		if (ghost == blinky) {
+			return sec(1);
+		} else if (ghost == pinky) {
+			return sec(3);
+		} else if (ghost == inky) {
+			return sec(4);
+		} else if (ghost == clyde) {
+			return sec(5);
+		}
+		throw new IllegalArgumentException();
 	}
 
 	public int getGhostNumFlashes() {

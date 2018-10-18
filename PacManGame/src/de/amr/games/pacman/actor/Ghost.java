@@ -17,6 +17,7 @@ import java.util.function.Supplier;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.controller.event.GameEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -72,6 +73,13 @@ public class Ghost extends PacManGameActor implements ActorBehaviors<Ghost> {
 		setNextDir(initialDir);
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("s_color_" + initialDir);
+	}
+	
+	private void reviveGhost() {
+		setCurrentDir(Top4.N);
+		setNextDir(Top4.N);
+		sprites.forEach(Sprite::resetAnimation);
+		sprites.select("s_color_" + getCurrentDir());
 	}
 
 	// Accessors
@@ -191,7 +199,7 @@ public class Ghost extends PacManGameActor implements ActorBehaviors<Ghost> {
 					.onEntry(this::initGhost)
 				
 				.state(SAFE)
-					.timeoutAfter(() -> app().clock.sec(2))
+					.timeoutAfter(() -> getGame().getGhostSafeTime(this))
 					.onTick(() -> {
 						move();	
 						sprites.select("s_color_" + getCurrentDir()); 
@@ -311,7 +319,7 @@ public class Ghost extends PacManGameActor implements ActorBehaviors<Ghost> {
 					
 				.when(DEAD).then(SAFE)
 					.condition(() -> inGhostHouse())
-					.act(this::initGhost)
+					.act(this::reviveGhost)
 				
 				.stay(DEAD).on(PacManGainsPowerEvent.class)
 				.stay(DEAD).on(PacManGettingWeakerEvent.class)
