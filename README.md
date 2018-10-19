@@ -457,9 +457,21 @@ state there is a move behavior assigned that is used whenever the ghost is movin
 Pac-Man is controlled by the keyboard:
 
 ```java
-ActorBehavior<PacMan> followKeyboard = pacMan.followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
-pacMan.setMoveBehavior(PacManState.HUNGRY, followKeyboard);
-pacMan.setMoveBehavior(PacManState.GREEDY, followKeyboard);
+public int supplyIntendedDir() {
+	if (Keyboard.keyDown(KeyEvent.VK_UP)) {
+		return Top4.N;
+	}
+	if (Keyboard.keyDown(KeyEvent.VK_RIGHT)) {
+		return Top4.E;
+	}
+	if (Keyboard.keyDown(KeyEvent.VK_DOWN)) {
+		return Top4.S;
+	}
+	if (Keyboard.keyDown(KeyEvent.VK_LEFT)) {
+		return Top4.W;
+	}
+	return -1;
+}
 ```
 
 ### Ghosts
@@ -482,8 +494,8 @@ Having the common *headFor* behavior implemented, the implementation of the indi
 Blinky's chase behavior is to directly attack Pac-Man. This is just two lines of code:
 
 ```java
-default ActorBehavior<T> attackDirectly(PacManGameActor victim) {
-	return headFor(victim::getTile);
+default ActorBehavior<Ghost> attackDirectly(PacMan pacMan) {
+	return headFor(pacMan::getTile);
 }
 ```
 
@@ -498,8 +510,8 @@ blinky.setMoveBehavior(CHASING, blinky.attackDirectly(pacMan));
 Pinky, the *ambusher*, targets the position 4 tiles ahead of Pac-Man (in the original game there is an overflow error that leads to a different behavior):
 
 ```java
-default ActorBehavior<T> ambush(PacManGameActor victim, int numTilesAhead) {
-	return headFor(() -> victim.ahead(numTilesAhead));
+default ActorBehavior<Ghost> ambush(PacMan pacMan, int numTilesAhead) {
+	return headFor(() -> pacMan.ahead(numTilesAhead));
 }
 ```
 
@@ -516,13 +528,13 @@ Inky's attack target is computed as follows:
 Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man, so `V = (P - B)`. Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-default ActorBehavior<T> attackWithPartnerGhost(Ghost partnerGhost, PacMan pacMan) {
+default ActorBehavior<Ghost> attackWithPartnerGhost(Ghost partner, PacMan pacMan) {
 	return headFor(() -> {
-		Maze maze = partnerGhost.getMaze();
+		Maze maze = partner.getMaze();
 		int mazeWidth = maze.numCols() * TS;
 		int mazeHeight = maze.numRows() * TS;
 		Tile strut = pacMan.ahead(2);
-		Vector2f partnerPosition = partnerGhost.tf.getCenter();
+		Vector2f partnerPosition = partner.tf.getCenter();
 		Vector2f strutPosition = Vector2f.of(strut.col * TS + TS / 2, strut.row * TS + TS / 2);
 		Vector2f targetPosition = doubledArrowTargetPosition(partnerPosition, strutPosition, mazeWidth,
 				mazeHeight);
@@ -531,10 +543,11 @@ default ActorBehavior<T> attackWithPartnerGhost(Ghost partnerGhost, PacMan pacMa
 		int y = targetPosition.y < mazeHeight ? (int) targetPosition.y : mazeHeight - 1;
 		return new Tile(x / TS, y / TS);
 	});
+}
 ```
 
 ```java
-inky.setMoveBehavior(CHASING, inky.attackWithPartner(blinky, pacMan));
+inky.setMoveBehavior(CHASING, inky.attackWithPartnerGhost(blinky, pacMan));
 ```
 
 <img src="doc/inky.png"/>
@@ -545,14 +558,14 @@ Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from 
 If closer, he goes into scattering mode:
 
 ```java
-default ActorBehavior<T> attackAndReject(Ghost attacker, PacMan pacMan, int distance) {
+default ActorBehavior<Ghost> attackOrReject(Ghost attacker, PacMan pacMan, int distance) {
 	return headFor(() -> dist(attacker.tf.getCenter(), pacMan.tf.getCenter()) >= distance ? pacMan.getTile()
 			: attacker.getScatteringTarget());
 }
 ```
 
 ```java
-clyde.setMoveBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * Game.TS));
+clyde.setMoveBehavior(CHASING, clyde.attackOrReject(clyde, pacMan, 8 * TS));
 ```
 
 <img src="doc/clyde.png"/>

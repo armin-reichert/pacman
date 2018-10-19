@@ -6,9 +6,7 @@ import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.util.function.Supplier;
 
-import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
-import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameActor;
@@ -16,30 +14,37 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Collection of actor navigation behaviors. Actors implementing this mixin-interface inherit all
- * behaviors.
+ * Mixin with ghost behaviors.
  * 
  * @author Armin Reichert
- * 
- * @param <T>
- *          the actor type
  */
-public interface ActorBehaviors<T extends PacManGameActor> {
+public interface GhostBehaviors {
 
 	/**
-	 * Ambushes the victim by heading for the tile the given number of tiles ahead of the victim's
-	 * current position.
+	 * Ambushes Pac-Man by heading for the tile ahead of Pac-Man's current position.
 	 * 
-	 * @param victim
-	 *                        the ambushed actor
+	 * @param pacMan
+	 *                        the ambushed Pac-Man
 	 * @param numTilesAhead
-	 *                        the number of tiles ahead of the victim in its current direction. If this
+	 *                        the number of tiles ahead of Pac-Man in its current direction. If this
 	 *                        tile is located outside of the maze, the tile <code>(n - 1)</code> ahead
 	 *                        is used etc.
-	 * @return ambush behavior
+	 * @return ambushing behavior
 	 */
-	default ActorBehavior<T> ambush(PacManGameActor victim, int numTilesAhead) {
-		return headFor(() -> victim.ahead(numTilesAhead));
+	default ActorBehavior<Ghost> ambush(PacMan pacMan, int numTilesAhead) {
+		return headFor(() -> pacMan.ahead(numTilesAhead));
+	}
+
+	/**
+	 * Attacks Pac-Man directly by targeting its current position.
+	 * 
+	 * @param pacMan
+	 *                 the attacked Pac-Man
+	 * 
+	 * @return behavior of attacking Pac-Man directly
+	 */
+	default ActorBehavior<Ghost> attackDirectly(PacMan pacMan) {
+		return headFor(pacMan::getTile);
 	}
 
 	/**
@@ -71,27 +76,15 @@ public interface ActorBehaviors<T extends PacManGameActor> {
 	 * @param attacker
 	 *                   the attacker (Clyde)
 	 * @param pacMan
-	 *                   the attacked actor (Pac-Man)
+	 *                   the attacked Pac-Man
 	 * @param distance
 	 *                   if the distance of the attacker to Pac-Man is less than this distance (measured
 	 *                   in pixels), the attacker rejects and heads for its scattering position.
 	 *                   Otherwise it directly attacks PacMan.
 	 */
-	default ActorBehavior<T> attackAndReject(Ghost attacker, PacMan pacMan, int distance) {
+	default ActorBehavior<Ghost> attackOrReject(Ghost attacker, PacMan pacMan, int distance) {
 		return headFor(() -> dist(attacker.tf.getCenter(), pacMan.tf.getCenter()) >= distance ? pacMan.getTile()
 				: attacker.getScatteringTarget());
-	}
-
-	/**
-	 * Attacks the victim directly by targeting its current position.
-	 * 
-	 * @param victim
-	 *                 the attacked actor
-	 * 
-	 * @return behavior of attacking the victim directly
-	 */
-	default ActorBehavior<T> attackDirectly(PacManGameActor victim) {
-		return headFor(victim::getTile);
 	}
 
 	/**
@@ -111,20 +104,20 @@ public interface ActorBehaviors<T extends PacManGameActor> {
 	 * TODO: This code is much too complicated. It could be a lot easier if target tiles could be
 	 * outside of the scope of valid tiles.
 	 * 
-	 * @param partnerGhost
-	 *                       the ghost which assists in attacking (Blinky)
+	 * @param partner
+	 *                  the ghost which assists in attacking (Blinky)
 	 * @param pacMan
-	 *                       the attacked Pac-Man
+	 *                  the attacked Pac-Man
 	 * 
 	 * @return behavior where Pac-Man is attacked with help of partner ghost
 	 */
-	default ActorBehavior<T> attackWithPartnerGhost(Ghost partnerGhost, PacMan pacMan) {
+	default ActorBehavior<Ghost> attackWithPartnerGhost(Ghost partner, PacMan pacMan) {
 		return headFor(() -> {
-			Maze maze = partnerGhost.getMaze();
+			Maze maze = partner.getMaze();
 			int mazeWidth = maze.numCols() * TS;
 			int mazeHeight = maze.numRows() * TS;
 			Tile strut = pacMan.ahead(2);
-			Vector2f partnerPosition = partnerGhost.tf.getCenter();
+			Vector2f partnerPosition = partner.tf.getCenter();
 			Vector2f strutPosition = Vector2f.of(strut.col * TS + TS / 2, strut.row * TS + TS / 2);
 			Vector2f targetPosition = doubledArrowTargetPosition(partnerPosition, strutPosition, mazeWidth,
 					mazeHeight);
@@ -217,60 +210,28 @@ public interface ActorBehaviors<T extends PacManGameActor> {
 	}
 
 	/**
-	 * Lets the actor bounce between walls or other inaccessible tiles.
+	 * Lets the ghost bounce between walls or other inaccessible tiles.
 	 * 
 	 * @return bouncing behavior
 	 */
-	default ActorBehavior<T> bounce() {
+	default ActorBehavior<Ghost> bounce() {
 		return bouncer -> new MazeRoute(
 				bouncer.isStuck() ? NESW.inv(bouncer.getCurrentDir()) : bouncer.getCurrentDir());
 	}
 
 	/**
-	 * Lets the maze mover flee from the given attacker by trying to escape to some safe maze corner.
+	 * Lets the ghost flee from Pac-Man by walking to a safe maze corner.
 	 * 
 	 * @param attacker
-	 *                   the attacker
-	 * @return flight behavior
+	 *                   the attacking Pac-Man
+	 * @return escaping behavior
 	 */
-	default ActorBehavior<T> flee(PacManGameActor attacker) {
+	default ActorBehavior<Ghost> flee(PacMan attacker) {
 		return new EscapeIntoCorner<>(attacker::getTile);
 	}
 
 	/**
-	 * Lets the actor follow the direction entered using the keyboard.
-	 * 
-	 * @param keyUp
-	 *                   key code for upwards movement e.g. KeyEvent.VK_UP
-	 * @param keyRight
-	 *                   key code for right movement
-	 * @param keyDown
-	 *                   key code for down movement
-	 * @param keyLeft
-	 *                   key code for left movement
-	 * 
-	 * @return behavior following direction entered with the keyboard
-	 */
-	default ActorBehavior<T> followKeyboard(int keyUp, int keyRight, int keyDown, int keyLeft) {
-		return mover -> {
-			MazeRoute result = new MazeRoute();
-			if (Keyboard.keyDown(keyUp)) {
-				result.setDir(Top4.N);
-			} else if (Keyboard.keyDown(keyRight)) {
-				result.setDir(Top4.E);
-			} else if (Keyboard.keyDown(keyDown)) {
-				result.setDir(Top4.S);
-			} else if (Keyboard.keyDown(keyLeft)) {
-				result.setDir(Top4.W);
-			} else {
-				result.setDir(-1);
-			}
-			return result;
-		};
-	}
-
-	/**
-	 * Lets the actor dynamically follow the path to the given target. The path is computed on the graph
+	 * Lets the ghost dynamically follow the path to the given target. The path is computed on the graph
 	 * of the maze and updated every time the move direction is queried. This can lead to lots of path
 	 * finder calls!
 	 * 
@@ -278,24 +239,24 @@ public interface ActorBehaviors<T extends PacManGameActor> {
 	 *                 target tile supplier (this tile must be inside the maze or teleport space!)
 	 * @return behavior following the path to the target
 	 */
-	default ActorBehavior<T> followRoute(Supplier<Tile> targetSupplier) {
-		return mover -> {
+	default ActorBehavior<Ghost> followRoute(Supplier<Tile> targetSupplier) {
+		return ghost -> {
 			MazeRoute route = new MazeRoute();
-			route.setPath(mover.getMaze().findPath(mover.getTile(), targetSupplier.get()));
-			route.setDir(mover.getMaze().alongPath(route.getPath()).orElse(-1));
+			route.setPath(ghost.getMaze().findPath(ghost.getTile(), targetSupplier.get()));
+			route.setDir(ghost.getMaze().alongPath(route.getPath()).orElse(-1));
 			return route;
 		};
 	}
 
 	/**
-	 * Lets the actor follow a static route to the target. The path of that route is computed by calling
-	 * the method {@link ActorBehavior#computePath(PacManGameActor)}.
+	 * Lets the ghost follow a fixed path to the target. The path is precomputed by calling
+	 * {@link ActorBehavior#computePath(PacManGameActor)}.
 	 * 
 	 * @param targetTileSupplier
 	 *                             function supplying the target tile at time of decision
-	 * @return behavior following a static route
+	 * @return behavior of following a fixed path
 	 */
-	default ActorBehavior<T> followFixedPath(Supplier<Tile> targetTileSupplier) {
+	default ActorBehavior<Ghost> followFixedPath(Supplier<Tile> targetTileSupplier) {
 		return new FollowFixedPath<>(targetTileSupplier);
 	}
 
@@ -307,7 +268,7 @@ public interface ActorBehaviors<T extends PacManGameActor> {
 	 *                             function supplying the target tile at time of decision
 	 * @return behavior heading for the target tile
 	 */
-	default ActorBehavior<T> headFor(Supplier<Tile> targetTileSupplier) {
+	default ActorBehavior<Ghost> headFor(Supplier<Tile> targetTileSupplier) {
 		return new FollowTargetTile<>(targetTileSupplier);
 	}
 
@@ -316,7 +277,7 @@ public interface ActorBehaviors<T extends PacManGameActor> {
 	 * 
 	 * @return behavior keeping the current move direction
 	 */
-	default ActorBehavior<T> keepDirection() {
-		return mover -> new MazeRoute(mover.getCurrentDir());
+	default ActorBehavior<Ghost> keepDirection() {
+		return ghost -> new MazeRoute(ghost.getCurrentDir());
 	}
 }

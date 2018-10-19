@@ -6,10 +6,6 @@ import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.SAFE;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
-import static java.awt.event.KeyEvent.VK_DOWN;
-import static java.awt.event.KeyEvent.VK_LEFT;
-import static java.awt.event.KeyEvent.VK_RIGHT;
-import static java.awt.event.KeyEvent.VK_UP;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,9 +20,7 @@ import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameActor;
-import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.model.Level.Property;
-import de.amr.games.pacman.navigation.ActorBehavior;
 import de.amr.games.pacman.theme.GhostColor;
 
 /**
@@ -95,14 +89,10 @@ public class PacManGame {
 
 		activeActors.addAll(Arrays.asList(pacMan, blinky, pinky, inky, clyde));
 
-		// Define the navigation behavior ("AI")
-
-		// Pac-Man is controlled by the keyboard
-		ActorBehavior<PacMan> followKeyboard = pacMan.followKeyboard(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
-		pacMan.setBehavior(PacManState.HUNGRY, followKeyboard);
-		pacMan.setBehavior(PacManState.GREEDY, followKeyboard);
+		// Define the ghost behavior ("AI")
 
 		// Common ghost behavior
+		
 		getGhosts().forEach(ghost -> {
 			ghost.setBehavior(FRIGHTENED, ghost.flee(pacMan));
 			ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
@@ -111,11 +101,13 @@ public class PacManGame {
 		});
 
 		// Individual ghost behavior
+		
 		blinky.setBehavior(DEAD, blinky.headFor(() -> maze.getPinkyHome()));
+		
 		blinky.setBehavior(CHASING, blinky.attackDirectly(pacMan));
 		pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
 		inky.setBehavior(CHASING, inky.attackWithPartnerGhost(blinky, pacMan));
-		clyde.setBehavior(CHASING, clyde.attackAndReject(clyde, pacMan, 8 * TS));
+		clyde.setBehavior(CHASING, clyde.attackOrReject(clyde, pacMan, 8 * TS));
 
 		// Other game rules. TODO: make these complete
 		clyde.fnCanLeaveHouse = () -> {

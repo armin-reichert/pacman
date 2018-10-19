@@ -28,7 +28,7 @@ import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.ActorBehavior;
-import de.amr.games.pacman.navigation.ActorBehaviors;
+import de.amr.games.pacman.navigation.GhostBehaviors;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.statemachine.State;
@@ -39,7 +39,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends PacManGameActor implements ActorBehaviors<Ghost> {
+public class Ghost extends PacManGameActor implements GhostBehaviors {
 
 	private final String name;
 	private final StateMachine<GhostState, GameEvent> fsm;
@@ -74,7 +74,7 @@ public class Ghost extends PacManGameActor implements ActorBehaviors<Ghost> {
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("s_color_" + initialDir);
 	}
-	
+
 	private void reviveGhost() {
 		setCurrentDir(Top4.N);
 		setNextDir(Top4.N);

@@ -9,10 +9,10 @@ import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.model.Maze.NESW;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.awt.event.KeyEvent;
 import java.util.Optional;
 
+import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.controller.EventManager;
@@ -26,8 +26,6 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.navigation.ActorBehavior;
-import de.amr.games.pacman.navigation.ActorBehaviors;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
@@ -37,10 +35,9 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends PacManGameActor implements ActorBehaviors<PacMan> {
+public class PacMan extends PacManGameActor {
 
 	private final StateMachine<PacManState, GameEvent> fsm;
-	private final Map<PacManState, ActorBehavior<PacMan>> behaviorMap;
 	private final EventManager<GameEvent> eventManager;
 	private PacManWorld world;
 
@@ -48,7 +45,6 @@ public class PacMan extends PacManGameActor implements ActorBehaviors<PacMan> {
 		super(game);
 		fsm = buildStateMachine();
 		fsm.traceTo(LOGGER, app().clock::getFrequency);
-		behaviorMap = new EnumMap<>(PacManState.class);
 		eventManager = new EventManager<>("[PacMan]");
 		setSprites();
 	}
@@ -81,17 +77,21 @@ public class PacMan extends PacManGameActor implements ActorBehaviors<PacMan> {
 
 	// Movement
 
-	public void setBehavior(PacManState state, ActorBehavior<PacMan> behavior) {
-		behaviorMap.put(state, behavior);
-	}
-
-	public ActorBehavior<PacMan> getBehavior() {
-		return behaviorMap.getOrDefault(getState(), keepDirection());
-	}
-
 	@Override
 	public int supplyIntendedDir() {
-		return getBehavior().getRoute(this).getDir();
+		if (Keyboard.keyDown(KeyEvent.VK_UP)) {
+			return Top4.N;
+		}
+		if (Keyboard.keyDown(KeyEvent.VK_RIGHT)) {
+			return Top4.E;
+		}
+		if (Keyboard.keyDown(KeyEvent.VK_DOWN)) {
+			return Top4.S;
+		}
+		if (Keyboard.keyDown(KeyEvent.VK_LEFT)) {
+			return Top4.W;
+		}
+		return -1;
 	}
 
 	@Override

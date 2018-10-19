@@ -12,7 +12,7 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.ActorBehavior;
-import de.amr.games.pacman.navigation.ActorBehaviors;
+import de.amr.games.pacman.navigation.GhostBehaviors;
 import de.amr.games.pacman.view.play.PlayViewX;
 
 public class InkyChaseTestController implements ViewController {
@@ -51,7 +51,7 @@ public class InkyChaseTestController implements ViewController {
 			Vector2f b = game.getBlinky().tf.getCenter();
 			Tile strut = game.getPacMan().ahead(2);
 			Vector2f p = Vector2f.of(strut.col * TS + TS / 2, strut.row * TS + TS / 2);
-			Vector2f s = ActorBehaviors.doubledArrowTargetPosition(b, p, w, h);
+			Vector2f s = GhostBehaviors.doubledArrowTargetPosition(b, p, w, h);
 			LOGGER.info(String.format("Target point is (%.2f | %.2f)", s.x, s.y));
 			Tile targetTile = tileFromVector(s.x, s.y);
 			LOGGER.info(String.format("Target tile is %s", targetTile));
