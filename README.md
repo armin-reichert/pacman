@@ -479,10 +479,10 @@ The ghosts behave identically in most of their states:
 
 ```java
 getGhosts().forEach(ghost -> {
-	ghost.setMoveBehavior(FRIGHTENED, ghost.flee(pacMan));
-	ghost.setMoveBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
-	ghost.setMoveBehavior(DEAD, ghost.headFor(ghost::getHomeTile));
-	ghost.setMoveBehavior(SAFE, ghost.bounce());
+	ghost.setBehavior(FRIGHTENED, ghost.flee(pacMan));
+	ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
+	ghost.setBehavior(DEAD, ghost.headFor(ghost::getHomeTile));
+	ghost.setBehavior(SAFE, ghost.bounce());
 });
 ```
 
@@ -500,7 +500,7 @@ default ActorBehavior<Ghost> attackDirectly(PacMan pacMan) {
 ```
 
 ```java
-blinky.setMoveBehavior(CHASING, blinky.attackDirectly(pacMan));
+blinky.setBehavior(CHASING, blinky.attackDirectly(pacMan));
 ```
 
 <img src="doc/blinky.png"/>
@@ -516,7 +516,7 @@ default ActorBehavior<Ghost> ambush(PacMan pacMan, int numTilesAhead) {
 ```
 
 ```java
-pinky.setMoveBehavior(CHASING, pinky.ambush(pacMan, 4));
+pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
 ```
 
 <img src="doc/pinky.png"/>
@@ -547,7 +547,7 @@ default ActorBehavior<Ghost> attackWithPartnerGhost(Ghost partner, PacMan pacMan
 ```
 
 ```java
-inky.setMoveBehavior(CHASING, inky.attackWithPartnerGhost(blinky, pacMan));
+inky.setBehavior(CHASING, inky.attackWithPartnerGhost(blinky, pacMan));
 ```
 
 <img src="doc/inky.png"/>
@@ -565,7 +565,7 @@ default ActorBehavior<Ghost> attackOrReject(Ghost attacker, PacMan pacMan, int d
 ```
 
 ```java
-clyde.setMoveBehavior(CHASING, clyde.attackOrReject(clyde, pacMan, 8 * TS));
+clyde.setBehavior(CHASING, clyde.attackOrReject(clyde, pacMan, 8 * TS));
 ```
 
 <img src="doc/clyde.png"/>
@@ -577,7 +577,7 @@ The visualization of the attack behavior can be toggled during the running game 
 In *scatter* mode, each ghost tries to reach his scattering target tile outside of the maze which results in a cyclic movement around the block in that corner. Also a one liner:
 
 ```java
-ghost.setMoveBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
+ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
 ```
 
 <img src="doc/scattering.png"/>
