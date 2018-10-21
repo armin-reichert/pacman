@@ -443,18 +443,17 @@ C:\Users\armin\Desktop>java -jar pacman.jar
 
 ## Configurable navigation behavior (aka AI)
 
-The game gets some of its entertainment factor from the diversity of the four ghosts. 
-Especially, each of the ghosts has its own specific attack behavior. In this implementation, 
-these differences in behavior are not realized by subclassing
-but by configuration (This would theoretically allow to exchange behaviors at runtime). For each ghost
-state there is a move behavior assigned that is used whenever the ghost is moving in that state.
+The game gets most of its entertainment factor from the diversity of attack behavior of the four ghosts. 
+In this implementation, these differences in behavior are not realized by subclassing
+but by configuration. For each ghost state there is a behavior assigned that is used whenever the ghost is
+ moving in that state.
 
 <img src="doc/pacman.png"/>
 
 
 ### Pac-Man
 
-Pac-Man is controlled by the keyboard:
+Pac-Man's movement is controlled by the keyboard:
 
 ```java
 public int supplyIntendedDir() {
@@ -481,13 +480,14 @@ The ghosts behave identically in most of their states:
 getGhosts().forEach(ghost -> {
 	ghost.setBehavior(FRIGHTENED, ghost.flee(pacMan));
 	ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
-	ghost.setBehavior(DEAD, ghost.headFor(ghost::getHomeTile));
+	ghost.setBehavior(DEAD, ghost.headFor(ghost::getRevivalTile));
 	ghost.setBehavior(SAFE, ghost.bounce());
 });
 ```
 
 The *chase* behavior however is different for each ghost as explained below. 
-Having the common *headFor* behavior implemented, the implementation of the individual behaviors like *scatter*, *ambush*, *attackDirectly*, *attackWithPartner* etc. becomes trivial.
+Having the common *headFor* behavior in hand, the implementation of the individual behaviors like 
+*scatter*, *ambush*, *attackDirectly*, *attackWithPartner* becomes trivial.
 
 ### Blinky (the red ghost)
 
@@ -507,7 +507,8 @@ blinky.setBehavior(CHASING, blinky.attackDirectly(pacMan));
 
 ### Pinky
 
-Pinky, the *ambusher*, targets the position 4 tiles ahead of Pac-Man (in the original game there is an overflow error that leads to a different behavior):
+Pinky, the *ambusher*, targets the position 4 tiles ahead of Pac-Man 
+(in the original game there is an overflow error that leads to a different behavior):
 
 ```java
 default ActorBehavior<Ghost> ambush(PacMan pacMan, int numTilesAhead) {
@@ -559,8 +560,9 @@ If closer, he goes into scattering mode:
 
 ```java
 default ActorBehavior<Ghost> attackOrReject(Ghost attacker, PacMan pacMan, int distance) {
-	return headFor(() -> dist(attacker.tf.getCenter(), pacMan.tf.getCenter()) >= distance ? pacMan.getTile()
-			: attacker.getScatteringTarget());
+	return headFor(() -> 
+		dist(attacker.tf.getCenter(), pacMan.tf.getCenter()) >= distance ? 
+			pacMan.getTile() : attacker.getScatteringTarget());
 }
 ```
 

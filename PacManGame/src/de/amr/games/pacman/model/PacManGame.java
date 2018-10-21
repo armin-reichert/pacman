@@ -96,14 +96,11 @@ public class PacManGame {
 		getGhosts().forEach(ghost -> {
 			ghost.setBehavior(FRIGHTENED, ghost.flee(pacMan));
 			ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
-			ghost.setBehavior(DEAD, ghost.headFor(ghost::getHomeTile));
+			ghost.setBehavior(DEAD, ghost.headFor(ghost::getRevivalTile));
 			ghost.setBehavior(SAFE, ghost.bounce());
 		});
 
 		// Individual ghost behavior
-
-		blinky.setBehavior(DEAD, blinky.headFor(() -> maze.getPinkyHome()));
-
 		blinky.setBehavior(CHASING, blinky.attackDirectly(pacMan));
 		pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
 		inky.setBehavior(CHASING, inky.attackWithPartnerGhost(blinky, pacMan));
