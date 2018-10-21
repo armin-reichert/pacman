@@ -51,12 +51,6 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavio
 		final int actorDir = actor.getCurrentDir();
 		final Tile actorTile = actor.getTile();
 
-		// keep direction in teleport space and tunnel
-		if (actor.inTeleportSpace() || actor.inTunnel()) {
-			route.setDir(actorDir);
-			return route;
-		}
-
 		// ask for current target tile
 		Tile targetTile = targetTileSupplier.get();
 		Objects.requireNonNull(targetTile, "Target tile must not be NULL");
