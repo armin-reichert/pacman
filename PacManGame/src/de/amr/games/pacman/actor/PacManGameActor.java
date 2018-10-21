@@ -120,54 +120,57 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 	}
 
 	public boolean isStuck() {
-		if (inTeleportSpace()) {
-			return false;
-		}
-		return possibleMove(getCurrentDir()).length() == 0;
+		return possibleMoveDistance(getCurrentDir()) == 0;
 	}
 
-	/*
+	/**
 	 * Computes how far this actor can move towards the given direction.
 	 */
-	private Vector2f possibleMove(int dir) {
+	private float possibleMoveDistance(int dir) {
+		final float speed = getSpeed();
+		if (inTeleportSpace()) {
+			return dir == Top4.N || dir == Top4.S ? 0 : speed;
+		}
 		final Tile currentTile = getTile();
 		final Tile neighborTile = currentTile.tileTowards(dir);
-		final Vector2f fullMove = Vector2f.smul(getSpeed(), Vector2f.of(NESW.dx(dir), NESW.dy(dir)));
-		if (inTeleportSpace()) {
-			return dir == Top4.E || dir == Top4.W ? fullMove : Vector2f.NULL;
-		}
 		if (canEnterTile(neighborTile)) {
-			return fullMove;
+			return speed;
 		}
 		switch (dir) {
 		case Top4.E:
 			float right = tf.getX() + tf.getWidth();
-			return Vector2f.of(neighborTile.col * getTileSize() - right, 0);
+			return Math.min(speed, neighborTile.col * getTileSize() - right);
 		case Top4.W:
 			float left = tf.getX();
-			return Vector2f.of(currentTile.col * getTileSize() - left, 0);
+			return Math.min(speed, left - currentTile.col * getTileSize());
 		case Top4.N:
 			float top = tf.getY();
-			return Vector2f.of(0, currentTile.row * getTileSize() - top);
+			return Math.min(speed, top - currentTile.row * getTileSize());
 		case Top4.S:
 			float bottom = tf.getY() + tf.getHeight();
-			return Vector2f.of(0, neighborTile.row * getTileSize() - bottom);
+			return Math.min(speed, neighborTile.row * getTileSize() - bottom);
+		default:
+			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}
-		throw new IllegalArgumentException("Illegal move direction: " + dir);
+	}
+
+	private Vector2f velocity(float speed, int dir) {
+		return Vector2f.smul(speed, Vector2f.of(NESW.dx(dir), NESW.dy(dir)));
 	}
 
 	public void move() {
 		// can we turn towards the intended direction?
-		if (possibleMove(nextDir).length() > 0) {
+		if (possibleMoveDistance(nextDir) > 0) {
 			if (nextDir == NESW.left(currentDir) || nextDir == NESW.right(currentDir)) {
 				align();
 			}
 			setCurrentDir(nextDir);
 		}
 		// move towards the current direction as far as possible
-		Vector2f possibleMove = possibleMove(currentDir);
-		if (possibleMove.length() > 0) {
-			tf.setVelocity(possibleMove);
+		float possibleMoveDistance = possibleMoveDistance(currentDir);
+		if (possibleMoveDistance > 0) {
+//			LOGGER.info("Move " + possibleMoveDistance);
+			tf.setVelocity(velocity(possibleMoveDistance, currentDir));
 			tf.move();
 			// check for exit from teleport space
 			if (tf.getX() + tf.getWidth() < 0) {
