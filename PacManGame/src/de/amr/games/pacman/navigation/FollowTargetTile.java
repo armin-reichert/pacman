@@ -46,7 +46,6 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavio
 
 	@Override
 	public Route getRoute(T actor) {
-		final Route route = new Route();
 		final Maze maze = actor.getMaze();
 		final int actorDir = actor.getCurrentDir();
 		final Tile actorTile = actor.getTile();
@@ -55,50 +54,49 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavio
 		Tile targetTile = targetTileSupplier.get();
 		Objects.requireNonNull(targetTile, "Target tile must not be NULL");
 
-		// if target tile is located in teleport space, use suitable tunnel entry
+		// if target tile is in teleport space, follow suitable tunnel entry
 		if (maze.inTeleportSpace(targetTile)) {
 			targetTile = targetTile.col < 0 ? maze.getLeftTunnelEntry() : maze.getRightTunnelEntry();
 		}
+
+		final Route route = new Route();
 		route.setTarget(targetTile);
 
-		// use path-finder inside ghosthouse
+		// entering ghost house?
+		if (maze.isGhostHouseEntry(actorTile) && maze.inGhostHouse(targetTile)) {
+			route.setPath(maze.findPath(actorTile, targetTile));
+			route.setDir(maze.alongPath(route.getPath()).orElse(actorDir));
+			return route;
+		}
+
+		// also use path-finder inside ghost house
 		if (maze.inGhostHouse(actorTile)) {
 			if (maze.inGhostHouse(targetTile)) {
-				// entering ghosthouse
+				// follow target inside ghost house
 				route.setPath(maze.findPath(actorTile, targetTile));
-				route.setDir(maze.alongPath(route.getPath()).orElse(actorDir));
 			} else {
-				// exiting ghosthouse
+				// follow target outside of ghost house, go to Blinky's home tile to exit ghost house
 				route.setPath(maze.findPath(actorTile, maze.getBlinkyHome()));
-				route.setDir(maze.alongPath(route.getPath()).orElse(actorDir));
 			}
+			route.setDir(maze.alongPath(route.getPath()).orElse(actorDir));
 			return route;
 		}
 
 		// if stuck, check if turning left or right is possible
 		if (actor.isStuck()) {
-			for (int turn : Arrays.asList(NESW.left(actorDir), NESW.right(actorDir))) {
-				if (actor.canEnterTile(maze.neighborTile(actorTile, turn).get())) {
-					route.setDir(turn);
+			for (int turnDir : Arrays.asList(NESW.left(actorDir), NESW.right(actorDir))) {
+				Tile turnTile = maze.neighborTile(actorTile, turnDir).get();
+				if (actor.canEnterTile(turnTile)) {
+					route.setDir(turnDir);
 					return route;
 				}
 			}
 		}
 
-		// decide where to go at ghosthouse door
-		if (maze.isGhostHouseEntry(actorTile)) {
-			Stream<Integer> choices = Stream.of(Top4.W, Top4.S, Top4.E);
-			Optional<Integer> choice = findBestDir(actor, actorTile, targetTile, choices);
-			if (choice.isPresent()) {
-				route.setDir(choice.get());
-				return route;
-			}
-		}
-
 		// decide where to go if the next tile is an intersection
-		Tile nextTile = actorTile.tileTowards(actorDir);
-		boolean unrestricted = maze.inGhostHouse(nextTile) || maze.isUnrestrictedIntersection(nextTile);
-		boolean upForbidden = maze.isUpwardsBlockedIntersection(nextTile);
+		final Tile nextTile = actorTile.tileTowards(actorDir);
+		final boolean unrestricted = maze.inGhostHouse(nextTile) || maze.isUnrestrictedIntersection(nextTile);
+		final boolean upForbidden = maze.isUpwardsBlockedIntersection(nextTile);
 		if (unrestricted || upForbidden) {
 			Stream<Integer> choices = NESW.dirs().boxed().filter(dir -> dir != NESW.inv(actorDir))
 					.filter(dir -> unrestricted || dir != Top4.N);
@@ -114,6 +112,9 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavio
 		return route;
 	}
 
+	/**
+	 * Find direction to neighbor tile with minimal distance to target.
+	 */
 	private Optional<Integer> findBestDir(PacManGameActor actor, Tile from, Tile to, Stream<Integer> choices) {
 		final Maze maze = actor.getMaze();
 		/*@formatter:off*/
