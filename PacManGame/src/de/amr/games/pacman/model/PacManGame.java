@@ -75,24 +75,24 @@ public class PacManGame {
 		pacMan = new PacMan(this);
 
 		// The ghosts
-		blinky = new Ghost("Blinky", pacMan, this, maze.getBlinkyHome(), maze.getBlinkyScatteringTarget(), Top4.S,
-				GhostColor.RED);
+		blinky = new Ghost("Blinky", pacMan, this, maze.getBlinkyHome(), maze.getPinkyHome(),
+				maze.getBlinkyScatteringTarget(), Top4.S, GhostColor.RED);
 
-		pinky = new Ghost("Pinky", pacMan, this, maze.getPinkyHome(), maze.getPinkyScatteringTarget(), Top4.S,
-				GhostColor.PINK);
+		pinky = new Ghost("Pinky", pacMan, this, maze.getPinkyHome(), maze.getPinkyHome(),
+				maze.getPinkyScatteringTarget(), Top4.S, GhostColor.PINK);
 
-		inky = new Ghost("Inky", pacMan, this, maze.getInkyHome(), maze.getInkyScatteringTarget(), Top4.N,
-				GhostColor.TURQUOISE);
+		inky = new Ghost("Inky", pacMan, this, maze.getInkyHome(), maze.getInkyHome(),
+				maze.getInkyScatteringTarget(), Top4.N, GhostColor.TURQUOISE);
 
-		clyde = new Ghost("Clyde", pacMan, this, maze.getClydeHome(), maze.getClydeScatteringTarget(), Top4.N,
-				GhostColor.ORANGE);
+		clyde = new Ghost("Clyde", pacMan, this, maze.getClydeHome(), maze.getClydeHome(),
+				maze.getClydeScatteringTarget(), Top4.N, GhostColor.ORANGE);
 
 		activeActors.addAll(Arrays.asList(pacMan, blinky, pinky, inky, clyde));
 
 		// Define the ghost behavior ("AI")
 
 		// Common ghost behavior
-		
+
 		getGhosts().forEach(ghost -> {
 			ghost.setBehavior(FRIGHTENED, ghost.flee(pacMan));
 			ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
@@ -101,9 +101,9 @@ public class PacManGame {
 		});
 
 		// Individual ghost behavior
-		
+
 		blinky.setBehavior(DEAD, blinky.headFor(() -> maze.getPinkyHome()));
-		
+
 		blinky.setBehavior(CHASING, blinky.attackDirectly(pacMan));
 		pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
 		inky.setBehavior(CHASING, inky.attackWithPartnerGhost(blinky, pacMan));
@@ -316,7 +316,7 @@ public class PacManGame {
 	// TODO implement this correctly
 	public int getGhostSafeTime(Ghost ghost) {
 		if (ghost == blinky) {
-			return sec(1);
+			return sec(0);
 		} else if (ghost == pinky) {
 			return sec(3);
 		} else if (ghost == inky) {

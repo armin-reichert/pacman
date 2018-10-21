@@ -12,11 +12,11 @@ public class LeaveGhostHouseTestController implements ViewController {
 
 	private final PacManGame game;
 	private final PlayViewX view;
-	private final Ghost blinky;
+	private final Ghost inky;
 
 	public LeaveGhostHouseTestController() {
 		game = new PacManGame();
-		blinky = game.getBlinky();
+		inky = game.getInky();
 		view = new PlayViewX(game);
 		view.setShowRoutes(true);
 		view.setShowGrid(true);
@@ -28,16 +28,16 @@ public class LeaveGhostHouseTestController implements ViewController {
 	public void init() {
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
-		game.getGhosts().filter(ghost -> ghost != blinky).forEach(ghost -> game.setActive(ghost, false));
-		blinky.initGhost();
-		blinky.setState(GhostState.SCATTERING);
+		game.getGhosts().filter(ghost -> ghost != inky).forEach(ghost -> game.setActive(ghost, false));
+		inky.initGhost();
+		inky.setState(GhostState.SCATTERING);
 	}
 
 	@Override
 	public void update() {
-		blinky.update();
-		if (blinky.getState() == GhostState.SAFE && blinky.getStateObject().isTerminated()) {
-			blinky.processEvent(new StartScatteringEvent());
+		inky.update();
+		if (inky.getState() == GhostState.SAFE && inky.getStateObject().isTerminated()) {
+			inky.processEvent(new StartScatteringEvent());
 		}
 		view.update();
 	}

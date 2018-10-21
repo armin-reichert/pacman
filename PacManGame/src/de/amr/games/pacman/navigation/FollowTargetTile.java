@@ -67,12 +67,14 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavio
 		}
 		route.setTargetTile(targetTile);
 
-		// leave ghost house by following route to Blinky's home tile
-		if (actor.inGhostHouse()) {
-			Optional<Integer> choice = findBestDir(actor, actorTile, maze.getBlinkyHome(),
-					Stream.of(actorDir, NESW.left(actorDir), NESW.right(actorDir)));
-			if (choice.isPresent()) {
-				route.setDir(choice.get());
+		// use path-finder inside ghosthouse
+		if (maze.inGhostHouse(actorTile)) {
+			if (maze.inGhostHouse(targetTile)) {
+				// entering ghosthouse
+				route.setDir(maze.alongPath(maze.findPath(actorTile, targetTile)).orElse(actorDir));
+			} else {
+				// exiting ghosthouse
+				route.setDir(maze.alongPath(maze.findPath(actorTile, maze.getBlinkyHome())).orElse(actorDir));
 			}
 			return route;
 		}
@@ -99,11 +101,11 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavio
 
 		// decide where to go if the next tile is an intersection
 		Tile nextTile = actorTile.tileTowards(actorDir);
-		boolean free = maze.isUnrestrictedIntersection(nextTile);
-		boolean notUp = maze.isUpwardsBlockedIntersection(nextTile);
-		if (free || notUp) {
-			Stream<Integer> choices = Stream.of(actorDir, NESW.left(actorDir), NESW.right(actorDir))
-					.filter(dir -> free || dir != Top4.N);
+		boolean unrestricted = maze.inGhostHouse(nextTile) || maze.isUnrestrictedIntersection(nextTile);
+		boolean upForbidden = maze.isUpwardsBlockedIntersection(nextTile);
+		if (unrestricted || upForbidden) {
+			Stream<Integer> choices = NESW.dirs().boxed().filter(dir -> dir != NESW.inv(actorDir))
+					.filter(dir -> unrestricted || dir != Top4.N);
 			Optional<Integer> choice = findBestDir(actor, nextTile, targetTile, choices);
 			if (choice.isPresent()) {
 				route.setDir(choice.get());
@@ -123,10 +125,26 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavio
 			.map(dir -> maze.neighborTile(from, dir))
 			.filter(Optional::isPresent).map(Optional::get)
 			.filter(actor::canEnterTile)
-			.sorted((t1, t2) -> Integer.compare(maze.euclidean2(t1, to), maze.euclidean2(t2, to)))
+			.sorted((t1, t2) -> compareTilesByTargetDist(maze, t1, t2, to))
 			.map(tile -> maze.direction(from, tile))
 			.map(OptionalInt::getAsInt)
 			.findFirst();
 		/*@formatter:on*/
+	}
+
+	private int compareTilesByTargetDist(Maze maze, Tile t1, Tile t2, Tile target) {
+		int dist1 = maze.euclidean2(t1, target);
+		int dist2 = maze.euclidean2(t2, target);
+		if (dist1 != dist2) {
+			return dist1 - dist2;
+		}
+		// if both tiles are neighbors of the target with same distance, make deterministic choice
+		// to avoid oszillation:
+		OptionalInt dir1 = maze.direction(t1, target);
+		OptionalInt dir2 = maze.direction(t2, target);
+		if (dir1.isPresent() && dir2.isPresent()) {
+			return dir1.getAsInt() - dir2.getAsInt();
+		}
+		return 0;
 	}
 }

@@ -320,7 +320,7 @@ public class Maze {
 	public Stream<Tile> getAdjacentTiles(Tile tile) {
 		return graph.adj(cell(tile)).mapToObj(this::tile);
 	}
-
+	
 	public List<Tile> findPath(Tile source, Tile target) {
 		if (isValidTile(source) && isValidTile(target)) {
 			GraphTraversal pathfinder =

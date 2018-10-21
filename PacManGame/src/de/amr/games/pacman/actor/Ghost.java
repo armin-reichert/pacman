@@ -46,23 +46,25 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 	private final Map<GhostState, ActorBehavior<Ghost>> behaviorMap;
 	private final PacMan pacMan;
 	private final Tile home;
+	private final Tile revivalTile;
 	private final Tile scatteringTarget;
 	private final int initialDir;
 	public Supplier<GhostState> fnNextAttackState; // chasing or scattering
 	public BooleanSupplier fnCanLeaveHouse;
 
-	public Ghost(String name, PacMan pacMan, PacManGame game, Tile home, Tile scatteringTarget, int initialDir,
+	public Ghost(String name, PacMan pacMan, PacManGame game, Tile home, Tile revivalTile, Tile scatteringTarget, int initialDir,
 			GhostColor color) {
 		super(game);
 		this.name = name;
 		this.pacMan = pacMan;
 		this.home = home;
+		this.revivalTile = revivalTile;
 		this.scatteringTarget = scatteringTarget;
 		this.initialDir = initialDir;
 		fsm = buildStateMachine(name);
 		fsm.traceTo(Application.LOGGER, Application.app().clock::getFrequency);
 		fnNextAttackState = () -> getState();
-		fnCanLeaveHouse = () -> fsm.state().isTerminated();
+		fnCanLeaveHouse = () -> fsm.state().getDuration() == State.ENDLESS || fsm.state().isTerminated();
 		behaviorMap = new EnumMap<>(GhostState.class);
 		setSprites(color);
 	}
@@ -90,6 +92,10 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 
 	public Tile getHomeTile() {
 		return home;
+	}
+	
+	public Tile getRevivalTile() {
+		return revivalTile;
 	}
 
 	public Tile getScatteringTarget() {
@@ -202,7 +208,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 					.timeoutAfter(() -> getGame().getGhostSafeTime(this))
 					.onTick(() -> {
 						move();	
-						sprites.select("s_color_" + getCurrentDir()); 
+						sprites.select("s_color_" + getCurrentDir());
 					})
 				
 				.state(SCATTERING)
@@ -221,10 +227,12 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 				
 				.state(FRIGHTENED)
 					.onEntry(() -> {
-						sprites.select("s_frightened"); 
 						getBehavior().computePath(this); 
 					})
-					.onTick(this::move)
+					.onTick(() -> {
+						move();
+						sprites.select(inGhostHouse() ? "s_color_" + getCurrentDir() : "s_frightened");
+					})
 				
 				.state(DYING)
 					.timeoutAfter(getGame()::getGhostDyingTime)
@@ -318,7 +326,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 				.stay(DYING).on(StartChasingEvent.class)
 					
 				.when(DEAD).then(SAFE)
-					.condition(() -> inGhostHouse())
+					.condition(() -> getTile().equals(getRevivalTile()))
 					.act(this::reviveGhost)
 				
 				.stay(DEAD).on(PacManGainsPowerEvent.class)
