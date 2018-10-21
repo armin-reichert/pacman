@@ -25,14 +25,14 @@ class FollowFixedPath<T extends PacManGameActor> implements ActorBehavior<T> {
 	}
 
 	@Override
-	public MazeRoute getRoute(T mover) {
+	public Route getRoute(T mover) {
 		if (path.size() == 0 || mover.getTile().equals(path.get(path.size() - 1))) {
 			computePath(mover);
 		}
 		while (path.size() > 0 && !mover.getTile().equals(path.get(0))) {
 			path.remove(0);
 		}
-		MazeRoute route = new MazeRoute();
+		Route route = new Route();
 		route.setPath(path);
 		route.setDir(mover.getMaze().alongPath(path).orElse(mover.getCurrentDir()));
 		return route;

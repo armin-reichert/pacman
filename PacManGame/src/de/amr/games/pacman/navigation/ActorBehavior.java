@@ -19,7 +19,7 @@ public interface ActorBehavior<T extends PacManGameActor> {
 	 *                the moving actor
 	 * @return the route the actor should take
 	 */
-	MazeRoute getRoute(T actor);
+	Route getRoute(T actor);
 
 	/**
 	 * Triggers computation of a static path for the actor. The concrete implementation can then store

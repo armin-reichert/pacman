@@ -215,7 +215,7 @@ public interface GhostBehaviors {
 	 * @return bouncing behavior
 	 */
 	default ActorBehavior<Ghost> bounce() {
-		return bouncer -> new MazeRoute(
+		return bouncer -> new Route(
 				bouncer.isStuck() ? NESW.inv(bouncer.getCurrentDir()) : bouncer.getCurrentDir());
 	}
 
@@ -241,7 +241,7 @@ public interface GhostBehaviors {
 	 */
 	default ActorBehavior<Ghost> followRoute(Supplier<Tile> targetSupplier) {
 		return ghost -> {
-			MazeRoute route = new MazeRoute();
+			Route route = new Route();
 			route.setPath(ghost.getMaze().findPath(ghost.getTile(), targetSupplier.get()));
 			route.setDir(ghost.getMaze().alongPath(route.getPath()).orElse(-1));
 			return route;
@@ -278,6 +278,6 @@ public interface GhostBehaviors {
 	 * @return behavior keeping the current move direction
 	 */
 	default ActorBehavior<Ghost> keepDirection() {
-		return ghost -> new MazeRoute(ghost.getCurrentDir());
+		return ghost -> new Route(ghost.getCurrentDir());
 	}
 }

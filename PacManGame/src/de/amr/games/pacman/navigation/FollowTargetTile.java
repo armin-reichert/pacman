@@ -45,8 +45,8 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavio
 	}
 
 	@Override
-	public MazeRoute getRoute(T actor) {
-		final MazeRoute route = new MazeRoute();
+	public Route getRoute(T actor) {
+		final Route route = new Route();
 		final Maze maze = actor.getMaze();
 		final int actorDir = actor.getCurrentDir();
 		final Tile actorTile = actor.getTile();
@@ -59,7 +59,7 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavio
 		if (maze.inTeleportSpace(targetTile)) {
 			targetTile = targetTile.col < 0 ? maze.getLeftTunnelEntry() : maze.getRightTunnelEntry();
 		}
-		route.setTargetTile(targetTile);
+		route.setTarget(targetTile);
 
 		// use path-finder inside ghosthouse
 		if (maze.inGhostHouse(actorTile)) {

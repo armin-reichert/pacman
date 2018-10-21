@@ -22,7 +22,7 @@ import de.amr.games.pacman.actor.TilePlacedEntity;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.navigation.MazeRoute;
+import de.amr.games.pacman.navigation.Route;
 import de.amr.statemachine.State;
 
 /**
@@ -227,7 +227,7 @@ public class PlayViewX extends PlayView {
 
 	private void drawRoute(Graphics2D g, Ghost ghost) {
 		g.setColor(ghostColor(ghost));
-		MazeRoute route = ghost.getBehavior().getRoute(ghost);
+		Route route = ghost.getBehavior().getRoute(ghost);
 		List<Tile> path = route.getPath();
 
 		if (path.size() > 1) {
@@ -243,12 +243,12 @@ public class PlayViewX extends PlayView {
 			g.translate(targetTile.col * TS, targetTile.row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-targetTile.col * TS, -targetTile.row * TS);
-		} else if (route.getTargetTile() != null) {
+		} else if (route.getTarget() != null) {
 			g.drawLine((int) ghost.tf().getCenter().x, (int) ghost.tf().getCenter().y,
-					route.getTargetTile().col * TS + TS / 2, route.getTargetTile().row * TS + TS / 2);
-			g.translate(route.getTargetTile().col * TS, route.getTargetTile().row * TS);
+					route.getTarget().col * TS + TS / 2, route.getTarget().row * TS + TS / 2);
+			g.translate(route.getTarget().col * TS, route.getTarget().row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
-			g.translate(-route.getTargetTile().col * TS, -route.getTargetTile().row * TS);
+			g.translate(-route.getTarget().col * TS, -route.getTarget().row * TS);
 		}
 
 		if (ghost == game.getClyde() && ghost.getState() == GhostState.CHASING) {

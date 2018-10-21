@@ -7,12 +7,12 @@ import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Represents a route through the maze. For dynamic routes (where the direction to be taken is
- * queried at each crossing), the path may be empty. For fixed routes it is computed only once.
+ * Represents a route through the maze. For dynamic routes (where the next direction is queried at
+ * each intersection), the path may be empty. For fixed routes, the path is computed only once.
  * 
  * @author Armin Reichert
  */
-public class MazeRoute {
+public class Route {
 
 	/** The direction to take (see class {@link Top4} for the direction constants. */
 	private int dir;
@@ -21,12 +21,12 @@ public class MazeRoute {
 	private List<Tile> path = Collections.emptyList();
 
 	/** The target tile of this route. */
-	private Tile targetTile;
+	private Tile target;
 
 	/**
 	 * Creates an empty route without defined direction.
 	 */
-	public MazeRoute() {
+	public Route() {
 		this(-1);
 	}
 
@@ -36,7 +36,7 @@ public class MazeRoute {
 	 * @param dir
 	 *              route direction
 	 */
-	public MazeRoute(int dir) {
+	public Route(int dir) {
 		this.dir = dir;
 	}
 
@@ -58,14 +58,14 @@ public class MazeRoute {
 	}
 
 	/**
-	 * @return the (optional) list of tiles defining this route.
+	 * @return the path of this route.
 	 */
 	public List<Tile> getPath() {
 		return Collections.unmodifiableList(path);
 	}
 
 	/**
-	 * Sets the path (as a list of tiles) for this route.
+	 * Sets the path of this route.
 	 * 
 	 * @param path
 	 *               tile list defining the path
@@ -77,17 +77,17 @@ public class MazeRoute {
 	/**
 	 * @return the target tile of this route
 	 */
-	public Tile getTargetTile() {
-		return targetTile;
+	public Tile getTarget() {
+		return target;
 	}
 
 	/**
 	 * Sets the target tile of this route.
 	 * 
-	 * @param targetTile
-	 *                     the target tile
+	 * @param target
+	 *                 the target tile
 	 */
-	public void setTargetTile(Tile targetTile) {
-		this.targetTile = targetTile;
+	public void setTarget(Tile target) {
+		this.target = target;
 	}
 }
