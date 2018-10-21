@@ -71,10 +71,12 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavio
 		if (maze.inGhostHouse(actorTile)) {
 			if (maze.inGhostHouse(targetTile)) {
 				// entering ghosthouse
-				route.setDir(maze.alongPath(maze.findPath(actorTile, targetTile)).orElse(actorDir));
+				route.setPath(maze.findPath(actorTile, targetTile));
+				route.setDir(maze.alongPath(route.getPath()).orElse(actorDir));
 			} else {
 				// exiting ghosthouse
-				route.setDir(maze.alongPath(maze.findPath(actorTile, maze.getBlinkyHome())).orElse(actorDir));
+				route.setPath(maze.findPath(actorTile, maze.getBlinkyHome()));
+				route.setDir(maze.alongPath(route.getPath()).orElse(actorDir));
 			}
 			return route;
 		}
