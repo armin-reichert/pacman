@@ -231,7 +231,8 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 					})
 					.onTick(() -> {
 						move();
-						sprites.select(inGhostHouse() ? "s_color_" + getCurrentDir() : "s_frightened");
+						sprites.select(inGhostHouse() ? "s_color_" + getCurrentDir() : 
+							pacMan.isGettingWeaker() ? "s_flashing" : "s_frightened");
 					})
 				
 				.state(DYING)
