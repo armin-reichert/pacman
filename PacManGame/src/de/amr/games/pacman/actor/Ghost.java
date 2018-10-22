@@ -204,7 +204,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 			.states()
 
 				.state(LOCKED)
-					.timeoutAfter(() -> getGame().getGhostSafeTime(this))
+					.timeoutAfter(() -> getGame().getGhostLockedTime(this))
 					.onTick(() -> {
 						move();	
 						sprites.select("s_color_" + getCurrentDir());

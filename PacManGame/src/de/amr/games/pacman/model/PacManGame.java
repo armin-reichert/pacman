@@ -309,7 +309,7 @@ public class PacManGame {
 	}
 
 	// TODO implement this correctly
-	public int getGhostSafeTime(Ghost ghost) {
+	public int getGhostLockedTime(Ghost ghost) {
 		if (ghost == blinky) {
 			return sec(0);
 		} else if (ghost == pinky) {
