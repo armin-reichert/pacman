@@ -4,7 +4,7 @@ import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.actor.GhostState.SAFE;
+import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 
 import java.util.Arrays;
@@ -92,7 +92,7 @@ public class PacManGame {
 			ghost.setBehavior(FRIGHTENED, ghost.flee(pacMan));
 			ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
 			ghost.setBehavior(DEAD, ghost.headFor(ghost::getRevivalTile));
-			ghost.setBehavior(SAFE, ghost.bounce());
+			ghost.setBehavior(LOCKED, ghost.bounce());
 		});
 
 		// Individual ghost behavior
@@ -103,7 +103,7 @@ public class PacManGame {
 
 		// Other game rules.
 		// TODO: incomplete
-		clyde.fnCanLeaveHouse = () -> {
+		clyde.fnCanLeaveGhostHouse = () -> {
 			if (!clyde.getStateObject().isTerminated()) {
 				return false; // wait for timeout
 			}
@@ -295,7 +295,7 @@ public class PacManGame {
 			return speed(1.5f);
 		case FRIGHTENED:
 			return tunnel ? tunnelSpeed : speed(Level.floatValue(level, Property.fGhostAfraidSpeed));
-		case SAFE:
+		case LOCKED:
 			return speed(0.75f);
 		case SCATTERING:
 			return tunnel ? tunnelSpeed : speed(Level.floatValue(level, Property.fGhostSpeed));

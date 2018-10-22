@@ -5,8 +5,7 @@ import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.DYING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.actor.GhostState.HOME;
-import static de.amr.games.pacman.actor.GhostState.SAFE;
+import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Maze.NESW;
 
@@ -49,7 +48,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 	private final Tile scatteringTarget;
 	private final int initialDir;
 	public Supplier<GhostState> fnNextAttackState; // chasing or scattering
-	public BooleanSupplier fnCanLeaveHouse;
+	public BooleanSupplier fnCanLeaveGhostHouse;
 
 	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, Tile revivalTile,
 			Tile scatteringTarget, int initialDir) {
@@ -64,7 +63,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 		fsm = buildStateMachine(name);
 		fsm.traceTo(Application.LOGGER, app().clock::getFrequency);
 		fnNextAttackState = () -> getState();
-		fnCanLeaveHouse = () -> fsm.state().getDuration() == State.ENDLESS || fsm.state().isTerminated();
+		fnCanLeaveGhostHouse = () -> fsm.state().getDuration() == State.ENDLESS || fsm.state().isTerminated();
 	}
 
 	public void initGhost() {
@@ -76,10 +75,14 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 	}
 
 	private void reviveGhost() {
-		setCurrentDir(Top4.N);
-		setNextDir(Top4.N);
+		int dir = initialDir;
+		if (dir == Top4.E || dir == Top4.W) {
+			dir = Top4.N; // let Blinky look upwards when in ghost house
+		}
+		setCurrentDir(dir);
+		setNextDir(dir);
 		sprites.forEach(Sprite::resetAnimation);
-		sprites.select("s_color_" + getCurrentDir());
+		sprites.select("s_color_" + dir);
 	}
 
 	// Accessors
@@ -131,7 +134,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 
 	@Override
 	public boolean canTraverseDoor(Tile door) {
-		if (getState() == GhostState.SAFE) {
+		if (getState() == GhostState.LOCKED) {
 			return false;
 		}
 		if (getState() == GhostState.DEAD) {
@@ -140,8 +143,8 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 		return inGhostHouse();
 	}
 
-	private boolean canLeaveHouse() {
-		return fnCanLeaveHouse.getAsBoolean();
+	private boolean canLeaveGhostHouse() {
+		return fnCanLeaveGhostHouse.getAsBoolean();
 	}
 
 	private boolean isPacManGreedy() {
@@ -166,6 +169,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 
 	@Override
 	public void init() {
+		initGhost();
 		fsm.init();
 	}
 
@@ -195,14 +199,11 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 		return StateMachine.beginStateMachine(GhostState.class, GameEvent.class)
 			 
 			.description(String.format("[%s]", ghostName))
-			.initialState(HOME)
+			.initialState(LOCKED)
 		
 			.states()
 
-				.state(HOME)
-					.onEntry(this::initGhost)
-				
-				.state(SAFE)
+				.state(LOCKED)
 					.timeoutAfter(() -> getGame().getGhostSafeTime(this))
 					.onTick(() -> {
 						move();	
@@ -258,43 +259,35 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 					
 			.transitions()
 
-				.when(HOME).then(SAFE)
+				.stay(LOCKED)
+					.on(StartChasingEvent.class)
+					.condition(() -> !canLeaveGhostHouse())
 				
-				.stay(HOME)
+				.when(LOCKED).then(CHASING)
+					.on(StartChasingEvent.class)
+					.condition(() -> canLeaveGhostHouse())
+				
+				.stay(LOCKED)
 					.on(StartScatteringEvent.class)
-				
-				.stay(HOME)
-					.on(StartChasingEvent.class)
-
-				.stay(SAFE)
-					.on(StartChasingEvent.class)
-					.condition(() -> !canLeaveHouse())
-				
-				.when(SAFE).then(CHASING)
-					.on(StartChasingEvent.class)
-					.condition(() -> canLeaveHouse())
-				
-				.stay(SAFE)
-					.on(StartScatteringEvent.class)
-					.condition(() -> !canLeaveHouse())
+					.condition(() -> !canLeaveGhostHouse())
 					
-				.when(SAFE).then(SCATTERING)
+				.when(LOCKED).then(SCATTERING)
 					.on(StartScatteringEvent.class)
-					.condition(() -> canLeaveHouse())
+					.condition(() -> canLeaveGhostHouse())
 					
-				.stay(SAFE).on(PacManGainsPowerEvent.class)
-				.stay(SAFE).on(PacManGettingWeakerEvent.class)
-				.stay(SAFE).on(PacManLostPowerEvent.class)
-				.stay(SAFE).on(GhostKilledEvent.class)
+				.stay(LOCKED).on(PacManGainsPowerEvent.class)
+				.stay(LOCKED).on(PacManGettingWeakerEvent.class)
+				.stay(LOCKED).on(PacManLostPowerEvent.class)
+				.stay(LOCKED).on(GhostKilledEvent.class)
 				
-				.when(SAFE).then(FRIGHTENED)
-					.condition(() -> canLeaveHouse() && isPacManGreedy())
+				.when(LOCKED).then(FRIGHTENED)
+					.condition(() -> canLeaveGhostHouse() && isPacManGreedy())
 
-				.when(SAFE).then(SCATTERING)
-					.condition(() -> canLeaveHouse() && getNextAttackState() == SCATTERING)
+				.when(LOCKED).then(SCATTERING)
+					.condition(() -> canLeaveGhostHouse() && getNextAttackState() == SCATTERING)
 				
-				.when(SAFE).then(CHASING)
-					.condition(() -> canLeaveHouse() && getNextAttackState() == CHASING)
+				.when(LOCKED).then(CHASING)
+					.condition(() -> canLeaveGhostHouse() && getNextAttackState() == CHASING)
 				
 				.stay(CHASING).on(StartChasingEvent.class)
 				.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
@@ -324,7 +317,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 				.stay(DYING).on(StartScatteringEvent.class)
 				.stay(DYING).on(StartChasingEvent.class)
 					
-				.when(DEAD).then(SAFE)
+				.when(DEAD).then(LOCKED)
 					.condition(() -> getTile().equals(getRevivalTile()))
 					.act(this::reviveGhost)
 				

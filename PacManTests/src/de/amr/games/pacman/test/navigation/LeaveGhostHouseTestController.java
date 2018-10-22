@@ -36,7 +36,7 @@ public class LeaveGhostHouseTestController implements ViewController {
 	@Override
 	public void update() {
 		inky.update();
-		if (inky.getState() == GhostState.SAFE && inky.getStateObject().isTerminated()) {
+		if (inky.getState() == GhostState.LOCKED && inky.getStateObject().isTerminated()) {
 			inky.processEvent(new StartScatteringEvent());
 		}
 		view.update();

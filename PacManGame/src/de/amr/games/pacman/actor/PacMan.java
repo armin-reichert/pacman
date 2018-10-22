@@ -243,7 +243,7 @@ public class PacMan extends PacManGameActor {
 			Optional<Ghost> collidingGhost = world.getGhosts()
 				.filter(ghost -> ghost.getState() != GhostState.DEAD)
 				.filter(ghost -> ghost.getState() != GhostState.DYING)
-				.filter(ghost -> ghost.getState() != GhostState.SAFE)
+				.filter(ghost -> ghost.getState() != GhostState.LOCKED)
 				.filter(ghost -> ghost.getTile().equals(tile))
 				.findFirst();
 			/*@formatter:on*/
