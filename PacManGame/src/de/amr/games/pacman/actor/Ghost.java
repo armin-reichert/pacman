@@ -302,7 +302,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 				.when(SCATTERING).then(CHASING).on(StartChasingEvent.class)
 				
 				.stay(FRIGHTENED).on(PacManGainsPowerEvent.class)
-				.stay(FRIGHTENED).on(PacManGettingWeakerEvent.class).act(e -> sprites.select("s_flashing"))
+				.stay(FRIGHTENED).on(PacManGettingWeakerEvent.class)
 				.stay(FRIGHTENED).on(StartScatteringEvent.class)
 				.stay(FRIGHTENED).on(StartChasingEvent.class)
 				
