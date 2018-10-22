@@ -2,6 +2,7 @@ package de.amr.games.pacman.navigation;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.OptionalInt;
 
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.Tile;
@@ -14,7 +15,10 @@ import de.amr.games.pacman.model.Tile;
  */
 public class Route {
 
-	/** The direction to take (see class {@link Top4} for the direction constants. */
+	/**
+	 * The direction to take (see class {@link Top4} for the direction constants), {@code -1} means no
+	 * value.
+	 */
 	private int dir;
 
 	/** (Optional) The route as a list of tiles. */
@@ -41,20 +45,24 @@ public class Route {
 	}
 
 	/**
-	 * @return the next direction to take for following this route or {@code -1} if no information is
-	 *         available.
+	 * @return the direction to take for following this route.
 	 */
-	public int getDir() {
-		return dir;
+	public OptionalInt getDir() {
+		return dir != -1 ? OptionalInt.of(dir) : OptionalInt.empty();
 	}
 
 	/**
-	 * Sets the next direction for this route.
+	 * Sets the direction for following this route.
 	 * 
 	 * @param dir
+	 *              the direction (Top4.N, Top4.E, Top4.S, Top4.W) or {@code -1}
 	 */
 	public void setDir(int dir) {
-		this.dir = dir;
+		if (dir == -1 || dir == Top4.N || dir == Top4.E || dir == Top4.S || dir == Top4.W) {
+			this.dir = dir;
+		} else {
+			throw new IllegalArgumentException("Illegal direction value: " + dir);
+		}
 	}
 
 	/**

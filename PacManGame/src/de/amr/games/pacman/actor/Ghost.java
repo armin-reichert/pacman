@@ -11,6 +11,7 @@ import static de.amr.games.pacman.model.Maze.NESW;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.OptionalInt;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -128,7 +129,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 	}
 
 	@Override
-	public int supplyIntendedDir() {
+	public OptionalInt supplyIntendedDir() {
 		return getBehavior().getRoute(this).getDir();
 	}
 

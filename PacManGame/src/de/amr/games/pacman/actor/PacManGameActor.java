@@ -2,6 +2,8 @@ package de.amr.games.pacman.actor;
 
 import static de.amr.games.pacman.model.Maze.NESW;
 
+import java.util.OptionalInt;
+
 import de.amr.easy.game.entity.SpriteEntity;
 import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.math.Vector2f;
@@ -46,9 +48,9 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 	/**
 	 * Supplies the intended move direction which will be taken as soon as possible.
 	 * 
-	 * @return intended direction
+	 * @return (optional) intended direction
 	 */
-	public abstract int supplyIntendedDir();
+	public abstract OptionalInt supplyIntendedDir();
 
 	/**
 	 * Returns the current move speed in pixels per tick.
@@ -169,7 +171,7 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 		// move towards the current direction as far as possible
 		float possibleMoveDistance = possibleMoveDistance(currentDir);
 		if (possibleMoveDistance > 0) {
-//			LOGGER.info("Move " + possibleMoveDistance);
+			// LOGGER.info("Move " + possibleMoveDistance);
 			tf.setVelocity(velocity(possibleMoveDistance, currentDir));
 			tf.move();
 			// check for exit from teleport space
@@ -180,10 +182,7 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 			}
 		}
 		// query intended direction
-		int dir = supplyIntendedDir();
-		if (dir != -1) {
-			setNextDir(dir);
-		}
+		supplyIntendedDir().ifPresent(this::setNextDir);
 	}
 
 	/**

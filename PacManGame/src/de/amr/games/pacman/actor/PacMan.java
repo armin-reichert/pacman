@@ -11,6 +11,7 @@ import static de.amr.games.pacman.model.Maze.NESW;
 
 import java.awt.event.KeyEvent;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.sprites.Sprite;
@@ -77,26 +78,26 @@ public class PacMan extends PacManGameActor {
 
 	public boolean isGettingWeaker() {
 		return getState() == PacManState.GREEDY
-				&& getStateObject().getTicksRemaining() < getGame().getPacManGettingWeakerRemainingTime();
+				&& getStateObject().getTicksRemaining() < getGame().getPacManGettingWeakerTicks();
 	}
 
 	// Movement
 
 	@Override
-	public int supplyIntendedDir() {
+	public OptionalInt supplyIntendedDir() {
 		if (Keyboard.keyDown(KeyEvent.VK_UP)) {
-			return Top4.N;
+			return OptionalInt.of(Top4.N);
 		}
 		if (Keyboard.keyDown(KeyEvent.VK_RIGHT)) {
-			return Top4.E;
+			return OptionalInt.of(Top4.E);
 		}
 		if (Keyboard.keyDown(KeyEvent.VK_DOWN)) {
-			return Top4.S;
+			return OptionalInt.of(Top4.S);
 		}
 		if (Keyboard.keyDown(KeyEvent.VK_LEFT)) {
-			return Top4.W;
+			return OptionalInt.of(Top4.W);
 		}
-		return -1;
+		return OptionalInt.empty();
 	}
 
 	@Override
@@ -283,7 +284,7 @@ public class PacMan extends PacManGameActor {
 		@Override
 		public void onTick() {
 			super.onTick();
-			if (getTicksRemaining() == getGame().getPacManGettingWeakerRemainingTime()) {
+			if (getTicksRemaining() == getGame().getPacManGettingWeakerTicks()) {
 				getEventManager().publish(new PacManGettingWeakerEvent());
 			}
 		}

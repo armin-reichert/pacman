@@ -361,7 +361,7 @@ public class PacManGame {
 		return sec(Level.intValue(level, Property.iPacManPowerSeconds));
 	}
 
-	public int getPacManGettingWeakerRemainingTime() {
+	public int getPacManGettingWeakerTicks() {
 		return sec(getGhostNumFlashes() * 400 / 1000);
 	}
 
