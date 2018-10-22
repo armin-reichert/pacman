@@ -119,7 +119,7 @@ public class PlayView implements View, Controller, PacManWorld {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		if (game.isActive(game.getPacMan())) {
+		if (game.isActorActive(game.getPacMan())) {
 			game.getPacMan().draw(g);
 		}
 		game.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)

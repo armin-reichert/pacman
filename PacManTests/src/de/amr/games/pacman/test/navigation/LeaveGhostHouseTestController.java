@@ -28,7 +28,7 @@ public class LeaveGhostHouseTestController implements ViewController {
 	public void init() {
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
-		game.getGhosts().filter(ghost -> ghost != inky).forEach(ghost -> game.setActive(ghost, false));
+		game.getGhosts().filter(ghost -> ghost != inky).forEach(ghost -> game.setActorActive(ghost, false));
 		inky.initGhost();
 		inky.setState(GhostState.SCATTERING);
 	}

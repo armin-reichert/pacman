@@ -9,11 +9,11 @@ import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import de.amr.easy.grid.impl.Top4;
@@ -24,10 +24,8 @@ import de.amr.games.pacman.model.Level.Property;
 import de.amr.games.pacman.theme.GhostColor;
 
 /**
- * The "model" (in MVC speak) of the Pac-Man game.
- * 
- * <p>
- * Contains the current game state and defines the "business logic" for playing the game.
+ * The "model" (in MVC speak) of the Pac-Man game. Contains the current game state and defines the
+ * "business logic" for playing the game. Also serves as factory and container for the actors.
  * 
  * @author Armin Reichert
  */
@@ -47,7 +45,7 @@ public class PacManGame {
 	private final Ghost blinky, pinky, inky, clyde;
 
 	/** The currently active actors. Actors can be toggled during the game. */
-	private final Set<PacManGameActor> activeActors = new HashSet<>();
+	private final Map<PacManGameActor, Boolean> actorState = new HashMap<>();
 
 	/** The game score including highscore management. */
 	private final Score score;
@@ -69,29 +67,26 @@ public class PacManGame {
 
 	public PacManGame() {
 		maze = new Maze();
+
 		score = new Score(this);
 
-		// Pac-Man
 		pacMan = new PacMan(this);
 
-		// The ghosts
-		blinky = new Ghost("Blinky", pacMan, this, maze.getBlinkyHome(), maze.getPinkyHome(),
-				maze.getBlinkyScatteringTarget(), Top4.S, GhostColor.RED);
+		blinky = new Ghost(this, "Blinky", GhostColor.RED, maze.getBlinkyHome(), maze.getPinkyHome(),
+				maze.getBlinkyScatteringTarget(), Top4.S);
 
-		pinky = new Ghost("Pinky", pacMan, this, maze.getPinkyHome(), maze.getPinkyHome(),
-				maze.getPinkyScatteringTarget(), Top4.S, GhostColor.PINK);
+		pinky = new Ghost(this, "Pinky", GhostColor.PINK, maze.getPinkyHome(), maze.getPinkyHome(),
+				maze.getPinkyScatteringTarget(), Top4.S);
 
-		inky = new Ghost("Inky", pacMan, this, maze.getInkyHome(), maze.getInkyHome(),
-				maze.getInkyScatteringTarget(), Top4.N, GhostColor.TURQUOISE);
+		inky = new Ghost(this, "Inky", GhostColor.TURQUOISE, maze.getInkyHome(), maze.getInkyHome(),
+				maze.getInkyScatteringTarget(), Top4.N);
 
-		clyde = new Ghost("Clyde", pacMan, this, maze.getClydeHome(), maze.getClydeHome(),
-				maze.getClydeScatteringTarget(), Top4.N, GhostColor.ORANGE);
+		clyde = new Ghost(this, "Clyde", GhostColor.ORANGE, maze.getClydeHome(), maze.getClydeHome(),
+				maze.getClydeScatteringTarget(), Top4.N);
 
-		activeActors.addAll(Arrays.asList(pacMan, blinky, pinky, inky, clyde));
+		Arrays.asList(pacMan, blinky, pinky, inky, clyde).forEach(actor -> actorState.put(actor, true));
 
 		// Define the ghost behavior ("AI")
-
-		// Common ghost behavior
 
 		getGhosts().forEach(ghost -> {
 			ghost.setBehavior(FRIGHTENED, ghost.flee(pacMan));
@@ -106,7 +101,8 @@ public class PacManGame {
 		inky.setBehavior(CHASING, inky.attackWithPartnerGhost(blinky, pacMan));
 		clyde.setBehavior(CHASING, clyde.attackOrReject(clyde, pacMan, 8 * TS));
 
-		// Other game rules. TODO: make these complete
+		// Other game rules.
+		// TODO: incomplete
 		clyde.fnCanLeaveHouse = () -> {
 			if (!clyde.getStateObject().isTerminated()) {
 				return false; // wait for timeout
@@ -140,28 +136,30 @@ public class PacManGame {
 	}
 
 	public Stream<Ghost> getActiveGhosts() {
-		return getGhosts().filter(this::isActive);
+		return getGhosts().filter(this::isActorActive);
 	}
 
-	public void initActors() {
-		activeActors.forEach(PacManGameActor::init);
+	public void initActiveActors() {
+		actorState.entrySet().forEach(e -> {
+			if (e.getValue()) {
+				e.getKey().init();
+			}
+		});
 	}
 
-	public boolean isActive(PacManGameActor actor) {
-		return activeActors.contains(actor);
+	public boolean isActorActive(PacManGameActor actor) {
+		return actorState.get(actor);
 	}
 
-	public void setActive(PacManGameActor actor, boolean active) {
-		if (active == isActive(actor)) {
-			return;
+	public void setActorActive(PacManGameActor actor, boolean active) {
+		if (actorState.containsKey(actor) && active == actorState.get(actor)) {
+			return; // no change
 		}
-		if (active) {
-			activeActors.add(actor);
-			actor.init();
-		} else {
-			activeActors.remove(actor);
-		}
+		actorState.put(actor, active);
 		actor.setVisible(active);
+		if (active) {
+			actor.init();
+		}
 	}
 
 	public int getPoints() {

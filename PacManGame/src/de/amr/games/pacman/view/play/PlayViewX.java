@@ -183,7 +183,7 @@ public class PlayViewX extends PlayView {
 	}
 
 	private void toggleGhost(Ghost ghost) {
-		game.setActive(ghost, !game.isActive(ghost));
+		game.setActorActive(ghost, !game.isActorActive(ghost));
 	}
 
 	private static Color ghostColor(Ghost ghost) {

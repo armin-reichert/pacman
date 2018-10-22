@@ -41,8 +41,8 @@ public class FollowFixedPathTestController implements ViewController {
 		targetIndex = 0;
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
-		game.setActive(pacMan, false);
-		game.getGhosts().filter(ghost -> ghost != blinky).forEach(ghost -> game.setActive(ghost, false));
+		game.setActorActive(pacMan, false);
+		game.getGhosts().filter(ghost -> ghost != blinky).forEach(ghost -> game.setActorActive(ghost, false));
 		blinky.initGhost();
 		blinky.setState(GhostState.CHASING);
 		blinky.setBehavior(GhostState.CHASING, blinky.followFixedPath(() -> targets.get(targetIndex)));

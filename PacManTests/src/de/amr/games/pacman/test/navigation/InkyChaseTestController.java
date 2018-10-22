@@ -33,10 +33,10 @@ public class InkyChaseTestController implements ViewController {
 	public void init() {
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
-		game.setActive(game.getPacMan(), true);
+		game.setActorActive(game.getPacMan(), true);
 		game.getPacMan().init();
-		game.setActive(game.getPinky(), false);
-		game.setActive(game.getClyde(), false);
+		game.setActorActive(game.getPinky(), false);
+		game.setActorActive(game.getClyde(), false);
 		int width = app().settings.width;
 		int height = app().settings.height;
 		game.getInky().setBehavior(GhostState.CHASING, attackWithBlinky(width, height));

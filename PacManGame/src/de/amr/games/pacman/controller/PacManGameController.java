@@ -144,7 +144,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 	}
 
 	private void resetPlayScreen() {
-		game.initActors();
+		game.initActiveActors();
 		getPlayScreen().init();
 	}
 

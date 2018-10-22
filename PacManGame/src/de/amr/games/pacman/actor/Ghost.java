@@ -44,33 +44,31 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 	private final String name;
 	private final StateMachine<GhostState, GameEvent> fsm;
 	private final Map<GhostState, ActorBehavior<Ghost>> behaviorMap;
-	private final PacMan pacMan;
-	private final Tile home;
+	private final Tile initialTile;
 	private final Tile revivalTile;
 	private final Tile scatteringTarget;
 	private final int initialDir;
 	public Supplier<GhostState> fnNextAttackState; // chasing or scattering
 	public BooleanSupplier fnCanLeaveHouse;
 
-	public Ghost(String name, PacMan pacMan, PacManGame game, Tile home, Tile revivalTile, Tile scatteringTarget, int initialDir,
-			GhostColor color) {
+	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, Tile revivalTile,
+			Tile scatteringTarget, int initialDir) {
 		super(game);
 		this.name = name;
-		this.pacMan = pacMan;
-		this.home = home;
+		setSprites(color);
+		this.initialTile = initialTile;
 		this.revivalTile = revivalTile;
 		this.scatteringTarget = scatteringTarget;
 		this.initialDir = initialDir;
+		behaviorMap = new EnumMap<>(GhostState.class);
 		fsm = buildStateMachine(name);
-		fsm.traceTo(Application.LOGGER, Application.app().clock::getFrequency);
+		fsm.traceTo(Application.LOGGER, app().clock::getFrequency);
 		fnNextAttackState = () -> getState();
 		fnCanLeaveHouse = () -> fsm.state().getDuration() == State.ENDLESS || fsm.state().isTerminated();
-		behaviorMap = new EnumMap<>(GhostState.class);
-		setSprites(color);
 	}
 
 	public void initGhost() {
-		placeAtTile(home, getTileSize() / 2, 0);
+		placeAtTile(initialTile, getTileSize() / 2, 0);
 		setCurrentDir(initialDir);
 		setNextDir(initialDir);
 		sprites.forEach(Sprite::resetAnimation);
@@ -90,10 +88,10 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 		return name;
 	}
 
-	public Tile getHomeTile() {
-		return home;
+	public Tile getInitialTile() {
+		return initialTile;
 	}
-	
+
 	public Tile getRevivalTile() {
 		return revivalTile;
 	}
@@ -147,7 +145,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 	}
 
 	private boolean isPacManGreedy() {
-		return pacMan.getState() == PacManState.GREEDY;
+		return getGame().getPacMan().getState() == PacManState.GREEDY;
 	}
 
 	// Sprites
@@ -232,7 +230,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 					.onTick(() -> {
 						move();
 						sprites.select(inGhostHouse() ? "s_color_" + getCurrentDir() : 
-							pacMan.isGettingWeaker() ? "s_flashing" : "s_frightened");
+							getGame().getPacMan().isGettingWeaker() ? "s_flashing" : "s_frightened");
 					})
 				
 				.state(DYING)
