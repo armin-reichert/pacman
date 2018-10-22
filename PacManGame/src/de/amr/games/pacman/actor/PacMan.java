@@ -76,11 +76,8 @@ public class PacMan extends PacManGameActor {
 	}
 
 	public boolean isGettingWeaker() {
-		if (getState() == PacManState.GREEDY) {
-			GreedyState greedyState = (GreedyState) getStateObject();
-			return greedyState.getTicksRemaining() < getGame().getPacManGettingWeakerRemainingTime();
-		}
-		return false;
+		return getState() == PacManState.GREEDY
+				&& getStateObject().getTicksRemaining() < getGame().getPacManGettingWeakerRemainingTime();
 	}
 
 	// Movement
