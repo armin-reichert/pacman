@@ -456,20 +456,20 @@ but by configuration. For each ghost state there is a behavior assigned that is 
 Pac-Man's movement is controlled by the keyboard:
 
 ```java
-public int supplyIntendedDir() {
+public OptionalInt supplyIntendedDir() {
 	if (Keyboard.keyDown(KeyEvent.VK_UP)) {
-		return Top4.N;
+		return OptionalInt.of(Top4.N);
 	}
 	if (Keyboard.keyDown(KeyEvent.VK_RIGHT)) {
-		return Top4.E;
+		return OptionalInt.of(Top4.E);
 	}
 	if (Keyboard.keyDown(KeyEvent.VK_DOWN)) {
-		return Top4.S;
+		return OptionalInt.of(Top4.S);
 	}
 	if (Keyboard.keyDown(KeyEvent.VK_LEFT)) {
-		return Top4.W;
+		return OptionalInt.of(Top4.W);
 	}
-	return -1;
+	return OptionalInt.empty();
 }
 ```
 
@@ -481,7 +481,7 @@ getGhosts().forEach(ghost -> {
 	ghost.setBehavior(FRIGHTENED, ghost.flee(pacMan));
 	ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
 	ghost.setBehavior(DEAD, ghost.headFor(ghost::getRevivalTile));
-	ghost.setBehavior(SAFE, ghost.bounce());
+	ghost.setBehavior(LOCKED, ghost.bounce());
 });
 ```
 
