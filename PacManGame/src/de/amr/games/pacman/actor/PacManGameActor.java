@@ -23,14 +23,14 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 	private final PacManGame game;
 
 	/** Current move direction. See {@link Top4} for direction values. */
-	private int currentDir;
+	private int moveDir;
 
 	/** The indended move direction, actor turns to this direction as soon as possible. */
 	private int nextDir;
 
 	protected PacManGameActor(PacManGame game) {
 		this.game = game;
-		currentDir = nextDir = Top4.E;
+		moveDir = nextDir = Top4.E;
 		// collision box size:
 		tf.setWidth(getTileSize());
 		tf.setHeight(getTileSize());
@@ -67,12 +67,12 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 		return game.getMaze();
 	}
 
-	public int getCurrentDir() {
-		return currentDir;
+	public int getMoveDir() {
+		return moveDir;
 	}
 
-	public void setCurrentDir(int currentDir) {
-		this.currentDir = currentDir;
+	public void setMoveDir(int moveDir) {
+		this.moveDir = moveDir;
 	}
 
 	public int getNextDir() {
@@ -122,7 +122,7 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 	}
 
 	public boolean isStuck() {
-		return possibleMoveDistance(getCurrentDir()) == 0;
+		return possibleMoveDistance(getMoveDir()) == 0;
 	}
 
 	/**
@@ -163,16 +163,16 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 	public void move() {
 		// can we turn towards the intended direction?
 		if (possibleMoveDistance(nextDir) > 0) {
-			if (nextDir == NESW.left(currentDir) || nextDir == NESW.right(currentDir)) {
+			if (nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir)) {
 				align();
 			}
-			setCurrentDir(nextDir);
+			setMoveDir(nextDir);
 		}
 		// move towards the current direction as far as possible
-		float possibleMoveDistance = possibleMoveDistance(currentDir);
+		float possibleMoveDistance = possibleMoveDistance(moveDir);
 		if (possibleMoveDistance > 0) {
 			// LOGGER.info("Move " + possibleMoveDistance);
-			tf.setVelocity(velocity(possibleMoveDistance, currentDir));
+			tf.setVelocity(velocity(possibleMoveDistance, moveDir));
 			tf.move();
 			// check for exit from teleport space
 			if (tf.getX() + tf.getWidth() < 0) {
@@ -195,7 +195,7 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 	public Tile ahead(int n) {
 		final Tile tile = getTile();
 		while (n >= 0) {
-			Tile ahead = tile.tileTowards(currentDir, n);
+			Tile ahead = tile.tileTowards(moveDir, n);
 			if (getMaze().isValidTile(ahead)) {
 				return ahead;
 			}

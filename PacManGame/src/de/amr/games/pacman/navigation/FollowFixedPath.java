@@ -34,7 +34,7 @@ class FollowFixedPath<T extends PacManGameActor> implements ActorBehavior<T> {
 		}
 		Route route = new Route();
 		route.setPath(path);
-		route.setDir(actor.getMaze().alongPath(path).orElse(actor.getCurrentDir()));
+		route.setDir(actor.getMaze().alongPath(path).orElse(actor.getMoveDir()));
 		return route;
 	}
 

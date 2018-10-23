@@ -216,7 +216,7 @@ public interface GhostBehaviors {
 	 */
 	default ActorBehavior<Ghost> bounce() {
 		return bouncer -> new Route(
-				bouncer.isStuck() ? NESW.inv(bouncer.getCurrentDir()) : bouncer.getCurrentDir());
+				bouncer.isStuck() ? NESW.inv(bouncer.getMoveDir()) : bouncer.getMoveDir());
 	}
 
 	/**
@@ -278,6 +278,6 @@ public interface GhostBehaviors {
 	 * @return behavior keeping the current move direction
 	 */
 	default ActorBehavior<Ghost> keepDirection() {
-		return ghost -> new Route(ghost.getCurrentDir());
+		return ghost -> new Route(ghost.getMoveDir());
 	}
 }

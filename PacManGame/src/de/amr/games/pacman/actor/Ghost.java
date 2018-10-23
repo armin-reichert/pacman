@@ -69,7 +69,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 
 	public void initGhost() {
 		placeAtTile(initialTile, getTileSize() / 2, 0);
-		setCurrentDir(initialDir);
+		setMoveDir(initialDir);
 		setNextDir(initialDir);
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("s_color_" + initialDir);
@@ -80,7 +80,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 		if (dir == Top4.E || dir == Top4.W) {
 			dir = Top4.N; // let Blinky look upwards when in ghost house
 		}
-		setCurrentDir(dir);
+		setMoveDir(dir);
 		setNextDir(dir);
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("s_color_" + dir);
@@ -208,13 +208,13 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 					.timeoutAfter(() -> getGame().getGhostLockedTime(this))
 					.onTick(() -> {
 						move();	
-						sprites.select("s_color_" + getCurrentDir());
+						sprites.select("s_color_" + getMoveDir());
 					})
 				
 				.state(SCATTERING)
 					.onTick(() -> {
 						move();	
-						sprites.select("s_color_" + getCurrentDir()); 
+						sprites.select("s_color_" + getMoveDir()); 
 					})
 			
 				.state(CHASING)
@@ -222,7 +222,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 					.onExit(() -> getTheme().snd_ghost_chase().stop())
 					.onTick(() -> {	
 						move();	
-						sprites.select("s_color_" + getCurrentDir()); 
+						sprites.select("s_color_" + getMoveDir()); 
 					})
 				
 				.state(FRIGHTENED)
@@ -231,7 +231,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 					})
 					.onTick(() -> {
 						move();
-						sprites.select(inGhostHouse() ? "s_color_" + getCurrentDir() : 
+						sprites.select(inGhostHouse() ? "s_color_" + getMoveDir() : 
 							getGame().getPacMan().isGettingWeaker() ? "s_flashing" : "s_frightened");
 					})
 				
@@ -249,7 +249,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 					})
 					.onTick(() -> {	
 						move();
-						sprites.select("s_eyes_" + getCurrentDir());
+						sprites.select("s_eyes_" + getMoveDir());
 					})
 					.onExit(() -> {
 						if (getGame().getActiveGhosts().filter(ghost -> ghost != this)

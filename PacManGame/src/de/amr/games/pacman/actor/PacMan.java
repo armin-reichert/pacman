@@ -125,7 +125,7 @@ public class PacMan extends PacManGameActor {
 	}
 
 	private void updateWalkingSprite() {
-		sprites.select("s_walking_" + getCurrentDir());
+		sprites.select("s_walking_" + getMoveDir());
 		sprites.current().enableAnimation(!isStuck());
 	}
 

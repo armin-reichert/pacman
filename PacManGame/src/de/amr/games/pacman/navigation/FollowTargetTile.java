@@ -47,7 +47,7 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavio
 	@Override
 	public Route getRoute(T actor) {
 		final Maze maze = actor.getMaze();
-		final int actorDir = actor.getCurrentDir();
+		final int actorDir = actor.getMoveDir();
 		final Tile actorTile = actor.getTile();
 
 		// ask for current target tile
