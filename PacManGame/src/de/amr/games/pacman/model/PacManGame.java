@@ -209,7 +209,7 @@ public class PacManGame {
 	}
 
 	private float speed(float relativeSpeed) {
-		// TODO what is the real base speed in tiles/second at 60 Hz?
+		// TODO what is the original base speed in tiles/second at 60 Hz?
 		return 9f * TS / 60 * relativeSpeed;
 	}
 
@@ -279,26 +279,26 @@ public class PacManGame {
 	}
 
 	public int getBonusTime() {
-		return sec(9f + new Random().nextFloat());
+		return sec(9 + new Random().nextFloat());
 	}
 
 	public float getGhostSpeed(Ghost ghost) {
 		Tile tile = ghost.getTile();
-		boolean tunnel = maze.inTeleportSpace(tile) || maze.inTunnel(tile);
-		float tunnelSpeed = speed(Level.floatValue(level, Property.fGhostTunnelSpeed));
+		boolean slow = maze.inTeleportSpace(tile) || maze.inTunnel(tile);
+		float slowSpeed = speed(Level.floatValue(level, Property.fGhostTunnelSpeed));
 		switch (ghost.getState()) {
 		case CHASING:
-			return tunnel ? tunnelSpeed : speed(Level.floatValue(level, Property.fGhostSpeed));
+			return slow ? slowSpeed : speed(Level.floatValue(level, Property.fGhostSpeed));
 		case DYING:
 			return 0;
 		case DEAD:
 			return speed(1.5f);
 		case FRIGHTENED:
-			return tunnel ? tunnelSpeed : speed(Level.floatValue(level, Property.fGhostAfraidSpeed));
+			return slow ? slowSpeed : speed(Level.floatValue(level, Property.fGhostAfraidSpeed));
 		case LOCKED:
 			return speed(0.75f);
 		case SCATTERING:
-			return tunnel ? tunnelSpeed : speed(Level.floatValue(level, Property.fGhostSpeed));
+			return slow ? slowSpeed : speed(Level.floatValue(level, Property.fGhostSpeed));
 		default:
 			throw new IllegalStateException();
 		}
