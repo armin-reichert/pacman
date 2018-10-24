@@ -1,6 +1,5 @@
 package de.amr.games.pacman;
 
-import java.awt.DisplayMode;
 import java.util.logging.Level;
 
 import de.amr.easy.game.Application;
@@ -28,7 +27,6 @@ public class PacManApp extends Application {
 		settings.height = 36 * PacManGame.TS;
 		settings.scale = 2;
 		settings.title = "Armin's Pac-Man";
-		settings.fullScreenMode = new DisplayMode(800, 600, 32, 60);
 		settings.fullScreenOnStart = false;
 		PacManTheme theme = new ClassicPacManTheme();
 		settings.set("theme", theme);
