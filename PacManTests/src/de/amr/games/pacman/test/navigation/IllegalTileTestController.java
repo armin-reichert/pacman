@@ -31,12 +31,12 @@ public class IllegalTileTestController implements ViewController {
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
 		game.getGhosts().filter(ghost -> ghost != blinky).forEach(ghost -> game.setActorActive(ghost, false));
 		blinky.initGhost();
-		blinky.setBehavior(GhostState.FRIGHTENED, blinky.headFor(this::getTargetTile));
-		blinky.setState(GhostState.FRIGHTENED);
+		blinky.setBehavior(GhostState.CHASING, blinky.headFor(this::getTargetTile));
+		blinky.setState(GhostState.CHASING);
 	}
 
 	private Tile getTargetTile() {
-		return new Tile(-10, 18);
+		return new Tile(game.getMaze().numCols(), game.getMaze().getTunnelRow());
 	}
 
 	@Override

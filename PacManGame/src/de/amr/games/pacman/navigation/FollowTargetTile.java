@@ -56,28 +56,23 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavio
 		Tile targetTile = targetTileSupplier.get();
 		Objects.requireNonNull(targetTile, "Target tile must not be NULL");
 
-		// if target tile is in teleport space, follow suitable tunnel entry
-		if (maze.inTeleportSpace(targetTile)) {
-			targetTile = targetTile.col < 0 ? maze.getLeftTunnelEntry() : maze.getRightTunnelEntry();
-		}
-
 		final Route route = new Route();
 		route.setTarget(targetTile);
 
-		// entering ghost house?
+		// use graph path-finder for entering ghost house
 		if (maze.isGhostHouseEntry(actorTile) && maze.inGhostHouse(targetTile)) {
 			route.setPath(maze.findPath(actorTile, targetTile));
 			route.setDir(maze.alongPath(route.getPath()).orElse(actorDir));
 			return route;
 		}
 
-		// also use path-finder inside ghost house
+		// also use path-finder inside ghost house and for exiting ghost house
 		if (maze.inGhostHouse(actorTile)) {
 			if (maze.inGhostHouse(targetTile)) {
 				// follow target inside ghost house
 				route.setPath(maze.findPath(actorTile, targetTile));
 			} else {
-				// follow target outside of ghost house, go to Blinky's home tile to exit ghost house
+				// first go to Blinky's home tile to exit ghost house
 				route.setPath(maze.findPath(actorTile, maze.getBlinkyHome()));
 			}
 			route.setDir(maze.alongPath(route.getPath()).orElse(actorDir));
@@ -115,7 +110,7 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavio
 	}
 
 	/**
-	 * Find direction to neighbor tile with minimal distance to target.
+	 * Find direction to the neighbor tile having smallest distance to target.
 	 */
 	private Optional<Integer> findBestDir(PacManGameActor actor, Tile from, Tile target,
 			Stream<Integer> choices) {
