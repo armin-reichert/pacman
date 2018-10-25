@@ -105,7 +105,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return behavior where Pac-Man is attacked with help of partner ghost
 	 */
-	default ActorBehavior<Ghost> attackWithBlinky(Ghost blinky, PacMan pacMan) {
+	default ActorBehavior<Ghost> attackWith(Ghost blinky, PacMan pacMan) {
 		return headFor(() -> {
 			Tile blinkyTile = blinky.getTile();
 			Tile strut = pacMan.ahead(2);

@@ -529,26 +529,17 @@ Inky's attack target is computed as follows:
 Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man, so `V = (P - B)`. Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-default ActorBehavior<Ghost> attackWithPartnerGhost(Ghost partner, PacMan pacMan) {
+default ActorBehavior<Ghost> attackWith(Ghost blinky, PacMan pacMan) {
 	return headFor(() -> {
-		Maze maze = partner.getMaze();
-		int mazeWidth = maze.numCols() * TS;
-		int mazeHeight = maze.numRows() * TS;
+		Tile blinkyTile = blinky.getTile();
 		Tile strut = pacMan.ahead(2);
-		Vector2f partnerPosition = partner.tf.getCenter();
-		Vector2f strutPosition = Vector2f.of(strut.col * TS + TS / 2, strut.row * TS + TS / 2);
-		Vector2f targetPosition = doubledArrowTargetPosition(partnerPosition, strutPosition, mazeWidth,
-				mazeHeight);
-		// ensure target tile is inside maze
-		int x = targetPosition.x < mazeWidth ? (int) targetPosition.x : mazeWidth - 1;
-		int y = targetPosition.y < mazeHeight ? (int) targetPosition.y : mazeHeight - 1;
-		return new Tile(x / TS, y / TS);
+		return new Tile(2 * strut.col - blinkyTile.col, 2 * strut.row - blinkyTile.row);
 	});
 }
 ```
 
 ```java
-inky.setBehavior(CHASING, inky.attackWithPartnerGhost(blinky, pacMan));
+inky.setBehavior(CHASING, inky.attackWith(blinky, pacMan));
 ```
 
 <img src="doc/inky.png"/>
