@@ -531,9 +531,9 @@ Consider the vector `V` from Blinky's position `B` to the position `P` two tiles
 ```java
 default ActorBehavior<Ghost> attackWith(Ghost blinky, PacMan pacMan) {
 	return headFor(() -> {
-		Tile blinkyTile = blinky.getTile();
-		Tile strut = pacMan.ahead(2);
-		return new Tile(2 * strut.col - blinkyTile.col, 2 * strut.row - blinkyTile.row);
+		Tile b = blinky.getTile();
+		Tile p = pacMan.ahead(2);
+		return new Tile(2 * p.col - b.col, 2 * p.row - b.row);
 	});
 }
 ```
