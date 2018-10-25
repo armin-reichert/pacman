@@ -98,7 +98,7 @@ public class PacManGame {
 		// Individual ghost behavior
 		blinky.setBehavior(CHASING, blinky.attackDirectly(pacMan));
 		pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
-		inky.setBehavior(CHASING, inky.attackWithPartnerGhost(blinky, pacMan));
+		inky.setBehavior(CHASING, inky.attackWithBlinky(blinky, pacMan));
 		clyde.setBehavior(CHASING, clyde.attackOrReject(clyde, pacMan, 8 * TS));
 
 		// Other game rules.

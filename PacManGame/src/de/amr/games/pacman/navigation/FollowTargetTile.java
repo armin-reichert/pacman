@@ -3,12 +3,14 @@ package de.amr.games.pacman.navigation;
 import static de.amr.games.pacman.model.Maze.NESW;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.PacManGameActor;
 import de.amr.games.pacman.model.Maze;
@@ -115,33 +117,26 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavio
 	/**
 	 * Find direction to neighbor tile with minimal distance to target.
 	 */
-	private Optional<Integer> findBestDir(PacManGameActor actor, Tile from, Tile to, Stream<Integer> choices) {
+	private Optional<Integer> findBestDir(PacManGameActor actor, Tile from, Tile target,
+			Stream<Integer> choices) {
 		final Maze maze = actor.getMaze();
 		/*@formatter:off*/
 		return choices
 			.map(dir -> maze.neighborTile(from, dir))
 			.filter(Optional::isPresent).map(Optional::get)
 			.filter(actor::canEnterTile)
-			.sorted((t1, t2) -> compareTilesByTargetDist(maze, t1, t2, to))
+			.sorted(compareTilesByDistanceTo(target))
 			.map(tile -> maze.direction(from, tile))
 			.map(OptionalInt::getAsInt)
 			.findFirst();
 		/*@formatter:on*/
 	}
 
-	private int compareTilesByTargetDist(Maze maze, Tile t1, Tile t2, Tile target) {
-		int dist1 = maze.euclidean2(t1, target);
-		int dist2 = maze.euclidean2(t2, target);
-		if (dist1 != dist2) {
-			return dist1 - dist2;
-		}
-		// if both tiles are neighbors of the target with same distance, make deterministic choice
-		// to avoid oszillation:
-		OptionalInt dir1 = maze.direction(t1, target);
-		OptionalInt dir2 = maze.direction(t2, target);
-		if (dir1.isPresent() && dir2.isPresent()) {
-			return dir1.getAsInt() - dir2.getAsInt();
-		}
-		return 0;
+	private static Comparator<Tile> compareTilesByDistanceTo(Tile target) {
+		return (t1, t2) -> Float.compare(distance(t1, target), distance(t2, target));
+	}
+
+	private static float distance(Tile t1, Tile t2) {
+		return Vector2f.dist(Vector2f.of(t1.col, t1.row), Vector2f.of(t2.col, t2.row));
 	}
 }

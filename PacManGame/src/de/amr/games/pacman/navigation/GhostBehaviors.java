@@ -2,15 +2,12 @@ package de.amr.games.pacman.navigation;
 
 import static de.amr.easy.game.math.Vector2f.dist;
 import static de.amr.games.pacman.model.Maze.NESW;
-import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.util.function.Supplier;
 
-import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameActor;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -101,112 +98,19 @@ public interface GhostBehaviors {
 	 * The tile that this new, extended vector ends on will be Inky’s actual target.</cite>
 	 * </p>
 	 * 
-	 * TODO: This code is much too complicated. It could be a lot easier if target tiles could be
-	 * outside of the scope of valid tiles.
-	 * 
-	 * @param partner
-	 *                  the ghost which assists in attacking (Blinky)
+	 * @param blinky
+	 *                 the ghost which assists in attacking (Blinky)
 	 * @param pacMan
-	 *                  the attacked Pac-Man
+	 *                 the attacked Pac-Man
 	 * 
 	 * @return behavior where Pac-Man is attacked with help of partner ghost
 	 */
-	default ActorBehavior<Ghost> attackWithPartnerGhost(Ghost partner, PacMan pacMan) {
+	default ActorBehavior<Ghost> attackWithBlinky(Ghost blinky, PacMan pacMan) {
 		return headFor(() -> {
-			Maze maze = partner.getMaze();
-			int mazeWidth = maze.numCols() * TS;
-			int mazeHeight = maze.numRows() * TS;
+			Tile blinkyTile = blinky.getTile();
 			Tile strut = pacMan.ahead(2);
-			Vector2f partnerPosition = partner.tf.getCenter();
-			Vector2f strutPosition = Vector2f.of(strut.col * TS + TS / 2, strut.row * TS + TS / 2);
-			Vector2f targetPosition = doubledArrowTargetPosition(partnerPosition, strutPosition, mazeWidth,
-					mazeHeight);
-			// ensure target tile is inside maze
-			int x = targetPosition.x < mazeWidth ? (int) targetPosition.x : mazeWidth - 1;
-			int y = targetPosition.y < mazeHeight ? (int) targetPosition.y : mazeHeight - 1;
-			return new Tile(x / TS, y / TS);
+			return new Tile(2 * strut.col - blinkyTile.col, 2 * strut.row - blinkyTile.row);
 		});
-	}
-
-	/**
-	 * Computes the position where the doubled arrow from the start position to the head position ends
-	 * (inside the maze) or touches the maze bounds (if outside).
-	 * 
-	 * TODO: should be much simpler
-	 * 
-	 * @param arrowStart
-	 *                     arrow start position (Blinky's position)
-	 * @param arrowHead
-	 *                     arrow head position (Pac-Man position + 2 tiles)
-	 * @param width
-	 *                     width of bounding box (maze width)
-	 * @param height
-	 *                     height of bounding box (maze height)
-	 * 
-	 * @return position where the doubled arrow ends, or projection point on maze border if doubled
-	 *         arrow ends outside the maze
-	 */
-	static Vector2f doubledArrowTargetPosition(Vector2f arrowStart, Vector2f arrowHead, int width, int height) {
-
-		final float dx = 2 * (arrowHead.x - arrowStart.x);
-		final float dy = 2 * (arrowHead.y - arrowStart.y);
-		final Vector2f target = Vector2f.of(arrowStart.x + dx, arrowStart.y + dy);
-
-		// target position inside maze?
-		if (0 <= target.x && target.x < width && 0 <= target.y && target.y < height) {
-			// LOGGER.info(String.format("Target inside maze at (%.2f | %.2f)", t.x, t.y));
-			return target;
-		}
-
-		// compute point where arrow leaves maze
-		float lambda;
-		float x, y;
-
-		// 1. lower border?
-		lambda = (height - arrowStart.y) / dy;
-		if (lambda > 0 && Float.isFinite(lambda)) {
-			x = arrowStart.x + lambda * dx;
-			y = height;
-			// LOGGER.info(String.format("Lower border touched at (%.2f | %.2f)", sx, sy));
-			if (0 <= x && x < width) {
-				return Vector2f.of(x, y);
-			}
-		}
-
-		// 2. right border?
-		lambda = (width - arrowStart.x) / dx;
-		if (lambda > 0 && Float.isFinite(lambda)) {
-			x = width;
-			y = (arrowStart.y + lambda * dy);
-			// LOGGER.info(String.format("Right border touched at (%.2f | %.2f)", sx, sy));
-			if (0 <= y && y < height) {
-				return Vector2f.of(x, y);
-			}
-		}
-
-		// 3. upper border?
-		lambda = -arrowStart.y / dy;
-		if (lambda > 0 && Float.isFinite(lambda)) {
-			x = arrowStart.x + lambda * dx;
-			y = 0;
-			// LOGGER.info(String.format("Upper border touched at (%.2f | %.2f)", sx, sy));
-			if (0 <= x && x < width) {
-				return Vector2f.of(x, y);
-			}
-		}
-
-		// 4. left border?
-		lambda = -arrowStart.x / dx;
-		if (lambda > 0 && Float.isFinite(lambda)) {
-			x = 0;
-			y = arrowStart.y + lambda * dy;
-			// LOGGER.info(String.format("Left border touched at (%.2f | %.2f)", sx, sy));
-			if (0 <= y && y < height) {
-				return Vector2f.of(x, y);
-			}
-		}
-
-		return target;
 	}
 
 	/**
@@ -215,8 +119,7 @@ public interface GhostBehaviors {
 	 * @return bouncing behavior
 	 */
 	default ActorBehavior<Ghost> bounce() {
-		return bouncer -> new Route(
-				bouncer.isStuck() ? NESW.inv(bouncer.getMoveDir()) : bouncer.getMoveDir());
+		return bouncer -> new Route(bouncer.isStuck() ? NESW.inv(bouncer.getMoveDir()) : bouncer.getMoveDir());
 	}
 
 	/**

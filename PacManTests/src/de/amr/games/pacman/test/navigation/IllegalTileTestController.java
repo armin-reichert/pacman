@@ -5,15 +5,19 @@ import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayViewX;
 
-public class InkyChaseTestController implements ViewController {
+public class IllegalTileTestController implements ViewController {
 
 	private final PacManGame game;
 	private final PlayViewX view;
+	private final Ghost blinky;
 
-	public InkyChaseTestController() {
+	public IllegalTileTestController() {
 		game = new PacManGame();
+		game.getPacMan().setVisible(false);
+		blinky = game.getBlinky();
 		view = new PlayViewX(game);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
@@ -25,20 +29,19 @@ public class InkyChaseTestController implements ViewController {
 	public void init() {
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
-		game.setActorActive(game.getPacMan(), true);
-		game.getPacMan().init();
-		game.setActorActive(game.getPinky(), false);
-		game.setActorActive(game.getClyde(), false);
-		game.getActiveGhosts().forEach(ghost -> {
-			ghost.init();
-			ghost.setState(GhostState.CHASING);
-		});
+		game.getGhosts().filter(ghost -> ghost != blinky).forEach(ghost -> game.setActorActive(ghost, false));
+		blinky.initGhost();
+		blinky.setBehavior(GhostState.FRIGHTENED, blinky.headFor(this::getTargetTile));
+		blinky.setState(GhostState.FRIGHTENED);
+	}
+
+	private Tile getTargetTile() {
+		return new Tile(-10, 18);
 	}
 
 	@Override
 	public void update() {
-		game.getPacMan().update();
-		game.getActiveGhosts().forEach(Ghost::update);
+		blinky.update();
 		view.update();
 	}
 
