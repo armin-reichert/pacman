@@ -18,18 +18,29 @@ import de.amr.games.pacman.model.Tile;
 public interface GhostBehaviors {
 
 	/**
+	 * @param actor
+	 *                an actor
+	 * @param n
+	 *                number of tiles
+	 * @return the tile located <code>n</code> tiles ahead of the actor towards its current move
+	 *         direction.
+	 */
+	public static Tile ahead(PacManGameActor actor, int n) {
+		return actor.getTile().tileTowards(actor.getMoveDir(), n);
+	}
+
+	/**
 	 * Ambushes Pac-Man by heading for the tile ahead of Pac-Man's current position.
 	 * 
 	 * @param pacMan
-	 *                        the ambushed Pac-Man
-	 * @param numTilesAhead
-	 *                        the number of tiles ahead of Pac-Man in its current direction. If this
-	 *                        tile is located outside of the maze, the tile <code>(n - 1)</code> ahead
-	 *                        is used etc.
+	 *                   the ambushed Pac-Man
+	 * @param numTiles
+	 *                   the number of tiles ahead of Pac-Man in its current direction. If this tile is
+	 *                   located outside of the maze, the tile <code>(n - 1)</code> ahead is used etc.
 	 * @return ambushing behavior
 	 */
-	default ActorBehavior<Ghost> ambush(PacMan pacMan, int numTilesAhead) {
-		return headFor(() -> pacMan.ahead(numTilesAhead));
+	default ActorBehavior<Ghost> ambush(PacMan pacMan, int numTiles) {
+		return headFor(() -> ahead(pacMan, numTiles));
 	}
 
 	/**
@@ -107,8 +118,7 @@ public interface GhostBehaviors {
 	 */
 	default ActorBehavior<Ghost> attackWith(Ghost blinky, PacMan pacMan) {
 		return headFor(() -> {
-			Tile b = blinky.getTile();
-			Tile p = pacMan.ahead(2);
+			Tile b = blinky.getTile(), p = ahead(pacMan, 2);
 			return new Tile(2 * p.col - b.col, 2 * p.row - b.row);
 		});
 	}

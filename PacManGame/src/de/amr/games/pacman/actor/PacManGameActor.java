@@ -185,22 +185,4 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 		supplyIntendedDir().ifPresent(this::setNextDir);
 	}
 
-	/**
-	 * @param n
-	 *            number of tiles
-	 * @return the tile located <code>n</code> tiles ahead of the actor towards its current move
-	 *         direction. If this position is outside the maze, returns the tile <code>(n-1)</code>
-	 *         tiles ahead etc.
-	 */
-	public Tile ahead(int n) {
-		final Tile tile = getTile();
-		while (n >= 0) {
-			Tile ahead = tile.tileTowards(moveDir, n);
-			if (getMaze().isValidTile(ahead)) {
-				return ahead;
-			}
-			n -= 1;
-		}
-		return tile;
-	}
 }

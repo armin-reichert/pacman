@@ -512,7 +512,7 @@ Pinky, the *ambusher*, targets the position 4 tiles ahead of Pac-Man
 
 ```java
 default ActorBehavior<Ghost> ambush(PacMan pacMan, int numTilesAhead) {
-	return headFor(() -> pacMan.ahead(numTilesAhead));
+	return headFor(() -> ahead(pacMan, numTilesAhead));
 }
 ```
 
@@ -532,7 +532,7 @@ Consider the vector `V` from Blinky's position `B` to the position `P` two tiles
 default ActorBehavior<Ghost> attackWith(Ghost blinky, PacMan pacMan) {
 	return headFor(() -> {
 		Tile b = blinky.getTile();
-		Tile p = pacMan.ahead(2);
+		Tile p = ahead(pacMan, 2);
 		return new Tile(2 * p.col - b.col, 2 * p.row - b.row);
 	});
 }
