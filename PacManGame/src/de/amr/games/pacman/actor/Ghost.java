@@ -77,8 +77,10 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 
 	private void reviveGhost() {
 		int dir = initialDir;
-		if (dir == Top4.E || dir == Top4.W) {
+		if (this == getGame().getBlinky()) {
 			dir = Top4.N; // let Blinky look upwards when in ghost house
+		} else {
+			placeAtTile(initialTile, getTileSize() / 2, 0);
 		}
 		setMoveDir(dir);
 		setNextDir(dir);
