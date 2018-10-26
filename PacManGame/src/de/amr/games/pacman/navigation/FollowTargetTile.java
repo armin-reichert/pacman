@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -92,11 +91,14 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavio
 
 		// decide where to go if the next tile is an intersection
 		final Tile nextTile = actorTile.tileTowards(actorDir);
-		final boolean unrestricted = maze.inGhostHouse(nextTile) || maze.isUnrestrictedIntersection(nextTile);
-		final boolean upForbidden = maze.isUpwardsBlockedIntersection(nextTile);
-		if (unrestricted || upForbidden) {
-			Stream<Integer> choices = NESW.dirs().boxed().filter(dir -> dir != NESW.inv(actorDir))
+		final boolean unrestricted = maze.isUnrestrictedIntersection(nextTile);
+		final boolean upwardsBlocked = maze.isUpwardsBlockedIntersection(nextTile);
+		if (unrestricted || upwardsBlocked) {
+			/*@formatter:off*/
+			Stream<Integer> choices = NESW.dirs().boxed()
+					.filter(dir -> dir != NESW.inv(actorDir))
 					.filter(dir -> unrestricted || dir != Top4.N);
+			/*@formatter:on*/
 			Optional<Integer> choice = findBestDir(actor, nextTile, targetTile, choices);
 			if (choice.isPresent()) {
 				route.setDir(choice.get());
@@ -110,25 +112,23 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavio
 	}
 
 	/**
-	 * Find direction to the neighbor tile having smallest distance to target.
+	 * Find direction to neighbor tile with smallest distance to target.
 	 */
-	private Optional<Integer> findBestDir(PacManGameActor actor, Tile from, Tile target,
+	private static Optional<Integer> findBestDir(PacManGameActor actor, Tile nextTile, Tile targetTile,
 			Stream<Integer> choices) {
-		final Maze maze = actor.getMaze();
 		/*@formatter:off*/
 		return choices
-			.map(dir -> maze.neighborTile(from, dir))
+			.map(dir -> actor.getMaze().neighborTile(nextTile, dir))
 			.filter(Optional::isPresent).map(Optional::get)
 			.filter(actor::canEnterTile)
-			.sorted(compareTilesByDistanceTo(target))
-			.map(tile -> maze.direction(from, tile))
-			.map(OptionalInt::getAsInt)
+			.sorted(compareTilesByDistanceTo(targetTile))
+			.map(tile -> actor.getMaze().direction(nextTile, tile).getAsInt())
 			.findFirst();
 		/*@formatter:on*/
 	}
 
-	private static Comparator<Tile> compareTilesByDistanceTo(Tile target) {
-		return (t1, t2) -> Float.compare(distance(t1, target), distance(t2, target));
+	private static Comparator<Tile> compareTilesByDistanceTo(Tile targetTile) {
+		return (t1, t2) -> Float.compare(distance(t1, targetTile), distance(t2, targetTile));
 	}
 
 	private static float distance(Tile t1, Tile t2) {
