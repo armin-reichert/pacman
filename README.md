@@ -1,4 +1,4 @@
-# A comprehensible(?) Pac-Man implementation        
+# A (hopefully) comprehensible Pac-Man implementation        
 
 <img src="doc/intro.png"/>
 
