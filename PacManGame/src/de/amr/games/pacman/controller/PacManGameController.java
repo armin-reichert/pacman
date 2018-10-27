@@ -460,13 +460,6 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 	private class PacManDyingState extends State<GameState, GameEvent> {
 
 		@Override
-		public void onEntry() {
-			game.getActiveGhosts().forEach(ghost -> ghost.setVisible(false));
-			getTheme().snd_clips_all().forEach(Sound::stop);
-			getTheme().snd_die().play();
-		}
-
-		@Override
 		public void onTick() {
 			game.getPacMan().update();
 		}
@@ -474,7 +467,6 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		@Override
 		public void onExit() {
 			game.removeLife();
-			game.getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
 		}
 	}
 

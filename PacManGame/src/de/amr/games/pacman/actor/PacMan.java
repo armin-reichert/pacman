@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.grid.impl.Top4;
@@ -176,8 +177,7 @@ public class PacMan extends PacManGameActor {
 					.timeoutAfter(getGame()::getPacManGreedyTime)
 	
 				.state(DYING)
-					.onEntry(() -> sprites.select("s_dying"))
-					.timeoutAfter(() -> app().clock.sec(2))
+					.impl(new DyingState())
 
 			.transitions()
 
@@ -289,4 +289,37 @@ public class PacMan extends PacManGameActor {
 			}
 		}
 	}
+
+	private class DyingState extends State<PacManState, GameEvent> {
+
+		private int paralyzedTime;
+
+		{
+			setTimer(() -> app().clock.sec(3));
+		}
+
+		@Override
+		public void onEntry() {
+			paralyzedTime = app().clock.sec(1);
+			getTheme().snd_clips_all().forEach(Sound::stop);
+		}
+
+		@Override
+		public void onTick() {
+			if (paralyzedTime > 0) {
+				paralyzedTime -= 1;
+				if (paralyzedTime == 0) {
+					getGame().getActiveGhosts().forEach(ghost -> ghost.setVisible(false));
+					sprites.select("s_dying");
+					getTheme().snd_die().play();
+				}
+			}
+		}
+
+		@Override
+		public void onExit() {
+			getGame().getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
+		}
+	}
+
 }
