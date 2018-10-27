@@ -301,6 +301,7 @@ public class PacMan extends PacManGameActor {
 		@Override
 		public void onEntry() {
 			paralyzedTime = app().clock.sec(1);
+			sprites.current().enableAnimation(false);
 			getTheme().snd_clips_all().forEach(Sound::stop);
 		}
 
@@ -314,11 +315,6 @@ public class PacMan extends PacManGameActor {
 					getTheme().snd_die().play();
 				}
 			}
-		}
-
-		@Override
-		public void onExit() {
-			getGame().getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
 		}
 	}
 

@@ -467,6 +467,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		@Override
 		public void onExit() {
 			game.removeLife();
+			getGame().getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
 		}
 	}
 
