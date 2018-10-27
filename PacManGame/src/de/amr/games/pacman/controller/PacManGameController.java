@@ -298,6 +298,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		@Override
 		public void onEntry() {
 			ghostAttackTimer.init();
+			getGame().getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
 		}
 
 		@Override
@@ -467,7 +468,6 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		@Override
 		public void onExit() {
 			game.removeLife();
-			getGame().getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
 		}
 	}
 
@@ -475,6 +475,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 		@Override
 		public void onEntry() {
+			getGame().getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
 			getPlayScreen().enableAnimation(false);
 			getPlayScreen().showInfoText("Game Over!", Color.RED);
 			game.saveScore();

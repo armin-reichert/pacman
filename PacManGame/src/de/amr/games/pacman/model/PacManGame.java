@@ -311,7 +311,7 @@ public class PacManGame {
 	// TODO implement this correctly
 	public int getGhostLockedTime(Ghost ghost) {
 		if (ghost == blinky) {
-			return sec(0);
+			return blinky.inGhostHouse() ? sec(0) : sec(1);
 		} else if (ghost == pinky) {
 			return sec(3);
 		} else if (ghost == inky) {
