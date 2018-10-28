@@ -21,7 +21,6 @@ import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.controller.event.GameEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
-import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
@@ -62,6 +61,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 		this.initialDir = initialDir;
 		behaviorMap = new EnumMap<>(GhostState.class);
 		fsm = buildStateMachine(name);
+		fsm.setIgnoreUnknownEvents(true);
 		fsm.traceTo(Application.LOGGER, app().clock::getFrequency);
 		fnNextAttackState = () -> getState();
 		fnCanLeaveGhostHouse = () -> fsm.state().getDuration() == State.ENDLESS || fsm.state().isTerminated();
@@ -278,11 +278,6 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 					.on(StartScatteringEvent.class)
 					.condition(() -> canLeaveGhostHouse())
 					
-				.stay(LOCKED).on(PacManGainsPowerEvent.class)
-				.stay(LOCKED).on(PacManGettingWeakerEvent.class)
-				.stay(LOCKED).on(PacManLostPowerEvent.class)
-				.stay(LOCKED).on(GhostKilledEvent.class)
-				
 				.when(LOCKED).then(FRIGHTENED)
 					.condition(() -> canLeaveGhostHouse() && isPacManGreedy())
 
@@ -292,45 +287,23 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 				.when(LOCKED).then(CHASING)
 					.condition(() -> canLeaveGhostHouse() && getNextAttackState() == CHASING)
 				
-				.stay(CHASING).on(StartChasingEvent.class)
 				.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
 				.when(CHASING).then(DYING).on(GhostKilledEvent.class) // cheating-mode
 				.when(CHASING).then(SCATTERING).on(StartScatteringEvent.class)
 
-				.stay(SCATTERING).on(StartScatteringEvent.class)
-				.stay(SCATTERING).on(PacManGettingWeakerEvent.class)
-				.stay(SCATTERING).on(PacManLostPowerEvent.class)
 				.when(SCATTERING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
 				.when(SCATTERING).then(DYING).on(GhostKilledEvent.class) // cheating-mode
 				.when(SCATTERING).then(CHASING).on(StartChasingEvent.class)
-				
-				.stay(FRIGHTENED).on(PacManGainsPowerEvent.class)
-				.stay(FRIGHTENED).on(PacManGettingWeakerEvent.class)
-				.stay(FRIGHTENED).on(StartScatteringEvent.class)
-				.stay(FRIGHTENED).on(StartChasingEvent.class)
 				
 				.when(FRIGHTENED).then(CHASING).on(PacManLostPowerEvent.class)
 				.when(FRIGHTENED).then(DYING).on(GhostKilledEvent.class)
 					
 				.when(DYING).then(DEAD).onTimeout()
-				.stay(DYING).on(PacManGainsPowerEvent.class) // cheating-mode
-				.stay(DYING).on(PacManGettingWeakerEvent.class) // cheating-mode
-				.stay(DYING).on(PacManLostPowerEvent.class) // cheating-mode
-				.stay(DYING).on(GhostKilledEvent.class) // cheating-mode
-				.stay(DYING).on(StartScatteringEvent.class)
-				.stay(DYING).on(StartChasingEvent.class)
 					
 				.when(DEAD).then(LOCKED)
 					.condition(() -> getTile().equals(getRevivalTile()))
 					.act(this::reviveGhost)
 				
-				.stay(DEAD).on(PacManGainsPowerEvent.class)
-				.stay(DEAD).on(PacManGettingWeakerEvent.class)
-				.stay(DEAD).on(PacManLostPowerEvent.class)
-				.stay(DEAD).on(GhostKilledEvent.class) // cheating-mode
-				.stay(DEAD).on(StartScatteringEvent.class)
-				.stay(DEAD).on(StartChasingEvent.class)
-
 		.endStateMachine();
 		/*@formatter:on*/
 	}
