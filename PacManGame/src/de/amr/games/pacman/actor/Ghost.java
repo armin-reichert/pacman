@@ -262,18 +262,10 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 					
 			.transitions()
 
-				.stay(LOCKED)
-					.on(StartChasingEvent.class)
-					.condition(() -> !canLeaveGhostHouse())
-				
 				.when(LOCKED).then(CHASING)
 					.on(StartChasingEvent.class)
 					.condition(() -> canLeaveGhostHouse())
 				
-				.stay(LOCKED)
-					.on(StartScatteringEvent.class)
-					.condition(() -> !canLeaveGhostHouse())
-					
 				.when(LOCKED).then(SCATTERING)
 					.on(StartScatteringEvent.class)
 					.condition(() -> canLeaveGhostHouse())
