@@ -185,6 +185,7 @@ public class PacMan extends PacManGameActor {
 				
 				.when(HUNGRY).then(DYING)
 					.on(PacManKilledEvent.class)
+					.act(this::setFullSprite)
 	
 				.when(HUNGRY).then(GREEDY)
 					.on(PacManGainsPowerEvent.class)
