@@ -156,9 +156,9 @@ public class PacMan extends PacManGameActor {
 	}
 
 	private StateMachine<PacManState, GameEvent> buildStateMachine() {
-		return StateMachine
+		return StateMachine.
 		/* @formatter:off */
-		.beginStateMachine(PacManState.class, GameEvent.class)
+		beginStateMachine(PacManState.class, GameEvent.class)
 				
 			.description("[Pac-Man]")
 			.initialState(HOME)

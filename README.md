@@ -139,6 +139,7 @@ beginStateMachine()
 			.onEntry(() -> {
 				setScreen(getIntroScreen());
 				getTheme().snd_insertCoin().play();
+				getTheme().loadMusic();
 			})
 		
 		.state(READY)
@@ -160,12 +161,12 @@ beginStateMachine()
 		
 		.state(GAME_OVER)
 			.impl(new GameOverState())
-			.timeoutAfter(() -> app().clock.sec(60))
+			.timeoutAfter(() -> app().clock.sec(20))
 
 	.transitions()
 	
 		.when(INTRO).then(READY)
-			.condition(() -> introScreen.isComplete())
+			.condition(() -> getIntroScreen().isComplete())
 			.act(() -> setScreen(getPlayScreen()))
 		
 		.when(READY).then(PLAYING).onTimeout()
@@ -230,7 +231,7 @@ beginStateMachine()
 			
 		.when(PACMAN_DYING).then(PLAYING)
 			.condition(() -> isPacManDead() && game.getLives() > 0)
-			.act(this::resetScene)
+			.act(this::resetPlayScreen)
 	
 		.when(GAME_OVER).then(READY)
 			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
@@ -246,7 +247,7 @@ The states of this state machine are implemented as separate (inner) classes. Ho
 Pac-Man's state machine is implemented as follows:
 
 ```java
-.beginStateMachine(PacManState.class, GameEvent.class)
+beginStateMachine(PacManState.class, GameEvent.class)
 		
 	.description("[Pac-Man]")
 	.initialState(HOME)
@@ -265,8 +266,7 @@ Pac-Man's state machine is implemented as follows:
 			.timeoutAfter(getGame()::getPacManGreedyTime)
 
 		.state(DYING)
-			.onEntry(() -> sprites.select("s_dying"))
-			.timeoutAfter(() -> app().clock.sec(2))
+			.impl(new DyingState())
 
 	.transitions()
 
@@ -289,6 +289,106 @@ Pac-Man's state machine is implemented as follows:
 		.when(DYING).then(DEAD)
 			.onTimeout()
 
+.endStateMachine();
+```
+
+The ghosts also share a common state machine definition:
+
+```java
+beginStateMachine(GhostState.class, GameEvent.class)
+	 
+	.description(String.format("[%s]", ghostName))
+	.initialState(LOCKED)
+
+	.states()
+
+		.state(LOCKED)
+			.timeoutAfter(() -> getGame().getGhostLockedTime(this))
+			.onTick(() -> {
+				move();	
+				sprites.select("s_color_" + getMoveDir());
+			})
+		
+		.state(SCATTERING)
+			.onTick(() -> {
+				move();	
+				sprites.select("s_color_" + getMoveDir()); 
+			})
+	
+		.state(CHASING)
+			.onEntry(() -> getTheme().snd_ghost_chase().loop())
+			.onExit(() -> getTheme().snd_ghost_chase().stop())
+			.onTick(() -> {	
+				move();	
+				sprites.select("s_color_" + getMoveDir()); 
+			})
+		
+		.state(FRIGHTENED)
+			.onEntry(() -> {
+				getBehavior().computePath(this); 
+			})
+			.onTick(() -> {
+				move();
+				sprites.select(inGhostHouse() ? "s_color_" + getMoveDir() : 
+					getGame().getPacMan().isGettingWeaker() ? "s_flashing" : "s_frightened");
+			})
+		
+		.state(DYING)
+			.timeoutAfter(getGame()::getGhostDyingTime)
+			.onEntry(() -> {
+				sprites.select("s_value" + getGame().getGhostsKilledByEnergizer()); 
+				getGame().addGhostKilled();
+			})
+		
+		.state(DEAD)
+			.onEntry(() -> {
+				getBehavior().computePath(this);
+				getTheme().snd_ghost_dead().loop();
+			})
+			.onTick(() -> {	
+				move();
+				sprites.select("s_eyes_" + getMoveDir());
+			})
+			.onExit(() -> {
+				if (getGame().getActiveGhosts().filter(ghost -> ghost != this)
+						.noneMatch(ghost -> ghost.getState() == DEAD)) {
+					getTheme().snd_ghost_dead().stop();
+				}
+			})
+			
+	.transitions()
+
+		.when(LOCKED).then(SCATTERING)
+			.condition(() -> canLeaveGhostHouse() && getNextState() == SCATTERING)
+		
+		.when(LOCKED).then(CHASING)
+			.condition(() -> canLeaveGhostHouse() && getNextState() == CHASING)
+		
+		.when(LOCKED).then(FRIGHTENED)
+			.condition(() -> canLeaveGhostHouse() && isPacManGreedy())
+
+		.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
+		.when(CHASING).then(DYING).on(GhostKilledEvent.class)
+		.when(CHASING).then(SCATTERING).on(StartScatteringEvent.class)
+
+		.when(SCATTERING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
+		.when(SCATTERING).then(DYING).on(GhostKilledEvent.class)
+		.when(SCATTERING).then(CHASING).on(StartChasingEvent.class)
+		
+		.when(FRIGHTENED).then(CHASING).on(PacManLostPowerEvent.class)
+			.condition(() -> getNextState() == CHASING)
+
+		.when(FRIGHTENED).then(SCATTERING).on(PacManLostPowerEvent.class)
+			.condition(() -> getNextState() == SCATTERING)
+		
+		.when(FRIGHTENED).then(DYING).on(GhostKilledEvent.class)
+			
+		.when(DYING).then(DEAD).onTimeout()
+			
+		.when(DEAD).then(LOCKED)
+			.condition(() -> getTile().equals(getRevivalTile()))
+			.act(this::reviveGhost)
+		
 .endStateMachine();
 ```
 

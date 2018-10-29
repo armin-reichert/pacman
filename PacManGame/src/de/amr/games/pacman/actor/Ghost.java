@@ -198,8 +198,9 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 	}
 
 	private StateMachine<GhostState, GameEvent> buildStateMachine(String ghostName) {
+		return StateMachine.
 		/*@formatter:off*/
-		return StateMachine.beginStateMachine(GhostState.class, GameEvent.class)
+		beginStateMachine(GhostState.class, GameEvent.class)
 			 
 			.description(String.format("[%s]", ghostName))
 			.initialState(LOCKED)
