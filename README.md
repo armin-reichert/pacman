@@ -394,7 +394,11 @@ beginStateMachine(GhostState.class, GameEvent.class)
 
 ## Tracing
 
-The processing of all used state machines can be traced to some logger. If a state machine processes an event and does not find a suitable state transition, a runtime exception is thrown. This is very useful for finding gaps in the state machine definitions because you will get a direct hint what is missing in your control logic. Without explicit state machines your program would probably just misbehave but give no information on the why and where.
+The processing of all used state machines can be traced. If a state machine processes an event and does not 
+find a suitable state transition, a runtime exception is thrown by default. This is very useful for finding 
+gaps in the state machine definition in the development stage. Afterwards, this behavior can be changed so
+that only a message is logged for unhandled events. This avoids the need for specifying "empty" transitions
+for any event that has no effect in the current state. The Ghost's state machine makes use of that feature.
 
 Example trace:
 
