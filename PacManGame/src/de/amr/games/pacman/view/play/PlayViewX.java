@@ -175,11 +175,11 @@ public class PlayViewX extends PlayView {
 
 	private String ghostStateText(Ghost ghost) {
 		State<?, ?> state = ghost.getStateObject();
-		GhostState nextAttackState = ghost.getNextAttackState();
+		GhostState nextState = ghost.getNextState();
 		String name = ghost.getState() == GhostState.DEAD ? ghost.getName() : "";
-		return state.getDuration() != State.ENDLESS ? String.format("%s(%s,%d|%d)[%s]", name, state.id(),
-				state.getTicksRemaining(), state.getDuration(), nextAttackState)
-				: String.format("%s(%s,%s)[%s]", name, state.id(), INFTY, nextAttackState);
+		return state.getDuration() != State.ENDLESS ? String.format("%s(%s,%d|%d)[->%s]", name, state.id(),
+				state.getTicksRemaining(), state.getDuration(), nextState)
+				: String.format("%s(%s,%s)[->%s]", name, state.id(), INFTY, nextState);
 	}
 
 	private void toggleGhost(Ghost ghost) {

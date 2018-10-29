@@ -47,7 +47,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 	private final Tile revivalTile;
 	private final Tile scatteringTarget;
 	private final int initialDir;
-	public Supplier<GhostState> fnNextAttackState; // chasing or scattering
+	public Supplier<GhostState> fnNextState; // chasing or scattering
 	public BooleanSupplier fnCanLeaveGhostHouse;
 
 	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, Tile revivalTile,
@@ -63,7 +63,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 		fsm = buildStateMachine(name);
 		fsm.setIgnoreUnknownEvents(true);
 		fsm.traceTo(Application.LOGGER, app().clock::getFrequency);
-		fnNextAttackState = () -> getState();
+		fnNextState = this::getState; // default
 		fnCanLeaveGhostHouse = () -> fsm.state().getDuration() == State.ENDLESS || fsm.state().isTerminated();
 	}
 
@@ -106,9 +106,9 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 		return scatteringTarget;
 	}
 
-	public GhostState getNextAttackState() {
-		GhostState nextAttackState = fnNextAttackState.get();
-		return nextAttackState != null ? nextAttackState : getState();
+	public GhostState getNextState() {
+		GhostState nextState = fnNextState.get();
+		return nextState != null ? nextState : getState();
 	}
 
 	@Override
@@ -262,32 +262,29 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 					
 			.transitions()
 
-				.when(LOCKED).then(CHASING)
-					.on(StartChasingEvent.class)
-					.condition(() -> canLeaveGhostHouse())
-				
 				.when(LOCKED).then(SCATTERING)
-					.on(StartScatteringEvent.class)
-					.condition(() -> canLeaveGhostHouse())
-					
+					.condition(() -> canLeaveGhostHouse() && getNextState() == SCATTERING)
+				
+				.when(LOCKED).then(CHASING)
+					.condition(() -> canLeaveGhostHouse() && getNextState() == CHASING)
+				
 				.when(LOCKED).then(FRIGHTENED)
 					.condition(() -> canLeaveGhostHouse() && isPacManGreedy())
 
-				.when(LOCKED).then(SCATTERING)
-					.condition(() -> canLeaveGhostHouse() && getNextAttackState() == SCATTERING)
-				
-				.when(LOCKED).then(CHASING)
-					.condition(() -> canLeaveGhostHouse() && getNextAttackState() == CHASING)
-				
 				.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
-				.when(CHASING).then(DYING).on(GhostKilledEvent.class) // cheating-mode
+				.when(CHASING).then(DYING).on(GhostKilledEvent.class)
 				.when(CHASING).then(SCATTERING).on(StartScatteringEvent.class)
 
 				.when(SCATTERING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
-				.when(SCATTERING).then(DYING).on(GhostKilledEvent.class) // cheating-mode
+				.when(SCATTERING).then(DYING).on(GhostKilledEvent.class)
 				.when(SCATTERING).then(CHASING).on(StartChasingEvent.class)
 				
 				.when(FRIGHTENED).then(CHASING).on(PacManLostPowerEvent.class)
+					.condition(() -> getNextState() == CHASING)
+
+				.when(FRIGHTENED).then(SCATTERING).on(PacManLostPowerEvent.class)
+					.condition(() -> getNextState() == SCATTERING)
+				
 				.when(FRIGHTENED).then(DYING).on(GhostKilledEvent.class)
 					
 				.when(DYING).then(DEAD).onTimeout()

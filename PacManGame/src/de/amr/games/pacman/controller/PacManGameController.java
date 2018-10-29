@@ -57,7 +57,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		game = new PacManGame();
 		game.getPacMan().getEventManager().addListener(this::process);
 		ghostAttackTimer = new GhostAttackTimer(game, this);
-		game.getGhosts().forEach(ghost -> ghost.fnNextAttackState = ghostAttackTimer::getState);
+		game.getGhosts().forEach(ghost -> ghost.fnNextState = ghostAttackTimer::getState);
 		buildStateMachine();
 		traceTo(LOGGER, app().clock::getFrequency);
 	}
@@ -183,7 +183,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 				
 				.state(GAME_OVER)
 					.impl(new GameOverState())
-					.timeoutAfter(() -> app().clock.sec(60))
+					.timeoutAfter(() -> app().clock.sec(20))
 	
 			.transitions()
 			
