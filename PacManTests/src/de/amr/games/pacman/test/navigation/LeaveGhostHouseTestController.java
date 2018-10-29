@@ -4,7 +4,6 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayViewX;
 
@@ -30,15 +29,13 @@ public class LeaveGhostHouseTestController implements ViewController {
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
 		game.getGhosts().filter(ghost -> ghost != inky).forEach(ghost -> game.setActorActive(ghost, false));
 		inky.initGhost();
+		inky.fnNextState = () -> GhostState.SCATTERING;
 		inky.setState(GhostState.SCATTERING);
 	}
 
 	@Override
 	public void update() {
 		inky.update();
-		if (inky.getState() == GhostState.LOCKED && inky.getStateObject().isTerminated()) {
-			inky.processEvent(new StartScatteringEvent());
-		}
 		view.update();
 	}
 
