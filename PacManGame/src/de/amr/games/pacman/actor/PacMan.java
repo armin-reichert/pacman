@@ -185,7 +185,6 @@ public class PacMan extends PacManGameActor {
 				
 				.when(HUNGRY).then(DYING)
 					.on(PacManKilledEvent.class)
-					.act(this::setFullSprite)
 	
 				.when(HUNGRY).then(GREEDY)
 					.on(PacManGainsPowerEvent.class)
@@ -303,6 +302,7 @@ public class PacMan extends PacManGameActor {
 		public void onEntry() {
 			paralyzedTime = app().clock.sec(1);
 			sprites.current().enableAnimation(false);
+			setFullSprite();
 			getTheme().snd_clips_all().forEach(Sound::stop);
 		}
 
