@@ -167,7 +167,7 @@ public class PacMan extends PacManGameActor {
 
 				.state(HOME)
 					.onEntry(this::initPacMan)
-					.timeoutAfter(() -> app().clock.sec(0.25f))
+					.timeoutAfter(() -> app().clock.sec(1.5f))
 	
 				.state(HUNGRY)
 					.impl(new HungryState())

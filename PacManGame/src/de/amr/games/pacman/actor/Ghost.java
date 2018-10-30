@@ -263,15 +263,15 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 					
 			.transitions()
 
+				.when(LOCKED).then(FRIGHTENED)
+					.condition(() -> canLeaveGhostHouse() && isPacManGreedy())
+
 				.when(LOCKED).then(SCATTERING)
 					.condition(() -> canLeaveGhostHouse() && getNextState() == SCATTERING)
 				
 				.when(LOCKED).then(CHASING)
 					.condition(() -> canLeaveGhostHouse() && getNextState() == CHASING)
 				
-				.when(LOCKED).then(FRIGHTENED)
-					.condition(() -> canLeaveGhostHouse() && isPacManGreedy())
-
 				.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
 				.when(CHASING).then(DYING).on(GhostKilledEvent.class)
 				.when(CHASING).then(SCATTERING).on(StartScatteringEvent.class)

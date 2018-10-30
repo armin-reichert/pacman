@@ -62,11 +62,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		traceTo(LOGGER, app().clock::getFrequency);
 	}
 
-	public PacManGame getGame() {
-		return game;
-	}
-
-	public PacManTheme getTheme() {
+	private PacManTheme getTheme() {
 		return app().settings.get("theme");
 	}
 
@@ -183,7 +179,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 				
 				.state(GAME_OVER)
 					.impl(new GameOverState())
-					.timeoutAfter(() -> app().clock.sec(20))
+					.timeoutAfter(() -> app().clock.sec(30))
 	
 			.transitions()
 			
@@ -298,7 +294,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		@Override
 		public void onEntry() {
 			ghostAttackTimer.init();
-			getGame().getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
+			game.getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
 		}
 
 		@Override
@@ -461,26 +457,46 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 	private class PacManDyingState extends State<GameState, GameEvent> {
 
 		@Override
+		public void onEntry() {
+			getTheme().music_playing().stop();
+		}
+
+		@Override
 		public void onTick() {
 			game.getPacMan().update();
 		}
 
 		@Override
 		public void onExit() {
-			game.removeLife();
+			if (game.getLives() > 0) {
+				game.removeLife();
+				getTheme().music_playing().loop();
+			}
 		}
 	}
 
 	private class GameOverState extends State<GameState, GameEvent> {
 
+		private int waitForMusic;
+
 		@Override
 		public void onEntry() {
-			getGame().getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
+			waitForMusic = app().clock.sec(3);
+			game.saveScore();
+			game.getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
+			getPlayScreen().getBonus().ifPresent(bonus -> bonus.setVisible(false));
 			getPlayScreen().enableAnimation(false);
 			getPlayScreen().showInfoText("Game Over!", Color.RED);
-			game.saveScore();
-			getTheme().music_playing().stop();
-			getTheme().music_gameover().loop();
+		}
+
+		@Override
+		public void onTick() {
+			if (waitForMusic > 0) {
+				waitForMusic -= 1;
+				if (waitForMusic == 0) {
+					getTheme().music_gameover().loop();
+				}
+			}
 		}
 
 		@Override
