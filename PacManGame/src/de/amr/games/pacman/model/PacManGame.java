@@ -6,6 +6,14 @@ import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.model.BonusSymbol.APPLE;
+import static de.amr.games.pacman.model.BonusSymbol.BELL;
+import static de.amr.games.pacman.model.BonusSymbol.CHERRIES;
+import static de.amr.games.pacman.model.BonusSymbol.GALAXIAN;
+import static de.amr.games.pacman.model.BonusSymbol.GRAPES;
+import static de.amr.games.pacman.model.BonusSymbol.KEY;
+import static de.amr.games.pacman.model.BonusSymbol.PEACH;
+import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,7 +28,6 @@ import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameActor;
-import de.amr.games.pacman.model.Levels.Property;
 import de.amr.games.pacman.theme.GhostColor;
 
 /**
@@ -31,12 +38,69 @@ import de.amr.games.pacman.theme.GhostColor;
  */
 public class PacManGame {
 
-	private static int sec(float seconds) {
-		return app().clock.sec(seconds);
-	}
-
 	/** The tile size (8px). */
 	public static final int TS = 8;
+
+	/**
+	 * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>
+	 */
+	private enum Param {
+		BONUS_SYMBOL,
+		BONUS_VALUE,
+		PACMAN_SPEED,
+		PACMAN_DOTS_SPEED,
+		GHOST_SPEED,
+		GHOST_TUNNEL_SPEED,
+		ELROY1_DOTS_LEFT,
+		ELROY1_SPEED,
+		ELROY2_DOTS_LEFT,
+		ELROY2_SPEED,
+		PACMAN_POWER_SPEED,
+		PACMAN_POWER_DOTS_SPEED,
+		GHOST_FRIGHTENED_SPEED,
+		PACMAN_POWER_SECONDS,
+		MAZE_NUM_FLASHES;
+
+		private static final Object[][] VALUES_BY_LEVEL = {
+			/*@formatter:off*/
+			{ /* this row is not used */ },
+			{ CHERRIES,           100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6,   5 },
+			{ STRAWBERRY,         300,  .90f, .79f, .85f, .45f,  30, .8f,  15,  .95f, .95f, .83f, .55f,   5,   5 },
+			{ PEACH,              500,  .90f, .79f, .85f, .45f,  40, .8f,  20,  .95f, .95f, .83f, .55f,   4,   5 },
+			{ PEACH,              500,  .90f, .79f, .85f, .50f,  40, .8f,  20,  .95f, .95f, .83f, .55f,   3,   5 },
+			{ APPLE,              700,    1f, .87f, .95f, .50f,  40, .8f,  20, .105f,   1f, .87f, .60f,   2,   5 },
+			{ APPLE,              700,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   5,   5 },
+			{ GRAPES,            1000,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   2,   5 },
+			{ GRAPES,            1000,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   2,   5 },
+			{ GALAXIAN,          2000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   1,   3 },
+			{ GALAXIAN,          2000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   5,   5 },
+			{ BELL,              3000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   2,   5 },
+			{ BELL,              3000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   1,   3 },
+			{ KEY,               5000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   1,   3 },
+			{ KEY,               5000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   3,   5 },
+			{ KEY,               5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   1f, .87f, .60f,   1,   3 },
+			{ KEY,               5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   0f,   0f,   0f,   0,   0 },
+			{ KEY,               5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   1f, .87f, .60f,   1,   3 },
+			{ KEY,               5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   0f,   0f,   0f,   0,   0 },
+			{ KEY,               5000,    1f, .87f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0,   0 },
+			{ KEY,               5000,    1f, .87f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0,   0 },
+			{ KEY,               5000,  .90f, .79f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0,   0 },
+			/*@formatter:on*/
+		};
+
+		public float asFloat(int level) {
+			return (float) VALUES_BY_LEVEL[level][ordinal()];
+		}
+
+		public int asInt(int level) {
+			return (int) VALUES_BY_LEVEL[level][ordinal()];
+		}
+
+		@SuppressWarnings("unchecked")
+		public <T> T asObject(int level) {
+			return (T) VALUES_BY_LEVEL[level][ordinal()];
+		}
+	};
 
 	private final Maze maze;
 
@@ -208,6 +272,10 @@ public class PacManGame {
 		}
 	}
 
+	private int sec(float seconds) {
+		return app().clock.sec(seconds);
+	}
+
 	private float speed(float relativeSpeed) {
 		// TODO what is the original base speed in tiles/second at 60 Hz?
 		return 9f * TS / 60 * relativeSpeed;
@@ -271,11 +339,11 @@ public class PacManGame {
 	}
 
 	public BonusSymbol getBonusSymbol() {
-		return Levels.getObject(level, Property.BonusSymbol);
+		return Param.BONUS_SYMBOL.asObject(level);
 	}
 
 	public int getBonusValue() {
-		return Levels.getInt(level, Property.iBonusValue);
+		return Param.BONUS_VALUE.asInt(level);
 	}
 
 	public int getBonusTime() {
@@ -309,20 +377,20 @@ public class PacManGame {
 	public float getGhostSpeed(Ghost ghost) {
 		Tile tile = ghost.getTile();
 		boolean slow = maze.inTeleportSpace(tile) || maze.inTunnel(tile);
-		float slowSpeed = speed(Levels.getFloat(level, Property.fGhostTunnelSpeed));
+		float slowSpeed = speed(Param.GHOST_TUNNEL_SPEED.asFloat(level));
 		switch (ghost.getState()) {
 		case CHASING:
-			return slow ? slowSpeed : speed(Levels.getFloat(level, Property.fGhostSpeed));
+			return slow ? slowSpeed : speed(Param.GHOST_SPEED.asFloat(level));
 		case DYING:
 			return 0;
 		case DEAD:
 			return speed(1.5f);
 		case FRIGHTENED:
-			return slow ? slowSpeed : speed(Levels.getFloat(level, Property.fGhostAfraidSpeed));
+			return slow ? slowSpeed : speed(Param.GHOST_FRIGHTENED_SPEED.asFloat(level));
 		case LOCKED:
 			return speed(0.75f);
 		case SCATTERING:
-			return slow ? slowSpeed : speed(Levels.getFloat(level, Property.fGhostSpeed));
+			return slow ? slowSpeed : speed(Param.GHOST_SPEED.asFloat(level));
 		default:
 			throw new IllegalStateException();
 		}
@@ -347,7 +415,7 @@ public class PacManGame {
 	}
 
 	public int getGhostNumFlashes() {
-		return Levels.getInt(level, Property.iNumFlashes);
+		return Param.MAZE_NUM_FLASHES.asInt(level);
 	}
 
 	public int getKilledGhostValue() {
@@ -369,9 +437,9 @@ public class PacManGame {
 	public float getPacManSpeed(PacMan pacMan) {
 		switch (pacMan.getState()) {
 		case HUNGRY:
-			return speed(Levels.getFloat(level, Property.fPacManSpeed));
+			return speed(Param.PACMAN_SPEED.asFloat(level));
 		case GREEDY:
-			return speed(Levels.getFloat(level, Property.fPacManPowerSpeed));
+			return speed(Param.PACMAN_POWER_SPEED.asFloat(level));
 		case HOME:
 		case DYING:
 		case DEAD:
@@ -382,7 +450,7 @@ public class PacManGame {
 	}
 
 	public int getPacManGreedyTime() {
-		return sec(Levels.getInt(level, Property.iPacManPowerSeconds));
+		return sec(Param.PACMAN_POWER_SECONDS.asInt(level));
 	}
 
 	public int getPacManGettingWeakerTicks() {

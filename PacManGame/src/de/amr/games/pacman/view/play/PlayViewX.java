@@ -177,8 +177,9 @@ public class PlayViewX extends PlayView {
 		State<?, ?> state = ghost.getStateObject();
 		GhostState nextState = ghost.getNextState();
 		String name = ghost.getState() == GhostState.DEAD ? ghost.getName() : "";
-		return state.getDuration() != State.ENDLESS ? String.format("%s(%s,%d|%d)[->%s]", name, state.id(),
-				state.getTicksRemaining(), state.getDuration(), nextState)
+		return state.getDuration() != State.ENDLESS
+				? String.format("%s(%s,%d|%d)[->%s]", name, state.id(), state.getTicksRemaining(),
+						state.getDuration(), nextState)
 				: String.format("%s(%s,%s)[->%s]", name, state.id(), INFTY, nextState);
 	}
 
