@@ -18,6 +18,7 @@ import java.util.logging.Level;
 
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
+import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
@@ -170,9 +171,18 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 	@Override
 	public void update() {
 		checkLoggingChange();
+		checkNextLevelCheat();
 		checkSpeedChange();
 		super.update();
 		currentScreen.update();
+	}
+
+	private void checkNextLevelCheat() {
+		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
+			if (getState() == GameState.PLAYING) {
+				enqueue(new LevelCompletedEvent());
+			}
+		}
 	}
 
 	private void checkLoggingChange() {
