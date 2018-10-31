@@ -438,14 +438,10 @@ public class PacManGame {
 		switch (pacMan.getState()) {
 		case HUNGRY:
 			return speed(Param.PACMAN_SPEED.asFloat(level));
-		case GREEDY:
+		case POWER:
 			return speed(Param.PACMAN_POWER_SPEED.asFloat(level));
-		case HOME:
-		case DYING:
-		case DEAD:
-			return 0;
 		default:
-			throw new IllegalStateException();
+			return 0;
 		}
 	}
 

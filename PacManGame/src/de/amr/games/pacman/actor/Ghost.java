@@ -151,7 +151,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 	}
 
 	private boolean isPacManGreedy() {
-		return getGame().getPacMan().getState() == PacManState.GREEDY;
+		return getGame().getPacMan().getState() == PacManState.POWER;
 	}
 
 	// Sprites

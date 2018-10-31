@@ -4,7 +4,7 @@ import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.PacManState.DEAD;
 import static de.amr.games.pacman.actor.PacManState.DYING;
-import static de.amr.games.pacman.actor.PacManState.GREEDY;
+import static de.amr.games.pacman.actor.PacManState.POWER;
 import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.model.Maze.NESW;
@@ -78,7 +78,7 @@ public class PacMan extends PacManGameActor {
 	}
 
 	public boolean isGettingWeaker() {
-		return getState() == PacManState.GREEDY
+		return getState() == PacManState.POWER
 				&& getStateObject().getTicksRemaining() < getGame().getPacManGettingWeakerTicks();
 	}
 
@@ -172,7 +172,7 @@ public class PacMan extends PacManGameActor {
 				.state(HUNGRY)
 					.impl(new HungryState())
 					
-				.state(GREEDY)
+				.state(POWER)
 					.impl(new GreedyState())
 					.timeoutAfter(getGame()::getPacManGreedyTime)
 	
@@ -186,14 +186,14 @@ public class PacMan extends PacManGameActor {
 				.when(HUNGRY).then(DYING)
 					.on(PacManKilledEvent.class)
 	
-				.when(HUNGRY).then(GREEDY)
+				.when(HUNGRY).then(POWER)
 					.on(PacManGainsPowerEvent.class)
 	
-				.stay(GREEDY)
+				.stay(POWER)
 					.on(PacManGainsPowerEvent.class)
 					.act(() -> fsm.resetTimer())
 	
-				.when(GREEDY).then(HUNGRY)
+				.when(POWER).then(HUNGRY)
 					.onTimeout()
 					.act(() -> getEventManager().publish(new PacManLostPowerEvent()))
 	

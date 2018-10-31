@@ -391,7 +391,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			if (pacManState == PacManState.DYING) {
 				return;
 			}
-			if (pacManState == PacManState.GREEDY) {
+			if (pacManState == PacManState.POWER) {
 				GhostState ghostState = e.ghost.getState();
 				if (ghostState == GhostState.FRIGHTENED || ghostState == GhostState.CHASING
 						|| ghostState == GhostState.SCATTERING) {
