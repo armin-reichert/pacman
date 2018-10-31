@@ -449,7 +449,7 @@ public class PacManGame {
 		return sec(Param.PACMAN_POWER_SECONDS.asInt(level));
 	}
 
-	public int getPacManGettingWeakerTicks() {
+	public int getPacManLosingPowerTicks() {
 		return sec(getGhostNumFlashes() * 400 / 1000);
 	}
 

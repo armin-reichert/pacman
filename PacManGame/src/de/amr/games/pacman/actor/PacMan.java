@@ -4,9 +4,9 @@ import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.PacManState.DEAD;
 import static de.amr.games.pacman.actor.PacManState.DYING;
-import static de.amr.games.pacman.actor.PacManState.POWER;
 import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
+import static de.amr.games.pacman.actor.PacManState.POWER;
 import static de.amr.games.pacman.model.Maze.NESW;
 
 import java.awt.event.KeyEvent;
@@ -77,9 +77,13 @@ public class PacMan extends PacManGameActor {
 		return app().settings.get("theme");
 	}
 
-	public boolean isGettingWeaker() {
-		return getState() == PacManState.POWER
-				&& getStateObject().getTicksRemaining() < getGame().getPacManGettingWeakerTicks();
+	public boolean isLosingPower() {
+		return getState() == POWER
+				&& getStateObject().getTicksRemaining() < getGame().getPacManLosingPowerTicks();
+	}
+
+	public boolean hasPower() {
+		return getState() == POWER;
 	}
 
 	// Movement
@@ -284,7 +288,7 @@ public class PacMan extends PacManGameActor {
 		@Override
 		public void onTick() {
 			super.onTick();
-			if (getTicksRemaining() == getGame().getPacManGettingWeakerTicks()) {
+			if (getTicksRemaining() == getGame().getPacManLosingPowerTicks()) {
 				getEventManager().publish(new PacManGettingWeakerEvent());
 			}
 		}

@@ -161,7 +161,7 @@ beginStateMachine()
 		
 		.state(GAME_OVER)
 			.impl(new GameOverState())
-			.timeoutAfter(() -> app().clock.sec(20))
+			.timeoutAfter(() -> app().clock.sec(30))
 
 	.transitions()
 	
@@ -256,12 +256,12 @@ beginStateMachine(PacManState.class, GameEvent.class)
 
 		.state(HOME)
 			.onEntry(this::initPacMan)
-			.timeoutAfter(() -> app().clock.sec(0.25f))
+			.timeoutAfter(() -> app().clock.sec(1.5f))
 
 		.state(HUNGRY)
 			.impl(new HungryState())
 			
-		.state(GREEDY)
+		.state(POWER)
 			.impl(new GreedyState())
 			.timeoutAfter(getGame()::getPacManGreedyTime)
 
@@ -275,14 +275,14 @@ beginStateMachine(PacManState.class, GameEvent.class)
 		.when(HUNGRY).then(DYING)
 			.on(PacManKilledEvent.class)
 
-		.when(HUNGRY).then(GREEDY)
+		.when(HUNGRY).then(POWER)
 			.on(PacManGainsPowerEvent.class)
 
-		.stay(GREEDY)
+		.stay(POWER)
 			.on(PacManGainsPowerEvent.class)
 			.act(() -> fsm.resetTimer())
 
-		.when(GREEDY).then(HUNGRY)
+		.when(POWER).then(HUNGRY)
 			.onTimeout()
 			.act(() -> getEventManager().publish(new PacManLostPowerEvent()))
 
@@ -330,7 +330,7 @@ beginStateMachine(GhostState.class, GameEvent.class)
 			.onTick(() -> {
 				move();
 				sprites.select(inGhostHouse() ? "s_color_" + getMoveDir() : 
-					getGame().getPacMan().isGettingWeaker() ? "s_flashing" : "s_frightened");
+					getGame().getPacMan().isLosingPower() ? "s_flashing" : "s_frightened");
 			})
 		
 		.state(DYING)
@@ -358,15 +358,15 @@ beginStateMachine(GhostState.class, GameEvent.class)
 			
 	.transitions()
 
+		.when(LOCKED).then(FRIGHTENED)
+			.condition(() -> canLeaveGhostHouse() && getGame().getPacMan().hasPower())
+
 		.when(LOCKED).then(SCATTERING)
 			.condition(() -> canLeaveGhostHouse() && getNextState() == SCATTERING)
 		
 		.when(LOCKED).then(CHASING)
 			.condition(() -> canLeaveGhostHouse() && getNextState() == CHASING)
 		
-		.when(LOCKED).then(FRIGHTENED)
-			.condition(() -> canLeaveGhostHouse() && isPacManGreedy())
-
 		.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
 		.when(CHASING).then(DYING).on(GhostKilledEvent.class)
 		.when(CHASING).then(SCATTERING).on(StartScatteringEvent.class)
@@ -488,7 +488,7 @@ C:\Users\armin\Desktop>java -jar pacman.jar
 [2018-10-29 09:56:56:062] Start scattering, round 0
 ```
 
-## Configurable navigation behavior (aka AI)
+## Actor movement ("AI")
 
 The game gets most of its entertainment factor from the diversity of attack behavior of the four ghosts. 
 In this implementation, these differences in behavior are not realized by subclassing

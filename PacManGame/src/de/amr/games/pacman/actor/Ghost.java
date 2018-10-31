@@ -150,10 +150,6 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 		return fnCanLeaveGhostHouse.getAsBoolean();
 	}
 
-	private boolean isPacManGreedy() {
-		return getGame().getPacMan().getState() == PacManState.POWER;
-	}
-
 	// Sprites
 
 	private void setSprites(GhostColor color) {
@@ -235,7 +231,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 					.onTick(() -> {
 						move();
 						sprites.select(inGhostHouse() ? "s_color_" + getMoveDir() : 
-							getGame().getPacMan().isGettingWeaker() ? "s_flashing" : "s_frightened");
+							getGame().getPacMan().isLosingPower() ? "s_flashing" : "s_frightened");
 					})
 				
 				.state(DYING)
@@ -264,7 +260,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 			.transitions()
 
 				.when(LOCKED).then(FRIGHTENED)
-					.condition(() -> canLeaveGhostHouse() && isPacManGreedy())
+					.condition(() -> canLeaveGhostHouse() && getGame().getPacMan().hasPower())
 
 				.when(LOCKED).then(SCATTERING)
 					.condition(() -> canLeaveGhostHouse() && getNextState() == SCATTERING)
