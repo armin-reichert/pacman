@@ -45,7 +45,7 @@ public class PacManGame {
 	private final Ghost blinky, pinky, inky, clyde;
 
 	/** The currently active actors. Actors can be toggled during the game. */
-	private final Map<PacManGameActor, Boolean> actorState = new HashMap<>();
+	private final Map<PacManGameActor, Boolean> activeActors = new HashMap<>();
 
 	/** The game score including highscore management. */
 	private final Score score;
@@ -84,7 +84,7 @@ public class PacManGame {
 		clyde = new Ghost(this, "Clyde", GhostColor.ORANGE, maze.getClydeHome(), maze.getClydeHome(),
 				maze.getClydeScatteringTarget(), Top4.N);
 
-		Arrays.asList(pacMan, blinky, pinky, inky, clyde).forEach(actor -> actorState.put(actor, true));
+		Arrays.asList(pacMan, blinky, pinky, inky, clyde).forEach(actor -> activeActors.put(actor, true));
 
 		// Define the ghost behavior ("AI")
 
@@ -140,7 +140,7 @@ public class PacManGame {
 	}
 
 	public void initActiveActors() {
-		actorState.entrySet().forEach(e -> {
+		activeActors.entrySet().forEach(e -> {
 			if (e.getValue()) {
 				e.getKey().init();
 			}
@@ -148,14 +148,14 @@ public class PacManGame {
 	}
 
 	public boolean isActorActive(PacManGameActor actor) {
-		return actorState.get(actor);
+		return activeActors.get(actor);
 	}
 
 	public void setActorActive(PacManGameActor actor, boolean active) {
-		if (actorState.containsKey(actor) && active == actorState.get(actor)) {
+		if (activeActors.containsKey(actor) && active == activeActors.get(actor)) {
 			return; // no change
 		}
-		actorState.put(actor, active);
+		activeActors.put(actor, active);
 		actor.setVisible(active);
 		if (active) {
 			actor.init();
