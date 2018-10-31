@@ -49,14 +49,14 @@ Which entities in the Pac-Man game are candidates for getting controlled by stat
 
 Of course, Pac-Man and the four ghosts, but also the global game control, maybe also the screen selection logic or even simpler entities in your game. It is interesting to look at your program parts through the state machine glasses and find out where an explicit state machine becomes useful.
 
-In the provided implementation, there are the following explicit state machines:
-- Game controller ([PacManGameController](PacManGame/src/de/amr/games/pacman/controller/PacManGameController.java))
-- Ghost attack controller ([GhostAttackTimer](PacManGame/src/de/amr/games/pacman/controller/GhostAttackTimer.java))
+In the provided implementation, there are a number of explicit state machines:
+- Intro screen controller ([IntroView](PacManGame/src/de/amr/games/pacman/view/intro/IntroView.java))
+- Global game controller ([PacManGameController](PacManGame/src/de/amr/games/pacman/controller/PacManGameController.java))
+- Ghost attack controller (inner class of PacManGameController)
 - Pac-Man controller ([Pac-Man](PacManGame/src/de/amr/games/pacman/actor/PacMan.java))
 - Ghost controller ([Ghost](PacManGame/src/de/amr/games/pacman/actor/Ghost.java))
-- Intro view controller ([IntroView](PacManGame/src/de/amr/games/pacman/view/intro/IntroView.java))
 
-The state machines are "implemented" in a declarative way (*builder pattern*). In essence, you write a single large expression representing the complete state graph together with node and edge annotations (actions, conditions, event conditions, timers).
+All these state machines are "implemented" in a declarative way (*builder pattern*). In essence, you write a single large expression representing the complete state graph together with node and edge annotations (actions, conditions, event conditions, timers).
 
 Lambda expressions (anonymous functions) and function references allow to embed code directly inside the state machine definition. However, if the code becomes more complex it is of course possible to delegate to separate methods or classes. Both variants are used here.
 
@@ -64,9 +64,9 @@ Lambda expressions (anonymous functions) and function references allow to embed 
 
 Sounds all well and nice, but how does that look in the real code? 
 
-The intro view shows some animations that have to be coordinated using timers and stop conditions. This
-is an obvious candidate for using a state machine. This state machine has no events but only uses timers,
-so we specify *Void* as event type. The states are identified by numbers:
+The intro screen shows different animations that have to be coordinated using timers and stop conditions. This
+is an obvious candidate for using a state machine. The state machine only uses timers, so we can specify
+type *Void* as event type. The states are identified by numbers:
 
 ```java
 beginStateMachine()
