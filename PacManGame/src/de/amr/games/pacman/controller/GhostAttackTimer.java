@@ -57,10 +57,6 @@ public class GhostAttackTimer extends StateMachine<GhostState, Void> implements 
 		++round;
 	}
 
-	private int sec(float seconds) {
-		return app().clock.sec(seconds);
-	}
-
 	private void fireStartChasing() {
 		LOGGER.info("Start chasing, round " + round);
 		master.enqueue(new StartChasingEvent());
@@ -72,28 +68,10 @@ public class GhostAttackTimer extends StateMachine<GhostState, Void> implements 
 	}
 
 	private int getScatteringDuration() {
-		int level = game.getLevel();
-		if (level <= 1) {
-			return sec(round <= 1 ? 7 : 5);
-		}
-		// levels 2-4
-		if (level <= 4) {
-			return round <= 1 ? sec(7) : round == 2 ? sec(5) : 1;
-		}
-		// levels 5+
-		return round <= 2 ? sec(5) : 1;
+		return game.getGhostScatteringDuration(round);
 	}
 
 	private int getChasingDuration() {
-		int level = game.getLevel();
-		if (level <= 1) {
-			return round <= 2 ? sec(20) : Integer.MAX_VALUE;
-		}
-		// levels 2-4
-		if (level <= 4) {
-			return round <= 1 ? sec(20) : round == 2 ? sec(1033) : Integer.MAX_VALUE;
-		}
-		// levels 5+
-		return round <= 1 ? sec(20) : round == 2 ? sec(1037) : Integer.MAX_VALUE;
+		return game.getGhostChasingDuration(round);
 	}
 }
