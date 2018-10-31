@@ -12,7 +12,7 @@ import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
 /**
  * Level-specific game data.
  */
-class Level {
+class Levels {
 
 	public enum Property {
 		BonusSymbol,
@@ -35,7 +35,7 @@ class Level {
 	/**
 	 * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>
 	 */
-	private static final Object[][] VALUES = {
+	private static final Object[][] LEVELS = {
 	/*@formatter:off*/
 	{ /* not used */},
 	{ CHERRIES,           100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6,   5 },
@@ -62,16 +62,16 @@ class Level {
 	/*@formatter:on*/
 	};
 
-	static float floatValue(int row, Property col) {
-		return (float) VALUES[row][col.ordinal()];
+	public static float getFloat(int level, Property property) {
+		return (float) LEVELS[level][property.ordinal()];
 	}
 
-	static int intValue(int row, Property col) {
-		return (int) VALUES[row][col.ordinal()];
+	public static int getInt(int level, Property property) {
+		return (int) LEVELS[level][property.ordinal()];
 	}
 
 	@SuppressWarnings("unchecked")
-	static <T> T objValue(int row, Property col) {
-		return (T) VALUES[row][col.ordinal()];
+	public static <T> T getObject(int level, Property property) {
+		return (T) LEVELS[level][property.ordinal()];
 	}
 }
