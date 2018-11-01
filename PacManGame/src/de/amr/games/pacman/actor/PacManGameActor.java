@@ -1,5 +1,6 @@
 package de.amr.games.pacman.actor;
 
+import static de.amr.easy.game.math.Vector2f.smul;
 import static de.amr.games.pacman.model.Maze.NESW;
 
 import java.util.OptionalInt;
@@ -106,29 +107,23 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 	}
 
 	public boolean canEnterTile(Tile tile) {
-		if (getMaze().inTeleportSpace(tile)) {
-			return true;
-		}
-		if (!getMaze().isValidTile(tile)) {
-			return false;
-		}
 		if (getMaze().isWall(tile)) {
 			return false;
 		}
 		if (getMaze().isDoor(tile)) {
 			return canTraverseDoor(tile);
 		}
-		return true;
+		return getMaze().inTeleportSpace(tile) || getMaze().isValidTile(tile);
 	}
 
 	public boolean isStuck() {
-		return possibleMoveDistance(getMoveDir()) == 0;
+		return possibleMove(getMoveDir()) == 0;
 	}
 
 	/**
 	 * Computes how far this actor can move towards the given direction.
 	 */
-	private float possibleMoveDistance(int dir) {
+	private float possibleMove(int dir) {
 		final float speed = getSpeed();
 		if (inTeleportSpace()) {
 			return dir == Top4.N || dir == Top4.S ? 0 : speed;
@@ -156,23 +151,19 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 		}
 	}
 
-	private Vector2f velocity(float speed, int dir) {
-		return Vector2f.smul(speed, Vector2f.of(NESW.dx(dir), NESW.dy(dir)));
-	}
-
 	public void move() {
-		// can we turn towards the intended direction?
-		if (possibleMoveDistance(nextDir) > 0) {
+		supplyIntendedDir().ifPresent(this::setNextDir);
+		float possibleMove = possibleMove(nextDir);
+		if (possibleMove > 0) {
 			if (nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir)) {
 				align();
 			}
 			setMoveDir(nextDir);
 		}
-		// move towards the current direction as far as possible
-		float possibleMoveDistance = possibleMoveDistance(moveDir);
-		if (possibleMoveDistance > 0) {
-			// LOGGER.info("Move " + possibleMoveDistance);
-			tf.setVelocity(velocity(possibleMoveDistance, moveDir));
+		possibleMove = possibleMove(moveDir);
+		if (possibleMove > 0) {
+			Vector2f velocity = smul(possibleMove, Vector2f.of(NESW.dx(moveDir), NESW.dy(moveDir)));
+			tf.setVelocity(velocity);
 			tf.move();
 			// check for exit from teleport space
 			if (tf.getX() + tf.getWidth() < 0) {
@@ -181,8 +172,5 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 				tf.setX(-tf.getWidth());
 			}
 		}
-		// query intended direction
-		supplyIntendedDir().ifPresent(this::setNextDir);
 	}
-
 }
