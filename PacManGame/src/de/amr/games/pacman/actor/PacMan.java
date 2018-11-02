@@ -169,7 +169,7 @@ public class PacMan extends MazeEntity {
 	public void processEvent(GameEvent event) {
 		fsm.process(event);
 	}
-
+	
 	private StateMachine<PacManState, GameEvent> buildStateMachine() {
 		return StateMachine.
 		/* @formatter:off */
@@ -206,7 +206,7 @@ public class PacMan extends MazeEntity {
 	
 				.stay(POWER)
 					.on(PacManGainsPowerEvent.class)
-					.act(fsm::resetTimer)
+					.act(() -> fsm.resetTimer())
 	
 				.when(POWER).then(HUNGRY)
 					.onTimeout()
