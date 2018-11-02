@@ -262,8 +262,8 @@ beginStateMachine(PacManState.class, GameEvent.class)
 			.impl(new HungryState())
 			
 		.state(POWER)
-			.impl(new GreedyState())
-			.timeoutAfter(getGame()::getPacManGreedyTime)
+			.impl(new PowerState())
+			.timeoutAfter(getGame()::getPacManPowerTime)
 
 		.state(DYING)
 			.impl(new DyingState())

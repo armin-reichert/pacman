@@ -189,8 +189,8 @@ public class PacMan extends MazeEntity {
 					.impl(new HungryState())
 					
 				.state(POWER)
-					.impl(new GreedyState())
-					.timeoutAfter(getGame()::getPacManGreedyTime)
+					.impl(new PowerState())
+					.timeoutAfter(getGame()::getPacManPowerTime)
 	
 				.state(DYING)
 					.impl(new DyingState())
@@ -285,7 +285,7 @@ public class PacMan extends MazeEntity {
 		}
 	}
 
-	private class GreedyState extends HungryState {
+	private class PowerState extends HungryState {
 
 		@Override
 		public void onEntry() {

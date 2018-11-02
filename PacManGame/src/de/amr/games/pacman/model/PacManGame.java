@@ -445,7 +445,7 @@ public class PacManGame {
 		}
 	}
 
-	public int getPacManGreedyTime() {
+	public int getPacManPowerTime() {
 		return sec(Param.PACMAN_POWER_SECONDS.asInt(level));
 	}
 
