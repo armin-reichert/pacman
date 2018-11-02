@@ -27,7 +27,7 @@ public abstract class MazeEntity extends SpriteEntity {
 	/** Current move direction. See {@link Top4} for direction values. */
 	private int moveDir;
 
-	/** The indended move direction, actor turns to this direction as soon as possible. */
+	/** The intended move direction, actor turns to this direction as soon as possible. */
 	private int nextDir;
 
 	protected MazeEntity() {
