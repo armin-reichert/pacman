@@ -24,20 +24,35 @@ import de.amr.games.pacman.model.Tile;
  */
 public abstract class MazeEntity extends SpriteEntity {
 
-	/** Current move direction. See {@link Top4} for direction values. */
+	/* Current move direction. See {@link Top4} for direction values. */
 	private int moveDir;
 
-	/** The intended move direction, actor turns to this direction as soon as possible. */
+	/* The intended move direction, actor turns to this direction as soon as possible. */
 	private int nextDir;
 
 	protected MazeEntity() {
 		moveDir = nextDir = Top4.E;
-		// collision box size:
 		tf.setWidth(TS);
 		tf.setHeight(TS);
 	}
 
-	public int tileIndex(float coord) {
+	public int getMoveDir() {
+		return moveDir;
+	}
+
+	public void setMoveDir(int moveDir) {
+		this.moveDir = moveDir;
+	}
+
+	public int getNextDir() {
+		return nextDir;
+	}
+
+	public void setNextDir(int nextDir) {
+		this.nextDir = nextDir;
+	}
+
+	private static int tileIndex(float coord) {
 		return round(coord) / TS;
 	}
 
@@ -66,46 +81,13 @@ public abstract class MazeEntity extends SpriteEntity {
 		return round(tf.getY()) % TS;
 	}
 
-	/**
-	 * Tells if this actor can traverse the door at the given tile position.
-	 * 
-	 * @param door
-	 *               tile with door
-	 * @return {@code true} if actor can traverse door in its current state
-	 */
 	public abstract boolean canTraverseDoor(Tile door);
 
-	/**
-	 * Supplies the intended move direction which will be taken as soon as possible.
-	 * 
-	 * @return (optional) intended direction
-	 */
 	public abstract OptionalInt supplyIntendedDir();
 
-	/**
-	 * Returns the current move speed in pixels per tick.
-	 * 
-	 * @return move speed (pixels per tick)
-	 */
 	public abstract float getSpeed();
 
 	public abstract Maze getMaze();
-
-	public int getMoveDir() {
-		return moveDir;
-	}
-
-	public void setMoveDir(int moveDir) {
-		this.moveDir = moveDir;
-	}
-
-	public int getNextDir() {
-		return nextDir;
-	}
-
-	public void setNextDir(int nextDir) {
-		this.nextDir = nextDir;
-	}
 
 	public boolean inTeleportSpace() {
 		return getMaze().inTeleportSpace(getTile());
@@ -129,11 +111,34 @@ public abstract class MazeEntity extends SpriteEntity {
 		return getMaze().inTeleportSpace(tile) || getMaze().isValidTile(tile);
 	}
 
-	public boolean isStuck() {
-		return possibleMove(getMoveDir()) == 0;
+	public void move() {
+		supplyIntendedDir().ifPresent(this::setNextDir);
+		float possibleMove = possibleMove(nextDir);
+		if (possibleMove > 0) {
+			if (nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir)) {
+				align();
+			}
+			setMoveDir(nextDir);
+		}
+		possibleMove = possibleMove(moveDir);
+		if (possibleMove > 0) {
+			Vector2f velocity = smul(possibleMove, Vector2f.of(NESW.dx(moveDir), NESW.dy(moveDir)));
+			tf.setVelocity(velocity);
+			tf.move();
+			// check for exit from teleport space
+			if (tf.getX() + tf.getWidth() < 0) {
+				tf.setX(getMaze().numCols() * TS);
+			} else if (tf.getX() > (getMaze().numCols()) * TS) {
+				tf.setX(-tf.getWidth());
+			}
+		}
 	}
 
-	/**
+	public boolean isStuck() {
+		return possibleMove(moveDir) == 0;
+	}
+
+	/*
 	 * Computes how far this actor can move towards the given direction.
 	 */
 	private float possibleMove(int dir) {
@@ -161,29 +166,6 @@ public abstract class MazeEntity extends SpriteEntity {
 			return Math.min(speed, neighborTile.row * TS - bottom);
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
-		}
-	}
-
-	public void move() {
-		supplyIntendedDir().ifPresent(this::setNextDir);
-		float possibleMove = possibleMove(nextDir);
-		if (possibleMove > 0) {
-			if (nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir)) {
-				align();
-			}
-			setMoveDir(nextDir);
-		}
-		possibleMove = possibleMove(moveDir);
-		if (possibleMove > 0) {
-			Vector2f velocity = smul(possibleMove, Vector2f.of(NESW.dx(moveDir), NESW.dy(moveDir)));
-			tf.setVelocity(velocity);
-			tf.move();
-			// check for exit from teleport space
-			if (tf.getX() + tf.getWidth() < 0) {
-				tf.setX(getMaze().numCols() * TS);
-			} else if (tf.getX() > (getMaze().numCols()) * TS) {
-				tf.setX(-tf.getWidth());
-			}
 		}
 	}
 }
