@@ -12,6 +12,7 @@ import de.amr.easy.game.ui.sprites.Animation;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.PacManTheme;
 
 public class MazeView extends SpriteEntity {
@@ -61,7 +62,8 @@ public class MazeView extends SpriteEntity {
 
 	public void setBonus(Bonus bonus) {
 		this.bonus = bonus;
-		bonus.placeAtTile(maze.getBonusTile(), TS / 2, 0);
+		Tile tile = maze.getBonusTile();
+		bonus.tf.setPosition(tile.col * TS + TS / 2, tile.row * TS);
 	}
 
 	public Optional<Bonus> getBonus() {

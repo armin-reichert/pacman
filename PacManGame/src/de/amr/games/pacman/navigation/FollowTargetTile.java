@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
-import de.amr.games.pacman.actor.PacManGameActor;
+import de.amr.games.pacman.actor.MazeEntity;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
@@ -37,7 +37,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavior<T> {
+public class FollowTargetTile<T extends MazeEntity> implements ActorBehavior<T> {
 
 	private final Supplier<Tile> targetTileSupplier;
 
@@ -114,7 +114,7 @@ public class FollowTargetTile<T extends PacManGameActor> implements ActorBehavio
 	/**
 	 * Find direction to neighbor tile with smallest distance to target.
 	 */
-	private static Optional<Integer> findBestDir(PacManGameActor actor, Tile nextTile, Tile targetTile,
+	private static Optional<Integer> findBestDir(MazeEntity actor, Tile nextTile, Tile targetTile,
 			Stream<Integer> choices) {
 		/*@formatter:off*/
 		return choices

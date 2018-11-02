@@ -17,8 +17,8 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.actor.MazeEntity;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.actor.TilePlacedEntity;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
@@ -156,12 +156,12 @@ public class PlayViewX extends PlayView {
 
 	private void drawEntityStates(Graphics2D g) {
 		if (game.getPacMan().getState() != null && game.getPacMan().isVisible()) {
-			drawText(g, Color.YELLOW, game.getPacMan().tf().getX(), game.getPacMan().tf().getY(),
+			drawText(g, Color.YELLOW, game.getPacMan().tf.getX(), game.getPacMan().tf.getY(),
 					pacManStateText(game.getPacMan()));
 		}
 		game.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> {
 			if (ghost.getState() != null) {
-				drawText(g, ghostColor(ghost), ghost.tf().getX(), ghost.tf().getY(), ghostStateText(ghost));
+				drawText(g, ghostColor(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
 			}
 		});
 	}
@@ -211,10 +211,10 @@ public class PlayViewX extends PlayView {
 		g.translate(-x, -y);
 	}
 
-	private void drawActorAlignment(TilePlacedEntity actor, Graphics2D g) {
+	private void drawActorAlignment(MazeEntity actor, Graphics2D g) {
 		g.setColor(Color.GREEN);
-		g.translate(actor.tf().getX(), actor.tf().getY());
-		int w = actor.tf().getWidth(), h = actor.tf().getHeight();
+		g.translate(actor.tf.getX(), actor.tf.getY());
+		int w = actor.tf.getWidth(), h = actor.tf.getHeight();
 		if (actor.getAlignmentY() == 0) {
 			g.drawLine(0, 0, w, 0);
 			g.drawLine(0, h, w, h);
@@ -223,7 +223,7 @@ public class PlayViewX extends PlayView {
 			g.drawLine(0, 0, 0, h);
 			g.drawLine(w, 0, w, h);
 		}
-		g.translate(-actor.tf().getX(), -actor.tf().getY());
+		g.translate(-actor.tf.getX(), -actor.tf.getY());
 	}
 
 	private void drawRoute(Graphics2D g, Ghost ghost) {
@@ -245,7 +245,7 @@ public class PlayViewX extends PlayView {
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-targetTile.col * TS, -targetTile.row * TS);
 		} else if (route.getTarget() != null) {
-			g.drawLine((int) ghost.tf().getCenter().x, (int) ghost.tf().getCenter().y,
+			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
 					route.getTarget().col * TS + TS / 2, route.getTarget().row * TS + TS / 2);
 			g.translate(route.getTarget().col * TS, route.getTarget().row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
@@ -253,7 +253,7 @@ public class PlayViewX extends PlayView {
 		}
 
 		if (ghost == game.getClyde() && ghost.getState() == GhostState.CHASING) {
-			Vector2f center = ghost.tf().getCenter();
+			Vector2f center = ghost.tf.getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.drawOval((int) center.x - 8 * TS, (int) center.y - 8 * TS, 16 * TS, 16 * TS);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);

@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.actor.PacManGameActor;
+import de.amr.games.pacman.actor.MazeEntity;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -15,7 +15,7 @@ import de.amr.games.pacman.model.Tile;
  * @param <T>
  *          actor type
  */
-class FollowFixedPath<T extends PacManGameActor> implements ActorBehavior<T> {
+class FollowFixedPath<T extends MazeEntity> implements ActorBehavior<T> {
 
 	protected Supplier<Tile> targetTileSupplier;
 	protected List<Tile> path = Collections.emptyList();

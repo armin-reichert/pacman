@@ -8,6 +8,7 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Maze.NESW;
+import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -24,6 +25,7 @@ import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.ActorBehavior;
@@ -38,8 +40,9 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends PacManGameActor implements GhostBehaviors {
+public class Ghost extends MazeEntity implements GhostBehaviors {
 
+	private final PacManGame game;
 	private final String name;
 	private final StateMachine<GhostState, GameEvent> fsm;
 	private final Map<GhostState, ActorBehavior<Ghost>> behaviorMap;
@@ -52,7 +55,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 
 	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, Tile revivalTile,
 			Tile scatteringTarget, int initialDir) {
-		super(game);
+		this.game = game;
 		this.name = name;
 		setSprites(color);
 		this.initialTile = initialTile;
@@ -68,7 +71,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 	}
 
 	public void initGhost() {
-		placeAtTile(initialTile, getTileSize() / 2, 0);
+		placeAtTile(initialTile, TS / 2, 0);
 		setMoveDir(initialDir);
 		setNextDir(initialDir);
 		sprites.forEach(Sprite::resetAnimation);
@@ -80,7 +83,7 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 		if (this == getGame().getBlinky()) {
 			dir = Top4.N; // let Blinky look upwards when in ghost house
 		} else {
-			placeAtTile(initialTile, getTileSize() / 2, 0);
+			placeAtTile(initialTile, TS / 2, 0);
 		}
 		setMoveDir(dir);
 		setNextDir(dir);
@@ -89,6 +92,15 @@ public class Ghost extends PacManGameActor implements GhostBehaviors {
 	}
 
 	// Accessors
+
+	public PacManGame getGame() {
+		return game;
+	}
+
+	@Override
+	public Maze getMaze() {
+		return game.getMaze();
+	}
 
 	public String getName() {
 		return name;

@@ -1,17 +1,18 @@
 package de.amr.games.pacman.actor;
 
+import static de.amr.games.pacman.model.PacManGame.TS;
 import static java.util.Arrays.binarySearch;
 
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.SpriteEntity;
-import de.amr.easy.game.entity.Transform;
+import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.BonusSymbol;
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.PacManTheme;
 
-public class Bonus extends SpriteEntity implements TilePlacedEntity {
+public class Bonus extends SpriteEntity {
 
 	private static final int[] POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
@@ -28,8 +29,8 @@ public class Bonus extends SpriteEntity implements TilePlacedEntity {
 		this.symbol = symbol;
 		this.value = value;
 		honored = false;
-		tf.setWidth(getTileSize());
-		tf.setHeight(getTileSize());
+		tf.setWidth(TS);
+		tf.setHeight(TS);
 		PacManTheme theme = Application.app().settings.get("theme");
 		sprites.set("s_symbol", theme.spr_bonusSymbol(symbol));
 		sprites.set("s_number", theme.spr_pinkNumber(index));
@@ -55,14 +56,9 @@ public class Bonus extends SpriteEntity implements TilePlacedEntity {
 		}
 	}
 
-	@Override
-	public Transform tf() {
-		return tf;
-	}
-
-	@Override
-	public int getTileSize() {
-		return PacManGame.TS;
+	public Tile getTile() {
+		Vector2f center = tf.getCenter();
+		return new Tile(Math.round(center.x) / TS, Math.round(center.y) / TS);
 	}
 
 	@Override

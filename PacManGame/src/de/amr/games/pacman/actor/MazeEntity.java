@@ -2,26 +2,27 @@ package de.amr.games.pacman.actor;
 
 import static de.amr.easy.game.math.Vector2f.smul;
 import static de.amr.games.pacman.model.Maze.NESW;
+import static de.amr.games.pacman.model.PacManGame.TS;
+import static java.lang.Math.round;
 
 import java.util.OptionalInt;
 
 import de.amr.easy.game.entity.SpriteEntity;
-import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Base class for Pac-Man and the ghosts. An actor knows how to move in the maze and its movement
- * can be controlled by supplying the intended move direction at suitable points in time.
+ * Base class for Pac-Man and the ghosts.
+ * 
+ * <p>
+ * Implements movement inside the maze. Movement is controlled by supplying the intended move
+ * direction before moving.
  * 
  * @author Armin Reichert
  */
-public abstract class PacManGameActor extends SpriteEntity implements TilePlacedEntity {
-
-	private final PacManGame game;
+public abstract class MazeEntity extends SpriteEntity {
 
 	/** Current move direction. See {@link Top4} for direction values. */
 	private int moveDir;
@@ -29,12 +30,40 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 	/** The indended move direction, actor turns to this direction as soon as possible. */
 	private int nextDir;
 
-	protected PacManGameActor(PacManGame game) {
-		this.game = game;
+	protected MazeEntity() {
 		moveDir = nextDir = Top4.E;
 		// collision box size:
-		tf.setWidth(getTileSize());
-		tf.setHeight(getTileSize());
+		tf.setWidth(TS);
+		tf.setHeight(TS);
+	}
+
+	public int tileIndex(float coord) {
+		return round(coord) / TS;
+	}
+
+	public Tile getTile() {
+		Vector2f center = tf.getCenter();
+		return new Tile(tileIndex(center.x), tileIndex(center.y));
+	}
+
+	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
+		tf.setPosition(tile.col * TS + xOffset, tile.row * TS + yOffset);
+	}
+
+	public void align() {
+		placeAtTile(getTile(), 0, 0);
+	}
+
+	public boolean isAligned() {
+		return getAlignmentX() == 0 && getAlignmentY() == 0;
+	}
+
+	public int getAlignmentX() {
+		return round(tf.getX()) % TS;
+	}
+
+	public int getAlignmentY() {
+		return round(tf.getY()) % TS;
 	}
 
 	/**
@@ -60,13 +89,7 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 	 */
 	public abstract float getSpeed();
 
-	public PacManGame getGame() {
-		return game;
-	}
-
-	public Maze getMaze() {
-		return game.getMaze();
-	}
+	public abstract Maze getMaze();
 
 	public int getMoveDir() {
 		return moveDir;
@@ -82,16 +105,6 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 
 	public void setNextDir(int nextDir) {
 		this.nextDir = nextDir;
-	}
-
-	@Override
-	public Transform tf() {
-		return tf;
-	}
-
-	@Override
-	public int getTileSize() {
-		return PacManGame.TS;
 	}
 
 	public boolean inTeleportSpace() {
@@ -136,16 +149,16 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 		switch (dir) {
 		case Top4.E:
 			float right = tf.getX() + tf.getWidth();
-			return Math.min(speed, neighborTile.col * getTileSize() - right);
+			return Math.min(speed, neighborTile.col * TS - right);
 		case Top4.W:
 			float left = tf.getX();
-			return Math.min(speed, left - currentTile.col * getTileSize());
+			return Math.min(speed, left - currentTile.col * TS);
 		case Top4.N:
 			float top = tf.getY();
-			return Math.min(speed, top - currentTile.row * getTileSize());
+			return Math.min(speed, top - currentTile.row * TS);
 		case Top4.S:
 			float bottom = tf.getY() + tf.getHeight();
-			return Math.min(speed, neighborTile.row * getTileSize() - bottom);
+			return Math.min(speed, neighborTile.row * TS - bottom);
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}
@@ -167,8 +180,8 @@ public abstract class PacManGameActor extends SpriteEntity implements TilePlaced
 			tf.move();
 			// check for exit from teleport space
 			if (tf.getX() + tf.getWidth() < 0) {
-				tf.setX(getMaze().numCols() * getTileSize());
-			} else if (tf.getX() > (getMaze().numCols()) * getTileSize()) {
+				tf.setX(getMaze().numCols() * TS);
+			} else if (tf.getX() > (getMaze().numCols()) * TS) {
 				tf.setX(-tf.getWidth());
 			}
 		}

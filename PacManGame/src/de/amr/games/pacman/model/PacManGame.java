@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.actor.PacManGameActor;
+import de.amr.games.pacman.actor.MazeEntity;
 import de.amr.games.pacman.theme.GhostColor;
 
 /**
@@ -109,7 +109,7 @@ public class PacManGame {
 	private final Ghost blinky, pinky, inky, clyde;
 
 	/** The currently active actors. Actors can be toggled during the game. */
-	private final Map<PacManGameActor, Boolean> activeActors = new HashMap<>();
+	private final Map<MazeEntity, Boolean> activeActors = new HashMap<>();
 
 	/** The game score including highscore management. */
 	private final Score score;
@@ -211,11 +211,11 @@ public class PacManGame {
 		});
 	}
 
-	public boolean isActorActive(PacManGameActor actor) {
+	public boolean isActorActive(MazeEntity actor) {
 		return activeActors.get(actor);
 	}
 
-	public void setActorActive(PacManGameActor actor, boolean active) {
+	public void setActorActive(MazeEntity actor, boolean active) {
 		if (activeActors.containsKey(actor) && active == activeActors.get(actor)) {
 			return; // no change
 		}

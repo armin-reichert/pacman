@@ -8,6 +8,7 @@ import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.actor.PacManState.POWER;
 import static de.amr.games.pacman.model.Maze.NESW;
+import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.awt.event.KeyEvent;
 import java.util.Optional;
@@ -26,6 +27,7 @@ import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.PacManTheme;
@@ -37,14 +39,15 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends PacManGameActor {
+public class PacMan extends MazeEntity {
 
+	private final PacManGame game;
 	private final StateMachine<PacManState, GameEvent> fsm;
 	private final EventManager<GameEvent> eventManager;
 	private PacManWorld world;
 
 	public PacMan(PacManGame game) {
-		super(game);
+		this.game = game;
 		fsm = buildStateMachine();
 		fsm.traceTo(LOGGER, app().clock::getFrequency);
 		eventManager = new EventManager<>("[PacMan]");
@@ -52,7 +55,7 @@ public class PacMan extends PacManGameActor {
 	}
 
 	public void initPacMan() {
-		placeAtTile(getMaze().getPacManHome(), getTileSize() / 2, 0);
+		placeAtTile(getMaze().getPacManHome(), TS / 2, 0);
 		setNextDir(Top4.E);
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("s_full");
@@ -63,6 +66,15 @@ public class PacMan extends PacManGameActor {
 	}
 
 	// Accessors
+
+	public PacManGame getGame() {
+		return game;
+	}
+
+	@Override
+	public Maze getMaze() {
+		return game.getMaze();
+	}
 
 	public EventManager<GameEvent> getEventManager() {
 		return eventManager;
