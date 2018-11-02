@@ -82,7 +82,7 @@ public class PacMan extends MazeEntity {
 
 	@Override
 	public float getSpeed() {
-		return getGame().getPacManSpeed(this);
+		return game.getPacManSpeed(this);
 	}
 
 	public PacManTheme getTheme() {
@@ -150,7 +150,6 @@ public class PacMan extends MazeEntity {
 
 	@Override
 	public void init() {
-		super.init();
 		fsm.init();
 	}
 
@@ -190,7 +189,7 @@ public class PacMan extends MazeEntity {
 					
 				.state(POWER)
 					.impl(new PowerState())
-					.timeoutAfter(getGame()::getPacManPowerTime)
+					.timeoutAfter(game::getPacManPowerTime)
 	
 				.state(DYING)
 					.impl(new DyingState())
@@ -207,7 +206,7 @@ public class PacMan extends MazeEntity {
 	
 				.stay(POWER)
 					.on(PacManGainsPowerEvent.class)
-					.act(() -> fsm.resetTimer())
+					.act(fsm::resetTimer)
 	
 				.when(POWER).then(HUNGRY)
 					.onTimeout()
@@ -279,7 +278,7 @@ public class PacMan extends MazeEntity {
 
 			if (getMaze().isFood(tile)) {
 				boolean energizer = getMaze().isEnergizer(tile);
-				digestionTicks = getGame().getDigestionTicks(energizer);
+				digestionTicks = game.getDigestionTicks(energizer);
 				getEventManager().publish(new FoodFoundEvent(tile, energizer));
 			}
 		}
@@ -300,7 +299,7 @@ public class PacMan extends MazeEntity {
 		@Override
 		public void onTick() {
 			super.onTick();
-			if (getTicksRemaining() == getGame().getPacManLosingPowerTicks()) {
+			if (getTicksRemaining() == game.getPacManLosingPowerTicks()) {
 				getEventManager().publish(new PacManGettingWeakerEvent());
 			}
 		}

@@ -263,7 +263,7 @@ beginStateMachine(PacManState.class, GameEvent.class)
 			
 		.state(POWER)
 			.impl(new PowerState())
-			.timeoutAfter(getGame()::getPacManPowerTime)
+			.timeoutAfter(game::getPacManPowerTime)
 
 		.state(DYING)
 			.impl(new DyingState())
@@ -280,7 +280,7 @@ beginStateMachine(PacManState.class, GameEvent.class)
 
 		.stay(POWER)
 			.on(PacManGainsPowerEvent.class)
-			.act(() -> fsm.resetTimer())
+			.act(fsm::resetTimer)
 
 		.when(POWER).then(HUNGRY)
 			.onTimeout()
