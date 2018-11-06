@@ -1,6 +1,5 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.easy.game.math.Vector2f.smul;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
 import static java.lang.Math.round;
@@ -111,19 +110,23 @@ public abstract class MazeEntity extends SpriteEntity {
 		return getMaze().inTeleportSpace(tile) || getMaze().isValidTile(tile);
 	}
 
+	public boolean isStuck() {
+		return tf.getVelocity().length() == 0;
+	}
+
 	public void move() {
 		supplyIntendedDir().ifPresent(this::setNextDir);
-		float possibleMove = possibleMove(nextDir);
-		if (possibleMove > 0) {
-			if (nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir)) {
+		float speed = actualSpeed(nextDir);
+		if (speed > 0) {
+			if (turn90()) {
 				align();
 			}
 			setMoveDir(nextDir);
+		} else {
+			speed = actualSpeed(moveDir);
 		}
-		possibleMove = possibleMove(moveDir);
-		if (possibleMove > 0) {
-			Vector2f velocity = smul(possibleMove, Vector2f.of(NESW.dx(moveDir), NESW.dy(moveDir)));
-			tf.setVelocity(velocity);
+		tf.setVelocity(velocity(speed));
+		if (speed > 0) {
 			tf.move();
 			// check for exit from teleport space
 			if (tf.getX() + tf.getWidth() < 0) {
@@ -134,14 +137,18 @@ public abstract class MazeEntity extends SpriteEntity {
 		}
 	}
 
-	public boolean isStuck() {
-		return possibleMove(moveDir) == 0;
+	private boolean turn90() {
+		return nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir);
+	}
+
+	private Vector2f velocity(float speed) {
+		return Vector2f.smul(speed, Vector2f.of(NESW.dx(moveDir), NESW.dy(moveDir)));
 	}
 
 	/*
-	 * Computes how far this actor can move towards the given direction.
+	 * Computes how many pixels this entity can move towards the given direction.
 	 */
-	private float possibleMove(int dir) {
+	private float actualSpeed(int dir) {
 		final float speed = getSpeed();
 		if (inTeleportSpace()) {
 			return dir == Top4.N || dir == Top4.S ? 0 : speed;
