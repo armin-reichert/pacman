@@ -118,7 +118,7 @@ public abstract class MazeEntity extends SpriteEntity {
 		supplyIntendedDir().ifPresent(this::setNextDir);
 		float speed = actualSpeed(nextDir);
 		if (speed > 0) {
-			if (turn90()) {
+			if (isTurning90()) {
 				align();
 			}
 			setMoveDir(nextDir);
@@ -137,7 +137,7 @@ public abstract class MazeEntity extends SpriteEntity {
 		}
 	}
 
-	private boolean turn90() {
+	private boolean isTurning90() {
 		return nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir);
 	}
 
