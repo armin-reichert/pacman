@@ -116,14 +116,14 @@ public abstract class MazeEntity extends SpriteEntity {
 
 	public void move() {
 		supplyIntendedDir().ifPresent(this::setNextDir);
-		float speed = actualSpeed(nextDir);
+		float speed = cappedSpeed(nextDir);
 		if (speed > 0) {
 			if (isTurning90()) {
 				align();
 			}
 			setMoveDir(nextDir);
 		} else {
-			speed = actualSpeed(moveDir);
+			speed = cappedSpeed(moveDir);
 		}
 		tf.setVelocity(velocity(speed));
 		if (speed > 0) {
@@ -148,31 +148,33 @@ public abstract class MazeEntity extends SpriteEntity {
 	/*
 	 * Computes how many pixels this entity can move towards the given direction.
 	 */
-	private float actualSpeed(int dir) {
-		final float speed = getSpeed();
+	private float cappedSpeed(int dir) {
+		final float maxSpeed = getSpeed();
 		if (inTeleportSpace()) {
-			return dir == Top4.N || dir == Top4.S ? 0 : speed;
+			return dir == Top4.N || dir == Top4.S ? 0 : maxSpeed;
 		}
-		final Tile currentTile = getTile();
-		final Tile neighborTile = currentTile.tileTowards(dir);
-		if (canEnterTile(neighborTile)) {
-			return speed;
+		final Tile current = getTile();
+		final Tile target = current.tileTowards(dir);
+		if (canEnterTile(target)) {
+			return maxSpeed;
 		}
+		float speed = 0;
 		switch (dir) {
 		case Top4.E:
-			float right = tf.getX() + tf.getWidth();
-			return Math.min(speed, neighborTile.col * TS - right);
+			speed = target.col * TS - (tf.getX() + tf.getWidth());
+			break;
 		case Top4.W:
-			float left = tf.getX();
-			return Math.min(speed, left - currentTile.col * TS);
+			speed = tf.getX() - current.col * TS;
+			break;
 		case Top4.N:
-			float top = tf.getY();
-			return Math.min(speed, top - currentTile.row * TS);
+			speed = tf.getY() - current.row * TS;
+			break;
 		case Top4.S:
-			float bottom = tf.getY() + tf.getHeight();
-			return Math.min(speed, neighborTile.row * TS - bottom);
+			speed = target.row * TS - (tf.getY() + tf.getHeight());
+			break;
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}
+		return Math.min(maxSpeed, speed);
 	}
 }
