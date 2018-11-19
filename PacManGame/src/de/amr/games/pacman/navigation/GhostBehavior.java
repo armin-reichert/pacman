@@ -6,8 +6,8 @@ import static de.amr.games.pacman.model.Maze.NESW;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.MazeEntity;
+import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -15,7 +15,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public interface GhostBehaviors {
+public interface GhostBehavior {
 
 	/**
 	 * @param actor
@@ -39,7 +39,7 @@ public interface GhostBehaviors {
 	 *                   located outside of the maze, the tile <code>(n - 1)</code> ahead is used etc.
 	 * @return ambushing behavior
 	 */
-	default ActorBehavior<Ghost> ambush(PacMan pacMan, int numTiles) {
+	default Behavior<Ghost> ambush(PacMan pacMan, int numTiles) {
 		return headFor(() -> ahead(pacMan, numTiles));
 	}
 
@@ -51,7 +51,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return behavior of attacking Pac-Man directly
 	 */
-	default ActorBehavior<Ghost> attackDirectly(PacMan pacMan) {
+	default Behavior<Ghost> attackDirectly(PacMan pacMan) {
 		return headFor(pacMan::getTile);
 	}
 
@@ -90,7 +90,7 @@ public interface GhostBehaviors {
 	 *                   in pixels), the attacker rejects and heads for its scattering position.
 	 *                   Otherwise it directly attacks PacMan.
 	 */
-	default ActorBehavior<Ghost> attackOrReject(Ghost attacker, PacMan pacMan, int distance) {
+	default Behavior<Ghost> attackOrReject(Ghost attacker, PacMan pacMan, int distance) {
 		return headFor(() -> dist(attacker.tf.getCenter(), pacMan.tf.getCenter()) >= distance ? pacMan.getTile()
 				: attacker.getScatteringTarget());
 	}
@@ -116,7 +116,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return behavior where Pac-Man is attacked with help of partner ghost
 	 */
-	default ActorBehavior<Ghost> attackWith(Ghost blinky, PacMan pacMan) {
+	default Behavior<Ghost> attackWith(Ghost blinky, PacMan pacMan) {
 		return headFor(() -> {
 			Tile b = blinky.getTile(), p = ahead(pacMan, 2);
 			return new Tile(2 * p.col - b.col, 2 * p.row - b.row);
@@ -128,7 +128,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return bouncing behavior
 	 */
-	default ActorBehavior<Ghost> bounce() {
+	default Behavior<Ghost> bounce() {
 		return bouncer -> new Route(bouncer.isStuck() ? NESW.inv(bouncer.getMoveDir()) : bouncer.getMoveDir());
 	}
 
@@ -139,7 +139,7 @@ public interface GhostBehaviors {
 	 *                   the attacking Pac-Man
 	 * @return escaping behavior
 	 */
-	default ActorBehavior<Ghost> flee(PacMan attacker) {
+	default Behavior<Ghost> flee(PacMan attacker) {
 		return new EscapeIntoCorner<>(attacker::getTile);
 	}
 
@@ -152,7 +152,7 @@ public interface GhostBehaviors {
 	 *                 target tile supplier (this tile must be inside the maze or teleport space!)
 	 * @return behavior following the path to the target
 	 */
-	default ActorBehavior<Ghost> followRoute(Supplier<Tile> targetSupplier) {
+	default Behavior<Ghost> followRoute(Supplier<Tile> targetSupplier) {
 		return ghost -> {
 			Route route = new Route();
 			route.setPath(ghost.getMaze().findPath(ghost.getTile(), targetSupplier.get()));
@@ -163,13 +163,13 @@ public interface GhostBehaviors {
 
 	/**
 	 * Lets the ghost follow a fixed path to the target. The path is precomputed by calling
-	 * {@link ActorBehavior#computePath(MazeEntity)}.
+	 * {@link Behavior#computePath(MazeEntity)}.
 	 * 
 	 * @param targetTileSupplier
 	 *                             function supplying the target tile at time of decision
 	 * @return behavior of following a fixed path
 	 */
-	default ActorBehavior<Ghost> followFixedPath(Supplier<Tile> targetTileSupplier) {
+	default Behavior<Ghost> followFixedPath(Supplier<Tile> targetTileSupplier) {
 		return new FollowFixedPath<>(targetTileSupplier);
 	}
 
@@ -181,7 +181,7 @@ public interface GhostBehaviors {
 	 *                             function supplying the target tile at time of decision
 	 * @return behavior heading for the target tile
 	 */
-	default ActorBehavior<Ghost> headFor(Supplier<Tile> targetTileSupplier) {
+	default Behavior<Ghost> headFor(Supplier<Tile> targetTileSupplier) {
 		return new FollowTargetTile<>(targetTileSupplier);
 	}
 
@@ -190,7 +190,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return behavior keeping the current move direction
 	 */
-	default ActorBehavior<Ghost> keepDirection() {
+	default Behavior<Ghost> keepDirection() {
 		return ghost -> new Route(ghost.getMoveDir());
 	}
 }

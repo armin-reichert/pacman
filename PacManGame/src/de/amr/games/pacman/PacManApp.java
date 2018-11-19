@@ -35,6 +35,7 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
+//		clock.setLoggingEnabled(true);
 		setController(new PacManGameController());
 	}
 }

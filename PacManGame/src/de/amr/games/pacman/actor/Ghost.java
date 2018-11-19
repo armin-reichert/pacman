@@ -28,8 +28,8 @@ import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.navigation.ActorBehavior;
-import de.amr.games.pacman.navigation.GhostBehaviors;
+import de.amr.games.pacman.navigation.Behavior;
+import de.amr.games.pacman.navigation.GhostBehavior;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.statemachine.State;
@@ -40,12 +40,12 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends MazeEntity implements GhostBehaviors {
+public class Ghost extends MazeEntity implements GhostBehavior {
 
 	private final PacManGame game;
 	private final String name;
 	private final StateMachine<GhostState, GameEvent> fsm;
-	private final Map<GhostState, ActorBehavior<Ghost>> behaviorMap;
+	private final Map<GhostState, Behavior<Ghost>> behaviorMap;
 	private final Tile initialTile;
 	private final Tile revivalTile;
 	private final Tile scatteringTarget;
@@ -134,11 +134,11 @@ public class Ghost extends MazeEntity implements GhostBehaviors {
 
 	// Behavior
 
-	public void setBehavior(GhostState state, ActorBehavior<Ghost> behavior) {
+	public void setBehavior(GhostState state, Behavior<Ghost> behavior) {
 		behaviorMap.put(state, behavior);
 	}
 
-	public ActorBehavior<Ghost> getBehavior() {
+	public Behavior<Ghost> getBehavior() {
 		return behaviorMap.getOrDefault(getState(), keepDirection());
 	}
 

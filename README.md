@@ -541,7 +541,7 @@ Having the common *headFor* behavior in hand, the implementation of the individu
 Blinky's chase behavior is to directly attack Pac-Man. This is just two lines of code:
 
 ```java
-default ActorBehavior<Ghost> attackDirectly(PacMan pacMan) {
+default Behavior<Ghost> attackDirectly(PacMan pacMan) {
 	return headFor(pacMan::getTile);
 }
 ```
@@ -558,7 +558,7 @@ Pinky, the *ambusher*, targets the position 4 tiles ahead of Pac-Man
 (in the original game there is an overflow error that leads to a different behavior):
 
 ```java
-default ActorBehavior<Ghost> ambush(PacMan pacMan, int numTilesAhead) {
+default Behavior<Ghost> ambush(PacMan pacMan, int numTilesAhead) {
 	return headFor(() -> ahead(pacMan, numTilesAhead));
 }
 ```
@@ -576,10 +576,9 @@ Inky's attack target is computed as follows:
 Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man, so `V = (P - B)`. Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-default ActorBehavior<Ghost> attackWith(Ghost blinky, PacMan pacMan) {
+default Behavior<Ghost> attackWith(Ghost blinky, PacMan pacMan) {
 	return headFor(() -> {
-		Tile b = blinky.getTile();
-		Tile p = ahead(pacMan, 2);
+		Tile b = blinky.getTile(), p = ahead(pacMan, 2);
 		return new Tile(2 * p.col - b.col, 2 * p.row - b.row);
 	});
 }
@@ -597,7 +596,7 @@ Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from 
 If closer, he goes into scattering mode:
 
 ```java
-default ActorBehavior<Ghost> attackOrReject(Ghost attacker, PacMan pacMan, int distance) {
+default Behavior<Ghost> attackOrReject(Ghost attacker, PacMan pacMan, int distance) {
 	return headFor(() -> 
 		dist(attacker.tf.getCenter(), pacMan.tf.getCenter()) >= distance ? 
 			pacMan.getTile() : attacker.getScatteringTarget());

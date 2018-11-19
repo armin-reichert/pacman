@@ -15,7 +15,7 @@ import de.amr.games.pacman.model.Tile;
  * @param <T>
  *          actor type
  */
-class FollowFixedPath<T extends MazeEntity> implements ActorBehavior<T> {
+class FollowFixedPath<T extends MazeEntity> implements Behavior<T> {
 
 	protected Supplier<Tile> targetTileSupplier;
 	protected List<Tile> path = Collections.emptyList();

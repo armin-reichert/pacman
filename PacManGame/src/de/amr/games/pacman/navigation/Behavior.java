@@ -10,7 +10,7 @@ import de.amr.games.pacman.actor.MazeEntity;
  * @param <T>
  *          actor type
  */
-public interface ActorBehavior<T extends MazeEntity> {
+public interface Behavior<T extends MazeEntity> {
 
 	/**
 	 * Computes the route the actor should take when this method is called.
