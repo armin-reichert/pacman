@@ -129,7 +129,7 @@ public class PlayViewX extends PlayView {
 	}
 
 	private void killActiveGhosts() {
-		game.getActiveGhosts().forEach(ghost -> ghost.processEvent(new GhostKilledEvent(ghost)));
+		game.getGhosts().forEach(ghost -> ghost.processEvent(new GhostKilledEvent(ghost)));
 	}
 
 	public void eatAllPellets() {
@@ -144,10 +144,10 @@ public class PlayViewX extends PlayView {
 			if (game.getPacMan().isVisible()) {
 				drawActorAlignment(game.getPacMan(), g);
 			}
-			game.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> drawActorAlignment(ghost, g));
+			game.getGhosts().filter(Ghost::isVisible).forEach(ghost -> drawActorAlignment(ghost, g));
 		}
 		if (showRoutes) {
-			game.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> drawRoute(g, ghost));
+			game.getGhosts().filter(Ghost::isVisible).forEach(ghost -> drawRoute(g, ghost));
 		}
 		if (showStates) {
 			drawEntityStates(g);
@@ -159,7 +159,7 @@ public class PlayViewX extends PlayView {
 			drawText(g, Color.YELLOW, game.getPacMan().tf.getX(), game.getPacMan().tf.getY(),
 					pacManStateText(game.getPacMan()));
 		}
-		game.getActiveGhosts().filter(Ghost::isVisible).forEach(ghost -> {
+		game.getGhosts().filter(Ghost::isVisible).forEach(ghost -> {
 			if (ghost.getState() != null) {
 				drawText(g, ghostColor(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
 			}

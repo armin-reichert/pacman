@@ -36,7 +36,7 @@ public class FollowMouseTestController implements ViewController {
 		pacMan.placeAtTile(mouseTile, 0, 0);
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
-		game.getGhosts().forEach(ghost -> game.setActorActive(ghost, false));
+		game.getAllGhosts().forEach(ghost -> game.setActorActive(ghost, false));
 		game.setActorActive(blinky, true);
 		game.setActorActive(pacMan, true);
 		blinky.init();

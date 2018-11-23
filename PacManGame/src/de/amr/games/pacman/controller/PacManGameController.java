@@ -2,8 +2,6 @@ package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.actor.GhostState.CHASING;
-import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.controller.GameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.GameState.GAME_OVER;
 import static de.amr.games.pacman.controller.GameState.GHOST_DYING;
@@ -14,6 +12,7 @@ import static de.amr.games.pacman.controller.GameState.READY;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 import de.amr.easy.game.assets.Sound;
@@ -55,85 +54,23 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 	private final PacManGame game;
 	private final GhostAttackController ghostAttackController;
 
-	/**
-	 * State machine for controlling the timing of the ghost attacks. Ghosts attack Pac-Man in rounds,
-	 * changing between chasing and scattering. The duration of these attacks depends on the level and
-	 * round.
-	 * 
-	 * <p>
-	 * Ghosts also use the current state of this state machine to decide what to do after being
-	 * frightened or killed.
-	 * 
-	 * @see <a href=
-	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=3">Gamasutra</a>
-	 */
-	private class GhostAttackController extends StateMachine<GhostState, Void> {
-
-		private int round;
-
-		public GhostAttackController() {
-			super(GhostState.class);
-			/*@formatter:off*/
-			beginStateMachine()
-				.description("[GhostAttackTimer]")
-				.initialState(SCATTERING)
-			.states()
-				.state(SCATTERING)
-					.timeoutAfter(this::getScatteringDuration)
-					.onEntry(this::fireStartScattering)
-				.state(CHASING)
-					.timeoutAfter(this::getChasingDuration)
-					.onEntry(this::fireStartChasing)
-					.onExit(this::nextRound)
-			.transitions()
-				.when(SCATTERING).then(CHASING).onTimeout()
-				.when(CHASING).then(SCATTERING).onTimeout()
-			.endStateMachine();
-			/*@formatter:on*/
-		}
-
-		@Override
-		public void init() {
-			round = 0;
-			super.init();
-		}
-
-		private void nextRound() {
-			++round;
-		}
-
-		private void fireStartChasing() {
-			LOGGER.info("Start chasing, round " + round);
-			PacManGameController.this.enqueue(new StartChasingEvent());
-		}
-
-		private void fireStartScattering() {
-			LOGGER.info("Start scattering, round " + round);
-			PacManGameController.this.enqueue(new StartScatteringEvent());
-		}
-
-		private int getScatteringDuration() {
-			return game.getGhostScatteringDuration(round);
-		}
-
-		private int getChasingDuration() {
-			return game.getGhostChasingDuration(round);
-		}
-	}
-
 	public PacManGameController() {
 		super(GameState.class);
 		game = new PacManGame();
 		buildStateMachine();
 		traceTo(LOGGER, app().clock::getFrequency);
-		ghostAttackController = new GhostAttackController();
+		ghostAttackController = new GhostAttackController(game);
 		ghostAttackController.traceTo(LOGGER, app().clock::getFrequency);
 		game.getPacMan().getEventManager().addListener(this::process);
-		game.getGhosts().forEach(ghost -> ghost.fnNextState = ghostAttackController::getState);
+		game.getAllGhosts().forEach(ghost -> ghost.fnNextState = ghostAttackController::getState);
 	}
 
 	private PacManTheme getTheme() {
 		return app().settings.get("theme");
+	}
+
+	private void foreachGhost(Consumer<Ghost> action) {
+		game.getGhosts().forEach(action::accept);
 	}
 
 	// Screens
@@ -269,14 +206,6 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 				.when(READY).then(PLAYING).onTimeout()
 					
 				.stay(PLAYING)
-					.on(StartChasingEvent.class)
-					.act(playingState()::onStartChasing)
-					
-				.stay(PLAYING)
-					.on(StartScatteringEvent.class)
-					.act(playingState()::onStartScattering)
-					
-				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
 					.act(playingState()::onFoodFound)
 					
@@ -373,26 +302,33 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		@Override
 		public void onEntry() {
 			ghostAttackController.init();
-			game.getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
-		}
-
-		@Override
-		public void onExit() {
+			foreachGhost(ghost -> ghost.setVisible(true));
+			fireAttackStateChange();
 		}
 
 		@Override
 		public void onTick() {
+			GhostState oldAttackState = ghostAttackController.getState();
 			ghostAttackController.update();
+			if (oldAttackState != ghostAttackController.getState()) {
+				fireAttackStateChange();
+			} else {
+				foreachGhost(Ghost::update);
+			}
 			game.getPacMan().update();
-			game.getActiveGhosts().forEach(Ghost::update);
 		}
 
-		private void onStartChasing(GameEvent event) {
-			game.getActiveGhosts().forEach(ghost -> ghost.processEvent(event));
-		}
-
-		private void onStartScattering(GameEvent event) {
-			game.getActiveGhosts().forEach(ghost -> ghost.processEvent(event));
+		private void fireAttackStateChange() {
+			switch (ghostAttackController.getState()) {
+			case CHASING:
+				foreachGhost(ghost -> ghost.processEvent(new StartChasingEvent()));
+				break;
+			case SCATTERING:
+				foreachGhost(ghost -> ghost.processEvent(new StartScatteringEvent()));
+				break;
+			default:
+				break;
+			}
 		}
 
 		private void onPacManGhostCollision(GameEvent event) {
@@ -421,17 +357,17 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		private void onPacManGainsPower(GameEvent event) {
 			PacManGainsPowerEvent e = (PacManGainsPowerEvent) event;
 			game.getPacMan().processEvent(e);
-			game.getActiveGhosts().forEach(ghost -> ghost.processEvent(e));
+			foreachGhost(ghost -> ghost.processEvent(e));
 		}
 
 		private void onPacManGettingWeaker(GameEvent event) {
 			PacManGettingWeakerEvent e = (PacManGettingWeakerEvent) event;
-			game.getActiveGhosts().forEach(ghost -> ghost.processEvent(e));
+			foreachGhost(ghost -> ghost.processEvent(e));
 		}
 
 		private void onPacManLostPower(GameEvent event) {
 			PacManLostPowerEvent e = (PacManLostPowerEvent) event;
-			game.getActiveGhosts().forEach(ghost -> ghost.processEvent(e));
+			foreachGhost(ghost -> ghost.processEvent(e));
 		}
 
 		private void onGhostKilled(GameEvent event) {
@@ -482,7 +418,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		@Override
 		public void onEntry() {
 			game.getPacMan().setFullSprite();
-			game.getActiveGhosts().forEach(ghost -> ghost.setVisible(false));
+			foreachGhost(ghost -> ghost.setVisible(false));
 			getPlayScreen().setMazeFlashing(true);
 			getTheme().snd_clips_all().forEach(Sound::stop);
 		}
@@ -493,7 +429,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			if (timeForChange) {
 				game.nextLevel();
 				resetPlayScreen();
-				game.getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
+				foreachGhost(ghost -> ghost.setVisible(true));
 				getPlayScreen().showInfoText("Ready!", Color.YELLOW);
 				getPlayScreen().setMazeFlashing(false);
 				getPlayScreen().enableAnimation(false);
@@ -522,7 +458,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 		@Override
 		public void onTick() {
-			game.getActiveGhosts()
+			game.getGhosts()
 					.filter(ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
 					.forEach(Ghost::update);
 		}
@@ -562,7 +498,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		public void onEntry() {
 			waitForMusic = app().clock.sec(3);
 			game.saveScore();
-			game.getActiveGhosts().forEach(ghost -> ghost.setVisible(true));
+			foreachGhost(ghost -> ghost.setVisible(true));
 			getPlayScreen().getBonus().ifPresent(bonus -> bonus.setVisible(false));
 			getPlayScreen().enableAnimation(false);
 			getPlayScreen().showInfoText("Game Over!", Color.RED);

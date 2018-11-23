@@ -263,7 +263,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 						sprites.select("s_eyes_" + getMoveDir());
 					})
 					.onExit(() -> {
-						if (getGame().getActiveGhosts().filter(ghost -> ghost != this)
+						if (getGame().getGhosts().filter(ghost -> ghost != this)
 								.noneMatch(ghost -> ghost.getState() == DEAD)) {
 							getTheme().snd_ghost_dead().stop();
 						}

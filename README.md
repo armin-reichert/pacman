@@ -4,26 +4,44 @@
 
 ## Pac-Man? Really? How uncool!
 
-For the average school kid in 2018, a retro game like Pac-Man probably seems like the most boring and uncool thing you can deal with. These cool kids implement their own 3D shooters with real and unreal engines in less than a week, don't they?
-
-Well, some of them probably even can do that (I can't). But I think that for many young people with an interest in computer programming also a simple (?) old-school game like Pac-Man can be very instructive. And for me personally, it brings back  memories because the only computer game I played regularly was ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), then running on my Apple II compatible computer in 1984. On a green monitor, no colors. But what a sound!
-
-Note: If you are the kind of kid that just wants to write quick and dirty code, this is not the right place for you. Also, if you are somebody who doesn't start with less than a game engine like Unity for implementing Pac-Man. I want to address people with an interest in writing code instead of using tools.
-   
+For the average school kid in 2018, a retro game like Pac-Man probably seems like the most boring and uncool thing you 
+can deal with, but I think that for many younger people with an interest in computer programming also a seemingly simple
+ game like Pac-Man can be very instructive. 
+ 
+ My personal interest also stems from the fact that the only computer game I played regularly was 
+ ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), then running on my Apple II compatible computer in 1984. 
+ On a green monitor, no colors. But what a sound!
+  
 ## The challenge
-For a beginner in programming, a game like Pac-Man can be interesting for different reasons. First, it isn't as trivial as "Pong" for example. Programming "Pong" is surely a good start. Programming a game loop, updating and drawing paddles, ball movement, collisions with walls and paddles are good stuff for starters. The next step probably are "Breakout" variants with different kinds of targets, waves, levels, special balls and so on. 
+For a beginner, a game like Pac-Man can be interesting for different reasons. First, it isn't as trivial as for example
+"Pong" which surely is a good start: programming a game loop, updating and drawing paddles, ball movement, 
+collisions with walls and paddles surely are a challenge for starters. The next step probably could be "Breakout" variants 
+with different kinds of targets, waves, levels, special balls and so on.
 
-Pac-Man offers new challenges. First, the representation of the maze and the correct movement of the characters in the maze is not trivial. The Pac-Man is moved through the maze using the keyboard and you can press the key for the intended direction before he reaches the position where he actually can change his direction. You can and should spend some time to get this (sufficiently) right.
+Pac-Man offers different challenges. First, implementing a good representation of the maze and the correct movement of the characters 
+through the maze are not trivial. Pac-Man's movement has to be controlled the keyboard, especially you can press the 
+key for the intended direction before Pac-Man actually reaches the position where he can turn to that direction. 
 
-Another task are the animations, timers and the rendering of Pac-Man and the four ghosts. You have to deal with sprites and different kinds of animations. It's a good exercise to implement all that from the ground up instead of just using predefined tools.
+Another task are the animations, timers and the rendering of Pac-Man and the four ghosts. One has to deal with sprites 
+and different kinds of animations. It's a good exercise to implement all this from scratch instead of using predefined tools.
 
-If you have mastered these basics and your actors can move correctly through the maze, you are challenged with making the "real" game. You have to think about what different phases (states) the game can have, how the actors and the user interface behave in these states and which "events" lead from one state to the other (state transitions).
+If one has mastered these basics and the actors can move correctly through the maze, you are challenged with making 
+the "real" game. You have to think about what different phases (states) the game can have, how the actors and 
+the user interface behave in these states and which "events" lead from one state to the other (state transitions).
 
-Maybe you should start with a single ghost and implement its behavior: waiting in the ghost house, jumping, leaving the house and chasing Pac-Man. Next, what should happen when Pac-Man and a ghost are colliding? Which part of your program should coordinate this? Should the code be distributed over the actors or should you have some kind of mediator, some central game control? Where should the game rules (points, lives, levels etc.) be implemented? Just where you need it or in a central place, a *model* in the sense of the Model-View-Controller pattern?
+Maybe you should start with a single ghost and implement its behavior: waiting in the ghost house, jumping, 
+leaving the house and chasing Pac-Man. Next, what should happen when Pac-Man and a ghost are colliding? 
+Which part of your program should coordinate this? Should the code be distributed over the actors or should you have 
+some kind of mediator, some central game control? Where should the game rules (points, lives, levels etc.) be implemented? 
+Just where you need it or in a central place, a *model* in the sense of the Model-View-Controller pattern?
 
-You may think that this is overengineering for such a simple program, but just have a look at some of the implementations you can find on the internet, read the code and judge if you really enjoy it. Can you learn how that game works from code where the game state is distributed in global variables, timers, flags and the game rules are distributed over the actors? 
+You may think that this is overengineering for such a simple program. But when reading existing Pac-Man code, very often
+you don't enjoy it because the game state is distributed in global variables, timers, flags and the game rules are 
+distributed over the actors making it rather difficult to get the complete picture.
 
-Without thinking about all these issues and having an idea how to structure it, your code can quickly become a real mess. Probably you will get some parts running quickly but when it comes to the interaction between the different actors, the game state and the timing, you can easily lose ground. 
+Without thinking about all these issues and having an idea how to structure it, your code can quickly become a real mess.
+Probably you will get some parts running quickly but when it comes to the interaction between the different actors, 
+the game state and the timing, you can easily lose ground. 
 
 ## Searching for help
 
@@ -52,19 +70,23 @@ Of course, Pac-Man and the four ghosts, but also the global game control, maybe 
 In the provided implementation, there are a number of explicit state machines:
 - Intro screen controller ([IntroView](PacManGame/src/de/amr/games/pacman/view/intro/IntroView.java))
 - Global game controller ([PacManGameController](PacManGame/src/de/amr/games/pacman/controller/PacManGameController.java))
-- Ghost attack controller (inner class of PacManGameController)
+- Ghost attack controller ([GhostAttackController](PacManGame/src/de/amr/games/pacman/controller/GhostAttackController.java))
 - Pac-Man controller ([Pac-Man](PacManGame/src/de/amr/games/pacman/actor/PacMan.java))
 - Ghost controller ([Ghost](PacManGame/src/de/amr/games/pacman/actor/Ghost.java))
 
-All these state machines are "implemented" in a declarative way (*builder pattern*). In essence, you write a single large expression representing the complete state graph together with node and edge annotations (actions, conditions, event conditions, timers).
+All these state machines are "implemented" in a declarative way (*builder pattern*). In essence, you write a single 
+large Java expression representing the complete state graph together with node and edge annotations representing actions,
+ conditions, event conditions and timers.
 
-Lambda expressions (anonymous functions) and function references allow to embed code directly inside the state machine definition. However, if the code becomes more complex it is of course possible to delegate to separate methods or classes. Both variants are used here.
+Lambda expressions (anonymous functions) and function references allow to embed code directly inside the state machine 
+definition. However, if the code becomes more complex it is of course possible to delegate to separate methods or 
+classes. Both variants are used here.
 
-## State machines in practice
+## State machines in action
 
 Sounds all well and nice, but how does that look in the real code? 
 
-The intro screen shows different animations that have to be coordinated using timers and stop conditions. This
+The **intro screen** shows different animations that have to be coordinated using timers and stop conditions. This
 is an obvious candidate for using a state machine. The state machine only uses timers, so we can specify
 type *Void* as event type. The states are identified by numbers:
 
@@ -121,7 +143,7 @@ beginStateMachine()
 .endStateMachine();
 ```
 
-A more complex state machine is used for defining the global game control. It processes game events which
+A more complex state machine is used for defining the **global game control**. It processes game events which
 are created during the game play, for example when Pac-Man finds food or meets ghosts. Also the different
 game states like changing the level or the dying animations of Pac-Man and the ghosts are controlled by this
 state machine. Further, the individual states are implemented by subclasses of the generic state class. This
@@ -170,14 +192,6 @@ beginStateMachine()
 			.act(() -> setScreen(getPlayScreen()))
 		
 		.when(READY).then(PLAYING).onTimeout()
-			
-		.stay(PLAYING)
-			.on(StartChasingEvent.class)
-			.act(playingState()::onStartChasing)
-			
-		.stay(PLAYING)
-			.on(StartScatteringEvent.class)
-			.act(playingState()::onStartScattering)
 			
 		.stay(PLAYING)
 			.on(FoodFoundEvent.class)
@@ -242,9 +256,37 @@ beginStateMachine()
 .endStateMachine();
 ```
 
-The states of this state machine are implemented as separate (inner) classes. However, this is not necessary in simpler cases and is the decision of the implementor.
+The states of the game controller are implemented as inner classes inheriting from the generic state class. This offers
+the possibility to add fields and methods to the state class, in simpler use cases, the base class is sufficient.
 
-Pac-Man's state machine is implemented as follows:
+The **ghost attack waves** (scattering, chasing) and their timing are implemented by the following state machine:
+
+```java
+public class GhostAttackController extends StateMachine<GhostState, Void> {
+...
+	public GhostAttackController(PacManGame game) {
+		super(GhostState.class);
+		this.game = game;
+		/*@formatter:off*/
+		beginStateMachine()
+			.description("[GhostAttackTimer]")
+			.initialState(SCATTERING)
+		.states()
+			.state(SCATTERING)
+				.timeoutAfter(this::getScatteringDuration)
+			.state(CHASING)
+				.timeoutAfter(this::getChasingDuration)
+				.onExit(this::nextRound)
+		.transitions()
+			.when(SCATTERING).then(CHASING).onTimeout()
+			.when(CHASING).then(SCATTERING).onTimeout()
+		.endStateMachine();
+		/*@formatter:on*/
+	}
+}
+```
+
+**Pac-Man** is controlled by the following state machine:
 
 ```java
 beginStateMachine(PacManState.class, GameEvent.class)
@@ -292,7 +334,7 @@ beginStateMachine(PacManState.class, GameEvent.class)
 .endStateMachine();
 ```
 
-The ghosts also share a common state machine definition:
+The **ghosts** sare a common state machine definition:
 
 ```java
 beginStateMachine(GhostState.class, GameEvent.class)
@@ -573,7 +615,8 @@ pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
 
 Inky's attack target is computed as follows:
 
-Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man, so `V = (P - B)`. Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
+Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man, so `V = (P - B)`. 
+Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
 default Behavior<Ghost> attackWith(Ghost blinky, PacMan pacMan) {
@@ -613,7 +656,8 @@ The visualization of the attack behavior can be toggled during the running game 
 
 ### Scattering
 
-In *scatter* mode, each ghost tries to reach his scattering target tile outside of the maze which results in a cyclic movement around the block in that corner. Also a one liner:
+In *scatter* mode, each ghost tries to reach his scattering target tile outside of the maze which results in a cyclic 
+movement around the block in that corner:
 
 ```java
 ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
@@ -634,7 +678,8 @@ position.
 Shortest paths in the maze graph can be computed with the method *Maze.findPath(Tile source, Tile target)*. 
 This method runs a Breadth-First-Search on the underlying grid graph to compute the shortest path. The used
 [graph library](https://github.com/armin-reichert/graph) provides also more sophisticated search algorithms
-like Dijkstra or [A-Star](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html) that could be used by just changing a single line of code in the Maze class:
+like Dijkstra or [A-Star](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html) that could be used by 
+changing a single line of code in the Maze class:
 
 ```java
 GraphTraversal pathfinder =
@@ -642,9 +687,12 @@ GraphTraversal pathfinder =
 		new BreadthFirstTraversal<>(graph);
 ```
 
-A-Star certainly sounds "cooler" than BFS, but is completely useless in this use-case because the maze is represented by a graph where the distance between two adjacent vertices (neighbor tiles) is always the same. Thus the A* or Dijkstra path finding algorithms would just degenerate to plain BFS (correct me if I'm wrong). 
+A-Star certainly sounds "cooler" than BFS, but is completely useless in this use-case because the maze is represented 
+by a graph where the distance between two adjacent vertices (neighbor tiles) is always the same. 
+Thus the A* or Dijkstra path finding algorithms would just degenerate to plain BFS (correct me if I'm wrong). 
 
-Of course one could represent the graph differently, for example with vertices only for crossings and weighted edges for passages, in which case Dijkstra or A* would become useful.
+Of course one could represent the graph differently, for example with vertices only for crossings and weighted edges 
+for passages, in which case Dijkstra or A* would become useful.
 
 ## Additional features
 
@@ -674,11 +722,17 @@ This work would not have been possible without these invaluable sources of infor
 ## Summary
 
 The goal of this project is to implement a Pac-Man game in a way that also beginners 
-should be able to fully understand the game's inner workings. The implementation tries to achieve this by following the MVC pattern and by using explicit finite state machines for the control logic of the actors and the game. The state machines are defined in a declarative way using the builder pattern. The program code tries to be as clear as possible and use good naming all over the place.
+should be able to fully understand the game's inner workings. The implementation tries to achieve this by following 
+the MVC pattern and by using explicit finite state machines for the control logic of the actors and the game. 
+The state machines are defined in a declarative way using the builder pattern. 
+The program code tries to be as clear as possible and use good naming all over the place.
 
-A simple, home-grown library is used for the basic game infrastructure (active rendering, game loop, full-screen mode, keyboard and mouse handling etc.), but it is not too difficult to write these infrastructure parts from scratch or use some real game library instead. 
+A simple, home-grown library is used for the basic game infrastructure (active rendering, game loop, full-screen mode, 
+keyboard and mouse handling etc.), but it is not too difficult to write these infrastructure parts from scratch or 
+use some real game library instead. 
 
-It would also be useful to further decouple UI, model and controller to enable an easy replacement of the complete UI or to replace the state machine implementations by some predefined library like Squirrel.
+It would also be useful to further decouple UI, model and controller to enable an easy replacement of the complete UI 
+or to implement the state machines using some other state machine library.
 
 Comments are welcome!
 

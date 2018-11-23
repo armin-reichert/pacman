@@ -29,7 +29,7 @@ public class IllegalTileTestController implements ViewController {
 	public void init() {
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
-		game.getGhosts().filter(ghost -> ghost != blinky).forEach(ghost -> game.setActorActive(ghost, false));
+		game.getAllGhosts().filter(ghost -> ghost != blinky).forEach(ghost -> game.setActorActive(ghost, false));
 		blinky.initGhost();
 		blinky.setBehavior(GhostState.CHASING, blinky.headFor(this::getTargetTile));
 		blinky.setState(GhostState.CHASING);

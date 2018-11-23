@@ -64,12 +64,12 @@ public class PlayView implements View, Controller, PacManWorld {
 	public void enableAnimation(boolean enable) {
 		mazeView.enableSprites(enable);
 		game.getPacMan().sprites.enableAnimation(enable);
-		game.getActiveGhosts().forEach(ghost -> ghost.sprites.enableAnimation(enable));
+		game.getGhosts().forEach(ghost -> ghost.sprites.enableAnimation(enable));
 	}
 
 	@Override
 	public Stream<Ghost> getGhosts() {
-		return game.getActiveGhosts();
+		return game.getGhosts();
 	}
 
 	@Override
@@ -122,9 +122,9 @@ public class PlayView implements View, Controller, PacManWorld {
 		if (game.isActorActive(game.getPacMan())) {
 			game.getPacMan().draw(g);
 		}
-		game.getActiveGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
+		game.getGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
 				.forEach(ghost -> ghost.draw(g));
-		game.getActiveGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
+		game.getGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
 				.forEach(ghost -> ghost.draw(g));
 	}
 

@@ -29,7 +29,7 @@ public class InkyChaseTestController implements ViewController {
 		game.getPacMan().init();
 		game.setActorActive(game.getPinky(), false);
 		game.setActorActive(game.getClyde(), false);
-		game.getActiveGhosts().forEach(ghost -> {
+		game.getGhosts().forEach(ghost -> {
 			ghost.init();
 			ghost.setState(GhostState.CHASING);
 		});
@@ -38,7 +38,7 @@ public class InkyChaseTestController implements ViewController {
 	@Override
 	public void update() {
 		game.getPacMan().update();
-		game.getActiveGhosts().forEach(Ghost::update);
+		game.getGhosts().forEach(Ghost::update);
 		view.update();
 	}
 

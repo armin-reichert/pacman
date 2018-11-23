@@ -28,7 +28,7 @@ public class ScatteringTestController implements ViewController {
 		game.init();
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
 		game.getPacMan().setVisible(false);
-		game.getActiveGhosts().forEach(ghost -> {
+		game.getGhosts().forEach(ghost -> {
 			ghost.initGhost();
 			ghost.setState(GhostState.SCATTERING);
 		});
@@ -37,7 +37,7 @@ public class ScatteringTestController implements ViewController {
 
 	@Override
 	public void update() {
-		game.getActiveGhosts().forEach(Ghost::update);
+		game.getGhosts().forEach(Ghost::update);
 		view.update();
 	}
 

@@ -152,7 +152,7 @@ public class PacManGame {
 
 		// Define the ghost behavior ("AI")
 
-		getGhosts().forEach(ghost -> {
+		getAllGhosts().forEach(ghost -> {
 			ghost.setBehavior(FRIGHTENED, ghost.flee(pacMan));
 			ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
 			ghost.setBehavior(DEAD, ghost.headFor(ghost::getRevivalTile));
@@ -195,12 +195,12 @@ public class PacManGame {
 		return clyde;
 	}
 
-	public Stream<Ghost> getGhosts() {
+	public Stream<Ghost> getAllGhosts() {
 		return Stream.of(blinky, pinky, inky, clyde);
 	}
 
-	public Stream<Ghost> getActiveGhosts() {
-		return getGhosts().filter(this::isActorActive);
+	public Stream<Ghost> getGhosts() {
+		return getAllGhosts().filter(this::isActorActive);
 	}
 
 	public void initActiveActors() {
