@@ -358,6 +358,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			PacManGainsPowerEvent e = (PacManGainsPowerEvent) event;
 			game.getPacMan().processEvent(e);
 			foreachGhost(ghost -> ghost.processEvent(e));
+			ghostAttackController.suspend();
 		}
 
 		private void onPacManGettingWeaker(GameEvent event) {
@@ -368,6 +369,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		private void onPacManLostPower(GameEvent event) {
 			PacManLostPowerEvent e = (PacManLostPowerEvent) event;
 			foreachGhost(ghost -> ghost.processEvent(e));
+			ghostAttackController.resume();
 		}
 
 		private void onGhostKilled(GameEvent event) {

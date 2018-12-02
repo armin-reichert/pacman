@@ -1,5 +1,6 @@
 package de.amr.games.pacman.controller;
 
+import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 
@@ -23,6 +24,7 @@ public class GhostAttackController extends StateMachine<GhostState, Void> {
 
 	private final PacManGame game;
 	private int round;
+	private boolean suspended;
 
 	public GhostAttackController(PacManGame game) {
 		super(GhostState.class);
@@ -47,7 +49,31 @@ public class GhostAttackController extends StateMachine<GhostState, Void> {
 	@Override
 	public void init() {
 		round = 0;
+		suspended = false;
 		super.init();
+	}
+
+	@Override
+	public void update() {
+		if (!suspended) {
+			super.update();
+		}
+	}
+
+	public void suspend() {
+		if (!suspended) {
+			LOGGER.info(String.format("%s: suspended in state %s, remaining time: %d frames", getDescription(),
+					getState(), getTicksRemaining()));
+			suspended = true;
+		}
+	}
+
+	public void resume() {
+		if (suspended) {
+			LOGGER.info(String.format("%s: resumed in state %s, remaining time: %d frames", getDescription(),
+					getState(), getTicksRemaining()));
+			suspended = false;
+		}
 	}
 
 	private void nextRound() {
