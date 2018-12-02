@@ -2,6 +2,7 @@ package de.amr.games.pacman.actor;
 
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
+import static de.amr.easy.game.input.Keyboard.keyDown;
 import static de.amr.games.pacman.actor.PacManState.DEAD;
 import static de.amr.games.pacman.actor.PacManState.DYING;
 import static de.amr.games.pacman.actor.PacManState.HOME;
@@ -15,7 +16,6 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 import de.amr.easy.game.assets.Sound;
-import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.controller.EventManager;
@@ -40,6 +40,8 @@ import de.amr.statemachine.StateMachine;
  * @author Armin Reichert
  */
 public class PacMan extends MazeEntity {
+
+	private static final int[] STEERING_KEY = { KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT };
 
 	private final PacManGame game;
 	private final StateMachine<PacManState, GameEvent> fsm;
@@ -102,19 +104,7 @@ public class PacMan extends MazeEntity {
 
 	@Override
 	public OptionalInt supplyIntendedDir() {
-		if (Keyboard.keyDown(KeyEvent.VK_UP)) {
-			return OptionalInt.of(Top4.N);
-		}
-		if (Keyboard.keyDown(KeyEvent.VK_RIGHT)) {
-			return OptionalInt.of(Top4.E);
-		}
-		if (Keyboard.keyDown(KeyEvent.VK_DOWN)) {
-			return OptionalInt.of(Top4.S);
-		}
-		if (Keyboard.keyDown(KeyEvent.VK_LEFT)) {
-			return OptionalInt.of(Top4.W);
-		}
-		return OptionalInt.empty();
+		return NESW.dirs().filter(dir -> keyDown(STEERING_KEY[dir])).findFirst();
 	}
 
 	@Override
@@ -169,7 +159,7 @@ public class PacMan extends MazeEntity {
 	public void processEvent(GameEvent event) {
 		fsm.process(event);
 	}
-	
+
 	private StateMachine<PacManState, GameEvent> buildStateMachine() {
 		return StateMachine.
 		/* @formatter:off */

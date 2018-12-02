@@ -545,20 +545,11 @@ but by configuration. For each ghost state there is a behavior assigned that is 
 Pac-Man's movement is controlled by the keyboard:
 
 ```java
+int[] STEERING_KEY = { KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT };
+
+@Override
 public OptionalInt supplyIntendedDir() {
-	if (Keyboard.keyDown(KeyEvent.VK_UP)) {
-		return OptionalInt.of(Top4.N);
-	}
-	if (Keyboard.keyDown(KeyEvent.VK_RIGHT)) {
-		return OptionalInt.of(Top4.E);
-	}
-	if (Keyboard.keyDown(KeyEvent.VK_DOWN)) {
-		return OptionalInt.of(Top4.S);
-	}
-	if (Keyboard.keyDown(KeyEvent.VK_LEFT)) {
-		return OptionalInt.of(Top4.W);
-	}
-	return OptionalInt.empty();
+	return NESW.dirs().filter(dir -> keyDown(STEERING_KEY[dir])).findFirst();
 }
 ```
 
