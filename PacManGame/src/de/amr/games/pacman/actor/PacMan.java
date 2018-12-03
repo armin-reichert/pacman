@@ -10,8 +10,11 @@ import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.actor.PacManState.POWER;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
+import static java.awt.event.KeyEvent.VK_DOWN;
+import static java.awt.event.KeyEvent.VK_LEFT;
+import static java.awt.event.KeyEvent.VK_RIGHT;
+import static java.awt.event.KeyEvent.VK_UP;
 
-import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -41,7 +44,7 @@ import de.amr.statemachine.StateMachine;
  */
 public class PacMan extends MazeEntity {
 
-	private static final int[] STEERING_KEY = { KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT };
+	private static final int[] STEERING = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
 	private final PacManGame game;
 	private final StateMachine<PacManState, GameEvent> fsm;
@@ -104,7 +107,7 @@ public class PacMan extends MazeEntity {
 
 	@Override
 	public OptionalInt supplyIntendedDir() {
-		return NESW.dirs().filter(dir -> keyDown(STEERING_KEY[dir])).findFirst();
+		return NESW.dirs().filter(dir -> keyDown(STEERING[dir])).findFirst();
 	}
 
 	@Override
