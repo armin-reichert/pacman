@@ -494,23 +494,23 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 	private class GameOverState extends State<GameState, GameEvent> {
 
-		private int waitForMusic;
+		private int waitTimer;
 
 		@Override
 		public void onEntry() {
-			waitForMusic = app().clock.sec(3);
+			waitTimer = app().clock.sec(3);
 			game.saveScore();
 			foreachGhost(ghost -> ghost.setVisible(true));
 			getPlayScreen().getBonus().ifPresent(bonus -> bonus.setVisible(false));
 			getPlayScreen().enableAnimation(false);
-			getPlayScreen().showInfoText("Game Over!", Color.RED);
 		}
 
 		@Override
 		public void onTick() {
-			if (waitForMusic > 0) {
-				waitForMusic -= 1;
-				if (waitForMusic == 0) {
+			if (waitTimer > 0) {
+				waitTimer -= 1;
+				if (waitTimer == 0) {
+					getPlayScreen().showInfoText("Game Over!", Color.RED);
 					getTheme().music_gameover().loop();
 				}
 			}
