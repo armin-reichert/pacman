@@ -334,7 +334,7 @@ beginStateMachine(PacManState.class, GameEvent.class)
 .endStateMachine();
 ```
 
-The **ghosts** sare a common state machine definition:
+The **ghosts** are controlled using the following state machine:
 
 ```java
 beginStateMachine(GhostState.class, GameEvent.class)
