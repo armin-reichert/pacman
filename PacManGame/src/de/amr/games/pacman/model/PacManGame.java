@@ -89,18 +89,18 @@ public class PacManGame {
 		};
 
 		public float asFloat(int level) {
-			level = Math.max(VALUES_BY_LEVEL.length - 1, level);
+			level = Math.min(VALUES_BY_LEVEL.length - 1, level);
 			return (float) VALUES_BY_LEVEL[level][ordinal()];
 		}
 
 		public int asInt(int level) {
-			level = Math.max(VALUES_BY_LEVEL.length - 1, level);
+			level = Math.min(VALUES_BY_LEVEL.length - 1, level);
 			return (int) VALUES_BY_LEVEL[level][ordinal()];
 		}
 
 		@SuppressWarnings("unchecked")
 		public <T> T asObject(int level) {
-			level = Math.max(VALUES_BY_LEVEL.length - 1, level);
+			level = Math.min(VALUES_BY_LEVEL.length - 1, level);
 			return (T) VALUES_BY_LEVEL[level][ordinal()];
 		}
 	};
