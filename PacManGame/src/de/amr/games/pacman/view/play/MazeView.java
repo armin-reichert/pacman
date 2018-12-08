@@ -15,6 +15,11 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.PacManTheme;
 
+/**
+ * Displays the maze, bonus symbol and handles animation of energizers and maze.
+ * 
+ * @author Armin Reichert
+ */
 public class MazeView extends SpriteEntity {
 
 	private final Maze maze;
@@ -85,11 +90,12 @@ public class MazeView extends SpriteEntity {
 		sprites.current().draw(g);
 		g.translate(-tf.getX(), -tf.getY());
 		if (!flashing) {
+			// hide eaten pellets and let energizer blink
 			maze.tiles().forEach(tile -> {
-				if (maze.isEatenFood(tile) || maze.isEnergizer(tile) && energizerBlinking.currentFrame() % 2 != 0) {
+				if (maze.isEatenFood(tile) || maze.isEnergizer(tile) && energizerBlinking.currentFrame() != 0) {
 					g.translate(tile.col * TS, tile.row * TS);
 					g.setColor(app().settings.bgColor);
-					g.fillRect(0, 0, TS + 1, TS + 1);
+					g.fillRect(0, 0, TS, TS);
 					g.translate(-tile.col * TS, -tile.row * TS);
 				}
 			});
