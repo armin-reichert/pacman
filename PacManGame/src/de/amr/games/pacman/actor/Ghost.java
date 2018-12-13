@@ -206,9 +206,8 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 	}
 
 	private StateMachine<GhostState, GameEvent> buildStateMachine(String ghostName) {
-		return StateMachine.
 		/*@formatter:off*/
-		beginStateMachine(GhostState.class, GameEvent.class)
+		return StateMachine.beginStateMachine(GhostState.class, GameEvent.class)
 			 
 			.description(String.format("[%s]", ghostName))
 			.initialState(LOCKED)
@@ -242,8 +241,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 					})
 					.onTick(() -> {
 						move();
-						sprites.select(inGhostHouse() ? "s_color_" + getMoveDir() : 
-							getGame().getPacMan().isLosingPower() ? "s_flashing" : "s_frightened");
+						sprites.select(getGame().getPacMan().isLosingPower() ? "s_flashing" : "s_frightened");
 					})
 				
 				.state(DYING)
