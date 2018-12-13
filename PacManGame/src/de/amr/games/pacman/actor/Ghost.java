@@ -1,5 +1,6 @@
 package de.amr.games.pacman.actor;
 
+import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
@@ -16,7 +17,6 @@ import java.util.OptionalInt;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.controller.event.GameEvent;
@@ -51,7 +51,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 	private final Tile scatteringTarget;
 	private final int initialDir;
 	public Supplier<GhostState> fnNextState; // chasing or scattering
-	public BooleanSupplier fnCanLeaveGhostHouse;
+	public BooleanSupplier fnCanLeaveHouse;
 
 	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, Tile revivalTile,
 			Tile scatteringTarget, int initialDir) {
@@ -64,9 +64,9 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 		behaviorMap = new EnumMap<>(GhostState.class);
 		fsm = buildStateMachine();
 		fsm.setIgnoreUnknownEvents(true);
-		fsm.traceTo(Application.LOGGER, app().clock::getFrequency);
+		fsm.traceTo(LOGGER, app().clock::getFrequency);
 		fnNextState = this::getState; // default
-		fnCanLeaveGhostHouse = () -> fsm.state().getDuration() == State.ENDLESS || fsm.state().isTerminated();
+		fnCanLeaveHouse = () -> getState() != LOCKED || fsm.state().isTerminated();
 		setSprites(color);
 	}
 
@@ -149,17 +149,11 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 
 	@Override
 	public boolean canTraverseDoor(Tile door) {
-		if (getState() == GhostState.LOCKED) {
-			return false;
-		}
-		if (getState() == GhostState.DEAD) {
-			return true;
-		}
-		return inGhostHouse();
+		return getState() == DEAD || getState() != LOCKED && inGhostHouse();
 	}
 
 	private boolean canLeaveGhostHouse() {
-		return fnCanLeaveGhostHouse.getAsBoolean();
+		return fnCanLeaveHouse.getAsBoolean();
 	}
 
 	// Sprites

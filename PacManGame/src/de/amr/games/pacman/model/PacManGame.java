@@ -170,7 +170,7 @@ public class PacManGame {
 
 		// Other game rules.
 		// TODO: incomplete
-		clyde.fnCanLeaveGhostHouse = () -> {
+		clyde.fnCanLeaveHouse = () -> {
 			if (!clyde.getStateObject().isTerminated()) {
 				return false; // wait for timeout
 			}
