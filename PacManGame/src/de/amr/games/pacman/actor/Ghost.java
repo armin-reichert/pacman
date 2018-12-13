@@ -57,17 +57,17 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 			Tile scatteringTarget, int initialDir) {
 		this.game = game;
 		this.name = name;
-		setSprites(color);
 		this.initialTile = initialTile;
 		this.revivalTile = revivalTile;
 		this.scatteringTarget = scatteringTarget;
 		this.initialDir = initialDir;
 		behaviorMap = new EnumMap<>(GhostState.class);
-		fsm = buildStateMachine(name);
+		fsm = buildStateMachine();
 		fsm.setIgnoreUnknownEvents(true);
 		fsm.traceTo(Application.LOGGER, app().clock::getFrequency);
 		fnNextState = this::getState; // default
 		fnCanLeaveGhostHouse = () -> fsm.state().getDuration() == State.ENDLESS || fsm.state().isTerminated();
+		setSprites(color);
 	}
 
 	public void initGhost() {
@@ -205,11 +205,11 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 		fsm.process(event);
 	}
 
-	private StateMachine<GhostState, GameEvent> buildStateMachine(String ghostName) {
+	private StateMachine<GhostState, GameEvent> buildStateMachine() {
 		/*@formatter:off*/
 		return StateMachine.beginStateMachine(GhostState.class, GameEvent.class)
 			 
-			.description(String.format("[%s]", ghostName))
+			.description(String.format("[%s]", name))
 			.initialState(LOCKED)
 		
 			.states()
@@ -253,7 +253,6 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 				
 				.state(DEAD)
 					.onEntry(() -> {
-						getBehavior().computePath(this);
 						getTheme().snd_ghost_dead().loop();
 					})
 					.onTick(() -> {	
