@@ -74,21 +74,21 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 		placeAtTile(initialTile, TS / 2, 0);
 		setMoveDir(initialDir);
 		setNextDir(initialDir);
-		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("s_color_" + initialDir);
+		sprites.forEach(Sprite::resetAnimation);
 	}
 
 	private void reviveGhost() {
-		int dir = initialDir;
+		placeAtTile(revivalTile, TS / 2, 0);
 		if (this == getGame().getBlinky()) {
-			dir = Top4.N; // let Blinky look upwards when in ghost house
+			setMoveDir(Top4.N);
+			setNextDir(Top4.N);
 		} else {
-			placeAtTile(initialTile, TS / 2, 0);
+			setMoveDir(initialDir);
+			setNextDir(initialDir);
 		}
-		setMoveDir(dir);
-		setNextDir(dir);
+		sprites.select("s_color_" + getMoveDir());
 		sprites.forEach(Sprite::resetAnimation);
-		sprites.select("s_color_" + dir);
 	}
 
 	// Accessors
