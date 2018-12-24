@@ -534,11 +534,9 @@ C:\Users\armin\Desktop>java -jar pacman.jar
 
 The game gets most of its entertainment factor from the diversity of attack behavior of the four ghosts. 
 In this implementation, these differences in behavior are not realized by subclassing
-but by configuration. For each ghost state there is a behavior assigned that is used whenever the ghost is
- moving in that state.
+but by assigning a different implementation of that behavior ("strategy pattern").
 
 <img src="doc/pacman.png"/>
-
 
 ### Pac-Man
 
@@ -565,7 +563,7 @@ getGhosts().forEach(ghost -> {
 });
 ```
 
-The *chasing* behavior differs for each ghost as explained below. Using the common *headFor* behavior, the individual chase behaviors like *ambush*, *attackDirectly*, *attackWithPartner* is trivial.
+The *chasing* behavior differs for each ghost as explained below. Using the common *headFor* behavior, the individual chase behaviors like *ambush*, *attackDirectly*, *attackWithPartner* can be implemented very easily.
 
 ### Blinky (the red ghost)
 
