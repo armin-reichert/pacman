@@ -26,8 +26,8 @@ import java.util.stream.Stream;
 
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.MazeEntity;
+import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.theme.GhostColor;
 
 /**
@@ -166,7 +166,7 @@ public class PacManGame {
 		blinky.setBehavior(CHASING, blinky.attackDirectly(pacMan));
 		pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
 		inky.setBehavior(CHASING, inky.attackWith(blinky, pacMan));
-		clyde.setBehavior(CHASING, clyde.attackOrReject(clyde, pacMan, 8 * TS));
+		clyde.setBehavior(CHASING, clyde.attackOrReject(pacMan, 8 * TS));
 
 		// Other game rules.
 		// TODO: incomplete

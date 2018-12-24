@@ -69,6 +69,11 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 		fnCanLeaveHouse = () -> getState() != LOCKED || fsm.state().isTerminated();
 		setSprites(color);
 	}
+	
+	@Override
+	public Ghost self() {
+		return this;
+	}
 
 	public void initGhost() {
 		placeAtTile(initialTile, TS / 2, 0);

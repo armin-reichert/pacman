@@ -18,6 +18,11 @@ import de.amr.games.pacman.model.Tile;
 public interface GhostBehavior {
 
 	/**
+	 * @return the ghost implementing this mixin
+	 */
+	public Ghost self();
+
+	/**
 	 * @param actor
 	 *                an actor
 	 * @param n
@@ -81,18 +86,16 @@ public interface GhostBehavior {
 	 * maintain in Scatter mode. </cite>
 	 * </p>
 	 * 
-	 * @param attacker
-	 *                   the attacker (Clyde)
 	 * @param pacMan
-	 *                   the attacked Pac-Man
+	 *                   the Pac-Man which gets attacked
 	 * @param distance
-	 *                   if the distance of the attacker to Pac-Man is less than this distance (measured
+	 *                   if the distance to Pac-Man is less than this distance (measured
 	 *                   in pixels), the attacker rejects and heads for its scattering position.
 	 *                   Otherwise it directly attacks PacMan.
 	 */
-	default Behavior<Ghost> attackOrReject(Ghost attacker, PacMan pacMan, int distance) {
-		return headFor(() -> dist(attacker.tf.getCenter(), pacMan.tf.getCenter()) >= distance ? pacMan.getTile()
-				: attacker.getScatteringTarget());
+	default Behavior<Ghost> attackOrReject(PacMan pacMan, int distance) {
+		return headFor(() -> dist(self().tf.getCenter(), pacMan.tf.getCenter()) >= distance ? pacMan.getTile()
+				: self().getScatteringTarget());
 	}
 
 	/**

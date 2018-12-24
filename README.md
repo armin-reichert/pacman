@@ -627,7 +627,7 @@ Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from 
 If closer, he behaves as in scattering mode:
 
 ```java
-clyde.setBehavior(CHASING, clyde.attackOrReject(clyde, pacMan, 8 * TS));
+clyde.setBehavior(CHASING, clyde.attackOrReject(pacMan, 8 * TS));
 ```
 
 ```java
