@@ -554,7 +554,7 @@ public OptionalInt supplyIntendedDir() {
 ```
 
 ### Ghosts
-The ghosts behave identically in most of their states:
+The ghosts behave identically in all of their states except the *chasing* state:
 
 ```java
 getGhosts().forEach(ghost -> {
@@ -565,13 +565,17 @@ getGhosts().forEach(ghost -> {
 });
 ```
 
-The *chase* behavior however is different for each ghost as explained below. 
-Having the common *headFor* behavior in hand, the implementation of the individual behaviors like 
-*scatter*, *ambush*, *attackDirectly*, *attackWithPartner* becomes trivial.
+The *chasing* behavior differs for each ghost as explained below. Using the common *headFor* behavior, the individual chase behaviors like *ambush*, *attackDirectly*, *attackWithPartner* is trivial.
 
 ### Blinky (the red ghost)
 
-Blinky's chase behavior is to directly attack Pac-Man. This is just two lines of code:
+Blinky's chasing behavior is to directly attack Pac-Man.
+
+```java
+blinky.setBehavior(CHASING, blinky.attackDirectly(pacMan));
+```
+
+This is the implementation:
 
 ```java
 default Behavior<Ghost> attackDirectly(PacMan pacMan) {
@@ -579,16 +583,15 @@ default Behavior<Ghost> attackDirectly(PacMan pacMan) {
 }
 ```
 
-```java
-blinky.setBehavior(CHASING, blinky.attackDirectly(pacMan));
-```
-
 <img src="doc/blinky.png"/>
 
 ### Pinky
 
-Pinky, the *ambusher*, targets the position 4 tiles ahead of Pac-Man 
-(in the original game there is an overflow error that leads to a different behavior):
+Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position (in the original game there is an overflow error leading to a slightly different behavior):
+
+```java
+pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
+```
 
 ```java
 default Behavior<Ghost> ambush(PacMan pacMan, int numTilesAhead) {
@@ -596,18 +599,18 @@ default Behavior<Ghost> ambush(PacMan pacMan, int numTilesAhead) {
 }
 ```
 
-```java
-pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
-```
-
 <img src="doc/pinky.png"/>
 
 ### Inky (the turquoise ghost)
 
-Inky's attack target is computed as follows:
+Inky heads for a position that depends on blinky's current position and the position two tiles ahead of Pac-Man's current position:
 
 Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man, so `V = (P - B)`. 
 Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
+
+```java
+inky.setBehavior(CHASING, inky.attackWith(blinky, pacMan));
+```
 
 ```java
 default Behavior<Ghost> attackWith(Ghost blinky, PacMan pacMan) {
@@ -618,16 +621,16 @@ default Behavior<Ghost> attackWith(Ghost blinky, PacMan pacMan) {
 }
 ```
 
-```java
-inky.setBehavior(CHASING, inky.attackWith(blinky, pacMan));
-```
-
 <img src="doc/inky.png"/>
 
 ### Clyde (the orange ghost)
 
-Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. 
-If closer, he goes into scattering mode:
+Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is larger than than 8 tiles. 
+If closer, he behaves as in scattering mode:
+
+```java
+clyde.setBehavior(CHASING, clyde.attackOrReject(clyde, pacMan, 8 * TS));
+```
 
 ```java
 default Behavior<Ghost> attackOrReject(Ghost attacker, PacMan pacMan, int distance) {
@@ -637,18 +640,14 @@ default Behavior<Ghost> attackOrReject(Ghost attacker, PacMan pacMan, int distan
 }
 ```
 
-```java
-clyde.setBehavior(CHASING, clyde.attackOrReject(clyde, pacMan, 8 * TS));
-```
-
 <img src="doc/clyde.png"/>
 
-The visualization of the attack behavior can be toggled during the running game by pressing the key 'r'.
+The visualization of the attack behaviors can be toggled during the game by pressing the key 'r' ("show routes").
 
 ### Scattering
 
-In *scatter* mode, each ghost tries to reach his scattering target tile outside of the maze which results in a cyclic 
-movement around the block in that corner:
+In *scattering* mode, each ghost tries to reach his "scattering target" which is a tile outside of the maze. Because ghosts
+cannot reverse direction this results in a cyclic movement around the walls in the corresponding corner of the maze:
 
 ```java
 ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
@@ -661,7 +660,7 @@ ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
 
 For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed but the *headFor* 
 behavior can be used all over the place. To also give an example how graph based path finding can be used, 
-the *flee* behavior has been implemented differently from the original game: a fleeing ghost choses a safe corner
+the *frightened* behavior has been implemented differently from the original game: a frightened ghost choses a safe corner
 by checking the path to each maze corner and selecting the path with the largest distance to Pac-Man's current position.
 The distance of a path from Pac-Man's position is defined as the minimum distance of any tile on the path from Pac-Man's
 position.
@@ -678,9 +677,9 @@ GraphTraversal pathfinder =
 		new BreadthFirstTraversal<>(graph);
 ```
 
-A-Star certainly sounds "cooler" than BFS, but is completely useless in this use-case because the maze is represented 
-by a graph where the distance between two adjacent vertices (neighbor tiles) is always the same. 
-Thus the A* or Dijkstra path finding algorithms would just degenerate to plain BFS (correct me if I'm wrong). 
+A* certainly sounds "cooler" than BFS, but doesn't give additional value in this use-case because the maze is represented 
+by a graph with uniform distance between every two adjacent vertices (neighbor tiles). 
+Thus the A* or Dijkstra algorithms just degenerate to BFS (correct me if I'm wrong). 
 
 Of course one could represent the graph differently, for example with vertices only for crossings and weighted edges 
 for passages, in which case Dijkstra or A* would become useful.
