@@ -69,7 +69,7 @@ public class ChasePacManAnimation extends Entity implements AnimationController,
 	@Override
 	public void startAnimation() {
 		init();
-		tf.setVelocityX(-1.2f);
+		tf.setVelocityX(-0.8f);
 		getTheme().snd_ghost_chase().loop();
 	}
 
