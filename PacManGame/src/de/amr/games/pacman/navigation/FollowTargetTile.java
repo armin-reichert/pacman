@@ -9,7 +9,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.MazeEntity;
 import de.amr.games.pacman.model.Maze;
@@ -121,17 +120,17 @@ class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 			.map(dir -> actor.getMaze().neighborTile(nextTile, dir))
 			.filter(Optional::isPresent).map(Optional::get)
 			.filter(actor::canEnterTile)
-			.sorted(compareTilesByDistanceTo(targetTile))
+			.sorted(byManhattanDist(targetTile))
 			.map(tile -> actor.getMaze().direction(nextTile, tile).getAsInt())
 			.findFirst();
 		/*@formatter:on*/
 	}
 
-	private static Comparator<Tile> compareTilesByDistanceTo(Tile targetTile) {
-		return (t1, t2) -> Float.compare(distance(t1, targetTile), distance(t2, targetTile));
+	private static Comparator<Tile> byManhattanDist(Tile targetTile) {
+		return (t1, t2) -> Float.compare(manhattanDist(t1, targetTile), manhattanDist(t2, targetTile));
 	}
 
-	private static float distance(Tile t1, Tile t2) {
-		return Vector2f.manhattanDist(Vector2f.of(t1.col, t1.row), Vector2f.of(t2.col, t2.row));
+	private static float manhattanDist(Tile t1, Tile t2) {
+		return Math.abs(t1.col - t2.col) + Math.abs(t1.row - t2.row);
 	}
 }
