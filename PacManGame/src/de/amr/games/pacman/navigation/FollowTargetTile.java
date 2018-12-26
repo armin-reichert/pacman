@@ -120,17 +120,17 @@ class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 			.map(dir -> actor.getMaze().neighborTile(nextTile, dir))
 			.filter(Optional::isPresent).map(Optional::get)
 			.filter(actor::canEnterTile)
-			.sorted(byManhattanDist(targetTile))
+			.sorted(byEuclideanDist(targetTile))
 			.map(tile -> actor.getMaze().direction(nextTile, tile).getAsInt())
 			.findFirst();
 		/*@formatter:on*/
 	}
 
-	private static Comparator<Tile> byManhattanDist(Tile targetTile) {
-		return (t1, t2) -> Float.compare(manhattanDist(t1, targetTile), manhattanDist(t2, targetTile));
+	private static Comparator<Tile> byEuclideanDist(Tile target) {
+		return (t1, t2) -> Float.compare(euclideanDist(t1, target), euclideanDist(t2, target));
 	}
 
-	private static float manhattanDist(Tile t1, Tile t2) {
-		return Math.abs(t1.col - t2.col) + Math.abs(t1.row - t2.row);
+	private static float euclideanDist(Tile t1, Tile t2) {
+		return (t1.col - t2.col) * (t1.col - t2.col) + (t1.row - t2.row) * (t1.row - t2.row);
 	}
 }
