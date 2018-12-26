@@ -633,8 +633,9 @@ clyde.setBehavior(CHASING, clyde.attackOrReject(pacMan, 8 * TS));
 ```java
 default Behavior<Ghost> attackOrReject(PacMan pacMan, int distance) {
 	return headFor(
-			() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) >= distance ? pacMan.getTile()
-					: self().getScatteringTarget());
+			() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) >= distance 
+			? pacMan.getTile()
+			: self().getScatteringTarget());
 }
 ```
 
