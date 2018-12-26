@@ -89,13 +89,14 @@ public interface GhostBehavior {
 	 * @param pacMan
 	 *                   the Pac-Man which gets attacked
 	 * @param distance
-	 *                   if the distance to Pac-Man is less than this distance (measured
-	 *                   in pixels), the attacker rejects and heads for its scattering position.
-	 *                   Otherwise it directly attacks PacMan.
+	 *                   if the distance to Pac-Man is less than this distance (measured in pixels), the
+	 *                   attacker rejects and heads for its scattering position. Otherwise it directly
+	 *                   attacks PacMan.
 	 */
 	default Behavior<Ghost> attackOrReject(PacMan pacMan, int distance) {
-		return headFor(() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) >= distance ? pacMan.getTile()
-				: self().getScatteringTarget());
+		return headFor(
+				() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) >= distance ? pacMan.getTile()
+						: self().getScatteringTarget());
 	}
 
 	/**
