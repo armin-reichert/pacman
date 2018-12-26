@@ -112,7 +112,7 @@ public class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 	}
 
 	/**
-	 * Find direction to neighbor tile with smallest distance to target.
+	 * Find direction to neighbor tile with smallest Manhattan distance to target.
 	 */
 	private static Optional<Integer> findBestDir(MazeEntity actor, Tile nextTile, Tile targetTile,
 			Stream<Integer> choices) {
@@ -132,6 +132,6 @@ public class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 	}
 
 	private static float distance(Tile t1, Tile t2) {
-		return Vector2f.dist(Vector2f.of(t1.col, t1.row), Vector2f.of(t2.col, t2.row));
+		return Vector2f.manhattanDist(Vector2f.of(t1.col, t1.row), Vector2f.of(t2.col, t2.row));
 	}
 }

@@ -1,6 +1,6 @@
 package de.amr.games.pacman.navigation;
 
-import static de.amr.easy.game.math.Vector2f.dist;
+import static de.amr.easy.game.math.Vector2f.euclideanDist;
 import static de.amr.games.pacman.model.Maze.NESW;
 
 import java.util.function.Supplier;
@@ -94,7 +94,7 @@ public interface GhostBehavior {
 	 *                   Otherwise it directly attacks PacMan.
 	 */
 	default Behavior<Ghost> attackOrReject(PacMan pacMan, int distance) {
-		return headFor(() -> dist(self().tf.getCenter(), pacMan.tf.getCenter()) >= distance ? pacMan.getTile()
+		return headFor(() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) >= distance ? pacMan.getTile()
 				: self().getScatteringTarget());
 	}
 
