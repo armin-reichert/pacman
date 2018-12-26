@@ -37,7 +37,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
+class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 
 	private final Supplier<Tile> targetTileSupplier;
 
