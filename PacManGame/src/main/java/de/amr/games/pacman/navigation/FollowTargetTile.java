@@ -111,7 +111,7 @@ class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 	}
 
 	/**
-	 * Find direction to neighbor tile with smallest Manhattan distance to target.
+	 * Find direction to neighbor tile with smallest Euclidean distance to target.
 	 */
 	private static Optional<Integer> findBestDir(MazeEntity actor, Tile nextTile, Tile targetTile,
 			Stream<Integer> choices) {
