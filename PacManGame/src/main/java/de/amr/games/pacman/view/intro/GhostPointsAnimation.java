@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.BitSet;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.view.AnimationController;
@@ -44,7 +43,7 @@ public class GhostPointsAnimation extends Entity implements AnimationController,
 	}
 
 	private PacManTheme getTheme() {
-		return Application.app().settings.get("theme");
+		return app().settings.get("theme");
 	}
 
 	private void resetGhostTimer() {
