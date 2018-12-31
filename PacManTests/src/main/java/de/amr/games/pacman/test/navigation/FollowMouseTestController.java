@@ -1,7 +1,11 @@
 package de.amr.games.pacman.test.navigation;
 
 import static de.amr.easy.game.Application.LOGGER;
+import static de.amr.games.pacman.model.PacManGame.TS;
 
+import java.awt.event.KeyEvent;
+
+import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Mouse;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
@@ -32,6 +36,11 @@ public class FollowMouseTestController implements ViewController {
 	}
 
 	@Override
+	public View currentView() {
+		return view;
+	}
+
+	@Override
 	public void init() {
 		targetTile = game.getMaze().getPacManHome();
 		pacMan.placeAtTile(targetTile, 0, 0);
@@ -42,11 +51,12 @@ public class FollowMouseTestController implements ViewController {
 		game.setActorActive(pacMan, true);
 		blinky.init();
 		blinky.setState(GhostState.CHASING);
-		blinky.setBehavior(GhostState.CHASING, blinky.followRoute(() -> targetTile));
+		blinky.setBehavior(GhostState.CHASING, blinky.headFor(() -> targetTile));
 	}
 
 	@Override
 	public void update() {
+		selectBehavior();
 		readTargetTile();
 		blinky.update();
 		view.update();
@@ -54,15 +64,17 @@ public class FollowMouseTestController implements ViewController {
 
 	private void readTargetTile() {
 		if (Mouse.moved()) {
-			int x = Mouse.getX(), y = Mouse.getY();
-			targetTile = new Tile(x / PacManGame.TS, y / PacManGame.TS);
+			targetTile = new Tile(Mouse.getX() / TS, Mouse.getY() / TS);
 			pacMan.placeAtTile(targetTile, 0, 0);
 			LOGGER.info(targetTile.toString());
 		}
 	}
 
-	@Override
-	public View currentView() {
-		return view;
+	private void selectBehavior() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
+			blinky.setBehavior(GhostState.CHASING, blinky.headFor(() -> targetTile));
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
+			blinky.setBehavior(GhostState.CHASING, blinky.followRoute(() -> targetTile));
+		}
 	}
 }
