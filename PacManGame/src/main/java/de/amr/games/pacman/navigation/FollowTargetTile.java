@@ -2,8 +2,8 @@ package de.amr.games.pacman.navigation;
 
 import static de.amr.games.pacman.model.Maze.NESW;
 
-import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -46,21 +46,22 @@ class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 
 	@Override
 	public Route getRoute(T actor) {
+		final Route route = new Route();
+
+		// where to go?
+		final Tile targetTile = targetTileSupplier.get();
+		Objects.requireNonNull(targetTile, "Target tile must not be NULL");
+		route.setTarget(targetTile);
+
 		final Maze maze = actor.getMaze();
 		final int actorDir = actor.getMoveDir();
 		final Tile actorTile = actor.getTile();
 
-		// ask for current target tile
-		Tile targetTile = targetTileSupplier.get();
-		Objects.requireNonNull(targetTile, "Target tile must not be NULL");
-
-		final Route route = new Route();
-		route.setTarget(targetTile);
-
 		// use graph path-finder for entering ghost house
 		if (maze.isGhostHouseEntry(actorTile) && maze.inGhostHouse(targetTile)) {
-			route.setPath(maze.findPath(actorTile, targetTile));
-			route.setDir(maze.alongPath(route.getPath()).orElse(actorDir));
+			List<Tile> intoGhostHouse = maze.findPath(actorTile, targetTile);
+			route.setPath(intoGhostHouse);
+			route.setDir(maze.alongPath(intoGhostHouse).orElse(actorDir));
 			return route;
 		}
 
@@ -70,7 +71,7 @@ class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 				// follow target inside ghost house
 				route.setPath(maze.findPath(actorTile, targetTile));
 			} else {
-				// first go to Blinky's home tile to exit ghost house
+				// go to Blinky's home to exit ghost house
 				route.setPath(maze.findPath(actorTile, maze.getBlinkyHome()));
 			}
 			route.setDir(maze.alongPath(route.getPath()).orElse(actorDir));
@@ -79,10 +80,11 @@ class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 
 		// if stuck, check if turning left or right is possible
 		if (actor.isStuck()) {
-			for (int turnDir : Arrays.asList(NESW.left(actorDir), NESW.right(actorDir))) {
-				Tile turnTile = maze.neighborTile(actorTile, turnDir).get();
-				if (actor.canEnterTile(turnTile)) {
-					route.setDir(turnDir);
+			int[] leftOrRight = { NESW.left(actorDir), NESW.right(actorDir) };
+			for (int turn : leftOrRight) {
+				Tile neighbor = maze.neighborTile(actorTile, turn).get();
+				if (actor.canEnterTile(neighbor)) {
+					route.setDir(turn);
 					return route;
 				}
 			}
