@@ -18,7 +18,7 @@ public class FollowMouseTestController implements ViewController {
 	private final PacMan pacMan;
 	private final Ghost blinky;
 	private final PlayViewX view;
-	private Tile mouseTile;
+	private Tile targetTile;
 
 	public FollowMouseTestController() {
 		game = new PacManGame();
@@ -26,15 +26,15 @@ public class FollowMouseTestController implements ViewController {
 		blinky = game.getBlinky();
 		view = new PlayViewX(game);
 		view.setShowRoutes(true);
-		view.setShowGrid(false);
+		view.setShowGrid(true);
 		view.setShowStates(false);
 		view.setScoresVisible(false);
 	}
 
 	@Override
 	public void init() {
-		mouseTile = game.getMaze().getPacManHome();
-		pacMan.placeAtTile(mouseTile, 0, 0);
+		targetTile = game.getMaze().getPacManHome();
+		pacMan.placeAtTile(targetTile, 0, 0);
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
 		game.getAllGhosts().forEach(ghost -> game.setActorActive(ghost, false));
@@ -42,22 +42,22 @@ public class FollowMouseTestController implements ViewController {
 		game.setActorActive(pacMan, true);
 		blinky.init();
 		blinky.setState(GhostState.CHASING);
-		blinky.setBehavior(GhostState.CHASING, blinky.followRoute(() -> mouseTile));
+		blinky.setBehavior(GhostState.CHASING, blinky.followRoute(() -> targetTile));
 	}
 
 	@Override
 	public void update() {
-		updateMouseTile();
+		readTargetTile();
 		blinky.update();
 		view.update();
 	}
 
-	private void updateMouseTile() {
+	private void readTargetTile() {
 		if (Mouse.moved()) {
 			int x = Mouse.getX(), y = Mouse.getY();
-			mouseTile = new Tile(x / PacManGame.TS, y / PacManGame.TS);
-			pacMan.placeAtTile(mouseTile, 0, 0);
-			LOGGER.info(mouseTile.toString());
+			targetTile = new Tile(x / PacManGame.TS, y / PacManGame.TS);
+			pacMan.placeAtTile(targetTile, 0, 0);
+			LOGGER.info(targetTile.toString());
 		}
 	}
 
