@@ -1,6 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
-import de.amr.easy.game.Application;
+import static de.amr.easy.game.Application.LOGGER;
+
 import de.amr.easy.game.input.Mouse;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
@@ -56,7 +57,7 @@ public class FollowMouseTestController implements ViewController {
 			int x = Mouse.getX(), y = Mouse.getY();
 			mouseTile = new Tile(x / PacManGame.TS, y / PacManGame.TS);
 			pacMan.placeAtTile(mouseTile, 0, 0);
-			Application.LOGGER.info(mouseTile.toString());
+			LOGGER.info(mouseTile.toString());
 		}
 	}
 
