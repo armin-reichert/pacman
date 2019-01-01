@@ -79,13 +79,15 @@ class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 
 		// if stuck, check if turning left or right is possible
 		if (actor.isStuck()) {
-			int[] leftOrRight = { NESW.left(actorDir), NESW.right(actorDir) };
-			for (int turn : leftOrRight) {
-				Tile neighbor = maze.neighborTile(actorTile, turn).get();
-				if (actor.canEnterTile(neighbor)) {
-					route.setDir(turn);
-					return route;
-				}
+			int left = NESW.left(actorDir);
+			if (actor.canEnterTile(maze.neighborTile(actorTile, left).get())) {
+				route.setDir(left);
+				return route;
+			}
+			int right = NESW.right(actorDir);
+			if (actor.canEnterTile(maze.neighborTile(actorTile, right).get())) {
+				route.setDir(right);
+				return route;
 			}
 		}
 
