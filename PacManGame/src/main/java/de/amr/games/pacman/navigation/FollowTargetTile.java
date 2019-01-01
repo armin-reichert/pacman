@@ -2,12 +2,11 @@ package de.amr.games.pacman.navigation;
 
 import static de.amr.games.pacman.model.Maze.NESW;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.MazeEntity;
@@ -95,16 +94,11 @@ class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 		final boolean unrestricted = maze.isUnrestrictedIntersection(nextTile);
 		final boolean upwardsBlocked = maze.isUpwardsBlockedIntersection(nextTile);
 		if (unrestricted || upwardsBlocked) {
-			/*@formatter:off*/
-			IntStream possibleDirs = NESW.dirs()
-					.filter(dir -> dir != NESW.inv(actorDir)) // cannot reverse direction
-					.filter(dir -> unrestricted || dir != Top4.N);
-			/*@formatter:on*/
-			Optional<Integer> bestDir = findBestDir(actor, nextTile, targetTile, possibleDirs);
-			if (bestDir.isPresent()) {
-				route.setDir(bestDir.get());
-				return route;
-			}
+			// preference: up > left > down > right
+			Stream<Integer> dirs = Stream.of(Top4.N, Top4.W, Top4.S, Top4.E)
+					.filter(dir -> dir != NESW.inv(actorDir)).filter(dir -> dir != Top4.N || unrestricted);
+			route.setDir(findBestDir(actor, nextTile, targetTile, dirs));
+			return route;
 		}
 
 		// no direction could be determined
@@ -113,27 +107,23 @@ class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 	}
 
 	/**
-	 * Finds the "best" direction from the source tile towards the target tile. The best direction leads
-	 * to the neighbor with the least straight line (Euclidean) distance to the target tile.
+	 * Finds the "best" direction from the source tile towards the target tile, i.e. the direction to
+	 * the (accessible) neighbor tile with the smallest (straight line) distance from the target tile.
 	 */
-	private static Optional<Integer> findBestDir(MazeEntity actor, Tile sourceTile, Tile targetTile,
-			IntStream possibleDirs) {
+	private int findBestDir(MazeEntity actor, Tile sourceTile, Tile targetTile, Stream<Integer> choices) {
 		/*@formatter:off*/
-		return possibleDirs.boxed()
-			.map(dir -> actor.getMaze().neighborTile(sourceTile, dir))
+		return choices
+			.map(dir -> actor.getMaze().neighborTile(sourceTile, dir)) // map direction to neighbor tile
 			.filter(Optional::isPresent).map(Optional::get)
 			.filter(actor::canEnterTile)
-			.sorted(byEuclideanDistSquared(targetTile))
-			.map(tile -> actor.getMaze().direction(sourceTile, tile).getAsInt())
-			.findFirst();
+			.sorted((t1, t2) -> Integer.compare(straightDistance(t1, targetTile),	straightDistance(t2, targetTile)))
+			.map(tile -> actor.getMaze().direction(sourceTile, tile).getAsInt()) // map tile back to direction
+			.findFirst().orElse(-1);
 		/*@formatter:on*/
 	}
 
-	private static Comparator<Tile> byEuclideanDistSquared(Tile target) {
-		return (t1, t2) -> Float.compare(euclideanDistSquared(t1, target), euclideanDistSquared(t2, target));
-	}
-
-	private static float euclideanDistSquared(Tile t1, Tile t2) {
-		return (t1.col - t2.col) * (t1.col - t2.col) + (t1.row - t2.row) * (t1.row - t2.row);
+	private static int straightDistance(Tile t1, Tile t2) {
+		int dx = t1.col - t2.col, dy = t1.row - t2.row;
+		return dx * dx + dy * dy;
 	}
 }
