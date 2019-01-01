@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
+import java.util.stream.IntStream;
 
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.MazeEntity;
@@ -96,13 +96,13 @@ class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 		final boolean upwardsBlocked = maze.isUpwardsBlockedIntersection(nextTile);
 		if (unrestricted || upwardsBlocked) {
 			/*@formatter:off*/
-			Stream<Integer> choices = NESW.dirs().boxed()
-					.filter(dir -> dir != NESW.inv(actorDir))
+			IntStream possibleDirs = NESW.dirs()
+					.filter(dir -> dir != NESW.inv(actorDir)) // cannot reverse direction
 					.filter(dir -> unrestricted || dir != Top4.N);
 			/*@formatter:on*/
-			Optional<Integer> choice = findBestDir(actor, nextTile, targetTile, choices);
-			if (choice.isPresent()) {
-				route.setDir(choice.get());
+			Optional<Integer> bestDir = findBestDir(actor, nextTile, targetTile, possibleDirs);
+			if (bestDir.isPresent()) {
+				route.setDir(bestDir.get());
 				return route;
 			}
 		}
@@ -113,17 +113,18 @@ class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 	}
 
 	/**
-	 * Find direction to neighbor tile with smallest Euclidean distance to target.
+	 * Finds the "best" direction from the source tile towards the target tile. The best direction leads
+	 * to the neighbor with the least straight line (Euclidean) distance to the target tile.
 	 */
-	private static Optional<Integer> findBestDir(MazeEntity actor, Tile nextTile, Tile targetTile,
-			Stream<Integer> choices) {
+	private static Optional<Integer> findBestDir(MazeEntity actor, Tile sourceTile, Tile targetTile,
+			IntStream possibleDirs) {
 		/*@formatter:off*/
-		return choices
-			.map(dir -> actor.getMaze().neighborTile(nextTile, dir))
+		return possibleDirs.boxed()
+			.map(dir -> actor.getMaze().neighborTile(sourceTile, dir))
 			.filter(Optional::isPresent).map(Optional::get)
 			.filter(actor::canEnterTile)
 			.sorted(byEuclideanDistSquared(targetTile))
-			.map(tile -> actor.getMaze().direction(nextTile, tile).getAsInt())
+			.map(tile -> actor.getMaze().direction(sourceTile, tile).getAsInt())
 			.findFirst();
 		/*@formatter:on*/
 	}
