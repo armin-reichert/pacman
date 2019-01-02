@@ -54,10 +54,9 @@ class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 		Objects.requireNonNull(targetTile, "Target tile must not be NULL");
 		route.setTarget(targetTile);
 
-		// use graph path-finder for entering ghost house
+		// entering ghost house?
 		if (maze.isGhostHouseEntry(actorTile) && maze.inGhostHouse(targetTile)) {
-			route.setPath(maze.findPath(actorTile, targetTile));
-			route.setDir(maze.alongPath(route.getPath()).orElse(actorDir));
+			route.setDir(Top4.S);
 			return route;
 		}
 
