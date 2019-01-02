@@ -20,18 +20,18 @@ public interface GhostBehavior {
 	/**
 	 * @return the ghost implementing this mixin
 	 */
-	public Ghost self();
+	Ghost self();
 
 	/**
 	 * @param actor
 	 *                an actor
-	 * @param n
+	 * @param numTiles
 	 *                number of tiles
 	 * @return the tile located <code>n</code> tiles ahead of the actor towards its current move
 	 *         direction.
 	 */
-	public static Tile ahead(MazeEntity actor, int n) {
-		return actor.getTile().tileTowards(actor.getMoveDir(), n);
+	static Tile ahead(MazeEntity actor, int numTiles) {
+		return actor.getTile().tileTowards(actor.getMoveDir(), numTiles);
 	}
 
 	/**
@@ -95,7 +95,7 @@ public interface GhostBehavior {
 	 */
 	default Behavior<Ghost> attackOrReject(PacMan pacMan, int distance) {
 		return headFor(
-				() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) >= distance ? pacMan.getTile()
+				() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.getTile()
 						: self().getScatteringTarget());
 	}
 
@@ -133,17 +133,17 @@ public interface GhostBehavior {
 	 * @return bouncing behavior
 	 */
 	default Behavior<Ghost> bounce() {
-		return bouncer -> new Route(bouncer.isStuck() ? NESW.inv(bouncer.getMoveDir()) : bouncer.getMoveDir());
+		return ghost -> new Route(ghost.isStuck() ? NESW.inv(ghost.getMoveDir()) : ghost.getMoveDir());
 	}
 
 	/**
-	 * Lets the ghost flee from Pac-Man by walking to a safe maze corner.
+	 * Lets the ghost flee from the attacker by heading to a safe maze corner.
 	 * 
 	 * @param attacker
-	 *                   the attacking Pac-Man
+	 *                   the attacker e.g. Pac-Man
 	 * @return escaping behavior
 	 */
-	default Behavior<Ghost> flee(PacMan attacker) {
+	default Behavior<Ghost> flee(MazeEntity attacker) {
 		return new EscapeIntoCorner<>(attacker::getTile);
 	}
 
@@ -152,14 +152,15 @@ public interface GhostBehavior {
 	 * of the maze and updated every time the move direction is queried. This can lead to lots of path
 	 * finder calls!
 	 * 
-	 * @param target
-	 *                 target tile supplier (this tile must be inside the maze or teleport space!)
+	 * @param targetTileSupplier
+	 *                             target tile supplier (this tile must be inside the maze or teleport
+	 *                             space!)
 	 * @return behavior following the path to the target
 	 */
-	default Behavior<Ghost> followRoute(Supplier<Tile> targetSupplier) {
+	default Behavior<Ghost> followRoute(Supplier<Tile> targetTileSupplier) {
 		return ghost -> {
 			Route route = new Route();
-			route.setPath(ghost.getMaze().findPath(ghost.getTile(), targetSupplier.get()));
+			route.setPath(ghost.getMaze().findPath(ghost.getTile(), targetTileSupplier.get()));
 			route.setDir(ghost.getMaze().alongPath(route.getPath()).orElse(-1));
 			return route;
 		};
