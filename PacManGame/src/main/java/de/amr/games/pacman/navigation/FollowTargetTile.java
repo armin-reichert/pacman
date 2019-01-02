@@ -60,7 +60,7 @@ class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 			return route;
 		}
 
-		// also use path-finder inside ghost house and for leaving ghost house
+		// if inside ghost house, use path finder. To leave the ghost house, target Blinky's home tile
 		if (maze.inGhostHouse(actorTile)) {
 			route.setPath(
 					maze.findPath(actorTile, maze.inGhostHouse(targetTile) ? targetTile : maze.getBlinkyHome()));
@@ -79,40 +79,29 @@ class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 			return route;
 		}
 
-		// if next tile is an intersection, decide where to go
+		// If next tile is an intersection, decide where to go:
 		final Tile nextTile = actorTile.tileTowards(actorDir);
 		final boolean unrestricted = maze.isUnrestrictedIntersection(nextTile);
 		final boolean upwardsBlocked = maze.isUpwardsBlockedIntersection(nextTile);
 		if (unrestricted || upwardsBlocked) {
-			// preference: up > left > down > right
+			// direction order: up > left > down > right
+			int bestDir = Stream.of(Top4.N, Top4.W, Top4.S, Top4.E)
 			/*@formatter:off*/
-			Stream<Integer> dirs = Stream.of(Top4.N, Top4.W, Top4.S, Top4.E)
-				.filter(dir -> dir != NESW.inv(actorDir))
-				.filter(dir -> dir != Top4.N || unrestricted);
+				.filter(dir -> dir != NESW.inv(actorDir)) // cannot reverse direction
+				.filter(dir -> dir != Top4.N || unrestricted) // cannot go up if restricted
+				.map(dir -> actor.getMaze().neighborTile(nextTile, dir)) // map direction to neighbor tile
+				.filter(Optional::isPresent).map(Optional::get)
+				.filter(actor::canEnterTile)
+				.sorted((t1, t2) -> Integer.compare(distance(t1, targetTile),	distance(t2, targetTile)))
+				.map(tile -> actor.getMaze().direction(nextTile, tile).getAsInt()) // map tile back to direction
+				.findFirst() // sort is stable, thus direction order is preserved
+				.orElse(-1);
 			/*@formatter:on*/
-			route.setDir(bestDir(dirs, actor, nextTile, targetTile));
+			route.setDir(bestDir);
 			return route;
 		}
 
-		// no direction could be determined
 		return route;
-	}
-
-	/**
-	 * Finds the "best" direction from the source tile towards the target tile, i.e. the direction to
-	 * the (accessible) neighbor tile with the smallest (straight line) distance from the target tile.
-	 */
-	private static int bestDir(Stream<Integer> choices, MazeEntity actor, Tile source, Tile target) {
-		/*@formatter:off*/
-		return choices
-			.map(dir -> actor.getMaze().neighborTile(source, dir)) // map direction to neighbor tile
-			.filter(Optional::isPresent).map(Optional::get)
-			.filter(actor::canEnterTile)
-			.sorted((t1, t2) -> Integer.compare(distance(t1, target),	distance(t2, target)))
-			.map(tile -> actor.getMaze().direction(source, tile).getAsInt()) // map tile back to direction
-			.findFirst()
-			.orElse(-1);
-		/*@formatter:on*/
 	}
 
 	private static int distance(Tile t1, Tile t2) {
