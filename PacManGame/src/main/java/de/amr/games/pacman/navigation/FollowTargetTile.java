@@ -89,11 +89,11 @@ class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 			/*@formatter:off*/
 				.filter(dir -> dir != NESW.inv(actorDir)) // cannot reverse direction
 				.filter(dir -> dir != Top4.N || unrestricted) // cannot go up if restricted
-				.map(dir -> actor.getMaze().neighborTile(nextTile, dir)) // map direction to neighbor tile
+				.map(dir -> maze.neighborTile(nextTile, dir)) // map direction to neighbor tile
 				.filter(Optional::isPresent).map(Optional::get)
 				.filter(actor::canEnterTile)
 				.sorted((t1, t2) -> Integer.compare(distance(t1, targetTile),	distance(t2, targetTile)))
-				.map(tile -> actor.getMaze().direction(nextTile, tile).getAsInt()) // map tile back to direction
+				.map(tile -> maze.direction(nextTile, tile).getAsInt()) // map tile back to direction
 				.findFirst() // sort is stable, thus direction order is preserved
 				.orElse(-1);
 			/*@formatter:on*/
