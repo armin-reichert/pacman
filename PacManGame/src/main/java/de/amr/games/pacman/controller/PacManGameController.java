@@ -302,7 +302,9 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		@Override
 		public void onEntry() {
 			ghostAttackController.init();
-			foreachGhost(ghost -> ghost.setVisible(true));
+			foreachGhost(ghost -> {
+				ghost.setVisible(true);
+			});
 			fireAttackStateChange();
 		}
 

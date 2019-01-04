@@ -14,7 +14,6 @@ import static de.amr.games.pacman.model.PacManGame.TS;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.OptionalInt;
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import de.amr.easy.game.ui.sprites.Sprite;
@@ -50,8 +49,9 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 	private final Tile revivalTile;
 	private final Tile scatteringTarget;
 	private final int initialDir;
+	private int foodCounter;
+	
 	public Supplier<GhostState> fnNextState; // chasing or scattering
-	public BooleanSupplier fnCanLeaveHouse;
 
 	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, Tile revivalTile,
 			Tile scatteringTarget, int initialDir) {
@@ -66,7 +66,6 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 		fsm.setIgnoreUnknownEvents(true);
 		fsm.traceTo(LOGGER, app().clock::getFrequency);
 		fnNextState = this::getState; // default
-		fnCanLeaveHouse = () -> getState() != LOCKED || fsm.state().isTerminated();
 		setSprites(color);
 	}
 
@@ -81,6 +80,14 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 		setNextDir(initialDir);
 		sprites.select("s_color_" + initialDir);
 		sprites.forEach(Sprite::resetAnimation);
+	}
+	
+	public void resetFoodCounter() {
+		foodCounter = 0;
+	}
+	
+	public void incFoodCounter() {
+		foodCounter++;
 	}
 
 	private void reviveGhost() {
@@ -136,6 +143,10 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 	public PacManTheme getTheme() {
 		return app().settings.get("theme");
 	}
+	
+	public int getFoodCounter() {
+		return foodCounter;
+	}
 
 	// Behavior
 
@@ -161,10 +172,6 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 			return getState() == DEAD || getState() != LOCKED && getMaze().inGhostHouse(getTile());
 		}
 		return true;
-	}
-
-	private boolean canLeaveGhostHouse() {
-		return fnCanLeaveHouse.getAsBoolean();
 	}
 
 	// Sprites
@@ -220,7 +227,6 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 			.states()
 
 				.state(LOCKED)
-					.timeoutAfter(() -> getGame().getGhostLockedTime(this))
 					.onTick(() -> {
 						move();	
 						sprites.select("s_color_" + getMoveDir());
@@ -274,13 +280,13 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 			.transitions()
 
 				.when(LOCKED).then(FRIGHTENED)
-					.condition(() -> canLeaveGhostHouse() && getGame().getPacMan().hasPower())
+					.condition(() -> game.canLeaveGhostHouse(this) && getGame().getPacMan().hasPower())
 
 				.when(LOCKED).then(SCATTERING)
-					.condition(() -> canLeaveGhostHouse() && getNextState() == SCATTERING)
+					.condition(() -> game.canLeaveGhostHouse(this) && getNextState() == SCATTERING)
 				
 				.when(LOCKED).then(CHASING)
-					.condition(() -> canLeaveGhostHouse() && getNextState() == CHASING)
+					.condition(() -> game.canLeaveGhostHouse(this) && getNextState() == CHASING)
 				
 				.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
 				.when(CHASING).then(DYING).on(GhostKilledEvent.class)

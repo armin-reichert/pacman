@@ -175,7 +175,7 @@ public class PacMan extends MazeEntity {
 
 				.state(HOME)
 					.onEntry(this::initPacMan)
-					.timeoutAfter(() -> app().clock.sec(1.5f))
+					.timeoutAfter(() -> 0)
 	
 				.state(HUNGRY)
 					.impl(new HungryState())

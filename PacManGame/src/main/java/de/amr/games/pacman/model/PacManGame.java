@@ -1,5 +1,6 @@
 package de.amr.games.pacman.model;
 
+import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
@@ -26,6 +27,7 @@ import java.util.stream.Stream;
 
 import de.amr.easy.grid.impl.Top4;
 import de.amr.games.pacman.actor.Ghost;
+import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeEntity;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.theme.GhostColor;
@@ -167,15 +169,6 @@ public class PacManGame {
 		pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
 		inky.setBehavior(CHASING, inky.attackWith(blinky, pacMan));
 		clyde.setBehavior(CHASING, clyde.attackOrReject(pacMan, 8 * TS));
-
-		// Other game rules.
-		// TODO: incomplete
-		clyde.fnCanLeaveHouse = () -> {
-			if (!clyde.getStateObject().isTerminated()) {
-				return false; // wait for timeout
-			}
-			return getLevel() > 1 || getFoodRemaining() < (66 * maze.getFoodTotal() / 100);
-		};
 	}
 
 	public PacMan getPacMan() {
@@ -273,6 +266,7 @@ public class PacManGame {
 		if (levelCounter.size() == 8) {
 			levelCounter.remove(levelCounter.size() - 1);
 		}
+		getAllGhosts().forEach(Ghost::resetFoodCounter);
 	}
 
 	private int sec(float seconds) {
@@ -314,6 +308,7 @@ public class PacManGame {
 		}
 		eaten += 1;
 		maze.hideFood(tile);
+		updateGhostsFoodCounter();
 		return energizer ? 50 : 10;
 	}
 
@@ -403,18 +398,78 @@ public class PacManGame {
 		return sec(0.75f);
 	}
 
-	// TODO implement this correctly
-	public int getGhostLockedTime(Ghost ghost) {
-		if (ghost == blinky) {
-			return maze.inGhostHouse(blinky.getTile()) ? sec(0) : sec(1.5f);
-		} else if (ghost == pinky) {
-			return sec(3);
-		} else if (ghost == inky) {
-			return sec(4);
-		} else if (ghost == clyde) {
-			return sec(5);
+	// rules for leaving ghost house
+
+	/**
+	 * The first control used to evaluate when the ghosts leave home is a personal counter each ghost
+	 * retains for tracking the number of dots Pac-Man eats. Each ghost's "dot counter" is reset to zero
+	 * when a level begins and can only be active when inside the ghost house, but only one ghost's
+	 * counter can be active at any given time regardless of how many ghosts are inside.
+	 * 
+	 * <p>
+	 * The order of preference for choosing which ghost's counter to activate is: Pinky, then Inky, and
+	 * then Clyde. For every dot Pac-Man eats, the preferred ghost in the house (if any) gets its dot
+	 * counter increased by one. Each ghost also has a "dot limit" associated with his counter, per
+	 * level.
+	 * 
+	 * <p>
+	 * If the preferred ghost reaches or exceeds his dot limit, it immediately exits the house and its
+	 * dot counter is deactivated (but not reset). The most-preferred ghost still waiting inside the
+	 * house (if any) activates its timer at this point and begins counting dots.
+	 * 
+	 * @see <a href="http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
+	 *      Dossier</a>
+	 */
+	private void updateGhostsFoodCounter() {
+		/*@formatter:off*/
+		Stream.of(pinky, inky, clyde)
+			.filter(ghost -> ghost.getState() == GhostState.LOCKED)
+			.findFirst()
+			.ifPresent(preferredGhost -> {
+				preferredGhost.incFoodCounter();
+				LOGGER.info(String.format("Food Counter[%s]=%d", preferredGhost.getName(), preferredGhost.getFoodCounter()));
+		});
+		/*@formatter:on*/
+	}
+
+	/**
+	 * Pinky's dot limit is always set to zero, causing him to leave home immediately when every level
+	 * begins. For the first level, Inky has a limit of 30 dots, and Clyde has a limit of 60. This
+	 * results in Pinky exiting immediately which, in turn, activates Inky's dot counter. His counter
+	 * must then reach or exceed 30 dots before he can leave the house.
+	 * 
+	 * <p>
+	 * Once Inky starts to leave, Clyde's counter (which is still at zero) is activated and starts
+	 * counting dots. When his counter reaches or exceeds 60, he may exit. On the second level, Inky's
+	 * dot limit is changed from 30 to zero, while Clyde's is changed from 60 to 50. Inky will exit the
+	 * house as soon as the level begins from now on.
+	 * 
+	 * <p>
+	 * Starting at level three, all the ghosts have a dot limit of zero for the remainder of the game
+	 * and will leave the ghost house immediately at the start of every level.
+	 * 
+	 * @param ghost
+	 *                a ghost
+	 * @return the ghosts's current food limit
+	 * 
+	 * @see <a href="http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
+	 *      Dossier</a>
+	 */
+	private int getFoodLimit(Ghost ghost) {
+		if (ghost == pinky) {
+			return 0;
 		}
-		throw new IllegalArgumentException();
+		if (ghost == inky) {
+			return level == 1 ? 30 : 0;
+		}
+		if (ghost == clyde) {
+			return level == 1 ? 60 : level == 2 ? 50 : 0;
+		}
+		return 0;
+	}
+
+	public boolean canLeaveGhostHouse(Ghost ghost) {
+		return ghost.getFoodCounter() >= getFoodLimit(ghost);
 	}
 
 	public int getGhostNumFlashes() {
