@@ -125,6 +125,12 @@ public class PacManGame {
 	/** Pellets + energizers eaten in current level. */
 	private int eaten;
 
+	/** Global food counter. */
+	private int globalFoodCounter;
+
+	/** If global food counter is enabled. */
+	private boolean globalFoodCounterEnabled = false;
+
 	/** Ghosts killed using current energizer. */
 	private int ghostsKilled;
 
@@ -267,6 +273,8 @@ public class PacManGame {
 			levelCounter.remove(levelCounter.size() - 1);
 		}
 		getAllGhosts().forEach(Ghost::resetFoodCounter);
+		globalFoodCounterEnabled = false;
+		globalFoodCounter = 0;
 	}
 
 	private int sec(float seconds) {
@@ -308,7 +316,7 @@ public class PacManGame {
 		}
 		eaten += 1;
 		maze.hideFood(tile);
-		updateGhostsFoodCounter();
+		updateFoodCounter();
 		return energizer ? 50 : 10;
 	}
 
@@ -420,7 +428,16 @@ public class PacManGame {
 	 * @see <a href="http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
 	 *      Dossier</a>
 	 */
-	private void updateGhostsFoodCounter() {
+	private void updateFoodCounter() {
+		if (globalFoodCounterEnabled) {
+			globalFoodCounter++;
+			LOGGER.info(String.format("Global Food Counter=%d", globalFoodCounter));
+			if (globalFoodCounter == 32 && clyde.getState() == GhostState.LOCKED) {
+				globalFoodCounterEnabled = false;
+				globalFoodCounter = 0;
+			}
+			return;
+		}
 		/*@formatter:off*/
 		Stream.of(pinky, inky, clyde)
 			.filter(ghost -> ghost.getState() == GhostState.LOCKED)
@@ -468,8 +485,29 @@ public class PacManGame {
 		return 0;
 	}
 
+	private int getGlobalFoodCounterLimit(Ghost ghost) {
+		return (ghost == pinky) ? 7 : (ghost == inky) ? 17 : (ghost == clyde) ? 32 : 0;
+	}
+
 	public boolean canLeaveGhostHouse(Ghost ghost) {
+		int releaseTime = level < 5 ? sec(4) : sec(3);
+		if (pacMan.getEatTimer() > releaseTime) {
+			Ghost releaseCandidate = Stream.of(pinky, inky, clyde).filter(g -> g.getState() == GhostState.LOCKED)
+					.findFirst().orElse(null);
+			if (ghost == releaseCandidate) {
+				LOGGER.info(String.format("Releasing ghost %s (Pac-Man eat timer expired)", ghost.getName()));
+				return true;
+			}
+		}
+		if (globalFoodCounterEnabled) {
+			return globalFoodCounter >= getGlobalFoodCounterLimit(ghost);
+		}
 		return ghost.getFoodCounter() >= getFoodLimit(ghost);
+	}
+
+	public void enableGlobalFoodCounter() {
+		globalFoodCounterEnabled = true;
+		globalFoodCounter = 0;
 	}
 
 	public int getGhostNumFlashes() {

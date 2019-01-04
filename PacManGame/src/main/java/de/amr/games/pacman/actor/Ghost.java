@@ -231,6 +231,9 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 						move();	
 						sprites.select("s_color_" + getMoveDir());
 					})
+					.onExit(() -> {
+						game.getPacMan().resetEatTimer();
+					})
 				
 				.state(SCATTERING)
 					.onTick(() -> {

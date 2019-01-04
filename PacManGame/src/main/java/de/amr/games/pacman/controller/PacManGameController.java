@@ -353,6 +353,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		private void onPacManKilled(GameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
 			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
+			game.enableGlobalFoodCounter();
 			game.getPacMan().processEvent(e);
 		}
 

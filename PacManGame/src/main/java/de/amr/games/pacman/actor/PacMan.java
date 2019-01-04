@@ -50,6 +50,7 @@ public class PacMan extends MazeEntity {
 	private final StateMachine<PacManState, GameEvent> fsm;
 	private final EventManager<GameEvent> eventManager;
 	private PacManWorld world;
+	private int eatTimer; // ticks since last pellet was eaten
 
 	public PacMan(PacManGame game) {
 		this.game = game;
@@ -60,6 +61,7 @@ public class PacMan extends MazeEntity {
 	}
 
 	public void initPacMan() {
+		eatTimer = 0;
 		placeAtTile(getMaze().getPacManHome(), TS / 2, 0);
 		setNextDir(Top4.E);
 		sprites.forEach(Sprite::resetAnimation);
@@ -101,6 +103,14 @@ public class PacMan extends MazeEntity {
 
 	public boolean hasPower() {
 		return getState() == POWER;
+	}
+
+	public int getEatTimer() {
+		return eatTimer;
+	}
+	
+	public void resetEatTimer() {
+		eatTimer = 0;
 	}
 
 	// Movement
@@ -270,9 +280,12 @@ public class PacMan extends MazeEntity {
 			}
 
 			if (getMaze().isFood(tile)) {
+				eatTimer = 0;
 				boolean energizer = getMaze().isEnergizer(tile);
 				digestionTicks = game.getDigestionTicks(energizer);
 				getEventManager().publish(new FoodFoundEvent(tile, energizer));
+			} else {
+				eatTimer += 1;
 			}
 		}
 	}
