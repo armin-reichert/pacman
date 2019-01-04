@@ -80,8 +80,6 @@ public abstract class MazeEntity extends SpriteEntity {
 		return round(tf.getY()) % TS;
 	}
 
-	public abstract boolean canTraverseDoor(Tile door);
-
 	public abstract OptionalInt supplyIntendedDir();
 
 	public abstract float getSpeed();
@@ -100,15 +98,7 @@ public abstract class MazeEntity extends SpriteEntity {
 		return getMaze().inGhostHouse(getTile());
 	}
 
-	public boolean canEnterTile(Tile tile) {
-		if (getMaze().isWall(tile)) {
-			return false;
-		}
-		if (getMaze().isDoor(tile)) {
-			return canTraverseDoor(tile);
-		}
-		return getMaze().inTeleportSpace(tile) || getMaze().isValidTile(tile);
-	}
+	public abstract boolean canEnterTile(Tile tile);
 
 	public boolean isStuck() {
 		return tf.getVelocity().length() == 0;

@@ -153,8 +153,14 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 	}
 
 	@Override
-	public boolean canTraverseDoor(Tile door) {
-		return getState() == DEAD || getState() != LOCKED && inGhostHouse();
+	public boolean canEnterTile(Tile tile) {
+		if (getMaze().isWall(tile)) {
+			return false;
+		}
+		if (getMaze().isDoor(tile)) {
+			return getState() == DEAD || getState() != LOCKED && inGhostHouse();
+		}
+		return true;
 	}
 
 	private boolean canLeaveGhostHouse() {

@@ -111,14 +111,14 @@ public class PacMan extends MazeEntity {
 	}
 
 	@Override
-	public boolean canTraverseDoor(Tile door) {
-		return false;
-	}
-
-	@Override
 	public void move() {
 		super.move();
 		updateWalkingSprite();
+	}
+
+	@Override
+	public boolean canEnterTile(Tile tile) {
+		return !getMaze().isWall(tile) && !getMaze().isDoor(tile);
 	}
 
 	// Sprites
