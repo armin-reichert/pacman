@@ -86,14 +86,6 @@ public abstract class MazeEntity extends SpriteEntity {
 
 	public abstract Maze getMaze();
 
-	public boolean inTeleportSpace() {
-		return getMaze().inTeleportSpace(getTile());
-	}
-
-	public boolean inTunnel() {
-		return getMaze().inTunnel(getTile());
-	}
-
 	public boolean inGhostHouse() {
 		return getMaze().inGhostHouse(getTile());
 	}
@@ -106,14 +98,14 @@ public abstract class MazeEntity extends SpriteEntity {
 
 	public void move() {
 		supplyIntendedDir().ifPresent(this::setNextDir);
-		float speed = cappedSpeed(nextDir);
+		float speed = computeMaxSpeed(nextDir);
 		if (speed > 0) {
 			if (isTurning90()) {
 				align();
 			}
 			setMoveDir(nextDir);
 		} else {
-			speed = cappedSpeed(moveDir);
+			speed = computeMaxSpeed(moveDir);
 		}
 		tf.setVelocity(velocity(speed));
 		if (speed > 0) {
@@ -136,35 +128,36 @@ public abstract class MazeEntity extends SpriteEntity {
 	}
 
 	/*
-	 * Computes how many pixels this entity can move towards the given direction.
+	 * Computes how many pixels this entity can move towards the given direction in one frame.
 	 */
-	private float cappedSpeed(int dir) {
-		final float maxSpeed = getSpeed();
-		if (inTeleportSpace()) {
-			return dir == Top4.N || dir == Top4.S ? 0 : maxSpeed;
+	private float computeMaxSpeed(int dir) {
+		final Tile currentTile = getTile();
+		final Tile neighborTile = currentTile.tileTowards(dir);
+		final float speed = getSpeed();
+		if (getMaze().inTeleportSpace(currentTile)) {
+			// in teleporting area only horizontal movement is possible
+			return dir == Top4.N || dir == Top4.S ? 0 : speed;
 		}
-		final Tile current = getTile();
-		final Tile target = current.tileTowards(dir);
-		if (canEnterTile(target)) {
-			return maxSpeed;
+		if (canEnterTile(neighborTile)) {
+			return speed;
 		}
-		float speed = 0;
+		float cappedSpeed = 0;
 		switch (dir) {
 		case Top4.E:
-			speed = target.col * TS - (tf.getX() + tf.getWidth());
+			cappedSpeed = neighborTile.col * TS - (tf.getX() + tf.getWidth());
 			break;
 		case Top4.W:
-			speed = tf.getX() - current.col * TS;
+			cappedSpeed = tf.getX() - currentTile.col * TS;
 			break;
 		case Top4.N:
-			speed = tf.getY() - current.row * TS;
+			cappedSpeed = tf.getY() - currentTile.row * TS;
 			break;
 		case Top4.S:
-			speed = target.row * TS - (tf.getY() + tf.getHeight());
+			cappedSpeed = neighborTile.row * TS - (tf.getY() + tf.getHeight());
 			break;
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}
-		return Math.min(maxSpeed, speed);
+		return Math.min(speed, cappedSpeed);
 	}
 }
