@@ -86,10 +86,6 @@ public abstract class MazeEntity extends SpriteEntity {
 
 	public abstract Maze getMaze();
 
-	public boolean inGhostHouse() {
-		return getMaze().inGhostHouse(getTile());
-	}
-
 	public abstract boolean canEnterTile(Tile tile);
 
 	public boolean isStuck() {

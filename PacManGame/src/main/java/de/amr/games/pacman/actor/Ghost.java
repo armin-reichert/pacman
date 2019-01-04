@@ -158,7 +158,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 			return false;
 		}
 		if (getMaze().isDoor(tile)) {
-			return getState() == DEAD || getState() != LOCKED && inGhostHouse();
+			return getState() == DEAD || getState() != LOCKED && getMaze().inGhostHouse(getTile());
 		}
 		return true;
 	}

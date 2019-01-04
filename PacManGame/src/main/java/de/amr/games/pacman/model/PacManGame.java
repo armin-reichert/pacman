@@ -406,7 +406,7 @@ public class PacManGame {
 	// TODO implement this correctly
 	public int getGhostLockedTime(Ghost ghost) {
 		if (ghost == blinky) {
-			return blinky.inGhostHouse() ? sec(0) : sec(1);
+			return maze.inGhostHouse(blinky.getTile()) ? sec(0) : sec(1.5f);
 		} else if (ghost == pinky) {
 			return sec(3);
 		} else if (ghost == inky) {
