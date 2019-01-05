@@ -203,7 +203,9 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 					.condition(() -> getIntroScreen().isComplete())
 					.act(() -> setScreen(getPlayScreen()))
 				
-				.when(READY).then(PLAYING).onTimeout()
+				.when(READY).then(PLAYING)
+				  .onTimeout()
+				  .act(() -> playingState().setInitialWaitTimer(app().clock.sec(1.7f)))
 					
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
@@ -257,7 +259,10 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 					
 				.when(PACMAN_DYING).then(PLAYING)
 					.condition(() -> isPacManDead() && game.getLives() > 0)
-					.act(this::resetPlayScreen)
+				  .act(() -> {
+				  	resetPlayScreen();
+				  	playingState().setInitialWaitTimer(app().clock.sec(1.7f));
+				  })
 			
 				.when(GAME_OVER).then(READY)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
@@ -298,6 +303,12 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 	}
 
 	private class PlayingState extends State<GameState, GameEvent> {
+		
+		private int initialWaitTimer;
+		
+		public void setInitialWaitTimer(int ticks) {
+			initialWaitTimer = ticks;
+		}
 
 		@Override
 		public void onEntry() {
@@ -310,6 +321,10 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 		@Override
 		public void onTick() {
+			if (initialWaitTimer > 0) {
+				initialWaitTimer -= 1;
+				return;
+			}
 			GhostState oldAttackState = ghostAttackController.getState();
 			ghostAttackController.update();
 			if (oldAttackState != ghostAttackController.getState()) {
