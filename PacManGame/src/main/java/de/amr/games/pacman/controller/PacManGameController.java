@@ -259,10 +259,10 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 					
 				.when(PACMAN_DYING).then(PLAYING)
 					.condition(() -> isPacManDead() && game.getLives() > 0)
-				  .act(() -> {
-				  	resetPlayScreen();
-				  	playingState().setInitialWaitTimer(app().clock.sec(1.7f));
-				  })
+					.act(() -> {
+						resetPlayScreen();
+						playingState().setInitialWaitTimer(app().clock.sec(1.7f));
+					})
 			
 				.when(GAME_OVER).then(READY)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
