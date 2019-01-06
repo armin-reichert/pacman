@@ -482,19 +482,26 @@ public class PacManGame {
 	}
 
 	public boolean canLeaveGhostHouse(Ghost ghost) {
-		int releaseTime = level < 5 ? sec(4) : sec(3);
-		if (pacMan.getEatTimer() > releaseTime) {
-			Ghost releaseCandidate = Stream.of(pinky, inky, clyde).filter(g -> g.getState() == GhostState.LOCKED)
-					.findFirst().orElse(null);
-			if (ghost == releaseCandidate) {
-				LOGGER.info(String.format("Releasing ghost %s (Pac-Man eat timer expired)", ghost.getName()));
-				return true;
-			}
+		if (ghost == blinky) {
+			return true;
 		}
-		if (globalFoodCounterEnabled) {
-			return globalFoodCounter >= getGlobalFoodCounterLimit(ghost);
+		Ghost next = Stream.of(pinky, inky, clyde).filter(g -> g.getState() == GhostState.LOCKED).findFirst()
+				.orElse(null);
+		if (ghost != next) {
+			return false;
 		}
-		return ghost.getFoodCounter() >= getFoodLimit(ghost);
+		if (ghost.getFoodCounter() >= getFoodLimit(ghost)) {
+			return true;
+		}
+		if (globalFoodCounterEnabled && globalFoodCounter >= getGlobalFoodCounterLimit(ghost)) {
+			return true;
+		}
+		int timeout = level < 5 ? sec(4) : sec(3);
+		if (pacMan.getEatTimer() > timeout) {
+			LOGGER.info(String.format("Releasing ghost %s (Pac-Man eat timer expired)", ghost.getName()));
+			return true;
+		}
+		return false;
 	}
 
 	public void enableGlobalFoodCounter() {
