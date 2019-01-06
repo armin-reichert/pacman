@@ -44,6 +44,8 @@ import de.amr.statemachine.StateMachine;
  */
 public class PacMan extends MazeEntity {
 
+	private static final int WEAK_AFTER = 66; /* percentage of power time */
+
 	private static final int[] STEERING = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
 	private final PacManGame game;
@@ -96,9 +98,9 @@ public class PacMan extends MazeEntity {
 		return app().settings.get("theme");
 	}
 
-	public boolean isLosingPower() {
-		return getState() == POWER
-				&& getStateObject().getTicksRemaining() < getGame().getPacManLosingPowerTicks();
+	public boolean isPowerEnding() {
+		return hasPower() && getStateObject().getDuration()
+				- getStateObject().getTicksRemaining() >= getStateObject().getDuration() * WEAK_AFTER / 100;
 	}
 
 	public boolean hasPower() {
@@ -108,7 +110,7 @@ public class PacMan extends MazeEntity {
 	public int getEatTimer() {
 		return eatTimer;
 	}
-	
+
 	public void resetEatTimer() {
 		eatTimer = 0;
 	}
@@ -305,7 +307,7 @@ public class PacMan extends MazeEntity {
 		@Override
 		public void onTick() {
 			super.onTick();
-			if (getTicksRemaining() == game.getPacManLosingPowerTicks()) {
+			if (getDuration() - getTicksRemaining() == getDuration() * WEAK_AFTER / 100) {
 				getEventManager().publish(new PacManGettingWeakerEvent());
 			}
 		}

@@ -50,7 +50,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 	private final Tile scatteringTarget;
 	private final int initialDir;
 	private int foodCounter;
-	
+
 	public Supplier<GhostState> fnNextState; // chasing or scattering
 
 	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, Tile revivalTile,
@@ -81,11 +81,11 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 		sprites.select("s_color_" + initialDir);
 		sprites.forEach(Sprite::resetAnimation);
 	}
-	
+
 	public void resetFoodCounter() {
 		foodCounter = 0;
 	}
-	
+
 	public void incFoodCounter() {
 		foodCounter++;
 	}
@@ -143,7 +143,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 	public PacManTheme getTheme() {
 		return app().settings.get("theme");
 	}
-	
+
 	public int getFoodCounter() {
 		return foodCounter;
 	}
@@ -255,7 +255,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 					})
 					.onTick(() -> {
 						move();
-						sprites.select(getGame().getPacMan().isLosingPower() ? "s_flashing" : "s_frightened");
+						sprites.select(getGame().getPacMan().isPowerEnding() ? "s_flashing" : "s_frightened");
 					})
 				
 				.state(DYING)

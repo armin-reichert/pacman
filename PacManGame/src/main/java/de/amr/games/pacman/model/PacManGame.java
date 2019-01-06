@@ -420,6 +420,29 @@ public class PacManGame {
 	 * @see <a href="http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
 	 *      Dossier</a>
 	 */
+	public boolean canLeaveGhostHouse(Ghost ghost) {
+		if (ghost == blinky) {
+			return true;
+		}
+		Ghost next = Stream.of(pinky, inky, clyde).filter(g -> g.getState() == GhostState.LOCKED).findFirst()
+				.orElse(null);
+		if (ghost != next) {
+			return false;
+		}
+		if (ghost.getFoodCounter() >= getFoodLimit(ghost)) {
+			return true;
+		}
+		if (globalFoodCounterEnabled && globalFoodCounter >= getGlobalFoodCounterLimit(ghost)) {
+			return true;
+		}
+		int timeout = level < 5 ? sec(4) : sec(3);
+		if (pacMan.getEatTimer() > timeout) {
+			LOGGER.info(String.format("Releasing ghost %s (Pac-Man eat timer expired)", ghost.getName()));
+			return true;
+		}
+		return false;
+	}
+
 	private void updateFoodCounter() {
 		if (globalFoodCounterEnabled) {
 			globalFoodCounter++;
@@ -481,29 +504,6 @@ public class PacManGame {
 		return (ghost == pinky) ? 7 : (ghost == inky) ? 17 : (ghost == clyde) ? 32 : 0;
 	}
 
-	public boolean canLeaveGhostHouse(Ghost ghost) {
-		if (ghost == blinky) {
-			return true;
-		}
-		Ghost next = Stream.of(pinky, inky, clyde).filter(g -> g.getState() == GhostState.LOCKED).findFirst()
-				.orElse(null);
-		if (ghost != next) {
-			return false;
-		}
-		if (ghost.getFoodCounter() >= getFoodLimit(ghost)) {
-			return true;
-		}
-		if (globalFoodCounterEnabled && globalFoodCounter >= getGlobalFoodCounterLimit(ghost)) {
-			return true;
-		}
-		int timeout = level < 5 ? sec(4) : sec(3);
-		if (pacMan.getEatTimer() > timeout) {
-			LOGGER.info(String.format("Releasing ghost %s (Pac-Man eat timer expired)", ghost.getName()));
-			return true;
-		}
-		return false;
-	}
-
 	public void enableGlobalFoodCounter() {
 		globalFoodCounterEnabled = true;
 		globalFoodCounter = 0;
@@ -542,10 +542,6 @@ public class PacManGame {
 
 	public int getPacManPowerTime() {
 		return sec(Param.PACMAN_POWER_SECONDS.asInt(level));
-	}
-
-	public int getPacManLosingPowerTicks() {
-		return sec(getGhostNumFlashes() * 400 / 1000);
 	}
 
 	public int getPacManDyingTime() {
