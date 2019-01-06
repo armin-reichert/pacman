@@ -204,8 +204,8 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 					.act(() -> setScreen(getPlayScreen()))
 				
 				.when(READY).then(PLAYING)
-				  .onTimeout()
-				  .act(() -> playingState().setInitialWaitTimer(app().clock.sec(1.7f)))
+					.onTimeout()
+					.act(() -> playingState().setInitialWaitTimer(app().clock.sec(1.7f)))
 					
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
