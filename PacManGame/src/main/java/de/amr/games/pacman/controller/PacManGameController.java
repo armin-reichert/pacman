@@ -184,7 +184,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 				
 				.state(CHANGING_LEVEL)
 					.impl(new ChangingLevelState())
-					.timeoutAfter(game::getLevelChangingTime)
+					.timeoutAfter(() -> app().clock.sec(3))
 				
 				.state(GHOST_DYING)
 					.impl(new GhostDyingState())

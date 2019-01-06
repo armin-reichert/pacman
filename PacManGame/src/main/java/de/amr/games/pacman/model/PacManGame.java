@@ -302,10 +302,6 @@ public class PacManGame {
 		return Collections.unmodifiableList(levelCounter);
 	}
 
-	public int getLevelChangingTime() {
-		return sec(3);
-	}
-
 	public int eatFoodAtTile(Tile tile) {
 		if (!maze.isFood(tile)) {
 			throw new IllegalArgumentException("No food at tile " + tile);
