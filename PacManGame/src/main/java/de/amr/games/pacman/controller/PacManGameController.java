@@ -303,9 +303,9 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 	}
 
 	private class PlayingState extends State<GameState, GameEvent> {
-		
+
 		private int initialWaitTimer;
-		
+
 		public void setInitialWaitTimer(int ticks) {
 			initialWaitTimer = ticks;
 		}
@@ -419,7 +419,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			if (extraLife) {
 				getTheme().snd_extraLife().play();
 			}
-			if (game.allFoodEaten()) {
+			if (game.getFoodRemaining() == 0) {
 				enqueue(new LevelCompletedEvent());
 				return;
 			}

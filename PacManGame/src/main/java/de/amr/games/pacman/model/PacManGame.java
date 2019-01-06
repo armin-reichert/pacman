@@ -320,10 +320,6 @@ public class PacManGame {
 		return energizer ? 50 : 10;
 	}
 
-	public boolean allFoodEaten() {
-		return eaten == maze.getFoodTotal();
-	}
-
 	public int getFoodRemaining() {
 		return maze.getFoodTotal() - eaten;
 	}
