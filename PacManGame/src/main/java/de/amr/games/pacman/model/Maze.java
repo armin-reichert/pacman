@@ -11,13 +11,13 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
-import de.amr.easy.graph.api.GraphTraversal;
-import de.amr.easy.graph.api.UndirectedEdge;
-import de.amr.easy.graph.impl.traversal.BreadthFirstTraversal;
-import de.amr.easy.grid.api.GridGraph2D;
-import de.amr.easy.grid.api.Topology;
-import de.amr.easy.grid.impl.GridGraph;
-import de.amr.easy.grid.impl.Top4;
+import de.amr.easy.graph.core.api.UndirectedEdge;
+import de.amr.easy.graph.grid.api.GridGraph2D;
+import de.amr.easy.graph.grid.api.Topology;
+import de.amr.easy.graph.grid.impl.GridGraph;
+import de.amr.easy.graph.grid.impl.Top4;
+import de.amr.easy.graph.pathfinder.api.PathFinder;
+import de.amr.easy.graph.pathfinder.impl.BreadthFirstSearchPathFinder;
 
 /**
  * The original Pac-Man maze.
@@ -320,9 +320,9 @@ public class Maze {
 
 	public List<Tile> findPath(Tile source, Tile target) {
 		if (isValidTile(source) && isValidTile(target)) {
-			GraphTraversal pathfinder =
+			PathFinder pathfinder =
 					// new AStarTraversal<>(graph, edge -> 1, graph::manhattan);
-					new BreadthFirstTraversal<>(grid);
+					new BreadthFirstSearchPathFinder<>(grid);
 			pathfinder.traverseGraph(cell(source), cell(target));
 			pathFinderCalls += 1;
 			if (pathFinderCalls % 100 == 0) {

@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
-import de.amr.easy.grid.impl.Top4;
+import de.amr.easy.graph.grid.impl.Top4;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;

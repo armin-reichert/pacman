@@ -7,10 +7,10 @@ import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import de.amr.easy.grid.ui.swing.rendering.ConfigurableGridRenderer;
-import de.amr.easy.grid.ui.swing.rendering.GridCanvas;
-import de.amr.easy.grid.ui.swing.rendering.GridRenderer;
-import de.amr.easy.grid.ui.swing.rendering.WallPassageGridRenderer;
+import de.amr.easy.graph.grid.ui.rendering.ConfigurableGridRenderer;
+import de.amr.easy.graph.grid.ui.rendering.GridCanvas;
+import de.amr.easy.graph.grid.ui.rendering.GridRenderer;
+import de.amr.easy.graph.grid.ui.rendering.WallPassageGridRenderer;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 

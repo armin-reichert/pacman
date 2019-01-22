@@ -8,7 +8,7 @@ import java.util.OptionalInt;
 
 import de.amr.easy.game.entity.SpriteEntity;
 import de.amr.easy.game.math.Vector2f;
-import de.amr.easy.grid.impl.Top4;
+import de.amr.easy.graph.grid.impl.Top4;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 

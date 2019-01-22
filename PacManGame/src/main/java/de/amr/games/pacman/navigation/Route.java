@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.OptionalInt;
 
-import de.amr.easy.grid.impl.Top4;
+import de.amr.easy.graph.grid.impl.Top4;
 import de.amr.games.pacman.model.Tile;
 
 /**

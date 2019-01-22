@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import de.amr.easy.grid.impl.Top4;
+import de.amr.easy.graph.grid.impl.Top4;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeEntity;

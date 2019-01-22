@@ -8,7 +8,7 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.view.AnimationController;
 import de.amr.easy.game.view.View;
-import de.amr.easy.grid.impl.Top4;
+import de.amr.easy.graph.grid.impl.Top4;
 import de.amr.games.pacman.theme.PacManTheme;
 
 /**
