@@ -675,13 +675,6 @@ PathFinder pathfinder = new AStarPathFinder<>(grid, edge -> 1, grid::manhattan);
 pathfinder.traverseGraph(cell(source), cell(target));
 ```
 
-A* certainly sounds "cooler" than BFS, but doesn't give additional value in this use-case because the maze is represented 
-by a graph with uniform distance between every two adjacent vertices (neighbor tiles). 
-Thus the A* or Dijkstra algorithms just degenerate to BFS (correct me if I'm wrong). 
-
-Of course one could represent the graph differently, for example with vertices only for crossings and weighted edges 
-for passages, in which case Dijkstra or A* would become useful.
-
 ## Additional features
 
 - The following command-line arguments are available (`java -jar pacman.jar arguments...`)
