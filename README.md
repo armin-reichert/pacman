@@ -667,13 +667,12 @@ position.
 Shortest paths in the maze graph can be computed with the method *Maze.findPath(Tile source, Tile target)*. 
 This method runs a Breadth-First-Search on the underlying grid graph to compute the shortest path. The used
 [graph library](https://github.com/armin-reichert/graph) provides also more sophisticated search algorithms
-like Dijkstra or [A-Star](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html) that could be used by 
-changing a single line of code in the Maze class:
+like Dijkstra or [A-Star](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html) is called inside the Maze class:
 
 ```java
-GraphTraversal pathfinder =
-//		new AStarTraversal<>(graph, edge -> 1, graph::manhattan);
-		new BreadthFirstTraversal<>(graph);
+PathFinder pathfinder = new AStarPathFinder<>(grid, edge -> 1, grid::manhattan);
+	// new BreadthFirstSearchPathFinder<>(grid);
+pathfinder.traverseGraph(cell(source), cell(target));
 ```
 
 A* certainly sounds "cooler" than BFS, but doesn't give additional value in this use-case because the maze is represented 
