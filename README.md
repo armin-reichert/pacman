@@ -665,13 +665,13 @@ The distance of a path from Pac-Man's position is defined as the minimum distanc
 position.
 
 Shortest paths in the maze graph can be computed with the method *Maze.findPath(Tile source, Tile target)*. 
-This method runs a Breadth-First-Search on the underlying grid graph to compute the shortest path. The used
-[graph library](https://github.com/armin-reichert/graph) provides also more sophisticated search algorithms
-like Dijkstra or [A-Star](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html) which is called inside the Maze class:
+This method runs an [A* search](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html)
+ on the underlying grid graph to compute the shortest path. The used
+[graph library](https://github.com/armin-reichert/graph) provides also other search algorithms
+like Dijkstra or "Hill Climbing".
 
 ```java
-PathFinder pathfinder = new AStarPathFinder<>(grid, edge -> 1, grid::manhattan);
-	// new BreadthFirstSearchPathFinder<>(grid);
+PathFinder pathfinder = new AStarSearch<>(grid, edge -> 1, grid::manhattan);
 pathfinder.traverseGraph(cell(source), cell(target));
 ```
 
