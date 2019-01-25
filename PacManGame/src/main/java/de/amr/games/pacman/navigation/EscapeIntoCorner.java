@@ -1,6 +1,6 @@
 package de.amr.games.pacman.navigation;
 
-import static de.amr.easy.util.StreamUtils.permute;
+import static de.amr.easy.datastruct.StreamUtils.permute;
 
 import java.util.Comparator;
 import java.util.List;
