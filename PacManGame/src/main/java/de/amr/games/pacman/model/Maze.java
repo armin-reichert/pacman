@@ -17,7 +17,7 @@ import de.amr.easy.graph.grid.api.Topology;
 import de.amr.easy.graph.grid.impl.GridGraph;
 import de.amr.easy.graph.grid.impl.Top4;
 import de.amr.easy.graph.pathfinder.api.PathFinder;
-import de.amr.easy.graph.pathfinder.impl.BreadthFirstSearchPathFinder;
+import de.amr.easy.graph.pathfinder.impl.AStarSearch;
 
 /**
  * The original Pac-Man maze.
@@ -320,9 +320,8 @@ public class Maze {
 
 	public List<Tile> findPath(Tile source, Tile target) {
 		if (isValidTile(source) && isValidTile(target)) {
-			PathFinder pathfinder =
-					// new AStarTraversal<>(graph, edge -> 1, graph::manhattan);
-					new BreadthFirstSearchPathFinder<>(grid);
+			PathFinder pathfinder = new AStarSearch<>(grid, edge -> 1, grid::manhattan);
+			// new BreadthFirstSearchPathFinder<>(grid);
 			pathfinder.traverseGraph(cell(source), cell(target));
 			pathFinderCalls += 1;
 			if (pathFinderCalls % 100 == 0) {
