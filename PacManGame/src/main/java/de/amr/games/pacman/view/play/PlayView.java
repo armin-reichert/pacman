@@ -13,7 +13,6 @@ import java.util.stream.Stream;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
-import de.amr.easy.graph.grid.impl.Top4;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
@@ -21,6 +20,7 @@ import de.amr.games.pacman.actor.PacManWorld;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.graph.grid.impl.Top4;
 
 /**
  * Simple play view without bells and whistles.

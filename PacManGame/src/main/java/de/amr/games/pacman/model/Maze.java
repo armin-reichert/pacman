@@ -11,13 +11,13 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
-import de.amr.easy.graph.core.api.UndirectedEdge;
-import de.amr.easy.graph.grid.api.GridGraph2D;
-import de.amr.easy.graph.grid.api.Topology;
-import de.amr.easy.graph.grid.impl.GridGraph;
-import de.amr.easy.graph.grid.impl.Top4;
-import de.amr.easy.graph.pathfinder.api.PathFinder;
-import de.amr.easy.graph.pathfinder.impl.AStarSearch;
+import de.amr.graph.core.api.UndirectedEdge;
+import de.amr.graph.grid.api.GridGraph2D;
+import de.amr.graph.grid.api.Topology;
+import de.amr.graph.grid.impl.GridGraph;
+import de.amr.graph.grid.impl.Top4;
+import de.amr.graph.pathfinder.api.PathFinder;
+import de.amr.graph.pathfinder.impl.AStarSearch;
 
 /**
  * The original Pac-Man maze.

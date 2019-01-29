@@ -20,8 +20,8 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.easy.graph.grid.impl.Top4;
 import de.amr.games.pacman.model.BonusSymbol;
+import de.amr.graph.grid.impl.Top4;
 
 public class ClassicPacManTheme implements PacManTheme {
 

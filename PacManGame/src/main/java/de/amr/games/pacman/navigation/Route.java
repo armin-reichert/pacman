@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.OptionalInt;
 
-import de.amr.easy.graph.grid.impl.Top4;
 import de.amr.games.pacman.model.Tile;
+import de.amr.graph.grid.impl.Top4;
 
 /**
  * Represents a route through the maze. For dynamic routes (where the next direction is queried at

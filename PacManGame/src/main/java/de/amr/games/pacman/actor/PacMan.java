@@ -2,7 +2,6 @@ package de.amr.games.pacman.actor;
 
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
-import static de.amr.easy.game.input.Keyboard.keyDown;
 import static de.amr.games.pacman.actor.PacManState.DEAD;
 import static de.amr.games.pacman.actor.PacManState.DYING;
 import static de.amr.games.pacman.actor.PacManState.HOME;
@@ -19,8 +18,8 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 import de.amr.easy.game.assets.Sound;
+import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.easy.graph.grid.impl.Top4;
 import de.amr.games.pacman.controller.EventManager;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -34,6 +33,7 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.graph.grid.impl.Top4;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
@@ -119,7 +119,7 @@ public class PacMan extends MazeEntity {
 
 	@Override
 	public OptionalInt supplyIntendedDir() {
-		return NESW.dirs().filter(dir -> keyDown(STEERING[dir])).findFirst();
+		return NESW.dirs().filter(dir -> Keyboard.keyDown(STEERING[dir])).findFirst();
 	}
 
 	@Override

@@ -25,12 +25,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import de.amr.easy.graph.grid.impl.Top4;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeEntity;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.theme.GhostColor;
+import de.amr.graph.grid.impl.Top4;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game. Contains the current game state and defines the

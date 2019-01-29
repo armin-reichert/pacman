@@ -7,10 +7,10 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import de.amr.easy.graph.grid.impl.Top4;
 import de.amr.games.pacman.actor.MazeEntity;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
+import de.amr.graph.grid.impl.Top4;
 
 /**
  * Attempt at implementing the original Ghost behavior as described
