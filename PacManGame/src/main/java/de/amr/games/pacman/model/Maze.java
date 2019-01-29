@@ -34,7 +34,7 @@ import de.amr.easy.graph.pathfinder.impl.AStarSearch;
 public class Maze {
 
 	/** The four move directions: NORTH, EAST, SOUTH and WEST. */
-	public static final Topology NESW = new Top4();
+	public static final Topology NESW = Top4.get();
 
 	private static final char WALL = '#';
 	private static final char DOOR = 'D';
