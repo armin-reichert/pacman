@@ -322,12 +322,12 @@ public class Maze {
 		if (isValidTile(source) && isValidTile(target)) {
 			PathFinder pathfinder = new AStarSearch<>(grid, edge -> 1, grid::manhattan);
 			// new BreadthFirstSearchPathFinder<>(grid);
-			pathfinder.traverseGraph(cell(source), cell(target));
+			List<Integer> path = pathfinder.path(cell(source), cell(target));
 			pathFinderCalls += 1;
 			if (pathFinderCalls % 100 == 0) {
 				Application.LOGGER.info(String.format("%d'th pathfinding executed", pathFinderCalls));
 			}
-			return pathfinder.path(cell(target)).stream().map(this::tile).collect(Collectors.toList());
+			return path.stream().map(this::tile).collect(Collectors.toList());
 		}
 		return Collections.emptyList();
 	}
