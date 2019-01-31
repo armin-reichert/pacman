@@ -672,7 +672,7 @@ like Dijkstra or "Hill Climbing".
 
 ```java
 PathFinder pathfinder = new AStarSearch<>(grid, edge -> 1, grid::manhattan);
-pathfinder.traverseGraph(cell(source), cell(target));
+List<Integer> path = pathfinder.path(cell(source), cell(target));
 ```
 
 ## Additional features
