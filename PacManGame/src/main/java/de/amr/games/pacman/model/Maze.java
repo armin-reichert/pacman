@@ -321,7 +321,7 @@ public class Maze {
 	public List<Tile> findPath(Tile source, Tile target) {
 		if (isValidTile(source) && isValidTile(target)) {
 			PathFinder pathfinder = new AStarSearch<>(grid, edge -> 1, grid::manhattan);
-			List<Integer> path = pathfinder.path(cell(source), cell(target));
+			List<Integer> path = pathfinder.findPath(cell(source), cell(target));
 			pathFinderCalls += 1;
 			if (pathFinderCalls % 100 == 0) {
 				Application.LOGGER.info(String.format("%d'th pathfinding executed", pathFinderCalls));
