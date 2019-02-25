@@ -40,7 +40,7 @@ public class BoardPreview extends JFrame {
 	private GridRenderer createRenderer() {
 		ConfigurableGridRenderer r = new WallPassageGridRenderer();
 		r.fnCellSize = () -> TS;
-		r.fnPassageWidth = () -> TS - 1;
+		r.fnPassageWidth = (u, v) -> TS - 1;
 		r.fnPassageColor = (cell, dir) -> Color.WHITE;
 		r.fnCellBgColor = cell -> {
 			Tile tile = maze.tile(cell);
