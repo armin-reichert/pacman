@@ -28,7 +28,7 @@ public class BoardPreview extends JFrame {
 		maze = new Maze();
 		setTitle("Pac-Man Maze Preview");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		GridCanvas canvas = new GridCanvas(maze.getGraph(), TS);
+		GridCanvas canvas = new GridCanvas(maze.getGraph());
 		canvas.pushRenderer(createRenderer());
 		add(canvas, BorderLayout.CENTER);
 		canvas.drawGrid();
