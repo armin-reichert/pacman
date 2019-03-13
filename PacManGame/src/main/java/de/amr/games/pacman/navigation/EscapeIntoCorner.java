@@ -54,16 +54,16 @@ class EscapeIntoCorner<T extends MazeEntity> extends FollowFixedPath<T> {
 
 	private Comparator<Tile> byDist(Maze maze, Tile refugeeTile, Tile chaserTile) {
 		return (corner1, corner2) -> {
-			int dist1 = distance(maze, maze.findPath(refugeeTile, corner1), chaserTile);
-			int dist2 = distance(maze, maze.findPath(refugeeTile, corner2), chaserTile);
-			return dist1 - dist2;
+			double dist1 = distance(maze, maze.findPath(refugeeTile, corner1), chaserTile);
+			double dist2 = distance(maze, maze.findPath(refugeeTile, corner2), chaserTile);
+			return Double.compare(dist1, dist2);
 		};
 	}
 
-	private int distance(Maze maze, List<Tile> path, Tile tile) {
-		int min = Integer.MAX_VALUE;
+	private double distance(Maze maze, List<Tile> path, Tile tile) {
+		double min = Double.MAX_VALUE;
 		for (Tile t : path) {
-			int dist = maze.manhattan(t, tile);
+			double dist = maze.manhattan(t, tile);
 			if (dist < min) {
 				min = dist;
 			}

@@ -331,11 +331,11 @@ public class Maze {
 		return Collections.emptyList();
 	}
 
-	public int euclidean2(Tile t1, Tile t2) {
-		return grid.euclidean2(cell(t1), cell(t2));
+	public double euclidean(Tile t1, Tile t2) {
+		return grid.euclidean(cell(t1), cell(t2));
 	}
 
-	public int manhattan(Tile t1, Tile t2) {
+	public double manhattan(Tile t1, Tile t2) {
 		return grid.manhattan(cell(t1), cell(t2));
 	}
 
