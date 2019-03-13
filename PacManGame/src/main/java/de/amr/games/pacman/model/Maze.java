@@ -16,7 +16,7 @@ import de.amr.graph.grid.api.GridGraph2D;
 import de.amr.graph.grid.api.Topology;
 import de.amr.graph.grid.impl.GridGraph;
 import de.amr.graph.grid.impl.Top4;
-import de.amr.graph.pathfinder.api.PathFinder;
+import de.amr.graph.pathfinder.api.Path;
 import de.amr.graph.pathfinder.impl.AStarSearch;
 
 /**
@@ -320,13 +320,13 @@ public class Maze {
 
 	public List<Tile> findPath(Tile source, Tile target) {
 		if (isValidTile(source) && isValidTile(target)) {
-			PathFinder pathfinder = new AStarSearch<>(grid, edge -> 1, grid::manhattan);
-			List<Integer> path = pathfinder.findPath(cell(source), cell(target));
+			AStarSearch<?, ?> pathfinder = new AStarSearch<>(grid, edge -> 1, grid::manhattan);
+			Path path = Path.computePath(cell(source), cell(target), pathfinder);
 			pathFinderCalls += 1;
 			if (pathFinderCalls % 100 == 0) {
 				Application.LOGGER.info(String.format("%d'th pathfinding executed", pathFinderCalls));
 			}
-			return path.stream().map(this::tile).collect(Collectors.toList());
+			return path.vertexStream().boxed().map(this::tile).collect(Collectors.toList());
 		}
 		return Collections.emptyList();
 	}
