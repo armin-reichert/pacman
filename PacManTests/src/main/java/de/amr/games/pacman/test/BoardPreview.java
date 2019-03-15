@@ -65,7 +65,7 @@ public class BoardPreview extends JFrame {
 			return Color.WHITE;
 		};
 		r.fnText = cell -> String.valueOf(maze.getGraph().get(cell));
-		r.fnTextFont = () -> new Font("Arial Bold", Font.BOLD, TS / 2);
+		r.fnTextFont = cell -> new Font("Arial Bold", Font.BOLD, TS / 2);
 		return r;
 	}
 }
