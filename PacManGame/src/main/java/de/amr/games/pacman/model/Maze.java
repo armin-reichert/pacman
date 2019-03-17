@@ -18,6 +18,7 @@ import de.amr.graph.grid.impl.GridGraph;
 import de.amr.graph.grid.impl.Top4;
 import de.amr.graph.pathfinder.api.Path;
 import de.amr.graph.pathfinder.impl.AStarSearch;
+import de.amr.graph.pathfinder.impl.GraphSearch;
 
 /**
  * The original Pac-Man maze.
@@ -320,7 +321,7 @@ public class Maze {
 
 	public List<Tile> findPath(Tile source, Tile target) {
 		if (isValidTile(source) && isValidTile(target)) {
-			AStarSearch<?, ?> pathfinder = new AStarSearch<>(grid, (u, v) -> 1, grid::manhattan);
+			GraphSearch<?> pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
 			Path path = Path.computePath(cell(source), cell(target), pathfinder);
 			pathFinderCalls += 1;
 			if (pathFinderCalls % 100 == 0) {
