@@ -47,9 +47,18 @@
 			<version>4.12</version>
 		</dependency>
 		<dependency>
-			<groupId>de.amr.graph.viz</groupId>
-			<artifactId>GraphVisualization</artifactId>
+			<groupId>de.amr.graph</groupId>
+			<artifactId>graph-viz</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>de.amr.graph.viz</groupId>
+				<artifactId>graph-viz</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>
