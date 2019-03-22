@@ -16,9 +16,9 @@ import de.amr.graph.grid.api.GridGraph2D;
 import de.amr.graph.grid.api.Topology;
 import de.amr.graph.grid.impl.GridGraph;
 import de.amr.graph.grid.impl.Top4;
+import de.amr.graph.pathfinder.api.GraphSearch;
 import de.amr.graph.pathfinder.api.Path;
 import de.amr.graph.pathfinder.impl.AStarSearch;
-import de.amr.graph.pathfinder.impl.GraphSearch;
 
 /**
  * The original Pac-Man maze.
