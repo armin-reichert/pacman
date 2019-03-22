@@ -143,7 +143,8 @@ public class Maze {
 							|| pacManHome.equals(new Tile(tile.col + 1, tile.row))
 							|| pacManHome.equals(new Tile(tile.col - 2, tile.row))) {
 						upwardsBlockedIS.add(tile);
-					} else {
+					}
+					else {
 						unrestrictedIS.add(tile);
 					}
 				});
@@ -321,7 +322,7 @@ public class Maze {
 
 	public List<Tile> findPath(Tile source, Tile target) {
 		if (isValidTile(source) && isValidTile(target)) {
-			GraphSearch<?> pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
+			GraphSearch pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
 			Path path = Path.computePath(cell(source), cell(target), pathfinder);
 			pathFinderCalls += 1;
 			if (pathFinderCalls % 100 == 0) {
