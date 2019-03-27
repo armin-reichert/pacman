@@ -323,7 +323,7 @@ public class Maze {
 	public List<Tile> findPath(Tile source, Tile target) {
 		if (isValidTile(source) && isValidTile(target)) {
 			GraphSearch pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
-			Path path = Path.findPath(cell(source), cell(target), pathfinder);
+			Path path = pathfinder.findPath(cell(source), cell(target));
 			pathFinderCalls += 1;
 			if (pathFinderCalls % 100 == 0) {
 				Application.LOGGER.info(String.format("%d'th pathfinding executed", pathFinderCalls));
