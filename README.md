@@ -671,8 +671,8 @@ This method runs an [A* search](http://theory.stanford.edu/~amitp/GameProgrammin
 like Dijkstra or "Hill Climbing".
 
 ```java
-AStarSearch<?, ?> pathfinder = new AStarSearch<>(grid, edge -> 1, grid::manhattan);
-Path path = Path.computePath(cell(source), cell(target), pathfinder);
+GraphSearch pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
+Path path = pathfinder.findPath(cell(source), cell(target));
 ```
 
 ## Additional features
