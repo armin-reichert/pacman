@@ -49,7 +49,8 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<GameState, GameEvent> implements ViewController {
+public class PacManGameController extends StateMachine<GameState, GameEvent>
+		implements ViewController {
 
 	private final PacManGame game;
 	private final GhostAttackController ghostAttackController;
@@ -127,7 +128,8 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			if (LOGGER.getLevel() == Level.OFF) {
 				LOGGER.setLevel(Level.INFO);
 				LOGGER.info("Logging enabled");
-			} else {
+			}
+			else {
 				LOGGER.info("Logging disabled");
 				LOGGER.setLevel(Level.OFF);
 			}
@@ -248,6 +250,9 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 				.stay(CHANGING_LEVEL)
 					.on(PacManGettingWeakerEvent.class)
 			
+				.stay(CHANGING_LEVEL)
+					.on(PacManLostPowerEvent.class)
+				
 				.stay(GHOST_DYING)
 					.on(PacManGettingWeakerEvent.class)
 				
@@ -329,7 +334,8 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			ghostAttackController.update();
 			if (oldAttackState != ghostAttackController.getState()) {
 				fireAttackStateChange();
-			} else {
+			}
+			else {
 				foreachGhost(Ghost::update);
 			}
 			game.getPacMan().update();
@@ -367,7 +373,8 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 		private void onPacManKilled(GameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
-			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
+			LOGGER.info(
+					() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
 			game.enableGlobalFoodCounter();
 			game.getPacMan().processEvent(e);
 		}
@@ -392,15 +399,16 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 		private void onGhostKilled(GameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
-			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
+			LOGGER
+					.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
 			getTheme().snd_eatGhost().play();
 			e.ghost.processEvent(e);
 		}
 
 		private void onBonusFound(GameEvent event) {
 			getPlayScreen().getBonus().ifPresent(bonus -> {
-				LOGGER.info(
-						() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(), bonus.getValue()));
+				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(),
+						bonus.getValue()));
 				getTheme().snd_eatFruit().play();
 				bonus.setHonored();
 				boolean extraLife = game.addPoints(bonus.getValue());
@@ -472,14 +480,15 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			if (extraLife) {
 				getTheme().snd_extraLife().play();
 			}
-			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
-					game.getGhostsKilledByEnergizer()));
+			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d",
+					game.getKilledGhostValue(), game.getGhostsKilledByEnergizer()));
 		}
 
 		@Override
 		public void onTick() {
 			game.getGhosts()
-					.filter(ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
+					.filter(
+							ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
 					.forEach(Ghost::update);
 		}
 
