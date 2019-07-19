@@ -7,9 +7,7 @@
 For the average school kid in 2018, a retro game like Pac-Man probably seems like the most boring and uncool thing you 
 can deal with. Nevertheless, if you like computer programming, also a seemingly simple game like Pac-Man can be very instructive!
 
-My personal interest in "Pac-Man" relies on the fact that the single computer game I played regularly was 
- ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), then running on my Apple II (compatible) computer in 1984. 
- On a green monitor, no colors, but what a sound!
+(My personal fascination in "Pac-Man" also relies on the fact that the single computer game I played regularly was  ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), then running on my Apple II (compatible) computer in 1984, on a green monitor, no colors, but what a sound!).
   
 ## The challenge
 Implementing Pac-Man is challenging not because of the core game functionality like implementing a game loop, updating and drawing entities, handling collisions etc. but for others reasons:
