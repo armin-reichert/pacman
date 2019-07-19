@@ -5,28 +5,21 @@
 ## Pac-Man? Really? How uncool!
 
 For the average school kid in 2018, a retro game like Pac-Man probably seems like the most boring and uncool thing you 
-can deal with, but I think that for many younger people with an interest in computer programming also a seemingly simple
- game like Pac-Man can be very instructive. 
- 
- My personal interest also stems from the fact that the only computer game I played regularly was 
- ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), then running on my Apple II compatible computer in 1984. 
- On a green monitor, no colors. But what a sound!
+can deal with. Nevertheless, if you like computer programming, also a seemingly simple game like Pac-Man can be very instructive!
+
+My personal interest in "Pac-Man" relies on the fact that the single computer game I played regularly was 
+ ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), then running on my Apple II (compatible) computer in 1984. 
+ On a green monitor, no colors, but what a sound!
   
 ## The challenge
-For a beginner, a game like Pac-Man can be interesting for different reasons. First, it isn't as trivial as for example
-"Pong" which surely is a good start: programming a game loop, updating and drawing paddles, ball movement, 
-collisions with walls and paddles surely are a challenge for starters. The next step probably could be "Breakout" variants 
-with different kinds of targets, waves, levels, special balls and so on.
+Implementing Pac-Man is challenging, not because of the core game functionality, like implementing a game loop, updating and drawing entities, handling collisions etc. 
 
-Pac-Man offers different challenges. First, implementing a good representation of the maze and the correct movement of the characters 
-through the maze are not trivial. Pac-Man's movement has to be controlled the keyboard, especially you can press the 
-key for the intended direction before Pac-Man actually reaches the position where he can turn to that direction. 
+First, implementing a good representation of the maze and the correct movement of the game characters 
+through the maze are not trivial. Pac-Man's movement has to be controlled the keyboard and the intended move direction can be selected before Pac-Man actually reaches a maze position where he can actually turn to that direction. 
 
-Another task are the animations, timers and the rendering of Pac-Man and the four ghosts. One has to deal with sprites 
-and different kinds of animations. It's a good exercise to implement all this from scratch instead of using predefined tools.
+If one has successfully implemented the actor's movement, the next challenge is the logic and the control of the game itself.
 
-If one has mastered these basics and the actors can move correctly through the maze, you are challenged with making 
-the "real" game. You have to think about what different phases (states) the game can have, how the actors and 
+You have to think about the different states of the game, how the actors and 
 the user interface behave in these states and which "events" lead from one state to the other (state transitions).
 
 Maybe you should start with a single ghost and implement its behavior: waiting in the ghost house, jumping, 
