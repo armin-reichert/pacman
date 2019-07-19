@@ -12,12 +12,10 @@ My personal interest in "Pac-Man" relies on the fact that the single computer ga
  On a green monitor, no colors, but what a sound!
   
 ## The challenge
-Implementing Pac-Man is challenging, not because of the core game functionality, like implementing a game loop, updating and drawing entities, handling collisions etc. 
+Implementing Pac-Man is challenging not because of the core game functionality like implementing a game loop, updating and drawing entities, handling collisions etc. but for others reasons:
 
 First, implementing a good representation of the maze and the correct movement of the game characters 
-through the maze are not trivial. Pac-Man's movement has to be controlled the keyboard and the intended move direction can be selected before Pac-Man actually reaches a maze position where he can actually turn to that direction. 
-
-If one has successfully implemented the actor's movement, the next challenge is the logic and the control of the game itself.
+through the maze are not trivial. Pac-Man's movement has to be controlled the keyboard and the intended move direction can be selected before Pac-Man actually reaches a maze position where he can actually turn to that direction. If one has successfully implemented the actor's movement, the next challenge is the logic and the control of the game itself.
 
 You have to think about the different states of the game, how the actors and 
 the user interface behave in these states and which "events" lead from one state to the other (state transitions).
