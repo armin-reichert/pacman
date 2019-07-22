@@ -1,50 +1,30 @@
-# A (hopefully) comprehensible Pac-Man implementation        
+# A comprehensible(?) Pac-Man implementation using explicit state-machines        
 
 <img src="doc/intro.png"/>
 
 ## Pac-Man? Really? How uncool!
 
 For the average school kid in 2018, a retro game like Pac-Man probably seems like the most boring and uncool thing you 
-can deal with. Nevertheless, if you like computer programming, also a seemingly simple game like Pac-Man can be very instructive!
+can deal with. Nevertheless, also a seemingly simple game like Pac-Man can be very instructive!
 
-(My personal fascination in "Pac-Man" also relies on the fact that the single computer game I played regularly was  ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), then running on my Apple II (compatible) computer in 1984, on a green monitor, no colors, but what a sound!).
+(My personal fascination for "Pac-Man" comes from the fact that the single computer game I played regularly was  ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), then running on my Apple II (compatible) computer in 1984, on a green monitor, no colors, but what a sound!).
   
 ## The challenge
 Implementing Pac-Man is challenging not because of the core game functionality like implementing a game loop, updating and drawing entities, handling collisions etc. but for others reasons:
 
 First, implementing a good representation of the maze and the correct movement of the game characters 
-through the maze are not trivial. Pac-Man's movement has to be controlled the keyboard and the intended move direction can be selected before Pac-Man actually reaches a maze position where he can actually turn to that direction. If one has successfully implemented the actor's movement, the next challenge is the logic and the control of the game itself.
+through the maze are not trivial. Pac-Man's movement direction is controlled by the keyboard and the intended move direction can be selected already before Pac-Man can actually turn to that direction. After having implemented this correctly, the next challenge is the logic and the control of the game itself. You have to sort out the different states of the game and the actors, you have to understand how the user interface should behave depending on the current state and which game "events" lead from one state to the other (state transitions).
 
-You have to think about the different states of the game, how the actors and 
-the user interface behave in these states and which "events" lead from one state to the other (state transitions).
-
-Maybe you should start with a single ghost and implement its behavior: waiting in the ghost house, jumping, 
-leaving the house and chasing Pac-Man. Next, what should happen when Pac-Man and a ghost are colliding? 
+Maybe you will start with a single ghost and implement its behavior: waiting (bouncing) in the ghost house, leaving the house to chase Pac-Man or scattering out to the ghosts corner. What should happen when Pac-Man and a ghost are colliding? 
 Which part of your program should coordinate this? Should the code be distributed over the actors or should you have 
 some kind of mediator, some central game control? Where should the game rules (points, lives, levels etc.) be implemented? 
-Just where you need it or in a central place, a *model* in the sense of the Model-View-Controller pattern?
+Should this be placed in some kind of *model* (in the sense of the Model-View-Controller pattern)?
 
-You may think that this is overengineering for such a simple program. But when reading existing Pac-Man code, very often
-you don't enjoy it because the game state is distributed in global variables, timers, flags and the game rules are 
-distributed over the actors making it rather difficult to get the complete picture.
+I looked into existing code, for example [here](https://github.com/leonardo-ono/Java2DPacmanGame) or [here](https://github.com/yichen0831/Pacman_libGdx) or [here](https://github.com/urossss/Pac-Man) which I find not bad at all. But I wanted something different, namely an implementation where you can directly see the underlying state machines.
 
-Without thinking about all these issues and having an idea how to structure it, your code can quickly become a real mess.
-Probably you will get some parts running quickly but when it comes to the interaction between the different actors, 
-the game state and the timing, you can easily lose ground. 
+## State machines
 
-## Searching for help
-
-And then you will look for help on the internet. You look at game "tutorials" on YouTube but they just tell you to put the right code in your entities' "update" method, add a few variables and flags here and there, write a few if- and switch-statements and all will be well and running. 
-
-Or you will look into the code of others who have implemented Pac-Man, often with impressive results, for example see [here](https://github.com/leonardo-ono/Java2DPacmanGame) or [here](https://github.com/yichen0831/Pacman_libGdx). (Just found another Pac-Man implementation [here](https://github.com/urossss/Pac-Man) which I find very readable and well organized!).
-
-Looking into the code, you are either overwhelmed or you understand only some parts but do not get the whole picture. Even if concepts like state machines are used in their code, they are not written in a way that helps you to understand the complete working of the game. From a practical point this is completely ok, often the underlying concepts somehow melt into the implementation and can only be recognized later if you have an idea what the implementor was trying to do. But often too, the concepts are only realized half-way or abandoned during the implementation to get the thing finally running.
-
-And then you maybe become totally frustrated and lose interest. Or you give it a last try and search the internet again. And you will find articles about using state machines in games in general and also in the Pac-Man game. You will find introductory computer science courses on AI where Pac-Man is used as a test ground for implementing AI agents. This is certainly very interesting but it doesn't help you with your own Pac-Man implementation because these agents are programmed against some predefined Pac-Man framework and cannot be 1:1 used inside your own game. And it doesn't help you with the control of the overall game play too.
-
-## State machines to the rescue
-
-You will maybe read tutorials about *(finite) state machines* and the different possibilities of implementing them: from basic switch-statements, function pointers (C, C++) to object-oriented "state pattern"-based implementations. There are also ready-to-use libraries like [Appcelerate](http://www.appccelerate.com/), [Stateless4j](https://github.com/oxo42/stateless4j) or [Squirrel](http://hekailiang.github.io/squirrel/). What should you do? 
+There are a number of tutorials about *(finite) state machines* and the different possibilities of implementing them: from basic switch-statements, function pointers (C, C++) to object-oriented "state pattern"-based implementations. There are also ready-to-use libraries like [Appcelerate](http://www.appccelerate.com/), [Stateless4j](https://github.com/oxo42/stateless4j) or [Squirrel](http://hekailiang.github.io/squirrel/). What should you do? 
 
 The low-level implementations using switch-statements or function pointers (if your programming language supports this) are the most performant ones but as long a you achieve the performance goals for your game (60 frames/updates per second) you can use whatever you like. Of course, using  a higher-level implementation should make your code more readable and easier to maintain.
 
