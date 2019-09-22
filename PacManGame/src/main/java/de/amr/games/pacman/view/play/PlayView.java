@@ -122,8 +122,10 @@ public class PlayView implements View, Controller, PacManWorld {
 		if (game.isActorActive(game.getPacMan())) {
 			game.getPacMan().draw(g);
 		}
-		game.getGhosts().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));
-		game.getGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(ghost -> ghost.draw(g));
+		game.getGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
+				.forEach(ghost -> ghost.draw(g));
+		game.getGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
+				.forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {
@@ -168,7 +170,7 @@ public class PlayView implements View, Controller, PacManWorld {
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
-		int mazeWidth = mazeView.sprites.current().getWidth();
+		int mazeWidth = mazeView.sprites.current().get().getWidth();
 		g.translate(0, height - 2 * TS);
 		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
 			g.translate(mazeWidth - (n - i) * 2 * TS, 0);
@@ -183,7 +185,7 @@ public class PlayView implements View, Controller, PacManWorld {
 		if (infoText == null) {
 			return;
 		}
-		int mazeWidth = mazeView.sprites.current().getWidth();
+		int mazeWidth = mazeView.sprites.current().get().getWidth();
 		Graphics2D g2 = (Graphics2D) g.create();
 		g2.setFont(getTheme().fnt_text(14));
 		g2.setColor(infoTextColor);

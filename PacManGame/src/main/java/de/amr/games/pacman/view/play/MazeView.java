@@ -87,7 +87,7 @@ public class MazeView extends SpriteEntity {
 	@Override
 	public void draw(Graphics2D g) {
 		g.translate(tf.getX(), tf.getY());
-		sprites.current().draw(g);
+		sprites.current().get().draw(g);
 		g.translate(-tf.getX(), -tf.getY());
 		if (!flashing) {
 			// hide eaten pellets and let energizer blink

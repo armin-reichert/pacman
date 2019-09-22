@@ -148,7 +148,7 @@ public class PacMan extends MazeEntity {
 
 	private void updateWalkingSprite() {
 		sprites.select("s_walking_" + getMoveDir());
-		sprites.current().enableAnimation(!isStuck());
+		sprites.current().get().enableAnimation(!isStuck());
 	}
 
 	// State machine
@@ -237,7 +237,8 @@ public class PacMan extends MazeEntity {
 		public void onTick() {
 			if (mustDigest()) {
 				digest();
-			} else {
+			}
+			else {
 				move();
 				inspectWorld();
 			}
@@ -286,7 +287,8 @@ public class PacMan extends MazeEntity {
 				boolean energizer = getMaze().isEnergizer(tile);
 				digestionTicks = game.getDigestionTicks(energizer);
 				getEventManager().publish(new FoodFoundEvent(tile, energizer));
-			} else {
+			}
+			else {
 				eatTimer += 1;
 			}
 		}
@@ -324,7 +326,7 @@ public class PacMan extends MazeEntity {
 		@Override
 		public void onEntry() {
 			paralyzedTime = app().clock.sec(1);
-			sprites.current().enableAnimation(false);
+			sprites.current().get().enableAnimation(false);
 			setFullSprite();
 			getTheme().snd_clips_all().forEach(Sound::stop);
 		}

@@ -63,11 +63,13 @@ public class Bonus extends SpriteEntity {
 
 	@Override
 	public void draw(Graphics2D g) {
-		float dx = tf.getX() - (sprites.current().getWidth() - tf.getWidth()) / 2;
-		float dy = tf.getY() - (sprites.current().getHeight() - tf.getHeight()) / 2;
-		g.translate(dx, dy);
-		sprites.current().draw(g);
-		g.translate(-dx, -dy);
+		sprites.current().ifPresent(sprite -> {
+			float dx = tf.getX() - (sprite.getWidth() - tf.getWidth()) / 2;
+			float dy = tf.getY() - (sprite.getHeight() - tf.getHeight()) / 2;
+			g.translate(dx, dy);
+			sprite.draw(g);
+			g.translate(-dx, -dy);
+		});
 	}
 
 	@Override
