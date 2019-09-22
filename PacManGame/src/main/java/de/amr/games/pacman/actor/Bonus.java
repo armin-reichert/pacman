@@ -1,11 +1,12 @@
 package de.amr.games.pacman.actor;
 
+import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.PacManGame.TS;
+import static java.lang.Math.round;
 import static java.util.Arrays.binarySearch;
 
 import java.awt.Graphics2D;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.SpriteEntity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.BonusSymbol;
@@ -19,7 +20,7 @@ public class Bonus extends SpriteEntity {
 	private final BonusSymbol symbol;
 	private final int value;
 	private final int index;
-	private boolean honored;
+	private boolean consumed;
 
 	public Bonus(BonusSymbol symbol, int value) {
 		index = binarySearch(POINTS, value);
@@ -28,37 +29,35 @@ public class Bonus extends SpriteEntity {
 		}
 		this.symbol = symbol;
 		this.value = value;
-		honored = false;
+		consumed = false;
 		tf.setWidth(TS);
 		tf.setHeight(TS);
-		PacManTheme theme = Application.app().settings.get("theme");
+		PacManTheme theme = app().settings.get("theme");
 		sprites.set("s_symbol", theme.spr_bonusSymbol(symbol));
 		sprites.set("s_number", theme.spr_pinkNumber(index));
 		sprites.select("s_symbol");
 	}
 
-	public int getValue() {
+	public int value() {
 		return value;
 	}
 
-	public BonusSymbol getSymbol() {
+	public BonusSymbol symbol() {
 		return symbol;
 	}
 
-	public boolean isHonored() {
-		return honored;
+	public boolean consumed() {
+		return consumed;
 	}
 
-	public void setHonored() {
-		if (!honored) {
-			honored = true;
-			sprites.select("s_number");
-		}
+	public void consume() {
+		consumed = true;
+		sprites.select("s_number");
 	}
 
-	public Tile getTile() {
+	public Tile tile() {
 		Vector2f center = tf.getCenter();
-		return new Tile(Math.round(center.x) / TS, Math.round(center.y) / TS);
+		return new Tile(round(center.x) / TS, round(center.y) / TS);
 	}
 
 	@Override

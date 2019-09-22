@@ -273,12 +273,12 @@ public class PacMan extends MazeEntity {
 
 			/*@formatter:off*/
 			Optional<Bonus> activeBonus = world.getBonus()
-					.filter(bonus -> bonus.getTile().equals(tile))
-					.filter(bonus -> !bonus.isHonored());
+					.filter(bonus -> bonus.tile().equals(tile))
+					.filter(bonus -> !bonus.consumed());
 			/*@formatter:on*/
 			if (activeBonus.isPresent()) {
 				Bonus bonus = activeBonus.get();
-				getEventManager().publish(new BonusFoundEvent(bonus.getSymbol(), bonus.getValue()));
+				getEventManager().publish(new BonusFoundEvent(bonus.symbol(), bonus.value()));
 				return;
 			}
 

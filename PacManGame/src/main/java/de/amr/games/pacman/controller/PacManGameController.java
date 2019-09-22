@@ -407,11 +407,11 @@ public class PacManGameController extends StateMachine<GameState, GameEvent>
 
 		private void onBonusFound(GameEvent event) {
 			getPlayScreen().getBonus().ifPresent(bonus -> {
-				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.getSymbol(),
-						bonus.getValue()));
+				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.symbol(),
+						bonus.value()));
 				getTheme().snd_eatFruit().play();
-				bonus.setHonored();
-				boolean extraLife = game.addPoints(bonus.getValue());
+				bonus.consume();
+				boolean extraLife = game.addPoints(bonus.value());
 				if (extraLife) {
 					getTheme().snd_extraLife().play();
 				}
