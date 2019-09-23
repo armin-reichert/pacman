@@ -23,14 +23,14 @@ public class PacManApp extends Application {
 	}
 
 	public PacManApp() {
+		PacManTheme theme = new ClassicPacManTheme();
+		setIcon(theme.spr_ghostFrightened().frame(0));
+		settings.set("theme", theme);
 		settings.width = 28 * PacManGame.TS;
 		settings.height = 36 * PacManGame.TS;
 		settings.scale = 2;
 		settings.title = "Armin's Pac-Man";
 		settings.fullScreenOnStart = false;
-		PacManTheme theme = new ClassicPacManTheme();
-		settings.set("theme", theme);
-		setIcon(theme.spr_ghostFrightened().frame(0));
 	}
 
 	@Override
