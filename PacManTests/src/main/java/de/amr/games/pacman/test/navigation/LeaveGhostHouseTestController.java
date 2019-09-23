@@ -4,16 +4,16 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.view.play.PlayViewX;
+import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class LeaveGhostHouseTestController implements ViewController {
 
 	private final PacManGame game;
-	private final PlayViewX view;
+	private final PlayViewXtended view;
 
 	public LeaveGhostHouseTestController() {
 		game = new PacManGame();
-		view = new PlayViewX(game);
+		view = new PlayViewXtended(game);
 		view.setShowRoutes(true);
 		view.setShowGrid(true);
 		view.setShowStates(true);

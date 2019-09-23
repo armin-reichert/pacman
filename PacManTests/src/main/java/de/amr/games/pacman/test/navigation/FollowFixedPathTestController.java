@@ -8,12 +8,12 @@ import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.view.play.PlayViewX;
+import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class FollowFixedPathTestController implements ViewController {
 
 	private final PacManGame game;
-	private final PlayViewX view;
+	private final PlayViewXtended view;
 	private final List<Tile> targets;
 	private int targetIndex;
 
@@ -23,7 +23,7 @@ public class FollowFixedPathTestController implements ViewController {
 				game.getMaze().getLeftTunnelEntry(), game.getMaze().getTopLeftCorner(),
 				game.getMaze().getBlinkyHome(), game.getMaze().getTopRightCorner(),
 				game.getMaze().getRightTunnelEntry(), game.getMaze().getPacManHome());
-		view = new PlayViewX(game);
+		view = new PlayViewXtended(game);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
 		view.setShowStates(false);

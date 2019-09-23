@@ -17,6 +17,8 @@ import de.amr.statemachine.StateMachine;
  * Ghosts also use the current state of this state machine to decide what to do after being
  * frightened or killed.
  * 
+ * @author Armin Reichert
+ * 
  * @see <a href=
  *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=3">Gamasutra</a>
  */
@@ -62,16 +64,16 @@ public class GhostAttackController extends StateMachine<GhostState, Void> {
 
 	public void suspend() {
 		if (!suspended) {
-			LOGGER.info(String.format("%s: suspended in state %s, remaining time: %d frames", getDescription(),
-					getState(), getTicksRemaining()));
+			LOGGER.info(String.format("%s: suspended in state %s, remaining time: %d frames",
+					getDescription(), getState(), getTicksRemaining()));
 			suspended = true;
 		}
 	}
 
 	public void resume() {
 		if (suspended) {
-			LOGGER.info(String.format("%s: resumed in state %s, remaining time: %d frames", getDescription(),
-					getState(), getTicksRemaining()));
+			LOGGER.info(String.format("%s: resumed in state %s, remaining time: %d frames",
+					getDescription(), getState(), getTicksRemaining()));
 			suspended = false;
 		}
 	}

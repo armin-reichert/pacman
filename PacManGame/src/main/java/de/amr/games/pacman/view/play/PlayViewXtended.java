@@ -42,7 +42,7 @@ import de.amr.statemachine.State;
  * 
  * @author Armin Reichert
  */
-public class PlayViewX extends PlayView {
+public class PlayViewXtended extends PlayView {
 
 	private static final String INFTY = Character.toString('\u221E');
 
@@ -67,7 +67,7 @@ public class PlayViewX extends PlayView {
 		return image;
 	}
 
-	public PlayViewX(PacManGame game) {
+	public PlayViewXtended(PacManGame game) {
 		super(game);
 		gridImage = createGridImage(game.getMaze().numRows(), game.getMaze().numCols());
 	}
