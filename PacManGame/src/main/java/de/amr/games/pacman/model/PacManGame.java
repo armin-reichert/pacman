@@ -110,9 +110,9 @@ public class PacManGame {
 
 	private final Maze maze;
 
-	private final PacMan pacMan;
+	public final PacMan pacMan;
 
-	private final Ghost blinky, pinky, inky, clyde;
+	public final Ghost blinky, pinky, inky, clyde;
 
 	/** The currently active actors. Actors can be toggled during the game. */
 	private final Set<MazeEntity> activeActors = new HashSet<>();
@@ -141,7 +141,11 @@ public class PacManGame {
 	/** Level counter symbols. */
 	private final List<BonusSymbol> levelCounter = new LinkedList<>();
 
+	/**
+	 * Creates the game.
+	 */
 	public PacManGame() {
+
 		maze = new Maze();
 
 		score = new Score(this);
@@ -164,7 +168,7 @@ public class PacManGame {
 
 		// Define the ghost behavior ("AI")
 
-		getAllGhosts().forEach(ghost -> {
+		ghosts().forEach(ghost -> {
 			ghost.setBehavior(FRIGHTENED, ghost.flee(pacMan));
 			ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
 			ghost.setBehavior(DEAD, ghost.headFor(ghost::getRevivalTile));
@@ -178,32 +182,12 @@ public class PacManGame {
 		clyde.setBehavior(CHASING, clyde.attackOrReject(pacMan, 8 * TS));
 	}
 
-	public PacMan getPacMan() {
-		return pacMan;
-	}
-
-	public Ghost getBlinky() {
-		return blinky;
-	}
-
-	public Ghost getPinky() {
-		return pinky;
-	}
-
-	public Ghost getInky() {
-		return inky;
-	}
-
-	public Ghost getClyde() {
-		return clyde;
-	}
-
-	public Stream<Ghost> getAllGhosts() {
+	public Stream<Ghost> ghosts() {
 		return Stream.of(blinky, pinky, inky, clyde);
 	}
 
-	public Stream<Ghost> getGhosts() {
-		return getAllGhosts().filter(this::isActive);
+	public Stream<Ghost> activeGhosts() {
+		return ghosts().filter(this::isActive);
 	}
 
 	public void initActiveActors() {
@@ -270,7 +254,7 @@ public class PacManGame {
 		if (levelCounter.size() == 8) {
 			levelCounter.remove(levelCounter.size() - 1);
 		}
-		getAllGhosts().forEach(Ghost::resetFoodCounter);
+		ghosts().forEach(Ghost::resetFoodCounter);
 		globalFoodCounterEnabled = false;
 		globalFoodCounter = 0;
 	}

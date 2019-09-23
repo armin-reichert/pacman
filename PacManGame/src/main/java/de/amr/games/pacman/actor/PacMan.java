@@ -336,7 +336,7 @@ public class PacMan extends MazeEntity {
 			if (paralyzedTime > 0) {
 				paralyzedTime -= 1;
 				if (paralyzedTime == 0) {
-					getGame().getGhosts().forEach(ghost -> ghost.setVisible(false));
+					getGame().activeGhosts().forEach(ghost -> ghost.setVisible(false));
 					sprites.select("s_dying");
 					getTheme().snd_die().play();
 				}

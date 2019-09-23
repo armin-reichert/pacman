@@ -25,11 +25,11 @@ public class InkyChaseTestController implements ViewController {
 	public void init() {
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
-		game.setActive(game.getPacMan(), true);
-		game.getPacMan().init();
-		game.setActive(game.getPinky(), false);
-		game.setActive(game.getClyde(), false);
-		game.getGhosts().forEach(ghost -> {
+		game.setActive(game.pacMan, true);
+		game.pacMan.init();
+		game.setActive(game.pinky, false);
+		game.setActive(game.clyde, false);
+		game.activeGhosts().forEach(ghost -> {
 			ghost.init();
 			ghost.setState(GhostState.CHASING);
 		});
@@ -37,8 +37,8 @@ public class InkyChaseTestController implements ViewController {
 
 	@Override
 	public void update() {
-		game.getPacMan().update();
-		game.getGhosts().forEach(Ghost::update);
+		game.pacMan.update();
+		game.activeGhosts().forEach(Ghost::update);
 		view.update();
 	}
 

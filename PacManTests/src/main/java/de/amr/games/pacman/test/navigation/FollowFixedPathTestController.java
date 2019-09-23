@@ -5,9 +5,7 @@ import java.util.List;
 
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
-import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayViewX;
@@ -15,16 +13,12 @@ import de.amr.games.pacman.view.play.PlayViewX;
 public class FollowFixedPathTestController implements ViewController {
 
 	private final PacManGame game;
-	private final PacMan pacMan;
-	private final Ghost blinky;
 	private final PlayViewX view;
 	private final List<Tile> targets;
 	private int targetIndex;
 
 	public FollowFixedPathTestController() {
 		game = new PacManGame();
-		pacMan = game.getPacMan();
-		blinky = game.getBlinky();
 		targets = Arrays.asList(game.getMaze().getBottomRightCorner(), game.getMaze().getBottomLeftCorner(),
 				game.getMaze().getLeftTunnelEntry(), game.getMaze().getTopLeftCorner(),
 				game.getMaze().getBlinkyHome(), game.getMaze().getTopRightCorner(),
@@ -41,12 +35,12 @@ public class FollowFixedPathTestController implements ViewController {
 		targetIndex = 0;
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
-		game.setActive(pacMan, false);
-		game.getAllGhosts().filter(ghost -> ghost != blinky).forEach(ghost -> game.setActive(ghost, false));
-		blinky.initGhost();
-		blinky.setState(GhostState.CHASING);
-		blinky.setBehavior(GhostState.CHASING, blinky.followFixedPath(() -> targets.get(targetIndex)));
-		blinky.getBehavior().computePath(blinky);
+		game.setActive(game.pacMan, false);
+		game.ghosts().filter(ghost -> ghost != game.blinky).forEach(ghost -> game.setActive(ghost, false));
+		game.blinky.initGhost();
+		game.blinky.setState(GhostState.CHASING);
+		game.blinky.setBehavior(GhostState.CHASING, game.blinky.followFixedPath(() -> targets.get(targetIndex)));
+		game.blinky.getBehavior().computePath(game.blinky);
 	}
 
 	private void nextTarget() {
@@ -59,8 +53,8 @@ public class FollowFixedPathTestController implements ViewController {
 
 	@Override
 	public void update() {
-		blinky.update();
-		if (blinky.getTile().equals(targets.get(targetIndex))) {
+		game.blinky.update();
+		if (game.blinky.getTile().equals(targets.get(targetIndex))) {
 			nextTarget();
 		}
 		view.update();

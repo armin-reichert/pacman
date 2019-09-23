@@ -41,7 +41,7 @@ public class PlayView implements View, Controller, PacManWorld {
 		this.width = app().settings.width;
 		this.height = app().settings.height;
 		this.game = game;
-		game.getPacMan().setWorld(this);
+		game.pacMan.setWorld(this);
 		lifeImage = getTheme().spr_pacManWalking(Top4.W).frame(1);
 		mazeView = new MazeView(game.getMaze());
 		mazeView.tf.setPosition(0, 3 * TS);
@@ -63,13 +63,13 @@ public class PlayView implements View, Controller, PacManWorld {
 
 	public void enableAnimation(boolean enable) {
 		mazeView.enableSprites(enable);
-		game.getPacMan().sprites.enableAnimation(enable);
-		game.getGhosts().forEach(ghost -> ghost.sprites.enableAnimation(enable));
+		game.pacMan.sprites.enableAnimation(enable);
+		game.activeGhosts().forEach(ghost -> ghost.sprites.enableAnimation(enable));
 	}
 
 	@Override
 	public Stream<Ghost> getGhosts() {
-		return game.getGhosts();
+		return game.activeGhosts();
 	}
 
 	@Override
@@ -119,12 +119,12 @@ public class PlayView implements View, Controller, PacManWorld {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		if (game.isActive(game.getPacMan())) {
-			game.getPacMan().draw(g);
+		if (game.isActive(game.pacMan)) {
+			game.pacMan.draw(g);
 		}
-		game.getGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
+		game.activeGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
 				.forEach(ghost -> ghost.draw(g));
-		game.getGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
+		game.activeGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
 				.forEach(ghost -> ghost.draw(g));
 	}
 

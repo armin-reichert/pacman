@@ -92,10 +92,11 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 
 	private void reviveGhost() {
 		placeAtTile(revivalTile, TS / 2, 0);
-		if (this == getGame().getBlinky()) {
+		if (this == getGame().blinky) {
 			setMoveDir(Top4.N);
 			setNextDir(Top4.N);
-		} else {
+		}
+		else {
 			setMoveDir(initialDir);
 			setNextDir(initialDir);
 		}
@@ -232,7 +233,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 						sprites.select("s_color_" + getMoveDir());
 					})
 					.onExit(() -> {
-						game.getPacMan().resetEatTimer();
+						game.pacMan.resetEatTimer();
 					})
 				
 				.state(SCATTERING)
@@ -255,7 +256,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 					})
 					.onTick(() -> {
 						move();
-						sprites.select(getGame().getPacMan().isPowerEnding() ? "s_flashing" : "s_frightened");
+						sprites.select(getGame().pacMan.isPowerEnding() ? "s_flashing" : "s_frightened");
 					})
 				
 				.state(DYING)
@@ -274,7 +275,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 						sprites.select("s_eyes_" + getMoveDir());
 					})
 					.onExit(() -> {
-						if (getGame().getGhosts().filter(ghost -> ghost != this)
+						if (getGame().activeGhosts().filter(ghost -> ghost != this)
 								.noneMatch(ghost -> ghost.getState() == DEAD)) {
 							getTheme().snd_ghost_dead().stop();
 						}
@@ -283,7 +284,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 			.transitions()
 
 				.when(LOCKED).then(FRIGHTENED)
-					.condition(() -> game.canLeaveGhostHouse(this) && getGame().getPacMan().hasPower())
+					.condition(() -> game.canLeaveGhostHouse(this) && getGame().pacMan.hasPower())
 
 				.when(LOCKED).then(SCATTERING)
 					.condition(() -> game.canLeaveGhostHouse(this) && getNextState() == SCATTERING)

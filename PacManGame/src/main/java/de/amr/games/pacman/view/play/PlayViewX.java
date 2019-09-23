@@ -114,22 +114,22 @@ public class PlayViewX extends PlayView {
 			eatAllPellets();
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
-			toggleGhost(game.getBlinky());
+			toggleGhost(game.blinky);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_P)) {
-			toggleGhost(game.getPinky());
+			toggleGhost(game.pinky);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_I)) {
-			toggleGhost(game.getInky());
+			toggleGhost(game.inky);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_C)) {
-			toggleGhost(game.getClyde());
+			toggleGhost(game.clyde);
 		}
 		super.update();
 	}
 
 	private void killActiveGhosts() {
-		game.getGhosts().forEach(ghost -> ghost.processEvent(new GhostKilledEvent(ghost)));
+		game.activeGhosts().forEach(ghost -> ghost.processEvent(new GhostKilledEvent(ghost)));
 	}
 
 	public void eatAllPellets() {
@@ -141,13 +141,13 @@ public class PlayViewX extends PlayView {
 		super.draw(g);
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
-			if (game.getPacMan().isVisible()) {
-				drawActorAlignment(game.getPacMan(), g);
+			if (game.pacMan.isVisible()) {
+				drawActorAlignment(game.pacMan, g);
 			}
-			game.getGhosts().filter(Ghost::isVisible).forEach(ghost -> drawActorAlignment(ghost, g));
+			game.activeGhosts().filter(Ghost::isVisible).forEach(ghost -> drawActorAlignment(ghost, g));
 		}
 		if (showRoutes) {
-			game.getGhosts().filter(Ghost::isVisible).forEach(ghost -> drawRoute(g, ghost));
+			game.activeGhosts().filter(Ghost::isVisible).forEach(ghost -> drawRoute(g, ghost));
 		}
 		if (showStates) {
 			drawEntityStates(g);
@@ -155,11 +155,10 @@ public class PlayViewX extends PlayView {
 	}
 
 	private void drawEntityStates(Graphics2D g) {
-		if (game.getPacMan().getState() != null && game.getPacMan().isVisible()) {
-			drawText(g, Color.YELLOW, game.getPacMan().tf.getX(), game.getPacMan().tf.getY(),
-					pacManStateText(game.getPacMan()));
+		if (game.pacMan.getState() != null && game.pacMan.isVisible()) {
+			drawText(g, Color.YELLOW, game.pacMan.tf.getX(), game.pacMan.tf.getY(), pacManStateText(game.pacMan));
 		}
-		game.getGhosts().filter(Ghost::isVisible).forEach(ghost -> {
+		game.activeGhosts().filter(Ghost::isVisible).forEach(ghost -> {
 			if (ghost.getState() != null) {
 				drawText(g, ghostColor(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
 			}
@@ -182,7 +181,8 @@ public class PlayViewX extends PlayView {
 					? String.format("%s(%s,%d|%d)[->%s]", name, state.id(), state.getTicksRemaining(),
 							state.getDuration(), nextState)
 					: String.format("%s(%s,%s)[->%s]", name, state.id(), INFTY, nextState);
-		} else {
+		}
+		else {
 			return state.getDuration() != State.ENDLESS
 					? String.format("%s(%s,%d|%d)", name, state.id(), state.getTicksRemaining(), state.getDuration())
 					: String.format("%s(%s,%s)", name, state.id(), INFTY);
@@ -250,7 +250,8 @@ public class PlayViewX extends PlayView {
 			g.translate(targetTile.col * TS, targetTile.row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-targetTile.col * TS, -targetTile.row * TS);
-		} else if (route.getTarget() != null) {
+		}
+		else if (route.getTarget() != null) {
 			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
 					route.getTarget().col * TS + TS / 2, route.getTarget().row * TS + TS / 2);
 			g.translate(route.getTarget().col * TS, route.getTarget().row * TS);
@@ -258,7 +259,7 @@ public class PlayViewX extends PlayView {
 			g.translate(-route.getTarget().col * TS, -route.getTarget().row * TS);
 		}
 
-		if (ghost == game.getClyde() && ghost.getState() == GhostState.CHASING) {
+		if (ghost == game.clyde && ghost.getState() == GhostState.CHASING) {
 			Vector2f center = ghost.tf.getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.drawOval((int) center.x - 8 * TS, (int) center.y - 8 * TS, 16 * TS, 16 * TS);

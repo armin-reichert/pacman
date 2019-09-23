@@ -62,8 +62,8 @@ public class PacManGameController extends StateMachine<GameState, GameEvent>
 		traceTo(LOGGER, app().clock::getFrequency);
 		ghostAttackController = new GhostAttackController(game);
 		ghostAttackController.traceTo(LOGGER, app().clock::getFrequency);
-		game.getPacMan().getEventManager().addListener(this::process);
-		game.getAllGhosts().forEach(ghost -> ghost.fnNextState = ghostAttackController::getState);
+		game.pacMan.getEventManager().addListener(this::process);
+		game.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackController::getState);
 	}
 
 	private PacManTheme getTheme() {
@@ -71,7 +71,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent>
 	}
 
 	private void foreachGhost(Consumer<Ghost> action) {
-		game.getGhosts().forEach(action::accept);
+		game.activeGhosts().forEach(action::accept);
 	}
 
 	// Screens
@@ -154,7 +154,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent>
 	}
 
 	private boolean isPacManDead() {
-		return game.getPacMan().getState() == PacManState.DEAD;
+		return game.pacMan.getState() == PacManState.DEAD;
 	}
 
 	private void resetPlayScreen() {
@@ -338,7 +338,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent>
 			else {
 				foreachGhost(Ghost::update);
 			}
-			game.getPacMan().update();
+			game.pacMan.update();
 		}
 
 		private void fireAttackStateChange() {
@@ -356,7 +356,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent>
 
 		private void onPacManGhostCollision(GameEvent event) {
 			PacManGhostCollisionEvent e = (PacManGhostCollisionEvent) event;
-			PacManState pacManState = game.getPacMan().getState();
+			PacManState pacManState = game.pacMan.getState();
 			if (pacManState == PacManState.DYING) {
 				return;
 			}
@@ -376,12 +376,12 @@ public class PacManGameController extends StateMachine<GameState, GameEvent>
 			LOGGER.info(
 					() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
 			game.enableGlobalFoodCounter();
-			game.getPacMan().processEvent(e);
+			game.pacMan.processEvent(e);
 		}
 
 		private void onPacManGainsPower(GameEvent event) {
 			PacManGainsPowerEvent e = (PacManGainsPowerEvent) event;
-			game.getPacMan().processEvent(e);
+			game.pacMan.processEvent(e);
 			foreachGhost(ghost -> ghost.processEvent(e));
 			ghostAttackController.suspend();
 		}
@@ -445,7 +445,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent>
 
 		@Override
 		public void onEntry() {
-			game.getPacMan().setFullSprite();
+			game.pacMan.setFullSprite();
 			foreachGhost(ghost -> ghost.setVisible(false));
 			getPlayScreen().setMazeFlashing(true);
 			getTheme().snd_clips_all().forEach(Sound::stop);
@@ -475,7 +475,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent>
 
 		@Override
 		public void onEntry() {
-			game.getPacMan().setVisible(false);
+			game.pacMan.setVisible(false);
 			boolean extraLife = game.addPoints(game.getKilledGhostValue());
 			if (extraLife) {
 				getTheme().snd_extraLife().play();
@@ -486,7 +486,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent>
 
 		@Override
 		public void onTick() {
-			game.getGhosts()
+			game.activeGhosts()
 					.filter(
 							ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
 					.forEach(Ghost::update);
@@ -494,7 +494,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent>
 
 		@Override
 		public void onExit() {
-			game.getPacMan().setVisible(true);
+			game.pacMan.setVisible(true);
 		}
 	}
 
@@ -507,7 +507,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent>
 
 		@Override
 		public void onTick() {
-			game.getPacMan().update();
+			game.pacMan.update();
 		}
 
 		@Override
