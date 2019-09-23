@@ -18,11 +18,11 @@ import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.actor.Ghost;
@@ -47,6 +47,7 @@ public class PacManGame {
 	 * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>
 	 */
 	private enum Param {
+
 		BONUS_SYMBOL,
 		BONUS_VALUE,
 		PACMAN_SPEED,
@@ -114,7 +115,7 @@ public class PacManGame {
 	private final Ghost blinky, pinky, inky, clyde;
 
 	/** The currently active actors. Actors can be toggled during the game. */
-	private final Map<MazeEntity, Boolean> activeActors = new HashMap<>();
+	private final Set<MazeEntity> activeActors = new HashSet<>();
 
 	/** The game score including highscore management. */
 	private final Score score;
@@ -159,7 +160,7 @@ public class PacManGame {
 		clyde = new Ghost(this, "Clyde", GhostColor.ORANGE, maze.getClydeHome(), maze.getClydeHome(),
 				maze.getClydeScatteringTarget(), Top4.N);
 
-		Arrays.asList(pacMan, blinky, pinky, inky, clyde).forEach(actor -> activeActors.put(actor, true));
+		Arrays.asList(pacMan, blinky, pinky, inky, clyde).forEach(activeActors::add);
 
 		// Define the ghost behavior ("AI")
 
@@ -202,30 +203,27 @@ public class PacManGame {
 	}
 
 	public Stream<Ghost> getGhosts() {
-		return getAllGhosts().filter(this::isActorActive);
+		return getAllGhosts().filter(this::isActive);
 	}
 
 	public void initActiveActors() {
-		activeActors.entrySet().forEach(e -> {
-			if (e.getValue()) {
-				e.getKey().init();
-			}
-		});
+		activeActors.forEach(MazeEntity::init);
 	}
 
-	public boolean isActorActive(MazeEntity actor) {
-		return activeActors.get(actor);
+	public boolean isActive(MazeEntity actor) {
+		return activeActors.contains(actor);
 	}
 
-	public void setActorActive(MazeEntity actor, boolean active) {
-		if (activeActors.containsKey(actor) && active == activeActors.get(actor)) {
-			return; // no change
-		}
-		activeActors.put(actor, active);
-		actor.setVisible(active);
+	public void setActive(MazeEntity actor, boolean active) {
 		if (active) {
-			actor.init();
+			if (activeActors.add(actor)) {
+				actor.init(); // only when not already active
+			}
 		}
+		else {
+			activeActors.remove(actor);
+		}
+		actor.setVisible(active);
 	}
 
 	public int getPoints() {

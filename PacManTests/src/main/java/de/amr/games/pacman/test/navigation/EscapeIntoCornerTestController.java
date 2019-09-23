@@ -30,9 +30,9 @@ public class EscapeIntoCornerTestController implements ViewController {
 	public void init() {
 		game.setLevel(1);
 		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
-		game.setActorActive(pacMan, true);
+		game.setActive(pacMan, true);
 		pacMan.init();
-		game.getAllGhosts().filter(ghost -> ghost != blinky).forEach(ghost -> game.setActorActive(ghost, false));
+		game.getAllGhosts().filter(ghost -> ghost != blinky).forEach(ghost -> game.setActive(ghost, false));
 		blinky.initGhost();
 		blinky.setState(GhostState.FRIGHTENED);
 	}

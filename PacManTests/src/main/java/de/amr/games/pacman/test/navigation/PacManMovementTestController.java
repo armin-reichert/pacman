@@ -37,8 +37,8 @@ public class PacManMovementTestController implements ViewController {
 				game.getMaze().hideFood(foodFound.tile);
 			}
 		});
-		game.getAllGhosts().forEach(ghost -> game.setActorActive(ghost, false));
-		game.setActorActive(game.getPacMan(), true);
+		game.getAllGhosts().forEach(ghost -> game.setActive(ghost, false));
+		game.setActive(game.getPacMan(), true);
 		game.getPacMan().init();
 	}
 
