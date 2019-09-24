@@ -120,108 +120,116 @@ has the advantage that actions which are state-specific can be realized as metho
 
 ```java
 beginStateMachine()
-	
-	.description("[Game]")
+
+	.description("[GameController]")
 	.initialState(INTRO)
-	
+
 	.states()
-		
+
 		.state(INTRO)
 			.onEntry(() -> {
-				setScreen(getIntroScreen());
-				getTheme().snd_insertCoin().play();
-				getTheme().loadMusic();
+				setViewController(getIntroView());
+				theme.snd_insertCoin().play();
+				theme.loadMusic();
 			})
-		
+
 		.state(READY)
 			.impl(new ReadyState())
-		
+
 		.state(PLAYING)
 			.impl(new PlayingState())
-		
+
 		.state(CHANGING_LEVEL)
 			.impl(new ChangingLevelState())
-			.timeoutAfter(game::getLevelChangingTime)
-		
+			.timeoutAfter(() -> app().clock.sec(3))
+
 		.state(GHOST_DYING)
 			.impl(new GhostDyingState())
 			.timeoutAfter(game::getGhostDyingTime)
-		
+
 		.state(PACMAN_DYING)
 			.impl(new PacManDyingState())
-		
+
 		.state(GAME_OVER)
 			.impl(new GameOverState())
 			.timeoutAfter(() -> app().clock.sec(30))
 
 	.transitions()
-	
+
 		.when(INTRO).then(READY)
-			.condition(() -> getIntroScreen().isComplete())
-			.act(() -> setScreen(getPlayScreen()))
-		
-		.when(READY).then(PLAYING).onTimeout()
-			
+			.condition(() -> getIntroView().isComplete())
+			.act(() -> setViewController(getPlayView()))
+
+		.when(READY).then(PLAYING)
+			.onTimeout()
+			.act(() -> playingState().setInitialWaitTimer(app().clock.sec(1.7f)))
+
 		.stay(PLAYING)
 			.on(FoodFoundEvent.class)
 			.act(playingState()::onFoodFound)
-			
+
 		.stay(PLAYING)
 			.on(BonusFoundEvent.class)
 			.act(playingState()::onBonusFound)
-			
+
 		.stay(PLAYING)
 			.on(PacManGhostCollisionEvent.class)
 			.act(playingState()::onPacManGhostCollision)
-			
+
 		.stay(PLAYING)
 			.on(PacManGainsPowerEvent.class)
 			.act(playingState()::onPacManGainsPower)
-			
+
 		.stay(PLAYING)
 			.on(PacManGettingWeakerEvent.class)
 			.act(playingState()::onPacManGettingWeaker)
-			
+
 		.stay(PLAYING)
 			.on(PacManLostPowerEvent.class)
 			.act(playingState()::onPacManLostPower)
-	
+
 		.when(PLAYING).then(GHOST_DYING)
 			.on(GhostKilledEvent.class)
 			.act(playingState()::onGhostKilled)
-			
+
 		.when(PLAYING).then(PACMAN_DYING)
 			.on(PacManKilledEvent.class)
 			.act(playingState()::onPacManKilled)
-			
+
 		.when(PLAYING).then(CHANGING_LEVEL)
 			.on(LevelCompletedEvent.class)
-			
+
 		.when(CHANGING_LEVEL).then(PLAYING)
 			.onTimeout()
-			
+
 		.stay(CHANGING_LEVEL)
 			.on(PacManGettingWeakerEvent.class)
-	
+
+		.stay(CHANGING_LEVEL)
+			.on(PacManLostPowerEvent.class)
+
 		.stay(GHOST_DYING)
 			.on(PacManGettingWeakerEvent.class)
-		
+
 		.when(GHOST_DYING).then(PLAYING)
 			.onTimeout()
-			
+
 		.when(PACMAN_DYING).then(GAME_OVER)
 			.condition(() -> isPacManDead() && game.getLives() == 0)
-			
+
 		.when(PACMAN_DYING).then(PLAYING)
 			.condition(() -> isPacManDead() && game.getLives() > 0)
-			.act(this::resetPlayScreen)
-	
+			.act(() -> {
+				resetPlayView();
+				playingState().setInitialWaitTimer(app().clock.sec(1.7f));
+			})
+
 		.when(GAME_OVER).then(READY)
 			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
-			
+
 		.when(GAME_OVER).then(INTRO)
 			.onTimeout()
-					
+
 .endStateMachine();
 ```
 
