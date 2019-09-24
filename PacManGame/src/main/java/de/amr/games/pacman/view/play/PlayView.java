@@ -143,8 +143,8 @@ public class PlayView implements View, Controller, PacManWorld {
 			g.drawString("HIGH", 10 * TS, TS);
 			g.drawString("SCORE", 14 * TS, TS);
 			g.setColor(Color.WHITE);
-			g.drawString(String.format("%07d", game.getHiscorePoints()), 10 * TS, 2 * TS);
-			g.drawString(String.format("L%d", game.getHiscoreLevel()), 16 * TS, 2 * TS);
+			g.drawString(String.format("%07d", game.score.getHiscorePoints()), 10 * TS, 2 * TS);
+			g.drawString(String.format("L%d", game.score.getHiscoreLevel()), 16 * TS, 2 * TS);
 
 			// Food remaining score
 			g.setColor(Color.PINK);

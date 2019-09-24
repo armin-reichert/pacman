@@ -225,14 +225,6 @@ public class PacManGame {
 		score.save();
 	}
 
-	public int getHiscorePoints() {
-		return score.getHiscorePoints();
-	}
-
-	public int getHiscoreLevel() {
-		return score.getHiscoreLevel();
-	}
-
 	public void init() {
 		lives = 3;
 		level = 0;
