@@ -20,7 +20,7 @@ import de.amr.games.pacman.model.Tile;
  * @author Armin Reichert
  *
  * @param <T>
- *          actor type
+ *              actor type
  */
 class EscapeIntoCorner<T extends MazeEntity> extends FollowFixedPath<T> {
 

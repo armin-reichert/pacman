@@ -91,7 +91,8 @@ public class ChasePacManAnimation extends Entity implements AnimationController,
 		g.setColor(Color.PINK);
 		if (pill) {
 			g.fillRect(6, 6, 2, 2);
-		} else {
+		}
+		else {
 			g.setFont(new Font("Arial", Font.BOLD, 8));
 			g.drawString("10", 0, 10);
 		}

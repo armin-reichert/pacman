@@ -24,9 +24,9 @@ public interface GhostBehavior {
 
 	/**
 	 * @param actor
-	 *                an actor
+	 *                   an actor
 	 * @param numTiles
-	 *                number of tiles
+	 *                   number of tiles
 	 * @return the tile located <code>n</code> tiles ahead of the actor towards its current move
 	 *         direction.
 	 */

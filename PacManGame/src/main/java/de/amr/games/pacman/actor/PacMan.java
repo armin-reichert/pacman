@@ -82,7 +82,7 @@ public class PacMan extends MazeEntity {
 
 	@Override
 	public Maze getMaze() {
-		return game.getMaze();
+		return game.maze;
 	}
 
 	public EventManager<GameEvent> getEventManager() {

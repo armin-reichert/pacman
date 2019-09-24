@@ -43,7 +43,7 @@ public class PlayView implements View, Controller, PacManWorld {
 		this.game = game;
 		game.pacMan.setWorld(this);
 		lifeImage = getTheme().spr_pacManWalking(Top4.W).frame(1);
-		mazeView = new MazeView(game.getMaze());
+		mazeView = new MazeView(game.maze);
 		mazeView.tf.setPosition(0, 3 * TS);
 	}
 
@@ -122,10 +122,8 @@ public class PlayView implements View, Controller, PacManWorld {
 		if (game.isActive(game.pacMan)) {
 			game.pacMan.draw(g);
 		}
-		game.activeGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
-				.forEach(ghost -> ghost.draw(g));
-		game.activeGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
-				.forEach(ghost -> ghost.draw(g));
+		game.activeGhosts().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));
+		game.activeGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {
@@ -190,7 +188,7 @@ public class PlayView implements View, Controller, PacManWorld {
 		g2.setFont(getTheme().fnt_text(14));
 		g2.setColor(infoTextColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(infoText, g2).getBounds();
-		g2.translate((mazeWidth - box.width) / 2, (game.getMaze().getBonusTile().row + 1) * TS);
+		g2.translate((mazeWidth - box.width) / 2, (game.maze.getBonusTile().row + 1) * TS);
 		g2.drawString(infoText, 0, 0);
 		g2.dispose();
 	}

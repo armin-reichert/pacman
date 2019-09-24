@@ -112,7 +112,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 
 	@Override
 	public Maze getMaze() {
-		return game.getMaze();
+		return game.maze;
 	}
 
 	public String getName() {

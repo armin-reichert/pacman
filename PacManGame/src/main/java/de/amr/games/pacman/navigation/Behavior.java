@@ -8,7 +8,7 @@ import de.amr.games.pacman.actor.MazeEntity;
  * @author Armin Reichert
  *
  * @param <T>
- *          actor type
+ *              actor type
  */
 public interface Behavior<T extends MazeEntity> {
 

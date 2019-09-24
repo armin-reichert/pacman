@@ -73,7 +73,8 @@ class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
 			int left = NESW.left(actorDir), right = NESW.right(actorDir);
 			if (actor.canEnterTile(maze.neighborTile(actorTile, left).get())) {
 				route.setDir(left);
-			} else if (actor.canEnterTile(maze.neighborTile(actorTile, right).get())) {
+			}
+			else if (actor.canEnterTile(maze.neighborTile(actorTile, right).get())) {
 				route.setDir(right);
 			}
 			return route;

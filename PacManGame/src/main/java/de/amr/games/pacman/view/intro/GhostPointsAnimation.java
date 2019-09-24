@@ -88,7 +88,8 @@ public class GhostPointsAnimation extends Entity implements AnimationController,
 			killNext = killNext + 1;
 			if (killed.cardinality() == 5) {
 				stopAnimation();
-			} else {
+			}
+			else {
 				getTheme().snd_eatGhost().play();
 				resetGhostTimer();
 			}
@@ -112,7 +113,8 @@ public class GhostPointsAnimation extends Entity implements AnimationController,
 		if (energizer) {
 			g.setColor(Color.PINK);
 			g.fillOval(4, 4, 8, 8);
-		} else {
+		}
+		else {
 			g.setColor(Color.PINK);
 			g.setFont(new Font("Arial", Font.BOLD, 8));
 			g.drawString("50", 4, 12);
@@ -123,7 +125,8 @@ public class GhostPointsAnimation extends Entity implements AnimationController,
 			g.translate(x, 0);
 			if (killed.get(i)) {
 				points[i].draw(g);
-			} else {
+			}
+			else {
 				ghost.draw(g);
 			}
 			g.translate(-x, 0);

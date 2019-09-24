@@ -60,7 +60,8 @@ public class Route {
 	public void setDir(int dir) {
 		if (dir == -1 || dir == Top4.N || dir == Top4.E || dir == Top4.S || dir == Top4.W) {
 			this.dir = dir;
-		} else {
+		}
+		else {
 			throw new IllegalArgumentException("Illegal direction value: " + dir);
 		}
 	}

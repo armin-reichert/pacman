@@ -36,10 +36,10 @@ public class FollowMouseTestController implements ViewController {
 
 	@Override
 	public void init() {
-		targetTile = game.getMaze().getPacManHome();
+		targetTile = game.maze.getPacManHome();
 		game.pacMan.placeAtTile(targetTile, 0, 0);
 		game.setLevel(1);
-		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
+		game.maze.tiles().filter(game.maze::isFood).forEach(game::eatFoodAtTile);
 		game.ghosts().forEach(ghost -> game.setActive(ghost, false));
 		game.setActive(game.blinky, true);
 		game.setActive(game.pacMan, true);

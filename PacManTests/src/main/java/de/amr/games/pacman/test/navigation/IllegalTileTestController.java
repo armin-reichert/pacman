@@ -25,7 +25,7 @@ public class IllegalTileTestController implements ViewController {
 	@Override
 	public void init() {
 		game.setLevel(1);
-		game.getMaze().tiles().filter(game.getMaze()::isFood).forEach(game::eatFoodAtTile);
+		game.maze.tiles().filter(game.maze::isFood).forEach(game::eatFoodAtTile);
 		game.ghosts().filter(ghost -> ghost != game.blinky).forEach(ghost -> game.setActive(ghost, false));
 		game.blinky.initGhost();
 		game.blinky.setBehavior(GhostState.CHASING, game.blinky.headFor(this::getTargetTile));
@@ -33,7 +33,7 @@ public class IllegalTileTestController implements ViewController {
 	}
 
 	private Tile getTargetTile() {
-		return new Tile(game.getMaze().numCols(), game.getMaze().getTunnelRow());
+		return new Tile(game.maze.numCols(), game.maze.getTunnelRow());
 	}
 
 	@Override

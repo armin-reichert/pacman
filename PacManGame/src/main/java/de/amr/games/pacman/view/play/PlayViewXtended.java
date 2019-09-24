@@ -69,7 +69,7 @@ public class PlayViewXtended extends PlayView {
 
 	public PlayViewXtended(PacManGame game) {
 		super(game);
-		gridImage = createGridImage(game.getMaze().numRows(), game.getMaze().numCols());
+		gridImage = createGridImage(game.maze.numRows(), game.maze.numCols());
 	}
 
 	public void setShowGrid(boolean showGrid) {
@@ -133,7 +133,7 @@ public class PlayViewXtended extends PlayView {
 	}
 
 	public void eatAllPellets() {
-		game.getMaze().tiles().filter(game.getMaze()::isPellet).forEach(game::eatFoodAtTile);
+		game.maze.tiles().filter(game.maze::isPellet).forEach(game::eatFoodAtTile);
 	}
 
 	@Override

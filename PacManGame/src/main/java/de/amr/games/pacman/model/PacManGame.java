@@ -108,7 +108,7 @@ public class PacManGame {
 		}
 	};
 
-	private final Maze maze;
+	public final Maze maze;
 
 	public final PacMan pacMan;
 
@@ -266,10 +266,6 @@ public class PacManGame {
 	private float speed(float relativeSpeed) {
 		// TODO what is the original base speed in tiles/second at 60 Hz?
 		return 9f * TS / 60 * relativeSpeed;
-	}
-
-	public Maze getMaze() {
-		return maze;
 	}
 
 	public int getLevel() {

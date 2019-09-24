@@ -100,7 +100,8 @@ public abstract class MazeEntity extends SpriteEntity {
 				align();
 			}
 			setMoveDir(nextDir);
-		} else {
+		}
+		else {
 			speed = computeMaxSpeed(moveDir);
 		}
 		tf.setVelocity(velocity(speed));
@@ -109,7 +110,8 @@ public abstract class MazeEntity extends SpriteEntity {
 			// check for exit from teleport space
 			if (tf.getX() + tf.getWidth() < 0) {
 				tf.setX(getMaze().numCols() * TS);
-			} else if (tf.getX() > (getMaze().numCols()) * TS) {
+			}
+			else if (tf.getX() > (getMaze().numCols()) * TS) {
 				tf.setX(-tf.getWidth());
 			}
 		}
