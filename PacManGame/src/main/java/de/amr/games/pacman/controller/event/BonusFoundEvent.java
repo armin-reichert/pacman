@@ -2,7 +2,7 @@ package de.amr.games.pacman.controller.event;
 
 import de.amr.games.pacman.model.BonusSymbol;
 
-public class BonusFoundEvent extends GameEvent {
+public class BonusFoundEvent extends PacManGameEvent {
 
 	public final BonusSymbol symbol;
 	public final int value;

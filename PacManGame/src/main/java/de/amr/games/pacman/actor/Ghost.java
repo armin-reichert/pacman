@@ -17,7 +17,7 @@ import java.util.OptionalInt;
 import java.util.function.Supplier;
 
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.controller.event.GameEvent;
+import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
@@ -43,7 +43,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 
 	private final PacManGame game;
 	private final String name;
-	private final StateMachine<GhostState, GameEvent> fsm;
+	private final StateMachine<GhostState, PacManGameEvent> fsm;
 	private final Map<GhostState, Behavior<Ghost>> behaviorMap;
 	private final Tile initialTile;
 	private final Tile revivalTile;
@@ -206,7 +206,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 		return fsm.getState();
 	}
 
-	public State<GhostState, GameEvent> getStateObject() {
+	public State<GhostState, PacManGameEvent> getStateObject() {
 		return fsm.state();
 	}
 
@@ -214,13 +214,13 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 		fsm.setState(state);
 	}
 
-	public void processEvent(GameEvent event) {
+	public void processEvent(PacManGameEvent event) {
 		fsm.process(event);
 	}
 
-	private StateMachine<GhostState, GameEvent> buildStateMachine() {
+	private StateMachine<GhostState, PacManGameEvent> buildStateMachine() {
 		/*@formatter:off*/
-		return StateMachine.beginStateMachine(GhostState.class, GameEvent.class)
+		return StateMachine.beginStateMachine(GhostState.class, PacManGameEvent.class)
 			 
 			.description(String.format("[%s]", name))
 			.initialState(LOCKED)

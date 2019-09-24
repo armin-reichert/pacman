@@ -23,7 +23,7 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.EventManager;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
-import de.amr.games.pacman.controller.event.GameEvent;
+import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
@@ -49,8 +49,8 @@ public class PacMan extends MazeEntity {
 	private static final int[] STEERING = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
 	private final PacManGame game;
-	private final StateMachine<PacManState, GameEvent> fsm;
-	private final EventManager<GameEvent> eventManager;
+	private final StateMachine<PacManState, PacManGameEvent> fsm;
+	private final EventManager<PacManGameEvent> eventManager;
 	private PacManWorld world;
 	private int eatTimer; // ticks since last pellet was eaten
 
@@ -85,7 +85,7 @@ public class PacMan extends MazeEntity {
 		return game.maze;
 	}
 
-	public EventManager<GameEvent> getEventManager() {
+	public EventManager<PacManGameEvent> getEventManager() {
 		return eventManager;
 	}
 
@@ -167,18 +167,18 @@ public class PacMan extends MazeEntity {
 		return fsm.getState();
 	}
 
-	public State<PacManState, GameEvent> getStateObject() {
+	public State<PacManState, PacManGameEvent> getStateObject() {
 		return fsm.state();
 	}
 
-	public void processEvent(GameEvent event) {
+	public void processEvent(PacManGameEvent event) {
 		fsm.process(event);
 	}
 
-	private StateMachine<PacManState, GameEvent> buildStateMachine() {
+	private StateMachine<PacManState, PacManGameEvent> buildStateMachine() {
 		return StateMachine.
 		/* @formatter:off */
-		beginStateMachine(PacManState.class, GameEvent.class)
+		beginStateMachine(PacManState.class, PacManGameEvent.class)
 				
 			.description("[Pac-Man]")
 			.initialState(HOME)
@@ -224,7 +224,7 @@ public class PacMan extends MazeEntity {
 		/* @formatter:on */
 	}
 
-	private class HungryState extends State<PacManState, GameEvent> {
+	private class HungryState extends State<PacManState, PacManGameEvent> {
 
 		private int digestionTicks;
 
@@ -315,7 +315,7 @@ public class PacMan extends MazeEntity {
 		}
 	}
 
-	private class DyingState extends State<PacManState, GameEvent> {
+	private class DyingState extends State<PacManState, PacManGameEvent> {
 
 		private int paralyzedTime;
 

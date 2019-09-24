@@ -2,13 +2,13 @@ package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.controller.GameState.CHANGING_LEVEL;
-import static de.amr.games.pacman.controller.GameState.GAME_OVER;
-import static de.amr.games.pacman.controller.GameState.GHOST_DYING;
-import static de.amr.games.pacman.controller.GameState.INTRO;
-import static de.amr.games.pacman.controller.GameState.PACMAN_DYING;
-import static de.amr.games.pacman.controller.GameState.PLAYING;
-import static de.amr.games.pacman.controller.GameState.READY;
+import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
+import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
+import static de.amr.games.pacman.controller.PacManGameState.GHOST_DYING;
+import static de.amr.games.pacman.controller.PacManGameState.INTRO;
+import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
+import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
+import static de.amr.games.pacman.controller.PacManGameState.READY;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -26,7 +26,7 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
-import de.amr.games.pacman.controller.event.GameEvent;
+import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -49,14 +49,14 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<GameState, GameEvent> implements ViewController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements ViewController {
 
 	private final PacManGame game;
 	private final GhostAttackController ghostAttackController;
 	private final PacManTheme theme;
 
 	public PacManGameController() {
-		super(GameState.class);
+		super(PacManGameState.class);
 		game = new PacManGame();
 		buildStateMachine();
 		traceTo(LOGGER, app().clock::getFrequency);
@@ -112,7 +112,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 
 	private void checkNextLevelCheat() {
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
-			if (getState() == GameState.PLAYING) {
+			if (getState() == PacManGameState.PLAYING) {
 				enqueue(new LevelCompletedEvent());
 			}
 		}
@@ -278,7 +278,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		//@formatter:on
 	}
 
-	private class ReadyState extends State<GameState, GameEvent> {
+	private class ReadyState extends State<PacManGameState, PacManGameEvent> {
 
 		// just to demonstrate that timer can also be set here
 		{
@@ -306,7 +306,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		}
 	}
 
-	private class PlayingState extends State<GameState, GameEvent> {
+	private class PlayingState extends State<PacManGameState, PacManGameEvent> {
 
 		private int initialWaitTimer;
 
@@ -353,7 +353,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			}
 		}
 
-		private void onPacManGhostCollision(GameEvent event) {
+		private void onPacManGhostCollision(PacManGameEvent event) {
 			PacManGhostCollisionEvent e = (PacManGhostCollisionEvent) event;
 			PacManState pacManState = game.pacMan.getState();
 			if (pacManState == PacManState.DYING) {
@@ -370,39 +370,39 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			enqueue(new PacManKilledEvent(e.ghost));
 		}
 
-		private void onPacManKilled(GameEvent event) {
+		private void onPacManKilled(PacManGameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
 			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
 			game.enableGlobalFoodCounter();
 			game.pacMan.processEvent(e);
 		}
 
-		private void onPacManGainsPower(GameEvent event) {
+		private void onPacManGainsPower(PacManGameEvent event) {
 			PacManGainsPowerEvent e = (PacManGainsPowerEvent) event;
 			game.pacMan.processEvent(e);
 			foreachActiveGhost(ghost -> ghost.processEvent(e));
 			ghostAttackController.suspend();
 		}
 
-		private void onPacManGettingWeaker(GameEvent event) {
+		private void onPacManGettingWeaker(PacManGameEvent event) {
 			PacManGettingWeakerEvent e = (PacManGettingWeakerEvent) event;
 			foreachActiveGhost(ghost -> ghost.processEvent(e));
 		}
 
-		private void onPacManLostPower(GameEvent event) {
+		private void onPacManLostPower(PacManGameEvent event) {
 			PacManLostPowerEvent e = (PacManLostPowerEvent) event;
 			foreachActiveGhost(ghost -> ghost.processEvent(e));
 			ghostAttackController.resume();
 		}
 
-		private void onGhostKilled(GameEvent event) {
+		private void onGhostKilled(PacManGameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
 			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
 			theme.snd_eatGhost().play();
 			e.ghost.processEvent(e);
 		}
 
-		private void onBonusFound(GameEvent event) {
+		private void onBonusFound(PacManGameEvent event) {
 			getPlayView().getBonus().ifPresent(bonus -> {
 				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.symbol(), bonus.value()));
 				theme.snd_eatFruit().play();
@@ -415,7 +415,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 			});
 		}
 
-		private void onFoodFound(GameEvent event) {
+		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent e = (FoodFoundEvent) event;
 			theme.snd_eatPill().play();
 			int points = game.eatFoodAtTile(e.tile);
@@ -437,7 +437,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		}
 	}
 
-	private class ChangingLevelState extends State<GameState, GameEvent> {
+	private class ChangingLevelState extends State<PacManGameState, PacManGameEvent> {
 
 		@Override
 		public void onEntry() {
@@ -467,7 +467,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		}
 	}
 
-	private class GhostDyingState extends State<GameState, GameEvent> {
+	private class GhostDyingState extends State<PacManGameState, PacManGameEvent> {
 
 		@Override
 		public void onEntry() {
@@ -493,7 +493,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		}
 	}
 
-	private class PacManDyingState extends State<GameState, GameEvent> {
+	private class PacManDyingState extends State<PacManGameState, PacManGameEvent> {
 
 		@Override
 		public void onEntry() {
@@ -514,7 +514,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		}
 	}
 
-	private class GameOverState extends State<GameState, GameEvent> {
+	private class GameOverState extends State<PacManGameState, PacManGameEvent> {
 
 		private int waitTimer;
 

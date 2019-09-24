@@ -2,7 +2,7 @@ package de.amr.games.pacman.controller.event;
 
 import de.amr.games.pacman.actor.Ghost;
 
-public class PacManGhostCollisionEvent extends GameEvent {
+public class PacManGhostCollisionEvent extends PacManGameEvent {
 
 	public final Ghost ghost;
 
