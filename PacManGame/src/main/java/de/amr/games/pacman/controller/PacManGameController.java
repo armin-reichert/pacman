@@ -12,7 +12,6 @@ import static de.amr.games.pacman.controller.PacManGameState.READY;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 
 import de.amr.easy.game.assets.Sound;
@@ -23,13 +22,14 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.actor.MazeEntity;
 import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
-import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
+import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
@@ -49,68 +49,72 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements ViewController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
+		implements ViewController {
 
+	// Model
 	private final PacManGame game;
-	private final GhostAttackController ghostAttackController;
-	private final PacManTheme theme;
 
-	public PacManGameController() {
+	// Child controller
+	private final GhostAttackController ghostAttackController;
+
+	// UI
+	private final PacManTheme theme;
+	private IntroView introView;
+	private PlayViewXtended playView;
+	private Controller currentViewController;
+
+	public PacManGameController(PacManGame game) {
 		super(PacManGameState.class);
-		game = new PacManGame();
+		this.game = game;
+		this.theme = app().settings.get("theme");
 		buildStateMachine();
-		traceTo(LOGGER, app().clock::getFrequency);
 		ghostAttackController = new GhostAttackController(game);
 		ghostAttackController.traceTo(LOGGER, app().clock::getFrequency);
-		game.pacMan.getEventManager().addListener(this::process);
 		game.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackController::getState);
-		theme = app().settings.get("theme");
+		game.pacMan.getEventManager().addListener(this::process);
 	}
 
-	// View controllers ("scenes")
+	// View handling
 
-	private IntroView introView;
-
-	private IntroView getIntroView() {
+	private IntroView introView() {
 		if (introView == null) {
 			introView = new IntroView();
 		}
 		return introView;
 	}
 
-	private PlayViewXtended playView;
-
-	private PlayView getPlayView() {
+	private PlayView playView() {
 		if (playView == null) {
 			playView = new PlayViewXtended(game);
 		}
 		return playView;
 	}
 
-	private Controller currentView;
-
-	private void setViewController(Controller controller) {
-		if (currentView != controller) {
-			currentView = controller;
-			currentView.init();
+	private void selectView(Controller viewController) {
+		if (currentViewController != viewController) {
+			currentViewController = viewController;
+			currentViewController.init();
 		}
 	}
 
 	@Override
 	public View currentView() {
-		return (View) currentView;
+		return (View) currentViewController;
 	}
+
+	// Controller methods
 
 	@Override
 	public void update() {
-		checkLoggingChange();
-		checkNextLevelCheat();
-		checkSpeedChange();
+		handleLoggingChange();
+		handleNextLevelCheat();
+		handlePlayingSpeedChange();
 		super.update();
-		currentView.update();
+		currentViewController.update();
 	}
 
-	private void checkNextLevelCheat() {
+	private void handleNextLevelCheat() {
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
 			if (getState() == PacManGameState.PLAYING) {
 				enqueue(new LevelCompletedEvent());
@@ -118,7 +122,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 	}
 
-	private void checkLoggingChange() {
+	private void handleLoggingChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_L)) {
 			if (LOGGER.getLevel() == Level.OFF) {
 				LOGGER.setLevel(Level.INFO);
@@ -131,35 +135,24 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 	}
 
-	private void checkSpeedChange() {
+	private void handlePlayingSpeedChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
 			app().clock.setFrequency(60);
 		}
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
 			app().clock.setFrequency(80);
 		}
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
 			app().clock.setFrequency(100);
 		}
 	}
 
-	private void foreachActiveGhost(Consumer<Ghost> action) {
-		game.activeGhosts().forEach(action::accept);
-	}
-
-	/* Typed access to playing state object */
+	/* Typed access to "playing" state object */
 	private PlayingState playingState() {
 		return state(PLAYING);
 	}
 
-	private boolean isPacManDead() {
-		return game.pacMan.getState() == PacManState.DEAD;
-	}
-
-	private void resetPlayView() {
-		game.initActiveActors();
-		getPlayView().init();
-	}
+	// The finite state machine
 
 	private void buildStateMachine() {
 		//@formatter:off
@@ -172,7 +165,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				
 				.state(INTRO)
 					.onEntry(() -> {
-						setViewController(getIntroView());
+						selectView(introView());
 						theme.snd_insertCoin().play();
 						theme.loadMusic();
 					})
@@ -201,8 +194,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			.transitions()
 			
 				.when(INTRO).then(READY)
-					.condition(() -> getIntroView().isComplete())
-					.act(() -> setViewController(getPlayView()))
+					.condition(() -> introView().isComplete())
+					.act(() -> selectView(playView()))
 				
 				.when(READY).then(PLAYING)
 					.onTimeout()
@@ -259,12 +252,13 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onTimeout()
 					
 				.when(PACMAN_DYING).then(GAME_OVER)
-					.condition(() -> isPacManDead() && game.getLives() == 0)
+					.condition(() -> game.pacMan.isDead() && game.getLives() == 0)
 					
 				.when(PACMAN_DYING).then(PLAYING)
-					.condition(() -> isPacManDead() && game.getLives() > 0)
+					.condition(() -> game.pacMan.isDead() && game.getLives() > 0)
 					.act(() -> {
-						resetPlayView();
+						game.activeActors().forEach(MazeEntity::init);
+						playView().init();
 						playingState().setInitialWaitTimer(app().clock.sec(1.7f));
 					})
 			
@@ -278,10 +272,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		//@formatter:on
 	}
 
+	// Classes implementing the FSM states:
+
+	/**
+	 * "Ready" state implementation.
+	 */
 	private class ReadyState extends State<PacManGameState, PacManGameEvent> {
 
-		// just to demonstrate that timer can also be set here
-		{
+		{ // just to demonstrate that timer can also be set here
 			setTimer(() -> app().clock.sec(4.5f));
 		}
 
@@ -289,23 +287,27 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		public void onEntry() {
 			game.init();
 			game.removeLife();
-			resetPlayView();
-			getPlayView().setScoresVisible(true);
-			getPlayView().enableAnimation(false);
-			getPlayView().showInfoText("Ready!", Color.YELLOW);
+			game.activeActors().forEach(MazeEntity::init);
+			playView().init();
+			playView().setScoresVisible(true);
+			playView().enableAnimation(false);
+			playView().showInfoText("Ready!", Color.YELLOW);
 			theme.snd_clips_all().forEach(Sound::stop);
 			theme.snd_ready().play();
 		}
 
 		@Override
 		public void onExit() {
-			getPlayView().enableAnimation(true);
-			getPlayView().hideInfoText();
+			playView().enableAnimation(true);
+			playView().hideInfoText();
 			theme.music_playing().volume(0.5f);
 			theme.music_playing().loop();
 		}
 	}
 
+	/**
+	 * "Playing" state implementation.
+	 */
 	private class PlayingState extends State<PacManGameState, PacManGameEvent> {
 
 		private int initialWaitTimer;
@@ -317,9 +319,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onEntry() {
 			ghostAttackController.init();
-			foreachActiveGhost(ghost -> {
-				ghost.setVisible(true);
-			});
+			game.activeGhosts().forEach(ghost -> ghost.setVisible(true));
 			fireAttackStateChange();
 		}
 
@@ -335,7 +335,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				fireAttackStateChange();
 			}
 			else {
-				foreachActiveGhost(Ghost::update);
+				game.activeGhosts().forEach(Ghost::update);
 			}
 			game.pacMan.update();
 		}
@@ -343,10 +343,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		private void fireAttackStateChange() {
 			switch (ghostAttackController.getState()) {
 			case CHASING:
-				foreachActiveGhost(ghost -> ghost.processEvent(new StartChasingEvent()));
+				game.activeGhosts().forEach(ghost -> ghost.processEvent(new StartChasingEvent()));
 				break;
 			case SCATTERING:
-				foreachActiveGhost(ghost -> ghost.processEvent(new StartScatteringEvent()));
+				game.activeGhosts().forEach(ghost -> ghost.processEvent(new StartScatteringEvent()));
 				break;
 			default:
 				break;
@@ -372,7 +372,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onPacManKilled(PacManGameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
-			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
+			LOGGER.info(
+					() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
 			game.enableGlobalFoodCounter();
 			game.pacMan.processEvent(e);
 		}
@@ -380,38 +381,40 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		private void onPacManGainsPower(PacManGameEvent event) {
 			PacManGainsPowerEvent e = (PacManGainsPowerEvent) event;
 			game.pacMan.processEvent(e);
-			foreachActiveGhost(ghost -> ghost.processEvent(e));
+			game.activeGhosts().forEach(ghost -> ghost.processEvent(e));
 			ghostAttackController.suspend();
 		}
 
 		private void onPacManGettingWeaker(PacManGameEvent event) {
 			PacManGettingWeakerEvent e = (PacManGettingWeakerEvent) event;
-			foreachActiveGhost(ghost -> ghost.processEvent(e));
+			game.activeGhosts().forEach(ghost -> ghost.processEvent(e));
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {
 			PacManLostPowerEvent e = (PacManLostPowerEvent) event;
-			foreachActiveGhost(ghost -> ghost.processEvent(e));
+			game.activeGhosts().forEach(ghost -> ghost.processEvent(e));
 			ghostAttackController.resume();
 		}
 
 		private void onGhostKilled(PacManGameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
-			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
+			LOGGER
+					.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
 			theme.snd_eatGhost().play();
 			e.ghost.processEvent(e);
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
-			getPlayView().getBonus().ifPresent(bonus -> {
-				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.symbol(), bonus.value()));
+			playView().getBonus().ifPresent(bonus -> {
+				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.symbol(),
+						bonus.value()));
 				theme.snd_eatFruit().play();
 				bonus.consume();
 				boolean extraLife = game.addPoints(bonus.value());
 				if (extraLife) {
 					theme.snd_extraLife().play();
 				}
-				getPlayView().setBonusTimer(app().clock.sec(1));
+				playView().setBonusTimer(app().clock.sec(1));
 			});
 		}
 
@@ -428,8 +431,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				return;
 			}
 			if (game.isBonusReached()) {
-				getPlayView().setBonus(game.getBonusSymbol(), game.getBonusValue());
-				getPlayView().setBonusTimer(game.getBonusTime());
+				playView().setBonus(game.getBonusSymbol(), game.getBonusValue());
+				playView().setBonusTimer(game.getBonusTime());
 			}
 			if (e.energizer) {
 				enqueue(new PacManGainsPowerEvent());
@@ -437,13 +440,16 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 	}
 
+	/**
+	 * "Level change" state implementation.
+	 */
 	private class ChangingLevelState extends State<PacManGameState, PacManGameEvent> {
 
 		@Override
 		public void onEntry() {
 			game.pacMan.setFullSprite();
-			foreachActiveGhost(ghost -> ghost.setVisible(false));
-			getPlayView().setMazeFlashing(true);
+			game.activeGhosts().forEach(ghost -> ghost.setVisible(false));
+			playView().setMazeFlashing(true);
 			theme.snd_clips_all().forEach(Sound::stop);
 		}
 
@@ -452,21 +458,25 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			boolean timeForChange = getTicksRemaining() == getDuration() / 2;
 			if (timeForChange) {
 				game.nextLevel();
-				resetPlayView();
-				foreachActiveGhost(ghost -> ghost.setVisible(true));
-				getPlayView().showInfoText("Ready!", Color.YELLOW);
-				getPlayView().setMazeFlashing(false);
-				getPlayView().enableAnimation(false);
+				game.activeActors().forEach(MazeEntity::init);
+				game.activeGhosts().forEach(ghost -> ghost.setVisible(true));
+				playView().init();
+				playView().showInfoText("Ready!", Color.YELLOW);
+				playView().setMazeFlashing(false);
+				playView().enableAnimation(false);
 			}
 		}
 
 		@Override
 		public void onExit() {
-			getPlayView().hideInfoText();
-			getPlayView().enableAnimation(true);
+			playView().hideInfoText();
+			playView().enableAnimation(true);
 		}
 	}
 
+	/**
+	 * "Ghost dying" state implementation.
+	 */
 	private class GhostDyingState extends State<PacManGameState, PacManGameEvent> {
 
 		@Override
@@ -476,14 +486,15 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (extraLife) {
 				theme.snd_extraLife().play();
 			}
-			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
-					game.getGhostsKilledByEnergizer()));
+			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d",
+					game.getKilledGhostValue(), game.getGhostsKilledByEnergizer()));
 		}
 
 		@Override
 		public void onTick() {
 			game.activeGhosts()
-					.filter(ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
+					.filter(
+							ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
 					.forEach(Ghost::update);
 		}
 
@@ -493,6 +504,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 	}
 
+	/**
+	 * "Pacman dying" state implementation.
+	 */
 	private class PacManDyingState extends State<PacManGameState, PacManGameEvent> {
 
 		@Override
@@ -514,6 +528,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 	}
 
+	/**
+	 * "Game over" state implementation.
+	 */
 	private class GameOverState extends State<PacManGameState, PacManGameEvent> {
 
 		private int waitTimer;
@@ -522,9 +539,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		public void onEntry() {
 			waitTimer = app().clock.sec(3);
 			game.score.save();
-			foreachActiveGhost(ghost -> ghost.setVisible(true));
-			getPlayView().getBonus().ifPresent(bonus -> bonus.setVisible(false));
-			getPlayView().enableAnimation(false);
+			game.activeGhosts().forEach(ghost -> ghost.setVisible(true));
+			playView().getBonus().ifPresent(bonus -> bonus.setVisible(false));
+			playView().enableAnimation(false);
 		}
 
 		@Override
@@ -532,7 +549,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (waitTimer > 0) {
 				waitTimer -= 1;
 				if (waitTimer == 0) {
-					getPlayView().showInfoText("Game Over!", Color.RED);
+					playView().showInfoText("Game Over!", Color.RED);
 					theme.music_gameover().loop();
 				}
 			}
@@ -540,7 +557,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onExit() {
-			getPlayView().hideInfoText();
+			playView().hideInfoText();
 			theme.music_gameover().stop();
 		}
 	}

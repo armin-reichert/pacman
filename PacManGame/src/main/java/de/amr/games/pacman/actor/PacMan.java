@@ -106,6 +106,10 @@ public class PacMan extends MazeEntity {
 	public boolean hasPower() {
 		return getState() == POWER;
 	}
+	
+	public boolean isDead() {
+		return getState() == DEAD;
+	}
 
 	public int getEatTimer() {
 		return eatTimer;

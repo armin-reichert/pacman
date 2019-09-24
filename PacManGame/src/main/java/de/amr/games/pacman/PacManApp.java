@@ -6,7 +6,6 @@ import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
-import de.amr.games.pacman.theme.PacManTheme;
 
 /**
  * Pac-Man game.
@@ -23,7 +22,7 @@ public class PacManApp extends Application {
 	}
 
 	public PacManApp() {
-		PacManTheme theme = new ClassicPacManTheme();
+		ClassicPacManTheme theme = new ClassicPacManTheme();
 		setIcon(theme.spr_ghostFrightened().frame(0));
 		settings.set("theme", theme);
 		settings.width = 28 * PacManGame.TS;
@@ -35,7 +34,9 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
-		// clock.setLoggingEnabled(true);
-		setController(new PacManGameController());
+		PacManGame game = new PacManGame();
+		PacManGameController gameController = new PacManGameController(game);
+		gameController.traceTo(LOGGER, app().clock::getFrequency);
+		setController(gameController);
 	}
 }
