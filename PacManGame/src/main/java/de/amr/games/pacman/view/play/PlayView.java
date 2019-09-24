@@ -129,7 +129,7 @@ public class PlayView implements View, Controller, PacManWorld {
 	protected void drawScores(Graphics2D g) {
 		if (scoresVisible) {
 			// Points score
-			int score = game.getPoints();
+			int score = game.score.getPoints();
 			g.setFont(getTheme().fnt_text());
 			g.setColor(Color.YELLOW);
 			g.drawString("SCORE", TS, TS);

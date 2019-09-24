@@ -118,7 +118,7 @@ public class PacManGame {
 	private final Set<MazeEntity> activeActors = new HashSet<>();
 
 	/** The game score including highscore management. */
-	private final Score score;
+	public final Score score;
 
 	/** Pac-Man's remaining lives. */
 	private int lives;
@@ -208,10 +208,6 @@ public class PacManGame {
 			activeActors.remove(actor);
 		}
 		actor.setVisible(active);
-	}
-
-	public int getPoints() {
-		return score.getPoints();
 	}
 
 	public boolean addPoints(int points) {
