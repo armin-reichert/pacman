@@ -221,10 +221,6 @@ public class PacManGame {
 		return false;
 	}
 
-	public void saveScore() {
-		score.save();
-	}
-
 	public void init() {
 		lives = 3;
 		level = 0;

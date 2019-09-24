@@ -523,7 +523,7 @@ public class PacManGameController extends StateMachine<GameState, GameEvent> imp
 		@Override
 		public void onEntry() {
 			waitTimer = app().clock.sec(3);
-			game.saveScore();
+			game.score.save();
 			foreachActiveGhost(ghost -> ghost.setVisible(true));
 			getPlayView().getBonus().ifPresent(bonus -> bonus.setVisible(false));
 			getPlayView().enableAnimation(false);
