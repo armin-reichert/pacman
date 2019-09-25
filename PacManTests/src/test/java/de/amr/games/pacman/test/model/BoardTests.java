@@ -15,14 +15,14 @@ public class BoardTests {
 		Maze maze = new Maze();
 
 		assertEquals(28, maze.numCols());
-		assertEquals(31, maze.numRows());
+		assertEquals(36, maze.numRows());
 
 		assertEquals(4, maze.tiles().filter(tile -> maze.containsEnergizer(tile)).count());
 		assertEquals(240, maze.tiles().filter(tile -> maze.containsPellet(tile)).count());
 
 		assertTrue(maze.isWall(new Tile(0, 3)));
-		assertTrue(maze.isDoor(new Tile(13, 12)));
+		assertTrue(maze.isDoor(new Tile(13, 15)));
 		assertTrue(maze.containsPellet(new Tile(1, 4)));
-		assertTrue(maze.containsEnergizer(new Tile(1, 3)));
+		assertTrue(maze.containsEnergizer(new Tile(1, 6)));
 	}
 }
