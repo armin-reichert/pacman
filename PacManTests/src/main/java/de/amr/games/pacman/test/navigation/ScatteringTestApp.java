@@ -14,6 +14,6 @@ public class ScatteringTestApp extends PacManApp {
 
 	@Override
 	public void init() {
-		setController(new ScatteringTestController());
+		setController(new ScatteringTestController(theme));
 	}
 }

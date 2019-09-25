@@ -22,6 +22,7 @@ import de.amr.graph.grid.impl.Top4;
  */
 public class GhostPointsAnimation extends Entity implements AnimationController, View {
 
+	private final PacManTheme theme;
 	private final Sprite pacMan;
 	private final Sprite ghost;
 	private final Sprite[] points = new Sprite[4];
@@ -31,19 +32,16 @@ public class GhostPointsAnimation extends Entity implements AnimationController,
 	private int energizerTimer;
 	private boolean energizer;
 
-	public GhostPointsAnimation() {
-		pacMan = getTheme().spr_pacManWalking(Top4.E);
-		ghost = getTheme().spr_ghostFrightened();
+	public GhostPointsAnimation(PacManTheme theme) {
+		this.theme = theme;
+		pacMan = theme.spr_pacManWalking(Top4.E);
+		ghost = theme.spr_ghostFrightened();
 		for (int i = 0; i < 4; ++i) {
-			points[i] = getTheme().spr_greenNumber(i);
+			points[i] = theme.spr_greenNumber(i);
 		}
 		ghostTimer = -1;
 		tf.setWidth(90);
 		tf.setHeight(18);
-	}
-
-	private PacManTheme getTheme() {
-		return app().settings.get("theme");
 	}
 
 	private void resetGhostTimer() {
@@ -90,7 +88,7 @@ public class GhostPointsAnimation extends Entity implements AnimationController,
 				stopAnimation();
 			}
 			else {
-				getTheme().snd_eatGhost().play();
+				theme.snd_eatGhost().play();
 				resetGhostTimer();
 			}
 		}

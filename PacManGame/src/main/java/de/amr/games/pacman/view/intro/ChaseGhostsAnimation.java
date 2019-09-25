@@ -2,7 +2,6 @@ package de.amr.games.pacman.view.intro;
 
 import java.awt.Graphics2D;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
@@ -18,6 +17,7 @@ import de.amr.graph.grid.impl.Top4;
  */
 public class ChaseGhostsAnimation extends Entity implements View, AnimationController {
 
+	private final PacManTheme theme;
 	private final Sprite pacMan;
 	private final Sprite ghost;
 	private final Sprite[] points = new Sprite[4];
@@ -27,18 +27,15 @@ public class ChaseGhostsAnimation extends Entity implements View, AnimationContr
 	private float pacManX;
 	private int ghostsKilled;
 
-	public ChaseGhostsAnimation() {
-		pacMan = getTheme().spr_pacManWalking(Top4.E);
-		ghost = getTheme().spr_ghostFrightened();
+	public ChaseGhostsAnimation(PacManTheme theme) {
+		this.theme = theme;
+		pacMan = theme.spr_pacManWalking(Top4.E);
+		ghost = theme.spr_ghostFrightened();
 		for (int i = 0; i < 4; ++i) {
-			points[i] = getTheme().spr_greenNumber(i);
+			points[i] = theme.spr_greenNumber(i);
 		}
 		tf.setWidth(5 * 18);
 		tf.setHeight(18);
-	}
-
-	private PacManTheme getTheme() {
-		return Application.app().settings.get("theme");
 	}
 
 	public void setStartPosition(float x, float y) {
@@ -63,13 +60,13 @@ public class ChaseGhostsAnimation extends Entity implements View, AnimationContr
 	public void startAnimation() {
 		init();
 		tf.setVelocityX(.8f);
-		getTheme().snd_eatPill().loop();
+		theme.snd_eatPill().loop();
 	}
 
 	@Override
 	public void stopAnimation() {
 		tf.setVelocityX(0);
-		getTheme().snd_eatPill().stop();
+		theme.snd_eatPill().stop();
 	}
 
 	@Override

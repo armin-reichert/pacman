@@ -5,6 +5,7 @@ import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class InkyChaseTestController implements ViewController {
@@ -12,8 +13,8 @@ public class InkyChaseTestController implements ViewController {
 	private final PacManGame game;
 	private final PlayViewXtended view;
 
-	public InkyChaseTestController() {
-		game = new PacManGame();
+	public InkyChaseTestController(PacManTheme theme) {
+		game = new PacManGame(theme);
 		game.setLevel(1);
 		game.maze.removeFood();
 		view = new PlayViewXtended(game);

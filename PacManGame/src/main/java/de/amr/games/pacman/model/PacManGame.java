@@ -30,6 +30,7 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeEntity;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.theme.GhostColor;
+import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.graph.grid.impl.Top4;
 
 /**
@@ -110,6 +111,8 @@ public class PacManGame {
 
 	public final Maze maze;
 
+	public final PacManTheme theme;
+
 	public final PacMan pacMan;
 
 	public final Ghost blinky, pinky, inky, clyde;
@@ -144,25 +147,27 @@ public class PacManGame {
 	/**
 	 * Creates the game.
 	 */
-	public PacManGame() {
+	public PacManGame(PacManTheme theme) {
+
+		this.theme = theme;
 
 		maze = new Maze();
 
 		score = new Score(this);
 
-		pacMan = new PacMan(this);
+		pacMan = new PacMan(this, theme);
 
-		blinky = new Ghost(this, "Blinky", GhostColor.RED, maze.getBlinkyHome(), maze.getPinkyHome(),
-				maze.getBlinkyScatteringTarget(), Top4.S);
+		blinky = new Ghost(this, theme, "Blinky", GhostColor.RED, maze.getBlinkyHome(),
+				maze.getPinkyHome(), maze.getBlinkyScatteringTarget(), Top4.S);
 
-		pinky = new Ghost(this, "Pinky", GhostColor.PINK, maze.getPinkyHome(), maze.getPinkyHome(),
-				maze.getPinkyScatteringTarget(), Top4.S);
+		pinky = new Ghost(this, theme, "Pinky", GhostColor.PINK, maze.getPinkyHome(),
+				maze.getPinkyHome(), maze.getPinkyScatteringTarget(), Top4.S);
 
-		inky = new Ghost(this, "Inky", GhostColor.TURQUOISE, maze.getInkyHome(), maze.getInkyHome(),
-				maze.getInkyScatteringTarget(), Top4.N);
+		inky = new Ghost(this, theme, "Inky", GhostColor.TURQUOISE, maze.getInkyHome(),
+				maze.getInkyHome(), maze.getInkyScatteringTarget(), Top4.N);
 
-		clyde = new Ghost(this, "Clyde", GhostColor.ORANGE, maze.getClydeHome(), maze.getClydeHome(),
-				maze.getClydeScatteringTarget(), Top4.N);
+		clyde = new Ghost(this, theme, "Clyde", GhostColor.ORANGE, maze.getClydeHome(),
+				maze.getClydeHome(), maze.getClydeScatteringTarget(), Top4.N);
 
 		Arrays.asList(pacMan, blinky, pinky, inky, clyde).forEach(activeActors::add);
 

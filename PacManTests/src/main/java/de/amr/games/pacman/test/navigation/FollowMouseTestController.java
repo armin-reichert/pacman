@@ -12,6 +12,7 @@ import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class FollowMouseTestController implements ViewController {
@@ -20,8 +21,8 @@ public class FollowMouseTestController implements ViewController {
 	private final PlayViewXtended view;
 	private Tile targetTile;
 
-	public FollowMouseTestController() {
-		game = new PacManGame();
+	public FollowMouseTestController(PacManTheme theme) {
+		game = new PacManGame(theme);
 		game.setLevel(1);
 		game.maze.removeFood();
 		view = new PlayViewXtended(game);

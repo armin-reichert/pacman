@@ -6,7 +6,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
@@ -18,6 +17,7 @@ import de.amr.graph.grid.impl.Top4;
 
 public class ChasePacManAnimation extends Entity implements AnimationController, View {
 
+	private final PacManTheme theme;
 	private final Sprite pacMan;
 	private final Sprite ghosts[] = new Sprite[4];
 	private int pillTimer;
@@ -25,19 +25,16 @@ public class ChasePacManAnimation extends Entity implements AnimationController,
 	private Vector2f endPosition;
 	private boolean pill;
 
-	public ChasePacManAnimation() {
-		pacMan = getTheme().spr_pacManWalking(Top4.W);
-		ghosts[0] = getTheme().spr_ghostColored(GhostColor.RED, Top4.W);
-		ghosts[1] = getTheme().spr_ghostColored(GhostColor.PINK, Top4.W);
-		ghosts[2] = getTheme().spr_ghostColored(GhostColor.TURQUOISE, Top4.W);
-		ghosts[3] = getTheme().spr_ghostColored(GhostColor.ORANGE, Top4.W);
+	public ChasePacManAnimation(PacManTheme theme) {
+		this.theme = theme;
+		pacMan = theme.spr_pacManWalking(Top4.W);
+		ghosts[0] = theme.spr_ghostColored(GhostColor.RED, Top4.W);
+		ghosts[1] = theme.spr_ghostColored(GhostColor.PINK, Top4.W);
+		ghosts[2] = theme.spr_ghostColored(GhostColor.TURQUOISE, Top4.W);
+		ghosts[3] = theme.spr_ghostColored(GhostColor.ORANGE, Top4.W);
 		pill = true;
 		tf.setWidth(88);
 		tf.setHeight(16);
-	}
-
-	private PacManTheme getTheme() {
-		return Application.app().settings.get("theme");
 	}
 
 	public void setStartPosition(float x, float y) {
@@ -70,13 +67,13 @@ public class ChasePacManAnimation extends Entity implements AnimationController,
 	public void startAnimation() {
 		init();
 		tf.setVelocityX(-0.8f);
-		getTheme().snd_ghost_chase().loop();
+		theme.snd_ghost_chase().loop();
 	}
 
 	@Override
 	public void stopAnimation() {
 		tf.setVelocityX(0);
-		getTheme().snd_ghost_chase().stop();
+		theme.snd_ghost_chase().stop();
 	}
 
 	@Override

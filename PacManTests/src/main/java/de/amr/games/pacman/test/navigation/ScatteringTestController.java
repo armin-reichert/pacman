@@ -5,6 +5,7 @@ import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class ScatteringTestController implements ViewController {
@@ -12,8 +13,8 @@ public class ScatteringTestController implements ViewController {
 	private final PacManGame game;
 	private final PlayViewXtended view;
 
-	public ScatteringTestController() {
-		game = new PacManGame();
+	public ScatteringTestController(PacManTheme theme) {
+		game = new PacManGame(theme);
 		view = new PlayViewXtended(game);
 		view.setShowGrid(true);
 		view.setShowRoutes(true);

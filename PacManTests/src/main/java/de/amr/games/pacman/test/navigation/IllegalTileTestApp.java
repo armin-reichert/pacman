@@ -14,6 +14,6 @@ public class IllegalTileTestApp extends PacManApp {
 
 	@Override
 	public void init() {
-		setController(new IllegalTileTestController());
+		setController(new IllegalTileTestController(theme));
 	}
 }

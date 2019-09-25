@@ -67,7 +67,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	public PacManGameController(PacManGame game) {
 		super(PacManGameState.class);
 		this.game = game;
-		this.theme = app().settings.get("theme");
+		this.theme = game.theme;
 		buildStateMachine();
 		ghostAttackController = new GhostAttackController(game);
 		ghostAttackController.traceTo(LOGGER, app().clock::getFrequency);
@@ -79,7 +79,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	private IntroView introView() {
 		if (introView == null) {
-			introView = new IntroView();
+			introView = new IntroView(game.theme);
 		}
 		return introView;
 	}

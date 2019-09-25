@@ -14,6 +14,6 @@ public class PacManMovementTestApp extends PacManApp {
 
 	@Override
 	public void init() {
-		setController(new PacManMovementTestController());
+		setController(new PacManMovementTestController(theme));
 	}
 }

@@ -6,6 +6,7 @@ import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
+import de.amr.games.pacman.theme.PacManTheme;
 
 /**
  * Pac-Man game.
@@ -21,20 +22,21 @@ public class PacManApp extends Application {
 		launch(new PacManApp(), args);
 	}
 
+	public final PacManTheme theme;
+
 	public PacManApp() {
-		ClassicPacManTheme theme = new ClassicPacManTheme();
-		setIcon(theme.spr_ghostFrightened().frame(0));
-		settings.set("theme", theme);
+		theme = new ClassicPacManTheme();
 		settings.width = 28 * PacManGame.TS;
 		settings.height = 36 * PacManGame.TS;
 		settings.scale = 2;
 		settings.title = "Armin's Pac-Man";
 		settings.fullScreenOnStart = false;
+		setIcon(theme.spr_ghostFrightened().frame(0));
 	}
 
 	@Override
 	public void init() {
-		PacManGame game = new PacManGame();
+		PacManGame game = new PacManGame(theme);
 		PacManGameController gameController = new PacManGameController(game);
 		gameController.traceTo(LOGGER, app().clock::getFrequency);
 		setController(gameController);

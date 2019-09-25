@@ -15,6 +15,6 @@ public class LeaveGhostHouseTestApp extends PacManApp {
 
 	@Override
 	public void init() {
-		setController(new LeaveGhostHouseTestController());
+		setController(new LeaveGhostHouseTestController(theme));
 	}
 }

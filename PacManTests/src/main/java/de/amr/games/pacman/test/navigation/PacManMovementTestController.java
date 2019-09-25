@@ -1,6 +1,5 @@
 package de.amr.games.pacman.test.navigation;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -13,17 +12,13 @@ public class PacManMovementTestController implements ViewController {
 	private final PacManGame game;
 	private final PlayViewXtended view;
 
-	public PacManMovementTestController() {
-		game = new PacManGame();
+	public PacManMovementTestController(PacManTheme theme) {
+		game = new PacManGame(theme);
 		view = new PlayViewXtended(game);
 		view.setShowRoutes(true);
 		view.setShowGrid(true);
 		view.setShowStates(false);
 		view.setScoresVisible(false);
-	}
-
-	private PacManTheme getTheme() {
-		return Application.app().settings.get("theme");
 	}
 
 	@Override
@@ -33,7 +28,7 @@ public class PacManMovementTestController implements ViewController {
 		game.pacMan.getEventManager().addListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
-				getTheme().snd_eatPill().play();
+				game.theme.snd_eatPill().play();
 				game.maze.removeFood(foodFound.tile);
 			}
 		});

@@ -51,11 +51,13 @@ public class PacMan extends MazeEntity {
 	private final PacManGame game;
 	private final StateMachine<PacManState, PacManGameEvent> fsm;
 	private final EventManager<PacManGameEvent> eventManager;
+	private final PacManTheme theme;
 	private PacManWorld world;
 	private int eatTimer; // ticks since last pellet was eaten
 
-	public PacMan(PacManGame game) {
+	public PacMan(PacManGame game, PacManTheme theme) {
 		this.game = game;
+		this.theme = theme;
 		fsm = buildStateMachine();
 		fsm.traceTo(LOGGER, app().clock::getFrequency);
 		eventManager = new EventManager<>("[PacMan]");
@@ -92,10 +94,6 @@ public class PacMan extends MazeEntity {
 	@Override
 	public float getSpeed() {
 		return game.getPacManSpeed(this);
-	}
-
-	public PacManTheme getTheme() {
-		return app().settings.get("theme");
 	}
 
 	public boolean isPowerEnding() {
@@ -140,9 +138,9 @@ public class PacMan extends MazeEntity {
 	// Sprites
 
 	private void setSprites() {
-		NESW.dirs().forEach(dir -> sprites.set("s_walking_" + dir, getTheme().spr_pacManWalking(dir)));
-		sprites.set("s_dying", getTheme().spr_pacManDying());
-		sprites.set("s_full", getTheme().spr_pacManFull());
+		NESW.dirs().forEach(dir -> sprites.set("s_walking_" + dir, theme.spr_pacManWalking(dir)));
+		sprites.set("s_dying", theme.spr_pacManDying());
+		sprites.set("s_full", theme.spr_pacManFull());
 		sprites.select("s_full");
 	}
 
@@ -302,12 +300,12 @@ public class PacMan extends MazeEntity {
 
 		@Override
 		public void onEntry() {
-			getTheme().snd_waza().loop();
+			theme.snd_waza().loop();
 		}
 
 		@Override
 		public void onExit() {
-			getTheme().snd_waza().stop();
+			theme.snd_waza().stop();
 		}
 
 		@Override
@@ -332,7 +330,7 @@ public class PacMan extends MazeEntity {
 			paralyzedTime = app().clock.sec(1);
 			sprites.current().get().enableAnimation(false);
 			setFullSprite();
-			getTheme().snd_clips_all().forEach(Sound::stop);
+			theme.snd_clips_all().forEach(Sound::stop);
 		}
 
 		@Override
@@ -342,7 +340,7 @@ public class PacMan extends MazeEntity {
 				if (paralyzedTime == 0) {
 					getGame().activeGhosts().forEach(ghost -> ghost.setVisible(false));
 					sprites.select("s_dying");
-					getTheme().snd_die().play();
+					theme.snd_die().play();
 				}
 			}
 		}

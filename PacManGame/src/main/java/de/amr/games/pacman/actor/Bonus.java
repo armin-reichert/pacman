@@ -1,6 +1,5 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.PacManGame.TS;
 import static java.lang.Math.round;
 import static java.util.Arrays.binarySearch;
@@ -22,7 +21,7 @@ public class Bonus extends SpriteEntity {
 	private final int index;
 	private boolean consumed;
 
-	public Bonus(BonusSymbol symbol, int value) {
+	public Bonus(BonusSymbol symbol, int value, PacManTheme theme) {
 		index = binarySearch(POINTS, value);
 		if (index < 0) {
 			throw new IllegalArgumentException("Illegal bonus value: " + value);
@@ -32,7 +31,6 @@ public class Bonus extends SpriteEntity {
 		consumed = false;
 		tf.setWidth(TS);
 		tf.setHeight(TS);
-		PacManTheme theme = app().settings.get("theme");
 		sprites.set("s_symbol", theme.spr_bonusSymbol(symbol));
 		sprites.set("s_number", theme.spr_pinkNumber(index));
 		sprites.select("s_symbol");

@@ -14,6 +14,6 @@ public class FollowFixedPathTestApp extends PacManApp {
 
 	@Override
 	public void init() {
-		setController(new FollowFixedPathTestController());
+		setController(new FollowFixedPathTestController(theme));
 	}
 }

@@ -45,12 +45,11 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 	private final GhostPointsAnimation ghostPoints;
 	private final LinkWidget visitGitHub;
 
-	public IntroView() {
+	public IntroView(PacManTheme theme) {
 		super(Integer.class);
 		width = app().settings.width;
 		height = app().settings.height;
 		background = new Color(0, 23, 61);
-		PacManTheme theme = app().settings.get("theme");
 
 		logo = new ImageWidget(Assets.image("logo.png"));
 		logo.tf.centerX(width);
@@ -58,34 +57,36 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		logo.tf.setVelocityY(-2f);
 		logo.setCompletion(() -> logo.tf.getY() <= 20);
 
-		chasePacMan = new ChasePacManAnimation();
+		chasePacMan = new ChasePacManAnimation(theme);
 		chasePacMan.setStartPosition(width, 100);
 		chasePacMan.setEndPosition(-chasePacMan.tf.getWidth(), 100);
 
-		chaseGhosts = new ChaseGhostsAnimation();
+		chaseGhosts = new ChaseGhostsAnimation(theme);
 		chaseGhosts.setStartPosition(-chaseGhosts.tf.getWidth(), 200);
 		chaseGhosts.setEndPosition(width, 200);
 
-		ghostPoints = new GhostPointsAnimation();
+		ghostPoints = new GhostPointsAnimation(theme);
 		ghostPoints.tf.setY(200);
 		ghostPoints.tf.centerX(width);
 
-		pressSpace = TextWidget.create().text("Press SPACE to start!").spaceExpansion(3).blinkTimeMillis(1000)
-				.font(theme.fnt_text(18)).background(background).color(Color.YELLOW).build();
+		pressSpace = TextWidget.create().text("Press SPACE to start!").spaceExpansion(3)
+				.blinkTimeMillis(1000).font(theme.fnt_text(18)).background(background).color(Color.YELLOW)
+				.build();
 		pressSpace.tf.setY(130);
 		pressSpace.tf.centerX(width);
 
 		f11Hint = TextWidget.create().text("F11 Toggle Fullscreen").spaceExpansion(3)
-				.blinkTimeMillis(Integer.MAX_VALUE).font(theme.fnt_text(12)).background(background).color(Color.PINK)
-				.build();
+				.blinkTimeMillis(Integer.MAX_VALUE).font(theme.fnt_text(12)).background(background)
+				.color(Color.PINK).build();
 		f11Hint.tf.setY(pressSpace.tf.getY() + 30);
 		f11Hint.tf.centerX(width);
 
 		speedHint = new TextWidget[3];
 		String[] texts = { "Normal 1", "Fast 2", "Insane 3" };
 		for (int i = 0; i < texts.length; ++i) {
-			speedHint[i] = TextWidget.create().text(texts[i]).spaceExpansion(3).blinkTimeMillis(Integer.MAX_VALUE)
-					.font(theme.fnt_text(12)).background(background).color(Color.PINK).build();
+			speedHint[i] = TextWidget.create().text(texts[i]).spaceExpansion(3)
+					.blinkTimeMillis(Integer.MAX_VALUE).font(theme.fnt_text(12)).background(background)
+					.color(Color.PINK).build();
 			speedHint[i].tf.setY(height - 40);
 		}
 		speedHint[0].tf.setX(20);

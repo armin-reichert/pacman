@@ -14,6 +14,6 @@ public class FollowMouseTestApp extends PacManApp {
 
 	@Override
 	public void init() {
-		setController(new FollowMouseTestController());
+		setController(new FollowMouseTestController(theme));
 	}
 }

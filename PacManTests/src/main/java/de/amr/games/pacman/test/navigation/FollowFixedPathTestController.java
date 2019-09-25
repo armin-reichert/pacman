@@ -8,6 +8,7 @@ import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class FollowFixedPathTestController implements ViewController {
@@ -17,8 +18,8 @@ public class FollowFixedPathTestController implements ViewController {
 	private final List<Tile> targets;
 	private int targetIndex;
 
-	public FollowFixedPathTestController() {
-		game = new PacManGame();
+	public FollowFixedPathTestController(PacManTheme theme) {
+		game = new PacManGame(theme);
 		game.setLevel(1);
 		game.maze.removeFood();
 		targets = Arrays.asList(game.maze.getBottomRightCorner(), game.maze.getBottomLeftCorner(),
@@ -35,10 +36,12 @@ public class FollowFixedPathTestController implements ViewController {
 	public void init() {
 		targetIndex = 0;
 		game.setActive(game.pacMan, false);
-		game.ghosts().filter(ghost -> ghost != game.blinky).forEach(ghost -> game.setActive(ghost, false));
+		game.ghosts().filter(ghost -> ghost != game.blinky)
+				.forEach(ghost -> game.setActive(ghost, false));
 		game.blinky.initGhost();
 		game.blinky.setState(GhostState.CHASING);
-		game.blinky.setBehavior(GhostState.CHASING, game.blinky.followFixedPath(() -> targets.get(targetIndex)));
+		game.blinky.setBehavior(GhostState.CHASING,
+				game.blinky.followFixedPath(() -> targets.get(targetIndex)));
 		game.blinky.getBehavior().computePath(game.blinky);
 	}
 

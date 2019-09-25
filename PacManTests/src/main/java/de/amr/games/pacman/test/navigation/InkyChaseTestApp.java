@@ -14,6 +14,6 @@ public class InkyChaseTestApp extends PacManApp {
 
 	@Override
 	public void init() {
-		setController(new InkyChaseTestController());
+		setController(new InkyChaseTestController(theme));
 	}
 }

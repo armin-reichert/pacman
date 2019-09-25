@@ -10,7 +10,6 @@ import java.awt.Rectangle;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.actor.Bonus;
@@ -19,7 +18,6 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManWorld;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.graph.grid.impl.Top4;
 
 /**
@@ -42,8 +40,8 @@ public class PlayView implements View, Controller, PacManWorld {
 		this.height = app().settings.height;
 		this.game = game;
 		game.pacMan.setWorld(this);
-		lifeImage = getTheme().spr_pacManWalking(Top4.W).frame(1);
-		mazeView = new MazeView(game.maze);
+		lifeImage = game.theme.spr_pacManWalking(Top4.W).frame(1);
+		mazeView = new MazeView(game.maze, game.theme);
 		mazeView.tf.setPosition(0, 3 * TS);
 	}
 
@@ -55,10 +53,6 @@ public class PlayView implements View, Controller, PacManWorld {
 	@Override
 	public void update() {
 		mazeView.update();
-	}
-
-	private PacManTheme getTheme() {
-		return Application.app().settings.get("theme");
 	}
 
 	public void enableAnimation(boolean enable) {
@@ -82,7 +76,7 @@ public class PlayView implements View, Controller, PacManWorld {
 	}
 
 	public void setBonus(BonusSymbol symbol, int value) {
-		mazeView.setBonus(new Bonus(symbol, value));
+		mazeView.setBonus(new Bonus(symbol, value, game.theme));
 	}
 
 	public void removeBonus() {
@@ -122,15 +116,17 @@ public class PlayView implements View, Controller, PacManWorld {
 		if (game.isActive(game.pacMan)) {
 			game.pacMan.draw(g);
 		}
-		game.activeGhosts().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));
-		game.activeGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(ghost -> ghost.draw(g));
+		game.activeGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
+				.forEach(ghost -> ghost.draw(g));
+		game.activeGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
+				.forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {
 		if (scoresVisible) {
 			// Points score
 			int score = game.score.getPoints();
-			g.setFont(getTheme().fnt_text());
+			g.setFont(game.theme.fnt_text());
 			g.setColor(Color.YELLOW);
 			g.drawString("SCORE", TS, TS);
 			g.setColor(Color.WHITE);
@@ -172,7 +168,7 @@ public class PlayView implements View, Controller, PacManWorld {
 		g.translate(0, height - 2 * TS);
 		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
 			g.translate(mazeWidth - (n - i) * 2 * TS, 0);
-			Image bonusImage = getTheme().spr_bonusSymbol(game.getLevelCounter().get(i)).frame(0);
+			Image bonusImage = game.theme.spr_bonusSymbol(game.getLevelCounter().get(i)).frame(0);
 			g.drawImage(bonusImage, 0, 0, 2 * TS, 2 * TS, null);
 			g.translate(-mazeWidth + (n - i) * 2 * TS, 0);
 		}
@@ -185,7 +181,7 @@ public class PlayView implements View, Controller, PacManWorld {
 		}
 		int mazeWidth = mazeView.sprites.current().get().getWidth();
 		Graphics2D g2 = (Graphics2D) g.create();
-		g2.setFont(getTheme().fnt_text(14));
+		g2.setFont(game.theme.fnt_text(14));
 		g2.setColor(infoTextColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(infoText, g2).getBounds();
 		g2.translate((mazeWidth - box.width) / 2, (game.maze.getBonusTile().row + 1) * TS);

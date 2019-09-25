@@ -17,9 +17,9 @@ import java.util.OptionalInt;
 import java.util.function.Supplier;
 
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
+import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
@@ -45,6 +45,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 	private final String name;
 	private final StateMachine<GhostState, PacManGameEvent> fsm;
 	private final Map<GhostState, Behavior<Ghost>> behaviorMap;
+	private final PacManTheme theme;
 	private final Tile initialTile;
 	private final Tile revivalTile;
 	private final Tile scatteringTarget;
@@ -53,9 +54,10 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 
 	public Supplier<GhostState> fnNextState; // chasing or scattering
 
-	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, Tile revivalTile,
-			Tile scatteringTarget, int initialDir) {
+	public Ghost(PacManGame game, PacManTheme theme, String name, GhostColor color, Tile initialTile,
+			Tile revivalTile, Tile scatteringTarget, int initialDir) {
 		this.game = game;
+		this.theme = theme;
 		this.name = name;
 		this.initialTile = initialTile;
 		this.revivalTile = revivalTile;
@@ -141,10 +143,6 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 		return getGame().getGhostSpeed(this);
 	}
 
-	public PacManTheme getTheme() {
-		return app().settings.get("theme");
-	}
-
 	public int getFoodCounter() {
 		return foodCounter;
 	}
@@ -179,14 +177,14 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 
 	private void setSprites(GhostColor color) {
 		NESW.dirs().forEach(dir -> {
-			sprites.set("s_color_" + dir, getTheme().spr_ghostColored(color, dir));
-			sprites.set("s_eyes_" + dir, getTheme().spr_ghostEyes(dir));
+			sprites.set("s_color_" + dir, theme.spr_ghostColored(color, dir));
+			sprites.set("s_eyes_" + dir, theme.spr_ghostEyes(dir));
 		});
 		for (int i = 0; i < 4; ++i) {
-			sprites.set("s_value" + i, getTheme().spr_greenNumber(i));
+			sprites.set("s_value" + i, theme.spr_greenNumber(i));
 		}
-		sprites.set("s_frightened", getTheme().spr_ghostFrightened());
-		sprites.set("s_flashing", getTheme().spr_ghostFlashing());
+		sprites.set("s_frightened", theme.spr_ghostFrightened());
+		sprites.set("s_flashing", theme.spr_ghostFlashing());
 	}
 
 	// State machine
@@ -243,8 +241,8 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 					})
 			
 				.state(CHASING)
-					.onEntry(() -> getTheme().snd_ghost_chase().loop())
-					.onExit(() -> getTheme().snd_ghost_chase().stop())
+					.onEntry(() -> theme.snd_ghost_chase().loop())
+					.onExit(() -> theme.snd_ghost_chase().stop())
 					.onTick(() -> {	
 						move();	
 						sprites.select("s_color_" + getMoveDir()); 
@@ -268,7 +266,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 				
 				.state(DEAD)
 					.onEntry(() -> {
-						getTheme().snd_ghost_dead().loop();
+						theme.snd_ghost_dead().loop();
 					})
 					.onTick(() -> {	
 						move();
@@ -277,7 +275,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 					.onExit(() -> {
 						if (getGame().activeGhosts().filter(ghost -> ghost != this)
 								.noneMatch(ghost -> ghost.getState() == DEAD)) {
-							getTheme().snd_ghost_dead().stop();
+							theme.snd_ghost_dead().stop();
 						}
 					})
 					

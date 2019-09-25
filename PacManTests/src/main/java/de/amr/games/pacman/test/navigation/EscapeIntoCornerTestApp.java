@@ -14,6 +14,6 @@ public class EscapeIntoCornerTestApp extends PacManApp {
 
 	@Override
 	public void init() {
-		setController(new EscapeIntoCornerTestController());
+		setController(new EscapeIntoCornerTestController(theme));
 	}
 }
