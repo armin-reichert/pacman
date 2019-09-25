@@ -133,7 +133,7 @@ public class PlayViewXtended extends PlayView {
 	}
 
 	public void eatAllPellets() {
-		game.maze.tiles().filter(game.maze::isPellet).forEach(game::eatFoodAtTile);
+		game.maze.tiles().filter(game.maze::containsPellet).forEach(game::eatFoodAtTile);
 	}
 
 	@Override

@@ -265,15 +265,15 @@ public class PacManGame {
 	}
 
 	public int eatFoodAtTile(Tile tile) {
-		if (!maze.isFood(tile)) {
+		if (!maze.containsFood(tile)) {
 			throw new IllegalArgumentException("No food at tile " + tile);
 		}
-		boolean energizer = maze.isEnergizer(tile);
+		boolean energizer = maze.containsEnergizer(tile);
 		if (energizer) {
 			ghostsKilled = 0;
 		}
 		eaten += 1;
-		maze.hideFood(tile);
+		maze.removeFood(tile);
 		updateFoodCounter();
 		return energizer ? 50 : 10;
 	}

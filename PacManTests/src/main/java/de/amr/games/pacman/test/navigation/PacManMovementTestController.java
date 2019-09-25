@@ -34,7 +34,7 @@ public class PacManMovementTestController implements ViewController {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
 				getTheme().snd_eatPill().play();
-				game.maze.hideFood(foodFound.tile);
+				game.maze.removeFood(foodFound.tile);
 			}
 		});
 		game.ghosts().forEach(ghost -> game.setActive(ghost, false));

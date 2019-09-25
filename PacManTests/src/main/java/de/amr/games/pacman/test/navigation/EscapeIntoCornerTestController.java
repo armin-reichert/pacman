@@ -13,6 +13,8 @@ public class EscapeIntoCornerTestController implements ViewController {
 
 	public EscapeIntoCornerTestController() {
 		game = new PacManGame();
+		game.setLevel(1);
+		game.maze.removeFood();
 		view = new PlayViewXtended(game);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
@@ -22,9 +24,6 @@ public class EscapeIntoCornerTestController implements ViewController {
 
 	@Override
 	public void init() {
-		game.setLevel(1);
-		game.maze.tiles().filter(game.maze::isFood).forEach(game::eatFoodAtTile);
-		game.setActive(game.pacMan, true);
 		game.pacMan.init();
 		game.ghosts().filter(ghost -> ghost != game.blinky).forEach(ghost -> game.setActive(ghost, false));
 		game.blinky.initGhost();

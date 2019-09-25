@@ -286,9 +286,9 @@ public class PacMan extends MazeEntity {
 				return;
 			}
 
-			if (getMaze().isFood(tile)) {
+			if (getMaze().containsFood(tile)) {
 				eatTimer = 0;
-				boolean energizer = getMaze().isEnergizer(tile);
+				boolean energizer = getMaze().containsEnergizer(tile);
 				digestionTicks = game.getDigestionTicks(energizer);
 				getEventManager().publish(new FoodFoundEvent(tile, energizer));
 			}

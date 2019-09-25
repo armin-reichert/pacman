@@ -13,6 +13,8 @@ public class LeaveGhostHouseTestController implements ViewController {
 
 	public LeaveGhostHouseTestController() {
 		game = new PacManGame();
+		game.setLevel(1);
+		game.maze.removeFood();
 		view = new PlayViewXtended(game);
 		view.setShowRoutes(true);
 		view.setShowGrid(true);
@@ -22,8 +24,6 @@ public class LeaveGhostHouseTestController implements ViewController {
 
 	@Override
 	public void init() {
-		game.setLevel(1);
-		game.maze.tiles().filter(game.maze::isFood).forEach(game::eatFoodAtTile);
 		game.pacMan.setVisible(false);
 		game.ghosts().filter(ghost -> ghost != game.inky).forEach(ghost -> game.setActive(ghost, false));
 		game.inky.initGhost();

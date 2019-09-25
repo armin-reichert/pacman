@@ -1,7 +1,5 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.easy.game.Application.app;
-
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Ghost;
@@ -26,13 +24,12 @@ public class ScatteringTestController implements ViewController {
 	@Override
 	public void init() {
 		game.init();
-		game.maze.tiles().filter(game.maze::isFood).forEach(game::eatFoodAtTile);
+		game.maze.removeFood();
 		game.pacMan.setVisible(false);
 		game.activeGhosts().forEach(ghost -> {
 			ghost.initGhost();
 			ghost.setState(GhostState.SCATTERING);
 		});
-		app().clock.setFrequency(60);
 	}
 
 	@Override

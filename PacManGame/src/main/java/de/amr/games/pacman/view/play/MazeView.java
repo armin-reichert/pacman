@@ -92,7 +92,7 @@ public class MazeView extends SpriteEntity {
 		if (!flashing) {
 			// hide eaten pellets and let energizer blink
 			maze.tiles().forEach(tile -> {
-				if (maze.isEatenFood(tile) || maze.isEnergizer(tile) && energizerBlinking.currentFrame() != 0) {
+				if (maze.containsEatenFood(tile) || maze.containsEnergizer(tile) && energizerBlinking.currentFrame() != 0) {
 					g.translate(tile.col * TS, tile.row * TS);
 					g.setColor(app().settings.bgColor);
 					g.fillRect(0, 0, TS, TS);

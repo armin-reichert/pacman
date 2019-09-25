@@ -14,6 +14,8 @@ public class InkyChaseTestController implements ViewController {
 
 	public InkyChaseTestController() {
 		game = new PacManGame();
+		game.setLevel(1);
+		game.maze.removeFood();
 		view = new PlayViewXtended(game);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
@@ -23,9 +25,6 @@ public class InkyChaseTestController implements ViewController {
 
 	@Override
 	public void init() {
-		game.setLevel(1);
-		game.maze.tiles().filter(game.maze::isFood).forEach(game::eatFoodAtTile);
-		game.setActive(game.pacMan, true);
 		game.pacMan.init();
 		game.setActive(game.pinky, false);
 		game.setActive(game.clyde, false);

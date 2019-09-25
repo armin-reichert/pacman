@@ -14,7 +14,8 @@ public class IllegalTileTestController implements ViewController {
 
 	public IllegalTileTestController() {
 		game = new PacManGame();
-		game.pacMan.setVisible(false);
+		game.setLevel(1);
+		game.maze.removeFood();
 		view = new PlayViewXtended(game);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
@@ -24,8 +25,7 @@ public class IllegalTileTestController implements ViewController {
 
 	@Override
 	public void init() {
-		game.setLevel(1);
-		game.maze.tiles().filter(game.maze::isFood).forEach(game::eatFoodAtTile);
+		game.pacMan.setVisible(false);
 		game.ghosts().filter(ghost -> ghost != game.blinky).forEach(ghost -> game.setActive(ghost, false));
 		game.blinky.initGhost();
 		game.blinky.setBehavior(GhostState.CHASING, game.blinky.headFor(this::getTargetTile));

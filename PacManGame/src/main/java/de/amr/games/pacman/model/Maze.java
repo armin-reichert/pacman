@@ -279,19 +279,19 @@ public class Maze {
 				&& tile.col <= clydeHome.col + 1;
 	}
 
-	public boolean isPellet(Tile tile) {
+	public boolean containsPellet(Tile tile) {
 		return getContent(tile) == PELLET;
 	}
 
-	public boolean isEnergizer(Tile tile) {
+	public boolean containsEnergizer(Tile tile) {
 		return getContent(tile) == ENERGIZER;
 	}
 
-	public boolean isFood(Tile tile) {
-		return isPellet(tile) || isEnergizer(tile);
+	public boolean containsFood(Tile tile) {
+		return containsPellet(tile) || containsEnergizer(tile);
 	}
 
-	public boolean isEatenFood(Tile tile) {
+	public boolean containsEatenFood(Tile tile) {
 		return getContent(tile) == EATEN;
 	}
 
@@ -303,7 +303,12 @@ public class Maze {
 		return foodTotal;
 	}
 
-	public void hideFood(Tile tile) {
+	public void removeFood() {
+		grid.vertices().filter(cell -> grid.get(cell) == PELLET || grid.get(cell) == ENERGIZER)
+				.forEach(cell -> grid.set(cell, EATEN));
+	}
+
+	public void removeFood(Tile tile) {
 		grid.set(cell(tile), EATEN);
 	}
 

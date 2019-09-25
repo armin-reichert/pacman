@@ -19,6 +19,8 @@ public class FollowFixedPathTestController implements ViewController {
 
 	public FollowFixedPathTestController() {
 		game = new PacManGame();
+		game.setLevel(1);
+		game.maze.removeFood();
 		targets = Arrays.asList(game.maze.getBottomRightCorner(), game.maze.getBottomLeftCorner(),
 				game.maze.getLeftTunnelEntry(), game.maze.getTopLeftCorner(), game.maze.getBlinkyHome(),
 				game.maze.getTopRightCorner(), game.maze.getRightTunnelEntry(), game.maze.getPacManHome());
@@ -32,8 +34,6 @@ public class FollowFixedPathTestController implements ViewController {
 	@Override
 	public void init() {
 		targetIndex = 0;
-		game.setLevel(1);
-		game.maze.tiles().filter(game.maze::isFood).forEach(game::eatFoodAtTile);
 		game.setActive(game.pacMan, false);
 		game.ghosts().filter(ghost -> ghost != game.blinky).forEach(ghost -> game.setActive(ghost, false));
 		game.blinky.initGhost();
