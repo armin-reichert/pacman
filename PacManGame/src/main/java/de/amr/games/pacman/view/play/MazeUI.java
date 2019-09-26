@@ -2,7 +2,6 @@ package de.amr.games.pacman.view.play;
 
 import static de.amr.games.pacman.model.PacManGame.TS;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Optional;
 
@@ -26,11 +25,9 @@ public class MazeUI extends SpriteEntity {
 	private boolean flashing;
 	private Bonus bonus;
 	private int bonusTimer;
-	private Color bgColor;
 
-	public MazeUI(PacManGame game, Color bgColor) {
+	public MazeUI(PacManGame game) {
 		this.game = game;
-		this.bgColor = bgColor;
 		sprites.set("s_normal", game.theme.spr_fullMaze());
 		sprites.set("s_flashing", game.theme.spr_flashingMaze());
 		sprites.select("s_normal");
@@ -85,7 +82,7 @@ public class MazeUI extends SpriteEntity {
 	public void draw(Graphics2D g) {
 		Sprite mazeSprite = sprites.current().get();
 		g.translate(tf.getX(), tf.getY());
-		g.setColor(bgColor);
+		g.setColor(game.theme.color_mazeBackground());
 		g.fillRect(0, 0, mazeSprite.getWidth(), mazeSprite.getHeight());
 		mazeSprite.draw(g);
 		g.translate(-tf.getX(), -tf.getY());
@@ -95,7 +92,7 @@ public class MazeUI extends SpriteEntity {
 				if (game.maze.containsEatenFood(tile) || game.maze.containsEnergizer(tile)
 						&& energizerBlinkingAnimation.currentFrame() != 0) {
 					g.translate(tile.col * TS, tile.row * TS);
-					g.setColor(bgColor);
+					g.setColor(game.theme.color_mazeBackground());
 					g.fillRect(0, 0, TS, TS);
 					g.translate(-tile.col * TS, -tile.row * TS);
 				}

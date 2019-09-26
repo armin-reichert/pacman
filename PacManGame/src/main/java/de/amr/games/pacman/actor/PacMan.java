@@ -23,8 +23,8 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.EventManager;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
-import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
+import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
@@ -104,7 +104,7 @@ public class PacMan extends MazeEntity {
 	public boolean hasPower() {
 		return getState() == POWER;
 	}
-	
+
 	public boolean isDead() {
 		return getState() == DEAD;
 	}

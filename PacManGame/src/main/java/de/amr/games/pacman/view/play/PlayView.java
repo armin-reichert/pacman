@@ -35,13 +35,13 @@ public class PlayView implements View, Controller, PacManWorld {
 	protected Color infoTextColor;
 	protected boolean scoresVisible;
 
-	public PlayView(PacManGame game, Color mazeBgColor) {
+	public PlayView(PacManGame game) {
 		this.width = app().settings.width;
 		this.height = app().settings.height;
 		this.game = game;
 		game.pacMan.setWorld(this);
 		lifeImage = game.theme.spr_pacManWalking(Top4.W).frame(1);
-		mazeView = new MazeUI(game, mazeBgColor);
+		mazeView = new MazeUI(game);
 		mazeView.tf.setPosition(0, 3 * TS);
 	}
 

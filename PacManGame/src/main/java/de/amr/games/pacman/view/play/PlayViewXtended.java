@@ -67,8 +67,8 @@ public class PlayViewXtended extends PlayView {
 		return image;
 	}
 
-	public PlayViewXtended(PacManGame game, Color mazeBgColor) {
-		super(game, mazeBgColor);
+	public PlayViewXtended(PacManGame game) {
+		super(game);
 		gridImage = createGridImage(game.maze.numRows(), game.maze.numCols());
 	}
 

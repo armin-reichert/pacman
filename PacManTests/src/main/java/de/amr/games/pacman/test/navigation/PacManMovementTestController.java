@@ -1,7 +1,5 @@
 package de.amr.games.pacman.test.navigation;
 
-import java.awt.Color;
-
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -16,7 +14,7 @@ public class PacManMovementTestController implements ViewController {
 
 	public PacManMovementTestController(PacManTheme theme) {
 		game = new PacManGame(theme);
-		view = new PlayViewXtended(game, Color.BLACK);
+		view = new PlayViewXtended(game);
 		view.setShowRoutes(true);
 		view.setShowGrid(true);
 		view.setShowStates(false);

@@ -64,16 +64,16 @@ public class GhostAttackController extends StateMachine<GhostState, Void> {
 
 	public void suspend() {
 		if (!suspended) {
-			LOGGER.info(String.format("%s: suspended in state %s, remaining time: %d frames", getDescription(),
-					getState(), getTicksRemaining()));
+			LOGGER.info(String.format("%s: suspended in state %s, remaining time: %d frames",
+					getDescription(), getState(), getTicksRemaining()));
 			suspended = true;
 		}
 	}
 
 	public void resume() {
 		if (suspended) {
-			LOGGER.info(String.format("%s: resumed in state %s, remaining time: %d frames", getDescription(),
-					getState(), getTicksRemaining()));
+			LOGGER.info(String.format("%s: resumed in state %s, remaining time: %d frames",
+					getDescription(), getState(), getTicksRemaining()));
 			suspended = false;
 		}
 	}

@@ -1,5 +1,6 @@
 package de.amr.games.pacman.theme;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.util.stream.Stream;
 
@@ -39,6 +40,10 @@ public interface PacManTheme {
 
 	default Font fnt_text(int size) {
 		return fnt_text().deriveFont((float) size);
+	}
+
+	default Color color_mazeBackground() {
+		return Color.BLACK;
 	}
 
 	// Background music

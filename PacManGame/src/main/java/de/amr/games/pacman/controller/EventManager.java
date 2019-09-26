@@ -10,7 +10,7 @@ import java.util.function.Consumer;
  * Manages a list of event listeners which are informed about events published by some object.
  * 
  * @param <E>
- *              event type
+ *          event type
  */
 public class EventManager<E> {
 

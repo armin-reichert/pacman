@@ -13,7 +13,7 @@ import de.amr.games.pacman.model.Tile;
  * @author Armin Reichert
  *
  * @param <T>
- *              actor type
+ *          actor type
  */
 class FollowFixedPath<T extends MazeEntity> implements Behavior<T> {
 

@@ -1,6 +1,5 @@
 package de.amr.games.pacman.test.navigation;
 
-import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class FollowFixedPathTestController implements ViewController {
 		targets = Arrays.asList(game.maze.getBottomRightCorner(), game.maze.getBottomLeftCorner(),
 				game.maze.getLeftTunnelEntry(), game.maze.getTopLeftCorner(), game.maze.getBlinkyHome(),
 				game.maze.getTopRightCorner(), game.maze.getRightTunnelEntry(), game.maze.getPacManHome());
-		view = new PlayViewXtended(game, Color.BLACK);
+		view = new PlayViewXtended(game);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
 		view.setShowStates(false);

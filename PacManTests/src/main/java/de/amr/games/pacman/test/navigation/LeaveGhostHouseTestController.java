@@ -1,7 +1,5 @@
 package de.amr.games.pacman.test.navigation;
 
-import java.awt.Color;
-
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.GhostState;
@@ -18,7 +16,7 @@ public class LeaveGhostHouseTestController implements ViewController {
 		game = new PacManGame(theme);
 		game.setLevel(1);
 		game.maze.removeFood();
-		view = new PlayViewXtended(game, Color.BLACK);
+		view = new PlayViewXtended(game);
 		view.setShowRoutes(true);
 		view.setShowGrid(true);
 		view.setShowStates(true);
@@ -28,7 +26,8 @@ public class LeaveGhostHouseTestController implements ViewController {
 	@Override
 	public void init() {
 		game.pacMan.setVisible(false);
-		game.ghosts().filter(ghost -> ghost != game.inky).forEach(ghost -> game.setActive(ghost, false));
+		game.ghosts().filter(ghost -> ghost != game.inky)
+				.forEach(ghost -> game.setActive(ghost, false));
 		game.inky.initGhost();
 		game.inky.fnNextState = () -> GhostState.SCATTERING;
 		game.inky.setState(GhostState.SCATTERING);

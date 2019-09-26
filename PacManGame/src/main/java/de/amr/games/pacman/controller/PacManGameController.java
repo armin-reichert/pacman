@@ -86,7 +86,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	private PlayView playView() {
 		if (playView == null) {
-			playView = new PlayViewXtended(game, Color.BLACK);
+			playView = new PlayViewXtended(game);
 		}
 		return playView;
 	}
