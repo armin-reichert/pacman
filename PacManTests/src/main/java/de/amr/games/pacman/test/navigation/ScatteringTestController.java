@@ -1,5 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
+import java.awt.Color;
+
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Ghost;
@@ -15,7 +17,7 @@ public class ScatteringTestController implements ViewController {
 
 	public ScatteringTestController(PacManTheme theme) {
 		game = new PacManGame(theme);
-		view = new PlayViewXtended(game);
+		view = new PlayViewXtended(game, Color.BLACK);
 		view.setShowGrid(true);
 		view.setShowRoutes(true);
 		view.setShowStates(true);

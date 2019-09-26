@@ -1,5 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
+import java.awt.Color;
+
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.GhostState;
@@ -16,7 +18,7 @@ public class EscapeIntoCornerTestController implements ViewController {
 		game = new PacManGame(theme);
 		game.setLevel(1);
 		game.maze.removeFood();
-		view = new PlayViewXtended(game);
+		view = new PlayViewXtended(game, Color.BLACK);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
 		view.setShowStates(true);

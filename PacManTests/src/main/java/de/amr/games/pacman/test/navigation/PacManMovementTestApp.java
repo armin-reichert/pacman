@@ -1,5 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
+import java.awt.Color;
+
 import de.amr.games.pacman.PacManApp;
 
 public class PacManMovementTestApp extends PacManApp {
@@ -10,6 +12,7 @@ public class PacManMovementTestApp extends PacManApp {
 
 	public PacManMovementTestApp() {
 		settings.title = "Pac-Man Movement";
+		settings.bgColor = Color.GREEN;
 	}
 
 	@Override

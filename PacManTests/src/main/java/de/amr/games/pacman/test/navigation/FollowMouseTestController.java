@@ -3,6 +3,7 @@ package de.amr.games.pacman.test.navigation;
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.games.pacman.model.PacManGame.TS;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import de.amr.easy.game.input.Keyboard;
@@ -25,7 +26,7 @@ public class FollowMouseTestController implements ViewController {
 		game = new PacManGame(theme);
 		game.setLevel(1);
 		game.maze.removeFood();
-		view = new PlayViewXtended(game);
+		view = new PlayViewXtended(game, Color.BLACK);
 		view.setShowRoutes(true);
 		view.setShowGrid(true);
 		view.setShowStates(false);

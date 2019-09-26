@@ -1,40 +1,42 @@
 package de.amr.games.pacman.view.play;
 
-import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.PacManGame.TS;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Optional;
 
 import de.amr.easy.game.entity.SpriteEntity;
 import de.amr.easy.game.ui.sprites.Animation;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
+import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.Bonus;
-import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.PacManTheme;
 
 /**
- * Displays the maze, bonus symbol and handles animation of energizers and maze.
+ * Displays the maze, bonus symbol and handles animations like blinking.
  * 
  * @author Armin Reichert
  */
-public class MazeView extends SpriteEntity {
+public class MazeUI extends SpriteEntity {
 
-	private final Maze maze;
-	private final Animation energizerBlinking;
+	private final PacManGame game;
+	private final Animation energizerBlinkingAnimation;
 	private boolean flashing;
 	private Bonus bonus;
 	private int bonusTimer;
+	private Color bgColor;
 
-	public MazeView(Maze maze, PacManTheme theme) {
-		this.maze = maze;
-		sprites.set("s_normal", theme.spr_fullMaze());
-		sprites.set("s_flashing", theme.spr_flashingMaze());
+	public MazeUI(PacManGame game, Color bgColor) {
+		this.game = game;
+		this.bgColor = bgColor;
+		sprites.set("s_normal", game.theme.spr_fullMaze());
+		sprites.set("s_flashing", game.theme.spr_flashingMaze());
 		sprites.select("s_normal");
-		energizerBlinking = new CyclicAnimation(2);
-		energizerBlinking.setFrameDuration(500);
-		energizerBlinking.setEnabled(false);
+		energizerBlinkingAnimation = new CyclicAnimation(2);
+		energizerBlinkingAnimation.setFrameDuration(500);
+		energizerBlinkingAnimation.setEnabled(false);
 	}
 
 	@Override
@@ -52,17 +54,17 @@ public class MazeView extends SpriteEntity {
 				bonus = null;
 			}
 		}
-		energizerBlinking.update();
+		energizerBlinkingAnimation.update();
 	}
 
-	public void setFlashing(boolean on) {
-		flashing = on;
+	public void setFlashing(boolean state) {
+		flashing = state;
 		sprites.select(flashing ? "s_flashing" : "s_normal");
 	}
 
 	public void setBonus(Bonus bonus) {
 		this.bonus = bonus;
-		Tile tile = maze.getBonusTile();
+		Tile tile = game.maze.getBonusTile();
 		bonus.tf.setPosition(tile.col * TS + TS / 2, tile.row * TS);
 	}
 
@@ -76,21 +78,24 @@ public class MazeView extends SpriteEntity {
 
 	public void enableSprites(boolean enable) {
 		sprites.enableAnimation(enable);
-		energizerBlinking.setEnabled(enable);
+		energizerBlinkingAnimation.setEnabled(enable);
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
+		Sprite mazeSprite = sprites.current().get();
 		g.translate(tf.getX(), tf.getY());
-		sprites.current().get().draw(g);
+		g.setColor(bgColor);
+		g.fillRect(0, 0, mazeSprite.getWidth(), mazeSprite.getHeight());
+		mazeSprite.draw(g);
 		g.translate(-tf.getX(), -tf.getY());
 		if (!flashing) {
-			// hide eaten pellets and let energizer blink
-			maze.tiles().forEach(tile -> {
-				if (maze.containsEatenFood(tile)
-						|| maze.containsEnergizer(tile) && energizerBlinking.currentFrame() != 0) {
+			// hide eaten pellets and let energizers blink
+			game.maze.tiles().forEach(tile -> {
+				if (game.maze.containsEatenFood(tile) || game.maze.containsEnergizer(tile)
+						&& energizerBlinkingAnimation.currentFrame() != 0) {
 					g.translate(tile.col * TS, tile.row * TS);
-					g.setColor(app().settings.bgColor);
+					g.setColor(bgColor);
 					g.fillRect(0, 0, TS, TS);
 					g.translate(-tile.col * TS, -tile.row * TS);
 				}
