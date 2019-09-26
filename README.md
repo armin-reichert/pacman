@@ -80,7 +80,7 @@ beginStateMachine()
 				stop(chasePacMan, chaseGhosts);
 				chasePacMan.tf.centerX(width);
 			})
-			
+
 		.state(2)
 			// Show ghost points animation and blinking text
 			.timeoutAfter(() -> app().clock.sec(6))
@@ -92,20 +92,20 @@ beginStateMachine()
 				ghostPoints.stopAnimation();
 				hide(ghostPoints, pressSpace);
 			})
-			
+
 		.state(42)
-			
+
 	.transitions()
-		
+
 		.when(0).then(1)
 			.condition(() -> logo.isAnimationCompleted())
-		
+
 		.when(1).then(2)
 			.condition(() -> chasePacMan.isAnimationCompleted() && chaseGhosts.isAnimationCompleted())
-		
+
 		.when(2).then(1)
 			.onTimeout()
-		
+
 		.when(2).then(42)
 			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 
@@ -128,7 +128,7 @@ beginStateMachine()
 
 		.state(INTRO)
 			.onEntry(() -> {
-				setViewController(getIntroView());
+				selectView(introView());
 				theme.snd_insertCoin().play();
 				theme.loadMusic();
 			})
@@ -157,8 +157,8 @@ beginStateMachine()
 	.transitions()
 
 		.when(INTRO).then(READY)
-			.condition(() -> getIntroView().isComplete())
-			.act(() -> setViewController(getPlayView()))
+			.condition(() -> introView().isComplete())
+			.act(() -> selectView(playView()))
 
 		.when(READY).then(PLAYING)
 			.onTimeout()
@@ -215,12 +215,13 @@ beginStateMachine()
 			.onTimeout()
 
 		.when(PACMAN_DYING).then(GAME_OVER)
-			.condition(() -> isPacManDead() && game.getLives() == 0)
+			.condition(() -> game.pacMan.isDead() && game.getLives() == 0)
 
 		.when(PACMAN_DYING).then(PLAYING)
-			.condition(() -> isPacManDead() && game.getLives() > 0)
+			.condition(() -> game.pacMan.isDead() && game.getLives() > 0)
 			.act(() -> {
-				resetPlayView();
+				game.activeActors().forEach(MazeEntity::init);
+				playView().init();
 				playingState().setInitialWaitTimer(app().clock.sec(1.7f));
 			})
 
@@ -266,8 +267,8 @@ public class GhostAttackController extends StateMachine<GhostState, Void> {
 **Pac-Man** is controlled by the following state machine:
 
 ```java
-beginStateMachine(PacManState.class, GameEvent.class)
-		
+beginStateMachine(PacManState.class, PacManGameEvent.class)
+
 	.description("[Pac-Man]")
 	.initialState(HOME)
 
@@ -275,11 +276,11 @@ beginStateMachine(PacManState.class, GameEvent.class)
 
 		.state(HOME)
 			.onEntry(this::initPacMan)
-			.timeoutAfter(() -> app().clock.sec(1.5f))
+			.timeoutAfter(() -> 0)
 
 		.state(HUNGRY)
 			.impl(new HungryState())
-			
+
 		.state(POWER)
 			.impl(new PowerState())
 			.timeoutAfter(game::getPacManPowerTime)
@@ -290,7 +291,7 @@ beginStateMachine(PacManState.class, GameEvent.class)
 	.transitions()
 
 		.when(HOME).then(HUNGRY).onTimeout()
-		
+
 		.when(HUNGRY).then(DYING)
 			.on(PacManKilledEvent.class)
 
@@ -299,7 +300,7 @@ beginStateMachine(PacManState.class, GameEvent.class)
 
 		.stay(POWER)
 			.on(PacManGainsPowerEvent.class)
-			.act(fsm::resetTimer)
+			.act(() -> fsm.resetTimer())
 
 		.when(POWER).then(HUNGRY)
 			.onTimeout()
@@ -679,7 +680,7 @@ This work would not have been possible without these invaluable sources of infor
 
 ## Summary
 
-The goal of this project was to provide a [Pac-Man](https://en.wikipedia.org/wiki/List_of_Pac-Man_video_games) implementation such that the game's inner workings can be understood from the code. The implementation follows the MVC pattern and uses finite state machines for the control logic of the actors and the game. The state machines are implemented in a declarative way using the *builder* pattern. 
+The goal of this project was to provide a [Pac-Man](https://en.wikipedia.org/wiki/List_of_Pac-Man_video_games) implementation such that the game's inner workings can more easily be understood from the code. The implementation follows the MVC pattern and uses *finite state machines* for the control logic of the actors and the game. The state machines are implemented in a declarative way using the *builder* pattern. 
 
 A simple home-grown library is used for the basic game infrastructure (active rendering, game loop, full-screen mode, 
 keyboard and mouse handling etc.), but it should be not too difficult to implement these infrastructure parts from scratch or 
