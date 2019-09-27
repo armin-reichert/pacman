@@ -94,7 +94,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 
 	private void reviveGhost() {
 		placeAtTile(revivalTile, TS / 2, 0);
-		if (this == getGame().blinky) {
+		if (this == game.blinky) {
 			setMoveDir(Top4.N);
 			setNextDir(Top4.N);
 		}
@@ -107,10 +107,6 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 	}
 
 	// Accessors
-
-	public PacManGame getGame() {
-		return game;
-	}
 
 	@Override
 	public Maze getMaze() {
@@ -140,7 +136,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 
 	@Override
 	public float getSpeed() {
-		return getGame().getGhostSpeed(this);
+		return game.getGhostSpeed(this);
 	}
 
 	public int getFoodCounter() {
@@ -254,14 +250,14 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 					})
 					.onTick(() -> {
 						move();
-						sprites.select(getGame().pacMan.isPowerEnding() ? "s_flashing" : "s_frightened");
+						sprites.select(game.pacMan.isPowerEnding() ? "s_flashing" : "s_frightened");
 					})
 				
 				.state(DYING)
-					.timeoutAfter(getGame()::getGhostDyingTime)
+					.timeoutAfter(game::getGhostDyingTime)
 					.onEntry(() -> {
-						sprites.select("s_value" + getGame().getGhostsKilledByEnergizer()); 
-						getGame().addGhostKilled();
+						sprites.select("s_value" + game.getGhostsKilledByEnergizer()); 
+						game.addGhostKilled();
 					})
 				
 				.state(DEAD)
@@ -273,7 +269,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 						sprites.select("s_eyes_" + getMoveDir());
 					})
 					.onExit(() -> {
-						if (getGame().activeGhosts().filter(ghost -> ghost != this)
+						if (game.activeGhosts().filter(ghost -> ghost != this)
 								.noneMatch(ghost -> ghost.getState() == DEAD)) {
 							theme.snd_ghost_dead().stop();
 						}
@@ -282,7 +278,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 			.transitions()
 
 				.when(LOCKED).then(FRIGHTENED)
-					.condition(() -> game.canLeaveGhostHouse(this) && getGame().pacMan.hasPower())
+					.condition(() -> game.canLeaveGhostHouse(this) && game.pacMan.hasPower())
 
 				.when(LOCKED).then(SCATTERING)
 					.condition(() -> game.canLeaveGhostHouse(this) && getNextState() == SCATTERING)
