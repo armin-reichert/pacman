@@ -349,7 +349,7 @@ public class PacManGame {
 		case DYING:
 			return 0;
 		case DEAD:
-			return speed(1.5f);
+			return speed(1.25f);
 		case FRIGHTENED:
 			return slow ? slowSpeed : speed(Param.GHOST_FRIGHTENED_SPEED.asFloat(level));
 		case LOCKED:
