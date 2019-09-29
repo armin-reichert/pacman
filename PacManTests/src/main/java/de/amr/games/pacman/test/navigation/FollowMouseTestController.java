@@ -46,7 +46,6 @@ public class FollowMouseTestController implements ViewController {
 		game.setActive(game.pacMan, true);
 		game.blinky.init();
 		game.blinky.setState(GhostState.CHASING);
-		game.blinky.setBehavior(GhostState.CHASING, game.blinky.headFor(() -> targetTile));
 	}
 
 	@Override
@@ -67,7 +66,7 @@ public class FollowMouseTestController implements ViewController {
 
 	private void selectBehavior() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
-			game.blinky.setBehavior(GhostState.CHASING, game.blinky.headFor(() -> targetTile));
+			game.blinky.setBehavior(GhostState.CHASING, game.blinky.attackDirectly(game.pacMan));
 		}
 		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
 			game.blinky.setBehavior(GhostState.CHASING, game.blinky.followRoute(() -> targetTile));
