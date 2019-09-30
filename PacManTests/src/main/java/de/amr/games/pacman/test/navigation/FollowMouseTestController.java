@@ -24,6 +24,8 @@ public class FollowMouseTestController implements ViewController {
 		g = new PacManGame(theme);
 		g.setLevel(1);
 		g.maze.removeFood();
+		g.setActive(g.pacMan, false);
+		g.ghosts().forEach(ghost -> g.setActive(ghost, ghost == g.blinky));
 		view = new PlayViewXtended(g);
 		view.setShowRoutes(true);
 		view.setShowGrid(true);
@@ -38,36 +40,38 @@ public class FollowMouseTestController implements ViewController {
 
 	@Override
 	public void init() {
-		g.pacMan.placeAtTile(g.maze.getPacManHome(), 0, 0);
-		g.ghosts().forEach(ghost -> g.setActive(ghost, false));
-		g.setActive(g.blinky, true);
-		g.setActive(g.pacMan, true);
 		g.blinky.init();
+		g.blinky.setBehavior(CHASING, g.blinky.headFor(this::currentMouseTile));
 		g.blinky.setState(CHASING);
+	}
+
+	private Tile currentMouseTile = new Tile(0, 0);
+
+	private Tile currentMouseTile() {
+		return currentMouseTile;
 	}
 
 	@Override
 	public void update() {
-		handleRoutingChange();
-		handleTargetChange();
+		handleRoutingMode();
+		handleMouseMove();
 		g.blinky.update();
 		view.update();
 	}
 
-	private void handleTargetChange() {
+	private void handleMouseMove() {
 		if (Mouse.moved()) {
-			Tile mousePosition = new Tile(Mouse.getX() / TS, Mouse.getY() / TS);
-			g.pacMan.placeAtTile(mousePosition, 0, 0);
-			LOGGER.info("New position of Pac-Man: " + mousePosition.toString());
+			currentMouseTile = new Tile(Mouse.getX() / TS, Mouse.getY() / TS);
+			LOGGER.info("New mouse position: " + currentMouseTile.toString());
 		}
 	}
 
-	private void handleRoutingChange() {
+	private void handleRoutingMode() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
-			g.blinky.setBehavior(CHASING, g.blinky.attackDirectly(g.pacMan));
+			g.blinky.setBehavior(CHASING, g.blinky.headFor(this::currentMouseTile));
 		}
 		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
-			g.blinky.setBehavior(CHASING, g.blinky.followRoute(() -> g.pacMan.getTile()));
+			g.blinky.setBehavior(CHASING, g.blinky.followRoute(this::currentMouseTile));
 		}
 	}
 }
