@@ -128,7 +128,7 @@ beginStateMachine()
 
 		.state(INTRO)
 			.onEntry(() -> {
-				selectView(introView());
+				showIntroView();
 				theme.snd_insertCoin().play();
 				theme.loadMusic();
 			})
@@ -137,7 +137,7 @@ beginStateMachine()
 			.impl(new ReadyState())
 
 		.state(PLAYING)
-			.impl(new PlayingState())
+			.impl(playingState = new PlayingState())
 
 		.state(CHANGING_LEVEL)
 			.impl(new ChangingLevelState())
@@ -152,49 +152,49 @@ beginStateMachine()
 
 		.state(GAME_OVER)
 			.impl(new GameOverState())
-			.timeoutAfter(() -> app().clock.sec(30))
+			.timeoutAfter(() -> app().clock.sec(60))
 
 	.transitions()
 
 		.when(INTRO).then(READY)
-			.condition(() -> introView().isComplete())
-			.act(() -> selectView(playView()))
+			.condition(() -> introView.isComplete())
+			.act(() -> showPlayView())
 
 		.when(READY).then(PLAYING)
 			.onTimeout()
-			.act(() -> playingState().setInitialWaitTimer(app().clock.sec(1.7f)))
+			.act(() -> playingState.setInitialWaitTimer(app().clock.sec(1.7f)))
 
 		.stay(PLAYING)
 			.on(FoodFoundEvent.class)
-			.act(playingState()::onFoodFound)
+			.act(playingState::onFoodFound)
 
 		.stay(PLAYING)
 			.on(BonusFoundEvent.class)
-			.act(playingState()::onBonusFound)
+			.act(playingState::onBonusFound)
 
 		.stay(PLAYING)
 			.on(PacManGhostCollisionEvent.class)
-			.act(playingState()::onPacManGhostCollision)
+			.act(playingState::onPacManGhostCollision)
 
 		.stay(PLAYING)
 			.on(PacManGainsPowerEvent.class)
-			.act(playingState()::onPacManGainsPower)
+			.act(playingState::onPacManGainsPower)
 
 		.stay(PLAYING)
 			.on(PacManGettingWeakerEvent.class)
-			.act(playingState()::onPacManGettingWeaker)
+			.act(playingState::onPacManGettingWeaker)
 
 		.stay(PLAYING)
 			.on(PacManLostPowerEvent.class)
-			.act(playingState()::onPacManLostPower)
+			.act(playingState::onPacManLostPower)
 
 		.when(PLAYING).then(GHOST_DYING)
 			.on(GhostKilledEvent.class)
-			.act(playingState()::onGhostKilled)
+			.act(playingState::onGhostKilled)
 
 		.when(PLAYING).then(PACMAN_DYING)
 			.on(PacManKilledEvent.class)
-			.act(playingState()::onPacManKilled)
+			.act(playingState::onPacManKilled)
 
 		.when(PLAYING).then(CHANGING_LEVEL)
 			.on(LevelCompletedEvent.class)
@@ -221,8 +221,8 @@ beginStateMachine()
 			.condition(() -> game.pacMan.isDead() && game.getLives() > 0)
 			.act(() -> {
 				game.activeActors().forEach(MazeEntity::init);
-				playView().init();
-				playingState().setInitialWaitTimer(app().clock.sec(1.7f));
+				playView.init();
+				playingState.setInitialWaitTimer(app().clock.sec(1.7f));
 			})
 
 		.when(GAME_OVER).then(READY)
