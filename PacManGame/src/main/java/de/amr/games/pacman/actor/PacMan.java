@@ -52,7 +52,6 @@ public class PacMan extends MazeEntity {
 	private final StateMachine<PacManState, PacManGameEvent> fsm;
 	private final EventManager<PacManGameEvent> eventManager;
 	private final PacManTheme theme;
-	private PacManWorld world;
 	private int eatTimer; // ticks since last pellet was eaten
 
 	public PacMan(PacManGame game, PacManTheme theme) {
@@ -70,10 +69,6 @@ public class PacMan extends MazeEntity {
 		setNextDir(Top4.E);
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("s_full");
-	}
-
-	public void setWorld(PacManWorld world) {
-		this.world = world;
 	}
 
 	// Accessors
@@ -255,13 +250,13 @@ public class PacMan extends MazeEntity {
 		}
 
 		protected void inspectWorld() {
-			if (world == null || !getEventManager().isEnabled()) {
+			if (!getEventManager().isEnabled()) {
 				return;
 			}
 			Tile tile = getTile();
 
 			/*@formatter:off*/
-			Optional<Ghost> collidingGhost = world.getGhosts()
+			Optional<Ghost> collidingGhost = game.activeGhosts()
 				.filter(ghost -> ghost.getState() != GhostState.DEAD)
 				.filter(ghost -> ghost.getState() != GhostState.DYING)
 				.filter(ghost -> ghost.getState() != GhostState.LOCKED)
@@ -274,7 +269,7 @@ public class PacMan extends MazeEntity {
 			}
 
 			/*@formatter:off*/
-			Optional<Bonus> activeBonus = world.getBonus()
+			Optional<Bonus> activeBonus = game.getBonus()
 					.filter(bonus -> bonus.tile().equals(tile))
 					.filter(bonus -> !bonus.consumed());
 			/*@formatter:on*/

@@ -402,7 +402,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
-			playView.getBonus().ifPresent(bonus -> {
+			game.getBonus().ifPresent(bonus -> {
 				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.symbol(),
 						bonus.value()));
 				theme.snd_eatFruit().play();
@@ -537,7 +537,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			waitTimer = app().clock.sec(3);
 			game.score.save();
 			game.activeGhosts().forEach(ghost -> ghost.setVisible(true));
-			playView.getBonus().ifPresent(bonus -> bonus.setVisible(false));
+			game.getBonus().ifPresent(bonus -> bonus.setVisible(false));
 			playView.enableAnimation(false);
 		}
 

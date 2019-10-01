@@ -3,7 +3,6 @@ package de.amr.games.pacman.view.play;
 import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.awt.Graphics2D;
-import java.util.Optional;
 
 import de.amr.easy.game.entity.SpriteEntity;
 import de.amr.easy.game.ui.sprites.Animation;
@@ -23,7 +22,6 @@ public class MazeUI extends SpriteEntity {
 	private final PacManGame game;
 	private final Animation energizerBlinkingAnimation;
 	private boolean flashing;
-	private Bonus bonus;
 	private int bonusTimer;
 
 	public MazeUI(PacManGame game) {
@@ -38,7 +36,7 @@ public class MazeUI extends SpriteEntity {
 
 	@Override
 	public void init() {
-		bonus = null;
+		game.removeBonus();
 		bonusTimer = 0;
 		setFlashing(false);
 	}
@@ -48,7 +46,7 @@ public class MazeUI extends SpriteEntity {
 		if (bonusTimer > 0) {
 			bonusTimer -= 1;
 			if (bonusTimer == 0) {
-				bonus = null;
+				game.removeBonus();
 			}
 		}
 		energizerBlinkingAnimation.update();
@@ -60,13 +58,13 @@ public class MazeUI extends SpriteEntity {
 	}
 
 	public void setBonus(Bonus bonus) {
-		this.bonus = bonus;
+		game.setBonus(bonus);
 		Tile tile = game.maze.getBonusTile();
 		bonus.tf.setPosition(tile.col * TS + TS / 2, tile.row * TS);
 	}
 
-	public Optional<Bonus> getBonus() {
-		return Optional.ofNullable(bonus);
+	public void removeBonus() {
+		game.removeBonus();
 	}
 
 	public void setBonusTimer(int ticks) {
@@ -97,9 +95,7 @@ public class MazeUI extends SpriteEntity {
 					g.translate(-tile.col * TS, -tile.row * TS);
 				}
 			});
-			if (bonus != null) {
-				bonus.draw(g);
-			}
+			game.getBonus().ifPresent(bonus -> bonus.draw(g));
 		}
 	}
 }

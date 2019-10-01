@@ -21,10 +21,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeEntity;
@@ -141,6 +144,8 @@ public class PacManGame {
 	/** Current level. */
 	private int level;
 
+	private Bonus bonus;
+
 	/** Level counter symbols. */
 	private final List<BonusSymbol> levelCounter = new LinkedList<>();
 
@@ -229,6 +234,7 @@ public class PacManGame {
 	public void init() {
 		lives = 3;
 		level = 0;
+		bonus = null;
 		levelCounter.clear();
 		score.loadHiscore();
 		nextLevel();
@@ -263,6 +269,18 @@ public class PacManGame {
 
 	public void setLevel(int level) {
 		this.level = level;
+	}
+
+	public Optional<Bonus> getBonus() {
+		return Optional.ofNullable(bonus);
+	}
+
+	public void removeBonus() {
+		bonus = null;
+	}
+
+	public void setBonus(Bonus bonus) {
+		this.bonus = Objects.requireNonNull(bonus);
 	}
 
 	public List<BonusSymbol> getLevelCounter() {

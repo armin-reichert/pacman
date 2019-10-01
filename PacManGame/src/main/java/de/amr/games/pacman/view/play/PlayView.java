@@ -7,15 +7,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.actor.Bonus;
-import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.PacManWorld;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.graph.grid.impl.Top4;
@@ -25,7 +21,7 @@ import de.amr.graph.grid.impl.Top4;
  * 
  * @author Armin Reichert
  */
-public class PlayView implements View, Controller, PacManWorld {
+public class PlayView implements View, Controller {
 
 	protected final int width, height;
 	protected final PacManGame game;
@@ -39,7 +35,6 @@ public class PlayView implements View, Controller, PacManWorld {
 		this.width = app().settings.width;
 		this.height = app().settings.height;
 		this.game = game;
-		game.pacMan.setWorld(this);
 		lifeImage = game.theme.spr_pacManWalking(Top4.W).frame(1);
 		mazeView = new MazeUI(game);
 		mazeView.tf.setPosition(0, 3 * TS);
@@ -61,16 +56,6 @@ public class PlayView implements View, Controller, PacManWorld {
 		game.activeGhosts().forEach(ghost -> ghost.sprites.enableAnimation(enable));
 	}
 
-	@Override
-	public Stream<Ghost> getGhosts() {
-		return game.activeGhosts();
-	}
-
-	@Override
-	public Optional<Bonus> getBonus() {
-		return mazeView.getBonus();
-	}
-
 	public void setBonusTimer(int ticks) {
 		mazeView.setBonusTimer(ticks);
 	}
@@ -80,7 +65,7 @@ public class PlayView implements View, Controller, PacManWorld {
 	}
 
 	public void removeBonus() {
-		mazeView.setBonus(null);
+		mazeView.removeBonus();
 	}
 
 	public void setMazeFlashing(boolean flashing) {
