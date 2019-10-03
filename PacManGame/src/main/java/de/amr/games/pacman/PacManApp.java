@@ -19,19 +19,20 @@ public class PacManApp extends Application {
 
 	public static void main(String[] args) {
 		LOGGER.setLevel(Level.INFO);
-		launch(new PacManApp(), args);
+		launch(new PacManApp(new ClassicPacManTheme()), args);
 	}
 
-	public final PacManTheme theme;
+	protected final PacManTheme theme;
 
-	public PacManApp() {
-		theme = new ClassicPacManTheme();
+	public PacManApp(PacManTheme theme) {
+		this.theme = theme;
+		setIcon(theme.spr_ghostFrightened().frame(0));
+		// Default application settings, can be overwritten by command-line arguments
+		settings.title = "Armin's Pac-Man";
 		settings.width = 28 * PacManGame.TS;
 		settings.height = 36 * PacManGame.TS;
 		settings.scale = 2;
-		settings.title = "Armin's Pac-Man";
 		settings.fullScreenOnStart = false;
-		setIcon(theme.spr_ghostFrightened().frame(0));
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
 import de.amr.games.pacman.PacManApp;
+import de.amr.games.pacman.theme.ClassicPacManTheme;
 
 public class ScatteringTestApp extends PacManApp {
 
@@ -9,6 +10,7 @@ public class ScatteringTestApp extends PacManApp {
 	}
 
 	public ScatteringTestApp() {
+		super(new ClassicPacManTheme());
 		settings.title = "Scattering";
 	}
 
