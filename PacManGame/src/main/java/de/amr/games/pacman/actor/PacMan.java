@@ -134,10 +134,6 @@ public class PacMan extends MazeMover {
 		sprites.select("s_full");
 	}
 
-	public void setFullSprite() {
-		sprites.select("s_full");
-	}
-
 	private void updateWalkingSprite() {
 		sprites.select("s_walking_" + getMoveDir());
 		sprites.current().get().enableAnimation(!isStuck());
@@ -318,8 +314,7 @@ public class PacMan extends MazeMover {
 		@Override
 		public void onEntry() {
 			paralyzedTime = app().clock.sec(1);
-			sprites.current().get().enableAnimation(false);
-			setFullSprite();
+			sprites.select("s_full");
 			theme.snd_clips_all().forEach(Sound::stop);
 		}
 
