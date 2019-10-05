@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.MazeEntity;
+import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.PacManTheme;
@@ -121,7 +121,7 @@ public class PacManGame {
 	public final Ghost blinky, pinky, inky, clyde;
 
 	/** The currently active actors. Actors can be toggled during the game. */
-	private final Set<MazeEntity> activeActors = new HashSet<>();
+	private final Set<MazeMover> activeActors = new HashSet<>();
 
 	/** The game score including highscore management. */
 	public final Score score;
@@ -174,7 +174,7 @@ public class PacManGame {
 		clyde = new Ghost(this, theme, "Clyde", GhostColor.ORANGE, maze.getClydeHome(),
 				maze.getClydeHome(), maze.getClydeScatteringTarget(), Top4.N);
 
-		Arrays.asList(pacMan, blinky, pinky, inky, clyde).forEach(activeActors::add);
+		activeActors.addAll((Arrays.asList(pacMan, blinky, pinky, inky, clyde)));
 
 		// Define the ghost behavior ("AI")
 
@@ -200,15 +200,15 @@ public class PacManGame {
 		return ghosts().filter(this::isActive);
 	}
 
-	public Stream<MazeEntity> activeActors() {
+	public Stream<MazeMover> activeActors() {
 		return activeActors.stream();
 	}
 
-	public boolean isActive(MazeEntity actor) {
+	public boolean isActive(MazeMover actor) {
 		return activeActors.contains(actor);
 	}
 
-	public void setActive(MazeEntity actor, boolean active) {
+	public void setActive(MazeMover actor, boolean active) {
 		if (active) {
 			if (activeActors.add(actor)) {
 				actor.init(); // only when not already active

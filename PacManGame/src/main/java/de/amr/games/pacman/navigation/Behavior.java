@@ -1,6 +1,6 @@
 package de.amr.games.pacman.navigation;
 
-import de.amr.games.pacman.actor.MazeEntity;
+import de.amr.games.pacman.actor.MazeMover;
 
 /**
  * Navigation behavior of actors.
@@ -10,7 +10,7 @@ import de.amr.games.pacman.actor.MazeEntity;
  * @param <T>
  *          actor type
  */
-public interface Behavior<T extends MazeEntity> {
+public interface Behavior<T extends MazeMover> {
 
 	/**
 	 * Computes the route the actor should take when this method is called.

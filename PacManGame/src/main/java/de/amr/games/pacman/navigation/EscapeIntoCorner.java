@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.actor.MazeEntity;
+import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
@@ -22,7 +22,7 @@ import de.amr.games.pacman.model.Tile;
  * @param <T>
  *          actor type
  */
-class EscapeIntoCorner<T extends MazeEntity> extends FollowFixedPath<T> {
+class EscapeIntoCorner<T extends MazeMover> extends FollowFixedPath<T> {
 
 	public EscapeIntoCorner(Supplier<Tile> chaserTileSupplier) {
 		super(chaserTileSupplier);

@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.actor.MazeEntity;
+import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
@@ -34,7 +34,7 @@ import de.amr.graph.grid.impl.Top4;
  * 
  * @author Armin Reichert
  */
-class FollowTargetTile<T extends MazeEntity> implements Behavior<T> {
+class FollowTargetTile<T extends MazeMover> implements Behavior<T> {
 
 	private final Supplier<Tile> targetTileSupplier;
 

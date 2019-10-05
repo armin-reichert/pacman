@@ -13,7 +13,7 @@ import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
 
 /**
- * Base class for Pac-Man and the ghosts.
+ * Abstract base class for Pac-Man and the ghosts.
  * 
  * <p>
  * Implements movement inside the maze. Movement is controlled by supplying the intended move
@@ -21,18 +21,38 @@ import de.amr.graph.grid.impl.Top4;
  * 
  * @author Armin Reichert
  */
-public abstract class MazeEntity extends SpriteEntity {
+public abstract class MazeMover extends SpriteEntity {
 
-	/* Current move direction. See {@link Top4} for direction values. */
+	/**
+	 * Converts pixel coordinate (x/y) to tile index (column/row).
+	 * 
+	 * @param coord
+	 *                pixel coordinate
+	 * @return tile index
+	 */
+	private static int tileIndex(float coord) {
+		return round(coord) / TS;
+	}
+
+	/* The maze where this maze mover lives. */
+	private final Maze maze;
+
+	/* Current move direction (Top4.N, Top4.E, Top4.S, Top4.W). */
 	private int moveDir;
 
 	/* The intended move direction, actor turns to this direction as soon as possible. */
 	private int nextDir;
 
-	protected MazeEntity() {
+	protected MazeMover(Maze maze) {
+		this.maze = maze;
 		moveDir = nextDir = Top4.E;
+		// collision box size of maze movers is one tile, sprite size is larger!
 		tf.setWidth(TS);
 		tf.setHeight(TS);
+	}
+
+	public Maze getMaze() {
+		return maze;
 	}
 
 	public int getMoveDir() {
@@ -51,52 +71,91 @@ public abstract class MazeEntity extends SpriteEntity {
 		this.nextDir = nextDir;
 	}
 
-	private static int tileIndex(float coord) {
-		return round(coord) / TS;
-	}
-
+	/**
+	 * @return The tile where this maze mover is located, which is the tile containing the center
+	 *         point of this maze mover.
+	 */
 	public Tile getTile() {
 		Vector2f center = tf.getCenter();
 		return new Tile(tileIndex(center.x), tileIndex(center.y));
 	}
 
+	/**
+	 * Places this maze mover the given tile, optionally with some pixel offset.
+	 * 
+	 * @param tile
+	 *                  the tile where this maze mover is placed
+	 * @param xOffset
+	 *                  pixel offset in x-direction
+	 * @param yOffset
+	 *                  pixel offset in y-direction
+	 */
 	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
 		tf.setPosition(tile.col * TS + xOffset, tile.row * TS + yOffset);
 	}
 
+	/**
+	 * Places this maze mover exactly over its current tile.
+	 */
 	public void align() {
 		placeAtTile(getTile(), 0, 0);
 	}
 
+	/**
+	 * @return <code>true</code> if this maze mover is exactly positioned over its current tile.
+	 */
 	public boolean isAligned() {
 		return getAlignmentX() == 0 && getAlignmentY() == 0;
 	}
 
+	/**
+	 * @return the pixel offset in x-direction wrt the current tile
+	 */
 	public int getAlignmentX() {
 		return round(tf.getX()) % TS;
 	}
 
+	/**
+	 * @return the pixel offset in y-direction wrt the current tile
+	 */
 	public int getAlignmentY() {
 		return round(tf.getY()) % TS;
 	}
 
+	/**
+	 * @return a function returning the intended move direction
+	 */
 	public abstract OptionalInt supplyIntendedDir();
 
+	/**
+	 * @return the current speed (in pixels)
+	 */
 	public abstract float getSpeed();
 
-	public abstract Maze getMaze();
-
+	/**
+	 * @param tile
+	 *               some tile
+	 * @return <code>true</code> if this maze mover can currently enter the tile
+	 */
 	public abstract boolean canEnterTile(Tile tile);
 
+	/**
+	 * @return <code>true</code> if the maze mover cannot move further towards its current direction
+	 */
 	public boolean isStuck() {
 		return tf.getVelocity().length() == 0;
 	}
 
+	/**
+	 * Moves this actor through the maze. Handles changing the direction according to the intended
+	 * move direction, moving around corners without losing alignment, movement through the "teleport"
+	 * tile and getting stuck.
+	 */
 	public void move() {
 		supplyIntendedDir().ifPresent(this::setNextDir);
 		float speed = computeMaxSpeed(nextDir);
 		if (speed > 0) {
-			if (isTurning90()) {
+			if (isTurning90Degrees()) {
 				align();
 			}
 			setMoveDir(nextDir);
@@ -117,7 +176,7 @@ public abstract class MazeEntity extends SpriteEntity {
 		}
 	}
 
-	private boolean isTurning90() {
+	private boolean isTurning90Degrees() {
 		return nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir);
 	}
 

@@ -23,7 +23,6 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.navigation.Behavior;
@@ -39,7 +38,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends MazeEntity implements GhostBehavior {
+public class Ghost extends MazeMover implements GhostBehavior {
 
 	private final PacManGame game;
 	private final String name;
@@ -56,6 +55,7 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 
 	public Ghost(PacManGame game, PacManTheme theme, String name, GhostColor color, Tile initialTile,
 			Tile revivalTile, Tile scatteringTarget, int initialDir) {
+		super(game.maze);
 		this.game = game;
 		this.theme = theme;
 		this.name = name;
@@ -107,11 +107,6 @@ public class Ghost extends MazeEntity implements GhostBehavior {
 	}
 
 	// Accessors
-
-	@Override
-	public Maze getMaze() {
-		return game.maze;
-	}
 
 	public String getName() {
 		return name;

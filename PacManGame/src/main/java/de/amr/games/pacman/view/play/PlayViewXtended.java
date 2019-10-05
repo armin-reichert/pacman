@@ -17,7 +17,7 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.MazeEntity;
+import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.model.PacManGame;
@@ -219,7 +219,7 @@ public class PlayViewXtended extends PlayView {
 		g.translate(-x, -y);
 	}
 
-	private void drawActorAlignment(MazeEntity actor, Graphics2D g) {
+	private void drawActorAlignment(MazeMover actor, Graphics2D g) {
 		g.setColor(Color.GREEN);
 		g.translate(actor.tf.getX(), actor.tf.getY());
 		int w = actor.tf.getWidth(), h = actor.tf.getHeight();

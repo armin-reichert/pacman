@@ -22,7 +22,7 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.MazeEntity;
+import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -254,7 +254,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.when(PACMAN_DYING).then(PLAYING)
 					.condition(() -> game.pacMan.isDead() && game.getLives() > 0)
 					.act(() -> {
-						game.activeActors().forEach(MazeEntity::init);
+						game.activeActors().forEach(MazeMover::init);
 						playView.init();
 						playingState.setInitialWaitTimer(app().clock.sec(1.7f));
 					})
@@ -284,7 +284,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		public void onEntry() {
 			game.init();
 			game.removeLife();
-			game.activeActors().forEach(MazeEntity::init);
+			game.activeActors().forEach(MazeMover::init);
 			playView.init();
 			playView.setScoresVisible(true);
 			playView.enableAnimation(false);
@@ -455,7 +455,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			boolean timeForChange = getTicksRemaining() == getDuration() / 2;
 			if (timeForChange) {
 				game.nextLevel();
-				game.activeActors().forEach(MazeEntity::init);
+				game.activeActors().forEach(MazeMover::init);
 				game.activeGhosts().forEach(ghost -> ghost.setVisible(true));
 				playView.init();
 				playView.showInfoText("Ready!", Color.YELLOW);

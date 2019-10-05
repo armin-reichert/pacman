@@ -29,7 +29,6 @@ import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.PacManTheme;
@@ -42,7 +41,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends MazeEntity {
+public class PacMan extends MazeMover {
 
 	private static final int WEAK_AFTER = 66; /* percentage of power time */
 
@@ -55,6 +54,7 @@ public class PacMan extends MazeEntity {
 	private int eatTimer; // ticks since last pellet was eaten
 
 	public PacMan(PacManGame game, PacManTheme theme) {
+		super(game.maze);
 		this.game = game;
 		this.theme = theme;
 		fsm = buildStateMachine();
@@ -75,11 +75,6 @@ public class PacMan extends MazeEntity {
 
 	public PacManGame getGame() {
 		return game;
-	}
-
-	@Override
-	public Maze getMaze() {
-		return game.maze;
 	}
 
 	public EventManager<PacManGameEvent> getEventManager() {

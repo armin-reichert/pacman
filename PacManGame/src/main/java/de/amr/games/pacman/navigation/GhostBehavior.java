@@ -6,7 +6,7 @@ import static de.amr.games.pacman.model.Maze.NESW;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.MazeEntity;
+import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.model.Tile;
 
@@ -30,7 +30,7 @@ public interface GhostBehavior {
 	 * @return the tile located <code>n</code> tiles ahead of the actor towards its current move
 	 *         direction.
 	 */
-	static Tile ahead(MazeEntity actor, int numTiles) {
+	static Tile ahead(MazeMover actor, int numTiles) {
 		return actor.getTile().tileTowards(actor.getMoveDir(), numTiles);
 	}
 
@@ -145,7 +145,7 @@ public interface GhostBehavior {
 	 *                   the attacker e.g. Pac-Man
 	 * @return escaping behavior
 	 */
-	default Behavior<Ghost> flee(MazeEntity attacker) {
+	default Behavior<Ghost> flee(MazeMover attacker) {
 		return new EscapeIntoCorner<>(attacker::getTile);
 	}
 
@@ -170,7 +170,7 @@ public interface GhostBehavior {
 
 	/**
 	 * Lets the ghost follow a fixed path to the target. The path is precomputed by calling
-	 * {@link Behavior#computePath(MazeEntity)}.
+	 * {@link Behavior#computePath(MazeMover)}.
 	 * 
 	 * @param targetTileSupplier
 	 *                             function supplying the target tile at time of decision
