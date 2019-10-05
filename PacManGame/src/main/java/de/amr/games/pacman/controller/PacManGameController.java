@@ -445,6 +445,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onEntry() {
 			game.activeGhosts().forEach(ghost -> ghost.setVisible(false));
+			game.pacMan.sprites.current().ifPresent(sprite -> sprite.enableAnimation(false));
 			playView.setMazeFlashing(true);
 			theme.snd_clips_all().forEach(Sound::stop);
 		}
