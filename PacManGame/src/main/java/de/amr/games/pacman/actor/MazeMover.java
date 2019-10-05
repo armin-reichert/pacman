@@ -168,9 +168,9 @@ public abstract class MazeMover extends SpriteEntity {
 			tf.move();
 			// check for exit from teleport space
 			if (tf.getX() + tf.getWidth() < 0) {
-				tf.setX(getMaze().numCols() * TS);
+				tf.setX(maze.numCols() * TS);
 			}
-			else if (tf.getX() > (getMaze().numCols()) * TS) {
+			else if (tf.getX() > (maze.numCols()) * TS) {
 				tf.setX(-tf.getWidth());
 			}
 		}
@@ -191,7 +191,7 @@ public abstract class MazeMover extends SpriteEntity {
 		final Tile currentTile = getTile();
 		final Tile neighborTile = currentTile.tileTowards(dir);
 		final float speed = getSpeed();
-		if (getMaze().inTeleportSpace(currentTile)) {
+		if (maze.inTeleportSpace(currentTile)) {
 			// in teleporting area only horizontal movement is possible
 			return dir == Top4.N || dir == Top4.S ? 0 : speed;
 		}
