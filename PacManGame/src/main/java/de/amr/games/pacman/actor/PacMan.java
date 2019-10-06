@@ -31,7 +31,6 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.graph.grid.impl.Top4;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
@@ -50,13 +49,11 @@ public class PacMan extends MazeMover {
 	private final PacManGame game;
 	private final StateMachine<PacManState, PacManGameEvent> fsm;
 	private final EventManager<PacManGameEvent> eventManager;
-	private final PacManTheme theme;
 	private int eatTimer; // ticks since last pellet was eaten
 
-	public PacMan(PacManGame game, PacManTheme theme) {
+	public PacMan(PacManGame game) {
 		super(game.maze);
 		this.game = game;
-		this.theme = theme;
 		fsm = buildStateMachine();
 		fsm.traceTo(LOGGER, app().clock::getFrequency);
 		eventManager = new EventManager<>("[PacMan]");
@@ -128,9 +125,9 @@ public class PacMan extends MazeMover {
 	// Sprites
 
 	private void setSprites() {
-		NESW.dirs().forEach(dir -> sprites.set("s_walking_" + dir, theme.spr_pacManWalking(dir)));
-		sprites.set("s_dying", theme.spr_pacManDying());
-		sprites.set("s_full", theme.spr_pacManFull());
+		NESW.dirs().forEach(dir -> sprites.set("s_walking_" + dir, game.theme.spr_pacManWalking(dir)));
+		sprites.set("s_dying", game.theme.spr_pacManDying());
+		sprites.set("s_full", game.theme.spr_pacManFull());
 		sprites.select("s_full");
 	}
 
@@ -286,12 +283,12 @@ public class PacMan extends MazeMover {
 
 		@Override
 		public void onEntry() {
-			theme.snd_waza().loop();
+			game.theme.snd_waza().loop();
 		}
 
 		@Override
 		public void onExit() {
-			theme.snd_waza().stop();
+			game.theme.snd_waza().stop();
 		}
 
 		@Override
@@ -315,7 +312,7 @@ public class PacMan extends MazeMover {
 		public void onEntry() {
 			paralyzedTime = app().clock.sec(1);
 			sprites.select("s_full");
-			theme.snd_clips_all().forEach(Sound::stop);
+			game.theme.snd_clips_all().forEach(Sound::stop);
 		}
 
 		@Override
@@ -325,7 +322,7 @@ public class PacMan extends MazeMover {
 				if (paralyzedTime == 0) {
 					getGame().activeGhosts().forEach(ghost -> ghost.setVisible(false));
 					sprites.select("s_dying");
-					theme.snd_die().play();
+					game.theme.snd_die().play();
 				}
 			}
 		}
