@@ -220,7 +220,7 @@ beginStateMachine()
 		.when(PACMAN_DYING).then(PLAYING)
 			.condition(() -> game.pacMan.isDead() && game.getLives() > 0)
 			.act(() -> {
-				game.activeActors().forEach(MazeEntity::init);
+				game.activeActors().forEach(MazeMover::init);
 				playView.init();
 				playingState.setInitialWaitTimer(app().clock.sec(1.7f));
 			})
