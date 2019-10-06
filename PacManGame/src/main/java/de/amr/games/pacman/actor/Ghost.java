@@ -152,11 +152,11 @@ public class Ghost extends MazeMover implements GhostBehavior {
 
 	@Override
 	public boolean canEnterTile(Tile tile) {
-		if (getMaze().isWall(tile)) {
+		if (maze.isWall(tile)) {
 			return false;
 		}
-		if (getMaze().isDoor(tile)) {
-			return getState() == DEAD || getState() != LOCKED && getMaze().inGhostHouse(getTile());
+		if (maze.isDoor(tile)) {
+			return getState() == DEAD || getState() != LOCKED && maze.inGhostHouse(getTile());
 		}
 		return true;
 	}

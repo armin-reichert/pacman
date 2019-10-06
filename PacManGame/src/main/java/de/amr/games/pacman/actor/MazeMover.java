@@ -35,7 +35,7 @@ public abstract class MazeMover extends SpriteEntity {
 	}
 
 	/* The maze where this maze mover lives. */
-	private final Maze maze;
+	protected final Maze maze;
 
 	/* Current move direction (Top4.N, Top4.E, Top4.S, Top4.W). */
 	private int moveDir;

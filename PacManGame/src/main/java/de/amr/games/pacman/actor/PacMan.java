@@ -62,7 +62,7 @@ public class PacMan extends MazeMover {
 
 	public void initPacMan() {
 		eatTimer = 0;
-		placeAtTile(getMaze().getPacManHome(), TS / 2, 0);
+		placeAtTile(maze.getPacManHome(), TS / 2, 0);
 		setNextDir(Top4.E);
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("s_full");
@@ -119,7 +119,7 @@ public class PacMan extends MazeMover {
 
 	@Override
 	public boolean canEnterTile(Tile tile) {
-		return !getMaze().isWall(tile) && !getMaze().isDoor(tile);
+		return !maze.isWall(tile) && !maze.isDoor(tile);
 	}
 
 	// Sprites
@@ -267,9 +267,9 @@ public class PacMan extends MazeMover {
 				return;
 			}
 
-			if (getMaze().containsFood(tile)) {
+			if (maze.containsFood(tile)) {
 				eatTimer = 0;
-				boolean energizer = getMaze().containsEnergizer(tile);
+				boolean energizer = maze.containsEnergizer(tile);
 				digestionTicks = game.getDigestionTicks(energizer);
 				getEventManager().publish(new FoodFoundEvent(tile, energizer));
 			}
