@@ -57,20 +57,19 @@ Sounds all well and nice, but how does that look in the real code?
 
 The **intro screen** shows different animations that have to be coordinated using timers and stop conditions. This
 is an obvious candidate for using a state machine. The state machine only uses timers, so we can specify
-type *Void* as event type. The states are identified by numbers:
+type *Void* as event type. The states are identified by an enumeration type:
 
 ```java
 beginStateMachine()
 	.description("[Intro]")
-	.initialState(0)
+	.initialState(LOGO_SCROLLING_IN)
 	.states()
 
-		.state(0)
-			// Scroll logo into view
+		.state(LOGO_SCROLLING_IN)
 			.onEntry(() -> { show(logo); logo.startAnimation(); })
 			.onExit(() -> logo.stopAnimation())
 
-		.state(1)
+		.state(CHASING_EACH_OTHER)
 			// Show ghosts chasing Pac-Man and vice-versa
 			.onEntry(() -> {
 				show(chasePacMan, chaseGhosts);
@@ -81,7 +80,7 @@ beginStateMachine()
 				chasePacMan.tf.centerX(width);
 			})
 
-		.state(2)
+		.state(READY_TO_PLAY)
 			// Show ghost points animation and blinking text
 			.timeoutAfter(() -> app().clock.sec(6))
 			.onEntry(() -> {
@@ -93,20 +92,20 @@ beginStateMachine()
 				hide(ghostPoints, pressSpace);
 			})
 
-		.state(42)
+		.state(FINISHED)
 
 	.transitions()
 
-		.when(0).then(1)
+		.when(LOGO_SCROLLING_IN).then(CHASING_EACH_OTHER)
 			.condition(() -> logo.isAnimationCompleted())
 
-		.when(1).then(2)
+		.when(CHASING_EACH_OTHER).then(READY_TO_PLAY)
 			.condition(() -> chasePacMan.isAnimationCompleted() && chaseGhosts.isAnimationCompleted())
 
-		.when(2).then(1)
+		.when(READY_TO_PLAY).then(CHASING_EACH_OTHER)
 			.onTimeout()
 
-		.when(2).then(42)
+		.when(CHASING_EACH_OTHER).then(FINISHED)
 			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 
 .endStateMachine();
