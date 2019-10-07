@@ -1,6 +1,10 @@
 package de.amr.games.pacman.view.intro;
 
 import static de.amr.easy.game.Application.app;
+import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.CHASING_EACH_OTHER;
+import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.FINISHED;
+import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.LOGO_SCROLLING_IN;
+import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.READY_TO_PLAY;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -19,15 +23,20 @@ import de.amr.easy.game.ui.widgets.TextWidget;
 import de.amr.easy.game.view.AnimationController;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.view.intro.IntroView.IntroViewState;
 import de.amr.statemachine.StateMachine;
 
 /**
- * Intro with different animations.
+ * Intro screen with different animations.
  * 
  * @author Armin Reichert
  */
-public class IntroView extends StateMachine<Integer, Void> implements View, Controller {
+public class IntroView extends StateMachine<IntroViewState, Void> implements View, Controller {
+
+	public enum IntroViewState {
+		LOGO_SCROLLING_IN, CHASING_EACH_OTHER, READY_TO_PLAY, FINISHED
+	};
 
 	private static final String GITHUB_TEXT = "Visit on GitHub!";
 	private static final String GITHUB_URL = "https://github.com/armin-reichert/pacman";
@@ -45,8 +54,8 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 	private final GhostPointsAnimation ghostPoints;
 	private final LinkWidget visitGitHub;
 
-	public IntroView(PacManTheme theme) {
-		super(Integer.class);
+	public IntroView(PacManGame game) {
+		super(IntroViewState.class);
 		width = app().settings.width;
 		height = app().settings.height;
 		background = new Color(0, 23, 61);
@@ -57,26 +66,26 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		logo.tf.setVelocityY(-2f);
 		logo.setCompletion(() -> logo.tf.getY() <= 20);
 
-		chasePacMan = new ChasePacManAnimation(theme);
+		chasePacMan = new ChasePacManAnimation(game.theme);
 		chasePacMan.setStartPosition(width, 100);
 		chasePacMan.setEndPosition(-chasePacMan.tf.getWidth(), 100);
 
-		chaseGhosts = new ChaseGhostsAnimation(theme);
+		chaseGhosts = new ChaseGhostsAnimation(game.theme);
 		chaseGhosts.setStartPosition(-chaseGhosts.tf.getWidth(), 200);
 		chaseGhosts.setEndPosition(width, 200);
 
-		ghostPoints = new GhostPointsAnimation(theme);
+		ghostPoints = new GhostPointsAnimation(game.theme);
 		ghostPoints.tf.setY(200);
 		ghostPoints.tf.centerX(width);
 
 		pressSpace = TextWidget.create().text("Press SPACE to start!").spaceExpansion(3)
-				.blinkTimeMillis(1000).font(theme.fnt_text(18)).background(background).color(Color.YELLOW)
-				.build();
+				.blinkTimeMillis(1000).font(game.theme.fnt_text(18)).background(background)
+				.color(Color.YELLOW).build();
 		pressSpace.tf.setY(130);
 		pressSpace.tf.centerX(width);
 
 		f11Hint = TextWidget.create().text("F11 Toggle Fullscreen").spaceExpansion(3)
-				.blinkTimeMillis(Integer.MAX_VALUE).font(theme.fnt_text(12)).background(background)
+				.blinkTimeMillis(Integer.MAX_VALUE).font(game.theme.fnt_text(12)).background(background)
 				.color(Color.PINK).build();
 		f11Hint.tf.setY(pressSpace.tf.getY() + 30);
 		f11Hint.tf.centerX(width);
@@ -85,7 +94,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		String[] texts = { "Normal 1", "Fast 2", "Insane 3" };
 		for (int i = 0; i < texts.length; ++i) {
 			speedHint[i] = TextWidget.create().text(texts[i]).spaceExpansion(3)
-					.blinkTimeMillis(Integer.MAX_VALUE).font(theme.fnt_text(12)).background(background)
+					.blinkTimeMillis(Integer.MAX_VALUE).font(game.theme.fnt_text(12)).background(background)
 					.color(Color.PINK).build();
 			speedHint[i].tf.setY(height - 40);
 		}
@@ -122,15 +131,14 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("[Intro]")
-			.initialState(0)
+			.initialState(LOGO_SCROLLING_IN)
 			.states()
 
-				.state(0)
-					// Scroll logo into view
+				.state(LOGO_SCROLLING_IN)
 					.onEntry(() -> { show(logo); logo.startAnimation(); })
 					.onExit(() -> logo.stopAnimation())
 
-				.state(1)
+				.state(CHASING_EACH_OTHER)
 					// Show ghosts chasing Pac-Man and vice-versa
 					.onEntry(() -> {
 						show(chasePacMan, chaseGhosts);
@@ -141,7 +149,7 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 						chasePacMan.tf.centerX(width);
 					})
 					
-				.state(2)
+				.state(READY_TO_PLAY)
 					// Show ghost points animation and blinking text
 					.timeoutAfter(() -> app().clock.sec(6))
 					.onEntry(() -> {
@@ -153,20 +161,20 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 						hide(ghostPoints, pressSpace);
 					})
 					
-				.state(42)
+				.state(FINISHED)
 					
 			.transitions()
 				
-				.when(0).then(1)
+				.when(LOGO_SCROLLING_IN).then(CHASING_EACH_OTHER)
 					.condition(() -> logo.isAnimationCompleted())
 				
-				.when(1).then(2)
+				.when(CHASING_EACH_OTHER).then(READY_TO_PLAY)
 					.condition(() -> chasePacMan.isAnimationCompleted() && chaseGhosts.isAnimationCompleted())
 				
-				.when(2).then(1)
+				.when(READY_TO_PLAY).then(CHASING_EACH_OTHER)
 					.onTimeout()
 				
-				.when(2).then(42)
+				.when(CHASING_EACH_OTHER).then(FINISHED)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 
 		.endStateMachine();
@@ -174,18 +182,13 @@ public class IntroView extends StateMachine<Integer, Void> implements View, Cont
 	}
 
 	public boolean isComplete() {
-		return getState() == 42;
-	}
-
-	@Override
-	public void init() {
-		super.init();
+		return getState() == FINISHED;
 	}
 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
-			setState(42);
+			setState(FINISHED);
 		}
 		super.update();
 		animations.forEach(animation -> ((Controller) animation).update());

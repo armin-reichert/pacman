@@ -81,7 +81,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	private void showIntroView() {
 		if (introView == null) {
-			introView = new IntroView(game.theme);
+			introView = new IntroView(game);
 		}
 		show(introView);
 	}
