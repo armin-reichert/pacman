@@ -59,7 +59,7 @@ public abstract class MazeMover extends SpriteEntity {
 		return moveDir;
 	}
 
-	public void setMoveDir(int moveDir) {
+	protected void setMoveDir(int moveDir) {
 		this.moveDir = moveDir;
 	}
 
@@ -67,7 +67,7 @@ public abstract class MazeMover extends SpriteEntity {
 		return nextDir;
 	}
 
-	public void setNextDir(int nextDir) {
+	protected void setNextDir(int nextDir) {
 		this.nextDir = nextDir;
 	}
 
@@ -81,7 +81,7 @@ public abstract class MazeMover extends SpriteEntity {
 	}
 
 	/**
-	 * Places this maze mover the given tile, optionally with some pixel offset.
+	 * Places this maze mover at the given tile, optionally with some pixel offset.
 	 * 
 	 * @param tile
 	 *                  the tile where this maze mover is placed
