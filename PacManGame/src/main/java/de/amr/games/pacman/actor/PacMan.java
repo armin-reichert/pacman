@@ -114,7 +114,8 @@ public class PacMan extends MazeMover {
 	@Override
 	public void move() {
 		super.move();
-		updateWalkingSprite();
+		sprites.select("s_walking_" + getMoveDir());
+		sprites.current().get().enableAnimation(!isStuck());
 	}
 
 	@Override
@@ -129,11 +130,6 @@ public class PacMan extends MazeMover {
 		sprites.set("s_dying", game.theme.spr_pacManDying());
 		sprites.set("s_full", game.theme.spr_pacManFull());
 		sprites.select("s_full");
-	}
-
-	private void updateWalkingSprite() {
-		sprites.select("s_walking_" + getMoveDir());
-		sprites.current().get().enableAnimation(!isStuck());
 	}
 
 	// State machine

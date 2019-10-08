@@ -151,7 +151,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 * move direction, moving around corners without losing alignment, movement through the "teleport"
 	 * tile and getting stuck.
 	 */
-	public void move() {
+	protected void move() {
 		supplyIntendedDir().ifPresent(this::setNextDir);
 		float speed = computeMaxSpeed(nextDir);
 		if (speed > 0) {
