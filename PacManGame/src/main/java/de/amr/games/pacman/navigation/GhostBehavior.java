@@ -30,7 +30,7 @@ public interface GhostBehavior {
 	 * @return the tile located <code>n</code> tiles ahead of the actor towards its current move
 	 *         direction.
 	 */
-	static Tile ahead(MazeMover actor, int numTiles) {
+	static Tile aheadOf(MazeMover actor, int numTiles) {
 		return actor.getTile().tileTowards(actor.getMoveDir(), numTiles);
 	}
 
@@ -46,7 +46,7 @@ public interface GhostBehavior {
 	 * @return ambushing behavior
 	 */
 	default Behavior<Ghost> ambush(PacMan pacMan, int numTiles) {
-		return headFor(() -> ahead(pacMan, numTiles));
+		return headFor(() -> aheadOf(pacMan, numTiles));
 	}
 
 	/**
@@ -124,7 +124,7 @@ public interface GhostBehavior {
 	 */
 	default Behavior<Ghost> attackWith(Ghost blinky, PacMan pacMan) {
 		return headFor(() -> {
-			Tile b = blinky.getTile(), p = ahead(pacMan, 2);
+			Tile b = blinky.getTile(), p = aheadOf(pacMan, 2);
 			return new Tile(2 * p.col - b.col, 2 * p.row - b.row);
 		});
 	}
