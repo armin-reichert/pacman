@@ -507,17 +507,9 @@ C:\Users\armin\Desktop>java -jar pacman.jar
 [2018-10-29 09:56:56:062] Start scattering, round 0
 ```
 
-## Actor movement ("AI")
+## Pac-Man movement
 
-The game gets most of its entertainment factor from the diversity of attack behavior of the four ghosts. 
-In this implementation, these differences in behavior are not realized by subclassing
-but by assigning a different implementation of that behavior ("strategy pattern").
-
-<img src="doc/pacman.png"/>
-
-### Pac-Man
-
-Pac-Man's movement is controlled by the keyboard:
+Pac-Man's movement is controlled by holding a key indicating its intended direction. As soon as Pac-Man reaches a tile where it can move towards this direction it changes its current direction accordingly. "Cornering" is not implemented.
 
 ```java
 int[] STEERING = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
@@ -527,6 +519,12 @@ public OptionalInt supplyIntendedDir() {
 	return NESW.dirs().filter(dir -> keyDown(STEERING[dir])).findFirst();
 }
 ```
+
+## Ghost attack behavior ("AI")
+
+The game gets much of its entertainment factor from the individual attack behavior of the four ghosts. This gives each ghost his unique personality. In the given implementation, these differences in behavior are realized by assigning a different implementation of behavior to each ghost ("strategy pattern"). This is more flexible than creating a subclass for each ghost character. 
+
+<img src="doc/pacman.png"/>
 
 ### Ghosts
 The ghosts behave identically in all of their states except the *chasing* state:
@@ -569,8 +567,8 @@ pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
 ```
 
 ```java
-default Behavior<Ghost> ambush(PacMan pacMan, int numTilesAhead) {
-	return headFor(() -> ahead(pacMan, numTilesAhead));
+default Behavior<Ghost> ambush(PacMan pacMan, int numTiles) {
+	return headFor(() -> tileAheadOf(pacMan, numTiles));
 }
 ```
 
@@ -590,7 +588,7 @@ Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to ge
 ```java
 default Behavior<Ghost> attackWith(Ghost blinky, PacMan pacMan) {
 	return headFor(() -> {
-		Tile b = blinky.getTile(), p = ahead(pacMan, 2);
+		Tile b = blinky.getTile(), p = tileAheadOf(pacMan, 2);
 		return new Tile(2 * p.col - b.col, 2 * p.row - b.row);
 	});
 }
@@ -610,9 +608,8 @@ clyde.setBehavior(CHASING, clyde.attackOrReject(pacMan, 8 * TS));
 ```java
 default Behavior<Ghost> attackOrReject(PacMan pacMan, int distance) {
 	return headFor(
-			() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) >= distance 
-			? pacMan.getTile()
-			: self().getScatteringTarget());
+			() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.getTile()
+					: self().getScatteringTarget());
 }
 ```
 
@@ -631,15 +628,9 @@ ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
 
 <img src="doc/scattering.png"/>
 
-
 ## Graph based path finding
 
-For simulating the ghost behavior from the original Pac-Man game, no graph based path finding is needed but the *headFor* 
-behavior can be used all over the place. To also give an example how graph based path finding can be used, 
-the *frightened* behavior has been implemented differently from the original game: a frightened ghost choses a safe corner
-by checking the path to each maze corner and selecting the path with the largest distance to Pac-Man's current position.
-The distance of a path from Pac-Man's position is defined as the minimum distance of any tile on the path from Pac-Man's
-position.
+The original Pac-Man game did not use any graph based path finding, the *headFor* behavior was used all over the place. To demonstrate how graph based path finding can be used, the *frightened* behavior is implemented differenty than in the original game: a frightened ghost choses a "safe" corner by computing the shortest path to each corner and selecting the one with the largest distance to Pac-Man's current position. The distance of a path from Pac-Man's position is defined as the minimum distance of any tile on the path from Pac-Man's position.
 
 Shortest paths in the maze graph can be computed with the method *Maze.findPath(Tile source, Tile target)*. 
 This method runs an [A* search](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html)
