@@ -19,10 +19,10 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.actor.behavior.Route;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.navigation.Route;
 import de.amr.statemachine.State;
 
 /**

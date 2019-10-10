@@ -1,4 +1,4 @@
-package de.amr.games.pacman.navigation;
+package de.amr.games.pacman.actor.behavior;
 
 import static de.amr.easy.game.math.Vector2f.euclideanDist;
 import static de.amr.games.pacman.model.Maze.NESW;

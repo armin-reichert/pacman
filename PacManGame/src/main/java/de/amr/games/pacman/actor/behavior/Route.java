@@ -1,4 +1,4 @@
-package de.amr.games.pacman.navigation;
+package de.amr.games.pacman.actor.behavior;
 
 import java.util.Collections;
 import java.util.List;

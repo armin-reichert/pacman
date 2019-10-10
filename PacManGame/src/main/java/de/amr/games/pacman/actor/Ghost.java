@@ -17,6 +17,8 @@ import java.util.OptionalInt;
 import java.util.function.Supplier;
 
 import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.games.pacman.actor.behavior.Behavior;
+import de.amr.games.pacman.actor.behavior.GhostBehavior;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -25,8 +27,6 @@ import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.navigation.Behavior;
-import de.amr.games.pacman.navigation.GhostBehavior;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.graph.grid.impl.Top4;
 import de.amr.statemachine.State;
