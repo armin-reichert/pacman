@@ -162,17 +162,17 @@ public class PacManGame {
 
 		pacMan = new PacMan(this);
 
-		blinky = new Ghost(this, "Blinky", GhostColor.RED, maze.getBlinkyHome(),
-				maze.getPinkyHome(), maze.getBlinkyScatteringTarget(), Top4.S);
+		blinky = new Ghost(this, "Blinky", GhostColor.RED, maze.getBlinkyHome(), maze.getPinkyHome(),
+				maze.getBlinkyScatteringTarget(), Top4.S);
 
-		pinky = new Ghost(this, "Pinky", GhostColor.PINK, maze.getPinkyHome(),
-				maze.getPinkyHome(), maze.getPinkyScatteringTarget(), Top4.S);
+		pinky = new Ghost(this, "Pinky", GhostColor.PINK, maze.getPinkyHome(), maze.getPinkyHome(),
+				maze.getPinkyScatteringTarget(), Top4.S);
 
-		inky = new Ghost(this, "Inky", GhostColor.CYAN, maze.getInkyHome(),
-				maze.getInkyHome(), maze.getInkyScatteringTarget(), Top4.N);
+		inky = new Ghost(this, "Inky", GhostColor.CYAN, maze.getInkyHome(), maze.getPinkyHome(),
+				maze.getInkyScatteringTarget(), Top4.N);
 
-		clyde = new Ghost(this, "Clyde", GhostColor.ORANGE, maze.getClydeHome(),
-				maze.getClydeHome(), maze.getClydeScatteringTarget(), Top4.N);
+		clyde = new Ghost(this, "Clyde", GhostColor.ORANGE, maze.getClydeHome(), maze.getPinkyHome(),
+				maze.getClydeScatteringTarget(), Top4.N);
 
 		activeActors.addAll((Arrays.asList(pacMan, blinky, pinky, inky, clyde)));
 
