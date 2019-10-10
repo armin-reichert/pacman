@@ -1,5 +1,5 @@
 package de.amr.games.pacman.theme;
 
 public enum GhostColor {
-	RED, PINK, TURQUOISE, ORANGE
+	RED, PINK, CYAN, ORANGE
 }

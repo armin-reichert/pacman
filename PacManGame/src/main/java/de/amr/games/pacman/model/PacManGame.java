@@ -168,7 +168,7 @@ public class PacManGame {
 		pinky = new Ghost(this, "Pinky", GhostColor.PINK, maze.getPinkyHome(),
 				maze.getPinkyHome(), maze.getPinkyScatteringTarget(), Top4.S);
 
-		inky = new Ghost(this, "Inky", GhostColor.TURQUOISE, maze.getInkyHome(),
+		inky = new Ghost(this, "Inky", GhostColor.CYAN, maze.getInkyHome(),
 				maze.getInkyHome(), maze.getInkyScatteringTarget(), Top4.N);
 
 		clyde = new Ghost(this, "Clyde", GhostColor.ORANGE, maze.getClydeHome(),

@@ -30,7 +30,7 @@ public class ChasePacManAnimation extends Entity implements AnimationController,
 		pacMan = theme.spr_pacManWalking(Top4.W);
 		ghosts[0] = theme.spr_ghostColored(GhostColor.RED, Top4.W);
 		ghosts[1] = theme.spr_ghostColored(GhostColor.PINK, Top4.W);
-		ghosts[2] = theme.spr_ghostColored(GhostColor.TURQUOISE, Top4.W);
+		ghosts[2] = theme.spr_ghostColored(GhostColor.CYAN, Top4.W);
 		ghosts[3] = theme.spr_ghostColored(GhostColor.ORANGE, Top4.W);
 		pill = true;
 		tf.setWidth(88);

@@ -41,6 +41,7 @@ public class Ghost extends MazeMover implements GhostBehavior {
 
 	private final PacManGame game;
 	private final String name;
+	private final GhostColor color;
 	private final StateMachine<GhostState, PacManGameEvent> fsm;
 	private final Map<GhostState, Behavior<Ghost>> behaviorMap;
 	private final Tile initialTile;
@@ -51,11 +52,12 @@ public class Ghost extends MazeMover implements GhostBehavior {
 
 	public Supplier<GhostState> fnNextState; // chasing or scattering
 
-	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile,
-			Tile revivalTile, Tile scatteringTarget, int initialDir) {
+	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, Tile revivalTile,
+			Tile scatteringTarget, int initialDir) {
 		super(game.maze);
 		this.game = game;
 		this.name = name;
+		this.color = color;
 		this.initialTile = initialTile;
 		this.revivalTile = revivalTile;
 		this.scatteringTarget = scatteringTarget;
@@ -107,6 +109,10 @@ public class Ghost extends MazeMover implements GhostBehavior {
 
 	public String getName() {
 		return name;
+	}
+
+	public GhostColor getColor() {
+		return color;
 	}
 
 	public Tile getInitialTile() {
