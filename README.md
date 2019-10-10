@@ -576,16 +576,16 @@ default Behavior<Ghost> ambush(PacMan pacMan, int numTilesAhead) {
 
 <img src="doc/pinky.png"/>
 
-### Inky (the turquoise ghost)
+### Inky (the cyan ghost)
 
 Inky heads for a position that depends on Blinky's current position and the position two tiles ahead of Pac-Man:
-
-Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man, so `V = (P - B)`. 
-Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
 inky.setBehavior(CHASING, inky.attackWith(blinky, pacMan));
 ```
+
+Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man, so `V = (P - B)`. 
+Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
 default Behavior<Ghost> attackWith(Ghost blinky, PacMan pacMan) {
