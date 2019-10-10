@@ -520,13 +520,13 @@ public OptionalInt supplyIntendedDir() {
 }
 ```
 
-## Ghost attack behavior ("AI")
+## Ghost behavior ("AI")
 
 The game gets much of its entertainment factor from the individual attack behavior of the four ghosts. This gives each ghost his unique personality. In the given implementation, these differences in behavior are realized by assigning a different implementation of behavior to each ghost ("strategy pattern"). This is more flexible than creating a subclass for each ghost character. 
 
 <img src="doc/pacman.png"/>
 
-### Ghosts
+### Common ghost behavior
 The ghosts behave identically in all of their states except the *chasing* state:
 
 ```java
