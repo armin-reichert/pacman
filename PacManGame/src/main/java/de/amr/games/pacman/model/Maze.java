@@ -49,14 +49,10 @@ public class Maze {
 	private final GridGraph<Character, Void> grid;
 
 	private Tile pacManHome;
-	private Tile blinkyHome;
-	private Tile pinkyHome;
-	private Tile inkyHome;
-	private Tile clydeHome;
-	private Tile blinkyScatteringTarget;
-	private Tile pinkyScatteringTarget;
-	private Tile inkyScatteringTarget;
-	private Tile clydeScatteringTarget;
+	private Tile blinkyHome, blinkyScatterTarget;
+	private Tile pinkyHome, pinkyScatterTarget;
+	private Tile inkyHome, inkyScatterTarget;
+	private Tile clydeHome, clydeScatterTarget;
 	private Tile bonusTile;
 
 	private int tunnelRow;
@@ -90,16 +86,16 @@ public class Maze {
 					clydeHome = tile;
 					break;
 				case 'b':
-					blinkyScatteringTarget = tile;
+					blinkyScatterTarget = tile;
 					break;
 				case 'p':
-					pinkyScatteringTarget = tile;
+					pinkyScatterTarget = tile;
 					break;
 				case 'i':
-					inkyScatteringTarget = tile;
+					inkyScatterTarget = tile;
 					break;
 				case 'c':
-					clydeScatteringTarget = tile;
+					clydeScatterTarget = tile;
 					break;
 				case '$':
 					bonusTile = tile;
@@ -190,20 +186,20 @@ public class Maze {
 		return new Tile(numCols() - 2, numRows() - 4);
 	}
 
-	public Tile getBlinkyScatteringTarget() {
-		return blinkyScatteringTarget;
+	public Tile getBlinkyScatterTarget() {
+		return blinkyScatterTarget;
 	}
 
-	public Tile getPinkyScatteringTarget() {
-		return pinkyScatteringTarget;
+	public Tile getPinkyScatterTarget() {
+		return pinkyScatterTarget;
 	}
 
-	public Tile getInkyScatteringTarget() {
-		return inkyScatteringTarget;
+	public Tile getInkyScatterTarget() {
+		return inkyScatterTarget;
 	}
 
-	public Tile getClydeScatteringTarget() {
-		return clydeScatteringTarget;
+	public Tile getClydeScatterTarget() {
+		return clydeScatterTarget;
 	}
 
 	public Tile getPacManHome() {

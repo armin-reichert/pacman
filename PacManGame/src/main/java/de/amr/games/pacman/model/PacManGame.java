@@ -153,31 +153,20 @@ public class PacManGame {
 	 * Creates the game.
 	 */
 	public PacManGame(PacManTheme theme) {
-
 		this.theme = theme;
-
 		maze = new Maze();
-
 		score = new Score(this);
-
 		pacMan = new PacMan(this);
 
-		blinky = new Ghost(this, "Blinky", maze.getBlinkyHome(), maze.getBlinkyScatteringTarget(),
-				Top4.S);
+		blinky = new Ghost(this, "Blinky", maze.getBlinkyHome(), maze.getBlinkyScatterTarget(), Top4.S);
+		pinky = new Ghost(this, "Pinky", maze.getPinkyHome(), maze.getPinkyScatterTarget(), Top4.S);
+		inky = new Ghost(this, "Inky", maze.getInkyHome(), maze.getInkyScatterTarget(), Top4.N);
+		clyde = new Ghost(this, "Clyde", maze.getClydeHome(), maze.getClydeScatterTarget(), Top4.N);
+
 		blinky.setSprites(GhostColor.RED);
-
-		pinky = new Ghost(this, "Pinky", maze.getPinkyHome(), maze.getPinkyScatteringTarget(), Top4.S);
 		pinky.setSprites(GhostColor.PINK);
-
-		inky = new Ghost(this, "Inky", maze.getInkyHome(), maze.getInkyScatteringTarget(), Top4.N);
 		inky.setSprites(GhostColor.CYAN);
-
-		clyde = new Ghost(this, "Clyde", maze.getClydeHome(), maze.getClydeScatteringTarget(), Top4.N);
 		clyde.setSprites(GhostColor.ORANGE);
-
-		activeActors.addAll((Arrays.asList(pacMan, blinky, pinky, inky, clyde)));
-
-		// Define the ghost behavior ("AI")
 
 		ghosts().forEach(ghost -> {
 			ghost.setBehavior(FRIGHTENED, ghost.flee(pacMan));
@@ -186,11 +175,12 @@ public class PacManGame {
 			ghost.setBehavior(LOCKED, ghost.bounce());
 		});
 
-		// Individual ghost behavior
 		blinky.setBehavior(CHASING, blinky.attackDirectly(pacMan));
 		pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
 		inky.setBehavior(CHASING, inky.attackWith(blinky, pacMan));
 		clyde.setBehavior(CHASING, clyde.attackOrReject(pacMan, 8 * TS));
+
+		activeActors.addAll((Arrays.asList(pacMan, blinky, pinky, inky, clyde)));
 	}
 
 	public Stream<Ghost> ghosts() {
