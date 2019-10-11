@@ -52,8 +52,8 @@ public class PlayViewXtended extends PlayView {
 	private boolean showStates = false;
 
 	private static BufferedImage createGridImage(int numRows, int numCols) {
-		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-				.getDefaultConfiguration();
+		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment()
+				.getDefaultScreenDevice().getDefaultConfiguration();
 		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1,
 				Transparency.TRANSLUCENT);
 		Graphics2D g = image.createGraphics();
@@ -156,7 +156,8 @@ public class PlayViewXtended extends PlayView {
 
 	private void drawEntityStates(Graphics2D g) {
 		if (game.pacMan.getState() != null && game.pacMan.isVisible()) {
-			drawText(g, Color.YELLOW, game.pacMan.tf.getX(), game.pacMan.tf.getY(), pacManStateText(game.pacMan));
+			drawText(g, Color.YELLOW, game.pacMan.tf.getX(), game.pacMan.tf.getY(),
+					pacManStateText(game.pacMan));
 		}
 		game.activeGhosts().filter(Ghost::isVisible).forEach(ghost -> {
 			if (ghost.getState() != null) {
@@ -184,7 +185,8 @@ public class PlayViewXtended extends PlayView {
 		}
 		else {
 			return state.getDuration() != State.ENDLESS
-					? String.format("%s(%s,%d|%d)", name, state.id(), state.getTicksRemaining(), state.getDuration())
+					? String.format("%s(%s,%d|%d)", name, state.id(), state.getTicksRemaining(),
+							state.getDuration())
 					: String.format("%s(%s,%s)", name, state.id(), INFTY);
 		}
 	}
@@ -194,14 +196,14 @@ public class PlayViewXtended extends PlayView {
 	}
 
 	private static Color ghostColor(Ghost ghost) {
-		switch (ghost.getColor()) {
-		case RED:
+		switch (ghost.getName()) {
+		case "Blinky":
 			return Color.RED;
-		case PINK:
+		case "Pinky":
 			return Color.PINK;
-		case CYAN:
+		case "Inky":
 			return Color.CYAN;
-		case ORANGE:
+		case "Clyde":
 			return Color.ORANGE;
 		default:
 			throw new IllegalArgumentException();

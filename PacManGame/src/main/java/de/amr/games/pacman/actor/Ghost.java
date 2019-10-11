@@ -41,7 +41,6 @@ public class Ghost extends MazeMover implements GhostBehavior {
 
 	private final PacManGame game;
 	private final String name;
-	private final GhostColor color;
 	private final StateMachine<GhostState, PacManGameEvent> fsm;
 	private final Map<GhostState, Behavior<Ghost>> behaviorMap;
 	private final Tile initialTile;
@@ -52,14 +51,13 @@ public class Ghost extends MazeMover implements GhostBehavior {
 
 	public Supplier<GhostState> fnNextState; // chasing or scattering
 
-	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, Tile revivalTile,
-			Tile scatteringTarget, int initialDir) {
+	public Ghost(PacManGame game, String name, Tile initialTile, Tile scatteringTarget,
+			int initialDir) {
 		super(game.maze);
 		this.game = game;
 		this.name = name;
-		this.color = color;
 		this.initialTile = initialTile;
-		this.revivalTile = revivalTile;
+		this.revivalTile = maze.getPinkyHome();
 		this.scatteringTarget = scatteringTarget;
 		this.initialDir = initialDir;
 		behaviorMap = new EnumMap<>(GhostState.class);
@@ -67,7 +65,18 @@ public class Ghost extends MazeMover implements GhostBehavior {
 		fsm.setIgnoreUnknownEvents(true);
 		fsm.traceTo(LOGGER, app().clock::getFrequency);
 		fnNextState = this::getState; // default
-		setSprites(color);
+	}
+
+	public void setSprites(GhostColor color) {
+		NESW.dirs().forEach(dir -> {
+			sprites.set("s_color_" + dir, game.theme.spr_ghostColored(color, dir));
+			sprites.set("s_eyes_" + dir, game.theme.spr_ghostEyes(dir));
+		});
+		for (int i = 0; i < 4; ++i) {
+			sprites.set("s_value" + i, game.theme.spr_greenNumber(i));
+		}
+		sprites.set("s_frightened", game.theme.spr_ghostFrightened());
+		sprites.set("s_flashing", game.theme.spr_ghostFlashing());
 	}
 
 	@Override
@@ -109,10 +118,6 @@ public class Ghost extends MazeMover implements GhostBehavior {
 
 	public String getName() {
 		return name;
-	}
-
-	public GhostColor getColor() {
-		return color;
 	}
 
 	public Tile getInitialTile() {
@@ -165,20 +170,6 @@ public class Ghost extends MazeMover implements GhostBehavior {
 			return getState() == DEAD || getState() != LOCKED && maze.inGhostHouse(getTile());
 		}
 		return true;
-	}
-
-	// Sprites
-
-	private void setSprites(GhostColor color) {
-		NESW.dirs().forEach(dir -> {
-			sprites.set("s_color_" + dir, game.theme.spr_ghostColored(color, dir));
-			sprites.set("s_eyes_" + dir, game.theme.spr_ghostEyes(dir));
-		});
-		for (int i = 0; i < 4; ++i) {
-			sprites.set("s_value" + i, game.theme.spr_greenNumber(i));
-		}
-		sprites.set("s_frightened", game.theme.spr_ghostFrightened());
-		sprites.set("s_flashing", game.theme.spr_ghostFlashing());
 	}
 
 	// State machine

@@ -2,7 +2,7 @@ package de.amr.games.pacman.view.intro;
 
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.CHASING_EACH_OTHER;
-import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.FINISHED;
+import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.LEAVING_INTRO;
 import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.LOGO_SCROLLING_IN;
 import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.READY_TO_PLAY;
 
@@ -35,7 +35,7 @@ import de.amr.statemachine.StateMachine;
 public class IntroView extends StateMachine<IntroViewState, Void> implements View, Controller {
 
 	public enum IntroViewState {
-		LOGO_SCROLLING_IN, CHASING_EACH_OTHER, READY_TO_PLAY, FINISHED
+		LOGO_SCROLLING_IN, CHASING_EACH_OTHER, READY_TO_PLAY, LEAVING_INTRO
 	};
 
 	private static final String GITHUB_TEXT = "Visit on GitHub!";
@@ -161,7 +161,7 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 						hide(ghostPoints, pressSpace);
 					})
 					
-				.state(FINISHED)
+				.state(LEAVING_INTRO)
 					
 			.transitions()
 				
@@ -174,7 +174,7 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 				.when(READY_TO_PLAY).then(CHASING_EACH_OTHER)
 					.onTimeout()
 				
-				.when(CHASING_EACH_OTHER).then(FINISHED)
+				.when(READY_TO_PLAY).then(LEAVING_INTRO)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 
 		.endStateMachine();
@@ -182,13 +182,13 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 	}
 
 	public boolean isComplete() {
-		return getState() == FINISHED;
+		return getState() == LEAVING_INTRO;
 	}
 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
-			setState(FINISHED);
+			setState(LEAVING_INTRO);
 		}
 		super.update();
 		animations.forEach(animation -> ((Controller) animation).update());
