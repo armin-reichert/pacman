@@ -1,7 +1,6 @@
 package de.amr.games.pacman.test.navigation;
 
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.theme.ClassicPacManTheme;
 
 public class FollowMouseTestApp extends PacManApp {
 
@@ -10,12 +9,11 @@ public class FollowMouseTestApp extends PacManApp {
 	}
 
 	public FollowMouseTestApp() {
-		super(new ClassicPacManTheme());
 		settings.title = "Follow Mouse";
 	}
 
 	@Override
 	public void init() {
-		setController(new FollowMouseTestController(theme));
+		setController(new FollowMouseTestController());
 	}
 }

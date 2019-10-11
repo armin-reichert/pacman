@@ -12,7 +12,6 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class FollowMouseTestController implements ViewController {
@@ -20,8 +19,8 @@ public class FollowMouseTestController implements ViewController {
 	private final PacManGame g;
 	private final PlayViewXtended view;
 
-	public FollowMouseTestController(PacManTheme theme) {
-		g = new PacManGame(theme);
+	public FollowMouseTestController() {
+		g = new PacManGame();
 		g.setLevel(1);
 		g.maze.removeFood();
 		g.setActive(g.pacMan, false);

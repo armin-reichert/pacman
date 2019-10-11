@@ -8,7 +8,6 @@ import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class FollowFixedPathTestController implements ViewController {
@@ -18,8 +17,8 @@ public class FollowFixedPathTestController implements ViewController {
 	private final List<Tile> targets;
 	private int targetIndex;
 
-	public FollowFixedPathTestController(PacManTheme theme) {
-		game = new PacManGame(theme);
+	public FollowFixedPathTestController() {
+		game = new PacManGame();
 		game.setLevel(1);
 		game.maze.removeFood();
 		targets = Arrays.asList(game.maze.getBottomRightCorner(), game.maze.getBottomLeftCorner(),

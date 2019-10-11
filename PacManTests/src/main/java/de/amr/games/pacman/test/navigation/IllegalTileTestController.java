@@ -5,7 +5,6 @@ import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class IllegalTileTestController implements ViewController {
@@ -13,8 +12,8 @@ public class IllegalTileTestController implements ViewController {
 	private final PacManGame game;
 	private final PlayViewXtended view;
 
-	public IllegalTileTestController(PacManTheme theme) {
-		game = new PacManGame(theme);
+	public IllegalTileTestController() {
+		game = new PacManGame();
 		game.setLevel(1);
 		game.maze.removeFood();
 		view = new PlayViewXtended(game);

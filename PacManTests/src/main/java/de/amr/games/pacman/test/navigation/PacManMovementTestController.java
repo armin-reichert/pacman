@@ -4,7 +4,6 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class PacManMovementTestController implements ViewController {
@@ -12,8 +11,8 @@ public class PacManMovementTestController implements ViewController {
 	private final PacManGame game;
 	private final PlayViewXtended view;
 
-	public PacManMovementTestController(PacManTheme theme) {
-		game = new PacManGame(theme);
+	public PacManMovementTestController() {
+		game = new PacManGame();
 		view = new PlayViewXtended(game);
 		view.setShowRoutes(true);
 		view.setShowGrid(true);

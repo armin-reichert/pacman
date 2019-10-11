@@ -27,8 +27,8 @@ public interface GhostBehavior {
 	 *                   an actor
 	 * @param numTiles
 	 *                   number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
-	 *         direction.
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current
+	 *         move direction.
 	 */
 	static Tile tileAheadOf(MazeMover actor, int numTiles) {
 		return actor.getTile().tileTowards(actor.getMoveDir(), numTiles);
@@ -80,8 +80,8 @@ public interface GhostBehavior {
 	 * whenever he gets too close. On the diagram above, the X marks on the path represent the points
 	 * where Clyde’s mode switches. If Pac-Man somehow managed to remain stationary in that position,
 	 * Clyde would indefinitely loop around that T-shaped area. As long as the player is not in the
-	 * lower-left corner of the maze, Clyde can be avoided completely by simply ensuring that you do not
-	 * block his “escape route” back to his corner. While Pac-Man is within eight tiles of the
+	 * lower-left corner of the maze, Clyde can be avoided completely by simply ensuring that you do
+	 * not block his “escape route” back to his corner. While Pac-Man is within eight tiles of the
 	 * lower-left corner, Clyde’s path will end up in exactly the same loop as he would eventually
 	 * maintain in Scatter mode. </cite>
 	 * </p>
@@ -89,14 +89,14 @@ public interface GhostBehavior {
 	 * @param pacMan
 	 *                   the Pac-Man which gets attacked
 	 * @param distance
-	 *                   if the distance to Pac-Man is less than this distance (measured in pixels), the
-	 *                   attacker rejects and heads for its scattering position. Otherwise it directly
-	 *                   attacks PacMan.
+	 *                   if the distance to Pac-Man is less than this distance (measured in pixels),
+	 *                   the attacker rejects and heads for its scattering position. Otherwise it
+	 *                   directly attacks PacMan.
 	 */
 	default Behavior<Ghost> attackOrReject(PacMan pacMan, int distance) {
-		return headFor(
-				() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.getTile()
-						: self().getScatteringTarget());
+		return headFor(() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance
+				? pacMan.getTile()
+				: self().getScatteringTarget());
 	}
 
 	/**
@@ -106,11 +106,12 @@ public interface GhostBehavior {
 	 * <p>
 	 * <cite>Inky is difficult to predict, because he is the only one of the ghosts that uses a factor
 	 * other than Pac-Man’s position/orientation when determining his target tile. Inky actually uses
-	 * both Pac-Man’s position/facing as well as Blinky’s (the red ghost’s) position in his calculation.
-	 * To locate Inky’s target, we first start by selecting the position two tiles in front of Pac-Man
-	 * in his current direction of travel, similar to Pinky’s targeting method. From there, imagine
-	 * drawing a vector from Blinky’s position to this tile, and then doubling the length of the vector.
-	 * The tile that this new, extended vector ends on will be Inky’s actual target.</cite>
+	 * both Pac-Man’s position/facing as well as Blinky’s (the red ghost’s) position in his
+	 * calculation. To locate Inky’s target, we first start by selecting the position two tiles in
+	 * front of Pac-Man in his current direction of travel, similar to Pinky’s targeting method. From
+	 * there, imagine drawing a vector from Blinky’s position to this tile, and then doubling the
+	 * length of the vector. The tile that this new, extended vector ends on will be Inky’s actual
+	 * target.</cite>
 	 * </p>
 	 * 
 	 * @param blinky
@@ -148,9 +149,9 @@ public interface GhostBehavior {
 	}
 
 	/**
-	 * Lets the ghost dynamically follow the path to the given target. The path is computed on the graph
-	 * of the maze and updated every time the move direction is queried. This can lead to lots of path
-	 * finder calls!
+	 * Lets the ghost dynamically follow the path to the given target. The path is computed on the
+	 * graph of the maze and updated every time the move direction is queried. This can lead to lots
+	 * of path finder calls!
 	 * 
 	 * @param targetTileSupplier
 	 *                             target tile supplier (this tile must be inside the maze or teleport
