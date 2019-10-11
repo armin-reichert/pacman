@@ -102,14 +102,8 @@ public class Ghost extends MazeMover implements GhostBehavior {
 
 	private void reviveGhost() {
 		placeAtTile(revivalTile, TS / 2, 0);
-		if (this == game.blinky) {
-			setMoveDir(Top4.N);
-			setNextDir(Top4.N);
-		}
-		else {
-			setMoveDir(initialDir);
-			setNextDir(initialDir);
-		}
+		setMoveDir(Top4.N);
+		setNextDir(Top4.N);
 		sprites.select("s_color_" + getMoveDir());
 		sprites.forEach(Sprite::resetAnimation);
 	}
