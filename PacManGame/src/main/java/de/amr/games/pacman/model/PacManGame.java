@@ -150,11 +150,15 @@ public class PacManGame {
 	/** Level counter symbols. */
 	private final List<BonusSymbol> levelCounter = new LinkedList<>();
 
-	/**
-	 * Creates the game.
-	 */
 	public PacManGame() {
-		theme = new ClassicPacManTheme();
+		this(new ClassicPacManTheme());
+	}
+
+	/**
+	 * Creates the game using the specified theme.
+	 */
+	public PacManGame(PacManTheme theme) {
+		this.theme = theme;
 		maze = new Maze();
 		score = new Score(this);
 		pacMan = new PacMan(this);
