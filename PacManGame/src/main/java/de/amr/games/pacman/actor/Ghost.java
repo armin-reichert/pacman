@@ -35,33 +35,36 @@ import de.amr.statemachine.StateMachine;
 /**
  * A ghost.
  * 
+ * <p>
+ * The behavior of a ghost is controlled by a finite state machine.
+ * 
  * @author Armin Reichert
  */
 public class Ghost extends MazeMover implements GhostBehavior {
 
 	private final PacManGame game;
-	private final String name;
 	private final StateMachine<GhostState, PacManGameEvent> fsm;
-	private final Map<GhostState, Behavior<Ghost>> behaviorMap;
-	private final Tile initialTile;
-	private final Tile scatterTarget;
-	private final int initialDir;
-	private int foodCounter;
-
 	public Supplier<GhostState> fnNextState; // chasing or scattering
+	private final Map<GhostState, Behavior<Ghost>> behaviorMap;
+	private final String name;
+	private final Tile initialTile;
+	private final int initialDir;
+	private final Tile scatterTarget;
+	private int foodCount;
 
-	public Ghost(PacManGame game, String name, Tile initialTile, Tile scatteringTarget, int initialDir) {
+	public Ghost(PacManGame game, String name, Tile initialTile, Tile scatteringTarget,
+			int initialDir) {
 		super(game.maze);
 		this.game = game;
 		this.name = name;
 		this.initialTile = initialTile;
-		this.scatterTarget = scatteringTarget;
 		this.initialDir = initialDir;
+		this.scatterTarget = scatteringTarget;
 		behaviorMap = new EnumMap<>(GhostState.class);
 		fsm = buildStateMachine();
 		fsm.setIgnoreUnknownEvents(true);
 		fsm.traceTo(LOGGER, app().clock::getFrequency);
-		fnNextState = this::getState; // default
+		fnNextState = this::getState; // default is to keep state
 	}
 
 	public void setSprites(GhostColor color) {
@@ -81,7 +84,7 @@ public class Ghost extends MazeMover implements GhostBehavior {
 		return this;
 	}
 
-	public void initGhost() {
+	public void initialize() {
 		placeAtTile(initialTile, TS / 2, 0);
 		setMoveDir(initialDir);
 		setNextDir(initialDir);
@@ -89,20 +92,20 @@ public class Ghost extends MazeMover implements GhostBehavior {
 		sprites.forEach(Sprite::resetAnimation);
 	}
 
-	public void resetFoodCounter() {
-		foodCounter = 0;
-	}
-
-	public void incFoodCounter() {
-		foodCounter++;
-	}
-
-	private void reviveGhost() {
+	private void revive() {
 		placeAtTile(getRevivalTile(), TS / 2, 0);
 		setMoveDir(Top4.N);
 		setNextDir(Top4.N);
-		sprites.select("s_color_" + getMoveDir());
+		sprites.select("s_color_" + Top4.N);
 		sprites.forEach(Sprite::resetAnimation);
+	}
+
+	public void resetFoodCount() {
+		foodCount = 0;
+	}
+
+	public void incFoodCount() {
+		foodCount++;
 	}
 
 	// Accessors
@@ -133,8 +136,8 @@ public class Ghost extends MazeMover implements GhostBehavior {
 		return game.getGhostSpeed(this);
 	}
 
-	public int getFoodCounter() {
-		return foodCounter;
+	public int getFoodCount() {
+		return foodCount;
 	}
 
 	// Behavior
@@ -167,7 +170,7 @@ public class Ghost extends MazeMover implements GhostBehavior {
 
 	@Override
 	public void init() {
-		initGhost();
+		initialize();
 		fsm.init();
 	}
 
@@ -218,11 +221,11 @@ public class Ghost extends MazeMover implements GhostBehavior {
 			
 				.state(CHASING)
 					.onEntry(() -> game.theme.snd_ghost_chase().loop())
-					.onExit(() -> game.theme.snd_ghost_chase().stop())
 					.onTick(() -> {	
 						move();	
 						sprites.select("s_color_" + getMoveDir()); 
 					})
+					.onExit(() -> game.theme.snd_ghost_chase().stop())
 				
 				.state(FRIGHTENED)
 					.onEntry(() -> {
@@ -286,7 +289,7 @@ public class Ghost extends MazeMover implements GhostBehavior {
 					
 				.when(DEAD).then(LOCKED)
 					.condition(() -> getTile().equals(getRevivalTile()))
-					.act(this::reviveGhost)
+					.act(this::revive)
 				
 		.endStateMachine();
 		/*@formatter:on*/

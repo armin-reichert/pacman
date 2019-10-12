@@ -245,7 +245,7 @@ public class PacManGame {
 		if (levelCounter.size() == 8) {
 			levelCounter.remove(levelCounter.size() - 1);
 		}
-		ghosts().forEach(Ghost::resetFoodCounter);
+		ghosts().forEach(Ghost::resetFoodCount);
 		globalFoodCounterEnabled = false;
 		globalFoodCounter = 0;
 	}
@@ -411,7 +411,7 @@ public class PacManGame {
 		if (ghost != next) {
 			return false;
 		}
-		if (ghost.getFoodCounter() >= getFoodLimit(ghost)) {
+		if (ghost.getFoodCount() >= getFoodLimit(ghost)) {
 			return true;
 		}
 		if (globalFoodCounterEnabled && globalFoodCounter >= getGlobalFoodCounterLimit(ghost)) {
@@ -440,8 +440,8 @@ public class PacManGame {
 			.filter(ghost -> ghost.getState() == GhostState.LOCKED)
 			.findFirst()
 			.ifPresent(preferredGhost -> {
-				preferredGhost.incFoodCounter();
-				LOGGER.info(String.format("Food Counter[%s]=%d", preferredGhost.getName(), preferredGhost.getFoodCounter()));
+				preferredGhost.incFoodCount();
+				LOGGER.info(String.format("Food Counter[%s]=%d", preferredGhost.getName(), preferredGhost.getFoodCount()));
 		});
 		/*@formatter:on*/
 	}

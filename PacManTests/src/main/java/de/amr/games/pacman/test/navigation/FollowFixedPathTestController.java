@@ -37,7 +37,7 @@ public class FollowFixedPathTestController implements ViewController {
 		game.setActive(game.pacMan, false);
 		game.ghosts().filter(ghost -> ghost != game.blinky)
 				.forEach(ghost -> game.setActive(ghost, false));
-		game.blinky.initGhost();
+		game.blinky.initialize();
 		game.blinky.setState(GhostState.CHASING);
 		game.blinky.setBehavior(GhostState.CHASING,
 				game.blinky.followFixedPath(() -> targets.get(targetIndex)));

@@ -29,7 +29,7 @@ public class LeaveGhostHouseTestController implements ViewController {
 	public void init() {
 		game.pacMan.setVisible(false);
 		game.ghosts().filter(ghost -> ghost != game.inky).forEach(ghost -> game.setActive(ghost, false));
-		game.inky.initGhost();
+		game.inky.initialize();
 		game.inky.fnNextState = () -> GhostState.SCATTERING;
 		game.inky.setState(GhostState.SCATTERING);
 	}
