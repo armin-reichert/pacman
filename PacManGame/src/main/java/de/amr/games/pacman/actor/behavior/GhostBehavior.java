@@ -96,7 +96,7 @@ public interface GhostBehavior {
 	default Behavior<Ghost> attackOrReject(PacMan pacMan, int distance) {
 		return headFor(() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance
 				? pacMan.getTile()
-				: self().getScatteringTarget());
+				: self().getScatterTarget());
 	}
 
 	/**

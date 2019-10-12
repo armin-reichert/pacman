@@ -44,7 +44,7 @@ public class Ghost extends MazeMover implements GhostBehavior {
 	private final StateMachine<GhostState, PacManGameEvent> fsm;
 	private final Map<GhostState, Behavior<Ghost>> behaviorMap;
 	private final Tile initialTile;
-	private final Tile scatteringTarget;
+	private final Tile scatterTarget;
 	private final int initialDir;
 	private int foodCounter;
 
@@ -55,7 +55,7 @@ public class Ghost extends MazeMover implements GhostBehavior {
 		this.game = game;
 		this.name = name;
 		this.initialTile = initialTile;
-		this.scatteringTarget = scatteringTarget;
+		this.scatterTarget = scatteringTarget;
 		this.initialDir = initialDir;
 		behaviorMap = new EnumMap<>(GhostState.class);
 		fsm = buildStateMachine();
@@ -119,8 +119,8 @@ public class Ghost extends MazeMover implements GhostBehavior {
 		return maze.getPinkyHome();
 	}
 
-	public Tile getScatteringTarget() {
-		return scatteringTarget;
+	public Tile getScatterTarget() {
+		return scatterTarget;
 	}
 
 	public GhostState getNextState() {

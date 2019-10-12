@@ -175,7 +175,7 @@ public class PacManGame {
 
 		ghosts().forEach(ghost -> {
 			ghost.setBehavior(FRIGHTENED, ghost.flee(pacMan));
-			ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
+			ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatterTarget));
 			ghost.setBehavior(DEAD, ghost.headFor(ghost::getRevivalTile));
 			ghost.setBehavior(LOCKED, ghost.bounce());
 		});
