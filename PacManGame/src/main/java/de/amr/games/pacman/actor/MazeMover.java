@@ -8,7 +8,7 @@ import java.util.OptionalInt;
 
 import de.amr.easy.game.entity.SpriteEntity;
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
 
@@ -34,8 +34,8 @@ public abstract class MazeMover extends SpriteEntity {
 		return round(coord) / TS;
 	}
 
-	/* The maze where this maze mover lives. */
-	protected final Maze maze;
+	/* The game model. */
+	public final PacManGame game;
 
 	/* Current move direction (Top4.N, Top4.E, Top4.S, Top4.W). */
 	private int moveDir;
@@ -43,16 +43,12 @@ public abstract class MazeMover extends SpriteEntity {
 	/* The intended move direction, actor turns to this direction as soon as possible. */
 	private int nextDir;
 
-	protected MazeMover(Maze maze) {
-		this.maze = maze;
+	protected MazeMover(PacManGame game) {
+		this.game = game;
 		moveDir = nextDir = Top4.E;
 		// collision box size of maze movers is one tile, sprite size is larger!
 		tf.setWidth(TS);
 		tf.setHeight(TS);
-	}
-
-	public Maze getMaze() {
-		return maze;
 	}
 
 	public int getMoveDir() {
@@ -168,9 +164,9 @@ public abstract class MazeMover extends SpriteEntity {
 			tf.move();
 			// check for exit from teleport space
 			if (tf.getX() + tf.getWidth() < 0) {
-				tf.setX(maze.numCols() * TS);
+				tf.setX(game.maze.numCols() * TS);
 			}
-			else if (tf.getX() > (maze.numCols()) * TS) {
+			else if (tf.getX() > (game.maze.numCols()) * TS) {
 				tf.setX(-tf.getWidth());
 			}
 		}
@@ -191,7 +187,7 @@ public abstract class MazeMover extends SpriteEntity {
 		final Tile currentTile = getTile();
 		final Tile neighborTile = currentTile.tileTowards(dir);
 		final float speed = getSpeed();
-		if (maze.inTeleportSpace(currentTile)) {
+		if (game.maze.inTeleportSpace(currentTile)) {
 			// in teleporting area only horizontal movement is possible
 			return dir == Top4.N || dir == Top4.S ? 0 : speed;
 		}

@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -160,9 +161,10 @@ public interface GhostBehavior {
 	 */
 	default Behavior<Ghost> followRoute(Supplier<Tile> targetTileSupplier) {
 		return ghost -> {
+			Maze maze = ghost.game.maze;
 			Route route = new Route();
-			route.setPath(ghost.getMaze().findPath(ghost.getTile(), targetTileSupplier.get()));
-			route.setDir(ghost.getMaze().alongPath(route.getPath()).orElse(-1));
+			route.setPath(maze.findPath(ghost.getTile(), targetTileSupplier.get()));
+			route.setDir(maze.alongPath(route.getPath()).orElse(-1));
 			return route;
 		};
 	}

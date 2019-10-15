@@ -34,12 +34,12 @@ class FollowFixedPath<T extends MazeMover> implements Behavior<T> {
 		}
 		Route route = new Route();
 		route.setPath(path);
-		route.setDir(actor.getMaze().alongPath(path).orElse(actor.getMoveDir()));
+		route.setDir(actor.game.maze.alongPath(path).orElse(actor.getMoveDir()));
 		return route;
 	}
 
 	@Override
 	public void computePath(T actor) {
-		path = actor.getMaze().findPath(actor.getTile(), targetTileSupplier.get());
+		path = actor.game.maze.findPath(actor.getTile(), targetTileSupplier.get());
 	}
 }

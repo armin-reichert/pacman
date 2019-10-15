@@ -46,14 +46,12 @@ public class PacMan extends MazeMover {
 
 	private static final int[] STEERING = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
-	private final PacManGame game;
 	private final StateMachine<PacManState, PacManGameEvent> fsm;
 	private final EventManager<PacManGameEvent> eventManager;
 	private int eatTimer; // ticks since last pellet was eaten
 
 	public PacMan(PacManGame game) {
-		super(game.maze);
-		this.game = game;
+		super(game);
 		fsm = buildStateMachine();
 		fsm.traceTo(LOGGER, app().clock::getFrequency);
 		eventManager = new EventManager<>("[PacMan]");
@@ -62,7 +60,7 @@ public class PacMan extends MazeMover {
 
 	public void initPacMan() {
 		eatTimer = 0;
-		placeAtTile(maze.getPacManHome(), TS / 2, 0);
+		placeAtTile(game.maze.getPacManHome(), TS / 2, 0);
 		setNextDir(Top4.E);
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("s_full");
@@ -120,7 +118,7 @@ public class PacMan extends MazeMover {
 
 	@Override
 	public boolean canEnterTile(Tile tile) {
-		return !maze.isWall(tile) && !maze.isDoor(tile);
+		return !game.maze.isWall(tile) && !game.maze.isDoor(tile);
 	}
 
 	// Sprites
@@ -263,9 +261,9 @@ public class PacMan extends MazeMover {
 				return;
 			}
 
-			if (maze.containsFood(tile)) {
+			if (game.maze.containsFood(tile)) {
 				eatTimer = 0;
-				boolean energizer = maze.containsEnergizer(tile);
+				boolean energizer = game.maze.containsEnergizer(tile);
 				digestionTicks = game.getDigestionTicks(energizer);
 				getEventManager().publish(new FoodFoundEvent(tile, energizer));
 			}

@@ -42,7 +42,6 @@ import de.amr.statemachine.StateMachine;
  */
 public class Ghost extends MazeMover implements GhostBehavior {
 
-	private final PacManGame game;
 	private final StateMachine<GhostState, PacManGameEvent> fsm;
 	public Supplier<GhostState> fnNextState; // chasing or scattering
 	private final Map<GhostState, Behavior<Ghost>> behaviorMap;
@@ -54,8 +53,7 @@ public class Ghost extends MazeMover implements GhostBehavior {
 
 	public Ghost(PacManGame game, String name, Tile initialTile, Tile scatteringTarget,
 			int initialDir) {
-		super(game.maze);
-		this.game = game;
+		super(game);
 		this.name = name;
 		this.initialTile = initialTile;
 		this.initialDir = initialDir;
@@ -119,7 +117,7 @@ public class Ghost extends MazeMover implements GhostBehavior {
 	}
 
 	public Tile getRevivalTile() {
-		return maze.getPinkyHome();
+		return game.maze.getPinkyHome();
 	}
 
 	public Tile getScatterTarget() {
@@ -157,11 +155,11 @@ public class Ghost extends MazeMover implements GhostBehavior {
 
 	@Override
 	public boolean canEnterTile(Tile tile) {
-		if (maze.isWall(tile)) {
+		if (game.maze.isWall(tile)) {
 			return false;
 		}
-		if (maze.isDoor(tile)) {
-			return getState() == DEAD || getState() != LOCKED && maze.inGhostHouse(getTile());
+		if (game.maze.isDoor(tile)) {
+			return getState() == DEAD || getState() != LOCKED && game.maze.inGhostHouse(getTile());
 		}
 		return true;
 	}

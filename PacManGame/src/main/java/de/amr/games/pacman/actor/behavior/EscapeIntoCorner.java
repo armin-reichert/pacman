@@ -30,7 +30,7 @@ class EscapeIntoCorner<T extends MazeMover> extends FollowFixedPath<T> {
 
 	@Override
 	public void computePath(T refugee) {
-		Maze maze = refugee.getMaze();
+		Maze maze = refugee.game.maze;
 		Tile target = refugee.getTile();
 		while (target.equals(refugee.getTile())) {
 			target = safeCorner(refugee);
@@ -39,7 +39,7 @@ class EscapeIntoCorner<T extends MazeMover> extends FollowFixedPath<T> {
 	}
 
 	private Tile safeCorner(T refugee) {
-		Maze maze = refugee.getMaze();
+		Maze maze = refugee.game.maze;
 		Tile refugeeTile = refugee.getTile();
 		Tile chaserTile = targetTileSupplier.get();
 		//@formatter:off
