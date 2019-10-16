@@ -167,19 +167,19 @@ public interface GhostBehavior {
 				// keep direction inside tile
 				return route;
 			}
-			permute(NESW.dirs())
 			/*@formatter:off*/
+			permute(NESW.dirs())
 				.filter(dir -> dir != NESW.inv(currentDir))
 				.filter(dir -> ghost.canEnterTile(ghost.getTile().tileTowards(dir)))
 				.findFirst()
-			/*@formatter:off*/
 				.ifPresent(newDir -> {
-				route.setDir(newDir);
-				if (newDir != currentDir) {
-					LOGGER.fine(String.format("Changing direction of %s from %s to %s", ghost.getName(),
+					route.setDir(newDir);
+					if (newDir != currentDir) {
+						LOGGER.fine(String.format("Changing direction of '%s' from %s to %s", ghost.getName(),
 							Top4.get().name(currentDir), Top4.get().name(newDir)));
-				}
+					}
 			});
+			/*@formatter:on*/
 			return route;
 		};
 	}
