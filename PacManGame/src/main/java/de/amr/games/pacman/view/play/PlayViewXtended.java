@@ -23,6 +23,7 @@ import de.amr.games.pacman.actor.behavior.Route;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
+import de.amr.graph.grid.impl.Top4;
 import de.amr.statemachine.State;
 
 /**
@@ -254,11 +255,27 @@ public class PlayViewXtended extends PlayView {
 			g.translate(-targetTile.col * TS, -targetTile.row * TS);
 		}
 		else if (route.getTarget() != null) {
+			// draw target tile indicator
 			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
 					route.getTarget().col * TS + TS / 2, route.getTarget().row * TS + TS / 2);
 			g.translate(route.getTarget().col * TS, route.getTarget().row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-route.getTarget().col * TS, -route.getTarget().row * TS);
+		}
+		else {
+			// draw direction indicator
+			route.getDir().ifPresent(dir -> {
+				Vector2f center = ghost.tf.getCenter();
+				int dx = Top4.get().dx(dir), dy = Top4.get().dy(dir);
+				int r = TS / 4;
+				int lineLen = TS;
+				int indX = (int) (center.x + dx * lineLen);
+				int indY = (int) (center.y + dy * lineLen);
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				g.drawLine((int) center.x, (int) center.y, indX, indY);
+				g.fillOval(indX - r, indY - r, 2 * r, 2 * r);
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			});
 		}
 
 		if (ghost == game.clyde && ghost.getState() == GhostState.CHASING) {
