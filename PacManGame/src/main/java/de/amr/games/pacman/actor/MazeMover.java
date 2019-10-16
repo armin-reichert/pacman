@@ -42,10 +42,14 @@ public abstract class MazeMover extends SpriteEntity {
 
 	/* The intended move direction, actor turns to this direction as soon as possible. */
 	private int nextDir;
+	
+	/* Tells if the last move entered a new tile position */
+	private boolean enteredNewTile;
 
 	protected MazeMover(PacManGame game) {
 		this.game = game;
 		moveDir = nextDir = Top4.E;
+		enteredNewTile = false;
 		// collision box size of maze movers is one tile, sprite size is larger!
 		tf.setWidth(TS);
 		tf.setHeight(TS);
@@ -65,6 +69,10 @@ public abstract class MazeMover extends SpriteEntity {
 
 	protected void setNextDir(int nextDir) {
 		this.nextDir = nextDir;
+	}
+	
+	public boolean enteredNewTile() {
+		return enteredNewTile;
 	}
 
 	/**
@@ -87,6 +95,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 *                  pixel offset in y-direction
 	 */
 	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
+		enteredNewTile = !tile.equals(getTile());
 		tf.setPosition(tile.col * TS + xOffset, tile.row * TS + yOffset);
 	}
 
@@ -148,6 +157,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 * tile and getting stuck.
 	 */
 	protected void move() {
+		Tile oldTile = getTile();
 		supplyIntendedDir().ifPresent(this::setNextDir);
 		float speed = computeMaxSpeed(nextDir);
 		if (speed > 0) {
@@ -170,6 +180,7 @@ public abstract class MazeMover extends SpriteEntity {
 				tf.setX(-tf.getWidth());
 			}
 		}
+		enteredNewTile = !oldTile.equals(getTile());
 	}
 
 	private boolean isTurning90Degrees() {

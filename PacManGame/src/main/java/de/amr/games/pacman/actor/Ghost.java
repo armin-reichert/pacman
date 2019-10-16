@@ -155,6 +155,9 @@ public class Ghost extends MazeMover implements GhostBehavior {
 
 	@Override
 	public boolean canEnterTile(Tile tile) {
+		if (!game.maze.isValidTile(tile) && !game.maze.inTeleportSpace(tile)) {
+			return false;
+		}
 		if (game.maze.isWall(tile)) {
 			return false;
 		}

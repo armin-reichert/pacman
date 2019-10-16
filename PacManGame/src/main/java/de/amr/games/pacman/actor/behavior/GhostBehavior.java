@@ -1,5 +1,7 @@
 package de.amr.games.pacman.actor.behavior;
 
+import static de.amr.datastruct.StreamUtils.permute;
+import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.math.Vector2f.euclideanDist;
 import static de.amr.games.pacman.model.Maze.NESW;
 
@@ -10,6 +12,7 @@ import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
+import de.amr.graph.grid.impl.Top4;
 
 /**
  * Mixin with ghost behaviors.
@@ -147,6 +150,38 @@ public interface GhostBehavior {
 	 */
 	default Behavior<Ghost> flee(MazeMover attacker) {
 		return new EscapeIntoCorner<>(attacker::getTile);
+	}
+
+	/**
+	 * <cite> Frightened mode is unique because the ghosts do not have a specific target tile while in
+	 * this mode. Instead, they pseudo-randomly decide which turns to make at every intersection.
+	 * </cite>
+	 * 
+	 * @return fleeing behavior
+	 */
+	default Behavior<Ghost> fleeRandomly() {
+		return ghost -> {
+			int currentDir = ghost.getMoveDir();
+			Route route = new Route(currentDir);
+			if (!ghost.enteredNewTile() && !ghost.isStuck()) {
+				// keep direction inside tile
+				return route;
+			}
+			permute(NESW.dirs())
+			/*@formatter:off*/
+				.filter(dir -> dir != NESW.inv(currentDir))
+				.filter(dir -> ghost.canEnterTile(ghost.getTile().tileTowards(dir)))
+				.findFirst()
+			/*@formatter:off*/
+				.ifPresent(newDir -> {
+				route.setDir(newDir);
+				if (newDir != currentDir) {
+					LOGGER.fine(String.format("Changing direction of %s from %s to %s", ghost.getName(),
+							Top4.get().name(currentDir), Top4.get().name(newDir)));
+				}
+			});
+			return route;
+		};
 	}
 
 	/**

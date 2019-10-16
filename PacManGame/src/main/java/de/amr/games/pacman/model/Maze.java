@@ -262,6 +262,10 @@ public class Maze {
 		return isValidTile(tile) && isDoor(neighborTile(tile, Top4.S).get());
 	}
 
+	public boolean isIntersection(Tile tile) {
+		return isUnrestrictedIntersection(tile) || isUpwardsBlockedIntersection(tile);
+	}
+
 	public boolean isUnrestrictedIntersection(Tile tile) {
 		return unrestrictedIS.contains(tile);
 	}

@@ -174,7 +174,7 @@ public class PacManGame {
 		clyde.setSprites(GhostColor.ORANGE);
 
 		ghosts().forEach(ghost -> {
-			ghost.setBehavior(FRIGHTENED, ghost.flee(pacMan));
+			ghost.setBehavior(FRIGHTENED, ghost.fleeRandomly());
 			ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatterTarget));
 			ghost.setBehavior(DEAD, ghost.headFor(ghost::getRevivalTile));
 			ghost.setBehavior(LOCKED, ghost.bounce());
