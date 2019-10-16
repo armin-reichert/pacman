@@ -144,19 +144,19 @@ public class Ghost extends MazeMover implements GhostBehavior {
 		behaviorMap.put(state, behavior);
 	}
 
-	public Behavior<Ghost> getBehavior() {
+	public Behavior<Ghost> currentBehavior() {
 		return behaviorMap.getOrDefault(getState(), keepDirection());
 	}
 
 	@Override
 	public OptionalInt supplyIntendedDir() {
-		return getBehavior().getRoute(this).getDir();
+		return currentBehavior().getRoute(this).getDir();
 	}
 
 	@Override
 	public boolean canEnterTile(Tile tile) {
-		if (!game.maze.isValidTile(tile) && !game.maze.inTeleportSpace(tile)) {
-			return false;
+		if (!game.maze.isValidTile(tile)) {
+			return game.maze.inTeleportSpace(tile);
 		}
 		if (game.maze.isWall(tile)) {
 			return false;
@@ -230,7 +230,7 @@ public class Ghost extends MazeMover implements GhostBehavior {
 				
 				.state(FRIGHTENED)
 					.onEntry(() -> {
-						getBehavior().computePath(this); 
+						currentBehavior().computePath(this); 
 					})
 					.onTick(() -> {
 						move();
