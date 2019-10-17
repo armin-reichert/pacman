@@ -31,6 +31,7 @@ public class PacManApp extends Application {
 		settings.height = 36 * PacManGame.TS;
 		settings.scale = 2;
 		settings.fullScreenOnStart = false;
+		settings.set("ghostsFleeRandomly", true);
 		theme = new ClassicPacManTheme();
 		setIcon(theme.spr_ghostFrightened().frame(0));
 	}

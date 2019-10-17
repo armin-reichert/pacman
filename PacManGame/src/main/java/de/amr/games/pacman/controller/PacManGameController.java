@@ -112,6 +112,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		handleLoggingChange();
 		handleNextLevelCheat();
 		handlePlayingSpeedChange();
+		handleGhostBehaviorChange();
 		super.update();
 		currentViewController.update();
 	}
@@ -146,6 +147,25 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
 			app().clock.setFrequency(100);
+		}
+	}
+
+	private void handleGhostBehaviorChange() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_F)) {
+			if (app().settings.getAsBoolean("ghostsFleeRandomly")) {
+				game.ghosts().forEach(ghost -> {
+					ghost.setBehavior(GhostState.FRIGHTENED, ghost.fleeViaSafeRoute(game.pacMan));
+				});
+				app().settings.set("ghostsFleeRandomly", false);
+				LOGGER.info("Changed ghost FRIGHTENED behavior to flee via safe route");
+			}
+			else {
+				game.ghosts().forEach(ghost -> {
+					ghost.setBehavior(GhostState.FRIGHTENED, ghost.fleeRandomly());
+				});
+				app().settings.set("ghostsFleeRandomly", true);
+				LOGGER.info("Changed ghost FRIGHTENED behavior to flee randomly");
+			}
 		}
 	}
 
@@ -369,8 +389,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onPacManKilled(PacManGameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
-			LOGGER.info(
-					() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
+			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.getName(), e.killer.getTile()));
 			game.enableGlobalFoodCounter();
 			game.pacMan.processEvent(e);
 		}
@@ -395,16 +414,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onGhostKilled(PacManGameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
-			LOGGER
-					.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
+			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.getName(), e.ghost.getTile()));
 			theme.snd_eatGhost().play();
 			e.ghost.processEvent(e);
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
 			game.getBonus().ifPresent(bonus -> {
-				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.symbol(),
-						bonus.value()));
+				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.symbol(), bonus.value()));
 				theme.snd_eatFruit().play();
 				bonus.consume();
 				boolean extraLife = game.addPoints(bonus.value());
@@ -483,15 +500,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (extraLife) {
 				theme.snd_extraLife().play();
 			}
-			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d",
-					game.getKilledGhostValue(), game.getGhostsKilledByEnergizer()));
+			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
+					game.getGhostsKilledByEnergizer()));
 		}
 
 		@Override
 		public void onTick() {
 			game.activeGhosts()
-					.filter(
-							ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
+					.filter(ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
 					.forEach(Ghost::update);
 		}
 

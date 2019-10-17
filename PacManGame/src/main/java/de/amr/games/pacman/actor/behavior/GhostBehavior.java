@@ -148,7 +148,7 @@ public interface GhostBehavior {
 	 *                   the attacker e.g. Pac-Man
 	 * @return escaping behavior
 	 */
-	default Behavior<Ghost> flee(MazeMover attacker) {
+	default Behavior<Ghost> fleeViaSafeRoute(MazeMover attacker) {
 		return new EscapeIntoCorner<>(attacker::getTile);
 	}
 
