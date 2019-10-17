@@ -530,9 +530,11 @@ The game gets much of its entertainment factor from the individual attack behavi
 The ghosts behave identically in all of their states except the *chasing* state:
 
 ```java
-getGhosts().forEach(ghost -> {
-	ghost.setBehavior(FRIGHTENED, ghost.flee(pacMan));
-	ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
+boolean ghostFleeRandomly = app().settings.getAsBoolean("ghostsFleeRandomly");
+ghosts().forEach(ghost -> {
+	ghost.setBehavior(FRIGHTENED,
+			ghostFleeRandomly ? ghost.fleeRandomly() : ghost.fleeViaSafeRoute(pacMan));
+	ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatterTarget));
 	ghost.setBehavior(DEAD, ghost.headFor(ghost::getRevivalTile));
 	ghost.setBehavior(LOCKED, ghost.bounce());
 });
@@ -630,7 +632,7 @@ ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
 
 ## Graph based path finding
 
-The original Pac-Man game did not use any graph based path finding, the *headFor* behavior was used all over the place. To demonstrate how graph based path finding can be used, the *frightened* behavior is implemented differenty than in the original game: a frightened ghost choses a "safe" corner by computing the shortest path to each corner and selecting the one with the largest distance to Pac-Man's current position. The distance of a path from Pac-Man's position is defined as the minimum distance of any tile on the path from Pac-Man's position.
+The original Pac-Man game did not use any graph based path finding, the *headFor* behavior was used all over the place. To demonstrate how graph based path finding can be used, the *frightened* behavior can be toggled at runtime (key 'f') between the original random flight mode and the follwoing alternative flight behavior: a frightened ghost choses a "safe" corner by computing the shortest path to each corner and selecting the one with the largest distance to Pac-Man's current position. The distance of a path from Pac-Man's position is defined as the minimum distance of any tile on the path from Pac-Man's position.
 
 Shortest paths in the maze graph can be computed with the method *Maze.findPath(Tile source, Tile target)*. 
 This method runs an [A* search](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html)
