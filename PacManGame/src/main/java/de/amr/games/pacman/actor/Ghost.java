@@ -50,11 +50,12 @@ public class Ghost extends MazeMover implements GhostBehavior {
 	private final int initialDir;
 	private int foodCount;
 
-	public Ghost(PacManGame game, String name, Tile initialTile, int initialDir) {
+	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, int initialDir) {
 		super(game);
 		this.name = name;
 		this.initialTile = initialTile;
 		this.initialDir = initialDir;
+		setSprites(color);
 		behaviorMap = new EnumMap<>(GhostState.class);
 		fsm = buildStateMachine();
 		fsm.setIgnoreUnknownEvents(true);
@@ -62,7 +63,7 @@ public class Ghost extends MazeMover implements GhostBehavior {
 		fnNextState = this::getState; // default is to keep state
 	}
 
-	public void setSprites(GhostColor color) {
+	private void setSprites(GhostColor color) {
 		NESW.dirs().forEach(dir -> {
 			sprites.set("s_color_" + dir, game.theme.spr_ghostColored(color, dir));
 			sprites.set("s_eyes_" + dir, game.theme.spr_ghostEyes(dir));

@@ -164,23 +164,19 @@ public class PacManGame {
 		score = new Score(this);
 		pacMan = new PacMan(this);
 
-		blinky = new Ghost(this, "Blinky", maze.getBlinkyHome(), Top4.S);
-		blinky.setSprites(GhostColor.RED);
+		blinky = new Ghost(this, "Blinky", GhostColor.RED, maze.getBlinkyHome(), Top4.S);
 		blinky.setBehavior(SCATTERING, blinky.headFor(maze::getBlinkyScatterTarget));
 		blinky.setBehavior(CHASING, blinky.attackDirectly(pacMan));
 
-		pinky = new Ghost(this, "Pinky", maze.getPinkyHome(), Top4.S);
-		pinky.setSprites(GhostColor.PINK);
+		pinky = new Ghost(this, "Pinky", GhostColor.PINK, maze.getPinkyHome(), Top4.S);
 		pinky.setBehavior(SCATTERING, pinky.headFor(maze::getPinkyScatterTarget));
 		pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
 
-		inky = new Ghost(this, "Inky", maze.getInkyHome(), Top4.N);
-		inky.setSprites(GhostColor.CYAN);
+		inky = new Ghost(this, "Inky", GhostColor.CYAN, maze.getInkyHome(), Top4.N);
 		inky.setBehavior(SCATTERING, inky.headFor(maze::getInkyScatterTarget));
 		inky.setBehavior(CHASING, inky.attackWith(blinky, pacMan));
 
-		clyde = new Ghost(this, "Clyde", maze.getClydeHome(), Top4.N);
-		clyde.setSprites(GhostColor.ORANGE);
+		clyde = new Ghost(this, "Clyde", GhostColor.ORANGE, maze.getClydeHome(), Top4.N);
 		clyde.setBehavior(SCATTERING, clyde.headFor(maze::getClydeScatterTarget));
 		clyde.setBehavior(CHASING, clyde.attackOrReject(pacMan, 8 * TS, maze.getClydeScatterTarget()));
 
