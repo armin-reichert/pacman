@@ -527,7 +527,7 @@ The game gets its entertainment factor from the individual *attack behavior* of 
 <img src="doc/pacman.png"/>
 
 ### Common ghost behavior
-The ghost behavior is equals for all states except *chasing*. The *frightened* behavior has two different implementations and can be toggled for all ghosts at once by pressing the 'f'-key.
+The ghost behavior only differs for the *chasing* state. The *frightened* behavior has two different implementations and can be toggled for all ghosts at once by pressing the 'f'-key.
 
 ```java
 blinky = new Ghost(this, "Blinky", maze.getBlinkyHome(), Top4.S);
