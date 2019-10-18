@@ -221,6 +221,10 @@ public class Maze {
 	public Tile getClydeHome() {
 		return clydeHome;
 	}
+	
+	public Tile getGhostRevivalTile() {
+		return pinkyHome;
+	}
 
 	public Tile getBonusTile() {
 		return bonusTile;

@@ -177,7 +177,7 @@ public class PacManGame {
 		ghosts().forEach(ghost -> {
 			ghost.setBehavior(FRIGHTENED,
 					ghostFleeRandomly ? ghost.fleeRandomly() : ghost.fleeViaSafeRoute(pacMan));
-			ghost.setBehavior(DEAD, ghost.headFor(ghost::getRevivalTile));
+			ghost.setBehavior(DEAD, ghost.headFor(maze::getGhostRevivalTile));
 			ghost.setBehavior(LOCKED, ghost.bounce());
 		});
 

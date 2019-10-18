@@ -88,7 +88,7 @@ public class Ghost extends MazeMover implements GhostBehavior {
 	}
 
 	private void revive() {
-		placeAtTile(getRevivalTile(), TS / 2, 0);
+		placeAtTile(game.maze.getGhostRevivalTile(), TS / 2, 0);
 		setMoveDir(Top4.N);
 		setNextDir(Top4.N);
 		sprites.select("s_color_" + Top4.N);
@@ -111,10 +111,6 @@ public class Ghost extends MazeMover implements GhostBehavior {
 
 	public Tile getInitialTile() {
 		return initialTile;
-	}
-
-	public Tile getRevivalTile() {
-		return game.maze.getPinkyHome();
 	}
 
 	public GhostState getNextState() {
@@ -282,7 +278,7 @@ public class Ghost extends MazeMover implements GhostBehavior {
 				.when(DYING).then(DEAD).onTimeout()
 					
 				.when(DEAD).then(LOCKED)
-					.condition(() -> getTile().equals(getRevivalTile()))
+					.condition(() -> getTile().equals(game.maze.getGhostRevivalTile()))
 					.act(this::revive)
 				
 		.endStateMachine();
