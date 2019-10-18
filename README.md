@@ -522,35 +522,48 @@ public OptionalInt supplyIntendedDir() {
 
 ## Ghost behavior ("AI")
 
-The game gets much of its entertainment factor from the individual attack behavior of the four ghosts. This gives each ghost his unique personality. In the given implementation, these differences in behavior are realized by assigning a different implementation of behavior to each ghost ("strategy pattern"). This is more flexible than creating a subclass for each ghost character. 
+The game gets its entertainment factor from the individual *attack behavior* of the ghosts which gives each ghost his unique personality. Instead of creating a separate subclass for each ghost type, each ghost has a map from its states (*locked*, *chasing*, *frightened*, ...) to the corresponding behavior implementation, the current behavior is determined by the current state of the ghost. Different ghost types have different implementations of their *chasing* behavior (*strategy pattern*).
 
 <img src="doc/pacman.png"/>
 
 ### Common ghost behavior
-The ghosts behave identically in all of their states except the *chasing* state:
+The ghost behavior is equals for all states except *chasing*. The *frightened* behavior has two different implementations and can be toggled for all ghosts at once by pressing the 'f'-key.
 
 ```java
+blinky = new Ghost(this, "Blinky", maze.getBlinkyHome(), Top4.S);
+blinky.setSprites(GhostColor.RED);
+blinky.setBehavior(SCATTERING, blinky.headFor(maze::getBlinkyScatterTarget));
+blinky.setBehavior(CHASING, blinky.attackDirectly(pacMan));
+
+pinky = new Ghost(this, "Pinky", maze.getPinkyHome(), Top4.S);
+pinky.setSprites(GhostColor.PINK);
+pinky.setBehavior(SCATTERING, pinky.headFor(maze::getPinkyScatterTarget));
+pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
+
+inky = new Ghost(this, "Inky", maze.getInkyHome(), Top4.N);
+inky.setSprites(GhostColor.CYAN);
+inky.setBehavior(SCATTERING, inky.headFor(maze::getInkyScatterTarget));
+inky.setBehavior(CHASING, inky.attackWith(blinky, pacMan));
+
+clyde = new Ghost(this, "Clyde", maze.getClydeHome(), Top4.N);
+clyde.setSprites(GhostColor.ORANGE);
+clyde.setBehavior(SCATTERING, clyde.headFor(maze::getClydeScatterTarget));
+clyde.setBehavior(CHASING, clyde.attackOrReject(pacMan, 8 * TS, maze.getClydeScatterTarget()));
+
 boolean ghostFleeRandomly = app().settings.getAsBoolean("ghostsFleeRandomly");
 ghosts().forEach(ghost -> {
 	ghost.setBehavior(FRIGHTENED,
 			ghostFleeRandomly ? ghost.fleeRandomly() : ghost.fleeViaSafeRoute(pacMan));
-	ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatterTarget));
-	ghost.setBehavior(DEAD, ghost.headFor(ghost::getRevivalTile));
+	ghost.setBehavior(DEAD, ghost.headFor(maze::getGhostRevivalTile));
 	ghost.setBehavior(LOCKED, ghost.bounce());
 });
 ```
 
-The *chasing* behavior differs for each ghost as explained below. Using the common *headFor* behavior, the individual chase behaviors like *ambush*, *attackDirectly*, *attackWithPartner* can be implemented very easily.
+The *chasing* behavior differs for each ghost as explained above. Using the common *headFor* behavior, the individual chase behaviors like *ambush*, *attackDirectly*, *attackWithPartner* can be implemented very easily.
 
 ### Blinky (the red ghost)
 
-Blinky's chasing behavior is to directly attack Pac-Man.
-
-```java
-blinky.setBehavior(CHASING, blinky.attackDirectly(pacMan));
-```
-
-This is the implementation:
+Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
 default Behavior<Ghost> attackDirectly(PacMan pacMan) {
@@ -565,10 +578,6 @@ default Behavior<Ghost> attackDirectly(PacMan pacMan) {
 Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position (in the original game there is an overflow error leading to a slightly different behavior):
 
 ```java
-pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
-```
-
-```java
 default Behavior<Ghost> ambush(PacMan pacMan, int numTiles) {
 	return headFor(() -> tileAheadOf(pacMan, numTiles));
 }
@@ -579,10 +588,6 @@ default Behavior<Ghost> ambush(PacMan pacMan, int numTiles) {
 ### Inky (the cyan ghost)
 
 Inky heads for a position that depends on Blinky's current position and the position two tiles ahead of Pac-Man:
-
-```java
-inky.setBehavior(CHASING, inky.attackWith(blinky, pacMan));
-```
 
 Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man, so `V = (P - B)`. 
 Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
@@ -604,10 +609,6 @@ Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from 
 If closer, he behaves as in scattering mode:
 
 ```java
-clyde.setBehavior(CHASING, clyde.attackOrReject(pacMan, 8 * TS));
-```
-
-```java
 default Behavior<Ghost> attackOrReject(PacMan pacMan, int distance) {
 	return headFor(
 			() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.getTile()
@@ -617,7 +618,7 @@ default Behavior<Ghost> attackOrReject(PacMan pacMan, int distance) {
 
 <img src="doc/clyde.png"/>
 
-The visualization of the attack behaviors can be toggled during the game by pressing the key 'r' ("show routes").
+The visualization of the attack behaviors can be toggled during the game by pressing the 'r'-key ("show/hide routes").
 
 ### Scattering
 
@@ -630,20 +631,18 @@ ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
 
 <img src="doc/scattering.png"/>
 
-## Graph based path finding
+## Graph-based pathfinding
 
-The original Pac-Man game did not use any graph based path finding, the *headFor* behavior was used all over the place. To demonstrate how graph based path finding can be used, the *frightened* behavior can be toggled at runtime (key 'f') between the original random flight mode and the follwoing alternative flight behavior: a frightened ghost choses a "safe" corner by computing the shortest path to each corner and selecting the one with the largest distance to Pac-Man's current position. The distance of a path from Pac-Man's position is defined as the minimum distance of any tile on the path from Pac-Man's position.
+The original Pac-Man game did not use any graph-based pathfinding. To give an example how graph-based pathfinding could be useful, there is an additional implementation of the *frightened* behavior: when Pac-Man eats a power-pill each frightened ghost choses the "safest" corner to flee to. It computes the shortest path to each corner and selects the one with the largest distance to Pac-Man's current position. Here, the distance of a path from Pac-Man's position is defined as the minimum distance of any tile on the path from Pac-Man's position.
 
-Shortest paths in the maze graph can be computed with the method *Maze.findPath(Tile source, Tile target)*. 
-This method runs an [A* search](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html)
- on the underlying grid graph to compute the shortest path. The used
-[graph library](https://github.com/armin-reichert/graph) provides also other search algorithms
-like Dijkstra or "Hill Climbing".
+Shortest paths in the maze (grid graph) can be computed using *Maze.findPath(Tile source, Tile target)*. This method runs an [A* search](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html) on the underlying grid graph to compute the shortest path. The used [graph library](https://github.com/armin-reichert/graph) provides a whole number of search algorithms
+like BFS, Dijkstra or "Hill Climbing". The actual code to compute a shortest path between two tiles looks like this:
 
 ```java
 GraphSearch pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
 Path path = pathfinder.findPath(cell(source), cell(target));
 ```
+Honestly, for a maze of this size, the used algorithm doesn't matter much, a plain breadth-first search would also do the job.
 
 ## Additional features
 
@@ -656,6 +655,7 @@ Path path = pathfinder.findPath(cell(source), cell(target));
 - Display of actor states and timers can be switched on/off at runtime (key 's')
 - Display of actor routes can be switched on/off at runtime (key 'r')
 - Ghosts can be enabled/disabled during the game (keys 'b', 'p', 'i', 'c')
+- The *frightened* behavior of the ghosts can be toggled between "random" and "select safe corner" during the game (key 'f')
 - Cheat key 'k' kills all ghosts
 - Cheat key 'e' eats all normal pellets
 - Alignment of actors on the grid can be visualized (key 'g')
