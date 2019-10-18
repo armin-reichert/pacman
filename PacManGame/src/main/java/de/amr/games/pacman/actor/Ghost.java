@@ -48,16 +48,13 @@ public class Ghost extends MazeMover implements GhostBehavior {
 	private final String name;
 	private final Tile initialTile;
 	private final int initialDir;
-	private final Tile scatterTarget;
 	private int foodCount;
 
-	public Ghost(PacManGame game, String name, Tile initialTile, Tile scatteringTarget,
-			int initialDir) {
+	public Ghost(PacManGame game, String name, Tile initialTile, int initialDir) {
 		super(game);
 		this.name = name;
 		this.initialTile = initialTile;
 		this.initialDir = initialDir;
-		this.scatterTarget = scatteringTarget;
 		behaviorMap = new EnumMap<>(GhostState.class);
 		fsm = buildStateMachine();
 		fsm.setIgnoreUnknownEvents(true);
@@ -118,10 +115,6 @@ public class Ghost extends MazeMover implements GhostBehavior {
 
 	public Tile getRevivalTile() {
 		return game.maze.getPinkyHome();
-	}
-
-	public Tile getScatterTarget() {
-		return scatterTarget;
 	}
 
 	public GhostState getNextState() {
