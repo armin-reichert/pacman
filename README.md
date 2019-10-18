@@ -550,10 +550,11 @@ clyde.setSprites(GhostColor.ORANGE);
 clyde.setBehavior(SCATTERING, clyde.headFor(maze::getClydeScatterTarget));
 clyde.setBehavior(CHASING, clyde.attackOrReject(pacMan, 8 * TS, maze.getClydeScatterTarget()));
 
-boolean ghostFleeRandomly = app().settings.getAsBoolean("ghostsFleeRandomly");
 ghosts().forEach(ghost -> {
 	ghost.setBehavior(FRIGHTENED,
-			ghostFleeRandomly ? ghost.fleeRandomly() : ghost.fleeViaSafeRoute(pacMan));
+			app().settings.getAsBoolean("ghost.behavior.frightened.fleeRandomly")
+					? ghost.fleeRandomly()
+					: ghost.fleeViaSafeRoute(pacMan));
 	ghost.setBehavior(DEAD, ghost.headFor(maze::getGhostRevivalTile));
 	ghost.setBehavior(LOCKED, ghost.bounce());
 });
