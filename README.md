@@ -605,10 +605,10 @@ Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from 
 If closer, he behaves as in scattering mode:
 
 ```java
-default Behavior<Ghost> attackOrReject(PacMan pacMan, int distance) {
+default Behavior<Ghost> attackOrReject(PacMan pacMan, int distance, Tile scatterTarget) {
 	return headFor(
 			() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.getTile()
-					: self().getScatteringTarget());
+					: scatterTarget);
 }
 ```
 
