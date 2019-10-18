@@ -42,7 +42,7 @@ public abstract class MazeMover extends SpriteEntity {
 
 	/* The intended move direction, actor turns to this direction as soon as possible. */
 	private int nextDir;
-	
+
 	/* Tells if the last move entered a new tile position */
 	private boolean enteredNewTile;
 
@@ -70,14 +70,14 @@ public abstract class MazeMover extends SpriteEntity {
 	protected void setNextDir(int nextDir) {
 		this.nextDir = nextDir;
 	}
-	
+
 	public boolean enteredNewTile() {
 		return enteredNewTile;
 	}
 
 	/**
-	 * @return The tile where this maze mover is located, which is the tile containing the center
-	 *         point of this maze mover.
+	 * @return The tile where this maze mover is located, which is the tile containing the center point
+	 *         of this maze mover.
 	 */
 	public Tile getTile() {
 		Vector2f center = tf.getCenter();
@@ -103,7 +103,8 @@ public abstract class MazeMover extends SpriteEntity {
 	 * Places this maze mover exactly over its current tile.
 	 */
 	public void align() {
-		placeAtTile(getTile(), 0, 0);
+		Tile tile = getTile();
+		tf.setPosition(tile.col * TS, tile.row * TS);
 	}
 
 	/**
@@ -152,9 +153,9 @@ public abstract class MazeMover extends SpriteEntity {
 	}
 
 	/**
-	 * Moves this actor through the maze. Handles changing the direction according to the intended
-	 * move direction, moving around corners without losing alignment, movement through the "teleport"
-	 * tile and getting stuck.
+	 * Moves this actor through the maze. Handles changing the direction according to the intended move
+	 * direction, moving around corners without losing alignment, movement through the "teleport" tile
+	 * and getting stuck.
 	 */
 	protected void move() {
 		Tile oldTile = getTile();
