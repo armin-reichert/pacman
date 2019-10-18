@@ -619,10 +619,11 @@ The visualization of the attack behaviors can be toggled during the game by pres
 ### Scattering
 
 In *scattering* mode, each ghost tries to reach his "scattering target" which is a tile outside of the maze. Because ghosts
-cannot reverse direction this results in a cyclic movement around the walls in the corresponding corner of the maze:
+cannot reverse direction this results in a cyclic movement around the walls in the corresponding corner of the maze.
 
 ```java
-ghost.setBehavior(SCATTERING, ghost.headFor(ghost::getScatteringTarget));
+blinky.setBehavior(SCATTERING, blinky.headFor(maze::getBlinkyScatterTarget));
+...
 ```
 
 <img src="doc/scattering.png"/>
