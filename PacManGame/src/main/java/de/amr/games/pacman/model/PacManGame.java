@@ -71,28 +71,28 @@ public class PacManGame {
 
 		private static final Object[][] VALUES_BY_LEVEL = {
 			/*@formatter:off*/
-			{ /* this row is not used */ },
-			{ CHERRIES,           100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6,   5 },
-			{ STRAWBERRY,         300,  .90f, .79f, .85f, .45f,  30, .8f,  15,  .95f, .95f, .83f, .55f,   5,   5 },
-			{ PEACH,              500,  .90f, .79f, .85f, .45f,  40, .8f,  20,  .95f, .95f, .83f, .55f,   4,   5 },
-			{ PEACH,              500,  .90f, .79f, .85f, .50f,  40, .8f,  20,  .95f, .95f, .83f, .55f,   3,   5 },
-			{ APPLE,              700,    1f, .87f, .95f, .50f,  40, .8f,  20, .105f,   1f, .87f, .60f,   2,   5 },
-			{ APPLE,              700,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   5,   5 },
-			{ GRAPES,            1000,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   2,   5 },
-			{ GRAPES,            1000,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   2,   5 },
-			{ GALAXIAN,          2000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   1,   3 },
-			{ GALAXIAN,          2000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   5,   5 },
-			{ BELL,              3000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   2,   5 },
-			{ BELL,              3000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   1,   3 },
-			{ KEY,               5000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   1,   3 },
-			{ KEY,               5000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   3,   5 },
-			{ KEY,               5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   1f, .87f, .60f,   1,   3 },
-			{ KEY,               5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   0f,   0f,   0f,   0,   0 },
-			{ KEY,               5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   1f, .87f, .60f,   1,   3 },
-			{ KEY,               5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   0f,   0f,   0f,   0,   0 },
-			{ KEY,               5000,    1f, .87f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0,   0 },
-			{ KEY,               5000,    1f, .87f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0,   0 },
-			{ KEY,               5000,  .90f, .79f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0,   0 },
+			{ /* this row intentionally empty */ },
+			{ CHERRIES,         100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6,   5 },
+			{ STRAWBERRY,       300,  .90f, .79f, .85f, .45f,  30, .8f,  15,  .95f, .95f, .83f, .55f,   5,   5 },
+			{ PEACH,            500,  .90f, .79f, .85f, .45f,  40, .8f,  20,  .95f, .95f, .83f, .55f,   4,   5 },
+			{ PEACH,            500,  .90f, .79f, .85f, .50f,  40, .8f,  20,  .95f, .95f, .83f, .55f,   3,   5 },
+			{ APPLE,            700,    1f, .87f, .95f, .50f,  40, .8f,  20, .105f,   1f, .87f, .60f,   2,   5 },
+			{ APPLE,            700,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   5,   5 },
+			{ GRAPES,          1000,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   2,   5 },
+			{ GRAPES,          1000,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   2,   5 },
+			{ GALAXIAN,        2000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   1,   3 },
+			{ GALAXIAN,        2000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   5,   5 },
+			{ BELL,            3000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   2,   5 },
+			{ BELL,            3000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   1,   3 },
+			{ KEY,             5000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   1,   3 },
+			{ KEY,             5000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   3,   5 },
+			{ KEY,             5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   1f, .87f, .60f,   1,   3 },
+			{ KEY,             5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   0f,   0f,   0f,   0,   0 },
+			{ KEY,             5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   1f, .87f, .60f,   1,   3 },
+			{ KEY,             5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   0f,   0f,   0f,   0,   0 },
+			{ KEY,             5000,    1f, .87f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0,   0 },
+			{ KEY,             5000,    1f, .87f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0,   0 },
+			{ KEY,             5000,  .90f, .79f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0,   0 },
 			/*@formatter:on*/
 		};
 
@@ -113,8 +113,10 @@ public class PacManGame {
 		}
 	};
 
+	/** The maze given as a graph with content */
 	public final Maze maze;
 
+	/** The used theme */
 	public final PacManTheme theme;
 
 	public final PacMan pacMan;
@@ -145,11 +147,15 @@ public class PacManGame {
 	/** Current level. */
 	private int level;
 
+	/** The currently active bonus. */
 	private Bonus bonus;
 
-	/** Level counter symbols. */
+	/** Level counter symbols displayed at the bottom right corner. */
 	private final List<BonusSymbol> levelCounter = new LinkedList<>();
 
+	/**
+	 * Creates the game using the classic Pac-Man theme.
+	 */
 	public PacManGame() {
 		this(new ClassicPacManTheme());
 	}
@@ -192,6 +198,29 @@ public class PacManGame {
 		activeActors.addAll((Arrays.asList(pacMan, blinky, pinky, inky, clyde)));
 	}
 
+	public void init() {
+		lives = 3;
+		level = 0;
+		bonus = null;
+		levelCounter.clear();
+		score.loadHiscore();
+		nextLevel();
+	}
+
+	public void nextLevel() {
+		level += 1;
+		maze.resetFood();
+		eaten = 0;
+		ghostsKilled = 0;
+		levelCounter.add(0, getLevelSymbol());
+		if (levelCounter.size() == 8) {
+			levelCounter.remove(levelCounter.size() - 1);
+		}
+		ghosts().forEach(Ghost::resetFoodCount);
+		globalFoodCounterEnabled = false;
+		globalFoodCounter = 0;
+	}
+
 	public Stream<Ghost> ghosts() {
 		return Stream.of(blinky, pinky, inky, clyde);
 	}
@@ -220,49 +249,6 @@ public class PacManGame {
 		actor.setVisible(active);
 	}
 
-	public boolean addPoints(int points) {
-		int oldScore = score.getPoints();
-		int newScore = oldScore + points;
-		score.set(newScore);
-		if (oldScore < 10000 && 10000 <= newScore) {
-			lives += 1;
-			return true;
-		}
-		return false;
-	}
-
-	public void init() {
-		lives = 3;
-		level = 0;
-		bonus = null;
-		levelCounter.clear();
-		score.loadHiscore();
-		nextLevel();
-	}
-
-	public void nextLevel() {
-		maze.resetFood();
-		eaten = 0;
-		ghostsKilled = 0;
-		level += 1;
-		levelCounter.add(0, getBonusSymbol());
-		if (levelCounter.size() == 8) {
-			levelCounter.remove(levelCounter.size() - 1);
-		}
-		ghosts().forEach(Ghost::resetFoodCount);
-		globalFoodCounterEnabled = false;
-		globalFoodCounter = 0;
-	}
-
-	private int sec(float seconds) {
-		return app().clock.sec(seconds);
-	}
-
-	private float speed(float relativeSpeed) {
-		// TODO what is the original base speed in tiles/second at 60 Hz?
-		return 9f * TS / 60 * relativeSpeed;
-	}
-
 	public int getLevel() {
 		return level;
 	}
@@ -271,16 +257,8 @@ public class PacManGame {
 		this.level = level;
 	}
 
-	public Optional<Bonus> getBonus() {
-		return Optional.ofNullable(bonus);
-	}
-
-	public void removeBonus() {
-		bonus = null;
-	}
-
-	public void setBonus(Bonus bonus) {
-		this.bonus = Objects.requireNonNull(bonus);
+	public BonusSymbol getLevelSymbol() {
+		return Param.BONUS_SYMBOL.asObject(level);
 	}
 
 	public List<BonusSymbol> getLevelCounter() {
@@ -309,6 +287,38 @@ public class PacManGame {
 		return energizer ? 3 : 1;
 	}
 
+	/**
+	 * @param points
+	 *                 points scored
+	 * @return <code>true</code> if new life has been granted
+	 */
+	public boolean scorePoints(int points) {
+		int oldScore = score.getPoints();
+		int newScore = oldScore + points;
+		score.set(newScore);
+		if (oldScore < 10_000 && 10_000 <= newScore) {
+			lives += 1;
+			return true;
+		}
+		return false;
+	}
+
+	public int getKilledGhostValue() {
+		int value = 200;
+		for (int i = 1; i < ghostsKilled; ++i) {
+			value *= 2;
+		}
+		return value;
+	}
+
+	public int getGhostsKilledByEnergizer() {
+		return ghostsKilled;
+	}
+
+	public void addGhostKilled() {
+		ghostsKilled += 1;
+	}
+
 	public int getLives() {
 		return lives;
 	}
@@ -317,20 +327,60 @@ public class PacManGame {
 		lives -= 1;
 	}
 
-	public boolean isBonusReached() {
-		return eaten == 70 || eaten == 170;
+	// Bonus handling
+
+	public Optional<Bonus> getBonus() {
+		return Optional.ofNullable(bonus);
 	}
 
-	public BonusSymbol getBonusSymbol() {
-		return Param.BONUS_SYMBOL.asObject(level);
+	public void removeBonus() {
+		bonus = null;
+	}
+
+	public void setBonus(Bonus bonus) {
+		this.bonus = Objects.requireNonNull(bonus);
+	}
+
+	public boolean isBonusReached() {
+		return eaten == 70 || eaten == 170;
 	}
 
 	public int getBonusValue() {
 		return Param.BONUS_VALUE.asInt(level);
 	}
 
-	public int getBonusTime() {
+	public int getBonusDuration() {
 		return sec(9 + new Random().nextFloat());
+	}
+
+	// Timing
+
+	private int sec(float seconds) {
+		return app().clock.sec(seconds);
+	}
+
+	private float speed(float relativeSpeed) {
+		// TODO is 9 tiles/seconds the correct base speed at 60 Hz?
+		return relativeSpeed * (9f * TS / 60);
+	}
+
+	public float getPacManSpeed(PacMan pacMan) {
+		switch (pacMan.getState()) {
+		case HUNGRY:
+			return speed(Param.PACMAN_SPEED.asFloat(level));
+		case POWER:
+			return speed(Param.PACMAN_POWER_SPEED.asFloat(level));
+		default:
+			return 0;
+		}
+	}
+
+	public int getPacManPowerTime() {
+		return sec(Param.PACMAN_POWER_SECONDS.asInt(level));
+	}
+
+	public int getPacManDyingTime() {
+		return sec(2);
 	}
 
 	public int getGhostScatteringDuration(int round) {
@@ -357,25 +407,27 @@ public class PacManGame {
 		return round <= 1 ? sec(20) : round == 2 ? sec(1037) : Integer.MAX_VALUE;
 	}
 
+	/* TODO: some values are still unknown to me and only estimated */
 	public float getGhostSpeed(Ghost ghost) {
+		Objects.requireNonNull(ghost);
 		Tile tile = ghost.getTile();
-		boolean slow = maze.inTeleportSpace(tile) || maze.inTunnel(tile);
-		float slowSpeed = speed(Param.GHOST_TUNNEL_SPEED.asFloat(level));
+		boolean inTunnel = maze.inTeleportSpace(tile) || maze.inTunnel(tile);
+		float tunnelSpeed = speed(Param.GHOST_TUNNEL_SPEED.asFloat(level));
 		switch (ghost.getState()) {
 		case CHASING:
-			return slow ? slowSpeed : speed(Param.GHOST_SPEED.asFloat(level));
+			return inTunnel ? tunnelSpeed : speed(Param.GHOST_SPEED.asFloat(level));
 		case DYING:
 			return 0;
 		case DEAD:
-			return speed(1.25f);
+			return 1.25f * speed(Param.GHOST_SPEED.asFloat(level));
 		case FRIGHTENED:
-			return slow ? slowSpeed : speed(Param.GHOST_FRIGHTENED_SPEED.asFloat(level));
+			return inTunnel ? tunnelSpeed : speed(Param.GHOST_FRIGHTENED_SPEED.asFloat(level));
 		case LOCKED:
 			return speed(0.75f);
 		case SCATTERING:
-			return slow ? slowSpeed : speed(Param.GHOST_SPEED.asFloat(level));
+			return inTunnel ? tunnelSpeed : speed(Param.GHOST_SPEED.asFloat(level));
 		default:
-			throw new IllegalStateException();
+			throw new IllegalStateException("Illegal ghost state for ghost " + ghost.getName());
 		}
 	}
 
@@ -383,7 +435,11 @@ public class PacManGame {
 		return sec(0.75f);
 	}
 
-	// rules for leaving ghost house
+	public int getGhostNumFlashes() {
+		return Param.MAZE_NUM_FLASHES.asInt(level);
+	}
+
+	// rules for leaving the ghost house
 
 	/**
 	 * The first control used to evaluate when the ghosts leave home is a personal counter each ghost
@@ -494,45 +550,6 @@ public class PacManGame {
 	public void enableGlobalFoodCounter() {
 		globalFoodCounterEnabled = true;
 		globalFoodCounter = 0;
-	}
-
-	public int getGhostNumFlashes() {
-		return Param.MAZE_NUM_FLASHES.asInt(level);
-	}
-
-	public int getKilledGhostValue() {
-		int value = 200;
-		for (int i = 1; i < ghostsKilled; ++i) {
-			value *= 2;
-		}
-		return value;
-	}
-
-	public int getGhostsKilledByEnergizer() {
-		return ghostsKilled;
-	}
-
-	public void addGhostKilled() {
-		ghostsKilled += 1;
-	}
-
-	public float getPacManSpeed(PacMan pacMan) {
-		switch (pacMan.getState()) {
-		case HUNGRY:
-			return speed(Param.PACMAN_SPEED.asFloat(level));
-		case POWER:
-			return speed(Param.PACMAN_POWER_SPEED.asFloat(level));
-		default:
-			return 0;
-		}
-	}
-
-	public int getPacManPowerTime() {
-		return sec(Param.PACMAN_POWER_SECONDS.asInt(level));
-	}
-
-	public int getPacManDyingTime() {
-		return sec(2);
 	}
 
 }

@@ -424,7 +424,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.symbol(), bonus.value()));
 				theme.snd_eatFruit().play();
 				bonus.consume();
-				boolean extraLife = game.addPoints(bonus.value());
+				boolean extraLife = game.scorePoints(bonus.value());
 				if (extraLife) {
 					theme.snd_extraLife().play();
 				}
@@ -436,7 +436,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			FoodFoundEvent e = (FoodFoundEvent) event;
 			theme.snd_eatPill().play();
 			int points = game.eatFoodAtTile(e.tile);
-			boolean extraLife = game.addPoints(points);
+			boolean extraLife = game.scorePoints(points);
 			if (extraLife) {
 				theme.snd_extraLife().play();
 			}
@@ -445,8 +445,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				return;
 			}
 			if (game.isBonusReached()) {
-				playView.setBonus(game.getBonusSymbol(), game.getBonusValue());
-				playView.setBonusTimer(game.getBonusTime());
+				playView.setBonus(game.getLevelSymbol(), game.getBonusValue());
+				playView.setBonusTimer(game.getBonusDuration());
 			}
 			if (e.energizer) {
 				enqueue(new PacManGainsPowerEvent());
@@ -496,7 +496,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onEntry() {
 			game.pacMan.setVisible(false);
-			boolean extraLife = game.addPoints(game.getKilledGhostValue());
+			boolean extraLife = game.scorePoints(game.getKilledGhostValue());
 			if (extraLife) {
 				theme.snd_extraLife().play();
 			}
