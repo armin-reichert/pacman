@@ -157,34 +157,7 @@ public class Ghost extends MazeMover implements GhostBehavior {
 		return true;
 	}
 
-	// State machine
-
-	@Override
-	public void init() {
-		initialize();
-		fsm.init();
-	}
-
-	@Override
-	public void update() {
-		fsm.update();
-	}
-
-	public GhostState getState() {
-		return fsm.getState();
-	}
-
-	public State<GhostState, PacManGameEvent> getStateObject() {
-		return fsm.state();
-	}
-
-	public void setState(GhostState state) {
-		fsm.setState(state);
-	}
-
-	public void processEvent(PacManGameEvent event) {
-		fsm.process(event);
-	}
+	// Define state machine
 
 	private StateMachine<GhostState, PacManGameEvent> buildStateMachine() {
 		/*@formatter:off*/
@@ -200,9 +173,7 @@ public class Ghost extends MazeMover implements GhostBehavior {
 						move();	
 						sprites.select("s_color_" + getMoveDir());
 					})
-					.onExit(() -> {
-						game.pacMan.resetEatTimer();
-					})
+					.onExit(game.pacMan::resetEatTimer)
 				
 				.state(SCATTERING)
 					.onTick(() -> {
@@ -211,12 +182,12 @@ public class Ghost extends MazeMover implements GhostBehavior {
 					})
 			
 				.state(CHASING)
-					.onEntry(() -> game.theme.snd_ghost_chase().loop())
+					.onEntry(game.theme.snd_ghost_chase()::loop)
 					.onTick(() -> {	
 						move();	
 						sprites.select("s_color_" + getMoveDir()); 
 					})
-					.onExit(() -> game.theme.snd_ghost_chase().stop())
+					.onExit(game.theme.snd_ghost_chase()::stop)
 				
 				.state(FRIGHTENED)
 					.onEntry(() -> {
@@ -235,9 +206,7 @@ public class Ghost extends MazeMover implements GhostBehavior {
 					})
 				
 				.state(DEAD)
-					.onEntry(() -> {
-						game.theme.snd_ghost_dead().loop();
-					})
+					.onEntry(game.theme.snd_ghost_dead()::loop)
 					.onTick(() -> {	
 						move();
 						sprites.select("s_eyes_" + getMoveDir());
@@ -284,5 +253,34 @@ public class Ghost extends MazeMover implements GhostBehavior {
 				
 		.endStateMachine();
 		/*@formatter:on*/
+	}
+
+	// Integrate state machine
+
+	@Override
+	public void init() {
+		initialize();
+		fsm.init();
+	}
+
+	@Override
+	public void update() {
+		fsm.update();
+	}
+
+	public GhostState getState() {
+		return fsm.getState();
+	}
+
+	public State<GhostState, PacManGameEvent> getStateObject() {
+		return fsm.state();
+	}
+
+	public void setState(GhostState state) {
+		fsm.setState(state);
+	}
+
+	public void processEvent(PacManGameEvent event) {
+		fsm.process(event);
 	}
 }
