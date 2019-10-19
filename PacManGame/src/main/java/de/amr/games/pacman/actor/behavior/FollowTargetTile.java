@@ -28,9 +28,6 @@ import de.amr.graph.grid.impl.Top4;
  * direction and move back to the left. The implication of this restriction is that whenever a ghost
  * enters a tile with only two exits, it will always continue in the same direction. </cite>
  * </p>
- * <p>
- * TODO: how did the original game implement exiting and leaving the ghost house?
- * </p>
  * 
  * @author Armin Reichert
  */
@@ -80,15 +77,13 @@ class FollowTargetTile<T extends MazeMover> implements Behavior<T> {
 
 		// If next tile is an intersection, decide where to go:
 		final Tile nextTile = actorTile.tileTowards(actorDir);
-		final boolean unrestricted = maze.isUnrestrictedIntersection(nextTile);
-		final boolean upwardsBlocked = maze.isUpwardsBlockedIntersection(nextTile);
-		if (unrestricted || upwardsBlocked) {
+		if (maze.isIntersection(nextTile)) {
 			// direction order: up > left > down > right
 			int bestDir = Stream.of(Top4.N, Top4.W, Top4.S, Top4.E)
 			/*@formatter:off*/
 				.filter(dir -> dir != NESW.inv(actorDir)) // cannot reverse direction
-				.filter(dir -> dir != Top4.N || unrestricted) // cannot go up if restricted
-				.map(dir -> maze.neighborTile(nextTile, dir)) // map direction to neighbor tile
+				.filter(dir -> dir != Top4.N || maze.isUnrestrictedIntersection(nextTile)) // cannot go up if restricted
+				.map(dir -> maze.neighborTile(nextTile, dir))
 				.filter(Optional::isPresent).map(Optional::get)
 				.filter(actor::canEnterTile)
 				.sorted((t1, t2) -> Integer.compare(distance(t1, targetTile),	distance(t2, targetTile)))
