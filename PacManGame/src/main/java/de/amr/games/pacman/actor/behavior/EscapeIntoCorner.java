@@ -12,8 +12,8 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Lets an actor (ghost) escape to the "best" maze corner depending on Pac-Man's current position.
- * The best corner is defined by the maximum distance of Pac-Man to any tile on the path from the
+ * Lets a ghost escape to the "safest" maze corner depending on Pac-Man's current position. The
+ * "safest" corner is defined by the maximum distance of Pac-Man to any tile on the path from the
  * actor's current position to the corner. When the target corner is reached the next corner is
  * computed.
  * 
@@ -24,13 +24,15 @@ import de.amr.games.pacman.model.Tile;
  */
 class EscapeIntoCorner<T extends MazeMover> extends FollowFixedPath<T> {
 
-	public EscapeIntoCorner(Supplier<Tile> chaserTileSupplier) {
+	private final Maze maze;
+
+	public EscapeIntoCorner(Maze maze, Supplier<Tile> chaserTileSupplier) {
 		super(chaserTileSupplier);
+		this.maze = maze;
 	}
 
 	@Override
 	public void computePath(T refugee) {
-		Maze maze = refugee.game.maze;
 		Tile target = refugee.getTile();
 		while (target.equals(refugee.getTile())) {
 			target = safeCorner(refugee);
@@ -39,7 +41,6 @@ class EscapeIntoCorner<T extends MazeMover> extends FollowFixedPath<T> {
 	}
 
 	private Tile safeCorner(T refugee) {
-		Maze maze = refugee.game.maze;
 		Tile refugeeTile = refugee.getTile();
 		Tile chaserTile = targetTileSupplier.get();
 		//@formatter:off
@@ -47,20 +48,20 @@ class EscapeIntoCorner<T extends MazeMover> extends FollowFixedPath<T> {
 			maze.getTopLeftCorner(), maze.getTopRightCorner(),
 			maze.getBottomRightCorner(), maze.getBottomLeftCorner()
 		)).filter(corner -> !corner.equals(refugeeTile))
-			.sorted(byDist(maze, refugeeTile, chaserTile).reversed())
+			.sorted(byDist(refugeeTile, chaserTile).reversed())
 			.findFirst().get();
 		//@formatter:on
 	}
 
-	private Comparator<Tile> byDist(Maze maze, Tile refugeeTile, Tile chaserTile) {
+	private Comparator<Tile> byDist(Tile refugeeTile, Tile chaserTile) {
 		return (corner1, corner2) -> {
-			double dist1 = distance(maze, maze.findPath(refugeeTile, corner1), chaserTile);
-			double dist2 = distance(maze, maze.findPath(refugeeTile, corner2), chaserTile);
+			double dist1 = minDistFromPath(maze.findPath(refugeeTile, corner1), chaserTile);
+			double dist2 = minDistFromPath(maze.findPath(refugeeTile, corner2), chaserTile);
 			return Double.compare(dist1, dist2);
 		};
 	}
 
-	private double distance(Maze maze, List<Tile> path, Tile tile) {
+	private double minDistFromPath(List<Tile> path, Tile tile) {
 		double min = Double.MAX_VALUE;
 		for (Tile t : path) {
 			double dist = maze.manhattan(t, tile);
