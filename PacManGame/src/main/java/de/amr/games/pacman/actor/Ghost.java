@@ -42,13 +42,13 @@ import de.amr.statemachine.StateMachine;
  */
 public class Ghost extends MazeMover implements GhostBehavior {
 
-	private final StateMachine<GhostState, PacManGameEvent> fsm;
 	public Supplier<GhostState> fnNextState; // chasing or scattering
-	private final Map<GhostState, Behavior<Ghost>> behaviorMap;
-	private final String name;
+	public final String name;
 	private final Tile initialTile;
 	private final int initialDir;
-	private int foodCount;
+	private final StateMachine<GhostState, PacManGameEvent> fsm;
+	private final Map<GhostState, Behavior<Ghost>> behaviorMap;
+	public int foodCount;
 
 	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, int initialDir) {
 		super(game);
@@ -96,39 +96,17 @@ public class Ghost extends MazeMover implements GhostBehavior {
 		sprites.forEach(Sprite::resetAnimation);
 	}
 
-	public void resetFoodCount() {
-		foodCount = 0;
-	}
-
-	public void incFoodCount() {
-		foodCount++;
-	}
-
-	// Accessors
-
-	public String getName() {
-		return name;
-	}
-
-	public Tile getInitialTile() {
-		return initialTile;
-	}
-
-	public GhostState getNextState() {
-		GhostState nextState = fnNextState.get();
-		return nextState != null ? nextState : getState();
-	}
+	// Behavior
 
 	@Override
 	public float getSpeed() {
 		return game.getGhostSpeed(this);
 	}
 
-	public int getFoodCount() {
-		return foodCount;
+	public GhostState getNextState() {
+		GhostState nextState = fnNextState.get();
+		return nextState != null ? nextState : getState();
 	}
-
-	// Behavior
 
 	public void setBehavior(GhostState state, Behavior<Ghost> behavior) {
 		behaviorMap.put(state, behavior);

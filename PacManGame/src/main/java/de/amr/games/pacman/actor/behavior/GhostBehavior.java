@@ -175,7 +175,7 @@ public interface GhostBehavior {
 				.ifPresent(newDir -> {
 					route.setDir(newDir);
 					if (newDir != currentDir) {
-						LOGGER.fine(String.format("Changing direction of '%s' from %s to %s", ghost.getName(),
+						LOGGER.fine(String.format("Changing direction of '%s' from %s to %s", ghost.name,
 							Top4.get().name(currentDir), Top4.get().name(newDir)));
 					}
 			});
