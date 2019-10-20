@@ -28,7 +28,6 @@ import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
-import de.amr.graph.grid.impl.Top4;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
@@ -85,14 +84,6 @@ public class Ghost extends MazeMover implements GhostBehavior {
 		setMoveDir(initialDir);
 		setNextDir(initialDir);
 		sprites.select("s_color_" + initialDir);
-		sprites.forEach(Sprite::resetAnimation);
-	}
-
-	private void revive() {
-		placeAtTile(game.maze.getGhostRevivalTile(), TS / 2, 0);
-		setMoveDir(Top4.N);
-		setNextDir(Top4.N);
-		sprites.select("s_color_" + Top4.N);
 		sprites.forEach(Sprite::resetAnimation);
 	}
 
@@ -227,7 +218,6 @@ public class Ghost extends MazeMover implements GhostBehavior {
 					
 				.when(DEAD).then(LOCKED)
 					.condition(() -> getTile().equals(game.maze.getGhostRevivalTile()))
-					.act(this::revive)
 				
 		.endStateMachine();
 		/*@formatter:on*/
