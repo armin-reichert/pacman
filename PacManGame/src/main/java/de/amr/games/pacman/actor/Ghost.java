@@ -42,7 +42,7 @@ import de.amr.statemachine.StateMachine;
  */
 public class Ghost extends MazeMover implements GhostBehavior {
 
-	public Supplier<GhostState> fnNextState; // chasing or scattering
+	public Supplier<GhostState> fnNextState; // state after FRIGHTENED or LOCKED state
 	public final String name;
 	private final Tile initialTile;
 	private final int initialDir;
@@ -63,6 +63,11 @@ public class Ghost extends MazeMover implements GhostBehavior {
 		fnNextState = this::getState; // default is to keep state
 	}
 
+	@Override
+	public Ghost self() {
+		return this;
+	}
+
 	private void setSprites(GhostColor color) {
 		NESW.dirs().forEach(dir -> {
 			sprites.set("s_color_" + dir, game.theme.spr_ghostColored(color, dir));
@@ -73,11 +78,6 @@ public class Ghost extends MazeMover implements GhostBehavior {
 		}
 		sprites.set("s_frightened", game.theme.spr_ghostFrightened());
 		sprites.set("s_flashing", game.theme.spr_ghostFlashing());
-	}
-
-	@Override
-	public Ghost self() {
-		return this;
 	}
 
 	public void initialize() {
