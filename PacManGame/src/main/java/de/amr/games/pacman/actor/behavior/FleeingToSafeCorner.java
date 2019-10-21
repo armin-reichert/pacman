@@ -22,11 +22,11 @@ import de.amr.games.pacman.model.Tile;
  * @param <T>
  *          actor type
  */
-class EscapeIntoCorner<T extends MazeMover> extends FollowFixedPath<T> {
+class FleeingToSafeCorner<T extends MazeMover> extends FollowingFixedPath<T> {
 
 	private final Maze maze;
 
-	public EscapeIntoCorner(Maze maze, Supplier<Tile> chaserTileSupplier) {
+	public FleeingToSafeCorner(Maze maze, Supplier<Tile> chaserTileSupplier) {
 		super(chaserTileSupplier);
 		this.maze = maze;
 	}

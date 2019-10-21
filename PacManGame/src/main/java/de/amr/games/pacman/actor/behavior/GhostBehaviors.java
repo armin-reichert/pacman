@@ -19,7 +19,7 @@ import de.amr.graph.grid.impl.Top4;
  * 
  * @author Armin Reichert
  */
-public interface GhostBehavior {
+public interface GhostBehaviors {
 
 	/**
 	 * @return the ghost implementing this mixin
@@ -31,8 +31,8 @@ public interface GhostBehavior {
 	 *                   an actor
 	 * @param numTiles
 	 *                   number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current
-	 *         move direction.
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
+	 *         direction.
 	 */
 	static Tile tileAheadOf(MazeMover actor, int numTiles) {
 		return actor.getTile().tileTowards(actor.getMoveDir(), numTiles);
@@ -43,13 +43,11 @@ public interface GhostBehavior {
 	 * current position.
 	 * 
 	 * @param pacMan
-	 *                   the ambushed Pac-Man
-	 * @param numTiles
-	 *                   the number of tiles ahead of Pac-Man in its current direction.
+	 *                 the ambushed Pac-Man
 	 * @return ambushing behavior
 	 */
-	default Behavior<Ghost> ambush(PacMan pacMan, int numTiles) {
-		return headFor(() -> tileAheadOf(pacMan, numTiles));
+	default Behavior<Ghost> ambushing(PacMan pacMan) {
+		return headingFor(() -> tileAheadOf(pacMan, 4));
 	}
 
 	/**
@@ -60,8 +58,8 @@ public interface GhostBehavior {
 	 * 
 	 * @return behavior of attacking Pac-Man directly
 	 */
-	default Behavior<Ghost> attackDirectly(PacMan pacMan) {
-		return headFor(pacMan::getTile);
+	default Behavior<Ghost> attackingDirectly(PacMan pacMan) {
+		return headingFor(pacMan::getTile);
 	}
 
 	/**
@@ -84,8 +82,8 @@ public interface GhostBehavior {
 	 * whenever he gets too close. On the diagram above, the X marks on the path represent the points
 	 * where Clyde’s mode switches. If Pac-Man somehow managed to remain stationary in that position,
 	 * Clyde would indefinitely loop around that T-shaped area. As long as the player is not in the
-	 * lower-left corner of the maze, Clyde can be avoided completely by simply ensuring that you do
-	 * not block his “escape route” back to his corner. While Pac-Man is within eight tiles of the
+	 * lower-left corner of the maze, Clyde can be avoided completely by simply ensuring that you do not
+	 * block his “escape route” back to his corner. While Pac-Man is within eight tiles of the
 	 * lower-left corner, Clyde’s path will end up in exactly the same loop as he would eventually
 	 * maintain in Scatter mode. </cite>
 	 * </p>
@@ -93,14 +91,14 @@ public interface GhostBehavior {
 	 * @param pacMan
 	 *                   the Pac-Man which gets attacked
 	 * @param distance
-	 *                   if the distance to Pac-Man is less than this distance (measured in pixels),
-	 *                   the attacker rejects and heads for its scattering position. Otherwise it
-	 *                   directly attacks PacMan.
+	 *                   if the distance to Pac-Man is less than this distance (measured in pixels), the
+	 *                   attacker rejects and heads for its scattering position. Otherwise it directly
+	 *                   attacks PacMan.
 	 */
-	default Behavior<Ghost> attackOrReject(PacMan pacMan, int distance, Tile scatterTarget) {
-		return headFor(() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance
-				? pacMan.getTile()
-				: scatterTarget);
+	default Behavior<Ghost> attackingAndRejecting(PacMan pacMan, int distance, Tile scatterTarget) {
+		return headingFor(
+				() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.getTile()
+						: scatterTarget);
 	}
 
 	/**
@@ -110,12 +108,11 @@ public interface GhostBehavior {
 	 * <p>
 	 * <cite>Inky is difficult to predict, because he is the only one of the ghosts that uses a factor
 	 * other than Pac-Man’s position/orientation when determining his target tile. Inky actually uses
-	 * both Pac-Man’s position/facing as well as Blinky’s (the red ghost’s) position in his
-	 * calculation. To locate Inky’s target, we first start by selecting the position two tiles in
-	 * front of Pac-Man in his current direction of travel, similar to Pinky’s targeting method. From
-	 * there, imagine drawing a vector from Blinky’s position to this tile, and then doubling the
-	 * length of the vector. The tile that this new, extended vector ends on will be Inky’s actual
-	 * target.</cite>
+	 * both Pac-Man’s position/facing as well as Blinky’s (the red ghost’s) position in his calculation.
+	 * To locate Inky’s target, we first start by selecting the position two tiles in front of Pac-Man
+	 * in his current direction of travel, similar to Pinky’s targeting method. From there, imagine
+	 * drawing a vector from Blinky’s position to this tile, and then doubling the length of the vector.
+	 * The tile that this new, extended vector ends on will be Inky’s actual target.</cite>
 	 * </p>
 	 * 
 	 * @param blinky
@@ -125,8 +122,8 @@ public interface GhostBehavior {
 	 * 
 	 * @return behavior where Pac-Man is attacked with help of partner ghost
 	 */
-	default Behavior<Ghost> attackWith(Ghost blinky, PacMan pacMan) {
-		return headFor(() -> {
+	default Behavior<Ghost> attackingWithPartner(Ghost blinky, PacMan pacMan) {
+		return headingFor(() -> {
 			Tile b = blinky.getTile(), p = tileAheadOf(pacMan, 2);
 			return new Tile(2 * p.col - b.col, 2 * p.row - b.row);
 		});
@@ -137,7 +134,7 @@ public interface GhostBehavior {
 	 * 
 	 * @return bouncing behavior
 	 */
-	default Behavior<Ghost> bounce() {
+	default Behavior<Ghost> bouncing() {
 		return ghost -> new Route(ghost.isStuck() ? NESW.inv(ghost.getMoveDir()) : ghost.getMoveDir());
 	}
 
@@ -146,10 +143,10 @@ public interface GhostBehavior {
 	 * 
 	 * @param attacker
 	 *                   the attacker e.g. Pac-Man
-	 * @return escaping behavior
+	 * @return behavior where ghost flees to a "safe" maze corner
 	 */
-	default Behavior<Ghost> fleeViaSafeRoute(MazeMover attacker) {
-		return new EscapeIntoCorner<>(attacker.game.maze, attacker::getTile);
+	default Behavior<Ghost> fleeingToSafeCorner(MazeMover attacker) {
+		return new FleeingToSafeCorner<>(attacker.game.maze, attacker::getTile);
 	}
 
 	/**
@@ -157,9 +154,9 @@ public interface GhostBehavior {
 	 * this mode. Instead, they pseudo-randomly decide which turns to make at every intersection.
 	 * </cite>
 	 * 
-	 * @return fleeing behavior
+	 * @return behavior where ghost takes random turns at each intersection
 	 */
-	default Behavior<Ghost> fleeRandomly() {
+	default Behavior<Ghost> fleeingRandomly() {
 		return ghost -> {
 			int currentDir = ghost.getMoveDir();
 			Route route = new Route(currentDir);
@@ -185,20 +182,19 @@ public interface GhostBehavior {
 	}
 
 	/**
-	 * Lets the ghost dynamically follow the path to the given target. The path is computed on the
-	 * graph of the maze and updated every time the move direction is queried. This can lead to lots
-	 * of path finder calls!
+	 * Lets the ghost dynamically follow the path to the given target. The path is computed on the graph
+	 * of the maze and updated every time the move direction is queried. This can lead to lots of path
+	 * finder calls!
 	 * 
-	 * @param targetTileSupplier
-	 *                             target tile supplier (this tile must be inside the maze or teleport
-	 *                             space!)
+	 * @param fnTarget
+	 *                   target tile supplier (this tile must be inside the maze or teleport space!)
 	 * @return behavior following the path to the target
 	 */
-	default Behavior<Ghost> followRoute(Supplier<Tile> targetTileSupplier) {
+	default Behavior<Ghost> followingPathfinder(Supplier<Tile> fnTarget) {
 		return ghost -> {
 			Maze maze = ghost.game.maze;
 			Route route = new Route();
-			route.setPath(maze.findPath(ghost.getTile(), targetTileSupplier.get()));
+			route.setPath(maze.findPath(ghost.getTile(), fnTarget.get()));
 			route.setDir(maze.alongPath(route.getPath()).orElse(-1));
 			return route;
 		};
@@ -208,32 +204,32 @@ public interface GhostBehavior {
 	 * Lets the ghost follow a fixed path to the target. The path is precomputed by calling
 	 * {@link Behavior#computePath(MazeMover)}.
 	 * 
-	 * @param targetTileSupplier
-	 *                             function supplying the target tile at time of decision
-	 * @return behavior of following a fixed path
+	 * @param fnTarget
+	 *                   function supplying the target tile at time of decision
+	 * @return behavior where ghost follows a fixed path
 	 */
-	default Behavior<Ghost> followFixedPath(Supplier<Tile> targetTileSupplier) {
-		return new FollowFixedPath<>(targetTileSupplier);
+	default Behavior<Ghost> followingFixedPath(Supplier<Tile> fnTarget) {
+		return new FollowingFixedPath<>(fnTarget);
 	}
 
 	/**
 	 * Tries to reach a (possibly unreachable) target tile by chosing the best direction at every
 	 * intersection.
 	 * 
-	 * @param targetTileSupplier
-	 *                             function supplying the target tile at time of decision
-	 * @return behavior heading for the target tile
+	 * @param fnTarget
+	 *                   function supplying the target tile at time of decision
+	 * @return behavior where ghost heads for the target tile
 	 */
-	default Behavior<Ghost> headFor(Supplier<Tile> targetTileSupplier) {
-		return new FollowTargetTile<>(targetTileSupplier);
+	default Behavior<Ghost> headingFor(Supplier<Tile> fnTarget) {
+		return new HeadingFor<>(fnTarget);
 	}
 
 	/**
 	 * Keeps the current move direction.
 	 * 
-	 * @return behavior keeping the current move direction
+	 * @return behavior where ghost keeps its current move direction
 	 */
-	default Behavior<Ghost> keepDirection() {
+	default Behavior<Ghost> keepingDirection() {
 		return ghost -> new Route(ghost.getMoveDir());
 	}
 }

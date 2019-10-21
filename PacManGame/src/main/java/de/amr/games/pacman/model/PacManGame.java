@@ -171,27 +171,27 @@ public class PacManGame {
 		pacMan = new PacMan(this);
 
 		blinky = new Ghost(this, "Blinky", GhostColor.RED, maze.getBlinkyHome(), Top4.S);
-		blinky.setBehavior(SCATTERING, blinky.headFor(maze::getBlinkyScatterTarget));
-		blinky.setBehavior(CHASING, blinky.attackDirectly(pacMan));
+		blinky.setBehavior(SCATTERING, blinky.headingFor(maze::getBlinkyScatterTarget));
+		blinky.setBehavior(CHASING, blinky.attackingDirectly(pacMan));
 
 		pinky = new Ghost(this, "Pinky", GhostColor.PINK, maze.getPinkyHome(), Top4.S);
-		pinky.setBehavior(SCATTERING, pinky.headFor(maze::getPinkyScatterTarget));
-		pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
+		pinky.setBehavior(SCATTERING, pinky.headingFor(maze::getPinkyScatterTarget));
+		pinky.setBehavior(CHASING, pinky.ambushing(pacMan));
 
 		inky = new Ghost(this, "Inky", GhostColor.CYAN, maze.getInkyHome(), Top4.N);
-		inky.setBehavior(SCATTERING, inky.headFor(maze::getInkyScatterTarget));
-		inky.setBehavior(CHASING, inky.attackWith(blinky, pacMan));
+		inky.setBehavior(SCATTERING, inky.headingFor(maze::getInkyScatterTarget));
+		inky.setBehavior(CHASING, inky.attackingWithPartner(blinky, pacMan));
 
 		clyde = new Ghost(this, "Clyde", GhostColor.ORANGE, maze.getClydeHome(), Top4.N);
-		clyde.setBehavior(SCATTERING, clyde.headFor(maze::getClydeScatterTarget));
-		clyde.setBehavior(CHASING, clyde.attackOrReject(pacMan, 8 * TS, maze.getClydeScatterTarget()));
+		clyde.setBehavior(SCATTERING, clyde.headingFor(maze::getClydeScatterTarget));
+		clyde.setBehavior(CHASING, clyde.attackingAndRejecting(pacMan, 8 * TS, maze.getClydeScatterTarget()));
 
 		ghosts().forEach(ghost -> {
 			ghost.setBehavior(FRIGHTENED,
-					app().settings.getAsBoolean("ghost.behavior.frightened.fleeRandomly") ? ghost.fleeRandomly()
-							: ghost.fleeViaSafeRoute(pacMan));
-			ghost.setBehavior(DEAD, ghost.headFor(maze::getGhostRevivalTile));
-			ghost.setBehavior(LOCKED, ghost.bounce());
+					app().settings.getAsBoolean("ghost.behavior.frightened.fleeRandomly") ? ghost.fleeingRandomly()
+							: ghost.fleeingToSafeCorner(pacMan));
+			ghost.setBehavior(DEAD, ghost.headingFor(maze::getGhostRevivalTile));
+			ghost.setBehavior(LOCKED, ghost.bouncing());
 		});
 
 		activeActors.addAll((Arrays.asList(pacMan, blinky, pinky, inky, clyde)));

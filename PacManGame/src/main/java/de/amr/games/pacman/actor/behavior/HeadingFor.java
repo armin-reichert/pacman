@@ -31,11 +31,11 @@ import de.amr.graph.grid.impl.Top4;
  * 
  * @author Armin Reichert
  */
-class FollowTargetTile<T extends MazeMover> implements Behavior<T> {
+class HeadingFor<T extends MazeMover> implements Behavior<T> {
 
 	private final Supplier<Tile> targetTileSupplier;
 
-	public FollowTargetTile(Supplier<Tile> targetTileSupplier) {
+	public HeadingFor(Supplier<Tile> targetTileSupplier) {
 		this.targetTileSupplier = targetTileSupplier;
 	}
 

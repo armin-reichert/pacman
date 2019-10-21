@@ -40,7 +40,7 @@ public class FollowMouseTestController implements ViewController {
 	@Override
 	public void init() {
 		g.blinky.init();
-		g.blinky.setBehavior(CHASING, g.blinky.headFor(this::currentMouseTile));
+		g.blinky.setBehavior(CHASING, g.blinky.headingFor(this::currentMouseTile));
 		g.blinky.setState(CHASING);
 	}
 
@@ -67,10 +67,10 @@ public class FollowMouseTestController implements ViewController {
 
 	private void handleRoutingMode() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
-			g.blinky.setBehavior(CHASING, g.blinky.headFor(this::currentMouseTile));
+			g.blinky.setBehavior(CHASING, g.blinky.headingFor(this::currentMouseTile));
 		}
 		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
-			g.blinky.setBehavior(CHASING, g.blinky.followRoute(this::currentMouseTile));
+			g.blinky.setBehavior(CHASING, g.blinky.followingPathfinder(this::currentMouseTile));
 		}
 	}
 }

@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Behavior;
-import de.amr.games.pacman.actor.behavior.GhostBehavior;
+import de.amr.games.pacman.actor.behavior.GhostBehaviors;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -39,7 +39,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends MazeMover implements GhostBehavior {
+public class Ghost extends MazeMover implements GhostBehaviors {
 
 	public Supplier<GhostState> fnNextState; // state after FRIGHTENED or LOCKED state
 	public final String name;
@@ -104,7 +104,7 @@ public class Ghost extends MazeMover implements GhostBehavior {
 	}
 
 	public Behavior<Ghost> currentBehavior() {
-		return behaviorMap.getOrDefault(getState(), keepDirection());
+		return behaviorMap.getOrDefault(getState(), keepingDirection());
 	}
 
 	@Override

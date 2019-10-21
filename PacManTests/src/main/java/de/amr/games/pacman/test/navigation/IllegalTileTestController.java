@@ -29,7 +29,7 @@ public class IllegalTileTestController implements ViewController {
 		game.ghosts().filter(ghost -> ghost != game.blinky)
 				.forEach(ghost -> game.setActive(ghost, false));
 		game.blinky.initialize();
-		game.blinky.setBehavior(GhostState.CHASING, game.blinky.headFor(this::getTargetTile));
+		game.blinky.setBehavior(GhostState.CHASING, game.blinky.headingFor(this::getTargetTile));
 		game.blinky.setState(GhostState.CHASING);
 	}
 

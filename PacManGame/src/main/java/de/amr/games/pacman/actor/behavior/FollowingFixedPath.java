@@ -15,12 +15,12 @@ import de.amr.games.pacman.model.Tile;
  * @param <T>
  *          actor type
  */
-class FollowFixedPath<T extends MazeMover> implements Behavior<T> {
+class FollowingFixedPath<T extends MazeMover> implements Behavior<T> {
 
 	protected Supplier<Tile> targetTileSupplier;
 	protected List<Tile> path = Collections.emptyList();
 
-	public FollowFixedPath(Supplier<Tile> targetTileSupplier) {
+	public FollowingFixedPath(Supplier<Tile> targetTileSupplier) {
 		this.targetTileSupplier = targetTileSupplier;
 	}
 

@@ -40,7 +40,7 @@ public class FollowFixedPathTestController implements ViewController {
 		game.blinky.initialize();
 		game.blinky.setState(GhostState.CHASING);
 		game.blinky.setBehavior(GhostState.CHASING,
-				game.blinky.followFixedPath(() -> targets.get(targetIndex)));
+				game.blinky.followingFixedPath(() -> targets.get(targetIndex)));
 		game.blinky.currentBehavior().computePath(game.blinky);
 	}
 

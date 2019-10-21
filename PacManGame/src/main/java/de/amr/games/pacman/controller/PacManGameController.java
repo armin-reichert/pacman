@@ -154,14 +154,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_F)) {
 			if (app().settings.getAsBoolean("ghostsFleeRandomly")) {
 				game.ghosts().forEach(ghost -> {
-					ghost.setBehavior(GhostState.FRIGHTENED, ghost.fleeViaSafeRoute(game.pacMan));
+					ghost.setBehavior(GhostState.FRIGHTENED, ghost.fleeingToSafeCorner(game.pacMan));
 				});
 				app().settings.set("ghostsFleeRandomly", false);
 				LOGGER.info("Changed ghost FRIGHTENED behavior to flee via safe route");
 			}
 			else {
 				game.ghosts().forEach(ghost -> {
-					ghost.setBehavior(GhostState.FRIGHTENED, ghost.fleeRandomly());
+					ghost.setBehavior(GhostState.FRIGHTENED, ghost.fleeingRandomly());
 				});
 				app().settings.set("ghostsFleeRandomly", true);
 				LOGGER.info("Changed ghost FRIGHTENED behavior to flee randomly");
