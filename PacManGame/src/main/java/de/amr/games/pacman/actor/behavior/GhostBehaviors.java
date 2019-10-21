@@ -10,32 +10,31 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
 
 /**
- * Mixin with ghost behaviors.
+ * Mix-in with ghost behaviors.
  * 
  * @author Armin Reichert
  */
 public interface GhostBehaviors {
 
 	/**
-	 * @return the ghost implementing this mixin
+	 * @return the ghost implementing this mix-in
 	 */
 	Ghost self();
 
 	/**
-	 * Ambushes Pac-Man by heading for the tile located the given number of tiles ahead of Pac-Man's
-	 * current position.
+	 * Tries to reach a (possibly unreachable) target tile by choosing the "best" direction at every
+	 * intersection.
 	 * 
-	 * @param pacMan
-	 *                 the ambushed Pac-Man
-	 * @return ambushing behavior
+	 * @param fnTarget
+	 *                   function supplying the target tile at time of decision
+	 * @return behavior where ghost heads for the target tile
 	 */
-	default Behavior<Ghost> ambushing(PacMan pacMan) {
-		return headingFor(() -> pacMan.tilesAhead(4));
+	default Behavior<Ghost> headingFor(Supplier<Tile> fnTarget) {
+		return new HeadingFor<>(fnTarget);
 	}
 
 	/**
@@ -51,42 +50,15 @@ public interface GhostBehaviors {
 	}
 
 	/**
-	 * Clyde's chase behavior as described <a href=
-	 * "http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior">here</a>.
-	 * 
-	 * <p>
-	 * <cite> The unique feature of Clyde’s targeting is that it has two separate modes which he
-	 * constantly switches back and forth between, based on his proximity to Pac-Man. Whenever Clyde
-	 * needs to determine his target tile, he first calculates his distance from Pac-Man. If he is
-	 * farther than eight tiles away, his targeting is identical to Blinky’s, using Pac-Man’s current
-	 * tile as his target. However, as soon as his distance to Pac-Man becomes less than eight tiles,
-	 * Clyde’s target is set to the same tile as his fixed one in Scatter mode, just outside the
-	 * bottom-left corner of the maze.</cite>
-	 * </p>
-	 * 
-	 * <p>
-	 * <cite> The combination of these two methods has the overall effect of Clyde alternating between
-	 * coming directly towards Pac-Man, and then changing his mind and heading back to his corner
-	 * whenever he gets too close. On the diagram above, the X marks on the path represent the points
-	 * where Clyde’s mode switches. If Pac-Man somehow managed to remain stationary in that position,
-	 * Clyde would indefinitely loop around that T-shaped area. As long as the player is not in the
-	 * lower-left corner of the maze, Clyde can be avoided completely by simply ensuring that you do
-	 * not block his “escape route” back to his corner. While Pac-Man is within eight tiles of the
-	 * lower-left corner, Clyde’s path will end up in exactly the same loop as he would eventually
-	 * maintain in Scatter mode. </cite>
-	 * </p>
+	 * Ambushes Pac-Man by heading for the tile located the given number of tiles ahead of Pac-Man's
+	 * current position.
 	 * 
 	 * @param pacMan
-	 *                   the Pac-Man which gets attacked
-	 * @param distance
-	 *                   if the distance to Pac-Man is less than this distance (measured in pixels),
-	 *                   the attacker rejects and heads for its scattering position. Otherwise it
-	 *                   directly attacks PacMan.
+	 *                 the ambushed Pac-Man
+	 * @return ambushing behavior
 	 */
-	default Behavior<Ghost> attackingAndRejecting(PacMan pacMan, int distance, Tile scatterTarget) {
-		return headingFor(() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance
-				? pacMan.getTile()
-				: scatterTarget);
+	default Behavior<Ghost> ambushing(PacMan pacMan) {
+		return headingFor(() -> pacMan.tilesAhead(4));
 	}
 
 	/**
@@ -119,6 +91,47 @@ public interface GhostBehaviors {
 	}
 
 	/**
+	 * Clyde's chase behavior as described <a href=
+	 * "http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior">here</a>.
+	 * 
+	 * <p>
+	 * <cite> The unique feature of Clyde’s targeting is that it has two separate modes which he
+	 * constantly switches back and forth between, based on his proximity to Pac-Man. Whenever Clyde
+	 * needs to determine his target tile, he first calculates his distance from Pac-Man. If he is
+	 * farther than eight tiles away, his targeting is identical to Blinky’s, using Pac-Man’s current
+	 * tile as his target. However, as soon as his distance to Pac-Man becomes less than eight tiles,
+	 * Clyde’s target is set to the same tile as his fixed one in Scatter mode, just outside the
+	 * bottom-left corner of the maze.</cite>
+	 * </p>
+	 * 
+	 * <p>
+	 * <cite> The combination of these two methods has the overall effect of Clyde alternating between
+	 * coming directly towards Pac-Man, and then changing his mind and heading back to his corner
+	 * whenever he gets too close. On the diagram above, the X marks on the path represent the points
+	 * where Clyde’s mode switches. If Pac-Man somehow managed to remain stationary in that position,
+	 * Clyde would indefinitely loop around that T-shaped area. As long as the player is not in the
+	 * lower-left corner of the maze, Clyde can be avoided completely by simply ensuring that you do
+	 * not block his “escape route” back to his corner. While Pac-Man is within eight tiles of the
+	 * lower-left corner, Clyde’s path will end up in exactly the same loop as he would eventually
+	 * maintain in Scatter mode. </cite>
+	 * </p>
+	 * 
+	 * @param pacMan
+	 *                        the Pac-Man which gets attacked
+	 * @param distance
+	 *                        if the distance to Pac-Man is less than this distance (measured in
+	 *                        pixels), the attacker rejects and heads for its scattering position.
+	 *                        Otherwise it directly attacks PacMan.
+	 * @param scatterTarget
+	 *                        tile ghost heads for in scattering mode
+	 */
+	default Behavior<Ghost> attackingAndRejecting(PacMan pacMan, int distance, Tile scatterTarget) {
+		return headingFor(() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance
+				? pacMan.getTile()
+				: scatterTarget);
+	}
+
+	/**
 	 * Lets the ghost bounce between walls or other inaccessible tiles.
 	 * 
 	 * @return bouncing behavior
@@ -128,7 +141,7 @@ public interface GhostBehaviors {
 	}
 
 	/**
-	 * Lets the ghost flee from the attacker by heading to a safe maze corner.
+	 * Lets the ghost flee from the attacker by walking to a "safe" maze corner.
 	 * 
 	 * @param attacker
 	 *                   the attacker e.g. Pac-Man
@@ -181,10 +194,9 @@ public interface GhostBehaviors {
 	 */
 	default Behavior<Ghost> followingPathfinder(Supplier<Tile> fnTarget) {
 		return ghost -> {
-			Maze maze = ghost.game.maze;
 			Route route = new Route();
-			route.setPath(maze.findPath(ghost.getTile(), fnTarget.get()));
-			route.setDir(maze.alongPath(route.getPath()).orElse(-1));
+			route.setPath(ghost.game.maze.findPath(ghost.getTile(), fnTarget.get()));
+			route.setDir(ghost.game.maze.alongPath(route.getPath()).orElse(-1));
 			return route;
 		};
 	}
@@ -199,18 +211,6 @@ public interface GhostBehaviors {
 	 */
 	default Behavior<Ghost> followingFixedPath(Supplier<Tile> fnTarget) {
 		return new FollowingFixedPath<>(fnTarget);
-	}
-
-	/**
-	 * Tries to reach a (possibly unreachable) target tile by chosing the best direction at every
-	 * intersection.
-	 * 
-	 * @param fnTarget
-	 *                   function supplying the target tile at time of decision
-	 * @return behavior where ghost heads for the target tile
-	 */
-	default Behavior<Ghost> headingFor(Supplier<Tile> fnTarget) {
-		return new HeadingFor<>(fnTarget);
 	}
 
 	/**
