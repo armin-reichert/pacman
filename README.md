@@ -530,40 +530,40 @@ The ghost behavior only differs for the *chasing* state. The *frightened* behavi
 
 ```java
 blinky = new Ghost(this, "Blinky", GhostColor.RED, maze.getBlinkyHome(), Top4.S);
-blinky.setBehavior(SCATTERING, blinky.headFor(maze::getBlinkyScatterTarget));
-blinky.setBehavior(CHASING, blinky.attackDirectly(pacMan));
+blinky.setBehavior(SCATTERING, blinky.headingFor(maze::getBlinkyScatterTarget));
+blinky.setBehavior(CHASING, blinky.attackingDirectly(pacMan));
 
 pinky = new Ghost(this, "Pinky", GhostColor.PINK, maze.getPinkyHome(), Top4.S);
-pinky.setBehavior(SCATTERING, pinky.headFor(maze::getPinkyScatterTarget));
-pinky.setBehavior(CHASING, pinky.ambush(pacMan, 4));
+pinky.setBehavior(SCATTERING, pinky.headingFor(maze::getPinkyScatterTarget));
+pinky.setBehavior(CHASING, pinky.ambushing(pacMan));
 
 inky = new Ghost(this, "Inky", GhostColor.CYAN, maze.getInkyHome(), Top4.N);
-inky.setBehavior(SCATTERING, inky.headFor(maze::getInkyScatterTarget));
-inky.setBehavior(CHASING, inky.attackWith(blinky, pacMan));
+inky.setBehavior(SCATTERING, inky.headingFor(maze::getInkyScatterTarget));
+inky.setBehavior(CHASING, inky.attackingWithPartner(blinky, pacMan));
 
 clyde = new Ghost(this, "Clyde", GhostColor.ORANGE, maze.getClydeHome(), Top4.N);
-clyde.setBehavior(SCATTERING, clyde.headFor(maze::getClydeScatterTarget));
-clyde.setBehavior(CHASING, clyde.attackOrReject(pacMan, 8 * TS, maze.getClydeScatterTarget()));
+clyde.setBehavior(SCATTERING, clyde.headingFor(maze::getClydeScatterTarget));
+clyde.setBehavior(CHASING, clyde.attackingAndRejecting(pacMan, 8 * TS, maze.getClydeScatterTarget()));
 
 ghosts().forEach(ghost -> {
 	ghost.setBehavior(FRIGHTENED,
-			app().settings.getAsBoolean("ghost.behavior.frightened.fleeRandomly")
-					? ghost.fleeRandomly()
-					: ghost.fleeViaSafeRoute(pacMan));
-	ghost.setBehavior(DEAD, ghost.headFor(maze::getGhostRevivalTile));
-	ghost.setBehavior(LOCKED, ghost.bounce());
+			app().settings.getAsBoolean("ghost.behavior.frightened.fleeRandomly") ? ghost.fleeingRandomly()
+					: ghost.fleeingToSafeCorner(pacMan));
+	ghost.setBehavior(DEAD, ghost.headingFor(maze::getGhostRevivalTile));
+	ghost.setBehavior(LOCKED, ghost.bouncing());
+});
 });
 ```
 
-The *chasing* behavior differs for each ghost as explained above. Using the common *headFor* behavior, the individual chase behaviors like *ambush*, *attackDirectly*, *attackWithPartner* can be implemented very easily.
+The *chasing* behavior differs for each ghost as explained above. Using the general *headingFor* behavior, the individual ghost  behaviors *ambushing*, *attackingDirectly*, *attackingWithPartner* and *attackingAndRejecting* can be implemented very easily.
 
 ### Blinky (the red ghost)
 
 Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
-default Behavior<Ghost> attackDirectly(PacMan pacMan) {
-	return headFor(pacMan::getTile);
+default Behavior<Ghost> attackingDirectly(PacMan pacMan) {
+	return headingFor(pacMan::getTile);
 }
 ```
 
@@ -574,8 +574,8 @@ default Behavior<Ghost> attackDirectly(PacMan pacMan) {
 Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position (in the original game there is an overflow error leading to a slightly different behavior):
 
 ```java
-default Behavior<Ghost> ambush(PacMan pacMan, int numTiles) {
-	return headFor(() -> tileAheadOf(pacMan, numTiles));
+default Behavior<Ghost> ambushing(PacMan pacMan) {
+	return headingFor(() -> tileAheadOf(pacMan, 4));
 }
 ```
 
@@ -589,8 +589,8 @@ Consider the vector `V` from Blinky's position `B` to the position `P` two tiles
 Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-default Behavior<Ghost> attackWith(Ghost blinky, PacMan pacMan) {
-	return headFor(() -> {
+default Behavior<Ghost> attackingWithPartner(Ghost blinky, PacMan pacMan) {
+	return headingFor(() -> {
 		Tile b = blinky.getTile(), p = tileAheadOf(pacMan, 2);
 		return new Tile(2 * p.col - b.col, 2 * p.row - b.row);
 	});
@@ -605,8 +605,8 @@ Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from 
 If closer, he behaves as in scattering mode:
 
 ```java
-default Behavior<Ghost> attackOrReject(PacMan pacMan, int distance, Tile scatterTarget) {
-	return headFor(
+default Behavior<Ghost> attackingAndRejecting(PacMan pacMan, int distance, Tile scatterTarget) {
+	return headingFor(
 			() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.getTile()
 					: scatterTarget);
 }
@@ -622,7 +622,7 @@ In *scattering* mode, each ghost tries to reach his "scattering target" which is
 cannot reverse direction this results in a cyclic movement around the walls in the corresponding corner of the maze.
 
 ```java
-blinky.setBehavior(SCATTERING, blinky.headFor(maze::getBlinkyScatterTarget));
+blinky.setBehavior(SCATTERING, blinky.headingFor(maze::getBlinkyScatterTarget));
 ...
 ```
 
