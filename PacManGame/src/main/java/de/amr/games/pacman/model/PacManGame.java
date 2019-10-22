@@ -422,7 +422,7 @@ public class PacManGame {
 		case FRIGHTENED:
 			return inTunnel ? tunnelSpeed : speed(Param.GHOST_FRIGHTENED_SPEED.asFloat(level));
 		case LOCKED:
-			return speed(0.75f);
+			return speed(0.5f);
 		case SCATTERING:
 			return inTunnel ? tunnelSpeed : speed(Param.GHOST_SPEED.asFloat(level));
 		default:
