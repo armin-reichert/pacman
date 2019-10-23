@@ -164,7 +164,10 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 					})
 					.onTick(() -> {
 						move();
-						sprites.select(game.pacMan.isPowerEnding() ? "s_flashing" : "s_frightened");
+						sprites.select(
+								game.maze.inGhostHouse(getTile())	
+									? "s_color_" + getMoveDir()
+									: game.pacMan.isPowerEnding()	? "s_flashing" : "s_frightened");
 					})
 				
 				.state(DYING)
