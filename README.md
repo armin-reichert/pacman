@@ -575,7 +575,7 @@ Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current
 
 ```java
 default Behavior<Ghost> ambushing(PacMan pacMan) {
-	return headingFor(() -> tileAheadOf(pacMan, 4));
+	return headingFor(() -> pacMan.tilesAhead(4));
 }
 ```
 
@@ -591,7 +591,7 @@ Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to ge
 ```java
 default Behavior<Ghost> attackingWithPartner(Ghost blinky, PacMan pacMan) {
 	return headingFor(() -> {
-		Tile b = blinky.getTile(), p = tileAheadOf(pacMan, 2);
+		Tile b = blinky.getTile(), p = pacMan.tilesAhead(2);
 		return new Tile(2 * p.col - b.col, 2 * p.row - b.row);
 	});
 }
