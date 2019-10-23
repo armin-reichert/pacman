@@ -39,8 +39,6 @@ public class PacManApp extends Application {
 	@Override
 	public void init() {
 		PacManGame game = new PacManGame(theme);
-		PacManGameController gameController = new PacManGameController(game);
-		gameController.traceTo(LOGGER, app().clock::getFrequency);
-		setController(gameController);
+		setController(new PacManGameController(game));
 	}
 }
