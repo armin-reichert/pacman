@@ -9,10 +9,13 @@ import static de.amr.games.pacman.model.Maze.NESW;
  */
 public class Tile {
 
+	public static final Tile UNDEFINED = new Tile(-1, -1);
+
 	public final int col;
 	public final int row;
 
-	public Tile(int col, int row) {
+	/* Only called from Maze constructor. */
+	Tile(int col, int row) {
 		this.col = col;
 		this.row = row;
 	}
@@ -60,5 +63,4 @@ public class Tile {
 	public Tile tileTowards(int dir) {
 		return tileTowards(dir, 1);
 	}
-
 }

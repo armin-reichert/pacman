@@ -1,5 +1,8 @@
 package de.amr.games.pacman.model;
 
+import static de.amr.games.pacman.model.PacManGame.TS;
+import static java.lang.Math.round;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +14,8 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
+import de.amr.easy.game.entity.Entity;
+import de.amr.easy.game.math.Vector2f;
 import de.amr.graph.core.api.UndirectedEdge;
 import de.amr.graph.grid.api.GridGraph2D;
 import de.amr.graph.grid.api.Topology;
@@ -40,6 +45,8 @@ public class Maze {
 	private static final char WALL = '#';
 	private static final char DOOR = 'D';
 	private static final char TUNNEL = 'T';
+	private static final char TELEPORT_L = '<';
+	private static final char TELEPORT_R = '>';
 	private static final char SPACE = ' ';
 	private static final char PELLET = '.';
 	private static final char ENERGIZER = '*';
@@ -48,12 +55,15 @@ public class Maze {
 	private final String[] map;
 	private final GridGraph<Character, Void> grid;
 
+	private final Tile[][] tiles;
+
 	private Tile pacManHome;
 	private Tile blinkyHome, blinkyScatterTarget;
 	private Tile pinkyHome, pinkyScatterTarget;
 	private Tile inkyHome, inkyScatterTarget;
 	private Tile clydeHome, clydeScatterTarget;
 	private Tile bonusTile;
+	private Tile teleportLeft, teleportRight;
 
 	private int tunnelRow;
 	private int foodTotal;
@@ -66,9 +76,15 @@ public class Maze {
 	public Maze() {
 		map = Assets.text("maze.txt").split("\n");
 		int numCols = map[0].length(), numRows = map.length;
+		tiles = new Tile[numCols][numRows];
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				Tile tile = new Tile(col, row);
+				tiles[col][row] = new Tile(col, row);
+			}
+		}
+		for (int row = 0; row < numRows; ++row) {
+			for (int col = 0; col < numCols; ++col) {
+				Tile tile = tiles[col][row];
 				switch (map(row, col)) {
 				case 'O':
 					pacManHome = tile;
@@ -103,6 +119,12 @@ public class Maze {
 				case TUNNEL:
 					tunnelRow = row;
 					break;
+				case TELEPORT_L:
+					teleportLeft = tile;
+					break;
+				case TELEPORT_R:
+					teleportRight = tile;
+					break;
 				case PELLET:
 				case ENERGIZER:
 					foodTotal += 1;
@@ -134,10 +156,10 @@ public class Maze {
 		//@formatter:on
 				.forEach(cell -> {
 					Tile tile = tile(cell);
-					if (blinkyHome.equals(new Tile(tile.col + 1, tile.row))
-							|| blinkyHome.equals(new Tile(tile.col - 2, tile.row))
-							|| pacManHome.equals(new Tile(tile.col + 1, tile.row))
-							|| pacManHome.equals(new Tile(tile.col - 2, tile.row))) {
+					if (blinkyHome.equals(tile(tile.col + 1, tile.row))
+							|| blinkyHome.equals(tile(tile.col - 2, tile.row))
+							|| pacManHome.equals(tile(tile.col + 1, tile.row))
+							|| pacManHome.equals(tile(tile.col - 2, tile.row))) {
 						upwardsBlockedIS.add(tile);
 					}
 					else {
@@ -171,19 +193,19 @@ public class Maze {
 	}
 
 	public Tile getTopLeftCorner() {
-		return new Tile(1, 4);
+		return tile(1, 4);
 	}
 
 	public Tile getTopRightCorner() {
-		return new Tile(numCols() - 2, 4);
+		return tile(numCols() - 2, 4);
 	}
 
 	public Tile getBottomLeftCorner() {
-		return new Tile(1, numRows() - 4);
+		return tile(1, numRows() - 4);
 	}
 
 	public Tile getBottomRightCorner() {
-		return new Tile(numCols() - 2, numRows() - 4);
+		return tile(numCols() - 2, numRows() - 4);
 	}
 
 	public Tile getBlinkyScatterTarget() {
@@ -221,7 +243,7 @@ public class Maze {
 	public Tile getClydeHome() {
 		return clydeHome;
 	}
-	
+
 	public Tile getGhostRevivalTile() {
 		return pinkyHome;
 	}
@@ -234,24 +256,20 @@ public class Maze {
 		return tunnelRow;
 	}
 
-	public Tile getLeftTunnelEntry() {
-		return new Tile(0, tunnelRow);
+	public Tile getTeleportLeft() {
+		return teleportLeft;
 	}
 
-	public Tile getRightTunnelEntry() {
-		return new Tile(numCols() - 1, tunnelRow);
+	public Tile getTeleportRight() {
+		return teleportRight;
 	}
 
 	private char getContent(Tile tile) {
-		return inTeleportSpace(tile) ? SPACE : grid.get(cell(tile));
-	}
-
-	public boolean inTeleportSpace(Tile tile) {
-		return tile.row == tunnelRow && (tile.col == -1 || tile.col == numCols());
+		return isValidTile(tile) ? grid.get(cell(tile)) : SPACE;
 	}
 
 	public boolean inTunnel(Tile tile) {
-		return getContent(tile) == TUNNEL;
+		return getContent(tile) == TUNNEL || tile == teleportLeft || tile == teleportRight;
 	}
 
 	public boolean isWall(Tile tile) {
@@ -355,10 +373,23 @@ public class Maze {
 	}
 
 	public int cell(Tile tile) {
-		return grid.cell(tile.col, tile.row);
+		if (isValidTile(tile)) {
+			return grid.cell(tile.col, tile.row);
+		}
+		throw new IllegalArgumentException("Illegal tile: " + tile);
+	}
+
+	public Tile tile(int col, int row) {
+		return grid.isValidCol(col) && grid.isValidRow(row) ? tiles[col][row] : Tile.UNDEFINED;
 	}
 
 	public Tile tile(int cell) {
-		return new Tile(grid.col(cell), grid.row(cell));
+		return tile(grid.col(cell), grid.row(cell));
 	}
+
+	public Tile tile(Entity entity) {
+		Vector2f center = entity.tf.getCenter();
+		return tile(round(center.x) / TS, round(center.y) / TS);
+	}
+
 }

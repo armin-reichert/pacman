@@ -1,15 +1,12 @@
 package de.amr.games.pacman.actor;
 
 import static de.amr.games.pacman.model.PacManGame.TS;
-import static java.lang.Math.round;
 import static java.util.Arrays.binarySearch;
 
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.entity.SpriteEntity;
-import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.BonusSymbol;
-import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.PacManTheme;
 
 public class Bonus extends SpriteEntity {
@@ -51,11 +48,6 @@ public class Bonus extends SpriteEntity {
 	public void consume() {
 		consumed = true;
 		sprites.select("s_number");
-	}
-
-	public Tile tile() {
-		Vector2f center = tf.getCenter();
-		return new Tile(round(center.x) / TS, round(center.y) / TS);
 	}
 
 	@Override

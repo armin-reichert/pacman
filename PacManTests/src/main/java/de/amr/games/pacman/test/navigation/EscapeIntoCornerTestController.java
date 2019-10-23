@@ -8,14 +8,14 @@ import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class EscapeIntoCornerTestController implements ViewController {
 
-	private final PacManGame game;
+	private final PacManGame g;
 	private final PlayViewXtended view;
 
 	public EscapeIntoCornerTestController() {
-		game = new PacManGame();
-		game.setLevel(1);
-		game.maze.removeFood();
-		view = new PlayViewXtended(game);
+		g = new PacManGame();
+		g.setLevel(1);
+		g.maze.removeFood();
+		view = new PlayViewXtended(g);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
 		view.setShowStates(true);
@@ -24,17 +24,18 @@ public class EscapeIntoCornerTestController implements ViewController {
 
 	@Override
 	public void init() {
-		game.pacMan.init();
-		game.ghosts().filter(ghost -> ghost != game.blinky)
-				.forEach(ghost -> game.setActive(ghost, false));
-		game.blinky.initialize();
-		game.blinky.setState(GhostState.FRIGHTENED);
+		g.pacMan.init();
+		g.ghosts().filter(ghost -> ghost != g.blinky)
+				.forEach(ghost -> g.setActive(ghost, false));
+		g.blinky.setBehavior(GhostState.FRIGHTENED, g.blinky.fleeingToSafeCorner(g.pacMan));
+		g.blinky.initialize();
+		g.blinky.setState(GhostState.FRIGHTENED);
 	}
 
 	@Override
 	public void update() {
-		game.pacMan.update();
-		game.blinky.update();
+		g.pacMan.update();
+		g.blinky.update();
 		view.update();
 	}
 

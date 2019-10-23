@@ -18,6 +18,7 @@ public class FollowMouseTestController implements ViewController {
 
 	private final PacManGame g;
 	private final PlayViewXtended view;
+	private Tile currentMouseTile;
 
 	public FollowMouseTestController() {
 		g = new PacManGame();
@@ -30,6 +31,7 @@ public class FollowMouseTestController implements ViewController {
 		view.setShowGrid(true);
 		view.setShowStates(false);
 		view.setScoresVisible(false);
+		currentMouseTile = g.maze.tile(0, 0);
 	}
 
 	@Override
@@ -42,9 +44,8 @@ public class FollowMouseTestController implements ViewController {
 		g.blinky.init();
 		g.blinky.setBehavior(CHASING, g.blinky.headingFor(this::currentMouseTile));
 		g.blinky.setState(CHASING);
+		g.theme.snd_ghost_chase().stop();
 	}
-
-	private Tile currentMouseTile = new Tile(0, 0);
 
 	private Tile currentMouseTile() {
 		return currentMouseTile;
@@ -60,7 +61,7 @@ public class FollowMouseTestController implements ViewController {
 
 	private void handleMouseMove() {
 		if (Mouse.moved()) {
-			currentMouseTile = new Tile(Mouse.getX() / TS, Mouse.getY() / TS);
+			currentMouseTile = g.maze.tile(Mouse.getX() / TS, Mouse.getY() / TS);
 			LOGGER.info("New mouse position: " + currentMouseTile.toString());
 		}
 	}

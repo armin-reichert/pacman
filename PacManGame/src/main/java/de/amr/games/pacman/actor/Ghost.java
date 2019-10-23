@@ -114,16 +114,10 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 
 	@Override
 	public boolean canEnterTile(Tile tile) {
-		if (!game.maze.isValidTile(tile)) {
-			return game.maze.inTeleportSpace(tile);
-		}
-		if (game.maze.isWall(tile)) {
-			return false;
-		}
 		if (game.maze.isDoor(tile)) {
-			return getState() == DEAD || getState() != LOCKED && game.maze.inGhostHouse(getTile());
+			return getState() == DEAD || getState() != LOCKED && game.maze.inGhostHouse(tile());
 		}
-		return true;
+		return super.canEnterTile(tile);
 	}
 
 	// Define state machine
@@ -165,7 +159,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 					.onTick(() -> {
 						move();
 						sprites.select(
-								game.maze.inGhostHouse(getTile())	
+								game.maze.inGhostHouse(tile())	
 									? "s_color_" + getMoveDir()
 									: game.pacMan.isPowerEnding()	? "s_flashing" : "s_frightened");
 					})
@@ -220,7 +214,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 				.when(DYING).then(DEAD).onTimeout()
 					
 				.when(DEAD).then(LOCKED)
-					.condition(() -> getTile().equals(game.maze.getGhostRevivalTile()))
+					.condition(() -> tile().equals(game.maze.getGhostRevivalTile()))
 				
 		.endStateMachine();
 		/*@formatter:on*/

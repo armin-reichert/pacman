@@ -12,19 +12,19 @@ import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class FollowFixedPathTestController implements ViewController {
 
-	private final PacManGame game;
+	private final PacManGame g;
 	private final PlayViewXtended view;
 	private final List<Tile> targets;
 	private int targetIndex;
 
 	public FollowFixedPathTestController() {
-		game = new PacManGame();
-		game.setLevel(1);
-		game.maze.removeFood();
-		targets = Arrays.asList(game.maze.getBottomRightCorner(), game.maze.getBottomLeftCorner(),
-				game.maze.getLeftTunnelEntry(), game.maze.getTopLeftCorner(), game.maze.getBlinkyHome(),
-				game.maze.getTopRightCorner(), game.maze.getRightTunnelEntry(), game.maze.getPacManHome());
-		view = new PlayViewXtended(game);
+		g = new PacManGame();
+		g.setLevel(1);
+		g.maze.removeFood();
+		targets = Arrays.asList(g.maze.getBottomRightCorner(), g.maze.getBottomLeftCorner(),
+				g.maze.getTeleportLeft(), g.maze.getTopLeftCorner(), g.maze.getBlinkyHome(),
+				g.maze.getTopRightCorner(), g.maze.getTeleportRight(), g.maze.getPacManHome());
+		view = new PlayViewXtended(g);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
 		view.setShowStates(false);
@@ -34,28 +34,28 @@ public class FollowFixedPathTestController implements ViewController {
 	@Override
 	public void init() {
 		targetIndex = 0;
-		game.setActive(game.pacMan, false);
-		game.ghosts().filter(ghost -> ghost != game.blinky)
-				.forEach(ghost -> game.setActive(ghost, false));
-		game.blinky.initialize();
-		game.blinky.setState(GhostState.CHASING);
-		game.blinky.setBehavior(GhostState.CHASING,
-				game.blinky.followingFixedPath(() -> targets.get(targetIndex)));
-		game.blinky.currentBehavior().computePath(game.blinky);
+		g.setActive(g.pacMan, false);
+		g.ghosts().filter(ghost -> ghost != g.blinky).forEach(ghost -> g.setActive(ghost, false));
+		g.blinky.initialize();
+		g.blinky.setState(GhostState.CHASING);
+		g.theme.snd_ghost_chase().stop();
+		g.blinky.setBehavior(GhostState.CHASING,
+				g.blinky.followingFixedPath(() -> targets.get(targetIndex)));
+		g.blinky.currentBehavior().computePath(g.blinky);
 	}
 
 	private void nextTarget() {
 		targetIndex += 1;
 		if (targetIndex == targets.size()) {
 			targetIndex = 0;
-			game.setLevel(game.getLevel() + 1);
+			g.setLevel(g.getLevel() + 1);
 		}
 	}
 
 	@Override
 	public void update() {
-		game.blinky.update();
-		if (game.blinky.getTile().equals(targets.get(targetIndex))) {
+		g.blinky.update();
+		if (g.blinky.tile().equals(targets.get(targetIndex))) {
 			nextTarget();
 		}
 		view.update();

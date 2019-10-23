@@ -33,15 +33,15 @@ class FleeingToSafeCorner<T extends MazeMover> extends FollowingFixedPath<T> {
 
 	@Override
 	public void computePath(T refugee) {
-		Tile target = refugee.getTile();
-		while (target.equals(refugee.getTile())) {
+		Tile target = refugee.tile();
+		while (target.equals(refugee.tile())) {
 			target = safeCorner(refugee);
 		}
-		path = maze.findPath(refugee.getTile(), target);
+		path = maze.findPath(refugee.tile(), target);
 	}
 
 	private Tile safeCorner(T refugee) {
-		Tile refugeeTile = refugee.getTile();
+		Tile refugeeTile = refugee.tile();
 		Tile chaserTile = targetTileSupplier.get();
 		//@formatter:off
 		return permute(Stream.of(

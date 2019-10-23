@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
 
@@ -24,6 +25,15 @@ public interface GhostBehaviors {
 	 * @return the ghost implementing this mix-in
 	 */
 	Ghost self();
+
+	/**
+	 * Shortcut for access to maze.
+	 * 
+	 * @return the maze
+	 */
+	default Maze maze() {
+		return self().game.maze;
+	}
 
 	/**
 	 * Tries to reach a (possibly unreachable) target tile by choosing the "best" direction at every
@@ -46,7 +56,7 @@ public interface GhostBehaviors {
 	 * @return behavior of attacking Pac-Man directly
 	 */
 	default Behavior<Ghost> attackingDirectly(PacMan pacMan) {
-		return headingFor(pacMan::getTile);
+		return headingFor(pacMan::tile);
 	}
 
 	/**
@@ -85,8 +95,8 @@ public interface GhostBehaviors {
 	 */
 	default Behavior<Ghost> attackingWithPartner(Ghost blinky, PacMan pacMan) {
 		return headingFor(() -> {
-			Tile b = blinky.getTile(), p = pacMan.tilesAhead(2);
-			return new Tile(2 * p.col - b.col, 2 * p.row - b.row);
+			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
+			return maze().tile(2 * p.col - b.col, 2 * p.row - b.row);
 		});
 	}
 
@@ -127,7 +137,7 @@ public interface GhostBehaviors {
 	 */
 	default Behavior<Ghost> attackingAndRejecting(PacMan pacMan, int distance, Tile scatterTarget) {
 		return headingFor(() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance
-				? pacMan.getTile()
+				? pacMan.tile()
 				: scatterTarget);
 	}
 
@@ -148,7 +158,7 @@ public interface GhostBehaviors {
 	 * @return behavior where ghost flees to a "safe" maze corner
 	 */
 	default Behavior<Ghost> fleeingToSafeCorner(MazeMover attacker) {
-		return new FleeingToSafeCorner<>(attacker.game.maze, attacker::getTile);
+		return new FleeingToSafeCorner<>(maze(), attacker::tile);
 	}
 
 	/**
@@ -169,7 +179,7 @@ public interface GhostBehaviors {
 			/*@formatter:off*/
 			permute(NESW.dirs())
 				.filter(dir -> dir != NESW.inv(currentDir))
-				.filter(dir -> ghost.canEnterTile(ghost.getTile().tileTowards(dir)))
+				.filter(dir -> ghost.canEnterTile(ghost.tile().tileTowards(dir)))
 				.findFirst()
 				.ifPresent(newDir -> {
 					route.setDir(newDir);
@@ -195,8 +205,8 @@ public interface GhostBehaviors {
 	default Behavior<Ghost> followingPathfinder(Supplier<Tile> fnTarget) {
 		return ghost -> {
 			Route route = new Route();
-			route.setPath(ghost.game.maze.findPath(ghost.getTile(), fnTarget.get()));
-			route.setDir(ghost.game.maze.alongPath(route.getPath()).orElse(-1));
+			route.setPath(maze().findPath(ghost.tile(), fnTarget.get()));
+			route.setDir(maze().alongPath(route.getPath()).orElse(-1));
 			return route;
 		};
 	}

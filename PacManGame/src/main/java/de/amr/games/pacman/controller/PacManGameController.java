@@ -390,7 +390,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onPacManKilled(PacManGameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
-			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.name, e.killer.getTile()));
+			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.name, e.killer.tile()));
 			game.enableGlobalFoodCounter();
 			game.pacMan.processEvent(e);
 		}
@@ -415,7 +415,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onGhostKilled(PacManGameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
-			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.name, e.ghost.getTile()));
+			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.name, e.ghost.tile()));
 			theme.snd_eatGhost().play();
 			e.ghost.processEvent(e);
 		}

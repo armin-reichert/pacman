@@ -23,17 +23,6 @@ import de.amr.graph.grid.impl.Top4;
  */
 public abstract class MazeMover extends SpriteEntity {
 
-	/**
-	 * Converts pixel coordinate (x/y) to tile index (column/row).
-	 * 
-	 * @param coord
-	 *                pixel coordinate
-	 * @return tile index
-	 */
-	private static int tileIndex(float coord) {
-		return round(coord) / TS;
-	}
-
 	/* The game model. */
 	public final PacManGame game;
 
@@ -75,13 +64,8 @@ public abstract class MazeMover extends SpriteEntity {
 		return enteredNewTile;
 	}
 
-	/**
-	 * @return The tile where this maze mover is located, which is the tile containing the center
-	 *         point of this maze mover.
-	 */
-	public Tile getTile() {
-		Vector2f center = tf.getCenter();
-		return new Tile(tileIndex(center.x), tileIndex(center.y));
+	public Tile tile() {
+		return game.maze.tile(this);
 	}
 
 	/**
@@ -91,7 +75,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 *         move direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
-		return getTile().tileTowards(moveDir, numTiles);
+		return tile().tileTowards(moveDir, numTiles);
 	}
 
 	/**
@@ -105,7 +89,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 *                  pixel offset in y-direction
 	 */
 	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
-		enteredNewTile = !tile.equals(getTile());
+		enteredNewTile = !tile.equals(tile());
 		tf.setPosition(tile.col * TS + xOffset, tile.row * TS + yOffset);
 	}
 
@@ -113,7 +97,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 * Places this maze mover exactly over its current tile.
 	 */
 	public void align() {
-		Tile tile = getTile();
+		Tile tile = tile();
 		tf.setPosition(tile.col * TS, tile.row * TS);
 	}
 
@@ -153,7 +137,20 @@ public abstract class MazeMover extends SpriteEntity {
 	 *               some tile
 	 * @return <code>true</code> if this maze mover can currently enter the tile
 	 */
-	public abstract boolean canEnterTile(Tile tile);
+	public boolean canEnterTile(Tile tile) {
+		if (game.maze.isWall(tile)) {
+			return false;
+		}
+		if (game.maze.getTeleportRight().row == tile.row
+				&& game.maze.getTeleportRight().col + 1 == tile.col) {
+			return true;
+		}
+		if (game.maze.getTeleportLeft().row == tile.row
+				&& game.maze.getTeleportLeft().col - 1 == tile.col) {
+			return true;
+		}
+		return game.maze.isValidTile(tile);
+	}
 
 	/**
 	 * @return <code>true</code> if the maze mover cannot move further towards its current direction
@@ -168,7 +165,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 * tile and getting stuck.
 	 */
 	protected void move() {
-		Tile oldTile = getTile();
+		Tile oldTile = tile();
 		supplyIntendedDir().ifPresent(this::setNextDir);
 		float speed = computeMaxSpeed(nextDir);
 		if (speed > 0) {
@@ -181,17 +178,14 @@ public abstract class MazeMover extends SpriteEntity {
 			speed = computeMaxSpeed(moveDir);
 		}
 		tf.setVelocity(velocity(speed));
-		if (speed > 0) {
-			tf.move();
-			// check for exit from teleport space
-			if (tf.getX() + tf.getWidth() < 0) {
-				tf.setX(game.maze.numCols() * TS);
-			}
-			else if (tf.getX() > (game.maze.numCols()) * TS) {
-				tf.setX(-tf.getWidth());
-			}
+		tf.move();
+		if (tf.getX() > (game.maze.numCols() - 1) * TS) {
+			tf.setX(-TS);
 		}
-		enteredNewTile = !oldTile.equals(getTile());
+		else if (tf.getX() <= -TS) {
+			tf.setX((game.maze.numCols() - 1) * TS);
+		}
+		enteredNewTile = oldTile != tile();
 	}
 
 	private boolean isTurning90Degrees() {
@@ -206,13 +200,9 @@ public abstract class MazeMover extends SpriteEntity {
 	 * Computes how many pixels this entity can move towards the given direction in one frame.
 	 */
 	private float computeMaxSpeed(int dir) {
-		final Tile currentTile = getTile();
+		final Tile currentTile = tile();
 		final Tile neighborTile = currentTile.tileTowards(dir);
 		final float speed = getSpeed();
-		if (game.maze.inTeleportSpace(currentTile)) {
-			// in teleporting area only horizontal movement is possible
-			return dir == Top4.N || dir == Top4.S ? 0 : speed;
-		}
 		if (canEnterTile(neighborTile)) {
 			return speed;
 		}

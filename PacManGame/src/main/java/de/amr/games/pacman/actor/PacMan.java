@@ -118,7 +118,13 @@ public class PacMan extends MazeMover {
 
 	@Override
 	public boolean canEnterTile(Tile tile) {
-		return !game.maze.isWall(tile) && !game.maze.isDoor(tile);
+		if (game.maze.isWall(tile)) {
+			return false;
+		}
+		if (game.maze.isDoor(tile)) {
+			return false;
+		}
+		return super.canEnterTile(tile);
 	}
 
 	// Sprites
@@ -235,14 +241,14 @@ public class PacMan extends MazeMover {
 			if (!getEventManager().isEnabled()) {
 				return;
 			}
-			Tile tile = getTile();
+			Tile tile = tile();
 
 			/*@formatter:off*/
 			Optional<Ghost> collidingGhost = game.activeGhosts()
 				.filter(ghost -> ghost.getState() != GhostState.DEAD)
 				.filter(ghost -> ghost.getState() != GhostState.DYING)
 				.filter(ghost -> ghost.getState() != GhostState.LOCKED)
-				.filter(ghost -> ghost.getTile().equals(tile))
+				.filter(ghost -> ghost.tile().equals(tile))
 				.findFirst();
 			/*@formatter:on*/
 			if (collidingGhost.isPresent()) {
@@ -252,7 +258,7 @@ public class PacMan extends MazeMover {
 
 			/*@formatter:off*/
 			Optional<Bonus> activeBonus = game.getBonus()
-					.filter(bonus -> bonus.tile().equals(tile))
+					.filter(bonus -> game.maze.tile(bonus).equals(tile))
 					.filter(bonus -> !bonus.consumed());
 			/*@formatter:on*/
 			if (activeBonus.isPresent()) {

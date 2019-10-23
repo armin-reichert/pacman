@@ -34,7 +34,7 @@ public class IllegalTileTestController implements ViewController {
 	}
 
 	private Tile getTargetTile() {
-		return new Tile(game.maze.numCols(), game.maze.getTunnelRow());
+		return game.maze.tile(game.maze.numCols(), game.maze.getTunnelRow());
 	}
 
 	@Override
