@@ -6,7 +6,6 @@ import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
-import de.amr.games.pacman.theme.PacManTheme;
 
 /**
  * Pac-Man game.
@@ -22,8 +21,6 @@ public class PacManApp extends Application {
 		launch(new PacManApp(), args);
 	}
 
-	private final PacManTheme theme;
-
 	public PacManApp() {
 		// Default application settings, can be overwritten by command-line arguments
 		settings.title = "Armin's Pac-Man";
@@ -32,13 +29,12 @@ public class PacManApp extends Application {
 		settings.scale = 2;
 		settings.fullScreenOnStart = false;
 		settings.set("ghost.behavior.frightened.fleeRandomly", true);
-		theme = new ClassicPacManTheme();
-		setIcon(theme.spr_ghostFrightened().frame(0));
 	}
 
 	@Override
 	public void init() {
-		PacManGame game = new PacManGame(theme);
+		PacManGame game = new PacManGame(new ClassicPacManTheme());
+		setIcon(game.theme.spr_ghostFrightened().frame(0));
 		setController(new PacManGameController(game));
 	}
 }
