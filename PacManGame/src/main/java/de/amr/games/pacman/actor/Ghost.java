@@ -91,6 +91,18 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 		}
 	}
 
+	private void deadSoundOn() {
+		if (!game.theme.snd_ghost_dead().isRunning()) {
+			game.theme.snd_ghost_dead().loop();
+		}
+	}
+
+	private void deadSoundOff() {
+		if (game.activeGhosts().filter(ghost -> ghost != this).noneMatch(ghost -> ghost.getState() == DEAD)) {
+			game.theme.snd_ghost_dead().stop();
+		}
+	}
+
 	public void initialize() {
 		placeAtTile(initialTile, TS / 2, 0);
 		setMoveDir(initialDir);
@@ -132,6 +144,12 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 		return super.canEnterTile(tile);
 	}
 
+	@Override
+	protected void move() {
+		super.move();
+		sprites.select("s_color_" + getMoveDir());
+	}
+
 	// Define state machine
 
 	private StateMachine<GhostState, PacManGameEvent> buildStateMachine() {
@@ -144,24 +162,15 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 			.states()
 
 				.state(LOCKED)
-					.onTick(() -> {
-						move();	
-						sprites.select("s_color_" + getMoveDir());
-					})
+					.onTick(this::move)
 					.onExit(game.pacMan::resetEatTimer)
 				
 				.state(SCATTERING)
-					.onTick(() -> {
-						move();	
-						sprites.select("s_color_" + getMoveDir()); 
-					})
+					.onTick(this::move)
 			
 				.state(CHASING)
 				  .onEntry(this::sirenOn)
-					.onTick(() -> {	
-						move();	
-						sprites.select("s_color_" + getMoveDir()); 
-					})
+					.onTick(this::move)
 				  .onExit(this::sirenOff)
 				
 				.state(FRIGHTENED)
@@ -170,8 +179,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 					})
 					.onTick(() -> {
 						move();
-						sprites.select(
-								game.maze.inGhostHouse(tile())	
+						sprites.select(game.maze.inGhostHouse(tile())	
 									? "s_color_" + getMoveDir()
 									: game.pacMan.isPowerEnding()	? "s_flashing" : "s_frightened");
 					})
@@ -184,17 +192,12 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 					})
 				
 				.state(DEAD)
-					.onEntry(game.theme.snd_ghost_dead()::loop)
+					.onEntry(this::deadSoundOn)
 					.onTick(() -> {	
 						move();
 						sprites.select("s_eyes_" + getMoveDir());
 					})
-					.onExit(() -> {
-						if (game.activeGhosts().filter(ghost -> ghost != this)
-								.noneMatch(ghost -> ghost.getState() == DEAD)) {
-							game.theme.snd_ghost_dead().stop();
-						}
-					})
+					.onExit(this::deadSoundOff)
 					
 			.transitions()
 
