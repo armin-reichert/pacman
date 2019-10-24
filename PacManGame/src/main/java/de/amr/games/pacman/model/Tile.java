@@ -1,7 +1,7 @@
 package de.amr.games.pacman.model;
 
 /**
- * A tile coordinate.
+ * A tile.
  * 
  * @author Armin Reichert
  */
@@ -11,6 +11,7 @@ public class Tile {
 
 	public final int col;
 	public final int row;
+	public char content;
 
 	/* Only called from Maze. */
 	Tile(int col, int row) {
@@ -35,6 +36,6 @@ public class Tile {
 
 	@Override
 	public String toString() {
-		return String.format("(%d,%d)", col, row);
+		return String.format("(%d,%d,'%c')", col, row, content);
 	}
 }

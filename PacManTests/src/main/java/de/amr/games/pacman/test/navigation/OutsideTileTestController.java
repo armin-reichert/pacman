@@ -6,17 +6,18 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayViewXtended;
+import de.amr.graph.grid.impl.Top4;
 
-public class IllegalTileTestController implements ViewController {
+public class OutsideTileTestController implements ViewController {
 
-	private final PacManGame game;
+	private final PacManGame g;
 	private final PlayViewXtended view;
 
-	public IllegalTileTestController() {
-		game = new PacManGame();
-		game.setLevel(1);
-		game.maze.removeFood();
-		view = new PlayViewXtended(game);
+	public OutsideTileTestController() {
+		g = new PacManGame();
+		g.setLevel(1);
+		g.maze.removeFood();
+		view = new PlayViewXtended(g);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
 		view.setShowStates(true);
@@ -25,21 +26,20 @@ public class IllegalTileTestController implements ViewController {
 
 	@Override
 	public void init() {
-		game.pacMan.setVisible(false);
-		game.ghosts().filter(ghost -> ghost != game.blinky)
-				.forEach(ghost -> game.setActive(ghost, false));
-		game.blinky.initialize();
-		game.blinky.setBehavior(GhostState.CHASING, game.blinky.headingFor(this::getTargetTile));
-		game.blinky.setState(GhostState.CHASING);
+		g.pacMan.setVisible(false);
+		g.ghosts().filter(ghost -> ghost != g.blinky).forEach(ghost -> g.setActive(ghost, false));
+		g.blinky.initialize();
+		g.blinky.setBehavior(GhostState.CHASING, g.blinky.headingFor(this::getTargetTile));
+		g.blinky.setState(GhostState.CHASING);
 	}
 
 	private Tile getTargetTile() {
-		return game.maze.tile(game.maze.numCols(), game.maze.getTunnelRow());
+		return g.maze.tileTowards(g.maze.getTeleportRight(), Top4.E);
 	}
 
 	@Override
 	public void update() {
-		game.blinky.update();
+		g.blinky.update();
 		view.update();
 	}
 

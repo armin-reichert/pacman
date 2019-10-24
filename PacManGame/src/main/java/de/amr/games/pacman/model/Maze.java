@@ -50,13 +50,10 @@ public class Maze {
 	private static final char SPACE = ' ';
 	private static final char PELLET = '.';
 	private static final char ENERGIZER = '*';
-	private static final char EATEN = ':';
+	private static final char EATEN = '%';
 
-	private final String[] map;
 	private final GridGraph<Character, Void> grid;
-
 	private final Tile[][] tiles;
-
 	private Tile pacManHome;
 	private Tile blinkyHome, blinkyScatterTarget;
 	private Tile pinkyHome, pinkyScatterTarget;
@@ -65,7 +62,6 @@ public class Maze {
 	private Tile bonusTile;
 	private Tile teleportLeft, teleportRight;
 
-	private int tunnelRow;
 	private int foodTotal;
 
 	private Set<Tile> unrestrictedIS = new HashSet<>();
@@ -74,18 +70,15 @@ public class Maze {
 	private long pathFinderCalls;
 
 	public Maze() {
-		map = Assets.text("maze.txt").split("\n");
+		String[] map = Assets.text("maze.txt").split("\n");
 		int numCols = map[0].length(), numRows = map.length;
 		tiles = new Tile[numCols][numRows];
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
 				tiles[col][row] = new Tile(col, row);
-			}
-		}
-		for (int row = 0; row < numRows; ++row) {
-			for (int col = 0; col < numCols; ++col) {
+				tiles[col][row].content = SPACE;
 				Tile tile = tiles[col][row];
-				switch (map(row, col)) {
+				switch (map[row].charAt(col)) {
 				case 'O':
 					pacManHome = tile;
 					break;
@@ -116,17 +109,29 @@ public class Maze {
 				case '$':
 					bonusTile = tile;
 					break;
+				case WALL:
+					tiles[col][row].content = WALL;
+					break;
+				case DOOR:
+					tiles[col][row].content = DOOR;
+					break;
 				case TUNNEL:
-					tunnelRow = row;
+					tiles[col][row].content = TUNNEL;
 					break;
 				case TELEPORT_L:
+					tiles[col][row].content = TUNNEL;
 					teleportLeft = tile;
 					break;
 				case TELEPORT_R:
+					tiles[col][row].content = TUNNEL;
 					teleportRight = tile;
 					break;
 				case PELLET:
+					tiles[col][row].content = PELLET;
+					foodTotal += 1;
+					break;
 				case ENERGIZER:
+					tiles[col][row].content = ENERGIZER;
 					foodTotal += 1;
 					break;
 				default:
@@ -137,7 +142,7 @@ public class Maze {
 
 		// The graph represents the maze and stores the maze content inside its vertices.
 		grid = new GridGraph<>(numCols, numRows, NESW, v -> null, (u, v) -> null, UndirectedEdge::new);
-		grid.setDefaultVertexLabel(v -> map(grid.row(v), grid.col(v)));
+		grid.setDefaultVertexLabel(v -> content(grid.row(v), grid.col(v)));
 
 		// Add graph edges
 		grid.fill();
@@ -168,8 +173,8 @@ public class Maze {
 				});
 	}
 
-	private char map(int row, int col) {
-		return map[row].charAt(col);
+	private char content(int row, int col) {
+		return tiles[col][row].content;
 	}
 
 	public GridGraph2D<Character, Void> getGraph() {
@@ -279,10 +284,6 @@ public class Maze {
 
 	public Tile getBonusTile() {
 		return bonusTile;
-	}
-
-	public int getTunnelRow() {
-		return tunnelRow;
 	}
 
 	public Tile getTeleportLeft() {
