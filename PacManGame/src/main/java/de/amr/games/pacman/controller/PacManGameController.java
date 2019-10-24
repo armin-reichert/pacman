@@ -522,19 +522,30 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	 * "Pac-Man dying" state implementation.
 	 */
 	private class PacManDyingState extends State<PacManGameState, PacManGameEvent> {
+		
+		private int waitTimer;
 
 		@Override
 		public void onEntry() {
 			theme.music_playing().stop();
+			waitTimer = app().clock.sec(1);
 		}
 
 		@Override
 		public void onTick() {
-			game.pacMan.update();
+			if (waitTimer > 0) {
+				waitTimer -= 1;
+				if (waitTimer == 0) {
+					game.activeGhosts().forEach(ghost -> ghost.setVisible(false));
+				}
+			} else {
+				game.pacMan.update();
+			}
 		}
 
 		@Override
 		public void onExit() {
+			game.activeGhosts().forEach(ghost -> ghost.setVisible(true));
 			if (game.getLives() > 0) {
 				game.removeLife();
 				theme.music_playing().loop();
