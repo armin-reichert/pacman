@@ -314,78 +314,62 @@ beginStateMachine(PacManState.class, PacManGameEvent.class)
 The **ghosts** are controlled using the following state machine:
 
 ```java
-beginStateMachine(GhostState.class, GameEvent.class)
-	 
-	.description(String.format("[%s]", ghostName))
+.beginStateMachine(GhostState.class, PacManGameEvent.class)
+
+	.description(String.format("[%s]", name))
 	.initialState(LOCKED)
 
 	.states()
 
 		.state(LOCKED)
-			.timeoutAfter(() -> getGame().getGhostLockedTime(this))
-			.onTick(() -> {
-				move();	
-				sprites.select("s_color_" + getMoveDir());
-			})
-		
+			.onTick(this::move)
+			.onExit(game.pacMan::resetEatTimer)
+
 		.state(SCATTERING)
-			.onTick(() -> {
-				move();	
-				sprites.select("s_color_" + getMoveDir()); 
-			})
-	
+			.onTick(this::move)
+
 		.state(CHASING)
-			.onEntry(() -> getTheme().snd_ghost_chase().loop())
-			.onExit(() -> getTheme().snd_ghost_chase().stop())
-			.onTick(() -> {	
-				move();	
-				sprites.select("s_color_" + getMoveDir()); 
-			})
-		
+		  .onEntry(this::sirenOn)
+			.onTick(this::move)
+		  .onExit(this::sirenOff)
+
 		.state(FRIGHTENED)
 			.onEntry(() -> {
-				getBehavior().computePath(this); 
+				currentBehavior().computePath(this); 
 			})
 			.onTick(() -> {
 				move();
-				sprites.select(inGhostHouse() ? "s_color_" + getMoveDir() : 
-					getGame().getPacMan().isLosingPower() ? "s_flashing" : "s_frightened");
+				sprites.select(game.maze.inGhostHouse(tile())	
+							? "s_color_" + getMoveDir()
+							: game.pacMan.isPowerEnding()	? "s_flashing" : "s_frightened");
 			})
-		
+
 		.state(DYING)
-			.timeoutAfter(getGame()::getGhostDyingTime)
+			.timeoutAfter(game::getGhostDyingTime)
 			.onEntry(() -> {
-				sprites.select("s_value" + getGame().getGhostsKilledByEnergizer()); 
-				getGame().addGhostKilled();
+				sprites.select("s_value" + game.getGhostsKilledByEnergizer()); 
+				game.addGhostKilled();
 			})
-		
+
 		.state(DEAD)
-			.onEntry(() -> {
-				getBehavior().computePath(this);
-				getTheme().snd_ghost_dead().loop();
-			})
+			.onEntry(this::deadSoundOn)
 			.onTick(() -> {	
 				move();
 				sprites.select("s_eyes_" + getMoveDir());
 			})
-			.onExit(() -> {
-				if (getGame().getActiveGhosts().filter(ghost -> ghost != this)
-						.noneMatch(ghost -> ghost.getState() == DEAD)) {
-					getTheme().snd_ghost_dead().stop();
-				}
-			})
-			
+			.onExit(this::deadSoundOff)
+
 	.transitions()
 
 		.when(LOCKED).then(FRIGHTENED)
-			.condition(() -> canLeaveGhostHouse() && getGame().getPacMan().hasPower())
+			.condition(() -> game.canLeaveGhostHouse(this) && game.pacMan.hasPower())
 
 		.when(LOCKED).then(SCATTERING)
-			.condition(() -> canLeaveGhostHouse() && getNextState() == SCATTERING)
-		
+			.condition(() -> game.canLeaveGhostHouse(this) && getNextState() == SCATTERING)
+
 		.when(LOCKED).then(CHASING)
-			.condition(() -> canLeaveGhostHouse() && getNextState() == CHASING)
-		
+			.condition(() -> game.canLeaveGhostHouse(this) && getNextState() == CHASING)
+
 		.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
 		.when(CHASING).then(DYING).on(GhostKilledEvent.class)
 		.when(CHASING).then(SCATTERING).on(StartScatteringEvent.class)
@@ -393,21 +377,20 @@ beginStateMachine(GhostState.class, GameEvent.class)
 		.when(SCATTERING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
 		.when(SCATTERING).then(DYING).on(GhostKilledEvent.class)
 		.when(SCATTERING).then(CHASING).on(StartChasingEvent.class)
-		
+
 		.when(FRIGHTENED).then(CHASING).on(PacManLostPowerEvent.class)
 			.condition(() -> getNextState() == CHASING)
 
 		.when(FRIGHTENED).then(SCATTERING).on(PacManLostPowerEvent.class)
 			.condition(() -> getNextState() == SCATTERING)
-		
+
 		.when(FRIGHTENED).then(DYING).on(GhostKilledEvent.class)
-			
+
 		.when(DYING).then(DEAD).onTimeout()
-			
+
 		.when(DEAD).then(LOCKED)
-			.condition(() -> getTile().equals(getRevivalTile()))
-			.act(this::reviveGhost)
-		
+			.condition(() -> tile().equals(game.maze.getGhostRevivalTile()))
+
 .endStateMachine();
 ```
 
