@@ -198,7 +198,7 @@ public class Maze {
 	 * @param n
 	 *               number of tiles
 	 * @return tile that lies <code>n</code> tiles away from the given tile towards the given direction.
-	 *         This can be an invalid tile position.
+	 *         This can be a tile outside of the board!
 	 */
 	public Tile tileTowards(Tile tile, int dir, int n) {
 		if (n < 0) {
