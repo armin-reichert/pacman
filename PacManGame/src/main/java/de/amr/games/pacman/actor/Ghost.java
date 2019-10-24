@@ -79,6 +79,18 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 		sprites.set("s_flashing", game.theme.spr_ghostFlashing());
 	}
 
+	private void sirenOn() {
+		if (!game.theme.snd_ghost_chase().isRunning()) {
+			game.theme.snd_ghost_chase().loop();
+		}
+	}
+
+	private void sirenOff() {
+		if (game.activeGhosts().filter(ghost -> this != ghost).anyMatch(ghost -> ghost.getState() == CHASING)) {
+			game.theme.snd_ghost_chase().stop();
+		}
+	}
+
 	public void initialize() {
 		placeAtTile(initialTile, TS / 2, 0);
 		setMoveDir(initialDir);
@@ -145,12 +157,12 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 					})
 			
 				.state(CHASING)
-					.onEntry(game.theme.snd_ghost_chase()::loop)
+				  .onEntry(this::sirenOn)
 					.onTick(() -> {	
 						move();	
 						sprites.select("s_color_" + getMoveDir()); 
 					})
-					.onExit(game.theme.snd_ghost_chase()::stop)
+				  .onExit(this::sirenOff)
 				
 				.state(FRIGHTENED)
 					.onEntry(() -> {
