@@ -147,7 +147,7 @@ public abstract class MazeMover extends SpriteEntity {
 		if (game.maze.getTeleportLeft().row == tile.row && game.maze.getTeleportLeft().col - 1 == tile.col) {
 			return true;
 		}
-		return game.maze.isValidTile(tile);
+		return game.maze.insideBoard(tile);
 	}
 
 	/**

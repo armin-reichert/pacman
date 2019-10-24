@@ -29,9 +29,9 @@ import de.amr.graph.pathfinder.impl.AStarSearch;
  * The original Pac-Man maze.
  * 
  * <p>
- * It is represented by a (grid) graph which may store content and can be used by path finding
- * algorithms. The original Pac-Man "AI" does not need a graph structure but we use also path
- * finding in a graph for the game.
+ * It is represented by a (grid) graph that can be used by path finding algorithms. The original
+ * Pac-Man "AI" does not need a graph structure but we use also path finding in a graph for the
+ * game.
  * 
  * @author Armin Reichert
  * 
@@ -53,32 +53,54 @@ public class Maze {
 	private static final char EATEN = '%';
 
 	private final GridGraph<Character, Void> grid;
-	private final Tile[][] tiles;
+	private final Tile[][] board;
+	private final Set<Tile> unrestrictedIS = new HashSet<>();
+	private final Set<Tile> upwardsBlockedIS = new HashSet<>();
 	private Tile pacManHome;
 	private Tile blinkyHome, blinkyScatterTarget;
 	private Tile pinkyHome, pinkyScatterTarget;
 	private Tile inkyHome, inkyScatterTarget;
 	private Tile clydeHome, clydeScatterTarget;
-	private Tile bonusTile;
+	private Tile bonus;
 	private Tile teleportLeft, teleportRight;
 
 	private int foodTotal;
-
-	private Set<Tile> unrestrictedIS = new HashSet<>();
-	private Set<Tile> upwardsBlockedIS = new HashSet<>();
-
 	private long pathFinderCalls;
 
 	public Maze() {
 		String[] map = Assets.text("maze.txt").split("\n");
 		int numCols = map[0].length(), numRows = map.length;
-		tiles = new Tile[numCols][numRows];
+		board = new Tile[numCols][numRows];
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				tiles[col][row] = new Tile(col, row);
-				tiles[col][row].content = SPACE;
-				Tile tile = tiles[col][row];
+				Tile tile = board[col][row] = new Tile(col, row);
+				board[col][row].content = SPACE;
 				switch (map[row].charAt(col)) {
+				case WALL:
+					tile.content = WALL;
+					break;
+				case DOOR:
+					tile.content = DOOR;
+					break;
+				case TUNNEL:
+					tile.content = TUNNEL;
+					break;
+				case TELEPORT_L:
+					tile.content = TUNNEL;
+					teleportLeft = tile;
+					break;
+				case TELEPORT_R:
+					tile.content = TUNNEL;
+					teleportRight = tile;
+					break;
+				case PELLET:
+					tile.content = PELLET;
+					foodTotal += 1;
+					break;
+				case ENERGIZER:
+					tile.content = ENERGIZER;
+					foodTotal += 1;
+					break;
 				case 'O':
 					pacManHome = tile;
 					break;
@@ -107,32 +129,7 @@ public class Maze {
 					clydeScatterTarget = tile;
 					break;
 				case '$':
-					bonusTile = tile;
-					break;
-				case WALL:
-					tiles[col][row].content = WALL;
-					break;
-				case DOOR:
-					tiles[col][row].content = DOOR;
-					break;
-				case TUNNEL:
-					tiles[col][row].content = TUNNEL;
-					break;
-				case TELEPORT_L:
-					tiles[col][row].content = TUNNEL;
-					teleportLeft = tile;
-					break;
-				case TELEPORT_R:
-					tiles[col][row].content = TUNNEL;
-					teleportRight = tile;
-					break;
-				case PELLET:
-					tiles[col][row].content = PELLET;
-					foodTotal += 1;
-					break;
-				case ENERGIZER:
-					tiles[col][row].content = ENERGIZER;
-					foodTotal += 1;
+					bonus = tile;
 					break;
 				default:
 					break;
@@ -142,7 +139,7 @@ public class Maze {
 
 		// The graph represents the maze and stores the maze content inside its vertices.
 		grid = new GridGraph<>(numCols, numRows, NESW, v -> null, (u, v) -> null, UndirectedEdge::new);
-		grid.setDefaultVertexLabel(v -> content(grid.row(v), grid.col(v)));
+		grid.setDefaultVertexLabel(v -> board[grid.col(v)][grid.row(v)].content);
 
 		// Add graph edges
 		grid.fill();
@@ -173,10 +170,6 @@ public class Maze {
 				});
 	}
 
-	private char content(int row, int col) {
-		return tiles[col][row].content;
-	}
-
 	public GridGraph2D<Character, Void> getGraph() {
 		return grid;
 	}
@@ -193,7 +186,7 @@ public class Maze {
 		return grid.vertices().mapToObj(this::tile);
 	}
 
-	public boolean isValidTile(Tile tile) {
+	public boolean insideBoard(Tile tile) {
 		return grid.isValidCol(tile.col) && grid.isValidRow(tile.row);
 	}
 
@@ -283,7 +276,7 @@ public class Maze {
 	}
 
 	public Tile getBonusTile() {
-		return bonusTile;
+		return bonus;
 	}
 
 	public Tile getTeleportLeft() {
@@ -295,7 +288,7 @@ public class Maze {
 	}
 
 	private char getContent(Tile tile) {
-		return isValidTile(tile) ? grid.get(cell(tile)) : SPACE;
+		return insideBoard(tile) ? grid.get(cell(tile)) : SPACE;
 	}
 
 	public boolean inTunnel(Tile tile) {
@@ -311,7 +304,7 @@ public class Maze {
 	}
 
 	public boolean isGhostHouseEntry(Tile tile) {
-		return isValidTile(tile) && isDoor(neighborTile(tile, Top4.S).get());
+		return insideBoard(tile) && isDoor(neighborTile(tile, Top4.S).get());
 	}
 
 	public boolean isIntersection(Tile tile) {
@@ -378,7 +371,7 @@ public class Maze {
 	}
 
 	public List<Tile> findPath(Tile source, Tile target) {
-		if (isValidTile(source) && isValidTile(target)) {
+		if (insideBoard(source) && insideBoard(target)) {
 			GraphSearch pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
 			Path path = pathfinder.findPath(cell(source), cell(target));
 			pathFinderCalls += 1;
@@ -403,14 +396,14 @@ public class Maze {
 	}
 
 	public int cell(Tile tile) {
-		if (isValidTile(tile)) {
+		if (insideBoard(tile)) {
 			return grid.cell(tile.col, tile.row);
 		}
 		throw new IllegalArgumentException("Illegal tile: " + tile);
 	}
 
 	public Tile tile(int col, int row) {
-		return grid.isValidCol(col) && grid.isValidRow(row) ? tiles[col][row] : Tile.UNDEFINED;
+		return grid.isValidCol(col) && grid.isValidRow(row) ? board[col][row] : Tile.UNDEFINED;
 	}
 
 	public Tile tile(int cell) {
