@@ -152,7 +152,7 @@ public class Maze {
 				.filter(cell -> grid.get(cell) != DOOR)
 				.filter(cell -> !inGhostHouse(tile(cell)))
 				.filter(cell -> !tile(cell).equals(blinkyHome))
-				.filter(cell -> !tile(cell).equals(blinkyHome.tileTowards(Top4.E)))
+				.filter(cell -> !tile(cell).equals(tileTowards(blinkyHome, Top4.E)))
 		//@formatter:on
 				.forEach(cell -> {
 					Tile tile = tile(cell);
@@ -190,6 +190,35 @@ public class Maze {
 
 	public boolean isValidTile(Tile tile) {
 		return grid.isValidCol(tile.col) && grid.isValidRow(tile.row);
+	}
+
+	/**
+	 * @param tile
+	 *               reference tile
+	 * @param dir
+	 *               some direction
+	 * @param n
+	 *               number of tiles
+	 * @return tile that lies <code>n</code> tiles away from the given tile towards the given direction.
+	 *         This can be an invalid tile position.
+	 */
+	public Tile tileTowards(Tile tile, int dir, int n) {
+		if (n < 0) {
+			throw new IllegalArgumentException("Number of tiles must not be negative");
+		}
+		int col = tile.col + n * NESW.dx(dir), row = tile.row + n * NESW.dy(dir);
+		return grid.isValidCol(col) && grid.isValidRow(row) ? tile(col, row) : new Tile(col, row);
+	}
+
+	/**
+	 * @param tile
+	 *               reference tile
+	 * @param dir
+	 *               some direction
+	 * @return neighbor towards the given direction. This can be an invalid tile position.
+	 */
+	public Tile tileTowards(Tile tile, int dir) {
+		return tileTowards(tile, dir, 1);
 	}
 
 	public Tile getTopLeftCorner() {

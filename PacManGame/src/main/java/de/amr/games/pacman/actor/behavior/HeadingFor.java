@@ -44,8 +44,7 @@ class HeadingFor<T extends MazeMover> implements Behavior<T> {
 		final Maze maze = actor.game.maze;
 		final int actorDir = actor.getMoveDir();
 		final Tile actorTile = actor.tile();
-		final Tile targetTile = Objects.requireNonNull(targetTileSupplier.get(),
-				"Target tile must not be NULL");
+		final Tile targetTile = Objects.requireNonNull(targetTileSupplier.get(), "Target tile must not be NULL");
 		final Route route = new Route();
 		route.setTarget(targetTile);
 
@@ -57,8 +56,8 @@ class HeadingFor<T extends MazeMover> implements Behavior<T> {
 
 		// if inside ghost house, use path finder. To leave the ghost house, target Blinky's home tile
 		if (maze.inGhostHouse(actorTile)) {
-			route.setPath(maze.findPath(actorTile,
-					maze.inGhostHouse(targetTile) ? targetTile : maze.getBlinkyHome()));
+			route.setPath(
+					maze.findPath(actorTile, maze.inGhostHouse(targetTile) ? targetTile : maze.getBlinkyHome()));
 			route.setDir(maze.alongPath(route.getPath()).orElse(actorDir));
 			return route;
 		}
@@ -76,7 +75,7 @@ class HeadingFor<T extends MazeMover> implements Behavior<T> {
 		}
 
 		// If next tile is an intersection, decide where to go:
-		final Tile nextTile = actorTile.tileTowards(actorDir);
+		final Tile nextTile = maze.tileTowards(actorTile, actorDir);
 		if (maze.isIntersection(nextTile)) {
 			// direction order: up > left > down > right
 			int bestDir = Stream.of(Top4.N, Top4.W, Top4.S, Top4.E)
