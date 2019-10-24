@@ -118,9 +118,6 @@ public class PacMan extends MazeMover {
 
 	@Override
 	public boolean canEnterTile(Tile tile) {
-		if (game.maze.isWall(tile)) {
-			return false;
-		}
 		if (game.maze.isDoor(tile)) {
 			return false;
 		}
