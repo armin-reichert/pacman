@@ -86,7 +86,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	}
 
 	private void sirenOff() {
-		if (game.activeGhosts().filter(ghost -> this != ghost).anyMatch(ghost -> ghost.getState() == CHASING)) {
+		if (game.activeGhosts().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
 			game.theme.snd_ghost_chase().stop();
 		}
 	}
