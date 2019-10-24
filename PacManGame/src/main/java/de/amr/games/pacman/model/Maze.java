@@ -292,7 +292,7 @@ public class Maze {
 	}
 
 	public boolean inTunnel(Tile tile) {
-		return getContent(tile) == TUNNEL || tile == teleportLeft || tile == teleportRight;
+		return getContent(tile) == TUNNEL;
 	}
 
 	public boolean isWall(Tile tile) {
