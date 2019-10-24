@@ -153,8 +153,9 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	// Define state machine
 
 	private StateMachine<GhostState, PacManGameEvent> buildStateMachine() {
+		return StateMachine
 		/*@formatter:off*/
-		return StateMachine.beginStateMachine(GhostState.class, PacManGameEvent.class)
+		.beginStateMachine(GhostState.class, PacManGameEvent.class)
 			 
 			.description(String.format("[%s]", name))
 			.initialState(LOCKED)
@@ -170,7 +171,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 			
 				.state(CHASING)
 				  .onEntry(this::sirenOn)
-					.onTick(this::move)
+				  .onTick(this::move)
 				  .onExit(this::sirenOff)
 				
 				.state(FRIGHTENED)
