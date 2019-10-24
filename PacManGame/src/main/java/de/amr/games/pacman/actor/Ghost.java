@@ -170,9 +170,9 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 					.onTick(this::move)
 			
 				.state(CHASING)
-				  .onEntry(this::sirenOn)
-				  .onTick(this::move)
-				  .onExit(this::sirenOff)
+					.onEntry(this::sirenOn)
+					.onTick(this::move)
+					.onExit(this::sirenOff)
 				
 				.state(FRIGHTENED)
 					.onEntry(() -> {
