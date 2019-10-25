@@ -45,7 +45,7 @@ public class BoardPreview extends JFrame {
 		r.fnCellBgColor = cell -> {
 			Tile tile = maze.tile(cell);
 			if (maze.isWall(tile)) {
-				return Color.BLUE;
+				return Color.BLACK;
 			}
 			if (maze.inTunnel(tile)) {
 				return Color.LIGHT_GRAY;
@@ -64,8 +64,32 @@ public class BoardPreview extends JFrame {
 			}
 			return Color.WHITE;
 		};
-		r.fnText = cell -> String.valueOf(maze.getGraph().get(cell));
-		r.fnTextFont = cell -> new Font("Arial Bold", Font.BOLD, TS / 2);
+		r.fnText = this::text;
+		r.fnTextColor = cell -> Color.RED;
+		r.fnTextFont = cell -> new Font("Arial Bold", Font.BOLD, TS * 70 / 100);
 		return r;
+	}
+
+	private String text(int cell) {
+		Tile tile = maze.tile(cell);
+		if (tile == maze.getBlinkyHome() || tile == maze.getBlinkyScatterTarget()) {
+			return "B";
+		}
+		if (tile == maze.getPinkyHome() || tile == maze.getPinkyScatterTarget()) {
+			return "P";
+		}
+		if (tile == maze.getInkyHome() || tile == maze.getInkyScatterTarget()) {
+			return "I";
+		}
+		if (tile == maze.getClydeHome() || tile == maze.getClydeScatterTarget()) {
+			return "C";
+		}
+		if (maze.isWall(tile)) {
+			return "";
+		}
+		if (maze.containsEnergizer(tile)) {
+			return "E";
+		}
+		return String.valueOf(maze.getGraph().get(cell));
 	}
 }

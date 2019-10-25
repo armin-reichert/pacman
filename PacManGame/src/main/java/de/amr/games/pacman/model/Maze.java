@@ -117,15 +117,19 @@ public class Maze {
 					clydeHome = tile;
 					break;
 				case 'b':
+					tile.content = WALL;
 					blinkyScatterTarget = tile;
 					break;
 				case 'p':
+					tile.content = WALL;
 					pinkyScatterTarget = tile;
 					break;
 				case 'i':
+					tile.content = WALL;
 					inkyScatterTarget = tile;
 					break;
 				case 'c':
+					tile.content = WALL;
 					clydeScatterTarget = tile;
 					break;
 				case '$':
