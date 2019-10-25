@@ -84,6 +84,9 @@ public class BoardPreview extends JFrame {
 		if (tile == maze.getClydeHome() || tile == maze.getClydeScatterTarget()) {
 			return "C";
 		}
+		if (tile == maze.getPacManHome()) {
+			return "O";
+		}
 		if (maze.isWall(tile)) {
 			return "";
 		}

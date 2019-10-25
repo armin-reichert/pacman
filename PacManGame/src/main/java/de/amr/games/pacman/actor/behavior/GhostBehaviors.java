@@ -178,7 +178,7 @@ public interface GhostBehaviors {
 			/*@formatter:off*/
 			permute(NESW.dirs())
 				.filter(dir -> dir != NESW.inv(currentDir))
-				.filter(dir -> ghost.canEnterTile(maze().tileTowards(ghost.tile(), dir)))
+				.filter(dir -> ghost.canEnterTile(maze().tileToDir(ghost.tile(), dir)))
 				.findFirst()
 				.ifPresent(newDir -> {
 					route.setDir(newDir);

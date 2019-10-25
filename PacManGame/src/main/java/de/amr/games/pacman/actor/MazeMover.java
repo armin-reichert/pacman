@@ -75,7 +75,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 *         direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
-		return game.maze.tileTowards(tile(), moveDir, numTiles);
+		return game.maze.tileToDir(tile(), moveDir, numTiles);
 	}
 
 	/**
@@ -199,7 +199,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 */
 	private float computeMaxSpeed(int dir) {
 		final Tile currentTile = tile();
-		final Tile neighborTile = game.maze.tileTowards(currentTile, dir);
+		final Tile neighborTile = game.maze.tileToDir(currentTile, dir);
 		final float speed = getSpeed();
 		if (canEnterTile(neighborTile)) {
 			return speed;

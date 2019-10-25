@@ -75,7 +75,7 @@ class HeadingFor<T extends MazeMover> implements Behavior<T> {
 		}
 
 		// If next tile is an intersection, decide where to go:
-		final Tile nextTile = maze.tileTowards(actorTile, actorDir);
+		final Tile nextTile = maze.tileToDir(actorTile, actorDir);
 		if (maze.isIntersection(nextTile)) {
 			// direction order: up > left > down > right
 			int bestDir = Stream.of(Top4.N, Top4.W, Top4.S, Top4.E)

@@ -151,27 +151,27 @@ public class Maze {
 		grid.edges().filter(edge -> grid.get(edge.either()) == WALL || grid.get(edge.other()) == WALL)
 				.forEach(grid::removeEdge);
 
-		// find intersections (unrestricted ones vs. intersections where ghosts cannot move upwards)
-		grid.vertices()
+		// sort intersections into unrestricted ones and those where ghosts cannot move upwards
+		grid.vertices().filter(v -> grid.degree(v) >= 3).mapToObj(this::tile)
 		//@formatter:off
-				.filter(cell -> grid.degree(cell) >= 3)
-				.filter(cell -> grid.get(cell) != DOOR)
-				.filter(cell -> !inGhostHouse(tile(cell)))
-				.filter(cell -> !tile(cell).equals(blinkyHome))
-				.filter(cell -> !tile(cell).equals(tileTowards(blinkyHome, Top4.E)))
-		//@formatter:on
-				.forEach(cell -> {
-					Tile tile = tile(cell);
-					if (blinkyHome.equals(tile(tile.col + 1, tile.row))
-							|| blinkyHome.equals(tile(tile.col - 2, tile.row))
-							|| pacManHome.equals(tile(tile.col + 1, tile.row))
-							|| pacManHome.equals(tile(tile.col - 2, tile.row))) {
+				// exclude tiles above ghost house doors
+				.filter(tile -> !isDoor(tileToDir(tile, Top4.S)))
+				// exclude doors
+				.filter(tile -> !isDoor(tile))
+				// exclude tiles inside ghost house
+				.filter(tile -> !inGhostHouse(tile))
+				.forEach(tile -> {
+					if (tile == tileToDir(blinkyHome, Top4.W)	
+					 || tile == tileToDir(blinkyHome, Top4.E, 2)
+					 || tile == tileToDir(pacManHome, Top4.W)
+					 || tile == tileToDir(pacManHome, Top4.E, 2)) {
 						upwardsBlockedIS.add(tile);
 					}
 					else {
 						unrestrictedIS.add(tile);
 					}
 				});
+		//@formatter:on
 	}
 
 	public GridGraph2D<Character, Void> getGraph() {
@@ -201,10 +201,10 @@ public class Maze {
 	 *               some direction
 	 * @param n
 	 *               number of tiles
-	 * @return tile that lies <code>n</code> tiles away from the given tile towards the given direction.
-	 *         This can be a tile outside of the board!
+	 * @return tile that lies <code>n</code> tiles away from the given tile towards the given
+	 *         direction. This can be a tile outside of the board!
 	 */
-	public Tile tileTowards(Tile tile, int dir, int n) {
+	public Tile tileToDir(Tile tile, int dir, int n) {
 		if (n < 0) {
 			throw new IllegalArgumentException("Number of tiles must not be negative");
 		}
@@ -219,8 +219,8 @@ public class Maze {
 	 *               some direction
 	 * @return neighbor towards the given direction. This can be an invalid tile position.
 	 */
-	public Tile tileTowards(Tile tile, int dir) {
-		return tileTowards(tile, dir, 1);
+	public Tile tileToDir(Tile tile, int dir) {
+		return tileToDir(tile, dir, 1);
 	}
 
 	public Tile getTopLeftCorner() {
