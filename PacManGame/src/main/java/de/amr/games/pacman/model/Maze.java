@@ -209,7 +209,7 @@ public class Maze {
 			throw new IllegalArgumentException("Number of tiles must not be negative");
 		}
 		int col = tile.col + n * NESW.dx(dir), row = tile.row + n * NESW.dy(dir);
-		return grid.isValidCol(col) && grid.isValidRow(row) ? tile(col, row) : new Tile(col, row);
+		return grid.isValidCol(col) && grid.isValidRow(row) ? tileAt(col, row) : new Tile(col, row);
 	}
 
 	/**
@@ -224,19 +224,19 @@ public class Maze {
 	}
 
 	public Tile getTopLeftCorner() {
-		return tile(1, 4);
+		return tileAt(1, 4);
 	}
 
 	public Tile getTopRightCorner() {
-		return tile(numCols() - 2, 4);
+		return tileAt(numCols() - 2, 4);
 	}
 
 	public Tile getBottomLeftCorner() {
-		return tile(1, numRows() - 4);
+		return tileAt(1, numRows() - 4);
 	}
 
 	public Tile getBottomRightCorner() {
-		return tile(numCols() - 2, numRows() - 4);
+		return tileAt(numCols() - 2, numRows() - 4);
 	}
 
 	public Tile getBlinkyScatterTarget() {
@@ -406,17 +406,17 @@ public class Maze {
 		throw new IllegalArgumentException("Illegal tile: " + tile);
 	}
 
-	public Tile tile(int col, int row) {
-		return grid.isValidCol(col) && grid.isValidRow(row) ? board[col][row] : Tile.UNDEFINED;
+	public Tile tileAt(int col, int row) {
+		return grid.isValidCol(col) && grid.isValidRow(row) ? board[col][row] : new Tile(col, row);
 	}
 
 	public Tile tile(int cell) {
-		return tile(grid.col(cell), grid.row(cell));
+		return tileAt(grid.col(cell), grid.row(cell));
 	}
 
 	public Tile tile(Entity entity) {
 		Vector2f center = entity.tf.getCenter();
-		return tile(round(center.x) / TS, round(center.y) / TS);
+		return tileAt(round(center.x) / TS, round(center.y) / TS);
 	}
 
 }

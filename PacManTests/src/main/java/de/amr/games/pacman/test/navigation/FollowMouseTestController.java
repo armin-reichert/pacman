@@ -31,7 +31,7 @@ public class FollowMouseTestController implements ViewController {
 		view.setShowGrid(true);
 		view.setShowStates(false);
 		view.setScoresVisible(false);
-		currentMouseTile = g.maze.tile(0, 0);
+		currentMouseTile = g.maze.tileAt(0, 0);
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class FollowMouseTestController implements ViewController {
 
 	private void handleMouseMove() {
 		if (Mouse.moved()) {
-			currentMouseTile = g.maze.tile(Mouse.getX() / TS, Mouse.getY() / TS);
+			currentMouseTile = g.maze.tileAt(Mouse.getX() / TS, Mouse.getY() / TS);
 			LOGGER.info("New mouse position: " + currentMouseTile.toString());
 		}
 	}

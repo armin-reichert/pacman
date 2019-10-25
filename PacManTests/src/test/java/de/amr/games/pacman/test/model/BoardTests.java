@@ -19,11 +19,11 @@ public class BoardTests {
 		assertEquals(4, maze.tiles().filter(tile -> maze.containsEnergizer(tile)).count());
 		assertEquals(240, maze.tiles().filter(tile -> maze.containsPellet(tile)).count());
 
-		assertTrue(maze.isWall(maze.tile(0, 3)));
-		assertTrue(maze.isDoor(maze.tile(13, 15)));
-		assertTrue(maze.containsPellet(maze.tile(1, 4)));
-		assertTrue(maze.containsEnergizer(maze.tile(1, 6)));
+		assertTrue(maze.isWall(maze.tileAt(0, 3)));
+		assertTrue(maze.isDoor(maze.tileAt(13, 15)));
+		assertTrue(maze.containsPellet(maze.tileAt(1, 4)));
+		assertTrue(maze.containsEnergizer(maze.tileAt(1, 6)));
 
-		assertEquals(maze.tile(0, 0), maze.tile(0, 0));
+		assertEquals(maze.tileAt(0, 0), maze.tileAt(0, 0));
 	}
 }

@@ -7,8 +7,6 @@ package de.amr.games.pacman.model;
  */
 public class Tile {
 
-	public static final Tile UNDEFINED = new Tile(-1, -1);
-
 	public final int col;
 	public final int row;
 	public char content;

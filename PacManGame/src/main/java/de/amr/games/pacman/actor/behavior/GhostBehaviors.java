@@ -95,7 +95,7 @@ public interface GhostBehaviors {
 	default Behavior<Ghost> attackingWithPartner(Ghost blinky, PacMan pacMan) {
 		return headingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
-			return maze().tile(2 * p.col - b.col, 2 * p.row - b.row);
+			return maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		});
 	}
 
