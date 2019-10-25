@@ -65,7 +65,7 @@ public abstract class MazeMover extends SpriteEntity {
 	}
 
 	public Tile tile() {
-		return game.maze.tile(this);
+		return game.maze.tilePosition(this);
 	}
 
 	/**

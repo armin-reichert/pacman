@@ -255,7 +255,7 @@ public class PacMan extends MazeMover {
 
 			/*@formatter:off*/
 			Optional<Bonus> activeBonus = game.getBonus()
-					.filter(bonus -> game.maze.tile(bonus).equals(tile))
+					.filter(bonus -> game.maze.tilePosition(bonus).equals(tile))
 					.filter(bonus -> !bonus.consumed());
 			/*@formatter:on*/
 			if (activeBonus.isPresent()) {

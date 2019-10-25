@@ -414,7 +414,12 @@ public class Maze {
 		return tileAt(grid.col(cell), grid.row(cell));
 	}
 
-	public Tile tile(Entity entity) {
+	/**
+	 * @param entity
+	 *                 a game entity
+	 * @return the tile where this entity is located
+	 */
+	public Tile tilePosition(Entity entity) {
 		Vector2f center = entity.tf.getCenter();
 		return tileAt(round(center.x) / TS, round(center.y) / TS);
 	}
