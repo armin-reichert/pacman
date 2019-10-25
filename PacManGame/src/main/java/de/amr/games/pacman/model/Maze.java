@@ -292,7 +292,7 @@ public class Maze {
 	}
 
 	private char getContent(Tile tile) {
-		return insideBoard(tile) ? grid.get(cell(tile)) : SPACE;
+		return insideBoard(tile) ? grid.get(cell(tile)) : TUNNEL;
 	}
 
 	public boolean inTunnel(Tile tile) {

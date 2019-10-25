@@ -15,7 +15,7 @@ public class PacManMovementTestController implements ViewController {
 		game = new PacManGame();
 		view = new PlayViewXtended(game);
 		view.setShowRoutes(true);
-		view.setShowGrid(true);
+		view.setShowGrid(false);
 		view.setShowStates(false);
 		view.setScoresVisible(false);
 	}
