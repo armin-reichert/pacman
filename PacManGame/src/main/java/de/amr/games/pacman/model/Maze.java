@@ -54,6 +54,7 @@ public class Maze {
 	private final Tile[][] board;
 	private final Set<Tile> unrestrictedIS = new HashSet<>();
 	private final Set<Tile> upwardsBlockedIS = new HashSet<>();
+	private final Set<Tile> energizerTiles = new HashSet<Tile>();
 
 	// dedicated tiles
 	private Tile pacManHome;
@@ -100,6 +101,7 @@ public class Maze {
 					break;
 				case ENERGIZER:
 					tile.content = ENERGIZER;
+					energizerTiles.add(tile);
 					foodTotal += 1;
 					break;
 				case 'O':
@@ -313,20 +315,16 @@ public class Maze {
 		return teleportRight;
 	}
 
-	private char getContent(Tile tile) {
-		return insideBoard(tile) ? graph.get(cell(tile)) : TUNNEL;
-	}
-
 	public boolean inTunnel(Tile tile) {
-		return getContent(tile) == TUNNEL;
+		return tile.content == TUNNEL;
 	}
 
 	public boolean isWall(Tile tile) {
-		return getContent(tile) == WALL;
+		return tile.content == WALL;
 	}
 
 	public boolean isDoor(Tile tile) {
-		return getContent(tile) == DOOR;
+		return tile.content == DOOR;
 	}
 
 	public boolean isGhostHouseEntry(Tile tile) {
@@ -350,12 +348,18 @@ public class Maze {
 				&& tile.col <= clydeHome.col + 1;
 	}
 
+	// food
+
+	public int getFoodTotal() {
+		return foodTotal;
+	}
+
 	public boolean containsPellet(Tile tile) {
-		return getContent(tile) == PELLET;
+		return tile.content == PELLET;
 	}
 
 	public boolean containsEnergizer(Tile tile) {
-		return getContent(tile) == ENERGIZER;
+		return tile.content == ENERGIZER;
 	}
 
 	public boolean containsFood(Tile tile) {
@@ -363,25 +367,23 @@ public class Maze {
 	}
 
 	public boolean containsEatenFood(Tile tile) {
-		return getContent(tile) == EATEN;
+		return tile.content == EATEN;
 	}
 
 	public void resetFood() {
-		graph.clearVertexLabels();
-	}
-
-	public int getFoodTotal() {
-		return foodTotal;
+		tiles().filter(this::containsEatenFood)
+				.forEach(tile -> tile.content = energizerTiles.contains(tile) ? ENERGIZER : PELLET);
 	}
 
 	public void removeFood() {
-		graph.vertices().filter(cell -> graph.get(cell) == PELLET || graph.get(cell) == ENERGIZER)
-				.forEach(cell -> graph.set(cell, EATEN));
+		tiles().filter(this::containsFood).forEach(this::removeFood);
 	}
 
 	public void removeFood(Tile tile) {
-		graph.set(cell(tile), EATEN);
+		tile.content = EATEN;
 	}
+
+	// navigation
 
 	public OptionalInt direction(Tile t1, Tile t2) {
 		return graph.direction(cell(t1), cell(t2));
@@ -409,16 +411,11 @@ public class Maze {
 		return Collections.emptyList();
 	}
 
-	public double euclidean(Tile t1, Tile t2) {
-		return graph.euclidean(cell(t1), cell(t2));
-	}
-
-	public double manhattan(Tile t1, Tile t2) {
+	public double manhattanDist(Tile t1, Tile t2) {
 		return graph.manhattan(cell(t1), cell(t2));
 	}
 
 	public OptionalInt alongPath(List<Tile> path) {
 		return path.size() < 2 ? OptionalInt.empty() : direction(path.get(0), path.get(1));
 	}
-
 }
