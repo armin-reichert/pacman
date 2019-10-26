@@ -183,6 +183,14 @@ public class Maze {
 		return graph.numRows();
 	}
 
+	private int cell(Tile tile) {
+		return graph.cell(tile.col, tile.row);
+	}
+
+	private Tile tile(int cell) {
+		return board[graph.col(cell)][graph.row(cell)];
+	}
+
 	public Stream<Tile> tiles() {
 		return graph.vertices().mapToObj(this::tile);
 	}
@@ -221,17 +229,6 @@ public class Maze {
 	 */
 	public Tile tileToDir(Tile tile, int dir) {
 		return tileToDir(tile, dir, 1);
-	}
-
-	private int cell(Tile tile) {
-		if (insideBoard(tile)) {
-			return graph.cell(tile.col, tile.row);
-		}
-		throw new IllegalArgumentException("Illegal tile: " + tile);
-	}
-
-	private Tile tile(int cell) {
-		return tileAt(graph.col(cell), graph.row(cell));
 	}
 
 	/**
