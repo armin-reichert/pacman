@@ -29,9 +29,8 @@ import de.amr.graph.pathfinder.impl.AStarSearch;
  * The original Pac-Man maze.
  * 
  * <p>
- * It is represented by a (grid) graph that can be used by path finding algorithms. The original
- * Pac-Man "AI" does not need a graph structure but we use also path finding in a graph for the
- * game.
+ * The maze is a 2-dimensional grid of tiles, each tile contains a character representing its
+ * content. Additionally, a grid graph structure is used to allow running path finders on the graph.
  * 
  * @author Armin Reichert
  * 
@@ -52,10 +51,11 @@ public class Maze {
 	private static final char ENERGIZER = '*';
 	private static final char EATEN = '%';
 
-	private final GridGraph<Character, Void> grid;
 	private final Tile[][] board;
 	private final Set<Tile> unrestrictedIS = new HashSet<>();
 	private final Set<Tile> upwardsBlockedIS = new HashSet<>();
+
+	// dedicated tiles
 	private Tile pacManHome;
 	private Tile blinkyHome, blinkyScatterTarget;
 	private Tile pinkyHome, pinkyScatterTarget;
@@ -63,6 +63,8 @@ public class Maze {
 	private Tile clydeHome, clydeScatterTarget;
 	private Tile bonus;
 	private Tile teleportLeft, teleportRight;
+
+	public final GridGraph<Character, Void> graph;
 
 	private int foodTotal;
 	private long pathFinderCalls;
@@ -73,8 +75,7 @@ public class Maze {
 		board = new Tile[numCols][numRows];
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				Tile tile = board[col][row] = new Tile(col, row);
-				board[col][row].content = SPACE;
+				Tile tile = board[col][row] = new Tile(col, row, SPACE);
 				switch (map[row].charAt(col)) {
 				case WALL:
 					tile.content = WALL;
@@ -142,17 +143,17 @@ public class Maze {
 		}
 
 		// The graph represents the maze and stores the maze content inside its vertices.
-		grid = new GridGraph<>(numCols, numRows, NESW, v -> null, (u, v) -> null, UndirectedEdge::new);
-		grid.setDefaultVertexLabel(v -> board[grid.col(v)][grid.row(v)].content);
+		graph = new GridGraph<>(numCols, numRows, NESW, v -> null, (u, v) -> null, UndirectedEdge::new);
+		graph.setDefaultVertexLabel(v -> board[graph.col(v)][graph.row(v)].content);
 
 		// Add graph edges
-		grid.fill();
+		graph.fill();
 		// remove edges into walls
-		grid.edges().filter(edge -> grid.get(edge.either()) == WALL || grid.get(edge.other()) == WALL)
-				.forEach(grid::removeEdge);
+		graph.edges().filter(edge -> graph.get(edge.either()) == WALL || graph.get(edge.other()) == WALL)
+				.forEach(graph::removeEdge);
 
 		// sort intersections into unrestricted ones and those where ghosts cannot move upwards
-		grid.vertices().filter(v -> grid.degree(v) >= 3).mapToObj(this::tile)
+		graph.vertices().filter(v -> graph.degree(v) >= 3).mapToObj(this::tile)
 		//@formatter:off
 				// exclude tiles above ghost house doors
 				.filter(tile -> !isDoor(tileToDir(tile, Top4.S)))
@@ -174,24 +175,20 @@ public class Maze {
 		//@formatter:on
 	}
 
-	public GridGraph2D<Character, Void> getGraph() {
-		return grid;
-	}
-
 	public int numCols() {
-		return grid.numCols();
+		return graph.numCols();
 	}
 
 	public int numRows() {
-		return grid.numRows();
+		return graph.numRows();
 	}
 
 	public Stream<Tile> tiles() {
-		return grid.vertices().mapToObj(this::tile);
+		return graph.vertices().mapToObj(this::tile);
 	}
 
 	public boolean insideBoard(Tile tile) {
-		return grid.isValidCol(tile.col) && grid.isValidRow(tile.row);
+		return graph.isValidCol(tile.col) && graph.isValidRow(tile.row);
 	}
 
 	/**
@@ -201,15 +198,15 @@ public class Maze {
 	 *               some direction
 	 * @param n
 	 *               number of tiles
-	 * @return tile that lies <code>n</code> tiles away from the given tile towards the given
-	 *         direction. This can be a tile outside of the board!
+	 * @return tile that lies <code>n</code> tiles away from the given tile towards the given direction.
+	 *         This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, int dir, int n) {
 		if (n < 0) {
 			throw new IllegalArgumentException("Number of tiles must not be negative");
 		}
 		int col = tile.col + n * NESW.dx(dir), row = tile.row + n * NESW.dy(dir);
-		return grid.isValidCol(col) && grid.isValidRow(row) ? tileAt(col, row) : new Tile(col, row);
+		return graph.isValidCol(col) && graph.isValidRow(row) ? tileAt(col, row) : new Tile(col, row, TUNNEL);
 	}
 
 	/**
@@ -292,7 +289,7 @@ public class Maze {
 	}
 
 	private char getContent(Tile tile) {
-		return insideBoard(tile) ? grid.get(cell(tile)) : TUNNEL;
+		return insideBoard(tile) ? graph.get(cell(tile)) : TUNNEL;
 	}
 
 	public boolean inTunnel(Tile tile) {
@@ -345,7 +342,7 @@ public class Maze {
 	}
 
 	public void resetFood() {
-		grid.clearVertexLabels();
+		graph.clearVertexLabels();
 	}
 
 	public int getFoodTotal() {
@@ -353,30 +350,30 @@ public class Maze {
 	}
 
 	public void removeFood() {
-		grid.vertices().filter(cell -> grid.get(cell) == PELLET || grid.get(cell) == ENERGIZER)
-				.forEach(cell -> grid.set(cell, EATEN));
+		graph.vertices().filter(cell -> graph.get(cell) == PELLET || graph.get(cell) == ENERGIZER)
+				.forEach(cell -> graph.set(cell, EATEN));
 	}
 
 	public void removeFood(Tile tile) {
-		grid.set(cell(tile), EATEN);
+		graph.set(cell(tile), EATEN);
 	}
 
 	public OptionalInt direction(Tile t1, Tile t2) {
-		return grid.direction(cell(t1), cell(t2));
+		return graph.direction(cell(t1), cell(t2));
 	}
 
 	public Optional<Tile> neighborTile(Tile tile, int dir) {
-		OptionalInt neighbor = grid.neighbor(cell(tile), dir);
+		OptionalInt neighbor = graph.neighbor(cell(tile), dir);
 		return neighbor.isPresent() ? Optional.of(tile(neighbor.getAsInt())) : Optional.empty();
 	}
 
 	public Stream<Tile> getAdjacentTiles(Tile tile) {
-		return grid.adj(cell(tile)).mapToObj(this::tile);
+		return graph.adj(cell(tile)).mapToObj(this::tile);
 	}
 
 	public List<Tile> findPath(Tile source, Tile target) {
 		if (insideBoard(source) && insideBoard(target)) {
-			GraphSearch pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
+			GraphSearch pathfinder = new AStarSearch(graph, (u, v) -> 1, graph::manhattan);
 			Path path = pathfinder.findPath(cell(source), cell(target));
 			pathFinderCalls += 1;
 			if (pathFinderCalls % 100 == 0) {
@@ -388,30 +385,30 @@ public class Maze {
 	}
 
 	public double euclidean(Tile t1, Tile t2) {
-		return grid.euclidean(cell(t1), cell(t2));
+		return graph.euclidean(cell(t1), cell(t2));
 	}
 
 	public double manhattan(Tile t1, Tile t2) {
-		return grid.manhattan(cell(t1), cell(t2));
+		return graph.manhattan(cell(t1), cell(t2));
 	}
 
 	public OptionalInt alongPath(List<Tile> path) {
 		return path.size() < 2 ? OptionalInt.empty() : direction(path.get(0), path.get(1));
 	}
 
-	public int cell(Tile tile) {
+	public Tile tileAt(int col, int row) {
+		return graph.isValidCol(col) && graph.isValidRow(row) ? board[col][row] : new Tile(col, row, TUNNEL);
+	}
+
+	private int cell(Tile tile) {
 		if (insideBoard(tile)) {
-			return grid.cell(tile.col, tile.row);
+			return graph.cell(tile.col, tile.row);
 		}
 		throw new IllegalArgumentException("Illegal tile: " + tile);
 	}
 
-	public Tile tileAt(int col, int row) {
-		return grid.isValidCol(col) && grid.isValidRow(row) ? board[col][row] : new Tile(col, row);
-	}
-
-	public Tile tile(int cell) {
-		return tileAt(grid.col(cell), grid.row(cell));
+	private Tile tile(int cell) {
+		return tileAt(graph.col(cell), graph.row(cell));
 	}
 
 	/**

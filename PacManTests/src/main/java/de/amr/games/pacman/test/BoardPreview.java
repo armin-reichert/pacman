@@ -28,7 +28,7 @@ public class BoardPreview extends JFrame {
 		maze = new Maze();
 		setTitle("Pac-Man Maze Preview");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		GridCanvas canvas = new GridCanvas(maze.getGraph(), TS);
+		GridCanvas canvas = new GridCanvas(maze.graph, TS);
 		canvas.pushRenderer(createRenderer());
 		add(canvas, BorderLayout.CENTER);
 		canvas.drawGrid();
@@ -37,13 +37,17 @@ public class BoardPreview extends JFrame {
 		setVisible(true);
 	}
 
+	private Tile tile(int cell) {
+		return maze.tileAt(maze.graph.col(cell), maze.graph.row(cell));
+	}
+
 	private GridRenderer createRenderer() {
 		ConfigurableGridRenderer r = new WallPassageGridRenderer();
 		r.fnCellSize = () -> TS;
 		r.fnPassageWidth = (u, v) -> TS - 1;
 		r.fnPassageColor = (cell, dir) -> Color.WHITE;
 		r.fnCellBgColor = cell -> {
-			Tile tile = maze.tile(cell);
+			Tile tile = tile(cell);
 			if (maze.isWall(tile)) {
 				return Color.BLACK;
 			}
@@ -71,7 +75,7 @@ public class BoardPreview extends JFrame {
 	}
 
 	private String text(int cell) {
-		Tile tile = maze.tile(cell);
+		Tile tile = tile(cell);
 		if (tile == maze.getBlinkyHome() || tile == maze.getBlinkyScatterTarget()) {
 			return "B";
 		}
@@ -93,6 +97,6 @@ public class BoardPreview extends JFrame {
 		if (maze.containsEnergizer(tile)) {
 			return "E";
 		}
-		return String.valueOf(maze.getGraph().get(cell));
+		return String.valueOf(maze.graph.get(cell));
 	}
 }

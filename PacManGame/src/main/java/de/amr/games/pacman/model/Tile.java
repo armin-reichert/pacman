@@ -12,9 +12,10 @@ public class Tile {
 	public char content;
 
 	/* Only called from Maze. */
-	Tile(int col, int row) {
+	Tile(int col, int row, char content) {
 		this.col = col;
 		this.row = row;
+		this.content = content;
 	}
 
 	@Override
