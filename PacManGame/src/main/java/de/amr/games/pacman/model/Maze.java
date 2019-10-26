@@ -397,7 +397,10 @@ public class Maze {
 	}
 
 	public Tile tileAt(int col, int row) {
-		return graph.isValidCol(col) && graph.isValidRow(row) ? board[col][row] : new Tile(col, row, TUNNEL);
+		if (graph.isValidCol(col) && graph.isValidRow(row)) {
+			return board[col][row];
+		}
+		return new Tile(col, row, TUNNEL);
 	}
 
 	private int cell(Tile tile) {

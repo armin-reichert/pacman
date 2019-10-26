@@ -24,7 +24,7 @@ public class PacManMovementTestController implements ViewController {
 	public void init() {
 		game.setLevel(1);
 		// game.maze.tiles().filter(game.maze::isFood).forEach(game::eatFoodAtTile);
-		game.pacMan.getEventManager().addListener(event -> {
+		game.pacMan.eventManager.addListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
 				game.theme.snd_eatPill().play();

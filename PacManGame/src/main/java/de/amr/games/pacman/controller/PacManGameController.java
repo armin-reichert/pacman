@@ -12,7 +12,6 @@ import static de.amr.games.pacman.controller.PacManGameState.READY;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.util.logging.Level;
 
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
@@ -58,7 +57,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private final PacManGame game;
 
 	// Child controller
-	private final GhostAttackController ghostAttackController;
+	public final GhostAttackController ghostAttackController;
 
 	// UI
 	private final PacManTheme theme;
@@ -71,11 +70,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		this.game = game;
 		this.theme = game.theme;
 		buildStateMachine();
-		traceTo(LOGGER, app().clock::getFrequency);
 		ghostAttackController = new GhostAttackController(game);
-		ghostAttackController.traceTo(LOGGER, app().clock::getFrequency);
 		game.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackController::getState);
-		game.pacMan.getEventManager().addListener(this::process);
+		game.pacMan.eventManager.addListener(this::process);
 	}
 
 	// View handling
@@ -110,7 +107,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	@Override
 	public void update() {
-		handleLoggingChange();
 		handleNextLevelCheat();
 		handlePlayingSpeedChange();
 		handleGhostBehaviorChange();
@@ -122,19 +118,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
 			if (getState() == PacManGameState.PLAYING) {
 				enqueue(new LevelCompletedEvent());
-			}
-		}
-	}
-
-	private void handleLoggingChange() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_L)) {
-			if (LOGGER.getLevel() == Level.OFF) {
-				LOGGER.setLevel(Level.INFO);
-				LOGGER.info("Logging enabled");
-			}
-			else {
-				LOGGER.info("Logging disabled");
-				LOGGER.setLevel(Level.OFF);
 			}
 		}
 	}
@@ -153,18 +136,18 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	private void handleGhostBehaviorChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_F)) {
-			if (app().settings.getAsBoolean("ghostsFleeRandomly")) {
+			if (app().settings.getAsBoolean("ghost.behavior.frightened.fleeRandomly")) {
 				game.ghosts().forEach(ghost -> {
 					ghost.setBehavior(GhostState.FRIGHTENED, ghost.fleeingToSafeCorner(game.pacMan));
 				});
-				app().settings.set("ghostsFleeRandomly", false);
+				app().settings.set("ghost.behavior.frightened.fleeRandomly", false);
 				LOGGER.info("Changed ghost FRIGHTENED behavior to flee via safe route");
 			}
 			else {
 				game.ghosts().forEach(ghost -> {
 					ghost.setBehavior(GhostState.FRIGHTENED, ghost.fleeingRandomly());
 				});
-				app().settings.set("ghostsFleeRandomly", true);
+				app().settings.set("ghost.behavior.frightened.fleeRandomly", true);
 				LOGGER.info("Changed ghost FRIGHTENED behavior to flee randomly");
 			}
 		}
@@ -522,7 +505,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	 * "Pac-Man dying" state implementation.
 	 */
 	private class PacManDyingState extends State<PacManGameState, PacManGameEvent> {
-		
+
 		private int waitTimer;
 
 		@Override
@@ -538,7 +521,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				if (waitTimer == 0) {
 					game.activeGhosts().forEach(ghost -> ghost.setVisible(false));
 				}
-			} else {
+			}
+			else {
 				game.pacMan.update();
 			}
 		}
