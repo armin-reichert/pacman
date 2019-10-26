@@ -3,7 +3,6 @@ package de.amr.games.pacman.actor.behavior;
 import static de.amr.games.pacman.model.Maze.NESW;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -44,7 +43,8 @@ class HeadingFor<T extends MazeMover> implements Behavior<T> {
 		final Maze maze = actor.game.maze;
 		final int actorDir = actor.getMoveDir();
 		final Tile actorTile = actor.tile();
-		final Tile targetTile = Objects.requireNonNull(targetTileSupplier.get(), "Target tile must not be NULL");
+		final Tile targetTile = Objects.requireNonNull(targetTileSupplier.get(),
+				"Target tile must not be NULL");
 		final Route route = new Route();
 		route.setTarget(targetTile);
 
@@ -56,8 +56,8 @@ class HeadingFor<T extends MazeMover> implements Behavior<T> {
 
 		// if inside ghost house, use path finder. To leave the ghost house, target Blinky's home tile
 		if (maze.inGhostHouse(actorTile)) {
-			route.setPath(
-					maze.findPath(actorTile, maze.inGhostHouse(targetTile) ? targetTile : maze.getBlinkyHome()));
+			route.setPath(maze.findPath(actorTile,
+					maze.inGhostHouse(targetTile) ? targetTile : maze.getBlinkyHome()));
 			route.setDir(maze.alongPath(route.getPath()).orElse(actorDir));
 			return route;
 		}
@@ -65,10 +65,10 @@ class HeadingFor<T extends MazeMover> implements Behavior<T> {
 		// if stuck, check if turning left or right is possible
 		if (actor.isStuck()) {
 			int left = NESW.left(actorDir), right = NESW.right(actorDir);
-			if (actor.canEnterTile(maze.neighborTile(actorTile, left).get())) {
+			if (actor.canEnterTile(maze.tileToDir(actorTile, left))) {
 				route.setDir(left);
 			}
-			else if (actor.canEnterTile(maze.neighborTile(actorTile, right).get())) {
+			else if (actor.canEnterTile(maze.tileToDir(actorTile, right))) {
 				route.setDir(right);
 			}
 			return route;
@@ -82,8 +82,8 @@ class HeadingFor<T extends MazeMover> implements Behavior<T> {
 			/*@formatter:off*/
 				.filter(dir -> dir != NESW.inv(actorDir)) // cannot reverse direction
 				.filter(dir -> dir != Top4.N || maze.isUnrestrictedIntersection(nextTile)) // cannot go up if restricted
-				.map(dir -> maze.neighborTile(nextTile, dir))
-				.filter(Optional::isPresent).map(Optional::get)
+				.map(dir -> maze.tileToDir(nextTile, dir))
+				.filter(tile -> maze.insideBoard(tile))
 				.filter(actor::canEnterTile)
 				.sorted((t1, t2) -> Integer.compare(distance(t1, targetTile),	distance(t2, targetTile)))
 				.map(tile -> maze.direction(nextTile, tile).getAsInt()) // map tile back to direction

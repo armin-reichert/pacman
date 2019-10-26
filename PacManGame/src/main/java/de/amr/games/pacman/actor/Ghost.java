@@ -83,7 +83,8 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	}
 
 	private void sirenOff() {
-		if (game.activeGhosts().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
+		if (game.activeGhosts().filter(ghost -> this != ghost)
+				.noneMatch(ghost -> ghost.getState() == CHASING)) {
 			game.theme.snd_ghost_chase().stop();
 		}
 	}
@@ -95,7 +96,8 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	}
 
 	private void deadSoundOff() {
-		if (game.activeGhosts().filter(ghost -> ghost != this).noneMatch(ghost -> ghost.getState() == DEAD)) {
+		if (game.activeGhosts().filter(ghost -> ghost != this)
+				.noneMatch(ghost -> ghost.getState() == DEAD)) {
 			game.theme.snd_ghost_dead().stop();
 		}
 	}

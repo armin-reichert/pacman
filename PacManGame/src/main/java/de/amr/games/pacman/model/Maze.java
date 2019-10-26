@@ -6,7 +6,6 @@ import static java.lang.Math.round;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -389,11 +388,6 @@ public class Maze {
 
 	public OptionalInt direction(Tile t1, Tile t2) {
 		return gridGraph.direction(vertex(t1), vertex(t2));
-	}
-
-	public Optional<Tile> neighborTile(Tile tile, int dir) {
-		OptionalInt neighbor = gridGraph.neighbor(vertex(tile), dir);
-		return neighbor.isPresent() ? Optional.of(tile(neighbor.getAsInt())) : Optional.empty();
 	}
 
 	public Stream<Tile> getAdjacentTiles(Tile tile) {
