@@ -187,8 +187,15 @@ public class Maze {
 		return graph.vertices().mapToObj(this::tile);
 	}
 
-	public boolean insideBoard(Tile tile) {
-		return graph.isValidCol(tile.col) && graph.isValidRow(tile.row);
+	/**
+	 * @param col
+	 *              a column index
+	 * @param row
+	 *              a row index
+	 * @return a board tile or a new tile if the coordinates are outside of the board
+	 */
+	public Tile tileAt(int col, int row) {
+		return graph.isValidCol(col) && graph.isValidRow(row) ? board[col][row] : new Tile(col, row, TUNNEL);
 	}
 
 	/**
@@ -202,11 +209,7 @@ public class Maze {
 	 *         This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, int dir, int n) {
-		if (n < 0) {
-			throw new IllegalArgumentException("Number of tiles must not be negative");
-		}
-		int col = tile.col + n * NESW.dx(dir), row = tile.row + n * NESW.dy(dir);
-		return graph.isValidCol(col) && graph.isValidRow(row) ? tileAt(col, row) : new Tile(col, row, TUNNEL);
+		return tileAt(tile.col + n * NESW.dx(dir), tile.row + n * NESW.dy(dir));
 	}
 
 	/**
@@ -218,6 +221,31 @@ public class Maze {
 	 */
 	public Tile tileToDir(Tile tile, int dir) {
 		return tileToDir(tile, dir, 1);
+	}
+
+	private int cell(Tile tile) {
+		if (insideBoard(tile)) {
+			return graph.cell(tile.col, tile.row);
+		}
+		throw new IllegalArgumentException("Illegal tile: " + tile);
+	}
+
+	private Tile tile(int cell) {
+		return tileAt(graph.col(cell), graph.row(cell));
+	}
+
+	/**
+	 * @param entity
+	 *                 a game entity
+	 * @return the tile where this entity is located
+	 */
+	public Tile tilePosition(Entity entity) {
+		Vector2f center = entity.tf.getCenter();
+		return tileAt(round(center.x) / TS, round(center.y) / TS);
+	}
+
+	public boolean insideBoard(Tile tile) {
+		return graph.isValidCol(tile.col) && graph.isValidRow(tile.row);
 	}
 
 	public Tile getTopLeftCorner() {
@@ -394,34 +422,6 @@ public class Maze {
 
 	public OptionalInt alongPath(List<Tile> path) {
 		return path.size() < 2 ? OptionalInt.empty() : direction(path.get(0), path.get(1));
-	}
-
-	public Tile tileAt(int col, int row) {
-		if (graph.isValidCol(col) && graph.isValidRow(row)) {
-			return board[col][row];
-		}
-		return new Tile(col, row, TUNNEL);
-	}
-
-	private int cell(Tile tile) {
-		if (insideBoard(tile)) {
-			return graph.cell(tile.col, tile.row);
-		}
-		throw new IllegalArgumentException("Illegal tile: " + tile);
-	}
-
-	private Tile tile(int cell) {
-		return tileAt(graph.col(cell), graph.row(cell));
-	}
-
-	/**
-	 * @param entity
-	 *                 a game entity
-	 * @return the tile where this entity is located
-	 */
-	public Tile tilePosition(Entity entity) {
-		Vector2f center = entity.tf.getCenter();
-		return tileAt(round(center.x) / TS, round(center.y) / TS);
 	}
 
 }
