@@ -54,7 +54,7 @@ public class Maze {
 	private final Tile[][] board;
 	private final Set<Tile> unrestrictedIS = new HashSet<>();
 	private final Set<Tile> upwardsBlockedIS = new HashSet<>();
-	private final Set<Tile> energizerTiles = new HashSet<Tile>();
+	private final Set<Tile> energizerTiles = new HashSet<>();
 
 	// dedicated tiles
 	private Tile pacManHome;
@@ -65,7 +65,7 @@ public class Maze {
 	private Tile bonus;
 	private Tile teleportLeft, teleportRight;
 
-	public final GridGraph<Character, Void> graph;
+	public final GridGraph<Tile, Void> gridGraph;
 
 	private int foodTotal;
 	private long pathFinderCalls;
@@ -144,18 +144,19 @@ public class Maze {
 			}
 		}
 
-		// The graph represents the maze and stores the maze content inside its vertices.
-		graph = new GridGraph<>(numCols, numRows, NESW, v -> null, (u, v) -> null, UndirectedEdge::new);
-		graph.setDefaultVertexLabel(v -> board[graph.col(v)][graph.row(v)].content);
+		// Grid graph structure, vertex content is (reference to) corresponding tile
+		gridGraph = new GridGraph<>(numCols, numRows, NESW, this::tile, (u, v) -> null,
+				UndirectedEdge::new);
 
-		// Add graph edges
-		graph.fill();
-		// remove edges into walls
-		graph.edges().filter(edge -> graph.get(edge.either()) == WALL || graph.get(edge.other()) == WALL)
-				.forEach(graph::removeEdge);
+		// Add edges
+		gridGraph.fill();
+		// Remove edges into walls
+		gridGraph.edges().filter(
+				e -> gridGraph.get(e.either()).content == WALL || gridGraph.get(e.other()).content == WALL)
+				.forEach(gridGraph::removeEdge);
 
-		// sort intersections into unrestricted ones and those where ghosts cannot move upwards
-		graph.vertices().filter(v -> graph.degree(v) >= 3).mapToObj(this::tile)
+		// Separate intersections into unrestricted ones and those where ghosts cannot move upwards
+		gridGraph.vertices().filter(v -> gridGraph.degree(v) >= 3).mapToObj(this::tile)
 		//@formatter:off
 				// exclude tiles above ghost house doors
 				.filter(tile -> !isDoor(tileToDir(tile, Top4.S)))
@@ -178,23 +179,23 @@ public class Maze {
 	}
 
 	public int numCols() {
-		return graph.numCols();
+		return gridGraph.numCols();
 	}
 
 	public int numRows() {
-		return graph.numRows();
+		return gridGraph.numRows();
 	}
 
-	private int cell(Tile tile) {
-		return graph.cell(tile.col, tile.row);
+	private int vertex(Tile tile) {
+		return gridGraph.cell(tile.col, tile.row);
 	}
 
-	private Tile tile(int cell) {
-		return board[graph.col(cell)][graph.row(cell)];
+	private Tile tile(int vertex) {
+		return board[gridGraph.col(vertex)][gridGraph.row(vertex)];
 	}
 
 	public Stream<Tile> tiles() {
-		return graph.vertices().mapToObj(this::tile);
+		return gridGraph.vertices().mapToObj(this::tile);
 	}
 
 	/**
@@ -202,10 +203,11 @@ public class Maze {
 	 *              a column index
 	 * @param row
 	 *              a row index
-	 * @return a board tile or a new tile if the coordinates are outside of the board
+	 * @return a board tile or a new (tunnel) tile if the coordinates are outside of the board
 	 */
 	public Tile tileAt(int col, int row) {
-		return graph.isValidCol(col) && graph.isValidRow(row) ? board[col][row] : new Tile(col, row, TUNNEL);
+		return gridGraph.isValidCol(col) && gridGraph.isValidRow(row) ? board[col][row]
+				: new Tile(col, row, TUNNEL);
 	}
 
 	/**
@@ -215,8 +217,8 @@ public class Maze {
 	 *               some direction
 	 * @param n
 	 *               number of tiles
-	 * @return tile that lies <code>n</code> tiles away from the given tile towards the given direction.
-	 *         This can be a tile outside of the board!
+	 * @return the tile located <code>n</code> tiles away from the reference tile towards the given
+	 *         direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, int dir, int n) {
 		return tileAt(tile.col + n * NESW.dx(dir), tile.row + n * NESW.dy(dir));
@@ -227,7 +229,7 @@ public class Maze {
 	 *               reference tile
 	 * @param dir
 	 *               some direction
-	 * @return neighbor towards the given direction. This can be an invalid tile position.
+	 * @return neighbor towards the given direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, int dir) {
 		return tileToDir(tile, dir, 1);
@@ -244,7 +246,7 @@ public class Maze {
 	}
 
 	public boolean insideBoard(Tile tile) {
-		return graph.isValidCol(tile.col) && graph.isValidRow(tile.row);
+		return gridGraph.isValidCol(tile.col) && gridGraph.isValidRow(tile.row);
 	}
 
 	public Tile getTopLeftCorner() {
@@ -328,7 +330,12 @@ public class Maze {
 	}
 
 	public boolean isGhostHouseEntry(Tile tile) {
-		return insideBoard(tile) && isDoor(neighborTile(tile, Top4.S).get());
+		return isDoor(tileToDir(tile, Top4.S));
+	}
+
+	public boolean inGhostHouse(Tile tile) {
+		return Math.abs(tile.row - inkyHome.row) <= 1 && tile.col >= inkyHome.col
+				&& tile.col <= clydeHome.col + 1;
 	}
 
 	public boolean isIntersection(Tile tile) {
@@ -341,11 +348,6 @@ public class Maze {
 
 	public boolean isUpwardsBlockedIntersection(Tile tile) {
 		return upwardsBlockedIS.contains(tile);
-	}
-
-	public boolean inGhostHouse(Tile tile) {
-		return Math.abs(tile.row - inkyHome.row) <= 1 && tile.col >= inkyHome.col
-				&& tile.col <= clydeHome.col + 1;
 	}
 
 	// food
@@ -386,22 +388,22 @@ public class Maze {
 	// navigation
 
 	public OptionalInt direction(Tile t1, Tile t2) {
-		return graph.direction(cell(t1), cell(t2));
+		return gridGraph.direction(vertex(t1), vertex(t2));
 	}
 
 	public Optional<Tile> neighborTile(Tile tile, int dir) {
-		OptionalInt neighbor = graph.neighbor(cell(tile), dir);
+		OptionalInt neighbor = gridGraph.neighbor(vertex(tile), dir);
 		return neighbor.isPresent() ? Optional.of(tile(neighbor.getAsInt())) : Optional.empty();
 	}
 
 	public Stream<Tile> getAdjacentTiles(Tile tile) {
-		return graph.adj(cell(tile)).mapToObj(this::tile);
+		return gridGraph.adj(vertex(tile)).mapToObj(this::tile);
 	}
 
 	public List<Tile> findPath(Tile source, Tile target) {
 		if (insideBoard(source) && insideBoard(target)) {
-			GraphSearch pathfinder = new AStarSearch(graph, (u, v) -> 1, graph::manhattan);
-			Path path = pathfinder.findPath(cell(source), cell(target));
+			GraphSearch pathfinder = new AStarSearch(gridGraph, (u, v) -> 1, gridGraph::manhattan);
+			Path path = pathfinder.findPath(vertex(source), vertex(target));
 			pathFinderCalls += 1;
 			if (pathFinderCalls % 100 == 0) {
 				Application.LOGGER.info(String.format("%d'th pathfinding executed", pathFinderCalls));
@@ -412,7 +414,7 @@ public class Maze {
 	}
 
 	public double manhattanDist(Tile t1, Tile t2) {
-		return graph.manhattan(cell(t1), cell(t2));
+		return gridGraph.manhattan(vertex(t1), vertex(t2));
 	}
 
 	public OptionalInt alongPath(List<Tile> path) {
