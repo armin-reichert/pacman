@@ -72,8 +72,8 @@ public abstract class MazeMover extends SpriteEntity {
 	/**
 	 * @param numTiles
 	 *                   number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
-	 *         direction.
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current
+	 *         move direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
 		return game.maze.tileToDir(tilePosition(), moveDir, numTiles);
@@ -142,10 +142,8 @@ public abstract class MazeMover extends SpriteEntity {
 		if (game.maze.isWall(tile)) {
 			return false;
 		}
-		if (game.maze.getTeleportRight().row == tile.row && game.maze.getTeleportRight().col + 1 == tile.col) {
-			return true;
-		}
-		if (game.maze.getTeleportLeft().row == tile.row && game.maze.getTeleportLeft().col - 1 == tile.col) {
+		if (tile.equals(game.maze.tileToDir(game.maze.getTeleportRight(), Top4.E))
+				|| tile.equals(game.maze.tileToDir(game.maze.getTeleportLeft(), Top4.W))) {
 			return true;
 		}
 		return game.maze.insideBoard(tile);
@@ -159,9 +157,9 @@ public abstract class MazeMover extends SpriteEntity {
 	}
 
 	/**
-	 * Moves this actor through the maze. Handles changing the direction according to the intended move
-	 * direction, moving around corners without losing alignment, movement through the "teleport" tile
-	 * and getting stuck.
+	 * Moves this actor through the maze. Handles changing the direction according to the intended
+	 * move direction, moving around corners without losing alignment, movement through the "teleport"
+	 * tile and getting stuck.
 	 */
 	protected void move() {
 		Tile oldTile = tilePosition();
