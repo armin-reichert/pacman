@@ -144,14 +144,13 @@ public class Maze {
 		}
 
 		// Grid graph structure, vertex content is (reference to) corresponding tile
-		gridGraph = new GridGraph<>(numCols, numRows, NESW, this::tile, (u, v) -> null,
-				UndirectedEdge::new);
+		gridGraph = new GridGraph<>(numCols, numRows, NESW, this::tile, (u, v) -> null, UndirectedEdge::new);
 
 		// Add edges
 		gridGraph.fill();
 		// Remove edges into walls
-		gridGraph.edges().filter(
-				e -> gridGraph.get(e.either()).content == WALL || gridGraph.get(e.other()).content == WALL)
+		gridGraph.edges()
+				.filter(e -> gridGraph.get(e.either()).content == WALL || gridGraph.get(e.other()).content == WALL)
 				.forEach(gridGraph::removeEdge);
 
 		// Separate intersections into unrestricted ones and those where ghosts cannot move upwards
@@ -388,10 +387,6 @@ public class Maze {
 
 	public OptionalInt direction(Tile t1, Tile t2) {
 		return gridGraph.direction(vertex(t1), vertex(t2));
-	}
-
-	public Stream<Tile> getAdjacentTiles(Tile tile) {
-		return gridGraph.adj(vertex(tile)).mapToObj(this::tile);
 	}
 
 	public List<Tile> findPath(Tile source, Tile target) {
