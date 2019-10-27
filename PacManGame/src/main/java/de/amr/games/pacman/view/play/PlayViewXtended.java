@@ -32,7 +32,6 @@ import de.amr.statemachine.State;
  * <p>
  * Features:
  * <ul>
- * <li>Key 'l' toggles logging on/off
  * <li>Can display grid and alignment of actors (key 'g')
  * <li>Can display actor state (key 's')
  * <li>Can display actor routes (key 'r')

@@ -75,8 +75,8 @@ public class ClassicPacManTheme implements PacManTheme {
 		int permuted[] = { 1, 3, 0, 2 };
 		pacManWalking = new BufferedImage[4][];
 		for (int d = 0; d < 4; ++d) {
-			pacManWalking[permuted[d]] = new BufferedImage[] { $(456, d * 16), $(472, d * 16),
-					$(488, 0) };
+			BufferedImage mouthOpen = $(456, d * 16), mouthHalfOpen = $(472, d * 16);
+			pacManWalking[permuted[d]] = new BufferedImage[] { mouthOpen, mouthHalfOpen, pacManFull };
 		}
 
 		pacManDying = hstrip(12, 488, 0);
@@ -162,7 +162,7 @@ public class ClassicPacManTheme implements PacManTheme {
 
 	@Override
 	public Sprite spr_pacManWalking(int dir) {
-		return Sprite.of(pacManWalking[dir]).animate(BACK_AND_FORTH, 50);
+		return Sprite.of(pacManWalking[dir]).animate(BACK_AND_FORTH, 80);
 	}
 
 	@Override
