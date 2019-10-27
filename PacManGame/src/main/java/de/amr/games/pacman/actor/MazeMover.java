@@ -176,11 +176,11 @@ public abstract class MazeMover extends SpriteEntity {
 		}
 		tf.setVelocity(velocity(speed));
 		tf.move();
-		if (tf.getX() > (game.maze.numCols() - 1) * TS) {
+		if (tf.getX() > (game.maze.numCols() - 1) * TS + TS / 2) {
 			tf.setX(-TS);
 		}
 		else if (tf.getX() <= -TS) {
-			tf.setX((game.maze.numCols() - 1) * TS);
+			tf.setX((game.maze.numCols() - 1) * TS + TS / 2);
 		}
 		enteredNewTile = oldTile != tilePosition();
 	}
