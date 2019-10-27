@@ -13,8 +13,8 @@ import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.widgets.ImageWidget;
@@ -108,7 +108,7 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 		visitGitHub.tf.centerX(width);
 
 		buildStateMachine();
-		traceTo(Application.LOGGER, Application.app().clock::getFrequency);
+		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
 
 	private void show(View... views) {

@@ -15,6 +15,7 @@ import static java.awt.event.KeyEvent.VK_UP;
 
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.logging.Logger;
 
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
@@ -44,13 +45,14 @@ public class PacMan extends MazeMover {
 	private static final int WEAK_AFTER = 66; /* percentage of power time */
 	private static final int[] STEERING = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
-	public final StateMachine<PacManState, PacManGameEvent> fsm;
 	public final EventManager<PacManGameEvent> eventManager;
+	private final StateMachine<PacManState, PacManGameEvent> fsm;
 	private int eatTimer; // ticks since last pellet was eaten
 
 	public PacMan(PacManGame game) {
 		super(game);
 		fsm = buildStateMachine();
+		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 		eventManager = new EventManager<>("[PacMan]");
 		setSprites();
 	}

@@ -12,6 +12,7 @@ import static de.amr.games.pacman.controller.PacManGameState.READY;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.logging.Logger;
 
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
@@ -57,7 +58,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private final PacManGame game;
 
 	// Child controller
-	public final GhostAttackController ghostAttackController;
+	private final GhostAttackController ghostAttackController;
 
 	// UI
 	private final PacManTheme theme;
@@ -73,6 +74,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		ghostAttackController = new GhostAttackController(game);
 		game.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackController::getState);
 		game.pacMan.eventManager.addListener(this::process);
+		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
 
 	// View handling

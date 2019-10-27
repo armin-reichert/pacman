@@ -18,6 +18,7 @@ import de.amr.games.pacman.theme.ClassicPacManTheme;
 public class PacManApp extends Application {
 
 	public static void main(String[] args) {
+		Logger.getLogger("StateMachineLogger").setLevel(Level.INFO);
 		launch(new PacManApp(), args);
 	}
 
@@ -37,13 +38,5 @@ public class PacManApp extends Application {
 		PacManGameController gameController = new PacManGameController(game);
 		setController(gameController);
 		setIcon(game.theme.spr_ghostFrightened().frame(0));
-
-		// FSM logging
-		Logger fsmLogger = Logger.getLogger("fsm");
-		fsmLogger.setLevel(Level.INFO);
-		gameController.traceTo(fsmLogger, clock::getFrequency);
-		gameController.ghostAttackController.traceTo(fsmLogger, clock::getFrequency);
-		game.pacMan.fsm.traceTo(fsmLogger, clock::getFrequency);
-		game.ghosts().forEach(ghost -> ghost.fsm.traceTo(fsmLogger, clock::getFrequency));
 	}
 }

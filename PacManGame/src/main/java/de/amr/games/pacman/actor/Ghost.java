@@ -1,5 +1,6 @@
 package de.amr.games.pacman.actor;
 
+import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.DYING;
@@ -13,6 +14,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Behavior;
@@ -39,13 +41,13 @@ import de.amr.statemachine.StateMachine;
  */
 public class Ghost extends MazeMover implements GhostBehaviors {
 
-	public final StateMachine<GhostState, PacManGameEvent> fsm;
 	public Supplier<GhostState> fnNextState; // state after FRIGHTENED or LOCKED state
-	private final Map<GhostState, Behavior<Ghost>> behaviorMap;
+	public int foodCount;
 	public final String name;
 	private final Tile initialTile;
 	private final int initialDir;
-	public int foodCount;
+	private final Map<GhostState, Behavior<Ghost>> behaviorMap;
+	private final StateMachine<GhostState, PacManGameEvent> fsm;
 
 	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, int initialDir) {
 		super(game);
@@ -56,7 +58,8 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 		behaviorMap = new EnumMap<>(GhostState.class);
 		fsm = buildStateMachine();
 		fsm.setIgnoreUnknownEvents(true);
-		fnNextState = this::getState; // default is to keep state
+		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		fnNextState = this::getState; // default: keep state
 	}
 
 	@Override

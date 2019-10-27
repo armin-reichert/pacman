@@ -1,8 +1,11 @@
 package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.LOGGER;
+import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+
+import java.util.logging.Logger;
 
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
@@ -46,6 +49,7 @@ public class GhostAttackController extends StateMachine<GhostState, Void> {
 			.when(CHASING).then(SCATTERING).onTimeout()
 		.endStateMachine();
 		/*@formatter:on*/
+		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
 
 	@Override
