@@ -64,18 +64,19 @@ public abstract class MazeMover extends SpriteEntity {
 		return enteredNewTile;
 	}
 
-	public Tile tile() {
-		return game.maze.tilePosition(this);
+	public Tile tilePosition() {
+		Vector2f center = tf.getCenter();
+		return game.maze.tileAt(round(center.x) / TS, round(center.y) / TS);
 	}
 
 	/**
 	 * @param numTiles
 	 *                   number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current
-	 *         move direction.
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
+	 *         direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
-		return game.maze.tileToDir(tile(), moveDir, numTiles);
+		return game.maze.tileToDir(tilePosition(), moveDir, numTiles);
 	}
 
 	/**
@@ -89,7 +90,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 *                  pixel offset in y-direction
 	 */
 	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
-		enteredNewTile = !tile.equals(tile());
+		enteredNewTile = !tile.equals(tilePosition());
 		tf.setPosition(tile.col * TS + xOffset, tile.row * TS + yOffset);
 	}
 
@@ -97,7 +98,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 * Places this maze mover exactly over its current tile.
 	 */
 	public void align() {
-		Tile tile = tile();
+		Tile tile = tilePosition();
 		tf.setPosition(tile.col * TS, tile.row * TS);
 	}
 
@@ -141,12 +142,10 @@ public abstract class MazeMover extends SpriteEntity {
 		if (game.maze.isWall(tile)) {
 			return false;
 		}
-		if (game.maze.getTeleportRight().row == tile.row
-				&& game.maze.getTeleportRight().col + 1 == tile.col) {
+		if (game.maze.getTeleportRight().row == tile.row && game.maze.getTeleportRight().col + 1 == tile.col) {
 			return true;
 		}
-		if (game.maze.getTeleportLeft().row == tile.row
-				&& game.maze.getTeleportLeft().col - 1 == tile.col) {
+		if (game.maze.getTeleportLeft().row == tile.row && game.maze.getTeleportLeft().col - 1 == tile.col) {
 			return true;
 		}
 		return game.maze.insideBoard(tile);
@@ -160,12 +159,12 @@ public abstract class MazeMover extends SpriteEntity {
 	}
 
 	/**
-	 * Moves this actor through the maze. Handles changing the direction according to the intended
-	 * move direction, moving around corners without losing alignment, movement through the "teleport"
-	 * tile and getting stuck.
+	 * Moves this actor through the maze. Handles changing the direction according to the intended move
+	 * direction, moving around corners without losing alignment, movement through the "teleport" tile
+	 * and getting stuck.
 	 */
 	protected void move() {
-		Tile oldTile = tile();
+		Tile oldTile = tilePosition();
 		supplyIntendedDir().ifPresent(this::setNextDir);
 		float speed = computeMaxSpeed(nextDir);
 		if (speed > 0) {
@@ -185,7 +184,7 @@ public abstract class MazeMover extends SpriteEntity {
 		else if (tf.getX() <= -TS) {
 			tf.setX((game.maze.numCols() - 1) * TS);
 		}
-		enteredNewTile = oldTile != tile();
+		enteredNewTile = oldTile != tilePosition();
 	}
 
 	private boolean isTurning90Degrees() {
@@ -200,7 +199,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 * Computes how many pixels this entity can move towards the given direction in one frame.
 	 */
 	private float computeMaxSpeed(int dir) {
-		final Tile currentTile = tile();
+		final Tile currentTile = tilePosition();
 		final Tile neighborTile = game.maze.tileToDir(currentTile, dir);
 		final float speed = getSpeed();
 		if (canEnterTile(neighborTile)) {

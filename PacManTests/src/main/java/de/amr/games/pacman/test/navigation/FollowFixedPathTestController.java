@@ -55,7 +55,7 @@ public class FollowFixedPathTestController implements ViewController {
 	@Override
 	public void update() {
 		g.blinky.update();
-		if (g.blinky.tile().equals(targets.get(targetIndex))) {
+		if (g.blinky.tilePosition().equals(targets.get(targetIndex))) {
 			nextTarget();
 		}
 		view.update();

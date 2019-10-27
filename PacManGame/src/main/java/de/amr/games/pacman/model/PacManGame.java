@@ -411,7 +411,7 @@ public class PacManGame {
 	/* TODO: some values are still unknown to me and only estimated */
 	public float getGhostSpeed(Ghost ghost) {
 		Objects.requireNonNull(ghost);
-		Tile tile = ghost.tile();
+		Tile tile = ghost.tilePosition();
 		boolean inTunnel = maze.inTunnel(tile) || tile == maze.getTeleportLeft()
 				|| tile == maze.getTeleportRight();
 		float tunnelSpeed = speed(Param.GHOST_TUNNEL_SPEED.asFloat(level));

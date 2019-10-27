@@ -56,7 +56,7 @@ public interface GhostBehaviors {
 	 * @return behavior of attacking Pac-Man directly
 	 */
 	default Behavior<Ghost> attackingDirectly(PacMan pacMan) {
-		return headingFor(pacMan::tile);
+		return headingFor(pacMan::tilePosition);
 	}
 
 	/**
@@ -95,7 +95,7 @@ public interface GhostBehaviors {
 	 */
 	default Behavior<Ghost> attackingWithPartner(Ghost blinky, PacMan pacMan) {
 		return headingFor(() -> {
-			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
+			Tile b = blinky.tilePosition(), p = pacMan.tilesAhead(2);
 			return maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		});
 	}
@@ -137,7 +137,7 @@ public interface GhostBehaviors {
 	 */
 	default Behavior<Ghost> attackingAndRejecting(PacMan pacMan, int distance, Tile scatterTarget) {
 		return headingFor(
-				() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.tile()
+				() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.tilePosition()
 						: scatterTarget);
 	}
 
@@ -158,7 +158,7 @@ public interface GhostBehaviors {
 	 * @return behavior where ghost flees to a "safe" maze corner
 	 */
 	default Behavior<Ghost> fleeingToSafeCorner(MazeMover attacker) {
-		return new FleeingToSafeCorner<>(maze(), attacker::tile);
+		return new FleeingToSafeCorner<>(maze(), attacker::tilePosition);
 	}
 
 	/**
@@ -179,7 +179,7 @@ public interface GhostBehaviors {
 			/*@formatter:off*/
 			permute(NESW.dirs())
 				.filter(dir -> dir != NESW.inv(currentDir))
-				.filter(dir -> ghost.canEnterTile(maze().tileToDir(ghost.tile(), dir)))
+				.filter(dir -> ghost.canEnterTile(maze().tileToDir(ghost.tilePosition(), dir)))
 				.findFirst()
 				.ifPresent(newDir -> {
 					route.setDir(newDir);
@@ -205,7 +205,7 @@ public interface GhostBehaviors {
 	default Behavior<Ghost> followingPathfinder(Supplier<Tile> fnTarget) {
 		return ghost -> {
 			Route route = new Route();
-			route.setPath(maze().findPath(ghost.tile(), fnTarget.get()));
+			route.setPath(maze().findPath(ghost.tilePosition(), fnTarget.get()));
 			route.setDir(maze().alongPath(route.getPath()).orElse(-1));
 			return route;
 		};

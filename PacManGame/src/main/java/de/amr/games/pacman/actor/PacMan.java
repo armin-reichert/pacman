@@ -231,14 +231,14 @@ public class PacMan extends MazeMover {
 			if (!eventManager.isEnabled()) {
 				return;
 			}
-			Tile tile = tile();
+			Tile tile = tilePosition();
 
 			/*@formatter:off*/
 			Optional<Ghost> collidingGhost = game.activeGhosts()
 				.filter(ghost -> ghost.getState() != GhostState.DEAD)
 				.filter(ghost -> ghost.getState() != GhostState.DYING)
 				.filter(ghost -> ghost.getState() != GhostState.LOCKED)
-				.filter(ghost -> ghost.tile().equals(tile))
+				.filter(ghost -> ghost.tilePosition().equals(tile))
 				.findFirst();
 			/*@formatter:on*/
 			if (collidingGhost.isPresent()) {
@@ -246,15 +246,13 @@ public class PacMan extends MazeMover {
 				return;
 			}
 
-			/*@formatter:off*/
-			Optional<Bonus> activeBonus = game.getBonus()
-					.filter(bonus -> game.maze.tilePosition(bonus).equals(tile))
-					.filter(bonus -> !bonus.consumed());
-			/*@formatter:on*/
-			if (activeBonus.isPresent()) {
-				Bonus bonus = activeBonus.get();
-				eventManager.publish(new BonusFoundEvent(bonus.symbol(), bonus.value()));
-				return;
+			if (tile == game.maze.getBonusTile()) {
+				Optional<Bonus> activeBonus = game.getBonus().filter(bonus -> !bonus.consumed());
+				if (activeBonus.isPresent()) {
+					Bonus bonus = activeBonus.get();
+					eventManager.publish(new BonusFoundEvent(bonus.symbol(), bonus.value()));
+					return;
+				}
 			}
 
 			if (game.maze.containsFood(tile)) {
@@ -292,24 +290,25 @@ public class PacMan extends MazeMover {
 
 	private class DyingState extends State<PacManState, PacManGameEvent> {
 
-		private int paralyzedTime;
+		private int paralyzedTimer; // time before dying animation starts
 
 		{
+			// duration of complete dying state
 			setTimer(() -> app().clock.sec(3));
 		}
 
 		@Override
 		public void onEntry() {
-			paralyzedTime = app().clock.sec(1);
+			paralyzedTimer = app().clock.sec(1);
 			sprites.select("s_full");
 			game.theme.snd_clips_all().forEach(Sound::stop);
 		}
 
 		@Override
 		public void onTick() {
-			if (paralyzedTime > 0) {
-				paralyzedTime -= 1;
-				if (paralyzedTime == 0) {
+			if (paralyzedTimer > 0) {
+				paralyzedTimer -= 1;
+				if (paralyzedTimer == 0) {
 					getGame().activeGhosts().forEach(ghost -> ghost.setVisible(false));
 					sprites.select("s_dying");
 					game.theme.snd_die().play();

@@ -1,8 +1,5 @@
 package de.amr.games.pacman.model;
 
-import static de.amr.games.pacman.model.PacManGame.TS;
-import static java.lang.Math.round;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -13,8 +10,6 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
-import de.amr.easy.game.entity.Entity;
-import de.amr.easy.game.math.Vector2f;
 import de.amr.graph.core.api.UndirectedEdge;
 import de.amr.graph.grid.api.GridGraph2D;
 import de.amr.graph.grid.api.Topology;
@@ -231,16 +226,6 @@ public class Maze {
 	 */
 	public Tile tileToDir(Tile tile, int dir) {
 		return tileToDir(tile, dir, 1);
-	}
-
-	/**
-	 * @param entity
-	 *                 a game entity
-	 * @return the tile where this entity is located
-	 */
-	public Tile tilePosition(Entity entity) {
-		Vector2f center = entity.tf.getCenter();
-		return tileAt(round(center.x) / TS, round(center.y) / TS);
 	}
 
 	public boolean insideBoard(Tile tile) {
