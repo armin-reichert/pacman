@@ -33,15 +33,20 @@ public abstract class MazeMover extends SpriteEntity {
 	private int nextDir;
 
 	/* Tells if the last move entered a new tile position */
-	private boolean enteredNewTile;
+	private boolean tileChanged;
+
+	/* Pixel positions of teleportation */
+	private final int teleportLeft, teleportRight;
 
 	protected MazeMover(PacManGame game) {
 		this.game = game;
 		moveDir = nextDir = Top4.E;
-		enteredNewTile = false;
+		tileChanged = false;
 		// collision box size of maze movers is one tile, sprite size is larger!
 		tf.setWidth(TS);
 		tf.setHeight(TS);
+		teleportLeft = -TS;
+		teleportRight = (game.maze.numCols() - 1) * TS + TS / 2;
 	}
 
 	public int getMoveDir() {
@@ -60,8 +65,8 @@ public abstract class MazeMover extends SpriteEntity {
 		this.nextDir = nextDir;
 	}
 
-	public boolean enteredNewTile() {
-		return enteredNewTile;
+	public boolean hasEnteredNewTile() {
+		return tileChanged;
 	}
 
 	public Tile tilePosition() {
@@ -90,7 +95,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 *                  pixel offset in y-direction
 	 */
 	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
-		enteredNewTile = !tile.equals(tilePosition());
+		tileChanged = !tile.equals(tilePosition());
 		tf.setPosition(tile.col * TS + xOffset, tile.row * TS + yOffset);
 	}
 
@@ -129,14 +134,16 @@ public abstract class MazeMover extends SpriteEntity {
 	public abstract OptionalInt supplyIntendedDir();
 
 	/**
-	 * @return the current speed (in pixels)
+	 * @return the current speed (in pixels/tick)
 	 */
 	public abstract float getSpeed();
 
 	/**
+	 * Common logic for Pac-Man and ghosts: walls can never be entered, teleportation is possible.
+	 * 
 	 * @param tile
-	 *               some tile
-	 * @return <code>true</code> if this maze mover can currently enter the tile
+	 *               some tile, may also be outside of the board
+	 * @return <code>true</code> if this maze mover can enter the given tile
 	 */
 	public boolean canEnterTile(Tile tile) {
 		if (game.maze.isWall(tile)) {
@@ -158,39 +165,31 @@ public abstract class MazeMover extends SpriteEntity {
 
 	/**
 	 * Moves this actor through the maze. Handles changing the direction according to the intended
-	 * move direction, moving around corners without losing alignment, movement through the "teleport"
-	 * tile and getting stuck.
+	 * move direction, moving around corners without losing alignment, "teleportation" and getting
+	 * stuck.
 	 */
 	protected void move() {
-		Tile oldTile = tilePosition();
+		Tile prevTile = tilePosition();
 		supplyIntendedDir().ifPresent(this::setNextDir);
 		float speed = computeMaxSpeed(nextDir);
 		if (speed > 0) {
-			if (isTurning90Degrees()) {
+			if (nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir)) {
 				align();
 			}
-			setMoveDir(nextDir);
+			moveDir = nextDir;
 		}
 		else {
 			speed = computeMaxSpeed(moveDir);
 		}
-		tf.setVelocity(velocity(speed));
+		tf.setVelocity(Vector2f.smul(speed, Vector2f.of(NESW.dx(moveDir), NESW.dy(moveDir))));
 		tf.move();
-		if (tf.getX() > (game.maze.numCols() - 1) * TS + TS / 2) {
-			tf.setX(-TS);
+		if (tf.getX() > teleportRight) {
+			tf.setX(teleportLeft);
 		}
-		else if (tf.getX() <= -TS) {
-			tf.setX((game.maze.numCols() - 1) * TS + TS / 2);
+		else if (tf.getX() <= teleportLeft) {
+			tf.setX(teleportRight);
 		}
-		enteredNewTile = oldTile != tilePosition();
-	}
-
-	private boolean isTurning90Degrees() {
-		return nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir);
-	}
-
-	private Vector2f velocity(float speed) {
-		return Vector2f.smul(speed, Vector2f.of(NESW.dx(moveDir), NESW.dy(moveDir)));
+		tileChanged = prevTile != tilePosition();
 	}
 
 	/*
@@ -199,9 +198,9 @@ public abstract class MazeMover extends SpriteEntity {
 	private float computeMaxSpeed(int dir) {
 		final Tile currentTile = tilePosition();
 		final Tile neighborTile = game.maze.tileToDir(currentTile, dir);
-		final float speed = getSpeed();
+		final float fullSpeed = getSpeed();
 		if (canEnterTile(neighborTile)) {
-			return speed;
+			return fullSpeed;
 		}
 		float cappedSpeed = 0;
 		switch (dir) {
@@ -220,6 +219,6 @@ public abstract class MazeMover extends SpriteEntity {
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}
-		return Math.min(speed, cappedSpeed);
+		return Math.min(fullSpeed, cappedSpeed);
 	}
 }

@@ -172,7 +172,7 @@ public interface GhostBehaviors {
 		return ghost -> {
 			int currentDir = ghost.getMoveDir();
 			Route route = new Route(currentDir);
-			if (!ghost.enteredNewTile() && !ghost.isStuck()) {
+			if (!ghost.hasEnteredNewTile() && !ghost.isStuck()) {
 				// keep direction inside tile
 				return route;
 			}
