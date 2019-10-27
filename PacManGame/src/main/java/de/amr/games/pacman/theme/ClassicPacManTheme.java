@@ -251,7 +251,6 @@ public class ClassicPacManTheme implements PacManTheme {
 		CompletableFuture.runAsync(() -> {
 			LOGGER.info("Loading music...");
 			music_playing();
-			music_gameover();
 		}).thenAccept(result -> LOGGER.info("Music loaded."));
 	}
 
