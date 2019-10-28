@@ -69,7 +69,7 @@ public class PacManGame {
 		PACMAN_POWER_SECONDS,
 		MAZE_NUM_FLASHES;
 
-		private static final Object[][] VALUES_BY_LEVEL = {
+		private static final Object[][] LEVELS = {
 			/*@formatter:off*/
 			{ /* this row intentionally empty */ },
 			{ CHERRIES,    100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6, 5 },
@@ -97,19 +97,19 @@ public class PacManGame {
 		};
 
 		public float asFloat(int level) {
-			level = Math.min(VALUES_BY_LEVEL.length - 1, level);
-			return (float) VALUES_BY_LEVEL[level][ordinal()];
+			level = Math.min(LEVELS.length - 1, level);
+			return (float) LEVELS[level][ordinal()];
 		}
 
 		public int asInt(int level) {
-			level = Math.min(VALUES_BY_LEVEL.length - 1, level);
-			return (int) VALUES_BY_LEVEL[level][ordinal()];
+			level = Math.min(LEVELS.length - 1, level);
+			return (int) LEVELS[level][ordinal()];
 		}
 
 		@SuppressWarnings("unchecked")
 		public <T> T asObject(int level) {
-			level = Math.min(VALUES_BY_LEVEL.length - 1, level);
-			return (T) VALUES_BY_LEVEL[level][ordinal()];
+			level = Math.min(LEVELS.length - 1, level);
+			return (T) LEVELS[level][ordinal()];
 		}
 	};
 
