@@ -29,7 +29,6 @@ public class PacManApp extends Application {
 		settings.height = 36 * PacManGame.TS;
 		settings.scale = 2;
 		settings.fullScreenOnStart = false;
-		settings.set("ghost.behavior.frightened.fleeRandomly", true);
 	}
 
 	@Override

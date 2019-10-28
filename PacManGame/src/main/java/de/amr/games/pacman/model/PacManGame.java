@@ -126,6 +126,12 @@ public class PacManGame {
 	/** The currently active actors. Actors can be toggled during the game. */
 	private final Set<MazeMover> activeActors = new HashSet<>();
 
+	/**
+	 * If ghosts use classic flight behavior (random direction at each intersection) or path based
+	 * flight into a "safe" corner.
+	 */
+	public boolean classicFlightBehavior;
+
 	/** The game score including highscore management. */
 	public final Score score;
 
@@ -187,11 +193,10 @@ public class PacManGame {
 		clyde.setBehavior(CHASING,
 				clyde.attackingAndRejecting(pacMan, 8 * TS, maze.getClydeScatterTarget()));
 
+		classicFlightBehavior = true;
 		ghosts().forEach(ghost -> {
 			ghost.setBehavior(FRIGHTENED,
-					app().settings.getAsBoolean("ghost.behavior.frightened.fleeRandomly")
-							? ghost.fleeingRandomly()
-							: ghost.fleeingToSafeCorner(pacMan));
+					classicFlightBehavior ? ghost.fleeingRandomly() : ghost.fleeingToSafeCorner(pacMan));
 			ghost.setBehavior(DEAD, ghost.headingFor(maze::getGhostRevivalTile));
 			ghost.setBehavior(LOCKED, ghost.bouncing());
 		});
