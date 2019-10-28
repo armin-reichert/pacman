@@ -587,8 +587,7 @@ default Behavior<Ghost> attackingWithPartner(Ghost blinky, PacMan pacMan) {
 
 ### Clyde (the orange ghost)
 
-Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is larger than than 8 tiles. 
-If closer, he behaves as in scattering mode:
+Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
 
 ```java
 default Behavior<Ghost> attackingAndRejecting(PacMan pacMan, int distance, Tile scatterTarget) {
