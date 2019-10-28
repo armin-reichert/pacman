@@ -49,10 +49,9 @@ public class PacManGame {
 	public static final int TS = 8;
 
 	/**
-	 * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>
+	 * Named access to the columns of the level table.
 	 */
-	private enum Param {
-
+	enum Param {
 		BONUS_SYMBOL,
 		BONUS_VALUE,
 		PACMAN_SPEED,
@@ -69,7 +68,13 @@ public class PacManGame {
 		PACMAN_POWER_SECONDS,
 		MAZE_NUM_FLASHES;
 
-		private static final Object[][] LEVELS = {
+		/**
+		 * Level data for speeds, bonus values etc.
+		 * 
+		 * @see <a href=
+		 *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>
+		 */
+		static final Object[][] LEVELS = {
 			/*@formatter:off*/
 			{ /* this row intentionally empty */ },
 			{ CHERRIES,    100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6, 5 },
@@ -96,31 +101,24 @@ public class PacManGame {
 			/*@formatter:on*/
 		};
 
-		public float asFloat(int level) {
-			level = Math.min(LEVELS.length - 1, level);
-			return (float) LEVELS[level][ordinal()];
-		}
-
-		public int asInt(int level) {
-			level = Math.min(LEVELS.length - 1, level);
-			return (int) LEVELS[level][ordinal()];
-		}
-
 		@SuppressWarnings("unchecked")
-		public <T> T asObject(int level) {
+		<T> T value(int level) {
 			level = Math.min(LEVELS.length - 1, level);
 			return (T) LEVELS[level][ordinal()];
 		}
-	};
 
-	/** The maze given as a graph with content */
+		float floatValue(int level) {
+			return value(level);
+		}
+
+		int intValue(int level) {
+			return value(level);
+		}
+	}
+
 	public final Maze maze;
-
-	/** The used theme */
 	public final PacManTheme theme;
-
 	public final PacMan pacMan;
-
 	public final Ghost blinky, pinky, inky, clyde;
 
 	/** The currently active actors. Actors can be toggled during the game. */
@@ -174,6 +172,7 @@ public class PacManGame {
 
 		maze = new Maze();
 		score = new Score(this);
+
 		pacMan = new PacMan(this);
 
 		blinky = new Ghost(this, "Blinky", GhostColor.RED, maze.getBlinkyHome(), Top4.S);
@@ -264,7 +263,7 @@ public class PacManGame {
 	}
 
 	public BonusSymbol getLevelSymbol() {
-		return Param.BONUS_SYMBOL.asObject(level);
+		return Param.BONUS_SYMBOL.value(level);
 	}
 
 	public List<BonusSymbol> getLevelCounter() {
@@ -352,7 +351,7 @@ public class PacManGame {
 	}
 
 	public int getBonusValue() {
-		return Param.BONUS_VALUE.asInt(level);
+		return Param.BONUS_VALUE.intValue(level);
 	}
 
 	public int getBonusDuration() {
@@ -373,16 +372,16 @@ public class PacManGame {
 	public float getPacManSpeed(PacMan pacMan) {
 		switch (pacMan.getState()) {
 		case HUNGRY:
-			return speed(Param.PACMAN_SPEED.asFloat(level));
+			return speed(Param.PACMAN_SPEED.floatValue(level));
 		case POWER:
-			return speed(Param.PACMAN_POWER_SPEED.asFloat(level));
+			return speed(Param.PACMAN_POWER_SPEED.floatValue(level));
 		default:
 			return 0;
 		}
 	}
 
 	public int getPacManPowerTime() {
-		return sec(Param.PACMAN_POWER_SECONDS.asInt(level));
+		return sec(Param.PACMAN_POWER_SECONDS.intValue(level));
 	}
 
 	public int getPacManDyingTime() {
@@ -413,26 +412,26 @@ public class PacManGame {
 		return round <= 1 ? sec(20) : round == 2 ? sec(1037) : Integer.MAX_VALUE;
 	}
 
-	/* TODO: some values are still unknown to me and only estimated */
+	/* TODO: some values are still unknown to me and only guessed */
 	public float getGhostSpeed(Ghost ghost) {
 		Objects.requireNonNull(ghost);
 		Tile tile = ghost.tilePosition();
 		boolean inTunnel = maze.inTunnel(tile) || tile == maze.getTeleportLeft()
 				|| tile == maze.getTeleportRight();
-		float tunnelSpeed = speed(Param.GHOST_TUNNEL_SPEED.asFloat(level));
+		float tunnelSpeed = speed(Param.GHOST_TUNNEL_SPEED.floatValue(level));
 		switch (ghost.getState()) {
 		case CHASING:
-			return inTunnel ? tunnelSpeed : speed(Param.GHOST_SPEED.asFloat(level));
+			return inTunnel ? tunnelSpeed : speed(Param.GHOST_SPEED.floatValue(level));
 		case DYING:
 			return 0;
 		case DEAD:
-			return 1.25f * speed(Param.GHOST_SPEED.asFloat(level));
+			return 1.25f * speed(Param.GHOST_SPEED.floatValue(level));
 		case FRIGHTENED:
-			return inTunnel ? tunnelSpeed : speed(Param.GHOST_FRIGHTENED_SPEED.asFloat(level));
+			return inTunnel ? tunnelSpeed : speed(Param.GHOST_FRIGHTENED_SPEED.floatValue(level));
 		case LOCKED:
 			return speed(0.5f);
 		case SCATTERING:
-			return inTunnel ? tunnelSpeed : speed(Param.GHOST_SPEED.asFloat(level));
+			return inTunnel ? tunnelSpeed : speed(Param.GHOST_SPEED.floatValue(level));
 		default:
 			throw new IllegalStateException("Illegal ghost state for ghost " + ghost.name);
 		}
@@ -443,7 +442,7 @@ public class PacManGame {
 	}
 
 	public int getGhostNumFlashes() {
-		return Param.MAZE_NUM_FLASHES.asInt(level);
+		return Param.MAZE_NUM_FLASHES.intValue(level);
 	}
 
 	// rules for leaving the ghost house
