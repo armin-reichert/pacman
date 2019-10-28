@@ -538,7 +538,6 @@ ghosts().forEach(ghost -> {
 	ghost.setBehavior(DEAD, ghost.headingFor(maze::getGhostRevivalTile));
 	ghost.setBehavior(LOCKED, ghost.bouncing());
 });
-});
 ```
 
 The *chasing* behavior differs for each ghost as explained above. Using the general *headingFor* behavior, the individual ghost  behaviors *ambushing*, *attackingDirectly*, *attackingWithPartner* and *attackingAndRejecting* can be implemented very easily.
