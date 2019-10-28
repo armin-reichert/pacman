@@ -1,13 +1,18 @@
 package de.amr.games.pacman.actor;
 
+import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
 import static java.lang.Math.round;
 
+import java.util.LinkedHashSet;
 import java.util.OptionalInt;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import de.amr.easy.game.entity.SpriteEntity;
 import de.amr.easy.game.math.Vector2f;
+import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
@@ -19,12 +24,18 @@ import de.amr.graph.grid.impl.Top4;
  * Implements movement inside the maze. Movement is controlled by supplying the intended move
  * direction before moving.
  * 
+ * <p>
+ * Maze movers can register event handlers for game events.
+ * 
  * @author Armin Reichert
  */
 public abstract class MazeMover extends SpriteEntity {
 
 	/* The game model. */
 	public final PacManGame game;
+
+	/* My name */
+	public final String name;
 
 	/* Current move direction (Top4.N, Top4.E, Top4.S, Top4.W). */
 	private int moveDir;
@@ -38,8 +49,13 @@ public abstract class MazeMover extends SpriteEntity {
 	/* Pixel positions of teleportation */
 	private final int teleportLeft, teleportRight;
 
-	protected MazeMover(PacManGame game) {
+	// Event publishing
+	private final Set<Consumer<PacManGameEvent>> eventListeners;
+	protected boolean eventsEnabled;
+
+	protected MazeMover(PacManGame game, String name) {
 		this.game = game;
+		this.name = name;
 		moveDir = nextDir = Top4.E;
 		tileChanged = false;
 		// collision box size of maze movers is one tile, sprite size is larger!
@@ -47,6 +63,32 @@ public abstract class MazeMover extends SpriteEntity {
 		tf.setHeight(TS);
 		teleportLeft = -TS;
 		teleportRight = (game.maze.numCols() - 1) * TS + TS / 2;
+		// eventing
+		eventListeners = new LinkedHashSet<>();
+		eventsEnabled = true;
+	}
+
+	public void addListener(Consumer<PacManGameEvent> listener) {
+		eventListeners.add(listener);
+	}
+
+	public void removeListener(Consumer<PacManGameEvent> listener) {
+		eventListeners.remove(listener);
+	}
+
+	public void publishEvent(PacManGameEvent event) {
+		if (eventsEnabled) {
+			LOGGER.info(String.format("%s publishing event '%s'", name, event));
+			eventListeners.forEach(subscriber -> subscriber.accept(event));
+		}
+	}
+
+	public void setEventsEnabled(boolean enabled) {
+		this.eventsEnabled = enabled;
+	}
+
+	public boolean areEventsEnabled() {
+		return eventsEnabled;
 	}
 
 	public int getMoveDir() {
@@ -77,8 +119,8 @@ public abstract class MazeMover extends SpriteEntity {
 	/**
 	 * @param numTiles
 	 *                   number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current
-	 *         move direction.
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
+	 *         direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
 		return game.maze.tileToDir(tilePosition(), moveDir, numTiles);
@@ -164,9 +206,8 @@ public abstract class MazeMover extends SpriteEntity {
 	}
 
 	/**
-	 * Moves this actor through the maze. Handles changing the direction according to the intended
-	 * move direction, moving around corners without losing alignment, "teleportation" and getting
-	 * stuck.
+	 * Moves this actor through the maze. Handles changing the direction according to the intended move
+	 * direction, moving around corners without losing alignment, "teleportation" and getting stuck.
 	 */
 	protected void move() {
 		Tile prevTile = tilePosition();

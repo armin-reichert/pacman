@@ -73,7 +73,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		buildStateMachine();
 		ghostAttackController = new GhostAttackController(game);
 		game.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackController::getState);
-		game.pacMan.eventManager.addListener(this::process);
+		game.pacMan.addListener(this::process);
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
 
@@ -410,8 +410,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onBonusFound(PacManGameEvent event) {
 			game.getBonus().ifPresent(bonus -> {
-				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.symbol(),
-						bonus.value()));
+				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.symbol(), bonus.value()));
 				theme.snd_eatFruit().play();
 				bonus.consume();
 				boolean extraLife = game.scorePoints(bonus.value());
@@ -490,15 +489,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (extraLife) {
 				theme.snd_extraLife().play();
 			}
-			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d",
-					game.getKilledGhostValue(), game.getGhostsKilledByEnergizer()));
+			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
+					game.getGhostsKilledByEnergizer()));
 		}
 
 		@Override
 		public void onTick() {
 			game.activeGhosts()
-					.filter(
-							ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
+					.filter(ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
 					.forEach(Ghost::update);
 		}
 

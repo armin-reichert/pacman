@@ -43,15 +43,13 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 
 	public Supplier<GhostState> fnNextState; // state after FRIGHTENED or LOCKED state
 	public int foodCount;
-	public final String name;
 	private final Tile initialTile;
 	private final int initialDir;
 	private final Map<GhostState, Behavior<Ghost>> behaviorMap;
 	private final StateMachine<GhostState, PacManGameEvent> fsm;
 
 	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, int initialDir) {
-		super(game);
-		this.name = name;
+		super(game, name);
 		this.initialTile = initialTile;
 		this.initialDir = initialDir;
 		setSprites(color);
@@ -86,8 +84,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	}
 
 	private void sirenOff() {
-		if (game.activeGhosts().filter(ghost -> this != ghost)
-				.noneMatch(ghost -> ghost.getState() == CHASING)) {
+		if (game.activeGhosts().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
 			game.theme.snd_ghost_chase().stop();
 		}
 	}
@@ -99,8 +96,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	}
 
 	private void deadSoundOff() {
-		if (game.activeGhosts().filter(ghost -> ghost != this)
-				.noneMatch(ghost -> ghost.getState() == DEAD)) {
+		if (game.activeGhosts().filter(ghost -> ghost != this).noneMatch(ghost -> ghost.getState() == DEAD)) {
 			game.theme.snd_ghost_dead().stop();
 		}
 	}

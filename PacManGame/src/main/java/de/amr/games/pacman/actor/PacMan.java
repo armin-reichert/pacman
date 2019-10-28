@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.controller.EventManager;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -45,15 +44,13 @@ public class PacMan extends MazeMover {
 	private static final int WEAK_AFTER = 66; /* percentage of power time */
 	private static final int[] STEERING = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
-	public final EventManager<PacManGameEvent> eventManager;
 	private final StateMachine<PacManState, PacManGameEvent> fsm;
 	private int eatTimer; // ticks since last pellet was eaten
 
 	public PacMan(PacManGame game) {
-		super(game);
+		super(game, "Pac-Man");
 		fsm = buildStateMachine();
 		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-		eventManager = new EventManager<>("[PacMan]");
 		setSprites();
 	}
 
@@ -192,7 +189,7 @@ public class PacMan extends MazeMover {
 	
 				.when(POWER).then(HUNGRY)
 					.onTimeout()
-					.act(() -> eventManager.publish(new PacManLostPowerEvent()))
+					.act(() -> publishEvent(new PacManLostPowerEvent()))
 	
 				.when(DYING).then(DEAD)
 					.onTimeout()
@@ -230,7 +227,7 @@ public class PacMan extends MazeMover {
 		}
 
 		protected void inspectWorld() {
-			if (!eventManager.isEnabled()) {
+			if (!eventsEnabled) {
 				return;
 			}
 			Tile tile = tilePosition();
@@ -244,7 +241,7 @@ public class PacMan extends MazeMover {
 				.findFirst();
 			/*@formatter:on*/
 			if (collidingGhost.isPresent()) {
-				eventManager.publish(new PacManGhostCollisionEvent(collidingGhost.get()));
+				publishEvent(new PacManGhostCollisionEvent(collidingGhost.get()));
 				return;
 			}
 
@@ -252,7 +249,7 @@ public class PacMan extends MazeMover {
 				Optional<Bonus> activeBonus = game.getBonus().filter(bonus -> !bonus.consumed());
 				if (activeBonus.isPresent()) {
 					Bonus bonus = activeBonus.get();
-					eventManager.publish(new BonusFoundEvent(bonus.symbol(), bonus.value()));
+					publishEvent(new BonusFoundEvent(bonus.symbol(), bonus.value()));
 					return;
 				}
 			}
@@ -261,7 +258,7 @@ public class PacMan extends MazeMover {
 				eatTimer = 0;
 				boolean energizer = game.maze.containsEnergizer(tile);
 				digestionTicks = game.getDigestionTicks(energizer);
-				eventManager.publish(new FoodFoundEvent(tile, energizer));
+				publishEvent(new FoodFoundEvent(tile, energizer));
 			}
 			else {
 				eatTimer += 1;
@@ -285,7 +282,7 @@ public class PacMan extends MazeMover {
 		public void onTick() {
 			super.onTick();
 			if (getDuration() - getTicksRemaining() == getDuration() * WEAK_AFTER / 100) {
-				eventManager.publish(new PacManGettingWeakerEvent());
+				publishEvent(new PacManGettingWeakerEvent());
 			}
 		}
 	}
