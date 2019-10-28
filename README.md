@@ -210,6 +210,9 @@ beginStateMachine()
 		.stay(GHOST_DYING)
 			.on(PacManGettingWeakerEvent.class)
 
+		.stay(GHOST_DYING)
+			.on(PacManLostPowerEvent.class)
+
 		.when(GHOST_DYING).then(PLAYING)
 			.onTimeout()
 
@@ -303,7 +306,7 @@ beginStateMachine(PacManState.class, PacManGameEvent.class)
 
 		.when(POWER).then(HUNGRY)
 			.onTimeout()
-			.act(() -> getEventManager().publish(new PacManLostPowerEvent()))
+			.act(() -> publishEvent(new PacManLostPowerEvent()))
 
 		.when(DYING).then(DEAD)
 			.onTimeout()
@@ -314,7 +317,7 @@ beginStateMachine(PacManState.class, PacManGameEvent.class)
 The **ghosts** are controlled using the following state machine:
 
 ```java
-.beginStateMachine(GhostState.class, PacManGameEvent.class)
+beginStateMachine(GhostState.class, PacManGameEvent.class)
 
 	.description(String.format("[%s]", name))
 	.initialState(LOCKED)
@@ -329,9 +332,9 @@ The **ghosts** are controlled using the following state machine:
 			.onTick(this::move)
 
 		.state(CHASING)
-		  .onEntry(this::sirenOn)
+			.onEntry(this::sirenOn)
 			.onTick(this::move)
-		  .onExit(this::sirenOff)
+			.onExit(this::sirenOff)
 
 		.state(FRIGHTENED)
 			.onEntry(() -> {
@@ -339,7 +342,7 @@ The **ghosts** are controlled using the following state machine:
 			})
 			.onTick(() -> {
 				move();
-				sprites.select(game.maze.inGhostHouse(tile())	
+				sprites.select(game.maze.inGhostHouse(tilePosition())	
 							? "s_color_" + getMoveDir()
 							: game.pacMan.isPowerEnding()	? "s_flashing" : "s_frightened");
 			})
@@ -389,7 +392,7 @@ The **ghosts** are controlled using the following state machine:
 		.when(DYING).then(DEAD).onTimeout()
 
 		.when(DEAD).then(LOCKED)
-			.condition(() -> tile().equals(game.maze.getGhostRevivalTile()))
+			.condition(() -> tilePosition().equals(game.maze.getGhostRevivalTile()))
 
 .endStateMachine();
 ```
@@ -546,7 +549,7 @@ Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
 default Behavior<Ghost> attackingDirectly(PacMan pacMan) {
-	return headingFor(pacMan::getTile);
+	return headingFor(pacMan::tilePosition);
 }
 ```
 
@@ -574,7 +577,7 @@ Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to ge
 ```java
 default Behavior<Ghost> attackingWithPartner(Ghost blinky, PacMan pacMan) {
 	return headingFor(() -> {
-		Tile b = blinky.getTile(), p = pacMan.tilesAhead(2);
+		Tile b = blinky.tilePosition(), p = pacMan.tilesAhead(2);
 		return new Tile(2 * p.col - b.col, 2 * p.row - b.row);
 	});
 }
@@ -590,7 +593,7 @@ If closer, he behaves as in scattering mode:
 ```java
 default Behavior<Ghost> attackingAndRejecting(PacMan pacMan, int distance, Tile scatterTarget) {
 	return headingFor(
-			() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.getTile()
+			() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.tilePosition()
 					: scatterTarget);
 }
 ```
