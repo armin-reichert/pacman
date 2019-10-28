@@ -621,9 +621,9 @@ like BFS, Dijkstra or "Hill Climbing". The actual code to compute a shortest pat
 
 ```java
 GraphSearch pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
-Path path = pathfinder.findPath(cell(source), cell(target));
+Path path = pathfinder.findPath(vertex(source), vertex(target));
 ```
-Honestly, for a maze of this size, the used algorithm doesn't matter much, a plain breadth-first search would also do the job.
+For a maze of such a small size the used algorithm doesn't matter much, a plain breadth-first search would also do the job.
 
 ## Additional features
 
