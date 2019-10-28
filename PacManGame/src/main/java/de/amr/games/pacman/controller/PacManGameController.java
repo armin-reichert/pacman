@@ -251,6 +251,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.stay(GHOST_DYING)
 					.on(PacManGettingWeakerEvent.class)
 				
+				.stay(GHOST_DYING)
+					.on(PacManLostPowerEvent.class)
+					
 				.when(GHOST_DYING).then(PLAYING)
 					.onTimeout()
 					
