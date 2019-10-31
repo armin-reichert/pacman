@@ -41,7 +41,6 @@ import de.amr.statemachine.StateMachine;
  */
 public class PacMan extends MazeMover {
 
-	private static final int WEAK_AFTER = 66; /* percentage of power time */
 	private static final int[] STEERING = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
 	private final StateMachine<PacManState, PacManGameEvent> fsm;
@@ -62,8 +61,6 @@ public class PacMan extends MazeMover {
 		sprites.select("s_full");
 	}
 
-	// Accessors
-
 	public PacManGame getGame() {
 		return game;
 	}
@@ -71,19 +68,6 @@ public class PacMan extends MazeMover {
 	@Override
 	public float getSpeed() {
 		return game.getPacManSpeed(this);
-	}
-
-	public boolean isPowerEnding() {
-		return hasPower() && getStateObject().getDuration()
-				- getStateObject().getTicksRemaining() >= getStateObject().getDuration() * WEAK_AFTER / 100;
-	}
-
-	public boolean hasPower() {
-		return getState() == POWER;
-	}
-
-	public boolean isDead() {
-		return getState() == DEAD;
 	}
 
 	public int getEatTimer() {
@@ -127,6 +111,42 @@ public class PacMan extends MazeMover {
 
 	// State machine
 
+	public boolean isLosingPower() {
+		if (!hasPower()) {
+			return false;
+		}
+		int total = fsm.state().getDuration(), remaining = fsm.state().getTicksRemaining();
+		return remaining <= total * 33 / 100;
+	}
+
+	private boolean startsLosingPower() {
+		if (!hasPower()) {
+			return false;
+		}
+		int total = fsm.state().getDuration(), remaining = fsm.state().getTicksRemaining();
+		return remaining == total * 33 / 100;
+	}
+
+	public boolean hasPower() {
+		return getPacManState() == POWER;
+	}
+
+	public boolean isDead() {
+		return getPacManState() == DEAD;
+	}
+
+	public PacManState getPacManState() {
+		return fsm.getState();
+	}
+
+	public State<PacManState, PacManGameEvent> state() {
+		return fsm.state();
+	}
+
+	public void processEvent(PacManGameEvent event) {
+		fsm.process(event);
+	}
+
 	@Override
 	public void init() {
 		fsm.init();
@@ -135,18 +155,6 @@ public class PacMan extends MazeMover {
 	@Override
 	public void update() {
 		fsm.update();
-	}
-
-	public PacManState getState() {
-		return fsm.getState();
-	}
-
-	public State<PacManState, PacManGameEvent> getStateObject() {
-		return fsm.state();
-	}
-
-	public void processEvent(PacManGameEvent event) {
-		fsm.process(event);
 	}
 
 	private StateMachine<PacManState, PacManGameEvent> buildStateMachine() {
@@ -226,7 +234,7 @@ public class PacMan extends MazeMover {
 			digestionTicks -= 1;
 		}
 
-		protected void inspectWorld() {
+		private void inspectWorld() {
 			if (!eventsEnabled) {
 				return;
 			}
@@ -281,7 +289,7 @@ public class PacMan extends MazeMover {
 		@Override
 		public void onTick() {
 			super.onTick();
-			if (getDuration() - getTicksRemaining() == getDuration() * WEAK_AFTER / 100) {
+			if (startsLosingPower()) {
 				publishEvent(new PacManGettingWeakerEvent());
 			}
 		}
@@ -289,25 +297,24 @@ public class PacMan extends MazeMover {
 
 	private class DyingState extends State<PacManState, PacManGameEvent> {
 
-		private int paralyzedTimer; // time before dying animation starts
+		private int paralyzedTicks; // time before dying animation starts
 
-		{
-			// duration of complete dying state
+		{ // set duration of complete "Dying" state
 			setTimer(() -> app().clock.sec(3));
 		}
 
 		@Override
 		public void onEntry() {
-			paralyzedTimer = app().clock.sec(1);
+			paralyzedTicks = app().clock.sec(1);
 			sprites.select("s_full");
 			game.theme.snd_clips_all().forEach(Sound::stop);
 		}
 
 		@Override
 		public void onTick() {
-			if (paralyzedTimer > 0) {
-				paralyzedTimer -= 1;
-				if (paralyzedTimer == 0) {
+			if (paralyzedTicks > 0) {
+				paralyzedTicks -= 1;
+				if (paralyzedTicks == 0) {
 					getGame().activeGhosts().forEach(ghost -> ghost.setVisible(false));
 					sprites.select("s_dying");
 					game.theme.snd_die().play();
@@ -315,5 +322,4 @@ public class PacMan extends MazeMover {
 			}
 		}
 	}
-
 }

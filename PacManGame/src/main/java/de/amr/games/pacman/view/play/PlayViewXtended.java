@@ -155,7 +155,7 @@ public class PlayViewXtended extends PlayView {
 	}
 
 	private void drawEntityStates(Graphics2D g) {
-		if (game.pacMan.getState() != null && game.pacMan.isVisible()) {
+		if (game.pacMan.getPacManState() != null && game.pacMan.isVisible()) {
 			drawText(g, Color.YELLOW, game.pacMan.tf.getX(), game.pacMan.tf.getY(),
 					pacManStateText(game.pacMan));
 		}
@@ -167,7 +167,7 @@ public class PlayViewXtended extends PlayView {
 	}
 
 	private String pacManStateText(PacMan pacMan) {
-		State<?, ?> state = pacMan.getStateObject();
+		State<?, ?> state = pacMan.state();
 		return state.getDuration() != State.ENDLESS
 				? String.format("(%s,%d|%d)", state.id(), state.getTicksRemaining(), state.getDuration())
 				: String.format("(%s,%s)", state.id(), INFTY);

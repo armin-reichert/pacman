@@ -369,7 +369,7 @@ public class PacManGame {
 	}
 
 	public float getPacManSpeed(PacMan pacMan) {
-		switch (pacMan.getState()) {
+		switch (pacMan.getPacManState()) {
 		case HUNGRY:
 			return speed(Param.PACMAN_SPEED.floatValue(level));
 		case POWER:
