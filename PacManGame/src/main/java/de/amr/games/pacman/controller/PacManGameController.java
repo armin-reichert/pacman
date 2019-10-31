@@ -12,6 +12,7 @@ import static de.amr.games.pacman.controller.PacManGameState.READY;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.amr.easy.game.assets.Sound;
@@ -109,11 +110,20 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	@Override
 	public void update() {
+		handleStateMachineLogging();
 		handleNextLevelCheat();
 		handlePlayingSpeedChange();
 		handleGhostBehaviorChange();
 		super.update();
 		currentViewController.update();
+	}
+
+	private void handleStateMachineLogging() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_L)) {
+			Logger smLogger = Logger.getLogger("StateMachineLogger");
+			smLogger.setLevel(smLogger.getLevel() == Level.OFF ? Level.INFO : Level.OFF);
+			LOGGER.info("State machine logging is " + smLogger.getLevel());
+		}
 	}
 
 	private void handleNextLevelCheat() {
@@ -141,8 +151,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			game.classicFlightBehavior = !game.classicFlightBehavior;
 			game.ghosts().forEach(ghost -> {
 				ghost.setBehavior(GhostState.FRIGHTENED,
-						game.classicFlightBehavior ? ghost.fleeingRandomly()
-								: ghost.fleeingToSafeCorner(game.pacMan));
+						game.classicFlightBehavior ? ghost.fleeingRandomly() : ghost.fleeingToSafeCorner(game.pacMan));
 			});
 			LOGGER.info("Changed ghost FRIGHTENED behavior to flee "
 					+ (game.classicFlightBehavior ? "randomly" : "via safe route"));
@@ -372,8 +381,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onPacManKilled(PacManGameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
-			LOGGER.info(
-					() -> String.format("PacMan killed by %s at %s", e.killer.name, e.killer.tilePosition()));
+			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.name, e.killer.tilePosition()));
 			game.enableGlobalFoodCounter();
 			game.pacMan.processEvent(e);
 		}
@@ -398,16 +406,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onGhostKilled(PacManGameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
-			LOGGER
-					.info(() -> String.format("Ghost %s killed at %s", e.ghost.name, e.ghost.tilePosition()));
+			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.name, e.ghost.tilePosition()));
 			theme.snd_eatGhost().play();
 			e.ghost.processEvent(e);
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
 			game.getBonus().ifPresent(bonus -> {
-				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.symbol(),
-						bonus.value()));
+				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.symbol(), bonus.value()));
 				theme.snd_eatFruit().play();
 				bonus.consume();
 				boolean extraLife = game.scorePoints(bonus.value());
@@ -486,15 +492,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (extraLife) {
 				theme.snd_extraLife().play();
 			}
-			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d",
-					game.getKilledGhostValue(), game.getGhostsKilledByEnergizer()));
+			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
+					game.getGhostsKilledByEnergizer()));
 		}
 
 		@Override
 		public void onTick() {
 			game.activeGhosts()
-					.filter(
-							ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
+					.filter(ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
 					.forEach(Ghost::update);
 		}
 

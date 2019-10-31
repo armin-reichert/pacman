@@ -20,7 +20,7 @@ import de.amr.games.pacman.model.Tile;
  * @author Armin Reichert
  *
  * @param <T>
- *          actor type
+ *              actor type
  */
 class FleeingToSafeCorner<T extends MazeMover> extends FollowingFixedPath<T> {
 
@@ -61,10 +61,10 @@ class FleeingToSafeCorner<T extends MazeMover> extends FollowingFixedPath<T> {
 		};
 	}
 
-	private double minDistFromPath(List<Tile> path, Tile tile) {
-		double min = Double.MAX_VALUE;
+	private int minDistFromPath(List<Tile> path, Tile tile) {
+		int min = Integer.MAX_VALUE;
 		for (Tile t : path) {
-			double dist = maze.manhattanDist(t, tile);
+			int dist = maze.manhattanDist(t, tile);
 			if (dist < min) {
 				min = dist;
 			}

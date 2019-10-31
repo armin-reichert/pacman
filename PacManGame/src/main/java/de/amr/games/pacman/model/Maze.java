@@ -387,7 +387,7 @@ public class Maze {
 		return Collections.emptyList();
 	}
 
-	public double manhattanDist(Tile t1, Tile t2) {
+	public int manhattanDist(Tile t1, Tile t2) {
 		return gridGraph.manhattan(vertex(t1), vertex(t2));
 	}
 
