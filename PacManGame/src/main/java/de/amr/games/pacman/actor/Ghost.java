@@ -186,7 +186,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 				.state(DYING)
 					.timeoutAfter(game::getGhostDyingTime)
 					.onEntry(() -> {
-						sprites.select("s_value" + game.getGhostsKilledByEnergizer()); 
+						sprites.select("s_value" + game.numGhostsKilledByCurrentEnergizer()); 
 						game.addGhostKilled();
 					})
 				

@@ -493,7 +493,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				theme.snd_extraLife().play();
 			}
 			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
-					game.getGhostsKilledByEnergizer()));
+					game.numGhostsKilledByCurrentEnergizer()));
 		}
 
 		@Override

@@ -146,7 +146,7 @@ public class PacManGame {
 	private boolean globalFoodCounterEnabled = false;
 
 	/** Ghosts killed using current energizer. */
-	private int ghostsKilled;
+	private int numGhostsKilled;
 
 	/** Current level. */
 	private int level;
@@ -215,7 +215,7 @@ public class PacManGame {
 		level += 1;
 		maze.resetFood();
 		eaten = 0;
-		ghostsKilled = 0;
+		numGhostsKilled = 0;
 		levelCounter.add(0, getLevelSymbol());
 		if (levelCounter.size() == 8) {
 			levelCounter.remove(levelCounter.size() - 1);
@@ -275,7 +275,7 @@ public class PacManGame {
 		}
 		boolean energizer = maze.containsEnergizer(tile);
 		if (energizer) {
-			ghostsKilled = 0;
+			numGhostsKilled = 0;
 		}
 		eaten += 1;
 		maze.removeFood(tile);
@@ -309,18 +309,18 @@ public class PacManGame {
 
 	public int getKilledGhostValue() {
 		int value = 200;
-		for (int i = 1; i < ghostsKilled; ++i) {
+		for (int i = 1; i < numGhostsKilled; ++i) {
 			value *= 2;
 		}
 		return value;
 	}
 
-	public int getGhostsKilledByEnergizer() {
-		return ghostsKilled;
+	public int numGhostsKilledByCurrentEnergizer() {
+		return numGhostsKilled;
 	}
 
 	public void addGhostKilled() {
-		ghostsKilled += 1;
+		numGhostsKilled += 1;
 	}
 
 	public int getLives() {
