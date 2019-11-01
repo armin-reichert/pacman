@@ -9,7 +9,7 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
 
 /**
- * Pac-Man game.
+ * The Pac-Man game application.
  * 
  * @see <a href="https://github.com/armin-reichert/pacman">GitHub</a>
  * 
@@ -23,7 +23,6 @@ public class PacManApp extends Application {
 	}
 
 	public PacManApp() {
-		// Default application settings, can be overwritten by command-line arguments
 		settings.title = "Armin's Pac-Man";
 		settings.width = 28 * PacManGame.TS;
 		settings.height = 36 * PacManGame.TS;
