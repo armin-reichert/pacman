@@ -119,6 +119,9 @@ public abstract class MazeMover extends SpriteEntity {
 		return tileChanged;
 	}
 
+	/**
+	 * @return the tile containing the center of this entity's collision box
+	 */
 	public Tile tilePosition() {
 		Vector2f center = tf.getCenter();
 		return game.maze.tileAt(round(center.x) / TS, round(center.y) / TS);
