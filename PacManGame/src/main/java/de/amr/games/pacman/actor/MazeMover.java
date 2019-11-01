@@ -68,6 +68,19 @@ public abstract class MazeMover extends SpriteEntity {
 		eventsEnabled = true;
 	}
 
+	/**
+	 * Computes the next move direction. This is usually different from the current move direction and
+	 * will be taken as soon as possible, for example at the next intersection.
+	 * 
+	 * @return the next move direction to take
+	 */
+	public abstract OptionalInt computeNextDirection();
+
+	/**
+	 * @return the current speed (in pixels/tick)
+	 */
+	public abstract float getSpeed();
+
 	public void addListener(Consumer<PacManGameEvent> listener) {
 		eventListeners.add(listener);
 	}
@@ -119,8 +132,8 @@ public abstract class MazeMover extends SpriteEntity {
 	/**
 	 * @param numTiles
 	 *                   number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
-	 *         direction.
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current
+	 *         move direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
 		return game.maze.tileToDir(tilePosition(), moveDir, numTiles);
@@ -171,16 +184,6 @@ public abstract class MazeMover extends SpriteEntity {
 	}
 
 	/**
-	 * @return a function returning the intended move direction
-	 */
-	public abstract OptionalInt supplyIntendedDir();
-
-	/**
-	 * @return the current speed (in pixels/tick)
-	 */
-	public abstract float getSpeed();
-
-	/**
 	 * Common logic for Pac-Man and ghosts: walls can never be entered, teleportation is possible.
 	 * 
 	 * @param tile
@@ -206,12 +209,13 @@ public abstract class MazeMover extends SpriteEntity {
 	}
 
 	/**
-	 * Moves this actor through the maze. Handles changing the direction according to the intended move
-	 * direction, moving around corners without losing alignment, "teleportation" and getting stuck.
+	 * Moves this actor through the maze. Handles changing the direction according to the intended
+	 * move direction, moving around corners without losing alignment, "teleportation" and getting
+	 * stuck.
 	 */
 	protected void move() {
 		Tile prevTile = tilePosition();
-		supplyIntendedDir().ifPresent(this::setNextDir);
+		computeNextDirection().ifPresent(this::setNextDir);
 		float speed = computeMaxSpeed(nextDir);
 		if (speed > 0) {
 			if (nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir)) {

@@ -155,7 +155,7 @@ public class PlayViewXtended extends PlayView {
 	}
 
 	private void drawEntityStates(Graphics2D g) {
-		if (game.pacMan.getPacManState() != null && game.pacMan.isVisible()) {
+		if (game.pacMan.getState() != null && game.pacMan.isVisible()) {
 			drawText(g, Color.YELLOW, game.pacMan.tf.getX(), game.pacMan.tf.getY(),
 					pacManStateText(game.pacMan));
 		}

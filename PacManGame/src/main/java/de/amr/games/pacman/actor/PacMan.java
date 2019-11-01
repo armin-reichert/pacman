@@ -50,10 +50,10 @@ public class PacMan extends MazeMover {
 		super(game, "Pac-Man");
 		fsm = buildStateMachine();
 		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-		setSprites();
+		createSprites();
 	}
 
-	public void initPacMan() {
+	private void initialize() {
 		eatTimer = 0;
 		placeAtTile(game.maze.getPacManHome(), TS / 2, 0);
 		setNextDir(Top4.E);
@@ -61,13 +61,9 @@ public class PacMan extends MazeMover {
 		sprites.select("s_full");
 	}
 
-	public PacManGame getGame() {
-		return game;
-	}
-
 	@Override
 	public float getSpeed() {
-		return game.getPacManSpeed(this);
+		return game.getPacManSpeed();
 	}
 
 	public int getEatTimer() {
@@ -80,16 +76,12 @@ public class PacMan extends MazeMover {
 
 	// Movement
 
+	/**
+	 * @return if a steering key is pressed, the corresponding direction, otherwise nothing
+	 */
 	@Override
-	public OptionalInt supplyIntendedDir() {
+	public OptionalInt computeNextDirection() {
 		return NESW.dirs().filter(dir -> Keyboard.keyDown(STEERING[dir])).findFirst();
-	}
-
-	@Override
-	public void move() {
-		super.move();
-		sprites.select("s_walking_" + getMoveDir());
-		sprites.current().get().enableAnimation(!isStuck());
 	}
 
 	@Override
@@ -102,11 +94,16 @@ public class PacMan extends MazeMover {
 
 	// Sprites
 
-	private void setSprites() {
+	private void createSprites() {
 		NESW.dirs().forEach(dir -> sprites.set("s_walking_" + dir, game.theme.spr_pacManWalking(dir)));
 		sprites.set("s_dying", game.theme.spr_pacManDying());
 		sprites.set("s_full", game.theme.spr_pacManFull());
 		sprites.select("s_full");
+	}
+
+	private void updateWalkingSprite() {
+		sprites.select("s_walking_" + getMoveDir());
+		sprites.current().ifPresent(sprite -> sprite.enableAnimation(!isStuck()));
 	}
 
 	// State machine
@@ -128,14 +125,14 @@ public class PacMan extends MazeMover {
 	}
 
 	public boolean hasPower() {
-		return getPacManState() == POWER;
+		return getState() == POWER;
 	}
 
 	public boolean isDead() {
-		return getPacManState() == DEAD;
+		return getState() == DEAD;
 	}
 
-	public PacManState getPacManState() {
+	public PacManState getState() {
 		return fsm.getState();
 	}
 
@@ -149,6 +146,7 @@ public class PacMan extends MazeMover {
 
 	@Override
 	public void init() {
+		initialize();
 		fsm.init();
 	}
 
@@ -168,7 +166,6 @@ public class PacMan extends MazeMover {
 			.states()
 
 				.state(HOME)
-					.onEntry(this::initPacMan)
 					.timeoutAfter(() -> 0)
 	
 				.state(HUNGRY)
@@ -222,6 +219,7 @@ public class PacMan extends MazeMover {
 			}
 			else {
 				move();
+				updateWalkingSprite();
 				inspectWorld();
 			}
 		}
@@ -315,7 +313,7 @@ public class PacMan extends MazeMover {
 			if (paralyzedTicks > 0) {
 				paralyzedTicks -= 1;
 				if (paralyzedTicks == 0) {
-					getGame().activeGhosts().forEach(ghost -> ghost.setVisible(false));
+					game.activeGhosts().forEach(ghost -> ghost.setVisible(false));
 					sprites.select("s_dying");
 					game.theme.snd_die().play();
 				}

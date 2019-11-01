@@ -130,7 +130,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	}
 
 	@Override
-	public OptionalInt supplyIntendedDir() {
+	public OptionalInt computeNextDirection() {
 		return currentBehavior().getRoute(this).getDir();
 	}
 

@@ -364,7 +364,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onPacManGhostCollision(PacManGameEvent event) {
 			PacManGhostCollisionEvent e = (PacManGhostCollisionEvent) event;
-			PacManState pacManState = game.pacMan.getPacManState();
+			PacManState pacManState = game.pacMan.getState();
 			if (pacManState == PacManState.DYING) {
 				return;
 			}
