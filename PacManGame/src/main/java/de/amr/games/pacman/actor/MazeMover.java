@@ -46,9 +46,6 @@ public abstract class MazeMover extends SpriteEntity {
 	/* Tells if the last move entered a new tile position */
 	private boolean tileChanged;
 
-	/* Pixel positions of teleportation */
-	private final int teleportLeft, teleportRight;
-
 	// Event publishing
 	private final Set<Consumer<PacManGameEvent>> eventListeners;
 	protected boolean eventsEnabled;
@@ -61,8 +58,6 @@ public abstract class MazeMover extends SpriteEntity {
 		// collision box size of maze movers is one tile, sprite size is larger!
 		tf.setWidth(TS);
 		tf.setHeight(TS);
-		teleportLeft = -TS;
-		teleportRight = (game.maze.numCols() - 1) * TS + TS / 2;
 		// eventing
 		eventListeners = new LinkedHashSet<>();
 		eventsEnabled = true;
@@ -228,11 +223,13 @@ public abstract class MazeMover extends SpriteEntity {
 		}
 		tf.setVelocity(Vector2f.smul(speed, Vector2f.of(NESW.dx(moveDir), NESW.dy(moveDir))));
 		tf.move();
-		if (tf.getX() > teleportRight) {
-			tf.setX(teleportLeft);
+		int teleportLeftX = (game.maze.getTeleportLeft().col - 1) * TS;
+		int teleportRightX = (game.maze.getTeleportRight().col + 1) * TS;
+		if (tf.getX() >= teleportRightX) {
+			tf.setX(teleportLeftX);
 		}
-		else if (tf.getX() <= teleportLeft) {
-			tf.setX(teleportRight);
+		else if (tf.getX() <= teleportLeftX) {
+			tf.setX(teleportRightX);
 		}
 		tileChanged = prevTile != tilePosition();
 	}
