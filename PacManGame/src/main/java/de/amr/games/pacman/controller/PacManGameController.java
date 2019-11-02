@@ -338,6 +338,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				initialWaitTimer -= 1;
 				return;
 			}
+			playView.hideInfoText();
 			GhostState oldAttackState = ghostAttackController.getState();
 			ghostAttackController.update();
 			if (oldAttackState != ghostAttackController.getState()) {
@@ -477,6 +478,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			game.activeActors().forEach(MazeMover::init);
 			playView.init();
 			playView.showInfoText("Ready!", Color.YELLOW);
+			playingState.setInitialWaitTimer(app().clock.sec(2));
 		}
 	}
 
