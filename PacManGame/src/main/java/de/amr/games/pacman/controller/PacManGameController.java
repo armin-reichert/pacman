@@ -454,31 +454,29 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	 */
 	private class ChangingLevelState extends State<PacManGameState, PacManGameEvent> {
 
-		@Override
-		public void onEntry() {
-			setTimerFunction(() -> app().clock.sec(0.5f * game.getMazeNumFlashes())); // 1 flashing takes 0.5 sec
-			resetTimer();
-			game.activeGhosts().forEach(ghost -> ghost.setVisible(false));
-			game.pacMan.sprites.current().ifPresent(sprite -> sprite.enableAnimation(false));
-			playView.setMazeFlashing(true);
-			theme.snd_clips_all().forEach(Sound::stop);
+		{ // Set state duration such that flashing animation is executed exact number of times defined
+			// for each level. One flash takes half a second.
+			setTimerFunction(() -> app().clock.sec(0.5f * game.getMazeNumFlashes()));
 		}
 
 		@Override
-		public void onTick() {
+		public void onEntry() {
+			theme.snd_clips_all().forEach(Sound::stop);
+			game.activeGhosts().forEach(ghost -> ghost.setVisible(false));
+			game.pacMan.sprites.select("full");
+			playView.hideInfoText();
+			resetTimer();
+			if (game.getMazeNumFlashes() > 0) {
+				playView.setMazeFlashing(true);
+			}
 		}
 
 		@Override
 		public void onExit() {
 			game.nextLevel();
 			game.activeActors().forEach(MazeMover::init);
-			game.activeGhosts().forEach(ghost -> ghost.setVisible(true));
 			playView.init();
 			playView.showInfoText("Ready!", Color.YELLOW);
-			playView.setMazeFlashing(false);
-			playView.enableAnimation(false);
-			playView.hideInfoText();
-			playView.enableAnimation(true);
 		}
 	}
 

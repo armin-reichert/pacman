@@ -107,6 +107,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 		setNextDir(initialDir);
 		sprites.select("color-" + initialDir);
 		sprites.forEach(Sprite::resetAnimation);
+		setVisible(true);
 	}
 
 	// Behavior
