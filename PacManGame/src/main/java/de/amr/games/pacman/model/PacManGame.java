@@ -442,7 +442,7 @@ public class PacManGame {
 		return sec(0.75f);
 	}
 
-	public int getGhostNumFlashes() {
+	public int getMazeNumFlashes() {
 		return Param.MAZE_NUM_FLASHES.intValue(level);
 	}
 
