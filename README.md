@@ -547,7 +547,7 @@ The *chasing* behavior differs for each ghost as explained above. Using the gene
 Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
-default Behavior<Ghost> attackingDirectly(PacMan pacMan) {
+default Behavior attackingDirectly(PacMan pacMan) {
 	return headingFor(pacMan::tilePosition);
 }
 ```
@@ -559,7 +559,7 @@ default Behavior<Ghost> attackingDirectly(PacMan pacMan) {
 Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position (in the original game there is an overflow error leading to a slightly different behavior):
 
 ```java
-default Behavior<Ghost> ambushing(PacMan pacMan) {
+default Behavior ambushing(PacMan pacMan) {
 	return headingFor(() -> pacMan.tilesAhead(4));
 }
 ```
@@ -574,7 +574,7 @@ Consider the vector `V` from Blinky's position `B` to the position `P` two tiles
 Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-default Behavior<Ghost> attackingWithPartner(Ghost blinky, PacMan pacMan) {
+default Behavior attackingWithPartner(Ghost blinky, PacMan pacMan) {
 	return headingFor(() -> {
 		Tile b = blinky.tilePosition(), p = pacMan.tilesAhead(2);
 		return new Tile(2 * p.col - b.col, 2 * p.row - b.row);
@@ -589,7 +589,7 @@ default Behavior<Ghost> attackingWithPartner(Ghost blinky, PacMan pacMan) {
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
 
 ```java
-default Behavior<Ghost> attackingAndRejecting(PacMan pacMan, int distance, Tile scatterTarget) {
+default Behavior attackingAndRejecting(PacMan pacMan, int distance, Tile scatterTarget) {
 	return headingFor(
 			() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.tilePosition()
 					: scatterTarget);
