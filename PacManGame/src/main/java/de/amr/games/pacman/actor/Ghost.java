@@ -67,14 +67,14 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 
 	private void setSprites(GhostColor color) {
 		NESW.dirs().forEach(dir -> {
-			sprites.set("s_color_" + dir, game.theme.spr_ghostColored(color, dir));
-			sprites.set("s_eyes_" + dir, game.theme.spr_ghostEyes(dir));
+			sprites.set("color_" + dir, game.theme.spr_ghostColored(color, dir));
+			sprites.set("eyes-" + dir, game.theme.spr_ghostEyes(dir));
 		});
 		for (int i = 0; i < 4; ++i) {
-			sprites.set("s_value" + i, game.theme.spr_greenNumber(i));
+			sprites.set("value" + i, game.theme.spr_greenNumber(i));
 		}
-		sprites.set("s_frightened", game.theme.spr_ghostFrightened());
-		sprites.set("s_flashing", game.theme.spr_ghostFlashing());
+		sprites.set("frightened", game.theme.spr_ghostFrightened());
+		sprites.set("flashing", game.theme.spr_ghostFlashing());
 	}
 
 	private void sirenOn() {
@@ -105,7 +105,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 		placeAtTile(initialTile, TS / 2, 0);
 		setMoveDir(initialDir);
 		setNextDir(initialDir);
-		sprites.select("s_color_" + initialDir);
+		sprites.select("color_" + initialDir);
 		sprites.forEach(Sprite::resetAnimation);
 	}
 
@@ -145,7 +145,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	@Override
 	protected void move() {
 		super.move();
-		sprites.select("s_color_" + getMoveDir());
+		sprites.select("color_" + getMoveDir());
 	}
 
 	// Define state machine
@@ -179,14 +179,14 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 					.onTick(() -> {
 						move();
 						sprites.select(game.maze.inGhostHouse(tilePosition())	
-									? "s_color_" + getMoveDir()
-									: game.pacMan.isLosingPower()	? "s_flashing" : "s_frightened");
+									? "color_" + getMoveDir()
+									: game.pacMan.isLosingPower()	? "flashing" : "frightened");
 					})
 				
 				.state(DYING)
 					.timeoutAfter(game::getGhostDyingTime)
 					.onEntry(() -> {
-						sprites.select("s_value" + game.numGhostsKilledByCurrentEnergizer()); 
+						sprites.select("value" + game.numGhostsKilledByCurrentEnergizer()); 
 						game.addGhostKilled();
 					})
 				
@@ -194,7 +194,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 					.onEntry(this::deadSoundOn)
 					.onTick(() -> {	
 						move();
-						sprites.select("s_eyes_" + getMoveDir());
+						sprites.select("eyes-" + getMoveDir());
 					})
 					.onExit(this::deadSoundOff)
 					

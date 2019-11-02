@@ -58,7 +58,7 @@ public class PacMan extends MazeMover {
 		placeAtTile(game.maze.getPacManHome(), TS / 2, 0);
 		setNextDir(Top4.E);
 		sprites.forEach(Sprite::resetAnimation);
-		sprites.select("s_full");
+		sprites.select("full");
 	}
 
 	@Override
@@ -95,14 +95,14 @@ public class PacMan extends MazeMover {
 	// Sprites
 
 	private void createSprites() {
-		NESW.dirs().forEach(dir -> sprites.set("s_walking_" + dir, game.theme.spr_pacManWalking(dir)));
-		sprites.set("s_dying", game.theme.spr_pacManDying());
-		sprites.set("s_full", game.theme.spr_pacManFull());
-		sprites.select("s_full");
+		NESW.dirs().forEach(dir -> sprites.set("walking_" + dir, game.theme.spr_pacManWalking(dir)));
+		sprites.set("dying", game.theme.spr_pacManDying());
+		sprites.set("full", game.theme.spr_pacManFull());
+		sprites.select("full");
 	}
 
 	private void updateWalkingSprite() {
-		sprites.select("s_walking_" + getMoveDir());
+		sprites.select("walking_" + getMoveDir());
 		sprites.current().ifPresent(sprite -> sprite.enableAnimation(!isStuck()));
 	}
 
@@ -301,7 +301,7 @@ public class PacMan extends MazeMover {
 		@Override
 		public void onEntry() {
 			paralyzedTicks = app().clock.sec(1);
-			sprites.select("s_full");
+			sprites.select("full");
 			game.theme.snd_clips_all().forEach(Sound::stop);
 		}
 
@@ -311,7 +311,7 @@ public class PacMan extends MazeMover {
 				paralyzedTicks -= 1;
 				if (paralyzedTicks == 0) {
 					game.activeGhosts().forEach(ghost -> ghost.setVisible(false));
-					sprites.select("s_dying");
+					sprites.select("dying");
 					game.theme.snd_die().play();
 				}
 			}
