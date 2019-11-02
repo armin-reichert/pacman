@@ -28,9 +28,9 @@ public class Bonus extends SpriteEntity {
 		consumed = false;
 		tf.setWidth(TS);
 		tf.setHeight(TS);
-		sprites.set("s_symbol", theme.spr_bonusSymbol(symbol));
-		sprites.set("s_number", theme.spr_pinkNumber(index));
-		sprites.select("s_symbol");
+		sprites.set("symbol", theme.spr_bonusSymbol(symbol));
+		sprites.set("number", theme.spr_pinkNumber(index));
+		sprites.select("symbol");
 	}
 
 	public int value() {
@@ -47,7 +47,7 @@ public class Bonus extends SpriteEntity {
 
 	public void consume() {
 		consumed = true;
-		sprites.select("s_number");
+		sprites.select("number");
 	}
 
 	@Override

@@ -67,11 +67,11 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 
 	private void setSprites(GhostColor color) {
 		NESW.dirs().forEach(dir -> {
-			sprites.set("color_" + dir, game.theme.spr_ghostColored(color, dir));
+			sprites.set("color-" + dir, game.theme.spr_ghostColored(color, dir));
 			sprites.set("eyes-" + dir, game.theme.spr_ghostEyes(dir));
 		});
 		for (int i = 0; i < 4; ++i) {
-			sprites.set("value" + i, game.theme.spr_greenNumber(i));
+			sprites.set("value-" + i, game.theme.spr_greenNumber(i));
 		}
 		sprites.set("frightened", game.theme.spr_ghostFrightened());
 		sprites.set("flashing", game.theme.spr_ghostFlashing());
@@ -105,7 +105,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 		placeAtTile(initialTile, TS / 2, 0);
 		setMoveDir(initialDir);
 		setNextDir(initialDir);
-		sprites.select("color_" + initialDir);
+		sprites.select("color-" + initialDir);
 		sprites.forEach(Sprite::resetAnimation);
 	}
 
@@ -145,7 +145,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	@Override
 	protected void move() {
 		super.move();
-		sprites.select("color_" + getMoveDir());
+		sprites.select("color-" + getMoveDir());
 	}
 
 	// Define state machine
@@ -179,14 +179,14 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 					.onTick(() -> {
 						move();
 						sprites.select(game.maze.inGhostHouse(tilePosition())	
-									? "color_" + getMoveDir()
+									? "color-" + getMoveDir()
 									: game.pacMan.isLosingPower()	? "flashing" : "frightened");
 					})
 				
 				.state(DYING)
 					.timeoutAfter(game::getGhostDyingTime)
 					.onEntry(() -> {
-						sprites.select("value" + game.numGhostsKilledByCurrentEnergizer()); 
+						sprites.select("value-" + game.numGhostsKilledByCurrentEnergizer()); 
 						game.addGhostKilled();
 					})
 				
