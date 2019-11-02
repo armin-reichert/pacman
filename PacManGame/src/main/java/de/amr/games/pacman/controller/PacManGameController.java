@@ -289,7 +289,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private class ReadyState extends State<PacManGameState, PacManGameEvent> {
 
 		{ // just to demonstrate that timer can also be set here
-			setTimer(() -> app().clock.sec(4.5f));
+			setTimerFunction(() -> app().clock.sec(4.5f));
 		}
 
 		@Override
@@ -456,7 +456,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onEntry() {
-			setTimer(() -> app().clock.sec(0.5f * game.getMazeNumFlashes())); // 1 flashing takes 0.5 sec
+			setTimerFunction(() -> app().clock.sec(0.5f * game.getMazeNumFlashes())); // 1 flashing takes 0.5 sec
 			resetTimer();
 			game.activeGhosts().forEach(ghost -> ghost.setVisible(false));
 			game.pacMan.sprites.current().ifPresent(sprite -> sprite.enableAnimation(false));

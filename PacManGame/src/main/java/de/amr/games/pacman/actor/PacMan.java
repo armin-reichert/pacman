@@ -295,7 +295,7 @@ public class PacMan extends MazeMover {
 		private int paralyzedTicks; // time before dying animation starts
 
 		{ // set duration of complete "Dying" state
-			setTimer(() -> app().clock.sec(3));
+			setTimerFunction(() -> app().clock.sec(3));
 		}
 
 		@Override
