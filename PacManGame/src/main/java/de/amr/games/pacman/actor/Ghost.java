@@ -45,7 +45,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	public int foodCount;
 	private final Tile initialTile;
 	private final int initialDir;
-	private final Map<GhostState, Behavior<Ghost>> behaviorMap;
+	private final Map<GhostState, Behavior> behaviorMap;
 	private final StateMachine<GhostState, PacManGameEvent> fsm;
 
 	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, int initialDir) {
@@ -84,7 +84,8 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	}
 
 	private void sirenOff() {
-		if (game.activeGhosts().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
+		if (game.activeGhosts().filter(ghost -> this != ghost)
+				.noneMatch(ghost -> ghost.getState() == CHASING)) {
 			game.theme.snd_ghost_chase().stop();
 		}
 	}
@@ -96,7 +97,8 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	}
 
 	private void deadSoundOff() {
-		if (game.activeGhosts().filter(ghost -> ghost != this).noneMatch(ghost -> ghost.getState() == DEAD)) {
+		if (game.activeGhosts().filter(ghost -> ghost != this)
+				.noneMatch(ghost -> ghost.getState() == DEAD)) {
 			game.theme.snd_ghost_dead().stop();
 		}
 	}
@@ -122,11 +124,11 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 		return nextState != null ? nextState : getState();
 	}
 
-	public void setBehavior(GhostState state, Behavior<Ghost> behavior) {
+	public void setBehavior(GhostState state, Behavior behavior) {
 		behaviorMap.put(state, behavior);
 	}
 
-	public Behavior<Ghost> currentBehavior() {
+	public Behavior currentBehavior() {
 		return behaviorMap.getOrDefault(getState(), keepingDirection());
 	}
 

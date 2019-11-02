@@ -30,7 +30,7 @@ import de.amr.graph.grid.impl.Top4;
  * 
  * @author Armin Reichert
  */
-class HeadingFor<T extends MazeMover> implements Behavior<T> {
+class HeadingFor implements Behavior {
 
 	private final Supplier<Tile> targetTileSupplier;
 
@@ -39,7 +39,7 @@ class HeadingFor<T extends MazeMover> implements Behavior<T> {
 	}
 
 	@Override
-	public Route getRoute(T actor) {
+	public Route getRoute(MazeMover actor) {
 		final Maze maze = actor.game.maze;
 		final int actorDir = actor.getMoveDir();
 		final Tile actorTile = actor.tilePosition();

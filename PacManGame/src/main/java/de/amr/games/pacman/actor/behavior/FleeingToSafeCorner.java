@@ -18,11 +18,8 @@ import de.amr.games.pacman.model.Tile;
  * computed.
  * 
  * @author Armin Reichert
- *
- * @param <T>
- *              actor type
  */
-class FleeingToSafeCorner<T extends MazeMover> extends FollowingFixedPath<T> {
+class FleeingToSafeCorner extends FollowingFixedPath {
 
 	private final Maze maze;
 
@@ -32,7 +29,7 @@ class FleeingToSafeCorner<T extends MazeMover> extends FollowingFixedPath<T> {
 	}
 
 	@Override
-	public void computePath(T refugee) {
+	public void computePath(MazeMover refugee) {
 		Tile target = refugee.tilePosition();
 		while (target.equals(refugee.tilePosition())) {
 			target = safeCorner(refugee);
@@ -40,7 +37,7 @@ class FleeingToSafeCorner<T extends MazeMover> extends FollowingFixedPath<T> {
 		path = maze.findPath(refugee.tilePosition(), target);
 	}
 
-	private Tile safeCorner(T refugee) {
+	private Tile safeCorner(MazeMover refugee) {
 		Tile refugeeTile = refugee.tilePosition();
 		Tile chaserTile = targetTileSupplier.get();
 		//@formatter:off

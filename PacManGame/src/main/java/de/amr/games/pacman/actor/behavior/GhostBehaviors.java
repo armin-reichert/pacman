@@ -43,8 +43,8 @@ public interface GhostBehaviors {
 	 *                   function supplying the target tile at time of decision
 	 * @return behavior where ghost heads for the target tile
 	 */
-	default Behavior<Ghost> headingFor(Supplier<Tile> fnTarget) {
-		return new HeadingFor<>(fnTarget);
+	default Behavior headingFor(Supplier<Tile> fnTarget) {
+		return new HeadingFor(fnTarget);
 	}
 
 	/**
@@ -55,7 +55,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return behavior of attacking Pac-Man directly
 	 */
-	default Behavior<Ghost> attackingDirectly(PacMan pacMan) {
+	default Behavior attackingDirectly(PacMan pacMan) {
 		return headingFor(pacMan::tilePosition);
 	}
 
@@ -67,7 +67,7 @@ public interface GhostBehaviors {
 	 *                 the ambushed Pac-Man
 	 * @return ambushing behavior
 	 */
-	default Behavior<Ghost> ambushing(PacMan pacMan) {
+	default Behavior ambushing(PacMan pacMan) {
 		return headingFor(() -> pacMan.tilesAhead(4));
 	}
 
@@ -93,7 +93,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return behavior where Pac-Man is attacked with help of partner ghost
 	 */
-	default Behavior<Ghost> attackingWithPartner(Ghost blinky, PacMan pacMan) {
+	default Behavior attackingWithPartner(Ghost blinky, PacMan pacMan) {
 		return headingFor(() -> {
 			Tile b = blinky.tilePosition(), p = pacMan.tilesAhead(2);
 			return maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
@@ -135,10 +135,10 @@ public interface GhostBehaviors {
 	 * @param scatterTarget
 	 *                        tile ghost heads for in scattering mode
 	 */
-	default Behavior<Ghost> attackingAndRejecting(PacMan pacMan, int distance, Tile scatterTarget) {
-		return headingFor(
-				() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.tilePosition()
-						: scatterTarget);
+	default Behavior attackingAndRejecting(PacMan pacMan, int distance, Tile scatterTarget) {
+		return headingFor(() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance
+				? pacMan.tilePosition()
+				: scatterTarget);
 	}
 
 	/**
@@ -146,7 +146,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return bouncing behavior
 	 */
-	default Behavior<Ghost> bouncing() {
+	default Behavior bouncing() {
 		return ghost -> new Route(ghost.isStuck() ? NESW.inv(ghost.getMoveDir()) : ghost.getMoveDir());
 	}
 
@@ -157,8 +157,8 @@ public interface GhostBehaviors {
 	 *                   the attacker e.g. Pac-Man
 	 * @return behavior where ghost flees to a "safe" maze corner
 	 */
-	default Behavior<Ghost> fleeingToSafeCorner(MazeMover attacker) {
-		return new FleeingToSafeCorner<>(maze(), attacker::tilePosition);
+	default Behavior fleeingToSafeCorner(MazeMover attacker) {
+		return new FleeingToSafeCorner(maze(), attacker::tilePosition);
 	}
 
 	/**
@@ -168,7 +168,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return behavior where ghost takes random turns at each intersection
 	 */
-	default Behavior<Ghost> fleeingRandomly() {
+	default Behavior fleeingRandomly() {
 		return ghost -> {
 			int currentDir = ghost.getMoveDir();
 			Route route = new Route(currentDir);
@@ -202,7 +202,7 @@ public interface GhostBehaviors {
 	 *                   target tile supplier (this tile must be inside the maze or teleport space!)
 	 * @return behavior following the path to the target
 	 */
-	default Behavior<Ghost> followingPathfinder(Supplier<Tile> fnTarget) {
+	default Behavior followingPathfinder(Supplier<Tile> fnTarget) {
 		return ghost -> {
 			Route route = new Route();
 			route.setPath(maze().findPath(ghost.tilePosition(), fnTarget.get()));
@@ -219,8 +219,8 @@ public interface GhostBehaviors {
 	 *                   function supplying the target tile at time of decision
 	 * @return behavior where ghost follows a fixed path
 	 */
-	default Behavior<Ghost> followingFixedPath(Supplier<Tile> fnTarget) {
-		return new FollowingFixedPath<>(fnTarget);
+	default Behavior followingFixedPath(Supplier<Tile> fnTarget) {
+		return new FollowingFixedPath(fnTarget);
 	}
 
 	/**
@@ -228,7 +228,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return behavior where ghost keeps its current move direction
 	 */
-	default Behavior<Ghost> keepingDirection() {
+	default Behavior keepingDirection() {
 		return ghost -> new Route(ghost.getMoveDir());
 	}
 }
