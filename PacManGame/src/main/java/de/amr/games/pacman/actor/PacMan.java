@@ -220,7 +220,9 @@ public class PacMan extends MazeMover {
 			else {
 				move();
 				updateWalkingSprite();
-				inspectWorld();
+				if (eventsEnabled) {
+					findSomethingInteresting().ifPresent(PacMan.this::publishEvent);
+				}
 			}
 		}
 
@@ -232,14 +234,11 @@ public class PacMan extends MazeMover {
 			digestionTicks -= 1;
 		}
 
-		private void inspectWorld() {
-			if (!eventsEnabled) {
-				return;
-			}
+		private Optional<PacManGameEvent> findSomethingInteresting() {
 			Tile tile = tilePosition();
 
-			/*@formatter:off*/
 			Optional<Ghost> collidingGhost = game.activeGhosts()
+			/*@formatter:off*/
 				.filter(ghost -> ghost.getState() != GhostState.DEAD)
 				.filter(ghost -> ghost.getState() != GhostState.DYING)
 				.filter(ghost -> ghost.getState() != GhostState.LOCKED)
@@ -247,16 +246,14 @@ public class PacMan extends MazeMover {
 				.findFirst();
 			/*@formatter:on*/
 			if (collidingGhost.isPresent()) {
-				publishEvent(new PacManGhostCollisionEvent(collidingGhost.get()));
-				return;
+				return Optional.of(new PacManGhostCollisionEvent(collidingGhost.get()));
 			}
 
 			if (tile == game.maze.getBonusTile()) {
 				Optional<Bonus> activeBonus = game.getBonus().filter(bonus -> !bonus.consumed());
 				if (activeBonus.isPresent()) {
 					Bonus bonus = activeBonus.get();
-					publishEvent(new BonusFoundEvent(bonus.symbol(), bonus.value()));
-					return;
+					return Optional.of(new BonusFoundEvent(bonus.symbol(), bonus.value()));
 				}
 			}
 
@@ -264,11 +261,11 @@ public class PacMan extends MazeMover {
 				eatTimer = 0;
 				boolean energizer = game.maze.containsEnergizer(tile);
 				digestionTicks = game.getDigestionTicks(energizer);
-				publishEvent(new FoodFoundEvent(tile, energizer));
+				return Optional.of(new FoodFoundEvent(tile, energizer));
 			}
-			else {
-				eatTimer += 1;
-			}
+			eatTimer += 1;
+
+			return Optional.empty();
 		}
 	}
 
