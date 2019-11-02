@@ -461,8 +461,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onTick() {
-			boolean timeForChange = getTicksRemaining() == getDuration() / 2;
-			if (timeForChange) {
+			if (getTicksRemaining() == getDuration() * 10 / 100) {
 				game.nextLevel();
 				game.activeActors().forEach(MazeMover::init);
 				game.activeGhosts().forEach(ghost -> ghost.setVisible(true));
