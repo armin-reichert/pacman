@@ -152,10 +152,10 @@ public class PlayView implements View, Controller {
 		int mazeWidth = mazeView.sprites.current().get().getWidth();
 		g.translate(0, height - 2 * TS);
 		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
-			g.translate(mazeWidth - (n - i) * 2 * TS, 0);
+			g.translate(mazeWidth - (n - i + 1) * 2 * TS, 0);
 			Image bonusImage = game.theme.spr_bonusSymbol(game.getLevelCounter().get(i)).frame(0);
 			g.drawImage(bonusImage, 0, 0, 2 * TS, 2 * TS, null);
-			g.translate(-mazeWidth + (n - i) * 2 * TS, 0);
+			g.translate(-mazeWidth + (n - i + 1) * 2 * TS, 0);
 		}
 		g.translate(0, -height + 2 * TS);
 	}

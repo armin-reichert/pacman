@@ -219,7 +219,7 @@ public class PacManGame {
 		eaten = 0;
 		numGhostsKilled = 0;
 		levelCounter.add(0, getLevelSymbol());
-		if (levelCounter.size() == 8) {
+		if (levelCounter.size() > 8) {
 			levelCounter.remove(levelCounter.size() - 1);
 		}
 		ghosts().forEach(ghost -> ghost.foodCount = 0);
