@@ -60,27 +60,45 @@ public abstract class MazeMover extends SpriteEntity {
 	}
 
 	/**
-	 * Computes the next move direction. This is usually different from the current move direction and
-	 * will be taken as soon as possible, for example at the next intersection.
+	 * Gets the next move direction which usually differs from the current move direction and will be
+	 * taken as soon as possible, for example at the next intersection.
 	 * 
 	 * @return the next move direction to take
 	 */
-	public abstract OptionalInt computeNextDirection();
+	public abstract OptionalInt getNextMoveDirection();
 
 	/**
-	 * @return the full speed (in pixels/tick) for the current frame. The actual speed can be lower to
-	 *         avoid moving into inaccessible tiles.
+	 * @return the maximum possible speed (in pixels/tick) for the current frame. The actual speed can
+	 *         be lower to avoid moving into inaccessible tiles.
 	 */
-	public abstract float computeFullSpeed();
+	public abstract float maxSpeed();
 
+	/**
+	 * Adds a listener for the game events published by this maze mover.
+	 * 
+	 * @param listener
+	 *                   event listener
+	 */
 	public void addGameEventListener(Consumer<PacManGameEvent> listener) {
 		gameEventListeners.add(listener);
 	}
 
+	/**
+	 * Removes the given game event listener.
+	 * 
+	 * @param listener
+	 *                   event listener
+	 */
 	public void removeGameEventListener(Consumer<PacManGameEvent> listener) {
 		gameEventListeners.remove(listener);
 	}
 
+	/**
+	 * Publishes the given event and informs all registered listeners.
+	 * 
+	 * @param event
+	 *                a game event
+	 */
 	public void publishEvent(PacManGameEvent event) {
 		LOGGER.info(String.format("%s publishing event '%s'", name, event));
 		gameEventListeners.forEach(listener -> listener.accept(event));
@@ -89,7 +107,7 @@ public abstract class MazeMover extends SpriteEntity {
 	/**
 	 * @return the tile containing the center of this entity's collision box
 	 */
-	public Tile tilePosition() {
+	public Tile currentTile() {
 		Vector2f center = tf.getCenter();
 		return game.maze.tileAt(round(center.x) / TS, round(center.y) / TS);
 	}
@@ -101,7 +119,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 *         direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
-		return game.maze.tileToDir(tilePosition(), moveDir, numTiles);
+		return game.maze.tileToDir(currentTile(), moveDir, numTiles);
 	}
 
 	/**
@@ -115,7 +133,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 *                  pixel offset in y-direction
 	 */
 	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
-		enteredNewTile = !tile.equals(tilePosition());
+		enteredNewTile = !tile.equals(currentTile());
 		tf.setPosition(tile.col * TS + xOffset, tile.row * TS + yOffset);
 	}
 
@@ -123,7 +141,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 * Places this maze mover exactly over its current tile.
 	 */
 	public void align() {
-		Tile tile = tilePosition();
+		Tile tile = currentTile();
 		tf.setPosition(tile.col * TS, tile.row * TS);
 	}
 
@@ -178,8 +196,8 @@ public abstract class MazeMover extends SpriteEntity {
 	 * direction, moving around corners without losing alignment, "teleportation" and getting stuck.
 	 */
 	protected void move() {
-		Tile prevTile = tilePosition();
-		computeNextDirection().ifPresent(dir -> nextDir = dir);
+		Tile prevTile = currentTile();
+		getNextMoveDirection().ifPresent(dir -> nextDir = dir);
 		float speed = computeActualSpeed(nextDir);
 		if (speed > 0) {
 			if (nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir)) {
@@ -200,7 +218,7 @@ public abstract class MazeMover extends SpriteEntity {
 		else if (tf.getX() <= teleportLeftX) {
 			tf.setX(teleportRightX);
 		}
-		enteredNewTile = prevTile != tilePosition();
+		enteredNewTile = prevTile != currentTile();
 	}
 
 	/*
@@ -208,10 +226,10 @@ public abstract class MazeMover extends SpriteEntity {
 	 * frame.
 	 */
 	private float computeActualSpeed(int dir) {
-		Tile currentTile = tilePosition();
+		Tile currentTile = currentTile();
 		Tile neighborTile = game.maze.tileToDir(currentTile, dir);
 		if (canEnterTile(neighborTile)) {
-			return computeFullSpeed();
+			return maxSpeed();
 		}
 		switch (dir) {
 		case Top4.E:

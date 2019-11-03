@@ -42,7 +42,7 @@ class HeadingFor implements Behavior {
 	public Route getRoute(MazeMover actor) {
 		final Maze maze = actor.game.maze;
 		final int actorDir = actor.moveDir;
-		final Tile actorTile = actor.tilePosition();
+		final Tile actorTile = actor.currentTile();
 		final Tile targetTile = Objects.requireNonNull(targetTileSupplier.get(), "Target tile must not be NULL");
 		final Route route = new Route();
 		route.setTarget(targetTile);

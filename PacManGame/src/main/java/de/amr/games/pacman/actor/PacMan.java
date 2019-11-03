@@ -62,7 +62,7 @@ public class PacMan extends MazeMover {
 	}
 
 	@Override
-	public float computeFullSpeed() {
+	public float maxSpeed() {
 		return game.getPacManSpeed();
 	}
 
@@ -80,7 +80,7 @@ public class PacMan extends MazeMover {
 	 * @return if a steering key is pressed, the corresponding direction, otherwise nothing
 	 */
 	@Override
-	public OptionalInt computeNextDirection() {
+	public OptionalInt getNextMoveDirection() {
 		return NESW.dirs().filter(dir -> Keyboard.keyDown(STEERING[dir])).findFirst();
 	}
 
@@ -233,14 +233,14 @@ public class PacMan extends MazeMover {
 		}
 
 		private Optional<PacManGameEvent> findSomethingInteresting() {
-			Tile tile = tilePosition();
+			Tile tile = currentTile();
 
 			Optional<Ghost> collidingGhost = game.activeGhosts()
 			/*@formatter:off*/
 				.filter(ghost -> ghost.getState() != GhostState.DEAD)
 				.filter(ghost -> ghost.getState() != GhostState.DYING)
 				.filter(ghost -> ghost.getState() != GhostState.LOCKED)
-				.filter(ghost -> ghost.tilePosition().equals(tile))
+				.filter(ghost -> ghost.currentTile().equals(tile))
 				.findFirst();
 			/*@formatter:on*/
 			if (collidingGhost.isPresent()) {

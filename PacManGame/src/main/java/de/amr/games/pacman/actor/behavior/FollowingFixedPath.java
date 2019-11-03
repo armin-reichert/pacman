@@ -23,10 +23,10 @@ class FollowingFixedPath implements Behavior {
 
 	@Override
 	public Route getRoute(MazeMover actor) {
-		if (path.size() == 0 || actor.tilePosition().equals(path.get(path.size() - 1))) {
+		if (path.size() == 0 || actor.currentTile().equals(path.get(path.size() - 1))) {
 			computePath(actor);
 		}
-		while (path.size() > 0 && !actor.tilePosition().equals(path.get(0))) {
+		while (path.size() > 0 && !actor.currentTile().equals(path.get(0))) {
 			path.remove(0);
 		}
 		Route route = new Route();
@@ -37,6 +37,6 @@ class FollowingFixedPath implements Behavior {
 
 	@Override
 	public void computePath(MazeMover actor) {
-		path = actor.game.maze.findPath(actor.tilePosition(), targetTileSupplier.get());
+		path = actor.game.maze.findPath(actor.currentTile(), targetTileSupplier.get());
 	}
 }

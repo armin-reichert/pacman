@@ -113,7 +113,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	// Behavior
 
 	@Override
-	public float computeFullSpeed() {
+	public float maxSpeed() {
 		return game.computeGhostSpeed(this);
 	}
 
@@ -131,14 +131,14 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	}
 
 	@Override
-	public OptionalInt computeNextDirection() {
+	public OptionalInt getNextMoveDirection() {
 		return currentBehavior().getRoute(this).getDir();
 	}
 
 	@Override
 	public boolean canEnterTile(Tile tile) {
 		if (game.maze.isDoor(tile)) {
-			return getState() == DEAD || getState() != LOCKED && game.maze.inGhostHouse(tilePosition());
+			return getState() == DEAD || getState() != LOCKED && game.maze.inGhostHouse(currentTile());
 		}
 		return super.canEnterTile(tile);
 	}
@@ -179,7 +179,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 					})
 					.onTick(() -> {
 						move();
-						sprites.select(game.maze.inGhostHouse(tilePosition())	
+						sprites.select(game.maze.inGhostHouse(currentTile())	
 									? "color-" + moveDir
 									: game.pacMan.isLosingPower()	? "flashing" : "frightened");
 					})
@@ -229,7 +229,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 				.when(DYING).then(DEAD).onTimeout()
 					
 				.when(DEAD).then(LOCKED)
-					.condition(() -> tilePosition().equals(game.maze.getGhostRevivalTile()))
+					.condition(() -> currentTile().equals(game.maze.getGhostRevivalTile()))
 				
 		.endStateMachine();
 		/*@formatter:on*/
