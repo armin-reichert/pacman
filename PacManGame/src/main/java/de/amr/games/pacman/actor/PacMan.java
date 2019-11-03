@@ -220,9 +220,7 @@ public class PacMan extends MazeMover {
 			else {
 				move();
 				updateWalkingSprite();
-				if (canPublishEvents) {
-					findSomethingInteresting().ifPresent(PacMan.this::publishEvent);
-				}
+				findSomethingInteresting().ifPresent(PacMan.this::publishEvent);
 			}
 		}
 

@@ -49,15 +49,11 @@ public abstract class MazeMover extends SpriteEntity {
 	/* Event listeners. */
 	private final Set<Consumer<PacManGameEvent>> gameEventListeners = new LinkedHashSet<>();
 
-	/* Tells if events can be published. */
-	public boolean canPublishEvents;
-
 	protected MazeMover(PacManGame game, String name) {
 		this.game = game;
 		this.name = name;
 		moveDir = nextDir = Top4.E;
 		enteredNewTile = false;
-		canPublishEvents = true;
 		// collision box size is one tile, sprite size is larger!
 		tf.setWidth(TS);
 		tf.setHeight(TS);
@@ -86,10 +82,8 @@ public abstract class MazeMover extends SpriteEntity {
 	}
 
 	public void publishEvent(PacManGameEvent event) {
-		if (canPublishEvents) {
-			LOGGER.info(String.format("%s publishing event '%s'", name, event));
-			gameEventListeners.forEach(listener -> listener.accept(event));
-		}
+		LOGGER.info(String.format("%s publishing event '%s'", name, event));
+		gameEventListeners.forEach(listener -> listener.accept(event));
 	}
 
 	/**
