@@ -31,7 +31,7 @@ class FollowingFixedPath implements Behavior {
 		}
 		Route route = new Route();
 		route.setPath(path);
-		route.setDir(actor.game.maze.alongPath(path).orElse(actor.getMoveDir()));
+		route.setDir(actor.game.maze.alongPath(path).orElse(actor.moveDir));
 		return route;
 	}
 

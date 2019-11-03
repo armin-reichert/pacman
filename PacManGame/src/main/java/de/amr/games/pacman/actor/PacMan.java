@@ -56,13 +56,13 @@ public class PacMan extends MazeMover {
 	private void initialize() {
 		eatTimer = 0;
 		placeAtTile(game.maze.getPacManHome(), TS / 2, 0);
-		setNextDir(Top4.E);
+		nextDir = Top4.E;
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("full");
 	}
 
 	@Override
-	public float getSpeed() {
+	public float computeFullSpeed() {
 		return game.getPacManSpeed();
 	}
 
@@ -102,7 +102,7 @@ public class PacMan extends MazeMover {
 	}
 
 	private void updateWalkingSprite() {
-		sprites.select("walking_" + getMoveDir());
+		sprites.select("walking_" + moveDir);
 		sprites.current().ifPresent(sprite -> sprite.enableAnimation(!isStuck()));
 	}
 
@@ -220,7 +220,7 @@ public class PacMan extends MazeMover {
 			else {
 				move();
 				updateWalkingSprite();
-				if (eventsEnabled) {
+				if (canPublishEvents) {
 					findSomethingInteresting().ifPresent(PacMan.this::publishEvent);
 				}
 			}

@@ -78,12 +78,11 @@ public interface GhostBehaviors {
 	 * <p>
 	 * <cite>Inky is difficult to predict, because he is the only one of the ghosts that uses a factor
 	 * other than Pac-Man’s position/orientation when determining his target tile. Inky actually uses
-	 * both Pac-Man’s position/facing as well as Blinky’s (the red ghost’s) position in his
-	 * calculation. To locate Inky’s target, we first start by selecting the position two tiles in
-	 * front of Pac-Man in his current direction of travel, similar to Pinky’s targeting method. From
-	 * there, imagine drawing a vector from Blinky’s position to this tile, and then doubling the
-	 * length of the vector. The tile that this new, extended vector ends on will be Inky’s actual
-	 * target.</cite>
+	 * both Pac-Man’s position/facing as well as Blinky’s (the red ghost’s) position in his calculation.
+	 * To locate Inky’s target, we first start by selecting the position two tiles in front of Pac-Man
+	 * in his current direction of travel, similar to Pinky’s targeting method. From there, imagine
+	 * drawing a vector from Blinky’s position to this tile, and then doubling the length of the vector.
+	 * The tile that this new, extended vector ends on will be Inky’s actual target.</cite>
 	 * </p>
 	 * 
 	 * @param blinky
@@ -120,8 +119,8 @@ public interface GhostBehaviors {
 	 * whenever he gets too close. On the diagram above, the X marks on the path represent the points
 	 * where Clyde’s mode switches. If Pac-Man somehow managed to remain stationary in that position,
 	 * Clyde would indefinitely loop around that T-shaped area. As long as the player is not in the
-	 * lower-left corner of the maze, Clyde can be avoided completely by simply ensuring that you do
-	 * not block his “escape route” back to his corner. While Pac-Man is within eight tiles of the
+	 * lower-left corner of the maze, Clyde can be avoided completely by simply ensuring that you do not
+	 * block his “escape route” back to his corner. While Pac-Man is within eight tiles of the
 	 * lower-left corner, Clyde’s path will end up in exactly the same loop as he would eventually
 	 * maintain in Scatter mode. </cite>
 	 * </p>
@@ -136,9 +135,9 @@ public interface GhostBehaviors {
 	 *                        tile ghost heads for in scattering mode
 	 */
 	default Behavior attackingAndRejecting(PacMan pacMan, int distance, Tile scatterTarget) {
-		return headingFor(() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance
-				? pacMan.tilePosition()
-				: scatterTarget);
+		return headingFor(
+				() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.tilePosition()
+						: scatterTarget);
 	}
 
 	/**
@@ -147,7 +146,7 @@ public interface GhostBehaviors {
 	 * @return bouncing behavior
 	 */
 	default Behavior bouncing() {
-		return ghost -> new Route(ghost.isStuck() ? NESW.inv(ghost.getMoveDir()) : ghost.getMoveDir());
+		return ghost -> new Route(ghost.isStuck() ? NESW.inv(ghost.moveDir) : ghost.moveDir);
 	}
 
 	/**
@@ -170,9 +169,9 @@ public interface GhostBehaviors {
 	 */
 	default Behavior fleeingRandomly() {
 		return ghost -> {
-			int currentDir = ghost.getMoveDir();
+			int currentDir = ghost.moveDir;
 			Route route = new Route(currentDir);
-			if (!ghost.hasEnteredNewTile() && !ghost.isStuck()) {
+			if (!ghost.enteredNewTile && !ghost.isStuck()) {
 				// keep direction inside tile
 				return route;
 			}
@@ -194,9 +193,9 @@ public interface GhostBehaviors {
 	}
 
 	/**
-	 * Lets the ghost dynamically follow the path to the given target. The path is computed on the
-	 * graph of the maze and updated every time the move direction is queried. This can lead to lots
-	 * of path finder calls!
+	 * Lets the ghost dynamically follow the path to the given target. The path is computed on the graph
+	 * of the maze and updated every time the move direction is queried. This can lead to lots of path
+	 * finder calls!
 	 * 
 	 * @param fnTarget
 	 *                   target tile supplier (this tile must be inside the maze or teleport space!)
@@ -229,6 +228,6 @@ public interface GhostBehaviors {
 	 * @return behavior where ghost keeps its current move direction
 	 */
 	default Behavior keepingDirection() {
-		return ghost -> new Route(ghost.getMoveDir());
+		return ghost -> new Route(ghost.moveDir);
 	}
 }

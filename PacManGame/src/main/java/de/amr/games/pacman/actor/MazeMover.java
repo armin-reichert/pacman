@@ -38,29 +38,29 @@ public abstract class MazeMover extends SpriteEntity {
 	public final String name;
 
 	/* Current move direction (Top4.N, Top4.E, Top4.S, Top4.W). */
-	private int moveDir;
+	public int moveDir;
 
 	/* The intended move direction, actor turns to this direction as soon as possible. */
-	private int nextDir;
+	public int nextDir;
 
 	/* Tells if the last move entered a new tile position */
-	private boolean tileChanged;
+	public boolean enteredNewTile;
 
-	// Event publishing
-	private final Set<Consumer<PacManGameEvent>> eventListeners;
-	protected boolean eventsEnabled;
+	/* Event listeners. */
+	private final Set<Consumer<PacManGameEvent>> gameEventListeners = new LinkedHashSet<>();
+
+	/* Tells if events can be published. */
+	public boolean canPublishEvents;
 
 	protected MazeMover(PacManGame game, String name) {
 		this.game = game;
 		this.name = name;
 		moveDir = nextDir = Top4.E;
-		tileChanged = false;
-		// collision box size of maze movers is one tile, sprite size is larger!
+		enteredNewTile = false;
+		canPublishEvents = true;
+		// collision box size is one tile, sprite size is larger!
 		tf.setWidth(TS);
 		tf.setHeight(TS);
-		// eventing
-		eventListeners = new LinkedHashSet<>();
-		eventsEnabled = true;
 	}
 
 	/**
@@ -72,51 +72,24 @@ public abstract class MazeMover extends SpriteEntity {
 	public abstract OptionalInt computeNextDirection();
 
 	/**
-	 * @return the current speed (in pixels/tick)
+	 * @return the full speed (in pixels/tick) for the current frame. The actual speed can be lower to
+	 *         avoid moving into inaccessible tiles.
 	 */
-	public abstract float getSpeed();
+	public abstract float computeFullSpeed();
 
-	public void addListener(Consumer<PacManGameEvent> listener) {
-		eventListeners.add(listener);
+	public void addGameEventListener(Consumer<PacManGameEvent> listener) {
+		gameEventListeners.add(listener);
 	}
 
-	public void removeListener(Consumer<PacManGameEvent> listener) {
-		eventListeners.remove(listener);
+	public void removeGameEventListener(Consumer<PacManGameEvent> listener) {
+		gameEventListeners.remove(listener);
 	}
 
 	public void publishEvent(PacManGameEvent event) {
-		if (eventsEnabled) {
+		if (canPublishEvents) {
 			LOGGER.info(String.format("%s publishing event '%s'", name, event));
-			eventListeners.forEach(subscriber -> subscriber.accept(event));
+			gameEventListeners.forEach(listener -> listener.accept(event));
 		}
-	}
-
-	public void setEventsEnabled(boolean enabled) {
-		this.eventsEnabled = enabled;
-	}
-
-	public boolean areEventsEnabled() {
-		return eventsEnabled;
-	}
-
-	public int getMoveDir() {
-		return moveDir;
-	}
-
-	protected void setMoveDir(int moveDir) {
-		this.moveDir = moveDir;
-	}
-
-	public int getNextDir() {
-		return nextDir;
-	}
-
-	protected void setNextDir(int nextDir) {
-		this.nextDir = nextDir;
-	}
-
-	public boolean hasEnteredNewTile() {
-		return tileChanged;
 	}
 
 	/**
@@ -130,8 +103,8 @@ public abstract class MazeMover extends SpriteEntity {
 	/**
 	 * @param numTiles
 	 *                   number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current
-	 *         move direction.
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
+	 *         direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
 		return game.maze.tileToDir(tilePosition(), moveDir, numTiles);
@@ -148,7 +121,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 *                  pixel offset in y-direction
 	 */
 	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
-		tileChanged = !tile.equals(tilePosition());
+		enteredNewTile = !tile.equals(tilePosition());
 		tf.setPosition(tile.col * TS + xOffset, tile.row * TS + yOffset);
 	}
 
@@ -207,14 +180,13 @@ public abstract class MazeMover extends SpriteEntity {
 	}
 
 	/**
-	 * Moves this actor through the maze. Handles changing the direction according to the intended
-	 * move direction, moving around corners without losing alignment, "teleportation" and getting
-	 * stuck.
+	 * Moves this actor through the maze. Handles changing the direction according to the intended move
+	 * direction, moving around corners without losing alignment, "teleportation" and getting stuck.
 	 */
 	protected void move() {
 		Tile prevTile = tilePosition();
-		computeNextDirection().ifPresent(this::setNextDir);
-		float speed = computeMaxSpeed(nextDir);
+		computeNextDirection().ifPresent(dir -> nextDir = dir);
+		float speed = computeActualSpeed(nextDir);
 		if (speed > 0) {
 			if (nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir)) {
 				align();
@@ -222,7 +194,7 @@ public abstract class MazeMover extends SpriteEntity {
 			moveDir = nextDir;
 		}
 		else {
-			speed = computeMaxSpeed(moveDir);
+			speed = computeActualSpeed(moveDir);
 		}
 		tf.setVelocity(Vector2f.smul(speed, Vector2f.of(NESW.dx(moveDir), NESW.dy(moveDir))));
 		tf.move();
@@ -234,36 +206,30 @@ public abstract class MazeMover extends SpriteEntity {
 		else if (tf.getX() <= teleportLeftX) {
 			tf.setX(teleportRightX);
 		}
-		tileChanged = prevTile != tilePosition();
+		enteredNewTile = prevTile != tilePosition();
 	}
 
 	/*
-	 * Computes how many pixels this entity can move towards the given direction in one frame.
+	 * Computes how many pixels this entity can actually move towards the given direction in the current
+	 * frame.
 	 */
-	private float computeMaxSpeed(int dir) {
-		final Tile currentTile = tilePosition();
-		final Tile neighborTile = game.maze.tileToDir(currentTile, dir);
-		final float fullSpeed = getSpeed();
+	private float computeActualSpeed(int dir) {
+		Tile currentTile = tilePosition();
+		Tile neighborTile = game.maze.tileToDir(currentTile, dir);
 		if (canEnterTile(neighborTile)) {
-			return fullSpeed;
+			return computeFullSpeed();
 		}
-		float cappedSpeed = 0;
 		switch (dir) {
 		case Top4.E:
-			cappedSpeed = neighborTile.col * TS - (tf.getX() + tf.getWidth());
-			break;
+			return neighborTile.col * TS - (tf.getX() + tf.getWidth());
 		case Top4.W:
-			cappedSpeed = tf.getX() - currentTile.col * TS;
-			break;
+			return tf.getX() - currentTile.col * TS;
 		case Top4.N:
-			cappedSpeed = tf.getY() - currentTile.row * TS;
-			break;
+			return tf.getY() - currentTile.row * TS;
 		case Top4.S:
-			cappedSpeed = neighborTile.row * TS - (tf.getY() + tf.getHeight());
-			break;
+			return neighborTile.row * TS - (tf.getY() + tf.getHeight());
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}
-		return Math.min(fullSpeed, cappedSpeed);
 	}
 }

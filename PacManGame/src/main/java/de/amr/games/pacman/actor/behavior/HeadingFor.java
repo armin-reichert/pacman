@@ -41,10 +41,9 @@ class HeadingFor implements Behavior {
 	@Override
 	public Route getRoute(MazeMover actor) {
 		final Maze maze = actor.game.maze;
-		final int actorDir = actor.getMoveDir();
+		final int actorDir = actor.moveDir;
 		final Tile actorTile = actor.tilePosition();
-		final Tile targetTile = Objects.requireNonNull(targetTileSupplier.get(),
-				"Target tile must not be NULL");
+		final Tile targetTile = Objects.requireNonNull(targetTileSupplier.get(), "Target tile must not be NULL");
 		final Route route = new Route();
 		route.setTarget(targetTile);
 
@@ -56,8 +55,8 @@ class HeadingFor implements Behavior {
 
 		// if inside ghost house, use path finder. To leave the ghost house, target Blinky's home tile
 		if (maze.inGhostHouse(actorTile)) {
-			route.setPath(maze.findPath(actorTile,
-					maze.inGhostHouse(targetTile) ? targetTile : maze.getBlinkyHome()));
+			route.setPath(
+					maze.findPath(actorTile, maze.inGhostHouse(targetTile) ? targetTile : maze.getBlinkyHome()));
 			route.setDir(maze.alongPath(route.getPath()).orElse(actorDir));
 			return route;
 		}

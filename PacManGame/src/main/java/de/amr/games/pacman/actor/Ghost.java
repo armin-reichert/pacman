@@ -84,8 +84,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	}
 
 	private void sirenOff() {
-		if (game.activeGhosts().filter(ghost -> this != ghost)
-				.noneMatch(ghost -> ghost.getState() == CHASING)) {
+		if (game.activeGhosts().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
 			game.theme.snd_ghost_chase().stop();
 		}
 	}
@@ -97,16 +96,15 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	}
 
 	private void deadSoundOff() {
-		if (game.activeGhosts().filter(ghost -> ghost != this)
-				.noneMatch(ghost -> ghost.getState() == DEAD)) {
+		if (game.activeGhosts().filter(ghost -> ghost != this).noneMatch(ghost -> ghost.getState() == DEAD)) {
 			game.theme.snd_ghost_dead().stop();
 		}
 	}
 
 	public void initialize() {
 		placeAtTile(initialTile, TS / 2, 0);
-		setMoveDir(initialDir);
-		setNextDir(initialDir);
+		moveDir = initialDir;
+		nextDir = initialDir;
 		sprites.select("color-" + initialDir);
 		sprites.forEach(Sprite::resetAnimation);
 		setVisible(true);
@@ -115,8 +113,8 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	// Behavior
 
 	@Override
-	public float getSpeed() {
-		return game.getGhostSpeed(this);
+	public float computeFullSpeed() {
+		return game.computeGhostSpeed(this);
 	}
 
 	public GhostState getNextState() {
@@ -148,7 +146,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	@Override
 	protected void move() {
 		super.move();
-		sprites.select("color-" + getMoveDir());
+		sprites.select("color-" + moveDir);
 	}
 
 	// Define state machine
@@ -182,7 +180,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 					.onTick(() -> {
 						move();
 						sprites.select(game.maze.inGhostHouse(tilePosition())	
-									? "color-" + getMoveDir()
+									? "color-" + moveDir
 									: game.pacMan.isLosingPower()	? "flashing" : "frightened");
 					})
 				
@@ -197,7 +195,7 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 					.onEntry(this::deadSoundOn)
 					.onTick(() -> {	
 						move();
-						sprites.select("eyes-" + getMoveDir());
+						sprites.select("eyes-" + moveDir);
 					})
 					.onExit(this::deadSoundOff)
 					
