@@ -501,8 +501,8 @@ Pac-Man's movement is controlled by holding a key indicating its intended direct
 int[] STEERING = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
 @Override
-public OptionalInt supplyIntendedDir() {
-	return NESW.dirs().filter(dir -> keyDown(STEERING[dir])).findFirst();
+public OptionalInt getNextMoveDirection() {
+	return NESW.dirs().filter(dir -> Keyboard.keyDown(STEERING[dir])).findFirst();
 }
 ```
 
@@ -548,7 +548,7 @@ Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
 default Behavior attackingDirectly(PacMan pacMan) {
-	return headingFor(pacMan::tilePosition);
+	return headingFor(pacMan::currentTile);
 }
 ```
 
@@ -576,8 +576,8 @@ Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to ge
 ```java
 default Behavior attackingWithPartner(Ghost blinky, PacMan pacMan) {
 	return headingFor(() -> {
-		Tile b = blinky.tilePosition(), p = pacMan.tilesAhead(2);
-		return new Tile(2 * p.col - b.col, 2 * p.row - b.row);
+		Tile b = blinky.currentTile(), p = pacMan.tilesAhead(2);
+		return maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 	});
 }
 ```
@@ -591,7 +591,7 @@ Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from 
 ```java
 default Behavior attackingAndRejecting(PacMan pacMan, int distance, Tile scatterTarget) {
 	return headingFor(
-			() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.tilePosition()
+			() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.currentTile()
 					: scatterTarget);
 }
 ```
