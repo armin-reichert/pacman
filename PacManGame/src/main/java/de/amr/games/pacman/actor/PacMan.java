@@ -50,13 +50,13 @@ public class PacMan extends MazeMover {
 		super(game, "Pac-Man");
 		fsm = buildStateMachine();
 		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-		createSprites();
+		setSprites();
 	}
 
 	private void initialize() {
 		eatTimer = 0;
 		placeAtTile(game.maze.getPacManHome(), TS / 2, 0);
-		nextDir = Top4.E;
+		moveDir = nextDir = Top4.E;
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("full");
 	}
@@ -94,7 +94,7 @@ public class PacMan extends MazeMover {
 
 	// Sprites
 
-	private void createSprites() {
+	private void setSprites() {
 		NESW.dirs().forEach(dir -> sprites.set("walking_" + dir, game.theme.spr_pacManWalking(dir)));
 		sprites.set("dying", game.theme.spr_pacManDying());
 		sprites.set("full", game.theme.spr_pacManFull());
