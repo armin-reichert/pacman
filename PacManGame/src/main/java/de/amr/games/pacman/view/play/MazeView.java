@@ -8,48 +8,37 @@ import de.amr.easy.game.entity.SpriteEntity;
 import de.amr.easy.game.ui.sprites.Animation;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.model.Tile;
 
 /**
- * Displays the maze, bonus symbol and handles animations like blinking.
+ * Displays the maze and handles animations like blinking energizers.
  * 
  * @author Armin Reichert
  */
-public class MazeUI extends SpriteEntity {
+public class MazeView extends SpriteEntity {
 
 	private final PacManGame game;
-	private final Animation blinkingEnergizer;
+	private final Animation energizerBlinking;
 	private boolean flashing;
-	private int bonusTimer;
 
-	public MazeUI(PacManGame game) {
+	public MazeView(PacManGame game) {
 		this.game = game;
+		energizerBlinking = new CyclicAnimation(2);
+		energizerBlinking.setFrameDuration(500);
+		energizerBlinking.setEnabled(false);
 		sprites.set("normal", game.theme.spr_fullMaze());
 		sprites.set("flashing", game.theme.spr_flashingMaze());
-		sprites.select("normal");
-		blinkingEnergizer = new CyclicAnimation(2);
-		blinkingEnergizer.setFrameDuration(500);
-		blinkingEnergizer.setEnabled(false);
+		setFlashing(false);
 	}
 
 	@Override
 	public void init() {
-		game.removeBonus();
-		bonusTimer = 0;
 		setFlashing(false);
 	}
 
 	@Override
 	public void update() {
-		if (bonusTimer > 0) {
-			bonusTimer -= 1;
-			if (bonusTimer == 0) {
-				game.removeBonus();
-			}
-		}
-		blinkingEnergizer.update();
+		energizerBlinking.update();
 	}
 
 	public void setFlashing(boolean state) {
@@ -57,19 +46,9 @@ public class MazeUI extends SpriteEntity {
 		sprites.select(flashing ? "flashing" : "normal");
 	}
 
-	public void setBonus(Bonus bonus) {
-		game.setBonus(bonus);
-		Tile bonusTile = game.maze.getBonusTile();
-		bonus.tf.setPosition(bonusTile.col * TS + TS / 2, bonusTile.row * TS);
-	}
-
-	public void setBonusTimer(int ticks) {
-		bonusTimer = ticks;
-	}
-
 	public void enableSprites(boolean enable) {
 		sprites.enableAnimation(enable);
-		blinkingEnergizer.setEnabled(enable);
+		energizerBlinking.setEnabled(enable);
 	}
 
 	@Override
@@ -85,11 +64,10 @@ public class MazeUI extends SpriteEntity {
 			// hide eaten pellets and turned off energizers
 			game.maze.tiles().forEach(tile -> {
 				if (game.maze.containsEatenFood(tile)
-						|| game.maze.containsEnergizer(tile) && blinkingEnergizer.currentFrame() != 0) {
+						|| game.maze.containsEnergizer(tile) && energizerBlinking.currentFrame() != 0) {
 					g.fillRect(tile.col * TS, tile.row * TS, TS, TS);
 				}
 			});
-			game.getBonus().ifPresent(bonus -> bonus.draw(g));
 		}
 	}
 }

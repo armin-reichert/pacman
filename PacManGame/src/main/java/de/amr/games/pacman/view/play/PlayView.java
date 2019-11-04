@@ -14,6 +14,7 @@ import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
 
 /**
@@ -25,28 +26,37 @@ public class PlayView implements View, Controller {
 
 	protected final int width, height;
 	protected final PacManGame game;
-	protected final MazeUI mazeView;
+	protected final MazeView mazeView;
 	protected final Image lifeImage;
 	protected String infoText;
 	protected Color infoTextColor;
 	protected boolean scoresVisible;
+	private int bonusTimer;
 
 	public PlayView(PacManGame game) {
 		this.width = app().settings.width;
 		this.height = app().settings.height;
 		this.game = game;
 		lifeImage = game.theme.spr_pacManWalking(Top4.W).frame(1);
-		mazeView = new MazeUI(game);
+		mazeView = new MazeView(game);
 		mazeView.tf.setPosition(0, 3 * TS);
 	}
 
 	@Override
 	public void init() {
+		game.removeBonus();
+		bonusTimer = 0;
 		mazeView.init();
 	}
 
 	@Override
 	public void update() {
+		if (bonusTimer > 0) {
+			bonusTimer -= 1;
+			if (bonusTimer == 0) {
+				game.removeBonus();
+			}
+		}
 		mazeView.update();
 	}
 
@@ -57,11 +67,14 @@ public class PlayView implements View, Controller {
 	}
 
 	public void setBonusTimer(int ticks) {
-		mazeView.setBonusTimer(ticks);
+		bonusTimer = ticks;
 	}
 
 	public void setBonus(BonusSymbol symbol, int value) {
-		mazeView.setBonus(new Bonus(symbol, value, game.theme));
+		Bonus bonus = new Bonus(symbol, value, game.theme);
+		game.setBonus(bonus);
+		Tile bonusTile = game.maze.getBonusTile();
+		bonus.tf.setPosition(bonusTile.col * TS + TS / 2, bonusTile.row * TS);
 	}
 
 	public void setMazeFlashing(boolean flashing) {
@@ -88,11 +101,12 @@ public class PlayView implements View, Controller {
 	@Override
 	public void draw(Graphics2D g) {
 		mazeView.draw(g);
+		game.getBonus().ifPresent(bonus -> bonus.draw(g));
 		drawActors(g);
 		drawInfoText(g);
 		drawScores(g);
 	}
-
+	
 	protected void drawActors(Graphics2D g) {
 		if (game.isActive(game.pacMan)) {
 			game.pacMan.draw(g);
