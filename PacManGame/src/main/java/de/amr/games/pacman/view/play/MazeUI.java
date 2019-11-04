@@ -59,12 +59,8 @@ public class MazeUI extends SpriteEntity {
 
 	public void setBonus(Bonus bonus) {
 		game.setBonus(bonus);
-		Tile tile = game.maze.getBonusTile();
-		bonus.tf.setPosition(tile.col * TS + TS / 2, tile.row * TS);
-	}
-
-	public void removeBonus() {
-		game.removeBonus();
+		Tile bonusTile = game.maze.getBonusTile();
+		bonus.tf.setPosition(bonusTile.col * TS + TS / 2, bonusTile.row * TS);
 	}
 
 	public void setBonusTimer(int ticks) {
@@ -79,20 +75,18 @@ public class MazeUI extends SpriteEntity {
 	@Override
 	public void draw(Graphics2D g) {
 		Sprite mazeSprite = sprites.current().get();
-		g.translate(tf.getX(), tf.getY());
 		g.setColor(game.theme.color_mazeBackground());
+		g.translate(tf.getX(), tf.getY());
+		// we must draw the background because the maze sprite is transparent
 		g.fillRect(0, 0, mazeSprite.getWidth(), mazeSprite.getHeight());
 		mazeSprite.draw(g);
 		g.translate(-tf.getX(), -tf.getY());
 		if (!flashing) {
-			// hide eaten pellets and let energizers blink
+			// hide eaten pellets and turned off energizers
 			game.maze.tiles().forEach(tile -> {
-				if (game.maze.containsEatenFood(tile) || game.maze.containsEnergizer(tile)
-						&& blinkingEnergizer.currentFrame() != 0) {
-					g.translate(tile.col * TS, tile.row * TS);
-					g.setColor(game.theme.color_mazeBackground());
-					g.fillRect(0, 0, TS, TS);
-					g.translate(-tile.col * TS, -tile.row * TS);
+				if (game.maze.containsEatenFood(tile)
+						|| game.maze.containsEnergizer(tile) && blinkingEnergizer.currentFrame() != 0) {
+					g.fillRect(tile.col * TS, tile.row * TS, TS, TS);
 				}
 			});
 			game.getBonus().ifPresent(bonus -> bonus.draw(g));
