@@ -64,10 +64,6 @@ public class PlayView implements View, Controller {
 		mazeView.setBonus(new Bonus(symbol, value, game.theme));
 	}
 
-	public void removeBonus() {
-		mazeView.removeBonus();
-	}
-
 	public void setMazeFlashing(boolean flashing) {
 		mazeView.setFlashing(flashing);
 	}

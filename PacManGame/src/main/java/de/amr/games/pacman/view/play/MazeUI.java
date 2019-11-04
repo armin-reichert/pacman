@@ -20,18 +20,18 @@ import de.amr.games.pacman.model.Tile;
 public class MazeUI extends SpriteEntity {
 
 	private final PacManGame game;
-	private final Animation energizerBlinkingAnimation;
+	private final Animation blinkingEnergizer;
 	private boolean flashing;
 	private int bonusTimer;
 
 	public MazeUI(PacManGame game) {
 		this.game = game;
-		sprites.set("s_normal", game.theme.spr_fullMaze());
-		sprites.set("s_flashing", game.theme.spr_flashingMaze());
-		sprites.select("s_normal");
-		energizerBlinkingAnimation = new CyclicAnimation(2);
-		energizerBlinkingAnimation.setFrameDuration(500);
-		energizerBlinkingAnimation.setEnabled(false);
+		sprites.set("normal", game.theme.spr_fullMaze());
+		sprites.set("flashing", game.theme.spr_flashingMaze());
+		sprites.select("normal");
+		blinkingEnergizer = new CyclicAnimation(2);
+		blinkingEnergizer.setFrameDuration(500);
+		blinkingEnergizer.setEnabled(false);
 	}
 
 	@Override
@@ -49,12 +49,12 @@ public class MazeUI extends SpriteEntity {
 				game.removeBonus();
 			}
 		}
-		energizerBlinkingAnimation.update();
+		blinkingEnergizer.update();
 	}
 
 	public void setFlashing(boolean state) {
 		flashing = state;
-		sprites.select(flashing ? "s_flashing" : "s_normal");
+		sprites.select(flashing ? "flashing" : "normal");
 	}
 
 	public void setBonus(Bonus bonus) {
@@ -73,7 +73,7 @@ public class MazeUI extends SpriteEntity {
 
 	public void enableSprites(boolean enable) {
 		sprites.enableAnimation(enable);
-		energizerBlinkingAnimation.setEnabled(enable);
+		blinkingEnergizer.setEnabled(enable);
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public class MazeUI extends SpriteEntity {
 			// hide eaten pellets and let energizers blink
 			game.maze.tiles().forEach(tile -> {
 				if (game.maze.containsEatenFood(tile) || game.maze.containsEnergizer(tile)
-						&& energizerBlinkingAnimation.currentFrame() != 0) {
+						&& blinkingEnergizer.currentFrame() != 0) {
 					g.translate(tile.col * TS, tile.row * TS);
 					g.setColor(game.theme.color_mazeBackground());
 					g.fillRect(0, 0, TS, TS);
