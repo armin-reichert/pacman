@@ -653,7 +653,7 @@ This work would not have been possible without these invaluable sources of infor
 
 ## Summary
 
-The goal of this project was to provide a [Pac-Man](https://en.wikipedia.org/wiki/List_of_Pac-Man_video_games) implementation such that the game's inner workings can more easily be understood from the code. The implementation follows the MVC pattern and uses *finite state machines* for the control logic of the actors and the game. The state machines are implemented in a declarative way using the *builder* pattern. 
+The goal of this project was to provide a [Pac-Man](https://en.wikipedia.org/wiki/List_of_Pac-Man_video_games) implementation in which the game's inner workings can be understood from the code more easily. The implementation follows the MVC pattern and uses *finite state machines* for the control logic of the actors and the game. The state machines are implemented in a declarative way using the *builder* pattern. 
 
 A simple home-grown library is used for the basic game infrastructure (active rendering, game loop, full-screen mode, 
 keyboard and mouse handling etc.), but it should be not too difficult to implement these infrastructure parts from scratch or 
@@ -664,4 +664,4 @@ or to implement the state machines using some other state machine library.
 
 Comments are welcome!
 
-*Armin Reichert, October 2018*
+*Armin Reichert, November 2019*
