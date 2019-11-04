@@ -46,7 +46,7 @@ public class PlayView implements View, Controller {
 	public void init() {
 		game.removeBonus();
 		bonusTimer = 0;
-		mazeView.init();
+		mazeView.setFlashing(false);
 	}
 
 	@Override

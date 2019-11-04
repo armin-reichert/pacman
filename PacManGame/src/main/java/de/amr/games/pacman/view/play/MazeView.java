@@ -31,16 +31,6 @@ public class MazeView extends SpriteEntity {
 		setFlashing(false);
 	}
 
-	@Override
-	public void init() {
-		setFlashing(false);
-	}
-
-	@Override
-	public void update() {
-		energizerBlinking.update();
-	}
-
 	public void setFlashing(boolean flashing) {
 		this.flashing = flashing;
 		sprites.select(flashing ? "flashing" : "normal");
@@ -53,18 +43,19 @@ public class MazeView extends SpriteEntity {
 
 	@Override
 	public void draw(Graphics2D g) {
-		Sprite mazeImage = sprites.current().get();
-		g.setColor(game.theme.color_mazeBackground());
+		Sprite currentSprite = sprites.current().get();
 		g.translate(tf.getX(), tf.getY());
 		// we must draw the background because the maze sprite is transparent
-		g.fillRect(0, 0, mazeImage.getWidth(), mazeImage.getHeight());
-		mazeImage.draw(g);
+		g.setColor(game.theme.color_mazeBackground());
+		g.fillRect(0, 0, currentSprite.getWidth(), currentSprite.getHeight());
+		currentSprite.draw(g);
 		g.translate(-tf.getX(), -tf.getY());
 		if (!flashing) {
-			// hide eaten pellets and turned off energizers
+			energizerBlinking.update();
 			game.maze.tiles().forEach(tile -> {
 				if (game.maze.containsEatenFood(tile)
-						|| game.maze.containsEnergizer(tile) && energizerBlinking.currentFrame() != 0) {
+						|| game.maze.containsEnergizer(tile) && energizerBlinking.currentFrame() == 1) {
+					g.setColor(game.theme.color_mazeBackground());
 					g.fillRect(tile.col * TS, tile.row * TS, TS, TS);
 				}
 			});
