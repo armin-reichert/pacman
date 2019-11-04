@@ -95,14 +95,14 @@ public class PacMan extends MazeMover {
 	// Sprites
 
 	private void setSprites() {
-		NESW.dirs().forEach(dir -> sprites.set("walking_" + dir, game.theme.spr_pacManWalking(dir)));
+		NESW.dirs().forEach(dir -> sprites.set("walking-" + dir, game.theme.spr_pacManWalking(dir)));
 		sprites.set("dying", game.theme.spr_pacManDying());
 		sprites.set("full", game.theme.spr_pacManFull());
 		sprites.select("full");
 	}
 
 	private void updateWalkingSprite() {
-		sprites.select("walking_" + moveDir);
+		sprites.select("walking-" + moveDir);
 		sprites.current().ifPresent(sprite -> sprite.enableAnimation(!isStuck()));
 	}
 
