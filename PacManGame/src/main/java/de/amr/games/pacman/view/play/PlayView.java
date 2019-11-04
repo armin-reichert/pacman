@@ -61,7 +61,7 @@ public class PlayView implements View, Controller {
 	}
 
 	public void enableAnimation(boolean enable) {
-		mazeView.enableSprites(enable);
+		mazeView.enableAnimation(enable);
 		game.pacMan.sprites.enableAnimation(enable);
 		game.activeGhosts().forEach(ghost -> ghost.sprites.enableAnimation(enable));
 	}

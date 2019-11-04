@@ -41,24 +41,24 @@ public class MazeView extends SpriteEntity {
 		energizerBlinking.update();
 	}
 
-	public void setFlashing(boolean state) {
-		flashing = state;
+	public void setFlashing(boolean flashing) {
+		this.flashing = flashing;
 		sprites.select(flashing ? "flashing" : "normal");
 	}
 
-	public void enableSprites(boolean enable) {
-		sprites.enableAnimation(enable);
-		energizerBlinking.setEnabled(enable);
+	public void enableAnimation(boolean enabled) {
+		sprites.enableAnimation(enabled);
+		energizerBlinking.setEnabled(enabled);
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		Sprite mazeSprite = sprites.current().get();
+		Sprite mazeImage = sprites.current().get();
 		g.setColor(game.theme.color_mazeBackground());
 		g.translate(tf.getX(), tf.getY());
 		// we must draw the background because the maze sprite is transparent
-		g.fillRect(0, 0, mazeSprite.getWidth(), mazeSprite.getHeight());
-		mazeSprite.draw(g);
+		g.fillRect(0, 0, mazeImage.getWidth(), mazeImage.getHeight());
+		mazeImage.draw(g);
 		g.translate(-tf.getX(), -tf.getY());
 		if (!flashing) {
 			// hide eaten pellets and turned off energizers
