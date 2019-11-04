@@ -41,10 +41,10 @@ import de.amr.statemachine.StateMachine;
  */
 public class PacMan extends MazeMover {
 
-	private static final int[] STEERING = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
+	static final int[] STEERING_NESW = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
 	private final StateMachine<PacManState, PacManGameEvent> fsm;
-	private int eatTimer; // ticks since last pellet was eaten
+	private int ticksSinceLastPelletEaten;
 
 	public PacMan(PacManGame game) {
 		super(game, "Pac-Man");
@@ -54,11 +54,11 @@ public class PacMan extends MazeMover {
 	}
 
 	private void initialize() {
-		eatTimer = 0;
-		placeAtTile(game.maze.getPacManHome(), TS / 2, 0);
+		ticksSinceLastPelletEaten = 0;
 		moveDir = nextDir = Top4.E;
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("full");
+		placeAtTile(game.maze.getPacManHome(), TS / 2, 0);
 	}
 
 	@Override
@@ -66,12 +66,12 @@ public class PacMan extends MazeMover {
 		return game.getPacManSpeed();
 	}
 
-	public int getEatTimer() {
-		return eatTimer;
+	public int getTicksSinceLastPelletEaten() {
+		return ticksSinceLastPelletEaten;
 	}
 
 	public void resetEatTimer() {
-		eatTimer = 0;
+		ticksSinceLastPelletEaten = 0;
 	}
 
 	// Movement
@@ -81,7 +81,7 @@ public class PacMan extends MazeMover {
 	 */
 	@Override
 	public OptionalInt getNextMoveDirection() {
-		return NESW.dirs().filter(dir -> Keyboard.keyDown(STEERING[dir])).findFirst();
+		return NESW.dirs().filter(dir -> Keyboard.keyDown(STEERING_NESW[dir])).findFirst();
 	}
 
 	@Override
@@ -109,19 +109,11 @@ public class PacMan extends MazeMover {
 	// State machine
 
 	public boolean isLosingPower() {
-		if (!hasPower()) {
-			return false;
-		}
-		int total = fsm.state().getDuration(), remaining = fsm.state().getTicksRemaining();
-		return remaining <= total * 33 / 100;
+		return hasPower() && state().getTicksRemaining() <= state().getDuration() * 33 / 100;
 	}
 
 	private boolean startsLosingPower() {
-		if (!hasPower()) {
-			return false;
-		}
-		int total = fsm.state().getDuration(), remaining = fsm.state().getTicksRemaining();
-		return remaining == total * 33 / 100;
+		return hasPower() && state().getTicksRemaining() == state().getDuration() * 33 / 100;
 	}
 
 	public boolean hasPower() {
@@ -256,12 +248,12 @@ public class PacMan extends MazeMover {
 			}
 
 			if (game.maze.containsFood(tile)) {
-				eatTimer = 0;
+				ticksSinceLastPelletEaten = 0;
 				boolean energizer = game.maze.containsEnergizer(tile);
 				digestionTicks = game.getDigestionTicks(energizer);
 				return Optional.of(new FoodFoundEvent(tile, energizer));
 			}
-			eatTimer += 1;
+			ticksSinceLastPelletEaten += 1;
 
 			return Optional.empty();
 		}

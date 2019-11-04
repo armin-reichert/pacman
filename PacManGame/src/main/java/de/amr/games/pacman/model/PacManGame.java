@@ -485,7 +485,7 @@ public class PacManGame {
 			return true;
 		}
 		int timeout = level < 5 ? sec(4) : sec(3);
-		if (pacMan.getEatTimer() > timeout) {
+		if (pacMan.getTicksSinceLastPelletEaten() > timeout) {
 			LOGGER.info(String.format("Releasing ghost %s (Pac-Man eat timer expired)", ghost.name));
 			return true;
 		}
