@@ -34,9 +34,9 @@ public class PlayView implements View, Controller {
 	private int bonusTimer;
 
 	public PlayView(PacManGame game) {
-		this.width = app().settings.width;
-		this.height = app().settings.height;
 		this.game = game;
+		width = app().settings.width;
+		height = app().settings.height;
 		lifeImage = game.theme.spr_pacManWalking(Top4.W).frame(1);
 		mazeView = new MazeView(game);
 		mazeView.tf.setPosition(0, 3 * TS);
@@ -57,13 +57,12 @@ public class PlayView implements View, Controller {
 				game.removeBonus();
 			}
 		}
-		mazeView.update();
 	}
 
-	public void enableAnimation(boolean enable) {
-		mazeView.enableAnimation(enable);
-		game.pacMan.sprites.enableAnimation(enable);
-		game.activeGhosts().forEach(ghost -> ghost.sprites.enableAnimation(enable));
+	public void enableAnimation(boolean enabled) {
+		mazeView.enableAnimation(enabled);
+		game.pacMan.sprites.enableAnimation(enabled);
+		game.activeGhosts().forEach(ghost -> ghost.sprites.enableAnimation(enabled));
 	}
 
 	public void setBonusTimer(int ticks) {
@@ -87,10 +86,10 @@ public class PlayView implements View, Controller {
 	}
 
 	public void hideInfoText() {
-		this.infoText = null;
+		infoText = null;
 	}
 
-	public boolean isScoresVisible() {
+	public boolean areScoresVisible() {
 		return scoresVisible;
 	}
 
@@ -106,7 +105,7 @@ public class PlayView implements View, Controller {
 		drawInfoText(g);
 		drawScores(g);
 	}
-	
+
 	protected void drawActors(Graphics2D g) {
 		if (game.isActive(game.pacMan)) {
 			game.pacMan.draw(g);
