@@ -100,7 +100,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 *                a game event
 	 */
 	public void publishEvent(PacManGameEvent event) {
-		LOGGER.info(String.format("%s publishing event '%s'", name, event));
+		LOGGER.info(String.format("%s reports '%s'", name, event));
 		gameEventListeners.forEach(listener -> listener.accept(event));
 	}
 

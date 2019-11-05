@@ -142,13 +142,13 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 		}
 		return super.canEnterTile(tile);
 	}
-
+	
 	@Override
 	protected void move() {
 		super.move();
 		sprites.select("color-" + moveDir);
 	}
-
+	
 	// Define state machine
 
 	private StateMachine<GhostState, PacManGameEvent> buildStateMachine() {
