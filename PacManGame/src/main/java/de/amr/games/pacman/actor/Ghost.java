@@ -155,7 +155,8 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent>
 
 	// Define state machine
 
-	private StateMachine<GhostState, PacManGameEvent> buildStateMachine() {
+	@Override
+	protected StateMachine<GhostState, PacManGameEvent> buildStateMachine() {
 		return StateMachine.
 		/*@formatter:off*/
 		beginStateMachine(GhostState.class, PacManGameEvent.class)

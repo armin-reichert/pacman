@@ -131,7 +131,8 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 		super.init();
 	}
 
-	private StateMachine<PacManState, PacManGameEvent> buildStateMachine() {
+	@Override
+	protected StateMachine<PacManState, PacManGameEvent> buildStateMachine() {
 		return StateMachine.
 		/* @formatter:off */
 		beginStateMachine(PacManState.class, PacManGameEvent.class)
