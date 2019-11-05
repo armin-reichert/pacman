@@ -167,27 +167,25 @@ public class PlayViewXtended extends PlayView {
 	}
 
 	private String pacManStateText(PacMan pacMan) {
-		State<?, ?> state = pacMan.state();
-		return state.getDuration() != State.ENDLESS
-				? String.format("(%s,%d|%d)", state.id(), state.getTicksRemaining(), state.getDuration())
-				: String.format("(%s,%s)", state.id(), INFTY);
+		return pacMan.state().getDuration() != State.ENDLESS ? String.format("(%s,%d|%d)",
+				pacMan.state().id(), pacMan.state().getTicksRemaining(), pacMan.state().getDuration())
+				: String.format("(%s,%s)", pacMan.state().id(), INFTY);
 	}
 
 	private String ghostStateText(Ghost ghost) {
-		State<?, ?> state = ghost.getStateObject();
 		String name = ghost.getState() == GhostState.DEAD ? ghost.name : "";
 		if (ghost.getState() == GhostState.FRIGHTENED) {
 			GhostState nextState = ghost.getNextState();
-			return state.getDuration() != State.ENDLESS
-					? String.format("%s(%s,%d|%d)[->%s]", name, state.id(), state.getTicksRemaining(),
-							state.getDuration(), nextState)
-					: String.format("%s(%s,%s)[->%s]", name, state.id(), INFTY, nextState);
+			return ghost.state().getDuration() != State.ENDLESS
+					? String.format("%s(%s,%d|%d)[->%s]", name, ghost.state().id(),
+							ghost.state().getTicksRemaining(), ghost.state().getDuration(), nextState)
+					: String.format("%s(%s,%s)[->%s]", name, ghost.state().id(), INFTY, nextState);
 		}
 		else {
-			return state.getDuration() != State.ENDLESS
-					? String.format("%s(%s,%d|%d)", name, state.id(), state.getTicksRemaining(),
-							state.getDuration())
-					: String.format("%s(%s,%s)", name, state.id(), INFTY);
+			return ghost.state().getDuration() != State.ENDLESS
+					? String.format("%s(%s,%d|%d)", name, ghost.state().id(),
+							ghost.state().getTicksRemaining(), ghost.state().getDuration())
+					: String.format("%s(%s,%s)", name, ghost.state().id(), INFTY);
 		}
 	}
 

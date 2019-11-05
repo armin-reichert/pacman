@@ -39,11 +39,10 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends MazeMover {
+public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 
 	static final int[] STEERING_NESW = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
-	private final StateMachine<PacManState, PacManGameEvent> fsm;
 	private int ticksSinceLastPelletEaten;
 
 	public PacMan(PacManGame game) {
@@ -126,27 +125,10 @@ public class PacMan extends MazeMover {
 		return getState() == DEAD;
 	}
 
-	public PacManState getState() {
-		return fsm.getState();
-	}
-
-	public State<PacManState, PacManGameEvent> state() {
-		return fsm.state();
-	}
-
-	public void processEvent(PacManGameEvent event) {
-		fsm.process(event);
-	}
-
 	@Override
 	public void init() {
 		initialize();
-		fsm.init();
-	}
-
-	@Override
-	public void update() {
-		fsm.update();
+		super.init();
 	}
 
 	private StateMachine<PacManState, PacManGameEvent> buildStateMachine() {

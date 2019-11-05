@@ -28,25 +28,21 @@ import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
-import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
 /**
  * A ghost.
  * 
- * <p>
- * The behavior of a ghost is controlled by a finite state machine.
- * 
  * @author Armin Reichert
  */
-public class Ghost extends MazeMover implements GhostBehaviors {
+public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent>
+		implements GhostBehaviors {
 
 	public Supplier<GhostState> fnNextState; // state after FRIGHTENED or LOCKED state
 	public int foodCount;
 	private final Tile initialTile;
 	private final int initialDir;
 	private final Map<GhostState, Behavior> behaviorMap;
-	private final StateMachine<GhostState, PacManGameEvent> fsm;
 
 	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, int initialDir) {
 		super(game, name);
@@ -84,7 +80,8 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	}
 
 	private void sirenOff() {
-		if (game.activeGhosts().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
+		if (game.activeGhosts().filter(ghost -> this != ghost)
+				.noneMatch(ghost -> ghost.getState() == CHASING)) {
 			game.theme.snd_ghost_chase().stop();
 		}
 	}
@@ -96,9 +93,16 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 	}
 
 	private void deadSoundOff() {
-		if (game.activeGhosts().filter(ghost -> ghost != this).noneMatch(ghost -> ghost.getState() == DEAD)) {
+		if (game.activeGhosts().filter(ghost -> ghost != this)
+				.noneMatch(ghost -> ghost.getState() == DEAD)) {
 			game.theme.snd_ghost_dead().stop();
 		}
+	}
+
+	@Override
+	public void init() {
+		initialize();
+		super.init();
 	}
 
 	public void initialize() {
@@ -142,13 +146,13 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 		}
 		return super.canEnterTile(tile);
 	}
-	
+
 	@Override
 	protected void move() {
 		super.move();
 		sprites.select("color-" + moveDir);
 	}
-	
+
 	// Define state machine
 
 	private StateMachine<GhostState, PacManGameEvent> buildStateMachine() {
@@ -233,34 +237,5 @@ public class Ghost extends MazeMover implements GhostBehaviors {
 				
 		.endStateMachine();
 		/*@formatter:on*/
-	}
-
-	// Integrate state machine
-
-	@Override
-	public void init() {
-		initialize();
-		fsm.init();
-	}
-
-	@Override
-	public void update() {
-		fsm.update();
-	}
-
-	public GhostState getState() {
-		return fsm.getState();
-	}
-
-	public State<GhostState, PacManGameEvent> getStateObject() {
-		return fsm.state();
-	}
-
-	public void setState(GhostState state) {
-		fsm.setState(state);
-	}
-
-	public void processEvent(PacManGameEvent event) {
-		fsm.process(event);
 	}
 }
