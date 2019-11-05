@@ -23,7 +23,7 @@ import de.amr.easy.game.ui.widgets.TextWidget;
 import de.amr.easy.game.view.AnimationController;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.intro.IntroView.IntroViewState;
 import de.amr.statemachine.StateMachine;
 
@@ -54,7 +54,7 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 	private final GhostPointsAnimation ghostPoints;
 	private final LinkWidget visitGitHub;
 
-	public IntroView(PacManGame game) {
+	public IntroView(PacManTheme theme) {
 		super(IntroViewState.class);
 		width = app().settings.width;
 		height = app().settings.height;
@@ -66,26 +66,26 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 		logo.tf.setVelocityY(-2f);
 		logo.setCompletion(() -> logo.tf.getY() <= 20);
 
-		chasePacMan = new ChasePacManAnimation(game.theme);
+		chasePacMan = new ChasePacManAnimation(theme);
 		chasePacMan.setStartPosition(width, 100);
 		chasePacMan.setEndPosition(-chasePacMan.tf.getWidth(), 100);
 
-		chaseGhosts = new ChaseGhostsAnimation(game.theme);
+		chaseGhosts = new ChaseGhostsAnimation(theme);
 		chaseGhosts.setStartPosition(-chaseGhosts.tf.getWidth(), 200);
 		chaseGhosts.setEndPosition(width, 200);
 
-		ghostPoints = new GhostPointsAnimation(game.theme);
+		ghostPoints = new GhostPointsAnimation(theme);
 		ghostPoints.tf.setY(200);
 		ghostPoints.tf.centerX(width);
 
 		pressSpace = TextWidget.create().text("Press SPACE to start!").spaceExpansion(3)
-				.blinkTimeMillis(1000).font(game.theme.fnt_text(18)).background(background)
+				.blinkTimeMillis(1000).font(theme.fnt_text(18)).background(background)
 				.color(Color.YELLOW).build();
 		pressSpace.tf.setY(130);
 		pressSpace.tf.centerX(width);
 
 		f11Hint = TextWidget.create().text("F11 Toggle Fullscreen").spaceExpansion(3)
-				.blinkTimeMillis(Integer.MAX_VALUE).font(game.theme.fnt_text(12)).background(background)
+				.blinkTimeMillis(Integer.MAX_VALUE).font(theme.fnt_text(12)).background(background)
 				.color(Color.PINK).build();
 		f11Hint.tf.setY(pressSpace.tf.getY() + 30);
 		f11Hint.tf.centerX(width);
@@ -94,7 +94,7 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 		String[] texts = { "Normal 1", "Fast 2", "Insane 3" };
 		for (int i = 0; i < texts.length; ++i) {
 			speedHint[i] = TextWidget.create().text(texts[i]).spaceExpansion(3)
-					.blinkTimeMillis(Integer.MAX_VALUE).font(game.theme.fnt_text(12)).background(background)
+					.blinkTimeMillis(Integer.MAX_VALUE).font(theme.fnt_text(12)).background(background)
 					.color(Color.PINK).build();
 			speedHint[i].tf.setY(height - 40);
 		}

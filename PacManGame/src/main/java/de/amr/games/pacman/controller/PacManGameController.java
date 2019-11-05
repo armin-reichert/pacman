@@ -81,7 +81,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	private void showIntroView() {
 		if (introView == null) {
-			introView = new IntroView(game);
+			introView = new IntroView(game.theme);
 		}
 		show(introView);
 	}
@@ -150,7 +150,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			game.classicFlightBehavior = !game.classicFlightBehavior;
 			game.ghosts().forEach(ghost -> {
 				ghost.setBehavior(GhostState.FRIGHTENED,
-						game.classicFlightBehavior ? ghost.fleeingRandomly() : ghost.fleeingToSafeCorner(game.pacMan));
+						game.classicFlightBehavior ? ghost.fleeingRandomly()
+								: ghost.fleeingToSafeCorner(game.pacMan));
 			});
 			LOGGER.info("Changed ghost FRIGHTENED behavior to flee "
 					+ (game.classicFlightBehavior ? "randomly" : "via safe route"));
@@ -380,7 +381,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onPacManKilled(PacManGameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
-			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.name, e.killer.currentTile()));
+			LOGGER.info(
+					() -> String.format("PacMan killed by %s at %s", e.killer.name, e.killer.currentTile()));
 			game.enableGlobalFoodCounter();
 			game.pacMan.processEvent(e);
 		}
@@ -405,14 +407,16 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onGhostKilled(PacManGameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
-			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.name, e.ghost.currentTile()));
+			LOGGER
+					.info(() -> String.format("Ghost %s killed at %s", e.ghost.name, e.ghost.currentTile()));
 			theme.snd_eatGhost().play();
 			e.ghost.processEvent(e);
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
 			game.getBonus().ifPresent(bonus -> {
-				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.symbol(), bonus.value()));
+				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.symbol(),
+						bonus.value()));
 				theme.snd_eatFruit().play();
 				bonus.consume();
 				boolean extraLife = game.scorePoints(bonus.value());
@@ -489,14 +493,15 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (extraLife) {
 				theme.snd_extraLife().play();
 			}
-			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
-					game.numGhostsKilledByCurrentEnergizer()));
+			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d",
+					game.getKilledGhostValue(), game.numGhostsKilledByCurrentEnergizer()));
 		}
 
 		@Override
 		public void onTick() {
 			game.activeGhosts()
-					.filter(ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
+					.filter(
+							ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
 					.forEach(Ghost::update);
 		}
 
