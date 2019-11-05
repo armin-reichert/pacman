@@ -76,6 +76,13 @@ public class PacMan extends MazeMover {
 
 	// Movement
 
+	@Override
+	protected void move() {
+		super.move();
+		sprites.select("walking-" + moveDir);
+		sprites.current().ifPresent(sprite -> sprite.enableAnimation(!isStuck()));
+	}
+
 	/**
 	 * @return if a steering key is pressed, the corresponding direction, otherwise nothing
 	 */
@@ -99,11 +106,6 @@ public class PacMan extends MazeMover {
 		sprites.set("dying", game.theme.spr_pacManDying());
 		sprites.set("full", game.theme.spr_pacManFull());
 		sprites.select("full");
-	}
-
-	private void updateWalkingSprite() {
-		sprites.select("walking-" + moveDir);
-		sprites.current().ifPresent(sprite -> sprite.enableAnimation(!isStuck()));
 	}
 
 	// State machine
@@ -211,7 +213,6 @@ public class PacMan extends MazeMover {
 			}
 			else {
 				move();
-				updateWalkingSprite();
 				findSomethingInteresting().ifPresent(PacMan.this::publishEvent);
 			}
 		}
