@@ -18,7 +18,7 @@ import de.amr.games.pacman.theme.ClassicPacManTheme;
 public class PacManApp extends Application {
 
 	public static void main(String[] args) {
-		Logger.getLogger("StateMachineLogger").setLevel(Level.INFO);
+		Logger.getLogger("StateMachineLogger").setLevel(Level.OFF);
 		launch(new PacManApp(), args);
 	}
 
