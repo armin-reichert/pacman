@@ -42,17 +42,14 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent>
 	public int foodCount;
 	private final Tile initialTile;
 	private final int initialDir;
-	private final Map<GhostState, Behavior> behaviorMap;
+	private final Map<GhostState, Behavior> behaviorMap = new EnumMap<>(GhostState.class);
 
 	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, int initialDir) {
 		super(game, name);
 		this.initialTile = initialTile;
 		this.initialDir = initialDir;
 		setSprites(color);
-		behaviorMap = new EnumMap<>(GhostState.class);
-		fsm = buildStateMachine();
-		fsm.setIgnoreUnknownEvents(true);
-		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		buildStateMachine();
 		fnNextState = this::getState; // default: keep state
 	}
 
@@ -155,9 +152,8 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent>
 
 	// Define state machine
 
-	@Override
-	protected StateMachine<GhostState, PacManGameEvent> buildStateMachine() {
-		return StateMachine.
+	private void buildStateMachine() {
+		fsm = StateMachine.
 		/*@formatter:off*/
 		beginStateMachine(GhostState.class, PacManGameEvent.class)
 			 
@@ -168,7 +164,7 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent>
 
 				.state(LOCKED)
 					.onTick(this::move)
-					.onExit(game.pacMan::resetEatTimer)
+					.onExit(() -> game.pacMan.ticksSinceLastMeal = 0)
 				
 				.state(SCATTERING)
 					.onTick(this::move)
@@ -238,5 +234,7 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent>
 				
 		.endStateMachine();
 		/*@formatter:on*/
+		fsm.setIgnoreUnknownEvents(true);
+		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
 }

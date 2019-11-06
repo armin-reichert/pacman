@@ -33,8 +33,6 @@ public abstract class MazeMoverUsingFSM<S, E> extends MazeMover {
 		super(game, name);
 	}
 
-	protected abstract StateMachine<S, E> buildStateMachine();
-
 	/**
 	 * Adds a listener for the game events published by this maze mover.
 	 * 

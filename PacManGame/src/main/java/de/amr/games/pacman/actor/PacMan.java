@@ -43,37 +43,31 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 
 	static final int[] STEERING_NESW = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
-	private int ticksSinceLastPelletEaten;
+	public int ticksSinceLastMeal;
 
 	public PacMan(PacManGame game) {
 		super(game, "Pac-Man");
-		fsm = buildStateMachine();
-		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-		setSprites();
+		buildStateMachine();
+		NESW.dirs().forEach(dir -> sprites.set("walking-" + dir, game.theme.spr_pacManWalking(dir)));
+		sprites.set("dying", game.theme.spr_pacManDying());
+		sprites.set("full", game.theme.spr_pacManFull());
+		sprites.select("full");
 	}
 
 	private void initialize() {
-		ticksSinceLastPelletEaten = 0;
+		ticksSinceLastMeal = 0;
 		moveDir = nextDir = Top4.E;
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("full");
 		placeAtTile(game.maze.getPacManHome(), TS / 2, 0);
 	}
 
+	// Movement
+
 	@Override
 	public float maxSpeed() {
 		return game.getPacManSpeed();
 	}
-
-	public int getTicksSinceLastPelletEaten() {
-		return ticksSinceLastPelletEaten;
-	}
-
-	public void resetEatTimer() {
-		ticksSinceLastPelletEaten = 0;
-	}
-
-	// Movement
 
 	@Override
 	protected void move() {
@@ -96,15 +90,6 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 			return false;
 		}
 		return super.canEnterTile(tile);
-	}
-
-	// Sprites
-
-	private void setSprites() {
-		NESW.dirs().forEach(dir -> sprites.set("walking-" + dir, game.theme.spr_pacManWalking(dir)));
-		sprites.set("dying", game.theme.spr_pacManDying());
-		sprites.set("full", game.theme.spr_pacManFull());
-		sprites.select("full");
 	}
 
 	// State machine
@@ -131,9 +116,8 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 		super.init();
 	}
 
-	@Override
-	protected StateMachine<PacManState, PacManGameEvent> buildStateMachine() {
-		return StateMachine.
+	private void buildStateMachine() {
+		fsm = StateMachine.
 		/* @formatter:off */
 		beginStateMachine(PacManState.class, PacManGameEvent.class)
 				
@@ -178,6 +162,7 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 
 		.endStateMachine();
 		/* @formatter:on */
+		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
 
 	private class HungryState extends State<PacManState, PacManGameEvent> {
@@ -232,12 +217,12 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 			}
 
 			if (game.maze.containsFood(tile)) {
-				ticksSinceLastPelletEaten = 0;
+				ticksSinceLastMeal = 0;
 				boolean energizer = game.maze.containsEnergizer(tile);
 				digestionTicks = game.getDigestionTicks(energizer);
 				return Optional.of(new FoodFoundEvent(tile, energizer));
 			}
-			ticksSinceLastPelletEaten += 1;
+			ticksSinceLastMeal += 1;
 
 			return Optional.empty();
 		}
