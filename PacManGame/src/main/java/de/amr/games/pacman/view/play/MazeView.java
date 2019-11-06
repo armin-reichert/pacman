@@ -24,7 +24,7 @@ public class MazeView extends SpriteEntity {
 	public MazeView(PacManGame game) {
 		this.game = game;
 		energizerBlinking = new CyclicAnimation(2);
-		energizerBlinking.setFrameDuration(500);
+		energizerBlinking.setFrameDuration(150);
 		energizerBlinking.setEnabled(false);
 		sprites.set("normal", game.theme.spr_fullMaze());
 		sprites.set("flashing", game.theme.spr_flashingMaze());
