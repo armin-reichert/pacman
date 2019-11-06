@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -49,8 +48,8 @@ public class PacManGame {
 	/** The tile size (8px). */
 	public static final int TS = 8;
 
-	/** Base speed in tiles/sec. */
-	public static final float TILES_PER_SECOND = 10f;
+	/** Base speed in pixels/tick. */
+	public static final float PIXELS_PER_TICK = 1.46f;
 
 	/**
 	 * Named access to the columns of the level table.
@@ -346,7 +345,7 @@ public class PacManGame {
 	}
 
 	public void setBonus(Bonus bonus) {
-		this.bonus = Objects.requireNonNull(bonus);
+		this.bonus = requireNonNull(bonus);
 	}
 
 	public boolean isBonusReached() {
@@ -369,10 +368,10 @@ public class PacManGame {
 	}
 
 	/**
-	 * @return number of pixels/tick corresponding to given fraction of base speed
+	 * @return given fraction of base speed (pixels/tick)
 	 */
-	private static float pixelsPerTick(float fraction) {
-		return fraction * (TILES_PER_SECOND * TS / 60);
+	private static float speed(float fraction) {
+		return fraction * PIXELS_PER_TICK;
 	}
 
 	/**
@@ -382,9 +381,9 @@ public class PacManGame {
 	public float getPacManSpeed() {
 		switch (pacMan.getState()) {
 		case HUNGRY:
-			return pixelsPerTick(Param.PACMAN_SPEED.float_(level));
+			return speed(Param.PACMAN_SPEED.float_(level));
 		case POWER:
-			return pixelsPerTick(Param.PACMAN_POWER_SPEED.float_(level));
+			return speed(Param.PACMAN_POWER_SPEED.float_(level));
 		default:
 			return 0;
 		}
@@ -427,24 +426,24 @@ public class PacManGame {
 		requireNonNull(ghost);
 		Tile tile = ghost.currentTile();
 		if (maze.inGhostHouse(tile)) {
-			return pixelsPerTick(.5f);
+			return speed(.5f);
 		}
 		boolean inTunnel = maze.inTunnel(tile) || tile == maze.getTeleportLeft()
 				|| tile == maze.getTeleportRight();
-		float tunnelSpeed = pixelsPerTick(Param.GHOST_TUNNEL_SPEED.float_(level));
+		float tunnelSpeed = speed(Param.GHOST_TUNNEL_SPEED.float_(level));
 		switch (ghost.getState()) {
 		case CHASING:
-			return inTunnel ? tunnelSpeed : pixelsPerTick(Param.GHOST_SPEED.float_(level));
+			return inTunnel ? tunnelSpeed : speed(Param.GHOST_SPEED.float_(level));
 		case DYING:
 			return 0;
 		case DEAD:
-			return 2f * pixelsPerTick(Param.GHOST_SPEED.float_(level));
+			return 2f * speed(Param.GHOST_SPEED.float_(level));
 		case FRIGHTENED:
-			return inTunnel ? tunnelSpeed : pixelsPerTick(Param.GHOST_FRIGHTENED_SPEED.float_(level));
+			return inTunnel ? tunnelSpeed : speed(Param.GHOST_FRIGHTENED_SPEED.float_(level));
 		case LOCKED:
-			return pixelsPerTick(0.5f);
+			return speed(0.5f);
 		case SCATTERING:
-			return inTunnel ? tunnelSpeed : pixelsPerTick(Param.GHOST_SPEED.float_(level));
+			return inTunnel ? tunnelSpeed : speed(Param.GHOST_SPEED.float_(level));
 		default:
 			throw new IllegalStateException("Illegal ghost state for ghost " + ghost.name);
 		}
