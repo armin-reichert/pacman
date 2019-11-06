@@ -15,6 +15,7 @@ import static de.amr.games.pacman.model.BonusSymbol.GRAPES;
 import static de.amr.games.pacman.model.BonusSymbol.KEY;
 import static de.amr.games.pacman.model.BonusSymbol.PEACH;
 import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
+import static java.util.Objects.requireNonNull;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,6 +48,9 @@ public class PacManGame {
 
 	/** The tile size (8px). */
 	public static final int TS = 8;
+
+	/** Base speed in tiles/sec. */
+	public static final float TILES_PER_SECOND = 10f;
 
 	/**
 	 * Named access to the columns of the level table.
@@ -107,11 +111,11 @@ public class PacManGame {
 			return (T) LEVELS[level][ordinal()];
 		}
 
-		float floatValue(int level) {
+		float float_(int level) {
 			return value(level);
 		}
 
-		int intValue(int level) {
+		int int_(int level) {
 			return value(level);
 		}
 	}
@@ -350,7 +354,7 @@ public class PacManGame {
 	}
 
 	public int getBonusValue() {
-		return Param.BONUS_VALUE.intValue(level);
+		return Param.BONUS_VALUE.int_(level);
 	}
 
 	public int getBonusDuration() {
@@ -359,29 +363,35 @@ public class PacManGame {
 
 	// Timing
 
-	private int sec(float seconds) {
+	/** @return ticks corresponding to given amount of seconds at current clock frequency */
+	private static int sec(float seconds) {
 		return app().clock.sec(seconds);
 	}
 
-	// TODO: what is this the correct base speed (for 60 Hz)?
-	private float speed(float relativeSpeed) {
-		float tilesPerSec = 11.0f;
-		return relativeSpeed * (tilesPerSec * TS / 60f);
+	/**
+	 * @return number of pixels/tick corresponding to given fraction of base speed
+	 */
+	private static float pixelsPerTick(float fraction) {
+		return fraction * (TILES_PER_SECOND * TS / 60);
 	}
 
+	/**
+	 * @return maximum Pac-Man speed in its current state. Actual speed may be slower to avoid running
+	 *         into inaccessible tiles.
+	 */
 	public float getPacManSpeed() {
 		switch (pacMan.getState()) {
 		case HUNGRY:
-			return speed(Param.PACMAN_SPEED.floatValue(level));
+			return pixelsPerTick(Param.PACMAN_SPEED.float_(level));
 		case POWER:
-			return speed(Param.PACMAN_POWER_SPEED.floatValue(level));
+			return pixelsPerTick(Param.PACMAN_POWER_SPEED.float_(level));
 		default:
 			return 0;
 		}
 	}
 
 	public int getPacManPowerTime() {
-		return sec(Param.PACMAN_POWER_SECONDS.intValue(level));
+		return sec(Param.PACMAN_POWER_SECONDS.int_(level));
 	}
 
 	public int getPacManDyingTime() {
@@ -414,35 +424,38 @@ public class PacManGame {
 
 	/* TODO: some values are still unknown to me and only guessed */
 	public float computeGhostSpeed(Ghost ghost) {
-		Objects.requireNonNull(ghost);
+		requireNonNull(ghost);
 		Tile tile = ghost.currentTile();
+		if (maze.inGhostHouse(tile)) {
+			return pixelsPerTick(.5f);
+		}
 		boolean inTunnel = maze.inTunnel(tile) || tile == maze.getTeleportLeft()
 				|| tile == maze.getTeleportRight();
-		float tunnelSpeed = speed(Param.GHOST_TUNNEL_SPEED.floatValue(level));
+		float tunnelSpeed = pixelsPerTick(Param.GHOST_TUNNEL_SPEED.float_(level));
 		switch (ghost.getState()) {
 		case CHASING:
-			return inTunnel ? tunnelSpeed : speed(Param.GHOST_SPEED.floatValue(level));
+			return inTunnel ? tunnelSpeed : pixelsPerTick(Param.GHOST_SPEED.float_(level));
 		case DYING:
 			return 0;
 		case DEAD:
-			return 1.25f * speed(Param.GHOST_SPEED.floatValue(level));
+			return 2f * pixelsPerTick(Param.GHOST_SPEED.float_(level));
 		case FRIGHTENED:
-			return inTunnel ? tunnelSpeed : speed(Param.GHOST_FRIGHTENED_SPEED.floatValue(level));
+			return inTunnel ? tunnelSpeed : pixelsPerTick(Param.GHOST_FRIGHTENED_SPEED.float_(level));
 		case LOCKED:
-			return speed(0.5f);
+			return pixelsPerTick(0.5f);
 		case SCATTERING:
-			return inTunnel ? tunnelSpeed : speed(Param.GHOST_SPEED.floatValue(level));
+			return inTunnel ? tunnelSpeed : pixelsPerTick(Param.GHOST_SPEED.float_(level));
 		default:
 			throw new IllegalStateException("Illegal ghost state for ghost " + ghost.name);
 		}
 	}
 
 	public int getGhostDyingTime() {
-		return sec(0.75f);
+		return sec(1f);
 	}
 
 	public int getMazeNumFlashes() {
-		return Param.MAZE_NUM_FLASHES.intValue(level);
+		return Param.MAZE_NUM_FLASHES.int_(level);
 	}
 
 	// rules for leaving the ghost house
