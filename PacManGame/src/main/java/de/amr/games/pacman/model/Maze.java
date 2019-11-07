@@ -1,5 +1,7 @@
 package de.amr.games.pacman.model;
 
+import static de.amr.easy.game.Application.LOGGER;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -8,7 +10,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.graph.core.api.UndirectedEdge;
 import de.amr.graph.grid.api.GridGraph2D;
@@ -35,26 +36,20 @@ public class Maze {
 	static final char WALL = '#', DOOR = 'D', TUNNEL = 'T', TELEPORT_L = '<', TELEPORT_R = '>', SPACE = ' ',
 			PELLET = '.', ENERGIZER = '*', EATEN = '%';
 
+	private final Tile[][] board;
+	private final Set<Tile> unrestricted = new HashSet<>();
+	private final Set<Tile> upwardsBlocked = new HashSet<>();
+	private final Set<Tile> energizerTiles = new HashSet<>();
+	private int pathFinderCalls;
+
 	public int numCols, numRows;
-
-	public final Tile topLeft, topRight, bottomLeft, bottomRight;
-
-	public Tile pacManHome, blinkyHome, blinkyScatter, pinkyHome, pinkyScatter, inkyHome, inkyScatter, clydeHome,
-			clydeScatter, bonusTile, teleportLeft, teleportRight, ghostRevival;
-
-	final Tile[][] board;
-
-	final Set<Tile> unrestrictedIS = new HashSet<>();
-
-	final Set<Tile> upwardsBlockedIS = new HashSet<>();
-
-	final Set<Tile> energizerTiles = new HashSet<>();
-
-	public final GridGraph<Tile, Void> gridGraph;
-
 	public int foodTotal;
 
-	int pathFinderCalls;
+	public Tile topLeft, topRight, bottomLeft, bottomRight, pacManHome, blinkyHome, blinkyScatter, pinkyHome,
+			pinkyScatter, inkyHome, inkyScatter, clydeHome, clydeScatter, bonusTile, teleportLeft, teleportRight,
+			ghostRevival;
+
+	public final GridGraph<Tile, Void> gridGraph;
 
 	public Maze() {
 		String[] map = Assets.text("maze.txt").split("\n");
@@ -131,6 +126,8 @@ public class Maze {
 				}
 			}
 		}
+
+		// Corners inside maze
 		topLeft = board[1][4];
 		topRight = board[numCols - 2][4];
 		bottomLeft = board[1][numRows - 4];
@@ -138,35 +135,34 @@ public class Maze {
 
 		// Grid graph structure, vertex content is (reference to) corresponding tile
 		gridGraph = new GridGraph<>(numCols, numRows, Top4.get(), this::tile, (u, v) -> null, UndirectedEdge::new);
-
-		// Add edges
 		gridGraph.fill();
+
 		// Remove edges into walls
 		gridGraph.edges()
 				.filter(e -> gridGraph.get(e.either()).content == WALL || gridGraph.get(e.other()).content == WALL)
 				.forEach(gridGraph::removeEdge);
 
-		// Separate intersections into unrestricted ones and those where ghosts cannot
-		// move upwards
+		// Intersections: unrestricted or upwards-blocked?
 		gridGraph.vertices().filter(v -> gridGraph.degree(v) >= 3).mapToObj(this::tile)
 		//@formatter:off
-				// exclude tiles above ghost house doors
-				.filter(tile -> !isDoor(tileToDir(tile, Top4.S)))
-				// exclude doors
-				.filter(tile -> !isDoor(tile))
-				// exclude tiles inside ghost house
-				.filter(tile -> !inGhostHouse(tile))
-				.forEach(tile -> {
-					if (tile == tileToDir(blinkyHome, Top4.W)	
-					 || tile == tileToDir(blinkyHome, Top4.E, 2)
-					 || tile == tileToDir(pacManHome, Top4.W)
-					 || tile == tileToDir(pacManHome, Top4.E, 2)) {
-						upwardsBlockedIS.add(tile);
-					}
-					else {
-						unrestrictedIS.add(tile);
-					}
-				});
+			// exclude tiles above ghost house doors:
+			.filter(tile -> !isDoor(tileToDir(tile, Top4.S)))
+			// exclude doors:
+			.filter(tile -> !isDoor(tile))
+			// exclude tiles inside ghost house:
+			.filter(tile -> !inGhostHouse(tile))
+			// separate "real" intersections:
+			.forEach(tile -> {
+				if (tile == tileToDir(blinkyHome, Top4.W)	
+				 || tile == tileToDir(blinkyHome, Top4.E, 2)
+				 || tile == tileToDir(pacManHome, Top4.W)
+				 || tile == tileToDir(pacManHome, Top4.E, 2)) {
+					upwardsBlocked.add(tile);
+				}
+				else {
+					unrestricted.add(tile);
+				}
+			});
 		//@formatter:on
 	}
 
@@ -242,11 +238,11 @@ public class Maze {
 	}
 
 	public boolean isUnrestrictedIntersection(Tile tile) {
-		return unrestrictedIS.contains(tile);
+		return unrestricted.contains(tile);
 	}
 
 	public boolean isUpwardsBlockedIntersection(Tile tile) {
-		return upwardsBlockedIS.contains(tile);
+		return upwardsBlocked.contains(tile);
 	}
 
 	// food
@@ -267,7 +263,7 @@ public class Maze {
 		return tile.content == EATEN;
 	}
 
-	public void resetFood() {
+	public void restoreFood() {
 		tiles().filter(this::containsEatenFood)
 				.forEach(tile -> tile.content = energizerTiles.contains(tile) ? ENERGIZER : PELLET);
 	}
@@ -292,7 +288,7 @@ public class Maze {
 			Path path = pathfinder.findPath(vertex(source), vertex(target));
 			pathFinderCalls += 1;
 			if (pathFinderCalls % 100 == 0) {
-				Application.LOGGER.info(String.format("%d'th pathfinding executed", pathFinderCalls));
+				LOGGER.info(String.format("%d'th pathfinding executed", pathFinderCalls));
 			}
 			return path.vertexStream().boxed().map(this::tile).collect(Collectors.toList());
 		}

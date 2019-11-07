@@ -206,7 +206,7 @@ public class PacManGame {
 
 	public void nextLevel() {
 		level += 1;
-		maze.resetFood();
+		maze.restoreFood();
 		eaten = 0;
 		numGhostsKilled = 0;
 		levelCounter.add(0, getLevelSymbol());
