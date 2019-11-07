@@ -100,8 +100,7 @@ public abstract class MazeMover extends SpriteEntity {
 	 * Places this maze mover exactly over its current tile.
 	 */
 	public void align() {
-		Tile tile = currentTile();
-		tf.setPosition(tile.col * TS, tile.row * TS);
+		placeAtTile(currentTile(), 0, 0);
 	}
 
 	/**
