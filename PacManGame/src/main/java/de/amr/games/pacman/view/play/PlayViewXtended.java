@@ -141,14 +141,14 @@ public class PlayViewXtended extends PlayView {
 		super.draw(g);
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
-			if (game.pacMan.visible) {
+			if (game.pacMan.visible()) {
 				drawActorAlignment(game.pacMan, g);
 			}
-			game.activeGhosts().filter(ghost -> ghost.visible)
+			game.activeGhosts().filter(Ghost::visible)
 					.forEach(ghost -> drawActorAlignment(ghost, g));
 		}
 		if (showRoutes) {
-			game.activeGhosts().filter(ghost -> ghost.visible).forEach(ghost -> drawRoute(g, ghost));
+			game.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));
 		}
 		if (showStates) {
 			drawEntityStates(g);
@@ -156,11 +156,11 @@ public class PlayViewXtended extends PlayView {
 	}
 
 	private void drawEntityStates(Graphics2D g) {
-		if (game.pacMan.getState() != null && game.pacMan.visible) {
+		if (game.pacMan.getState() != null && game.pacMan.visible()) {
 			drawText(g, Color.YELLOW, game.pacMan.tf.getX(), game.pacMan.tf.getY(),
 					pacManStateText(game.pacMan));
 		}
-		game.activeGhosts().filter(ghost -> ghost.visible).forEach(ghost -> {
+		game.activeGhosts().filter(Ghost::visible).forEach(ghost -> {
 			if (ghost.getState() != null) {
 				drawText(g, ghostColor(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
 			}

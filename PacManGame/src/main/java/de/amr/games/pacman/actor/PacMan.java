@@ -269,7 +269,7 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 			if (paralyzedTicks > 0) {
 				paralyzedTicks -= 1;
 				if (paralyzedTicks == 0) {
-					game.activeGhosts().forEach(ghost -> ghost.visible = false);
+					game.activeGhosts().forEach(Ghost::hide);
 					sprites.select("dying");
 					game.theme.snd_die().play();
 				}

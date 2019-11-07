@@ -26,7 +26,7 @@ public class OutsideTileTestController implements ViewController {
 
 	@Override
 	public void init() {
-		g.pacMan.visible = false;
+		g.pacMan.hide();
 		g.ghosts().filter(ghost -> ghost != g.blinky).forEach(ghost -> g.setActive(ghost, false));
 		g.blinky.initialize();
 		g.blinky.setBehavior(GhostState.CHASING, g.blinky.headingFor(this::getTargetTile));

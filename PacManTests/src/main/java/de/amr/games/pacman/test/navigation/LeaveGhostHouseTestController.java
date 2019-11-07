@@ -27,7 +27,7 @@ public class LeaveGhostHouseTestController implements ViewController {
 
 	@Override
 	public void init() {
-		game.pacMan.visible = false;
+		game.pacMan.hide();
 		game.ghosts().filter(ghost -> ghost != game.inky).forEach(ghost -> game.setActive(ghost, false));
 		game.inky.initialize();
 		game.inky.fnNextState = () -> GhostState.SCATTERING;

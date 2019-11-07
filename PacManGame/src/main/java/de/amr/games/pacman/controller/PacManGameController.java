@@ -21,6 +21,7 @@ import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
+import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeMover;
@@ -327,7 +328,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onEntry() {
 			ghostAttackController.init();
-			game.activeGhosts().forEach(ghost -> ghost.visible = true);
+			game.activeGhosts().forEach(Ghost::show);
 			fireAttackStateChange();
 		}
 
@@ -463,7 +464,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onEntry() {
 			theme.snd_clips_all().forEach(Sound::stop);
-			game.activeGhosts().forEach(ghost -> ghost.visible = false);
+			game.activeGhosts().forEach(Ghost::hide);
 			game.pacMan.sprites.select("full");
 			playView.hideInfoText();
 			resetTimer();
@@ -489,7 +490,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onEntry() {
-			game.pacMan.visible = false;
+			game.pacMan.hide();
 			boolean extraLife = game.scorePoints(game.getKilledGhostValue());
 			if (extraLife) {
 				theme.snd_extraLife().play();
@@ -508,7 +509,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onExit() {
-			game.pacMan.visible = true;
+			game.pacMan.show();
 		}
 	}
 
@@ -530,7 +531,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (waitTimer > 0) {
 				waitTimer -= 1;
 				if (waitTimer == 0) {
-					game.activeGhosts().forEach(ghost -> ghost.visible = false);
+					game.activeGhosts().forEach(Ghost::hide);
 				}
 			}
 			else {
@@ -540,7 +541,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onExit() {
-			game.activeGhosts().forEach(ghost -> ghost.visible = true);
+			game.activeGhosts().forEach(Ghost::show);
 			if (game.getLives() > 0) {
 				game.removeLife();
 				theme.music_playing().loop();
@@ -556,8 +557,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onEntry() {
 			game.score.save();
-			game.activeGhosts().forEach(ghost -> ghost.visible = true);
-			game.getBonus().ifPresent(bonus -> bonus.visible = false);
+			game.activeGhosts().forEach(Ghost::show);
+			game.getBonus().ifPresent(Bonus::hide);
 			playView.enableAnimation(false);
 			playView.showInfoText("Game Over!", Color.RED);
 			theme.music_gameover().loop();

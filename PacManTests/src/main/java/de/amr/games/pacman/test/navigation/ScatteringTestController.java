@@ -28,7 +28,7 @@ public class ScatteringTestController implements ViewController {
 	public void init() {
 		game.init();
 		game.maze.removeFood();
-		game.pacMan.visible = false;
+		game.pacMan.hide();
 		game.activeGhosts().forEach(ghost -> {
 			ghost.initialize();
 			ghost.setState(GhostState.SCATTERING);
