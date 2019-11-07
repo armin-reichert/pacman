@@ -6,7 +6,7 @@ import static java.lang.Math.round;
 
 import java.util.OptionalInt;
 
-import de.amr.easy.game.entity.SpriteEntity;
+import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
@@ -21,7 +21,7 @@ import de.amr.graph.grid.impl.Top4;
  * 
  * @author Armin Reichert
  */
-public abstract class MazeMover extends SpriteEntity {
+public abstract class MazeMover extends Entity {
 
 	/* The game model. */
 	public final PacManGame game;

@@ -4,7 +4,7 @@ import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.awt.Graphics2D;
 
-import de.amr.easy.game.entity.SpriteEntity;
+import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.Animation;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
@@ -15,7 +15,7 @@ import de.amr.games.pacman.model.PacManGame;
  * 
  * @author Armin Reichert
  */
-public class MazeView extends SpriteEntity {
+public class MazeView extends Entity {
 
 	private final PacManGame game;
 	private final Animation energizerBlinking;

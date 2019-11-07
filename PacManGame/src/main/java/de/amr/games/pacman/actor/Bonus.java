@@ -5,11 +5,11 @@ import static java.util.Arrays.binarySearch;
 
 import java.awt.Graphics2D;
 
-import de.amr.easy.game.entity.SpriteEntity;
+import de.amr.easy.game.entity.Entity;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.theme.PacManTheme;
 
-public class Bonus extends SpriteEntity {
+public class Bonus extends Entity {
 
 	private static final int[] POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
