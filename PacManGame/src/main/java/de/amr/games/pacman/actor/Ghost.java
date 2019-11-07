@@ -103,9 +103,9 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implem
 		placeAtTile(initialTile, TS / 2, 0);
 		moveDir = initialDir;
 		nextDir = initialDir;
+		visible = true;
 		sprites.select("color-" + initialDir);
 		sprites.forEach(Sprite::resetAnimation);
-		setVisible(true);
 	}
 
 	// Behavior

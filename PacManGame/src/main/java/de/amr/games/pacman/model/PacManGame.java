@@ -242,7 +242,7 @@ public class PacManGame {
 		} else {
 			activeActors.remove(actor);
 		}
-		actor.setVisible(active);
+		actor.visible = active;
 	}
 
 	public int getLevel() {

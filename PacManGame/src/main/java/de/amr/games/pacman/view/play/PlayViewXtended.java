@@ -52,9 +52,10 @@ public class PlayViewXtended extends PlayView {
 	private boolean showStates = false;
 
 	private static BufferedImage createGridImage(int numRows, int numCols) {
-		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-				.getDefaultConfiguration();
-		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1, Transparency.TRANSLUCENT);
+		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment()
+				.getDefaultScreenDevice().getDefaultConfiguration();
+		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1,
+				Transparency.TRANSLUCENT);
 		Graphics2D g = image.createGraphics();
 		g.setColor(Color.DARK_GRAY);
 		for (int row = 0; row <= numRows; ++row) {
@@ -140,13 +141,14 @@ public class PlayViewXtended extends PlayView {
 		super.draw(g);
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
-			if (game.pacMan.isVisible()) {
+			if (game.pacMan.visible) {
 				drawActorAlignment(game.pacMan, g);
 			}
-			game.activeGhosts().filter(Ghost::isVisible).forEach(ghost -> drawActorAlignment(ghost, g));
+			game.activeGhosts().filter(ghost -> ghost.visible)
+					.forEach(ghost -> drawActorAlignment(ghost, g));
 		}
 		if (showRoutes) {
-			game.activeGhosts().filter(Ghost::isVisible).forEach(ghost -> drawRoute(g, ghost));
+			game.activeGhosts().filter(ghost -> ghost.visible).forEach(ghost -> drawRoute(g, ghost));
 		}
 		if (showStates) {
 			drawEntityStates(g);
@@ -154,10 +156,11 @@ public class PlayViewXtended extends PlayView {
 	}
 
 	private void drawEntityStates(Graphics2D g) {
-		if (game.pacMan.getState() != null && game.pacMan.isVisible()) {
-			drawText(g, Color.YELLOW, game.pacMan.tf.getX(), game.pacMan.tf.getY(), pacManStateText(game.pacMan));
+		if (game.pacMan.getState() != null && game.pacMan.visible) {
+			drawText(g, Color.YELLOW, game.pacMan.tf.getX(), game.pacMan.tf.getY(),
+					pacManStateText(game.pacMan));
 		}
-		game.activeGhosts().filter(Ghost::isVisible).forEach(ghost -> {
+		game.activeGhosts().filter(ghost -> ghost.visible).forEach(ghost -> {
 			if (ghost.getState() != null) {
 				drawText(g, ghostColor(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
 			}
@@ -165,8 +168,8 @@ public class PlayViewXtended extends PlayView {
 	}
 
 	private String pacManStateText(PacMan pacMan) {
-		return pacMan.state().getDuration() != State.ENDLESS ? String.format("(%s,%d|%d)", pacMan.state().id(),
-				pacMan.state().getTicksRemaining(), pacMan.state().getDuration())
+		return pacMan.state().getDuration() != State.ENDLESS ? String.format("(%s,%d|%d)",
+				pacMan.state().id(), pacMan.state().getTicksRemaining(), pacMan.state().getDuration())
 				: String.format("(%s,%s)", pacMan.state().id(), INFTY);
 	}
 
@@ -175,12 +178,14 @@ public class PlayViewXtended extends PlayView {
 		if (ghost.getState() == GhostState.FRIGHTENED) {
 			GhostState nextState = ghost.getNextState();
 			return ghost.state().getDuration() != State.ENDLESS
-					? String.format("%s(%s,%d|%d)[->%s]", name, ghost.state().id(), ghost.state().getTicksRemaining(),
-							ghost.state().getDuration(), nextState)
+					? String.format("%s(%s,%d|%d)[->%s]", name, ghost.state().id(),
+							ghost.state().getTicksRemaining(), ghost.state().getDuration(), nextState)
 					: String.format("%s(%s,%s)[->%s]", name, ghost.state().id(), INFTY, nextState);
-		} else {
-			return ghost.state().getDuration() != State.ENDLESS ? String.format("%s(%s,%d|%d)", name,
-					ghost.state().id(), ghost.state().getTicksRemaining(), ghost.state().getDuration())
+		}
+		else {
+			return ghost.state().getDuration() != State.ENDLESS
+					? String.format("%s(%s,%d|%d)", name, ghost.state().id(),
+							ghost.state().getTicksRemaining(), ghost.state().getDuration())
 					: String.format("%s(%s,%s)", name, ghost.state().id(), INFTY);
 		}
 	}
@@ -246,14 +251,16 @@ public class PlayViewXtended extends PlayView {
 			g.translate(targetTile.col * TS, targetTile.row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-targetTile.col * TS, -targetTile.row * TS);
-		} else if (route.getTarget() != null) {
+		}
+		else if (route.getTarget() != null) {
 			// draw target tile indicator
-			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y, route.getTarget().col * TS + TS / 2,
-					route.getTarget().row * TS + TS / 2);
+			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
+					route.getTarget().col * TS + TS / 2, route.getTarget().row * TS + TS / 2);
 			g.translate(route.getTarget().col * TS, route.getTarget().row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-route.getTarget().col * TS, -route.getTarget().row * TS);
-		} else {
+		}
+		else {
 			// draw direction indicator
 			route.getDir().ifPresent(dir -> {
 				Vector2f center = ghost.tf.getCenter();

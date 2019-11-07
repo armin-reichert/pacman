@@ -48,7 +48,8 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements ViewController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
+		implements ViewController {
 
 	// Typed reference to "Playing" state object
 	private PlayingState playingState;
@@ -135,9 +136,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void handlePlayingSpeedChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
 			app().clock.setFrequency(60);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
 			app().clock.setFrequency(80);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
 			app().clock.setFrequency(100);
 		}
 	}
@@ -147,7 +150,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			game.classicFlightBehavior = !game.classicFlightBehavior;
 			game.ghosts().forEach(ghost -> {
 				ghost.setBehavior(GhostState.FRIGHTENED,
-						game.classicFlightBehavior ? ghost.fleeingRandomly() : ghost.fleeingToSafeCorner(game.pacMan));
+						game.classicFlightBehavior ? ghost.fleeingRandomly()
+								: ghost.fleeingToSafeCorner(game.pacMan));
 			});
 			LOGGER.info("Changed ghost FRIGHTENED behavior to flee "
 					+ (game.classicFlightBehavior ? "randomly" : "via safe route"));
@@ -323,7 +327,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onEntry() {
 			ghostAttackController.init();
-			game.activeGhosts().forEach(ghost -> ghost.setVisible(true));
+			game.activeGhosts().forEach(ghost -> ghost.visible = true);
 			fireAttackStateChange();
 		}
 
@@ -338,7 +342,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			ghostAttackController.update();
 			if (oldAttackState != ghostAttackController.getState()) {
 				fireAttackStateChange();
-			} else {
+			}
+			else {
 				game.activeGhosts().forEach(Ghost::update);
 			}
 			game.pacMan.update();
@@ -376,7 +381,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onPacManKilled(PacManGameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
-			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.name, e.killer.currentTile()));
+			LOGGER.info(
+					() -> String.format("PacMan killed by %s at %s", e.killer.name, e.killer.currentTile()));
 			game.enableGlobalFoodCounter();
 			game.pacMan.processEvent(e);
 		}
@@ -401,14 +407,16 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onGhostKilled(PacManGameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
-			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.name, e.ghost.currentTile()));
+			LOGGER
+					.info(() -> String.format("Ghost %s killed at %s", e.ghost.name, e.ghost.currentTile()));
 			theme.snd_eatGhost().play();
 			e.ghost.processEvent(e);
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
 			game.getBonus().ifPresent(bonus -> {
-				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.symbol(), bonus.value()));
+				LOGGER.info(() -> String.format("PacMan found bonus %s of value %d", bonus.symbol(),
+						bonus.value()));
 				theme.snd_eatFruit().play();
 				bonus.consume();
 				boolean extraLife = game.scorePoints(bonus.value());
@@ -455,7 +463,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onEntry() {
 			theme.snd_clips_all().forEach(Sound::stop);
-			game.activeGhosts().forEach(ghost -> ghost.setVisible(false));
+			game.activeGhosts().forEach(ghost -> ghost.visible = false);
 			game.pacMan.sprites.select("full");
 			playView.hideInfoText();
 			resetTimer();
@@ -481,25 +489,26 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onEntry() {
-			game.pacMan.setVisible(false);
+			game.pacMan.visible = false;
 			boolean extraLife = game.scorePoints(game.getKilledGhostValue());
 			if (extraLife) {
 				theme.snd_extraLife().play();
 			}
-			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
-					game.numGhostsKilledByCurrentEnergizer()));
+			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d",
+					game.getKilledGhostValue(), game.numGhostsKilledByCurrentEnergizer()));
 		}
 
 		@Override
 		public void onTick() {
 			game.activeGhosts()
-					.filter(ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
+					.filter(
+							ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
 					.forEach(Ghost::update);
 		}
 
 		@Override
 		public void onExit() {
-			game.pacMan.setVisible(true);
+			game.pacMan.visible = true;
 		}
 	}
 
@@ -521,16 +530,17 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (waitTimer > 0) {
 				waitTimer -= 1;
 				if (waitTimer == 0) {
-					game.activeGhosts().forEach(ghost -> ghost.setVisible(false));
+					game.activeGhosts().forEach(ghost -> ghost.visible = false);
 				}
-			} else {
+			}
+			else {
 				game.pacMan.update();
 			}
 		}
 
 		@Override
 		public void onExit() {
-			game.activeGhosts().forEach(ghost -> ghost.setVisible(true));
+			game.activeGhosts().forEach(ghost -> ghost.visible = true);
 			if (game.getLives() > 0) {
 				game.removeLife();
 				theme.music_playing().loop();
@@ -546,8 +556,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onEntry() {
 			game.score.save();
-			game.activeGhosts().forEach(ghost -> ghost.setVisible(true));
-			game.getBonus().ifPresent(bonus -> bonus.setVisible(false));
+			game.activeGhosts().forEach(ghost -> ghost.visible = true);
+			game.getBonus().ifPresent(bonus -> bonus.visible = false);
 			playView.enableAnimation(false);
 			playView.showInfoText("Game Over!", Color.RED);
 			theme.music_gameover().loop();

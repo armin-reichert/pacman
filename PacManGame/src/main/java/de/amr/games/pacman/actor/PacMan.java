@@ -77,8 +77,7 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 	}
 
 	/**
-	 * @return if a steering key is pressed, the corresponding direction, otherwise
-	 *         nothing
+	 * @return if a steering key is pressed, the corresponding direction, otherwise nothing
 	 */
 	@Override
 	public OptionalInt getNextMoveDirection() {
@@ -179,7 +178,8 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 		public void onTick() {
 			if (mustDigest()) {
 				digest();
-			} else {
+			}
+			else {
 				move();
 				findSomethingInteresting().ifPresent(PacMan.this::publishEvent);
 			}
@@ -269,7 +269,7 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 			if (paralyzedTicks > 0) {
 				paralyzedTicks -= 1;
 				if (paralyzedTicks == 0) {
-					game.activeGhosts().forEach(ghost -> ghost.setVisible(false));
+					game.activeGhosts().forEach(ghost -> ghost.visible = false);
 					sprites.select("dying");
 					game.theme.snd_die().play();
 				}
