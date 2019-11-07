@@ -21,9 +21,9 @@ public class FollowFixedPathTestController implements ViewController {
 		g = new PacManGame();
 		g.setLevel(1);
 		g.maze.removeFood();
-		targets = Arrays.asList(g.maze.getBottomRightCorner(), g.maze.getBottomLeftCorner(),
-				g.maze.getTeleportLeft(), g.maze.getTopLeftCorner(), g.maze.getBlinkyHome(),
-				g.maze.getTopRightCorner(), g.maze.getTeleportRight(), g.maze.getPacManHome());
+		targets = Arrays.asList(g.maze.getBottomRightCorner(), g.maze.getBottomLeftCorner(), g.maze.getTeleportLeft(),
+				g.maze.getTopLeftCorner(), g.maze.getBlinkyHome(), g.maze.getTopRightCorner(),
+				g.maze.getTeleportRight(), g.maze.getPacManHome());
 		view = new PlayViewXtended(g);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
@@ -39,8 +39,7 @@ public class FollowFixedPathTestController implements ViewController {
 		g.blinky.initialize();
 		g.blinky.setState(GhostState.CHASING);
 		g.theme.snd_ghost_chase().stop();
-		g.blinky.setBehavior(GhostState.CHASING,
-				g.blinky.followingFixedPath(() -> targets.get(targetIndex)));
+		g.blinky.setBehavior(GhostState.CHASING, g.blinky.followingFixedPath(() -> targets.get(targetIndex)));
 		g.blinky.currentBehavior().computePath(g.blinky);
 	}
 

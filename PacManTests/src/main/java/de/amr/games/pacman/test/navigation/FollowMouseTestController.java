@@ -69,8 +69,7 @@ public class FollowMouseTestController implements ViewController {
 	private void handleRoutingMode() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
 			g.blinky.setBehavior(CHASING, g.blinky.headingFor(this::currentMouseTile));
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
 			g.blinky.setBehavior(CHASING, g.blinky.followingPathfinder(this::currentMouseTile));
 		}
 	}
