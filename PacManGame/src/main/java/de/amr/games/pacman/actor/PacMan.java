@@ -77,7 +77,8 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 	}
 
 	/**
-	 * @return if a steering key is pressed, the corresponding direction, otherwise nothing
+	 * @return if a steering key is pressed, the corresponding direction, otherwise
+	 *         nothing
 	 */
 	@Override
 	public OptionalInt getNextMoveDirection() {
@@ -178,8 +179,7 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 		public void onTick() {
 			if (mustDigest()) {
 				digest();
-			}
-			else {
+			} else {
 				move();
 				findSomethingInteresting().ifPresent(PacMan.this::publishEvent);
 			}

@@ -8,16 +8,17 @@ import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
 
 /**
- * Represents a route through the maze. For dynamic routes (where the next direction is queried at
- * each intersection), the path may be empty. For fixed routes, the path is computed only once.
+ * Represents a route through the maze. For dynamic routes (where the next
+ * direction is queried at each intersection), the path may be empty. For fixed
+ * routes, the path is computed only once.
  * 
  * @author Armin Reichert
  */
 public class Route {
 
 	/**
-	 * The direction to take (see class {@link Top4} for the direction constants), {@code -1} means no
-	 * value.
+	 * The direction to take (see class {@link Top4} for the direction constants),
+	 * {@code -1} means no value.
 	 */
 	private int dir;
 
@@ -37,8 +38,7 @@ public class Route {
 	/**
 	 * Creates a route following the given direction. The path is empty.
 	 * 
-	 * @param dir
-	 *              route direction
+	 * @param dir route direction
 	 */
 	public Route(int dir) {
 		this.dir = dir;
@@ -54,14 +54,12 @@ public class Route {
 	/**
 	 * Sets the direction for following this route.
 	 * 
-	 * @param dir
-	 *              the direction (Top4.N, Top4.E, Top4.S, Top4.W) or {@code -1}
+	 * @param dir the direction (Top4.N, Top4.E, Top4.S, Top4.W) or {@code -1}
 	 */
 	public void setDir(int dir) {
 		if (dir == -1 || dir == Top4.N || dir == Top4.E || dir == Top4.S || dir == Top4.W) {
 			this.dir = dir;
-		}
-		else {
+		} else {
 			throw new IllegalArgumentException("Illegal direction value: " + dir);
 		}
 	}
@@ -76,8 +74,7 @@ public class Route {
 	/**
 	 * Sets the path of this route.
 	 * 
-	 * @param path
-	 *               tile list defining the path
+	 * @param path tile list defining the path
 	 */
 	public void setPath(List<Tile> path) {
 		this.path = path;
@@ -93,8 +90,7 @@ public class Route {
 	/**
 	 * Sets the target tile of this route.
 	 * 
-	 * @param target
-	 *                 the target tile
+	 * @param target the target tile
 	 */
 	public void setTarget(Tile target) {
 		this.target = target;

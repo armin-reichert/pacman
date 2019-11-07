@@ -8,7 +8,8 @@ import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Computes a fixed path and lets the actor follow this path until the target tile is reached.
+ * Computes a fixed path and lets the actor follow this path until the target
+ * tile is reached.
  *
  * @author Armin Reichert
  */

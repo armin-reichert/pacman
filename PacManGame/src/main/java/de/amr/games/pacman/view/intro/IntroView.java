@@ -78,24 +78,21 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 		ghostPoints.tf.setY(200);
 		ghostPoints.tf.centerX(width);
 
-		pressSpace = TextWidget.create().text("Press SPACE to start!").spaceExpansion(3)
-				.blinkTimeMillis(1000).font(theme.fnt_text(18)).background(background)
-				.color(Color.YELLOW).build();
+		pressSpace = TextWidget.create().text("Press SPACE to start!").spaceExpansion(3).blinkTimeMillis(1000)
+				.font(theme.fnt_text(18)).background(background).color(Color.YELLOW).build();
 		pressSpace.tf.setY(130);
 		pressSpace.tf.centerX(width);
 
-		f11Hint = TextWidget.create().text("F11 Toggle Fullscreen").spaceExpansion(3)
-				.blinkTimeMillis(Integer.MAX_VALUE).font(theme.fnt_text(12)).background(background)
-				.color(Color.PINK).build();
+		f11Hint = TextWidget.create().text("F11 Toggle Fullscreen").spaceExpansion(3).blinkTimeMillis(Integer.MAX_VALUE)
+				.font(theme.fnt_text(12)).background(background).color(Color.PINK).build();
 		f11Hint.tf.setY(pressSpace.tf.getY() + 30);
 		f11Hint.tf.centerX(width);
 
 		speedHint = new TextWidget[3];
 		String[] texts = { "Normal 1", "Fast 2", "Insane 3" };
 		for (int i = 0; i < texts.length; ++i) {
-			speedHint[i] = TextWidget.create().text(texts[i]).spaceExpansion(3)
-					.blinkTimeMillis(Integer.MAX_VALUE).font(theme.fnt_text(12)).background(background)
-					.color(Color.PINK).build();
+			speedHint[i] = TextWidget.create().text(texts[i]).spaceExpansion(3).blinkTimeMillis(Integer.MAX_VALUE)
+					.font(theme.fnt_text(12)).background(background).color(Color.PINK).build();
 			speedHint[i].tf.setY(height - 40);
 		}
 		speedHint[0].tf.setX(20);

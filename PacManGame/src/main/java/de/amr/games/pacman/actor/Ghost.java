@@ -35,8 +35,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent>
-		implements GhostBehaviors {
+public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implements GhostBehaviors {
 
 	public Supplier<GhostState> fnNextState; // state after FRIGHTENED or LOCKED state
 	public int foodCount;
@@ -77,8 +76,7 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent>
 	}
 
 	private void sirenOff() {
-		if (game.activeGhosts().filter(ghost -> this != ghost)
-				.noneMatch(ghost -> ghost.getState() == CHASING)) {
+		if (game.activeGhosts().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
 			game.theme.snd_ghost_chase().stop();
 		}
 	}
@@ -90,8 +88,7 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent>
 	}
 
 	private void deadSoundOff() {
-		if (game.activeGhosts().filter(ghost -> ghost != this)
-				.noneMatch(ghost -> ghost.getState() == DEAD)) {
+		if (game.activeGhosts().filter(ghost -> ghost != this).noneMatch(ghost -> ghost.getState() == DEAD)) {
 			game.theme.snd_ghost_dead().stop();
 		}
 	}

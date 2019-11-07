@@ -110,10 +110,8 @@ public class PlayView implements View, Controller {
 		if (game.isActive(game.pacMan)) {
 			game.pacMan.draw(g);
 		}
-		game.activeGhosts().filter(ghost -> ghost.getState() != GhostState.DYING)
-				.forEach(ghost -> ghost.draw(g));
-		game.activeGhosts().filter(ghost -> ghost.getState() == GhostState.DYING)
-				.forEach(ghost -> ghost.draw(g));
+		game.activeGhosts().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));
+		game.activeGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {
