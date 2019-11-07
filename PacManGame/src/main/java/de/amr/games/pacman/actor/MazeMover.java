@@ -185,20 +185,19 @@ public abstract class MazeMover extends SpriteEntity {
 	 * direction in the current frame.
 	 */
 	private float computeActualSpeed(int dir) {
-		Tile currentTile = currentTile();
-		Tile neighborTile = game.maze.tileToDir(currentTile, dir);
-		if (canEnterTile(neighborTile)) {
+		Tile tile = currentTile();
+		if (canEnterTile(game.maze.tileToDir(tile, dir))) {
 			return maxSpeed();
 		}
 		switch (dir) {
-		case Top4.E:
-			return neighborTile.col * TS - (tf.getX() + tf.getWidth());
 		case Top4.W:
-			return tf.getX() - currentTile.col * TS;
+			return -tile.col * TS + tf.getX();
+		case Top4.E:
+			return tile.col * TS - tf.getX();
 		case Top4.N:
-			return tf.getY() - currentTile.row * TS;
+			return -tile.row * TS + tf.getY();
 		case Top4.S:
-			return neighborTile.row * TS - (tf.getY() + tf.getHeight());
+			return tile.row * TS - tf.getY();
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}
