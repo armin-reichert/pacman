@@ -7,6 +7,7 @@ import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
+import de.amr.games.pacman.theme.PacManTheme;
 
 /**
  * The Pac-Man game application.
@@ -32,9 +33,10 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
-		PacManGame game = new PacManGame(new ClassicPacManTheme());
+		PacManTheme theme = new ClassicPacManTheme();
+		PacManGame game = new PacManGame(theme);
 		PacManGameController gameController = new PacManGameController(game);
 		setController(gameController);
-		setIcon(game.theme.spr_ghostFrightened().frame(0));
+		setIcon(theme.spr_ghostFrightened().frame(0));
 	}
 }
