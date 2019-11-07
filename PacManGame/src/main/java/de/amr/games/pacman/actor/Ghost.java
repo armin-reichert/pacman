@@ -227,7 +227,7 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implem
 				.when(DYING).then(DEAD).onTimeout()
 					
 				.when(DEAD).then(LOCKED)
-					.condition(() -> currentTile().equals(game.maze.getGhostRevivalTile()))
+					.condition(() -> currentTile().equals(game.maze.ghostRevival))
 				
 		.endStateMachine();
 		/*@formatter:on*/

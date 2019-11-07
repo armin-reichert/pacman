@@ -135,8 +135,8 @@ public abstract class MazeMover extends Entity {
 		if (game.maze.isWall(tile)) {
 			return false;
 		}
-		if (tile.equals(game.maze.tileToDir(game.maze.getTeleportRight(), Top4.E))
-				|| tile.equals(game.maze.tileToDir(game.maze.getTeleportLeft(), Top4.W))) {
+		if (tile.equals(game.maze.tileToDir(game.maze.teleportRight, Top4.E))
+				|| tile.equals(game.maze.tileToDir(game.maze.teleportLeft, Top4.W))) {
 			return true;
 		}
 		return game.maze.insideBoard(tile);
@@ -169,8 +169,8 @@ public abstract class MazeMover extends Entity {
 		}
 		tf.setVelocity(Vector2f.smul(speed, Vector2f.of(Top4.get().dx(moveDir), Top4.get().dy(moveDir))));
 		tf.move();
-		int teleportLeftX = (game.maze.getTeleportLeft().col - 1) * TS;
-		int teleportRightX = (game.maze.getTeleportRight().col + 1) * TS;
+		int teleportLeftX = (game.maze.teleportLeft.col - 1) * TS;
+		int teleportRightX = (game.maze.teleportRight.col + 1) * TS;
 		if (tf.getX() >= teleportRightX) {
 			tf.setX(teleportLeftX);
 		} else if (tf.getX() <= teleportLeftX) {

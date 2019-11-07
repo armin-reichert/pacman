@@ -168,27 +168,27 @@ public class PacManGame {
 
 		pacMan = new PacMan(this);
 
-		blinky = new Ghost(this, "Blinky", GhostColor.RED, maze.getBlinkyHome(), Top4.S);
-		blinky.setBehavior(SCATTERING, blinky.headingFor(maze::getBlinkyScatterTarget));
+		blinky = new Ghost(this, "Blinky", GhostColor.RED, maze.blinkyHome, Top4.S);
+		blinky.setBehavior(SCATTERING, blinky.headingFor(() -> maze.blinkyScatter));
 		blinky.setBehavior(CHASING, blinky.attackingDirectly(pacMan));
 
-		pinky = new Ghost(this, "Pinky", GhostColor.PINK, maze.getPinkyHome(), Top4.S);
-		pinky.setBehavior(SCATTERING, pinky.headingFor(maze::getPinkyScatterTarget));
+		pinky = new Ghost(this, "Pinky", GhostColor.PINK, maze.pinkyHome, Top4.S);
+		pinky.setBehavior(SCATTERING, pinky.headingFor(() -> maze.pinkyScatter));
 		pinky.setBehavior(CHASING, pinky.ambushing(pacMan));
 
-		inky = new Ghost(this, "Inky", GhostColor.CYAN, maze.getInkyHome(), Top4.N);
-		inky.setBehavior(SCATTERING, inky.headingFor(maze::getInkyScatterTarget));
+		inky = new Ghost(this, "Inky", GhostColor.CYAN, maze.inkyHome, Top4.N);
+		inky.setBehavior(SCATTERING, inky.headingFor(() -> maze.inkyScatter));
 		inky.setBehavior(CHASING, inky.attackingWithPartner(blinky, pacMan));
 
-		clyde = new Ghost(this, "Clyde", GhostColor.ORANGE, maze.getClydeHome(), Top4.N);
-		clyde.setBehavior(SCATTERING, clyde.headingFor(maze::getClydeScatterTarget));
-		clyde.setBehavior(CHASING, clyde.attackingAndRejecting(pacMan, 8 * TS, maze.getClydeScatterTarget()));
+		clyde = new Ghost(this, "Clyde", GhostColor.ORANGE, maze.clydeHome, Top4.N);
+		clyde.setBehavior(SCATTERING, clyde.headingFor(() -> maze.clydeScatter));
+		clyde.setBehavior(CHASING, clyde.attackingAndRejecting(pacMan, 8 * TS, maze.clydeScatter));
 
 		classicFlightBehavior = true;
 		ghosts().forEach(ghost -> {
 			ghost.setBehavior(FRIGHTENED,
 					classicFlightBehavior ? ghost.fleeingRandomly() : ghost.fleeingToSafeCorner(pacMan));
-			ghost.setBehavior(DEAD, ghost.headingFor(maze::getGhostRevivalTile));
+			ghost.setBehavior(DEAD, ghost.headingFor(() -> maze.ghostRevival));
 			ghost.setBehavior(LOCKED, ghost.bouncing());
 		});
 
@@ -278,7 +278,7 @@ public class PacManGame {
 	}
 
 	public int getFoodRemaining() {
-		return maze.getFoodTotal() - eaten;
+		return maze.foodTotal - eaten;
 	}
 
 	public int getDigestionTicks(boolean energizer) {
@@ -421,7 +421,7 @@ public class PacManGame {
 		if (maze.inGhostHouse(tile)) {
 			return speed(.5f);
 		}
-		boolean inTunnel = maze.inTunnel(tile) || tile == maze.getTeleportLeft() || tile == maze.getTeleportRight();
+		boolean inTunnel = maze.inTunnel(tile) || tile == maze.teleportLeft || tile == maze.teleportRight;
 		float tunnelSpeed = speed(Param.GHOST_TUNNEL_SPEED.float_(level));
 		switch (ghost.getState()) {
 		case CHASING:

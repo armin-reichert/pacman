@@ -68,7 +68,7 @@ public class PlayViewXtended extends PlayView {
 
 	public PlayViewXtended(PacManGame game) {
 		super(game);
-		gridImage = createGridImage(game.maze.numRows(), game.maze.numCols());
+		gridImage = createGridImage(game.maze.numRows, game.maze.numCols);
 	}
 
 	public void setShowGrid(boolean showGrid) {

@@ -1,6 +1,7 @@
 package de.amr.games.pacman.test.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -13,8 +14,26 @@ public class BoardTests {
 	public void testBoardLoading() {
 		Maze maze = new Maze();
 
-		assertEquals(28, maze.numCols());
-		assertEquals(36, maze.numRows());
+		assertEquals(28, maze.numCols);
+		assertEquals(36, maze.numRows);
+		
+		assertNotNull(maze.blinkyHome);
+		assertNotNull(maze.blinkyScatter);
+		assertNotNull(maze.bonusTile);
+		assertNotNull(maze.bottomLeft);
+		assertNotNull(maze.bottomRight);
+		assertNotNull(maze.clydeHome);
+		assertNotNull(maze.clydeScatter);
+		assertNotNull(maze.ghostRevival);
+		assertNotNull(maze.inkyHome);
+		assertNotNull(maze.inkyScatter);
+		assertNotNull(maze.pacManHome);
+		assertNotNull(maze.pinkyHome);
+		assertNotNull(maze.pinkyScatter);
+		assertNotNull(maze.teleportLeft);
+		assertNotNull(maze.teleportRight);
+		assertNotNull(maze.topLeft);
+		assertNotNull(maze.topRight);
 
 		assertEquals(4, maze.tiles().filter(tile -> maze.containsEnergizer(tile)).count());
 		assertEquals(240, maze.tiles().filter(tile -> maze.containsPellet(tile)).count());

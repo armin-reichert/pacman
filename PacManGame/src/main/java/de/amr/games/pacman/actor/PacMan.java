@@ -58,7 +58,7 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 		moveDir = nextDir = Top4.E;
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("full");
-		placeAtTile(game.maze.getPacManHome(), TS / 2, 0);
+		placeAtTile(game.maze.pacManHome, TS / 2, 0);
 	}
 
 	// Movement
@@ -207,7 +207,7 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 				return Optional.of(new PacManGhostCollisionEvent(collidingGhost.get()));
 			}
 
-			if (tile == game.maze.getBonusTile()) {
+			if (tile == game.maze.bonusTile) {
 				Optional<Bonus> activeBonus = game.getBonus().filter(bonus -> !bonus.consumed());
 				if (activeBonus.isPresent()) {
 					Bonus bonus = activeBonus.get();

@@ -32,38 +32,34 @@ import de.amr.graph.pathfinder.impl.AStarSearch;
  */
 public class Maze {
 
-	private static final char WALL = '#';
-	private static final char DOOR = 'D';
-	private static final char TUNNEL = 'T';
-	private static final char TELEPORT_L = '<';
-	private static final char TELEPORT_R = '>';
-	private static final char SPACE = ' ';
-	private static final char PELLET = '.';
-	private static final char ENERGIZER = '*';
-	private static final char EATEN = '%';
+	static final char WALL = '#', DOOR = 'D', TUNNEL = 'T', TELEPORT_L = '<', TELEPORT_R = '>', SPACE = ' ',
+			PELLET = '.', ENERGIZER = '*', EATEN = '%';
 
-	private final Tile[][] board;
-	private final Set<Tile> unrestrictedIS = new HashSet<>();
-	private final Set<Tile> upwardsBlockedIS = new HashSet<>();
-	private final Set<Tile> energizerTiles = new HashSet<>();
+	public int numCols, numRows;
 
-	// dedicated tiles
-	private Tile pacManHome;
-	private Tile blinkyHome, blinkyScatterTarget;
-	private Tile pinkyHome, pinkyScatterTarget;
-	private Tile inkyHome, inkyScatterTarget;
-	private Tile clydeHome, clydeScatterTarget;
-	private Tile bonus;
-	private Tile teleportLeft, teleportRight;
+	public final Tile topLeft, topRight, bottomLeft, bottomRight;
+
+	public Tile pacManHome, blinkyHome, blinkyScatter, pinkyHome, pinkyScatter, inkyHome, inkyScatter, clydeHome,
+			clydeScatter, bonusTile, teleportLeft, teleportRight, ghostRevival;
+
+	final Tile[][] board;
+
+	final Set<Tile> unrestrictedIS = new HashSet<>();
+
+	final Set<Tile> upwardsBlockedIS = new HashSet<>();
+
+	final Set<Tile> energizerTiles = new HashSet<>();
 
 	public final GridGraph<Tile, Void> gridGraph;
 
-	private int foodTotal;
-	private long pathFinderCalls;
+	public int foodTotal;
+
+	int pathFinderCalls;
 
 	public Maze() {
 		String[] map = Assets.text("maze.txt").split("\n");
-		int numCols = map[0].length(), numRows = map.length;
+		numCols = map[0].length();
+		numRows = map.length;
 		board = new Tile[numCols][numRows];
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
@@ -103,6 +99,7 @@ public class Maze {
 					break;
 				case 'P':
 					pinkyHome = tile;
+					ghostRevival = tile;
 					break;
 				case 'I':
 					inkyHome = tile;
@@ -112,28 +109,32 @@ public class Maze {
 					break;
 				case 'b':
 					tile.content = WALL;
-					blinkyScatterTarget = tile;
+					blinkyScatter = tile;
 					break;
 				case 'p':
 					tile.content = WALL;
-					pinkyScatterTarget = tile;
+					pinkyScatter = tile;
 					break;
 				case 'i':
 					tile.content = WALL;
-					inkyScatterTarget = tile;
+					inkyScatter = tile;
 					break;
 				case 'c':
 					tile.content = WALL;
-					clydeScatterTarget = tile;
+					clydeScatter = tile;
 					break;
 				case '$':
-					bonus = tile;
+					bonusTile = tile;
 					break;
 				default:
 					break;
 				}
 			}
 		}
+		topLeft = board[1][4];
+		topRight = board[numCols - 2][4];
+		bottomLeft = board[1][numRows - 4];
+		bottomRight = board[numCols - 2][numRows - 4];
 
 		// Grid graph structure, vertex content is (reference to) corresponding tile
 		gridGraph = new GridGraph<>(numCols, numRows, Top4.get(), this::tile, (u, v) -> null, UndirectedEdge::new);
@@ -167,14 +168,6 @@ public class Maze {
 					}
 				});
 		//@formatter:on
-	}
-
-	public int numCols() {
-		return gridGraph.numCols();
-	}
-
-	public int numRows() {
-		return gridGraph.numRows();
 	}
 
 	private int vertex(Tile tile) {
@@ -224,74 +217,6 @@ public class Maze {
 		return gridGraph.isValidCol(tile.col) && gridGraph.isValidRow(tile.row);
 	}
 
-	public Tile getTopLeftCorner() {
-		return tileAt(1, 4);
-	}
-
-	public Tile getTopRightCorner() {
-		return tileAt(numCols() - 2, 4);
-	}
-
-	public Tile getBottomLeftCorner() {
-		return tileAt(1, numRows() - 4);
-	}
-
-	public Tile getBottomRightCorner() {
-		return tileAt(numCols() - 2, numRows() - 4);
-	}
-
-	public Tile getBlinkyScatterTarget() {
-		return blinkyScatterTarget;
-	}
-
-	public Tile getPinkyScatterTarget() {
-		return pinkyScatterTarget;
-	}
-
-	public Tile getInkyScatterTarget() {
-		return inkyScatterTarget;
-	}
-
-	public Tile getClydeScatterTarget() {
-		return clydeScatterTarget;
-	}
-
-	public Tile getPacManHome() {
-		return pacManHome;
-	}
-
-	public Tile getBlinkyHome() {
-		return blinkyHome;
-	}
-
-	public Tile getPinkyHome() {
-		return pinkyHome;
-	}
-
-	public Tile getInkyHome() {
-		return inkyHome;
-	}
-
-	public Tile getClydeHome() {
-		return clydeHome;
-	}
-
-	public Tile getGhostRevivalTile() {
-		return pinkyHome;
-	}
-
-	public Tile getBonusTile() {
-		return bonus;
-	}
-
-	public Tile getTeleportLeft() {
-		return teleportLeft;
-	}
-
-	public Tile getTeleportRight() {
-		return teleportRight;
-	}
-
 	public boolean inTunnel(Tile tile) {
 		return tile.content == TUNNEL;
 	}
@@ -325,10 +250,6 @@ public class Maze {
 	}
 
 	// food
-
-	public int getFoodTotal() {
-		return foodTotal;
-	}
 
 	public boolean containsPellet(Tile tile) {
 		return tile.content == PELLET;

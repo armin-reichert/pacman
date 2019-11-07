@@ -72,7 +72,7 @@ public class PlayView implements View, Controller {
 	public void setBonus(BonusSymbol symbol, int value) {
 		Bonus bonus = new Bonus(symbol, value, game.theme);
 		game.setBonus(bonus);
-		Tile bonusTile = game.maze.getBonusTile();
+		Tile bonusTile = game.maze.bonusTile;
 		bonus.tf.setPosition(bonusTile.col * TS + TS / 2, bonusTile.row * TS);
 	}
 
@@ -176,7 +176,7 @@ public class PlayView implements View, Controller {
 		g2.setFont(game.theme.fnt_text(14));
 		g2.setColor(infoTextColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(infoText, g2).getBounds();
-		g2.translate((mazeWidth - box.width) / 2, (game.maze.getBonusTile().row + 1) * TS);
+		g2.translate((mazeWidth - box.width) / 2, (game.maze.bonusTile.row + 1) * TS);
 		g2.drawString(infoText, 0, 0);
 		g2.dispose();
 	}
