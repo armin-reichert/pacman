@@ -1,6 +1,5 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
 import static java.lang.Math.round;
 
@@ -161,14 +160,14 @@ public abstract class MazeMover extends Entity {
 		getNextMoveDirection().ifPresent(dir -> nextDir = dir);
 		float speed = computeActualSpeed(nextDir);
 		if (speed > 0) {
-			if (nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir)) {
+			if (nextDir == Top4.get().left(moveDir) || nextDir == Top4.get().right(moveDir)) {
 				align();
 			}
 			moveDir = nextDir;
 		} else {
 			speed = computeActualSpeed(moveDir);
 		}
-		tf.setVelocity(Vector2f.smul(speed, Vector2f.of(NESW.dx(moveDir), NESW.dy(moveDir))));
+		tf.setVelocity(Vector2f.smul(speed, Vector2f.of(Top4.get().dx(moveDir), Top4.get().dy(moveDir))));
 		tf.move();
 		int teleportLeftX = (game.maze.getTeleportLeft().col - 1) * TS;
 		int teleportRightX = (game.maze.getTeleportRight().col + 1) * TS;

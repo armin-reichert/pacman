@@ -3,7 +3,6 @@ package de.amr.games.pacman.actor.behavior;
 import static de.amr.datastruct.StreamUtils.permute;
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.math.Vector2f.euclideanDist;
-import static de.amr.games.pacman.model.Maze.NESW;
 
 import java.util.function.Supplier;
 
@@ -144,7 +143,7 @@ public interface GhostBehaviors {
 	 * @return bouncing behavior
 	 */
 	default Behavior bouncing() {
-		return ghost -> new Route(ghost.isStuck() ? NESW.inv(ghost.moveDir) : ghost.moveDir);
+		return ghost -> new Route(ghost.isStuck() ? Top4.get().inv(ghost.moveDir) : ghost.moveDir);
 	}
 
 	/**
@@ -173,8 +172,8 @@ public interface GhostBehaviors {
 				return route;
 			}
 			/*@formatter:off*/
-			permute(NESW.dirs())
-				.filter(dir -> dir != NESW.inv(currentDir))
+			permute(Top4.get().dirs())
+				.filter(dir -> dir != Top4.get().inv(currentDir))
 				.filter(dir -> ghost.canEnterTile(maze().tileToDir(ghost.currentTile(), dir)))
 				.findFirst()
 				.ifPresent(newDir -> {

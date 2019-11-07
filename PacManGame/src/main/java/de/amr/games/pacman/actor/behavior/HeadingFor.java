@@ -1,7 +1,5 @@
 package de.amr.games.pacman.actor.behavior;
 
-import static de.amr.games.pacman.model.Maze.NESW;
-
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -65,7 +63,7 @@ class HeadingFor implements Behavior {
 
 		// if stuck, check if turning left or right is possible
 		if (actor.isStuck()) {
-			int left = NESW.left(actorDir), right = NESW.right(actorDir);
+			int left = Top4.get().left(actorDir), right = Top4.get().right(actorDir);
 			if (actor.canEnterTile(maze.tileToDir(actorTile, left))) {
 				route.setDir(left);
 			} else if (actor.canEnterTile(maze.tileToDir(actorTile, right))) {
@@ -80,7 +78,7 @@ class HeadingFor implements Behavior {
 			// direction order: up > left > down > right
 			int bestDir = Stream.of(Top4.N, Top4.W, Top4.S, Top4.E)
 			/*@formatter:off*/
-				.filter(dir -> dir != NESW.inv(actorDir)) // cannot reverse direction
+				.filter(dir -> dir != Top4.get().inv(actorDir)) // cannot reverse direction
 				.filter(dir -> dir != Top4.N || maze.isUnrestrictedIntersection(nextTile)) // cannot go up if restricted
 				.map(dir -> maze.tileToDir(nextTile, dir))
 				.filter(tile -> maze.insideBoard(tile))

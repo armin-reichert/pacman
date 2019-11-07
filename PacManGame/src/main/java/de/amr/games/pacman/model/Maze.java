@@ -12,7 +12,6 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.graph.core.api.UndirectedEdge;
 import de.amr.graph.grid.api.GridGraph2D;
-import de.amr.graph.grid.api.Topology;
 import de.amr.graph.grid.impl.GridGraph;
 import de.amr.graph.grid.impl.Top4;
 import de.amr.graph.pathfinder.api.GraphSearch;
@@ -32,9 +31,6 @@ import de.amr.graph.pathfinder.impl.AStarSearch;
  * @see GridGraph2D
  */
 public class Maze {
-
-	/** The four move directions: NORTH, EAST, SOUTH and WEST. */
-	public static final Topology NESW = Top4.get();
 
 	private static final char WALL = '#';
 	private static final char DOOR = 'D';
@@ -140,7 +136,7 @@ public class Maze {
 		}
 
 		// Grid graph structure, vertex content is (reference to) corresponding tile
-		gridGraph = new GridGraph<>(numCols, numRows, NESW, this::tile, (u, v) -> null, UndirectedEdge::new);
+		gridGraph = new GridGraph<>(numCols, numRows, Top4.get(), this::tile, (u, v) -> null, UndirectedEdge::new);
 
 		// Add edges
 		gridGraph.fill();
@@ -211,7 +207,7 @@ public class Maze {
 	 *         towards the given direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, int dir, int n) {
-		return tileAt(tile.col + n * NESW.dx(dir), tile.row + n * NESW.dy(dir));
+		return tileAt(tile.col + n * Top4.get().dx(dir), tile.row + n * Top4.get().dy(dir));
 	}
 
 	/**

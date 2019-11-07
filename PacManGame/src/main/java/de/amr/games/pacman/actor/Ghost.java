@@ -7,7 +7,6 @@ import static de.amr.games.pacman.actor.GhostState.DYING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.util.EnumMap;
@@ -28,6 +27,7 @@ import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
+import de.amr.graph.grid.impl.Top4;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -58,7 +58,7 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implem
 	}
 
 	private void setSprites(GhostColor color) {
-		NESW.dirs().forEach(dir -> {
+		Top4.get().dirs().forEach(dir -> {
 			sprites.set("color-" + dir, game.theme.spr_ghostColored(color, dir));
 			sprites.set("eyes-" + dir, game.theme.spr_ghostEyes(dir));
 		});

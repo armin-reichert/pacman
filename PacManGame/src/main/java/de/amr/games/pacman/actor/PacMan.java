@@ -6,7 +6,6 @@ import static de.amr.games.pacman.actor.PacManState.DYING;
 import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.actor.PacManState.POWER;
-import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
@@ -48,7 +47,7 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 	public PacMan(PacManGame game) {
 		super(game, "Pac-Man");
 		buildStateMachine();
-		NESW.dirs().forEach(dir -> sprites.set("walking-" + dir, game.theme.spr_pacManWalking(dir)));
+		Top4.get().dirs().forEach(dir -> sprites.set("walking-" + dir, game.theme.spr_pacManWalking(dir)));
 		sprites.set("dying", game.theme.spr_pacManDying());
 		sprites.set("full", game.theme.spr_pacManFull());
 		sprites.select("full");
@@ -77,11 +76,12 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 	}
 
 	/**
-	 * @return if a steering key is pressed, the corresponding direction, otherwise nothing
+	 * @return if a steering key is pressed, the corresponding direction, otherwise
+	 *         nothing
 	 */
 	@Override
 	public OptionalInt getNextMoveDirection() {
-		return NESW.dirs().filter(dir -> Keyboard.keyDown(STEERING_NESW[dir])).findFirst();
+		return Top4.get().dirs().filter(dir -> Keyboard.keyDown(STEERING_NESW[dir])).findFirst();
 	}
 
 	@Override
@@ -178,8 +178,7 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 		public void onTick() {
 			if (mustDigest()) {
 				digest();
-			}
-			else {
+			} else {
 				move();
 				findSomethingInteresting().ifPresent(PacMan.this::publishEvent);
 			}
