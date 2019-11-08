@@ -1,19 +1,21 @@
-# A comprehensible(?) Pac-Man implementation using explicit state-machines        
+# A hopefully comprehensible Pac-Man implementation using finite-state machines        
 
 <img src="doc/intro.png"/>
 
 ## Pac-Man? Really? How uncool!
 
-For the average school kid in 2018, a retro game like Pac-Man probably seems like the most boring and uncool thing you 
+For the average school kid of today, a retro game like Pac-Man probably feels like the most boring and uncool thing you 
 can deal with. Nevertheless, also a seemingly simple game like Pac-Man can be very instructive!
 
-(My personal fascination for "Pac-Man" comes from the fact that the single computer game I played regularly was  ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), then running on my Apple II (compatible) computer in 1984, on a green monitor, no colors, but what a sound!).
+My personal fascination for "Pac-Man" comes from the fact that the single computer game I played regularly was  ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running on my Apple II+ clone in 1984, no color monitor, but what a sound!.
   
 ## The challenge
 Implementing Pac-Man is challenging not because of the core game functionality like implementing a game loop, updating and drawing entities, handling collisions etc. but for others reasons:
 
 First, implementing a good representation of the maze and the correct movement of the game characters 
-through the maze are not trivial. Pac-Man's movement direction is controlled by the keyboard and the intended move direction can be selected already before Pac-Man can actually turn to that direction. After having implemented this correctly, the next challenge is the logic and the control of the game itself. You have to sort out the different states of the game and the actors, you have to understand how the user interface should behave depending on the current state and which game "events" lead from one state to the other (state transitions).
+through the maze are not trivial. Pac-Man's movement direction is controlled by the keyboard and the intended move direction can be selected already before Pac-Man actually can turn to that direction. 
+
+After having implemented this correctly, the next challenge is the logic and the control of the game itself. You have to sort out the different states of the game and the actors, you have to understand how the user interface should behave depending on the current state and which game "events" lead from one state to the other (state transitions).
 
 Maybe you will start with a single ghost and implement its behavior: waiting (bouncing) in the ghost house, leaving the house to chase Pac-Man or scattering out to the ghosts corner. What should happen when Pac-Man and a ghost are colliding? 
 Which part of your program should coordinate this? Should the code be distributed over the actors or should you have 
@@ -24,7 +26,7 @@ I looked into existing code, for example [here](https://github.com/leonardo-ono/
 
 ## State machines
 
-There are lots of tutorials about Software implementations of *finite state machines*: from basic switch-statements, function pointers (C, C++) to object-oriented "state pattern"-based implementations. There are also ready-to-use libraries like [Appcelerate](http://www.appccelerate.com/), [Stateless4j](https://github.com/oxo42/stateless4j) or [Squirrel](http://hekailiang.github.io/squirrel/). What should you do? 
+There are many possibilities of implementing *finite state machines* in software: from basic switch-statements, function pointers (C, C++) to object-oriented "state pattern"-based implementations. There are also ready-to-use libraries like [Appcelerate](http://www.appccelerate.com/), [Stateless4j](https://github.com/oxo42/stateless4j) or [Squirrel](http://hekailiang.github.io/squirrel/). What should you do? 
 
 The low-level implementations using switch-statements or function pointers (if your programming language supports this) are the most performant ones but as long a you achieve the performance goals for your game (60 frames/updates per second) you can use whatever you like. Of course, using  a higher-level implementation should make your code more readable and easier to maintain.
 
@@ -92,7 +94,7 @@ beginStateMachine()
 				hide(ghostPoints, pressSpace);
 			})
 
-		.state(FINISHED)
+		.state(LEAVING_INTRO)
 
 	.transitions()
 
@@ -105,7 +107,7 @@ beginStateMachine()
 		.when(READY_TO_PLAY).then(CHASING_EACH_OTHER)
 			.onTimeout()
 
-		.when(CHASING_EACH_OTHER).then(FINISHED)
+		.when(READY_TO_PLAY).then(LEAVING_INTRO)
 			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 
 .endStateMachine();
@@ -140,7 +142,6 @@ beginStateMachine()
 
 		.state(CHANGING_LEVEL)
 			.impl(new ChangingLevelState())
-			.timeoutAfter(() -> app().clock.sec(3))
 
 		.state(GHOST_DYING)
 			.impl(new GhostDyingState())
@@ -277,7 +278,6 @@ beginStateMachine(PacManState.class, PacManGameEvent.class)
 	.states()
 
 		.state(HOME)
-			.onEntry(this::initPacMan)
 			.timeoutAfter(() -> 0)
 
 		.state(HUNGRY)
@@ -326,7 +326,7 @@ beginStateMachine(GhostState.class, PacManGameEvent.class)
 
 		.state(LOCKED)
 			.onTick(this::move)
-			.onExit(game.pacMan::resetEatTimer)
+			.onExit(() -> game.pacMan.ticksSinceLastMeal = 0)
 
 		.state(SCATTERING)
 			.onTick(this::move)
@@ -342,15 +342,15 @@ beginStateMachine(GhostState.class, PacManGameEvent.class)
 			})
 			.onTick(() -> {
 				move();
-				sprites.select(game.maze.inGhostHouse(tilePosition())	
-							? "s_color_" + getMoveDir()
-							: game.pacMan.isPowerEnding()	? "s_flashing" : "s_frightened");
+				sprites.select(game.maze.insideGhostHouse(currentTile())	
+							? "color-" + moveDir
+							: game.pacMan.isLosingPower()	? "flashing" : "frightened");
 			})
 
 		.state(DYING)
 			.timeoutAfter(game::getGhostDyingTime)
 			.onEntry(() -> {
-				sprites.select("s_value" + game.getGhostsKilledByEnergizer()); 
+				sprites.select("value-" + game.numGhostsKilledByCurrentEnergizer()); 
 				game.addGhostKilled();
 			})
 
@@ -358,7 +358,7 @@ beginStateMachine(GhostState.class, PacManGameEvent.class)
 			.onEntry(this::deadSoundOn)
 			.onTick(() -> {	
 				move();
-				sprites.select("s_eyes_" + getMoveDir());
+				sprites.select("eyes-" + moveDir);
 			})
 			.onExit(this::deadSoundOff)
 
@@ -392,7 +392,7 @@ beginStateMachine(GhostState.class, PacManGameEvent.class)
 		.when(DYING).then(DEAD).onTimeout()
 
 		.when(DEAD).then(LOCKED)
-			.condition(() -> tilePosition().equals(game.maze.getGhostRevivalTile()))
+			.condition(() -> currentTile().equals(game.maze.ghostRevival))
 
 .endStateMachine();
 ```
@@ -498,11 +498,10 @@ C:\Users\armin\Desktop>java -jar pacman.jar
 Pac-Man's movement is controlled by holding a key indicating its intended direction. As soon as Pac-Man reaches a tile where it can move towards this direction it changes its current direction accordingly. "Cornering" is not implemented.
 
 ```java
-int[] STEERING = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
+static final int[] STEERING_NESW = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
-@Override
 public OptionalInt getNextMoveDirection() {
-	return NESW.dirs().filter(dir -> Keyboard.keyDown(STEERING[dir])).findFirst();
+	return Top4.get().dirs().filter(dir -> Keyboard.keyDown(STEERING_NESW[dir])).findFirst();
 }
 ```
 
@@ -515,27 +514,27 @@ The game gets its entertainment factor from the individual *attack behavior* of 
 The ghost behavior only differs for the *chasing* state. The *frightened* behavior has two different implementations and can be toggled for all ghosts at once by pressing the 'f'-key.
 
 ```java
-blinky = new Ghost(this, "Blinky", GhostColor.RED, maze.getBlinkyHome(), Top4.S);
-blinky.setBehavior(SCATTERING, blinky.headingFor(maze::getBlinkyScatterTarget));
+blinky = new Ghost(this, "Blinky", GhostColor.RED, maze.blinkyHome, Top4.S);
+blinky.setBehavior(SCATTERING, blinky.headingFor(() -> maze.blinkyScatter));
 blinky.setBehavior(CHASING, blinky.attackingDirectly(pacMan));
 
-pinky = new Ghost(this, "Pinky", GhostColor.PINK, maze.getPinkyHome(), Top4.S);
-pinky.setBehavior(SCATTERING, pinky.headingFor(maze::getPinkyScatterTarget));
+pinky = new Ghost(this, "Pinky", GhostColor.PINK, maze.pinkyHome, Top4.S);
+pinky.setBehavior(SCATTERING, pinky.headingFor(() -> maze.pinkyScatter));
 pinky.setBehavior(CHASING, pinky.ambushing(pacMan));
 
-inky = new Ghost(this, "Inky", GhostColor.CYAN, maze.getInkyHome(), Top4.N);
-inky.setBehavior(SCATTERING, inky.headingFor(maze::getInkyScatterTarget));
+inky = new Ghost(this, "Inky", GhostColor.CYAN, maze.inkyHome, Top4.N);
+inky.setBehavior(SCATTERING, inky.headingFor(() -> maze.inkyScatter));
 inky.setBehavior(CHASING, inky.attackingWithPartner(blinky, pacMan));
 
-clyde = new Ghost(this, "Clyde", GhostColor.ORANGE, maze.getClydeHome(), Top4.N);
-clyde.setBehavior(SCATTERING, clyde.headingFor(maze::getClydeScatterTarget));
-clyde.setBehavior(CHASING, clyde.attackingAndRejecting(pacMan, 8 * TS, maze.getClydeScatterTarget()));
+clyde = new Ghost(this, "Clyde", GhostColor.ORANGE, maze.clydeHome, Top4.N);
+clyde.setBehavior(SCATTERING, clyde.headingFor(() -> maze.clydeScatter));
+clyde.setBehavior(CHASING, clyde.attackingAndRejecting(pacMan, 8 * TS, maze.clydeScatter));
 
 classicFlightBehavior = true;
 ghosts().forEach(ghost -> {
 	ghost.setBehavior(FRIGHTENED,
 			classicFlightBehavior ? ghost.fleeingRandomly() : ghost.fleeingToSafeCorner(pacMan));
-	ghost.setBehavior(DEAD, ghost.headingFor(maze::getGhostRevivalTile));
+	ghost.setBehavior(DEAD, ghost.headingFor(() -> maze.ghostRevival));
 	ghost.setBehavior(LOCKED, ghost.bouncing());
 });
 ```
@@ -606,8 +605,10 @@ In *scattering* mode, each ghost tries to reach his "scattering target" which is
 cannot reverse direction this results in a cyclic movement around the walls in the corresponding corner of the maze.
 
 ```java
-blinky.setBehavior(SCATTERING, blinky.headingFor(maze::getBlinkyScatterTarget));
-...
+blinky.setBehavior(SCATTERING, blinky.headingFor(() -> maze.blinkyScatter));
+pinky.setBehavior(SCATTERING, pinky.headingFor(() -> maze.pinkyScatter));
+inky.setBehavior(SCATTERING, inky.headingFor(() -> maze.inkyScatter));
+clyde.setBehavior(SCATTERING, clyde.headingFor(() -> maze.clydeScatter));
 ```
 
 <img src="doc/scattering.png"/>
@@ -635,8 +636,9 @@ For a maze of such a small size the used algorithm doesn't matter much, a plain 
 - Speed can be changed during game ('1' = normal, '2' = fast, '3' = very fast)
 - Display of actor states and timers can be switched on/off at runtime (key 's')
 - Display of actor routes can be switched on/off at runtime (key 'r')
+- Tracing of state machines can be switched on/off at runtime (key 'l')
 - Ghosts can be enabled/disabled during the game (keys 'b', 'p', 'i', 'c')
-- The *frightened* behavior of the ghosts can be toggled between "random" and "select safe corner" during the game (key 'f')
+- The ghost's *frightened* behavior can be toggled between "random" and "select safe corner" during the game (key 'f')
 - Cheat key 'k' kills all ghosts
 - Cheat key 'e' eats all normal pellets
 - Alignment of actors on the grid can be visualized (key 'g')
@@ -660,7 +662,7 @@ keyboard and mouse handling etc.), but it should be not too difficult to impleme
 use some real game library instead.
 
 It could be useful to further decouple UI, model and controller to enable an easy replacement of the complete UI 
-or to implement the state machines using some other state machine library.
+or to implement the state machines using some other state machine library. 
 
 Comments are welcome!
 
