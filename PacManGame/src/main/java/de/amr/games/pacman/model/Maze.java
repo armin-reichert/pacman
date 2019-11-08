@@ -1,6 +1,7 @@
 package de.amr.games.pacman.model;
 
 import static de.amr.easy.game.Application.LOGGER;
+import static java.lang.Math.abs;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -150,17 +151,17 @@ public class Maze {
 			// exclude doors:
 			.filter(tile -> !isDoor(tile))
 			// exclude tiles inside ghost house:
-			.filter(tile -> !inGhostHouse(tile))
+			.filter(tile -> !insideGhostHouse(tile))
 			// separate "real" intersections:
-			.forEach(tile -> {
-				if (tile == tileToDir(blinkyHome, Top4.W)	
-				 || tile == tileToDir(blinkyHome, Top4.E, 2)
-				 || tile == tileToDir(pacManHome, Top4.W)
-				 || tile == tileToDir(pacManHome, Top4.E, 2)) {
-					upwardsBlocked.add(tile);
+			.forEach(intersection -> {
+				if (intersection == tileToDir(blinkyHome, Top4.W)	
+				 || intersection == tileToDir(blinkyHome, Top4.E, 2)
+				 || intersection == tileToDir(pacManHome, Top4.W)
+				 || intersection == tileToDir(pacManHome, Top4.E, 2)) {
+					upwardsBlocked.add(intersection);
 				}
 				else {
-					unrestricted.add(tile);
+					unrestricted.add(intersection);
 				}
 			});
 		//@formatter:on
@@ -213,7 +214,7 @@ public class Maze {
 		return gridGraph.isValidCol(tile.col) && gridGraph.isValidRow(tile.row);
 	}
 
-	public boolean inTunnel(Tile tile) {
+	public boolean insideTunnel(Tile tile) {
 		return tile.content == TUNNEL;
 	}
 
@@ -225,12 +226,12 @@ public class Maze {
 		return tile.content == DOOR;
 	}
 
-	public boolean isGhostHouseEntry(Tile tile) {
+	public boolean inFrontOfGhostHouseDoor(Tile tile) {
 		return isDoor(tileToDir(tile, Top4.S));
 	}
 
-	public boolean inGhostHouse(Tile tile) {
-		return Math.abs(tile.row - inkyHome.row) <= 1 && tile.col >= inkyHome.col && tile.col <= clydeHome.col + 1;
+	public boolean insideGhostHouse(Tile tile) {
+		return abs(tile.row - inkyHome.row) <= 1 && tile.col >= inkyHome.col && tile.col <= clydeHome.col + 1;
 	}
 
 	public boolean isIntersection(Tile tile) {

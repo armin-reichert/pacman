@@ -48,15 +48,15 @@ class HeadingFor implements Behavior {
 		route.setTarget(targetTile);
 
 		// entering ghost house from above?
-		if (maze.isGhostHouseEntry(actorTile) && maze.inGhostHouse(targetTile)) {
+		if (maze.inFrontOfGhostHouseDoor(actorTile) && maze.insideGhostHouse(targetTile)) {
 			route.setDir(Top4.S);
 			return route;
 		}
 
 		// if inside ghost house, use path finder. To leave the ghost house, target
 		// Blinky's home tile
-		if (maze.inGhostHouse(actorTile)) {
-			route.setPath(maze.findPath(actorTile, maze.inGhostHouse(targetTile) ? targetTile : maze.blinkyHome));
+		if (maze.insideGhostHouse(actorTile)) {
+			route.setPath(maze.findPath(actorTile, maze.insideGhostHouse(targetTile) ? targetTile : maze.blinkyHome));
 			route.setDir(maze.alongPath(route.getPath()).orElse(actorDir));
 			return route;
 		}

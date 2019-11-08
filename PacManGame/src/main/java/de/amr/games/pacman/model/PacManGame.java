@@ -418,10 +418,10 @@ public class PacManGame {
 	public float computeGhostSpeed(Ghost ghost) {
 		requireNonNull(ghost);
 		Tile tile = ghost.currentTile();
-		if (maze.inGhostHouse(tile)) {
+		if (maze.insideGhostHouse(tile)) {
 			return speed(.5f);
 		}
-		boolean inTunnel = maze.inTunnel(tile) || tile == maze.teleportLeft || tile == maze.teleportRight;
+		boolean inTunnel = maze.insideTunnel(tile) || tile == maze.teleportLeft || tile == maze.teleportRight;
 		float tunnelSpeed = speed(Param.GHOST_TUNNEL_SPEED.float_(level));
 		switch (ghost.getState()) {
 		case CHASING:

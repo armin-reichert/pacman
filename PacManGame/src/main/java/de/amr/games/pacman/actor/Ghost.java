@@ -136,7 +136,7 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implem
 	@Override
 	public boolean canEnterTile(Tile tile) {
 		if (game.maze.isDoor(tile)) {
-			return getState() == DEAD || getState() != LOCKED && game.maze.inGhostHouse(currentTile());
+			return getState() == DEAD || getState() != LOCKED && game.maze.insideGhostHouse(currentTile());
 		}
 		return super.canEnterTile(tile);
 	}
@@ -177,7 +177,7 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implem
 					})
 					.onTick(() -> {
 						move();
-						sprites.select(game.maze.inGhostHouse(currentTile())	
+						sprites.select(game.maze.insideGhostHouse(currentTile())	
 									? "color-" + moveDir
 									: game.pacMan.isLosingPower()	? "flashing" : "frightened");
 					})
