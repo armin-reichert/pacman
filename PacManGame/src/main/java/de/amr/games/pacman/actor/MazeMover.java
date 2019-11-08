@@ -73,7 +73,7 @@ public abstract class MazeMover extends Entity {
 		Vector2f center = tf.getCenter();
 		return game.maze.tileAt(round(center.x) / TS, round(center.y) / TS);
 	}
-
+	
 	/**
 	 * @param numTiles number of tiles
 	 * @return the tile located <code>numTiles</code> tiles ahead of the actor
@@ -176,7 +176,7 @@ public abstract class MazeMover extends Entity {
 		} else if (tf.getX() <= teleportLeftX) {
 			tf.setX(teleportRightX);
 		}
-		enteredNewTile = prevTile != currentTile();
+		enteredNewTile = !prevTile.equals(currentTile());
 	}
 
 	/*

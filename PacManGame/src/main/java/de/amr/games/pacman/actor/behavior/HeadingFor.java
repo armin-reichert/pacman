@@ -72,19 +72,18 @@ class HeadingFor implements Behavior {
 			return route;
 		}
 
-		// If next tile is an intersection, decide where to go:
-		final Tile nextTile = maze.tileToDir(actorTile, actorDir);
-		if (maze.isIntersection(nextTile)) {
+		// If newly entered tile is an intersection, decide where to go:
+		if (actor.enteredNewTile && maze.isIntersection(actorTile)) {
 			// direction order: up > left > down > right
 			int bestDir = Stream.of(Top4.N, Top4.W, Top4.S, Top4.E)
 			/*@formatter:off*/
 				.filter(dir -> dir != Top4.get().inv(actorDir)) // cannot reverse direction
-				.filter(dir -> dir != Top4.N || maze.isUnrestrictedIntersection(nextTile)) // cannot go up if restricted
-				.map(dir -> maze.tileToDir(nextTile, dir))
+				.filter(dir -> dir != Top4.N || maze.isUnrestrictedIntersection(actorTile)) // cannot go up if restricted
+				.map(dir -> maze.tileToDir(actorTile, dir))
 				.filter(tile -> maze.insideBoard(tile))
 				.filter(actor::canEnterTile)
 				.sorted((t1, t2) -> Integer.compare(distance(t1, targetTile),	distance(t2, targetTile)))
-				.map(tile -> maze.direction(nextTile, tile).getAsInt()) // map tile back to direction
+				.map(tile -> maze.direction(actorTile, tile).getAsInt()) // map tile back to direction
 				.findFirst() // sort is stable, thus direction order is preserved
 				.orElse(-1);
 			/*@formatter:on*/
