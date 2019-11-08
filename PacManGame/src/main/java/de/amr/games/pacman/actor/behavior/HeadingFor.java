@@ -64,9 +64,9 @@ class HeadingFor implements Behavior {
 		// if stuck, check if turning left or right is possible
 		if (actor.isStuck()) {
 			int left = Top4.get().left(actorDir), right = Top4.get().right(actorDir);
-			if (actor.canEnterTile(maze.tileToDir(actorTile, left))) {
+			if (actor.canEnterTileTo(left)) {
 				route.setDir(left);
-			} else if (actor.canEnterTile(maze.tileToDir(actorTile, right))) {
+			} else if (actor.canEnterTileTo(right)) {
 				route.setDir(right);
 			}
 			return route;

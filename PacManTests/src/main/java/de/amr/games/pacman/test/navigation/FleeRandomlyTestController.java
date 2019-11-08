@@ -33,6 +33,10 @@ public class FleeRandomlyTestController implements ViewController {
 			ghost.setBehavior(FRIGHTENED, ghost.fleeingRandomly());
 			ghost.setState(FRIGHTENED);
 		});
+		g.blinky.placeAtTile(g.maze.topLeft, 0, 0);
+		g.pinky.placeAtTile(g.maze.topRight, 0, 0);
+		g.inky.placeAtTile(g.maze.bottomLeft, 0, 0);
+		g.clyde.placeAtTile(g.maze.bottomRight, 0, 0);
 	}
 
 	@Override
