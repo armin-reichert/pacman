@@ -168,7 +168,7 @@ public interface GhostBehaviors {
 	default Behavior fleeingRandomly() {
 		return ghost -> {
 			Route route = new Route(ghost.moveDir);
-			if (ghost.enteredNewTile) {
+			if (ghost.enteredNewTile || ghost.isStuck()) {
 				/*@formatter:off*/
 				permute(Top4.get().dirs())
 					.filter(dir -> dir != Top4.get().inv(ghost.moveDir))

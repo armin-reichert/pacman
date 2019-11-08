@@ -228,6 +228,7 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implem
 					
 				.when(DEAD).then(LOCKED)
 					.condition(() -> currentTile().equals(game.maze.ghostRevival))
+					.act(() -> moveDir = initialDir)
 				
 		.endStateMachine();
 		/*@formatter:on*/
