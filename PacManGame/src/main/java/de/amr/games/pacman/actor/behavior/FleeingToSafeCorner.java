@@ -39,7 +39,7 @@ class FleeingToSafeCorner extends FollowingFixedPath {
 
 	private Tile safeCorner(MazeMover refugee) {
 		Tile refugeeTile = refugee.currentTile();
-		Tile chaserTile = targetTileSupplier.get();
+		Tile chaserTile = fnTargetTile.get();
 		//@formatter:off
 		return permute(Stream.of(maze.topLeft, maze.topRight, maze.bottomRight, maze.bottomLeft))
 			.filter(corner -> !corner.equals(refugeeTile))

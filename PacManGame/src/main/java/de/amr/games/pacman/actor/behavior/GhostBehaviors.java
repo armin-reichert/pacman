@@ -192,8 +192,10 @@ public interface GhostBehaviors {
 	default Behavior followingPathfinder(Supplier<Tile> fnTarget) {
 		return ghost -> {
 			Route route = new Route();
-			route.setPath(maze().findPath(ghost.currentTile(), fnTarget.get()));
-			route.setDir(maze().alongPath(route.getPath()).orElse(-1));
+			if (ghost.enteredNewTile) {
+				route.setPath(maze().findPath(ghost.currentTile(), fnTarget.get()));
+				route.setDir(maze().alongPath(route.getPath()).orElse(-1));
+			}
 			return route;
 		};
 	}

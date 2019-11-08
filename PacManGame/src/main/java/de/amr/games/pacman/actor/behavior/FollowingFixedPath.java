@@ -8,23 +8,22 @@ import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Computes a fixed path and lets the actor follow this path until the target
- * tile is reached.
+ * Computes a fixed path and lets the actor follow this path until the target tile is reached.
  *
  * @author Armin Reichert
  */
 class FollowingFixedPath implements Behavior {
 
-	protected Supplier<Tile> targetTileSupplier;
+	protected Supplier<Tile> fnTargetTile;
 	protected List<Tile> path = Collections.emptyList();
 
-	public FollowingFixedPath(Supplier<Tile> targetTileSupplier) {
-		this.targetTileSupplier = targetTileSupplier;
+	public FollowingFixedPath(Supplier<Tile> fnTargetTile) {
+		this.fnTargetTile = fnTargetTile;
 	}
 
 	@Override
 	public Route getRoute(MazeMover actor) {
-		if (path.size() == 0 || actor.currentTile().equals(path.get(path.size() - 1))) {
+		if (path.isEmpty() || actor.currentTile().equals(path.get(path.size() - 1))) {
 			computePath(actor);
 		}
 		while (path.size() > 0 && !actor.currentTile().equals(path.get(0))) {
@@ -38,6 +37,6 @@ class FollowingFixedPath implements Behavior {
 
 	@Override
 	public void computePath(MazeMover actor) {
-		path = actor.game.maze.findPath(actor.currentTile(), targetTileSupplier.get());
+		path = actor.game.maze.findPath(actor.currentTile(), fnTargetTile.get());
 	}
 }
