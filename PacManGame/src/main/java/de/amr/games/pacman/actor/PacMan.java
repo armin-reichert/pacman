@@ -207,35 +207,42 @@ public class PacMan extends Actor<PacManState> {
 		}
 
 		private Optional<PacManGameEvent> findSomethingInteresting() {
-			Tile tile = currentTile();
+			Tile pacManTile = currentTile();
 
-			Optional<Ghost> collidingGhost = game.activeGhosts()
+			Optional<PacManGameEvent> ghostCollision = game.activeGhosts()
 			/*@formatter:off*/
 				.filter(ghost -> ghost.getState() != GhostState.DEAD)
 				.filter(ghost -> ghost.getState() != GhostState.DYING)
 				.filter(ghost -> ghost.getState() != GhostState.LOCKED)
-				.filter(ghost -> ghost.currentTile().equals(tile))
-				.findFirst();
+				.filter(ghost -> ghost.currentTile().equals(pacManTile))
+				.findFirst()
+				.map(PacManGhostCollisionEvent::new);
 			/*@formatter:on*/
-			if (collidingGhost.isPresent()) {
-				return Optional.of(new PacManGhostCollisionEvent(collidingGhost.get()));
+
+			if (ghostCollision.isPresent()) {
+				return ghostCollision;
 			}
 
-			if (tile == maze().bonusTile) {
-				Optional<Bonus> activeBonus = game.getBonus().filter(bonus -> !bonus.consumed());
-				if (activeBonus.isPresent()) {
-					Bonus bonus = activeBonus.get();
-					return Optional.of(new BonusFoundEvent(bonus.symbol(), bonus.value()));
-				}
+			Optional<PacManGameEvent> bonusEaten = game.getBonus()
+			/*@formatter:off*/
+				.filter(bonus -> pacManTile == maze().bonusTile)
+				.filter(bonus -> !bonus.consumed())
+				.map(bonus -> new BonusFoundEvent(bonus.symbol(), bonus.value()));
+			/*@formatter:on*/
+
+			if (bonusEaten.isPresent()) {
+				return bonusEaten;
 			}
 
-			if (maze().containsFood(tile)) {
+			if (maze().containsFood(pacManTile)) {
 				ticksSinceLastMeal = 0;
-				boolean energizer = maze().containsEnergizer(tile);
+				boolean energizer = maze().containsEnergizer(pacManTile);
 				digestionTicks = game.getDigestionTicks(energizer);
-				return Optional.of(new FoodFoundEvent(tile, energizer));
+				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
 			}
-			ticksSinceLastMeal += 1;
+			else {
+				ticksSinceLastMeal += 1;
+			}
 
 			return Optional.empty();
 		}
