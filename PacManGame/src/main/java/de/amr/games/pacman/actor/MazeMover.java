@@ -1,5 +1,6 @@
 package de.amr.games.pacman.actor;
 
+import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
 import static java.lang.Math.round;
 
@@ -9,7 +10,6 @@ import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.graph.grid.api.Topology;
 import de.amr.graph.grid.impl.Top4;
 
 /**
@@ -22,8 +22,6 @@ import de.amr.graph.grid.impl.Top4;
  * @author Armin Reichert
  */
 public abstract class MazeMover extends Entity {
-
-	public static final Topology NESW = Top4.get();
 
 	public final PacManGame game;
 

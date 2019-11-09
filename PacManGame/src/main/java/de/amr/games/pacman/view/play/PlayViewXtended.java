@@ -1,5 +1,6 @@
 package de.amr.games.pacman.view.play;
 
+import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.awt.Color;
@@ -23,7 +24,6 @@ import de.amr.games.pacman.actor.behavior.Route;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.graph.grid.impl.Top4;
 import de.amr.statemachine.State;
 
 /**
@@ -257,7 +257,7 @@ public class PlayViewXtended extends PlayView {
 			// draw direction indicator
 			route.getDir().ifPresent(dir -> {
 				Vector2f center = ghost.tf.getCenter();
-				int dx = Top4.get().dx(dir), dy = Top4.get().dy(dir);
+				int dx = NESW.dx(dir), dy = NESW.dy(dir);
 				int r = TS / 4;
 				int lineLen = TS;
 				int indX = (int) (center.x + dx * lineLen);

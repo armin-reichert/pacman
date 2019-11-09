@@ -34,6 +34,8 @@ import de.amr.graph.pathfinder.impl.AStarSearch;
  */
 public class Maze {
 
+	public static Top4 NESW = Top4.get();
+
 	static final char WALL = '#', DOOR = 'D', TUNNEL = 'T', TELEPORT_L = '<', TELEPORT_R = '>', SPACE = ' ',
 			PELLET = '.', ENERGIZER = '*', EATEN = '%';
 
@@ -135,7 +137,7 @@ public class Maze {
 		bottomRight = board[numCols - 2][numRows - 4];
 
 		// Grid graph structure, vertex content is (reference to) corresponding tile
-		gridGraph = new GridGraph<>(numCols, numRows, Top4.get(), this::tile, (u, v) -> null, UndirectedEdge::new);
+		gridGraph = new GridGraph<>(numCols, numRows, NESW, this::tile, (u, v) -> null, UndirectedEdge::new);
 		gridGraph.fill();
 
 		// Remove edges into walls
@@ -197,7 +199,7 @@ public class Maze {
 	 *         towards the given direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, int dir, int n) {
-		return tileAt(tile.col + n * Top4.get().dx(dir), tile.row + n * Top4.get().dy(dir));
+		return tileAt(tile.col + n * NESW.dx(dir), tile.row + n * NESW.dy(dir));
 	}
 
 	/**
