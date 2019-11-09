@@ -37,27 +37,19 @@ import de.amr.statemachine.StateMachine;
  */
 public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implements GhostBehaviors {
 
-	public Supplier<GhostState> fnNextState; // state after FRIGHTENED or LOCKED state
+	/* State to enter after end of FRIGHTENED or LOCKED state */
+	public Supplier<GhostState> fnNextState;
+	public Tile initialTile;
+	public int initialDir;
 	public int foodCount;
-	private final Tile initialTile;
-	private final int initialDir;
-	private final Map<GhostState, Behavior> behaviorMap = new EnumMap<>(GhostState.class);
+
+	private Map<GhostState, Behavior> behaviorMap = new EnumMap<>(GhostState.class);
 
 	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, int initialDir) {
 		super(game, name);
 		this.initialTile = initialTile;
 		this.initialDir = initialDir;
-		setSprites(color);
 		buildStateMachine();
-		fnNextState = this::getState; // default: keep state
-	}
-
-	@Override
-	public Ghost self() {
-		return this;
-	}
-
-	private void setSprites(GhostColor color) {
 		NESW.dirs().forEach(dir -> {
 			sprites.set("color-" + dir, game.theme.spr_ghostColored(color, dir));
 			sprites.set("eyes-" + dir, game.theme.spr_ghostEyes(dir));
@@ -69,13 +61,19 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implem
 		sprites.set("flashing", game.theme.spr_ghostFlashing());
 	}
 
-	private void sirenOn() {
+	@Override
+	public Ghost self() {
+		return this;
+	}
+
+	private void chasingSoundOn() {
 		if (!game.theme.snd_ghost_chase().isRunning()) {
 			game.theme.snd_ghost_chase().loop();
 		}
 	}
 
-	private void sirenOff() {
+	private void chasingSoundOff() {
+		// if this is the only chasing ghost, turn it off
 		if (game.activeGhosts().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
 			game.theme.snd_ghost_chase().stop();
 		}
@@ -88,6 +86,7 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implem
 	}
 
 	private void deadSoundOff() {
+		// if this is the only dead ghost, turn it off
 		if (game.activeGhosts().filter(ghost -> ghost != this).noneMatch(ghost -> ghost.getState() == DEAD)) {
 			game.theme.snd_ghost_dead().stop();
 		}
@@ -96,7 +95,7 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implem
 	@Override
 	public void init() {
 		initialize();
-		super.init();
+		fsm.init();
 	}
 
 	public void initialize() {
@@ -167,9 +166,9 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implem
 					.onTick(this::move)
 			
 				.state(CHASING)
-					.onEntry(this::sirenOn)
+					.onEntry(this::chasingSoundOn)
 					.onTick(this::move)
-					.onExit(this::sirenOff)
+					.onExit(this::chasingSoundOff)
 				
 				.state(FRIGHTENED)
 					.onEntry(() -> {
