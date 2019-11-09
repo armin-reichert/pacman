@@ -40,7 +40,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends PacManGameActor<PacManState> {
+public class PacMan extends Actor<PacManState> {
 
 	static final int[] STEERING_NESW = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
@@ -49,7 +49,6 @@ public class PacMan extends PacManGameActor<PacManState> {
 	public int ticksSinceLastMeal;
 
 	public PacMan(PacManGame game) {
-		super("Pac-Man");
 		this.game = game;
 		buildStateMachine();
 		NESW.dirs().forEach(dir -> sprites.set("walking-" + dir, game.theme.spr_pacManWalking(dir)));
@@ -64,6 +63,11 @@ public class PacMan extends PacManGameActor<PacManState> {
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("full");
 		placeAtTile(maze().pacManHome, TS / 2, 0);
+	}
+
+	@Override
+	public String name() {
+		return "Pac-Man";
 	}
 
 	@Override

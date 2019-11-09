@@ -36,9 +36,10 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends PacManGameActor<GhostState> implements GhostBehaviors {
+public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 
 	public final PacManGame game;
+	public final String name;
 	public Supplier<GhostState> fnNextState;
 	public final Tile initialTile;
 	public final int initialDir;
@@ -47,8 +48,8 @@ public class Ghost extends PacManGameActor<GhostState> implements GhostBehaviors
 	private Map<GhostState, Behavior> behaviorMap = new EnumMap<>(GhostState.class);
 
 	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, int initialDir) {
-		super(name);
 		this.game = game;
+		this.name = name;
 		this.initialTile = initialTile;
 		this.initialDir = initialDir;
 		fnNextState = this::getState;
@@ -62,6 +63,11 @@ public class Ghost extends PacManGameActor<GhostState> implements GhostBehaviors
 		}
 		sprites.set("frightened", game.theme.spr_ghostFrightened());
 		sprites.set("flashing", game.theme.spr_ghostFlashing());
+	}
+
+	@Override
+	public String name() {
+		return name;
 	}
 
 	@Override

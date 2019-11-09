@@ -19,19 +19,15 @@ import de.amr.statemachine.StateMachine;
  * @author Armin Reichert
  *
  * @param <S>
- *          state (label) type of the finite-state machine of this actor
+ *          state (label) type of the
  */
-public abstract class PacManGameActor<S> extends MazeMover {
-
-	public final String name;
+public abstract class Actor<S> extends MazeMover {
 
 	protected StateMachine<S, PacManGameEvent> fsm;
 
 	private final Set<Consumer<PacManGameEvent>> gameEventListeners = new LinkedHashSet<>();
 
-	public PacManGameActor(String name) {
-		this.name = name;
-	}
+	public abstract String name();
 
 	public void addGameEventListener(Consumer<PacManGameEvent> listener) {
 		gameEventListeners.add(listener);
@@ -42,7 +38,7 @@ public abstract class PacManGameActor<S> extends MazeMover {
 	}
 
 	public void publishEvent(PacManGameEvent event) {
-		LOGGER.info(String.format("%s reports '%s'", name, event));
+		LOGGER.info(String.format("%s reports '%s'", name(), event));
 		gameEventListeners.forEach(listener -> listener.accept(event));
 	}
 
