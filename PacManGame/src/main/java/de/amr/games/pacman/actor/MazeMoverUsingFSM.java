@@ -12,7 +12,7 @@ import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
 /**
- * Maze mover controlled by a finite state machine and with the capability of
+ * Maze mover controlled by a finite-state machine and with the capability of
  * registering event handlers for game events.
  * 
  * @author Armin Reichert
@@ -23,37 +23,22 @@ import de.amr.statemachine.StateMachine;
 public abstract class MazeMoverUsingFSM<S, E> extends MazeMover {
 
 	protected StateMachine<S, E> fsm;
-
-	/* Event listeners. */
+	public final String name;
 	private final Set<Consumer<PacManGameEvent>> gameEventListeners = new LinkedHashSet<>();
 
 	public MazeMoverUsingFSM(PacManGame game, String name) {
-		super(game, name);
+		super(game);
+		this.name = name;
 	}
 
-	/**
-	 * Adds a listener for the game events published by this maze mover.
-	 * 
-	 * @param listener event listener
-	 */
 	public void addGameEventListener(Consumer<PacManGameEvent> listener) {
 		gameEventListeners.add(listener);
 	}
 
-	/**
-	 * Removes the given game event listener.
-	 * 
-	 * @param listener event listener
-	 */
 	public void removeGameEventListener(Consumer<PacManGameEvent> listener) {
 		gameEventListeners.remove(listener);
 	}
 
-	/**
-	 * Publishes the given event and informs all registered listeners.
-	 * 
-	 * @param event a game event
-	 */
 	public void publishEvent(PacManGameEvent event) {
 		LOGGER.info(String.format("%s reports '%s'", name, event));
 		gameEventListeners.forEach(listener -> listener.accept(event));
