@@ -81,7 +81,7 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 	 *         nothing
 	 */
 	@Override
-	public OptionalInt getNextMoveDirection() {
+	public OptionalInt nextMoveDirection() {
 		return NESW.dirs().filter(dir -> Keyboard.keyDown(STEERING_NESW[dir])).findFirst();
 	}
 

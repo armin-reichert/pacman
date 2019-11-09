@@ -2,6 +2,7 @@ package de.amr.games.pacman.view.play;
 
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
+import static java.lang.Math.round;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -54,7 +55,8 @@ public class PlayViewXtended extends PlayView {
 	private static BufferedImage createGridImage(int numRows, int numCols) {
 		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
 				.getDefaultConfiguration();
-		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1, Transparency.TRANSLUCENT);
+		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1,
+				Transparency.TRANSLUCENT);
 		Graphics2D g = image.createGraphics();
 		g.setColor(Color.DARK_GRAY);
 		for (int row = 0; row <= numRows; ++row) {
@@ -178,7 +180,8 @@ public class PlayViewXtended extends PlayView {
 					? String.format("%s(%s,%d|%d)[->%s]", name, ghost.state().id(), ghost.state().getTicksRemaining(),
 							ghost.state().getDuration(), nextState)
 					: String.format("%s(%s,%s)[->%s]", name, ghost.state().id(), INFTY, nextState);
-		} else {
+		}
+		else {
 			return ghost.state().getDuration() != State.ENDLESS ? String.format("%s(%s,%d|%d)", name,
 					ghost.state().id(), ghost.state().getTicksRemaining(), ghost.state().getDuration())
 					: String.format("%s(%s,%s)", name, ghost.state().id(), INFTY);
@@ -217,11 +220,11 @@ public class PlayViewXtended extends PlayView {
 		g.setColor(Color.GREEN);
 		g.translate(actor.tf.getX(), actor.tf.getY());
 		int w = actor.tf.getWidth(), h = actor.tf.getHeight();
-		if (actor.getAlignmentY() == 0) {
+		if (round(actor.tf.getY()) % TS == 0) {
 			g.drawLine(0, 0, w, 0);
 			g.drawLine(0, h, w, h);
 		}
-		if (actor.getAlignmentX() == 0) {
+		if (round(actor.tf.getX()) % TS == 0) {
 			g.drawLine(0, 0, 0, h);
 			g.drawLine(w, 0, w, h);
 		}
@@ -246,14 +249,16 @@ public class PlayViewXtended extends PlayView {
 			g.translate(targetTile.col * TS, targetTile.row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-targetTile.col * TS, -targetTile.row * TS);
-		} else if (route.getTarget() != null) {
+		}
+		else if (route.getTarget() != null) {
 			// draw target tile indicator
-			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y, route.getTarget().col * TS + TS / 2,
-					route.getTarget().row * TS + TS / 2);
+			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
+					route.getTarget().col * TS + TS / 2, route.getTarget().row * TS + TS / 2);
 			g.translate(route.getTarget().col * TS, route.getTarget().row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-route.getTarget().col * TS, -route.getTarget().row * TS);
-		} else {
+		}
+		else {
 			// draw direction indicator
 			route.getDir().ifPresent(dir -> {
 				Vector2f center = ghost.tf.getCenter();

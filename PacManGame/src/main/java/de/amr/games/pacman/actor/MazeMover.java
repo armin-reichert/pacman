@@ -16,8 +16,8 @@ import de.amr.graph.grid.impl.Top4;
  * Abstract base class for Pac-Man and the ghosts.
  * 
  * <p>
- * Implements movement inside the maze. Movement is controlled by supplying the
- * intended move direction before moving.
+ * Implements movement inside the maze. Movement is controlled by supplying the intended move
+ * direction before moving.
  * 
  * @author Armin Reichert
  */
@@ -44,21 +44,21 @@ public abstract class MazeMover extends Entity {
 	}
 
 	/**
-	 * Moves this actor through the maze. Handles changing the direction according
-	 * to the intended move direction, moving around corners without losing
-	 * alignment, "teleportation" and getting stuck.
+	 * Moves this actor through the maze. Handles changing the direction according to the intended move
+	 * direction, moving around corners without losing alignment, "teleportation" and getting stuck.
 	 */
 	protected void move() {
 		Tile oldTile = currentTile();
-		getNextMoveDirection().ifPresent(dir -> nextDir = dir);
-		float speed = computeActualSpeed(nextDir);
+		nextMoveDirection().ifPresent(dir -> nextDir = dir);
+		float speed = allowedSpeed(nextDir);
 		if (speed > 0) {
 			if (nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir)) {
 				tf.setPosition(oldTile.col * TS, oldTile.row * TS);
 			}
 			moveDir = nextDir;
-		} else {
-			speed = computeActualSpeed(moveDir);
+		}
+		else {
+			speed = allowedSpeed(moveDir);
 		}
 		Vector2f direction = Vector2f.of(NESW.dx(moveDir), NESW.dy(moveDir));
 		tf.setVelocity(Vector2f.smul(speed, direction));
@@ -67,47 +67,54 @@ public abstract class MazeMover extends Entity {
 		int teleportRight = (game.maze.teleportRight.col + 1) * TS;
 		if (tf.getX() >= teleportRight) {
 			tf.setX(teleportLeft);
-		} else if (tf.getX() <= teleportLeft) {
+		}
+		else if (tf.getX() <= teleportLeft) {
 			tf.setX(teleportRight);
 		}
 		enteredNewTile = !oldTile.equals(currentTile());
 	}
 
 	/*
-	 * Computes how many pixels this entity can actually move towards the given
-	 * direction in the current frame.
+	 * Computes how many pixels this entity can actually move towards the given direction in the current
+	 * frame without entering a forbidden tile.
 	 */
-	private float computeActualSpeed(int dir) {
+	private float allowedSpeed(int dir) {
 		if (canEnterTileTo(dir)) {
 			return maxSpeed();
 		}
 		switch (dir) {
-		case Top4.W:
-			return -currentTile().col * TS + tf.getX();
-		case Top4.E:
-			return currentTile().col * TS - tf.getX();
 		case Top4.N:
-			return -currentTile().row * TS + tf.getY();
+			return -row() * TS + tf.getY();
+		case Top4.E:
+			return col() * TS - tf.getX();
 		case Top4.S:
-			return currentTile().row * TS - tf.getY();
+			return row() * TS - tf.getY();
+		case Top4.W:
+			return -col() * TS + tf.getX();
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}
 	}
 
+	private int col() {
+		return round(tf.getCenter().x) / TS;
+	}
+
+	private int row() {
+		return round(tf.getCenter().y) / TS;
+	}
+
 	/**
-	 * Gets the next move direction which usually differs from the current move
-	 * direction and will be taken as soon as possible, for example at the next
-	 * intersection.
+	 * Returns the next move direction which usually differs from the current move direction and will be
+	 * taken as soon as possible, for example at the next intersection.
 	 * 
 	 * @return the next move direction to take
 	 */
-	public abstract OptionalInt getNextMoveDirection();
+	public abstract OptionalInt nextMoveDirection();
 
 	/**
-	 * @return the maximum possible speed (in pixels/tick) for the current frame.
-	 *         The actual speed can be lower to avoid moving into inaccessible
-	 *         tiles.
+	 * @return the maximum possible speed (in pixels/tick) for the current frame. The actual speed can
+	 *         be lower to avoid moving into inaccessible tiles.
 	 */
 	public abstract float maxSpeed();
 
@@ -115,14 +122,14 @@ public abstract class MazeMover extends Entity {
 	 * @return the tile containing the center of this entity's collision box
 	 */
 	public Tile currentTile() {
-		Vector2f center = tf.getCenter();
-		return game.maze.tileAt(round(center.x) / TS, round(center.y) / TS);
+		return game.maze.tileAt(col(), row());
 	}
 
 	/**
-	 * @param numTiles number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor
-	 *         towards his current move direction.
+	 * @param numTiles
+	 *                   number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
+	 *         direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
 		return game.maze.tileToDir(currentTile(), moveDir, numTiles);
@@ -131,9 +138,12 @@ public abstract class MazeMover extends Entity {
 	/**
 	 * Places this maze mover at the given tile, optionally with some pixel offset.
 	 * 
-	 * @param tile    the tile where this maze mover is placed
-	 * @param xOffset pixel offset in x-direction
-	 * @param yOffset pixel offset in y-direction
+	 * @param tile
+	 *                  the tile where this maze mover is placed
+	 * @param xOffset
+	 *                  pixel offset in x-direction
+	 * @param yOffset
+	 *                  pixel offset in y-direction
 	 */
 	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
 		enteredNewTile = !tile.equals(currentTile());
@@ -141,32 +151,10 @@ public abstract class MazeMover extends Entity {
 	}
 
 	/**
-	 * @return <code>true</code> if this maze mover is exactly positioned over its
-	 *         current tile.
-	 */
-	public boolean isAligned() {
-		return getAlignmentX() == 0 && getAlignmentY() == 0;
-	}
-
-	/**
-	 * @return the pixel offset in x-direction wrt the current tile
-	 */
-	public int getAlignmentX() {
-		return round(tf.getX()) % TS;
-	}
-
-	/**
-	 * @return the pixel offset in y-direction wrt the current tile
-	 */
-	public int getAlignmentY() {
-		return round(tf.getY()) % TS;
-	}
-
-	/**
-	 * Common logic for Pac-Man and ghosts: walls can never be entered,
-	 * teleportation is possible.
+	 * Common logic for Pac-Man and ghosts: walls can never be entered, teleportation is possible.
 	 * 
-	 * @param tile some tile, may also be outside of the board
+	 * @param tile
+	 *               some tile, may also be outside of the board
 	 * @return <code>true</code> if this maze mover can enter the given tile
 	 */
 	public boolean canEnterTile(Tile tile) {
@@ -181,17 +169,16 @@ public abstract class MazeMover extends Entity {
 	}
 
 	/**
-	 * @param dir a direction (N, E, S, W)
-	 * @return if the maze mover can enter the neighbor tile towards the given
-	 *         direction
+	 * @param dir
+	 *              a direction (N, E, S, W)
+	 * @return if the maze mover can enter the neighbor tile towards the given direction
 	 */
 	public boolean canEnterTileTo(int dir) {
 		return canEnterTile(game.maze.tileToDir(currentTile(), dir));
 	}
 
 	/**
-	 * @return <code>true</code> if the maze mover cannot move further towards its
-	 *         current direction
+	 * @return <code>true</code> if the maze mover cannot move further towards its current direction
 	 */
 	public boolean isStuck() {
 		return tf.getVelocity().length() == 0;

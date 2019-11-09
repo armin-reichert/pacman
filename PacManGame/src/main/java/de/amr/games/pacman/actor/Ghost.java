@@ -49,6 +49,7 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implem
 		super(game, name);
 		this.initialTile = initialTile;
 		this.initialDir = initialDir;
+		fnNextState = this::getState;
 		buildStateMachine();
 		NESW.dirs().forEach(dir -> {
 			sprites.set("color-" + dir, game.theme.spr_ghostColored(color, dir));
@@ -128,7 +129,7 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implem
 	}
 
 	@Override
-	public OptionalInt getNextMoveDirection() {
+	public OptionalInt nextMoveDirection() {
 		return currentBehavior().getRoute(this).getDir();
 	}
 
