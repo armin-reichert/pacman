@@ -25,6 +25,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
@@ -35,18 +36,19 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implements GhostBehaviors {
+public class Ghost extends PacManGameActor<GhostState> implements GhostBehaviors {
 
-	/* State to enter after end of FRIGHTENED or LOCKED state */
+	public final PacManGame game;
 	public Supplier<GhostState> fnNextState;
-	public Tile initialTile;
-	public int initialDir;
+	public final Tile initialTile;
+	public final int initialDir;
 	public int foodCount;
 
 	private Map<GhostState, Behavior> behaviorMap = new EnumMap<>(GhostState.class);
 
 	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, int initialDir) {
-		super(game, name);
+		super(name);
+		this.game = game;
 		this.initialTile = initialTile;
 		this.initialDir = initialDir;
 		fnNextState = this::getState;
@@ -60,6 +62,11 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implem
 		}
 		sprites.set("frightened", game.theme.spr_ghostFrightened());
 		sprites.set("flashing", game.theme.spr_ghostFlashing());
+	}
+
+	@Override
+	public Maze maze() {
+		return game.maze;
 	}
 
 	@Override
@@ -135,8 +142,8 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implem
 
 	@Override
 	public boolean canEnterTile(Tile tile) {
-		if (game.maze.isDoor(tile)) {
-			return getState() == DEAD || getState() != LOCKED && game.maze.insideGhostHouse(currentTile());
+		if (maze().isDoor(tile)) {
+			return getState() == DEAD || getState() != LOCKED && maze().insideGhostHouse(currentTile());
 		}
 		return super.canEnterTile(tile);
 	}
@@ -177,7 +184,7 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implem
 					})
 					.onTick(() -> {
 						move();
-						sprites.select(game.maze.insideGhostHouse(currentTile())	
+						sprites.select(maze().insideGhostHouse(currentTile())	
 									? "color-" + moveDir
 									: game.pacMan.isLosingPower()	? "flashing" : "frightened");
 					})
@@ -227,7 +234,7 @@ public class Ghost extends MazeMoverUsingFSM<GhostState, PacManGameEvent> implem
 				.when(DYING).then(DEAD).onTimeout()
 					
 				.when(DEAD).then(LOCKED)
-					.condition(() -> currentTile().equals(game.maze.ghostRevival))
+					.condition(() -> currentTile().equals(maze().ghostRevival))
 					.act(() -> moveDir = initialDir)
 				
 		.endStateMachine();

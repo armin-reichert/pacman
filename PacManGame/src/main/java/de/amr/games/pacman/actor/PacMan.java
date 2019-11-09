@@ -28,6 +28,7 @@ import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
@@ -39,14 +40,17 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
+public class PacMan extends PacManGameActor<PacManState> {
 
 	static final int[] STEERING_NESW = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
+
+	public final PacManGame game;
 
 	public int ticksSinceLastMeal;
 
 	public PacMan(PacManGame game) {
-		super(game, "Pac-Man");
+		super("Pac-Man");
+		this.game = game;
 		buildStateMachine();
 		NESW.dirs().forEach(dir -> sprites.set("walking-" + dir, game.theme.spr_pacManWalking(dir)));
 		sprites.set("dying", game.theme.spr_pacManDying());
@@ -59,7 +63,12 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 		moveDir = nextDir = Top4.E;
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("full");
-		placeAtTile(game.maze.pacManHome, TS / 2, 0);
+		placeAtTile(maze().pacManHome, TS / 2, 0);
+	}
+
+	@Override
+	public Maze maze() {
+		return game.maze;
 	}
 
 	// Movement
@@ -77,8 +86,7 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 	}
 
 	/**
-	 * @return if a steering key is pressed, the corresponding direction, otherwise
-	 *         nothing
+	 * @return if a steering key is pressed, the corresponding direction, otherwise nothing
 	 */
 	@Override
 	public OptionalInt nextMoveDirection() {
@@ -87,7 +95,7 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 
 	@Override
 	public boolean canEnterTile(Tile tile) {
-		if (game.maze.isDoor(tile)) {
+		if (maze().isDoor(tile)) {
 			return false;
 		}
 		return super.canEnterTile(tile);
@@ -179,7 +187,8 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 		public void onTick() {
 			if (mustDigest()) {
 				digest();
-			} else {
+			}
+			else {
 				move();
 				findSomethingInteresting().ifPresent(PacMan.this::publishEvent);
 			}
@@ -208,7 +217,7 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 				return Optional.of(new PacManGhostCollisionEvent(collidingGhost.get()));
 			}
 
-			if (tile == game.maze.bonusTile) {
+			if (tile == maze().bonusTile) {
 				Optional<Bonus> activeBonus = game.getBonus().filter(bonus -> !bonus.consumed());
 				if (activeBonus.isPresent()) {
 					Bonus bonus = activeBonus.get();
@@ -216,9 +225,9 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 				}
 			}
 
-			if (game.maze.containsFood(tile)) {
+			if (maze().containsFood(tile)) {
 				ticksSinceLastMeal = 0;
-				boolean energizer = game.maze.containsEnergizer(tile);
+				boolean energizer = maze().containsEnergizer(tile);
 				digestionTicks = game.getDigestionTicks(energizer);
 				return Optional.of(new FoodFoundEvent(tile, energizer));
 			}

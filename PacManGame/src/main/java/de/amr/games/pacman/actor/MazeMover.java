@@ -8,22 +8,17 @@ import java.util.OptionalInt;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
 
 /**
- * Abstract base class for Pac-Man and the ghosts.
- * 
- * <p>
- * Implements movement inside the maze. Movement is controlled by supplying the intended move
+ * An entity that can move through the maze. Movement is controlled by supplying the intended move
  * direction before moving.
  * 
  * @author Armin Reichert
  */
 public abstract class MazeMover extends Entity {
-
-	public final PacManGame game;
 
 	/* Current move direction (Top4.N, Top4.E, Top4.S, Top4.W). */
 	public int moveDir;
@@ -34,14 +29,32 @@ public abstract class MazeMover extends Entity {
 	/* Tells if the last move entered a new tile position */
 	public boolean enteredNewTile;
 
-	protected MazeMover(PacManGame game) {
-		this.game = game;
-		moveDir = nextDir = Top4.E;
-		enteredNewTile = true;
-		// collision box size is one tile, sprite size is larger!
+	public MazeMover() {
+		// set collision box size to one tile, sprite size may be larger
 		tf.setWidth(TS);
 		tf.setHeight(TS);
+		moveDir = nextDir = Top4.E;
+		enteredNewTile = true;
 	}
+
+	/**
+	 * @return the maze where this maze mover lives
+	 */
+	public abstract Maze maze();
+
+	/**
+	 * Returns the next move direction which usually differs from the current move direction and will be
+	 * taken as soon as possible, for example at the next intersection.
+	 * 
+	 * @return the next move direction to take
+	 */
+	public abstract OptionalInt nextMoveDirection();
+
+	/**
+	 * @return the maximum possible speed (in pixels/tick) for the current frame. The actual speed can
+	 *         be lower to avoid moving into inaccessible tiles.
+	 */
+	public abstract float maxSpeed();
 
 	/**
 	 * Moves this actor through the maze. Handles changing the direction according to the intended move
@@ -63,8 +76,8 @@ public abstract class MazeMover extends Entity {
 		Vector2f direction = Vector2f.of(NESW.dx(moveDir), NESW.dy(moveDir));
 		tf.setVelocity(Vector2f.smul(speed, direction));
 		tf.move();
-		int teleportLeft = (game.maze.teleportLeft.col - 1) * TS;
-		int teleportRight = (game.maze.teleportRight.col + 1) * TS;
+		int teleportLeft = (maze().teleportLeft.col - 1) * TS;
+		int teleportRight = (maze().teleportRight.col + 1) * TS;
 		if (tf.getX() >= teleportRight) {
 			tf.setX(teleportLeft);
 		}
@@ -105,24 +118,10 @@ public abstract class MazeMover extends Entity {
 	}
 
 	/**
-	 * Returns the next move direction which usually differs from the current move direction and will be
-	 * taken as soon as possible, for example at the next intersection.
-	 * 
-	 * @return the next move direction to take
-	 */
-	public abstract OptionalInt nextMoveDirection();
-
-	/**
-	 * @return the maximum possible speed (in pixels/tick) for the current frame. The actual speed can
-	 *         be lower to avoid moving into inaccessible tiles.
-	 */
-	public abstract float maxSpeed();
-
-	/**
 	 * @return the tile containing the center of this entity's collision box
 	 */
 	public Tile currentTile() {
-		return game.maze.tileAt(col(), row());
+		return maze().tileAt(col(), row());
 	}
 
 	/**
@@ -132,7 +131,7 @@ public abstract class MazeMover extends Entity {
 	 *         direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
-		return game.maze.tileToDir(currentTile(), moveDir, numTiles);
+		return maze().tileToDir(currentTile(), moveDir, numTiles);
 	}
 
 	/**
@@ -158,14 +157,14 @@ public abstract class MazeMover extends Entity {
 	 * @return <code>true</code> if this maze mover can enter the given tile
 	 */
 	public boolean canEnterTile(Tile tile) {
-		if (game.maze.isWall(tile)) {
+		if (maze().isWall(tile)) {
 			return false;
 		}
-		if (tile.equals(game.maze.tileToDir(game.maze.teleportRight, Top4.E))
-				|| tile.equals(game.maze.tileToDir(game.maze.teleportLeft, Top4.W))) {
+		if (tile.equals(maze().tileToDir(maze().teleportRight, Top4.E))
+				|| tile.equals(maze().tileToDir(maze().teleportLeft, Top4.W))) {
 			return true;
 		}
-		return game.maze.insideBoard(tile);
+		return maze().insideBoard(tile);
 	}
 
 	/**
@@ -174,7 +173,7 @@ public abstract class MazeMover extends Entity {
 	 * @return if the maze mover can enter the neighbor tile towards the given direction
 	 */
 	public boolean canEnterTileTo(int dir) {
-		return canEnterTile(game.maze.tileToDir(currentTile(), dir));
+		return canEnterTile(maze().tileToDir(currentTile(), dir));
 	}
 
 	/**

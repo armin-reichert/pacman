@@ -16,18 +16,16 @@ import de.amr.graph.grid.impl.Top4;
  * "http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior">here</a>:
  *
  * <p>
- * The next step is understanding exactly how the ghosts attempt to reach their
- * target tiles. The ghosts’ AI is very simple and short-sighted, which makes
- * the complex behavior of the ghosts even more impressive. Ghosts only ever
- * plan one step into the future as they move about the maze. <br/>
- * Whenever a ghost enters a new tile, it looks ahead to the next tile that it
- * will reach, and makes a decision about which direction it will turn when it
- * gets there. These decisions have one very important restriction, which is
- * that ghosts may never choose to reverse their direction of travel. That is, a
- * ghost cannot enter a tile from the left side and then decide to reverse
- * direction and move back to the left. The implication of this restriction is
- * that whenever a ghost enters a tile with only two exits, it will always
- * continue in the same direction. </cite>
+ * The next step is understanding exactly how the ghosts attempt to reach their target tiles. The
+ * ghosts’ AI is very simple and short-sighted, which makes the complex behavior of the ghosts even
+ * more impressive. Ghosts only ever plan one step into the future as they move about the maze.
+ * <br/>
+ * Whenever a ghost enters a new tile, it looks ahead to the next tile that it will reach, and makes
+ * a decision about which direction it will turn when it gets there. These decisions have one very
+ * important restriction, which is that ghosts may never choose to reverse their direction of
+ * travel. That is, a ghost cannot enter a tile from the left side and then decide to reverse
+ * direction and move back to the left. The implication of this restriction is that whenever a ghost
+ * enters a tile with only two exits, it will always continue in the same direction. </cite>
  * </p>
  * 
  * @author Armin Reichert
@@ -42,7 +40,7 @@ class HeadingFor implements Behavior {
 
 	@Override
 	public Route getRoute(MazeMover actor) {
-		final Maze maze = actor.game.maze;
+		final Maze maze = actor.maze();
 		final int actorDir = actor.moveDir;
 		final Tile actorTile = actor.currentTile();
 		final Tile targetTile = Objects.requireNonNull(targetTileSupplier.get(), "Target tile must not be NULL");
@@ -58,7 +56,8 @@ class HeadingFor implements Behavior {
 		// if inside ghost house, use path finder. To leave the ghost house, target
 		// Blinky's home tile
 		if (maze.insideGhostHouse(actorTile)) {
-			route.setPath(maze.findPath(actorTile, maze.insideGhostHouse(targetTile) ? targetTile : maze.blinkyHome));
+			route.setPath(
+					maze.findPath(actorTile, maze.insideGhostHouse(targetTile) ? targetTile : maze.blinkyHome));
 			route.setDir(maze.alongPath(route.getPath()).orElse(actorDir));
 			return route;
 		}
@@ -68,7 +67,8 @@ class HeadingFor implements Behavior {
 			int left = NESW.left(actorDir), right = NESW.right(actorDir);
 			if (actor.canEnterTileTo(left)) {
 				route.setDir(left);
-			} else if (actor.canEnterTileTo(right)) {
+			}
+			else if (actor.canEnterTileTo(right)) {
 				route.setDir(right);
 			}
 			return route;

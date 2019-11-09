@@ -31,12 +31,12 @@ class FollowingFixedPath implements Behavior {
 		}
 		Route route = new Route();
 		route.setPath(path);
-		route.setDir(actor.game.maze.alongPath(path).orElse(actor.moveDir));
+		route.setDir(actor.maze().alongPath(path).orElse(actor.moveDir));
 		return route;
 	}
 
 	@Override
 	public void computePath(MazeMover actor) {
-		path = actor.game.maze.findPath(actor.currentTile(), fnTargetTile.get());
+		path = actor.maze().findPath(actor.currentTile(), fnTargetTile.get());
 	}
 }
