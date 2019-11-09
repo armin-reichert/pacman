@@ -47,7 +47,7 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 	public PacMan(PacManGame game) {
 		super(game, "Pac-Man");
 		buildStateMachine();
-		Top4.get().dirs().forEach(dir -> sprites.set("walking-" + dir, game.theme.spr_pacManWalking(dir)));
+		NESW.dirs().forEach(dir -> sprites.set("walking-" + dir, game.theme.spr_pacManWalking(dir)));
 		sprites.set("dying", game.theme.spr_pacManDying());
 		sprites.set("full", game.theme.spr_pacManFull());
 		sprites.select("full");
@@ -81,7 +81,7 @@ public class PacMan extends MazeMoverUsingFSM<PacManState, PacManGameEvent> {
 	 */
 	@Override
 	public OptionalInt getNextMoveDirection() {
-		return Top4.get().dirs().filter(dir -> Keyboard.keyDown(STEERING_NESW[dir])).findFirst();
+		return NESW.dirs().filter(dir -> Keyboard.keyDown(STEERING_NESW[dir])).findFirst();
 	}
 
 	@Override

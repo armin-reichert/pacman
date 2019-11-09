@@ -23,6 +23,8 @@ import de.amr.graph.grid.impl.Top4;
  */
 public abstract class MazeMover extends Entity {
 
+	public static final Topology NESW = Top4.get();
+
 	public final PacManGame game;
 
 	/* Current move direction (Top4.N, Top4.E, Top4.S, Top4.W). */
@@ -49,19 +51,18 @@ public abstract class MazeMover extends Entity {
 	 * alignment, "teleportation" and getting stuck.
 	 */
 	protected void move() {
-		Topology T = Top4.get();
 		Tile oldTile = currentTile();
 		getNextMoveDirection().ifPresent(dir -> nextDir = dir);
 		float speed = computeActualSpeed(nextDir);
 		if (speed > 0) {
-			if (nextDir == T.left(moveDir) || nextDir == T.right(moveDir)) {
+			if (nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir)) {
 				tf.setPosition(oldTile.col * TS, oldTile.row * TS);
 			}
 			moveDir = nextDir;
 		} else {
 			speed = computeActualSpeed(moveDir);
 		}
-		Vector2f direction = Vector2f.of(T.dx(moveDir), T.dy(moveDir));
+		Vector2f direction = Vector2f.of(NESW.dx(moveDir), NESW.dy(moveDir));
 		tf.setVelocity(Vector2f.smul(speed, direction));
 		tf.move();
 		int teleportLeft = (game.maze.teleportLeft.col - 1) * TS;
