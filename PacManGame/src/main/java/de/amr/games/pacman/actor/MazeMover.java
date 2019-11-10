@@ -32,16 +32,10 @@ public abstract class MazeMover extends Entity {
 	public boolean enteredNewTile;
 
 	/* Timer for teleporting */
-	private int tpTimer;
+	private int teleportTicksRemaining;
 
 	/* x-coordinate of teleport target */
-	private int tpTargetX;
-
-	/* x-coordinate of left teleport target */
-	private int teleportLeftX;
-
-	/* x-coordinate of right teleport target */
-	private int teleportRightX;
+	private int teleportTargetX;
 
 	public MazeMover() {
 		// set collision box size to one tile, sprite size may be larger
@@ -53,10 +47,8 @@ public abstract class MazeMover extends Entity {
 	public void init() {
 		moveDir = nextDir = Top4.E;
 		enteredNewTile = true;
-		tpTimer = -1;
-		tpTargetX = -1;
-		teleportLeftX = (maze().teleportLeft.col - 1) * TS;
-		teleportRightX = (maze().teleportRight.col + 1) * TS;
+		teleportTicksRemaining = Integer.MIN_VALUE;
+		teleportTargetX = Integer.MIN_VALUE;
 	}
 
 	/**
@@ -117,34 +109,40 @@ public abstract class MazeMover extends Entity {
 	 */
 	private boolean teleporting() {
 		// check if teleporting is already running
-		if (tpTimer >= 1) {
-			tpTimer -= 1;
+		if (teleportTicksRemaining >= 1) {
+			teleportTicksRemaining -= 1;
 			return true;
 		}
 
 		// check if timer expired
-		if (tpTimer == 0) {
-			LOGGER.info("Teleporting ends");
-			tf.setX(tpTargetX);
+		if (teleportTicksRemaining == 0) {
+			LOGGER.fine("Teleporting ends");
+			tf.setX(teleportTargetX);
 			show();
-			tpTargetX = -1;
-			tpTimer = -1;
+			teleportTargetX = Integer.MIN_VALUE;
+			teleportTicksRemaining = Integer.MIN_VALUE;
 			return false;
 		}
 
 		// check if teleporting should be started
-		if (tf.getX() >= teleportRightX) {
-			tpTargetX = teleportLeftX;
+		int leftExit = (maze().teleportLeft.col - 1) * TS;
+		int rightExit = (maze().teleportRight.col + 1) * TS;
+
+		if (tf.getX() >= rightExit) {
+			teleportTargetX = leftExit;
 		}
-		else if (tf.getX() <= teleportLeftX) {
-			tpTargetX = teleportRightX;
+		else if (tf.getX() <= leftExit) {
+			teleportTargetX = rightExit;
 		}
-		if (tpTargetX != -1) {
-			LOGGER.info("Teleporting started");
+
+		// maybe start
+		if (teleportTargetX != Integer.MIN_VALUE) {
+			LOGGER.fine("Teleporting started");
 			hide();
-			tpTimer = app().clock.sec(1.5f);
+			teleportTicksRemaining = app().clock.sec(1f);
 			return true;
 		}
+
 		return false;
 	}
 
