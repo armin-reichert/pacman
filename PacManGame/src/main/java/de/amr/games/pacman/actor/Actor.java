@@ -57,14 +57,19 @@ public abstract class Actor<S> extends MazeMover {
 	public void processEvent(PacManGameEvent event) {
 		fsm.process(event);
 	}
-
+	
 	@Override
 	public void init() {
-		fsm.init();
+		super.init();
+		if (fsm != null) {
+			fsm.init();
+		}
 	}
-
+	
 	@Override
 	public void update() {
-		fsm.update();
+		if (fsm != null) {
+			fsm.update();
+		}
 	}
 }

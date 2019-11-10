@@ -1,5 +1,7 @@
 package de.amr.games.pacman.actor;
 
+import static de.amr.easy.game.Application.LOGGER;
+import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
 import static java.lang.Math.round;
@@ -29,12 +31,32 @@ public abstract class MazeMover extends Entity {
 	/* Tells if the last move entered a new tile position */
 	public boolean enteredNewTile;
 
+	/* Timer for teleporting */
+	private int tpTimer;
+
+	/* x-coordinate of teleport target */
+	private int tpTargetX;
+
+	/* x-coordinate of left teleport target */
+	private int teleportLeftX;
+
+	/* x-coordinate of right teleport target */
+	private int teleportRightX;
+
 	public MazeMover() {
 		// set collision box size to one tile, sprite size may be larger
 		tf.setWidth(TS);
 		tf.setHeight(TS);
+	}
+
+	@Override
+	public void init() {
 		moveDir = nextDir = Top4.E;
 		enteredNewTile = true;
+		tpTimer = -1;
+		tpTargetX = -1;
+		teleportLeftX = (maze().teleportLeft.col - 1) * TS;
+		teleportRightX = (maze().teleportRight.col + 1) * TS;
 	}
 
 	/**
@@ -61,8 +83,14 @@ public abstract class MazeMover extends Entity {
 	 * direction, moving around corners without losing alignment, "teleportation" and getting stuck.
 	 */
 	protected void move() {
-		Tile oldTile = currentTile();
 		nextMoveDirection().ifPresent(dir -> nextDir = dir);
+
+		if (teleporting()) {
+			return;
+		}
+
+		// normal movement
+		Tile oldTile = currentTile();
 		float speed = allowedSpeed(nextDir);
 		if (speed > 0) {
 			if (nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir)) {
@@ -76,15 +104,48 @@ public abstract class MazeMover extends Entity {
 		Vector2f direction = Vector2f.of(NESW.dx(moveDir), NESW.dy(moveDir));
 		tf.setVelocity(Vector2f.smul(speed, direction));
 		tf.move();
-		int teleportLeft = (maze().teleportLeft.col - 1) * TS;
-		int teleportRight = (maze().teleportRight.col + 1) * TS;
-		if (tf.getX() >= teleportRight) {
-			tf.setX(teleportLeft);
-		}
-		else if (tf.getX() <= teleportLeft) {
-			tf.setX(teleportRight);
-		}
 		enteredNewTile = !oldTile.equals(currentTile());
+	}
+
+	/**
+	 * Implements "teleporting". When an actor (Ghost, Pac-Man) leaves a teleport tile towards the
+	 * border, a timer is started and the actor is hidden (to avoid triggering events during
+	 * teleportation). When the timer ends, the actor is placed at the teleportation target and made
+	 * visible again.
+	 * 
+	 * @return <code>true</code> if teleportation is running
+	 */
+	private boolean teleporting() {
+		// check if teleporting is already running
+		if (tpTimer >= 1) {
+			tpTimer -= 1;
+			return true;
+		}
+
+		// check if timer expired
+		if (tpTimer == 0) {
+			LOGGER.info("Teleporting ends");
+			tf.setX(tpTargetX);
+			show();
+			tpTargetX = -1;
+			tpTimer = -1;
+			return false;
+		}
+
+		// check if teleporting should be started
+		if (tf.getX() >= teleportRightX) {
+			tpTargetX = teleportLeftX;
+		}
+		else if (tf.getX() <= teleportLeftX) {
+			tpTargetX = teleportRightX;
+		}
+		if (tpTargetX != -1) {
+			LOGGER.info("Teleporting started");
+			hide();
+			tpTimer = app().clock.sec(1.5f);
+			return true;
+		}
+		return false;
 	}
 
 	/*

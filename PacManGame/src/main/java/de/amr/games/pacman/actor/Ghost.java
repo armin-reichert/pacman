@@ -108,8 +108,8 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 
 	@Override
 	public void init() {
+		super.init();
 		initialize();
-		fsm.init();
 	}
 
 	public void initialize() {

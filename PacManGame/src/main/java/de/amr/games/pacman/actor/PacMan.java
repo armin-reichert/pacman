@@ -57,14 +57,6 @@ public class PacMan extends Actor<PacManState> {
 		sprites.select("full");
 	}
 
-	private void initialize() {
-		ticksSinceLastMeal = 0;
-		moveDir = nextDir = Top4.E;
-		sprites.forEach(Sprite::resetAnimation);
-		sprites.select("full");
-		placeAtTile(maze().pacManHome, TS / 2, 0);
-	}
-
 	@Override
 	public String name() {
 		return "Pac-Man";
@@ -125,8 +117,12 @@ public class PacMan extends Actor<PacManState> {
 
 	@Override
 	public void init() {
-		initialize();
 		super.init();
+		ticksSinceLastMeal = 0;
+		moveDir = nextDir = Top4.E;
+		sprites.forEach(Sprite::resetAnimation);
+		sprites.select("full");
+		placeAtTile(maze().pacManHome, TS / 2, 0);
 	}
 
 	private void buildStateMachine() {
@@ -208,6 +204,10 @@ public class PacMan extends Actor<PacManState> {
 
 		private Optional<PacManGameEvent> findSomethingInteresting() {
 			Tile pacManTile = currentTile();
+
+			if (!maze().insideBoard(pacManTile) || !visible) {
+				return Optional.empty(); // when teleporting no events are triggered
+			}
 
 			Optional<PacManGameEvent> ghostCollision = game.activeGhosts()
 			/*@formatter:off*/
