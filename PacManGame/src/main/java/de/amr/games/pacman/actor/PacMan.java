@@ -211,6 +211,7 @@ public class PacMan extends Actor<PacManState> {
 
 			Optional<PacManGameEvent> ghostCollision = game.activeGhosts()
 			/*@formatter:off*/
+				.filter(Ghost::visible)
 				.filter(ghost -> ghost.getState() != GhostState.DEAD)
 				.filter(ghost -> ghost.getState() != GhostState.DYING)
 				.filter(ghost -> ghost.getState() != GhostState.LOCKED)
