@@ -9,25 +9,30 @@ import de.amr.easy.game.entity.Entity;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.theme.PacManTheme;
 
+/**
+ * Bonus symbol that appears at the maze bonus position. When consumed, displays
+ * the bonus value for some time, then disappears.
+ * 
+ * @author Armin Reichert
+ */
 public class Bonus extends Entity {
 
-	private static final int[] POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+	static final int[] POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
 	private final BonusSymbol symbol;
 	private final int value;
-	private final int index;
 	private boolean consumed;
 
 	public Bonus(BonusSymbol symbol, int value, PacManTheme theme) {
-		index = binarySearch(POINTS, value);
+		tf.setWidth(TS);
+		tf.setHeight(TS);
+		this.symbol = symbol;
+		this.value = value;
+		int index = binarySearch(POINTS, value);
 		if (index < 0) {
 			throw new IllegalArgumentException("Illegal bonus value: " + value);
 		}
-		this.symbol = symbol;
-		this.value = value;
 		consumed = false;
-		tf.setWidth(TS);
-		tf.setHeight(TS);
 		sprites.set("symbol", theme.spr_bonusSymbol(symbol));
 		sprites.set("number", theme.spr_pinkNumber(index));
 		sprites.select("symbol");
