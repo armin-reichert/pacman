@@ -34,7 +34,7 @@ import de.amr.graph.pathfinder.impl.AStarSearch;
  */
 public class Maze {
 
-	public static Top4 NESW = Top4.get();
+	public static final Top4 NESW = Top4.get();
 
 	static final char WALL = '#', DOOR = 'D', TUNNEL = 'T', TELEPORT_L = '<', TELEPORT_R = '>', SPACE = ' ',
 			PELLET = '.', ENERGIZER = '*', EATEN = '%';
@@ -45,14 +45,14 @@ public class Maze {
 	private final Set<Tile> energizerTiles = new HashSet<>();
 	private int pathFinderCalls;
 
-	public int numCols, numRows;
+	public final int numCols, numRows;
 	public int foodTotal;
 
 	public Tile topLeft, topRight, bottomLeft, bottomRight, pacManHome, blinkyHome, blinkyScatter, pinkyHome,
 			pinkyScatter, inkyHome, inkyScatter, clydeHome, clydeScatter, bonusTile, teleportLeft, teleportRight,
 			ghostRevival;
 
-	public final GridGraph<Tile, Void> gridGraph;
+	public final GridGraph<Tile, Void> graph;
 
 	public Maze() {
 		String[] map = Assets.text("maze.txt").split("\n");
@@ -137,16 +137,15 @@ public class Maze {
 		bottomRight = board[numCols - 2][numRows - 4];
 
 		// Grid graph structure, vertex content is (reference to) corresponding tile
-		gridGraph = new GridGraph<>(numCols, numRows, NESW, this::tile, (u, v) -> null, UndirectedEdge::new);
-		gridGraph.fill();
+		graph = new GridGraph<>(numCols, numRows, NESW, this::tile, (u, v) -> null, UndirectedEdge::new);
+		graph.fill();
 
 		// Remove edges into walls
-		gridGraph.edges()
-				.filter(e -> gridGraph.get(e.either()).content == WALL || gridGraph.get(e.other()).content == WALL)
-				.forEach(gridGraph::removeEdge);
+		graph.edges().filter(e -> graph.get(e.either()).content == WALL || graph.get(e.other()).content == WALL)
+				.forEach(graph::removeEdge);
 
 		// Intersections: unrestricted or upwards-blocked?
-		gridGraph.vertices().filter(v -> gridGraph.degree(v) >= 3).mapToObj(this::tile)
+		graph.vertices().filter(v -> graph.degree(v) >= 3).mapToObj(this::tile)
 		//@formatter:off
 			// exclude tiles above ghost house doors:
 			.filter(tile -> !isDoor(tileToDir(tile, Top4.S)))
@@ -170,15 +169,15 @@ public class Maze {
 	}
 
 	private int vertex(Tile tile) {
-		return gridGraph.cell(tile.col, tile.row);
+		return graph.cell(tile.col, tile.row);
 	}
 
 	private Tile tile(int vertex) {
-		return board[gridGraph.col(vertex)][gridGraph.row(vertex)];
+		return board[graph.col(vertex)][graph.row(vertex)];
 	}
 
 	public Stream<Tile> tiles() {
-		return gridGraph.vertices().mapToObj(this::tile);
+		return graph.vertices().mapToObj(this::tile);
 	}
 
 	/**
@@ -188,7 +187,7 @@ public class Maze {
 	 *         the board
 	 */
 	public Tile tileAt(int col, int row) {
-		return gridGraph.isValidCol(col) && gridGraph.isValidRow(row) ? board[col][row] : new Tile(col, row, TUNNEL);
+		return graph.isValidCol(col) && graph.isValidRow(row) ? board[col][row] : new Tile(col, row, TUNNEL);
 	}
 
 	/**
@@ -213,7 +212,7 @@ public class Maze {
 	}
 
 	public boolean insideBoard(Tile tile) {
-		return gridGraph.isValidCol(tile.col) && gridGraph.isValidRow(tile.row);
+		return graph.isValidCol(tile.col) && graph.isValidRow(tile.row);
 	}
 
 	public boolean insideTunnel(Tile tile) {
@@ -282,12 +281,12 @@ public class Maze {
 	// navigation
 
 	public OptionalInt direction(Tile t1, Tile t2) {
-		return gridGraph.direction(vertex(t1), vertex(t2));
+		return graph.direction(vertex(t1), vertex(t2));
 	}
 
 	public List<Tile> findPath(Tile source, Tile target) {
 		if (insideBoard(source) && insideBoard(target)) {
-			GraphSearch pathfinder = new AStarSearch(gridGraph, (u, v) -> 1, gridGraph::manhattan);
+			GraphSearch pathfinder = new AStarSearch(graph, (u, v) -> 1, graph::manhattan);
 			Path path = pathfinder.findPath(vertex(source), vertex(target));
 			pathFinderCalls += 1;
 			if (pathFinderCalls % 100 == 0) {
@@ -299,7 +298,7 @@ public class Maze {
 	}
 
 	public int manhattanDist(Tile t1, Tile t2) {
-		return gridGraph.manhattan(vertex(t1), vertex(t2));
+		return graph.manhattan(vertex(t1), vertex(t2));
 	}
 
 	public OptionalInt alongPath(List<Tile> path) {
