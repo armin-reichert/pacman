@@ -15,22 +15,23 @@ import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
 
 /**
- * An entity that can move through the maze. Movement is controlled by supplying
- * the intended move direction before moving.
+ * An entity that can move through the maze. Movement is controlled by supplying the intended move
+ * direction before moving.
  * 
  * @author Armin Reichert
  */
 public abstract class MazeMover extends Entity {
-	
+
+	/** The maze where this entity moves in */
 	public Maze maze;
 
-	/* Current move direction (Top4.N, Top4.E, Top4.S, Top4.W). */
+	/** The current move direction (Top4.N, Top4.E, Top4.S, Top4.W). */
 	public int moveDir;
 
-	/* Intended move direction, actor takes this direction as soon as possible. */
+	/** The intended move direction, actor takes this direction as soon as possible. */
 	public int nextDir;
 
-	/* Tells if the last move entered a new tile position */
+	/** Tells if the last move entered a new tile position */
 	public boolean enteredNewTile;
 
 	/* Timer for teleporting */
@@ -54,25 +55,22 @@ public abstract class MazeMover extends Entity {
 	}
 
 	/**
-	 * Returns the next move direction which usually differs from the current move
-	 * direction and will be taken as soon as possible, for example at the next
-	 * intersection.
+	 * Returns the next move direction which usually differs from the current move direction and will be
+	 * taken as soon as possible, for example at the next intersection.
 	 * 
 	 * @return the next move direction to take
 	 */
 	public abstract OptionalInt nextMoveDirection();
 
 	/**
-	 * @return the maximum possible speed (in pixels/tick) for the current frame.
-	 *         The actual speed can be lower to avoid moving into inaccessible
-	 *         tiles.
+	 * @return the maximum possible speed (in pixels/tick) for the current frame. The actual speed can
+	 *         be lower to avoid moving into inaccessible tiles.
 	 */
 	public abstract float maxSpeed();
 
 	/**
-	 * Moves this actor through the maze. Handles changing the direction according
-	 * to the intended move direction, moving around corners without losing
-	 * alignment, "teleportation" and getting stuck.
+	 * Moves this actor through the maze. Handles changing the direction according to the intended move
+	 * direction, moving around corners without losing alignment, "teleportation" and getting stuck.
 	 */
 	protected void move() {
 		nextMoveDirection().ifPresent(dir -> nextDir = dir);
@@ -89,7 +87,8 @@ public abstract class MazeMover extends Entity {
 				tf.setPosition(oldTile.col * TS, oldTile.row * TS);
 			}
 			moveDir = nextDir;
-		} else {
+		}
+		else {
 			speed = allowedSpeed(moveDir);
 		}
 		Vector2f direction = Vector2f.of(NESW.dx(moveDir), NESW.dy(moveDir));
@@ -99,10 +98,10 @@ public abstract class MazeMover extends Entity {
 	}
 
 	/**
-	 * Implements "teleporting". When an actor (Ghost, Pac-Man) leaves a teleport
-	 * tile towards the border, a timer is started and the actor is hidden (to avoid
-	 * triggering events during teleportation). When the timer ends, the actor is
-	 * placed at the teleportation target and made visible again.
+	 * Implements "teleporting". When an actor (Ghost, Pac-Man) leaves a teleport tile towards the
+	 * border, a timer is started and the actor is hidden (to avoid triggering events during
+	 * teleportation). When the timer ends, the actor is placed at the teleportation target and made
+	 * visible again.
 	 * 
 	 * @return <code>true</code> if teleportation is running
 	 */
@@ -129,7 +128,8 @@ public abstract class MazeMover extends Entity {
 
 		if (tf.getX() >= rightExit) {
 			teleportTargetX = leftExit;
-		} else if (tf.getX() <= leftExit) {
+		}
+		else if (tf.getX() <= leftExit) {
 			teleportTargetX = rightExit;
 		}
 
@@ -145,8 +145,8 @@ public abstract class MazeMover extends Entity {
 	}
 
 	/*
-	 * Computes how many pixels this entity can actually move towards the given
-	 * direction in the current frame without entering a forbidden tile.
+	 * Computes how many pixels this entity can actually move towards the given direction in the current
+	 * frame without entering a forbidden tile.
 	 */
 	private float allowedSpeed(int dir) {
 		if (canEnterTileTo(dir)) {
@@ -182,9 +182,10 @@ public abstract class MazeMover extends Entity {
 	}
 
 	/**
-	 * @param numTiles number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor
-	 *         towards his current move direction.
+	 * @param numTiles
+	 *                   number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
+	 *         direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
 		return maze.tileToDir(currentTile(), moveDir, numTiles);
@@ -193,9 +194,12 @@ public abstract class MazeMover extends Entity {
 	/**
 	 * Places this maze mover at the given tile, optionally with some pixel offset.
 	 * 
-	 * @param tile    the tile where this maze mover is placed
-	 * @param xOffset pixel offset in x-direction
-	 * @param yOffset pixel offset in y-direction
+	 * @param tile
+	 *                  the tile where this maze mover is placed
+	 * @param xOffset
+	 *                  pixel offset in x-direction
+	 * @param yOffset
+	 *                  pixel offset in y-direction
 	 */
 	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
 		enteredNewTile = !tile.equals(currentTile());
@@ -203,10 +207,10 @@ public abstract class MazeMover extends Entity {
 	}
 
 	/**
-	 * Common logic for Pac-Man and ghosts: walls can never be entered,
-	 * teleportation is possible.
+	 * Common logic for Pac-Man and ghosts: walls can never be entered, teleportation is possible.
 	 * 
-	 * @param tile some tile, may also be outside of the board
+	 * @param tile
+	 *               some tile, may also be outside of the board
 	 * @return <code>true</code> if this maze mover can enter the given tile
 	 */
 	public boolean canEnterTile(Tile tile) {
@@ -220,17 +224,16 @@ public abstract class MazeMover extends Entity {
 	}
 
 	/**
-	 * @param dir a direction (N, E, S, W)
-	 * @return if the maze mover can enter the neighbor tile towards the given
-	 *         direction
+	 * @param dir
+	 *              a direction (N, E, S, W)
+	 * @return if the maze mover can enter the neighbor tile towards the given direction
 	 */
 	public boolean canEnterTileTo(int dir) {
 		return canEnterTile(maze.tileToDir(currentTile(), dir));
 	}
 
 	/**
-	 * @return <code>true</code> if the maze mover cannot move further towards its
-	 *         current direction
+	 * @return <code>true</code> if the maze mover cannot move further towards its current direction
 	 */
 	public boolean isStuck() {
 		return tf.getVelocity().length() == 0;
