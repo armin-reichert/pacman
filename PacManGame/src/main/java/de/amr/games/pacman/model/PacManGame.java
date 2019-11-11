@@ -418,7 +418,7 @@ public class PacManGame {
 	public float computeGhostSpeed(Ghost ghost) {
 		requireNonNull(ghost);
 		Tile tile = ghost.currentTile();
-		if (maze.insideGhostHouse(tile)) {
+		if (maze.inGhostHouse(tile)) {
 			return speed(.5f);
 		}
 		boolean inTunnel = maze.insideTunnel(tile) || tile == maze.teleportLeft || tile == maze.teleportRight;

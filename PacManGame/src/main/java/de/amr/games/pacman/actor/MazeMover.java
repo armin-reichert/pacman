@@ -21,6 +21,8 @@ import de.amr.graph.grid.impl.Top4;
  * @author Armin Reichert
  */
 public abstract class MazeMover extends Entity {
+	
+	public Maze maze;
 
 	/* Current move direction (Top4.N, Top4.E, Top4.S, Top4.W). */
 	public int moveDir;
@@ -50,11 +52,6 @@ public abstract class MazeMover extends Entity {
 		teleportTicksRemaining = Integer.MIN_VALUE;
 		teleportTargetX = Integer.MIN_VALUE;
 	}
-
-	/**
-	 * @return the maze where this maze mover lives
-	 */
-	public abstract Maze maze();
 
 	/**
 	 * Returns the next move direction which usually differs from the current move
@@ -127,8 +124,8 @@ public abstract class MazeMover extends Entity {
 		}
 
 		// check if teleporting should be started
-		int leftExit = (maze().teleportLeft.col - 1) * TS;
-		int rightExit = (maze().teleportRight.col + 1) * TS;
+		int leftExit = (maze.teleportLeft.col - 1) * TS;
+		int rightExit = (maze.teleportRight.col + 1) * TS;
 
 		if (tf.getX() >= rightExit) {
 			teleportTargetX = leftExit;
@@ -181,7 +178,7 @@ public abstract class MazeMover extends Entity {
 	 * @return the tile containing the center of this entity's collision box
 	 */
 	public Tile currentTile() {
-		return maze().tileAt(col(), row());
+		return maze.tileAt(col(), row());
 	}
 
 	/**
@@ -190,7 +187,7 @@ public abstract class MazeMover extends Entity {
 	 *         towards his current move direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
-		return maze().tileToDir(currentTile(), moveDir, numTiles);
+		return maze.tileToDir(currentTile(), moveDir, numTiles);
 	}
 
 	/**
@@ -213,13 +210,13 @@ public abstract class MazeMover extends Entity {
 	 * @return <code>true</code> if this maze mover can enter the given tile
 	 */
 	public boolean canEnterTile(Tile tile) {
-		if (maze().isWall(tile)) {
+		if (maze.isWall(tile)) {
 			return false;
 		}
-		if (maze().insideTunnel(tile)) {
+		if (maze.insideTunnel(tile)) {
 			return true; // includes tiles outside board used for teleportation!
 		}
-		return maze().insideBoard(tile);
+		return maze.insideBoard(tile);
 	}
 
 	/**
@@ -228,7 +225,7 @@ public abstract class MazeMover extends Entity {
 	 *         direction
 	 */
 	public boolean canEnterTileTo(int dir) {
-		return canEnterTile(maze().tileToDir(currentTile(), dir));
+		return canEnterTile(maze.tileToDir(currentTile(), dir));
 	}
 
 	/**

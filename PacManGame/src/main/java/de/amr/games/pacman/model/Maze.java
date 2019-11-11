@@ -152,7 +152,7 @@ public class Maze {
 			// exclude doors:
 			.filter(tile -> !isDoor(tile))
 			// exclude tiles inside ghost house:
-			.filter(tile -> !insideGhostHouse(tile))
+			.filter(tile -> !inGhostHouse(tile))
 			// separate "real" intersections:
 			.forEach(intersection -> {
 				if (intersection == tileToDir(blinkyHome, Top4.W)	
@@ -231,7 +231,7 @@ public class Maze {
 		return isDoor(tileToDir(tile, Top4.S));
 	}
 
-	public boolean insideGhostHouse(Tile tile) {
+	public boolean inGhostHouse(Tile tile) {
 		return abs(tile.row - inkyHome.row) <= 1 && tile.col >= inkyHome.col && tile.col <= clydeHome.col + 1;
 	}
 

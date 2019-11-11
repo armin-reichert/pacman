@@ -49,6 +49,7 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 
 	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, int initialDir) {
 		this.game = game;
+		this.maze = game.maze;
 		this.name = name;
 		this.initialTile = initialTile;
 		this.initialDir = initialDir;
@@ -149,7 +150,7 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 	@Override
 	public boolean canEnterTile(Tile tile) {
 		if (maze().isDoor(tile)) {
-			return getState() == DEAD || getState() != LOCKED && maze().insideGhostHouse(currentTile());
+			return getState() == DEAD || getState() != LOCKED && maze().inGhostHouse(currentTile());
 		}
 		return super.canEnterTile(tile);
 	}
@@ -190,7 +191,7 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 					})
 					.onTick(() -> {
 						move();
-						sprites.select(maze().insideGhostHouse(currentTile())	
+						sprites.select(maze().inGhostHouse(currentTile())	
 									? "color-" + moveDir
 									: game.pacMan.isLosingPower()	? "flashing" : "frightened");
 					})
