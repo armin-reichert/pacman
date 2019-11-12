@@ -12,12 +12,11 @@ import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.OptionalInt;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.actor.behavior.Behavior;
+import de.amr.games.pacman.actor.behavior.SteeringBehavior;
 import de.amr.games.pacman.actor.behavior.GhostBehaviors;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -44,7 +43,7 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 	public final int initialDir;
 	public int foodCount;
 
-	private Map<GhostState, Behavior> behaviorMap = new EnumMap<>(GhostState.class);
+	private Map<GhostState, SteeringBehavior> behaviorMap = new EnumMap<>(GhostState.class);
 
 	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, int initialDir) {
 		this.game = game;
@@ -128,18 +127,17 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 		return nextState != null ? nextState : getState();
 	}
 
-	public void setBehavior(GhostState state, Behavior behavior) {
+	public void setBehavior(GhostState state, SteeringBehavior behavior) {
 		behaviorMap.put(state, behavior);
 	}
 
-	public Behavior currentBehavior() {
+	public SteeringBehavior currentBehavior() {
 		return behaviorMap.getOrDefault(getState(), keepingDirection());
 	}
 
 	@Override
-	public OptionalInt nextMoveDirection() {
-		currentBehavior().direct(this);
-		return OptionalInt.of(nextDir);
+	public void steer() {
+		currentBehavior().steer(this);
 	}
 
 	@Override

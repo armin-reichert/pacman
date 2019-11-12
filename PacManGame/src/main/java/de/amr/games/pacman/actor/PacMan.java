@@ -14,7 +14,6 @@ import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.awt.event.KeyEvent.VK_UP;
 
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.logging.Logger;
 
 import de.amr.easy.game.assets.Sound;
@@ -76,12 +75,10 @@ public class PacMan extends Actor<PacManState> {
 		sprites.current().ifPresent(sprite -> sprite.enableAnimation(!isStuck()));
 	}
 
-	/**
-	 * @return if a steering key is pressed, the corresponding direction, otherwise nothing
-	 */
 	@Override
-	public OptionalInt nextMoveDirection() {
-		return NESW.dirs().filter(dir -> Keyboard.keyDown(STEERING_NESW[dir])).findFirst();
+	public void steer() {
+		NESW.dirs().filter(dir -> Keyboard.keyDown(STEERING_NESW[dir])).findFirst()
+				.ifPresent(dir -> nextDir = dir);
 	}
 
 	@Override

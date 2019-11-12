@@ -33,7 +33,7 @@ public interface GhostBehaviors {
 	 *                   function supplying the target tile at time of decision
 	 * @return behavior where ghost heads for the target tile
 	 */
-	default Behavior headingFor(Supplier<Tile> fnTarget) {
+	default SteeringBehavior headingFor(Supplier<Tile> fnTarget) {
 		return new HeadingFor(fnTarget);
 	}
 
@@ -45,7 +45,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return behavior of attacking Pac-Man directly
 	 */
-	default Behavior attackingDirectly(PacMan pacMan) {
+	default SteeringBehavior attackingDirectly(PacMan pacMan) {
 		return headingFor(pacMan::currentTile);
 	}
 
@@ -57,7 +57,7 @@ public interface GhostBehaviors {
 	 *                 the ambushed Pac-Man
 	 * @return ambushing behavior
 	 */
-	default Behavior ambushing(PacMan pacMan) {
+	default SteeringBehavior ambushing(PacMan pacMan) {
 		return headingFor(() -> pacMan.tilesAhead(4));
 	}
 
@@ -82,7 +82,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return behavior where Pac-Man is attacked with help of partner ghost
 	 */
-	default Behavior attackingWithPartner(Ghost blinky, PacMan pacMan) {
+	default SteeringBehavior attackingWithPartner(Ghost blinky, PacMan pacMan) {
 		return headingFor(() -> {
 			Tile b = blinky.currentTile(), p = pacMan.tilesAhead(2);
 			return pacMan.maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
@@ -124,7 +124,7 @@ public interface GhostBehaviors {
 	 * @param scatterTarget
 	 *                        tile ghost heads for in scattering mode
 	 */
-	default Behavior attackingAndRejecting(PacMan pacMan, int distance, Tile scatterTarget) {
+	default SteeringBehavior attackingAndRejecting(PacMan pacMan, int distance, Tile scatterTarget) {
 		return headingFor(
 				() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.currentTile()
 						: scatterTarget);
@@ -135,7 +135,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return bouncing behavior
 	 */
-	default Behavior bouncing() {
+	default SteeringBehavior bouncing() {
 		return ghost -> {
 			ghost.nextDir = ghost.isStuck() ? NESW.inv(ghost.moveDir) : ghost.moveDir;
 		};
@@ -148,7 +148,7 @@ public interface GhostBehaviors {
 	 *                   the attacker e.g. Pac-Man
 	 * @return behavior where ghost flees to a "safe" maze corner
 	 */
-	default Behavior fleeingToSafeCorner(MazeMover attacker) {
+	default SteeringBehavior fleeingToSafeCorner(MazeMover attacker) {
 		return new FleeingToSafeCorner(attacker::currentTile);
 	}
 
@@ -159,7 +159,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return behavior where ghost takes random turn at each intersection
 	 */
-	default Behavior fleeingRandomly() {
+	default SteeringBehavior fleeingRandomly() {
 		return ghost -> {
 			ghost.targetPath = Collections.emptyList();
 			ghost.targetTile = null;
@@ -187,7 +187,7 @@ public interface GhostBehaviors {
 	 *                   target tile supplier (this tile must be inside the maze or teleport space!)
 	 * @return behavior following the path to the target
 	 */
-	default Behavior followingPathfinder(Supplier<Tile> fnTarget) {
+	default SteeringBehavior followingPathfinder(Supplier<Tile> fnTarget) {
 		return ghost -> {
 			ghost.nextDir = ghost.moveDir;
 			if (ghost.enteredNewTile) {
@@ -200,13 +200,13 @@ public interface GhostBehaviors {
 
 	/**
 	 * Lets the ghost follow a fixed path to the target. The path is precomputed by calling
-	 * {@link Behavior#computePath(MazeMover)}.
+	 * {@link SteeringBehavior#computePath(MazeMover)}.
 	 * 
 	 * @param fnTarget
 	 *                   function supplying the target tile at time of decision
 	 * @return behavior where ghost follows a fixed path
 	 */
-	default Behavior followingFixedPath(Supplier<Tile> fnTarget) {
+	default SteeringBehavior followingFixedPath(Supplier<Tile> fnTarget) {
 		return new FollowingFixedPath(fnTarget);
 	}
 
@@ -215,7 +215,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return behavior where ghost keeps its current move direction
 	 */
-	default Behavior keepingDirection() {
+	default SteeringBehavior keepingDirection() {
 		return ghost -> {
 			ghost.nextDir = ghost.moveDir;
 		};

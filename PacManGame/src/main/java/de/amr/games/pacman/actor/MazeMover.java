@@ -8,7 +8,6 @@ import static java.lang.Math.round;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.OptionalInt;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
@@ -65,30 +64,22 @@ public abstract class MazeMover extends Entity {
 	}
 
 	/**
-	 * Returns the next move direction which usually differs from the current move direction and will be
-	 * taken as soon as possible, for example at the next intersection.
-	 * 
-	 * @return the next move direction to take
-	 */
-	public abstract OptionalInt nextMoveDirection();
-
-	/**
 	 * @return the maximum possible speed (in pixels/tick) for the current frame. The actual speed can
 	 *         be lower to avoid moving into inaccessible tiles.
 	 */
 	public abstract float maxSpeed();
+
+	protected abstract void steer();
 
 	/**
 	 * Moves this actor through the maze. Handles changing the direction according to the intended move
 	 * direction, moving around corners without losing alignment, "teleportation" and getting stuck.
 	 */
 	protected void move() {
-		nextMoveDirection().ifPresent(dir -> nextDir = dir);
-
+		steer();
 		if (teleporting()) {
 			return;
 		}
-
 		// normal movement
 		Tile oldTile = currentTile();
 		float speed = allowedSpeed(nextDir);

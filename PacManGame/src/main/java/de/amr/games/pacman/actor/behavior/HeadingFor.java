@@ -32,7 +32,7 @@ import de.amr.graph.grid.impl.Top4;
  * 
  * @author Armin Reichert
  */
-class HeadingFor implements Behavior {
+class HeadingFor implements SteeringBehavior {
 
 	private final Supplier<Tile> fnTargetTile;
 
@@ -41,7 +41,7 @@ class HeadingFor implements Behavior {
 	}
 
 	@Override
-	public void direct(MazeMover actor) {
+	public void steer(MazeMover actor) {
 
 		Maze maze = actor.maze;
 		Tile actorTile = actor.currentTile();

@@ -13,7 +13,7 @@ import de.amr.games.pacman.model.Tile;
  *
  * @author Armin Reichert
  */
-class FollowingFixedPath implements Behavior {
+class FollowingFixedPath implements SteeringBehavior {
 
 	protected Supplier<Tile> fnTargetTile;
 	protected List<Tile> cachedPath = Collections.emptyList();
@@ -23,7 +23,7 @@ class FollowingFixedPath implements Behavior {
 	}
 
 	@Override
-	public void direct(MazeMover actor) {
+	public void steer(MazeMover actor) {
 		trimCachedPath(actor);
 		if (cachedPath.isEmpty() || actor.currentTile().equals(cachedPath.get(cachedPath.size() - 1))) {
 			computePath(actor);
