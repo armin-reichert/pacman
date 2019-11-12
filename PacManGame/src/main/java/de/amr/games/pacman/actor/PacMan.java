@@ -43,17 +43,22 @@ public class PacMan extends Actor<PacManState> {
 	static final int[] STEERING_NESW = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
 	public final PacManGame game;
-
 	public int ticksSinceLastMeal;
+	private StateMachine<PacManState, PacManGameEvent> fsm;
 
 	public PacMan(PacManGame game) {
+		super(game.maze);
 		this.game = game;
-		this.maze = game.maze;
 		buildStateMachine();
 		NESW.dirs().forEach(dir -> sprites.set("walking-" + dir, game.theme.spr_pacManWalking(dir)));
 		sprites.set("dying", game.theme.spr_pacManDying());
 		sprites.set("full", game.theme.spr_pacManFull());
 		sprites.select("full");
+	}
+
+	@Override
+	protected StateMachine<PacManState, PacManGameEvent> fsm() {
+		return fsm;
 	}
 
 	@Override

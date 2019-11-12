@@ -23,7 +23,7 @@ import de.amr.graph.grid.impl.Top4;
 public abstract class MazeMover extends Entity {
 
 	/** The maze where this entity moves in */
-	public Maze maze;
+	public final Maze maze;
 
 	/** The current move direction (Top4.N, Top4.E, Top4.S, Top4.W). */
 	public int moveDir;
@@ -46,7 +46,8 @@ public abstract class MazeMover extends Entity {
 	/** x-coordinate of teleport target */
 	private int teleportTargetX;
 
-	public MazeMover() {
+	public MazeMover(Maze maze) {
+		this.maze = maze;
 		// set collision box size to one tile, sprite size may be larger
 		tf.setWidth(TS);
 		tf.setHeight(TS);

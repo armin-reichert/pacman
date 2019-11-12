@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import de.amr.games.pacman.controller.event.PacManGameEvent;
+import de.amr.games.pacman.model.Maze;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
@@ -23,9 +24,13 @@ import de.amr.statemachine.StateMachine;
  */
 public abstract class Actor<S> extends MazeMover {
 
-	protected StateMachine<S, PacManGameEvent> fsm;
-
 	private final Set<Consumer<PacManGameEvent>> gameEventListeners = new LinkedHashSet<>();
+
+	public Actor(Maze maze) {
+		super(maze);
+	}
+
+	protected abstract StateMachine<S, PacManGameEvent> fsm();
 
 	public abstract String name();
 
@@ -43,33 +48,29 @@ public abstract class Actor<S> extends MazeMover {
 	}
 
 	public S getState() {
-		return fsm.getState();
+		return fsm().getState();
 	}
 
 	public void setState(S state) {
-		fsm.setState(state);
+		fsm().setState(state);
 	}
 
 	public State<S, PacManGameEvent> state() {
-		return fsm.state();
+		return fsm().state();
 	}
 
 	public void processEvent(PacManGameEvent event) {
-		fsm.process(event);
+		fsm().process(event);
 	}
-	
+
 	@Override
 	public void init() {
 		super.init();
-		if (fsm != null) {
-			fsm.init();
-		}
+		fsm().init();
 	}
-	
+
 	@Override
 	public void update() {
-		if (fsm != null) {
-			fsm.update();
-		}
+		fsm().update();
 	}
 }

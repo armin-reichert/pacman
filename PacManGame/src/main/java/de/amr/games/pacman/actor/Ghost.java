@@ -43,11 +43,12 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 	public final int initialDir;
 	public int foodCount;
 
+	private StateMachine<GhostState, PacManGameEvent> fsm;
 	private Map<GhostState, SteeringBehavior> behaviorMap = new EnumMap<>(GhostState.class);
 
 	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, int initialDir) {
+		super(game.maze);
 		this.game = game;
-		this.maze = game.maze;
 		this.name = name;
 		this.initialTile = initialTile;
 		this.initialDir = initialDir;
@@ -62,6 +63,11 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 		}
 		sprites.set("frightened", game.theme.spr_ghostFrightened());
 		sprites.set("flashing", game.theme.spr_ghostFlashing());
+	}
+
+	@Override
+	protected StateMachine<GhostState, PacManGameEvent> fsm() {
+		return fsm;
 	}
 
 	@Override
