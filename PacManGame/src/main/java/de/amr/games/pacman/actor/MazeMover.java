@@ -43,9 +43,6 @@ public abstract class MazeMover extends Entity {
 	/** Ticks remaining in teleporting state */
 	private int teleportTime;
 
-	/** x-coordinate of teleport target */
-	private int teleportTargetX;
-
 	public MazeMover(Maze maze) {
 		this.maze = maze;
 		// set collision box size to one tile, sprite size may be larger
@@ -57,8 +54,7 @@ public abstract class MazeMover extends Entity {
 	public void init() {
 		moveDir = nextDir = Top4.E;
 		enteredNewTile = true;
-		teleportTime = Integer.MIN_VALUE;
-		teleportTargetX = Integer.MIN_VALUE;
+		teleportTime = -1;
 		targetPath = Collections.emptyList();
 		targetTile = null;
 	}
@@ -79,43 +75,43 @@ public abstract class MazeMover extends Entity {
 	 */
 	protected void move() {
 		steer();
-		teleport(app().clock.sec(1.0f));
-		if (teleportTime == Integer.MIN_VALUE) {
+		maybeTeleport(app().clock.sec(1.0f));
+		if (teleportTime == -1) {
 			moveInsideMaze();
 		}
 	}
 
 	/**
-	 * Implements "teleporting". When an actor (Ghost, Pac-Man) leaves a teleport tile towards the
-	 * border, a timer is started and the actor is hidden (to avoid triggering events during
-	 * teleportation). When the timer ends, the actor is placed at the teleportation target and made
-	 * visible again.
+	 * Implements "teleporting".
+	 * 
+	 * <p>
+	 * When an actor (Ghost, Pac-Man) leaves a teleport tile towards the border, a timer is started and
+	 * the actor is placed at the teleportation target and hidden (to avoid triggering events during
+	 * teleportation). When the timer ends, the actor is made visible again.
 	 * 
 	 * @param ticks
 	 *                duration of teleportation in ticks
 	 */
-	private void teleport(int ticks) {
-		if (teleportTime > 0) {
+	private void maybeTeleport(int ticks) {
+		if (teleportTime > 0) { // running
 			teleportTime -= 1;
 		}
-		else if (teleportTime == 0) {
-			tf.setX(teleportTargetX);
+		else if (teleportTime == 0) { // completed
+			teleportTime = -1;
 			show();
-			teleportTargetX = Integer.MIN_VALUE;
-			teleportTime = Integer.MIN_VALUE;
 		}
-		else {
+		else { // off
 			int leftExit = (maze.teleportLeft.col - 1) * TS;
 			int rightExit = (maze.teleportRight.col + 1) * TS;
-			if (tf.getX() >= rightExit) {
-				teleportTargetX = leftExit;
-			}
-			else if (tf.getX() <= leftExit) {
-				teleportTargetX = rightExit;
-			}
-			if (teleportTargetX != Integer.MIN_VALUE) {
-				hide();
+			if (tf.getX() >= rightExit) { // start
 				teleportTime = ticks;
+				tf.setX(leftExit);
+				hide();
+			}
+			else if (tf.getX() <= leftExit) { // start
+				teleportTime = ticks;
+				tf.setX(rightExit);
+				hide();
 			}
 		}
 	}
