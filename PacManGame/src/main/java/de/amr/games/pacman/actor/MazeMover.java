@@ -8,6 +8,7 @@ import static java.lang.Math.round;
 import java.util.Collections;
 import java.util.List;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.Maze;
@@ -92,23 +93,27 @@ public abstract class MazeMover extends Entity {
 	private boolean teleport(int ticks) {
 		if (teleportTime > 0) { // running
 			teleportTime -= 1;
+			Application.LOGGER.info("Teleporting running, remaining:" + teleportTime);
 		}
 		else if (teleportTime == 0) { // completed
 			teleportTime = -1;
 			show();
+			Application.LOGGER.info("Teleporting complete");
 		}
 		else { // off
 			int leftExit = (maze.teleportLeft.col - 1) * TS;
 			int rightExit = (maze.teleportRight.col + 1) * TS;
-			if (tf.getX() >= rightExit) { // start
+			if (tf.getX() > rightExit) { // start
 				teleportTime = ticks;
 				tf.setX(leftExit);
 				hide();
+				Application.LOGGER.info("Teleporting started");
 			}
-			else if (tf.getX() <= leftExit) { // start
+			else if (tf.getX() < leftExit) { // start
 				teleportTime = ticks;
 				tf.setX(rightExit);
 				hide();
+				Application.LOGGER.info("Teleporting started");
 			}
 		}
 		return teleportTime != -1;

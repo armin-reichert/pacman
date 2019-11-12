@@ -24,9 +24,8 @@ import de.amr.graph.pathfinder.impl.AStarSearch;
  * The original Pac-Man maze.
  * 
  * <p>
- * The maze is a 2-dimensional grid of tiles, each tile contains a character
- * representing its content. Additionally, a grid graph structure is used to
- * allow running path finders on the graph.
+ * The maze is a 2-dimensional grid of tiles, each tile contains a character representing its
+ * content. Additionally, a grid graph structure is used to allow running path finders on the graph.
  * 
  * @author Armin Reichert
  * 
@@ -181,31 +180,38 @@ public class Maze {
 	}
 
 	/**
-	 * @param col a column index
-	 * @param row a row index
-	 * @return a board tile or a new (tunnel) tile if the coordinates are outside of
-	 *         the board
+	 * @param col
+	 *              a column index
+	 * @param row
+	 *              a row index
+	 * @return a board tile or a new tile if the coordinates are outside of the board. Tiles outside of
+	 *         the board are either tunnels (if in the same row than the teleport tiles) or walls.
 	 */
 	public Tile tileAt(int col, int row) {
-		return graph.isValidCol(col) && graph.isValidRow(row) ? board[col][row] : new Tile(col, row, TUNNEL);
+		return graph.isValidCol(col) && graph.isValidRow(row) ? board[col][row]
+				: new Tile(col, row, row == teleportLeft.row ? TUNNEL : WALL);
 	}
 
 	/**
-	 * @param tile reference tile
-	 * @param dir  some direction
-	 * @param n    number of tiles
-	 * @return the tile located <code>n</code> tiles away from the reference tile
-	 *         towards the given direction. This can be a tile outside of the board!
+	 * @param tile
+	 *               reference tile
+	 * @param dir
+	 *               some direction
+	 * @param n
+	 *               number of tiles
+	 * @return the tile located <code>n</code> tiles away from the reference tile towards the given
+	 *         direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, int dir, int n) {
 		return tileAt(tile.col + n * NESW.dx(dir), tile.row + n * NESW.dy(dir));
 	}
 
 	/**
-	 * @param tile reference tile
-	 * @param dir  some direction
-	 * @return neighbor towards the given direction. This can be a tile outside of
-	 *         the board!
+	 * @param tile
+	 *               reference tile
+	 * @param dir
+	 *               some direction
+	 * @return neighbor towards the given direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, int dir) {
 		return tileToDir(tile, dir, 1);
