@@ -75,24 +75,21 @@ public abstract class MazeMover extends Entity {
 	 */
 	protected void move() {
 		steer();
-		maybeTeleport(app().clock.sec(1.0f));
-		if (teleportTime == -1) {
+		if (!teleport(app().clock.sec(1.0f))) {
 			moveInsideMaze();
 		}
 	}
 
 	/**
-	 * Implements "teleporting".
-	 * 
-	 * <p>
 	 * When an actor (Ghost, Pac-Man) leaves a teleport tile towards the border, a timer is started and
 	 * the actor is placed at the teleportation target and hidden (to avoid triggering events during
 	 * teleportation). When the timer ends, the actor is made visible again.
 	 * 
 	 * @param ticks
 	 *                duration of teleportation in ticks
+	 * @return <code>true</code> if teleportation is running
 	 */
-	private void maybeTeleport(int ticks) {
+	private boolean teleport(int ticks) {
 		if (teleportTime > 0) { // running
 			teleportTime -= 1;
 		}
@@ -114,6 +111,7 @@ public abstract class MazeMover extends Entity {
 				hide();
 			}
 		}
+		return teleportTime != -1;
 	}
 
 	/**
