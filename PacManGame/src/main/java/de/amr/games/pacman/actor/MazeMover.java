@@ -1,5 +1,6 @@
 package de.amr.games.pacman.actor;
 
+import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
@@ -8,7 +9,6 @@ import static java.lang.Math.round;
 import java.util.Collections;
 import java.util.List;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.Maze;
@@ -93,12 +93,12 @@ public abstract class MazeMover extends Entity {
 	private boolean teleport(int ticks) {
 		if (teleportTime > 0) { // running
 			teleportTime -= 1;
-			Application.LOGGER.info("Teleporting running, remaining:" + teleportTime);
+			LOGGER.fine("Teleporting running, remaining:" + teleportTime);
 		}
 		else if (teleportTime == 0) { // completed
 			teleportTime = -1;
 			show();
-			Application.LOGGER.info("Teleporting complete");
+			LOGGER.fine("Teleporting complete");
 		}
 		else { // off
 			int leftExit = (maze.teleportLeft.col - 1) * TS;
@@ -107,13 +107,13 @@ public abstract class MazeMover extends Entity {
 				teleportTime = ticks;
 				tf.setX(leftExit);
 				hide();
-				Application.LOGGER.info("Teleporting started");
+				LOGGER.fine("Teleporting started");
 			}
 			else if (tf.getX() < leftExit) { // start
 				teleportTime = ticks;
 				tf.setX(rightExit);
 				hide();
-				Application.LOGGER.info("Teleporting started");
+				LOGGER.fine("Teleporting started");
 			}
 		}
 		return teleportTime != -1;
