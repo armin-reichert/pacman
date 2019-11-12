@@ -500,8 +500,10 @@ Pac-Man's movement is controlled by holding a key indicating its intended direct
 ```java
 static final int[] STEERING_NESW = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
-public OptionalInt getNextMoveDirection() {
-	return Top4.get().dirs().filter(dir -> Keyboard.keyDown(STEERING_NESW[dir])).findFirst();
+@Override
+public void steer() {
+	NESW.dirs().filter(dir -> Keyboard.keyDown(STEERING_NESW[dir])).findFirst()
+			.ifPresent(dir -> nextDir = dir);
 }
 ```
 
@@ -528,14 +530,14 @@ inky.setBehavior(CHASING, inky.attackingWithPartner(blinky, pacMan));
 
 clyde = new Ghost(this, "Clyde", GhostColor.ORANGE, maze.clydeHome, Top4.N);
 clyde.setBehavior(SCATTERING, clyde.headingFor(() -> maze.clydeScatter));
-clyde.setBehavior(CHASING, clyde.attackingAndRejecting(pacMan, 8 * TS, maze.clydeScatter));
+clyde.setBehavior(CHASING, clyde.attackingCowardly(pacMan, 8 * TS, maze.clydeScatter));
 
 classicFlightBehavior = true;
 ghosts().forEach(ghost -> {
 	ghost.setBehavior(FRIGHTENED,
 			classicFlightBehavior ? ghost.fleeingRandomly() : ghost.fleeingToSafeCorner(pacMan));
 	ghost.setBehavior(DEAD, ghost.headingFor(() -> maze.ghostRevival));
-	ghost.setBehavior(LOCKED, ghost.bouncing());
+	ghost.setBehavior(LOCKED, ghost.jumpingUpAndDown());
 });
 ```
 
@@ -546,8 +548,8 @@ The *chasing* behavior differs for each ghost as explained above. Using the gene
 Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
-default Behavior attackingDirectly(PacMan pacMan) {
-	return headingFor(pacMan::currentTile);
+default SteeringBehavior attackingDirectly(MazeMover victim) {
+	return headingFor(victim::currentTile);
 }
 ```
 
@@ -558,8 +560,8 @@ default Behavior attackingDirectly(PacMan pacMan) {
 Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position (in the original game there is an overflow error leading to a slightly different behavior):
 
 ```java
-default Behavior ambushing(PacMan pacMan) {
-	return headingFor(() -> pacMan.tilesAhead(4));
+default SteeringBehavior ambushing(MazeMover victim) {
+	return headingFor(() -> victim.tilesAhead(4));
 }
 ```
 
@@ -573,10 +575,10 @@ Consider the vector `V` from Blinky's position `B` to the position `P` two tiles
 Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-default Behavior attackingWithPartner(Ghost blinky, PacMan pacMan) {
+default SteeringBehavior attackingWithPartner(MazeMover partner, MazeMover victim) {
 	return headingFor(() -> {
-		Tile b = blinky.currentTile(), p = pacMan.tilesAhead(2);
-		return maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
+		Tile partnerTile = partner.currentTile(), victimTile = victim.tilesAhead(2);
+		return victim.maze.tileAt(2 * victimTile.col - partnerTile.col, 2 * victimTile.row - partnerTile.row);
 	});
 }
 ```
@@ -588,10 +590,10 @@ default Behavior attackingWithPartner(Ghost blinky, PacMan pacMan) {
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
 
 ```java
-default Behavior attackingAndRejecting(PacMan pacMan, int distance, Tile scatterTarget) {
-	return headingFor(
-			() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.currentTile()
-					: scatterTarget);
+default SteeringBehavior attackingCowardly(MazeMover victim, int distance, Tile scatterTarget) {
+	return headingFor(() -> euclideanDist(theGhost().tf.getCenter(), victim.tf.getCenter()) > distance
+			? victim.currentTile()
+			: scatterTarget);
 }
 ```
 
@@ -618,13 +620,13 @@ clyde.setBehavior(SCATTERING, clyde.headingFor(() -> maze.clydeScatter));
 The original Pac-Man game did not use any graph-based pathfinding. To give an example how graph-based pathfinding could be useful, there is an additional implementation of the *frightened* behavior: when Pac-Man eats a power-pill each frightened ghost choses the "safest" corner to flee to. It computes the shortest path to each corner and selects the one with the largest distance to Pac-Man's current position. Here, the distance of a path from Pac-Man's position is defined as the minimum distance of any tile on the path from Pac-Man's position.
 
 Shortest paths in the maze (grid graph) can be computed using *Maze.findPath(Tile source, Tile target)*. This method runs an [A* search](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html) on the underlying grid graph to compute the shortest path. The used [graph library](https://github.com/armin-reichert/graph) provides a whole number of search algorithms
-like BFS, Dijkstra or "Hill Climbing". The actual code to compute a shortest path between two tiles looks like this:
+like BFS, Dijkstra etc. The code to compute a shortest path between two tiles using the A* algorithm with Manhattan distance heuristics looks like this:
 
 ```java
 GraphSearch pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
 Path path = pathfinder.findPath(vertex(source), vertex(target));
 ```
-For a maze of such a small size the used algorithm doesn't matter much, a plain breadth-first search would also do the job.
+However, for a maze of such a small size the used algorithm doesn't matter much, a simple breadth-first search would also do the job.
 
 ## Additional features
 
@@ -664,6 +666,6 @@ use some real game library instead.
 It could be useful to further decouple UI, model and controller to enable an easy replacement of the complete UI 
 or to implement the state machines using some other state machine library. 
 
-Comments are welcome!
+Comments are welcome.
 
 *Armin Reichert, November 2019*
