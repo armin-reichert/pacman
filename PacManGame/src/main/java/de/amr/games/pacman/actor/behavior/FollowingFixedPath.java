@@ -16,7 +16,7 @@ import de.amr.games.pacman.model.Tile;
 class FollowingFixedPath implements SteeringBehavior {
 
 	protected Supplier<Tile> fnTargetTile;
-	protected List<Tile> cachedPath = Collections.emptyList();
+	protected List<Tile> path = Collections.emptyList();
 
 	public FollowingFixedPath(Supplier<Tile> fnTargetTile) {
 		this.fnTargetTile = fnTargetTile;
@@ -24,25 +24,24 @@ class FollowingFixedPath implements SteeringBehavior {
 
 	@Override
 	public void steer(MazeMover actor) {
-		trimCachedPath(actor);
-		if (cachedPath.isEmpty() || actor.currentTile().equals(cachedPath.get(cachedPath.size() - 1))) {
+		trimPath(actor);
+		if (path.isEmpty() || actor.currentTile().equals(path.get(path.size() - 1))) {
 			computePath(actor);
-			actor.targetPath = cachedPath;
+			actor.targetPath = path;
 		}
-		actor.nextDir = actor.maze.alongPath(cachedPath).orElse(actor.moveDir);
+		actor.nextDir = actor.maze.alongPath(path).orElse(actor.moveDir);
 	}
 
-	@Override
-	public void computePath(MazeMover actor) {
+	protected void computePath(MazeMover actor) {
 		Application.LOGGER.info("Computing new path");
-		cachedPath = actor.maze.findPath(actor.currentTile(), fnTargetTile.get());
-		trimCachedPath(actor);
+		path = actor.maze.findPath(actor.currentTile(), fnTargetTile.get());
+		trimPath(actor);
 	}
 
-	private void trimCachedPath(MazeMover actor) {
+	protected void trimPath(MazeMover actor) {
 		Tile actorTile = actor.currentTile();
-		while (cachedPath.size() > 0 && !actorTile.equals(cachedPath.get(0))) {
-			cachedPath.remove(0);
+		while (path.size() > 0 && !actorTile.equals(path.get(0))) {
+			path.remove(0);
 		}
 	}
 }

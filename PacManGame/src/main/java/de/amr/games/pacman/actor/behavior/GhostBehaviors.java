@@ -10,8 +10,8 @@ import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.MazeMover;
-import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.model.Tile;
+import de.amr.graph.grid.impl.Top4;
 
 /**
  * Mix-in with ghost behaviors.
@@ -23,14 +23,37 @@ public interface GhostBehaviors {
 	/**
 	 * @return the ghost implementing this mix-in
 	 */
-	Ghost self();
+	Ghost theGhost();
 
 	/**
-	 * Tries to reach a (possibly unreachable) target tile by choosing the "best" direction at every
+	 * Keeps the current move direction.
+	 * 
+	 * @return behavior where ghost keeps its current move direction
+	 */
+	default SteeringBehavior keepingDirection() {
+		return ghost -> ghost.nextDir = ghost.moveDir;
+	}
+
+	/**
+	 * Lets the ghost jump up and down.
+	 * 
+	 * @return bouncing behavior
+	 */
+	default SteeringBehavior jumpingUpAndDown() {
+		return ghost -> {
+			if (ghost.moveDir == Top4.E || ghost.moveDir == Top4.W) {
+				ghost.moveDir = Top4.N;
+			}
+			ghost.nextDir = ghost.isStuck() ? NESW.inv(ghost.moveDir) : ghost.moveDir;
+		};
+	}
+
+	/**
+	 * Heads for a target tile (may be unreachable) by taking the "best" direction at every
 	 * intersection.
 	 * 
 	 * @param fnTarget
-	 *                   function supplying the target tile at time of decision
+	 *                   function supplying the target tile
 	 * @return behavior where ghost heads for the target tile
 	 */
 	default SteeringBehavior headingFor(Supplier<Tile> fnTarget) {
@@ -38,31 +61,30 @@ public interface GhostBehaviors {
 	}
 
 	/**
-	 * Attacks Pac-Man directly by targeting his current position.
+	 * Attacks a victim directly by targeting his current position.
 	 * 
-	 * @param pacMan
-	 *                 the attacked Pac-Man
+	 * @param victim
+	 *                 the victim of the attack (e.g. Pac-Man)
 	 * 
-	 * @return behavior of attacking Pac-Man directly
+	 * @return behavior of attacking a victim directly
 	 */
-	default SteeringBehavior attackingDirectly(PacMan pacMan) {
-		return headingFor(pacMan::currentTile);
+	default SteeringBehavior attackingDirectly(MazeMover victim) {
+		return headingFor(victim::currentTile);
 	}
 
 	/**
-	 * Ambushes Pac-Man by heading for the tile located the given number of tiles ahead of Pac-Man's
-	 * current position.
+	 * Ambushes a victim by heading for the tile located 4 tiles ahead of the victim's current position.
 	 * 
-	 * @param pacMan
-	 *                 the ambushed Pac-Man
+	 * @param victim
+	 *                 the ambushed victim (e.g. Pac-Man)
 	 * @return ambushing behavior
 	 */
-	default SteeringBehavior ambushing(PacMan pacMan) {
-		return headingFor(() -> pacMan.tilesAhead(4));
+	default SteeringBehavior ambushing(MazeMover victim) {
+		return headingFor(() -> victim.tilesAhead(4));
 	}
 
 	/**
-	 * Inky's behaviour as described <a href=
+	 * Inky's attack behavior as described <a href=
 	 * "http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior">here</a>.
 	 * 
 	 * <p>
@@ -75,17 +97,17 @@ public interface GhostBehaviors {
 	 * The tile that this new, extended vector ends on will be Inky’s actual target.</cite>
 	 * </p>
 	 * 
-	 * @param blinky
-	 *                 the ghost which assists in attacking (Blinky)
-	 * @param pacMan
-	 *                 the attacked Pac-Man
+	 * @param partner
+	 *                  the ghost which assists in attacking (Blinky)
+	 * @param victim
+	 *                  the attacked victim (Pac-Man)
 	 * 
-	 * @return behavior where Pac-Man is attacked with help of partner ghost
+	 * @return behavior where victim is attacked with help of partner ghost
 	 */
-	default SteeringBehavior attackingWithPartner(Ghost blinky, PacMan pacMan) {
+	default SteeringBehavior attackingWithPartner(MazeMover partner, MazeMover victim) {
 		return headingFor(() -> {
-			Tile b = blinky.currentTile(), p = pacMan.tilesAhead(2);
-			return pacMan.maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
+			Tile partnerTile = partner.currentTile(), victimTile = victim.tilesAhead(2);
+			return victim.maze.tileAt(2 * victimTile.col - partnerTile.col, 2 * victimTile.row - partnerTile.row);
 		});
 	}
 
@@ -115,37 +137,26 @@ public interface GhostBehaviors {
 	 * maintain in Scatter mode. </cite>
 	 * </p>
 	 * 
-	 * @param pacMan
-	 *                        the Pac-Man which gets attacked
+	 * @param victim
+	 *                        the victim (Pac-Man) getting attacked
 	 * @param distance
-	 *                        if the distance to Pac-Man is less than this distance (measured in
+	 *                        if the distance to the victim is less than this distance (measured in
 	 *                        pixels), the attacker rejects and heads for its scattering position.
 	 *                        Otherwise it directly attacks PacMan.
 	 * @param scatterTarget
 	 *                        tile ghost heads for in scattering mode
 	 */
-	default SteeringBehavior attackingAndRejecting(PacMan pacMan, int distance, Tile scatterTarget) {
-		return headingFor(
-				() -> euclideanDist(self().tf.getCenter(), pacMan.tf.getCenter()) > distance ? pacMan.currentTile()
-						: scatterTarget);
-	}
-
-	/**
-	 * Lets the ghost bounce between walls or other inaccessible tiles.
-	 * 
-	 * @return bouncing behavior
-	 */
-	default SteeringBehavior bouncing() {
-		return ghost -> {
-			ghost.nextDir = ghost.isStuck() ? NESW.inv(ghost.moveDir) : ghost.moveDir;
-		};
+	default SteeringBehavior attackingCowardly(MazeMover victim, int distance, Tile scatterTarget) {
+		return headingFor(() -> euclideanDist(theGhost().tf.getCenter(), victim.tf.getCenter()) > distance
+				? victim.currentTile()
+				: scatterTarget);
 	}
 
 	/**
 	 * Lets the ghost flee from the attacker by walking to a "safe" maze corner.
 	 * 
 	 * @param attacker
-	 *                   the attacker e.g. Pac-Man
+	 *                   the attacker (Pac-Man)
 	 * @return behavior where ghost flees to a "safe" maze corner
 	 */
 	default SteeringBehavior fleeingToSafeCorner(MazeMover attacker) {
@@ -157,7 +168,7 @@ public interface GhostBehaviors {
 	 * this mode. Instead, they pseudo-randomly decide which turns to make at every intersection.
 	 * </cite>
 	 * 
-	 * @return behavior where ghost takes random turn at each intersection
+	 * @return behavior where ghost flees Pac-Man by taking random turns at each intersection
 	 */
 	default SteeringBehavior fleeingRandomly() {
 		return ghost -> {
@@ -199,8 +210,7 @@ public interface GhostBehaviors {
 	}
 
 	/**
-	 * Lets the ghost follow a fixed path to the target. The path is precomputed by calling
-	 * {@link SteeringBehavior#computePath(MazeMover)}.
+	 * Lets the ghost follow a fixed path to the target.
 	 * 
 	 * @param fnTarget
 	 *                   function supplying the target tile at time of decision
@@ -208,16 +218,5 @@ public interface GhostBehaviors {
 	 */
 	default SteeringBehavior followingFixedPath(Supplier<Tile> fnTarget) {
 		return new FollowingFixedPath(fnTarget);
-	}
-
-	/**
-	 * Keeps the current move direction.
-	 * 
-	 * @return behavior where ghost keeps its current move direction
-	 */
-	default SteeringBehavior keepingDirection() {
-		return ghost -> {
-			ghost.nextDir = ghost.moveDir;
-		};
 	}
 }

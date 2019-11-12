@@ -16,8 +16,8 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.actor.behavior.SteeringBehavior;
 import de.amr.games.pacman.actor.behavior.GhostBehaviors;
+import de.amr.games.pacman.actor.behavior.SteeringBehavior;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -70,7 +70,7 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 	}
 
 	@Override
-	public Ghost self() {
+	public Ghost theGhost() {
 		return this;
 	}
 
@@ -179,9 +179,6 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 					.onExit(this::chasingSoundOff)
 				
 				.state(FRIGHTENED)
-					.onEntry(() -> {
-						currentBehavior().computePath(this); 
-					})
 					.onTick(() -> {
 						move();
 						sprites.select(maze.inGhostHouse(currentTile())	

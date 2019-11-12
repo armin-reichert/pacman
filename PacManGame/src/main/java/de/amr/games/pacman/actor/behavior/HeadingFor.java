@@ -55,8 +55,9 @@ class HeadingFor implements SteeringBehavior {
 			return;
 		}
 
-		// If actor is inside ghost house, use path finder for either leaving the ghost house again (target
-		// Blinky's home tile) or reaching the target inside the ghost house
+		// If actor inside ghost house, use path finder for either leaving the ghost house again (target
+		// Blinky's home tile) or reaching the target tile inside the ghost house
+		// TODO how did the original game do that?
 		if (maze.inGhostHouse(actorTile)) {
 			List<Tile> path = maze.findPath(actorTile,
 					maze.inGhostHouse(actor.targetTile) ? actor.targetTile : maze.blinkyHome);
@@ -85,14 +86,14 @@ class HeadingFor implements SteeringBehavior {
 			/*@formatter:off*/
 				 // cannot reverse move direction	
 				.filter(dir -> dir != NESW.inv(actor.moveDir))
-				 // cannot only move up at unrestricted intersections
+				 // can move up only at unrestricted intersections
 				.filter(dir -> dir != Top4.N || maze.isUnrestrictedIntersection(actorTile))
 				 // check if neighbor tile is accessible
 				.map(dir -> maze.tileToDir(actorTile, dir))
 				.filter(actor::canEnterTile)
 				 // if more than one possibility select tile nearest to target
 				.sorted((t1, t2) -> 
-						Integer.compare(euclideanDist(t1, actor.targetTile), euclideanDist(t2, actor.targetTile)))
+						Integer.compare(euclideanDistSq(t1, actor.targetTile), euclideanDistSq(t2, actor.targetTile)))
 				 // map tile back to direction
 				.map(tile -> maze.direction(actorTile, tile).getAsInt())
 				.findFirst().orElse(actor.moveDir);
@@ -100,7 +101,7 @@ class HeadingFor implements SteeringBehavior {
 		}
 	}
 
-	private static int euclideanDist(Tile t1, Tile t2) {
+	private static int euclideanDistSq(Tile t1, Tile t2) {
 		int dx = t1.col - t2.col, dy = t1.row - t2.row;
 		return dx * dx + dy * dy;
 	}

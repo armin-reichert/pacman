@@ -26,21 +26,22 @@ class FleeingToSafeCorner extends FollowingFixedPath {
 	}
 
 	@Override
-	public void computePath(MazeMover refugee) {
+	protected void computePath(MazeMover refugee) {
 		Tile target = refugee.currentTile();
 		while (target.equals(refugee.currentTile())) {
 			target = safeCorner(refugee);
 		}
-		cachedPath = refugee.maze.findPath(refugee.currentTile(), target);
+		path = refugee.maze.findPath(refugee.currentTile(), target);
 	}
 
 	private Tile safeCorner(MazeMover refugee) {
+		Maze maze = refugee.maze;
 		Tile refugeeTile = refugee.currentTile();
 		Tile chaserTile = fnTargetTile.get();
 		//@formatter:off
-		return permute(Stream.of(refugee.maze.topLeft, refugee.maze.topRight, refugee.maze.bottomRight, refugee.maze.bottomLeft))
+		return permute(Stream.of(maze.topLeft, maze.topRight, maze.bottomRight, maze.bottomLeft))
 			.filter(corner -> !corner.equals(refugeeTile))
-			.sorted(byDist(refugee.maze,refugeeTile, chaserTile).reversed())
+			.sorted(byDist(maze,refugeeTile, chaserTile).reversed())
 			.findFirst().get();
 		//@formatter:on
 	}

@@ -182,14 +182,14 @@ public class PacManGame {
 
 		clyde = new Ghost(this, "Clyde", GhostColor.ORANGE, maze.clydeHome, Top4.N);
 		clyde.setBehavior(SCATTERING, clyde.headingFor(() -> maze.clydeScatter));
-		clyde.setBehavior(CHASING, clyde.attackingAndRejecting(pacMan, 8 * TS, maze.clydeScatter));
+		clyde.setBehavior(CHASING, clyde.attackingCowardly(pacMan, 8 * TS, maze.clydeScatter));
 
 		classicFlightBehavior = true;
 		ghosts().forEach(ghost -> {
 			ghost.setBehavior(FRIGHTENED,
 					classicFlightBehavior ? ghost.fleeingRandomly() : ghost.fleeingToSafeCorner(pacMan));
 			ghost.setBehavior(DEAD, ghost.headingFor(() -> maze.ghostRevival));
-			ghost.setBehavior(LOCKED, ghost.bouncing());
+			ghost.setBehavior(LOCKED, ghost.jumpingUpAndDown());
 		});
 
 		activeActors.addAll((Arrays.asList(pacMan, blinky, pinky, inky, clyde)));
