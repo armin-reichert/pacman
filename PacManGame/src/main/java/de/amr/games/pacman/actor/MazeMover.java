@@ -78,7 +78,7 @@ public abstract class MazeMover extends Entity {
 	 */
 	protected void move() {
 		steer();
-		teleport();
+		teleport(app().clock.sec(1.0f));
 		if (teleportTime == Integer.MIN_VALUE) {
 			moveInsideMaze();
 		}
@@ -90,9 +90,10 @@ public abstract class MazeMover extends Entity {
 	 * teleportation). When the timer ends, the actor is placed at the teleportation target and made
 	 * visible again.
 	 * 
-	 * @return <code>true</code> if teleportation is running
+	 * @param ticks
+	 *                duration of teleportation in ticks
 	 */
-	private void teleport() {
+	private void teleport(int ticks) {
 		if (teleportTime > 0) {
 			teleportTime -= 1;
 		}
@@ -113,7 +114,7 @@ public abstract class MazeMover extends Entity {
 			}
 			if (teleportTargetX != Integer.MIN_VALUE) {
 				hide();
-				teleportTime = app().clock.sec(1f);
+				teleportTime = ticks;
 			}
 		}
 	}
