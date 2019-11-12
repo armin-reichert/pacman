@@ -103,10 +103,6 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 	@Override
 	public void init() {
 		super.init();
-		initialize();
-	}
-
-	private void initialize() {
 		placeAtTile(initialTile, TS / 2, 0);
 		moveDir = initialDir;
 		nextDir = initialDir;
