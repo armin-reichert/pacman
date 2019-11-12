@@ -133,13 +133,9 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 		behaviorMap.put(state, behavior);
 	}
 
-	public SteeringBehavior currentBehavior() {
-		return behaviorMap.getOrDefault(getState(), keepingDirection());
-	}
-
 	@Override
 	public void steer() {
-		currentBehavior().steer(this);
+		behaviorMap.getOrDefault(getState(), keepingDirection()).steer(this);
 	}
 
 	@Override
