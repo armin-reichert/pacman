@@ -35,11 +35,10 @@ public class FollowFixedPathTestController implements ViewController {
 		targetIndex = 0;
 		g.setActive(g.pacMan, false);
 		g.ghosts().filter(ghost -> ghost != g.blinky).forEach(ghost -> g.setActive(ghost, false));
-		g.blinky.initialize();
+		g.blinky.init();
 		g.blinky.setState(GhostState.CHASING);
 		g.theme.snd_ghost_chase().stop();
 		g.blinky.setBehavior(GhostState.CHASING, g.blinky.followingFixedPath(() -> targets.get(targetIndex)));
-		g.blinky.currentBehavior().computePath(g.blinky);
 	}
 
 	private void nextTarget() {

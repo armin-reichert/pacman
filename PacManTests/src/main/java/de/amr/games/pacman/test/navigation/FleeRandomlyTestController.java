@@ -29,7 +29,7 @@ public class FleeRandomlyTestController implements ViewController {
 		g.setActive(g.pacMan, false);
 		g.ghosts().forEach(ghost -> {
 			g.setActive(ghost, true);
-			ghost.initialize();
+			ghost.init();
 			ghost.setBehavior(FRIGHTENED, ghost.fleeingRandomly());
 			ghost.setState(FRIGHTENED);
 		});

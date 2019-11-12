@@ -27,7 +27,7 @@ public class EscapeIntoCornerTestController implements ViewController {
 		g.pacMan.init();
 		g.ghosts().filter(ghost -> ghost != g.blinky).forEach(ghost -> g.setActive(ghost, false));
 		g.blinky.setBehavior(GhostState.FRIGHTENED, g.blinky.fleeingToSafeCorner(g.pacMan));
-		g.blinky.initialize();
+		g.blinky.init();
 		g.blinky.setState(GhostState.FRIGHTENED);
 	}
 

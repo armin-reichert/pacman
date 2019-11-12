@@ -10,20 +10,20 @@ import de.amr.games.pacman.actor.MazeMover;
 public interface Behavior {
 
 	/**
-	 * Computes the route the actor should take when this method is called.
+	 * Directs the actor towards its target or wherever it should move in its current state.
 	 * 
-	 * @param actor the moving actor
-	 * @return the route the actor should take
+	 * @param actor
+	 *                the moving actor
 	 */
-	Route getRoute(MazeMover actor);
+	void direct(MazeMover actor);
 
 	/**
-	 * Triggers computation of a static path for the actor. The concrete
-	 * implementation can then store this path until the actor has reached the
-	 * target or another decision has to be taken. Using a static path can save lots
-	 * of path finder calls.
+	 * Triggers computation of a static path for the actor. The concrete implementation can then store
+	 * this path until the actor has reached the target or another decision has to be taken. Using a
+	 * static path can save lots of path finder calls.
 	 * 
-	 * @param actor the moving actor
+	 * @param actor
+	 *                the moving actor
 	 */
 	default void computePath(MazeMover actor) {
 	}

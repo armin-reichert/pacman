@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
+import de.amr.easy.game.Application;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.model.Tile;
 
@@ -15,28 +16,33 @@ import de.amr.games.pacman.model.Tile;
 class FollowingFixedPath implements Behavior {
 
 	protected Supplier<Tile> fnTargetTile;
-	protected List<Tile> path = Collections.emptyList();
+	protected List<Tile> cachedPath = Collections.emptyList();
 
 	public FollowingFixedPath(Supplier<Tile> fnTargetTile) {
 		this.fnTargetTile = fnTargetTile;
 	}
 
 	@Override
-	public Route getRoute(MazeMover actor) {
-		if (path.isEmpty() || actor.currentTile().equals(path.get(path.size() - 1))) {
+	public void direct(MazeMover actor) {
+		trimCachedPath(actor);
+		if (cachedPath.isEmpty() || actor.currentTile().equals(cachedPath.get(cachedPath.size() - 1))) {
 			computePath(actor);
+			actor.targetPath = cachedPath;
 		}
-		while (path.size() > 0 && !actor.currentTile().equals(path.get(0))) {
-			path.remove(0);
-		}
-		Route route = new Route();
-		route.setPath(path);
-		route.setDir(actor.maze.alongPath(path).orElse(actor.moveDir));
-		return route;
+		actor.nextDir = actor.maze.alongPath(cachedPath).orElse(actor.moveDir);
 	}
 
 	@Override
 	public void computePath(MazeMover actor) {
-		path = actor.maze.findPath(actor.currentTile(), fnTargetTile.get());
+		Application.LOGGER.info("Computing new path");
+		cachedPath = actor.maze.findPath(actor.currentTile(), fnTargetTile.get());
+		trimCachedPath(actor);
+	}
+
+	private void trimCachedPath(MazeMover actor) {
+		Tile actorTile = actor.currentTile();
+		while (cachedPath.size() > 0 && !actorTile.equals(cachedPath.get(0))) {
+			cachedPath.remove(0);
+		}
 	}
 }

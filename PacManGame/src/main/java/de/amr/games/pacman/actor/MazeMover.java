@@ -6,6 +6,8 @@ import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
 import static java.lang.Math.round;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.OptionalInt;
 
 import de.amr.easy.game.entity.Entity;
@@ -31,6 +33,12 @@ public abstract class MazeMover extends Entity {
 	/** The intended move direction, actor takes this direction as soon as possible. */
 	public int nextDir;
 
+	/** Current target tile of this actor. */
+	public Tile targetTile;
+
+	/** (Optional) path to target. */
+	public List<Tile> targetPath = Collections.emptyList();
+
 	/** Tells if the last move entered a new tile position */
 	public boolean enteredNewTile;
 
@@ -52,6 +60,8 @@ public abstract class MazeMover extends Entity {
 		enteredNewTile = true;
 		teleportTicksRemaining = Integer.MIN_VALUE;
 		teleportTargetX = Integer.MIN_VALUE;
+		targetPath = Collections.emptyList();
+		targetTile = null;
 	}
 
 	/**

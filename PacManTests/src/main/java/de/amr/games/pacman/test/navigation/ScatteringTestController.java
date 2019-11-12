@@ -29,10 +29,14 @@ public class ScatteringTestController implements ViewController {
 		game.init();
 		game.maze.removeFood();
 		game.pacMan.hide();
+//		game.setActive(game.pinky, false);
+//		game.setActive(game.inky, false);
+//		game.setActive(game.clyde, false);
 		game.activeGhosts().forEach(ghost -> {
-			ghost.initialize();
+			ghost.init();
 			ghost.setState(GhostState.SCATTERING);
 		});
+//		LOGGER.info("Position=" + game.blinky.tf.getPosition());
 	}
 
 	@Override
@@ -43,6 +47,7 @@ public class ScatteringTestController implements ViewController {
 			});
 		}
 		game.activeGhosts().forEach(Ghost::update);
+//		LOGGER.info("Position=" + game.blinky.tf.getPosition());
 		view.update();
 	}
 

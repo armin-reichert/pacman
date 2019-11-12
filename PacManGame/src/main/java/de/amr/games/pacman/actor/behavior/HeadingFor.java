@@ -2,6 +2,8 @@ package de.amr.games.pacman.actor.behavior;
 
 import static de.amr.games.pacman.model.Maze.NESW;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -39,45 +41,47 @@ class HeadingFor implements Behavior {
 	}
 
 	@Override
-	public Route getRoute(MazeMover actor) {
+	public void direct(MazeMover actor) {
+
 		Maze maze = actor.maze;
-		Tile targetTile = Objects.requireNonNull(fnTargetTile.get(), "Target tile must not be NULL");
 		Tile actorTile = actor.currentTile();
 
-		Route route = new Route();
-		route.setTarget(targetTile); // only needed for route visualization, not for movement
+		actor.targetPath = Collections.emptyList();
+		actor.targetTile = Objects.requireNonNull(fnTargetTile.get(), "Target tile must not be NULL");
 
 		// Should actor enter ghost house?
-		if (maze.inFrontOfGhostHouseDoor(actorTile) && maze.inGhostHouse(targetTile)) {
-			route.setDir(Top4.S);
-			return route;
+		if (maze.inFrontOfGhostHouseDoor(actorTile) && maze.inGhostHouse(actor.targetTile)) {
+			actor.nextDir = Top4.S;
+			return;
 		}
 
 		// If actor is inside ghost house, use path finder for either leaving the ghost house again (target
 		// Blinky's home tile) or reaching the target inside the ghost house
 		if (maze.inGhostHouse(actorTile)) {
-			route.setPath(maze.findPath(actorTile, maze.inGhostHouse(targetTile) ? targetTile : maze.blinkyHome));
-			route.setDir(maze.alongPath(route.getPath()).orElse(actor.moveDir));
-			return route;
+			List<Tile> path = maze.findPath(actorTile,
+					maze.inGhostHouse(actor.targetTile) ? actor.targetTile : maze.blinkyHome);
+			actor.targetPath = path;
+			actor.nextDir = maze.alongPath(path).orElse(actor.moveDir);
+			return;
 		}
 
 		// If actor got stuck, check if left or right turn is possible
 		if (actor.isStuck()) {
 			int left = NESW.left(actor.moveDir), right = NESW.right(actor.moveDir);
 			if (actor.canEnterTileTo(left)) {
-				route.setDir(left);
-				return route;
+				actor.nextDir = left;
+				return;
 			}
 			else if (actor.canEnterTileTo(right)) {
-				route.setDir(right);
-				return route;
+				actor.nextDir = right;
+				return;
 			}
 		}
 
 		// If newly entered tile is an intersection, decide where to go:
 		if (actor.enteredNewTile && maze.isIntersection(actorTile)) {
 			// try directions in order: up > left > down > right
-			int nextDir = Stream.of(Top4.N, Top4.W, Top4.S, Top4.E)
+			actor.nextDir = Stream.of(Top4.N, Top4.W, Top4.S, Top4.E)
 			/*@formatter:off*/
 				 // cannot reverse move direction	
 				.filter(dir -> dir != NESW.inv(actor.moveDir))
@@ -87,15 +91,13 @@ class HeadingFor implements Behavior {
 				.map(dir -> maze.tileToDir(actorTile, dir))
 				.filter(actor::canEnterTile)
 				 // if more than one possibility select tile nearest to target
-				.sorted((t1, t2) -> Integer.compare(euclideanDist(t1, targetTile), euclideanDist(t2, targetTile)))
+				.sorted((t1, t2) -> 
+						Integer.compare(euclideanDist(t1, actor.targetTile), euclideanDist(t2, actor.targetTile)))
 				 // map tile back to direction
 				.map(tile -> maze.direction(actorTile, tile).getAsInt())
-				.findFirst().orElse(-1);
+				.findFirst().orElse(actor.moveDir);
 			/*@formatter:on*/
-			route.setDir(nextDir);
 		}
-
-		return route;
 	}
 
 	private static int euclideanDist(Tile t1, Tile t2) {

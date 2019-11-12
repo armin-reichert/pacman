@@ -25,7 +25,6 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
@@ -72,11 +71,6 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 	}
 
 	@Override
-	public Maze maze() {
-		return game.maze;
-	}
-
-	@Override
 	public Ghost self() {
 		return this;
 	}
@@ -113,7 +107,7 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 		initialize();
 	}
 
-	public void initialize() {
+	private void initialize() {
 		placeAtTile(initialTile, TS / 2, 0);
 		moveDir = initialDir;
 		nextDir = initialDir;
@@ -144,13 +138,14 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 
 	@Override
 	public OptionalInt nextMoveDirection() {
-		return currentBehavior().getRoute(this).getDir();
+		currentBehavior().direct(this);
+		return OptionalInt.of(nextDir);
 	}
 
 	@Override
 	public boolean canEnterTile(Tile tile) {
-		if (maze().isDoor(tile)) {
-			return getState() == DEAD || getState() != LOCKED && maze().inGhostHouse(currentTile());
+		if (maze.isDoor(tile)) {
+			return getState() == DEAD || getState() != LOCKED && maze.inGhostHouse(currentTile());
 		}
 		return super.canEnterTile(tile);
 	}
@@ -191,7 +186,7 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 					})
 					.onTick(() -> {
 						move();
-						sprites.select(maze().inGhostHouse(currentTile())	
+						sprites.select(maze.inGhostHouse(currentTile())	
 									? "color-" + moveDir
 									: game.pacMan.isLosingPower()	? "flashing" : "frightened");
 					})
@@ -241,7 +236,7 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 				.when(DYING).then(DEAD).onTimeout()
 					
 				.when(DEAD).then(LOCKED)
-					.condition(() -> currentTile().equals(maze().ghostRevival))
+					.condition(() -> currentTile().equals(maze.ghostRevival))
 					.act(() -> moveDir = initialDir)
 				
 		.endStateMachine();

@@ -12,20 +12,17 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Lets a ghost escape to the "safest" maze corner depending on Pac-Man's
- * current position. The "safest" corner is defined by the maximum distance of
- * Pac-Man to any tile on the path from the actor's current position to the
- * corner. When the target corner is reached the next corner is computed.
+ * Lets a ghost escape to the "safest" maze corner depending on Pac-Man's current position. The
+ * "safest" corner is defined by the maximum distance of Pac-Man to any tile on the path from the
+ * actor's current position to the corner. When the target corner is reached the next corner is
+ * computed.
  * 
  * @author Armin Reichert
  */
 class FleeingToSafeCorner extends FollowingFixedPath {
 
-	private final Maze maze;
-
-	public FleeingToSafeCorner(Maze maze, Supplier<Tile> chaserTileSupplier) {
+	public FleeingToSafeCorner(Supplier<Tile> chaserTileSupplier) {
 		super(chaserTileSupplier);
-		this.maze = maze;
 	}
 
 	@Override
@@ -34,29 +31,29 @@ class FleeingToSafeCorner extends FollowingFixedPath {
 		while (target.equals(refugee.currentTile())) {
 			target = safeCorner(refugee);
 		}
-		path = maze.findPath(refugee.currentTile(), target);
+		cachedPath = refugee.maze.findPath(refugee.currentTile(), target);
 	}
 
 	private Tile safeCorner(MazeMover refugee) {
 		Tile refugeeTile = refugee.currentTile();
 		Tile chaserTile = fnTargetTile.get();
 		//@formatter:off
-		return permute(Stream.of(maze.topLeft, maze.topRight, maze.bottomRight, maze.bottomLeft))
+		return permute(Stream.of(refugee.maze.topLeft, refugee.maze.topRight, refugee.maze.bottomRight, refugee.maze.bottomLeft))
 			.filter(corner -> !corner.equals(refugeeTile))
-			.sorted(byDist(refugeeTile, chaserTile).reversed())
+			.sorted(byDist(refugee.maze,refugeeTile, chaserTile).reversed())
 			.findFirst().get();
 		//@formatter:on
 	}
 
-	private Comparator<Tile> byDist(Tile refugeeTile, Tile chaserTile) {
+	private Comparator<Tile> byDist(Maze maze, Tile refugeeTile, Tile chaserTile) {
 		return (corner1, corner2) -> {
-			double dist1 = minDistFromPath(maze.findPath(refugeeTile, corner1), chaserTile);
-			double dist2 = minDistFromPath(maze.findPath(refugeeTile, corner2), chaserTile);
+			double dist1 = minDistFromPath(maze, maze.findPath(refugeeTile, corner1), chaserTile);
+			double dist2 = minDistFromPath(maze, maze.findPath(refugeeTile, corner2), chaserTile);
 			return Double.compare(dist1, dist2);
 		};
 	}
 
-	private int minDistFromPath(List<Tile> path, Tile tile) {
+	private int minDistFromPath(Maze maze, List<Tile> path, Tile tile) {
 		int min = Integer.MAX_VALUE;
 		for (Tile t : path) {
 			int dist = maze.manhattanDist(t, tile);
