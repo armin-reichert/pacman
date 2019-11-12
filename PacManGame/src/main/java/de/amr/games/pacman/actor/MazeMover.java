@@ -1,6 +1,5 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
@@ -41,10 +40,10 @@ public abstract class MazeMover extends Entity {
 	/** Tells if the last move entered a new tile position */
 	public boolean enteredNewTile;
 
-	/* Timer for teleporting */
-	private int teleportTicksRemaining;
+	/** Ticks remaining in teleporting state */
+	private int teleportTime;
 
-	/* x-coordinate of teleport target */
+	/** x-coordinate of teleport target */
 	private int teleportTargetX;
 
 	public MazeMover() {
@@ -57,7 +56,7 @@ public abstract class MazeMover extends Entity {
 	public void init() {
 		moveDir = nextDir = Top4.E;
 		enteredNewTile = true;
-		teleportTicksRemaining = Integer.MIN_VALUE;
+		teleportTime = Integer.MIN_VALUE;
 		teleportTargetX = Integer.MIN_VALUE;
 		targetPath = Collections.emptyList();
 		targetTile = null;
@@ -69,18 +68,61 @@ public abstract class MazeMover extends Entity {
 	 */
 	public abstract float maxSpeed();
 
+	/**
+	 * Steers the actor by changing the intended move direction.
+	 */
 	protected abstract void steer();
 
 	/**
-	 * Moves this actor through the maze. Handles changing the direction according to the intended move
-	 * direction, moving around corners without losing alignment, "teleportation" and getting stuck.
+	 * Steers and moves the actor.
 	 */
 	protected void move() {
 		steer();
-		if (teleporting()) {
-			return;
+		teleport();
+		if (teleportTime == Integer.MIN_VALUE) {
+			moveInsideMaze();
 		}
-		// normal movement
+	}
+
+	/**
+	 * Implements "teleporting". When an actor (Ghost, Pac-Man) leaves a teleport tile towards the
+	 * border, a timer is started and the actor is hidden (to avoid triggering events during
+	 * teleportation). When the timer ends, the actor is placed at the teleportation target and made
+	 * visible again.
+	 * 
+	 * @return <code>true</code> if teleportation is running
+	 */
+	private void teleport() {
+		if (teleportTime > 0) {
+			teleportTime -= 1;
+		}
+		else if (teleportTime == 0) {
+			tf.setX(teleportTargetX);
+			show();
+			teleportTargetX = Integer.MIN_VALUE;
+			teleportTime = Integer.MIN_VALUE;
+		}
+		else {
+			int leftExit = (maze.teleportLeft.col - 1) * TS;
+			int rightExit = (maze.teleportRight.col + 1) * TS;
+			if (tf.getX() >= rightExit) {
+				teleportTargetX = leftExit;
+			}
+			else if (tf.getX() <= leftExit) {
+				teleportTargetX = rightExit;
+			}
+			if (teleportTargetX != Integer.MIN_VALUE) {
+				hide();
+				teleportTime = app().clock.sec(1f);
+			}
+		}
+	}
+
+	/**
+	 * Movement inside the maze. Handles changing the direction according to the intended move
+	 * direction, moving around corners without losing alignment,
+	 */
+	private void moveInsideMaze() {
 		Tile oldTile = currentTile();
 		float speed = allowedSpeed(nextDir);
 		if (speed > 0) {
@@ -96,53 +138,6 @@ public abstract class MazeMover extends Entity {
 		tf.setVelocity(Vector2f.smul(speed, direction));
 		tf.move();
 		enteredNewTile = !oldTile.equals(currentTile());
-	}
-
-	/**
-	 * Implements "teleporting". When an actor (Ghost, Pac-Man) leaves a teleport tile towards the
-	 * border, a timer is started and the actor is hidden (to avoid triggering events during
-	 * teleportation). When the timer ends, the actor is placed at the teleportation target and made
-	 * visible again.
-	 * 
-	 * @return <code>true</code> if teleportation is running
-	 */
-	private boolean teleporting() {
-		// check if teleporting is already running
-		if (teleportTicksRemaining >= 1) {
-			teleportTicksRemaining -= 1;
-			return true;
-		}
-
-		// check if timer expired
-		if (teleportTicksRemaining == 0) {
-			LOGGER.fine("Teleporting ends");
-			tf.setX(teleportTargetX);
-			show();
-			teleportTargetX = Integer.MIN_VALUE;
-			teleportTicksRemaining = Integer.MIN_VALUE;
-			return false;
-		}
-
-		// check if teleporting should be started
-		int leftExit = (maze.teleportLeft.col - 1) * TS;
-		int rightExit = (maze.teleportRight.col + 1) * TS;
-
-		if (tf.getX() >= rightExit) {
-			teleportTargetX = leftExit;
-		}
-		else if (tf.getX() <= leftExit) {
-			teleportTargetX = rightExit;
-		}
-
-		// maybe start
-		if (teleportTargetX != Integer.MIN_VALUE) {
-			LOGGER.fine("Teleporting started");
-			hide();
-			teleportTicksRemaining = app().clock.sec(1f);
-			return true;
-		}
-
-		return false;
 	}
 
 	/*
