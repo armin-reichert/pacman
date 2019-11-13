@@ -166,7 +166,10 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 
 				.state(LOCKED)
 					.onTick(this::move)
-					.onExit(() -> game.pacMan.ticksSinceLastMeal = 0)
+					.onExit(() -> {
+						game.pacMan.ticksSinceLastMeal = 0;
+						enteredNewTile = true;
+					})
 				
 				.state(SCATTERING)
 					.onTick(this::move)

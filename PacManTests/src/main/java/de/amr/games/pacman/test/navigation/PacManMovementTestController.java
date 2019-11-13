@@ -1,5 +1,8 @@
 package de.amr.games.pacman.test.navigation;
 
+import java.util.logging.Level;
+
+import de.amr.easy.game.Application;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -22,6 +25,7 @@ public class PacManMovementTestController implements ViewController {
 
 	@Override
 	public void init() {
+		Application.LOGGER.setLevel(Level.FINE);
 		game.setLevel(1);
 		// game.maze.tiles().filter(game.maze::isFood).forEach(game::eatFoodAtTile);
 		game.pacMan.addGameEventListener(event -> {

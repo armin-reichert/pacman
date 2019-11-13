@@ -67,27 +67,28 @@ class HeadingFor implements SteeringBehavior {
 		}
 
 		// If actor got stuck, check if left or right turn is possible
-		if (actor.isStuck()) {
-			int left = NESW.left(actor.moveDir), right = NESW.right(actor.moveDir);
-			if (actor.canEnterTileTo(left)) {
-				actor.nextDir = left;
-				return;
-			}
-			else if (actor.canEnterTileTo(right)) {
-				actor.nextDir = right;
-				return;
-			}
-		}
+//		if (actor.isStuck()) {
+//			int left = NESW.left(actor.moveDir), right = NESW.right(actor.moveDir);
+//			if (actor.canEnterTileTo(left)) {
+//				actor.nextDir = left;
+//				return;
+//			}
+//			else if (actor.canEnterTileTo(right)) {
+//				actor.nextDir = right;
+//				return;
+//			}
+//		}
 
 		// If newly entered tile is an intersection, decide where to go:
-		if (actor.enteredNewTile && maze.isIntersection(actorTile)) {
+		if (actor.enteredNewTile) {
 			// try directions in order: up > left > down > right
-			actor.nextDir = Stream.of(Top4.N, Top4.W, Top4.S, Top4.E)
+			Stream.of(Top4.N, Top4.W, Top4.S, Top4.E)
 			/*@formatter:off*/
 				 // cannot reverse move direction	
 				.filter(dir -> dir != NESW.inv(actor.moveDir))
 				 // can move up only at unrestricted intersections
-				.filter(dir -> dir != Top4.N || maze.isUnrestrictedIntersection(actorTile))
+				.filter(dir -> !maze.isIntersection(actorTile) || 
+						dir != Top4.N || maze.isUnrestrictedIntersection(actorTile))
 				 // check if neighbor tile is accessible
 				.map(dir -> maze.tileToDir(actorTile, dir))
 				.filter(actor::canEnterTile)
@@ -96,7 +97,7 @@ class HeadingFor implements SteeringBehavior {
 						Integer.compare(euclideanDistSq(t1, actor.targetTile), euclideanDistSq(t2, actor.targetTile)))
 				 // map tile back to direction
 				.map(tile -> maze.direction(actorTile, tile).getAsInt())
-				.findFirst().orElse(actor.moveDir);
+				.findFirst().ifPresent(dir -> actor.nextDir = dir);
 			/*@formatter:on*/
 		}
 	}

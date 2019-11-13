@@ -24,8 +24,9 @@ import de.amr.graph.pathfinder.impl.AStarSearch;
  * The original Pac-Man maze.
  * 
  * <p>
- * The maze is a 2-dimensional grid of tiles, each tile contains a character representing its
- * content. Additionally, a grid graph structure is used to allow running path finders on the graph.
+ * The maze is a 2-dimensional grid of tiles, each tile contains a character
+ * representing its content. Additionally, a grid graph structure is used to
+ * allow running path finders on the graph.
  * 
  * @author Armin Reichert
  * 
@@ -180,12 +181,11 @@ public class Maze {
 	}
 
 	/**
-	 * @param col
-	 *              a column index
-	 * @param row
-	 *              a row index
-	 * @return a board tile or a new tile if the coordinates are outside of the board. Tiles outside of
-	 *         the board are either tunnels (if in the same row than the teleport tiles) or walls.
+	 * @param col a column index
+	 * @param row a row index
+	 * @return a board tile or a new tile if the coordinates are outside of the
+	 *         board. Tiles outside of the board are either tunnels (if in the same
+	 *         row than the teleport tiles) or walls.
 	 */
 	public Tile tileAt(int col, int row) {
 		return graph.isValidCol(col) && graph.isValidRow(row) ? board[col][row]
@@ -193,25 +193,21 @@ public class Maze {
 	}
 
 	/**
-	 * @param tile
-	 *               reference tile
-	 * @param dir
-	 *               some direction
-	 * @param n
-	 *               number of tiles
-	 * @return the tile located <code>n</code> tiles away from the reference tile towards the given
-	 *         direction. This can be a tile outside of the board!
+	 * @param tile reference tile
+	 * @param dir  some direction
+	 * @param n    number of tiles
+	 * @return the tile located <code>n</code> tiles away from the reference tile
+	 *         towards the given direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, int dir, int n) {
 		return tileAt(tile.col + n * NESW.dx(dir), tile.row + n * NESW.dy(dir));
 	}
 
 	/**
-	 * @param tile
-	 *               reference tile
-	 * @param dir
-	 *               some direction
-	 * @return neighbor towards the given direction. This can be a tile outside of the board!
+	 * @param tile reference tile
+	 * @param dir  some direction
+	 * @return neighbor towards the given direction. This can be a tile outside of
+	 *         the board!
 	 */
 	public Tile tileToDir(Tile tile, int dir) {
 		return tileToDir(tile, dir, 1);
@@ -287,7 +283,14 @@ public class Maze {
 	// navigation
 
 	public OptionalInt direction(Tile t1, Tile t2) {
-		return graph.direction(vertex(t1), vertex(t2));
+		int dx = t2.col - t1.col, dy = t2.row - t1.row;
+		return NESW.dirs().filter(dir -> NESW.dx(dir) == dx && NESW.dy(dir) == dy).findFirst();
+	}
+
+	public int manhattanDist(Tile t1, Tile t2) {
+		// Note: tiles may be outside of board so we cannot use graph.manhattan()!
+		int dx = t2.col - t1.col, dy = t2.row - t1.row;
+		return Math.abs(dx) + Math.abs(dy);
 	}
 
 	public List<Tile> findPath(Tile source, Tile target) {
@@ -301,10 +304,6 @@ public class Maze {
 			return path.vertexStream().boxed().map(this::tile).collect(Collectors.toList());
 		}
 		return Collections.emptyList();
-	}
-
-	public int manhattanDist(Tile t1, Tile t2) {
-		return graph.manhattan(vertex(t1), vertex(t2));
 	}
 
 	public OptionalInt alongPath(List<Tile> path) {
