@@ -34,11 +34,11 @@ import de.amr.graph.grid.impl.Top4;
  * 
  * @author Armin Reichert
  */
-class HeadingFor implements SteeringBehavior {
+class HeadingForTile implements Steering {
 
 	private final Supplier<Tile> fnTargetTile;
 
-	public HeadingFor(Supplier<Tile> fnTargetTile) {
+	public HeadingForTile(Supplier<Tile> fnTargetTile) {
 		this.fnTargetTile = fnTargetTile;
 	}
 

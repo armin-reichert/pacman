@@ -17,13 +17,14 @@ import java.util.logging.Logger;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.GhostBehaviors;
-import de.amr.games.pacman.actor.behavior.SteeringBehavior;
+import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
@@ -37,17 +38,24 @@ import de.amr.statemachine.StateMachine;
 public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 
 	public final PacManGame game;
+
 	public final String name;
-	public Supplier<GhostState> fnNextState;
+
 	public final Tile initialTile;
+
 	public final int initialDir;
+
+	/** Function providing the next state after being FRIGHTENED or LOCKED. */
+	public Supplier<GhostState> fnNextState;
+
 	public int foodCount;
 
 	private StateMachine<GhostState, PacManGameEvent> fsm;
-	private Map<GhostState, SteeringBehavior> behaviorMap = new EnumMap<>(GhostState.class);
 
-	public Ghost(PacManGame game, String name, GhostColor color, Tile initialTile, int initialDir) {
-		super(game.maze);
+	private Map<GhostState, Steering> steeringInState = new EnumMap<>(GhostState.class);
+
+	public Ghost(PacManGame game, Maze maze, String name, GhostColor color, Tile initialTile, int initialDir) {
+		super(maze);
 		this.game = game;
 		this.name = name;
 		this.initialTile = initialTile;
@@ -117,25 +125,15 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 		sprites.forEach(Sprite::resetAnimation);
 	}
 
-	// Behavior
+	// Steering
 
-	@Override
-	public float maxSpeed() {
-		return game.computeGhostSpeed(this);
-	}
-
-	public GhostState getNextState() {
-		GhostState nextState = fnNextState.get();
-		return nextState != null ? nextState : getState();
-	}
-
-	public void setBehavior(GhostState state, SteeringBehavior behavior) {
-		behaviorMap.put(state, behavior);
+	public void setBehavior(GhostState state, Steering steering) {
+		steeringInState.put(state, steering);
 	}
 
 	@Override
 	public void steer() {
-		behaviorMap.getOrDefault(getState(), keepingDirection()).steer(this);
+		steeringInState.getOrDefault(getState(), keepingDirection()).steer(this);
 	}
 
 	@Override
@@ -152,7 +150,17 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 		sprites.select("color-" + moveDir);
 	}
 
+	@Override
+	public float maxSpeed() {
+		return game.computeGhostSpeed(this);
+	}
+
 	// Define state machine
+
+	public GhostState getNextState() {
+		GhostState nextState = fnNextState.get();
+		return nextState != null ? nextState : getState();
+	}
 
 	private void buildStateMachine() {
 		fsm = StateMachine.

@@ -30,7 +30,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return behavior where ghost keeps its current move direction
 	 */
-	default SteeringBehavior keepingDirection() {
+	default Steering keepingDirection() {
 		return ghost -> ghost.nextDir = ghost.moveDir;
 	}
 
@@ -39,7 +39,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return bouncing behavior
 	 */
-	default SteeringBehavior jumpingUpAndDown() {
+	default Steering jumpingUpAndDown() {
 		return ghost -> {
 			if (ghost.moveDir == Top4.E || ghost.moveDir == Top4.W) {
 				ghost.moveDir = Top4.N;
@@ -56,8 +56,8 @@ public interface GhostBehaviors {
 	 *                   function supplying the target tile
 	 * @return behavior where ghost heads for the target tile
 	 */
-	default SteeringBehavior headingFor(Supplier<Tile> fnTarget) {
-		return new HeadingFor(fnTarget);
+	default Steering headingFor(Supplier<Tile> fnTarget) {
+		return new HeadingForTile(fnTarget);
 	}
 
 	/**
@@ -68,7 +68,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return behavior of attacking a victim directly
 	 */
-	default SteeringBehavior attackingDirectly(MazeMover victim) {
+	default Steering attackingDirectly(MazeMover victim) {
 		return headingFor(victim::currentTile);
 	}
 
@@ -79,7 +79,7 @@ public interface GhostBehaviors {
 	 *                 the ambushed victim (e.g. Pac-Man)
 	 * @return ambushing behavior
 	 */
-	default SteeringBehavior ambushing(MazeMover victim) {
+	default Steering ambushing(MazeMover victim) {
 		return headingFor(() -> victim.tilesAhead(4));
 	}
 
@@ -104,7 +104,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return behavior where victim is attacked with help of partner ghost
 	 */
-	default SteeringBehavior attackingWithPartner(MazeMover partner, MazeMover victim) {
+	default Steering attackingWithPartner(MazeMover partner, MazeMover victim) {
 		return headingFor(() -> {
 			Tile partnerTile = partner.currentTile(), victimTile = victim.tilesAhead(2);
 			return victim.maze.tileAt(2 * victimTile.col - partnerTile.col, 2 * victimTile.row - partnerTile.row);
@@ -146,7 +146,7 @@ public interface GhostBehaviors {
 	 * @param scatterTarget
 	 *                        tile ghost heads for in scattering mode
 	 */
-	default SteeringBehavior attackingCowardly(MazeMover victim, int distance, Tile scatterTarget) {
+	default Steering attackingCowardly(MazeMover victim, int distance, Tile scatterTarget) {
 		return headingFor(() -> euclideanDist(theGhost().tf.getCenter(), victim.tf.getCenter()) > distance
 				? victim.currentTile()
 				: scatterTarget);
@@ -159,7 +159,7 @@ public interface GhostBehaviors {
 	 *                   the attacker (Pac-Man)
 	 * @return behavior where ghost flees to a "safe" maze corner
 	 */
-	default SteeringBehavior fleeingToSafeCorner(MazeMover attacker) {
+	default Steering fleeingToSafeCorner(MazeMover attacker) {
 		return new FleeingToSafeCorner(attacker::currentTile);
 	}
 
@@ -170,7 +170,7 @@ public interface GhostBehaviors {
 	 * 
 	 * @return behavior where ghost flees Pac-Man by taking random turns at each intersection
 	 */
-	default SteeringBehavior fleeingRandomly() {
+	default Steering fleeingRandomly() {
 		return ghost -> {
 			ghost.targetPath = Collections.emptyList();
 			ghost.targetTile = null;
@@ -198,7 +198,7 @@ public interface GhostBehaviors {
 	 *                   target tile supplier (this tile must be inside the maze or teleport space!)
 	 * @return behavior following the path to the target
 	 */
-	default SteeringBehavior followingPathfinder(Supplier<Tile> fnTarget) {
+	default Steering followingPathfinder(Supplier<Tile> fnTarget) {
 		return ghost -> {
 			ghost.nextDir = ghost.moveDir;
 			if (ghost.enteredNewTile) {
@@ -216,7 +216,7 @@ public interface GhostBehaviors {
 	 *                   function supplying the target tile at time of decision
 	 * @return behavior where ghost follows a fixed path
 	 */
-	default SteeringBehavior followingFixedPath(Supplier<Tile> fnTarget) {
+	default Steering followingFixedPath(Supplier<Tile> fnTarget) {
 		return new FollowingFixedPath(fnTarget);
 	}
 }

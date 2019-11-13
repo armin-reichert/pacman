@@ -13,7 +13,7 @@ import de.amr.games.pacman.model.Tile;
  *
  * @author Armin Reichert
  */
-class FollowingFixedPath implements SteeringBehavior {
+class FollowingFixedPath implements Steering {
 
 	protected Supplier<Tile> fnTargetTile;
 	protected List<Tile> path = Collections.emptyList();

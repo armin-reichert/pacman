@@ -168,19 +168,19 @@ public class PacManGame {
 
 		pacMan = new PacMan(this);
 
-		blinky = new Ghost(this, "Blinky", GhostColor.RED, maze.blinkyHome, Top4.S);
+		blinky = new Ghost(this, maze, "Blinky", GhostColor.RED, maze.blinkyHome, Top4.S);
 		blinky.setBehavior(SCATTERING, blinky.headingFor(() -> maze.blinkyScatter));
 		blinky.setBehavior(CHASING, blinky.attackingDirectly(pacMan));
 
-		pinky = new Ghost(this, "Pinky", GhostColor.PINK, maze.pinkyHome, Top4.S);
+		pinky = new Ghost(this, maze, "Pinky", GhostColor.PINK, maze.pinkyHome, Top4.S);
 		pinky.setBehavior(SCATTERING, pinky.headingFor(() -> maze.pinkyScatter));
 		pinky.setBehavior(CHASING, pinky.ambushing(pacMan));
 
-		inky = new Ghost(this, "Inky", GhostColor.CYAN, maze.inkyHome, Top4.N);
+		inky = new Ghost(this, maze, "Inky", GhostColor.CYAN, maze.inkyHome, Top4.N);
 		inky.setBehavior(SCATTERING, inky.headingFor(() -> maze.inkyScatter));
 		inky.setBehavior(CHASING, inky.attackingWithPartner(blinky, pacMan));
 
-		clyde = new Ghost(this, "Clyde", GhostColor.ORANGE, maze.clydeHome, Top4.N);
+		clyde = new Ghost(this, maze, "Clyde", GhostColor.ORANGE, maze.clydeHome, Top4.N);
 		clyde.setBehavior(SCATTERING, clyde.headingFor(() -> maze.clydeScatter));
 		clyde.setBehavior(CHASING, clyde.attackingCowardly(pacMan, 8 * TS, maze.clydeScatter));
 
