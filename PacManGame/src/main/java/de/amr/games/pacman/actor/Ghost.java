@@ -14,6 +14,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
+import java.util.stream.IntStream;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.GhostBehaviors;
@@ -155,6 +156,12 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 		return game.computeGhostSpeed(this);
 	}
 
+	void reverseDirection() {
+		int oppositeDir = NESW.inv(moveDir);
+		IntStream.of(oppositeDir, NESW.left(oppositeDir), NESW.right(oppositeDir)).filter(this::canEnterTileTo)
+				.findFirst().ifPresent(dir -> nextDir = dir);
+	}
+
 	// Define state machine
 
 	public GhostState getNextState() {
@@ -188,6 +195,7 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 					.onExit(this::chasingSoundOff)
 				
 				.state(FRIGHTENED)
+					.onEntry(this::reverseDirection)
 					.onTick(() -> {
 						move();
 						sprites.select(maze.inGhostHouse(currentTile())	
@@ -222,11 +230,15 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 					.condition(() -> game.canLeaveGhostHouse(this) && getNextState() == CHASING)
 				
 				.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
+				
 				.when(CHASING).then(DYING).on(GhostKilledEvent.class)
+				
 				.when(CHASING).then(SCATTERING).on(StartScatteringEvent.class)
 
 				.when(SCATTERING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
+				
 				.when(SCATTERING).then(DYING).on(GhostKilledEvent.class)
+				
 				.when(SCATTERING).then(CHASING).on(StartChasingEvent.class)
 				
 				.when(FRIGHTENED).then(CHASING).on(PacManLostPowerEvent.class)
