@@ -20,7 +20,7 @@ import de.amr.statemachine.StateMachine;
  * @author Armin Reichert
  *
  * @param <S>
- *          state (label) type of the
+ *          state (label) type of the FSM
  */
 public abstract class Actor<S> extends MazeMover {
 
