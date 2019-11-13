@@ -52,7 +52,7 @@ class HeadingFor implements SteeringBehavior {
 
 		/*
 		 * If the actor wants to enter the ghost house, check if it is at the ghost
-		 * house door and move down.
+		 * house door and if yes, move down.
 		 */
 		if (maze.inGhostHouse(actor.targetTile) && maze.inFrontOfGhostHouseDoor(actorTile)) {
 			actor.nextDir = Top4.S;
@@ -62,8 +62,9 @@ class HeadingFor implements SteeringBehavior {
 		/*
 		 * If the actor is in the ghost house, use the graph path finder for either
 		 * leaving the ghost house again (by targetting Blinky's home tile) or for
-		 * reaching the target tile inside the ghost house TODO how did the original
-		 * game do that?
+		 * reaching the target tile inside the ghost house.
+		 * 
+		 * TODO: how did the original game do that?
 		 */
 		if (maze.inGhostHouse(actorTile)) {
 			List<Tile> path = maze.findPath(actorTile,
