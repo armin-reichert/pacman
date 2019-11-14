@@ -249,12 +249,6 @@ public class Maze {
 		return NESW.dirs().filter(dir -> NESW.dx(dir) == dx && NESW.dy(dir) == dy).findFirst();
 	}
 
-	public int manhattanDist(Tile t1, Tile t2) {
-		// Note: tiles may be outside of board so we cannot use graph.manhattan()!
-		int dx = t2.col - t1.col, dy = t2.row - t1.row;
-		return Math.abs(dx) + Math.abs(dy);
-	}
-
 	private int pathFinderCalls;
 
 	public List<Tile> findPath(Tile source, Tile target) {

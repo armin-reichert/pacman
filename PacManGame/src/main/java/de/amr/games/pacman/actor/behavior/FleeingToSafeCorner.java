@@ -54,10 +54,16 @@ class FleeingToSafeCorner extends FollowingFixedPath {
 		};
 	}
 
+	private int manhattanDist(Tile t1, Tile t2) {
+		// Note: tiles may be outside of board so we cannot use graph.manhattan()!
+		int dx = t2.col - t1.col, dy = t2.row - t1.row;
+		return Math.abs(dx) + Math.abs(dy);
+	}
+
 	private int minDistFromPath(Maze maze, List<Tile> path, Tile tile) {
 		int min = Integer.MAX_VALUE;
 		for (Tile t : path) {
-			int dist = maze.manhattanDist(t, tile);
+			int dist = manhattanDist(t, tile);
 			if (dist < min) {
 				min = dist;
 			}
