@@ -82,8 +82,7 @@ public class PacMan extends Actor<PacManState> {
 
 	@Override
 	public void steer() {
-		NESW.dirs().filter(dir -> Keyboard.keyDown(STEERING_NESW[dir])).findFirst()
-				.ifPresent(dir -> nextDir = dir);
+		NESW.dirs().filter(dir -> Keyboard.keyDown(STEERING_NESW[dir])).findFirst().ifPresent(dir -> nextDir = dir);
 	}
 
 	@Override
@@ -184,8 +183,7 @@ public class PacMan extends Actor<PacManState> {
 		public void onTick() {
 			if (mustDigest()) {
 				digest();
-			}
-			else {
+			} else {
 				move();
 				findSomethingInteresting().ifPresent(PacMan.this::publishEvent);
 			}
@@ -237,8 +235,7 @@ public class PacMan extends Actor<PacManState> {
 				boolean energizer = maze.containsEnergizer(pacManTile);
 				digestionTicks = game.getDigestionTicks(energizer);
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			}
-			else {
+			} else {
 				ticksSinceLastMeal += 1;
 			}
 

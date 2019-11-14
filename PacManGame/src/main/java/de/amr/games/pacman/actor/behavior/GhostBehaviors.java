@@ -49,11 +49,10 @@ public interface GhostBehaviors {
 	}
 
 	/**
-	 * Heads for a target tile (may be unreachable) by taking the "best" direction at every
-	 * intersection.
+	 * Heads for a target tile (may be unreachable) by taking the "best" direction
+	 * at every intersection.
 	 * 
-	 * @param fnTarget
-	 *                   function supplying the target tile
+	 * @param fnTarget function supplying the target tile
 	 * @return behavior where ghost heads for the target tile
 	 */
 	default Steering headingFor(Supplier<Tile> fnTarget) {
@@ -63,8 +62,7 @@ public interface GhostBehaviors {
 	/**
 	 * Attacks a victim directly by targeting his current position.
 	 * 
-	 * @param victim
-	 *                 the victim of the attack (e.g. Pac-Man)
+	 * @param victim the victim of the attack (e.g. Pac-Man)
 	 * 
 	 * @return behavior of attacking a victim directly
 	 */
@@ -73,10 +71,10 @@ public interface GhostBehaviors {
 	}
 
 	/**
-	 * Ambushes a victim by heading for the tile located 4 tiles ahead of the victim's current position.
+	 * Ambushes a victim by heading for the tile located 4 tiles ahead of the
+	 * victim's current position.
 	 * 
-	 * @param victim
-	 *                 the ambushed victim (e.g. Pac-Man)
+	 * @param victim the ambushed victim (e.g. Pac-Man)
 	 * @return ambushing behavior
 	 */
 	default Steering ambushing(MazeMover victim) {
@@ -88,19 +86,19 @@ public interface GhostBehaviors {
 	 * "http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior">here</a>.
 	 * 
 	 * <p>
-	 * <cite>Inky is difficult to predict, because he is the only one of the ghosts that uses a factor
-	 * other than Pac-Man’s position/orientation when determining his target tile. Inky actually uses
-	 * both Pac-Man’s position/facing as well as Blinky’s (the red ghost’s) position in his calculation.
-	 * To locate Inky’s target, we first start by selecting the position two tiles in front of Pac-Man
-	 * in his current direction of travel, similar to Pinky’s targeting method. From there, imagine
-	 * drawing a vector from Blinky’s position to this tile, and then doubling the length of the vector.
-	 * The tile that this new, extended vector ends on will be Inky’s actual target.</cite>
+	 * <cite>Inky is difficult to predict, because he is the only one of the ghosts
+	 * that uses a factor other than Pac-Man’s position/orientation when determining
+	 * his target tile. Inky actually uses both Pac-Man’s position/facing as well as
+	 * Blinky’s (the red ghost’s) position in his calculation. To locate Inky’s
+	 * target, we first start by selecting the position two tiles in front of
+	 * Pac-Man in his current direction of travel, similar to Pinky’s targeting
+	 * method. From there, imagine drawing a vector from Blinky’s position to this
+	 * tile, and then doubling the length of the vector. The tile that this new,
+	 * extended vector ends on will be Inky’s actual target.</cite>
 	 * </p>
 	 * 
-	 * @param partner
-	 *                  the ghost which assists in attacking (Blinky)
-	 * @param victim
-	 *                  the attacked victim (Pac-Man)
+	 * @param partner the ghost which assists in attacking (Blinky)
+	 * @param victim  the attacked victim (Pac-Man)
 	 * 
 	 * @return behavior where victim is attacked with help of partner ghost
 	 */
@@ -116,47 +114,47 @@ public interface GhostBehaviors {
 	 * "http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior">here</a>.
 	 * 
 	 * <p>
-	 * <cite> The unique feature of Clyde’s targeting is that it has two separate modes which he
-	 * constantly switches back and forth between, based on his proximity to Pac-Man. Whenever Clyde
-	 * needs to determine his target tile, he first calculates his distance from Pac-Man. If he is
-	 * farther than eight tiles away, his targeting is identical to Blinky’s, using Pac-Man’s current
-	 * tile as his target. However, as soon as his distance to Pac-Man becomes less than eight tiles,
-	 * Clyde’s target is set to the same tile as his fixed one in Scatter mode, just outside the
-	 * bottom-left corner of the maze.</cite>
+	 * <cite> The unique feature of Clyde’s targeting is that it has two separate
+	 * modes which he constantly switches back and forth between, based on his
+	 * proximity to Pac-Man. Whenever Clyde needs to determine his target tile, he
+	 * first calculates his distance from Pac-Man. If he is farther than eight tiles
+	 * away, his targeting is identical to Blinky’s, using Pac-Man’s current tile as
+	 * his target. However, as soon as his distance to Pac-Man becomes less than
+	 * eight tiles, Clyde’s target is set to the same tile as his fixed one in
+	 * Scatter mode, just outside the bottom-left corner of the maze.</cite>
 	 * </p>
 	 * 
 	 * <p>
-	 * <cite> The combination of these two methods has the overall effect of Clyde alternating between
-	 * coming directly towards Pac-Man, and then changing his mind and heading back to his corner
-	 * whenever he gets too close. On the diagram above, the X marks on the path represent the points
-	 * where Clyde’s mode switches. If Pac-Man somehow managed to remain stationary in that position,
-	 * Clyde would indefinitely loop around that T-shaped area. As long as the player is not in the
-	 * lower-left corner of the maze, Clyde can be avoided completely by simply ensuring that you do not
-	 * block his “escape route” back to his corner. While Pac-Man is within eight tiles of the
-	 * lower-left corner, Clyde’s path will end up in exactly the same loop as he would eventually
+	 * <cite> The combination of these two methods has the overall effect of Clyde
+	 * alternating between coming directly towards Pac-Man, and then changing his
+	 * mind and heading back to his corner whenever he gets too close. On the
+	 * diagram above, the X marks on the path represent the points where Clyde’s
+	 * mode switches. If Pac-Man somehow managed to remain stationary in that
+	 * position, Clyde would indefinitely loop around that T-shaped area. As long as
+	 * the player is not in the lower-left corner of the maze, Clyde can be avoided
+	 * completely by simply ensuring that you do not block his “escape route” back
+	 * to his corner. While Pac-Man is within eight tiles of the lower-left corner,
+	 * Clyde’s path will end up in exactly the same loop as he would eventually
 	 * maintain in Scatter mode. </cite>
 	 * </p>
 	 * 
-	 * @param victim
-	 *                        the victim (Pac-Man) getting attacked
-	 * @param distance
-	 *                        if the distance to the victim is less than this distance (measured in
-	 *                        pixels), the attacker rejects and heads for its scattering position.
-	 *                        Otherwise it directly attacks PacMan.
-	 * @param scatterTarget
-	 *                        tile ghost heads for in scattering mode
+	 * @param victim        the victim (Pac-Man) getting attacked
+	 * @param distance      if the distance to the victim is less than this distance
+	 *                      (measured in pixels), the attacker rejects and heads for
+	 *                      its scattering position. Otherwise it directly attacks
+	 *                      PacMan.
+	 * @param scatterTarget tile ghost heads for in scattering mode
 	 */
 	default Steering attackingCowardly(MazeMover victim, int distance, Tile scatterTarget) {
-		return headingFor(() -> euclideanDist(theGhost().tf.getCenter(), victim.tf.getCenter()) > distance
-				? victim.currentTile()
-				: scatterTarget);
+		return headingFor(
+				() -> euclideanDist(theGhost().tf.getCenter(), victim.tf.getCenter()) > distance ? victim.currentTile()
+						: scatterTarget);
 	}
 
 	/**
 	 * Lets the ghost flee from the attacker by walking to a "safe" maze corner.
 	 * 
-	 * @param attacker
-	 *                   the attacker (Pac-Man)
+	 * @param attacker the attacker (Pac-Man)
 	 * @return behavior where ghost flees to a "safe" maze corner
 	 */
 	default Steering fleeingToSafeCorner(MazeMover attacker) {
@@ -164,11 +162,12 @@ public interface GhostBehaviors {
 	}
 
 	/**
-	 * <cite> Frightened mode is unique because the ghosts do not have a specific target tile while in
-	 * this mode. Instead, they pseudo-randomly decide which turns to make at every intersection.
-	 * </cite>
+	 * <cite> Frightened mode is unique because the ghosts do not have a specific
+	 * target tile while in this mode. Instead, they pseudo-randomly decide which
+	 * turns to make at every intersection. </cite>
 	 * 
-	 * @return behavior where ghost flees from Pac-Man by taking random turns at each intersection
+	 * @return behavior where ghost flees from Pac-Man by taking random turns at
+	 *         each intersection
 	 */
 	default Steering fleeingRandomly() {
 		return ghost -> {
@@ -186,12 +185,12 @@ public interface GhostBehaviors {
 	}
 
 	/**
-	 * Lets the ghost dynamically follow the path to the given target. The path is computed on the graph
-	 * of the maze and updated every time the move direction is queried. This can lead to lots of path
-	 * finder calls!
+	 * Lets the ghost dynamically follow the path to the given target. The path is
+	 * computed on the graph of the maze and updated every time the move direction
+	 * is queried. This can lead to lots of path finder calls!
 	 * 
-	 * @param fnTarget
-	 *                   target tile supplier (this tile must be inside the maze or teleport space!)
+	 * @param fnTarget target tile supplier (this tile must be inside the maze or
+	 *                 teleport space!)
 	 * @return behavior following the path to the target
 	 */
 	default Steering followingPathfinder(Supplier<Tile> fnTarget) {
@@ -208,8 +207,7 @@ public interface GhostBehaviors {
 	/**
 	 * Lets the ghost follow a fixed path to the target.
 	 * 
-	 * @param fnTarget
-	 *                   function supplying the target tile at time of decision
+	 * @param fnTarget function supplying the target tile at time of decision
 	 * @return behavior where ghost follows a fixed path
 	 */
 	default Steering followingFixedPath(Supplier<Tile> fnTarget) {
