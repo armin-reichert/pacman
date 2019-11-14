@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.assets.Assets;
 import de.amr.graph.core.api.UndirectedEdge;
 import de.amr.graph.grid.api.GridGraph2D;
 import de.amr.graph.grid.impl.GridGraph;
@@ -32,11 +31,56 @@ import de.amr.graph.pathfinder.impl.AStarSearch;
  */
 public class Maze {
 
+	/*@formatter:off*/
+	private static final String MAP = 
+	"############################\n" + 
+	"############################\n" + 
+	"############################\n" + 
+	"############################\n" + 
+	"#............##............#\n" + 
+	"#.####.#####.##.#####.####.#\n" + 
+	"#*####.#####.##.#####.####*#\n" + 
+	"#.####.#####.##.#####.####.#\n" + 
+	"#..........................#\n" + 
+	"#.####.##.########.##.####.#\n" + 
+	"#.####.##.########.##.####.#\n" + 
+	"#......##....##....##......#\n" + 
+	"######.##### ## #####.######\n" + 
+	"######.##### ## #####.######\n" + 
+	"######.##    B     ##.######\n" + 
+	"######.## ###--### ##.######\n" + 
+	"######.## #      # ##.######\n" + 
+	"tttttt.   #I P C #   .tttttt\n" + 
+	"######.## #      # ##.######\n" + 
+	"######.## ######## ##.######\n" + 
+	"######.##    $     ##.######\n" + 
+	"######.## ######## ##.######\n" + 
+	"######.## ######## ##.######\n" + 
+	"#............##............#\n" + 
+	"#.####.#####.##.#####.####.#\n" + 
+	"#.####.#####.##.#####.####.#\n" + 
+	"#*..##.......O .......##..*#\n" + 
+	"###.##.##.########.##.##.###\n" + 
+	"###.##.##.########.##.##.###\n" + 
+	"#......##....##....##......#\n" + 
+	"#.##########.##.##########.#\n" + 
+	"#.##########.##.##########.#\n" + 
+	"#..........................#\n" + 
+	"############################\n" + 
+	"############################\n" + 
+	"############################"; 
+	/*@formatter:on*/
+
+	private static final char WALL = '#', DOOR = '-', TUNNEL = 't', SPACE = ' ', PELLET = '.', ENERGIZER = '*',
+			EATEN = '%';
+
+	private Tile[][] board;
+	private Set<Tile> intersections;
+	private Set<Tile> energizers;
+
+	public static final int COLS = 28, ROWS = 36;
+
 	public static final Top4 NESW = Top4.get();
-
-	static final char WALL = '#', DOOR = '-', TUNNEL = 't', SPACE = ' ', PELLET = '.', ENERGIZER = '*', EATEN = '%';
-
-	public final int numCols = 28, numRows = 36;
 
 	public Tile topLeft, topRight, bottomLeft, bottomRight, pacManHome, blinkyHome, blinkyScatter, pinkyHome,
 			pinkyScatter, inkyHome, inkyScatter, clydeHome, clydeScatter, bonusTile, tunnelLeftExit, tunnelRightExit,
@@ -44,21 +88,17 @@ public class Maze {
 
 	public GridGraph<Tile, Void> graph;
 
-	Tile[][] board;
-	Set<Tile> intersections;
-	Set<Tile> energizers;
-
 	public Maze() {
-		board = new Tile[numCols][numRows];
-		String[] map = Assets.text("maze.txt").split("\n");
-		for (int row = 0; row < numRows; ++row) {
-			for (int col = 0; col < numCols; ++col) {
+		board = new Tile[COLS][ROWS];
+		String[] map = MAP.split("\n");
+		for (int row = 0; row < ROWS; ++row) {
+			for (int col = 0; col < COLS; ++col) {
 				char content = map[row].charAt(col);
 				Tile tile = board[col][row] = new Tile(col, row, content);
 				if (content == TUNNEL) {
 					if (col == 0) {
 						tunnelLeftExit = tile;
-					} else if (col == numCols - 1) {
+					} else if (col == COLS - 1) {
 						tunnelRightExit = tile;
 					}
 				}
@@ -94,7 +134,7 @@ public class Maze {
 		}
 
 		// Graph where each vertex holds a reference to the corresponding tile
-		graph = new GridGraph<>(numCols, numRows, NESW, this::tile, (u, v) -> null, UndirectedEdge::new);
+		graph = new GridGraph<>(COLS, ROWS, NESW, this::tile, (u, v) -> null, UndirectedEdge::new);
 		graph.fill();
 		graph.edges()
 		//@formatter:off
@@ -172,7 +212,7 @@ public class Maze {
 	}
 
 	public boolean insideBoard(int col, int row) {
-		return 0 <= col && col < numCols && 0 <= row && row < numRows;
+		return 0 <= col && col < COLS && 0 <= row && row < ROWS;
 	}
 
 	public boolean insideBoard(Tile tile) {

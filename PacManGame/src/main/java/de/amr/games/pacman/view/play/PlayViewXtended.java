@@ -21,6 +21,7 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.State;
@@ -67,7 +68,7 @@ public class PlayViewXtended extends PlayView {
 
 	public PlayViewXtended(PacManGame game) {
 		super(game);
-		gridImage = createGridImage(game.maze.numRows, game.maze.numCols);
+		gridImage = createGridImage(Maze.ROWS, Maze.COLS);
 	}
 
 	public void setShowGrid(boolean showGrid) {

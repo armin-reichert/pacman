@@ -14,8 +14,8 @@ public class BoardTests {
 	public void testBoardLoading() {
 		Maze maze = new Maze();
 
-		assertEquals(28, maze.numCols);
-		assertEquals(36, maze.numRows);
+		assertEquals(28, Maze.COLS);
+		assertEquals(36, Maze.ROWS);
 		
 		assertNotNull(maze.blinkyHome);
 		assertNotNull(maze.blinkyScatter);
