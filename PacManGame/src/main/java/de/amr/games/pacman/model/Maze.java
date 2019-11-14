@@ -36,19 +36,17 @@ public class Maze {
 
 	static final char WALL = '#', DOOR = '-', TUNNEL = 't', SPACE = ' ', PELLET = '.', ENERGIZER = '*', EATEN = '%';
 
-	private Tile[][] board;
-	private Set<Tile> intersections;
-	private Set<Tile> energizers;
-
 	public final int numCols = 28, numRows = 36;
 
 	public Tile topLeft, topRight, bottomLeft, bottomRight, pacManHome, blinkyHome, blinkyScatter, pinkyHome,
 			pinkyScatter, inkyHome, inkyScatter, clydeHome, clydeScatter, bonusTile, tunnelLeftExit, tunnelRightExit,
 			ghostRevival;
 
-	public int foodTotal;
+	public GridGraph<Tile, Void> graph;
 
-	public final GridGraph<Tile, Void> graph;
+	Tile[][] board;
+	Set<Tile> intersections;
+	Set<Tile> energizers;
 
 	public Maze() {
 		board = new Tile[numCols][numRows];
@@ -122,12 +120,11 @@ public class Maze {
 
 		// Corners inside maze
 		topLeft = board[1][4];
-		topRight = board[numCols - 2][4];
-		bottomLeft = board[1][numRows - 4];
-		bottomRight = board[numCols - 2][numRows - 4];
+		topRight = board[26][4];
+		bottomLeft = board[1][32];
+		bottomRight = board[26][32];
 
 		energizers = tiles().filter(this::containsEnergizer).collect(Collectors.toSet());
-		foodTotal = (int) tiles().filter(this::containsFood).count();
 	}
 
 	private int vertex(Tile tile) {
@@ -150,8 +147,7 @@ public class Maze {
 	 *         or walls otherwise.
 	 */
 	public Tile tileAt(int col, int row) {
-		return graph.isValidCol(col) && graph.isValidRow(row) ? board[col][row]
-				: new Tile(col, row, row == tunnelLeftExit.row ? TUNNEL : WALL);
+		return insideBoard(col, row) ? board[col][row] : new Tile(col, row, row == tunnelLeftExit.row ? TUNNEL : WALL);
 	}
 
 	/**
@@ -175,8 +171,12 @@ public class Maze {
 		return tileToDir(tile, dir, 1);
 	}
 
+	public boolean insideBoard(int col, int row) {
+		return 0 <= col && col < numCols && 0 <= row && row < numRows;
+	}
+
 	public boolean insideBoard(Tile tile) {
-		return 0 <= tile.col && tile.col < numCols && 0 <= tile.row && tile.row < numRows;
+		return insideBoard(tile.col, tile.row);
 	}
 
 	public boolean isTunnel(Tile tile) {
@@ -213,6 +213,10 @@ public class Maze {
 
 	// food
 
+	public boolean containsFood(Tile tile) {
+		return containsPellet(tile) || containsEnergizer(tile);
+	}
+
 	public boolean containsPellet(Tile tile) {
 		return tile.content == PELLET;
 	}
@@ -221,12 +225,12 @@ public class Maze {
 		return tile.content == ENERGIZER;
 	}
 
-	public boolean containsFood(Tile tile) {
-		return containsPellet(tile) || containsEnergizer(tile);
-	}
-
 	public boolean containsEatenFood(Tile tile) {
 		return tile.content == EATEN;
+	}
+
+	public void removeFood(Tile tile) {
+		tile.content = EATEN;
 	}
 
 	public void restoreFood() {
@@ -236,10 +240,6 @@ public class Maze {
 
 	public void removeFood() {
 		tiles().filter(this::containsFood).forEach(this::removeFood);
-	}
-
-	public void removeFood(Tile tile) {
-		tile.content = EATEN;
 	}
 
 	// navigation and path finding

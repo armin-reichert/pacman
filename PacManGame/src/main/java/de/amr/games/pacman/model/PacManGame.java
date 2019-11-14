@@ -129,6 +129,8 @@ public class PacManGame {
 	/** Pac-Man's remaining lives. */
 	private int lives;
 
+	private int foodTotal;
+
 	/** Pellets + energizers eaten in current level. */
 	private int eaten;
 
@@ -164,6 +166,8 @@ public class PacManGame {
 		this.theme = theme;
 
 		maze = new Maze();
+		foodTotal = (int) maze.tiles().filter(maze::containsFood).count();
+
 		score = new Score(this);
 
 		pacMan = new PacMan(this);
@@ -278,7 +282,7 @@ public class PacManGame {
 	}
 
 	public int getFoodRemaining() {
-		return maze.foodTotal - eaten;
+		return foodTotal - eaten;
 	}
 
 	public int getDigestionTicks(boolean energizer) {
