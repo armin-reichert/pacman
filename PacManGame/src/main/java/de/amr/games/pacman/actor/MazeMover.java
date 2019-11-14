@@ -102,8 +102,8 @@ public abstract class MazeMover extends Entity {
 			show();
 			LOGGER.fine("Teleporting complete");
 		} else { // off
-			int leftExit = (maze.teleportLeft.col - 1) * TS;
-			int rightExit = (maze.teleportRight.col + 1) * TS;
+			int leftExit = (maze.tunnelLeftExit.col - 1) * TS;
+			int rightExit = (maze.tunnelRightExit.col + 1) * TS;
 			if (tf.getX() > rightExit) { // start
 				teleportTime = ticks;
 				tf.setX(leftExit);
@@ -209,7 +209,7 @@ public abstract class MazeMover extends Entity {
 		if (maze.isWall(tile)) {
 			return false;
 		}
-		if (maze.insideTunnel(tile)) {
+		if (maze.isTunnel(tile)) {
 			return true; // includes tiles outside board used for teleportation!
 		}
 		return maze.insideBoard(tile);

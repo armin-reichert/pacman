@@ -1,10 +1,8 @@
 package de.amr.games.pacman.model;
 
 import static de.amr.easy.game.Application.LOGGER;
-import static java.lang.Math.abs;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.Set;
@@ -36,93 +34,60 @@ public class Maze {
 
 	public static final Top4 NESW = Top4.get();
 
-	static final char WALL = '#', DOOR = 'D', TUNNEL = 'T', TELEPORT_L = '<', TELEPORT_R = '>', SPACE = ' ',
-			PELLET = '.', ENERGIZER = '*', EATEN = '%';
+	static final char WALL = '#', DOOR = '-', TUNNEL = 't', SPACE = ' ', PELLET = '.', ENERGIZER = '*', EATEN = '%';
 
-	private final Tile[][] board;
-	private final Set<Tile> unrestricted = new HashSet<>();
-	private final Set<Tile> upwardsBlocked = new HashSet<>();
-	private final Set<Tile> energizerTiles = new HashSet<>();
-	private int pathFinderCalls;
+	private Tile[][] board;
+	private Set<Tile> intersections;
+	private Set<Tile> energizers;
 
-	public final int numCols, numRows;
-	public int foodTotal;
+	public final int numCols = 28, numRows = 36;
 
 	public Tile topLeft, topRight, bottomLeft, bottomRight, pacManHome, blinkyHome, blinkyScatter, pinkyHome,
-			pinkyScatter, inkyHome, inkyScatter, clydeHome, clydeScatter, bonusTile, teleportLeft, teleportRight,
+			pinkyScatter, inkyHome, inkyScatter, clydeHome, clydeScatter, bonusTile, tunnelLeftExit, tunnelRightExit,
 			ghostRevival;
+
+	public int foodTotal;
 
 	public final GridGraph<Tile, Void> graph;
 
 	public Maze() {
-		String[] map = Assets.text("maze.txt").split("\n");
-		numCols = map[0].length();
-		numRows = map.length;
 		board = new Tile[numCols][numRows];
+		String[] map = Assets.text("maze.txt").split("\n");
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				Tile tile = board[col][row] = new Tile(col, row, SPACE);
-				switch (map[row].charAt(col)) {
-				case WALL:
-					tile.content = WALL;
-					break;
-				case DOOR:
-					tile.content = DOOR;
-					break;
-				case TUNNEL:
-					tile.content = TUNNEL;
-					break;
-				case TELEPORT_L:
-					tile.content = TUNNEL;
-					teleportLeft = tile;
-					break;
-				case TELEPORT_R:
-					tile.content = TUNNEL;
-					teleportRight = tile;
-					break;
-				case PELLET:
-					tile.content = PELLET;
-					foodTotal += 1;
-					break;
-				case ENERGIZER:
-					tile.content = ENERGIZER;
-					energizerTiles.add(tile);
-					foodTotal += 1;
-					break;
+				char content = map[row].charAt(col);
+				Tile tile = board[col][row] = new Tile(col, row, content);
+				if (content == TUNNEL) {
+					if (col == 0) {
+						tunnelLeftExit = tile;
+					} else if (col == numCols - 1) {
+						tunnelRightExit = tile;
+					}
+				}
+				switch (content) {
 				case 'O':
 					pacManHome = tile;
+					tile.content = SPACE;
 					break;
 				case 'B':
 					blinkyHome = tile;
+					tile.content = SPACE;
 					break;
 				case 'P':
 					pinkyHome = tile;
-					ghostRevival = tile;
+					tile.content = SPACE;
 					break;
 				case 'I':
 					inkyHome = tile;
+					tile.content = SPACE;
 					break;
 				case 'C':
 					clydeHome = tile;
-					break;
-				case 'b':
-					tile.content = WALL;
-					blinkyScatter = tile;
-					break;
-				case 'p':
-					tile.content = WALL;
-					pinkyScatter = tile;
-					break;
-				case 'i':
-					tile.content = WALL;
-					inkyScatter = tile;
-					break;
-				case 'c':
-					tile.content = WALL;
-					clydeScatter = tile;
+					tile.content = SPACE;
 					break;
 				case '$':
 					bonusTile = tile;
+					tile.content = SPACE;
 					break;
 				default:
 					break;
@@ -130,42 +95,39 @@ public class Maze {
 			}
 		}
 
+		// Graph where each vertex holds a reference to the corresponding tile
+		graph = new GridGraph<>(numCols, numRows, NESW, this::tile, (u, v) -> null, UndirectedEdge::new);
+		graph.fill();
+		graph.edges()
+		//@formatter:off
+			.filter(edge -> graph.get(edge.either()).content == WALL || graph.get(edge.other()).content == WALL)
+			.forEach(graph::removeEdge);
+		//@formatter:on
+
+		intersections = tiles()
+		//@formatter:off
+			.filter(tile -> graph.degree(vertex(tile)) >= 3)
+			.filter(tile -> !inFrontOfGhostHouseDoor(tile))
+			.filter(tile -> !partOfGhostHouse(tile))
+			.collect(Collectors.toSet());
+		//@formatter:on
+
+		ghostRevival = pinkyHome;
+
+		// Scattering targets
+		pinkyScatter = board[2][0];
+		blinkyScatter = board[25][0];
+		clydeScatter = board[0][35];
+		inkyScatter = board[27][35];
+
 		// Corners inside maze
 		topLeft = board[1][4];
 		topRight = board[numCols - 2][4];
 		bottomLeft = board[1][numRows - 4];
 		bottomRight = board[numCols - 2][numRows - 4];
 
-		// Grid graph structure, vertex content is (reference to) corresponding tile
-		graph = new GridGraph<>(numCols, numRows, NESW, this::tile, (u, v) -> null, UndirectedEdge::new);
-		graph.fill();
-
-		// Remove edges into walls
-		graph.edges().filter(e -> graph.get(e.either()).content == WALL || graph.get(e.other()).content == WALL)
-				.forEach(graph::removeEdge);
-
-		// Intersections: unrestricted or upwards-blocked?
-		graph.vertices().filter(v -> graph.degree(v) >= 3).mapToObj(this::tile)
-		//@formatter:off
-			// exclude tiles above ghost house doors:
-			.filter(tile -> !isDoor(tileToDir(tile, Top4.S)))
-			// exclude doors:
-			.filter(tile -> !isDoor(tile))
-			// exclude tiles inside ghost house:
-			.filter(tile -> !inGhostHouse(tile))
-			// separate "real" intersections:
-			.forEach(intersection -> {
-				if (intersection == tileToDir(blinkyHome, Top4.W)	
-				 || intersection == tileToDir(blinkyHome, Top4.E, 2)
-				 || intersection == tileToDir(pacManHome, Top4.W)
-				 || intersection == tileToDir(pacManHome, Top4.E, 2)) {
-					upwardsBlocked.add(intersection);
-				}
-				else {
-					unrestricted.add(intersection);
-				}
-			});
-		//@formatter:on
+		energizers = tiles().filter(this::containsEnergizer).collect(Collectors.toSet());
+		foodTotal = (int) tiles().filter(this::containsFood).count();
 	}
 
 	private int vertex(Tile tile) {
@@ -183,13 +145,13 @@ public class Maze {
 	/**
 	 * @param col a column index
 	 * @param row a row index
-	 * @return a board tile or a new tile if the coordinates are outside of the
-	 *         board. Tiles outside of the board are either tunnels (if in the same
-	 *         row than the teleport tiles) or walls.
+	 * @return the tile with the given coordinates. Tiles outside of the board are
+	 *         either tunnel tiles (if in the same row than the board tunnel tiles)
+	 *         or walls otherwise.
 	 */
 	public Tile tileAt(int col, int row) {
 		return graph.isValidCol(col) && graph.isValidRow(row) ? board[col][row]
-				: new Tile(col, row, row == teleportLeft.row ? TUNNEL : WALL);
+				: new Tile(col, row, row == tunnelLeftExit.row ? TUNNEL : WALL);
 	}
 
 	/**
@@ -214,10 +176,10 @@ public class Maze {
 	}
 
 	public boolean insideBoard(Tile tile) {
-		return graph.isValidCol(tile.col) && graph.isValidRow(tile.row);
+		return 0 <= tile.col && tile.col < numCols && 0 <= tile.row && tile.row < numRows;
 	}
 
-	public boolean insideTunnel(Tile tile) {
+	public boolean isTunnel(Tile tile) {
 		return tile.content == TUNNEL;
 	}
 
@@ -233,20 +195,20 @@ public class Maze {
 		return isDoor(tileToDir(tile, Top4.S));
 	}
 
+	public boolean partOfGhostHouse(Tile tile) {
+		return 15 <= tile.row && tile.row <= 19 && 10 <= tile.col && tile.col <= 17;
+	}
+
 	public boolean inGhostHouse(Tile tile) {
-		return abs(tile.row - inkyHome.row) <= 1 && tile.col >= inkyHome.col && tile.col <= clydeHome.col + 1;
+		return partOfGhostHouse(tile) && tile.content == SPACE;
 	}
 
 	public boolean isIntersection(Tile tile) {
-		return isUnrestrictedIntersection(tile) || isUpwardsBlockedIntersection(tile);
+		return intersections.contains(tile);
 	}
 
-	public boolean isUnrestrictedIntersection(Tile tile) {
-		return unrestricted.contains(tile);
-	}
-
-	public boolean isUpwardsBlockedIntersection(Tile tile) {
-		return upwardsBlocked.contains(tile);
+	public boolean isNoUpIntersection(Tile tile) {
+		return tile == board[12][14] || tile == board[12][26] || tile == board[15][14] || tile == board[15][26];
 	}
 
 	// food
@@ -269,7 +231,7 @@ public class Maze {
 
 	public void restoreFood() {
 		tiles().filter(this::containsEatenFood)
-				.forEach(tile -> tile.content = energizerTiles.contains(tile) ? ENERGIZER : PELLET);
+				.forEach(tile -> tile.content = energizers.contains(tile) ? ENERGIZER : PELLET);
 	}
 
 	public void removeFood() {
@@ -280,7 +242,7 @@ public class Maze {
 		tile.content = EATEN;
 	}
 
-	// navigation
+	// navigation and path finding
 
 	public OptionalInt direction(Tile t1, Tile t2) {
 		int dx = t2.col - t1.col, dy = t2.row - t1.row;
@@ -292,6 +254,8 @@ public class Maze {
 		int dx = t2.col - t1.col, dy = t2.row - t1.row;
 		return Math.abs(dx) + Math.abs(dy);
 	}
+
+	private int pathFinderCalls;
 
 	public List<Tile> findPath(Tile source, Tile target) {
 		if (insideBoard(source) && insideBoard(target)) {

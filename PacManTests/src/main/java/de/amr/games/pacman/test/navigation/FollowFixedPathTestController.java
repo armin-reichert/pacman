@@ -21,8 +21,8 @@ public class FollowFixedPathTestController implements ViewController {
 		g = new PacManGame();
 		g.setLevel(1);
 		g.maze.removeFood();
-		targets = Arrays.asList(g.maze.bottomRight, g.maze.bottomLeft, g.maze.teleportLeft, g.maze.topLeft,
-				g.maze.blinkyHome, g.maze.topRight, g.maze.teleportRight, g.maze.pacManHome);
+		targets = Arrays.asList(g.maze.bottomRight, g.maze.bottomLeft, g.maze.tunnelLeftExit, g.maze.topLeft,
+				g.maze.blinkyHome, g.maze.topRight, g.maze.tunnelRightExit, g.maze.pacManHome);
 		view = new PlayViewXtended(g);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);

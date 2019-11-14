@@ -82,7 +82,7 @@ class HeadingForTile implements Steering {
 				 // never reverse direction	
 				.filter(dir -> dir != NESW.inv(actor.moveDir))
 				 // cannot move upwards at blocked intersection
-				.filter(dir -> !(dir == Top4.N && maze.isUpwardsBlockedIntersection(actorTile)))
+				.filter(dir -> !(dir == Top4.N && maze.isNoUpIntersection(actorTile)))
 				 // check if neighbor tile to this direction is accessible
 				.map(dir -> maze.tileToDir(actorTile, dir))
 				.filter(actor::canEnterTile)

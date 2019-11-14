@@ -34,7 +34,7 @@ public class OutsideTileTestController implements ViewController {
 	}
 
 	private Tile getTargetTile() {
-		return g.maze.tileToDir(g.maze.teleportRight, Top4.E);
+		return g.maze.tileToDir(g.maze.tunnelRightExit, Top4.E);
 	}
 
 	@Override

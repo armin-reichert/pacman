@@ -30,8 +30,8 @@ public class BoardTests {
 		assertNotNull(maze.pacManHome);
 		assertNotNull(maze.pinkyHome);
 		assertNotNull(maze.pinkyScatter);
-		assertNotNull(maze.teleportLeft);
-		assertNotNull(maze.teleportRight);
+		assertNotNull(maze.tunnelLeftExit);
+		assertNotNull(maze.tunnelRightExit);
 		assertNotNull(maze.topLeft);
 		assertNotNull(maze.topRight);
 
