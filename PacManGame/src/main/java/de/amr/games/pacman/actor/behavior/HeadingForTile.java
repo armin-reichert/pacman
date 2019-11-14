@@ -3,7 +3,6 @@ package de.amr.games.pacman.actor.behavior;
 import static de.amr.games.pacman.model.Maze.NESW;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -51,8 +50,7 @@ class HeadingForTile implements Steering {
 		actor.targetTile = Objects.requireNonNull(fnTargetTile.get(), "Target tile must not be NULL");
 
 		/*
-		 * If the actor wants to enter the ghost house, check if it is at the ghost
-		 * house door and if yes, move down.
+		 * For entering the ghost house, move downwards at the ghost house door.
 		 */
 		if (maze.inGhostHouse(actor.targetTile) && maze.inFrontOfGhostHouseDoor(actorTile)) {
 			actor.nextDir = Top4.S;
@@ -60,18 +58,10 @@ class HeadingForTile implements Steering {
 		}
 
 		/*
-		 * If the actor is in the ghost house, use the graph path finder for either
-		 * leaving the ghost house again (by targetting Blinky's home tile) or for
-		 * reaching the target tile inside the ghost house.
-		 * 
-		 * TODO: how did the original game do that?
+		 * For leaving the ghost house use Blinky's home as target tile.
 		 */
-		if (maze.inGhostHouse(actorTile)) {
-			List<Tile> path = maze.findPath(actorTile,
-					maze.inGhostHouse(actor.targetTile) ? actor.targetTile : maze.blinkyHome);
-			actor.targetPath = path;
-			actor.nextDir = maze.alongPath(path).orElse(actor.moveDir);
-			return;
+		if (maze.inGhostHouse(actorTile) && !maze.inGhostHouse(actor.targetTile)) {
+			actor.targetTile = maze.blinkyHome;
 		}
 
 		/* If a new tile is entered, decide where to go as described above. */
