@@ -94,13 +94,6 @@ public class Maze {
 			for (int col = 0; col < COLS; ++col) {
 				char content = MAP[row].charAt(col);
 				Tile tile = board[col][row] = new Tile(col, row, content);
-				if (content == TUNNEL) {
-					if (col == 0) {
-						tunnelLeftExit = tile;
-					} else if (col == COLS - 1) {
-						tunnelRightExit = tile;
-					}
-				}
 				switch (content) {
 				case 'O':
 					pacManHome = tile;
@@ -148,6 +141,9 @@ public class Maze {
 			.filter(tile -> !partOfGhostHouse(tile))
 			.collect(Collectors.toSet());
 		//@formatter:on
+
+		tunnelLeftExit = board[0][17];
+		tunnelRightExit = board[27][17];
 
 		ghostRevival = pinkyHome;
 
