@@ -137,18 +137,18 @@ public interface GhostBehaviors {
 	 * </p>
 	 * 
 	 * @param victim
-	 *                        the victim (Pac-Man) getting attacked
+	 *                     the victim (Pac-Man) getting attacked
 	 * @param distance
-	 *                        if the distance to the victim is less than this distance (measured in
-	 *                        pixels), the attacker rejects and heads for its scattering position.
-	 *                        Otherwise it directly attacks PacMan.
-	 * @param scatterTarget
-	 *                        tile ghost heads for in scattering mode
+	 *                     if the straight line distance to the victim is greater than this distance
+	 *                     (measured in pixels), the attacker directly attacks the victim, otherwise it
+	 *                     heads for the escape tile
+	 * @param escapeTile
+	 *                     tile ghost heads for in scattering mode
 	 */
-	default Steering attackingCowardly(MazeMover victim, int distance, Tile scatterTarget) {
+	default Steering attackingCowardly(MazeMover victim, int distance, Tile escapeTile) {
 		return headingFor(() -> euclideanDist(theGhost().tf.getCenter(), victim.tf.getCenter()) > distance
 				? victim.currentTile()
-				: scatterTarget);
+				: escapeTile);
 	}
 
 	/**
