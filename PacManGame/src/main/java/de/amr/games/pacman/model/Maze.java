@@ -86,7 +86,7 @@ public class Maze {
 			pinkyScatter, inkyHome, inkyScatter, clydeHome, clydeScatter, bonusTile, tunnelLeftExit, tunnelRightExit,
 			ghostRevival;
 
-	public GridGraph<Tile, Void> graph;
+	public GridGraph2D<Tile, Void> graph;
 
 	public Maze() {
 		board = new Tile[COLS][ROWS];
