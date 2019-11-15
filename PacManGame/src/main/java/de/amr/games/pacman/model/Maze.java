@@ -3,6 +3,7 @@ package de.amr.games.pacman.model;
 import static de.amr.easy.game.Application.LOGGER;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.Set;
@@ -21,15 +22,18 @@ import de.amr.graph.pathfinder.impl.AStarSearch;
  * The original Pac-Man maze.
  * 
  * <p>
- * The maze is a 2-dimensional grid of tiles, each tile contains a character
- * representing its content. Additionally, a grid graph structure is used to
- * allow running path finders on the graph.
+ * The maze is a 2-dimensional grid of tiles, each tile contains a character representing its
+ * content. Additionally, a (grid) graph structure is used to allow running path finders on the
+ * graph.
  * 
  * @author Armin Reichert
  * 
  * @see GridGraph2D
  */
 public class Maze {
+
+	public static final Top4 NESW = Top4.get();
+	public static final int COLS = 28, ROWS = 36;
 
 	private static final String[] MAP = {
 	/*@formatter:off*/
@@ -74,27 +78,26 @@ public class Maze {
 	private static final char WALL = '#', DOOR = '-', TUNNEL = 't', SPACE = ' ', PELLET = '.', ENERGIZER = '*',
 			EATEN = '%';
 
-	private Tile[][] board;
-	private Set<Tile> intersections;
-	private Set<Tile> energizers;
+	public final GridGraph2D<Tile, Void> graph;
 
-	public static final int COLS = 28, ROWS = 36;
+	public final Tile topLeft, topRight, bottomLeft, bottomRight, blinkyScatter, pinkyScatter, inkyScatter,
+			clydeScatter, tunnelLeftExit, tunnelRightExit, ghostRevival;
 
-	public static final Top4 NESW = Top4.get();
+	public /* final */ Tile pacManHome, blinkyHome, inkyHome, pinkyHome, clydeHome, bonusTile;
 
-	public Tile topLeft, topRight, bottomLeft, bottomRight, pacManHome, blinkyHome, blinkyScatter, pinkyHome,
-			pinkyScatter, inkyHome, inkyScatter, clydeHome, clydeScatter, bonusTile, tunnelLeftExit, tunnelRightExit,
-			ghostRevival;
-
-	public GridGraph2D<Tile, Void> graph;
+	private final Tile[][] board = new Tile[COLS][ROWS];
+	private final Set<Tile> intersections;
+	private final Set<Tile> energizers = new HashSet<>();
 
 	public Maze() {
-		board = new Tile[COLS][ROWS];
 		for (int row = 0; row < ROWS; ++row) {
 			for (int col = 0; col < COLS; ++col) {
 				char content = MAP[row].charAt(col);
 				Tile tile = board[col][row] = new Tile(col, row, content);
 				switch (content) {
+				case ENERGIZER:
+					energizers.add(tile);
+					break;
 				case 'O':
 					pacManHome = tile;
 					tile.content = SPACE;
@@ -125,6 +128,23 @@ public class Maze {
 			}
 		}
 
+		tunnelLeftExit = board[0][17];
+		tunnelRightExit = board[27][17];
+
+		ghostRevival = board[13][17];
+
+		// Scattering targets
+		pinkyScatter = board[2][0];
+		blinkyScatter = board[25][0];
+		clydeScatter = board[0][35];
+		inkyScatter = board[27][35];
+
+		// Corners inside maze
+		topLeft = board[1][4];
+		topRight = board[26][4];
+		bottomLeft = board[1][32];
+		bottomRight = board[26][32];
+
 		// Graph where each vertex holds a reference to the corresponding tile
 		graph = new GridGraph<>(COLS, ROWS, NESW, this::tile, (u, v) -> null, UndirectedEdge::new);
 		graph.fill();
@@ -141,25 +161,6 @@ public class Maze {
 			.filter(tile -> !partOfGhostHouse(tile))
 			.collect(Collectors.toSet());
 		//@formatter:on
-
-		tunnelLeftExit = board[0][17];
-		tunnelRightExit = board[27][17];
-
-		ghostRevival = pinkyHome;
-
-		// Scattering targets
-		pinkyScatter = board[2][0];
-		blinkyScatter = board[25][0];
-		clydeScatter = board[0][35];
-		inkyScatter = board[27][35];
-
-		// Corners inside maze
-		topLeft = board[1][4];
-		topRight = board[26][4];
-		bottomLeft = board[1][32];
-		bottomRight = board[26][32];
-
-		energizers = tiles().filter(this::containsEnergizer).collect(Collectors.toSet());
 	}
 
 	private int vertex(Tile tile) {
@@ -175,32 +176,38 @@ public class Maze {
 	}
 
 	/**
-	 * @param col a column index
-	 * @param row a row index
-	 * @return the tile with the given coordinates. Tiles outside of the board are
-	 *         either tunnel tiles (if in the same row than the board tunnel tiles)
-	 *         or walls otherwise.
+	 * @param col
+	 *              a column index
+	 * @param row
+	 *              a row index
+	 * @return the tile with the given coordinates. Tiles outside of the board are either tunnel tiles
+	 *         (if in the same row than the board tunnel tiles) or walls otherwise.
 	 */
 	public Tile tileAt(int col, int row) {
-		return insideBoard(col, row) ? board[col][row] : new Tile(col, row, row == tunnelLeftExit.row ? TUNNEL : WALL);
+		return insideBoard(col, row) ? board[col][row]
+				: new Tile(col, row, row == tunnelLeftExit.row ? TUNNEL : WALL);
 	}
 
 	/**
-	 * @param tile reference tile
-	 * @param dir  some direction
-	 * @param n    number of tiles
-	 * @return the tile located <code>n</code> tiles away from the reference tile
-	 *         towards the given direction. This can be a tile outside of the board!
+	 * @param tile
+	 *               reference tile
+	 * @param dir
+	 *               some direction
+	 * @param n
+	 *               number of tiles
+	 * @return the tile located <code>n</code> tiles away from the reference tile towards the given
+	 *         direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, int dir, int n) {
 		return tileAt(tile.col + n * NESW.dx(dir), tile.row + n * NESW.dy(dir));
 	}
 
 	/**
-	 * @param tile reference tile
-	 * @param dir  some direction
-	 * @return neighbor towards the given direction. This can be a tile outside of
-	 *         the board!
+	 * @param tile
+	 *               reference tile
+	 * @param dir
+	 *               some direction
+	 * @return neighbor towards the given direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, int dir) {
 		return tileToDir(tile, dir, 1);
