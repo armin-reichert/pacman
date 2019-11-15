@@ -408,89 +408,42 @@ for any event that has no effect in the current state. The Ghost's state machine
 Example trace:
 
 ```
-C:\Users\armin\Desktop>java -jar pacman.jar
-[2018-10-29 06:50:40:143] Clock frequency is 60 ticks/sec.
-[2018-10-29 06:50:40:159] Application 'PacManApp' created.
-[2018-10-29 06:50:41:617] Pac-Man sprites extracted.
-[2018-10-29 06:50:41:663] Theme 'ClassicPacManTheme' created.
-[2018-10-29 06:50:41:933] Entered window mode, resolution 448x576 (224x288 scaled by 2,00)
-[2018-10-29 06:50:41:933] Application shell created.
-[2018-10-29 06:50:42:234] Controller set: de.amr.games.pacman.controller.PacManGameController@6e50047c
-[2018-10-29 06:50:42:234] [Game] entering initial state:
-[2018-10-29 06:50:42:234] [Game] entering state 'INTRO'
-[2018-10-29 06:50:42:281] [Intro] entering initial state:
-[2018-10-29 06:50:42:281] [Intro] entering state '0'
-[2018-10-29 06:50:42:720] Controller initialized.
-[2018-10-29 06:50:42:720] Application initialized.
-[2018-10-29 06:50:42:720] Loading music...
-[2018-10-29 06:50:42:735] Clock started, running with 60 ticks/sec.
-[2018-10-29 06:50:45:143] [Intro] changing from '0' to '1'
-[2018-10-29 06:50:45:147] [Intro] exiting state '0'
-[2018-10-29 06:50:45:147] [Intro] entering state '1'
-[2018-10-29 06:50:45:576] Music loaded.
-[2018-10-29 06:50:52:418] [Intro] changing from '1' to '2'
-[2018-10-29 06:50:52:418] [Intro] exiting state '1'
-[2018-10-29 06:50:52:422] [Intro] entering state '2' for 6,00 seconds (360 frames)
-[2018-10-29 06:50:52:947] [Intro] changing from '2' to '42'
-[2018-10-29 06:50:52:947] [Intro] exiting state '2'
-[2018-10-29 06:50:52:952] [Intro] entering state '42'
-[2018-10-29 06:50:52:965] [Game] changing from 'INTRO' to 'READY'
-[2018-10-29 06:50:52:965] [Game] exiting state 'INTRO'
-[2018-10-29 06:50:52:965] [Game] entering state 'READY' for 4,50 seconds (270 frames)
-[2018-10-29 06:50:53:152] [Clyde] entering initial state:
-[2018-10-29 06:50:53:152] [Clyde] entering state 'LOCKED' for 5,00 seconds (300 frames)
-[2018-10-29 06:50:53:152] [Pinky] entering initial state:
-[2018-10-29 06:50:53:152] [Pinky] entering state 'LOCKED' for 3,00 seconds (180 frames)
-[2018-10-29 06:50:53:152] [Blinky] entering initial state:
-[2018-10-29 06:50:53:152] [Blinky] entering state 'LOCKED' for 1,00 seconds (60 frames)
-[2018-10-29 06:50:53:152] [Pac-Man] entering initial state:
-[2018-10-29 06:50:53:152] [Pac-Man] entering state 'HOME' for 0,25 seconds (15 frames)
-[2018-10-29 06:50:53:152] [Inky] entering initial state:
-[2018-10-29 06:50:53:152] [Inky] entering state 'LOCKED' for 4,00 seconds (240 frames)
-[2018-10-29 06:50:58:733] [Game] changing from 'READY' to 'PLAYING' on timeout
-[2018-10-29 06:50:58:733] [Game] exiting state 'READY'
-[2018-10-29 06:50:58:733] [Game] entering state 'PLAYING'
-[2018-10-29 06:50:58:733] [GhostAttackTimer] entering initial state:
-[2018-10-29 06:50:58:733] [GhostAttackTimer] entering state 'SCATTERING' for 7,00 seconds (420 frames)
-[2018-10-29 06:50:58:733] Start scattering, round 0
-[2018-10-29 06:50:58:751] [Game] stays 'PLAYING' on 'StartScatteringEvent'
-[2018-10-29 06:50:58:752] [Blinky] stays 'LOCKED' on 'StartScatteringEvent'
-[2018-10-29 06:50:58:755] [Pinky] stays 'LOCKED' on 'StartScatteringEvent'
-[2018-10-29 06:50:58:755] [Inky] stays 'LOCKED' on 'StartScatteringEvent'
-[2018-10-29 06:50:58:755] [Clyde] stays 'LOCKED' on 'StartScatteringEvent'
-[2018-10-29 06:50:59:041] [Pac-Man] changing from 'HOME' to 'HUNGRY' on timeout
-[2018-10-29 06:50:59:041] [Pac-Man] exiting state 'HOME'
-[2018-10-29 06:50:59:042] [Pac-Man] entering state 'HUNGRY'
-[2018-10-29 06:50:59:189] [PacMan] publishing event 'FoodFound(Pellet)'
-...
-[2018-10-29 09:56:52:872] [PacMan] publishing event 'PacManGhostCollisionEvent(Pinky)'
-[2018-10-29 09:56:52:872] [Game] stays 'PLAYING' on 'PacManGhostCollisionEvent(Pinky)'
-[2018-10-29 09:56:52:888] [Game] changing from 'PLAYING' to 'PACMAN_DYING' on 'PacManKilledEvent(Pinky)'
-[2018-10-29 09:56:52:888] [Game] exiting state 'PLAYING'
-[2018-10-29 09:56:52:888] PacMan killed by Pinky at (15,23)
-[2018-10-29 09:56:52:888] [Pac-Man] changing from 'HUNGRY' to 'DYING' on 'PacManKilledEvent(Pinky)'
-[2018-10-29 09:56:52:888] [Pac-Man] exiting state 'HUNGRY'
-[2018-10-29 09:56:52:888] [Pac-Man] entering state 'DYING' for 3,00 seconds (180 frames)
-[2018-10-29 09:56:52:888] [Game] entering state 'PACMAN_DYING'
-[2018-10-29 09:56:56:047] [Pac-Man] changing from 'DYING' to 'DEAD' on timeout
-[2018-10-29 09:56:56:047] [Pac-Man] exiting state 'DYING'
-[2018-10-29 09:56:56:047] [Pac-Man] entering state 'DEAD'
-[2018-10-29 09:56:56:062] [Game] changing from 'PACMAN_DYING' to 'PLAYING'
-[2018-10-29 09:56:56:062] [Game] exiting state 'PACMAN_DYING'
-[2018-10-29 09:56:56:062] [Pinky] entering initial state:
-[2018-10-29 09:56:56:062] [Pinky] entering state 'LOCKED' for 3,00 seconds (180 frames)
-[2018-10-29 09:56:56:062] [Blinky] entering initial state:
-[2018-10-29 09:56:56:062] [Blinky] entering state 'LOCKED' for 1,00 seconds (60 frames)
-[2018-10-29 09:56:56:062] [Inky] entering initial state:
-[2018-10-29 09:56:56:062] [Inky] entering state 'LOCKED' for 4,00 seconds (240 frames)
-[2018-10-29 09:56:56:062] [Clyde] entering initial state:
-[2018-10-29 09:56:56:062] [Clyde] entering state 'LOCKED' for 5,00 seconds (300 frames)
-[2018-10-29 09:56:56:062] [Pac-Man] entering initial state:
-[2018-10-29 09:56:56:062] [Pac-Man] entering state 'HOME' for 0,25 seconds (15 frames)
-[2018-10-29 09:56:56:062] [Game] entering state 'PLAYING'
-[2018-10-29 09:56:56:062] [GhostAttackTimer] entering initial state:
-[2018-10-29 09:56:56:062] [GhostAttackTimer] entering state 'SCATTERING' for 7,00 seconds (420 frames)
-[2018-10-29 09:56:56:062] Start scattering, round 0
+[2019-11-15 06:01:06:863] [GhostAttackTimer] entering initial state: 
+[2019-11-15 06:01:06:863] [GhostAttackTimer] entering state 'SCATTERING' for 7,00 seconds (420 frames) 
+[2019-11-15 06:01:06:863] [Blinky] in state LOCKED could not handle 'StartScatteringEvent' 
+[2019-11-15 06:01:06:863] [Pinky] in state LOCKED could not handle 'StartScatteringEvent' 
+[2019-11-15 06:01:06:863] [Inky] in state LOCKED could not handle 'StartScatteringEvent' 
+[2019-11-15 06:01:06:863] [Clyde] in state LOCKED could not handle 'StartScatteringEvent' 
+[2019-11-15 06:01:08:519] [Blinky] changing from 'LOCKED' to 'SCATTERING' 
+[2019-11-15 06:01:08:519] [Blinky] exiting state 'LOCKED' 
+[2019-11-15 06:01:08:519] [Blinky] entering state 'SCATTERING' 
+[2019-11-15 06:01:08:519] [Pinky] changing from 'LOCKED' to 'SCATTERING' 
+[2019-11-15 06:01:08:519] [Pinky] exiting state 'LOCKED' 
+[2019-11-15 06:01:08:519] [Pinky] entering state 'SCATTERING' 
+[2019-11-15 06:01:08:519] [Inky] changing from 'LOCKED' to 'SCATTERING' 
+[2019-11-15 06:01:08:519] [Inky] exiting state 'LOCKED' 
+[2019-11-15 06:01:08:519] [Inky] entering state 'SCATTERING' 
+[2019-11-15 06:01:08:519] [Clyde] changing from 'LOCKED' to 'SCATTERING' 
+[2019-11-15 06:01:08:519] [Clyde] exiting state 'LOCKED' 
+[2019-11-15 06:01:08:519] [Clyde] entering state 'SCATTERING' 
+[2019-11-15 06:01:08:519] [Pac-Man] changing from 'HOME' to 'HUNGRY (timeout)' 
+[2019-11-15 06:01:08:520] [Pac-Man] exiting state 'HOME' 
+[2019-11-15 06:01:08:520] [Pac-Man] entering state 'HUNGRY' 
+[2019-11-15 06:01:11:057] Pac-Man reports 'PacManGhostCollisionEvent(Inky)' 
+[2019-11-15 06:01:11:057] [GameController] stays 'PLAYING' on 'PacManGhostCollisionEvent(Inky)' 
+[2019-11-15 06:01:11:074] [GameController] changing from 'PLAYING' to 'PACMAN_DYING' on 'PacManKilledEvent(Inky)' 
+[2019-11-15 06:01:11:074] [GameController] exiting state 'PLAYING' 
+[2019-11-15 06:01:11:074] PacMan killed by Inky at (21,26,'%') 
+[2019-11-15 06:01:11:074] [Pac-Man] changing from 'HUNGRY' to 'DYING' on 'PacManKilledEvent(Inky)' 
+[2019-11-15 06:01:11:074] [Pac-Man] exiting state 'HUNGRY' 
+[2019-11-15 06:01:11:074] [Pac-Man] entering state 'DYING' for 3,00 seconds (180 frames) 
+[2019-11-15 06:01:11:075] [GameController] entering state 'PACMAN_DYING' 
+[2019-11-15 06:01:14:871] [Pac-Man] changing from 'DYING' to 'DEAD (timeout)' 
+[2019-11-15 06:01:14:871] [Pac-Man] exiting state 'DYING' 
+[2019-11-15 06:01:14:871] [Pac-Man] entering state 'DEAD' 
+[2019-11-15 06:01:14:888] [GameController] changing from 'PACMAN_DYING' to 'GAME_OVER' 
+[2019-11-15 06:01:14:888] [GameController] exiting state 'PACMAN_DYING' 
+[2019-11-15 06:01:14:888] [GameController] entering state 'GAME_OVER' for 60,00 seconds (3600 frames) 
 ```
 
 ## Pac-Man movement
@@ -516,19 +469,19 @@ The game gets its entertainment factor from the individual *attack behavior* of 
 The ghost behavior only differs for the *chasing* state. The *frightened* behavior has two different implementations and can be toggled for all ghosts at once by pressing the 'f'-key.
 
 ```java
-blinky = new Ghost(this, "Blinky", GhostColor.RED, maze.blinkyHome, Top4.S);
+blinky = new Ghost(this, maze, "Blinky", GhostColor.RED, maze.blinkyHome, Top4.S);
 blinky.setBehavior(SCATTERING, blinky.headingFor(() -> maze.blinkyScatter));
 blinky.setBehavior(CHASING, blinky.attackingDirectly(pacMan));
 
-pinky = new Ghost(this, "Pinky", GhostColor.PINK, maze.pinkyHome, Top4.S);
+pinky = new Ghost(this, maze, "Pinky", GhostColor.PINK, maze.pinkyHome, Top4.S);
 pinky.setBehavior(SCATTERING, pinky.headingFor(() -> maze.pinkyScatter));
 pinky.setBehavior(CHASING, pinky.ambushing(pacMan));
 
-inky = new Ghost(this, "Inky", GhostColor.CYAN, maze.inkyHome, Top4.N);
+inky = new Ghost(this, maze, "Inky", GhostColor.CYAN, maze.inkyHome, Top4.N);
 inky.setBehavior(SCATTERING, inky.headingFor(() -> maze.inkyScatter));
 inky.setBehavior(CHASING, inky.attackingWithPartner(blinky, pacMan));
 
-clyde = new Ghost(this, "Clyde", GhostColor.ORANGE, maze.clydeHome, Top4.N);
+clyde = new Ghost(this, maze, "Clyde", GhostColor.ORANGE, maze.clydeHome, Top4.N);
 clyde.setBehavior(SCATTERING, clyde.headingFor(() -> maze.clydeScatter));
 clyde.setBehavior(CHASING, clyde.attackingCowardly(pacMan, 8 * TS, maze.clydeScatter));
 
@@ -548,7 +501,7 @@ The *chasing* behavior differs for each ghost as explained above. Using the gene
 Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
-default SteeringBehavior attackingDirectly(MazeMover victim) {
+default Steering attackingDirectly(MazeMover victim) {
 	return headingFor(victim::currentTile);
 }
 ```
@@ -560,7 +513,7 @@ default SteeringBehavior attackingDirectly(MazeMover victim) {
 Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position (in the original game there is an overflow error leading to a slightly different behavior):
 
 ```java
-default SteeringBehavior ambushing(MazeMover victim) {
+default Steering ambushing(MazeMover victim) {
 	return headingFor(() -> victim.tilesAhead(4));
 }
 ```
@@ -575,7 +528,7 @@ Consider the vector `V` from Blinky's position `B` to the position `P` two tiles
 Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-default SteeringBehavior attackingWithPartner(MazeMover partner, MazeMover victim) {
+default Steering attackingWithPartner(MazeMover partner, MazeMover victim) {
 	return headingFor(() -> {
 		Tile partnerTile = partner.currentTile(), victimTile = victim.tilesAhead(2);
 		return victim.maze.tileAt(2 * victimTile.col - partnerTile.col, 2 * victimTile.row - partnerTile.row);
@@ -590,7 +543,7 @@ default SteeringBehavior attackingWithPartner(MazeMover partner, MazeMover victi
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
 
 ```java
-default SteeringBehavior attackingCowardly(MazeMover victim, int distance, Tile scatterTarget) {
+default Steering attackingCowardly(MazeMover victim, int distance, Tile scatterTarget) {
 	return headingFor(() -> euclideanDist(theGhost().tf.getCenter(), victim.tf.getCenter()) > distance
 			? victim.currentTile()
 			: scatterTarget);
