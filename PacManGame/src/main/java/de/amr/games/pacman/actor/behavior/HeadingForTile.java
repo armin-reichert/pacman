@@ -1,10 +1,19 @@
 package de.amr.games.pacman.actor.behavior;
 
 import static de.amr.games.pacman.model.Maze.NESW;
+import static de.amr.graph.grid.impl.Top4.E;
+import static de.amr.graph.grid.impl.Top4.N;
+import static de.amr.graph.grid.impl.Top4.S;
+import static de.amr.graph.grid.impl.Top4.W;
 
 import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.OptionalInt;
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import de.amr.games.pacman.actor.MazeMover;
@@ -33,6 +42,47 @@ import de.amr.graph.grid.impl.Top4;
  */
 class HeadingForTile implements Steering {
 
+	private static OptionalInt computeNextDir(MazeMover actor, int moveDir, Tile tile, Tile target) {
+		/*@formatter:off*/
+		Maze maze = actor.maze;
+		return IntStream.of(N, W, S, E)
+				.filter(dir -> dir != NESW.inv(moveDir))
+				.filter(dir -> !(dir == N && maze.isNoUpIntersection(tile)))
+				.mapToObj(dir -> maze.tileToDir(tile, dir))
+				.filter(actor::canEnterTile)
+				.sorted((t1, t2) -> Integer.compare(dist(t1, target), dist(t2, target)))
+				.mapToInt(nextTile -> maze.direction(tile, nextTile).getAsInt())
+				.findFirst()
+				;
+		/*@formatter:on*/
+	}
+
+	private static List<Tile> computePathToTarget(MazeMover actor, Tile targetTile) {
+		Maze maze = actor.maze;
+		Set<Tile> path = new LinkedHashSet<>();
+		Tile currentTile = actor.currentTile();
+		int currentDir = actor.moveDir;
+		path.add(currentTile);
+		while (!currentTile.equals(targetTile)) {
+			OptionalInt optNextDir = computeNextDir(actor, currentDir, currentTile, targetTile);
+			if (!optNextDir.isPresent()) {
+				break;
+			}
+			int nextDir = optNextDir.getAsInt();
+			Tile nextTile = maze.tileToDir(currentTile, nextDir);
+			if (!maze.insideBoard(nextTile)) {
+				break;
+			}
+			if (path.contains(nextTile)) {
+				break; // cycle
+			}
+			path.add(nextTile);
+			currentTile = nextTile;
+			currentDir = nextDir;
+		}
+		return path.stream().collect(Collectors.toList());
+	}
+
 	private final Supplier<Tile> fnTargetTile;
 
 	public HeadingForTile(Supplier<Tile> fnTargetTile) {
@@ -41,47 +91,25 @@ class HeadingForTile implements Steering {
 
 	@Override
 	public void steer(MazeMover actor) {
-		Maze maze = actor.maze;
+		actor.targetTile = Objects.requireNonNull(fnTargetTile.get(), "Target tile must not be NULL");
+		actor.targetPath = actor.visualizeCompletePath ? computePathToTarget(actor, actor.targetTile)
+				: Collections.emptyList();
 		Tile actorTile = actor.currentTile();
 
-		actor.targetPath = Collections.emptyList();
-		actor.targetTile = Objects.requireNonNull(fnTargetTile.get(), "Target tile must not be NULL");
-
-		/*
-		 * For entering the ghost house, move downwards at the ghost house door.
-		 */
-		if (maze.inGhostHouse(actor.targetTile) && maze.inFrontOfGhostHouseDoor(actorTile)) {
+		/* Entering ghost house: move downwards at the ghost house door. */
+		if (actor.maze.inGhostHouse(actor.targetTile) && actor.maze.inFrontOfGhostHouseDoor(actorTile)) {
 			actor.nextDir = Top4.S;
 			return;
 		}
 
-		/*
-		 * For leaving the ghost house use Blinky's home as target tile.
-		 */
-		if (maze.inGhostHouse(actorTile) && !maze.inGhostHouse(actor.targetTile)) {
-			actor.targetTile = maze.blinkyHome;
+		/* For leaving the ghost house use Blinky's home as target tile. */
+		if (actor.maze.inGhostHouse(actorTile) && !actor.maze.inGhostHouse(actor.targetTile)) {
+			actor.targetTile = actor.maze.blinkyHome;
 		}
 
 		/* If a new tile is entered, decide where to go as described above. */
 		if (actor.enteredNewTile) {
-			// try directions in order: up > left > down > right
-			IntStream.of(Top4.N, Top4.W, Top4.S, Top4.E)
-			/*@formatter:off*/
-				 // never reverse direction	
-				.filter(dir -> dir != NESW.inv(actor.moveDir))
-				 // cannot move upwards at blocked intersection
-				.filter(dir -> !(dir == Top4.N && maze.isNoUpIntersection(actorTile)))
-				 // check if neighbor tile to this direction is accessible
-				.mapToObj(dir -> maze.tileToDir(actorTile, dir))
-				.filter(actor::canEnterTile)
-				 // select tile with smallest straight line distance to target
-				.sorted((t1, t2) -> Integer.compare(dist(t1, actor.targetTile), dist(t2, actor.targetTile)))
-				.findFirst()
-				 // map back to direction
-				.map(neighborTile -> maze.direction(actorTile, neighborTile).getAsInt())
-				// use result as new intended direction
-				.ifPresent(dir -> actor.nextDir = dir);
-			/*@formatter:on*/
+			computeNextDir(actor, actor.moveDir, actorTile, actor.targetTile).ifPresent(dir -> actor.nextDir = dir);
 		}
 	}
 
