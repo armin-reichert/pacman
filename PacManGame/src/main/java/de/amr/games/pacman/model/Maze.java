@@ -150,7 +150,7 @@ public class Maze {
 		graph.fill();
 		graph.edges()
 		//@formatter:off
-			.filter(edge -> isWall(graph.get(edge.either())) || isWall(graph.get(edge.other())))
+			.filter(edge -> isWall(tile(edge.either())) || isWall(tile(edge.other())))
 			.forEach(graph::removeEdge);
 		//@formatter:on
 
