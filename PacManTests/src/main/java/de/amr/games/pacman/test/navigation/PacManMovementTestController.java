@@ -3,8 +3,10 @@ package de.amr.games.pacman.test.navigation;
 import java.util.logging.Level;
 
 import de.amr.easy.game.Application;
+import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
+import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayViewXtended;
@@ -17,7 +19,7 @@ public class PacManMovementTestController implements ViewController {
 	public PacManMovementTestController() {
 		g = new PacManGame();
 		view = new PlayViewXtended(g);
-		view.setShowRoutes(true);
+		view.setShowRoutes(false);
 		view.setShowGrid(false);
 		view.setShowStates(false);
 		view.setScoresVisible(false);
@@ -38,14 +40,14 @@ public class PacManMovementTestController implements ViewController {
 				}
 			}
 		});
-		g.ghosts().forEach(ghost -> g.setActive(ghost, false));
+		g.setActive(g.blinky, false);
 		g.setActive(g.pacMan, true);
-		g.pacMan.init();
+		g.activeActors().forEach(Entity::init);
 	}
 
 	@Override
 	public void update() {
-		g.pacMan.update();
+		g.activeActors().forEach(MazeMover::update);
 		view.update();
 	}
 

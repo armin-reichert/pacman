@@ -20,7 +20,6 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
@@ -54,7 +53,8 @@ public class PlayViewXtended extends PlayView {
 	private static BufferedImage createGridImage(int numRows, int numCols) {
 		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
 				.getDefaultConfiguration();
-		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1, Transparency.TRANSLUCENT);
+		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1,
+				Transparency.TRANSLUCENT);
 		Graphics2D g = image.createGraphics();
 		g.setColor(new Color(0, 60, 0));
 		for (int row = 0; row <= numRows; ++row) {
@@ -106,12 +106,6 @@ public class PlayViewXtended extends PlayView {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
 			showRoutes = !showRoutes;
 		}
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_K)) {
-			killActiveGhosts();
-		}
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_E)) {
-			eatAllPellets();
-		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
 			toggleGhost(game.blinky);
 		}
@@ -127,12 +121,8 @@ public class PlayViewXtended extends PlayView {
 		super.update();
 	}
 
-	private void killActiveGhosts() {
-		game.activeGhosts().forEach(ghost -> ghost.processEvent(new GhostKilledEvent(ghost)));
-	}
-
-	public void eatAllPellets() {
-		game.maze.tiles().filter(game.maze::containsPellet).forEach(game::eatFoodAtTile);
+	private void toggleGhost(Ghost ghost) {
+		game.setActive(ghost, !game.isActive(ghost));
 	}
 
 	@Override
@@ -178,15 +168,12 @@ public class PlayViewXtended extends PlayView {
 					? String.format("%s(%s,%d|%d)[->%s]", name, ghost.state().id(), ghost.state().getTicksRemaining(),
 							ghost.state().getDuration(), nextState)
 					: String.format("%s(%s,%s)[->%s]", name, ghost.state().id(), INFTY, nextState);
-		} else {
+		}
+		else {
 			return ghost.state().getDuration() != State.ENDLESS ? String.format("%s(%s,%d|%d)", name,
 					ghost.state().id(), ghost.state().getTicksRemaining(), ghost.state().getDuration())
 					: String.format("%s(%s,%s)", name, ghost.state().id(), INFTY);
 		}
-	}
-
-	private void toggleGhost(Ghost ghost) {
-		game.setActive(ghost, !game.isActive(ghost));
 	}
 
 	private static Color ghostColor(Ghost ghost) {
@@ -243,14 +230,16 @@ public class PlayViewXtended extends PlayView {
 			g.translate(targetTile.col * TS, targetTile.row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-targetTile.col * TS, -targetTile.row * TS);
-		} else if (ghost.targetTile != null) {
+		}
+		else if (ghost.targetTile != null) {
 			// draw target tile indicator
-			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y, ghost.targetTile.col * TS + TS / 2,
-					ghost.targetTile.row * TS + TS / 2);
+			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
+					ghost.targetTile.col * TS + TS / 2, ghost.targetTile.row * TS + TS / 2);
 			g.translate(ghost.targetTile.col * TS, ghost.targetTile.row * TS);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-ghost.targetTile.col * TS, -ghost.targetTile.row * TS);
-		} else {
+		}
+		else {
 			// draw direction indicator
 			if (ghost.nextDir != -1) {
 				Vector2f center = ghost.tf.getCenter();

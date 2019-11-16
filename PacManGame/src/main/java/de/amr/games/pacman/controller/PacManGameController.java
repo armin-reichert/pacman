@@ -49,7 +49,8 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements ViewController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
+		implements ViewController {
 
 	// Typed reference to "Playing" state object
 	private PlayingState playingState;
@@ -126,6 +127,12 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	}
 
 	private void handleCheats() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_K)) {
+			game.activeGhosts().forEach(ghost -> ghost.processEvent(new GhostKilledEvent(ghost)));
+		}
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_E)) {
+			game.maze.tiles().filter(game.maze::containsPellet).forEach(game::eatFoodAtTile);
+		}
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
 			if (getState() == PacManGameState.PLAYING) {
 				enqueue(new LevelCompletedEvent());
@@ -135,15 +142,16 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			game.immortable = !game.immortable;
 			LOGGER.info("Immortable = " + game.immortable);
 		}
-
 	}
 
 	private void handlePlayingSpeedChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
 			app().clock.setFrequency(60);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
 			app().clock.setFrequency(80);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
 			app().clock.setFrequency(100);
 		}
 	}
@@ -344,7 +352,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			ghostAttackController.update();
 			if (oldAttackState != ghostAttackController.getState()) {
 				fireAttackStateChange();
-			} else {
+			}
+			else {
 				game.activeGhosts().forEach(Ghost::update);
 			}
 			game.pacMan.update();
@@ -529,7 +538,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				if (waitTimer == 0) {
 					game.activeGhosts().forEach(Ghost::hide);
 				}
-			} else {
+			}
+			else {
 				game.pacMan.update();
 			}
 		}
