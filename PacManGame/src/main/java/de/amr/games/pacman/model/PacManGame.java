@@ -151,6 +151,8 @@ public class PacManGame {
 
 	/** Level counter symbols displayed at the bottom right corner. */
 	private final List<BonusSymbol> levelCounter = new LinkedList<>();
+	
+	public boolean immortable = false;
 
 	/**
 	 * Creates the game using the classic Pac-Man theme.
@@ -325,6 +327,9 @@ public class PacManGame {
 	}
 
 	public void removeLife() {
+		if (immortable) {
+			return;
+		}
 		lives -= 1;
 	}
 

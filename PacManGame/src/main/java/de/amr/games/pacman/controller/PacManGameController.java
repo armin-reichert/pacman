@@ -110,7 +110,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	@Override
 	public void update() {
 		handleStateMachineLogging();
-		handleNextLevelCheat();
+		handleCheats();
 		handlePlayingSpeedChange();
 		handleGhostBehaviorChange();
 		super.update();
@@ -125,12 +125,17 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 	}
 
-	private void handleNextLevelCheat() {
+	private void handleCheats() {
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
 			if (getState() == PacManGameState.PLAYING) {
 				enqueue(new LevelCompletedEvent());
 			}
 		}
+		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_I)) {
+			game.immortable = !game.immortable;
+			LOGGER.info("Immortable = " + game.immortable);
+		}
+
 	}
 
 	private void handlePlayingSpeedChange() {
