@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import de.amr.graph.core.api.UndirectedEdge;
 import de.amr.graph.grid.api.GridGraph2D;
+import de.amr.graph.grid.api.Topology;
 import de.amr.graph.grid.impl.GridGraph;
 import de.amr.graph.grid.impl.Top4;
 import de.amr.graph.pathfinder.api.GraphSearch;
@@ -32,7 +33,9 @@ import de.amr.graph.pathfinder.impl.AStarSearch;
  */
 public class Maze {
 
-	public static final Top4 NESW = Top4.get();
+	/* 4 directions (NORTH, EAST, SOUTH, WEST) */
+	public static final Topology NESW = Top4.get();
+
 	public static final int COLS = 28, ROWS = 36;
 
 	private static final String[] MAP = {
@@ -148,15 +151,14 @@ public class Maze {
 		// Graph where each vertex holds a reference to the corresponding tile
 		graph = new GridGraph<>(COLS, ROWS, NESW, this::tile, (u, v) -> null, UndirectedEdge::new);
 		graph.fill();
-		graph.edges()
 		//@formatter:off
+		graph.edges()
 			.filter(edge -> isWall(tile(edge.either())) || isWall(tile(edge.other())))
 			.forEach(graph::removeEdge);
-		//@formatter:on
 
-		intersections = tiles()
-		//@formatter:off
-			.filter(tile -> graph.degree(vertex(tile)) >= 3)
+		intersections = graph.vertices()
+			.filter(vertex -> graph.degree(vertex) >= 3)
+			.mapToObj(this::tile)
 			.filter(tile -> !inFrontOfGhostHouseDoor(tile))
 			.filter(tile -> !partOfGhostHouse(tile))
 			.collect(Collectors.toSet());

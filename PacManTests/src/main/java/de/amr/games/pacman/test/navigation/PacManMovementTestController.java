@@ -11,12 +11,12 @@ import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class PacManMovementTestController implements ViewController {
 
-	private final PacManGame game;
+	private final PacManGame g;
 	private final PlayViewXtended view;
 
 	public PacManMovementTestController() {
-		game = new PacManGame();
-		view = new PlayViewXtended(game);
+		g = new PacManGame();
+		view = new PlayViewXtended(g);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
 		view.setShowStates(false);
@@ -26,23 +26,26 @@ public class PacManMovementTestController implements ViewController {
 	@Override
 	public void init() {
 		Application.LOGGER.setLevel(Level.FINE);
-		game.setLevel(1);
+		g.setLevel(1);
 		// game.maze.tiles().filter(game.maze::isFood).forEach(game::eatFoodAtTile);
-		game.pacMan.addGameEventListener(event -> {
+		g.pacMan.addGameEventListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
-				game.theme.snd_eatPill().play();
-				game.maze.removeFood(foodFound.tile);
+				g.theme.snd_eatPill().play();
+				g.maze.removeFood(foodFound.tile);
+				if (g.maze.tiles().filter(g.maze::containsFood).count() == 0) {
+					g.maze.restoreFood();
+				}
 			}
 		});
-		game.ghosts().forEach(ghost -> game.setActive(ghost, false));
-		game.setActive(game.pacMan, true);
-		game.pacMan.init();
+		g.ghosts().forEach(ghost -> g.setActive(ghost, false));
+		g.setActive(g.pacMan, true);
+		g.pacMan.init();
 	}
 
 	@Override
 	public void update() {
-		game.pacMan.update();
+		g.pacMan.update();
 		view.update();
 	}
 

@@ -162,7 +162,7 @@ public class ClassicPacManTheme implements PacManTheme {
 
 	@Override
 	public Sprite spr_pacManWalking(int dir) {
-		return Sprite.of(pacManWalking[dir]).animate(BACK_AND_FORTH, 20);
+		return Sprite.of(pacManWalking[dir]).animate(BACK_AND_FORTH, 25);
 	}
 
 	@Override
