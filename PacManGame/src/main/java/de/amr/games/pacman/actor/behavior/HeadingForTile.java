@@ -44,6 +44,14 @@ import de.amr.graph.grid.impl.Top4;
  */
 class HeadingForTile implements Steering {
 
+	/*
+	 * Straight line distance (squared).
+	 */
+	private static int dist(Tile t1, Tile t2) {
+		int dx = t1.col - t2.col, dy = t1.row - t2.row;
+		return dx * dx + dy * dy;
+	}
+
 	private static OptionalInt computeNextDir(MazeMover actor, int moveDir, Tile currentTile, Tile targetTile) {
 		/*@formatter:off*/
 		Maze maze = actor.maze;
@@ -91,14 +99,14 @@ class HeadingForTile implements Steering {
 
 	@Override
 	public void steer(MazeMover actor) {
-		actor.targetTile = Objects.requireNonNull(fnTargetTile.get(), "Target tile must not be NULL");
-		actor.targetPath = actor.visualizeCompletePath ? computePathToTarget(actor, actor.targetTile)
-				: Collections.emptyList();
 		Tile actorTile = actor.currentTile();
+		actor.targetTile = Objects.requireNonNull(fnTargetTile.get(), "Target tile must not be NULL");
 
 		/* Entering ghost house: move downwards at the ghost house door. */
 		if (actor.maze.inGhostHouse(actor.targetTile) && actor.maze.inFrontOfGhostHouseDoor(actorTile)) {
 			actor.nextDir = Top4.S;
+			actor.targetPath = actor.visualizeCompletePath ? computePathToTarget(actor, actor.targetTile)
+					: Collections.emptyList();
 			return;
 		}
 
@@ -111,13 +119,8 @@ class HeadingForTile implements Steering {
 		if (actor.enteredNewTile) {
 			computeNextDir(actor, actor.moveDir, actorTile, actor.targetTile).ifPresent(dir -> actor.nextDir = dir);
 		}
-	}
 
-	/*
-	 * Straight line distance (squared).
-	 */
-	private static int dist(Tile t1, Tile t2) {
-		int dx = t1.col - t2.col, dy = t1.row - t2.row;
-		return dx * dx + dy * dy;
+		actor.targetPath = actor.visualizeCompletePath ? computePathToTarget(actor, actor.targetTile)
+				: Collections.emptyList();
 	}
 }
