@@ -44,24 +44,24 @@ import de.amr.graph.grid.impl.Top4;
  */
 class HeadingForTile implements Steering {
 
-	private static OptionalInt computeNextDir(MazeMover actor, int moveDir, Tile currentTile, Tile target) {
+	private static OptionalInt computeNextDir(MazeMover actor, int moveDir, Tile currentTile, Tile targetTile) {
 		/*@formatter:off*/
 		Maze maze = actor.maze;
 		return IntStream.of(N, W, S, E)
-				.filter(dir -> dir != NESW.inv(moveDir))
-				.mapToObj(dir -> maze.tileToDir(currentTile, dir))
-				.filter(tile -> actor.canEnterTile(currentTile, tile))
-				.sorted((t1, t2) -> Integer.compare(dist(t1, target), dist(t2, target)))
-				.mapToInt(nextTile -> maze.direction(currentTile, nextTile).getAsInt())
-				.findFirst();
+			.filter(dir -> dir != NESW.inv(moveDir))
+			.mapToObj(dir -> maze.tileToDir(currentTile, dir))
+			.filter(tile -> actor.canEnterTile(currentTile, tile))
+			.sorted((t1, t2) -> Integer.compare(dist(t1, targetTile), dist(t2, targetTile)))
+			.mapToInt(neighborTile -> maze.direction(currentTile, neighborTile).getAsInt())
+			.findFirst();
 		/*@formatter:on*/
 	}
 
 	private static List<Tile> computePathToTarget(MazeMover actor, Tile targetTile) {
 		Maze maze = actor.maze;
-		Set<Tile> path = new LinkedHashSet<>();
 		Tile currentTile = actor.currentTile();
 		int currentDir = actor.moveDir;
+		Set<Tile> path = new LinkedHashSet<>();
 		path.add(currentTile);
 		while (!currentTile.equals(targetTile)) {
 			OptionalInt optNextDir = computeNextDir(actor, currentDir, currentTile, targetTile);
