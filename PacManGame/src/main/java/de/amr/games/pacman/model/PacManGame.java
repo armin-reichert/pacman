@@ -1,7 +1,6 @@
 package de.amr.games.pacman.model;
 
 import static de.amr.easy.game.Application.LOGGER;
-import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
@@ -374,10 +373,10 @@ public class PacManGame {
 	// Timing
 
 	/**
-	 * @return ticks corresponding to given amount of seconds at current clock frequency
+	 * @return ticks corresponding to given amount of seconds at 60Hz
 	 */
 	private static int sec(float seconds) {
-		return app().clock.sec(seconds);
+		return (int) (60 * seconds);
 	}
 
 	/**

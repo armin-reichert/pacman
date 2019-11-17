@@ -20,6 +20,8 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.actor.PacManState;
+import de.amr.games.pacman.controller.GhostAttackController;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
@@ -50,10 +52,13 @@ public class PlayViewXtended extends PlayView {
 	private boolean showRoutes = false;
 	private boolean showStates = false;
 
+	public GhostAttackController ghostAttackController;
+
 	private static BufferedImage createGridImage(int numRows, int numCols) {
 		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
 				.getDefaultConfiguration();
-		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1, Transparency.TRANSLUCENT);
+		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1,
+				Transparency.TRANSLUCENT);
 		Graphics2D g = image.createGraphics();
 		g.setColor(new Color(0, 60, 0));
 		for (int row = 0; row <= numRows; ++row) {
@@ -161,18 +166,25 @@ public class PlayViewXtended extends PlayView {
 	}
 
 	private String ghostStateText(Ghost ghost) {
-		String name = ghost.getState() == GhostState.DEAD ? ghost.name : "";
-		if (ghost.getState() == GhostState.FRIGHTENED) {
-			GhostState nextState = ghost.getNextState();
-			return ghost.state().getDuration() != State.ENDLESS
-					? String.format("%s(%s,%d|%d)[->%s]", name, ghost.state().id(), ghost.state().getTicksRemaining(),
-							ghost.state().getDuration(), nextState)
-					: String.format("%s(%s,%s)[->%s]", name, ghost.state().id(), INFTY, nextState);
-		} else {
-			return ghost.state().getDuration() != State.ENDLESS ? String.format("%s(%s,%d|%d)", name,
-					ghost.state().id(), ghost.state().getTicksRemaining(), ghost.state().getDuration())
-					: String.format("%s(%s,%s)", name, ghost.state().id(), INFTY);
+		String displayName = ghost.getState() == GhostState.DEAD ? ghost.name : "";
+		String nextState = ghost.getNextState() != ghost.getState()
+				? String.format("[->%s]", ghost.getNextState())
+				: "";
+		int duration = ghost.state().getDuration(), remaining = ghost.state().getTicksRemaining();
+
+		if (ghost.getState() == GhostState.FRIGHTENED && game.pacMan.getState() == PacManState.POWER) {
+			duration = game.pacMan.state().getDuration();
+			remaining = game.pacMan.state().getTicksRemaining();
 		}
+		else if ((ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING)
+				&& ghostAttackController != null) {
+			duration = ghostAttackController.state().getDuration();
+			remaining = ghostAttackController.state().getTicksRemaining();
+		}
+
+		return duration != State.ENDLESS
+				? String.format("%s(%s,%d|%d)%s", displayName, ghost.getState(), remaining, duration, nextState)
+				: String.format("%s(%s,%s)%s", displayName, ghost.getState(), INFTY, nextState);
 	}
 
 	private static Color ghostColor(Ghost ghost) {
@@ -219,10 +231,10 @@ public class PlayViewXtended extends PlayView {
 		g.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 140));
 		if (ghost.targetTile != null) {
 			// draw target tile indicator
-			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y, ghost.targetTile.col * TS + TS / 2,
-					ghost.targetTile.row * TS + TS / 2);
+			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
+					ghost.targetTile.col * TS + TS / 2, ghost.targetTile.row * TS + TS / 2);
 			g.translate(ghost.targetTile.col * TS, ghost.targetTile.row * TS);
-			g.drawRect(TS / 4, TS / 4, TS / 2, TS / 2);
+			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-ghost.targetTile.col * TS, -ghost.targetTile.row * TS);
 		}
 		if (ghost.targetPath.size() > 1) {
@@ -234,7 +246,8 @@ public class PlayViewXtended extends PlayView {
 				int v2 = v.row * TS + TS / 2;
 				g.drawLine(u1, u2, v1, v2);
 			}
-		} else {
+		}
+		else {
 			// draw direction indicator
 			if (ghost.nextDir != -1) {
 				Vector2f center = ghost.tf.getCenter();

@@ -90,6 +90,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void showPlayView() {
 		if (playView == null) {
 			playView = new PlayViewXtended(game);
+			playView.ghostAttackController = ghostAttackController;
 		}
 		show(playView);
 	}
