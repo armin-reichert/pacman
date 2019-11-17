@@ -26,34 +26,34 @@ import de.amr.graph.grid.impl.Top4;
  * "http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior">here</a>:
  *
  * <p>
- * The next step is understanding exactly how the ghosts attempt to reach their target tiles. The
- * ghosts’ AI is very simple and short-sighted, which makes the complex behavior of the ghosts even
- * more impressive. Ghosts only ever plan one step into the future as they move about the maze.
- * <br/>
- * Whenever a ghost enters a new tile, it looks ahead to the next tile that it will reach, and makes
- * a decision about which direction it will turn when it gets there. These decisions have one very
- * important restriction, which is that ghosts may never choose to reverse their direction of
- * travel. That is, a ghost cannot enter a tile from the left side and then decide to reverse
- * direction and move back to the left. The implication of this restriction is that whenever a ghost
- * enters a tile with only two exits, it will always continue in the same direction. </cite>
+ * The next step is understanding exactly how the ghosts attempt to reach their
+ * target tiles. The ghosts’ AI is very simple and short-sighted, which makes
+ * the complex behavior of the ghosts even more impressive. Ghosts only ever
+ * plan one step into the future as they move about the maze. <br/>
+ * Whenever a ghost enters a new tile, it looks ahead to the next tile that it
+ * will reach, and makes a decision about which direction it will turn when it
+ * gets there. These decisions have one very important restriction, which is
+ * that ghosts may never choose to reverse their direction of travel. That is, a
+ * ghost cannot enter a tile from the left side and then decide to reverse
+ * direction and move back to the left. The implication of this restriction is
+ * that whenever a ghost enters a tile with only two exits, it will always
+ * continue in the same direction. </cite>
  * </p>
  * 
  * @author Armin Reichert
  */
 class HeadingForTile implements Steering {
 
-	private static OptionalInt computeNextDir(MazeMover actor, int moveDir, Tile tile, Tile target) {
+	private static OptionalInt computeNextDir(MazeMover actor, int moveDir, Tile currentTile, Tile target) {
 		/*@formatter:off*/
 		Maze maze = actor.maze;
 		return IntStream.of(N, W, S, E)
 				.filter(dir -> dir != NESW.inv(moveDir))
-				.filter(dir -> !(dir == N && maze.isNoUpIntersection(tile)))
-				.mapToObj(dir -> maze.tileToDir(tile, dir))
-				.filter(actor::canEnterTile)
+				.mapToObj(dir -> maze.tileToDir(currentTile, dir))
+				.filter(tile -> actor.canEnterTile(currentTile, tile))
 				.sorted((t1, t2) -> Integer.compare(dist(t1, target), dist(t2, target)))
-				.mapToInt(nextTile -> maze.direction(tile, nextTile).getAsInt())
-				.findFirst()
-				;
+				.mapToInt(nextTile -> maze.direction(currentTile, nextTile).getAsInt())
+				.findFirst();
 		/*@formatter:on*/
 	}
 

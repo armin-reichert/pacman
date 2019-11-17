@@ -86,11 +86,11 @@ public class PacMan extends Actor<PacManState> {
 	}
 
 	@Override
-	public boolean canEnterTile(Tile tile) {
+	public boolean canEnterTile(Tile current, Tile tile) {
 		if (maze.isDoor(tile)) {
 			return false;
 		}
-		return super.canEnterTile(tile);
+		return super.canEnterTile(current, tile);
 	}
 
 	// State machine

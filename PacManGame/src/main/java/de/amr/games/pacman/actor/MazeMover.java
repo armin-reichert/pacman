@@ -44,7 +44,7 @@ public abstract class MazeMover extends Entity {
 	public boolean enteredNewTile;
 
 	public boolean visualizeCompletePath = false;
-	
+
 	/** Ticks remaining in teleporting state */
 	private int teleportTime;
 
@@ -204,10 +204,11 @@ public abstract class MazeMover extends Entity {
 	 * Common logic for Pac-Man and ghosts: walls can never be entered,
 	 * teleportation is possible.
 	 * 
-	 * @param tile some tile, may also be outside of the board
+	 * @param current current tile
+	 * @param tile    some tile, may also be outside of the board
 	 * @return <code>true</code> if this maze mover can enter the given tile
 	 */
-	public boolean canEnterTile(Tile tile) {
+	public boolean canEnterTile(Tile current, Tile tile) {
 		if (maze.isWall(tile)) {
 			return false;
 		}
@@ -218,12 +219,16 @@ public abstract class MazeMover extends Entity {
 	}
 
 	/**
+	 * Tells if the neighbor tile towards the given direction can be entered from
+	 * the current direction.
+	 * 
 	 * @param dir a direction (N, E, S, W)
 	 * @return if the maze mover can enter the neighbor tile towards the given
 	 *         direction
 	 */
 	public boolean canEnterTileTo(int dir) {
-		return canEnterTile(maze.tileToDir(currentTile(), dir));
+		Tile currentTile = currentTile(), neighbor = maze.tileToDir(currentTile, dir);
+		return canEnterTile(currentTile, neighbor);
 	}
 
 	/**

@@ -29,6 +29,7 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
+import de.amr.graph.grid.impl.Top4;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -138,11 +139,14 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 	}
 
 	@Override
-	public boolean canEnterTile(Tile tile) {
+	public boolean canEnterTile(Tile current, Tile tile) {
 		if (maze.isDoor(tile)) {
 			return getState() == DEAD || getState() != LOCKED && maze.inGhostHouse(currentTile());
 		}
-		return super.canEnterTile(tile);
+		if (maze.isNoUpIntersection(current) && tile == maze.tileToDir(current, Top4.N)) {
+			return false;
+		}
+		return super.canEnterTile(current, tile);
 	}
 
 	@Override
