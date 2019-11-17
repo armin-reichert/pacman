@@ -410,27 +410,39 @@ public class PacManGame {
 		return sec(2);
 	}
 
+	/**
+	 * @param round
+	 *                0-based index of scattering round
+	 * @return duration (ticks) of scattering state in current level and given round
+	 */
 	public int getGhostScatteringDuration(int round) {
-		if (level <= 1) {
+		// Level 1: 7s, 7s, 5s, 5s
+		if (level == 1) {
 			return sec(round <= 1 ? 7 : 5);
 		}
-		// levels 2-4
+		// Levels 2, 3, 4: 7s, 7s, 5s, 1 tick
 		if (level <= 4) {
 			return round <= 1 ? sec(7) : round == 2 ? sec(5) : 1;
 		}
-		// levels 5+
+		// Levels 5+: 5s, 5s, 5s, 1 tick
 		return round <= 2 ? sec(5) : 1;
 	}
 
+	/**
+	 * @param round
+	 *                0-based index of chasing round
+	 * @return duration (ticks) of chasing state in current level and given round
+	 */
 	public int getGhostChasingDuration(int round) {
-		if (level <= 1) {
+		// Level 1: 20s, 20s, 20s, forever
+		if (level == 1) {
 			return round <= 2 ? sec(20) : Integer.MAX_VALUE;
 		}
-		// levels 2-4
+		// Levels 2, 3, 4: 20s, 20s, 1033s, forever
 		if (level <= 4) {
 			return round <= 1 ? sec(20) : round == 2 ? sec(1033) : Integer.MAX_VALUE;
 		}
-		// levels 5+
+		// Levels 5+: 20s, 20s, 1037s, forever
 		return round <= 1 ? sec(20) : round == 2 ? sec(1037) : Integer.MAX_VALUE;
 	}
 
