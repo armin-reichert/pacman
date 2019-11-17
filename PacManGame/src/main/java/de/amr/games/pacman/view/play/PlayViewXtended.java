@@ -218,6 +218,14 @@ public class PlayViewXtended extends PlayView {
 
 	private void drawRoute(Graphics2D g, Ghost ghost) {
 		g.setColor(ghostColor(ghost));
+		if (ghost.targetTile != null) {
+			// draw target tile indicator
+			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
+					ghost.targetTile.col * TS + TS / 2, ghost.targetTile.row * TS + TS / 2);
+			g.translate(ghost.targetTile.col * TS, ghost.targetTile.row * TS);
+			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
+			g.translate(-ghost.targetTile.col * TS, -ghost.targetTile.row * TS);
+		}
 		if (ghost.targetPath.size() > 1) {
 			for (int i = 0; i < ghost.targetPath.size() - 1; ++i) {
 				Tile u = ghost.targetPath.get(i), v = ghost.targetPath.get(i + 1);
@@ -227,18 +235,6 @@ public class PlayViewXtended extends PlayView {
 				int v2 = v.row * TS + TS / 2;
 				g.drawLine(u1, u2, v1, v2);
 			}
-			Tile targetTile = ghost.targetPath.get(ghost.targetPath.size() - 1);
-			g.translate(targetTile.col * TS, targetTile.row * TS);
-			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
-			g.translate(-targetTile.col * TS, -targetTile.row * TS);
-		}
-		else if (ghost.targetTile != null) {
-			// draw target tile indicator
-			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
-					ghost.targetTile.col * TS + TS / 2, ghost.targetTile.row * TS + TS / 2);
-			g.translate(ghost.targetTile.col * TS, ghost.targetTile.row * TS);
-			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
-			g.translate(-ghost.targetTile.col * TS, -ghost.targetTile.row * TS);
 		}
 		else {
 			// draw direction indicator

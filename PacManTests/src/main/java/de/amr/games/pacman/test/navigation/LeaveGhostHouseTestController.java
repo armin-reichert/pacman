@@ -11,14 +11,14 @@ import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class LeaveGhostHouseTestController implements ViewController {
 
-	private final PacManGame game;
+	private final PacManGame g;
 	private final PlayViewXtended view;
 
 	public LeaveGhostHouseTestController() {
-		game = new PacManGame();
-		game.setLevel(1);
-		game.maze.removeFood();
-		view = new PlayViewXtended(game);
+		g = new PacManGame();
+		g.setLevel(1);
+		g.maze.removeFood();
+		view = new PlayViewXtended(g);
 		view.setShowRoutes(true);
 		view.setShowGrid(true);
 		view.setShowStates(true);
@@ -27,18 +27,19 @@ public class LeaveGhostHouseTestController implements ViewController {
 
 	@Override
 	public void init() {
-		game.pacMan.hide();
-		game.ghosts().filter(ghost -> ghost != game.inky).forEach(ghost -> game.setActive(ghost, false));
-		game.inky.init();
-		game.inky.fnNextState = () -> GhostState.SCATTERING;
-		game.inky.setState(GhostState.SCATTERING);
+		g.pacMan.hide();
+		g.ghosts().filter(ghost -> ghost != g.inky).forEach(ghost -> g.setActive(ghost, false));
+		g.inky.init();
+		g.inky.visualizeCompletePath = true;
+		g.inky.fnNextState = () -> GhostState.SCATTERING;
+		g.inky.setState(GhostState.SCATTERING);
 	}
 
 	@Override
 	public void update() {
-		game.inky.update();
-		if (game.inky.getState() == GhostState.LOCKED && Keyboard.keyPressedOnce(KeyEvent.VK_X)) {
-			game.inky.setState(GhostState.SCATTERING);
+		g.inky.update();
+		if (g.inky.getState() == GhostState.LOCKED && Keyboard.keyPressedOnce(KeyEvent.VK_X)) {
+			g.inky.setState(GhostState.SCATTERING);
 		}
 		view.update();
 	}
