@@ -1,6 +1,5 @@
 package de.amr.games.pacman.actor.behavior;
 
-import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.graph.grid.impl.Top4.E;
 import static de.amr.graph.grid.impl.Top4.N;
 import static de.amr.graph.grid.impl.Top4.S;
@@ -88,17 +87,20 @@ class HeadingForTile implements Steering {
 	private static int computeNextDir(MazeMover actor, int moveDir, Tile currentTile, Tile targetTile) {
 		/*@formatter:off*/
 		Maze maze = actor.maze;
-		List<Integer> candidates = Stream.of(N, W, S, E)
-				.filter(dir -> dir != NESW.inv(moveDir))
+		List<Integer> dirs = Stream.of(N, W, S, E)
+				.filter(dir -> dir != Maze.NESW.inv(moveDir))
 				.filter(dir -> actor.canEnterTile(currentTile, maze.tileToDir(currentTile, dir)))
 				.collect(Collectors.toList());
 		/*@formatter:on*/
-		if (candidates.size() > 1) {
-			candidates.sort((d1, d2) -> {
-				Tile neighbor1 = maze.tileToDir(currentTile, d1), neighbor2 = maze.tileToDir(currentTile, d2);
-				int dist1 = dist(neighbor1, targetTile), dist2 = dist(neighbor2, targetTile);
-				if (dist1 != dist2) {
-					return Integer.compare(dist1, dist2);
+		if (dirs.isEmpty()) {
+			throw new IllegalStateException("Could not determine next move direction");
+		}
+		if (dirs.size() > 1) {
+			dirs.sort((dir1, dir2) -> {
+				Tile tile1 = maze.tileToDir(currentTile, dir1), tile2 = maze.tileToDir(currentTile, dir2);
+				int comparedByDistance = Integer.compare(distance(tile1, targetTile), distance(tile2, targetTile));
+				if (comparedByDistance != 0) {
+					return comparedByDistance;
 				}
 				/*
 				 * If two or more potential choices are an equal distance from the target, the decision between them
@@ -106,14 +108,11 @@ class HeadingForTile implements Steering {
 				 * situation where two tiles are equidistant to the target, since any other option has a higher
 				 * priority.
 				 */
-				List<Integer> order = Arrays.asList(Top4.N, Top4.W, Top4.S, Top4.E);
-				return Integer.compare(order.indexOf(d1), order.indexOf(d2));
+				List<Integer> dirOrder = Arrays.asList(Top4.N, Top4.W, Top4.S, Top4.E);
+				return Integer.compare(dirOrder.indexOf(dir1), dirOrder.indexOf(dir2));
 			});
 		}
-		if (candidates.isEmpty()) {
-			throw new IllegalStateException("Could not determine next move direction");
-		}
-		return candidates.get(0);
+		return dirs.get(0);
 	}
 
 	/**
@@ -147,7 +146,7 @@ class HeadingForTile implements Steering {
 	}
 
 	/** Straight line distance (squared). */
-	private static int dist(Tile t1, Tile t2) {
+	private static int distance(Tile t1, Tile t2) {
 		int dx = t1.col - t2.col, dy = t1.row - t2.row;
 		return dx * dx + dy * dy;
 	}
