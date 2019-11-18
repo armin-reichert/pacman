@@ -58,18 +58,15 @@ class HeadingForTile implements Steering {
 			actor.targetTile = targetTile;
 			actor.targetPath = actor.visualizePath ? computePath(actor) : Collections.emptyList();
 			actor.nextDir = Top4.S;
-			return;
 		}
-
 		/* For leaving the ghost house use Blinky's home as temporary target tile. */
-		if (maze.inGhostHouse(actorTile) && !maze.inGhostHouse(targetTile)) {
+		else if (maze.inGhostHouse(actorTile) && !maze.inGhostHouse(targetTile)) {
 			actor.targetTile = maze.blinkyHome;
 			actor.targetPath = actor.visualizePath ? computePath(actor) : Collections.emptyList();
 			actor.nextDir = computeNextDir(actor, actor.moveDir, actorTile, actor.targetTile);
 		}
-
 		/* If a new tile is entered, decide where to go as described above. */
-		if (actor.enteredNewTile) {
+		else if (actor.enteredNewTile) {
 			actor.targetTile = targetTile;
 			actor.targetPath = actor.visualizePath ? computePath(actor) : Collections.emptyList();
 			actor.nextDir = computeNextDir(actor, actor.moveDir, actorTile, actor.targetTile);
