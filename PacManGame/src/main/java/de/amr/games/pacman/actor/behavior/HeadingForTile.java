@@ -49,64 +49,22 @@ class HeadingForTile implements Steering {
 
 	@Override
 	public void steer(MazeMover actor) {
-		Tile targetTile = Objects.requireNonNull(fnTargetTile.get(), "Target tile must not be NULL");
-		Tile actorTile = actor.currentTile();
-		Maze maze = actor.maze;
-
+		final Maze maze = actor.maze;
+		actor.targetTile = Objects.requireNonNull(fnTargetTile.get(), "Target tile must not be NULL");
 		/* Entering ghost house: move downwards at the ghost house door. */
-		if (maze.inGhostHouse(targetTile) && maze.inFrontOfGhostHouseDoor(actorTile)) {
-			actor.targetTile = targetTile;
-			actor.targetPath = actor.visualizePath ? computePath(actor) : Collections.emptyList();
+		if (maze.inGhostHouse(actor.targetTile) && maze.inFrontOfGhostHouseDoor(actor.currentTile())) {
 			actor.nextDir = Top4.S;
 		}
-		/* For leaving the ghost house use Blinky's home as temporary target tile. */
-		else if (maze.inGhostHouse(actorTile) && !maze.inGhostHouse(targetTile)) {
+		/* Leaving ghost house: use Blinky's home tile as (temporary) target tile. */
+		else if (maze.inGhostHouse(actor.currentTile()) && !maze.inGhostHouse(actor.targetTile)) {
 			actor.targetTile = maze.blinkyHome;
-			actor.targetPath = actor.visualizePath ? computePath(actor) : Collections.emptyList();
-			actor.nextDir = computeNextDir(actor, actor.moveDir, actorTile, actor.targetTile);
+			actor.nextDir = computeNextDir(actor, actor.moveDir, actor.currentTile(), actor.targetTile);
 		}
 		/* If a new tile is entered, decide where to go as described above. */
 		else if (actor.enteredNewTile) {
-			actor.targetTile = targetTile;
-			actor.targetPath = actor.visualizePath ? computePath(actor) : Collections.emptyList();
-			actor.nextDir = computeNextDir(actor, actor.moveDir, actorTile, actor.targetTile);
+			actor.nextDir = computeNextDir(actor, actor.moveDir, actor.currentTile(), actor.targetTile);
 		}
-	}
-
-	/**
-	 * Computes the complete path the actor would traverse until it would reach the target tile, a cycle
-	 * would occur or the borders of the board would be reached.
-	 * 
-	 * @param actor
-	 *                actor for which the path is computed
-	 * @return the path the actor would use
-	 */
-	private static List<Tile> computePath(MazeMover actor) {
-		Maze maze = actor.maze;
-		Tile currentTile = actor.currentTile();
-		int currentDir = actor.moveDir;
-		Set<Tile> path = new LinkedHashSet<>();
-		path.add(currentTile);
-		while (!currentTile.equals(actor.targetTile)) {
-			int nextDir = computeNextDir(actor, currentDir, currentTile, actor.targetTile);
-			Tile nextTile = maze.tileToDir(currentTile, nextDir);
-			if (!maze.insideBoard(nextTile)) {
-				break; // path leaves board
-			}
-			if (path.contains(nextTile)) {
-				break; // cycle
-			}
-			path.add(nextTile);
-			currentTile = nextTile;
-			currentDir = nextDir;
-		}
-		return path.stream().collect(Collectors.toList());
-	}
-
-	/** Straight line distance (squared). */
-	private static int dist(Tile t1, Tile t2) {
-		int dx = t1.col - t2.col, dy = t1.row - t2.row;
-		return dx * dx + dy * dy;
+		actor.targetPath = actor.visualizePath ? computePath(actor) : Collections.emptyList();
 	}
 
 	/**
@@ -157,4 +115,41 @@ class HeadingForTile implements Steering {
 		}
 		return candidates.get(0);
 	}
+
+	/**
+	 * Computes the complete path the actor would traverse until it would reach the target tile, a cycle
+	 * would occur or the borders of the board would be reached.
+	 * 
+	 * @param actor
+	 *                actor for which the path is computed
+	 * @return the path the actor would use
+	 */
+	private static List<Tile> computePath(MazeMover actor) {
+		Maze maze = actor.maze;
+		Tile currentTile = actor.currentTile();
+		int currentDir = actor.moveDir;
+		Set<Tile> path = new LinkedHashSet<>();
+		path.add(currentTile);
+		while (!currentTile.equals(actor.targetTile)) {
+			int nextDir = computeNextDir(actor, currentDir, currentTile, actor.targetTile);
+			Tile nextTile = maze.tileToDir(currentTile, nextDir);
+			if (!maze.insideBoard(nextTile)) {
+				break; // path leaves board
+			}
+			if (path.contains(nextTile)) {
+				break; // cycle
+			}
+			path.add(nextTile);
+			currentTile = nextTile;
+			currentDir = nextDir;
+		}
+		return path.stream().collect(Collectors.toList());
+	}
+
+	/** Straight line distance (squared). */
+	private static int dist(Tile t1, Tile t2) {
+		int dx = t1.col - t2.col, dy = t1.row - t2.row;
+		return dx * dx + dy * dy;
+	}
+
 }
