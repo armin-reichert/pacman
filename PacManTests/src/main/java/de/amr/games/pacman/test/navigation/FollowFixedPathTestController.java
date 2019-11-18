@@ -1,8 +1,10 @@
 package de.amr.games.pacman.test.navigation;
 
+import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
 
+import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.GhostState;
@@ -39,6 +41,7 @@ public class FollowFixedPathTestController implements ViewController {
 		g.blinky.setState(GhostState.CHASING);
 		g.theme.snd_ghost_chase().stop();
 		g.blinky.setBehavior(GhostState.CHASING, g.blinky.followingFixedPath(() -> targets.get(targetIndex)));
+		g.blinky.setBehavior(GhostState.FRIGHTENED, g.blinky.followingFixedPath(() -> targets.get(targetIndex)));
 	}
 
 	private void nextTarget() {
@@ -51,6 +54,13 @@ public class FollowFixedPathTestController implements ViewController {
 
 	@Override
 	public void update() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_F)) {
+			g.blinky.setState(GhostState.FRIGHTENED);
+		}
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_C)) {
+			g.blinky.setState(GhostState.CHASING);
+			g.theme.snd_ghost_chase().stop();
+		}
 		g.blinky.update();
 		if (g.blinky.currentTile().equals(targets.get(targetIndex))) {
 			nextTarget();
