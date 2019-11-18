@@ -1,10 +1,13 @@
 package de.amr.games.pacman;
 
+import static de.amr.games.pacman.model.PacManGame.TS;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.theme.PacManTheme;
@@ -25,8 +28,8 @@ public class PacManApp extends Application {
 
 	public PacManApp() {
 		settings.title = "Armin's Pac-Man";
-		settings.width = 28 * PacManGame.TS;
-		settings.height = 36 * PacManGame.TS;
+		settings.width = Maze.COLS * TS;
+		settings.height = Maze.ROWS * TS;
 		settings.scale = 2;
 		settings.fullScreenOnStart = false;
 	}
