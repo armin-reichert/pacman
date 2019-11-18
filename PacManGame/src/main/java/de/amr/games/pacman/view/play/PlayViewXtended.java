@@ -264,7 +264,6 @@ public class PlayViewXtended extends PlayView {
 			int lineLen = TS;
 			int indX = (int) (center.x + dx * lineLen);
 			int indY = (int) (center.y + dy * lineLen);
-//			g.drawLine((int) center.x, (int) center.y, indX, indY);
 			g.fillOval(indX - r, indY - r, 2 * r, 2 * r);
 		}
 		// draw Clyde's chasing zone
