@@ -43,7 +43,7 @@ public abstract class MazeMover extends Entity {
 	/** Tells if the last move entered a new tile position */
 	public boolean enteredNewTile;
 
-	public boolean visualizeCompletePath = false;
+	public boolean visualizePath = false;
 
 	/** Ticks remaining in teleporting state */
 	private int teleportTime;

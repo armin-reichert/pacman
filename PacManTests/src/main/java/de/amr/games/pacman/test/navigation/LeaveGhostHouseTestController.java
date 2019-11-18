@@ -30,7 +30,7 @@ public class LeaveGhostHouseTestController implements ViewController {
 		g.pacMan.hide();
 		g.ghosts().filter(ghost -> ghost != g.inky).forEach(ghost -> g.setActive(ghost, false));
 		g.inky.init();
-		g.inky.visualizeCompletePath = true;
+		g.inky.visualizePath = true;
 		g.inky.fnNextState = () -> GhostState.SCATTERING;
 		g.inky.setState(GhostState.SCATTERING);
 	}

@@ -1,5 +1,8 @@
 package de.amr.games.pacman.test.navigation;
 
+import static de.amr.games.pacman.actor.GhostState.CHASING;
+import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
+
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
@@ -7,7 +10,6 @@ import java.util.List;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
-import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayViewXtended;
@@ -38,10 +40,9 @@ public class FollowFixedPathTestController implements ViewController {
 		g.setActive(g.pacMan, false);
 		g.ghosts().filter(ghost -> ghost != g.blinky).forEach(ghost -> g.setActive(ghost, false));
 		g.blinky.init();
-		g.blinky.setState(GhostState.CHASING);
-		g.theme.snd_ghost_chase().stop();
-		g.blinky.setBehavior(GhostState.CHASING, g.blinky.followingFixedPath(() -> targets.get(targetIndex)));
-		g.blinky.setBehavior(GhostState.FRIGHTENED, g.blinky.followingFixedPath(() -> targets.get(targetIndex)));
+		g.blinky.setState(CHASING);
+		g.blinky.setBehavior(CHASING, g.blinky.followingFixedPath(() -> targets.get(targetIndex)));
+		g.blinky.setBehavior(FRIGHTENED, g.blinky.followingFixedPath(() -> targets.get(targetIndex)));
 	}
 
 	private void nextTarget() {
@@ -55,11 +56,7 @@ public class FollowFixedPathTestController implements ViewController {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_F)) {
-			g.blinky.setState(GhostState.FRIGHTENED);
-		}
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_C)) {
-			g.blinky.setState(GhostState.CHASING);
-			g.theme.snd_ghost_chase().stop();
+			g.blinky.setState(g.blinky.getState() == CHASING ? FRIGHTENED : CHASING);
 		}
 		g.blinky.update();
 		if (g.blinky.currentTile().equals(targets.get(targetIndex))) {

@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.OptionalInt;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -23,25 +22,89 @@ import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
 
 /**
- * Attempt at implementing the original Ghost behavior as described <a href=
- * "http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior">here</a>:
- *
- * <p>
- * The next step is understanding exactly how the ghosts attempt to reach their target tiles. The
- * ghosts’ AI is very simple and short-sighted, which makes the complex behavior of the ghosts even
- * more impressive. Ghosts only ever plan one step into the future as they move about the maze.
- * <br/>
- * Whenever a ghost enters a new tile, it looks ahead to the next tile that it will reach, and makes
- * a decision about which direction it will turn when it gets there. These decisions have one very
- * important restriction, which is that ghosts may never choose to reverse their direction of
- * travel. That is, a ghost cannot enter a tile from the left side and then decide to reverse
- * direction and move back to the left. The implication of this restriction is that whenever a ghost
- * enters a tile with only two exits, it will always continue in the same direction. </cite>
- * </p>
+ * A behavior which steers an actor (ghost) towards a (possibly moving) target tile. Each time the
+ * {@link #steer(MazeMover)} method is called, the target tile is recomputed. There is also some
+ * special logic for entering and exiting the ghost house.
+ * 
+ * The detailed behavior is described
+ * <a href="http://gameinternals.com/understanding-pac-man-ghost-behavior">here</a>.
  * 
  * @author Armin Reichert
  */
 class HeadingForTile implements Steering {
+
+	private final Supplier<Tile> fnTargetTile;
+
+	/**
+	 * Creates a behavior which lets an actor heading for the target tile supplied by the given
+	 * function.
+	 * 
+	 * @param fnTargetTile
+	 *                       function supplying the target tile whenever the {@link #steer(MazeMover)}
+	 *                       method is called
+	 */
+	public HeadingForTile(Supplier<Tile> fnTargetTile) {
+		this.fnTargetTile = fnTargetTile;
+	}
+
+	@Override
+	public void steer(MazeMover actor) {
+		Tile targetTile = Objects.requireNonNull(fnTargetTile.get(), "Target tile must not be NULL");
+		Tile actorTile = actor.currentTile();
+		Maze maze = actor.maze;
+
+		/* Entering ghost house: move downwards at the ghost house door. */
+		if (maze.inGhostHouse(targetTile) && maze.inFrontOfGhostHouseDoor(actorTile)) {
+			actor.targetTile = targetTile;
+			actor.targetPath = actor.visualizePath ? computePath(actor) : Collections.emptyList();
+			actor.nextDir = Top4.S;
+			return;
+		}
+
+		/* For leaving the ghost house use Blinky's home as temporary target tile. */
+		if (maze.inGhostHouse(actorTile) && !maze.inGhostHouse(targetTile)) {
+			actor.targetTile = maze.blinkyHome;
+			actor.targetPath = actor.visualizePath ? computePath(actor) : Collections.emptyList();
+			actor.nextDir = computeNextDir(actor, actor.moveDir, actorTile, actor.targetTile);
+		}
+
+		/* If a new tile is entered, decide where to go as described above. */
+		if (actor.enteredNewTile) {
+			actor.targetTile = targetTile;
+			actor.targetPath = actor.visualizePath ? computePath(actor) : Collections.emptyList();
+			actor.nextDir = computeNextDir(actor, actor.moveDir, actorTile, actor.targetTile);
+		}
+	}
+
+	/**
+	 * Computes the complete path the actor would traverse until it would reach the target tile, a cycle
+	 * would occur or the borders of the board would be reached.
+	 * 
+	 * @param actor
+	 *                actor for which the path is computed
+	 * @return the path the actor would use
+	 */
+	private static List<Tile> computePath(MazeMover actor) {
+		Maze maze = actor.maze;
+		Tile currentTile = actor.currentTile();
+		int currentDir = actor.moveDir;
+		Set<Tile> path = new LinkedHashSet<>();
+		path.add(currentTile);
+		while (!currentTile.equals(actor.targetTile)) {
+			int nextDir = computeNextDir(actor, currentDir, currentTile, actor.targetTile);
+			Tile nextTile = maze.tileToDir(currentTile, nextDir);
+			if (!maze.insideBoard(nextTile)) {
+				break; // path leaves board
+			}
+			if (path.contains(nextTile)) {
+				break; // cycle
+			}
+			path.add(nextTile);
+			currentTile = nextTile;
+			currentDir = nextDir;
+		}
+		return path.stream().collect(Collectors.toList());
+	}
 
 	/** Straight line distance (squared). */
 	private static int dist(Tile t1, Tile t2) {
@@ -55,8 +118,8 @@ class HeadingForTile implements Steering {
 	 * 
 	 * <p>
 	 * Note: We use separate parameters for the actor's move direction, tile and target tile instead of
-	 * the members of the actor itself because the {@link #computePathToTarget(MazeMover, Tile)} method
-	 * uses this method without actually placing the actor at each tile of the path.
+	 * the members of the actor itself because the {@link #computePath(MazeMover, Tile)} method uses
+	 * this method without actually placing the actor at each tile of the path.
 	 * 
 	 * @param actor
 	 *                      a actor (normally a ghost)
@@ -67,7 +130,7 @@ class HeadingForTile implements Steering {
 	 * @param targetTile
 	 *                      the actor's current target tile
 	 */
-	private static OptionalInt computeNextDir(MazeMover actor, int moveDir, Tile currentTile, Tile targetTile) {
+	private static int computeNextDir(MazeMover actor, int moveDir, Tile currentTile, Tile targetTile) {
 		/*@formatter:off*/
 		Maze maze = actor.maze;
 		List<Integer> candidates = Stream.of(N, W, S, E)
@@ -95,63 +158,6 @@ class HeadingForTile implements Steering {
 		if (candidates.isEmpty()) {
 			throw new IllegalStateException("Could not determine next move direction");
 		}
-		return OptionalInt.of(candidates.get(0));
-	}
-
-	private static List<Tile> computePathToTarget(MazeMover actor, Tile targetTile) {
-		Maze maze = actor.maze;
-		Tile currentTile = actor.currentTile();
-		int currentDir = actor.moveDir;
-		Set<Tile> path = new LinkedHashSet<>();
-		path.add(currentTile);
-		while (!currentTile.equals(targetTile)) {
-			OptionalInt optNextDir = computeNextDir(actor, currentDir, currentTile, targetTile);
-			if (!optNextDir.isPresent()) {
-				break;
-			}
-			int nextDir = optNextDir.getAsInt();
-			Tile nextTile = maze.tileToDir(currentTile, nextDir);
-			if (!maze.insideBoard(nextTile)) {
-				break;
-			}
-			if (path.contains(nextTile)) {
-				break; // cycle
-			}
-			path.add(nextTile);
-			currentTile = nextTile;
-			currentDir = nextDir;
-		}
-		return path.stream().collect(Collectors.toList());
-	}
-
-	private final Supplier<Tile> fnTargetTile;
-
-	public HeadingForTile(Supplier<Tile> fnTargetTile) {
-		this.fnTargetTile = fnTargetTile;
-	}
-
-	@Override
-	public void steer(MazeMover actor) {
-		Tile actorTile = actor.currentTile();
-		actor.targetTile = Objects.requireNonNull(fnTargetTile.get(), "Target tile must not be NULL");
-
-		/* Entering ghost house: move downwards at the ghost house door. */
-		if (actor.maze.inGhostHouse(actor.targetTile) && actor.maze.inFrontOfGhostHouseDoor(actorTile)) {
-			actor.nextDir = Top4.S;
-			return;
-		}
-
-		/* For leaving the ghost house use Blinky's home as target tile. */
-		if (actor.maze.inGhostHouse(actorTile) && !actor.maze.inGhostHouse(actor.targetTile)) {
-			actor.targetTile = actor.maze.blinkyHome;
-		}
-
-		/* If a new tile is entered, decide where to go as described above. */
-		if (actor.enteredNewTile) {
-			computeNextDir(actor, actor.moveDir, actorTile, actor.targetTile).ifPresent(dir -> actor.nextDir = dir);
-		}
-
-		actor.targetPath = actor.visualizeCompletePath ? computePathToTarget(actor, actor.targetTile)
-				: Collections.emptyList();
+		return candidates.get(0);
 	}
 }
