@@ -141,7 +141,7 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 	@Override
 	public boolean canEnterTile(Tile current, Tile tile) {
 		if (maze.isDoor(tile)) {
-			return getState() == DEAD || getState() != LOCKED && maze.inGhostHouse(currentTile());
+			return getState() == DEAD || getState() != LOCKED && maze.inGhostHouse(current);
 		}
 		if (maze.isNoUpIntersection(current) && tile == maze.tileToDir(current, Top4.N)) {
 			return getState() != GhostState.CHASING;
