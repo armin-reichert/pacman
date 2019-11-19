@@ -3,7 +3,7 @@
 
 <!-- img src="doc/intro.png"/>
 
-[![Alt text](https://img.youtube.com/vi/NF8ynftis_U/0.jpg)](https://www.youtube.com/watch?v=NF8ynftis_U)
+[![Pac-Man](https://img.youtube.com/vi/NF8ynftis_U/0.jpg)](https://www.youtube.com/watch?v=NF8ynftis_U)
 
 ## Pac-Man? Really? How uncool!
 
