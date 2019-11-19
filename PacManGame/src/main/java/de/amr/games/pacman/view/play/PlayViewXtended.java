@@ -264,12 +264,15 @@ public class PlayViewXtended extends PlayView {
 			int lineLen = TS;
 			int indX = (int) (center.x + dx * lineLen);
 			int indY = (int) (center.y + dy * lineLen);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.fillOval(indX - r, indY - r, 2 * r, 2 * r);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		}
 		// draw Clyde's chasing zone
 		if (ghost == game.clyde && ghost.getState() == GhostState.CHASING) {
 			Vector2f center = game.clyde.tf.getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 160));
 			g.drawOval((int) center.x - 8 * TS, (int) center.y - 8 * TS, 16 * TS, 16 * TS);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		}
