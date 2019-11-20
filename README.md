@@ -596,8 +596,10 @@ However, for a maze of such a small size the used algorithm doesn't matter much,
 - Tracing of state machines can be switched on/off at runtime (key 'l')
 - Ghosts can be enabled/disabled during the game (keys 'b', 'p', 'i', 'c')
 - The ghost's *frightened* behavior can be toggled between "random" and "select safe corner" during the game (key 'f')
-- Cheat key 'k' kills all ghosts
-- Cheat key 'e' eats all normal pellets
+- Cheat key ALT-'k' kills all ghosts
+- Cheat key ALT-'e' eats all normal pellets
+- Cheat key ALT-'+' switches to next level
+- Cheat key ALT-'i' makes Pac-Man immportable
 - Alignment of actors on the grid can be visualized (key 'g')
 - Game can be paused/resumed (CTRL+p)
 - Game loop frequency and (full-)screen resolution can be changed (key F2)
