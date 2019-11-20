@@ -38,20 +38,20 @@ public class GhostAttackController extends StateMachine<GhostState, Void> {
 	}
 
 	/*@formatter:off*/
-	public static final int[][] SCATTER_TABLE = {
+	public static final int[][] SCATTERING_DURATION = {
 		{ sec(7), sec(7), sec(5), sec(5) }, // Level 1
 		{ sec(7), sec(7), sec(5), 1 },      // Level 2-4
 		{ sec(5), sec(5), sec(5), 1 },      // Level >= 5
 	};
 	
-	public static final int[][] CHASING_TABLE = {
+	public static final int[][] CHASING_DURATION = {
 		{ sec(20), sec(20), sec(20),                Integer.MAX_VALUE }, // Level 1
 		{ sec(20), sec(20), min(17) + sec(13) + 14, Integer.MAX_VALUE }, // Level 2-4
 		{ sec(20), sec(20), min(17) + sec(17) + 14, Integer.MAX_VALUE }, // Level >= 5
 	};
 	/*@formatter:on*/
 
-	private int getDuration(int[][] table) {
+	private int ticks(int[][] table) {
 		int level = fnLevel.getAsInt();
 		return table[(level == 1) ? 0 : (level <= 4) ? 1 : 2][round < 3 ? round : 3];
 	}
@@ -70,10 +70,10 @@ public class GhostAttackController extends StateMachine<GhostState, Void> {
 			.initialState(SCATTERING)
 		.states()
 			.state(SCATTERING)
-				.timeoutAfter(() -> getDuration(SCATTER_TABLE))
+				.timeoutAfter(() -> ticks(SCATTERING_DURATION))
 				.onEntry(this::logStateEntry)
 			.state(CHASING)
-				.timeoutAfter(() -> getDuration(CHASING_TABLE))
+				.timeoutAfter(() -> ticks(CHASING_DURATION))
 				.onEntry(this::logStateEntry)
 				.onExit(() -> ++round)
 		.transitions()
