@@ -80,7 +80,8 @@ public abstract class MazeMover extends Entity {
 	 */
 	protected void move() {
 		steer();
-		if (!teleport(app().clock.sec(1.0f))) {
+		boolean teleporting = teleport(app().clock.sec(1.0f));
+		if (!teleporting) {
 			moveInsideMaze();
 		}
 	}
