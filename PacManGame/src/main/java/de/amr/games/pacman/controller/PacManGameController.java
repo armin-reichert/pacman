@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
@@ -55,23 +54,27 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	// Typed reference to "Playing" state object
 	private PlayingState playingState;
 
-	// Model
-	private final PacManGame game;
+	// Game (model)
+	public final PacManGame game;
 
-	// Child controller
+	// Controls the ghost attack waves
 	private final GhostAttackController ghostAttackController;
+
+	// Handles cheat keys
+	private final Cheats cheatsController;
 
 	// UI
 	private final PacManTheme theme;
 	private IntroView introView;
 	private PlayViewXtended playView;
-	private Controller currentViewController;
+	private Controller viewController;
 
 	public PacManGameController(PacManGame game) {
 		super(PacManGameState.class);
 		this.game = game;
 		this.theme = game.theme;
 		buildStateMachine();
+		cheatsController = new Cheats(this);
 		ghostAttackController = new GhostAttackController(game::getLevel);
 		game.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackController::getState);
 		game.pacMan.addGameEventListener(this::process);
@@ -96,15 +99,15 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	}
 
 	private void show(Controller controller) {
-		if (currentViewController != controller) {
-			currentViewController = controller;
+		if (viewController != controller) {
+			viewController = controller;
 			controller.init();
 		}
 	}
 
 	@Override
 	public View currentView() {
-		return (View) currentViewController;
+		return (View) viewController;
 	}
 
 	// Controller methods
@@ -112,11 +115,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	@Override
 	public void update() {
 		handleStateMachineLogging();
-		handleCheats();
 		handlePlayingSpeedChange();
 		handleGhostBehaviorChange();
+		cheatsController.update();
 		super.update();
-		currentViewController.update();
+		viewController.update();
 	}
 
 	private void handleStateMachineLogging() {
@@ -124,24 +127,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			Logger smLogger = Logger.getLogger("StateMachineLogger");
 			smLogger.setLevel(smLogger.getLevel() == Level.OFF ? Level.INFO : Level.OFF);
 			LOGGER.info("State machine logging is " + smLogger.getLevel());
-		}
-	}
-
-	private void handleCheats() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_K)) {
-			game.activeGhosts().forEach(ghost -> ghost.processEvent(new GhostKilledEvent(ghost)));
-		}
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_E)) {
-			game.maze.tiles().filter(game.maze::containsPellet).forEach(game::eatFoodAtTile);
-		}
-		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
-			if (getState() == PacManGameState.PLAYING) {
-				enqueue(new LevelCompletedEvent());
-			}
-		}
-		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_I)) {
-			game.immortable = !game.immortable;
-			LOGGER.info("Immortable = " + game.immortable);
 		}
 	}
 
