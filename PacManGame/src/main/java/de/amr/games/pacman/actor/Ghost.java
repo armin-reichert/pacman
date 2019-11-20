@@ -62,6 +62,8 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 		this.name = name;
 		this.initialTile = initialTile;
 		this.initialDir = initialDir;
+		this.nextDir = initialDir;
+		this.moveDir = initialDir;
 		fnNextState = this::getState;
 		buildStateMachine();
 		NESW.dirs().forEach(dir -> {
@@ -144,7 +146,7 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 			return getState() == DEAD || getState() != LOCKED && maze.inGhostHouse(current);
 		}
 		if (maze.isNoUpIntersection(current) && tile == maze.tileToDir(current, Top4.N)) {
-			return getState() != GhostState.CHASING;
+			return getState() != GhostState.CHASING && getState() != GhostState.SCATTERING;
 		}
 		return super.canEnterTile(current, tile);
 	}
