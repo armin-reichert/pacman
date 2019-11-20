@@ -51,6 +51,16 @@ public class GhostAttackController extends StateMachine<GhostState, Void> {
 	};
 	/*@formatter:on*/
 
+	private int getScatteringDuration() {
+		int level = fnLevel.getAsInt();
+		return SCATTER_TICKS[(level == 1) ? 0 : (level <= 4) ? 1 : 2][Math.min(round, 3)];
+	}
+
+	private int getChasingDuration() {
+		int level = fnLevel.getAsInt();
+		return SCATTER_TICKS[(level == 1) ? 0 : (level <= 4) ? 1 : 2][Math.min(round, 3)];
+	}
+
 	private final IntSupplier fnLevel;
 	private int round;
 	private boolean suspended;
@@ -63,11 +73,8 @@ public class GhostAttackController extends StateMachine<GhostState, Void> {
 			.description("[GhostAttackTimer]")
 			.initialState(SCATTERING)
 		.states()
-			.state(SCATTERING)
-				.timeoutAfter(this::getScatteringDuration)
-			.state(CHASING)
-				.timeoutAfter(this::getChasingDuration)
-				.onExit(this::nextRound)
+			.state(SCATTERING).timeoutAfter(this::getScatteringDuration)
+			.state(CHASING).timeoutAfter(this::getChasingDuration).onExit(this::nextRound)
 		.transitions()
 			.when(SCATTERING).then(CHASING).onTimeout()
 			.when(CHASING).then(SCATTERING).onTimeout()
@@ -108,17 +115,6 @@ public class GhostAttackController extends StateMachine<GhostState, Void> {
 
 	private void nextRound() {
 		++round;
-	}
-
-	private int getScatteringDuration() {
-		int level = fnLevel.getAsInt();
-		int row = level == 1 ? 0 : level <= 4 ? 1 : 2;
-		return SCATTER_TICKS[row][round];
-	}
-
-	private int getChasingDuration() {
-		int level = fnLevel.getAsInt();
-		int row = level == 1 ? 0 : level <= 4 ? 1 : 2;
-		return SCATTER_TICKS[row][round];
+		LOGGER.info("Starting attack round #" + round);
 	}
 }

@@ -162,7 +162,7 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 		return game.computeGhostSpeed(this);
 	}
 
-	void reverseDirection() {
+	private void reverseDirection() {
 		int oppositeDir = NESW.inv(moveDir);
 		IntStream.of(oppositeDir, NESW.left(oppositeDir), NESW.right(oppositeDir)).filter(this::canEnterTileTo)
 				.findFirst().ifPresent(dir -> nextDir = dir);
@@ -239,13 +239,13 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 				
 				.when(CHASING).then(DYING).on(GhostKilledEvent.class)
 				
-				.when(CHASING).then(SCATTERING).on(StartScatteringEvent.class)
+				.when(CHASING).then(SCATTERING).on(StartScatteringEvent.class).act(this::reverseDirection)
 
 				.when(SCATTERING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
 				
 				.when(SCATTERING).then(DYING).on(GhostKilledEvent.class)
 				
-				.when(SCATTERING).then(CHASING).on(StartChasingEvent.class)
+				.when(SCATTERING).then(CHASING).on(StartChasingEvent.class).act(this::reverseDirection)
 				
 				.when(FRIGHTENED).then(CHASING).on(PacManLostPowerEvent.class)
 					.condition(() -> getNextState() == CHASING)
