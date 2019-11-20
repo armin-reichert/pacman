@@ -12,13 +12,13 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.statemachine.StateMachine;
 
 /**
- * State machine for controlling the timing of the ghost attacks. Ghosts attack
- * Pac-Man in rounds, changing between chasing and scattering. The duration of
- * these attacks depends on the level and round.
+ * State machine for controlling the timing of the ghost attacks. Ghosts attack Pac-Man in rounds,
+ * changing between chasing and scattering. The duration of these attacks depends on the level and
+ * round.
  * 
  * <p>
- * Ghosts also use the current state of this state machine to decide what to do
- * after being frightened or killed.
+ * Ghosts also use the current state of this state machine to decide what to do after being
+ * frightened or killed.
  * 
  * @author Armin Reichert
  * 
@@ -26,6 +26,30 @@ import de.amr.statemachine.StateMachine;
  *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=3">Gamasutra</a>
  */
 public class GhostAttackController extends StateMachine<GhostState, Void> {
+
+	/** Ticks for given seconds at 60 Hz */
+	private static int sec(int sec) {
+		return 60 * sec;
+	}
+
+	/** Ticks for given minutes at 60 Hz */
+	private static int min(int min) {
+		return 3600 * min;
+	}
+
+	/*@formatter:off*/
+	public static final int[][] SCATTER_TICKS = {
+		{ sec(7), sec(7), sec(5), sec(5) }, // Level 1
+		{ sec(7), sec(7), sec(5), 1 },      // Level 2-4
+		{ sec(5), sec(5), sec(5), 1 },      // Level >= 5
+	};
+	
+	public static final int[][] CHASING_TICKS = {
+		{ sec(20), sec(20), sec(20),                Integer.MAX_VALUE }, // Level 1
+		{ sec(20), sec(20), min(17) + sec(13) + 14, Integer.MAX_VALUE }, // Level 2-4
+		{ sec(20), sec(20), min(17) + sec(17) + 14, Integer.MAX_VALUE }, // Level >= 5
+	};
+	/*@formatter:on*/
 
 	private final PacManGame game;
 	private int round;
@@ -87,10 +111,12 @@ public class GhostAttackController extends StateMachine<GhostState, Void> {
 	}
 
 	private int getScatteringDuration() {
-		return game.getGhostScatteringDuration(round);
+		int row = game.getLevel() == 1 ? 0 : game.getLevel() <= 4 ? 1 : 2;
+		return SCATTER_TICKS[row][round];
 	}
 
 	private int getChasingDuration() {
-		return game.getGhostChasingDuration(round);
+		int row = game.getLevel() == 1 ? 0 : game.getLevel() <= 4 ? 1 : 2;
+		return SCATTER_TICKS[row][round];
 	}
 }
