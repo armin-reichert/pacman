@@ -72,7 +72,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		this.game = game;
 		this.theme = game.theme;
 		buildStateMachine();
-		ghostAttackController = new GhostAttackController(game);
+		ghostAttackController = new GhostAttackController(game::getLevel);
 		game.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackController::getState);
 		game.pacMan.addGameEventListener(this::process);
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
