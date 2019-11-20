@@ -1,5 +1,6 @@
 package de.amr.games.pacman.test.navigation;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import de.amr.easy.game.input.Keyboard;
@@ -18,7 +19,7 @@ public class ScatteringTestController implements ViewController {
 	public ScatteringTestController() {
 		game = new PacManGame();
 		view = new PlayViewXtended(game);
-		view.setShowGrid(true);
+		view.setShowGrid(false);
 		view.setShowRoutes(true);
 		view.setShowStates(true);
 		view.setScoresVisible(false);
@@ -29,25 +30,23 @@ public class ScatteringTestController implements ViewController {
 		game.init();
 		game.maze.removeFood();
 		game.pacMan.hide();
-//		game.setActive(game.pinky, false);
-//		game.setActive(game.inky, false);
-//		game.setActive(game.clyde, false);
 		game.activeGhosts().forEach(ghost -> {
 			ghost.init();
-			ghost.setState(GhostState.SCATTERING);
+			ghost.setState(GhostState.LOCKED);
+			ghost.visualizePath = true;
 		});
-//		LOGGER.info("Position=" + game.blinky.tf.getPosition());
+		view.showInfoText("Press SPACE key", Color.YELLOW);
 	}
 
 	@Override
 	public void update() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_X)) {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			game.activeGhosts().filter(ghost -> ghost.getState() == GhostState.LOCKED).forEach(ghost -> {
 				ghost.setState(GhostState.SCATTERING);
 			});
+			view.hideInfoText();
 		}
 		game.activeGhosts().forEach(Ghost::update);
-//		LOGGER.info("Position=" + game.blinky.tf.getPosition());
 		view.update();
 	}
 

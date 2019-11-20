@@ -186,7 +186,7 @@ public class PacManGame {
 		blinky = new Ghost(this, maze, "Blinky", GhostColor.RED, maze.blinkyHome, Top4.W);
 		blinky.setBehavior(SCATTERING, blinky.headingFor(() -> maze.blinkyScatter));
 		blinky.setBehavior(CHASING, blinky.attackingDirectly(pacMan));
-		blinky.setBehavior(LOCKED, blinky.keepingDirection());
+		blinky.setBehavior(LOCKED, blinky.standingStill());
 
 		pinky = new Ghost(this, maze, "Pinky", GhostColor.PINK, maze.pinkyHome, Top4.S);
 		pinky.setBehavior(SCATTERING, pinky.headingFor(() -> maze.pinkyScatter));

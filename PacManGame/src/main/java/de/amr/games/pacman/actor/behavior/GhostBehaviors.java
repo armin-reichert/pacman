@@ -25,6 +25,15 @@ public interface GhostBehaviors {
 	Ghost theGhost();
 
 	/**
+	 * Keeps the actor on its current tile.
+	 * 
+	 * @return behavior where ghost keeps its current position
+	 */
+	default Steering standingStill() {
+		return ghost -> ghost.targetTile = ghost.currentTile();
+	}
+
+	/**
 	 * Keeps the current move direction.
 	 * 
 	 * @return behavior where ghost keeps its current move direction
