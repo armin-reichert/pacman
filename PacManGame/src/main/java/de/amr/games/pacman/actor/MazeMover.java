@@ -80,9 +80,6 @@ public abstract class MazeMover extends Entity {
 	 */
 	protected void move() {
 		steer();
-		if (currentTile().equals(targetTile)) {
-			return;
-		}
 		if (!teleport(app().clock.sec(1.0f))) {
 			moveInsideMaze();
 		}

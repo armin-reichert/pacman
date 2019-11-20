@@ -58,7 +58,7 @@ public class GhostAttackController extends StateMachine<GhostState, Void> {
 
 	private int getChasingDuration() {
 		int level = fnLevel.getAsInt();
-		return SCATTER_TICKS[(level == 1) ? 0 : (level <= 4) ? 1 : 2][Math.min(round, 3)];
+		return CHASING_TICKS[(level == 1) ? 0 : (level <= 4) ? 1 : 2][Math.min(round, 3)];
 	}
 
 	private final IntSupplier fnLevel;
@@ -68,19 +68,24 @@ public class GhostAttackController extends StateMachine<GhostState, Void> {
 	public GhostAttackController(IntSupplier fnLevel) {
 		super(GhostState.class);
 		this.fnLevel = fnLevel;
+		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("[GhostAttackTimer]")
 			.initialState(SCATTERING)
 		.states()
-			.state(SCATTERING).timeoutAfter(this::getScatteringDuration)
-			.state(CHASING).timeoutAfter(this::getChasingDuration).onExit(this::nextRound)
+			.state(SCATTERING)
+				.timeoutAfter(this::getScatteringDuration)
+				.onEntry(this::logStateEntry)
+			.state(CHASING)
+				.timeoutAfter(this::getChasingDuration)
+				.onEntry(this::logStateEntry)
+				.onExit(() -> ++round)
 		.transitions()
 			.when(SCATTERING).then(CHASING).onTimeout()
 			.when(CHASING).then(SCATTERING).onTimeout()
 		.endStateMachine();
 		/*@formatter:on*/
-		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
 
 	@Override
@@ -113,8 +118,7 @@ public class GhostAttackController extends StateMachine<GhostState, Void> {
 		}
 	}
 
-	private void nextRound() {
-		++round;
-		LOGGER.info("Starting attack round #" + round);
+	private void logStateEntry() {
+		LOGGER.info(() -> "Start " + getState() + " for " + state().getDuration() + " ticks");
 	}
 }
