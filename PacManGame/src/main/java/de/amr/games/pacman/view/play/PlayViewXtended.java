@@ -133,7 +133,7 @@ public class PlayViewXtended extends PlayView {
 
 	@Override
 	public void draw(Graphics2D g) {
-		super.draw(g);
+		mazeView.draw(g);
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
 			if (game.pacMan.visible()) {
@@ -144,9 +144,13 @@ public class PlayViewXtended extends PlayView {
 		if (showRoutes) {
 			game.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));
 		}
+		game.getBonus().ifPresent(bonus -> bonus.draw(g));
+		drawActors(g);
+		drawScores(g);
 		if (showStates) {
 			drawEntityStates(g);
 		}
+		drawInfoText(g);
 	}
 
 	private void drawEntityStates(Graphics2D g) {

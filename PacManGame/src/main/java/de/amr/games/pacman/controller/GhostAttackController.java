@@ -5,10 +5,10 @@ import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 
+import java.util.function.IntSupplier;
 import java.util.logging.Logger;
 
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -51,13 +51,13 @@ public class GhostAttackController extends StateMachine<GhostState, Void> {
 	};
 	/*@formatter:on*/
 
-	private final PacManGame game;
+	private final IntSupplier fnLevel;
 	private int round;
 	private boolean suspended;
 
-	public GhostAttackController(PacManGame game) {
+	public GhostAttackController(IntSupplier fnLevel) {
 		super(GhostState.class);
-		this.game = game;
+		this.fnLevel = fnLevel;
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("[GhostAttackTimer]")
@@ -111,12 +111,14 @@ public class GhostAttackController extends StateMachine<GhostState, Void> {
 	}
 
 	private int getScatteringDuration() {
-		int row = game.getLevel() == 1 ? 0 : game.getLevel() <= 4 ? 1 : 2;
+		int level = fnLevel.getAsInt();
+		int row = level == 1 ? 0 : level <= 4 ? 1 : 2;
 		return SCATTER_TICKS[row][round];
 	}
 
 	private int getChasingDuration() {
-		int row = game.getLevel() == 1 ? 0 : game.getLevel() <= 4 ? 1 : 2;
+		int level = fnLevel.getAsInt();
+		int row = level == 1 ? 0 : level <= 4 ? 1 : 2;
 		return SCATTER_TICKS[row][round];
 	}
 }
