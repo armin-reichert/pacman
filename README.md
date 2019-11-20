@@ -590,20 +590,24 @@ However, for a maze of such a small size the used algorithm doesn't matter much,
   - Full-screen mode on start: `-fullScreenOnStart`
   - Full-screen resolution & depth, e.g.: `-fullScreenMode 800,600,32`
   - Window title e.g.: `-title "Pac-Man Game"`
-- Speed can be changed during game ('1' = normal, '2' = fast, '3' = very fast)
-- Display of actor states and timers can be switched on/off at runtime (key 's')
-- Display of actor routes can be switched on/off at runtime (key 'r')
-- Tracing of state machines can be switched on/off at runtime (key 'l')
-- Ghosts can be enabled/disabled during the game (keys 'b', 'p', 'i', 'c')
-- The ghost's *frightened* behavior can be toggled between "random" and "select safe corner" during the game (key 'f')
-- Cheat key ALT-'k' kills all ghosts
-- Cheat key ALT-'e' eats all normal pellets
-- Cheat key ALT-'+' switches to next level
-- Cheat key ALT-'i' makes Pac-Man immportable
-- Alignment of actors on the grid can be visualized (key 'g')
-- Game can be paused/resumed (CTRL+p)
-- Game loop frequency and (full-)screen resolution can be changed (key F2)
-- Key F11 toggles between window and full-screen exclusive mode
+- General
+  - CTRL-p pauses/resumes the game
+  - F2 opens a dialog where the game loop frequency and (full-)screen resolution can be changed
+  - F11 toggles between window and full-screen exclusive mode
+- Game 
+  - Speed can be changed during game ('1' = normal, '2' = fast, '3' = very fast)
+  - 'b', 'p', 'i', 'c' toggles the presence of the 4 ghosts in the game
+  - 'f' toggles the ghost's *frightened* behavior between "random" (original) and "select safe corner"
+  - 's' toggles the display of actor states and timers
+  - 'r' toggles the display of actor routes and target tiles
+  - 'g' toggles the display of the grid and the alignment of the actors on the grid
+- Cheats
+  - ALT-'k' kills all ghosts
+  - ALT-'e' eats all normal pellets
+  - ALT-'+' switches to next level
+  - ALT-'i' makes Pac-Man immportable
+- Logging
+  - Logging messages of state machines can be switched on/off (key 'l')
 
 ## References
 
