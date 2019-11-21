@@ -135,7 +135,7 @@ public class PacManGame {
 	 * If ghosts use classic flight behavior (random direction at each intersection)
 	 * or path based flight into a "safe" corner.
 	 */
-	public boolean classicFlightBehavior;
+	public boolean classicFlightBehavior = true;
 
 	/** The game score including highscore management. */
 	public final Score score;
@@ -180,40 +180,38 @@ public class PacManGame {
 	 */
 	public PacManGame(PacManTheme theme) {
 		this.theme = theme;
-
 		maze = new Maze();
 		foodTotal = (int) maze.tiles().filter(maze::containsFood).count();
-
 		score = new Score(this);
-
 		pacMan = new PacMan(this);
 
 		blinky = new Ghost(this, maze, "Blinky", GhostColor.RED, maze.blinkyHome, Top4.W);
 		blinky.setBehavior(SCATTERING, blinky.headingFor(() -> maze.blinkyScatter));
 		blinky.setBehavior(CHASING, blinky.attackingDirectly(pacMan));
 		blinky.setBehavior(LOCKED, blinky.standingStill());
+		blinky.setBehavior(FRIGHTENED, blinky.fleeingRandomly());
+		blinky.setBehavior(DEAD, blinky.headingFor(() -> maze.ghostRevival));
 
 		pinky = new Ghost(this, maze, "Pinky", GhostColor.PINK, maze.pinkyHome, Top4.S);
 		pinky.setBehavior(SCATTERING, pinky.headingFor(() -> maze.pinkyScatter));
 		pinky.setBehavior(CHASING, pinky.ambushing(pacMan));
 		pinky.setBehavior(LOCKED, pinky.jumpingUpAndDown());
+		pinky.setBehavior(FRIGHTENED, pinky.fleeingRandomly());
+		pinky.setBehavior(DEAD, pinky.headingFor(() -> maze.ghostRevival));
 
 		inky = new Ghost(this, maze, "Inky", GhostColor.CYAN, maze.inkyHome, Top4.N);
 		inky.setBehavior(SCATTERING, inky.headingFor(() -> maze.inkyScatter));
 		inky.setBehavior(CHASING, inky.attackingWithPartner(blinky, pacMan));
 		inky.setBehavior(LOCKED, inky.jumpingUpAndDown());
+		inky.setBehavior(FRIGHTENED, inky.fleeingRandomly());
+		inky.setBehavior(DEAD, inky.headingFor(() -> maze.ghostRevival));
 
 		clyde = new Ghost(this, maze, "Clyde", GhostColor.ORANGE, maze.clydeHome, Top4.N);
 		clyde.setBehavior(SCATTERING, clyde.headingFor(() -> maze.clydeScatter));
 		clyde.setBehavior(CHASING, clyde.attackingCowardly(pacMan, 8 * TS, maze.clydeScatter));
 		clyde.setBehavior(LOCKED, clyde.jumpingUpAndDown());
-
-		classicFlightBehavior = true;
-		ghosts().forEach(ghost -> {
-			ghost.setBehavior(FRIGHTENED,
-					classicFlightBehavior ? ghost.fleeingRandomly() : ghost.fleeingToSafeCorner(pacMan));
-			ghost.setBehavior(DEAD, ghost.headingFor(() -> maze.ghostRevival));
-		});
+		clyde.setBehavior(FRIGHTENED, clyde.fleeingRandomly());
+		clyde.setBehavior(DEAD, clyde.headingFor(() -> maze.ghostRevival));
 
 		activeActors.addAll((Arrays.asList(pacMan, blinky, pinky, inky, clyde)));
 	}
