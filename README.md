@@ -471,29 +471,33 @@ The game gets its entertainment factor from the individual *attack behavior* of 
 The ghost behavior only differs for the *chasing* state. The *frightened* behavior has two different implementations and can be toggled for all ghosts at once by pressing the 'f'-key.
 
 ```java
-blinky = new Ghost(this, maze, "Blinky", GhostColor.RED, maze.blinkyHome, Top4.S);
+blinky = new Ghost(this, maze, "Blinky", GhostColor.RED, maze.blinkyHome, Top4.W);
 blinky.setBehavior(SCATTERING, blinky.headingFor(() -> maze.blinkyScatter));
 blinky.setBehavior(CHASING, blinky.attackingDirectly(pacMan));
+blinky.setBehavior(LOCKED, blinky.standingStill());
+blinky.setBehavior(FRIGHTENED, blinky.fleeingRandomly());
+blinky.setBehavior(DEAD, blinky.headingFor(() -> maze.ghostRevival));
 
 pinky = new Ghost(this, maze, "Pinky", GhostColor.PINK, maze.pinkyHome, Top4.S);
 pinky.setBehavior(SCATTERING, pinky.headingFor(() -> maze.pinkyScatter));
 pinky.setBehavior(CHASING, pinky.ambushing(pacMan));
+pinky.setBehavior(LOCKED, pinky.jumpingUpAndDown());
+pinky.setBehavior(FRIGHTENED, pinky.fleeingRandomly());
+pinky.setBehavior(DEAD, pinky.headingFor(() -> maze.ghostRevival));
 
 inky = new Ghost(this, maze, "Inky", GhostColor.CYAN, maze.inkyHome, Top4.N);
 inky.setBehavior(SCATTERING, inky.headingFor(() -> maze.inkyScatter));
 inky.setBehavior(CHASING, inky.attackingWithPartner(blinky, pacMan));
+inky.setBehavior(LOCKED, inky.jumpingUpAndDown());
+inky.setBehavior(FRIGHTENED, inky.fleeingRandomly());
+inky.setBehavior(DEAD, inky.headingFor(() -> maze.ghostRevival));
 
 clyde = new Ghost(this, maze, "Clyde", GhostColor.ORANGE, maze.clydeHome, Top4.N);
 clyde.setBehavior(SCATTERING, clyde.headingFor(() -> maze.clydeScatter));
 clyde.setBehavior(CHASING, clyde.attackingCowardly(pacMan, 8 * TS, maze.clydeScatter));
-
-classicFlightBehavior = true;
-ghosts().forEach(ghost -> {
-	ghost.setBehavior(FRIGHTENED,
-			classicFlightBehavior ? ghost.fleeingRandomly() : ghost.fleeingToSafeCorner(pacMan));
-	ghost.setBehavior(DEAD, ghost.headingFor(() -> maze.ghostRevival));
-	ghost.setBehavior(LOCKED, ghost.jumpingUpAndDown());
-});
+clyde.setBehavior(LOCKED, clyde.jumpingUpAndDown());
+clyde.setBehavior(FRIGHTENED, clyde.fleeingRandomly());
+clyde.setBehavior(DEAD, clyde.headingFor(() -> maze.ghostRevival));
 ```
 
 The *chasing* behavior differs for each ghost as explained above. Using the general *headingFor* behavior, the individual ghost  behaviors *ambushing*, *attackingDirectly*, *attackingWithPartner* and *attackingAndRejecting* can be implemented very easily.
