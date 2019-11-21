@@ -9,6 +9,7 @@ import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
+import static de.amr.games.pacman.model.PacManGame.sec;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -170,6 +171,10 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 
 	// Define state machine
 
+	public static int getDyingTime() {
+		return sec(1);
+	}
+
 	public GhostState getNextState() {
 		GhostState nextState = fnNextState.get();
 		return nextState != null ? nextState : getState();
@@ -210,7 +215,7 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 					})
 				
 				.state(DYING)
-					.timeoutAfter(game::getGhostDyingTime)
+					.timeoutAfter(Ghost::getDyingTime)
 					.onEntry(() -> {
 						sprites.select("value-" + game.numGhostsKilledByCurrentEnergizer()); 
 						game.addGhostKilled();

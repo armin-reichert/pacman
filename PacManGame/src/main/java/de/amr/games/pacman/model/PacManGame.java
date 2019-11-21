@@ -408,10 +408,6 @@ public class PacManGame {
 		}
 	}
 
-	public int getGhostDyingTime() {
-		return sec(1f);
-	}
-
 	// rules for leaving the ghost house
 
 	/**

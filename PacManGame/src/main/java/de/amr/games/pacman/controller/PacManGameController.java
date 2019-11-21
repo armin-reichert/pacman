@@ -181,7 +181,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				
 				.state(GHOST_DYING)
 					.impl(new GhostDyingState())
-					.timeoutAfter(game::getGhostDyingTime)
+					.timeoutAfter(Ghost::getDyingTime)
 				
 				.state(PACMAN_DYING)
 					.impl(new PacManDyingState())
