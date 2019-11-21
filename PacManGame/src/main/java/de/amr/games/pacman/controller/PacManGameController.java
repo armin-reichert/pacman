@@ -9,6 +9,7 @@ import static de.amr.games.pacman.controller.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
 import static de.amr.games.pacman.controller.PacManGameState.READY;
+import static de.amr.games.pacman.model.PacManGame.LevelData.MAZE_NUM_FLASHES;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -48,8 +49,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
-		implements ViewController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements ViewController {
 
 	// Typed reference to "Playing" state object
 	private PlayingState playingState;
@@ -133,11 +133,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void handlePlayingSpeedChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
 			app().clock.setFrequency(60);
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
 			app().clock.setFrequency(80);
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
 			app().clock.setFrequency(100);
 		}
 	}
@@ -338,8 +336,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			ghostAttackController.update();
 			if (oldAttackState != ghostAttackController.getState()) {
 				fireAttackStateChange();
-			}
-			else {
+			} else {
 				game.activeGhosts().forEach(Ghost::update);
 			}
 			game.pacMan.update();
@@ -447,10 +444,16 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	 */
 	private class ChangingLevelState extends State<PacManGameState, PacManGameEvent> {
 
-		{ // Set state duration such that flashing animation is executed exact number of
-			// times defined
-			// for each level. One flash takes half a second.
-			setTimerFunction(() -> app().clock.sec(0.5f * game.getMazeNumFlashes()));
+		int numMazeFlashes() {
+			return MAZE_NUM_FLASHES.intValue(game.getLevel());
+		}
+
+		/*
+		 * Set state duration such that flashing animation is executed exact number of
+		 * times defined for each level. One flash takes half a second.
+		 */
+		{
+			setTimerFunction(() -> app().clock.sec(0.5f * numMazeFlashes()));
 		}
 
 		@Override
@@ -460,7 +463,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			game.pacMan.sprites.select("full");
 			playView.hideInfoText();
 			resetTimer();
-			if (game.getMazeNumFlashes() > 0) {
+			if (numMazeFlashes() > 0) {
 				playView.setMazeFlashing(true);
 			}
 		}
@@ -524,8 +527,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				if (waitTimer == 0) {
 					game.activeGhosts().forEach(Ghost::hide);
 				}
-			}
-			else {
+			} else {
 				game.pacMan.update();
 			}
 		}

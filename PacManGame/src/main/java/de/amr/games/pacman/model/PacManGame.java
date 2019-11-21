@@ -19,7 +19,6 @@ import static de.amr.games.pacman.model.PacManGame.LevelData.BONUS_VALUE;
 import static de.amr.games.pacman.model.PacManGame.LevelData.GHOST_FRIGHTENED_SPEED;
 import static de.amr.games.pacman.model.PacManGame.LevelData.GHOST_SPEED;
 import static de.amr.games.pacman.model.PacManGame.LevelData.GHOST_TUNNEL_SPEED;
-import static de.amr.games.pacman.model.PacManGame.LevelData.MAZE_NUM_FLASHES;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Arrays;
@@ -411,10 +410,6 @@ public class PacManGame {
 
 	public int getGhostDyingTime() {
 		return sec(1f);
-	}
-
-	public int getMazeNumFlashes() {
-		return MAZE_NUM_FLASHES.intValue(level);
 	}
 
 	// rules for leaving the ghost house
