@@ -1,7 +1,7 @@
 package de.amr.games.pacman.actor;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.actor.GhostState.CHASING;
+import static de.amr.games.pacman.actor.GhostState.*;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.DYING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
@@ -148,7 +148,7 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 	@Override
 	public boolean canEnterTile(Tile current, Tile tile) {
 		if (maze.isDoor(tile)) {
-			return getState() == DEAD || getState() != LOCKED && maze.inGhostHouse(current);
+			return getState() == RECOVERING || maze.inGhostHouse(current) && getState() != LOCKED;
 		}
 		if (maze.isNoUpIntersection(current) && tile == maze.tileToDir(current, Top4.N)) {
 			return getState() != GhostState.CHASING && getState() != GhostState.SCATTERING;
@@ -183,6 +183,8 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 			return 0;
 		case DEAD:
 			return 2 * relSpeed(GHOST_SPEED.$float(level));
+		case RECOVERING:
+			return relSpeed(.25f);
 		default:
 			throw new IllegalStateException("Illegal ghost state for " + name);
 		}
@@ -254,6 +256,14 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 					})
 					.onExit(this::deadSoundOff)
 					
+				.state(RECOVERING)
+					.onEntry(() -> {
+						targetTile = maze.ghostRevival;
+					})
+					.onTick(() -> {
+						move();
+					})
+				
 			.transitions()
 
 				.when(LOCKED).then(FRIGHTENED)
@@ -287,9 +297,12 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 					
 				.when(DYING).then(DEAD).onTimeout()
 					
-				.when(DEAD).then(LOCKED)
-					.condition(() -> currentTile().equals(maze.ghostRevival))
-					.act(() -> moveDir = initialDir)
+				.when(DEAD).then(RECOVERING)
+					.condition(() -> currentTile().equals(maze.blinkyHome))
+					.act(() -> targetTile = maze.pinkyHome)
+					
+				.when(RECOVERING).then(LOCKED)
+					.condition(() -> currentTile().equals(maze.pinkyHome))
 				
 		.endStateMachine();
 		/*@formatter:on*/

@@ -5,6 +5,7 @@ import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
+import static de.amr.games.pacman.actor.GhostState.RECOVERING;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.BonusSymbol.APPLE;
 import static de.amr.games.pacman.model.BonusSymbol.BELL;
@@ -190,28 +191,32 @@ public class PacManGame {
 		blinky.setBehavior(CHASING, blinky.attackingDirectly(pacMan));
 		blinky.setBehavior(LOCKED, blinky.standingStill());
 		blinky.setBehavior(FRIGHTENED, blinky.fleeingRandomly());
-		blinky.setBehavior(DEAD, blinky.headingFor(() -> maze.ghostRevival));
+		blinky.setBehavior(DEAD, blinky.headingFor(() -> maze.blinkyHome));
+		blinky.setBehavior(RECOVERING, blinky.headingFor(() -> maze.pinkyHome));
 
 		pinky = new Ghost(this, maze, "Pinky", GhostColor.PINK, maze.pinkyHome, Top4.S);
 		pinky.setBehavior(SCATTERING, pinky.headingFor(() -> maze.pinkyScatter));
 		pinky.setBehavior(CHASING, pinky.ambushing(pacMan));
 		pinky.setBehavior(LOCKED, pinky.jumpingUpAndDown());
 		pinky.setBehavior(FRIGHTENED, pinky.fleeingRandomly());
-		pinky.setBehavior(DEAD, pinky.headingFor(() -> maze.ghostRevival));
+		pinky.setBehavior(DEAD, pinky.headingFor(() -> maze.blinkyHome));
+		pinky.setBehavior(RECOVERING, pinky.headingFor(() -> maze.pinkyHome));
 
 		inky = new Ghost(this, maze, "Inky", GhostColor.CYAN, maze.inkyHome, Top4.N);
 		inky.setBehavior(SCATTERING, inky.headingFor(() -> maze.inkyScatter));
 		inky.setBehavior(CHASING, inky.attackingWithPartner(blinky, pacMan));
 		inky.setBehavior(LOCKED, inky.jumpingUpAndDown());
 		inky.setBehavior(FRIGHTENED, inky.fleeingRandomly());
-		inky.setBehavior(DEAD, inky.headingFor(() -> maze.ghostRevival));
+		inky.setBehavior(DEAD, inky.headingFor(() -> maze.blinkyHome));
+		inky.setBehavior(RECOVERING, inky.headingFor(() -> maze.pinkyHome));
 
 		clyde = new Ghost(this, maze, "Clyde", GhostColor.ORANGE, maze.clydeHome, Top4.N);
 		clyde.setBehavior(SCATTERING, clyde.headingFor(() -> maze.clydeScatter));
 		clyde.setBehavior(CHASING, clyde.attackingCowardly(pacMan, 8 * TS, maze.clydeScatter));
 		clyde.setBehavior(LOCKED, clyde.jumpingUpAndDown());
 		clyde.setBehavior(FRIGHTENED, clyde.fleeingRandomly());
-		clyde.setBehavior(DEAD, clyde.headingFor(() -> maze.ghostRevival));
+		clyde.setBehavior(DEAD, clyde.headingFor(() -> maze.blinkyHome));
+		clyde.setBehavior(RECOVERING, clyde.headingFor(() -> maze.pinkyHome));
 
 		activeActors.addAll((Arrays.asList(pacMan, blinky, pinky, inky, clyde)));
 	}
