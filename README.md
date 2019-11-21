@@ -620,6 +620,10 @@ This work would not have been possible without these invaluable sources of infor
 - [GameInternals - Understanding Pac-Man Ghost Behavior](http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior)
 - [Gamasutra - The Pac-Man Dossier](http://www.gamasutra.com/view/feature/3938/the_pacman_dossier.php)
 
+Just recently I found this excellent video on YouTube:
+
+- [Pac-Man ghost AI explained](https://www.youtube.com/watch?v=ataGotQ7ir8)
+
 ## Summary
 
 The goal of this project was to provide a [Pac-Man](https://en.wikipedia.org/wiki/List_of_Pac-Man_video_games) implementation in which the game's inner workings can be understood from the code more easily. The implementation follows the MVC pattern and uses *finite state machines* for the control logic of the actors and the game. The state machines are implemented in a declarative way using the *builder* pattern. 
