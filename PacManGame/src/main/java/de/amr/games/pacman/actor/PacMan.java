@@ -8,6 +8,11 @@ import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.actor.PacManState.POWER;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
+import static de.amr.games.pacman.model.PacManGame.ppt;
+import static de.amr.games.pacman.model.PacManGame.sec;
+import static de.amr.games.pacman.model.PacManGame.LevelData.PACMAN_POWER_SECONDS;
+import static de.amr.games.pacman.model.PacManGame.LevelData.PACMAN_POWER_SPEED;
+import static de.amr.games.pacman.model.PacManGame.LevelData.PACMAN_SPEED;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -70,7 +75,14 @@ public class PacMan extends Actor<PacManState> {
 
 	@Override
 	public float maxSpeed() {
-		return game.getPacManSpeed();
+		switch (getState()) {
+		case HUNGRY:
+			return ppt(PACMAN_SPEED.floatValue(game.getLevel()));
+		case POWER:
+			return ppt(PACMAN_POWER_SPEED.floatValue(game.getLevel()));
+		default:
+			return 0;
+		}
 	}
 
 	@Override
@@ -94,6 +106,14 @@ public class PacMan extends Actor<PacManState> {
 	}
 
 	// State machine
+
+	public int getPacManPowerTime() {
+		return sec(PACMAN_POWER_SECONDS.intValue(game.getLevel()));
+	}
+
+	public int getPacManDyingTime() {
+		return sec(2);
+	}
 
 	public boolean isLosingPower() {
 		return hasPower() && state().getTicksRemaining() <= state().getDuration() * 33 / 100;
@@ -139,7 +159,7 @@ public class PacMan extends Actor<PacManState> {
 					
 				.state(POWER)
 					.impl(new PowerState())
-					.timeoutAfter(game::getPacManPowerTime)
+					.timeoutAfter(this::getPacManPowerTime)
 	
 				.state(DYING)
 					.impl(new DyingState())

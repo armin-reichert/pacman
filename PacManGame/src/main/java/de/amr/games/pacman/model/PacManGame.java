@@ -14,6 +14,12 @@ import static de.amr.games.pacman.model.BonusSymbol.GRAPES;
 import static de.amr.games.pacman.model.BonusSymbol.KEY;
 import static de.amr.games.pacman.model.BonusSymbol.PEACH;
 import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
+import static de.amr.games.pacman.model.PacManGame.LevelData.BONUS_SYMBOL;
+import static de.amr.games.pacman.model.PacManGame.LevelData.BONUS_VALUE;
+import static de.amr.games.pacman.model.PacManGame.LevelData.GHOST_FRIGHTENED_SPEED;
+import static de.amr.games.pacman.model.PacManGame.LevelData.GHOST_SPEED;
+import static de.amr.games.pacman.model.PacManGame.LevelData.GHOST_TUNNEL_SPEED;
+import static de.amr.games.pacman.model.PacManGame.LevelData.MAZE_NUM_FLASHES;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Arrays;
@@ -37,8 +43,9 @@ import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.graph.grid.impl.Top4;
 
 /**
- * The "model" (in MVC speak) of the Pac-Man game. Contains the current game state and defines the
- * "business logic" for playing the game. Also serves as factory and container for the actors.
+ * The "model" (in MVC speak) of the Pac-Man game. Contains the current game
+ * state and defines the "business logic" for playing the game. Also serves as
+ * factory and container for the actors.
  * 
  * @author Armin Reichert
  */
@@ -47,36 +54,38 @@ public class PacManGame {
 	/** The tile size (8px). */
 	public static final int TS = 8;
 
-	/** Base speed in pixels/tick. */
-	public static final float PIXELS_PER_TICK = 1.46f;
+	/** Base speed (11 tiles/second) in pixel/tick. */
+	public static final float PIXELS_PER_TICK = (float) 11 * TS / 60;
 
 	/**
-	 * Named access to the columns of the level table.
+	 * @param fraction fraction of seconds
+	 * @return ticks corresponding to given fraction of seconds at 60Hz
 	 */
-	enum Param {
+	public static int sec(float fraction) {
+		return (int) (60 * fraction);
+	}
 
-		BONUS_SYMBOL,
-		BONUS_VALUE,
-		PACMAN_SPEED,
-		PACMAN_DOTS_SPEED,
-		GHOST_SPEED,
-		GHOST_TUNNEL_SPEED,
-		ELROY1_DOTS_LEFT,
-		ELROY1_SPEED,
-		ELROY2_DOTS_LEFT,
-		ELROY2_SPEED,
-		PACMAN_POWER_SPEED,
-		PACMAN_POWER_DOTS_SPEED,
-		GHOST_FRIGHTENED_SPEED,
-		PACMAN_POWER_SECONDS,
-		MAZE_NUM_FLASHES;
+	/**
+	 * @param fraction fraction of base speed
+	 * @return speed (pixels/tick) corresponding to given fraction of base speed
+	 */
+	public static float ppt(float fraction) {
+		return fraction * PIXELS_PER_TICK;
+	}
 
-		/**
-		 * Level data for speeds, bonus values etc.
-		 * 
-		 * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>
-		 */
-		static final Object[][] LEVELS = {
+	/**
+	 * Level data.
+	 * 
+	 * @see <a href=
+	 *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>
+	 */
+	public enum LevelData {
+
+		BONUS_SYMBOL, BONUS_VALUE, PACMAN_SPEED, PACMAN_DOTS_SPEED, GHOST_SPEED, GHOST_TUNNEL_SPEED, ELROY1_DOTS_LEFT,
+		ELROY1_SPEED, ELROY2_DOTS_LEFT, ELROY2_SPEED, PACMAN_POWER_SPEED, PACMAN_POWER_DOTS_SPEED,
+		GHOST_FRIGHTENED_SPEED, PACMAN_POWER_SECONDS, MAZE_NUM_FLASHES;
+
+		private static final Object[][] LEVEL_DATA = {
 			/*@formatter:off*/
 			{ /* this row intentionally empty */ },
 			{ CHERRIES,    100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6, 5 },
@@ -104,16 +113,16 @@ public class PacManGame {
 		};
 
 		@SuppressWarnings("unchecked")
-		<T> T value(int level) {
-			level = Math.min(LEVELS.length - 1, level);
-			return (T) LEVELS[level][ordinal()];
+		public <T> T value(int level) {
+			level = Math.min(LEVEL_DATA.length - 1, level);
+			return (T) LEVEL_DATA[level][ordinal()];
 		}
 
-		float float_(int level) {
+		public float floatValue(int level) {
 			return value(level);
 		}
 
-		int int_(int level) {
+		public int intValue(int level) {
 			return value(level);
 		}
 	}
@@ -127,8 +136,8 @@ public class PacManGame {
 	private final Set<Actor<?>> activeActors = new HashSet<>();
 
 	/**
-	 * If ghosts use classic flight behavior (random direction at each intersection) or path based
-	 * flight into a "safe" corner.
+	 * If ghosts use classic flight behavior (random direction at each intersection)
+	 * or path based flight into a "safe" corner.
 	 */
 	public boolean classicFlightBehavior;
 
@@ -259,8 +268,7 @@ public class PacManGame {
 				actor.init(); // only when not already active
 				actor.show();
 			}
-		}
-		else {
+		} else {
 			activeActors.remove(actor);
 			actor.hide();
 		}
@@ -275,7 +283,7 @@ public class PacManGame {
 	}
 
 	public BonusSymbol getLevelSymbol() {
-		return Param.BONUS_SYMBOL.value(level);
+		return BONUS_SYMBOL.value(level);
 	}
 
 	public List<BonusSymbol> getLevelCounter() {
@@ -305,8 +313,7 @@ public class PacManGame {
 	}
 
 	/**
-	 * @param points
-	 *                 points scored
+	 * @param points points scored
 	 * @return <code>true</code> if new life has been granted
 	 */
 	public boolean scorePoints(int points) {
@@ -366,7 +373,7 @@ public class PacManGame {
 	}
 
 	public int getBonusValue() {
-		return Param.BONUS_VALUE.int_(level);
+		return BONUS_VALUE.intValue(level);
 	}
 
 	public int getBonusDuration() {
@@ -375,65 +382,28 @@ public class PacManGame {
 
 	// Timing
 
-	/**
-	 * @return ticks corresponding to given amount of seconds at 60Hz
-	 */
-	private static int sec(float seconds) {
-		return (int) (60 * seconds);
-	}
-
-	/**
-	 * @return given fraction of base speed (pixels/tick)
-	 */
-	private static float speed(float fraction) {
-		return fraction * PIXELS_PER_TICK;
-	}
-
-	/**
-	 * @return maximum Pac-Man speed in its current state. Actual speed may be slower to avoid running
-	 *         into inaccessible tiles.
-	 */
-	public float getPacManSpeed() {
-		switch (pacMan.getState()) {
-		case HUNGRY:
-			return speed(Param.PACMAN_SPEED.float_(level));
-		case POWER:
-			return speed(Param.PACMAN_POWER_SPEED.float_(level));
-		default:
-			return 0;
-		}
-	}
-
-	public int getPacManPowerTime() {
-		return sec(Param.PACMAN_POWER_SECONDS.int_(level));
-	}
-
-	public int getPacManDyingTime() {
-		return sec(2);
-	}
-
 	/* TODO: some values are still unknown to me and only guessed */
 	public float computeGhostSpeed(Ghost ghost) {
 		Tile ghostTile = ghost.currentTile();
 		if (maze.inGhostHouse(ghostTile)) {
-			return speed(.25f);
+			return ppt(.25f);
 		}
 		boolean inTunnel = maze.isTunnel(ghostTile) || ghostTile == maze.tunnelLeftExit
 				|| ghostTile == maze.tunnelRightExit;
-		float tunnelSpeed = speed(Param.GHOST_TUNNEL_SPEED.float_(level));
+		float tunnelSpeed = ppt(GHOST_TUNNEL_SPEED.floatValue(level));
 		switch (ghost.getState()) {
 		case CHASING:
-			return inTunnel ? tunnelSpeed : speed(Param.GHOST_SPEED.float_(level));
+			return inTunnel ? tunnelSpeed : ppt(GHOST_SPEED.floatValue(level));
 		case DYING:
 			return 0;
 		case DEAD:
-			return 2f * speed(Param.GHOST_SPEED.float_(level));
+			return 2f * ppt(GHOST_SPEED.floatValue(level));
 		case FRIGHTENED:
-			return inTunnel ? tunnelSpeed : speed(Param.GHOST_FRIGHTENED_SPEED.float_(level));
+			return inTunnel ? tunnelSpeed : ppt(GHOST_FRIGHTENED_SPEED.floatValue(level));
 		case LOCKED:
-			return speed(0.5f);
+			return ppt(0.5f);
 		case SCATTERING:
-			return inTunnel ? tunnelSpeed : speed(Param.GHOST_SPEED.float_(level));
+			return inTunnel ? tunnelSpeed : ppt(GHOST_SPEED.floatValue(level));
 		default:
 			throw new IllegalStateException("Illegal ghost state for ghost " + ghost.name);
 		}
@@ -444,27 +414,29 @@ public class PacManGame {
 	}
 
 	public int getMazeNumFlashes() {
-		return Param.MAZE_NUM_FLASHES.int_(level);
+		return MAZE_NUM_FLASHES.intValue(level);
 	}
 
 	// rules for leaving the ghost house
 
 	/**
-	 * The first control used to evaluate when the ghosts leave home is a personal counter each ghost
-	 * retains for tracking the number of dots Pac-Man eats. Each ghost's "dot counter" is reset to zero
-	 * when a level begins and can only be active when inside the ghost house, but only one ghost's
-	 * counter can be active at any given time regardless of how many ghosts are inside.
+	 * The first control used to evaluate when the ghosts leave home is a personal
+	 * counter each ghost retains for tracking the number of dots Pac-Man eats. Each
+	 * ghost's "dot counter" is reset to zero when a level begins and can only be
+	 * active when inside the ghost house, but only one ghost's counter can be
+	 * active at any given time regardless of how many ghosts are inside.
 	 * 
 	 * <p>
-	 * The order of preference for choosing which ghost's counter to activate is: Pinky, then Inky, and
-	 * then Clyde. For every dot Pac-Man eats, the preferred ghost in the house (if any) gets its dot
-	 * counter increased by one. Each ghost also has a "dot limit" associated with his counter, per
-	 * level.
+	 * The order of preference for choosing which ghost's counter to activate is:
+	 * Pinky, then Inky, and then Clyde. For every dot Pac-Man eats, the preferred
+	 * ghost in the house (if any) gets its dot counter increased by one. Each ghost
+	 * also has a "dot limit" associated with his counter, per level.
 	 * 
 	 * <p>
-	 * If the preferred ghost reaches or exceeds his dot limit, it immediately exits the house and its
-	 * dot counter is deactivated (but not reset). The most-preferred ghost still waiting inside the
-	 * house (if any) activates its timer at this point and begins counting dots.
+	 * If the preferred ghost reaches or exceeds his dot limit, it immediately exits
+	 * the house and its dot counter is deactivated (but not reset). The
+	 * most-preferred ghost still waiting inside the house (if any) activates its
+	 * timer at this point and begins counting dots.
 	 * 
 	 * @see <a href=
 	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
@@ -515,23 +487,25 @@ public class PacManGame {
 	}
 
 	/**
-	 * Pinky's dot limit is always set to zero, causing him to leave home immediately when every level
-	 * begins. For the first level, Inky has a limit of 30 dots, and Clyde has a limit of 60. This
-	 * results in Pinky exiting immediately which, in turn, activates Inky's dot counter. His counter
-	 * must then reach or exceed 30 dots before he can leave the house.
+	 * Pinky's dot limit is always set to zero, causing him to leave home
+	 * immediately when every level begins. For the first level, Inky has a limit of
+	 * 30 dots, and Clyde has a limit of 60. This results in Pinky exiting
+	 * immediately which, in turn, activates Inky's dot counter. His counter must
+	 * then reach or exceed 30 dots before he can leave the house.
 	 * 
 	 * <p>
-	 * Once Inky starts to leave, Clyde's counter (which is still at zero) is activated and starts
-	 * counting dots. When his counter reaches or exceeds 60, he may exit. On the second level, Inky's
-	 * dot limit is changed from 30 to zero, while Clyde's is changed from 60 to 50. Inky will exit the
-	 * house as soon as the level begins from now on.
+	 * Once Inky starts to leave, Clyde's counter (which is still at zero) is
+	 * activated and starts counting dots. When his counter reaches or exceeds 60,
+	 * he may exit. On the second level, Inky's dot limit is changed from 30 to
+	 * zero, while Clyde's is changed from 60 to 50. Inky will exit the house as
+	 * soon as the level begins from now on.
 	 * 
 	 * <p>
-	 * Starting at level three, all the ghosts have a dot limit of zero for the remainder of the game
-	 * and will leave the ghost house immediately at the start of every level.
+	 * Starting at level three, all the ghosts have a dot limit of zero for the
+	 * remainder of the game and will leave the ghost house immediately at the start
+	 * of every level.
 	 * 
-	 * @param ghost
-	 *                a ghost
+	 * @param ghost a ghost
 	 * @return the ghosts's current food limit
 	 * 
 	 * @see <a href=
@@ -559,5 +533,4 @@ public class PacManGame {
 		globalFoodCounterEnabled = true;
 		globalFoodCounter = 0;
 	}
-
 }
