@@ -445,7 +445,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private class ChangingLevelState extends State<PacManGameState, PacManGameEvent> {
 
 		int numMazeFlashes() {
-			return MAZE_NUM_FLASHES.intValue(game.getLevel());
+			return MAZE_NUM_FLASHES.$int(game.getLevel());
 		}
 
 		/*

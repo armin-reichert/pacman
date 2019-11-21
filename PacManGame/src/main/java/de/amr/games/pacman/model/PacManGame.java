@@ -16,9 +16,6 @@ import static de.amr.games.pacman.model.BonusSymbol.PEACH;
 import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
 import static de.amr.games.pacman.model.PacManGame.LevelData.BONUS_SYMBOL;
 import static de.amr.games.pacman.model.PacManGame.LevelData.BONUS_VALUE;
-import static de.amr.games.pacman.model.PacManGame.LevelData.GHOST_FRIGHTENED_SPEED;
-import static de.amr.games.pacman.model.PacManGame.LevelData.GHOST_SPEED;
-import static de.amr.games.pacman.model.PacManGame.LevelData.GHOST_TUNNEL_SPEED;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Arrays;
@@ -68,7 +65,7 @@ public class PacManGame {
 	 * @param fraction fraction of base speed
 	 * @return speed (pixels/tick) corresponding to given fraction of base speed
 	 */
-	public static float ppt(float fraction) {
+	public static float relSpeed(float fraction) {
 		return fraction * PIXELS_PER_TICK;
 	}
 
@@ -117,11 +114,11 @@ public class PacManGame {
 			return (T) LEVEL_DATA[level][ordinal()];
 		}
 
-		public float floatValue(int level) {
+		public float $float(int level) {
 			return value(level);
 		}
 
-		public int intValue(int level) {
+		public int $int(int level) {
 			return value(level);
 		}
 	}
@@ -372,40 +369,11 @@ public class PacManGame {
 	}
 
 	public int getBonusValue() {
-		return BONUS_VALUE.intValue(level);
+		return BONUS_VALUE.$int(level);
 	}
 
 	public int getBonusDuration() {
 		return sec(9 + new Random().nextFloat());
-	}
-
-	// Timing
-
-	/* TODO: some values are still unknown to me and only guessed */
-	public float computeGhostSpeed(Ghost ghost) {
-		Tile ghostTile = ghost.currentTile();
-		if (maze.inGhostHouse(ghostTile)) {
-			return ppt(.25f);
-		}
-		boolean inTunnel = maze.isTunnel(ghostTile) || ghostTile == maze.tunnelLeftExit
-				|| ghostTile == maze.tunnelRightExit;
-		float tunnelSpeed = ppt(GHOST_TUNNEL_SPEED.floatValue(level));
-		switch (ghost.getState()) {
-		case CHASING:
-			return inTunnel ? tunnelSpeed : ppt(GHOST_SPEED.floatValue(level));
-		case DYING:
-			return 0;
-		case DEAD:
-			return 2f * ppt(GHOST_SPEED.floatValue(level));
-		case FRIGHTENED:
-			return inTunnel ? tunnelSpeed : ppt(GHOST_FRIGHTENED_SPEED.floatValue(level));
-		case LOCKED:
-			return ppt(0.5f);
-		case SCATTERING:
-			return inTunnel ? tunnelSpeed : ppt(GHOST_SPEED.floatValue(level));
-		default:
-			throw new IllegalStateException("Illegal ghost state for ghost " + ghost.name);
-		}
 	}
 
 	// rules for leaving the ghost house

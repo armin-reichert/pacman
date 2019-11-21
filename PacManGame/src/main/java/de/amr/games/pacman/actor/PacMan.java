@@ -8,7 +8,7 @@ import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.actor.PacManState.POWER;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
-import static de.amr.games.pacman.model.PacManGame.ppt;
+import static de.amr.games.pacman.model.PacManGame.relSpeed;
 import static de.amr.games.pacman.model.PacManGame.sec;
 import static de.amr.games.pacman.model.PacManGame.LevelData.PACMAN_POWER_SECONDS;
 import static de.amr.games.pacman.model.PacManGame.LevelData.PACMAN_POWER_SPEED;
@@ -77,9 +77,9 @@ public class PacMan extends Actor<PacManState> {
 	public float maxSpeed() {
 		switch (getState()) {
 		case HUNGRY:
-			return ppt(PACMAN_SPEED.floatValue(game.getLevel()));
+			return relSpeed(PACMAN_SPEED.$float(game.getLevel()));
 		case POWER:
-			return ppt(PACMAN_POWER_SPEED.floatValue(game.getLevel()));
+			return relSpeed(PACMAN_POWER_SPEED.$float(game.getLevel()));
 		default:
 			return 0;
 		}
@@ -108,7 +108,7 @@ public class PacMan extends Actor<PacManState> {
 	// State machine
 
 	public int getPacManPowerTime() {
-		return sec(PACMAN_POWER_SECONDS.intValue(game.getLevel()));
+		return sec(PACMAN_POWER_SECONDS.$int(game.getLevel()));
 	}
 
 	public int getPacManDyingTime() {
