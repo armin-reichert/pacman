@@ -46,7 +46,7 @@ import de.amr.statemachine.StateMachine;
  */
 public class PacMan extends Actor<PacManState> {
 
-	static final int[] STEERING_NESW = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
+	static final int[] KEY = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
 	public final PacManGame game;
 	public int ticksSinceLastMeal;
@@ -95,7 +95,7 @@ public class PacMan extends Actor<PacManState> {
 
 	@Override
 	public void steer() {
-		NESW.dirs().filter(dir -> Keyboard.keyDown(STEERING_NESW[dir])).findFirst().ifPresent(dir -> nextDir = dir);
+		NESW.dirs().filter(dir -> Keyboard.keyDown(KEY[dir])).findFirst().ifPresent(dir -> nextDir = dir);
 	}
 
 	@Override
@@ -204,7 +204,8 @@ public class PacMan extends Actor<PacManState> {
 		public void onTick() {
 			if (mustDigest()) {
 				digest();
-			} else {
+			}
+			else {
 				steer();
 				move();
 				findSomethingInteresting().ifPresent(PacMan.this::publishEvent);
@@ -257,7 +258,8 @@ public class PacMan extends Actor<PacManState> {
 				boolean energizer = maze.containsEnergizer(pacManTile);
 				digestionTicks = game.getDigestionTicks(energizer);
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			} else {
+			}
+			else {
 				ticksSinceLastMeal += 1;
 			}
 
@@ -270,7 +272,8 @@ public class PacMan extends Actor<PacManState> {
 		@Override
 		public void onEntry() {
 			game.theme.snd_waza().loop();
-			LOGGER.info(() -> String.format("Pac-Man powered for %d ticks (%d sec)", getDuration(), getDuration() / 60));
+			LOGGER.info(
+					() -> String.format("Pac-Man powered for %d ticks (%d sec)", getDuration(), getDuration() / 60));
 		}
 
 		@Override
