@@ -16,8 +16,10 @@ import java.awt.event.KeyEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
+import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
@@ -68,7 +70,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private IntroView introView;
 	private PlayViewXtended playView;
 	private Controller viewController;
-	
+
 	public boolean skipIntro = false;
 
 	public PacManGameController(PacManGame game) {
@@ -116,12 +118,23 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	@Override
 	public void update() {
+		handleMuteSound();
 		handleStateMachineLogging();
 		handlePlayingSpeedChange();
 		handleGhostBehaviorChange();
 		cheatsController.update();
 		super.update();
 		viewController.update();
+	}
+
+	private boolean muted = false;
+
+	private void handleMuteSound() {
+		if (Keyboard.keyPressedOnce(Modifier.SHIFT, KeyEvent.VK_M)) {
+			muted = !muted;
+			Assets.muteAll(muted);
+			LOGGER.info(() -> muted ? "Sound off" : "Sound on");
+		}
 	}
 
 	private void handleStateMachineLogging() {
@@ -149,8 +162,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				ghost.setBehavior(GhostState.FRIGHTENED,
 						game.classicFlightBehavior ? ghost.fleeingRandomly() : ghost.fleeingToSafeCorner(game.pacMan));
 			});
-			LOGGER.info("Changed ghost FRIGHTENED behavior to flee "
-					+ (game.classicFlightBehavior ? "randomly" : "via safe route"));
+			LOGGER.info(
+					"Changed ghost FRIGHTENED behavior to flee " + (game.classicFlightBehavior ? "randomly" : "via safe route"));
 		}
 	}
 
@@ -498,8 +511,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onTick() {
-			game.activeGhosts()
-					.filter(ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
+			game.activeGhosts().filter(ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
 					.forEach(Ghost::update);
 		}
 
