@@ -457,8 +457,7 @@ static final int[] STEERING_NESW = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
 @Override
 public void steer() {
-	NESW.dirs().filter(dir -> Keyboard.keyDown(STEERING_NESW[dir])).findFirst()
-			.ifPresent(dir -> nextDir = dir);
+	NESW.dirs().filter(dir -> Keyboard.keyDown(KEY[dir])).findFirst().ifPresent(dir -> nextDir = dir);
 }
 ```
 
@@ -470,46 +469,12 @@ The game gets its entertainment factor from the individual *attack behavior* of 
 
 The ghost behavior only differs for the *chasing* state. The *frightened* behavior has two different implementations and can be toggled for all ghosts at once by pressing the 'f'-key.
 
-```java
-blinky = new Ghost(this, maze, "Blinky", GhostColor.RED, maze.blinkyHome, Top4.W);
-blinky.setBehavior(SCATTERING, blinky.headingFor(() -> maze.blinkyScatter));
-blinky.setBehavior(CHASING, blinky.attackingDirectly(pacMan));
-blinky.setBehavior(LOCKED, blinky.standingStill());
-blinky.setBehavior(FRIGHTENED, blinky.fleeingRandomly());
-blinky.setBehavior(DEAD, blinky.headingFor(() -> maze.ghostRevival));
-
-pinky = new Ghost(this, maze, "Pinky", GhostColor.PINK, maze.pinkyHome, Top4.S);
-pinky.setBehavior(SCATTERING, pinky.headingFor(() -> maze.pinkyScatter));
-pinky.setBehavior(CHASING, pinky.ambushing(pacMan));
-pinky.setBehavior(LOCKED, pinky.jumpingUpAndDown());
-pinky.setBehavior(FRIGHTENED, pinky.fleeingRandomly());
-pinky.setBehavior(DEAD, pinky.headingFor(() -> maze.ghostRevival));
-
-inky = new Ghost(this, maze, "Inky", GhostColor.CYAN, maze.inkyHome, Top4.N);
-inky.setBehavior(SCATTERING, inky.headingFor(() -> maze.inkyScatter));
-inky.setBehavior(CHASING, inky.attackingWithPartner(blinky, pacMan));
-inky.setBehavior(LOCKED, inky.jumpingUpAndDown());
-inky.setBehavior(FRIGHTENED, inky.fleeingRandomly());
-inky.setBehavior(DEAD, inky.headingFor(() -> maze.ghostRevival));
-
-clyde = new Ghost(this, maze, "Clyde", GhostColor.ORANGE, maze.clydeHome, Top4.N);
-clyde.setBehavior(SCATTERING, clyde.headingFor(() -> maze.clydeScatter));
-clyde.setBehavior(CHASING, clyde.attackingCowardly(pacMan, 8 * TS, maze.clydeScatter));
-clyde.setBehavior(LOCKED, clyde.jumpingUpAndDown());
-clyde.setBehavior(FRIGHTENED, clyde.fleeingRandomly());
-clyde.setBehavior(DEAD, clyde.headingFor(() -> maze.ghostRevival));
-```
-
-The *chasing* behavior differs for each ghost as explained above. Using the general *headingFor* behavior, the individual ghost  behaviors *ambushing*, *attackingDirectly*, *attackingWithPartner* and *attackingAndRejecting* can be implemented very easily.
-
 ### Blinky (the red ghost)
 
 Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
-default Steering attackingDirectly(MazeMover victim) {
-	return headingFor(victim::currentTile);
-}
+blinky.fnChasingTarget = pacMan::currentTile;
 ```
 
 <img src="doc/blinky.png"/>
@@ -519,9 +484,7 @@ default Steering attackingDirectly(MazeMover victim) {
 Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position (in the original game there is an overflow error leading to a slightly different behavior):
 
 ```java
-default Steering ambushing(MazeMover victim) {
-	return headingFor(() -> victim.tilesAhead(4));
-}
+pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
 ```
 
 <img src="doc/pinky.png"/>
@@ -534,12 +497,10 @@ Consider the vector `V` from Blinky's position `B` to the position `P` two tiles
 Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-default Steering attackingWithPartner(MazeMover partner, MazeMover victim) {
-	return headingFor(() -> {
-		Tile partnerTile = partner.currentTile(), victimTile = victim.tilesAhead(2);
-		return victim.maze.tileAt(2 * victimTile.col - partnerTile.col, 2 * victimTile.row - partnerTile.row);
-	});
-}
+inky.fnChasingTarget = () -> {
+	Tile b = blinky.currentTile(), p = pacMan.tilesAhead(2);
+	return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
+};
 ```
 
 <img src="doc/inky.png"/>
@@ -549,11 +510,9 @@ default Steering attackingWithPartner(MazeMover partner, MazeMover victim) {
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
 
 ```java
-default Steering attackingCowardly(MazeMover victim, int distance, Tile scatterTarget) {
-	return headingFor(() -> euclideanDist(theGhost().tf.getCenter(), victim.tf.getCenter()) > distance
-			? victim.currentTile()
-			: scatterTarget);
-}
+clyde.fnChasingTarget = () -> euclideanDist(clyde.tf.getCenter(), pacMan.tf.getCenter()) > 8
+		? pacMan.currentTile()
+		: maze.clydeScatter;
 ```
 
 <img src="doc/clyde.png"/>
@@ -564,13 +523,6 @@ The visualization of the attack behaviors can be toggled during the game by pres
 
 In *scattering* mode, each ghost tries to reach his "scattering target" which is a tile outside of the maze. Because ghosts
 cannot reverse direction this results in a cyclic movement around the walls in the corresponding corner of the maze.
-
-```java
-blinky.setBehavior(SCATTERING, blinky.headingFor(() -> maze.blinkyScatter));
-pinky.setBehavior(SCATTERING, pinky.headingFor(() -> maze.pinkyScatter));
-inky.setBehavior(SCATTERING, inky.headingFor(() -> maze.inkyScatter));
-clyde.setBehavior(SCATTERING, clyde.headingFor(() -> maze.clydeScatter));
-```
 
 <img src="doc/scattering.png"/>
 
