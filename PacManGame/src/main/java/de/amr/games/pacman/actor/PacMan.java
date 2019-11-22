@@ -228,10 +228,10 @@ public class PacMan extends Actor<PacManState> {
 			Optional<PacManGameEvent> ghostCollision = game.activeGhosts()
 			/*@formatter:off*/
 				.filter(Ghost::visible)
-				.filter(ghost -> ghost.getState() != GhostState.DEAD)
-				.filter(ghost -> ghost.getState() != GhostState.DYING)
-				.filter(ghost -> ghost.getState() != GhostState.LOCKED)
 				.filter(ghost -> ghost.currentTile().equals(pacManTile))
+				.filter(ghost -> ghost.getState() == GhostState.CHASING
+											|| ghost.getState() == GhostState.SCATTERING
+											|| ghost.getState() == GhostState.FRIGHTENED)
 				.findFirst()
 				.map(PacManGhostCollisionEvent::new);
 			/*@formatter:on*/
@@ -269,8 +269,7 @@ public class PacMan extends Actor<PacManState> {
 		@Override
 		public void onEntry() {
 			game.theme.snd_waza().loop();
-			LOGGER.info(
-					() -> String.format("Pac-Man powered for %d ticks (%d sec)", getDuration(), getDuration() / 60));
+			LOGGER.info(() -> String.format("Pac-Man powered for %d ticks (%d sec)", getDuration(), getDuration() / 60));
 		}
 
 		@Override
