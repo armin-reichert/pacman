@@ -157,12 +157,6 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 	}
 
 	@Override
-	protected void move() {
-		super.move();
-		sprites.select("color-" + moveDir);
-	}
-
-	@Override
 	/* TODO: some values still guessed */
 	public float maxSpeed() {
 		Tile tile = currentTile();
@@ -218,18 +212,27 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 			.states()
 
 				.state(LOCKED)
-					.onTick(this::move)
+					.onTick(() -> {
+						move();
+						sprites.select("color-" + moveDir);
+					})
 					.onExit(() -> {
 						game.pacMan.ticksSinceLastMeal = 0;
 						enteredNewTile = true;
 					})
 				
 				.state(SCATTERING)
-					.onTick(this::move)
+				.onTick(() -> {
+					move();
+					sprites.select("color-" + moveDir);
+				})
 			
 				.state(CHASING)
 					.onEntry(this::chasingSoundOn)
-					.onTick(this::move)
+					.onTick(() -> {
+						move();
+						sprites.select("color-" + moveDir);
+					})
 					.onExit(this::chasingSoundOff)
 				
 				.state(FRIGHTENED)
@@ -262,6 +265,7 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 					})
 					.onTick(() -> {
 						move();
+						sprites.select("eyes-" + moveDir);
 					})
 				
 			.transitions()
