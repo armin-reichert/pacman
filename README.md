@@ -453,7 +453,7 @@ Example trace:
 Pac-Man's movement is controlled by holding a key indicating its intended direction. As soon as Pac-Man reaches a tile where it can move towards this direction it changes its current direction accordingly. "Cornering" is not implemented.
 
 ```java
-static final int[] STEERING_NESW = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
+static final int[] KEY = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
 @Override
 public void steer() {
