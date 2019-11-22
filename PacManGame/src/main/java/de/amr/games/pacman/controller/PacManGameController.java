@@ -73,6 +73,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	public boolean skipIntro = false;
 
+	private boolean muted = false;
+
 	public PacManGameController(PacManGame game) {
 		super(PacManGameState.class);
 		this.game = game;
@@ -126,8 +128,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		super.update();
 		viewController.update();
 	}
-
-	private boolean muted = false;
 
 	private void handleMuteSound() {
 		if (Keyboard.keyPressedOnce(Modifier.SHIFT, KeyEvent.VK_M)) {
