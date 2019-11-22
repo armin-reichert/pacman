@@ -205,6 +205,7 @@ public class PacMan extends Actor<PacManState> {
 			if (mustDigest()) {
 				digest();
 			} else {
+				steer();
 				move();
 				findSomethingInteresting().ifPresent(PacMan.this::publishEvent);
 			}

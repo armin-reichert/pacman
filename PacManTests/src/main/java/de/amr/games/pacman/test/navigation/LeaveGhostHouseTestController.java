@@ -1,8 +1,5 @@
 package de.amr.games.pacman.test.navigation;
 
-import java.awt.event.KeyEvent;
-
-import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.GhostState;
@@ -31,16 +28,13 @@ public class LeaveGhostHouseTestController implements ViewController {
 		g.ghosts().filter(ghost -> ghost != g.inky).forEach(ghost -> g.setActive(ghost, false));
 		g.inky.init();
 		g.inky.visualizePath = true;
+		g.inky.fnIsUnlocked = g -> true;
 		g.inky.fnNextState = () -> GhostState.SCATTERING;
-		g.inky.setState(GhostState.SCATTERING);
 	}
 
 	@Override
 	public void update() {
 		g.inky.update();
-		if (g.inky.getState() == GhostState.LOCKED && Keyboard.keyPressedOnce(KeyEvent.VK_X)) {
-			g.inky.setState(GhostState.SCATTERING);
-		}
 		view.update();
 	}
 

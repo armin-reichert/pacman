@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -18,16 +17,14 @@ import java.util.stream.Collectors;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
-import de.amr.graph.grid.impl.Top4;
 
 /**
- * A behavior which steers an actor (ghost) towards a (possibly moving) target
- * tile. Each time the {@link #steer(MazeMover)} method is called, the target
- * tile is recomputed. There is also some special logic for entering and exiting
- * the ghost house.
+ * A behavior which steers an actor (ghost) towards a (possibly moving) target tile. Each time the
+ * {@link #steer(MazeMover)} method is called, the target tile is recomputed. There is also some
+ * special logic for entering and exiting the ghost house.
  * 
- * The detailed behavior is described <a href=
- * "http://gameinternals.com/understanding-pac-man-ghost-behavior">here</a>.
+ * The detailed behavior is described
+ * <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here</a>.
  * 
  * @author Armin Reichert
  */
@@ -36,11 +33,12 @@ class HeadingForTile implements Steering {
 	private final Supplier<Tile> fnTargetTile;
 
 	/**
-	 * Creates a behavior which lets an actor heading for the target tile supplied
-	 * by the given function.
+	 * Creates a behavior which lets an actor heading for the target tile supplied by the given
+	 * function.
 	 * 
-	 * @param fnTargetTile function supplying the target tile whenever the
-	 *                     {@link #steer(MazeMover)} method is called
+	 * @param fnTargetTile
+	 *                       function supplying the target tile whenever the {@link #steer(MazeMover)}
+	 *                       method is called
 	 */
 	public HeadingForTile(Supplier<Tile> fnTargetTile) {
 		this.fnTargetTile = fnTargetTile;
@@ -48,19 +46,18 @@ class HeadingForTile implements Steering {
 
 	@Override
 	public void steer(MazeMover actor) {
+		actor.targetTile = fnTargetTile.get();
+		if (actor.targetTile == null) {
+			return;
+		}
+
 		final Maze maze = actor.maze;
-		actor.targetTile = Objects.requireNonNull(fnTargetTile.get(), "Target tile must not be NULL");
-		/* Entering ghost house: move downwards at the ghost house door. */
-		if (maze.inGhostHouse(actor.targetTile) && maze.inFrontOfGhostHouseDoor(actor.currentTile())) {
-			actor.nextDir = Top4.S;
-		}
-		/* Leaving ghost house: use Blinky's home tile as (temporary) target tile. */
-		else if (maze.inGhostHouse(actor.currentTile()) && !maze.inGhostHouse(actor.targetTile)) {
-			actor.targetTile = maze.blinkyHome;
-			actor.nextDir = computeNextDir(actor, actor.moveDir, actor.currentTile(), actor.targetTile);
-		}
+		final Tile actorTile = actor.currentTile();
+		final boolean actorInHouse = maze.inGhostHouse(actorTile);
+		final boolean targetInHouse = maze.inGhostHouse(actor.targetTile);
+
 		/* If a new tile is entered, decide where to go as described above. */
-		else if (actor.enteredNewTile) {
+		if (actor.enteredNewTile || actorInHouse && targetInHouse) {
 			actor.nextDir = computeNextDir(actor, actor.moveDir, actor.currentTile(), actor.targetTile);
 		}
 		actor.targetPath = actor.visualizePath ? computePath(actor) : Collections.emptyList();
@@ -70,19 +67,22 @@ class HeadingForTile implements Steering {
 	private static final List<Integer> DIRS_IN_ORDER = Collections.unmodifiableList(Arrays.asList(N, W, S, E));
 
 	/**
-	 * Computes the next move direction as described <a href=
-	 * "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
+	 * Computes the next move direction as described
+	 * <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
 	 * 
 	 * <p>
-	 * Note: We use separate parameters for the actor's move direction, tile and
-	 * target tile instead of the members of the actor itself because the
-	 * {@link #computePath(MazeMover, Tile)} method uses this method without
-	 * actually placing the actor at each tile of the path.
+	 * Note: We use separate parameters for the actor's move direction, tile and target tile instead of
+	 * the members of the actor itself because the {@link #computePath(MazeMover, Tile)} method uses
+	 * this method without actually placing the actor at each tile of the path.
 	 * 
-	 * @param actor       a actor (normally a ghost)
-	 * @param moveDir     the actor's current move direction
-	 * @param currentTile the actor's current tile
-	 * @param targetTile  the actor's current target tile
+	 * @param actor
+	 *                      a actor (normally a ghost)
+	 * @param moveDir
+	 *                      the actor's current move direction
+	 * @param currentTile
+	 *                      the actor's current tile
+	 * @param targetTile
+	 *                      the actor's current target tile
 	 */
 	private static int computeNextDir(MazeMover actor, int moveDir, Tile currentTile, Tile targetTile) {
 		/*@formatter:off*/
@@ -102,11 +102,11 @@ class HeadingForTile implements Steering {
 	}
 
 	/**
-	 * Computes the complete path the actor would traverse until it would reach the
-	 * target tile, a cycle would occur or the borders of the board would be
-	 * reached.
+	 * Computes the complete path the actor would traverse until it would reach the target tile, a cycle
+	 * would occur or the borders of the board would be reached.
 	 * 
-	 * @param actor actor for which the path is computed
+	 * @param actor
+	 *                actor for which the path is computed
 	 * @return the path the actor would use
 	 */
 	private static List<Tile> computePath(MazeMover actor) {

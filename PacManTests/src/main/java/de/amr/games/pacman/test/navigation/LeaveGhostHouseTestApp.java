@@ -14,7 +14,6 @@ public class LeaveGhostHouseTestApp extends Application {
 		settings.width = 28 * PacManGame.TS;
 		settings.height = 36 * PacManGame.TS;
 		settings.scale = 2;
-		clock.setFrequency(20);
 	}
 
 	@Override

@@ -15,6 +15,7 @@ public class ScatteringTestController implements ViewController {
 
 	private final PacManGame game;
 	private final PlayViewXtended view;
+	private boolean unlocked = false;
 
 	public ScatteringTestController() {
 		game = new PacManGame();
@@ -32,7 +33,8 @@ public class ScatteringTestController implements ViewController {
 		game.pacMan.hide();
 		game.activeGhosts().forEach(ghost -> {
 			ghost.init();
-			ghost.setState(GhostState.LOCKED);
+			ghost.fnNextState = () -> GhostState.SCATTERING;
+			ghost.fnIsUnlocked = g -> unlocked;
 			ghost.visualizePath = true;
 		});
 		view.showInfoText("Press SPACE key", Color.YELLOW);
@@ -41,9 +43,7 @@ public class ScatteringTestController implements ViewController {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			game.activeGhosts().filter(ghost -> ghost.getState() == GhostState.LOCKED).forEach(ghost -> {
-				ghost.setState(GhostState.SCATTERING);
-			});
+			unlocked = true;
 			view.hideInfoText();
 		}
 		game.activeGhosts().forEach(Ghost::update);

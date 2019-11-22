@@ -76,10 +76,9 @@ public abstract class MazeMover extends Entity {
 	protected abstract void steer();
 
 	/**
-	 * Steers and moves the actor.
+	 * Moves or teleports the actor.
 	 */
 	protected void move() {
-		steer();
 		boolean teleporting = teleport(app().clock.sec(1.0f));
 		if (!teleporting) {
 			moveInsideMaze();

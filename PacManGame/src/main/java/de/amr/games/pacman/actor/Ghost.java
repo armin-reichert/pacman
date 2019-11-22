@@ -1,10 +1,12 @@
 package de.amr.games.pacman.actor;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.actor.GhostState.*;
+import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.DYING;
+import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Maze.NESW;
@@ -17,6 +19,7 @@ import static de.amr.games.pacman.model.PacManGame.LevelData.GHOST_TUNNEL_SPEED;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
@@ -52,8 +55,14 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 
 	public final int initialDir;
 
+	public final Tile scatterTile;
+
 	/** Function providing the next state after being FRIGHTENED or LOCKED. */
 	public Supplier<GhostState> fnNextState;
+
+	public Supplier<Tile> fnChasingTarget;
+
+	public Function<Ghost, Boolean> fnIsUnlocked;
 
 	public int foodCount;
 
@@ -61,15 +70,20 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 
 	private Map<GhostState, Steering> steeringInState = new EnumMap<>(GhostState.class);
 
-	public Ghost(PacManGame game, Maze maze, String name, GhostColor color, Tile initialTile, int initialDir) {
+	private final Steering defaultSteering = headingFor(() -> targetTile);
+
+	public Ghost(PacManGame game, Maze maze, String name, GhostColor color, Tile initialTile, int initialDir,
+			Tile scatterTile) {
 		super(maze);
 		this.game = game;
 		this.name = name;
 		this.initialTile = initialTile;
 		this.initialDir = initialDir;
+		this.scatterTile = scatterTile;
 		this.nextDir = initialDir;
 		this.moveDir = initialDir;
 		fnNextState = this::getState;
+		fnIsUnlocked = game::isUnlocked;
 		buildStateMachine();
 		NESW.dirs().forEach(dir -> {
 			sprites.set("color-" + dir, game.theme.spr_ghostColored(color, dir));
@@ -90,11 +104,6 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 	@Override
 	public String name() {
 		return name;
-	}
-
-	@Override
-	public Ghost theGhost() {
-		return this;
 	}
 
 	private void chasingSoundOn() {
@@ -142,13 +151,13 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 
 	@Override
 	public void steer() {
-		steeringInState.getOrDefault(getState(), keepingDirection()).steer(this);
+		steeringInState.getOrDefault(getState(), defaultSteering).steer(this);
 	}
 
 	@Override
 	public boolean canEnterTile(Tile current, Tile tile) {
 		if (maze.isDoor(tile)) {
-			return getState() == RECOVERING || maze.inGhostHouse(current) && getState() != LOCKED;
+			return getState() == ENTERING_HOUSE || getState() == LEAVING_HOUSE;
 		}
 		if (maze.isNoUpIntersection(current) && tile == maze.tileToDir(current, Top4.N)) {
 			return getState() != GhostState.CHASING && getState() != GhostState.SCATTERING;
@@ -167,7 +176,10 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 		float tunnelSpeed = relSpeed(GHOST_TUNNEL_SPEED.$float(level));
 		switch (getState()) {
 		case LOCKED:
-			return 0; // locked outside ghost house
+			return maze.inGhostHouse(tile) ? relSpeed(.25f) : 0;
+		case LEAVING_HOUSE:
+		case ENTERING_HOUSE:
+			return relSpeed(.25f);
 		case CHASING:
 		case SCATTERING:
 			return maze.isTunnel(tile) ? tunnelSpeed : relSpeed(GHOST_SPEED.$float(level));
@@ -177,10 +189,8 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 			return 0;
 		case DEAD:
 			return 2 * relSpeed(GHOST_SPEED.$float(level));
-		case RECOVERING:
-			return relSpeed(.25f);
 		default:
-			throw new IllegalStateException("Illegal ghost state for " + name);
+			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name));
 		}
 	}
 
@@ -188,6 +198,14 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 		int oppositeDir = NESW.inv(moveDir);
 		IntStream.of(oppositeDir, NESW.left(oppositeDir), NESW.right(oppositeDir)).filter(this::canEnterTileTo)
 				.findFirst().ifPresent(dir -> nextDir = dir);
+	}
+
+	private boolean unlocked() {
+		return fnIsUnlocked.apply(this);
+	}
+
+	private boolean inHouse() {
+		return maze.inGhostHouse(currentTile()) || maze.isDoor(currentTile());
 	}
 
 	// Define state machine
@@ -213,6 +231,7 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 
 				.state(LOCKED)
 					.onTick(() -> {
+						steer();
 						move();
 						sprites.select("color-" + moveDir);
 					})
@@ -220,16 +239,39 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 						game.pacMan.ticksSinceLastMeal = 0;
 						enteredNewTile = true;
 					})
+					
+				.state(LEAVING_HOUSE)
+					.onTick(() -> {
+						if (inHouse()) {
+							targetTile = maze.blinkyHome;
+						}
+						steer();
+						move();
+						sprites.select("color-" + moveDir);
+					})
+					.onExit(() -> moveDir = nextDir = Top4.W)
+				
+				.state(ENTERING_HOUSE)
+				  .onEntry(() -> targetTile = maze.pinkyHome)
+					.onTick(() -> {
+						steer();
+						move();
+						sprites.select("eyes-" + moveDir);
+					})
 				
 				.state(SCATTERING)
-				.onTick(() -> {
-					move();
-					sprites.select("color-" + moveDir);
-				})
+					.onEntry(() -> targetTile = scatterTile)
+					.onTick(() -> {
+						steer();
+						move();
+						sprites.select("color-" + moveDir);
+					})
 			
 				.state(CHASING)
 					.onEntry(this::chasingSoundOn)
 					.onTick(() -> {
+						targetTile = fnChasingTarget.get();
+						steer();
 						move();
 						sprites.select("color-" + moveDir);
 					})
@@ -238,46 +280,45 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 				.state(FRIGHTENED)
 					.onEntry(this::reverseDirection)
 					.onTick(() -> {
+						steer();
 						move();
-						sprites.select(maze.inGhostHouse(currentTile())	
-									? "color-" + moveDir
-									: game.pacMan.isLosingPower()	? "flashing" : "frightened");
+						sprites.select(game.pacMan.isLosingPower()	? "flashing" : "frightened");
 					})
 				
 				.state(DYING)
 					.timeoutAfter(Ghost::getDyingTime)
 					.onEntry(() -> {
 						sprites.select("value-" + game.numGhostsKilledByCurrentEnergizer()); 
-						game.addGhostKilled();
 					})
+					.onExit(game::addGhostKilled)
 				
 				.state(DEAD)
-					.onEntry(this::deadSoundOn)
-					.onTick(() -> {	
+					.onEntry(() -> {
+						targetTile = maze.blinkyHome;
+						deadSoundOn();
+					})
+					.onTick(() -> {
+						steer();
 						move();
 						sprites.select("eyes-" + moveDir);
 					})
 					.onExit(this::deadSoundOff)
-					
-				.state(RECOVERING)
-					.onEntry(() -> {
-						targetTile = maze.ghostRevival;
-					})
-					.onTick(() -> {
-						move();
-						sprites.select("eyes-" + moveDir);
-					})
 				
 			.transitions()
+			
+				.when(LOCKED).then(LEAVING_HOUSE).condition(this::unlocked)
+			
+				.when(LEAVING_HOUSE).then(FRIGHTENED)
+					.condition(() -> !inHouse() && game.pacMan.hasPower())
 
-				.when(LOCKED).then(FRIGHTENED)
-					.condition(() -> game.canLeaveGhostHouse(this) && game.pacMan.hasPower())
-
-				.when(LOCKED).then(SCATTERING)
-					.condition(() -> game.canLeaveGhostHouse(this) && getNextState() == SCATTERING)
+				.when(LEAVING_HOUSE).then(SCATTERING)
+					.condition(() -> !inHouse() && getNextState() == SCATTERING)
 				
-				.when(LOCKED).then(CHASING)
-					.condition(() -> game.canLeaveGhostHouse(this) && getNextState() == CHASING)
+				.when(LEAVING_HOUSE).then(CHASING)
+					.condition(() -> !inHouse() && getNextState() == CHASING)
+					
+				.when(ENTERING_HOUSE).then(LOCKED)
+					.condition(() -> currentTile() == targetTile)
 				
 				.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
 				
@@ -301,12 +342,8 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 					
 				.when(DYING).then(DEAD).onTimeout()
 					
-				.when(DEAD).then(RECOVERING)
+				.when(DEAD).then(ENTERING_HOUSE)
 					.condition(() -> currentTile().equals(maze.blinkyHome))
-					.act(() -> targetTile = maze.pinkyHome)
-					
-				.when(RECOVERING).then(LOCKED)
-					.condition(() -> currentTile().equals(maze.pinkyHome))
 				
 		.endStateMachine();
 		/*@formatter:on*/

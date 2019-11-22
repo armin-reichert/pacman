@@ -38,10 +38,9 @@ public class FollowTargetTilesTestController implements ViewController {
 		g.ghosts().filter(ghost -> ghost != g.blinky).forEach(ghost -> g.setActive(ghost, false));
 		g.blinky.init();
 		g.blinky.placeAtTile(targets.get(0), 0, 0);
-		g.blinky.targetTile = targets.get(0);
+		g.blinky.targetTile = targets.get(1);
 		g.blinky.visualizePath = true;
 		g.blinky.setState(CHASING);
-		g.blinky.setBehavior(CHASING, g.blinky.headingFor(() -> g.blinky.targetTile));
 	}
 
 	private void nextTarget() {

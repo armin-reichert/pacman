@@ -30,7 +30,8 @@ public class InkyChaseTestController implements ViewController {
 		game.setActive(game.clyde, false);
 		game.activeGhosts().forEach(ghost -> {
 			ghost.init();
-			ghost.setState(GhostState.CHASING);
+			ghost.fnIsUnlocked = g -> true;
+			ghost.fnNextState = () -> GhostState.CHASING;
 		});
 	}
 
