@@ -1,5 +1,6 @@
 package de.amr.games.pacman.actor;
 
+import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.PacManState.DEAD;
 import static de.amr.games.pacman.actor.PacManState.DYING;
@@ -268,6 +269,8 @@ public class PacMan extends Actor<PacManState> {
 		@Override
 		public void onEntry() {
 			game.theme.snd_waza().loop();
+			LOGGER.info(
+					() -> String.format("Pac-Man powered for %d ticks (%d sec)", getDuration(), getDuration() / 60));
 		}
 
 		@Override
