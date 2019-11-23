@@ -10,33 +10,28 @@ import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class FleeRandomlyTestController implements ViewController {
 
-	private final PacManGame g;
-	private final PlayViewXtended view;
-
-	public FleeRandomlyTestController() {
-		g = new PacManGame();
-		g.level = 1;
-		g.maze.removeFood();
-		view = new PlayViewXtended(g);
-		view.setShowRoutes(true);
-		view.setShowGrid(false);
-		view.setShowStates(false);
-		view.setScoresVisible(false);
-	}
+	private PacManGame g;
+	private PlayViewXtended view;
 
 	@Override
 	public void init() {
+		g = new PacManGame();
+		g.level = 1;
+		g.maze.removeFood();
 		g.setActive(g.pacMan, false);
 		g.ghosts().forEach(ghost -> {
-			g.setActive(ghost, true);
 			ghost.init();
-			ghost.setBehavior(FRIGHTENED, ghost.fleeingRandomly());
 			ghost.setState(FRIGHTENED);
 		});
 		g.blinky.placeAtTile(g.maze.topLeft, 0, 0);
 		g.pinky.placeAtTile(g.maze.topRight, 0, 0);
 		g.inky.placeAtTile(g.maze.bottomLeft, 0, 0);
 		g.clyde.placeAtTile(g.maze.bottomRight, 0, 0);
+		view = new PlayViewXtended(g);
+		view.setShowRoutes(true);
+		view.setShowGrid(false);
+		view.setShowStates(true);
+		view.setScoresVisible(false);
 	}
 
 	@Override

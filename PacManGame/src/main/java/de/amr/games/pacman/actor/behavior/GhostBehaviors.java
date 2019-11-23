@@ -87,7 +87,7 @@ public interface GhostBehaviors {
 				/*@formatter:off*/
 				ghost.nextDir = permute(NESW.dirs())
 					.filter(dir -> dir != NESW.inv(ghost.nextDir))
-					.filter(dir -> ghost.canEnterTileTo(dir))
+					.filter(ghost::canEnterTileTo)
 					.findAny().orElse(ghost.moveDir);
 				/*@formatter:on*/
 			}
