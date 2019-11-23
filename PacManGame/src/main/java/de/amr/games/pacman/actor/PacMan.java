@@ -73,9 +73,9 @@ public class PacMan extends Actor<PacManState> {
 	public float maxSpeed() {
 		switch (getState()) {
 		case HUNGRY:
-			return relSpeed(PACMAN_SPEED.$float(game.getLevel()));
+			return relSpeed(PACMAN_SPEED.$float(game.level));
 		case POWER:
-			return relSpeed(PACMAN_POWER_SPEED.$float(game.getLevel()));
+			return relSpeed(PACMAN_POWER_SPEED.$float(game.level));
 		default:
 			return 0;
 		}
@@ -104,7 +104,7 @@ public class PacMan extends Actor<PacManState> {
 	// State machine
 
 	public int getPacManPowerTime() {
-		return sec(PACMAN_POWER_SECONDS.$int(game.getLevel()));
+		return sec(PACMAN_POWER_SECONDS.$int(game.level));
 	}
 
 	public int getPacManDyingTime() {

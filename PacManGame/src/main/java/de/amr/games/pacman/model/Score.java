@@ -56,7 +56,7 @@ public class Score {
 		points = n;
 		if (points > hiscorePoints) {
 			hiscorePoints = points;
-			hiscoreLevel = game.getLevel();
+			hiscoreLevel = game.level;
 		}
 	}
 

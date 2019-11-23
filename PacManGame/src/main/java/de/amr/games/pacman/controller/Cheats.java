@@ -40,7 +40,7 @@ public class Cheats implements Controller {
 		/* ALT-"L": Selects next level */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
 			if (gameController.getState() == PacManGameState.PLAYING) {
-				LOGGER.info(() -> String.format("Switch to next level (%d)", game.getLevel() + 1));
+				LOGGER.info(() -> String.format("Switch to next level (%d)", game.level + 1));
 				gameController.enqueue(new LevelCompletedEvent());
 			}
 		}

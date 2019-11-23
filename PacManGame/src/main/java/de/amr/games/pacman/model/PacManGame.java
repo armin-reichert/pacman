@@ -171,7 +171,7 @@ public class PacManGame {
 	private int numGhostsKilled;
 
 	/** Current level. */
-	private int level;
+	public int level;
 
 	/** The currently active bonus. */
 	private Bonus bonus;
@@ -277,14 +277,6 @@ public class PacManGame {
 			activeActors.remove(actor);
 			actor.hide();
 		}
-	}
-
-	public int getLevel() {
-		return level;
-	}
-
-	public void setLevel(int level) {
-		this.level = level;
 	}
 
 	public BonusSymbol getLevelSymbol() {

@@ -165,11 +165,10 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 	/* TODO: some values still guessed */
 	public float maxSpeed() {
 		Tile tile = currentTile();
-		int level = game.getLevel();
 		if (maze.inGhostHouse(tile)) {
 			return relSpeed(.25f);
 		}
-		float tunnelSpeed = relSpeed(GHOST_TUNNEL_SPEED.$float(level));
+		float tunnelSpeed = relSpeed(GHOST_TUNNEL_SPEED.$float(game.level));
 		switch (getState()) {
 		case LOCKED:
 			return maze.inGhostHouse(tile) ? relSpeed(.25f) : 0;
@@ -178,13 +177,13 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 			return relSpeed(.25f);
 		case CHASING:
 		case SCATTERING:
-			return maze.isTunnel(tile) ? tunnelSpeed : relSpeed(GHOST_SPEED.$float(level));
+			return maze.isTunnel(tile) ? tunnelSpeed : relSpeed(GHOST_SPEED.$float(game.level));
 		case FRIGHTENED:
-			return maze.isTunnel(tile) ? tunnelSpeed : relSpeed(GHOST_FRIGHTENED_SPEED.$float(level));
+			return maze.isTunnel(tile) ? tunnelSpeed : relSpeed(GHOST_FRIGHTENED_SPEED.$float(game.level));
 		case DYING:
 			return 0;
 		case DEAD:
-			return 2 * relSpeed(GHOST_SPEED.$float(level));
+			return 2 * relSpeed(GHOST_SPEED.$float(game.level));
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name));
 		}

@@ -15,7 +15,7 @@ public class FleeRandomlyTestController implements ViewController {
 
 	public FleeRandomlyTestController() {
 		g = new PacManGame();
-		g.setLevel(1);
+		g.level = 1;
 		g.maze.removeFood();
 		view = new PlayViewXtended(g);
 		view.setShowRoutes(true);

@@ -23,7 +23,7 @@ public class FollowFixedPathTestController implements ViewController {
 
 	public FollowFixedPathTestController() {
 		g = new PacManGame();
-		g.setLevel(1);
+		g.level = 1;
 		g.maze.removeFood();
 		targets = Arrays.asList(g.maze.bottomRight, g.maze.bottomLeft, g.maze.tunnelLeftExit, g.maze.topLeft,
 				g.maze.blinkyHome, g.maze.topRight, g.maze.tunnelRightExit, g.maze.pacManHome);
@@ -49,7 +49,7 @@ public class FollowFixedPathTestController implements ViewController {
 		targetIndex += 1;
 		if (targetIndex == targets.size()) {
 			targetIndex = 0;
-			g.setLevel(g.getLevel() + 1);
+			g.level += 1;
 		}
 	}
 

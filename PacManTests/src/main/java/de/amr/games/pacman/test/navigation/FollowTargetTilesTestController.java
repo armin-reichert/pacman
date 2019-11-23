@@ -21,7 +21,7 @@ public class FollowTargetTilesTestController implements ViewController {
 	@Override
 	public void init() {
 		g = new PacManGame();
-		g.setLevel(1);
+		g.level = 1;
 		g.maze.removeFood();
 		
 		targets = Arrays.asList(g.maze.topLeft, g.maze.blinkyHome, g.maze.topRight, g.maze.bottomRight,
@@ -47,7 +47,7 @@ public class FollowTargetTilesTestController implements ViewController {
 		current += 1;
 		if (current == targets.size()) {
 			current = 0;
-			g.setLevel(g.getLevel() + 1);
+			g.level += 1;
 		}
 	}
 

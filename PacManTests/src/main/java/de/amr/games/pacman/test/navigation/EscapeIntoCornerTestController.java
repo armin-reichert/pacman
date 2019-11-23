@@ -13,7 +13,7 @@ public class EscapeIntoCornerTestController implements ViewController {
 
 	public EscapeIntoCornerTestController() {
 		g = new PacManGame();
-		g.setLevel(1);
+		g.level = 1;
 		g.maze.removeFood();
 		view = new PlayViewXtended(g);
 		view.setShowRoutes(true);

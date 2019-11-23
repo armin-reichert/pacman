@@ -80,7 +80,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		this.theme = game.theme;
 		buildStateMachine();
 		cheatsController = new Cheats(this);
-		ghostAttackController = new GhostAttackController(game::getLevel);
+		ghostAttackController = new GhostAttackController(() -> game.level);
 		game.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackController::getState);
 		game.pacMan.addGameEventListener(this::process);
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
@@ -459,7 +459,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private class ChangingLevelState extends State<PacManGameState, PacManGameEvent> {
 
 		int numMazeFlashes() {
-			return MAZE_NUM_FLASHES.$int(game.getLevel());
+			return MAZE_NUM_FLASHES.$int(game.level);
 		}
 
 		/*

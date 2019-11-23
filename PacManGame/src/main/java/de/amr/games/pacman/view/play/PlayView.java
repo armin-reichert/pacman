@@ -124,7 +124,7 @@ public class PlayView implements View, Controller {
 			g.setColor(Color.WHITE);
 			g.drawString(String.format("%07d", score), TS, 2 * TS);
 			g.setColor(Color.YELLOW);
-			g.drawString(String.format("LEVEL %2d", game.getLevel()), 22 * TS, TS);
+			g.drawString(String.format("LEVEL %2d", game.level), 22 * TS, TS);
 
 			// High score
 			g.setColor(Color.YELLOW);

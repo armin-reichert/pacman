@@ -25,7 +25,7 @@ public class FollowMouseTestController implements ViewController {
 	@Override
 	public void init() {
 		g = new PacManGame();
-		g.setLevel(1);
+		g.level = 1;
 		g.maze.removeFood();
 		g.setActive(g.pacMan, false);
 		g.ghosts().forEach(ghost -> g.setActive(ghost, ghost == g.blinky));

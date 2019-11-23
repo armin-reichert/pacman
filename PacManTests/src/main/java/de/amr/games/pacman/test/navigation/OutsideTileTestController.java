@@ -15,7 +15,7 @@ public class OutsideTileTestController implements ViewController {
 
 	public OutsideTileTestController() {
 		g = new PacManGame();
-		g.setLevel(1);
+		g.level = 1;
 		g.maze.removeFood();
 		view = new PlayViewXtended(g);
 		view.setShowRoutes(true);
