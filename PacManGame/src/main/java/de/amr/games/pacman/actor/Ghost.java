@@ -233,7 +233,6 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 					})
 					.onExit(() -> {
 						game.pacMan.ticksSinceLastMeal = 0;
-						enteredNewTile = true;
 					})
 					
 				.state(LEAVING_HOUSE)

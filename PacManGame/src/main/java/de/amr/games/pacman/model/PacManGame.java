@@ -120,6 +120,9 @@ public class PacManGame {
 
 		@SuppressWarnings("unchecked")
 		public <T> T value(int level) {
+			if (level < 1) {
+				throw new IllegalArgumentException("Level must be >= 1, is " + level);
+			}
 			level = Math.min(LEVEL_DATA.length - 1, level);
 			return (T) LEVEL_DATA[level][ordinal()];
 		}
