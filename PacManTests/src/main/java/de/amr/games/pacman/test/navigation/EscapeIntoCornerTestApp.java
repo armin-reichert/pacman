@@ -13,10 +13,11 @@ public class EscapeIntoCornerTestApp extends Application {
 		settings.title = "Escape Into Corner";
 		settings.width = 28 * PacManGame.TS;
 		settings.height = 36 * PacManGame.TS;
-		settings.scale = 2;	}
+		settings.scale = 2;
+	}
 
 	@Override
 	public void init() {
-		setController(new EscapeIntoCornerTestController());
+		setController(new EscapeIntoCornerTestUI(new PacManGame()));
 	}
 }
