@@ -18,6 +18,6 @@ public class FollowTargetTilesTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new FollowTargetTilesTestController());
+		setController(new FollowTargetTilesTestUI(new PacManGame()));
 	}
 }
