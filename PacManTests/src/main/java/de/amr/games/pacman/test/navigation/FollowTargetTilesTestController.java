@@ -13,15 +13,29 @@ import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class FollowTargetTilesTestController implements ViewController {
 
-	private final PacManGame g;
-	private final PlayViewXtended view;
+	private PacManGame g;
+	private PlayViewXtended view;
 	private List<Tile> targets;
-	private int targetIndex;
+	private int current;
 
-	public FollowTargetTilesTestController() {
+	@Override
+	public void init() {
 		g = new PacManGame();
 		g.setLevel(1);
 		g.maze.removeFood();
+		
+		targets = Arrays.asList(g.maze.topLeft, g.maze.blinkyHome, g.maze.topRight, g.maze.bottomRight,
+				g.maze.pacManHome, g.maze.bottomLeft);
+		current = 0;
+
+		g.setActive(g.pacMan, false);
+		g.ghosts().filter(ghost -> ghost != g.blinky).forEach(ghost -> g.setActive(ghost, false));
+		g.blinky.init();
+		g.blinky.fnChasingTarget = () -> targets.get(current);
+		g.blinky.placeAtTile(targets.get(0), 0, 0);
+		g.blinky.visualizePath = true;
+		g.blinky.setState(CHASING);
+		
 		view = new PlayViewXtended(g);
 		view.setShowRoutes(true);
 		view.setShowGrid(false);
@@ -29,35 +43,20 @@ public class FollowTargetTilesTestController implements ViewController {
 		view.setScoresVisible(false);
 	}
 
-	@Override
-	public void init() {
-		targets = Arrays.asList(g.maze.topLeft, g.maze.blinkyHome, g.maze.topRight, g.maze.bottomRight,
-				g.maze.pacManHome, g.maze.bottomLeft);
-		targetIndex = 0;
-		g.setActive(g.pacMan, false);
-		g.ghosts().filter(ghost -> ghost != g.blinky).forEach(ghost -> g.setActive(ghost, false));
-		g.blinky.init();
-		g.blinky.placeAtTile(targets.get(0), 0, 0);
-		g.blinky.targetTile = targets.get(1);
-		g.blinky.visualizePath = true;
-		g.blinky.setState(CHASING);
-	}
-
 	private void nextTarget() {
-		targetIndex += 1;
-		if (targetIndex == targets.size()) {
-			targetIndex = 0;
+		current += 1;
+		if (current == targets.size()) {
+			current = 0;
 			g.setLevel(g.getLevel() + 1);
 		}
-		g.blinky.targetTile = targets.get(targetIndex);
 	}
 
 	@Override
 	public void update() {
-		g.blinky.update();
-		if (g.blinky.currentTile().equals(targets.get(targetIndex))) {
+		if (g.blinky.currentTile() == targets.get(current)) {
 			nextTarget();
 		}
+		g.blinky.update();
 		view.update();
 	}
 
