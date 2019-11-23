@@ -18,6 +18,6 @@ public class FollowMouseTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new FollowMouseTestController());
+		setController(new FollowMouseTestUI(new PacManGame()));
 	}
 }
