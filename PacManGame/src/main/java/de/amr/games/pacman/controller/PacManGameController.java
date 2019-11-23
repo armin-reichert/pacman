@@ -71,8 +71,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private PlayViewXtended playView;
 	private Controller viewController;
 
-	public boolean skipIntro = true;
-
+	public boolean skipIntro = false;
 	private boolean muted = false;
 
 	public PacManGameController(PacManGame game) {
