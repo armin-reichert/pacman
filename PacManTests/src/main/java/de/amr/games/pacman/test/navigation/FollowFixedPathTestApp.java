@@ -18,6 +18,6 @@ public class FollowFixedPathTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new FollowFixedPathTestController());
+		setController(new FollowFixedPathTestUI(new PacManGame()));
 	}
 }
