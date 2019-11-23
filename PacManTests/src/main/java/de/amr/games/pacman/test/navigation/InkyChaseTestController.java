@@ -9,22 +9,17 @@ import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class InkyChaseTestController implements ViewController {
 
-	private final PacManGame g;
-	private final PlayViewXtended view;
+	private PacManGame g;
+	private PlayViewXtended view;
 
 	public InkyChaseTestController() {
-		g = new PacManGame();
-		g.level = 1;
-		g.maze.removeFood();
-		view = new PlayViewXtended(g);
-		view.setShowRoutes(true);
-		view.setShowGrid(false);
-		view.setShowStates(true);
-		view.setScoresVisible(false);
 	}
 
 	@Override
 	public void init() {
+		g = new PacManGame();
+		g.level = 1;
+		g.maze.removeFood();
 		g.pacMan.init();
 		g.setActive(g.pinky, false);
 		g.setActive(g.clyde, false);
@@ -33,6 +28,11 @@ public class InkyChaseTestController implements ViewController {
 			ghost.fnIsUnlocked = g -> true;
 			ghost.fnNextState = () -> GhostState.CHASING;
 		});
+		view = new PlayViewXtended(g);
+		view.setShowRoutes(true);
+		view.setShowGrid(false);
+		view.setShowStates(true);
+		view.setScoresVisible(false);
 	}
 
 	@Override
