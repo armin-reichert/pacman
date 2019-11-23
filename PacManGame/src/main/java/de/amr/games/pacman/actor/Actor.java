@@ -24,6 +24,8 @@ import de.amr.statemachine.StateMachine;
  */
 public abstract class Actor<S> extends MazeMover {
 
+	public final String name;
+
 	private final Set<Consumer<PacManGameEvent>> gameEventListeners = new LinkedHashSet<>();
 
 	public Actor(String name, Maze maze) {
@@ -32,8 +34,6 @@ public abstract class Actor<S> extends MazeMover {
 	}
 
 	protected abstract StateMachine<S, PacManGameEvent> fsm();
-
-	public final String name;
 
 	public void addGameEventListener(Consumer<PacManGameEvent> listener) {
 		gameEventListeners.add(listener);
