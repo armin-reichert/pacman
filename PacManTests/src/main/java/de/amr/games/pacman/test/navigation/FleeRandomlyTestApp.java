@@ -18,6 +18,6 @@ public class FleeRandomlyTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new FleeRandomlyTestController());
+		setController(new FleeRandomlyTestUI(new PacManGame()));
 	}
 }
