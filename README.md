@@ -327,38 +327,75 @@ beginStateMachine(GhostState.class, PacManGameEvent.class)
 	.states()
 
 		.state(LOCKED)
-			.onTick(this::move)
-			.onExit(() -> game.pacMan.ticksSinceLastMeal = 0)
+			.onTick(() -> {
+				steer();
+				move();
+				sprites.select("color-" + moveDir);
+			})
+			.onExit(() -> {
+				game.pacMan.ticksSinceLastMeal = 0;
+				enteredNewTile = true;
+			})
+
+		.state(LEAVING_HOUSE)
+			.onTick(() -> {
+				if (inHouse()) {
+					targetTile = maze.blinkyHome;
+				}
+				steer();
+				move();
+				sprites.select("color-" + moveDir);
+			})
+			.onExit(() -> moveDir = nextDir = Top4.W)
+
+		.state(ENTERING_HOUSE)
+		  .onEntry(() -> targetTile = maze.pinkyHome)
+			.onTick(() -> {
+				steer();
+				move();
+				sprites.select("eyes-" + moveDir);
+			})
 
 		.state(SCATTERING)
-			.onTick(this::move)
+			.onEntry(() -> targetTile = scatterTile)
+			.onTick(() -> {
+				steer();
+				move();
+				sprites.select("color-" + moveDir);
+			})
 
 		.state(CHASING)
-			.onEntry(this::sirenOn)
-			.onTick(this::move)
-			.onExit(this::sirenOff)
+			.onEntry(this::chasingSoundOn)
+			.onTick(() -> {
+				targetTile = fnChasingTarget.get();
+				steer();
+				move();
+				sprites.select("color-" + moveDir);
+			})
+			.onExit(this::chasingSoundOff)
 
 		.state(FRIGHTENED)
-			.onEntry(() -> {
-				currentBehavior().computePath(this); 
-			})
+			.onEntry(this::reverseDirection)
 			.onTick(() -> {
+				steer();
 				move();
-				sprites.select(game.maze.insideGhostHouse(currentTile())	
-							? "color-" + moveDir
-							: game.pacMan.isLosingPower()	? "flashing" : "frightened");
+				sprites.select(game.pacMan.isLosingPower()	? "flashing" : "frightened");
 			})
 
 		.state(DYING)
-			.timeoutAfter(game::getGhostDyingTime)
+			.timeoutAfter(Ghost::getDyingTime)
 			.onEntry(() -> {
 				sprites.select("value-" + game.numGhostsKilledByCurrentEnergizer()); 
-				game.addGhostKilled();
 			})
+			.onExit(game::addGhostKilled)
 
 		.state(DEAD)
-			.onEntry(this::deadSoundOn)
-			.onTick(() -> {	
+			.onEntry(() -> {
+				targetTile = maze.blinkyHome;
+				deadSoundOn();
+			})
+			.onTick(() -> {
+				steer();
 				move();
 				sprites.select("eyes-" + moveDir);
 			})
@@ -366,22 +403,31 @@ beginStateMachine(GhostState.class, PacManGameEvent.class)
 
 	.transitions()
 
-		.when(LOCKED).then(FRIGHTENED)
-			.condition(() -> game.canLeaveGhostHouse(this) && game.pacMan.hasPower())
+		.when(LOCKED).then(LEAVING_HOUSE).condition(this::unlocked)
 
-		.when(LOCKED).then(SCATTERING)
-			.condition(() -> game.canLeaveGhostHouse(this) && getNextState() == SCATTERING)
+		.when(LEAVING_HOUSE).then(FRIGHTENED)
+			.condition(() -> !inHouse() && game.pacMan.hasPower())
 
-		.when(LOCKED).then(CHASING)
-			.condition(() -> game.canLeaveGhostHouse(this) && getNextState() == CHASING)
+		.when(LEAVING_HOUSE).then(SCATTERING)
+			.condition(() -> !inHouse() && getNextState() == SCATTERING)
+
+		.when(LEAVING_HOUSE).then(CHASING)
+			.condition(() -> !inHouse() && getNextState() == CHASING)
+
+		.when(ENTERING_HOUSE).then(LOCKED)
+			.condition(() -> currentTile() == targetTile)
 
 		.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
+
 		.when(CHASING).then(DYING).on(GhostKilledEvent.class)
-		.when(CHASING).then(SCATTERING).on(StartScatteringEvent.class)
+
+		.when(CHASING).then(SCATTERING).on(StartScatteringEvent.class).act(this::reverseDirection)
 
 		.when(SCATTERING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
+
 		.when(SCATTERING).then(DYING).on(GhostKilledEvent.class)
-		.when(SCATTERING).then(CHASING).on(StartChasingEvent.class)
+
+		.when(SCATTERING).then(CHASING).on(StartChasingEvent.class).act(this::reverseDirection)
 
 		.when(FRIGHTENED).then(CHASING).on(PacManLostPowerEvent.class)
 			.condition(() -> getNextState() == CHASING)
@@ -393,8 +439,8 @@ beginStateMachine(GhostState.class, PacManGameEvent.class)
 
 		.when(DYING).then(DEAD).onTimeout()
 
-		.when(DEAD).then(LOCKED)
-			.condition(() -> currentTile().equals(game.maze.ghostRevival))
+		.when(DEAD).then(ENTERING_HOUSE)
+			.condition(() -> currentTile().equals(maze.blinkyHome))
 
 .endStateMachine();
 ```
