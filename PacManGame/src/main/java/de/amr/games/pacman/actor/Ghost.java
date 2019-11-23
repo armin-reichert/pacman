@@ -49,34 +49,35 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 
 	public final PacManGame game;
 
-	public final String name;
-
 	public final Tile initialTile;
 
 	public final int initialDir;
 
 	public final Tile scatterTile;
 
-	/** Function providing the next state after being FRIGHTENED or LOCKED. */
+	/**
+	 * Function providing the next state after the "frightened" state ends or leaving the ghost house.
+	 */
 	public Supplier<GhostState> fnNextState;
 
+	/** Function providing the chasing target position. */
 	public Supplier<Tile> fnChasingTarget;
 
+	/** Function telling if ghost can leave the ghost house. */
 	public Function<Ghost, Boolean> fnIsUnlocked;
 
 	public int foodCount;
 
 	private StateMachine<GhostState, PacManGameEvent> fsm;
 
-	private Map<GhostState, Steering> steeringInState = new EnumMap<>(GhostState.class);
+	private Map<GhostState, Steering> steeringByState = new EnumMap<>(GhostState.class);
 
 	private final Steering defaultSteering = headingFor(() -> targetTile);
 
 	public Ghost(PacManGame game, Maze maze, String name, GhostColor color, Tile initialTile, int initialDir,
 			Tile scatterTile) {
-		super(maze);
+		super(name, maze);
 		this.game = game;
-		this.name = name;
 		this.initialTile = initialTile;
 		this.initialDir = initialDir;
 		this.scatterTile = scatterTile;
@@ -99,11 +100,6 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 	@Override
 	protected StateMachine<GhostState, PacManGameEvent> fsm() {
 		return fsm;
-	}
-
-	@Override
-	public String name() {
-		return name;
 	}
 
 	private void chasingSoundOn() {
@@ -146,12 +142,12 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 	// Steering
 
 	public void setBehavior(GhostState state, Steering steering) {
-		steeringInState.put(state, steering);
+		steeringByState.put(state, steering);
 	}
 
 	@Override
 	public void steer() {
-		steeringInState.getOrDefault(getState(), defaultSteering).steer(this);
+		steeringByState.getOrDefault(getState(), defaultSteering).steer(this);
 	}
 
 	@Override

@@ -53,7 +53,7 @@ public class PacMan extends Actor<PacManState> {
 	private StateMachine<PacManState, PacManGameEvent> fsm;
 
 	public PacMan(PacManGame game) {
-		super(game.maze);
+		super("Pac-Man", game.maze);
 		this.game = game;
 		buildStateMachine();
 		NESW.dirs().forEach(dir -> sprites.set("walking-" + dir, game.theme.spr_pacManWalking(dir)));
@@ -65,11 +65,6 @@ public class PacMan extends Actor<PacManState> {
 	@Override
 	protected StateMachine<PacManState, PacManGameEvent> fsm() {
 		return fsm;
-	}
-
-	@Override
-	public String name() {
-		return "Pac-Man";
 	}
 
 	// Movement
