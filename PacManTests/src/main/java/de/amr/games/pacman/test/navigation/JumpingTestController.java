@@ -8,20 +8,12 @@ import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class JumpingTestController implements ViewController {
 
-	private final PacManGame game;
-	private final PlayViewXtended view;
-
-	public JumpingTestController() {
-		game = new PacManGame();
-		view = new PlayViewXtended(game);
-		view.setShowGrid(false);
-		view.setShowRoutes(false);
-		view.setShowStates(true);
-		view.setScoresVisible(false);
-	}
+	private PacManGame game;
+	private PlayViewXtended view;
 
 	@Override
 	public void init() {
+		game = new PacManGame();
 		game.init();
 		game.maze.removeFood();
 		game.setActive(game.pacMan, false);
@@ -29,6 +21,11 @@ public class JumpingTestController implements ViewController {
 			ghost.init();
 			ghost.fnIsUnlocked = g -> false;
 		});
+		view = new PlayViewXtended(game);
+		view.setShowGrid(false);
+		view.setShowRoutes(false);
+		view.setShowStates(true);
+		view.setScoresVisible(false);
 	}
 
 	@Override
