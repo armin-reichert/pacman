@@ -18,6 +18,7 @@ public class LeaveGhostHouseTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new LeaveGhostHouseTestController());
+		clock.setFrequency(10);
+		setController(new LeaveGhostHouseTestUI(new PacManGame()));
 	}
 }
