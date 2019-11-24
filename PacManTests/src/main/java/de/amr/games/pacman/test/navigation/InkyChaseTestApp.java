@@ -18,6 +18,6 @@ public class InkyChaseTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new InkyChaseTestController());
+		setController(new InkyChaseTestUI(new PacManGame()));
 	}
 }
