@@ -18,6 +18,6 @@ public class ScatteringTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new ScatteringTestController());
+		setController(new ScatteringTestUI(new PacManGame()));
 	}
 }

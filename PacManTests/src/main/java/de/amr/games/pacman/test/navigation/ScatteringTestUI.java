@@ -11,15 +11,20 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayViewXtended;
 
-public class ScatteringTestController implements ViewController {
+public class ScatteringTestUI extends PlayViewXtended implements ViewController {
 
-	private PacManGame game;
-	private PlayViewXtended view;
 	private boolean locked = true;
+
+	public ScatteringTestUI(PacManGame game) {
+		super(game);
+		setShowGrid(false);
+		setShowRoutes(true);
+		setShowStates(true);
+		setScoresVisible(false);
+	}
 
 	@Override
 	public void init() {
-		game = new PacManGame();
 		game.init();
 		game.maze.removeFood();
 		game.pacMan.hide();
@@ -29,26 +34,21 @@ public class ScatteringTestController implements ViewController {
 			ghost.fnIsUnlocked = g -> !locked;
 			ghost.visualizePath = true;
 		});
-		view = new PlayViewXtended(game);
-		view.setShowGrid(false);
-		view.setShowRoutes(true);
-		view.setShowStates(true);
-		view.setScoresVisible(false);
-		view.showInfoText("Press SPACE key", Color.YELLOW);
+		showInfoText("Press SPACE key", Color.YELLOW);
 	}
 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			locked = false;
-			view.hideInfoText();
+			hideInfoText();
 		}
 		game.activeGhosts().forEach(Ghost::update);
-		view.update();
+		super.update();
 	}
 
 	@Override
 	public View currentView() {
-		return view;
+		return this;
 	}
 }
