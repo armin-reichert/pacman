@@ -47,11 +47,7 @@ class HeadingForTile implements Steering {
 	@Override
 	public void steer(MazeMover actor) {
 		actor.targetTile = fnTargetTile.get();
-		if (actor.targetTile != null && actor.enteredNewTile 
-				/*
-				|| actor.maze.inGhostHouse(actor.currentTile()) && actor.maze.inGhostHouse(actor.targetTile))
-				*/
-				) {
+		if (actor.targetTile != null && actor.enteredNewTile) {
 			actor.nextDir = nextDir(actor, actor.moveDir, actor.currentTile(), actor.targetTile);
 			actor.targetPath = actor.computePathToTargetTile ? pathToTargetTile(actor) : Collections.emptyList();
 		}
