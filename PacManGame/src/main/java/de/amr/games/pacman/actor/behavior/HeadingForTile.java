@@ -29,7 +29,7 @@ import de.amr.games.pacman.model.Tile;
 class HeadingForTile implements Steering {
 
 	/** Directions in the order used to compute the next move direction */
-	private static final List<Integer> DIRS_IN_ORDER = Arrays.asList(N, W, S, E);
+	private static final List<Integer> NWSE = Arrays.asList(N, W, S, E);
 
 	private final Supplier<Tile> fnTargetTile;
 
@@ -73,7 +73,7 @@ class HeadingForTile implements Steering {
 	 */
 	private static int nextDir(MazeMover actor, int moveDir, Tile currentTile, Tile targetTile) {
 		/*@formatter:off*/
-		return DIRS_IN_ORDER.stream()
+		return NWSE.stream()
 			.filter(dir -> dir != NESW.inv(moveDir))
 			.filter(dir -> actor.canEnterTile(currentTile, actor.maze.tileToDir(currentTile, dir)))
 			.sorted((dir1, dir2) -> {
@@ -82,7 +82,7 @@ class HeadingForTile implements Steering {
 				int cmpByDistance = Integer.compare(distance(neighbor1, targetTile), distance(neighbor2, targetTile));
 				return cmpByDistance != 0
 					? cmpByDistance
-					: Integer.compare(DIRS_IN_ORDER.indexOf(dir1), DIRS_IN_ORDER.indexOf(dir2));
+					: Integer.compare(NWSE.indexOf(dir1), NWSE.indexOf(dir2));
 			})
 			.findFirst().orElseThrow(IllegalStateException::new);
 		/*@formatter:on*/
