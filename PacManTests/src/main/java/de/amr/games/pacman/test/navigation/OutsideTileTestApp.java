@@ -18,6 +18,6 @@ public class OutsideTileTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new OutsideTileTestController());
+		setController(new OutsideTileTestUI(new PacManGame()));
 	}
 }
