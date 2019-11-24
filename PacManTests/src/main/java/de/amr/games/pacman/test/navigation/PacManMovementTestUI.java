@@ -1,8 +1,5 @@
 package de.amr.games.pacman.test.navigation;
 
-import java.util.logging.Level;
-
-import de.amr.easy.game.Application;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Actor;
