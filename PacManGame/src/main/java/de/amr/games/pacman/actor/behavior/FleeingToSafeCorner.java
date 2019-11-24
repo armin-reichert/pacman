@@ -12,26 +12,26 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Lets a ghost escape to the "safest" maze corner depending on Pac-Man's
- * current position. The "safest" corner is defined by the maximum distance of
- * Pac-Man to any tile on the path from the actor's current position to the
- * corner. When the target corner is reached the next corner is computed.
+ * Lets a ghost escape to the "safest" maze corner depending on Pac-Man's current position. The
+ * "safest" corner is defined by the maximum distance of Pac-Man to any tile on the path from the
+ * actor's current position to the corner. When the target corner is reached the next corner is
+ * computed.
  * 
  * @author Armin Reichert
  */
-class FleeingToSafeCorner extends TakingShortestPath {
+class FleeingToSafeCorner extends TakingPrecomputedPath {
 
 	public FleeingToSafeCorner(Supplier<Tile> chaserTileSupplier) {
 		super(chaserTileSupplier);
 	}
 
 	@Override
-	protected void computePath(MazeMover refugee) {
+	protected List<Tile> computePath(MazeMover refugee) {
 		Tile target = refugee.currentTile();
 		while (target.equals(refugee.currentTile())) {
 			target = safeCorner(refugee);
 		}
-		path = refugee.maze.findPath(refugee.currentTile(), target);
+		return refugee.maze.findPath(refugee.currentTile(), target);
 	}
 
 	private Tile safeCorner(MazeMover refugee) {

@@ -14,12 +14,12 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayViewXtended;
 
-public class FollowFixedPathTestUI extends PlayViewXtended implements ViewController {
+public class TakeShortestPathTestUI extends PlayViewXtended implements ViewController {
 
 	private List<Tile> targets;
 	private int targetIndex;
 
-	public FollowFixedPathTestUI(PacManGame game) {
+	public TakeShortestPathTestUI(PacManGame game) {
 		super(game);
 		setShowRoutes(true);
 		setShowGrid(false);
