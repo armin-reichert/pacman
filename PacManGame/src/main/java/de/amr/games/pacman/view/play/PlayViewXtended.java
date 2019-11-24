@@ -110,7 +110,7 @@ public class PlayViewXtended extends PlayView {
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
 			showRoutes = !showRoutes;
-			game.ghosts().forEach(ghost -> ghost.visualizePath = showRoutes);
+			game.ghosts().forEach(ghost -> ghost.computePathToTargetTile = showRoutes);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
 			toggleGhost(game.blinky);

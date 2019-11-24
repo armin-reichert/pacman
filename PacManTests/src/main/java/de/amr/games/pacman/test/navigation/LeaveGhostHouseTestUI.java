@@ -23,7 +23,7 @@ public class LeaveGhostHouseTestUI extends PlayViewXtended implements ViewContro
 		game.pacMan.hide();
 		game.ghosts().filter(ghost -> ghost != game.inky).forEach(ghost -> game.setActive(ghost, false));
 		game.inky.init();
-		game.inky.visualizePath = true;
+		game.inky.computePathToTargetTile = true;
 		game.inky.fnIsUnlocked = g -> true;
 		game.inky.fnNextState = () -> GhostState.SCATTERING;
 	}

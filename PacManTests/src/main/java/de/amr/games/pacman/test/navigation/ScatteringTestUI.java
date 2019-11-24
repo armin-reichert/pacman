@@ -32,7 +32,7 @@ public class ScatteringTestUI extends PlayViewXtended implements ViewController 
 			ghost.init();
 			ghost.fnNextState = () -> GhostState.SCATTERING;
 			ghost.fnIsUnlocked = g -> !locked;
-			ghost.visualizePath = true;
+			ghost.computePathToTargetTile = true;
 		});
 		showInfoText("Press SPACE key", Color.YELLOW);
 	}
