@@ -1,6 +1,5 @@
 package de.amr.games.pacman.test.navigation;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.GhostState;
