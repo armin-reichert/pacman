@@ -19,7 +19,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-class FleeingToSafeCorner extends FollowingFixedPath {
+class FleeingToSafeCorner extends TakingShortestPath {
 
 	public FleeingToSafeCorner(Supplier<Tile> chaserTileSupplier) {
 		super(chaserTileSupplier);

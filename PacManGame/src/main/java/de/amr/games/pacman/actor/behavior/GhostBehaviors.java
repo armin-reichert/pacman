@@ -102,6 +102,6 @@ public interface GhostBehaviors {
 	 * @return behavior where ghost follows a fixed path
 	 */
 	default Steering followingFixedPath(Supplier<Tile> fnTarget) {
-		return new FollowingFixedPath(fnTarget);
+		return new TakingShortestPath(fnTarget);
 	}
 }

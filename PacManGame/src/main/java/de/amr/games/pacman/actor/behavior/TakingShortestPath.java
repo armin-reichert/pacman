@@ -4,22 +4,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-import de.amr.easy.game.Application;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Computes a fixed path and lets the actor follow this path until the target
- * tile is reached.
+ * Steering using a graph-based path finder.
  *
  * @author Armin Reichert
  */
-class FollowingFixedPath implements Steering {
+class TakingShortestPath implements Steering {
 
 	protected Supplier<Tile> fnTargetTile;
 	protected List<Tile> path = Collections.emptyList();
 
-	public FollowingFixedPath(Supplier<Tile> fnTargetTile) {
+	public TakingShortestPath(Supplier<Tile> fnTargetTile) {
 		this.fnTargetTile = fnTargetTile;
 	}
 
@@ -34,7 +32,6 @@ class FollowingFixedPath implements Steering {
 	}
 
 	protected void computePath(MazeMover actor) {
-		Application.LOGGER.info("Computing new path");
 		path = actor.maze.findPath(actor.currentTile(), fnTargetTile.get());
 		trimPath(actor);
 	}
