@@ -18,6 +18,6 @@ public class JumpingTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new JumpingTestController());
+		setController(new JumpingTestUI(new PacManGame()));
 	}
 }
