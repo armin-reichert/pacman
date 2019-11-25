@@ -11,14 +11,14 @@ import de.amr.games.pacman.model.Tile;
  *
  * @author Armin Reichert
  */
-class TakingShortestPath extends TakingPrecomputedPath implements Steering {
+class TakingShortestPath<T extends MazeMover> extends TakingPrecomputedPath<T> {
 
 	public TakingShortestPath(Supplier<Tile> fnTargetTile) {
 		super(fnTargetTile);
 	}
 
 	@Override
-	protected List<Tile> computePath(MazeMover actor) {
+	protected List<Tile> computePath(T actor) {
 		return actor.maze.findPath(actor.currentTile(), actor.targetTile);
 	}
 }

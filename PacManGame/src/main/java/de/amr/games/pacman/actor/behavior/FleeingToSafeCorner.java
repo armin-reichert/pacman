@@ -19,14 +19,14 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-class FleeingToSafeCorner extends TakingPrecomputedPath {
+class FleeingToSafeCorner<T extends MazeMover> extends TakingPrecomputedPath<T> {
 
 	public FleeingToSafeCorner(Supplier<Tile> chaserTileSupplier) {
 		super(chaserTileSupplier);
 	}
 
 	@Override
-	protected List<Tile> computePath(MazeMover refugee) {
+	protected List<Tile> computePath(T refugee) {
 		Tile target = refugee.currentTile();
 		while (target.equals(refugee.currentTile())) {
 			target = safeCorner(refugee);
@@ -34,7 +34,7 @@ class FleeingToSafeCorner extends TakingPrecomputedPath {
 		return refugee.maze.findPath(refugee.currentTile(), target);
 	}
 
-	private Tile safeCorner(MazeMover refugee) {
+	private Tile safeCorner(T refugee) {
 		Maze maze = refugee.maze;
 		Tile refugeeTile = refugee.currentTile();
 		Tile chaserTile = fnTargetTile.get();

@@ -4,12 +4,13 @@ import static de.amr.games.pacman.model.Maze.NESW;
 
 import de.amr.datastruct.StreamUtils;
 import de.amr.easy.game.input.Keyboard;
+import de.amr.games.pacman.actor.PacMan;
 
 /**
  * Steerings for Pac-Man.
  * 
  * <p>
- * Here we can implenment different steering strategies ("AI") for Pac-Man .
+ * Here we can implement different steering strategies ("AI") for Pac-Man .
  * 
  * @author Armin Reichert
  */
@@ -20,12 +21,12 @@ public interface PacManSteerings {
 	 *               steering key codes in order N, E, S, W
 	 * @return steering using the given keys
 	 */
-	default Steering steeredByKeys(int... keys) {
+	default Steering<PacMan> steeredByKeys(int... keys) {
 		return pacMan -> NESW.dirs().filter(dir -> Keyboard.keyDown(keys[dir])).findAny()
 				.ifPresent(pacMan::setNextDir);
 	}
 
-	default Steering movingRandomly() {
+	default Steering<PacMan> movingRandomly() {
 		return pacMan -> {
 			if (pacMan.isStuck()) {
 				StreamUtils
@@ -33,6 +34,11 @@ public interface PacManSteerings {
 								.canEnterTile(pacMan.currentTile(), pacMan.maze.tileToDir(pacMan.currentTile(), dir)))
 						.findFirst().ifPresent(pacMan::setNextDir);
 			}
+		};
+	}
+
+	default Steering<PacMan> avoidGhosts() {
+		return pacMan -> {
 		};
 	}
 }

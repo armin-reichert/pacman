@@ -70,9 +70,9 @@ public class Ghost extends Actor<GhostState> implements GhostSteerings {
 
 	private StateMachine<GhostState, PacManGameEvent> fsm;
 
-	private Map<GhostState, Steering> steeringByState = new EnumMap<>(GhostState.class);
+	private Map<GhostState, Steering<Ghost>> steeringByState = new EnumMap<>(GhostState.class);
 
-	private final Steering defaultSteering = headingFor(() -> targetTile);
+	private final Steering<Ghost> defaultSteering = headingFor(() -> targetTile);
 
 	public Ghost(PacManGame game, Maze maze, String name, GhostColor color, Tile initialTile, int initialDir,
 			Tile scatterTile) {
@@ -141,7 +141,7 @@ public class Ghost extends Actor<GhostState> implements GhostSteerings {
 
 	// Steering
 
-	public void setBehavior(GhostState state, Steering steering) {
+	public void setBehavior(GhostState state, Steering<Ghost> steering) {
 		steeringByState.put(state, steering);
 	}
 

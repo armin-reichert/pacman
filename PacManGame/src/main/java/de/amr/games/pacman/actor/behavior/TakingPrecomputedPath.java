@@ -8,12 +8,11 @@ import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Steering using a precomputed path which is recomputed only if the actor would
- * leave this path.
+ * Steering using a precomputed path which is recomputed only if the actor would leave this path.
  *
  * @author Armin Reichert
  */
-abstract class TakingPrecomputedPath implements Steering {
+abstract class TakingPrecomputedPath<T extends MazeMover> implements Steering<T> {
 
 	protected Supplier<Tile> fnTargetTile;
 	protected List<Tile> path = Collections.emptyList();
@@ -23,7 +22,7 @@ abstract class TakingPrecomputedPath implements Steering {
 	}
 
 	@Override
-	public void steer(MazeMover actor) {
+	public void steer(T actor) {
 		Tile actorTile = actor.currentTile();
 		actor.targetTile = fnTargetTile.get();
 		while (path.size() > 0 && !actorTile.equals(path.get(0))) {
@@ -37,5 +36,5 @@ abstract class TakingPrecomputedPath implements Steering {
 		actor.nextDir = actor.maze.alongPath(path).orElse(actor.moveDir);
 	}
 
-	protected abstract List<Tile> computePath(MazeMover actor);
+	protected abstract List<Tile> computePath(T actor);
 }

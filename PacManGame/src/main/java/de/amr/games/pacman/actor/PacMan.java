@@ -50,7 +50,7 @@ public class PacMan extends Actor<PacManState> implements PacManSteerings {
 	public final PacManGame game;
 	public int ticksSinceLastMeal;
 	private StateMachine<PacManState, PacManGameEvent> fsm;
-	private Steering steering;
+	private Steering<PacMan> steering;
 
 	public PacMan(PacManGame game) {
 		super("Pac-Man", game.maze);

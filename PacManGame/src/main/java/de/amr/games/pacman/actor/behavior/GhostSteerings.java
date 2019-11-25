@@ -6,6 +6,7 @@ import static de.amr.games.pacman.model.Maze.NESW;
 import java.util.Collections;
 import java.util.function.Supplier;
 
+import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
@@ -22,7 +23,7 @@ public interface GhostSteerings {
 	 * 
 	 * @return behavior where ghost keeps its current position
 	 */
-	default Steering standingStill() {
+	default Steering<Ghost> standingStill() {
 		return ghost -> ghost.targetTile = ghost.currentTile();
 	}
 
@@ -31,7 +32,7 @@ public interface GhostSteerings {
 	 * 
 	 * @return behavior where ghost keeps its current move direction
 	 */
-	default Steering keepingDirection() {
+	default Steering<Ghost> keepingDirection() {
 		return ghost -> ghost.nextDir = ghost.moveDir;
 	}
 
@@ -40,7 +41,7 @@ public interface GhostSteerings {
 	 * 
 	 * @return bouncing behavior
 	 */
-	default Steering jumpingUpAndDown() {
+	default Steering<Ghost> jumpingUpAndDown() {
 		return ghost -> {
 			if (ghost.moveDir == Top4.E || ghost.moveDir == Top4.W) {
 				ghost.moveDir = Top4.N;
@@ -57,8 +58,8 @@ public interface GhostSteerings {
 	 *                   function supplying the target tile
 	 * @return behavior where ghost heads for the target tile
 	 */
-	default Steering headingFor(Supplier<Tile> fnTarget) {
-		return new HeadingForTile(fnTarget);
+	default Steering<Ghost> headingFor(Supplier<Tile> fnTarget) {
+		return new HeadingForTile<>(fnTarget);
 	}
 
 	/**
@@ -68,8 +69,8 @@ public interface GhostSteerings {
 	 *                   the attacker (Pac-Man)
 	 * @return behavior where ghost flees to a "safe" maze corner
 	 */
-	default Steering fleeingToSafeCorner(MazeMover attacker) {
-		return new FleeingToSafeCorner(attacker::currentTile);
+	default Steering<Ghost> fleeingToSafeCorner(MazeMover attacker) {
+		return new FleeingToSafeCorner<>(attacker::currentTile);
 	}
 
 	/**
@@ -79,7 +80,7 @@ public interface GhostSteerings {
 	 * 
 	 * @return behavior where ghost flees from Pac-Man by taking random turns at each intersection
 	 */
-	default Steering fleeingRandomly() {
+	default Steering<Ghost> fleeingRandomly() {
 		return ghost -> {
 			ghost.targetPath = Collections.emptyList();
 			ghost.targetTile = null;
@@ -101,7 +102,7 @@ public interface GhostSteerings {
 	 *                   function supplying the target tile at time of decision
 	 * @return behavior where ghost follows a fixed path
 	 */
-	default Steering followingFixedPath(Supplier<Tile> fnTarget) {
-		return new TakingShortestPath(fnTarget);
+	default Steering<Ghost> followingFixedPath(Supplier<Tile> fnTarget) {
+		return new TakingShortestPath<Ghost>(fnTarget);
 	}
 }
