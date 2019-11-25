@@ -8,7 +8,8 @@ import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Steering using a graph-based path finder.
+ * Steering using a precomputed path which is recomputed only if the actor would
+ * leave this path.
  *
  * @author Armin Reichert
  */
