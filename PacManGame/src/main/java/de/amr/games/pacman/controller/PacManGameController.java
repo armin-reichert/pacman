@@ -51,7 +51,8 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements ViewController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
+		implements ViewController {
 
 	// Typed reference to "Playing" state object
 	private PlayingState playingState;
@@ -123,9 +124,17 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		handleStateMachineLogging();
 		handlePlayingSpeedChange();
 		handleGhostBehaviorChange();
+		handleToggleOverflowBug();
 		cheatsController.update();
 		super.update();
 		viewController.update();
+	}
+
+	private void handleToggleOverflowBug() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_O)) {
+			app().settings.set("overflowBug", !app().settings.getAsBoolean("overflowBug"));
+			LOGGER.info("Overflow bug is " + (app().settings.getAsBoolean("overflowBug") ? "on" : "off"));
+		}
 	}
 
 	private void handleMuteSound() {
@@ -147,9 +156,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void handlePlayingSpeedChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
 			app().clock.setFrequency(60);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
 			app().clock.setFrequency(80);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
 			app().clock.setFrequency(100);
 		}
 	}
@@ -161,8 +172,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				ghost.setBehavior(GhostState.FRIGHTENED,
 						game.classicFlightBehavior ? ghost.fleeingRandomly() : ghost.fleeingToSafeCorner(game.pacMan));
 			});
-			LOGGER.info(
-					"Changed ghost FRIGHTENED behavior to flee " + (game.classicFlightBehavior ? "randomly" : "via safe route"));
+			LOGGER.info("Changed ghost FRIGHTENED behavior to flee "
+					+ (game.classicFlightBehavior ? "randomly" : "via safe route"));
 		}
 	}
 
@@ -350,7 +361,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			ghostAttackController.update();
 			if (oldAttackState != ghostAttackController.getState()) {
 				fireAttackStateChange();
-			} else {
+			}
+			else {
 				game.activeGhosts().forEach(Ghost::update);
 			}
 			game.pacMan.update();
@@ -463,8 +475,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 
 		/*
-		 * Set state duration such that flashing animation is executed exact number of
-		 * times defined for each level. One flash takes half a second.
+		 * Set state duration such that flashing animation is executed exact number of times defined for
+		 * each level. One flash takes half a second.
 		 */
 		{
 			setTimerFunction(() -> app().clock.sec(0.5f * numMazeFlashes()));
@@ -510,7 +522,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onTick() {
-			game.activeGhosts().filter(ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
+			game.activeGhosts()
+					.filter(ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
 					.forEach(Ghost::update);
 		}
 
@@ -540,7 +553,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				if (waitTimer == 0) {
 					game.activeGhosts().forEach(Ghost::hide);
 				}
-			} else {
+			}
+			else {
 				game.pacMan.update();
 			}
 		}

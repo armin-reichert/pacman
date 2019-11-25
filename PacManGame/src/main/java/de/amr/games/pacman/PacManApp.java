@@ -31,6 +31,7 @@ public class PacManApp extends Application {
 		settings.height = Maze.ROWS * TS;
 		settings.scale = 2;
 		settings.fullScreenOnStart = false;
+		settings.set("overflowBug", true);
 	}
 
 	@Override
