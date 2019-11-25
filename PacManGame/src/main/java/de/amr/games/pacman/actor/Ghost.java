@@ -239,6 +239,7 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 						if (inHouse()) {
 							targetTile = maze.blinkyHome;
 						}
+						enteredNewTile = true; //TODO this avoids getting stuck in house
 						steer();
 						move();
 						sprites.select("color-" + moveDir);
