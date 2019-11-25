@@ -21,9 +21,8 @@ public interface PacManSteerings {
 	 * @return steering using the given keys
 	 */
 	default Steering steeredByKeys(int... keys) {
-		return pacMan -> {
-			NESW.dirs().filter(dir -> Keyboard.keyDown(keys[dir])).findFirst().ifPresent(pacMan::setNextDir);
-		};
+		return pacMan -> NESW.dirs().filter(dir -> Keyboard.keyDown(keys[dir])).findAny()
+				.ifPresent(pacMan::setNextDir);
 	}
 
 	default Steering movingRandomly() {
