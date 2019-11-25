@@ -23,8 +23,9 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import de.amr.easy.game.assets.Sound;
-import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.games.pacman.actor.behavior.PacManSteerings;
+import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -44,18 +45,18 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends Actor<PacManState> {
-
-	static final int[] KEY = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
+public class PacMan extends Actor<PacManState> implements PacManSteerings {
 
 	public final PacManGame game;
 	public int ticksSinceLastMeal;
 	private StateMachine<PacManState, PacManGameEvent> fsm;
+	private Steering steering;
 
 	public PacMan(PacManGame game) {
 		super("Pac-Man", game.maze);
 		this.game = game;
 		buildStateMachine();
+		steering = steeredByKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
 		NESW.dirs().forEach(dir -> sprites.set("walking-" + dir, game.theme.spr_pacManWalking(dir)));
 		sprites.set("dying", game.theme.spr_pacManDying());
 		sprites.set("full", game.theme.spr_pacManFull());
@@ -90,7 +91,7 @@ public class PacMan extends Actor<PacManState> {
 
 	@Override
 	public void steer() {
-		NESW.dirs().filter(dir -> Keyboard.keyDown(KEY[dir])).findFirst().ifPresent(dir -> nextDir = dir);
+		steering.steer(this);
 	}
 
 	@Override

@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.actor.behavior.GhostBehaviors;
+import de.amr.games.pacman.actor.behavior.GhostSteerings;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -45,7 +45,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Actor<GhostState> implements GhostBehaviors {
+public class Ghost extends Actor<GhostState> implements GhostSteerings {
 
 	public final PacManGame game;
 
@@ -192,7 +192,7 @@ public class Ghost extends Actor<GhostState> implements GhostBehaviors {
 	private void reverseDirection() {
 		int oppositeDir = NESW.inv(moveDir);
 		IntStream.of(oppositeDir, NESW.left(oppositeDir), NESW.right(oppositeDir)).filter(this::canEnterTileTo)
-				.findFirst().ifPresent(dir -> nextDir = dir);
+				.findFirst().ifPresent(this::setNextDir);
 	}
 
 	private boolean unlocked() {

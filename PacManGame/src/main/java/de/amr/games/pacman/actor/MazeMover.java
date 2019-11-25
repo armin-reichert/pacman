@@ -64,6 +64,15 @@ public abstract class MazeMover extends Entity {
 		targetTile = null;
 	}
 
+	public void setNextDir(int dir) {
+		if (dir == Top4.N || dir == Top4.E || dir == Top4.S || dir == Top4.W) {
+			nextDir = dir;
+		}
+		else {
+			throw new IllegalArgumentException("Illegal direction value " + dir);
+		}
+	}
+
 	/**
 	 * @return the maximum possible speed (in pixels/tick) for the current frame. The actual speed can
 	 *         be lower to avoid moving into inaccessible tiles.

@@ -15,7 +15,7 @@ import de.amr.graph.grid.impl.Top4;
  * 
  * @author Armin Reichert
  */
-public interface GhostBehaviors {
+public interface GhostSteerings {
 
 	/**
 	 * Keeps the actor on its current tile.
