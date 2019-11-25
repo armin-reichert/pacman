@@ -496,15 +496,16 @@ Example trace:
 
 ## Pac-Man movement
 
-Pac-Man's movement is controlled by holding a key indicating its intended direction. As soon as Pac-Man reaches a tile where it can move towards this direction it changes its current direction accordingly. "Cornering" is not implemented.
+Pac-Man's movement by default is controlled by holding a key indicating its intended direction. As soon as Pac-Man reaches a tile where it can move towards this direction it changes its current direction accordingly. "Cornering" is not implemented.
 
 ```java
-static final int[] KEY = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
-
-@Override
-public void steer() {
-	NESW.dirs().filter(dir -> Keyboard.keyDown(KEY[dir])).findFirst().ifPresent(dir -> nextDir = dir);
+default Steering steeredByKeys(int... keys) {
+	return pacMan -> {
+		NESW.dirs().filter(dir -> Keyboard.keyDown(keys[dir])).findFirst().ifPresent(pacMan::setNextDir);
+	};
 }
+
+steering = steeredByKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
 ```
 
 ## Defining the ghost behavior ("AI")
