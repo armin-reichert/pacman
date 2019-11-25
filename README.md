@@ -19,7 +19,7 @@ through the maze are not trivial. Pac-Man's movement direction is controlled by 
 
 After having implemented this correctly, the next challenge is the logic and the control of the game itself. You have to sort out the different states of the game and the actors, you have to understand how the user interface should behave depending on the current state and which game "events" lead from one state to the other (state transitions).
 
-Maybe you will start with a single ghost and implement its behavior: waiting (bouncing) in the ghost house, leaving the house to chase Pac-Man or scattering out to the ghosts corner. What should happen when Pac-Man and a ghost are colliding? 
+Maybe you will start with a single ghost and implement its behavior: waiting (bouncing) in the ghost house, leaving the house to chase Pac-Man or scattering out to the ghost's maze corner. What should happen when Pac-Man and a ghost are colliding? 
 Which part of your program should coordinate this? Should the code be distributed over the actors or should you have 
 some kind of mediator, some central game control? Where should the game rules (points, lives, levels etc.) be implemented? 
 Should this be placed in some kind of *model* (in the sense of the Model-View-Controller pattern)?
