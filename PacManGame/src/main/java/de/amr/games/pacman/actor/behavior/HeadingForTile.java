@@ -21,8 +21,8 @@ import de.amr.games.pacman.model.Tile;
  * Steers an actor towards a (possibly changing) target tile. Each time the
  * {@link #steer(MazeMover)} method is called, the target tile is recomputed.
  * 
- * The detailed behavior is described
- * <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here</a>.
+ * The detailed behavior is described <a href=
+ * "http://gameinternals.com/understanding-pac-man-ghost-behavior">here</a>.
  * 
  * @author Armin Reichert
  */
@@ -34,11 +34,11 @@ class HeadingForTile implements Steering {
 	private final Supplier<Tile> fnTargetTile;
 
 	/**
-	 * Creates a steering which lets an actor head for the target tile supplied by the given function.
+	 * Creates a steering which lets an actor head for the target tile supplied by
+	 * the given function.
 	 * 
-	 * @param fnTargetTile
-	 *                       function supplying the target tile whenever the {@link #steer(MazeMover)}
-	 *                       method is called
+	 * @param fnTargetTile function supplying the target tile whenever the
+	 *                     {@link #steer(MazeMover)} method is called
 	 */
 	public HeadingForTile(Supplier<Tile> fnTargetTile) {
 		this.fnTargetTile = fnTargetTile;
@@ -46,30 +46,31 @@ class HeadingForTile implements Steering {
 
 	@Override
 	public void steer(MazeMover actor) {
-		actor.targetTile = fnTargetTile.get();
-		if (actor.targetTile != null && actor.enteredNewTile) {
-			actor.nextDir = nextDir(actor, actor.moveDir, actor.currentTile(), actor.targetTile);
+		if (!actor.enteredNewTile) {
+			return; // TODO move this text outside
+		}
+		Tile targetTile = fnTargetTile.get();
+		if (targetTile != null) {
+			actor.targetTile = targetTile;
+			actor.nextDir = nextDir(actor, actor.moveDir, actor.currentTile(), targetTile);
 			actor.targetPath = actor.computePathToTargetTile ? pathToTargetTile(actor) : Collections.emptyList();
 		}
 	}
 
 	/**
-	 * Computes the next move direction as described
-	 * <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
+	 * Computes the next move direction as described <a href=
+	 * "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
 	 * 
 	 * <p>
-	 * Note: We use separate parameters for the actor's move direction, tile and target tile instead of
-	 * the members of the actor itself because the {@link #computePath(MazeMover, Tile)} method uses
-	 * this method without actually placing the actor at each tile of the path.
+	 * Note: We use separate parameters for the actor's move direction, current tile
+	 * and target tile instead of the members of the actor itself because the
+	 * {@link #computePath(MazeMover, Tile)} method uses this method without
+	 * actually placing the actor at each tile of the path.
 	 * 
-	 * @param actor
-	 *                      a actor (normally a ghost)
-	 * @param moveDir
-	 *                      the actor's current move direction
-	 * @param currentTile
-	 *                      the actor's current tile
-	 * @param targetTile
-	 *                      the actor's current target tile
+	 * @param actor       an actor (normally a ghost)
+	 * @param moveDir     the actor's current move direction
+	 * @param currentTile the actor's current tile
+	 * @param targetTile  the actor's current target tile
 	 */
 	private static int nextDir(MazeMover actor, int moveDir, Tile currentTile, Tile targetTile) {
 		/*@formatter:off*/
@@ -89,11 +90,11 @@ class HeadingForTile implements Steering {
 	}
 
 	/**
-	 * Computes the complete path the actor would traverse until it would reach the target tile, a cycle
-	 * would occur or the borders of the board would be reached.
+	 * Computes the complete path the actor would traverse until it would reach the
+	 * target tile, a cycle would occur or the borders of the board would be
+	 * reached.
 	 * 
-	 * @param actor
-	 *                actor for which the path is computed
+	 * @param actor actor for which the path is computed
 	 * @return the path the actor would take when moving to its target tile
 	 */
 	private static List<Tile> pathToTargetTile(MazeMover actor) {

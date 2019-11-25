@@ -36,9 +36,10 @@ public class FollowMouseTestUI extends PlayViewXtended implements ViewController
 		game.ghosts().forEach(ghost -> game.setActive(ghost, ghost == game.blinky));
 		game.blinky.init();
 		game.blinky.fnChasingTarget = () -> mouseTile;
+		game.blinky.computePathToTargetTile = true;
 		game.blinky.setState(CHASING);
-		Assets.muteAll(true);
 		mouseTile = game.maze.tileAt(Mouse.getX() / TS, Mouse.getY() / TS);
+		Assets.muteAll(true);
 	}
 
 	@Override
