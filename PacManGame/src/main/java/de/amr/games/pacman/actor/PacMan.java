@@ -57,6 +57,7 @@ public class PacMan extends Actor<PacManState> implements PacManSteerings {
 		this.game = game;
 		buildStateMachine();
 		steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
+//		steering = avoidGhosts(maze);
 		NESW.dirs().forEach(dir -> sprites.set("walking-" + dir, game.theme.spr_pacManWalking(dir)));
 		sprites.set("dying", game.theme.spr_pacManDying());
 		sprites.set("full", game.theme.spr_pacManFull());

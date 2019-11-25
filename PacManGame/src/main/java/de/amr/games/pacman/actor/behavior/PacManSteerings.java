@@ -5,6 +5,7 @@ import static de.amr.games.pacman.model.Maze.NESW;
 import de.amr.datastruct.StreamUtils;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.model.Maze;
 
 /**
  * Steerings for Pac-Man.
@@ -37,7 +38,7 @@ public interface PacManSteerings {
 		};
 	}
 
-	default Steering<PacMan> avoidGhosts() {
-		return new AvoidGhosts();
+	default Steering<PacMan> avoidGhosts(Maze maze) {
+		return new AvoidGhosts(maze);
 	}
 }
