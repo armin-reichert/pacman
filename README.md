@@ -527,7 +527,7 @@ blinky.fnChasingTarget = pacMan::currentTile;
 
 ### Pinky
 
-Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position (in the original game there is an overflow error leading to a slightly different behavior):
+Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position. In the original game there is an overflow error leading to a different behavior: when Pac-Man looks upwards, the tile ahead of Pac-Man is falsely computed with an additional number of steps to the west. This behavior is active by default and can be toggled on/off using the 'o'-key.
 
 ```java
 pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
@@ -603,6 +603,7 @@ However, for a maze of such a small size the used algorithm doesn't matter much,
   - 's' toggles the display of actor states and timers
   - 'r' toggles the display of actor routes and target tiles
   - 'g' toggles the display of the grid and the alignment of the actors on the grid
+  - 'o' toggles the simulation of the overflow bug from the original game which occurs when Pac-Man is looking upwards
 - Cheats
   - ALT-'k' kills all ghosts
   - ALT-'e' eats all normal pellets
