@@ -1,6 +1,7 @@
 package de.amr.games.pacman.actor.behavior;
 
 import static de.amr.games.pacman.model.Maze.NESW;
+import static de.amr.games.pacman.model.Tile.distance;
 import static de.amr.graph.grid.impl.Top4.E;
 import static de.amr.graph.grid.impl.Top4.N;
 import static de.amr.graph.grid.impl.Top4.S;
@@ -116,11 +117,5 @@ class HeadingForTile<T extends MazeMover> implements Steering<T> {
 			currentDir = nextDir;
 		}
 		return new ArrayList<>(path);
-	}
-
-	/** Straight line distance (squared). */
-	private static int distance(Tile t1, Tile t2) {
-		int dx = t1.col - t2.col, dy = t1.row - t2.row;
-		return dx * dx + dy * dy;
 	}
 }

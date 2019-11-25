@@ -14,11 +14,8 @@ import static de.amr.games.pacman.model.PacManGame.sec;
 import static de.amr.games.pacman.model.PacManGame.LevelData.PACMAN_POWER_SECONDS;
 import static de.amr.games.pacman.model.PacManGame.LevelData.PACMAN_POWER_SPEED;
 import static de.amr.games.pacman.model.PacManGame.LevelData.PACMAN_SPEED;
-import static java.awt.event.KeyEvent.VK_DOWN;
-import static java.awt.event.KeyEvent.VK_LEFT;
-import static java.awt.event.KeyEvent.VK_RIGHT;
-import static java.awt.event.KeyEvent.VK_UP;
 
+import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -48,15 +45,18 @@ import de.amr.statemachine.StateMachine;
 public class PacMan extends Actor<PacManState> implements PacManSteerings {
 
 	public final PacManGame game;
+
 	public int ticksSinceLastMeal;
+
+	public Steering<PacMan> steering;
+
 	private StateMachine<PacManState, PacManGameEvent> fsm;
-	private Steering<PacMan> steering;
 
 	public PacMan(PacManGame game) {
 		super("Pac-Man", game.maze);
 		this.game = game;
 		buildStateMachine();
-		steering = steeredByKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
+		steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
 		NESW.dirs().forEach(dir -> sprites.set("walking-" + dir, game.theme.spr_pacManWalking(dir)));
 		sprites.set("dying", game.theme.spr_pacManDying());
 		sprites.set("full", game.theme.spr_pacManFull());

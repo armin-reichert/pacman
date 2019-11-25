@@ -38,7 +38,6 @@ public interface PacManSteerings {
 	}
 
 	default Steering<PacMan> avoidGhosts() {
-		return pacMan -> {
-		};
+		return new AvoidGhosts();
 	}
 }
