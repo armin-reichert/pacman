@@ -500,9 +500,8 @@ Pac-Man's movement by default is controlled by holding a key indicating its inte
 
 ```java
 default Steering steeredByKeys(int... keys) {
-	return pacMan -> {
-		NESW.dirs().filter(dir -> Keyboard.keyDown(keys[dir])).findFirst().ifPresent(pacMan::setNextDir);
-	};
+	return pacMan -> NESW.dirs().filter(dir -> Keyboard.keyDown(keys[dir])).findAny()
+			.ifPresent(pacMan::setNextDir);
 }
 
 steering = steeredByKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
