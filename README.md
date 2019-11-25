@@ -606,10 +606,10 @@ However, for a maze of such a small size the used algorithm doesn't matter much,
 - Cheats
   - ALT-'k' kills all ghosts
   - ALT-'e' eats all normal pellets
-  - ALT-'+' switches to next level
-  - ALT-'i' makes Pac-Man immportable
-- Logging
-  - Logging messages of state machines can be switched on/off (key 'l')
+  - ALT-'+' switches to the next level
+  - ALT-'i' makes Pac-Man immortable
+- Logging/tracing
+  - Tracing of state machines can be switched on/off (key 'l')
 
 ## References
 
@@ -624,10 +624,10 @@ Just recently I found this excellent video on YouTube:
 
 ## Summary
 
-The goal of this project was to provide a [Pac-Man](https://en.wikipedia.org/wiki/List_of_Pac-Man_video_games) implementation in which the game's inner workings can be understood from the code more easily. The implementation follows the MVC pattern and uses *finite state machines* for the control logic of the actors and the game. The state machines are implemented in a declarative way using the *builder* pattern. 
+The goal of this project is to provide a [Pac-Man](https://en.wikipedia.org/wiki/List_of_Pac-Man_video_games) implementation in which the game's inner workings can be understood from the code more easily. The implementation follows the MVC pattern and uses *finite state machines* for the control logic of the actors and the game. The state machines are implemented in a declarative way using the *builder* pattern. 
 
-A simple home-grown library is used for the basic game infrastructure (active rendering, game loop, full-screen mode, 
-keyboard and mouse handling etc.), but it should be not too difficult to implement these infrastructure parts from scratch or 
+A home-grown library is used for the basic game infrastructure (active rendering, game loop, full-screen mode, 
+keyboard and mouse handling etc.), but it should be not too difficult to implement these parts from scratch or 
 use some real game library instead.
 
 It could be useful to further decouple UI, model and controller to enable an easy replacement of the complete UI 
