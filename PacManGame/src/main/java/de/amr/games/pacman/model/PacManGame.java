@@ -1,6 +1,7 @@
 package de.amr.games.pacman.model;
 
 import static de.amr.easy.game.Application.LOGGER;
+import static de.amr.easy.game.Application.app;
 import static de.amr.easy.game.math.Vector2f.euclideanDist;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
@@ -186,8 +187,6 @@ public class PacManGame {
 	/** Level counter symbols displayed at the bottom right corner. */
 	private final List<BonusSymbol> levelCounter = new LinkedList<>();
 
-	public boolean immortable = false;
-
 	/**
 	 * Creates the game using the classic Pac-Man theme.
 	 */
@@ -353,7 +352,7 @@ public class PacManGame {
 	}
 
 	public void removeLife() {
-		if (immortable) {
+		if (app().settings.getAsBoolean("pacMan.immortable")) {
 			return;
 		}
 		lives -= 1;

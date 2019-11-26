@@ -16,6 +16,7 @@ import java.awt.Transparency;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.Ghost;
@@ -159,10 +160,15 @@ public class PlayViewXtended extends PlayView {
 	}
 
 	private String pacManStateText(PacMan pacMan) {
-		return pacMan.state().getDuration() != State.ENDLESS
+		String text = pacMan.state().getDuration() != State.ENDLESS
 				? String.format("(%s,%d|%d)", pacMan.state().id(), pacMan.state().getTicksRemaining(),
 						pacMan.state().getDuration())
 				: String.format("(%s,%s)", pacMan.state().id(), INFTY);
+				
+		if (Application.app().settings.getAsBoolean("pacMan.immortable")) {
+			text += "-immortable";
+		}
+		return text;
 	}
 
 	private String ghostStateText(Ghost ghost) {

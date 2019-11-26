@@ -1,6 +1,7 @@
 package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.LOGGER;
+import static de.amr.easy.game.Application.app;
 
 import java.awt.event.KeyEvent;
 
@@ -46,8 +47,9 @@ public class Cheats implements Controller {
 		}
 		/* ALT-"I": Makes Pac-Man immortable */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_I)) {
-			game.immortable = !game.immortable;
-			LOGGER.info("Pac-Man immortable = " + game.immortable);
+			boolean immortable = app().settings.getAsBoolean("pacMan.immortable");
+			app().settings.set("pacMan.immortable", !immortable);
+			LOGGER.info("Pac-Man immortable = " + app().settings.getAsBoolean("pacMan.immortable"));
 		}
 	}
 }
