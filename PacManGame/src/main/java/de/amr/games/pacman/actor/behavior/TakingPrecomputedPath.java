@@ -12,7 +12,7 @@ import de.amr.games.pacman.model.Tile;
  *
  * @author Armin Reichert
  */
-abstract class TakingPrecomputedPath<T extends MazeMover> implements Steering<T> {
+public abstract class TakingPrecomputedPath<T extends MazeMover> implements Steering<T> {
 
 	protected Supplier<Tile> fnTargetTile;
 	protected List<Tile> path = Collections.emptyList();

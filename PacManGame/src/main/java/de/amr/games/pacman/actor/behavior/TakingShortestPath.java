@@ -11,7 +11,7 @@ import de.amr.games.pacman.model.Tile;
  *
  * @author Armin Reichert
  */
-class TakingShortestPath<T extends MazeMover> extends TakingPrecomputedPath<T> {
+public class TakingShortestPath<T extends MazeMover> extends TakingPrecomputedPath<T> {
 
 	public TakingShortestPath(Supplier<Tile> fnTargetTile) {
 		super(fnTargetTile);

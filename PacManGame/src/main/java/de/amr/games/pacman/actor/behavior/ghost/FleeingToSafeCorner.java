@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor.behavior;
+package de.amr.games.pacman.actor.behavior.ghost;
 
 import static de.amr.datastruct.StreamUtils.permute;
 
@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.actor.MazeMover;
+import de.amr.games.pacman.actor.behavior.TakingPrecomputedPath;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 

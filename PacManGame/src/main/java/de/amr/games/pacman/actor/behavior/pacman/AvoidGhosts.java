@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor.behavior;
+package de.amr.games.pacman.actor.behavior.pacman;
 
 import static de.amr.datastruct.StreamUtils.permute;
 import static de.amr.games.pacman.model.Maze.NESW;
@@ -8,6 +8,7 @@ import java.util.Comparator;
 
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 

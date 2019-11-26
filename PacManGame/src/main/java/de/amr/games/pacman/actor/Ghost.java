@@ -25,8 +25,8 @@ import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.actor.behavior.GhostSteerings;
 import de.amr.games.pacman.actor.behavior.Steering;
+import de.amr.games.pacman.actor.behavior.ghost.GhostSteerings;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -56,7 +56,8 @@ public class Ghost extends Actor<GhostState> implements GhostSteerings {
 	public final Tile scatterTile;
 
 	/**
-	 * Function providing the next state after the "frightened" state ends or leaving the ghost house.
+	 * Function providing the next state after the "frightened" state ends or
+	 * leaving the ghost house.
 	 */
 	public Supplier<GhostState> fnNextState;
 
@@ -72,7 +73,7 @@ public class Ghost extends Actor<GhostState> implements GhostSteerings {
 
 	private Map<GhostState, Steering<Ghost>> steeringByState = new EnumMap<>(GhostState.class);
 
-	private final Steering<Ghost> defaultSteering = headingFor(() -> targetTile);
+	private final Steering<Ghost> defaultSteering;
 
 	public Ghost(PacManGame game, Maze maze, String name, GhostColor color, Tile initialTile, int initialDir,
 			Tile scatterTile) {
@@ -83,6 +84,7 @@ public class Ghost extends Actor<GhostState> implements GhostSteerings {
 		this.scatterTile = scatterTile;
 		this.nextDir = initialDir;
 		this.moveDir = initialDir;
+		defaultSteering = headingFor(maze, () -> targetTile);
 		fnNextState = this::getState;
 		fnIsUnlocked = game::isUnlocked;
 		buildStateMachine();

@@ -1,10 +1,11 @@
-package de.amr.games.pacman.actor.behavior;
+package de.amr.games.pacman.actor.behavior.pacman;
 
 import static de.amr.games.pacman.model.Maze.NESW;
 
 import de.amr.datastruct.StreamUtils;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.model.Maze;
 
 /**

@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor.behavior;
+package de.amr.games.pacman.actor.behavior.ghost;
 
 import static de.amr.datastruct.StreamUtils.permute;
 import static de.amr.games.pacman.model.Maze.NESW;
@@ -8,6 +8,10 @@ import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.MazeMover;
+import de.amr.games.pacman.actor.behavior.HeadingForTile;
+import de.amr.games.pacman.actor.behavior.Steering;
+import de.amr.games.pacman.actor.behavior.TakingShortestPath;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
 
@@ -51,22 +55,21 @@ public interface GhostSteerings {
 	}
 
 	/**
-	 * Heads for a target tile (may be unreachable) by taking the "best" direction at every
-	 * intersection.
+	 * Heads for a target tile (may be unreachable) by taking the "best" direction
+	 * at every intersection.
 	 * 
-	 * @param fnTarget
-	 *                   function supplying the target tile
+	 * @param maze     the maze where we are moving
+	 * @param fnTarget function supplying the target tile
 	 * @return behavior where ghost heads for the target tile
 	 */
-	default Steering<Ghost> headingFor(Supplier<Tile> fnTarget) {
-		return new HeadingForTile<>(fnTarget);
+	default Steering<Ghost> headingFor(Maze maze, Supplier<Tile> fnTarget) {
+		return new HeadingForTile<>(maze, fnTarget);
 	}
 
 	/**
 	 * Lets the ghost flee from the attacker by walking to a "safe" maze corner.
 	 * 
-	 * @param attacker
-	 *                   the attacker (Pac-Man)
+	 * @param attacker the attacker (Pac-Man)
 	 * @return behavior where ghost flees to a "safe" maze corner
 	 */
 	default Steering<Ghost> fleeingToSafeCorner(MazeMover attacker) {
@@ -74,11 +77,12 @@ public interface GhostSteerings {
 	}
 
 	/**
-	 * <cite> Frightened mode is unique because the ghosts do not have a specific target tile while in
-	 * this mode. Instead, they pseudo-randomly decide which turns to make at every intersection.
-	 * </cite>
+	 * <cite> Frightened mode is unique because the ghosts do not have a specific
+	 * target tile while in this mode. Instead, they pseudo-randomly decide which
+	 * turns to make at every intersection. </cite>
 	 * 
-	 * @return behavior where ghost flees from Pac-Man by taking random turns at each intersection
+	 * @return behavior where ghost flees from Pac-Man by taking random turns at
+	 *         each intersection
 	 */
 	default Steering<Ghost> fleeingRandomly() {
 		return ghost -> {
@@ -98,8 +102,7 @@ public interface GhostSteerings {
 	/**
 	 * Lets the ghost follow a fixed path to the target.
 	 * 
-	 * @param fnTarget
-	 *                   function supplying the target tile at time of decision
+	 * @param fnTarget function supplying the target tile at time of decision
 	 * @return behavior where ghost follows a fixed path
 	 */
 	default Steering<Ghost> followingFixedPath(Supplier<Tile> fnTarget) {
