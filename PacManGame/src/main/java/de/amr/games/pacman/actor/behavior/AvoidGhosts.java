@@ -28,7 +28,7 @@ public class AvoidGhosts implements Steering<PacMan> {
 			.findFirst()
 			.ifPresent(ghost -> {
 				pacMan.nextDir = NESW.dirs().boxed()
-						.filter(pacMan::canEnterTileTo)
+						.filter(pacMan::canCrossBorderTo)
 						.sorted(byLargestDistanceOfNeighborTile(pacMan, ghost))
 						.findAny()
 						.orElse(randomAccessibleDir(pacMan));
@@ -49,6 +49,6 @@ public class AvoidGhosts implements Steering<PacMan> {
 	}
 
 	private int randomAccessibleDir(PacMan pacMan) {
-		return permute(NESW.dirs()).filter(pacMan::canEnterTileTo).findAny().getAsInt();
+		return permute(NESW.dirs()).filter(pacMan::canCrossBorderTo).findAny().getAsInt();
 	}
 }

@@ -88,7 +88,7 @@ public interface GhostSteerings {
 				/*@formatter:off*/
 				ghost.nextDir = permute(NESW.dirs())
 					.filter(dir -> dir != NESW.inv(ghost.nextDir))
-					.filter(ghost::canEnterTileTo)
+					.filter(ghost::canCrossBorderTo)
 					.findAny().orElse(ghost.moveDir);
 				/*@formatter:on*/
 			}

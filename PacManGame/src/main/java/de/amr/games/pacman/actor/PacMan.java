@@ -96,11 +96,11 @@ public class PacMan extends Actor<PacManState> implements PacManSteerings {
 	}
 
 	@Override
-	public boolean canEnterTile(Tile current, Tile tile) {
+	public boolean canCrossBorder(Tile current, Tile tile) {
 		if (maze.isDoor(tile)) {
 			return false;
 		}
-		return super.canEnterTile(current, tile);
+		return super.canCrossBorder(current, tile);
 	}
 
 	// State machine

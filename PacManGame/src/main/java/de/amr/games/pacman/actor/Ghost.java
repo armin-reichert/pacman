@@ -151,14 +151,14 @@ public class Ghost extends Actor<GhostState> implements GhostSteerings {
 	}
 
 	@Override
-	public boolean canEnterTile(Tile current, Tile tile) {
+	public boolean canCrossBorder(Tile current, Tile tile) {
 		if (maze.isDoor(tile)) {
 			return getState() == ENTERING_HOUSE || getState() == LEAVING_HOUSE;
 		}
 		if (maze.isNoUpIntersection(current) && tile == maze.tileToDir(current, Top4.N)) {
 			return getState() != GhostState.CHASING && getState() != GhostState.SCATTERING;
 		}
-		return super.canEnterTile(current, tile);
+		return super.canCrossBorder(current, tile);
 	}
 
 	@Override
@@ -191,7 +191,7 @@ public class Ghost extends Actor<GhostState> implements GhostSteerings {
 
 	private void reverseDirection() {
 		int oppositeDir = NESW.inv(moveDir);
-		IntStream.of(oppositeDir, NESW.left(oppositeDir), NESW.right(oppositeDir)).filter(this::canEnterTileTo)
+		IntStream.of(oppositeDir, NESW.left(oppositeDir), NESW.right(oppositeDir)).filter(this::canCrossBorderTo)
 				.findFirst().ifPresent(this::setNextDir);
 	}
 

@@ -164,7 +164,7 @@ public abstract class MazeMover extends Entity {
 	 * direction in the current frame without entering a forbidden tile.
 	 */
 	private float allowedSpeed(int dir) {
-		if (canEnterTileTo(dir)) {
+		if (canCrossBorderTo(dir)) {
 			return maxSpeed();
 		}
 		switch (dir) {
@@ -222,21 +222,21 @@ public abstract class MazeMover extends Entity {
 	}
 
 	/**
-	 * Common logic for Pac-Man and ghosts: walls can never be entered,
-	 * teleportation is possible.
+	 * Tells if this actor can (currently) cross the border between the given tiles.
 	 * 
-	 * @param current current tile
-	 * @param tile    some tile, may also be outside of the board
-	 * @return <code>true</code> if this maze mover can enter the given tile
+	 * @param from     current tile
+	 * @param neighbor neighbor tile, may also be a tile outside of the board
+	 * @return <code>true</code> if this maze mover can cross the border between the
+	 *         given tiles
 	 */
-	public boolean canEnterTile(Tile current, Tile tile) {
-		if (maze.isWall(tile)) {
+	public boolean canCrossBorder(Tile from, Tile neighbor) {
+		if (maze.isWall(neighbor)) {
 			return false;
 		}
-		if (maze.isTunnel(tile)) {
+		if (maze.isTunnel(neighbor)) {
 			return true; // includes tiles outside board used for teleportation!
 		}
-		return maze.insideBoard(tile);
+		return maze.insideBoard(neighbor);
 	}
 
 	/**
@@ -247,9 +247,9 @@ public abstract class MazeMover extends Entity {
 	 * @return if the maze mover can enter the neighbor tile towards the given
 	 *         direction
 	 */
-	public boolean canEnterTileTo(int dir) {
-		Tile currentTile = currentTile(), neighbor = maze.tileToDir(currentTile, dir);
-		return canEnterTile(currentTile, neighbor);
+	public boolean canCrossBorderTo(int dir) {
+		Tile currentTile = currentTile();
+		return canCrossBorder(currentTile, maze.tileToDir(currentTile, dir));
 	}
 
 	/**
