@@ -84,7 +84,7 @@ public class Ghost extends Actor<GhostState> implements GhostSteerings {
 		this.scatterTile = scatterTile;
 		this.nextDir = initialDir;
 		this.moveDir = initialDir;
-		defaultSteering = headingFor(maze, () -> targetTile);
+		defaultSteering = headingFor(() -> targetTile);
 		fnNextState = this::getState;
 		fnIsUnlocked = game::isUnlocked;
 		buildStateMachine();

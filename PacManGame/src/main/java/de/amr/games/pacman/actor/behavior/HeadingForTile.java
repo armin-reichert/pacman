@@ -26,6 +26,8 @@ import de.amr.games.pacman.model.Tile;
  * The detailed behavior is described <a href=
  * "http://gameinternals.com/understanding-pac-man-ghost-behavior">here</a>.
  * 
+ * @param <T> type of actor
+ * 
  * @author Armin Reichert
  */
 public class HeadingForTile<T extends MazeMover> implements Steering<T> {
@@ -33,19 +35,16 @@ public class HeadingForTile<T extends MazeMover> implements Steering<T> {
 	/** Directions in the order used to compute the next move direction */
 	private static final List<Integer> NWSE = Arrays.asList(N, W, S, E);
 
-	private final Maze maze;
 	private final Supplier<Tile> fnTargetTile;
 
 	/**
 	 * Creates a steering which lets an actor head for the target tile supplied by
 	 * the given function.
 	 * 
-	 * @param maze         the maze where we are moving
 	 * @param fnTargetTile function supplying the target tile whenever the
 	 *                     {@link #steer(MazeMover)} method is called
 	 */
-	public HeadingForTile(Maze maze, Supplier<Tile> fnTargetTile) {
-		this.maze = maze;
+	public HeadingForTile(Supplier<Tile> fnTargetTile) {
 		this.fnTargetTile = fnTargetTile;
 	}
 
@@ -78,6 +77,7 @@ public class HeadingForTile<T extends MazeMover> implements Steering<T> {
 	 * @param targetTile  the actor's current target tile
 	 */
 	private int nextDir(T actor, int moveDir, Tile currentTile, Tile targetTile) {
+		Maze maze = actor.maze;
 		/*@formatter:off*/
 		return NWSE.stream()
 			.filter(dir -> dir != NESW.inv(moveDir))
@@ -96,13 +96,13 @@ public class HeadingForTile<T extends MazeMover> implements Steering<T> {
 
 	/**
 	 * Computes the complete path the actor would traverse until it would reach the
-	 * target tile, a cycle would occur or the borders of the board would be
-	 * reached.
+	 * target tile, a cycle would occur or the path would leave the board.
 	 * 
 	 * @param actor actor for which the path is computed
 	 * @return the path the actor would take when moving to its target tile
 	 */
 	private List<Tile> pathToTargetTile(T actor) {
+		Maze maze = actor.maze;
 		Set<Tile> path = new LinkedHashSet<>();
 		Tile currentTile = actor.currentTile();
 		int currentDir = actor.moveDir;

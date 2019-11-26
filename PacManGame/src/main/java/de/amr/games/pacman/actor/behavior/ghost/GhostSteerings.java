@@ -11,7 +11,6 @@ import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.behavior.HeadingForTile;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.behavior.TakingShortestPath;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
 
@@ -58,12 +57,11 @@ public interface GhostSteerings {
 	 * Heads for a target tile (may be unreachable) by taking the "best" direction
 	 * at every intersection.
 	 * 
-	 * @param maze     the maze where we are moving
 	 * @param fnTarget function supplying the target tile
 	 * @return behavior where ghost heads for the target tile
 	 */
-	default Steering<Ghost> headingFor(Maze maze, Supplier<Tile> fnTarget) {
-		return new HeadingForTile<>(maze, fnTarget);
+	default Steering<Ghost> headingFor(Supplier<Tile> fnTarget) {
+		return new HeadingForTile<>(fnTarget);
 	}
 
 	/**
