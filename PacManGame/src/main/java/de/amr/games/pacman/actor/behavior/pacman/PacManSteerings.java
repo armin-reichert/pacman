@@ -6,7 +6,6 @@ import de.amr.datastruct.StreamUtils;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.behavior.Steering;
-import de.amr.games.pacman.model.Maze;
 
 /**
  * Steerings for Pac-Man.
@@ -23,12 +22,12 @@ public interface PacManSteerings {
 	 *               steering key codes in order N, E, S, W
 	 * @return steering using the given keys
 	 */
-	default Steering<PacMan> steeredByKeys(int... keys) {
+	static Steering<PacMan> steeredByKeys(int... keys) {
 		return pacMan -> NESW.dirs().filter(dir -> Keyboard.keyDown(keys[dir])).findAny()
 				.ifPresent(pacMan::setNextDir);
 	}
 
-	default Steering<PacMan> movingRandomly() {
+	static Steering<PacMan> movingRandomly() {
 		return pacMan -> {
 			if (pacMan.isStuck()) {
 				StreamUtils
@@ -39,7 +38,7 @@ public interface PacManSteerings {
 		};
 	}
 
-	default Steering<PacMan> avoidGhosts(Maze maze) {
-		return new AvoidGhosts(maze);
+	static Steering<PacMan> avoidGhosts() {
+		return new AvoidGhosts();
 	}
 }

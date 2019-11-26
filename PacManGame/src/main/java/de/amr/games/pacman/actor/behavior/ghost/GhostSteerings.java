@@ -15,7 +15,7 @@ import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
 
 /**
- * Mix-in with ghost behaviors.
+ * Ghost steerings.
  * 
  * @author Armin Reichert
  */
@@ -26,7 +26,7 @@ public interface GhostSteerings {
 	 * 
 	 * @return behavior where ghost keeps its current position
 	 */
-	default Steering<Ghost> standingStill() {
+	static Steering<Ghost> standingStill() {
 		return ghost -> ghost.targetTile = ghost.currentTile();
 	}
 
@@ -35,7 +35,7 @@ public interface GhostSteerings {
 	 * 
 	 * @return behavior where ghost keeps its current move direction
 	 */
-	default Steering<Ghost> keepingDirection() {
+	static Steering<Ghost> keepingDirection() {
 		return ghost -> ghost.nextDir = ghost.moveDir;
 	}
 
@@ -44,7 +44,7 @@ public interface GhostSteerings {
 	 * 
 	 * @return bouncing behavior
 	 */
-	default Steering<Ghost> jumpingUpAndDown() {
+	static Steering<Ghost> jumpingUpAndDown() {
 		return ghost -> {
 			if (ghost.moveDir == Top4.E || ghost.moveDir == Top4.W) {
 				ghost.moveDir = Top4.N;
@@ -54,35 +54,36 @@ public interface GhostSteerings {
 	}
 
 	/**
-	 * Heads for a target tile (may be unreachable) by taking the "best" direction
-	 * at every intersection.
+	 * Heads for a target tile (may be unreachable) by taking the "best" direction at every
+	 * intersection.
 	 * 
-	 * @param fnTarget function supplying the target tile
+	 * @param fnTarget
+	 *                   function supplying the target tile
 	 * @return behavior where ghost heads for the target tile
 	 */
-	default Steering<Ghost> headingFor(Supplier<Tile> fnTarget) {
+	static Steering<Ghost> headingFor(Supplier<Tile> fnTarget) {
 		return new HeadingForTile<>(fnTarget);
 	}
 
 	/**
 	 * Lets the ghost flee from the attacker by walking to a "safe" maze corner.
 	 * 
-	 * @param attacker the attacker (Pac-Man)
+	 * @param attacker
+	 *                   the attacker (Pac-Man)
 	 * @return behavior where ghost flees to a "safe" maze corner
 	 */
-	default Steering<Ghost> fleeingToSafeCorner(MazeMover attacker) {
+	static Steering<Ghost> fleeingToSafeCorner(MazeMover attacker) {
 		return new FleeingToSafeCorner<>(attacker::currentTile);
 	}
 
 	/**
-	 * <cite> Frightened mode is unique because the ghosts do not have a specific
-	 * target tile while in this mode. Instead, they pseudo-randomly decide which
-	 * turns to make at every intersection. </cite>
+	 * <cite> Frightened mode is unique because the ghosts do not have a specific target tile while in
+	 * this mode. Instead, they pseudo-randomly decide which turns to make at every intersection.
+	 * </cite>
 	 * 
-	 * @return behavior where ghost flees from Pac-Man by taking random turns at
-	 *         each intersection
+	 * @return behavior where ghost flees from Pac-Man by taking random turns at each intersection
 	 */
-	default Steering<Ghost> fleeingRandomly() {
+	static Steering<Ghost> fleeingRandomly() {
 		return ghost -> {
 			ghost.targetPath = Collections.emptyList();
 			ghost.targetTile = null;
@@ -100,10 +101,11 @@ public interface GhostSteerings {
 	/**
 	 * Lets the ghost follow a fixed path to the target.
 	 * 
-	 * @param fnTarget function supplying the target tile at time of decision
+	 * @param fnTarget
+	 *                   function supplying the target tile at time of decision
 	 * @return behavior where ghost follows a fixed path
 	 */
-	default Steering<Ghost> followingFixedPath(Supplier<Tile> fnTarget) {
-		return new TakingShortestPath<Ghost>(fnTarget);
+	static Steering<Ghost> followingFixedPath(Supplier<Tile> fnTarget) {
+		return new TakingShortestPath<>(fnTarget);
 	}
 }

@@ -4,6 +4,9 @@ import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.math.Vector2f.euclideanDist;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
+import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.fleeingRandomly;
+import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.jumpingUpAndDown;
+import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.standingStill;
 import static de.amr.games.pacman.model.BonusSymbol.APPLE;
 import static de.amr.games.pacman.model.BonusSymbol.BELL;
 import static de.amr.games.pacman.model.BonusSymbol.CHERRIES;
@@ -206,13 +209,13 @@ public class PacManGame {
 		activeActors.addAll(Arrays.asList(pacMan, blinky, pinky, inky, clyde));
 
 		ghosts().forEach(ghost -> {
-			ghost.setSteering(FRIGHTENED, ghost.fleeingRandomly());
-			ghost.setSteering(LOCKED, ghost.jumpingUpAndDown());
+			ghost.setSteering(FRIGHTENED, fleeingRandomly());
+			ghost.setSteering(LOCKED, jumpingUpAndDown());
 			ghost.fnIsUnlocked = g -> isUnlocked(ghost);
 		});
 
 		blinky.fnChasingTarget = pacMan::currentTile;
-		blinky.setSteering(LOCKED, blinky.standingStill());
+		blinky.setSteering(LOCKED, standingStill());
 
 		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
 

@@ -2,6 +2,8 @@ package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
+import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.fleeingRandomly;
+import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.fleeingToSafeCorner;
 import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.controller.PacManGameState.GHOST_DYING;
@@ -170,7 +172,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			game.classicFlightBehavior = !game.classicFlightBehavior;
 			game.ghosts().forEach(ghost -> {
 				ghost.setSteering(GhostState.FRIGHTENED,
-						game.classicFlightBehavior ? ghost.fleeingRandomly() : ghost.fleeingToSafeCorner(game.pacMan));
+						game.classicFlightBehavior ? fleeingRandomly() : fleeingToSafeCorner(game.pacMan));
 			});
 			LOGGER.info("Changed ghost FRIGHTENED behavior to flee "
 					+ (game.classicFlightBehavior ? "randomly" : "via safe route"));

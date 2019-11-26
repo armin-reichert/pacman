@@ -45,7 +45,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Actor<GhostState> implements GhostSteerings {
+public class Ghost extends Actor<GhostState> {
 
 	public final PacManGame game;
 
@@ -56,8 +56,7 @@ public class Ghost extends Actor<GhostState> implements GhostSteerings {
 	public final Tile scatterTile;
 
 	/**
-	 * Function providing the next state after the "frightened" state ends or
-	 * leaving the ghost house.
+	 * Function providing the next state after the "frightened" state ends or leaving the ghost house.
 	 */
 	public Supplier<GhostState> fnNextState;
 
@@ -84,7 +83,7 @@ public class Ghost extends Actor<GhostState> implements GhostSteerings {
 		this.scatterTile = scatterTile;
 		this.nextDir = initialDir;
 		this.moveDir = initialDir;
-		defaultSteering = headingFor(() -> targetTile);
+		defaultSteering = GhostSteerings.headingFor(() -> targetTile);
 		fnNextState = this::getState;
 		fnIsUnlocked = game::isUnlocked;
 		buildStateMachine();

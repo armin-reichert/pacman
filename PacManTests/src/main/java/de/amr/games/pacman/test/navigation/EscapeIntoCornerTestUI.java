@@ -1,5 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
+import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.fleeingToSafeCorner;
+
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.GhostState;
@@ -22,7 +24,7 @@ public class EscapeIntoCornerTestUI extends PlayViewXtended implements ViewContr
 		game.maze.removeFood();
 		game.pacMan.init();
 		game.ghosts().filter(ghost -> ghost != game.blinky).forEach(ghost -> game.setActive(ghost, false));
-		game.blinky.setSteering(GhostState.FRIGHTENED, game.blinky.fleeingToSafeCorner(game.pacMan));
+		game.blinky.setSteering(GhostState.FRIGHTENED, fleeingToSafeCorner(game.pacMan));
 		game.blinky.init();
 		game.blinky.setState(GhostState.FRIGHTENED);
 	}
