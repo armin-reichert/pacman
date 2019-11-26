@@ -1,8 +1,9 @@
 package de.amr.games.pacman.test.navigation;
 
+import static de.amr.games.pacman.actor.GhostState.CHASING;
+
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
-import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayViewXtended;
@@ -25,8 +26,8 @@ public class OutsideTileTestUI extends PlayViewXtended implements ViewController
 		game.pacMan.hide();
 		game.ghosts().filter(ghost -> ghost != game.blinky).forEach(ghost -> game.setActive(ghost, false));
 		game.blinky.init();
-		game.blinky.setBehavior(GhostState.CHASING, game.blinky.headingFor(this::getTargetTile));
-		game.blinky.setState(GhostState.CHASING);
+		game.blinky.setBehavior(CHASING, game.blinky.headingFor(game.maze, () -> getTargetTile()));
+		game.blinky.setState(CHASING);
 	}
 
 	private Tile getTargetTile() {
