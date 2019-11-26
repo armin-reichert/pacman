@@ -208,7 +208,7 @@ public class PlayViewXtended extends PlayView {
 	private void drawText(Graphics2D g, Color color, float x, float y, String text) {
 		g.translate(x, y);
 		g.setColor(color);
-		g.setFont(new Font("Arial Narrow", Font.PLAIN, 6));
+		g.setFont(new Font("Arial Narrow", Font.PLAIN, 5));
 		int width = g.getFontMetrics().stringWidth(text);
 		g.drawString(text, -width / 2, -TS / 2);
 		g.translate(-x, -y);
