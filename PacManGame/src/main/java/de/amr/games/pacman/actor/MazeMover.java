@@ -16,41 +16,22 @@ import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
 
 /**
- * An entity that can move through the maze. Movement is controlled by supplying
- * the intended move direction before moving.
+ * An entity following the rules for moving through the maze.
  * 
  * @author Armin Reichert
  */
 public abstract class MazeMover extends Entity {
 
-	/** The maze where this entity moves in */
-	public final Maze maze;
-
-	/** The current move direction (Top4.N, Top4.E, Top4.S, Top4.W). */
+	public Maze maze;
 	public int moveDir;
-
-	/**
-	 * The intended move direction, actor takes this direction as soon as possible.
-	 */
 	public int nextDir;
-
-	/** Current target tile of this actor. */
 	public Tile targetTile;
-
-	/** (Optional) path to target. */
-	public List<Tile> targetPath = Collections.emptyList();
-
-	/** Tells if the last move entered a new tile position */
+	public List<Tile> targetPath;
 	public boolean enteredNewTile;
-
-	public boolean computePathToTargetTile = false;
-
-	/** Ticks remaining in teleporting state */
-	private int teleportTime;
+	private int teleportTicksRemaining;
 
 	public MazeMover(Maze maze) {
 		this.maze = maze;
-		// set collision box size to one tile, sprite size may be larger
 		tf.setWidth(TS);
 		tf.setHeight(TS);
 	}
@@ -58,10 +39,10 @@ public abstract class MazeMover extends Entity {
 	@Override
 	public void init() {
 		moveDir = nextDir = Top4.E;
-		enteredNewTile = true;
-		teleportTime = -1;
-		targetPath = Collections.emptyList();
 		targetTile = null;
+		targetPath = Collections.emptyList();
+		enteredNewTile = true;
+		teleportTicksRemaining = -1;
 	}
 
 	public void setNextDir(int dir) {
@@ -113,29 +94,29 @@ public abstract class MazeMover extends Entity {
 	 * @return <code>true</code> if teleportation is running
 	 */
 	private boolean teleport(int ticks) {
-		if (teleportTime > 0) { // running
-			teleportTime -= 1;
-			LOGGER.fine("Teleporting running, remaining:" + teleportTime);
-		} else if (teleportTime == 0) { // completed
-			teleportTime = -1;
+		if (teleportTicksRemaining > 0) { // running
+			teleportTicksRemaining -= 1;
+			LOGGER.fine("Teleporting running, remaining:" + teleportTicksRemaining);
+		} else if (teleportTicksRemaining == 0) { // completed
+			teleportTicksRemaining = -1;
 			show();
 			LOGGER.fine("Teleporting complete");
 		} else { // off
 			int leftExit = (maze.tunnelLeftExit.col - 1) * TS;
 			int rightExit = (maze.tunnelRightExit.col + 1) * TS;
 			if (tf.getX() > rightExit) { // start
-				teleportTime = ticks;
+				teleportTicksRemaining = ticks;
 				tf.setX(leftExit);
 				hide();
 				LOGGER.fine("Teleporting started");
 			} else if (tf.getX() < leftExit) { // start
-				teleportTime = ticks;
+				teleportTicksRemaining = ticks;
 				tf.setX(rightExit);
 				hide();
 				LOGGER.fine("Teleporting started");
 			}
 		}
-		return teleportTime != -1;
+		return teleportTicksRemaining != -1;
 	}
 
 	/**

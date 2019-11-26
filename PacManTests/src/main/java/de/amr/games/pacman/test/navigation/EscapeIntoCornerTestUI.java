@@ -17,6 +17,7 @@ public class EscapeIntoCornerTestUI extends PlayViewXtended implements ViewContr
 
 	@Override
 	public void init() {
+		super.init();
 		game.level = 1;
 		game.maze.removeFood();
 		game.pacMan.init();

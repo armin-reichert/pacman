@@ -35,6 +35,8 @@ public class HeadingForTile<T extends MazeMover> implements Steering<T> {
 	/** Directions in the order used to compute the next move direction */
 	private static final List<Integer> NWSE = Arrays.asList(N, W, S, E);
 
+	public boolean computePathToTargetTile;
+
 	private final Supplier<Tile> fnTargetTile;
 
 	/**
@@ -57,7 +59,7 @@ public class HeadingForTile<T extends MazeMover> implements Steering<T> {
 		if (targetTile != null) {
 			actor.targetTile = targetTile;
 			actor.nextDir = nextDir(actor, actor.moveDir, actor.currentTile(), targetTile);
-			actor.targetPath = actor.computePathToTargetTile ? pathToTargetTile(actor) : Collections.emptyList();
+			actor.targetPath = computePathToTargetTile ? pathToTargetTile(actor) : Collections.emptyList();
 		}
 	}
 

@@ -23,6 +23,8 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManState;
+import de.amr.games.pacman.actor.behavior.HeadingForTile;
+import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.controller.GhostAttackController;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
@@ -78,6 +80,12 @@ public class PlayViewXtended extends PlayView {
 	}
 
 	@Override
+	public void init() {
+		super.init();
+		updateGhostSteerings();
+	}
+
+	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_G)) {
 			showGrid = !showGrid;
@@ -87,7 +95,7 @@ public class PlayViewXtended extends PlayView {
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
 			showRoutes = !showRoutes;
-			game.ghosts().forEach(ghost -> ghost.computePathToTargetTile = showRoutes);
+			updateGhostSteerings();
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
 			toggleGhost(game.blinky);
@@ -102,6 +110,15 @@ public class PlayViewXtended extends PlayView {
 			toggleGhost(game.clyde);
 		}
 		super.update();
+	}
+
+	private void updateGhostSteerings() {
+		game.ghosts().forEach(ghost -> {
+			Steering<Ghost> steering = ghost.getSteering();
+			if (steering instanceof HeadingForTile) {
+				((HeadingForTile<Ghost>) steering).computePathToTargetTile = showRoutes;
+			}
+		});
 	}
 
 	private void toggleGhost(Ghost ghost) {

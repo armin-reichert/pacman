@@ -24,6 +24,7 @@ public class ScatteringTestUI extends PlayViewXtended implements ViewController 
 
 	@Override
 	public void init() {
+		super.init();
 		game.init();
 		game.maze.removeFood();
 		game.pacMan.hide();
@@ -31,7 +32,6 @@ public class ScatteringTestUI extends PlayViewXtended implements ViewController 
 			ghost.init();
 			ghost.fnNextState = () -> GhostState.SCATTERING;
 			ghost.fnIsUnlocked = g -> !locked;
-			ghost.computePathToTargetTile = true;
 		});
 		showInfoText("Press SPACE key", Color.YELLOW);
 	}

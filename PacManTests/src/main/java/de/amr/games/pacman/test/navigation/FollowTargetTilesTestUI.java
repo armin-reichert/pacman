@@ -30,6 +30,7 @@ public class FollowTargetTilesTestUI extends PlayViewXtended implements ViewCont
 
 	@Override
 	public void init() {
+		super.init();
 		targets = Arrays.asList(game.maze.topLeft, game.maze.blinkyHome, game.maze.topRight,
 				game.maze.bottomRight, game.maze.pacManHome, game.maze.bottomLeft);
 		current = 0;
@@ -41,7 +42,6 @@ public class FollowTargetTilesTestUI extends PlayViewXtended implements ViewCont
 		game.blinky.init();
 		game.blinky.fnChasingTarget = () -> targets.get(current);
 		game.blinky.placeAtTile(targets.get(0), 0, 0);
-		game.blinky.computePathToTargetTile = true;
 		game.blinky.setState(CHASING);
 	}
 

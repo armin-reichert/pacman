@@ -148,9 +148,13 @@ public class Ghost extends Actor<GhostState> implements GhostSteerings {
 		steeringByState.put(state, steering);
 	}
 
+	public Steering<Ghost> getSteering() {
+		return steeringByState.getOrDefault(getState(), defaultSteering);
+	}
+
 	@Override
 	public void steer() {
-		steeringByState.getOrDefault(getState(), defaultSteering).steer(this);
+		getSteering().steer(this);
 	}
 
 	@Override

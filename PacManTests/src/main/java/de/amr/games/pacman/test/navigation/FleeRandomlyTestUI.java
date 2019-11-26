@@ -19,6 +19,7 @@ public class FleeRandomlyTestUI extends PlayViewXtended implements ViewControlle
 
 	@Override
 	public void init() {
+		super.init();
 		game.level = 1;
 		game.maze.removeFood();
 		game.setActive(game.pacMan, false);

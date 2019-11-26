@@ -18,6 +18,7 @@ public class OutsideTileTestUI extends PlayViewXtended implements ViewController
 
 	@Override
 	public void init() {
+		super.init();
 		game.level = 1;
 		game.setActive(game.pacMan, false);
 		game.setActive(game.pinky, false);

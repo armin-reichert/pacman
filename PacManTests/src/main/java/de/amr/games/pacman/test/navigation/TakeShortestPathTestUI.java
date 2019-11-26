@@ -28,9 +28,9 @@ public class TakeShortestPathTestUI extends PlayViewXtended implements ViewContr
 
 	@Override
 	public void init() {
-		targets = Arrays.asList(game.maze.bottomRight, game.maze.bottomLeft, game.maze.tunnelLeftExit,
-				game.maze.topLeft, game.maze.blinkyHome, game.maze.topRight, game.maze.tunnelRightExit,
-				game.maze.pacManHome);
+		super.init();
+		targets = Arrays.asList(game.maze.bottomRight, game.maze.bottomLeft, game.maze.tunnelLeftExit, game.maze.topLeft,
+				game.maze.blinkyHome, game.maze.topRight, game.maze.tunnelRightExit, game.maze.pacManHome);
 		targetIndex = 0;
 		game.level = 1;
 		game.maze.removeFood();
