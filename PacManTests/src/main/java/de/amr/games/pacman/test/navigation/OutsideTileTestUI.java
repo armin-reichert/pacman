@@ -26,7 +26,7 @@ public class OutsideTileTestUI extends PlayViewXtended implements ViewController
 		game.pacMan.hide();
 		game.ghosts().filter(ghost -> ghost != game.blinky).forEach(ghost -> game.setActive(ghost, false));
 		game.blinky.init();
-		game.blinky.setBehavior(CHASING, game.blinky.headingFor(this::getTargetTile));
+		game.blinky.setSteering(CHASING, game.blinky.headingFor(this::getTargetTile));
 		game.blinky.setState(CHASING);
 	}
 

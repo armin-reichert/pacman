@@ -206,13 +206,13 @@ public class PacManGame {
 		activeActors.addAll(Arrays.asList(pacMan, blinky, pinky, inky, clyde));
 
 		ghosts().forEach(ghost -> {
-			ghost.setBehavior(FRIGHTENED, ghost.fleeingRandomly());
-			ghost.setBehavior(LOCKED, ghost.jumpingUpAndDown());
+			ghost.setSteering(FRIGHTENED, ghost.fleeingRandomly());
+			ghost.setSteering(LOCKED, ghost.jumpingUpAndDown());
 			ghost.fnIsUnlocked = g -> isUnlocked(ghost);
 		});
 
 		blinky.fnChasingTarget = pacMan::currentTile;
-		blinky.setBehavior(LOCKED, blinky.standingStill());
+		blinky.setSteering(LOCKED, blinky.standingStill());
 
 		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
 

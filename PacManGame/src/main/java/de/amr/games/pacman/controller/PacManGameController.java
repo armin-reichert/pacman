@@ -169,7 +169,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_F)) {
 			game.classicFlightBehavior = !game.classicFlightBehavior;
 			game.ghosts().forEach(ghost -> {
-				ghost.setBehavior(GhostState.FRIGHTENED,
+				ghost.setSteering(GhostState.FRIGHTENED,
 						game.classicFlightBehavior ? ghost.fleeingRandomly() : ghost.fleeingToSafeCorner(game.pacMan));
 			});
 			LOGGER.info("Changed ghost FRIGHTENED behavior to flee "

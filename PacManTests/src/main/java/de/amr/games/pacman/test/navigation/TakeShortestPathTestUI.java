@@ -39,8 +39,8 @@ public class TakeShortestPathTestUI extends PlayViewXtended implements ViewContr
 		game.ghosts().filter(ghost -> ghost != game.blinky).forEach(ghost -> game.setActive(ghost, false));
 		game.blinky.init();
 		game.blinky.setState(CHASING);
-		game.blinky.setBehavior(CHASING, game.blinky.followingFixedPath(() -> targets.get(targetIndex)));
-		game.blinky.setBehavior(FRIGHTENED, game.blinky.followingFixedPath(() -> targets.get(targetIndex)));
+		game.blinky.setSteering(CHASING, game.blinky.followingFixedPath(() -> targets.get(targetIndex)));
+		game.blinky.setSteering(FRIGHTENED, game.blinky.followingFixedPath(() -> targets.get(targetIndex)));
 	}
 
 	private void nextTarget() {

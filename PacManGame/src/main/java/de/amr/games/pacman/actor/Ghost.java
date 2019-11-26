@@ -101,6 +101,9 @@ public class Ghost extends Actor<GhostState> implements GhostSteerings {
 
 	@Override
 	protected StateMachine<GhostState, PacManGameEvent> fsm() {
+		if (fsm == null) {
+			throw new IllegalStateException("Access to state machine failed, state machine not yet created");
+		}
 		return fsm;
 	}
 
@@ -141,9 +144,7 @@ public class Ghost extends Actor<GhostState> implements GhostSteerings {
 		sprites.forEach(Sprite::resetAnimation);
 	}
 
-	// Steering
-
-	public void setBehavior(GhostState state, Steering<Ghost> steering) {
+	public void setSteering(GhostState state, Steering<Ghost> steering) {
 		steeringByState.put(state, steering);
 	}
 
@@ -167,16 +168,15 @@ public class Ghost extends Actor<GhostState> implements GhostSteerings {
 	/* TODO: some values still guessed */
 	public float maxSpeed() {
 		Tile tile = currentTile();
-		if (maze.inGhostHouse(tile)) {
-			return relSpeed(.25f);
-		}
+		float ghostHouseSpeed = relSpeed(.25f);
 		float tunnelSpeed = relSpeed(GHOST_TUNNEL_SPEED.$float(game.level));
 		switch (getState()) {
 		case LOCKED:
-			return maze.inGhostHouse(tile) ? relSpeed(.25f) : 0;
+			return maze.inGhostHouse(tile) ? ghostHouseSpeed : 0;
 		case LEAVING_HOUSE:
+			return ghostHouseSpeed;
 		case ENTERING_HOUSE:
-			return relSpeed(.25f);
+			return ghostHouseSpeed;
 		case CHASING:
 		case SCATTERING:
 			return maze.isTunnel(tile) ? tunnelSpeed : relSpeed(GHOST_SPEED.$float(game.level));
