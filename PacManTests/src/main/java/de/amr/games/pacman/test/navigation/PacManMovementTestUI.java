@@ -1,8 +1,12 @@
 package de.amr.games.pacman.test.navigation;
 
+import java.awt.event.KeyEvent;
+
+import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Actor;
+import de.amr.games.pacman.actor.behavior.pacman.PacManSteerings;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayViewXtended;
@@ -34,8 +38,22 @@ public class PacManMovementTestUI extends PlayViewXtended implements ViewControl
 
 	@Override
 	public void update() {
+		handleSteeringChange();
 		game.activeActors().forEach(Actor::update);
 		super.update();
+	}
+
+	private void handleSteeringChange() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_M)) {
+			game.pacMan.steering = PacManSteerings.steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT,
+					KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_A)) {
+			game.pacMan.steering = PacManSteerings.avoidGhosts();
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
+			game.pacMan.steering = PacManSteerings.movingRandomly();
+		}
 	}
 
 	@Override
