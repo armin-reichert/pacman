@@ -1,16 +1,11 @@
 package de.amr.games.pacman.actor.behavior;
 
+import static de.amr.datastruct.StreamUtils.permute;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.Tile.distance;
-import static de.amr.graph.grid.impl.Top4.E;
-import static de.amr.graph.grid.impl.Top4.N;
-import static de.amr.graph.grid.impl.Top4.S;
-import static de.amr.graph.grid.impl.Top4.W;
 
 import java.util.Comparator;
-import java.util.stream.IntStream;
 
-import de.amr.datastruct.StreamUtils;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.model.Maze;
@@ -33,32 +28,27 @@ public class AvoidGhosts implements Steering<PacMan> {
 			.findFirst()
 			.ifPresent(ghost -> {
 				pacMan.nextDir = NESW.dirs().boxed()
-						.sorted(byLargestDistanceToGhost(pacMan, ghost))
 						.filter(pacMan::canEnterTileTo)
+						.sorted(byLargestDistanceOfNeighborTile(pacMan, ghost))
 						.findAny()
 						.orElse(randomAccessibleDir(pacMan));
 			});
 		/*@formatter:on*/
 	}
 
-	private Comparator<Integer> byLargestDistanceToGhost(PacMan pacMan, Ghost ghost) {
+	private Comparator<Integer> byLargestDistanceOfNeighborTile(PacMan pacMan, Ghost ghost) {
+		Tile pacManTile = pacMan.currentTile(), ghostTile = ghost.currentTile();
 		return (dir1, dir2) -> {
-			Tile neighborTile1 = maze.tileToDir(pacMan.currentTile(), dir1);
-			Tile neighborTile2 = maze.tileToDir(pacMan.currentTile(), dir2);
-			return -Integer.compare(distance(neighborTile1, ghost.currentTile()),
-					distance(neighborTile2, ghost.currentTile()));
+			Tile neighborTile1 = maze.tileToDir(pacManTile, dir1), neighborTile2 = maze.tileToDir(pacManTile, dir2);
+			return -Integer.compare(distance(neighborTile1, ghostTile), distance(neighborTile2, ghostTile));
 		};
 	}
 
 	private Comparator<Ghost> bySmallestDistanceTo(PacMan pacMan) {
-		return (ghost1, ghost2) -> {
-			int dist1 = distance(pacMan.currentTile(), ghost1.currentTile());
-			int dist2 = distance(pacMan.currentTile(), ghost2.currentTile());
-			return Integer.compare(dist1, dist2);
-		};
+		return (ghost1, ghost2) -> Integer.compare(pacMan.distanceTo(ghost1), pacMan.distanceTo(ghost2));
 	}
 
 	private int randomAccessibleDir(PacMan pacMan) {
-		return StreamUtils.permute(IntStream.of(N, E, S, W)).filter(pacMan::canEnterTileTo).findAny().getAsInt();
+		return permute(NESW.dirs()).filter(pacMan::canEnterTileTo).findAny().getAsInt();
 	}
 }
