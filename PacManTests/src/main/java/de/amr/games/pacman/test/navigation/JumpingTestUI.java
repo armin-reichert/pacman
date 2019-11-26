@@ -12,7 +12,7 @@ public class JumpingTestUI extends PlayViewXtended implements ViewController {
 		super(game);
 		showRoutes = false;
 		showStates = true;
-		scoresVisible = false;
+		showScores = false;
 	}
 
 	@Override

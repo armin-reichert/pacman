@@ -14,7 +14,7 @@ public class FleeRandomlyTestUI extends PlayViewXtended implements ViewControlle
 		super(game);
 		showRoutes = true;
 		showStates = true;
-		scoresVisible = false;
+		showScores = false;
 	}
 
 	@Override

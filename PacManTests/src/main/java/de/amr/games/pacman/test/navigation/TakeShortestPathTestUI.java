@@ -26,7 +26,7 @@ public class TakeShortestPathTestUI extends PlayViewXtended implements ViewContr
 		super(game);
 		showRoutes = true;
 		showStates = true;
-		scoresVisible = false;
+		showScores = false;
 	}
 
 	@Override

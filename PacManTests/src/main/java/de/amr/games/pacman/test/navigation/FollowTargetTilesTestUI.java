@@ -20,7 +20,7 @@ public class FollowTargetTilesTestUI extends PlayViewXtended implements ViewCont
 		super(game);
 		showRoutes = true;
 		showStates = false;
-		scoresVisible = false;
+		showScores = false;
 	}
 
 	@Override

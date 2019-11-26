@@ -15,7 +15,7 @@ public class PacManMovementTestUI extends PlayViewXtended implements ViewControl
 
 	public PacManMovementTestUI(PacManGame game) {
 		super(game);
-		scoresVisible = false;
+		showScores = false;
 	}
 
 	@Override
@@ -47,6 +47,10 @@ public class PacManMovementTestUI extends PlayViewXtended implements ViewControl
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_M)) {
 			game.pacMan.steering = PacManSteerings.steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT,
 					KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_N)) {
+			game.pacMan.steering = PacManSteerings.steeredByKeys(KeyEvent.VK_NUMPAD5, KeyEvent.VK_NUMPAD3,
+					KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD1);
 		}
 		else if (Keyboard.keyPressedOnce(KeyEvent.VK_A)) {
 			game.pacMan.steering = PacManSteerings.avoidGhosts();

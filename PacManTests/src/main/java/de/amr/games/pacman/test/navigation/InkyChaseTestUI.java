@@ -13,7 +13,7 @@ public class InkyChaseTestUI extends PlayViewXtended implements ViewController {
 		super(game);
 		showRoutes = true;
 		showStates = true;
-		scoresVisible = false;
+		showScores = false;
 	}
 
 	@Override

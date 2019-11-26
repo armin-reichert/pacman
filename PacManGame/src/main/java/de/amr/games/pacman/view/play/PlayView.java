@@ -24,14 +24,15 @@ import de.amr.graph.grid.impl.Top4;
  */
 public class PlayView implements View, Controller {
 
-	protected final int width, height;
-	protected final PacManGame game;
+	public final int width, height;
+	public final PacManGame game;
+	public boolean showScores;
+
 	protected final MazeView mazeView;
 	protected final Image lifeImage;
 	protected String infoText;
 	protected Color infoTextColor;
-	public boolean scoresVisible;
-	private int bonusTimer;
+	protected int bonusTimer;
 
 	public PlayView(PacManGame game) {
 		this.game = game;
@@ -107,7 +108,7 @@ public class PlayView implements View, Controller {
 	}
 
 	protected void drawScores(Graphics2D g) {
-		if (scoresVisible) {
+		if (showScores) {
 			// Points score
 			int score = game.score.getPoints();
 			g.setFont(game.theme.fnt_text());

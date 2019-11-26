@@ -14,7 +14,7 @@ public class EscapeIntoCornerTestUI extends PlayViewXtended implements ViewContr
 		super(game);
 		showRoutes = true;
 		showStates = true;
-		scoresVisible = false;
+		showScores = false;
 	}
 
 	@Override

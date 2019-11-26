@@ -13,7 +13,7 @@ public class LeaveGhostHouseTestUI extends PlayViewXtended implements ViewContro
 		showRoutes = true;
 		showGrid = true;
 		showStates = true;
-		scoresVisible = false;
+		showScores = false;
 	}
 
 	@Override

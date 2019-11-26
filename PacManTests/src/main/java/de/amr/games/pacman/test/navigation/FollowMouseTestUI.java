@@ -20,7 +20,7 @@ public class FollowMouseTestUI extends PlayViewXtended implements ViewController
 		showRoutes = true;
 		showGrid = true;
 		showStates = false;
-		scoresVisible = false;
+		showScores = false;
 	}
 
 	@Override
