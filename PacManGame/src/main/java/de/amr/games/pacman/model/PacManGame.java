@@ -139,6 +139,10 @@ public class PacManGame {
 		}
 	}
 
+	public float speed(LevelData column) {
+		return relSpeed(column.$float(level));
+	}
+
 	public final Maze maze;
 	public final PacManTheme theme;
 	public final PacMan pacMan;

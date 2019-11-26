@@ -11,7 +11,6 @@ import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
-import static de.amr.games.pacman.model.PacManGame.relSpeed;
 import static de.amr.games.pacman.model.PacManGame.sec;
 import static de.amr.games.pacman.model.PacManGame.LevelData.GHOST_FRIGHTENED_SPEED;
 import static de.amr.games.pacman.model.PacManGame.LevelData.GHOST_SPEED;
@@ -168,27 +167,26 @@ public class Ghost extends Actor<GhostState> {
 	}
 
 	@Override
-	/* TODO: some values still guessed */
+	/* TODO: Some values are still guessed */
 	public float maxSpeed() {
-		Tile tile = currentTile();
-		float ghostHouseSpeed = relSpeed(.25f);
-		float tunnelSpeed = relSpeed(GHOST_TUNNEL_SPEED.$float(game.level));
+		boolean inTunnel = maze.isTunnel(currentTile());
 		switch (getState()) {
 		case LOCKED:
-			return maze.inGhostHouse(tile) ? ghostHouseSpeed : 0;
+			//$FALL-THROUGH$
 		case LEAVING_HOUSE:
-			return ghostHouseSpeed;
+			//$FALL-THROUGH$
 		case ENTERING_HOUSE:
-			return ghostHouseSpeed;
+			return game.speed(GHOST_SPEED) / 2;
 		case CHASING:
+			//$FALL-THROUGH$
 		case SCATTERING:
-			return maze.isTunnel(tile) ? tunnelSpeed : relSpeed(GHOST_SPEED.$float(game.level));
+			return inTunnel ? game.speed(GHOST_TUNNEL_SPEED) : game.speed(GHOST_SPEED);
 		case FRIGHTENED:
-			return maze.isTunnel(tile) ? tunnelSpeed : relSpeed(GHOST_FRIGHTENED_SPEED.$float(game.level));
+			return inTunnel ? game.speed(GHOST_TUNNEL_SPEED) : game.speed(GHOST_FRIGHTENED_SPEED);
 		case DYING:
 			return 0;
 		case DEAD:
-			return 2 * relSpeed(GHOST_SPEED.$float(game.level));
+			return 2 * game.speed(GHOST_SPEED);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name));
 		}

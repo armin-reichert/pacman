@@ -74,7 +74,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private PlayViewXtended playView;
 	private Controller viewController;
 
-	public boolean skipIntro = false;
 	private boolean muted = false;
 
 	public PacManGameController(PacManGame game) {
@@ -220,7 +219,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			.transitions()
 			
 				.when(INTRO).then(READY)
-					.condition(() -> introView.isComplete() || skipIntro)
+					.condition(() -> introView.isComplete() || app().settings.getAsBoolean("skipIntro"))
 					.act(() -> showPlayView())
 				
 				.when(READY).then(PLAYING)

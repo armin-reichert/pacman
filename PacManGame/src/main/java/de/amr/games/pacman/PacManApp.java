@@ -32,6 +32,7 @@ public class PacManApp extends Application {
 		settings.scale = 2;
 		settings.fullScreenOnStart = false;
 		settings.set("overflowBug", true);
+		settings.set("skipIntro", true);
 	}
 
 	@Override
