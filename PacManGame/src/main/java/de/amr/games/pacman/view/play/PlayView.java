@@ -30,7 +30,7 @@ public class PlayView implements View, Controller {
 	protected final Image lifeImage;
 	protected String infoText;
 	protected Color infoTextColor;
-	protected boolean scoresVisible;
+	public boolean scoresVisible;
 	private int bonusTimer;
 
 	public PlayView(PacManGame game) {
@@ -87,14 +87,6 @@ public class PlayView implements View, Controller {
 
 	public void hideInfoText() {
 		infoText = null;
-	}
-
-	public boolean areScoresVisible() {
-		return scoresVisible;
-	}
-
-	public void setScoresVisible(boolean scoresVisible) {
-		this.scoresVisible = scoresVisible;
 	}
 
 	@Override

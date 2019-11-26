@@ -5,33 +5,27 @@ import static de.amr.games.pacman.actor.GhostState.CHASING;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayViewXtended;
-import de.amr.graph.grid.impl.Top4;
 
 public class OutsideTileTestUI extends PlayViewXtended implements ViewController {
 
 	public OutsideTileTestUI(PacManGame game) {
 		super(game);
-		setShowRoutes(true);
-		setShowGrid(false);
-		setShowStates(true);
-		setScoresVisible(false);
+		showRoutes = true;
+		showStates = true;
+		scoresVisible = false;
 	}
 
 	@Override
 	public void init() {
 		game.level = 1;
-		game.maze.removeFood();
-		game.pacMan.hide();
-		game.ghosts().filter(ghost -> ghost != game.blinky).forEach(ghost -> game.setActive(ghost, false));
+		game.setActive(game.pacMan, false);
+		game.setActive(game.pinky, false);
+		game.setActive(game.inky, false);
+		game.setActive(game.clyde, false);
+		game.blinky.fnChasingTarget = () -> game.maze.tileAt(100, game.maze.tunnelRightExit.row);
 		game.blinky.init();
-		game.blinky.setSteering(CHASING, game.blinky.headingFor(this::getTargetTile));
 		game.blinky.setState(CHASING);
-	}
-
-	private Tile getTargetTile() {
-		return game.maze.tileToDir(game.maze.tunnelRightExit, Top4.E);
 	}
 
 	@Override

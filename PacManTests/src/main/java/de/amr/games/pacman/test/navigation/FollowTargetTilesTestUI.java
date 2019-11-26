@@ -18,10 +18,9 @@ public class FollowTargetTilesTestUI extends PlayViewXtended implements ViewCont
 
 	public FollowTargetTilesTestUI(PacManGame game) {
 		super(game);
-		setShowRoutes(true);
-		setShowGrid(false);
-		setShowStates(false);
-		setScoresVisible(false);
+		showRoutes = true;
+		showStates = false;
+		scoresVisible = false;
 	}
 
 	@Override

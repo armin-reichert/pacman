@@ -17,10 +17,9 @@ public class ScatteringTestUI extends PlayViewXtended implements ViewController 
 
 	public ScatteringTestUI(PacManGame game) {
 		super(game);
-		setShowGrid(false);
-		setShowRoutes(true);
-		setShowStates(true);
-		setScoresVisible(false);
+		showRoutes = true;
+		showStates = true;
+		scoresVisible = false;
 	}
 
 	@Override

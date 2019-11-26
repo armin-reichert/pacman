@@ -12,10 +12,9 @@ public class FleeRandomlyTestUI extends PlayViewXtended implements ViewControlle
 
 	public FleeRandomlyTestUI(PacManGame game) {
 		super(game);
-		setShowRoutes(true);
-		setShowGrid(false);
-		setShowStates(true);
-		setScoresVisible(false);
+		showRoutes = true;
+		showStates = true;
+		scoresVisible = false;
 	}
 
 	@Override

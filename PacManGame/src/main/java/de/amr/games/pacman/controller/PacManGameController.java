@@ -316,7 +316,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			game.removeLife();
 			game.activeActors().forEach(MazeMover::init);
 			playView.init();
-			playView.setScoresVisible(true);
+			playView.scoresVisible = true;
 			playView.enableAnimation(false);
 			playView.showInfoText("Ready!", Color.YELLOW);
 			theme.snd_clips_all().forEach(Sound::stop);

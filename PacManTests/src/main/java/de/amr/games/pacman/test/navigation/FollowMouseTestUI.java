@@ -17,10 +17,10 @@ public class FollowMouseTestUI extends PlayViewXtended implements ViewController
 
 	public FollowMouseTestUI(PacManGame game) {
 		super(game);
-		setShowRoutes(true);
-		setShowGrid(true);
-		setShowStates(false);
-		setScoresVisible(false);
+		showRoutes = true;
+		showGrid = true;
+		showStates = false;
+		scoresVisible = false;
 	}
 
 	@Override

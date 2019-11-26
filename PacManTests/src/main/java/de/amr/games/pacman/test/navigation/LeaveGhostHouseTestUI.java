@@ -10,10 +10,10 @@ public class LeaveGhostHouseTestUI extends PlayViewXtended implements ViewContro
 
 	public LeaveGhostHouseTestUI(PacManGame game) {
 		super(game);
-		setShowRoutes(true);
-		setShowGrid(true);
-		setShowStates(true);
-		setScoresVisible(false);
+		showRoutes = true;
+		showGrid = true;
+		showStates = true;
+		scoresVisible = false;
 	}
 
 	@Override

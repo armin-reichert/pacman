@@ -50,9 +50,10 @@ public class PlayViewXtended extends PlayView {
 	private static final String INFTY = Character.toString('\u221E');
 
 	private final BufferedImage gridImage;
-	private boolean showGrid = false;
-	private boolean showRoutes = false;
-	private boolean showStates = false;
+
+	public boolean showGrid = false;
+	public boolean showRoutes = false;
+	public boolean showStates = false;
 
 	public GhostAttackController ghostAttackController;
 
@@ -74,30 +75,6 @@ public class PlayViewXtended extends PlayView {
 	public PlayViewXtended(PacManGame game) {
 		super(game);
 		gridImage = createGridImage(Maze.ROWS, Maze.COLS);
-	}
-
-	public void setShowGrid(boolean showGrid) {
-		this.showGrid = showGrid;
-	}
-
-	public void setShowRoutes(boolean showRoutes) {
-		this.showRoutes = showRoutes;
-	}
-
-	public void setShowStates(boolean showStates) {
-		this.showStates = showStates;
-	}
-
-	public boolean isShowGrid() {
-		return showGrid;
-	}
-
-	public boolean isShowRoutes() {
-		return showRoutes;
-	}
-
-	public boolean isShowStates() {
-		return showStates;
 	}
 
 	@Override
@@ -165,15 +142,15 @@ public class PlayViewXtended extends PlayView {
 	}
 
 	private String pacManStateText(PacMan pacMan) {
-		return pacMan.state().getDuration() != State.ENDLESS ? String.format("(%s,%d|%d)", pacMan.state().id(),
-				pacMan.state().getTicksRemaining(), pacMan.state().getDuration())
+		return pacMan.state().getDuration() != State.ENDLESS
+				? String.format("(%s,%d|%d)", pacMan.state().id(), pacMan.state().getTicksRemaining(),
+						pacMan.state().getDuration())
 				: String.format("(%s,%s)", pacMan.state().id(), INFTY);
 	}
 
 	private String ghostStateText(Ghost ghost) {
 		String displayName = ghost.getState() == GhostState.DEAD ? ghost.name : "";
-		String nextState = ghost.getNextState() != ghost.getState() ? String.format("[->%s]", ghost.getNextState())
-				: "";
+		String nextState = ghost.getNextState() != ghost.getState() ? String.format("[->%s]", ghost.getNextState()) : "";
 		int duration = ghost.state().getDuration(), remaining = ghost.state().getTicksRemaining();
 
 		if (ghost.getState() == GhostState.FRIGHTENED && game.pacMan.getState() == PacManState.POWER) {

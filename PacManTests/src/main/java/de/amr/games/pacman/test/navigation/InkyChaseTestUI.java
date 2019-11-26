@@ -11,10 +11,9 @@ public class InkyChaseTestUI extends PlayViewXtended implements ViewController {
 
 	public InkyChaseTestUI(PacManGame game) {
 		super(game);
-		setShowRoutes(true);
-		setShowGrid(false);
-		setShowStates(true);
-		setScoresVisible(false);
+		showRoutes = true;
+		showStates = true;
+		scoresVisible = false;
 	}
 
 	@Override

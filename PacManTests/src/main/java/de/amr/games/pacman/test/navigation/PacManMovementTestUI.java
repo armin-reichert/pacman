@@ -11,10 +11,7 @@ public class PacManMovementTestUI extends PlayViewXtended implements ViewControl
 
 	public PacManMovementTestUI(PacManGame game) {
 		super(game);
-		setShowRoutes(false);
-		setShowGrid(false);
-		setShowStates(false);
-		setScoresVisible(false);
+		scoresVisible = false;
 	}
 
 	@Override

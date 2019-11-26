@@ -10,10 +10,9 @@ public class JumpingTestUI extends PlayViewXtended implements ViewController {
 
 	public JumpingTestUI(PacManGame game) {
 		super(game);
-		setShowGrid(false);
-		setShowRoutes(false);
-		setShowStates(true);
-		setScoresVisible(false);
+		showRoutes = false;
+		showStates = true;
+		scoresVisible = false;
 	}
 
 	@Override

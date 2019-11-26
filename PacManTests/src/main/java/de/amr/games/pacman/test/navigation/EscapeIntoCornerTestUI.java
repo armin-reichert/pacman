@@ -10,10 +10,9 @@ public class EscapeIntoCornerTestUI extends PlayViewXtended implements ViewContr
 
 	public EscapeIntoCornerTestUI(PacManGame game) {
 		super(game);
-		setShowRoutes(true);
-		setShowGrid(false);
-		setShowStates(true);
-		setScoresVisible(false);
+		showRoutes = true;
+		showStates = true;
+		scoresVisible = false;
 	}
 
 	@Override
