@@ -525,7 +525,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onTick() {
 			game.activeGhosts()
-					.filter(ghost -> ghost.getState() == GhostState.DYING || ghost.getState() == GhostState.DEAD)
+					.filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
 					.forEach(Ghost::update);
 		}
 

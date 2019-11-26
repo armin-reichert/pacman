@@ -2,6 +2,7 @@ package de.amr.games.pacman.actor;
 
 import static de.amr.easy.game.Application.LOGGER;
 
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -50,6 +51,11 @@ public abstract class Actor<S> extends MazeMover {
 
 	public S getState() {
 		return fsm().getState();
+	}
+
+	@SuppressWarnings("unchecked")
+	public boolean oneOf(S... states) {
+		return Arrays.stream(states).anyMatch(state -> state == getState());
 	}
 
 	public void setState(S state) {
