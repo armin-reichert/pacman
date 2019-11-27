@@ -9,6 +9,7 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.headingFor;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
 import static de.amr.games.pacman.model.PacManGame.sec;
@@ -25,7 +26,6 @@ import java.util.stream.IntStream;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
-import de.amr.games.pacman.actor.behavior.ghost.GhostSteerings;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -55,7 +55,8 @@ public class Ghost extends Actor<GhostState> {
 	public final Tile scatterTile;
 
 	/**
-	 * Function providing the next state after the "frightened" state ends or leaving the ghost house.
+	 * Function providing the next state after the "frightened" state ends or
+	 * leaving the ghost house.
 	 */
 	public Supplier<GhostState> fnNextState;
 
@@ -82,7 +83,7 @@ public class Ghost extends Actor<GhostState> {
 		this.scatterTile = scatterTile;
 		this.nextDir = initialDir;
 		this.moveDir = initialDir;
-		defaultSteering = GhostSteerings.headingFor(() -> targetTile);
+		defaultSteering = headingFor(() -> enteredNewTile ? targetTile : null);
 		fnNextState = this::getState;
 		fnIsUnlocked = game::isUnlocked;
 		buildStateMachine();

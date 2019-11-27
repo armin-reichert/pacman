@@ -52,9 +52,6 @@ public class HeadingForTile<T extends MazeMover> implements Steering<T> {
 
 	@Override
 	public void steer(T actor) {
-		if (!actor.enteredNewTile) {
-			return; // TODO move this text outside
-		}
 		Tile targetTile = fnTargetTile.get();
 		if (targetTile != null) {
 			actor.targetTile = targetTile;
