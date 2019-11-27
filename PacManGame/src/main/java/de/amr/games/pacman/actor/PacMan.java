@@ -7,9 +7,9 @@ import static de.amr.games.pacman.actor.PacManState.DYING;
 import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.actor.PacManState.POWER;
+import static de.amr.games.pacman.actor.behavior.pacman.PacManSteerings.steeredByKeys;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
-import static de.amr.games.pacman.model.PacManGame.relSpeed;
 import static de.amr.games.pacman.model.PacManGame.sec;
 import static de.amr.games.pacman.model.PacManGame.LevelData.PACMAN_POWER_SECONDS;
 import static de.amr.games.pacman.model.PacManGame.LevelData.PACMAN_POWER_SPEED;
@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
-import de.amr.games.pacman.actor.behavior.pacman.PacManSteerings;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -50,12 +49,12 @@ public class PacMan extends Actor<PacManState> {
 
 	public PacMan(PacManGame game) {
 		super("Pac-Man", game, game.maze);
-		buildStateMachine();
-		steering = PacManSteerings.steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
 		NESW.dirs().forEach(dir -> sprites.set("walking-" + dir, game.theme.spr_pacManWalking(dir)));
 		sprites.set("dying", game.theme.spr_pacManDying());
 		sprites.set("full", game.theme.spr_pacManFull());
 		sprites.select("full");
+		steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
+		buildStateMachine();
 	}
 
 	@Override
@@ -69,9 +68,9 @@ public class PacMan extends Actor<PacManState> {
 	public float maxSpeed() {
 		switch (getState()) {
 		case HUNGRY:
-			return relSpeed(PACMAN_SPEED.$float(game.level));
+			return game.speed(PACMAN_SPEED);
 		case POWER:
-			return relSpeed(PACMAN_POWER_SPEED.$float(game.level));
+			return game.speed(PACMAN_POWER_SPEED);
 		default:
 			return 0;
 		}
@@ -195,7 +194,8 @@ public class PacMan extends Actor<PacManState> {
 		public void onTick() {
 			if (mustDigest()) {
 				digest();
-			} else {
+			}
+			else {
 				steer();
 				move();
 				findSomethingInteresting().ifPresent(PacMan.this::publishEvent);
@@ -248,7 +248,8 @@ public class PacMan extends Actor<PacManState> {
 				boolean energizer = maze.containsEnergizer(pacManTile);
 				digestionTicks = game.getDigestionTicks(energizer);
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			} else {
+			}
+			else {
 				ticksSinceLastMeal += 1;
 			}
 
@@ -261,7 +262,8 @@ public class PacMan extends Actor<PacManState> {
 		@Override
 		public void onEntry() {
 			game.theme.snd_waza().loop();
-			LOGGER.info(() -> String.format("Pac-Man powered for %d ticks (%d sec)", getDuration(), getDuration() / 60));
+			LOGGER.info(
+					() -> String.format("Pac-Man powered for %d ticks (%d sec)", getDuration(), getDuration() / 60));
 		}
 
 		@Override
@@ -283,12 +285,12 @@ public class PacMan extends Actor<PacManState> {
 		private int paralyzedTicks; // time before dying animation starts
 
 		{ // set duration of complete "Dying" state
-			setTimerFunction(() -> app().clock.sec(3));
+			setTimerFunction(() -> app().clock.sec(4f));
 		}
 
 		@Override
 		public void onEntry() {
-			paralyzedTicks = app().clock.sec(1);
+			paralyzedTicks = app().clock.sec(1.5f);
 			sprites.select("full");
 			game.theme.snd_clips_all().forEach(Sound::stop);
 		}
