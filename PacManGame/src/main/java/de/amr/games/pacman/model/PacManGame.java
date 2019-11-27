@@ -140,12 +140,6 @@ public class PacManGame {
 	/** The currently active actors. Actors can be toggled during the game. */
 	private final Set<Actor<?>> activeActors = new HashSet<>();
 
-	/**
-	 * If ghosts use classic flight behavior (random direction at each intersection)
-	 * or path based flight into a "safe" corner.
-	 */
-	public boolean classicFlightBehavior = true;
-
 	/** The game score including highscore management. */
 	public final Score score;
 

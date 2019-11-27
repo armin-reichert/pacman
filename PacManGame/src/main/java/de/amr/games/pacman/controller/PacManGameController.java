@@ -2,8 +2,8 @@ package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.movingRandomly;
 import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.fleeingToSafeCorner;
+import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.movingRandomly;
 import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.controller.PacManGameState.GHOST_DYING;
@@ -53,8 +53,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
-		implements ViewController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements ViewController {
 
 	// Typed reference to "Playing" state object
 	private PlayingState playingState;
@@ -124,7 +123,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		handleMuteSound();
 		handleStateMachineLogging();
 		handlePlayingSpeedChange();
-		handleGhostBehaviorChange();
+		handleGhostFrightenedBehaviorChange();
 		handleToggleOverflowBug();
 		cheatsController.update();
 		super.update();
@@ -157,24 +156,21 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void handlePlayingSpeedChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
 			app().clock.setFrequency(60);
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
 			app().clock.setFrequency(80);
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
 			app().clock.setFrequency(100);
 		}
 	}
 
-	private void handleGhostBehaviorChange() {
+	private void handleGhostFrightenedBehaviorChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_F)) {
-			game.classicFlightBehavior = !game.classicFlightBehavior;
-			game.ghosts().forEach(ghost -> {
-				ghost.setSteering(GhostState.FRIGHTENED,
-						game.classicFlightBehavior ? movingRandomly() : fleeingToSafeCorner(game.pacMan));
-			});
-			LOGGER.info("Changed ghost FRIGHTENED behavior to flee "
-					+ (game.classicFlightBehavior ? "randomly" : "via safe route"));
+			String property = "ghost.originalBehavior";
+			app().settings.set(property, !app().settings.getAsBoolean(property));
+			boolean original = app().settings.getAsBoolean(property);
+			game.ghosts().forEach(ghost -> ghost.setSteering(GhostState.FRIGHTENED,
+					original ? movingRandomly() : fleeingToSafeCorner(game.pacMan)));
+			LOGGER.info("Changed ghost FRIGHTENED behavior to " + (original ? "original" : "escape via safe route"));
 		}
 	}
 
@@ -362,8 +358,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			ghostAttackController.update();
 			if (oldAttackState != ghostAttackController.getState()) {
 				fireAttackStateChange();
-			}
-			else {
+			} else {
 				game.activeGhosts().forEach(Ghost::update);
 			}
 			game.pacMan.update();
@@ -476,8 +471,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 
 		/*
-		 * Set state duration such that flashing animation is executed exact number of times defined for
-		 * each level. One flash takes half a second.
+		 * Set state duration such that flashing animation is executed exact number of
+		 * times defined for each level. One flash takes half a second.
 		 */
 		{
 			setTimerFunction(() -> app().clock.sec(0.5f * numMazeFlashes()));
@@ -523,8 +518,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onTick() {
-			game.activeGhosts()
-					.filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
+			game.activeGhosts().filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
 					.forEach(Ghost::update);
 		}
 
@@ -554,8 +548,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				if (waitTimer == 0) {
 					game.activeGhosts().forEach(Ghost::hide);
 				}
-			}
-			else {
+			} else {
 				game.pacMan.update();
 			}
 		}
