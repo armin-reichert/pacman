@@ -34,7 +34,6 @@ import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.GhostColor;
 import de.amr.graph.grid.impl.Top4;
 import de.amr.statemachine.StateMachine;
 
@@ -57,24 +56,13 @@ public class Ghost extends Actor<GhostState> {
 	public Supplier<Boolean> fnIsUnlocked;
 	public int foodCount;
 
-	public Ghost(PacManGame game, Maze maze, String name, GhostColor color) {
+	public Ghost(PacManGame game, Maze maze, String name) {
 		super(name, maze);
 		this.game = game;
-		this.nextDir = initialDir;
-		this.moveDir = initialDir;
 		steeringByState = new EnumMap<>(GhostState.class);
 		defaultSteering = headingFor(() -> enteredNewTile ? targetTile : null);
 		fnNextState = this::getState;
 		buildStateMachine();
-		NESW.dirs().forEach(dir -> {
-			sprites.set("color-" + dir, game.theme.spr_ghostColored(color, dir));
-			sprites.set("eyes-" + dir, game.theme.spr_ghostEyes(dir));
-		});
-		for (int i = 0; i < 4; ++i) {
-			sprites.set("value-" + i, game.theme.spr_greenNumber(i));
-		}
-		sprites.set("frightened", game.theme.spr_ghostFrightened());
-		sprites.set("flashing", game.theme.spr_ghostFlashing());
 	}
 
 	@Override
