@@ -31,7 +31,7 @@ public class ScatteringTestUI extends PlayViewXtended implements ViewController 
 		game.activeGhosts().forEach(ghost -> {
 			ghost.init();
 			ghost.fnNextState = () -> GhostState.SCATTERING;
-			ghost.fnIsUnlocked = g -> !locked;
+			ghost.fnIsUnlocked = () -> !locked;
 		});
 		showInfoText("Press SPACE key", Color.YELLOW);
 	}
