@@ -556,7 +556,7 @@ inky.fnChasingTarget = () -> {
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
 
 ```java
-clyde.fnChasingTarget = () -> euclideanDist(clyde.tf.getCenter(), pacMan.tf.getCenter()) > 8
+clyde.fnChasingTarget = () -> Vector2f.euclideanDist(clyde.tf.getCenter(), pacMan.tf.getCenter()) > 8
 		? pacMan.currentTile()
 		: maze.clydeScatter;
 ```
