@@ -44,7 +44,6 @@ import de.amr.statemachine.StateMachine;
  */
 public class Ghost extends Actor<GhostState> {
 
-	public final PacManGame game;
 	private StateMachine<GhostState, PacManGameEvent> fsm;
 	private final Map<GhostState, Steering<Ghost>> steeringByState;
 	private final Steering<Ghost> defaultSteering;
@@ -58,8 +57,7 @@ public class Ghost extends Actor<GhostState> {
 	public int foodCount;
 
 	public Ghost(PacManGame game, Maze maze, String name) {
-		super(name, maze);
-		this.game = game;
+		super(name, game, maze);
 		steeringByState = new EnumMap<>(GhostState.class);
 		defaultSteering = headingFor(() -> enteredNewTile ? targetTile : null);
 		fnNextState = this::getState;
