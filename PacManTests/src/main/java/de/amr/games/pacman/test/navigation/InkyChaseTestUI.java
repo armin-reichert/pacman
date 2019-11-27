@@ -22,8 +22,8 @@ public class InkyChaseTestUI extends PlayViewXtended implements ViewController {
 		game.level = 1;
 		game.maze.removeFood();
 		game.pacMan.init();
-		game.activateActor(game.pinky, false);
-		game.activateActor(game.clyde, false);
+		game.setActive(game.pinky, false);
+		game.setActive(game.clyde, false);
 		game.activeGhosts().forEach(ghost -> {
 			ghost.init();
 			ghost.fnIsUnlocked = () -> true;

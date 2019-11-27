@@ -33,8 +33,8 @@ public class FollowMouseTestUI extends PlayViewXtended implements ViewController
 		super.init();
 		game.level = 1;
 		game.maze.removeFood();
-		game.activateActor(game.pacMan, false);
-		game.ghosts().forEach(ghost -> game.activateActor(ghost, ghost == game.blinky));
+		game.setActive(game.pacMan, false);
+		game.ghosts().forEach(ghost -> game.setActive(ghost, ghost == game.blinky));
 		game.blinky.init();
 		game.blinky.fnChasingTarget = () -> mouseTile;
 		game.blinky.setState(CHASING);

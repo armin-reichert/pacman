@@ -25,7 +25,6 @@ import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.actor.behavior.HeadingForTile;
-import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.controller.GhostAttackController;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
@@ -63,7 +62,8 @@ public class PlayViewXtended extends PlayView {
 	private static BufferedImage createGridImage(int numRows, int numCols) {
 		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
 				.getDefaultConfiguration();
-		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1, Transparency.TRANSLUCENT);
+		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1,
+				Transparency.TRANSLUCENT);
 		Graphics2D g = image.createGraphics();
 		g.setColor(new Color(0, 60, 0));
 		for (int row = 0; row <= numRows; ++row) {
@@ -83,7 +83,7 @@ public class PlayViewXtended extends PlayView {
 	@Override
 	public void init() {
 		super.init();
-		updateGhostSteerings();
+		updateGhostRouteDisplay();
 	}
 
 	@Override
@@ -96,34 +96,35 @@ public class PlayViewXtended extends PlayView {
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
 			showRoutes = !showRoutes;
-			updateGhostSteerings();
+			updateGhostRouteDisplay();
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
-			toggleGhost(game.blinky);
+			toggleGhostActivationState(game.blinky);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_P)) {
-			toggleGhost(game.pinky);
+			toggleGhostActivationState(game.pinky);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_I)) {
-			toggleGhost(game.inky);
+			toggleGhostActivationState(game.inky);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_C)) {
-			toggleGhost(game.clyde);
+			toggleGhostActivationState(game.clyde);
 		}
 		super.update();
 	}
 
-	private void updateGhostSteerings() {
+	private void updateGhostRouteDisplay() {
+		// TODO this is ugly
 		game.ghosts().forEach(ghost -> {
-			Steering<Ghost> steering = ghost.getSteering();
-			if (steering instanceof HeadingForTile) {
-				((HeadingForTile<Ghost>) steering).computePathToTargetTile = showRoutes;
+			if (ghost.getSteering() instanceof HeadingForTile<?>) {
+				HeadingForTile<?> steering = (HeadingForTile<?>) ghost.getSteering();
+				steering.fnComputePath = () -> showRoutes;
 			}
 		});
 	}
 
-	private void toggleGhost(Ghost ghost) {
-		game.activateActor(ghost, !game.isActive(ghost));
+	private void toggleGhostActivationState(Ghost ghost) {
+		game.setActive(ghost, !game.isActive(ghost));
 	}
 
 	@Override
@@ -154,17 +155,16 @@ public class PlayViewXtended extends PlayView {
 		}
 		game.activeGhosts().filter(Ghost::visible).forEach(ghost -> {
 			if (ghost.getState() != null) {
-				drawText(g, ghostColor(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
+				drawText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
 			}
 		});
 	}
 
 	private String pacManStateText(PacMan pacMan) {
-		String text = pacMan.state().getDuration() != State.ENDLESS
-				? String.format("(%s,%d|%d)", pacMan.state().id(), pacMan.state().getTicksRemaining(),
-						pacMan.state().getDuration())
+		String text = pacMan.state().getDuration() != State.ENDLESS ? String.format("(%s,%d|%d)",
+				pacMan.state().id(), pacMan.state().getTicksRemaining(), pacMan.state().getDuration())
 				: String.format("(%s,%s)", pacMan.state().id(), INFTY);
-				
+
 		if (Application.app().settings.getAsBoolean("pacMan.immortable")) {
 			text += "-immortable";
 		}
@@ -173,13 +173,16 @@ public class PlayViewXtended extends PlayView {
 
 	private String ghostStateText(Ghost ghost) {
 		String displayName = ghost.getState() == GhostState.DEAD ? ghost.name : "";
-		String nextState = ghost.getNextState() != ghost.getState() ? String.format("[->%s]", ghost.getNextState()) : "";
+		String nextState = ghost.getNextState() != ghost.getState()
+				? String.format("[->%s]", ghost.getNextState())
+				: "";
 		int duration = ghost.state().getDuration(), remaining = ghost.state().getTicksRemaining();
 
 		if (ghost.getState() == GhostState.FRIGHTENED && game.pacMan.getState() == PacManState.POWER) {
 			duration = game.pacMan.state().getDuration();
 			remaining = game.pacMan.state().getTicksRemaining();
-		} else if ((ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING)
+		}
+		else if ((ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING)
 				&& ghostAttackController != null) {
 			duration = ghostAttackController.state().getDuration();
 			remaining = ghostAttackController.state().getTicksRemaining();
@@ -190,19 +193,10 @@ public class PlayViewXtended extends PlayView {
 				: String.format("%s(%s,%s)%s", displayName, ghost.getState(), INFTY, nextState);
 	}
 
-	private static Color ghostColor(Ghost ghost) {
-		switch (ghost.name) {
-		case "Blinky":
-			return Color.RED;
-		case "Pinky":
-			return Color.PINK;
-		case "Inky":
-			return Color.CYAN;
-		case "Clyde":
-			return Color.ORANGE;
-		default:
-			throw new IllegalArgumentException();
-		}
+	private Color color(Ghost ghost) {
+		return ghost == game.blinky ? Color.RED
+				: ghost == game.pinky ? Color.PINK
+						: ghost == game.inky ? Color.CYAN : ghost == game.clyde ? Color.ORANGE : Color.WHITE;
 	}
 
 	private void drawText(Graphics2D g, Color color, float x, float y, String text) {
@@ -230,37 +224,32 @@ public class PlayViewXtended extends PlayView {
 	}
 
 	private void drawRoute(Graphics2D g, Ghost ghost) {
-		Color ghostColor = ghostColor(ghost);
-		g.setColor(ghostColor);
+		Color ghostColor = color(ghost);
 		Stroke solid = g.getStroke();
 		if (ghost.targetTile != null) {
 			// draw target tile indicator
-			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
+			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
+					0);
 			g.setStroke(dashed);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y, ghost.targetTile.col * TS + TS / 2,
-					ghost.targetTile.row * TS + TS / 2);
+			g.setColor(ghostColor);
+			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
+					ghost.targetTile.col * TS + TS / 2, ghost.targetTile.row * TS + TS / 2);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			g.setStroke(solid);
 			g.translate(ghost.targetTile.col * TS, ghost.targetTile.row * TS);
+			g.setColor(ghostColor);
 			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
 			g.translate(-ghost.targetTile.col * TS, -ghost.targetTile.row * TS);
 		}
 		if (ghost.targetPath.size() > 1) {
-			Stroke wide = new BasicStroke(TS);
-			g.setStroke(wide);
-			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 40));
-			for (int i = 0; i < ghost.targetPath.size() - 1; ++i) {
-				Tile u = ghost.targetPath.get(i), v = ghost.targetPath.get(i + 1);
-				int u1 = u.col * TS + TS / 2;
-				int u2 = u.row * TS + TS / 2;
-				int v1 = v.col * TS + TS / 2;
-				int v2 = v.row * TS + TS / 2;
-				g.drawLine(u1, u2, v1, v2);
+			// draw path in ghost's color
+			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 100));
+			for (Tile tile : ghost.targetPath) {
+				g.fillRect(tile.col * TS, tile.row * TS, TS, TS);
 			}
-			g.setStroke(solid);
-			g.setColor(ghostColor);
-		} else {
+		}
+		else {
 			// draw direction indicator
 			Vector2f center = ghost.tf.getCenter();
 			int dx = NESW.dx(ghost.nextDir), dy = NESW.dy(ghost.nextDir);
@@ -269,6 +258,7 @@ public class PlayViewXtended extends PlayView {
 			int indX = (int) (center.x + dx * lineLen);
 			int indY = (int) (center.y + dy * lineLen);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setColor(ghostColor);
 			g.fillOval(indX - r, indY - r, 2 * r, 2 * r);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		}

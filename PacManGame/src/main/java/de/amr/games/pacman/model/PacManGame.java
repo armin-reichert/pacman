@@ -248,7 +248,7 @@ public class PacManGame {
 		bonus = null;
 		levelCounter.clear();
 		score.loadHiscore();
-		Arrays.asList(pacMan, blinky, pinky, inky, clyde).forEach(actor -> activateActor(actor, true));
+		Arrays.asList(pacMan, blinky, pinky, inky, clyde).forEach(actor -> setActive(actor, true));
 		nextLevel();
 	}
 
@@ -282,7 +282,7 @@ public class PacManGame {
 		return actorActivationState.get(actor);
 	}
 
-	public void activateActor(Actor<?> actor, boolean activate) {
+	public void setActive(Actor<?> actor, boolean activate) {
 		if (activate) {
 			boolean wasActive = actorActivationState.getOrDefault(actor, false);
 			if (!wasActive) {

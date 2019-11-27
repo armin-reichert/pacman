@@ -19,6 +19,7 @@ import static de.amr.games.pacman.model.PacManGame.LevelData.GHOST_TUNNEL_SPEED;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
@@ -53,7 +54,7 @@ public class Ghost extends Actor<GhostState> {
 	public Tile scatterTile;
 	public Supplier<GhostState> fnNextState;
 	public Supplier<Tile> fnChasingTarget;
-	public Supplier<Boolean> fnIsUnlocked;
+	public BooleanSupplier fnIsUnlocked;
 	public int foodCount;
 
 	public Ghost(PacManGame game, Maze maze, String name) {
@@ -167,7 +168,7 @@ public class Ghost extends Actor<GhostState> {
 	}
 
 	private boolean unlocked() {
-		return fnIsUnlocked.get();
+		return fnIsUnlocked.getAsBoolean();
 	}
 
 	private boolean inHouse() {
