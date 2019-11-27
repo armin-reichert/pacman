@@ -32,7 +32,7 @@ public class PacManMovementTestUI extends PlayViewXtended implements ViewControl
 				}
 			}
 		});
-		game.ghosts().forEach(ghost -> game.setActive(ghost, false));
+		game.ghosts().forEach(ghost -> game.activateActor(ghost, false));
 		game.pacMan.init();
 	}
 

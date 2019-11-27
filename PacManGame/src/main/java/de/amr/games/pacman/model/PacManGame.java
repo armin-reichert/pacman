@@ -21,12 +21,12 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
@@ -138,7 +138,7 @@ public class PacManGame {
 	public final Ghost blinky, pinky, inky, clyde;
 
 	/** The currently active actors. Actors can be toggled during the game. */
-	private final Set<Actor<?>> activeActors = new HashSet<>();
+	private final Map<Actor<?>, Boolean> actorActivationState = new HashMap<>();
 
 	/** The game score including highscore management. */
 	public final Score score;
@@ -224,8 +224,6 @@ public class PacManGame {
 			ghost.setSteering(LOCKED, jumpingUpAndDown());
 			ghost.fnIsUnlocked = () -> canLeaveHouse(ghost);
 		});
-
-		activeActors.addAll(Arrays.asList(pacMan, blinky, pinky, inky, clyde));
 	}
 
 	private void setSprites(Ghost ghost, GhostColor color) {
@@ -246,6 +244,7 @@ public class PacManGame {
 		bonus = null;
 		levelCounter.clear();
 		score.loadHiscore();
+		Arrays.asList(pacMan, blinky, pinky, inky, clyde).forEach(actor -> activateActor(actor, true));
 		nextLevel();
 	}
 
@@ -272,23 +271,26 @@ public class PacManGame {
 	}
 
 	public Stream<Actor<?>> activeActors() {
-		return activeActors.stream();
+		return actorActivationState.keySet().stream().filter(this::isActive);
 	}
 
 	public boolean isActive(Actor<?> actor) {
-		return activeActors.contains(actor);
+		return actorActivationState.get(actor);
 	}
 
-	public void setActive(Actor<?> actor, boolean active) {
-		if (active) {
-			boolean added = activeActors.add(actor);
-			if (added) {
-				actor.init(); // only when not already active
+	public void activateActor(Actor<?> actor, boolean activate) {
+		if (activate) {
+			boolean wasActive = actorActivationState.getOrDefault(actor, false);
+			if (!wasActive) {
+				actor.init();
 				actor.show();
 			}
+			actorActivationState.put(actor, true);
+			LOGGER.info(() -> actor.name + " activated");
 		} else {
-			activeActors.remove(actor);
+			actorActivationState.put(actor, false);
 			actor.hide();
+			LOGGER.info(() -> actor.name + " deactivated");
 		}
 	}
 

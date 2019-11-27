@@ -119,14 +119,21 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	// Controller methods
 
 	@Override
+	public void init() {
+		super.init();
+		cheatsController.init();
+		viewController.init();
+	}
+
+	@Override
 	public void update() {
 		handleMuteSound();
 		handleStateMachineLogging();
 		handlePlayingSpeedChange();
 		handleGhostFrightenedBehaviorChange();
 		handleToggleOverflowBug();
-		cheatsController.update();
 		super.update();
+		cheatsController.update();
 		viewController.update();
 	}
 

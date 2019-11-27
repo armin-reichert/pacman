@@ -123,7 +123,7 @@ public class PlayViewXtended extends PlayView {
 	}
 
 	private void toggleGhost(Ghost ghost) {
-		game.setActive(ghost, !game.isActive(ghost));
+		game.activateActor(ghost, !game.isActive(ghost));
 	}
 
 	@Override

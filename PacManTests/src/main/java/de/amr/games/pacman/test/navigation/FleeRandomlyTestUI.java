@@ -22,7 +22,7 @@ public class FleeRandomlyTestUI extends PlayViewXtended implements ViewControlle
 		super.init();
 		game.level = 1;
 		game.maze.removeFood();
-		game.setActive(game.pacMan, false);
+		game.activateActor(game.pacMan, false);
 		game.ghosts().forEach(ghost -> {
 			ghost.init();
 			ghost.setState(FRIGHTENED);

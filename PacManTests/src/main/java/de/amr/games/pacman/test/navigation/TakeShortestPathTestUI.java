@@ -38,8 +38,8 @@ public class TakeShortestPathTestUI extends PlayViewXtended implements ViewContr
 		targetIndex = 0;
 		game.level = 1;
 		game.maze.removeFood();
-		game.setActive(game.pacMan, false);
-		game.ghosts().filter(ghost -> ghost != game.blinky).forEach(ghost -> game.setActive(ghost, false));
+		game.activateActor(game.pacMan, false);
+		game.ghosts().filter(ghost -> ghost != game.blinky).forEach(ghost -> game.activateActor(ghost, false));
 		game.blinky.init();
 		Steering<Ghost> followPathToCurrentTarget = followingFixedPath(() -> targets.get(targetIndex));
 		game.blinky.setState(CHASING);
