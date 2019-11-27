@@ -190,6 +190,7 @@ public class PacManGame {
 		blinky.initialTile = maze.blinkyHome;
 		blinky.initialDir = Top4.W;
 		blinky.scatterTile = maze.blinkyScatter;
+		blinky.revivalTile = maze.pinkyHome;
 		blinky.fnChasingTarget = pacMan::currentTile;
 		setSprites(blinky, GhostColor.RED);
 
@@ -197,6 +198,7 @@ public class PacManGame {
 		pinky.initialTile = maze.pinkyHome;
 		pinky.initialDir = Top4.S;
 		pinky.scatterTile = maze.pinkyScatter;
+		pinky.revivalTile = maze.pinkyHome;
 		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
 		setSprites(pinky, GhostColor.PINK);
 
@@ -204,6 +206,7 @@ public class PacManGame {
 		inky.initialTile = maze.inkyHome;
 		inky.initialDir = Top4.N;
 		inky.scatterTile = maze.inkyScatter;
+		inky.revivalTile = maze.inkyHome;
 		inky.fnChasingTarget = () -> {
 			Tile b = blinky.currentTile(), p = pacMan.tilesAhead(2);
 			return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
@@ -214,6 +217,7 @@ public class PacManGame {
 		clyde.initialTile = maze.clydeHome;
 		clyde.initialDir = Top4.N;
 		clyde.scatterTile = maze.clydeScatter;
+		clyde.revivalTile = maze.clydeHome;
 		clyde.fnChasingTarget = () -> Vector2f.euclideanDist(clyde.tf.getCenter(), pacMan.tf.getCenter()) > 8
 				? pacMan.currentTile()
 				: maze.clydeScatter;

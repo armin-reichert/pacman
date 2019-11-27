@@ -50,6 +50,7 @@ public class Ghost extends Actor<GhostState> {
 	private final Steering<Ghost> defaultSteering;
 	public Tile initialTile;
 	public int initialDir;
+	public Tile revivalTile;
 	public Tile scatterTile;
 	public Supplier<GhostState> fnNextState;
 	public Supplier<Tile> fnChasingTarget;
@@ -219,7 +220,7 @@ public class Ghost extends Actor<GhostState> {
 					.onExit(() -> moveDir = nextDir = Top4.W)
 				
 				.state(ENTERING_HOUSE)
-				  .onEntry(() -> targetTile = maze.pinkyHome)
+				  .onEntry(() -> targetTile = revivalTile)
 					.onTick(() -> {
 						steer();
 						move();
