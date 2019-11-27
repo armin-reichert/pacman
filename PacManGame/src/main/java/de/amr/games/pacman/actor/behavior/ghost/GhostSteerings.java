@@ -64,7 +64,7 @@ public interface GhostSteerings {
 	 * @return behavior where ghost flees from Pac-Man by taking random turns at
 	 *         each intersection
 	 */
-	static Steering<Ghost> fleeingRandomly() {
+	static Steering<Ghost> movingRandomly() {
 		return ghost -> {
 			ghost.targetPath = Collections.emptyList();
 			ghost.targetTile = null;

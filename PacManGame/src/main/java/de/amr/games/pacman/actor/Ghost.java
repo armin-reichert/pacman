@@ -19,7 +19,6 @@ import static de.amr.games.pacman.model.PacManGame.LevelData.GHOST_TUNNEL_SPEED;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
@@ -47,45 +46,25 @@ import de.amr.statemachine.StateMachine;
 public class Ghost extends Actor<GhostState> {
 
 	public final PacManGame game;
-
-	public final Tile initialTile;
-
-	public final int initialDir;
-
-	public final Tile scatterTile;
-
-	/**
-	 * Function providing the next state after the "frightened" state ends or
-	 * leaving the ghost house.
-	 */
+	private StateMachine<GhostState, PacManGameEvent> fsm;
+	private final Map<GhostState, Steering<Ghost>> steeringByState;
+	private final Steering<Ghost> defaultSteering;
+	public Tile initialTile;
+	public int initialDir;
+	public Tile scatterTile;
 	public Supplier<GhostState> fnNextState;
-
-	/** Function providing the chasing target position. */
 	public Supplier<Tile> fnChasingTarget;
-
-	/** Function telling if ghost can leave the ghost house. */
-	public Function<Ghost, Boolean> fnIsUnlocked;
-
+	public Supplier<Boolean> fnIsUnlocked;
 	public int foodCount;
 
-	private StateMachine<GhostState, PacManGameEvent> fsm;
-
-	private Map<GhostState, Steering<Ghost>> steeringByState = new EnumMap<>(GhostState.class);
-
-	private final Steering<Ghost> defaultSteering;
-
-	public Ghost(PacManGame game, Maze maze, String name, GhostColor color, Tile initialTile, int initialDir,
-			Tile scatterTile) {
+	public Ghost(PacManGame game, Maze maze, String name, GhostColor color) {
 		super(name, maze);
 		this.game = game;
-		this.initialTile = initialTile;
-		this.initialDir = initialDir;
-		this.scatterTile = scatterTile;
 		this.nextDir = initialDir;
 		this.moveDir = initialDir;
+		steeringByState = new EnumMap<>(GhostState.class);
 		defaultSteering = headingFor(() -> enteredNewTile ? targetTile : null);
 		fnNextState = this::getState;
-		fnIsUnlocked = game::isUnlocked;
 		buildStateMachine();
 		NESW.dirs().forEach(dir -> {
 			sprites.set("color-" + dir, game.theme.spr_ghostColored(color, dir));
@@ -194,13 +173,14 @@ public class Ghost extends Actor<GhostState> {
 	}
 
 	private void reverseDirection() {
+		enteredNewTile = true;
 		int oppositeDir = NESW.inv(moveDir);
 		IntStream.of(oppositeDir, NESW.left(oppositeDir), NESW.right(oppositeDir)).filter(this::canCrossBorderTo)
 				.findFirst().ifPresent(this::setNextDir);
 	}
 
 	private boolean unlocked() {
-		return fnIsUnlocked.apply(this);
+		return fnIsUnlocked.get();
 	}
 
 	private boolean inHouse() {
@@ -243,7 +223,7 @@ public class Ghost extends Actor<GhostState> {
 						if (inHouse()) {
 							targetTile = maze.blinkyHome;
 						}
-						enteredNewTile = true; //TODO this avoids getting stuck in house
+						enteredNewTile = true; //TODO this workaround avoids getting stuck in house
 						steer();
 						move();
 						sprites.select("color-" + moveDir);

@@ -2,11 +2,10 @@ package de.amr.games.pacman.model;
 
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
-import static de.amr.easy.game.math.Vector2f.euclideanDist;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
-import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.fleeingRandomly;
 import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.jumpingUpAndDown;
+import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.movingRandomly;
 import static de.amr.games.pacman.model.BonusSymbol.APPLE;
 import static de.amr.games.pacman.model.BonusSymbol.BELL;
 import static de.amr.games.pacman.model.BonusSymbol.CHERRIES;
@@ -29,6 +28,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.Actor;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
@@ -189,32 +189,44 @@ public class PacManGame {
 		maze = new Maze();
 		foodTotal = (int) maze.tiles().filter(maze::containsFood).count();
 		score = new Score(this);
-
 		pacMan = new PacMan(this);
-		blinky = new Ghost(this, maze, "Blinky", GhostColor.RED, maze.blinkyHome, Top4.W, maze.blinkyScatter);
-		pinky = new Ghost(this, maze, "Pinky", GhostColor.PINK, maze.pinkyHome, Top4.S, maze.pinkyScatter);
-		inky = new Ghost(this, maze, "Inky", GhostColor.CYAN, maze.inkyHome, Top4.N, maze.inkyScatter);
-		clyde = new Ghost(this, maze, "Clyde", GhostColor.ORANGE, maze.clydeHome, Top4.N, maze.clydeScatter);
 
-		activeActors.addAll(Arrays.asList(pacMan, blinky, pinky, inky, clyde));
-
-		ghosts().forEach(ghost -> {
-			ghost.setSteering(FRIGHTENED, fleeingRandomly());
-			ghost.setSteering(LOCKED, jumpingUpAndDown());
-			ghost.fnIsUnlocked = g -> isUnlocked(ghost);
-		});
-
+		blinky = new Ghost(this, maze, "Blinky", GhostColor.RED);
+		blinky.initialTile = maze.blinkyHome;
+		blinky.initialDir = Top4.W;
+		blinky.scatterTile = maze.blinkyScatter;
 		blinky.fnChasingTarget = pacMan::currentTile;
 
+		pinky = new Ghost(this, maze, "Pinky", GhostColor.PINK);
+		pinky.initialTile = maze.pinkyHome;
+		pinky.initialDir = Top4.S;
+		pinky.scatterTile = maze.pinkyScatter;
 		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
 
+		inky = new Ghost(this, maze, "Inky", GhostColor.CYAN);
+		inky.initialTile = maze.inkyHome;
+		inky.initialDir = Top4.N;
+		inky.scatterTile = maze.inkyScatter;
 		inky.fnChasingTarget = () -> {
 			Tile b = blinky.currentTile(), p = pacMan.tilesAhead(2);
 			return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		};
 
-		clyde.fnChasingTarget = () -> euclideanDist(clyde.tf.getCenter(), pacMan.tf.getCenter()) > 8 ? pacMan.currentTile()
+		clyde = new Ghost(this, maze, "Clyde", GhostColor.ORANGE);
+		clyde.initialTile = maze.clydeHome;
+		clyde.initialDir = Top4.N;
+		clyde.scatterTile = maze.clydeScatter;
+		clyde.fnChasingTarget = () -> Vector2f.euclideanDist(clyde.tf.getCenter(), pacMan.tf.getCenter()) > 8
+				? pacMan.currentTile()
 				: maze.clydeScatter;
+
+		ghosts().forEach(ghost -> {
+			ghost.setSteering(FRIGHTENED, movingRandomly());
+			ghost.setSteering(LOCKED, jumpingUpAndDown());
+			ghost.fnIsUnlocked = () -> canLeaveHouse(ghost);
+		});
+
+		activeActors.addAll(Arrays.asList(pacMan, blinky, pinky, inky, clyde));
 	}
 
 	public void init() {
@@ -392,7 +404,7 @@ public class PacManGame {
 	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
 	 *      Dossier</a>
 	 */
-	public boolean isUnlocked(Ghost ghost) {
+	public boolean canLeaveHouse(Ghost ghost) {
 		if (ghost == blinky) {
 			return true;
 		}
@@ -408,7 +420,7 @@ public class PacManGame {
 		}
 		int timeout = level < 5 ? sec(4) : sec(3);
 		if (pacMan.ticksSinceLastMeal > timeout) {
-			LOGGER.info(String.format("Releasing ghost %s (Pac-Man eat timer expired)", ghost.name));
+			LOGGER.info(() -> String.format("Releasing ghost %s (Pac-Man eat timer expired)", ghost.name));
 			return true;
 		}
 		return false;
@@ -430,7 +442,7 @@ public class PacManGame {
 			.findFirst()
 			.ifPresent(preferredGhost -> {
 				preferredGhost.foodCount += 1;
-				LOGGER.fine(()->String.format("Food Counter[%s]=%d", preferredGhost.name, preferredGhost.foodCount));
+				LOGGER.fine(() -> String.format("Food Counter[%s]=%d", preferredGhost.name, preferredGhost.foodCount));
 		});
 		/*@formatter:on*/
 	}
