@@ -355,7 +355,7 @@ beginStateMachine(GhostState.class, PacManGameEvent.class)
 			.onExit(this::chasingSoundOff)
 
 		.state(FRIGHTENED)
-			.onTick(() -> walkAndAppearAs(game.pacMan.isLosingPower()	? "flashing" : "frightened"))
+			.onTick(() -> walkAndAppearAs(game.pacMan.isLosingPower() ? "flashing" : "frightened"))
 
 		.state(DYING)
 			.timeoutAfter(Ghost::getDyingTime)
