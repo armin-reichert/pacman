@@ -176,9 +176,9 @@ public class Ghost extends Actor<GhostState> {
 
 	private boolean leftHouse() {
 		Tile currentTile = currentTile();
-		return !maze.partOfGhostHouse(currentTile);
+		return !maze.partOfGhostHouse(currentTile) && tf.getY() - currentTile.row * TS == 0;
 	}
-	
+
 	// Define state machine
 
 	public static int getDyingTime() {
