@@ -9,7 +9,6 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.headingFor;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
 import static de.amr.games.pacman.model.PacManGame.sec;
@@ -26,6 +25,7 @@ import java.util.stream.IntStream;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
+import de.amr.games.pacman.actor.behavior.ghost.GhostSteerings;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -60,7 +60,7 @@ public class Ghost extends Actor<GhostState> {
 	public Ghost(PacManGame game, Maze maze, String name) {
 		super(name, game, maze);
 		steeringByState = new EnumMap<>(GhostState.class);
-		defaultSteering = headingFor(() -> enteredNewTile ? targetTile : null);
+		defaultSteering = GhostSteerings.headingForTargetTile();
 		fnNextState = this::getState;
 		buildStateMachine();
 	}

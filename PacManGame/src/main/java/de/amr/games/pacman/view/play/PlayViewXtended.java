@@ -24,7 +24,7 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManState;
-import de.amr.games.pacman.actor.behavior.HeadingForTile;
+import de.amr.games.pacman.actor.behavior.HeadingForTargetTile;
 import de.amr.games.pacman.controller.GhostAttackController;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
@@ -116,8 +116,8 @@ public class PlayViewXtended extends PlayView {
 	private void updateGhostRouteDisplay() {
 		// TODO this is ugly
 		game.ghosts().forEach(ghost -> {
-			if (ghost.getSteering() instanceof HeadingForTile<?>) {
-				HeadingForTile<?> steering = (HeadingForTile<?>) ghost.getSteering();
+			if (ghost.getSteering() instanceof HeadingForTargetTile<?>) {
+				HeadingForTargetTile<?> steering = (HeadingForTargetTile<?>) ghost.getSteering();
 				steering.fnComputePath = () -> showRoutes;
 			}
 		});

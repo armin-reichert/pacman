@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.MazeMover;
-import de.amr.games.pacman.actor.behavior.HeadingForTile;
+import de.amr.games.pacman.actor.behavior.HeadingForTargetTile;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.behavior.TakingShortestPath;
 import de.amr.games.pacman.model.Tile;
@@ -39,11 +39,10 @@ public interface GhostSteerings {
 	 * Heads for a target tile (may be unreachable) by taking the "best" direction
 	 * at every intersection.
 	 * 
-	 * @param fnTarget function supplying the target tile
 	 * @return behavior where ghost heads for the target tile
 	 */
-	static Steering<Ghost> headingFor(Supplier<Tile> fnTarget) {
-		return new HeadingForTile<>(fnTarget);
+	static Steering<Ghost> headingForTargetTile() {
+		return new HeadingForTargetTile<>();
 	}
 
 	/**
