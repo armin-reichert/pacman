@@ -327,66 +327,39 @@ beginStateMachine(GhostState.class, PacManGameEvent.class)
 	.states()
 
 		.state(LOCKED)
-			.onTick(() -> {
-				steer();
-				move();
-				sprites.select("color-" + moveDir);
-			})
+			.onTick(() -> walkAndAppearAs("color-" + moveDir))
 			.onExit(() -> {
-				game.pacMan.ticksSinceLastMeal = 0;
 				enteredNewTile = true;
+				game.pacMan.ticksSinceLastMeal = 0;
 			})
 
 		.state(LEAVING_HOUSE)
-			.onTick(() -> {
-				if (inHouse()) {
-					targetTile = maze.blinkyHome;
-				}
-				steer();
-				move();
-				sprites.select("color-" + moveDir);
-			})
+			.onEntry(() -> targetTile = maze.blinkyHome)
+			.onTick(() -> walkAndAppearAs("color-" + moveDir))
 			.onExit(() -> moveDir = nextDir = Top4.W)
 
 		.state(ENTERING_HOUSE)
-		  .onEntry(() -> targetTile = maze.pinkyHome)
-			.onTick(() -> {
-				steer();
-				move();
-				sprites.select("eyes-" + moveDir);
-			})
+			.onEntry(() -> targetTile = revivalTile)
+			.onTick(() -> walkAndAppearAs("eyes-" + moveDir))
 
 		.state(SCATTERING)
 			.onEntry(() -> targetTile = scatterTile)
-			.onTick(() -> {
-				steer();
-				move();
-				sprites.select("color-" + moveDir);
-			})
+			.onTick(() -> walkAndAppearAs("color-" + moveDir))
 
 		.state(CHASING)
-			.onEntry(this::chasingSoundOn)
+			.onEntry(() -> chasingSoundOn())
 			.onTick(() -> {
 				targetTile = fnChasingTarget.get();
-				steer();
-				move();
-				sprites.select("color-" + moveDir);
+				walkAndAppearAs("color-" + moveDir);
 			})
 			.onExit(this::chasingSoundOff)
 
 		.state(FRIGHTENED)
-			.onEntry(this::reverseDirection)
-			.onTick(() -> {
-				steer();
-				move();
-				sprites.select(game.pacMan.isLosingPower()	? "flashing" : "frightened");
-			})
+			.onTick(() -> walkAndAppearAs(game.pacMan.isLosingPower()	? "flashing" : "frightened"))
 
 		.state(DYING)
 			.timeoutAfter(Ghost::getDyingTime)
-			.onEntry(() -> {
-				sprites.select("value-" + game.numGhostsKilledByCurrentEnergizer()); 
-			})
+			.onEntry(() -> sprites.select("value-" + game.numGhostsKilledByCurrentEnergizer()))
 			.onExit(game::addGhostKilled)
 
 		.state(DEAD)
@@ -394,50 +367,61 @@ beginStateMachine(GhostState.class, PacManGameEvent.class)
 				targetTile = maze.blinkyHome;
 				deadSoundOn();
 			})
-			.onTick(() -> {
-				steer();
-				move();
-				sprites.select("eyes-" + moveDir);
-			})
+			.onTick(() -> walkAndAppearAs("eyes-" + moveDir))
 			.onExit(this::deadSoundOff)
 
 	.transitions()
 
-		.when(LOCKED).then(LEAVING_HOUSE).condition(this::unlocked)
+		.when(LOCKED).then(LEAVING_HOUSE)
+			.condition(this::unlocked)
 
 		.when(LEAVING_HOUSE).then(FRIGHTENED)
-			.condition(() -> !inHouse() && game.pacMan.hasPower())
+			.condition(() -> leftHouse() && game.pacMan.hasPower())
 
 		.when(LEAVING_HOUSE).then(SCATTERING)
-			.condition(() -> !inHouse() && getNextState() == SCATTERING)
+			.condition(() -> leftHouse() && nextState() == SCATTERING)
 
 		.when(LEAVING_HOUSE).then(CHASING)
-			.condition(() -> !inHouse() && getNextState() == CHASING)
+			.condition(() -> leftHouse() && nextState() == CHASING)
 
 		.when(ENTERING_HOUSE).then(LOCKED)
 			.condition(() -> currentTile() == targetTile)
 
-		.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
+		.when(CHASING).then(FRIGHTENED)
+			.on(PacManGainsPowerEvent.class)
+			.act(this::turnBack)
 
-		.when(CHASING).then(DYING).on(GhostKilledEvent.class)
+		.when(CHASING).then(DYING)
+			.on(GhostKilledEvent.class)
 
-		.when(CHASING).then(SCATTERING).on(StartScatteringEvent.class).act(this::reverseDirection)
+		.when(CHASING).then(SCATTERING)
+			.on(StartScatteringEvent.class)
+			.act(this::turnBack)
 
-		.when(SCATTERING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
+		.when(SCATTERING).then(FRIGHTENED)
+			.on(PacManGainsPowerEvent.class)
+			.act(this::turnBack)
 
-		.when(SCATTERING).then(DYING).on(GhostKilledEvent.class)
+		.when(SCATTERING).then(DYING)
+			.on(GhostKilledEvent.class)
 
-		.when(SCATTERING).then(CHASING).on(StartChasingEvent.class).act(this::reverseDirection)
+		.when(SCATTERING).then(CHASING)
+			.on(StartChasingEvent.class)
+			.act(this::turnBack)
 
-		.when(FRIGHTENED).then(CHASING).on(PacManLostPowerEvent.class)
-			.condition(() -> getNextState() == CHASING)
+		.when(FRIGHTENED).then(CHASING)
+			.on(PacManLostPowerEvent.class)
+			.condition(() -> nextState() == CHASING)
 
-		.when(FRIGHTENED).then(SCATTERING).on(PacManLostPowerEvent.class)
-			.condition(() -> getNextState() == SCATTERING)
+		.when(FRIGHTENED).then(SCATTERING)
+			.on(PacManLostPowerEvent.class)
+			.condition(() -> nextState() == SCATTERING)
 
-		.when(FRIGHTENED).then(DYING).on(GhostKilledEvent.class)
+		.when(FRIGHTENED).then(DYING)
+			.on(GhostKilledEvent.class)
 
-		.when(DYING).then(DEAD).onTimeout()
+		.when(DYING).then(DEAD)
+			.onTimeout()
 
 		.when(DEAD).then(ENTERING_HOUSE)
 			.condition(() -> currentTile().equals(maze.blinkyHome))
