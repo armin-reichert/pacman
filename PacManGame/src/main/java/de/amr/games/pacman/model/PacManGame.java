@@ -291,7 +291,7 @@ public class PacManGame {
 	}
 
 	public boolean isActive(Actor<?> actor) {
-		return actorActivationState.get(actor);
+		return actorActivationState.getOrDefault(actor, false);
 	}
 
 	public void setActive(Actor<?> actor, boolean activate) {
