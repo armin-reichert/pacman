@@ -201,41 +201,27 @@ public class Ghost extends Actor<GhostState> {
 			.states()
 
 				.state(LOCKED)
-					.onTick(() -> {
-						walkAndAppearAs("color-" + moveDir);
-					})
+					.onTick(() -> walkAndAppearAs("color-" + moveDir))
 					.onExit(() -> {
 						enteredNewTile = true;
 						game.pacMan.ticksSinceLastMeal = 0;
 					})
 					
 				.state(LEAVING_HOUSE)
-					.onTick(() -> {
-						if (!leftHouse()) {
-							targetTile = maze.blinkyHome;
-						}
-						walkAndAppearAs("color-" + moveDir);
-					})
+					.onEntry(() -> targetTile = maze.blinkyHome)
+					.onTick(() -> walkAndAppearAs("color-" + moveDir))
 					.onExit(() -> moveDir = nextDir = Top4.W)
 				
 				.state(ENTERING_HOUSE)
-				  .onEntry(() -> targetTile = revivalTile)
-					.onTick(() -> {
-						walkAndAppearAs("eyes-" + moveDir);
-					})
+					.onEntry(() -> targetTile = revivalTile)
+					.onTick(() -> walkAndAppearAs("eyes-" + moveDir))
 				
 				.state(SCATTERING)
-					.onEntry(() -> {
-						targetTile = scatterTile;
-					})
-					.onTick(() -> {
-						walkAndAppearAs("color-" + moveDir);
-					})
+					.onEntry(() -> targetTile = scatterTile)
+					.onTick(() -> walkAndAppearAs("color-" + moveDir))
 			
 				.state(CHASING)
-					.onEntry(() -> {
-						chasingSoundOn();
-					})
+					.onEntry(() -> chasingSoundOn())
 					.onTick(() -> {
 						targetTile = fnChasingTarget.get();
 						walkAndAppearAs("color-" + moveDir);
@@ -243,15 +229,11 @@ public class Ghost extends Actor<GhostState> {
 					.onExit(this::chasingSoundOff)
 				
 				.state(FRIGHTENED)
-					.onTick(() -> {
-						walkAndAppearAs(game.pacMan.isLosingPower()	? "flashing" : "frightened");
-					})
+					.onTick(() -> walkAndAppearAs(game.pacMan.isLosingPower()	? "flashing" : "frightened"))
 				
 				.state(DYING)
 					.timeoutAfter(Ghost::getDyingTime)
-					.onEntry(() -> {
-						sprites.select("value-" + game.numGhostsKilledByCurrentEnergizer()); 
-					})
+					.onEntry(() -> sprites.select("value-" + game.numGhostsKilledByCurrentEnergizer()))
 					.onExit(game::addGhostKilled)
 				
 				.state(DEAD)
@@ -259,9 +241,7 @@ public class Ghost extends Actor<GhostState> {
 						targetTile = maze.blinkyHome;
 						deadSoundOn();
 					})
-					.onTick(() -> {
-						walkAndAppearAs("eyes-" + moveDir);
-					})
+					.onTick(() -> walkAndAppearAs("eyes-" + moveDir))
 					.onExit(this::deadSoundOff)
 				
 			.transitions()
