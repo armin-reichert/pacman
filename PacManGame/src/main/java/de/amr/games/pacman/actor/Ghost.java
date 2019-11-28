@@ -229,7 +229,7 @@ public class Ghost extends Actor<GhostState> {
 					.onExit(this::chasingSoundOff)
 				
 				.state(FRIGHTENED)
-					.onTick(() -> walkAndAppearAs(game.pacMan.isLosingPower()	? "flashing" : "frightened"))
+					.onTick(() -> walkAndAppearAs(game.pacMan.isLosingPower() ? "flashing" : "frightened"))
 				
 				.state(DYING)
 					.timeoutAfter(Ghost::getDyingTime)
