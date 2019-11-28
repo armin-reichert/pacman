@@ -173,8 +173,8 @@ public class PlayViewXtended extends PlayView {
 
 	private String ghostStateText(Ghost ghost) {
 		String displayName = ghost.getState() == GhostState.DEAD ? ghost.name : "";
-		String nextState = ghost.getNextState() != ghost.getState()
-				? String.format("[->%s]", ghost.getNextState())
+		String nextState = ghost.nextState() != ghost.getState()
+				? String.format("[->%s]", ghost.nextState())
 				: "";
 		int duration = ghost.state().getDuration(), remaining = ghost.state().getTicksRemaining();
 
