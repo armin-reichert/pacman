@@ -21,6 +21,8 @@ public class FollowTargetTilesTestUI extends PlayViewXtended implements ViewCont
 		showRoutes = true;
 		showStates = false;
 		showScores = false;
+		targets = Arrays.asList(game.maze.topLeft, game.maze.blinkyHome, game.maze.topRight,
+				game.maze.bottomRight, game.maze.pacManHome, game.maze.bottomLeft);
 	}
 
 	@Override
@@ -31,14 +33,11 @@ public class FollowTargetTilesTestUI extends PlayViewXtended implements ViewCont
 	@Override
 	public void init() {
 		super.init();
-		targets = Arrays.asList(game.maze.topLeft, game.maze.blinkyHome, game.maze.topRight,
-				game.maze.bottomRight, game.maze.pacManHome, game.maze.bottomLeft);
 		current = 0;
-
 		game.level = 1;
 		game.maze.removeFood();
-		game.setActive(game.pacMan, false);
-		game.ghosts().filter(ghost -> ghost != game.blinky).forEach(ghost -> game.setActive(ghost, false));
+		game.theme.snd_ghost_chase().volume(0);
+		game.setActive(game.blinky, true);
 		game.blinky.init();
 		game.blinky.fnChasingTarget = () -> targets.get(current);
 		game.blinky.placeAtTile(targets.get(0), 0, 0);

@@ -25,10 +25,10 @@ public class ScatteringTestUI extends PlayViewXtended implements ViewController 
 	@Override
 	public void init() {
 		super.init();
-		game.init();
+		game.level = 1;
 		game.maze.removeFood();
-		game.pacMan.hide();
-		game.activeGhosts().forEach(ghost -> {
+		game.ghosts().forEach(ghost -> {
+			game.setActive(ghost, true);
 			ghost.init();
 			ghost.fnNextState = () -> GhostState.SCATTERING;
 			ghost.fnIsUnlocked = () -> !locked;

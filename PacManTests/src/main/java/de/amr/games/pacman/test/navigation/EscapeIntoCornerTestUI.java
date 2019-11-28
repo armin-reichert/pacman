@@ -22,8 +22,9 @@ public class EscapeIntoCornerTestUI extends PlayViewXtended implements ViewContr
 		super.init();
 		game.level = 1;
 		game.maze.removeFood();
+		game.setActive(game.pacMan, true);
 		game.pacMan.init();
-		game.ghosts().filter(ghost -> ghost != game.blinky).forEach(ghost -> game.setActive(ghost, false));
+		game.setActive(game.blinky, true);
 		game.blinky.setSteering(GhostState.FRIGHTENED, fleeingToSafeCorner(game.pacMan));
 		game.blinky.init();
 		game.blinky.setState(GhostState.FRIGHTENED);

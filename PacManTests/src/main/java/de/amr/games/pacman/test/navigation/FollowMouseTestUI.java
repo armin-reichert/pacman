@@ -3,7 +3,6 @@ package de.amr.games.pacman.test.navigation;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.model.PacManGame.TS;
 
-import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.input.Mouse;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
@@ -31,15 +30,15 @@ public class FollowMouseTestUI extends PlayViewXtended implements ViewController
 	@Override
 	public void init() {
 		super.init();
+		game.theme.snd_ghost_chase().volume(0);
 		game.level = 1;
 		game.maze.removeFood();
 		game.setActive(game.pacMan, false);
-		game.ghosts().forEach(ghost -> game.setActive(ghost, ghost == game.blinky));
+		game.setActive(game.blinky, true);
 		game.blinky.init();
 		game.blinky.fnChasingTarget = () -> mouseTile;
 		game.blinky.setState(CHASING);
 		mouseTile = game.maze.tileAt(Mouse.getX() / TS, Mouse.getY() / TS);
-		Assets.muteAll(true);
 	}
 
 	@Override

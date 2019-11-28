@@ -4,6 +4,7 @@ import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.followingFixedPath;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
@@ -20,37 +21,38 @@ import de.amr.games.pacman.view.play.PlayViewXtended;
 public class TakeShortestPathTestUI extends PlayViewXtended implements ViewController {
 
 	private List<Tile> targets;
-	private int targetIndex;
+	private int currentTarget;
 
 	public TakeShortestPathTestUI(PacManGame game) {
 		super(game);
 		showRoutes = true;
 		showStates = true;
 		showScores = false;
+		targets = Arrays.asList(game.maze.bottomRight, game.maze.bottomLeft, game.maze.tunnelLeftExit,
+				game.maze.topLeft, game.maze.blinkyHome, game.maze.topRight, game.maze.tunnelRightExit,
+				game.maze.pacManHome);
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		targets = Arrays.asList(game.maze.bottomRight, game.maze.bottomLeft, game.maze.tunnelLeftExit,
-				game.maze.topLeft, game.maze.blinkyHome, game.maze.topRight, game.maze.tunnelRightExit,
-				game.maze.pacManHome);
-		targetIndex = 0;
+		showInfoText("Press F FRIGHTENED vs CHASING", Color.YELLOW);
+		currentTarget = 0;
 		game.level = 1;
+		game.theme.snd_ghost_chase().volume(0);
 		game.maze.removeFood();
-		game.setActive(game.pacMan, false);
-		game.ghosts().filter(ghost -> ghost != game.blinky).forEach(ghost -> game.setActive(ghost, false));
+		game.setActive(game.blinky, true);
 		game.blinky.init();
-		Steering<Ghost> followPathToCurrentTarget = followingFixedPath(() -> targets.get(targetIndex));
 		game.blinky.setState(CHASING);
+		Steering<Ghost> followPathToCurrentTarget = followingFixedPath(() -> targets.get(currentTarget));
 		game.blinky.setSteering(CHASING, followPathToCurrentTarget);
 		game.blinky.setSteering(FRIGHTENED, followPathToCurrentTarget);
 	}
 
 	private void nextTarget() {
-		targetIndex += 1;
-		if (targetIndex == targets.size()) {
-			targetIndex = 0;
+		currentTarget += 1;
+		if (currentTarget == targets.size()) {
+			currentTarget = 0;
 			game.level += 1;
 		}
 	}
@@ -61,7 +63,7 @@ public class TakeShortestPathTestUI extends PlayViewXtended implements ViewContr
 			game.blinky.setState(game.blinky.getState() == CHASING ? FRIGHTENED : CHASING);
 		}
 		game.blinky.update();
-		if (game.blinky.currentTile().equals(targets.get(targetIndex))) {
+		if (game.blinky.currentTile().equals(targets.get(currentTarget))) {
 			nextTarget();
 		}
 		super.update();
