@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
-import java.util.stream.IntStream;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
@@ -161,18 +160,17 @@ public class Ghost extends Actor<GhostState> {
 	}
 
 	private void reverseDirection() {
+		nextDir = moveDir = NESW.inv(moveDir);
 		enteredNewTile = true;
-		int oppositeDir = NESW.inv(moveDir);
-		IntStream.of(oppositeDir, NESW.left(oppositeDir), NESW.right(oppositeDir)).filter(this::canCrossBorderTo)
-				.findFirst().ifPresent(this::setNextDir);
 	}
 
 	private boolean unlocked() {
 		return fnIsUnlocked.getAsBoolean();
 	}
 
-	private boolean inHouse() {
-		return maze.inGhostHouse(currentTile()) || maze.isDoor(currentTile());
+	private boolean leftHouse() {
+		Tile currentTile = currentTile();
+		return !maze.partOfGhostHouse(currentTile);
 	}
 
 	// Define state machine
@@ -203,15 +201,15 @@ public class Ghost extends Actor<GhostState> {
 						sprites.select("color-" + moveDir);
 					})
 					.onExit(() -> {
+						enteredNewTile = true;
 						game.pacMan.ticksSinceLastMeal = 0;
 					})
 					
 				.state(LEAVING_HOUSE)
 					.onTick(() -> {
-						if (inHouse()) {
+						if (!leftHouse()) {
 							targetTile = maze.blinkyHome;
 						}
-						enteredNewTile = true; //TODO this workaround avoids getting stuck in house
 						steer();
 						move();
 						sprites.select("color-" + moveDir);
@@ -227,7 +225,9 @@ public class Ghost extends Actor<GhostState> {
 					})
 				
 				.state(SCATTERING)
-					.onEntry(() -> targetTile = scatterTile)
+					.onEntry(() -> {
+						targetTile = scatterTile;
+					})
 					.onTick(() -> {
 						steer();
 						move();
@@ -235,7 +235,9 @@ public class Ghost extends Actor<GhostState> {
 					})
 			
 				.state(CHASING)
-					.onEntry(this::chasingSoundOn)
+					.onEntry(() -> {
+						chasingSoundOn();
+					})
 					.onTick(() -> {
 						targetTile = fnChasingTarget.get();
 						steer();
@@ -245,7 +247,6 @@ public class Ghost extends Actor<GhostState> {
 					.onExit(this::chasingSoundOff)
 				
 				.state(FRIGHTENED)
-					.onEntry(this::reverseDirection)
 					.onTick(() -> {
 						steer();
 						move();
@@ -276,24 +277,24 @@ public class Ghost extends Actor<GhostState> {
 				.when(LOCKED).then(LEAVING_HOUSE).condition(this::unlocked)
 			
 				.when(LEAVING_HOUSE).then(FRIGHTENED)
-					.condition(() -> !inHouse() && game.pacMan.hasPower())
+					.condition(() -> leftHouse() && game.pacMan.hasPower())
 
 				.when(LEAVING_HOUSE).then(SCATTERING)
-					.condition(() -> !inHouse() && getNextState() == SCATTERING)
+					.condition(() -> leftHouse() && getNextState() == SCATTERING)
 				
 				.when(LEAVING_HOUSE).then(CHASING)
-					.condition(() -> !inHouse() && getNextState() == CHASING)
+					.condition(() -> leftHouse() && getNextState() == CHASING)
 					
 				.when(ENTERING_HOUSE).then(LOCKED)
 					.condition(() -> currentTile() == targetTile)
 				
-				.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
+				.when(CHASING).then(FRIGHTENED).on(PacManGainsPowerEvent.class).act(this::reverseDirection)
 				
 				.when(CHASING).then(DYING).on(GhostKilledEvent.class)
 				
 				.when(CHASING).then(SCATTERING).on(StartScatteringEvent.class).act(this::reverseDirection)
 
-				.when(SCATTERING).then(FRIGHTENED).on(PacManGainsPowerEvent.class)
+				.when(SCATTERING).then(FRIGHTENED).on(PacManGainsPowerEvent.class).act(this::reverseDirection)
 				
 				.when(SCATTERING).then(DYING).on(GhostKilledEvent.class)
 				
