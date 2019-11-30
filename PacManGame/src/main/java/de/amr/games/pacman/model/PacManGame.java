@@ -6,6 +6,7 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.jumpingUpAndDown;
 import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.movingRandomly;
+import static de.amr.games.pacman.actor.behavior.pacman.PacManSteerings.steeredByKeys;
 import static de.amr.games.pacman.model.BonusSymbol.APPLE;
 import static de.amr.games.pacman.model.BonusSymbol.BELL;
 import static de.amr.games.pacman.model.BonusSymbol.CHERRIES;
@@ -19,6 +20,7 @@ import static de.amr.games.pacman.model.PacManGame.LevelData.BONUS_SYMBOL;
 import static de.amr.games.pacman.model.PacManGame.LevelData.BONUS_VALUE;
 import static java.util.Objects.requireNonNull;
 
+import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -130,7 +132,7 @@ public class PacManGame {
 	public static float relSpeed(float fraction) {
 		return fraction * PIXELS_PER_TICK;
 	}
-	
+
 	public float speed(LevelData column) {
 		return relSpeed(column.$float(level));
 	}
@@ -143,9 +145,9 @@ public class PacManGame {
 	public static int sec(float fraction) {
 		return (int) (60 * fraction);
 	}
-	
+
 	public int sec(LevelData column) {
-		return sec(column.$float(level));
+		return sec(column.$int(level));
 	}
 
 	public final Maze maze;
@@ -200,7 +202,10 @@ public class PacManGame {
 		maze = new Maze();
 		foodTotal = (int) maze.tiles().filter(maze::containsFood).count();
 		score = new Score(this);
+
 		pacMan = new PacMan(this);
+		pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
+		setSprites(pacMan);
 
 		blinky = new Ghost(this, maze, "Blinky");
 		blinky.initialTile = maze.blinkyHome;
@@ -244,6 +249,13 @@ public class PacManGame {
 			ghost.setSteering(LOCKED, jumpingUpAndDown());
 			ghost.fnIsUnlocked = () -> canLeaveHouse(ghost);
 		});
+	}
+
+	private void setSprites(PacMan pacMan) {
+		NESW.dirs().forEach(dir -> pacMan.sprites.set("walking-" + dir, theme.spr_pacManWalking(dir)));
+		pacMan.sprites.set("dying", theme.spr_pacManDying());
+		pacMan.sprites.set("full", theme.spr_pacManFull());
+		pacMan.sprites.select("full");
 	}
 
 	private void setSprites(Ghost ghost, GhostColor color) {

@@ -6,15 +6,12 @@ import static de.amr.games.pacman.actor.PacManState.DEAD;
 import static de.amr.games.pacman.actor.PacManState.DYING;
 import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
-import static de.amr.games.pacman.actor.behavior.pacman.PacManSteerings.steeredByKeys;
-import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
 import static de.amr.games.pacman.model.PacManGame.sec;
 import static de.amr.games.pacman.model.PacManGame.LevelData.PACMAN_POWER_SECONDS;
 import static de.amr.games.pacman.model.PacManGame.LevelData.PACMAN_POWER_SPEED;
 import static de.amr.games.pacman.model.PacManGame.LevelData.PACMAN_SPEED;
 
-import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -42,18 +39,14 @@ import de.amr.statemachine.StateMachine;
  */
 public class PacMan extends Actor<PacManState> {
 
+	private final StateMachine<PacManState, PacManGameEvent> fsm;
 	public int ticksSinceLastMeal;
 	public Steering<PacMan> steering;
-	private StateMachine<PacManState, PacManGameEvent> fsm;
 
 	public PacMan(PacManGame game) {
 		super("Pac-Man", game, game.maze);
-		NESW.dirs().forEach(dir -> sprites.set("walking-" + dir, game.theme.spr_pacManWalking(dir)));
-		sprites.set("dying", game.theme.spr_pacManDying());
-		sprites.set("full", game.theme.spr_pacManFull());
-		sprites.select("full");
-		steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
-		buildStateMachine();
+		fsm = buildStateMachine();
+		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
 
 	@Override
@@ -117,8 +110,8 @@ public class PacMan extends Actor<PacManState> {
 		placeAtTile(maze.pacManHome, TS / 2, 0);
 	}
 
-	private void buildStateMachine() {
-		fsm = StateMachine.
+	private StateMachine<PacManState, PacManGameEvent> buildStateMachine() {
+		return StateMachine.
 		/* @formatter:off */
 		beginStateMachine(PacManState.class, PacManGameEvent.class)
 				
@@ -168,7 +161,6 @@ public class PacMan extends Actor<PacManState> {
 
 		.endStateMachine();
 		/* @formatter:on */
-		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
 
 	private class HungryState extends State<PacManState, PacManGameEvent> {
@@ -184,13 +176,16 @@ public class PacMan extends Actor<PacManState> {
 		public void onTick() {
 			if (startsLosingPower()) {
 				publishEvent(new PacManGettingWeakerEvent());
-			} else if (getTicksRemaining() == 1) {
+			}
+			else if (getTicksRemaining() == 1) {
 				setTimerFunction(() -> 0);
 				game.theme.snd_waza().stop();
 				publishEvent(new PacManLostPowerEvent());
-			} else if (mustDigest()) {
+			}
+			else if (mustDigest()) {
 				digest();
-			} else {
+			}
+			else {
 				steer();
 				move();
 				findSomethingInteresting().ifPresent(PacMan.this::publishEvent);
@@ -243,7 +238,8 @@ public class PacMan extends Actor<PacManState> {
 				boolean energizer = maze.containsEnergizer(pacManTile);
 				digestionTicks = game.getDigestionTicks(energizer);
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			} else {
+			}
+			else {
 				ticksSinceLastMeal += 1;
 			}
 
