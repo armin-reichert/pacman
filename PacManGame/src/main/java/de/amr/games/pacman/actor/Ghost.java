@@ -44,7 +44,7 @@ import de.amr.statemachine.StateMachine;
  */
 public class Ghost extends Actor<GhostState> {
 
-	private StateMachine<GhostState, PacManGameEvent> fsm;
+	private final StateMachine<GhostState, PacManGameEvent> fsm;
 	private final Map<GhostState, Steering<Ghost>> steeringByState;
 	private final Steering<Ghost> defaultSteering;
 	public Tile initialTile;
@@ -61,14 +61,13 @@ public class Ghost extends Actor<GhostState> {
 		steeringByState = new EnumMap<>(GhostState.class);
 		defaultSteering = GhostSteerings.headingForTargetTile();
 		fnNextState = this::getState;
-		buildStateMachine();
+		fsm = buildStateMachine();
+		fsm.setIgnoreUnknownEvents(true);
+		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
 
 	@Override
 	protected StateMachine<GhostState, PacManGameEvent> fsm() {
-		if (fsm == null) {
-			throw new IllegalStateException("Access to state machine failed, state machine not yet created");
-		}
 		return fsm;
 	}
 
@@ -190,8 +189,8 @@ public class Ghost extends Actor<GhostState> {
 		return nextState != null ? nextState : getState();
 	}
 
-	private void buildStateMachine() {
-		fsm = StateMachine.
+	private StateMachine<GhostState, PacManGameEvent> buildStateMachine() {
+		return StateMachine.
 		/*@formatter:off*/
 		beginStateMachine(GhostState.class, PacManGameEvent.class)
 			 
@@ -299,7 +298,5 @@ public class Ghost extends Actor<GhostState> {
 				
 		.endStateMachine();
 		/*@formatter:on*/
-		fsm.setIgnoreUnknownEvents(true);
-		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
 }
