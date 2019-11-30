@@ -140,7 +140,6 @@ public class PacMan extends Actor<PacManState> {
 			.states()
 
 				.state(HOME)
-					.timeoutAfter(() -> 0)
 	
 				.state(HUNGRY)
 					.impl(new HungryState())
@@ -150,7 +149,7 @@ public class PacMan extends Actor<PacManState> {
 
 			.transitions()
 
-				.when(HOME).then(HUNGRY).onTimeout()
+				.when(HOME).then(HUNGRY)
 				
 				.when(HUNGRY).then(DYING)
 					.on(PacManKilledEvent.class)
