@@ -32,7 +32,7 @@ public class PacManApp extends Application {
 		settings.scale = 2;
 		settings.fullScreenOnStart = false;
 		settings.set("overflowBug", true);
-		settings.set("skipIntro", false);
+		settings.set("skipIntro", true);
 		settings.set("ghost.originalBehavior", true);
 		settings.set("pacMan.immortable", false);
 	}

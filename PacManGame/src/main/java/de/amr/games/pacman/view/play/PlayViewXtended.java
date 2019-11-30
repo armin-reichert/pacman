@@ -23,7 +23,6 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.actor.behavior.HeadingForTargetTile;
 import de.amr.games.pacman.controller.GhostAttackController;
 import de.amr.games.pacman.model.Maze;
@@ -173,12 +172,11 @@ public class PlayViewXtended extends PlayView {
 
 	private String ghostStateText(Ghost ghost) {
 		String displayName = ghost.getState() == GhostState.DEAD ? ghost.name : "";
-		String nextState = ghost.nextState() != ghost.getState()
-				? String.format("[->%s]", ghost.nextState())
+		String nextState = ghost.nextState() != ghost.getState() ? String.format("[->%s]", ghost.nextState())
 				: "";
 		int duration = ghost.state().getDuration(), remaining = ghost.state().getTicksRemaining();
 
-		if (ghost.getState() == GhostState.FRIGHTENED && game.pacMan.getState() == PacManState.POWER) {
+		if (ghost.getState() == GhostState.FRIGHTENED && game.pacMan.hasPower()) {
 			duration = game.pacMan.state().getDuration();
 			remaining = game.pacMan.state().getTicksRemaining();
 		}

@@ -6,7 +6,6 @@ import static de.amr.games.pacman.actor.PacManState.DEAD;
 import static de.amr.games.pacman.actor.PacManState.DYING;
 import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
-import static de.amr.games.pacman.actor.PacManState.POWER;
 import static de.amr.games.pacman.actor.behavior.pacman.PacManSteerings.steeredByKeys;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
@@ -68,9 +67,7 @@ public class PacMan extends Actor<PacManState> {
 	public float maxSpeed() {
 		switch (getState()) {
 		case HUNGRY:
-			return game.speed(PACMAN_SPEED);
-		case POWER:
-			return game.speed(PACMAN_POWER_SPEED);
+			return hasPower() ? game.speed(PACMAN_POWER_SPEED) : game.speed(PACMAN_SPEED);
 		default:
 			return 0;
 		}
@@ -115,7 +112,7 @@ public class PacMan extends Actor<PacManState> {
 	}
 
 	public boolean hasPower() {
-		return getState() == POWER;
+		return getState() == HUNGRY && state().getTicksRemaining() > 0;
 	}
 
 	public boolean isDead() {
@@ -148,10 +145,6 @@ public class PacMan extends Actor<PacManState> {
 				.state(HUNGRY)
 					.impl(new HungryState())
 					
-				.state(POWER)
-					.impl(new PowerState())
-					.timeoutAfter(this::getPacManPowerTime)
-	
 				.state(DYING)
 					.impl(new DyingState())
 
@@ -162,17 +155,15 @@ public class PacMan extends Actor<PacManState> {
 				.when(HUNGRY).then(DYING)
 					.on(PacManKilledEvent.class)
 	
-				.when(HUNGRY).then(POWER)
+				.stay(HUNGRY)
 					.on(PacManGainsPowerEvent.class)
-	
-				.stay(POWER)
-					.on(PacManGainsPowerEvent.class)
-					.act(() -> fsm.resetTimer())
-	
-				.when(POWER).then(HUNGRY)
-					.onTimeout()
-					.act(() -> publishEvent(new PacManLostPowerEvent()))
-	
+					.act(() -> {
+						fsm.state().setTimerFunction(this::getPacManPowerTime);
+						fsm.resetTimer();
+						game.theme.snd_waza().loop();
+						LOGGER.info(String.format("Pac-Man has power for %d ticks (%d sec)", state().getDuration(), state().getDuration() / 60));
+					})
+					
 				.when(DYING).then(DEAD)
 					.onTimeout()
 
@@ -192,7 +183,15 @@ public class PacMan extends Actor<PacManState> {
 
 		@Override
 		public void onTick() {
-			if (mustDigest()) {
+			if (startsLosingPower()) {
+				publishEvent(new PacManGettingWeakerEvent());
+			}
+			else if (getTicksRemaining() == 1) {
+				publishEvent(new PacManLostPowerEvent());
+				setTimerFunction(() -> 0); 
+				game.theme.snd_waza().stop();
+			}
+			else if (mustDigest()) {
 				digest();
 			}
 			else {
@@ -254,29 +253,6 @@ public class PacMan extends Actor<PacManState> {
 			}
 
 			return Optional.empty();
-		}
-	}
-
-	private class PowerState extends HungryState {
-
-		@Override
-		public void onEntry() {
-			game.theme.snd_waza().loop();
-			LOGGER.info(
-					() -> String.format("Pac-Man powered for %d ticks (%d sec)", getDuration(), getDuration() / 60));
-		}
-
-		@Override
-		public void onExit() {
-			game.theme.snd_waza().stop();
-		}
-
-		@Override
-		public void onTick() {
-			super.onTick();
-			if (startsLosingPower()) {
-				publishEvent(new PacManGettingWeakerEvent());
-			}
 		}
 	}
 
