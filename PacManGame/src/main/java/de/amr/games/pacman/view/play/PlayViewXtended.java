@@ -40,8 +40,6 @@ import de.amr.statemachine.State;
  * <li>Can display actor state (key 's')
  * <li>Can display actor routes (key 'r')
  * <li>Can switch ghosts on and off (keys 'b', 'p', 'i', 'c')
- * <li>Cheat key 'k' kills all active ghosts
- * <li>Cheat key 'e' eats all normal pellets
  * </ul>
  * 
  * @author Armin Reichert
@@ -242,7 +240,7 @@ public class PlayViewXtended extends PlayView {
 		}
 		if (ghost.targetPath.size() > 1) {
 			// draw path in ghost's color
-			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 100));
+			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 60));
 			for (Tile tile : ghost.targetPath) {
 				g.fillRect(tile.col * TS, tile.row * TS, TS, TS);
 			}
@@ -264,7 +262,7 @@ public class PlayViewXtended extends PlayView {
 		if (ghost == game.clyde && ghost.getState() == GhostState.CHASING) {
 			Vector2f center = game.clyde.tf.getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 160));
+			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 100));
 			g.drawOval((int) center.x - 8 * TS, (int) center.y - 8 * TS, 16 * TS, 16 * TS);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		}
