@@ -60,7 +60,7 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 		/*@formatter:off*/
 		return NWSE.stream()
 			.filter(dir -> dir != NESW.inv(moveDir))
-			.filter(dir -> actor.canCrossBorder(currentTile, maze.tileToDir(currentTile, dir)))
+			.filter(dir -> actor.canMoveBetween(currentTile, maze.tileToDir(currentTile, dir)))
 			.sorted((dir1, dir2) -> {
 				Tile neighbor1 = maze.tileToDir(currentTile, dir1);
 				Tile neighbor2 = maze.tileToDir(currentTile, dir2);

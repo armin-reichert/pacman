@@ -130,6 +130,10 @@ public class PacManGame {
 	public static float relSpeed(float fraction) {
 		return fraction * PIXELS_PER_TICK;
 	}
+	
+	public float speed(LevelData column) {
+		return relSpeed(column.$float(level));
+	}
 
 	/**
 	 * @param fraction
@@ -138,6 +142,10 @@ public class PacManGame {
 	 */
 	public static int sec(float fraction) {
 		return (int) (60 * fraction);
+	}
+	
+	public int sec(LevelData column) {
+		return sec(column.$float(level));
 	}
 
 	public final Maze maze;
@@ -272,10 +280,6 @@ public class PacManGame {
 		ghosts().forEach(ghost -> ghost.foodCount = 0);
 		globalFoodCounterEnabled = false;
 		globalFoodCounter = 0;
-	}
-
-	public float speed(LevelData column) {
-		return relSpeed(column.$float(level));
 	}
 
 	public Stream<Ghost> ghosts() {

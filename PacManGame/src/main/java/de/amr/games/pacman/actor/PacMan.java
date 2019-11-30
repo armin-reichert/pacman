@@ -86,22 +86,14 @@ public class PacMan extends Actor<PacManState> {
 	}
 
 	@Override
-	public boolean canCrossBorder(Tile current, Tile tile) {
-		if (maze.isDoor(tile)) {
+	public boolean canMoveBetween(Tile tile, Tile neighbor) {
+		if (maze.isDoor(neighbor)) {
 			return false;
 		}
-		return super.canCrossBorder(current, tile);
+		return super.canMoveBetween(tile, neighbor);
 	}
 
 	// State machine
-
-	public int getPacManPowerTime() {
-		return sec(PACMAN_POWER_SECONDS.$int(game.level));
-	}
-
-	public int getPacManDyingTime() {
-		return sec(2);
-	}
 
 	public boolean isLosingPower() {
 		return hasPower() && state().getTicksRemaining() <= state().getDuration() * 33 / 100;
@@ -113,10 +105,6 @@ public class PacMan extends Actor<PacManState> {
 
 	public boolean hasPower() {
 		return getState() == HUNGRY && state().getTicksRemaining() > 0;
-	}
-
-	public boolean isDead() {
-		return getState() == DEAD;
 	}
 
 	@Override
@@ -165,7 +153,7 @@ public class PacMan extends Actor<PacManState> {
 				.stay(HUNGRY)
 					.on(PacManGainsPowerEvent.class)
 					.act(() -> {
-						state().setTimerFunction(this::getPacManPowerTime);
+						state().setTimerFunction(() -> game.sec(PACMAN_POWER_SECONDS));
 						state().resetTimer();
 						LOGGER.info(() -> String.format("Pac-Man got power for %d ticks (%d sec)", 
 								state().getDuration(), state().getDuration() / 60));

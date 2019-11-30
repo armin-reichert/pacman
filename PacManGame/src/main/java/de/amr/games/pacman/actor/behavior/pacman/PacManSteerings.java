@@ -32,7 +32,7 @@ public interface PacManSteerings {
 			if (pacMan.isStuck()) {
 				StreamUtils
 						.permute(NESW.dirs()).filter(dir -> dir != NESW.inv(pacMan.moveDir)).filter(dir -> pacMan
-								.canCrossBorder(pacMan.currentTile(), pacMan.maze.tileToDir(pacMan.currentTile(), dir)))
+								.canMoveBetween(pacMan.currentTile(), pacMan.maze.tileToDir(pacMan.currentTile(), dir)))
 						.findFirst().ifPresent(pacMan::setNextDir);
 			}
 		};

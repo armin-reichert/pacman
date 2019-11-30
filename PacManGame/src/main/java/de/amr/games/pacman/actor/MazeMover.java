@@ -205,12 +205,12 @@ public abstract class MazeMover extends Entity {
 	/**
 	 * Tells if this actor can (currently) cross the border between the given tiles.
 	 * 
-	 * @param from     current tile
+	 * @param tile     current tile
 	 * @param neighbor neighbor tile, may also be a tile outside of the board
 	 * @return <code>true</code> if this maze mover can cross the border between the
 	 *         given tiles
 	 */
-	public boolean canCrossBorder(Tile from, Tile neighbor) {
+	public boolean canMoveBetween(Tile tile, Tile neighbor) {
 		if (maze.isWall(neighbor)) {
 			return false;
 		}
@@ -230,7 +230,7 @@ public abstract class MazeMover extends Entity {
 	 */
 	public boolean canCrossBorderTo(int dir) {
 		Tile currentTile = currentTile();
-		return canCrossBorder(currentTile, maze.tileToDir(currentTile, dir));
+		return canMoveBetween(currentTile, maze.tileToDir(currentTile, dir));
 	}
 
 	/**

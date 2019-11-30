@@ -123,14 +123,14 @@ public class Ghost extends Actor<GhostState> {
 	}
 
 	@Override
-	public boolean canCrossBorder(Tile current, Tile tile) {
-		if (maze.isDoor(tile)) {
+	public boolean canMoveBetween(Tile tile, Tile neighbor) {
+		if (maze.isDoor(neighbor)) {
 			return getState() == ENTERING_HOUSE || getState() == LEAVING_HOUSE;
 		}
-		if (maze.isNoUpIntersection(current) && tile == maze.tileToDir(current, Top4.N)) {
+		if (maze.isNoUpIntersection(tile) && neighbor == maze.tileToDir(tile, Top4.N)) {
 			return getState() != GhostState.CHASING && getState() != GhostState.SCATTERING;
 		}
-		return super.canCrossBorder(current, tile);
+		return super.canMoveBetween(tile, neighbor);
 	}
 
 	@Override

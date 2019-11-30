@@ -29,6 +29,7 @@ import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeMover;
+import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -53,7 +54,8 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements ViewController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
+		implements ViewController {
 
 	// Typed reference to "Playing" state object
 	private PlayingState playingState;
@@ -163,9 +165,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void handlePlayingSpeedChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
 			app().clock.setFrequency(60);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
 			app().clock.setFrequency(80);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
 			app().clock.setFrequency(100);
 		}
 	}
@@ -177,7 +181,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			boolean original = app().settings.getAsBoolean(property);
 			game.ghosts().forEach(ghost -> ghost.setSteering(GhostState.FRIGHTENED,
 					original ? movingRandomly() : fleeingToSafeCorner(game.pacMan)));
-			LOGGER.info("Changed ghost FRIGHTENED behavior to " + (original ? "original" : "escape via safe route"));
+			LOGGER
+					.info("Changed ghost FRIGHTENED behavior to " + (original ? "original" : "escape via safe route"));
 		}
 	}
 
@@ -283,10 +288,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onTimeout()
 					
 				.when(PACMAN_DYING).then(GAME_OVER)
-					.condition(() -> game.pacMan.isDead() && game.getLives() == 0)
+					.condition(() -> game.pacMan.getState() == PacManState.DEAD && game.getLives() == 0)
 					
 				.when(PACMAN_DYING).then(PLAYING)
-					.condition(() -> game.pacMan.isDead() && game.getLives() > 0)
+					.condition(() -> game.pacMan.getState() == PacManState.DEAD && game.getLives() > 0)
 					.act(() -> {
 						game.activeActors().forEach(MazeMover::init);
 						playView.init();
@@ -365,7 +370,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			ghostAttackController.update();
 			if (oldAttackState != ghostAttackController.getState()) {
 				fireAttackStateChange();
-			} else {
+			}
+			else {
 				game.activeGhosts().forEach(Ghost::update);
 			}
 			game.pacMan.update();
@@ -488,8 +494,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 
 		/*
-		 * Set state duration such that flashing animation is executed exact number of
-		 * times defined for each level. One flash takes half a second.
+		 * Set state duration such that flashing animation is executed exact number of times defined for
+		 * each level. One flash takes half a second.
 		 */
 		{
 			setTimerFunction(() -> app().clock.sec(0.5f * numMazeFlashes()));
@@ -536,7 +542,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onTick() {
-			game.activeGhosts().filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
+			game.activeGhosts()
+					.filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
 					.forEach(Ghost::update);
 		}
 
@@ -566,7 +573,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				if (waitTimer == 0) {
 					game.activeGhosts().forEach(Ghost::hide);
 				}
-			} else {
+			}
+			else {
 				game.pacMan.update();
 			}
 		}
