@@ -162,7 +162,7 @@ public class PacManGame {
 	public final Score score;
 
 	/** Pac-Man's remaining lives. */
-	private int lives;
+	public int lives;
 
 	private int foodTotal;
 
@@ -387,10 +387,6 @@ public class PacManGame {
 
 	public void addGhostKilled() {
 		numGhostsKilled += 1;
-	}
-
-	public int getLives() {
-		return lives;
 	}
 
 	public void removeLife() {

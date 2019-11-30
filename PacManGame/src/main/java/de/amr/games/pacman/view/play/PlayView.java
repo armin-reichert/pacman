@@ -140,7 +140,7 @@ public class PlayView implements View, Controller {
 
 	protected void drawLives(Graphics2D g) {
 		g.translate(0, height - 2 * TS);
-		for (int i = 0; i < game.getLives(); ++i) {
+		for (int i = 0; i < game.lives; ++i) {
 			g.translate((2 - i) * lifeImage.getWidth(null), 0);
 			g.drawImage(lifeImage, 0, 0, null);
 			g.translate((i - 2) * lifeImage.getWidth(null), 0);

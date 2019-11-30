@@ -288,10 +288,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onTimeout()
 					
 				.when(PACMAN_DYING).then(GAME_OVER)
-					.condition(() -> game.pacMan.getState() == PacManState.DEAD && game.getLives() == 0)
+					.condition(() -> game.pacMan.getState() == PacManState.DEAD && game.lives == 0)
 					
 				.when(PACMAN_DYING).then(PLAYING)
-					.condition(() -> game.pacMan.getState() == PacManState.DEAD && game.getLives() > 0)
+					.condition(() -> game.pacMan.getState() == PacManState.DEAD && game.lives > 0)
 					.act(() -> {
 						game.activeActors().forEach(MazeMover::init);
 						playView.init();
@@ -582,7 +582,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onExit() {
 			game.activeGhosts().forEach(Ghost::show);
-			if (game.getLives() > 0) {
+			if (game.lives > 0) {
 				game.removeLife();
 				theme.music_playing().loop();
 			}
