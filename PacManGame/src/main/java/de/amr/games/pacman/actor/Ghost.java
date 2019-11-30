@@ -249,9 +249,6 @@ public class Ghost extends Actor<GhostState> {
 				.when(LOCKED).then(LEAVING_HOUSE)
 					.condition(this::unlocked)
 			
-//				.when(LEAVING_HOUSE).then(FRIGHTENED)
-//					.condition(() -> leftHouse() && game.pacMan.hasPower())
-
 				.when(LEAVING_HOUSE).then(SCATTERING)
 					.condition(() -> leftHouse() && nextState() == SCATTERING)
 				
