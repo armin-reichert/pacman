@@ -147,7 +147,7 @@ beginStateMachine()
 
 		.state(GHOST_DYING)
 			.impl(new GhostDyingState())
-			.timeoutAfter(game::getGhostDyingTime)
+			.timeoutAfter(Ghost::getDyingTime)
 
 		.state(PACMAN_DYING)
 			.impl(new PacManDyingState())
@@ -159,7 +159,7 @@ beginStateMachine()
 	.transitions()
 
 		.when(INTRO).then(READY)
-			.condition(() -> introView.isComplete())
+			.condition(() -> introView.isComplete() || app().settings.getAsBoolean("skipIntro"))
 			.act(() -> showPlayView())
 
 		.when(READY).then(PLAYING)
@@ -280,35 +280,40 @@ beginStateMachine(PacManState.class, PacManGameEvent.class)
 	.states()
 
 		.state(HOME)
-			.timeoutAfter(() -> 0)
 
 		.state(HUNGRY)
 			.impl(new HungryState())
 
-		.state(POWER)
-			.impl(new PowerState())
-			.timeoutAfter(game::getPacManPowerTime)
-
 		.state(DYING)
-			.impl(new DyingState())
+			.timeoutAfter(() -> sec(4f))
+			.onEntry(() -> {
+				sprites.select("full");
+				game.theme.snd_clips_all().forEach(Sound::stop);
+			})
+			.onTick(() -> {
+				if (state().getTicksRemaining() == sec(2.5f)) {
+					sprites.select("dying");
+					game.theme.snd_die().play();
+					game.activeGhosts().forEach(Ghost::hide);
+				}
+			})
 
 	.transitions()
 
-		.when(HOME).then(HUNGRY).onTimeout()
+		.when(HOME).then(HUNGRY)
+
+		.stay(HUNGRY)
+			.on(PacManGainsPowerEvent.class)
+			.act(() -> {
+				state().setTimerFunction(this::getPacManPowerTime);
+				state().resetTimer();
+				LOGGER.info(() -> String.format("Pac-Man got power for %d ticks (%d sec)", 
+						state().getDuration(), state().getDuration() / 60));
+				game.theme.snd_waza().loop();
+			})
 
 		.when(HUNGRY).then(DYING)
 			.on(PacManKilledEvent.class)
-
-		.when(HUNGRY).then(POWER)
-			.on(PacManGainsPowerEvent.class)
-
-		.stay(POWER)
-			.on(PacManGainsPowerEvent.class)
-			.act(() -> fsm.resetTimer())
-
-		.when(POWER).then(HUNGRY)
-			.onTimeout()
-			.act(() -> publishEvent(new PacManLostPowerEvent()))
 
 		.when(DYING).then(DEAD)
 			.onTimeout()
@@ -374,9 +379,6 @@ beginStateMachine(GhostState.class, PacManGameEvent.class)
 
 		.when(LOCKED).then(LEAVING_HOUSE)
 			.condition(this::unlocked)
-
-		.when(LEAVING_HOUSE).then(FRIGHTENED)
-			.condition(() -> leftHouse() && game.pacMan.hasPower())
 
 		.when(LEAVING_HOUSE).then(SCATTERING)
 			.condition(() -> leftHouse() && nextState() == SCATTERING)
