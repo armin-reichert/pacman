@@ -44,7 +44,6 @@ import de.amr.statemachine.StateMachine;
  */
 public class Ghost extends Actor<GhostState> {
 
-	private final StateMachine<GhostState, PacManGameEvent> fsm;
 	private final Map<GhostState, Steering<Ghost>> steeringByState;
 	private final Steering<Ghost> defaultSteering;
 	public Tile initialTile;
@@ -64,11 +63,6 @@ public class Ghost extends Actor<GhostState> {
 		fsm = buildStateMachine();
 		fsm.setIgnoreUnknownEvents(true);
 		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-	}
-
-	@Override
-	protected StateMachine<GhostState, PacManGameEvent> fsm() {
-		return fsm;
 	}
 
 	private void chasingSoundOn() {

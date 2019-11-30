@@ -17,44 +17,45 @@ import de.amr.statemachine.StateMachine;
 /**
  * Base class for Pac-Man and the ghosts.
  * <p>
- * An entity controlled by a finite-state machine with the capability of
- * registering event handlers for game events and publishing game events.
+ * An entity controlled by a finite-state machine with the capability of registering event handlers
+ * for game events and publishing game events.
  * 
  * @author Armin Reichert
  *
- * @param <S> state (label) type of the FSM
+ * @param <S>
+ *          state (label) type of the FSM
  */
 public abstract class Actor<S> extends MazeMover {
 
 	public final String name;
 	public final PacManGame game;
-	private final Set<Consumer<PacManGameEvent>> gameEventListeners = new LinkedHashSet<>();
+	protected final Set<Consumer<PacManGameEvent>> listeners;
+	protected StateMachine<S, PacManGameEvent> fsm;
 
 	public Actor(String name, PacManGame game, Maze maze) {
 		super(maze);
 		this.name = name;
 		this.game = game;
+		listeners = new LinkedHashSet<>();
 	}
 
-	protected abstract StateMachine<S, PacManGameEvent> fsm();
-
 	public void addGameEventListener(Consumer<PacManGameEvent> listener) {
-		gameEventListeners.add(listener);
+		listeners.add(listener);
 	}
 
 	public void removeGameEventListener(Consumer<PacManGameEvent> listener) {
-		gameEventListeners.remove(listener);
+		listeners.remove(listener);
 	}
 
 	public void publishEvent(PacManGameEvent event) {
 		if (!(event instanceof FoodFoundEvent)) {
 			LOGGER.info(() -> String.format("%s reports '%s'", name, event));
 		}
-		gameEventListeners.forEach(listener -> listener.accept(event));
+		listeners.forEach(listener -> listener.accept(event));
 	}
 
 	public S getState() {
-		return fsm().getState();
+		return fsm.getState();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -63,25 +64,26 @@ public abstract class Actor<S> extends MazeMover {
 	}
 
 	public void setState(S state) {
-		fsm().setState(state);
+		fsm.setState(state);
 	}
 
 	public State<S, PacManGameEvent> state() {
-		return fsm().state();
+		return fsm.state();
 	}
 
 	public void processEvent(PacManGameEvent event) {
-		fsm().process(event);
+		fsm.process(event);
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		fsm().init();
+		fsm.init();
 	}
 
 	@Override
 	public void update() {
-		fsm().update();
+		super.update();
+		fsm.update();
 	}
 }

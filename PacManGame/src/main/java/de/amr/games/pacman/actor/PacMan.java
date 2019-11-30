@@ -39,7 +39,6 @@ import de.amr.statemachine.StateMachine;
  */
 public class PacMan extends Actor<PacManState> {
 
-	private final StateMachine<PacManState, PacManGameEvent> fsm;
 	public int ticksSinceLastMeal;
 	public Steering<PacMan> steering;
 
@@ -47,11 +46,6 @@ public class PacMan extends Actor<PacManState> {
 		super("Pac-Man", game, game.maze);
 		fsm = buildStateMachine();
 		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-	}
-
-	@Override
-	protected StateMachine<PacManState, PacManGameEvent> fsm() {
-		return fsm;
 	}
 
 	// Movement
