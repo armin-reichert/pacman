@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
@@ -46,7 +47,9 @@ public abstract class Actor<S> extends MazeMover {
 	}
 
 	public void publishEvent(PacManGameEvent event) {
-		LOGGER.info(String.format("%s reports '%s'", name, event));
+		if (!(event instanceof FoodFoundEvent)) {
+			LOGGER.info(() -> String.format("%s reports '%s'", name, event));
+		}
 		gameEventListeners.forEach(listener -> listener.accept(event));
 	}
 
