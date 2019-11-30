@@ -229,8 +229,8 @@ public class PacMan extends Actor<PacManState> {
 				.filter(Ghost::visible)
 				.filter(ghost -> ghost.currentTile().equals(pacManTile))
 				.filter(ghost -> ghost.getState() == GhostState.CHASING
-											|| ghost.getState() == GhostState.SCATTERING
-											|| ghost.getState() == GhostState.FRIGHTENED)
+					|| ghost.getState() == GhostState.SCATTERING
+					|| ghost.getState() == GhostState.FRIGHTENED)
 				.findFirst()
 				.map(PacManGhostCollisionEvent::new);
 			/*@formatter:on*/
