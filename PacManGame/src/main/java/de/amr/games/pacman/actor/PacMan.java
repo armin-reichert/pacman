@@ -145,24 +145,26 @@ public class PacMan extends Actor<PacManState> {
 					.impl(new HungryState())
 					
 				.state(DYING)
+					.timeoutAfter(() -> sec(4f))
 					.impl(new DyingState())
 
 			.transitions()
 
 				.when(HOME).then(HUNGRY)
 				
-				.when(HUNGRY).then(DYING)
-					.on(PacManKilledEvent.class)
-	
 				.stay(HUNGRY)
 					.on(PacManGainsPowerEvent.class)
 					.act(() -> {
-						fsm.state().setTimerFunction(this::getPacManPowerTime);
-						fsm.resetTimer();
+						state().setTimerFunction(this::getPacManPowerTime);
+						state().resetTimer();
+						LOGGER.info(() -> String.format("Pac-Man got power for %d ticks (%d sec)", 
+								state().getDuration(), state().getDuration() / 60));
 						game.theme.snd_waza().loop();
-						LOGGER.info(String.format("Pac-Man has power for %d ticks (%d sec)", state().getDuration(), state().getDuration() / 60));
 					})
 					
+				.when(HUNGRY).then(DYING)
+					.on(PacManKilledEvent.class)
+	
 				.when(DYING).then(DEAD)
 					.onTimeout()
 
@@ -184,16 +186,13 @@ public class PacMan extends Actor<PacManState> {
 		public void onTick() {
 			if (startsLosingPower()) {
 				publishEvent(new PacManGettingWeakerEvent());
-			}
-			else if (getTicksRemaining() == 1) {
-				publishEvent(new PacManLostPowerEvent());
-				setTimerFunction(() -> 0); 
+			} else if (getTicksRemaining() == 1) {
+				setTimerFunction(() -> 0);
 				game.theme.snd_waza().stop();
-			}
-			else if (mustDigest()) {
+				publishEvent(new PacManLostPowerEvent());
+			} else if (mustDigest()) {
 				digest();
-			}
-			else {
+			} else {
 				steer();
 				move();
 				findSomethingInteresting().ifPresent(PacMan.this::publishEvent);
@@ -215,8 +214,8 @@ public class PacMan extends Actor<PacManState> {
 				return Optional.empty(); // when teleporting no events are triggered
 			}
 
-			Optional<PacManGameEvent> ghostCollision = game.activeGhosts()
 			/*@formatter:off*/
+			Optional<PacManGameEvent> ghostCollision = game.activeGhosts()
 				.filter(Ghost::visible)
 				.filter(ghost -> ghost.currentTile().equals(pacManTile))
 				.filter(ghost -> ghost.getState() == GhostState.CHASING
@@ -230,8 +229,8 @@ public class PacMan extends Actor<PacManState> {
 				return ghostCollision;
 			}
 
-			Optional<PacManGameEvent> bonusEaten = game.getBonus()
 			/*@formatter:off*/
+			Optional<PacManGameEvent> bonusEaten = game.getBonus()
 				.filter(bonus -> pacManTile == maze.bonusTile)
 				.filter(bonus -> !bonus.consumed())
 				.map(bonus -> new BonusFoundEvent(bonus.symbol(), bonus.value()));
@@ -246,8 +245,7 @@ public class PacMan extends Actor<PacManState> {
 				boolean energizer = maze.containsEnergizer(pacManTile);
 				digestionTicks = game.getDigestionTicks(energizer);
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			}
-			else {
+			} else {
 				ticksSinceLastMeal += 1;
 			}
 
@@ -257,28 +255,18 @@ public class PacMan extends Actor<PacManState> {
 
 	private class DyingState extends State<PacManState, PacManGameEvent> {
 
-		private int paralyzedTicks; // time before dying animation starts
-
-		{ // set duration of complete "Dying" state
-			setTimerFunction(() -> app().clock.sec(4f));
-		}
-
 		@Override
 		public void onEntry() {
-			paralyzedTicks = app().clock.sec(1.5f);
 			sprites.select("full");
 			game.theme.snd_clips_all().forEach(Sound::stop);
 		}
 
 		@Override
 		public void onTick() {
-			if (paralyzedTicks > 0) {
-				paralyzedTicks -= 1;
-				if (paralyzedTicks == 0) {
-					game.activeGhosts().forEach(Ghost::hide);
-					sprites.select("dying");
-					game.theme.snd_die().play();
-				}
+			if (getTicksRemaining() == sec(2.5f)) {
+				sprites.select("dying");
+				game.theme.snd_die().play();
+				game.activeGhosts().forEach(Ghost::hide);
 			}
 		}
 	}
