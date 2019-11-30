@@ -54,7 +54,7 @@ public class PacManGame {
 	public static final int TS = 8;
 
 	/** Base speed (11 tiles/second) in pixel/tick. */
-	public static final float PIXELS_PER_TICK = (float) 11 * TS / 60;
+	public static final float BASE_SPEED = (float) 11 * TS / 60;
 
 	/**
 	 * Level data.
@@ -130,7 +130,7 @@ public class PacManGame {
 	 * @return speed (pixels/tick) corresponding to given fraction of base speed
 	 */
 	public static float relSpeed(float fraction) {
-		return fraction * PIXELS_PER_TICK;
+		return fraction * BASE_SPEED;
 	}
 
 	public float speed(LevelData column) {
