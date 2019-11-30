@@ -146,7 +146,17 @@ public class PacMan extends Actor<PacManState> {
 					
 				.state(DYING)
 					.timeoutAfter(() -> sec(4f))
-					.impl(new DyingState())
+					.onEntry(() -> {
+						sprites.select("full");
+						game.theme.snd_clips_all().forEach(Sound::stop);
+					})
+					.onTick(() -> {
+						if (state().getTicksRemaining() == sec(2.5f)) {
+							sprites.select("dying");
+							game.theme.snd_die().play();
+							game.activeGhosts().forEach(Ghost::hide);
+						}
+					})
 
 			.transitions()
 
@@ -250,24 +260,6 @@ public class PacMan extends Actor<PacManState> {
 			}
 
 			return Optional.empty();
-		}
-	}
-
-	private class DyingState extends State<PacManState, PacManGameEvent> {
-
-		@Override
-		public void onEntry() {
-			sprites.select("full");
-			game.theme.snd_clips_all().forEach(Sound::stop);
-		}
-
-		@Override
-		public void onTick() {
-			if (getTicksRemaining() == sec(2.5f)) {
-				sprites.select("dying");
-				game.theme.snd_die().play();
-				game.activeGhosts().forEach(Ghost::hide);
-			}
 		}
 	}
 }
