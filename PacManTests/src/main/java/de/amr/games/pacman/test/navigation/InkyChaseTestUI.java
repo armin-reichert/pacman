@@ -1,9 +1,14 @@
 package de.amr.games.pacman.test.navigation;
 
+import java.awt.Color;
+import java.awt.event.KeyEvent;
+
+import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayViewXtended;
 
@@ -28,13 +33,17 @@ public class InkyChaseTestUI extends PlayViewXtended implements ViewController {
 		game.setActive(game.blinky, true);
 		game.activeGhosts().forEach(ghost -> {
 			ghost.init();
-			ghost.fnIsUnlocked = () -> true;
 			ghost.fnNextState = () -> GhostState.CHASING;
 		});
+		showInfoText("Press SPACE to start", Color.YELLOW);
 	}
 
 	@Override
 	public void update() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
+			game.activeGhosts().forEach(ghost -> ghost.processEvent(new GhostUnlockedEvent()));
+			hideInfoText();
+		}
 		game.pacMan.update();
 		game.activeGhosts().forEach(Ghost::update);
 		super.update();

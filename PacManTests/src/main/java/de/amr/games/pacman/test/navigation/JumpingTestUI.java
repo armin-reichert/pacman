@@ -23,7 +23,6 @@ public class JumpingTestUI extends PlayViewXtended implements ViewController {
 		game.activeGhosts().forEach(ghost -> {
 			game.setActive(ghost, true);
 			ghost.init();
-			ghost.fnIsUnlocked = () -> false;
 		});
 	}
 

@@ -8,12 +8,11 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class ScatteringTestUI extends PlayViewXtended implements ViewController {
-
-	private boolean locked = true;
 
 	public ScatteringTestUI(PacManGame game) {
 		super(game);
@@ -31,15 +30,14 @@ public class ScatteringTestUI extends PlayViewXtended implements ViewController 
 			game.setActive(ghost, true);
 			ghost.init();
 			ghost.fnNextState = () -> GhostState.SCATTERING;
-			ghost.fnIsUnlocked = () -> !locked;
 		});
-		showInfoText("Press SPACE key", Color.YELLOW);
+		showInfoText("Press SPACE to start", Color.YELLOW);
 	}
 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			locked = false;
+			game.activeGhosts().forEach(ghost -> ghost.processEvent(new GhostUnlockedEvent()));
 			hideInfoText();
 		}
 		game.activeGhosts().forEach(Ghost::update);

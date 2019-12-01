@@ -36,7 +36,7 @@ public class TakeShortestPathTestUI extends PlayViewXtended implements ViewContr
 	@Override
 	public void init() {
 		super.init();
-		showInfoText("Press F FRIGHTENED vs CHASING", Color.YELLOW);
+		showInfoText("F toggles FRIGHTENED CHASING", Color.YELLOW);
 		currentTarget = 0;
 		game.level = 1;
 		game.theme.snd_ghost_chase().volume(0);

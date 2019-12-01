@@ -11,6 +11,7 @@ import static de.amr.games.pacman.controller.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
 import static de.amr.games.pacman.controller.PacManGameState.READY;
+import static de.amr.games.pacman.model.PacManGame.sec;
 import static de.amr.games.pacman.model.PacManGame.LevelData.MAZE_NUM_FLASHES;
 
 import java.awt.Color;
@@ -33,6 +34,7 @@ import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
+import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -232,7 +234,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				
 				.when(READY).then(PLAYING)
 					.onTimeout()
-					.act(() -> playingState.setInitialWaitTimer(app().clock.sec(1.7f)))
+					.act(() -> playingState.resetTimer())
 					
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
@@ -295,7 +297,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.act(() -> {
 						game.activeActors().forEach(MazeMover::init);
 						playView.init();
-						playingState.setInitialWaitTimer(app().clock.sec(1.7f));
+						playingState.resetTimer();
 					})
 			
 				.when(GAME_OVER).then(READY)
@@ -346,47 +348,44 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	 */
 	private class PlayingState extends State<PacManGameState, PacManGameEvent> {
 
-		private int initialWaitTimer;
-
-		public void setInitialWaitTimer(int ticks) {
-			initialWaitTimer = ticks;
+		{
+			setTimerFunction(() -> sec(1.7f)); // initial wait time
 		}
 
 		@Override
 		public void onEntry() {
+			resetTimer();
 			ghostAttackController.init();
 			game.activeGhosts().forEach(Ghost::show);
-			fireAttackStateChange();
 		}
 
 		@Override
 		public void onTick() {
-			if (initialWaitTimer > 0) {
-				initialWaitTimer -= 1;
+			if (getTicksRemaining() > 0) {
+				if (getTicksRemaining() == 1) {
+					playView.hideInfoText();
+				}
 				return;
 			}
-			playView.hideInfoText();
-			GhostState oldAttackState = ghostAttackController.getState();
-			ghostAttackController.update();
-			if (oldAttackState != ghostAttackController.getState()) {
-				fireAttackStateChange();
-			}
-			else {
-				game.activeGhosts().forEach(Ghost::update);
-			}
+			
 			game.pacMan.update();
-		}
-
-		private void fireAttackStateChange() {
-			switch (ghostAttackController.getState()) {
-			case CHASING:
-				game.activeGhosts().forEach(ghost -> ghost.processEvent(new StartChasingEvent()));
-				break;
-			case SCATTERING:
-				game.activeGhosts().forEach(ghost -> ghost.processEvent(new StartScatteringEvent()));
-				break;
-			default:
-				break;
+			ghostAttackController.update();
+			Iterable<Ghost> ghosts = game.activeGhosts()::iterator;
+			for (Ghost ghost : ghosts) {
+				if (ghost.getState() == GhostState.LOCKED && game.canLeaveHouse(ghost)) {
+					ghost.processEvent(new GhostUnlockedEvent());
+				}
+				else if (ghost.getState() == GhostState.CHASING
+						&& ghostAttackController.getState() == GhostState.SCATTERING) {
+					ghost.processEvent(new StartScatteringEvent());
+				}
+				else if (ghost.getState() == GhostState.SCATTERING
+						&& ghostAttackController.getState() == GhostState.CHASING) {
+					ghost.processEvent(new StartChasingEvent());
+				}
+				else {
+					ghost.update();
+				}
 			}
 		}
 
@@ -520,7 +519,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			game.activeActors().forEach(MazeMover::init);
 			playView.init();
 			playView.showInfoText("Ready!", Color.YELLOW);
-			playingState.setInitialWaitTimer(app().clock.sec(2));
+			playingState.resetTimer();
 		}
 	}
 

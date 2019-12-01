@@ -247,7 +247,6 @@ public class PacManGame {
 		ghosts().forEach(ghost -> {
 			ghost.setSteering(FRIGHTENED, movingRandomly());
 			ghost.setSteering(LOCKED, jumpingUpAndDown());
-			ghost.fnIsUnlocked = () -> canLeaveHouse(ghost);
 		});
 	}
 

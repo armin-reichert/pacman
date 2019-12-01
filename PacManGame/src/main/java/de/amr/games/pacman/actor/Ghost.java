@@ -18,7 +18,6 @@ import static de.amr.games.pacman.model.PacManGame.LevelData.GHOST_TUNNEL_SPEED;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
@@ -26,6 +25,7 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.behavior.ghost.GhostSteerings;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
+import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
@@ -52,7 +52,6 @@ public class Ghost extends Actor<GhostState> {
 	public Tile scatterTile;
 	public Supplier<GhostState> fnNextState;
 	public Supplier<Tile> fnChasingTarget;
-	public BooleanSupplier fnIsUnlocked;
 	public int foodCount;
 
 	public Ghost(PacManGame game, Maze maze, String name) {
@@ -163,10 +162,6 @@ public class Ghost extends Actor<GhostState> {
 		enteredNewTile = true;
 	}
 
-	private boolean unlocked() {
-		return fnIsUnlocked.getAsBoolean();
-	}
-
 	private boolean leftHouse() {
 		Tile currentTile = currentTile();
 		return !maze.partOfGhostHouse(currentTile) && tf.getY() - currentTile.row * TS == 0;
@@ -240,7 +235,7 @@ public class Ghost extends Actor<GhostState> {
 			.transitions()
 			
 				.when(LOCKED).then(LEAVING_HOUSE)
-					.condition(this::unlocked)
+					.on(GhostUnlockedEvent.class)
 			
 				.when(LEAVING_HOUSE).then(SCATTERING)
 					.condition(() -> leftHouse() && nextState() == SCATTERING)
