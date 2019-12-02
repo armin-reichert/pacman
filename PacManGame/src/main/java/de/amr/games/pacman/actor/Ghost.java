@@ -12,9 +12,9 @@ import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
 import static de.amr.games.pacman.model.PacManGame.sec;
-import static de.amr.games.pacman.model.PacManGame.LevelData.GHOST_FRIGHTENED_SPEED;
-import static de.amr.games.pacman.model.PacManGame.LevelData.GHOST_SPEED;
-import static de.amr.games.pacman.model.PacManGame.LevelData.GHOST_TUNNEL_SPEED;
+import static de.amr.games.pacman.model.PacManGame.Column.GHOST_FRIGHTENED_SPEED;
+import static de.amr.games.pacman.model.PacManGame.Column.GHOST_SPEED;
+import static de.amr.games.pacman.model.PacManGame.Column.GHOST_TUNNEL_SPEED;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -222,8 +222,8 @@ public class Ghost extends Actor<GhostState> {
 				
 				.state(DYING)
 					.timeoutAfter(Ghost::getDyingTime)
-					.onEntry(() -> sprites.select("value-" + game.numGhostsKilledByCurrentEnergizer()))
-					.onExit(game::addGhostKilled)
+					.onEntry(() -> sprites.select("value-" + game.numGhostsKilledByEnergizer))
+					.onExit(() -> game.numGhostsKilledByEnergizer += 1)
 				
 				.state(DEAD)
 					.onEntry(() -> {

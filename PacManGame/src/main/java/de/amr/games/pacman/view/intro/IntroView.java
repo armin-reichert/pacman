@@ -53,7 +53,7 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 	private final ChaseGhostsAnimation chaseGhosts;
 	private final GhostPointsAnimation ghostPoints;
 	private final LinkWidget visitGitHub;
-
+	
 	public IntroView(PacManTheme theme) {
 		super(IntroViewState.class);
 		width = app().settings.width;

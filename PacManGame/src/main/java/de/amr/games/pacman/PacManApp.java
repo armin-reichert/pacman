@@ -41,7 +41,8 @@ public class PacManApp extends Application {
 	public void init() {
 		PacManTheme theme = new ClassicPacManTheme();
 		PacManGame game = new PacManGame();
-		PacManGameController gameController = new PacManGameController(game, theme);
+		PacManGameController gameController = new PacManGameController(game);
+		gameController.setTheme(theme);
 		setController(gameController);
 		setIcon(theme.spr_ghostFrightened().frame(0));
 		Logger.getLogger("StateMachineLogger").setLevel(Level.OFF);

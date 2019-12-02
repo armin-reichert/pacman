@@ -13,10 +13,11 @@ import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
 import static de.amr.games.pacman.controller.PacManGameState.START_PLAYING;
 import static de.amr.games.pacman.model.PacManGame.sec;
-import static de.amr.games.pacman.model.PacManGame.LevelData.MAZE_NUM_FLASHES;
+import static de.amr.games.pacman.model.PacManGame.Column.MAZE_NUM_FLASHES;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -69,26 +70,33 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private final GhostAttackTimer ghostAttackTimer;
 
 	// UI
-	private final PacManTheme theme;
+	private PacManTheme theme;
 	private IntroView introView;
 	private PlayViewXtended playView;
 	private Controller ui;
 
 	private boolean muted = false;
 
-	public PacManGameController(PacManGame game, PacManTheme theme) {
+	public PacManGameController(PacManGame game) {
 		super(PacManGameState.class);
 		this.game = game;
-		this.theme = theme;
 		buildStateMachine();
 		setIgnoreUnknownEvents(true);
 		ghostAttackTimer = new GhostAttackTimer(() -> game.level);
 		game.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackTimer::getState);
 		game.pacMan.addListener(this::process);
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		playView = new PlayViewXtended(game);
+		playView.ghostAttackTimer = ghostAttackTimer;
 	}
 
 	// View handling
+
+	public void setTheme(PacManTheme theme) {
+		this.theme = theme;
+		introView = new IntroView(theme);
+		playView.setTheme(theme);
+	}
 
 	private void showUI(Controller ui) {
 		if (this.ui != ui) {
@@ -103,15 +111,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	}
 
 	// Controller methods
-
-	@Override
-	public void init() {
-		introView = new IntroView(theme);
-		playView = new PlayViewXtended(game);
-		playView.ghostAttackTimer = ghostAttackTimer;
-		playView.setTheme(theme);
-		super.init();
-	}
 
 	@Override
 	public void update() {
@@ -234,6 +233,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.state(START_PLAYING)
 					.timeoutAfter(() -> sec(1.7f))
 					.onEntry(() -> {
+						game.startLevel();
 						playView.hideInfoText();
 						playView.enableAnimation(true);
 						theme.music_playing().volume(1f);
@@ -457,7 +457,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			}
 			if (game.isBonusReached()) {
 				playView.setBonus(game.getLevelSymbol(), game.getBonusValue());
-				playView.setBonusTimer(game.getBonusDuration());
+				playView.setBonusTimer(sec(9 + new Random().nextFloat()));
 			}
 			if (e.energizer) {
 				enqueue(new PacManGainsPowerEvent());
@@ -475,7 +475,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			theme.snd_clips_all().forEach(Sound::stop);
 			game.activeGhosts().forEach(Ghost::hide);
 			game.pacMan.sprites.select("full");
-			int numFlashes = MAZE_NUM_FLASHES.$int(game.level);
+			int numFlashes = MAZE_NUM_FLASHES.intValue(game.level);
 			setTimerFunction(() -> sec(2 + 0.5f * numFlashes));
 			resetTimer();
 			if (numFlashes > 0) {
@@ -487,10 +487,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		public void onTick() {
 			if (getTicksRemaining() == sec(2)) {
 				playView.setMazeFlashing(false);
-				game.nextLevel();
+				game.level += 1;
 				game.activeActors().forEach(Actor::init);
 				playView.init();
-				LOGGER.info("Entered game level " + game.level);
+				game.startLevel();
 			}
 		}
 	}
@@ -508,7 +508,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				theme.snd_extraLife().play();
 			}
 			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
-					game.numGhostsKilledByCurrentEnergizer()));
+					game.numGhostsKilledByEnergizer));
 		}
 
 		@Override

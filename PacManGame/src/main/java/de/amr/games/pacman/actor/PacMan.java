@@ -8,9 +8,9 @@ import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.model.PacManGame.TS;
 import static de.amr.games.pacman.model.PacManGame.sec;
-import static de.amr.games.pacman.model.PacManGame.LevelData.PACMAN_POWER_SECONDS;
-import static de.amr.games.pacman.model.PacManGame.LevelData.PACMAN_POWER_SPEED;
-import static de.amr.games.pacman.model.PacManGame.LevelData.PACMAN_SPEED;
+import static de.amr.games.pacman.model.PacManGame.Column.PACMAN_POWER_SECONDS;
+import static de.amr.games.pacman.model.PacManGame.Column.PACMAN_POWER_SPEED;
+import static de.amr.games.pacman.model.PacManGame.Column.PACMAN_SPEED;
 
 import java.util.Optional;
 import java.util.logging.Logger;

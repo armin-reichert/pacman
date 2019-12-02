@@ -14,8 +14,9 @@ import static de.amr.games.pacman.model.BonusSymbol.GRAPES;
 import static de.amr.games.pacman.model.BonusSymbol.KEY;
 import static de.amr.games.pacman.model.BonusSymbol.PEACH;
 import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
-import static de.amr.games.pacman.model.PacManGame.LevelData.BONUS_SYMBOL;
-import static de.amr.games.pacman.model.PacManGame.LevelData.BONUS_VALUE;
+import static de.amr.games.pacman.model.PacManGame.Column.BONUS;
+import static de.amr.games.pacman.model.PacManGame.Column.BONUS_VALUE;
+import static java.lang.Math.min;
 import static java.util.Objects.requireNonNull;
 
 import java.awt.event.KeyEvent;
@@ -23,7 +24,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
@@ -35,7 +35,7 @@ import de.amr.games.pacman.actor.PacMan;
 import de.amr.graph.grid.impl.Top4;
 
 /**
- * The "model" (in MVC speak) of the Pac-Man game. Contains the current game state and defines the
+ * The "model" (in MVC speak) of the Pac-Man game. Contains the current game data and defines the
  * "business logic" for playing the game. Also serves as factory and container for the actors.
  * 
  * @author Armin Reichert
@@ -46,72 +46,61 @@ public class PacManGame {
 	public static final int TS = 8;
 
 	/** Base speed (11 tiles/second) in pixel/tick. */
-	public static final float BASE_SPEED = (float) 11 * TS / 60;
+	static final float BASE_SPEED = (float) 11 * TS / 60;
 
 	/**
 	 * Level data.
 	 * 
 	 * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>
 	 */
-	public enum LevelData {
+	static final Object[][] LEVEL_DATA = {
+		/*@formatter:off*/
+		{ /* this row intentionally empty */ },
+		{ CHERRIES,    100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6, 5 },
+		{ STRAWBERRY,  300,  .90f, .79f, .85f, .45f,  30, .8f,  15,  .95f, .95f, .83f, .55f,   5, 5 },
+		{ PEACH,       500,  .90f, .79f, .85f, .45f,  40, .8f,  20,  .95f, .95f, .83f, .55f,   4, 5 },
+		{ PEACH,       500,  .90f, .79f, .85f, .50f,  40, .8f,  20,  .95f, .95f, .83f, .55f,   3, 5 },
+		{ APPLE,       700,    1f, .87f, .95f, .50f,  40, .8f,  20, .105f,   1f, .87f, .60f,   2, 5 },
+		{ APPLE,       700,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   5, 5 },
+		{ GRAPES,     1000,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   2, 5 },
+		{ GRAPES,     1000,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   2, 5 },
+		{ GALAXIAN,   2000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   1, 3 },
+		{ GALAXIAN,   2000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   5, 5 },
+		{ BELL,       3000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   2, 5 },
+		{ BELL,       3000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   1, 3 },
+		{ KEY,        5000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   1, 3 },
+		{ KEY,        5000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   3, 5 },
+		{ KEY,        5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   1f, .87f, .60f,   1, 3 },
+		{ KEY,        5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   0f,   0f,   0f,   0, 0 },
+		{ KEY,        5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   1f, .87f, .60f,   1, 3 },
+		{ KEY,        5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   0f,   0f,   0f,   0, 0 },
+		{ KEY,        5000,    1f, .87f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0, 0 },
+		{ KEY,        5000,    1f, .87f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0, 0 },
+		{ KEY,        5000,  .90f, .79f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0, 0 },
+		/*@formatter:on*/
+	};
 
-		BONUS_SYMBOL,
-		BONUS_VALUE,
-		PACMAN_SPEED,
-		PACMAN_DOTS_SPEED,
-		GHOST_SPEED,
-		GHOST_TUNNEL_SPEED,
-		ELROY1_DOTS_LEFT,
-		ELROY1_SPEED,
-		ELROY2_DOTS_LEFT,
-		ELROY2_SPEED,
-		PACMAN_POWER_SPEED,
-		PACMAN_POWER_DOTS_SPEED,
-		GHOST_FRIGHTENED_SPEED,
-		PACMAN_POWER_SECONDS,
-		MAZE_NUM_FLASHES;
-
-		private static final Object[][] LEVEL_DATA = {
-			/*@formatter:off*/
-			{ /* this row intentionally empty */ },
-			{ CHERRIES,    100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6, 5 },
-			{ STRAWBERRY,  300,  .90f, .79f, .85f, .45f,  30, .8f,  15,  .95f, .95f, .83f, .55f,   5, 5 },
-			{ PEACH,       500,  .90f, .79f, .85f, .45f,  40, .8f,  20,  .95f, .95f, .83f, .55f,   4, 5 },
-			{ PEACH,       500,  .90f, .79f, .85f, .50f,  40, .8f,  20,  .95f, .95f, .83f, .55f,   3, 5 },
-			{ APPLE,       700,    1f, .87f, .95f, .50f,  40, .8f,  20, .105f,   1f, .87f, .60f,   2, 5 },
-			{ APPLE,       700,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   5, 5 },
-			{ GRAPES,     1000,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   2, 5 },
-			{ GRAPES,     1000,    1f, .87f, .95f, .50f,  50, .8f,  25, .105f,   1f, .87f, .60f,   2, 5 },
-			{ GALAXIAN,   2000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   1, 3 },
-			{ GALAXIAN,   2000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   5, 5 },
-			{ BELL,       3000,    1f, .87f, .95f, .50f,  60, .8f,  30, .105f,   1f, .87f, .60f,   2, 5 },
-			{ BELL,       3000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   1, 3 },
-			{ KEY,        5000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   1, 3 },
-			{ KEY,        5000,    1f, .87f, .95f, .50f,  80, .8f,  40, .105f,   1f, .87f, .60f,   3, 5 },
-			{ KEY,        5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   1f, .87f, .60f,   1, 3 },
-			{ KEY,        5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   0f,   0f,   0f,   0, 0 },
-			{ KEY,        5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   1f, .87f, .60f,   1, 3 },
-			{ KEY,        5000,    1f, .87f, .95f, .50f, 100, .8f,  50, .105f,   0f,   0f,   0f,   0, 0 },
-			{ KEY,        5000,    1f, .87f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0, 0 },
-			{ KEY,        5000,    1f, .87f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0, 0 },
-			{ KEY,        5000,  .90f, .79f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0, 0 },
-			/*@formatter:on*/
-		};
+	public enum Column {
+		/*@formatter:off*/
+		BONUS, BONUS_VALUE, PACMAN_SPEED, PACMAN_DOTS_SPEED, GHOST_SPEED,	GHOST_TUNNEL_SPEED,	
+		ELROY1_DOTS_LEFT,	ELROY1_SPEED,	ELROY2_DOTS_LEFT,	ELROY2_SPEED,
+		PACMAN_POWER_SPEED,	PACMAN_POWER_DOTS_SPEED, GHOST_FRIGHTENED_SPEED, 
+		PACMAN_POWER_SECONDS, MAZE_NUM_FLASHES;
+		/*@formatter:on*/
 
 		@SuppressWarnings("unchecked")
 		public <T> T value(int level) {
 			if (level < 1) {
-				throw new IllegalArgumentException("Level must be >= 1, is " + level);
+				throw new IllegalArgumentException("Level must be at least 1, is " + level);
 			}
-			level = Math.min(LEVEL_DATA.length - 1, level);
-			return (T) LEVEL_DATA[level][ordinal()];
+			return (T) LEVEL_DATA[min(level, LEVEL_DATA.length - 1)][ordinal()];
 		}
 
-		public float $float(int level) {
+		public float floatValue(int level) {
 			return value(level);
 		}
 
-		public int $int(int level) {
+		public int intValue(int level) {
 			return value(level);
 		}
 	}
@@ -125,8 +114,8 @@ public class PacManGame {
 		return fraction * BASE_SPEED;
 	}
 
-	public float speed(LevelData column) {
-		return relSpeed(column.$float(level));
+	public float speed(Column column) {
+		return relSpeed(column.floatValue(level));
 	}
 
 	/**
@@ -138,30 +127,33 @@ public class PacManGame {
 		return (int) (60 * fraction);
 	}
 
-	public int sec(LevelData column) {
-		return sec(column.$int(level));
+	public int sec(Column column) {
+		return sec(column.intValue(level));
 	}
 
 	public final Maze maze;
+
 	public final PacMan pacMan;
+
 	public final Ghost blinky, pinky, inky, clyde;
 
 	/** The game score including highscore management. */
 	public final Score score;
 
-	private int foodTotal;
+	/** Number of pellets + energizers in maze. */
+	private int totalFoodInMaze;
 
 	/** Pellets + energizers eaten in current level. */
-	private int eaten;
+	private int levelFoodCount;
 
 	/** Global food counter. */
-	private int globalFoodCounter;
+	private int globalFoodCount;
 
 	/** If global food counter is enabled. */
 	private boolean globalFoodCounterEnabled = false;
 
 	/** Ghosts killed using current energizer. */
-	private int numGhostsKilled;
+	public int numGhostsKilledByEnergizer;
 
 	/** Current level. */
 	public int level;
@@ -177,7 +169,7 @@ public class PacManGame {
 	 */
 	public PacManGame() {
 		maze = new Maze();
-		foodTotal = (int) maze.tiles().filter(maze::containsFood).count();
+		totalFoodInMaze = (int) maze.tiles().filter(maze::containsFood).count();
 		score = new Score(this);
 
 		pacMan = new PacMan(this);
@@ -224,26 +216,25 @@ public class PacManGame {
 
 	public void init() {
 		pacMan.lives = 3;
-		level = 0;
+		level = 1;
 		bonus = null;
 		levelCounter.clear();
 		score.loadHiscore();
 		actors().forEach(Actor::activate);
-		nextLevel();
 	}
 
-	public void nextLevel() {
-		level += 1;
+	public void startLevel() {
+		LOGGER.info("Start game level " + level);
 		maze.restoreFood();
-		eaten = 0;
-		numGhostsKilled = 0;
+		levelFoodCount = 0;
+		numGhostsKilledByEnergizer = 0;
 		levelCounter.add(0, getLevelSymbol());
 		if (levelCounter.size() > 8) {
 			levelCounter.remove(levelCounter.size() - 1);
 		}
 		ghosts().forEach(ghost -> ghost.foodCount = 0);
 		globalFoodCounterEnabled = false;
-		globalFoodCounter = 0;
+		globalFoodCount = 0;
 	}
 
 	public Stream<Ghost> ghosts() {
@@ -263,7 +254,7 @@ public class PacManGame {
 	}
 
 	public BonusSymbol getLevelSymbol() {
-		return BONUS_SYMBOL.value(level);
+		return BONUS.value(level);
 	}
 
 	public List<BonusSymbol> getLevelCounter() {
@@ -276,16 +267,16 @@ public class PacManGame {
 		}
 		boolean energizer = maze.containsEnergizer(tile);
 		if (energizer) {
-			numGhostsKilled = 0;
+			numGhostsKilledByEnergizer = 0;
 		}
-		eaten += 1;
+		levelFoodCount += 1;
 		maze.removeFood(tile);
 		updateFoodCounter();
 		return energizer ? 50 : 10;
 	}
 
 	public int getFoodRemaining() {
-		return foodTotal - eaten;
+		return totalFoodInMaze - levelFoodCount;
 	}
 
 	public int getDigestionTicks(boolean energizer) {
@@ -310,18 +301,10 @@ public class PacManGame {
 
 	public int getKilledGhostValue() {
 		int value = 200;
-		for (int i = 1; i < numGhostsKilled; ++i) {
+		for (int i = 1; i < numGhostsKilledByEnergizer; ++i) {
 			value *= 2;
 		}
 		return value;
-	}
-
-	public int numGhostsKilledByCurrentEnergizer() {
-		return numGhostsKilled;
-	}
-
-	public void addGhostKilled() {
-		numGhostsKilled += 1;
 	}
 
 	// Bonus handling
@@ -339,15 +322,11 @@ public class PacManGame {
 	}
 
 	public boolean isBonusReached() {
-		return eaten == 70 || eaten == 170;
+		return levelFoodCount == 70 || levelFoodCount == 170;
 	}
 
 	public int getBonusValue() {
-		return BONUS_VALUE.$int(level);
-	}
-
-	public int getBonusDuration() {
-		return sec(9 + new Random().nextFloat());
+		return BONUS_VALUE.intValue(level);
 	}
 
 	// rules for leaving the ghost house
@@ -385,7 +364,7 @@ public class PacManGame {
 		if (ghost.foodCount >= getFoodLimit(ghost)) {
 			return true;
 		}
-		if (globalFoodCounterEnabled && globalFoodCounter >= getGlobalFoodCounterLimit(ghost)) {
+		if (globalFoodCounterEnabled && globalFoodCount >= getGlobalFoodCounterLimit(ghost)) {
 			return true;
 		}
 		int timeout = level < 5 ? sec(4) : sec(3);
@@ -398,11 +377,11 @@ public class PacManGame {
 
 	private void updateFoodCounter() {
 		if (globalFoodCounterEnabled) {
-			globalFoodCounter++;
-			LOGGER.fine(() -> String.format("Global Food Counter=%d", globalFoodCounter));
-			if (globalFoodCounter == 32 && clyde.getState() == GhostState.LOCKED) {
+			globalFoodCount++;
+			LOGGER.fine(() -> String.format("Global Food Counter=%d", globalFoodCount));
+			if (globalFoodCount == 32 && clyde.getState() == GhostState.LOCKED) {
 				globalFoodCounterEnabled = false;
-				globalFoodCounter = 0;
+				globalFoodCount = 0;
 			}
 			return;
 		}
@@ -460,6 +439,6 @@ public class PacManGame {
 
 	public void enableGlobalFoodCounter() {
 		globalFoodCounterEnabled = true;
-		globalFoodCounter = 0;
+		globalFoodCount = 0;
 	}
 }
