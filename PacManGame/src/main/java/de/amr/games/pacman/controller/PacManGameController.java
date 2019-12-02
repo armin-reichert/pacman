@@ -31,7 +31,6 @@ import de.amr.games.pacman.actor.Actor;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -225,7 +224,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						theme.snd_clips_all().forEach(Sound::stop);
 						theme.snd_ready().play();
 						game.init();
-						game.activeActors().forEach(MazeMover::init);
+						game.activeActors().forEach(Actor::init);
 						playView.init();
 						playView.showScores = true;
 						playView.enableAnimation(false);
