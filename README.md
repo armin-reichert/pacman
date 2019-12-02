@@ -131,27 +131,28 @@ beginStateMachine()
 
 		.state(INTRO)
 			.onEntry(() -> {
-				showIntroView();
+				showUI(introView);
 				theme.snd_insertCoin().play();
 				theme.loadMusic();
 			})
 
-		.state(READY_MUSIC)
+		.state(GETTING_READY)
 			.timeoutAfter(() -> sec(5))
 			.onEntry(() -> {
 				theme.snd_clips_all().forEach(Sound::stop);
 				theme.snd_ready().play();
 				game.init();
-				game.activeActors().forEach(MazeMover::init);
+				game.activeActors().forEach(Actor::init);
 				playView.init();
 				playView.showScores = true;
 				playView.enableAnimation(false);
 				playView.showInfoText("Ready!", Color.YELLOW);
 			})
 
-		.state(READY)
+		.state(START_PLAYING)
 			.timeoutAfter(() -> sec(1.7f))
 			.onEntry(() -> {
+				game.startLevel();
 				playView.hideInfoText();
 				playView.enableAnimation(true);
 				theme.music_playing().volume(1f);
@@ -173,20 +174,22 @@ beginStateMachine()
 
 		.state(PACMAN_DYING)
 			.onEntry(() -> {
-				state().setTimerFunction(() -> game.lives > 1 ? sec(6) : sec(4));
+				state().setTimerFunction(() -> game.pacMan.lives > 1 ? sec(6) : sec(4));
 				state().resetTimer();
 				theme.music_playing().stop();
-				game.removeLife();
+				if (!app().settings.getAsBoolean("pacMan.immortable")) {
+					game.pacMan.lives -= 1;
+				}
 			})
 			.onTick(() -> {
+				if (state().getTicksConsumed() < sec(2)) {
+					game.pacMan.update();
+				}
 				if (state().getTicksConsumed() == sec(1)) {
 					game.activeGhosts().forEach(Ghost::hide);
 				}
-				if (state().getTicksRemaining() > sec(2)) {
-					game.pacMan.update();
-				}
-				if (game.lives > 0 && state().getTicksRemaining() == sec(2)) {
-					game.activeActors().forEach(MazeMover::init);
+				if (game.pacMan.lives > 0 && state().getTicksConsumed() == sec(4)) {
+					game.activeActors().forEach(Actor::init);
 					game.activeGhosts().forEach(Ghost::show);
 					playView.init();
 					theme.music_playing().loop();
@@ -194,19 +197,31 @@ beginStateMachine()
 			})
 
 		.state(GAME_OVER)
-			.impl(new GameOverState())
 			.timeoutAfter(() -> sec(60))
+			.onEntry(() -> {
+				LOGGER.info("Game is over");
+				game.score.save();
+				game.activeGhosts().forEach(Ghost::show);
+				game.getBonus().ifPresent(Bonus::hide);
+				playView.enableAnimation(false);
+				theme.music_gameover().loop();
+				playView.showInfoText("Game Over!", Color.RED);
+			})
+			.onExit(() -> {
+				theme.music_gameover().stop();
+				playView.hideInfoText();
+			})
 
 	.transitions()
 
-		.when(INTRO).then(READY_MUSIC)
+		.when(INTRO).then(GETTING_READY)
 			.condition(() -> introView.isComplete() || app().settings.getAsBoolean("skipIntro"))
-			.act(() -> showPlayView())
+			.act(() -> showUI(playView))
 
-		.when(READY_MUSIC).then(READY)
+		.when(GETTING_READY).then(START_PLAYING)
 			.onTimeout()
 
-		.when(READY).then(PLAYING)
+		.when(START_PLAYING).then(PLAYING)
 			.onTimeout()
 
 		.stay(PLAYING)
@@ -247,30 +262,18 @@ beginStateMachine()
 		.when(CHANGING_LEVEL).then(PLAYING)
 			.onTimeout()
 
-		.stay(CHANGING_LEVEL)
-			.on(PacManGettingWeakerEvent.class)
-
-		.stay(CHANGING_LEVEL)
-			.on(PacManLostPowerEvent.class)
-
-		.stay(GHOST_DYING)
-			.on(PacManGettingWeakerEvent.class)
-
-		.stay(GHOST_DYING)
-			.on(PacManLostPowerEvent.class)
-
 		.when(GHOST_DYING).then(PLAYING)
 			.onTimeout()
 
 		.when(PACMAN_DYING).then(GAME_OVER)
 			.onTimeout()
-			.condition(() -> game.lives == 0)
+			.condition(() -> game.pacMan.lives == 0)
 
 		.when(PACMAN_DYING).then(PLAYING)
 			.onTimeout()
-			.condition(() -> game.lives > 0)
+			.condition(() -> game.pacMan.lives > 0)
 
-		.when(GAME_OVER).then(READY_MUSIC)
+		.when(GAME_OVER).then(GETTING_READY)
 			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 
 		.when(GAME_OVER).then(INTRO)
