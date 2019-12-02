@@ -4,6 +4,7 @@ import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -28,8 +29,8 @@ public class PlayView implements View, Controller {
 
 	public boolean showScores;
 
-	protected final int width, height;
 	protected final PacManGame game;
+	protected Dimension size;
 	protected final MazeView mazeView;
 	protected Image lifeImage;
 	protected PacManTheme theme;
@@ -39,8 +40,7 @@ public class PlayView implements View, Controller {
 
 	public PlayView(PacManGame game) {
 		this.game = game;
-		width = app().settings.width;
-		height = app().settings.height;
+		size = new Dimension(app().settings.width, app().settings.height);
 		mazeView = new MazeView(game);
 		mazeView.tf.setPosition(0, 3 * TS);
 	}
@@ -152,25 +152,25 @@ public class PlayView implements View, Controller {
 	}
 
 	protected void drawLives(Graphics2D g) {
-		g.translate(0, height - 2 * TS);
+		g.translate(0, size.height - 2 * TS);
 		for (int i = 0; i < game.pacMan.lives; ++i) {
 			g.translate((2 - i) * lifeImage.getWidth(null), 0);
 			g.drawImage(lifeImage, 0, 0, null);
 			g.translate((i - 2) * lifeImage.getWidth(null), 0);
 		}
-		g.translate(0, -height + 2 * TS);
+		g.translate(0, -size.height + 2 * TS);
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
 		int mazeWidth = mazeView.sprites.current().get().getWidth();
-		g.translate(0, height - 2 * TS);
+		g.translate(0, size.height - 2 * TS);
 		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
 			g.translate(mazeWidth - (n - i + 1) * 2 * TS, 0);
 			Image bonusImage = theme.spr_bonusSymbol(game.getLevelCounter().get(i)).frame(0);
 			g.drawImage(bonusImage, 0, 0, 2 * TS, 2 * TS, null);
 			g.translate(-mazeWidth + (n - i + 1) * 2 * TS, 0);
 		}
-		g.translate(0, -height + 2 * TS);
+		g.translate(0, -size.height + 2 * TS);
 	}
 
 	protected void drawInfoText(Graphics2D g) {
