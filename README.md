@@ -136,8 +136,30 @@ beginStateMachine()
 				theme.loadMusic();
 			})
 
+		.state(READY_MUSIC)
+			.timeoutAfter(() -> sec(5))
+			.onEntry(() -> {
+				theme.snd_clips_all().forEach(Sound::stop);
+				theme.snd_ready().play();
+				game.init();
+				game.activeActors().forEach(MazeMover::init);
+				playView.init();
+				playView.showScores = true;
+				playView.enableAnimation(false);
+				playView.showInfoText("Ready!", Color.YELLOW);
+			})
+
 		.state(READY)
-			.impl(new ReadyState())
+			.timeoutAfter(() -> sec(1.7f))
+			.onEntry(() -> {
+				playView.hideInfoText();
+				playView.enableAnimation(true);
+				theme.music_playing().volume(1f);
+				theme.music_playing().loop();
+			})
+			.onTick(() -> {
+				game.activeGhosts().forEach(Ghost::update);
+			})
 
 		.state(PLAYING)
 			.impl(playingState = new PlayingState())
@@ -150,21 +172,42 @@ beginStateMachine()
 			.timeoutAfter(Ghost::getDyingTime)
 
 		.state(PACMAN_DYING)
-			.impl(new PacManDyingState())
+			.onEntry(() -> {
+				state().setTimerFunction(() -> game.lives > 1 ? sec(6) : sec(4));
+				state().resetTimer();
+				theme.music_playing().stop();
+				game.removeLife();
+			})
+			.onTick(() -> {
+				if (state().getTicksConsumed() == sec(1)) {
+					game.activeGhosts().forEach(Ghost::hide);
+				}
+				if (state().getTicksRemaining() > sec(2)) {
+					game.pacMan.update();
+				}
+				if (game.lives > 0 && state().getTicksRemaining() == sec(2)) {
+					game.activeActors().forEach(MazeMover::init);
+					game.activeGhosts().forEach(Ghost::show);
+					playView.init();
+					theme.music_playing().loop();
+				}
+			})
 
 		.state(GAME_OVER)
 			.impl(new GameOverState())
-			.timeoutAfter(() -> app().clock.sec(60))
+			.timeoutAfter(() -> sec(60))
 
 	.transitions()
 
-		.when(INTRO).then(READY)
+		.when(INTRO).then(READY_MUSIC)
 			.condition(() -> introView.isComplete() || app().settings.getAsBoolean("skipIntro"))
 			.act(() -> showPlayView())
 
+		.when(READY_MUSIC).then(READY)
+			.onTimeout()
+
 		.when(READY).then(PLAYING)
 			.onTimeout()
-			.act(() -> playingState.setInitialWaitTimer(app().clock.sec(1.7f)))
 
 		.stay(PLAYING)
 			.on(FoodFoundEvent.class)
@@ -220,17 +263,14 @@ beginStateMachine()
 			.onTimeout()
 
 		.when(PACMAN_DYING).then(GAME_OVER)
-			.condition(() -> game.pacMan.isDead() && game.getLives() == 0)
+			.onTimeout()
+			.condition(() -> game.lives == 0)
 
 		.when(PACMAN_DYING).then(PLAYING)
-			.condition(() -> game.pacMan.isDead() && game.getLives() > 0)
-			.act(() -> {
-				game.activeActors().forEach(MazeMover::init);
-				playView.init();
-				playingState.setInitialWaitTimer(app().clock.sec(1.7f));
-			})
+			.onTimeout()
+			.condition(() -> game.lives > 0)
 
-		.when(GAME_OVER).then(READY)
+		.when(GAME_OVER).then(READY_MUSIC)
 			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 
 		.when(GAME_OVER).then(INTRO)
