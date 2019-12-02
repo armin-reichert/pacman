@@ -6,12 +6,12 @@ import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.fleeingToS
 import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.movingRandomly;
 import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
+import static de.amr.games.pacman.controller.PacManGameState.GETTING_READY;
 import static de.amr.games.pacman.controller.PacManGameState.GHOST_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
 import static de.amr.games.pacman.controller.PacManGameState.START_PLAYING;
-import static de.amr.games.pacman.controller.PacManGameState.GETTING_READY;
 import static de.amr.games.pacman.model.PacManGame.sec;
 import static de.amr.games.pacman.model.PacManGame.LevelData.MAZE_NUM_FLASHES;
 
@@ -401,28 +401,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onPacManGhostCollision(PacManGameEvent event) {
 			PacManGhostCollisionEvent e = (PacManGhostCollisionEvent) event;
-			switch (e.ghost.getState()) {
-			case CHASING:
+			if (e.ghost.oneOf(GhostState.CHASING, GhostState.SCATTERING)) {
 				enqueue(new PacManKilledEvent(e.ghost));
-				return;
-			case DEAD:
-				return;
-			case DYING:
-				return;
-			case ENTERING_HOUSE:
-				return;
-			case FRIGHTENED:
+			}
+			else if (e.ghost.getState() == GhostState.FRIGHTENED) {
 				enqueue(new GhostKilledEvent(e.ghost));
-				return;
-			case LEAVING_HOUSE:
-				return;
-			case LOCKED:
-				return;
-			case SCATTERING:
-				enqueue(new PacManKilledEvent(e.ghost));
-				return;
-			default:
-				throw new IllegalStateException();
 			}
 		}
 
