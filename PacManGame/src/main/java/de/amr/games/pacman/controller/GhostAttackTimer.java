@@ -25,7 +25,7 @@ import de.amr.statemachine.StateMachine;
  * @see <a href=
  *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=3">Gamasutra</a>
  */
-public class GhostAttackController extends StateMachine<GhostState, Void> {
+public class GhostAttackTimer extends StateMachine<GhostState, Void> {
 
 	/** Ticks for given seconds at 60 Hz */
 	private static int sec(int sec) {
@@ -60,7 +60,7 @@ public class GhostAttackController extends StateMachine<GhostState, Void> {
 	private int round;
 	private boolean suspended;
 
-	public GhostAttackController(IntSupplier fnLevel) {
+	public GhostAttackTimer(IntSupplier fnLevel) {
 		super(GhostState.class);
 		this.fnLevel = fnLevel;
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);

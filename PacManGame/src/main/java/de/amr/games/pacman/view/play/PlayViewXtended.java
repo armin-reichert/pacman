@@ -24,7 +24,7 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.behavior.HeadingForTargetTile;
-import de.amr.games.pacman.controller.GhostAttackController;
+import de.amr.games.pacman.controller.GhostAttackTimer;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
@@ -54,7 +54,7 @@ public class PlayViewXtended extends PlayView {
 	public boolean showRoutes = false;
 	public boolean showStates = false;
 
-	public GhostAttackController ghostAttackController;
+	public GhostAttackTimer ghostAttackController;
 
 	private static BufferedImage createGridImage(int numRows, int numCols) {
 		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
