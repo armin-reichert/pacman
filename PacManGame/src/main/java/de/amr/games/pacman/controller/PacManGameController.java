@@ -108,8 +108,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	@Override
 	public void init() {
 		introView = new IntroView(theme);
-		playView = new PlayViewXtended(game, theme);
+		playView = new PlayViewXtended(game);
 		playView.ghostAttackTimer = ghostAttackTimer;
+		playView.setTheme(theme);
 		super.init();
 	}
 

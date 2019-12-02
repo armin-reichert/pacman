@@ -26,33 +26,27 @@ import de.amr.graph.grid.impl.Top4;
  */
 public class PlayView implements View, Controller {
 
-	public final int width, height;
 	public boolean showScores;
-	public final PacManGame game;
-	protected final PacManTheme theme;
+
+	protected final int width, height;
+	protected final PacManGame game;
 	protected final MazeView mazeView;
-	protected final Image lifeImage;
+	protected Image lifeImage;
+	protected PacManTheme theme;
 	protected String infoText;
 	protected Color infoTextColor;
 	protected int bonusTimer;
 
-	public PlayView(PacManGame game, PacManTheme theme) {
+	public PlayView(PacManGame game) {
 		this.game = game;
-		this.theme = theme;
 		width = app().settings.width;
 		height = app().settings.height;
-		lifeImage = theme.spr_pacManWalking(Top4.W).frame(1);
-		mazeView = new MazeView(game, theme);
+		mazeView = new MazeView(game);
 		mazeView.tf.setPosition(0, 3 * TS);
 	}
 
 	@Override
 	public void init() {
-		theme.apply(game.pacMan);
-		theme.apply(game.blinky, GhostColor.RED);
-		theme.apply(game.pinky, GhostColor.PINK);
-		theme.apply(game.inky, GhostColor.CYAN);
-		theme.apply(game.clyde, GhostColor.ORANGE);
 		game.removeBonus();
 		bonusTimer = 0;
 		mazeView.setFlashing(false);
@@ -66,6 +60,17 @@ public class PlayView implements View, Controller {
 				game.removeBonus();
 			}
 		}
+	}
+
+	public void setTheme(PacManTheme theme) {
+		this.theme = theme;
+		lifeImage = theme.spr_pacManWalking(Top4.W).frame(1);
+		mazeView.setTheme(theme);
+		theme.apply(game.pacMan);
+		theme.apply(game.blinky, GhostColor.RED);
+		theme.apply(game.pinky, GhostColor.PINK);
+		theme.apply(game.inky, GhostColor.CYAN);
+		theme.apply(game.clyde, GhostColor.ORANGE);
 	}
 
 	public void enableAnimation(boolean enabled) {

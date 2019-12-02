@@ -19,19 +19,22 @@ import de.amr.games.pacman.theme.PacManTheme;
 public class MazeView extends Entity {
 
 	private final PacManGame game;
-	private final PacManTheme theme;
+	private PacManTheme theme;
 	private final Animation energizerBlinking;
 	private boolean flashing;
 
-	public MazeView(PacManGame game, PacManTheme theme) {
+	public MazeView(PacManGame game) {
 		this.game = game;
-		this.theme = theme;
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
 		energizerBlinking.setEnabled(false);
+		setFlashing(false);
+	}
+
+	public void setTheme(PacManTheme theme) {
+		this.theme = theme;
 		sprites.set("normal", theme.spr_fullMaze());
 		sprites.set("flashing", theme.spr_flashingMaze());
-		setFlashing(false);
 	}
 
 	public void setFlashing(boolean flashing) {

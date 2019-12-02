@@ -74,7 +74,12 @@ public class PlayViewXtended extends PlayView {
 	}
 
 	public PlayViewXtended(PacManGame game, PacManTheme theme) {
-		super(game, theme);
+		this(game);
+		setTheme(theme);
+	}
+	
+	public PlayViewXtended(PacManGame game) {
+		super(game);
 		gridImage = createGridImage(Maze.ROWS, Maze.COLS);
 	}
 
