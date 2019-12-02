@@ -54,7 +54,7 @@ public class PlayViewXtended extends PlayView {
 	public boolean showRoutes = false;
 	public boolean showStates = false;
 
-	public GhostAttackTimer ghostAttackController;
+	public GhostAttackTimer ghostAttackTimer;
 
 	private static BufferedImage createGridImage(int numRows, int numCols) {
 		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
@@ -179,9 +179,9 @@ public class PlayViewXtended extends PlayView {
 			remaining = game.pacMan.state().getTicksRemaining();
 		}
 		else if ((ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING)
-				&& ghostAttackController != null) {
-			duration = ghostAttackController.state().getDuration();
-			remaining = ghostAttackController.state().getTicksRemaining();
+				&& ghostAttackTimer != null) {
+			duration = ghostAttackTimer.state().getDuration();
+			remaining = ghostAttackTimer.state().getTicksRemaining();
 		}
 
 		return duration != State.ENDLESS
