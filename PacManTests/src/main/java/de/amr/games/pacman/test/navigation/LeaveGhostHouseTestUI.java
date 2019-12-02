@@ -36,7 +36,7 @@ public class LeaveGhostHouseTestUI extends PlayViewXtended implements ViewContro
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			game.inky.processEvent(new GhostUnlockedEvent());
+			game.inky.process(new GhostUnlockedEvent());
 			hideInfoText();
 		}
 		game.inky.update();

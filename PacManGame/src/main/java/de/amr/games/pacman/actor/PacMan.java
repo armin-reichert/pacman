@@ -169,12 +169,12 @@ public class PacMan extends Actor<PacManState> {
 		@Override
 		public void onTick() {
 			if (startsLosingPower()) {
-				publishEvent(new PacManGettingWeakerEvent());
+				publish(new PacManGettingWeakerEvent());
 			}
 			else if (getTicksRemaining() == 1) {
 				setTimerFunction(() -> 0);
 				game.theme.snd_waza().stop();
-				publishEvent(new PacManLostPowerEvent());
+				publish(new PacManLostPowerEvent());
 			}
 			else if (mustDigest()) {
 				digest();
@@ -182,7 +182,7 @@ public class PacMan extends Actor<PacManState> {
 			else {
 				steer();
 				move();
-				findSomethingInteresting().ifPresent(PacMan.this::publishEvent);
+				findSomethingInteresting().ifPresent(PacMan.this::publish);
 			}
 		}
 

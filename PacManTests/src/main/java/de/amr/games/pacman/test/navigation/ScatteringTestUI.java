@@ -37,7 +37,7 @@ public class ScatteringTestUI extends PlayViewXtended implements ViewController 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			game.activeGhosts().forEach(ghost -> ghost.processEvent(new GhostUnlockedEvent()));
+			game.activeGhosts().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
 			hideInfoText();
 		}
 		game.activeGhosts().forEach(Ghost::update);

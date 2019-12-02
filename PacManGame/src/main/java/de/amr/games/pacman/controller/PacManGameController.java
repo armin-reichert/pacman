@@ -82,7 +82,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		buildStateMachine();
 		ghostAttackController = new GhostAttackController(() -> game.level);
 		game.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackController::getState);
-		game.pacMan.addGameEventListener(this::process);
+		game.pacMan.addListener(this::process);
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
 
@@ -138,7 +138,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void handleCheats() {
 		/* ALT-"K": Kill all ghosts */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_K)) {
-			game.activeGhosts().forEach(ghost -> ghost.processEvent(new GhostKilledEvent(ghost)));
+			game.activeGhosts().forEach(ghost -> ghost.process(new GhostKilledEvent(ghost)));
 			LOGGER.info(() -> "All ghosts killed");
 		}
 		/* ALT-"E": Eats all (normal) pellets */
@@ -390,13 +390,13 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			Iterable<Ghost> ghosts = game.activeGhosts()::iterator;
 			for (Ghost ghost : ghosts) {
 				if (ghost.getState() == GhostState.LOCKED && game.canLeaveHouse(ghost)) {
-					ghost.processEvent(new GhostUnlockedEvent());
+					ghost.process(new GhostUnlockedEvent());
 				} else if (ghost.getState() == GhostState.CHASING
 						&& ghostAttackController.getState() == GhostState.SCATTERING) {
-					ghost.processEvent(new StartScatteringEvent());
+					ghost.process(new StartScatteringEvent());
 				} else if (ghost.getState() == GhostState.SCATTERING
 						&& ghostAttackController.getState() == GhostState.CHASING) {
-					ghost.processEvent(new StartChasingEvent());
+					ghost.process(new StartChasingEvent());
 				} else {
 					ghost.update();
 				}
@@ -434,24 +434,24 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			PacManKilledEvent e = (PacManKilledEvent) event;
 			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.name, e.killer.currentTile()));
 			game.enableGlobalFoodCounter();
-			game.pacMan.processEvent(e);
+			game.pacMan.process(e);
 		}
 
 		private void onPacManGainsPower(PacManGameEvent event) {
 			PacManGainsPowerEvent e = (PacManGainsPowerEvent) event;
-			game.pacMan.processEvent(e);
-			game.activeGhosts().forEach(ghost -> ghost.processEvent(e));
+			game.pacMan.process(e);
+			game.activeGhosts().forEach(ghost -> ghost.process(e));
 			ghostAttackController.suspend();
 		}
 
 		private void onPacManGettingWeaker(PacManGameEvent event) {
 			PacManGettingWeakerEvent e = (PacManGettingWeakerEvent) event;
-			game.activeGhosts().forEach(ghost -> ghost.processEvent(e));
+			game.activeGhosts().forEach(ghost -> ghost.process(e));
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {
 			PacManLostPowerEvent e = (PacManLostPowerEvent) event;
-			game.activeGhosts().forEach(ghost -> ghost.processEvent(e));
+			game.activeGhosts().forEach(ghost -> ghost.process(e));
 			ghostAttackController.resume();
 		}
 
@@ -459,7 +459,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			GhostKilledEvent e = (GhostKilledEvent) event;
 			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.name, e.ghost.currentTile()));
 			theme.snd_eatGhost().play();
-			e.ghost.processEvent(e);
+			e.ghost.process(e);
 		}
 
 		private void onBonusFound(PacManGameEvent event) {

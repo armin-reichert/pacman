@@ -17,13 +17,12 @@ import de.amr.statemachine.StateMachine;
 /**
  * Base class for Pac-Man and the ghosts.
  * <p>
- * An entity controlled by a finite-state machine with the capability of registering event handlers
- * for game events and publishing game events.
+ * An entity controlled by a finite-state machine with the capability of
+ * registering event handlers for game events and publishing game events.
  * 
  * @author Armin Reichert
  *
- * @param <S>
- *          state (label) type of the FSM
+ * @param <S> state (label) type of the FSM
  */
 public abstract class Actor<S> extends MazeMover {
 
@@ -39,15 +38,15 @@ public abstract class Actor<S> extends MazeMover {
 		listeners = new LinkedHashSet<>();
 	}
 
-	public void addGameEventListener(Consumer<PacManGameEvent> listener) {
+	public void addListener(Consumer<PacManGameEvent> listener) {
 		listeners.add(listener);
 	}
 
-	public void removeGameEventListener(Consumer<PacManGameEvent> listener) {
+	public void removeListener(Consumer<PacManGameEvent> listener) {
 		listeners.remove(listener);
 	}
 
-	public void publishEvent(PacManGameEvent event) {
+	public void publish(PacManGameEvent event) {
 		if (!(event instanceof FoodFoundEvent)) {
 			LOGGER.info(() -> String.format("%s reports '%s'", name, event));
 		}
@@ -71,7 +70,7 @@ public abstract class Actor<S> extends MazeMover {
 		return fsm.state();
 	}
 
-	public void processEvent(PacManGameEvent event) {
+	public void process(PacManGameEvent event) {
 		fsm.process(event);
 	}
 
