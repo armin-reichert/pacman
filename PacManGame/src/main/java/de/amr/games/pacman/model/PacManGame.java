@@ -14,7 +14,6 @@ import static de.amr.games.pacman.model.BonusSymbol.GRAPES;
 import static de.amr.games.pacman.model.BonusSymbol.KEY;
 import static de.amr.games.pacman.model.BonusSymbol.PEACH;
 import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
-import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.LevelData.BONUS_SYMBOL;
 import static de.amr.games.pacman.model.PacManGame.LevelData.BONUS_VALUE;
 import static java.util.Objects.requireNonNull;
@@ -33,9 +32,6 @@ import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.theme.ClassicPacManTheme;
-import de.amr.games.pacman.theme.GhostColor;
-import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.graph.grid.impl.Top4;
 
 /**
@@ -147,7 +143,6 @@ public class PacManGame {
 	}
 
 	public final Maze maze;
-	public final PacManTheme theme;
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
 
@@ -178,24 +173,15 @@ public class PacManGame {
 	private final List<BonusSymbol> levelCounter = new LinkedList<>();
 
 	/**
-	 * Creates the game using the classic Pac-Man theme.
+	 * Creates a game instance.
 	 */
 	public PacManGame() {
-		this(new ClassicPacManTheme());
-	}
-
-	/**
-	 * Creates the game using the specified theme.
-	 */
-	public PacManGame(PacManTheme theme) {
-		this.theme = theme;
 		maze = new Maze();
 		foodTotal = (int) maze.tiles().filter(maze::containsFood).count();
 		score = new Score(this);
 
 		pacMan = new PacMan(this);
 		pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
-		setSprites(pacMan);
 
 		blinky = new Ghost(this, maze, "Blinky");
 		blinky.initialTile = maze.blinkyHome;
@@ -203,7 +189,6 @@ public class PacManGame {
 		blinky.scatterTile = maze.blinkyScatter;
 		blinky.revivalTile = maze.pinkyHome;
 		blinky.fnChasingTarget = pacMan::currentTile;
-		setSprites(blinky, GhostColor.RED);
 
 		pinky = new Ghost(this, maze, "Pinky");
 		pinky.initialTile = maze.pinkyHome;
@@ -211,7 +196,6 @@ public class PacManGame {
 		pinky.scatterTile = maze.pinkyScatter;
 		pinky.revivalTile = maze.pinkyHome;
 		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
-		setSprites(pinky, GhostColor.PINK);
 
 		inky = new Ghost(this, maze, "Inky");
 		inky.initialTile = maze.inkyHome;
@@ -222,7 +206,6 @@ public class PacManGame {
 			Tile b = blinky.currentTile(), p = pacMan.tilesAhead(2);
 			return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		};
-		setSprites(inky, GhostColor.CYAN);
 
 		clyde = new Ghost(this, maze, "Clyde");
 		clyde.initialTile = maze.clydeHome;
@@ -232,31 +215,11 @@ public class PacManGame {
 		clyde.fnChasingTarget = () -> Vector2f.euclideanDist(clyde.tf.getCenter(), pacMan.tf.getCenter()) > 8
 				? pacMan.currentTile()
 				: maze.clydeScatter;
-		setSprites(clyde, GhostColor.ORANGE);
 
 		ghosts().forEach(ghost -> {
 			ghost.setSteering(FRIGHTENED, movingRandomly());
 			ghost.setSteering(LOCKED, jumpingUpAndDown());
 		});
-	}
-
-	private void setSprites(PacMan pacMan) {
-		NESW.dirs().forEach(dir -> pacMan.sprites.set("walking-" + dir, theme.spr_pacManWalking(dir)));
-		pacMan.sprites.set("dying", theme.spr_pacManDying());
-		pacMan.sprites.set("full", theme.spr_pacManFull());
-		pacMan.sprites.select("full");
-	}
-
-	private void setSprites(Ghost ghost, GhostColor color) {
-		NESW.dirs().forEach(dir -> {
-			ghost.sprites.set("color-" + dir, theme.spr_ghostColored(color, dir));
-			ghost.sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir));
-		});
-		for (int i = 0; i < 4; ++i) {
-			ghost.sprites.set("value-" + i, theme.spr_greenNumber(i));
-		}
-		ghost.sprites.set("frightened", theme.spr_ghostFrightened());
-		ghost.sprites.set("flashing", theme.spr_ghostFlashing());
 	}
 
 	public void init() {

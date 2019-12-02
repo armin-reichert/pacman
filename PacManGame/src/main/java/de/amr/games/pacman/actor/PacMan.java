@@ -124,12 +124,12 @@ public class PacMan extends Actor<PacManState> {
 					.timeoutAfter(() -> sec(4f))
 					.onEntry(() -> {
 						sprites.select("full");
-						game.theme.snd_clips_all().forEach(Sound::stop);
+						theme.snd_clips_all().forEach(Sound::stop);
 					})
 					.onTick(() -> {
 						if (state().getTicksRemaining() == sec(2.5f)) {
 							sprites.select("dying");
-							game.theme.snd_die().play();
+							theme.snd_die().play();
 							game.activeGhosts().forEach(Ghost::hide);
 						}
 					})
@@ -145,7 +145,7 @@ public class PacMan extends Actor<PacManState> {
 						state().resetTimer();
 						LOGGER.info(() -> String.format("Pac-Man got power for %d ticks (%d sec)", 
 								state().getDuration(), state().getDuration() / 60));
-						game.theme.snd_waza().loop();
+						theme.snd_waza().loop();
 					})
 					
 				.when(HUNGRY).then(DYING)
@@ -171,13 +171,16 @@ public class PacMan extends Actor<PacManState> {
 		public void onTick() {
 			if (startsLosingPower()) {
 				publish(new PacManGettingWeakerEvent());
-			} else if (getTicksRemaining() == 1) {
+			}
+			else if (getTicksRemaining() == 1) {
 				setTimerFunction(() -> 0);
-				game.theme.snd_waza().stop();
+				theme.snd_waza().stop();
 				publish(new PacManLostPowerEvent());
-			} else if (mustDigest()) {
+			}
+			else if (mustDigest()) {
 				digest();
-			} else {
+			}
+			else {
 				steer();
 				move();
 				findSomethingInteresting().ifPresent(PacMan.this::publish);
@@ -230,7 +233,8 @@ public class PacMan extends Actor<PacManState> {
 				boolean energizer = maze.containsEnergizer(pacManTile);
 				digestionTicks = game.getDigestionTicks(energizer);
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			} else {
+			}
+			else {
 				ticksSinceLastMeal += 1;
 			}
 

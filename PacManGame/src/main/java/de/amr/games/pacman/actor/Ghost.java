@@ -46,6 +46,7 @@ public class Ghost extends Actor<GhostState> {
 
 	private final Map<GhostState, Steering<Ghost>> steeringByState;
 	private final Steering<Ghost> defaultSteering;
+
 	public Tile initialTile;
 	public int initialDir;
 	public Tile revivalTile;
@@ -65,28 +66,28 @@ public class Ghost extends Actor<GhostState> {
 	}
 
 	private void chasingSoundOn() {
-		if (!game.theme.snd_ghost_chase().isRunning()) {
-			game.theme.snd_ghost_chase().loop();
+		if (!theme.snd_ghost_chase().isRunning()) {
+			theme.snd_ghost_chase().loop();
 		}
 	}
 
 	private void chasingSoundOff() {
 		// if this is the only chasing ghost, turn it off
 		if (game.activeGhosts().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
-			game.theme.snd_ghost_chase().stop();
+			theme.snd_ghost_chase().stop();
 		}
 	}
 
 	private void deadSoundOn() {
-		if (!game.theme.snd_ghost_dead().isRunning()) {
-			game.theme.snd_ghost_dead().loop();
+		if (!theme.snd_ghost_dead().isRunning()) {
+			theme.snd_ghost_dead().loop();
 		}
 	}
 
 	private void deadSoundOff() {
 		// if this is the only dead ghost, turn it off
 		if (game.activeGhosts().filter(ghost -> ghost != this).noneMatch(ghost -> ghost.getState() == DEAD)) {
-			game.theme.snd_ghost_dead().stop();
+			theme.snd_ghost_dead().stop();
 		}
 	}
 

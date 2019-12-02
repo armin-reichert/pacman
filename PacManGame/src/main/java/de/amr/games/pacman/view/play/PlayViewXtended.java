@@ -28,6 +28,7 @@ import de.amr.games.pacman.controller.GhostAttackTimer;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.statemachine.State;
 
 /**
@@ -72,8 +73,8 @@ public class PlayViewXtended extends PlayView {
 		return image;
 	}
 
-	public PlayViewXtended(PacManGame game) {
-		super(game);
+	public PlayViewXtended(PacManGame game, PacManTheme theme) {
+		super(game, theme);
 		gridImage = createGridImage(Maze.ROWS, Maze.COLS);
 	}
 
@@ -123,7 +124,8 @@ public class PlayViewXtended extends PlayView {
 	private void toggleGhostActivationState(Ghost ghost) {
 		if (ghost.isActive()) {
 			ghost.deactivate();
-		} else {
+		}
+		else {
 			ghost.activate();
 		}
 	}

@@ -40,8 +40,8 @@ public class PacManApp extends Application {
 	@Override
 	public void init() {
 		PacManTheme theme = new ClassicPacManTheme();
-		PacManGame game = new PacManGame(theme);
-		PacManGameController gameController = new PacManGameController(game);
+		PacManGame game = new PacManGame();
+		PacManGameController gameController = new PacManGameController(game, theme);
 		setController(gameController);
 		setIcon(theme.spr_ghostFrightened().frame(0));
 		Logger.getLogger("StateMachineLogger").setLevel(Level.OFF);

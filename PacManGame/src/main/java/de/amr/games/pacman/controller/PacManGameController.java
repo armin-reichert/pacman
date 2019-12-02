@@ -77,10 +77,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	private boolean muted = false;
 
-	public PacManGameController(PacManGame game) {
+	public PacManGameController(PacManGame game, PacManTheme theme) {
 		super(PacManGameState.class);
 		this.game = game;
-		this.theme = game.theme;
+		this.theme = theme;
 		buildStateMachine();
 		setIgnoreUnknownEvents(true);
 		ghostAttackTimer = new GhostAttackTimer(() -> game.level);
@@ -91,25 +91,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	// View handling
 
-	private void showIntroView() {
-		if (introView == null) {
-			introView = new IntroView(game.theme);
-		}
-		show(introView);
-	}
-
-	private void showPlayView() {
-		if (playView == null) {
-			playView = new PlayViewXtended(game);
-			playView.ghostAttackTimer = ghostAttackTimer;
-		}
-		show(playView);
-	}
-
-	private void show(Controller controller) {
-		if (ui != controller) {
-			ui = controller;
-			controller.init();
+	private void showUI(Controller ui) {
+		if (this.ui != ui) {
+			this.ui = ui;
+			ui.init();
 		}
 	}
 
@@ -122,8 +107,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	@Override
 	public void init() {
+		introView = new IntroView(theme);
+		playView = new PlayViewXtended(game, theme);
+		playView.ghostAttackTimer = ghostAttackTimer;
 		super.init();
-		ui.init();
 	}
 
 	@Override
@@ -137,6 +124,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		super.update();
 		ui.update();
 	}
+
+	// Input
 
 	private void handleCheats() {
 		/* ALT-"K": Kill all ghosts */
@@ -224,7 +213,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				
 				.state(INTRO)
 					.onEntry(() -> {
-						showIntroView();
+						showUI(introView);
 						theme.snd_insertCoin().play();
 						theme.loadMusic();
 					})
@@ -296,7 +285,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			
 				.when(INTRO).then(GETTING_READY)
 					.condition(() -> introView.isComplete() || app().settings.getAsBoolean("skipIntro"))
-					.act(() -> showPlayView())
+					.act(() -> showUI(playView))
 				
 				.when(GETTING_READY).then(START_PLAYING)
 					.onTimeout()

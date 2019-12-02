@@ -16,6 +16,7 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class TakeShortestPathTestUI extends PlayViewXtended implements ViewController {
@@ -24,7 +25,7 @@ public class TakeShortestPathTestUI extends PlayViewXtended implements ViewContr
 	private int currentTarget;
 
 	public TakeShortestPathTestUI(PacManGame game) {
-		super(game);
+		super(game, new ClassicPacManTheme());
 		showRoutes = true;
 		showStates = true;
 		showScores = false;
@@ -39,7 +40,7 @@ public class TakeShortestPathTestUI extends PlayViewXtended implements ViewContr
 		showInfoText("F toggles FRIGHTENED CHASING", Color.YELLOW);
 		currentTarget = 0;
 		game.level = 1;
-		game.theme.snd_ghost_chase().volume(0);
+		theme.snd_ghost_chase().volume(0);
 		game.maze.removeFood();
 		game.blinky.activate();
 		game.blinky.init();

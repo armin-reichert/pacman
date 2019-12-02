@@ -9,12 +9,13 @@ import de.amr.games.pacman.actor.Actor;
 import de.amr.games.pacman.actor.behavior.pacman.PacManSteerings;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class PacManMovementTestUI extends PlayViewXtended implements ViewController {
 
 	public PacManMovementTestUI(PacManGame game) {
-		super(game);
+		super(game, new ClassicPacManTheme());
 		showScores = false;
 	}
 
@@ -25,7 +26,7 @@ public class PacManMovementTestUI extends PlayViewXtended implements ViewControl
 		game.pacMan.addListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
-				game.theme.snd_eatPill().play();
+				theme.snd_eatPill().play();
 				game.maze.removeFood(foodFound.tile);
 				if (game.maze.tiles().filter(game.maze::containsFood).count() == 0) {
 					game.maze.restoreFood();

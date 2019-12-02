@@ -15,6 +15,8 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.theme.GhostColor;
+import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.graph.grid.impl.Top4;
 
 /**
@@ -25,26 +27,32 @@ import de.amr.graph.grid.impl.Top4;
 public class PlayView implements View, Controller {
 
 	public final int width, height;
-	public final PacManGame game;
 	public boolean showScores;
-
+	public final PacManGame game;
+	protected final PacManTheme theme;
 	protected final MazeView mazeView;
 	protected final Image lifeImage;
 	protected String infoText;
 	protected Color infoTextColor;
 	protected int bonusTimer;
 
-	public PlayView(PacManGame game) {
+	public PlayView(PacManGame game, PacManTheme theme) {
 		this.game = game;
+		this.theme = theme;
 		width = app().settings.width;
 		height = app().settings.height;
-		lifeImage = game.theme.spr_pacManWalking(Top4.W).frame(1);
-		mazeView = new MazeView(game);
+		lifeImage = theme.spr_pacManWalking(Top4.W).frame(1);
+		mazeView = new MazeView(game, theme);
 		mazeView.tf.setPosition(0, 3 * TS);
 	}
 
 	@Override
 	public void init() {
+		theme.apply(game.pacMan);
+		theme.apply(game.blinky, GhostColor.RED);
+		theme.apply(game.pinky, GhostColor.PINK);
+		theme.apply(game.inky, GhostColor.CYAN);
+		theme.apply(game.clyde, GhostColor.ORANGE);
 		game.removeBonus();
 		bonusTimer = 0;
 		mazeView.setFlashing(false);
@@ -71,7 +79,7 @@ public class PlayView implements View, Controller {
 	}
 
 	public void setBonus(BonusSymbol symbol, int value) {
-		Bonus bonus = new Bonus(symbol, value, game.theme);
+		Bonus bonus = new Bonus(symbol, value, theme);
 		game.setBonus(bonus);
 		Tile bonusTile = game.maze.bonusTile;
 		bonus.tf.setPosition(bonusTile.col * TS + TS / 2, bonusTile.row * TS);
@@ -111,7 +119,7 @@ public class PlayView implements View, Controller {
 		if (showScores) {
 			// Points score
 			int score = game.score.getPoints();
-			g.setFont(game.theme.fnt_text());
+			g.setFont(theme.fnt_text());
 			g.setColor(Color.YELLOW);
 			g.drawString("SCORE", TS, TS);
 			g.setColor(Color.WHITE);
@@ -153,7 +161,7 @@ public class PlayView implements View, Controller {
 		g.translate(0, height - 2 * TS);
 		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
 			g.translate(mazeWidth - (n - i + 1) * 2 * TS, 0);
-			Image bonusImage = game.theme.spr_bonusSymbol(game.getLevelCounter().get(i)).frame(0);
+			Image bonusImage = theme.spr_bonusSymbol(game.getLevelCounter().get(i)).frame(0);
 			g.drawImage(bonusImage, 0, 0, 2 * TS, 2 * TS, null);
 			g.translate(-mazeWidth + (n - i + 1) * 2 * TS, 0);
 		}
@@ -166,7 +174,7 @@ public class PlayView implements View, Controller {
 		}
 		int mazeWidth = mazeView.sprites.current().get().getWidth();
 		Graphics2D g2 = (Graphics2D) g.create();
-		g2.setFont(game.theme.fnt_text(14));
+		g2.setFont(theme.fnt_text(14));
 		g2.setColor(infoTextColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(infoText, g2).getBounds();
 		g2.translate((mazeWidth - box.width) / 2, (game.maze.bonusTile.row + 1) * TS);

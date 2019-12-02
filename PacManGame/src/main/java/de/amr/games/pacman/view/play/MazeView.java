@@ -9,6 +9,7 @@ import de.amr.easy.game.ui.sprites.Animation;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.theme.PacManTheme;
 
 /**
  * Displays the maze and handles animations like blinking energizers.
@@ -18,16 +19,18 @@ import de.amr.games.pacman.model.PacManGame;
 public class MazeView extends Entity {
 
 	private final PacManGame game;
+	private final PacManTheme theme;
 	private final Animation energizerBlinking;
 	private boolean flashing;
 
-	public MazeView(PacManGame game) {
+	public MazeView(PacManGame game, PacManTheme theme) {
 		this.game = game;
+		this.theme = theme;
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
 		energizerBlinking.setEnabled(false);
-		sprites.set("normal", game.theme.spr_fullMaze());
-		sprites.set("flashing", game.theme.spr_flashingMaze());
+		sprites.set("normal", theme.spr_fullMaze());
+		sprites.set("flashing", theme.spr_flashingMaze());
 		setFlashing(false);
 	}
 
@@ -46,7 +49,7 @@ public class MazeView extends Entity {
 		Sprite currentSprite = sprites.current().get();
 		g.translate(tf.getX(), tf.getY());
 		// we must draw the background because the maze sprite is transparent
-		g.setColor(game.theme.color_mazeBackground());
+		g.setColor(theme.color_mazeBackground());
 		g.fillRect(0, 0, currentSprite.getWidth(), currentSprite.getHeight());
 		currentSprite.draw(g);
 		g.translate(-tf.getX(), -tf.getY());
@@ -55,7 +58,7 @@ public class MazeView extends Entity {
 			game.maze.tiles().forEach(tile -> {
 				if (game.maze.containsEatenFood(tile)
 						|| game.maze.containsEnergizer(tile) && energizerBlinking.currentFrame() == 1) {
-					g.setColor(game.theme.color_mazeBackground());
+					g.setColor(theme.color_mazeBackground());
 					g.fillRect(tile.col * TS, tile.row * TS, TS, TS);
 				}
 			});

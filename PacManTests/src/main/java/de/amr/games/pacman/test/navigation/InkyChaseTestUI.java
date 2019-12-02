@@ -10,12 +10,13 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class InkyChaseTestUI extends PlayViewXtended implements ViewController {
 
 	public InkyChaseTestUI(PacManGame game) {
-		super(game);
+		super(game, new ClassicPacManTheme());
 		showRoutes = true;
 		showStates = true;
 		showScores = false;
@@ -26,7 +27,7 @@ public class InkyChaseTestUI extends PlayViewXtended implements ViewController {
 		super.init();
 		game.level = 1;
 		game.maze.removeFood();
-		game.theme.snd_ghost_chase().volume(0);
+		theme.snd_ghost_chase().volume(0);
 		game.pacMan.init();
 		game.pacMan.activate();
 		game.inky.activate();

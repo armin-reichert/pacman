@@ -5,12 +5,13 @@ import static de.amr.games.pacman.actor.GhostState.CHASING;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.view.play.PlayViewXtended;
 
 public class OutsideTileTestUI extends PlayViewXtended implements ViewController {
 
 	public OutsideTileTestUI(PacManGame game) {
-		super(game);
+		super(game, new ClassicPacManTheme());
 		showRoutes = true;
 		showStates = true;
 		showScores = false;
@@ -20,7 +21,7 @@ public class OutsideTileTestUI extends PlayViewXtended implements ViewController
 	public void init() {
 		super.init();
 		game.level = 1;
-		game.theme.snd_ghost_chase().volume(0);
+		theme.snd_ghost_chase().volume(0);
 		game.blinky.activate();
 		game.blinky.fnChasingTarget = () -> game.maze.tileAt(100, game.maze.tunnelRightExit.row);
 		game.blinky.init();
