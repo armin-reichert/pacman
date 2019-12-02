@@ -278,9 +278,21 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					})
 				
 				.state(GAME_OVER)
-					.impl(new GameOverState())
 					.timeoutAfter(() -> sec(60))
-	
+					.onEntry(() -> {
+						LOGGER.info("Game is over");
+						game.score.save();
+						game.activeGhosts().forEach(Ghost::show);
+						game.getBonus().ifPresent(Bonus::hide);
+						playView.enableAnimation(false);
+						theme.music_gameover().loop();
+						playView.showInfoText("Game Over!", Color.RED);
+					})
+					.onExit(() -> {
+						theme.music_gameover().stop();
+						playView.hideInfoText();
+					})
+
 			.transitions()
 			
 				.when(INTRO).then(GETTING_READY)
@@ -503,12 +515,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onEntry() {
 			game.pacMan.hide();
-			boolean extraLife = game.scorePoints(game.getKilledGhostValue());
+			int points = 200 * (int) Math.pow(2, game.numGhostsKilledByEnergizer);
+			boolean extraLife = game.scorePoints(points);
+			LOGGER.info(() -> String.format("Scored %d points for killing %s ghost", points,
+					new String[] { "first", "2nd", "3rd", "4th" }[game.numGhostsKilledByEnergizer]));
 			if (extraLife) {
 				theme.snd_extraLife().play();
 			}
-			LOGGER.info(() -> String.format("Scored %d points for killing ghost #%d", game.getKilledGhostValue(),
-					game.numGhostsKilledByEnergizer));
+			game.numGhostsKilledByEnergizer += 1;
 		}
 
 		@Override
@@ -521,29 +535,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onExit() {
 			game.pacMan.show();
-		}
-	}
-
-	/**
-	 * "Game over" state implementation.
-	 */
-	private class GameOverState extends State<PacManGameState, PacManGameEvent> {
-
-		@Override
-		public void onEntry() {
-			LOGGER.info("Game is over");
-			game.score.save();
-			game.activeGhosts().forEach(Ghost::show);
-			game.getBonus().ifPresent(Bonus::hide);
-			playView.enableAnimation(false);
-			playView.showInfoText("Game Over!", Color.RED);
-			theme.music_gameover().loop();
-		}
-
-		@Override
-		public void onExit() {
-			playView.hideInfoText();
-			theme.music_gameover().stop();
 		}
 	}
 }

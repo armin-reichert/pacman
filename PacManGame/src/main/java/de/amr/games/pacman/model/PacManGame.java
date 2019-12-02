@@ -299,14 +299,6 @@ public class PacManGame {
 		return false;
 	}
 
-	public int getKilledGhostValue() {
-		int value = 200;
-		for (int i = 1; i < numGhostsKilledByEnergizer; ++i) {
-			value *= 2;
-		}
-		return value;
-	}
-
 	// Bonus handling
 
 	public Optional<Bonus> getBonus() {
