@@ -261,17 +261,19 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				
 				.state(PACMAN_DYING)
 					.onEntry(() -> {
-						theme.music_playing().stop();
-						game.activeGhosts().forEach(Ghost::hide);
 						state().setTimerFunction(() -> game.lives > 1 ? sec(6) : sec(4));
 						state().resetTimer();
+						theme.music_playing().stop();
 						game.removeLife();
 					})
 					.onTick(() -> {
-						if (getTicksRemaining() > sec(2)) {
+						if (state().getTicksConsumed() == sec(1)) {
+							game.activeGhosts().forEach(Ghost::hide);
+						}
+						if (state().getTicksRemaining() > sec(2)) {
 							game.pacMan.update();
 						}
-						if (game.lives > 0 && getTicksRemaining() == sec(2)) {
+						if (game.lives > 0 && state().getTicksRemaining() == sec(2)) {
 							game.activeActors().forEach(MazeMover::init);
 							game.activeGhosts().forEach(Ghost::show);
 							playView.init();
