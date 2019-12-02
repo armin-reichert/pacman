@@ -10,8 +10,8 @@ import static de.amr.games.pacman.controller.PacManGameState.GHOST_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
-import static de.amr.games.pacman.controller.PacManGameState.READY;
-import static de.amr.games.pacman.controller.PacManGameState.READY_MUSIC;
+import static de.amr.games.pacman.controller.PacManGameState.START_PLAYING;
+import static de.amr.games.pacman.controller.PacManGameState.GETTING_READY;
 import static de.amr.games.pacman.model.PacManGame.sec;
 import static de.amr.games.pacman.model.PacManGame.LevelData.MAZE_NUM_FLASHES;
 
@@ -57,7 +57,8 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements ViewController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
+		implements ViewController {
 
 	// Typed reference to "Playing" state object
 	private PlayingState playingState;
@@ -81,6 +82,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		this.game = game;
 		this.theme = game.theme;
 		buildStateMachine();
+		setIgnoreUnknownEvents(true);
 		ghostAttackController = new GhostAttackController(() -> game.level);
 		game.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackController::getState);
 		game.pacMan.addListener(this::process);
@@ -188,9 +190,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void handlePlayingSpeedChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
 			app().clock.setFrequency(60);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
 			app().clock.setFrequency(80);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
 			app().clock.setFrequency(100);
 		}
 	}
@@ -202,7 +206,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			boolean original = app().settings.getAsBoolean(property);
 			game.ghosts().forEach(ghost -> ghost.setSteering(GhostState.FRIGHTENED,
 					original ? movingRandomly() : fleeingToSafeCorner(game.pacMan)));
-			LOGGER.info("Changed ghost FRIGHTENED behavior to " + (original ? "original" : "escape via safe route"));
+			LOGGER
+					.info("Changed ghost FRIGHTENED behavior to " + (original ? "original" : "escape via safe route"));
 		}
 	}
 
@@ -224,7 +229,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						theme.loadMusic();
 					})
 				
-				.state(READY_MUSIC)
+				.state(GETTING_READY)
 					.timeoutAfter(() -> sec(5))
 					.onEntry(() -> {
 						theme.snd_clips_all().forEach(Sound::stop);
@@ -237,7 +242,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						playView.showInfoText("Ready!", Color.YELLOW);
 					})
 				
-				.state(READY)
+				.state(START_PLAYING)
 					.timeoutAfter(() -> sec(1.7f))
 					.onEntry(() -> {
 						playView.hideInfoText();
@@ -289,14 +294,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	
 			.transitions()
 			
-				.when(INTRO).then(READY_MUSIC)
+				.when(INTRO).then(GETTING_READY)
 					.condition(() -> introView.isComplete() || app().settings.getAsBoolean("skipIntro"))
 					.act(() -> showPlayView())
 				
-				.when(READY_MUSIC).then(READY)
+				.when(GETTING_READY).then(START_PLAYING)
 					.onTimeout()
 				
-				.when(READY).then(PLAYING)
+				.when(START_PLAYING).then(PLAYING)
 					.onTimeout()
 					
 				.stay(PLAYING)
@@ -337,18 +342,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.when(CHANGING_LEVEL).then(PLAYING)
 					.onTimeout()
 					
-				.stay(CHANGING_LEVEL)
-					.on(PacManGettingWeakerEvent.class)
-			
-				.stay(CHANGING_LEVEL)
-					.on(PacManLostPowerEvent.class)
-				
-				.stay(GHOST_DYING)
-					.on(PacManGettingWeakerEvent.class)
-				
-				.stay(GHOST_DYING)
-					.on(PacManLostPowerEvent.class)
-					
 				.when(GHOST_DYING).then(PLAYING)
 					.onTimeout()
 					
@@ -360,7 +353,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onTimeout()
 					.condition(() -> game.pacMan.lives > 0)
 			
-				.when(GAME_OVER).then(READY_MUSIC)
+				.when(GAME_OVER).then(GETTING_READY)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 					
 				.when(GAME_OVER).then(INTRO)
@@ -391,13 +384,16 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			for (Ghost ghost : ghosts) {
 				if (ghost.getState() == GhostState.LOCKED && game.canLeaveHouse(ghost)) {
 					ghost.process(new GhostUnlockedEvent());
-				} else if (ghost.getState() == GhostState.CHASING
+				}
+				else if (ghost.getState() == GhostState.CHASING
 						&& ghostAttackController.getState() == GhostState.SCATTERING) {
 					ghost.process(new StartScatteringEvent());
-				} else if (ghost.getState() == GhostState.SCATTERING
+				}
+				else if (ghost.getState() == GhostState.SCATTERING
 						&& ghostAttackController.getState() == GhostState.CHASING) {
 					ghost.process(new StartChasingEvent());
-				} else {
+				}
+				else {
 					ghost.update();
 				}
 			}
@@ -545,7 +541,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onTick() {
-			game.activeGhosts().filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
+			game.activeGhosts()
+					.filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
 					.forEach(Ghost::update);
 		}
 
