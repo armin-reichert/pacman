@@ -100,7 +100,7 @@ public class PlayView implements View, Controller {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		if (game.isActive(game.pacMan)) {
+		if (game.pacMan.isActive()) {
 			game.pacMan.draw(g);
 		}
 		game.activeGhosts().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));

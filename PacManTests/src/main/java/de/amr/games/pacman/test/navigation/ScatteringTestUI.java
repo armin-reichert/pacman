@@ -27,7 +27,7 @@ public class ScatteringTestUI extends PlayViewXtended implements ViewController 
 		game.level = 1;
 		game.maze.removeFood();
 		game.ghosts().forEach(ghost -> {
-			game.setActive(ghost, true);
+			ghost.activate(true);
 			ghost.init();
 			ghost.fnNextState = () -> GhostState.SCATTERING;
 		});

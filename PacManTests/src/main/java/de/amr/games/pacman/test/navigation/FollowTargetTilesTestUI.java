@@ -37,7 +37,7 @@ public class FollowTargetTilesTestUI extends PlayViewXtended implements ViewCont
 		game.level = 1;
 		game.maze.removeFood();
 		game.theme.snd_ghost_chase().volume(0);
-		game.setActive(game.blinky, true);
+		game.blinky.activate(true);
 		game.blinky.init();
 		game.blinky.fnChasingTarget = () -> targets.get(current);
 		game.blinky.placeAtTile(targets.get(0), 0, 0);

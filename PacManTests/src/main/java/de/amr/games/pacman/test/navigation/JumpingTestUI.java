@@ -21,7 +21,7 @@ public class JumpingTestUI extends PlayViewXtended implements ViewController {
 		game.init();
 		game.maze.removeFood();
 		game.activeGhosts().forEach(ghost -> {
-			game.setActive(ghost, true);
+			ghost.activate(true);
 			ghost.init();
 		});
 	}

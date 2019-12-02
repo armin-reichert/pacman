@@ -121,7 +121,7 @@ public class PlayViewXtended extends PlayView {
 	}
 
 	private void toggleGhostActivationState(Ghost ghost) {
-		game.setActive(ghost, !game.isActive(ghost));
+		ghost.activate(!ghost.isActive());
 	}
 
 	@Override
