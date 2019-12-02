@@ -11,6 +11,7 @@ import static de.amr.games.pacman.controller.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
 import static de.amr.games.pacman.controller.PacManGameState.READY;
+import static de.amr.games.pacman.controller.PacManGameState.READY_MUSIC;
 import static de.amr.games.pacman.model.PacManGame.sec;
 import static de.amr.games.pacman.model.PacManGame.LevelData.MAZE_NUM_FLASHES;
 
@@ -26,11 +27,11 @@ import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
+import de.amr.games.pacman.actor.Actor;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeMover;
-import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -150,7 +151,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
 			if (getState() == PacManGameState.PLAYING) {
 				LOGGER.info(() -> String.format("Switch to next level (%d)", game.level + 1));
-				process(new LevelCompletedEvent());
+				enqueue(new LevelCompletedEvent());
 			}
 		}
 		/* ALT-"I": Makes Pac-Man immortable */
@@ -223,8 +224,30 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						theme.loadMusic();
 					})
 				
+				.state(READY_MUSIC)
+					.timeoutAfter(() -> sec(5))
+					.onEntry(() -> {
+						theme.snd_clips_all().forEach(Sound::stop);
+						theme.snd_ready().play();
+						game.init();
+						game.activeActors().forEach(MazeMover::init);
+						playView.init();
+						playView.showScores = true;
+						playView.enableAnimation(false);
+						playView.showInfoText("Ready!", Color.YELLOW);
+					})
+				
 				.state(READY)
-					.impl(new ReadyState())
+					.timeoutAfter(() -> sec(1.7f))
+					.onEntry(() -> {
+						playView.hideInfoText();
+						playView.enableAnimation(true);
+						theme.music_playing().volume(1f);
+						theme.music_playing().loop();
+					})
+					.onTick(() -> {
+						game.activeGhosts().forEach(Ghost::update);
+					})
 				
 				.state(PLAYING)
 					.impl(playingState = new PlayingState())
@@ -237,21 +260,40 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.timeoutAfter(Ghost::getDyingTime)
 				
 				.state(PACMAN_DYING)
-					.impl(new PacManDyingState())
+					.onEntry(() -> {
+						theme.music_playing().stop();
+						game.activeGhosts().forEach(Ghost::hide);
+						state().setTimerFunction(() -> game.lives > 1 ? sec(6) : sec(4));
+						state().resetTimer();
+						game.removeLife();
+					})
+					.onTick(() -> {
+						if (getTicksRemaining() > sec(2)) {
+							game.pacMan.update();
+						}
+						if (game.lives > 0 && getTicksRemaining() == sec(2)) {
+							game.activeActors().forEach(MazeMover::init);
+							game.activeGhosts().forEach(Ghost::show);
+							playView.init();
+							theme.music_playing().loop();
+						}
+					})
 				
 				.state(GAME_OVER)
 					.impl(new GameOverState())
-					.timeoutAfter(() -> app().clock.sec(60))
+					.timeoutAfter(() -> sec(60))
 	
 			.transitions()
 			
-				.when(INTRO).then(READY)
+				.when(INTRO).then(READY_MUSIC)
 					.condition(() -> introView.isComplete() || app().settings.getAsBoolean("skipIntro"))
 					.act(() -> showPlayView())
 				
+				.when(READY_MUSIC).then(READY)
+					.onTimeout()
+				
 				.when(READY).then(PLAYING)
 					.onTimeout()
-					.act(() -> playingState.resetTimer())
 					
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
@@ -307,17 +349,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onTimeout()
 					
 				.when(PACMAN_DYING).then(GAME_OVER)
-					.condition(() -> game.pacMan.getState() == PacManState.DEAD && game.lives == 0)
+					.onTimeout()
+					.condition(() -> game.lives == 0)
 					
 				.when(PACMAN_DYING).then(PLAYING)
-					.condition(() -> game.pacMan.getState() == PacManState.DEAD && game.lives > 0)
-					.act(() -> {
-						game.activeActors().forEach(MazeMover::init);
-						playView.init();
-						playingState.resetTimer();
-					})
+					.onTimeout()
+					.condition(() -> game.lives > 0)
 			
-				.when(GAME_OVER).then(READY)
+				.when(GAME_OVER).then(READY_MUSIC)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 					
 				.when(GAME_OVER).then(INTRO)
@@ -330,61 +369,18 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	// Classes implementing the FSM states:
 
 	/**
-	 * "Ready" state implementation.
-	 */
-	private class ReadyState extends State<PacManGameState, PacManGameEvent> {
-
-		{ // just to demonstrate that timer can also be set here
-			setTimerFunction(() -> app().clock.sec(4.5f));
-		}
-
-		@Override
-		public void onEntry() {
-			game.init();
-			game.removeLife();
-			game.activeActors().forEach(MazeMover::init);
-			playView.init();
-			playView.showScores = true;
-			playView.enableAnimation(false);
-			playView.showInfoText("Ready!", Color.YELLOW);
-			theme.snd_clips_all().forEach(Sound::stop);
-			theme.snd_ready().play();
-		}
-
-		@Override
-		public void onExit() {
-			playView.enableAnimation(true);
-			playView.hideInfoText();
-			theme.music_playing().volume(1f);
-			theme.music_playing().loop();
-		}
-	}
-
-	/**
 	 * "Playing" state implementation.
 	 */
 	private class PlayingState extends State<PacManGameState, PacManGameEvent> {
 
-		{
-			setTimerFunction(() -> sec(1.7f)); // initial wait time
-		}
-
 		@Override
 		public void onEntry() {
-			resetTimer();
 			ghostAttackController.init();
 			game.activeGhosts().forEach(Ghost::show);
 		}
 
 		@Override
 		public void onTick() {
-			if (getTicksRemaining() > 0) {
-				if (getTicksRemaining() == 1) {
-					playView.hideInfoText();
-				}
-				return;
-			}
-
 			game.pacMan.update();
 			ghostAttackController.update();
 			Iterable<Ghost> ghosts = game.activeGhosts()::iterator;
@@ -502,38 +498,28 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	 */
 	private class ChangingLevelState extends State<PacManGameState, PacManGameEvent> {
 
-		int numMazeFlashes() {
-			return MAZE_NUM_FLASHES.$int(game.level);
-		}
-
-		/*
-		 * Set state duration such that flashing animation is executed exact number of
-		 * times defined for each level. One flash takes half a second.
-		 */
-		{
-			setTimerFunction(() -> app().clock.sec(0.5f * numMazeFlashes()));
-		}
-
 		@Override
 		public void onEntry() {
 			theme.snd_clips_all().forEach(Sound::stop);
 			game.activeGhosts().forEach(Ghost::hide);
 			game.pacMan.sprites.select("full");
-			playView.hideInfoText();
+			int numFlashes = MAZE_NUM_FLASHES.$int(game.level);
+			setTimerFunction(() -> sec(2 + 0.5f * numFlashes));
 			resetTimer();
-			if (numMazeFlashes() > 0) {
+			if (numFlashes > 0) {
 				playView.setMazeFlashing(true);
 			}
 		}
 
 		@Override
-		public void onExit() {
-			game.nextLevel();
-			LOGGER.info("Entered game level " + game.level);
-			game.activeActors().forEach(MazeMover::init);
-			playView.init();
-			playView.showInfoText("Ready!", Color.YELLOW);
-			playingState.resetTimer();
+		public void onTick() {
+			if (getTicksRemaining() == sec(2)) {
+				playView.setMazeFlashing(false);
+				game.nextLevel();
+				game.activeActors().forEach(Actor::init);
+				playView.init();
+				LOGGER.info("Entered game level " + game.level);
+			}
 		}
 	}
 
@@ -562,41 +548,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onExit() {
 			game.pacMan.show();
-		}
-	}
-
-	/**
-	 * "Pac-Man dying" state implementation.
-	 */
-	private class PacManDyingState extends State<PacManGameState, PacManGameEvent> {
-
-		private int waitTimer;
-
-		@Override
-		public void onEntry() {
-			theme.music_playing().stop();
-			waitTimer = app().clock.sec(1);
-		}
-
-		@Override
-		public void onTick() {
-			if (waitTimer > 0) {
-				waitTimer -= 1;
-				if (waitTimer == 0) {
-					game.activeGhosts().forEach(Ghost::hide);
-				}
-			} else {
-				game.pacMan.update();
-			}
-		}
-
-		@Override
-		public void onExit() {
-			game.activeGhosts().forEach(Ghost::show);
-			if (game.lives > 0) {
-				game.removeLife();
-				theme.music_playing().loop();
-			}
 		}
 	}
 
