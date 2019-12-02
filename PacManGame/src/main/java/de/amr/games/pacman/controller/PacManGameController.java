@@ -261,10 +261,12 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				
 				.state(PACMAN_DYING)
 					.onEntry(() -> {
-						state().setTimerFunction(() -> game.lives > 1 ? sec(6) : sec(4));
+						state().setTimerFunction(() -> game.pacMan.lives > 1 ? sec(6) : sec(4));
 						state().resetTimer();
 						theme.music_playing().stop();
-						game.removeLife();
+						if (!app().settings.getAsBoolean("pacMan.immortable")) {
+							game.pacMan.lives -= 1;
+						}
 					})
 					.onTick(() -> {
 						if (state().getTicksConsumed() < sec(2)) {
@@ -273,7 +275,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						if (state().getTicksConsumed() == sec(1)) {
 							game.activeGhosts().forEach(Ghost::hide);
 						}
-						if (game.lives > 0 && state().getTicksConsumed() == sec(4)) {
+						if (game.pacMan.lives > 0 && state().getTicksConsumed() == sec(4)) {
 							game.activeActors().forEach(Actor::init);
 							game.activeGhosts().forEach(Ghost::show);
 							playView.init();
@@ -352,11 +354,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					
 				.when(PACMAN_DYING).then(GAME_OVER)
 					.onTimeout()
-					.condition(() -> game.lives == 0)
+					.condition(() -> game.pacMan.lives == 0)
 					
 				.when(PACMAN_DYING).then(PLAYING)
 					.onTimeout()
-					.condition(() -> game.lives > 0)
+					.condition(() -> game.pacMan.lives > 0)
 			
 				.when(GAME_OVER).then(READY_MUSIC)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))

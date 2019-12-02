@@ -39,6 +39,7 @@ import de.amr.statemachine.StateMachine;
  */
 public class PacMan extends Actor<PacManState> {
 
+	public int lives;
 	public int ticksSinceLastMeal;
 	public Steering<PacMan> steering;
 
@@ -170,16 +171,13 @@ public class PacMan extends Actor<PacManState> {
 		public void onTick() {
 			if (startsLosingPower()) {
 				publish(new PacManGettingWeakerEvent());
-			}
-			else if (getTicksRemaining() == 1) {
+			} else if (getTicksRemaining() == 1) {
 				setTimerFunction(() -> 0);
 				game.theme.snd_waza().stop();
 				publish(new PacManLostPowerEvent());
-			}
-			else if (mustDigest()) {
+			} else if (mustDigest()) {
 				digest();
-			}
-			else {
+			} else {
 				steer();
 				move();
 				findSomethingInteresting().ifPresent(PacMan.this::publish);
@@ -232,8 +230,7 @@ public class PacMan extends Actor<PacManState> {
 				boolean energizer = maze.containsEnergizer(pacManTile);
 				digestionTicks = game.getDigestionTicks(energizer);
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			}
-			else {
+			} else {
 				ticksSinceLastMeal += 1;
 			}
 
