@@ -265,7 +265,7 @@ public class PacManGame {
 		bonus = null;
 		levelCounter.clear();
 		score.loadHiscore();
-		actors().forEach(actor -> actor.activate(true));
+		actors().forEach(Actor::activate);
 		nextLevel();
 	}
 

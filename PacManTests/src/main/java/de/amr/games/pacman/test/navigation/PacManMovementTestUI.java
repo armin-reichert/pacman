@@ -32,7 +32,7 @@ public class PacManMovementTestUI extends PlayViewXtended implements ViewControl
 				}
 			}
 		});
-		game.pacMan.activate(true);
+		game.pacMan.activate();
 		game.pacMan.init();
 	}
 

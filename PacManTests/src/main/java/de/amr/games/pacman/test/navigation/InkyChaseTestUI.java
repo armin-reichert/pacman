@@ -28,9 +28,9 @@ public class InkyChaseTestUI extends PlayViewXtended implements ViewController {
 		game.maze.removeFood();
 		game.theme.snd_ghost_chase().volume(0);
 		game.pacMan.init();
-		game.pacMan.activate(true);
-		game.inky.activate(true);
-		game.blinky.activate(true);
+		game.pacMan.activate();
+		game.inky.activate();
+		game.blinky.activate();
 		game.activeGhosts().forEach(ghost -> {
 			ghost.init();
 			ghost.fnNextState = () -> GhostState.CHASING;

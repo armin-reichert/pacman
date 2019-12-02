@@ -33,7 +33,7 @@ public class FollowMouseTestUI extends PlayViewXtended implements ViewController
 		game.theme.snd_ghost_chase().volume(0);
 		game.level = 1;
 		game.maze.removeFood();
-		game.blinky.activate(true);
+		game.blinky.activate();
 		game.blinky.init();
 		game.blinky.fnChasingTarget = () -> mouseTile;
 		game.blinky.setState(CHASING);

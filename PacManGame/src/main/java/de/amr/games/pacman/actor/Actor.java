@@ -41,19 +41,17 @@ public abstract class Actor<S> extends MazeMover {
 		listeners = new LinkedHashSet<>();
 	}
 
-	public void activate(boolean newState) {
-		if (active != newState) {
-			active = newState;
-			if (active) {
-				init();
-				show();
-				LOGGER.info(() -> name + " activated");
-			}
-			else {
-				hide();
-				LOGGER.info(() -> name + " deactivated");
-			}
-		}
+	public void activate() {
+		active = true;
+		init();
+		show();
+		LOGGER.info(() -> name + " activated");
+	}
+
+	public void deactivate() {
+		active = false;
+		hide();
+		LOGGER.info(() -> name + " deactivated");
 	}
 
 	public boolean isActive() {
