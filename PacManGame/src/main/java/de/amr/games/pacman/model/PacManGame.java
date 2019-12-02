@@ -170,28 +170,29 @@ public class PacManGame {
 	public PacManGame() {
 		maze = new Maze();
 		totalFoodInMaze = (int) maze.tiles().filter(maze::containsFood).count();
-		score = new Score(this);
+		
+		score = new Score();
 
 		pacMan = new PacMan(this);
 		pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
 
 		blinky = new Ghost(this, maze, "Blinky");
-		blinky.initialTile = maze.blinkyHome;
 		blinky.initialDir = Top4.W;
+		blinky.initialTile = maze.blinkyHome;
 		blinky.scatterTile = maze.blinkyScatter;
 		blinky.revivalTile = maze.pinkyHome;
 		blinky.fnChasingTarget = pacMan::currentTile;
 
 		pinky = new Ghost(this, maze, "Pinky");
-		pinky.initialTile = maze.pinkyHome;
 		pinky.initialDir = Top4.S;
+		pinky.initialTile = maze.pinkyHome;
 		pinky.scatterTile = maze.pinkyScatter;
 		pinky.revivalTile = maze.pinkyHome;
 		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
 
 		inky = new Ghost(this, maze, "Inky");
-		inky.initialTile = maze.inkyHome;
 		inky.initialDir = Top4.N;
+		inky.initialTile = maze.inkyHome;
 		inky.scatterTile = maze.inkyScatter;
 		inky.revivalTile = maze.inkyHome;
 		inky.fnChasingTarget = () -> {
@@ -200,8 +201,8 @@ public class PacManGame {
 		};
 
 		clyde = new Ghost(this, maze, "Clyde");
-		clyde.initialTile = maze.clydeHome;
 		clyde.initialDir = Top4.N;
+		clyde.initialTile = maze.clydeHome;
 		clyde.scatterTile = maze.clydeScatter;
 		clyde.revivalTile = maze.clydeHome;
 		clyde.fnChasingTarget = () -> Vector2f.euclideanDist(clyde.tf.getCenter(), pacMan.tf.getCenter()) > 8
@@ -291,7 +292,7 @@ public class PacManGame {
 	public boolean scorePoints(int points) {
 		int oldScore = score.getPoints();
 		int newScore = oldScore + points;
-		score.set(newScore);
+		score.set(level, newScore);
 		if (oldScore < 10_000 && 10_000 <= newScore) {
 			pacMan.lives += 1;
 			return true;

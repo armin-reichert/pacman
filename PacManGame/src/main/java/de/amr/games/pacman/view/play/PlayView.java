@@ -28,12 +28,11 @@ import de.amr.graph.grid.impl.Top4;
 public class PlayView implements View, Controller {
 
 	public boolean showScores;
-
 	protected final PacManGame game;
-	protected Dimension size;
+	protected final Dimension size;
 	protected final MazeView mazeView;
-	protected Image lifeImage;
 	protected PacManTheme theme;
+	protected Image lifeImage;
 	protected String infoText;
 	protected Color infoTextColor;
 	protected int bonusTimer;

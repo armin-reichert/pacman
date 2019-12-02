@@ -11,14 +11,12 @@ import java.util.Properties;
 
 public class Score {
 
-	private PacManGame game;
 	private File file;
 	private int points;
 	private int hiscorePoints;
 	private int hiscoreLevel;
 
-	public Score(PacManGame game) {
-		this.game = game;
+	public Score() {
 		file = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
 	}
 
@@ -52,11 +50,11 @@ public class Score {
 		}
 	}
 
-	public void set(int n) {
-		points = n;
+	public void set(int level, int score) {
+		points = score;
 		if (points > hiscorePoints) {
 			hiscorePoints = points;
-			hiscoreLevel = game.level;
+			hiscoreLevel = level;
 		}
 	}
 
