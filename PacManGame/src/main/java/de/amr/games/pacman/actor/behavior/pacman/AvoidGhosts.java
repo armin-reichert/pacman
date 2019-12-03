@@ -17,7 +17,7 @@ public class AvoidGhosts implements Steering<PacMan> {
 	public void steer(PacMan pacMan) {
 		/*@formatter:off*/
 		pacMan.game.activeGhosts()
-			.filter(ghost -> !pacMan.maze.inGhostHouse(ghost.currentTile()))
+			.filter(ghost -> !pacMan.maze.inGhostHouse(ghost.tile()))
 			.sorted(bySmallestDistanceTo(pacMan))
 			.findFirst()
 			.ifPresent(ghost -> {
@@ -31,7 +31,7 @@ public class AvoidGhosts implements Steering<PacMan> {
 	}
 
 	private Comparator<Integer> byLargestDistanceOfNeighborTile(PacMan pacMan, Ghost ghost) {
-		Tile pacManTile = pacMan.currentTile(), ghostTile = ghost.currentTile();
+		Tile pacManTile = pacMan.tile(), ghostTile = ghost.tile();
 		return (dir1, dir2) -> {
 			Tile neighborTile1 = pacMan.maze.tileToDir(pacManTile, dir1),
 					neighborTile2 = pacMan.maze.tileToDir(pacManTile, dir2);
@@ -40,7 +40,7 @@ public class AvoidGhosts implements Steering<PacMan> {
 	}
 
 	private Comparator<Ghost> bySmallestDistanceTo(PacMan pacMan) {
-		return (ghost1, ghost2) -> Integer.compare(pacMan.distanceSq(ghost1), pacMan.distanceSq(ghost2));
+		return (ghost1, ghost2) -> Integer.compare(pacMan.tileDistanceSq(ghost1), pacMan.tileDistanceSq(ghost2));
 	}
 
 	private int randomAccessibleDir(PacMan pacMan) {

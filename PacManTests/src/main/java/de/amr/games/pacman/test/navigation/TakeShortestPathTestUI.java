@@ -64,7 +64,7 @@ public class TakeShortestPathTestUI extends PlayViewXtended implements ViewContr
 			game.blinky.setState(game.blinky.getState() == CHASING ? FRIGHTENED : CHASING);
 		}
 		game.blinky.update();
-		if (game.blinky.currentTile().equals(targets.get(currentTarget))) {
+		if (game.blinky.tile().equals(targets.get(currentTarget))) {
 			nextTarget();
 		}
 		super.update();

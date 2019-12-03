@@ -196,7 +196,7 @@ public class PacMan extends Actor<PacManState> {
 		}
 
 		private Optional<PacManGameEvent> findSomethingInteresting() {
-			Tile pacManTile = currentTile();
+			Tile pacManTile = tile();
 
 			if (!maze.insideBoard(pacManTile) || !visible) {
 				return Optional.empty(); // when teleporting no events are triggered
@@ -205,7 +205,7 @@ public class PacMan extends Actor<PacManState> {
 			/*@formatter:off*/
 			Optional<PacManGameEvent> ghostCollision = game.activeGhosts()
 				.filter(Ghost::visible)
-				.filter(ghost -> ghost.currentTile().equals(pacManTile))
+				.filter(ghost -> ghost.tile().equals(pacManTile))
 				.filter(ghost -> ghost.getState() == GhostState.CHASING
 					|| ghost.getState() == GhostState.SCATTERING
 					|| ghost.getState() == GhostState.FRIGHTENED)

@@ -46,7 +46,7 @@ public class FollowTargetTilesTestUI extends PlayViewXtended implements ViewCont
 
 	@Override
 	public void update() {
-		if (game.blinky.currentTile() == targets.get(current)) {
+		if (game.blinky.tile() == targets.get(current)) {
 			current += 1;
 			if (current == targets.size()) {
 				current = 0;

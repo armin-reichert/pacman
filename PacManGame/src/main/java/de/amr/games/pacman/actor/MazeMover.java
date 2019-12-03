@@ -54,13 +54,14 @@ public abstract class MazeMover extends Entity {
 	}
 
 	/**
-	 * Returns the squared straight line distance to the other actor.
+	 * Returns the squared straight line distance to the other actor measured in
+	 * tile size.
 	 * 
 	 * @param other other actor
 	 * @return Euclidean distance (squared) in tile coordinates
 	 */
-	public int distanceSq(MazeMover other) {
-		return Tile.distanceSq(currentTile(), other.currentTile());
+	public int tileDistanceSq(MazeMover other) {
+		return Tile.distanceSq(tile(), other.tile());
 	}
 
 	/**
@@ -125,7 +126,7 @@ public abstract class MazeMover extends Entity {
 	 * intended move direction, moving around corners without losing alignment,
 	 */
 	private void moveInsideMaze() {
-		Tile oldTile = currentTile();
+		Tile oldTile = tile();
 		float speed = allowedSpeed(nextDir);
 		if (speed > 0) {
 			if (nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir)) {
@@ -138,7 +139,7 @@ public abstract class MazeMover extends Entity {
 		Vector2f direction = Vector2f.of(NESW.dx(moveDir), NESW.dy(moveDir));
 		tf.setVelocity(Vector2f.smul(speed, direction));
 		tf.move();
-		enteredNewTile = !oldTile.equals(currentTile());
+		enteredNewTile = !oldTile.equals(tile());
 	}
 
 	/*
@@ -172,9 +173,12 @@ public abstract class MazeMover extends Entity {
 	}
 
 	/**
-	 * @return the tile containing the center of this entity's collision box
+	 * Returns the current tile of this actor which is the tile containing the
+	 * center of the actor's collision box.
+	 * 
+	 * @return the current tile of this actor
 	 */
-	public Tile currentTile() {
+	public Tile tile() {
 		return maze.tileAt(col(), row());
 	}
 
@@ -184,7 +188,7 @@ public abstract class MazeMover extends Entity {
 	 *         towards his current move direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
-		Tile tileAhead = maze.tileToDir(currentTile(), moveDir, numTiles);
+		Tile tileAhead = maze.tileToDir(tile(), moveDir, numTiles);
 		if (moveDir == Top4.N && app().settings.getAsBoolean("overflowBug")) {
 			return maze.tileToDir(tileAhead, Top4.W, numTiles);
 		}
@@ -199,7 +203,7 @@ public abstract class MazeMover extends Entity {
 	 * @param yOffset pixel offset in y-direction
 	 */
 	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
-		enteredNewTile = !tile.equals(currentTile());
+		enteredNewTile = !tile.equals(tile());
 		tf.setPosition(tile.col * TS + xOffset, tile.row * TS + yOffset);
 	}
 
@@ -230,7 +234,7 @@ public abstract class MazeMover extends Entity {
 	 *         direction
 	 */
 	public boolean canCrossBorderTo(int dir) {
-		Tile currentTile = currentTile();
+		Tile currentTile = tile();
 		return canMoveBetween(currentTile, maze.tileToDir(currentTile, dir));
 	}
 

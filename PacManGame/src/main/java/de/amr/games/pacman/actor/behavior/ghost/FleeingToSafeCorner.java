@@ -28,16 +28,16 @@ class FleeingToSafeCorner<T extends MazeMover> extends TakingPrecomputedPath<T> 
 
 	@Override
 	protected List<Tile> computePath(T refugee) {
-		Tile target = refugee.currentTile();
-		while (target.equals(refugee.currentTile())) {
+		Tile target = refugee.tile();
+		while (target.equals(refugee.tile())) {
 			target = safeCorner(refugee);
 		}
-		return refugee.maze.findPath(refugee.currentTile(), target);
+		return refugee.maze.findPath(refugee.tile(), target);
 	}
 
 	private Tile safeCorner(T refugee) {
 		Maze maze = refugee.maze;
-		Tile refugeeTile = refugee.currentTile();
+		Tile refugeeTile = refugee.tile();
 		Tile chaserTile = fnTargetTile.get();
 		//@formatter:off
 		return permute(Stream.of(maze.topLeft, maze.topRight, maze.bottomRight, maze.bottomLeft))

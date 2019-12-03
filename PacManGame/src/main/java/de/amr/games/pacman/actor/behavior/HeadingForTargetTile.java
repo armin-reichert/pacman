@@ -40,7 +40,7 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	@Override
 	public void steer(T actor) {
 		if (actor.targetTile != null && actor.enteredNewTile) {
-			actor.nextDir = nextDir(actor, actor.moveDir, actor.currentTile(), actor.targetTile);
+			actor.nextDir = nextDir(actor, actor.moveDir, actor.tile(), actor.targetTile);
 			actor.targetPath = fnComputePath.getAsBoolean() ? pathToTargetTile(actor) : Collections.emptyList();
 		}
 	}
@@ -83,7 +83,7 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	private List<Tile> pathToTargetTile(T actor) {
 		Maze maze = actor.maze;
 		Set<Tile> path = new LinkedHashSet<>();
-		Tile currentTile = actor.currentTile();
+		Tile currentTile = actor.tile();
 		int currentDir = actor.moveDir;
 		path.add(currentTile);
 		while (!currentTile.equals(actor.targetTile)) {

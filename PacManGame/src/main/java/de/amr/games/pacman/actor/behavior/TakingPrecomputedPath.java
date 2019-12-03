@@ -24,7 +24,7 @@ public abstract class TakingPrecomputedPath<T extends MazeMover> implements Stee
 
 	@Override
 	public void steer(T actor) {
-		Tile actorTile = actor.currentTile();
+		Tile actorTile = actor.tile();
 		actor.targetTile = fnTargetTile.get();
 		while (path.size() > 0 && !actorTile.equals(path.get(0))) {
 			path.remove(0);

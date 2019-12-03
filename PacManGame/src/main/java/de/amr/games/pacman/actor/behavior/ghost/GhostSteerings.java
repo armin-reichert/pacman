@@ -53,7 +53,7 @@ public interface GhostSteerings {
 	 * @return behavior where ghost flees to a "safe" maze corner
 	 */
 	static Steering<Ghost> fleeingToSafeCorner(MazeMover attacker) {
-		return new FleeingToSafeCorner<>(attacker::currentTile);
+		return new FleeingToSafeCorner<>(attacker::tile);
 	}
 
 	/**

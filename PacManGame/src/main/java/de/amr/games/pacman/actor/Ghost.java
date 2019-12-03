@@ -129,7 +129,7 @@ public class Ghost extends Actor<GhostState> {
 	@Override
 	/* TODO: Some values are still guessed */
 	public float maxSpeed() {
-		boolean inTunnel = maze.isTunnel(currentTile());
+		boolean inTunnel = maze.isTunnel(tile());
 		switch (getState()) {
 		case LOCKED:
 			//$FALL-THROUGH$
@@ -164,7 +164,7 @@ public class Ghost extends Actor<GhostState> {
 	}
 
 	private boolean leftHouse() {
-		Tile currentTile = currentTile();
+		Tile currentTile = tile();
 		return !maze.partOfGhostHouse(currentTile) && tf.getY() - currentTile.row * TS == 0;
 	}
 
@@ -246,7 +246,7 @@ public class Ghost extends Actor<GhostState> {
 					.condition(() -> leftHouse() && nextState() == CHASING)
 					
 				.when(ENTERING_HOUSE).then(LOCKED)
-					.condition(() -> currentTile() == targetTile)
+					.condition(() -> tile() == targetTile)
 				
 				.when(CHASING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
@@ -285,7 +285,7 @@ public class Ghost extends Actor<GhostState> {
 					.onTimeout()
 					
 				.when(DEAD).then(ENTERING_HOUSE)
-					.condition(() -> currentTile().equals(maze.blinkyHome))
+					.condition(() -> tile().equals(maze.blinkyHome))
 				
 		.endStateMachine();
 		/*@formatter:on*/
