@@ -219,6 +219,7 @@ public class PacManGame {
 		pacMan.lives = 3;
 		level = 1;
 		bonus = null;
+		maze.restoreFood();
 		levelCounter.clear();
 		score.loadHiscore();
 		actors().forEach(Actor::activate);
