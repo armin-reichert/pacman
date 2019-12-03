@@ -141,10 +141,10 @@ public class PacManGame {
 	public final Score score;
 
 	/** Number of pellets + energizers in maze. */
-	private int totalFoodInMaze;
+	private int totalPelletsInMaze;
 
 	/** Pellets + energizers eaten in current level. */
-	private int levelFoodCount;
+	private int numPelletsEaten;
 
 	/** Global food counter. */
 	private int globalFoodCount;
@@ -169,7 +169,7 @@ public class PacManGame {
 	 */
 	public PacManGame() {
 		maze = new Maze();
-		totalFoodInMaze = (int) maze.tiles().filter(maze::containsFood).count();
+		totalPelletsInMaze = (int) maze.tiles().filter(maze::containsFood).count();
 		
 		score = new Score();
 
@@ -228,7 +228,7 @@ public class PacManGame {
 	public void startLevel() {
 		LOGGER.info("Start game level " + level);
 		maze.restoreFood();
-		levelFoodCount = 0;
+		numPelletsEaten = 0;
 		numGhostsKilledByEnergizer = 0;
 		levelCounter.add(0, getLevelSymbol());
 		if (levelCounter.size() > 8) {
@@ -271,14 +271,14 @@ public class PacManGame {
 		if (energizer) {
 			numGhostsKilledByEnergizer = 0;
 		}
-		levelFoodCount += 1;
+		numPelletsEaten += 1;
 		maze.removeFood(tile);
 		updateFoodCounter();
 		return energizer ? 50 : 10;
 	}
 
-	public int getFoodRemaining() {
-		return totalFoodInMaze - levelFoodCount;
+	public int numPelletsRemaining() {
+		return totalPelletsInMaze - numPelletsEaten;
 	}
 
 	public int getDigestionTicks(boolean energizer) {
@@ -316,7 +316,7 @@ public class PacManGame {
 	}
 
 	public boolean isBonusReached() {
-		return levelFoodCount == 70 || levelFoodCount == 170;
+		return numPelletsEaten == 70 || numPelletsEaten == 170;
 	}
 
 	public int getBonusValue() {

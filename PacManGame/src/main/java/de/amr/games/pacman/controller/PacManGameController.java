@@ -463,7 +463,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (extraLife) {
 				theme.snd_extraLife().play();
 			}
-			if (game.getFoodRemaining() == 0) {
+			if (game.numPelletsRemaining() == 0) {
 				enqueue(new LevelCompletedEvent());
 				return;
 			}

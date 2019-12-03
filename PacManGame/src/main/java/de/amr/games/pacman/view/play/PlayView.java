@@ -143,7 +143,7 @@ public class PlayView implements View, Controller {
 			g.setColor(Color.PINK);
 			g.fillRect(22 * TS + 2, TS + 2, 4, 4);
 			g.setColor(Color.WHITE);
-			g.drawString(String.format("%d", game.getFoodRemaining()), 23 * TS, 2 * TS);
+			g.drawString(String.format("%d", game.numPelletsRemaining()), 23 * TS, 2 * TS);
 
 			drawLives(g);
 			drawLevelCounter(g);
