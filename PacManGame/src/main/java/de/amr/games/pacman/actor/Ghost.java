@@ -11,10 +11,8 @@ import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
+import static de.amr.games.pacman.model.PacManGame.speed;
 import static de.amr.games.pacman.model.PacManGame.sec;
-import static de.amr.games.pacman.model.PacManGame.Column.GHOST_FRIGHTENED_SPEED;
-import static de.amr.games.pacman.model.PacManGame.Column.GHOST_SPEED;
-import static de.amr.games.pacman.model.PacManGame.Column.GHOST_TUNNEL_SPEED;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -31,6 +29,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
+import de.amr.games.pacman.model.PacManGameLevel;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
@@ -129,6 +128,7 @@ public class Ghost extends Actor<GhostState> {
 	@Override
 	/* TODO: Some values are still guessed */
 	public float maxSpeed() {
+		PacManGameLevel level = game.level();
 		boolean inTunnel = maze.isTunnel(tile());
 		switch (getState()) {
 		case LOCKED:
@@ -136,17 +136,17 @@ public class Ghost extends Actor<GhostState> {
 		case LEAVING_HOUSE:
 			//$FALL-THROUGH$
 		case ENTERING_HOUSE:
-			return game.speed(GHOST_SPEED) / 2;
+			return speed(level.ghostSpeed / 2);
 		case CHASING:
 			//$FALL-THROUGH$
 		case SCATTERING:
-			return inTunnel ? game.speed(GHOST_TUNNEL_SPEED) : game.speed(GHOST_SPEED);
+			return inTunnel ? speed(level.ghostTunnelSpeed) : speed(level.ghostSpeed);
 		case FRIGHTENED:
-			return inTunnel ? game.speed(GHOST_TUNNEL_SPEED) : game.speed(GHOST_FRIGHTENED_SPEED);
+			return inTunnel ? speed(level.ghostTunnelSpeed) : speed(level.ghostFrightenedSpeed);
 		case DYING:
 			return 0;
 		case DEAD:
-			return 2 * game.speed(GHOST_SPEED);
+			return 2 * speed(level.ghostSpeed);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name));
 		}

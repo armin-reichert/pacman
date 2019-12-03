@@ -35,7 +35,7 @@ public class FollowTargetTilesTestUI extends PlayViewXtended implements ViewCont
 	public void init() {
 		super.init();
 		current = 0;
-		game.level = 1;
+		game.levelNumber = 1;
 		game.maze.removeFood();
 		theme.snd_ghost_chase().volume(0);
 		game.blinky.activate();
@@ -50,7 +50,7 @@ public class FollowTargetTilesTestUI extends PlayViewXtended implements ViewCont
 			current += 1;
 			if (current == targets.size()) {
 				current = 0;
-				game.level += 1;
+				game.levelNumber += 1;
 			}
 		}
 		game.blinky.update();

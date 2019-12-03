@@ -22,7 +22,7 @@ public class PacManMovementTestUI extends PlayViewXtended implements ViewControl
 	@Override
 	public void init() {
 		super.init();
-		game.level = 1;
+		game.levelNumber = 1;
 		game.pacMan.addListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;

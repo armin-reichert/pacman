@@ -7,10 +7,8 @@ import static de.amr.games.pacman.actor.PacManState.DYING;
 import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.model.PacManGame.TS;
+import static de.amr.games.pacman.model.PacManGame.speed;
 import static de.amr.games.pacman.model.PacManGame.sec;
-import static de.amr.games.pacman.model.PacManGame.Column.PACMAN_POWER_SECONDS;
-import static de.amr.games.pacman.model.PacManGame.Column.PACMAN_POWER_SPEED;
-import static de.amr.games.pacman.model.PacManGame.Column.PACMAN_SPEED;
 
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -55,7 +53,7 @@ public class PacMan extends Actor<PacManState> {
 	public float maxSpeed() {
 		switch (getState()) {
 		case HUNGRY:
-			return hasPower() ? game.speed(PACMAN_POWER_SPEED) : game.speed(PACMAN_SPEED);
+			return hasPower() ? speed(game.level().pacManPowerSpeed) : speed(game.level().pacManSpeed);
 		default:
 			return 0;
 		}
@@ -141,7 +139,7 @@ public class PacMan extends Actor<PacManState> {
 				.stay(HUNGRY)
 					.on(PacManGainsPowerEvent.class)
 					.act(() -> {
-						state().setTimerFunction(() -> game.sec(PACMAN_POWER_SECONDS));
+						state().setTimerFunction(() -> sec(game.level().pacManPowerSeconds));
 						state().resetTimer();
 						LOGGER.info(() -> String.format("Pac-Man got power for %d ticks (%d sec)", 
 								state().getDuration(), state().getDuration() / 60));
@@ -171,16 +169,13 @@ public class PacMan extends Actor<PacManState> {
 		public void onTick() {
 			if (startsLosingPower()) {
 				publish(new PacManGettingWeakerEvent());
-			}
-			else if (getTicksRemaining() == 1) {
+			} else if (getTicksRemaining() == 1) {
 				setTimerFunction(() -> 0);
 				theme.snd_waza().stop();
 				publish(new PacManLostPowerEvent());
-			}
-			else if (mustDigest()) {
+			} else if (mustDigest()) {
 				digest();
-			}
-			else {
+			} else {
 				steer();
 				move();
 				findSomethingInteresting().ifPresent(PacMan.this::publish);
@@ -233,8 +228,7 @@ public class PacMan extends Actor<PacManState> {
 				boolean energizer = maze.containsEnergizer(pacManTile);
 				digestionTicks = game.getDigestionTicks(energizer);
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			}
-			else {
+			} else {
 				ticksSinceLastMeal += 1;
 			}
 

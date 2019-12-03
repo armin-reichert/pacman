@@ -13,7 +13,6 @@ import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
 import static de.amr.games.pacman.controller.PacManGameState.START_PLAYING;
 import static de.amr.games.pacman.model.PacManGame.sec;
-import static de.amr.games.pacman.model.PacManGame.Column.MAZE_NUM_FLASHES;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -57,8 +56,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
-		implements ViewController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements ViewController {
 
 	// Typed reference to "Playing" state object
 	private PlayingState playingState;
@@ -82,7 +80,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		this.game = game;
 		buildStateMachine();
 		setIgnoreUnknownEvents(true);
-		ghostAttackTimer = new GhostAttackTimer(() -> game.level);
+		ghostAttackTimer = new GhostAttackTimer(() -> game.levelNumber);
 		game.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackTimer::getState);
 		game.pacMan.addListener(this::process);
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
@@ -140,7 +138,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		/* ALT-"L": Selects next level */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
 			if (getState() == PacManGameState.PLAYING) {
-				LOGGER.info(() -> String.format("Switch to next level (%d)", game.level + 1));
+				LOGGER.info(() -> String.format("Switch to next level (%d)", game.levelNumber + 1));
 				enqueue(new LevelCompletedEvent());
 			}
 		}
@@ -178,11 +176,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void handlePlayingSpeedChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
 			app().clock.setFrequency(60);
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
 			app().clock.setFrequency(80);
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
 			app().clock.setFrequency(100);
 		}
 	}
@@ -194,8 +190,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			boolean original = app().settings.getAsBoolean(property);
 			game.ghosts().forEach(ghost -> ghost.setSteering(GhostState.FRIGHTENED,
 					original ? movingRandomly() : fleeingToSafeCorner(game.pacMan)));
-			LOGGER
-					.info("Changed ghost FRIGHTENED behavior to " + (original ? "original" : "escape via safe route"));
+			LOGGER.info("Changed ghost FRIGHTENED behavior to " + (original ? "original" : "escape via safe route"));
 		}
 	}
 
@@ -385,16 +380,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			for (Ghost ghost : ghosts) {
 				if (ghost.getState() == GhostState.LOCKED && game.canLeaveHouse(ghost)) {
 					ghost.process(new GhostUnlockedEvent());
-				}
-				else if (ghost.getState() == GhostState.CHASING
-						&& ghostAttackTimer.getState() == GhostState.SCATTERING) {
+				} else if (ghost.getState() == GhostState.CHASING && ghostAttackTimer.getState() == GhostState.SCATTERING) {
 					ghost.process(new StartScatteringEvent());
-				}
-				else if (ghost.getState() == GhostState.SCATTERING
-						&& ghostAttackTimer.getState() == GhostState.CHASING) {
+				} else if (ghost.getState() == GhostState.SCATTERING && ghostAttackTimer.getState() == GhostState.CHASING) {
 					ghost.process(new StartChasingEvent());
-				}
-				else {
+				} else {
 					ghost.update();
 				}
 			}
@@ -404,8 +394,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			PacManGhostCollisionEvent e = (PacManGhostCollisionEvent) event;
 			if (e.ghost.oneOf(GhostState.CHASING, GhostState.SCATTERING)) {
 				enqueue(new PacManKilledEvent(e.ghost));
-			}
-			else if (e.ghost.getState() == GhostState.FRIGHTENED) {
+			} else if (e.ghost.getState() == GhostState.FRIGHTENED) {
 				enqueue(new GhostKilledEvent(e.ghost));
 			}
 		}
@@ -468,7 +457,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				return;
 			}
 			if (game.isBonusReached()) {
-				playView.setBonus(game.getLevelSymbol(), game.getBonusValue());
+				playView.setBonus(game.level().bonusSymbol, game.level().bonusValue);
 				playView.setBonusTimer(sec(9 + new Random().nextFloat()));
 			}
 			if (e.energizer) {
@@ -487,7 +476,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			theme.snd_clips_all().forEach(Sound::stop);
 			game.activeGhosts().forEach(Ghost::hide);
 			game.pacMan.sprites.select("full");
-			int numFlashes = MAZE_NUM_FLASHES.intValue(game.level);
+			int numFlashes = game.level().mazeNumFlashes;
 			setTimerFunction(() -> sec(2 + 0.5f * numFlashes));
 			resetTimer();
 			if (numFlashes > 0) {
@@ -499,7 +488,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		public void onTick() {
 			if (getTicksRemaining() == sec(2)) {
 				playView.setMazeFlashing(false);
-				game.level += 1;
+				game.levelNumber += 1;
 				game.activeActors().forEach(Actor::init);
 				playView.init();
 				game.startLevel();
@@ -527,8 +516,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onTick() {
-			game.activeGhosts()
-					.filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
+			game.activeGhosts().filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
 					.forEach(Ghost::update);
 		}
 

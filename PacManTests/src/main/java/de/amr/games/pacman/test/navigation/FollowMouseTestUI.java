@@ -32,7 +32,7 @@ public class FollowMouseTestUI extends PlayViewXtended implements ViewController
 	public void init() {
 		super.init();
 		theme.snd_ghost_chase().volume(0);
-		game.level = 1;
+		game.levelNumber = 1;
 		game.maze.removeFood();
 		game.blinky.activate();
 		game.blinky.init();

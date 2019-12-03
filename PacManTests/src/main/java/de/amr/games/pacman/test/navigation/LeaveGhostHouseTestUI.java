@@ -25,7 +25,7 @@ public class LeaveGhostHouseTestUI extends PlayViewXtended implements ViewContro
 	@Override
 	public void init() {
 		super.init();
-		game.level = 1;
+		game.levelNumber = 1;
 		game.maze.removeFood();
 		game.inky.activate();
 		game.inky.init();

@@ -20,7 +20,7 @@ public class OutsideTileTestUI extends PlayViewXtended implements ViewController
 	@Override
 	public void init() {
 		super.init();
-		game.level = 1;
+		game.levelNumber = 1;
 		theme.snd_ghost_chase().volume(0);
 		game.blinky.activate();
 		game.blinky.fnChasingTarget = () -> game.maze.tileAt(100, game.maze.tunnelRightExit.row);

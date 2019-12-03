@@ -21,7 +21,7 @@ public class FleeRandomlyTestUI extends PlayViewXtended implements ViewControlle
 	@Override
 	public void init() {
 		super.init();
-		game.level = 1;
+		game.levelNumber = 1;
 		game.maze.removeFood();
 		game.ghosts().forEach(ghost -> {
 			ghost.activate();

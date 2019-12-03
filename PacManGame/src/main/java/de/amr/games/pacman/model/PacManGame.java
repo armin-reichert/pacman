@@ -14,9 +14,6 @@ import static de.amr.games.pacman.model.BonusSymbol.GRAPES;
 import static de.amr.games.pacman.model.BonusSymbol.KEY;
 import static de.amr.games.pacman.model.BonusSymbol.PEACH;
 import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
-import static de.amr.games.pacman.model.PacManGame.Column.BONUS;
-import static de.amr.games.pacman.model.PacManGame.Column.BONUS_VALUE;
-import static java.lang.Math.min;
 import static java.util.Objects.requireNonNull;
 
 import java.awt.event.KeyEvent;
@@ -46,17 +43,30 @@ public class PacManGame {
 	public static final int TS = 8;
 
 	/** Base speed (11 tiles/second) in pixel/tick. */
-	static final float BASE_SPEED = (float) 11 * TS / 60;
+	public static final float BASE_SPEED = (float) 11 * TS / 60;
 
 	/**
-	 * Level data.
-	 * 
+	 * @param fraction fraction of base speed
+	 * @return speed (pixels/tick) corresponding to given fraction of base speed
+	 */
+	public static float speed(float fraction) {
+		return fraction * BASE_SPEED;
+	}
+
+	/**
+	 * @param fraction fraction of seconds
+	 * @return ticks corresponding to given fraction of seconds at 60Hz
+	 */
+	public static int sec(float fraction) {
+		return (int) (60 * fraction);
+	}
+
+	/**
 	 * @see <a href=
 	 *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>
 	 */
-	static final Object[][] LEVEL_DATA = {
+	final PacManGameLevel[] levels = PacManGameLevel.parse(new Object[][] {
 		/*@formatter:off*/
-		{ /* this row intentionally empty */ },
 		{ CHERRIES,    100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6, 5 },
 		{ STRAWBERRY,  300,  .90f, .79f, .85f, .45f,  30, .8f,  15,  .95f, .95f, .83f, .55f,   5, 5 },
 		{ PEACH,       500,  .90f, .79f, .85f, .45f,  40, .8f,  20,  .95f, .95f, .83f, .55f,   4, 5 },
@@ -79,55 +89,17 @@ public class PacManGame {
 		{ KEY,        5000,    1f, .87f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0, 0 },
 		{ KEY,        5000,  .90f, .79f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0, 0 },
 		/*@formatter:on*/
-	};
-
-	public enum Column {
-		/*@formatter:off*/
-		BONUS, BONUS_VALUE, PACMAN_SPEED, PACMAN_DOTS_SPEED, GHOST_SPEED,	GHOST_TUNNEL_SPEED,	
-		ELROY1_DOTS_LEFT,	ELROY1_SPEED,	ELROY2_DOTS_LEFT,	ELROY2_SPEED,
-		PACMAN_POWER_SPEED,	PACMAN_POWER_DOTS_SPEED, GHOST_FRIGHTENED_SPEED, 
-		PACMAN_POWER_SECONDS, MAZE_NUM_FLASHES;
-		/*@formatter:on*/
-
-		@SuppressWarnings("unchecked")
-		public <T> T value(int level) {
-			if (level < 1) {
-				throw new IllegalArgumentException("Level must be at least 1, is " + level);
-			}
-			return (T) LEVEL_DATA[min(level, LEVEL_DATA.length - 1)][ordinal()];
-		}
-
-		public float floatValue(int level) {
-			return value(level);
-		}
-
-		public int intValue(int level) {
-			return value(level);
-		}
-	}
+	});
 
 	/**
-	 * @param fraction fraction of base speed
-	 * @return speed (pixels/tick) corresponding to given fraction of base speed
+	 * @return the current level parameters
 	 */
-	public static float relSpeed(float fraction) {
-		return fraction * BASE_SPEED;
-	}
-
-	public float speed(Column column) {
-		return relSpeed(column.floatValue(level));
-	}
-
-	/**
-	 * @param fraction fraction of seconds
-	 * @return ticks corresponding to given fraction of seconds at 60Hz
-	 */
-	public static int sec(float fraction) {
-		return (int) (60 * fraction);
-	}
-
-	public int sec(Column column) {
-		return sec(column.intValue(level));
+	public PacManGameLevel level() {
+		// Note: levelNumber counts from 1!
+		if (levelNumber - 1 < levels.length) {
+			return levels[levelNumber - 1];
+		}
+		return levels[levels.length - 1];
 	}
 
 	public final Maze maze;
@@ -154,8 +126,8 @@ public class PacManGame {
 	/** Ghosts killed using current energizer. */
 	public int numGhostsKilledByEnergizer;
 
-	/** Current level. */
-	public int level;
+	/** Current level number. */
+	public int levelNumber;
 
 	/** The currently active bonus. */
 	private Bonus bonus;
@@ -214,7 +186,7 @@ public class PacManGame {
 
 	public void init() {
 		pacMan.lives = 3;
-		level = 1;
+		levelNumber = 1;
 		bonus = null;
 		maze.restoreFood();
 		levelCounter.clear();
@@ -223,11 +195,11 @@ public class PacManGame {
 	}
 
 	public void startLevel() {
-		LOGGER.info("Start game level " + level);
+		LOGGER.info("Start game level " + levelNumber);
 		maze.restoreFood();
 		numPelletsEaten = 0;
 		numGhostsKilledByEnergizer = 0;
-		levelCounter.add(0, getLevelSymbol());
+		levelCounter.add(0, level().bonusSymbol);
 		if (levelCounter.size() > 8) {
 			levelCounter.remove(levelCounter.size() - 1);
 		}
@@ -250,10 +222,6 @@ public class PacManGame {
 
 	public Stream<Actor<?>> activeActors() {
 		return actors().filter(Actor::isActive);
-	}
-
-	public BonusSymbol getLevelSymbol() {
-		return BONUS.value(level);
 	}
 
 	public List<BonusSymbol> getLevelCounter() {
@@ -289,7 +257,7 @@ public class PacManGame {
 	public boolean scorePoints(int points) {
 		int oldScore = score.getPoints();
 		int newScore = oldScore + points;
-		score.set(level, newScore);
+		score.set(levelNumber, newScore);
 		if (oldScore < 10_000 && 10_000 <= newScore) {
 			pacMan.lives += 1;
 			return true;
@@ -313,10 +281,6 @@ public class PacManGame {
 
 	public boolean isBonusReached() {
 		return numPelletsEaten == 70 || numPelletsEaten == 170;
-	}
-
-	public int getBonusValue() {
-		return BONUS_VALUE.intValue(level);
 	}
 
 	// rules for leaving the ghost house
@@ -358,7 +322,7 @@ public class PacManGame {
 		if (globalFoodCounterEnabled && globalFoodCount >= getGlobalFoodCounterLimit(ghost)) {
 			return true;
 		}
-		int timeout = level < 5 ? sec(4) : sec(3);
+		int timeout = levelNumber < 5 ? sec(4) : sec(3);
 		if (pacMan.ticksSinceLastMeal > timeout) {
 			LOGGER.info(() -> String.format("Releasing ghost %s (Pac-Man eat timer expired)", ghost.name));
 			return true;
@@ -418,10 +382,10 @@ public class PacManGame {
 			return 0;
 		}
 		if (ghost == inky) {
-			return level == 1 ? 30 : 0;
+			return levelNumber == 1 ? 30 : 0;
 		}
 		if (ghost == clyde) {
-			return level == 1 ? 60 : level == 2 ? 50 : 0;
+			return levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
 		}
 		return 0;
 	}

@@ -19,7 +19,7 @@ public class JumpingTestUI extends PlayViewXtended implements ViewController {
 	@Override
 	public void init() {
 		super.init();
-		game.level = 1;
+		game.levelNumber = 1;
 		game.maze.removeFood();
 		game.ghosts().forEach(ghost -> {
 			ghost.activate();

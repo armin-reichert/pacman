@@ -39,7 +39,7 @@ public class TakeShortestPathTestUI extends PlayViewXtended implements ViewContr
 		super.init();
 		showInfoText("F toggles FRIGHTENED CHASING", Color.YELLOW);
 		currentTarget = 0;
-		game.level = 1;
+		game.levelNumber = 1;
 		theme.snd_ghost_chase().volume(0);
 		game.maze.removeFood();
 		game.blinky.activate();
@@ -54,7 +54,7 @@ public class TakeShortestPathTestUI extends PlayViewXtended implements ViewContr
 		currentTarget += 1;
 		if (currentTarget == targets.size()) {
 			currentTarget = 0;
-			game.level += 1;
+			game.levelNumber += 1;
 		}
 	}
 

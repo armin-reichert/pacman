@@ -25,7 +25,7 @@ public class InkyChaseTestUI extends PlayViewXtended implements ViewController {
 	@Override
 	public void init() {
 		super.init();
-		game.level = 1;
+		game.levelNumber = 1;
 		game.maze.removeFood();
 		theme.snd_ghost_chase().volume(0);
 		game.pacMan.init();
