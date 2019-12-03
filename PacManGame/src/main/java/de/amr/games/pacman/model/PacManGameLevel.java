@@ -1,5 +1,7 @@
 package de.amr.games.pacman.model;
 
+import java.util.Arrays;
+
 /**
  * Data structure storing the level-specific parameters.
  * 
@@ -8,11 +10,7 @@ package de.amr.games.pacman.model;
 public class PacManGameLevel {
 
 	static PacManGameLevel[] parse(Object[][] table) {
-		PacManGameLevel[] data = new PacManGameLevel[table.length];
-		for (int row = 0; row < table.length; ++row) {
-			data[row] = new PacManGameLevel(table[row]);
-		}
-		return data;
+		return Arrays.stream(table).map(PacManGameLevel::new).toArray(PacManGameLevel[]::new);
 	}
 
 	public PacManGameLevel(Object[] row) {
