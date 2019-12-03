@@ -2,7 +2,7 @@ package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.followingFixedPath;
+import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.followingShortestPath;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -45,7 +45,7 @@ public class TakeShortestPathTestUI extends PlayViewXtended implements ViewContr
 		game.blinky.activate();
 		game.blinky.init();
 		game.blinky.setState(CHASING);
-		Steering<Ghost> followPathToCurrentTarget = followingFixedPath(() -> targets.get(currentTarget));
+		Steering<Ghost> followPathToCurrentTarget = followingShortestPath(() -> targets.get(currentTarget));
 		game.blinky.setSteering(CHASING, followPathToCurrentTarget);
 		game.blinky.setSteering(FRIGHTENED, followPathToCurrentTarget);
 	}

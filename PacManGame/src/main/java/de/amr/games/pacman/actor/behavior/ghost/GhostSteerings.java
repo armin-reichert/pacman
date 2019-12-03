@@ -24,7 +24,8 @@ public interface GhostSteerings {
 	/**
 	 * Lets the ghost jump up and down.
 	 * 
-	 * @return bouncing behavior
+	 * @return behavior which lets the ghost bounce vertically inside the currently
+	 *         accessible area e.g. the ghost house
 	 */
 	static Steering<Ghost> jumpingUpAndDown() {
 		return ghost -> {
@@ -56,12 +57,16 @@ public interface GhostSteerings {
 	}
 
 	/**
+	 * Random movement inside the maze.
+	 * 
+	 * <p>
 	 * <cite> Frightened mode is unique because the ghosts do not have a specific
 	 * target tile while in this mode. Instead, they pseudo-randomly decide which
 	 * turns to make at every intersection. </cite>
 	 * 
-	 * @return behavior where ghost flees from Pac-Man by taking random turns at
-	 *         each intersection
+	 * @return behavior where ghost takes random non-backwards turn at each
+	 *         intersection respecting the rules which tiles are accessible for the
+	 *         ghost in its current state
 	 */
 	static Steering<Ghost> movingRandomly() {
 		return ghost -> {
@@ -79,12 +84,15 @@ public interface GhostSteerings {
 	}
 
 	/**
-	 * Lets the ghost follow a fixed path to the target.
+	 * Lets the ghost follow the shortest path to the target. This may, depending on
+	 * the ghost's current state, cause the ghost getting stuck because of the
+	 * no-upwards-move-allowed crossings.
 	 * 
 	 * @param fnTarget function supplying the target tile at time of decision
-	 * @return behavior where ghost follows a fixed path
+	 * @return behavior where ghost follows the shortest (according to Manhattan
+	 *         distance) path
 	 */
-	static Steering<Ghost> followingFixedPath(Supplier<Tile> fnTarget) {
+	static Steering<Ghost> followingShortestPath(Supplier<Tile> fnTarget) {
 		return new TakingShortestPath<>(fnTarget);
 	}
 }
