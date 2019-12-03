@@ -118,8 +118,8 @@ beginStateMachine()
 A more complex state machine is used for defining the **global game control**. It processes game events which
 are created during the game play, for example when Pac-Man finds food or meets ghosts. Also the different
 game states like changing the level or the dying animations of Pac-Man and the ghosts are controlled by this
-state machine. Further, the individual states are implemented by subclasses of the generic state class. This
-has the advantage that actions which are state-specific can be realized as methods of the subclass.
+state machine. Further, the more complex states are implemented as subclasses of the generic `State` class. This
+has the advantage that actions which are state-specific can be realized as methods of the state subclass.
 
 ```java
 beginStateMachine()
@@ -281,9 +281,6 @@ beginStateMachine()
 
 .endStateMachine();
 ```
-
-The states of the game controller are implemented as inner classes inheriting from the generic state class. This offers
-the possibility to add fields and methods to the state class, in simpler use cases, the base class is sufficient.
 
 The **ghost attack waves** (scattering, chasing) and their timing are implemented by the following state machine:
 
@@ -616,11 +613,11 @@ However, for a maze of such a small size the used algorithm doesn't matter much,
 
 ## Additional features
 
-- The following command-line arguments are available (`java -jar pacman.jar arguments...`)
-  - Scaling, e.g.: `-scale 2.5`
+- The following settings can be changed via command-line arguments (`java -jar pacman.jar arguments...`):
+  - Scaling: e.g. `-scale 2.5`
   - Full-screen mode on start: `-fullScreenOnStart`
-  - Full-screen resolution & depth, e.g.: `-fullScreenMode 800,600,32`
-  - Window title e.g.: `-title "Pac-Man Game"`
+  - Full-screen resolution & depth: e.g. `-fullScreenMode 800,600,32`
+  - Window title: e.g. `-title "Pac-Man Game"`
 - General
   - CTRL-p pauses/resumes the game
   - F2 opens a dialog where the game loop frequency and (full-)screen resolution can be changed
