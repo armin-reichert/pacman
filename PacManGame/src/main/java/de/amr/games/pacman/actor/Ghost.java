@@ -221,7 +221,7 @@ public class Ghost extends Actor<GhostState> {
 				.state(DYING)
 					.timeoutAfter(Ghost::getDyingTime)
 					.onEntry(() -> {
-						sprites.select("value-" + game.numGhostsKilledByEnergizer);
+						sprites.select("value-" + game.numGhostsKilledByCurrentEnergizer);
 					})
 				
 				.state(DEAD)

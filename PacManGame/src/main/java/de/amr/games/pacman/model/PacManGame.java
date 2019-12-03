@@ -16,7 +16,6 @@ import static de.amr.games.pacman.model.BonusSymbol.PEACH;
 import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
 
 import java.awt.event.KeyEvent;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -29,9 +28,8 @@ import de.amr.games.pacman.actor.PacMan;
 import de.amr.graph.grid.impl.Top4;
 
 /**
- * The "model" (in MVC speak) of the Pac-Man game. Contains the current game
- * data and defines the "business logic" for playing the game. Also serves as
- * factory and container for the actors.
+ * The "model" (in MVC speak) of the Pac-Man game. Contains the current game data and defines the
+ * "business logic" for playing the game. Also serves as factory and container for the actors.
  * 
  * @author Armin Reichert
  */
@@ -43,8 +41,19 @@ public class PacManGame {
 	/** Base speed (11 tiles/second) in pixel/tick. */
 	public static final float BASE_SPEED = (float) 11 * TS / 60;
 
+	/** Idle time after eating normal pellet. */
+	public static final int DIGEST_TICKS = 1;
+
+	/** Idle time after eating energizer. */
+	public static final int DIGEST_TICKS_ENERGIZER = 1;
+
+	public static final int PELLET_VALUE = 10;
+
+	public static final int ENERGIZER_VALUE = 50;
+
 	/**
-	 * @param fraction fraction of base speed
+	 * @param fraction
+	 *                   fraction of base speed
 	 * @return speed (pixels/tick) corresponding to given fraction of base speed
 	 */
 	public static float speed(float fraction) {
@@ -52,7 +61,8 @@ public class PacManGame {
 	}
 
 	/**
-	 * @param fraction fraction of seconds
+	 * @param fraction
+	 *                   fraction of seconds
 	 * @return ticks corresponding to given fraction of seconds at 60Hz
 	 */
 	public static int sec(float fraction) {
@@ -60,8 +70,7 @@ public class PacManGame {
 	}
 
 	/**
-	 * @see <a href=
-	 *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>
+	 * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>
 	 */
 	final PacManGameLevel[] levels = PacManGameLevel.parse(new Object[][] {
 		/*@formatter:off*/
@@ -89,17 +98,6 @@ public class PacManGame {
 		/*@formatter:on*/
 	});
 
-	/**
-	 * @return the current level parameters
-	 */
-	public PacManGameLevel level() {
-		// Note: levelNumber counts from 1!
-		if (levelNumber - 1 < levels.length) {
-			return levels[levelNumber - 1];
-		}
-		return levels[levels.length - 1];
-	}
-
 	public final Maze maze;
 
 	public final PacMan pacMan;
@@ -108,6 +106,9 @@ public class PacManGame {
 
 	/** The game score including highscore management. */
 	public final Score score;
+
+	/** Level counter symbols displayed at the bottom right corner. */
+	public final List<BonusSymbol> levelCounter = new LinkedList<>();
 
 	/** Number of pellets + energizers in maze. */
 	private int totalPelletsInMaze;
@@ -122,16 +123,13 @@ public class PacManGame {
 	private boolean globalFoodCounterEnabled = false;
 
 	/** Ghosts killed using current energizer. */
-	public int numGhostsKilledByEnergizer;
+	public int numGhostsKilledByCurrentEnergizer;
 
 	/** Current level number. */
 	public int levelNumber;
 
 	/** The currently active bonus. */
 	public Bonus bonus;
-
-	/** Level counter symbols displayed at the bottom right corner. */
-	private final List<BonusSymbol> levelCounter = new LinkedList<>();
 
 	/**
 	 * Creates a game instance.
@@ -196,7 +194,7 @@ public class PacManGame {
 		LOGGER.info("Start game level " + levelNumber);
 		maze.restoreFood();
 		numPelletsEaten = 0;
-		numGhostsKilledByEnergizer = 0;
+		numGhostsKilledByCurrentEnergizer = 0;
 		levelCounter.add(0, level().bonusSymbol);
 		if (levelCounter.size() > 8) {
 			levelCounter.remove(levelCounter.size() - 1);
@@ -204,6 +202,17 @@ public class PacManGame {
 		ghosts().forEach(ghost -> ghost.foodCount = 0);
 		globalFoodCounterEnabled = false;
 		globalFoodCount = 0;
+	}
+
+	/**
+	 * @return the current level parameters
+	 */
+	public PacManGameLevel level() {
+		// Note: levelNumber counts from 1!
+		if (levelNumber - 1 < levels.length) {
+			return levels[levelNumber - 1];
+		}
+		return levels[levels.length - 1];
 	}
 
 	public Stream<Ghost> ghosts() {
@@ -222,34 +231,24 @@ public class PacManGame {
 		return actors().filter(Actor::isActive);
 	}
 
-	public List<BonusSymbol> getLevelCounter() {
-		return Collections.unmodifiableList(levelCounter);
-	}
-
-	public int eatFoodAtTile(Tile tile) {
-		if (!maze.containsFood(tile)) {
-			throw new IllegalArgumentException("No food at tile " + tile);
-		}
-		boolean energizer = maze.containsEnergizer(tile);
-		if (energizer) {
-			numGhostsKilledByEnergizer = 0;
-		}
-		numPelletsEaten += 1;
+	public int eat(Tile tile) {
 		maze.removeFood(tile);
+		numPelletsEaten += 1;
 		updateFoodCounter();
-		return energizer ? 50 : 10;
+		if (maze.containsEnergizer(tile)) {
+			numGhostsKilledByCurrentEnergizer = 0;
+			return ENERGIZER_VALUE;
+		}
+		return PELLET_VALUE;
 	}
 
 	public int numPelletsRemaining() {
 		return totalPelletsInMaze - numPelletsEaten;
 	}
 
-	public int getDigestionTicks(boolean energizer) {
-		return energizer ? 3 : 1;
-	}
-
 	/**
-	 * @param points points scored
+	 * @param points
+	 *                 points scored
 	 * @return <code>true</code> if new life has been granted
 	 */
 	public boolean scorePoints(int points) {
@@ -270,23 +269,21 @@ public class PacManGame {
 	// rules for leaving the ghost house
 
 	/**
-	 * The first control used to evaluate when the ghosts leave home is a personal
-	 * counter each ghost retains for tracking the number of dots Pac-Man eats. Each
-	 * ghost's "dot counter" is reset to zero when a level begins and can only be
-	 * active when inside the ghost house, but only one ghost's counter can be
-	 * active at any given time regardless of how many ghosts are inside.
+	 * The first control used to evaluate when the ghosts leave home is a personal counter each ghost
+	 * retains for tracking the number of dots Pac-Man eats. Each ghost's "dot counter" is reset to zero
+	 * when a level begins and can only be active when inside the ghost house, but only one ghost's
+	 * counter can be active at any given time regardless of how many ghosts are inside.
 	 * 
 	 * <p>
-	 * The order of preference for choosing which ghost's counter to activate is:
-	 * Pinky, then Inky, and then Clyde. For every dot Pac-Man eats, the preferred
-	 * ghost in the house (if any) gets its dot counter increased by one. Each ghost
-	 * also has a "dot limit" associated with his counter, per level.
+	 * The order of preference for choosing which ghost's counter to activate is: Pinky, then Inky, and
+	 * then Clyde. For every dot Pac-Man eats, the preferred ghost in the house (if any) gets its dot
+	 * counter increased by one. Each ghost also has a "dot limit" associated with his counter, per
+	 * level.
 	 * 
 	 * <p>
-	 * If the preferred ghost reaches or exceeds his dot limit, it immediately exits
-	 * the house and its dot counter is deactivated (but not reset). The
-	 * most-preferred ghost still waiting inside the house (if any) activates its
-	 * timer at this point and begins counting dots.
+	 * If the preferred ghost reaches or exceeds his dot limit, it immediately exits the house and its
+	 * dot counter is deactivated (but not reset). The most-preferred ghost still waiting inside the
+	 * house (if any) activates its timer at this point and begins counting dots.
 	 * 
 	 * @see <a href=
 	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
@@ -296,7 +293,8 @@ public class PacManGame {
 		if (ghost == blinky) {
 			return true;
 		}
-		Ghost next = Stream.of(pinky, inky, clyde).filter(g -> g.getState() == GhostState.LOCKED).findFirst().orElse(null);
+		Ghost next = Stream.of(pinky, inky, clyde).filter(g -> g.getState() == GhostState.LOCKED).findFirst()
+				.orElse(null);
 		if (ghost != next) {
 			return false;
 		}
@@ -336,25 +334,23 @@ public class PacManGame {
 	}
 
 	/**
-	 * Pinky's dot limit is always set to zero, causing him to leave home
-	 * immediately when every level begins. For the first level, Inky has a limit of
-	 * 30 dots, and Clyde has a limit of 60. This results in Pinky exiting
-	 * immediately which, in turn, activates Inky's dot counter. His counter must
-	 * then reach or exceed 30 dots before he can leave the house.
+	 * Pinky's dot limit is always set to zero, causing him to leave home immediately when every level
+	 * begins. For the first level, Inky has a limit of 30 dots, and Clyde has a limit of 60. This
+	 * results in Pinky exiting immediately which, in turn, activates Inky's dot counter. His counter
+	 * must then reach or exceed 30 dots before he can leave the house.
 	 * 
 	 * <p>
-	 * Once Inky starts to leave, Clyde's counter (which is still at zero) is
-	 * activated and starts counting dots. When his counter reaches or exceeds 60,
-	 * he may exit. On the second level, Inky's dot limit is changed from 30 to
-	 * zero, while Clyde's is changed from 60 to 50. Inky will exit the house as
-	 * soon as the level begins from now on.
+	 * Once Inky starts to leave, Clyde's counter (which is still at zero) is activated and starts
+	 * counting dots. When his counter reaches or exceeds 60, he may exit. On the second level, Inky's
+	 * dot limit is changed from 30 to zero, while Clyde's is changed from 60 to 50. Inky will exit the
+	 * house as soon as the level begins from now on.
 	 * 
 	 * <p>
-	 * Starting at level three, all the ghosts have a dot limit of zero for the
-	 * remainder of the game and will leave the ghost house immediately at the start
-	 * of every level.
+	 * Starting at level three, all the ghosts have a dot limit of zero for the remainder of the game
+	 * and will leave the ghost house immediately at the start of every level.
 	 * 
-	 * @param ghost a ghost
+	 * @param ghost
+	 *                a ghost
 	 * @return the ghosts's current food limit
 	 * 
 	 * @see <a href=

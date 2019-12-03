@@ -7,8 +7,8 @@ import static de.amr.games.pacman.actor.PacManState.DYING;
 import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.model.PacManGame.TS;
-import static de.amr.games.pacman.model.PacManGame.speed;
 import static de.amr.games.pacman.model.PacManGame.sec;
+import static de.amr.games.pacman.model.PacManGame.speed;
 
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -158,24 +158,27 @@ public class PacMan extends Actor<PacManState> {
 
 	private class HungryState extends State<PacManState, PacManGameEvent> {
 
-		private int digestionTicks;
+		private int digestion;
 
 		@Override
 		public void onEntry() {
-			digestionTicks = 0;
+			digestion = 0;
 		}
 
 		@Override
 		public void onTick() {
 			if (startsLosingPower()) {
 				publish(new PacManGettingWeakerEvent());
-			} else if (getTicksRemaining() == 1) {
+			}
+			else if (getTicksRemaining() == 1) {
 				setTimerFunction(() -> 0);
 				theme.snd_waza().stop();
 				publish(new PacManLostPowerEvent());
-			} else if (mustDigest()) {
+			}
+			else if (mustDigest()) {
 				digest();
-			} else {
+			}
+			else {
 				steer();
 				move();
 				findSomethingInteresting().ifPresent(PacMan.this::publish);
@@ -183,11 +186,11 @@ public class PacMan extends Actor<PacManState> {
 		}
 
 		private boolean mustDigest() {
-			return digestionTicks > 0;
+			return digestion > 0;
 		}
 
 		private void digest() {
-			digestionTicks -= 1;
+			digestion -= 1;
 		}
 
 		private Optional<PacManGameEvent> findSomethingInteresting() {
@@ -226,9 +229,10 @@ public class PacMan extends Actor<PacManState> {
 			if (maze.containsFood(pacManTile)) {
 				ticksSinceLastMeal = 0;
 				boolean energizer = maze.containsEnergizer(pacManTile);
-				digestionTicks = game.getDigestionTicks(energizer);
+				digestion = energizer ? PacManGame.DIGEST_TICKS_ENERGIZER : PacManGame.DIGEST_TICKS;
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			} else {
+			}
+			else {
 				ticksSinceLastMeal += 1;
 			}
 

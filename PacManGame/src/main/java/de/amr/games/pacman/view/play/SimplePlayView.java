@@ -162,9 +162,9 @@ public class SimplePlayView implements View, Controller {
 	protected void drawLevelCounter(Graphics2D g) {
 		int mazeWidth = mazeView.sprites.current().get().getWidth();
 		g.translate(0, size.height - 2 * TS);
-		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
+		for (int i = 0, n = game.levelCounter.size(); i < n; ++i) {
 			g.translate(mazeWidth - (n - i + 1) * 2 * TS, 0);
-			Image bonusImage = theme.spr_bonusSymbol(game.getLevelCounter().get(i)).frame(0);
+			Image bonusImage = theme.spr_bonusSymbol(game.levelCounter.get(i)).frame(0);
 			g.drawImage(bonusImage, 0, 0, 2 * TS, 2 * TS, null);
 			g.translate(-mazeWidth + (n - i + 1) * 2 * TS, 0);
 		}

@@ -131,7 +131,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 		/* ALT-"E": Eats all (normal) pellets */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_E)) {
-			game.maze.tiles().filter(game.maze::containsPellet).forEach(game::eatFoodAtTile);
+			game.maze.tiles().filter(game.maze::containsPellet).forEach(game::eat);
 			LOGGER.info(() -> "All pellets eaten");
 		}
 		/* ALT-"L": Selects next level */
@@ -444,7 +444,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent e = (FoodFoundEvent) event;
 			theme.snd_eatPill().play();
-			int points = game.eatFoodAtTile(e.tile);
+			int points = game.eat(e.tile);
 			boolean extraLife = game.scorePoints(points);
 			if (extraLife) {
 				theme.snd_extraLife().play();
@@ -501,14 +501,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onEntry() {
 			game.pacMan.hide();
-			int points = 200 * (int) Math.pow(2, game.numGhostsKilledByEnergizer);
+			int points = 200 * (int) Math.pow(2, game.numGhostsKilledByCurrentEnergizer);
 			boolean extraLife = game.scorePoints(points);
 			LOGGER.info(() -> String.format("Scored %d points for killing %s ghost", points,
-					new String[] { "first", "2nd", "3rd", "4th" }[game.numGhostsKilledByEnergizer]));
+					new String[] { "first", "2nd", "3rd", "4th" }[game.numGhostsKilledByCurrentEnergizer]));
 			if (extraLife) {
 				theme.snd_extraLife().play();
 			}
-			game.numGhostsKilledByEnergizer += 1;
+			game.numGhostsKilledByCurrentEnergizer += 1;
 		}
 
 		@Override
