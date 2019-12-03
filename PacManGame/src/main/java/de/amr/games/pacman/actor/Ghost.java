@@ -11,8 +11,8 @@ import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
-import static de.amr.games.pacman.model.PacManGame.speed;
 import static de.amr.games.pacman.model.PacManGame.sec;
+import static de.amr.games.pacman.model.PacManGame.speed;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -29,9 +29,9 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
-import de.amr.games.pacman.model.PacManGameLevel;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.PacManGameLevel;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
 import de.amr.statemachine.StateMachine;
@@ -46,8 +46,8 @@ public class Ghost extends Actor<GhostState> {
 	private final Map<GhostState, Steering<Ghost>> steeringByState;
 	private final Steering<Ghost> defaultSteering;
 
-	public Tile initialTile;
 	public int initialDir;
+	public Tile initialTile;
 	public Tile revivalTile;
 	public Tile scatterTile;
 	public Supplier<GhostState> fnNextState;
@@ -120,7 +120,7 @@ public class Ghost extends Actor<GhostState> {
 			return getState() == ENTERING_HOUSE || getState() == LEAVING_HOUSE;
 		}
 		if (maze.isNoUpIntersection(tile) && neighbor == maze.tileToDir(tile, Top4.N)) {
-			return getState() != GhostState.CHASING && getState() != GhostState.SCATTERING;
+			return getState() != CHASING && getState() != SCATTERING;
 		}
 		return super.canMoveBetween(tile, neighbor);
 	}
@@ -136,7 +136,7 @@ public class Ghost extends Actor<GhostState> {
 		case LEAVING_HOUSE:
 			//$FALL-THROUGH$
 		case ENTERING_HOUSE:
-			return speed(level.ghostSpeed / 2);
+			return speed(level.ghostSpeed) / 2;
 		case CHASING:
 			//$FALL-THROUGH$
 		case SCATTERING:
@@ -152,10 +152,10 @@ public class Ghost extends Actor<GhostState> {
 		}
 	}
 
-	private void walkAndAppearAs(String nextSpriteKey) {
+	private void walkAndDisplayAs(String spriteKey) {
 		steer();
 		move();
-		sprites.select(nextSpriteKey);
+		sprites.select(spriteKey);
 	}
 
 	private void turnBack() {
@@ -167,8 +167,6 @@ public class Ghost extends Actor<GhostState> {
 		Tile currentTile = tile();
 		return !maze.partOfGhostHouse(currentTile) && tf.getY() - currentTile.row * TS == 0;
 	}
-
-	// Define state machine
 
 	public static int getDyingTime() {
 		return sec(1);
@@ -190,7 +188,7 @@ public class Ghost extends Actor<GhostState> {
 			.states()
 
 				.state(LOCKED)
-					.onTick(() -> walkAndAppearAs("color-" + moveDir))
+					.onTick(() -> walkAndDisplayAs("color-" + moveDir))
 					.onExit(() -> {
 						enteredNewTile = true;
 						game.pacMan.ticksSinceLastMeal = 0;
@@ -198,27 +196,27 @@ public class Ghost extends Actor<GhostState> {
 					
 				.state(LEAVING_HOUSE)
 					.onEntry(() -> targetTile = maze.blinkyHome)
-					.onTick(() -> walkAndAppearAs("color-" + moveDir))
+					.onTick(() -> walkAndDisplayAs("color-" + moveDir))
 					.onExit(() -> moveDir = nextDir = Top4.W)
 				
 				.state(ENTERING_HOUSE)
 					.onEntry(() -> targetTile = revivalTile)
-					.onTick(() -> walkAndAppearAs("eyes-" + moveDir))
+					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir))
 				
 				.state(SCATTERING)
 					.onEntry(() -> targetTile = scatterTile)
-					.onTick(() -> walkAndAppearAs("color-" + moveDir))
+					.onTick(() -> walkAndDisplayAs("color-" + moveDir))
 			
 				.state(CHASING)
 					.onEntry(() -> chasingSoundOn())
 					.onTick(() -> {
 						targetTile = fnChasingTarget.get();
-						walkAndAppearAs("color-" + moveDir);
+						walkAndDisplayAs("color-" + moveDir);
 					})
 					.onExit(this::chasingSoundOff)
 				
 				.state(FRIGHTENED)
-					.onTick(() -> walkAndAppearAs(game.pacMan.isLosingPower() ? "flashing" : "frightened"))
+					.onTick(() -> walkAndDisplayAs(game.pacMan.isLosingPower() ? "flashing" : "frightened"))
 				
 				.state(DYING)
 					.timeoutAfter(Ghost::getDyingTime)
@@ -231,7 +229,7 @@ public class Ghost extends Actor<GhostState> {
 						targetTile = maze.blinkyHome;
 						deadSoundOn();
 					})
-					.onTick(() -> walkAndAppearAs("eyes-" + moveDir))
+					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir))
 					.onExit(this::deadSoundOff)
 				
 			.transitions()
