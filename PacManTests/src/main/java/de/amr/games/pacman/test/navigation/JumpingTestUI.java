@@ -5,9 +5,9 @@ import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
-import de.amr.games.pacman.view.play.PlayViewXtended;
+import de.amr.games.pacman.view.play.PlayView;
 
-public class JumpingTestUI extends PlayViewXtended implements ViewController {
+public class JumpingTestUI extends PlayView implements ViewController {
 
 	public JumpingTestUI(PacManGame game) {
 		super(game, new ClassicPacManTheme());

@@ -10,9 +10,9 @@ import de.amr.games.pacman.actor.behavior.pacman.PacManSteerings;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
-import de.amr.games.pacman.view.play.PlayViewXtended;
+import de.amr.games.pacman.view.play.PlayView;
 
-public class PacManMovementTestUI extends PlayViewXtended implements ViewController {
+public class PacManMovementTestUI extends PlayView implements ViewController {
 
 	public PacManMovementTestUI(PacManGame game) {
 		super(game, new ClassicPacManTheme());

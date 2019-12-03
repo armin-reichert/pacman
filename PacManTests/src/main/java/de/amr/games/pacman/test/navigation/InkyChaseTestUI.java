@@ -11,9 +11,9 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
-import de.amr.games.pacman.view.play.PlayViewXtended;
+import de.amr.games.pacman.view.play.PlayView;
 
-public class InkyChaseTestUI extends PlayViewXtended implements ViewController {
+public class InkyChaseTestUI extends PlayView implements ViewController {
 
 	public InkyChaseTestUI(PacManGame game) {
 		super(game, new ClassicPacManTheme());

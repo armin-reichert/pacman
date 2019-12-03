@@ -1,187 +1,283 @@
 package de.amr.games.pacman.view.play;
 
-import static de.amr.easy.game.Application.app;
+import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
+import static java.lang.Math.round;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Rectangle;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
+import java.awt.RenderingHints;
+import java.awt.Stroke;
+import java.awt.Transparency;
+import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 
-import de.amr.easy.game.view.Controller;
-import de.amr.easy.game.view.View;
-import de.amr.games.pacman.actor.Bonus;
+import de.amr.easy.game.Application;
+import de.amr.easy.game.input.Keyboard;
+import de.amr.easy.game.math.Vector2f;
+import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.model.BonusSymbol;
+import de.amr.games.pacman.actor.MazeMover;
+import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.actor.behavior.HeadingForTargetTile;
+import de.amr.games.pacman.controller.GhostAttackTimer;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.theme.GhostColor;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.PacManTheme;
-import de.amr.graph.grid.impl.Top4;
+import de.amr.statemachine.State;
 
 /**
- * Simple play view without bells and whistles.
+ * An extended play view.
+ * 
+ * <p>
+ * Features:
+ * <ul>
+ * <li>Can display grid and alignment of actors (key 'g')
+ * <li>Can display actor state (key 's')
+ * <li>Can display actor routes (key 'r')
+ * <li>Can switch ghosts on and off (keys 'b', 'p', 'i', 'c')
+ * </ul>
  * 
  * @author Armin Reichert
  */
-public class PlayView implements View, Controller {
+public class PlayView extends SimplePlayView {
 
-	public boolean showScores;
-	protected final PacManGame game;
-	protected final Dimension size;
-	protected final MazeView mazeView;
-	protected PacManTheme theme;
-	protected Image lifeImage;
-	protected String infoText;
-	protected Color infoTextColor;
-	protected int bonusTimer;
+	private static final String INFTY = Character.toString('\u221E');
+
+	private final BufferedImage gridImage;
+
+	public boolean showGrid = false;
+	public boolean showRoutes = false;
+	public boolean showStates = false;
+
+	public GhostAttackTimer ghostAttackTimer;
+
+	private static BufferedImage createGridImage(int numRows, int numCols) {
+		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+				.getDefaultConfiguration();
+		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1,
+				Transparency.TRANSLUCENT);
+		Graphics2D g = image.createGraphics();
+		g.setColor(new Color(0, 60, 0));
+		for (int row = 0; row <= numRows; ++row) {
+			g.drawLine(0, row * TS, numCols * TS, row * TS);
+		}
+		for (int col = 1; col < numCols; ++col) {
+			g.drawLine(col * TS, 0, col * TS, numRows * TS);
+		}
+		return image;
+	}
+
+	public PlayView(PacManGame game, PacManTheme theme) {
+		this(game);
+		setTheme(theme);
+	}
 
 	public PlayView(PacManGame game) {
-		this.game = game;
-		size = new Dimension(app().settings.width, app().settings.height);
-		mazeView = new MazeView(game);
-		mazeView.tf.setPosition(0, 3 * TS);
+		super(game);
+		gridImage = createGridImage(Maze.ROWS, Maze.COLS);
 	}
 
 	@Override
 	public void init() {
-		game.bonus = null;
-		bonusTimer = 0;
-		mazeView.setFlashing(false);
+		super.init();
+		updateGhostRouteDisplay();
 	}
 
 	@Override
 	public void update() {
-		if (bonusTimer > 0) {
-			bonusTimer -= 1;
-			if (bonusTimer == 0) {
-				game.bonus = null;
-			}
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_G)) {
+			showGrid = !showGrid;
 		}
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_S)) {
+			showStates = !showStates;
+		}
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
+			showRoutes = !showRoutes;
+			updateGhostRouteDisplay();
+		}
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
+			toggleGhostActivationState(game.blinky);
+		}
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_P)) {
+			toggleGhostActivationState(game.pinky);
+		}
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_I)) {
+			toggleGhostActivationState(game.inky);
+		}
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_C)) {
+			toggleGhostActivationState(game.clyde);
+		}
+		super.update();
 	}
 
-	public void setTheme(PacManTheme theme) {
-		this.theme = theme;
-		lifeImage = theme.spr_pacManWalking(Top4.W).frame(1);
-		mazeView.setTheme(theme);
-		theme.apply(game.pacMan);
-		theme.apply(game.blinky, GhostColor.RED);
-		theme.apply(game.pinky, GhostColor.PINK);
-		theme.apply(game.inky, GhostColor.CYAN);
-		theme.apply(game.clyde, GhostColor.ORANGE);
+	private void updateGhostRouteDisplay() {
+		// TODO this is ugly
+		game.ghosts().forEach(ghost -> {
+			if (ghost.getSteering() instanceof HeadingForTargetTile<?>) {
+				HeadingForTargetTile<?> steering = (HeadingForTargetTile<?>) ghost.getSteering();
+				steering.fnComputePath = () -> showRoutes;
+			}
+		});
 	}
 
-	public void enableAnimation(boolean enabled) {
-		mazeView.enableAnimation(enabled);
-		game.pacMan.sprites.enableAnimation(enabled);
-		game.activeGhosts().forEach(ghost -> ghost.sprites.enableAnimation(enabled));
-	}
-
-	public void setBonusTimer(int ticks) {
-		bonusTimer = ticks;
-	}
-
-	public void setBonus(BonusSymbol symbol, int value) {
-		game.bonus = new Bonus(symbol, value, theme);
-		game.bonus.tf.setPosition(game.maze.bonusTile.col * TS + TS / 2, game.maze.bonusTile.row * TS);
-	}
-
-	public void setMazeFlashing(boolean flashing) {
-		mazeView.setFlashing(flashing);
-	}
-
-	public void showInfoText(String text, Color color) {
-		infoText = text;
-		infoTextColor = color;
-	}
-
-	public void hideInfoText() {
-		infoText = null;
+	private void toggleGhostActivationState(Ghost ghost) {
+		if (ghost.isActive()) {
+			ghost.deactivate();
+		}
+		else {
+			ghost.activate();
+		}
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
 		mazeView.draw(g);
+		drawScores(g);
+		if (showRoutes) {
+			game.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));
+		}
 		if (game.bonus != null) {
 			game.bonus.draw(g);
 		}
 		drawActors(g);
+		if (showGrid) {
+			g.drawImage(gridImage, 0, 0, null);
+			if (game.pacMan.visible()) {
+				drawActorAlignment(game.pacMan, g);
+			}
+			game.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawActorAlignment(ghost, g));
+		}
+		if (showStates) {
+			drawEntityStates(g);
+		}
 		drawInfoText(g);
-		drawScores(g);
 	}
 
-	protected void drawActors(Graphics2D g) {
-		if (game.pacMan.isActive()) {
-			game.pacMan.draw(g);
+	private void drawEntityStates(Graphics2D g) {
+		if (game.pacMan.getState() != null && game.pacMan.visible()) {
+			drawText(g, Color.YELLOW, game.pacMan.tf.getX(), game.pacMan.tf.getY(), pacManStateText(game.pacMan));
 		}
-		game.activeGhosts().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));
-		game.activeGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(ghost -> ghost.draw(g));
+		game.activeGhosts().filter(Ghost::visible).forEach(ghost -> {
+			if (ghost.getState() != null) {
+				drawText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
+			}
+		});
 	}
 
-	protected void drawScores(Graphics2D g) {
-		if (showScores) {
-			// Points score
-			int score = game.score.getPoints();
-			g.setFont(theme.fnt_text());
-			g.setColor(Color.YELLOW);
-			g.drawString("SCORE", TS, TS);
-			g.setColor(Color.WHITE);
-			g.drawString(String.format("%07d", score), TS, 2 * TS);
-			g.setColor(Color.YELLOW);
-			g.drawString(String.format("LEVEL %2d", game.levelNumber), 22 * TS, TS);
+	private String pacManStateText(PacMan pacMan) {
+		String text = pacMan.state().getDuration() != State.ENDLESS ? String.format("(%s,%d|%d)",
+				pacMan.state().id(), pacMan.state().getTicksRemaining(), pacMan.state().getDuration())
+				: String.format("(%s,%s)", pacMan.state().id(), INFTY);
 
-			// High score
-			g.setColor(Color.YELLOW);
-			g.drawString("HIGH", 10 * TS, TS);
-			g.drawString("SCORE", 14 * TS, TS);
-			g.setColor(Color.WHITE);
-			g.drawString(String.format("%07d", game.score.getHiscorePoints()), 10 * TS, 2 * TS);
-			g.drawString(String.format("L%d", game.score.getHiscoreLevel()), 16 * TS, 2 * TS);
-
-			// Food remaining score
-			g.setColor(Color.PINK);
-			g.fillRect(22 * TS + 2, TS + 2, 4, 4);
-			g.setColor(Color.WHITE);
-			g.drawString(String.format("%d", game.numPelletsRemaining()), 23 * TS, 2 * TS);
-
-			drawLives(g);
-			drawLevelCounter(g);
+		if (Application.app().settings.getAsBoolean("pacMan.immortable")) {
+			text += "-immortable";
 		}
+		return text;
 	}
 
-	protected void drawLives(Graphics2D g) {
-		g.translate(0, size.height - 2 * TS);
-		for (int i = 0; i < game.pacMan.lives; ++i) {
-			g.translate((2 - i) * lifeImage.getWidth(null), 0);
-			g.drawImage(lifeImage, 0, 0, null);
-			g.translate((i - 2) * lifeImage.getWidth(null), 0);
+	private String ghostStateText(Ghost ghost) {
+		String displayName = ghost.getState() == GhostState.DEAD ? ghost.name : "";
+		String nextState = ghost.nextState() != ghost.getState() ? String.format("[->%s]", ghost.nextState())
+				: "";
+		int duration = ghost.state().getDuration(), remaining = ghost.state().getTicksRemaining();
+
+		if (ghost.getState() == GhostState.FRIGHTENED && game.pacMan.hasPower()) {
+			duration = game.pacMan.state().getDuration();
+			remaining = game.pacMan.state().getTicksRemaining();
 		}
-		g.translate(0, -size.height + 2 * TS);
+		else if ((ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING)
+				&& ghostAttackTimer != null) {
+			duration = ghostAttackTimer.state().getDuration();
+			remaining = ghostAttackTimer.state().getTicksRemaining();
+		}
+
+		return duration != State.ENDLESS
+				? String.format("%s(%s,%d|%d)%s", displayName, ghost.getState(), remaining, duration, nextState)
+				: String.format("%s(%s,%s)%s", displayName, ghost.getState(), INFTY, nextState);
 	}
 
-	protected void drawLevelCounter(Graphics2D g) {
-		int mazeWidth = mazeView.sprites.current().get().getWidth();
-		g.translate(0, size.height - 2 * TS);
-		for (int i = 0, n = game.getLevelCounter().size(); i < n; ++i) {
-			g.translate(mazeWidth - (n - i + 1) * 2 * TS, 0);
-			Image bonusImage = theme.spr_bonusSymbol(game.getLevelCounter().get(i)).frame(0);
-			g.drawImage(bonusImage, 0, 0, 2 * TS, 2 * TS, null);
-			g.translate(-mazeWidth + (n - i + 1) * 2 * TS, 0);
-		}
-		g.translate(0, -size.height + 2 * TS);
+	private Color color(Ghost ghost) {
+		return ghost == game.blinky ? Color.RED
+				: ghost == game.pinky ? Color.PINK
+						: ghost == game.inky ? Color.CYAN : ghost == game.clyde ? Color.ORANGE : Color.WHITE;
 	}
 
-	protected void drawInfoText(Graphics2D g) {
-		if (infoText == null) {
-			return;
+	private void drawText(Graphics2D g, Color color, float x, float y, String text) {
+		g.translate(x, y);
+		g.setColor(color);
+		g.setFont(new Font("Arial Narrow", Font.PLAIN, 5));
+		int width = g.getFontMetrics().stringWidth(text);
+		g.drawString(text, -width / 2, -TS / 2);
+		g.translate(-x, -y);
+	}
+
+	private void drawActorAlignment(MazeMover actor, Graphics2D g) {
+		g.setColor(Color.GREEN);
+		g.translate(actor.tf.getX(), actor.tf.getY());
+		int w = actor.tf.getWidth(), h = actor.tf.getHeight();
+		if (round(actor.tf.getY()) % TS == 0) {
+			g.drawLine(0, 0, w, 0);
+			g.drawLine(0, h, w, h);
 		}
-		int mazeWidth = mazeView.sprites.current().get().getWidth();
-		Graphics2D g2 = (Graphics2D) g.create();
-		g2.setFont(theme.fnt_text(14));
-		g2.setColor(infoTextColor);
-		Rectangle box = g2.getFontMetrics().getStringBounds(infoText, g2).getBounds();
-		g2.translate((mazeWidth - box.width) / 2, (game.maze.bonusTile.row + 1) * TS);
-		g2.drawString(infoText, 0, 0);
-		g2.dispose();
+		if (round(actor.tf.getX()) % TS == 0) {
+			g.drawLine(0, 0, 0, h);
+			g.drawLine(w, 0, w, h);
+		}
+		g.translate(-actor.tf.getX(), -actor.tf.getY());
+	}
+
+	private void drawRoute(Graphics2D g, Ghost ghost) {
+		Color ghostColor = color(ghost);
+		Stroke solid = g.getStroke();
+		if (ghost.targetTile != null) {
+			// draw target tile indicator
+			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
+					0);
+			g.setStroke(dashed);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setColor(ghostColor);
+			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
+					ghost.targetTile.col * TS + TS / 2, ghost.targetTile.row * TS + TS / 2);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			g.setStroke(solid);
+			g.translate(ghost.targetTile.col * TS, ghost.targetTile.row * TS);
+			g.setColor(ghostColor);
+			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
+			g.translate(-ghost.targetTile.col * TS, -ghost.targetTile.row * TS);
+		}
+		if (ghost.targetPath.size() > 1) {
+			// draw path in ghost's color
+			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 60));
+			for (Tile tile : ghost.targetPath) {
+				g.fillRect(tile.col * TS, tile.row * TS, TS, TS);
+			}
+		}
+		else {
+			// draw direction indicator
+			Vector2f center = ghost.tf.getCenter();
+			int dx = NESW.dx(ghost.nextDir), dy = NESW.dy(ghost.nextDir);
+			int r = TS / 4;
+			int lineLen = TS;
+			int indX = (int) (center.x + dx * lineLen);
+			int indY = (int) (center.y + dy * lineLen);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setColor(ghostColor);
+			g.fillOval(indX - r, indY - r, 2 * r, 2 * r);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		}
+		// draw Clyde's chasing zone
+		if (ghost == game.clyde && ghost.getState() == GhostState.CHASING) {
+			Vector2f center = game.clyde.tf.getCenter();
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 100));
+			g.drawOval((int) center.x - 8 * TS, (int) center.y - 8 * TS, 16 * TS, 16 * TS);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		}
 	}
 }

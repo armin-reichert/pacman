@@ -46,7 +46,7 @@ import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.intro.IntroView;
-import de.amr.games.pacman.view.play.PlayViewXtended;
+import de.amr.games.pacman.view.play.PlayView;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
@@ -69,7 +69,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	// UI
 	private PacManTheme theme;
 	private IntroView introView;
-	private PlayViewXtended playView;
+	private PlayView playView;
 	private Controller ui;
 
 	private boolean muted = false;
@@ -83,7 +83,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		game.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackTimer::getState);
 		game.pacMan.addListener(this::process);
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-		playView = new PlayViewXtended(game);
+		playView = new PlayView(game);
 		playView.ghostAttackTimer = ghostAttackTimer;
 	}
 

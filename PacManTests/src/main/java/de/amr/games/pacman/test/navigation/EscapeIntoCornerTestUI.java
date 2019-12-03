@@ -7,9 +7,9 @@ import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
-import de.amr.games.pacman.view.play.PlayViewXtended;
+import de.amr.games.pacman.view.play.PlayView;
 
-public class EscapeIntoCornerTestUI extends PlayViewXtended implements ViewController {
+public class EscapeIntoCornerTestUI extends PlayView implements ViewController {
 
 	public EscapeIntoCornerTestUI(PacManGame game) {
 		super(game, new ClassicPacManTheme());

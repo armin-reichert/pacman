@@ -17,9 +17,9 @@ import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
-import de.amr.games.pacman.view.play.PlayViewXtended;
+import de.amr.games.pacman.view.play.PlayView;
 
-public class TakeShortestPathTestUI extends PlayViewXtended implements ViewController {
+public class TakeShortestPathTestUI extends PlayView implements ViewController {
 
 	private List<Tile> targets;
 	private int currentTarget;

@@ -6,9 +6,9 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
-import de.amr.games.pacman.view.play.PlayViewXtended;
+import de.amr.games.pacman.view.play.PlayView;
 
-public class OutsideTileTestUI extends PlayViewXtended implements ViewController {
+public class OutsideTileTestUI extends PlayView implements ViewController {
 
 	public OutsideTileTestUI(PacManGame game) {
 		super(game, new ClassicPacManTheme());
