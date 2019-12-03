@@ -54,12 +54,13 @@ public abstract class MazeMover extends Entity {
 	}
 
 	/**
+	 * Returns the squared straight line distance to the other actor.
 	 * 
 	 * @param other other actor
 	 * @return Euclidean distance (squared) in tile coordinates
 	 */
-	public int distanceTo(MazeMover other) {
-		return Tile.distance(currentTile(), other.currentTile());
+	public int distanceSq(MazeMover other) {
+		return Tile.distanceSq(currentTile(), other.currentTile());
 	}
 
 	/**

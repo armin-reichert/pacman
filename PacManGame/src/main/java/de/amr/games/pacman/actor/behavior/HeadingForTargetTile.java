@@ -1,7 +1,7 @@
 package de.amr.games.pacman.actor.behavior;
 
 import static de.amr.games.pacman.model.Maze.NESW;
-import static de.amr.games.pacman.model.Tile.distance;
+import static de.amr.games.pacman.model.Tile.distanceSq;
 import static de.amr.graph.grid.impl.Top4.E;
 import static de.amr.graph.grid.impl.Top4.N;
 import static de.amr.graph.grid.impl.Top4.S;
@@ -64,7 +64,7 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 			.sorted((dir1, dir2) -> {
 				Tile neighbor1 = maze.tileToDir(currentTile, dir1);
 				Tile neighbor2 = maze.tileToDir(currentTile, dir2);
-				int cmpByDistance = Integer.compare(distance(neighbor1, targetTile), distance(neighbor2, targetTile));
+				int cmpByDistance = Integer.compare(distanceSq(neighbor1, targetTile), distanceSq(neighbor2, targetTile));
 				return cmpByDistance != 0
 					? cmpByDistance
 					: Integer.compare(NWSE.indexOf(dir1), NWSE.indexOf(dir2));

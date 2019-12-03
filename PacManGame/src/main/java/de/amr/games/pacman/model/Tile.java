@@ -11,7 +11,7 @@ package de.amr.games.pacman.model;
 public class Tile {
 
 	/** Straight line distance (squared). */
-	public static int distance(Tile t1, Tile t2) {
+	public static int distanceSq(Tile t1, Tile t2) {
 		int dx = t1.col - t2.col, dy = t1.row - t2.row;
 		return dx * dx + dy * dy;
 	}
