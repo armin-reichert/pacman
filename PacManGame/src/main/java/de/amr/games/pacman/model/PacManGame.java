@@ -14,13 +14,11 @@ import static de.amr.games.pacman.model.BonusSymbol.GRAPES;
 import static de.amr.games.pacman.model.BonusSymbol.KEY;
 import static de.amr.games.pacman.model.BonusSymbol.PEACH;
 import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
-import static java.util.Objects.requireNonNull;
 
 import java.awt.event.KeyEvent;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.actor.Actor;
@@ -130,7 +128,7 @@ public class PacManGame {
 	public int levelNumber;
 
 	/** The currently active bonus. */
-	private Bonus bonus;
+	public Bonus bonus;
 
 	/** Level counter symbols displayed at the bottom right corner. */
 	private final List<BonusSymbol> levelCounter = new LinkedList<>();
@@ -263,20 +261,6 @@ public class PacManGame {
 			return true;
 		}
 		return false;
-	}
-
-	// Bonus handling
-
-	public Optional<Bonus> getBonus() {
-		return Optional.ofNullable(bonus);
-	}
-
-	public void removeBonus() {
-		bonus = null;
-	}
-
-	public void setBonus(Bonus bonus) {
-		this.bonus = requireNonNull(bonus);
 	}
 
 	public boolean isBonusReached() {

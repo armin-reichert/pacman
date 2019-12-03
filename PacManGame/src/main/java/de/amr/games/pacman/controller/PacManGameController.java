@@ -28,7 +28,6 @@ import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Actor;
-import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
@@ -278,7 +277,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						LOGGER.info("Game is over");
 						game.score.save();
 						game.activeGhosts().forEach(Ghost::show);
-						game.getBonus().ifPresent(Bonus::hide);
+						game.bonus = null;
 						playView.enableAnimation(false);
 						theme.music_gameover().loop();
 						playView.showInfoText("Game Over!", Color.RED);
@@ -432,16 +431,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
-			game.getBonus().ifPresent(bonus -> {
-				LOGGER.info(() -> String.format("PacMan found %s, value %d points", bonus.symbol(), bonus.value()));
-				theme.snd_eatFruit().play();
-				bonus.consume();
-				boolean extraLife = game.scorePoints(bonus.value());
-				if (extraLife) {
-					theme.snd_extraLife().play();
-				}
-				playView.setBonusTimer(app().clock.sec(1));
-			});
+			LOGGER.info(() -> String.format("PacMan found %s, value %d points", game.bonus.symbol(), game.bonus.value()));
+			theme.snd_eatFruit().play();
+			game.bonus.consume();
+			boolean extraLife = game.scorePoints(game.bonus.value());
+			if (extraLife) {
+				theme.snd_extraLife().play();
+			}
+			playView.setBonusTimer(sec(1));
 		}
 
 		private void onFoodFound(PacManGameEvent event) {

@@ -142,7 +142,9 @@ public class PlayViewXtended extends PlayView {
 		if (showRoutes) {
 			game.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));
 		}
-		game.getBonus().ifPresent(bonus -> bonus.draw(g));
+		if (game.bonus != null) {
+			game.bonus.draw(g);
+		}
 		drawActors(g);
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);

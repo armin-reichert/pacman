@@ -15,7 +15,6 @@ import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.graph.grid.impl.Top4;
@@ -46,7 +45,7 @@ public class PlayView implements View, Controller {
 
 	@Override
 	public void init() {
-		game.removeBonus();
+		game.bonus = null;
 		bonusTimer = 0;
 		mazeView.setFlashing(false);
 	}
@@ -56,7 +55,7 @@ public class PlayView implements View, Controller {
 		if (bonusTimer > 0) {
 			bonusTimer -= 1;
 			if (bonusTimer == 0) {
-				game.removeBonus();
+				game.bonus = null;
 			}
 		}
 	}
@@ -83,10 +82,8 @@ public class PlayView implements View, Controller {
 	}
 
 	public void setBonus(BonusSymbol symbol, int value) {
-		Bonus bonus = new Bonus(symbol, value, theme);
-		game.setBonus(bonus);
-		Tile bonusTile = game.maze.bonusTile;
-		bonus.tf.setPosition(bonusTile.col * TS + TS / 2, bonusTile.row * TS);
+		game.bonus = new Bonus(symbol, value, theme);
+		game.bonus.tf.setPosition(game.maze.bonusTile.col * TS + TS / 2, game.maze.bonusTile.row * TS);
 	}
 
 	public void setMazeFlashing(boolean flashing) {
@@ -105,7 +102,9 @@ public class PlayView implements View, Controller {
 	@Override
 	public void draw(Graphics2D g) {
 		mazeView.draw(g);
-		game.getBonus().ifPresent(bonus -> bonus.draw(g));
+		if (game.bonus != null) {
+			game.bonus.draw(g);
+		}
 		drawActors(g);
 		drawInfoText(g);
 		drawScores(g);
