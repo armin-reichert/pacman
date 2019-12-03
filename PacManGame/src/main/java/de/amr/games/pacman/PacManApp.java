@@ -22,6 +22,7 @@ import de.amr.games.pacman.theme.PacManTheme;
 public class PacManApp extends Application {
 
 	public static void main(String[] args) {
+		Logger.getLogger("StateMachineLogger").setLevel(Level.OFF);
 		launch(new PacManApp(), args);
 	}
 
@@ -45,6 +46,5 @@ public class PacManApp extends Application {
 		gameController.setTheme(theme);
 		setController(gameController);
 		setIcon(theme.spr_ghostFrightened().frame(0));
-		Logger.getLogger("StateMachineLogger").setLevel(Level.OFF);
 	}
 }
