@@ -27,7 +27,7 @@ public class InkyChaseTestUI extends PlayView implements ViewController {
 		super.init();
 		game.levelNumber = 1;
 		game.maze.removeFood();
-		theme.snd_ghost_chase().volume(0);
+		ensemble.theme.snd_ghost_chase().volume(0);
 		ensemble.pacMan.init();
 		ensemble.pacMan.activate();
 		ensemble.inky.activate();

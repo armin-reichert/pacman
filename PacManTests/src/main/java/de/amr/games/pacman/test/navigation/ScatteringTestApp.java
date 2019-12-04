@@ -23,7 +23,7 @@ public class ScatteringTestApp extends Application {
 	public void init() {
 		PacManGame game = new PacManGame();
 		PacManTheme theme = new ClassicPacManTheme();
-		Ensemble ensemble = new Ensemble(game, game.maze, theme);
+		Ensemble ensemble = new Ensemble(game, theme);
 		setController(new ScatteringTestUI(game, ensemble));
 	}
 }

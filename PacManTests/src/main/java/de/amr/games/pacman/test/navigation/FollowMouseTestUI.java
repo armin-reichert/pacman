@@ -31,9 +31,9 @@ public class FollowMouseTestUI extends PlayView implements ViewController {
 	@Override
 	public void init() {
 		super.init();
-		theme.snd_ghost_chase().volume(0);
 		game.levelNumber = 1;
 		game.maze.removeFood();
+		ensemble.theme.snd_ghost_chase().volume(0);
 		ensemble.blinky.activate();
 		ensemble.blinky.init();
 		ensemble.blinky.fnChasingTarget = () -> mouseTile;

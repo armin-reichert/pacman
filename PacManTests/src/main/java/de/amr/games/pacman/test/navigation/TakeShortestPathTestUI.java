@@ -36,11 +36,11 @@ public class TakeShortestPathTestUI extends PlayView implements ViewController {
 	@Override
 	public void init() {
 		super.init();
-		showInfoText("F toggles FRIGHTENED CHASING", Color.YELLOW);
+		showInfoText("SPACE toggles ghost state", Color.YELLOW);
 		currentTarget = 0;
 		game.levelNumber = 1;
-		theme.snd_ghost_chase().volume(0);
 		game.maze.removeFood();
+		ensemble.theme.snd_ghost_chase().volume(0);
 		ensemble.blinky.activate();
 		ensemble.blinky.init();
 		ensemble.blinky.setState(CHASING);
@@ -59,7 +59,7 @@ public class TakeShortestPathTestUI extends PlayView implements ViewController {
 
 	@Override
 	public void update() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_F)) {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			ensemble.blinky.setState(ensemble.blinky.getState() == CHASING ? FRIGHTENED : CHASING);
 		}
 		ensemble.blinky.update();

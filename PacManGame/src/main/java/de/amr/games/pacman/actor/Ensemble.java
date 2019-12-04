@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.actor.behavior.ghost.GhostSteerings;
 import de.amr.games.pacman.model.BonusSymbol;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
@@ -32,7 +31,7 @@ public class Ensemble {
 	public PacManTheme theme;
 	private Bonus bonus;
 
-	public Ensemble(PacManGame game, Maze maze, PacManTheme theme) {
+	public Ensemble(PacManGame game, PacManTheme theme) {
 		this.game = game;
 
 		pacMan = new PacMan(game);
@@ -40,34 +39,34 @@ public class Ensemble {
 
 		blinky = new Ghost("Blinky", game);
 		blinky.initialDir = Top4.W;
-		blinky.initialTile = maze.blinkyHome;
-		blinky.scatterTile = maze.blinkyScatter;
-		blinky.revivalTile = maze.pinkyHome;
+		blinky.initialTile = game.maze.blinkyHome;
+		blinky.scatterTile = game.maze.blinkyScatter;
+		blinky.revivalTile = game.maze.pinkyHome;
 		blinky.fnChasingTarget = pacMan::tile;
 
 		pinky = new Ghost("Pinky", game);
 		pinky.initialDir = Top4.S;
-		pinky.initialTile = maze.pinkyHome;
-		pinky.scatterTile = maze.pinkyScatter;
-		pinky.revivalTile = maze.pinkyHome;
+		pinky.initialTile = game.maze.pinkyHome;
+		pinky.scatterTile = game.maze.pinkyScatter;
+		pinky.revivalTile = game.maze.pinkyHome;
 		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
 
 		inky = new Ghost("Inky", game);
 		inky.initialDir = Top4.N;
-		inky.initialTile = maze.inkyHome;
-		inky.scatterTile = maze.inkyScatter;
-		inky.revivalTile = maze.inkyHome;
+		inky.initialTile = game.maze.inkyHome;
+		inky.scatterTile = game.maze.inkyScatter;
+		inky.revivalTile = game.maze.inkyHome;
 		inky.fnChasingTarget = () -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
-			return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
+			return game.maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		};
 
 		clyde = new Ghost("Clyde", game);
 		clyde.initialDir = Top4.N;
-		clyde.initialTile = maze.clydeHome;
-		clyde.scatterTile = maze.clydeScatter;
-		clyde.revivalTile = maze.clydeHome;
-		clyde.fnChasingTarget = () -> clyde.tileDistanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze.clydeScatter;
+		clyde.initialTile = game.maze.clydeHome;
+		clyde.scatterTile = game.maze.clydeScatter;
+		clyde.revivalTile = game.maze.clydeHome;
+		clyde.fnChasingTarget = () -> clyde.tileDistanceSq(pacMan) > 8 * 8 ? pacMan.tile() : game.maze.clydeScatter;
 
 		ghosts().forEach(ghost -> {
 			ghost.setSteering(GhostState.FRIGHTENED, GhostSteerings.movingRandomly());

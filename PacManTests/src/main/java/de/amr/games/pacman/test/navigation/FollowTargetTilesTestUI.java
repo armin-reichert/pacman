@@ -37,7 +37,7 @@ public class FollowTargetTilesTestUI extends PlayView implements ViewController 
 		current = 0;
 		game.levelNumber = 1;
 		game.maze.removeFood();
-		theme.snd_ghost_chase().volume(0);
+		ensemble.theme.snd_ghost_chase().volume(0);
 		ensemble.blinky.activate();
 		ensemble.blinky.fnChasingTarget = () -> targets.get(current);
 		ensemble.blinky.placeAtTile(targets.get(0), 0, 0);

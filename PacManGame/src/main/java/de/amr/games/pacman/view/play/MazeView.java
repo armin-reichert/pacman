@@ -23,12 +23,13 @@ public class MazeView extends Entity {
 	private final Animation energizerBlinking;
 	private boolean flashing;
 
-	public MazeView(PacManGame game) {
+	public MazeView(PacManGame game, PacManTheme theme) {
 		this.game = game;
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
 		energizerBlinking.setEnabled(false);
 		setFlashing(false);
+		setTheme(theme);
 	}
 
 	public void setTheme(PacManTheme theme) {

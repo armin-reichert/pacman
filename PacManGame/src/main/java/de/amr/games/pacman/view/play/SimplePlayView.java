@@ -30,7 +30,6 @@ public class SimplePlayView implements View, Controller {
 	protected final Ensemble ensemble;
 	protected final Dimension size;
 	protected final MazeView mazeView;
-	protected PacManTheme theme;
 	protected Image lifeImage;
 	protected String infoText;
 	protected Color infoTextColor;
@@ -40,7 +39,7 @@ public class SimplePlayView implements View, Controller {
 		this.game = game;
 		this.ensemble = ensemble;
 		size = new Dimension(app().settings.width, app().settings.height);
-		mazeView = new MazeView(game);
+		mazeView = new MazeView(game, ensemble.theme);
 		mazeView.tf.setPosition(0, 3 * TS);
 	}
 
@@ -61,7 +60,6 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	public void setTheme(PacManTheme theme) {
-		this.theme = theme;
 		lifeImage = theme.spr_pacManWalking(Top4.W).frame(1);
 		mazeView.setTheme(theme);
 	}
@@ -114,7 +112,7 @@ public class SimplePlayView implements View, Controller {
 		if (showScores) {
 			// Points score
 			int score = game.score.getPoints();
-			g.setFont(theme.fnt_text());
+			g.setFont(ensemble.theme.fnt_text());
 			g.setColor(Color.YELLOW);
 			g.drawString("SCORE", TS, TS);
 			g.setColor(Color.WHITE);
@@ -156,7 +154,7 @@ public class SimplePlayView implements View, Controller {
 		g.translate(0, size.height - 2 * TS);
 		for (int i = 0, n = game.levelCounter.size(); i < n; ++i) {
 			g.translate(mazeWidth - (n - i + 1) * 2 * TS, 0);
-			Image bonusImage = theme.spr_bonusSymbol(game.levelCounter.get(i)).frame(0);
+			Image bonusImage = ensemble.theme.spr_bonusSymbol(game.levelCounter.get(i)).frame(0);
 			g.drawImage(bonusImage, 0, 0, 2 * TS, 2 * TS, null);
 			g.translate(-mazeWidth + (n - i + 1) * 2 * TS, 0);
 		}
@@ -169,7 +167,7 @@ public class SimplePlayView implements View, Controller {
 		}
 		int mazeWidth = mazeView.sprites.current().get().getWidth();
 		Graphics2D g2 = (Graphics2D) g.create();
-		g2.setFont(theme.fnt_text(14));
+		g2.setFont(ensemble.theme.fnt_text(14));
 		g2.setColor(infoTextColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(infoText, g2).getBounds();
 		g2.translate((mazeWidth - box.width) / 2, (game.maze.bonusTile.row + 1) * TS);

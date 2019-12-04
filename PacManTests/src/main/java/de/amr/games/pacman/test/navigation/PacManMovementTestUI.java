@@ -26,7 +26,7 @@ public class PacManMovementTestUI extends PlayView implements ViewController {
 		ensemble.pacMan.addListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
-				theme.snd_eatPill().play();
+				ensemble.theme.snd_eatPill().play();
 				game.maze.removeFood(foodFound.tile);
 				if (game.maze.tiles().filter(game.maze::containsFood).count() == 0) {
 					game.maze.restoreFood();
