@@ -3,6 +3,8 @@ package de.amr.games.pacman.test.navigation;
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.actor.Ensemble;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.theme.ClassicPacManTheme;
+import de.amr.games.pacman.theme.PacManTheme;
 
 public class FleeRandomlyTestApp extends Application {
 
@@ -20,7 +22,8 @@ public class FleeRandomlyTestApp extends Application {
 	@Override
 	public void init() {
 		PacManGame game = new PacManGame();
-		Ensemble ensemble = new Ensemble(game, game.maze);
+		PacManTheme theme = new ClassicPacManTheme();
+		Ensemble ensemble = new Ensemble(game, game.maze, theme);
 		setController(new FleeRandomlyTestUI(game, ensemble));
 	}
 }

@@ -5,13 +5,12 @@ import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Ensemble;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class JumpingTestUI extends PlayView implements ViewController {
 
 	public JumpingTestUI(PacManGame game, Ensemble ensemble) {
-		super(game, ensemble, new ClassicPacManTheme());
+		super(game, ensemble);
 		showRoutes = false;
 		showStates = true;
 		showScores = false;

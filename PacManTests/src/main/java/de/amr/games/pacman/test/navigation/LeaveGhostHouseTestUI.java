@@ -10,13 +10,12 @@ import de.amr.games.pacman.actor.Ensemble;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class LeaveGhostHouseTestUI extends PlayView implements ViewController {
 
 	public LeaveGhostHouseTestUI(PacManGame game, Ensemble ensemble) {
-		super(game, ensemble, new ClassicPacManTheme());
+		super(game, ensemble);
 		showRoutes = true;
 		showGrid = true;
 		showStates = true;

@@ -9,7 +9,6 @@ import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Ensemble;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class FollowMouseTestUI extends PlayView implements ViewController {
@@ -17,7 +16,7 @@ public class FollowMouseTestUI extends PlayView implements ViewController {
 	private Tile mouseTile;
 
 	public FollowMouseTestUI(PacManGame game, Ensemble ensemble) {
-		super(game, ensemble, new ClassicPacManTheme());
+		super(game, ensemble);
 		showRoutes = true;
 		showGrid = true;
 		showStates = false;

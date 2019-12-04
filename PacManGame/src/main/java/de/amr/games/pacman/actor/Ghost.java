@@ -65,28 +65,28 @@ public class Ghost extends Actor<GhostState> {
 	}
 
 	private void chasingSoundOn() {
-		if (!theme.snd_ghost_chase().isRunning()) {
-			theme.snd_ghost_chase().loop();
+		if (!ensemble.theme.snd_ghost_chase().isRunning()) {
+			ensemble.theme.snd_ghost_chase().loop();
 		}
 	}
 
 	private void chasingSoundOff() {
 		// if this is the only chasing ghost, turn it off
 		if (ensemble.activeGhosts().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
-			theme.snd_ghost_chase().stop();
+			ensemble.theme.snd_ghost_chase().stop();
 		}
 	}
 
 	private void deadSoundOn() {
-		if (!theme.snd_ghost_dead().isRunning()) {
-			theme.snd_ghost_dead().loop();
+		if (!ensemble.theme.snd_ghost_dead().isRunning()) {
+			ensemble.theme.snd_ghost_dead().loop();
 		}
 	}
 
 	private void deadSoundOff() {
 		// if this is the only dead ghost, turn it off
 		if (ensemble.activeGhosts().filter(ghost -> ghost != this).noneMatch(ghost -> ghost.getState() == DEAD)) {
-			theme.snd_ghost_dead().stop();
+			ensemble.theme.snd_ghost_dead().stop();
 		}
 	}
 

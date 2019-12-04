@@ -11,12 +11,10 @@ import java.awt.Rectangle;
 
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ensemble;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.graph.grid.impl.Top4;
 
@@ -57,7 +55,7 @@ public class SimplePlayView implements View, Controller {
 		if (bonusTimer > 0) {
 			bonusTimer -= 1;
 			if (bonusTimer == 0) {
-				ensemble.bonus = null;
+				ensemble.clearBonus();
 			}
 		}
 	}
@@ -66,11 +64,6 @@ public class SimplePlayView implements View, Controller {
 		this.theme = theme;
 		lifeImage = theme.spr_pacManWalking(Top4.W).frame(1);
 		mazeView.setTheme(theme);
-		theme.apply(ensemble.pacMan);
-		theme.apply(ensemble.blinky, GhostColor.RED);
-		theme.apply(ensemble.pinky, GhostColor.PINK);
-		theme.apply(ensemble.inky, GhostColor.CYAN);
-		theme.apply(ensemble.clyde, GhostColor.ORANGE);
 	}
 
 	public void enableAnimation(boolean enabled) {
@@ -84,8 +77,7 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	public void setBonus(BonusSymbol symbol, int value) {
-		ensemble.bonus = new Bonus(symbol, value, theme);
-		ensemble.bonus.tf.setPosition(game.maze.bonusTile.col * TS + TS / 2, game.maze.bonusTile.row * TS);
+		ensemble.addBonus(symbol, value);
 	}
 
 	public void setMazeFlashing(boolean flashing) {
@@ -110,9 +102,7 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		if (ensemble.bonus != null) {
-			ensemble.bonus.draw(g);
-		}
+		ensemble.bonus().ifPresent(bonus -> bonus.draw(g));
 		if (ensemble.pacMan.isActive()) {
 			ensemble.pacMan.draw(g);
 		}

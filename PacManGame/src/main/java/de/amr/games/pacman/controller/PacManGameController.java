@@ -77,27 +77,32 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	private boolean muted = false;
 
-	public PacManGameController(PacManGame game) {
+	public PacManGameController(PacManGame game, PacManTheme theme) {
 		super(PacManGameState.class);
 		this.game = game;
+		this.theme = theme;
 
 		buildStateMachine();
 		setIgnoreUnknownEvents(true);
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 		ghostAttackTimer = new GhostAttackTimer(() -> game.levelNumber);
 
-		ensemble = new Ensemble(game, game.maze);
+		ensemble = new Ensemble(game, game.maze, theme);
 		ensemble.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackTimer::getState);
 		ensemble.pacMan.addListener(this::process);
 
+		introView = new IntroView(theme);
+		
 		playView = new PlayView(game, ensemble);
 		playView.ghostAttackTimer = ghostAttackTimer;
+		playView.setTheme(theme);
 	}
 
 	// View handling
 
 	public void setTheme(PacManTheme theme) {
 		this.theme = theme;
+		ensemble.setTheme(theme);
 		introView = new IntroView(theme);
 		playView.setTheme(theme);
 	}
@@ -227,7 +232,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						game.init();
 						ensemble.actors().forEach(Actor::activate);
 						ensemble.actors().forEach(Actor::init);
-						ensemble.bonus = null;
+						ensemble.clearBonus();
 						playView.init();
 						playView.showScores = true;
 						playView.enableAnimation(false);
@@ -288,7 +293,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						LOGGER.info("Game is over");
 						game.score.save();
 						ensemble.activeGhosts().forEach(Ghost::show);
-						ensemble.bonus = null;
+						ensemble.clearBonus();
 						playView.enableAnimation(false);
 						theme.music_gameover().loop();
 						playView.showInfoText("Game Over!", Color.RED);
@@ -442,15 +447,16 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
-			LOGGER.info(
-					() -> String.format("PacMan found %s, value %d points", ensemble.bonus.symbol(), ensemble.bonus.value()));
-			theme.snd_eatFruit().play();
-			ensemble.bonus.consume();
-			boolean extraLife = game.scorePoints(ensemble.bonus.value());
-			if (extraLife) {
-				theme.snd_extraLife().play();
-			}
-			playView.setBonusTimer(sec(1));
+			ensemble.bonus().ifPresent(bonus -> {
+				bonus.consume();
+				boolean extraLife = game.scorePoints(bonus.value());
+				playView.setBonusTimer(sec(1));
+				theme.snd_eatFruit().play();
+				if (extraLife) {
+					theme.snd_extraLife().play();
+				}
+				LOGGER.info(() -> String.format("PacMan found %s and scored %d points", bonus.symbol(), bonus.value()));
+			});
 		}
 
 		private void onFoodFound(PacManGameEvent event) {

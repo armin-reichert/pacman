@@ -10,13 +10,12 @@ import de.amr.games.pacman.actor.Ensemble;
 import de.amr.games.pacman.actor.behavior.pacman.PacManSteerings;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class PacManMovementTestUI extends PlayView implements ViewController {
 
 	public PacManMovementTestUI(PacManGame game, Ensemble ensemble) {
-		super(game, ensemble, new ClassicPacManTheme());
+		super(game, ensemble);
 		showScores = false;
 	}
 

@@ -29,7 +29,6 @@ import de.amr.games.pacman.controller.GhostAttackTimer;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.statemachine.State;
 
 /**
@@ -71,11 +70,6 @@ public class PlayView extends SimplePlayView {
 			g.drawLine(col * TS, 0, col * TS, numRows * TS);
 		}
 		return image;
-	}
-
-	public PlayView(PacManGame game, Ensemble ensemble, PacManTheme theme) {
-		this(game, ensemble);
-		setTheme(theme);
 	}
 
 	public PlayView(PacManGame game, Ensemble ensemble) {

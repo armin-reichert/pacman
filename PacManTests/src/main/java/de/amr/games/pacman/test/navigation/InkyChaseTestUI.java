@@ -11,13 +11,12 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class InkyChaseTestUI extends PlayView implements ViewController {
 
 	public InkyChaseTestUI(PacManGame game, Ensemble ensemble) {
-		super(game, ensemble, new ClassicPacManTheme());
+		super(game, ensemble);
 		showRoutes = true;
 		showStates = true;
 		showScores = false;

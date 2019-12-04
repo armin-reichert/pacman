@@ -11,7 +11,6 @@ import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
@@ -30,7 +29,6 @@ public abstract class Actor<S> extends MazeMover {
 	public final String name;
 	public final PacManGame game;
 	public Ensemble ensemble;
-	public PacManTheme theme;
 	private boolean active;
 	protected final Set<Consumer<PacManGameEvent>> listeners;
 	protected StateMachine<S, PacManGameEvent> fsm;

@@ -17,7 +17,6 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class TakeShortestPathTestUI extends PlayView implements ViewController {
@@ -26,7 +25,7 @@ public class TakeShortestPathTestUI extends PlayView implements ViewController {
 	private int currentTarget;
 
 	public TakeShortestPathTestUI(PacManGame game, Ensemble ensemble) {
-		super(game, ensemble, new ClassicPacManTheme());
+		super(game, ensemble);
 		showRoutes = true;
 		showStates = true;
 		showScores = false;

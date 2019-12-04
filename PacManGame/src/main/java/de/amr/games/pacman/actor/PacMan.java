@@ -121,12 +121,12 @@ public class PacMan extends Actor<PacManState> {
 					.timeoutAfter(() -> sec(4f))
 					.onEntry(() -> {
 						sprites.select("full");
-						theme.snd_clips_all().forEach(Sound::stop);
+						ensemble.theme.snd_clips_all().forEach(Sound::stop);
 					})
 					.onTick(() -> {
 						if (state().getTicksRemaining() == sec(2.5f)) {
 							sprites.select("dying");
-							theme.snd_die().play();
+							ensemble.theme.snd_die().play();
 							ensemble.activeGhosts().forEach(Ghost::hide);
 						}
 					})
@@ -142,7 +142,7 @@ public class PacMan extends Actor<PacManState> {
 						state().resetTimer();
 						LOGGER.info(() -> String.format("Pac-Man got power for %d ticks (%d sec)", 
 								state().getDuration(), state().getDuration() / 60));
-						theme.snd_waza().loop();
+						ensemble.theme.snd_waza().loop();
 					})
 					
 				.when(HUNGRY).then(DYING)
@@ -170,7 +170,7 @@ public class PacMan extends Actor<PacManState> {
 				publish(new PacManGettingWeakerEvent());
 			} else if (getTicksRemaining() == 1) {
 				setTimerFunction(() -> 0);
-				theme.snd_waza().stop();
+				ensemble.theme.snd_waza().stop();
 				publish(new PacManLostPowerEvent());
 			} else if (mustDigest()) {
 				digest();
@@ -212,7 +212,7 @@ public class PacMan extends Actor<PacManState> {
 			}
 
 			/*@formatter:off*/
-			Optional<PacManGameEvent> bonusEaten = Optional.ofNullable(ensemble.bonus)
+			Optional<PacManGameEvent> bonusEaten = ensemble.bonus()
 				.filter(bonus -> pacManTile == maze.bonusTile)
 				.filter(bonus -> !bonus.consumed())
 				.map(bonus -> new BonusFoundEvent(bonus.symbol(), bonus.value()));

@@ -2,15 +2,21 @@ package de.amr.games.pacman.actor;
 
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.games.pacman.actor.behavior.pacman.PacManSteerings.steeredByKeys;
+import static de.amr.games.pacman.model.Maze.NESW;
+import static de.amr.games.pacman.model.PacManGame.TS;
 import static de.amr.games.pacman.model.PacManGame.sec;
 
 import java.awt.event.KeyEvent;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.actor.behavior.ghost.GhostSteerings;
+import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.theme.GhostColor;
+import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.graph.grid.impl.Top4;
 
 /**
@@ -20,17 +26,17 @@ import de.amr.graph.grid.impl.Top4;
  */
 public class Ensemble {
 
-	private final PacManGame game;
-	public PacMan pacMan;
-	public Ghost blinky, pinky, inky, clyde;
-	public Bonus bonus;
+	final private PacManGame game;
+	final public PacMan pacMan;
+	final public Ghost blinky, pinky, inky, clyde;
+	private Bonus bonus;
+	public PacManTheme theme;
 
-	public Ensemble(PacManGame game, Maze maze) {
+	public Ensemble(PacManGame game, Maze maze, PacManTheme theme) {
 		this.game = game;
 
 		pacMan = new PacMan(game);
 		pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
-		pacMan.addToEnsemble(this);
 
 		blinky = new Ghost(game, maze, "Blinky");
 		blinky.initialDir = Top4.W;
@@ -69,6 +75,35 @@ public class Ensemble {
 		});
 
 		actors().forEach(actor -> actor.addToEnsemble(this));
+		setTheme(theme);
+	}
+
+	public void setTheme(PacManTheme theme) {
+		this.theme = theme;
+		setPacManSprites();
+		setGhostSprites(blinky, GhostColor.RED);
+		setGhostSprites(pinky, GhostColor.PINK);
+		setGhostSprites(inky, GhostColor.CYAN);
+		setGhostSprites(clyde, GhostColor.ORANGE);
+	}
+
+	private void setPacManSprites() {
+		NESW.dirs().forEach(dir -> pacMan.sprites.set("walking-" + dir, theme.spr_pacManWalking(dir)));
+		pacMan.sprites.set("dying", theme.spr_pacManDying());
+		pacMan.sprites.set("full", theme.spr_pacManFull());
+		pacMan.sprites.select("full");
+	}
+
+	private void setGhostSprites(Ghost ghost, GhostColor color) {
+		NESW.dirs().forEach(dir -> {
+			ghost.sprites.set("color-" + dir, theme.spr_ghostColored(color, dir));
+			ghost.sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir));
+		});
+		for (int i = 0; i < 4; ++i) {
+			ghost.sprites.set("value-" + i, theme.spr_greenNumber(i));
+		}
+		ghost.sprites.set("frightened", theme.spr_ghostFrightened());
+		ghost.sprites.set("flashing", theme.spr_ghostFlashing());
 	}
 
 	public Stream<Ghost> ghosts() {
@@ -85,6 +120,19 @@ public class Ensemble {
 
 	public Stream<Actor<?>> activeActors() {
 		return actors().filter(Actor::isActive);
+	}
+
+	public Optional<Bonus> bonus() {
+		return Optional.ofNullable(bonus);
+	}
+
+	public void clearBonus() {
+		bonus = null;
+	}
+
+	public void addBonus(BonusSymbol symbol, int value) {
+		bonus = new Bonus(symbol, value, theme);
+		bonus.tf.setPosition(game.maze.bonusTile.col * TS + TS / 2, game.maze.bonusTile.row * TS);
 	}
 
 	// rules for leaving the ghost house
