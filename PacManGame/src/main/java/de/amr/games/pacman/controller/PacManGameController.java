@@ -227,6 +227,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						game.init();
 						ensemble.actors().forEach(Actor::activate);
 						ensemble.actors().forEach(Actor::init);
+						ensemble.bonus = null;
 						playView.init();
 						playView.showScores = true;
 						playView.enableAnimation(false);
@@ -287,7 +288,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						LOGGER.info("Game is over");
 						game.score.save();
 						ensemble.activeGhosts().forEach(Ghost::show);
-						game.bonus = null;
+						ensemble.bonus = null;
 						playView.enableAnimation(false);
 						theme.music_gameover().loop();
 						playView.showInfoText("Game Over!", Color.RED);
@@ -441,10 +442,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
-			LOGGER.info(() -> String.format("PacMan found %s, value %d points", game.bonus.symbol(), game.bonus.value()));
+			LOGGER.info(
+					() -> String.format("PacMan found %s, value %d points", ensemble.bonus.symbol(), ensemble.bonus.value()));
 			theme.snd_eatFruit().play();
-			game.bonus.consume();
-			boolean extraLife = game.scorePoints(game.bonus.value());
+			ensemble.bonus.consume();
+			boolean extraLife = game.scorePoints(ensemble.bonus.value());
 			if (extraLife) {
 				theme.snd_extraLife().play();
 			}

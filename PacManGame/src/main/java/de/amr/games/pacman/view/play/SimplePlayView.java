@@ -48,7 +48,6 @@ public class SimplePlayView implements View, Controller {
 
 	@Override
 	public void init() {
-		game.bonus = null;
 		bonusTimer = 0;
 		mazeView.setFlashing(false);
 	}
@@ -58,7 +57,7 @@ public class SimplePlayView implements View, Controller {
 		if (bonusTimer > 0) {
 			bonusTimer -= 1;
 			if (bonusTimer == 0) {
-				game.bonus = null;
+				ensemble.bonus = null;
 			}
 		}
 	}
@@ -85,8 +84,8 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	public void setBonus(BonusSymbol symbol, int value) {
-		game.bonus = new Bonus(symbol, value, theme);
-		game.bonus.tf.setPosition(game.maze.bonusTile.col * TS + TS / 2, game.maze.bonusTile.row * TS);
+		ensemble.bonus = new Bonus(symbol, value, theme);
+		ensemble.bonus.tf.setPosition(game.maze.bonusTile.col * TS + TS / 2, game.maze.bonusTile.row * TS);
 	}
 
 	public void setMazeFlashing(boolean flashing) {
@@ -105,15 +104,15 @@ public class SimplePlayView implements View, Controller {
 	@Override
 	public void draw(Graphics2D g) {
 		mazeView.draw(g);
-		if (game.bonus != null) {
-			game.bonus.draw(g);
-		}
 		drawActors(g);
 		drawInfoText(g);
 		drawScores(g);
 	}
 
 	protected void drawActors(Graphics2D g) {
+		if (ensemble.bonus != null) {
+			ensemble.bonus.draw(g);
+		}
 		if (ensemble.pacMan.isActive()) {
 			ensemble.pacMan.draw(g);
 		}

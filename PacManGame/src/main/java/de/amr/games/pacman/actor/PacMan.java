@@ -212,7 +212,7 @@ public class PacMan extends Actor<PacManState> {
 			}
 
 			/*@formatter:off*/
-			Optional<PacManGameEvent> bonusEaten = Optional.ofNullable(game.bonus)
+			Optional<PacManGameEvent> bonusEaten = Optional.ofNullable(ensemble.bonus)
 				.filter(bonus -> pacManTile == maze.bonusTile)
 				.filter(bonus -> !bonus.consumed())
 				.map(bonus -> new BonusFoundEvent(bonus.symbol(), bonus.value()));

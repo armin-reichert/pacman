@@ -23,6 +23,7 @@ public class Ensemble {
 	private final PacManGame game;
 	public PacMan pacMan;
 	public Ghost blinky, pinky, inky, clyde;
+	public Bonus bonus;
 
 	public Ensemble(PacManGame game, Maze maze) {
 		this.game = game;

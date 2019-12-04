@@ -141,9 +141,6 @@ public class PlayView extends SimplePlayView {
 		if (showRoutes) {
 			ensemble.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));
 		}
-		if (game.bonus != null) {
-			game.bonus.draw(g);
-		}
 		drawActors(g);
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);

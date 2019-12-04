@@ -13,8 +13,6 @@ import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.amr.games.pacman.actor.Bonus;
-
 /**
  * The "model" (in MVC speak) of the Pac-Man game.
  * 
@@ -111,12 +109,6 @@ public class PacManGame {
 	/** Current level number. */
 	public int levelNumber;
 
-	/** The currently active bonus. */
-	public Bonus bonus; // TODO this is an actor, move out of model
-
-	/**
-	 * Creates a game instance.
-	 */
 	public PacManGame() {
 		maze = new Maze();
 		score = new Score();
@@ -125,7 +117,6 @@ public class PacManGame {
 	public void init() {
 		lives = 3;
 		levelNumber = 1;
-		bonus = null;
 		maze.restoreFood();
 		levelCounter.clear();
 		score.loadHiscore();
