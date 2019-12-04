@@ -13,6 +13,22 @@ public class PacManGameLevel {
 		return Arrays.stream(table).map(PacManGameLevel::new).toArray(PacManGameLevel[]::new);
 	}
 
+	public final BonusSymbol bonusSymbol;
+	public final int bonusValue;
+	public final float pacManSpeed;
+	public final float pacManDotsSpeed;
+	public final float ghostSpeed;
+	public final float ghostTunnelSpeed;
+	public final int elroy1DotsLeft;
+	public final float elroy1Speed;
+	public final int elroy2DotsLeft;
+	public final float elroy2Speed;
+	public final float pacManPowerSpeed;
+	public final float pacManPowerDotsSpeed;
+	public final float ghostFrightenedSpeed;
+	public final int pacManPowerSeconds;
+	public final int mazeNumFlashes;
+
 	public PacManGameLevel(Object[] row) {
 		bonusSymbol = (BonusSymbol) row[0];
 		bonusValue = (int) row[1];
@@ -30,20 +46,4 @@ public class PacManGameLevel {
 		pacManPowerSeconds = (int) row[13];
 		mazeNumFlashes = (int) row[14];
 	}
-
-	public final BonusSymbol bonusSymbol;
-	public final int bonusValue;
-	public final float pacManSpeed;
-	public final float pacManDotsSpeed;
-	public final float ghostSpeed;
-	public final float ghostTunnelSpeed;
-	public final int elroy1DotsLeft;
-	public final float elroy1Speed;
-	public final int elroy2DotsLeft;
-	public final float elroy2Speed;
-	public final float pacManPowerSpeed;
-	public final float pacManPowerDotsSpeed;
-	public final float ghostFrightenedSpeed;
-	public final int pacManPowerSeconds;
-	public final int mazeNumFlashes;
 }
