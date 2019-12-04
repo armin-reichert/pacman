@@ -16,7 +16,7 @@ public class BoardTests {
 
 		assertEquals(28, Maze.COLS);
 		assertEquals(36, Maze.ROWS);
-		
+
 		assertNotNull(maze.blinkyHome);
 		assertNotNull(maze.blinkyScatter);
 		assertNotNull(maze.bonusTile);

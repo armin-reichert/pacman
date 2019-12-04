@@ -12,6 +12,7 @@ import java.awt.Rectangle;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.actor.Bonus;
+import de.amr.games.pacman.actor.Ensemble;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.PacManGame;
@@ -28,6 +29,7 @@ public class SimplePlayView implements View, Controller {
 
 	public boolean showScores;
 	protected final PacManGame game;
+	protected final Ensemble ensemble;
 	protected final Dimension size;
 	protected final MazeView mazeView;
 	protected PacManTheme theme;
@@ -36,8 +38,9 @@ public class SimplePlayView implements View, Controller {
 	protected Color infoTextColor;
 	protected int bonusTimer;
 
-	public SimplePlayView(PacManGame game) {
+	public SimplePlayView(PacManGame game, Ensemble ensemble) {
 		this.game = game;
+		this.ensemble = ensemble;
 		size = new Dimension(app().settings.width, app().settings.height);
 		mazeView = new MazeView(game);
 		mazeView.tf.setPosition(0, 3 * TS);
@@ -64,17 +67,17 @@ public class SimplePlayView implements View, Controller {
 		this.theme = theme;
 		lifeImage = theme.spr_pacManWalking(Top4.W).frame(1);
 		mazeView.setTheme(theme);
-		theme.apply(game.pacMan);
-		theme.apply(game.blinky, GhostColor.RED);
-		theme.apply(game.pinky, GhostColor.PINK);
-		theme.apply(game.inky, GhostColor.CYAN);
-		theme.apply(game.clyde, GhostColor.ORANGE);
+		theme.apply(ensemble.pacMan);
+		theme.apply(ensemble.blinky, GhostColor.RED);
+		theme.apply(ensemble.pinky, GhostColor.PINK);
+		theme.apply(ensemble.inky, GhostColor.CYAN);
+		theme.apply(ensemble.clyde, GhostColor.ORANGE);
 	}
 
 	public void enableAnimation(boolean enabled) {
 		mazeView.enableAnimation(enabled);
-		game.pacMan.sprites.enableAnimation(enabled);
-		game.activeGhosts().forEach(ghost -> ghost.sprites.enableAnimation(enabled));
+		ensemble.pacMan.sprites.enableAnimation(enabled);
+		ensemble.activeGhosts().forEach(ghost -> ghost.sprites.enableAnimation(enabled));
 	}
 
 	public void setBonusTimer(int ticks) {
@@ -111,11 +114,11 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		if (game.pacMan.isActive()) {
-			game.pacMan.draw(g);
+		if (ensemble.pacMan.isActive()) {
+			ensemble.pacMan.draw(g);
 		}
-		game.activeGhosts().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));
-		game.activeGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(ghost -> ghost.draw(g));
+		ensemble.activeGhosts().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));
+		ensemble.activeGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {
@@ -151,7 +154,7 @@ public class SimplePlayView implements View, Controller {
 
 	protected void drawLives(Graphics2D g) {
 		g.translate(0, size.height - 2 * TS);
-		for (int i = 0; i < game.pacMan.lives; ++i) {
+		for (int i = 0; i < game.lives; ++i) {
 			g.translate((2 - i) * lifeImage.getWidth(null), 0);
 			g.drawImage(lifeImage, 0, 0, null);
 			g.translate((i - 2) * lifeImage.getWidth(null), 0);

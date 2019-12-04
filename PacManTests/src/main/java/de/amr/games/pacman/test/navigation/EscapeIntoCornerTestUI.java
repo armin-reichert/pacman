@@ -4,6 +4,7 @@ import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.fleeingToS
 
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
+import de.amr.games.pacman.actor.Ensemble;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
@@ -11,8 +12,8 @@ import de.amr.games.pacman.view.play.PlayView;
 
 public class EscapeIntoCornerTestUI extends PlayView implements ViewController {
 
-	public EscapeIntoCornerTestUI(PacManGame game) {
-		super(game, new ClassicPacManTheme());
+	public EscapeIntoCornerTestUI(PacManGame game, Ensemble ensemble) {
+		super(game, ensemble, new ClassicPacManTheme());
 		showRoutes = true;
 		showStates = true;
 		showScores = false;
@@ -23,18 +24,18 @@ public class EscapeIntoCornerTestUI extends PlayView implements ViewController {
 		super.init();
 		game.levelNumber = 1;
 		game.maze.removeFood();
-		game.pacMan.activate();
-		game.pacMan.init();
-		game.blinky.activate();
-		game.blinky.setSteering(GhostState.FRIGHTENED, fleeingToSafeCorner(game.pacMan));
-		game.blinky.init();
-		game.blinky.setState(GhostState.FRIGHTENED);
+		ensemble.pacMan.activate();
+		ensemble.pacMan.init();
+		ensemble.blinky.activate();
+		ensemble.blinky.setSteering(GhostState.FRIGHTENED, fleeingToSafeCorner(ensemble.pacMan));
+		ensemble.blinky.init();
+		ensemble.blinky.setState(GhostState.FRIGHTENED);
 	}
 
 	@Override
 	public void update() {
-		game.pacMan.update();
-		game.blinky.update();
+		ensemble.pacMan.update();
+		ensemble.blinky.update();
 		super.update();
 	}
 

@@ -12,6 +12,7 @@ import java.util.List;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
+import de.amr.games.pacman.actor.Ensemble;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.model.PacManGame;
@@ -24,14 +25,13 @@ public class TakeShortestPathTestUI extends PlayView implements ViewController {
 	private List<Tile> targets;
 	private int currentTarget;
 
-	public TakeShortestPathTestUI(PacManGame game) {
-		super(game, new ClassicPacManTheme());
+	public TakeShortestPathTestUI(PacManGame game, Ensemble ensemble) {
+		super(game, ensemble, new ClassicPacManTheme());
 		showRoutes = true;
 		showStates = true;
 		showScores = false;
-		targets = Arrays.asList(game.maze.bottomRight, game.maze.bottomLeft, game.maze.tunnelLeftExit,
-				game.maze.topLeft, game.maze.blinkyHome, game.maze.topRight, game.maze.tunnelRightExit,
-				game.maze.pacManHome);
+		targets = Arrays.asList(game.maze.bottomRight, game.maze.bottomLeft, game.maze.tunnelLeftExit, game.maze.topLeft,
+				game.maze.blinkyHome, game.maze.topRight, game.maze.tunnelRightExit, game.maze.pacManHome);
 	}
 
 	@Override
@@ -42,12 +42,12 @@ public class TakeShortestPathTestUI extends PlayView implements ViewController {
 		game.levelNumber = 1;
 		theme.snd_ghost_chase().volume(0);
 		game.maze.removeFood();
-		game.blinky.activate();
-		game.blinky.init();
-		game.blinky.setState(CHASING);
+		ensemble.blinky.activate();
+		ensemble.blinky.init();
+		ensemble.blinky.setState(CHASING);
 		Steering<Ghost> followPathToCurrentTarget = followingShortestPath(() -> targets.get(currentTarget));
-		game.blinky.setSteering(CHASING, followPathToCurrentTarget);
-		game.blinky.setSteering(FRIGHTENED, followPathToCurrentTarget);
+		ensemble.blinky.setSteering(CHASING, followPathToCurrentTarget);
+		ensemble.blinky.setSteering(FRIGHTENED, followPathToCurrentTarget);
 	}
 
 	private void nextTarget() {
@@ -61,10 +61,10 @@ public class TakeShortestPathTestUI extends PlayView implements ViewController {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_F)) {
-			game.blinky.setState(game.blinky.getState() == CHASING ? FRIGHTENED : CHASING);
+			ensemble.blinky.setState(ensemble.blinky.getState() == CHASING ? FRIGHTENED : CHASING);
 		}
-		game.blinky.update();
-		if (game.blinky.tile().equals(targets.get(currentTarget))) {
+		ensemble.blinky.update();
+		if (ensemble.blinky.tile().equals(targets.get(currentTarget))) {
 			nextTarget();
 		}
 		super.update();

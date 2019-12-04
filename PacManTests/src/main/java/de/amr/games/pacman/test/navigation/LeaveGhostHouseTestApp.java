@@ -1,6 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
 import de.amr.easy.game.Application;
+import de.amr.games.pacman.actor.Ensemble;
 import de.amr.games.pacman.model.PacManGame;
 
 public class LeaveGhostHouseTestApp extends Application {
@@ -19,6 +20,8 @@ public class LeaveGhostHouseTestApp extends Application {
 	@Override
 	public void init() {
 		clock.setFrequency(10);
-		setController(new LeaveGhostHouseTestUI(new PacManGame()));
+		PacManGame game = new PacManGame();
+		Ensemble ensemble = new Ensemble(game, game.maze);
+		setController(new LeaveGhostHouseTestUI(game, ensemble));
 	}
 }

@@ -1,6 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
 import de.amr.easy.game.Application;
+import de.amr.games.pacman.actor.Ensemble;
 import de.amr.games.pacman.model.PacManGame;
 
 public class FleeRandomlyTestApp extends Application {
@@ -18,6 +19,8 @@ public class FleeRandomlyTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new FleeRandomlyTestUI(new PacManGame()));
+		PacManGame game = new PacManGame();
+		Ensemble ensemble = new Ensemble(game, game.maze);
+		setController(new FleeRandomlyTestUI(game, ensemble));
 	}
 }

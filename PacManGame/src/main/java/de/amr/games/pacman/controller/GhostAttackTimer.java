@@ -12,13 +12,13 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.statemachine.StateMachine;
 
 /**
- * State machine for controlling the timing of the ghost attacks. Ghosts attack Pac-Man in rounds,
- * changing between chasing and scattering. The duration of these attacks depends on the level and
- * round.
+ * State machine for controlling the timing of the ghost attacks. Ghosts attack
+ * Pac-Man in rounds, changing between chasing and scattering. The duration of
+ * these attacks depends on the level and round.
  * 
  * <p>
- * Ghosts also use the current state of this state machine to decide what to do after being
- * frightened or killed.
+ * Ghosts also use the current state of this state machine to decide what to do
+ * after being frightened or killed.
  * 
  * @author Armin Reichert
  * 
@@ -99,16 +99,16 @@ public class GhostAttackTimer extends StateMachine<GhostState, Void> {
 
 	public void suspend() {
 		if (!suspended) {
-			LOGGER.info(String.format("%s: suspended in state %s, remaining time: %d frames (%.2f seconds)",
-					getDescription(), getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
+			LOGGER.info(String.format("%s: suspended in state %s, remaining time: %d frames (%.2f seconds)", getDescription(),
+					getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
 			suspended = true;
 		}
 	}
 
 	public void resume() {
 		if (suspended) {
-			LOGGER.info(String.format("%s: resumed in state %s, remaining time: %d frames (%.2f seconds)",
-					getDescription(), getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
+			LOGGER.info(String.format("%s: resumed in state %s, remaining time: %d frames (%.2f seconds)", getDescription(),
+					getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
 			suspended = false;
 		}
 	}

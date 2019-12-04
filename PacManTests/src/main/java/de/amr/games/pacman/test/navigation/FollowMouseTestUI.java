@@ -6,6 +6,7 @@ import static de.amr.games.pacman.model.PacManGame.TS;
 import de.amr.easy.game.input.Mouse;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
+import de.amr.games.pacman.actor.Ensemble;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
@@ -15,8 +16,8 @@ public class FollowMouseTestUI extends PlayView implements ViewController {
 
 	private Tile mouseTile;
 
-	public FollowMouseTestUI(PacManGame game) {
-		super(game, new ClassicPacManTheme());
+	public FollowMouseTestUI(PacManGame game, Ensemble ensemble) {
+		super(game, ensemble, new ClassicPacManTheme());
 		showRoutes = true;
 		showGrid = true;
 		showStates = false;
@@ -34,10 +35,10 @@ public class FollowMouseTestUI extends PlayView implements ViewController {
 		theme.snd_ghost_chase().volume(0);
 		game.levelNumber = 1;
 		game.maze.removeFood();
-		game.blinky.activate();
-		game.blinky.init();
-		game.blinky.fnChasingTarget = () -> mouseTile;
-		game.blinky.setState(CHASING);
+		ensemble.blinky.activate();
+		ensemble.blinky.init();
+		ensemble.blinky.fnChasingTarget = () -> mouseTile;
+		ensemble.blinky.setState(CHASING);
 		mouseTile = game.maze.tileAt(Mouse.getX() / TS, Mouse.getY() / TS);
 	}
 
@@ -46,7 +47,7 @@ public class FollowMouseTestUI extends PlayView implements ViewController {
 		if (Mouse.moved()) {
 			mouseTile = game.maze.tileAt(Mouse.getX() / TS, Mouse.getY() / TS);
 		}
-		game.blinky.update();
+		ensemble.blinky.update();
 		super.update();
 	}
 }

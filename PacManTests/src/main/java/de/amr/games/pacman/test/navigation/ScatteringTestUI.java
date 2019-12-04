@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
+import de.amr.games.pacman.actor.Ensemble;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
@@ -15,8 +16,8 @@ import de.amr.games.pacman.view.play.PlayView;
 
 public class ScatteringTestUI extends PlayView implements ViewController {
 
-	public ScatteringTestUI(PacManGame game) {
-		super(game, new ClassicPacManTheme());
+	public ScatteringTestUI(PacManGame game, Ensemble ensemble) {
+		super(game, ensemble, new ClassicPacManTheme());
 		showRoutes = true;
 		showStates = true;
 		showScores = false;
@@ -27,7 +28,7 @@ public class ScatteringTestUI extends PlayView implements ViewController {
 		super.init();
 		game.levelNumber = 1;
 		game.maze.removeFood();
-		game.ghosts().forEach(ghost -> {
+		ensemble.ghosts().forEach(ghost -> {
 			ghost.activate();
 			ghost.init();
 			ghost.fnNextState = () -> GhostState.SCATTERING;
@@ -38,10 +39,10 @@ public class ScatteringTestUI extends PlayView implements ViewController {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			game.activeGhosts().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
+			ensemble.activeGhosts().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
 			hideInfoText();
 		}
-		game.activeGhosts().forEach(Ghost::update);
+		ensemble.activeGhosts().forEach(Ghost::update);
 		super.update();
 	}
 

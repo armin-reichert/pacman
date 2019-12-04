@@ -83,8 +83,8 @@ public class Maze {
 
 	public final GridGraph2D<Tile, Void> graph;
 
-	public final Tile topLeft, topRight, bottomLeft, bottomRight, blinkyScatter, pinkyScatter, inkyScatter,
-			clydeScatter, tunnelLeftExit, tunnelRightExit, ghostRevival;
+	public final Tile topLeft, topRight, bottomLeft, bottomRight, blinkyScatter, pinkyScatter, inkyScatter, clydeScatter,
+			tunnelLeftExit, tunnelRightExit, ghostRevival;
 
 	public /* final */ Tile pacManHome, blinkyHome, inkyHome, pinkyHome, clydeHome, bonusTile;
 

@@ -2,6 +2,7 @@ package de.amr.games.pacman.test.navigation;
 
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
+import de.amr.games.pacman.actor.Ensemble;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
@@ -9,8 +10,8 @@ import de.amr.games.pacman.view.play.PlayView;
 
 public class JumpingTestUI extends PlayView implements ViewController {
 
-	public JumpingTestUI(PacManGame game) {
-		super(game, new ClassicPacManTheme());
+	public JumpingTestUI(PacManGame game, Ensemble ensemble) {
+		super(game, ensemble, new ClassicPacManTheme());
 		showRoutes = false;
 		showStates = true;
 		showScores = false;
@@ -21,7 +22,7 @@ public class JumpingTestUI extends PlayView implements ViewController {
 		super.init();
 		game.levelNumber = 1;
 		game.maze.removeFood();
-		game.ghosts().forEach(ghost -> {
+		ensemble.ghosts().forEach(ghost -> {
 			ghost.activate();
 			ghost.init();
 		});
@@ -29,7 +30,7 @@ public class JumpingTestUI extends PlayView implements ViewController {
 
 	@Override
 	public void update() {
-		game.activeGhosts().forEach(Ghost::update);
+		ensemble.activeGhosts().forEach(Ghost::update);
 		super.update();
 	}
 

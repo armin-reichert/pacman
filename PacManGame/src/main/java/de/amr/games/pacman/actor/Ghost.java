@@ -72,7 +72,7 @@ public class Ghost extends Actor<GhostState> {
 
 	private void chasingSoundOff() {
 		// if this is the only chasing ghost, turn it off
-		if (game.activeGhosts().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
+		if (ensemble.activeGhosts().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
 			theme.snd_ghost_chase().stop();
 		}
 	}
@@ -85,7 +85,7 @@ public class Ghost extends Actor<GhostState> {
 
 	private void deadSoundOff() {
 		// if this is the only dead ghost, turn it off
-		if (game.activeGhosts().filter(ghost -> ghost != this).noneMatch(ghost -> ghost.getState() == DEAD)) {
+		if (ensemble.activeGhosts().filter(ghost -> ghost != this).noneMatch(ghost -> ghost.getState() == DEAD)) {
 			theme.snd_ghost_dead().stop();
 		}
 	}
@@ -191,7 +191,7 @@ public class Ghost extends Actor<GhostState> {
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir))
 					.onExit(() -> {
 						enteredNewTile = true;
-						game.pacMan.ticksSinceLastMeal = 0;
+						ensemble.pacMan.ticksSinceLastMeal = 0;
 					})
 					
 				.state(LEAVING_HOUSE)
@@ -216,7 +216,7 @@ public class Ghost extends Actor<GhostState> {
 					.onExit(this::chasingSoundOff)
 				
 				.state(FRIGHTENED)
-					.onTick(() -> walkAndDisplayAs(game.pacMan.isLosingPower() ? "flashing" : "frightened"))
+					.onTick(() -> walkAndDisplayAs(ensemble.pacMan.isLosingPower() ? "flashing" : "frightened"))
 				
 				.state(DYING)
 					.timeoutAfter(Ghost::getDyingTime)

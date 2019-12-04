@@ -37,7 +37,6 @@ import de.amr.statemachine.StateMachine;
  */
 public class PacMan extends Actor<PacManState> {
 
-	public int lives;
 	public int ticksSinceLastMeal;
 	public Steering<PacMan> steering;
 
@@ -128,7 +127,7 @@ public class PacMan extends Actor<PacManState> {
 						if (state().getTicksRemaining() == sec(2.5f)) {
 							sprites.select("dying");
 							theme.snd_die().play();
-							game.activeGhosts().forEach(Ghost::hide);
+							ensemble.activeGhosts().forEach(Ghost::hide);
 						}
 					})
 
@@ -169,16 +168,13 @@ public class PacMan extends Actor<PacManState> {
 		public void onTick() {
 			if (startsLosingPower()) {
 				publish(new PacManGettingWeakerEvent());
-			}
-			else if (getTicksRemaining() == 1) {
+			} else if (getTicksRemaining() == 1) {
 				setTimerFunction(() -> 0);
 				theme.snd_waza().stop();
 				publish(new PacManLostPowerEvent());
-			}
-			else if (mustDigest()) {
+			} else if (mustDigest()) {
 				digest();
-			}
-			else {
+			} else {
 				steer();
 				move();
 				findSomethingInteresting().ifPresent(PacMan.this::publish);
@@ -201,7 +197,7 @@ public class PacMan extends Actor<PacManState> {
 			}
 
 			/*@formatter:off*/
-			Optional<PacManGameEvent> ghostCollision = game.activeGhosts()
+			Optional<PacManGameEvent> ghostCollision = ensemble.activeGhosts()
 				.filter(Ghost::visible)
 				.filter(ghost -> ghost.tile().equals(pacManTile))
 				.filter(ghost -> ghost.getState() == GhostState.CHASING
@@ -231,8 +227,7 @@ public class PacMan extends Actor<PacManState> {
 				boolean energizer = maze.containsEnergizer(pacManTile);
 				digestion = energizer ? PacManGame.DIGEST_TICKS_ENERGIZER : PacManGame.DIGEST_TICKS;
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			}
-			else {
+			} else {
 				ticksSinceLastMeal += 1;
 			}
 

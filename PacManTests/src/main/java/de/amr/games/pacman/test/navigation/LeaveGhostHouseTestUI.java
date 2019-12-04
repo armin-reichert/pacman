@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
+import de.amr.games.pacman.actor.Ensemble;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.PacManGame;
@@ -14,8 +15,8 @@ import de.amr.games.pacman.view.play.PlayView;
 
 public class LeaveGhostHouseTestUI extends PlayView implements ViewController {
 
-	public LeaveGhostHouseTestUI(PacManGame game) {
-		super(game, new ClassicPacManTheme());
+	public LeaveGhostHouseTestUI(PacManGame game, Ensemble ensemble) {
+		super(game, ensemble, new ClassicPacManTheme());
 		showRoutes = true;
 		showGrid = true;
 		showStates = true;
@@ -27,19 +28,19 @@ public class LeaveGhostHouseTestUI extends PlayView implements ViewController {
 		super.init();
 		game.levelNumber = 1;
 		game.maze.removeFood();
-		game.inky.activate();
-		game.inky.init();
-		game.inky.fnNextState = () -> GhostState.SCATTERING;
+		ensemble.inky.activate();
+		ensemble.inky.init();
+		ensemble.inky.fnNextState = () -> GhostState.SCATTERING;
 		showInfoText("Press SPACE to unlock", Color.YELLOW);
 	}
 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			game.inky.process(new GhostUnlockedEvent());
+			ensemble.inky.process(new GhostUnlockedEvent());
 			hideInfoText();
 		}
-		game.inky.update();
+		ensemble.inky.update();
 		super.update();
 	}
 

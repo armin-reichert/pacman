@@ -258,9 +258,9 @@ public class DisplayModeTest extends JFrame implements ActionListener, ListSelec
 		} else {
 			rr = Integer.toString(refreshRate);
 		}
-		currentDM.setText(COLUMN_NAMES[INDEX_WIDTH] + ": " + newMode.getWidth() + " " + COLUMN_NAMES[INDEX_HEIGHT]
-				+ ": " + newMode.getHeight() + " " + COLUMN_NAMES[INDEX_BITDEPTH] + ": " + bd + " "
-				+ COLUMN_NAMES[INDEX_REFRESHRATE] + ": " + rr);
+		currentDM.setText(COLUMN_NAMES[INDEX_WIDTH] + ": " + newMode.getWidth() + " " + COLUMN_NAMES[INDEX_HEIGHT] + ": "
+				+ newMode.getHeight() + " " + COLUMN_NAMES[INDEX_BITDEPTH] + ": " + bd + " " + COLUMN_NAMES[INDEX_REFRESHRATE]
+				+ ": " + rr);
 	}
 
 	public void begin() {

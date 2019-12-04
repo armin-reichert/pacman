@@ -53,7 +53,7 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 	private final ChaseGhostsAnimation chaseGhosts;
 	private final GhostPointsAnimation ghostPoints;
 	private final LinkWidget visitGitHub;
-	
+
 	public IntroView(PacManTheme theme) {
 		super(IntroViewState.class);
 		width = app().settings.width;
@@ -99,8 +99,8 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 		speedHint[1].tf.centerX(width);
 		speedHint[2].tf.setX(width - 20 - speedHint[2].tf.getWidth());
 
-		visitGitHub = LinkWidget.create().text(GITHUB_TEXT).url(GITHUB_URL)
-				.font(new Font(Font.SANS_SERIF, Font.BOLD, 6)).color(Color.LIGHT_GRAY).build();
+		visitGitHub = LinkWidget.create().text(GITHUB_TEXT).url(GITHUB_URL).font(new Font(Font.SANS_SERIF, Font.BOLD, 6))
+				.color(Color.LIGHT_GRAY).build();
 		visitGitHub.tf.setY(height - 10);
 		visitGitHub.tf.centerX(width);
 
