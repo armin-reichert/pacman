@@ -26,11 +26,11 @@ import de.amr.graph.grid.impl.Top4;
  */
 public class Ensemble {
 
-	final private PacManGame game;
-	final public PacMan pacMan;
-	final public Ghost blinky, pinky, inky, clyde;
-	private Bonus bonus;
+	public PacManGame game;
+	public PacMan pacMan;
+	public Ghost blinky, pinky, inky, clyde;
 	public PacManTheme theme;
+	private Bonus bonus;
 
 	public Ensemble(PacManGame game, Maze maze, PacManTheme theme) {
 		this.game = game;
