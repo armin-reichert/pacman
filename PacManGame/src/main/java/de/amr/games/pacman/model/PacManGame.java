@@ -232,14 +232,16 @@ public class PacManGame {
 	}
 
 	public int eat(Tile tile) {
-		maze.removeFood(tile);
 		numPelletsEaten += 1;
 		updateFoodCounter();
 		if (maze.containsEnergizer(tile)) {
 			numGhostsKilledByCurrentEnergizer = 0;
+			maze.removeFood(tile);
 			return ENERGIZER_VALUE;
+		} else {
+			maze.removeFood(tile);
+			return PELLET_VALUE;
 		}
-		return PELLET_VALUE;
 	}
 
 	public int numPelletsRemaining() {
