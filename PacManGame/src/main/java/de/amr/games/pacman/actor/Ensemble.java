@@ -74,7 +74,7 @@ public class Ensemble {
 			ghost.setSteering(GhostState.LOCKED, GhostSteerings.jumpingUpAndDown());
 		});
 
-		actors().forEach(actor -> actor.addToEnsemble(this));
+		actors().forEach(actor -> actor.ensemble = this);
 		setTheme(theme);
 	}
 

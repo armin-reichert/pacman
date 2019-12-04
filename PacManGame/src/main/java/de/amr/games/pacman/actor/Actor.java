@@ -41,10 +41,6 @@ public abstract class Actor<S> extends MazeMover {
 		listeners = new LinkedHashSet<>();
 	}
 
-	public void addToEnsemble(Ensemble ensemble) {
-		this.ensemble = ensemble;
-	}
-
 	public void activate() {
 		active = true;
 		init();
