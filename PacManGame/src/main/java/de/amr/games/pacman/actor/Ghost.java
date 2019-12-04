@@ -107,17 +107,17 @@ public class Ghost extends Actor<GhostState> {
 		case LEAVING_HOUSE:
 			//$FALL-THROUGH$
 		case ENTERING_HOUSE:
-			return speed(game.level().ghostSpeed) / 2;
+			return speed(game.level.ghostSpeed) / 2;
 		case CHASING:
 			//$FALL-THROUGH$
 		case SCATTERING:
-			return inTunnel ? speed(game.level().ghostTunnelSpeed) : speed(game.level().ghostSpeed);
+			return inTunnel ? speed(game.level.ghostTunnelSpeed) : speed(game.level.ghostSpeed);
 		case FRIGHTENED:
-			return inTunnel ? speed(game.level().ghostTunnelSpeed) : speed(game.level().ghostFrightenedSpeed);
+			return inTunnel ? speed(game.level.ghostTunnelSpeed) : speed(game.level.ghostFrightenedSpeed);
 		case DYING:
 			return 0;
 		case DEAD:
-			return 2 * speed(game.level().ghostSpeed);
+			return 2 * speed(game.level.ghostSpeed);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name));
 		}

@@ -10,7 +10,6 @@ import static de.amr.games.pacman.model.BonusSymbol.KEY;
 import static de.amr.games.pacman.model.BonusSymbol.PEACH;
 import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -70,7 +69,7 @@ public class PacManGame {
 		}
 	}
 
-	static final Level[] LEVELS = Arrays.stream(new Object[][] {
+	static final Object[][] LEVELS = new Object[][] {
 		/*@formatter:off*/
 		{ CHERRIES,    100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6, 5 },
 		{ STRAWBERRY,  300,  .90f, .79f, .85f, .45f,  30, .8f,  15,  .95f, .95f, .83f, .55f,   5, 5 },
@@ -94,7 +93,7 @@ public class PacManGame {
 		{ KEY,        5000,    1f, .87f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0, 0 },
 		{ KEY,        5000,  .90f, .79f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0, 0 },
 		/*@formatter:on*/
-	}).map(Level::new).toArray(Level[]::new);
+	};
 
 	static final int[][] SCATTERING_TICKS = {
 		/*@formatter:off*/
@@ -141,6 +140,7 @@ public class PacManGame {
 	public boolean globalFoodCounterEnabled;
 	public int numGhostsKilledByCurrentEnergizer;
 	public int levelNumber;
+	public Level level;
 	public final List<BonusSymbol> levelCounter;
 	public final Maze maze;
 	public final Score score;
@@ -165,26 +165,16 @@ public class PacManGame {
 
 	public void startLevel() {
 		LOGGER.info("Start game level " + levelNumber);
+		level = new Level(LEVELS[Math.min(levelNumber - 1, LEVELS.length - 1)]);
 		maze.restoreFood();
 		numPelletsEaten = 0;
 		numGhostsKilledByCurrentEnergizer = 0;
-		levelCounter.add(0, level().bonusSymbol);
+		levelCounter.add(0, level.bonusSymbol);
 		if (levelCounter.size() > 8) {
 			levelCounter.remove(levelCounter.size() - 1);
 		}
 		globalFoodCount = 0;
 		globalFoodCounterEnabled = false;
-	}
-
-	/**
-	 * @return the current level parameters
-	 */
-	public Level level() {
-		// Note: levelNumber counts from 1!
-		if (levelNumber - 1 < LEVELS.length) {
-			return LEVELS[levelNumber - 1];
-		}
-		return LEVELS[LEVELS.length - 1];
 	}
 
 	/**
@@ -250,7 +240,7 @@ public class PacManGame {
 	 * @return if bonus will become active
 	 */
 	public boolean isBonusReached() {
-		return numPelletsEaten == 70 || numPelletsEaten == 170;
+		return numPelletsRemaining() == 70 || numPelletsRemaining() == 170;
 	}
 
 	public void enableGlobalFoodCounter() {

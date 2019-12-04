@@ -52,7 +52,7 @@ public class PacMan extends Actor<PacManState> {
 	public float maxSpeed() {
 		switch (getState()) {
 		case HUNGRY:
-			return hasPower() ? speed(game.level().pacManPowerSpeed) : speed(game.level().pacManSpeed);
+			return hasPower() ? speed(game.level.pacManPowerSpeed) : speed(game.level.pacManSpeed);
 		default:
 			return 0;
 		}
@@ -138,7 +138,7 @@ public class PacMan extends Actor<PacManState> {
 				.stay(HUNGRY)
 					.on(PacManGainsPowerEvent.class)
 					.act(() -> {
-						state().setTimerFunction(() -> sec(game.level().pacManPowerSeconds));
+						state().setTimerFunction(() -> sec(game.level.pacManPowerSeconds));
 						state().resetTimer();
 						LOGGER.info(() -> String.format("Pac-Man got power for %d ticks (%d sec)", 
 								state().getDuration(), state().getDuration() / 60));
@@ -168,13 +168,16 @@ public class PacMan extends Actor<PacManState> {
 		public void onTick() {
 			if (startsLosingPower()) {
 				publish(new PacManGettingWeakerEvent());
-			} else if (getTicksRemaining() == 1) {
+			}
+			else if (getTicksRemaining() == 1) {
 				setTimerFunction(() -> 0);
 				ensemble.theme.snd_waza().stop();
 				publish(new PacManLostPowerEvent());
-			} else if (mustDigest()) {
+			}
+			else if (mustDigest()) {
 				digest();
-			} else {
+			}
+			else {
 				steer();
 				move();
 				findSomethingInteresting().ifPresent(PacMan.this::publish);
@@ -227,7 +230,8 @@ public class PacMan extends Actor<PacManState> {
 				boolean energizer = maze.containsEnergizer(pacManTile);
 				digestion = energizer ? PacManGame.DIGEST_TICKS_ENERGIZER : PacManGame.DIGEST_TICKS;
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			} else {
+			}
+			else {
 				ticksSinceLastMeal += 1;
 			}
 

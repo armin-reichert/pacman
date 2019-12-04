@@ -65,12 +65,14 @@ public class SimplePlayView implements View, Controller {
 
 	@Override
 	public void update() {
-		if (bonusDisplayTicks > 0) {
-			bonusDisplayTicks -= 1;
-			if (bonusDisplayTicks == 0) {
-				ensemble.clearBonus();
+		ensemble.bonus().ifPresent(bonus -> {
+			if (bonusDisplayTicks > 0) {
+				bonusDisplayTicks -= 1;
+				if (bonusDisplayTicks == 0) {
+					ensemble.clearBonus();
+				}
 			}
-		}
+		});
 	}
 
 	public void enableAnimations(boolean state) {
