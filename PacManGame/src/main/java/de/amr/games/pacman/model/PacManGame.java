@@ -96,9 +96,6 @@ public class PacManGame {
 	/** Pac-Man lives. */
 	public int lives;
 
-	/** Number of pellets + energizers in maze. */
-	private int totalPelletsInMaze;
-
 	/** Pellets + energizers eaten in current level. */
 	private int numPelletsEaten;
 
@@ -122,7 +119,6 @@ public class PacManGame {
 	 */
 	public PacManGame() {
 		maze = new Maze();
-		totalPelletsInMaze = (int) maze.tiles().filter(maze::containsFood).count();
 		score = new Score();
 	}
 
@@ -177,7 +173,7 @@ public class PacManGame {
 	}
 
 	public int numPelletsRemaining() {
-		return totalPelletsInMaze - numPelletsEaten;
+		return maze.totalNumPellets - numPelletsEaten;
 	}
 
 	/**

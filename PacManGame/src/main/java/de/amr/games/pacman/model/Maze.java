@@ -88,17 +88,24 @@ public class Maze {
 
 	public /* final */ Tile pacManHome, blinkyHome, inkyHome, pinkyHome, clydeHome, bonusTile;
 
+	public final int totalNumPellets;
+
 	private final Tile[][] board = new Tile[COLS][ROWS];
 	private final Set<Tile> intersections;
 	private final Set<Tile> energizers = new HashSet<>();
 
 	public Maze() {
+		int numPellets = 0;
 		for (int row = 0; row < ROWS; ++row) {
 			for (int col = 0; col < COLS; ++col) {
 				char content = MAP[row].charAt(col);
 				Tile tile = board[col][row] = new Tile(col, row, content);
 				switch (content) {
+				case PELLET:
+					numPellets += 1;
+					break;
 				case ENERGIZER:
+					numPellets += 1;
 					energizers.add(tile);
 					break;
 				case 'O':
@@ -130,6 +137,8 @@ public class Maze {
 				}
 			}
 		}
+
+		totalNumPellets = numPellets;
 
 		tunnelLeftExit = board[0][17];
 		tunnelRightExit = board[27][17];
