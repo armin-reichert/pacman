@@ -130,7 +130,7 @@ public class PlayView extends SimplePlayView {
 
 	@Override
 	public void draw(Graphics2D g) {
-		mazeView.draw(g);
+		drawMaze(g);
 		drawScores(g);
 		if (showRoutes) {
 			ensemble.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));

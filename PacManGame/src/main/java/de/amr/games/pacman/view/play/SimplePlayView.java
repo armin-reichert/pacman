@@ -9,77 +9,86 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 
+import de.amr.easy.game.ui.sprites.Animation;
+import de.amr.easy.game.ui.sprites.CyclicAnimation;
+import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.actor.Ensemble;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.graph.grid.impl.Top4;
 
 /**
- * Simple play view without bells and whistles.
+ * Simple play view providing core functionality for playing.
  * 
  * @author Armin Reichert
  */
 public class SimplePlayView implements View, Controller {
 
 	public boolean showScores;
+
 	protected final PacManGame game;
 	protected final Ensemble ensemble;
 	protected final Dimension size;
-	protected final MazeView mazeView;
+
+	protected Sprite fullMazeSprite, flashingMazeSprite;
+	protected Animation energizerBlinking;
+	protected boolean flashing;
+
 	protected Image lifeImage;
 	protected String infoText;
 	protected Color infoTextColor;
-	protected int bonusTimer;
+	protected int bonusDisplayTicks;
 
 	public SimplePlayView(PacManGame game, Ensemble ensemble) {
 		this.game = game;
 		this.ensemble = ensemble;
 		size = new Dimension(app().settings.width, app().settings.height);
-		mazeView = new MazeView(game, ensemble.theme);
-		mazeView.tf.setPosition(0, 3 * TS);
+		energizerBlinking = new CyclicAnimation(2);
+		energizerBlinking.setFrameDuration(150);
+		updateTheme();
+	}
+
+	public void updateTheme() {
+		lifeImage = ensemble.theme.spr_pacManWalking(Top4.W).frame(1);
+		fullMazeSprite = ensemble.theme.spr_fullMaze();
+		flashingMazeSprite = ensemble.theme.spr_flashingMaze();
 	}
 
 	@Override
 	public void init() {
-		bonusTimer = 0;
-		mazeView.setFlashing(false);
+		bonusDisplayTicks = 0;
+		flashing = false;
+		energizerBlinking.setEnabled(false);
 	}
 
 	@Override
 	public void update() {
-		if (bonusTimer > 0) {
-			bonusTimer -= 1;
-			if (bonusTimer == 0) {
+		if (bonusDisplayTicks > 0) {
+			bonusDisplayTicks -= 1;
+			if (bonusDisplayTicks == 0) {
 				ensemble.clearBonus();
 			}
 		}
 	}
 
-	public void setTheme(PacManTheme theme) {
-		lifeImage = theme.spr_pacManWalking(Top4.W).frame(1);
-		mazeView.setTheme(theme);
+	public void enableAnimations(boolean state) {
+		flashingMazeSprite.enableAnimation(state);
+		energizerBlinking.setEnabled(state);
+		ensemble.actors().forEach(actor -> actor.sprites.enableAnimation(state));
 	}
 
-	public void enableAnimation(boolean enabled) {
-		mazeView.enableAnimation(enabled);
-		ensemble.pacMan.sprites.enableAnimation(enabled);
-		ensemble.activeGhosts().forEach(ghost -> ghost.sprites.enableAnimation(enabled));
+	public void startFlashing() {
+		flashing = true;
 	}
 
-	public void setBonusTimer(int ticks) {
-		bonusTimer = ticks;
+	public void stopFlashing() {
+		flashing = false;
 	}
 
-	public void setBonus(BonusSymbol symbol, int value) {
-		ensemble.addBonus(symbol, value);
-	}
-
-	public void setMazeFlashing(boolean flashing) {
-		mazeView.setFlashing(flashing);
+	public void startBonusTimer(int ticks) {
+		bonusDisplayTicks = ticks;
 	}
 
 	public void showInfoText(String text, Color color) {
@@ -87,16 +96,36 @@ public class SimplePlayView implements View, Controller {
 		infoTextColor = color;
 	}
 
-	public void hideInfoText() {
+	public void clearInfoText() {
 		infoText = null;
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		mazeView.draw(g);
+		drawMaze(g);
 		drawActors(g);
 		drawInfoText(g);
 		drawScores(g);
+	}
+
+	protected void drawMaze(Graphics2D g) {
+		Sprite mazeSprite = flashing ? flashingMazeSprite : fullMazeSprite;
+		// draw background because maze sprite is transparent
+		g.setColor(ensemble.theme.color_mazeBackground());
+		g.translate(0, 3 * TS);
+		g.fillRect(0, 0, mazeSprite.getWidth(), mazeSprite.getHeight());
+		mazeSprite.draw(g);
+		g.translate(0, -3 * TS);
+		if (!flashing) {
+			energizerBlinking.update();
+			game.maze.tiles().forEach(tile -> {
+				if (game.maze.containsEatenFood(tile)
+						|| game.maze.containsEnergizer(tile) && energizerBlinking.currentFrame() == 1) {
+					g.setColor(ensemble.theme.color_mazeBackground());
+					g.fillRect(tile.col * TS, tile.row * TS, TS, TS);
+				}
+			});
+		}
 	}
 
 	protected void drawActors(Graphics2D g) {
@@ -104,8 +133,10 @@ public class SimplePlayView implements View, Controller {
 		if (ensemble.pacMan.isActive()) {
 			ensemble.pacMan.draw(g);
 		}
-		ensemble.activeGhosts().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));
-		ensemble.activeGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(ghost -> ghost.draw(g));
+		ensemble.activeGhosts().sorted((g1, g2) -> {
+			GhostState s1 = g1.getState(), s2 = g2.getState();
+			return s1 == s2 ? 0 : s1 == GhostState.DYING ? -1 : 1;
+		}).forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {
@@ -128,7 +159,7 @@ public class SimplePlayView implements View, Controller {
 			g.drawString(String.format("%07d", game.score.getHiscorePoints()), 10 * TS, 2 * TS);
 			g.drawString(String.format("L%d", game.score.getHiscoreLevel()), 16 * TS, 2 * TS);
 
-			// Food remaining score
+			// Remaining pellets score
 			g.setColor(Color.PINK);
 			g.fillRect(22 * TS + 2, TS + 2, 4, 4);
 			g.setColor(Color.WHITE);
@@ -150,7 +181,7 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
-		int mazeWidth = mazeView.sprites.current().get().getWidth();
+		int mazeWidth = fullMazeSprite.getWidth();
 		g.translate(0, size.height - 2 * TS);
 		for (int i = 0, n = game.levelCounter.size(); i < n; ++i) {
 			g.translate(mazeWidth - (n - i + 1) * 2 * TS, 0);
@@ -165,7 +196,7 @@ public class SimplePlayView implements View, Controller {
 		if (infoText == null) {
 			return;
 		}
-		int mazeWidth = mazeView.sprites.current().get().getWidth();
+		int mazeWidth = fullMazeSprite.getWidth();
 		Graphics2D g2 = (Graphics2D) g.create();
 		g2.setFont(ensemble.theme.fnt_text(14));
 		g2.setColor(infoTextColor);

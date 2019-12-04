@@ -39,7 +39,7 @@ public class ScatteringTestUI extends PlayView implements ViewController {
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			ensemble.activeGhosts().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
-			hideInfoText();
+			clearInfoText();
 		}
 		ensemble.activeGhosts().forEach(Ghost::update);
 		super.update();

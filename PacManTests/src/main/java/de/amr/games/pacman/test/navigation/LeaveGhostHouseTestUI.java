@@ -37,7 +37,7 @@ public class LeaveGhostHouseTestUI extends PlayView implements ViewController {
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			ensemble.inky.process(new GhostUnlockedEvent());
-			hideInfoText();
+			clearInfoText();
 		}
 		ensemble.inky.update();
 		super.update();

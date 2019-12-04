@@ -41,6 +41,8 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 	private static final String GITHUB_TEXT = "Visit on GitHub!";
 	private static final String GITHUB_URL = "https://github.com/armin-reichert/pacman";
 
+	public final PacManTheme theme;
+	
 	private final int width;
 	private final int height;
 	private final Color background;
@@ -56,6 +58,7 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 
 	public IntroView(PacManTheme theme) {
 		super(IntroViewState.class);
+		this.theme = theme;
 		width = app().settings.width;
 		height = app().settings.height;
 		background = new Color(0, 23, 61);

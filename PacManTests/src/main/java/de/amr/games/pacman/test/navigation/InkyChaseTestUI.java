@@ -43,7 +43,7 @@ public class InkyChaseTestUI extends PlayView implements ViewController {
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			ensemble.activeGhosts().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
-			hideInfoText();
+			clearInfoText();
 		}
 		ensemble.pacMan.update();
 		ensemble.activeGhosts().forEach(Ghost::update);
