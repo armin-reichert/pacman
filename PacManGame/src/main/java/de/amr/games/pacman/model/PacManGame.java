@@ -10,6 +10,7 @@ import static de.amr.games.pacman.model.BonusSymbol.KEY;
 import static de.amr.games.pacman.model.BonusSymbol.PEACH;
 import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class PacManGame {
 	public static final int POINTS_PELLET = 10;
 	public static final int POINTS_ENERGIZER = 50;
 
-	static final PacManGameLevel[] LEVELS = PacManGameLevel.parse(new Object[][] {
+	static final PacManGameLevel[] LEVELS = Arrays.stream(new Object[][] {
 		/*@formatter:off*/
 		{ CHERRIES,    100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6, 5 },
 		{ STRAWBERRY,  300,  .90f, .79f, .85f, .45f,  30, .8f,  15,  .95f, .95f, .83f, .55f,   5, 5 },
@@ -56,7 +57,7 @@ public class PacManGame {
 		{ KEY,        5000,    1f, .87f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0, 0 },
 		{ KEY,        5000,  .90f, .79f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0, 0 },
 		/*@formatter:on*/
-	});
+	}).map(PacManGameLevel::new).toArray(PacManGameLevel[]::new);
 
 	static final int[][] SCATTERING_TICKS = {
 		/*@formatter:off*/

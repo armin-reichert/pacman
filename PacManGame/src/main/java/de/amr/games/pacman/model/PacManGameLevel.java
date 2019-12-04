@@ -1,17 +1,11 @@
 package de.amr.games.pacman.model;
 
-import java.util.Arrays;
-
 /**
  * Data structure storing the level-specific parameters.
  * 
  * @author Armin Reichert
  */
 public class PacManGameLevel {
-
-	static PacManGameLevel[] parse(Object[][] table) {
-		return Arrays.stream(table).map(PacManGameLevel::new).toArray(PacManGameLevel[]::new);
-	}
 
 	public final BonusSymbol bonusSymbol;
 	public final int bonusValue;
