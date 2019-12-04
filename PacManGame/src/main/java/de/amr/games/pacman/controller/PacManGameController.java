@@ -134,8 +134,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onEntry(() -> {
 						game.startLevel();
 						ensemble.ghosts().forEach(ghost -> ghost.foodCount = 0);
+						ghostAttackTimer.init();
 						playView.clearInfoText();
 						playView.enableAnimations(true);
+						playView.startEnergizerBlinking();
 						ensemble.theme.music_playing().volume(.90f);
 						ensemble.theme.music_playing().loop();
 					})
@@ -273,9 +275,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onEntry() {
-			ghostAttackTimer.init();
 			ensemble.activeGhosts().forEach(Ghost::show);
 			ensemble.clearBonus();
+			playView.enableAnimations(true);
+			playView.startEnergizerBlinking();
 		}
 
 		@Override
@@ -315,6 +318,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			PacManKilledEvent e = (PacManKilledEvent) event;
 			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.name, e.killer.tile()));
 			game.enableGlobalFoodCounter();
+			ghostAttackTimer.init();
+			playView.stopEnergizerBlinking();
 			ensemble.pacMan.process(e);
 		}
 

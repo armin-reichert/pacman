@@ -10,8 +10,8 @@ import static de.amr.games.pacman.model.BonusSymbol.KEY;
 import static de.amr.games.pacman.model.BonusSymbol.PEACH;
 import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.
@@ -134,6 +134,9 @@ public class PacManGame {
 		return (int) (3600 * min);
 	}
 
+	public final Deque<BonusSymbol> levelCounter;
+	public final Maze maze;
+	public final Score score;
 	public int lives;
 	public int numPelletsEaten;
 	public int globalFoodCount;
@@ -141,12 +144,9 @@ public class PacManGame {
 	public int numGhostsKilledByCurrentEnergizer;
 	public int levelNumber;
 	public Level level;
-	public final List<BonusSymbol> levelCounter;
-	public final Maze maze;
-	public final Score score;
 
 	public PacManGame() {
-		levelCounter = new LinkedList<>();
+		levelCounter = new ArrayDeque<>(8);
 		maze = new Maze();
 		score = new Score();
 	}
@@ -169,10 +169,10 @@ public class PacManGame {
 		maze.restoreFood();
 		numPelletsEaten = 0;
 		numGhostsKilledByCurrentEnergizer = 0;
-		levelCounter.add(0, level.bonusSymbol);
-		if (levelCounter.size() > 8) {
-			levelCounter.remove(levelCounter.size() - 1);
+		if (levelCounter.size() == 8) {
+			levelCounter.removeLast();
 		}
+		levelCounter.addFirst(level.bonusSymbol);
 		globalFoodCount = 0;
 		globalFoodCounterEnabled = false;
 	}

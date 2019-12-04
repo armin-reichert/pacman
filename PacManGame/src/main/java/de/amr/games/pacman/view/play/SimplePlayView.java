@@ -16,6 +16,7 @@ import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.actor.Ensemble;
 import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.graph.grid.impl.Top4;
 
@@ -73,12 +74,20 @@ public class SimplePlayView implements View, Controller {
 				}
 			}
 		});
+		energizerBlinking.update();
 	}
 
 	public void enableAnimations(boolean state) {
 		flashingMazeSprite.enableAnimation(state);
-		energizerBlinking.setEnabled(state);
 		ensemble.actors().forEach(actor -> actor.sprites.enableAnimation(state));
+	}
+	
+	public void startEnergizerBlinking() {
+		energizerBlinking.setEnabled(true);
+	}
+	
+	public void stopEnergizerBlinking() {
+		energizerBlinking.setEnabled(false);
 	}
 
 	public void startFlashing() {
@@ -183,15 +192,13 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
-		int mazeWidth = fullMazeSprite.getWidth();
-		g.translate(0, size.height - 2 * TS);
-		for (int i = 0, n = game.levelCounter.size(); i < n; ++i) {
-			g.translate(mazeWidth - (n - i + 1) * 2 * TS, 0);
-			Image bonusImage = ensemble.theme.spr_bonusSymbol(game.levelCounter.get(i)).frame(0);
-			g.drawImage(bonusImage, 0, 0, 2 * TS, 2 * TS, null);
-			g.translate(-mazeWidth + (n - i + 1) * 2 * TS, 0);
+		int imageSize = 2 * TS;
+		int x = fullMazeSprite.getWidth() - (game.levelCounter.size() + 1) * imageSize;
+		for (BonusSymbol symbol : game.levelCounter) {
+			Image image = ensemble.theme.spr_bonusSymbol(symbol).frame(0);
+			g.drawImage(image, x, size.height - imageSize, imageSize, imageSize, null);
+			x += imageSize;
 		}
-		g.translate(0, -size.height + 2 * TS);
 	}
 
 	protected void drawInfoText(Graphics2D g) {
