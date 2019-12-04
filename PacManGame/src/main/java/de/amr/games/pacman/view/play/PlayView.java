@@ -138,7 +138,7 @@ public class PlayView extends SimplePlayView {
 		drawActors(g);
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
-			if (ensemble.pacMan.visible()) {
+			if (ensemble.pacMan.isActive()) {
 				drawActorAlignment(ensemble.pacMan, g);
 			}
 			ensemble.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawActorAlignment(ghost, g));
