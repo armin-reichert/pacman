@@ -52,6 +52,11 @@ public class PacManGame {
 		return (int) (60 * fraction);
 	}
 
+	/** Ticks for given minutes at 60 Hz */
+	public static int min(int min) {
+		return 3600 * min;
+	}
+
 	/**
 	 * @see <a href=
 	 *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>

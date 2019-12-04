@@ -4,6 +4,8 @@ import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.model.PacManGame.min;
+import static de.amr.games.pacman.model.PacManGame.sec;
 
 import java.util.function.IntSupplier;
 import java.util.logging.Logger;
@@ -26,16 +28,6 @@ import de.amr.statemachine.StateMachine;
  *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=3">Gamasutra</a>
  */
 public class GhostAttackTimer extends StateMachine<GhostState, Void> {
-
-	/** Ticks for given seconds at 60 Hz */
-	private static int sec(int sec) {
-		return 60 * sec;
-	}
-
-	/** Ticks for given minutes at 60 Hz */
-	private static int min(int min) {
-		return 3600 * min;
-	}
 
 	/*@formatter:off*/
 	public static final int[][] SCATTERING_DURATION = {
