@@ -33,7 +33,44 @@ public class PacManGame {
 	public static final int POINTS_PELLET = 10;
 	public static final int POINTS_ENERGIZER = 50;
 
-	static final PacManGameLevel[] LEVELS = Arrays.stream(new Object[][] {
+	public static class Level {
+
+		public final BonusSymbol bonusSymbol;
+		public final int bonusValue;
+		public final float pacManSpeed;
+		public final float pacManDotsSpeed;
+		public final float ghostSpeed;
+		public final float ghostTunnelSpeed;
+		public final int elroy1DotsLeft;
+		public final float elroy1Speed;
+		public final int elroy2DotsLeft;
+		public final float elroy2Speed;
+		public final float pacManPowerSpeed;
+		public final float pacManPowerDotsSpeed;
+		public final float ghostFrightenedSpeed;
+		public final int pacManPowerSeconds;
+		public final int mazeNumFlashes;
+
+		public Level(Object[] row) {
+			bonusSymbol = (BonusSymbol) row[0];
+			bonusValue = (int) row[1];
+			pacManSpeed = (float) row[2];
+			pacManDotsSpeed = (float) row[3];
+			ghostSpeed = (float) row[4];
+			ghostTunnelSpeed = (float) row[5];
+			elroy1DotsLeft = (int) row[6];
+			elroy1Speed = (float) row[7];
+			elroy2DotsLeft = (int) row[8];
+			elroy2Speed = (float) row[9];
+			pacManPowerSpeed = (float) row[10];
+			pacManPowerDotsSpeed = (float) row[11];
+			ghostFrightenedSpeed = (float) row[12];
+			pacManPowerSeconds = (int) row[13];
+			mazeNumFlashes = (int) row[14];
+		}
+	}
+
+	static final Level[] LEVELS = Arrays.stream(new Object[][] {
 		/*@formatter:off*/
 		{ CHERRIES,    100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6, 5 },
 		{ STRAWBERRY,  300,  .90f, .79f, .85f, .45f,  30, .8f,  15,  .95f, .95f, .83f, .55f,   5, 5 },
@@ -57,7 +94,7 @@ public class PacManGame {
 		{ KEY,        5000,    1f, .87f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0, 0 },
 		{ KEY,        5000,  .90f, .79f, .95f, .50f, 120, .8f,  60, .105f,   0f,   0f,   0f,   0, 0 },
 		/*@formatter:on*/
-	}).map(PacManGameLevel::new).toArray(PacManGameLevel[]::new);
+	}).map(Level::new).toArray(Level[]::new);
 
 	static final int[][] SCATTERING_TICKS = {
 		/*@formatter:off*/
@@ -142,7 +179,7 @@ public class PacManGame {
 	/**
 	 * @return the current level parameters
 	 */
-	public PacManGameLevel level() {
+	public Level level() {
 		// Note: levelNumber counts from 1!
 		if (levelNumber - 1 < LEVELS.length) {
 			return LEVELS[levelNumber - 1];

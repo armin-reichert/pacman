@@ -30,7 +30,6 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.model.PacManGameLevel;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
 import de.amr.statemachine.StateMachine;
@@ -101,7 +100,6 @@ public class Ghost extends Actor<GhostState> {
 	@Override
 	/* TODO: Some values are still guessed */
 	public float maxSpeed() {
-		PacManGameLevel level = game.level();
 		boolean inTunnel = maze.isTunnel(tile());
 		switch (getState()) {
 		case LOCKED:
@@ -109,17 +107,17 @@ public class Ghost extends Actor<GhostState> {
 		case LEAVING_HOUSE:
 			//$FALL-THROUGH$
 		case ENTERING_HOUSE:
-			return speed(level.ghostSpeed) / 2;
+			return speed(game.level().ghostSpeed) / 2;
 		case CHASING:
 			//$FALL-THROUGH$
 		case SCATTERING:
-			return inTunnel ? speed(level.ghostTunnelSpeed) : speed(level.ghostSpeed);
+			return inTunnel ? speed(game.level().ghostTunnelSpeed) : speed(game.level().ghostSpeed);
 		case FRIGHTENED:
-			return inTunnel ? speed(level.ghostTunnelSpeed) : speed(level.ghostFrightenedSpeed);
+			return inTunnel ? speed(game.level().ghostTunnelSpeed) : speed(game.level().ghostFrightenedSpeed);
 		case DYING:
 			return 0;
 		case DEAD:
-			return 2 * speed(level.ghostSpeed);
+			return 2 * speed(game.level().ghostSpeed);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name));
 		}
