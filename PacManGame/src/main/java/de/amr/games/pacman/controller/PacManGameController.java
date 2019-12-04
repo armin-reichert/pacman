@@ -385,6 +385,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		public void onEntry() {
 			ghostAttackTimer.init();
 			ensemble.activeGhosts().forEach(Ghost::show);
+			ensemble.clearBonus();
 		}
 
 		@Override
