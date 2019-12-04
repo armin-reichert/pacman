@@ -87,6 +87,30 @@ public class PacManGame {
 		/*@formatter:on*/
 	});
 
+	public static final int[][] SCATTERING_TICKS = {
+		/*@formatter:off*/
+		{ sec(7), sec(7), sec(5), sec(5) }, // Level 1
+		{ sec(7), sec(7), sec(5), 1 },      // Level 2-4
+		{ sec(5), sec(5), sec(5), 1 },      // Level >= 5
+		/*@formatter:on*/
+	};
+
+	public static final int[][] CHASING_TICKS = {
+			/*@formatter:off*/
+		{ sec(20), sec(20), sec(20),                Integer.MAX_VALUE }, // Level 1
+		{ sec(20), sec(20), min(17) + sec(13) + 14, Integer.MAX_VALUE }, // Level 2-4
+		{ sec(20), sec(20), min(17) + sec(17) + 14, Integer.MAX_VALUE }, // Level >= 5
+		/*@formatter:on*/
+	};
+
+	public int scatterTicks(int round) {
+		return SCATTERING_TICKS[(levelNumber == 1) ? 0 : (levelNumber <= 4) ? 1 : 2][round < 3 ? round : 3];
+	}
+
+	public int chasingTicks(int round) {
+		return CHASING_TICKS[(levelNumber == 1) ? 0 : (levelNumber <= 4) ? 1 : 2][round < 3 ? round : 3];
+	}
+
 	/** The maze (model). */
 	public final Maze maze;
 

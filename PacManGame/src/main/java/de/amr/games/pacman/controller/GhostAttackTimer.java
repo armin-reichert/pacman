@@ -4,13 +4,11 @@ import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.model.PacManGame.min;
-import static de.amr.games.pacman.model.PacManGame.sec;
 
-import java.util.function.IntSupplier;
 import java.util.logging.Logger;
 
 import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -29,32 +27,11 @@ import de.amr.statemachine.StateMachine;
  */
 public class GhostAttackTimer extends StateMachine<GhostState, Void> {
 
-	/*@formatter:off*/
-	public static final int[][] SCATTERING_DURATION = {
-		{ sec(7), sec(7), sec(5), sec(5) }, // Level 1
-		{ sec(7), sec(7), sec(5), 1 },      // Level 2-4
-		{ sec(5), sec(5), sec(5), 1 },      // Level >= 5
-	};
-	
-	public static final int[][] CHASING_DURATION = {
-		{ sec(20), sec(20), sec(20),                Integer.MAX_VALUE }, // Level 1
-		{ sec(20), sec(20), min(17) + sec(13) + 14, Integer.MAX_VALUE }, // Level 2-4
-		{ sec(20), sec(20), min(17) + sec(17) + 14, Integer.MAX_VALUE }, // Level >= 5
-	};
-	/*@formatter:on*/
-
-	private int ticks(int[][] table) {
-		int level = fnLevel.getAsInt();
-		return table[(level == 1) ? 0 : (level <= 4) ? 1 : 2][round < 3 ? round : 3];
-	}
-
-	private final IntSupplier fnLevel;
 	private int round;
 	private boolean suspended;
 
-	public GhostAttackTimer(IntSupplier fnLevel) {
+	public GhostAttackTimer(PacManGame game) {
 		super(GhostState.class);
-		this.fnLevel = fnLevel;
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 		/*@formatter:off*/
 		beginStateMachine()
@@ -62,10 +39,10 @@ public class GhostAttackTimer extends StateMachine<GhostState, Void> {
 			.initialState(SCATTERING)
 		.states()
 			.state(SCATTERING)
-				.timeoutAfter(() -> ticks(SCATTERING_DURATION))
+				.timeoutAfter(() -> game.scatterTicks(round))
 				.onEntry(this::logStateEntry)
 			.state(CHASING)
-				.timeoutAfter(() -> ticks(CHASING_DURATION))
+				.timeoutAfter(() -> game.chasingTicks(round))
 				.onEntry(this::logStateEntry)
 				.onExit(() -> ++round)
 		.transitions()

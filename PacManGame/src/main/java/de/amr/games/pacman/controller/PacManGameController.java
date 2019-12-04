@@ -85,7 +85,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		buildStateMachine();
 		setIgnoreUnknownEvents(true);
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-		ghostAttackTimer = new GhostAttackTimer(() -> game.levelNumber);
+		ghostAttackTimer = new GhostAttackTimer(game);
 
 		ensemble = new Ensemble(game, theme);
 		ensemble.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackTimer::getState);
