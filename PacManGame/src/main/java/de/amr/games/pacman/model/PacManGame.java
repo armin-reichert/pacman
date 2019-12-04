@@ -97,14 +97,6 @@ public class PacManGame {
 		return (int) (3600 * min);
 	}
 
-	public int scatterTicks(int round) {
-		return SCATTERING_TICKS[(levelNumber == 1) ? 0 : (levelNumber <= 4) ? 1 : 2][Math.min(round, 3)];
-	}
-
-	public int chasingTicks(int round) {
-		return CHASING_TICKS[(levelNumber == 1) ? 0 : (levelNumber <= 4) ? 1 : 2][Math.min(round, 3)];
-	}
-
 	public int lives;
 	public int numPelletsEaten;
 	public int globalFoodCount;
@@ -157,6 +149,29 @@ public class PacManGame {
 		return LEVELS[LEVELS.length - 1];
 	}
 
+	/**
+	 * @param round
+	 *                attack round
+	 * @return number of ticks ghost will scatter in this round and level
+	 */
+	public int scatterTicks(int round) {
+		return SCATTERING_TICKS[(levelNumber == 1) ? 0 : (levelNumber <= 4) ? 1 : 2][Math.min(round, 3)];
+	}
+
+	/**
+	 * @param round
+	 *                attack round
+	 * @return number of ticks ghost will chase in this round and level
+	 */
+	public int chasingTicks(int round) {
+		return CHASING_TICKS[(levelNumber == 1) ? 0 : (levelNumber <= 4) ? 1 : 2][Math.min(round, 3)];
+	}
+
+	/**
+	 * @param tile
+	 *               tile containing pellet
+	 * @return points scored for eating pellet
+	 */
 	public int eat(Tile tile) {
 		numPelletsEaten += 1;
 		if (maze.containsEnergizer(tile)) {
@@ -170,11 +185,9 @@ public class PacManGame {
 		}
 	}
 
-	public void enableGlobalFoodCounter() {
-		globalFoodCounterEnabled = true;
-		globalFoodCount = 0;
-	}
-
+	/**
+	 * @return number of pellets not yet eaten
+	 */
 	public int numPelletsRemaining() {
 		return maze.totalNumPellets - numPelletsEaten;
 	}
@@ -195,7 +208,15 @@ public class PacManGame {
 		return false;
 	}
 
+	/**
+	 * @return if bonus will become active
+	 */
 	public boolean isBonusReached() {
 		return numPelletsEaten == 70 || numPelletsEaten == 170;
+	}
+
+	public void enableGlobalFoodCounter() {
+		globalFoodCounterEnabled = true;
+		globalFoodCount = 0;
 	}
 }
