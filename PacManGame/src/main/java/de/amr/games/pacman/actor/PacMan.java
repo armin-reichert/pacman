@@ -41,7 +41,7 @@ public class PacMan extends Actor<PacManState> {
 	public Steering<PacMan> steering;
 
 	public PacMan(PacManGame game) {
-		super("Pac-Man", game, game.maze);
+		super("Pac-Man", game);
 		fsm = buildStateMachine();
 		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}

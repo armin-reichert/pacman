@@ -29,7 +29,6 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.PacManGameLevel;
 import de.amr.games.pacman.model.Tile;
@@ -54,8 +53,8 @@ public class Ghost extends Actor<GhostState> {
 	public Supplier<Tile> fnChasingTarget;
 	public int foodCount;
 
-	public Ghost(PacManGame game, Maze maze, String name) {
-		super(name, game, maze);
+	public Ghost(String name, PacManGame game) {
+		super(name, game);
 		steeringByState = new EnumMap<>(GhostState.class);
 		defaultSteering = GhostSteerings.headingForTargetTile();
 		fnNextState = this::getState;

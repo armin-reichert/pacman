@@ -38,21 +38,21 @@ public class Ensemble {
 		pacMan = new PacMan(game);
 		pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
 
-		blinky = new Ghost(game, maze, "Blinky");
+		blinky = new Ghost("Blinky", game);
 		blinky.initialDir = Top4.W;
 		blinky.initialTile = maze.blinkyHome;
 		blinky.scatterTile = maze.blinkyScatter;
 		blinky.revivalTile = maze.pinkyHome;
 		blinky.fnChasingTarget = pacMan::tile;
 
-		pinky = new Ghost(game, maze, "Pinky");
+		pinky = new Ghost("Pinky", game);
 		pinky.initialDir = Top4.S;
 		pinky.initialTile = maze.pinkyHome;
 		pinky.scatterTile = maze.pinkyScatter;
 		pinky.revivalTile = maze.pinkyHome;
 		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
 
-		inky = new Ghost(game, maze, "Inky");
+		inky = new Ghost("Inky", game);
 		inky.initialDir = Top4.N;
 		inky.initialTile = maze.inkyHome;
 		inky.scatterTile = maze.inkyScatter;
@@ -62,7 +62,7 @@ public class Ensemble {
 			return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		};
 
-		clyde = new Ghost(game, maze, "Clyde");
+		clyde = new Ghost("Clyde", game);
 		clyde.initialDir = Top4.N;
 		clyde.initialTile = maze.clydeHome;
 		clyde.scatterTile = maze.clydeScatter;
