@@ -17,51 +17,22 @@ import java.util.List;
  * The "model" (in MVC speak) of the Pac-Man game.
  * 
  * @author Armin Reichert
+ * 
+ * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
+ *      dossier</a>
+ * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man level
+ *      specifications</a>
  */
 public class PacManGame {
 
-	/** The tile size (8px). */
-	public static final int TS = 8;
-
-	/** Base speed (11 tiles/second) in pixel/tick. */
-	public static final float BASE_SPEED = (float) 11 * TS / 60;
-
-	/** Idle time after eating normal pellet. */
+	public static final int TS = 8; // tile size in pixel
+	public static final float BASE_SPEED = (float) 11 * TS / 60; // 11 tiles/second at 60Hz
 	public static final int DIGEST_TICKS = 1;
+	public static final int DIGEST_TICKS_ENERGIZER = 3;
+	public static final int POINTS_PELLET = 10;
+	public static final int POINTS_ENERGIZER = 50;
 
-	/** Idle time after eating energizer. */
-	public static final int DIGEST_TICKS_ENERGIZER = 1;
-
-	public static final int PELLET_VALUE = 10;
-
-	public static final int ENERGIZER_VALUE = 50;
-
-	/**
-	 * @param fraction fraction of base speed
-	 * @return speed (pixels/tick) corresponding to given fraction of base speed
-	 */
-	public static float speed(float fraction) {
-		return fraction * BASE_SPEED;
-	}
-
-	/**
-	 * @param fraction fraction of seconds
-	 * @return ticks corresponding to given fraction of seconds at 60Hz
-	 */
-	public static int sec(float fraction) {
-		return (int) (60 * fraction);
-	}
-
-	/** Ticks for given minutes at 60 Hz */
-	public static int min(float min) {
-		return (int) (3600 * min);
-	}
-
-	/**
-	 * @see <a href=
-	 *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Gamasutra</a>
-	 */
-	final PacManGameLevel[] levels = PacManGameLevel.parse(new Object[][] {
+	static final PacManGameLevel[] LEVELS = PacManGameLevel.parse(new Object[][] {
 		/*@formatter:off*/
 		{ CHERRIES,    100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6, 5 },
 		{ STRAWBERRY,  300,  .90f, .79f, .85f, .45f,  30, .8f,  15,  .95f, .95f, .83f, .55f,   5, 5 },
@@ -87,7 +58,7 @@ public class PacManGame {
 		/*@formatter:on*/
 	});
 
-	public static final int[][] SCATTERING_TICKS = {
+	static final int[][] SCATTERING_TICKS = {
 		/*@formatter:off*/
 		{ sec(7), sec(7), sec(5), sec(5) }, // Level 1
 		{ sec(7), sec(7), sec(5), 1 },      // Level 2-4
@@ -95,7 +66,7 @@ public class PacManGame {
 		/*@formatter:on*/
 	};
 
-	public static final int[][] CHASING_TICKS = {
+	static final int[][] CHASING_TICKS = {
 		/*@formatter:off*/
 		{ sec(20), sec(20), sec(20),                Integer.MAX_VALUE }, // Level 1
 		{ sec(20), sec(20), min(17) + sec(13) + 14, Integer.MAX_VALUE }, // Level 2-4
@@ -103,51 +74,62 @@ public class PacManGame {
 		/*@formatter:on*/
 	};
 
+	/**
+	 * @param fraction
+	 *                   fraction of base speed
+	 * @return speed (pixels/tick) corresponding to given fraction of base speed
+	 */
+	public static float speed(float fraction) {
+		return fraction * BASE_SPEED;
+	}
+
+	/**
+	 * @param fraction
+	 *                   fraction of seconds
+	 * @return ticks corresponding to given fraction of seconds at 60Hz
+	 */
+	public static int sec(float fraction) {
+		return (int) (60 * fraction);
+	}
+
+	/** Ticks for given minutes at 60 Hz */
+	public static int min(float min) {
+		return (int) (3600 * min);
+	}
+
 	public int scatterTicks(int round) {
-		return SCATTERING_TICKS[(levelNumber == 1) ? 0 : (levelNumber <= 4) ? 1 : 2][round < 3 ? round : 3];
+		return SCATTERING_TICKS[(levelNumber == 1) ? 0 : (levelNumber <= 4) ? 1 : 2][Math.min(round, 3)];
 	}
 
 	public int chasingTicks(int round) {
-		return CHASING_TICKS[(levelNumber == 1) ? 0 : (levelNumber <= 4) ? 1 : 2][round < 3 ? round : 3];
+		return CHASING_TICKS[(levelNumber == 1) ? 0 : (levelNumber <= 4) ? 1 : 2][Math.min(round, 3)];
 	}
 
-	/** The maze (model). */
+	public int lives;
+	public int numPelletsEaten;
+	public int globalFoodCount;
+	public boolean globalFoodCounterEnabled;
+	public int numGhostsKilledByCurrentEnergizer;
+	public int levelNumber;
+	public final List<BonusSymbol> levelCounter;
 	public final Maze maze;
-
-	/** The game score including highscore management. */
 	public final Score score;
 
-	/** Level counter symbols displayed at the bottom right corner. */
-	public final List<BonusSymbol> levelCounter = new LinkedList<>();
-
-	/** Pac-Man lives. */
-	public int lives;
-
-	/** Pellets + energizers eaten in current level. */
-	private int numPelletsEaten;
-
-	/** Global food counter. */
-	public int globalFoodCount;
-
-	/** If global food counter is enabled. */
-	public boolean globalFoodCounterEnabled = false;
-
-	/** Ghosts killed using current energizer. */
-	public int numGhostsKilledByCurrentEnergizer;
-
-	/** Current level number. */
-	public int levelNumber;
-
 	public PacManGame() {
+		levelCounter = new LinkedList<>();
 		maze = new Maze();
 		score = new Score();
 	}
 
-	public void init() {
+	public void reset() {
 		lives = 3;
+		numPelletsEaten = 0;
+		globalFoodCount = 0;
+		globalFoodCounterEnabled = false;
+		numGhostsKilledByCurrentEnergizer = 0;
 		levelNumber = 1;
-		maze.restoreFood();
 		levelCounter.clear();
+		maze.restoreFood();
 		score.loadHiscore();
 	}
 
@@ -160,8 +142,8 @@ public class PacManGame {
 		if (levelCounter.size() > 8) {
 			levelCounter.remove(levelCounter.size() - 1);
 		}
-		globalFoodCounterEnabled = false;
 		globalFoodCount = 0;
+		globalFoodCounterEnabled = false;
 	}
 
 	/**
@@ -169,10 +151,10 @@ public class PacManGame {
 	 */
 	public PacManGameLevel level() {
 		// Note: levelNumber counts from 1!
-		if (levelNumber - 1 < levels.length) {
-			return levels[levelNumber - 1];
+		if (levelNumber - 1 < LEVELS.length) {
+			return LEVELS[levelNumber - 1];
 		}
-		return levels[levels.length - 1];
+		return LEVELS[LEVELS.length - 1];
 	}
 
 	public int eat(Tile tile) {
@@ -180,10 +162,11 @@ public class PacManGame {
 		if (maze.containsEnergizer(tile)) {
 			numGhostsKilledByCurrentEnergizer = 0;
 			maze.removeFood(tile);
-			return ENERGIZER_VALUE;
-		} else {
+			return POINTS_ENERGIZER;
+		}
+		else {
 			maze.removeFood(tile);
-			return PELLET_VALUE;
+			return POINTS_PELLET;
 		}
 	}
 
@@ -197,7 +180,8 @@ public class PacManGame {
 	}
 
 	/**
-	 * @param points points scored
+	 * @param points
+	 *                 points scored
 	 * @return <code>true</code> if new life has been granted
 	 */
 	public boolean scorePoints(int points) {

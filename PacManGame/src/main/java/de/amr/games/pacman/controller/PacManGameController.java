@@ -117,9 +117,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.state(GETTING_READY)
 					.timeoutAfter(() -> sec(5))
 					.onEntry(() -> {
+						game.reset();
 						ensemble.theme.snd_clips_all().forEach(Sound::stop);
 						ensemble.theme.snd_ready().play();
-						game.init();
 						ensemble.actors().forEach(Actor::activate);
 						ensemble.actors().forEach(Actor::init);
 						ensemble.clearBonus();
