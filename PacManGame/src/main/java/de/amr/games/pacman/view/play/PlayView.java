@@ -15,6 +15,7 @@ import java.awt.Stroke;
 import java.awt.Transparency;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.function.Supplier;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Keyboard;
@@ -25,7 +26,6 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.behavior.common.HeadingForTargetTile;
-import de.amr.games.pacman.controller.GhostAttackTimer;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
@@ -55,7 +55,7 @@ public class PlayView extends SimplePlayView {
 	public boolean showRoutes = false;
 	public boolean showStates = false;
 
-	public GhostAttackTimer ghostAttackTimer;
+	public Supplier<State<GhostState, ?>> fnGhostAttack = () -> null;
 
 	private static BufferedImage createGridImage(int numRows, int numCols) {
 		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
@@ -182,10 +182,12 @@ public class PlayView extends SimplePlayView {
 			duration = ensemble.pacMan.state().getDuration();
 			remaining = ensemble.pacMan.state().getTicksRemaining();
 		}
-		else if ((ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING)
-				&& ghostAttackTimer != null) {
-			duration = ghostAttackTimer.state().getDuration();
-			remaining = ghostAttackTimer.state().getTicksRemaining();
+		else if (ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING) {
+			State<?, ?> attack = fnGhostAttack.get();
+			if (attack != null) {
+				duration = attack.getDuration();
+				remaining = attack.getTicksRemaining();
+			}
 		}
 
 		return duration != State.ENDLESS

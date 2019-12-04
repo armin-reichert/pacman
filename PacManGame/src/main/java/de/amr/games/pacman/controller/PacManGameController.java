@@ -93,7 +93,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		introView = new IntroView(theme);
 
 		playView = new PlayView(game, ensemble);
-		playView.ghostAttackTimer = ghostAttackTimer;
+		playView.fnGhostAttack = ghostAttackTimer::state;
 	}
 
 	// The finite state machine
