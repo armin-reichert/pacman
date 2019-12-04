@@ -99,7 +99,7 @@ public class GhostAttackTimer extends StateMachine<GhostState, Void> {
 
 	public void suspend() {
 		if (!suspended) {
-			LOGGER.info(String.format("%s: suspended in state %s, remaining time: %d frames (%.2f seconds)", getDescription(),
+			LOGGER.info(String.format("%s: suspended %s, remaining time: %d frames (%.2f seconds)", getDescription(),
 					getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
 			suspended = true;
 		}
@@ -107,7 +107,7 @@ public class GhostAttackTimer extends StateMachine<GhostState, Void> {
 
 	public void resume() {
 		if (suspended) {
-			LOGGER.info(String.format("%s: resumed in state %s, remaining time: %d frames (%.2f seconds)", getDescription(),
+			LOGGER.info(String.format("%s: resumed %s, remaining time: %d frames (%.2f seconds)", getDescription(),
 					getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
 			suspended = false;
 		}
