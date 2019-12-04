@@ -8,9 +8,9 @@ import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.MazeMover;
-import de.amr.games.pacman.actor.behavior.HeadingForTargetTile;
 import de.amr.games.pacman.actor.behavior.Steering;
-import de.amr.games.pacman.actor.behavior.TakingShortestPath;
+import de.amr.games.pacman.actor.behavior.common.HeadingForTargetTile;
+import de.amr.games.pacman.actor.behavior.common.TakingShortestPath;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
 

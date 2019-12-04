@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor.behavior;
+package de.amr.games.pacman.actor.behavior.common;
 
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.Tile.distanceSq;
@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.function.BooleanSupplier;
 
 import de.amr.games.pacman.actor.MazeMover;
+import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 

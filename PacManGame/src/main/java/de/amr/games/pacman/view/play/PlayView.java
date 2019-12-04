@@ -24,7 +24,7 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.actor.behavior.HeadingForTargetTile;
+import de.amr.games.pacman.actor.behavior.common.HeadingForTargetTile;
 import de.amr.games.pacman.controller.GhostAttackTimer;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
