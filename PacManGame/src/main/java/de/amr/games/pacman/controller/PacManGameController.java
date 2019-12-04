@@ -92,118 +92,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		ensemble.pacMan.addListener(this::process);
 
 		introView = new IntroView(theme);
-		
+
 		playView = new PlayView(game, ensemble);
 		playView.ghostAttackTimer = ghostAttackTimer;
 		playView.setTheme(theme);
-	}
-
-	// View handling
-
-	public void setTheme(PacManTheme theme) {
-		this.theme = theme;
-		ensemble.setTheme(theme);
-		introView = new IntroView(theme);
-		playView.setTheme(theme);
-	}
-
-	private void showUI(Controller ui) {
-		if (this.ui != ui) {
-			this.ui = ui;
-			ui.init();
-		}
-	}
-
-	@Override
-	public View currentView() {
-		return (View) ui;
-	}
-
-	// Controller methods
-
-	@Override
-	public void update() {
-		handleMuteSound();
-		handleStateMachineLogging();
-		handlePlayingSpeedChange();
-		handleGhostFrightenedBehaviorChange();
-		handleToggleOverflowBug();
-		handleCheats();
-		super.update();
-		ui.update();
-	}
-
-	// Input
-
-	private void handleCheats() {
-		/* ALT-"K": Kill all ghosts */
-		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_K)) {
-			ensemble.activeGhosts().forEach(ghost -> ghost.process(new GhostKilledEvent(ghost)));
-			LOGGER.info(() -> "All ghosts killed");
-		}
-		/* ALT-"E": Eats all (normal) pellets */
-		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_E)) {
-			game.maze.tiles().filter(game.maze::containsPellet).forEach(game::eat);
-			ensemble.updateFoodCounter();
-			LOGGER.info(() -> "All pellets eaten");
-		}
-		/* ALT-"L": Selects next level */
-		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
-			if (getState() == PacManGameState.PLAYING) {
-				LOGGER.info(() -> String.format("Switch to next level (%d)", game.levelNumber + 1));
-				enqueue(new LevelCompletedEvent());
-			}
-		}
-		/* ALT-"I": Makes Pac-Man immortable */
-		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_I)) {
-			boolean immortable = app().settings.getAsBoolean("pacMan.immortable");
-			app().settings.set("pacMan.immortable", !immortable);
-			LOGGER.info("Pac-Man immortable = " + app().settings.getAsBoolean("pacMan.immortable"));
-		}
-	}
-
-	private void handleToggleOverflowBug() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_O)) {
-			app().settings.set("overflowBug", !app().settings.getAsBoolean("overflowBug"));
-			LOGGER.info("Overflow bug is " + (app().settings.getAsBoolean("overflowBug") ? "on" : "off"));
-		}
-	}
-
-	private void handleMuteSound() {
-		if (Keyboard.keyPressedOnce(Modifier.SHIFT, KeyEvent.VK_M)) {
-			muted = !muted;
-			Assets.muteAll(muted);
-			LOGGER.info(() -> muted ? "Sound off" : "Sound on");
-		}
-	}
-
-	private void handleStateMachineLogging() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_L)) {
-			Logger smLogger = Logger.getLogger("StateMachineLogger");
-			smLogger.setLevel(smLogger.getLevel() == Level.OFF ? Level.INFO : Level.OFF);
-			LOGGER.info("State machine logging is " + smLogger.getLevel());
-		}
-	}
-
-	private void handlePlayingSpeedChange() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
-			app().clock.setFrequency(60);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
-			app().clock.setFrequency(80);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
-			app().clock.setFrequency(100);
-		}
-	}
-
-	private void handleGhostFrightenedBehaviorChange() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_F)) {
-			String property = "ghost.originalBehavior";
-			app().settings.set(property, !app().settings.getAsBoolean(property));
-			boolean original = app().settings.getAsBoolean(property);
-			ensemble.ghosts().forEach(ghost -> ghost.setSteering(GhostState.FRIGHTENED,
-					original ? GhostSteerings.movingRandomly() : GhostSteerings.fleeingToSafeCorner(ensemble.pacMan)));
-			LOGGER.info("Changed ghost FRIGHTENED behavior to " + (original ? "original" : "escape via safe route"));
-		}
 	}
 
 	// The finite state machine
@@ -246,7 +138,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						ensemble.ghosts().forEach(ghost -> ghost.foodCount = 0);
 						playView.hideInfoText();
 						playView.enableAnimation(true);
-						theme.music_playing().volume(1f);
+						theme.music_playing().volume(.90f);
 						theme.music_playing().loop();
 					})
 					.onTick(() -> {
@@ -541,6 +433,114 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onExit() {
 			ensemble.pacMan.show();
+		}
+	}
+
+	// View handling
+
+	public void setTheme(PacManTheme theme) {
+		this.theme = theme;
+		ensemble.setTheme(theme);
+		introView = new IntroView(theme);
+		playView.setTheme(theme);
+	}
+
+	private void showUI(Controller ui) {
+		if (this.ui != ui) {
+			this.ui = ui;
+			ui.init();
+		}
+	}
+
+	@Override
+	public View currentView() {
+		return (View) ui;
+	}
+
+	// Controller methods
+
+	@Override
+	public void update() {
+		handleMuteSound();
+		handleStateMachineLogging();
+		handlePlayingSpeedChange();
+		handleGhostFrightenedBehaviorChange();
+		handleToggleOverflowBug();
+		handleCheats();
+		super.update();
+		ui.update();
+	}
+
+	// Input
+
+	private void handleCheats() {
+		/* ALT-"K": Kill all ghosts */
+		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_K)) {
+			ensemble.activeGhosts().forEach(ghost -> ghost.process(new GhostKilledEvent(ghost)));
+			LOGGER.info(() -> "All ghosts killed");
+		}
+		/* ALT-"E": Eats all (normal) pellets */
+		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_E)) {
+			game.maze.tiles().filter(game.maze::containsPellet).forEach(game::eat);
+			ensemble.updateFoodCounter();
+			LOGGER.info(() -> "All pellets eaten");
+		}
+		/* ALT-"L": Selects next level */
+		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
+			if (getState() == PacManGameState.PLAYING) {
+				LOGGER.info(() -> String.format("Switch to next level (%d)", game.levelNumber + 1));
+				enqueue(new LevelCompletedEvent());
+			}
+		}
+		/* ALT-"I": Makes Pac-Man immortable */
+		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_I)) {
+			boolean immortable = app().settings.getAsBoolean("pacMan.immortable");
+			app().settings.set("pacMan.immortable", !immortable);
+			LOGGER.info("Pac-Man immortable = " + app().settings.getAsBoolean("pacMan.immortable"));
+		}
+	}
+
+	private void handleToggleOverflowBug() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_O)) {
+			app().settings.set("overflowBug", !app().settings.getAsBoolean("overflowBug"));
+			LOGGER.info("Overflow bug is " + (app().settings.getAsBoolean("overflowBug") ? "on" : "off"));
+		}
+	}
+
+	private void handleMuteSound() {
+		if (Keyboard.keyPressedOnce(Modifier.SHIFT, KeyEvent.VK_M)) {
+			muted = !muted;
+			Assets.muteAll(muted);
+			LOGGER.info(() -> muted ? "Sound off" : "Sound on");
+		}
+	}
+
+	private void handleStateMachineLogging() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_L)) {
+			Logger smLogger = Logger.getLogger("StateMachineLogger");
+			smLogger.setLevel(smLogger.getLevel() == Level.OFF ? Level.INFO : Level.OFF);
+			LOGGER.info("State machine logging is " + smLogger.getLevel());
+		}
+	}
+
+	private void handlePlayingSpeedChange() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
+			app().clock.setFrequency(60);
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
+			app().clock.setFrequency(80);
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
+			app().clock.setFrequency(100);
+		}
+	}
+
+	private void handleGhostFrightenedBehaviorChange() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_F)) {
+			String property = "ghost.originalBehavior";
+			app().settings.set(property, !app().settings.getAsBoolean(property));
+			boolean original = app().settings.getAsBoolean(property);
+			ensemble.ghosts().forEach(ghost -> ghost.setSteering(GhostState.FRIGHTENED,
+					original ? GhostSteerings.movingRandomly() : GhostSteerings.fleeingToSafeCorner(ensemble.pacMan)));
+			LOGGER.info("Changed ghost FRIGHTENED behavior to " + (original ? "original" : "escape via safe route"));
 		}
 	}
 }

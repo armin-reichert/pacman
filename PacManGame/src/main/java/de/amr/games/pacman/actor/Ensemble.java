@@ -1,6 +1,8 @@
 package de.amr.games.pacman.actor;
 
 import static de.amr.easy.game.Application.LOGGER;
+import static de.amr.games.pacman.actor.GhostState.CHASING;
+import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.behavior.pacman.PacManSteerings.steeredByKeys;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
@@ -132,6 +134,32 @@ public class Ensemble {
 	public void addBonus(BonusSymbol symbol, int value) {
 		bonus = new Bonus(symbol, value, theme);
 		bonus.tf.setPosition(game.maze.bonusTile.col * TS + TS / 2, game.maze.bonusTile.row * TS);
+	}
+
+	public void chasingSoundOn() {
+		if (!theme.snd_ghost_chase().isRunning()) {
+			theme.snd_ghost_chase().loop();
+		}
+	}
+
+	public void chasingSoundOff(Ghost caller) {
+		// if caller is the only chasing ghost, turn it off
+		if (activeGhosts().filter(ghost -> caller != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
+			theme.snd_ghost_chase().stop();
+		}
+	}
+
+	public void deadSoundOn() {
+		if (!theme.snd_ghost_dead().isRunning()) {
+			theme.snd_ghost_dead().loop();
+		}
+	}
+
+	public void deadSoundOff(Ghost caller) {
+		// if caller is the only dead ghost, turn it off
+		if (activeGhosts().filter(ghost -> ghost != caller).noneMatch(ghost -> ghost.getState() == DEAD)) {
+			theme.snd_ghost_dead().stop();
+		}
 	}
 
 	// rules for leaving the ghost house

@@ -63,32 +63,6 @@ public class Ghost extends Actor<GhostState> {
 		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
 
-	private void chasingSoundOn() {
-		if (!ensemble.theme.snd_ghost_chase().isRunning()) {
-			ensemble.theme.snd_ghost_chase().loop();
-		}
-	}
-
-	private void chasingSoundOff() {
-		// if this is the only chasing ghost, turn it off
-		if (ensemble.activeGhosts().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
-			ensemble.theme.snd_ghost_chase().stop();
-		}
-	}
-
-	private void deadSoundOn() {
-		if (!ensemble.theme.snd_ghost_dead().isRunning()) {
-			ensemble.theme.snd_ghost_dead().loop();
-		}
-	}
-
-	private void deadSoundOff() {
-		// if this is the only dead ghost, turn it off
-		if (ensemble.activeGhosts().filter(ghost -> ghost != this).noneMatch(ghost -> ghost.getState() == DEAD)) {
-			ensemble.theme.snd_ghost_dead().stop();
-		}
-	}
-
 	@Override
 	public void init() {
 		super.init();
@@ -207,12 +181,12 @@ public class Ghost extends Actor<GhostState> {
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir))
 			
 				.state(CHASING)
-					.onEntry(() -> chasingSoundOn())
+					.onEntry(() -> ensemble.chasingSoundOn())
 					.onTick(() -> {
 						targetTile = fnChasingTarget.get();
 						walkAndDisplayAs("color-" + moveDir);
 					})
-					.onExit(this::chasingSoundOff)
+					.onExit(() -> ensemble.chasingSoundOff(this))
 				
 				.state(FRIGHTENED)
 					.onTick(() -> walkAndDisplayAs(ensemble.pacMan.isLosingPower() ? "flashing" : "frightened"))
@@ -226,10 +200,10 @@ public class Ghost extends Actor<GhostState> {
 				.state(DEAD)
 					.onEntry(() -> {
 						targetTile = maze.blinkyHome;
-						deadSoundOn();
+						ensemble.deadSoundOn();
 					})
 					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir))
-					.onExit(this::deadSoundOff)
+					.onExit(() -> ensemble.deadSoundOff(this))
 				
 			.transitions()
 			
