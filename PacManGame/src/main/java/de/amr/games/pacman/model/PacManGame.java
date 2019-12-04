@@ -53,8 +53,8 @@ public class PacManGame {
 	}
 
 	/** Ticks for given minutes at 60 Hz */
-	public static int min(int min) {
-		return 3600 * min;
+	public static int min(float min) {
+		return (int) (3600 * min);
 	}
 
 	/**
