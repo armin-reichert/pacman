@@ -121,7 +121,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						ensemble.theme.snd_clips_all().forEach(Sound::stop);
 						ensemble.theme.snd_ready().play();
 						ensemble.actors().forEach(Actor::activate);
-						ensemble.actors().forEach(Actor::init);
 						ensemble.clearBonus();
 						playView.init();
 						playView.showScores = true;
