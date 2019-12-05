@@ -355,7 +355,7 @@ beginStateMachine(PacManState.class, PacManGameEvent.class)
 .endStateMachine();
 ```
 
-Finally, each **ghosts** is controlled by its own instance of the following state machine:
+Finally, each ghost is controlled by its own instance of the following state machine:
 
 ```java
 beginStateMachine(GhostState.class, PacManGameEvent.class)
