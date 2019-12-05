@@ -33,14 +33,14 @@ public class SimplePlayView implements View, Controller {
 	protected final Ensemble ensemble;
 	protected final Dimension size;
 
+	protected Image lifeImage;
 	protected Sprite fullMazeSprite, flashingMazeSprite;
 	protected Animation energizerBlinking;
-	protected boolean flashing;
 
-	protected Image lifeImage;
+	protected boolean mazeFlashing;
+	protected int bonusDisplayTicks;
 	protected String infoText;
 	protected Color infoTextColor;
-	protected int bonusDisplayTicks;
 
 	public SimplePlayView(PacManGame game, Ensemble ensemble) {
 		this.game = game;
@@ -51,32 +51,33 @@ public class SimplePlayView implements View, Controller {
 		updateTheme();
 	}
 
-	public void updateTheme() {
-		lifeImage = ensemble.theme.spr_pacManWalking(Top4.W).frame(1);
-		fullMazeSprite = ensemble.theme.spr_fullMaze();
-		flashingMazeSprite = ensemble.theme.spr_flashingMaze();
-	}
-
 	@Override
 	public void init() {
-		bonusDisplayTicks = 0;
-		flashing = false;
 		energizerBlinking.setEnabled(false);
+		mazeFlashing = false;
+		bonusDisplayTicks = 0;
+		infoText = null;
+		infoTextColor = Color.YELLOW;
 	}
 
 	@Override
 	public void update() {
-		ensemble.bonus.ifPresent(bonus -> {
-			if (bonusDisplayTicks > 0) {
-				bonusDisplayTicks -= 1;
-				if (bonusDisplayTicks == 0) {
-					ensemble.clearBonus();
-				}
-			}
-		});
-		if (!flashing) {
-			energizerBlinking.update();
+		if (mazeFlashing) {
+			return;
 		}
+		if (ensemble.bonus.isPresent() && bonusDisplayTicks > 0) {
+			bonusDisplayTicks -= 1;
+			if (bonusDisplayTicks == 0) {
+				ensemble.clearBonus();
+			}
+		}
+		energizerBlinking.update();
+	}
+
+	public void updateTheme() {
+		lifeImage = ensemble.theme.spr_pacManWalking(Top4.W).frame(1);
+		fullMazeSprite = ensemble.theme.spr_fullMaze();
+		flashingMazeSprite = ensemble.theme.spr_flashingMaze();
 	}
 
 	public void enableAnimations(boolean state) {
@@ -92,12 +93,12 @@ public class SimplePlayView implements View, Controller {
 		energizerBlinking.setEnabled(false);
 	}
 
-	public void startFlashing() {
-		flashing = true;
+	public void startMazeFlashing() {
+		mazeFlashing = true;
 	}
 
-	public void stopFlashing() {
-		flashing = false;
+	public void stopMazeFlashing() {
+		mazeFlashing = false;
 	}
 
 	public void startBonusTimer(int ticks) {
@@ -122,21 +123,24 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	protected void drawMaze(Graphics2D g) {
-		Sprite mazeSprite = flashing ? flashingMazeSprite : fullMazeSprite;
+		Sprite mazeSprite = mazeFlashing ? flashingMazeSprite : fullMazeSprite;
 		// draw background because maze sprite is transparent
 		g.setColor(ensemble.theme.color_mazeBackground());
 		g.translate(0, 3 * TS);
 		g.fillRect(0, 0, mazeSprite.getWidth(), mazeSprite.getHeight());
 		mazeSprite.draw(g);
 		g.translate(0, -3 * TS);
-		// hide eaten food
+		if (mazeFlashing) {
+			return;
+		}
+		// hide tiles with eaten pellets
 		game.maze.tiles().filter(game.maze::containsEatenFood).forEach(tile -> {
 			g.setColor(ensemble.theme.color_mazeBackground());
 			g.fillRect(tile.col * TS, tile.row * TS, TS, TS);
 		});
-		// hide blinking, non-eaten energizers
-		if (!flashing && energizerBlinking.currentFrame() == 1) {
-			game.maze.energizerTiles().filter(tile -> !game.maze.containsEatenFood(tile)).forEach(tile -> {
+		// hide energizers when animation is in blank state
+		if (energizerBlinking.currentFrame() == 1) {
+			game.maze.energizerTiles().forEach(tile -> {
 				g.setColor(ensemble.theme.color_mazeBackground());
 				g.fillRect(tile.col * TS, tile.row * TS, TS, TS);
 			});
@@ -144,10 +148,13 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		ensemble.bonus.ifPresent(bonus -> bonus.draw(g));
+		if (ensemble.bonus.isPresent() && bonusDisplayTicks > 0) {
+			ensemble.bonus.get().draw(g);
+		}
 		if (ensemble.pacMan.isActive()) {
 			ensemble.pacMan.draw(g);
 		}
+		// draw dying ghosts (numbers) under non-dying ghosts
 		ensemble.activeGhosts().sorted((g1, g2) -> {
 			GhostState s1 = g1.getState(), s2 = g2.getState();
 			return s1 == s2 ? 0 : s1 == GhostState.DYING ? -1 : 1;
@@ -155,44 +162,43 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	protected void drawScores(Graphics2D g) {
-		if (showScores) {
-			// Points score
-			int score = game.score.getPoints();
-			g.setFont(ensemble.theme.fnt_text());
-			g.setColor(Color.YELLOW);
-			g.drawString("SCORE", TS, TS);
-			g.setColor(Color.WHITE);
-			g.drawString(String.format("%07d", score), TS, 2 * TS);
-			g.setColor(Color.YELLOW);
-			g.drawString(String.format("LEVEL %2d", game.levelNumber), 22 * TS, TS);
-
-			// High score
-			g.setColor(Color.YELLOW);
-			g.drawString("HIGH", 10 * TS, TS);
-			g.drawString("SCORE", 14 * TS, TS);
-			g.setColor(Color.WHITE);
-			g.drawString(String.format("%07d", game.score.getHiscorePoints()), 10 * TS, 2 * TS);
-			g.drawString(String.format("L%d", game.score.getHiscoreLevel()), 16 * TS, 2 * TS);
-
-			// Remaining pellets score
-			g.setColor(Color.PINK);
-			g.fillRect(22 * TS + 2, TS + 2, 4, 4);
-			g.setColor(Color.WHITE);
-			g.drawString(String.format("%d", game.numPelletsRemaining()), 23 * TS, 2 * TS);
-
-			drawLives(g);
-			drawLevelCounter(g);
+		if (!showScores) {
+			return;
 		}
+		// Points score
+		int score = game.score.getPoints();
+		g.setFont(ensemble.theme.fnt_text());
+		g.setColor(Color.YELLOW);
+		g.drawString("SCORE", TS, TS);
+		g.setColor(Color.WHITE);
+		g.drawString(String.format("%07d", score), TS, 2 * TS);
+		g.setColor(Color.YELLOW);
+		g.drawString(String.format("LEVEL %2d", game.levelNumber), 22 * TS, TS);
+
+		// Highscore
+		g.setColor(Color.YELLOW);
+		g.drawString("HIGH", 10 * TS, TS);
+		g.drawString("SCORE", 14 * TS, TS);
+		g.setColor(Color.WHITE);
+		g.drawString(String.format("%07d", game.score.getHiscorePoints()), 10 * TS, 2 * TS);
+		g.drawString(String.format("L%d", game.score.getHiscoreLevel()), 16 * TS, 2 * TS);
+
+		// Remaining pellets score
+		g.setColor(Color.PINK);
+		g.fillRect(22 * TS + 2, TS + 2, 4, 4);
+		g.setColor(Color.WHITE);
+		g.drawString(String.format("%d", game.numPelletsRemaining()), 23 * TS, 2 * TS);
+
+		drawLives(g);
+		drawLevelCounter(g);
 	}
 
 	protected void drawLives(Graphics2D g) {
-		g.translate(0, size.height - 2 * TS);
+		int x = 0;
 		for (int i = 0; i < game.lives; ++i) {
-			g.translate((2 - i) * lifeImage.getWidth(null), 0);
-			g.drawImage(lifeImage, 0, 0, null);
-			g.translate((i - 2) * lifeImage.getWidth(null), 0);
+			g.drawImage(lifeImage, x, size.height - 2 * TS, null);
+			x += 2 * TS;
 		}
-		g.translate(0, -size.height + 2 * TS);
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {

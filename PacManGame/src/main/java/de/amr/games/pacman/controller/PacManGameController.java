@@ -275,6 +275,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		public void onEntry() {
 			ensemble.activeGhosts().forEach(Ghost::show);
 			ensemble.clearBonus();
+			playView.init();
 			playView.enableAnimations(true);
 			playView.startEnergizerBlinking();
 		}
@@ -343,7 +344,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		private void onBonusFound(PacManGameEvent event) {
 			ensemble.bonus.ifPresent(bonus -> {
 				boolean extraLife = game.scorePoints(bonus.value);
-				bonus.consume();
+				bonus.changeIntoNumber();
 				playView.startBonusTimer(sec(2));
 				ensemble.theme.snd_eatFruit().play();
 				if (extraLife) {
@@ -364,9 +365,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			ensemble.updateFoodCounter();
 			if (game.numPelletsRemaining() == 0) {
 				enqueue(new LevelCompletedEvent());
-				return;
 			}
-			if (game.isBonusReached()) {
+			else if (game.isBonusReached()) {
 				ensemble.setBonus(game.level.bonusSymbol, game.level.bonusValue);
 				playView.startBonusTimer(sec(9 + new Random().nextFloat()));
 			}
@@ -390,7 +390,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			setTimerFunction(() -> sec(2 + 0.5f * numFlashes));
 			resetTimer();
 			if (numFlashes > 0) {
-				playView.startFlashing();
+				playView.startMazeFlashing();
 			}
 		}
 
@@ -401,7 +401,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				game.startLevel();
 				ensemble.activeActors().forEach(Actor::init);
 				ensemble.ghosts().forEach(ghost -> ghost.foodCount = 0);
-				playView.stopFlashing();
+				playView.stopMazeFlashing();
 				playView.init();
 			}
 		}

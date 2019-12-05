@@ -21,7 +21,7 @@ public class Bonus extends Entity {
 
 	public final BonusSymbol symbol;
 	public final int value;
-	public boolean consumed;
+	public boolean number;
 
 	public Bonus(BonusSymbol symbol, int value, PacManTheme theme) {
 		tf.setWidth(TS);
@@ -32,14 +32,14 @@ public class Bonus extends Entity {
 		if (index < 0) {
 			throw new IllegalArgumentException("Illegal bonus value: " + value);
 		}
-		consumed = false;
+		number = false;
 		sprites.set("symbol", theme.spr_bonusSymbol(symbol));
 		sprites.set("number", theme.spr_pinkNumber(index));
 		sprites.select("symbol");
 	}
 
-	public void consume() {
-		consumed = true;
+	public void changeIntoNumber() {
+		number = true;
 		sprites.select("number");
 	}
 
