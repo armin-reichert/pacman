@@ -205,10 +205,9 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	protected void drawLives(Graphics2D g) {
-		int x = 0;
-		for (int i = 0; i < game.lives; ++i) {
-			g.drawImage(lifeImage, x, size.height - 2 * TS, null);
-			x += 2 * TS;
+		int imageSize = 2 * TS;
+		for (int i = 0, x = imageSize; i < game.lives; ++i, x += imageSize) {
+			g.drawImage(lifeImage, x, size.height - imageSize, null);
 		}
 	}
 

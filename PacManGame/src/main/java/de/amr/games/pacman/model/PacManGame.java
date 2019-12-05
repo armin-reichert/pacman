@@ -155,13 +155,17 @@ public class PacManGame {
 		LOGGER.info("Start game");
 		score.loadHiscore();
 		lives = 3;
-		levelNumber = 1;
 		levelCounter.clear();
-		startLevel();
+		startLevel(1);
+	}
+	
+	public void nextLevel() {
+		startLevel(++levelNumber);
 	}
 
-	public void startLevel() {
-		LOGGER.info("Start level " + levelNumber);
+	public void startLevel(int n) {
+		LOGGER.info("Start level " + n);
+		levelNumber = n;
 		level = new Level(LEVELS[Math.min(levelNumber - 1, LEVELS.length - 1)]);
 		maze.restoreFood();
 		numPelletsEaten = 0;

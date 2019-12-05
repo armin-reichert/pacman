@@ -26,9 +26,9 @@ import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Actor;
-import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.behavior.ghost.GhostSteerings;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -123,8 +123,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						cast.actors().forEach(Actor::activate);
 						cast.clearBonus();
 						playView.init();
-						playView.showScores = true;
 						playView.showInfoText("Ready!", Color.YELLOW);
+						playView.showScores = true;
 					})
 					.onTick(() -> {
 						cast.activeGhosts().filter(ghost -> ghost != cast.blinky).forEach(Ghost::update);
@@ -133,12 +133,12 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.state(START_PLAYING)
 					.timeoutAfter(() -> sec(1.7f))
 					.onEntry(() -> {
-						cast.ghosts().forEach(ghost -> ghost.foodCount = 0);
 						ghostAttackTimer.init();
-						playView.clearInfoText();
-						playView.startEnergizerBlinking();
+						cast.ghosts().forEach(ghost -> ghost.foodCount = 0);
 						cast.theme.music_playing().volume(.90f);
 						cast.theme.music_playing().loop();
+						playView.clearInfoText();
+						playView.startEnergizerBlinking();
 					})
 					.onTick(() -> {
 						cast.activeGhosts().forEach(Ghost::update);
@@ -149,23 +149,21 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				
 				.state(CHANGING_LEVEL)
 					.onEntry(() -> {
+						float flashDuration = 0.5f; //TODO
+						state().setTimerFunction(() -> sec(2 + flashDuration * game.level.mazeNumFlashes));
+						state().resetTimer();
 						cast.theme.snd_clips_all().forEach(Sound::stop);
 						cast.activeGhosts().forEach(Ghost::hide);
 						cast.pacMan.sprites.select("full");
-						int numFlashes = game.level.mazeNumFlashes;
-						state().setTimerFunction(() -> sec(2 + 0.5f * numFlashes));
-						state().resetTimer();
-						if (numFlashes > 0) {
+						if (game.level.mazeNumFlashes > 0) {
 							playView.startMazeFlashing();
 						}
 					})
 					.onTick(() -> {
 						if (state().getTicksRemaining() == sec(2)) {
-							game.levelNumber += 1;
-							game.startLevel();
+							game.nextLevel();
 							cast.activeActors().forEach(Actor::init);
 							cast.ghosts().forEach(ghost -> ghost.foodCount = 0);
-							playView.stopMazeFlashing();
 							playView.init();
 						} else if (state().getTicksRemaining() < sec(2)) {
 							cast.activeGhosts().forEach(Ghost::update);
@@ -178,27 +176,29 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				
 				.state(PACMAN_DYING)
 					.onEntry(() -> {
-						state().setTimerFunction(() -> game.lives > 1 ? sec(6) : sec(4));
-						state().resetTimer();
-						cast.theme.music_playing().stop();
 						if (!app().settings.getAsBoolean("pacMan.immortable")) {
 							game.lives -= 1;
 						}
+						state().setTimerFunction(() -> game.lives > 0 ? sec(6) : sec(4));
+						state().resetTimer();
+						cast.theme.music_playing().stop();
 					})
 					.onTick(() -> {
 						if (state().getTicksConsumed() < sec(2)) {
-							cast.pacMan.update();
+							cast.pacMan.update(); // dying animation
 						}
 						if (state().getTicksConsumed() == sec(1)) {
 							cast.activeGhosts().forEach(Ghost::hide);
 						}
-						if (game.lives > 0 && state().getTicksConsumed() == sec(4)) {
-							cast.activeActors().forEach(Actor::init);
-							cast.activeGhosts().forEach(Ghost::show);
-							playView.init();
-							cast.theme.music_playing().loop();
+						if (game.lives == 0) {
+							return;
 						}
-						if (game.lives > 0 && state().getTicksConsumed() > sec(4)) {
+						if (state().getTicksConsumed() == sec(4)) {
+							cast.activeActors().forEach(Actor::init);
+							cast.theme.music_playing().loop();
+							playView.init();
+						}
+						if (state().getTicksConsumed() > sec(4)) {
 							cast.activeGhosts().forEach(Ghost::update);
 						}
 					})
@@ -210,8 +210,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						game.score.save();
 						cast.activeGhosts().forEach(Ghost::show);
 						cast.clearBonus();
-						playView.enableAnimations(false);
 						cast.theme.music_gameover().loop();
+						playView.enableAnimations(false);
 						playView.showInfoText("Game Over!", Color.RED);
 					})
 					.onExit(() -> {
