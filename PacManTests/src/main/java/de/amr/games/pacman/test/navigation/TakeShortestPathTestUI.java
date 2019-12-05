@@ -12,7 +12,7 @@ import java.util.List;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
-import de.amr.games.pacman.actor.Ensemble;
+import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.model.PacManGame;
@@ -24,7 +24,7 @@ public class TakeShortestPathTestUI extends PlayView implements ViewController {
 	private List<Tile> targets;
 	private int currentTarget;
 
-	public TakeShortestPathTestUI(PacManGame game, Ensemble ensemble) {
+	public TakeShortestPathTestUI(PacManGame game, PacManGameCast ensemble) {
 		super(game, ensemble);
 		showRoutes = true;
 		showStates = true;
@@ -40,13 +40,13 @@ public class TakeShortestPathTestUI extends PlayView implements ViewController {
 		currentTarget = 0;
 		game.levelNumber = 1;
 		game.maze.removeFood();
-		ensemble.theme.snd_ghost_chase().volume(0);
-		ensemble.blinky.activate();
-		ensemble.blinky.init();
-		ensemble.blinky.setState(CHASING);
+		cast.theme.snd_ghost_chase().volume(0);
+		cast.blinky.activate();
+		cast.blinky.init();
+		cast.blinky.setState(CHASING);
 		Steering<Ghost> followPathToCurrentTarget = followingShortestPath(() -> targets.get(currentTarget));
-		ensemble.blinky.setSteering(CHASING, followPathToCurrentTarget);
-		ensemble.blinky.setSteering(FRIGHTENED, followPathToCurrentTarget);
+		cast.blinky.setSteering(CHASING, followPathToCurrentTarget);
+		cast.blinky.setSteering(FRIGHTENED, followPathToCurrentTarget);
 	}
 
 	private void nextTarget() {
@@ -60,10 +60,10 @@ public class TakeShortestPathTestUI extends PlayView implements ViewController {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			ensemble.blinky.setState(ensemble.blinky.getState() == CHASING ? FRIGHTENED : CHASING);
+			cast.blinky.setState(cast.blinky.getState() == CHASING ? FRIGHTENED : CHASING);
 		}
-		ensemble.blinky.update();
-		if (ensemble.blinky.tile().equals(targets.get(currentTarget))) {
+		cast.blinky.update();
+		if (cast.blinky.tile().equals(targets.get(currentTarget))) {
 			nextTarget();
 		}
 		super.update();

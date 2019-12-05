@@ -4,13 +4,13 @@ import static de.amr.games.pacman.actor.GhostState.CHASING;
 
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
-import de.amr.games.pacman.actor.Ensemble;
+import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class OutsideTileTestUI extends PlayView implements ViewController {
 
-	public OutsideTileTestUI(PacManGame game, Ensemble ensemble) {
+	public OutsideTileTestUI(PacManGame game, PacManGameCast ensemble) {
 		super(game, ensemble);
 		showRoutes = true;
 		showStates = true;
@@ -21,16 +21,16 @@ public class OutsideTileTestUI extends PlayView implements ViewController {
 	public void init() {
 		super.init();
 		game.levelNumber = 1;
-		ensemble.theme.snd_ghost_chase().volume(0);
-		ensemble.blinky.activate();
-		ensemble.blinky.fnChasingTarget = () -> game.maze.tileAt(100, game.maze.tunnelRightExit.row);
-		ensemble.blinky.init();
-		ensemble.blinky.setState(CHASING);
+		cast.theme.snd_ghost_chase().volume(0);
+		cast.blinky.activate();
+		cast.blinky.fnChasingTarget = () -> game.maze.tileAt(100, game.maze.tunnelRightExit.row);
+		cast.blinky.init();
+		cast.blinky.setState(CHASING);
 	}
 
 	@Override
 	public void update() {
-		ensemble.blinky.update();
+		cast.blinky.update();
 		super.update();
 	}
 

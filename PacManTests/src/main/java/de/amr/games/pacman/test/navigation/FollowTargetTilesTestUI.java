@@ -7,7 +7,7 @@ import java.util.List;
 
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
-import de.amr.games.pacman.actor.Ensemble;
+import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
@@ -17,7 +17,7 @@ public class FollowTargetTilesTestUI extends PlayView implements ViewController 
 	private List<Tile> targets;
 	private int current;
 
-	public FollowTargetTilesTestUI(PacManGame game, Ensemble ensemble) {
+	public FollowTargetTilesTestUI(PacManGame game, PacManGameCast ensemble) {
 		super(game, ensemble);
 		showRoutes = true;
 		showStates = false;
@@ -37,23 +37,23 @@ public class FollowTargetTilesTestUI extends PlayView implements ViewController 
 		current = 0;
 		game.levelNumber = 1;
 		game.maze.removeFood();
-		ensemble.theme.snd_ghost_chase().volume(0);
-		ensemble.blinky.activate();
-		ensemble.blinky.fnChasingTarget = () -> targets.get(current);
-		ensemble.blinky.placeAtTile(targets.get(0), 0, 0);
-		ensemble.blinky.setState(CHASING);
+		cast.theme.snd_ghost_chase().volume(0);
+		cast.blinky.activate();
+		cast.blinky.fnChasingTarget = () -> targets.get(current);
+		cast.blinky.placeAtTile(targets.get(0), 0, 0);
+		cast.blinky.setState(CHASING);
 	}
 
 	@Override
 	public void update() {
-		if (ensemble.blinky.tile() == targets.get(current)) {
+		if (cast.blinky.tile() == targets.get(current)) {
 			current += 1;
 			if (current == targets.size()) {
 				current = 0;
 				game.levelNumber += 1;
 			}
 		}
-		ensemble.blinky.update();
+		cast.blinky.update();
 		super.update();
 	}
 }

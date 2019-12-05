@@ -27,7 +27,7 @@ public abstract class Actor<S> extends MazeMover {
 
 	public final String name;
 	public final PacManGame game;
-	public Ensemble ensemble;
+	public PacManGameCast cast;
 	private boolean active;
 	protected final Set<Consumer<PacManGameEvent>> listeners;
 	protected StateMachine<S, PacManGameEvent> fsm;

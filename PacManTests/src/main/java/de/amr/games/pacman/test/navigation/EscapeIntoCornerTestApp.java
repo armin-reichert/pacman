@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
 import de.amr.easy.game.Application;
-import de.amr.games.pacman.actor.Ensemble;
+import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.theme.PacManTheme;
@@ -23,7 +23,7 @@ public class EscapeIntoCornerTestApp extends Application {
 	public void init() {
 		PacManGame game = new PacManGame();
 		PacManTheme theme = new ClassicPacManTheme();
-		Ensemble ensemble = new Ensemble(game, theme);
+		PacManGameCast ensemble = new PacManGameCast(game, theme);
 		setController(new EscapeIntoCornerTestUI(game, ensemble));
 	}
 }

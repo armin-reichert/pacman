@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.actor.Ensemble;
+import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeMover;
@@ -73,8 +73,8 @@ public class PlayView extends SimplePlayView {
 		return image;
 	}
 
-	public PlayView(PacManGame game, Ensemble ensemble) {
-		super(game, ensemble);
+	public PlayView(PacManGame game, PacManGameCast cast) {
+		super(game, cast);
 		gridImage = createGridImage(Maze.ROWS, Maze.COLS);
 	}
 
@@ -97,23 +97,23 @@ public class PlayView extends SimplePlayView {
 			updateGhostRouteDisplay();
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
-			toggleGhostActivationState(ensemble.blinky);
+			toggleGhostActivationState(cast.blinky);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_P)) {
-			toggleGhostActivationState(ensemble.pinky);
+			toggleGhostActivationState(cast.pinky);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_I)) {
-			toggleGhostActivationState(ensemble.inky);
+			toggleGhostActivationState(cast.inky);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_C)) {
-			toggleGhostActivationState(ensemble.clyde);
+			toggleGhostActivationState(cast.clyde);
 		}
 		super.update();
 	}
 
 	private void updateGhostRouteDisplay() {
 		// TODO this is ugly
-		ensemble.ghosts().forEach(ghost -> {
+		cast.ghosts().forEach(ghost -> {
 			if (ghost.getSteering() instanceof HeadingForTargetTile<?>) {
 				HeadingForTargetTile<?> steering = (HeadingForTargetTile<?>) ghost.getSteering();
 				steering.fnComputePath = () -> showRoutes;
@@ -135,15 +135,15 @@ public class PlayView extends SimplePlayView {
 		drawMaze(g);
 		drawScores(g);
 		if (showRoutes) {
-			ensemble.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));
+			cast.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));
 		}
 		drawActors(g);
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
-			if (ensemble.pacMan.isActive()) {
-				drawActorAlignment(ensemble.pacMan, g);
+			if (cast.pacMan.isActive()) {
+				drawActorAlignment(cast.pacMan, g);
 			}
-			ensemble.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawActorAlignment(ghost, g));
+			cast.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawActorAlignment(ghost, g));
 		}
 		if (showStates) {
 			drawActorStates(g);
@@ -152,11 +152,11 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawActorStates(Graphics2D g) {
-		if (ensemble.pacMan.getState() != null && ensemble.pacMan.visible()) {
-			drawText(g, Color.YELLOW, ensemble.pacMan.tf.getX(), ensemble.pacMan.tf.getY(),
-					pacManStateText(ensemble.pacMan));
+		if (cast.pacMan.getState() != null && cast.pacMan.visible()) {
+			drawText(g, Color.YELLOW, cast.pacMan.tf.getX(), cast.pacMan.tf.getY(),
+					pacManStateText(cast.pacMan));
 		}
-		ensemble.activeGhosts().filter(Ghost::visible).forEach(ghost -> {
+		cast.activeGhosts().filter(Ghost::visible).forEach(ghost -> {
 			drawText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
 		});
 	}
@@ -178,9 +178,9 @@ public class PlayView extends SimplePlayView {
 				: "";
 		int duration = ghost.state().getDuration(), remaining = ghost.state().getTicksRemaining();
 
-		if (ghost.getState() == GhostState.FRIGHTENED && ensemble.pacMan.hasPower()) {
-			duration = ensemble.pacMan.state().getDuration();
-			remaining = ensemble.pacMan.state().getTicksRemaining();
+		if (ghost.getState() == GhostState.FRIGHTENED && cast.pacMan.hasPower()) {
+			duration = cast.pacMan.state().getDuration();
+			remaining = cast.pacMan.state().getTicksRemaining();
 		}
 		else if (ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING) {
 			State<?, ?> attack = fnGhostAttack.get();
@@ -196,9 +196,9 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private Color color(Ghost ghost) {
-		return ghost == ensemble.blinky ? Color.RED
-				: ghost == ensemble.pinky ? Color.PINK
-						: ghost == ensemble.inky ? Color.CYAN : ghost == ensemble.clyde ? Color.ORANGE : Color.WHITE;
+		return ghost == cast.blinky ? Color.RED
+				: ghost == cast.pinky ? Color.PINK
+						: ghost == cast.inky ? Color.CYAN : ghost == cast.clyde ? Color.ORANGE : Color.WHITE;
 	}
 
 	private void drawText(Graphics2D g, Color color, float x, float y, String text) {
@@ -265,8 +265,8 @@ public class PlayView extends SimplePlayView {
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		}
 		// draw Clyde's chasing zone
-		if (ghost == ensemble.clyde && ghost.getState() == GhostState.CHASING) {
-			Vector2f center = ensemble.clyde.tf.getCenter();
+		if (ghost == cast.clyde && ghost.getState() == GhostState.CHASING) {
+			Vector2f center = cast.clyde.tf.getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 100));
 			g.drawOval((int) center.x - 8 * TS, (int) center.y - 8 * TS, 16 * TS, 16 * TS);

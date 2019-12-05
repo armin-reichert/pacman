@@ -121,13 +121,13 @@ public class PacMan extends Actor<PacManState> {
 					.timeoutAfter(() -> sec(4f))
 					.onEntry(() -> {
 						sprites.select("full");
-						ensemble.theme.snd_clips_all().forEach(Sound::stop);
+						cast.theme.snd_clips_all().forEach(Sound::stop);
 					})
 					.onTick(() -> {
 						if (state().getTicksRemaining() == sec(2.5f)) {
 							sprites.select("dying");
-							ensemble.theme.snd_die().play();
-							ensemble.activeGhosts().forEach(Ghost::hide);
+							cast.theme.snd_die().play();
+							cast.activeGhosts().forEach(Ghost::hide);
 						}
 					})
 
@@ -142,7 +142,7 @@ public class PacMan extends Actor<PacManState> {
 						state().resetTimer();
 						LOGGER.info(() -> String.format("Pac-Man got power for %d ticks (%d sec)", 
 								state().getDuration(), state().getDuration() / 60));
-						ensemble.theme.snd_waza().loop();
+						cast.theme.snd_waza().loop();
 					})
 					
 				.when(HUNGRY).then(DYING)
@@ -171,7 +171,7 @@ public class PacMan extends Actor<PacManState> {
 			}
 			else if (getTicksRemaining() == 1) {
 				setTimerFunction(() -> 0);
-				ensemble.theme.snd_waza().stop();
+				cast.theme.snd_waza().stop();
 				publish(new PacManLostPowerEvent());
 			}
 			else if (mustDigest()) {
@@ -200,7 +200,7 @@ public class PacMan extends Actor<PacManState> {
 			}
 
 			/*@formatter:off*/
-			Optional<PacManGameEvent> ghostCollision = ensemble.activeGhosts()
+			Optional<PacManGameEvent> ghostCollision = cast.activeGhosts()
 				.filter(Ghost::visible)
 				.filter(ghost -> ghost.tile().equals(pacManTile))
 				.filter(ghost -> ghost.getState() == GhostState.CHASING
@@ -215,7 +215,7 @@ public class PacMan extends Actor<PacManState> {
 			}
 
 			/*@formatter:off*/
-			Optional<PacManGameEvent> bonusEaten = ensemble.bonus
+			Optional<PacManGameEvent> bonusEaten = cast.bonus
 				.filter(bonus -> pacManTile == maze.bonusTile)
 				.filter(bonus -> !bonus.number)
 				.map(bonus -> new BonusFoundEvent(bonus.symbol, bonus.value));

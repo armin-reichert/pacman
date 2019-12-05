@@ -26,7 +26,7 @@ import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
 import de.amr.games.pacman.actor.Actor;
-import de.amr.games.pacman.actor.Ensemble;
+import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.behavior.ghost.GhostSteerings;
@@ -55,7 +55,8 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements ViewController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
+		implements ViewController {
 
 	// Typed reference to "Playing" state object
 	private PlayingState playingState;
@@ -63,8 +64,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	// Game (model)
 	public final PacManGame game;
 
-	// Game ensemble
-	private Ensemble ensemble;
+	// Game actors
+	private PacManGameCast cast;
 
 	// Controls the ghost attack waves
 	private final GhostAttackTimer ghostAttackTimer;
@@ -85,13 +86,13 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 		ghostAttackTimer = new GhostAttackTimer(game);
 
-		ensemble = new Ensemble(game, theme);
-		ensemble.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackTimer::getState);
-		ensemble.pacMan.addListener(this::process);
+		cast = new PacManGameCast(game, theme);
+		cast.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackTimer::getState);
+		cast.pacMan.addListener(this::process);
 
 		introView = new IntroView(theme);
 
-		playView = new PlayView(game, ensemble);
+		playView = new PlayView(game, cast);
 		playView.fnGhostAttack = ghostAttackTimer::state;
 	}
 
@@ -116,39 +117,60 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.state(GETTING_READY)
 					.timeoutAfter(() -> sec(5))
 					.onEntry(() -> {
-						game.reset();
-						game.startLevel();
-						ensemble.theme.snd_clips_all().forEach(Sound::stop);
-						ensemble.theme.snd_ready().play();
-						ensemble.actors().forEach(Actor::activate);
-						ensemble.clearBonus();
+						game.start();
+						cast.theme.snd_clips_all().forEach(Sound::stop);
+						cast.theme.snd_ready().play();
+						cast.actors().forEach(Actor::activate);
+						cast.clearBonus();
 						playView.init();
 						playView.showScores = true;
 						playView.showInfoText("Ready!", Color.YELLOW);
 					})
 					.onTick(() -> {
-						ensemble.activeGhosts().filter(ghost -> ghost != ensemble.blinky).forEach(Ghost::update);
+						cast.activeGhosts().filter(ghost -> ghost != cast.blinky).forEach(Ghost::update);
 					})
 				
 				.state(START_PLAYING)
 					.timeoutAfter(() -> sec(1.7f))
 					.onEntry(() -> {
-						ensemble.ghosts().forEach(ghost -> ghost.foodCount = 0);
+						cast.ghosts().forEach(ghost -> ghost.foodCount = 0);
 						ghostAttackTimer.init();
 						playView.clearInfoText();
 						playView.startEnergizerBlinking();
-						ensemble.theme.music_playing().volume(.90f);
-						ensemble.theme.music_playing().loop();
+						cast.theme.music_playing().volume(.90f);
+						cast.theme.music_playing().loop();
 					})
 					.onTick(() -> {
-						ensemble.activeGhosts().forEach(Ghost::update);
+						cast.activeGhosts().forEach(Ghost::update);
 					})
 				
 				.state(PLAYING)
 					.impl(playingState = new PlayingState())
 				
 				.state(CHANGING_LEVEL)
-					.impl(new ChangingLevelState())
+					.onEntry(() -> {
+						cast.theme.snd_clips_all().forEach(Sound::stop);
+						cast.activeGhosts().forEach(Ghost::hide);
+						cast.pacMan.sprites.select("full");
+						int numFlashes = game.level.mazeNumFlashes;
+						state().setTimerFunction(() -> sec(2 + 0.5f * numFlashes));
+						state().resetTimer();
+						if (numFlashes > 0) {
+							playView.startMazeFlashing();
+						}
+					})
+					.onTick(() -> {
+						if (state().getTicksRemaining() == sec(2)) {
+							game.levelNumber += 1;
+							game.startLevel();
+							cast.activeActors().forEach(Actor::init);
+							cast.ghosts().forEach(ghost -> ghost.foodCount = 0);
+							playView.stopMazeFlashing();
+							playView.init();
+						} else if (state().getTicksRemaining() < sec(2)) {
+							cast.activeGhosts().forEach(Ghost::update);
+						}
+					})
 				
 				.state(GHOST_DYING)
 					.impl(new GhostDyingState())
@@ -158,26 +180,26 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onEntry(() -> {
 						state().setTimerFunction(() -> game.lives > 1 ? sec(6) : sec(4));
 						state().resetTimer();
-						ensemble.theme.music_playing().stop();
+						cast.theme.music_playing().stop();
 						if (!app().settings.getAsBoolean("pacMan.immortable")) {
 							game.lives -= 1;
 						}
 					})
 					.onTick(() -> {
 						if (state().getTicksConsumed() < sec(2)) {
-							ensemble.pacMan.update();
+							cast.pacMan.update();
 						}
 						if (state().getTicksConsumed() == sec(1)) {
-							ensemble.activeGhosts().forEach(Ghost::hide);
+							cast.activeGhosts().forEach(Ghost::hide);
 						}
 						if (game.lives > 0 && state().getTicksConsumed() == sec(4)) {
-							ensemble.activeActors().forEach(Actor::init);
-							ensemble.activeGhosts().forEach(Ghost::show);
+							cast.activeActors().forEach(Actor::init);
+							cast.activeGhosts().forEach(Ghost::show);
 							playView.init();
-							ensemble.theme.music_playing().loop();
+							cast.theme.music_playing().loop();
 						}
 						if (game.lives > 0 && state().getTicksConsumed() > sec(4)) {
-							ensemble.activeGhosts().forEach(Ghost::update);
+							cast.activeGhosts().forEach(Ghost::update);
 						}
 					})
 				
@@ -186,14 +208,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onEntry(() -> {
 						LOGGER.info("Game is over");
 						game.score.save();
-						ensemble.activeGhosts().forEach(Ghost::show);
-						ensemble.clearBonus();
+						cast.activeGhosts().forEach(Ghost::show);
+						cast.clearBonus();
 						playView.enableAnimations(false);
-						ensemble.theme.music_gameover().loop();
+						cast.theme.music_gameover().loop();
 						playView.showInfoText("Game Over!", Color.RED);
 					})
 					.onExit(() -> {
-						ensemble.theme.music_gameover().stop();
+						cast.theme.music_gameover().stop();
 						playView.clearInfoText();
 					})
 
@@ -277,8 +299,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onEntry() {
-			ensemble.activeGhosts().forEach(Ghost::show);
-			ensemble.clearBonus();
+			cast.activeGhosts().forEach(Ghost::show);
+			cast.clearBonus();
 			playView.init();
 			playView.enableAnimations(true);
 			playView.startEnergizerBlinking();
@@ -286,17 +308,22 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onTick() {
-			ensemble.pacMan.update();
+			cast.pacMan.update();
 			ghostAttackTimer.update();
-			Iterable<Ghost> ghosts = ensemble.activeGhosts()::iterator;
+			Iterable<Ghost> ghosts = cast.activeGhosts()::iterator;
 			for (Ghost ghost : ghosts) {
-				if (ghost.getState() == GhostState.LOCKED && ensemble.canLeaveHouse(ghost)) {
+				if (ghost.getState() == GhostState.LOCKED && cast.canLeaveHouse(ghost)) {
 					ghost.process(new GhostUnlockedEvent());
-				} else if (ghost.getState() == GhostState.CHASING && ghostAttackTimer.getState() == GhostState.SCATTERING) {
+				}
+				else if (ghost.getState() == GhostState.CHASING
+						&& ghostAttackTimer.getState() == GhostState.SCATTERING) {
 					ghost.process(new StartScatteringEvent());
-				} else if (ghost.getState() == GhostState.SCATTERING && ghostAttackTimer.getState() == GhostState.CHASING) {
+				}
+				else if (ghost.getState() == GhostState.SCATTERING
+						&& ghostAttackTimer.getState() == GhostState.CHASING) {
 					ghost.process(new StartChasingEvent());
-				} else {
+				}
+				else {
 					ghost.update();
 				}
 			}
@@ -306,7 +333,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			PacManGhostCollisionEvent e = (PacManGhostCollisionEvent) event;
 			if (e.ghost.oneOf(GhostState.CHASING, GhostState.SCATTERING)) {
 				enqueue(new PacManKilledEvent(e.ghost));
-			} else if (e.ghost.getState() == GhostState.FRIGHTENED) {
+			}
+			else if (e.ghost.getState() == GhostState.FRIGHTENED) {
 				enqueue(new GhostKilledEvent(e.ghost));
 			}
 		}
@@ -317,42 +345,41 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			game.enableGlobalFoodCounter();
 			ghostAttackTimer.init();
 			playView.stopEnergizerBlinking();
-			ensemble.pacMan.process(e);
+			cast.pacMan.process(e);
 		}
 
 		private void onPacManGainsPower(PacManGameEvent event) {
 			PacManGainsPowerEvent e = (PacManGainsPowerEvent) event;
-			ensemble.pacMan.process(e);
-			ensemble.activeGhosts().forEach(ghost -> ghost.process(e));
+			cast.pacMan.process(e);
+			cast.activeGhosts().forEach(ghost -> ghost.process(e));
 			ghostAttackTimer.suspend();
 		}
 
 		private void onPacManGettingWeaker(PacManGameEvent event) {
 			PacManGettingWeakerEvent e = (PacManGettingWeakerEvent) event;
-			ensemble.activeGhosts().forEach(ghost -> ghost.process(e));
+			cast.activeGhosts().forEach(ghost -> ghost.process(e));
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {
 			PacManLostPowerEvent e = (PacManLostPowerEvent) event;
-			ensemble.activeGhosts().forEach(ghost -> ghost.process(e));
+			cast.activeGhosts().forEach(ghost -> ghost.process(e));
 			ghostAttackTimer.resume();
 		}
 
 		private void onGhostKilled(PacManGameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
 			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.name, e.ghost.tile()));
-			ensemble.theme.snd_eatGhost().play();
+			cast.theme.snd_eatGhost().play();
 			e.ghost.process(e);
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
-			ensemble.bonus.ifPresent(bonus -> {
+			cast.bonus.ifPresent(bonus -> {
 				boolean extraLife = game.scorePoints(bonus.value);
-				bonus.changeIntoNumber();
-				playView.startBonusTimer(sec(2));
-				ensemble.theme.snd_eatFruit().play();
+				playView.consumeBonus(sec(2));
+				cast.theme.snd_eatFruit().play();
 				if (extraLife) {
-					ensemble.theme.snd_extraLife().play();
+					cast.theme.snd_extraLife().play();
 				}
 				LOGGER.info(() -> String.format("PacMan found %s and scored %d points", bonus.symbol, bonus.value));
 			});
@@ -360,55 +387,22 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent e = (FoodFoundEvent) event;
-			ensemble.theme.snd_eatPill().play();
+			cast.theme.snd_eatPill().play();
 			int points = game.eat(e.tile);
 			boolean extraLife = game.scorePoints(points);
 			if (extraLife) {
-				ensemble.theme.snd_extraLife().play();
+				cast.theme.snd_extraLife().play();
 			}
-			ensemble.updateFoodCounter();
+			cast.updateFoodCounter();
 			if (game.numPelletsRemaining() == 0) {
 				enqueue(new LevelCompletedEvent());
 			}
 			else if (game.isBonusReached()) {
-				ensemble.setBonus(game.level.bonusSymbol, game.level.bonusValue);
-				playView.startBonusTimer(sec(9 + new Random().nextFloat()));
+				cast.setBonus(game.level.bonusSymbol, game.level.bonusValue);
+				playView.displayBonus(sec(9 + new Random().nextFloat()));
 			}
 			if (e.energizer) {
 				enqueue(new PacManGainsPowerEvent());
-			}
-		}
-	}
-
-	/**
-	 * "Level changing" state implementation.
-	 */
-	private class ChangingLevelState extends State<PacManGameState, PacManGameEvent> {
-
-		@Override
-		public void onEntry() {
-			ensemble.theme.snd_clips_all().forEach(Sound::stop);
-			ensemble.activeGhosts().forEach(Ghost::hide);
-			ensemble.pacMan.sprites.select("full");
-			int numFlashes = game.level.mazeNumFlashes;
-			setTimerFunction(() -> sec(2 + 0.5f * numFlashes));
-			resetTimer();
-			if (numFlashes > 0) {
-				playView.startMazeFlashing();
-			}
-		}
-
-		@Override
-		public void onTick() {
-			if (getTicksRemaining() == sec(2)) {
-				game.levelNumber += 1;
-				game.startLevel();
-				ensemble.activeActors().forEach(Actor::init);
-				ensemble.ghosts().forEach(ghost -> ghost.foodCount = 0);
-				playView.stopMazeFlashing();
-				playView.init();
-			} else if (getTicksRemaining() < sec(2)) {
-				ensemble.activeGhosts().forEach(Ghost::update);
 			}
 		}
 	}
@@ -420,33 +414,34 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onEntry() {
-			ensemble.pacMan.hide();
+			cast.pacMan.hide();
 			int points = 200 * (int) Math.pow(2, game.numGhostsKilledByCurrentEnergizer);
 			boolean extraLife = game.scorePoints(points);
 			LOGGER.info(() -> String.format("Scored %d points for killing %s ghost", points,
 					new String[] { "first", "2nd", "3rd", "4th" }[game.numGhostsKilledByCurrentEnergizer]));
 			if (extraLife) {
-				ensemble.theme.snd_extraLife().play();
+				cast.theme.snd_extraLife().play();
 			}
 			game.numGhostsKilledByCurrentEnergizer += 1;
 		}
 
 		@Override
 		public void onTick() {
-			ensemble.activeGhosts().filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
+			cast.activeGhosts()
+					.filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
 					.forEach(Ghost::update);
 		}
 
 		@Override
 		public void onExit() {
-			ensemble.pacMan.show();
+			cast.pacMan.show();
 		}
 	}
 
 	// View handling
 
 	public void setTheme(PacManTheme theme) {
-		ensemble.setTheme(theme);
+		cast.setTheme(theme);
 		introView = new IntroView(theme);
 		playView.updateTheme();
 	}
@@ -482,13 +477,13 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void handleCheats() {
 		/* ALT-"K": Kill all ghosts */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_K)) {
-			ensemble.activeGhosts().forEach(ghost -> ghost.process(new GhostKilledEvent(ghost)));
+			cast.activeGhosts().forEach(ghost -> ghost.process(new GhostKilledEvent(ghost)));
 			LOGGER.info(() -> "All ghosts killed");
 		}
 		/* ALT-"E": Eats all (normal) pellets */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_E)) {
 			game.maze.tiles().filter(game.maze::containsPellet).forEach(game::eat);
-			ensemble.updateFoodCounter();
+			cast.updateFoodCounter();
 			LOGGER.info(() -> "All pellets eaten");
 		}
 		/* ALT-"L": Selects next level */
@@ -532,9 +527,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void handlePlayingSpeedChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
 			app().clock.setFrequency(60);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
 			app().clock.setFrequency(80);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
 			app().clock.setFrequency(100);
 		}
 	}
@@ -544,9 +541,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			String property = "ghost.originalBehavior";
 			app().settings.set(property, !app().settings.getAsBoolean(property));
 			boolean original = app().settings.getAsBoolean(property);
-			ensemble.ghosts().forEach(ghost -> ghost.setSteering(GhostState.FRIGHTENED,
-					original ? GhostSteerings.movingRandomly() : GhostSteerings.fleeingToSafeCorner(ensemble.pacMan)));
-			LOGGER.info("Changed ghost FRIGHTENED behavior to " + (original ? "original" : "escape via safe route"));
+			cast.ghosts().forEach(ghost -> ghost.setSteering(GhostState.FRIGHTENED,
+					original ? GhostSteerings.movingRandomly() : GhostSteerings.fleeingToSafeCorner(cast.pacMan)));
+			LOGGER
+					.info("Changed ghost FRIGHTENED behavior to " + (original ? "original" : "escape via safe route"));
 		}
 	}
 }

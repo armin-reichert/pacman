@@ -103,7 +103,7 @@ public class Ghost extends Actor<GhostState> {
 		boolean inTunnel = maze.isTunnel(tile());
 		switch (getState()) {
 		case LOCKED:
-			return this == ensemble.blinky ? 0 : speed(game.level.ghostSpeed) / 2;
+			return this == cast.blinky ? 0 : speed(game.level.ghostSpeed) / 2;
 		case LEAVING_HOUSE:
 			return speed(game.level.ghostSpeed) / 2;
 		case ENTERING_HOUSE:
@@ -162,7 +162,7 @@ public class Ghost extends Actor<GhostState> {
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir))
 					.onExit(() -> {
 						enteredNewTile = true;
-						ensemble.pacMan.ticksSinceLastMeal = 0;
+						cast.pacMan.ticksSinceLastMeal = 0;
 					})
 					
 				.state(LEAVING_HOUSE)
@@ -179,15 +179,15 @@ public class Ghost extends Actor<GhostState> {
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir))
 			
 				.state(CHASING)
-					.onEntry(() -> ensemble.chasingSoundOn())
+					.onEntry(() -> cast.chasingSoundOn())
 					.onTick(() -> {
 						targetTile = fnChasingTarget.get();
 						walkAndDisplayAs("color-" + moveDir);
 					})
-					.onExit(() -> ensemble.chasingSoundOff(this))
+					.onExit(() -> cast.chasingSoundOff(this))
 				
 				.state(FRIGHTENED)
-					.onTick(() -> walkAndDisplayAs(ensemble.pacMan.isLosingPower() ? "flashing" : "frightened"))
+					.onTick(() -> walkAndDisplayAs(cast.pacMan.isLosingPower() ? "flashing" : "frightened"))
 				
 				.state(DYING)
 					.timeoutAfter(Ghost::getDyingTime)
@@ -198,10 +198,10 @@ public class Ghost extends Actor<GhostState> {
 				.state(DEAD)
 					.onEntry(() -> {
 						targetTile = maze.blinkyHome;
-						ensemble.deadSoundOn();
+						cast.deadSoundOn();
 					})
 					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir))
-					.onExit(() -> ensemble.deadSoundOff(this))
+					.onExit(() -> cast.deadSoundOff(this))
 				
 			.transitions()
 			

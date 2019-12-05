@@ -134,9 +134,6 @@ public class PacManGame {
 		return (int) (3600 * min);
 	}
 
-	public final Deque<BonusSymbol> levelCounter;
-	public final Maze maze;
-	public final Score score;
 	public int lives;
 	public int numPelletsEaten;
 	public int globalFoodCount;
@@ -144,6 +141,9 @@ public class PacManGame {
 	public int numGhostsKilledByCurrentEnergizer;
 	public int levelNumber;
 	public Level level;
+	public final Deque<BonusSymbol> levelCounter;
+	public final Maze maze;
+	public final Score score;
 
 	public PacManGame() {
 		levelCounter = new ArrayDeque<>(8);
@@ -151,20 +151,17 @@ public class PacManGame {
 		score = new Score();
 	}
 
-	public void reset() {
+	public void start() {
+		LOGGER.info("Start game");
+		score.loadHiscore();
 		lives = 3;
-		numPelletsEaten = 0;
-		globalFoodCount = 0;
-		globalFoodCounterEnabled = false;
-		numGhostsKilledByCurrentEnergizer = 0;
 		levelNumber = 1;
 		levelCounter.clear();
-		maze.restoreFood();
-		score.loadHiscore();
+		startLevel();
 	}
 
 	public void startLevel() {
-		LOGGER.info("Start game level " + levelNumber);
+		LOGGER.info("Start level " + levelNumber);
 		level = new Level(LEVELS[Math.min(levelNumber - 1, LEVELS.length - 1)]);
 		maze.restoreFood();
 		numPelletsEaten = 0;

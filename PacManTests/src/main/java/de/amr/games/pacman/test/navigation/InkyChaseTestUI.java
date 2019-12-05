@@ -6,7 +6,7 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
-import de.amr.games.pacman.actor.Ensemble;
+import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
@@ -15,7 +15,7 @@ import de.amr.games.pacman.view.play.PlayView;
 
 public class InkyChaseTestUI extends PlayView implements ViewController {
 
-	public InkyChaseTestUI(PacManGame game, Ensemble ensemble) {
+	public InkyChaseTestUI(PacManGame game, PacManGameCast ensemble) {
 		super(game, ensemble);
 		showRoutes = true;
 		showStates = true;
@@ -27,12 +27,12 @@ public class InkyChaseTestUI extends PlayView implements ViewController {
 		super.init();
 		game.levelNumber = 1;
 		game.maze.removeFood();
-		ensemble.theme.snd_ghost_chase().volume(0);
-		ensemble.pacMan.init();
-		ensemble.pacMan.activate();
-		ensemble.inky.activate();
-		ensemble.blinky.activate();
-		ensemble.activeGhosts().forEach(ghost -> {
+		cast.theme.snd_ghost_chase().volume(0);
+		cast.pacMan.init();
+		cast.pacMan.activate();
+		cast.inky.activate();
+		cast.blinky.activate();
+		cast.activeGhosts().forEach(ghost -> {
 			ghost.init();
 			ghost.fnNextState = () -> GhostState.CHASING;
 		});
@@ -42,11 +42,11 @@ public class InkyChaseTestUI extends PlayView implements ViewController {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			ensemble.activeGhosts().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
+			cast.activeGhosts().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
 			clearInfoText();
 		}
-		ensemble.pacMan.update();
-		ensemble.activeGhosts().forEach(Ghost::update);
+		cast.pacMan.update();
+		cast.activeGhosts().forEach(Ghost::update);
 		super.update();
 	}
 

@@ -16,7 +16,7 @@ public class AvoidGhosts implements Steering<PacMan> {
 	@Override
 	public void steer(PacMan pacMan) {
 		/*@formatter:off*/
-		pacMan.ensemble.activeGhosts()
+		pacMan.cast.activeGhosts()
 			.filter(ghost -> !pacMan.maze.inGhostHouse(ghost.tile()))
 			.sorted(bySmallestDistanceTo(pacMan))
 			.findFirst()
