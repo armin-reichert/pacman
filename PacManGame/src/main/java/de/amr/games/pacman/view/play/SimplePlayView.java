@@ -28,20 +28,21 @@ import de.amr.graph.grid.impl.Top4;
  */
 public class SimplePlayView implements View, Controller {
 
+	public final PacManGame game;
+	public final PacManGameCast cast;
+	public final Dimension size;
+	
 	public boolean showScores;
+	public boolean mazeFlashing;
+	public Animation energizerBlinking;
 
-	protected final PacManGame game;
-	protected final PacManGameCast cast;
-	protected final Dimension size;
+	public String infoText;
+	public Color infoTextColor;
 
 	protected Image lifeImage;
 	protected Sprite fullMazeSprite, flashingMazeSprite;
-	protected Animation energizerBlinking;
 
-	protected boolean mazeFlashing;
 	protected int bonusDisplayTicks;
-	protected String infoText;
-	protected Color infoTextColor;
 
 	public SimplePlayView(PacManGame game, PacManGameCast cast) {
 		this.game = game;
@@ -84,22 +85,6 @@ public class SimplePlayView implements View, Controller {
 	public void enableAnimations(boolean state) {
 		flashingMazeSprite.enableAnimation(state);
 		cast.actors().forEach(actor -> actor.sprites.enableAnimation(state));
-	}
-
-	public void startEnergizerBlinking() {
-		energizerBlinking.setEnabled(true);
-	}
-
-	public void stopEnergizerBlinking() {
-		energizerBlinking.setEnabled(false);
-	}
-
-	public void startMazeFlashing() {
-		mazeFlashing = true;
-	}
-
-	public void stopMazeFlashing() {
-		mazeFlashing = false;
 	}
 
 	public void displayBonus(int ticks) {

@@ -138,7 +138,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						cast.theme.music_playing().volume(.90f);
 						cast.theme.music_playing().loop();
 						playView.clearInfoText();
-						playView.startEnergizerBlinking();
+						playView.energizerBlinking.setEnabled(true);
 					})
 					.onTick(() -> {
 						cast.activeGhosts().forEach(Ghost::update);
@@ -156,7 +156,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						cast.activeGhosts().forEach(Ghost::hide);
 						cast.pacMan.sprites.select("full");
 						if (game.level.mazeNumFlashes > 0) {
-							playView.startMazeFlashing();
+							playView.mazeFlashing = true;
 						}
 					})
 					.onTick(() -> {
@@ -303,7 +303,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			cast.clearBonus();
 			playView.init();
 			playView.enableAnimations(true);
-			playView.startEnergizerBlinking();
+			playView.energizerBlinking.setEnabled(true);
 		}
 
 		@Override
@@ -344,7 +344,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.name, e.killer.tile()));
 			game.enableGlobalFoodCounter();
 			ghostAttackTimer.init();
-			playView.stopEnergizerBlinking();
+			playView.energizerBlinking.setEnabled(false);
 			cast.pacMan.process(e);
 		}
 
