@@ -30,15 +30,15 @@ public class LeaveGhostHouseTestUI extends PlayView implements ViewController {
 		cast.inky.activate();
 		cast.inky.init();
 		cast.inky.fnNextState = () -> GhostState.SCATTERING;
-		infoTextColor = Color.YELLOW;
-		infoText = "Press SPACE to unlock";
+		textColor = Color.YELLOW;
+		message = "Press SPACE to unlock";
 	}
 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			cast.inky.process(new GhostUnlockedEvent());
-			infoText = null;
+			message = null;
 		}
 		cast.inky.update();
 		super.update();

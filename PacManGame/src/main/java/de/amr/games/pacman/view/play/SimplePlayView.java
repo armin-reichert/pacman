@@ -31,17 +31,15 @@ public class SimplePlayView implements View, Controller {
 	public final PacManGame game;
 	public final PacManGameCast cast;
 	public final Dimension size;
+	public final Animation energizerBlinking;
 
 	public boolean showScores;
 	public boolean mazeFlashing;
-	public Animation energizerBlinking;
-
-	public String infoText;
-	public Color infoTextColor;
+	public String message;
+	public Color textColor;
 
 	protected Image lifeImage;
 	protected Sprite fullMazeSprite, flashingMazeSprite;
-
 	protected int bonusDisplayTicks;
 
 	public SimplePlayView(PacManGame game, PacManGameCast cast) {
@@ -58,8 +56,8 @@ public class SimplePlayView implements View, Controller {
 		energizerBlinking.setEnabled(false);
 		mazeFlashing = false;
 		bonusDisplayTicks = 0;
-		infoText = null;
-		infoTextColor = Color.YELLOW;
+		message = null;
+		textColor = Color.YELLOW;
 	}
 
 	@Override
@@ -142,10 +140,8 @@ public class SimplePlayView implements View, Controller {
 			cast.pacMan.draw(g);
 		}
 		// draw dying ghosts (numbers) under non-dying ghosts
-		cast.activeGhosts().sorted((g1, g2) -> {
-			GhostState s1 = g1.getState(), s2 = g2.getState();
-			return s1 == s2 ? 0 : s1 == GhostState.DYING ? -1 : 1;
-		}).forEach(ghost -> ghost.draw(g));
+		cast.activeGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(ghost -> ghost.draw(g));
+		cast.activeGhosts().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {
@@ -198,16 +194,16 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	protected void drawInfoText(Graphics2D g) {
-		if (infoText == null) {
+		if (message == null) {
 			return;
 		}
 		int mazeWidth = fullMazeSprite.getWidth();
 		Graphics2D g2 = (Graphics2D) g.create();
 		g2.setFont(cast.theme.fnt_text(14));
-		g2.setColor(infoTextColor);
-		Rectangle box = g2.getFontMetrics().getStringBounds(infoText, g2).getBounds();
+		g2.setColor(textColor);
+		Rectangle box = g2.getFontMetrics().getStringBounds(message, g2).getBounds();
 		g2.translate((mazeWidth - box.width) / 2, (game.maze.bonusTile.row + 1) * TS);
-		g2.drawString(infoText, 0, 0);
+		g2.drawString(message, 0, 0);
 		g2.dispose();
 	}
 }

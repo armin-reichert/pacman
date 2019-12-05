@@ -37,8 +37,8 @@ public class TakeShortestPathTestUI extends PlayView implements ViewController {
 	@Override
 	public void init() {
 		super.init();
-		infoTextColor = Color.YELLOW;
-		infoText = "SPACE toggles ghost state";
+		textColor = Color.YELLOW;
+		message = "SPACE toggles ghost state";
 		currentTarget = 0;
 		game.startLevel(1);
 		game.maze.removeFood();
