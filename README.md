@@ -553,10 +553,12 @@ Pac-Man is steered by holding a key indicating its **intended** direction. As so
 pacMan = new PacMan(game);
 pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
 
-...
 
 Steering<PacMan> steeredByKeys(int... keys) {
-	return pacMan -> NESW.dirs().filter(dir -> Keyboard.keyDown(keys[dir])).findAny().ifPresent(pacMan::setNextDir);
+	return pacMan -> NESW.dirs()
+		.filter(dir -> Keyboard.keyDown(keys[dir]))
+		.findAny()
+		.ifPresent(pacMan::setNextDir);
 }
 ```
 
