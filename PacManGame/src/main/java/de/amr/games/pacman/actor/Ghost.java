@@ -103,9 +103,9 @@ public class Ghost extends Actor<GhostState> {
 		boolean inTunnel = maze.isTunnel(tile());
 		switch (getState()) {
 		case LOCKED:
-			//$FALL-THROUGH$
+			return this == ensemble.blinky ? 0 : speed(game.level.ghostSpeed) / 2;
 		case LEAVING_HOUSE:
-			//$FALL-THROUGH$
+			return speed(game.level.ghostSpeed) / 2;
 		case ENTERING_HOUSE:
 			return speed(game.level.ghostSpeed) / 2;
 		case CHASING:

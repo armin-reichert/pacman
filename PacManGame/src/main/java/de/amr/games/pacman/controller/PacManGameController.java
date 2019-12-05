@@ -117,24 +117,25 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.timeoutAfter(() -> sec(5))
 					.onEntry(() -> {
 						game.reset();
+						game.startLevel();
 						ensemble.theme.snd_clips_all().forEach(Sound::stop);
 						ensemble.theme.snd_ready().play();
 						ensemble.actors().forEach(Actor::activate);
 						ensemble.clearBonus();
 						playView.init();
 						playView.showScores = true;
-						playView.enableAnimations(false);
 						playView.showInfoText("Ready!", Color.YELLOW);
+					})
+					.onTick(() -> {
+						ensemble.activeGhosts().filter(ghost -> ghost != ensemble.blinky).forEach(Ghost::update);
 					})
 				
 				.state(START_PLAYING)
 					.timeoutAfter(() -> sec(1.7f))
 					.onEntry(() -> {
-						game.startLevel();
 						ensemble.ghosts().forEach(ghost -> ghost.foodCount = 0);
 						ghostAttackTimer.init();
 						playView.clearInfoText();
-						playView.enableAnimations(true);
 						playView.startEnergizerBlinking();
 						ensemble.theme.music_playing().volume(.90f);
 						ensemble.theme.music_playing().loop();
@@ -174,6 +175,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 							ensemble.activeGhosts().forEach(Ghost::show);
 							playView.init();
 							ensemble.theme.music_playing().loop();
+						}
+						if (game.lives > 0 && state().getTicksConsumed() > sec(4)) {
+							ensemble.activeGhosts().forEach(Ghost::update);
 						}
 					})
 				
@@ -403,6 +407,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				ensemble.ghosts().forEach(ghost -> ghost.foodCount = 0);
 				playView.stopMazeFlashing();
 				playView.init();
+			} else if (getTicksRemaining() < sec(2)) {
+				ensemble.activeGhosts().forEach(Ghost::update);
 			}
 		}
 	}

@@ -3,6 +3,8 @@ package de.amr.games.pacman.actor;
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
+import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.jumpingUpAndDown;
+import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.movingRandomly;
 import static de.amr.games.pacman.actor.behavior.pacman.PacManSteerings.steeredByKeys;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
@@ -12,7 +14,6 @@ import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.actor.behavior.ghost.GhostSteerings;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
@@ -52,6 +53,7 @@ public class Ensemble {
 		pinky.scatterTile = game.maze.pinkyScatter;
 		pinky.revivalTile = game.maze.pinkyHome;
 		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
+		pinky.setSteering(GhostState.LOCKED, jumpingUpAndDown());
 
 		inky = new Ghost("Inky", game);
 		inky.initialDir = Top4.N;
@@ -62,6 +64,7 @@ public class Ensemble {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return game.maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		};
+		inky.setSteering(GhostState.LOCKED, jumpingUpAndDown());
 
 		clyde = new Ghost("Clyde", game);
 		clyde.initialDir = Top4.N;
@@ -69,12 +72,11 @@ public class Ensemble {
 		clyde.scatterTile = game.maze.clydeScatter;
 		clyde.revivalTile = game.maze.clydeHome;
 		clyde.fnChasingTarget = () -> clyde.tileDistanceSq(pacMan) > 8 * 8 ? pacMan.tile() : game.maze.clydeScatter;
+		clyde.setSteering(GhostState.LOCKED, jumpingUpAndDown());
 
 		ghosts().forEach(ghost -> {
-			ghost.setSteering(GhostState.FRIGHTENED, GhostSteerings.movingRandomly());
-			ghost.setSteering(GhostState.LOCKED, GhostSteerings.jumpingUpAndDown());
+			ghost.setSteering(GhostState.FRIGHTENED, movingRandomly());
 		});
-
 		actors().forEach(actor -> actor.ensemble = this);
 		setTheme(theme);
 	}

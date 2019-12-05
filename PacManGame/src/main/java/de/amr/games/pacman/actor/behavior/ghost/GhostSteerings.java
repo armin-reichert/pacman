@@ -20,7 +20,7 @@ import de.amr.graph.grid.impl.Top4;
  * @author Armin Reichert
  */
 public interface GhostSteerings {
-
+	
 	/**
 	 * Lets the ghost jump up and down.
 	 * 
@@ -29,10 +29,10 @@ public interface GhostSteerings {
 	 */
 	static Steering<Ghost> jumpingUpAndDown() {
 		return ghost -> {
-			if (ghost.moveDir == Top4.E || ghost.moveDir == Top4.W) {
-				ghost.moveDir = Top4.N;
+			if (ghost.isStuck()) {
+				ghost.nextDir = Top4.get().inv(ghost.moveDir);
 			}
-			ghost.nextDir = ghost.isStuck() ? NESW.inv(ghost.moveDir) : ghost.moveDir;
+			ghost.targetTile = ghost.maze.tileToDir(ghost.tile(), ghost.moveDir);
 		};
 	}
 
