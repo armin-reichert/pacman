@@ -1,11 +1,10 @@
 package de.amr.games.pacman.model;
 
 /**
- * The Pac-Man game world consists of an unbounded grid of tiles. The board
- * tiles are created exactly once when the board/maze is created. Therefore
- * tiles inside the board can be compared by identity where in the general case,
- * tiles have to be compared using equals(). The tile content is not relevant
- * when comparing tiles.
+ * The Pac-Man game world consists of an unbounded grid of tiles. The board tiles are created
+ * exactly once when the board/maze is created. Therefore tiles inside the board can be compared by
+ * identity where in the general case, tiles have to be compared using equals(). The tile content is
+ * not relevant when comparing tiles.
  * 
  * @author Armin Reichert
  */

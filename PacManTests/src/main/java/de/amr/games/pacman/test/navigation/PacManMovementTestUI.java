@@ -22,7 +22,7 @@ public class PacManMovementTestUI extends PlayView implements ViewController {
 	@Override
 	public void init() {
 		super.init();
-		game.levelNumber = 1;
+		game.start();
 		cast.pacMan.addListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
@@ -46,14 +46,17 @@ public class PacManMovementTestUI extends PlayView implements ViewController {
 
 	private void handleSteeringChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_M)) {
-			cast.pacMan.steering = PacManSteerings.steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN,
-					KeyEvent.VK_LEFT);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_N)) {
+			cast.pacMan.steering = PacManSteerings.steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT,
+					KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_N)) {
 			cast.pacMan.steering = PacManSteerings.steeredByKeys(KeyEvent.VK_NUMPAD5, KeyEvent.VK_NUMPAD3,
 					KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD1);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_A)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_A)) {
 			cast.pacMan.steering = PacManSteerings.avoidGhosts();
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
 			cast.pacMan.steering = PacManSteerings.movingRandomly();
 		}
 	}

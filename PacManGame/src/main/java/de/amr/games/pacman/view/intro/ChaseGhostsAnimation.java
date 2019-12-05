@@ -11,8 +11,7 @@ import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.graph.grid.impl.Top4;
 
 /**
- * An animation showing Pac-Man chasing the ghosts and scoring points for each
- * killed ghost.
+ * An animation showing Pac-Man chasing the ghosts and scoring points for each killed ghost.
  * 
  * @author Armin Reichert
  */
@@ -101,7 +100,8 @@ public class ChaseGhostsAnimation extends Entity implements View, AnimationContr
 			g.translate(18 * (i + 1), 0);
 			if (killed[i]) {
 				points[i].draw(g);
-			} else {
+			}
+			else {
 				ghost.draw(g);
 			}
 			g.translate(-18 * (i + 1), 0);

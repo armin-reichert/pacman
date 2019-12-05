@@ -4,8 +4,8 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
-import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.Ghost;
+import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayView;
 
@@ -21,7 +21,7 @@ public class FleeRandomlyTestUI extends PlayView implements ViewController {
 	@Override
 	public void init() {
 		super.init();
-		game.levelNumber = 1;
+		game.start();
 		game.maze.removeFood();
 		cast.ghosts().forEach(ghost -> {
 			ghost.activate();

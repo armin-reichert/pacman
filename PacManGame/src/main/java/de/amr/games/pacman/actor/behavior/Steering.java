@@ -5,7 +5,8 @@ import de.amr.games.pacman.actor.MazeMover;
 /**
  * Functional interface for steering of actors.
  * 
- * @param <T> type of steered entity
+ * @param <T>
+ *          type of steered entity
  * 
  * @author Armin Reichert
  */
@@ -13,10 +14,10 @@ import de.amr.games.pacman.actor.MazeMover;
 public interface Steering<T extends MazeMover> {
 
 	/**
-	 * Steers the actor towards its target tile or wherever it should move in its
-	 * current state.
+	 * Steers the actor towards its target tile or wherever it should move in its current state.
 	 * 
-	 * @param actor the steered actor
+	 * @param actor
+	 *                the steered actor
 	 */
 	void steer(T actor);
 }

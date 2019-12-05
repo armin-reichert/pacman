@@ -22,8 +22,8 @@ public class FollowTargetTilesTestUI extends PlayView implements ViewController 
 		showRoutes = true;
 		showStates = false;
 		showScores = false;
-		targets = Arrays.asList(game.maze.topLeft, game.maze.blinkyHome, game.maze.topRight, game.maze.bottomRight,
-				game.maze.pacManHome, game.maze.bottomLeft);
+		targets = Arrays.asList(game.maze.topLeft, game.maze.blinkyHome, game.maze.topRight,
+				game.maze.bottomRight, game.maze.pacManHome, game.maze.bottomLeft);
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class FollowTargetTilesTestUI extends PlayView implements ViewController 
 	public void init() {
 		super.init();
 		current = 0;
-		game.levelNumber = 1;
+		game.start();
 		game.maze.removeFood();
 		cast.theme.snd_ghost_chase().volume(0);
 		cast.blinky.activate();

@@ -20,12 +20,12 @@ import de.amr.graph.grid.impl.Top4;
  * @author Armin Reichert
  */
 public interface GhostSteerings {
-	
+
 	/**
 	 * Lets the ghost jump up and down.
 	 * 
-	 * @return behavior which lets the ghost bounce vertically inside the currently
-	 *         accessible area e.g. the ghost house
+	 * @return behavior which lets the ghost bounce vertically inside the currently accessible area e.g.
+	 *         the ghost house
 	 */
 	static Steering<Ghost> jumpingUpAndDown() {
 		return ghost -> {
@@ -37,8 +37,8 @@ public interface GhostSteerings {
 	}
 
 	/**
-	 * Heads for a target tile (may be unreachable) by taking the "best" direction
-	 * at every intersection.
+	 * Heads for a target tile (may be unreachable) by taking the "best" direction at every
+	 * intersection.
 	 * 
 	 * @return behavior where ghost heads for the target tile
 	 */
@@ -49,7 +49,8 @@ public interface GhostSteerings {
 	/**
 	 * Lets the ghost flee from the attacker by walking to a "safe" maze corner.
 	 * 
-	 * @param attacker the attacker (Pac-Man)
+	 * @param attacker
+	 *                   the attacker (Pac-Man)
 	 * @return behavior where ghost flees to a "safe" maze corner
 	 */
 	static Steering<Ghost> fleeingToSafeCorner(MazeMover attacker) {
@@ -60,13 +61,12 @@ public interface GhostSteerings {
 	 * Random movement inside the maze.
 	 * 
 	 * <p>
-	 * <cite> Frightened mode is unique because the ghosts do not have a specific
-	 * target tile while in this mode. Instead, they pseudo-randomly decide which
-	 * turns to make at every intersection. </cite>
+	 * <cite> Frightened mode is unique because the ghosts do not have a specific target tile while in
+	 * this mode. Instead, they pseudo-randomly decide which turns to make at every intersection.
+	 * </cite>
 	 * 
-	 * @return behavior where ghost takes random non-backwards turn at each
-	 *         intersection respecting the rules which tiles are accessible for the
-	 *         ghost in its current state
+	 * @return behavior where ghost takes random non-backwards turn at each intersection respecting the
+	 *         rules which tiles are accessible for the ghost in its current state
 	 */
 	static Steering<Ghost> movingRandomly() {
 		return ghost -> {
@@ -84,13 +84,12 @@ public interface GhostSteerings {
 	}
 
 	/**
-	 * Lets the ghost follow the shortest path to the target. This may, depending on
-	 * the ghost's current state, cause the ghost getting stuck because of the
-	 * no-upwards-move-allowed crossings.
+	 * Lets the ghost follow the shortest path to the target. This may, depending on the ghost's current
+	 * state, cause the ghost getting stuck because of the no-upwards-move-allowed crossings.
 	 * 
-	 * @param fnTarget function supplying the target tile at time of decision
-	 * @return behavior where ghost follows the shortest (according to Manhattan
-	 *         distance) path
+	 * @param fnTarget
+	 *                   function supplying the target tile at time of decision
+	 * @return behavior where ghost follows the shortest (according to Manhattan distance) path
 	 */
 	static Steering<Ghost> followingShortestPath(Supplier<Tile> fnTarget) {
 		return new TakingShortestPath<>(fnTarget);

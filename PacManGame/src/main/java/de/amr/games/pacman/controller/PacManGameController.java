@@ -123,7 +123,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						cast.actors().forEach(Actor::activate);
 						cast.clearBonus();
 						playView.init();
-						playView.showInfoText("Ready!", Color.YELLOW);
+						playView.infoTextColor = Color.YELLOW;
+						playView.infoText = "Ready!";
 						playView.showScores = true;
 					})
 					.onTick(() -> {
@@ -137,7 +138,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						cast.ghosts().forEach(ghost -> ghost.foodCount = 0);
 						cast.theme.music_playing().volume(.90f);
 						cast.theme.music_playing().loop();
-						playView.clearInfoText();
+						playView.infoText = null;
 						playView.energizerBlinking.setEnabled(true);
 					})
 					.onTick(() -> {
@@ -212,11 +213,12 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						cast.clearBonus();
 						cast.theme.music_gameover().loop();
 						playView.enableAnimations(false);
-						playView.showInfoText("Game Over!", Color.RED);
+						playView.infoTextColor = Color.RED;
+						playView.infoText = "Game Over!";
 					})
 					.onExit(() -> {
 						cast.theme.music_gameover().stop();
-						playView.clearInfoText();
+						playView.infoText = null;
 					})
 
 			.transitions()

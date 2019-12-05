@@ -10,8 +10,8 @@ import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.theme.PacManTheme;
 
 /**
- * Bonus symbol that appears at the maze bonus position. When consumed, displays
- * the bonus value for some time, then disappears.
+ * Bonus symbol that appears at the maze bonus position. When consumed, displays the bonus value for
+ * some time, then disappears.
  * 
  * @author Armin Reichert
  */

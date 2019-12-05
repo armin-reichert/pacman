@@ -9,8 +9,7 @@ import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Steering using a precomputed path which is recomputed only if the actor would
- * leave this path.
+ * Steering using a precomputed path which is recomputed only if the actor would leave this path.
  *
  * @author Armin Reichert
  */

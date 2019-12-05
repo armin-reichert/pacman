@@ -12,8 +12,8 @@ import java.util.List;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
-import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.Ghost;
+import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
@@ -24,21 +24,23 @@ public class TakeShortestPathTestUI extends PlayView implements ViewController {
 	private List<Tile> targets;
 	private int currentTarget;
 
-	public TakeShortestPathTestUI(PacManGame game, PacManGameCast ensemble) {
-		super(game, ensemble);
+	public TakeShortestPathTestUI(PacManGame game, PacManGameCast cast) {
+		super(game, cast);
 		showRoutes = true;
 		showStates = true;
 		showScores = false;
-		targets = Arrays.asList(game.maze.bottomRight, game.maze.bottomLeft, game.maze.tunnelLeftExit, game.maze.topLeft,
-				game.maze.blinkyHome, game.maze.topRight, game.maze.tunnelRightExit, game.maze.pacManHome);
+		targets = Arrays.asList(game.maze.bottomRight, game.maze.bottomLeft, game.maze.tunnelLeftExit,
+				game.maze.topLeft, game.maze.blinkyHome, game.maze.topRight, game.maze.tunnelRightExit,
+				game.maze.pacManHome);
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		showInfoText("SPACE toggles ghost state", Color.YELLOW);
+		infoTextColor = Color.YELLOW;
+		infoText = "SPACE toggles ghost state";
 		currentTarget = 0;
-		game.levelNumber = 1;
+		game.startLevel(1);
 		game.maze.removeFood();
 		cast.theme.snd_ghost_chase().volume(0);
 		cast.blinky.activate();

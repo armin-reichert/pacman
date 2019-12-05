@@ -79,7 +79,7 @@ public class PacManGameCast {
 			ghost.setSteering(GhostState.FRIGHTENED, movingRandomly());
 		});
 		actors().forEach(actor -> actor.cast = this);
-		
+
 		setTheme(theme);
 	}
 

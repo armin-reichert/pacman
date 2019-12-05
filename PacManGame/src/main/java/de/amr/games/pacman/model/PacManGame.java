@@ -158,7 +158,7 @@ public class PacManGame {
 		levelCounter.clear();
 		startLevel(1);
 	}
-	
+
 	public void nextLevel() {
 		startLevel(++levelNumber);
 	}

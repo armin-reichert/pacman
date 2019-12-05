@@ -31,7 +31,7 @@ public class SimplePlayView implements View, Controller {
 	public final PacManGame game;
 	public final PacManGameCast cast;
 	public final Dimension size;
-	
+
 	public boolean showScores;
 	public boolean mazeFlashing;
 	public Animation energizerBlinking;
@@ -99,15 +99,6 @@ public class SimplePlayView implements View, Controller {
 			bonus.changeIntoNumber();
 			bonusDisplayTicks = ticks;
 		});
-	}
-
-	public void showInfoText(String text, Color color) {
-		infoText = text;
-		infoTextColor = color;
-	}
-
-	public void clearInfoText() {
-		infoText = null;
 	}
 
 	@Override

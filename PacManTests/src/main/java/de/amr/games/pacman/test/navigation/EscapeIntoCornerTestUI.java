@@ -4,8 +4,8 @@ import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.fleeingToS
 
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.ViewController;
-import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayView;
 
@@ -21,7 +21,7 @@ public class EscapeIntoCornerTestUI extends PlayView implements ViewController {
 	@Override
 	public void init() {
 		super.init();
-		game.levelNumber = 1;
+		game.start();
 		game.maze.removeFood();
 		cast.pacMan.activate();
 		cast.pacMan.init();

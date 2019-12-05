@@ -42,7 +42,7 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 	private static final String GITHUB_URL = "https://github.com/armin-reichert/pacman";
 
 	public final PacManTheme theme;
-	
+
 	private final int width;
 	private final int height;
 	private final Color background;
@@ -86,8 +86,9 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 		pressSpace.tf.setY(130);
 		pressSpace.tf.centerX(width);
 
-		f11Hint = TextWidget.create().text("F11 Toggle Fullscreen").spaceExpansion(3).blinkTimeMillis(Integer.MAX_VALUE)
-				.font(theme.fnt_text(12)).background(background).color(Color.PINK).build();
+		f11Hint = TextWidget.create().text("F11 Toggle Fullscreen").spaceExpansion(3)
+				.blinkTimeMillis(Integer.MAX_VALUE).font(theme.fnt_text(12)).background(background).color(Color.PINK)
+				.build();
 		f11Hint.tf.setY(pressSpace.tf.getY() + 30);
 		f11Hint.tf.centerX(width);
 
@@ -102,8 +103,8 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 		speedHint[1].tf.centerX(width);
 		speedHint[2].tf.setX(width - 20 - speedHint[2].tf.getWidth());
 
-		visitGitHub = LinkWidget.create().text(GITHUB_TEXT).url(GITHUB_URL).font(new Font(Font.SANS_SERIF, Font.BOLD, 6))
-				.color(Color.LIGHT_GRAY).build();
+		visitGitHub = LinkWidget.create().text(GITHUB_TEXT).url(GITHUB_URL)
+				.font(new Font(Font.SANS_SERIF, Font.BOLD, 6)).color(Color.LIGHT_GRAY).build();
 		visitGitHub.tf.setY(height - 10);
 		visitGitHub.tf.centerX(width);
 
