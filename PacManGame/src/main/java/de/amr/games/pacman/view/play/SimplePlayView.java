@@ -74,18 +74,20 @@ public class SimplePlayView implements View, Controller {
 				}
 			}
 		});
-		energizerBlinking.update();
+		if (!flashing) {
+			energizerBlinking.update();
+		}
 	}
 
 	public void enableAnimations(boolean state) {
 		flashingMazeSprite.enableAnimation(state);
 		ensemble.actors().forEach(actor -> actor.sprites.enableAnimation(state));
 	}
-	
+
 	public void startEnergizerBlinking() {
 		energizerBlinking.setEnabled(true);
 	}
-	
+
 	public void stopEnergizerBlinking() {
 		energizerBlinking.setEnabled(false);
 	}
@@ -127,14 +129,16 @@ public class SimplePlayView implements View, Controller {
 		g.fillRect(0, 0, mazeSprite.getWidth(), mazeSprite.getHeight());
 		mazeSprite.draw(g);
 		g.translate(0, -3 * TS);
-		if (!flashing) {
-			energizerBlinking.update();
-			game.maze.tiles().forEach(tile -> {
-				if (game.maze.containsEatenFood(tile)
-						|| game.maze.containsEnergizer(tile) && energizerBlinking.currentFrame() == 1) {
-					g.setColor(ensemble.theme.color_mazeBackground());
-					g.fillRect(tile.col * TS, tile.row * TS, TS, TS);
-				}
+		// hide eaten food
+		game.maze.tiles().filter(game.maze::containsEatenFood).forEach(tile -> {
+			g.setColor(ensemble.theme.color_mazeBackground());
+			g.fillRect(tile.col * TS, tile.row * TS, TS, TS);
+		});
+		// hide blinking, non-eaten energizers
+		if (!flashing && energizerBlinking.currentFrame() == 1) {
+			game.maze.energizerTiles().filter(tile -> !game.maze.containsEatenFood(tile)).forEach(tile -> {
+				g.setColor(ensemble.theme.color_mazeBackground());
+				g.fillRect(tile.col * TS, tile.row * TS, TS, TS);
 			});
 		}
 	}

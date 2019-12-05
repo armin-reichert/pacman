@@ -185,6 +185,10 @@ public class Maze {
 	public Stream<Tile> tiles() {
 		return graph.vertices().mapToObj(this::tile);
 	}
+	
+	public Stream<Tile> energizerTiles() {
+		return energizers.stream();
+	}
 
 	/**
 	 * @param col a column index
