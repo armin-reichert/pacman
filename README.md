@@ -43,17 +43,13 @@ Of course, Pac-Man and the four ghosts, but also the global game control, maybe 
 In the provided implementation, there are a number of explicit state machines:
 - Intro screen controller ([IntroView](PacManGame/src/main/java/de/amr/games/pacman/view/intro/IntroView.java))
 - Global game controller ([PacManGameController](PacManGame/src/main/java/de/amr/games/pacman/controller/PacManGameController.java))
-- Ghost attack controller ([GhostAttackController](PacManGame/src/main/java/de/amr/games/pacman/controller/GhostAttackController.java))
+- Ghost attack timer ([GhostAttackTimer](PacManGame/src/main/java/de/amr/games/pacman/controller/GhostAttackTimer.java))
 - Pac-Man controller ([Pac-Man](PacManGame/src/main/java/de/amr/games/pacman/actor/PacMan.java))
 - Ghost controller ([Ghost](PacManGame/src/main/java/de/amr/games/pacman/actor/Ghost.java))
 
-All these state machines are "implemented" in a declarative way (*builder pattern*). In essence, you write a single 
-large Java expression representing the complete state graph together with node and edge annotations representing actions,
- conditions, event conditions and timers.
-
-Lambda expressions (anonymous functions) and function references allow to embed code directly inside the state machine 
-definition. However, if the code becomes more complex it is of course possible to delegate to separate methods or 
-classes. Both variants are used here.
+All these state machines are implemented in a declarative way (*builder pattern*). A single 
+large Java expression defines the complete state graph together with node and edge annotations representing the actions,
+ conditions, event conditions and timers. Lambda expressions (anonymous functions) and function references allow to embed code directly inside the state machine definition. If the state definition becomes more complex it is possible to implement it in a separate state class. Both variants are used here.
 
 ## State machines in action
 
@@ -132,20 +128,22 @@ beginStateMachine()
 		.state(INTRO)
 			.onEntry(() -> {
 				showUI(introView);
-				theme.snd_insertCoin().play();
-				theme.loadMusic();
+				introView.theme.snd_insertCoin().play();
+				introView.theme.loadMusic();
 			})
 
 		.state(GETTING_READY)
 			.timeoutAfter(() -> sec(5))
 			.onEntry(() -> {
-				theme.snd_clips_all().forEach(Sound::stop);
-				theme.snd_ready().play();
-				game.init();
-				game.activeActors().forEach(Actor::init);
+				game.reset();
+				ensemble.theme.snd_clips_all().forEach(Sound::stop);
+				ensemble.theme.snd_ready().play();
+				ensemble.actors().forEach(Actor::activate);
+				ensemble.actors().forEach(Actor::init);
+				ensemble.clearBonus();
 				playView.init();
 				playView.showScores = true;
-				playView.enableAnimation(false);
+				playView.enableAnimations(false);
 				playView.showInfoText("Ready!", Color.YELLOW);
 			})
 
@@ -153,13 +151,16 @@ beginStateMachine()
 			.timeoutAfter(() -> sec(1.7f))
 			.onEntry(() -> {
 				game.startLevel();
-				playView.hideInfoText();
-				playView.enableAnimation(true);
-				theme.music_playing().volume(1f);
-				theme.music_playing().loop();
+				ensemble.ghosts().forEach(ghost -> ghost.foodCount = 0);
+				ghostAttackTimer.init();
+				playView.clearInfoText();
+				playView.enableAnimations(true);
+				playView.startEnergizerBlinking();
+				ensemble.theme.music_playing().volume(.90f);
+				ensemble.theme.music_playing().loop();
 			})
 			.onTick(() -> {
-				game.activeGhosts().forEach(Ghost::update);
+				ensemble.activeGhosts().forEach(Ghost::update);
 			})
 
 		.state(PLAYING)
@@ -174,25 +175,25 @@ beginStateMachine()
 
 		.state(PACMAN_DYING)
 			.onEntry(() -> {
-				state().setTimerFunction(() -> game.pacMan.lives > 1 ? sec(6) : sec(4));
+				state().setTimerFunction(() -> game.lives > 1 ? sec(6) : sec(4));
 				state().resetTimer();
-				theme.music_playing().stop();
+				ensemble.theme.music_playing().stop();
 				if (!app().settings.getAsBoolean("pacMan.immortable")) {
-					game.pacMan.lives -= 1;
+					game.lives -= 1;
 				}
 			})
 			.onTick(() -> {
 				if (state().getTicksConsumed() < sec(2)) {
-					game.pacMan.update();
+					ensemble.pacMan.update();
 				}
 				if (state().getTicksConsumed() == sec(1)) {
-					game.activeGhosts().forEach(Ghost::hide);
+					ensemble.activeGhosts().forEach(Ghost::hide);
 				}
-				if (game.pacMan.lives > 0 && state().getTicksConsumed() == sec(4)) {
-					game.activeActors().forEach(Actor::init);
-					game.activeGhosts().forEach(Ghost::show);
+				if (game.lives > 0 && state().getTicksConsumed() == sec(4)) {
+					ensemble.activeActors().forEach(Actor::init);
+					ensemble.activeGhosts().forEach(Ghost::show);
 					playView.init();
-					theme.music_playing().loop();
+					ensemble.theme.music_playing().loop();
 				}
 			})
 
@@ -201,15 +202,15 @@ beginStateMachine()
 			.onEntry(() -> {
 				LOGGER.info("Game is over");
 				game.score.save();
-				game.activeGhosts().forEach(Ghost::show);
-				game.getBonus().ifPresent(Bonus::hide);
-				playView.enableAnimation(false);
-				theme.music_gameover().loop();
+				ensemble.activeGhosts().forEach(Ghost::show);
+				ensemble.clearBonus();
+				playView.enableAnimations(false);
+				ensemble.theme.music_gameover().loop();
 				playView.showInfoText("Game Over!", Color.RED);
 			})
 			.onExit(() -> {
-				theme.music_gameover().stop();
-				playView.hideInfoText();
+				ensemble.theme.music_gameover().stop();
+				playView.clearInfoText();
 			})
 
 	.transitions()
@@ -267,11 +268,11 @@ beginStateMachine()
 
 		.when(PACMAN_DYING).then(GAME_OVER)
 			.onTimeout()
-			.condition(() -> game.pacMan.lives == 0)
+			.condition(() -> game.lives == 0)
 
 		.when(PACMAN_DYING).then(PLAYING)
 			.onTimeout()
-			.condition(() -> game.pacMan.lives > 0)
+			.condition(() -> game.lives > 0)
 
 		.when(GAME_OVER).then(GETTING_READY)
 			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
@@ -282,34 +283,27 @@ beginStateMachine()
 .endStateMachine();
 ```
 
-The **ghost attack waves** (scattering, chasing) and their timing are implemented by the following state machine:
+The **attack waves** (scattering, chasing) of the ghosts with their level-specific timing are also realized as a state machine:
 
 ```java
-public class GhostAttackController extends StateMachine<GhostState, Void> {
-...
-	public GhostAttackController(PacManGame game) {
-		super(GhostState.class);
-		this.game = game;
-		/*@formatter:off*/
-		beginStateMachine()
-			.description("[GhostAttackTimer]")
-			.initialState(SCATTERING)
-		.states()
-			.state(SCATTERING)
-				.timeoutAfter(this::getScatteringDuration)
-			.state(CHASING)
-				.timeoutAfter(this::getChasingDuration)
-				.onExit(this::nextRound)
-		.transitions()
-			.when(SCATTERING).then(CHASING).onTimeout()
-			.when(CHASING).then(SCATTERING).onTimeout()
-		.endStateMachine();
-		/*@formatter:on*/
-	}
-}
+beginStateMachine()
+	.description("[GhostAttackTimer]")
+	.initialState(SCATTERING)
+.states()
+	.state(SCATTERING)
+		.timeoutAfter(() -> game.scatterTicks(round))
+		.onEntry(this::logStateEntry)
+	.state(CHASING)
+		.timeoutAfter(() -> game.chasingTicks(round))
+		.onEntry(this::logStateEntry)
+		.onExit(() -> ++round)
+.transitions()
+	.when(SCATTERING).then(CHASING).onTimeout()
+	.when(CHASING).then(SCATTERING).onTimeout()
+.endStateMachine();
 ```
 
-**Pac-Man** is controlled by the following state machine:
+**Pac-Man** himself is also controlled by a state machine, the main state *HUNGRY* is realized by a separate state subclass.
 
 ```java
 beginStateMachine(PacManState.class, PacManGameEvent.class)
@@ -328,13 +322,13 @@ beginStateMachine(PacManState.class, PacManGameEvent.class)
 			.timeoutAfter(() -> sec(4f))
 			.onEntry(() -> {
 				sprites.select("full");
-				game.theme.snd_clips_all().forEach(Sound::stop);
+				ensemble.theme.snd_clips_all().forEach(Sound::stop);
 			})
 			.onTick(() -> {
 				if (state().getTicksRemaining() == sec(2.5f)) {
 					sprites.select("dying");
-					game.theme.snd_die().play();
-					game.activeGhosts().forEach(Ghost::hide);
+					ensemble.theme.snd_die().play();
+					ensemble.activeGhosts().forEach(Ghost::hide);
 				}
 			})
 
@@ -345,11 +339,11 @@ beginStateMachine(PacManState.class, PacManGameEvent.class)
 		.stay(HUNGRY)
 			.on(PacManGainsPowerEvent.class)
 			.act(() -> {
-				state().setTimerFunction(this::getPacManPowerTime);
+				state().setTimerFunction(() -> sec(game.level.pacManPowerSeconds));
 				state().resetTimer();
 				LOGGER.info(() -> String.format("Pac-Man got power for %d ticks (%d sec)", 
 						state().getDuration(), state().getDuration() / 60));
-				game.theme.snd_waza().loop();
+				ensemble.theme.snd_waza().loop();
 			})
 
 		.when(HUNGRY).then(DYING)
@@ -361,7 +355,7 @@ beginStateMachine(PacManState.class, PacManGameEvent.class)
 .endStateMachine();
 ```
 
-The **ghosts** are controlled using the following state machine:
+Finally, each **ghosts** is controlled by its own instance of the following state machine:
 
 ```java
 beginStateMachine(GhostState.class, PacManGameEvent.class)
@@ -372,53 +366,54 @@ beginStateMachine(GhostState.class, PacManGameEvent.class)
 	.states()
 
 		.state(LOCKED)
-			.onTick(() -> walkAndAppearAs("color-" + moveDir))
+			.onTick(() -> walkAndDisplayAs("color-" + moveDir))
 			.onExit(() -> {
 				enteredNewTile = true;
-				game.pacMan.ticksSinceLastMeal = 0;
+				ensemble.pacMan.ticksSinceLastMeal = 0;
 			})
 
 		.state(LEAVING_HOUSE)
 			.onEntry(() -> targetTile = maze.blinkyHome)
-			.onTick(() -> walkAndAppearAs("color-" + moveDir))
+			.onTick(() -> walkAndDisplayAs("color-" + moveDir))
 			.onExit(() -> moveDir = nextDir = Top4.W)
 
 		.state(ENTERING_HOUSE)
 			.onEntry(() -> targetTile = revivalTile)
-			.onTick(() -> walkAndAppearAs("eyes-" + moveDir))
+			.onTick(() -> walkAndDisplayAs("eyes-" + moveDir))
 
 		.state(SCATTERING)
 			.onEntry(() -> targetTile = scatterTile)
-			.onTick(() -> walkAndAppearAs("color-" + moveDir))
+			.onTick(() -> walkAndDisplayAs("color-" + moveDir))
 
 		.state(CHASING)
-			.onEntry(() -> chasingSoundOn())
+			.onEntry(() -> ensemble.chasingSoundOn())
 			.onTick(() -> {
 				targetTile = fnChasingTarget.get();
-				walkAndAppearAs("color-" + moveDir);
+				walkAndDisplayAs("color-" + moveDir);
 			})
-			.onExit(this::chasingSoundOff)
+			.onExit(() -> ensemble.chasingSoundOff(this))
 
 		.state(FRIGHTENED)
-			.onTick(() -> walkAndAppearAs(game.pacMan.isLosingPower() ? "flashing" : "frightened"))
+			.onTick(() -> walkAndDisplayAs(ensemble.pacMan.isLosingPower() ? "flashing" : "frightened"))
 
 		.state(DYING)
 			.timeoutAfter(Ghost::getDyingTime)
-			.onEntry(() -> sprites.select("value-" + game.numGhostsKilledByCurrentEnergizer()))
-			.onExit(game::addGhostKilled)
+			.onEntry(() -> {
+				sprites.select("value-" + game.numGhostsKilledByCurrentEnergizer);
+			})
 
 		.state(DEAD)
 			.onEntry(() -> {
 				targetTile = maze.blinkyHome;
-				deadSoundOn();
+				ensemble.deadSoundOn();
 			})
-			.onTick(() -> walkAndAppearAs("eyes-" + moveDir))
-			.onExit(this::deadSoundOff)
+			.onTick(() -> walkAndDisplayAs("eyes-" + moveDir))
+			.onExit(() -> ensemble.deadSoundOff(this))
 
 	.transitions()
 
 		.when(LOCKED).then(LEAVING_HOUSE)
-			.condition(this::unlocked)
+			.on(GhostUnlockedEvent.class)
 
 		.when(LEAVING_HOUSE).then(SCATTERING)
 			.condition(() -> leftHouse() && nextState() == SCATTERING)
@@ -427,7 +422,7 @@ beginStateMachine(GhostState.class, PacManGameEvent.class)
 			.condition(() -> leftHouse() && nextState() == CHASING)
 
 		.when(ENTERING_HOUSE).then(LOCKED)
-			.condition(() -> currentTile() == targetTile)
+			.condition(() -> tile() == targetTile)
 
 		.when(CHASING).then(FRIGHTENED)
 			.on(PacManGainsPowerEvent.class)
@@ -466,7 +461,7 @@ beginStateMachine(GhostState.class, PacManGameEvent.class)
 			.onTimeout()
 
 		.when(DEAD).then(ENTERING_HOUSE)
-			.condition(() -> currentTile().equals(maze.blinkyHome))
+			.condition(() -> tile().equals(maze.blinkyHome))
 
 .endStateMachine();
 ```
@@ -482,80 +477,137 @@ for any event that has no effect in the current state. The Ghost's state machine
 Example trace:
 
 ```
-[2019-11-15 06:01:06:863] [GhostAttackTimer] entering initial state: 
-[2019-11-15 06:01:06:863] [GhostAttackTimer] entering state 'SCATTERING' for 7,00 seconds (420 frames) 
-[2019-11-15 06:01:06:863] [Blinky] in state LOCKED could not handle 'StartScatteringEvent' 
-[2019-11-15 06:01:06:863] [Pinky] in state LOCKED could not handle 'StartScatteringEvent' 
-[2019-11-15 06:01:06:863] [Inky] in state LOCKED could not handle 'StartScatteringEvent' 
-[2019-11-15 06:01:06:863] [Clyde] in state LOCKED could not handle 'StartScatteringEvent' 
-[2019-11-15 06:01:08:519] [Blinky] changing from 'LOCKED' to 'SCATTERING' 
-[2019-11-15 06:01:08:519] [Blinky] exiting state 'LOCKED' 
-[2019-11-15 06:01:08:519] [Blinky] entering state 'SCATTERING' 
-[2019-11-15 06:01:08:519] [Pinky] changing from 'LOCKED' to 'SCATTERING' 
-[2019-11-15 06:01:08:519] [Pinky] exiting state 'LOCKED' 
-[2019-11-15 06:01:08:519] [Pinky] entering state 'SCATTERING' 
-[2019-11-15 06:01:08:519] [Inky] changing from 'LOCKED' to 'SCATTERING' 
-[2019-11-15 06:01:08:519] [Inky] exiting state 'LOCKED' 
-[2019-11-15 06:01:08:519] [Inky] entering state 'SCATTERING' 
-[2019-11-15 06:01:08:519] [Clyde] changing from 'LOCKED' to 'SCATTERING' 
-[2019-11-15 06:01:08:519] [Clyde] exiting state 'LOCKED' 
-[2019-11-15 06:01:08:519] [Clyde] entering state 'SCATTERING' 
-[2019-11-15 06:01:08:519] [Pac-Man] changing from 'HOME' to 'HUNGRY (timeout)' 
-[2019-11-15 06:01:08:520] [Pac-Man] exiting state 'HOME' 
-[2019-11-15 06:01:08:520] [Pac-Man] entering state 'HUNGRY' 
-[2019-11-15 06:01:11:057] Pac-Man reports 'PacManGhostCollisionEvent(Inky)' 
-[2019-11-15 06:01:11:057] [GameController] stays 'PLAYING' on 'PacManGhostCollisionEvent(Inky)' 
-[2019-11-15 06:01:11:074] [GameController] changing from 'PLAYING' to 'PACMAN_DYING' on 'PacManKilledEvent(Inky)' 
-[2019-11-15 06:01:11:074] [GameController] exiting state 'PLAYING' 
-[2019-11-15 06:01:11:074] PacMan killed by Inky at (21,26,'%') 
-[2019-11-15 06:01:11:074] [Pac-Man] changing from 'HUNGRY' to 'DYING' on 'PacManKilledEvent(Inky)' 
-[2019-11-15 06:01:11:074] [Pac-Man] exiting state 'HUNGRY' 
-[2019-11-15 06:01:11:074] [Pac-Man] entering state 'DYING' for 3,00 seconds (180 frames) 
-[2019-11-15 06:01:11:075] [GameController] entering state 'PACMAN_DYING' 
-[2019-11-15 06:01:14:871] [Pac-Man] changing from 'DYING' to 'DEAD (timeout)' 
-[2019-11-15 06:01:14:871] [Pac-Man] exiting state 'DYING' 
-[2019-11-15 06:01:14:871] [Pac-Man] entering state 'DEAD' 
-[2019-11-15 06:01:14:888] [GameController] changing from 'PACMAN_DYING' to 'GAME_OVER' 
-[2019-11-15 06:01:14:888] [GameController] exiting state 'PACMAN_DYING' 
-[2019-11-15 06:01:14:888] [GameController] entering state 'GAME_OVER' for 60,00 seconds (3600 frames) 
+[2019-12-05 05:49:43:838] Launching application 'PacManApp'  
+[2019-12-05 05:49:44:226] Entered window mode, resolution 537x691 (224x288 scaled by 2,40) 
+[2019-12-05 05:49:44:230] Application shell created. 
+[2019-12-05 05:49:44:234] Clock frequency is 60 ticks/sec. 
+[2019-12-05 05:49:44:674] Pac-Man sprites extracted. 
+[2019-12-05 05:49:44:684] Theme 'ClassicPacManTheme' created. 
+[2019-12-05 05:49:44:865] Controller set: de.amr.games.pacman.controller.PacManGameController@61112446 
+[2019-12-05 05:49:45:137] Loading music... 
+[2019-12-05 05:49:45:137] Controller initialized. 
+[2019-12-05 05:49:45:149] Application state changes from 'NEW' to 'INITIALIZED' 
+[2019-12-05 05:49:45:153] Application initialized. 
+[2019-12-05 05:49:45:153] Clock started, running with 60 ticks/sec. 
+[2019-12-05 05:49:45:153] Application state changes from 'INITIALIZED' to 'RUNNING' 
+[2019-12-05 05:49:46:902] Music loaded. 
+[2019-12-05 05:49:48:312] State machine logging is INFO 
+[2019-12-05 05:49:53:970] [Intro] changing from 'CHASING_EACH_OTHER' to 'READY_TO_PLAY' 
+[2019-12-05 05:49:53:970] [Intro] exiting state 'CHASING_EACH_OTHER' 
+[2019-12-05 05:49:53:974] [Intro] entering state 'READY_TO_PLAY' for 6,00 seconds (360 frames) 
+[2019-12-05 05:49:59:517] [GameController] changing from 'INTRO' to 'GETTING_READY' 
+[2019-12-05 05:49:59:517] [GameController] exiting state 'INTRO' 
+[2019-12-05 05:49:59:520] [GameController] entering state 'GETTING_READY' for 5,00 seconds (300 frames) 
+[2019-12-05 05:49:59:648] [Pac-Man] entering initial state: 
+[2019-12-05 05:49:59:648] [Pac-Man] entering state 'HOME' 
+[2019-12-05 05:49:59:652] Pac-Man activated 
+[2019-12-05 05:49:59:652] [Blinky] entering initial state: 
+[2019-12-05 05:49:59:652] [Blinky] entering state 'LOCKED' 
+[2019-12-05 05:49:59:652] Blinky activated 
+[2019-12-05 05:49:59:652] [Pinky] entering initial state: 
+[2019-12-05 05:49:59:652] [Pinky] entering state 'LOCKED' 
+[2019-12-05 05:49:59:652] Pinky activated 
+[2019-12-05 05:49:59:652] [Inky] entering initial state: 
+[2019-12-05 05:49:59:652] [Inky] entering state 'LOCKED' 
+[2019-12-05 05:49:59:652] Inky activated 
+[2019-12-05 05:49:59:656] [Clyde] entering initial state: 
+[2019-12-05 05:49:59:656] [Clyde] entering state 'LOCKED' 
+[2019-12-05 05:49:59:656] Clyde activated 
+[2019-12-05 05:49:59:656] [Pac-Man] entering initial state: 
+[2019-12-05 05:49:59:656] [Pac-Man] entering state 'HOME' 
+[2019-12-05 05:49:59:656] [Blinky] entering initial state: 
+[2019-12-05 05:49:59:656] [Blinky] entering state 'LOCKED' 
+[2019-12-05 05:49:59:656] [Pinky] entering initial state: 
+[2019-12-05 05:49:59:656] [Pinky] entering state 'LOCKED' 
+[2019-12-05 05:49:59:656] [Inky] entering initial state: 
+[2019-12-05 05:49:59:656] [Inky] entering state 'LOCKED' 
+[2019-12-05 05:49:59:656] [Clyde] entering initial state: 
+[2019-12-05 05:49:59:656] [Clyde] entering state 'LOCKED' 
+[2019-12-05 05:50:04:506] [GameController] changing from 'GETTING_READY' to 'START_PLAYING (timeout)' 
+[2019-12-05 05:50:04:506] [GameController] exiting state 'GETTING_READY' 
+[2019-12-05 05:50:04:509] [GameController] entering state 'START_PLAYING' for 1,70 seconds (102 frames) 
+[2019-12-05 05:50:04:509] Start game level 1 
+[2019-12-05 05:50:04:510] Initialize ghost attack timer 
+[2019-12-05 05:50:04:510] [GhostAttackTimer] entering initial state: 
+[2019-12-05 05:50:04:514] [GhostAttackTimer] entering state 'SCATTERING' for 7,00 seconds (420 frames) 
+[2019-12-05 05:50:04:514] Start SCATTERING for 420 ticks (7,00 seconds) 
+[2019-12-05 05:50:06:197] [GameController] changing from 'START_PLAYING' to 'PLAYING (timeout)' 
+[2019-12-05 05:50:06:197] [GameController] exiting state 'START_PLAYING' 
+[2019-12-05 05:50:06:198] [GameController] entering state 'PLAYING' 
+[2019-12-05 05:50:06:214] [Pac-Man] changing from 'HOME' to 'HUNGRY' 
+[2019-12-05 05:50:06:214] [Pac-Man] exiting state 'HOME' 
+[2019-12-05 05:50:06:214] [Pac-Man] entering state 'HUNGRY' 
+[2019-12-05 05:50:06:221] [Blinky] changing from 'LOCKED' to 'LEAVING_HOUSE' on 'GhostUnlockedEvent' 
+[2019-12-05 05:50:06:221] [Blinky] exiting state 'LOCKED' 
+[2019-12-05 05:50:06:221] [Blinky] entering state 'LEAVING_HOUSE' 
+[2019-12-05 05:50:06:225] [Pinky] changing from 'LOCKED' to 'LEAVING_HOUSE' on 'GhostUnlockedEvent' 
+[2019-12-05 05:50:06:225] [Pinky] exiting state 'LOCKED' 
+[2019-12-05 05:50:06:225] [Pinky] entering state 'LEAVING_HOUSE' 
+[2019-12-05 05:50:06:245] [Blinky] changing from 'LEAVING_HOUSE' to 'SCATTERING' 
+[2019-12-05 05:50:06:245] [Blinky] exiting state 'LEAVING_HOUSE' 
+[2019-12-05 05:50:06:249] [Blinky] entering state 'SCATTERING' 
+[2019-12-05 05:50:06:292] [GameController] stays 'PLAYING' on 'FoodFound(Pellet)' 
+[2019-12-05 05:50:06:412] [GameController] stays 'PLAYING' on 'FoodFound(Pellet)' 
+[2019-12-05 05:50:06:530] [GameController] stays 'PLAYING' on 'FoodFound(Pellet)' 
+[2019-12-05 05:50:06:647] [GameController] stays 'PLAYING' on 'FoodFound(Pellet)' 
+[2019-12-05 05:50:06:767] [GameController] stays 'PLAYING' on 'FoodFound(Pellet)' 
+[2019-12-05 05:50:06:767] [Pinky] changing from 'LEAVING_HOUSE' to 'SCATTERING' 
+[2019-12-05 05:50:06:767] [Pinky] exiting state 'LEAVING_HOUSE' 
+[2019-12-05 05:50:06:767] [Pinky] entering state 'SCATTERING' 
 ```
 
-## Pac-Man movement
+## Pac-Man steering
 
-Pac-Man's movement by default is controlled by holding a key indicating its intended direction. As soon as Pac-Man reaches a tile where it can move towards this direction it changes its current direction accordingly. "Cornering" is not implemented.
+Pac-Man is steered by holding a key indicating its **intended** direction. As soon as Pac-Man reaches a tile where it can move towards this direction it changes its move direction accordingly. ("Cornering" is not yet implemented). In the code, this is implemented by setting the steering function as shown below. This makes it very easy to replace the manual steering by some sort of automatic steering ("AI"):
 
 ```java
-default Steering steeredByKeys(int... keys) {
-	return pacMan -> NESW.dirs().filter(dir -> Keyboard.keyDown(keys[dir])).findAny()
-			.ifPresent(pacMan::setNextDir);
-}
+pacMan = new PacMan(game);
+pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
 
-steering = steeredByKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT);
+...
+
+static Steering<PacMan> steeredByKeys(int... keys) {
+	return pacMan -> NESW.dirs().filter(dir -> Keyboard.keyDown(keys[dir])).findAny().ifPresent(pacMan::setNextDir);
+}
 ```
 
-## Defining the ghost behavior ("AI")
+## Ghost steering ("AI")
 
-The game gets its entertainment factor from the individual *attack behavior* of the ghosts which gives each ghost his unique personality. Instead of creating a separate subclass for each ghost type, each ghost has a map from its states (*locked*, *chasing*, *frightened*, ...) to the corresponding behavior implementation, the current behavior is determined by the current state of the ghost. Different ghost types have different implementations of their *chasing* behavior (*strategy pattern*).
+What makes the game so entertaining is the individual behavior of each ghost when chasing Pac-Man. The red ghost (Blinky) attacks Pac-Man directly, the pink ghost (Pinky) tries to ambush Pac-Man, the orange ghost (Clyde) either attacks directly or rejects, depending on its distance to Pac-Man, and finally the pink ghost (Pinky) uses Blinky's current position to get in Pac-Man's way. 
+
+To realize these different ghost behaviors each ghost has a map of functions mapping each state (*scattering*, *chasing*, *frightened*, ...) to the corresponding behavior implementation. In terms of OO design patterns, one could call this a *strategy pattern*. 
 
 <img src="doc/pacman.png"/>
 
-The ghost behavior only differs for the *chasing* state. The *frightened* behavior has two different implementations and can be toggled for all ghosts at once by pressing the 'f'-key.
+The ghost behavior only differs for the *chasing* state namely in the logic for calculating the target tile. Beside the different target tiles, the ghost behavior is equal. Each ghost uses the same algorithm to calculate the next move direction to take for reaching the target tile as described in the references given at the end of this article.
+
+The *frightened* behavior has two different implementations (just as a demonstration how the behavior can be exchanged during the game) and can be toggled for all ghosts at once by pressing the 'f'-key.
 
 ### Blinky (the red ghost)
 
 Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
-blinky.fnChasingTarget = pacMan::currentTile;
+blinky = new Ghost("Blinky", game);
+blinky.initialDir = Top4.W;
+blinky.initialTile = game.maze.blinkyHome;
+blinky.scatterTile = game.maze.blinkyScatter;
+blinky.revivalTile = game.maze.pinkyHome;
+blinky.fnChasingTarget = pacMan::tile;
 ```
 
 <img src="doc/blinky.png"/>
 
 ### Pinky
 
-Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position. In the original game there is an overflow error leading to a different behavior: when Pac-Man looks upwards, the tile ahead of Pac-Man is falsely computed with an additional number of steps to the west. This behavior is active by default and can be toggled on/off using the 'o'-key.
+Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position. In the original game there is an overflow error leading to a different behavior: when Pac-Man looks upwards, the tile ahead of Pac-Man is falsely computed with an additional number of steps to the west. This behavior is active by default and can be toggled using the 'o'-key.
 
 ```java
+pinky = new Ghost("Pinky", game);
+pinky.initialDir = Top4.S;
+pinky.initialTile = game.maze.pinkyHome;
+pinky.scatterTile = game.maze.pinkyScatter;
+pinky.revivalTile = game.maze.pinkyHome;
 pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
 ```
 
@@ -569,9 +621,14 @@ Consider the vector `V` from Blinky's position `B` to the position `P` two tiles
 Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
+inky = new Ghost("Inky", game);
+inky.initialDir = Top4.N;
+inky.initialTile = game.maze.inkyHome;
+inky.scatterTile = game.maze.inkyScatter;
+inky.revivalTile = game.maze.inkyHome;
 inky.fnChasingTarget = () -> {
-	Tile b = blinky.currentTile(), p = pacMan.tilesAhead(2);
-	return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
+	Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
+	return game.maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 };
 ```
 
@@ -582,9 +639,12 @@ inky.fnChasingTarget = () -> {
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
 
 ```java
-clyde.fnChasingTarget = () -> Vector2f.euclideanDist(clyde.tf.getCenter(), pacMan.tf.getCenter()) > 8
-		? pacMan.currentTile()
-		: maze.clydeScatter;
+clyde = new Ghost("Clyde", game);
+clyde.initialDir = Top4.N;
+clyde.initialTile = game.maze.clydeHome;
+clyde.scatterTile = game.maze.clydeScatter;
+clyde.revivalTile = game.maze.clydeHome;
+clyde.fnChasingTarget = () -> clyde.tileDistanceSq(pacMan) > 8 * 8 ? pacMan.tile() : game.maze.clydeScatter;
 ```
 
 <img src="doc/clyde.png"/>
@@ -597,6 +657,15 @@ In *scattering* mode, each ghost tries to reach his "scattering target" which is
 cannot reverse direction this results in a cyclic movement around the walls in the corresponding corner of the maze.
 
 <img src="doc/scattering.png"/>
+
+In the *frightened* and *locked* mode, the ghoste have the same behavior:
+
+```java
+ghosts().forEach(ghost -> {
+	ghost.setSteering(GhostState.FRIGHTENED, GhostSteerings.movingRandomly());
+	ghost.setSteering(GhostState.LOCKED, GhostSteerings.jumpingUpAndDown());
+});
+```
 
 ## Graph-based pathfinding
 
