@@ -555,7 +555,7 @@ pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_D
 
 ...
 
-static Steering<PacMan> steeredByKeys(int... keys) {
+Steering<PacMan> steeredByKeys(int... keys) {
 	return pacMan -> NESW.dirs().filter(dir -> Keyboard.keyDown(keys[dir])).findAny().ifPresent(pacMan::setNextDir);
 }
 ```
