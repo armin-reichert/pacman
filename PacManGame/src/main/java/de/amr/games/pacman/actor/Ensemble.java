@@ -21,7 +21,7 @@ import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.graph.grid.impl.Top4;
 
 /**
- * The ensemble for the PacMan game.
+ * The ensemble (actors) for the PacMan game.
  * 
  * @author Armin Reichert
  */
@@ -31,7 +31,7 @@ public class Ensemble {
 	public PacMan pacMan;
 	public Ghost blinky, pinky, inky, clyde;
 	public PacManTheme theme;
-	private Bonus bonus;
+	public Optional<Bonus> bonus;
 
 	public Ensemble(PacManGame game, PacManTheme theme) {
 		this.game = game;
@@ -123,17 +123,14 @@ public class Ensemble {
 		return actors().filter(Actor::isActive);
 	}
 
-	public Optional<Bonus> bonus() {
-		return Optional.ofNullable(bonus);
-	}
-
 	public void clearBonus() {
-		bonus = null;
+		bonus = Optional.empty();
 	}
 
-	public void addBonus(BonusSymbol symbol, int value) {
-		bonus = new Bonus(symbol, value, theme);
-		bonus.tf.setPosition(game.maze.bonusTile.col * TS + TS / 2, game.maze.bonusTile.row * TS);
+	public void setBonus(BonusSymbol symbol, int value) {
+		Bonus b = new Bonus(symbol, value, theme);
+		b.tf.setPosition(game.maze.bonusTile.col * TS + TS / 2, game.maze.bonusTile.row * TS);
+		bonus = Optional.of(b);
 	}
 
 	public void chasingSoundOn() {

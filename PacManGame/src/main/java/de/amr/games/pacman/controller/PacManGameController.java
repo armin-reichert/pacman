@@ -55,8 +55,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
-		implements ViewController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements ViewController {
 
 	// Typed reference to "Playing" state object
 	private PlayingState playingState;
@@ -288,16 +287,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			for (Ghost ghost : ghosts) {
 				if (ghost.getState() == GhostState.LOCKED && ensemble.canLeaveHouse(ghost)) {
 					ghost.process(new GhostUnlockedEvent());
-				}
-				else if (ghost.getState() == GhostState.CHASING
-						&& ghostAttackTimer.getState() == GhostState.SCATTERING) {
+				} else if (ghost.getState() == GhostState.CHASING && ghostAttackTimer.getState() == GhostState.SCATTERING) {
 					ghost.process(new StartScatteringEvent());
-				}
-				else if (ghost.getState() == GhostState.SCATTERING
-						&& ghostAttackTimer.getState() == GhostState.CHASING) {
+				} else if (ghost.getState() == GhostState.SCATTERING && ghostAttackTimer.getState() == GhostState.CHASING) {
 					ghost.process(new StartChasingEvent());
-				}
-				else {
+				} else {
 					ghost.update();
 				}
 			}
@@ -307,8 +301,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			PacManGhostCollisionEvent e = (PacManGhostCollisionEvent) event;
 			if (e.ghost.oneOf(GhostState.CHASING, GhostState.SCATTERING)) {
 				enqueue(new PacManKilledEvent(e.ghost));
-			}
-			else if (e.ghost.getState() == GhostState.FRIGHTENED) {
+			} else if (e.ghost.getState() == GhostState.FRIGHTENED) {
 				enqueue(new GhostKilledEvent(e.ghost));
 			}
 		}
@@ -348,16 +341,15 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
-			ensemble.bonus().ifPresent(bonus -> {
-				boolean extraLife = game.scorePoints(bonus.value());
+			ensemble.bonus.ifPresent(bonus -> {
+				boolean extraLife = game.scorePoints(bonus.value);
 				bonus.consume();
 				playView.startBonusTimer(sec(2));
 				ensemble.theme.snd_eatFruit().play();
 				if (extraLife) {
 					ensemble.theme.snd_extraLife().play();
 				}
-				LOGGER
-						.info(() -> String.format("PacMan found %s and scored %d points", bonus.symbol(), bonus.value()));
+				LOGGER.info(() -> String.format("PacMan found %s and scored %d points", bonus.symbol, bonus.value));
 			});
 		}
 
@@ -375,7 +367,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				return;
 			}
 			if (game.isBonusReached()) {
-				ensemble.addBonus(game.level.bonusSymbol, game.level.bonusValue);
+				ensemble.setBonus(game.level.bonusSymbol, game.level.bonusValue);
 				playView.startBonusTimer(sec(9 + new Random().nextFloat()));
 			}
 			if (e.energizer) {
@@ -435,8 +427,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onTick() {
-			ensemble.activeGhosts()
-					.filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
+			ensemble.activeGhosts().filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
 					.forEach(Ghost::update);
 		}
 
@@ -535,11 +526,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void handlePlayingSpeedChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
 			app().clock.setFrequency(60);
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
 			app().clock.setFrequency(80);
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
 			app().clock.setFrequency(100);
 		}
 	}
@@ -551,8 +540,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			boolean original = app().settings.getAsBoolean(property);
 			ensemble.ghosts().forEach(ghost -> ghost.setSteering(GhostState.FRIGHTENED,
 					original ? GhostSteerings.movingRandomly() : GhostSteerings.fleeingToSafeCorner(ensemble.pacMan)));
-			LOGGER
-					.info("Changed ghost FRIGHTENED behavior to " + (original ? "original" : "escape via safe route"));
+			LOGGER.info("Changed ghost FRIGHTENED behavior to " + (original ? "original" : "escape via safe route"));
 		}
 	}
 }

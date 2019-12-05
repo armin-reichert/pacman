@@ -215,10 +215,10 @@ public class PacMan extends Actor<PacManState> {
 			}
 
 			/*@formatter:off*/
-			Optional<PacManGameEvent> bonusEaten = ensemble.bonus()
+			Optional<PacManGameEvent> bonusEaten = ensemble.bonus
 				.filter(bonus -> pacManTile == maze.bonusTile)
-				.filter(bonus -> !bonus.consumed())
-				.map(bonus -> new BonusFoundEvent(bonus.symbol(), bonus.value()));
+				.filter(bonus -> !bonus.consumed)
+				.map(bonus -> new BonusFoundEvent(bonus.symbol, bonus.value));
 			/*@formatter:on*/
 
 			if (bonusEaten.isPresent()) {

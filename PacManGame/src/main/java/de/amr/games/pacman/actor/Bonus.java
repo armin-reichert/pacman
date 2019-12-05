@@ -19,9 +19,9 @@ public class Bonus extends Entity {
 
 	static final int[] POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
-	private final BonusSymbol symbol;
-	private final int value;
-	private boolean consumed;
+	public final BonusSymbol symbol;
+	public final int value;
+	public boolean consumed;
 
 	public Bonus(BonusSymbol symbol, int value, PacManTheme theme) {
 		tf.setWidth(TS);
@@ -36,18 +36,6 @@ public class Bonus extends Entity {
 		sprites.set("symbol", theme.spr_bonusSymbol(symbol));
 		sprites.set("number", theme.spr_pinkNumber(index));
 		sprites.select("symbol");
-	}
-
-	public int value() {
-		return value;
-	}
-
-	public BonusSymbol symbol() {
-		return symbol;
-	}
-
-	public boolean consumed() {
-		return consumed;
 	}
 
 	public void consume() {

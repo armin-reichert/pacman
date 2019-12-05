@@ -66,7 +66,7 @@ public class SimplePlayView implements View, Controller {
 
 	@Override
 	public void update() {
-		ensemble.bonus().ifPresent(bonus -> {
+		ensemble.bonus.ifPresent(bonus -> {
 			if (bonusDisplayTicks > 0) {
 				bonusDisplayTicks -= 1;
 				if (bonusDisplayTicks == 0) {
@@ -144,7 +144,7 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		ensemble.bonus().ifPresent(bonus -> bonus.draw(g));
+		ensemble.bonus.ifPresent(bonus -> bonus.draw(g));
 		if (ensemble.pacMan.isActive()) {
 			ensemble.pacMan.draw(g);
 		}
