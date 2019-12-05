@@ -139,7 +139,6 @@ beginStateMachine()
 				ensemble.theme.snd_clips_all().forEach(Sound::stop);
 				ensemble.theme.snd_ready().play();
 				ensemble.actors().forEach(Actor::activate);
-				ensemble.actors().forEach(Actor::init);
 				ensemble.clearBonus();
 				playView.init();
 				playView.showScores = true;
@@ -513,16 +512,6 @@ Example trace:
 [2019-12-05 05:49:59:656] [Clyde] entering initial state: 
 [2019-12-05 05:49:59:656] [Clyde] entering state 'LOCKED' 
 [2019-12-05 05:49:59:656] Clyde activated 
-[2019-12-05 05:49:59:656] [Pac-Man] entering initial state: 
-[2019-12-05 05:49:59:656] [Pac-Man] entering state 'HOME' 
-[2019-12-05 05:49:59:656] [Blinky] entering initial state: 
-[2019-12-05 05:49:59:656] [Blinky] entering state 'LOCKED' 
-[2019-12-05 05:49:59:656] [Pinky] entering initial state: 
-[2019-12-05 05:49:59:656] [Pinky] entering state 'LOCKED' 
-[2019-12-05 05:49:59:656] [Inky] entering initial state: 
-[2019-12-05 05:49:59:656] [Inky] entering state 'LOCKED' 
-[2019-12-05 05:49:59:656] [Clyde] entering initial state: 
-[2019-12-05 05:49:59:656] [Clyde] entering state 'LOCKED' 
 [2019-12-05 05:50:04:506] [GameController] changing from 'GETTING_READY' to 'START_PLAYING (timeout)' 
 [2019-12-05 05:50:04:506] [GameController] exiting state 'GETTING_READY' 
 [2019-12-05 05:50:04:509] [GameController] entering state 'START_PLAYING' for 1,70 seconds (102 frames) 
