@@ -32,7 +32,7 @@ public class PacManGameCast {
 	public PacMan pacMan;
 	public Ghost blinky, pinky, inky, clyde;
 	public PacManTheme theme;
-	public Optional<Bonus> bonus;
+	public Optional<Bonus> bonus = Optional.empty();
 
 	public PacManGameCast(PacManGame game, PacManTheme theme) {
 		this.game = game;
@@ -79,6 +79,7 @@ public class PacManGameCast {
 			ghost.setSteering(GhostState.FRIGHTENED, movingRandomly());
 		});
 		actors().forEach(actor -> actor.cast = this);
+		
 		setTheme(theme);
 	}
 
