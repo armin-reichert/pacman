@@ -55,8 +55,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
-		implements ViewController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements ViewController {
 
 	// Typed reference to "Playing" state object
 	private PlayingState playingState;
@@ -149,10 +148,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.impl(playingState = new PlayingState())
 				
 				.state(CHANGING_LEVEL)
+					.timeoutAfter(() -> sec(2 + 0.4f * game.level.mazeNumFlashes))
 					.onEntry(() -> {
-						float flashDuration = 0.5f; //TODO
-						state().setTimerFunction(() -> sec(2 + flashDuration * game.level.mazeNumFlashes));
-						state().resetTimer();
 						cast.theme.snd_clips_all().forEach(Sound::stop);
 						cast.activeGhosts().forEach(Ghost::hide);
 						cast.pacMan.sprites.select("full");
@@ -316,16 +313,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			for (Ghost ghost : ghosts) {
 				if (ghost.getState() == GhostState.LOCKED && cast.canLeaveHouse(ghost)) {
 					ghost.process(new GhostUnlockedEvent());
-				}
-				else if (ghost.getState() == GhostState.CHASING
-						&& ghostAttackTimer.getState() == GhostState.SCATTERING) {
+				} else if (ghost.getState() == GhostState.CHASING && ghostAttackTimer.getState() == GhostState.SCATTERING) {
 					ghost.process(new StartScatteringEvent());
-				}
-				else if (ghost.getState() == GhostState.SCATTERING
-						&& ghostAttackTimer.getState() == GhostState.CHASING) {
+				} else if (ghost.getState() == GhostState.SCATTERING && ghostAttackTimer.getState() == GhostState.CHASING) {
 					ghost.process(new StartChasingEvent());
-				}
-				else {
+				} else {
 					ghost.update();
 				}
 			}
@@ -335,8 +327,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			PacManGhostCollisionEvent e = (PacManGhostCollisionEvent) event;
 			if (e.ghost.oneOf(GhostState.CHASING, GhostState.SCATTERING)) {
 				enqueue(new PacManKilledEvent(e.ghost));
-			}
-			else if (e.ghost.getState() == GhostState.FRIGHTENED) {
+			} else if (e.ghost.getState() == GhostState.FRIGHTENED) {
 				enqueue(new GhostKilledEvent(e.ghost));
 			}
 		}
@@ -398,8 +389,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			cast.updateFoodCounter();
 			if (game.numPelletsRemaining() == 0) {
 				enqueue(new LevelCompletedEvent());
-			}
-			else if (game.isBonusReached()) {
+			} else if (game.isBonusReached()) {
 				cast.setBonus(game.level.bonusSymbol, game.level.bonusValue);
 				playView.displayBonus(sec(9 + new Random().nextFloat()));
 			}
@@ -429,8 +419,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onTick() {
-			cast.activeGhosts()
-					.filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
+			cast.activeGhosts().filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
 					.forEach(Ghost::update);
 		}
 
@@ -529,11 +518,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void handlePlayingSpeedChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
 			app().clock.setFrequency(60);
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
 			app().clock.setFrequency(80);
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
 			app().clock.setFrequency(100);
 		}
 	}
@@ -545,8 +532,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			boolean original = app().settings.getAsBoolean(property);
 			cast.ghosts().forEach(ghost -> ghost.setSteering(GhostState.FRIGHTENED,
 					original ? GhostSteerings.movingRandomly() : GhostSteerings.fleeingToSafeCorner(cast.pacMan)));
-			LOGGER
-					.info("Changed ghost FRIGHTENED behavior to " + (original ? "original" : "escape via safe route"));
+			LOGGER.info("Changed ghost FRIGHTENED behavior to " + (original ? "original" : "escape via safe route"));
 		}
 	}
 }
