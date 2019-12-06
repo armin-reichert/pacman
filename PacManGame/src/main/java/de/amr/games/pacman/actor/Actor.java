@@ -9,7 +9,6 @@ import java.util.function.Consumer;
 
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
@@ -27,16 +26,15 @@ import de.amr.statemachine.StateMachine;
 public abstract class Actor<S> extends MazeMover {
 
 	public final String name;
-	public final PacManGame game;
-	public PacManGameCast cast;
+	public final PacManGameCast cast;
 	private boolean active;
 	protected final Set<Consumer<PacManGameEvent>> listeners;
 	protected StateMachine<S, PacManGameEvent> fsm;
 
-	public Actor(String name, PacManGame game) {
-		super(game.maze);
+	public Actor(String name, PacManGameCast cast) {
+		super(cast.game.maze);
+		this.cast = cast;
 		this.name = name;
-		this.game = game;
 		active = false;
 		listeners = new LinkedHashSet<>();
 	}

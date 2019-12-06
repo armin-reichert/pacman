@@ -37,13 +37,12 @@ public class PacManGameCast {
 	public PacManGameCast(PacManGame game, PacManTheme theme) {
 		this.game = game;
 
-		pacMan = new PacMan(game);
-		blinky = new Ghost("Blinky", game);
-		pinky = new Ghost("Pinky", game);
-		inky = new Ghost("Inky", game);
-		clyde = new Ghost("Clyde", game);
+		pacMan = new PacMan(this);
+		blinky = new Ghost("Blinky", this);
+		pinky = new Ghost("Pinky", this);
+		inky = new Ghost("Inky", this);
+		clyde = new Ghost("Clyde", this);
 
-		actors().forEach(actor -> actor.cast = this);
 		setTheme(theme);
 
 		// configure the actors
@@ -79,7 +78,7 @@ public class PacManGameCast {
 				: game.maze.clydeScatter;
 
 		ghosts().forEach(ghost -> ghost.setSteering(GhostState.FRIGHTENED, movingRandomlyNoReversing()));
-		
+
 		// Blinky does not jump when locked
 		Stream.of(pinky, inky, clyde).forEach(ghost -> ghost.setSteering(GhostState.LOCKED, jumpingUpAndDown()));
 	}

@@ -29,7 +29,6 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
 import de.amr.statemachine.StateMachine;
@@ -52,8 +51,8 @@ public class Ghost extends Actor<GhostState> {
 	public Supplier<Tile> fnChasingTarget;
 	public int foodCount;
 
-	public Ghost(String name, PacManGame game) {
-		super(name, game);
+	public Ghost(String name, PacManGameCast cast) {
+		super(name, cast);
 		steeringByState = new EnumMap<>(GhostState.class);
 		defaultSteering = Steerings.headingForTargetTile();
 		fnNextState = this::getState;
@@ -103,21 +102,21 @@ public class Ghost extends Actor<GhostState> {
 		boolean inTunnel = maze.isTunnel(tile());
 		switch (getState()) {
 		case LOCKED:
-			return this == cast.blinky ? 0 : speed(game.level.ghostSpeed) / 2;
+			return this == cast.blinky ? 0 : speed(cast.game.level.ghostSpeed) / 2;
 		case LEAVING_HOUSE:
-			return speed(game.level.ghostSpeed) / 2;
+			return speed(cast.game.level.ghostSpeed) / 2;
 		case ENTERING_HOUSE:
-			return speed(game.level.ghostSpeed) / 2;
+			return speed(cast.game.level.ghostSpeed) / 2;
 		case CHASING:
 			//$FALL-THROUGH$
 		case SCATTERING:
-			return inTunnel ? speed(game.level.ghostTunnelSpeed) : speed(game.level.ghostSpeed);
+			return inTunnel ? speed(cast.game.level.ghostTunnelSpeed) : speed(cast.game.level.ghostSpeed);
 		case FRIGHTENED:
-			return inTunnel ? speed(game.level.ghostTunnelSpeed) : speed(game.level.ghostFrightenedSpeed);
+			return inTunnel ? speed(cast.game.level.ghostTunnelSpeed) : speed(cast.game.level.ghostFrightenedSpeed);
 		case DYING:
 			return 0;
 		case DEAD:
-			return 2 * speed(game.level.ghostSpeed);
+			return 2 * speed(cast.game.level.ghostSpeed);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name));
 		}
@@ -192,7 +191,7 @@ public class Ghost extends Actor<GhostState> {
 				.state(DYING)
 					.timeoutAfter(Ghost::getDyingTime)
 					.onEntry(() -> {
-						sprites.select("value-" + game.numGhostsKilledByCurrentEnergizer);
+						sprites.select("value-" + cast.game.numGhostsKilledByCurrentEnergizer);
 					})
 				
 				.state(DEAD)
