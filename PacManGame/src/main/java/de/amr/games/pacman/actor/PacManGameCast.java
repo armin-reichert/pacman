@@ -28,9 +28,9 @@ import de.amr.graph.grid.impl.Top4;
  */
 public class PacManGameCast {
 
-	public PacManGame game;
-	public PacMan pacMan;
-	public Ghost blinky, pinky, inky, clyde;
+	public final PacManGame game;
+	public final PacMan pacMan;
+	public final Ghost blinky, pinky, inky, clyde;
 	public PacManTheme theme;
 	public Optional<Bonus> bonus = Optional.empty();
 
