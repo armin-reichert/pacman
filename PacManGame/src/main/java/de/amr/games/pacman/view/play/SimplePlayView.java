@@ -1,6 +1,5 @@
 package de.amr.games.pacman.view.play;
 
-import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.PacManGame.TS;
 
@@ -86,16 +85,7 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	public void displayBonus(int ticks) {
-		cast.setBonus(game.level.bonusSymbol, game.level.bonusValue);
 		cast.bonus.ifPresent(bonus -> {
-			bonusDisplayTicks = ticks;
-			LOGGER.info(() -> String.format("Display %s for %d ticks (%.2f sec)", bonus, ticks, ticks / 60f));
-		});
-	}
-
-	public void consumeBonus(int ticks) {
-		cast.bonus.ifPresent(bonus -> {
-			bonus.changeIntoNumber();
 			bonusDisplayTicks = ticks;
 		});
 	}

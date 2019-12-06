@@ -359,13 +359,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onBonusFound(PacManGameEvent event) {
 			cast.bonus.ifPresent(bonus -> {
-				LOGGER.info(() -> String.format("PacMan found %s and scored %d points", bonus.symbol, bonus.value));
 				boolean extraLife = game.scorePoints(bonus.value);
-				playView.consumeBonus(sec(2));
+				bonus.changeIntoNumber();
 				cast.theme.snd_eatFruit().play();
 				if (extraLife) {
 					cast.theme.snd_extraLife().play();
 				}
+				playView.displayBonus(sec(2));
+				LOGGER.info(() -> String.format("PacMan found %s and scored %d points", bonus.symbol, bonus.value));
 			});
 		}
 
@@ -383,7 +384,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				return;
 			}
 			if (game.isBonusReached()) {
-				playView.displayBonus(sec(9 + new Random().nextFloat()));
+				cast.setBonus(game.level.bonusSymbol, game.level.bonusValue);
+				int displayTicks = sec(9 + new Random().nextFloat());
+				LOGGER.info(() -> String.format("Display %s for %d ticks (%.2f sec)", cast.bonus.get(), displayTicks,
+						displayTicks / 60f));
+				playView.displayBonus(displayTicks);
 			}
 			if (e.energizer) {
 				enqueue(new PacManGainsPowerEvent());
