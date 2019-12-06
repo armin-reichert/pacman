@@ -1,6 +1,6 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.fleeingToSafeCorner;
+import static de.amr.games.pacman.actor.behavior.common.Steerings.fleeingToSafeCorner;
 
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;

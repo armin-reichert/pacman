@@ -6,7 +6,7 @@ import de.amr.games.pacman.actor.MazeMover;
  * Functional interface for steering of actors.
  * 
  * @param <T>
- *          type of steered entity
+ *          type of steered entity, subtype of {@link MazeMover}
  * 
  * @author Armin Reichert
  */

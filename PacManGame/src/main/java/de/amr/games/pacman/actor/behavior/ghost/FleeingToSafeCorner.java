@@ -20,7 +20,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-class FleeingToSafeCorner<T extends MazeMover> extends TakingPrecomputedPath<T> {
+public class FleeingToSafeCorner<T extends MazeMover> extends TakingPrecomputedPath<T> {
 
 	public FleeingToSafeCorner(Supplier<Tile> chaserTileSupplier) {
 		super(chaserTileSupplier);

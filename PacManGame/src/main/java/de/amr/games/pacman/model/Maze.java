@@ -78,7 +78,7 @@ public class Maze {
 	"############################"}; 
 	/*@formatter:on*/
 
-	private static final char WALL = '#', DOOR = '-', TUNNEL = 't', SPACE = ' ', PELLET = '.', ENERGIZER = '*',
+	public static final char WALL = '#', DOOR = '-', TUNNEL = 't', SPACE = ' ', PELLET = '.', ENERGIZER = '*',
 			EATEN = '%';
 
 	public final GridGraph2D<Tile, Void> graph;

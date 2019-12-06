@@ -193,11 +193,7 @@ public abstract class MazeMover extends Entity {
 	 *         direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
-		Tile tileAhead = maze.tileToDir(tile(), moveDir, numTiles);
-		if (moveDir == Top4.N && app().settings.getAsBoolean("overflowBug")) {
-			return maze.tileToDir(tileAhead, Top4.W, numTiles);
-		}
-		return tileAhead;
+		return maze.tileToDir(tile(), moveDir, numTiles);
 	}
 
 	/**

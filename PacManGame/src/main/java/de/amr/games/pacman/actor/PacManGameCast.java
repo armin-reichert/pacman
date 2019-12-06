@@ -3,9 +3,9 @@ package de.amr.games.pacman.actor;
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
-import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.jumpingUpAndDown;
-import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.movingRandomly;
-import static de.amr.games.pacman.actor.behavior.pacman.PacManSteerings.steeredByKeys;
+import static de.amr.games.pacman.actor.behavior.common.Steerings.jumpingUpAndDown;
+import static de.amr.games.pacman.actor.behavior.common.Steerings.movingRandomlyNoReversing;
+import static de.amr.games.pacman.actor.behavior.common.Steerings.steeredByKeys;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
 import static de.amr.games.pacman.model.PacManGame.sec;
@@ -38,24 +38,30 @@ public class PacManGameCast {
 		this.game = game;
 
 		pacMan = new PacMan(game);
+		blinky = new Ghost("Blinky", game);
+		pinky = new Ghost("Pinky", game);
+		inky = new Ghost("Inky", game);
+		clyde = new Ghost("Clyde", game);
+
+		actors().forEach(actor -> actor.cast = this);
+		setTheme(theme);
+
+		// configure the actors
+
 		pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
 
-		blinky = new Ghost("Blinky", game);
 		blinky.initialDir = Top4.W;
 		blinky.initialTile = game.maze.blinkyHome;
 		blinky.scatterTile = game.maze.blinkyScatter;
 		blinky.revivalTile = game.maze.pinkyHome;
 		blinky.fnChasingTarget = pacMan::tile;
 
-		pinky = new Ghost("Pinky", game);
 		pinky.initialDir = Top4.S;
 		pinky.initialTile = game.maze.pinkyHome;
 		pinky.scatterTile = game.maze.pinkyScatter;
 		pinky.revivalTile = game.maze.pinkyHome;
 		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
-		pinky.setSteering(GhostState.LOCKED, jumpingUpAndDown());
 
-		inky = new Ghost("Inky", game);
 		inky.initialDir = Top4.N;
 		inky.initialTile = game.maze.inkyHome;
 		inky.scatterTile = game.maze.inkyScatter;
@@ -64,23 +70,18 @@ public class PacManGameCast {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return game.maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		};
-		inky.setSteering(GhostState.LOCKED, jumpingUpAndDown());
 
-		clyde = new Ghost("Clyde", game);
 		clyde.initialDir = Top4.N;
 		clyde.initialTile = game.maze.clydeHome;
 		clyde.scatterTile = game.maze.clydeScatter;
 		clyde.revivalTile = game.maze.clydeHome;
 		clyde.fnChasingTarget = () -> clyde.tileDistanceSq(pacMan) > 8 * 8 ? pacMan.tile()
 				: game.maze.clydeScatter;
-		clyde.setSteering(GhostState.LOCKED, jumpingUpAndDown());
 
-		ghosts().forEach(ghost -> {
-			ghost.setSteering(GhostState.FRIGHTENED, movingRandomly());
-		});
-		actors().forEach(actor -> actor.cast = this);
-
-		setTheme(theme);
+		ghosts().forEach(ghost -> ghost.setSteering(GhostState.FRIGHTENED, movingRandomlyNoReversing()));
+		
+		// Blinky does not jump when locked
+		Stream.of(pinky, inky, clyde).forEach(ghost -> ghost.setSteering(GhostState.LOCKED, jumpingUpAndDown()));
 	}
 
 	public void setTheme(PacManTheme theme) {

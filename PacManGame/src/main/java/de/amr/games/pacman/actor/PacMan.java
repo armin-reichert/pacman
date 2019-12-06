@@ -70,6 +70,25 @@ public class PacMan extends Actor<PacManState> {
 		steering.steer(this);
 	}
 
+	/**
+	 * NOTE: If the application property <code>overflowBug</code> is <code>true</code>, this method
+	 * simulates the bug in the original Arcade game which occurs if Pac-Man points upwards. In that
+	 * case the same number of tiles to the left is added.
+	 * 
+	 * @param numTiles
+	 *                   number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
+	 *         direction.
+	 */
+	@Override
+	public Tile tilesAhead(int numTiles) {
+		Tile tileAhead = maze.tileToDir(tile(), moveDir, numTiles);
+		if (moveDir == Top4.N && app().settings.getAsBoolean("overflowBug")) {
+			return maze.tileToDir(tileAhead, Top4.W, numTiles);
+		}
+		return tileAhead;
+	}
+
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
 		if (maze.isDoor(neighbor)) {

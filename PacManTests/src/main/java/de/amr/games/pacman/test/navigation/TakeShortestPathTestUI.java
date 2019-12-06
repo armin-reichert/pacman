@@ -2,7 +2,7 @@ package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.followingShortestPath;
+import static de.amr.games.pacman.actor.behavior.common.Steerings.followingShortestPath;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;

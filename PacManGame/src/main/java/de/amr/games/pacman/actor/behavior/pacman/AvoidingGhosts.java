@@ -11,7 +11,7 @@ import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.model.Tile;
 
-public class AvoidGhosts implements Steering<PacMan> {
+public class AvoidingGhosts implements Steering<PacMan> {
 
 	@Override
 	public void steer(PacMan pacMan) {

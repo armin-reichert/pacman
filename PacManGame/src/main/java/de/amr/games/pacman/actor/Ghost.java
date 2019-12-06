@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
-import de.amr.games.pacman.actor.behavior.ghost.GhostSteerings;
+import de.amr.games.pacman.actor.behavior.common.Steerings;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -55,7 +55,7 @@ public class Ghost extends Actor<GhostState> {
 	public Ghost(String name, PacManGame game) {
 		super(name, game);
 		steeringByState = new EnumMap<>(GhostState.class);
-		defaultSteering = GhostSteerings.headingForTargetTile();
+		defaultSteering = Steerings.headingForTargetTile();
 		fnNextState = this::getState;
 		fsm = buildStateMachine();
 		fsm.setIgnoreUnknownEvents(true);
