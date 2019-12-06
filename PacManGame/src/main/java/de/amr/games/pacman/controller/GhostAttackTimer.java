@@ -25,7 +25,7 @@ import de.amr.statemachine.StateMachine;
  * @see <a href=
  *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=3">Gamasutra</a>
  */
-public class GhostAttackTimer extends StateMachine<GhostState, Void> {
+class GhostAttackTimer extends StateMachine<GhostState, Void> {
 
 	private int round;
 	private boolean suspended;
