@@ -337,10 +337,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 
 		private void onPacManGainsPower(PacManGameEvent event) {
-			PacManGainsPowerEvent e = (PacManGainsPowerEvent) event;
-			cast.pacMan.process(e);
-			cast.activeGhosts().forEach(ghost -> ghost.process(e));
 			ghostAttackTimer.suspend();
+			cast.activeActors().forEach(actor -> actor.process(event));
 		}
 
 		private void onPacManGettingWeaker(PacManGameEvent event) {
