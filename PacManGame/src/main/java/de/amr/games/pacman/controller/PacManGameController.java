@@ -153,9 +153,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						cast.theme.snd_clips_all().forEach(Sound::stop);
 						cast.activeGhosts().forEach(Ghost::hide);
 						cast.pacMan.sprites.select("full");
-						if (game.level.mazeNumFlashes > 0) {
-							playView.mazeFlashing = true;
-						}
+						playView.mazeFlashing = game.level.mazeNumFlashes > 0;
 					})
 					.onTick(() -> {
 						if (state().getTicksRemaining() == sec(2)) {
