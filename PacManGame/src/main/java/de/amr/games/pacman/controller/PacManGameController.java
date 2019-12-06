@@ -512,13 +512,23 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	}
 
 	private void handlePlayingSpeedChange() {
+		int fps = app().clock.getFrequency();
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
-			app().clock.setFrequency(60);
+			setClockFrequency(60);
 		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
-			app().clock.setFrequency(80);
+			setClockFrequency(70);
 		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
-			app().clock.setFrequency(100);
+			setClockFrequency(80);
+		} else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_LEFT)) {
+			setClockFrequency(fps > 10 ? fps - 5 : Math.max(fps - 1, 1));
+		} else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_RIGHT)) {
+			setClockFrequency(fps < 10 ? fps + 1 : fps + 5);
 		}
+	}
+
+	private void setClockFrequency(int ticksPerSecond) {
+		app().clock.setFrequency(ticksPerSecond);
+		LOGGER.info(() -> String.format("Clock frequency set to %d ticks/sec", ticksPerSecond));
 	}
 
 	private void handleGhostFrightenedBehaviorChange() {
