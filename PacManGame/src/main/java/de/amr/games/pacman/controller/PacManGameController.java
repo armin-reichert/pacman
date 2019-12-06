@@ -10,6 +10,7 @@ import static de.amr.games.pacman.controller.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
 import static de.amr.games.pacman.controller.PacManGameState.START_PLAYING;
+import static de.amr.games.pacman.model.PacManGame.min;
 import static de.amr.games.pacman.model.PacManGame.sec;
 
 import java.awt.Color;
@@ -57,40 +58,38 @@ import de.amr.statemachine.StateMachine;
  */
 public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements ViewController {
 
-	// Typed reference to "Playing" state object
-	private PlayingState playingState;
-
 	// Game (model)
-	public final PacManGame game;
+	private final PacManGame game;
+
+	// Current view-controller
+	private Controller currentView;
 
 	// Game actors
-	private PacManGameCast cast;
+	private final PacManGameCast cast;
 
 	// Controls the ghost attack waves
 	private final GhostAttackTimer ghostAttackTimer;
 
-	// UI
+	// Typed reference to "Playing" state object
+	private PlayingState playingState;
+
+	// Views
 	private IntroView introView;
 	private PlayView playView;
-	private Controller ui;
 
 	private boolean muted = false;
 
 	public PacManGameController(PacManGame game, PacManTheme theme) {
 		super(PacManGameState.class);
 		this.game = game;
-
+		ghostAttackTimer = new GhostAttackTimer(game);
 		buildStateMachine();
 		setIgnoreUnknownEvents(true);
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-		ghostAttackTimer = new GhostAttackTimer(game);
-
 		cast = new PacManGameCast(game, theme);
 		cast.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackTimer::getState);
 		cast.pacMan.addListener(this::process);
-
 		introView = new IntroView(theme);
-
 		playView = new PlayView(game, cast);
 		playView.fnGhostAttack = ghostAttackTimer::state;
 	}
@@ -114,7 +113,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					})
 				
 				.state(GETTING_READY)
-					.timeoutAfter(() -> sec(5))
+					.timeoutAfter(sec(5))
 					.onEntry(() -> {
 						game.start();
 						cast.theme.snd_clips_all().forEach(Sound::stop);
@@ -131,7 +130,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					})
 				
 				.state(START_PLAYING)
-					.timeoutAfter(() -> sec(1.7f))
+					.timeoutAfter(sec(1.7f))
 					.onEntry(() -> {
 						ghostAttackTimer.init();
 						cast.ghosts().forEach(ghost -> ghost.foodCount = 0);
@@ -196,7 +195,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					})
 				
 				.state(GAME_OVER)
-					.timeoutAfter(() -> sec(60))
+					.timeoutAfter(min(1))
 					.onEntry(() -> {
 						LOGGER.info("Game is over");
 						game.score.save();
@@ -435,15 +434,15 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	}
 
 	private void showUI(Controller ui) {
-		if (this.ui != ui) {
-			this.ui = ui;
+		if (this.currentView != ui) {
+			this.currentView = ui;
 			ui.init();
 		}
 	}
 
 	@Override
 	public View currentView() {
-		return (View) ui;
+		return (View) currentView;
 	}
 
 	// Controller methods
@@ -457,7 +456,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		handleToggleOverflowBug();
 		handleCheats();
 		super.update();
-		ui.update();
+		currentView.update();
 	}
 
 	// Input
