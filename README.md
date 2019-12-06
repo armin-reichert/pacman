@@ -683,7 +683,9 @@ However, for a maze of such a small size the used algorithm doesn't matter much,
   - F2 opens a dialog where the game loop frequency and (full-)screen resolution can be changed
   - F11 toggles between window and full-screen exclusive mode
 - Game 
-  - Speed can be changed during game ('1' = normal, '2' = fast, '3' = very fast)
+  - Speed can be changed during game 
+    - Keys ('1' = normal, '2' = fast, '3' = very fast)
+    - ALT-LEFT = slower, ALT-RIGHT = faster
   - 'b', 'p', 'i', 'c' toggles the presence of the 4 ghosts in the game
   - 'f' toggles the ghost's *frightened* behavior between "random" (original) and "select safe corner"
   - 's' toggles the display of actor states and timers
