@@ -171,13 +171,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.timeoutAfter(Ghost::getDyingTime)
 				
 				.state(PACMAN_DYING)
+					.timeoutAfter(() -> game.lives > 1 ? sec(6) : sec(4))
 					.onEntry(() -> {
-						if (!app().settings.getAsBoolean("pacMan.immortable")) {
-							game.lives -= 1;
-						}
-						state().setTimerFunction(() -> game.lives > 0 ? sec(6) : sec(4));
-						state().resetTimer();
-						cast.theme.music_playing().stop();
+							game.lives -= app().settings.getAsBoolean("pacMan.immortable") ? 0 : 1;
 					})
 					.onTick(() -> {
 						if (state().getTicksConsumed() < sec(2)) {
@@ -335,6 +331,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.name, e.killer.tile()));
 			game.enableGlobalFoodCounter();
 			ghostAttackTimer.init();
+			cast.theme.music_playing().stop();
 			playView.energizerBlinking.setEnabled(false);
 			cast.pacMan.process(e);
 		}
