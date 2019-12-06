@@ -52,7 +52,7 @@ public class PacMan extends Actor<PacManState> {
 	public float maxSpeed() {
 		switch (getState()) {
 		case HUNGRY:
-			return hasPower() ? speed(cast.game.level.pacManPowerSpeed) : speed(cast.game.level.pacManSpeed);
+			return hasPower() ? speed(game.level.pacManPowerSpeed) : speed(game.level.pacManSpeed);
 		default:
 			return 0;
 		}
@@ -157,7 +157,7 @@ public class PacMan extends Actor<PacManState> {
 				.stay(HUNGRY)
 					.on(PacManGainsPowerEvent.class)
 					.act(() -> {
-						state().setTimerFunction(() -> sec(cast.game.level.pacManPowerSeconds));
+						state().setTimerFunction(() -> sec(game.level.pacManPowerSeconds));
 						state().resetTimer();
 						LOGGER.info(() -> String.format("Pac-Man got power for %d ticks (%d sec)", 
 								state().getDuration(), state().getDuration() / 60));

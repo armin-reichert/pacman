@@ -102,21 +102,21 @@ public class Ghost extends Actor<GhostState> {
 		boolean inTunnel = maze.isTunnel(tile());
 		switch (getState()) {
 		case LOCKED:
-			return this == cast.blinky ? 0 : speed(cast.game.level.ghostSpeed) / 2;
+			return this == cast.blinky ? 0 : speed(game.level.ghostSpeed) / 2;
 		case LEAVING_HOUSE:
-			return speed(cast.game.level.ghostSpeed) / 2;
+			return speed(game.level.ghostSpeed) / 2;
 		case ENTERING_HOUSE:
-			return speed(cast.game.level.ghostSpeed) / 2;
+			return speed(game.level.ghostSpeed) / 2;
 		case CHASING:
 			//$FALL-THROUGH$
 		case SCATTERING:
-			return inTunnel ? speed(cast.game.level.ghostTunnelSpeed) : speed(cast.game.level.ghostSpeed);
+			return inTunnel ? speed(game.level.ghostTunnelSpeed) : speed(game.level.ghostSpeed);
 		case FRIGHTENED:
-			return inTunnel ? speed(cast.game.level.ghostTunnelSpeed) : speed(cast.game.level.ghostFrightenedSpeed);
+			return inTunnel ? speed(game.level.ghostTunnelSpeed) : speed(game.level.ghostFrightenedSpeed);
 		case DYING:
 			return 0;
 		case DEAD:
-			return 2 * speed(cast.game.level.ghostSpeed);
+			return 2 * speed(game.level.ghostSpeed);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name));
 		}
@@ -191,7 +191,7 @@ public class Ghost extends Actor<GhostState> {
 				.state(DYING)
 					.timeoutAfter(Ghost::getDyingTime)
 					.onEntry(() -> {
-						sprites.select("value-" + cast.game.numGhostsKilledByCurrentEnergizer);
+						sprites.select("value-" + game.numGhostsKilledByCurrentEnergizer);
 					})
 				
 				.state(DEAD)
