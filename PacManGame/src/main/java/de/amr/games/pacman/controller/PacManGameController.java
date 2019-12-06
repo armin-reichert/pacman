@@ -332,8 +332,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			game.enableGlobalFoodCounter();
 			ghostAttackTimer.init();
 			cast.theme.music_playing().stop();
+			cast.pacMan.process(event);
 			playView.energizerBlinking.setEnabled(false);
-			cast.pacMan.process(e);
 		}
 
 		private void onPacManGainsPower(PacManGameEvent event) {
@@ -342,48 +342,47 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 
 		private void onPacManGettingWeaker(PacManGameEvent event) {
-			PacManGettingWeakerEvent e = (PacManGettingWeakerEvent) event;
-			cast.activeGhosts().forEach(ghost -> ghost.process(e));
+			cast.activeGhosts().forEach(ghost -> ghost.process(event));
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {
-			PacManLostPowerEvent e = (PacManLostPowerEvent) event;
-			cast.activeGhosts().forEach(ghost -> ghost.process(e));
 			ghostAttackTimer.resume();
+			cast.activeGhosts().forEach(ghost -> ghost.process(event));
 		}
 
 		private void onGhostKilled(PacManGameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
 			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.name, e.ghost.tile()));
 			cast.theme.snd_eatGhost().play();
-			e.ghost.process(e);
+			e.ghost.process(event);
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
 			cast.bonus.ifPresent(bonus -> {
+				LOGGER.info(() -> String.format("PacMan found %s and scored %d points", bonus.symbol, bonus.value));
 				boolean extraLife = game.scorePoints(bonus.value);
 				playView.consumeBonus(sec(2));
 				cast.theme.snd_eatFruit().play();
 				if (extraLife) {
 					cast.theme.snd_extraLife().play();
 				}
-				LOGGER.info(() -> String.format("PacMan found %s and scored %d points", bonus.symbol, bonus.value));
 			});
 		}
 
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent e = (FoodFoundEvent) event;
-			cast.theme.snd_eatPill().play();
 			int points = game.eat(e.tile);
 			boolean extraLife = game.scorePoints(points);
+			cast.updateFoodCounter();
+			cast.theme.snd_eatPill().play();
 			if (extraLife) {
 				cast.theme.snd_extraLife().play();
 			}
-			cast.updateFoodCounter();
 			if (game.numPelletsRemaining() == 0) {
 				enqueue(new LevelCompletedEvent());
-			} else if (game.isBonusReached()) {
-				cast.setBonus(game.level.bonusSymbol, game.level.bonusValue);
+				return;
+			}
+			if (game.isBonusReached()) {
 				playView.displayBonus(sec(9 + new Random().nextFloat()));
 			}
 			if (e.energizer) {

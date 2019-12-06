@@ -86,9 +86,10 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	public void displayBonus(int ticks) {
+		cast.setBonus(game.level.bonusSymbol, game.level.bonusValue);
 		cast.bonus.ifPresent(bonus -> {
 			bonusDisplayTicks = ticks;
-			LOGGER.info(() -> String.format("Display %s for %d ticks (%.2f seconds)", bonus, ticks, ticks / 60f));
+			LOGGER.info(() -> String.format("Display %s for %d ticks (%.2f sec)", bonus, ticks, ticks / 60f));
 		});
 	}
 
