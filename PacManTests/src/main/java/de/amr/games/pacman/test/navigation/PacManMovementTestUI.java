@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
-import de.amr.easy.game.view.ViewController;
+import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Actor;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.behavior.pacman.PacManSteerings;
@@ -12,7 +12,7 @@ import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayView;
 
-public class PacManMovementTestUI extends PlayView implements ViewController {
+public class PacManMovementTestUI extends PlayView implements VisualController {
 
 	public PacManMovementTestUI(PacManGame game, PacManGameCast ensemble) {
 		super(game, ensemble);

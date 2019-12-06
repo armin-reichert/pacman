@@ -3,13 +3,13 @@ package de.amr.games.pacman.test.navigation;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 
 import de.amr.easy.game.view.View;
-import de.amr.easy.game.view.ViewController;
+import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayView;
 
-public class FleeRandomlyTestUI extends PlayView implements ViewController {
+public class FleeRandomlyTestUI extends PlayView implements VisualController {
 
 	public FleeRandomlyTestUI(PacManGame game, PacManGameCast ensemble) {
 		super(game, ensemble);

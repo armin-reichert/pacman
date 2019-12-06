@@ -3,13 +3,13 @@ package de.amr.games.pacman.test.navigation;
 import static de.amr.games.pacman.actor.behavior.ghost.GhostSteerings.fleeingToSafeCorner;
 
 import de.amr.easy.game.view.View;
-import de.amr.easy.game.view.ViewController;
+import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayView;
 
-public class EscapeIntoCornerTestUI extends PlayView implements ViewController {
+public class EscapeIntoCornerTestUI extends PlayView implements VisualController {
 
 	public EscapeIntoCornerTestUI(PacManGame game, PacManGameCast ensemble) {
 		super(game, ensemble);

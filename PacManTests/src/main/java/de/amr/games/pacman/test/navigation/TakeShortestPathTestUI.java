@@ -11,7 +11,7 @@ import java.util.List;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
-import de.amr.easy.game.view.ViewController;
+import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.behavior.Steering;
@@ -19,7 +19,7 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 
-public class TakeShortestPathTestUI extends PlayView implements ViewController {
+public class TakeShortestPathTestUI extends PlayView implements VisualController {
 
 	private List<Tile> targets;
 	private int currentTarget;

@@ -25,7 +25,7 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
-import de.amr.easy.game.view.ViewController;
+import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Actor;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
@@ -56,7 +56,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements ViewController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
 	// Game (model)
 	private final PacManGame game;

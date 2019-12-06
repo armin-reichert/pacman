@@ -5,13 +5,13 @@ import static de.amr.games.pacman.model.PacManGame.TS;
 
 import de.amr.easy.game.input.Mouse;
 import de.amr.easy.game.view.View;
-import de.amr.easy.game.view.ViewController;
+import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 
-public class FollowMouseTestUI extends PlayView implements ViewController {
+public class FollowMouseTestUI extends PlayView implements VisualController {
 
 	private Tile mouseTile;
 
