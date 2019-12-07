@@ -32,7 +32,7 @@ public class PacManGame {
 	public static final int POINTS_PELLET = 10;
 	public static final int POINTS_ENERGIZER = 50;
 
-	public static final int[] BONUS_POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+	public static final int[] BONUS_NUMBERS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
 	static final Object[][] LEVELS = new Object[][] {
 		/*@formatter:off*/

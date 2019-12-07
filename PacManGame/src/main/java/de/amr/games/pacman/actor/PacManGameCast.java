@@ -133,7 +133,7 @@ public class PacManGameCast {
 	public void activateBonus(int activeTime, int consumedTime) {
 		Bonus bonus = new Bonus(this, activeTime, consumedTime);
 		bonus.placeAtTile(game.maze.bonusTile, TS / 2, 0);
-		bonus.init();
+		bonus.activate();
 		this.bonus = Optional.of(bonus);
 	}
 

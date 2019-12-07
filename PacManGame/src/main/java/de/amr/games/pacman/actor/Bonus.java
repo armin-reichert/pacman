@@ -1,5 +1,6 @@
 package de.amr.games.pacman.actor;
 
+import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.BonusState.ACTIVE;
 import static de.amr.games.pacman.actor.BonusState.CONSUMED;
 import static de.amr.games.pacman.actor.BonusState.INACTIVE;
@@ -9,7 +10,6 @@ import java.awt.Graphics2D;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
-import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.BonusSymbol;
@@ -39,7 +39,7 @@ public class Bonus extends Actor<BonusState> {
 		this.activeTime = activeTime;
 		this.consumedTime = consumedTime;
 		fsm = buildStateMachine();
-		fsm.traceTo(Logger.getLogger("StateMachineLogger"), Application.app().clock::getFrequency);
+		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
 
 	private StateMachine<BonusState, PacManGameEvent> buildStateMachine() {
@@ -58,7 +58,7 @@ public class Bonus extends Actor<BonusState> {
 					.state(CONSUMED)
 						.timeoutAfter(consumedTime)
 						.onEntry(() -> {
-							sprites.set("number", cast.theme.spr_pinkNumber(pointsIndex(value)));
+							sprites.set("number", cast.theme.spr_pinkNumber(numberIndex(value)));
 							sprites.select("number");
 						})
 					.state(INACTIVE)
@@ -71,8 +71,8 @@ public class Bonus extends Actor<BonusState> {
 		/*@formatter:on*/
 	}
 
-	private int pointsIndex(int value) {
-		int index = Arrays.binarySearch(PacManGame.BONUS_POINTS, value);
+	private int numberIndex(int value) {
+		int index = Arrays.binarySearch(PacManGame.BONUS_NUMBERS, value);
 		if (index >= 0) {
 			return index;
 		}
@@ -93,8 +93,9 @@ public class Bonus extends Actor<BonusState> {
 	@Override
 	public void draw(Graphics2D g) {
 		sprites.current().ifPresent(sprite -> {
-			float dx = tf.getX() - (sprite.getWidth() - tf.getWidth()) / 2;
-			float dy = tf.getY() - (sprite.getHeight() - tf.getHeight()) / 2;
+			// center sprite over collision box
+			float dx = tf.getX() - (sprite.getWidth() - TS) / 2;
+			float dy = tf.getY() - (sprite.getHeight() - TS) / 2;
 			g.translate(dx, dy);
 			sprite.draw(g);
 			g.translate(-dx, -dy);
