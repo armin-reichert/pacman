@@ -82,30 +82,29 @@ The **ghosts** ([Ghost](PacManGame/src/main/java/de/amr/games/pacman/actor/Ghost
 Even a simple entity like the **bonus symbol** which appears at dedicated scores uses a finite-state machine to implement its lifecycle:
 
 ```java
-		beginStateMachine(BonusState.class, PacManGameEvent.class)
-				.description("[Bonus]")
-				.initialState(ACTIVE)
-				.states()
-					.state(ACTIVE)
-						.timeoutAfter(activeTime)
-						.onEntry(() -> {
-							sprites.set("symbol", theme.spr_bonusSymbol(symbol));
-							sprites.select("symbol");
-						})
-					.state(CONSUMED)
-						.timeoutAfter(consumedTime)
-						.onEntry(() -> {
-							sprites.set("number", theme.spr_pinkNumber(pointsIndex(value)));
-							sprites.select("number");
-						})
-					.state(INACTIVE)
-						.onEntry(cast::clearBonus)
-				.transitions()
-					.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
-					.when(ACTIVE).then(INACTIVE).onTimeout()
-					.when(CONSUMED).then(INACTIVE).onTimeout()
-		.endStateMachine();
-
+beginStateMachine(BonusState.class, PacManGameEvent.class)
+		.description("[Bonus]")
+		.initialState(ACTIVE)
+		.states()
+			.state(ACTIVE)
+				.timeoutAfter(activeTime)
+				.onEntry(() -> {
+					sprites.set("symbol", theme.spr_bonusSymbol(symbol));
+					sprites.select("symbol");
+				})
+			.state(CONSUMED)
+				.timeoutAfter(consumedTime)
+				.onEntry(() -> {
+					sprites.set("number", theme.spr_pinkNumber(pointsIndex(value)));
+					sprites.select("number");
+				})
+			.state(INACTIVE)
+				.onEntry(cast::clearBonus)
+		.transitions()
+			.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
+			.when(ACTIVE).then(INACTIVE).onTimeout()
+			.when(CONSUMED).then(INACTIVE).onTimeout()
+.endStateMachine();
 ```
 
 ## Tracing
