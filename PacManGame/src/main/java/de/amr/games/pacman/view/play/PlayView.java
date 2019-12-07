@@ -60,8 +60,7 @@ public class PlayView extends SimplePlayView {
 	private static BufferedImage createGridImage(int numRows, int numCols) {
 		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
 				.getDefaultConfiguration();
-		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1,
-				Transparency.TRANSLUCENT);
+		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1, Transparency.TRANSLUCENT);
 		Graphics2D g = image.createGraphics();
 		g.setColor(new Color(0, 60, 0));
 		for (int row = 0; row <= numRows; ++row) {
@@ -124,8 +123,7 @@ public class PlayView extends SimplePlayView {
 	private void toggleGhostActivationState(Ghost ghost) {
 		if (ghost.isActive()) {
 			ghost.deactivate();
-		}
-		else {
+		} else {
 			ghost.activate();
 		}
 	}
@@ -161,8 +159,9 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private String pacManStateText(PacMan pacMan) {
-		String text = pacMan.state().getDuration() != State.ENDLESS ? String.format("(%s,%d|%d)",
-				pacMan.state().id(), pacMan.state().getTicksRemaining(), pacMan.state().getDuration())
+		String text = pacMan.state().getDuration() != State.ENDLESS
+				? String.format("(%s,%d|%d)", pacMan.state().id(), pacMan.state().getTicksRemaining(),
+						pacMan.state().getDuration())
 				: String.format("(%s,%s)", pacMan.state().id(), INFTY);
 
 		if (Application.app().settings.getAsBoolean("pacMan.immortable")) {
@@ -173,15 +172,13 @@ public class PlayView extends SimplePlayView {
 
 	private String ghostStateText(Ghost ghost) {
 		String displayName = ghost.getState() == GhostState.DEAD ? ghost.name : "";
-		String nextState = ghost.nextState() != ghost.getState() ? String.format("[->%s]", ghost.nextState())
-				: "";
+		String nextState = ghost.nextState != ghost.getState() ? String.format("[->%s]", ghost.nextState) : "";
 		int duration = ghost.state().getDuration(), remaining = ghost.state().getTicksRemaining();
 
 		if (ghost.getState() == GhostState.FRIGHTENED && cast.pacMan.hasPower()) {
 			duration = cast.pacMan.state().getDuration();
 			remaining = cast.pacMan.state().getTicksRemaining();
-		}
-		else if (ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING) {
+		} else if (ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING) {
 			State<?, ?> attack = fnGhostAttack.get();
 			if (attack != null) {
 				duration = attack.getDuration();
@@ -229,13 +226,12 @@ public class PlayView extends SimplePlayView {
 		Stroke solid = g.getStroke();
 		if (ghost.targetTile != null) {
 			// draw target tile indicator
-			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
-					0);
+			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
 			g.setStroke(dashed);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(ghostColor);
-			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
-					ghost.targetTile.col * TS + TS / 2, ghost.targetTile.row * TS + TS / 2);
+			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y, ghost.targetTile.col * TS + TS / 2,
+					ghost.targetTile.row * TS + TS / 2);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			g.setStroke(solid);
 			g.translate(ghost.targetTile.col * TS, ghost.targetTile.row * TS);
@@ -249,8 +245,7 @@ public class PlayView extends SimplePlayView {
 			for (Tile tile : ghost.targetPath) {
 				g.fillRect(tile.col * TS, tile.row * TS, TS, TS);
 			}
-		}
-		else {
+		} else {
 			// draw direction indicator
 			Vector2f center = ghost.tf.getCenter();
 			int dx = NESW.dx(ghost.nextDir), dy = NESW.dy(ghost.nextDir);

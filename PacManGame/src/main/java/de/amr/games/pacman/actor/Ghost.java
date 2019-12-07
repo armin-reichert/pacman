@@ -47,7 +47,7 @@ public class Ghost extends Actor<GhostState> {
 	public Tile initialTile;
 	public Tile revivalTile;
 	public Tile scatterTile;
-	public Supplier<GhostState> fnNextState;
+	public GhostState nextState;
 	public Supplier<Tile> fnChasingTarget;
 	public int foodCount;
 
@@ -55,7 +55,6 @@ public class Ghost extends Actor<GhostState> {
 		super(name, cast);
 		steeringByState = new EnumMap<>(GhostState.class);
 		defaultSteering = Steerings.headingForTargetTile();
-		fnNextState = this::getState;
 		fsm = buildStateMachine();
 		fsm.setIgnoreUnknownEvents(true);
 		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
@@ -64,12 +63,13 @@ public class Ghost extends Actor<GhostState> {
 	@Override
 	public void init() {
 		super.init();
-		placeAtTile(initialTile, TS / 2, 0);
+		visible = true;
 		moveDir = initialDir;
 		nextDir = initialDir;
-		visible = true;
+		placeAtTile(initialTile, TS / 2, 0);
 		sprites.select("color-" + initialDir);
 		sprites.forEach(Sprite::resetAnimation);
+		nextState = getState();
 	}
 
 	public void setSteering(GhostState state, Steering<Ghost> steering) {
@@ -142,11 +142,6 @@ public class Ghost extends Actor<GhostState> {
 		return sec(1);
 	}
 
-	public GhostState nextState() {
-		GhostState nextState = fnNextState.get();
-		return nextState != null ? nextState : getState();
-	}
-
 	private StateMachine<GhostState, PacManGameEvent> buildStateMachine() {
 		return StateMachine.
 		/*@formatter:off*/
@@ -208,10 +203,10 @@ public class Ghost extends Actor<GhostState> {
 					.on(GhostUnlockedEvent.class)
 			
 				.when(LEAVING_HOUSE).then(SCATTERING)
-					.condition(() -> leftHouse() && nextState() == SCATTERING)
+					.condition(() -> leftHouse() && nextState == SCATTERING)
 				
 				.when(LEAVING_HOUSE).then(CHASING)
-					.condition(() -> leftHouse() && nextState() == CHASING)
+					.condition(() -> leftHouse() && nextState == CHASING)
 					
 				.when(ENTERING_HOUSE).then(LOCKED)
 					.condition(() -> tile() == targetTile)
@@ -240,11 +235,11 @@ public class Ghost extends Actor<GhostState> {
 				
 				.when(FRIGHTENED).then(CHASING)
 					.on(PacManLostPowerEvent.class)
-					.condition(() -> nextState() == CHASING)
+					.condition(() -> nextState == CHASING)
 
 				.when(FRIGHTENED).then(SCATTERING)
 					.on(PacManLostPowerEvent.class)
-					.condition(() -> nextState() == SCATTERING)
+					.condition(() -> nextState == SCATTERING)
 				
 				.when(FRIGHTENED).then(DYING)
 					.on(GhostKilledEvent.class)

@@ -30,7 +30,7 @@ public class ScatteringTestUI extends PlayView implements VisualController {
 		cast.ghosts().forEach(ghost -> {
 			ghost.activate();
 			ghost.init();
-			ghost.fnNextState = () -> GhostState.SCATTERING;
+			ghost.nextState = GhostState.SCATTERING;
 		});
 		textColor = Color.YELLOW;
 		message = "Press SPACE to start";

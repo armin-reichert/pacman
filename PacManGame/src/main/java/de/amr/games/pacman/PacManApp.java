@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.amr.easy.game.Application;
+import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
@@ -23,6 +24,7 @@ public class PacManApp extends Application {
 
 	public static void main(String[] args) {
 		Logger.getLogger("StateMachineLogger").setLevel(Level.OFF);
+		Logger.getLogger(Keyboard.class.getName()).setLevel(Level.INFO);
 		launch(new PacManApp(), args);
 	}
 

@@ -34,7 +34,7 @@ public class InkyChaseTestUI extends PlayView implements VisualController {
 		cast.blinky.activate();
 		cast.activeGhosts().forEach(ghost -> {
 			ghost.init();
-			ghost.fnNextState = () -> GhostState.CHASING;
+			ghost.nextState = GhostState.CHASING;
 		});
 		textColor = Color.YELLOW;
 		message = "Press SPACE to start";

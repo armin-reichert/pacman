@@ -90,7 +90,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		setIgnoreUnknownEvents(true);
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 		cast = new PacManGameCast(game, theme);
-		cast.ghosts().forEach(ghost -> ghost.fnNextState = ghostAttackTimer::getState);
 		cast.pacMan.addListener(this::process);
 		introView = new IntroView(theme);
 		playView = new PlayView(game, cast);
@@ -305,6 +304,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		public void onTick() {
 			cast.pacMan.update();
 			ghostAttackTimer.update();
+			cast.ghosts().forEach(ghost -> ghost.nextState = ghostAttackTimer.getState());
 			Iterable<Ghost> ghosts = cast.activeGhosts()::iterator;
 			for (Ghost ghost : ghosts) {
 				if (ghost.getState() == GhostState.LOCKED && cast.canLeaveHouse(ghost)) {
