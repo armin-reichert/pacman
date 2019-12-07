@@ -15,7 +15,6 @@ import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -44,11 +43,11 @@ public class Bonus extends Actor<BonusState> {
 		this.value = cast.game.level.bonusValue;
 		this.activeTime = activeTime;
 		this.consumedTime = consumedTime;
-		fsm = buildStateMachine(cast.theme);
+		fsm = buildStateMachine();
 		fsm.traceTo(Logger.getLogger("StateMachineLogger"), Application.app().clock::getFrequency);
 	}
 
-	private StateMachine<BonusState, PacManGameEvent> buildStateMachine(PacManTheme theme) {
+	private StateMachine<BonusState, PacManGameEvent> buildStateMachine() {
 		return StateMachine.
 		/*@formatter:off*/
 		beginStateMachine(BonusState.class, PacManGameEvent.class)
@@ -58,13 +57,13 @@ public class Bonus extends Actor<BonusState> {
 					.state(ACTIVE)
 						.timeoutAfter(activeTime)
 						.onEntry(() -> {
-							sprites.set("symbol", theme.spr_bonusSymbol(symbol));
+							sprites.set("symbol", cast.theme.spr_bonusSymbol(symbol));
 							sprites.select("symbol");
 						})
 					.state(CONSUMED)
 						.timeoutAfter(consumedTime)
 						.onEntry(() -> {
-							sprites.set("number", theme.spr_pinkNumber(pointsIndex(value)));
+							sprites.set("number", cast.theme.spr_pinkNumber(pointsIndex(value)));
 							sprites.select("number");
 						})
 					.state(INACTIVE)
