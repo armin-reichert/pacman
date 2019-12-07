@@ -64,6 +64,23 @@ The **ghost motion waves** (scattering, chasing) with their level-specific timin
 
 [GhostMotionTimer](PacManGame/src/main/java/de/amr/games/pacman/controller/GhostMotionTimer.java)
 
+```java
+beginStateMachine()
+	.description("[GhostMotionTimer]")
+	.initialState(SCATTERING)
+.states()
+	.state(SCATTERING)
+		.timeoutAfter(() -> game.level.scatterTicks(round))
+		.onEntry(this::logStateEntry)
+	.state(CHASING)
+		.timeoutAfter(() -> game.level.chasingTicks(round))
+		.onEntry(this::logStateEntry)
+		.onExit(() -> ++round)
+.transitions()
+	.when(SCATTERING).then(CHASING).onTimeout()
+	.when(CHASING).then(SCATTERING).onTimeout()
+.endStateMachine();
+```
 
 **Pac-Man** himself is also controlled by a state machine, the main state *HUNGRY* is realized by a separate state subclass.
 
