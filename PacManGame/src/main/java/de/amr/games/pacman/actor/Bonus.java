@@ -49,8 +49,9 @@ public class Bonus extends Actor<BonusState> {
 	}
 
 	private StateMachine<BonusState, PacManGameEvent> buildStateMachine(PacManTheme theme) {
+		return StateMachine.
 		/*@formatter:off*/
-		return StateMachine.beginStateMachine(BonusState.class, PacManGameEvent.class)
+		beginStateMachine(BonusState.class, PacManGameEvent.class)
 				.description("[Bonus]")
 				.initialState(ACTIVE)
 				.states()
@@ -72,7 +73,7 @@ public class Bonus extends Actor<BonusState> {
 					.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
 					.when(ACTIVE).then(INACTIVE).onTimeout()
 					.when(CONSUMED).then(INACTIVE).onTimeout()
-				.endStateMachine();
+		.endStateMachine();
 		/*@formatter:on*/
 	}
 
