@@ -79,7 +79,7 @@ The actors in this implementation are also controlled by finite-state machines:
 
 The **ghosts** ([Ghost](PacManGame/src/main/java/de/amr/games/pacman/actor/Ghost.java))
 
-Even a simple entity like the **bonus symbol** (Bonus](PacManGame/src/main/java/de/amr/games/pacman/actor/Bonus.java)) which appears at certain scores uses a finite-state machine to implement its lifecycle:
+Even a simple entity like the **bonus symbol** ([Bonus](PacManGame/src/main/java/de/amr/games/pacman/actor/Bonus.java)) which appears at certain scores uses a finite-state machine to implement its lifecycle:
 
 ```java
 beginStateMachine(BonusState.class, PacManGameEvent.class)
