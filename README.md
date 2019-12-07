@@ -4,7 +4,7 @@
 
 ## Pac-Man? Really? How uncool!
 
-My personal fascination for "Pac-Man" comes from the fact that the single computer game I played regularly was  ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running on my Apple II+ clone in the mid-eighties, on a monochrome monitor, but what a sound came from the crappy speaker! 
+My personal fascination for "Pac-Man" comes from the fact that the single computer game I played regularly was  ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running on my Apple II+ clone in the mid-eighties, on a monochrome monitor, but what a sound came out of the crappy PC speaker! 
 
 But also today, a seemingly simple game like Pac-Man can be very instructive from a programmer's point of view.
   
