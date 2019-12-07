@@ -1,17 +1,12 @@
 # A hopefully comprehensible Pac-Man implementation using finite-state machines        
 
-
-
 [![Pac-Man](https://img.youtube.com/vi/NF8ynftis_U/0.jpg)](https://www.youtube.com/watch?v=NF8ynftis_U)
 
 ## Pac-Man? Really? How uncool!
 
-For the average school kid of today, a retro game like Pac-Man probably feels like the most boring and uncool thing you 
-can deal with. Nevertheless, also a seemingly simple game like Pac-Man can be very instructive!
-
-My personal fascination for "Pac-Man" comes from the fact that the single computer game I played regularly was  ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running on my Apple II+ clone in 1984, no color monitor, but what a sound!.
+My personal fascination for "Pac-Man" comes from the fact that the single computer game I played regularly was  ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running on my Apple II+ clone in 1984, no color monitor, but what a sound!. But also today, a seemingly simple game like Pac-Man can be very instructive from a programmer's point of view!
   
-## The challenge
+## The programming challenge
 Implementing Pac-Man is challenging not because of the core game functionality like implementing a game loop, updating and drawing entities, handling collisions etc. but for others reasons:
 
 First, implementing a good representation of the maze and the correct movement of the game characters 
@@ -40,29 +35,24 @@ Which entities in the Pac-Man game are candidates for getting controlled by stat
 
 Of course, Pac-Man and the four ghosts, but also the global game control, maybe also the screen selection logic or even simpler entities in your game. It is interesting to look at your program parts through the state machine glasses and find out where an explicit state machine becomes useful.
 
-All tate machines are implemented in a declarative way (*builder pattern*). A single large Java expression defines the complete state graph together with node and edge annotations representing the actions, conditions, event conditions and timers. Lambda expressions (anonymous functions) and function references allow to embed code directly inside the state machine definition. If the state definition becomes more complex it is possible to implement it in a separate state class. Both variants are used here.
+All state machines in this implementation are implemented in a declarative way (*builder pattern*). A single large Java expression defines the complete state graph together with node and edge annotations representing the actions, conditions, event conditions and timers. Lambda expressions (anonymous functions) and function references allow to embed code directly inside the state machine definition. If the state definition becomes more complex it is possible to implement it in a separate state class. Both variants are used here.
 
 ## State machines in action
 
 Sounds all well and nice, but how does that look in the real code? 
 
-The **intro screen** shows different animations that have to be coordinated using timers and stop conditions. This
-is an obvious candidate for using a state machine. The state machine only uses timers, so we can specify
-type *Void* as event type. The states are identified by an enumeration type.
+The **start screen** ([IntroView](PacManGame/src/main/java/de/amr/games/pacman/view/intro/IntroView.java)) shows different animations that have to be coordinated using timers and stop conditions. This is an obvious candidate for using a state machine. The state machine only uses timers, so we can use *Void* as event type. The states are identified using an enumeration type.
 
-[IntroView](PacManGame/src/main/java/de/amr/games/pacman/view/intro/IntroView.java)
-
-A more complex state machine is used for defining the **global game control**. It processes game events which
+A more complex state machine is used for defining the **global game control** ([PacManGameController](PacManGame/src/main/java/de/amr/games/pacman/controller/PacManGameController.java)). It processes game events which
 are created during the game play, for example when Pac-Man finds food or meets ghosts. Also the different
 game states like changing the level or the dying animations of Pac-Man and the ghosts are controlled by this
 state machine. Further, the more complex states are implemented as subclasses of the generic `State` class. This
 has the advantage that actions which are state-specific can be realized as methods of the state subclass.
 
-[PacManGameController](PacManGame/src/main/java/de/amr/games/pacman/controller/PacManGameController.java)
 
 The **ghost motion waves** (scattering, chasing) with their level-specific timing are realized by the following state machine:
 
-[GhostMotionTimer](PacManGame/src/main/java/de/amr/games/pacman/controller/GhostMotionTimer.java)
+See [GhostMotionTimer](PacManGame/src/main/java/de/amr/games/pacman/controller/GhostMotionTimer.java)
 
 ```java
 beginStateMachine()
@@ -82,14 +72,11 @@ beginStateMachine()
 .endStateMachine();
 ```
 
-**Pac-Man** himself is also controlled by a state machine, the main state *HUNGRY* is realized by a separate state subclass.
+The **Pac-Man** ([Pac-Man](PacManGame/src/main/java/de/amr/games/pacman/actor/PacMan.java)
+) is also controlled by a state machine, the main state *HUNGRY* is realized by a separate state subclass.
 
-[Pac-Man](PacManGame/src/main/java/de/amr/games/pacman/actor/PacMan.java)
-
-Finally, each ghost is controlled by its own instance of the same state machine.
-
-[Ghost](PacManGame/src/main/java/de/amr/games/pacman/actor/Ghost.java)
-
+Finally, each of the four **ghosts** ([Ghost](PacManGame/src/main/java/de/amr/games/pacman/actor/Ghost.java)
+) is controlled by its own instance of the same state machine.
 
 ## Tracing
 
