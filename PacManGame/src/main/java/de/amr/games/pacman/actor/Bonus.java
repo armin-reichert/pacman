@@ -1,8 +1,8 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.games.pacman.actor.Bonus.BonusState.ACTIVE;
-import static de.amr.games.pacman.actor.Bonus.BonusState.CONSUMED;
-import static de.amr.games.pacman.actor.Bonus.BonusState.INACTIVE;
+import static de.amr.games.pacman.actor.BonusState.ACTIVE;
+import static de.amr.games.pacman.actor.BonusState.CONSUMED;
+import static de.amr.games.pacman.actor.BonusState.INACTIVE;
 import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.awt.Graphics2D;
@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import de.amr.easy.game.Application;
-import de.amr.games.pacman.actor.Bonus.BonusState;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.BonusSymbol;
@@ -25,10 +24,6 @@ import de.amr.statemachine.StateMachine;
  * @author Armin Reichert
  */
 public class Bonus extends Actor<BonusState> {
-
-	public enum BonusState {
-		ACTIVE, CONSUMED, INACTIVE
-	};
 
 	public final BonusSymbol symbol;
 	public final int value;

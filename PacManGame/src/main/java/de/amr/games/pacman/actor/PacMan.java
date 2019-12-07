@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.actor.Bonus.BonusState;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
