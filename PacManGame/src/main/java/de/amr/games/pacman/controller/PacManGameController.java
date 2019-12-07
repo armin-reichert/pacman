@@ -71,7 +71,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private final PacManGameCast cast;
 
 	// Controls the ghost attack waves
-	private final GhostAttackTimer ghostAttackTimer;
+	private final GhostMotionTimer ghostAttackTimer;
 
 	// Typed reference to "Playing" state object
 	private PlayingState playingState;
@@ -85,7 +85,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	public PacManGameController(PacManGame game, PacManTheme theme) {
 		super(PacManGameState.class);
 		this.game = game;
-		ghostAttackTimer = new GhostAttackTimer(game);
+		ghostAttackTimer = new GhostMotionTimer(game);
 		buildStateMachine();
 		setIgnoreUnknownEvents(true);
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);

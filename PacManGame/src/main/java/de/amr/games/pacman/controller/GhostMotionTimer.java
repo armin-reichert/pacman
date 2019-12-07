@@ -12,30 +12,27 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.statemachine.StateMachine;
 
 /**
- * State machine for controlling the timing of the ghost attacks. Ghosts attack Pac-Man in rounds,
- * changing between chasing and scattering. The duration of these attacks depends on the level and
- * round.
- * 
- * <p>
- * Ghosts also use the current state of this state machine to decide what to do after being
- * frightened or killed.
+ * Controller for the timing of the ghost motion. Ghosts change between chasing
+ * and scattering mode during each level in several rounds. The duration of
+ * these rounds depends on the level and round. When a ghost becomes frightened,
+ * the timer is stopped and the ghost resumes later in that state.
  * 
  * @author Armin Reichert
  * 
  * @see <a href=
  *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=3">Gamasutra</a>
  */
-class GhostAttackTimer extends StateMachine<GhostState, Void> {
+class GhostMotionTimer extends StateMachine<GhostState, Void> {
 
 	private int round;
 	private boolean suspended;
 
-	public GhostAttackTimer(PacManGame game) {
+	public GhostMotionTimer(PacManGame game) {
 		super(GhostState.class);
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 		/*@formatter:off*/
 		beginStateMachine()
-			.description("[GhostAttackTimer]")
+			.description("[GhostMotionTimer]")
 			.initialState(SCATTERING)
 		.states()
 			.state(SCATTERING)
@@ -54,7 +51,6 @@ class GhostAttackTimer extends StateMachine<GhostState, Void> {
 
 	@Override
 	public void init() {
-		LOGGER.info(() -> "Initialize ghost attack timer");
 		round = 0;
 		suspended = false;
 		super.init();
@@ -69,16 +65,16 @@ class GhostAttackTimer extends StateMachine<GhostState, Void> {
 
 	public void suspend() {
 		if (!suspended) {
-			LOGGER.info(() -> String.format("%s: suspended %s, remaining time: %d frames (%.2f seconds)",
-					getDescription(), getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
+			LOGGER.info(() -> String.format("%s: suspended %s, remaining time: %d frames (%.2f seconds)", getDescription(),
+					getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
 			suspended = true;
 		}
 	}
 
 	public void resume() {
 		if (suspended) {
-			LOGGER.info(() -> String.format("%s: resumed %s, remaining time: %d frames (%.2f seconds)",
-					getDescription(), getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
+			LOGGER.info(() -> String.format("%s: resumed %s, remaining time: %d frames (%.2f seconds)", getDescription(),
+					getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
 			suspended = false;
 		}
 	}
@@ -87,4 +83,5 @@ class GhostAttackTimer extends StateMachine<GhostState, Void> {
 		LOGGER.info(() -> String.format("Start %s for %d ticks (%.2f seconds)", getState(), state().getDuration(),
 				state().getDuration() / 60f));
 	}
+
 }
