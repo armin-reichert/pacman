@@ -30,6 +30,7 @@ import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Actor;
+import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManGameCast;
@@ -303,6 +304,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onTick() {
 			cast.pacMan.update();
+			cast.bonus.ifPresent(Bonus::update);
 			ghostMotionTimer.update();
 			cast.ghosts().forEach(ghost -> ghost.nextState = ghostMotionTimer.getState());
 			Iterable<Ghost> ghosts = cast.activeGhosts()::iterator;
@@ -367,14 +369,13 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onBonusFound(PacManGameEvent event) {
 			cast.bonus.ifPresent(bonus -> {
+				LOGGER.info(() -> String.format("PacMan found %s and wins %d points", bonus.symbol, bonus.value));
 				boolean extraLife = game.scorePoints(bonus.value);
-				bonus.changeIntoNumber();
 				cast.theme.snd_eatFruit().play();
 				if (extraLife) {
 					cast.theme.snd_extraLife().play();
 				}
-				playView.displayBonus(sec(2));
-				LOGGER.info(() -> String.format("PacMan found %s and scored %d points", bonus.symbol, bonus.value));
+				bonus.process(event);
 			});
 		}
 
@@ -391,12 +392,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				enqueue(new LevelCompletedEvent());
 				return;
 			}
-			if (game.isBonusReached()) {
-				cast.setBonus(game.level.bonusSymbol, game.level.bonusValue);
-				int displayTicks = sec(9 + new Random().nextFloat());
-				LOGGER.info(() -> String.format("Display %s for %d ticks (%.2f sec)", cast.bonus.get(), displayTicks,
-						displayTicks / 60f));
-				playView.displayBonus(displayTicks);
+			if (game.isBonusScoreReached()) {
+				cast.activateBonus(sec(9 + new Random().nextFloat()), sec(3));
 			}
 			if (e.energizer) {
 				enqueue(new PacManGainsPowerEvent());

@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.games.pacman.actor.Bonus.BonusState;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -236,7 +237,7 @@ public class PacMan extends Actor<PacManState> {
 			/*@formatter:off*/
 			Optional<PacManGameEvent> bonusEaten = cast.bonus
 				.filter(bonus -> pacManTile == maze.bonusTile)
-				.filter(bonus -> !bonus.number)
+				.filter(bonus -> bonus.getState() == BonusState.ACTIVE)
 				.map(bonus -> new BonusFoundEvent(bonus.symbol, bonus.value));
 			/*@formatter:on*/
 

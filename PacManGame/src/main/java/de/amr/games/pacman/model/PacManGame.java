@@ -18,12 +18,10 @@ import java.util.Deque;
  * 
  * @author Armin Reichert
  * 
- * @see <a href=
- *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
+ * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
  *      dossier</a>
- * @see <a href=
- *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man
- *      level specifications</a>
+ * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man level
+ *      specifications</a>
  */
 public class PacManGame {
 
@@ -34,60 +32,7 @@ public class PacManGame {
 	public static final int POINTS_PELLET = 10;
 	public static final int POINTS_ENERGIZER = 50;
 
-	public static class Level {
-
-		public final int number;
-		public final BonusSymbol bonusSymbol;
-		public final int bonusValue;
-		public final float pacManSpeed;
-		public final float pacManDotsSpeed;
-		public final float ghostSpeed;
-		public final float ghostTunnelSpeed;
-		public final int elroy1DotsLeft;
-		public final float elroy1Speed;
-		public final int elroy2DotsLeft;
-		public final float elroy2Speed;
-		public final float pacManPowerSpeed;
-		public final float pacManPowerDotsSpeed;
-		public final float ghostFrightenedSpeed;
-		public final int pacManPowerSeconds;
-		public final int mazeNumFlashes;
-
-		public Level(int number, Object[] row) {
-			this.number = number;
-			bonusSymbol = (BonusSymbol) row[0];
-			bonusValue = (int) row[1];
-			pacManSpeed = (float) row[2];
-			pacManDotsSpeed = (float) row[3];
-			ghostSpeed = (float) row[4];
-			ghostTunnelSpeed = (float) row[5];
-			elroy1DotsLeft = (int) row[6];
-			elroy1Speed = (float) row[7];
-			elroy2DotsLeft = (int) row[8];
-			elroy2Speed = (float) row[9];
-			pacManPowerSpeed = (float) row[10];
-			pacManPowerDotsSpeed = (float) row[11];
-			ghostFrightenedSpeed = (float) row[12];
-			pacManPowerSeconds = (int) row[13];
-			mazeNumFlashes = (int) row[14];
-		}
-
-		/**
-		 * @param round attack round
-		 * @return number of ticks ghost will scatter in this round and level
-		 */
-		public int scatterTicks(int round) {
-			return SCATTERING_TICKS[(number == 1) ? 0 : (number <= 4) ? 1 : 2][Math.min(round, 3)];
-		}
-
-		/**
-		 * @param round attack round
-		 * @return number of ticks ghost will chase in this round and level
-		 */
-		public int chasingTicks(int round) {
-			return CHASING_TICKS[(number == 1) ? 0 : (number <= 4) ? 1 : 2][Math.min(round, 3)];
-		}
-	}
+	public static final int[] BONUS_POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
 	static final Object[][] LEVELS = new Object[][] {
 		/*@formatter:off*/
@@ -131,8 +76,66 @@ public class PacManGame {
 		/*@formatter:on*/
 	};
 
+	public static class Level {
+
+		public final int number;
+		public final BonusSymbol bonusSymbol;
+		public final int bonusValue;
+		public final float pacManSpeed;
+		public final float pacManDotsSpeed;
+		public final float ghostSpeed;
+		public final float ghostTunnelSpeed;
+		public final int elroy1DotsLeft;
+		public final float elroy1Speed;
+		public final int elroy2DotsLeft;
+		public final float elroy2Speed;
+		public final float pacManPowerSpeed;
+		public final float pacManPowerDotsSpeed;
+		public final float ghostFrightenedSpeed;
+		public final int pacManPowerSeconds;
+		public final int mazeNumFlashes;
+
+		public Level(int number, Object[] row) {
+			this.number = number;
+			bonusSymbol = (BonusSymbol) row[0];
+			bonusValue = (int) row[1];
+			pacManSpeed = (float) row[2];
+			pacManDotsSpeed = (float) row[3];
+			ghostSpeed = (float) row[4];
+			ghostTunnelSpeed = (float) row[5];
+			elroy1DotsLeft = (int) row[6];
+			elroy1Speed = (float) row[7];
+			elroy2DotsLeft = (int) row[8];
+			elroy2Speed = (float) row[9];
+			pacManPowerSpeed = (float) row[10];
+			pacManPowerDotsSpeed = (float) row[11];
+			ghostFrightenedSpeed = (float) row[12];
+			pacManPowerSeconds = (int) row[13];
+			mazeNumFlashes = (int) row[14];
+		}
+
+		/**
+		 * @param round
+		 *                attack round
+		 * @return number of ticks ghost will scatter in this round and level
+		 */
+		public int scatterTicks(int round) {
+			return SCATTERING_TICKS[(number == 1) ? 0 : (number <= 4) ? 1 : 2][Math.min(round, 3)];
+		}
+
+		/**
+		 * @param round
+		 *                attack round
+		 * @return number of ticks ghost will chase in this round and level
+		 */
+		public int chasingTicks(int round) {
+			return CHASING_TICKS[(number == 1) ? 0 : (number <= 4) ? 1 : 2][Math.min(round, 3)];
+		}
+	}
+
 	/**
-	 * @param fraction fraction of base speed
+	 * @param fraction
+	 *                   fraction of base speed
 	 * @return speed (pixels/tick) corresponding to given fraction of base speed
 	 */
 	public static float speed(float fraction) {
@@ -140,7 +143,8 @@ public class PacManGame {
 	}
 
 	/**
-	 * @param fraction fraction of seconds
+	 * @param fraction
+	 *                   fraction of seconds
 	 * @return ticks corresponding to given fraction of seconds at 60Hz
 	 */
 	public static int sec(float fraction) {
@@ -197,7 +201,8 @@ public class PacManGame {
 	}
 
 	/**
-	 * @param tile tile containing pellet
+	 * @param tile
+	 *               tile containing pellet
 	 * @return points scored for eating pellet
 	 */
 	public int eat(Tile tile) {
@@ -206,7 +211,8 @@ public class PacManGame {
 			numGhostsKilledByCurrentEnergizer = 0;
 			maze.removeFood(tile);
 			return POINTS_ENERGIZER;
-		} else {
+		}
+		else {
 			maze.removeFood(tile);
 			return POINTS_PELLET;
 		}
@@ -220,7 +226,8 @@ public class PacManGame {
 	}
 
 	/**
-	 * @param points points scored
+	 * @param points
+	 *                 points scored
 	 * @return <code>true</code> if new life has been granted
 	 */
 	public boolean scorePoints(int points) {
@@ -237,7 +244,7 @@ public class PacManGame {
 	/**
 	 * @return if bonus will become active
 	 */
-	public boolean isBonusReached() {
+	public boolean isBonusScoreReached() {
 		return numPelletsRemaining() == 70 || numPelletsRemaining() == 170;
 	}
 

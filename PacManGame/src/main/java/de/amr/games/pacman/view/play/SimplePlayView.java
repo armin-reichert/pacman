@@ -14,6 +14,7 @@ import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
+import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.BonusSymbol;
@@ -39,8 +40,6 @@ public class SimplePlayView implements View, Controller {
 
 	protected Image lifeImage;
 	protected Sprite fullMazeSprite, flashingMazeSprite;
-	protected int bonusDisplayDuration;
-	protected int bonusDisplayTicksRemaining;
 
 	public SimplePlayView(PacManGame game, PacManGameCast cast) {
 		this.game = game;
@@ -55,7 +54,6 @@ public class SimplePlayView implements View, Controller {
 	public void init() {
 		energizerBlinking.setEnabled(false);
 		mazeFlashing = false;
-		bonusDisplayDuration = bonusDisplayTicksRemaining = 0;
 		message = null;
 		textColor = Color.YELLOW;
 	}
@@ -65,12 +63,7 @@ public class SimplePlayView implements View, Controller {
 		if (mazeFlashing) {
 			return;
 		}
-		if (cast.bonus.isPresent() && bonusDisplayTicksRemaining > 0) {
-			bonusDisplayTicksRemaining -= 1;
-			if (bonusDisplayTicksRemaining == 0) {
-				cast.clearBonus();
-			}
-		}
+		cast.bonus.ifPresent(Bonus::update);
 		energizerBlinking.update();
 	}
 
@@ -83,12 +76,6 @@ public class SimplePlayView implements View, Controller {
 	public void enableAnimations(boolean state) {
 		flashingMazeSprite.enableAnimation(state);
 		cast.actors().forEach(actor -> actor.sprites.enableAnimation(state));
-	}
-
-	public void displayBonus(int ticks) {
-		cast.bonus.ifPresent(bonus -> {
-			bonusDisplayDuration = bonusDisplayTicksRemaining = ticks;
-		});
 	}
 
 	@Override
@@ -125,9 +112,9 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		if (cast.bonus.isPresent() && bonusDisplayDuration > 0) {
-			cast.bonus.get().draw(g);
-		}
+		cast.bonus.ifPresent(bonus -> {
+			bonus.draw(g);
+		});
 		if (cast.pacMan.isActive()) {
 			cast.pacMan.draw(g);
 		}

@@ -14,7 +14,6 @@ import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
@@ -131,10 +130,11 @@ public class PacManGameCast {
 		bonus = Optional.empty();
 	}
 
-	public void setBonus(BonusSymbol symbol, int value) {
-		Bonus b = new Bonus(symbol, value, theme);
-		b.tf.setPosition(game.maze.bonusTile.col * TS + TS / 2, game.maze.bonusTile.row * TS);
-		bonus = Optional.of(b);
+	public void activateBonus(int activeTime, int consumedTime) {
+		Bonus bonus = new Bonus(this, activeTime, consumedTime);
+		bonus.placeAtTile(game.maze.bonusTile, TS / 2, 0);
+		bonus.init();
+		this.bonus = Optional.of(bonus);
 	}
 
 	public void chasingSoundOn() {
