@@ -45,12 +45,11 @@ Sounds all well and nice, but how does that look in the real code?
 
 The **start screen** ([IntroView](PacManGame/src/main/java/de/amr/games/pacman/view/intro/IntroView.java)) shows different animations that have to be coordinated using timers and stop conditions. This is an obvious candidate for using a state machine. The state machine only uses timers, so we can use *Void* as event type. The states are identified using an enumeration type.
 
-A more complex state machine is used for defining the **global game control** ([PacManGameController](PacManGame/src/main/java/de/amr/games/pacman/controller/PacManGameController.java)). It processes game events which
+A more complex state machine is used for implementing the **global game control** ([PacManGameController](PacManGame/src/main/java/de/amr/games/pacman/controller/PacManGameController.java)). It processes game events which
 are created during the game play, for example when Pac-Man finds food or meets ghosts. Also the different
 game states like changing the level or the dying animations of Pac-Man and the ghosts are controlled by this
 state machine. Further, the more complex states are implemented as subclasses of the generic `State` class. This
 has the advantage that actions which are state-specific can be realized as methods of the state subclass.
-
 
 The **ghost motion waves** (scattering, chasing) with their level-specific timing are realized by the following state machine:
 
@@ -74,11 +73,40 @@ beginStateMachine()
 .endStateMachine();
 ```
 
-The **Pac-Man** ([Pac-Man](PacManGame/src/main/java/de/amr/games/pacman/actor/PacMan.java)
-) is also controlled by a state machine, the main state *HUNGRY* is realized by a separate state subclass.
+The actors in this implementation are also controlled by finite-state machines:
 
-Finally, each of the four **ghosts** ([Ghost](PacManGame/src/main/java/de/amr/games/pacman/actor/Ghost.java)
-) is controlled by its own instance of the same state machine.
+**Pac-Man** ([Pac-Man](PacManGame/src/main/java/de/amr/games/pacman/actor/PacMan.java))
+
+The **ghosts** ([Ghost](PacManGame/src/main/java/de/amr/games/pacman/actor/Ghost.java))
+
+Even a simple entity like the **bonus symbol** which appears at dedicated scores uses a finite-state machine to implement its lifecycle:
+
+```java
+		beginStateMachine(BonusState.class, PacManGameEvent.class)
+				.description("[Bonus]")
+				.initialState(ACTIVE)
+				.states()
+					.state(ACTIVE)
+						.timeoutAfter(activeTime)
+						.onEntry(() -> {
+							sprites.set("symbol", theme.spr_bonusSymbol(symbol));
+							sprites.select("symbol");
+						})
+					.state(CONSUMED)
+						.timeoutAfter(consumedTime)
+						.onEntry(() -> {
+							sprites.set("number", theme.spr_pinkNumber(pointsIndex(value)));
+							sprites.select("number");
+						})
+					.state(INACTIVE)
+						.onEntry(cast::clearBonus)
+				.transitions()
+					.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
+					.when(ACTIVE).then(INACTIVE).onTimeout()
+					.when(CONSUMED).then(INACTIVE).onTimeout()
+		.endStateMachine();
+
+```
 
 ## Tracing
 
