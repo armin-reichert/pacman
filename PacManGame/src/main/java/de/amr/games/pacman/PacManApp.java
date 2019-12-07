@@ -24,7 +24,7 @@ public class PacManApp extends Application {
 
 	public static void main(String[] args) {
 		Logger.getLogger("StateMachineLogger").setLevel(Level.OFF);
-		Logger.getLogger(Keyboard.class.getName()).setLevel(Level.INFO);
+		Logger.getLogger(Keyboard.class.getName()).setLevel(Level.OFF);
 		launch(new PacManApp(), args);
 	}
 

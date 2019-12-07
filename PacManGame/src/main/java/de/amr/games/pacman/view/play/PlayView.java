@@ -259,7 +259,7 @@ public class PlayView extends SimplePlayView {
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		}
 		// draw Clyde's chasing zone
-		if (ghost == cast.clyde && ghost.getState() == GhostState.CHASING) {
+		if (ghost == cast.clyde && ghost.getState() == GhostState.CHASING && cast.clyde.targetTile != null) {
 			Vector2f center = cast.clyde.tf.getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 100));
