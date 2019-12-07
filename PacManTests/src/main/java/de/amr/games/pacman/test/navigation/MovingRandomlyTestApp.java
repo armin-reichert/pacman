@@ -1,21 +1,23 @@
 package de.amr.games.pacman.test.navigation;
 
+import static de.amr.games.pacman.model.PacManGame.TS;
+
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.theme.PacManTheme;
 
-public class FleeRandomlyTestApp extends Application {
+public class MovingRandomlyTestApp extends Application {
 
 	public static void main(String[] args) {
-		launch(new FleeRandomlyTestApp(), args);
+		launch(new MovingRandomlyTestApp(), args);
 	}
 
-	public FleeRandomlyTestApp() {
-		settings.title = "Flee Randomly";
-		settings.width = 28 * PacManGame.TS;
-		settings.height = 36 * PacManGame.TS;
+	public MovingRandomlyTestApp() {
+		settings.title = "Moving Randomly";
+		settings.width = 28 * TS;
+		settings.height = 36 * TS;
 		settings.scale = 2;
 	}
 
@@ -24,6 +26,6 @@ public class FleeRandomlyTestApp extends Application {
 		PacManGame game = new PacManGame();
 		PacManTheme theme = new ClassicPacManTheme();
 		PacManGameCast ensemble = new PacManGameCast(game, theme);
-		setController(new FleeRandomlyTestUI(game, ensemble));
+		setController(new MovingRandomlyTestUI(game, ensemble));
 	}
 }
