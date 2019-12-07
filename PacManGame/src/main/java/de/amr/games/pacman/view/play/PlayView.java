@@ -20,6 +20,7 @@ import java.util.function.Supplier;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
+import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MazeMover;
@@ -156,6 +157,13 @@ public class PlayView extends SimplePlayView {
 		cast.activeGhosts().filter(Ghost::visible).forEach(ghost -> {
 			drawText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
 		});
+		cast.bonus.ifPresent(bonus -> {
+			drawText(g, Color.YELLOW, bonus.tf.getX(), bonus.tf.getY(), bonusStateText(bonus));
+		});
+	}
+	
+	private String bonusStateText(Bonus bonus) {
+		return String.format("%s,%d|%d", bonus, bonusDisplayTicksRemaining, bonusDisplayDuration);
 	}
 
 	private String pacManStateText(PacMan pacMan) {

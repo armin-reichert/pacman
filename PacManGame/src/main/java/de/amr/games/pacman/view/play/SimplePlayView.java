@@ -39,7 +39,8 @@ public class SimplePlayView implements View, Controller {
 
 	protected Image lifeImage;
 	protected Sprite fullMazeSprite, flashingMazeSprite;
-	protected int bonusDisplayTicks;
+	protected int bonusDisplayDuration;
+	protected int bonusDisplayTicksRemaining;
 
 	public SimplePlayView(PacManGame game, PacManGameCast cast) {
 		this.game = game;
@@ -54,7 +55,7 @@ public class SimplePlayView implements View, Controller {
 	public void init() {
 		energizerBlinking.setEnabled(false);
 		mazeFlashing = false;
-		bonusDisplayTicks = 0;
+		bonusDisplayDuration = bonusDisplayTicksRemaining = 0;
 		message = null;
 		textColor = Color.YELLOW;
 	}
@@ -64,9 +65,9 @@ public class SimplePlayView implements View, Controller {
 		if (mazeFlashing) {
 			return;
 		}
-		if (cast.bonus.isPresent() && bonusDisplayTicks > 0) {
-			bonusDisplayTicks -= 1;
-			if (bonusDisplayTicks == 0) {
+		if (cast.bonus.isPresent() && bonusDisplayTicksRemaining > 0) {
+			bonusDisplayTicksRemaining -= 1;
+			if (bonusDisplayTicksRemaining == 0) {
 				cast.clearBonus();
 			}
 		}
@@ -86,7 +87,7 @@ public class SimplePlayView implements View, Controller {
 
 	public void displayBonus(int ticks) {
 		cast.bonus.ifPresent(bonus -> {
-			bonusDisplayTicks = ticks;
+			bonusDisplayDuration = bonusDisplayTicksRemaining = ticks;
 		});
 	}
 
@@ -124,7 +125,7 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		if (cast.bonus.isPresent() && bonusDisplayTicks > 0) {
+		if (cast.bonus.isPresent() && bonusDisplayDuration > 0) {
 			cast.bonus.get().draw(g);
 		}
 		if (cast.pacMan.isActive()) {
