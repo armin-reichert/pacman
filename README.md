@@ -4,7 +4,9 @@
 
 ## Pac-Man? Really? How uncool!
 
-My personal fascination for "Pac-Man" comes from the fact that the single computer game I played regularly was  ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running on my Apple II+ clone in 1984, no color monitor, but what a sound!. But also today, a seemingly simple game like Pac-Man can be very instructive from a programmer's point of view!
+My personal fascination for "Pac-Man" comes from the fact that the single computer game I played regularly was  ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running on my Apple II+ clone in the mid-eighties, on a monochrome monitor, but what a sound came from the crappy speaker! 
+
+But also today, a seemingly simple game like Pac-Man can be very instructive from a programmer's point of view.
   
 ## The programming challenge
 Implementing Pac-Man is challenging not because of the core game functionality like implementing a game loop, updating and drawing entities, handling collisions etc. but for others reasons:
