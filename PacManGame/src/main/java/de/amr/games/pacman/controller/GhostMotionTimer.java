@@ -37,10 +37,8 @@ class GhostMotionTimer extends StateMachine<GhostState, Void> {
 		.states()
 			.state(SCATTERING)
 				.timeoutAfter(() -> game.level.scatterTicks(round))
-				.onEntry(this::logStateEntry)
 			.state(CHASING)
 				.timeoutAfter(() -> game.level.chasingTicks(round))
-				.onEntry(this::logStateEntry)
 				.onExit(() -> ++round)
 		.transitions()
 			.when(SCATTERING).then(CHASING).onTimeout()
@@ -78,10 +76,4 @@ class GhostMotionTimer extends StateMachine<GhostState, Void> {
 			suspended = false;
 		}
 	}
-
-	private void logStateEntry() {
-		LOGGER.info(() -> String.format("Start %s for %d ticks (%.2f seconds)", getState(), state().getDuration(),
-				state().getDuration() / 60f));
-	}
-
 }
