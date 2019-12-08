@@ -37,11 +37,13 @@ import de.amr.statemachine.StateMachine;
  */
 public class PacMan extends Actor<PacManState> {
 
+	public final PacManGameCast cast;
 	public int ticksSinceLastMeal;
 	public Steering<PacMan> steering;
 
 	public PacMan(PacManGameCast cast) {
-		super("Pac-Man", cast);
+		super("Pac-Man", cast.game);
+		this.cast = cast;
 		fsm = buildStateMachine();
 		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
@@ -71,14 +73,14 @@ public class PacMan extends Actor<PacManState> {
 	}
 
 	/**
-	 * NOTE: If the application property <code>overflowBug</code> is <code>true</code>, this method
-	 * simulates the bug in the original Arcade game which occurs if Pac-Man points upwards. In that
-	 * case the same number of tiles to the left is added.
+	 * NOTE: If the application property <code>overflowBug</code> is
+	 * <code>true</code>, this method simulates the bug in the original Arcade game
+	 * which occurs if Pac-Man points upwards. In that case the same number of tiles
+	 * to the left is added.
 	 * 
-	 * @param numTiles
-	 *                   number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
-	 *         direction.
+	 * @param numTiles number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor
+	 *         towards his current move direction.
 	 */
 	@Override
 	public Tile tilesAhead(int numTiles) {
@@ -187,16 +189,13 @@ public class PacMan extends Actor<PacManState> {
 		public void onTick() {
 			if (startsLosingPower()) {
 				publish(new PacManGettingWeakerEvent());
-			}
-			else if (getTicksRemaining() == 1) {
+			} else if (getTicksRemaining() == 1) {
 				setTimerFunction(() -> 0);
 				cast.theme.snd_waza().stop();
 				publish(new PacManLostPowerEvent());
-			}
-			else if (mustDigest()) {
+			} else if (mustDigest()) {
 				digest();
-			}
-			else {
+			} else {
 				steer();
 				move();
 				findSomethingInteresting().ifPresent(PacMan.this::publish);
@@ -249,8 +248,7 @@ public class PacMan extends Actor<PacManState> {
 				boolean energizer = maze.containsEnergizer(pacManTile);
 				digestion = energizer ? PacManGame.DIGEST_TICKS_ENERGIZER : PacManGame.DIGEST_TICKS;
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			}
-			else {
+			} else {
 				ticksSinceLastMeal += 1;
 			}
 

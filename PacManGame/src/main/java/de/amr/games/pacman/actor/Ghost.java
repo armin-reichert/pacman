@@ -43,6 +43,7 @@ public class Ghost extends Actor<GhostState> {
 	private final Map<GhostState, Steering<Ghost>> steeringByState;
 	private final Steering<Ghost> defaultSteering;
 
+	public final PacManGameCast cast;
 	public int initialDir;
 	public Tile initialTile;
 	public Tile revivalTile;
@@ -52,7 +53,8 @@ public class Ghost extends Actor<GhostState> {
 	public int foodCount;
 
 	public Ghost(String name, PacManGameCast cast) {
-		super(name, cast);
+		super(name, cast.game);
+		this.cast = cast;
 		steeringByState = new EnumMap<>(GhostState.class);
 		defaultSteering = Steerings.headingForTargetTile();
 		fsm = buildStateMachine();

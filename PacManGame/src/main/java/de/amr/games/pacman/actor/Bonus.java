@@ -25,13 +25,15 @@ import de.amr.statemachine.StateMachine;
  */
 public class Bonus extends Actor<BonusState> {
 
+	public final PacManGameCast cast;
 	public final BonusSymbol symbol;
 	public final int value;
 	public final int activeTime;
 	public final int consumedTime;
 
 	public Bonus(PacManGameCast cast, int activeTime, int consumedTime) {
-		super("Bonus", cast);
+		super("Bonus", cast.game);
+		this.cast = cast;
 		tf.setWidth(TS);
 		tf.setHeight(TS);
 		this.symbol = cast.game.level.bonusSymbol;

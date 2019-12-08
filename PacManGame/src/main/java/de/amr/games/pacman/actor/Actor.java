@@ -16,27 +16,24 @@ import de.amr.statemachine.StateMachine;
 /**
  * Base class for Pac-Man and the ghosts.
  * <p>
- * An entity controlled by a finite-state machine with the capability of registering event handlers
- * for game events and publishing game events.
+ * An entity controlled by a finite-state machine with the capability of
+ * registering event handlers for game events and publishing game events.
  * 
  * @author Armin Reichert
  *
- * @param <S>
- *          state (label) type of the FSM
+ * @param <S> state (label) type of the FSM
  */
 public abstract class Actor<S> extends MazeMover {
 
 	public final String name;
-	public final PacManGameCast cast;
 	public final PacManGame game;
 	private boolean active;
 	protected final Set<Consumer<PacManGameEvent>> listeners;
 	protected StateMachine<S, PacManGameEvent> fsm;
 
-	public Actor(String name, PacManGameCast cast) {
-		super(cast.game.maze);
-		this.cast = cast;
-		this.game = cast.game;
+	public Actor(String name, PacManGame game) {
+		super(game.maze);
+		this.game = game;
 		this.name = name;
 		active = false;
 		listeners = new LinkedHashSet<>();
