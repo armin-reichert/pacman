@@ -13,15 +13,14 @@ import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
 /**
- * Default implementation of the {@link Actor} interface which can be used as a delegate by an
- * entity class.
+ * Prototypical implementation of the {@link Actor} interface which can be used
+ * as a delegate by an entity class.
  * 
  * @author Armin Reichert
  *
- * @param <S>
- *          state (label) type of the FSM
+ * @param <S> state (label) type of the FSM
  */
-class DefaultActor<S> implements Actor<S> {
+class ActorPrototype<S> implements Actor<S> {
 
 	public final String name;
 	public final StateMachine<S, PacManGameEvent> fsm;
@@ -29,7 +28,7 @@ class DefaultActor<S> implements Actor<S> {
 	public Predicate<PacManGameEvent> publishedEventIsLogged;
 	private boolean active;
 
-	public DefaultActor(String name, StateMachine<S, PacManGameEvent> fsm) {
+	public ActorPrototype(String name, StateMachine<S, PacManGameEvent> fsm) {
 		this.name = name;
 		this.fsm = fsm;
 		active = false;

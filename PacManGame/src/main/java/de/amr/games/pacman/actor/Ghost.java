@@ -40,7 +40,7 @@ import de.amr.statemachine.StateMachine;
  */
 public class Ghost extends MazeMover implements Actor<GhostState> {
 
-	private final DefaultActor<GhostState> actorPart;
+	private final ActorPrototype<GhostState> actorPart;
 	private final Map<GhostState, Steering<Ghost>> steeringByState;
 	private final Steering<Ghost> defaultSteering;
 
@@ -60,7 +60,7 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 		this.game = cast.game;
 		steeringByState = new EnumMap<>(GhostState.class);
 		defaultSteering = Steerings.headingForTargetTile();
-		actorPart = new DefaultActor<>(name, buildStateMachine(name));
+		actorPart = new ActorPrototype<>(name, buildStateMachine(name));
 		actorPart.fsm.setIgnoreUnknownEvents(true);
 		actorPart.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}

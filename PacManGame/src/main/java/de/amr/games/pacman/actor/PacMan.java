@@ -37,7 +37,7 @@ import de.amr.statemachine.StateMachine;
  */
 public class PacMan extends MazeMover implements Actor<PacManState> {
 
-	private final DefaultActor<PacManState> actorPart;
+	private final ActorPrototype<PacManState> actorPart;
 
 	public final PacManGameCast cast;
 	public final PacManGame game;
@@ -48,7 +48,7 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 		super(cast.game.maze);
 		this.cast = cast;
 		this.game = cast.game;
-		actorPart = new DefaultActor<>("Pac-Man", buildStateMachine());
+		actorPart = new ActorPrototype<>("Pac-Man", buildStateMachine());
 		actorPart.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 		actorPart.publishedEventIsLogged = event -> {
 			// no logging when normal pellet is found
