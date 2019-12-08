@@ -179,10 +179,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					})
 					.onTick(() -> {
 						if (state().getTicksConsumed() < sec(2)) {
-							cast.pacMan.update(); // dying animation
+							cast.pacMan.update(); // play dying animation
 						}
 						if (state().getTicksConsumed() == sec(1)) {
 							cast.activeGhosts().forEach(Ghost::hide);
+							cast.clearBonus();
 						}
 						if (game.lives == 0) {
 							return;
@@ -295,7 +296,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onEntry() {
 			cast.activeGhosts().forEach(Ghost::show);
-			cast.clearBonus();
 			playView.init();
 			playView.enableAnimations(true);
 			playView.energizerBlinking.setEnabled(true);
@@ -421,6 +421,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onTick() {
+			cast.bonus.ifPresent(Bonus::update);
 			cast.activeGhosts()
 					.filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
 					.forEach(Ghost::update);
