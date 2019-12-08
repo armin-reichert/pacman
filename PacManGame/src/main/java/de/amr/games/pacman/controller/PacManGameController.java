@@ -90,7 +90,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 		ghostMotionTimer = new GhostMotionTimer(game);
 		cast = new PacManGameCast(game, theme);
-		cast.pacMan.addListener(this::process);
+		cast.pacMan.addGameEventListener(this::process);
 		introView = new IntroView(theme);
 		playView = new PlayView(game, cast);
 		playView.fnGhostAttack = ghostMotionTimer::state;
@@ -330,7 +330,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onPacManKilled(PacManGameEvent event) {
 			PacManKilledEvent e = (PacManKilledEvent) event;
-			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.name, e.killer.tile()));
+			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.name(), e.killer.tile()));
 			game.enableGlobalFoodCounter();
 			ghostMotionTimer.init();
 			cast.theme.music_playing().stop();
@@ -354,7 +354,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onGhostKilled(PacManGameEvent event) {
 			GhostKilledEvent e = (GhostKilledEvent) event;
-			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.name, e.ghost.tile()));
+			LOGGER.info(() -> String.format("Ghost %s killed at %s", e.ghost.name(), e.ghost.tile()));
 			cast.theme.snd_eatGhost().play();
 			e.ghost.process(event);
 		}

@@ -14,7 +14,6 @@ import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
@@ -48,7 +47,8 @@ public class PacManGameCast {
 		// configure the actors
 
 		pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
-		pacMan.fnEventIsLogged = event -> !(event instanceof FoodFoundEvent);
+//		pacMan.actor.fnEventIsLogged = event -> !(event instanceof FoodFoundEvent);
+		// TODO
 
 		blinky.initialDir = Top4.W;
 		blinky.initialTile = game.maze.blinkyHome;
@@ -133,7 +133,8 @@ public class PacManGameCast {
 
 	public void addBonus(int activeTime, int consumedTime) {
 		bonus = new Bonus(this, activeTime, consumedTime);
-		bonus.placeAtTile(game.maze.bonusTile, TS / 2, 0);
+//		bonus.placeAtTile(game.maze.bonusTile, TS / 2, 0);//TODO
+		bonus.tf.setPosition(game.maze.bonusTile.col * TS + TS / 2, game.maze.bonusTile.row * TS);
 		bonus.activate();
 	}
 
@@ -208,7 +209,7 @@ public class PacManGameCast {
 		}
 		int timeout = game.levelNumber < 5 ? sec(4) : sec(3);
 		if (pacMan.ticksSinceLastMeal > timeout) {
-			LOGGER.info(() -> String.format("Releasing ghost %s (Pac-Man eat timer expired)", ghost.name));
+			LOGGER.info(() -> String.format("Releasing ghost %s (Pac-Man eat timer expired)", ghost.name()));
 			return true;
 		}
 		return false;
@@ -230,7 +231,7 @@ public class PacManGameCast {
 			.findFirst()
 			.ifPresent(preferredGhost -> {
 				preferredGhost.foodCount += 1;
-				LOGGER.fine(() -> String.format("Food Counter[%s]=%d", preferredGhost.name, preferredGhost.foodCount));
+				LOGGER.fine(() -> String.format("Food Counter[%s]=%d", preferredGhost.name(), preferredGhost.foodCount));
 		});
 		/*@formatter:on*/
 	}

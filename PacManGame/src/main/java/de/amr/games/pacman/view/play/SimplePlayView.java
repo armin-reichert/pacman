@@ -73,7 +73,7 @@ public class SimplePlayView implements View, Controller {
 
 	public void enableAnimations(boolean state) {
 		flashingMazeSprite.enableAnimation(state);
-		cast.actors().forEach(actor -> actor.sprites.enableAnimation(state));
+		cast.activeGhosts().forEach(ghost -> ghost.sprites.enableAnimation(state));
 	}
 
 	@Override

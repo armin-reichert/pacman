@@ -16,6 +16,7 @@ import static de.amr.games.pacman.model.PacManGame.speed;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
@@ -29,6 +30,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
 import de.amr.statemachine.StateMachine;
@@ -38,12 +40,14 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Actor<GhostState> {
+public class Ghost extends MazeMover implements Actor<GhostState> {
 
+	private final ActorImpl<GhostState> actorComponent;
 	private final Map<GhostState, Steering<Ghost>> steeringByState;
 	private final Steering<Ghost> defaultSteering;
 
 	public final PacManGameCast cast;
+	public final PacManGame game;
 	public int initialDir;
 	public Tile initialTile;
 	public Tile revivalTile;
@@ -53,25 +57,71 @@ public class Ghost extends Actor<GhostState> {
 	public int foodCount;
 
 	public Ghost(String name, PacManGameCast cast) {
-		super(name, cast.game);
+		super(cast.game.maze);
 		this.cast = cast;
+		this.game = cast.game;
 		steeringByState = new EnumMap<>(GhostState.class);
 		defaultSteering = Steerings.headingForTargetTile();
-		fsm = buildStateMachine();
-		fsm.setIgnoreUnknownEvents(true);
-		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		actorComponent = new ActorImpl<>(name, buildStateMachine(name));
+		actorComponent.fsm.setIgnoreUnknownEvents(true);
+		actorComponent.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+	}
+
+	@Override
+	public String name() {
+		return actorComponent.name();
+	}
+
+	@Override
+	public StateMachine<GhostState, PacManGameEvent> fsm() {
+		return actorComponent.fsm();
+	}
+
+	@Override
+	public void activate() {
+		actorComponent.activate();
+		init();
+		show();
+	}
+
+	@Override
+	public void deactivate() {
+		actorComponent.deactivate();
+		hide();
+	}
+
+	@Override
+	public boolean isActive() {
+		return actorComponent.isActive();
+	}
+
+	@Override
+	public void addGameEventListener(Consumer<PacManGameEvent> listener) {
+		actorComponent.addGameEventListener(listener);
+	}
+
+	@Override
+	public void removeGameEventListener(Consumer<PacManGameEvent> listener) {
+		actorComponent.removeGameEventListener(listener);
 	}
 
 	@Override
 	public void init() {
 		super.init();
+		actorComponent.init();
 		visible = true;
 		moveDir = initialDir;
 		nextDir = initialDir;
 		placeAtTile(initialTile, TS / 2, 0);
 		sprites.select("color-" + initialDir);
 		sprites.forEach(Sprite::resetAnimation);
-		nextState = getState();
+		nextState = actorComponent.getState();
+	}
+
+	@Override
+	public void update() {
+		super.update();
+		actorComponent.update();
 	}
 
 	public void setSteering(GhostState state, Steering<Ghost> steering) {
@@ -79,7 +129,7 @@ public class Ghost extends Actor<GhostState> {
 	}
 
 	public Steering<Ghost> getSteering() {
-		return steeringByState.getOrDefault(getState(), defaultSteering);
+		return steeringByState.getOrDefault(actorComponent.getState(), defaultSteering);
 	}
 
 	@Override
@@ -121,7 +171,7 @@ public class Ghost extends Actor<GhostState> {
 		case DEAD:
 			return 2 * speed(game.level.ghostSpeed);
 		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name));
+			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), actorComponent.name));
 		}
 	}
 
@@ -145,7 +195,7 @@ public class Ghost extends Actor<GhostState> {
 		return sec(1);
 	}
 
-	private StateMachine<GhostState, PacManGameEvent> buildStateMachine() {
+	private StateMachine<GhostState, PacManGameEvent> buildStateMachine(String name) {
 		return StateMachine.
 		/*@formatter:off*/
 		beginStateMachine(GhostState.class, PacManGameEvent.class)

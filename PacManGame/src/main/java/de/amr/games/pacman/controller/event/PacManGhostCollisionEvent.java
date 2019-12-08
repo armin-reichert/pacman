@@ -12,6 +12,6 @@ public class PacManGhostCollisionEvent extends PacManGameEvent {
 
 	@Override
 	public String toString() {
-		return String.format("PacManGhostCollisionEvent(%s)", ghost.name);
+		return String.format("PacManGhostCollisionEvent(%s)", ghost.name());
 	}
 }

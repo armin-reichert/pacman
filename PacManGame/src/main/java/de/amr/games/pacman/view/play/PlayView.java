@@ -180,7 +180,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private String ghostStateText(Ghost ghost) {
-		String displayName = ghost.getState() == GhostState.DEAD ? ghost.name : "";
+		String displayName = ghost.getState() == GhostState.DEAD ? ghost.name() : "";
 		String nextState = ghost.nextState != ghost.getState() ? String.format("[->%s]", ghost.nextState) : "";
 		int duration = ghost.state().getDuration(), remaining = ghost.state().getTicksRemaining();
 

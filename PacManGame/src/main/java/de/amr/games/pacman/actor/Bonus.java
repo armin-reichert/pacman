@@ -8,8 +8,10 @@ import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.awt.Graphics2D;
 import java.util.Arrays;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
+import de.amr.easy.game.entity.Entity;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.BonusSymbol;
@@ -23,8 +25,9 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Bonus extends Actor<BonusState> {
+public class Bonus extends Entity implements Actor<BonusState> {
 
+	private final ActorImpl<BonusState> actorComponent;
 	public final PacManGameCast cast;
 	public final BonusSymbol symbol;
 	public final int value;
@@ -32,7 +35,6 @@ public class Bonus extends Actor<BonusState> {
 	public final int consumedTime;
 
 	public Bonus(PacManGameCast cast, int activeTime, int consumedTime) {
-		super("Bonus", cast.game);
 		this.cast = cast;
 		tf.setWidth(TS);
 		tf.setHeight(TS);
@@ -40,8 +42,56 @@ public class Bonus extends Actor<BonusState> {
 		this.value = cast.game.level.bonusValue;
 		this.activeTime = activeTime;
 		this.consumedTime = consumedTime;
-		fsm = buildStateMachine();
-		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		actorComponent = new ActorImpl<>("Bonus", buildStateMachine());
+		actorComponent.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		init();
+	}
+
+	@Override
+	public void init() {
+		super.init();
+		actorComponent.init();
+	}
+
+	@Override
+	public void update() {
+		super.update();
+		actorComponent.update();
+	}
+
+	@Override
+	public String name() {
+		return actorComponent.name;
+	}
+
+	@Override
+	public StateMachine<BonusState, PacManGameEvent> fsm() {
+		return actorComponent.fsm;
+	}
+
+	@Override
+	public void activate() {
+		actorComponent.activate();
+	}
+
+	@Override
+	public void deactivate() {
+		actorComponent.deactivate();
+	}
+
+	@Override
+	public boolean isActive() {
+		return actorComponent.isActive();
+	}
+
+	@Override
+	public void addGameEventListener(Consumer<PacManGameEvent> listener) {
+		actorComponent.addGameEventListener(listener);
+	}
+
+	@Override
+	public void removeGameEventListener(Consumer<PacManGameEvent> listener) {
+		actorComponent.removeGameEventListener(listener);
 	}
 
 	private StateMachine<BonusState, PacManGameEvent> buildStateMachine() {
@@ -79,17 +129,6 @@ public class Bonus extends Actor<BonusState> {
 			return index;
 		}
 		throw new IllegalArgumentException("Illegal bonus value: " + value);
-	}
-
-	@Override
-	protected void steer() {
-		// does not move
-	}
-
-	@Override
-	public float maxSpeed() {
-		// does not move
-		return 0;
 	}
 
 	@Override

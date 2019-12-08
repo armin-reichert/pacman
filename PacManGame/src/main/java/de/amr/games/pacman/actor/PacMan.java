@@ -11,6 +11,7 @@ import static de.amr.games.pacman.model.PacManGame.sec;
 import static de.amr.games.pacman.model.PacManGame.speed;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import de.amr.easy.game.assets.Sound;
@@ -35,17 +36,58 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends Actor<PacManState> {
+public class PacMan extends MazeMover implements Actor<PacManState> {
 
 	public final PacManGameCast cast;
+	public final PacManGame game;
 	public int ticksSinceLastMeal;
 	public Steering<PacMan> steering;
+	private final ActorImpl<PacManState> actorComponent;
 
 	public PacMan(PacManGameCast cast) {
-		super("Pac-Man", cast.game);
+		super(cast.game.maze);
 		this.cast = cast;
-		fsm = buildStateMachine();
-		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		this.game = cast.game;
+		actorComponent = new ActorImpl<PacManState>("Pac-Man", buildStateMachine());
+		actorComponent.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+	}
+
+	@Override
+	public String name() {
+		return actorComponent.name;
+	}
+
+	@Override
+	public StateMachine<PacManState, PacManGameEvent> fsm() {
+		return actorComponent.fsm;
+	}
+
+	@Override
+	public void activate() {
+		actorComponent.activate();
+		init();
+		show();
+	}
+
+	@Override
+	public void deactivate() {
+		actorComponent.deactivate();
+		hide();
+	}
+
+	@Override
+	public boolean isActive() {
+		return actorComponent.isActive();
+	}
+
+	@Override
+	public void addGameEventListener(Consumer<PacManGameEvent> listener) {
+		actorComponent.addGameEventListener(listener);
+	}
+
+	@Override
+	public void removeGameEventListener(Consumer<PacManGameEvent> listener) {
+		actorComponent.removeGameEventListener(listener);
 	}
 
 	// Movement
@@ -116,11 +158,18 @@ public class PacMan extends Actor<PacManState> {
 	@Override
 	public void init() {
 		super.init();
+		actorComponent.init();
 		ticksSinceLastMeal = 0;
 		moveDir = nextDir = Top4.E;
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("full");
 		placeAtTile(maze.pacManHome, TS / 2, 0);
+	}
+
+	@Override
+	public void update() {
+		super.update();
+		actorComponent.update();
 	}
 
 	private StateMachine<PacManState, PacManGameEvent> buildStateMachine() {
@@ -188,17 +237,17 @@ public class PacMan extends Actor<PacManState> {
 		@Override
 		public void onTick() {
 			if (startsLosingPower()) {
-				publish(new PacManGettingWeakerEvent());
+				actorComponent.publish(new PacManGettingWeakerEvent());
 			} else if (getTicksRemaining() == 1) {
 				setTimerFunction(() -> 0);
 				cast.theme.snd_waza().stop();
-				publish(new PacManLostPowerEvent());
+				actorComponent.publish(new PacManLostPowerEvent());
 			} else if (mustDigest()) {
 				digest();
 			} else {
 				steer();
 				move();
-				findSomethingInteresting().ifPresent(PacMan.this::publish);
+				findSomethingInteresting().ifPresent(actorComponent::publish);
 			}
 		}
 
