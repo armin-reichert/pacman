@@ -46,27 +46,27 @@ public class Bonus extends Actor<BonusState> {
 		return StateMachine.
 		/*@formatter:off*/
 		beginStateMachine(BonusState.class, PacManGameEvent.class)
-				.description("[Bonus]")
-				.initialState(ACTIVE)
-				.states()
-					.state(ACTIVE)
-						.timeoutAfter(activeTime)
-						.onEntry(() -> {
-							sprites.set("symbol", cast.theme.spr_bonusSymbol(symbol));
-							sprites.select("symbol");
-						})
-					.state(CONSUMED)
-						.timeoutAfter(consumedTime)
-						.onEntry(() -> {
-							sprites.set("number", cast.theme.spr_pinkNumber(numberIndex(value)));
-							sprites.select("number");
-						})
-					.state(INACTIVE)
-						.onEntry(cast::clearBonus)
-				.transitions()
-					.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
-					.when(ACTIVE).then(INACTIVE).onTimeout()
-					.when(CONSUMED).then(INACTIVE).onTimeout()
+			.description("[Bonus]")
+			.initialState(ACTIVE)
+			.states()
+				.state(ACTIVE)
+					.timeoutAfter(activeTime)
+					.onEntry(() -> {
+						sprites.set("symbol", cast.theme.spr_bonusSymbol(symbol));
+						sprites.select("symbol");
+					})
+				.state(CONSUMED)
+					.timeoutAfter(consumedTime)
+					.onEntry(() -> {
+						sprites.set("number", cast.theme.spr_pinkNumber(numberIndex(value)));
+						sprites.select("number");
+					})
+				.state(INACTIVE)
+					.onEntry(cast::clearBonus)
+			.transitions()
+				.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
+				.when(ACTIVE).then(INACTIVE).onTimeout()
+				.when(CONSUMED).then(INACTIVE).onTimeout()
 		.endStateMachine();
 		/*@formatter:on*/
 	}
