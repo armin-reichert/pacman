@@ -216,6 +216,9 @@ public abstract class MazeMover extends MazeResident {
 		return tf.getVelocity().length() == 0;
 	}
 
+	/**
+	 * Turns back to the reverse direction and triggers new steering.
+	 */
 	public void turnBack() {
 		nextDir = moveDir = NESW.inv(moveDir);
 		enteredNewTile = true;
