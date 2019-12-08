@@ -40,7 +40,7 @@ import de.amr.statemachine.StateMachine;
  */
 public class Ghost extends MazeMover implements Actor<GhostState> {
 
-	private final ActorPrototype<GhostState> actorPart;
+	private final ActorPrototype<GhostState> _actor;
 	private final Map<GhostState, Steering<Ghost>> steeringByState;
 	private final Steering<Ghost> defaultSteering;
 
@@ -60,9 +60,9 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 		this.game = cast.game;
 		steeringByState = new EnumMap<>(GhostState.class);
 		defaultSteering = Steerings.headingForTargetTile();
-		actorPart = new ActorPrototype<>(name, buildStateMachine(name));
-		actorPart.fsm.setIgnoreUnknownEvents(true);
-		actorPart.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		_actor = new ActorPrototype<>(name, buildStateMachine(name));
+		_actor.fsm.setIgnoreUnknownEvents(true);
+		_actor.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
 
 	private StateMachine<GhostState, PacManGameEvent> buildStateMachine(String name) {
@@ -179,39 +179,39 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 
 	@Override
 	public Actor<GhostState> actorPart() {
-		return actorPart;
+		return _actor;
 	}
 
 	@Override
 	public void activate() {
-		actorPart.activate();
+		_actor.activate();
 		init();
 		show();
 	}
 
 	@Override
 	public void deactivate() {
-		actorPart.deactivate();
+		_actor.deactivate();
 		hide();
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		actorPart.init();
+		_actor.init();
 		visible = true;
 		moveDir = initialDir;
 		nextDir = initialDir;
 		placeAtTile(initialTile, Maze.TS / 2, 0);
 		sprites.select("color-" + initialDir);
 		sprites.forEach(Sprite::resetAnimation);
-		nextState = actorPart.getState();
+		nextState = _actor.getState();
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		actorPart.update();
+		_actor.update();
 	}
 
 	public void setSteering(GhostState state, Steering<Ghost> steering) {
@@ -219,7 +219,7 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 	}
 
 	public Steering<Ghost> getSteering() {
-		return steeringByState.getOrDefault(actorPart.getState(), defaultSteering);
+		return steeringByState.getOrDefault(_actor.getState(), defaultSteering);
 	}
 
 	@Override
@@ -262,7 +262,7 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 			return 2 * speed(game.level.ghostSpeed);
 		default:
 			throw new IllegalStateException(
-					String.format("Illegal ghost state %s for %s", getState(), actorPart.name));
+					String.format("Illegal ghost state %s for %s", getState(), _actor.name));
 		}
 	}
 

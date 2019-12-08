@@ -25,7 +25,7 @@ import de.amr.statemachine.StateMachine;
  */
 public class Bonus extends MazeResident implements Actor<BonusState> {
 
-	private final ActorPrototype<BonusState> actorPart;
+	private final ActorPrototype<BonusState> _actor;
 	public final PacManGameCast cast;
 	public final BonusSymbol symbol;
 	public final int value;
@@ -35,8 +35,8 @@ public class Bonus extends MazeResident implements Actor<BonusState> {
 		this.cast = cast;
 		this.symbol = cast.game.level.bonusSymbol;
 		this.value = cast.game.level.bonusValue;
-		actorPart = new ActorPrototype<>("Bonus", buildStateMachine(activeTime, consumedTime));
-		actorPart.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		_actor = new ActorPrototype<>("Bonus", buildStateMachine(activeTime, consumedTime));
+		_actor.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 		init();
 	}
 
@@ -71,19 +71,19 @@ public class Bonus extends MazeResident implements Actor<BonusState> {
 
 	@Override
 	public Actor<BonusState> actorPart() {
-		return actorPart;
+		return _actor;
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		actorPart.init();
+		_actor.init();
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		actorPart.update();
+		_actor.update();
 	}
 
 	private int numberIndex(int value) {

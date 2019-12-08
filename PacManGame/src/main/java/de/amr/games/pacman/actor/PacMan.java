@@ -37,7 +37,7 @@ import de.amr.statemachine.StateMachine;
  */
 public class PacMan extends MazeMover implements Actor<PacManState> {
 
-	private final ActorPrototype<PacManState> actorPart;
+	private final ActorPrototype<PacManState> _actor;
 
 	public final PacManGameCast cast;
 	public final PacManGame game;
@@ -48,9 +48,9 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 		super(cast.game.maze);
 		this.cast = cast;
 		this.game = cast.game;
-		actorPart = new ActorPrototype<>("Pac-Man", buildStateMachine());
-		actorPart.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-		actorPart.publishedEventIsLogged = event -> {
+		_actor = new ActorPrototype<>("Pac-Man", buildStateMachine());
+		_actor.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		_actor.publishedEventIsLogged = event -> {
 			// no logging when normal pellet is found
 			if (event instanceof FoodFoundEvent) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
@@ -116,7 +116,7 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 	@Override
 	public void init() {
 		super.init();
-		actorPart.init();
+		_actor.init();
 		ticksSinceLastMeal = 0;
 		moveDir = nextDir = Top4.E;
 		sprites.forEach(Sprite::resetAnimation);
@@ -127,26 +127,26 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 	@Override
 	public void update() {
 		super.update();
-		actorPart.update();
+		_actor.update();
 	}
 
 	// Actor
 
 	@Override
 	public Actor<PacManState> actorPart() {
-		return actorPart;
+		return _actor;
 	}
 
 	@Override
 	public void activate() {
-		actorPart.activate();
+		_actor.activate();
 		init();
 		show();
 	}
 
 	@Override
 	public void deactivate() {
-		actorPart.deactivate();
+		_actor.deactivate();
 		hide();
 	}
 
@@ -175,14 +175,14 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 	}
 
 	/**
-	 * NOTE: If the application property <code>overflowBug</code> is <code>true</code>, this method
-	 * simulates the bug in the original Arcade game which occurs if Pac-Man points upwards. In that
-	 * case the same number of tiles to the left is added.
+	 * NOTE: If the application property <code>overflowBug</code> is
+	 * <code>true</code>, this method simulates the bug in the original Arcade game
+	 * which occurs if Pac-Man points upwards. In that case the same number of tiles
+	 * to the left is added.
 	 * 
-	 * @param numTiles
-	 *                   number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
-	 *         direction.
+	 * @param numTiles number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor
+	 *         towards his current move direction.
 	 */
 	@Override
 	public Tile tilesAhead(int numTiles) {
@@ -230,20 +230,17 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 		@Override
 		public void onTick() {
 			if (startsLosingPower()) {
-				actorPart.publish(new PacManGettingWeakerEvent());
-			}
-			else if (getTicksRemaining() == 1) {
+				_actor.publish(new PacManGettingWeakerEvent());
+			} else if (getTicksRemaining() == 1) {
 				setTimerFunction(() -> 0);
 				cast.theme.snd_waza().stop();
-				actorPart.publish(new PacManLostPowerEvent());
-			}
-			else if (mustDigest()) {
+				_actor.publish(new PacManLostPowerEvent());
+			} else if (mustDigest()) {
 				digest();
-			}
-			else {
+			} else {
 				steer();
 				move();
-				findSomethingInteresting().ifPresent(actorPart::publish);
+				findSomethingInteresting().ifPresent(_actor::publish);
 			}
 		}
 
@@ -293,8 +290,7 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 				boolean energizer = maze.containsEnergizer(pacManTile);
 				digestion = energizer ? PacManGame.DIGEST_TICKS_ENERGIZER : PacManGame.DIGEST_TICKS;
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			}
-			else {
+			} else {
 				ticksSinceLastMeal += 1;
 			}
 
