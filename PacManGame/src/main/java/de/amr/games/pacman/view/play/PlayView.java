@@ -201,7 +201,7 @@ public class PlayView extends SimplePlayView {
 				: String.format("%s(%s,%s)%s", displayName, ghost.getState(), INFTY, nextState);
 	}
 
-	private Color color(Ghost ghost) {
+	private Color color(MazeMover ghost) {
 		return ghost == cast.blinky ? Color.RED
 				: ghost == cast.pinky ? Color.PINK
 						: ghost == cast.inky ? Color.CYAN : ghost == cast.clyde ? Color.ORANGE : Color.WHITE;

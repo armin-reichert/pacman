@@ -8,10 +8,8 @@ import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.awt.Graphics2D;
 import java.util.Arrays;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
 
-import de.amr.easy.game.entity.Entity;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.BonusSymbol;
@@ -19,82 +17,30 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.statemachine.StateMachine;
 
 /**
- * Bonus symbol (fruit or other symbol) that appears at the maze bonus position
- * for around 9 seconds. When consumed, the bonus is displayed for 3 seconds as
- * a number representing its value and then disappears.
+ * Bonus symbol (fruit or other symbol) that appears at the maze bonus position for around 9
+ * seconds. When consumed, the bonus is displayed for 3 seconds as a number representing its value
+ * and then disappears.
  * 
  * @author Armin Reichert
  */
-public class Bonus extends Entity implements Actor<BonusState> {
+public class Bonus extends MazeResident implements Actor<BonusState> {
 
-	private final ActorImpl<BonusState> actorComponent;
+	private final DefaultActor<BonusState> actorPart;
 	public final PacManGameCast cast;
 	public final BonusSymbol symbol;
 	public final int value;
-	public final int activeTime;
-	public final int consumedTime;
 
 	public Bonus(PacManGameCast cast, int activeTime, int consumedTime) {
+		super(cast.game.maze);
 		this.cast = cast;
-		tf.setWidth(TS);
-		tf.setHeight(TS);
 		this.symbol = cast.game.level.bonusSymbol;
 		this.value = cast.game.level.bonusValue;
-		this.activeTime = activeTime;
-		this.consumedTime = consumedTime;
-		actorComponent = new ActorImpl<>("Bonus", buildStateMachine());
-		actorComponent.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		actorPart = new DefaultActor<>("Bonus", buildStateMachine(activeTime, consumedTime));
+		actorPart.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 		init();
 	}
 
-	@Override
-	public void init() {
-		super.init();
-		actorComponent.init();
-	}
-
-	@Override
-	public void update() {
-		super.update();
-		actorComponent.update();
-	}
-
-	@Override
-	public String name() {
-		return actorComponent.name;
-	}
-
-	@Override
-	public StateMachine<BonusState, PacManGameEvent> fsm() {
-		return actorComponent.fsm;
-	}
-
-	@Override
-	public void activate() {
-		actorComponent.activate();
-	}
-
-	@Override
-	public void deactivate() {
-		actorComponent.deactivate();
-	}
-
-	@Override
-	public boolean isActive() {
-		return actorComponent.isActive();
-	}
-
-	@Override
-	public void addGameEventListener(Consumer<PacManGameEvent> listener) {
-		actorComponent.addGameEventListener(listener);
-	}
-
-	@Override
-	public void removeGameEventListener(Consumer<PacManGameEvent> listener) {
-		actorComponent.removeGameEventListener(listener);
-	}
-
-	private StateMachine<BonusState, PacManGameEvent> buildStateMachine() {
+	private StateMachine<BonusState, PacManGameEvent> buildStateMachine(int activeTime, int consumedTime) {
 		return StateMachine.
 		/*@formatter:off*/
 		beginStateMachine(BonusState.class, PacManGameEvent.class)
@@ -121,6 +67,23 @@ public class Bonus extends Entity implements Actor<BonusState> {
 				.when(CONSUMED).then(INACTIVE).onTimeout()
 		.endStateMachine();
 		/*@formatter:on*/
+	}
+
+	@Override
+	public Actor<BonusState> actorPart() {
+		return actorPart;
+	}
+
+	@Override
+	public void init() {
+		super.init();
+		actorPart.init();
+	}
+
+	@Override
+	public void update() {
+		super.update();
+		actorPart.update();
 	}
 
 	private int numberIndex(int value) {

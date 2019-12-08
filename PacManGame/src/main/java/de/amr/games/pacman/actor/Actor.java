@@ -9,8 +9,12 @@ import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
 /**
- * An actor is an entity controlled by a finite-state machine and can register game event listeners
- * for its published game events.
+ * An actor is an entity which is controlled by a finite-state machine and can register game event
+ * listeners for its published game events.
+ * 
+ * <p>
+ * Most methods have a default implementation that delegates to an instance of a default Actor
+ * implementation referenced by the entity class.
  * 
  * @author Armin Reichert
  *
@@ -19,26 +23,43 @@ import de.amr.statemachine.StateMachine;
  */
 public interface Actor<S> extends Controller {
 
-	String name();
+	/** Actor implementation (delegate) provided by the entity implementing the Actor interface. */
+	Actor<S> actorPart();
 
-	StateMachine<S, PacManGameEvent> fsm();
+	default String name() {
+		return actorPart().name();
+	}
 
-	void activate();
+	default StateMachine<S, PacManGameEvent> fsm() {
+		return actorPart().fsm();
+	}
 
-	void deactivate();
+	default void activate() {
+		actorPart().activate();
+	}
 
-	boolean isActive();
+	default void deactivate() {
+		actorPart().deactivate();
+	}
 
-	void addGameEventListener(Consumer<PacManGameEvent> listener);
+	default boolean isActive() {
+		return actorPart().isActive();
+	}
 
-	void removeGameEventListener(Consumer<PacManGameEvent> listener);
+	default void addGameEventListener(Consumer<PacManGameEvent> listener) {
+		actorPart().addGameEventListener(listener);
+	}
+
+	default void removeGameEventListener(Consumer<PacManGameEvent> listener) {
+		actorPart().removeGameEventListener(listener);
+	}
 
 	default void setState(S state) {
-		fsm().setState(state);
+		actorPart().setState(state);
 	}
 
 	default S getState() {
-		return fsm().getState();
+		return actorPart().getState();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -47,10 +68,10 @@ public interface Actor<S> extends Controller {
 	}
 
 	default State<S, PacManGameEvent> state() {
-		return fsm().state();
+		return actorPart().state();
 	}
 
 	default void process(PacManGameEvent event) {
-		fsm().process(event);
+		actorPart().process(event);
 	}
 }

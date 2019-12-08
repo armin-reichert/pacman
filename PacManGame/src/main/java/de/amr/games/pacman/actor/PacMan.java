@@ -11,7 +11,6 @@ import static de.amr.games.pacman.model.PacManGame.sec;
 import static de.amr.games.pacman.model.PacManGame.speed;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import de.amr.easy.game.assets.Sound;
@@ -38,56 +37,117 @@ import de.amr.statemachine.StateMachine;
  */
 public class PacMan extends MazeMover implements Actor<PacManState> {
 
+	private final DefaultActor<PacManState> actorPart;
+
 	public final PacManGameCast cast;
 	public final PacManGame game;
 	public int ticksSinceLastMeal;
 	public Steering<PacMan> steering;
-	private final ActorImpl<PacManState> actorComponent;
 
 	public PacMan(PacManGameCast cast) {
 		super(cast.game.maze);
 		this.cast = cast;
 		this.game = cast.game;
-		actorComponent = new ActorImpl<PacManState>("Pac-Man", buildStateMachine());
-		actorComponent.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		actorPart = new DefaultActor<>("Pac-Man", buildStateMachine());
+		actorPart.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		actorPart.publishedEventIsLogged = event -> {
+			// no logging when normal pellet is found
+			if (event instanceof FoodFoundEvent) {
+				FoodFoundEvent foodFound = (FoodFoundEvent) event;
+				return foodFound.energizer;
+			}
+			return true;
+		};
+	}
+
+	private StateMachine<PacManState, PacManGameEvent> buildStateMachine() {
+		return StateMachine.
+		/* @formatter:off */
+		beginStateMachine(PacManState.class, PacManGameEvent.class)
+				
+			.description("[Pac-Man]")
+			.initialState(HOME)
+	
+			.states()
+	
+				.state(HOME)
+	
+				.state(HUNGRY)
+					.impl(new HungryState())
+					
+				.state(DYING)
+					.timeoutAfter(() -> sec(4f))
+					.onEntry(() -> {
+						sprites.select("full");
+						cast.theme.snd_clips_all().forEach(Sound::stop);
+					})
+					.onTick(() -> {
+						if (state().getTicksRemaining() == sec(2.5f)) {
+							sprites.select("dying");
+							cast.theme.snd_die().play();
+							cast.activeGhosts().forEach(Ghost::hide);
+						}
+					})
+	
+			.transitions()
+	
+				.when(HOME).then(HUNGRY)
+				
+				.stay(HUNGRY)
+					.on(PacManGainsPowerEvent.class)
+					.act(() -> {
+						state().setTimerFunction(() -> sec(game.level.pacManPowerSeconds));
+						state().resetTimer();
+						LOGGER.info(() -> String.format("Pac-Man got power for %d ticks (%d sec)", 
+								state().getDuration(), state().getDuration() / 60));
+						cast.theme.snd_waza().loop();
+					})
+					
+				.when(HUNGRY).then(DYING)
+					.on(PacManKilledEvent.class)
+	
+				.when(DYING).then(DEAD)
+					.onTimeout()
+	
+		.endStateMachine();
+		/* @formatter:on */
 	}
 
 	@Override
-	public String name() {
-		return actorComponent.name;
+	public void init() {
+		super.init();
+		actorPart.init();
+		ticksSinceLastMeal = 0;
+		moveDir = nextDir = Top4.E;
+		sprites.forEach(Sprite::resetAnimation);
+		sprites.select("full");
+		placeAtTile(maze.pacManHome, TS / 2, 0);
 	}
 
 	@Override
-	public StateMachine<PacManState, PacManGameEvent> fsm() {
-		return actorComponent.fsm;
+	public void update() {
+		super.update();
+		actorPart.update();
+	}
+
+	// Actor
+
+	@Override
+	public Actor<PacManState> actorPart() {
+		return actorPart;
 	}
 
 	@Override
 	public void activate() {
-		actorComponent.activate();
+		actorPart.activate();
 		init();
 		show();
 	}
 
 	@Override
 	public void deactivate() {
-		actorComponent.deactivate();
+		actorPart.deactivate();
 		hide();
-	}
-
-	@Override
-	public boolean isActive() {
-		return actorComponent.isActive();
-	}
-
-	@Override
-	public void addGameEventListener(Consumer<PacManGameEvent> listener) {
-		actorComponent.addGameEventListener(listener);
-	}
-
-	@Override
-	public void removeGameEventListener(Consumer<PacManGameEvent> listener) {
-		actorComponent.removeGameEventListener(listener);
 	}
 
 	// Movement
@@ -115,14 +175,14 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 	}
 
 	/**
-	 * NOTE: If the application property <code>overflowBug</code> is
-	 * <code>true</code>, this method simulates the bug in the original Arcade game
-	 * which occurs if Pac-Man points upwards. In that case the same number of tiles
-	 * to the left is added.
+	 * NOTE: If the application property <code>overflowBug</code> is <code>true</code>, this method
+	 * simulates the bug in the original Arcade game which occurs if Pac-Man points upwards. In that
+	 * case the same number of tiles to the left is added.
 	 * 
-	 * @param numTiles number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor
-	 *         towards his current move direction.
+	 * @param numTiles
+	 *                   number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
+	 *         direction.
 	 */
 	@Override
 	public Tile tilesAhead(int numTiles) {
@@ -155,76 +215,9 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 		return getState() == HUNGRY && state().getTicksRemaining() > 0;
 	}
 
-	@Override
-	public void init() {
-		super.init();
-		actorComponent.init();
-		ticksSinceLastMeal = 0;
-		moveDir = nextDir = Top4.E;
-		sprites.forEach(Sprite::resetAnimation);
-		sprites.select("full");
-		placeAtTile(maze.pacManHome, TS / 2, 0);
-	}
-
-	@Override
-	public void update() {
-		super.update();
-		actorComponent.update();
-	}
-
-	private StateMachine<PacManState, PacManGameEvent> buildStateMachine() {
-		return StateMachine.
-		/* @formatter:off */
-		beginStateMachine(PacManState.class, PacManGameEvent.class)
-				
-			.description("[Pac-Man]")
-			.initialState(HOME)
-
-			.states()
-
-				.state(HOME)
-	
-				.state(HUNGRY)
-					.impl(new HungryState())
-					
-				.state(DYING)
-					.timeoutAfter(() -> sec(4f))
-					.onEntry(() -> {
-						sprites.select("full");
-						cast.theme.snd_clips_all().forEach(Sound::stop);
-					})
-					.onTick(() -> {
-						if (state().getTicksRemaining() == sec(2.5f)) {
-							sprites.select("dying");
-							cast.theme.snd_die().play();
-							cast.activeGhosts().forEach(Ghost::hide);
-						}
-					})
-
-			.transitions()
-
-				.when(HOME).then(HUNGRY)
-				
-				.stay(HUNGRY)
-					.on(PacManGainsPowerEvent.class)
-					.act(() -> {
-						state().setTimerFunction(() -> sec(game.level.pacManPowerSeconds));
-						state().resetTimer();
-						LOGGER.info(() -> String.format("Pac-Man got power for %d ticks (%d sec)", 
-								state().getDuration(), state().getDuration() / 60));
-						cast.theme.snd_waza().loop();
-					})
-					
-				.when(HUNGRY).then(DYING)
-					.on(PacManKilledEvent.class)
-	
-				.when(DYING).then(DEAD)
-					.onTimeout()
-
-		.endStateMachine();
-		/* @formatter:on */
-	}
-
+	/*
+	 * Subclass implementing the HUNGRY state.
+	 */
 	private class HungryState extends State<PacManState, PacManGameEvent> {
 
 		private int digestion;
@@ -237,17 +230,20 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 		@Override
 		public void onTick() {
 			if (startsLosingPower()) {
-				actorComponent.publish(new PacManGettingWeakerEvent());
-			} else if (getTicksRemaining() == 1) {
+				actorPart.publish(new PacManGettingWeakerEvent());
+			}
+			else if (getTicksRemaining() == 1) {
 				setTimerFunction(() -> 0);
 				cast.theme.snd_waza().stop();
-				actorComponent.publish(new PacManLostPowerEvent());
-			} else if (mustDigest()) {
+				actorPart.publish(new PacManLostPowerEvent());
+			}
+			else if (mustDigest()) {
 				digest();
-			} else {
+			}
+			else {
 				steer();
 				move();
-				findSomethingInteresting().ifPresent(actorComponent::publish);
+				findSomethingInteresting().ifPresent(actorPart::publish);
 			}
 		}
 
@@ -297,7 +293,8 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 				boolean energizer = maze.containsEnergizer(pacManTile);
 				digestion = energizer ? PacManGame.DIGEST_TICKS_ENERGIZER : PacManGame.DIGEST_TICKS;
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			} else {
+			}
+			else {
 				ticksSinceLastMeal += 1;
 			}
 

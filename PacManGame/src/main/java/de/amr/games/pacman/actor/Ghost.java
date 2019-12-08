@@ -9,14 +9,12 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.TS;
 import static de.amr.games.pacman.model.PacManGame.sec;
 import static de.amr.games.pacman.model.PacManGame.speed;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
@@ -42,7 +40,7 @@ import de.amr.statemachine.StateMachine;
  */
 public class Ghost extends MazeMover implements Actor<GhostState> {
 
-	private final ActorImpl<GhostState> actorComponent;
+	private final DefaultActor<GhostState> actorPart;
 	private final Map<GhostState, Steering<Ghost>> steeringByState;
 	private final Steering<Ghost> defaultSteering;
 
@@ -62,137 +60,9 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 		this.game = cast.game;
 		steeringByState = new EnumMap<>(GhostState.class);
 		defaultSteering = Steerings.headingForTargetTile();
-		actorComponent = new ActorImpl<>(name, buildStateMachine(name));
-		actorComponent.fsm.setIgnoreUnknownEvents(true);
-		actorComponent.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-	}
-
-	@Override
-	public String name() {
-		return actorComponent.name();
-	}
-
-	@Override
-	public StateMachine<GhostState, PacManGameEvent> fsm() {
-		return actorComponent.fsm();
-	}
-
-	@Override
-	public void activate() {
-		actorComponent.activate();
-		init();
-		show();
-	}
-
-	@Override
-	public void deactivate() {
-		actorComponent.deactivate();
-		hide();
-	}
-
-	@Override
-	public boolean isActive() {
-		return actorComponent.isActive();
-	}
-
-	@Override
-	public void addGameEventListener(Consumer<PacManGameEvent> listener) {
-		actorComponent.addGameEventListener(listener);
-	}
-
-	@Override
-	public void removeGameEventListener(Consumer<PacManGameEvent> listener) {
-		actorComponent.removeGameEventListener(listener);
-	}
-
-	@Override
-	public void init() {
-		super.init();
-		actorComponent.init();
-		visible = true;
-		moveDir = initialDir;
-		nextDir = initialDir;
-		placeAtTile(initialTile, TS / 2, 0);
-		sprites.select("color-" + initialDir);
-		sprites.forEach(Sprite::resetAnimation);
-		nextState = actorComponent.getState();
-	}
-
-	@Override
-	public void update() {
-		super.update();
-		actorComponent.update();
-	}
-
-	public void setSteering(GhostState state, Steering<Ghost> steering) {
-		steeringByState.put(state, steering);
-	}
-
-	public Steering<Ghost> getSteering() {
-		return steeringByState.getOrDefault(actorComponent.getState(), defaultSteering);
-	}
-
-	@Override
-	public void steer() {
-		getSteering().steer(this);
-	}
-
-	@Override
-	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (maze.isDoor(neighbor)) {
-			return getState() == ENTERING_HOUSE || getState() == LEAVING_HOUSE;
-		}
-		if (maze.isNoUpIntersection(tile) && neighbor == maze.tileToDir(tile, Top4.N)) {
-			return getState() != CHASING && getState() != SCATTERING;
-		}
-		return super.canMoveBetween(tile, neighbor);
-	}
-
-	@Override
-	/* TODO: Some values are still guessed */
-	public float maxSpeed() {
-		boolean inTunnel = maze.isTunnel(tile());
-		boolean outsideHouse = !maze.inGhostHouse(tile());
-		switch (getState()) {
-		case LOCKED:
-			return outsideHouse ? 0 : speed(game.level.ghostSpeed) / 2;
-		case LEAVING_HOUSE:
-			//$FALL-THROUGH$
-		case ENTERING_HOUSE:
-			return speed(game.level.ghostSpeed) / 2;
-		case CHASING:
-			//$FALL-THROUGH$
-		case SCATTERING:
-			return inTunnel ? speed(game.level.ghostTunnelSpeed) : speed(game.level.ghostSpeed);
-		case FRIGHTENED:
-			return inTunnel ? speed(game.level.ghostTunnelSpeed) : speed(game.level.ghostFrightenedSpeed);
-		case DYING:
-			return 0;
-		case DEAD:
-			return 2 * speed(game.level.ghostSpeed);
-		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), actorComponent.name));
-		}
-	}
-
-	private void walkAndDisplayAs(String spriteKey) {
-		steer();
-		move();
-		sprites.select(spriteKey);
-	}
-
-	private void turnBack() {
-		nextDir = moveDir = NESW.inv(moveDir);
-		enteredNewTile = true;
-	}
-
-	private boolean leftHouse() {
-		Tile currentTile = tile();
-		return !maze.partOfGhostHouse(currentTile) && tf.getY() - currentTile.row * TS == 0;
-	}
-
-	public static int getDyingTime() {
-		return sec(1);
+		actorPart = new DefaultActor<>(name, buildStateMachine(name));
+		actorPart.fsm.setIgnoreUnknownEvents(true);
+		actorPart.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
 
 	private StateMachine<GhostState, PacManGameEvent> buildStateMachine(String name) {
@@ -204,7 +74,7 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 			.initialState(LOCKED)
 		
 			.states()
-
+	
 				.state(LOCKED)
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir))
 					.onExit(() -> {
@@ -274,7 +144,7 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 				.when(CHASING).then(SCATTERING)
 					.on(StartScatteringEvent.class)
 					.act(this::turnBack)
-
+	
 				.when(SCATTERING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
 					.act(this::turnBack)
@@ -289,7 +159,7 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 				.when(FRIGHTENED).then(CHASING)
 					.on(PacManLostPowerEvent.class)
 					.condition(() -> nextState == CHASING)
-
+	
 				.when(FRIGHTENED).then(SCATTERING)
 					.on(PacManLostPowerEvent.class)
 					.condition(() -> nextState == SCATTERING)
@@ -305,5 +175,109 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 				
 		.endStateMachine();
 		/*@formatter:on*/
+	}
+
+	@Override
+	public Actor<GhostState> actorPart() {
+		return actorPart;
+	}
+
+	@Override
+	public void activate() {
+		actorPart.activate();
+		init();
+		show();
+	}
+
+	@Override
+	public void deactivate() {
+		actorPart.deactivate();
+		hide();
+	}
+
+	@Override
+	public void init() {
+		super.init();
+		actorPart.init();
+		visible = true;
+		moveDir = initialDir;
+		nextDir = initialDir;
+		placeAtTile(initialTile, TS / 2, 0);
+		sprites.select("color-" + initialDir);
+		sprites.forEach(Sprite::resetAnimation);
+		nextState = actorPart.getState();
+	}
+
+	@Override
+	public void update() {
+		super.update();
+		actorPart.update();
+	}
+
+	public void setSteering(GhostState state, Steering<Ghost> steering) {
+		steeringByState.put(state, steering);
+	}
+
+	public Steering<Ghost> getSteering() {
+		return steeringByState.getOrDefault(actorPart.getState(), defaultSteering);
+	}
+
+	@Override
+	public void steer() {
+		getSteering().steer(this);
+	}
+
+	@Override
+	public boolean canMoveBetween(Tile tile, Tile neighbor) {
+		if (maze.isDoor(neighbor)) {
+			return getState() == ENTERING_HOUSE || getState() == LEAVING_HOUSE;
+		}
+		if (maze.isNoUpIntersection(tile) && neighbor == maze.tileToDir(tile, Top4.N)) {
+			return getState() != CHASING && getState() != SCATTERING;
+		}
+		return super.canMoveBetween(tile, neighbor);
+	}
+
+	@Override
+	/* TODO: Some values are still guessed */
+	public float maxSpeed() {
+		boolean inTunnel = maze.isTunnel(tile());
+		boolean outsideHouse = !maze.inGhostHouse(tile());
+		switch (getState()) {
+		case LOCKED:
+			return outsideHouse ? 0 : speed(game.level.ghostSpeed) / 2;
+		case LEAVING_HOUSE:
+			//$FALL-THROUGH$
+		case ENTERING_HOUSE:
+			return speed(game.level.ghostSpeed) / 2;
+		case CHASING:
+			//$FALL-THROUGH$
+		case SCATTERING:
+			return inTunnel ? speed(game.level.ghostTunnelSpeed) : speed(game.level.ghostSpeed);
+		case FRIGHTENED:
+			return inTunnel ? speed(game.level.ghostTunnelSpeed) : speed(game.level.ghostFrightenedSpeed);
+		case DYING:
+			return 0;
+		case DEAD:
+			return 2 * speed(game.level.ghostSpeed);
+		default:
+			throw new IllegalStateException(
+					String.format("Illegal ghost state %s for %s", getState(), actorPart.name));
+		}
+	}
+
+	private void walkAndDisplayAs(String spriteKey) {
+		steer();
+		move();
+		sprites.select(spriteKey);
+	}
+
+	private boolean leftHouse() {
+		Tile currentTile = tile();
+		return !maze.partOfGhostHouse(currentTile) && tf.getY() - currentTile.row * TS == 0;
+	}
+
+	public static int getDyingTime() {
+		return sec(1);
 	}
 }
