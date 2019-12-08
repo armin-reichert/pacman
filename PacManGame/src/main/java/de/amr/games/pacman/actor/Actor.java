@@ -3,19 +3,21 @@ package de.amr.games.pacman.actor;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
+import de.amr.easy.game.view.Controller;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
 /**
- * An actor is an entity controlled by a finite-state machine and can register
- * game event listeners for its published game events.
+ * An actor is an entity controlled by a finite-state machine and can register game event listeners
+ * for its published game events.
  * 
  * @author Armin Reichert
  *
- * @param <S> state label type of the FSM
+ * @param <S>
+ *          state label type of the FSM
  */
-public interface Actor<S> {
+public interface Actor<S> extends Controller {
 
 	String name();
 
@@ -51,8 +53,4 @@ public interface Actor<S> {
 	default void process(PacManGameEvent event) {
 		fsm().process(event);
 	}
-
-	void init();
-
-	void update();
 }
