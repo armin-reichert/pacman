@@ -14,7 +14,6 @@ import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.BonusSymbol;
@@ -63,7 +62,6 @@ public class SimplePlayView implements View, Controller {
 		if (mazeFlashing) {
 			return;
 		}
-		cast.bonus.ifPresent(Bonus::update);
 		energizerBlinking.update();
 	}
 

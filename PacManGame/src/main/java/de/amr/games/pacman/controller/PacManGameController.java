@@ -303,9 +303,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onTick() {
+			ghostMotionTimer.update();
 			cast.pacMan.update();
 			cast.bonus.ifPresent(Bonus::update);
-			ghostMotionTimer.update();
 			cast.ghosts().forEach(ghost -> ghost.nextState = ghostMotionTimer.getState());
 			Iterable<Ghost> ghosts = cast.activeGhosts()::iterator;
 			for (Ghost ghost : ghosts) {
