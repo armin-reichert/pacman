@@ -110,7 +110,7 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		cast.bonus.ifPresent(bonus -> {
+		cast.bonus().ifPresent(bonus -> {
 			bonus.draw(g);
 		});
 		if (cast.pacMan.isActive()) {

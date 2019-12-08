@@ -18,7 +18,6 @@ import static de.amr.games.pacman.model.PacManGame.sec;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.util.Optional;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -182,7 +181,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						}
 						if (state().getTicksConsumed() == sec(1)) {
 							cast.activeGhosts().forEach(Ghost::hide);
-							cast.bonus = Optional.empty();
+							cast.removeBonus();
 						}
 						if (game.lives == 0) {
 							return;
@@ -203,7 +202,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						LOGGER.info("Game is over");
 						game.score.save();
 						cast.activeGhosts().forEach(Ghost::show);
-						cast.bonus = Optional.empty();
+						cast.removeBonus();
 						cast.theme.music_gameover().loop();
 						playView.enableAnimations(false);
 						playView.textColor = Color.RED;
@@ -304,7 +303,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		public void onTick() {
 			ghostMotionTimer.update();
 			cast.pacMan.update();
-			cast.bonus.ifPresent(Bonus::update);
+			cast.bonus().ifPresent(Bonus::update);
 			cast.ghosts().forEach(ghost -> ghost.nextState = ghostMotionTimer.getState());
 			Iterable<Ghost> ghosts = cast.activeGhosts()::iterator;
 			for (Ghost ghost : ghosts) {
@@ -361,7 +360,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
-			cast.bonus.ifPresent(bonus -> {
+			cast.bonus().ifPresent(bonus -> {
 				LOGGER.info(() -> String.format("PacMan found %s and wins %d points", bonus.symbol, bonus.value));
 				boolean extraLife = game.scorePoints(bonus.value);
 				cast.theme.snd_eatFruit().play();
@@ -386,7 +385,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				return;
 			}
 			if (game.isBonusScoreReached()) {
-				cast.activateBonus(sec(9 + new Random().nextFloat()), sec(3));
+				cast.addBonus(sec(9 + new Random().nextFloat()), sec(3));
 			}
 			if (e.energizer) {
 				enqueue(new PacManGainsPowerEvent());
@@ -414,7 +413,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onTick() {
-			cast.bonus.ifPresent(Bonus::update);
+			cast.bonus().ifPresent(Bonus::update);
 			cast.activeGhosts().filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
 					.forEach(Ghost::update);
 		}

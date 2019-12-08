@@ -8,7 +8,6 @@ import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.awt.Graphics2D;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
@@ -18,9 +17,9 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.statemachine.StateMachine;
 
 /**
- * Bonus symbol (fruit or other symbol) that appears at the maze bonus position for around 9
- * seconds. When consumed, the bonus is displayed for 3 seconds as a number representing its value
- * and then disappears.
+ * Bonus symbol (fruit or other symbol) that appears at the maze bonus position
+ * for around 9 seconds. When consumed, the bonus is displayed for 3 seconds as
+ * a number representing its value and then disappears.
  * 
  * @author Armin Reichert
  */
@@ -63,7 +62,7 @@ public class Bonus extends Actor<BonusState> {
 						sprites.select("number");
 					})
 				.state(INACTIVE)
-					.onEntry(() -> cast.bonus = Optional.empty())
+					.onEntry(cast::removeBonus)
 			.transitions()
 				.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
 				.when(ACTIVE).then(INACTIVE).onTimeout()

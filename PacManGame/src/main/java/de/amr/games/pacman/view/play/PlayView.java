@@ -159,7 +159,7 @@ public class PlayView extends SimplePlayView {
 		cast.activeGhosts().filter(Ghost::visible).forEach(ghost -> {
 			drawText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
 		});
-		cast.bonus.ifPresent(bonus -> {
+		cast.bonus().ifPresent(bonus -> {
 			drawText(g, Color.YELLOW, bonus.tf.getX(), bonus.tf.getY(), bonusStateText(bonus));
 		});
 	}

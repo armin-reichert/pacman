@@ -234,7 +234,7 @@ public class PacMan extends Actor<PacManState> {
 			}
 
 			/*@formatter:off*/
-			Optional<PacManGameEvent> bonusEaten = cast.bonus
+			Optional<PacManGameEvent> bonusEaten = cast.bonus()
 				.filter(bonus -> pacManTile == maze.bonusTile)
 				.filter(bonus -> bonus.getState() == BonusState.ACTIVE)
 				.map(bonus -> new BonusFoundEvent(bonus.symbol, bonus.value));
