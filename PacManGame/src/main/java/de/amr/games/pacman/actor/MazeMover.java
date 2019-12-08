@@ -3,7 +3,6 @@ package de.amr.games.pacman.actor;
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.Maze.NESW;
-import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.util.Collections;
 import java.util.List;
@@ -90,8 +89,8 @@ public abstract class MazeMover extends MazeResident {
 			LOGGER.fine("Teleporting complete");
 		}
 		else { // off
-			int leftExit = (maze.tunnelLeftExit.col - 1) * TS;
-			int rightExit = (maze.tunnelRightExit.col + 1) * TS;
+			int leftExit = (maze.tunnelLeftExit.col - 1) * Maze.TS;
+			int rightExit = (maze.tunnelRightExit.col + 1) * Maze.TS;
 			if (tf.getX() > rightExit) { // start
 				teleportTicksRemaining = ticks;
 				tf.setX(leftExit);
@@ -117,7 +116,7 @@ public abstract class MazeMover extends MazeResident {
 		float speed = allowedSpeed(nextDir);
 		if (speed > 0) {
 			if (nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir)) {
-				tf.setPosition(oldTile.col * TS, oldTile.row * TS);
+				tf.setPosition(oldTile.col * Maze.TS, oldTile.row * Maze.TS);
 			}
 			moveDir = nextDir;
 		}
@@ -140,13 +139,13 @@ public abstract class MazeMover extends MazeResident {
 		}
 		switch (dir) {
 		case Top4.N:
-			return -row() * TS + tf.getY();
+			return -row() * Maze.TS + tf.getY();
 		case Top4.E:
-			return col() * TS - tf.getX();
+			return col() * Maze.TS - tf.getX();
 		case Top4.S:
-			return row() * TS - tf.getY();
+			return row() * Maze.TS - tf.getY();
 		case Top4.W:
-			return -col() * TS + tf.getX();
+			return -col() * Maze.TS + tf.getX();
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}

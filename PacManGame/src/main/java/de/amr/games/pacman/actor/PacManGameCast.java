@@ -7,13 +7,13 @@ import static de.amr.games.pacman.actor.behavior.common.Steerings.jumpingUpAndDo
 import static de.amr.games.pacman.actor.behavior.common.Steerings.movingRandomlyNoReversing;
 import static de.amr.games.pacman.actor.behavior.common.Steerings.steeredByKeys;
 import static de.amr.games.pacman.model.Maze.NESW;
-import static de.amr.games.pacman.model.PacManGame.TS;
 import static de.amr.games.pacman.model.PacManGame.sec;
 
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
@@ -132,7 +132,7 @@ public class PacManGameCast {
 
 	public void addBonus(int activeTime, int consumedTime) {
 		bonus = new Bonus(this, activeTime, consumedTime);
-		bonus.placeAtTile(game.maze.bonusTile, TS / 2, 0);
+		bonus.placeAtTile(game.maze.bonusTile, Maze.TS / 2, 0);
 		bonus.activate();
 	}
 

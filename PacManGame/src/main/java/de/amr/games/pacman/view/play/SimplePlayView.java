@@ -1,7 +1,6 @@
 package de.amr.games.pacman.view.play;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -17,6 +16,7 @@ import de.amr.easy.game.view.View;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.BonusSymbol;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.graph.grid.impl.Top4;
 
@@ -88,23 +88,23 @@ public class SimplePlayView implements View, Controller {
 		Sprite mazeSprite = mazeFlashing ? flashingMazeSprite : fullMazeSprite;
 		// draw background because maze sprite is transparent
 		g.setColor(cast.theme.color_mazeBackground());
-		g.translate(0, 3 * TS);
+		g.translate(0, 3 * Maze.TS);
 		g.fillRect(0, 0, mazeSprite.getWidth(), mazeSprite.getHeight());
 		mazeSprite.draw(g);
-		g.translate(0, -3 * TS);
+		g.translate(0, -3 * Maze.TS);
 		if (mazeFlashing) {
 			return;
 		}
 		// hide tiles with eaten pellets
 		game.maze.tiles().filter(game.maze::containsEatenFood).forEach(tile -> {
 			g.setColor(cast.theme.color_mazeBackground());
-			g.fillRect(tile.col * TS, tile.row * TS, TS, TS);
+			g.fillRect(tile.col * Maze.TS, tile.row * Maze.TS, Maze.TS, Maze.TS);
 		});
 		// hide energizers when animation is in blank state
 		if (energizerBlinking.currentFrame() == 1) {
 			game.maze.energizerTiles().forEach(tile -> {
 				g.setColor(cast.theme.color_mazeBackground());
-				g.fillRect(tile.col * TS, tile.row * TS, TS, TS);
+				g.fillRect(tile.col * Maze.TS, tile.row * Maze.TS, Maze.TS, Maze.TS);
 			});
 		}
 	}
@@ -129,39 +129,39 @@ public class SimplePlayView implements View, Controller {
 		int score = game.score.getPoints();
 		g.setFont(cast.theme.fnt_text());
 		g.setColor(Color.YELLOW);
-		g.drawString("SCORE", TS, TS);
+		g.drawString("SCORE", Maze.TS, Maze.TS);
 		g.setColor(Color.WHITE);
-		g.drawString(String.format("%07d", score), TS, 2 * TS);
+		g.drawString(String.format("%07d", score), Maze.TS, 2 * Maze.TS);
 		g.setColor(Color.YELLOW);
-		g.drawString(String.format("LEVEL %2d", game.levelNumber), 22 * TS, TS);
+		g.drawString(String.format("LEVEL %2d", game.levelNumber), 22 * Maze.TS, Maze.TS);
 
 		// Highscore
 		g.setColor(Color.YELLOW);
-		g.drawString("HIGH", 10 * TS, TS);
-		g.drawString("SCORE", 14 * TS, TS);
+		g.drawString("HIGH", 10 * Maze.TS, Maze.TS);
+		g.drawString("SCORE", 14 * Maze.TS, Maze.TS);
 		g.setColor(Color.WHITE);
-		g.drawString(String.format("%07d", game.score.getHiscorePoints()), 10 * TS, 2 * TS);
-		g.drawString(String.format("L%d", game.score.getHiscoreLevel()), 16 * TS, 2 * TS);
+		g.drawString(String.format("%07d", game.score.getHiscorePoints()), 10 * Maze.TS, 2 * Maze.TS);
+		g.drawString(String.format("L%d", game.score.getHiscoreLevel()), 16 * Maze.TS, 2 * Maze.TS);
 
 		// Remaining pellets score
 		g.setColor(Color.PINK);
-		g.fillRect(22 * TS + 2, TS + 2, 4, 4);
+		g.fillRect(22 * Maze.TS + 2, Maze.TS + 2, 4, 4);
 		g.setColor(Color.WHITE);
-		g.drawString(String.format("%d", game.numPelletsRemaining()), 23 * TS, 2 * TS);
+		g.drawString(String.format("%d", game.numPelletsRemaining()), 23 * Maze.TS, 2 * Maze.TS);
 
 		drawLives(g);
 		drawLevelCounter(g);
 	}
 
 	protected void drawLives(Graphics2D g) {
-		int imageSize = 2 * TS;
+		int imageSize = 2 * Maze.TS;
 		for (int i = 0, x = imageSize; i < game.lives; ++i, x += imageSize) {
 			g.drawImage(lifeImage, x, size.height - imageSize, null);
 		}
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
-		int imageSize = 2 * TS;
+		int imageSize = 2 * Maze.TS;
 		int x = fullMazeSprite.getWidth() - (game.levelCounter.size() + 1) * imageSize;
 		for (BonusSymbol symbol : game.levelCounter) {
 			Image image = cast.theme.spr_bonusSymbol(symbol).frame(0);
@@ -179,7 +179,7 @@ public class SimplePlayView implements View, Controller {
 		g2.setFont(cast.theme.fnt_text(14));
 		g2.setColor(textColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(message, g2).getBounds();
-		g2.translate((mazeWidth - box.width) / 2, (game.maze.bonusTile.row + 1) * TS);
+		g2.translate((mazeWidth - box.width) / 2, (game.maze.bonusTile.row + 1) * Maze.TS);
 		g2.drawString(message, 0, 0);
 		g2.dispose();
 	}

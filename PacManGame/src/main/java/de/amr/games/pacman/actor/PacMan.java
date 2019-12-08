@@ -6,7 +6,6 @@ import static de.amr.games.pacman.actor.PacManState.DEAD;
 import static de.amr.games.pacman.actor.PacManState.DYING;
 import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
-import static de.amr.games.pacman.model.PacManGame.TS;
 import static de.amr.games.pacman.model.PacManGame.sec;
 import static de.amr.games.pacman.model.PacManGame.speed;
 
@@ -24,6 +23,7 @@ import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
@@ -121,7 +121,7 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 		moveDir = nextDir = Top4.E;
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("full");
-		placeAtTile(maze.pacManHome, TS / 2, 0);
+		placeAtTile(maze.pacManHome, Maze.TS / 2, 0);
 	}
 
 	@Override

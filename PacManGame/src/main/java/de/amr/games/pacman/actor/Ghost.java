@@ -9,7 +9,6 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.model.PacManGame.TS;
 import static de.amr.games.pacman.model.PacManGame.sec;
 import static de.amr.games.pacman.model.PacManGame.speed;
 
@@ -28,6 +27,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.impl.Top4;
@@ -202,7 +202,7 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 		visible = true;
 		moveDir = initialDir;
 		nextDir = initialDir;
-		placeAtTile(initialTile, TS / 2, 0);
+		placeAtTile(initialTile, Maze.TS / 2, 0);
 		sprites.select("color-" + initialDir);
 		sprites.forEach(Sprite::resetAnimation);
 		nextState = actorPart.getState();
@@ -274,7 +274,7 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 
 	private boolean leftHouse() {
 		Tile currentTile = tile();
-		return !maze.partOfGhostHouse(currentTile) && tf.getY() - currentTile.row * TS == 0;
+		return !maze.partOfGhostHouse(currentTile) && tf.getY() - currentTile.row * Maze.TS == 0;
 	}
 
 	public static int getDyingTime() {

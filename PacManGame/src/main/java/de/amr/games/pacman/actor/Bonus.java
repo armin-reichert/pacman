@@ -4,7 +4,6 @@ import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.BonusState.ACTIVE;
 import static de.amr.games.pacman.actor.BonusState.CONSUMED;
 import static de.amr.games.pacman.actor.BonusState.INACTIVE;
-import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.awt.Graphics2D;
 import java.util.Arrays;
@@ -13,6 +12,7 @@ import java.util.logging.Logger;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.BonusSymbol;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.statemachine.StateMachine;
 
@@ -98,8 +98,8 @@ public class Bonus extends MazeResident implements Actor<BonusState> {
 	public void draw(Graphics2D g) {
 		sprites.current().ifPresent(sprite -> {
 			// center sprite over collision box
-			float dx = tf.getX() - (sprite.getWidth() - TS) / 2;
-			float dy = tf.getY() - (sprite.getHeight() - TS) / 2;
+			float dx = tf.getX() - (sprite.getWidth() - Maze.TS) / 2;
+			float dy = tf.getY() - (sprite.getHeight() - Maze.TS) / 2;
 			g.translate(dx, dy);
 			sprite.draw(g);
 			g.translate(-dx, -dy);

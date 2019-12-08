@@ -1,7 +1,6 @@
 package de.amr.games.pacman.view.play;
 
 import static de.amr.games.pacman.model.Maze.NESW;
-import static de.amr.games.pacman.model.PacManGame.TS;
 import static java.lang.Math.round;
 
 import java.awt.BasicStroke;
@@ -61,15 +60,15 @@ public class PlayView extends SimplePlayView {
 	private static BufferedImage createGridImage(int numRows, int numCols) {
 		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
 				.getDefaultConfiguration();
-		BufferedImage image = conf.createCompatibleImage(numCols * TS, numRows * TS + 1,
+		BufferedImage image = conf.createCompatibleImage(numCols * Maze.TS, numRows * Maze.TS + 1,
 				Transparency.TRANSLUCENT);
 		Graphics2D g = image.createGraphics();
 		g.setColor(new Color(0, 60, 0));
 		for (int row = 0; row <= numRows; ++row) {
-			g.drawLine(0, row * TS, numCols * TS, row * TS);
+			g.drawLine(0, row * Maze.TS, numCols * Maze.TS, row * Maze.TS);
 		}
 		for (int col = 1; col < numCols; ++col) {
-			g.drawLine(col * TS, 0, col * TS, numRows * TS);
+			g.drawLine(col * Maze.TS, 0, col * Maze.TS, numRows * Maze.TS);
 		}
 		return image;
 	}
@@ -212,7 +211,7 @@ public class PlayView extends SimplePlayView {
 		g.setColor(color);
 		g.setFont(new Font("Arial Narrow", Font.PLAIN, 5));
 		int width = g.getFontMetrics().stringWidth(text);
-		g.drawString(text, -width / 2, -TS / 2);
+		g.drawString(text, -width / 2, -Maze.TS / 2);
 		g.translate(-x, -y);
 	}
 
@@ -220,11 +219,11 @@ public class PlayView extends SimplePlayView {
 		g.setColor(Color.GREEN);
 		g.translate(actor.tf.getX(), actor.tf.getY());
 		int w = actor.tf.getWidth(), h = actor.tf.getHeight();
-		if (round(actor.tf.getY()) % TS == 0) {
+		if (round(actor.tf.getY()) % Maze.TS == 0) {
 			g.drawLine(0, 0, w, 0);
 			g.drawLine(0, h, w, h);
 		}
-		if (round(actor.tf.getX()) % TS == 0) {
+		if (round(actor.tf.getX()) % Maze.TS == 0) {
 			g.drawLine(0, 0, 0, h);
 			g.drawLine(w, 0, w, h);
 		}
@@ -242,27 +241,27 @@ public class PlayView extends SimplePlayView {
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(ghostColor);
 			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
-					ghost.targetTile.col * TS + TS / 2, ghost.targetTile.row * TS + TS / 2);
+					ghost.targetTile.col * Maze.TS + Maze.TS / 2, ghost.targetTile.row * Maze.TS + Maze.TS / 2);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			g.setStroke(solid);
-			g.translate(ghost.targetTile.col * TS, ghost.targetTile.row * TS);
+			g.translate(ghost.targetTile.col * Maze.TS, ghost.targetTile.row * Maze.TS);
 			g.setColor(ghostColor);
-			g.fillRect(TS / 4, TS / 4, TS / 2, TS / 2);
-			g.translate(-ghost.targetTile.col * TS, -ghost.targetTile.row * TS);
+			g.fillRect(Maze.TS / 4, Maze.TS / 4, Maze.TS / 2, Maze.TS / 2);
+			g.translate(-ghost.targetTile.col * Maze.TS, -ghost.targetTile.row * Maze.TS);
 		}
 		if (ghost.targetPath.size() > 1) {
 			// draw path in ghost's color
 			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 60));
 			for (Tile tile : ghost.targetPath) {
-				g.fillRect(tile.col * TS, tile.row * TS, TS, TS);
+				g.fillRect(tile.col * Maze.TS, tile.row * Maze.TS, Maze.TS, Maze.TS);
 			}
 		}
 		else {
 			// draw direction indicator
 			Vector2f center = ghost.tf.getCenter();
 			int dx = NESW.dx(ghost.nextDir), dy = NESW.dy(ghost.nextDir);
-			int r = TS / 4;
-			int lineLen = TS;
+			int r = Maze.TS / 4;
+			int lineLen = Maze.TS;
 			int indX = (int) (center.x + dx * lineLen);
 			int indY = (int) (center.y + dy * lineLen);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -275,7 +274,7 @@ public class PlayView extends SimplePlayView {
 			Vector2f center = cast.clyde.tf.getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 100));
-			g.drawOval((int) center.x - 8 * TS, (int) center.y - 8 * TS, 16 * TS, 16 * TS);
+			g.drawOval((int) center.x - 8 * Maze.TS, (int) center.y - 8 * Maze.TS, 16 * Maze.TS, 16 * Maze.TS);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		}
 	}

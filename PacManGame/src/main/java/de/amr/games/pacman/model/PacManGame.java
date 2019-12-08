@@ -25,8 +25,7 @@ import java.util.Deque;
  */
 public class PacManGame {
 
-	public static final int TS = 8; // tile size in pixel
-	public static final float BASE_SPEED = (float) 11 * TS / 60; // 11 tiles/second at 60Hz
+	public static final float BASE_SPEED = (float) 11 * Maze.TS / 60; // 11 tiles/second at 60Hz
 	public static final int DIGEST_TICKS = 1;
 	public static final int DIGEST_TICKS_ENERGIZER = 3;
 	public static final int POINTS_PELLET = 10;

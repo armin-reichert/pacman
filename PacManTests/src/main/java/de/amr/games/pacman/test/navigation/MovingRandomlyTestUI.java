@@ -1,7 +1,5 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.model.PacManGame.TS;
-
 import java.awt.event.KeyEvent;
 
 import de.amr.easy.game.input.Keyboard;
@@ -11,6 +9,7 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.behavior.common.Steerings;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayView;
 
@@ -33,7 +32,7 @@ public class MovingRandomlyTestUI extends PlayView implements VisualController {
 		cast.ghosts().forEach(ghost -> {
 			ghost.activate();
 			ghost.init();
-			ghost.placeAtTile(game.maze.pacManHome, TS / 2, 0);
+			ghost.placeAtTile(game.maze.pacManHome, Maze.TS / 2, 0);
 			ghost.setState(GhostState.CHASING);
 			ghost.setSteering(GhostState.CHASING, Steerings.movingRandomlyNoReversing());
 		});

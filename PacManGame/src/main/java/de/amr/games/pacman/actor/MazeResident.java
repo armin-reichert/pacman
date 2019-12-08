@@ -1,6 +1,5 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.games.pacman.model.PacManGame.TS;
 import static java.lang.Math.round;
 
 import de.amr.easy.game.entity.Entity;
@@ -18,8 +17,8 @@ public abstract class MazeResident extends Entity {
 
 	public MazeResident(Maze maze) {
 		this.maze = maze;
-		tf.setWidth(TS);
-		tf.setHeight(TS);
+		tf.setWidth(Maze.TS);
+		tf.setHeight(Maze.TS);
 	}
 
 	/**
@@ -35,14 +34,14 @@ public abstract class MazeResident extends Entity {
 	 * @return maze column where the center of the collision box is located
 	 */
 	public int col() {
-		return round(tf.getCenter().x) / TS;
+		return round(tf.getCenter().x) / Maze.TS;
 	}
 
 	/**
 	 * @return maze row where the center of the collision box is located
 	 */
 	public int row() {
-		return round(tf.getCenter().y) / TS;
+		return round(tf.getCenter().y) / Maze.TS;
 	}
 
 	/**
@@ -63,6 +62,6 @@ public abstract class MazeResident extends Entity {
 	 *                  pixel offset in y-direction
 	 */
 	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
-		tf.setPosition(tile.col * TS + xOffset, tile.row * TS + yOffset);
+		tf.setPosition(tile.col * Maze.TS + xOffset, tile.row * Maze.TS + yOffset);
 	}
 }

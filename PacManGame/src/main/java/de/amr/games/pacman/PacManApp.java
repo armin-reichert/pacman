@@ -1,7 +1,5 @@
 package de.amr.games.pacman;
 
-import static de.amr.games.pacman.model.PacManGame.TS;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,8 +28,8 @@ public class PacManApp extends Application {
 
 	public PacManApp() {
 		settings.title = "Armin's Pac-Man";
-		settings.width = Maze.COLS * TS;
-		settings.height = Maze.ROWS * TS;
+		settings.width = Maze.COLS * Maze.TS;
+		settings.height = Maze.ROWS * Maze.TS;
 		settings.scale = 2;
 		settings.fullScreenOnStart = false;
 		settings.set("overflowBug", true);

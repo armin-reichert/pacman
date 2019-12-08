@@ -33,7 +33,10 @@ import de.amr.graph.pathfinder.impl.AStarSearch;
  */
 public class Maze {
 
-	/* 4 directions (NORTH, EAST, SOUTH, WEST) */
+	/** Tile size in pixels. */
+	public static final int TS = 8;
+
+	/** 4-direction topology (NORTH, EAST, SOUTH, WEST) */
 	public static final Topology NESW = Top4.get();
 
 	public static final int COLS = 28, ROWS = 36;
