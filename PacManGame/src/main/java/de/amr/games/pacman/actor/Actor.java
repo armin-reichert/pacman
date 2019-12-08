@@ -6,15 +6,15 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
-import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
 /**
- * Base class for Pac-Man and the ghosts.
+ * Base class for game actors (Pac-Man, ghosts, bonus).
  * <p>
  * An entity controlled by a finite-state machine with the capability of
  * registering event handlers for game events and publishing game events.
@@ -30,6 +30,7 @@ public abstract class Actor<S> extends MazeMover {
 	private boolean active;
 	protected final Set<Consumer<PacManGameEvent>> listeners;
 	protected StateMachine<S, PacManGameEvent> fsm;
+	public Predicate<PacManGameEvent> fnEventIsLogged;
 
 	public Actor(String name, PacManGame game) {
 		super(game.maze);
@@ -37,6 +38,7 @@ public abstract class Actor<S> extends MazeMover {
 		this.name = name;
 		active = false;
 		listeners = new LinkedHashSet<>();
+		fnEventIsLogged = event -> true;
 	}
 
 	public void activate() {
@@ -65,7 +67,7 @@ public abstract class Actor<S> extends MazeMover {
 	}
 
 	public void publish(PacManGameEvent event) {
-		if (!(event instanceof FoodFoundEvent)) {
+		if (fnEventIsLogged.test(event)) {
 			LOGGER.info(() -> String.format("%s reports '%s'", name, event));
 		}
 		listeners.forEach(listener -> listener.accept(event));
