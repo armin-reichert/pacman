@@ -126,10 +126,6 @@ public class PacManGameCast {
 		return actors().filter(Actor::isActive);
 	}
 
-	public void clearBonus() {
-		bonus = Optional.empty();
-	}
-
 	public void activateBonus(int activeTime, int consumedTime) {
 		Bonus bonus = new Bonus(this, activeTime, consumedTime);
 		bonus.placeAtTile(game.maze.bonusTile, TS / 2, 0);

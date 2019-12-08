@@ -8,6 +8,7 @@ import static de.amr.games.pacman.model.PacManGame.TS;
 
 import java.awt.Graphics2D;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
@@ -62,7 +63,7 @@ public class Bonus extends Actor<BonusState> {
 						sprites.select("number");
 					})
 				.state(INACTIVE)
-					.onEntry(cast::clearBonus)
+					.onEntry(() -> cast.bonus = Optional.empty())
 			.transitions()
 				.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
 				.when(ACTIVE).then(INACTIVE).onTimeout()
