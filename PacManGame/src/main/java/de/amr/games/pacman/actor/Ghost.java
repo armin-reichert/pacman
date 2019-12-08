@@ -100,11 +100,12 @@ public class Ghost extends Actor<GhostState> {
 	/* TODO: Some values are still guessed */
 	public float maxSpeed() {
 		boolean inTunnel = maze.isTunnel(tile());
+		boolean outsideHouse = !maze.inGhostHouse(tile());
 		switch (getState()) {
 		case LOCKED:
-			return this == cast.blinky ? 0 : speed(game.level.ghostSpeed) / 2;
+			return outsideHouse ? 0 : speed(game.level.ghostSpeed) / 2;
 		case LEAVING_HOUSE:
-			return speed(game.level.ghostSpeed) / 2;
+			//$FALL-THROUGH$
 		case ENTERING_HOUSE:
 			return speed(game.level.ghostSpeed) / 2;
 		case CHASING:
