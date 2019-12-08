@@ -129,7 +129,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						playView.showScores = true;
 					})
 					.onTick(() -> {
-						cast.activeGhosts().filter(ghost -> ghost != cast.blinky).forEach(Ghost::update);
+						cast.activeGhosts().forEach(Ghost::update);
 					})
 				
 				.state(START_PLAYING)
