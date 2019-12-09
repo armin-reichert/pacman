@@ -10,8 +10,14 @@ import static de.amr.games.pacman.model.BonusSymbol.KEY;
 import static de.amr.games.pacman.model.BonusSymbol.PEACH;
 import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Properties;
 import java.util.Random;
 
 /**
@@ -32,6 +38,8 @@ public class PacManGame {
 	public static final int POINTS_PELLET = 10;
 	public static final int POINTS_ENERGIZER = 50;
 	public static final int[] BONUS_NUMBERS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+	public static final File HIGHSCORE_FILE = new File(new File(System.getProperty("user.home")),
+			"pacman.hiscore.xml");
 
 	static final Object[][] LEVELS = new Object[][] {
 		/*@formatter:off*/
@@ -176,27 +184,34 @@ public class PacManGame {
 		return (int) (3600 * min);
 	}
 
-	public Score score;
 	public Maze maze;
 	public Deque<BonusSymbol> levelCounter;
 	public Level level;
 	public int lives;
 	public int globalFoodCount;
 	public boolean globalFoodCounterEnabled;
+	public int score;
+	public int hiscorePoints;
+	public int hiscoreLevel;
 
 	public PacManGame() {
 		LOGGER.info("Create new game");
-		score = new Score();
 		maze = new Maze();
 		levelCounter = new ArrayDeque<>(8);
 	}
 
 	public void start() {
 		LOGGER.info("Start game");
-		score.loadHiscore();
+		score = 0;
 		lives = 3;
 		levelCounter.clear();
 		startLevel(1);
+		loadHiscore();
+	}
+
+	public void end() {
+		saveHighscore();
+		LOGGER.info("Game is over");
 	}
 
 	public void startLevel(int n) {
@@ -245,16 +260,56 @@ public class PacManGame {
 		return maze.totalNumPellets - level.numPelletsEaten;
 	}
 
+	public void enableGlobalFoodCounter() {
+		globalFoodCounterEnabled = true;
+		globalFoodCount = 0;
+	}
+
+	// Score management
+
+	public void loadHiscore() {
+		LOGGER.info("Loading highscores from " + HIGHSCORE_FILE);
+		Properties scores = new Properties();
+		try {
+			scores.loadFromXML(new FileInputStream(HIGHSCORE_FILE));
+			hiscorePoints = Integer.valueOf(scores.getProperty("score"));
+			hiscoreLevel = Integer.valueOf(scores.getProperty("level"));
+		} catch (FileNotFoundException e) {
+			LOGGER.info("No file found, creating new highscores file " + HIGHSCORE_FILE);
+			hiscorePoints = 0;
+			saveHighscore();
+		} catch (IOException e) {
+			LOGGER.info("Could not load hiscores from file " + HIGHSCORE_FILE);
+			LOGGER.throwing(getClass().getName(), "loadHiscore", e);
+		}
+	}
+
+	public void saveHighscore() {
+		LOGGER.info("Save highscores to " + HIGHSCORE_FILE);
+		Properties scores = new Properties();
+		scores.setProperty("score", String.valueOf(hiscorePoints));
+		scores.setProperty("level", String.valueOf(level.number));
+		try {
+			scores.storeToXML(new FileOutputStream(HIGHSCORE_FILE), "Pac-Man Highscore");
+		} catch (IOException e) {
+			LOGGER.info("Could not save hiscore in file " + HIGHSCORE_FILE);
+			LOGGER.throwing(getClass().getName(), "saveHiscore", e);
+		}
+	}
+
 	/**
 	 * @param points
-	 *                 points scored
+	 *                 additional points scored
 	 * @return <code>true</code> if new life has been granted
 	 */
-	public boolean scorePoints(int points) {
-		int oldScore = score.getPoints();
-		int newScore = oldScore + points;
-		score.set(level.number, newScore);
-		if (oldScore < 10_000 && 10_000 <= newScore) {
+	public boolean score(int points) {
+		int oldScore = score;
+		score += points;
+		if (score > hiscorePoints) {
+			hiscorePoints = score;
+			hiscoreLevel = level.number;
+		}
+		if (oldScore < 10_000 && 10_000 <= score) {
 			lives += 1;
 			return true;
 		}
@@ -266,10 +321,5 @@ public class PacManGame {
 	 */
 	public boolean isBonusScoreReached() {
 		return numPelletsRemaining() == 70 || numPelletsRemaining() == 170;
-	}
-
-	public void enableGlobalFoodCounter() {
-		globalFoodCounterEnabled = true;
-		globalFoodCount = 0;
 	}
 }

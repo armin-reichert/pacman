@@ -126,12 +126,11 @@ public class SimplePlayView implements View, Controller {
 			return;
 		}
 		// Points score
-		int score = game.score.getPoints();
 		g.setFont(cast.theme.fnt_text());
 		g.setColor(Color.YELLOW);
 		g.drawString("SCORE", Maze.TS, Maze.TS);
 		g.setColor(Color.WHITE);
-		g.drawString(String.format("%07d", score), Maze.TS, 2 * Maze.TS);
+		g.drawString(String.format("%07d", game.score), Maze.TS, 2 * Maze.TS);
 		g.setColor(Color.YELLOW);
 		g.drawString(String.format("LEVEL %2d", game.level.number), 22 * Maze.TS, Maze.TS);
 
@@ -140,8 +139,8 @@ public class SimplePlayView implements View, Controller {
 		g.drawString("HIGH", 10 * Maze.TS, Maze.TS);
 		g.drawString("SCORE", 14 * Maze.TS, Maze.TS);
 		g.setColor(Color.WHITE);
-		g.drawString(String.format("%07d", game.score.getHiscorePoints()), 10 * Maze.TS, 2 * Maze.TS);
-		g.drawString(String.format("L%d", game.score.getHiscoreLevel()), 16 * Maze.TS, 2 * Maze.TS);
+		g.drawString(String.format("%07d", game.hiscorePoints), 10 * Maze.TS, 2 * Maze.TS);
+		g.drawString(String.format("L%d", game.hiscoreLevel), 16 * Maze.TS, 2 * Maze.TS);
 
 		// Remaining pellets score
 		g.setColor(Color.PINK);

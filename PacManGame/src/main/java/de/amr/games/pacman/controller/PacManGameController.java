@@ -181,14 +181,13 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.state(GAME_OVER)
 					.timeoutAfter(min(1))
 					.onEntry(() -> {
-						LOGGER.info("Game is over");
-						game.score.save();
 						cast.activeGhosts().forEach(Ghost::show);
 						cast.removeBonus();
 						cast.theme.music_gameover().loop();
 						playView.enableAnimations(false);
 						playView.textColor = Color.RED;
 						playView.message = "Game Over!";
+						game.end();
 					})
 					.onExit(() -> {
 						cast.theme.music_gameover().stop();
@@ -350,7 +349,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		private void onBonusFound(PacManGameEvent event) {
 			cast.bonus().ifPresent(bonus -> {
 				LOGGER.info(() -> String.format("PacMan found %s and wins %d points", bonus.symbol, bonus.value));
-				boolean extraLife = game.scorePoints(bonus.value);
+				boolean extraLife = game.score(bonus.value);
 				cast.theme.snd_eatFruit().play();
 				if (extraLife) {
 					cast.theme.snd_extraLife().play();
@@ -362,7 +361,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent e = (FoodFoundEvent) event;
 			int points = game.eat(e.tile);
-			boolean extraLife = game.scorePoints(points);
+			boolean extraLife = game.score(points);
 			cast.updateFoodCounter();
 			cast.theme.snd_eatPill().play();
 			if (extraLife) {
@@ -390,7 +389,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		public void onEntry() {
 			cast.pacMan.hide();
 			int points = 200 * (int) Math.pow(2, game.level.bodyCount);
-			boolean extraLife = game.scorePoints(points);
+			boolean extraLife = game.score(points);
 			LOGGER.info(() -> String.format("Scored %d points for killing %s ghost", points,
 					new String[] { "first", "2nd", "3rd", "4th" }[game.level.bodyCount]));
 			if (extraLife) {
