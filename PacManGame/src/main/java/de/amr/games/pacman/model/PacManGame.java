@@ -77,7 +77,6 @@ public class PacManGame {
 
 	public static class Level {
 
-		public final int number;
 		public final BonusSymbol bonusSymbol;
 		public final int bonusValue;
 		public final float pacManSpeed;
@@ -94,10 +93,12 @@ public class PacManGame {
 		public final int pacManPowerSeconds;
 		public final int mazeNumFlashes;
 
+		public final int number;
 		public int numPelletsEaten;
+		public int bodyCount; // ghosts killed using current energizer
 
-		public Level(int number, Object[] row) {
-			this.number = number;
+		public Level(int n, Object[] row) {
+			// constants
 			bonusSymbol = (BonusSymbol) row[0];
 			bonusValue = (int) row[1];
 			pacManSpeed = (float) row[2];
@@ -113,7 +114,10 @@ public class PacManGame {
 			ghostFrightenedSpeed = (float) row[12];
 			pacManPowerSeconds = (int) row[13];
 			mazeNumFlashes = (int) row[14];
+			// variables
+			number = n;
 			numPelletsEaten = 0;
+			bodyCount = 0;
 		}
 
 		/**
@@ -175,7 +179,6 @@ public class PacManGame {
 	public int lives;
 	public int globalFoodCount;
 	public boolean globalFoodCounterEnabled;
-	public int numGhostsKilledByCurrentEnergizer;
 	public int levelNumber;
 	public Level level;
 	public final Deque<BonusSymbol> levelCounter;
@@ -205,7 +208,6 @@ public class PacManGame {
 		levelNumber = n;
 		level = new Level(n, LEVELS[Math.min(levelNumber - 1, LEVELS.length - 1)]);
 		maze.restoreFood();
-		numGhostsKilledByCurrentEnergizer = 0;
 		if (levelCounter.size() == 8) {
 			levelCounter.removeLast();
 		}
@@ -222,7 +224,7 @@ public class PacManGame {
 	public int eat(Tile tile) {
 		level.numPelletsEaten += 1;
 		if (maze.containsEnergizer(tile)) {
-			numGhostsKilledByCurrentEnergizer = 0;
+			level.bodyCount = 0;
 			maze.removeFood(tile);
 			return POINTS_ENERGIZER;
 		}

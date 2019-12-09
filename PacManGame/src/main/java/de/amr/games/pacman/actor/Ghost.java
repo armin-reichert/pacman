@@ -109,7 +109,7 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 				.state(DYING)
 					.timeoutAfter(Ghost::getDyingTime)
 					.onEntry(() -> {
-						sprites.select("value-" + game.numGhostsKilledByCurrentEnergizer);
+						sprites.select("value-" + game.level.bodyCount);
 					})
 				
 				.state(DEAD)
