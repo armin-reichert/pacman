@@ -17,7 +17,7 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.PacManTheme;
-import de.amr.graph.grid.impl.Top4;
+import de.amr.graph.grid.impl.Grid4Topology;
 
 /**
  * The cast (set of actors) in the PacMan game.
@@ -48,21 +48,21 @@ public class PacManGameCast {
 		pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
 		pacMan.teleportingTicks = sec(0);
 
-		blinky.initialDir = Top4.W;
+		blinky.initialDir = Grid4Topology.W;
 		blinky.initialTile = game.maze.blinkyHome;
 		blinky.scatterTile = game.maze.blinkyScatter;
 		blinky.revivalTile = game.maze.pinkyHome;
 		blinky.teleportingTicks = sec(1);
 		blinky.fnChasingTarget = pacMan::tile;
 
-		pinky.initialDir = Top4.S;
+		pinky.initialDir = Grid4Topology.S;
 		pinky.initialTile = game.maze.pinkyHome;
 		pinky.scatterTile = game.maze.pinkyScatter;
 		pinky.revivalTile = game.maze.pinkyHome;
 		pinky.teleportingTicks = sec(1);
 		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
 
-		inky.initialDir = Top4.N;
+		inky.initialDir = Grid4Topology.N;
 		inky.initialTile = game.maze.inkyHome;
 		inky.scatterTile = game.maze.inkyScatter;
 		inky.revivalTile = game.maze.inkyHome;
@@ -72,7 +72,7 @@ public class PacManGameCast {
 			return game.maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		};
 
-		clyde.initialDir = Top4.N;
+		clyde.initialDir = Grid4Topology.N;
 		clyde.initialTile = game.maze.clydeHome;
 		clyde.scatterTile = game.maze.clydeScatter;
 		clyde.revivalTile = game.maze.clydeHome;

@@ -26,7 +26,7 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.graph.grid.impl.Top4;
+import de.amr.graph.grid.impl.Grid4Topology;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
@@ -117,7 +117,7 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 		super.init();
 		_actor.init();
 		ticksSinceLastMeal = 0;
-		moveDir = nextDir = Top4.E;
+		moveDir = nextDir = Grid4Topology.E;
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("full");
 		placeAtTile(maze.pacManHome, Maze.TS / 2, 0);
@@ -186,8 +186,8 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 	@Override
 	public Tile tilesAhead(int numTiles) {
 		Tile tileAhead = maze.tileToDir(tile(), moveDir, numTiles);
-		if (moveDir == Top4.N && app().settings.getAsBoolean("overflowBug")) {
-			return maze.tileToDir(tileAhead, Top4.W, numTiles);
+		if (moveDir == Grid4Topology.N && app().settings.getAsBoolean("overflowBug")) {
+			return maze.tileToDir(tileAhead, Grid4Topology.W, numTiles);
 		}
 		return tileAhead;
 	}

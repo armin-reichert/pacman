@@ -30,7 +30,7 @@ import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.graph.grid.impl.Top4;
+import de.amr.graph.grid.impl.Grid4Topology;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -85,7 +85,7 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 				.state(LEAVING_HOUSE)
 					.onEntry(() -> targetTile = maze.blinkyHome)
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir))
-					.onExit(() -> moveDir = nextDir = Top4.W)
+					.onExit(() -> moveDir = nextDir = Grid4Topology.W)
 				
 				.state(ENTERING_HOUSE)
 					.onEntry(() -> targetTile = revivalTile)
@@ -232,7 +232,7 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 		if (maze.isDoor(neighbor)) {
 			return getState() == ENTERING_HOUSE || getState() == LEAVING_HOUSE;
 		}
-		if (maze.isNoUpIntersection(tile) && neighbor == maze.tileToDir(tile, Top4.N)) {
+		if (maze.isNoUpIntersection(tile) && neighbor == maze.tileToDir(tile, Grid4Topology.N)) {
 			return getState() != CHASING && getState() != SCATTERING;
 		}
 		return super.canMoveBetween(tile, neighbor);

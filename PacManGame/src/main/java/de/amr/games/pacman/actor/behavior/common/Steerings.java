@@ -13,7 +13,7 @@ import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.behavior.ghost.FleeingToSafeCorner;
 import de.amr.games.pacman.actor.behavior.pacman.AvoidingGhosts;
 import de.amr.games.pacman.model.Tile;
-import de.amr.graph.grid.impl.Top4;
+import de.amr.graph.grid.impl.Grid4Topology;
 
 /**
  * Steerings.
@@ -44,8 +44,8 @@ public interface Steerings {
 	 */
 	static <T extends MazeMover> Steering<T> jumpingUpAndDown() {
 		return actor -> {
-			if (actor.moveDir == Top4.W || actor.moveDir == Top4.E) {
-				actor.moveDir = Top4.S;
+			if (actor.moveDir == Grid4Topology.W || actor.moveDir == Grid4Topology.E) {
+				actor.moveDir = Grid4Topology.S;
 			}
 			actor.targetTile = actor.tilesAhead(1);
 			if (actor.isStuck()) {

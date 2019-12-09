@@ -9,7 +9,7 @@ import java.util.List;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
-import de.amr.graph.grid.impl.Top4;
+import de.amr.graph.grid.impl.Grid4Topology;
 
 /**
  * An entity following the rules for moving through the maze.
@@ -32,7 +32,7 @@ public abstract class MazeMover extends MazeResident {
 
 	@Override
 	public void init() {
-		moveDir = nextDir = Top4.E;
+		moveDir = nextDir = Grid4Topology.E;
 		targetTile = null;
 		targetPath = Collections.emptyList();
 		enteredNewTile = true;
@@ -40,7 +40,7 @@ public abstract class MazeMover extends MazeResident {
 	}
 
 	public void setNextDir(int dir) {
-		if (dir == Top4.N || dir == Top4.E || dir == Top4.S || dir == Top4.W) {
+		if (dir == Grid4Topology.N || dir == Grid4Topology.E || dir == Grid4Topology.S || dir == Grid4Topology.W) {
 			nextDir = dir;
 		} else {
 			throw new IllegalArgumentException("Illegal direction value " + dir);
@@ -133,13 +133,13 @@ public abstract class MazeMover extends MazeResident {
 			return maxSpeed();
 		}
 		switch (dir) {
-		case Top4.N:
+		case Grid4Topology.N:
 			return -row() * Maze.TS + tf.getY();
-		case Top4.E:
+		case Grid4Topology.E:
 			return col() * Maze.TS - tf.getX();
-		case Top4.S:
+		case Grid4Topology.S:
 			return row() * Maze.TS - tf.getY();
-		case Top4.W:
+		case Grid4Topology.W:
 			return -col() * Maze.TS + tf.getX();
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);

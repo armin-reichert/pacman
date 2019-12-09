@@ -21,7 +21,7 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.model.BonusSymbol;
-import de.amr.graph.grid.impl.Top4;
+import de.amr.graph.grid.impl.Grid4Topology;
 
 public class ClassicPacManTheme implements PacManTheme {
 
@@ -174,16 +174,16 @@ public class ClassicPacManTheme implements PacManTheme {
 	public Sprite spr_ghostColored(GhostColor color, int direction) {
 		BufferedImage[] frames;
 		switch (direction) {
-		case Top4.E:
+		case Grid4Topology.E:
 			frames = Arrays.copyOfRange(ghostColored[color.ordinal()], 0, 2);
 			break;
-		case Top4.W:
+		case Grid4Topology.W:
 			frames = Arrays.copyOfRange(ghostColored[color.ordinal()], 2, 4);
 			break;
-		case Top4.N:
+		case Grid4Topology.N:
 			frames = Arrays.copyOfRange(ghostColored[color.ordinal()], 4, 6);
 			break;
-		case Top4.S:
+		case Grid4Topology.S:
 			frames = Arrays.copyOfRange(ghostColored[color.ordinal()], 6, 8);
 			break;
 		default:

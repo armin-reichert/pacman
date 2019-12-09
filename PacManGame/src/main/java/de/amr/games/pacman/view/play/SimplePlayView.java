@@ -18,7 +18,7 @@ import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.graph.grid.impl.Top4;
+import de.amr.graph.grid.impl.Grid4Topology;
 
 /**
  * Simple play view providing core functionality for playing.
@@ -66,7 +66,7 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	public void updateTheme() {
-		lifeImage = cast.theme.spr_pacManWalking(Top4.W).frame(1);
+		lifeImage = cast.theme.spr_pacManWalking(Grid4Topology.W).frame(1);
 		fullMazeSprite = cast.theme.spr_fullMaze();
 		flashingMazeSprite = cast.theme.spr_flashingMaze();
 	}

@@ -2,10 +2,10 @@ package de.amr.games.pacman.actor.behavior.common;
 
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.Tile.distanceSq;
-import static de.amr.graph.grid.impl.Top4.E;
-import static de.amr.graph.grid.impl.Top4.N;
-import static de.amr.graph.grid.impl.Top4.S;
-import static de.amr.graph.grid.impl.Top4.W;
+import static de.amr.graph.grid.impl.Grid4Topology.E;
+import static de.amr.graph.grid.impl.Grid4Topology.N;
+import static de.amr.graph.grid.impl.Grid4Topology.S;
+import static de.amr.graph.grid.impl.Grid4Topology.W;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +34,7 @@ import de.amr.games.pacman.model.Tile;
 public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 
 	/** Directions in the order used to compute the next move direction */
-	private static final List<Integer> NWSE = Arrays.asList(N, W, S, E);
+	private static final List<Byte> NWSE = Arrays.asList(N, W, S, E);
 
 	/** Tells if the complete path the actor will take is computed. */
 	public BooleanSupplier fnComputePath = () -> false;

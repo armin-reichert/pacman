@@ -12,9 +12,9 @@ import java.util.stream.Stream;
 
 import de.amr.graph.core.api.UndirectedEdge;
 import de.amr.graph.grid.api.GridGraph2D;
-import de.amr.graph.grid.api.Topology;
+import de.amr.graph.grid.api.GridTopology;
 import de.amr.graph.grid.impl.GridGraph;
-import de.amr.graph.grid.impl.Top4;
+import de.amr.graph.grid.impl.Grid4Topology;
 import de.amr.graph.pathfinder.api.GraphSearch;
 import de.amr.graph.pathfinder.api.Path;
 import de.amr.graph.pathfinder.impl.AStarSearch;
@@ -37,7 +37,7 @@ public class Maze {
 	public static final int TS = 8;
 
 	/** 4-direction topology (NORTH, EAST, SOUTH, WEST) */
-	public static final Topology NESW = Top4.get();
+	public static final GridTopology NESW = Grid4Topology.get();
 
 	public static final int COLS = 28, ROWS = 36;
 
@@ -252,7 +252,7 @@ public class Maze {
 	}
 
 	public boolean inFrontOfGhostHouseDoor(Tile tile) {
-		return isDoor(tileToDir(tile, Top4.S));
+		return isDoor(tileToDir(tile, Grid4Topology.S));
 	}
 
 	public boolean partOfGhostHouse(Tile tile) {
