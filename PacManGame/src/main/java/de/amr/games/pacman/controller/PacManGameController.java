@@ -18,7 +18,6 @@ import static de.amr.games.pacman.model.PacManGame.sec;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -385,7 +384,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				return;
 			}
 			if (game.isBonusScoreReached()) {
-				cast.addBonus(sec(9 + new Random().nextFloat()), sec(3));
+				cast.addBonus();
 			}
 			if (e.energizer) {
 				enqueue(new PacManGainsPowerEvent());

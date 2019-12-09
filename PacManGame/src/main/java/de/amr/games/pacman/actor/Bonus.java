@@ -17,9 +17,9 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.statemachine.StateMachine;
 
 /**
- * Bonus symbol (fruit or other symbol) that appears at the maze bonus position for around 9
- * seconds. When consumed, the bonus is displayed for 3 seconds as a number representing its value
- * and then disappears.
+ * Bonus symbol (fruit or other symbol) that appears at the maze bonus position
+ * for around 9 seconds. When consumed, the bonus is displayed for 3 seconds as
+ * a number representing its value and then disappears.
  * 
  * @author Armin Reichert
  */
@@ -30,17 +30,17 @@ public class Bonus extends MazeResident implements Actor<BonusState> {
 	public final BonusSymbol symbol;
 	public final int value;
 
-	public Bonus(PacManGameCast cast, int activeTime, int consumedTime) {
+	public Bonus(PacManGameCast cast) {
 		super(cast.game.maze);
 		this.cast = cast;
 		this.symbol = cast.game.level.bonusSymbol;
 		this.value = cast.game.level.bonusValue;
-		_actor = new ActorPrototype<>("Bonus", buildStateMachine(activeTime, consumedTime));
+		_actor = new ActorPrototype<>("Bonus", buildStateMachine());
 		_actor.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-		init();
+		placeAtTile(cast.game.maze.bonusTile, Maze.TS / 2, 0);
 	}
 
-	private StateMachine<BonusState, PacManGameEvent> buildStateMachine(int activeTime, int consumedTime) {
+	private StateMachine<BonusState, PacManGameEvent> buildStateMachine() {
 		return StateMachine.
 		/*@formatter:off*/
 		beginStateMachine(BonusState.class, PacManGameEvent.class)
@@ -48,13 +48,14 @@ public class Bonus extends MazeResident implements Actor<BonusState> {
 			.initialState(ACTIVE)
 			.states()
 				.state(ACTIVE)
-					.timeoutAfter(activeTime)
+					.timeoutAfter(cast.game.level::bonusActiveTicks)
 					.onEntry(() -> {
 						sprites.set("symbol", cast.theme.spr_bonusSymbol(symbol));
 						sprites.select("symbol");
+						activate();
 					})
 				.state(CONSUMED)
-					.timeoutAfter(consumedTime)
+					.timeoutAfter(cast.game.level::bonusConsumedTicks)
 					.onEntry(() -> {
 						sprites.set("number", cast.theme.spr_pinkNumber(numberIndex(value)));
 						sprites.select("number");
