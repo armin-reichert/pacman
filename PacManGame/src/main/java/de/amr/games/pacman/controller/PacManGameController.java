@@ -21,7 +21,6 @@ import java.awt.event.KeyEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
@@ -69,7 +68,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private PlayingState playingState;
 	private IntroView introView;
 	private PlayView playView;
-	private boolean muted = false;
 
 	public PacManGameController(PacManTheme theme) {
 		super(PacManGameState.class);
@@ -77,7 +75,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		buildStateMachine();
 		setIgnoreUnknownEvents(true);
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-		introView = new IntroView(theme);
 	}
 
 	// The finite state machine
@@ -93,9 +90,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				
 				.state(INTRO)
 					.onEntry(() -> {
-						show(introView);
+						introView = new IntroView(theme);
 						introView.theme.snd_insertCoin().play();
 						introView.theme.loadMusic();
+						show(introView);
 					})
 				
 				.state(GETTING_READY)
@@ -449,9 +447,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	@Override
 	public void update() {
-		handleMuteSound();
-		handleToggleStateMachineLogging();
 		handlePlayingSpeedChange();
+		handleToggleStateMachineLogging();
 		handleToggleGhostFrightenedBehavior();
 		handleToggleOverflowBug();
 		handleCheats();
@@ -492,14 +489,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_O)) {
 			app().settings.set("overflowBug", !app().settings.getAsBoolean("overflowBug"));
 			LOGGER.info("Overflow bug is " + (app().settings.getAsBoolean("overflowBug") ? "on" : "off"));
-		}
-	}
-
-	private void handleMuteSound() {
-		if (Keyboard.keyPressedOnce(Modifier.SHIFT, KeyEvent.VK_M)) {
-			muted = !muted;
-			Assets.muteAll(muted);
-			LOGGER.info(() -> muted ? "Sound off" : "Sound on");
 		}
 	}
 
