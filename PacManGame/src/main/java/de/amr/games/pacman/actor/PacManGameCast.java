@@ -46,23 +46,27 @@ public class PacManGameCast {
 		// configure the actors
 
 		pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
+		pacMan.teleportingTicks = sec(0);
 
 		blinky.initialDir = Top4.W;
 		blinky.initialTile = game.maze.blinkyHome;
 		blinky.scatterTile = game.maze.blinkyScatter;
 		blinky.revivalTile = game.maze.pinkyHome;
+		blinky.teleportingTicks = sec(1);
 		blinky.fnChasingTarget = pacMan::tile;
 
 		pinky.initialDir = Top4.S;
 		pinky.initialTile = game.maze.pinkyHome;
 		pinky.scatterTile = game.maze.pinkyScatter;
 		pinky.revivalTile = game.maze.pinkyHome;
+		pinky.teleportingTicks = sec(1);
 		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
 
 		inky.initialDir = Top4.N;
 		inky.initialTile = game.maze.inkyHome;
 		inky.scatterTile = game.maze.inkyScatter;
 		inky.revivalTile = game.maze.inkyHome;
+		inky.teleportingTicks = sec(1);
 		inky.fnChasingTarget = () -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return game.maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
@@ -72,6 +76,7 @@ public class PacManGameCast {
 		clyde.initialTile = game.maze.clydeHome;
 		clyde.scatterTile = game.maze.clydeScatter;
 		clyde.revivalTile = game.maze.clydeHome;
+		clyde.teleportingTicks = sec(1);
 		clyde.fnChasingTarget = () -> clyde.tileDistanceSq(pacMan) > 8 * 8 ? pacMan.tile() : game.maze.clydeScatter;
 
 		ghosts().forEach(ghost -> ghost.setSteering(GhostState.FRIGHTENED, movingRandomlyNoReversing()));
