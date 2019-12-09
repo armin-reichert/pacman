@@ -97,7 +97,6 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 					.on(PacManGainsPowerEvent.class)
 					.act(() -> {
 						state().setTimerFunction(() -> sec(game.level.pacManPowerSeconds));
-						state().resetTimer();
 						LOGGER.info(() -> String.format("Pac-Man got power for %d ticks (%d sec)", 
 								state().getDuration(), state().getDuration() / 60));
 						cast.theme.snd_waza().loop();
@@ -232,7 +231,7 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 			if (startsLosingPower()) {
 				_actor.publish(new PacManGettingWeakerEvent());
 			} else if (getTicksRemaining() == 1) {
-				setTimerFunction(() -> 0);
+				setConstantTimer(0);
 				cast.theme.snd_waza().stop();
 				_actor.publish(new PacManLostPowerEvent());
 			} else if (mustDigest()) {
