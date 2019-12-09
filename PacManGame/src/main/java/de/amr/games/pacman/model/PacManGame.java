@@ -144,13 +144,6 @@ public class PacManGame {
 		public int bonusConsumedTicks() {
 			return sec(3);
 		}
-		
-		/**
-		 * @return number of ticks in teleporting state
-		 */
-		public int teleportingTicks() {
-			return sec(1);
-		}
 	}
 
 	/**
