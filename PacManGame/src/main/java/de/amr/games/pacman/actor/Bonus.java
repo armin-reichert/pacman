@@ -92,8 +92,8 @@ public class Bonus extends MazeResident implements Actor<BonusState> {
 	public void draw(Graphics2D g) {
 		sprites.current().ifPresent(sprite -> {
 			// center sprite over collision box
-			float dx = tf.getX() - (sprite.getWidth() - Maze.TS) / 2;
-			float dy = tf.getY() - (sprite.getHeight() - Maze.TS) / 2;
+			float dx = tf.getX() + tf.getWidth() / 2 - sprite.getWidth() / 2;
+			float dy = tf.getY() + tf.getHeight() / 2 - sprite.getHeight() / 2;
 			g.translate(dx, dy);
 			sprite.draw(g);
 			g.translate(-dx, -dy);
