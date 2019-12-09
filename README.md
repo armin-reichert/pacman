@@ -85,19 +85,23 @@ beginStateMachine(BonusState.class, PacManGameEvent.class)
 	.initialState(ACTIVE)
 	.states()
 		.state(ACTIVE)
-			.timeoutAfter(activeTime)
+			.timeoutAfter(cast.game.level::bonusActiveTicks)
 			.onEntry(() -> {
-				sprites.set("symbol", theme.spr_bonusSymbol(symbol));
+				symbol = cast.game.level.bonusSymbol;
+				value = cast.game.level.bonusValue;
+				sprites.set("symbol", cast.theme.spr_bonusSymbol(symbol));
+				sprites.set("number", cast.theme.spr_pinkNumber(Arrays.binarySearch(PacManGame.BONUS_NUMBERS, value)));
 				sprites.select("symbol");
+				placeAtTile(cast.game.maze.bonusTile, Maze.TS / 2, 0);
+				activate();
 			})
 		.state(CONSUMED)
-			.timeoutAfter(consumedTime)
+			.timeoutAfter(cast.game.level::bonusConsumedTicks)
 			.onEntry(() -> {
-				sprites.set("number", theme.spr_pinkNumber(pointsIndex(value)));
 				sprites.select("number");
 			})
 		.state(INACTIVE)
-			.onEntry(cast::clearBonus)
+			.onEntry(cast::removeBonus)
 	.transitions()
 		.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
 		.when(ACTIVE).then(INACTIVE).onTimeout()
