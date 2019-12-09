@@ -26,19 +26,14 @@ import de.amr.statemachine.StateMachine;
 public class Bonus extends MazeResident implements Actor<BonusState> {
 
 	public final PacManGameCast cast;
-	public final BonusSymbol symbol;
-	public final int value;
+	public BonusSymbol symbol;
+	public int value;
 
 	private final ActorPrototype<BonusState> _actor;
 
 	public Bonus(PacManGameCast cast) {
 		super(cast.game.maze);
 		this.cast = cast;
-		this.symbol = cast.game.level.bonusSymbol;
-		this.value = cast.game.level.bonusValue;
-		placeAtTile(cast.game.maze.bonusTile, Maze.TS / 2, 0);
-		sprites.set("symbol", cast.theme.spr_bonusSymbol(symbol));
-		sprites.set("number", cast.theme.spr_pinkNumber(Arrays.binarySearch(PacManGame.BONUS_NUMBERS, value)));
 		_actor = new ActorPrototype<>("Bonus", buildStateMachine());
 		_actor.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
@@ -53,7 +48,12 @@ public class Bonus extends MazeResident implements Actor<BonusState> {
 				.state(ACTIVE)
 					.timeoutAfter(cast.game.level::bonusActiveTicks)
 					.onEntry(() -> {
+						symbol = cast.game.level.bonusSymbol;
+						value = cast.game.level.bonusValue;
+						sprites.set("symbol", cast.theme.spr_bonusSymbol(symbol));
+						sprites.set("number", cast.theme.spr_pinkNumber(Arrays.binarySearch(PacManGame.BONUS_NUMBERS, value)));
 						sprites.select("symbol");
+						placeAtTile(cast.game.maze.bonusTile, Maze.TS / 2, 0);
 						activate();
 					})
 				.state(CONSUMED)
