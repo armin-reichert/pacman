@@ -14,7 +14,7 @@ public class TakeShortestPathTestApp extends Application {
 	}
 
 	public TakeShortestPathTestApp() {
-		settings.title = "Follow Shortest Path";
+		settings.title = "Take Shortest Path";
 		settings.width = 28 * Maze.TS;
 		settings.height = 36 * Maze.TS;
 		settings.scale = 2;

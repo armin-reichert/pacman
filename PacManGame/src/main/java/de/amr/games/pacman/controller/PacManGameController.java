@@ -474,7 +474,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		/* ALT-"L": Selects next level */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
 			if (getState() == PacManGameState.PLAYING) {
-				LOGGER.info(() -> String.format("Switch to next level (%d)", game.levelNumber + 1));
+				LOGGER.info(() -> String.format("Switch to next level (%d)", game.level.number + 1));
 				enqueue(new LevelCompletedEvent());
 			}
 		}

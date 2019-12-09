@@ -208,7 +208,7 @@ public class PacManGameCast {
 		if (game.globalFoodCounterEnabled && game.globalFoodCount >= getGlobalFoodCounterLimit(ghost)) {
 			return true;
 		}
-		int timeout = game.levelNumber < 5 ? sec(4) : sec(3);
+		int timeout = game.level.number < 5 ? sec(4) : sec(3);
 		if (pacMan.ticksSinceLastMeal > timeout) {
 			LOGGER.info(() -> String.format("Releasing ghost %s (Pac-Man eat timer expired)", ghost.name()));
 			return true;
@@ -268,10 +268,10 @@ public class PacManGameCast {
 			return 0;
 		}
 		if (ghost == inky) {
-			return game.levelNumber == 1 ? 30 : 0;
+			return game.level.number == 1 ? 30 : 0;
 		}
 		if (ghost == clyde) {
-			return game.levelNumber == 1 ? 60 : game.levelNumber == 2 ? 50 : 0;
+			return game.level.number == 1 ? 60 : game.level.number == 2 ? 50 : 0;
 		}
 		return 0;
 	}

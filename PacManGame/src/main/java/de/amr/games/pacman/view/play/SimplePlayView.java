@@ -133,7 +133,7 @@ public class SimplePlayView implements View, Controller {
 		g.setColor(Color.WHITE);
 		g.drawString(String.format("%07d", score), Maze.TS, 2 * Maze.TS);
 		g.setColor(Color.YELLOW);
-		g.drawString(String.format("LEVEL %2d", game.levelNumber), 22 * Maze.TS, Maze.TS);
+		g.drawString(String.format("LEVEL %2d", game.level.number), 22 * Maze.TS, Maze.TS);
 
 		// Highscore
 		g.setColor(Color.YELLOW);

@@ -179,7 +179,6 @@ public class PacManGame {
 	public int lives;
 	public int globalFoodCount;
 	public boolean globalFoodCounterEnabled;
-	public int levelNumber;
 	public Level level;
 	public final Deque<BonusSymbol> levelCounter;
 	public final Maze maze;
@@ -199,14 +198,9 @@ public class PacManGame {
 		startLevel(1);
 	}
 
-	public void nextLevel() {
-		startLevel(++levelNumber);
-	}
-
 	public void startLevel(int n) {
-		LOGGER.info("Start level " + n);
-		levelNumber = n;
-		level = new Level(n, LEVELS[Math.min(levelNumber - 1, LEVELS.length - 1)]);
+		LOGGER.info("Starting level " + n);
+		level = new Level(n, LEVELS[Math.min(n - 1, LEVELS.length - 1)]);
 		maze.restoreFood();
 		if (levelCounter.size() == 8) {
 			levelCounter.removeLast();
@@ -214,6 +208,15 @@ public class PacManGame {
 		levelCounter.addFirst(level.bonusSymbol);
 		globalFoodCount = 0;
 		globalFoodCounterEnabled = false;
+	}
+
+	public void nextLevel() {
+		if (level == null) {
+			start();
+		}
+		else {
+			startLevel(level.number + 1);
+		}
 	}
 
 	/**
@@ -249,7 +252,7 @@ public class PacManGame {
 	public boolean scorePoints(int points) {
 		int oldScore = score.getPoints();
 		int newScore = oldScore + points;
-		score.set(levelNumber, newScore);
+		score.set(level.number, newScore);
 		if (oldScore < 10_000 && 10_000 <= newScore) {
 			lives += 1;
 			return true;
