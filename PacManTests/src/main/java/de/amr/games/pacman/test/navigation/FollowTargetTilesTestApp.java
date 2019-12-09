@@ -24,7 +24,7 @@ public class FollowTargetTilesTestApp extends Application {
 	public void init() {
 		PacManGame game = new PacManGame();
 		PacManTheme theme = new ClassicPacManTheme();
-		PacManGameCast ensemble = new PacManGameCast(game, theme);
-		setController(new FollowTargetTilesTestUI(game, ensemble));
+		PacManGameCast cast = new PacManGameCast(game, theme);
+		setController(new FollowTargetTilesTestUI(cast));
 	}
 }

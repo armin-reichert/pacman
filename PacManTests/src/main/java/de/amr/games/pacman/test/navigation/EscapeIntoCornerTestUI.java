@@ -11,8 +11,8 @@ import de.amr.games.pacman.view.play.PlayView;
 
 public class EscapeIntoCornerTestUI extends PlayView implements VisualController {
 
-	public EscapeIntoCornerTestUI(PacManGame game, PacManGameCast ensemble) {
-		super(game, ensemble);
+	public EscapeIntoCornerTestUI(PacManGame game, PacManGameCast cast) {
+		super(cast);
 		showRoutes = true;
 		showStates = true;
 		showScores = false;

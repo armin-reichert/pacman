@@ -7,7 +7,6 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.theme.PacManTheme;
 
@@ -41,8 +40,7 @@ public class PacManApp extends Application {
 	@Override
 	public void init() {
 		PacManTheme theme = new ClassicPacManTheme();
-		PacManGame game = new PacManGame();
-		PacManGameController gameController = new PacManGameController(game, theme);
+		PacManGameController gameController = new PacManGameController(theme);
 		setController(gameController);
 		setIcon(theme.spr_ghostFrightened().frame(0));
 	}

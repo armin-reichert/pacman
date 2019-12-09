@@ -7,7 +7,6 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 
@@ -15,8 +14,8 @@ public class FollowMouseTestUI extends PlayView implements VisualController {
 
 	private Tile mouseTile;
 
-	public FollowMouseTestUI(PacManGame game, PacManGameCast ensemble) {
-		super(game, ensemble);
+	public FollowMouseTestUI(PacManGameCast cast) {
+		super(cast);
 		showRoutes = true;
 		showGrid = true;
 		showStates = false;

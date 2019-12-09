@@ -25,7 +25,7 @@ public class LeaveGhostHouseTestApp extends Application {
 		clock.setFrequency(10);
 		PacManGame game = new PacManGame();
 		PacManTheme theme = new ClassicPacManTheme();
-		PacManGameCast ensemble = new PacManGameCast(game, theme);
-		setController(new LeaveGhostHouseTestUI(game, ensemble));
+		PacManGameCast cast = new PacManGameCast(game, theme);
+		setController(new LeaveGhostHouseTestUI(cast));
 	}
 }

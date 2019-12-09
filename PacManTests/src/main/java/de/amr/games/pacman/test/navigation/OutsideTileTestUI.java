@@ -5,13 +5,12 @@ import static de.amr.games.pacman.actor.GhostState.CHASING;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.PacManGameCast;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class OutsideTileTestUI extends PlayView implements VisualController {
 
-	public OutsideTileTestUI(PacManGame game, PacManGameCast ensemble) {
-		super(game, ensemble);
+	public OutsideTileTestUI(PacManGameCast cast) {
+		super(cast);
 		showRoutes = true;
 		showStates = true;
 		showScores = false;

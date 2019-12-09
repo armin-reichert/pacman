@@ -25,6 +25,6 @@ public class TakeShortestPathTestApp extends Application {
 		PacManGame game = new PacManGame();
 		PacManTheme theme = new ClassicPacManTheme();
 		PacManGameCast cast = new PacManGameCast(game, theme);
-		setController(new TakeShortestPathTestUI(game, cast));
+		setController(new TakeShortestPathTestUI(cast));
 	}
 }

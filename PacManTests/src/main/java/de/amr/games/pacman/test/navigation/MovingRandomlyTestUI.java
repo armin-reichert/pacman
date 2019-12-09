@@ -10,15 +10,14 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.behavior.common.Steerings;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class MovingRandomlyTestUI extends PlayView implements VisualController {
 
 	boolean running;
 
-	public MovingRandomlyTestUI(PacManGame game, PacManGameCast ensemble) {
-		super(game, ensemble);
+	public MovingRandomlyTestUI(PacManGameCast cast) {
+		super(cast);
 		showRoutes = true;
 		showStates = false;
 		showScores = false;

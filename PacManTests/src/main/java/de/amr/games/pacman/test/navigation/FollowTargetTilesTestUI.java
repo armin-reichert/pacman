@@ -8,7 +8,6 @@ import java.util.List;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.PacManGameCast;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 
@@ -17,8 +16,8 @@ public class FollowTargetTilesTestUI extends PlayView implements VisualControlle
 	private List<Tile> targets;
 	private int current;
 
-	public FollowTargetTilesTestUI(PacManGame game, PacManGameCast ensemble) {
-		super(game, ensemble);
+	public FollowTargetTilesTestUI(PacManGameCast cast) {
+		super(cast);
 		showRoutes = true;
 		showStates = false;
 		showScores = false;

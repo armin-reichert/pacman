@@ -4,13 +4,12 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacManGameCast;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class JumpingTestUI extends PlayView implements VisualController {
 
-	public JumpingTestUI(PacManGame game, PacManGameCast ensemble) {
-		super(game, ensemble);
+	public JumpingTestUI(PacManGameCast cast) {
+		super(cast);
 		showRoutes = false;
 		showStates = true;
 		showScores = false;

@@ -24,7 +24,7 @@ public class OutsideTileTestApp extends Application {
 	public void init() {
 		PacManGame game = new PacManGame();
 		PacManTheme theme = new ClassicPacManTheme();
-		PacManGameCast ensemble = new PacManGameCast(game, theme);
-		setController(new OutsideTileTestUI(game, ensemble));
+		PacManGameCast cast = new PacManGameCast(game, theme);
+		setController(new OutsideTileTestUI( cast));
 	}
 }

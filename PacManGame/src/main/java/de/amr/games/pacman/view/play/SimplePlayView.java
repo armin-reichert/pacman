@@ -40,9 +40,9 @@ public class SimplePlayView implements View, Controller {
 	protected Image lifeImage;
 	protected Sprite fullMazeSprite, flashingMazeSprite;
 
-	public SimplePlayView(PacManGame game, PacManGameCast cast) {
-		this.game = game;
+	public SimplePlayView(PacManGameCast cast) {
 		this.cast = cast;
+		this.game = cast.game;
 		size = new Dimension(app().settings.width, app().settings.height);
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);

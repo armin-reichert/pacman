@@ -27,7 +27,6 @@ import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.behavior.common.HeadingForTargetTile;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.State;
 
@@ -73,8 +72,8 @@ public class PlayView extends SimplePlayView {
 		return image;
 	}
 
-	public PlayView(PacManGame game, PacManGameCast cast) {
-		super(game, cast);
+	public PlayView(PacManGameCast cast) {
+		super(cast);
 		gridImage = createGridImage(Maze.ROWS, Maze.COLS);
 	}
 
