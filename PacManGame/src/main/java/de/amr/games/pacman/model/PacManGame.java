@@ -176,19 +176,19 @@ public class PacManGame {
 		return (int) (3600 * min);
 	}
 
-	public Maze maze;
 	public Score score;
-	public Level level;
+	public Maze maze;
 	public Deque<BonusSymbol> levelCounter;
+	public Level level;
 	public int lives;
 	public int globalFoodCount;
 	public boolean globalFoodCounterEnabled;
 
 	public PacManGame() {
 		LOGGER.info("Create new game");
-		levelCounter = new ArrayDeque<>(8);
-		maze = new Maze();
 		score = new Score();
+		maze = new Maze();
+		levelCounter = new ArrayDeque<>(8);
 	}
 
 	public void start() {
