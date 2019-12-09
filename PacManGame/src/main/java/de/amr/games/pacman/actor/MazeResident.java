@@ -22,11 +22,11 @@ public abstract class MazeResident extends Entity {
 	}
 
 	/**
-	 * @param other
-	 *                other maze resident
-	 * @return squared Euclidean distance to the other maze resident in tile coordinates
+	 * @param other other maze resident
+	 * @return squared Euclidean distance to the other maze resident in tile
+	 *         coordinates
 	 */
-	public int tileDistanceSq(MazeMover other) {
+	public int tileDistanceSq(MazeResident other) {
 		return Tile.distanceSq(tile(), other.tile());
 	}
 
@@ -54,12 +54,9 @@ public abstract class MazeResident extends Entity {
 	/**
 	 * Places this maze mover at the given tile, optionally with some pixel offset.
 	 * 
-	 * @param tile
-	 *                  the tile where this maze mover is placed
-	 * @param xOffset
-	 *                  pixel offset in x-direction
-	 * @param yOffset
-	 *                  pixel offset in y-direction
+	 * @param tile    the tile where this maze mover is placed
+	 * @param xOffset pixel offset in x-direction
+	 * @param yOffset pixel offset in y-direction
 	 */
 	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
 		tf.setPosition(tile.col * Maze.TS + xOffset, tile.row * Maze.TS + yOffset);
