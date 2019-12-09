@@ -25,19 +25,22 @@ import de.amr.statemachine.StateMachine;
  */
 public class Bonus extends MazeResident implements Actor<BonusState> {
 
-	private final ActorPrototype<BonusState> _actor;
 	public final PacManGameCast cast;
 	public final BonusSymbol symbol;
 	public final int value;
+
+	private final ActorPrototype<BonusState> _actor;
 
 	public Bonus(PacManGameCast cast) {
 		super(cast.game.maze);
 		this.cast = cast;
 		this.symbol = cast.game.level.bonusSymbol;
 		this.value = cast.game.level.bonusValue;
+		placeAtTile(cast.game.maze.bonusTile, Maze.TS / 2, 0);
+		sprites.set("symbol", cast.theme.spr_bonusSymbol(symbol));
+		sprites.set("number", cast.theme.spr_pinkNumber(Arrays.binarySearch(PacManGame.BONUS_NUMBERS, value)));
 		_actor = new ActorPrototype<>("Bonus", buildStateMachine());
 		_actor.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-		placeAtTile(cast.game.maze.bonusTile, Maze.TS / 2, 0);
 	}
 
 	private StateMachine<BonusState, PacManGameEvent> buildStateMachine() {
@@ -50,14 +53,12 @@ public class Bonus extends MazeResident implements Actor<BonusState> {
 				.state(ACTIVE)
 					.timeoutAfter(cast.game.level::bonusActiveTicks)
 					.onEntry(() -> {
-						sprites.set("symbol", cast.theme.spr_bonusSymbol(symbol));
 						sprites.select("symbol");
 						activate();
 					})
 				.state(CONSUMED)
 					.timeoutAfter(cast.game.level::bonusConsumedTicks)
 					.onEntry(() -> {
-						sprites.set("number", cast.theme.spr_pinkNumber(numberIndex(value)));
 						sprites.select("number");
 					})
 				.state(INACTIVE)
@@ -85,14 +86,6 @@ public class Bonus extends MazeResident implements Actor<BonusState> {
 	public void update() {
 		super.update();
 		_actor.update();
-	}
-
-	private int numberIndex(int value) {
-		int index = Arrays.binarySearch(PacManGame.BONUS_NUMBERS, value);
-		if (index >= 0) {
-			return index;
-		}
-		throw new IllegalArgumentException("Illegal bonus value: " + value);
 	}
 
 	@Override
