@@ -1,6 +1,7 @@
 package de.amr.games.pacman.view.intro;
 
 import static de.amr.easy.game.Application.app;
+import static de.amr.graph.grid.impl.Grid4Topology.W;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -13,7 +14,6 @@ import de.amr.easy.game.view.AnimationController;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.PacManTheme;
-import de.amr.graph.grid.impl.Grid4Topology;
 
 public class ChasePacManAnimation extends Entity implements AnimationController, View {
 
@@ -27,11 +27,11 @@ public class ChasePacManAnimation extends Entity implements AnimationController,
 
 	public ChasePacManAnimation(PacManTheme theme) {
 		this.theme = theme;
-		pacMan = theme.spr_pacManWalking(Grid4Topology.W);
-		ghosts[0] = theme.spr_ghostColored(GhostColor.RED, Grid4Topology.W);
-		ghosts[1] = theme.spr_ghostColored(GhostColor.PINK, Grid4Topology.W);
-		ghosts[2] = theme.spr_ghostColored(GhostColor.CYAN, Grid4Topology.W);
-		ghosts[3] = theme.spr_ghostColored(GhostColor.ORANGE, Grid4Topology.W);
+		pacMan = theme.spr_pacManWalking(W);
+		ghosts[0] = theme.spr_ghostColored(GhostColor.RED, W);
+		ghosts[1] = theme.spr_ghostColored(GhostColor.PINK, W);
+		ghosts[2] = theme.spr_ghostColored(GhostColor.CYAN, W);
+		ghosts[3] = theme.spr_ghostColored(GhostColor.ORANGE, W);
 		pill = true;
 		tf.setWidth(88);
 		tf.setHeight(16);

@@ -8,6 +8,9 @@ import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.model.PacManGame.sec;
 import static de.amr.games.pacman.model.PacManGame.speed;
+import static de.amr.graph.grid.impl.Grid4Topology.E;
+import static de.amr.graph.grid.impl.Grid4Topology.N;
+import static de.amr.graph.grid.impl.Grid4Topology.W;
 
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -26,7 +29,6 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.graph.grid.impl.Grid4Topology;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
@@ -117,7 +119,7 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 		super.init();
 		_actor.init();
 		ticksSinceLastMeal = 0;
-		moveDir = nextDir = Grid4Topology.E;
+		moveDir = nextDir = E;
 		sprites.forEach(Sprite::resetAnimation);
 		sprites.select("full");
 		placeAtTile(maze.pacManHome, Maze.TS / 2, 0);
@@ -174,20 +176,20 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 	}
 
 	/**
-	 * NOTE: If the application property <code>overflowBug</code> is
-	 * <code>true</code>, this method simulates the bug in the original Arcade game
-	 * which occurs if Pac-Man points upwards. In that case the same number of tiles
-	 * to the left is added.
+	 * NOTE: If the application property <code>overflowBug</code> is <code>true</code>, this method
+	 * simulates the bug in the original Arcade game which occurs if Pac-Man points upwards. In that
+	 * case the same number of tiles to the left is added.
 	 * 
-	 * @param numTiles number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor
-	 *         towards his current move direction.
+	 * @param numTiles
+	 *                   number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
+	 *         direction.
 	 */
 	@Override
 	public Tile tilesAhead(int numTiles) {
 		Tile tileAhead = maze.tileToDir(tile(), moveDir, numTiles);
-		if (moveDir == Grid4Topology.N && app().settings.getAsBoolean("overflowBug")) {
-			return maze.tileToDir(tileAhead, Grid4Topology.W, numTiles);
+		if (moveDir == N && app().settings.getAsBoolean("overflowBug")) {
+			return maze.tileToDir(tileAhead, W, numTiles);
 		}
 		return tileAhead;
 	}
@@ -230,13 +232,16 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 		public void onTick() {
 			if (startsLosingPower()) {
 				_actor.publish(new PacManGettingWeakerEvent());
-			} else if (getTicksRemaining() == 1) {
+			}
+			else if (getTicksRemaining() == 1) {
 				setConstantTimer(0);
 				cast.theme.snd_waza().stop();
 				_actor.publish(new PacManLostPowerEvent());
-			} else if (mustDigest()) {
+			}
+			else if (mustDigest()) {
 				digest();
-			} else {
+			}
+			else {
 				steer();
 				move();
 				findSomethingInteresting().ifPresent(_actor::publish);
@@ -289,7 +294,8 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 				boolean energizer = maze.containsEnergizer(pacManTile);
 				digestion = energizer ? PacManGame.DIGEST_TICKS_ENERGIZER : PacManGame.DIGEST_TICKS;
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			} else {
+			}
+			else {
 				ticksSinceLastMeal += 1;
 			}
 

@@ -1,6 +1,9 @@
 package de.amr.games.pacman.actor.behavior.common;
 
 import static de.amr.games.pacman.model.Maze.NESW;
+import static de.amr.graph.grid.impl.Grid4Topology.E;
+import static de.amr.graph.grid.impl.Grid4Topology.S;
+import static de.amr.graph.grid.impl.Grid4Topology.W;
 
 import java.util.Collections;
 import java.util.function.Supplier;
@@ -13,7 +16,6 @@ import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.behavior.ghost.FleeingToSafeCorner;
 import de.amr.games.pacman.actor.behavior.pacman.AvoidingGhosts;
 import de.amr.games.pacman.model.Tile;
-import de.amr.graph.grid.impl.Grid4Topology;
 
 /**
  * Steerings.
@@ -44,8 +46,8 @@ public interface Steerings {
 	 */
 	static <T extends MazeMover> Steering<T> jumpingUpAndDown() {
 		return actor -> {
-			if (actor.moveDir == Grid4Topology.W || actor.moveDir == Grid4Topology.E) {
-				actor.moveDir = Grid4Topology.S;
+			if (actor.moveDir == W || actor.moveDir == E) {
+				actor.moveDir = S;
 			}
 			actor.targetTile = actor.tilesAhead(1);
 			if (actor.isStuck()) {

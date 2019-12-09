@@ -1,6 +1,7 @@
 package de.amr.games.pacman.model;
 
 import static de.amr.easy.game.Application.LOGGER;
+import static de.amr.graph.grid.impl.Grid4Topology.S;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -13,8 +14,8 @@ import java.util.stream.Stream;
 import de.amr.graph.core.api.UndirectedEdge;
 import de.amr.graph.grid.api.GridGraph2D;
 import de.amr.graph.grid.api.GridTopology;
-import de.amr.graph.grid.impl.GridGraph;
 import de.amr.graph.grid.impl.Grid4Topology;
+import de.amr.graph.grid.impl.GridGraph;
 import de.amr.graph.pathfinder.api.GraphSearch;
 import de.amr.graph.pathfinder.api.Path;
 import de.amr.graph.pathfinder.impl.AStarSearch;
@@ -252,7 +253,7 @@ public class Maze {
 	}
 
 	public boolean inFrontOfGhostHouseDoor(Tile tile) {
-		return isDoor(tileToDir(tile, Grid4Topology.S));
+		return isDoor(tileToDir(tile, S));
 	}
 
 	public boolean partOfGhostHouse(Tile tile) {

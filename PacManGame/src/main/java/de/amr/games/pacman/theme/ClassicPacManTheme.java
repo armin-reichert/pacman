@@ -4,6 +4,10 @@ import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.ui.sprites.AnimationType.BACK_AND_FORTH;
 import static de.amr.easy.game.ui.sprites.AnimationType.CYCLIC;
 import static de.amr.easy.game.ui.sprites.AnimationType.LINEAR;
+import static de.amr.graph.grid.impl.Grid4Topology.E;
+import static de.amr.graph.grid.impl.Grid4Topology.N;
+import static de.amr.graph.grid.impl.Grid4Topology.S;
+import static de.amr.graph.grid.impl.Grid4Topology.W;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -21,7 +25,6 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.model.BonusSymbol;
-import de.amr.graph.grid.impl.Grid4Topology;
 
 public class ClassicPacManTheme implements PacManTheme {
 
@@ -174,16 +177,16 @@ public class ClassicPacManTheme implements PacManTheme {
 	public Sprite spr_ghostColored(GhostColor color, int direction) {
 		BufferedImage[] frames;
 		switch (direction) {
-		case Grid4Topology.E:
+		case E:
 			frames = Arrays.copyOfRange(ghostColored[color.ordinal()], 0, 2);
 			break;
-		case Grid4Topology.W:
+		case W:
 			frames = Arrays.copyOfRange(ghostColored[color.ordinal()], 2, 4);
 			break;
-		case Grid4Topology.N:
+		case N:
 			frames = Arrays.copyOfRange(ghostColored[color.ordinal()], 4, 6);
 			break;
-		case Grid4Topology.S:
+		case S:
 			frames = Arrays.copyOfRange(ghostColored[color.ordinal()], 6, 8);
 			break;
 		default:

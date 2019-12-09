@@ -1,6 +1,7 @@
 package de.amr.games.pacman.view.intro;
 
 import static de.amr.easy.game.Application.app;
+import static de.amr.graph.grid.impl.Grid4Topology.E;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -12,7 +13,6 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.view.AnimationController;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.theme.PacManTheme;
-import de.amr.graph.grid.impl.Grid4Topology;
 
 /**
  * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the
@@ -34,7 +34,7 @@ public class GhostPointsAnimation extends Entity implements AnimationController,
 
 	public GhostPointsAnimation(PacManTheme theme) {
 		this.theme = theme;
-		pacMan = theme.spr_pacManWalking(Grid4Topology.E);
+		pacMan = theme.spr_pacManWalking(E);
 		ghost = theme.spr_ghostFrightened();
 		for (int i = 0; i < 4; ++i) {
 			points[i] = theme.spr_greenNumber(i);

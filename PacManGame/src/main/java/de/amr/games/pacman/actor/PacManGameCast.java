@@ -8,6 +8,9 @@ import static de.amr.games.pacman.actor.behavior.common.Steerings.movingRandomly
 import static de.amr.games.pacman.actor.behavior.common.Steerings.steeredByKeys;
 import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.PacManGame.sec;
+import static de.amr.graph.grid.impl.Grid4Topology.N;
+import static de.amr.graph.grid.impl.Grid4Topology.S;
+import static de.amr.graph.grid.impl.Grid4Topology.W;
 
 import java.awt.event.KeyEvent;
 import java.util.Optional;
@@ -17,7 +20,6 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.PacManTheme;
-import de.amr.graph.grid.impl.Grid4Topology;
 
 /**
  * The cast (set of actors) in the PacMan game.
@@ -48,21 +50,21 @@ public class PacManGameCast {
 		pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
 		pacMan.teleportingTicks = sec(0);
 
-		blinky.initialDir = Grid4Topology.W;
+		blinky.initialDir = W;
 		blinky.initialTile = game.maze.blinkyHome;
 		blinky.scatterTile = game.maze.blinkyScatter;
 		blinky.revivalTile = game.maze.pinkyHome;
 		blinky.teleportingTicks = sec(1);
 		blinky.fnChasingTarget = pacMan::tile;
 
-		pinky.initialDir = Grid4Topology.S;
+		pinky.initialDir = S;
 		pinky.initialTile = game.maze.pinkyHome;
 		pinky.scatterTile = game.maze.pinkyScatter;
 		pinky.revivalTile = game.maze.pinkyHome;
 		pinky.teleportingTicks = sec(1);
 		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
 
-		inky.initialDir = Grid4Topology.N;
+		inky.initialDir = N;
 		inky.initialTile = game.maze.inkyHome;
 		inky.scatterTile = game.maze.inkyScatter;
 		inky.revivalTile = game.maze.inkyHome;
@@ -72,7 +74,7 @@ public class PacManGameCast {
 			return game.maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		};
 
-		clyde.initialDir = Grid4Topology.N;
+		clyde.initialDir = N;
 		clyde.initialTile = game.maze.clydeHome;
 		clyde.scatterTile = game.maze.clydeScatter;
 		clyde.revivalTile = game.maze.clydeHome;
