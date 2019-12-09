@@ -19,12 +19,10 @@ import java.util.Random;
  * 
  * @author Armin Reichert
  * 
- * @see <a href=
- *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
+ * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
  *      dossier</a>
- * @see <a href=
- *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man
- *      level specifications</a>
+ * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man level
+ *      specifications</a>
  */
 public class PacManGame {
 
@@ -96,6 +94,8 @@ public class PacManGame {
 		public final int pacManPowerSeconds;
 		public final int mazeNumFlashes;
 
+		public int numPelletsEaten;
+
 		public Level(int number, Object[] row) {
 			this.number = number;
 			bonusSymbol = (BonusSymbol) row[0];
@@ -113,10 +113,12 @@ public class PacManGame {
 			ghostFrightenedSpeed = (float) row[12];
 			pacManPowerSeconds = (int) row[13];
 			mazeNumFlashes = (int) row[14];
+			numPelletsEaten = 0;
 		}
 
 		/**
-		 * @param round attack round
+		 * @param round
+		 *                attack round
 		 * @return number of ticks ghost will scatter in this round and level
 		 */
 		public int scatterTicks(int round) {
@@ -124,7 +126,8 @@ public class PacManGame {
 		}
 
 		/**
-		 * @param round attack round
+		 * @param round
+		 *                attack round
 		 * @return number of ticks ghost will chase in this round and level
 		 */
 		public int chasingTicks(int round) {
@@ -147,7 +150,8 @@ public class PacManGame {
 	}
 
 	/**
-	 * @param fraction fraction of base speed
+	 * @param fraction
+	 *                   fraction of base speed
 	 * @return speed (pixels/tick) corresponding to given fraction of base speed
 	 */
 	public static float speed(float fraction) {
@@ -155,7 +159,8 @@ public class PacManGame {
 	}
 
 	/**
-	 * @param fraction fraction of seconds
+	 * @param fraction
+	 *                   fraction of seconds
 	 * @return ticks corresponding to given fraction of seconds at 60Hz
 	 */
 	public static int sec(float fraction) {
@@ -168,7 +173,6 @@ public class PacManGame {
 	}
 
 	public int lives;
-	public int numPelletsEaten;
 	public int globalFoodCount;
 	public boolean globalFoodCounterEnabled;
 	public int numGhostsKilledByCurrentEnergizer;
@@ -201,7 +205,6 @@ public class PacManGame {
 		levelNumber = n;
 		level = new Level(n, LEVELS[Math.min(levelNumber - 1, LEVELS.length - 1)]);
 		maze.restoreFood();
-		numPelletsEaten = 0;
 		numGhostsKilledByCurrentEnergizer = 0;
 		if (levelCounter.size() == 8) {
 			levelCounter.removeLast();
@@ -212,16 +215,18 @@ public class PacManGame {
 	}
 
 	/**
-	 * @param tile tile containing pellet
+	 * @param tile
+	 *               tile containing pellet
 	 * @return points scored for eating pellet
 	 */
 	public int eat(Tile tile) {
-		numPelletsEaten += 1;
+		level.numPelletsEaten += 1;
 		if (maze.containsEnergizer(tile)) {
 			numGhostsKilledByCurrentEnergizer = 0;
 			maze.removeFood(tile);
 			return POINTS_ENERGIZER;
-		} else {
+		}
+		else {
 			maze.removeFood(tile);
 			return POINTS_PELLET;
 		}
@@ -231,11 +236,12 @@ public class PacManGame {
 	 * @return number of pellets not yet eaten
 	 */
 	public int numPelletsRemaining() {
-		return maze.totalNumPellets - numPelletsEaten;
+		return maze.totalNumPellets - level.numPelletsEaten;
 	}
 
 	/**
-	 * @param points points scored
+	 * @param points
+	 *                 points scored
 	 * @return <code>true</code> if new life has been granted
 	 */
 	public boolean scorePoints(int points) {
