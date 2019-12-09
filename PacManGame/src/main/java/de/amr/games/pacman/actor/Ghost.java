@@ -178,7 +178,7 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 	}
 
 	@Override
-	public Actor<GhostState> actorPart() {
+	public Actor<GhostState> _actor() {
 		return _actor;
 	}
 

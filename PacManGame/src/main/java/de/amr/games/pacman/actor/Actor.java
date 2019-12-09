@@ -9,57 +9,59 @@ import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
 /**
- * An actor is an entity which is controlled by a finite-state machine and can register game event
- * listeners for its published game events.
+ * This interface is implemented by entities which are controlled by a
+ * finite-state machine and can register game event listeners for its published
+ * game events.
  * 
  * <p>
- * Most methods have a default implementation that delegates to an instance of a default Actor
- * implementation referenced by the entity class.
+ * Most methods have a default implementation that delegates to an instance of
+ * an Actor prototype referenced by the entity class.
  * 
  * @author Armin Reichert
  *
- * @param <S>
- *          state label type of the FSM
+ * @param <S> state type of the finite-state machine
  */
 public interface Actor<S> extends Controller {
 
-	/** Actor implementation (delegate) provided by the entity implementing the Actor interface. */
-	Actor<S> actorPart();
+	/**
+	 * Actor prototype referenced the entity implementing the Actor interface.
+	 */
+	Actor<S> _actor();
 
 	default String name() {
-		return actorPart().name();
+		return _actor().name();
 	}
 
 	default StateMachine<S, PacManGameEvent> fsm() {
-		return actorPart().fsm();
+		return _actor().fsm();
 	}
 
 	default void activate() {
-		actorPart().activate();
+		_actor().activate();
 	}
 
 	default void deactivate() {
-		actorPart().deactivate();
+		_actor().deactivate();
 	}
 
 	default boolean isActive() {
-		return actorPart().isActive();
+		return _actor().isActive();
 	}
 
 	default void addGameEventListener(Consumer<PacManGameEvent> listener) {
-		actorPart().addGameEventListener(listener);
+		_actor().addGameEventListener(listener);
 	}
 
 	default void removeGameEventListener(Consumer<PacManGameEvent> listener) {
-		actorPart().removeGameEventListener(listener);
+		_actor().removeGameEventListener(listener);
 	}
 
 	default void setState(S state) {
-		actorPart().setState(state);
+		_actor().setState(state);
 	}
 
 	default S getState() {
-		return actorPart().getState();
+		return _actor().getState();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -68,10 +70,10 @@ public interface Actor<S> extends Controller {
 	}
 
 	default State<S, PacManGameEvent> state() {
-		return actorPart().state();
+		return _actor().state();
 	}
 
 	default void process(PacManGameEvent event) {
-		actorPart().process(event);
+		_actor().process(event);
 	}
 }

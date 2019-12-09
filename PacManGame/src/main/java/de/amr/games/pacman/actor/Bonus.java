@@ -70,7 +70,7 @@ public class Bonus extends MazeResident implements Actor<BonusState> {
 	}
 
 	@Override
-	public Actor<BonusState> actorPart() {
+	public Actor<BonusState> _actor() {
 		return _actor;
 	}
 

@@ -41,8 +41,8 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 
 	public final PacManGameCast cast;
 	public final PacManGame game;
-	public int ticksSinceLastMeal;
 	public Steering<PacMan> steering;
+	public int ticksSinceLastMeal;
 
 	public PacMan(PacManGameCast cast) {
 		super(cast.game.maze);
@@ -133,7 +133,7 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 	// Actor
 
 	@Override
-	public Actor<PacManState> actorPart() {
+	public Actor<PacManState> _actor() {
 		return _actor;
 	}
 

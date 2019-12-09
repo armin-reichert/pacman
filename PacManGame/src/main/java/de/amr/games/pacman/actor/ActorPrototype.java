@@ -37,7 +37,7 @@ class ActorPrototype<S> implements Actor<S> {
 	}
 
 	@Override
-	public Actor<S> actorPart() {
+	public Actor<S> _actor() {
 		return this;
 	}
 
