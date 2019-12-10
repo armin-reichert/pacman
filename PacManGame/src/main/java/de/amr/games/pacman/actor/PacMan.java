@@ -47,12 +47,16 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 	public int ticksSinceLastMeal;
 
 	public PacMan(PacManGameCast cast) {
-		super(cast.game.maze);
 		this.cast = cast;
 		this.game = cast.game;
 		_actor = buildActorComponent("Pac-Man");
 		tf.setWidth(Maze.TS);
 		tf.setHeight(Maze.TS);
+	}
+
+	@Override
+	public Maze maze() {
+		return cast.game.maze;
 	}
 
 	/*
@@ -86,7 +90,7 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 	
 				.state(HOME)
 					.onEntry(() -> {
-						placeAtTile(maze.pacManHome, Maze.TS / 2, 0);
+						placeAtTile(maze().pacManHome, Maze.TS / 2, 0);
 						enteredNewTile = true;
 						moveDir = nextDir = E;
 						sprites.forEach(Sprite::resetAnimation);
@@ -207,16 +211,16 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 	 */
 	@Override
 	public Tile tilesAhead(int numTiles) {
-		Tile tileAhead = maze.tileToDir(tile(), moveDir, numTiles);
+		Tile tileAhead = maze().tileToDir(tile(), moveDir, numTiles);
 		if (moveDir == N && app().settings.getAsBoolean("overflowBug")) {
-			return maze.tileToDir(tileAhead, W, numTiles);
+			return maze().tileToDir(tileAhead, W, numTiles);
 		}
 		return tileAhead;
 	}
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (maze.isDoor(neighbor)) {
+		if (maze().isDoor(neighbor)) {
 			return false;
 		}
 		return super.canMoveBetween(tile, neighbor);
@@ -277,7 +281,7 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 		private Optional<PacManGameEvent> findSomethingInteresting() {
 			Tile pacManTile = tile();
 
-			if (!maze.insideBoard(pacManTile) || !visible) {
+			if (!maze().insideBoard(pacManTile) || !visible) {
 				return Optional.empty(); // when teleporting no events are triggered
 			}
 
@@ -298,7 +302,7 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 
 			/*@formatter:off*/
 			Optional<PacManGameEvent> bonusEaten = cast.bonus()
-				.filter(bonus -> pacManTile == maze.bonusTile)
+				.filter(bonus -> pacManTile == maze().bonusTile)
 				.filter(bonus -> bonus.getState() == BonusState.ACTIVE)
 				.map(bonus -> new BonusFoundEvent(bonus.symbol, bonus.value));
 			/*@formatter:on*/
@@ -307,9 +311,9 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 				return bonusEaten;
 			}
 
-			if (maze.containsFood(pacManTile)) {
+			if (maze().containsFood(pacManTile)) {
 				ticksSinceLastMeal = 0;
-				boolean energizer = maze.containsEnergizer(pacManTile);
+				boolean energizer = maze().containsEnergizer(pacManTile);
 				digestion = energizer ? PacManGame.DIGEST_TICKS_ENERGIZER : PacManGame.DIGEST_TICKS;
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
 			} else {

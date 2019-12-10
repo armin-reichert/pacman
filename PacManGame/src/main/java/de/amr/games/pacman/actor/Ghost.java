@@ -57,7 +57,6 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 	public int foodCount;
 
 	public Ghost(String name, PacManGameCast cast) {
-		super(cast.game.maze);
 		this.cast = cast;
 		this.game = cast.game;
 		tf.setWidth(Maze.TS);
@@ -65,6 +64,11 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 		steeringByState = new EnumMap<>(GhostState.class);
 		defaultSteering = Steerings.headingForTargetTile();
 		_actor = buildActorComponent(name);
+	}
+
+	@Override
+	public Maze maze() {
+		return cast.game.maze;
 	}
 
 	private ActorPrototype<GhostState> buildActorComponent(String name) {
@@ -92,7 +96,7 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 					})
 					
 				.state(LEAVING_HOUSE)
-					.onEntry(() -> targetTile = maze.blinkyHome)
+					.onEntry(() -> targetTile = maze().blinkyHome)
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir))
 					.onExit(() -> moveDir = nextDir = W)
 				
@@ -123,7 +127,7 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 				
 				.state(DEAD)
 					.onEntry(() -> {
-						targetTile = maze.blinkyHome;
+						targetTile = maze().blinkyHome;
 						cast.deadSoundOn();
 					})
 					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir))
@@ -180,7 +184,7 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 					.onTimeout()
 					
 				.when(DEAD).then(ENTERING_HOUSE)
-					.condition(() -> tile().equals(maze.blinkyHome))
+					.condition(() -> tile().equals(maze().blinkyHome))
 				
 		.endStateMachine();
 		/*@formatter:on*/
@@ -244,10 +248,10 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (maze.isDoor(neighbor)) {
+		if (maze().isDoor(neighbor)) {
 			return getState() == ENTERING_HOUSE || getState() == LEAVING_HOUSE;
 		}
-		if (maze.isNoUpIntersection(tile) && neighbor == maze.tileToDir(tile, N)) {
+		if (maze().isNoUpIntersection(tile) && neighbor == maze().tileToDir(tile, N)) {
 			return getState() != CHASING && getState() != SCATTERING;
 		}
 		return super.canMoveBetween(tile, neighbor);
@@ -256,8 +260,8 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 	@Override
 	/* TODO: Some values are still guessed */
 	public float maxSpeed() {
-		boolean inTunnel = maze.isTunnel(tile());
-		boolean outsideHouse = !maze.inGhostHouse(tile());
+		boolean inTunnel = maze().isTunnel(tile());
+		boolean outsideHouse = !maze().inGhostHouse(tile());
 		switch (getState()) {
 		case LOCKED:
 			return outsideHouse ? 0 : speed(game.level.ghostSpeed) / 2;
@@ -288,7 +292,7 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 
 	private boolean leftHouse() {
 		Tile currentTile = tile();
-		return !maze.partOfGhostHouse(currentTile) && tf.getY() - currentTile.row * Maze.TS == 0;
+		return !maze().partOfGhostHouse(currentTile) && tf.getY() - currentTile.row * Maze.TS == 0;
 	}
 
 	public static int getDyingTime() {

@@ -34,7 +34,7 @@ public abstract class TakingPrecomputedPath<T extends MazeMover> implements Stee
 			actor.targetPath = path;
 			actor.targetTile = path.isEmpty() ? null : path.get(path.size() - 1);
 		}
-		actor.nextDir = actor.maze.alongPath(path).orElse(actor.moveDir);
+		actor.nextDir = actor.maze().alongPath(path).orElse(actor.moveDir);
 	}
 
 	protected abstract List<Tile> computePath(T actor);

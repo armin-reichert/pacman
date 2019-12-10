@@ -18,7 +18,7 @@ public class AvoidingGhosts implements Steering<PacMan> {
 	public void steer(PacMan pacMan) {
 		/*@formatter:off*/
 		pacMan.cast.activeGhosts()
-			.filter(ghost -> !pacMan.maze.inGhostHouse(ghost.tile()))
+			.filter(ghost -> !pacMan.maze().inGhostHouse(ghost.tile()))
 			.sorted(bySmallestDistanceTo(pacMan))
 			.findFirst()
 			.ifPresent(ghost -> {
@@ -34,8 +34,8 @@ public class AvoidingGhosts implements Steering<PacMan> {
 	private Comparator<Integer> byLargestDistanceOfNeighborTile(PacMan pacMan, MazeMover ghost) {
 		Tile pacManTile = pacMan.tile(), ghostTile = ghost.tile();
 		return (dir1, dir2) -> {
-			Tile neighborTile1 = pacMan.maze.tileToDir(pacManTile, dir1),
-					neighborTile2 = pacMan.maze.tileToDir(pacManTile, dir2);
+			Tile neighborTile1 = pacMan.maze().tileToDir(pacManTile, dir1),
+					neighborTile2 = pacMan.maze().tileToDir(pacManTile, dir2);
 			return -Integer.compare(distanceSq(neighborTile1, ghostTile), distanceSq(neighborTile2, ghostTile));
 		};
 	}

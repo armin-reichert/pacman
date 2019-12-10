@@ -22,7 +22,6 @@ import de.amr.games.pacman.model.Tile;
  */
 public abstract class MazeMover extends Entity implements MazeResident {
 
-	public final Maze maze;
 	public int moveDir;
 	public int nextDir;
 	public Tile targetTile;
@@ -30,15 +29,6 @@ public abstract class MazeMover extends Entity implements MazeResident {
 	public boolean enteredNewTile;
 	public int teleportingTicks;
 	private int teleportTicksRemaining;
-
-	public MazeMover(Maze maze) {
-		this.maze = maze;
-	}
-
-	@Override
-	public Maze maze() {
-		return maze;
-	}
 
 	@Override
 	public void init() {
@@ -96,8 +86,8 @@ public abstract class MazeMover extends Entity implements MazeResident {
 			show();
 			LOGGER.fine("Teleporting complete");
 		} else { // off
-			int leftExit = (maze.tunnelLeftExit.col - 1) * Maze.TS;
-			int rightExit = (maze.tunnelRightExit.col + 1) * Maze.TS;
+			int leftExit = (maze().tunnelLeftExit.col - 1) * Maze.TS;
+			int rightExit = (maze().tunnelRightExit.col + 1) * Maze.TS;
 			if (tf.getX() > rightExit) { // start
 				teleportTicksRemaining = teleportingTicks;
 				tf.setX(leftExit);
@@ -162,7 +152,7 @@ public abstract class MazeMover extends Entity implements MazeResident {
 	 *         towards his current move direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
-		return maze.tileToDir(tile(), moveDir, numTiles);
+		return maze().tileToDir(tile(), moveDir, numTiles);
 	}
 
 	/**
@@ -174,13 +164,13 @@ public abstract class MazeMover extends Entity implements MazeResident {
 	 *         given tiles
 	 */
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (maze.isWall(neighbor)) {
+		if (maze().isWall(neighbor)) {
 			return false;
 		}
-		if (maze.isTunnel(neighbor)) {
+		if (maze().isTunnel(neighbor)) {
 			return true; // includes tiles outside board used for teleportation!
 		}
-		return maze.insideBoard(neighbor);
+		return maze().insideBoard(neighbor);
 	}
 
 	/**
@@ -193,7 +183,7 @@ public abstract class MazeMover extends Entity implements MazeResident {
 	 */
 	public boolean canCrossBorderTo(int dir) {
 		Tile currentTile = tile();
-		return canMoveBetween(currentTile, maze.tileToDir(currentTile, dir));
+		return canMoveBetween(currentTile, maze().tileToDir(currentTile, dir));
 	}
 
 	/**

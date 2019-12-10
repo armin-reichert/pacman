@@ -32,11 +32,11 @@ public class FleeingToSafeCorner<T extends MazeMover> extends TakingPrecomputedP
 		while (target.equals(refugee.tile())) {
 			target = safeCorner(refugee);
 		}
-		return refugee.maze.findPath(refugee.tile(), target);
+		return refugee.maze().findPath(refugee.tile(), target);
 	}
 
 	private Tile safeCorner(T refugee) {
-		Maze maze = refugee.maze;
+		Maze maze = refugee.maze();
 		Tile refugeeTile = refugee.tile();
 		Tile chaserTile = fnTargetTile.get();
 		//@formatter:off
