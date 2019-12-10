@@ -41,12 +41,12 @@ import de.amr.statemachine.StateMachine;
  */
 public class Ghost extends MazeMover implements Actor<GhostState> {
 
-	private final ActorPrototype<GhostState> _actor;
 	private final Map<GhostState, Steering<Ghost>> steeringByState;
 	private final Steering<Ghost> defaultSteering;
 
 	public final PacManGameCast cast;
 	public final PacManGame game;
+	public final ActorPrototype<GhostState> _actor;
 	public int initialDir;
 	public Tile initialTile;
 	public Tile revivalTile;
@@ -61,9 +61,14 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 		this.game = cast.game;
 		steeringByState = new EnumMap<>(GhostState.class);
 		defaultSteering = Steerings.headingForTargetTile();
-		_actor = new ActorPrototype<>(name, buildStateMachine(name));
-		_actor.fsm.setIgnoreUnknownEvents(true);
-		_actor.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		_actor = buildActorComponent(name); 
+	}
+
+	private ActorPrototype<GhostState> buildActorComponent(String name) {
+		StateMachine<GhostState, PacManGameEvent> fsm = buildStateMachine(name);
+		fsm.setIgnoreUnknownEvents(true);
+		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		return new ActorPrototype<>(name, fsm);
 	}
 
 	private StateMachine<GhostState, PacManGameEvent> buildStateMachine(String name) {
@@ -262,8 +267,7 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 		case DEAD:
 			return 2 * speed(game.level.ghostSpeed);
 		default:
-			throw new IllegalStateException(
-					String.format("Illegal ghost state %s for %s", getState(), _actor.name));
+			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), _actor.name));
 		}
 	}
 
