@@ -310,7 +310,7 @@ public class Maze {
 			tile.content = ENERGIZER;
 		}
 		else {
-			throw new IllegalArgumentException(String.format("Tile %s does not contain food", tile));
+			throw new IllegalArgumentException(String.format("Tile %s does not contain eaten food", tile));
 		}
 	}
 
