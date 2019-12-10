@@ -212,6 +212,7 @@ public class PacManGame {
 	public void startLevel(int n) {
 		LOGGER.info("Start level " + n);
 		level = new Level(n, LEVELS[Math.min(n - 1, LEVELS.length - 1)]);
+		maze.restoreFood();
 		globalFoodCount = 0;
 		globalFoodCounterEnabled = false;
 		updateLevelCounter();
@@ -222,7 +223,6 @@ public class PacManGame {
 
 	public void nextLevel() {
 		if (level != null) {
-			maze.restoreFood();
 			startLevel(level.number + 1);
 		} else {
 			throw new IllegalStateException("Cannot enter next level, game has not been started");
