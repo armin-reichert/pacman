@@ -203,7 +203,7 @@ public class Maze {
 	 */
 	public Tile tileAt(int col, int row) {
 		byte _col = (byte) col, _row = (byte) row;
-		return insideBoard(_col, _row) ? board[col][row]
+		return insideBoard(_col, _row) ? board[_col][_row]
 				: new Tile(_col, _row, _row == tunnelLeftExit.row ? TUNNEL : WALL);
 	}
 
@@ -217,9 +217,8 @@ public class Maze {
 	 * @return the tile located <code>n</code> tiles away from the reference tile towards the given
 	 *         direction. This can be a tile outside of the board!
 	 */
-	public Tile tileToDir(Tile tile, int dir, int n) {
-		byte _dir = (byte) dir, _n = (byte) n;
-		return tileAt(tile.col + _n * NESW.dx(_dir), tile.row + _n * NESW.dy(_dir));
+	public Tile tileToDir(Tile tile, byte dir, int n) {
+		return tileAt(tile.col + n * NESW.dx(dir), tile.row + n * NESW.dy(dir));
 	}
 
 	/**
@@ -229,9 +228,8 @@ public class Maze {
 	 *               some direction
 	 * @return neighbor towards the given direction. This can be a tile outside of the board!
 	 */
-	public Tile tileToDir(Tile tile, int dir) {
-		byte _dir = (byte) dir;
-		return tileToDir(tile, _dir, (byte) 1);
+	public Tile tileToDir(Tile tile, byte dir) {
+		return tileToDir(tile, dir, 1);
 	}
 
 	public boolean insideBoard(byte col, byte row) {

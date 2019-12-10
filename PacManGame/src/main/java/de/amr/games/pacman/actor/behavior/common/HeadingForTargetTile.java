@@ -88,7 +88,7 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 		int currentDir = actor.moveDir();
 		path.add(currentTile);
 		while (!currentTile.equals(actor.targetTile())) {
-			int nextDir = nextDir(actor, currentDir, currentTile, actor.targetTile());
+			byte nextDir = nextDir(actor, currentDir, currentTile, actor.targetTile());
 			Tile nextTile = maze.tileToDir(currentTile, nextDir);
 			if (!maze.insideBoard(nextTile) || path.contains(nextTile)) {
 				break;
