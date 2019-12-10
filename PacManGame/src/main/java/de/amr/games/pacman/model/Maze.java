@@ -347,4 +347,19 @@ public class Maze {
 	public Optional<Byte> alongPath(List<Tile> path) {
 		return path.size() < 2 ? Optional.empty() : direction(path.get(0), path.get(1));
 	}
+
+	// misc
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (byte row = 0; row < ROWS; ++row) {
+			for (byte col = 0; col < COLS; ++col) {
+				sb.append(board[col][row].content);
+			}
+			sb.append("\n");
+		}
+		return sb.toString();
+	}
+
 }
