@@ -72,4 +72,15 @@ public interface MazeMover extends MazeResident {
 	 * @return the tile located <code>n</code> tiles away in the current move direction
 	 */
 	Tile tilesAhead(int n);
+
+	/**
+	 * @return the maximum possible speed (in pixels/tick) for the current frame. The actual speed can
+	 *         be lower to avoid moving into inaccessible tiles.
+	 */
+	float maxSpeed();
+
+	/**
+	 * Steers the actor by changing the intended move direction.
+	 */
+	void steer();
 }

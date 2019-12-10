@@ -95,36 +95,17 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 		targetPath = new ArrayList<>(path);
 	}
 
-	/**
-	 * @return <code>true</code> if the maze mover cannot move further towards its current direction
-	 */
 	@Override
 	public boolean canMoveForward() {
 		return possibleSpeedTo(moveDir) > 0;
 	}
 
-	/**
-	 * Tells if the neighbor tile towards the given direction can be entered from the current direction.
-	 * 
-	 * @param dir
-	 *              a direction (N, E, S, W)
-	 * @return if the maze mover can enter the neighbor tile towards the given direction
-	 */
 	@Override
 	public boolean canCrossBorderTo(byte dir) {
 		Tile currentTile = tile();
 		return canMoveBetween(currentTile, maze().tileToDir(currentTile, dir));
 	}
 
-	/**
-	 * Tells if this actor can (currently) cross the border between the given tiles.
-	 * 
-	 * @param tile
-	 *                   current tile
-	 * @param neighbor
-	 *                   neighbor tile, may also be a tile outside of the board
-	 * @return <code>true</code> if this maze mover can cross the border between the given tiles
-	 */
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
 		if (maze().isWall(neighbor)) {
@@ -136,12 +117,6 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 		return maze().insideBoard(neighbor);
 	}
 
-	/**
-	 * @param numTiles
-	 *                   number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
-	 *         direction.
-	 */
 	@Override
 	public Tile tilesAhead(int numTiles) {
 		if (numTiles < 0) {
@@ -150,29 +125,18 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 		return maze().tileToDir(tile(), moveDir, numTiles);
 	}
 
+	@Override
+	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
+		MazeMover.super.placeAtTile(tile, xOffset, yOffset);
+		enteredNewTile = !tile.equals(tile());
+	}
+
 	/**
 	 * Turns back to the reverse direction and triggers new steering.
 	 */
 	public void turnBack() {
 		nextDir = moveDir = NESW.inv(moveDir);
 		enteredNewTile = true;
-	}
-
-	/**
-	 * @return the maximum possible speed (in pixels/tick) for the current frame. The actual speed can
-	 *         be lower to avoid moving into inaccessible tiles.
-	 */
-	public abstract float maxSpeed();
-
-	/**
-	 * Steers the actor by changing the intended move direction.
-	 */
-	protected abstract void steer();
-
-	@Override
-	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
-		MazeMover.super.placeAtTile(tile, xOffset, yOffset);
-		enteredNewTile = !tile.equals(tile());
 	}
 
 	/**
