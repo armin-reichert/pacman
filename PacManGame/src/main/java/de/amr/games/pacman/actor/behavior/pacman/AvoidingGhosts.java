@@ -22,7 +22,7 @@ public class AvoidingGhosts implements Steering<PacMan> {
 			.sorted(bySmallestDistanceTo(pacMan))
 			.findFirst()
 			.ifPresent(ghost -> {
-				pacMan.setNextDir( NESW.dirs().boxed()
+				pacMan.setNextDir( NESW.dirs()
 						.filter(pacMan::canCrossBorderTo)
 						.sorted(byLargestDistanceOfNeighborTile(pacMan, ghost))
 						.findAny()
@@ -31,7 +31,7 @@ public class AvoidingGhosts implements Steering<PacMan> {
 		/*@formatter:on*/
 	}
 
-	private Comparator<Integer> byLargestDistanceOfNeighborTile(PacMan pacMan, MazeMover ghost) {
+	private Comparator<Byte> byLargestDistanceOfNeighborTile(PacMan pacMan, MazeMover ghost) {
 		Tile pacManTile = pacMan.tile(), ghostTile = ghost.tile();
 		return (dir1, dir2) -> {
 			Tile neighborTile1 = pacMan.maze().tileToDir(pacManTile, dir1),
@@ -44,7 +44,7 @@ public class AvoidingGhosts implements Steering<PacMan> {
 		return (ghost1, ghost2) -> Integer.compare(pacMan.tileDistanceSq(ghost1), pacMan.tileDistanceSq(ghost2));
 	}
 
-	private int randomAccessibleDir(PacMan pacMan) {
-		return permute(NESW.dirs()).filter(pacMan::canCrossBorderTo).findAny().getAsInt();
+	private byte randomAccessibleDir(PacMan pacMan) {
+		return permute(NESW.dirs()).filter(pacMan::canCrossBorderTo).findAny().get();
 	}
 }

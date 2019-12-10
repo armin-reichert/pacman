@@ -6,7 +6,7 @@ import static de.amr.graph.grid.impl.Grid4Topology.S;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.OptionalInt;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -307,7 +307,7 @@ public class Maze {
 
 	// navigation and path finding
 
-	public OptionalInt direction(Tile t1, Tile t2) {
+	public Optional<Byte> direction(Tile t1, Tile t2) {
 		int dx = t2.col - t1.col, dy = t2.row - t1.row;
 		return NESW.dirs().filter(dir -> NESW.dx(dir) == dx && NESW.dy(dir) == dy).findFirst();
 	}
@@ -327,7 +327,7 @@ public class Maze {
 		return Collections.emptyList();
 	}
 
-	public OptionalInt alongPath(List<Tile> path) {
-		return path.size() < 2 ? OptionalInt.empty() : direction(path.get(0), path.get(1));
+	public Optional<Byte> alongPath(List<Tile> path) {
+		return path.size() < 2 ? Optional.empty() : direction(path.get(0), path.get(1));
 	}
 }
