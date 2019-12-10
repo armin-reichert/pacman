@@ -60,8 +60,8 @@ public class PacMan extends AbstractMazeMover implements MazeMover, Actor<PacMan
 	}
 
 	/*
-	 * Instead of inheriting from a base class, the actor role of this class is
-	 * implemented by delegating to an actor prototype/component.
+	 * Instead of inheriting from a base class, the actor role of this class is implemented by
+	 * delegating to an actor prototype/component.
 	 */
 	private ActorPrototype<PacManState> buildActorComponent(String name) {
 		StateMachine<PacManState, PacManGameEvent> fsm = buildStateMachine();
@@ -190,7 +190,7 @@ public class PacMan extends AbstractMazeMover implements MazeMover, Actor<PacMan
 	protected void move() {
 		super.move();
 		sprites.select("walking-" + moveDir);
-		sprites.current().ifPresent(sprite -> sprite.enableAnimation(!isStuck()));
+		sprites.current().ifPresent(sprite -> sprite.enableAnimation(canMoveForward()));
 	}
 
 	@Override
@@ -199,14 +199,14 @@ public class PacMan extends AbstractMazeMover implements MazeMover, Actor<PacMan
 	}
 
 	/**
-	 * NOTE: If the application property <code>overflowBug</code> is
-	 * <code>true</code>, this method simulates the bug in the original Arcade game
-	 * which occurs if Pac-Man points upwards. In that case the same number of tiles
-	 * to the left is added.
+	 * NOTE: If the application property <code>overflowBug</code> is <code>true</code>, this method
+	 * simulates the bug in the original Arcade game which occurs if Pac-Man points upwards. In that
+	 * case the same number of tiles to the left is added.
 	 * 
-	 * @param numTiles number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor
-	 *         towards his current move direction.
+	 * @param numTiles
+	 *                   number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
+	 *         direction.
 	 */
 	@Override
 	public Tile tilesAhead(int numTiles) {
@@ -256,13 +256,16 @@ public class PacMan extends AbstractMazeMover implements MazeMover, Actor<PacMan
 		public void onTick() {
 			if (startsLosingPower()) {
 				_actor.publish(new PacManGettingWeakerEvent());
-			} else if (getTicksRemaining() == 1) {
+			}
+			else if (getTicksRemaining() == 1) {
 				setConstantTimer(0);
 				cast.theme.snd_waza().stop();
 				_actor.publish(new PacManLostPowerEvent());
-			} else if (mustDigest()) {
+			}
+			else if (mustDigest()) {
 				digest();
-			} else {
+			}
+			else {
 				steer();
 				move();
 				findSomethingInteresting().ifPresent(_actor::publish);
@@ -315,7 +318,8 @@ public class PacMan extends AbstractMazeMover implements MazeMover, Actor<PacMan
 				boolean energizer = maze().containsEnergizer(pacManTile);
 				digestion = energizer ? PacManGame.DIGEST_TICKS_ENERGIZER : PacManGame.DIGEST_TICKS;
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			} else {
+			}
+			else {
 				ticksSinceLastMeal += 1;
 			}
 

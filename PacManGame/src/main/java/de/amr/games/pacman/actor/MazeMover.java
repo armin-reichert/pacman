@@ -29,7 +29,7 @@ public interface MazeMover extends MazeResident {
 
 	void setTargetPath(List<Tile> path);
 
-	boolean isStuck();
+	boolean canMoveForward();
 
 	boolean canCrossBorderTo(int dir);
 

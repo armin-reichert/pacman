@@ -1,6 +1,7 @@
 package de.amr.games.pacman.actor.behavior.common;
 
 import static de.amr.graph.grid.impl.Grid4Topology.E;
+import static de.amr.graph.grid.impl.Grid4Topology.N;
 import static de.amr.graph.grid.impl.Grid4Topology.S;
 import static de.amr.graph.grid.impl.Grid4Topology.W;
 
@@ -25,7 +26,8 @@ import de.amr.games.pacman.model.Tile;
 public interface Steerings {
 
 	/**
-	 * @param keys steering key codes in order N, E, S, W
+	 * @param keys
+	 *               steering key codes in order N, E, S, W
 	 * @return steering using the given keys
 	 */
 	static <T extends MazeMover> Steering<T> steeredByKeys(int... keys) {
@@ -40,25 +42,28 @@ public interface Steerings {
 	/**
 	 * Lets the actor jump up and down.
 	 * 
-	 * @return behavior which lets the actor bounce vertically inside its currently
-	 *         accessible area e.g. the ghost house or the current maze corridor
+	 * @return behavior which lets the actor bounce vertically inside its currently accessible area e.g.
+	 *         the ghost house or the current maze corridor
 	 */
 	static <T extends MazeMover> Steering<T> jumpingUpAndDown() {
 		return actor -> {
 			if (actor.moveDir() == W || actor.moveDir() == E) {
 				actor.setMoveDir(S);
+				if (!actor.canMoveForward()) {
+					actor.setMoveDir(N);
+				}
 			}
 			actor.setTargetTile(actor.tilesAhead(1));
-			if (actor.isStuck()) {
+			if (!actor.canMoveForward()) {
 				actor.setNextDir(Maze.NESW.inv(actor.moveDir()));
 			}
 		};
 	}
 
 	/**
-	 * Lets the actor move randomly though the maze while respecting the
-	 * accessibility rules (for example, chasing and scattering ghost may not move
-	 * upwards at dedicated tiles. Also reversing the direction is never allowed.
+	 * Lets the actor move randomly though the maze while respecting the accessibility rules (for
+	 * example, chasing and scattering ghost may not move upwards at dedicated tiles. Also reversing the
+	 * direction is never allowed.
 	 * 
 	 * @return random move behavior
 	 */
@@ -78,8 +83,8 @@ public interface Steerings {
 	}
 
 	/**
-	 * Lets the actor head for a target tile (may be unreachable) by taking the
-	 * "best" direction at every intersection.
+	 * Lets the actor head for a target tile (may be unreachable) by taking the "best" direction at
+	 * every intersection.
 	 * 
 	 * @return behavior where actor heads for the target tile
 	 */
@@ -90,7 +95,8 @@ public interface Steerings {
 	/**
 	 * Lets the actor avoid the attacker's path by walking to a "safe" maze corner.
 	 * 
-	 * @param attacker the attacking actor
+	 * @param attacker
+	 *                   the attacking actor
 	 * @return behavior where actor flees to a "safe" maze corner
 	 */
 	static <T extends MazeMover> Steering<T> fleeingToSafeCorner(MazeMover attacker) {
@@ -98,12 +104,13 @@ public interface Steerings {
 	}
 
 	/**
-	 * Lets the actor follow the shortest path to the target. This may, depending on
-	 * the actor's current state.
+	 * Lets the actor follow the shortest path to the target. This may, depending on the actor's current
+	 * state.
 	 * 
-	 * @param fnTarget function supplying the target tile at time of decision
-	 * @return behavior where an actor follows the shortest (according to Manhattan
-	 *         distance) path to a target tile
+	 * @param fnTarget
+	 *                   function supplying the target tile at time of decision
+	 * @return behavior where an actor follows the shortest (according to Manhattan distance) path to a
+	 *         target tile
 	 */
 	static <T extends MazeMover> Steering<T> followingShortestPath(Supplier<Tile> fnTarget) {
 		return new TakingShortestPath<>(fnTarget);

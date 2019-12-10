@@ -99,8 +99,8 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 	 * @return <code>true</code> if the maze mover cannot move further towards its current direction
 	 */
 	@Override
-	public boolean isStuck() {
-		return tf.getVelocity().length() == 0;
+	public boolean canMoveForward() {
+		return possibleSpeedTo(moveDir) > 0;
 	}
 
 	/**
