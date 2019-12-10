@@ -96,7 +96,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 					})
 					
 				.state(LEAVING_HOUSE)
-					.onEntry(() -> targetTile = maze().blinkyHome)
+					.onEntry(() -> targetTile = maze().ghostHome[0])
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir))
 					.onExit(() -> moveDir = nextDir = W)
 				
@@ -127,7 +127,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 				
 				.state(DEAD)
 					.onEntry(() -> {
-						targetTile = maze().blinkyHome;
+						targetTile = maze().ghostHome[0];
 						cast.deadSoundOn();
 					})
 					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir))
@@ -184,7 +184,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 					.onTimeout()
 					
 				.when(DEAD).then(ENTERING_HOUSE)
-					.condition(() -> tile().equals(maze().blinkyHome))
+					.condition(() -> tile().equals(maze().ghostHome[0]))
 				
 		.endStateMachine();
 		/*@formatter:on*/

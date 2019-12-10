@@ -59,10 +59,10 @@ public class Maze {
 	"#......##....##....##......#", 
 	"######.##### ## #####.######", 
 	"######.##### ## #####.######", 
-	"######.##    B     ##.######", 
+	"######.##    0     ##.######", 
 	"######.## ###--### ##.######", 
 	"######.## #      # ##.######", 
-	"tttttt.   #I P C #   .tttttt", 
+	"tttttt.   #1 2 3 #   .tttttt", 
 	"######.## #      # ##.######", 
 	"######.## ######## ##.######", 
 	"######.##    $     ##.######", 
@@ -71,7 +71,7 @@ public class Maze {
 	"#............##............#", 
 	"#.####.#####.##.#####.####.#", 
 	"#.####.#####.##.#####.####.#", 
-	"#*..##.......O .......##..*#", 
+	"#*..##.......P .......##..*#", 
 	"###.##.##.########.##.##.###", 
 	"###.##.##.########.##.##.###", 
 	"#......##....##....##......#", 
@@ -88,49 +88,36 @@ public class Maze {
 
 	public final GridGraph2D<Tile, Void> graph;
 
-	public final Tile cornerNW, cornerNE, cornerSW, cornerSE, scatterTileNE, scatterTileNW, scatterTileSE,
-			scatterTileSW, tunnelExitLeft, tunnelExitRight, ghostRevival;
+	public Tile cornerNW, cornerNE, cornerSW, cornerSE, scatterTileNE, scatterTileNW, scatterTileSE,
+			scatterTileSW, tunnelExitLeft, tunnelExitRight, pacManHome, bonusTile;
 
-	public /* final */ Tile pacManHome, blinkyHome, inkyHome, pinkyHome, clydeHome, bonusTile;
+	public Tile[] ghostHome = new Tile[4];
 
-	public final int totalNumPellets;
+	public int totalNumPellets;
 
 	private final Tile[][] board = new Tile[NUM_COLS][NUM_ROWS];
 	private final Set<Tile> intersections;
 	private final Set<Tile> energizers = new HashSet<>();
 
 	public Maze() {
-		int numPellets = 0;
 		for (byte row = 0; row < NUM_ROWS; ++row) {
 			for (byte col = 0; col < NUM_COLS; ++col) {
 				char content = CONTENT[row].charAt(col);
 				Tile tile = board[col][row] = new Tile(col, row, content);
+				if (Character.isDigit(content)) {
+					ghostHome[Integer.valueOf(String.valueOf(content))] = tile;
+					tile.content = SPACE;
+				}
 				switch (content) {
 				case PELLET:
-					numPellets += 1;
+					totalNumPellets += 1;
 					break;
 				case ENERGIZER:
-					numPellets += 1;
+					totalNumPellets += 1;
 					energizers.add(tile);
 					break;
-				case 'O':
-					pacManHome = tile;
-					tile.content = SPACE;
-					break;
-				case 'B':
-					blinkyHome = tile;
-					tile.content = SPACE;
-					break;
 				case 'P':
-					pinkyHome = tile;
-					tile.content = SPACE;
-					break;
-				case 'I':
-					inkyHome = tile;
-					tile.content = SPACE;
-					break;
-				case 'C':
-					clydeHome = tile;
+					pacManHome = tile;
 					tile.content = SPACE;
 					break;
 				case '$':
@@ -143,12 +130,8 @@ public class Maze {
 			}
 		}
 
-		totalNumPellets = numPellets;
-
 		tunnelExitLeft = board[0][17];
 		tunnelExitRight = board[27][17];
-
-		ghostRevival = board[13][17];
 
 		// Scattering targets
 		scatterTileNW = board[2][0];

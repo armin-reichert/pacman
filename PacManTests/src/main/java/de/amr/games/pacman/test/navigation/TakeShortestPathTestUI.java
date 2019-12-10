@@ -29,7 +29,7 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 		showStates = true;
 		showScores = false;
 		targets = Arrays.asList(game.maze.cornerSE, game.maze.cornerSW, game.maze.tunnelExitLeft,
-				game.maze.cornerNW, game.maze.blinkyHome, game.maze.cornerNE, game.maze.tunnelExitRight,
+				game.maze.cornerNW, game.maze.ghostHome[0], game.maze.cornerNE, game.maze.tunnelExitRight,
 				game.maze.pacManHome);
 	}
 

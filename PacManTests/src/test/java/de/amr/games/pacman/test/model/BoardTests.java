@@ -17,23 +17,22 @@ public class BoardTests {
 		assertEquals(28, Maze.NUM_COLS);
 		assertEquals(36, Maze.NUM_ROWS);
 
-		assertNotNull(maze.blinkyHome);
-		assertNotNull(maze.scatterTileNE);
-		assertNotNull(maze.bonusTile);
-		assertNotNull(maze.cornerSW);
-		assertNotNull(maze.cornerSE);
-		assertNotNull(maze.clydeHome);
-		assertNotNull(maze.scatterTileSW);
-		assertNotNull(maze.ghostRevival);
-		assertNotNull(maze.inkyHome);
-		assertNotNull(maze.scatterTileSE);
 		assertNotNull(maze.pacManHome);
-		assertNotNull(maze.pinkyHome);
-		assertNotNull(maze.scatterTileNW);
+		assertNotNull(maze.ghostHome[0]);
+		assertNotNull(maze.ghostHome[1]);
+		assertNotNull(maze.ghostHome[2]);
+		assertNotNull(maze.ghostHome[3]);
 		assertNotNull(maze.tunnelExitLeft);
 		assertNotNull(maze.tunnelExitRight);
+		assertNotNull(maze.bonusTile);
 		assertNotNull(maze.cornerNW);
 		assertNotNull(maze.cornerNE);
+		assertNotNull(maze.cornerSW);
+		assertNotNull(maze.cornerSE);
+		assertNotNull(maze.scatterTileNE);
+		assertNotNull(maze.scatterTileNW);
+		assertNotNull(maze.scatterTileSW);
+		assertNotNull(maze.scatterTileSE);
 
 		assertEquals(4, maze.tiles().filter(tile -> maze.containsEnergizer(tile)).count());
 		assertEquals(240, maze.tiles().filter(tile -> maze.containsPellet(tile)).count());
