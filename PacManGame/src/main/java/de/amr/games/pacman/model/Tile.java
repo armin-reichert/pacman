@@ -16,11 +16,11 @@ public class Tile {
 		return dx * dx + dy * dy;
 	}
 
-	public final int col;
-	public final int row;
+	public final byte col;
+	public final byte row;
 	public char content;
 
-	Tile(int col, int row, char content) {
+	Tile(byte col, byte row, char content) {
 		this.col = col;
 		this.row = row;
 		this.content = content;
