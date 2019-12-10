@@ -40,7 +40,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends MazeMover implements Actor<GhostState> {
+public class Ghost extends AbstractMazeMover implements MazeMover, Actor<GhostState> {
 
 	private final Map<GhostState, Steering<Ghost>> steeringByState;
 	private final Steering<Ghost> defaultSteering;
@@ -48,7 +48,7 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 	public final PacManGameCast cast;
 	public final PacManGame game;
 	public final ActorPrototype<GhostState> _actor;
-	public int initialDir;
+	public byte initialDir;
 	public Tile initialTile;
 	public Tile revivalTile;
 	public Tile scatterTile;

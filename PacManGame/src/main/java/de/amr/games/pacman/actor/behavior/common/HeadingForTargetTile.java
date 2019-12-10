@@ -40,9 +40,9 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 
 	@Override
 	public void steer(T actor) {
-		if (actor.targetTile != null && actor.enteredNewTile) {
-			actor.nextDir = nextDir(actor, actor.moveDir, actor.tile(), actor.targetTile);
-			actor.targetPath = fnComputePath.getAsBoolean() ? pathToTargetTile(actor) : Collections.emptyList();
+		if (actor.targetTile() != null && actor.enteredNewTile()) {
+			actor.setNextDir(nextDir(actor, actor.moveDir(), actor.tile(), actor.targetTile()));
+			actor.setTargetPath(fnComputePath.getAsBoolean() ? pathToTargetTile(actor) : Collections.emptyList());
 		}
 	}
 
@@ -53,8 +53,8 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	 * <p>
 	 * Note: We use separate parameters for the actor's move direction, current tile
 	 * and target tile instead of the members of the actor itself because the
-	 * {@link #computePath(MazeMover, Tile)} method uses this method without
-	 * actually placing the actor at each tile of the path.
+	 * {@link #pathToTargetTile(MazeMover)} method uses this method without actually
+	 * placing the actor at each tile of the path.
 	 */
 	private int nextDir(T actor, int moveDir, Tile currentTile, Tile targetTile) {
 		Maze maze = actor.maze();
@@ -85,10 +85,10 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 		Maze maze = actor.maze();
 		Set<Tile> path = new LinkedHashSet<>();
 		Tile currentTile = actor.tile();
-		int currentDir = actor.moveDir;
+		int currentDir = actor.moveDir();
 		path.add(currentTile);
-		while (!currentTile.equals(actor.targetTile)) {
-			int nextDir = nextDir(actor, currentDir, currentTile, actor.targetTile);
+		while (!currentTile.equals(actor.targetTile())) {
+			int nextDir = nextDir(actor, currentDir, currentTile, actor.targetTile());
 			Tile nextTile = maze.tileToDir(currentTile, nextDir);
 			if (!maze.insideBoard(nextTile) || path.contains(nextTile)) {
 				break;

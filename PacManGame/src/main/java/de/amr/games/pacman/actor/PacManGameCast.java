@@ -103,7 +103,7 @@ public class PacManGameCast {
 		pacMan.sprites.select("full");
 	}
 
-	private void setGhostSprites(MazeMover ghost, GhostColor color) {
+	private void setGhostSprites(Ghost ghost, GhostColor color) {
 		NESW.dirs().forEach(dir -> {
 			ghost.sprites.set("color-" + dir, theme.spr_ghostColored(color, dir));
 			ghost.sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir));
@@ -150,7 +150,7 @@ public class PacManGameCast {
 		}
 	}
 
-	public void chasingSoundOff(MazeMover caller) {
+	public void chasingSoundOff(Ghost caller) {
 		// if caller is the only chasing ghost, turn it off
 		if (activeGhosts().filter(ghost -> caller != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
 			theme.snd_ghost_chase().stop();
@@ -163,7 +163,7 @@ public class PacManGameCast {
 		}
 	}
 
-	public void deadSoundOff(MazeMover caller) {
+	public void deadSoundOff(Ghost caller) {
 		// if caller is the only dead ghost, turn it off
 		if (activeGhosts().filter(ghost -> ghost != caller).noneMatch(ghost -> ghost.getState() == DEAD)) {
 			theme.snd_ghost_dead().stop();
@@ -199,8 +199,7 @@ public class PacManGameCast {
 		if (ghost == blinky) {
 			return true;
 		}
-		MazeMover next = Stream.of(pinky, inky, clyde).filter(g -> g.getState() == GhostState.LOCKED).findFirst()
-				.orElse(null);
+		Ghost next = Stream.of(pinky, inky, clyde).filter(g -> g.getState() == GhostState.LOCKED).findFirst().orElse(null);
 		if (ghost != next) {
 			return false;
 		}
@@ -265,7 +264,7 @@ public class PacManGameCast {
 	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
 	 *      Dossier</a>
 	 */
-	private int getFoodLimit(MazeMover ghost) {
+	private int getFoodLimit(Ghost ghost) {
 		if (ghost == pinky) {
 			return 0;
 		}
@@ -278,7 +277,7 @@ public class PacManGameCast {
 		return 0;
 	}
 
-	private int getGlobalFoodCounterLimit(MazeMover ghost) {
+	private int getGlobalFoodCounterLimit(Ghost ghost) {
 		return (ghost == pinky) ? 7 : (ghost == inky) ? 17 : (ghost == clyde) ? 32 : 0;
 	}
 }

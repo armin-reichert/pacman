@@ -22,11 +22,11 @@ public class AvoidingGhosts implements Steering<PacMan> {
 			.sorted(bySmallestDistanceTo(pacMan))
 			.findFirst()
 			.ifPresent(ghost -> {
-				pacMan.nextDir = NESW.dirs().boxed()
+				pacMan.setNextDir( NESW.dirs().boxed()
 						.filter(pacMan::canCrossBorderTo)
 						.sorted(byLargestDistanceOfNeighborTile(pacMan, ghost))
 						.findAny()
-						.orElse(randomAccessibleDir(pacMan));
+						.orElse(randomAccessibleDir(pacMan)));
 			});
 		/*@formatter:on*/
 	}

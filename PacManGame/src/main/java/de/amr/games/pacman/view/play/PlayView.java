@@ -17,12 +17,12 @@ import java.awt.image.BufferedImage;
 import java.util.function.Supplier;
 
 import de.amr.easy.game.Application;
+import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.behavior.common.HeadingForTargetTile;
@@ -123,8 +123,7 @@ public class PlayView extends SimplePlayView {
 	private void toggleGhostActivationState(Ghost ghost) {
 		if (ghost.isActive()) {
 			ghost.deactivate();
-		}
-		else {
+		} else {
 			ghost.activate();
 		}
 	}
@@ -140,9 +139,9 @@ public class PlayView extends SimplePlayView {
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
 			if (cast.pacMan.isActive()) {
-				drawActorAlignment(cast.pacMan, g);
+				drawGridAlignment(cast.pacMan, g);
 			}
-			cast.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawActorAlignment(ghost, g));
+			cast.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawGridAlignment(ghost, g));
 		}
 		if (showStates) {
 			drawActorStates(g);
@@ -167,8 +166,9 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private String pacManStateText(PacMan pacMan) {
-		String text = pacMan.state().getDuration() != State.ENDLESS ? String.format("(%s,%d|%d)",
-				pacMan.state().id(), pacMan.state().getTicksRemaining(), pacMan.state().getDuration())
+		String text = pacMan.state().getDuration() != State.ENDLESS
+				? String.format("(%s,%d|%d)", pacMan.state().id(), pacMan.state().getTicksRemaining(),
+						pacMan.state().getDuration())
 				: String.format("(%s,%s)", pacMan.state().id(), INFTY);
 
 		if (Application.app().settings.getAsBoolean("pacMan.immortable")) {
@@ -185,8 +185,7 @@ public class PlayView extends SimplePlayView {
 		if (ghost.getState() == GhostState.FRIGHTENED && cast.pacMan.hasPower()) {
 			duration = cast.pacMan.state().getDuration();
 			remaining = cast.pacMan.state().getTicksRemaining();
-		}
-		else if (ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING) {
+		} else if (ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING) {
 			State<?, ?> attack = fnGhostAttack.get();
 			if (attack != null) {
 				duration = attack.getDuration();
@@ -199,7 +198,7 @@ public class PlayView extends SimplePlayView {
 				: String.format("%s(%s,%s)%s", displayName, ghost.getState(), INFTY, nextState);
 	}
 
-	private Color color(MazeMover ghost) {
+	private Color color(Ghost ghost) {
 		return ghost == cast.blinky ? Color.RED
 				: ghost == cast.pinky ? Color.PINK
 						: ghost == cast.inky ? Color.CYAN : ghost == cast.clyde ? Color.ORANGE : Color.WHITE;
@@ -214,7 +213,7 @@ public class PlayView extends SimplePlayView {
 		g.translate(-x, -y);
 	}
 
-	private void drawActorAlignment(MazeMover actor, Graphics2D g) {
+	private void drawGridAlignment(Entity actor, Graphics2D g) {
 		g.setColor(Color.GREEN);
 		g.translate(actor.tf.getX(), actor.tf.getY());
 		int w = actor.tf.getWidth(), h = actor.tf.getHeight();
@@ -232,33 +231,31 @@ public class PlayView extends SimplePlayView {
 	private void drawRoute(Graphics2D g, Ghost ghost) {
 		Color ghostColor = color(ghost);
 		Stroke solid = g.getStroke();
-		if (ghost.targetTile != null) {
+		if (ghost.targetTile() != null) {
 			// draw target tile indicator
-			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
-					0);
+			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
 			g.setStroke(dashed);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(ghostColor);
 			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
-					ghost.targetTile.col * Maze.TS + Maze.TS / 2, ghost.targetTile.row * Maze.TS + Maze.TS / 2);
+					ghost.targetTile().col * Maze.TS + Maze.TS / 2, ghost.targetTile().row * Maze.TS + Maze.TS / 2);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			g.setStroke(solid);
-			g.translate(ghost.targetTile.col * Maze.TS, ghost.targetTile.row * Maze.TS);
+			g.translate(ghost.targetTile().col * Maze.TS, ghost.targetTile().row * Maze.TS);
 			g.setColor(ghostColor);
 			g.fillRect(Maze.TS / 4, Maze.TS / 4, Maze.TS / 2, Maze.TS / 2);
-			g.translate(-ghost.targetTile.col * Maze.TS, -ghost.targetTile.row * Maze.TS);
+			g.translate(-ghost.targetTile().col * Maze.TS, -ghost.targetTile().row * Maze.TS);
 		}
-		if (ghost.targetPath.size() > 1) {
+		if (ghost.targetPath().size() > 1) {
 			// draw path in ghost's color
 			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 60));
-			for (Tile tile : ghost.targetPath) {
+			for (Tile tile : ghost.targetPath()) {
 				g.fillRect(tile.col * Maze.TS, tile.row * Maze.TS, Maze.TS, Maze.TS);
 			}
-		}
-		else {
+		} else {
 			// draw direction indicator
 			Vector2f center = ghost.tf.getCenter();
-			int dx = NESW.dx(ghost.nextDir), dy = NESW.dy(ghost.nextDir);
+			int dx = NESW.dx(ghost.nextDir()), dy = NESW.dy(ghost.nextDir());
 			int r = Maze.TS / 4;
 			int lineLen = Maze.TS;
 			int indX = (int) (center.x + dx * lineLen);
@@ -269,7 +266,7 @@ public class PlayView extends SimplePlayView {
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		}
 		// draw Clyde's chasing zone
-		if (ghost == cast.clyde && ghost.getState() == GhostState.CHASING && cast.clyde.targetTile != null) {
+		if (ghost == cast.clyde && ghost.getState() == GhostState.CHASING && cast.clyde.targetTile() != null) {
 			Vector2f center = cast.clyde.tf.getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 100));

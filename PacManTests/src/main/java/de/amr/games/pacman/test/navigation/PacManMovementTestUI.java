@@ -54,7 +54,7 @@ public class PacManMovementTestUI extends PlayView implements VisualController {
 			cast.pacMan.steering = Steerings.avoidingGhosts();
 		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
 			cast.pacMan.steering = Steerings.movingRandomlyNoReversing();
-			cast.pacMan.enteredNewTile = true;
+//			cast.pacMan.enteredNewTile = true;
 		}
 	}
 
