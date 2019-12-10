@@ -82,7 +82,7 @@ public class Maze {
 	/*@formatter:on*/
 
 	public static final char WALL = '#', DOOR = '-', TUNNEL = 't', SPACE = ' ', PELLET = '.', ENERGIZER = '*',
-			EATEN = '%';
+			EATEN_PELLET = ':', EATEN_ENERGIZER = '~';
 
 	public final GridGraph2D<Tile, Void> graph;
 
@@ -287,16 +287,24 @@ public class Maze {
 	}
 
 	public boolean containsEatenFood(Tile tile) {
-		return tile.content == EATEN;
+		return tile.content == EATEN_PELLET || tile.content == EATEN_ENERGIZER;
 	}
 
 	public void removeFood(Tile tile) {
-		tile.content = EATEN;
+		if (tile.content == PELLET) {
+			tile.content = EATEN_PELLET;
+		}
+		else if (tile.content == ENERGIZER) {
+			tile.content = EATEN_ENERGIZER;
+		}
+		else {
+			throw new IllegalArgumentException(String.format("Tile %s does not contain food", tile));
+		}
 	}
 
 	public void restoreFood() {
 		tiles().filter(this::containsEatenFood)
-				.forEach(tile -> tile.content = energizers.contains(tile) ? ENERGIZER : PELLET);
+				.forEach(tile -> tile.content = tile.content == EATEN_PELLET ? PELLET : ENERGIZER);
 	}
 
 	public void removeFood() {
