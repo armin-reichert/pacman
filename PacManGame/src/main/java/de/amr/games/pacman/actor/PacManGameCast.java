@@ -48,7 +48,7 @@ public class PacManGameCast {
 		// configure the actors
 
 		pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
-		pacMan.teleportingTicks = sec(0);
+		pacMan.teleportingTicks = sec(0.5f);
 
 		blinky.initialDir = W;
 		blinky.initialTile = game.maze.ghostHome[0];
