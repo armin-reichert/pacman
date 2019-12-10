@@ -339,7 +339,7 @@ public class Maze {
 			if (pathFinderCalls % 100 == 0) {
 				LOGGER.info(String.format("%d'th pathfinding executed", pathFinderCalls));
 			}
-			return path.vertexStream().boxed().map(this::tile).collect(Collectors.toList());
+			return path.vertexStream().map(this::tile).collect(Collectors.toList());
 		}
 		return Collections.emptyList();
 	}
