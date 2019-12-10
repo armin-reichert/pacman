@@ -34,7 +34,7 @@ public class FollowTargetTilesTestUI extends PlayView implements VisualControlle
 	public void init() {
 		super.init();
 		current = 0;
-		game.start();
+		game.newGame();
 		game.maze.removeFood();
 		cast.theme.snd_ghost_chase().volume(0);
 		cast.blinky.activate();

@@ -181,62 +181,61 @@ public class PacManGame {
 		return (int) (3600 * min);
 	}
 
-	public Maze maze;
-	public Deque<BonusSymbol> levelCounter;
+	public final Maze maze;
+	public final Deque<BonusSymbol> levelSymbols;
+
 	public Level level;
 	public int lives;
-	public int globalFoodCount;
-	public boolean globalFoodCounterEnabled;
 	public int score;
 	public int hiscorePoints;
 	public int hiscoreLevel;
+	public int globalFoodCount;
+	public boolean globalFoodCounterEnabled;
 
 	public PacManGame() {
-		LOGGER.info("Create new game");
 		maze = new Maze();
-		levelCounter = new ArrayDeque<>(8);
+		levelSymbols = new ArrayDeque<>(8);
 	}
 
-	public void start() {
-		LOGGER.info("Start game");
+	public void newGame() {
+		LOGGER.info("New game");
 		score = 0;
 		lives = 3;
-		clearLevelCounter();
 		startLevel(1);
-		loadHiscore();
 	}
 
-	public void end() {
-		saveHighscore();
+	public void finishGame() {
 		LOGGER.info("Game is over");
+		saveHighscore();
 	}
 
 	public void startLevel(int n) {
 		LOGGER.info("Start level " + n);
 		level = new Level(n, LEVELS[Math.min(n - 1, LEVELS.length - 1)]);
-		maze.restoreFood();
 		globalFoodCount = 0;
 		globalFoodCounterEnabled = false;
 		updateLevelCounter();
+		if (n == 1) {
+			loadHiscore();
+		}
 	}
 
 	public void nextLevel() {
-		if (level == null) {
-			start();
-		} else {
+		if (level != null) {
+			maze.restoreFood();
 			startLevel(level.number + 1);
+		} else {
+			throw new IllegalStateException("Cannot enter next level, game has not been started");
 		}
-	}
-
-	void clearLevelCounter() {
-		levelCounter.clear();
 	}
 
 	void updateLevelCounter() {
-		if (levelCounter.size() == 8) {
-			levelCounter.removeLast();
+		if (level.number == 1) {
+			levelSymbols.clear();
+		} else if (levelSymbols.size() == 8) {
+			levelSymbols.removeLast();
 		}
-		levelCounter.addFirst(level.bonusSymbol);
+		levelSymbols.addFirst(level.bonusSymbol);
 	}
 
 	/**
