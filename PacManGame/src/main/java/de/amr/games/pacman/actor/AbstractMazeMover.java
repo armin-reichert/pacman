@@ -41,7 +41,7 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 	}
 
 	@Override
-	public int moveDir() {
+	public byte moveDir() {
 		return moveDir;
 	}
 
@@ -56,7 +56,7 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 	}
 
 	@Override
-	public int nextDir() {
+	public byte nextDir() {
 		return nextDir;
 	}
 

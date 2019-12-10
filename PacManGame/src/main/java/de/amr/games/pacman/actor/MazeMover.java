@@ -11,11 +11,11 @@ import de.amr.games.pacman.model.Tile;
  */
 public interface MazeMover extends MazeResident {
 
-	int moveDir();
+	byte moveDir();
 
 	void setMoveDir(int dir);
 
-	int nextDir();
+	byte nextDir();
 
 	void setNextDir(int dir);
 
