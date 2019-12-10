@@ -40,7 +40,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends AbstractMazeMover implements MazeMover, Actor<GhostState> {
+public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 
 	private final Map<GhostState, Steering<Ghost>> steeringByState;
 	private final Steering<Ghost> defaultSteering;
@@ -280,7 +280,8 @@ public class Ghost extends AbstractMazeMover implements MazeMover, Actor<GhostSt
 		case DEAD:
 			return 2 * speed(game.level.ghostSpeed);
 		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), _actor.name));
+			throw new IllegalStateException(
+					String.format("Illegal ghost state %s for %s", getState(), _actor.name));
 		}
 	}
 

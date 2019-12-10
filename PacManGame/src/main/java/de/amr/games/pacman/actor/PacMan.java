@@ -38,7 +38,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends AbstractMazeMover implements MazeMover, Actor<PacManState> {
+public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 
 	public final PacManGameCast cast;
 	public final PacManGame game;
