@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
+import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.behavior.common.Steerings;
@@ -59,9 +60,11 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 		super(cast.game.maze);
 		this.cast = cast;
 		this.game = cast.game;
+		tf.setWidth(Maze.TS);
+		tf.setHeight(Maze.TS);
 		steeringByState = new EnumMap<>(GhostState.class);
 		defaultSteering = Steerings.headingForTargetTile();
-		_actor = buildActorComponent(name); 
+		_actor = buildActorComponent(name);
 	}
 
 	private ActorPrototype<GhostState> buildActorComponent(String name) {
@@ -202,12 +205,18 @@ public class Ghost extends MazeMover implements Actor<GhostState> {
 	}
 
 	@Override
+	public Entity entity() {
+		return this;
+	}
+
+	@Override
 	public void init() {
 		super.init();
 		_actor.init();
 		visible = true;
 		moveDir = initialDir;
 		nextDir = initialDir;
+		enteredNewTile = true;
 		placeAtTile(initialTile, Maze.TS / 2, 0);
 		sprites.select("color-" + initialDir);
 		sprites.forEach(Sprite::resetAnimation);

@@ -9,6 +9,7 @@ import static java.util.Arrays.binarySearch;
 import java.awt.Graphics2D;
 import java.util.logging.Logger;
 
+import de.amr.easy.game.entity.Entity;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.BonusSymbol;
@@ -23,7 +24,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Bonus extends MazeResident implements Actor<BonusState> {
+public class Bonus extends Entity implements MazeResident, Actor<BonusState> {
 
 	public final PacManGameCast cast;
 	public final ActorPrototype<BonusState> _actor;
@@ -31,13 +32,24 @@ public class Bonus extends MazeResident implements Actor<BonusState> {
 	public final int value;
 
 	public Bonus(PacManGameCast cast) {
-		super(cast.game.maze);
 		this.cast = cast;
 		_actor = buildActorComponent("Bonus");
+		tf.setWidth(Maze.TS);
+		tf.setHeight(Maze.TS);
 		symbol = cast.game.level.bonusSymbol;
 		value = cast.game.level.bonusValue;
 		sprites.set("symbol", cast.theme.spr_bonusSymbol(symbol));
 		sprites.set("number", cast.theme.spr_pinkNumber(binarySearch(PacManGame.BONUS_NUMBERS, value)));
+	}
+
+	@Override
+	public Entity entity() {
+		return this;
+	}
+
+	@Override
+	public Maze maze() {
+		return cast.game.maze;
 	}
 
 	private ActorPrototype<BonusState> buildActorComponent(String name) {

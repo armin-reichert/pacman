@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import de.amr.easy.game.assets.Sound;
+import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
@@ -50,6 +51,8 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 		this.cast = cast;
 		this.game = cast.game;
 		_actor = buildActorComponent("Pac-Man");
+		tf.setWidth(Maze.TS);
+		tf.setHeight(Maze.TS);
 	}
 
 	/*
@@ -84,6 +87,7 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 				.state(HOME)
 					.onEntry(() -> {
 						placeAtTile(maze.pacManHome, Maze.TS / 2, 0);
+						enteredNewTile = true;
 						moveDir = nextDir = E;
 						sprites.forEach(Sprite::resetAnimation);
 						sprites.select("full");
@@ -160,6 +164,11 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 	public void deactivate() {
 		_actor.deactivate();
 		hide();
+	}
+
+	@Override
+	public Entity entity() {
+		return this;
 	}
 
 	// Movement
