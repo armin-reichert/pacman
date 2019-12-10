@@ -59,6 +59,12 @@ public abstract class MazeMover extends Entity implements MazeResident {
 	 */
 	protected abstract void steer();
 
+	@Override
+	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
+		MazeResident.super.placeAtTile(tile, xOffset, yOffset);
+		enteredNewTile = !tile.equals(tile());
+	}
+
 	/**
 	 * Moves or teleports the actor.
 	 */

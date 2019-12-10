@@ -91,7 +91,6 @@ public class PacMan extends MazeMover implements Actor<PacManState> {
 				.state(HOME)
 					.onEntry(() -> {
 						placeAtTile(maze().pacManHome, Maze.TS / 2, 0);
-						enteredNewTile = true;
 						moveDir = nextDir = E;
 						sprites.forEach(Sprite::resetAnimation);
 						sprites.select("full");
