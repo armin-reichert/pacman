@@ -4,9 +4,9 @@ import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.BonusState.ACTIVE;
 import static de.amr.games.pacman.actor.BonusState.CONSUMED;
 import static de.amr.games.pacman.actor.BonusState.INACTIVE;
+import static java.util.Arrays.binarySearch;
 
 import java.awt.Graphics2D;
-import java.util.Arrays;
 import java.util.logging.Logger;
 
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
@@ -26,16 +26,24 @@ import de.amr.statemachine.StateMachine;
 public class Bonus extends MazeResident implements Actor<BonusState> {
 
 	public final PacManGameCast cast;
-	public BonusSymbol symbol;
-	public int value;
-
-	private final ActorPrototype<BonusState> _actor;
+	public final ActorPrototype<BonusState> _actor;
+	public final BonusSymbol symbol;
+	public final int value;
 
 	public Bonus(PacManGameCast cast) {
 		super(cast.game.maze);
 		this.cast = cast;
-		_actor = new ActorPrototype<>("Bonus", buildStateMachine());
-		_actor.fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		_actor = buildActorComponent("Bonus");
+		symbol = cast.game.level.bonusSymbol;
+		value = cast.game.level.bonusValue;
+		sprites.set("symbol", cast.theme.spr_bonusSymbol(symbol));
+		sprites.set("number", cast.theme.spr_pinkNumber(binarySearch(PacManGame.BONUS_NUMBERS, value)));
+	}
+
+	private ActorPrototype<BonusState> buildActorComponent(String name) {
+		StateMachine<BonusState, PacManGameEvent> fsm = buildStateMachine();
+		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		return new ActorPrototype<>(name, fsm);
 	}
 
 	private StateMachine<BonusState, PacManGameEvent> buildStateMachine() {
@@ -48,13 +56,9 @@ public class Bonus extends MazeResident implements Actor<BonusState> {
 				.state(ACTIVE)
 					.timeoutAfter(cast.game.level::bonusActiveTicks)
 					.onEntry(() -> {
-						symbol = cast.game.level.bonusSymbol;
-						value = cast.game.level.bonusValue;
-						sprites.set("symbol", cast.theme.spr_bonusSymbol(symbol));
-						sprites.set("number", cast.theme.spr_pinkNumber(Arrays.binarySearch(PacManGame.BONUS_NUMBERS, value)));
-						sprites.select("symbol");
 						placeAtTile(cast.game.maze.bonusTile, Maze.TS / 2, 0);
 						activate();
+						sprites.select("symbol");
 					})
 				.state(CONSUMED)
 					.timeoutAfter(cast.game.level::bonusConsumedTicks)
