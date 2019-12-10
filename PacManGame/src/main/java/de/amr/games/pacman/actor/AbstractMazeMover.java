@@ -144,6 +144,9 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 	 */
 	@Override
 	public Tile tilesAhead(int numTiles) {
+		if (numTiles < 0) {
+			throw new IllegalArgumentException("Number of tiles must be positive but is " + numTiles);
+		}
 		return maze().tileToDir(tile(), moveDir, numTiles);
 	}
 
