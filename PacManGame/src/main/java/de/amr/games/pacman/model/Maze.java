@@ -13,7 +13,6 @@ import java.util.stream.Stream;
 
 import de.amr.graph.core.api.UndirectedEdge;
 import de.amr.graph.grid.api.GridGraph2D;
-import de.amr.graph.grid.api.GridTopology;
 import de.amr.graph.grid.impl.Grid4Topology;
 import de.amr.graph.grid.impl.GridGraph;
 import de.amr.graph.pathfinder.api.GraphSearch;
@@ -38,7 +37,7 @@ public class Maze {
 	public static final int TS = 8;
 
 	/** 4-direction topology (NORTH, EAST, SOUTH, WEST) */
-	public static final GridTopology NESW = Grid4Topology.get();
+	public static final Grid4Topology NESW = Grid4Topology.get();
 
 	public static final int COLS = 28, ROWS = 36;
 
