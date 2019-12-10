@@ -39,9 +39,11 @@ public class Maze {
 	/** 4-direction topology (NORTH, EAST, SOUTH, WEST) */
 	public static final Grid4Topology NESW = Grid4Topology.get();
 
-	public static final int COLS = 28, ROWS = 36;
+	public static final byte NUM_COLS = 28;
 
-	private static final String[] MAP = {
+	public static final byte NUM_ROWS = 36;
+
+	private static final String[] CONTENT = {
 	/*@formatter:off*/
 	"############################", 
 	"############################", 
@@ -86,22 +88,22 @@ public class Maze {
 
 	public final GridGraph2D<Tile, Void> graph;
 
-	public final Tile topLeft, topRight, bottomLeft, bottomRight, blinkyScatter, pinkyScatter, inkyScatter,
-			clydeScatter, tunnelLeftExit, tunnelRightExit, ghostRevival;
+	public final Tile cornerNW, cornerNE, cornerSW, cornerSE, scatterTileNE, scatterTileNW, scatterTileSE,
+			scatterTileSW, tunnelExitLeft, tunnelExitRight, ghostRevival;
 
 	public /* final */ Tile pacManHome, blinkyHome, inkyHome, pinkyHome, clydeHome, bonusTile;
 
 	public final int totalNumPellets;
 
-	private final Tile[][] board = new Tile[COLS][ROWS];
+	private final Tile[][] board = new Tile[NUM_COLS][NUM_ROWS];
 	private final Set<Tile> intersections;
 	private final Set<Tile> energizers = new HashSet<>();
 
 	public Maze() {
 		int numPellets = 0;
-		for (byte row = 0; row < ROWS; ++row) {
-			for (byte col = 0; col < COLS; ++col) {
-				char content = MAP[row].charAt(col);
+		for (byte row = 0; row < NUM_ROWS; ++row) {
+			for (byte col = 0; col < NUM_COLS; ++col) {
+				char content = CONTENT[row].charAt(col);
 				Tile tile = board[col][row] = new Tile(col, row, content);
 				switch (content) {
 				case PELLET:
@@ -143,25 +145,25 @@ public class Maze {
 
 		totalNumPellets = numPellets;
 
-		tunnelLeftExit = board[0][17];
-		tunnelRightExit = board[27][17];
+		tunnelExitLeft = board[0][17];
+		tunnelExitRight = board[27][17];
 
 		ghostRevival = board[13][17];
 
 		// Scattering targets
-		pinkyScatter = board[2][0];
-		blinkyScatter = board[25][0];
-		clydeScatter = board[0][35];
-		inkyScatter = board[27][35];
+		scatterTileNW = board[2][0];
+		scatterTileNE = board[25][0];
+		scatterTileSW = board[0][35];
+		scatterTileSE = board[27][35];
 
 		// Corners inside maze
-		topLeft = board[1][4];
-		topRight = board[26][4];
-		bottomLeft = board[1][32];
-		bottomRight = board[26][32];
+		cornerNW = board[1][4];
+		cornerNE = board[26][4];
+		cornerSW = board[1][32];
+		cornerSE = board[26][32];
 
 		// Graph where each vertex holds a reference to the corresponding tile
-		graph = new GridGraph<>(COLS, ROWS, NESW, this::tile, (u, v) -> null, UndirectedEdge::new);
+		graph = new GridGraph<>(NUM_COLS, NUM_ROWS, NESW, this::tile, (u, v) -> null, UndirectedEdge::new);
 		graph.fill();
 		//@formatter:off
 		graph.edges()
@@ -204,7 +206,7 @@ public class Maze {
 	public Tile tileAt(int col, int row) {
 		byte _col = (byte) col, _row = (byte) row;
 		return insideBoard(_col, _row) ? board[_col][_row]
-				: new Tile(_col, _row, _row == tunnelLeftExit.row ? TUNNEL : WALL);
+				: new Tile(_col, _row, _row == tunnelExitLeft.row ? TUNNEL : WALL);
 	}
 
 	/**
@@ -233,7 +235,7 @@ public class Maze {
 	}
 
 	public boolean insideBoard(byte col, byte row) {
-		return 0 <= col && col < COLS && 0 <= row && row < ROWS;
+		return 0 <= col && col < NUM_COLS && 0 <= row && row < NUM_ROWS;
 	}
 
 	public boolean insideBoard(Tile tile) {
@@ -353,8 +355,8 @@ public class Maze {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		for (byte row = 0; row < ROWS; ++row) {
-			for (byte col = 0; col < COLS; ++col) {
+		for (byte row = 0; row < NUM_ROWS; ++row) {
+			for (byte col = 0; col < NUM_COLS; ++col) {
 				sb.append(board[col][row].content);
 			}
 			sb.append("\n");

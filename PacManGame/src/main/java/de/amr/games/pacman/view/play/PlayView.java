@@ -74,7 +74,7 @@ public class PlayView extends SimplePlayView {
 
 	public PlayView(PacManGameCast cast) {
 		super(cast);
-		gridImage = createGridImage(Maze.ROWS, Maze.COLS);
+		gridImage = createGridImage(Maze.NUM_ROWS, Maze.NUM_COLS);
 	}
 
 	@Override

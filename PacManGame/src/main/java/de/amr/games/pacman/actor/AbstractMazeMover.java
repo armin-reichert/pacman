@@ -167,8 +167,8 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 			LOGGER.fine("Teleporting complete");
 		}
 		else { // off
-			int leftExit = (maze().tunnelLeftExit.col - 1) * Maze.TS;
-			int rightExit = (maze().tunnelRightExit.col + 1) * Maze.TS;
+			int leftExit = (maze().tunnelExitLeft.col - 1) * Maze.TS;
+			int rightExit = (maze().tunnelExitRight.col + 1) * Maze.TS;
 			if (tf.getX() > rightExit) { // start
 				teleportTicksRemaining = teleportingTicks;
 				tf.setX(leftExit);

@@ -21,8 +21,8 @@ public class FollowTargetTilesTestUI extends PlayView implements VisualControlle
 		showRoutes = true;
 		showStates = false;
 		showScores = false;
-		targets = Arrays.asList(game.maze.topLeft, game.maze.blinkyHome, game.maze.topRight,
-				game.maze.bottomRight, game.maze.pacManHome, game.maze.bottomLeft);
+		targets = Arrays.asList(game.maze.cornerNW, game.maze.blinkyHome, game.maze.cornerNE,
+				game.maze.cornerSE, game.maze.pacManHome, game.maze.cornerSW);
 	}
 
 	@Override

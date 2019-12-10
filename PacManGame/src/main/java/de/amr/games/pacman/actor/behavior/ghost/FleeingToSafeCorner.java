@@ -40,7 +40,7 @@ public class FleeingToSafeCorner<T extends MazeMover> extends TakingPrecomputedP
 		Tile refugeeTile = refugee.tile();
 		Tile chaserTile = fnTargetTile.get();
 		//@formatter:off
-		return permute(Stream.of(maze.topLeft, maze.topRight, maze.bottomRight, maze.bottomLeft))
+		return permute(Stream.of(maze.cornerNW, maze.cornerNE, maze.cornerSE, maze.cornerSW))
 			.filter(corner -> !corner.equals(refugeeTile))
 			.sorted(byDist(maze,refugeeTile, chaserTile).reversed())
 			.findFirst().get();

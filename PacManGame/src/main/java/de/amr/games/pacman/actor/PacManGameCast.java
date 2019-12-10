@@ -52,21 +52,21 @@ public class PacManGameCast {
 
 		blinky.initialDir = W;
 		blinky.initialTile = game.maze.blinkyHome;
-		blinky.scatterTile = game.maze.blinkyScatter;
+		blinky.scatterTile = game.maze.scatterTileNE;
 		blinky.revivalTile = game.maze.pinkyHome;
 		blinky.teleportingTicks = sec(1);
 		blinky.fnChasingTarget = pacMan::tile;
 
 		pinky.initialDir = S;
 		pinky.initialTile = game.maze.pinkyHome;
-		pinky.scatterTile = game.maze.pinkyScatter;
+		pinky.scatterTile = game.maze.scatterTileNW;
 		pinky.revivalTile = game.maze.pinkyHome;
 		pinky.teleportingTicks = sec(1);
 		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
 
 		inky.initialDir = N;
 		inky.initialTile = game.maze.inkyHome;
-		inky.scatterTile = game.maze.inkyScatter;
+		inky.scatterTile = game.maze.scatterTileSE;
 		inky.revivalTile = game.maze.inkyHome;
 		inky.teleportingTicks = sec(1);
 		inky.fnChasingTarget = () -> {
@@ -76,10 +76,10 @@ public class PacManGameCast {
 
 		clyde.initialDir = N;
 		clyde.initialTile = game.maze.clydeHome;
-		clyde.scatterTile = game.maze.clydeScatter;
+		clyde.scatterTile = game.maze.scatterTileSW;
 		clyde.revivalTile = game.maze.clydeHome;
 		clyde.teleportingTicks = sec(1);
-		clyde.fnChasingTarget = () -> clyde.tileDistanceSq(pacMan) > 8 * 8 ? pacMan.tile() : game.maze.clydeScatter;
+		clyde.fnChasingTarget = () -> clyde.tileDistanceSq(pacMan) > 8 * 8 ? pacMan.tile() : game.maze.scatterTileSW;
 
 		ghosts().forEach(ghost -> ghost.setSteering(GhostState.FRIGHTENED, movingRandomlyNoReversing()));
 
