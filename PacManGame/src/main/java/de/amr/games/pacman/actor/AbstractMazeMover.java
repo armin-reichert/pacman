@@ -46,9 +46,9 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 	}
 
 	@Override
-	public void setMoveDir(int dir) {
+	public void setMoveDir(byte dir) {
 		if (Maze.NESW.isValid(dir)) {
-			moveDir = (byte) dir;
+			moveDir = dir;
 		}
 		else {
 			throw new IllegalArgumentException("Illegal direction value " + dir);
@@ -61,9 +61,9 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 	}
 
 	@Override
-	public void setNextDir(int dir) {
+	public void setNextDir(byte dir) {
 		if (Maze.NESW.isValid(dir)) {
-			nextDir = (byte) dir;
+			nextDir = dir;
 		}
 		else {
 			throw new IllegalArgumentException("Illegal direction value " + dir);
@@ -111,7 +111,7 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 	 * @return if the maze mover can enter the neighbor tile towards the given direction
 	 */
 	@Override
-	public boolean canCrossBorderTo(int dir) {
+	public boolean canCrossBorderTo(byte dir) {
 		Tile currentTile = tile();
 		return canMoveBetween(currentTile, maze().tileToDir(currentTile, dir));
 	}
@@ -243,7 +243,7 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 	 * Computes how many pixels this entity can move towards the given direction without crossing the
 	 * border to a forbidden neighbor tile.
 	 */
-	private float possibleSpeedTo(int dir) {
+	private float possibleSpeedTo(byte dir) {
 		if (canCrossBorderTo(dir)) {
 			return maxSpeed();
 		}

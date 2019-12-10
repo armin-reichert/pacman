@@ -56,7 +56,7 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	 * {@link #pathToTargetTile(MazeMover)} method uses this method without actually
 	 * placing the actor at each tile of the path.
 	 */
-	private int nextDir(T actor, int moveDir, Tile currentTile, Tile targetTile) {
+	private byte nextDir(T actor, int moveDir, Tile currentTile, Tile targetTile) {
 		Maze maze = actor.maze();
 		/*@formatter:off*/
 		return NWSE.stream()

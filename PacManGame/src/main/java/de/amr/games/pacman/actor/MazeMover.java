@@ -13,11 +13,11 @@ public interface MazeMover extends MazeResident {
 
 	byte moveDir();
 
-	void setMoveDir(int dir);
+	void setMoveDir(byte dir);
 
 	byte nextDir();
 
-	void setNextDir(int dir);
+	void setNextDir(byte dir);
 
 	boolean enteredNewTile();
 
@@ -31,7 +31,7 @@ public interface MazeMover extends MazeResident {
 
 	boolean canMoveForward();
 
-	boolean canCrossBorderTo(int dir);
+	boolean canCrossBorderTo(byte dir);
 
 	boolean canMoveBetween(Tile tile, Tile neighbor);
 
