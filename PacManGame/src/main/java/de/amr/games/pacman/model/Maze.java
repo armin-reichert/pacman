@@ -302,9 +302,20 @@ public class Maze {
 		}
 	}
 
+	public void restoreFood(Tile tile) {
+		if (tile.content == EATEN_PELLET) {
+			tile.content = PELLET;
+		}
+		else if (tile.content == EATEN_ENERGIZER) {
+			tile.content = ENERGIZER;
+		}
+		else {
+			throw new IllegalArgumentException(String.format("Tile %s does not contain food", tile));
+		}
+	}
+
 	public void restoreFood() {
-		tiles().filter(this::containsEatenFood)
-				.forEach(tile -> tile.content = tile.content == EATEN_PELLET ? PELLET : ENERGIZER);
+		tiles().filter(this::containsEatenFood).forEach(this::restoreFood);
 	}
 
 	public void removeFood() {
