@@ -213,13 +213,13 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 		}
 		switch (dir) {
 		case N:
-			return -row() * Maze.TS + tf.getY();
+			return -tile().row * Maze.TS + tf.getY();
 		case E:
-			return col() * Maze.TS - tf.getX();
+			return tile().col * Maze.TS - tf.getX();
 		case S:
-			return row() * Maze.TS - tf.getY();
+			return tile().row * Maze.TS - tf.getY();
 		case W:
-			return -col() * Maze.TS + tf.getX();
+			return -tile().col * Maze.TS + tf.getX();
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}

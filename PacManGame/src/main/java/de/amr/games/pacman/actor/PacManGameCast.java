@@ -80,7 +80,7 @@ public class PacManGameCast {
 		clyde.scatterTile = game.maze.scatterTileSW;
 		clyde.revivalTile = game.maze.ghostHome[3];
 		clyde.teleportingTicks = sec(0.5f);
-		clyde.fnChasingTarget = () -> clyde.tileDistanceSq(pacMan) > 8 * 8 ? pacMan.tile() : game.maze.scatterTileSW;
+		clyde.fnChasingTarget = () -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : game.maze.scatterTileSW;
 
 		ghosts().forEach(ghost -> ghost.setSteering(GhostState.FRIGHTENED, movingRandomlyNoReversing()));
 

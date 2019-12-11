@@ -46,8 +46,8 @@ import de.amr.statemachine.StateMachine;
  */
 public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState> {
 
-	private final Map<GhostState, Steering<Ghost>> steeringByState;
-	private final Steering<Ghost> defaultSteering;
+	private final Map<GhostState, Steering<Ghost>> steeringByState = new EnumMap<>(GhostState.class);
+	private final Steering<Ghost> defaultSteering = Steerings.headingForTargetTile();
 
 	public final PacManGameCast cast;
 	public final PacManGame game;
@@ -63,16 +63,9 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	public Ghost(String name, PacManGameCast cast) {
 		this.cast = cast;
 		this.game = cast.game;
+		fsmComponent = buildFsmComponent(name);
 		tf.setWidth(Maze.TS);
 		tf.setHeight(Maze.TS);
-		steeringByState = new EnumMap<>(GhostState.class);
-		defaultSteering = Steerings.headingForTargetTile();
-		fsmComponent = buildFsmComponent(name);
-	}
-
-	@Override
-	public Maze maze() {
-		return cast.game.maze;
 	}
 
 	private FsmComponent<GhostState> buildFsmComponent(String name) {
@@ -195,6 +188,16 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	}
 
 	@Override
+	public Entity resident() {
+		return this;
+	}
+
+	@Override
+	public Maze maze() {
+		return cast.game.maze;
+	}
+
+	@Override
 	public FsmControlled<GhostState> fsmComponent() {
 		return fsmComponent;
 	}
@@ -210,11 +213,6 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	public void deactivate() {
 		fsmComponent.deactivate();
 		hide();
-	}
-
-	@Override
-	public Entity entity() {
-		return this;
 	}
 
 	@Override
@@ -284,8 +282,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		case DEAD:
 			return 2 * speed(game.level.ghostSpeed);
 		default:
-			throw new IllegalStateException(
-					String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
+			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
 		}
 	}
 

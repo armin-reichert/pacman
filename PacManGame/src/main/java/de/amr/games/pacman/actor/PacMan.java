@@ -170,7 +170,7 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 	}
 
 	@Override
-	public Entity entity() {
+	public Entity resident() {
 		return this;
 	}
 

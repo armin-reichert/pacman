@@ -47,7 +47,7 @@ public class Bonus extends Entity implements MazeResident, FsmContainer<BonusSta
 	}
 
 	@Override
-	public Entity entity() {
+	public Entity resident() {
 		return this;
 	}
 
