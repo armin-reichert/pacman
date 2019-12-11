@@ -15,6 +15,7 @@ import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
 import static de.amr.games.pacman.controller.PacManGameState.START_PLAYING;
 import static de.amr.games.pacman.model.PacManGame.min;
 import static de.amr.games.pacman.model.PacManGame.sec;
+import static de.amr.games.pacman.theme.PacManTheme.MAZE_FLASH_TIME_MILLIS;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -129,7 +130,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.impl(playingState = new PlayingState())
 				
 				.state(CHANGING_LEVEL)
-					.timeoutAfter(() -> sec(4 + 0.4f * game.level.mazeNumFlashes))
+					.timeoutAfter(() -> sec(4 + game.level.mazeNumFlashes * MAZE_FLASH_TIME_MILLIS / 1000))
 					.onEntry(() -> {
 						cast.theme.snd_clips_all().forEach(Sound::stop);
 						cast.pacMan.sprites.select("full");
@@ -143,9 +144,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 							game.nextLevel();
 							cast.activeActors().forEach(Actor::init);
 							cast.ghosts().forEach(ghost -> ghost.foodCount = 0);
-							playView.init();
+							playView.init(); // stops flashing
 						} 
-						else if (state().getTicksRemaining() < sec(2)) {
+						else if (state().getTicksRemaining() < sec(1.8f)) {
 							cast.activeGhosts().forEach(Ghost::update);
 						}
 					})

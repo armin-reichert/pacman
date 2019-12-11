@@ -150,7 +150,7 @@ public class ClassicPacManTheme implements PacManTheme {
 
 	@Override
 	public Sprite spr_flashingMaze() {
-		return Sprite.of(mazeEmpty, mazeWhite).animate(CYCLIC, 200);
+		return Sprite.of(mazeEmpty, mazeWhite).animate(CYCLIC, MAZE_FLASH_TIME_MILLIS / 2);
 	}
 
 	@Override

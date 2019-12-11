@@ -37,8 +37,9 @@ public class SimplePlayView implements View, Controller {
 	public String message;
 	public Color textColor;
 
-	protected Image lifeImage;
-	protected Sprite fullMazeSprite, flashingMazeSprite;
+	public Image lifeImage;
+	public Sprite fullMazeSprite;
+	public Sprite flashingMazeSprite;
 
 	public SimplePlayView(PacManGameCast cast) {
 		this.cast = cast;
