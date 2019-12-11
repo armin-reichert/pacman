@@ -106,12 +106,12 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir))
 			
 				.state(CHASING)
-					.onEntry(() -> cast.chasingSoundOn())
+					.onEntry(() -> cast.turnGhostIsChasingSoundOn())
 					.onTick(() -> {
 						targetTile = fnChasingTarget.get();
 						walkAndDisplayAs("color-" + moveDir);
 					})
-					.onExit(() -> cast.chasingSoundOff(this))
+					.onExit(() -> cast.turnGhostIsChasingSoundOff(this))
 				
 				.state(FRIGHTENED)
 					.onTick(() -> walkAndDisplayAs(cast.pacMan.isLosingPower() ? "flashing" : "frightened"))
@@ -125,10 +125,10 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 				.state(DEAD)
 					.onEntry(() -> {
 						targetTile = maze().ghostHome[0];
-						cast.deadSoundOn();
+						cast.turnGhostIsDeadSoundOn();
 					})
 					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir))
-					.onExit(() -> cast.deadSoundOff(this))
+					.onExit(() -> cast.turnGhostIsDeadSoundOff(this))
 				
 			.transitions()
 			

@@ -163,27 +163,27 @@ public class PacManGameCast {
 		bonus = null;
 	}
 
-	public void chasingSoundOn() {
+	public void turnGhostIsChasingSoundOn() {
 		if (!theme.snd_ghost_chase().isRunning()) {
 			theme.snd_ghost_chase().loop();
 		}
 	}
 
-	public void chasingSoundOff(Ghost caller) {
-		// if caller is the only chasing ghost, turn it off
+	public void turnGhostIsChasingSoundOff(Ghost caller) {
+		// if caller is the only chasing ghost, turn sound off
 		if (activeGhosts().filter(ghost -> caller != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
 			theme.snd_ghost_chase().stop();
 		}
 	}
 
-	public void deadSoundOn() {
+	public void turnGhostIsDeadSoundOn() {
 		if (!theme.snd_ghost_dead().isRunning()) {
 			theme.snd_ghost_dead().loop();
 		}
 	}
 
-	public void deadSoundOff(Ghost caller) {
-		// if caller is the only dead ghost, turn it off
+	public void turnGhostIsDeadSoundOff(Ghost caller) {
+		// if caller is the only dead ghost, turn sound off
 		if (activeGhosts().filter(ghost -> ghost != caller).noneMatch(ghost -> ghost.getState() == DEAD)) {
 			theme.snd_ghost_dead().stop();
 		}
