@@ -4,7 +4,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.amr.easy.game.Application;
-import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
@@ -19,18 +18,19 @@ import de.amr.games.pacman.theme.PacManTheme;
  */
 public class PacManApp extends Application {
 
+	static {
+		Logger.getLogger("StateMachineLogger").setLevel(Level.INFO);
+	}
+
 	public static void main(String[] args) {
-		Logger.getLogger("StateMachineLogger").setLevel(Level.OFF);
-		Logger.getLogger(Keyboard.class.getName()).setLevel(Level.OFF);
 		launch(new PacManApp(), args);
 	}
 
 	public PacManApp() {
-		settings.title = "Armin's Pac-Man";
 		settings.width = Maze.NUM_COLS * Maze.TS;
 		settings.height = Maze.NUM_ROWS * Maze.TS;
 		settings.scale = 2;
-		settings.fullScreenOnStart = false;
+		settings.title = "Armin's Pac-Man";
 		settings.set("overflowBug", true);
 		settings.set("skipIntro", false);
 		settings.set("ghost.originalBehavior", true);
