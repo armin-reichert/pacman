@@ -1,6 +1,6 @@
 package de.amr.games.pacman.actor.behavior;
 
-import de.amr.games.pacman.actor.MazeMover;
+import de.amr.games.pacman.actor.core.MazeMover;
 
 /**
  * Functional interface for steering of actors.

@@ -7,9 +7,9 @@ import static de.amr.games.pacman.model.Tile.distanceSq;
 import java.util.Comparator;
 
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.behavior.Steering;
+import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Tile;
 
 public class AvoidingGhosts implements Steering<PacMan> {

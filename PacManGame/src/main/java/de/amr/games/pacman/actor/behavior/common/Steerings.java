@@ -10,11 +10,11 @@ import java.util.function.Supplier;
 
 import de.amr.datastruct.StreamUtils;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.behavior.ghost.FleeingToSafeCorner;
 import de.amr.games.pacman.actor.behavior.pacman.AvoidingGhosts;
+import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 

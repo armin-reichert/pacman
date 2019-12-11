@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.behavior.Steering;
+import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Tile;
 
 /**

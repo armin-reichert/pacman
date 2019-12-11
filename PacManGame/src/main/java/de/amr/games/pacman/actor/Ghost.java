@@ -23,6 +23,10 @@ import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.behavior.common.Steerings;
+import de.amr.games.pacman.actor.core.AbstractMazeMover;
+import de.amr.games.pacman.actor.fsm.StateMachineComponent;
+import de.amr.games.pacman.actor.fsm.StateMachineContainer;
+import de.amr.games.pacman.actor.fsm.StateMachineController;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -40,14 +44,14 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
+public class Ghost extends AbstractMazeMover implements StateMachineContainer<GhostState> {
 
 	private final Map<GhostState, Steering<Ghost>> steeringByState;
 	private final Steering<Ghost> defaultSteering;
 
 	public final PacManGameCast cast;
 	public final PacManGame game;
-	public final ActorPrototype<GhostState> _actor;
+	public final StateMachineComponent<GhostState> fsmComponent;
 	public byte initialDir;
 	public Tile initialTile;
 	public Tile revivalTile;
@@ -63,7 +67,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 		tf.setHeight(Maze.TS);
 		steeringByState = new EnumMap<>(GhostState.class);
 		defaultSteering = Steerings.headingForTargetTile();
-		_actor = buildActorComponent(name);
+		fsmComponent = buildFsmComponent(name);
 	}
 
 	@Override
@@ -71,11 +75,11 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 		return cast.game.maze;
 	}
 
-	private ActorPrototype<GhostState> buildActorComponent(String name) {
+	private StateMachineComponent<GhostState> buildFsmComponent(String name) {
 		StateMachine<GhostState, PacManGameEvent> fsm = buildStateMachine(name);
 		fsm.setIgnoreUnknownEvents(true);
 		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-		return new ActorPrototype<>(name, fsm);
+		return new StateMachineComponent<>(name, fsm);
 	}
 
 	private StateMachine<GhostState, PacManGameEvent> buildStateMachine(String name) {
@@ -191,20 +195,20 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 	}
 
 	@Override
-	public Actor<GhostState> _actor() {
-		return _actor;
+	public StateMachineController<GhostState> fsmComponent() {
+		return fsmComponent;
 	}
 
 	@Override
 	public void activate() {
-		_actor.activate();
+		fsmComponent.activate();
 		init();
 		show();
 	}
 
 	@Override
 	public void deactivate() {
-		_actor.deactivate();
+		fsmComponent.deactivate();
 		hide();
 	}
 
@@ -216,7 +220,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 	@Override
 	public void init() {
 		super.init();
-		_actor.init();
+		fsmComponent.init();
 		visible = true;
 		moveDir = initialDir;
 		nextDir = initialDir;
@@ -224,13 +228,13 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 		placeAtTile(initialTile, Maze.TS / 2, 0);
 		sprites.select("color-" + initialDir);
 		sprites.forEach(Sprite::resetAnimation);
-		nextState = _actor.getState();
+		nextState = fsmComponent.getState();
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		_actor.update();
+		fsmComponent.update();
 	}
 
 	public void setSteering(GhostState state, Steering<Ghost> steering) {
@@ -238,7 +242,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 	}
 
 	public Steering<Ghost> getSteering() {
-		return steeringByState.getOrDefault(_actor.getState(), defaultSteering);
+		return steeringByState.getOrDefault(fsmComponent.getState(), defaultSteering);
 	}
 
 	@Override
@@ -281,7 +285,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 			return 2 * speed(game.level.ghostSpeed);
 		default:
 			throw new IllegalStateException(
-					String.format("Illegal ghost state %s for %s", getState(), _actor.name));
+					String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
 		}
 	}
 

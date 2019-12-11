@@ -19,6 +19,10 @@ import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
+import de.amr.games.pacman.actor.core.AbstractMazeMover;
+import de.amr.games.pacman.actor.fsm.StateMachineComponent;
+import de.amr.games.pacman.actor.fsm.StateMachineContainer;
+import de.amr.games.pacman.actor.fsm.StateMachineController;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -38,18 +42,18 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
+public class PacMan extends AbstractMazeMover implements StateMachineContainer<PacManState> {
 
 	public final PacManGameCast cast;
 	public final PacManGame game;
-	public final ActorPrototype<PacManState> _actor;
+	public final StateMachineComponent<PacManState> fsmComponent;
 	public Steering<PacMan> steering;
 	public int ticksSinceLastMeal;
 
 	public PacMan(PacManGameCast cast) {
 		this.cast = cast;
 		this.game = cast.game;
-		_actor = buildActorComponent("Pac-Man");
+		fsmComponent = buildFsmComponent("Pac-Man");
 		tf.setWidth(Maze.TS);
 		tf.setHeight(Maze.TS);
 	}
@@ -59,15 +63,11 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 		return cast.game.maze;
 	}
 
-	/*
-	 * Instead of inheriting from a base class, the actor role of this class is implemented by
-	 * delegating to an actor prototype/component.
-	 */
-	private ActorPrototype<PacManState> buildActorComponent(String name) {
+	private StateMachineComponent<PacManState> buildFsmComponent(String name) {
 		StateMachine<PacManState, PacManGameEvent> fsm = buildStateMachine();
 		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-		ActorPrototype<PacManState> actor = new ActorPrototype<>(name, fsm);
-		actor.publishedEventIsLogged = event -> {
+		StateMachineComponent<PacManState> component = new StateMachineComponent<>(name, fsm);
+		component.publishedEventIsLogged = event -> {
 			// do not write log entry when normal pellet is found
 			if (event instanceof FoodFoundEvent) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
@@ -75,7 +75,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 			}
 			return true;
 		};
-		return actor;
+		return component;
 	}
 
 	private StateMachine<PacManState, PacManGameEvent> buildStateMachine() {
@@ -140,32 +140,32 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	@Override
 	public void init() {
 		super.init();
-		_actor.init();
+		fsmComponent.init();
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		_actor.update();
+		fsmComponent.update();
 	}
 
 	// Actor<PacManState> implementation
 
 	@Override
-	public Actor<PacManState> _actor() {
-		return _actor;
+	public StateMachineController<PacManState> fsmComponent() {
+		return fsmComponent;
 	}
 
 	@Override
 	public void activate() {
-		_actor.activate();
+		fsmComponent.activate();
 		init();
 		show();
 	}
 
 	@Override
 	public void deactivate() {
-		_actor.deactivate();
+		fsmComponent.deactivate();
 		hide();
 	}
 
@@ -199,14 +199,14 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	}
 
 	/**
-	 * NOTE: If the application property <code>overflowBug</code> is <code>true</code>, this method
-	 * simulates the bug in the original Arcade game which occurs if Pac-Man points upwards. In that
-	 * case the same number of tiles to the left is added.
+	 * NOTE: If the application property <code>overflowBug</code> is
+	 * <code>true</code>, this method simulates the bug in the original Arcade game
+	 * which occurs if Pac-Man points upwards. In that case the same number of tiles
+	 * to the left is added.
 	 * 
-	 * @param numTiles
-	 *                   number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
-	 *         direction.
+	 * @param numTiles number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor
+	 *         towards his current move direction.
 	 */
 	@Override
 	public Tile tilesAhead(int numTiles) {
@@ -255,20 +255,17 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 		@Override
 		public void onTick() {
 			if (startsLosingPower()) {
-				_actor.publish(new PacManGettingWeakerEvent());
-			}
-			else if (getTicksRemaining() == 1) {
+				fsmComponent.publish(new PacManGettingWeakerEvent());
+			} else if (getTicksRemaining() == 1) {
 				setConstantTimer(0);
 				cast.theme.snd_waza().stop();
-				_actor.publish(new PacManLostPowerEvent());
-			}
-			else if (mustDigest()) {
+				fsmComponent.publish(new PacManLostPowerEvent());
+			} else if (mustDigest()) {
 				digest();
-			}
-			else {
+			} else {
 				steer();
 				move();
-				findSomethingInteresting().ifPresent(_actor::publish);
+				findSomethingInteresting().ifPresent(fsmComponent::publish);
 			}
 		}
 
@@ -318,8 +315,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 				boolean energizer = maze().containsEnergizer(pacManTile);
 				digestion = energizer ? PacManGame.DIGEST_TICKS_ENERGIZER : PacManGame.DIGEST_TICKS;
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			}
-			else {
+			} else {
 				ticksSinceLastMeal += 1;
 			}
 

@@ -10,6 +10,10 @@ import java.awt.Graphics2D;
 import java.util.logging.Logger;
 
 import de.amr.easy.game.entity.Entity;
+import de.amr.games.pacman.actor.core.MazeResident;
+import de.amr.games.pacman.actor.fsm.StateMachineComponent;
+import de.amr.games.pacman.actor.fsm.StateMachineContainer;
+import de.amr.games.pacman.actor.fsm.StateMachineController;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.BonusSymbol;
@@ -24,16 +28,16 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Bonus extends Entity implements MazeResident, Actor<BonusState> {
+public class Bonus extends Entity implements MazeResident, StateMachineContainer<BonusState> {
 
 	public final PacManGameCast cast;
-	public final ActorPrototype<BonusState> _actor;
+	public final StateMachineComponent<BonusState> fsmComponent;
 	public final BonusSymbol symbol;
 	public final int value;
 
 	public Bonus(PacManGameCast cast) {
 		this.cast = cast;
-		_actor = buildActorComponent("Bonus");
+		fsmComponent = buildFsmComponent("Bonus");
 		tf.setWidth(Maze.TS);
 		tf.setHeight(Maze.TS);
 		symbol = cast.game.level.bonusSymbol;
@@ -52,10 +56,15 @@ public class Bonus extends Entity implements MazeResident, Actor<BonusState> {
 		return cast.game.maze;
 	}
 
-	private ActorPrototype<BonusState> buildActorComponent(String name) {
+	@Override
+	public StateMachineController<BonusState> fsmComponent() {
+		return fsmComponent;
+	}
+
+	private StateMachineComponent<BonusState> buildFsmComponent(String name) {
 		StateMachine<BonusState, PacManGameEvent> fsm = buildStateMachine();
 		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-		return new ActorPrototype<>(name, fsm);
+		return new StateMachineComponent<>(name, fsm);
 	}
 
 	private StateMachine<BonusState, PacManGameEvent> buildStateMachine() {
@@ -88,20 +97,15 @@ public class Bonus extends Entity implements MazeResident, Actor<BonusState> {
 	}
 
 	@Override
-	public Actor<BonusState> _actor() {
-		return _actor;
-	}
-
-	@Override
 	public void init() {
 		super.init();
-		_actor.init();
+		fsmComponent.init();
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		_actor.update();
+		fsmComponent.update();
 	}
 
 	@Override

@@ -1,79 +1,83 @@
-package de.amr.games.pacman.actor;
+package de.amr.games.pacman.actor.fsm;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-import de.amr.easy.game.view.Controller;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
 /**
- * This interface is implemented by entities which are controlled by a
- * finite-state machine and can register game event listeners for its published
- * game events.
- * 
- * <p>
- * Most methods have a default implementation that delegates to an instance of
- * an Actor prototype referenced by the entity class.
+ * This interface is implemented by entities that implement the
+ * {@link StateMachineController} interface by delegation to a component
+ * implementing that interface.
  * 
  * @author Armin Reichert
  *
  * @param <S> state type of the finite-state machine
  */
-public interface Actor<S> extends Controller {
+public interface StateMachineContainer<S> extends StateMachineController<S> {
 
-	/**
-	 * Actor prototype referenced the entity implementing the Actor interface.
-	 */
-	Actor<S> _actor();
+	StateMachineController<S> fsmComponent();
 
+	@Override
 	default String name() {
-		return _actor().name();
+		return fsmComponent().name();
 	}
 
+	@Override
 	default StateMachine<S, PacManGameEvent> fsm() {
-		return _actor().fsm();
+		return fsmComponent().fsm();
 	}
 
+	@Override
 	default void activate() {
-		_actor().activate();
+		fsmComponent().activate();
 	}
 
+	@Override
 	default void deactivate() {
-		_actor().deactivate();
+		fsmComponent().deactivate();
 	}
 
+	@Override
 	default boolean isActive() {
-		return _actor().isActive();
+		return fsmComponent().isActive();
 	}
 
+	@Override
 	default void addGameEventListener(Consumer<PacManGameEvent> listener) {
-		_actor().addGameEventListener(listener);
+		fsmComponent().addGameEventListener(listener);
 	}
 
+	@Override
 	default void removeGameEventListener(Consumer<PacManGameEvent> listener) {
-		_actor().removeGameEventListener(listener);
+		fsmComponent().removeGameEventListener(listener);
 	}
 
+	@Override
 	default void setState(S state) {
-		_actor().setState(state);
+		fsmComponent().setState(state);
 	}
 
+	@Override
 	default S getState() {
-		return _actor().getState();
+		return fsmComponent().getState();
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	default boolean oneOf(S... states) {
 		return Arrays.stream(states).anyMatch(s -> s.equals(getState()));
 	}
 
+	@Override
 	default State<S, PacManGameEvent> state() {
-		return _actor().state();
+		return fsmComponent().state();
 	}
 
+	@Override
 	default void process(PacManGameEvent event) {
-		_actor().process(event);
+		fsmComponent().process(event);
 	}
 }

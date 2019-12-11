@@ -5,9 +5,9 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
-import de.amr.games.pacman.actor.Actor;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.behavior.common.Steerings;
+import de.amr.games.pacman.actor.fsm.StateMachineController;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.view.play.PlayView;
 
@@ -39,7 +39,7 @@ public class PacManMovementTestUI extends PlayView implements VisualController {
 	@Override
 	public void update() {
 		handleSteeringChange();
-		cast.activeActors().forEach(Actor::update);
+		cast.activeActors().forEach(StateMachineController::update);
 		super.update();
 	}
 

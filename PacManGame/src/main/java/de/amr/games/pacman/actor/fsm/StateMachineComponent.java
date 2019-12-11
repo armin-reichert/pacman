@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor;
+package de.amr.games.pacman.actor.fsm;
 
 import static de.amr.easy.game.Application.LOGGER;
 
@@ -13,14 +13,14 @@ import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
 /**
- * Prototypical implementation of the {@link Actor} interface which can be used
- * as a delegate by an entity class.
+ * Prototypical implementation of the {@link StateMachineController} interface
+ * which can be used as a delegate by an entity class.
  * 
  * @author Armin Reichert
  *
  * @param <S> state (label) type of the FSM
  */
-class ActorPrototype<S> implements Actor<S> {
+public class StateMachineComponent<S> implements StateMachineController<S> {
 
 	public final String name;
 	public final StateMachine<S, PacManGameEvent> fsm;
@@ -28,17 +28,12 @@ class ActorPrototype<S> implements Actor<S> {
 	public Predicate<PacManGameEvent> publishedEventIsLogged;
 	private boolean active;
 
-	public ActorPrototype(String name, StateMachine<S, PacManGameEvent> fsm) {
+	public StateMachineComponent(String name, StateMachine<S, PacManGameEvent> fsm) {
 		this.name = name;
 		this.fsm = fsm;
 		active = false;
 		publishedEventIsLogged = event -> true;
 		listeners = new LinkedHashSet<>();
-	}
-
-	@Override
-	public Actor<S> _actor() {
-		return this;
 	}
 
 	@Override

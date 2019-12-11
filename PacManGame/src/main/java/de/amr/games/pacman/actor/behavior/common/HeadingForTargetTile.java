@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 
-import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.behavior.Steering;
+import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
