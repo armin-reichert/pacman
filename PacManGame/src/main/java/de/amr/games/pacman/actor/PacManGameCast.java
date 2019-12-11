@@ -67,7 +67,7 @@ public class PacManGameCast {
 		inky.initialDir = N;
 		inky.initialTile = game.maze.ghostHome[1];
 		inky.scatterTile = game.maze.scatterTileSE;
-		inky.revivalTile = game.maze.ghostHome[1];
+		inky.revivalTile = game.maze.ghostHome[2];
 		inky.teleportingTicks = sec(1);
 		inky.fnChasingTarget = () -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);

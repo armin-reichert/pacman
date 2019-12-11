@@ -28,6 +28,7 @@ import de.amr.games.pacman.model.PacManGame;
 public class SimplePlayView implements View, Controller {
 
 	public final PacManGame game;
+	public final Maze maze;
 	public final PacManGameCast cast;
 	public final Dimension size;
 	public final Animation energizerBlinking;
@@ -44,6 +45,7 @@ public class SimplePlayView implements View, Controller {
 	public SimplePlayView(PacManGameCast cast) {
 		this.cast = cast;
 		this.game = cast.game;
+		this.maze = game.maze;
 		size = new Dimension(app().settings.width, app().settings.height);
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
@@ -97,16 +99,21 @@ public class SimplePlayView implements View, Controller {
 			return;
 		}
 		// hide tiles with eaten pellets
-		game.maze.tiles().filter(game.maze::containsEatenFood).forEach(tile -> {
+		maze.tiles().filter(maze::containsEatenFood).forEach(tile -> {
 			g.setColor(cast.theme.color_mazeBackground());
 			g.fillRect(tile.col * Maze.TS, tile.row * Maze.TS, Maze.TS, Maze.TS);
 		});
 		// hide energizers when animation is in blank state
 		if (energizerBlinking.currentFrame() == 1) {
-			game.maze.energizerTiles().forEach(tile -> {
+			maze.energizerTiles().forEach(tile -> {
 				g.setColor(cast.theme.color_mazeBackground());
 				g.fillRect(tile.col * Maze.TS, tile.row * Maze.TS, Maze.TS, Maze.TS);
 			});
+		}
+		// draw door open when ghost is passing through
+		if (cast.activeGhosts().anyMatch(ghost -> maze.isDoor(ghost.tile()))) {
+			g.setColor(cast.theme.color_mazeBackground());
+			g.fillRect(maze.doorLeft.col * Maze.TS, maze.doorLeft.row * Maze.TS, 2 * Maze.TS, Maze.TS);
 		}
 	}
 
@@ -179,7 +186,7 @@ public class SimplePlayView implements View, Controller {
 		g2.setFont(cast.theme.fnt_text(14));
 		g2.setColor(textColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(message, g2).getBounds();
-		g2.translate((mazeWidth - box.width) / 2, (game.maze.bonusTile.row + 1) * Maze.TS);
+		g2.translate((mazeWidth - box.width) / 2, (maze.bonusTile.row + 1) * Maze.TS);
 		g2.drawString(message, 0, 0);
 		g2.dispose();
 	}
