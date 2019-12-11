@@ -23,6 +23,7 @@ import de.amr.easy.game.ui.widgets.TextWidget;
 import de.amr.easy.game.view.AnimationController;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.intro.IntroView.IntroViewState;
 import de.amr.statemachine.StateMachine;
@@ -193,9 +194,9 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 		}
 		super.update();
 		animations.forEach(animation -> ((Controller) animation).update());
-		for (int i = 0; i < 3; ++i) {
-			speedHint[i].setColor(app().clock.getFrequency() == 60 + 20 * i ? Color.YELLOW : Color.PINK);
-		}
+		speedHint[0].setColor(app().clock.getFrequency() == PacManGame.SPEED_1_FPS ? Color.YELLOW : Color.PINK);
+		speedHint[1].setColor(app().clock.getFrequency() == PacManGame.SPEED_2_FPS ? Color.YELLOW : Color.PINK);
+		speedHint[2].setColor(app().clock.getFrequency() == PacManGame.SPEED_3_FPS ? Color.YELLOW : Color.PINK);
 	}
 
 	@Override

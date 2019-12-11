@@ -516,14 +516,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	private void handlePlayingSpeedChange() {
 		int fps = app().clock.getFrequency();
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
-			setClockFrequency(60);
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_1) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
+			setClockFrequency(PacManGame.SPEED_1_FPS);
 		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
-			setClockFrequency(70);
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
+			setClockFrequency(PacManGame.SPEED_2_FPS);
 		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
-			setClockFrequency(80);
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
+			setClockFrequency(PacManGame.SPEED_3_FPS);
 		}
 		else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_LEFT)) {
 			if (fps > 5) {
