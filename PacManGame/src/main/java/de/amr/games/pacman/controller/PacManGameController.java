@@ -32,7 +32,7 @@ import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManGameCast;
-import de.amr.games.pacman.actor.fsm.StateMachineControlled;
+import de.amr.games.pacman.actor.fsm.FsmControlled;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -102,7 +102,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						game.newGame();
 						cast.theme.snd_clips_all().forEach(Sound::stop);
 						cast.theme.snd_ready().play();
-						cast.actors().forEach(StateMachineControlled::activate);
+						cast.actors().forEach(FsmControlled::activate);
 						playView.init();
 						playView.textColor = Color.YELLOW;
 						playView.message = "Ready!";
@@ -142,7 +142,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						}
 						else if (state().getTicksRemaining() == sec(2)) {
 							game.nextLevel();
-							cast.activeActors().forEach(StateMachineControlled::init);
+							cast.activeActors().forEach(FsmControlled::init);
 							cast.ghosts().forEach(ghost -> ghost.foodCount = 0);
 							playView.init(); // stops flashing
 						} 
@@ -172,7 +172,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 							return;
 						}
 						if (state().getTicksConsumed() == sec(4)) {
-							cast.activeActors().forEach(StateMachineControlled::init);
+							cast.activeActors().forEach(FsmControlled::init);
 							cast.theme.music_playing().loop();
 							playView.init();
 						}

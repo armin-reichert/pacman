@@ -20,9 +20,9 @@ import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
-import de.amr.games.pacman.actor.fsm.StateMachineComponent;
-import de.amr.games.pacman.actor.fsm.StateMachineContainer;
-import de.amr.games.pacman.actor.fsm.StateMachineControlled;
+import de.amr.games.pacman.actor.fsm.FsmComponent;
+import de.amr.games.pacman.actor.fsm.FsmContainer;
+import de.amr.games.pacman.actor.fsm.FsmControlled;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -42,11 +42,11 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends AbstractMazeMover implements StateMachineContainer<PacManState> {
+public class PacMan extends AbstractMazeMover implements FsmContainer<PacManState> {
 
 	public final PacManGameCast cast;
 	public final PacManGame game;
-	public final StateMachineComponent<PacManState> fsmComponent;
+	public final FsmComponent<PacManState> fsmComponent;
 	public Steering<PacMan> steering;
 	public int ticksSinceLastMeal;
 
@@ -63,10 +63,10 @@ public class PacMan extends AbstractMazeMover implements StateMachineContainer<P
 		return cast.game.maze;
 	}
 
-	private StateMachineComponent<PacManState> buildFsmComponent(String name) {
+	private FsmComponent<PacManState> buildFsmComponent(String name) {
 		StateMachine<PacManState, PacManGameEvent> fsm = buildStateMachine();
 		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-		StateMachineComponent<PacManState> component = new StateMachineComponent<>(name, fsm);
+		FsmComponent<PacManState> component = new FsmComponent<>(name, fsm);
 		component.publishedEventIsLogged = event -> {
 			// do not write log entry when normal pellet is found
 			if (event instanceof FoodFoundEvent) {
@@ -152,7 +152,7 @@ public class PacMan extends AbstractMazeMover implements StateMachineContainer<P
 	// Actor<PacManState> implementation
 
 	@Override
-	public StateMachineControlled<PacManState> fsmComponent() {
+	public FsmControlled<PacManState> fsmComponent() {
 		return fsmComponent;
 	}
 

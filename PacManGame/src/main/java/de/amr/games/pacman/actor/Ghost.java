@@ -24,9 +24,9 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.behavior.common.Steerings;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
-import de.amr.games.pacman.actor.fsm.StateMachineComponent;
-import de.amr.games.pacman.actor.fsm.StateMachineContainer;
-import de.amr.games.pacman.actor.fsm.StateMachineControlled;
+import de.amr.games.pacman.actor.fsm.FsmComponent;
+import de.amr.games.pacman.actor.fsm.FsmContainer;
+import de.amr.games.pacman.actor.fsm.FsmControlled;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -44,14 +44,14 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends AbstractMazeMover implements StateMachineContainer<GhostState> {
+public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState> {
 
 	private final Map<GhostState, Steering<Ghost>> steeringByState;
 	private final Steering<Ghost> defaultSteering;
 
 	public final PacManGameCast cast;
 	public final PacManGame game;
-	public final StateMachineComponent<GhostState> fsmComponent;
+	public final FsmComponent<GhostState> fsmComponent;
 	public byte initialDir;
 	public Tile initialTile;
 	public Tile revivalTile;
@@ -75,11 +75,11 @@ public class Ghost extends AbstractMazeMover implements StateMachineContainer<Gh
 		return cast.game.maze;
 	}
 
-	private StateMachineComponent<GhostState> buildFsmComponent(String name) {
+	private FsmComponent<GhostState> buildFsmComponent(String name) {
 		StateMachine<GhostState, PacManGameEvent> fsm = buildStateMachine(name);
 		fsm.setIgnoreUnknownEvents(true);
 		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
-		return new StateMachineComponent<>(name, fsm);
+		return new FsmComponent<>(name, fsm);
 	}
 
 	private StateMachine<GhostState, PacManGameEvent> buildStateMachine(String name) {
@@ -195,7 +195,7 @@ public class Ghost extends AbstractMazeMover implements StateMachineContainer<Gh
 	}
 
 	@Override
-	public StateMachineControlled<GhostState> fsmComponent() {
+	public FsmControlled<GhostState> fsmComponent() {
 		return fsmComponent;
 	}
 
