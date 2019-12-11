@@ -199,7 +199,7 @@ public class PacManGame {
 
 	public PacManGame() {
 		maze = new Maze();
-		levelSymbols = new ArrayDeque<>(8);
+		levelSymbols = new ArrayDeque<>(7);
 	}
 
 	public void newGame() {
@@ -241,7 +241,7 @@ public class PacManGame {
 		if (level.number == 1) {
 			levelSymbols.clear();
 		}
-		else if (levelSymbols.size() == 8) {
+		else if (levelSymbols.size() == 7) {
 			levelSymbols.removeLast();
 		}
 		levelSymbols.addFirst(level.bonusSymbol);
@@ -332,6 +332,6 @@ public class PacManGame {
 	 * @return if bonus will become active
 	 */
 	public boolean isBonusScoreReached() {
-		return numPelletsRemaining() == 70 || numPelletsRemaining() == 170;
+		return level.numPelletsEaten == 70 || level.numPelletsEaten == 170;
 	}
 }
