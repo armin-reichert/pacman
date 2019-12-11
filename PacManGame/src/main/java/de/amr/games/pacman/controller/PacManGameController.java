@@ -21,6 +21,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
@@ -58,14 +59,14 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
+		implements VisualController {
 
 	private PacManGame game;
 	private PacManTheme theme;
 	private Controller currentView;
 	private PacManGameCast cast;
 	private GhostMotionTimer ghostMotionTimer;
-	private GhostHouse ghostHouse;
 	private PlayingState playingState;
 	private IntroView introView;
 	private PlayView playView;
@@ -292,13 +293,18 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			cast.ghosts().forEach(ghost -> ghost.nextState = ghostMotionTimer.getState());
 			Iterable<Ghost> ghosts = cast.activeGhosts()::iterator;
 			for (Ghost ghost : ghosts) {
-				if (ghost.getState() == GhostState.LOCKED && ghostHouse.canLeave(ghost)) {
+				if (ghost.getState() == GhostState.LOCKED && canLeaveHouse(ghost)) {
 					ghost.process(new GhostUnlockedEvent());
-				} else if (ghost.getState() == GhostState.CHASING && ghostMotionTimer.getState() == GhostState.SCATTERING) {
+				}
+				else if (ghost.getState() == GhostState.CHASING
+						&& ghostMotionTimer.getState() == GhostState.SCATTERING) {
 					ghost.process(new StartScatteringEvent());
-				} else if (ghost.getState() == GhostState.SCATTERING && ghostMotionTimer.getState() == GhostState.CHASING) {
+				}
+				else if (ghost.getState() == GhostState.SCATTERING
+						&& ghostMotionTimer.getState() == GhostState.CHASING) {
 					ghost.process(new StartChasingEvent());
-				} else {
+				}
+				else {
 					ghost.update();
 				}
 			}
@@ -308,7 +314,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			PacManGhostCollisionEvent e = (PacManGhostCollisionEvent) event;
 			if (e.ghost.oneOf(GhostState.CHASING, GhostState.SCATTERING)) {
 				enqueue(new PacManKilledEvent(e.ghost));
-			} else if (e.ghost.getState() == GhostState.FRIGHTENED) {
+			}
+			else if (e.ghost.getState() == GhostState.FRIGHTENED) {
 				enqueue(new GhostKilledEvent(e.ghost));
 			}
 		}
@@ -359,9 +366,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent e = (FoodFoundEvent) event;
-			int points = game.eat(e.tile);
+			int points = game.eatFoodAt(e.tile);
 			boolean extraLife = game.score(points);
-			ghostHouse.updateFoodCounter();
+			updateFoodCounter();
 			cast.theme.snd_eatPill().play();
 			if (extraLife) {
 				cast.theme.snd_extraLife().play();
@@ -400,7 +407,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onTick() {
 			cast.bonus().ifPresent(Bonus::update);
-			cast.activeGhosts().filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
+			cast.activeGhosts()
+					.filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
 					.forEach(Ghost::update);
 		}
 
@@ -437,7 +445,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		ghostMotionTimer = new GhostMotionTimer(game);
 		cast = new PacManGameCast(game, theme);
 		cast.pacMan.addGameEventListener(this::process);
-		ghostHouse = new GhostHouse(cast);
 		playView = new PlayView(cast);
 		playView.fnGhostAttack = ghostMotionTimer::state;
 		show(playView);
@@ -464,8 +471,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 		/* ALT-"E": Eats all (normal) pellets */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_E)) {
-			game.maze.tiles().filter(game.maze::containsPellet).forEach(game::eat);
-			ghostHouse.updateFoodCounter();
+			game.maze.tiles().filter(game.maze::containsPellet).forEach(tile -> {
+				game.eatFoodAt(tile);
+				updateFoodCounter();
+			});
 			LOGGER.info(() -> "All pellets eaten");
 		}
 		/* ALT-"L": Selects next level */
@@ -502,15 +511,19 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		int fps = app().clock.getFrequency();
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1)) {
 			setClockFrequency(60);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2)) {
 			setClockFrequency(70);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3)) {
 			setClockFrequency(80);
-		} else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_LEFT)) {
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_LEFT)) {
 			if (fps > 5) {
 				setClockFrequency(fps > 10 ? fps - 5 : Math.max(fps - 1, 5));
 			}
-		} else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_RIGHT)) {
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_RIGHT)) {
 			setClockFrequency(fps < 10 ? fps + 1 : fps + 5);
 		}
 	}
@@ -527,11 +540,126 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				app().settings.set("ghost.originalBehavior", false);
 				cast.ghosts().forEach(ghost -> ghost.setSteering(FRIGHTENED, fleeingToSafeCorner(cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
-			} else {
+			}
+			else {
 				app().settings.set("ghost.originalBehavior", true);
 				cast.ghosts().forEach(ghost -> ghost.setSteering(FRIGHTENED, movingRandomlyNoReversing()));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
 			}
 		}
 	}
+
+	// Ghost house rules
+
+	/**
+	 * The first control used to evaluate when the ghosts leave home is a personal counter each ghost
+	 * retains for tracking the number of dots Pac-Man eats. Each ghost's "dot counter" is reset to zero
+	 * when a level begins and can only be active when inside the ghost house, but only one ghost's
+	 * counter can be active at any given time regardless of how many ghosts are inside.
+	 * 
+	 * <p>
+	 * The order of preference for choosing which ghost's counter to activate is: Pinky, then Inky, and
+	 * then Clyde. For every dot Pac-Man eats, the preferred ghost in the house (if any) gets its dot
+	 * counter increased by one. Each ghost also has a "dot limit" associated with his counter, per
+	 * level.
+	 * 
+	 * <p>
+	 * If the preferred ghost reaches or exceeds his dot limit, it immediately exits the house and its
+	 * dot counter is deactivated (but not reset). The most-preferred ghost still waiting inside the
+	 * house (if any) activates its timer at this point and begins counting dots.
+	 * 
+	 * @see <a href=
+	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
+	 *      Dossier</a>
+	 */
+	public boolean canLeaveHouse(Ghost ghost) {
+		if (ghost == cast.blinky) {
+			return true;
+		}
+		/*@formatter:off*/
+		Ghost nextGhost = Stream.of(cast.pinky, cast.inky, cast.clyde)
+				.filter(g -> g.getState() == GhostState.LOCKED)
+				.findFirst()
+				.orElse(null);
+		/*@formatter:on*/
+
+		if (ghost != nextGhost) {
+			return false;
+		}
+		if (ghost.foodCount >= foodLimit(ghost)) {
+			return true;
+		}
+		if (cast.game.globalFoodCounterEnabled && cast.game.globalFoodCount >= getGlobalFoodCounterLimit(ghost)) {
+			return true;
+		}
+		int timeout = cast.game.level.number < 5 ? sec(4) : sec(3);
+		if (cast.pacMan.ticksSinceLastMeal > timeout) {
+			LOGGER.info(() -> String.format("Releasing ghost %s (Pac-Man eat timer expired)", ghost.name()));
+			return true;
+		}
+		return false;
+	}
+
+	private void updateFoodCounter() {
+		if (cast.game.globalFoodCounterEnabled) {
+			cast.game.globalFoodCount++;
+			LOGGER.fine(() -> String.format("Global Food Counter=%d", cast.game.globalFoodCount));
+			if (cast.game.globalFoodCount == 32 && cast.clyde.getState() == GhostState.LOCKED) {
+				cast.game.globalFoodCounterEnabled = false;
+				cast.game.globalFoodCount = 0;
+			}
+			return;
+		}
+		/*@formatter:off*/
+		Stream.of(cast.pinky, cast.inky, cast.clyde)
+			.filter(ghost -> ghost.getState() == GhostState.LOCKED)
+			.findFirst()
+			.ifPresent(preferredGhost -> {
+				preferredGhost.foodCount += 1;
+				LOGGER.fine(() -> String.format("Food Counter[%s]=%d", preferredGhost.name(), preferredGhost.foodCount));
+		});
+		/*@formatter:on*/
+	}
+
+	/**
+	 * Pinky's dot limit is always set to zero, causing him to leave home immediately when every level
+	 * begins. For the first level, Inky has a limit of 30 dots, and Clyde has a limit of 60. This
+	 * results in Pinky exiting immediately which, in turn, activates Inky's dot counter. His counter
+	 * must then reach or exceed 30 dots before he can leave the house.
+	 * 
+	 * <p>
+	 * Once Inky starts to leave, Clyde's counter (which is still at zero) is activated and starts
+	 * counting dots. When his counter reaches or exceeds 60, he may exit. On the second level, Inky's
+	 * dot limit is changed from 30 to zero, while Clyde's is changed from 60 to 50. Inky will exit the
+	 * house as soon as the level begins from now on.
+	 * 
+	 * <p>
+	 * Starting at level three, all the ghosts have a dot limit of zero for the remainder of the game
+	 * and will leave the ghost house immediately at the start of every level.
+	 * 
+	 * @param ghost
+	 *                a ghost
+	 * @return the ghosts's current food limit
+	 * 
+	 * @see <a href=
+	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
+	 *      Dossier</a>
+	 */
+	private int foodLimit(Ghost ghost) {
+		if (ghost == cast.pinky) {
+			return 0;
+		}
+		if (ghost == cast.inky) {
+			return cast.game.level.number == 1 ? 30 : 0;
+		}
+		if (ghost == cast.clyde) {
+			return cast.game.level.number == 1 ? 60 : cast.game.level.number == 2 ? 50 : 0;
+		}
+		return 0;
+	}
+
+	private int getGlobalFoodCounterLimit(Ghost ghost) {
+		return (ghost == cast.pinky) ? 7 : (ghost == cast.inky) ? 17 : (ghost == cast.clyde) ? 32 : 0;
+	}
+
 }

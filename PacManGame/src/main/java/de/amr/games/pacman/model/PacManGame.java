@@ -242,7 +242,7 @@ public class PacManGame {
 	 * @param tile tile containing pellet
 	 * @return points scored for eating pellet
 	 */
-	public int eat(Tile tile) {
+	public int eatFoodAt(Tile tile) {
 		level.numPelletsEaten += 1;
 		if (maze.containsEnergizer(tile)) {
 			level.bodyCount = 0;
