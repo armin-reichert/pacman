@@ -119,7 +119,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 				.state(DYING)
 					.timeoutAfter(Ghost::getDyingTime)
 					.onEntry(() -> {
-						sprites.select("value-" + game.level.bodyCount);
+						sprites.select("value-" + game.level.ghostsKilledByEnergizer);
 					})
 				
 				.state(DEAD)

@@ -25,12 +25,10 @@ import java.util.Random;
  * 
  * @author Armin Reichert
  * 
- * @see <a href=
- *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
+ * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
  *      dossier</a>
- * @see <a href=
- *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man
- *      level specifications</a>
+ * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man level
+ *      specifications</a>
  */
 public class PacManGame {
 
@@ -40,7 +38,8 @@ public class PacManGame {
 	public static final int POINTS_PELLET = 10;
 	public static final int POINTS_ENERGIZER = 50;
 	public static final int[] BONUS_NUMBERS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
-	public static final File HIGHSCORE_FILE = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
+	public static final File HIGHSCORE_FILE = new File(new File(System.getProperty("user.home")),
+			"pacman.hiscore.xml");
 
 	static final Object[][] LEVELS = new Object[][] {
 		/*@formatter:off*/
@@ -104,7 +103,8 @@ public class PacManGame {
 
 		public final int number;
 		public int numPelletsEaten;
-		public int bodyCount; // ghosts killed using current energizer
+		public int ghostsKilledByEnergizer;
+		public int ghostKilledInLevel;
 
 		public Level(int n, Object[] row) {
 			// constants
@@ -126,11 +126,13 @@ public class PacManGame {
 			// variables
 			number = n;
 			numPelletsEaten = 0;
-			bodyCount = 0;
+			ghostsKilledByEnergizer = 0;
+			ghostKilledInLevel = 0;
 		}
 
 		/**
-		 * @param round attack round
+		 * @param round
+		 *                attack round
 		 * @return number of ticks ghost will scatter in this round and level
 		 */
 		public int scatterTicks(int round) {
@@ -138,7 +140,8 @@ public class PacManGame {
 		}
 
 		/**
-		 * @param round attack round
+		 * @param round
+		 *                attack round
 		 * @return number of ticks ghost will chase in this round and level
 		 */
 		public int chasingTicks(int round) {
@@ -161,7 +164,8 @@ public class PacManGame {
 	}
 
 	/**
-	 * @param fraction fraction of base speed
+	 * @param fraction
+	 *                   fraction of base speed
 	 * @return speed (pixels/tick) corresponding to given fraction of base speed
 	 */
 	public static float speed(float fraction) {
@@ -169,7 +173,8 @@ public class PacManGame {
 	}
 
 	/**
-	 * @param fraction fraction of seconds
+	 * @param fraction
+	 *                   fraction of seconds
 	 * @return ticks corresponding to given fraction of seconds at 60Hz
 	 */
 	public static int sec(float fraction) {
@@ -198,19 +203,19 @@ public class PacManGame {
 	}
 
 	public void newGame() {
-		LOGGER.info("New game");
+		LOGGER.info(() -> "New game");
 		score = 0;
 		lives = 3;
 		startLevel(1);
 	}
 
 	public void finishGame() {
-		LOGGER.info("Game is over");
+		LOGGER.info(() -> "Game is over");
 		saveHighscore();
 	}
 
 	public void startLevel(int n) {
-		LOGGER.info("Start level " + n);
+		LOGGER.info(() -> "Start level " + n);
 		level = new Level(n, LEVELS[Math.min(n - 1, LEVELS.length - 1)]);
 		maze.restoreFood();
 		globalFoodCount = 0;
@@ -223,8 +228,11 @@ public class PacManGame {
 
 	public void nextLevel() {
 		if (level != null) {
+			LOGGER
+					.info(() -> String.format("Ghosts killed in level %d: %d", level.number, level.ghostKilledInLevel));
 			startLevel(level.number + 1);
-		} else {
+		}
+		else {
 			throw new IllegalStateException("Cannot enter next level, game has not been started");
 		}
 	}
@@ -232,23 +240,26 @@ public class PacManGame {
 	void updateLevelCounter() {
 		if (level.number == 1) {
 			levelSymbols.clear();
-		} else if (levelSymbols.size() == 8) {
+		}
+		else if (levelSymbols.size() == 8) {
 			levelSymbols.removeLast();
 		}
 		levelSymbols.addFirst(level.bonusSymbol);
 	}
 
 	/**
-	 * @param tile tile containing pellet
+	 * @param tile
+	 *               tile containing pellet
 	 * @return points scored for eating pellet
 	 */
 	public int eatFoodAt(Tile tile) {
 		level.numPelletsEaten += 1;
 		if (maze.containsEnergizer(tile)) {
-			level.bodyCount = 0;
+			level.ghostsKilledByEnergizer = 0;
 			maze.removeFood(tile);
 			return POINTS_ENERGIZER;
-		} else {
+		}
+		else {
 			maze.removeFood(tile);
 			return POINTS_PELLET;
 		}
@@ -299,7 +310,8 @@ public class PacManGame {
 	}
 
 	/**
-	 * @param points additional points scored
+	 * @param points
+	 *                 additional points scored
 	 * @return <code>true</code> if new life has been granted
 	 */
 	public boolean score(int points) {

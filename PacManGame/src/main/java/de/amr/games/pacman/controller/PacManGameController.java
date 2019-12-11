@@ -394,14 +394,18 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onEntry() {
 			cast.pacMan.hide();
-			int points = 200 * (int) Math.pow(2, game.level.bodyCount);
+			int points = 200 * (int) Math.pow(2, game.level.ghostsKilledByEnergizer);
 			boolean extraLife = game.score(points);
 			LOGGER.info(() -> String.format("Scored %d points for killing %s ghost", points,
-					new String[] { "first", "2nd", "3rd", "4th" }[game.level.bodyCount]));
+					new String[] { "first", "2nd", "3rd", "4th" }[game.level.ghostsKilledByEnergizer]));
 			if (extraLife) {
 				cast.theme.snd_extraLife().play();
 			}
-			game.level.bodyCount += 1;
+			game.level.ghostsKilledByEnergizer += 1;
+			game.level.ghostKilledInLevel += 1;
+			if (game.level.ghostKilledInLevel == 16) {
+				game.score(12000);
+			}
 		}
 
 		@Override
