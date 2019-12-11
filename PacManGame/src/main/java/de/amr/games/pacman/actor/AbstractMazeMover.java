@@ -10,6 +10,7 @@ import static de.amr.graph.grid.impl.Grid4Topology.W;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
@@ -92,6 +93,7 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 
 	@Override
 	public void setTargetPath(List<Tile> path) {
+		path = Objects.requireNonNull(path, "Target path must not be null");
 		targetPath = new ArrayList<>(path);
 	}
 
