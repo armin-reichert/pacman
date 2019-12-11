@@ -65,6 +65,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private Controller currentView;
 	private PacManGameCast cast;
 	private GhostMotionTimer ghostMotionTimer;
+	private GhostHouse ghostHouse;
 	private PlayingState playingState;
 	private IntroView introView;
 	private PlayView playView;
@@ -291,7 +292,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			cast.ghosts().forEach(ghost -> ghost.nextState = ghostMotionTimer.getState());
 			Iterable<Ghost> ghosts = cast.activeGhosts()::iterator;
 			for (Ghost ghost : ghosts) {
-				if (ghost.getState() == GhostState.LOCKED && cast.canLeaveHouse(ghost)) {
+				if (ghost.getState() == GhostState.LOCKED && ghostHouse.canLeave(ghost)) {
 					ghost.process(new GhostUnlockedEvent());
 				} else if (ghost.getState() == GhostState.CHASING && ghostMotionTimer.getState() == GhostState.SCATTERING) {
 					ghost.process(new StartScatteringEvent());
@@ -360,7 +361,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			FoodFoundEvent e = (FoodFoundEvent) event;
 			int points = game.eat(e.tile);
 			boolean extraLife = game.score(points);
-			cast.updateFoodCounter();
+			ghostHouse.updateFoodCounter();
 			cast.theme.snd_eatPill().play();
 			if (extraLife) {
 				cast.theme.snd_extraLife().play();
@@ -436,6 +437,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		ghostMotionTimer = new GhostMotionTimer(game);
 		cast = new PacManGameCast(game, theme);
 		cast.pacMan.addGameEventListener(this::process);
+		ghostHouse = new GhostHouse(cast);
 		playView = new PlayView(cast);
 		playView.fnGhostAttack = ghostMotionTimer::state;
 		show(playView);
@@ -463,7 +465,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		/* ALT-"E": Eats all (normal) pellets */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_E)) {
 			game.maze.tiles().filter(game.maze::containsPellet).forEach(game::eat);
-			cast.updateFoodCounter();
+			ghostHouse.updateFoodCounter();
 			LOGGER.info(() -> "All pellets eaten");
 		}
 		/* ALT-"L": Selects next level */
