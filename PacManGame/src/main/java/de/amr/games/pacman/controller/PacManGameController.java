@@ -152,6 +152,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 							cast.activeGhosts().forEach(Ghost::update);
 						}
 					})
+					.onExit(() -> {
+						ghostMotionTimer.init();
+					})
 				
 				.state(GHOST_DYING)
 					.impl(new GhostDyingState())
