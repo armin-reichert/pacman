@@ -29,6 +29,8 @@ public interface MazeMover extends MazeResident {
 	 * @return if a new tile has been entered
 	 */
 	boolean enteredNewTile();
+	
+	void setEnteredNewTile();
 
 	/**
 	 * @return the current target tile

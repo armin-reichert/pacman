@@ -75,6 +75,11 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 	}
 
 	@Override
+	public void setEnteredNewTile() {
+		this.enteredNewTile = true;
+	}
+
+	@Override
 	public Tile targetTile() {
 		return targetTile;
 	}

@@ -41,6 +41,7 @@ public class FollowTargetTilesTestUI extends PlayView implements VisualControlle
 		cast.blinky.fnChasingTarget = () -> targets.get(current);
 		cast.blinky.placeAtTile(targets.get(0), 0, 0);
 		cast.blinky.setState(CHASING);
+		cast.blinky.setEnteredNewTile();
 	}
 
 	@Override

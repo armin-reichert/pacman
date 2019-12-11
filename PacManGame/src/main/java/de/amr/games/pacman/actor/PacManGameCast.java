@@ -90,8 +90,6 @@ public class PacManGameCast {
 
 		// Blinky does not jump when locked
 		Stream.of(pinky, inky, clyde).forEach(ghost -> ghost.setSteering(GhostState.LOCKED, jumpingUpAndDown()));
-
-		actors().forEach(this::activate);
 	}
 
 	public void activate(MazeResident actor) {
