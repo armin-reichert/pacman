@@ -7,7 +7,7 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.behavior.common.Steerings;
-import de.amr.games.pacman.actor.fsm.Actor;
+import de.amr.games.pacman.actor.core.MazeResident;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.view.play.PlayView;
 
@@ -32,14 +32,14 @@ public class PacManMovementTestUI extends PlayView implements VisualController {
 				}
 			}
 		});
-		cast.pacMan.activate();
+		cast.activate(cast.pacMan);
 		cast.pacMan.init();
 	}
 
 	@Override
 	public void update() {
 		handleSteeringChange();
-		cast.activeActors().forEach(Actor::update);
+		cast.activeActors().forEach(MazeResident::update);
 		super.update();
 	}
 

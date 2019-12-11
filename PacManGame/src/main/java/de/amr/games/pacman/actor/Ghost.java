@@ -24,7 +24,6 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.behavior.common.Steerings;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
-import de.amr.games.pacman.actor.fsm.Actor;
 import de.amr.games.pacman.actor.fsm.FsmComponent;
 import de.amr.games.pacman.actor.fsm.FsmContainer;
 import de.amr.games.pacman.actor.fsm.FsmControlled;
@@ -45,7 +44,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends AbstractMazeMover implements Actor, FsmContainer<GhostState> {
+public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState> {
 
 	private final Map<GhostState, Steering<Ghost>> steeringByState = new EnumMap<>(GhostState.class);
 	private final Steering<Ghost> defaultSteering = Steerings.headingForTargetTile();
@@ -201,26 +200,6 @@ public class Ghost extends AbstractMazeMover implements Actor, FsmContainer<Ghos
 	@Override
 	public FsmControlled<GhostState> fsmComponent() {
 		return fsmComponent;
-	}
-
-	private boolean active;
-
-	@Override
-	public void activate() {
-		init();
-		show();
-		active = true;
-	}
-
-	@Override
-	public void deactivate() {
-		hide();
-		active = false;
-	}
-
-	@Override
-	public boolean isActive() {
-		return active;
 	}
 
 	@Override

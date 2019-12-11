@@ -20,7 +20,6 @@ import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
-import de.amr.games.pacman.actor.fsm.Actor;
 import de.amr.games.pacman.actor.fsm.FsmComponent;
 import de.amr.games.pacman.actor.fsm.FsmContainer;
 import de.amr.games.pacman.actor.fsm.FsmControlled;
@@ -43,7 +42,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends AbstractMazeMover implements Actor, FsmContainer<PacManState> {
+public class PacMan extends AbstractMazeMover implements FsmContainer<PacManState> {
 
 	public final PacManGameCast cast;
 	public final PacManGame game;
@@ -153,26 +152,6 @@ public class PacMan extends AbstractMazeMover implements Actor, FsmContainer<Pac
 	@Override
 	public FsmControlled<PacManState> fsmComponent() {
 		return fsmComponent;
-	}
-
-	private boolean active;
-
-	@Override
-	public void activate() {
-		init();
-		show();
-		active = true;
-	}
-
-	@Override
-	public void deactivate() {
-		hide();
-		active = false;
-	}
-
-	@Override
-	public boolean isActive() {
-		return active;
 	}
 
 	@Override

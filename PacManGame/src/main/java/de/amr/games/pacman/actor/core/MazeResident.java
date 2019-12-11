@@ -4,6 +4,7 @@ import static java.lang.Math.round;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.view.Controller;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
@@ -13,7 +14,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public interface MazeResident {
+public interface MazeResident extends Controller {
 
 	/**
 	 * @return the entity implementing this interface

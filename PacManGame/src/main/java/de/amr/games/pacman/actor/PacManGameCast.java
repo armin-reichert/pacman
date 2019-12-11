@@ -13,10 +13,12 @@ import static de.amr.graph.grid.impl.Grid4Topology.S;
 import static de.amr.graph.grid.impl.Grid4Topology.W;
 
 import java.awt.event.KeyEvent;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.actor.fsm.Actor;
+import de.amr.games.pacman.actor.core.MazeResident;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
@@ -34,6 +36,8 @@ public class PacManGameCast {
 	public final Ghost blinky, pinky, inky, clyde;
 	public PacManTheme theme;
 	private Bonus bonus;
+
+	private final Set<MazeResident> activeActors = new HashSet<>();
 
 	public PacManGameCast(PacManGame game, PacManTheme theme) {
 		this.game = game;
@@ -86,6 +90,23 @@ public class PacManGameCast {
 
 		// Blinky does not jump when locked
 		Stream.of(pinky, inky, clyde).forEach(ghost -> ghost.setSteering(GhostState.LOCKED, jumpingUpAndDown()));
+
+		actors().forEach(this::activate);
+	}
+
+	public void activate(MazeResident actor) {
+		actor.resident().init();
+		actor.resident().show();
+		activeActors.add(actor);
+	}
+
+	public void deactivate(MazeResident actor) {
+		actor.resident().hide();
+		activeActors.remove(actor);
+	}
+
+	public boolean isActive(MazeResident actor) {
+		return activeActors.contains(actor);
 	}
 
 	public void setTheme(PacManTheme theme) {
@@ -121,15 +142,15 @@ public class PacManGameCast {
 	}
 
 	public Stream<Ghost> activeGhosts() {
-		return ghosts().filter(Ghost::isActive);
+		return ghosts().filter(this::isActive);
 	}
 
-	public Stream<Actor> actors() {
+	public Stream<MazeResident> actors() {
 		return Stream.of(pacMan, blinky, pinky, inky, clyde);
 	}
 
-	public Stream<Actor> activeActors() {
-		return actors().filter(Actor::isActive);
+	public Stream<MazeResident> activeActors() {
+		return actors().filter(this::isActive);
 	}
 
 	public Optional<Bonus> bonus() {

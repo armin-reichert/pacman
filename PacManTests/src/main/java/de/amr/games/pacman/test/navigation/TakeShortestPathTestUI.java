@@ -28,9 +28,8 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 		showRoutes = true;
 		showStates = true;
 		showScores = false;
-		targets = Arrays.asList(game.maze.cornerSE, game.maze.cornerSW, game.maze.tunnelExitLeft,
-				game.maze.cornerNW, game.maze.ghostHome[0], game.maze.cornerNE, game.maze.tunnelExitRight,
-				game.maze.pacManHome);
+		targets = Arrays.asList(game.maze.cornerSE, game.maze.cornerSW, game.maze.tunnelExitLeft, game.maze.cornerNW,
+				game.maze.ghostHome[0], game.maze.cornerNE, game.maze.tunnelExitRight, game.maze.pacManHome);
 	}
 
 	@Override
@@ -42,7 +41,7 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 		game.startLevel(1);
 		game.maze.removeFood();
 		cast.theme.snd_ghost_chase().volume(0);
-		cast.blinky.activate();
+		cast.activate(cast.blinky);
 		cast.blinky.init();
 		cast.blinky.setState(CHASING);
 		Steering<Ghost> followPathToCurrentTarget = followingShortestPath(() -> targets.get(currentTarget));

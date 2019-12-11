@@ -121,10 +121,10 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void toggleGhostActivationState(Ghost ghost) {
-		if (ghost.isActive()) {
-			ghost.deactivate();
+		if (cast.isActive(ghost)) {
+			cast.deactivate(ghost);
 		} else {
-			ghost.activate();
+			cast.activate(ghost);
 		}
 	}
 
@@ -138,7 +138,7 @@ public class PlayView extends SimplePlayView {
 		drawActors(g);
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
-			if (cast.pacMan.isActive()) {
+			if (cast.isActive(cast.pacMan)) {
 				drawGridAlignment(cast.pacMan, g);
 			}
 			cast.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawGridAlignment(ghost, g));

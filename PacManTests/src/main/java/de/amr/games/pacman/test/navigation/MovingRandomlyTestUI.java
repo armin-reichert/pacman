@@ -29,7 +29,7 @@ public class MovingRandomlyTestUI extends PlayView implements VisualController {
 		game.newGame();
 		game.maze.removeFood();
 		cast.ghosts().forEach(ghost -> {
-			ghost.activate();
+			cast.activate(ghost);
 			ghost.init();
 			ghost.placeAtTile(game.maze.pacManHome, Maze.TS / 2, 0);
 			ghost.setState(GhostState.CHASING);

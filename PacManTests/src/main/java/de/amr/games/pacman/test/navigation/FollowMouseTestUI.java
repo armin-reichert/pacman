@@ -33,7 +33,7 @@ public class FollowMouseTestUI extends PlayView implements VisualController {
 		game.newGame();
 		game.maze.removeFood();
 		cast.theme.snd_ghost_chase().volume(0);
-		cast.blinky.activate();
+		cast.activate(cast.blinky);
 		cast.blinky.init();
 		cast.blinky.fnChasingTarget = () -> mouseTile;
 		cast.blinky.setState(CHASING);

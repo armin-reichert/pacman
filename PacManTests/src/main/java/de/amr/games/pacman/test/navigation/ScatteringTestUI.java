@@ -27,7 +27,7 @@ public class ScatteringTestUI extends PlayView implements VisualController {
 		game.newGame();
 		game.maze.removeFood();
 		cast.ghosts().forEach(ghost -> {
-			ghost.activate();
+			cast.activate(ghost);
 			ghost.init();
 			ghost.nextState = GhostState.SCATTERING;
 		});

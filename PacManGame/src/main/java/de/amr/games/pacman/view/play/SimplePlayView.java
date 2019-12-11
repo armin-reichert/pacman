@@ -121,7 +121,7 @@ public class SimplePlayView implements View, Controller {
 		cast.bonus().ifPresent(bonus -> {
 			bonus.draw(g);
 		});
-		if (cast.pacMan.isActive()) {
+		if (cast.isActive(cast.pacMan)) {
 			cast.pacMan.draw(g);
 		}
 		// draw dying ghosts (numbers) under non-dying ghosts
