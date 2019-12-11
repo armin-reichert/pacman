@@ -77,9 +77,9 @@ public class PacManGame {
 
 	static final int[][] CHASING_TICKS = {
 		/*@formatter:off*/
-		{ sec(20), sec(20), sec(20),                Integer.MAX_VALUE }, // Level 1
-		{ sec(20), sec(20), min(17) + sec(13) + 14, Integer.MAX_VALUE }, // Level 2-4
-		{ sec(20), sec(20), min(17) + sec(17) + 14, Integer.MAX_VALUE }, // Level >= 5
+		{ sec(20), sec(20), sec(20),   Integer.MAX_VALUE }, // Level 1
+		{ sec(20), sec(20), sec(1033), Integer.MAX_VALUE }, // Level 2-4
+		{ sec(20), sec(20), sec(1037), Integer.MAX_VALUE }, // Level >= 5
 		/*@formatter:on*/
 	};
 
