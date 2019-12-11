@@ -200,7 +200,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			
 				.when(INTRO).then(GETTING_READY)
 					.condition(() -> introView.isComplete() || app().settings.getAsBoolean("skipIntro"))
-					.act(this::newGame)
+					.act(this::createPlayingStage)
 				
 				.when(GETTING_READY).then(START_PLAYING)
 					.onTimeout()
@@ -429,10 +429,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	// Controller methods
 
-	private void newGame() {
+	private void createPlayingStage() {
 		game = new PacManGame();
-		cast = new PacManGameCast(game, theme);
 		ghostMotionTimer = new GhostMotionTimer(game);
+		cast = new PacManGameCast(game, theme);
 		cast.pacMan.addGameEventListener(this::process);
 		playView = new PlayView(cast);
 		playView.fnGhostAttack = ghostMotionTimer::state;
