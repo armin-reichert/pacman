@@ -9,16 +9,16 @@ import de.amr.statemachine.StateMachine;
 
 /**
  * This interface is implemented by entities that implement the
- * {@link StateMachineController} interface by delegation to a component
+ * {@link StateMachineControlled} interface by delegation to a component
  * implementing that interface.
  * 
  * @author Armin Reichert
  *
  * @param <S> state type of the finite-state machine
  */
-public interface StateMachineContainer<S> extends StateMachineController<S> {
+public interface StateMachineContainer<S> extends StateMachineControlled<S> {
 
-	StateMachineController<S> fsmComponent();
+	StateMachineControlled<S> fsmComponent();
 
 	@Override
 	default String name() {

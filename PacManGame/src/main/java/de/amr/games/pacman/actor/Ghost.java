@@ -26,7 +26,7 @@ import de.amr.games.pacman.actor.behavior.common.Steerings;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
 import de.amr.games.pacman.actor.fsm.StateMachineComponent;
 import de.amr.games.pacman.actor.fsm.StateMachineContainer;
-import de.amr.games.pacman.actor.fsm.StateMachineController;
+import de.amr.games.pacman.actor.fsm.StateMachineControlled;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -195,7 +195,7 @@ public class Ghost extends AbstractMazeMover implements StateMachineContainer<Gh
 	}
 
 	@Override
-	public StateMachineController<GhostState> fsmComponent() {
+	public StateMachineControlled<GhostState> fsmComponent() {
 		return fsmComponent;
 	}
 

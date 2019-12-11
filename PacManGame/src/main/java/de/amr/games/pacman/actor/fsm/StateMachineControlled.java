@@ -17,7 +17,7 @@ import de.amr.statemachine.StateMachine;
  *
  * @param <S> state type of the finite-state machine
  */
-public interface StateMachineController<S> extends Controller {
+public interface StateMachineControlled<S> extends Controller {
 
 	String name();
 

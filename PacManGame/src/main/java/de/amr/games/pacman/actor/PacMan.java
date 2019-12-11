@@ -22,7 +22,7 @@ import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
 import de.amr.games.pacman.actor.fsm.StateMachineComponent;
 import de.amr.games.pacman.actor.fsm.StateMachineContainer;
-import de.amr.games.pacman.actor.fsm.StateMachineController;
+import de.amr.games.pacman.actor.fsm.StateMachineControlled;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -152,7 +152,7 @@ public class PacMan extends AbstractMazeMover implements StateMachineContainer<P
 	// Actor<PacManState> implementation
 
 	@Override
-	public StateMachineController<PacManState> fsmComponent() {
+	public StateMachineControlled<PacManState> fsmComponent() {
 		return fsmComponent;
 	}
 

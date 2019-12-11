@@ -16,7 +16,7 @@ import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.actor.fsm.StateMachineController;
+import de.amr.games.pacman.actor.fsm.StateMachineControlled;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
@@ -124,12 +124,12 @@ public class PacManGameCast {
 		return ghosts().filter(Ghost::isActive);
 	}
 
-	public Stream<StateMachineController<?>> actors() {
+	public Stream<StateMachineControlled<?>> actors() {
 		return Stream.of(pacMan, blinky, pinky, inky, clyde);
 	}
 
-	public Stream<StateMachineController<?>> activeActors() {
-		return actors().filter(StateMachineController::isActive);
+	public Stream<StateMachineControlled<?>> activeActors() {
+		return actors().filter(StateMachineControlled::isActive);
 	}
 
 	public Optional<Bonus> bonus() {

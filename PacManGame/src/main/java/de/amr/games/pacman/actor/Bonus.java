@@ -13,7 +13,7 @@ import de.amr.easy.game.entity.Entity;
 import de.amr.games.pacman.actor.core.MazeResident;
 import de.amr.games.pacman.actor.fsm.StateMachineComponent;
 import de.amr.games.pacman.actor.fsm.StateMachineContainer;
-import de.amr.games.pacman.actor.fsm.StateMachineController;
+import de.amr.games.pacman.actor.fsm.StateMachineControlled;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.BonusSymbol;
@@ -57,7 +57,7 @@ public class Bonus extends Entity implements MazeResident, StateMachineContainer
 	}
 
 	@Override
-	public StateMachineController<BonusState> fsmComponent() {
+	public StateMachineControlled<BonusState> fsmComponent() {
 		return fsmComponent;
 	}
 

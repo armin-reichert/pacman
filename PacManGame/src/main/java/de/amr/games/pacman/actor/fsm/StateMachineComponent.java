@@ -13,14 +13,14 @@ import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
 /**
- * Prototypical implementation of the {@link StateMachineController} interface
+ * Prototypical implementation of the {@link StateMachineControlled} interface
  * which can be used as a delegate by an entity class.
  * 
  * @author Armin Reichert
  *
  * @param <S> state (label) type of the FSM
  */
-public class StateMachineComponent<S> implements StateMachineController<S> {
+public class StateMachineComponent<S> implements StateMachineControlled<S> {
 
 	public final String name;
 	public final StateMachine<S, PacManGameEvent> fsm;
