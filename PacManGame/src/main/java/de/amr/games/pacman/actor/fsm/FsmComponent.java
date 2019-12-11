@@ -26,12 +26,10 @@ public class FsmComponent<S> implements FsmControlled<S> {
 	public final StateMachine<S, PacManGameEvent> fsm;
 	public final Set<Consumer<PacManGameEvent>> listeners;
 	public Predicate<PacManGameEvent> publishedEventIsLogged;
-	private boolean active;
 
 	public FsmComponent(String name, StateMachine<S, PacManGameEvent> fsm) {
 		this.name = name;
 		this.fsm = fsm;
-		active = false;
 		publishedEventIsLogged = event -> true;
 		listeners = new LinkedHashSet<>();
 	}
@@ -44,23 +42,6 @@ public class FsmComponent<S> implements FsmControlled<S> {
 	@Override
 	public String name() {
 		return name;
-	}
-
-	@Override
-	public void activate() {
-		active = true;
-		LOGGER.info(() -> String.format("Actor '%s' has been activated", name));
-	}
-
-	@Override
-	public void deactivate() {
-		active = false;
-		LOGGER.info(() -> String.format("Actor '%s' has been deactivated", name));
-	}
-
-	@Override
-	public boolean isActive() {
-		return active;
 	}
 
 	@Override

@@ -78,7 +78,6 @@ public class Bonus extends Entity implements MazeResident, FsmContainer<BonusSta
 					.timeoutAfter(cast.game.level::bonusActiveTicks)
 					.onEntry(() -> {
 						placeAtTile(cast.game.maze.bonusTile, Maze.TS / 2, 0);
-						activate();
 						sprites.select("symbol");
 					})
 				.state(CONSUMED)

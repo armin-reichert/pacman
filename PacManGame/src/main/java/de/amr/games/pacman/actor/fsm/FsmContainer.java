@@ -9,8 +9,8 @@ import de.amr.statemachine.StateMachine;
 
 /**
  * This interface is implemented by entities that implement the
- * {@link FsmControlled} interface by delegation to a component
- * implementing that interface.
+ * {@link FsmControlled} interface by delegation to a component implementing
+ * that interface.
  * 
  * @author Armin Reichert
  *
@@ -28,21 +28,6 @@ public interface FsmContainer<S> extends FsmControlled<S> {
 	@Override
 	default StateMachine<S, PacManGameEvent> fsm() {
 		return fsmComponent().fsm();
-	}
-
-	@Override
-	default void activate() {
-		fsmComponent().activate();
-	}
-
-	@Override
-	default void deactivate() {
-		fsmComponent().deactivate();
-	}
-
-	@Override
-	default boolean isActive() {
-		return fsmComponent().isActive();
 	}
 
 	@Override

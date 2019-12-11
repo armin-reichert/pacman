@@ -23,12 +23,6 @@ public interface FsmControlled<S> extends Controller {
 
 	StateMachine<S, PacManGameEvent> fsm();
 
-	void activate();
-
-	void deactivate();
-
-	boolean isActive();
-
 	void addGameEventListener(Consumer<PacManGameEvent> listener);
 
 	void removeGameEventListener(Consumer<PacManGameEvent> listener);

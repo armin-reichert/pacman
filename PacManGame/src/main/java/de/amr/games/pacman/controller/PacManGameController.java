@@ -32,7 +32,7 @@ import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManGameCast;
-import de.amr.games.pacman.actor.fsm.FsmControlled;
+import de.amr.games.pacman.actor.fsm.Actor;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -102,7 +102,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						game.newGame();
 						cast.theme.snd_clips_all().forEach(Sound::stop);
 						cast.theme.snd_ready().play();
-						cast.actors().forEach(FsmControlled::activate);
+						cast.actors().forEach(Actor::activate);
 						playView.init();
 						playView.textColor = Color.YELLOW;
 						playView.message = "Ready!";
@@ -142,7 +142,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						}
 						else if (state().getTicksRemaining() == sec(2)) {
 							game.nextLevel();
-							cast.activeActors().forEach(FsmControlled::init);
+							cast.activeActors().forEach(Actor::init);
 							cast.ghosts().forEach(ghost -> ghost.foodCount = 0);
 							playView.init(); // stops flashing
 						} 
@@ -172,7 +172,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 							return;
 						}
 						if (state().getTicksConsumed() == sec(4)) {
-							cast.activeActors().forEach(FsmControlled::init);
+							cast.activeActors().forEach(Actor::init);
 							cast.theme.music_playing().loop();
 							playView.init();
 						}
@@ -324,7 +324,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onPacManGainsPower(PacManGameEvent event) {
 			ghostMotionTimer.suspend();
-			cast.activeActors().forEach(actor -> actor.process(event));
+			cast.activeGhosts().forEach(ghost -> ghost.process(event));
+			cast.pacMan.process(event);
 		}
 
 		private void onPacManGettingWeaker(PacManGameEvent event) {
