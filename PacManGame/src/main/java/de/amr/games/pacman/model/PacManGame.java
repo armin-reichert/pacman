@@ -200,43 +200,30 @@ public class PacManGame {
 		levelSymbols = new ArrayDeque<>(7);
 	}
 
-	public void startLevel(int n) {
-		if (n < 1) {
-			throw new IllegalArgumentException("Level number must be at least 1, was " + n);
-		}
-		level = new Level(n, LEVELS[Math.min(n - 1, LEVELS.length - 1)]);
-		if (n == 1) {
-			score = 0;
-			lives = 3;
-			loadHiscore();
-		}
-		maze.restoreFood();
-		globalFoodCount = 0;
-		globalFoodCounterEnabled = false;
-		updateLevelCounter();
-		LOGGER.info(() -> "Started level " + n);
-	}
-
 	public void nextLevel() {
 		if (level == null) {
-			throw new IllegalStateException("Cannot enter next level, game has not been started");
+			level = new Level(1, LEVELS[0]);
+			lives = 3;
+			score = 0;
+			loadHiscore();
+		} else {
+			LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", level.number, level.ghostKilledInLevel));
+			int next = level.number + 1;
+			level = new Level(next, LEVELS[Math.min(next - 1, LEVELS.length - 1)]);
+			maze.restoreFood();
+			if (levelSymbols.size() == 7) {
+				levelSymbols.removeLast();
+			}
 		}
-		LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", level.number, level.ghostKilledInLevel));
-		startLevel(level.number + 1);
+		levelSymbols.addFirst(level.bonusSymbol);
+		globalFoodCount = 0;
+		globalFoodCounterEnabled = false;
+		LOGGER.info(() -> "Started level " + level.number);
 	}
 
 	public void finishGame() {
 		LOGGER.info(() -> "Game is over");
 		saveHighscore();
-	}
-
-	void updateLevelCounter() {
-		if (level.number == 1) {
-			levelSymbols.clear();
-		} else if (levelSymbols.size() == 7) {
-			levelSymbols.removeLast();
-		}
-		levelSymbols.addFirst(level.bonusSymbol);
 	}
 
 	/**

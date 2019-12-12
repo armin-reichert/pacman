@@ -38,7 +38,7 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 		textColor = Color.YELLOW;
 		message = "SPACE toggles ghost state";
 		currentTarget = 0;
-		game.startLevel(1);
+		game.nextLevel();
 		game.maze.removeFood();
 		cast.theme.snd_ghost_chase().volume(0);
 		cast.activate(cast.blinky);

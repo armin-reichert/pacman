@@ -102,7 +102,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.state(GETTING_READY)
 					.timeoutAfter(sec(5))
 					.onEntry(() -> {
-						game.startLevel(1);
+						game.nextLevel();
 						cast.theme.snd_clips_all().forEach(Sound::stop);
 						cast.theme.snd_ready().play();
 						cast.actors().forEach(cast::activate);
