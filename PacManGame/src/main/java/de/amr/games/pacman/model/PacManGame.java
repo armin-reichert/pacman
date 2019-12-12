@@ -15,9 +15,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.Random;
 
@@ -198,37 +195,6 @@ public class PacManGame {
 				maze.removeFood(tile);
 				return POINTS_PELLET;
 			}
-		}
-	}
-
-	public static class Hiscore {
-
-		public int levelNumber;
-		public int points;
-	}
-
-	public static class LevelSymbols implements Iterable<BonusSymbol> {
-
-		private final Deque<BonusSymbol> list = new ArrayDeque<>(7);
-
-		public int count() {
-			return list.size();
-		}
-
-		@Override
-		public Iterator<BonusSymbol> iterator() {
-			return list.iterator();
-		}
-
-		public void clear() {
-			list.clear();
-		}
-
-		public void add(BonusSymbol symbol) {
-			if (list.size() == 7) {
-				list.removeLast();
-			}
-			list.addFirst(symbol);
 		}
 	}
 
