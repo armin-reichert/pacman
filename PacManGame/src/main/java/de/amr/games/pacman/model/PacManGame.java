@@ -48,8 +48,9 @@ public class PacManGame {
 	static final float BASE_SPEED = (float) 11 * Maze.TS / 60; // 11 tiles/second at 60Hz
 	static final File HISCORE_FILE = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
 
-	static final Object[][] LEVELS = new Object[][] {
+	static final Object[][] LEVELDATA = new Object[][] {
 		/*@formatter:off*/
+		null, // levels start at 1
 		{ CHERRIES,    100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6, 5 },
 		{ STRAWBERRY,  300,  .90f, .79f, .85f, .45f,  30, .8f,  15,  .95f, .95f, .83f, .55f,   5, 5 },
 		{ PEACH,       500,  .90f, .79f, .85f, .45f,  40, .8f,  20,  .95f, .95f, .83f, .55f,   4, 5 },
@@ -113,23 +114,27 @@ public class PacManGame {
 		public int ghostsKilledByEnergizer;
 		public int ghostKilledInLevel;
 
-		public Level(int n, Object[] row) {
+		public Level(int n) {
+			if (n < 1) {
+				throw new IllegalArgumentException("Level number must be at least 1, was " + n);
+			}
 			number = n;
-			bonusSymbol = (BonusSymbol) row[0];
-			bonusValue = (int) row[1];
-			pacManSpeed = (float) row[2];
-			pacManDotsSpeed = (float) row[3];
-			ghostSpeed = (float) row[4];
-			ghostTunnelSpeed = (float) row[5];
-			elroy1DotsLeft = (int) row[6];
-			elroy1Speed = (float) row[7];
-			elroy2DotsLeft = (int) row[8];
-			elroy2Speed = (float) row[9];
-			pacManPowerSpeed = (float) row[10];
-			pacManPowerDotsSpeed = (float) row[11];
-			ghostFrightenedSpeed = (float) row[12];
-			pacManPowerSeconds = (int) row[13];
-			mazeNumFlashes = (int) row[14];
+			Object[] data = LEVELDATA[Math.min(n, LEVELDATA.length - 1)];
+			bonusSymbol = (BonusSymbol) data[0];
+			bonusValue = (int) data[1];
+			pacManSpeed = (float) data[2];
+			pacManDotsSpeed = (float) data[3];
+			ghostSpeed = (float) data[4];
+			ghostTunnelSpeed = (float) data[5];
+			elroy1DotsLeft = (int) data[6];
+			elroy1Speed = (float) data[7];
+			elroy2DotsLeft = (int) data[8];
+			elroy2Speed = (float) data[9];
+			pacManPowerSpeed = (float) data[10];
+			pacManPowerDotsSpeed = (float) data[11];
+			ghostFrightenedSpeed = (float) data[12];
+			pacManPowerSeconds = (int) data[13];
+			mazeNumFlashes = (int) data[14];
 		}
 
 		/**
@@ -202,18 +207,17 @@ public class PacManGame {
 
 	public void nextLevel() {
 		if (level == null) {
-			level = new Level(1, LEVELS[0]);
+			level = new Level(1);
 			lives = 3;
 			score = 0;
 			loadHiscore();
 		} else {
 			LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", level.number, level.ghostKilledInLevel));
-			int next = level.number + 1;
-			level = new Level(next, LEVELS[Math.min(next - 1, LEVELS.length - 1)]);
+			level = new Level(level.number + 1);
 			maze.restoreFood();
-			if (levelSymbols.size() == 7) {
-				levelSymbols.removeLast();
-			}
+		}
+		if (levelSymbols.size() == 7) {
+			levelSymbols.removeLast();
 		}
 		levelSymbols.addFirst(level.bonusSymbol);
 		globalFoodCount = 0;
