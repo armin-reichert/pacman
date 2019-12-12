@@ -25,24 +25,28 @@ import java.util.Random;
  * 
  * @author Armin Reichert
  * 
- * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
+ * @see <a href=
+ *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
  *      dossier</a>
- * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man level
- *      specifications</a>
+ * @see <a href=
+ *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man
+ *      level specifications</a>
  */
 public class PacManGame {
 
-	public static final float BASE_SPEED = (float) 11 * Maze.TS / 60; // 11 tiles/second at 60Hz
-	public static final int DIGEST_TICKS = 1;
-	public static final int DIGEST_TICKS_ENERGIZER = 3;
 	public static final int POINTS_PELLET = 10;
 	public static final int POINTS_ENERGIZER = 50;
-	public static final int[] BONUS_NUMBERS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+	public static final int POINTS_BONUS[] = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+
+	public static final int DIGEST_PELLET_TICKS = 1;
+	public static final int DIGEST_ENERGIZER_TICKS = 3;
+
 	public static final int SPEED_1_FPS = 60;
 	public static final int SPEED_2_FPS = 70;
 	public static final int SPEED_3_FPS = 80;
-	public static final File HIGHSCORE_FILE = new File(new File(System.getProperty("user.home")),
-			"pacman.hiscore.xml");
+
+	static final float BASE_SPEED = (float) 11 * Maze.TS / 60; // 11 tiles/second at 60Hz
+	static final File HISCORE_FILE = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
 
 	static final Object[][] LEVELS = new Object[][] {
 		/*@formatter:off*/
@@ -88,6 +92,7 @@ public class PacManGame {
 
 	public static class Level {
 
+		public final int number;
 		public final BonusSymbol bonusSymbol;
 		public final int bonusValue;
 		public final float pacManSpeed;
@@ -104,13 +109,12 @@ public class PacManGame {
 		public final int pacManPowerSeconds;
 		public final int mazeNumFlashes;
 
-		public final int number;
 		public int numPelletsEaten;
 		public int ghostsKilledByEnergizer;
 		public int ghostKilledInLevel;
 
 		public Level(int n, Object[] row) {
-			// constants
+			number = n;
 			bonusSymbol = (BonusSymbol) row[0];
 			bonusValue = (int) row[1];
 			pacManSpeed = (float) row[2];
@@ -126,16 +130,10 @@ public class PacManGame {
 			ghostFrightenedSpeed = (float) row[12];
 			pacManPowerSeconds = (int) row[13];
 			mazeNumFlashes = (int) row[14];
-			// variables
-			number = n;
-			numPelletsEaten = 0;
-			ghostsKilledByEnergizer = 0;
-			ghostKilledInLevel = 0;
 		}
 
 		/**
-		 * @param round
-		 *                attack round
+		 * @param round attack round
 		 * @return number of ticks ghost will scatter in this round and level
 		 */
 		public int scatterTicks(int round) {
@@ -143,8 +141,7 @@ public class PacManGame {
 		}
 
 		/**
-		 * @param round
-		 *                attack round
+		 * @param round attack round
 		 * @return number of ticks ghost will chase in this round and level
 		 */
 		public int chasingTicks(int round) {
@@ -167,8 +164,7 @@ public class PacManGame {
 	}
 
 	/**
-	 * @param fraction
-	 *                   fraction of base speed
+	 * @param fraction fraction of base speed
 	 * @return speed (pixels/tick) corresponding to given fraction of base speed
 	 */
 	public static float speed(float fraction) {
@@ -176,8 +172,7 @@ public class PacManGame {
 	}
 
 	/**
-	 * @param fraction
-	 *                   fraction of seconds
+	 * @param fraction fraction of seconds
 	 * @return ticks corresponding to given fraction of seconds at 60Hz
 	 */
 	public static int sec(float fraction) {
@@ -230,30 +225,25 @@ public class PacManGame {
 	}
 
 	public void nextLevel() {
-		if (level != null) {
-			LOGGER
-					.info(() -> String.format("Ghosts killed in level %d: %d", level.number, level.ghostKilledInLevel));
-			startLevel(level.number + 1);
-		}
-		else {
+		if (level == null) {
 			throw new IllegalStateException("Cannot enter next level, game has not been started");
 		}
+		LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", level.number, level.ghostKilledInLevel));
+		startLevel(level.number + 1);
 	}
 
 	void updateLevelCounter() {
 		if (level.number == 1) {
 			levelSymbols.clear();
-		}
-		else if (levelSymbols.size() == 7) {
+		} else if (levelSymbols.size() == 7) {
 			levelSymbols.removeLast();
 		}
 		levelSymbols.addFirst(level.bonusSymbol);
 	}
 
 	/**
-	 * @param tile
-	 *               tile containing pellet
-	 * @return points scored for eating pellet
+	 * @param tile tile containing food
+	 * @return points scored
 	 */
 	public int eatFoodAt(Tile tile) {
 		level.numPelletsEaten += 1;
@@ -261,8 +251,7 @@ public class PacManGame {
 			level.ghostsKilledByEnergizer = 0;
 			maze.removeFood(tile);
 			return POINTS_ENERGIZER;
-		}
-		else {
+		} else {
 			maze.removeFood(tile);
 			return POINTS_PELLET;
 		}
@@ -283,38 +272,37 @@ public class PacManGame {
 	// Score management
 
 	public void loadHiscore() {
-		LOGGER.info("Loading highscores from " + HIGHSCORE_FILE);
+		LOGGER.info("Loading highscores from " + HISCORE_FILE);
 		Properties scores = new Properties();
 		try {
-			scores.loadFromXML(new FileInputStream(HIGHSCORE_FILE));
+			scores.loadFromXML(new FileInputStream(HISCORE_FILE));
 			hiscorePoints = Integer.valueOf(scores.getProperty("score"));
 			hiscoreLevel = Integer.valueOf(scores.getProperty("level"));
 		} catch (FileNotFoundException e) {
-			LOGGER.info("No file found, creating new highscores file " + HIGHSCORE_FILE);
+			LOGGER.info("No file found, creating new highscores file " + HISCORE_FILE);
 			hiscorePoints = 0;
 			saveHighscore();
 		} catch (IOException e) {
-			LOGGER.info("Could not load hiscores from file " + HIGHSCORE_FILE);
+			LOGGER.info("Could not load hiscores from file " + HISCORE_FILE);
 			LOGGER.throwing(getClass().getName(), "loadHiscore", e);
 		}
 	}
 
 	public void saveHighscore() {
-		LOGGER.info("Save highscores to " + HIGHSCORE_FILE);
+		LOGGER.info("Save highscores to " + HISCORE_FILE);
 		Properties scores = new Properties();
 		scores.setProperty("score", String.valueOf(hiscorePoints));
 		scores.setProperty("level", String.valueOf(level.number));
 		try {
-			scores.storeToXML(new FileOutputStream(HIGHSCORE_FILE), "Pac-Man Highscore");
+			scores.storeToXML(new FileOutputStream(HISCORE_FILE), "Pac-Man Highscore");
 		} catch (IOException e) {
-			LOGGER.info("Could not save hiscore in file " + HIGHSCORE_FILE);
+			LOGGER.info("Could not save hiscore in file " + HISCORE_FILE);
 			LOGGER.throwing(getClass().getName(), "saveHiscore", e);
 		}
 	}
 
 	/**
-	 * @param points
-	 *                 additional points scored
+	 * @param points additional points scored
 	 * @return <code>true</code> if new life has been granted
 	 */
 	public boolean score(int points) {

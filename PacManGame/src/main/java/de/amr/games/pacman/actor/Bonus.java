@@ -43,7 +43,7 @@ public class Bonus extends Entity implements MazeResident, FsmContainer<BonusSta
 		symbol = cast.game.level.bonusSymbol;
 		value = cast.game.level.bonusValue;
 		sprites.set("symbol", cast.theme.spr_bonusSymbol(symbol));
-		sprites.set("number", cast.theme.spr_pinkNumber(binarySearch(PacManGame.BONUS_NUMBERS, value)));
+		sprites.set("number", cast.theme.spr_pinkNumber(binarySearch(PacManGame.POINTS_BONUS, value)));
 	}
 
 	@Override
