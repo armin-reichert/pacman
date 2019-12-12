@@ -24,7 +24,7 @@ public class LeaveGhostHouseTestUI extends PlayView implements VisualController 
 	@Override
 	public void init() {
 		super.init();
-		game.newGame();
+		game.startLevel(1);
 		game.maze.removeFood();
 		cast.activate(cast.inky);
 		cast.inky.init();

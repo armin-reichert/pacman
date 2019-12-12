@@ -24,7 +24,7 @@ public class ScatteringTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game.newGame();
+		game.startLevel(1);
 		game.maze.removeFood();
 		cast.ghosts().forEach(ghost -> {
 			cast.activate(ghost);

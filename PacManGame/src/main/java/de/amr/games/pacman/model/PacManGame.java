@@ -200,28 +200,21 @@ public class PacManGame {
 		levelSymbols = new ArrayDeque<>(7);
 	}
 
-	public void newGame() {
-		LOGGER.info(() -> "New game");
-		score = 0;
-		lives = 3;
-		startLevel(1);
-	}
-
-	public void finishGame() {
-		LOGGER.info(() -> "Game is over");
-		saveHighscore();
-	}
-
 	public void startLevel(int n) {
-		LOGGER.info(() -> "Start level " + n);
+		if (n < 1) {
+			throw new IllegalArgumentException("Level number must be at least 1, was " + n);
+		}
 		level = new Level(n, LEVELS[Math.min(n - 1, LEVELS.length - 1)]);
+		if (n == 1) {
+			score = 0;
+			lives = 3;
+			loadHiscore();
+		}
 		maze.restoreFood();
 		globalFoodCount = 0;
 		globalFoodCounterEnabled = false;
 		updateLevelCounter();
-		if (n == 1) {
-			loadHiscore();
-		}
+		LOGGER.info(() -> "Started level " + n);
 	}
 
 	public void nextLevel() {
@@ -230,6 +223,11 @@ public class PacManGame {
 		}
 		LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", level.number, level.ghostKilledInLevel));
 		startLevel(level.number + 1);
+	}
+
+	public void finishGame() {
+		LOGGER.info(() -> "Game is over");
+		saveHighscore();
 	}
 
 	void updateLevelCounter() {
