@@ -373,9 +373,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		private void onBonusFound(PacManGameEvent event) {
 			cast.bonus().ifPresent(bonus -> {
 				LOGGER.info(() -> String.format("PacMan found %s and wins %d points", bonus.symbol, bonus.value));
-				boolean extraLife = game.score(bonus.value);
+				int livesBeforeScoring = game.lives;
+				game.score(bonus.value);
 				cast.theme.snd_eatFruit().play();
-				if (extraLife) {
+				if (game.lives > livesBeforeScoring) {
 					cast.theme.snd_extraLife().play();
 				}
 				bonus.process(event);
@@ -385,10 +386,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent e = (FoodFoundEvent) event;
 			int points = game.level.eatFoodAt(e.tile);
-			boolean extraLife = game.score(points);
+			int livesBeforeScoring = game.lives;
+			game.score(points);
 			updateFoodCounter();
 			cast.theme.snd_eatPill().play();
-			if (extraLife) {
+			if (game.lives > livesBeforeScoring) {
 				cast.theme.snd_extraLife().play();
 			}
 			if (game.level.numPelletsRemaining() == 0) {
@@ -413,10 +415,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		public void onEntry() {
 			cast.pacMan.hide();
 			int points = 200 * (int) Math.pow(2, game.level.ghostsKilledByEnergizer);
-			boolean extraLife = game.score(points);
+			int livesBeforeScoring = game.lives;
+			game.score(points);
 			LOGGER.info(() -> String.format("Scored %d points for killing %s ghost", points,
 					new String[] { "first", "2nd", "3rd", "4th" }[game.level.ghostsKilledByEnergizer]));
-			if (extraLife) {
+			if (game.lives > livesBeforeScoring) {
 				cast.theme.snd_extraLife().play();
 			}
 			game.level.ghostsKilledByEnergizer += 1;

@@ -323,12 +323,7 @@ public class PacManGame {
 		}
 	}
 
-	/**
-	 * @param points
-	 *                 additional points scored
-	 * @return <code>true</code> if new life has been granted
-	 */
-	public boolean score(int points) {
+	public void score(int points) {
 		int oldScore = score;
 		score += points;
 		if (score > hiscore.points) {
@@ -337,8 +332,6 @@ public class PacManGame {
 		}
 		if (oldScore < 10_000 && 10_000 <= score) {
 			lives += 1;
-			return true;
 		}
-		return false;
 	}
 }
