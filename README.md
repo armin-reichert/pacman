@@ -4,7 +4,7 @@
 
 ## Pac-Man? Really? How uncool!
 
-My personal fascination for "Pac-Man" comes from the fact that the single computer game I played regularly was  ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running on my Apple II+ clone in the mid-eighties, on a monochrome monitor, but what a sound came out of the crappy PC speaker! 
+My personal fascination for "Pac-Man" comes from the fact that the single computer game I played regularly was  ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running on my Apple II+ clone in the mid-eighties, on a monochrome monitor, but what a sound came out of my crappy PC speaker! 
 
 But also today, a seemingly simple game like Pac-Man can be very instructive from a programmer's point of view.
   
@@ -43,7 +43,7 @@ All state machines in this implementation are implemented in a declarative way (
 
 Sounds all well and nice, but how does that look in the real code? 
 
-The **start screen** ([IntroView](PacManGame/src/main/java/de/amr/games/pacman/view/intro/IntroView.java)) shows different animations that have to be coordinated using timers and stop conditions. This is an obvious candidate for using a state machine. The state machine only uses timers, so we can use *Void* as event type. The states are identified using an enumeration type.
+The **intro screen** ([IntroView](PacManGame/src/main/java/de/amr/games/pacman/view/intro/IntroView.java)) shows different animations that have to be coordinated using timers and stop conditions. This is an obvious candidate for using a state machine. The state machine only uses timers, so we can use *Void* as event type. The states are identified using an enumeration type.
 
 A more complex state machine is used for implementing the **global game control** ([PacManGameController](PacManGame/src/main/java/de/amr/games/pacman/controller/PacManGameController.java)). It processes game events which
 are created during the game play, for example when Pac-Man finds food or meets ghosts. Also the different
@@ -87,13 +87,8 @@ beginStateMachine(BonusState.class, PacManGameEvent.class)
 		.state(ACTIVE)
 			.timeoutAfter(cast.game.level::bonusActiveTicks)
 			.onEntry(() -> {
-				symbol = cast.game.level.bonusSymbol;
-				value = cast.game.level.bonusValue;
-				sprites.set("symbol", cast.theme.spr_bonusSymbol(symbol));
-				sprites.set("number", cast.theme.spr_pinkNumber(Arrays.binarySearch(PacManGame.BONUS_NUMBERS, value)));
-				sprites.select("symbol");
 				placeAtTile(cast.game.maze.bonusTile, Maze.TS / 2, 0);
-				activate();
+				sprites.select("symbol");
 			})
 		.state(CONSUMED)
 			.timeoutAfter(cast.game.level::bonusConsumedTicks)
@@ -122,15 +117,14 @@ for any event that has no effect in the current state. The Ghost's state machine
 Pac-Man is steered by holding a key indicating its **intended** direction. As soon as Pac-Man reaches a tile where it can move towards this direction it changes its move direction accordingly. ("Cornering" is not yet implemented). In the code, this is implemented by setting the steering function as shown below. This makes it very easy to replace the manual steering by some sort of automatic steering ("AI"):
 
 ```java
-pacMan = new PacMan(game);
+pacMan = new PacMan(this);
 pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
 
-
-Steering<PacMan> steeredByKeys(int... keys) {
-	return pacMan -> NESW.dirs()
-		.filter(dir -> Keyboard.keyDown(keys[dir]))
-		.findAny()
-		.ifPresent(pacMan::setNextDir);
+static <T extends MazeMover> Steering<T> steeredByKeys(int... keys) {
+	return actor -> Maze.NESW.dirs()
+			.filter(dir -> Keyboard.keyDown(keys[dir]))
+			.findAny()
+			.ifPresent(actor::setNextDir);
 }
 ```
 
@@ -151,11 +145,11 @@ The *frightened* behavior has two different implementations (just as a demonstra
 Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
-blinky = new Ghost("Blinky", game);
-blinky.initialDir = Top4.W;
-blinky.initialTile = game.maze.blinkyHome;
-blinky.scatterTile = game.maze.blinkyScatter;
-blinky.revivalTile = game.maze.pinkyHome;
+blinky.initialDir = W;
+blinky.initialTile = game.maze.ghostHome[0];
+blinky.scatterTile = game.maze.scatterTileNE;
+blinky.revivalTile = game.maze.ghostHome[2];
+blinky.teleportingTicks = sec(0.5f);
 blinky.fnChasingTarget = pacMan::tile;
 ```
 
@@ -166,11 +160,11 @@ blinky.fnChasingTarget = pacMan::tile;
 Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position. In the original game there is an overflow error leading to a different behavior: when Pac-Man looks upwards, the tile ahead of Pac-Man is falsely computed with an additional number of steps to the west. This behavior is active by default and can be toggled using the 'o'-key.
 
 ```java
-pinky = new Ghost("Pinky", game);
-pinky.initialDir = Top4.S;
-pinky.initialTile = game.maze.pinkyHome;
-pinky.scatterTile = game.maze.pinkyScatter;
-pinky.revivalTile = game.maze.pinkyHome;
+pinky.initialDir = S;
+pinky.initialTile = game.maze.ghostHome[2];
+pinky.scatterTile = game.maze.scatterTileNW;
+pinky.revivalTile = game.maze.ghostHome[2];
+pinky.teleportingTicks = sec(0.5f);
 pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
 ```
 
@@ -184,11 +178,11 @@ Consider the vector `V` from Blinky's position `B` to the position `P` two tiles
 Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-inky = new Ghost("Inky", game);
-inky.initialDir = Top4.N;
-inky.initialTile = game.maze.inkyHome;
-inky.scatterTile = game.maze.inkyScatter;
-inky.revivalTile = game.maze.inkyHome;
+inky.initialDir = N;
+inky.initialTile = game.maze.ghostHome[1];
+inky.scatterTile = game.maze.scatterTileSE;
+inky.revivalTile = game.maze.ghostHome[2];
+inky.teleportingTicks = sec(0.5f);
 inky.fnChasingTarget = () -> {
 	Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 	return game.maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
@@ -202,12 +196,12 @@ inky.fnChasingTarget = () -> {
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
 
 ```java
-clyde = new Ghost("Clyde", game);
-clyde.initialDir = Top4.N;
-clyde.initialTile = game.maze.clydeHome;
-clyde.scatterTile = game.maze.clydeScatter;
-clyde.revivalTile = game.maze.clydeHome;
-clyde.fnChasingTarget = () -> clyde.tileDistanceSq(pacMan) > 8 * 8 ? pacMan.tile() : game.maze.clydeScatter;
+clyde.initialDir = N;
+clyde.initialTile = game.maze.ghostHome[3];
+clyde.scatterTile = game.maze.scatterTileSW;
+clyde.revivalTile = game.maze.ghostHome[3];
+clyde.teleportingTicks = sec(0.5f);
+clyde.fnChasingTarget = () -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : game.maze.scatterTileSW;
 ```
 
 <img src="doc/clyde.png"/>
@@ -221,13 +215,13 @@ cannot reverse direction this results in a cyclic movement around the walls in t
 
 <img src="doc/scattering.png"/>
 
-In the *frightened* and *locked* mode, the ghoste have the same behavior:
+In the *frightened* and *locked* mode, the ghosts mostly have the same behavior:
 
 ```java
-ghosts().forEach(ghost -> {
-	ghost.setSteering(GhostState.FRIGHTENED, GhostSteerings.movingRandomly());
-	ghost.setSteering(GhostState.LOCKED, GhostSteerings.jumpingUpAndDown());
-});
+ghosts().forEach(ghost -> ghost.setSteering(GhostState.FRIGHTENED, movingRandomlyNoReversing()));
+
+// Blinky does not jump when locked
+Stream.of(pinky, inky, clyde).forEach(ghost -> ghost.setSteering(GhostState.LOCKED, jumpingUpAndDown()));
 ```
 
 ## Graph-based pathfinding
@@ -256,21 +250,21 @@ However, for a maze of such a small size the used algorithm doesn't matter much,
   - F11 toggles between window and full-screen exclusive mode
 - Game 
   - Speed can be changed during game 
-    - Keys ('1' = normal, '2' = fast, '3' = very fast)
-    - ALT-LEFT = slower, ALT-RIGHT = faster
+    - Continuosly: ALT-LEFT = slower, ALT-RIGHT = faster
+    - Fixed speeds: '1' = normal speed, '2' = fast, '3' = very fast
   - 'b', 'p', 'i', 'c' toggles the presence of the 4 ghosts in the game
   - 'f' toggles the ghost's *frightened* behavior between "random" (original) and "select safe corner"
   - 's' toggles the display of actor states and timers
   - 'r' toggles the display of actor routes and target tiles
   - 'g' toggles the display of the grid and the alignment of the actors on the grid
-  - 'o' toggles the simulation of the overflow bug from the original game which occurs when Pac-Man is looking upwards
+  - 'o' toggles the simulation of the overflow bug which occurs in the original Arcade game when Pac-Man is looking upwards
 - Cheats
   - ALT-'k' kills all ghosts
-  - ALT-'e' eats all normal pellets
+  - ALT-'e' eats all pellets except the energizers
   - ALT-'+' switches to the next level
   - ALT-'i' makes Pac-Man immortable
 - Logging/tracing
-  - Tracing of state machines can be switched on/off (key 'l')
+  - Tracing of used state machines can be switched on/off (key 'l')
 
 ## References
 
