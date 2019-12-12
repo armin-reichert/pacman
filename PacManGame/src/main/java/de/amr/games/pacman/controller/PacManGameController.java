@@ -102,7 +102,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.state(GETTING_READY)
 					.timeoutAfter(sec(5))
 					.onEntry(() -> {
-						game.nextLevel();
+						game.reset();
 						cast.theme.snd_clips_all().forEach(Sound::stop);
 						cast.theme.snd_ready().play();
 						cast.actors().forEach(cast::activate);
@@ -199,13 +199,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.state(GAME_OVER)
 					.timeoutAfter(min(1))
 					.onEntry(() -> {
+						game.saveHighscore();
 						cast.activeGhosts().forEach(Ghost::show);
 						cast.removeBonus();
 						cast.theme.music_gameover().loop();
 						playView.enableAnimations(false);
 						playView.textColor = Color.RED;
 						playView.message = "Game Over!";
-						game.finishGame();
+						
 					})
 					.onExit(() -> {
 						cast.theme.music_gameover().stop();

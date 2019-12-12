@@ -21,7 +21,7 @@ public class EscapeIntoCornerTestUI extends PlayView implements VisualController
 	@Override
 	public void init() {
 		super.init();
-		game.nextLevel();
+		game.reset();
 		game.maze.removeFood();
 		cast.activate(cast.pacMan);
 		cast.pacMan.init();

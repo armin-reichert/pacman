@@ -30,7 +30,7 @@ public class FollowMouseTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game.nextLevel();
+		game.reset();
 		game.maze.removeFood();
 		cast.theme.snd_ghost_chase().volume(0);
 		cast.activate(cast.blinky);

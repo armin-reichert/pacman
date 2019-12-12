@@ -5,6 +5,7 @@ import static de.amr.graph.grid.impl.Grid4Topology.W;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -26,6 +27,23 @@ import de.amr.games.pacman.model.PacManGame;
  * @author Armin Reichert
  */
 public class SimplePlayView implements View, Controller {
+
+	public static class Pen {
+
+		private Graphics2D g;
+		public Font font;
+		public Color color;
+
+		public Pen(Graphics2D g) {
+			this.g = (Graphics2D) g.create();
+		}
+
+		public void text(String s, int col, int row) {
+			g.setColor(color);
+			g.setFont(font);
+			g.drawString(s, col * Maze.TS, row * Maze.TS);
+		}
+	}
 
 	public final PacManGame game;
 	public final Maze maze;
@@ -133,28 +151,29 @@ public class SimplePlayView implements View, Controller {
 		if (!showScores) {
 			return;
 		}
-		// Points score
-		g.setFont(cast.theme.fnt_text());
-		g.setColor(Color.YELLOW);
-		g.drawString("SCORE", Maze.TS, Maze.TS);
-		g.setColor(Color.WHITE);
-		g.drawString(String.format("%07d", game.score), Maze.TS, 2 * Maze.TS);
-		g.setColor(Color.YELLOW);
-		g.drawString(String.format("LEVEL %2d", game.level.number), 22 * Maze.TS, Maze.TS);
+		Pen pen = new Pen(g);
+		pen.font = cast.theme.fnt_text();
+
+		// Points
+		pen.color = Color.YELLOW;
+		pen.text("SCORE", 1, 1);
+		pen.text(String.format("LEVEL %2d", game.level.number), 22, 1);
+		pen.color = Color.WHITE;
+		pen.text(String.format("%07d", game.score), 1, 2);
 
 		// Highscore
-		g.setColor(Color.YELLOW);
-		g.drawString("HIGH", 10 * Maze.TS, Maze.TS);
-		g.drawString("SCORE", 14 * Maze.TS, Maze.TS);
-		g.setColor(Color.WHITE);
-		g.drawString(String.format("%07d", game.hiscorePoints), 10 * Maze.TS, 2 * Maze.TS);
-		g.drawString(String.format("L%d", game.hiscoreLevel), 16 * Maze.TS, 2 * Maze.TS);
+		pen.color = Color.YELLOW;
+		pen.text("HIGH", 10, 1);
+		pen.text("SCORE", 14, 1);
+		pen.color = Color.WHITE;
+		pen.text(String.format("%07d", game.hiscore.points), 10, 2);
+		pen.text(String.format("L%d", game.hiscore.levelNumber), 16, 2);
 
-		// Remaining pellets score
+		// Remaining pellets
 		g.setColor(Color.PINK);
 		g.fillRect(22 * Maze.TS + 2, Maze.TS + 2, 4, 4);
-		g.setColor(Color.WHITE);
-		g.drawString(String.format("%d", game.numPelletsRemaining()), 23 * Maze.TS, 2 * Maze.TS);
+		pen.color = Color.WHITE;
+		pen.text(String.format("%d", game.numPelletsRemaining()), 23, 2);
 
 		drawLives(g);
 		drawLevelCounter(g);
