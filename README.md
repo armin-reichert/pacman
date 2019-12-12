@@ -138,6 +138,27 @@ To realize these different ghost behaviors each ghost has a map of functions map
 
 The ghost behavior only differs for the *chasing* state namely in the logic for calculating the target tile. Beside the different target tiles, the ghost behavior is equal. Each ghost uses the same algorithm to calculate the next move direction to take for reaching the target tile as described in the references given at the end of this article.
 
+```java
+private byte nextDir(T actor, int moveDir, Tile currentTile, Tile targetTile) {
+	Maze maze = actor.maze();
+	/*@formatter:off*/
+	return NWSE.stream()
+		.filter(dir -> dir != NESW.inv(moveDir))
+		.filter(dir -> actor.canMoveBetween(currentTile, maze.tileToDir(currentTile, dir)))
+		.sorted((dir1, dir2) -> {
+			Tile neighbor1 = maze.tileToDir(currentTile, dir1);
+			Tile neighbor2 = maze.tileToDir(currentTile, dir2);
+			int cmpByDistance = Integer.compare(distanceSq(neighbor1, targetTile), distanceSq(neighbor2, targetTile));
+			return cmpByDistance != 0
+				? cmpByDistance
+				: Integer.compare(NWSE.indexOf(dir1), NWSE.indexOf(dir2));
+		})
+		.findFirst().orElseThrow(IllegalStateException::new);
+	/*@formatter:on*/
+}
+```
+
+
 The *frightened* behavior has two different implementations (just as a demonstration how the behavior can be exchanged during the game) and can be toggled for all ghosts at once by pressing the 'f'-key.
 
 ### Blinky (the red ghost)
