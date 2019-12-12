@@ -21,7 +21,7 @@ public class PacManMovementTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game.reset();
+		game.init();
 		cast.pacMan.addGameEventListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;

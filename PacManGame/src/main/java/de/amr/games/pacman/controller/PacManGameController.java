@@ -102,7 +102,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.state(GETTING_READY)
 					.timeoutAfter(sec(5))
 					.onEntry(() -> {
-						game.reset();
+						game.init();
 						cast.theme.snd_clips_all().forEach(Sound::stop);
 						cast.theme.snd_ready().play();
 						cast.actors().forEach(cast::activate);
@@ -152,6 +152,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						else if (state().getTicksRemaining() < sec(1.8f)) {
 							cast.activeGhosts().forEach(Ghost::update);
 						}
+					})
+					.onExit(() -> {
+						LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", game.level.number, game.level.ghostKilledInLevel));
 					})
 				
 				.state(GHOST_DYING)

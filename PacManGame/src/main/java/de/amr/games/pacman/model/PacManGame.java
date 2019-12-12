@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.Random;
 
@@ -174,6 +175,31 @@ public class PacManGame {
 		public int points;
 	}
 
+	public static class LevelSymbols implements Iterable<BonusSymbol> {
+
+		private final Deque<BonusSymbol> list = new ArrayDeque<>(7);
+
+		public int count() {
+			return list.size();
+		}
+
+		@Override
+		public Iterator<BonusSymbol> iterator() {
+			return list.iterator();
+		}
+
+		public void clear() {
+			list.clear();
+		}
+
+		public void add(BonusSymbol symbol) {
+			if (list.size() == 7) {
+				list.removeLast();
+			}
+			list.addFirst(symbol);
+		}
+	}
+
 	/**
 	 * @param fraction
 	 *                   fraction of base speed
@@ -197,43 +223,33 @@ public class PacManGame {
 		return (int) (3600 * min);
 	}
 
-	public final Maze maze;
-	public final Deque<BonusSymbol> levelSymbols;
+	public final Maze maze = new Maze();
+	public final LevelSymbols levelSymbols = new LevelSymbols();
+	public final Hiscore hiscore = new Hiscore();
 
 	public Level level;
 	public int lives;
 	public int score;
-	public Hiscore hiscore;
 	public int globalFoodCount;
 	public boolean globalFoodCounterEnabled;
 
-	public PacManGame() {
-		maze = new Maze();
-		levelSymbols = new ArrayDeque<>(7);
-		hiscore = new Hiscore();
-	}
-
-	public void reset() {
+	public void init() {
 		lives = 3;
 		score = 0;
-		level = new Level(1);
+		levelSymbols.clear();
 		loadHiscore();
-		initLevel();
+		enterLevel(1);
 	}
 
 	public void nextLevel() {
-		LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", level.number, level.ghostKilledInLevel));
-		level = new Level(level.number + 1);
-		initLevel();
-		LOGGER.info(() -> "Started level " + level.number);
+		enterLevel(level.number + 1);
 	}
 
-	void initLevel() {
+	private void enterLevel(int n) {
+		LOGGER.info(() -> "Enter level " + n); 
+		level = new Level(n);
 		maze.restoreFood();
-		if (levelSymbols.size() == 7) {
-			levelSymbols.removeLast();
-		}
-		levelSymbols.addFirst(level.bonusSymbol);
+		levelSymbols.add(level.bonusSymbol);
 		globalFoodCount = 0;
 		globalFoodCounterEnabled = false;
 	}
