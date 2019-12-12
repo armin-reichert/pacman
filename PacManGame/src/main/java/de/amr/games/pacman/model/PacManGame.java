@@ -90,7 +90,7 @@ public class PacManGame {
 		/*@formatter:on*/
 	};
 
-	public static class Level {
+	public class Level {
 
 		public final int number;
 		public final BonusSymbol bonusSymbol;
@@ -166,6 +166,38 @@ public class PacManGame {
 		 */
 		public int bonusConsumedTicks() {
 			return sec(3);
+		}
+
+		/**
+		 * @return if bonus will become active
+		 */
+		public boolean isBonusScoreReached() {
+			return numPelletsEaten == 70 || numPelletsEaten == 170;
+		}
+
+		/**
+		 * @return number of pellets not yet eaten
+		 */
+		public int numPelletsRemaining() {
+			return maze.totalNumPellets - numPelletsEaten;
+		}
+
+		/**
+		 * @param tile
+		 *               tile containing food
+		 * @return points scored
+		 */
+		public int eatFoodAt(Tile tile) {
+			numPelletsEaten += 1;
+			if (maze.containsEnergizer(tile)) {
+				ghostsKilledByEnergizer = 0;
+				maze.removeFood(tile);
+				return POINTS_ENERGIZER;
+			}
+			else {
+				maze.removeFood(tile);
+				return POINTS_PELLET;
+			}
 		}
 	}
 
@@ -246,37 +278,13 @@ public class PacManGame {
 	}
 
 	private void enterLevel(int n) {
-		LOGGER.info(() -> "Enter level " + n); 
+		LOGGER.info(() -> "Enter level " + n);
 		level = new Level(n);
 		maze.restoreFood();
 		levelSymbols.add(level.bonusSymbol);
 		globalFoodCount = 0;
 		globalFoodCounterEnabled = false;
-	}
-
-	/**
-	 * @param tile
-	 *               tile containing food
-	 * @return points scored
-	 */
-	public int eatFoodAt(Tile tile) {
-		level.numPelletsEaten += 1;
-		if (maze.containsEnergizer(tile)) {
-			level.ghostsKilledByEnergizer = 0;
-			maze.removeFood(tile);
-			return POINTS_ENERGIZER;
-		}
-		else {
-			maze.removeFood(tile);
-			return POINTS_PELLET;
-		}
-	}
-
-	/**
-	 * @return number of pellets not yet eaten
-	 */
-	public int numPelletsRemaining() {
-		return maze.totalNumPellets - level.numPelletsEaten;
+		saveHighscore();
 	}
 
 	public void enableGlobalFoodCounter() {
@@ -288,15 +296,15 @@ public class PacManGame {
 
 	public void loadHiscore() {
 		LOGGER.info("Loading highscore from " + HISCORE_FILE);
-		Properties scores = new Properties();
+		Properties p = new Properties();
 		try {
-			scores.loadFromXML(new FileInputStream(HISCORE_FILE));
-			hiscore.points = Integer.valueOf(scores.getProperty("score"));
-			hiscore.levelNumber = Integer.valueOf(scores.getProperty("level"));
+			p.loadFromXML(new FileInputStream(HISCORE_FILE));
+			hiscore.points = Integer.valueOf(p.getProperty("score"));
+			hiscore.levelNumber = Integer.valueOf(p.getProperty("level"));
 		} catch (FileNotFoundException e) {
-			LOGGER.info("No hiscore file found, creating new file " + HISCORE_FILE);
-			saveHighscore();
-		} catch (IOException e) {
+			hiscore.points = 0;
+			hiscore.levelNumber = 1;
+		} catch (Exception e) {
 			LOGGER.info("Could not load hiscore from file " + HISCORE_FILE);
 			throw new RuntimeException(e);
 		}
@@ -304,11 +312,11 @@ public class PacManGame {
 
 	public void saveHighscore() {
 		LOGGER.info("Save highscore to " + HISCORE_FILE);
-		Properties scores = new Properties();
-		scores.setProperty("score", String.valueOf(hiscore.points));
-		scores.setProperty("level", String.valueOf(hiscore.levelNumber));
+		Properties p = new Properties();
+		p.setProperty("score", String.valueOf(hiscore.points));
+		p.setProperty("level", String.valueOf(hiscore.levelNumber));
 		try {
-			scores.storeToXML(new FileOutputStream(HISCORE_FILE), "Pac-Man Highscore");
+			p.storeToXML(new FileOutputStream(HISCORE_FILE), "Pac-Man Highscore");
 		} catch (IOException e) {
 			LOGGER.info("Could not save hiscore in file " + HISCORE_FILE);
 			throw new RuntimeException(e);
@@ -332,12 +340,5 @@ public class PacManGame {
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * @return if bonus will become active
-	 */
-	public boolean isBonusScoreReached() {
-		return level.numPelletsEaten == 70 || level.numPelletsEaten == 170;
 	}
 }

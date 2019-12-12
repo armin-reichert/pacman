@@ -384,18 +384,18 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent e = (FoodFoundEvent) event;
-			int points = game.eatFoodAt(e.tile);
+			int points = game.level.eatFoodAt(e.tile);
 			boolean extraLife = game.score(points);
 			updateFoodCounter();
 			cast.theme.snd_eatPill().play();
 			if (extraLife) {
 				cast.theme.snd_extraLife().play();
 			}
-			if (game.numPelletsRemaining() == 0) {
+			if (game.level.numPelletsRemaining() == 0) {
 				enqueue(new LevelCompletedEvent());
 				return;
 			}
-			if (game.isBonusScoreReached()) {
+			if (game.level.isBonusScoreReached()) {
 				cast.addBonus();
 			}
 			if (e.energizer) {
@@ -494,7 +494,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		/* ALT-"E": Eats all (normal) pellets */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_E)) {
 			game.maze.tiles().filter(game.maze::containsPellet).forEach(tile -> {
-				game.eatFoodAt(tile);
+				game.level.eatFoodAt(tile);
 				updateFoodCounter();
 			});
 			LOGGER.info(() -> "All pellets eaten");
