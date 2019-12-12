@@ -6,7 +6,7 @@ import static de.amr.games.pacman.actor.behavior.common.Steerings.jumpingUpAndDo
 import static de.amr.games.pacman.actor.behavior.common.Steerings.movingRandomlyNoReversing;
 import static de.amr.games.pacman.actor.behavior.common.Steerings.steeredByKeys;
 import static de.amr.games.pacman.model.Maze.NESW;
-import static de.amr.games.pacman.model.PacManGame.sec;
+import static de.amr.games.pacman.model.Timing.sec;
 import static de.amr.graph.grid.impl.Grid4Topology.N;
 import static de.amr.graph.grid.impl.Grid4Topology.S;
 import static de.amr.graph.grid.impl.Grid4Topology.W;

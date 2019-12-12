@@ -9,8 +9,8 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.model.PacManGame.sec;
-import static de.amr.games.pacman.model.PacManGame.speed;
+import static de.amr.games.pacman.model.Timing.sec;
+import static de.amr.games.pacman.model.Timing.speed;
 import static de.amr.graph.grid.impl.Grid4Topology.N;
 import static de.amr.graph.grid.impl.Grid4Topology.W;
 
@@ -58,7 +58,8 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	public Tile scatterTile;
 	public GhostState nextState;
 	public Supplier<Tile> fnChasingTarget;
-	public int foodCount;
+	
+	public int dotCounter; // used by logic when ghost can leave house
 
 	public Ghost(String name, PacManGameCast cast) {
 		this.cast = cast;

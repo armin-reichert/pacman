@@ -9,6 +9,7 @@ import static de.amr.games.pacman.model.BonusSymbol.GRAPES;
 import static de.amr.games.pacman.model.BonusSymbol.KEY;
 import static de.amr.games.pacman.model.BonusSymbol.PEACH;
 import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
+import static de.amr.games.pacman.model.Timing.sec;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,7 +42,6 @@ public class PacManGame {
 	public static final int SPEED_2_FPS = 70;
 	public static final int SPEED_3_FPS = 80;
 
-	static final float BASE_SPEED = (float) 11 * Maze.TS / 60; // 11 tiles/second at 60Hz
 	static final File HISCORE_FILE = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
 
 	static final Object[][] LEVELDATA = new Object[][] {
@@ -198,29 +198,6 @@ public class PacManGame {
 		}
 	}
 
-	/**
-	 * @param fraction
-	 *                   fraction of base speed
-	 * @return speed (pixels/tick) corresponding to given fraction of base speed
-	 */
-	public static float speed(float fraction) {
-		return fraction * BASE_SPEED;
-	}
-
-	/**
-	 * @param fraction
-	 *                   fraction of seconds
-	 * @return ticks corresponding to given fraction of seconds at 60Hz
-	 */
-	public static int sec(float fraction) {
-		return (int) (60 * fraction);
-	}
-
-	/** Ticks for given minutes at 60 Hz */
-	public static int min(float min) {
-		return (int) (3600 * min);
-	}
-
 	public final Maze maze = new Maze();
 	public final LevelSymbols levelSymbols = new LevelSymbols();
 	public final Hiscore hiscore = new Hiscore();
@@ -228,8 +205,6 @@ public class PacManGame {
 	public Level level;
 	public int lives;
 	public int score;
-	public int globalFoodCount;
-	public boolean globalFoodCounterEnabled;
 
 	public void init() {
 		lives = 3;
@@ -248,14 +223,7 @@ public class PacManGame {
 		level = new Level(n);
 		maze.restoreFood();
 		levelSymbols.add(level.bonusSymbol);
-		globalFoodCount = 0;
-		globalFoodCounterEnabled = false;
 		saveHighscore();
-	}
-
-	public void enableGlobalFoodCounter() {
-		globalFoodCounterEnabled = true;
-		globalFoodCount = 0;
 	}
 
 	// Score management
@@ -279,8 +247,8 @@ public class PacManGame {
 	public void saveHighscore() {
 		LOGGER.info("Save highscore to " + HISCORE_FILE);
 		Properties p = new Properties();
-		p.setProperty("score", String.valueOf(hiscore.points));
-		p.setProperty("level", String.valueOf(hiscore.levelNumber));
+		p.setProperty("score", Integer.toString(hiscore.points));
+		p.setProperty("level", Integer.toString(hiscore.levelNumber));
 		try {
 			p.storeToXML(new FileOutputStream(HISCORE_FILE), "Pac-Man Highscore");
 		} catch (IOException e) {

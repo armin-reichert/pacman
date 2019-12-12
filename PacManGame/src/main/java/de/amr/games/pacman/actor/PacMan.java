@@ -6,8 +6,8 @@ import static de.amr.games.pacman.actor.PacManState.DEAD;
 import static de.amr.games.pacman.actor.PacManState.DYING;
 import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
-import static de.amr.games.pacman.model.PacManGame.sec;
-import static de.amr.games.pacman.model.PacManGame.speed;
+import static de.amr.games.pacman.model.Timing.sec;
+import static de.amr.games.pacman.model.Timing.speed;
 import static de.amr.graph.grid.impl.Grid4Topology.E;
 import static de.amr.graph.grid.impl.Grid4Topology.N;
 import static de.amr.graph.grid.impl.Grid4Topology.W;
@@ -176,14 +176,14 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 	}
 
 	/**
-	 * NOTE: If the application property <code>overflowBug</code> is
-	 * <code>true</code>, this method simulates the bug in the original Arcade game
-	 * which occurs if Pac-Man points upwards. In that case the same number of tiles
-	 * to the left is added.
+	 * NOTE: If the application property <code>overflowBug</code> is <code>true</code>, this method
+	 * simulates the bug in the original Arcade game which occurs if Pac-Man points upwards. In that
+	 * case the same number of tiles to the left is added.
 	 * 
-	 * @param numTiles number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor
-	 *         towards his current move direction.
+	 * @param numTiles
+	 *                   number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
+	 *         direction.
 	 */
 	@Override
 	public Tile tilesAhead(int numTiles) {
@@ -233,13 +233,16 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 		public void onTick() {
 			if (startsLosingPower()) {
 				fsmComponent.publish(new PacManGettingWeakerEvent());
-			} else if (getTicksRemaining() == 1) {
+			}
+			else if (getTicksRemaining() == 1) {
 				setConstantTimer(0);
 				cast.theme.snd_waza().stop();
 				fsmComponent.publish(new PacManLostPowerEvent());
-			} else if (mustDigest()) {
+			}
+			else if (mustDigest()) {
 				digest();
-			} else {
+			}
+			else {
 				steer();
 				move();
 				findSomethingInteresting().ifPresent(fsmComponent::publish);
@@ -292,7 +295,8 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 				boolean energizer = maze().containsEnergizer(pacManTile);
 				digestion = energizer ? PacManGame.DIGEST_ENERGIZER_TICKS : PacManGame.DIGEST_PELLET_TICKS;
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			} else {
+			}
+			else {
 				ticksSinceLastMeal += 1;
 			}
 
