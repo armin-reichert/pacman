@@ -633,7 +633,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void updateDotCounters() {
 		if (globalDotCounterEnabled) {
 			globalDotCounter++;
-			LOGGER.info(() -> String.format("Global Food Counter:d", globalDotCounter));
+			LOGGER.info(() -> String.format("Global Food Counter: %d", globalDotCounter));
 			if (globalDotCounter == 32 && cast.clyde.getState() == GhostState.LOCKED) {
 				globalDotCounterEnabled = false;
 				globalDotCounter = 0;
