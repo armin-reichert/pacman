@@ -15,7 +15,6 @@ import static de.amr.graph.grid.impl.Grid4Topology.W;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
@@ -25,6 +24,7 @@ import de.amr.games.pacman.actor.fsm.FsmContainer;
 import de.amr.games.pacman.actor.fsm.FsmControlled;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
+import de.amr.games.pacman.controller.event.PacManDiedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
@@ -101,17 +101,9 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 					.impl(new HungryState())
 					
 				.state(DYING)
-					.timeoutAfter(() -> sec(4f))
+					.timeoutAfter(sec(4f))
 					.onEntry(() -> {
 						sprites.select("full");
-						cast.theme.snd_clips_all().forEach(Sound::stop);
-					})
-					.onTick(() -> {
-						if (state().getTicksConsumed() == sec(1.5f)) {
-							sprites.select("dying");
-							cast.theme.snd_die().play();
-							cast.activeGhosts().forEach(Ghost::hide);
-						}
 					})
 	
 			.transitions()
@@ -121,17 +113,17 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 				.stay(HUNGRY)
 					.on(PacManGainsPowerEvent.class)
 					.act(() -> {
-						state().setTimerFunction(() -> sec(game.level.pacManPowerSeconds));
+						state().setConstantTimer(sec(game.level.pacManPowerSeconds));
+						cast.theme.snd_waza().loop();
 						LOGGER.info(() -> String.format("Pac-Man got power for %d ticks (%d sec)", 
 								state().getDuration(), state().getDuration() / 60));
-						cast.theme.snd_waza().loop();
 					})
 					
 				.when(HUNGRY).then(DYING)
 					.on(PacManKilledEvent.class)
 	
 				.when(DYING).then(DEAD)
-					.onTimeout()
+					.on(PacManDiedEvent.class)
 	
 		.endStateMachine();
 		/* @formatter:on */

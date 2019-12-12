@@ -39,6 +39,7 @@ import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
+import de.amr.games.pacman.controller.event.PacManDiedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
@@ -163,25 +164,37 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.state(PACMAN_DYING)
 					.timeoutAfter(() -> game.lives > 1 ? sec(6) : sec(4))
 					.onEntry(() -> {
-							game.lives -= app().settings.getAsBoolean("pacMan.immortable") ? 0 : 1;
+						cast.theme.snd_clips_all().forEach(Sound::stop);
+						game.lives -= app().settings.getAsBoolean("pacMan.immortable") ? 0 : 1;
 					})
 					.onTick(() -> {
-						if (state().getTicksConsumed() < sec(2)) {
-							cast.pacMan.update(); // play dying animation
-						}
-						if (state().getTicksConsumed() == sec(1)) {
+						int passedTime = state().getTicksConsumed();
+						// wait first 1.5 sec before starting the "dying" animation
+						if (passedTime == sec(1.5f)) {
 							cast.activeGhosts().forEach(Ghost::hide);
 							cast.removeBonus();
+							cast.theme.snd_die().play();
+							cast.pacMan.sprites.select("dying");
+						}
+						// run "dying" animation
+						if (passedTime > sec(1.5f) && passedTime < sec(2)) {
+							cast.pacMan.update();
+						}
+						// inform Pac-Man that he died
+						if (passedTime == sec(2)) {
+							cast.pacMan.process(new PacManDiedEvent());
 						}
 						if (game.lives == 0) {
 							return;
 						}
-						if (state().getTicksConsumed() == sec(4)) {
+						// if playing continues, init actors and view
+						if (passedTime == sec(4)) {
 							cast.activeActors().forEach(MazeResident::init);
 							cast.theme.music_playing().loop();
 							playView.init();
 						}
-						if (state().getTicksConsumed() > sec(4)) {
+						// let ghosts jump a bit before game play continues
+						if (passedTime > sec(4)) {
 							cast.activeGhosts().forEach(Ghost::update);
 						}
 					})
