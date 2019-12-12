@@ -153,9 +153,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 							cast.activeGhosts().forEach(Ghost::update);
 						}
 					})
-					.onExit(() -> {
-						ghostMotionTimer.init();
-					})
 				
 				.state(GHOST_DYING)
 					.impl(new GhostDyingState())
@@ -264,6 +261,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					
 				.when(CHANGING_LEVEL).then(PLAYING)
 					.onTimeout()
+					.act(() -> ghostMotionTimer.init())
 					
 				.when(GHOST_DYING).then(PLAYING)
 					.onTimeout()
@@ -275,6 +273,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.when(PACMAN_DYING).then(PLAYING)
 					.onTimeout()
 					.condition(() -> game.lives > 0)
+					.act(() -> ghostMotionTimer.init())
 			
 				.when(GAME_OVER).then(GETTING_READY)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
@@ -340,7 +339,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			PacManKilledEvent e = (PacManKilledEvent) event;
 			LOGGER.info(() -> String.format("PacMan killed by %s at %s", e.killer.name(), e.killer.tile()));
 			game.enableGlobalFoodCounter();
-			ghostMotionTimer.init();
 			cast.theme.music_playing().stop();
 			cast.pacMan.process(event);
 			playView.energizerBlinking.setEnabled(false);
