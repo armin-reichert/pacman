@@ -2,8 +2,8 @@ package de.amr.games.pacman.test.navigation;
 
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.actor.PacManGameCast;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.theme.PacManTheme;
 
@@ -15,8 +15,8 @@ public class LeaveGhostHouseTestApp extends Application {
 
 	public LeaveGhostHouseTestApp() {
 		settings.title = "Leave Ghost House";
-		settings.width = 28 * Maze.TS;
-		settings.height = 36 * Maze.TS;
+		settings.width = 28 * Tile.SIZE;
+		settings.height = 36 * Tile.SIZE;
 		settings.scale = 2;
 	}
 

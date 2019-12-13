@@ -10,6 +10,17 @@ package de.amr.games.pacman.model;
  */
 public class Tile {
 
+	/** Tile size in pixels. */
+	public static final int SIZE = 8;
+	
+	public static final char WALL = '#';
+	public static final char TUNNEL = 't';
+	public static final char SPACE = ' ';
+	public static final char PELLET = '.';
+	public static final char ENERGIZER = '*';
+	public static final char EATEN_PELLET = ':';
+	public static final char EATEN_ENERGIZER = '~';
+
 	/** Straight line distance (squared). */
 	public static int distanceSq(Tile t1, Tile t2) {
 		int dx = t1.col - t2.col, dy = t1.row - t2.row;

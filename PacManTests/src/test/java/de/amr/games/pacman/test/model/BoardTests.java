@@ -15,8 +15,8 @@ public class BoardTests {
 	public void testBoardLoading() {
 		Maze maze = new Maze(PacManGame.BOARD);
 
-		assertEquals(28, Maze.NUM_COLS);
-		assertEquals(36, Maze.NUM_ROWS);
+		assertEquals(28, maze.numCols);
+		assertEquals(36, maze.numRows);
 
 		assertNotNull(maze.pacManHome);
 		assertNotNull(maze.ghostHome[0]);

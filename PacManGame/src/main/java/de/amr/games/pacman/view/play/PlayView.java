@@ -25,7 +25,6 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.behavior.common.HeadingForTargetTile;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.State;
 
@@ -47,6 +46,22 @@ public class PlayView extends SimplePlayView {
 
 	private static final String INFTY = Character.toString('\u221E');
 
+	private static BufferedImage createGridImage(int numRows, int numCols) {
+		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+				.getDefaultConfiguration();
+		BufferedImage image = conf.createCompatibleImage(numCols * Tile.SIZE, numRows * Tile.SIZE + 1,
+				Transparency.TRANSLUCENT);
+		Graphics2D g = image.createGraphics();
+		g.setColor(new Color(0, 60, 0));
+		for (int row = 0; row <= numRows; ++row) {
+			g.drawLine(0, row * Tile.SIZE, numCols * Tile.SIZE, row * Tile.SIZE);
+		}
+		for (int col = 1; col < numCols; ++col) {
+			g.drawLine(col * Tile.SIZE, 0, col * Tile.SIZE, numRows * Tile.SIZE);
+		}
+		return image;
+	}
+
 	private final BufferedImage gridImage;
 
 	public boolean showGrid = false;
@@ -55,25 +70,9 @@ public class PlayView extends SimplePlayView {
 
 	public Supplier<State<GhostState, ?>> fnGhostAttack = () -> null;
 
-	private static BufferedImage createGridImage(int numRows, int numCols) {
-		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-				.getDefaultConfiguration();
-		BufferedImage image = conf.createCompatibleImage(numCols * Maze.TS, numRows * Maze.TS + 1,
-				Transparency.TRANSLUCENT);
-		Graphics2D g = image.createGraphics();
-		g.setColor(new Color(0, 60, 0));
-		for (int row = 0; row <= numRows; ++row) {
-			g.drawLine(0, row * Maze.TS, numCols * Maze.TS, row * Maze.TS);
-		}
-		for (int col = 1; col < numCols; ++col) {
-			g.drawLine(col * Maze.TS, 0, col * Maze.TS, numRows * Maze.TS);
-		}
-		return image;
-	}
-
 	public PlayView(PacManGameCast cast) {
 		super(cast);
-		gridImage = createGridImage(Maze.NUM_ROWS, Maze.NUM_COLS);
+		gridImage = createGridImage(cast.game.maze.numRows, cast.game.maze.numCols);
 	}
 
 	@Override
@@ -209,7 +208,7 @@ public class PlayView extends SimplePlayView {
 		g.setColor(color);
 		g.setFont(new Font("Arial Narrow", Font.PLAIN, 5));
 		int width = g.getFontMetrics().stringWidth(text);
-		g.drawString(text, -width / 2, -Maze.TS / 2);
+		g.drawString(text, -width / 2, -Tile.SIZE / 2);
 		g.translate(-x, -y);
 	}
 
@@ -217,11 +216,11 @@ public class PlayView extends SimplePlayView {
 		g.setColor(Color.GREEN);
 		g.translate(actor.tf.getX(), actor.tf.getY());
 		int w = actor.tf.getWidth(), h = actor.tf.getHeight();
-		if (round(actor.tf.getY()) % Maze.TS == 0) {
+		if (round(actor.tf.getY()) % Tile.SIZE == 0) {
 			g.drawLine(0, 0, w, 0);
 			g.drawLine(0, h, w, h);
 		}
-		if (round(actor.tf.getX()) % Maze.TS == 0) {
+		if (round(actor.tf.getX()) % Tile.SIZE == 0) {
 			g.drawLine(0, 0, 0, h);
 			g.drawLine(w, 0, w, h);
 		}
@@ -239,27 +238,27 @@ public class PlayView extends SimplePlayView {
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(ghostColor);
 			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
-					ghost.targetTile().col * Maze.TS + Maze.TS / 2, ghost.targetTile().row * Maze.TS + Maze.TS / 2);
+					ghost.targetTile().col * Tile.SIZE + Tile.SIZE / 2, ghost.targetTile().row * Tile.SIZE + Tile.SIZE / 2);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			g.setStroke(solid);
-			g.translate(ghost.targetTile().col * Maze.TS, ghost.targetTile().row * Maze.TS);
+			g.translate(ghost.targetTile().col * Tile.SIZE, ghost.targetTile().row * Tile.SIZE);
 			g.setColor(ghostColor);
-			g.fillRect(Maze.TS / 4, Maze.TS / 4, Maze.TS / 2, Maze.TS / 2);
-			g.translate(-ghost.targetTile().col * Maze.TS, -ghost.targetTile().row * Maze.TS);
+			g.fillRect(Tile.SIZE / 4, Tile.SIZE / 4, Tile.SIZE / 2, Tile.SIZE / 2);
+			g.translate(-ghost.targetTile().col * Tile.SIZE, -ghost.targetTile().row * Tile.SIZE);
 		}
 		if (ghost.targetPath().size() > 1) {
 			// draw path in ghost's color
 			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 60));
 			for (Tile tile : ghost.targetPath()) {
-				g.fillRect(tile.col * Maze.TS, tile.row * Maze.TS, Maze.TS, Maze.TS);
+				g.fillRect(tile.col * Tile.SIZE, tile.row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 			}
 		}
 		else {
 			// draw direction indicator
 			Vector2f center = ghost.tf.getCenter();
 			int dx = ghost.nextDir().dx, dy = ghost.nextDir().dy;
-			int r = Maze.TS / 4;
-			int lineLen = Maze.TS;
+			int r = Tile.SIZE / 4;
+			int lineLen = Tile.SIZE;
 			int indX = (int) (center.x + dx * lineLen);
 			int indY = (int) (center.y + dy * lineLen);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -272,7 +271,7 @@ public class PlayView extends SimplePlayView {
 			Vector2f center = cast.clyde.tf.getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 100));
-			g.drawOval((int) center.x - 8 * Maze.TS, (int) center.y - 8 * Maze.TS, 16 * Maze.TS, 16 * Maze.TS);
+			g.drawOval((int) center.x - 8 * Tile.SIZE, (int) center.y - 8 * Tile.SIZE, 16 * Tile.SIZE, 16 * Tile.SIZE);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		}
 	}

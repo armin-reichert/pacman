@@ -9,7 +9,7 @@ public interface Timing {
 
 	static final int FPS = 60;
 
-	static final float BASE_SPEED = 11f * Maze.TS / FPS; // 11 tiles/second
+	static final float BASE_SPEED = 11f * Tile.SIZE / FPS; // 11 tiles/second
 
 	/**
 	 * @param fraction

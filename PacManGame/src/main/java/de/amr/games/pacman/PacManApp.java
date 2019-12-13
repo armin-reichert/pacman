@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.theme.PacManTheme;
 
@@ -27,8 +27,8 @@ public class PacManApp extends Application {
 	}
 
 	public PacManApp() {
-		settings.width = Maze.NUM_COLS * Maze.TS;
-		settings.height = Maze.NUM_ROWS * Maze.TS;
+		settings.width = 28 * Tile.SIZE;
+		settings.height = 36 * Tile.SIZE;
 		settings.scale = 2;
 		settings.title = "Armin's Pac-Man";
 		settings.set("overflowBug", true);

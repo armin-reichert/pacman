@@ -11,7 +11,6 @@ import java.util.Objects;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -161,8 +160,8 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 			LOGGER.fine("Teleporting complete");
 		}
 		else { // off
-			int leftExit = (maze().tunnelExitLeft.col - 1) * Maze.TS;
-			int rightExit = (maze().tunnelExitRight.col + 1) * Maze.TS;
+			int leftExit = (maze().tunnelExitLeft.col - 1) * Tile.SIZE;
+			int rightExit = (maze().tunnelExitRight.col + 1) * Tile.SIZE;
 			if (tf.getX() > rightExit) { // start
 				teleportTicksRemaining = teleportingTicks;
 				tf.setX(leftExit);
@@ -188,7 +187,7 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 		float speed = possibleSpeedTo(nextDir);
 		if (speed > 0) {
 			if (nextDir == moveDir.turnLeft() || nextDir == moveDir.turnRight()) {
-				tf.setPosition(oldTile.col * Maze.TS, oldTile.row * Maze.TS);
+				tf.setPosition(oldTile.col * Tile.SIZE, oldTile.row * Tile.SIZE);
 			}
 			moveDir = nextDir;
 		}
@@ -210,13 +209,13 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 		}
 		switch (dir) {
 		case UP:
-			return -tile().row * Maze.TS + tf.getY();
+			return -tile().row * Tile.SIZE + tf.getY();
 		case RIGHT:
-			return tile().col * Maze.TS - tf.getX();
+			return tile().col * Tile.SIZE - tf.getX();
 		case DOWN:
-			return tile().row * Maze.TS - tf.getY();
+			return tile().row * Tile.SIZE - tf.getY();
 		case LEFT:
-			return -tile().col * Maze.TS + tf.getX();
+			return -tile().col * Tile.SIZE + tf.getX();
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}

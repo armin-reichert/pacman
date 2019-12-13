@@ -21,6 +21,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -40,9 +41,9 @@ public class Bonus extends Entity implements MazeResident, FsmContainer<BonusSta
 	public Bonus(PacManGameCast cast) {
 		this.cast = cast;
 		fsmComponent = buildFsmComponent("Bonus");
-		tf.setWidth(Maze.TS);
-		tf.setHeight(Maze.TS);
-		placeAtTile(cast.game.maze.bonusTile, Maze.TS / 2, 0);
+		tf.setWidth(Tile.SIZE);
+		tf.setHeight(Tile.SIZE);
+		placeAtTile(cast.game.maze.bonusTile, Tile.SIZE / 2, 0);
 		symbol = cast.game.level.bonusSymbol;
 		value = cast.game.level.bonusValue;
 		sprites.set("symbol", cast.theme.spr_bonusSymbol(symbol));

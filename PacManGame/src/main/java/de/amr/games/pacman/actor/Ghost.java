@@ -67,8 +67,8 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		this.cast = cast;
 		this.game = cast.game;
 		fsmComponent = buildFsmComponent(name);
-		tf.setWidth(Maze.TS);
-		tf.setHeight(Maze.TS);
+		tf.setWidth(Tile.SIZE);
+		tf.setHeight(Tile.SIZE);
 	}
 
 	private FsmComponent<GhostState> buildFsmComponent(String name) {
@@ -213,7 +213,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		moveDir = initialDir;
 		nextDir = initialDir;
 		enteredNewTile = true;
-		placeAtTile(initialTile, Maze.TS / 2, 0);
+		placeAtTile(initialTile, Tile.SIZE / 2, 0);
 		sprites.select("color-" + initialDir);
 		sprites.forEach(Sprite::resetAnimation);
 		nextState = fsmComponent.getState();
@@ -285,7 +285,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 
 	private boolean leftHouse() {
 		Tile currentTile = tile();
-		return !maze().partOfGhostHouse(currentTile) && tf.getY() - currentTile.row * Maze.TS == 0;
+		return !maze().partOfGhostHouse(currentTile) && tf.getY() - currentTile.row * Tile.SIZE == 0;
 	}
 
 	public static int getDyingTime() {

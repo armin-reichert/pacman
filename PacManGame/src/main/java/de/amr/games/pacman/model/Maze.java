@@ -1,5 +1,13 @@
 package de.amr.games.pacman.model;
 
+import static de.amr.games.pacman.model.Tile.EATEN_ENERGIZER;
+import static de.amr.games.pacman.model.Tile.EATEN_PELLET;
+import static de.amr.games.pacman.model.Tile.ENERGIZER;
+import static de.amr.games.pacman.model.Tile.PELLET;
+import static de.amr.games.pacman.model.Tile.SPACE;
+import static de.amr.games.pacman.model.Tile.TUNNEL;
+import static de.amr.games.pacman.model.Tile.WALL;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,31 +21,28 @@ import java.util.stream.Stream;
  */
 public class Maze {
 
-	/** Tile size in pixels. */
-	public static final int TS = 8;
-
-	public static final int NUM_COLS = 28;
-	public static final int NUM_ROWS = 36;
-
-	public static final char WALL = '#', TUNNEL = 't', SPACE = ' ', PELLET = '.', ENERGIZER = '*',
-			EATEN_PELLET = ':', EATEN_ENERGIZER = '~';
-
-	public final Tile[][] tiles = new Tile[NUM_COLS][NUM_ROWS];
-
-	public Tile cornerNW, cornerNE, cornerSW, cornerSE, scatterTileNE, scatterTileNW, scatterTileSE,
-			scatterTileSW, tunnelExitLeft, tunnelExitRight, pacManHome, bonusTile, doorLeft, doorRight;
-
-	public Tile[] ghostHome = new Tile[4];
-
+	public final int numRows;
+	public final int numCols;
+	public final Tile[][] tiles;
+	public Tile pacManHome;
+	public Tile ghostHome[] = new Tile[4];
+	public Tile bonusTile;
+	public Tile cornerNW, cornerNE, cornerSW, cornerSE;
+	public Tile scatterTileNE, scatterTileNW, scatterTileSE, scatterTileSW;
+	public Tile tunnelExitLeft, tunnelExitRight;
+	public Tile doorLeft, doorRight;
 	public int totalNumPellets;
 
 	private final Set<Tile> intersections;
 	private final Set<Tile> energizers = new HashSet<>();
 
-	public Maze(String[] board) {
-		for (int row = 0; row < NUM_ROWS; ++row) {
-			for (int col = 0; col < NUM_COLS; ++col) {
-				char c = board[row].charAt(col);
+	public Maze(String[] map) {
+		numRows = map.length;
+		numCols = map[0].length();
+		tiles = new Tile[numCols][numRows];
+		for (int row = 0; row < numRows; ++row) {
+			for (int col = 0; col < numCols; ++col) {
+				char c = map[row].charAt(col);
 				Tile tile = tiles[col][row] = new Tile((byte) col, (byte) row, c);
 				if (Character.isDigit(c)) {
 					ghostHome[Integer.valueOf(String.valueOf(c))] = tile;
@@ -151,7 +156,7 @@ public class Maze {
 	}
 
 	public boolean insideBoard(int col, int row) {
-		return 0 <= col && col < NUM_COLS && 0 <= row && row < NUM_ROWS;
+		return 0 <= col && col < numCols && 0 <= row && row < numRows;
 	}
 
 	public boolean insideBoard(Tile tile) {
@@ -243,8 +248,8 @@ public class Maze {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		for (int row = 0; row < NUM_ROWS; ++row) {
-			for (int col = 0; col < NUM_COLS; ++col) {
+		for (int row = 0; row < numRows; ++row) {
+			for (int col = 0; col < numCols; ++col) {
 				sb.append(tiles[col][row].content);
 			}
 			sb.append("\n");

@@ -28,7 +28,7 @@ public class MazeGraph {
 
 	public MazeGraph(Maze maze) {
 		this.maze = maze;
-		grid = new GridGraph<>(Maze.NUM_COLS, Maze.NUM_ROWS, Grid4Topology.get(), this::tile, (u, v) -> null,
+		grid = new GridGraph<>(maze.numCols, maze.numRows, Grid4Topology.get(), this::tile, (u, v) -> null,
 				UndirectedEdge::new);
 		grid.fill();
 		//@formatter:off

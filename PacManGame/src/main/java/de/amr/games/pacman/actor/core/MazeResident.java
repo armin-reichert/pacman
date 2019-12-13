@@ -31,7 +31,7 @@ public interface MazeResident extends Controller {
 	 */
 	default Tile tile() {
 		Vector2f center = resident().tf.getCenter();
-		return maze().tileAt(round(center.x) / Maze.TS, round(center.y) / Maze.TS);
+		return maze().tileAt(round(center.x) / Tile.SIZE, round(center.y) / Tile.SIZE);
 	}
 
 	/**
@@ -42,7 +42,7 @@ public interface MazeResident extends Controller {
 	 * @param yOffset pixel offset in y-direction
 	 */
 	default void placeAtTile(Tile tile, float xOffset, float yOffset) {
-		resident().tf.setPosition(tile.col * Maze.TS + xOffset, tile.row * Maze.TS + yOffset);
+		resident().tf.setPosition(tile.col * Tile.SIZE + xOffset, tile.row * Tile.SIZE + yOffset);
 	}
 
 	/**

@@ -54,8 +54,8 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 		this.cast = cast;
 		this.game = cast.game;
 		fsmComponent = buildFsmComponent("Pac-Man");
-		tf.setWidth(Maze.TS);
-		tf.setHeight(Maze.TS);
+		tf.setWidth(Tile.SIZE);
+		tf.setHeight(Tile.SIZE);
 	}
 
 	@Override
@@ -90,7 +90,7 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 	
 				.state(HOME)
 					.onEntry(() -> {
-						placeAtTile(maze().pacManHome, Maze.TS / 2, 0);
+						placeAtTile(maze().pacManHome, Tile.SIZE / 2, 0);
 						moveDir = nextDir = RIGHT;
 						sprites.forEach(Sprite::resetAnimation);
 						sprites.select("full");
