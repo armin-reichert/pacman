@@ -1,4 +1,4 @@
-package de.amr.games.pacman.test.navigation;
+package de.amr.games.pacman.test.graph;
 
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
@@ -28,8 +28,9 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 		showRoutes = true;
 		showStates = true;
 		showScores = false;
-		targets = Arrays.asList(game.maze.cornerSE, game.maze.cornerSW, game.maze.tunnelExitLeft, game.maze.cornerNW,
-				game.maze.ghostHome[0], game.maze.cornerNE, game.maze.tunnelExitRight, game.maze.pacManHome);
+		targets = Arrays.asList(game.maze.cornerSE, game.maze.cornerSW, game.maze.tunnelExitLeft,
+				game.maze.cornerNW, game.maze.ghostHome[0], game.maze.cornerNE, game.maze.tunnelExitRight,
+				game.maze.pacManHome);
 	}
 
 	@Override
@@ -44,7 +45,8 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 		cast.activate(cast.blinky);
 		cast.blinky.init();
 		cast.blinky.setState(CHASING);
-		Steering<Ghost> followPathToCurrentTarget = followingShortestPath(() -> targets.get(currentTarget));
+		Steering<Ghost> followPathToCurrentTarget = followingShortestPath(game.maze,
+				() -> targets.get(currentTarget));
 		cast.blinky.setSteering(CHASING, followPathToCurrentTarget);
 		cast.blinky.setSteering(FRIGHTENED, followPathToCurrentTarget);
 	}

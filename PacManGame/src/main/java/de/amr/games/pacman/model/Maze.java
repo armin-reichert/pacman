@@ -1,34 +1,15 @@
 package de.amr.games.pacman.model;
 
-import static de.amr.easy.game.Application.LOGGER;
-
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.amr.graph.core.api.UndirectedEdge;
-import de.amr.graph.grid.api.GridGraph2D;
-import de.amr.graph.grid.impl.Grid4Topology;
-import de.amr.graph.grid.impl.GridGraph;
-import de.amr.graph.pathfinder.api.GraphSearch;
-import de.amr.graph.pathfinder.api.Path;
-import de.amr.graph.pathfinder.impl.AStarSearch;
-
 /**
- * The original Pac-Man maze.
- * 
- * <p>
- * The maze is a 2-dimensional grid of tiles, each tile contains a character representing its
- * content. Additionally, a (grid) graph structure is used to allow running path finders on the
- * graph.
+ * The maze, a 2-dimensional grid of tiles.
  * 
  * @author Armin Reichert
- * 
- * @see GridGraph2D
  */
 public class Maze {
 
@@ -82,16 +63,14 @@ public class Maze {
 	public static final char WALL = '#', TUNNEL = 't', SPACE = ' ', PELLET = '.', ENERGIZER = '*',
 			EATEN_PELLET = ':', EATEN_ENERGIZER = '~';
 
-	public final GridGraph2D<Tile, Void> graph;
+	public final Tile[][] board = new Tile[NUM_COLS][NUM_ROWS];
 
 	public Tile cornerNW, cornerNE, cornerSW, cornerSE, scatterTileNE, scatterTileNW, scatterTileSE,
 			scatterTileSW, tunnelExitLeft, tunnelExitRight, pacManHome, bonusTile, doorLeft, doorRight;
-
 	public Tile[] ghostHome = new Tile[4];
 
 	public int totalNumPellets;
 
-	private final Tile[][] board = new Tile[NUM_COLS][NUM_ROWS];
 	private final Set<Tile> intersections;
 	private final Set<Tile> energizers = new HashSet<>();
 
@@ -144,34 +123,29 @@ public class Maze {
 		cornerSW = board[1][32];
 		cornerSE = board[26][32];
 
-		// Graph where each vertex holds a reference to the corresponding tile
-		graph = new GridGraph<>(NUM_COLS, NUM_ROWS, Grid4Topology.get(), this::tile, (u, v) -> null,
-				UndirectedEdge::new);
-		graph.fill();
-		//@formatter:off
-		graph.edges()
-			.filter(edge -> isWall(tile(edge.either())) || isWall(tile(edge.other())))
-			.forEach(graph::removeEdge);
+		intersections = tiles()
+		/*@formatter:off*/
+				.filter(tile -> numFreeNeighborTiles(tile) > 2)
+				.filter(tile -> !inFrontOfGhostHouseDoor(tile))
+				.filter(tile -> !partOfGhostHouse(tile))
+				.collect(Collectors.toSet());
+		/*@formatter:on*/
 
-		intersections = graph.vertices()
-			.filter(vertex -> graph.degree(vertex) >= 3)
-			.mapToObj(this::tile)
-			.filter(tile -> !inFrontOfGhostHouseDoor(tile))
-			.filter(tile -> !partOfGhostHouse(tile))
-			.collect(Collectors.toSet());
-		//@formatter:on
+		System.out.println();
 	}
 
-	private int vertex(Tile tile) {
-		return graph.cell(tile.col, tile.row);
-	}
-
-	private Tile tile(int vertex) {
-		return board[graph.col(vertex)][graph.row(vertex)];
+	private long numFreeNeighborTiles(Tile tile) {
+		/*@formatter:off*/
+		return Direction.dirs()
+				.map(dir -> tileToDir(tile, dir))
+				.filter(this::insideBoard)
+				.filter(neighbor -> !isWall(neighbor) && !isDoor(neighbor))
+				.count();
+		/*@formatter:on*/
 	}
 
 	public Stream<Tile> tiles() {
-		return graph.vertices().mapToObj(this::tile);
+		return Arrays.stream(board).flatMap(Arrays::stream);
 	}
 
 	public Stream<Tile> energizerTiles() {
@@ -306,32 +280,6 @@ public class Maze {
 		tiles().filter(this::containsFood).forEach(this::removeFood);
 	}
 
-	// navigation and path finding
-
-	public Optional<Direction> directionBetween(Tile t1, Tile t2) {
-		int dx = t2.col - t1.col, dy = t2.row - t1.row;
-		return Direction.dirs().filter(dir -> dir.dx == dx && dir.dy == dy).findFirst();
-	}
-
-	private int pathFinderCalls;
-
-	public List<Tile> findPath(Tile source, Tile target) {
-		if (insideBoard(source) && insideBoard(target)) {
-			GraphSearch pathfinder = new AStarSearch(graph, (u, v) -> 1, graph::manhattan);
-			Path path = pathfinder.findPath(vertex(source), vertex(target));
-			pathFinderCalls += 1;
-			if (pathFinderCalls % 100 == 0) {
-				LOGGER.info(String.format("%d'th pathfinding executed", pathFinderCalls));
-			}
-			return path.vertexStream().map(this::tile).collect(Collectors.toList());
-		}
-		return Collections.emptyList();
-	}
-
-	public Optional<Direction> alongPath(List<Tile> path) {
-		return path.size() < 2 ? Optional.empty() : directionBetween(path.get(0), path.get(1));
-	}
-
 	// misc
 
 	@Override
@@ -345,5 +293,4 @@ public class Maze {
 		}
 		return sb.toString();
 	}
-
 }

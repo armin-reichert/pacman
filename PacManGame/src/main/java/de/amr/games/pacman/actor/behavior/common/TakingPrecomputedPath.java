@@ -6,20 +6,25 @@ import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.MazeMover;
+import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.MazeGraph;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Steering using a precomputed path which is recomputed only if the actor would
- * leave this path.
+ * Steering using a precomputed path which is recomputed only if the actor would leave this path.
  *
  * @author Armin Reichert
  */
 public abstract class TakingPrecomputedPath<T extends MazeMover> implements Steering<T> {
 
+	protected Maze maze;
+	protected MazeGraph graph;
 	protected Supplier<Tile> fnTargetTile;
 	protected List<Tile> path = Collections.emptyList();
 
-	public TakingPrecomputedPath(Supplier<Tile> fnTargetTile) {
+	public TakingPrecomputedPath(Maze maze, Supplier<Tile> fnTargetTile) {
+		this.maze = maze;
+		this.graph = new MazeGraph(maze);
 		this.fnTargetTile = fnTargetTile;
 	}
 
@@ -35,7 +40,7 @@ public abstract class TakingPrecomputedPath<T extends MazeMover> implements Stee
 			actor.setTargetPath(path);
 			actor.setTargetTile(path.isEmpty() ? null : path.get(path.size() - 1));
 		}
-		actor.setNextDir(actor.maze().alongPath(path).orElse(actor.moveDir()));
+		actor.setNextDir(graph.alongPath(path).orElse(actor.moveDir()));
 	}
 
 	protected abstract List<Tile> computePath(T actor);

@@ -16,6 +16,7 @@ import de.amr.games.pacman.actor.behavior.ghost.FleeingToSafeCorner;
 import de.amr.games.pacman.actor.behavior.pacman.AvoidingGhosts;
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -100,7 +101,7 @@ public interface Steerings {
 	 * @return behavior where actor flees to a "safe" maze corner
 	 */
 	static <T extends MazeMover> Steering<T> fleeingToSafeCorner(MazeMover attacker) {
-		return new FleeingToSafeCorner<>(attacker::tile);
+		return new FleeingToSafeCorner<>(attacker.maze(), attacker::tile);
 	}
 
 	/**
@@ -112,8 +113,8 @@ public interface Steerings {
 	 * @return behavior where an actor follows the shortest (according to Manhattan distance) path to a
 	 *         target tile
 	 */
-	static <T extends MazeMover> Steering<T> followingShortestPath(Supplier<Tile> fnTarget) {
-		return new TakingShortestPath<>(fnTarget);
+	static <T extends MazeMover> Steering<T> followingShortestPath(Maze maze, Supplier<Tile> fnTarget) {
+		return new TakingShortestPath<>(maze, fnTarget);
 	}
 
 	/**

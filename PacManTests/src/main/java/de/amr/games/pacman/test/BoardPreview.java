@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.MazeGraph;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.ui.rendering.ConfigurableGridRenderer;
 import de.amr.graph.grid.ui.rendering.GridCanvas;
@@ -23,12 +24,14 @@ public class BoardPreview extends JFrame {
 	}
 
 	private Maze maze;
+	private MazeGraph graph;
 
 	public BoardPreview() {
 		maze = new Maze();
+		graph = new MazeGraph(maze);
 		setTitle("Pac-Man Maze Preview");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		GridCanvas canvas = new GridCanvas(maze.graph, TS);
+		GridCanvas canvas = new GridCanvas(graph.grid, TS);
 		canvas.pushRenderer(createRenderer());
 		add(canvas, BorderLayout.CENTER);
 		canvas.drawGrid();
@@ -38,7 +41,7 @@ public class BoardPreview extends JFrame {
 	}
 
 	private Tile tile(int cell) {
-		return maze.tileAt(maze.graph.col(cell), maze.graph.row(cell));
+		return maze.tileAt(graph.grid.col(cell), graph.grid.row(cell));
 	}
 
 	private GridRenderer createRenderer() {

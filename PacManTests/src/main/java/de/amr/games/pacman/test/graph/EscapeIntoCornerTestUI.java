@@ -1,4 +1,4 @@
-package de.amr.games.pacman.test.navigation;
+package de.amr.games.pacman.test.graph;
 
 import static de.amr.games.pacman.actor.behavior.common.Steerings.fleeingToSafeCorner;
 

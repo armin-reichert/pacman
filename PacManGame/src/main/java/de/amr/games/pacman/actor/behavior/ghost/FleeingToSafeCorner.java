@@ -13,17 +13,17 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Lets a ghost escape to the "safest" maze corner depending on Pac-Man's
- * current position. The "safest" corner is defined by the maximum distance of
- * Pac-Man to any tile on the path from the actor's current position to the
- * corner. When the target corner is reached the next corner is computed.
+ * Lets a ghost escape to the "safest" maze corner depending on Pac-Man's current position. The
+ * "safest" corner is defined by the maximum distance of Pac-Man to any tile on the path from the
+ * actor's current position to the corner. When the target corner is reached the next corner is
+ * computed.
  * 
  * @author Armin Reichert
  */
 public class FleeingToSafeCorner<T extends MazeMover> extends TakingPrecomputedPath<T> {
 
-	public FleeingToSafeCorner(Supplier<Tile> chaserTileSupplier) {
-		super(chaserTileSupplier);
+	public FleeingToSafeCorner(Maze maze, Supplier<Tile> chaserTileSupplier) {
+		super(maze, chaserTileSupplier);
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class FleeingToSafeCorner<T extends MazeMover> extends TakingPrecomputedP
 		while (target.equals(refugee.tile())) {
 			target = safeCorner(refugee);
 		}
-		return refugee.maze().findPath(refugee.tile(), target);
+		return graph.findPath(refugee.tile(), target);
 	}
 
 	private Tile safeCorner(T refugee) {
@@ -49,8 +49,8 @@ public class FleeingToSafeCorner<T extends MazeMover> extends TakingPrecomputedP
 
 	private Comparator<Tile> byDist(Maze maze, Tile refugeeTile, Tile chaserTile) {
 		return (corner1, corner2) -> {
-			double dist1 = minDistFromPath(maze, maze.findPath(refugeeTile, corner1), chaserTile);
-			double dist2 = minDistFromPath(maze, maze.findPath(refugeeTile, corner2), chaserTile);
+			double dist1 = minDistFromPath(maze, graph.findPath(refugeeTile, corner1), chaserTile);
+			double dist2 = minDistFromPath(maze, graph.findPath(refugeeTile, corner2), chaserTile);
 			return Double.compare(dist1, dist2);
 		};
 	}

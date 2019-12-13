@@ -1,4 +1,4 @@
-package de.amr.games.pacman.test.navigation;
+package de.amr.games.pacman.test.graph;
 
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.actor.PacManGameCast;
