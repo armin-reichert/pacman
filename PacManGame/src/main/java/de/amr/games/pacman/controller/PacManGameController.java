@@ -203,12 +203,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					})
 				
 				.state(GAME_OVER)
-					.timeoutAfter(sec(60))
 					.onEntry(() -> {
 						game.saveHighscore();
 						cast.activeGhosts().forEach(Ghost::show);
 						cast.removeBonus();
-						cast.theme.music_gameover().loop();
+						cast.theme.music_gameover().play();
 						playView.enableAnimations(false);
 						playView.textColor = Color.RED;
 						playView.message = "Game Over!";
@@ -286,7 +285,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 					
 				.when(GAME_OVER).then(INTRO)
-					.onTimeout()
+					.condition(() -> !cast.theme.music_gameover().isRunning())
 							
 		.endStateMachine();
 		//@formatter:on
