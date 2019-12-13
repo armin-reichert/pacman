@@ -11,7 +11,9 @@ import java.util.Iterator;
  */
 public class LevelSymbols implements Iterable<BonusSymbol> {
 
-	private final Deque<BonusSymbol> q = new ArrayDeque<>(7);
+	static final int MAX_SIZE = 7;
+
+	private final Deque<BonusSymbol> q = new ArrayDeque<>(MAX_SIZE);
 
 	public int count() {
 		return q.size();
@@ -27,7 +29,7 @@ public class LevelSymbols implements Iterable<BonusSymbol> {
 	}
 
 	public void add(BonusSymbol symbol) {
-		if (q.size() == 7) {
+		if (q.size() == MAX_SIZE) {
 			q.removeLast();
 		}
 		q.addFirst(symbol);
