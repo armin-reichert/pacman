@@ -7,12 +7,13 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.PacManGame;
 
 public class BoardTests {
 
 	@Test
 	public void testBoardLoading() {
-		Maze maze = new Maze();
+		Maze maze = new Maze(PacManGame.BOARD);
 
 		assertEquals(28, Maze.NUM_COLS);
 		assertEquals(36, Maze.NUM_ROWS);

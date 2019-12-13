@@ -9,6 +9,7 @@ import javax.swing.SwingUtilities;
 
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.MazeGraph;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.ui.rendering.ConfigurableGridRenderer;
 import de.amr.graph.grid.ui.rendering.GridCanvas;
@@ -27,7 +28,7 @@ public class BoardPreview extends JFrame {
 	private MazeGraph graph;
 
 	public BoardPreview() {
-		maze = new Maze();
+		maze = new Maze(PacManGame.BOARD);
 		graph = new MazeGraph(maze);
 		setTitle("Pac-Man Maze Preview");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);

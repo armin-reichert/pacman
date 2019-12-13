@@ -17,14 +17,52 @@ import java.io.File;
  * 
  * @author Armin Reichert
  * 
- * @see <a href=
- *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
+ * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
  *      dossier</a>
- * @see <a href=
- *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man
- *      level specifications</a>
+ * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man level
+ *      specifications</a>
  */
 public class PacManGame {
+
+	public static final String[] BOARD = {
+	/*@formatter:off*/
+	"############################", 
+	"############################", 
+	"############################", 
+	"############################", 
+	"#............##............#", 
+	"#.####.#####.##.#####.####.#", 
+	"#*####.#####.##.#####.####*#", 
+	"#.####.#####.##.#####.####.#", 
+	"#..........................#", 
+	"#.####.##.########.##.####.#", 
+	"#.####.##.########.##.####.#", 
+	"#......##....##....##......#", 
+	"######.##### ## #####.######", 
+	"######.##### ## #####.######", 
+	"######.##    0     ##.######", 
+	"######.## ###  ### ##.######", 
+	"######.## #      # ##.######", 
+	"tttttt.   #1 2 3 #   .tttttt", 
+	"######.## #      # ##.######", 
+	"######.## ######## ##.######", 
+	"######.##    $     ##.######", 
+	"######.## ######## ##.######", 
+	"######.## ######## ##.######", 
+	"#............##............#", 
+	"#.####.#####.##.#####.####.#", 
+	"#.####.#####.##.#####.####.#", 
+	"#*..##.......P .......##..*#", 
+	"###.##.##.########.##.##.###", 
+	"###.##.##.########.##.##.###", 
+	"#......##....##....##......#", 
+	"#.##########.##.##########.#", 
+	"#.##########.##.##########.#", 
+	"#..........................#", 
+	"############################", 
+	"############################", 
+	"############################"}; 
+	/*@formatter:on*/
 
 	public static final int POINTS_PELLET = 10;
 	public static final int POINTS_ENERGIZER = 50;
@@ -66,7 +104,7 @@ public class PacManGame {
 		/*@formatter:on*/
 	};
 
-	public final Maze maze = new Maze();
+	public final Maze maze = new Maze(BOARD);
 	public final LevelSymbols levelSymbols = new LevelSymbols();
 	public final Hiscore hiscore = new Hiscore();
 
@@ -102,7 +140,8 @@ public class PacManGame {
 	}
 
 	/**
-	 * @param tile tile containing food
+	 * @param tile
+	 *               tile containing food
 	 * @return points scored
 	 */
 	public int eatFoodAt(Tile tile) {
@@ -111,7 +150,8 @@ public class PacManGame {
 			level.ghostsKilledByEnergizer = 0;
 			maze.removeFood(tile);
 			return POINTS_ENERGIZER;
-		} else {
+		}
+		else {
 			maze.removeFood(tile);
 			return POINTS_PELLET;
 		}

@@ -43,7 +43,7 @@ public class MazeGraph {
 	}
 
 	public Tile tile(int vertex) {
-		return maze.board[grid.col(vertex)][grid.row(vertex)];
+		return maze.tiles[grid.col(vertex)][grid.row(vertex)];
 	}
 
 	// navigation and path finding

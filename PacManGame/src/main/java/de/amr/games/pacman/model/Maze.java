@@ -17,56 +17,16 @@ public class Maze {
 	public static final int TS = 8;
 
 	public static final int NUM_COLS = 28;
-
 	public static final int NUM_ROWS = 36;
-
-	private static final String[] CONTENT = {
-	/*@formatter:off*/
-	"############################", 
-	"############################", 
-	"############################", 
-	"############################", 
-	"#............##............#", 
-	"#.####.#####.##.#####.####.#", 
-	"#*####.#####.##.#####.####*#", 
-	"#.####.#####.##.#####.####.#", 
-	"#..........................#", 
-	"#.####.##.########.##.####.#", 
-	"#.####.##.########.##.####.#", 
-	"#......##....##....##......#", 
-	"######.##### ## #####.######", 
-	"######.##### ## #####.######", 
-	"######.##    0     ##.######", 
-	"######.## ###  ### ##.######", 
-	"######.## #      # ##.######", 
-	"tttttt.   #1 2 3 #   .tttttt", 
-	"######.## #      # ##.######", 
-	"######.## ######## ##.######", 
-	"######.##    $     ##.######", 
-	"######.## ######## ##.######", 
-	"######.## ######## ##.######", 
-	"#............##............#", 
-	"#.####.#####.##.#####.####.#", 
-	"#.####.#####.##.#####.####.#", 
-	"#*..##.......P .......##..*#", 
-	"###.##.##.########.##.##.###", 
-	"###.##.##.########.##.##.###", 
-	"#......##....##....##......#", 
-	"#.##########.##.##########.#", 
-	"#.##########.##.##########.#", 
-	"#..........................#", 
-	"############################", 
-	"############################", 
-	"############################"}; 
-	/*@formatter:on*/
 
 	public static final char WALL = '#', TUNNEL = 't', SPACE = ' ', PELLET = '.', ENERGIZER = '*',
 			EATEN_PELLET = ':', EATEN_ENERGIZER = '~';
 
-	public final Tile[][] board = new Tile[NUM_COLS][NUM_ROWS];
+	public final Tile[][] tiles = new Tile[NUM_COLS][NUM_ROWS];
 
 	public Tile cornerNW, cornerNE, cornerSW, cornerSE, scatterTileNE, scatterTileNW, scatterTileSE,
 			scatterTileSW, tunnelExitLeft, tunnelExitRight, pacManHome, bonusTile, doorLeft, doorRight;
+
 	public Tile[] ghostHome = new Tile[4];
 
 	public int totalNumPellets;
@@ -74,16 +34,16 @@ public class Maze {
 	private final Set<Tile> intersections;
 	private final Set<Tile> energizers = new HashSet<>();
 
-	public Maze() {
+	public Maze(String[] board) {
 		for (int row = 0; row < NUM_ROWS; ++row) {
 			for (int col = 0; col < NUM_COLS; ++col) {
-				char content = CONTENT[row].charAt(col);
-				Tile tile = board[col][row] = new Tile((byte) col, (byte) row, content);
-				if (Character.isDigit(content)) {
-					ghostHome[Integer.valueOf(String.valueOf(content))] = tile;
+				char c = board[row].charAt(col);
+				Tile tile = tiles[col][row] = new Tile((byte) col, (byte) row, c);
+				if (Character.isDigit(c)) {
+					ghostHome[Integer.valueOf(String.valueOf(c))] = tile;
 					tile.content = SPACE;
 				}
-				switch (content) {
+				switch (c) {
 				case PELLET:
 					totalNumPellets += 1;
 					break;
@@ -105,23 +65,23 @@ public class Maze {
 			}
 		}
 
-		doorLeft = board[13][15];
-		doorRight = board[14][15];
+		doorLeft = tiles[13][15];
+		doorRight = tiles[14][15];
 
-		tunnelExitLeft = board[0][17];
-		tunnelExitRight = board[27][17];
+		tunnelExitLeft = tiles[0][17];
+		tunnelExitRight = tiles[27][17];
 
 		// Scattering targets
-		scatterTileNW = board[2][0];
-		scatterTileNE = board[25][0];
-		scatterTileSW = board[0][35];
-		scatterTileSE = board[27][35];
+		scatterTileNW = tiles[2][0];
+		scatterTileNE = tiles[25][0];
+		scatterTileSW = tiles[0][35];
+		scatterTileSE = tiles[27][35];
 
 		// Corners inside maze
-		cornerNW = board[1][4];
-		cornerNE = board[26][4];
-		cornerSW = board[1][32];
-		cornerSE = board[26][32];
+		cornerNW = tiles[1][4];
+		cornerNE = tiles[26][4];
+		cornerSW = tiles[1][32];
+		cornerSE = tiles[26][32];
 
 		intersections = tiles()
 		/*@formatter:off*/
@@ -145,7 +105,7 @@ public class Maze {
 	}
 
 	public Stream<Tile> tiles() {
-		return Arrays.stream(board).flatMap(Arrays::stream);
+		return Arrays.stream(tiles).flatMap(Arrays::stream);
 	}
 
 	public Stream<Tile> energizerTiles() {
@@ -161,7 +121,7 @@ public class Maze {
 	 *         (if in the same row than the board tunnel tiles) or walls otherwise.
 	 */
 	public Tile tileAt(int col, int row) {
-		return insideBoard(col, row) ? board[col][row]
+		return insideBoard(col, row) ? tiles[col][row]
 				: new Tile((byte) col, (byte) row, row == tunnelExitLeft.row ? TUNNEL : WALL);
 	}
 
@@ -227,7 +187,7 @@ public class Maze {
 	}
 
 	public boolean isNoUpIntersection(Tile tile) {
-		return tile == board[12][14] || tile == board[12][26] || tile == board[15][14] || tile == board[15][26];
+		return tile == tiles[12][14] || tile == tiles[12][26] || tile == tiles[15][14] || tile == tiles[15][26];
 	}
 
 	// food
@@ -280,14 +240,12 @@ public class Maze {
 		tiles().filter(this::containsFood).forEach(this::removeFood);
 	}
 
-	// misc
-
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (int row = 0; row < NUM_ROWS; ++row) {
 			for (int col = 0; col < NUM_COLS; ++col) {
-				sb.append(board[col][row].content);
+				sb.append(tiles[col][row].content);
 			}
 			sb.append("\n");
 		}
