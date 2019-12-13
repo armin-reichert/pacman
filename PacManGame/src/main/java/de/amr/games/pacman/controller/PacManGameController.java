@@ -204,7 +204,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				
 				.state(GAME_OVER)
 					.onEntry(() -> {
-						game.saveHighscore();
+						game.saveHiscore();
 						cast.activeGhosts().forEach(Ghost::show);
 						cast.removeBonus();
 						cast.theme.music_gameover().play();

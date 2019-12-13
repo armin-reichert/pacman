@@ -12,11 +12,6 @@ import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
 import static de.amr.games.pacman.model.Timing.sec;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Properties;
 import java.util.Random;
 
 /**
@@ -85,7 +80,7 @@ public class PacManGame {
 		lives = 3;
 		score = 0;
 		levelSymbols.clear();
-		loadHiscore();
+		hiscore.load(HISCORE_FILE);
 		enterLevel(1);
 	}
 
@@ -99,7 +94,7 @@ public class PacManGame {
 		level.ghostKilledInLevel = 0;
 		levelSymbols.add(level.bonusSymbol);
 		maze.restoreFood();
-		saveHighscore();
+		saveHiscore();
 	}
 
 	public void enterNextLevel() {
@@ -152,33 +147,8 @@ public class PacManGame {
 
 	// Score management
 
-	public void loadHiscore() {
-		LOGGER.info("Loading highscore from " + HISCORE_FILE);
-		Properties p = new Properties();
-		try {
-			p.loadFromXML(new FileInputStream(HISCORE_FILE));
-			hiscore.points = Integer.valueOf(p.getProperty("score"));
-			hiscore.levelNumber = Integer.valueOf(p.getProperty("level"));
-		} catch (FileNotFoundException e) {
-			hiscore.points = 0;
-			hiscore.levelNumber = 1;
-		} catch (Exception e) {
-			LOGGER.info("Could not load hiscore from file " + HISCORE_FILE);
-			throw new RuntimeException(e);
-		}
-	}
-
-	public void saveHighscore() {
-		LOGGER.info("Save highscore to " + HISCORE_FILE);
-		Properties p = new Properties();
-		p.setProperty("score", Integer.toString(hiscore.points));
-		p.setProperty("level", Integer.toString(hiscore.levelNumber));
-		try {
-			p.storeToXML(new FileOutputStream(HISCORE_FILE), "Pac-Man Highscore");
-		} catch (IOException e) {
-			LOGGER.info("Could not save hiscore in file " + HISCORE_FILE);
-			throw new RuntimeException(e);
-		}
+	public void saveHiscore() {
+		hiscore.save(HISCORE_FILE);
 	}
 
 	public void score(int points) {
