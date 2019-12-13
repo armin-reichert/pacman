@@ -582,8 +582,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			LOGGER.info(() -> "Blinky can always leave house immediatley");
 			return true;
 		}
-		Optional<Ghost> lockedGhost = preferredLockedGhost();
-		if (!lockedGhost.isPresent() || lockedGhost.get() != ghost) {
+		Optional<Ghost> nextGhostToLeaveHouse = preferredLockedGhost();
+		if (!nextGhostToLeaveHouse.isPresent() || nextGhostToLeaveHouse.get() != ghost) {
 			return false;
 		}
 		int ghostDotLimit = ghostDotLimit(ghost, levelNumber);
