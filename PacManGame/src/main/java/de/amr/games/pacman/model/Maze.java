@@ -9,7 +9,6 @@ import static de.amr.games.pacman.model.Tile.TUNNEL;
 import static de.amr.games.pacman.model.Tile.WALL;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,15 +30,17 @@ public class Maze {
 	public Tile scatterTileNE, scatterTileNW, scatterTileSE, scatterTileSW;
 	public Tile tunnelExitLeft, tunnelExitRight;
 	public Tile doorLeft, doorRight;
+	public Tile energizers[];
 	public int totalNumPellets;
 
 	private final Set<Tile> intersections;
-	private final Set<Tile> energizers = new HashSet<>();
 
 	public Maze(String[] map) {
 		numRows = map.length;
 		numCols = map[0].length();
 		tiles = new Tile[numCols][numRows];
+		energizers = new Tile[4];
+		int energizerCount = 0;
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
 				char c = map[row].charAt(col);
@@ -54,7 +55,7 @@ public class Maze {
 					break;
 				case ENERGIZER:
 					totalNumPellets += 1;
-					energizers.add(tile);
+					energizers[energizerCount++] = tile;
 					break;
 				case 'P':
 					pacManHome = tile;
@@ -111,10 +112,6 @@ public class Maze {
 
 	public Stream<Tile> tiles() {
 		return Arrays.stream(tiles).flatMap(Arrays::stream);
-	}
-
-	public Stream<Tile> energizerTiles() {
-		return energizers.stream();
 	}
 
 	/**

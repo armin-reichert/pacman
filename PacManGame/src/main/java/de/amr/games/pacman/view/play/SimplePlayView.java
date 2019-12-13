@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.util.Arrays;
 
 import de.amr.easy.game.ui.sprites.Animation;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
@@ -124,7 +125,7 @@ public class SimplePlayView implements View, Controller {
 		});
 		// hide energizers when animation is in blank state
 		if (energizerBlinking.currentFrame() == 1) {
-			maze.energizerTiles().forEach(tile -> {
+			Arrays.stream(maze.energizers).forEach(tile -> {
 				g.setColor(cast.theme.color_mazeBackground());
 				g.fillRect(tile.col * Tile.SIZE, tile.row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 			});
