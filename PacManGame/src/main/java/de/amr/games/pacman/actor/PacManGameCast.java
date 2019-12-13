@@ -5,11 +5,10 @@ import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.behavior.common.Steerings.jumpingUpAndDown;
 import static de.amr.games.pacman.actor.behavior.common.Steerings.movingRandomlyNoReversing;
 import static de.amr.games.pacman.actor.behavior.common.Steerings.steeredByKeys;
-import static de.amr.games.pacman.model.Maze.NESW;
+import static de.amr.games.pacman.model.Direction.DOWN;
+import static de.amr.games.pacman.model.Direction.LEFT;
+import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Timing.sec;
-import static de.amr.graph.grid.impl.Grid4Topology.N;
-import static de.amr.graph.grid.impl.Grid4Topology.S;
-import static de.amr.graph.grid.impl.Grid4Topology.W;
 
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
@@ -18,6 +17,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.actor.core.MazeResident;
+import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
@@ -54,21 +54,21 @@ public class PacManGameCast {
 		pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
 		pacMan.teleportingTicks = sec(0.25f);
 
-		blinky.initialDir = W;
+		blinky.initialDir = LEFT;
 		blinky.initialTile = game.maze.ghostHome[0];
 		blinky.scatterTile = game.maze.scatterTileNE;
 		blinky.revivalTile = game.maze.ghostHome[2];
 		blinky.teleportingTicks = sec(0.5f);
 		blinky.fnChasingTarget = pacMan::tile;
 
-		pinky.initialDir = S;
+		pinky.initialDir = DOWN;
 		pinky.initialTile = game.maze.ghostHome[2];
 		pinky.scatterTile = game.maze.scatterTileNW;
 		pinky.revivalTile = game.maze.ghostHome[2];
 		pinky.teleportingTicks = sec(0.5f);
 		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
 
-		inky.initialDir = N;
+		inky.initialDir = UP;
 		inky.initialTile = game.maze.ghostHome[1];
 		inky.scatterTile = game.maze.scatterTileSE;
 		inky.revivalTile = game.maze.ghostHome[2];
@@ -78,7 +78,7 @@ public class PacManGameCast {
 			return game.maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		};
 
-		clyde.initialDir = N;
+		clyde.initialDir = UP;
 		clyde.initialTile = game.maze.ghostHome[3];
 		clyde.scatterTile = game.maze.scatterTileSW;
 		clyde.revivalTile = game.maze.ghostHome[3];
@@ -101,16 +101,17 @@ public class PacManGameCast {
 	}
 
 	private void setPacManSprites() {
-		NESW.dirs().forEach(dir -> pacMan.sprites.set("walking-" + dir, theme.spr_pacManWalking(dir)));
+		Direction.stream()
+				.forEach(dir -> pacMan.sprites.set("walking-" + dir, theme.spr_pacManWalking(dir.ordinal())));
 		pacMan.sprites.set("dying", theme.spr_pacManDying());
 		pacMan.sprites.set("full", theme.spr_pacManFull());
 		pacMan.sprites.select("full");
 	}
 
 	private void setGhostSprites(Ghost ghost, GhostColor color) {
-		NESW.dirs().forEach(dir -> {
-			ghost.sprites.set("color-" + dir, theme.spr_ghostColored(color, dir));
-			ghost.sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir));
+		Direction.stream().forEach(dir -> {
+			ghost.sprites.set("color-" + dir, theme.spr_ghostColored(color, dir.ordinal()));
+			ghost.sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir.ordinal()));
 		});
 		for (int i = 0; i < 4; ++i) {
 			ghost.sprites.set("value-" + i, theme.spr_greenNumber(i));

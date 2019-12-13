@@ -1,11 +1,7 @@
 package de.amr.games.pacman.actor.core;
 
 import static de.amr.easy.game.Application.LOGGER;
-import static de.amr.games.pacman.model.Maze.NESW;
-import static de.amr.graph.grid.impl.Grid4Topology.E;
-import static de.amr.graph.grid.impl.Grid4Topology.N;
-import static de.amr.graph.grid.impl.Grid4Topology.S;
-import static de.amr.graph.grid.impl.Grid4Topology.W;
+import static de.amr.games.pacman.model.Direction.RIGHT;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +10,7 @@ import java.util.Objects;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
+import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
@@ -24,8 +21,8 @@ import de.amr.games.pacman.model.Tile;
  */
 public abstract class AbstractMazeMover extends Entity implements MazeMover {
 
-	protected byte moveDir;
-	protected byte nextDir;
+	protected Direction moveDir = Direction.RIGHT;
+	protected Direction nextDir;
 	protected Tile targetTile;
 	protected List<Tile> targetPath;
 	protected boolean enteredNewTile;
@@ -34,7 +31,7 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 
 	@Override
 	public void init() {
-		moveDir = nextDir = E;
+		moveDir = nextDir = RIGHT;
 		targetTile = null;
 		targetPath = Collections.emptyList();
 		enteredNewTile = true;
@@ -42,31 +39,23 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 	}
 
 	@Override
-	public byte moveDir() {
+	public Direction moveDir() {
 		return moveDir;
 	}
 
 	@Override
-	public void setMoveDir(byte dir) {
-		if (Maze.NESW.isValid(dir)) {
-			moveDir = dir;
-		} else {
-			throw new IllegalArgumentException("Illegal direction value " + dir);
-		}
+	public void setMoveDir(Direction dir) {
+		moveDir = Objects.requireNonNull(dir);
 	}
 
 	@Override
-	public byte nextDir() {
+	public Direction nextDir() {
 		return nextDir;
 	}
 
 	@Override
-	public void setNextDir(byte dir) {
-		if (Maze.NESW.isValid(dir)) {
-			nextDir = dir;
-		} else {
-			throw new IllegalArgumentException("Illegal direction value " + dir);
-		}
+	public void setNextDir(Direction dir) {
+		nextDir = dir;
 	}
 
 	@Override
@@ -106,7 +95,7 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 	}
 
 	@Override
-	public boolean canCrossBorderTo(byte dir) {
+	public boolean canCrossBorderTo(Direction dir) {
 		Tile currentTile = tile();
 		return canMoveBetween(currentTile, maze().tileToDir(currentTile, dir));
 	}
@@ -140,7 +129,7 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 	 * Turns back to the reverse direction and triggers new steering.
 	 */
 	public void turnBack() {
-		nextDir = moveDir = NESW.inv(moveDir);
+		nextDir = moveDir = moveDir.opposite();
 		enteredNewTile = true;
 	}
 
@@ -155,10 +144,9 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 	}
 
 	/**
-	 * When an actor (Ghost, Pac-Man) leaves a teleport tile towards the border, a
-	 * timer is started and the actor is placed at the teleportation target and
-	 * hidden (to avoid triggering events during teleportation). When the timer
-	 * ends, the actor is made visible again.
+	 * When an actor (Ghost, Pac-Man) leaves a teleport tile towards the border, a timer is started and
+	 * the actor is placed at the teleportation target and hidden (to avoid triggering events during
+	 * teleportation). When the timer ends, the actor is made visible again.
 	 * 
 	 * @return <code>true</code> if teleportation is running
 	 */
@@ -166,11 +154,13 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 		if (teleportTicksRemaining > 0) { // running
 			teleportTicksRemaining -= 1;
 			LOGGER.fine("Teleporting running, remaining:" + teleportTicksRemaining);
-		} else if (teleportTicksRemaining == 0) { // completed
+		}
+		else if (teleportTicksRemaining == 0) { // completed
 			teleportTicksRemaining = -1;
 			show();
 			LOGGER.fine("Teleporting complete");
-		} else { // off
+		}
+		else { // off
 			int leftExit = (maze().tunnelExitLeft.col - 1) * Maze.TS;
 			int rightExit = (maze().tunnelExitRight.col + 1) * Maze.TS;
 			if (tf.getX() > rightExit) { // start
@@ -178,7 +168,8 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 				tf.setX(leftExit);
 				hide();
 				LOGGER.fine("Teleporting started");
-			} else if (tf.getX() < leftExit) { // start
+			}
+			else if (tf.getX() < leftExit) { // start
 				teleportTicksRemaining = teleportingTicks;
 				tf.setX(rightExit);
 				hide();
@@ -189,41 +180,42 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 	}
 
 	/**
-	 * Movement inside the maze. Handles changing the direction according to the
-	 * intended move direction, moving around corners without losing alignment,
+	 * Movement inside the maze. Handles changing the direction according to the intended move
+	 * direction, moving around corners without losing alignment,
 	 */
 	private void moveInsideMaze() {
 		Tile oldTile = tile();
 		float speed = possibleSpeedTo(nextDir);
 		if (speed > 0) {
-			if (nextDir == NESW.left(moveDir) || nextDir == NESW.right(moveDir)) {
+			if (nextDir == moveDir.turnLeft() || nextDir == moveDir.turnRight()) {
 				tf.setPosition(oldTile.col * Maze.TS, oldTile.row * Maze.TS);
 			}
 			moveDir = nextDir;
-		} else {
+		}
+		else {
 			speed = possibleSpeedTo(moveDir);
 		}
-		tf.setVelocity(Vector2f.smul(speed, Vector2f.of(NESW.dx(moveDir), NESW.dy(moveDir))));
+		tf.setVelocity(Vector2f.smul(speed, Vector2f.of(moveDir.dx, moveDir.dy)));
 		tf.move();
 		enteredNewTile = !oldTile.equals(tile());
 	}
 
 	/**
-	 * Computes how many pixels this entity can move towards the given direction
-	 * without crossing the border to a forbidden neighbor tile.
+	 * Computes how many pixels this entity can move towards the given direction without crossing the
+	 * border to a forbidden neighbor tile.
 	 */
-	private float possibleSpeedTo(byte dir) {
+	private float possibleSpeedTo(Direction dir) {
 		if (canCrossBorderTo(dir)) {
 			return maxSpeed();
 		}
 		switch (dir) {
-		case N:
+		case UP:
 			return -tile().row * Maze.TS + tf.getY();
-		case E:
+		case RIGHT:
 			return tile().col * Maze.TS - tf.getX();
-		case S:
+		case DOWN:
 			return tile().row * Maze.TS - tf.getY();
-		case W:
+		case LEFT:
 			return -tile().col * Maze.TS + tf.getX();
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);

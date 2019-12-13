@@ -2,6 +2,7 @@ package de.amr.games.pacman.actor.core;
 
 import java.util.List;
 
+import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -14,16 +15,16 @@ public interface MazeMover extends MazeResident {
 	/**
 	 * @return current move direction
 	 */
-	byte moveDir();
+	Direction moveDir();
 
-	void setMoveDir(byte dir);
+	void setMoveDir(Direction dir);
 
 	/**
 	 * @return next (=intended) move direction
 	 */
-	byte nextDir();
+	Direction nextDir();
 
-	void setNextDir(byte dir);
+	void setNextDir(Direction dir);
 
 	/**
 	 * @return if a new tile has been entered
@@ -56,7 +57,7 @@ public interface MazeMover extends MazeResident {
 	 *              direction value (N, E, S, W)
 	 * @return if the entity can enter the neighbor tile towards this direction
 	 */
-	boolean canCrossBorderTo(byte dir);
+	boolean canCrossBorderTo(Direction dir);
 
 	/**
 	 * @param tile

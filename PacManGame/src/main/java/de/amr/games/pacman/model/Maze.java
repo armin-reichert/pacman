@@ -1,7 +1,6 @@
 package de.amr.games.pacman.model;
 
 import static de.amr.easy.game.Application.LOGGER;
-import static de.amr.graph.grid.impl.Grid4Topology.S;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,9 +22,9 @@ import de.amr.graph.pathfinder.impl.AStarSearch;
  * The original Pac-Man maze.
  * 
  * <p>
- * The maze is a 2-dimensional grid of tiles, each tile contains a character
- * representing its content. Additionally, a (grid) graph structure is used to
- * allow running path finders on the graph.
+ * The maze is a 2-dimensional grid of tiles, each tile contains a character representing its
+ * content. Additionally, a (grid) graph structure is used to allow running path finders on the
+ * graph.
  * 
  * @author Armin Reichert
  * 
@@ -36,12 +35,9 @@ public class Maze {
 	/** Tile size in pixels. */
 	public static final int TS = 8;
 
-	/** 4-direction topology (NORTH, EAST, SOUTH, WEST) */
-	public static final Grid4Topology NESW = Grid4Topology.get();
+	public static final int NUM_COLS = 28;
 
-	public static final byte NUM_COLS = 28;
-
-	public static final byte NUM_ROWS = 36;
+	public static final int NUM_ROWS = 36;
 
 	private static final String[] CONTENT = {
 	/*@formatter:off*/
@@ -83,13 +79,13 @@ public class Maze {
 	"############################"}; 
 	/*@formatter:on*/
 
-	public static final char WALL = '#', TUNNEL = 't', SPACE = ' ', PELLET = '.', ENERGIZER = '*', EATEN_PELLET = ':',
-			EATEN_ENERGIZER = '~';
+	public static final char WALL = '#', TUNNEL = 't', SPACE = ' ', PELLET = '.', ENERGIZER = '*',
+			EATEN_PELLET = ':', EATEN_ENERGIZER = '~';
 
 	public final GridGraph2D<Tile, Void> graph;
 
-	public Tile cornerNW, cornerNE, cornerSW, cornerSE, scatterTileNE, scatterTileNW, scatterTileSE, scatterTileSW,
-			tunnelExitLeft, tunnelExitRight, pacManHome, bonusTile, doorLeft, doorRight;
+	public Tile cornerNW, cornerNE, cornerSW, cornerSE, scatterTileNE, scatterTileNW, scatterTileSE,
+			scatterTileSW, tunnelExitLeft, tunnelExitRight, pacManHome, bonusTile, doorLeft, doorRight;
 
 	public Tile[] ghostHome = new Tile[4];
 
@@ -100,10 +96,10 @@ public class Maze {
 	private final Set<Tile> energizers = new HashSet<>();
 
 	public Maze() {
-		for (byte row = 0; row < NUM_ROWS; ++row) {
-			for (byte col = 0; col < NUM_COLS; ++col) {
+		for (int row = 0; row < NUM_ROWS; ++row) {
+			for (int col = 0; col < NUM_COLS; ++col) {
 				char content = CONTENT[row].charAt(col);
-				Tile tile = board[col][row] = new Tile(col, row, content);
+				Tile tile = board[col][row] = new Tile((byte) col, (byte) row, content);
 				if (Character.isDigit(content)) {
 					ghostHome[Integer.valueOf(String.valueOf(content))] = tile;
 					tile.content = SPACE;
@@ -149,7 +145,8 @@ public class Maze {
 		cornerSE = board[26][32];
 
 		// Graph where each vertex holds a reference to the corresponding tile
-		graph = new GridGraph<>(NUM_COLS, NUM_ROWS, NESW, this::tile, (u, v) -> null, UndirectedEdge::new);
+		graph = new GridGraph<>(NUM_COLS, NUM_ROWS, Grid4Topology.get(), this::tile, (u, v) -> null,
+				UndirectedEdge::new);
 		graph.fill();
 		//@formatter:off
 		graph.edges()
@@ -182,40 +179,44 @@ public class Maze {
 	}
 
 	/**
-	 * @param col a column index
-	 * @param row a row index
-	 * @return the tile with the given coordinates. Tiles outside of the board are
-	 *         either tunnel tiles (if in the same row than the board tunnel tiles)
-	 *         or walls otherwise.
+	 * @param col
+	 *              a column index
+	 * @param row
+	 *              a row index
+	 * @return the tile with the given coordinates. Tiles outside of the board are either tunnel tiles
+	 *         (if in the same row than the board tunnel tiles) or walls otherwise.
 	 */
 	public Tile tileAt(int col, int row) {
-		byte _col = (byte) col, _row = (byte) row;
-		return insideBoard(_col, _row) ? board[_col][_row]
-				: new Tile(_col, _row, _row == tunnelExitLeft.row ? TUNNEL : WALL);
+		return insideBoard(col, row) ? board[col][row]
+				: new Tile((byte) col, (byte) row, row == tunnelExitLeft.row ? TUNNEL : WALL);
 	}
 
 	/**
-	 * @param tile reference tile
-	 * @param dir  some direction
-	 * @param n    number of tiles
-	 * @return the tile located <code>n</code> tiles away from the reference tile
-	 *         towards the given direction. This can be a tile outside of the board!
+	 * @param tile
+	 *               reference tile
+	 * @param dir
+	 *               some direction
+	 * @param n
+	 *               number of tiles
+	 * @return the tile located <code>n</code> tiles away from the reference tile towards the given
+	 *         direction. This can be a tile outside of the board!
 	 */
-	public Tile tileToDir(Tile tile, byte dir, int n) {
-		return tileAt(tile.col + n * NESW.dx(dir), tile.row + n * NESW.dy(dir));
+	public Tile tileToDir(Tile tile, Direction dir, int n) {
+		return tileAt(tile.col + n * dir.dx, tile.row + n * dir.dy);
 	}
 
 	/**
-	 * @param tile reference tile
-	 * @param dir  some direction
-	 * @return neighbor towards the given direction. This can be a tile outside of
-	 *         the board!
+	 * @param tile
+	 *               reference tile
+	 * @param dir
+	 *               some direction
+	 * @return neighbor towards the given direction. This can be a tile outside of the board!
 	 */
-	public Tile tileToDir(Tile tile, byte dir) {
+	public Tile tileToDir(Tile tile, Direction dir) {
 		return tileToDir(tile, dir, 1);
 	}
 
-	public boolean insideBoard(byte col, byte row) {
+	public boolean insideBoard(int col, int row) {
 		return 0 <= col && col < NUM_COLS && 0 <= row && row < NUM_ROWS;
 	}
 
@@ -236,7 +237,7 @@ public class Maze {
 	}
 
 	public boolean inFrontOfGhostHouseDoor(Tile tile) {
-		return isDoor(tileToDir(tile, S));
+		return isDoor(tileToDir(tile, Direction.DOWN));
 	}
 
 	public boolean partOfGhostHouse(Tile tile) {
@@ -276,9 +277,11 @@ public class Maze {
 	public void removeFood(Tile tile) {
 		if (tile.content == PELLET) {
 			tile.content = EATEN_PELLET;
-		} else if (tile.content == ENERGIZER) {
+		}
+		else if (tile.content == ENERGIZER) {
 			tile.content = EATEN_ENERGIZER;
-		} else {
+		}
+		else {
 			throw new IllegalArgumentException(String.format("Tile %s does not contain food", tile));
 		}
 	}
@@ -286,9 +289,11 @@ public class Maze {
 	public void restoreFood(Tile tile) {
 		if (tile.content == EATEN_PELLET) {
 			tile.content = PELLET;
-		} else if (tile.content == EATEN_ENERGIZER) {
+		}
+		else if (tile.content == EATEN_ENERGIZER) {
 			tile.content = ENERGIZER;
-		} else {
+		}
+		else {
 			throw new IllegalArgumentException(String.format("Tile %s does not contain eaten food", tile));
 		}
 	}
@@ -303,9 +308,9 @@ public class Maze {
 
 	// navigation and path finding
 
-	public Optional<Byte> direction(Tile t1, Tile t2) {
+	public Optional<Direction> directionBetween(Tile t1, Tile t2) {
 		int dx = t2.col - t1.col, dy = t2.row - t1.row;
-		return NESW.dirs().filter(dir -> NESW.dx(dir) == dx && NESW.dy(dir) == dy).findFirst();
+		return Direction.stream().filter(dir -> dir.dx == dx && dir.dy == dy).findFirst();
 	}
 
 	private int pathFinderCalls;
@@ -323,8 +328,8 @@ public class Maze {
 		return Collections.emptyList();
 	}
 
-	public Optional<Byte> alongPath(List<Tile> path) {
-		return path.size() < 2 ? Optional.empty() : direction(path.get(0), path.get(1));
+	public Optional<Direction> alongPath(List<Tile> path) {
+		return path.size() < 2 ? Optional.empty() : directionBetween(path.get(0), path.get(1));
 	}
 
 	// misc
@@ -332,8 +337,8 @@ public class Maze {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		for (byte row = 0; row < NUM_ROWS; ++row) {
-			for (byte col = 0; col < NUM_COLS; ++col) {
+		for (int row = 0; row < NUM_ROWS; ++row) {
+			for (int col = 0; col < NUM_COLS; ++col) {
 				sb.append(board[col][row].content);
 			}
 			sb.append("\n");

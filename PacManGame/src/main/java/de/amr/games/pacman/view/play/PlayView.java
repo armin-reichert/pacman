@@ -1,6 +1,5 @@
 package de.amr.games.pacman.view.play;
 
-import static de.amr.games.pacman.model.Maze.NESW;
 import static java.lang.Math.round;
 
 import java.awt.BasicStroke;
@@ -123,7 +122,8 @@ public class PlayView extends SimplePlayView {
 	private void toggleGhostActivationState(Ghost ghost) {
 		if (cast.isActive(ghost)) {
 			cast.deactivate(ghost);
-		} else {
+		}
+		else {
 			cast.activate(ghost);
 		}
 	}
@@ -166,9 +166,8 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private String pacManStateText(PacMan pacMan) {
-		String text = pacMan.state().getDuration() != State.ENDLESS
-				? String.format("(%s,%d|%d)", pacMan.state().id(), pacMan.state().getTicksRemaining(),
-						pacMan.state().getDuration())
+		String text = pacMan.state().getDuration() != State.ENDLESS ? String.format("(%s,%d|%d)",
+				pacMan.state().id(), pacMan.state().getTicksRemaining(), pacMan.state().getDuration())
 				: String.format("(%s,%s)", pacMan.state().id(), INFTY);
 
 		if (Application.app().settings.getAsBoolean("pacMan.immortable")) {
@@ -185,7 +184,8 @@ public class PlayView extends SimplePlayView {
 		if (ghost.getState() == GhostState.FRIGHTENED && cast.pacMan.hasPower()) {
 			duration = cast.pacMan.state().getDuration();
 			remaining = cast.pacMan.state().getTicksRemaining();
-		} else if (ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING) {
+		}
+		else if (ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING) {
 			State<?, ?> attack = fnGhostAttack.get();
 			if (attack != null) {
 				duration = attack.getDuration();
@@ -233,7 +233,8 @@ public class PlayView extends SimplePlayView {
 		Stroke solid = g.getStroke();
 		if (ghost.targetTile() != null) {
 			// draw target tile indicator
-			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
+			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
+					0);
 			g.setStroke(dashed);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(ghostColor);
@@ -252,10 +253,11 @@ public class PlayView extends SimplePlayView {
 			for (Tile tile : ghost.targetPath()) {
 				g.fillRect(tile.col * Maze.TS, tile.row * Maze.TS, Maze.TS, Maze.TS);
 			}
-		} else {
+		}
+		else {
 			// draw direction indicator
 			Vector2f center = ghost.tf.getCenter();
-			int dx = NESW.dx(ghost.nextDir()), dy = NESW.dy(ghost.nextDir());
+			int dx = ghost.nextDir().dx, dy = ghost.nextDir().dy;
 			int r = Maze.TS / 4;
 			int lineLen = Maze.TS;
 			int indX = (int) (center.x + dx * lineLen);

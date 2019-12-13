@@ -9,10 +9,10 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.model.Direction.LEFT;
+import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Timing.sec;
 import static de.amr.games.pacman.model.Timing.speed;
-import static de.amr.graph.grid.impl.Grid4Topology.N;
-import static de.amr.graph.grid.impl.Grid4Topology.W;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -34,6 +34,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
+import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
@@ -53,13 +54,13 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	public final PacManGameCast cast;
 	public final PacManGame game;
 	public final FsmComponent<GhostState> fsmComponent;
-	public byte initialDir;
+	public Direction initialDir;
 	public Tile initialTile;
 	public Tile revivalTile;
 	public Tile scatterTile;
 	public GhostState nextState;
 	public Supplier<Tile> fnChasingTarget;
-	
+
 	public int dotCounter; // used by logic when ghost can leave house
 
 	public Ghost(String name, PacManGameCast cast) {
@@ -97,7 +98,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 				.state(LEAVING_HOUSE)
 					.onEntry(() -> targetTile = maze().ghostHome[0])
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir))
-					.onExit(() -> moveDir = nextDir = W)
+					.onExit(() -> moveDir = nextDir = LEFT)
 				
 				.state(ENTERING_HOUSE)
 					.onEntry(() -> targetTile = revivalTile)
@@ -242,7 +243,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		if (maze().isDoor(neighbor)) {
 			return getState() == ENTERING_HOUSE || getState() == LEAVING_HOUSE;
 		}
-		if (maze().isNoUpIntersection(tile) && neighbor == maze().tileToDir(tile, N)) {
+		if (maze().isNoUpIntersection(tile) && neighbor == maze().tileToDir(tile, UP)) {
 			return getState() != CHASING && getState() != SCATTERING;
 		}
 		return super.canMoveBetween(tile, neighbor);
@@ -271,7 +272,8 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		case DEAD:
 			return 2 * speed(game.level.ghostSpeed);
 		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
+			throw new IllegalStateException(
+					String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
 		}
 	}
 

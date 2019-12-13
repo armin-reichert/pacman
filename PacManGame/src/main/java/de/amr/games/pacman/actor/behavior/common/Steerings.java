@@ -1,9 +1,9 @@
 package de.amr.games.pacman.actor.behavior.common;
 
-import static de.amr.graph.grid.impl.Grid4Topology.E;
-import static de.amr.graph.grid.impl.Grid4Topology.N;
-import static de.amr.graph.grid.impl.Grid4Topology.S;
-import static de.amr.graph.grid.impl.Grid4Topology.W;
+import static de.amr.games.pacman.model.Direction.DOWN;
+import static de.amr.games.pacman.model.Direction.LEFT;
+import static de.amr.games.pacman.model.Direction.RIGHT;
+import static de.amr.games.pacman.model.Direction.UP;
 
 import java.util.Collections;
 import java.util.function.Supplier;
@@ -15,7 +15,7 @@ import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.behavior.ghost.FleeingToSafeCorner;
 import de.amr.games.pacman.actor.behavior.pacman.AvoidingGhosts;
 import de.amr.games.pacman.actor.core.MazeMover;
-import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -27,13 +27,13 @@ public interface Steerings {
 
 	/**
 	 * @param keys
-	 *               steering key codes in order N, E, S, W
+	 *               steering key codes in order UP, RIGHT, DOWN, LEFT
 	 * @return steering using the given keys
 	 */
 	static <T extends MazeMover> Steering<T> steeredByKeys(int... keys) {
 		/*@formatter:off*/
-		return actor -> Maze.NESW.dirs()
-				.filter(dir -> Keyboard.keyDown(keys[dir]))
+		return actor -> Direction.stream()
+				.filter(dir -> Keyboard.keyDown(keys[dir.ordinal()]))
 				.findAny()
 				.ifPresent(actor::setNextDir);
 		/*@formatter:on*/
@@ -47,15 +47,15 @@ public interface Steerings {
 	 */
 	static <T extends MazeMover> Steering<T> jumpingUpAndDown() {
 		return actor -> {
-			if (actor.moveDir() == W || actor.moveDir() == E) {
-				actor.setMoveDir(S);
+			if (actor.moveDir() == LEFT || actor.moveDir() == RIGHT) {
+				actor.setMoveDir(DOWN);
 				if (!actor.canMoveForward()) {
-					actor.setMoveDir(N);
+					actor.setMoveDir(UP);
 				}
 			}
 			actor.setTargetTile(actor.tilesAhead(1));
 			if (!actor.canMoveForward()) {
-				actor.setNextDir(Maze.NESW.inv(actor.moveDir()));
+				actor.setNextDir(actor.moveDir().opposite());
 			}
 		};
 	}
@@ -72,9 +72,9 @@ public interface Steerings {
 		return actor -> {
 			actor.setTargetPath(Collections.emptyList());
 			actor.setTargetTile(null);
-			StreamUtils.permute(Maze.NESW.dirs())
+			StreamUtils.permute(Direction.stream())
 				.filter(dir -> actor.enteredNewTile())
-				.filter(dir -> dir != Maze.NESW.inv(actor.moveDir()))
+				.filter(dir -> dir != actor.moveDir().opposite())
 				.filter(actor::canCrossBorderTo)
 				.findFirst()
 				.ifPresent(actor::setNextDir);

@@ -1,7 +1,6 @@
 package de.amr.games.pacman.actor.behavior.pacman;
 
 import static de.amr.datastruct.StreamUtils.permute;
-import static de.amr.games.pacman.model.Maze.NESW;
 import static de.amr.games.pacman.model.Tile.distanceSq;
 
 import java.util.Comparator;
@@ -10,6 +9,7 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.MazeMover;
+import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Tile;
 
 public class AvoidingGhosts implements Steering<PacMan> {
@@ -22,7 +22,7 @@ public class AvoidingGhosts implements Steering<PacMan> {
 			.sorted(bySmallestDistanceTo(pacMan))
 			.findFirst()
 			.ifPresent(ghost -> {
-				pacMan.setNextDir( NESW.dirs()
+				pacMan.setNextDir(Direction.stream()
 						.filter(pacMan::canCrossBorderTo)
 						.sorted(byLargestDistanceOfNeighborTile(pacMan, ghost))
 						.findAny()
@@ -31,7 +31,7 @@ public class AvoidingGhosts implements Steering<PacMan> {
 		/*@formatter:on*/
 	}
 
-	private Comparator<Byte> byLargestDistanceOfNeighborTile(PacMan pacMan, MazeMover ghost) {
+	private Comparator<Direction> byLargestDistanceOfNeighborTile(PacMan pacMan, MazeMover ghost) {
 		Tile pacManTile = pacMan.tile(), ghostTile = ghost.tile();
 		return (dir1, dir2) -> {
 			Tile neighborTile1 = pacMan.maze().tileToDir(pacManTile, dir1),
@@ -44,7 +44,7 @@ public class AvoidingGhosts implements Steering<PacMan> {
 		return (ghost1, ghost2) -> Integer.compare(pacMan.distanceSq(ghost1), pacMan.distanceSq(ghost2));
 	}
 
-	private byte randomAccessibleDir(PacMan pacMan) {
-		return permute(NESW.dirs()).filter(pacMan::canCrossBorderTo).findAny().get();
+	private Direction randomAccessibleDir(PacMan pacMan) {
+		return permute(Direction.stream()).filter(pacMan::canCrossBorderTo).findAny().get();
 	}
 }

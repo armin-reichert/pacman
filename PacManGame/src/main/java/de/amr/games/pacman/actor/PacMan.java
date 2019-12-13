@@ -6,11 +6,11 @@ import static de.amr.games.pacman.actor.PacManState.DEAD;
 import static de.amr.games.pacman.actor.PacManState.DYING;
 import static de.amr.games.pacman.actor.PacManState.HOME;
 import static de.amr.games.pacman.actor.PacManState.HUNGRY;
+import static de.amr.games.pacman.model.Direction.LEFT;
+import static de.amr.games.pacman.model.Direction.RIGHT;
+import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Timing.sec;
 import static de.amr.games.pacman.model.Timing.speed;
-import static de.amr.graph.grid.impl.Grid4Topology.E;
-import static de.amr.graph.grid.impl.Grid4Topology.N;
-import static de.amr.graph.grid.impl.Grid4Topology.W;
 
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -91,7 +91,7 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 				.state(HOME)
 					.onEntry(() -> {
 						placeAtTile(maze().pacManHome, Maze.TS / 2, 0);
-						moveDir = nextDir = E;
+						moveDir = nextDir = RIGHT;
 						sprites.forEach(Sprite::resetAnimation);
 						sprites.select("full");
 						ticksSinceLastMeal = 0;
@@ -188,8 +188,8 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 	@Override
 	public Tile tilesAhead(int numTiles) {
 		Tile tileAhead = maze().tileToDir(tile(), moveDir, numTiles);
-		if (moveDir == N && app().settings.getAsBoolean("overflowBug")) {
-			return maze().tileToDir(tileAhead, W, numTiles);
+		if (moveDir == UP && app().settings.getAsBoolean("overflowBug")) {
+			return maze().tileToDir(tileAhead, LEFT, numTiles);
 		}
 		return tileAhead;
 	}
