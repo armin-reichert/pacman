@@ -9,6 +9,7 @@ import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.behavior.common.Steerings;
 import de.amr.games.pacman.actor.core.MazeResident;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class PacManMovementTestUI extends PlayView implements VisualController {
@@ -27,7 +28,7 @@ public class PacManMovementTestUI extends PlayView implements VisualController {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
 				cast.theme.snd_eatPill().play();
 				game.maze.removeFood(foodFound.tile);
-				if (game.maze.tiles().filter(game.maze::containsFood).count() == 0) {
+				if (game.maze.tiles().filter(Tile::containsFood).count() == 0) {
 					game.maze.restoreFood();
 				}
 			}
@@ -47,14 +48,17 @@ public class PacManMovementTestUI extends PlayView implements VisualController {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_M)) {
 			cast.pacMan.steering = Steerings.steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN,
 					KeyEvent.VK_LEFT);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_N)) {
-			cast.pacMan.steering = Steerings.steeredByKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2,
-					KeyEvent.VK_NUMPAD4);
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_A)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_N)) {
+			cast.pacMan.steering = Steerings.steeredByKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6,
+					KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4);
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_A)) {
 			cast.pacMan.steering = Steerings.avoidingGhosts();
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
 			cast.pacMan.steering = Steerings.movingRandomlyNoReversing();
-//			cast.pacMan.enteredNewTile = true;
+			// cast.pacMan.enteredNewTile = true;
 		}
 	}
 

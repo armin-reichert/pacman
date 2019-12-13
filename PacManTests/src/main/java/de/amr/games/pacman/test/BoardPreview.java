@@ -101,7 +101,7 @@ public class BoardPreview extends JFrame {
 		if (maze.isWall(tile)) {
 			return "";
 		}
-		if (maze.containsEnergizer(tile)) {
+		if (tile.containsEnergizer()) {
 			return "E";
 		}
 		return String.valueOf(tile.content);

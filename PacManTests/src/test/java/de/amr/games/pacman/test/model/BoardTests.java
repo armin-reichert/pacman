@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.Tile;
 
 public class BoardTests {
 
@@ -35,13 +36,13 @@ public class BoardTests {
 		assertNotNull(maze.scatterTileSW);
 		assertNotNull(maze.scatterTileSE);
 
-		assertEquals(4, maze.tiles().filter(tile -> maze.containsEnergizer(tile)).count());
-		assertEquals(240, maze.tiles().filter(tile -> maze.containsPellet(tile)).count());
+		assertEquals(4, maze.tiles().filter(Tile::containsEnergizer).count());
+		assertEquals(240, maze.tiles().filter(Tile::containsPellet).count());
 
 		assertTrue(maze.isWall(maze.tileAt(0, 3)));
 		assertTrue(maze.isDoor(maze.tileAt(13, 15)));
-		assertTrue(maze.containsPellet(maze.tileAt(1, 4)));
-		assertTrue(maze.containsEnergizer(maze.tileAt(1, 6)));
+		assertTrue(maze.tileAt(1, 4).containsPellet());
+		assertTrue(maze.tileAt(1, 6).containsEnergizer());
 
 		assertEquals(maze.tileAt(0, 0), maze.tileAt(0, 0));
 	}

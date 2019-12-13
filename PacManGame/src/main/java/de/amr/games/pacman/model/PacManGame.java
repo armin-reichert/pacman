@@ -146,7 +146,7 @@ public class PacManGame {
 	 */
 	public int eatFoodAt(Tile tile) {
 		level.numPelletsEaten += 1;
-		if (maze.containsEnergizer(tile)) {
+		if (tile.containsEnergizer()) {
 			level.ghostsKilledByEnergizer = 0;
 			maze.removeFood(tile);
 			return POINTS_ENERGIZER;

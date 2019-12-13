@@ -290,9 +290,9 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 				return bonusEaten;
 			}
 
-			if (maze().containsFood(pacManTile)) {
+			if (pacManTile.containsFood()) {
 				ticksSinceLastMeal = 0;
-				boolean energizer = maze().containsEnergizer(pacManTile);
+				boolean energizer = pacManTile.containsEnergizer();
 				digestion = energizer ? PacManGame.DIGEST_ENERGIZER_TICKS : PacManGame.DIGEST_PELLET_TICKS;
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
 			}

@@ -12,7 +12,7 @@ public class Tile {
 
 	/** Tile size in pixels. */
 	public static final int SIZE = 8;
-	
+
 	public static final char WALL = '#';
 	public static final char TUNNEL = 't';
 	public static final char SPACE = ' ';
@@ -35,6 +35,22 @@ public class Tile {
 		this.col = col;
 		this.row = row;
 		this.content = content;
+	}
+
+	public boolean containsFood() {
+		return containsPellet() || containsEnergizer();
+	}
+
+	public boolean containsPellet() {
+		return content == PELLET;
+	}
+
+	public boolean containsEnergizer() {
+		return content == ENERGIZER;
+	}
+
+	public boolean containsEatenFood() {
+		return content == EATEN_PELLET || content == EATEN_ENERGIZER;
 	}
 
 	@Override

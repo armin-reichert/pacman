@@ -49,6 +49,7 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.play.PlayView;
@@ -494,7 +495,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 		/* ALT-"E": Eats all (normal) pellets */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_E)) {
-			game.maze.tiles().filter(game.maze::containsPellet).forEach(tile -> {
+			game.maze.tiles().filter(Tile::containsPellet).forEach(tile -> {
 				game.eatFoodAt(tile);
 				updateDotCounters();
 			});

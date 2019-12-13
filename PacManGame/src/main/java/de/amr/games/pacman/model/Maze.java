@@ -192,21 +192,6 @@ public class Maze {
 
 	// food
 
-	public boolean containsFood(Tile tile) {
-		return containsPellet(tile) || containsEnergizer(tile);
-	}
-
-	public boolean containsPellet(Tile tile) {
-		return tile.content == PELLET;
-	}
-
-	public boolean containsEnergizer(Tile tile) {
-		return tile.content == ENERGIZER;
-	}
-
-	public boolean containsEatenFood(Tile tile) {
-		return tile.content == EATEN_PELLET || tile.content == EATEN_ENERGIZER;
-	}
 
 	public void removeFood(Tile tile) {
 		if (tile.content == PELLET) {
@@ -233,11 +218,11 @@ public class Maze {
 	}
 
 	public void restoreFood() {
-		tiles().filter(this::containsEatenFood).forEach(this::restoreFood);
+		tiles().filter(Tile::containsEatenFood).forEach(this::restoreFood);
 	}
 
 	public void removeFood() {
-		tiles().filter(this::containsFood).forEach(this::removeFood);
+		tiles().filter(Tile::containsFood).forEach(this::removeFood);
 	}
 
 	@Override

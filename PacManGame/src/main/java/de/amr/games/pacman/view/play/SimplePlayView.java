@@ -119,7 +119,7 @@ public class SimplePlayView implements View, Controller {
 			return;
 		}
 		// hide tiles with eaten pellets
-		maze.tiles().filter(maze::containsEatenFood).forEach(tile -> {
+		maze.tiles().filter(Tile::containsEatenFood).forEach(tile -> {
 			g.setColor(cast.theme.color_mazeBackground());
 			g.fillRect(tile.col * Tile.SIZE, tile.row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 		});
