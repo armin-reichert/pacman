@@ -414,19 +414,19 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onEntry() {
 			cast.pacMan.hide();
-			int points = 200 * (int) Math.pow(2, game.level.ghostsKilledByEnergizer);
-			int livesBeforeScoring = game.lives;
-			game.score(points);
-			LOGGER.info(() -> String.format("Scored %d points for killing %s ghost", points,
-					new String[] { "first", "2nd", "3rd", "4th" }[game.level.ghostsKilledByEnergizer]));
-			if (game.lives > livesBeforeScoring) {
-				cast.theme.snd_extraLife().play();
-			}
 			game.level.ghostsKilledByEnergizer += 1;
 			game.level.ghostKilledInLevel += 1;
+			int points = 100 * (int) Math.pow(2, game.level.ghostsKilledByEnergizer);
+			int livesBefore = game.lives;
+			game.score(points);
+			if (game.lives > livesBefore) {
+				cast.theme.snd_extraLife().play();
+			}
 			if (game.level.ghostKilledInLevel == 16) {
 				game.score(12000);
 			}
+			LOGGER.info(() -> String.format("Scored %d points for killing %s ghost in sequence", points,
+					new String[] { "", "first", "2nd", "3rd", "4th" }[game.level.ghostsKilledByEnergizer]));
 		}
 
 		@Override
@@ -640,7 +640,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		} else {
 			preferredLockedGhost().ifPresent(ghost -> {
 				ghost.dotCounter++;
-				LOGGER.info(() -> String.format("Ghost dot counter[%s]: %d", ghost.name(), ghost.dotCounter));
+				LOGGER.info(() -> String.format("%s's dot counter: %d", ghost.name(), ghost.dotCounter));
 			});
 		}
 	}
