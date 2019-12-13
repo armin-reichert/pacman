@@ -173,7 +173,7 @@ public class SimplePlayView implements View, Controller {
 		g.setColor(Color.PINK);
 		g.fillRect(22 * Maze.TS + 2, Maze.TS + 2, 4, 4);
 		pen.color = Color.WHITE;
-		pen.text(String.format("%d", game.level.numPelletsRemaining()), 23, 2);
+		pen.text(String.format("%d", game.numPelletsRemaining()), 23, 2);
 
 		drawLives(g);
 		drawLevelCounter(g);

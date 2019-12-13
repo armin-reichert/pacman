@@ -53,7 +53,7 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 		currentTarget += 1;
 		if (currentTarget == targets.size()) {
 			currentTarget = 0;
-			game.nextLevel();
+			game.enterNextLevel();
 			game.maze.removeFood();
 		}
 	}

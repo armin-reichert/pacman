@@ -147,7 +147,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 							playView.mazeFlashing = game.level.mazeNumFlashes > 0;
 						}
 						else if (state().getTicksRemaining() == sec(2)) {
-							game.nextLevel();
+							game.enterNextLevel();
 							cast.activeActors().forEach(MazeResident::init);
 							playView.init(); // stops flashing
 							resetGhostDotCounters();
@@ -381,7 +381,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent e = (FoodFoundEvent) event;
-			int points = game.level.eatFoodAt(e.tile);
+			int points = game.eatFoodAt(e.tile);
 			int livesBeforeScoring = game.lives;
 			game.score(points);
 			updateDotCounters();
@@ -389,11 +389,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (game.lives > livesBeforeScoring) {
 				cast.theme.snd_extraLife().play();
 			}
-			if (game.level.numPelletsRemaining() == 0) {
+			if (game.numPelletsRemaining() == 0) {
 				enqueue(new LevelCompletedEvent());
 				return;
 			}
-			if (game.level.isBonusScoreReached()) {
+			if (game.isBonusScoreReached()) {
 				cast.addBonus();
 			}
 			if (e.energizer) {
@@ -492,7 +492,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		/* ALT-"E": Eats all (normal) pellets */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_E)) {
 			game.maze.tiles().filter(game.maze::containsPellet).forEach(tile -> {
-				game.level.eatFoodAt(tile);
+				game.eatFoodAt(tile);
 				updateDotCounters();
 			});
 			LOGGER.info(() -> "All pellets eaten");

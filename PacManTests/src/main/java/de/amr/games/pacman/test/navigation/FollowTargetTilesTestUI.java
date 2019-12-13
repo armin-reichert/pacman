@@ -50,7 +50,7 @@ public class FollowTargetTilesTestUI extends PlayView implements VisualControlle
 			current += 1;
 			if (current == targets.size()) {
 				current = 0;
-				game.nextLevel();
+				game.enterNextLevel();
 			}
 		}
 		cast.blinky.update();

@@ -4,6 +4,7 @@ import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.model.Timing.sec;
 
 import java.util.logging.Logger;
 
@@ -24,6 +25,40 @@ import de.amr.statemachine.StateMachine;
  */
 class GhostMotionTimer extends StateMachine<GhostState, Void> {
 
+	static final int[][] SCATTERING_TICKS = {
+			/*@formatter:off*/
+			{ sec(7), sec(7), sec(5), sec(5) }, // Level 1
+			{ sec(7), sec(7), sec(5), 1 },      // Level 2-4
+			{ sec(5), sec(5), sec(5), 1 },      // Level >= 5
+			/*@formatter:on*/
+	};
+
+	static final int[][] CHASING_TICKS = {
+			/*@formatter:off*/
+			{ sec(20), sec(20), sec(20),   Integer.MAX_VALUE }, // Level 1
+			{ sec(20), sec(20), sec(1033), Integer.MAX_VALUE }, // Level 2-4
+			{ sec(20), sec(20), sec(1037), Integer.MAX_VALUE }, // Level >= 5
+			/*@formatter:on*/
+	};
+
+	/**
+	 * @param levelNumber current game level number
+	 * @param round       attack round
+	 * @return number of ticks ghost will scatter in this round and level
+	 */
+	static int scatterTicks(int levelNumber, int round) {
+		return SCATTERING_TICKS[(levelNumber == 1) ? 0 : (levelNumber <= 4) ? 1 : 2][Math.min(round, 3)];
+	}
+
+	/**
+	 * @param levelNumber current game level number
+	 * @param round       attack round
+	 * @return number of ticks ghost will chase in this round and level
+	 */
+	static int chasingTicks(int levelNumber, int round) {
+		return CHASING_TICKS[(levelNumber == 1) ? 0 : (levelNumber <= 4) ? 1 : 2][Math.min(round, 3)];
+	}
+
 	private int round;
 	private boolean suspended;
 
@@ -36,9 +71,9 @@ class GhostMotionTimer extends StateMachine<GhostState, Void> {
 			.initialState(SCATTERING)
 		.states()
 			.state(SCATTERING)
-				.timeoutAfter(() -> game.level.scatterTicks(round))
+				.timeoutAfter(() -> scatterTicks(game.level.number, round))
 			.state(CHASING)
-				.timeoutAfter(() -> game.level.chasingTicks(round))
+				.timeoutAfter(() -> chasingTicks(game.level.number, round))
 				.onExit(() -> ++round)
 		.transitions()
 			.when(SCATTERING).then(CHASING).onTimeout()
