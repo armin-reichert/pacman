@@ -19,7 +19,7 @@ import de.amr.games.pacman.theme.PacManTheme;
 public class PacManApp extends Application {
 
 	static {
-		Logger.getLogger("StateMachineLogger").setLevel(Level.INFO);
+		Logger.getLogger("StateMachineLogger").setLevel(Level.OFF);
 	}
 
 	public static void main(String[] args) {
