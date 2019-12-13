@@ -21,8 +21,8 @@ public class FollowTargetTilesTestUI extends PlayView implements VisualControlle
 		showRoutes = true;
 		showStates = false;
 		showScores = false;
-		targets = Arrays.asList(game.maze.cornerNW, game.maze.ghostHome[0], game.maze.cornerNE,
-				game.maze.cornerSE, game.maze.pacManHome, game.maze.cornerSW);
+		targets = Arrays.asList(game.maze.cornerNW, game.maze.ghostHome[0], game.maze.cornerNE, game.maze.cornerSE,
+				game.maze.pacManHome, game.maze.cornerSW);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class FollowTargetTilesTestUI extends PlayView implements VisualControlle
 			current += 1;
 			if (current == targets.size()) {
 				current = 0;
-				game.enterNextLevel();
+				game.enterLevel(game.level.number + 1);
 			}
 		}
 		cast.blinky.update();

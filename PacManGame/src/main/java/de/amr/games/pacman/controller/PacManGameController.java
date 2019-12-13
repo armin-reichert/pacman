@@ -147,7 +147,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 							playView.mazeFlashing = game.level.mazeNumFlashes > 0;
 						}
 						else if (state().getTicksRemaining() == sec(2)) {
-							game.enterNextLevel();
+							game.enterLevel(game.level.number + 1);
 							cast.activeActors().forEach(MazeResident::init);
 							playView.init(); // stops flashing
 							resetGhostDotCounters();

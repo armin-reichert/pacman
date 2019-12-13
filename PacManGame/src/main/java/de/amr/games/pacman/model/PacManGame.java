@@ -37,9 +37,9 @@ public class PacManGame {
 	public static final int SPEED_2_FPS = 70;
 	public static final int SPEED_3_FPS = 80;
 
-	static final File HISCORE_FILE = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
+	final File highscoreFile = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
 
-	static final Level[] LEVELS = new Level[] {
+	final Level[] levels = new Level[] {
 		/*@formatter:off*/
 		null, // level numbering starts at 1
 		new Level(CHERRIES,   100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6, 5 ),
@@ -77,15 +77,14 @@ public class PacManGame {
 	public void init() {
 		lives = 3;
 		score = 0;
-		hiscore.load(HISCORE_FILE);
+		hiscore.load(highscoreFile);
 		levelSymbols.clear();
 		enterLevel(1);
 	}
 
-	private void enterLevel(int n) {
+	public void enterLevel(int n) {
 		LOGGER.info(() -> "Enter level " + n);
-		int index = n < LEVELS.length ? n : LEVELS.length - 1;
-		level = LEVELS[index];
+		level = levels[Math.min(n, levels.length - 1)];
 		level.number = n;
 		level.numPelletsEaten = 0;
 		level.ghostsKilledByEnergizer = 0;
@@ -93,10 +92,6 @@ public class PacManGame {
 		levelSymbols.add(level.bonusSymbol);
 		maze.restoreFood();
 		saveHiscore();
-	}
-
-	public void enterNextLevel() {
-		enterLevel(level.number + 1);
 	}
 
 	/**
@@ -132,7 +127,7 @@ public class PacManGame {
 	// Score management
 
 	public void saveHiscore() {
-		hiscore.save(HISCORE_FILE);
+		hiscore.save(highscoreFile);
 	}
 
 	public void score(int points) {
