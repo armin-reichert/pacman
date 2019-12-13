@@ -17,7 +17,7 @@ public enum Direction implements Iterable<Direction> {
 		return Arrays.asList(values()).iterator();
 	}
 
-	public static Stream<Direction> stream() {
+	public static Stream<Direction> dirs() {
 		return Arrays.stream(values());
 	}
 

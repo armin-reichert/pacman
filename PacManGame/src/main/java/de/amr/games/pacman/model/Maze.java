@@ -310,7 +310,7 @@ public class Maze {
 
 	public Optional<Direction> directionBetween(Tile t1, Tile t2) {
 		int dx = t2.col - t1.col, dy = t2.row - t1.row;
-		return Direction.stream().filter(dir -> dir.dx == dx && dir.dy == dy).findFirst();
+		return Direction.dirs().filter(dir -> dir.dx == dx && dir.dy == dy).findFirst();
 	}
 
 	private int pathFinderCalls;

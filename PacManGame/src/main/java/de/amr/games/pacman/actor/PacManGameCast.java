@@ -101,7 +101,7 @@ public class PacManGameCast {
 	}
 
 	private void setPacManSprites() {
-		Direction.stream()
+		Direction.dirs()
 				.forEach(dir -> pacMan.sprites.set("walking-" + dir, theme.spr_pacManWalking(dir.ordinal())));
 		pacMan.sprites.set("dying", theme.spr_pacManDying());
 		pacMan.sprites.set("full", theme.spr_pacManFull());
@@ -109,7 +109,7 @@ public class PacManGameCast {
 	}
 
 	private void setGhostSprites(Ghost ghost, GhostColor color) {
-		Direction.stream().forEach(dir -> {
+		Direction.dirs().forEach(dir -> {
 			ghost.sprites.set("color-" + dir, theme.spr_ghostColored(color, dir.ordinal()));
 			ghost.sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir.ordinal()));
 		});

@@ -22,7 +22,7 @@ public class AvoidingGhosts implements Steering<PacMan> {
 			.sorted(bySmallestDistanceTo(pacMan))
 			.findFirst()
 			.ifPresent(ghost -> {
-				pacMan.setNextDir(Direction.stream()
+				pacMan.setNextDir(Direction.dirs()
 						.filter(pacMan::canCrossBorderTo)
 						.sorted(byLargestDistanceOfNeighborTile(pacMan, ghost))
 						.findAny()
@@ -45,6 +45,6 @@ public class AvoidingGhosts implements Steering<PacMan> {
 	}
 
 	private Direction randomAccessibleDir(PacMan pacMan) {
-		return permute(Direction.stream()).filter(pacMan::canCrossBorderTo).findAny().get();
+		return permute(Direction.dirs()).filter(pacMan::canCrossBorderTo).findAny().get();
 	}
 }

@@ -32,7 +32,7 @@ public interface Steerings {
 	 */
 	static <T extends MazeMover> Steering<T> steeredByKeys(int... keys) {
 		/*@formatter:off*/
-		return actor -> Direction.stream()
+		return actor -> Direction.dirs()
 				.filter(dir -> Keyboard.keyDown(keys[dir.ordinal()]))
 				.findAny()
 				.ifPresent(actor::setNextDir);
@@ -72,7 +72,7 @@ public interface Steerings {
 		return actor -> {
 			actor.setTargetPath(Collections.emptyList());
 			actor.setTargetTile(null);
-			StreamUtils.permute(Direction.stream())
+			StreamUtils.permute(Direction.dirs())
 				.filter(dir -> actor.enteredNewTile())
 				.filter(dir -> dir != actor.moveDir().opposite())
 				.filter(actor::canCrossBorderTo)
