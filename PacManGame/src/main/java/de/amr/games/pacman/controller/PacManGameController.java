@@ -592,21 +592,21 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		int ghostDotLimit = ghostDotLimit(ghost, levelNumber);
 		if (ghost.dotCounter >= ghostDotLimit) {
 			LOGGER
-					.info(() -> String.format("%s can leave house (ghost's dot limit %d reached)", ghost.name(), ghostDotLimit));
+					.info(() -> String.format("%s can leave house: ghost's dot limit (%d) reached", ghost.name(), ghostDotLimit));
 			return true;
 		}
 		if (globalDotCounterEnabled) {
 			int globalDotLimit = globalDotLimit(ghost);
 			if (globalDotCounter >= globalDotLimit) {
 				LOGGER.info(
-						() -> String.format("%s can leave house (global dot limit %d reached)", ghost.name(), globalDotLimit));
+						() -> String.format("%s can leave house: global dot limit (%d) reached", ghost.name(), globalDotLimit));
 				return true;
 			}
 		}
 		int timeout = levelNumber < 5 ? sec(4) : sec(3);
 		if (cast.pacMan.ticksSinceLastMeal > timeout) {
 			LOGGER.info(
-					() -> String.format("%s can leave house (Pac-Man's eat timeout %d ticksreached )", ghost.name(), timeout));
+					() -> String.format("%s can leave house: Pac-Man's eat timeout (%d ticks) reached", ghost.name(), timeout));
 			return true;
 		}
 		return false;
