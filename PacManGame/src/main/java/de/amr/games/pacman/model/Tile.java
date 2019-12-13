@@ -49,8 +49,40 @@ public class Tile {
 		return content == ENERGIZER;
 	}
 
+	public boolean containsEatenPellet() {
+		return content == EATEN_PELLET;
+	}
+
+	public boolean containsEatenEnergizer() {
+		return content == EATEN_ENERGIZER;
+	}
+
 	public boolean containsEatenFood() {
 		return content == EATEN_PELLET || content == EATEN_ENERGIZER;
+	}
+
+	public void removeFood() {
+		if (containsPellet()) {
+			content = EATEN_PELLET;
+		}
+		else if (containsEnergizer()) {
+			content = EATEN_ENERGIZER;
+		}
+		else {
+			throw new IllegalArgumentException(String.format("Tile %s does not contain food", this));
+		}
+	}
+
+	public void restoreFood() {
+		if (containsEatenPellet()) {
+			content = PELLET;
+		}
+		else if (containsEatenEnergizer()) {
+			content = ENERGIZER;
+		}
+		else {
+			throw new IllegalArgumentException(String.format("Tile %s does not contain eaten food", this));
+		}
 	}
 
 	@Override

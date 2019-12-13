@@ -148,11 +148,11 @@ public class PacManGame {
 		level.numPelletsEaten += 1;
 		if (tile.containsEnergizer()) {
 			level.ghostsKilledByEnergizer = 0;
-			maze.removeFood(tile);
+			tile.removeFood();
 			return POINTS_ENERGIZER;
 		}
 		else {
-			maze.removeFood(tile);
+			tile.removeFood();
 			return POINTS_PELLET;
 		}
 	}

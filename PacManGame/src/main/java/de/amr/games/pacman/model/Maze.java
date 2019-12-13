@@ -1,7 +1,5 @@
 package de.amr.games.pacman.model;
 
-import static de.amr.games.pacman.model.Tile.EATEN_ENERGIZER;
-import static de.amr.games.pacman.model.Tile.EATEN_PELLET;
 import static de.amr.games.pacman.model.Tile.ENERGIZER;
 import static de.amr.games.pacman.model.Tile.PELLET;
 import static de.amr.games.pacman.model.Tile.SPACE;
@@ -190,39 +188,12 @@ public class Maze {
 		return tile == tiles[12][14] || tile == tiles[12][26] || tile == tiles[15][14] || tile == tiles[15][26];
 	}
 
-	// food
-
-
-	public void removeFood(Tile tile) {
-		if (tile.content == PELLET) {
-			tile.content = EATEN_PELLET;
-		}
-		else if (tile.content == ENERGIZER) {
-			tile.content = EATEN_ENERGIZER;
-		}
-		else {
-			throw new IllegalArgumentException(String.format("Tile %s does not contain food", tile));
-		}
-	}
-
-	public void restoreFood(Tile tile) {
-		if (tile.content == EATEN_PELLET) {
-			tile.content = PELLET;
-		}
-		else if (tile.content == EATEN_ENERGIZER) {
-			tile.content = ENERGIZER;
-		}
-		else {
-			throw new IllegalArgumentException(String.format("Tile %s does not contain eaten food", tile));
-		}
-	}
-
 	public void restoreFood() {
-		tiles().filter(Tile::containsEatenFood).forEach(this::restoreFood);
+		tiles().filter(Tile::containsEatenFood).forEach(Tile::restoreFood);
 	}
 
 	public void removeFood() {
-		tiles().filter(Tile::containsFood).forEach(this::removeFood);
+		tiles().filter(Tile::containsFood).forEach(Tile::removeFood);
 	}
 
 	@Override
