@@ -60,8 +60,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
-		implements VisualController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
 	private PacManGame game;
 	private PacManTheme theme;
@@ -318,16 +317,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			for (Ghost ghost : ghosts) {
 				if (ghost.getState() == GhostState.LOCKED && canLeaveHouse(ghost, cast.game.level.number)) {
 					ghost.process(new GhostUnlockedEvent());
-				}
-				else if (ghost.getState() == GhostState.CHASING
-						&& ghostMotionTimer.getState() == GhostState.SCATTERING) {
+				} else if (ghost.getState() == GhostState.CHASING && ghostMotionTimer.getState() == GhostState.SCATTERING) {
 					ghost.process(new StartScatteringEvent());
-				}
-				else if (ghost.getState() == GhostState.SCATTERING
-						&& ghostMotionTimer.getState() == GhostState.CHASING) {
+				} else if (ghost.getState() == GhostState.SCATTERING && ghostMotionTimer.getState() == GhostState.CHASING) {
 					ghost.process(new StartChasingEvent());
-				}
-				else {
+				} else {
 					ghost.update();
 				}
 			}
@@ -337,8 +331,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			PacManGhostCollisionEvent e = (PacManGhostCollisionEvent) event;
 			if (e.ghost.oneOf(GhostState.CHASING, GhostState.SCATTERING)) {
 				enqueue(new PacManKilledEvent(e.ghost));
-			}
-			else if (e.ghost.getState() == GhostState.FRIGHTENED) {
+			} else if (e.ghost.getState() == GhostState.FRIGHTENED) {
 				enqueue(new GhostKilledEvent(e.ghost));
 			}
 		}
@@ -436,8 +429,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onTick() {
 			cast.bonus().ifPresent(Bonus::update);
-			cast.activeGhosts()
-					.filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
+			cast.activeGhosts().filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
 					.forEach(Ghost::update);
 		}
 
@@ -540,19 +532,15 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		int fps = app().clock.getFrequency();
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
 			setClockFrequency(PacManGame.SPEED_1_FPS);
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
 			setClockFrequency(PacManGame.SPEED_2_FPS);
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			setClockFrequency(PacManGame.SPEED_3_FPS);
-		}
-		else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_LEFT)) {
+		} else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_LEFT)) {
 			if (fps > 5) {
 				setClockFrequency(fps > 10 ? fps - 5 : Math.max(fps - 1, 5));
 			}
-		}
-		else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_RIGHT)) {
+		} else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_RIGHT)) {
 			setClockFrequency(fps < 10 ? fps + 1 : fps + 5);
 		}
 	}
@@ -569,8 +557,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				app().settings.set("ghost.originalBehavior", false);
 				cast.ghosts().forEach(ghost -> ghost.setSteering(FRIGHTENED, fleeingToSafeCorner(cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
-			}
-			else {
+			} else {
 				app().settings.set("ghost.originalBehavior", true);
 				cast.ghosts().forEach(ghost -> ghost.setSteering(FRIGHTENED, movingRandomlyNoReversing()));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
@@ -583,10 +570,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	/**
 	 * Determines if the given ghost can leave the ghost house.
 	 * 
-	 * @param ghost
-	 *                      a ghost
-	 * @param levelNumber
-	 *                      the level number
+	 * @param ghost       a ghost
+	 * @param levelNumber the level number
 	 * 
 	 * @see <a href=
 	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
@@ -594,23 +579,31 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	 */
 	private boolean canLeaveHouse(Ghost ghost, int levelNumber) {
 		if (ghost == cast.blinky) {
+			LOGGER.info(() -> "Blinky can always leave house immediatley");
 			return true;
 		}
 		Optional<Ghost> lockedGhost = preferredLockedGhost();
 		if (!lockedGhost.isPresent() || lockedGhost.get() != ghost) {
 			return false;
 		}
-		if (ghost.dotCounter >= ghostDotLimit(ghost, levelNumber)) {
-			LOGGER.info(() -> String.format("%s can leave house (ghost's dot limit reached)", ghost.name()));
+		int ghostDotLimit = ghostDotLimit(ghost, levelNumber);
+		if (ghost.dotCounter >= ghostDotLimit) {
+			LOGGER
+					.info(() -> String.format("%s can leave house (ghost's dot limit %d reached)", ghost.name(), ghostDotLimit));
 			return true;
 		}
-		if (globalDotCounterEnabled && globalDotCounter >= globalDotLimit(ghost)) {
-			LOGGER.info(() -> String.format("%s can leave house (global dot limit reached)", ghost.name()));
-			return true;
+		if (globalDotCounterEnabled) {
+			int globalDotLimit = globalDotLimit(ghost);
+			if (globalDotCounter >= globalDotLimit) {
+				LOGGER.info(
+						() -> String.format("%s can leave house (global dot limit %d reached)", ghost.name(), globalDotLimit));
+				return true;
+			}
 		}
 		int timeout = levelNumber < 5 ? sec(4) : sec(3);
 		if (cast.pacMan.ticksSinceLastMeal > timeout) {
-			LOGGER.info(() -> String.format("%s can leave house (Pac-Man's eat timer expired)", ghost.name()));
+			LOGGER.info(
+					() -> String.format("%s can leave house (Pac-Man's eat timeout %d ticksreached )", ghost.name(), timeout));
 			return true;
 		}
 		return false;
@@ -624,26 +617,27 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void enableGlobalDotCounter() {
 		globalDotCounterEnabled = true;
 		globalDotCounter = 0;
+		LOGGER.info(() -> "Global dot counter enabled and set to zero");
 	}
 
 	private void resetGhostDotCounters() {
 		cast.ghosts().forEach(ghost -> ghost.dotCounter = 0);
+		LOGGER.info(() -> "Ghost dot counters enabled and set to zero");
 	}
 
 	private void updateDotCounters() {
 		if (globalDotCounterEnabled) {
 			globalDotCounter++;
-			LOGGER.info(() -> String.format("Global Food Counter: %d", globalDotCounter));
+			LOGGER.info(() -> String.format("Global dot counter: %d", globalDotCounter));
 			if (globalDotCounter == 32 && cast.clyde.getState() == GhostState.LOCKED) {
 				globalDotCounterEnabled = false;
 				globalDotCounter = 0;
-				LOGGER.info(() -> "Global Food Counter reset to zero");
+				LOGGER.info(() -> "Global dot counter reset to zero");
 			}
-		}
-		else {
+		} else {
 			preferredLockedGhost().ifPresent(ghost -> {
 				ghost.dotCounter++;
-				LOGGER.info(() -> String.format("Ghost food counter[%s]: %d", ghost.name(), ghost.dotCounter));
+				LOGGER.info(() -> String.format("Ghost dot counter[%s]: %d", ghost.name(), ghost.dotCounter));
 			});
 		}
 	}
