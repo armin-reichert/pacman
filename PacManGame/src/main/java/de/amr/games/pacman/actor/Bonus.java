@@ -4,9 +4,11 @@ import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.BonusState.ACTIVE;
 import static de.amr.games.pacman.actor.BonusState.CONSUMED;
 import static de.amr.games.pacman.actor.BonusState.INACTIVE;
+import static de.amr.games.pacman.model.Timing.sec;
 import static java.util.Arrays.binarySearch;
 
 import java.awt.Graphics2D;
+import java.util.Random;
 import java.util.logging.Logger;
 
 import de.amr.easy.game.entity.Entity;
@@ -40,6 +42,7 @@ public class Bonus extends Entity implements MazeResident, FsmContainer<BonusSta
 		fsmComponent = buildFsmComponent("Bonus");
 		tf.setWidth(Maze.TS);
 		tf.setHeight(Maze.TS);
+		placeAtTile(cast.game.maze.bonusTile, Maze.TS / 2, 0);
 		symbol = cast.game.level.bonusSymbol;
 		value = cast.game.level.bonusValue;
 		sprites.set("symbol", cast.theme.spr_bonusSymbol(symbol));
@@ -75,16 +78,11 @@ public class Bonus extends Entity implements MazeResident, FsmContainer<BonusSta
 			.initialState(ACTIVE)
 			.states()
 				.state(ACTIVE)
-					.timeoutAfter(cast.game::bonusActiveTicks)
-					.onEntry(() -> {
-						placeAtTile(cast.game.maze.bonusTile, Maze.TS / 2, 0);
-						sprites.select("symbol");
-					})
+					.timeoutAfter(() -> sec(9 + new Random().nextFloat()))
+					.onEntry(() -> sprites.select("symbol"))
 				.state(CONSUMED)
-					.timeoutAfter(cast.game::bonusConsumedTicks)
-					.onEntry(() -> {
-						sprites.select("number");
-					})
+					.timeoutAfter(sec(3))
+					.onEntry(() -> sprites.select("number"))
 				.state(INACTIVE)
 					.onEntry(cast::removeBonus)
 			.transitions()

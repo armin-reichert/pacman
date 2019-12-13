@@ -395,6 +395,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			}
 			if (game.isBonusScoreReached()) {
 				cast.addBonus();
+				cast.bonus().ifPresent(bonus -> {
+					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus, bonus.state().getDuration() / 60f));
+				});
 			}
 			if (e.energizer) {
 				enqueue(new PacManGainsPowerEvent());

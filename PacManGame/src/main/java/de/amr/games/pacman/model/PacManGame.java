@@ -9,10 +9,8 @@ import static de.amr.games.pacman.model.BonusSymbol.GRAPES;
 import static de.amr.games.pacman.model.BonusSymbol.KEY;
 import static de.amr.games.pacman.model.BonusSymbol.PEACH;
 import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
-import static de.amr.games.pacman.model.Timing.sec;
 
 import java.io.File;
-import java.util.Random;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.
@@ -79,8 +77,8 @@ public class PacManGame {
 	public void init() {
 		lives = 3;
 		score = 0;
-		levelSymbols.clear();
 		hiscore.load(HISCORE_FILE);
+		levelSymbols.clear();
 		enterLevel(1);
 	}
 
@@ -122,20 +120,6 @@ public class PacManGame {
 			maze.removeFood(tile);
 			return POINTS_PELLET;
 		}
-	}
-
-	/**
-	 * @return number of ticks the bonus is active
-	 */
-	public int bonusActiveTicks() {
-		return sec(9 + new Random().nextInt(1));
-	}
-
-	/**
-	 * @return number of ticks the consumed bonus is active
-	 */
-	public int bonusConsumedTicks() {
-		return sec(3);
 	}
 
 	/**
