@@ -196,7 +196,7 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (maze().isDoor(neighbor)) {
+		if (neighbor.isDoor()) {
 			return false;
 		}
 		return super.canMoveBetween(tile, neighbor);

@@ -70,7 +70,9 @@ public class Maze {
 		}
 
 		doorLeft = tiles[13][15];
+		doorLeft.content = Tile.DOOR;
 		doorRight = tiles[14][15];
+		doorRight.content = Tile.DOOR;
 
 		tunnelExitLeft = tiles[0][17];
 		tunnelExitRight = tiles[27][17];
@@ -101,7 +103,7 @@ public class Maze {
 		return Direction.dirs()
 				.map(dir -> tileToDir(tile, dir))
 				.filter(this::insideBoard)
-				.filter(neighbor -> !isWall(neighbor) && !isDoor(neighbor))
+				.filter(neighbor -> !neighbor.isWall() && !neighbor.isDoor())
 				.count();
 		/*@formatter:on*/
 	}
@@ -156,20 +158,8 @@ public class Maze {
 		return insideBoard(tile.col, tile.row);
 	}
 
-	public boolean isTunnel(Tile tile) {
-		return tile.content == TUNNEL;
-	}
-
-	public boolean isWall(Tile tile) {
-		return tile.content == WALL;
-	}
-
-	public boolean isDoor(Tile tile) {
-		return tile == doorLeft || tile == doorRight;
-	}
-
 	public boolean inFrontOfGhostHouseDoor(Tile tile) {
-		return isDoor(tileToDir(tile, Direction.DOWN));
+		return tileToDir(tile, Direction.DOWN).isDoor();
 	}
 
 	public boolean partOfGhostHouse(Tile tile) {

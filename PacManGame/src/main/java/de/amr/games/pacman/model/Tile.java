@@ -14,6 +14,7 @@ public class Tile {
 	public static final int SIZE = 8;
 
 	public static final char WALL = '#';
+	public static final char DOOR = '=';
 	public static final char TUNNEL = 't';
 	public static final char SPACE = ' ';
 	public static final char PELLET = '.';
@@ -35,6 +36,18 @@ public class Tile {
 		this.col = col;
 		this.row = row;
 		this.content = content;
+	}
+
+	public boolean isTunnel() {
+		return content == TUNNEL;
+	}
+
+	public boolean isWall() {
+		return content == WALL;
+	}
+
+	public boolean isDoor() {
+		return content == DOOR;
 	}
 
 	public boolean containsFood() {

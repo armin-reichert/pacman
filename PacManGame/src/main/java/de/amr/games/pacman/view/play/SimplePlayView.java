@@ -131,7 +131,7 @@ public class SimplePlayView implements View, Controller {
 			});
 		}
 		// draw door open when ghost is passing through
-		if (cast.activeGhosts().anyMatch(ghost -> maze.isDoor(ghost.tile()))) {
+		if (cast.activeGhosts().anyMatch(ghost -> ghost.tile().isDoor())) {
 			g.setColor(cast.theme.color_mazeBackground());
 			g.fillRect(maze.doorLeft.col * Tile.SIZE, maze.doorLeft.row * Tile.SIZE, 2 * Tile.SIZE, Tile.SIZE);
 		}

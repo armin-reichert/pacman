@@ -240,7 +240,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (maze().isDoor(neighbor)) {
+		if (neighbor.isDoor()) {
 			return getState() == ENTERING_HOUSE || getState() == LEAVING_HOUSE;
 		}
 		if (maze().isNoUpIntersection(tile) && neighbor == maze().tileToDir(tile, UP)) {
@@ -252,7 +252,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	@Override
 	/* TODO: Some values are still guessed */
 	public float maxSpeed() {
-		boolean inTunnel = maze().isTunnel(tile());
+		boolean inTunnel = tile().isTunnel();
 		boolean outsideHouse = !maze().inGhostHouse(tile());
 		switch (getState()) {
 		case LOCKED:

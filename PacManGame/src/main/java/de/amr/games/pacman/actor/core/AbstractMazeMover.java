@@ -101,10 +101,10 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (maze().isWall(neighbor)) {
+		if (neighbor.isWall()) {
 			return false;
 		}
-		if (maze().isTunnel(neighbor)) {
+		if (neighbor.isTunnel()) {
 			return true; // includes tiles outside board used for teleportation!
 		}
 		return maze().insideBoard(neighbor);

@@ -52,10 +52,10 @@ public class BoardPreview extends JFrame {
 		r.fnPassageColor = (cell, dir) -> Color.WHITE;
 		r.fnCellBgColor = cell -> {
 			Tile tile = tile(cell);
-			if (maze.isWall(tile)) {
+			if (tile.isWall()) {
 				return Color.BLACK;
 			}
-			if (maze.isTunnel(tile)) {
+			if (tile.isTunnel()) {
 				return Color.LIGHT_GRAY;
 			}
 			if (maze.inGhostHouse(tile)) {
@@ -67,7 +67,7 @@ public class BoardPreview extends JFrame {
 			if (maze.isIntersection(tile)) {
 				return Color.GREEN;
 			}
-			if (maze.isDoor(tile)) {
+			if (tile.isDoor()) {
 				return Color.PINK;
 			}
 			return Color.WHITE;
@@ -98,7 +98,7 @@ public class BoardPreview extends JFrame {
 		if (tile == maze.pacManHome) {
 			return "O";
 		}
-		if (maze.isWall(tile)) {
+		if (tile.isWall()) {
 			return "";
 		}
 		if (tile.containsEnergizer()) {

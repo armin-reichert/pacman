@@ -33,7 +33,7 @@ public class MazeGraph {
 		grid.fill();
 		//@formatter:off
 		grid.edges()
-			.filter(edge -> maze.isWall(tile(edge.either())) || maze.isWall(tile(edge.other())))
+			.filter(edge -> tile(edge.either()).isWall() || tile(edge.other()).isWall())
 			.forEach(grid::removeEdge);
 		/*@formatter:on*/
 	}

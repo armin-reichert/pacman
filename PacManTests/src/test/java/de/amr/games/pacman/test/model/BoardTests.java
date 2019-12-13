@@ -39,8 +39,8 @@ public class BoardTests {
 		assertEquals(4, maze.tiles().filter(Tile::containsEnergizer).count());
 		assertEquals(240, maze.tiles().filter(Tile::containsPellet).count());
 
-		assertTrue(maze.isWall(maze.tileAt(0, 3)));
-		assertTrue(maze.isDoor(maze.tileAt(13, 15)));
+		assertTrue(maze.tileAt(0, 3).isWall());
+		assertTrue(maze.tileAt(13, 15).isDoor());
 		assertTrue(maze.tileAt(1, 4).containsPellet());
 		assertTrue(maze.tileAt(1, 6).containsEnergizer());
 
