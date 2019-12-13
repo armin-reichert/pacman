@@ -11,25 +11,25 @@ import java.util.Iterator;
  */
 public class LevelSymbols implements Iterable<BonusSymbol> {
 
-	private final Deque<BonusSymbol> list = new ArrayDeque<>(7);
+	private final Deque<BonusSymbol> q = new ArrayDeque<>(7);
 
 	public int count() {
-		return list.size();
+		return q.size();
 	}
 
 	@Override
 	public Iterator<BonusSymbol> iterator() {
-		return list.iterator();
+		return q.iterator();
 	}
 
 	public void clear() {
-		list.clear();
+		q.clear();
 	}
 
 	public void add(BonusSymbol symbol) {
-		if (list.size() == 7) {
-			list.removeLast();
+		if (q.size() == 7) {
+			q.removeLast();
 		}
-		list.addFirst(symbol);
+		q.addFirst(symbol);
 	}
 }
