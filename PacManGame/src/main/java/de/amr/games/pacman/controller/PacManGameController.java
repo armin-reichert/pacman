@@ -77,7 +77,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		super(PacManGameState.class);
 		this.theme = theme;
 		buildStateMachine();
-		setIgnoreUnknownEvents(true);
+		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 	}
 

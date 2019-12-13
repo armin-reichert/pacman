@@ -38,6 +38,7 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.StateMachine;
+import de.amr.statemachine.StateMachine.MissingTransitionBehavior;
 
 /**
  * A ghost.
@@ -71,7 +72,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 
 	private FsmComponent<GhostState> buildFsmComponent(String name) {
 		StateMachine<GhostState, PacManGameEvent> fsm = buildStateMachine(name);
-		fsm.setIgnoreUnknownEvents(true);
+		fsm.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
 		return new FsmComponent<>(name, fsm);
 	}
