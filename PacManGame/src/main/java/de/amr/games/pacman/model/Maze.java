@@ -96,8 +96,6 @@ public class Maze {
 				.filter(tile -> !partOfGhostHouse(tile))
 				.collect(Collectors.toSet());
 		/*@formatter:on*/
-
-		System.out.println();
 	}
 
 	private long numFreeNeighborTiles(Tile tile) {
