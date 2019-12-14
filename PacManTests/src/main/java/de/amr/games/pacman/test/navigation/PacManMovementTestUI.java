@@ -30,6 +30,7 @@ public class PacManMovementTestUI extends PlayView implements VisualController {
 				game.level.numPelletsEaten++;
 				if (game.numPelletsRemaining() == 0) {
 					game.maze.restoreFood();
+					game.level.numPelletsEaten = 0;
 				}
 			}
 		});
@@ -55,7 +56,7 @@ public class PacManMovementTestUI extends PlayView implements VisualController {
 			cast.pacMan.steering = Steerings.avoidingGhosts();
 		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
 			cast.pacMan.steering = Steerings.movingRandomlyNoReversing();
-			// cast.pacMan.enteredNewTile = true;
+			cast.pacMan.setEnteredNewTile();
 		}
 	}
 
