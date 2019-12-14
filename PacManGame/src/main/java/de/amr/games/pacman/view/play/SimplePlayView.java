@@ -1,7 +1,6 @@
 package de.amr.games.pacman.view.play;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.graph.grid.impl.Grid4Topology.W;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -89,7 +88,7 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	public void updateTheme() {
-		lifeImage = cast.theme.spr_pacManWalking(W).frame(1);
+		lifeImage = cast.theme.spr_pacManWalking(3).frame(1);
 		fullMazeSprite = cast.theme.spr_fullMaze();
 		flashingMazeSprite = cast.theme.spr_flashingMaze();
 	}
