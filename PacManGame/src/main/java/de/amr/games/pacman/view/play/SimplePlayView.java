@@ -201,12 +201,11 @@ public class SimplePlayView implements View, Controller {
 		if (message == null) {
 			return;
 		}
-		int mazeWidth = fullMazeSprite.getWidth();
 		Graphics2D g2 = (Graphics2D) g.create();
 		g2.setFont(cast.theme.fnt_text(14));
 		g2.setColor(textColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(message, g2).getBounds();
-		g2.translate((mazeWidth - box.width) / 2, (maze.bonusTile.row + 1) * Tile.SIZE);
+		g2.translate((viewSize.width - box.width) / 2, (maze.bonusTile.row + 1) * Tile.SIZE);
 		g2.drawString(message, 0, 0);
 		g2.dispose();
 	}
