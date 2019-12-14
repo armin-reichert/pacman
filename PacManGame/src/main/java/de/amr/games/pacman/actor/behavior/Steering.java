@@ -1,5 +1,6 @@
 package de.amr.games.pacman.actor.behavior;
 
+import de.amr.games.pacman.actor.behavior.common.Steerings;
 import de.amr.games.pacman.actor.core.MazeMover;
 
 /**
@@ -20,4 +21,14 @@ public interface Steering<T extends MazeMover> {
 	 * @param actor the steered actor
 	 */
 	void steer(T actor);
+
+	/**
+	 * Some steerings like {@link Steerings#headingForTargetTile()} need a trigger
+	 * before they start working.
+	 * 
+	 * @param actor the steered actor
+	 */
+	default void triggerSteering(T actor) {
+		actor.setEnteredNewTile();
+	}
 }

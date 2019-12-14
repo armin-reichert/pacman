@@ -47,8 +47,8 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 	public final PacManGameCast cast;
 	public final PacManGame game;
 	public final FsmComponent<PacManState> fsmComponent;
-	public Steering<PacMan> steering;
 	public int ticksSinceLastMeal;
+	protected Steering<PacMan> steering;
 
 	public PacMan(PacManGameCast cast) {
 		this.cast = cast;
@@ -152,6 +152,11 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 	}
 
 	// Movement
+	
+	public void setSteering(Steering<PacMan> steering) {
+		this.steering = steering;
+		steering.triggerSteering(this);
+	}
 
 	@Override
 	public float maxSpeed() {

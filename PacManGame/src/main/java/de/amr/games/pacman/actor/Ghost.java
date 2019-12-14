@@ -227,6 +227,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 
 	public void setSteering(GhostState state, Steering<Ghost> steering) {
 		steeringByState.put(state, steering);
+		steering.triggerSteering(this);
 	}
 
 	public Steering<Ghost> getSteering() {
