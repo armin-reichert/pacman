@@ -1,8 +1,8 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.actor.behavior.common.Steerings.avoidingGhosts;
-import static de.amr.games.pacman.actor.behavior.common.Steerings.movingRandomlyNoReversing;
-import static de.amr.games.pacman.actor.behavior.common.Steerings.steeredByKeys;
+import static de.amr.games.pacman.actor.behavior.Steerings.avoidingGhosts;
+import static de.amr.games.pacman.actor.behavior.Steerings.movingRandomlyNoReversing;
+import static de.amr.games.pacman.actor.behavior.Steerings.steeredByKeys;
 
 import java.awt.event.KeyEvent;
 

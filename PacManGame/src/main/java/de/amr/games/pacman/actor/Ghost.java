@@ -9,6 +9,7 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.actor.behavior.Steerings.headingForTargetTile;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Timing.sec;
@@ -22,7 +23,6 @@ import java.util.logging.Logger;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
-import de.amr.games.pacman.actor.behavior.common.Steerings;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
 import de.amr.games.pacman.actor.fsm.FsmComponent;
 import de.amr.games.pacman.actor.fsm.FsmContainer;
@@ -49,14 +49,13 @@ import de.amr.statemachine.StateMachine.MissingTransitionBehavior;
 public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState> {
 
 	private final Map<GhostState, Steering<Ghost>> steeringByState = new EnumMap<>(GhostState.class);
-	private final Steering<Ghost> defaultSteering = Steerings.headingForTargetTile();
+	private final Steering<Ghost> defaultSteering = headingForTargetTile();
 
 	public final PacManGameCast cast;
 	public final PacManGame game;
 	public final FsmComponent<GhostState> fsmComponent;
 	public Direction initialDir;
 	public Tile initialTile;
-	public Tile revivalTile;
 	public Tile scatterTile;
 	public GhostState nextState;
 	public Supplier<Tile> fnChasingTarget;
@@ -276,9 +275,10 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 					String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
 		}
 	}
-	
+
 	@Override
 	protected boolean snapToGrid() {
+		// when entering or leaving the ghost house, pixel-exact movement is needed
 		return getState() != ENTERING_HOUSE && getState() != LEAVING_HOUSE;
 	}
 

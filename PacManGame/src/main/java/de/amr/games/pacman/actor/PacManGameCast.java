@@ -2,12 +2,16 @@ package de.amr.games.pacman.actor;
 
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
-import static de.amr.games.pacman.actor.behavior.common.Steerings.jumpingUpAndDown;
-import static de.amr.games.pacman.actor.behavior.common.Steerings.movingRandomlyNoReversing;
-import static de.amr.games.pacman.actor.behavior.common.Steerings.steeredByKeys;
+import static de.amr.games.pacman.actor.behavior.Steerings.enteringGhostHouse;
+import static de.amr.games.pacman.actor.behavior.Steerings.headingForTargetTile;
+import static de.amr.games.pacman.actor.behavior.Steerings.jumpingUpAndDown;
+import static de.amr.games.pacman.actor.behavior.Steerings.leavingGhostHouse;
+import static de.amr.games.pacman.actor.behavior.Steerings.movingRandomlyNoReversing;
+import static de.amr.games.pacman.actor.behavior.Steerings.steeredByKeys;
 import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
+import static de.amr.games.pacman.model.Direction.dirs;
 import static de.amr.games.pacman.model.Timing.sec;
 
 import java.awt.event.KeyEvent;
@@ -16,10 +20,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse;
-import de.amr.games.pacman.actor.behavior.ghost.LeavingGhostHouse;
 import de.amr.games.pacman.actor.core.MazeResident;
-import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
@@ -33,15 +35,18 @@ import de.amr.games.pacman.theme.PacManTheme;
 public class PacManGameCast {
 
 	public final PacManGame game;
+	public final Maze maze;
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
 	public PacManTheme theme;
 	private Bonus bonus;
-
 	private final Set<MazeResident> activeActors = new HashSet<>();
 
 	public PacManGameCast(PacManGame game, PacManTheme theme) {
 		this.game = game;
+		this.maze = game.maze;
+
+		// create the actors
 
 		pacMan = new PacMan(this);
 		blinky = new Ghost("Blinky", this);
@@ -57,49 +62,38 @@ public class PacManGameCast {
 		pacMan.teleportingTicks = sec(0.25f);
 
 		blinky.initialDir = LEFT;
-		blinky.initialTile = game.maze.ghostHome[0];
-		blinky.scatterTile = game.maze.scatterTileNE;
-		blinky.revivalTile = game.maze.ghostHome[2];
+		blinky.initialTile = maze.ghostHome[0];
+		blinky.scatterTile = maze.scatterTileNE;
 		blinky.teleportingTicks = sec(0.5f);
 		blinky.fnChasingTarget = pacMan::tile;
-		blinky.setSteering(GhostState.ENTERING_HOUSE, new EnteringGhostHouse(game.maze, game.maze.ghostHome[2]));
-		blinky.setSteering(GhostState.LEAVING_HOUSE, new LeavingGhostHouse(game.maze));
 
 		pinky.initialDir = DOWN;
-		pinky.initialTile = game.maze.ghostHome[2];
-		pinky.scatterTile = game.maze.scatterTileNW;
-		pinky.revivalTile = game.maze.ghostHome[2];
+		pinky.initialTile = maze.ghostHome[2];
+		pinky.scatterTile = maze.scatterTileNW;
 		pinky.teleportingTicks = sec(0.5f);
 		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
-		pinky.setSteering(GhostState.ENTERING_HOUSE, new EnteringGhostHouse(game.maze, game.maze.ghostHome[2]));
-		pinky.setSteering(GhostState.LEAVING_HOUSE, new LeavingGhostHouse(game.maze));
 
 		inky.initialDir = UP;
-		inky.initialTile = game.maze.ghostHome[1];
-		inky.scatterTile = game.maze.scatterTileSE;
-		inky.revivalTile = game.maze.ghostHome[2];
+		inky.initialTile = maze.ghostHome[1];
+		inky.scatterTile = maze.scatterTileSE;
 		inky.teleportingTicks = sec(0.5f);
 		inky.fnChasingTarget = () -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
-			return game.maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
+			return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		};
-		inky.setSteering(GhostState.ENTERING_HOUSE, new EnteringGhostHouse(game.maze, game.maze.ghostHome[1]));
-		inky.setSteering(GhostState.LEAVING_HOUSE, new LeavingGhostHouse(game.maze));
 
 		clyde.initialDir = UP;
-		clyde.initialTile = game.maze.ghostHome[3];
-		clyde.scatterTile = game.maze.scatterTileSW;
-		clyde.revivalTile = game.maze.ghostHome[3];
+		clyde.initialTile = maze.ghostHome[3];
+		clyde.scatterTile = maze.scatterTileSW;
 		clyde.teleportingTicks = sec(0.5f);
-		clyde.fnChasingTarget = () -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : game.maze.scatterTileSW;
-		clyde.setSteering(GhostState.ENTERING_HOUSE, new EnteringGhostHouse(game.maze, game.maze.ghostHome[3]));
-		clyde.setSteering(GhostState.LEAVING_HOUSE, new LeavingGhostHouse(game.maze));
+		clyde.fnChasingTarget = () -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze.scatterTileSW;
 
 		ghosts().forEach(ghost -> {
+			ghost.setSteering(GhostState.LEAVING_HOUSE, leavingGhostHouse(maze));
 			ghost.setSteering(GhostState.FRIGHTENED, movingRandomlyNoReversing());
-			if (ghost != blinky) {
-				ghost.setSteering(GhostState.LOCKED, jumpingUpAndDown());
-			}
+			ghost.setSteering(GhostState.LOCKED, ghost == blinky ? headingForTargetTile() : jumpingUpAndDown());
+			ghost.setSteering(GhostState.ENTERING_HOUSE,
+					enteringGhostHouse(maze, ghost == blinky ? maze.ghostHome[2] : ghost.initialTile));
 		});
 	}
 
@@ -113,15 +107,14 @@ public class PacManGameCast {
 	}
 
 	private void setPacManSprites() {
-		Direction.dirs()
-				.forEach(dir -> pacMan.sprites.set("walking-" + dir, theme.spr_pacManWalking(dir.ordinal())));
+		dirs().forEach(dir -> pacMan.sprites.set("walking-" + dir, theme.spr_pacManWalking(dir.ordinal())));
 		pacMan.sprites.set("dying", theme.spr_pacManDying());
 		pacMan.sprites.set("full", theme.spr_pacManFull());
 		pacMan.sprites.select("full");
 	}
 
 	private void setGhostSprites(Ghost ghost, GhostColor color) {
-		Direction.dirs().forEach(dir -> {
+		dirs().forEach(dir -> {
 			ghost.sprites.set("color-" + dir, theme.spr_ghostColored(color, dir.ordinal()));
 			ghost.sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir.ordinal()));
 		});

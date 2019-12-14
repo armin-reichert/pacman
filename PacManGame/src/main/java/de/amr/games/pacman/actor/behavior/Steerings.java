@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor.behavior.common;
+package de.amr.games.pacman.actor.behavior;
 
 import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
@@ -11,9 +11,14 @@ import java.util.function.Supplier;
 
 import de.amr.datastruct.StreamUtils;
 import de.amr.easy.game.input.Keyboard;
+import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.actor.behavior.Steering;
+import de.amr.games.pacman.actor.behavior.common.HeadingForTargetTile;
+import de.amr.games.pacman.actor.behavior.common.TakingFixedPath;
+import de.amr.games.pacman.actor.behavior.common.TakingShortestPath;
+import de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse;
 import de.amr.games.pacman.actor.behavior.ghost.FleeingToSafeCorner;
+import de.amr.games.pacman.actor.behavior.ghost.LeavingGhostHouse;
 import de.amr.games.pacman.actor.behavior.pacman.AvoidingGhosts;
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Direction;
@@ -30,6 +35,7 @@ public interface Steerings {
 	/**
 	 * @param keys
 	 *               steering key codes in order UP, RIGHT, DOWN, LEFT
+	 * 
 	 * @return steering using the given keys
 	 */
 	static <T extends MazeMover> Steering<T> steeredByKeys(int... keys) {
@@ -137,6 +143,32 @@ public interface Steerings {
 			throw new IllegalArgumentException("Path must not be empty");
 		}
 		return new TakingFixedPath<>(maze, path);
+	}
+
+	/**
+	 * Lets a ghost enter the ghost house and move to its target tile.
+	 * 
+	 * @param maze
+	 *                         the maze
+	 * @param ghostHouseTile
+	 *                         the ghost target tile in the house
+	 * 
+	 * @return behavior where a ghost enters the house and moves to its target tile
+	 */
+	static Steering<Ghost> enteringGhostHouse(Maze maze, Tile ghostHouseTile) {
+		return new EnteringGhostHouse(maze, ghostHouseTile);
+	}
+
+	/**
+	 * Lets a ghost leave the ghost house.
+	 * 
+	 * @param maze
+	 *               the maze
+	 * 
+	 * @return behavior where a ghost leaves the house
+	 */
+	static Steering<Ghost> leavingGhostHouse(Maze maze) {
+		return new LeavingGhostHouse(maze);
 	}
 
 	/**

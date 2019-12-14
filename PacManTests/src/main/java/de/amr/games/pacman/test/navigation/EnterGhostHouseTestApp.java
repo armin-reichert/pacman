@@ -22,7 +22,6 @@ public class EnterGhostHouseTestApp extends Application {
 
 	@Override
 	public void init() {
-		clock.setFrequency(10);
 		PacManGame game = new PacManGame();
 		PacManTheme theme = new ClassicPacManTheme();
 		PacManGameCast cast = new PacManGameCast(game, theme);

@@ -1,6 +1,5 @@
 package de.amr.games.pacman.actor.behavior;
 
-import de.amr.games.pacman.actor.behavior.common.Steerings;
 import de.amr.games.pacman.actor.core.MazeMover;
 
 /**

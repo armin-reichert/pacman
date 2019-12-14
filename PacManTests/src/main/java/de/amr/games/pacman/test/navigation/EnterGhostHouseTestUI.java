@@ -9,8 +9,9 @@ import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManGameCast;
-import de.amr.games.pacman.actor.behavior.common.Steerings;
+import de.amr.games.pacman.actor.behavior.Steerings;
 import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class EnterGhostHouseTestUI extends PlayView implements VisualController {
@@ -35,8 +36,8 @@ public class EnterGhostHouseTestUI extends PlayView implements VisualController 
 		game.maze.removeFood();
 		cast.activate(ghost);
 		ghost.init();
-		ghost.placeAtTile(maze.ghostHome[0], 0, 0);
-		ghost.setSteering(GhostState.ENTERING_HOUSE, Steerings.takingFixedPath(maze, maze.pathIntoHouse1));
+		ghost.placeAtTile(maze.ghostHome[0], Tile.SIZE / 2, 0);
+		ghost.setSteering(GhostState.ENTERING_HOUSE, Steerings.enteringGhostHouse(maze, maze.ghostHome[1]));
 		textColor = Color.YELLOW;
 		message = "Press SPACE to enter or leave house";
 	}
