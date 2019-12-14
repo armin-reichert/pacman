@@ -55,7 +55,7 @@ public class MazeGraph {
 
 	private int pathFinderCalls;
 
-	public List<Tile> findPath(Tile source, Tile target) {
+	public List<Tile> shortestPath(Tile source, Tile target) {
 		if (maze.insideBoard(source) && maze.insideBoard(target)) {
 			GraphSearch pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
 			Path path = pathfinder.findPath(vertex(source), vertex(target));

@@ -32,7 +32,7 @@ public class FleeingToSafeCorner<T extends MazeMover> extends TakingPrecomputedP
 		while (target.equals(refugee.tile())) {
 			target = safeCorner(refugee);
 		}
-		return graph.findPath(refugee.tile(), target);
+		return graph.shortestPath(refugee.tile(), target);
 	}
 
 	private Tile safeCorner(T refugee) {
@@ -49,8 +49,8 @@ public class FleeingToSafeCorner<T extends MazeMover> extends TakingPrecomputedP
 
 	private Comparator<Tile> byDist(Maze maze, Tile refugeeTile, Tile chaserTile) {
 		return (corner1, corner2) -> {
-			double dist1 = minDistFromPath(maze, graph.findPath(refugeeTile, corner1), chaserTile);
-			double dist2 = minDistFromPath(maze, graph.findPath(refugeeTile, corner2), chaserTile);
+			double dist1 = minDistFromPath(maze, graph.shortestPath(refugeeTile, corner1), chaserTile);
+			double dist2 = minDistFromPath(maze, graph.shortestPath(refugeeTile, corner2), chaserTile);
 			return Double.compare(dist1, dist2);
 		};
 	}

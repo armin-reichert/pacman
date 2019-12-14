@@ -20,6 +20,6 @@ public class TakingShortestPath<T extends MazeMover> extends TakingPrecomputedPa
 
 	@Override
 	protected List<Tile> computePath(T actor) {
-		return graph.findPath(actor.tile(), actor.targetTile());
+		return graph.shortestPath(actor.tile(), actor.targetTile());
 	}
 }
