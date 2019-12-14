@@ -54,7 +54,7 @@ public enum Direction implements Iterable<Direction> {
 	public Direction turnRight() {
 		switch (this) {
 		case UP:
-			return Direction.RIGHT;
+			return RIGHT;
 		case DOWN:
 			return LEFT;
 		case LEFT:
