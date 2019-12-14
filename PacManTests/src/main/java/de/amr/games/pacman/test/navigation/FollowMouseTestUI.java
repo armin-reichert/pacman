@@ -15,10 +15,10 @@ public class FollowMouseTestUI extends PlayView implements VisualController {
 
 	public FollowMouseTestUI(PacManGameCast cast) {
 		super(cast);
-		showRoutes = true;
-		showGrid = true;
-		showStates = false;
-		showScores = false;
+		setShowRoutes(true);
+		setShowStates(false);
+		setShowScores(false);
+		setShowGrid(true);
 	}
 
 	@Override

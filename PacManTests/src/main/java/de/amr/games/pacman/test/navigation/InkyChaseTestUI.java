@@ -16,9 +16,10 @@ public class InkyChaseTestUI extends PlayView implements VisualController {
 
 	public InkyChaseTestUI(PacManGameCast cast) {
 		super(cast);
-		showRoutes = true;
-		showStates = true;
-		showScores = false;
+		setShowRoutes(true);
+		setShowStates(true);
+		setShowScores(false);
+		setShowGrid(false);
 	}
 
 	@Override

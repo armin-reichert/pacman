@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BooleanSupplier;
 
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.MazeMover;
@@ -34,14 +33,11 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	/** Directions in the order used to compute the next move direction */
 	private static final List<Direction> NWSE = Arrays.asList(UP, LEFT, DOWN, RIGHT);
 
-	/** Tells if the complete path the actor will take is computed. */
-	public BooleanSupplier fnComputePath = () -> false;
-
 	@Override
 	public void steer(T actor) {
 		if (actor.targetTile() != null && actor.enteredNewTile()) {
 			actor.setNextDir(nextDir(actor, actor.moveDir(), actor.tile(), actor.targetTile()));
-			actor.setTargetPath(fnComputePath.getAsBoolean() ? pathToTargetTile(actor) : Collections.emptyList());
+			actor.setTargetPath(actor.requireTargetPath() ? pathToTargetTile(actor) : Collections.emptyList());
 		}
 	}
 

@@ -24,7 +24,6 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameCast;
-import de.amr.games.pacman.actor.behavior.common.HeadingForTargetTile;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.State;
 
@@ -47,11 +46,11 @@ public class PlayView extends SimplePlayView {
 	private static final String INFTY = Character.toString('\u221E');
 
 	private static BufferedImage createGridImage(int numRows, int numCols) {
-		GraphicsConfiguration conf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+		GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
 				.getDefaultConfiguration();
-		BufferedImage image = conf.createCompatibleImage(numCols * Tile.SIZE, numRows * Tile.SIZE + 1,
+		BufferedImage img = gc.createCompatibleImage(numCols * Tile.SIZE, numRows * Tile.SIZE + 1,
 				Transparency.TRANSLUCENT);
-		Graphics2D g = image.createGraphics();
+		Graphics2D g = img.createGraphics();
 		g.setColor(new Color(0, 60, 0));
 		for (int row = 0; row <= numRows; ++row) {
 			g.drawLine(0, row * Tile.SIZE, numCols * Tile.SIZE, row * Tile.SIZE);
@@ -59,39 +58,47 @@ public class PlayView extends SimplePlayView {
 		for (int col = 1; col < numCols; ++col) {
 			g.drawLine(col * Tile.SIZE, 0, col * Tile.SIZE, numRows * Tile.SIZE);
 		}
-		return image;
+		return img;
 	}
 
-	private final BufferedImage gridImage;
+	private boolean showRoutes = false;
+	private boolean showGrid = false;
+	private boolean showStates = false;
+	private BufferedImage gridImage;
 
-	public boolean showGrid = false;
-	public boolean showRoutes = false;
-	public boolean showStates = false;
-
-	public Supplier<State<GhostState, ?>> fnGhostAttack = () -> null;
+	public Supplier<State<GhostState, ?>> fnGhostMotionState = () -> null;
 
 	public PlayView(PacManGameCast cast) {
 		super(cast);
-		gridImage = createGridImage(cast.game.maze.numRows, cast.game.maze.numCols);
 	}
 
-	@Override
-	public void init() {
-		super.init();
-		updateGhostRouteDisplay();
+	public void setShowRoutes(boolean showRoutes) {
+		this.showRoutes = showRoutes;
+		cast.pacMan.requireTargetPath = showRoutes;
+		cast.ghosts().forEach(ghost -> ghost.requireTargetPath = showRoutes);
+	}
+
+	public void setShowGrid(boolean showGrid) {
+		this.showGrid = showGrid;
+		if (showGrid && gridImage == null) {
+			gridImage = createGridImage(cast.game.maze.numRows, cast.game.maze.numCols);
+		}
+	}
+
+	public void setShowStates(boolean showStates) {
+		this.showStates = showStates;
 	}
 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_G)) {
-			showGrid = !showGrid;
+			setShowGrid(!showGrid);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_S)) {
-			showStates = !showStates;
+			setShowStates(!showStates);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
-			showRoutes = !showRoutes;
-			updateGhostRouteDisplay();
+			setShowRoutes(!showRoutes);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
 			toggleGhostActivationState(cast.blinky);
@@ -108,21 +115,10 @@ public class PlayView extends SimplePlayView {
 		super.update();
 	}
 
-	private void updateGhostRouteDisplay() {
-		// TODO this is ugly
-		cast.ghosts().forEach(ghost -> {
-			if (ghost.getSteering() instanceof HeadingForTargetTile<?>) {
-				HeadingForTargetTile<?> steering = (HeadingForTargetTile<?>) ghost.getSteering();
-				steering.fnComputePath = () -> showRoutes;
-			}
-		});
-	}
-
 	private void toggleGhostActivationState(Ghost ghost) {
 		if (cast.isActive(ghost)) {
 			cast.deactivate(ghost);
-		}
-		else {
+		} else {
 			cast.activate(ghost);
 		}
 	}
@@ -165,8 +161,8 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private String pacManStateText(PacMan pacMan) {
-		String text = pacMan.state().getDuration() != State.ENDLESS ? String.format("(%s,%d|%d)",
-				pacMan.state().id(), pacMan.state().getTicksRemaining(), pacMan.state().getDuration())
+		String text = pacMan.state().getDuration() != State.ENDLESS ? String.format("(%s,%d|%d)", pacMan.state().id(),
+				pacMan.state().getTicksRemaining(), pacMan.state().getDuration())
 				: String.format("(%s,%s)", pacMan.state().id(), INFTY);
 
 		if (Application.app().settings.getAsBoolean("pacMan.immortable")) {
@@ -183,9 +179,8 @@ public class PlayView extends SimplePlayView {
 		if (ghost.getState() == GhostState.FRIGHTENED && cast.pacMan.hasPower()) {
 			duration = cast.pacMan.state().getDuration();
 			remaining = cast.pacMan.state().getTicksRemaining();
-		}
-		else if (ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING) {
-			State<?, ?> attack = fnGhostAttack.get();
+		} else if (ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING) {
+			State<?, ?> attack = fnGhostMotionState.get();
 			if (attack != null) {
 				duration = attack.getDuration();
 				remaining = attack.getTicksRemaining();
@@ -232,13 +227,13 @@ public class PlayView extends SimplePlayView {
 		Stroke solid = g.getStroke();
 		if (ghost.targetTile() != null) {
 			// draw target tile indicator
-			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
-					0);
+			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
 			g.setStroke(dashed);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(ghostColor);
 			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
-					ghost.targetTile().col * Tile.SIZE + Tile.SIZE / 2, ghost.targetTile().row * Tile.SIZE + Tile.SIZE / 2);
+					ghost.targetTile().col * Tile.SIZE + Tile.SIZE / 2,
+					ghost.targetTile().row * Tile.SIZE + Tile.SIZE / 2);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			g.setStroke(solid);
 			g.translate(ghost.targetTile().col * Tile.SIZE, ghost.targetTile().row * Tile.SIZE);
@@ -252,8 +247,7 @@ public class PlayView extends SimplePlayView {
 			for (Tile tile : ghost.targetPath()) {
 				g.fillRect(tile.col * Tile.SIZE, tile.row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 			}
-		}
-		else {
+		} else {
 			// draw direction indicator
 			Vector2f center = ghost.tf.getCenter();
 			int dx = ghost.nextDir().dx, dy = ghost.nextDir().dy;

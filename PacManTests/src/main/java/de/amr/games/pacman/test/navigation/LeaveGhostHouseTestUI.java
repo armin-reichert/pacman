@@ -15,10 +15,10 @@ public class LeaveGhostHouseTestUI extends PlayView implements VisualController 
 
 	public LeaveGhostHouseTestUI(PacManGameCast cast) {
 		super(cast);
-		showRoutes = true;
-		showGrid = true;
-		showStates = true;
-		showScores = false;
+		setShowRoutes(true);
+		setShowStates(true);
+		setShowScores(false);
+		setShowGrid(true);
 	}
 
 	@Override

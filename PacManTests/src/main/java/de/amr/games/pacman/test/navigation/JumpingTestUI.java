@@ -10,9 +10,10 @@ public class JumpingTestUI extends PlayView implements VisualController {
 
 	public JumpingTestUI(PacManGameCast cast) {
 		super(cast);
-		showRoutes = false;
-		showStates = true;
-		showScores = false;
+		setShowRoutes(false);
+		setShowStates(true);
+		setShowScores(false);
+		setShowGrid(false);
 	}
 
 	@Override

@@ -11,9 +11,10 @@ public class OutsideTileTestUI extends PlayView implements VisualController {
 
 	public OutsideTileTestUI(PacManGameCast cast) {
 		super(cast);
-		showRoutes = true;
-		showStates = true;
-		showScores = false;
+		setShowRoutes(true);
+		setShowStates(true);
+		setShowScores(false);
+		setShowGrid(false);
 	}
 
 	@Override

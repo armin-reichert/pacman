@@ -111,7 +111,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						playView.init();
 						playView.textColor = Color.YELLOW;
 						playView.message = "Ready!";
-						playView.showScores = true;
+						playView.setShowScores(true);
 						globalDotCounterEnabled = false;
 						globalDotCounter = 0;
 					})
@@ -470,7 +470,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		cast = new PacManGameCast(game, theme);
 		cast.pacMan.addGameEventListener(this::process);
 		playView = new PlayView(cast);
-		playView.fnGhostAttack = ghostMotionTimer::state;
+		playView.fnGhostMotionState = ghostMotionTimer::state;
 		show(playView);
 	}
 

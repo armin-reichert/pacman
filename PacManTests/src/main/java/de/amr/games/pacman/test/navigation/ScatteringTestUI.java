@@ -16,9 +16,10 @@ public class ScatteringTestUI extends PlayView implements VisualController {
 
 	public ScatteringTestUI(PacManGameCast cast) {
 		super(cast);
-		showRoutes = true;
-		showStates = true;
-		showScores = false;
+		setShowRoutes(true);
+		setShowStates(true);
+		setShowScores(false);
+		setShowGrid(false);
 	}
 
 	@Override

@@ -52,7 +52,7 @@ public class SimplePlayView implements View, Controller {
 	public final Dimension viewSize;
 	public final Animation energizerBlinking;
 
-	public boolean showScores;
+	protected boolean showScores;
 	public boolean mazeFlashing;
 	public String message;
 	public Color textColor;
@@ -69,6 +69,10 @@ public class SimplePlayView implements View, Controller {
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
 		updateTheme();
+	}
+
+	public void setShowScores(boolean showScores) {
+		this.showScores = showScores;
 	}
 
 	@Override
