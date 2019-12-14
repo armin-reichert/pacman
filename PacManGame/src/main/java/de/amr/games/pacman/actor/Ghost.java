@@ -286,8 +286,8 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		steer();
 		if (nextDir != null) {
 			move();
-			sprites.select(spriteKey);
 		}
+		sprites.select(spriteKey);
 	}
 
 	private boolean leftHouse() {
