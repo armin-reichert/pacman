@@ -15,40 +15,43 @@ import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.behavior.Steering;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class TakeShortestPathTestUI extends PlayView implements VisualController {
 
-	private List<Tile> targets;
-	private int currentTarget;
+	final Maze maze;
+	final Ghost ghost;
+	final List<Tile> targets;
+	int currentTarget;
 
 	public TakeShortestPathTestUI(PacManGameCast cast) {
 		super(cast);
-		setShowRoutes(true);
-		setShowStates(true);
-		setShowScores(false);
-		targets = Arrays.asList(game.maze.cornerSE, game.maze.cornerSW, game.maze.tunnelExitLeft,
-				game.maze.cornerNW, game.maze.ghostHome[0], game.maze.cornerNE, game.maze.tunnelExitRight,
-				game.maze.pacManHome);
+		cast.theme.snd_ghost_chase().volume(0);
+		maze = cast.game.maze;
+		ghost = cast.blinky;
+		targets = Arrays.asList(maze.cornerSE, maze.tileAt(15, 23), maze.tileAt(12, 23), maze.cornerSW,
+				maze.tunnelExitLeft, maze.cornerNW, maze.ghostHome[0], maze.cornerNE, maze.tunnelExitRight,
+				maze.pacManHome);
 	}
 
 	@Override
 	public void init() {
 		super.init();
+		game.init();
+		maze.removeFood();
+		currentTarget = 0;
+		Steering<Ghost> shortestPath = followingShortestPath(maze, () -> targets.get(currentTarget));
+		ghost.setSteering(CHASING, shortestPath);
+		ghost.setSteering(FRIGHTENED, shortestPath);
+		cast.activate(ghost);
+		ghost.setState(CHASING);
 		textColor = Color.YELLOW;
 		message = "SPACE toggles ghost state";
-		currentTarget = 0;
-		game.init();
-		game.maze.removeFood();
-		cast.theme.snd_ghost_chase().volume(0);
-		cast.activate(cast.blinky);
-		cast.blinky.init();
-		cast.blinky.setState(CHASING);
-		Steering<Ghost> followPathToCurrentTarget = followingShortestPath(game.maze,
-				() -> targets.get(currentTarget));
-		cast.blinky.setSteering(CHASING, followPathToCurrentTarget);
-		cast.blinky.setSteering(FRIGHTENED, followPathToCurrentTarget);
+		setShowRoutes(true);
+		setShowStates(true);
+		setShowScores(false);
 	}
 
 	private void nextTarget() {
@@ -63,10 +66,10 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			cast.blinky.setState(cast.blinky.getState() == CHASING ? FRIGHTENED : CHASING);
+			ghost.setState(ghost.getState() == CHASING ? FRIGHTENED : CHASING);
 		}
-		cast.blinky.update();
-		if (cast.blinky.tile().equals(targets.get(currentTarget))) {
+		ghost.update();
+		if (ghost.tile().equals(targets.get(currentTarget))) {
 			nextTarget();
 		}
 		super.update();
