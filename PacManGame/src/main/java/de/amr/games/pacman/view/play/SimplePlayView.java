@@ -49,7 +49,7 @@ public class SimplePlayView implements View, Controller {
 	public final PacManGame game;
 	public final Maze maze;
 	public final PacManGameCast cast;
-	public final Dimension size;
+	public final Dimension viewSize;
 	public final Animation energizerBlinking;
 
 	public boolean showScores;
@@ -65,7 +65,7 @@ public class SimplePlayView implements View, Controller {
 		this.cast = cast;
 		this.game = cast.game;
 		this.maze = game.maze;
-		size = new Dimension(app().settings.width, app().settings.height);
+		viewSize = new Dimension(app().settings.width, app().settings.height);
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
 		updateTheme();
@@ -183,16 +183,16 @@ public class SimplePlayView implements View, Controller {
 	protected void drawLives(Graphics2D g) {
 		int imageSize = 2 * Tile.SIZE;
 		for (int i = 0, x = imageSize; i < game.lives; ++i, x += imageSize) {
-			g.drawImage(lifeImage, x, size.height - imageSize, null);
+			g.drawImage(lifeImage, x, viewSize.height - imageSize, null);
 		}
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
 		int imageSize = 2 * Tile.SIZE;
-		int x = fullMazeSprite.getWidth() - (game.levelSymbols.count() + 1) * imageSize;
+		int x = viewSize.width - (game.levelSymbols.count() + 1) * imageSize;
 		for (BonusSymbol symbol : game.levelSymbols) {
 			Image image = cast.theme.spr_bonusSymbol(symbol).frame(0);
-			g.drawImage(image, x, size.height - imageSize, imageSize, imageSize, null);
+			g.drawImage(image, x, viewSize.height - imageSize, imageSize, imageSize, null);
 			x += imageSize;
 		}
 	}
