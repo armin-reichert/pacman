@@ -67,12 +67,6 @@ public class PacManGameCast {
 		blinky.teleportingTicks = sec(0.5f);
 		blinky.fnChasingTarget = pacMan::tile;
 
-		pinky.initialDir = DOWN;
-		pinky.initialTile = maze.ghostHome[2];
-		pinky.scatterTile = maze.scatterTileNW;
-		pinky.teleportingTicks = sec(0.5f);
-		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
-
 		inky.initialDir = UP;
 		inky.initialTile = maze.ghostHome[1];
 		inky.scatterTile = maze.scatterTileSE;
@@ -81,6 +75,12 @@ public class PacManGameCast {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		};
+
+		pinky.initialDir = DOWN;
+		pinky.initialTile = maze.ghostHome[2];
+		pinky.scatterTile = maze.scatterTileNW;
+		pinky.teleportingTicks = sec(0.5f);
+		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
 
 		clyde.initialDir = UP;
 		clyde.initialTile = maze.ghostHome[3];
