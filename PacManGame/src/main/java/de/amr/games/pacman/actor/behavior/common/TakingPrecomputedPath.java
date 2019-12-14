@@ -2,6 +2,7 @@ package de.amr.games.pacman.actor.behavior.common;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.behavior.Steering;
@@ -19,25 +20,46 @@ public abstract class TakingPrecomputedPath<T extends MazeMover> implements Stee
 	protected Maze maze;
 	protected Supplier<Tile> fnTargetTile;
 	protected List<Tile> pathSuffix = Collections.emptyList();
+	public Function<MazeMover, Boolean> fnTargetReached;
 
 	public TakingPrecomputedPath(Maze maze, Supplier<Tile> fnTargetTile) {
 		this.maze = maze;
 		this.fnTargetTile = fnTargetTile;
+		this.fnTargetReached = actor -> actor.tile().equals(fnTargetTile.get());
 	}
 
 	@Override
 	public void steer(T actor) {
 		Tile actorTile = actor.tile();
-		actor.setTargetTile(fnTargetTile.get());
-		while (pathSuffix.size() > 0 && !actorTile.equals(pathSuffix.get(0))) {
-			pathSuffix.remove(0);
+		Tile targetTile = fnTargetTile.get();
+		actor.setTargetTile(targetTile);
+		if (actor.targetTile() == null) {
+			actor.setTargetPath(Collections.emptyList());
+			return;
 		}
-		if (pathSuffix.isEmpty() || actorTile.equals(pathSuffix.get(pathSuffix.size() - 1))) {
+		// is path suffix still useful?
+		int pathLength = pathSuffix.size();
+		int index = pathSuffix.indexOf(actorTile);
+		boolean usable = pathLength >= 2 && index != -1 && last(pathSuffix) == targetTile;
+		if (usable) {
+			for (int i = 0; i < index; ++i) {
+				pathSuffix.remove(0);
+			}
+			usable = pathSuffix.size() >= 2;
+		}
+		if (!usable) {
 			pathSuffix = computePath(actor);
 			actor.setTargetPath(pathSuffix);
-			actor.setTargetTile(pathSuffix.isEmpty() ? null : pathSuffix.get(pathSuffix.size() - 1));
 		}
 		actor.setNextDir(maze.alongPath(pathSuffix).orElse(null));
+	}
+
+	static Tile first(List<Tile> list) {
+		return list.isEmpty() ? null : list.get(0);
+	}
+
+	static Tile last(List<Tile> list) {
+		return list.isEmpty() ? null : list.get(list.size() - 1);
 	}
 
 	protected abstract List<Tile> computePath(T actor);

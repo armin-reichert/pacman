@@ -6,7 +6,9 @@ import static de.amr.games.pacman.model.Tile.SPACE;
 import static de.amr.games.pacman.model.Tile.TUNNEL;
 import static de.amr.games.pacman.model.Tile.WALL;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -31,6 +33,8 @@ public class Maze {
 	public Tile tunnelExitLeft, tunnelExitRight;
 	public Tile doorLeft, doorRight;
 	public Tile energizers[];
+	public List<Tile> pathIntoHouse0, pathIntoHouse1, pathIntoHouse2, pathIntoHouse3;
+	public List<Tile> pathOutOfHouse0, pathOutOfHouse1, pathOutOfHouse2, pathOutOfHouse3;
 	public int totalNumPellets;
 
 	private final Set<Tile> intersections;
@@ -71,10 +75,25 @@ public class Maze {
 			}
 		}
 
+		// Ghost house
 		doorLeft = tiles[13][15];
 		doorLeft.content = Tile.DOOR;
 		doorRight = tiles[14][15];
 		doorRight.content = Tile.DOOR;
+
+		pathIntoHouse0 = Arrays.asList(tileAt(13, 14), tileAt(13, 15), tileAt(13, 16), tileAt(13, 17));
+		pathIntoHouse1 = Arrays.asList(tileAt(13, 14), tileAt(13, 15), tileAt(13, 16), tileAt(13, 17));
+		pathIntoHouse2 = Arrays.asList(tileAt(13, 14), tileAt(13, 15), tileAt(13, 16), tileAt(13, 17));
+		pathIntoHouse3 = Arrays.asList(tileAt(13, 14), tileAt(13, 15), tileAt(13, 16), tileAt(13, 17));
+
+		pathOutOfHouse0 = new ArrayList<>(pathIntoHouse0);
+		Collections.reverse(pathOutOfHouse0);
+		pathOutOfHouse1 = new ArrayList<>(pathIntoHouse1);
+		Collections.reverse(pathOutOfHouse1);
+		pathOutOfHouse2 = new ArrayList<>(pathIntoHouse2);
+		Collections.reverse(pathOutOfHouse2);
+		pathOutOfHouse3 = new ArrayList<>(pathIntoHouse3);
+		Collections.reverse(pathOutOfHouse3);
 
 		tunnelExitLeft = tiles[0][17];
 		tunnelExitRight = tiles[27][17];

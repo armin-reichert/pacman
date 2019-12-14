@@ -52,6 +52,7 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 		setShowRoutes(true);
 		setShowStates(true);
 		setShowScores(false);
+		setShowGrid(true);
 	}
 
 	private void nextTarget() {
