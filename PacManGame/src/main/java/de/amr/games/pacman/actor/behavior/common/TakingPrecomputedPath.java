@@ -18,7 +18,7 @@ public abstract class TakingPrecomputedPath<T extends MazeMover> implements Stee
 
 	protected Maze maze;
 	protected Supplier<Tile> fnTargetTile;
-	protected List<Tile> path = Collections.emptyList();
+	protected List<Tile> pathSuffix = Collections.emptyList();
 
 	public TakingPrecomputedPath(Maze maze, Supplier<Tile> fnTargetTile) {
 		this.maze = maze;
@@ -29,15 +29,15 @@ public abstract class TakingPrecomputedPath<T extends MazeMover> implements Stee
 	public void steer(T actor) {
 		Tile actorTile = actor.tile();
 		actor.setTargetTile(fnTargetTile.get());
-		while (path.size() > 0 && !actorTile.equals(path.get(0))) {
-			path.remove(0);
+		while (pathSuffix.size() > 0 && !actorTile.equals(pathSuffix.get(0))) {
+			pathSuffix.remove(0);
 		}
-		if (path.isEmpty() || actorTile.equals(path.get(path.size() - 1))) {
-			path = computePath(actor);
-			actor.setTargetPath(path);
-			actor.setTargetTile(path.isEmpty() ? null : path.get(path.size() - 1));
+		if (pathSuffix.isEmpty() || actorTile.equals(pathSuffix.get(pathSuffix.size() - 1))) {
+			pathSuffix = computePath(actor);
+			actor.setTargetPath(pathSuffix);
+			actor.setTargetTile(pathSuffix.isEmpty() ? null : pathSuffix.get(pathSuffix.size() - 1));
 		}
-		actor.setNextDir(maze.alongPath(path).orElse(actor.moveDir()));
+		actor.setNextDir(maze.alongPath(pathSuffix).orElse(null));
 	}
 
 	protected abstract List<Tile> computePath(T actor);

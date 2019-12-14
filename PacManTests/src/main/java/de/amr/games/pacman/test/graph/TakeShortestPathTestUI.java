@@ -2,7 +2,7 @@ package de.amr.games.pacman.test.graph;
 
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.actor.behavior.common.Steerings.followingShortestPath;
+import static de.amr.games.pacman.actor.behavior.common.Steerings.takingShortestPath;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -42,7 +42,7 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 		game.init();
 		maze.removeFood();
 		currentTarget = 0;
-		Steering<Ghost> shortestPath = followingShortestPath(maze, () -> targets.get(currentTarget));
+		Steering<Ghost> shortestPath = takingShortestPath(maze, () -> targets.get(currentTarget));
 		ghost.setSteering(CHASING, shortestPath);
 		ghost.setSteering(FRIGHTENED, shortestPath);
 		cast.activate(ghost);

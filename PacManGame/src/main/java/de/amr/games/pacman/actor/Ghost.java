@@ -185,6 +185,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 					
 				.when(DEAD).then(ENTERING_HOUSE)
 					.condition(() -> tile().equals(maze().ghostHome[0]))
+					.act(() -> placeAtTile(maze().ghostHome[0], Tile.SIZE/2, 0))
 				
 		.endStateMachine();
 		/*@formatter:on*/
@@ -280,8 +281,10 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 
 	private void walkAndDisplayAs(String spriteKey) {
 		steer();
-		move();
-		sprites.select(spriteKey);
+		if (nextDir != null) {
+			move();
+			sprites.select(spriteKey);
+		}
 	}
 
 	private boolean leftHouse() {

@@ -119,7 +119,8 @@ public class PlayView extends SimplePlayView {
 	private void toggleGhostActivationState(Ghost ghost) {
 		if (cast.isActive(ghost)) {
 			cast.deactivate(ghost);
-		} else {
+		}
+		else {
 			cast.activate(ghost);
 		}
 	}
@@ -162,9 +163,8 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private String pacManStateText(PacMan pacMan) {
-		String text = pacMan.state().getDuration() != State.ENDLESS
-				? String.format("(%s,%d|%d)", pacMan.state().id(), pacMan.state().getTicksRemaining(),
-						pacMan.state().getDuration())
+		String text = pacMan.state().getDuration() != State.ENDLESS ? String.format("(%s,%d|%d)",
+				pacMan.state().id(), pacMan.state().getTicksRemaining(), pacMan.state().getDuration())
 				: String.format("(%s,%s)", pacMan.state().id(), INFTY);
 
 		if (Application.app().settings.getAsBoolean("pacMan.immortable")) {
@@ -181,7 +181,8 @@ public class PlayView extends SimplePlayView {
 		if (ghost.getState() == GhostState.FRIGHTENED && cast.pacMan.hasPower()) {
 			duration = cast.pacMan.state().getDuration();
 			remaining = cast.pacMan.state().getTicksRemaining();
-		} else if (ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING) {
+		}
+		else if (ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING) {
 			State<?, ?> attack = fnGhostMotionState.get();
 			if (attack != null) {
 				duration = attack.getDuration();
@@ -229,12 +230,14 @@ public class PlayView extends SimplePlayView {
 		Stroke solid = g.getStroke();
 		if (ghost.targetTile() != null) {
 			// draw target tile indicator
-			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
+			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
+					0);
 			g.setStroke(dashed);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(ghostColor);
 			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
-					ghost.targetTile().col * Tile.SIZE + Tile.SIZE / 2, ghost.targetTile().row * Tile.SIZE + Tile.SIZE / 2);
+					ghost.targetTile().col * Tile.SIZE + Tile.SIZE / 2,
+					ghost.targetTile().row * Tile.SIZE + Tile.SIZE / 2);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			g.setStroke(solid);
 			g.translate(ghost.targetTile().col * Tile.SIZE, ghost.targetTile().row * Tile.SIZE);
@@ -248,7 +251,8 @@ public class PlayView extends SimplePlayView {
 			for (Tile tile : ghost.targetPath()) {
 				g.fillRect(tile.col * Tile.SIZE, tile.row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 			}
-		} else {
+		}
+		else if (ghost.nextDir() != null) {
 			// draw direction indicator
 			Vector2f center = ghost.tf.getCenter();
 			int dx = ghost.nextDir().dx, dy = ghost.nextDir().dy;
@@ -295,7 +299,8 @@ public class PlayView extends SimplePlayView {
 			Vector2f center = cast.clyde.tf.getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 100));
-			g.drawOval((int) center.x - 8 * Tile.SIZE, (int) center.y - 8 * Tile.SIZE, 16 * Tile.SIZE, 16 * Tile.SIZE);
+			g.drawOval((int) center.x - 8 * Tile.SIZE, (int) center.y - 8 * Tile.SIZE, 16 * Tile.SIZE,
+					16 * Tile.SIZE);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		}
 	}

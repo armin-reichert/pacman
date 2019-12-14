@@ -6,6 +6,7 @@ import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.model.Direction.UP;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.function.Supplier;
 
 import de.amr.datastruct.StreamUtils;
@@ -98,6 +99,7 @@ public interface Steerings {
 	 * 
 	 * @param attacker
 	 *                   the attacking actor
+	 * 
 	 * @return behavior where actor flees to a "safe" maze corner
 	 */
 	static <T extends MazeMover> Steering<T> fleeingToSafeCorner(MazeMover attacker) {
@@ -105,20 +107,40 @@ public interface Steerings {
 	}
 
 	/**
-	 * Lets the actor follow the shortest path to the target. This may, depending on the actor's current
-	 * state.
+	 * Lets the actor follow the shortest path to the target. This may be not possible, depending on the
+	 * actor's current state.
 	 * 
+	 * @param maze
+	 *                   the maze
 	 * @param fnTarget
 	 *                   function supplying the target tile at time of decision
+	 * 
 	 * @return behavior where an actor follows the shortest (according to Manhattan distance) path to a
 	 *         target tile
 	 */
-	static <T extends MazeMover> Steering<T> followingShortestPath(Maze maze, Supplier<Tile> fnTarget) {
+	static <T extends MazeMover> Steering<T> takingShortestPath(Maze maze, Supplier<Tile> fnTarget) {
 		return new TakingShortestPath<>(maze, fnTarget);
 	}
 
 	/**
-	 * TODO: in progress.
+	 * Lets the actor follow a fixed path to the target.
+	 * 
+	 * @param maze
+	 *               the maze
+	 * @param path
+	 *               the path to follow
+	 * 
+	 * @return behavior where actor follows the given path
+	 */
+	static <T extends MazeMover> Steering<T> takingFixedPath(Maze maze, List<Tile> path) {
+		if (path.isEmpty()) {
+			throw new IllegalArgumentException("Path must not be empty");
+		}
+		return new TakingFixedPath<>(maze, path);
+	}
+
+	/**
+	 * /** TODO: in progress.
 	 */
 	static Steering<PacMan> avoidingGhosts() {
 		return new AvoidingGhosts();
