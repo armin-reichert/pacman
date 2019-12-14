@@ -132,9 +132,6 @@ public class PacManGame {
 		saveHiscore();
 	}
 
-	/**
-	 * @return number of pellets not yet eaten
-	 */
 	public int numPelletsRemaining() {
 		return maze.totalNumPellets - level.numPelletsEaten;
 	}
@@ -157,14 +154,9 @@ public class PacManGame {
 		}
 	}
 
-	/**
-	 * @return if bonus will become active
-	 */
 	public boolean isBonusScoreReached() {
 		return level.numPelletsEaten == 70 || level.numPelletsEaten == 170;
 	}
-
-	// Score management
 
 	public void saveHiscore() {
 		hiscore.save(hiscoreFile);
