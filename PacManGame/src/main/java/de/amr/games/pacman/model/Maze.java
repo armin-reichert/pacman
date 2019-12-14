@@ -7,6 +7,8 @@ import static de.amr.games.pacman.model.Tile.TUNNEL;
 import static de.amr.games.pacman.model.Tile.WALL;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -160,6 +162,15 @@ public class Maze {
 
 	public boolean inFrontOfGhostHouseDoor(Tile tile) {
 		return tileToDir(tile, Direction.DOWN).isDoor();
+	}
+
+	public Optional<Direction> directionBetween(Tile t1, Tile t2) {
+		int dx = t2.col - t1.col, dy = t2.row - t1.row;
+		return Direction.dirs().filter(dir -> dir.dx == dx && dir.dy == dy).findFirst();
+	}
+
+	public Optional<Direction> alongPath(List<Tile> path) {
+		return path.size() < 2 ? Optional.empty() : directionBetween(path.get(0), path.get(1));
 	}
 
 	public boolean partOfGhostHouse(Tile tile) {

@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.actor.behavior.common.TakingPrecomputedPath;
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.MazeGraph;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -22,8 +23,11 @@ import de.amr.games.pacman.model.Tile;
  */
 public class FleeingToSafeCorner<T extends MazeMover> extends TakingPrecomputedPath<T> {
 
+	protected MazeGraph graph;
+
 	public FleeingToSafeCorner(Maze maze, Supplier<Tile> chaserTileSupplier) {
 		super(maze, chaserTileSupplier);
+		graph = new MazeGraph(maze);
 	}
 
 	@Override
@@ -36,7 +40,6 @@ public class FleeingToSafeCorner<T extends MazeMover> extends TakingPrecomputedP
 	}
 
 	private Tile safeCorner(T refugee) {
-		Maze maze = refugee.maze();
 		Tile refugeeTile = refugee.tile();
 		Tile chaserTile = fnTargetTile.get();
 		//@formatter:off

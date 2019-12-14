@@ -4,7 +4,6 @@ import static de.amr.easy.game.Application.LOGGER;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import de.amr.graph.core.api.UndirectedEdge;
@@ -25,6 +24,7 @@ public class MazeGraph {
 
 	public final Maze maze;
 	public final GridGraph2D<Tile, Void> grid;
+	private int pathFinderCalls;
 
 	public MazeGraph(Maze maze) {
 		this.maze = maze;
@@ -46,15 +46,6 @@ public class MazeGraph {
 		return maze.tiles[grid.col(vertex)][grid.row(vertex)];
 	}
 
-	// navigation and path finding
-
-	public Optional<Direction> directionBetween(Tile t1, Tile t2) {
-		int dx = t2.col - t1.col, dy = t2.row - t1.row;
-		return Direction.dirs().filter(dir -> dir.dx == dx && dir.dy == dy).findFirst();
-	}
-
-	private int pathFinderCalls;
-
 	public List<Tile> shortestPath(Tile source, Tile target) {
 		if (maze.insideBoard(source) && maze.insideBoard(target)) {
 			GraphSearch pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
@@ -66,9 +57,5 @@ public class MazeGraph {
 			return path.vertexStream().map(this::tile).collect(Collectors.toList());
 		}
 		return Collections.emptyList();
-	}
-
-	public Optional<Direction> alongPath(List<Tile> path) {
-		return path.size() < 2 ? Optional.empty() : directionBetween(path.get(0), path.get(1));
 	}
 }
