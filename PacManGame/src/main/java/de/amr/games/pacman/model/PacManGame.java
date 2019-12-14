@@ -75,7 +75,7 @@ public class PacManGame {
 	public static final int SPEED_2_FPS = 70;
 	public static final int SPEED_3_FPS = 80;
 
-	final File highscoreFile = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
+	final File hiscoreFile = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
 
 	final Level[] levels = new Level[] {
 		/*@formatter:off*/
@@ -115,7 +115,7 @@ public class PacManGame {
 	public void init() {
 		lives = 3;
 		score = 0;
-		hiscore.load(highscoreFile);
+		hiscore.load(hiscoreFile);
 		levelSymbols.clear();
 		enterLevel(1);
 	}
@@ -167,7 +167,7 @@ public class PacManGame {
 	// Score management
 
 	public void saveHiscore() {
-		hiscore.save(highscoreFile);
+		hiscore.save(hiscoreFile);
 	}
 
 	public void score(int points) {
