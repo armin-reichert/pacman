@@ -96,12 +96,10 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 					})
 					
 				.state(LEAVING_HOUSE)
-					.onEntry(() -> targetTile = maze().ghostHome[0])
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir))
 					.onExit(() -> moveDir = nextDir = LEFT)
 				
 				.state(ENTERING_HOUSE)
-					.onEntry(() -> targetTile = revivalTile)
 					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir))
 				
 				.state(SCATTERING)
@@ -145,7 +143,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 					.condition(() -> leftHouse() && nextState == CHASING)
 					
 				.when(ENTERING_HOUSE).then(LOCKED)
-					.condition(() -> tile() == targetTile)
+					.condition(() -> nextDir == null)
 				
 				.when(CHASING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
@@ -277,6 +275,11 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 			throw new IllegalStateException(
 					String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
 		}
+	}
+	
+	@Override
+	protected boolean snapToGrid() {
+		return getState() != ENTERING_HOUSE && getState() != LEAVING_HOUSE;
 	}
 
 	private void walkAndDisplayAs(String spriteKey) {

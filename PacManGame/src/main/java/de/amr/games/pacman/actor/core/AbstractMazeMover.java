@@ -149,10 +149,9 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 	}
 
 	/**
-	 * When an actor (Ghost, Pac-Man) leaves a teleport tile towards the border, a
-	 * timer is started and the actor is placed at the teleportation target and
-	 * hidden (to avoid triggering events during teleportation). When the timer
-	 * ends, the actor is made visible again.
+	 * When an actor (Ghost, Pac-Man) leaves a teleport tile towards the border, a timer is started and
+	 * the actor is placed at the teleportation target and hidden (to avoid triggering events during
+	 * teleportation). When the timer ends, the actor is made visible again.
 	 * 
 	 * @return <code>true</code> if teleportation is running
 	 */
@@ -160,11 +159,13 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 		if (teleportTicksRemaining > 0) { // running
 			teleportTicksRemaining -= 1;
 			LOGGER.fine("Teleporting running, remaining:" + teleportTicksRemaining);
-		} else if (teleportTicksRemaining == 0) { // completed
+		}
+		else if (teleportTicksRemaining == 0) { // completed
 			teleportTicksRemaining = -1;
 			show();
 			LOGGER.fine("Teleporting complete");
-		} else { // off
+		}
+		else { // off
 			int leftExit = (maze().tunnelExitLeft.col - 1) * Tile.SIZE;
 			int rightExit = (maze().tunnelExitRight.col + 1) * Tile.SIZE;
 			if (tf.getX() > rightExit) { // start
@@ -172,7 +173,8 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 				tf.setX(leftExit);
 				hide();
 				LOGGER.fine("Teleporting started");
-			} else if (tf.getX() < leftExit) { // start
+			}
+			else if (tf.getX() < leftExit) { // start
 				teleportTicksRemaining = teleportingTicks;
 				tf.setX(rightExit);
 				hide();
@@ -181,20 +183,26 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 		}
 		return teleportTicksRemaining != -1;
 	}
+	
+	protected boolean snapToGrid() {
+		return true;
+	}
 
 	/**
-	 * Movement inside the maze. Handles changing the direction according to the
-	 * intended move direction, moving around corners without losing alignment,
+	 * Movement inside the maze. Handles changing the direction according to the intended move
+	 * direction, moving around corners without losing alignment,
 	 */
 	private void moveInsideMaze() {
 		Tile oldTile = tile();
 		float speed = possibleSpeedTo(nextDir);
 		if (speed > 0) {
-			if (nextDir == moveDir.turnLeft() || nextDir == moveDir.turnRight()) {
+			boolean turning = (nextDir == moveDir.turnLeft() || nextDir == moveDir.turnRight());
+			if (turning && snapToGrid()) {
 				tf.setPosition(oldTile.col * Tile.SIZE, oldTile.row * Tile.SIZE);
 			}
 			moveDir = nextDir;
-		} else {
+		}
+		else {
 			speed = possibleSpeedTo(moveDir);
 		}
 		tf.setVelocity(Vector2f.smul(speed, Vector2f.of(moveDir.dx, moveDir.dy)));
@@ -203,8 +211,8 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 	}
 
 	/**
-	 * Computes how many pixels this entity can move towards the given direction
-	 * without crossing the border to a forbidden neighbor tile.
+	 * Computes how many pixels this entity can move towards the given direction without crossing the
+	 * border to a forbidden neighbor tile.
 	 */
 	private float possibleSpeedTo(Direction dir) {
 		if (canCrossBorderTo(dir)) {

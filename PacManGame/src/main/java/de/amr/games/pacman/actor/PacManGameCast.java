@@ -16,6 +16,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse;
+import de.amr.games.pacman.actor.behavior.ghost.LeavingGhostHouse;
 import de.amr.games.pacman.actor.core.MazeResident;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.PacManGame;
@@ -60,6 +62,8 @@ public class PacManGameCast {
 		blinky.revivalTile = game.maze.ghostHome[2];
 		blinky.teleportingTicks = sec(0.5f);
 		blinky.fnChasingTarget = pacMan::tile;
+		blinky.setSteering(GhostState.ENTERING_HOUSE, new EnteringGhostHouse(game.maze, game.maze.ghostHome[2]));
+		blinky.setSteering(GhostState.LEAVING_HOUSE, new LeavingGhostHouse(game.maze));
 
 		pinky.initialDir = DOWN;
 		pinky.initialTile = game.maze.ghostHome[2];
@@ -67,6 +71,8 @@ public class PacManGameCast {
 		pinky.revivalTile = game.maze.ghostHome[2];
 		pinky.teleportingTicks = sec(0.5f);
 		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
+		pinky.setSteering(GhostState.ENTERING_HOUSE, new EnteringGhostHouse(game.maze, game.maze.ghostHome[2]));
+		pinky.setSteering(GhostState.LEAVING_HOUSE, new LeavingGhostHouse(game.maze));
 
 		inky.initialDir = UP;
 		inky.initialTile = game.maze.ghostHome[1];
@@ -77,6 +83,8 @@ public class PacManGameCast {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return game.maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		};
+		inky.setSteering(GhostState.ENTERING_HOUSE, new EnteringGhostHouse(game.maze, game.maze.ghostHome[1]));
+		inky.setSteering(GhostState.LEAVING_HOUSE, new LeavingGhostHouse(game.maze));
 
 		clyde.initialDir = UP;
 		clyde.initialTile = game.maze.ghostHome[3];
@@ -84,11 +92,15 @@ public class PacManGameCast {
 		clyde.revivalTile = game.maze.ghostHome[3];
 		clyde.teleportingTicks = sec(0.5f);
 		clyde.fnChasingTarget = () -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : game.maze.scatterTileSW;
+		clyde.setSteering(GhostState.ENTERING_HOUSE, new EnteringGhostHouse(game.maze, game.maze.ghostHome[3]));
+		clyde.setSteering(GhostState.LEAVING_HOUSE, new LeavingGhostHouse(game.maze));
 
-		ghosts().forEach(ghost -> ghost.setSteering(GhostState.FRIGHTENED, movingRandomlyNoReversing()));
-
-		// Blinky does not jump when locked
-		Stream.of(pinky, inky, clyde).forEach(ghost -> ghost.setSteering(GhostState.LOCKED, jumpingUpAndDown()));
+		ghosts().forEach(ghost -> {
+			ghost.setSteering(GhostState.FRIGHTENED, movingRandomlyNoReversing());
+			if (ghost != blinky) {
+				ghost.setSteering(GhostState.LOCKED, jumpingUpAndDown());
+			}
+		});
 	}
 
 	public void setTheme(PacManTheme theme) {
