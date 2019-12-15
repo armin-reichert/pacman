@@ -95,7 +95,9 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 					
 				.state(LEAVING_HOUSE)
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir()))
-					.onExit(() -> setMoveDir(LEFT))
+					.onExit(() -> {
+						setNextDir(LEFT);
+					})
 				
 				.state(ENTERING_HOUSE)
 					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir()))
