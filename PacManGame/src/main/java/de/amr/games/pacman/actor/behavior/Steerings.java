@@ -1,10 +1,5 @@
 package de.amr.games.pacman.actor.behavior;
 
-import static de.amr.games.pacman.model.Direction.DOWN;
-import static de.amr.games.pacman.model.Direction.LEFT;
-import static de.amr.games.pacman.model.Direction.RIGHT;
-import static de.amr.games.pacman.model.Direction.UP;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
@@ -18,6 +13,7 @@ import de.amr.games.pacman.actor.behavior.common.TakingFixedPath;
 import de.amr.games.pacman.actor.behavior.common.TakingShortestPath;
 import de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse;
 import de.amr.games.pacman.actor.behavior.ghost.FleeingToSafeCorner;
+import de.amr.games.pacman.actor.behavior.ghost.JumpingUpAndDown;
 import de.amr.games.pacman.actor.behavior.ghost.LeavingGhostHouse;
 import de.amr.games.pacman.actor.behavior.pacman.AvoidingGhosts;
 import de.amr.games.pacman.actor.core.MazeMover;
@@ -48,24 +44,16 @@ public interface Steerings {
 	}
 
 	/**
-	 * Lets the actor jump up and down.
+	 * Lets the ghost jump up and down.
 	 * 
-	 * @return behavior which lets the actor bounce vertically inside its currently accessible area e.g.
-	 *         the ghost house or the current maze corridor
+	 * @param baseTile
+	 *                    base tile for jump
+	 * @param amplitude
+	 *                    how far to jump from base tile up and down
+	 * @return behavior which lets the ghost jump
 	 */
-	static <T extends MazeMover> Steering<T> jumpingUpAndDown() {
-		return actor -> {
-			if (actor.moveDir() == LEFT || actor.moveDir() == RIGHT) {
-				actor.setMoveDir(DOWN);
-				if (!actor.canMoveForward()) {
-					actor.setMoveDir(UP);
-				}
-			}
-			actor.setTargetTile(actor.tilesAhead(1));
-			if (!actor.canMoveForward()) {
-				actor.setNextDir(actor.moveDir().opposite());
-			}
-		};
+	static Steering<Ghost> jumpingUpAndDown(Tile baseTile, int amplitude) {
+		return new JumpingUpAndDown(baseTile, amplitude);
 	}
 
 	/**
