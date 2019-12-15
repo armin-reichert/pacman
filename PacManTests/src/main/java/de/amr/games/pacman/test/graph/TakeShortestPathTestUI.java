@@ -24,7 +24,7 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 	final Maze maze;
 	final Ghost ghost;
 	final List<Tile> targets;
-	int currentTarget;
+	int current;
 
 	public TakeShortestPathTestUI(PacManGameCast cast) {
 		super(cast);
@@ -36,13 +36,18 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 				maze.pacManHome);
 	}
 
+	Tile currentTarget() {
+		return targets.get(current);
+	}
+
 	@Override
 	public void init() {
 		super.init();
 		game.init();
 		maze.removeFood();
-		currentTarget = 0;
-		Steering<Ghost> shortestPath = takingShortestPath(maze, () -> targets.get(currentTarget));
+		current = 0;
+		ghost.fnChasingTarget = this::currentTarget;
+		Steering<Ghost> shortestPath = takingShortestPath(maze, this::currentTarget);
 		ghost.setSteering(CHASING, shortestPath);
 		ghost.setSteering(FRIGHTENED, shortestPath);
 		cast.putOnStage(ghost);
@@ -56,9 +61,9 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 	}
 
 	private void nextTarget() {
-		currentTarget += 1;
-		if (currentTarget == targets.size()) {
-			currentTarget = 0;
+		current += 1;
+		if (current == targets.size()) {
+			current = 0;
 			game.enterLevel(game.level.number + 1);
 			game.maze.removeFood();
 		}
@@ -70,7 +75,7 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 			ghost.setState(ghost.getState() == CHASING ? FRIGHTENED : CHASING);
 		}
 		ghost.update();
-		if (ghost.tile().equals(targets.get(currentTarget))) {
+		if (ghost.tile().equals(targets.get(current))) {
 			nextTarget();
 		}
 		super.update();
