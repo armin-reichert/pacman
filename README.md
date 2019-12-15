@@ -273,6 +273,7 @@ However, for a maze of such a small size the used algorithm doesn't matter much,
   - Speed can be changed during game 
     - Continuosly: ALT-LEFT = slower, ALT-RIGHT = faster
     - Fixed speeds: '1' = normal speed, '2' = fast, '3' = very fast
+    - 't' toggles display of current framerate
   - 'b', 'p', 'i', 'c' toggles the presence of the 4 ghosts in the game
   - 'f' toggles the ghost's *frightened* behavior between "random" (original) and "select safe corner"
   - 's' toggles the display of actor states and timers
