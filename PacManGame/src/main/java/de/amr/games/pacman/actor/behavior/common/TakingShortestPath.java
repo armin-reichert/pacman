@@ -9,21 +9,22 @@ import de.amr.games.pacman.model.MazeGraph;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Steering which computes the shortest path (using graph path finding) to the target tile.
+ * Steering which computes the shortest path (using graph path finding) to the
+ * target tile.
  *
  * @author Armin Reichert
  */
 public class TakingShortestPath<T extends MazeMover> extends TakingPrecomputedPath<T> {
 
 	protected MazeGraph graph;
-	
+
 	public TakingShortestPath(Maze maze, Supplier<Tile> fnTargetTile) {
 		super(maze, fnTargetTile);
 		graph = new MazeGraph(maze);
 	}
 
 	@Override
-	protected List<Tile> computePath(T actor) {
-		return graph.shortestPath(actor.tile(), actor.targetTile());
+	protected List<Tile> computePath(T actor, Tile targetTile) {
+		return graph.shortestPath(actor.tile(), targetTile);
 	}
 }

@@ -31,7 +31,7 @@ public class FleeingToSafeCorner<T extends MazeMover> extends TakingPrecomputedP
 	}
 
 	@Override
-	protected List<Tile> computePath(T refugee) {
+	protected List<Tile> computePath(T refugee, Tile targetTile) {
 		Tile target = refugee.tile();
 		while (target.equals(refugee.tile())) {
 			target = safeCorner(refugee);

@@ -15,8 +15,8 @@ import de.amr.graph.pathfinder.api.Path;
 import de.amr.graph.pathfinder.impl.AStarSearch;
 
 /**
- * Adds a grid graph structure to the maze such that graph path finder algorithms can be run on the
- * maze.
+ * Adds a grid graph structure to the maze such that graph path finder
+ * algorithms can be run on the maze.
  * 
  * @author Armin Reichert
  */
@@ -51,9 +51,7 @@ public class MazeGraph {
 			GraphSearch pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
 			Path path = pathfinder.findPath(vertex(source), vertex(target));
 			pathFinderCalls += 1;
-			if (pathFinderCalls % 5 == 0) {
-				LOGGER.info(String.format("%d'th pathfinding executed", pathFinderCalls));
-			}
+			LOGGER.info(String.format("%d'th pathfinding executed", pathFinderCalls));
 			return path.vertexStream().map(this::tile).collect(Collectors.toList());
 		}
 		return Collections.emptyList();

@@ -17,7 +17,7 @@ public class TakingFixedPath<T extends MazeMover> extends TakingPrecomputedPath<
 	}
 
 	@Override
-	protected List<Tile> computePath(T actor) {
+	protected List<Tile> computePath(T actor, Tile targetTile) {
 		return path;
 	}
 }

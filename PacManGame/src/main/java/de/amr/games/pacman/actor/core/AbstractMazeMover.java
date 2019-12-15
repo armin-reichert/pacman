@@ -20,9 +20,9 @@ import de.amr.games.pacman.model.Tile;
  */
 public abstract class AbstractMazeMover extends Entity implements MazeMover {
 
-	protected Direction moveDir = Direction.RIGHT;
+	private Direction moveDir = Direction.RIGHT;
 	protected Direction nextDir;
-	protected Tile targetTile;
+	private Tile targetTile;
 	protected List<Tile> targetPath;
 	public boolean requireTargetPath;
 	protected boolean enteredNewTile;

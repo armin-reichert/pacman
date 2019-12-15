@@ -88,28 +88,27 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 			.states()
 	
 				.state(LOCKED)
-					.onTick(() -> walkAndDisplayAs("color-" + moveDir))
+					.onTick(() -> walkAndDisplayAs("color-" + moveDir()))
 					.onExit(() -> {
 						enteredNewTile = true;
 						cast.pacMan.ticksSinceLastMeal = 0;
 					})
 					
 				.state(LEAVING_HOUSE)
-					.onTick(() -> walkAndDisplayAs("color-" + moveDir))
-					.onExit(() -> moveDir = nextDir = LEFT)
+					.onTick(() -> walkAndDisplayAs("color-" + moveDir()))
+					.onExit(() -> setMoveDir(LEFT))
 				
 				.state(ENTERING_HOUSE)
-					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir))
+					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir()))
 				
 				.state(SCATTERING)
-					.onEntry(() -> targetTile = scatterTile)
-					.onTick(() -> walkAndDisplayAs("color-" + moveDir))
+					.onEntry(() -> setTargetTile(scatterTile))
+					.onTick(() -> walkAndDisplayAs("color-" + moveDir()))
 			
 				.state(CHASING)
 					.onEntry(() -> turnChasingGhostSoundOn())
 					.onTick(() -> {
-						targetTile = fnChasingTarget.get();
-						walkAndDisplayAs("color-" + moveDir);
+						walkAndDisplayAs("color-" + moveDir());
 					})
 					.onExit(() -> turnChasingGhostSoundOff())
 				
@@ -124,10 +123,10 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 				
 				.state(DEAD)
 					.onEntry(() -> {
-						targetTile = maze().ghostHome[0];
+						setTargetTile(maze().ghostHome[0]);
 						turnDeadGhostSoundOn();
 					})
-					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir))
+					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir()))
 					.onExit(() -> turnDeadGhostSoundOff())
 				
 			.transitions()
@@ -208,8 +207,8 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		super.init();
 		fsmComponent.init();
 		visible = true;
-		moveDir = initialDir;
-		nextDir = initialDir;
+		setMoveDir(initialDir);
+		setNextDir(initialDir);
 		enteredNewTile = true;
 		placeAtTile(initialTile, Tile.SIZE / 2, 0);
 		sprites.select("color-" + initialDir);
@@ -235,6 +234,11 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	@Override
 	public void steer() {
 		getSteering().steer(this);
+	}
+
+	@Override
+	public Tile targetTile() {
+		return getState() == CHASING ? fnChasingTarget.get() : super.targetTile();
 	}
 
 	@Override
