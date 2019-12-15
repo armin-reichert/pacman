@@ -1,56 +1,53 @@
 package de.amr.games.pacman.actor.core;
 
-import static java.lang.Math.round;
-
-import de.amr.easy.game.entity.Entity;
-import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.view.Controller;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Implemented by entities residing in a maze. This provides tile coordinates
- * and tile-specific methods for an entity.
+ * Implemented by entities that reside in a maze.
  * 
  * @author Armin Reichert
  */
 public interface MazeResident extends Controller {
 
 	/**
-	 * @return the entity implementing this interface
+	 * Make me visible.
 	 */
-	Entity resident();
+	void show();
 
 	/**
-	 * @return the maze where this entity resides
+	 * Makes me invisible.
+	 */
+	void hide();
+
+	/**
+	 * @return my maze
 	 */
 	Maze maze();
 
 	/**
 	 * @return maze tile where the center of the collision box is located
 	 */
-	default Tile tile() {
-		Vector2f center = resident().tf.getCenter();
-		return maze().tileAt(round(center.x) / Tile.SIZE, round(center.y) / Tile.SIZE);
-	}
+	Tile tile();
 
 	/**
 	 * Places this maze resident at the given tile, optionally with some offset.
 	 * 
-	 * @param tile    the tile where this maze mover is placed
-	 * @param xOffset pixel offset in x-direction
-	 * @param yOffset pixel offset in y-direction
+	 * @param tile
+	 *                  the tile where this maze mover is placed
+	 * @param xOffset
+	 *                  pixel offset in x-direction
+	 * @param yOffset
+	 *                  pixel offset in y-direction
 	 */
-	default void placeAtTile(Tile tile, float xOffset, float yOffset) {
-		resident().tf.setPosition(tile.col * Tile.SIZE + xOffset, tile.row * Tile.SIZE + yOffset);
-	}
+	void placeAtTile(Tile tile, float xOffset, float yOffset);
 
 	/**
-	 * @param other other maze resident
-	 * @return squared Euclidean distance to the other maze resident in tile
-	 *         coordinates
+	 * @param other
+	 *                other maze resident
+	 * @return squared Euclidean distance to the other maze resident in tile coordinates
 	 */
-	default int distanceSq(MazeResident other) {
-		return Tile.distanceSq(tile(), other.tile());
-	}
+	int distanceSq(AbstractMazeResident other);
+
 }

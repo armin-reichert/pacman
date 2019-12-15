@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
@@ -188,11 +187,6 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	}
 
 	@Override
-	public Entity resident() {
-		return this;
-	}
-
-	@Override
 	public Maze maze() {
 		return cast.game.maze;
 	}
@@ -275,7 +269,8 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		case DEAD:
 			return 2 * speed(game.level.ghostSpeed);
 		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
+			throw new IllegalStateException(
+					String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
 		}
 	}
 

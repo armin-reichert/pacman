@@ -11,8 +11,7 @@ import java.awt.Graphics2D;
 import java.util.Random;
 import java.util.logging.Logger;
 
-import de.amr.easy.game.entity.Entity;
-import de.amr.games.pacman.actor.core.MazeResident;
+import de.amr.games.pacman.actor.core.AbstractMazeResident;
 import de.amr.games.pacman.actor.fsm.FsmComponent;
 import de.amr.games.pacman.actor.fsm.FsmContainer;
 import de.amr.games.pacman.actor.fsm.FsmControlled;
@@ -31,7 +30,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Bonus extends Entity implements MazeResident, FsmContainer<BonusState> {
+public class Bonus extends AbstractMazeResident implements FsmContainer<BonusState> {
 
 	public final PacManGameCast cast;
 	public final FsmComponent<BonusState> fsmComponent;
@@ -48,11 +47,6 @@ public class Bonus extends Entity implements MazeResident, FsmContainer<BonusSta
 		value = cast.game.level.bonusValue;
 		sprites.set("symbol", cast.theme.spr_bonusSymbol(symbol));
 		sprites.set("number", cast.theme.spr_pinkNumber(binarySearch(PacManGame.POINTS_BONUS, value)));
-	}
-
-	@Override
-	public Entity resident() {
-		return this;
 	}
 
 	@Override

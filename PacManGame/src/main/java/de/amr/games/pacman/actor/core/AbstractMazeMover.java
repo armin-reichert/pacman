@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Tile;
@@ -18,7 +17,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public abstract class AbstractMazeMover extends Entity implements MazeMover {
+public abstract class AbstractMazeMover extends AbstractMazeResident implements MazeMover {
 
 	private Direction moveDir = Direction.RIGHT;
 	protected Direction nextDir;
@@ -26,7 +25,7 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 	protected List<Tile> targetPath;
 	public boolean requireTargetPath;
 	protected boolean enteredNewTile;
-	public int teleportingTicks;
+	protected int teleportTicks;
 	protected int teleportTicksRemaining;
 
 	@Override
@@ -126,8 +125,12 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 
 	@Override
 	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
-		MazeMover.super.placeAtTile(tile, xOffset, yOffset);
+		super.placeAtTile(tile, xOffset, yOffset);
 		enteredNewTile = !tile.equals(tile());
+	}
+
+	public void setTeleportingDuration(int ticks) {
+		teleportTicks = ticks;
 	}
 
 	/**
@@ -169,13 +172,13 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 			int leftExit = (maze().tunnelExitLeft.col - 1) * Tile.SIZE;
 			int rightExit = (maze().tunnelExitRight.col + 1) * Tile.SIZE;
 			if (tf.getX() > rightExit) { // start
-				teleportTicksRemaining = teleportingTicks;
+				teleportTicksRemaining = teleportTicks;
 				tf.setX(leftExit);
 				hide();
 				LOGGER.fine("Teleporting started");
 			}
 			else if (tf.getX() < leftExit) { // start
-				teleportTicksRemaining = teleportingTicks;
+				teleportTicksRemaining = teleportTicks;
 				tf.setX(rightExit);
 				hide();
 				LOGGER.fine("Teleporting started");
@@ -183,7 +186,7 @@ public abstract class AbstractMazeMover extends Entity implements MazeMover {
 		}
 		return teleportTicksRemaining != -1;
 	}
-	
+
 	protected boolean snapToGrid() {
 		return true;
 	}
