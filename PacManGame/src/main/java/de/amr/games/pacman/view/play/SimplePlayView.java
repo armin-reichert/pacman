@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.util.Arrays;
 
 import de.amr.easy.game.ui.sprites.Animation;
@@ -37,6 +38,14 @@ public class SimplePlayView implements View, Controller {
 
 		public Pen(Graphics2D g) {
 			this.g = (Graphics2D) g.create();
+		}
+
+		public void aaOn() {
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		}
+
+		public void aaOff() {
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 		}
 
 		public void text(String s, int col, int row) {
@@ -148,8 +157,10 @@ public class SimplePlayView implements View, Controller {
 			cast.pacMan.draw(g);
 		}
 		// draw dying ghosts (numbers) under non-dying ghosts
-		cast.ghostsOnStage().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(ghost -> ghost.draw(g));
-		cast.ghostsOnStage().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(ghost -> ghost.getState() == GhostState.DYING)
+				.forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(ghost -> ghost.getState() != GhostState.DYING)
+				.forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {
