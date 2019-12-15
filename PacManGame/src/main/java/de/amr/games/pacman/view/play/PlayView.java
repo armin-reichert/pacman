@@ -65,6 +65,7 @@ public class PlayView extends SimplePlayView {
 	private boolean showRoutes = false;
 	private boolean showGrid = false;
 	private boolean showStates = false;
+	private boolean showFrameRate = false;
 	private BufferedImage gridImage;
 
 	public Supplier<State<GhostState, ?>> fnGhostMotionState = () -> null;
@@ -86,12 +87,19 @@ public class PlayView extends SimplePlayView {
 		}
 	}
 
+	public void setShowFrameRate(boolean showFrameRate) {
+		this.showFrameRate = showFrameRate;
+	}
+
 	public void setShowStates(boolean showStates) {
 		this.showStates = showStates;
 	}
 
 	@Override
 	public void update() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_T)) {
+			setShowFrameRate(!showFrameRate);
+		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_G)) {
 			setShowGrid(!showGrid);
 		}
@@ -119,31 +127,36 @@ public class PlayView extends SimplePlayView {
 	private void toggleGhostActivationState(Ghost ghost) {
 		if (cast.isActive(ghost)) {
 			cast.deactivate(ghost);
-		}
-		else {
+		} else {
 			cast.activate(ghost);
 		}
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		drawMaze(g);
 		drawScores(g);
+		drawMaze(g);
 		if (showRoutes) {
-			cast.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));
+			drawRoutes(g);
 		}
 		drawActors(g);
 		if (showGrid) {
-			g.drawImage(gridImage, 0, 0, null);
-			if (cast.isActive(cast.pacMan)) {
-				drawGridAlignment(cast.pacMan, g);
-			}
-			cast.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawGridAlignment(ghost, g));
+			drawGrid(g);
 		}
 		if (showStates) {
 			drawActorStates(g);
 		}
 		drawInfoText(g);
+		if (showFrameRate) {
+			drawFPS(g);
+		}
+	}
+
+	private void drawFPS(Graphics2D g) {
+		Pen pen = new Pen(g);
+		pen.color = new Color(240, 240, 240, 80);
+		pen.font = new Font(Font.MONOSPACED, Font.BOLD, 12);
+		pen.text(Application.app().clock.getRenderRate() + "fps", 23, 21);
 	}
 
 	private void drawActorStates(Graphics2D g) {
@@ -163,8 +176,9 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private String pacManStateText(PacMan pacMan) {
-		String text = pacMan.state().getDuration() != State.ENDLESS ? String.format("(%s,%d|%d)",
-				pacMan.state().id(), pacMan.state().getTicksRemaining(), pacMan.state().getDuration())
+		String text = pacMan.state().getDuration() != State.ENDLESS
+				? String.format("(%s,%d|%d)", pacMan.state().id(), pacMan.state().getTicksRemaining(),
+						pacMan.state().getDuration())
 				: String.format("(%s,%s)", pacMan.state().id(), INFTY);
 
 		if (Application.app().settings.getAsBoolean("pacMan.immortable")) {
@@ -181,8 +195,7 @@ public class PlayView extends SimplePlayView {
 		if (ghost.getState() == GhostState.FRIGHTENED && cast.pacMan.hasPower()) {
 			duration = cast.pacMan.state().getDuration();
 			remaining = cast.pacMan.state().getTicksRemaining();
-		}
-		else if (ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING) {
+		} else if (ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING) {
 			State<?, ?> attack = fnGhostMotionState.get();
 			if (attack != null) {
 				duration = attack.getDuration();
@@ -210,6 +223,14 @@ public class PlayView extends SimplePlayView {
 		g.translate(-x, -y);
 	}
 
+	private void drawGrid(Graphics2D g) {
+		g.drawImage(gridImage, 0, 0, null);
+		if (cast.isActive(cast.pacMan)) {
+			drawGridAlignment(cast.pacMan, g);
+		}
+		cast.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawGridAlignment(ghost, g));
+	}
+
 	private void drawGridAlignment(Entity actor, Graphics2D g) {
 		g.setColor(Color.GREEN);
 		g.translate(actor.tf.getX(), actor.tf.getY());
@@ -225,19 +246,21 @@ public class PlayView extends SimplePlayView {
 		g.translate(-actor.tf.getX(), -actor.tf.getY());
 	}
 
+	private void drawRoutes(Graphics2D g) {
+		cast.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));
+	}
+
 	private void drawRoute(Graphics2D g, Ghost ghost) {
 		Color ghostColor = color(ghost);
 		Stroke solid = g.getStroke();
 		if (ghost.targetTile() != null) {
 			// draw target tile indicator
-			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
-					0);
+			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
 			g.setStroke(dashed);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(ghostColor);
 			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
-					ghost.targetTile().col * Tile.SIZE + Tile.SIZE / 2,
-					ghost.targetTile().row * Tile.SIZE + Tile.SIZE / 2);
+					ghost.targetTile().col * Tile.SIZE + Tile.SIZE / 2, ghost.targetTile().row * Tile.SIZE + Tile.SIZE / 2);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			g.setStroke(solid);
 			g.translate(ghost.targetTile().col * Tile.SIZE, ghost.targetTile().row * Tile.SIZE);
@@ -251,8 +274,7 @@ public class PlayView extends SimplePlayView {
 			for (Tile tile : ghost.targetPath()) {
 				g.fillRect(tile.col * Tile.SIZE, tile.row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 			}
-		}
-		else if (ghost.nextDir() != null) {
+		} else if (ghost.nextDir() != null) {
 			// draw direction indicator
 			Vector2f center = ghost.tf.getCenter();
 			int dx = ghost.nextDir().dx, dy = ghost.nextDir().dy;
@@ -299,8 +321,7 @@ public class PlayView extends SimplePlayView {
 			Vector2f center = cast.clyde.tf.getCenter();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 100));
-			g.drawOval((int) center.x - 8 * Tile.SIZE, (int) center.y - 8 * Tile.SIZE, 16 * Tile.SIZE,
-					16 * Tile.SIZE);
+			g.drawOval((int) center.x - 8 * Tile.SIZE, (int) center.y - 8 * Tile.SIZE, 16 * Tile.SIZE, 16 * Tile.SIZE);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		}
 	}
