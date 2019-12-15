@@ -191,25 +191,36 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private String ghostStateText(Ghost ghost) {
-		String displayName = ghost.getState() == GhostState.DEAD ? ghost.name() : "";
-		String nextState = ghost.nextState != ghost.getState() ? String.format("[->%s]", ghost.nextState) : "";
-		int duration = ghost.state().getDuration(), remaining = ghost.state().getTicksRemaining();
-
+		StringBuilder text = new StringBuilder();
+		// ghost name if dead
+		text.append(ghost.getState() == GhostState.DEAD ? ghost.name() : "");
+		// timer values
+		int duration = ghost.state().getDuration();
+		int remaining = ghost.state().getTicksRemaining();
+		// Pac-Man power time
 		if (ghost.getState() == GhostState.FRIGHTENED && cast.pacMan.hasPower()) {
 			duration = cast.pacMan.state().getDuration();
 			remaining = cast.pacMan.state().getTicksRemaining();
 		}
+		// chasing or scattering time
 		else if (ghost.getState() == GhostState.SCATTERING || ghost.getState() == GhostState.CHASING) {
-			State<?, ?> attack = fnGhostMotionState.get();
+			State<GhostState, ?> attack = fnGhostMotionState.get();
 			if (attack != null) {
 				duration = attack.getDuration();
 				remaining = attack.getTicksRemaining();
 			}
 		}
-
-		return duration != State.ENDLESS
-				? String.format("%s(%s,%d|%d)%s", displayName, ghost.getState(), remaining, duration, nextState)
-				: String.format("%s(%s,%s)%s", displayName, ghost.getState(), INFTY, nextState);
+		if (duration == State.ENDLESS) {
+			text.append(String.format("(%s,%s)", ghost.getState(), INFTY));
+		}
+		else {
+			text.append(String.format("(%s,%d|%d)", ghost.getState(), remaining, duration));
+		}
+		// next state
+		if (ghost.getState() == GhostState.LEAVING_HOUSE) {
+			text.append(String.format("[->%s]", ghost.nextState));
+		}
+		return text.toString();
 	}
 
 	private Color color(Ghost ghost) {
