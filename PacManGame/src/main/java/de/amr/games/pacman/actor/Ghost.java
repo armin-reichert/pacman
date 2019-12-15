@@ -95,9 +95,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 					
 				.state(LEAVING_HOUSE)
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir()))
-					.onExit(() -> {
-						setNextDir(LEFT);
-					})
+					.onExit(() -> setNextDir(LEFT))
 				
 				.state(ENTERING_HOUSE)
 					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir()))
@@ -108,9 +106,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 			
 				.state(CHASING)
 					.onEntry(() -> turnChasingGhostSoundOn())
-					.onTick(() -> {
-						walkAndDisplayAs("color-" + moveDir());
-					})
+					.onTick(() -> walkAndDisplayAs("color-" + moveDir()))
 					.onExit(() -> turnChasingGhostSoundOff())
 				
 				.state(FRIGHTENED)
@@ -118,9 +114,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 				
 				.state(DYING)
 					.timeoutAfter(Ghost::getDyingTime)
-					.onEntry(() -> {
-						sprites.select("value-" + game.level.ghostsKilledByEnergizer);
-					})
+					.onEntry(() -> sprites.select("value-" + game.level.ghostsKilledByEnergizer))
 				
 				.state(DEAD)
 					.onEntry(() -> {
