@@ -1,7 +1,5 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.games.pacman.actor.GhostState.CHASING;
-import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.behavior.Steerings.enteringGhostHouse;
 import static de.amr.games.pacman.actor.behavior.Steerings.headingForTargetTile;
 import static de.amr.games.pacman.actor.behavior.Steerings.jumpingUpAndDown;
@@ -36,11 +34,11 @@ public class PacManGameCast {
 
 	public final PacManGame game;
 	public final Maze maze;
+	public PacManTheme theme;
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
-	public PacManTheme theme;
 	private Bonus bonus;
-	private final Set<MazeResident> activeActors = new HashSet<>();
+	private final Set<MazeResident> actorsOnStage = new HashSet<>();
 
 	public PacManGameCast(PacManGame game, PacManTheme theme) {
 		this.game = game;
@@ -129,31 +127,31 @@ public class PacManGameCast {
 		return Stream.of(blinky, pinky, inky, clyde);
 	}
 
-	public Stream<Ghost> activeGhosts() {
-		return ghosts().filter(this::isActive);
+	public Stream<Ghost> ghostsOnStage() {
+		return ghosts().filter(this::onStage);
 	}
 
 	public Stream<MazeResident> actors() {
 		return Stream.of(pacMan, blinky, pinky, inky, clyde);
 	}
 
-	public Stream<MazeResident> activeActors() {
-		return actors().filter(this::isActive);
+	public Stream<MazeResident> actorsOnStage() {
+		return actors().filter(this::onStage);
 	}
 
-	public void activate(MazeResident actor) {
+	public void putOnStage(MazeResident actor) {
 		actor.init();
 		actor.resident().show();
-		activeActors.add(actor);
+		actorsOnStage.add(actor);
 	}
 
-	public void deactivate(MazeResident actor) {
+	public void removeFromStage(MazeResident actor) {
 		actor.resident().hide();
-		activeActors.remove(actor);
+		actorsOnStage.remove(actor);
 	}
 
-	public boolean isActive(MazeResident actor) {
-		return activeActors.contains(actor);
+	public boolean onStage(MazeResident actor) {
+		return actorsOnStage.contains(actor);
 	}
 
 	public Optional<Bonus> bonus() {
@@ -167,31 +165,5 @@ public class PacManGameCast {
 
 	public void removeBonus() {
 		bonus = null;
-	}
-
-	public void turnGhostIsChasingSoundOn() {
-		if (!theme.snd_ghost_chase().isRunning()) {
-			theme.snd_ghost_chase().loop();
-		}
-	}
-
-	public void turnGhostIsChasingSoundOff(Ghost caller) {
-		// if caller is the only chasing ghost, turn sound off
-		if (activeGhosts().filter(ghost -> caller != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
-			theme.snd_ghost_chase().stop();
-		}
-	}
-
-	public void turnGhostIsDeadSoundOn() {
-		if (!theme.snd_ghost_dead().isRunning()) {
-			theme.snd_ghost_dead().loop();
-		}
-	}
-
-	public void turnGhostIsDeadSoundOff(Ghost caller) {
-		// if caller is the only dead ghost, turn sound off
-		if (activeGhosts().filter(ghost -> ghost != caller).noneMatch(ghost -> ghost.getState() == DEAD)) {
-			theme.snd_ghost_dead().stop();
-		}
 	}
 }

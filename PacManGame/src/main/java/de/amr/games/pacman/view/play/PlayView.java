@@ -125,10 +125,10 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void toggleGhostActivationState(Ghost ghost) {
-		if (cast.isActive(ghost)) {
-			cast.deactivate(ghost);
+		if (cast.onStage(ghost)) {
+			cast.removeFromStage(ghost);
 		} else {
-			cast.activate(ghost);
+			cast.putOnStage(ghost);
 		}
 	}
 
@@ -163,7 +163,7 @@ public class PlayView extends SimplePlayView {
 		if (cast.pacMan.getState() != null && cast.pacMan.visible()) {
 			drawText(g, Color.YELLOW, cast.pacMan.tf.getX(), cast.pacMan.tf.getY(), pacManStateText(cast.pacMan));
 		}
-		cast.activeGhosts().filter(Ghost::visible).forEach(ghost -> {
+		cast.ghostsOnStage().filter(Ghost::visible).forEach(ghost -> {
 			drawText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
 		});
 		cast.bonus().ifPresent(bonus -> {
@@ -225,10 +225,10 @@ public class PlayView extends SimplePlayView {
 
 	private void drawGrid(Graphics2D g) {
 		g.drawImage(gridImage, 0, 0, null);
-		if (cast.isActive(cast.pacMan)) {
+		if (cast.onStage(cast.pacMan)) {
 			drawGridAlignment(cast.pacMan, g);
 		}
-		cast.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawGridAlignment(ghost, g));
+		cast.ghostsOnStage().filter(Ghost::visible).forEach(ghost -> drawGridAlignment(ghost, g));
 	}
 
 	private void drawGridAlignment(Entity actor, Graphics2D g) {
@@ -247,7 +247,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawRoutes(Graphics2D g) {
-		cast.activeGhosts().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));
+		cast.ghostsOnStage().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));
 	}
 
 	private void drawRoute(Graphics2D g, Ghost ghost) {

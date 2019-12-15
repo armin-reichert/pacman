@@ -107,7 +107,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						game.init();
 						cast.theme.snd_clips_all().forEach(Sound::stop);
 						cast.theme.snd_ready().play();
-						cast.actors().forEach(cast::activate);
+						cast.actors().forEach(cast::putOnStage);
 						playView.init();
 						playView.textColor = Color.YELLOW;
 						playView.message = "Ready!";
@@ -116,7 +116,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						globalDotCounter = 0;
 					})
 					.onTick(() -> {
-						cast.activeGhosts().forEach(Ghost::update);
+						cast.ghostsOnStage().forEach(Ghost::update);
 					})
 				
 				.state(START_PLAYING)
@@ -130,7 +130,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						playView.energizerBlinking.setEnabled(true);
 					})
 					.onTick(() -> {
-						cast.activeGhosts().forEach(Ghost::update);
+						cast.ghostsOnStage().forEach(Ghost::update);
 					})
 				
 				.state(PLAYING)
@@ -144,17 +144,17 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					})
 					.onTick(() -> {
 						if (state().getTicksConsumed() == sec(2)) {
-							cast.activeGhosts().forEach(Ghost::hide);
+							cast.ghostsOnStage().forEach(Ghost::hide);
 							playView.mazeFlashing = game.level.mazeNumFlashes > 0;
 						}
 						else if (state().getTicksRemaining() == sec(2)) {
 							game.enterLevel(game.level.number + 1);
-							cast.activeActors().forEach(MazeResident::init);
+							cast.actorsOnStage().forEach(MazeResident::init);
 							playView.init(); // stops flashing
 							resetGhostDotCounters();
 						} 
 						else if (state().getTicksRemaining() < sec(1.8f)) {
-							cast.activeGhosts().forEach(Ghost::update);
+							cast.ghostsOnStage().forEach(Ghost::update);
 						}
 					})
 					.onExit(() -> {
@@ -175,7 +175,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						int passedTime = state().getTicksConsumed();
 						// wait first 1.5 sec before starting the "dying" animation
 						if (passedTime == sec(1.5f)) {
-							cast.activeGhosts().forEach(Ghost::hide);
+							cast.ghostsOnStage().forEach(Ghost::hide);
 							cast.removeBonus();
 							cast.theme.snd_die().play();
 							cast.pacMan.sprites.select("dying");
@@ -193,20 +193,20 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						}
 						// if playing continues, init actors and view
 						if (passedTime == sec(4)) {
-							cast.activeActors().forEach(MazeResident::init);
+							cast.actorsOnStage().forEach(MazeResident::init);
 							cast.theme.music_playing().loop();
 							playView.init();
 						}
 						// let ghosts jump a bit before game play continues
 						if (passedTime > sec(4)) {
-							cast.activeGhosts().forEach(Ghost::update);
+							cast.ghostsOnStage().forEach(Ghost::update);
 						}
 					})
 				
 				.state(GAME_OVER)
 					.onEntry(() -> {
 						game.saveHiscore();
-						cast.activeGhosts().forEach(Ghost::show);
+						cast.ghostsOnStage().forEach(Ghost::show);
 						cast.removeBonus();
 						cast.theme.music_gameover().play();
 						playView.enableAnimations(false);
@@ -301,7 +301,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onEntry() {
-			cast.activeGhosts().forEach(Ghost::show);
+			cast.ghostsOnStage().forEach(Ghost::show);
 			playView.init();
 			playView.enableAnimations(true);
 			playView.energizerBlinking.setEnabled(true);
@@ -313,7 +313,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			cast.pacMan.update();
 			cast.bonus().ifPresent(Bonus::update);
 			cast.ghosts().forEach(ghost -> ghost.nextState = ghostMotionTimer.getState());
-			Iterable<Ghost> ghosts = cast.activeGhosts()::iterator;
+			Iterable<Ghost> ghosts = cast.ghostsOnStage()::iterator;
 			for (Ghost ghost : ghosts) {
 				if (ghost.getState() == GhostState.LOCKED && canLeaveHouse(ghost, cast.game.level.number)) {
 					ghost.process(new GhostUnlockedEvent());
@@ -347,17 +347,17 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onPacManGainsPower(PacManGameEvent event) {
 			ghostMotionTimer.suspend();
-			cast.activeGhosts().forEach(ghost -> ghost.process(event));
+			cast.ghostsOnStage().forEach(ghost -> ghost.process(event));
 			cast.pacMan.process(event);
 		}
 
 		private void onPacManGettingWeaker(PacManGameEvent event) {
-			cast.activeGhosts().forEach(ghost -> ghost.process(event));
+			cast.ghostsOnStage().forEach(ghost -> ghost.process(event));
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {
 			ghostMotionTimer.resume();
-			cast.activeGhosts().forEach(ghost -> ghost.process(event));
+			cast.ghostsOnStage().forEach(ghost -> ghost.process(event));
 		}
 
 		private void onGhostKilled(PacManGameEvent event) {
@@ -432,7 +432,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onTick() {
 			cast.bonus().ifPresent(Bonus::update);
-			cast.activeGhosts().filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
+			cast.ghostsOnStage().filter(ghost -> ghost.oneOf(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
 					.forEach(Ghost::update);
 		}
 
@@ -490,7 +490,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void handleCheats() {
 		/* ALT-"K": Kill all ghosts */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_K)) {
-			cast.activeGhosts().forEach(ghost -> ghost.process(new GhostKilledEvent(ghost)));
+			cast.ghostsOnStage().forEach(ghost -> ghost.process(new GhostKilledEvent(ghost)));
 			LOGGER.info(() -> "All ghosts killed");
 		}
 		/* ALT-"E": Eats all (normal) pellets */

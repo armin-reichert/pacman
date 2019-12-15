@@ -34,7 +34,7 @@ public class EnterGhostHouseTestUI extends PlayView implements VisualController 
 		super.init();
 		game.init();
 		game.maze.removeFood();
-		cast.activate(ghost);
+		cast.putOnStage(ghost);
 		ghost.init();
 		ghost.placeAtTile(maze.ghostHome[0], Tile.SIZE / 2, 0);
 		ghost.setSteering(GhostState.ENTERING_HOUSE, Steerings.enteringGhostHouse(maze, maze.ghostHome[1]));

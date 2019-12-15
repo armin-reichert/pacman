@@ -29,10 +29,10 @@ public class InkyChaseTestUI extends PlayView implements VisualController {
 		game.maze.removeFood();
 		cast.theme.snd_ghost_chase().volume(0);
 		cast.pacMan.init();
-		cast.activate(cast.pacMan);
-		cast.activate(cast.inky);
-		cast.activate(cast.blinky);
-		cast.activeGhosts().forEach(ghost -> {
+		cast.putOnStage(cast.pacMan);
+		cast.putOnStage(cast.inky);
+		cast.putOnStage(cast.blinky);
+		cast.ghostsOnStage().forEach(ghost -> {
 			ghost.init();
 			ghost.nextState = GhostState.CHASING;
 		});
@@ -43,11 +43,11 @@ public class InkyChaseTestUI extends PlayView implements VisualController {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			cast.activeGhosts().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
+			cast.ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
 			message = null;
 		}
 		cast.pacMan.update();
-		cast.activeGhosts().forEach(Ghost::update);
+		cast.ghostsOnStage().forEach(Ghost::update);
 		super.update();
 	}
 

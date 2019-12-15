@@ -28,7 +28,7 @@ public class ScatteringTestUI extends PlayView implements VisualController {
 		game.init();
 		game.maze.removeFood();
 		cast.ghosts().forEach(ghost -> {
-			cast.activate(ghost);
+			cast.putOnStage(ghost);
 			ghost.init();
 			ghost.nextState = GhostState.SCATTERING;
 		});
@@ -39,10 +39,10 @@ public class ScatteringTestUI extends PlayView implements VisualController {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			cast.activeGhosts().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
+			cast.ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
 			message = null;
 		}
-		cast.activeGhosts().forEach(Ghost::update);
+		cast.ghostsOnStage().forEach(Ghost::update);
 		super.update();
 	}
 

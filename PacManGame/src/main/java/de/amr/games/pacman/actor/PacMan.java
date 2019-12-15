@@ -270,7 +270,7 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 			}
 
 			/*@formatter:off*/
-			Optional<PacManGameEvent> ghostCollision = cast.activeGhosts()
+			Optional<PacManGameEvent> ghostCollision = cast.ghostsOnStage()
 				.filter(Ghost::visible)
 				.filter(ghost -> ghost.tile().equals(pacManTile))
 				.filter(ghost -> ghost.getState() == GhostState.CHASING

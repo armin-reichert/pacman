@@ -106,12 +106,12 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir))
 			
 				.state(CHASING)
-					.onEntry(() -> cast.turnGhostIsChasingSoundOn())
+					.onEntry(() -> turnChasingGhostSoundOn())
 					.onTick(() -> {
 						targetTile = fnChasingTarget.get();
 						walkAndDisplayAs("color-" + moveDir);
 					})
-					.onExit(() -> cast.turnGhostIsChasingSoundOff(this))
+					.onExit(() -> turnChasingGhostSoundOff())
 				
 				.state(FRIGHTENED)
 					.onTick(() -> walkAndDisplayAs(cast.pacMan.isLosingPower() ? "flashing" : "frightened"))
@@ -125,10 +125,10 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 				.state(DEAD)
 					.onEntry(() -> {
 						targetTile = maze().ghostHome[0];
-						cast.turnGhostIsDeadSoundOn();
+						turnDeadGhostSoundOn();
 					})
 					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir))
-					.onExit(() -> cast.turnGhostIsDeadSoundOff(this))
+					.onExit(() -> turnDeadGhostSoundOff())
 				
 			.transitions()
 			
@@ -271,8 +271,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		case DEAD:
 			return 2 * speed(game.level.ghostSpeed);
 		default:
-			throw new IllegalStateException(
-					String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
+			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
 		}
 	}
 
@@ -297,5 +296,31 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 
 	public static int getDyingTime() {
 		return sec(1);
+	}
+
+	public void turnChasingGhostSoundOn() {
+		if (!cast.theme.snd_ghost_chase().isRunning()) {
+			cast.theme.snd_ghost_chase().loop();
+		}
+	}
+
+	public void turnChasingGhostSoundOff() {
+		// if caller is the last chasing ghost, turn sound off
+		if (cast.ghostsOnStage().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
+			cast.theme.snd_ghost_chase().stop();
+		}
+	}
+
+	public void turnDeadGhostSoundOn() {
+		if (!cast.theme.snd_ghost_dead().isRunning()) {
+			cast.theme.snd_ghost_dead().loop();
+		}
+	}
+
+	public void turnDeadGhostSoundOff() {
+		// if caller is the last dead ghost, turn sound off
+		if (cast.ghostsOnStage().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.getState() == DEAD)) {
+			cast.theme.snd_ghost_dead().stop();
+		}
 	}
 }

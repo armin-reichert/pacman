@@ -37,14 +37,14 @@ public class PacManMovementTestUI extends PlayView implements VisualController {
 				}
 			}
 		});
-		cast.activate(cast.pacMan);
+		cast.putOnStage(cast.pacMan);
 		cast.pacMan.init();
 	}
 
 	@Override
 	public void update() {
 		handleSteeringChange();
-		cast.activeActors().forEach(MazeResident::update);
+		cast.actorsOnStage().forEach(MazeResident::update);
 		super.update();
 	}
 

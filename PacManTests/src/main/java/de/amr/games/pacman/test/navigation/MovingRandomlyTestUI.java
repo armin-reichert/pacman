@@ -30,7 +30,7 @@ public class MovingRandomlyTestUI extends PlayView implements VisualController {
 		game.init();
 		game.maze.removeFood();
 		cast.ghosts().forEach(ghost -> {
-			cast.activate(ghost);
+			cast.putOnStage(ghost);
 			ghost.init();
 			ghost.placeAtTile(game.maze.pacManHome, Tile.SIZE / 2, 0);
 			ghost.setState(GhostState.CHASING);
@@ -46,7 +46,7 @@ public class MovingRandomlyTestUI extends PlayView implements VisualController {
 			message = null;
 		}
 		if (running) {
-			cast.activeGhosts().forEach(Ghost::update);
+			cast.ghostsOnStage().forEach(Ghost::update);
 		}
 		super.update();
 	}

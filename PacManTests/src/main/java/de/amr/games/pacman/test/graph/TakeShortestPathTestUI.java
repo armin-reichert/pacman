@@ -45,7 +45,7 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 		Steering<Ghost> shortestPath = takingShortestPath(maze, () -> targets.get(currentTarget));
 		ghost.setSteering(CHASING, shortestPath);
 		ghost.setSteering(FRIGHTENED, shortestPath);
-		cast.activate(ghost);
+		cast.putOnStage(ghost);
 		ghost.setState(CHASING);
 		textColor = Color.YELLOW;
 		message = "SPACE toggles ghost state";

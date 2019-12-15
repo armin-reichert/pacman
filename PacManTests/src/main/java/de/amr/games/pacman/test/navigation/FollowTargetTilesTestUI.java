@@ -38,7 +38,7 @@ public class FollowTargetTilesTestUI extends PlayView implements VisualControlle
 		game.init();
 		game.maze.removeFood();
 		cast.theme.snd_ghost_chase().volume(0);
-		cast.activate(cast.blinky);
+		cast.putOnStage(cast.blinky);
 		cast.blinky.fnChasingTarget = () -> targets.get(current);
 		cast.blinky.placeAtTile(targets.get(0), 0, 0);
 		cast.blinky.setState(CHASING);

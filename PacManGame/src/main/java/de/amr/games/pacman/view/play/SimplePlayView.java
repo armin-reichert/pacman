@@ -99,7 +99,7 @@ public class SimplePlayView implements View, Controller {
 
 	public void enableAnimations(boolean state) {
 		flashingMazeSprite.enableAnimation(state);
-		cast.activeGhosts().forEach(ghost -> ghost.sprites.enableAnimation(state));
+		cast.ghostsOnStage().forEach(ghost -> ghost.sprites.enableAnimation(state));
 	}
 
 	@Override
@@ -134,7 +134,7 @@ public class SimplePlayView implements View, Controller {
 			});
 		}
 		// draw door open when ghost is passing through
-		if (cast.activeGhosts().anyMatch(ghost -> ghost.tile().isDoor())) {
+		if (cast.ghostsOnStage().anyMatch(ghost -> ghost.tile().isDoor())) {
 			g.setColor(cast.theme.color_mazeBackground());
 			g.fillRect(maze.doorLeft.col * Tile.SIZE, maze.doorLeft.row * Tile.SIZE, 2 * Tile.SIZE, Tile.SIZE);
 		}
@@ -144,12 +144,12 @@ public class SimplePlayView implements View, Controller {
 		cast.bonus().ifPresent(bonus -> {
 			bonus.draw(g);
 		});
-		if (cast.isActive(cast.pacMan)) {
+		if (cast.onStage(cast.pacMan)) {
 			cast.pacMan.draw(g);
 		}
 		// draw dying ghosts (numbers) under non-dying ghosts
-		cast.activeGhosts().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(ghost -> ghost.draw(g));
-		cast.activeGhosts().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(ghost -> ghost.getState() == GhostState.DYING).forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(ghost -> ghost.getState() != GhostState.DYING).forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {

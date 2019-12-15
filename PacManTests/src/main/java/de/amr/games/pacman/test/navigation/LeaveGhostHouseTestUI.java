@@ -26,7 +26,7 @@ public class LeaveGhostHouseTestUI extends PlayView implements VisualController 
 		super.init();
 		game.init();
 		game.maze.removeFood();
-		cast.activate(cast.inky);
+		cast.putOnStage(cast.inky);
 		cast.inky.init();
 		cast.inky.nextState = GhostState.SCATTERING;
 		textColor = Color.YELLOW;
