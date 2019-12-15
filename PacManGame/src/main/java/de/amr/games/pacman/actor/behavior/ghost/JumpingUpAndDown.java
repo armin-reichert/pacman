@@ -22,11 +22,11 @@ public class JumpingUpAndDown implements Steering<Ghost> {
 
 	@Override
 	public void steer(Ghost ghost) {
-		float ghostY = ghost.tf.getPosition().y;
-		if (ghostY < baseY - amplitude) {
+		float dy = ghost.tf.getPosition().y - baseY;
+		if (dy < -amplitude) {
 			ghost.setNextDir(Direction.DOWN);
 		}
-		else if (ghostY > baseY + amplitude) {
+		else if (dy > amplitude) {
 			ghost.setNextDir(Direction.UP);
 		}
 		else {
