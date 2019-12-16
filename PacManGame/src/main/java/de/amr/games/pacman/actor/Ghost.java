@@ -136,29 +136,29 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 					.condition(() -> leftHouse() && nextState == CHASING)
 					
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
-					.condition(() -> nextDir == null)
+					.condition(() -> nextDir() == null)
 				
 				.when(CHASING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
-					.act(this::turnBack)
+					.act(this::turnAround)
 				
 				.when(CHASING).then(DYING)
 					.on(GhostKilledEvent.class)
 				
 				.when(CHASING).then(SCATTERING)
 					.on(StartScatteringEvent.class)
-					.act(this::turnBack)
+					.act(this::turnAround)
 	
 				.when(SCATTERING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
-					.act(this::turnBack)
+					.act(this::turnAround)
 				
 				.when(SCATTERING).then(DYING)
 					.on(GhostKilledEvent.class)
 				
 				.when(SCATTERING).then(CHASING)
 					.on(StartChasingEvent.class)
-					.act(this::turnBack)
+					.act(this::turnAround)
 				
 				.when(FRIGHTENED).then(CHASING)
 					.on(PacManLostPowerEvent.class)
@@ -277,7 +277,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 
 	private void walkAndDisplayAs(String spriteKey) {
 		steer();
-		if (nextDir != null) {
+		if (nextDir() != null) {
 			walkMaze();
 		}
 		sprites.select(spriteKey);
