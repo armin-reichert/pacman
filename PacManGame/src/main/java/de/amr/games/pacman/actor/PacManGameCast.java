@@ -87,8 +87,8 @@ public class PacManGameCast {
 			ghost.setSteering(GhostState.FRIGHTENED, movingRandomlyNoReversing());
 			ghost.setSteering(GhostState.LOCKED,
 					ghost == blinky ? headingForTargetTile() : jumpingUpAndDown(maze, ghost.ghostHousePlace));
-			ghost.setSteering(GhostState.ENTERING_HOUSE,
-					enteringGhostHouse(maze, ghost == blinky ? 2 : ghost.ghostHousePlace));
+			int place = ghost == blinky ? 2 : ghost.ghostHousePlace;
+			ghost.setSteering(GhostState.ENTERING_HOUSE, enteringGhostHouse(maze, ghost, place));
 			ghost.setTeleportingDuration(sec(0.5f));
 		});
 	}

@@ -135,7 +135,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 				.when(LEAVING_HOUSE).then(CHASING)
 					.condition(() -> leftHouse() && nextState == CHASING)
 					
-				.when(ENTERING_HOUSE).then(LOCKED)
+				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
 					.condition(() -> nextDir == null)
 				
 				.when(CHASING).then(FRIGHTENED)
@@ -176,7 +176,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 					
 				.when(DEAD).then(ENTERING_HOUSE)
 					.condition(() -> tile().equals(maze().ghostHome[0]))
-					.act(() -> placeAtTile(maze().ghostHome[0], Tile.SIZE/2, 0))
+					.act(() -> placeAtTile(maze().ghostHome[0], Tile.SIZE / 2, 0))
 				
 		.endStateMachine();
 		/*@formatter:on*/

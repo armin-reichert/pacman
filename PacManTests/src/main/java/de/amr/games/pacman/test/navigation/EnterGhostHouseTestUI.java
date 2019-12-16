@@ -39,7 +39,7 @@ public class EnterGhostHouseTestUI extends PlayView implements VisualController 
 		game.maze.removeFood();
 		cast.putOnStage(inky);
 		inky.placeAtTile(maze.ghostHome[0], Tile.SIZE / 2, 0);
-		inky.setSteering(ENTERING_HOUSE, enteringGhostHouse(maze, 1));
+		inky.setSteering(ENTERING_HOUSE, enteringGhostHouse(maze, inky, 1));
 		textColor = Color.YELLOW;
 		message = "Press SPACE to enter or leave house";
 	}
@@ -50,10 +50,12 @@ public class EnterGhostHouseTestUI extends PlayView implements VisualController 
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			if (inky.is(LOCKED)) {
 				inky.setState(outside ? ENTERING_HOUSE : LEAVING_HOUSE);
-			} else if (inky.is(LEAVING_HOUSE) && maze.inFrontOfGhostHouseDoor(inky.tile())) {
+			}
+			else if (inky.is(LEAVING_HOUSE) && maze.inFrontOfGhostHouseDoor(inky.tile())) {
 				inky.setState(LOCKED);
 			}
-		} else {
+		}
+		else {
 			inky.update();
 		}
 		super.update();
