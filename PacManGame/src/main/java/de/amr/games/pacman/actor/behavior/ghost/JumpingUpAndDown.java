@@ -3,6 +3,7 @@ package de.amr.games.pacman.actor.behavior.ghost;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -13,19 +14,17 @@ import de.amr.games.pacman.model.Tile;
 public class JumpingUpAndDown implements Steering<Ghost> {
 
 	private final int baseY;
-	private final int amplitude;
 
-	public JumpingUpAndDown(Tile baseTile, int amplitude) {
-		this.baseY = baseTile.row * Tile.SIZE;
-		this.amplitude = amplitude;
+	public JumpingUpAndDown(Maze maze, int ghostHousePlace) {
+		this.baseY = maze.ghostHome[ghostHousePlace].row * Tile.SIZE;
 	}
 
 	@Override
 	public void steer(Ghost ghost) {
 		float dy = ghost.tf.getPosition().y - baseY;
-		if (dy < -amplitude) {
+		if (dy < -3) {
 			ghost.setNextDir(Direction.DOWN);
-		} else if (dy > amplitude) {
+		} else if (dy > 3) {
 			ghost.setNextDir(Direction.UP);
 		} else {
 			ghost.setNextDir(ghost.moveDir());

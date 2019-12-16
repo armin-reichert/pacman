@@ -45,12 +45,12 @@ public interface Steerings {
 	/**
 	 * Lets the ghost jump up and down.
 	 * 
-	 * @param baseTile  base tile for jump
-	 * @param amplitude how far to jump from base tile up and down
+	 * @param maze            the maze
+	 * @param ghostHousePlace the ghosthouse place number
 	 * @return behavior which lets the ghost jump
 	 */
-	static Steering<Ghost> jumpingUpAndDown(Tile baseTile, int amplitude) {
-		return new JumpingUpAndDown(baseTile, amplitude);
+	static Steering<Ghost> jumpingUpAndDown(Maze maze, int ghostHousePlace) {
+		return new JumpingUpAndDown(maze, ghostHousePlace);
 	}
 
 	/**
