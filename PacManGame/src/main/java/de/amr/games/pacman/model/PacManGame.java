@@ -11,16 +11,20 @@ import static de.amr.games.pacman.model.BonusSymbol.PEACH;
 import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
 
 import java.io.File;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.
  * 
  * @author Armin Reichert
  * 
- * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
+ * @see <a href=
+ *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
  *      dossier</a>
- * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man level
- *      specifications</a>
+ * @see <a href=
+ *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man
+ *      level specifications</a>
  */
 public class PacManGame {
 
@@ -105,7 +109,7 @@ public class PacManGame {
 	};
 
 	public final Maze maze = new Maze(BOARD);
-	public final LevelSymbols levelSymbols = new LevelSymbols();
+	public final Deque<BonusSymbol> levelSymbols = new ArrayDeque<>(7);
 	public final Hiscore hiscore = new Hiscore();
 
 	public Level level;
@@ -127,7 +131,10 @@ public class PacManGame {
 		level.numPelletsEaten = 0;
 		level.ghostsKilledByEnergizer = 0;
 		level.ghostKilledInLevel = 0;
-		levelSymbols.add(level.bonusSymbol);
+		if (levelSymbols.size() == 7) {
+			levelSymbols.removeLast();
+		}
+		levelSymbols.addFirst(level.bonusSymbol);
 		maze.restoreFood();
 		saveHiscore();
 	}
@@ -137,8 +144,7 @@ public class PacManGame {
 	}
 
 	/**
-	 * @param tile
-	 *               tile containing food
+	 * @param tile tile containing food
 	 * @return points scored
 	 */
 	public int eatFoodAt(Tile tile) {
@@ -147,8 +153,7 @@ public class PacManGame {
 			level.ghostsKilledByEnergizer = 0;
 			tile.removeFood();
 			return POINTS_ENERGIZER;
-		}
-		else {
+		} else {
 			tile.removeFood();
 			return POINTS_PELLET;
 		}
