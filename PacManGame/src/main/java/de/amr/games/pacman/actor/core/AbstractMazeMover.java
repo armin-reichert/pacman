@@ -144,7 +144,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	/**
 	 * Moves or teleports the actor.
 	 */
-	protected void move() {
+	public void walkMaze() {
 		boolean teleporting = teleport();
 		if (!teleporting) {
 			moveInsideMaze();

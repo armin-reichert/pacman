@@ -278,7 +278,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	private void walkAndDisplayAs(String spriteKey) {
 		steer();
 		if (nextDir != null) {
-			move();
+			walkMaze();
 		}
 		sprites.select(spriteKey);
 	}
