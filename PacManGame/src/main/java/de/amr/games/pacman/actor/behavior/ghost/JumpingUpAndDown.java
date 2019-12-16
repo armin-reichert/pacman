@@ -25,11 +25,9 @@ public class JumpingUpAndDown implements Steering<Ghost> {
 		float dy = ghost.tf.getPosition().y - baseY;
 		if (dy < -amplitude) {
 			ghost.setNextDir(Direction.DOWN);
-		}
-		else if (dy > amplitude) {
+		} else if (dy > amplitude) {
 			ghost.setNextDir(Direction.UP);
-		}
-		else {
+		} else {
 			ghost.setNextDir(ghost.moveDir());
 		}
 	}

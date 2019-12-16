@@ -34,19 +34,16 @@ public interface MazeResident extends Controller {
 	/**
 	 * Places this maze resident at the given tile, optionally with some offset.
 	 * 
-	 * @param tile
-	 *                  the tile where this maze mover is placed
-	 * @param xOffset
-	 *                  pixel offset in x-direction
-	 * @param yOffset
-	 *                  pixel offset in y-direction
+	 * @param tile    the tile where this maze mover is placed
+	 * @param xOffset pixel offset in x-direction
+	 * @param yOffset pixel offset in y-direction
 	 */
 	void placeAtTile(Tile tile, float xOffset, float yOffset);
 
 	/**
-	 * @param other
-	 *                other maze resident
-	 * @return squared Euclidean distance to the other maze resident in tile coordinates
+	 * @param other other maze resident
+	 * @return squared Euclidean distance to the other maze resident in tile
+	 *         coordinates
 	 */
 	int distanceSq(AbstractMazeResident other);
 

@@ -21,14 +21,11 @@ public class LeavingGhostHouse implements Steering<Ghost> {
 		float exitY = maze.ghostHome[0].row * Tile.SIZE;
 		if (aboutEqual(1, ghostX, middleX)) {
 			ghost.setNextDir(Direction.UP);
-		}
-		else if (ghostX < middleX) {
+		} else if (ghostX < middleX) {
 			ghost.setNextDir(Direction.RIGHT);
-		}
-		else if (ghostX > middleX) {
+		} else if (ghostX > middleX) {
 			ghost.setNextDir(Direction.LEFT);
-		}
-		else if (ghostY <= exitY) {
+		} else if (ghostY <= exitY) {
 			ghost.setNextDir(null); // got out
 		}
 	}

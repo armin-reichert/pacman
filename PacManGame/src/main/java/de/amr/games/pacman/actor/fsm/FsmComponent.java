@@ -2,7 +2,6 @@ package de.amr.games.pacman.actor.fsm;
 
 import static de.amr.easy.game.Application.LOGGER;
 
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -66,10 +65,10 @@ public class FsmComponent<S> implements FsmControlled<S> {
 		return fsm.getState();
 	}
 
-	@Override
 	@SuppressWarnings("unchecked")
-	public boolean oneOf(S... states) {
-		return Arrays.stream(states).anyMatch(state -> state == getState());
+	@Override
+	public boolean is(S... states) {
+		return fsm.is(states);
 	}
 
 	@Override

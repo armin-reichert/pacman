@@ -31,9 +31,8 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 		cast.theme.snd_ghost_chase().volume(0);
 		maze = cast.game.maze;
 		ghost = cast.blinky;
-		targets = Arrays.asList(maze.cornerSE, maze.tileAt(15, 23), maze.tileAt(12, 23), maze.cornerSW,
-				maze.tunnelExitLeft, maze.cornerNW, maze.ghostHome[0], maze.cornerNE, maze.tunnelExitRight,
-				maze.pacManHome);
+		targets = Arrays.asList(maze.cornerSE, maze.tileAt(15, 23), maze.tileAt(12, 23), maze.cornerSW, maze.tunnelExitLeft,
+				maze.cornerNW, maze.ghostHome[0], maze.cornerNE, maze.tunnelExitRight, maze.pacManHome);
 	}
 
 	Tile currentTarget() {

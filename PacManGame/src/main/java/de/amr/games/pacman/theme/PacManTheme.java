@@ -9,7 +9,7 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.model.BonusSymbol;
 
 public interface PacManTheme {
-	
+
 	public static final int MAZE_FLASH_TIME_MILLIS = 400;
 
 	Sprite spr_emptyMaze();

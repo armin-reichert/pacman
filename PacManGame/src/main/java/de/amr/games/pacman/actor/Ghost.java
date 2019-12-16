@@ -228,16 +228,16 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 
 	@Override
 	public Tile targetTile() {
-		return getState() == CHASING ? fnChasingTarget.get() : super.targetTile();
+		return is(CHASING) ? fnChasingTarget.get() : super.targetTile();
 	}
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
 		if (neighbor.isDoor()) {
-			return getState() == ENTERING_HOUSE || getState() == LEAVING_HOUSE;
+			return is(ENTERING_HOUSE) || is(LEAVING_HOUSE);
 		}
 		if (maze().isNoUpIntersection(tile) && neighbor == maze().tileToDir(tile, UP)) {
-			return getState() != CHASING && getState() != SCATTERING;
+			return !is(CHASING) && !is(SCATTERING);
 		}
 		return super.canMoveBetween(tile, neighbor);
 	}
@@ -265,15 +265,14 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		case DEAD:
 			return 2 * speed(game.level.ghostSpeed);
 		default:
-			throw new IllegalStateException(
-					String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
+			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
 		}
 	}
 
 	@Override
 	protected boolean snapToGrid() {
 		// when entering or leaving the ghost house, pixel-exact movement is needed
-		return getState() != ENTERING_HOUSE && getState() != LEAVING_HOUSE;
+		return !is(ENTERING_HOUSE) && !is(LEAVING_HOUSE);
 	}
 
 	private void walkAndDisplayAs(String spriteKey) {
@@ -301,7 +300,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 
 	public void turnChasingGhostSoundOff() {
 		// if caller is the last chasing ghost, turn sound off
-		if (cast.ghostsOnStage().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.getState() == CHASING)) {
+		if (cast.ghostsOnStage().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.is(CHASING))) {
 			cast.theme.snd_ghost_chase().stop();
 		}
 	}
@@ -314,7 +313,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 
 	public void turnDeadGhostSoundOff() {
 		// if caller is the last dead ghost, turn sound off
-		if (cast.ghostsOnStage().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.getState() == DEAD)) {
+		if (cast.ghostsOnStage().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.is(DEAD))) {
 			cast.theme.snd_ghost_dead().stop();
 		}
 	}

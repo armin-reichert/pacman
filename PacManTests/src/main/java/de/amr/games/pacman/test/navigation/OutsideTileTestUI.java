@@ -24,7 +24,6 @@ public class OutsideTileTestUI extends PlayView implements VisualController {
 		cast.theme.snd_ghost_chase().volume(0);
 		cast.putOnStage(cast.blinky);
 		cast.blinky.fnChasingTarget = () -> game.maze.tileAt(100, game.maze.tunnelExitRight.row);
-		cast.blinky.init();
 		cast.blinky.setState(CHASING);
 	}
 

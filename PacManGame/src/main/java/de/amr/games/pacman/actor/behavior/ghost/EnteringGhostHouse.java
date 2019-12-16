@@ -23,16 +23,13 @@ public class EnteringGhostHouse implements Steering<Ghost> {
 		if (maze.inFrontOfGhostHouseDoor(ghost.tile()) && ghost.nextDir() != Direction.DOWN) {
 			ghost.placeAtTile(maze.ghostHome[0], Tile.SIZE / 2, 0);
 			ghost.setNextDir(Direction.DOWN);
-		}
-		else if (ghost.tf.getY() >= bottom) {
+		} else if (ghost.tf.getY() >= bottom) {
 			int targetX = targetTile.col * Tile.SIZE + Tile.SIZE / 2;
 			if (aboutEqual(1, ghost.tf.getX(), targetX)) {
 				ghost.setNextDir(null);
-			}
-			else if (ghost.tf.getX() < targetX) {
+			} else if (ghost.tf.getX() < targetX) {
 				ghost.setNextDir(Direction.RIGHT);
-			}
-			else if (ghost.tf.getX() > targetX) {
+			} else if (ghost.tf.getX() > targetX) {
 				ghost.setNextDir(Direction.LEFT);
 			}
 		}

@@ -1,6 +1,7 @@
 package de.amr.games.pacman.view.play;
 
 import static de.amr.easy.game.Application.app;
+import static de.amr.games.pacman.actor.GhostState.DYING;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,7 +17,6 @@ import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Maze;
@@ -157,10 +157,8 @@ public class SimplePlayView implements View, Controller {
 			cast.pacMan.draw(g);
 		}
 		// draw dying ghosts (numbers) under non-dying ghosts
-		cast.ghostsOnStage().filter(ghost -> ghost.getState() == GhostState.DYING)
-				.forEach(ghost -> ghost.draw(g));
-		cast.ghostsOnStage().filter(ghost -> ghost.getState() != GhostState.DYING)
-				.forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(ghost -> ghost.is(DYING)).forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(ghost -> !ghost.is(DYING)).forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {

@@ -1,6 +1,5 @@
 package de.amr.games.pacman.actor.fsm;
 
-import java.util.Arrays;
 import java.util.function.Consumer;
 
 import de.amr.easy.game.view.Controller;
@@ -32,9 +31,7 @@ public interface FsmControlled<S> extends Controller {
 	S getState();
 
 	@SuppressWarnings("unchecked")
-	default boolean oneOf(S... states) {
-		return Arrays.stream(states).anyMatch(s -> s.equals(getState()));
-	}
+	boolean is(S... states);
 
 	State<S, PacManGameEvent> state();
 

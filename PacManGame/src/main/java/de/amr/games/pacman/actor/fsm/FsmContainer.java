@@ -1,6 +1,5 @@
 package de.amr.games.pacman.actor.fsm;
 
-import java.util.Arrays;
 import java.util.function.Consumer;
 
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -52,8 +51,8 @@ public interface FsmContainer<S> extends FsmControlled<S> {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	default boolean oneOf(S... states) {
-		return Arrays.stream(states).anyMatch(s -> s.equals(getState()));
+	default boolean is(S... states) {
+		return fsmComponent().is(states);
 	}
 
 	@Override

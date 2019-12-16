@@ -7,8 +7,8 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * An entity residing in a maze. This provides tile coordinates and tile-specific methods for an
- * entity.
+ * An entity residing in a maze. This provides tile coordinates and
+ * tile-specific methods for an entity.
  * 
  * @author Armin Reichert
  */
