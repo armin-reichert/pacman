@@ -1,14 +1,14 @@
 package de.amr.games.pacman.actor.behavior.ghost;
 
 import static de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState.AT_DOOR;
+import static de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState.AT_PLACE;
 import static de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState.FALLING;
 import static de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState.MOVING_LEFT;
 import static de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState.MOVING_RIGHT;
-import static de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState.AT_PLACE;
 
 import java.util.Collections;
+import java.util.logging.Logger;
 
-import de.amr.easy.game.Application;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState;
@@ -74,7 +74,7 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 					
 		.endStateMachine();
 		/*@formatter:on*/
-		traceTo(Application.LOGGER, () -> 60);
+		traceTo(Logger.getLogger("StateMachineLogger"), () -> 60);
 	}
 
 	@Override

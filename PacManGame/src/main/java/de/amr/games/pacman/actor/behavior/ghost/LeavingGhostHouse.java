@@ -6,9 +6,18 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
+/**
+ * Steering for ghost leaving the house.
+ * 
+ * @author Armin Reichert
+ */
 public class LeavingGhostHouse implements Steering<Ghost> {
 
-	final Maze maze;
+	private static boolean aboutEqual(float tolerance, float f1, float f2) {
+		return Math.abs(f1 - f2) <= tolerance;
+	}
+
+	private final Maze maze;
 
 	public LeavingGhostHouse(Maze maze) {
 		this.maze = maze;
@@ -16,21 +25,20 @@ public class LeavingGhostHouse implements Steering<Ghost> {
 
 	@Override
 	public void steer(Ghost ghost) {
-		float ghostX = ghost.tf.getX(), ghostY = ghost.tf.getY();
-		float middleX = maze.ghostHome[2].col * Tile.SIZE + Tile.SIZE / 2;
-		float exitY = maze.ghostHome[0].row * Tile.SIZE;
-		if (aboutEqual(1, ghostX, middleX)) {
+		int targetX = maze.ghostHome[0].col * Tile.SIZE + Tile.SIZE / 2;
+		int targetY = maze.ghostHome[0].row * Tile.SIZE;
+		if (aboutEqual(1, ghost.tf.getX(), targetX)) {
+			ghost.tf.setX(targetX);
 			ghost.setNextDir(Direction.UP);
-		} else if (ghostX < middleX) {
+		}
+		else if (ghost.tf.getX() < targetX) {
 			ghost.setNextDir(Direction.RIGHT);
-		} else if (ghostX > middleX) {
+		}
+		else if (ghost.tf.getX() > targetX) {
 			ghost.setNextDir(Direction.LEFT);
-		} else if (ghostY <= exitY) {
+		}
+		else if (ghost.tf.getY() <= targetY) {
 			ghost.setNextDir(null); // got out
 		}
-	}
-
-	boolean aboutEqual(float tolerance, float f1, float f2) {
-		return Math.abs(f1 - f2) <= tolerance;
 	}
 }
