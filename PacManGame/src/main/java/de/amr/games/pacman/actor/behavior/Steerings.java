@@ -129,12 +129,12 @@ public interface Steerings {
 	 * Lets a ghost enter the ghost house and move to its target tile.
 	 * 
 	 * @param maze           the maze
-	 * @param ghostHouseTile the ghost target tile in the house
+	 * @param ghostHomeIndex index of the ghost home in the house
 	 * 
 	 * @return behavior where a ghost enters the house and moves to its target tile
 	 */
-	static Steering<Ghost> enteringGhostHouse(Maze maze, Tile ghostHouseTile) {
-		return new EnteringGhostHouse(maze, ghostHouseTile);
+	static Steering<Ghost> enteringGhostHouse(Maze maze, int ghostHomeIndex) {
+		return new EnteringGhostHouse(maze, ghostHomeIndex);
 	}
 
 	/**

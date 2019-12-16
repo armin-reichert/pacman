@@ -1,5 +1,7 @@
 package de.amr.games.pacman.actor.behavior.ghost;
 
+import java.util.Collections;
+
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.model.Direction;
@@ -9,29 +11,35 @@ import de.amr.games.pacman.model.Tile;
 public class EnteringGhostHouse implements Steering<Ghost> {
 
 	final Maze maze;
-	final Tile targetTile;
+	final int ghostHomeIndex;
 
-	public EnteringGhostHouse(Maze maze, Tile targetTile) {
+	public EnteringGhostHouse(Maze maze, int ghostHomeIndex) {
 		this.maze = maze;
-		this.targetTile = targetTile;
+		this.ghostHomeIndex = ghostHomeIndex;
 	}
 
 	@Override
 	public void steer(Ghost ghost) {
-		int bottom = maze.ghostHome[2].row * Tile.SIZE;
-		ghost.setTargetTile(null);
+		int bottomY = maze.ghostHome[ghostHomeIndex].row * Tile.SIZE;
+		ghost.setTargetTile(maze.ghostHome[ghostHomeIndex]);
+		ghost.setTargetPath(Collections.emptyList());
 		if (maze.inFrontOfGhostHouseDoor(ghost.tile()) && ghost.nextDir() != Direction.DOWN) {
 			ghost.placeAtTile(maze.ghostHome[0], Tile.SIZE / 2, 0);
 			ghost.setNextDir(Direction.DOWN);
-		} else if (ghost.tf.getY() >= bottom) {
-			int targetX = targetTile.col * Tile.SIZE + Tile.SIZE / 2;
-			if (aboutEqual(1, ghost.tf.getX(), targetX)) {
-				ghost.setNextDir(null);
-			} else if (ghost.tf.getX() < targetX) {
-				ghost.setNextDir(Direction.RIGHT);
-			} else if (ghost.tf.getX() > targetX) {
-				ghost.setNextDir(Direction.LEFT);
-			}
+			return;
+		}
+		if (ghost.tf.getY() < bottomY) {
+			ghost.setNextDir(Direction.DOWN);
+			return;
+		}
+		ghost.tf.setY(bottomY);
+		int targetX = maze.ghostHome[ghostHomeIndex].col * Tile.SIZE + Tile.SIZE / 2;
+		if (aboutEqual(1, ghost.tf.getX(), targetX)) {
+			ghost.setNextDir(null);
+		} else if (ghost.tf.getX() < targetX) {
+			ghost.setNextDir(Direction.RIGHT);
+		} else if (ghost.tf.getX() > targetX) {
+			ghost.setNextDir(Direction.LEFT);
 		}
 	}
 

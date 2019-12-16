@@ -54,7 +54,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	public final PacManGame game;
 	public final FsmComponent<GhostState> fsmComponent;
 	public Direction initialDir;
-	public Tile initialTile;
+	public int ghostHousePlace;
 	public Tile scatterTile;
 	public GhostState nextState;
 	public Supplier<Tile> fnChasingTarget;
@@ -200,7 +200,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		setMoveDir(initialDir);
 		setNextDir(initialDir);
 		enteredNewTile = true;
-		placeAtTile(initialTile, Tile.SIZE / 2, 0);
+		placeAtTile(maze().ghostHome[ghostHousePlace], Tile.SIZE / 2, 0);
 		sprites.select("color-" + initialDir);
 		sprites.forEach(Sprite::resetAnimation);
 		nextState = fsmComponent.getState();

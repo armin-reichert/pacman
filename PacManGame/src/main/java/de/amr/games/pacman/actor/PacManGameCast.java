@@ -60,12 +60,12 @@ public class PacManGameCast {
 		pacMan.setTeleportingDuration(sec(0.25f));
 
 		blinky.initialDir = LEFT;
-		blinky.initialTile = maze.ghostHome[0];
+		blinky.ghostHousePlace = 0;
 		blinky.scatterTile = maze.scatterTileNE;
 		blinky.fnChasingTarget = pacMan::tile;
 
 		inky.initialDir = UP;
-		inky.initialTile = maze.ghostHome[1];
+		inky.ghostHousePlace = 1;
 		inky.scatterTile = maze.scatterTileSE;
 		inky.fnChasingTarget = () -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
@@ -73,22 +73,22 @@ public class PacManGameCast {
 		};
 
 		pinky.initialDir = DOWN;
-		pinky.initialTile = maze.ghostHome[2];
+		pinky.ghostHousePlace = 2;
 		pinky.scatterTile = maze.scatterTileNW;
 		pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
 
 		clyde.initialDir = UP;
-		clyde.initialTile = maze.ghostHome[3];
+		clyde.ghostHousePlace = 3;
 		clyde.scatterTile = maze.scatterTileSW;
 		clyde.fnChasingTarget = () -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze.scatterTileSW;
 
 		ghosts().forEach(ghost -> {
 			ghost.setSteering(GhostState.LEAVING_HOUSE, leavingGhostHouse(maze));
 			ghost.setSteering(GhostState.FRIGHTENED, movingRandomlyNoReversing());
-			ghost.setSteering(GhostState.LOCKED,
-					ghost == blinky ? headingForTargetTile() : jumpingUpAndDown(ghost.initialTile, Tile.SIZE / 2 - 1));
+			ghost.setSteering(GhostState.LOCKED, ghost == blinky ? headingForTargetTile()
+					: jumpingUpAndDown(maze.ghostHome[ghost.ghostHousePlace], Tile.SIZE / 2 - 1));
 			ghost.setSteering(GhostState.ENTERING_HOUSE,
-					enteringGhostHouse(maze, ghost == blinky ? maze.ghostHome[2] : ghost.initialTile));
+					enteringGhostHouse(maze, ghost == blinky ? 2 : ghost.ghostHousePlace));
 			ghost.setTeleportingDuration(sec(0.5f));
 		});
 	}
