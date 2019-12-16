@@ -35,13 +35,17 @@ public class FollowMouseTestUI extends PlayView implements VisualController {
 		cast.putOnStage(cast.blinky);
 		cast.blinky.fnChasingTarget = () -> mouseTile;
 		cast.blinky.setState(CHASING);
+		readMouse();
+	}
+
+	private void readMouse() {
 		mouseTile = game.maze.tileAt(Mouse.getX() / Tile.SIZE, Mouse.getY() / Tile.SIZE);
 	}
 
 	@Override
 	public void update() {
 		if (Mouse.moved()) {
-			mouseTile = game.maze.tileAt(Mouse.getX() / Tile.SIZE, Mouse.getY() / Tile.SIZE);
+			readMouse();
 		}
 		cast.blinky.update();
 		super.update();
