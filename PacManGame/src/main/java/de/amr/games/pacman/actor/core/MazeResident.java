@@ -32,6 +32,20 @@ public interface MazeResident extends Controller {
 	Tile tile();
 
 	/**
+	 * @return x-coordinate of tile center
+	 */
+	default int centerX() {
+		return tile().centerX();
+	}
+
+	/**
+	 * @return y-coordinate of tile center
+	 */
+	default int centerY() {
+		return tile().centerY();
+	}
+
+	/**
 	 * Places this maze resident at the given tile, optionally with some offset.
 	 * 
 	 * @param tile    the tile where this maze mover is placed

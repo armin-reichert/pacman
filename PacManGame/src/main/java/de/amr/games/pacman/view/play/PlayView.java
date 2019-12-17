@@ -279,7 +279,7 @@ public class PlayView extends SimplePlayView {
 			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
 			g.setStroke(dashed);
 			g.setColor(ghostColor);
-			int x1 = ghost.tile().centerX(), y1 = ghost.tile().centerY();
+			int x1 = ghost.centerX(), y1 = ghost.centerY();
 			int x2 = ghostTarget.centerX(), y2 = ghostTarget.centerY();
 			g.drawLine(x1, y1, x2, y2);
 			g.setStroke(solid);
