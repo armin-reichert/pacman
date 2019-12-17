@@ -107,20 +107,35 @@ beginStateMachine(BonusState.class, PacManGameEvent.class)
 When an actor leaves the board inside a tunnel it enters *teleporting* mode. In this implementation, the teleporting duration can be specified for each actor individually (no idea if this makes much sense) and the teleporting is controlled by the following state machine:
 
 ```java
-beginStateMachine()
-	.description(String.format("[Teleporting %s]", name()))
-	.initialState(false)
-	.states()
-	.transitions()
-		.when(false).then(true).condition(() -> tf.getX() > exitR())
-			.act(() -> { tf.setX(exitL()); hide(); })
-		.when(false).then(true).condition(() -> tf.getX() < exitL())
-			.act(() -> { tf.setX(exitR()); hide(); })
-		.when(true).then(false).onTimeout()
-			.act(() -> show())
-.endStateMachine();
+private StateMachine<Boolean, Void> teleporting = new StateMachine<Boolean, Void>(Boolean.class) {
+	{
+		//@formatter:off
+		beginStateMachine()
+			.description(String.format("[Teleporting %s]", name()))
+			.initialState(false)
+			.states()
+			.transitions()
+				.when(false).then(true).condition(() -> tf.getX() > exitR())
+					.act(() -> { tf.setX(exitL()); hide(); })
+				.when(false).then(true).condition(() -> tf.getX() < exitL())
+					.act(() -> { tf.setX(exitR()); hide(); })
+				.when(true).then(false).onTimeout()
+					.act(() -> show())
+		.endStateMachine();
+		//@formatter:on
+	}
+
+	private int exitL() {
+		return (maze().tunnelExitLeft.col - 1) * Tile.SIZE;
+	}
+
+	private int exitR() {
+		return (maze().tunnelExitRight.col + 1) * Tile.SIZE;
+	}
+};
 ```
-The state type in this machine is just the built-in type Boolean.
+
+The state type of this state machine is just the built-in type `Boolean`. Using an explicit state machine for this a simple control case may seem like shooting at sparrows with cannons but serves to illustrate how seamlessly state machines can be used. 
 
 ## Tracing
 
