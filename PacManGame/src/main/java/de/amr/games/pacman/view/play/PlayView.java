@@ -320,18 +320,25 @@ public class PlayView extends SimplePlayView {
 				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			}
 			{
-				// Note: we cannot use tilesAhead() because this simulates the overflow error
-				Tile pacManTile = cast.pacMan.tile();
-				Direction dir = cast.pacMan.moveDir();
-				Tile twoTilesAheadPacMan = maze.tileAt(pacManTile.col + 2 * dir.dx, pacManTile.row + 2 * dir.dy);
-				int x1 = pacManTile.col * Tile.SIZE + Tile.SIZE / 2;
-				int y1 = pacManTile.row * Tile.SIZE + Tile.SIZE / 2;
-				int x2 = twoTilesAheadPacMan.col * Tile.SIZE + Tile.SIZE / 2;
-				int y2 = twoTilesAheadPacMan.row * Tile.SIZE + Tile.SIZE / 2;
 				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 				g.setColor(Color.GRAY);
-				g.drawLine(x1, y1, x2, y2);
-				g.fillRect(x2 - Tile.SIZE / 4, y2 - Tile.SIZE / 4, Tile.SIZE / 2, Tile.SIZE / 2);
+				Tile pacManTile = cast.pacMan.tile();
+				if (app().settings.getAsBoolean("overflowBug") && cast.pacMan.moveDir() == Direction.UP) {
+					Tile twoTilesAhead = maze.tileToDir(pacManTile, cast.pacMan.moveDir(), 2);
+					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
+					int x2 = twoTilesAhead.centerX(), y2 = twoTilesAhead.centerY();
+					g.drawLine(x1, y1, x2, y2);
+					Tile twoTilesToLeft = maze.tileToDir(twoTilesAhead, Direction.LEFT, 2);
+					int x3 = twoTilesToLeft.centerX(), y3 = twoTilesToLeft.centerY();
+					g.drawLine(x2, y2, x3, y3);
+					g.fillRect(x3 - Tile.SIZE / 4, y3 - Tile.SIZE / 4, Tile.SIZE / 2, Tile.SIZE / 2);
+				} else {
+					Tile twoTilesAhead = cast.pacMan.tilesAhead(2);
+					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
+					int x2 = twoTilesAhead.centerX(), y2 = twoTilesAhead.centerY();
+					g.drawLine(x1, y1, x2, y2);
+					g.fillRect(x2 - Tile.SIZE / 4, y2 - Tile.SIZE / 4, Tile.SIZE / 2, Tile.SIZE / 2);
+				}
 				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			}
 		}

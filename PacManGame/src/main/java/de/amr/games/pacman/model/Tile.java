@@ -95,6 +95,14 @@ public class Tile {
 		}
 	}
 
+	public int centerX() {
+		return col * Tile.SIZE + Tile.SIZE / 2;
+	}
+
+	public int centerY() {
+		return row * Tile.SIZE + Tile.SIZE / 2;
+	}
+
 	@Override
 	public int hashCode() {
 		int sum = col + row;
