@@ -270,22 +270,23 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawRoute(Graphics2D g, Ghost ghost) {
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		Tile ghostTarget = ghost.targetTile();
 		Color ghostColor = color(ghost);
 		Stroke solid = g.getStroke();
-		if (ghost.targetTile() != null) {
+		if (ghostTarget != null) {
 			// draw target tile indicator
 			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
 			g.setStroke(dashed);
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(ghostColor);
-			g.drawLine((int) ghost.tf.getCenter().x, (int) ghost.tf.getCenter().y,
-					ghost.targetTile().col * Tile.SIZE + Tile.SIZE / 2, ghost.targetTile().row * Tile.SIZE + Tile.SIZE / 2);
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			int x1 = ghost.tile().centerX(), y1 = ghost.tile().centerY();
+			int x2 = ghostTarget.centerX(), y2 = ghostTarget.centerY();
+			g.drawLine(x1, y1, x2, y2);
 			g.setStroke(solid);
-			g.translate(ghost.targetTile().col * Tile.SIZE, ghost.targetTile().row * Tile.SIZE);
+			g.translate(ghostTarget.col * Tile.SIZE, ghostTarget.row * Tile.SIZE);
 			g.setColor(ghostColor);
 			g.fillRect(Tile.SIZE / 4, Tile.SIZE / 4, Tile.SIZE / 2, Tile.SIZE / 2);
-			g.translate(-ghost.targetTile().col * Tile.SIZE, -ghost.targetTile().row * Tile.SIZE);
+			g.translate(-ghostTarget.col * Tile.SIZE, -ghostTarget.row * Tile.SIZE);
 		}
 		if (ghost.targetPath().size() > 1) {
 			// draw path in ghost's color
@@ -301,54 +302,46 @@ public class PlayView extends SimplePlayView {
 			int lineLen = Tile.SIZE;
 			int indX = (int) (center.x + dx * lineLen);
 			int indY = (int) (center.y + dy * lineLen);
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(ghostColor);
 			g.fillOval(indX - r, indY - r, 2 * r, 2 * r);
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		}
-		// draw Inky's vector
-		if (ghost == cast.inky && ghost.is(CHASING) && ghost.targetTile() != null) {
+		// visualize Inky's chasing
+		if (ghost == cast.inky && ghost.is(CHASING)) {
 			{
-				Vector2f bp = cast.blinky.tf.getCenter();
-				int x1 = bp.roundedX();
-				int y1 = bp.roundedY();
-				int x2 = ghost.targetTile().col * Tile.SIZE + Tile.SIZE / 2;
-				int y2 = ghost.targetTile().row * Tile.SIZE + Tile.SIZE / 2;
-				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				int x1 = cast.blinky.tile().centerX(), y1 = cast.blinky.tile().centerY();
+				int x2 = ghost.targetTile().centerX(), y2 = ghost.targetTile().centerY();
 				g.setColor(Color.GRAY);
 				g.drawLine(x1, y1, x2, y2);
-				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			}
 			{
-				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				g.setColor(Color.GRAY);
 				Tile pacManTile = cast.pacMan.tile();
-				if (app().settings.getAsBoolean("overflowBug") && cast.pacMan.moveDir() == Direction.UP) {
-					Tile twoTilesAhead = maze.tileToDir(pacManTile, cast.pacMan.moveDir(), 2);
+				Direction pacManDir = cast.pacMan.moveDir();
+				int s = Tile.SIZE / 2; // size of target square
+				g.setColor(Color.GRAY);
+				if (app().settings.getAsBoolean("overflowBug") && pacManDir == Direction.UP) {
+					Tile twoAhead = maze.tileToDir(pacManTile, pacManDir, 2);
+					Tile twoLeft = maze.tileToDir(twoAhead, Direction.LEFT, 2);
 					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
-					int x2 = twoTilesAhead.centerX(), y2 = twoTilesAhead.centerY();
+					int x2 = twoAhead.centerX(), y2 = twoAhead.centerY();
+					int x3 = twoLeft.centerX(), y3 = twoLeft.centerY();
 					g.drawLine(x1, y1, x2, y2);
-					Tile twoTilesToLeft = maze.tileToDir(twoTilesAhead, Direction.LEFT, 2);
-					int x3 = twoTilesToLeft.centerX(), y3 = twoTilesToLeft.centerY();
 					g.drawLine(x2, y2, x3, y3);
-					g.fillRect(x3 - Tile.SIZE / 4, y3 - Tile.SIZE / 4, Tile.SIZE / 2, Tile.SIZE / 2);
+					g.fillRect(x3 - s / 2, y3 - s / 2, s, s);
 				} else {
 					Tile twoTilesAhead = cast.pacMan.tilesAhead(2);
 					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
 					int x2 = twoTilesAhead.centerX(), y2 = twoTilesAhead.centerY();
 					g.drawLine(x1, y1, x2, y2);
-					g.fillRect(x2 - Tile.SIZE / 4, y2 - Tile.SIZE / 4, Tile.SIZE / 2, Tile.SIZE / 2);
+					g.fillRect(x2 - s / 2, y2 - s / 2, s, s);
 				}
-				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			}
 		}
 		// draw Clyde's chasing zone
-		if (ghost == cast.clyde && ghost.is(CHASING) && ghost.targetTile() != null) {
-			Vector2f center = cast.clyde.tf.getCenter();
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		if (ghost == cast.clyde && ghost.is(CHASING)) {
+			int cx = cast.clyde.tile().centerX(), cy = cast.clyde.tile().centerY(), r = 8 * Tile.SIZE;
 			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 100));
-			g.drawOval((int) center.x - 8 * Tile.SIZE, (int) center.y - 8 * Tile.SIZE, 16 * Tile.SIZE, 16 * Tile.SIZE);
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			g.drawOval(cx - r, cy - r, 2 * r, 2 * r);
 		}
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 }
