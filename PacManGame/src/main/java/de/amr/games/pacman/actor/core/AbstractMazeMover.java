@@ -20,23 +20,15 @@ import de.amr.statemachine.StateMachine;
 public abstract class AbstractMazeMover extends AbstractMazeResident implements MazeMover {
 
 	/**
+	 * Anonymous inner class implementing teleporting control.
+	 * <p>
 	 * When an actor (Ghost, Pac-Man) crosses the border of the board in the tunnel,
 	 * a timer is started and the actor is placed at the teleportation target and
 	 * hidden (to avoid triggering events during teleportation). When the timer
 	 * ends, the actor is made visible again.
 	 */
-	private class Teleporting extends StateMachine<Boolean, Void> {
-
-		private int exitL() {
-			return (maze().tunnelExitLeft.col - 1) * Tile.SIZE;
-		}
-
-		private int exitR() {
-			return (maze().tunnelExitRight.col + 1) * Tile.SIZE;
-		}
-
-		public Teleporting() {
-			super(Boolean.class);
+	private StateMachine<Boolean, Void> teleporting = new StateMachine<Boolean, Void>(Boolean.class) {
+		{
 			//@formatter:off
 			beginStateMachine()
 				.description(String.format("[Teleporting %s]", name()))
@@ -52,7 +44,15 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 			.endStateMachine();
 			//@formatter:on
 		}
-	}
+
+		private int exitL() {
+			return (maze().tunnelExitLeft.col - 1) * Tile.SIZE;
+		}
+
+		private int exitR() {
+			return (maze().tunnelExitRight.col + 1) * Tile.SIZE;
+		}
+	};
 
 	private Direction moveDir = Direction.RIGHT;
 	private Direction nextDir;
@@ -60,12 +60,11 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	protected List<Tile> targetPath;
 	public boolean requireTargetPath;
 	protected boolean enteredNewTile;
-	private Teleporting teleporting = new Teleporting();
 
 	public AbstractMazeMover(String name) {
 		super(name);
 	}
-	
+
 	@Override
 	public void init() {
 		moveDir = nextDir = RIGHT;
@@ -178,6 +177,11 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 		enteredNewTile = !tile.equals(tile());
 	}
 
+	/**
+	 * Sets the teleporting duration for this actor.
+	 * 
+	 * @param ticks how many ticks the teleporting is running
+	 */
 	public void setTeleportingDuration(int ticks) {
 		teleporting.state(true).setConstantTimer(ticks);
 	}
