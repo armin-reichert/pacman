@@ -176,7 +176,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 					.onTimeout()
 					
 				.when(DEAD).then(ENTERING_HOUSE)
-					.condition(() -> tile().equals(maze().ghostHome[0]))
+					.condition(() -> tile().equals(maze().ghostHome[0]) || tile().equals(maze().ghostHome[1]))
 					.act(() -> placeAtTile(maze().ghostHome[0], Tile.SIZE / 2, 0))
 				
 		.endStateMachine();
@@ -266,7 +266,8 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		case DEAD:
 			return 2 * speed(game.level.ghostSpeed);
 		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
+			throw new IllegalStateException(
+					String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
 		}
 	}
 

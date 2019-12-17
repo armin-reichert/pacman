@@ -162,11 +162,11 @@ public class PlayView extends SimplePlayView {
 
 	private void drawFPS(Graphics2D g) {
 		Pen pen = new Pen(g);
-		pen.color = new Color(240, 240, 240, 80);
-		pen.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
-		pen.aaOn();
-		pen.text(String.format("%d|%dfps", app().clock.getRenderRate(), app().clock.getFrequency()), 23, 21);
-		pen.aaOff();
+		pen.color(new Color(240, 240, 240, 80));
+		pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
+		pen.smooth(() -> {
+			pen.draw(String.format("%d|%dfps", app().clock.getRenderRate(), app().clock.getFrequency()), 23, 21);
+		});
 	}
 
 	private void drawActorStates(Graphics2D g) {

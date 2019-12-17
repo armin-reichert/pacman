@@ -140,27 +140,27 @@ public class SimplePlayView implements View, Controller {
 			return;
 		}
 		Pen pen = new Pen(g);
-		pen.font = cast.theme.fnt_text(10);
+		pen.font(cast.theme.fnt_text(10));
 
 		// Points
-		pen.color = Color.YELLOW;
-		pen.text("SCORE", 1, 1);
-		pen.text(String.format("LEVEL%2d", game.level.number), 22, 1);
-		pen.color = Color.WHITE;
-		pen.text(String.format("%07d", game.score), 1, 2);
+		pen.color(Color.YELLOW);
+		pen.draw("SCORE", 1, 1);
+		pen.draw(String.format("LEVEL%2d", game.level.number), 22, 1);
+		pen.color(Color.WHITE);
+		pen.draw(String.format("%07d", game.score), 1, 2);
 
 		// Highscore
-		pen.color = Color.YELLOW;
-		pen.text("HIGHSCORE", 10, 1);
-		pen.color = Color.WHITE;
-		pen.text(String.format("%07d", game.hiscore.points), 10, 2);
-		pen.text(String.format("L%d", game.hiscore.levelNumber), 16, 2);
+		pen.color(Color.YELLOW);
+		pen.draw("HIGHSCORE", 10, 1);
+		pen.color(Color.WHITE);
+		pen.draw(String.format("%07d", game.hiscore.points), 10, 2);
+		pen.draw(String.format("L%d", game.hiscore.levelNumber), 16, 2);
 
 		// Remaining pellets
 		g.setColor(Color.PINK);
 		g.fillRect(22 * Tile.SIZE + 2, Tile.SIZE + 2, 4, 4);
-		pen.color = Color.WHITE;
-		pen.text(String.format("%d", game.numPelletsRemaining()), 23, 2);
+		pen.color(Color.WHITE);
+		pen.draw(String.format("%d", game.numPelletsRemaining()), 23, 2);
 
 		drawLives(g);
 		drawLevelCounter(g);
