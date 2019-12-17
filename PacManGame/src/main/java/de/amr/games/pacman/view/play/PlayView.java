@@ -32,6 +32,7 @@ import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.view.Pen;
 import de.amr.statemachine.State;
 
 /**
@@ -133,7 +134,8 @@ public class PlayView extends SimplePlayView {
 	private void toggleGhostActivationState(Ghost ghost) {
 		if (cast.onStage(ghost)) {
 			cast.removeFromStage(ghost);
-		} else {
+		}
+		else {
 			cast.putOnStage(ghost);
 		}
 	}
@@ -161,9 +163,9 @@ public class PlayView extends SimplePlayView {
 	private void drawFPS(Graphics2D g) {
 		Pen pen = new Pen(g);
 		pen.color = new Color(240, 240, 240, 80);
-		pen.font = new Font(Font.MONOSPACED, Font.BOLD, 12);
+		pen.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
 		pen.aaOn();
-		pen.text(app().clock.getRenderRate() + "fps", 23, 21);
+		pen.text(String.format("%d|%dfps", app().clock.getRenderRate(), app().clock.getFrequency()), 23, 21);
 		pen.aaOff();
 	}
 
@@ -184,9 +186,8 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private String pacManStateText(PacMan pacMan) {
-		String text = pacMan.state().getDuration() != State.ENDLESS
-				? String.format("(%s,%d|%d)", pacMan.state().id(), pacMan.state().getTicksRemaining(),
-						pacMan.state().getDuration())
+		String text = pacMan.state().getDuration() != State.ENDLESS ? String.format("(%s,%d|%d)",
+				pacMan.state().id(), pacMan.state().getTicksRemaining(), pacMan.state().getDuration())
 				: String.format("(%s,%s)", pacMan.state().id(), INFTY);
 
 		if (Application.app().settings.getAsBoolean("pacMan.immortable")) {
@@ -217,7 +218,8 @@ public class PlayView extends SimplePlayView {
 		}
 		if (duration == State.ENDLESS) {
 			text.append(String.format("(%s,%s)", ghost.getState(), INFTY));
-		} else {
+		}
+		else {
 			text.append(String.format("(%s,%d|%d)", ghost.getState(), remaining, duration));
 		}
 		// next state
@@ -276,7 +278,8 @@ public class PlayView extends SimplePlayView {
 		Stroke solid = g.getStroke();
 		if (ghostTarget != null) {
 			// draw target tile indicator
-			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
+			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
+					0);
 			g.setStroke(dashed);
 			g.setColor(ghostColor);
 			int x1 = ghost.centerX(), y1 = ghost.centerY();
@@ -294,7 +297,8 @@ public class PlayView extends SimplePlayView {
 			for (Tile tile : ghost.targetPath()) {
 				g.fillRect(tile.col * Tile.SIZE, tile.row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 			}
-		} else if (ghost.nextDir() != null) {
+		}
+		else if (ghost.nextDir() != null) {
 			// draw direction indicator
 			Vector2f center = ghost.tf.getCenter();
 			int dx = ghost.nextDir().dx, dy = ghost.nextDir().dy;
@@ -327,7 +331,8 @@ public class PlayView extends SimplePlayView {
 					g.drawLine(x1, y1, x2, y2);
 					g.drawLine(x2, y2, x3, y3);
 					g.fillRect(x3 - s / 2, y3 - s / 2, s, s);
-				} else {
+				}
+				else {
 					Tile twoTilesAhead = cast.pacMan.tilesAhead(2);
 					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
 					int x2 = twoTilesAhead.centerX(), y2 = twoTilesAhead.centerY();

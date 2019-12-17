@@ -19,12 +19,11 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
-import de.amr.easy.game.ui.widgets.TextWidget;
 import de.amr.easy.game.view.AnimationController;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.view.Pen;
 import de.amr.games.pacman.view.intro.IntroView.IntroViewState;
 import de.amr.statemachine.StateMachine;
 
@@ -39,19 +38,20 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 		LOGO_SCROLLING_IN, CHASING_EACH_OTHER, READY_TO_PLAY, LEAVING_INTRO
 	};
 
-	private static final String GITHUB_TEXT = "Visit on GitHub!";
+	private static final String GITHUB_TEXT = "Visit me on GitHub!";
 	private static final String GITHUB_URL = "https://github.com/armin-reichert/pacman";
 
 	public final PacManTheme theme;
 
 	private final int width;
 	private final int height;
+	private long ticks;
+	private boolean showStaticTexts;
+	private boolean showReadyToPlay;
+
 	private final Color background;
 	private final Set<View> animations = new HashSet<>();
 	private final ImageWidget logo;
-	private final TextWidget pressSpace;
-	private final TextWidget f11Hint;
-	private final TextWidget[] speedHint;
 	private final ChasePacManAnimation chasePacMan;
 	private final ChaseGhostsAnimation chaseGhosts;
 	private final GhostPointsAnimation ghostPoints;
@@ -82,30 +82,9 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 		ghostPoints.tf.setY(200);
 		ghostPoints.tf.centerX(width);
 
-		pressSpace = TextWidget.create().text("Press SPACE to start!").spaceExpansion(3).blinkTimeMillis(1000)
-				.font(theme.fnt_text(18)).background(background).color(Color.YELLOW).build();
-		pressSpace.tf.setY(130);
-		pressSpace.tf.centerX(width);
-
-		f11Hint = TextWidget.create().text("F11 Toggle Fullscreen").spaceExpansion(3).blinkTimeMillis(Integer.MAX_VALUE)
-				.font(theme.fnt_text(12)).background(background).color(Color.PINK).build();
-		f11Hint.tf.setY(pressSpace.tf.getY() + 30);
-		f11Hint.tf.centerX(width);
-
-		speedHint = new TextWidget[3];
-		String[] texts = { "Normal 1", "Fast 2", "Insane 3" };
-		for (int i = 0; i < texts.length; ++i) {
-			speedHint[i] = TextWidget.create().text(texts[i]).spaceExpansion(3).blinkTimeMillis(Integer.MAX_VALUE)
-					.font(theme.fnt_text(12)).background(background).color(Color.PINK).build();
-			speedHint[i].tf.setY(height - 40);
-		}
-		speedHint[0].tf.setX(20);
-		speedHint[1].tf.centerX(width);
-		speedHint[2].tf.setX(width - 20 - speedHint[2].tf.getWidth());
-
-		visitGitHub = LinkWidget.create().text(GITHUB_TEXT).url(GITHUB_URL).font(new Font(Font.SANS_SERIF, Font.BOLD, 6))
-				.color(Color.LIGHT_GRAY).build();
-		visitGitHub.tf.setY(height - 10);
+		visitGitHub = LinkWidget.create().text(GITHUB_TEXT).url(GITHUB_URL)
+				.font(new Font(Font.SANS_SERIF, Font.BOLD, 8)).color(Color.LIGHT_GRAY).build();
+		visitGitHub.tf.setY(height - 16);
 		visitGitHub.tf.centerX(width);
 
 		buildStateMachine();
@@ -154,12 +133,16 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 					// Show ghost points animation and blinking text
 					.timeoutAfter(() -> app().clock.sec(6))
 					.onEntry(() -> {
-						show(ghostPoints, pressSpace, f11Hint, speedHint[0], speedHint[1], speedHint[2], visitGitHub);
+						showStaticTexts = true;
+						showReadyToPlay = true;
+						show(ghostPoints, visitGitHub);
 						ghostPoints.startAnimation();
 					})
 					.onExit(() -> {
+						showReadyToPlay = false;
+						showStaticTexts = false;
 						ghostPoints.stopAnimation();
-						hide(ghostPoints, pressSpace);
+						hide(ghostPoints);
 					})
 					
 				.state(LEAVING_INTRO)
@@ -188,20 +171,38 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 
 	@Override
 	public void update() {
+		++ticks;
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
 			setState(LEAVING_INTRO);
 		}
 		super.update();
 		animations.forEach(animation -> ((Controller) animation).update());
-		speedHint[0].setColor(app().clock.getFrequency() == PacManGame.SPEED_1_FPS ? Color.YELLOW : Color.PINK);
-		speedHint[1].setColor(app().clock.getFrequency() == PacManGame.SPEED_2_FPS ? Color.YELLOW : Color.PINK);
-		speedHint[2].setColor(app().clock.getFrequency() == PacManGame.SPEED_3_FPS ? Color.YELLOW : Color.PINK);
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
+		Pen pen = new Pen(g);
 		g.setColor(background);
 		g.fillRect(0, 0, width, height);
 		animations.forEach(animation -> animation.draw(g));
+		if (showReadyToPlay) {
+			if (ticks % 60 < 30) {
+				pen.color = Color.RED;
+				pen.font = theme.fnt_text(14);
+				pen.text("Press SPACE to start!", 2, 18);
+			}
+		}
+		if (showStaticTexts) {
+			pen.color = Color.PINK;
+			pen.font = theme.fnt_text(10);
+			pen.text("F11 - Fullscreen Mode", 6, 22);
+			int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock.getFrequency()) + 1;
+			pen.color = selectedSpeed == 1 ? Color.YELLOW : Color.PINK;
+			pen.text("1 Normal", 2, 32);
+			pen.color = selectedSpeed == 2 ? Color.YELLOW : Color.PINK;
+			pen.text("2 Fast", 12, 32);
+			pen.color = selectedSpeed == 3 ? Color.YELLOW : Color.PINK;
+			pen.text("3 Insane", 20, 32);
+		}
 	}
 }
