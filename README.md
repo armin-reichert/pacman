@@ -104,6 +104,24 @@ beginStateMachine(BonusState.class, PacManGameEvent.class)
 .endStateMachine();
 ```
 
+When an actor leaves the board inside a tunnel it enters *teleporting* mode. In this implementation, the teleporting duration can be specified for each actor individually (no idea if this makes much sense) and the teleporting is controlled by the following state machine:
+
+```java
+beginStateMachine()
+	.description(String.format("[Teleporting %s]", name()))
+	.initialState(false)
+	.states()
+	.transitions()
+		.when(false).then(true).condition(() -> tf.getX() > exitR())
+			.act(() -> { tf.setX(exitL()); hide(); })
+		.when(false).then(true).condition(() -> tf.getX() < exitL())
+			.act(() -> { tf.setX(exitR()); hide(); })
+		.when(true).then(false).onTimeout()
+			.act(() -> show())
+.endStateMachine();
+```
+The state type in this machine is just the built-in type Boolean.
+
 ## Tracing
 
 The processing of all used state machines can be traced. If a state machine processes an event and does not 
