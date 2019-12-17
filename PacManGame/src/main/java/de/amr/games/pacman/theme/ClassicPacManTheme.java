@@ -118,7 +118,6 @@ public class ClassicPacManTheme implements PacManTheme {
 		Application.LOGGER.info("Pac-Man sprites extracted.");
 
 		// Text font
-		Assets.storeTrueTypeFont("font.arcadeclassic", "arcadeclassic.ttf", Font.PLAIN, 12);
 		Assets.storeTrueTypeFont("font.joystix", "Joystix.ttf", Font.PLAIN, 12);
 
 		LOGGER.info(String.format("Theme '%s' created.", getClass().getSimpleName()));
