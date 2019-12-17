@@ -119,6 +119,7 @@ public class ClassicPacManTheme implements PacManTheme {
 
 		// Text font
 		Assets.storeTrueTypeFont("font.arcadeclassic", "arcadeclassic.ttf", Font.PLAIN, 12);
+		Assets.storeTrueTypeFont("font.joystix", "Joystix.ttf", Font.PLAIN, 12);
 
 		LOGGER.info(String.format("Theme '%s' created.", getClass().getSimpleName()));
 	}
@@ -222,7 +223,8 @@ public class ClassicPacManTheme implements PacManTheme {
 
 	@Override
 	public Font fnt_text() {
-		return Assets.font("font.arcadeclassic");
+		return Assets.font("font.joystix");
+//		return Assets.font("font.arcadeclassic");
 	}
 
 	private Sound sound(String name) {

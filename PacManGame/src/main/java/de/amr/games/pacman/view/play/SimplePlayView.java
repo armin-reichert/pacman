@@ -166,19 +166,18 @@ public class SimplePlayView implements View, Controller {
 			return;
 		}
 		Pen pen = new Pen(g);
-		pen.font = cast.theme.fnt_text();
+		pen.font = cast.theme.fnt_text(10);
 
 		// Points
 		pen.color = Color.YELLOW;
 		pen.text("SCORE", 1, 1);
-		pen.text(String.format("LEVEL %2d", game.level.number), 22, 1);
+		pen.text(String.format("LEVEL%2d", game.level.number), 22, 1);
 		pen.color = Color.WHITE;
 		pen.text(String.format("%07d", game.score), 1, 2);
 
 		// Highscore
 		pen.color = Color.YELLOW;
-		pen.text("HIGH", 10, 1);
-		pen.text("SCORE", 14, 1);
+		pen.text("HIGHSCORE", 10, 1);
 		pen.color = Color.WHITE;
 		pen.text(String.format("%07d", game.hiscore.points), 10, 2);
 		pen.text(String.format("L%d", game.hiscore.levelNumber), 16, 2);
@@ -215,7 +214,7 @@ public class SimplePlayView implements View, Controller {
 			return;
 		}
 		Graphics2D g2 = (Graphics2D) g.create();
-		g2.setFont(cast.theme.fnt_text(14));
+		g2.setFont(cast.theme.fnt_text(11));
 		g2.setColor(textColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(message, g2).getBounds();
 		g2.translate((viewSize.width - box.width) / 2, (maze.bonusTile.row + 1) * Tile.SIZE);

@@ -62,6 +62,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	public int dotCounter; // used by logic when ghost can leave house
 
 	public Ghost(String name, PacManGameCast cast) {
+		super(name);
 		this.cast = cast;
 		this.game = cast.game;
 		fsmComponent = buildFsmComponent(name);

@@ -20,11 +20,6 @@ public interface FsmContainer<S> extends FsmControlled<S> {
 	FsmControlled<S> fsmComponent();
 
 	@Override
-	default String name() {
-		return fsmComponent().name();
-	}
-
-	@Override
 	default StateMachine<S, PacManGameEvent> fsm() {
 		return fsmComponent().fsm();
 	}

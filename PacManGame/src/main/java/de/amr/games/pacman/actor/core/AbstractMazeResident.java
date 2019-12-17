@@ -14,6 +14,17 @@ import de.amr.games.pacman.model.Tile;
  */
 public abstract class AbstractMazeResident extends Entity implements MazeResident {
 
+	private final String name;
+
+	public AbstractMazeResident(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String name() {
+		return name;
+	}
+
 	@Override
 	public Tile tile() {
 		Vector2f center = tf.getCenter();

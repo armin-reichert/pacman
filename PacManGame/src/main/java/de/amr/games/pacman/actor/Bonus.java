@@ -38,8 +38,9 @@ public class Bonus extends AbstractMazeResident implements FsmContainer<BonusSta
 	public final int value;
 
 	public Bonus(PacManGameCast cast) {
+		super("Bonus");
 		this.cast = cast;
-		fsmComponent = buildFsmComponent("Bonus");
+		fsmComponent = buildFsmComponent(name());
 		tf.setWidth(Tile.SIZE);
 		tf.setHeight(Tile.SIZE);
 		placeAtTile(cast.game.maze.bonusTile, Tile.SIZE / 2, 0);

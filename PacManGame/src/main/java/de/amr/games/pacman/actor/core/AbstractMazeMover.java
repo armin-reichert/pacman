@@ -1,6 +1,5 @@
 package de.amr.games.pacman.actor.core;
 
-import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 
 import java.util.ArrayList;
@@ -11,6 +10,7 @@ import java.util.Objects;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Tile;
+import de.amr.statemachine.StateMachine;
 
 /**
  * Base class for maze movers (ghosts, Pac-Man).
@@ -19,22 +19,60 @@ import de.amr.games.pacman.model.Tile;
  */
 public abstract class AbstractMazeMover extends AbstractMazeResident implements MazeMover {
 
+	/**
+	 * When an actor (Ghost, Pac-Man) crosses the border of the board in the tunnel,
+	 * a timer is started and the actor is placed at the teleportation target and
+	 * hidden (to avoid triggering events during teleportation). When the timer
+	 * ends, the actor is made visible again.
+	 */
+	private class Teleporting extends StateMachine<Boolean, Void> {
+
+		private int exitL() {
+			return (maze().tunnelExitLeft.col - 1) * Tile.SIZE;
+		}
+
+		private int exitR() {
+			return (maze().tunnelExitRight.col + 1) * Tile.SIZE;
+		}
+
+		public Teleporting() {
+			super(Boolean.class);
+			//@formatter:off
+			beginStateMachine()
+				.description(String.format("[Teleporting %s]", name()))
+				.initialState(false)
+				.states()
+				.transitions()
+					.when(false).then(true).condition(() -> tf.getX() > exitR())
+						.act(() -> { tf.setX(exitL()); hide(); })
+					.when(false).then(true).condition(() -> tf.getX() < exitL())
+						.act(() -> { tf.setX(exitR()); hide(); })
+					.when(true).then(false).onTimeout()
+						.act(() -> show())
+			.endStateMachine();
+			//@formatter:on
+		}
+	}
+
 	private Direction moveDir = Direction.RIGHT;
 	private Direction nextDir;
 	private Tile targetTile;
 	protected List<Tile> targetPath;
 	public boolean requireTargetPath;
 	protected boolean enteredNewTile;
-	protected int teleportTicks;
-	protected int teleportTicksRemaining;
+	private Teleporting teleporting = new Teleporting();
 
+	public AbstractMazeMover(String name) {
+		super(name);
+	}
+	
 	@Override
 	public void init() {
 		moveDir = nextDir = RIGHT;
 		targetTile = null;
 		targetPath = Collections.emptyList();
 		enteredNewTile = true;
-		teleportTicksRemaining = -1;
+		teleporting.init();
 	}
 
 	/**
@@ -42,8 +80,8 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	 */
 	@Override
 	public void walkMaze() {
-		boolean teleporting = teleport();
-		if (!teleporting) {
+		teleporting.update();
+		if (teleporting.is(false)) {
 			moveInsideMaze();
 		}
 	}
@@ -141,7 +179,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	}
 
 	public void setTeleportingDuration(int ticks) {
-		teleportTicks = ticks;
+		teleporting.state(true).setConstantTimer(ticks);
 	}
 
 	/**
@@ -152,49 +190,13 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 		enteredNewTile = true;
 	}
 
-	/**
-	 * When an actor (Ghost, Pac-Man) leaves a teleport tile towards the border, a timer is started and
-	 * the actor is placed at the teleportation target and hidden (to avoid triggering events during
-	 * teleportation). When the timer ends, the actor is made visible again.
-	 * 
-	 * @return <code>true</code> if teleportation is running
-	 */
-	private boolean teleport() {
-		if (teleportTicksRemaining > 0) { // running
-			teleportTicksRemaining -= 1;
-			LOGGER.fine("Teleporting running, remaining:" + teleportTicksRemaining);
-		}
-		else if (teleportTicksRemaining == 0) { // completed
-			teleportTicksRemaining = -1;
-			show();
-			LOGGER.fine("Teleporting complete");
-		}
-		else { // off
-			int leftExit = (maze().tunnelExitLeft.col - 1) * Tile.SIZE;
-			int rightExit = (maze().tunnelExitRight.col + 1) * Tile.SIZE;
-			if (tf.getX() > rightExit) { // start
-				teleportTicksRemaining = teleportTicks;
-				tf.setX(leftExit);
-				hide();
-				LOGGER.fine("Teleporting started");
-			}
-			else if (tf.getX() < leftExit) { // start
-				teleportTicksRemaining = teleportTicks;
-				tf.setX(rightExit);
-				hide();
-				LOGGER.fine("Teleporting started");
-			}
-		}
-		return teleportTicksRemaining != -1;
-	}
-
 	protected boolean snapToGrid() {
 		return true;
 	}
 
 	/**
-	 * Movement inside the maze. Handles changing the direction according to the intended move
-	 * direction, moving around corners without losing alignment,
+	 * Movement inside the maze. Handles changing the direction according to the
+	 * intended move direction, moving around corners without losing alignment,
 	 */
 	private void moveInsideMaze() {
 		Tile oldTile = tile();
@@ -205,8 +207,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 				tf.setPosition(oldTile.col * Tile.SIZE, oldTile.row * Tile.SIZE);
 			}
 			moveDir = nextDir;
-		}
-		else {
+		} else {
 			speed = possibleSpeedTo(moveDir);
 		}
 		tf.setVelocity(Vector2f.smul(speed, Vector2f.of(moveDir.dx, moveDir.dy)));
@@ -215,8 +216,8 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	}
 
 	/**
-	 * Computes how many pixels this entity can move towards the given direction without crossing the
-	 * border to a forbidden neighbor tile.
+	 * Computes how many pixels this entity can move towards the given direction
+	 * without crossing the border to a forbidden neighbor tile.
 	 */
 	private float possibleSpeedTo(Direction dir) {
 		if (canCrossBorderTo(dir)) {

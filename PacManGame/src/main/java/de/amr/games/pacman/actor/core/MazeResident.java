@@ -10,6 +10,11 @@ import de.amr.games.pacman.model.Tile;
  * @author Armin Reichert
  */
 public interface MazeResident extends Controller {
+	
+	/**
+	 * @return descriptive name
+	 */
+	String name();
 
 	/**
 	 * Make me visible.
