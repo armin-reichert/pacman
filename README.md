@@ -135,7 +135,7 @@ private StateMachine<Boolean, Void> teleporting = new StateMachine<Boolean, Void
 };
 ```
 
-The state type of this state machine is just the built-in type `Boolean`. Using an explicit state machine for this a simple control case may seem like shooting at sparrows with cannons but serves to illustrate how seamlessly state machines can be used. 
+The state type of this state machine is just the built-in type `Boolean`. Using an explicit state machine for such a simple control case may seem like shooting at sparrows with cannons but serves to illustrate how seamlessly state machines can be used. 
 
 ## Tracing
 
