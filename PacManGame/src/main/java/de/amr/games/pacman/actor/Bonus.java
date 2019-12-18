@@ -1,6 +1,5 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.BonusState.ACTIVE;
 import static de.amr.games.pacman.actor.BonusState.CONSUMED;
 import static de.amr.games.pacman.actor.BonusState.INACTIVE;
@@ -21,6 +20,7 @@ import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.Timing;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -61,16 +61,16 @@ public class Bonus extends AbstractMazeResident implements FsmContainer<BonusSta
 	}
 
 	private FsmComponent<BonusState> buildFsmComponent(String name) {
-		StateMachine<BonusState, PacManGameEvent> fsm = buildStateMachine();
-		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		StateMachine<BonusState, PacManGameEvent> fsm = buildStateMachine(name);
+		fsm.traceTo(Logger.getLogger("StateMachineLogger"), () -> Timing.FPS);
 		return new FsmComponent<>(name, fsm);
 	}
 
-	private StateMachine<BonusState, PacManGameEvent> buildStateMachine() {
+	private StateMachine<BonusState, PacManGameEvent> buildStateMachine(String name) {
 		return StateMachine.
 		/*@formatter:off*/
 		beginStateMachine(BonusState.class, PacManGameEvent.class)
-			.description("[Bonus]")
+			.description(String.format("[%s]", name))
 			.initialState(ACTIVE)
 			.states()
 				.state(ACTIVE)
@@ -104,9 +104,8 @@ public class Bonus extends AbstractMazeResident implements FsmContainer<BonusSta
 	@Override
 	public void draw(Graphics2D g) {
 		sprites.current().ifPresent(sprite -> {
-			// center sprite over collision box
-			float dx = tf.getX() + tf.getWidth() / 2 - sprite.getWidth() / 2;
-			float dy = tf.getY() + tf.getHeight() / 2 - sprite.getHeight() / 2;
+			float dx = centerX() - sprite.getWidth() / 2;
+			float dy = centerY() - sprite.getHeight() / 2;
 			g.translate(dx, dy);
 			sprite.draw(g);
 			g.translate(-dx, -dy);
