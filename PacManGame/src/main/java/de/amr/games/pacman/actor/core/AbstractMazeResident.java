@@ -1,7 +1,5 @@
 package de.amr.games.pacman.actor.core;
 
-import static java.lang.Math.round;
-
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.Tile;
@@ -28,7 +26,17 @@ public abstract class AbstractMazeResident extends Entity implements MazeResiden
 	@Override
 	public Tile tile() {
 		Vector2f center = tf.getCenter();
-		return maze().tileAt(round(center.x) / Tile.SIZE, round(center.y) / Tile.SIZE);
+		return maze().tileAt(center.roundedX() / Tile.SIZE, center.roundedY() / Tile.SIZE);
+	}
+
+	@Override
+	public int centerX() {
+		return tf.getCenter().roundedX();
+	}
+
+	@Override
+	public int centerY() {
+		return tf.getCenter().roundedY();
 	}
 
 	@Override
