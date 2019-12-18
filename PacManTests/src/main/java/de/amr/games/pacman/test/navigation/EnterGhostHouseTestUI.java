@@ -3,7 +3,7 @@ package de.amr.games.pacman.test.navigation;
 import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
-import static de.amr.games.pacman.actor.behavior.Steerings.takingGhostHouseSeat;
+import static de.amr.games.pacman.actor.behavior.Steerings.isTakingSeat;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -39,7 +39,7 @@ public class EnterGhostHouseTestUI extends PlayView implements VisualController 
 		game.maze.removeFood();
 		cast.putOnStage(inky);
 		inky.placeAtTile(maze.ghostHome[0], Tile.SIZE / 2, 0);
-		inky.setSteering(ENTERING_HOUSE, takingGhostHouseSeat(inky, 1));
+		inky.during(ENTERING_HOUSE, isTakingSeat(inky, 1));
 		textColor = Color.YELLOW;
 		message = "Press SPACE to enter or leave house";
 	}

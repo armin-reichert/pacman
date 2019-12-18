@@ -1,8 +1,8 @@
 package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.actor.behavior.Steerings.avoidingGhosts;
-import static de.amr.games.pacman.actor.behavior.Steerings.movingRandomlyWithoutTurningBack;
-import static de.amr.games.pacman.actor.behavior.Steerings.steeredByKeys;
+import static de.amr.games.pacman.actor.behavior.Steerings.isMovingRandomlyWithoutTurningBack;
+import static de.amr.games.pacman.actor.behavior.Steerings.followsKeys;
 
 import java.awt.event.KeyEvent;
 
@@ -49,14 +49,14 @@ public class PacManMovementTestUI extends PlayView implements VisualController {
 
 	private void handleSteeringChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_M)) {
-			cast.pacMan.setSteering(steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
+			cast.pacMan.setSteering(followsKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
 		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_N)) {
 			cast.pacMan.setSteering(
-					steeredByKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
+					followsKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
 		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_A)) {
 			cast.pacMan.setSteering(avoidingGhosts());
 		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
-			cast.pacMan.setSteering(movingRandomlyWithoutTurningBack());
+			cast.pacMan.setSteering(isMovingRandomlyWithoutTurningBack());
 		}
 	}
 

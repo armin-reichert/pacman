@@ -7,7 +7,7 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.actor.behavior.Steerings.seekingSafeeCornerFrom;
-import static de.amr.games.pacman.actor.behavior.Steerings.movingRandomlyWithoutTurningBack;
+import static de.amr.games.pacman.actor.behavior.Steerings.isMovingRandomlyWithoutTurningBack;
 import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.controller.PacManGameState.GETTING_READY;
@@ -570,12 +570,12 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			boolean original = app().settings.getAsBoolean("ghost.originalBehavior");
 			if (original) {
 				app().settings.set("ghost.originalBehavior", false);
-				cast.ghosts().forEach(ghost -> ghost.setSteering(FRIGHTENED, seekingSafeeCornerFrom(cast.pacMan)));
+				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, seekingSafeeCornerFrom(cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
 			}
 			else {
 				app().settings.set("ghost.originalBehavior", true);
-				cast.ghosts().forEach(ghost -> ghost.setSteering(FRIGHTENED, movingRandomlyWithoutTurningBack()));
+				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack()));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
 			}
 		}

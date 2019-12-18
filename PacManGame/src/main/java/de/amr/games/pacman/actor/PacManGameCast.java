@@ -6,19 +6,22 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.actor.behavior.Steerings.headingFor;
-import static de.amr.games.pacman.actor.behavior.Steerings.jumpingUpAndDown;
-import static de.amr.games.pacman.actor.behavior.Steerings.leavingGhostHouse;
-import static de.amr.games.pacman.actor.behavior.Steerings.movingRandomlyWithoutTurningBack;
-import static de.amr.games.pacman.actor.behavior.Steerings.steeredByKeys;
-import static de.amr.games.pacman.actor.behavior.Steerings.takingGhostHouseSeat;
+import static de.amr.games.pacman.actor.behavior.Steerings.followsKeys;
+import static de.amr.games.pacman.actor.behavior.Steerings.isHeadingFor;
+import static de.amr.games.pacman.actor.behavior.Steerings.isJumpingUpAndDown;
+import static de.amr.games.pacman.actor.behavior.Steerings.isLeavingGhostHouse;
+import static de.amr.games.pacman.actor.behavior.Steerings.isMovingRandomlyWithoutTurningBack;
+import static de.amr.games.pacman.actor.behavior.Steerings.isTakingSeat;
 import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Direction.dirs;
 import static de.amr.games.pacman.model.Timing.sec;
+import static java.awt.event.KeyEvent.VK_DOWN;
+import static java.awt.event.KeyEvent.VK_LEFT;
+import static java.awt.event.KeyEvent.VK_RIGHT;
+import static java.awt.event.KeyEvent.VK_UP;
 
-import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -62,41 +65,41 @@ public class PacManGameCast {
 
 		// configure the actors
 
-		pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
+		pacMan.always(followsKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		pacMan.setTeleportingDuration(sec(0.25f));
 
 		blinky.eyes = LEFT;
 		blinky.seat = 0;
-		blinky.setSteering(SCATTERING, headingFor(() -> maze.scatterNE));
-		blinky.setSteering(CHASING, headingFor(pacMan::tile));
+		blinky.during(SCATTERING, isHeadingFor(() -> maze.horizonNE));
+		blinky.during(CHASING, isHeadingFor(pacMan::tile));
 
 		inky.eyes = UP;
 		inky.seat = 1;
-		inky.setSteering(SCATTERING, headingFor(() -> maze.scatterSE));
-		inky.setSteering(CHASING, headingFor(() -> {
+		inky.during(SCATTERING, isHeadingFor(() -> maze.horizonSE));
+		inky.during(CHASING, isHeadingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
 
 		pinky.eyes = DOWN;
 		pinky.seat = 2;
-		pinky.setSteering(SCATTERING, headingFor(() -> maze.scatterNW));
-		pinky.setSteering(CHASING, headingFor(() -> pacMan.tilesAhead(4)));
+		pinky.during(SCATTERING, isHeadingFor(() -> maze.horizonNW));
+		pinky.during(CHASING, isHeadingFor(() -> pacMan.tilesAhead(4)));
 
 		clyde.eyes = UP;
 		clyde.seat = 3;
-		clyde.setSteering(SCATTERING, headingFor(() -> maze.scatterSW));
-		clyde.setSteering(CHASING, headingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze.scatterSW));
+		clyde.during(SCATTERING, isHeadingFor(() -> maze.horizonSW));
+		clyde.during(CHASING, isHeadingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
 
 		ghosts().forEach(ghost -> {
 			ghost.setTeleportingDuration(sec(0.5f));
-			ghost.setSteering(LEAVING_HOUSE, leavingGhostHouse(maze));
-			ghost.setSteering(FRIGHTENED, movingRandomlyWithoutTurningBack());
+			ghost.during(LEAVING_HOUSE, isLeavingGhostHouse(maze));
+			ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack());
 			if (ghost != blinky) {
-				ghost.setSteering(LOCKED, jumpingUpAndDown(maze, ghost.seat));
-				ghost.setSteering(ENTERING_HOUSE, takingGhostHouseSeat(ghost, ghost.seat));
+				ghost.during(LOCKED, isJumpingUpAndDown(maze, ghost.seat));
+				ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, ghost.seat));
 			} else {
-				ghost.setSteering(ENTERING_HOUSE, takingGhostHouseSeat(ghost, 2));
+				ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, 2));
 			}
 		});
 	}

@@ -8,7 +8,7 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.actor.behavior.Steerings.headingFor;
+import static de.amr.games.pacman.actor.behavior.Steerings.isHeadingFor;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Timing.sec;
@@ -47,7 +47,7 @@ import de.amr.statemachine.StateMachine.MissingTransitionBehavior;
 public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState> {
 
 	private final Map<GhostState, Steering<Ghost>> steeringByState = new EnumMap<>(GhostState.class);
-	private final Steering<Ghost> defaultSteering = headingFor(this::targetTile);
+	private final Steering<Ghost> defaultSteering = isHeadingFor(this::targetTile);
 
 	public final PacManGameCast cast;
 	public final PacManGame game;
@@ -209,7 +209,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		fsmComponent.update();
 	}
 
-	public void setSteering(GhostState state, Steering<Ghost> steering) {
+	public void during(GhostState state, Steering<Ghost> steering) {
 		steeringByState.put(state, steering);
 		steering.triggerSteering(this);
 	}

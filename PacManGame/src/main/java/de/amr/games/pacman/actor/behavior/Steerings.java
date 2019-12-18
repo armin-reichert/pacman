@@ -33,7 +33,7 @@ public interface Steerings {
 	 * 
 	 * @return steering using the given keys
 	 */
-	static <T extends MazeMover> Steering<T> steeredByKeys(int... keys) {
+	static <T extends MazeMover> Steering<T> followsKeys(int... keys) {
 		/*@formatter:off*/
 		return actor -> Direction.dirs()
 				.filter(dir -> Keyboard.keyDown(keys[dir.ordinal()]))
@@ -49,7 +49,7 @@ public interface Steerings {
 	 * @param ghostHousePlace the ghosthouse place number
 	 * @return behavior which lets the ghost jump
 	 */
-	static Steering<Ghost> jumpingUpAndDown(Maze maze, int ghostHousePlace) {
+	static Steering<Ghost> isJumpingUpAndDown(Maze maze, int ghostHousePlace) {
 		return new JumpingUpAndDown(maze, ghostHousePlace);
 	}
 
@@ -60,7 +60,7 @@ public interface Steerings {
 	 * 
 	 * @return random move behavior
 	 */
-	static <T extends MazeMover> Steering<T> movingRandomlyWithoutTurningBack() {
+	static <T extends MazeMover> Steering<T> isMovingRandomlyWithoutTurningBack() {
 		/*@formatter:off*/
 		return actor -> {
 			actor.setTargetPath(Collections.emptyList());
@@ -81,7 +81,7 @@ public interface Steerings {
 	 * 
 	 * @return behavior where actor heads for the target tile
 	 */
-	static <T extends MazeMover> Steering<T> headingFor(Supplier<Tile> fnTargetTile) {
+	static <T extends MazeMover> Steering<T> isHeadingFor(Supplier<Tile> fnTargetTile) {
 		return new HeadingForTargetTile<>(fnTargetTile);
 	}
 
@@ -134,7 +134,7 @@ public interface Steerings {
 	 * 
 	 * @return behavior which lets a ghost enter the house and take its seat
 	 */
-	static Steering<Ghost> takingGhostHouseSeat(Ghost ghost, int seatNumber) {
+	static Steering<Ghost> isTakingSeat(Ghost ghost, int seatNumber) {
 		return new EnteringGhostHouse(ghost.maze(), ghost, seatNumber);
 	}
 
@@ -145,7 +145,7 @@ public interface Steerings {
 	 * 
 	 * @return behavior which lets a ghost leave the ghost house
 	 */
-	static Steering<Ghost> leavingGhostHouse(Maze maze) {
+	static Steering<Ghost> isLeavingGhostHouse(Maze maze) {
 		return new LeavingGhostHouse(maze);
 	}
 

@@ -53,7 +53,7 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 	public final PacManGame game;
 	public final FsmComponent<PacManState> fsmComponent;
 	public int ticksSinceLastMeal;
-	protected Steering<PacMan> steering;
+	private Steering<PacMan> steering;
 
 	public PacMan(PacManGameCast cast) {
 		super("Pac-Man");
@@ -67,6 +67,10 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 	@Override
 	public Maze maze() {
 		return cast.game.maze;
+	}
+
+	public void always(Steering<PacMan> steering) {
+		this.steering = steering;
 	}
 
 	private FsmComponent<PacManState> buildFsmComponent(String name) {

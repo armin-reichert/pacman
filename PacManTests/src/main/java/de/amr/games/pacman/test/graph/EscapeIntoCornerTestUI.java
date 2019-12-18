@@ -26,7 +26,7 @@ public class EscapeIntoCornerTestUI extends PlayView implements VisualController
 		cast.putOnStage(cast.pacMan);
 		cast.pacMan.init();
 		cast.putOnStage(cast.blinky);
-		cast.blinky.setSteering(GhostState.FRIGHTENED, seekingSafeeCornerFrom(cast.pacMan));
+		cast.blinky.during(GhostState.FRIGHTENED, seekingSafeeCornerFrom(cast.pacMan));
 		cast.blinky.init();
 		cast.blinky.setState(GhostState.FRIGHTENED);
 	}
