@@ -87,18 +87,25 @@ public class SimplePlayView implements View, Controller {
 
 	@Override
 	public void draw(Graphics2D g) {
+		drawMazeBackground(g);
 		drawMaze(g);
 		drawActors(g);
 		drawInfoText(g);
 		drawScores(g);
 	}
 
+	protected void drawMazeBackground(Graphics2D g) {
+		g.setColor(cast.theme().color_mazeBackground());
+		g.fillRect(0, 0, maze.numCols * Tile.SIZE, maze.numRows * Tile.SIZE);
+	}
+	
+	protected Color cellBackground(int col, int row) {
+		return Color.BLACK;
+	}
+
 	protected void drawMaze(Graphics2D g) {
 		Sprite mazeSprite = mazeFlashing ? flashingMazeSprite : fullMazeSprite;
-		// draw background because maze sprite is transparent
-		g.setColor(cast.theme().color_mazeBackground());
 		g.translate(0, 3 * Tile.SIZE);
-		g.fillRect(0, 0, mazeSprite.getWidth(), mazeSprite.getHeight());
 		mazeSprite.draw(g);
 		g.translate(0, -3 * Tile.SIZE);
 		if (mazeFlashing) {
@@ -106,13 +113,13 @@ public class SimplePlayView implements View, Controller {
 		}
 		// hide tiles with eaten pellets
 		maze.tiles().filter(Tile::containsEatenFood).forEach(tile -> {
-			g.setColor(cast.theme().color_mazeBackground());
+			g.setColor(cellBackground(tile.col, tile.row));
 			g.fillRect(tile.col * Tile.SIZE, tile.row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 		});
 		// hide energizers when animation is in blank state
 		if (energizerBlinking.currentFrame() == 1) {
 			Arrays.stream(maze.energizers).forEach(tile -> {
-				g.setColor(cast.theme().color_mazeBackground());
+				g.setColor(cellBackground(tile.col, tile.row));
 				g.fillRect(tile.col * Tile.SIZE, tile.row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 			});
 		}

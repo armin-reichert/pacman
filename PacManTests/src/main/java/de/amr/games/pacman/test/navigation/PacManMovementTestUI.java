@@ -55,7 +55,7 @@ public class PacManMovementTestUI extends PlayView implements VisualController {
 					followsKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
 		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_A)) {
 			cast.pacMan.setSteering(avoidingGhosts());
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
 			cast.pacMan.setSteering(isMovingRandomlyWithoutTurningBack());
 		}
 	}
