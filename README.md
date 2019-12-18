@@ -314,14 +314,13 @@ ghosts().forEach(ghost -> {
 
 The original Pac-Man game did not use any graph-based pathfinding. To still give an example how graph-based pathfinding can be useful, there is an additional implementation of the *frightened* behavior: when Pac-Man eats a power-pill each frightened ghost choses the "safest" corner to flee to. It computes the shortest path to each corner and selects the one with the largest distance to Pac-Man's current position. Here, the distance of a path from Pac-Man's position is defined as the minimum distance of any tile on the path from Pac-Man's position.
 
-Shortest paths in the maze (grid graph) can be computed using *Maze.findPath(Tile source, Tile target)*. This method runs an [A* search](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html) on the underlying grid graph to compute the shortest path. The used [graph library](https://github.com/armin-reichert/graph) provides a whole number of search algorithms
-like BFS, Dijkstra etc. The code to compute a shortest path between two tiles using the A* algorithm with Manhattan distance heuristics looks like this:
+The wrapper class `MazeGraph`adds a graph structure (grid graph) to the maze. This allows running the graph algorithms from my [graph library](https://github.com/armin-reichert/graph) on the maze. For example, shortest paths in the maze can then be computed by just calling the *findPath(Tile source, Tile target)* method on the maze graph. This method runs an [A* search](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html) on the underlying graph. The graph library provides a whole number of search algorithms like BFS or Dijkstra. The code to compute a shortest path between two tiles using the A* algorithm with Manhattan distance heuristics looks like this:
 
 ```java
 GraphSearch pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
 Path path = pathfinder.findPath(vertex(source), vertex(target));
 ```
-However, for a maze of such a small size the used algorithm doesn't matter much, a simple breadth-first search would also do the job.
+However, for a graph of such a small size, the used algorithm doesn't matter very much, a Breadth-First Search would also run with sufficient performance in this use case.
 
 ## Additional features
 
