@@ -24,7 +24,7 @@ public class Maze {
 	public final int numCols;
 	public final Tile[][] tiles;
 	public Tile pacManHome;
-	public Tile ghostHome[] = new Tile[4];
+	public Tile ghostHouseSeats[] = new Tile[4];
 	public Tile bonusTile;
 	public Tile cornerNW, cornerNE, cornerSW, cornerSE;
 	public Tile horizonNE, horizonNW, horizonSE, horizonSW;
@@ -45,7 +45,8 @@ public class Maze {
 				char c = map[row].charAt(col);
 				Tile tile = tiles[col][row] = new Tile((byte) col, (byte) row, c);
 				if (Character.isDigit(c)) {
-					ghostHome[Integer.valueOf(String.valueOf(c))] = tile;
+					int seat = Integer.valueOf(String.valueOf(c));
+					ghostHouseSeats[seat] = tile;
 					tile.content = SPACE;
 				}
 				switch (c) {

@@ -80,16 +80,16 @@ public class BoardPreview extends JFrame {
 
 	private String text(int cell) {
 		Tile tile = tile(cell);
-		if (tile == maze.ghostHome[0] || tile == maze.horizonNE) {
+		if (tile == maze.ghostHouseSeats[0] || tile == maze.horizonNE) {
 			return "B";
 		}
-		if (tile == maze.ghostHome[1] || tile == maze.horizonSE) {
+		if (tile == maze.ghostHouseSeats[1] || tile == maze.horizonSE) {
 			return "I";
 		}
-		if (tile == maze.ghostHome[2] || tile == maze.horizonNW) {
+		if (tile == maze.ghostHouseSeats[2] || tile == maze.horizonNW) {
 			return "P";
 		}
-		if (tile == maze.ghostHome[3] || tile == maze.horizonSW) {
+		if (tile == maze.ghostHouseSeats[3] || tile == maze.horizonSW) {
 			return "C";
 		}
 		if (tile == maze.bonusTile) {

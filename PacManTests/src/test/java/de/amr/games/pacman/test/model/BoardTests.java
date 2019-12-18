@@ -20,10 +20,10 @@ public class BoardTests {
 		assertEquals(36, maze.numRows);
 
 		assertNotNull(maze.pacManHome);
-		assertNotNull(maze.ghostHome[0]);
-		assertNotNull(maze.ghostHome[1]);
-		assertNotNull(maze.ghostHome[2]);
-		assertNotNull(maze.ghostHome[3]);
+		assertNotNull(maze.ghostHouseSeats[0]);
+		assertNotNull(maze.ghostHouseSeats[1]);
+		assertNotNull(maze.ghostHouseSeats[2]);
+		assertNotNull(maze.ghostHouseSeats[3]);
 		assertNotNull(maze.tunnelExitLeft);
 		assertNotNull(maze.tunnelExitRight);
 		assertNotNull(maze.bonusTile);

@@ -25,8 +25,8 @@ public class LeavingGhostHouse implements Steering<Ghost> {
 
 	@Override
 	public void steer(Ghost ghost) {
-		int targetX = maze.ghostHome[0].col * Tile.SIZE + Tile.SIZE / 2;
-		int targetY = maze.ghostHome[0].row * Tile.SIZE;
+		int targetX = maze.ghostHouseSeats[0].col * Tile.SIZE + Tile.SIZE / 2;
+		int targetY = maze.ghostHouseSeats[0].row * Tile.SIZE;
 		if (aboutEqual(1, ghost.tf.getX(), targetX)) {
 			ghost.tf.setX(targetX);
 			ghost.setNextDir(Direction.UP);

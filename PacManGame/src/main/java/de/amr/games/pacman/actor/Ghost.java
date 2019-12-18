@@ -115,7 +115,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 				
 				.state(DEAD)
 					.onEntry(() -> {
-						setTargetTile(maze().ghostHome[0]);
+						setTargetTile(maze().ghostHouseSeats[0]);
 						turnDeadGhostSoundOn();
 					})
 					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir()))
@@ -172,8 +172,8 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 					.onTimeout()
 					
 				.when(DEAD).then(ENTERING_HOUSE)
-					.condition(() -> tile().equals(maze().ghostHome[0]) || tile().equals(maze().ghostHome[1]))
-					.act(() -> placeAtTile(maze().ghostHome[0], Tile.SIZE / 2, 0))
+					.condition(() -> tile().equals(maze().ghostHouseSeats[0]) || tile().equals(maze().ghostHouseSeats[1]))
+					.act(() -> placeAtTile(maze().ghostHouseSeats[0], Tile.SIZE / 2, 0))
 				
 		.endStateMachine();
 		/*@formatter:on*/
@@ -197,7 +197,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		setMoveDir(eyes);
 		setNextDir(eyes);
 		enteredNewTile = true;
-		placeAtTile(maze().ghostHome[seat], Tile.SIZE / 2, 0);
+		placeAtTile(maze().ghostHouseSeats[seat], Tile.SIZE / 2, 0);
 		sprites.select("color-" + eyes);
 		sprites.forEach(Sprite::resetAnimation);
 		nextState = fsmComponent.getState();

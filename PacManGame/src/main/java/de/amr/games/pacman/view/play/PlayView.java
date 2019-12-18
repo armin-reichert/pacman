@@ -11,6 +11,7 @@ import static java.lang.Math.round;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
@@ -18,8 +19,10 @@ import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.Transparency;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.Entity;
@@ -134,8 +137,7 @@ public class PlayView extends SimplePlayView {
 	private void toggleGhostActivationState(Ghost ghost) {
 		if (cast.onStage(ghost)) {
 			cast.removeFromStage(ghost);
-		}
-		else {
+		} else {
 			cast.putOnStage(ghost);
 		}
 	}
@@ -186,8 +188,9 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private String pacManStateText(PacMan pacMan) {
-		String text = pacMan.state().getDuration() != State.ENDLESS ? String.format("(%s,%d|%d)",
-				pacMan.state().id(), pacMan.state().getTicksRemaining(), pacMan.state().getDuration())
+		String text = pacMan.state().getDuration() != State.ENDLESS
+				? String.format("(%s,%d|%d)", pacMan.state().id(), pacMan.state().getTicksRemaining(),
+						pacMan.state().getDuration())
 				: String.format("(%s,%s)", pacMan.state().id(), INFTY);
 
 		if (Application.app().settings.getAsBoolean("pacMan.immortable")) {
@@ -218,8 +221,7 @@ public class PlayView extends SimplePlayView {
 		}
 		if (duration == State.ENDLESS) {
 			text.append(String.format("(%s,%s)", ghost.getState(), INFTY));
-		}
-		else {
+		} else {
 			text.append(String.format("(%s,%d|%d)", ghost.getState(), remaining, duration));
 		}
 		// next state
@@ -267,7 +269,27 @@ public class PlayView extends SimplePlayView {
 		g.translate(-actor.tf.getX(), -actor.tf.getY());
 	}
 
+	private void drawSeats(Graphics2D g) {
+		IntStream.rangeClosed(0, 3).forEach(seat -> {
+			Tile seatTile = maze.ghostHouseSeats[seat];
+			g.setColor(Color.BLUE);
+			int x = seatTile.col * Tile.SIZE + Tile.SIZE / 2, y = seatTile.row * Tile.SIZE;
+			String text = String.valueOf(seat);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.drawRoundRect(x, y, Tile.SIZE, Tile.SIZE, 2, 2);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 6));
+			FontMetrics fm = g.getFontMetrics();
+			Rectangle2D r = fm.getStringBounds(text, g);
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			g.setColor(Color.WHITE);
+			g.drawString(text, x + (Tile.SIZE - Math.round(r.getWidth())) / 2, y + Tile.SIZE - 2);
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+		});
+	}
+
 	private void drawRoutes(Graphics2D g) {
+		drawSeats(g);
 		cast.ghostsOnStage().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));
 	}
 
@@ -278,8 +300,7 @@ public class PlayView extends SimplePlayView {
 		Stroke solid = g.getStroke();
 		if (ghostTarget != null) {
 			// draw target tile indicator
-			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
-					0);
+			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
 			g.setStroke(dashed);
 			g.setColor(ghostColor);
 			int x1 = ghost.centerX(), y1 = ghost.centerY();
@@ -297,8 +318,7 @@ public class PlayView extends SimplePlayView {
 			for (Tile tile : ghost.targetPath()) {
 				g.fillRect(tile.col * Tile.SIZE, tile.row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 			}
-		}
-		else if (ghost.nextDir() != null) {
+		} else if (ghost.nextDir() != null) {
 			// draw direction indicator
 			Vector2f center = ghost.tf.getCenter();
 			int dx = ghost.nextDir().dx, dy = ghost.nextDir().dy;
@@ -331,8 +351,7 @@ public class PlayView extends SimplePlayView {
 					g.drawLine(x1, y1, x2, y2);
 					g.drawLine(x2, y2, x3, y3);
 					g.fillRect(x3 - s / 2, y3 - s / 2, s, s);
-				}
-				else {
+				} else {
 					Tile twoTilesAhead = cast.pacMan.tilesAhead(2);
 					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
 					int x2 = twoTilesAhead.centerX(), y2 = twoTilesAhead.centerY();

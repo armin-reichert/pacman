@@ -38,7 +38,7 @@ public class EnterGhostHouseTestUI extends PlayView implements VisualController 
 		game.init();
 		game.maze.removeFood();
 		cast.putOnStage(inky);
-		inky.placeAtTile(maze.ghostHome[0], Tile.SIZE / 2, 0);
+		inky.placeAtTile(maze.ghostHouseSeats[0], Tile.SIZE / 2, 0);
 		inky.during(ENTERING_HOUSE, isTakingSeat(inky, 1));
 		textColor = Color.YELLOW;
 		message = "Press SPACE to enter or leave house";

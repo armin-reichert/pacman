@@ -16,7 +16,7 @@ public class JumpingUpAndDown implements Steering<Ghost> {
 	private final int baseY;
 
 	public JumpingUpAndDown(Maze maze, int ghostHousePlace) {
-		this.baseY = maze.ghostHome[ghostHousePlace].row * Tile.SIZE;
+		this.baseY = maze.ghostHouseSeats[ghostHousePlace].row * Tile.SIZE;
 	}
 
 	@Override
