@@ -64,6 +64,6 @@ public interface MazeResident extends Controller {
 	 * @return squared Euclidean distance to the other maze resident in tile
 	 *         coordinates
 	 */
-	int distanceSq(AbstractMazeResident other);
+	int distanceSq(MazeResident other);
 
 }

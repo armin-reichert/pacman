@@ -37,7 +37,7 @@ public abstract class AbstractMazeResident extends Entity implements MazeResiden
 	}
 
 	@Override
-	public int distanceSq(AbstractMazeResident other) {
+	public int distanceSq(MazeResident other) {
 		return Tile.distanceSq(tile(), other.tile());
 	}
 }
