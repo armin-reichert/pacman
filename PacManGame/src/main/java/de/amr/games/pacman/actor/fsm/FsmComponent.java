@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import de.amr.games.pacman.actor.Ghost;
+import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
@@ -14,10 +16,16 @@ import de.amr.statemachine.StateMachine;
 /**
  * Prototypical implementation of the {@link FsmControlled} interface which can
  * be used as a delegate by an entity class.
+ * <p>
+ * When an entity cannot inherit directly from the {@link StateMachine} class,
+ * it can implement the {@link FsmContainer} interface which delegates to an
+ * instance of this class.
  * 
  * @author Armin Reichert
  *
  * @param <S> state (label) type of the FSM
+ * 
+ * @see {@link PacMan}, {@link Ghost}
  */
 public class FsmComponent<S> implements FsmControlled<S> {
 
@@ -55,7 +63,7 @@ public class FsmComponent<S> implements FsmControlled<S> {
 
 	public void publish(PacManGameEvent event) {
 		if (publishedEventIsLogged.test(event)) {
-			LOGGER.info(() -> String.format("Actor '%s' published event '%s'", name, event));
+			LOGGER.info(() -> String.format("'%s' published event '%s'", name, event));
 		}
 		listeners.forEach(listener -> listener.accept(event));
 	}

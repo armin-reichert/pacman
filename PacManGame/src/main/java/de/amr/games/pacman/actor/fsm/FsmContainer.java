@@ -8,7 +8,7 @@ import de.amr.statemachine.StateMachine;
 
 /**
  * This interface is implemented by entities that implement the
- * {@link FsmControlled} interface by delegation to a component implementing
+ * {@link FsmControlled} interface by delegating to a component implementing
  * that interface.
  * 
  * @author Armin Reichert
@@ -17,6 +17,11 @@ import de.amr.statemachine.StateMachine;
  */
 public interface FsmContainer<S> extends FsmControlled<S> {
 
+	/**
+	 * The component (delegate) implementing the {@link FsmControlled} interface.
+	 * 
+	 * @return delegate component
+	 */
 	FsmControlled<S> fsmComponent();
 
 	@Override
