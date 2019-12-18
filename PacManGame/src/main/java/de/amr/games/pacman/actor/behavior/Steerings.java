@@ -76,13 +76,23 @@ public interface Steerings {
 	}
 
 	/**
-	 * Lets the actor head for a target tile (may be unreachable) by taking the
-	 * "best" direction at every intersection.
+	 * Lets the actor head for a possibly changing target tile (may be unreachable)
+	 * by taking the "best" direction at every intersection.
 	 * 
 	 * @return behavior where actor heads for the target tile
 	 */
 	static <T extends MazeMover> Steering<T> isHeadingFor(Supplier<Tile> fnTargetTile) {
 		return new HeadingForTargetTile<>(fnTargetTile);
+	}
+
+	/**
+	 * Lets the actor head for a fixed target tile (may be unreachable) by taking
+	 * the "best" direction at every intersection.
+	 * 
+	 * @return behavior where actor heads for the target tile
+	 */
+	static <T extends MazeMover> Steering<T> isHeadingFor(Tile targetTile) {
+		return new HeadingForTargetTile<>(() -> targetTile);
 	}
 
 	/**

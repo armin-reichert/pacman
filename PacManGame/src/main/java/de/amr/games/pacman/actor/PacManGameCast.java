@@ -70,12 +70,12 @@ public class PacManGameCast {
 
 		blinky.eyes = LEFT;
 		blinky.seat = 0;
-		blinky.during(SCATTERING, isHeadingFor(() -> maze.horizonNE));
+		blinky.during(SCATTERING, isHeadingFor(maze.horizonNE));
 		blinky.during(CHASING, isHeadingFor(pacMan::tile));
 
 		inky.eyes = UP;
 		inky.seat = 1;
-		inky.during(SCATTERING, isHeadingFor(() -> maze.horizonSE));
+		inky.during(SCATTERING, isHeadingFor(maze.horizonSE));
 		inky.during(CHASING, isHeadingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
@@ -83,12 +83,12 @@ public class PacManGameCast {
 
 		pinky.eyes = DOWN;
 		pinky.seat = 2;
-		pinky.during(SCATTERING, isHeadingFor(() -> maze.horizonNW));
+		pinky.during(SCATTERING, isHeadingFor(maze.horizonNW));
 		pinky.during(CHASING, isHeadingFor(() -> pacMan.tilesAhead(4)));
 
 		clyde.eyes = UP;
 		clyde.seat = 3;
-		clyde.during(SCATTERING, isHeadingFor(() -> maze.horizonSW));
+		clyde.during(SCATTERING, isHeadingFor(maze.horizonSW));
 		clyde.during(CHASING, isHeadingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
 
 		ghosts().forEach(ghost -> {
