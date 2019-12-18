@@ -329,8 +329,8 @@ public class PlayView extends SimplePlayView {
 			g.setColor(ghostColor);
 			g.fillOval(indX - r, indY - r, 2 * r, 2 * r);
 		}
-		// visualize Inky's chasing
-		if (ghost == cast.inky && ghost.is(CHASING)) {
+		// visualize Inky's chasing (target tile may be null if Blinky is not on stage!)
+		if (ghost == cast.inky && ghost.is(CHASING) && ghost.targetTile() != null) {
 			{
 				int x1 = cast.blinky.tile().centerX(), y1 = cast.blinky.tile().centerY();
 				int x2 = ghost.targetTile().centerX(), y2 = ghost.targetTile().centerY();
