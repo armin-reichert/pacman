@@ -34,7 +34,7 @@ public class FollowMouseTestUI extends PlayView implements VisualController {
 		game.maze.removeFood();
 		cast.theme.snd_ghost_chase().volume(0);
 		cast.putOnStage(cast.blinky);
-		cast.blinky.setSteering(CHASING, Steerings.headingForTargetTile(() -> mouseTile));
+		cast.blinky.setSteering(CHASING, Steerings.headingFor(() -> mouseTile));
 		cast.blinky.setState(CHASING);
 		readMouse();
 	}

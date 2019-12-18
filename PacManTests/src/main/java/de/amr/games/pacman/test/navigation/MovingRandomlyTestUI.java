@@ -33,7 +33,7 @@ public class MovingRandomlyTestUI extends PlayView implements VisualController {
 			cast.putOnStage(ghost);
 			ghost.placeAtTile(game.maze.pacManHome, Tile.SIZE / 2, 0);
 			ghost.setState(GhostState.CHASING);
-			ghost.setSteering(GhostState.CHASING, Steerings.movingRandomlyNoReversing());
+			ghost.setSteering(GhostState.CHASING, Steerings.movingRandomlyWithoutTurningBack());
 		});
 		message = "Press SPACE";
 	}

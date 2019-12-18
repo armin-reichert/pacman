@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.actor.behavior.Steerings.avoidingGhosts;
-import static de.amr.games.pacman.actor.behavior.Steerings.movingRandomlyNoReversing;
+import static de.amr.games.pacman.actor.behavior.Steerings.movingRandomlyWithoutTurningBack;
 import static de.amr.games.pacman.actor.behavior.Steerings.steeredByKeys;
 
 import java.awt.event.KeyEvent;
@@ -56,7 +56,7 @@ public class PacManMovementTestUI extends PlayView implements VisualController {
 		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_A)) {
 			cast.pacMan.setSteering(avoidingGhosts());
 		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
-			cast.pacMan.setSteering(movingRandomlyNoReversing());
+			cast.pacMan.setSteering(movingRandomlyWithoutTurningBack());
 		}
 	}
 

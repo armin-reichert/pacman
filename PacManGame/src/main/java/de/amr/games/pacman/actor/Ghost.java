@@ -8,7 +8,7 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.actor.behavior.Steerings.headingForTargetTile;
+import static de.amr.games.pacman.actor.behavior.Steerings.headingFor;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Timing.sec;
@@ -47,13 +47,13 @@ import de.amr.statemachine.StateMachine.MissingTransitionBehavior;
 public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState> {
 
 	private final Map<GhostState, Steering<Ghost>> steeringByState = new EnumMap<>(GhostState.class);
-	private final Steering<Ghost> defaultSteering = headingForTargetTile(this::targetTile);
+	private final Steering<Ghost> defaultSteering = headingFor(this::targetTile);
 
 	public final PacManGameCast cast;
 	public final PacManGame game;
 	public final FsmComponent<GhostState> fsmComponent;
-	public Direction initialDir;
-	public int ghostHousePlace;
+	public Direction eyes;
+	public int seat;
 	public GhostState nextState;
 
 	public int dotCounter; // used by logic when ghost can leave house
@@ -194,11 +194,11 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		super.init();
 		fsmComponent.init();
 		visible = true;
-		setMoveDir(initialDir);
-		setNextDir(initialDir);
+		setMoveDir(eyes);
+		setNextDir(eyes);
 		enteredNewTile = true;
-		placeAtTile(maze().ghostHome[ghostHousePlace], Tile.SIZE / 2, 0);
-		sprites.select("color-" + initialDir);
+		placeAtTile(maze().ghostHome[seat], Tile.SIZE / 2, 0);
+		sprites.select("color-" + eyes);
 		sprites.forEach(Sprite::resetAnimation);
 		nextState = fsmComponent.getState();
 	}

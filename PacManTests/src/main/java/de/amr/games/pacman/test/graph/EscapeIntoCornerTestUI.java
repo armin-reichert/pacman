@@ -1,6 +1,6 @@
 package de.amr.games.pacman.test.graph;
 
-import static de.amr.games.pacman.actor.behavior.Steerings.fleeingToSafeCorner;
+import static de.amr.games.pacman.actor.behavior.Steerings.seekingSafeeCornerFrom;
 
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
@@ -26,7 +26,7 @@ public class EscapeIntoCornerTestUI extends PlayView implements VisualController
 		cast.putOnStage(cast.pacMan);
 		cast.pacMan.init();
 		cast.putOnStage(cast.blinky);
-		cast.blinky.setSteering(GhostState.FRIGHTENED, fleeingToSafeCorner(cast.pacMan));
+		cast.blinky.setSteering(GhostState.FRIGHTENED, seekingSafeeCornerFrom(cast.pacMan));
 		cast.blinky.init();
 		cast.blinky.setState(GhostState.FRIGHTENED);
 	}

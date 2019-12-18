@@ -1,13 +1,17 @@
 package de.amr.games.pacman.actor;
 
 import static de.amr.games.pacman.actor.GhostState.CHASING;
+import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.actor.behavior.Steerings.enteringGhostHouse;
-import static de.amr.games.pacman.actor.behavior.Steerings.headingForTargetTile;
+import static de.amr.games.pacman.actor.behavior.Steerings.headingFor;
 import static de.amr.games.pacman.actor.behavior.Steerings.jumpingUpAndDown;
 import static de.amr.games.pacman.actor.behavior.Steerings.leavingGhostHouse;
-import static de.amr.games.pacman.actor.behavior.Steerings.movingRandomlyNoReversing;
+import static de.amr.games.pacman.actor.behavior.Steerings.movingRandomlyWithoutTurningBack;
 import static de.amr.games.pacman.actor.behavior.Steerings.steeredByKeys;
+import static de.amr.games.pacman.actor.behavior.Steerings.takingGhostHouseSeat;
 import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
@@ -61,39 +65,38 @@ public class PacManGameCast {
 		pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
 		pacMan.setTeleportingDuration(sec(0.25f));
 
-		blinky.initialDir = LEFT;
-		blinky.ghostHousePlace = 0;
-		blinky.setSteering(SCATTERING, headingForTargetTile(() -> maze.scatterTileNE));
-		blinky.setSteering(CHASING, headingForTargetTile(pacMan::tile));
+		blinky.eyes = LEFT;
+		blinky.seat = 0;
+		blinky.setSteering(SCATTERING, headingFor(() -> maze.scatterNE));
+		blinky.setSteering(CHASING, headingFor(pacMan::tile));
 
-		inky.initialDir = UP;
-		inky.ghostHousePlace = 1;
-		inky.setSteering(SCATTERING, headingForTargetTile(() -> maze.scatterTileSE));
-		inky.setSteering(CHASING, headingForTargetTile(() -> {
+		inky.eyes = UP;
+		inky.seat = 1;
+		inky.setSteering(SCATTERING, headingFor(() -> maze.scatterSE));
+		inky.setSteering(CHASING, headingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
 
-		pinky.initialDir = DOWN;
-		pinky.ghostHousePlace = 2;
-		pinky.setSteering(SCATTERING, headingForTargetTile(() -> maze.scatterTileNW));
-		pinky.setSteering(CHASING, headingForTargetTile(() -> pacMan.tilesAhead(4)));
+		pinky.eyes = DOWN;
+		pinky.seat = 2;
+		pinky.setSteering(SCATTERING, headingFor(() -> maze.scatterNW));
+		pinky.setSteering(CHASING, headingFor(() -> pacMan.tilesAhead(4)));
 
-		clyde.initialDir = UP;
-		clyde.ghostHousePlace = 3;
-		clyde.setSteering(SCATTERING, headingForTargetTile(() -> maze.scatterTileSW));
-		clyde.setSteering(CHASING,
-				headingForTargetTile(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze.scatterTileSW));
+		clyde.eyes = UP;
+		clyde.seat = 3;
+		clyde.setSteering(SCATTERING, headingFor(() -> maze.scatterSW));
+		clyde.setSteering(CHASING, headingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze.scatterSW));
 
 		ghosts().forEach(ghost -> {
 			ghost.setTeleportingDuration(sec(0.5f));
-			ghost.setSteering(GhostState.LEAVING_HOUSE, leavingGhostHouse(maze));
-			ghost.setSteering(GhostState.FRIGHTENED, movingRandomlyNoReversing());
+			ghost.setSteering(LEAVING_HOUSE, leavingGhostHouse(maze));
+			ghost.setSteering(FRIGHTENED, movingRandomlyWithoutTurningBack());
 			if (ghost != blinky) {
-				ghost.setSteering(GhostState.LOCKED, jumpingUpAndDown(maze, ghost.ghostHousePlace));
-				ghost.setSteering(GhostState.ENTERING_HOUSE, enteringGhostHouse(maze, ghost, ghost.ghostHousePlace));
+				ghost.setSteering(LOCKED, jumpingUpAndDown(maze, ghost.seat));
+				ghost.setSteering(ENTERING_HOUSE, takingGhostHouseSeat(ghost, ghost.seat));
 			} else {
-				ghost.setSteering(GhostState.ENTERING_HOUSE, enteringGhostHouse(maze, ghost, 2));
+				ghost.setSteering(ENTERING_HOUSE, takingGhostHouseSeat(ghost, 2));
 			}
 		});
 	}

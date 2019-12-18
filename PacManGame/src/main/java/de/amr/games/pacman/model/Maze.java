@@ -27,7 +27,7 @@ public class Maze {
 	public Tile ghostHome[] = new Tile[4];
 	public Tile bonusTile;
 	public Tile cornerNW, cornerNE, cornerSW, cornerSE;
-	public Tile scatterTileNE, scatterTileNW, scatterTileSE, scatterTileSW;
+	public Tile scatterNE, scatterNW, scatterSE, scatterSW;
 	public Tile tunnelExitLeft, tunnelExitRight;
 	public Tile doorLeft, doorRight;
 	public Tile energizers[] = new Tile[4];
@@ -80,10 +80,10 @@ public class Maze {
 		tunnelExitRight = tiles[27][17];
 
 		// Scattering targets
-		scatterTileNW = tiles[2][0];
-		scatterTileNE = tiles[25][0];
-		scatterTileSW = tiles[0][35];
-		scatterTileSE = tiles[27][35];
+		scatterNW = tiles[2][0];
+		scatterNE = tiles[25][0];
+		scatterSW = tiles[0][35];
+		scatterSE = tiles[27][35];
 
 		// Corners inside maze
 		cornerNW = tiles[1][4];

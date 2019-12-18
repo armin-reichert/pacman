@@ -31,10 +31,10 @@ public class BoardTests {
 		assertNotNull(maze.cornerNE);
 		assertNotNull(maze.cornerSW);
 		assertNotNull(maze.cornerSE);
-		assertNotNull(maze.scatterTileNE);
-		assertNotNull(maze.scatterTileNW);
-		assertNotNull(maze.scatterTileSW);
-		assertNotNull(maze.scatterTileSE);
+		assertNotNull(maze.scatterNE);
+		assertNotNull(maze.scatterNW);
+		assertNotNull(maze.scatterSW);
+		assertNotNull(maze.scatterSE);
 
 		assertEquals(4, maze.tiles().filter(Tile::containsEnergizer).count());
 		assertEquals(240, maze.tiles().filter(Tile::containsPellet).count());

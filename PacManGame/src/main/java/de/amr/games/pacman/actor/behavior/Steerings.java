@@ -29,8 +29,7 @@ import de.amr.games.pacman.model.Tile;
 public interface Steerings {
 
 	/**
-	 * @param keys
-	 *               steering key codes in order UP, RIGHT, DOWN, LEFT
+	 * @param keys steering key codes in order UP, RIGHT, DOWN, LEFT
 	 * 
 	 * @return steering using the given keys
 	 */
@@ -46,10 +45,8 @@ public interface Steerings {
 	/**
 	 * Lets the ghost jump up and down.
 	 * 
-	 * @param maze
-	 *                          the maze
-	 * @param ghostHousePlace
-	 *                          the ghosthouse place number
+	 * @param maze            the maze
+	 * @param ghostHousePlace the ghosthouse place number
 	 * @return behavior which lets the ghost jump
 	 */
 	static Steering<Ghost> jumpingUpAndDown(Maze maze, int ghostHousePlace) {
@@ -57,13 +54,13 @@ public interface Steerings {
 	}
 
 	/**
-	 * Lets the actor move randomly though the maze while respecting the accessibility rules (for
-	 * example, chasing and scattering ghost may not move upwards at dedicated tiles. Also reversing the
-	 * direction is never allowed.
+	 * Lets the actor move randomly though the maze while respecting the
+	 * accessibility rules (for example, chasing and scattering ghost may not move
+	 * upwards at dedicated tiles. Also reversing the direction is never allowed.
 	 * 
 	 * @return random move behavior
 	 */
-	static <T extends MazeMover> Steering<T> movingRandomlyNoReversing() {
+	static <T extends MazeMover> Steering<T> movingRandomlyWithoutTurningBack() {
 		/*@formatter:off*/
 		return actor -> {
 			actor.setTargetPath(Collections.emptyList());
@@ -79,38 +76,35 @@ public interface Steerings {
 	}
 
 	/**
-	 * Lets the actor head for a target tile (may be unreachable) by taking the "best" direction at
-	 * every intersection.
+	 * Lets the actor head for a target tile (may be unreachable) by taking the
+	 * "best" direction at every intersection.
 	 * 
 	 * @return behavior where actor heads for the target tile
 	 */
-	static <T extends MazeMover> Steering<T> headingForTargetTile(Supplier<Tile> fnTargetTile) {
+	static <T extends MazeMover> Steering<T> headingFor(Supplier<Tile> fnTargetTile) {
 		return new HeadingForTargetTile<>(fnTargetTile);
 	}
 
 	/**
 	 * Lets the actor avoid the attacker's path by walking to a "safe" maze corner.
 	 * 
-	 * @param attacker
-	 *                   the attacking actor
+	 * @param attacker the attacking actor
 	 * 
 	 * @return behavior where actor flees to a "safe" maze corner
 	 */
-	static <T extends MazeMover> Steering<T> fleeingToSafeCorner(MazeMover attacker) {
+	static <T extends MazeMover> Steering<T> seekingSafeeCornerFrom(MazeMover attacker) {
 		return new FleeingToSafeCorner<>(attacker.maze(), attacker::tile);
 	}
 
 	/**
-	 * Lets the actor follow the shortest path to the target. This may be not possible, depending on the
-	 * actor's current state.
+	 * Lets the actor follow the shortest path to the target. This may be not
+	 * possible, depending on the actor's current state.
 	 * 
-	 * @param maze
-	 *                   the maze
-	 * @param fnTarget
-	 *                   function supplying the target tile at time of decision
+	 * @param maze     the maze
+	 * @param fnTarget function supplying the target tile at time of decision
 	 * 
-	 * @return behavior where an actor follows the shortest (according to Manhattan distance) path to a
-	 *         target tile
+	 * @return behavior where an actor follows the shortest (according to Manhattan
+	 *         distance) path to a target tile
 	 */
 	static <T extends MazeMover> Steering<T> takingShortestPath(Maze maze, Supplier<Tile> fnTarget) {
 		return new TakingShortestPath<>(maze, fnTarget);
@@ -119,10 +113,8 @@ public interface Steerings {
 	/**
 	 * Lets the actor follow a fixed path to the target.
 	 * 
-	 * @param maze
-	 *               the maze
-	 * @param path
-	 *               the path to follow
+	 * @param maze the maze
+	 * @param path the path to follow
 	 * 
 	 * @return behavior where actor follows the given path
 	 */
@@ -136,26 +128,22 @@ public interface Steerings {
 	/**
 	 * Lets a ghost enter the ghost house and move to its target tile.
 	 * 
-	 * @param maze
-	 *                the maze
-	 * @param ghost
-	 *                the ghost
-	 * @param place
-	 *                place in the house
+	 * @param maze       the maze
+	 * @param ghost      the ghost
+	 * @param seatNumber seat number in the house
 	 * 
-	 * @return behavior where a ghost enters the house and moves to its target tile
+	 * @return behavior which lets a ghost enter the house and take its seat
 	 */
-	static Steering<Ghost> enteringGhostHouse(Maze maze, Ghost ghost, int place) {
-		return new EnteringGhostHouse(maze, ghost, place);
+	static Steering<Ghost> takingGhostHouseSeat(Ghost ghost, int seatNumber) {
+		return new EnteringGhostHouse(ghost.maze(), ghost, seatNumber);
 	}
 
 	/**
 	 * Lets a ghost leave the ghost house.
 	 * 
-	 * @param maze
-	 *               the maze
+	 * @param maze the maze
 	 * 
-	 * @return behavior where a ghost leaves the house
+	 * @return behavior which lets a ghost leave the ghost house
 	 */
 	static Steering<Ghost> leavingGhostHouse(Maze maze) {
 		return new LeavingGhostHouse(maze);
