@@ -5,11 +5,9 @@ import static de.amr.games.pacman.actor.GhostState.DYING;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.util.Arrays;
 
 import de.amr.easy.game.ui.sprites.Animation;
@@ -22,6 +20,7 @@ import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.view.Pen;
 
 /**
  * Simple play view providing core functionality for playing.
@@ -29,31 +28,6 @@ import de.amr.games.pacman.model.Tile;
  * @author Armin Reichert
  */
 public class SimplePlayView implements View, Controller {
-
-	public static class Pen {
-
-		private Graphics2D g;
-		public Font font;
-		public Color color;
-
-		public Pen(Graphics2D g) {
-			this.g = (Graphics2D) g.create();
-		}
-
-		public void aaOn() {
-			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		}
-
-		public void aaOff() {
-			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-		}
-
-		public void text(String s, int col, int row) {
-			g.setColor(color);
-			g.setFont(font);
-			g.drawString(s, col * Tile.SIZE, row * Tile.SIZE);
-		}
-	}
 
 	public final PacManGame game;
 	public final Maze maze;
@@ -166,27 +140,27 @@ public class SimplePlayView implements View, Controller {
 			return;
 		}
 		Pen pen = new Pen(g);
-		pen.font = cast.theme.fnt_text(10);
+		pen.font(cast.theme.fnt_text(10));
 
 		// Points
-		pen.color = Color.YELLOW;
-		pen.text("SCORE", 1, 1);
-		pen.text(String.format("LEVEL%2d", game.level.number), 22, 1);
-		pen.color = Color.WHITE;
-		pen.text(String.format("%07d", game.score), 1, 2);
+		pen.color(Color.YELLOW);
+		pen.draw("SCORE", 1, 1);
+		pen.draw(String.format("LEVEL%2d", game.level.number), 22, 1);
+		pen.color(Color.WHITE);
+		pen.draw(String.format("%07d", game.score), 1, 2);
 
 		// Highscore
-		pen.color = Color.YELLOW;
-		pen.text("HIGHSCORE", 10, 1);
-		pen.color = Color.WHITE;
-		pen.text(String.format("%07d", game.hiscore.points), 10, 2);
-		pen.text(String.format("L%d", game.hiscore.levelNumber), 16, 2);
+		pen.color(Color.YELLOW);
+		pen.draw("HIGHSCORE", 10, 1);
+		pen.color(Color.WHITE);
+		pen.draw(String.format("%07d", game.hiscore.points), 10, 2);
+		pen.draw(String.format("L%d", game.hiscore.levelNumber), 16, 2);
 
 		// Remaining pellets
 		g.setColor(Color.PINK);
 		g.fillRect(22 * Tile.SIZE + 2, Tile.SIZE + 2, 4, 4);
-		pen.color = Color.WHITE;
-		pen.text(String.format("%d", game.numPelletsRemaining()), 23, 2);
+		pen.color(Color.WHITE);
+		pen.draw(String.format("%d", game.numPelletsRemaining()), 23, 2);
 
 		drawLives(g);
 		drawLevelCounter(g);
