@@ -167,7 +167,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				
 				.state(GHOST_DYING)
 					.impl(new GhostDyingState())
-					.timeoutAfter(Ghost::getDyingTime)
+					.timeoutAfter(sec(1))
 				
 				.state(PACMAN_DYING)
 					.timeoutAfter(() -> game.lives > 1 ? sec(6) : sec(4))
@@ -441,8 +441,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onTick() {
 			cast.bonus().ifPresent(Bonus::update);
-			cast.ghostsOnStage()
-					.filter(ghost -> ghost.is(GhostState.DYING, GhostState.DEAD, GhostState.ENTERING_HOUSE))
+			cast.ghostsOnStage().filter(ghost -> ghost.is(GhostState.DEAD, GhostState.ENTERING_HOUSE))
 					.forEach(Ghost::update);
 		}
 

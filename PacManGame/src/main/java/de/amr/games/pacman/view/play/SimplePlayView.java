@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.play;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.actor.GhostState.DYING;
+import static de.amr.games.pacman.actor.GhostState.DEAD;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -130,9 +130,9 @@ public class SimplePlayView implements View, Controller {
 		if (cast.onStage(cast.pacMan)) {
 			cast.pacMan.draw(g);
 		}
-		// draw dying ghosts (numbers) under non-dying ghosts
-		cast.ghostsOnStage().filter(ghost -> ghost.is(DYING)).forEach(ghost -> ghost.draw(g));
-		cast.ghostsOnStage().filter(ghost -> !ghost.is(DYING)).forEach(ghost -> ghost.draw(g));
+		// draw dead ghosts (numbers) under living ghosts
+		cast.ghostsOnStage().filter(ghost -> ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(ghost -> !ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {

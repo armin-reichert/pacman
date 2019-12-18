@@ -2,7 +2,6 @@ package de.amr.games.pacman.actor;
 
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
-import static de.amr.games.pacman.actor.GhostState.DYING;
 import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
@@ -119,16 +118,18 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 				.state(FRIGHTENED)
 					.onTick(() -> walkAndDisplayAs(cast.pacMan.isLosingPower() ? "flashing" : "frightened"))
 				
-				.state(DYING)
-					.timeoutAfter(Ghost::getDyingTime)
-					.onEntry(() -> sprites.select("value-" + game.level.ghostsKilledByEnergizer))
-				
 				.state(DEAD)
+					.timeoutAfter(sec(1))
 					.onEntry(() -> {
-						setTargetTile(maze().ghostHouseSeats[0]);
-						turnDeadGhostSoundOn();
+						sprites.select("value-" + game.level.ghostsKilledByEnergizer);
 					})
-					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir()))
+					.onTick(() -> {
+						if (state().getTicksConsumed() == sec(1)) {
+							setTargetTile(maze().ghostHouseSeats[0]);
+							turnDeadGhostSoundOn();
+							walkAndDisplayAs("eyes-" + moveDir());
+						}
+					})
 					.onExit(() -> turnDeadGhostSoundOff())
 				
 			.transitions()
@@ -149,7 +150,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 					.on(PacManGainsPowerEvent.class)
 					.act(this::turnAround)
 				
-				.when(CHASING).then(DYING)
+				.when(CHASING).then(DEAD)
 					.on(GhostKilledEvent.class)
 				
 				.when(CHASING).then(SCATTERING)
@@ -160,7 +161,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 					.on(PacManGainsPowerEvent.class)
 					.act(this::turnAround)
 				
-				.when(SCATTERING).then(DYING)
+				.when(SCATTERING).then(DEAD)
 					.on(GhostKilledEvent.class)
 				
 				.when(SCATTERING).then(CHASING)
@@ -175,11 +176,8 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 					.on(PacManLostPowerEvent.class)
 					.condition(() -> nextState == SCATTERING)
 				
-				.when(FRIGHTENED).then(DYING)
+				.when(FRIGHTENED).then(DEAD)
 					.on(GhostKilledEvent.class)
-					
-				.when(DYING).then(DEAD)
-					.onTimeout()
 					
 				.when(DEAD).then(ENTERING_HOUSE)
 					.condition(() -> maze().inFrontOfGhostHouseDoor(tile()))
@@ -254,8 +252,6 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 			return inTunnel ? speed(game.level.ghostTunnelSpeed) : speed(game.level.ghostSpeed);
 		case FRIGHTENED:
 			return inTunnel ? speed(game.level.ghostTunnelSpeed) : speed(game.level.ghostFrightenedSpeed);
-		case DYING:
-			return 0;
 		case DEAD:
 			return 2 * speed(game.level.ghostSpeed);
 		default:
@@ -281,10 +277,6 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	private boolean leftHouse() {
 		Tile currentTile = tile();
 		return !maze().partOfGhostHouse(currentTile) && tf.getY() - currentTile.row * Tile.SIZE == 0;
-	}
-
-	public static int getDyingTime() {
-		return sec(1);
 	}
 
 	public void turnChasingGhostSoundOn() {
