@@ -85,6 +85,16 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 			.states()
 	
 				.state(LOCKED)
+					.onEntry(() -> {
+						visible = true;
+						enteredNewTile = true;
+						nextState = fsmComponent.getState();
+						placeAtTile(maze().ghostHouseSeats[seat], Tile.SIZE / 2, 0);
+						setMoveDir(eyes);
+						setNextDir(eyes);
+						sprites.select("color-" + moveDir());
+						sprites.forEach(Sprite::resetAnimation);
+					})
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir()))
 					.onExit(() -> {
 						enteredNewTile = true;
@@ -193,14 +203,6 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	public void init() {
 		super.init();
 		fsmComponent.init();
-		visible = true;
-		setMoveDir(eyes);
-		setNextDir(eyes);
-		enteredNewTile = true;
-		placeAtTile(maze().ghostHouseSeats[seat], Tile.SIZE / 2, 0);
-		sprites.select("color-" + eyes);
-		sprites.forEach(Sprite::resetAnimation);
-		nextState = fsmComponent.getState();
 	}
 
 	@Override
@@ -257,7 +259,8 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		case DEAD:
 			return 2 * speed(game.level.ghostSpeed);
 		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
+			throw new IllegalStateException(
+					String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
 		}
 	}
 
