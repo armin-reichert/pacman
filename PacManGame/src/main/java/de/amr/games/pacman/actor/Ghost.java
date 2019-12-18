@@ -267,7 +267,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	@Override
 	protected boolean snapToGrid() {
 		// when entering or leaving the ghost house, pixel-exact movement is needed
-		return !is(ENTERING_HOUSE) && !is(LEAVING_HOUSE);
+		return !is(ENTERING_HOUSE, LEAVING_HOUSE);
 	}
 
 	private void walkAndDisplayAs(String spriteKey) {
