@@ -14,7 +14,6 @@ import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -30,8 +29,8 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 
 	public EnteringGhostHouse(Maze maze, Ghost ghost, int place) {
 		super(EnteringHouseState.class);
-		int targetX = maze.ghostHouseSeats[place].col * Tile.SIZE + Tile.SIZE / 2;
-		int targetY = maze.ghostHouseSeats[place].row * Tile.SIZE;
+		int targetX = maze.ghostHouseSeats[place].centerX();
+		int targetY = maze.ghostHouseSeats[place].y();
 		/*@formatter:off*/
 		beginStateMachine()
 			.initialState(AT_DOOR)

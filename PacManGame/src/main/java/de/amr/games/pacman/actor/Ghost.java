@@ -278,7 +278,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 
 	private boolean leftHouse() {
 		Tile currentTile = tile();
-		return !maze().partOfGhostHouse(currentTile) && tf.getY() - currentTile.row * Tile.SIZE == 0;
+		return !maze().partOfGhostHouse(currentTile) && tf.getY() - currentTile.y() == 0;
 	}
 
 	public void turnChasingGhostSoundOn() {

@@ -114,19 +114,19 @@ public class SimplePlayView implements View, Controller {
 		// hide tiles with eaten pellets
 		maze.tiles().filter(Tile::containsEatenFood).forEach(tile -> {
 			g.setColor(cellBackground(tile.col, tile.row));
-			g.fillRect(tile.col * Tile.SIZE, tile.row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
+			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 		});
 		// hide energizers when animation is in blank state
 		if (energizerBlinking.currentFrame() == 1) {
 			Arrays.stream(maze.energizers).forEach(tile -> {
 				g.setColor(cellBackground(tile.col, tile.row));
-				g.fillRect(tile.col * Tile.SIZE, tile.row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
+				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
 		}
 		// draw door open when ghost is passing through
 		if (cast.ghostsOnStage().anyMatch(ghost -> ghost.tile().isDoor())) {
 			g.setColor(cast.theme().color_mazeBackground());
-			g.fillRect(maze.doorLeft.col * Tile.SIZE, maze.doorLeft.row * Tile.SIZE, 2 * Tile.SIZE, Tile.SIZE);
+			g.fillRect(maze.doorLeft.x(), maze.doorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
 		}
 	}
 

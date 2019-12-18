@@ -294,7 +294,7 @@ public class PlayView extends SimplePlayView {
 		IntStream.rangeClosed(0, 3).forEach(seat -> {
 			Tile seatTile = maze.ghostHouseSeats[seat];
 			g.setColor(Color.BLUE);
-			int x = seatTile.col * Tile.SIZE + Tile.SIZE / 2, y = seatTile.row * Tile.SIZE;
+			int x = seatTile.centerX(), y = seatTile.y();
 			String text = String.valueOf(seat);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.drawRoundRect(x, y, Tile.SIZE, Tile.SIZE, 2, 2);
@@ -355,10 +355,10 @@ public class PlayView extends SimplePlayView {
 			int x2 = target.centerX(), y2 = target.centerY();
 			g.drawLine(x1, y1, x2, y2);
 			g.setStroke(solid);
-			g.translate(target.col * Tile.SIZE, target.row * Tile.SIZE);
+			g.translate(target.x(), target.y());
 			g.setColor(ghostColor);
 			g.fillRect(Tile.SIZE / 4, Tile.SIZE / 4, Tile.SIZE / 2, Tile.SIZE / 2);
-			g.translate(-target.col * Tile.SIZE, -target.row * Tile.SIZE);
+			g.translate(-target.x(), -target.y());
 		}
 		if (ghost.targetPath().size() > 1) {
 			g.setColor(dimmed(ghostColor, 200));
