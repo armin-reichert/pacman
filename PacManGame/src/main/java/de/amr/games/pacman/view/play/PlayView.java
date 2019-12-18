@@ -157,7 +157,6 @@ public class PlayView extends SimplePlayView {
 
 	@Override
 	public void draw(Graphics2D g) {
-		drawScores(g);
 		if (showGrid) {
 			drawGrid(g);
 		}
@@ -165,6 +164,7 @@ public class PlayView extends SimplePlayView {
 			drawMazeBackground(g);
 		}
 		drawMaze(g);
+		drawScores(g);
 		if (showRoutes) {
 			drawRoutes(g);
 		}
@@ -310,6 +310,31 @@ public class PlayView extends SimplePlayView {
 		});
 	}
 
+	private void drawArrowHead(Graphics2D g, Direction dir, int x, int y) {
+		double angle = 0;
+		switch (dir) {
+		case DOWN:
+			angle = 0;
+			break;
+		case LEFT:
+			angle = Math.PI / 2;
+			break;
+		case RIGHT:
+			angle = -Math.PI / 2;
+			break;
+		case UP:
+			angle = Math.PI;
+			break;
+		default:
+			break;
+		}
+		g.translate(x, y);
+		g.rotate(angle);
+		g.fillPolygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
+		g.rotate(-angle);
+		g.translate(-x, -y);
+	}
+
 	private void drawRoutes(Graphics2D g) {
 		drawSeats(g);
 		cast.ghostsOnStage().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));
@@ -342,42 +367,16 @@ public class PlayView extends SimplePlayView {
 				Tile from = ghost.targetPath().get(i), to = ghost.targetPath().get(i + 1);
 				g.drawLine(from.centerX(), from.centerY(), to.centerX(), to.centerY());
 				if (i + 1 == ghost.targetPath().size() - 1) {
-					Direction dir = maze.directionBetween(from, to).get();
-					double angle = 0;
-					switch (dir) {
-					case DOWN:
-						angle = 0;
-						break;
-					case LEFT:
-						angle = Math.PI / 2;
-						break;
-					case RIGHT:
-						angle = -Math.PI / 2;
-						break;
-					case UP:
-						angle = Math.PI;
-						break;
-					default:
-						break;
-					}
-					g.translate(to.centerX(), to.centerY());
-					g.rotate(angle);
-					g.fillPolygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
-					g.rotate(-angle);
-					g.translate(-to.centerX(), -to.centerY());
+					drawArrowHead(g, maze.directionBetween(from, to).get(), to.centerX(), to.centerY());
 				}
 			}
 		}
 		else if (ghost.nextDir() != null) {
 			// draw direction indicator
-			Vector2f center = ghost.tf.getCenter();
-			int dx = ghost.nextDir().dx, dy = ghost.nextDir().dy;
-			int r = Tile.SIZE / 4;
-			int lineLen = Tile.SIZE;
-			int indX = (int) (center.x + dx * lineLen);
-			int indY = (int) (center.y + dy * lineLen);
+			Direction dir = ghost.nextDir();
+			int x = ghost.centerX(), y = ghost.centerY();
 			g.setColor(ghostColor);
-			g.fillOval(indX - r, indY - r, 2 * r, 2 * r);
+			drawArrowHead(g, dir, x + dir.dx * Tile.SIZE, y + dir.dy * Tile.SIZE);
 		}
 		// visualize Inky's chasing (target tile may be null if Blinky is not on stage!)
 		if (ghost == cast.inky && ghost.is(CHASING) && ghost.targetTile() != null) {
