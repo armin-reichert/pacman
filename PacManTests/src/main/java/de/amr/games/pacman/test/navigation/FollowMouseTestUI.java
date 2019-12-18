@@ -6,6 +6,7 @@ import de.amr.easy.game.input.Mouse;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.PacManGameCast;
+import de.amr.games.pacman.actor.behavior.Steerings;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 
@@ -33,7 +34,7 @@ public class FollowMouseTestUI extends PlayView implements VisualController {
 		game.maze.removeFood();
 		cast.theme.snd_ghost_chase().volume(0);
 		cast.putOnStage(cast.blinky);
-		cast.blinky.fnChasingTarget = () -> mouseTile;
+		cast.blinky.setSteering(CHASING, Steerings.headingForTargetTile(() -> mouseTile));
 		cast.blinky.setState(CHASING);
 		readMouse();
 	}

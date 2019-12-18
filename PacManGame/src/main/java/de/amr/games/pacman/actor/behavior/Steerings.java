@@ -84,8 +84,8 @@ public interface Steerings {
 	 * 
 	 * @return behavior where actor heads for the target tile
 	 */
-	static <T extends MazeMover> Steering<T> headingForTargetTile() {
-		return new HeadingForTargetTile<>();
+	static <T extends MazeMover> Steering<T> headingForTargetTile(Supplier<Tile> fnTargetTile) {
+		return new HeadingForTargetTile<>(fnTargetTile);
 	}
 
 	/**

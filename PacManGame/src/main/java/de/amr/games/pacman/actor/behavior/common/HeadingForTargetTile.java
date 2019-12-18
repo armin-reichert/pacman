@@ -4,13 +4,15 @@ import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.model.Direction.UP;
+import static java.util.Collections.emptyList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.MazeMover;
@@ -19,7 +21,7 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Steers an actor towards its current target tile.
+ * Steers an actor towards a target tile.
  * 
  * The detailed behavior is described <a href=
  * "http://gameinternals.com/understanding-pac-man-ghost-behavior">here</a>.
@@ -33,11 +35,19 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	/** Directions in the order used to compute the next move direction */
 	private static final List<Direction> NWSE = Arrays.asList(UP, LEFT, DOWN, RIGHT);
 
+	private Supplier<Tile> fnTargetTile;
+
+	public HeadingForTargetTile(Supplier<Tile> fnTargetTile) {
+		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
+	}
+
 	@Override
 	public void steer(T actor) {
-		if (actor.targetTile() != null && actor.enteredNewTile()) {
-			actor.setNextDir(nextDir(actor, actor.moveDir(), actor.tile(), actor.targetTile()));
-			actor.setTargetPath(actor.requireTargetPath() ? pathToTargetTile(actor) : Collections.emptyList());
+		Tile targetTile = fnTargetTile.get();
+		if (targetTile != null && actor.enteredNewTile()) {
+			actor.setNextDir(nextDir(actor, actor.moveDir(), actor.tile(), targetTile));
+			actor.setTargetTile(targetTile);
+			actor.setTargetPath(actor.requireTargetPath() ? pathToTargetTile(actor, targetTile) : emptyList());
 		}
 	}
 
@@ -76,14 +86,14 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	 * @param actor actor for which the path is computed
 	 * @return the path the actor would take when moving to its target tile
 	 */
-	private List<Tile> pathToTargetTile(T actor) {
+	private List<Tile> pathToTargetTile(T actor, Tile targetTile) {
 		Maze maze = actor.maze();
 		Set<Tile> path = new LinkedHashSet<>();
 		Tile currentTile = actor.tile();
 		Direction currentDir = actor.moveDir();
 		path.add(currentTile);
-		while (!currentTile.equals(actor.targetTile())) {
-			Direction nextDir = nextDir(actor, currentDir, currentTile, actor.targetTile());
+		while (!currentTile.equals(targetTile)) {
+			Direction nextDir = nextDir(actor, currentDir, currentTile, targetTile);
 			Tile nextTile = maze.tileToDir(currentTile, nextDir);
 			if (!maze.insideBoard(nextTile) || path.contains(nextTile)) {
 				break;

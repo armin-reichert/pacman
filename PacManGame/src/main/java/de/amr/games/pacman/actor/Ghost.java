@@ -1,6 +1,5 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.DYING;
@@ -17,7 +16,6 @@ import static de.amr.games.pacman.model.Timing.speed;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import de.amr.easy.game.ui.sprites.Sprite;
@@ -37,6 +35,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.Timing;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateMachine.MissingTransitionBehavior;
 
@@ -48,16 +47,14 @@ import de.amr.statemachine.StateMachine.MissingTransitionBehavior;
 public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState> {
 
 	private final Map<GhostState, Steering<Ghost>> steeringByState = new EnumMap<>(GhostState.class);
-	private final Steering<Ghost> defaultSteering = headingForTargetTile();
+	private final Steering<Ghost> defaultSteering = headingForTargetTile(this::targetTile);
 
 	public final PacManGameCast cast;
 	public final PacManGame game;
 	public final FsmComponent<GhostState> fsmComponent;
 	public Direction initialDir;
 	public int ghostHousePlace;
-	public Tile scatterTile;
 	public GhostState nextState;
-	public Supplier<Tile> fnChasingTarget;
 
 	public int dotCounter; // used by logic when ghost can leave house
 
@@ -73,7 +70,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	private FsmComponent<GhostState> buildFsmComponent(String name) {
 		StateMachine<GhostState, PacManGameEvent> fsm = buildStateMachine(name);
 		fsm.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		fsm.traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		fsm.traceTo(Logger.getLogger("StateMachineLogger"), () -> Timing.FPS);
 		return new FsmComponent<>(name, fsm);
 	}
 
@@ -102,7 +99,6 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir()))
 				
 				.state(SCATTERING)
-					.onEntry(() -> setTargetTile(scatterTile))
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir()))
 			
 				.state(CHASING)
@@ -228,11 +224,6 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	}
 
 	@Override
-	public Tile targetTile() {
-		return is(CHASING) ? fnChasingTarget.get() : super.targetTile();
-	}
-
-	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
 		if (neighbor.isDoor()) {
 			return is(ENTERING_HOUSE) || is(LEAVING_HOUSE);
@@ -266,8 +257,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		case DEAD:
 			return 2 * speed(game.level.ghostSpeed);
 		default:
-			throw new IllegalStateException(
-					String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
+			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
 		}
 	}
 

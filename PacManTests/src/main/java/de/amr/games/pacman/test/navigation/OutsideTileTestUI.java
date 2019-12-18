@@ -5,6 +5,7 @@ import static de.amr.games.pacman.actor.GhostState.CHASING;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.PacManGameCast;
+import de.amr.games.pacman.actor.behavior.Steerings;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class OutsideTileTestUI extends PlayView implements VisualController {
@@ -23,7 +24,8 @@ public class OutsideTileTestUI extends PlayView implements VisualController {
 		game.init();
 		cast.theme.snd_ghost_chase().volume(0);
 		cast.putOnStage(cast.blinky);
-		cast.blinky.fnChasingTarget = () -> game.maze.tileAt(100, game.maze.tunnelExitRight.row);
+		cast.blinky.setSteering(CHASING,
+				Steerings.headingForTargetTile(() -> game.maze.tileAt(100, game.maze.tunnelExitRight.row)));
 		cast.blinky.setState(CHASING);
 	}
 

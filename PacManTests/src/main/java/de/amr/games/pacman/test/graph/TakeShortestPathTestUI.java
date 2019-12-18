@@ -45,7 +45,6 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 		game.init();
 		maze.removeFood();
 		current = 0;
-		ghost.fnChasingTarget = this::currentTarget;
 		Steering<Ghost> shortestPath = takingShortestPath(maze, this::currentTarget);
 		ghost.setSteering(CHASING, shortestPath);
 		ghost.setSteering(FRIGHTENED, shortestPath);

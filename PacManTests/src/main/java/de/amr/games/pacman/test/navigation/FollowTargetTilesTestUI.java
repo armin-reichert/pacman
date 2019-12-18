@@ -8,6 +8,7 @@ import java.util.List;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.PacManGameCast;
+import de.amr.games.pacman.actor.behavior.Steerings;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 
@@ -39,7 +40,7 @@ public class FollowTargetTilesTestUI extends PlayView implements VisualControlle
 		game.maze.removeFood();
 		cast.theme.snd_ghost_chase().volume(0);
 		cast.putOnStage(cast.blinky);
-		cast.blinky.fnChasingTarget = () -> targets.get(current);
+		cast.blinky.setSteering(CHASING, Steerings.headingForTargetTile(() -> targets.get(current)));
 		cast.blinky.placeAtTile(targets.get(0), 0, 0);
 		cast.blinky.setState(CHASING);
 		cast.blinky.setEnteredNewTile();
