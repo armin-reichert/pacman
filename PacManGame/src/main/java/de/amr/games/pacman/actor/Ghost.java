@@ -231,7 +231,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 			return is(ENTERING_HOUSE) || is(LEAVING_HOUSE);
 		}
 		if (maze().isNoUpIntersection(tile) && neighbor == maze().tileToDir(tile, UP)) {
-			return !is(CHASING) && !is(SCATTERING);
+			return !is(CHASING, SCATTERING);
 		}
 		return super.canMoveBetween(tile, neighbor);
 	}
