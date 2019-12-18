@@ -119,18 +119,20 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 					.onTick(() -> walkAndDisplayAs(cast.pacMan.isLosingPower() ? "flashing" : "frightened"))
 				
 				.state(DEAD)
-					.timeoutAfter(sec(1))
+					.timeoutAfter(sec(1)) // "dying" time
 					.onEntry(() -> {
 						sprites.select("value-" + game.level.ghostsKilledByEnergizer);
+						setTargetTile(maze().ghostHouseSeats[0]);
+						turnDeadGhostSoundOn();
 					})
 					.onTick(() -> {
-						if (state().getTicksConsumed() == sec(1)) {
-							setTargetTile(maze().ghostHouseSeats[0]);
-							turnDeadGhostSoundOn();
+						if (state().isTerminated()) { // "dead"
 							walkAndDisplayAs("eyes-" + moveDir());
 						}
 					})
-					.onExit(() -> turnDeadGhostSoundOff())
+					.onExit(() -> {
+						turnDeadGhostSoundOff();
+					})
 				
 			.transitions()
 			
