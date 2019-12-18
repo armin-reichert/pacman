@@ -43,7 +43,66 @@ All state machines in this implementation are implemented in a declarative way (
 
 Sounds all well and nice, but how does that look in the real code? 
 
-The **intro screen** ([IntroView](PacManGame/src/main/java/de/amr/games/pacman/view/intro/IntroView.java)) shows different animations that have to be coordinated using timers and stop conditions. This is an obvious candidate for using a state machine. The state machine only uses timers, so we can use *Void* as event type. The states are identified using an enumeration type.
+The **intro screen** ([IntroView](PacManGame/src/main/java/de/amr/games/pacman/view/intro/IntroView.java)) shows different animations that have to be coordinated using timers and stop conditions. This is an obvious candidate for using a state machine. The state machine only uses timers, so we can use *Void* as event type. The states are identified using an enumeration type:
+
+```java
+beginStateMachine()
+	.description("[IntroViewAnimation]")
+	.initialState(LOGO_SCROLLING_IN)
+	.states()
+
+		.state(LOGO_SCROLLING_IN)
+			.onEntry(() -> {
+				showStaticTexts = false;
+				showBlinkingText = false;
+				show(logoScrollingAnimation); 
+				logoScrollingAnimation.startAnimation(); 
+			})
+			.onExit(logoScrollingAnimation::stopAnimation)
+
+		.state(CHASING)
+			.onEntry(() -> {
+				show(chasePacManAnimation, chaseGhostsAnimation);
+				start(chasePacManAnimation, chaseGhostsAnimation);
+			})
+			.onExit(() -> {
+				stop(chasePacManAnimation, chaseGhostsAnimation);
+				chasePacManAnimation.tf.centerX(width);
+			})
+
+		.state(READY)
+			.timeoutAfter(sec(6))
+			.onEntry(() -> {
+				showStaticTexts = true;
+				showBlinkingText = true;
+				show(ghostPointsAnimation, gitHubLink);
+				ghostPointsAnimation.startAnimation();
+			})
+			.onExit(() -> {
+				showBlinkingText = false;
+				showStaticTexts = false;
+				ghostPointsAnimation.stopAnimation();
+				hide(ghostPointsAnimation);
+			})
+
+		.state(COMPLETE)
+
+	.transitions()
+
+		.when(LOGO_SCROLLING_IN).then(CHASING)
+			.condition(() -> logoScrollingAnimation.isAnimationCompleted())
+
+		.when(CHASING).then(READY)
+			.condition(() -> chasePacManAnimation.isAnimationCompleted() && chaseGhostsAnimation.isAnimationCompleted())
+
+		.when(READY).then(CHASING)
+			.onTimeout()
+
+		.when(READY).then(COMPLETE)
+			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+
+.endStateMachine();
+```
 
 A more complex state machine is used for implementing the **global game control** ([PacManGameController](PacManGame/src/main/java/de/amr/games/pacman/controller/PacManGameController.java)). It processes game events which
 are created during the game play, for example when Pac-Man finds food or meets ghosts. Also the different
