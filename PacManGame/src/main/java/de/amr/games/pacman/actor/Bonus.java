@@ -46,8 +46,8 @@ public class Bonus extends AbstractMazeResident implements FsmContainer<BonusSta
 		placeAtTile(cast.game.maze.bonusTile, Tile.SIZE / 2, 0);
 		symbol = cast.game.level.bonusSymbol;
 		value = cast.game.level.bonusValue;
-		sprites.set("symbol", cast.theme.spr_bonusSymbol(symbol));
-		sprites.set("number", cast.theme.spr_pinkNumber(binarySearch(PacManGame.POINTS_BONUS, value)));
+		sprites.set("symbol", cast.theme().spr_bonusSymbol(symbol));
+		sprites.set("number", cast.theme().spr_pinkNumber(binarySearch(PacManGame.POINTS_BONUS, value)));
 	}
 
 	@Override

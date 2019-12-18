@@ -28,7 +28,7 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 
 	public TakeShortestPathTestUI(PacManGameCast cast) {
 		super(cast);
-		cast.theme.snd_ghost_chase().volume(0);
+		cast.theme().snd_ghost_chase().volume(0);
 		maze = cast.game.maze;
 		ghost = cast.blinky;
 		targets = Arrays.asList(maze.cornerSE, maze.tileAt(15, 23), maze.tileAt(12, 23), maze.cornerSW, maze.tunnelExitLeft,

@@ -43,9 +43,9 @@ public class PacManGameCast {
 
 	public final PacManGame game;
 	public final Maze maze;
-	public PacManTheme theme;
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
+	private PacManTheme theme;
 	private Bonus bonus;
 	private final Set<MazeResident> actorsOnStage = new HashSet<>();
 
@@ -89,7 +89,8 @@ public class PacManGameCast {
 		clyde.eyes = UP;
 		clyde.seat = 3;
 		clyde.during(SCATTERING, isHeadingFor(maze.horizonSW));
-		clyde.during(CHASING, isHeadingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
+		clyde.during(CHASING,
+				isHeadingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
 
 		ghosts().forEach(ghost -> {
 			ghost.setTeleportingDuration(sec(0.5f));
@@ -98,10 +99,15 @@ public class PacManGameCast {
 			if (ghost != blinky) {
 				ghost.during(LOCKED, isJumpingUpAndDown(maze, ghost.seat));
 				ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, ghost.seat));
-			} else {
+			}
+			else {
 				ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, 2));
 			}
 		});
+	}
+
+	public PacManTheme theme() {
+		return theme;
 	}
 
 	public void setTheme(PacManTheme theme) {

@@ -75,9 +75,9 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	public void updateTheme() {
-		lifeImage = cast.theme.spr_pacManWalking(3).frame(1);
-		fullMazeSprite = cast.theme.spr_fullMaze();
-		flashingMazeSprite = cast.theme.spr_flashingMaze();
+		lifeImage = cast.theme().spr_pacManWalking(3).frame(1);
+		fullMazeSprite = cast.theme().spr_fullMaze();
+		flashingMazeSprite = cast.theme().spr_flashingMaze();
 	}
 
 	public void enableAnimations(boolean state) {
@@ -96,7 +96,7 @@ public class SimplePlayView implements View, Controller {
 	protected void drawMaze(Graphics2D g) {
 		Sprite mazeSprite = mazeFlashing ? flashingMazeSprite : fullMazeSprite;
 		// draw background because maze sprite is transparent
-		g.setColor(cast.theme.color_mazeBackground());
+		g.setColor(cast.theme().color_mazeBackground());
 		g.translate(0, 3 * Tile.SIZE);
 		g.fillRect(0, 0, mazeSprite.getWidth(), mazeSprite.getHeight());
 		mazeSprite.draw(g);
@@ -106,19 +106,19 @@ public class SimplePlayView implements View, Controller {
 		}
 		// hide tiles with eaten pellets
 		maze.tiles().filter(Tile::containsEatenFood).forEach(tile -> {
-			g.setColor(cast.theme.color_mazeBackground());
+			g.setColor(cast.theme().color_mazeBackground());
 			g.fillRect(tile.col * Tile.SIZE, tile.row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 		});
 		// hide energizers when animation is in blank state
 		if (energizerBlinking.currentFrame() == 1) {
 			Arrays.stream(maze.energizers).forEach(tile -> {
-				g.setColor(cast.theme.color_mazeBackground());
+				g.setColor(cast.theme().color_mazeBackground());
 				g.fillRect(tile.col * Tile.SIZE, tile.row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 			});
 		}
 		// draw door open when ghost is passing through
 		if (cast.ghostsOnStage().anyMatch(ghost -> ghost.tile().isDoor())) {
-			g.setColor(cast.theme.color_mazeBackground());
+			g.setColor(cast.theme().color_mazeBackground());
 			g.fillRect(maze.doorLeft.col * Tile.SIZE, maze.doorLeft.row * Tile.SIZE, 2 * Tile.SIZE, Tile.SIZE);
 		}
 	}
@@ -140,7 +140,7 @@ public class SimplePlayView implements View, Controller {
 			return;
 		}
 		Pen pen = new Pen(g);
-		pen.font(cast.theme.fnt_text(10));
+		pen.font(cast.theme().fnt_text(10));
 
 		// Points
 		pen.color(Color.YELLOW);
@@ -177,7 +177,7 @@ public class SimplePlayView implements View, Controller {
 		int imageSize = 2 * Tile.SIZE;
 		int x = viewSize.width - (game.levelSymbols.size() + 1) * imageSize;
 		for (BonusSymbol symbol : game.levelSymbols) {
-			Image image = cast.theme.spr_bonusSymbol(symbol).frame(0);
+			Image image = cast.theme().spr_bonusSymbol(symbol).frame(0);
 			g.drawImage(image, x, viewSize.height - imageSize, imageSize, imageSize, null);
 			x += imageSize;
 		}
@@ -188,7 +188,7 @@ public class SimplePlayView implements View, Controller {
 			return;
 		}
 		Graphics2D g2 = (Graphics2D) g.create();
-		g2.setFont(cast.theme.fnt_text(11));
+		g2.setFont(cast.theme().fnt_text(11));
 		g2.setColor(textColor);
 		Rectangle box = g2.getFontMetrics().getStringBounds(message, g2).getBounds();
 		g2.translate((viewSize.width - box.width) / 2, (maze.bonusTile.row + 1) * Tile.SIZE);

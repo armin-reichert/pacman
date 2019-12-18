@@ -285,28 +285,28 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	}
 
 	public void turnChasingGhostSoundOn() {
-		if (!cast.theme.snd_ghost_chase().isRunning()) {
-			cast.theme.snd_ghost_chase().loop();
+		if (!cast.theme().snd_ghost_chase().isRunning()) {
+			cast.theme().snd_ghost_chase().loop();
 		}
 	}
 
 	public void turnChasingGhostSoundOff() {
 		// if caller is the last chasing ghost, turn sound off
 		if (cast.ghostsOnStage().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.is(CHASING))) {
-			cast.theme.snd_ghost_chase().stop();
+			cast.theme().snd_ghost_chase().stop();
 		}
 	}
 
 	public void turnDeadGhostSoundOn() {
-		if (!cast.theme.snd_ghost_dead().isRunning()) {
-			cast.theme.snd_ghost_dead().loop();
+		if (!cast.theme().snd_ghost_dead().isRunning()) {
+			cast.theme().snd_ghost_dead().loop();
 		}
 	}
 
 	public void turnDeadGhostSoundOff() {
 		// if caller is the last dead ghost, turn sound off
 		if (cast.ghostsOnStage().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.is(DEAD))) {
-			cast.theme.snd_ghost_dead().stop();
+			cast.theme().snd_ghost_dead().stop();
 		}
 	}
 }

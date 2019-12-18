@@ -28,7 +28,7 @@ public class PacManMovementTestUI extends PlayView implements VisualController {
 		cast.pacMan.addGameEventListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
-				cast.theme.snd_eatPill().play();
+				cast.theme().snd_eatPill().play();
 				foodFound.tile.removeFood();
 				game.level.numPelletsEaten++;
 				if (game.numPelletsRemaining() == 0) {

@@ -125,7 +125,7 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 					.on(PacManGainsPowerEvent.class)
 					.act(() -> {
 						state().setConstantTimer(sec(game.level.pacManPowerSeconds));
-						cast.theme.snd_waza().loop();
+						cast.theme().snd_waza().loop();
 						LOGGER.info(() -> String.format("Pac-Man got power for %d ticks (%d sec)", 
 								state().getDuration(), state().getDuration() / 60));
 					})
@@ -239,7 +239,7 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 				fsmComponent.publish(new PacManGettingWeakerEvent());
 			} else if (getTicksRemaining() == 1) {
 				setConstantTimer(0);
-				cast.theme.snd_waza().stop();
+				cast.theme().snd_waza().stop();
 				fsmComponent.publish(new PacManLostPowerEvent());
 			} else if (mustDigest()) {
 				digest();
