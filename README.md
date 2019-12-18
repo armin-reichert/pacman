@@ -234,7 +234,7 @@ Blinky's chasing behavior is to directly attack Pac-Man:
 ```java
 blinky.eyes = LEFT;
 blinky.seat = 0;
-blinky.during(SCATTERING, isHeadingFor(() -> maze.horizonNE));
+blinky.during(SCATTERING, isHeadingFor(maze.horizonNE));
 blinky.during(CHASING, isHeadingFor(pacMan::tile));
 ```
 
@@ -250,7 +250,7 @@ Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to ge
 ```java
 inky.eyes = UP;
 inky.seat = 1;
-inky.during(SCATTERING, isHeadingFor(() -> maze.horizonSE));
+inky.during(SCATTERING, isHeadingFor(maze.horizonSE));
 inky.during(CHASING, isHeadingFor(() -> {
 	Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 	return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
@@ -266,7 +266,7 @@ Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current
 ```java
 pinky.eyes = DOWN;
 pinky.seat = 2;
-pinky.during(SCATTERING, isHeadingFor(() -> maze.horizonNW));
+pinky.during(SCATTERING, isHeadingFor(maze.horizonNW));
 pinky.during(CHASING, isHeadingFor(() -> pacMan.tilesAhead(4)));
 ```
 
@@ -279,7 +279,7 @@ Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from 
 ```java
 clyde.eyes = UP;
 clyde.seat = 3;
-clyde.during(SCATTERING, isHeadingFor(() -> maze.horizonSW));
+clyde.during(SCATTERING, isHeadingFor(maze.horizonSW));
 clyde.during(CHASING, isHeadingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
 ```
 
