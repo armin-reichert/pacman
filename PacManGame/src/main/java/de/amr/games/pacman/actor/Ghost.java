@@ -182,7 +182,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 					.onTimeout()
 					
 				.when(DEAD).then(ENTERING_HOUSE)
-					.condition(() -> tile().equals(maze().ghostHouseSeats[0]) || tile().equals(maze().ghostHouseSeats[1]))
+					.condition(() -> maze().inFrontOfGhostHouseDoor(tile()))
 					.act(() -> placeAtTile(maze().ghostHouseSeats[0], Tile.SIZE / 2, 0))
 				
 		.endStateMachine();
