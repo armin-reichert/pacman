@@ -81,20 +81,15 @@ Even a simple entity like the **bonus symbol** ([Bonus](PacManGame/src/main/java
 
 ```java
 beginStateMachine(BonusState.class, PacManGameEvent.class)
-	.description("[Bonus]")
+	.description(String.format("[%s]", name))
 	.initialState(ACTIVE)
 	.states()
 		.state(ACTIVE)
-			.timeoutAfter(cast.game.level::bonusActiveTicks)
-			.onEntry(() -> {
-				placeAtTile(cast.game.maze.bonusTile, Maze.TS / 2, 0);
-				sprites.select("symbol");
-			})
+			.timeoutAfter(() -> sec(9 + new Random().nextFloat()))
+			.onEntry(() -> sprites.select("symbol"))
 		.state(CONSUMED)
-			.timeoutAfter(cast.game.level::bonusConsumedTicks)
-			.onEntry(() -> {
-				sprites.select("number");
-			})
+			.timeoutAfter(sec(3))
+			.onEntry(() -> sprites.select("number"))
 		.state(INACTIVE)
 			.onEntry(cast::removeBonus)
 	.transitions()
@@ -151,11 +146,11 @@ Pac-Man is steered by holding a key indicating its **intended** direction. As so
 
 ```java
 pacMan = new PacMan(this);
-pacMan.steering = steeredByKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT);
+pacMan.always(followsKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 
-static <T extends MazeMover> Steering<T> steeredByKeys(int... keys) {
-	return actor -> Maze.NESW.dirs()
-			.filter(dir -> Keyboard.keyDown(keys[dir]))
+static <T extends MazeMover> Steering<T> followsKeys(int... keys) {
+	return actor -> Direction.dirs()
+			.filter(dir -> Keyboard.keyDown(keys[dir.ordinal()]))
 			.findAny()
 			.ifPresent(actor::setNextDir);
 }
@@ -171,27 +166,6 @@ To realize these different ghost behaviors each ghost has a map of functions map
 
 The ghost behavior only differs for the *chasing* state namely in the logic for calculating the target tile. Beside the different target tiles, the ghost behavior is equal. Each ghost uses the same algorithm to calculate the next move direction to take for reaching the target tile as described in the references given at the end of this article.
 
-```java
-private byte nextDir(T actor, int moveDir, Tile currentTile, Tile targetTile) {
-	Maze maze = actor.maze();
-	/*@formatter:off*/
-	return NWSE.stream()
-		.filter(dir -> dir != NESW.inv(moveDir))
-		.filter(dir -> actor.canMoveBetween(currentTile, maze.tileToDir(currentTile, dir)))
-		.sorted((dir1, dir2) -> {
-			Tile neighbor1 = maze.tileToDir(currentTile, dir1);
-			Tile neighbor2 = maze.tileToDir(currentTile, dir2);
-			int cmpByDistance = Integer.compare(distanceSq(neighbor1, targetTile), distanceSq(neighbor2, targetTile));
-			return cmpByDistance != 0
-				? cmpByDistance
-				: Integer.compare(NWSE.indexOf(dir1), NWSE.indexOf(dir2));
-		})
-		.findFirst().orElseThrow(IllegalStateException::new);
-	/*@formatter:on*/
-}
-```
-
-
 The *frightened* behavior has two different implementations (just as a demonstration how the behavior can be exchanged during the game) and can be toggled for all ghosts at once by pressing the 'f'-key.
 
 ### Blinky (the red ghost)
@@ -199,30 +173,13 @@ The *frightened* behavior has two different implementations (just as a demonstra
 Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
-blinky.initialDir = W;
-blinky.initialTile = game.maze.ghostHome[0];
-blinky.scatterTile = game.maze.scatterTileNE;
-blinky.revivalTile = game.maze.ghostHome[2];
-blinky.teleportingTicks = sec(0.5f);
-blinky.fnChasingTarget = pacMan::tile;
+blinky.eyes = LEFT;
+blinky.seat = 0;
+blinky.during(SCATTERING, isHeadingFor(() -> maze.horizonNE));
+blinky.during(CHASING, isHeadingFor(pacMan::tile));
 ```
 
 <img src="doc/blinky.png"/>
-
-### Pinky
-
-Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position. In the original game there is an overflow error leading to a different behavior: when Pac-Man looks upwards, the tile ahead of Pac-Man is falsely computed with an additional number of steps to the west. This behavior is active by default and can be toggled using the 'o'-key.
-
-```java
-pinky.initialDir = S;
-pinky.initialTile = game.maze.ghostHome[2];
-pinky.scatterTile = game.maze.scatterTileNW;
-pinky.revivalTile = game.maze.ghostHome[2];
-pinky.teleportingTicks = sec(0.5f);
-pinky.fnChasingTarget = () -> pacMan.tilesAhead(4);
-```
-
-<img src="doc/pinky.png"/>
 
 ### Inky (the cyan ghost)
 
@@ -232,30 +189,39 @@ Consider the vector `V` from Blinky's position `B` to the position `P` two tiles
 Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-inky.initialDir = N;
-inky.initialTile = game.maze.ghostHome[1];
-inky.scatterTile = game.maze.scatterTileSE;
-inky.revivalTile = game.maze.ghostHome[2];
-inky.teleportingTicks = sec(0.5f);
-inky.fnChasingTarget = () -> {
+inky.eyes = UP;
+inky.seat = 1;
+inky.during(SCATTERING, isHeadingFor(() -> maze.horizonSE));
+inky.during(CHASING, isHeadingFor(() -> {
 	Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
-	return game.maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
-};
+	return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
+}));
 ```
 
 <img src="doc/inky.png"/>
+
+### Pinky
+
+Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position. In the original game there is an overflow error leading to a different behavior: when Pac-Man looks upwards, the tile ahead of Pac-Man is falsely computed with an additional number of steps to the west. This behavior is active by default and can be toggled using the 'o'-key.
+
+```java
+pinky.eyes = DOWN;
+pinky.seat = 2;
+pinky.during(SCATTERING, isHeadingFor(() -> maze.horizonNW));
+pinky.during(CHASING, isHeadingFor(() -> pacMan.tilesAhead(4)));
+```
+
+<img src="doc/pinky.png"/>
 
 ### Clyde (the orange ghost)
 
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
 
 ```java
-clyde.initialDir = N;
-clyde.initialTile = game.maze.ghostHome[3];
-clyde.scatterTile = game.maze.scatterTileSW;
-clyde.revivalTile = game.maze.ghostHome[3];
-clyde.teleportingTicks = sec(0.5f);
-clyde.fnChasingTarget = () -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : game.maze.scatterTileSW;
+clyde.eyes = UP;
+clyde.seat = 3;
+clyde.during(SCATTERING, isHeadingFor(() -> maze.horizonSW));
+clyde.during(CHASING, isHeadingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
 ```
 
 <img src="doc/clyde.png"/>
@@ -269,18 +235,25 @@ cannot reverse direction this results in a cyclic movement around the walls in t
 
 <img src="doc/scattering.png"/>
 
-In the *frightened* and *locked* mode, the ghosts mostly have the same behavior:
+In the *frightened*, *locked*, *entering house* and *leaving house* modes, the ghosts (mostly) have the same behavior:
 
 ```java
-ghosts().forEach(ghost -> ghost.setSteering(GhostState.FRIGHTENED, movingRandomlyNoReversing()));
-
-// Blinky does not jump when locked
-Stream.of(pinky, inky, clyde).forEach(ghost -> ghost.setSteering(GhostState.LOCKED, jumpingUpAndDown()));
+ghosts().forEach(ghost -> {
+	ghost.setTeleportingDuration(sec(0.5f));
+	ghost.during(LEAVING_HOUSE, isLeavingGhostHouse(maze));
+	ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack());
+	if (ghost != blinky) {
+		ghost.during(LOCKED, isJumpingUpAndDown(maze, ghost.seat));
+		ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, ghost.seat));
+	} else {
+		ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, 2));
+	}
+});
 ```
 
 ## Graph-based pathfinding
 
-The original Pac-Man game did not use any graph-based pathfinding. To give an example how graph-based pathfinding could be useful, there is an additional implementation of the *frightened* behavior: when Pac-Man eats a power-pill each frightened ghost choses the "safest" corner to flee to. It computes the shortest path to each corner and selects the one with the largest distance to Pac-Man's current position. Here, the distance of a path from Pac-Man's position is defined as the minimum distance of any tile on the path from Pac-Man's position.
+The original Pac-Man game did not use any graph-based pathfinding. To still give an example how graph-based pathfinding can be useful, there is an additional implementation of the *frightened* behavior: when Pac-Man eats a power-pill each frightened ghost choses the "safest" corner to flee to. It computes the shortest path to each corner and selects the one with the largest distance to Pac-Man's current position. Here, the distance of a path from Pac-Man's position is defined as the minimum distance of any tile on the path from Pac-Man's position.
 
 Shortest paths in the maze (grid graph) can be computed using *Maze.findPath(Tile source, Tile target)*. This method runs an [A* search](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html) on the underlying grid graph to compute the shortest path. The used [graph library](https://github.com/armin-reichert/graph) provides a whole number of search algorithms
 like BFS, Dijkstra etc. The code to compute a shortest path between two tiles using the A* algorithm with Manhattan distance heuristics looks like this:
@@ -317,7 +290,7 @@ However, for a maze of such a small size the used algorithm doesn't matter much,
   - ALT-'k' kills all ghosts
   - ALT-'e' eats all pellets except the energizers
   - ALT-'+' switches to the next level
-  - ALT-'i' makes Pac-Man immortable
+  - ALT-'i' makes Pac-Man immortable (does not lose live after being killed)
 - Logging/tracing
   - Tracing of used state machines can be switched on/off (key 'l')
 
@@ -342,7 +315,5 @@ use some real game library instead.
 
 It could be useful to further decouple UI, model and controller to enable an easy replacement of the complete UI 
 or to implement the state machines using some other state machine library. 
-
-Comments are welcome.
 
 *Armin Reichert, November 2019*
