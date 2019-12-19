@@ -1,7 +1,6 @@
 package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.LOGGER;
-import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Timing.sec;
@@ -10,6 +9,7 @@ import java.util.logging.Logger;
 
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.Timing;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -64,7 +64,7 @@ class GhostMotionTimer extends StateMachine<GhostState, Void> {
 
 	public GhostMotionTimer(PacManGame game) {
 		super(GhostState.class);
-		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		traceTo(Logger.getLogger("StateMachineLogger"), () -> Timing.FPS);
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("[GhostMotionTimer]")

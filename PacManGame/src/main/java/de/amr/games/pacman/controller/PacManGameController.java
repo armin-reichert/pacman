@@ -6,8 +6,8 @@ import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.actor.behavior.Steerings.seekingSafeeCornerFrom;
 import static de.amr.games.pacman.actor.behavior.Steerings.isMovingRandomlyWithoutTurningBack;
+import static de.amr.games.pacman.actor.behavior.Steerings.seekingSafeeCornerFrom;
 import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.controller.PacManGameState.GETTING_READY;
@@ -53,6 +53,7 @@ import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.Timing;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.play.PlayView;
@@ -83,7 +84,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		this.theme = theme;
 		buildStateMachine();
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		traceTo(Logger.getLogger("StateMachineLogger"), app().clock::getFrequency);
+		traceTo(Logger.getLogger("StateMachineLogger"), () -> Timing.FPS);
 	}
 
 	// The finite state machine
