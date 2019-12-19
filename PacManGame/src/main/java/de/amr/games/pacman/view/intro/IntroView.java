@@ -82,9 +82,9 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 
 		gitHubLink = LinkWidget.create()
 		/*@formatter:off*/
-			.text("Visit me on GitHub!")
+			.text("https://github.com/armin-reichert/pacman")
 			.url("https://github.com/armin-reichert/pacman")
-			.font(new Font(Font.SANS_SERIF, Font.BOLD, 8))
+			.font(new Font(Font.MONOSPACED, Font.BOLD, 6))
 			.color(Color.LIGHT_GRAY)
 			.build();
 		/*@formatter:on*/
@@ -223,11 +223,11 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 			pen.draw("F11 - Fullscreen Mode", 6, 22);
 			int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock.getFrequency()) + 1;
 			pen.color(selectedSpeed == 1 ? Color.YELLOW : Color.PINK);
-			pen.draw("1 Normal", 2, 32);
+			pen.draw("1 Normal", 1, 31);
 			pen.color(selectedSpeed == 2 ? Color.YELLOW : Color.PINK);
-			pen.draw("2 Fast", 12, 32);
+			pen.draw("2 Fast", 11, 31);
 			pen.color(selectedSpeed == 3 ? Color.YELLOW : Color.PINK);
-			pen.draw("3 Insane", 20, 32);
+			pen.draw("3 Insane", 19, 31);
 			break;
 		case READY_TO_PLAY:
 			break;
