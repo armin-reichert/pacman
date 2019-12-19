@@ -16,7 +16,6 @@ import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -252,10 +251,6 @@ public class ClassicPacManTheme implements PacManTheme {
 
 	@Override
 	public void loadMusic() {
-		CompletableFuture.runAsync(() -> {
-			LOGGER.info("Loading music...");
-			music_playing();
-		}).thenAccept(result -> LOGGER.info("Music loaded."));
 	}
 
 	@Override

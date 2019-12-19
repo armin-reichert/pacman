@@ -1,9 +1,11 @@
 package de.amr.games.pacman.view.intro;
 
+import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.Timing.sec;
 import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.CHASING;
 import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.COMPLETE;
+import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.LOADING_MUSIC;
 import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.LOGO_SCROLLING_IN;
 import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.READY;
 
@@ -14,6 +16,7 @@ import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
 import de.amr.easy.game.assets.Assets;
@@ -37,7 +40,7 @@ import de.amr.statemachine.StateMachine;
 public class IntroView extends StateMachine<IntroViewState, Void> implements View, Controller {
 
 	public enum IntroViewState {
-		LOGO_SCROLLING_IN, CHASING, READY, COMPLETE
+		LOADING_MUSIC, LOGO_SCROLLING_IN, CHASING, READY, COMPLETE
 	};
 
 	public final PacManTheme theme;
@@ -45,8 +48,6 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 	public final int height;
 
 	private long ticks;
-	private boolean showStaticTexts;
-	private boolean showBlinkingText;
 	private final Set<View> animations = new HashSet<>();
 	private final ImageWidget logoScrollingAnimation;
 	private final ChasePacManAnimation chasePacManAnimation;
@@ -54,9 +55,12 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 	private final GhostPointsAnimation ghostPointsAnimation;
 	private final LinkWidget gitHubLink;
 
+	private int loadingAlpha;
+
 	public IntroView(PacManTheme theme) {
 		super(IntroViewState.class);
 		this.theme = theme;
+
 		width = app().settings.width;
 		height = app().settings.height;
 
@@ -97,13 +101,24 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("[IntroViewAnimation]")
-			.initialState(LOGO_SCROLLING_IN)
+			.initialState(LOADING_MUSIC)
 			.states()
 	
+			  .state(LOADING_MUSIC)
+			  	.onEntry(() -> {
+			  		CompletableFuture.runAsync(() -> {
+			  			LOGGER.info("Loading music...");
+			  			theme.music_playing();
+			  			theme.music_gameover();
+			  		}).thenAccept(result -> {
+			  			LOGGER.info("Music loaded.");
+			  			setState(LOGO_SCROLLING_IN);
+			  		});
+			  	})
+		
 				.state(LOGO_SCROLLING_IN)
 					.onEntry(() -> {
-						showStaticTexts = false;
-						showBlinkingText = false;
+						theme.snd_insertCoin().play();
 						show(logoScrollingAnimation); 
 						logoScrollingAnimation.startAnimation(); 
 					})
@@ -122,14 +137,10 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 				.state(READY)
 					.timeoutAfter(sec(6))
 					.onEntry(() -> {
-						showStaticTexts = true;
-						showBlinkingText = true;
 						show(ghostPointsAnimation, gitHubLink);
 						ghostPointsAnimation.startAnimation();
 					})
 					.onExit(() -> {
-						showBlinkingText = false;
-						showStaticTexts = false;
 						ghostPointsAnimation.stopAnimation();
 						hide(ghostPointsAnimation);
 					})
@@ -195,12 +206,23 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 	private void drawTexts(Graphics2D g) {
 		Pen pen = new Pen(g);
 		pen.font(theme.fnt_text());
-		if (showBlinkingText && ticks % sec(1) < sec(0.5f)) {
-			pen.color(Color.RED);
-			pen.fontSize(14);
-			pen.draw("Press SPACE to start!", 2, 18);
-		}
-		if (showStaticTexts) {
+		switch (getState()) {
+		case LOADING_MUSIC:
+			loadingAlpha = Math.min(loadingAlpha + 1, 255);
+			pen.color(new Color(255, 255, 255, loadingAlpha));
+			pen.fontSize(16);
+			pen.draw("Loading...", 8, 18);
+			break;
+		case LOGO_SCROLLING_IN:
+			break;
+		case CHASING:
+			break;
+		case READY:
+			if (ticks % sec(1) < sec(0.5f)) {
+				pen.color(Color.RED);
+				pen.fontSize(14);
+				pen.draw("Press SPACE to start!", 2, 18);
+			}
 			pen.color(Color.PINK);
 			pen.fontSize(10);
 			pen.draw("F11 - Fullscreen Mode", 6, 22);
@@ -211,6 +233,9 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 			pen.draw("2 Fast", 12, 32);
 			pen.color(selectedSpeed == 3 ? Color.YELLOW : Color.PINK);
 			pen.draw("3 Insane", 20, 32);
+			break;
+		case COMPLETE:
+			break;
 		}
 	}
 }
