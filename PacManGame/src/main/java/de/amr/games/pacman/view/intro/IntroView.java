@@ -135,14 +135,14 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 					})
 					
 				.state(READY)
-					.timeoutAfter(sec(6))
+					.timeoutAfter(sec(8))
 					.onEntry(() -> {
 						show(ghostPointsAnimation, gitHubLink);
 						ghostPointsAnimation.startAnimation();
 					})
 					.onExit(() -> {
 						ghostPointsAnimation.stopAnimation();
-						hide(ghostPointsAnimation);
+						hide(ghostPointsAnimation, gitHubLink);
 					})
 					
 				.state(COMPLETE)
@@ -210,8 +210,8 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 		case LOADING_MUSIC:
 			loadingAlpha = Math.min(loadingAlpha + 1, 255);
 			pen.color(new Color(255, 255, 255, loadingAlpha));
-			pen.fontSize(20);
-			pen.draw("Loading...", 6, 18);
+			pen.fontSize(16);
+			pen.draw("Loading...", 8, 18);
 			break;
 		case LOGO_SCROLLING_IN:
 			break;
