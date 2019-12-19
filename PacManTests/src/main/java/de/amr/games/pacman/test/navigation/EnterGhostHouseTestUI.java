@@ -2,8 +2,6 @@ package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
-import static de.amr.games.pacman.actor.GhostState.LOCKED;
-import static de.amr.games.pacman.actor.behavior.Steerings.isTakingSeat;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -14,7 +12,6 @@ import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class EnterGhostHouseTestUI extends PlayView implements VisualController {
@@ -38,24 +35,17 @@ public class EnterGhostHouseTestUI extends PlayView implements VisualController 
 		game.init();
 		game.maze.removeFood();
 		cast.putOnStage(inky);
-		inky.placeAtTile(maze.ghostHouseSeats[0], Tile.SIZE / 2, 0);
-		inky.during(ENTERING_HOUSE, isTakingSeat(inky, 1));
 		textColor = Color.YELLOW;
-		message = "Press SPACE to enter or leave house";
+		message = "SPACE = enter / leave house";
 	}
 
 	@Override
 	public void update() {
 		boolean outside = !maze.partOfGhostHouse(inky.tile());
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			if (inky.is(LOCKED)) {
-				inky.setState(outside ? ENTERING_HOUSE : LEAVING_HOUSE);
-			} else if (inky.is(LEAVING_HOUSE) && maze.inFrontOfGhostHouseDoor(inky.tile())) {
-				inky.setState(LOCKED);
-			}
-		} else {
-			inky.update();
+			inky.setState(outside ? ENTERING_HOUSE : LEAVING_HOUSE);
 		}
+		inky.update();
 		super.update();
 	}
 
