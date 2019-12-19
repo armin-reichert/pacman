@@ -221,7 +221,7 @@ What makes the game so entertaining is the individual behavior of each ghost whe
 
 To realize these different ghost behaviors each ghost has a map of functions mapping each state (*scattering*, *chasing*, *frightened*, ...) to the corresponding behavior implementation. In terms of OO design patterns, one could call this a *strategy pattern*. 
 
-<img src="doc/pacman.png"/>
+<img src="PacManDoc/pacman.png"/>
 
 The ghost behavior only differs for the *chasing* state namely in the logic for calculating the target tile. Beside the different target tiles, the ghost behavior is equal. Each ghost uses the same algorithm to calculate the next move direction to take for reaching the target tile as described in the references given at the end of this article.
 
@@ -238,7 +238,7 @@ blinky.during(SCATTERING, isHeadingFor(maze.horizonNE));
 blinky.during(CHASING, isHeadingFor(pacMan::tile));
 ```
 
-<img src="doc/blinky.png"/>
+<img src="PacManDoc/blinky.png"/>
 
 ### Inky (the cyan ghost)
 
@@ -257,7 +257,7 @@ inky.during(CHASING, isHeadingFor(() -> {
 }));
 ```
 
-<img src="doc/inky.png"/>
+<img src="PacManDoc/inky.png"/>
 
 ### Pinky
 
@@ -270,7 +270,7 @@ pinky.during(SCATTERING, isHeadingFor(maze.horizonNW));
 pinky.during(CHASING, isHeadingFor(() -> pacMan.tilesAhead(4)));
 ```
 
-<img src="doc/pinky.png"/>
+<img src="PacManDoc/pinky.png"/>
 
 ### Clyde (the orange ghost)
 
@@ -283,7 +283,7 @@ clyde.during(SCATTERING, isHeadingFor(maze.horizonSW));
 clyde.during(CHASING, isHeadingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
 ```
 
-<img src="doc/clyde.png"/>
+<img src="PacManDoc/clyde.png"/>
 
 The visualization of the attack behaviors can be toggled during the game by pressing the 'r'-key ("show/hide routes").
 
@@ -292,7 +292,7 @@ The visualization of the attack behaviors can be toggled during the game by pres
 In *scattering* mode, each ghost tries to reach his "scattering target" which is a tile outside of the maze. Because ghosts
 cannot reverse direction this results in a cyclic movement around the walls in the corresponding corner of the maze.
 
-<img src="doc/scattering.png"/>
+<img src="PacManDoc/scattering.png"/>
 
 In the *frightened*, *locked*, *entering house* and *leaving house* modes, the ghosts (mostly) have the same behavior:
 
