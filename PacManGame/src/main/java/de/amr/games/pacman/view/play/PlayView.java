@@ -157,7 +157,7 @@ public class PlayView extends SimplePlayView {
 	@Override
 	public void draw(Graphics2D g) {
 		if (showGrid) {
-			drawGrid(g);
+			g.drawImage(gridImage, 0, 0, null);
 		}
 		else {
 			drawMazeBackground(g);
@@ -262,10 +262,6 @@ public class PlayView extends SimplePlayView {
 		int width = g.getFontMetrics().stringWidth(text);
 		g.drawString(text, -width / 2, -Tile.SIZE / 2);
 		g.translate(-x, -y);
-	}
-
-	private void drawGrid(Graphics2D g) {
-		g.drawImage(gridImage, 0, 0, null);
 	}
 
 	private void drawActorAlignments(Graphics2D g) {
