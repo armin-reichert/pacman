@@ -53,7 +53,8 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 	private final GhostPointsAnimation ghostPointsAnimation;
 	private final LinkWidget gitHubLink;
 
-	private int loadingTextAlpha;
+	private int textAlpha = -1;
+	private int textAlphaInc;
 
 	public IntroView(PacManTheme theme, int width, int height) {
 		super(IntroState.class);
@@ -131,7 +132,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 					})
 					
 				.state(WAITING_FOR_INPUT)
-					.timeoutAfter(sec(8))
+					.timeoutAfter(sec(10))
 					.onEntry(() -> {
 						show(ghostPointsAnimation, gitHubLink);
 						ghostPointsAnimation.startAnimation();
@@ -199,14 +200,26 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 	}
 
 	private void drawTexts(Graphics2D g) {
+		// colors from logo
+		Color orange = new Color(255,163,71);
+//		Color pink = new Color(248, 120, 88);
+		Color red = new Color(171,19,0);
 		Pen pen = new Pen(g);
 		pen.font(theme.fnt_text());
 		switch (getState()) {
 		case LOADING_MUSIC:
-			loadingTextAlpha = Math.min(loadingTextAlpha + 1, 255);
-			pen.color(new Color(255, 255, 255, loadingTextAlpha));
+			if (textAlpha > 255) {
+				textAlphaInc = -4;
+				textAlpha = 255;
+			}
+			else if (textAlpha < 0) {
+				textAlphaInc = 4;
+				textAlpha = 0;
+			}
+			pen.color(new Color(255, 255, 255, textAlpha));
 			pen.fontSize(16);
 			pen.draw("Loading...", 8, 18);
+			textAlpha += textAlphaInc;
 			break;
 		case SCROLLING_LOGO:
 			break;
@@ -214,23 +227,25 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 			break;
 		case WAITING_FOR_INPUT:
 			if (app().clock.getTicks() % sec(1) < sec(0.5f)) {
-				pen.color(Color.RED);
+				pen.color(Color.WHITE);
 				pen.fontSize(14);
 				pen.draw("Press SPACE to start!", 2, 18);
 			}
-			pen.color(Color.PINK);
+			pen.color(orange);
 			pen.fontSize(10);
 			pen.draw("F11 - Fullscreen Mode", 6, 22);
 			int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock.getFrequency()) + 1;
-			pen.color(selectedSpeed == 1 ? Color.YELLOW : Color.PINK);
+			pen.color(selectedSpeed == 1 ? orange: red);
 			pen.draw("1 Normal", 1, 31);
-			pen.color(selectedSpeed == 2 ? Color.YELLOW : Color.PINK);
+			pen.color(selectedSpeed == 2 ? orange : red);
 			pen.draw("2 Fast", 11, 31);
-			pen.color(selectedSpeed == 3 ? Color.YELLOW : Color.PINK);
+			pen.color(selectedSpeed == 3 ? orange : red);
 			pen.draw("3 Insane", 19, 31);
 			break;
 		case READY_TO_PLAY:
 			break;
+		default:
+			throw new IllegalStateException();
 		}
 	}
 }
