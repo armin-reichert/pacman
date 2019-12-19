@@ -33,7 +33,7 @@ import de.amr.games.pacman.model.Tile;
 public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 
 	/** Directions in the order used to compute the next move direction */
-	private static final List<Direction> NWSE = Arrays.asList(UP, LEFT, DOWN, RIGHT);
+	private static final List<Direction> UP_LEFT_DOWN_RIGHT = Arrays.asList(UP, LEFT, DOWN, RIGHT);
 
 	private Supplier<Tile> fnTargetTile;
 
@@ -64,7 +64,7 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	private Direction nextDir(T actor, Direction moveDir, Tile currentTile, Tile targetTile) {
 		Maze maze = actor.maze();
 		/*@formatter:off*/
-		return NWSE.stream()
+		return UP_LEFT_DOWN_RIGHT.stream()
 			.filter(dir -> dir != moveDir.opposite())
 			.filter(dir -> actor.canMoveBetween(currentTile, maze.tileToDir(currentTile, dir)))
 			.sorted((dir1, dir2) -> {
@@ -73,7 +73,7 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 				int cmpByDistance = Integer.compare(Tile.distanceSq(neighbor1, targetTile), Tile.distanceSq(neighbor2, targetTile));
 				return cmpByDistance != 0
 					? cmpByDistance
-					: Integer.compare(NWSE.indexOf(dir1), NWSE.indexOf(dir2));
+					: Integer.compare(UP_LEFT_DOWN_RIGHT.indexOf(dir1), UP_LEFT_DOWN_RIGHT.indexOf(dir2));
 			})
 			.findFirst().orElseThrow(IllegalStateException::new);
 		/*@formatter:on*/
