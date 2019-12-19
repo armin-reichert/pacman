@@ -99,7 +99,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				
 				.state(INTRO)
 					.onEntry(() -> {
-						introView = new IntroView(theme);
+						introView = new IntroView(theme, app().settings.width, app().settings.height);
 						show(introView);
 					})
 				
@@ -447,7 +447,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	public void setTheme(PacManTheme theme) {
 		cast.setTheme(theme);
-		introView = new IntroView(theme);
+		introView = new IntroView(theme, app().settings.width, app().settings.height);
 		playView.updateTheme();
 	}
 

@@ -1,13 +1,12 @@
 package de.amr.games.pacman.view.intro;
 
-import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.Timing.sec;
-import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.CHASING;
-import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.COMPLETE;
-import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.LOADING_MUSIC;
-import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.LOGO_SCROLLING_IN;
-import static de.amr.games.pacman.view.intro.IntroView.IntroViewState.READY;
+import static de.amr.games.pacman.view.intro.IntroView.IntroState.LOADING_MUSIC;
+import static de.amr.games.pacman.view.intro.IntroView.IntroState.READY_TO_PLAY;
+import static de.amr.games.pacman.view.intro.IntroView.IntroState.SCROLLING_LOGO;
+import static de.amr.games.pacman.view.intro.IntroView.IntroState.SHOWING_ANIMATIONS;
+import static de.amr.games.pacman.view.intro.IntroView.IntroState.WAITING_FOR_INPUT;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -29,7 +28,7 @@ import de.amr.easy.game.view.View;
 import de.amr.games.pacman.model.Timing;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.Pen;
-import de.amr.games.pacman.view.intro.IntroView.IntroViewState;
+import de.amr.games.pacman.view.intro.IntroView.IntroState;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -37,46 +36,45 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class IntroView extends StateMachine<IntroViewState, Void> implements View, Controller {
+public class IntroView extends StateMachine<IntroState, Void> implements View, Controller {
 
-	public enum IntroViewState {
-		LOADING_MUSIC, LOGO_SCROLLING_IN, CHASING, READY, COMPLETE
+	public enum IntroState {
+		LOADING_MUSIC, SCROLLING_LOGO, SHOWING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
 	};
 
-	public final PacManTheme theme;
 	public final int width;
 	public final int height;
+	public final PacManTheme theme;
 
-	private long ticks;
-	private final Set<View> animations = new HashSet<>();
-	private final ImageWidget logoScrollingAnimation;
-	private final ChasePacManAnimation chasePacManAnimation;
-	private final ChaseGhostsAnimation chaseGhostsAnimation;
+	private final Set<View> activeAnimations = new HashSet<>();
+	private final ImageWidget scrollingLogo;
+	private final ChasePacManAnimation chasePacMan;
+	private final ChaseGhostsAnimation chaseGhosts;
 	private final GhostPointsAnimation ghostPointsAnimation;
 	private final LinkWidget gitHubLink;
 
-	private int loadingAlpha;
+	private int loadingTextAlpha;
 
-	public IntroView(PacManTheme theme) {
-		super(IntroViewState.class);
+	public IntroView(PacManTheme theme, int width, int height) {
+		super(IntroState.class);
+
 		this.theme = theme;
+		this.width = width;
+		this.height = height;
 
-		width = app().settings.width;
-		height = app().settings.height;
+		scrollingLogo = new ImageWidget(Assets.image("logo.png"));
+		scrollingLogo.tf.centerX(width);
+		scrollingLogo.tf.setY(height);
+		scrollingLogo.tf.setVelocityY(-2f);
+		scrollingLogo.setCompletion(() -> scrollingLogo.tf.getY() <= 20);
 
-		logoScrollingAnimation = new ImageWidget(Assets.image("logo.png"));
-		logoScrollingAnimation.tf.centerX(width);
-		logoScrollingAnimation.tf.setY(height);
-		logoScrollingAnimation.tf.setVelocityY(-2f);
-		logoScrollingAnimation.setCompletion(() -> logoScrollingAnimation.tf.getY() <= 20);
+		chasePacMan = new ChasePacManAnimation(theme);
+		chasePacMan.setStartPosition(width, 100);
+		chasePacMan.setEndPosition(-chasePacMan.tf.getWidth(), 100);
 
-		chasePacManAnimation = new ChasePacManAnimation(theme);
-		chasePacManAnimation.setStartPosition(width, 100);
-		chasePacManAnimation.setEndPosition(-chasePacManAnimation.tf.getWidth(), 100);
-
-		chaseGhostsAnimation = new ChaseGhostsAnimation(theme);
-		chaseGhostsAnimation.setStartPosition(-chaseGhostsAnimation.tf.getWidth(), 200);
-		chaseGhostsAnimation.setEndPosition(width, 200);
+		chaseGhosts = new ChaseGhostsAnimation(theme);
+		chaseGhosts.setStartPosition(-chaseGhosts.tf.getWidth(), 200);
+		chaseGhosts.setEndPosition(width, 200);
 
 		ghostPointsAnimation = new GhostPointsAnimation(theme);
 		ghostPointsAnimation.tf.setY(200);
@@ -100,41 +98,39 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 	private void buildStateMachine() {
 		/*@formatter:off*/
 		beginStateMachine()
-			.description("[IntroViewAnimation]")
+			.description("[IntroView]")
 			.initialState(LOADING_MUSIC)
 			.states()
 	
 			  .state(LOADING_MUSIC)
 			  	.onEntry(() -> {
 			  		CompletableFuture.runAsync(() -> {
-			  			LOGGER.info("Loading music...");
 			  			theme.music_playing();
 			  			theme.music_gameover();
 			  		}).thenAccept(result -> {
-			  			LOGGER.info("Music loaded.");
-			  			setState(LOGO_SCROLLING_IN);
+			  			setState(SCROLLING_LOGO);
 			  		});
 			  	})
 		
-				.state(LOGO_SCROLLING_IN)
+				.state(SCROLLING_LOGO)
 					.onEntry(() -> {
 						theme.snd_insertCoin().play();
-						show(logoScrollingAnimation); 
-						logoScrollingAnimation.startAnimation(); 
+						show(scrollingLogo); 
+						scrollingLogo.startAnimation(); 
 					})
-					.onExit(logoScrollingAnimation::stopAnimation)
+					.onExit(scrollingLogo::stopAnimation)
 	
-				.state(CHASING)
+				.state(SHOWING_ANIMATIONS)
 					.onEntry(() -> {
-						show(chasePacManAnimation, chaseGhostsAnimation);
-						start(chasePacManAnimation, chaseGhostsAnimation);
+						show(chasePacMan, chaseGhosts);
+						start(chasePacMan, chaseGhosts);
 					})
 					.onExit(() -> {
-						stop(chasePacManAnimation, chaseGhostsAnimation);
-						chasePacManAnimation.tf.centerX(width);
+						stop(chasePacMan, chaseGhosts);
+						chasePacMan.tf.centerX(width);
 					})
 					
-				.state(READY)
+				.state(WAITING_FOR_INPUT)
 					.timeoutAfter(sec(8))
 					.onEntry(() -> {
 						show(ghostPointsAnimation, gitHubLink);
@@ -145,20 +141,20 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 						hide(ghostPointsAnimation, gitHubLink);
 					})
 					
-				.state(COMPLETE)
+				.state(READY_TO_PLAY)
 					
 			.transitions()
 				
-				.when(LOGO_SCROLLING_IN).then(CHASING)
-					.condition(() -> logoScrollingAnimation.isAnimationCompleted())
+				.when(SCROLLING_LOGO).then(SHOWING_ANIMATIONS)
+					.condition(() -> scrollingLogo.isAnimationCompleted())
 				
-				.when(CHASING).then(READY)
-					.condition(() -> chasePacManAnimation.isAnimationCompleted() && chaseGhostsAnimation.isAnimationCompleted())
+				.when(SHOWING_ANIMATIONS).then(WAITING_FOR_INPUT)
+					.condition(() -> chasePacMan.isAnimationCompleted() && chaseGhosts.isAnimationCompleted())
 				
-				.when(READY).then(CHASING)
+				.when(WAITING_FOR_INPUT).then(SHOWING_ANIMATIONS)
 					.onTimeout()
 				
-				.when(READY).then(COMPLETE)
+				.when(WAITING_FOR_INPUT).then(READY_TO_PLAY)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 	
 		.endStateMachine();
@@ -166,11 +162,11 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 	}
 
 	private void show(View... views) {
-		Arrays.stream(views).forEach(animations::add);
+		Arrays.stream(views).forEach(activeAnimations::add);
 	}
 
 	private void hide(View... views) {
-		Arrays.stream(views).forEach(animations::remove);
+		Arrays.stream(views).forEach(activeAnimations::remove);
 	}
 
 	private void start(AnimationController... animations) {
@@ -182,24 +178,23 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 	}
 
 	public boolean isComplete() {
-		return is(COMPLETE);
+		return is(READY_TO_PLAY);
 	}
 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
-			setState(COMPLETE); // exit shortcut
+			setState(READY_TO_PLAY); // exit shortcut
 		}
 		super.update();
-		animations.forEach(animation -> ((Controller) animation).update());
-		++ticks;
+		activeAnimations.forEach(animation -> ((Controller) animation).update());
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
 		g.setColor(new Color(0, 23, 61));
 		g.fillRect(0, 0, width, height);
-		animations.forEach(animation -> animation.draw(g));
+		activeAnimations.forEach(animation -> animation.draw(g));
 		drawTexts(g);
 	}
 
@@ -208,17 +203,17 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 		pen.font(theme.fnt_text());
 		switch (getState()) {
 		case LOADING_MUSIC:
-			loadingAlpha = Math.min(loadingAlpha + 1, 255);
-			pen.color(new Color(255, 255, 255, loadingAlpha));
+			loadingTextAlpha = Math.min(loadingTextAlpha + 1, 255);
+			pen.color(new Color(255, 255, 255, loadingTextAlpha));
 			pen.fontSize(16);
 			pen.draw("Loading...", 8, 18);
 			break;
-		case LOGO_SCROLLING_IN:
+		case SCROLLING_LOGO:
 			break;
-		case CHASING:
+		case SHOWING_ANIMATIONS:
 			break;
-		case READY:
-			if (ticks % sec(1) < sec(0.5f)) {
+		case WAITING_FOR_INPUT:
+			if (app().clock.getTicks() % sec(1) < sec(0.5f)) {
 				pen.color(Color.RED);
 				pen.fontSize(14);
 				pen.draw("Press SPACE to start!", 2, 18);
@@ -234,7 +229,7 @@ public class IntroView extends StateMachine<IntroViewState, Void> implements Vie
 			pen.color(selectedSpeed == 3 ? Color.YELLOW : Color.PINK);
 			pen.draw("3 Insane", 20, 32);
 			break;
-		case COMPLETE:
+		case READY_TO_PLAY:
 			break;
 		}
 	}
