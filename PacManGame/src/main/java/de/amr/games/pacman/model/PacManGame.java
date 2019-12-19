@@ -116,6 +116,8 @@ public class PacManGame {
 	public int lives;
 	public int score;
 
+	public int globalDotCounter;
+
 	public void init() {
 		lives = 3;
 		score = 0;

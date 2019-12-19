@@ -173,6 +173,7 @@ public class PlayView extends SimplePlayView {
 		}
 		if (showStates) {
 			drawActorStates(g);
+			drawGhostDotCounters(g);
 		}
 		drawInfoText(g);
 		if (showFrameRate) {
@@ -185,7 +186,7 @@ public class PlayView extends SimplePlayView {
 		pen.color(new Color(240, 240, 240, 80));
 		pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
 		pen.smooth(() -> {
-			pen.draw(String.format("%d|%dfps", app().clock.getRenderRate(), app().clock.getFrequency()), 23, 21);
+			pen.draw(String.format("%d|%dfps", app().clock.getRenderRate(), app().clock.getFrequency()), 0, 18);
 		});
 	}
 
@@ -413,4 +414,25 @@ public class PlayView extends SimplePlayView {
 		}
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
+
+	private void drawGhostDotCounters(Graphics2D g) {
+		drawGhostDotCounter(g, cast.pinky, 1, 14);
+		drawGhostDotCounter(g, null, 24, 14);
+		drawGhostDotCounter(g, cast.clyde, 1, 20);
+		drawGhostDotCounter(g, cast.inky, 24, 20);
+	}
+
+	private void drawGhostDotCounter(Graphics2D g, Ghost ghost, int col, int row) {
+		Pen pen = new Pen(g);
+		if (ghost != null) {
+			g.translate(col * Tile.SIZE, row * Tile.SIZE);
+			ghost.sprites.get("color-" + Direction.RIGHT).draw(g);
+			g.translate(-col * Tile.SIZE, -row * Tile.SIZE);
+		}
+		pen.color(Color.WHITE);
+		pen.fontSize(8);
+		pen.draw(String.format("%d", ghost != null ? ghost.dotCounter : cast.game.globalDotCounter), col + 2,
+				row);
+	}
+
 }
