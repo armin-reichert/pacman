@@ -102,7 +102,7 @@ public interface Steerings {
 	 * 
 	 * @return behavior where actor flees to a "safe" maze corner
 	 */
-	static <T extends MazeMover> Steering<T> seekingSafeeCornerFrom(MazeMover attacker) {
+	static <T extends MazeMover> Steering<T> isFleeingToSafeCornerFrom(MazeMover attacker) {
 		return new FleeingToSafeCorner<>(attacker.maze(), attacker::tile);
 	}
 
