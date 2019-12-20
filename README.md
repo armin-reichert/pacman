@@ -47,58 +47,63 @@ The **intro screen** ([IntroView](PacManGame/src/main/java/de/amr/games/pacman/v
 
 ```java
 beginStateMachine()
-	.description("[IntroViewAnimation]")
-	.initialState(LOGO_SCROLLING_IN)
+	.description("[IntroView]")
+	.initialState(LOADING_MUSIC)
 	.states()
 
-		.state(LOGO_SCROLLING_IN)
+		.state(LOADING_MUSIC)
 			.onEntry(() -> {
-				showStaticTexts = false;
-				showBlinkingText = false;
-				show(logoScrollingAnimation); 
-				logoScrollingAnimation.startAnimation(); 
+				CompletableFuture.runAsync(() -> {
+					theme.music_playing();
+					theme.music_gameover();
+				}).thenAccept(result -> {
+					setState(SCROLLING_LOGO);
+				});
 			})
-			.onExit(logoScrollingAnimation::stopAnimation)
 
-		.state(CHASING)
+		.state(SCROLLING_LOGO)
 			.onEntry(() -> {
-				show(chasePacManAnimation, chaseGhostsAnimation);
-				start(chasePacManAnimation, chaseGhostsAnimation);
+				theme.snd_insertCoin().play();
+				show(scrollingLogo); 
+				scrollingLogo.startAnimation(); 
+			})
+			.onExit(scrollingLogo::stopAnimation)
+
+		.state(SHOWING_ANIMATIONS)
+			.onEntry(() -> {
+				show(chasePacMan, chaseGhosts);
+				start(chasePacMan, chaseGhosts);
 			})
 			.onExit(() -> {
-				stop(chasePacManAnimation, chaseGhostsAnimation);
-				chasePacManAnimation.tf.centerX(width);
+				stop(chasePacMan, chaseGhosts);
+				chasePacMan.tf.centerX(width);
 			})
 
-		.state(READY)
-			.timeoutAfter(sec(6))
+		.state(WAITING_FOR_INPUT)
+			.timeoutAfter(sec(10))
 			.onEntry(() -> {
-				showStaticTexts = true;
-				showBlinkingText = true;
 				show(ghostPointsAnimation, gitHubLink);
 				ghostPointsAnimation.startAnimation();
 			})
 			.onExit(() -> {
-				showBlinkingText = false;
-				showStaticTexts = false;
 				ghostPointsAnimation.stopAnimation();
-				hide(ghostPointsAnimation);
+				hide(ghostPointsAnimation, gitHubLink);
 			})
 
-		.state(COMPLETE)
+		.state(READY_TO_PLAY)
 
 	.transitions()
 
-		.when(LOGO_SCROLLING_IN).then(CHASING)
-			.condition(() -> logoScrollingAnimation.isAnimationCompleted())
+		.when(SCROLLING_LOGO).then(SHOWING_ANIMATIONS)
+			.condition(() -> scrollingLogo.isAnimationCompleted())
 
-		.when(CHASING).then(READY)
-			.condition(() -> chasePacManAnimation.isAnimationCompleted() && chaseGhostsAnimation.isAnimationCompleted())
+		.when(SHOWING_ANIMATIONS).then(WAITING_FOR_INPUT)
+			.condition(() -> chasePacMan.isAnimationCompleted() && chaseGhosts.isAnimationCompleted())
 
-		.when(READY).then(CHASING)
+		.when(WAITING_FOR_INPUT).then(SHOWING_ANIMATIONS)
 			.onTimeout()
 
-		.when(READY).then(COMPLETE)
+		.when(WAITING_FOR_INPUT).then(READY_TO_PLAY)
 			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
 
 .endStateMachine();
