@@ -22,6 +22,7 @@ import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.awt.event.KeyEvent.VK_UP;
 
+import java.beans.PropertyChangeSupport;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -45,6 +46,8 @@ public class PacManGameCast {
 	public final Maze maze;
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
+	public final PropertyChangeSupport changes = new PropertyChangeSupport(this);
+
 	private PacManTheme theme;
 	private Bonus bonus;
 	private final Set<MazeResident> actorsOnStage = new HashSet<>();
@@ -89,8 +92,7 @@ public class PacManGameCast {
 		clyde.eyes = UP;
 		clyde.seat = 3;
 		clyde.during(SCATTERING, isHeadingFor(maze.horizonSW));
-		clyde.during(CHASING,
-				isHeadingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
+		clyde.during(CHASING, isHeadingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
 
 		ghosts().forEach(ghost -> {
 			ghost.setTeleportingDuration(sec(0.5f));
@@ -99,8 +101,7 @@ public class PacManGameCast {
 			if (ghost != blinky) {
 				ghost.during(LOCKED, isJumpingUpAndDown(maze, ghost.seat));
 				ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, ghost.seat));
-			}
-			else {
+			} else {
 				ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, 2));
 			}
 		});
@@ -110,8 +111,14 @@ public class PacManGameCast {
 		return theme;
 	}
 
-	public void setTheme(PacManTheme theme) {
-		this.theme = theme;
+	public void setTheme(PacManTheme newTheme) {
+		PacManTheme oldTheme = this.theme;
+		this.theme = newTheme;
+		setActorSprites();
+		changes.firePropertyChange("theme", oldTheme, newTheme);
+	}
+
+	private void setActorSprites() {
 		setPacManSprites();
 		setGhostSprites(blinky, GhostColor.RED);
 		setGhostSprites(pinky, GhostColor.PINK);

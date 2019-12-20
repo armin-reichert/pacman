@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.beans.PropertyChangeEvent;
 import java.util.Arrays;
 
 import de.amr.easy.game.ui.sprites.Animation;
@@ -44,10 +45,11 @@ public class SimplePlayView implements PacManGameView, Controller {
 
 	public SimplePlayView(PacManGameCast cast) {
 		this.cast = cast;
+		cast.changes.addPropertyChangeListener("theme", this);
 		viewSize = new Dimension(app().settings.width, app().settings.height);
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
-		updateTheme();
+		setTheme(cast.theme());
 	}
 
 	@Override
@@ -70,6 +72,14 @@ public class SimplePlayView implements PacManGameView, Controller {
 		return cast.theme();
 	}
 
+	@Override
+	public void propertyChange(PropertyChangeEvent change) {
+		if ("theme".equals(change.getPropertyName())) {
+			PacManTheme theme = (PacManTheme) change.getNewValue();
+			setTheme(theme);
+		}
+	}
+
 	public void setShowScores(boolean showScores) {
 		this.showScores = showScores;
 	}
@@ -90,10 +100,10 @@ public class SimplePlayView implements PacManGameView, Controller {
 		energizerBlinking.update();
 	}
 
-	public void updateTheme() {
-		lifeImage = cast.theme().spr_pacManWalking(3).frame(1);
-		fullMazeSprite = cast.theme().spr_fullMaze();
-		flashingMazeSprite = cast.theme().spr_flashingMaze();
+	public void setTheme(PacManTheme theme) {
+		lifeImage = theme.spr_pacManWalking(3).frame(1);
+		fullMazeSprite = theme.spr_fullMaze();
+		flashingMazeSprite = theme.spr_flashingMaze();
 	}
 
 	public void enableAnimations(boolean state) {
