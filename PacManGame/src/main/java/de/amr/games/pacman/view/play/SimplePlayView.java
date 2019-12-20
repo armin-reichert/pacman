@@ -109,6 +109,10 @@ public class SimplePlayView implements PacManGameView, Controller {
 		this.messageColor = color;
 	}
 
+	public void message(String message) {
+		this.messageText = message;
+	}
+
 	public void clearMessage() {
 		messageText = null;
 	}

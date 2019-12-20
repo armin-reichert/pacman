@@ -4,6 +4,7 @@ import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
+import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
@@ -278,7 +279,7 @@ public class PlayView extends SimplePlayView {
 	private String ghostStateText(Ghost ghost) {
 		StringBuilder text = new StringBuilder();
 		// ghost name if dead
-		text.append(ghost.is(DEAD) ? ghost.name() : "");
+		text.append(ghost.is(DEAD, FRIGHTENED, ENTERING_HOUSE) ? ghost.name() : "");
 		// timer values
 		int duration = ghost.state().getDuration();
 		int remaining = ghost.state().getTicksRemaining();

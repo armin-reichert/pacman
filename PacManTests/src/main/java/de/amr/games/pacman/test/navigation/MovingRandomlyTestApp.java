@@ -1,5 +1,8 @@
 package de.amr.games.pacman.test.navigation;
 
+import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.actor.behavior.Steerings.isMovingRandomlyWithoutTurningBack;
+
 import java.awt.event.KeyEvent;
 
 import de.amr.easy.game.Application;
@@ -7,9 +10,7 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManGameCast;
-import de.amr.games.pacman.actor.behavior.Steerings;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
@@ -40,14 +41,14 @@ public class MovingRandomlyTestApp extends Application {
 
 class MovingRandomlyTestUI extends PlayView implements VisualController {
 
-	boolean running;
+	boolean started;
 
 	public MovingRandomlyTestUI(PacManGameCast cast) {
 		super(cast);
 		setShowRoutes(true);
-		setShowStates(false);
+		setShowStates(true);
 		setShowScores(false);
-		setShowGrid(false);
+		setShowGrid(true);
 	}
 
 	@Override
@@ -58,22 +59,22 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 		cast().ghosts().forEach(ghost -> {
 			cast().putOnStage(ghost);
 			ghost.placeAtTile(maze().pacManHome, Tile.SIZE / 2, 0);
-			ghost.setState(GhostState.CHASING);
-			ghost.during(GhostState.CHASING, Steerings.isMovingRandomlyWithoutTurningBack());
+			ghost.setState(FRIGHTENED);
+			ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack());
 		});
-		messageText = "Press SPACE";
+		message("Press SPACE");
 	}
 
 	@Override
 	public void update() {
+		super.update();
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			running = true;
-			messageText = null;
+			started = true;
+			clearMessage();
 		}
-		if (running) {
+		if (started) {
 			cast().ghostsOnStage().forEach(Ghost::update);
 		}
-		super.update();
 	}
 
 	@Override
