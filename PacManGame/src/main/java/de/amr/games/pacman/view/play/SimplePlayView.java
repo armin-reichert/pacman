@@ -7,7 +7,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Rectangle;
 import java.util.Arrays;
 
 import de.amr.easy.game.ui.sprites.Animation;
@@ -98,7 +97,7 @@ public class SimplePlayView implements View, Controller {
 		g.setColor(cast.theme().color_mazeBackground());
 		g.fillRect(0, 0, maze.numCols * Tile.SIZE, maze.numRows * Tile.SIZE);
 	}
-	
+
 	protected Color cellBackground(int col, int row) {
 		return Color.BLACK;
 	}
@@ -191,15 +190,11 @@ public class SimplePlayView implements View, Controller {
 	}
 
 	protected void drawInfoText(Graphics2D g) {
-		if (message == null) {
-			return;
+		if (message != null) {
+			Pen pen = new Pen(g);
+			pen.font(cast.theme().fnt_text(11));
+			pen.color(textColor);
+			pen.hcenter(message, viewSize.width, 21);
 		}
-		Graphics2D g2 = (Graphics2D) g.create();
-		g2.setFont(cast.theme().fnt_text(11));
-		g2.setColor(textColor);
-		Rectangle box = g2.getFontMetrics().getStringBounds(message, g2).getBounds();
-		g2.translate((viewSize.width - box.width) / 2, (maze.bonusTile.row + 1) * Tile.SIZE);
-		g2.drawString(message, 0, 0);
-		g2.dispose();
 	}
 }

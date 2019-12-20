@@ -217,7 +217,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 			}
 			pen.color(new Color(255, 255, 255, textAlpha));
 			pen.fontSize(16);
-			pen.draw("Loading...", 8, 18);
+			pen.hcenter("Loading...", width, 18);
 			textAlpha += textAlphaInc;
 			break;
 		case SCROLLING_LOGO:
@@ -228,11 +228,11 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 			if (app().clock.getTicks() % sec(1) < sec(0.5f)) {
 				pen.color(Color.WHITE);
 				pen.fontSize(14);
-				pen.draw("Press SPACE to start!", 2, 18);
+				pen.hcenter("Press SPACE to start!", width, 18);
 			}
 			pen.color(orange);
 			pen.fontSize(10);
-			pen.draw("F11 - Fullscreen Mode", 6, 22);
+			pen.hcenter("F11 - Fullscreen Mode", width, 22);
 			int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock.getFrequency()) + 1;
 			pen.color(selectedSpeed == 1 ? orange: red);
 			pen.draw("1 Normal", 1, 31);

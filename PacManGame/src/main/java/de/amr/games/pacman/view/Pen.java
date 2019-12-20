@@ -45,4 +45,11 @@ public class Pen {
 		g.setFont(font);
 		g.drawString(s, col * Tile.SIZE, row * Tile.SIZE);
 	}
+
+	public void hcenter(String s, int viewWidth, int row) {
+		g.setColor(color);
+		g.setFont(font);
+		g.drawString(s, (viewWidth - g.getFontMetrics().stringWidth(s)) / 2, row * Tile.SIZE);
+
+	}
 }
