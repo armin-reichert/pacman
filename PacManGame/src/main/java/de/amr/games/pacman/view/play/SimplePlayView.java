@@ -13,14 +13,13 @@ import java.util.Arrays;
 import de.amr.easy.game.ui.sprites.Animation;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.easy.game.view.Controller;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.PacManTheme;
-import de.amr.games.pacman.view.PacManGameView;
+import de.amr.games.pacman.view.AbstractPacManGameView;
 import de.amr.games.pacman.view.Pen;
 
 /**
@@ -28,7 +27,7 @@ import de.amr.games.pacman.view.Pen;
  * 
  * @author Armin Reichert
  */
-public class SimplePlayView implements PacManGameView, Controller {
+public class SimplePlayView extends AbstractPacManGameView {
 
 	protected Animation energizerBlinking;
 	protected boolean mazeFlashing;
@@ -50,22 +49,18 @@ public class SimplePlayView implements PacManGameView, Controller {
 		setTheme(cast.theme());
 	}
 
-	@Override
 	public PacManGameCast cast() {
 		return cast;
 	}
 
-	@Override
 	public PacManGame game() {
 		return cast.game;
 	}
 
-	@Override
 	public Maze maze() {
 		return cast.game.maze;
 	}
 
-	@Override
 	public PacManTheme theme() {
 		return cast.theme();
 	}
@@ -90,6 +85,7 @@ public class SimplePlayView implements PacManGameView, Controller {
 
 	@Override
 	public void update() {
+		super.update();
 		if (mazeFlashing) {
 			return;
 		}

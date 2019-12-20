@@ -24,8 +24,13 @@ import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.AnimationController;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
+import de.amr.games.pacman.actor.fsm.FsmComponent;
+import de.amr.games.pacman.actor.fsm.FsmContainer;
+import de.amr.games.pacman.actor.fsm.FsmControlled;
+import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.view.AbstractPacManGameView;
 import de.amr.games.pacman.view.Pen;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
 import de.amr.statemachine.StateMachine;
@@ -35,7 +40,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class IntroView extends StateMachine<IntroState, Void> implements View, Controller {
+public class IntroView extends AbstractPacManGameView implements FsmContainer<IntroState> {
 
 	public enum IntroState {
 		LOADING_MUSIC, SCROLLING_LOGO, SHOWING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
@@ -45,6 +50,8 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 	public final int height;
 	public final PacManTheme theme;
 
+	private final String name = "[IntroView]";
+	private final FsmComponent<IntroState> fsm;
 	private final Set<View> activeAnimations = new HashSet<>();
 	private final ImageWidget scrollingLogo;
 	private final ChasePacManAnimation chasePacMan;
@@ -56,7 +63,6 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 	private int textAlphaInc;
 
 	public IntroView(PacManTheme theme, int width, int height) {
-		super(IntroState.class);
 
 		this.theme = theme;
 		this.width = width;
@@ -91,14 +97,26 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 		gitHubLink.tf.setY(height - 16);
 		gitHubLink.tf.centerX(width);
 
-		buildStateMachine();
-		traceTo(PacManGame.FSM_LOGGER, () -> 60);
+		fsm = buildFsmComponent(name);
+		fsm.init();
 	}
 
-	private void buildStateMachine() {
+	@Override
+	public FsmControlled<IntroState> fsmComponent() {
+		return fsm;
+	}
+
+	private FsmComponent<IntroState> buildFsmComponent(String name) {
+		StateMachine<IntroState, PacManGameEvent> fsm = buildStateMachine(name);
+		fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
+		return new FsmComponent<>(name, fsm);
+	}
+
+	private StateMachine<IntroState, PacManGameEvent> buildStateMachine(String description) {
+		return StateMachine.
 		/*@formatter:off*/
-		beginStateMachine()
-			.description("[IntroView]")
+		beginStateMachine(IntroState.class, PacManGameEvent.class)
+			.description(description)
 			.initialState(LOADING_MUSIC)
 			.states()
 	
@@ -118,12 +136,18 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 						show(scrollingLogo); 
 						scrollingLogo.startAnimation(); 
 					})
+					.onTick(() -> {
+						activeAnimations.forEach(animation -> ((Controller) animation).update());
+					})
 					.onExit(scrollingLogo::stopAnimation)
 	
 				.state(SHOWING_ANIMATIONS)
 					.onEntry(() -> {
 						show(chasePacMan, chaseGhosts);
 						start(chasePacMan, chaseGhosts);
+					})
+					.onTick(() -> {
+						activeAnimations.forEach(animation -> ((Controller) animation).update());
 					})
 					.onExit(() -> {
 						stop(chasePacMan, chaseGhosts);
@@ -135,6 +159,9 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 					.onEntry(() -> {
 						show(ghostPointsAnimation, gitHubLink);
 						ghostPointsAnimation.startAnimation();
+					})
+					.onTick(() -> {
+						activeAnimations.forEach(animation -> ((Controller) animation).update());
 					})
 					.onExit(() -> {
 						ghostPointsAnimation.stopAnimation();
@@ -182,12 +209,21 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 	}
 
 	@Override
+	public String name() {
+		return name;
+	}
+
+	public PacManTheme theme() {
+		return theme;
+	}
+
+	@Override
 	public void update() {
+		super.update();
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
 			setState(READY_TO_PLAY); // exit shortcut
 		}
-		super.update();
-		activeAnimations.forEach(animation -> ((Controller) animation).update());
+		fsm.update();
 	}
 
 	@Override

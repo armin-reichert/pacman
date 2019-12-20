@@ -1,6 +1,5 @@
 package de.amr.games.pacman.view.play;
 
-import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
@@ -29,16 +28,13 @@ import java.util.stream.IntStream;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.view.Pen;
@@ -84,7 +80,6 @@ public class PlayView extends SimplePlayView {
 	private boolean showRoutes = false;
 	private boolean showGrid = false;
 	private boolean showStates = false;
-	private boolean showFrameRate = false;
 	private BufferedImage gridImage;
 	private Sprite pinkySprite, inkySprite, clydeSprite;
 
@@ -119,19 +114,13 @@ public class PlayView extends SimplePlayView {
 		}
 	}
 
-	public void setShowFrameRate(boolean showFrameRate) {
-		this.showFrameRate = showFrameRate;
-	}
-
 	public void setShowStates(boolean showStates) {
 		this.showStates = showStates;
 	}
 
 	@Override
 	public void update() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_T)) {
-			setShowFrameRate(!showFrameRate);
-		}
+		super.update();
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_G)) {
 			setShowGrid(!showGrid);
 		}
@@ -142,53 +131,26 @@ public class PlayView extends SimplePlayView {
 			setShowRoutes(!showRoutes);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
-			toggleGhostActivationState(cast().blinky);
+			toggleGhost(cast().blinky);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_P)) {
-			toggleGhostActivationState(cast().pinky);
+			toggleGhost(cast().pinky);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_I)) {
-			toggleGhostActivationState(cast().inky);
+			toggleGhost(cast().inky);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_C)) {
-			toggleGhostActivationState(cast().clyde);
+			toggleGhost(cast().clyde);
 		}
-		handleClockSpeedChange();
-
-		super.update();
 	}
 
-	private void toggleGhostActivationState(Ghost ghost) {
+	private void toggleGhost(Ghost ghost) {
 		if (cast().onStage(ghost)) {
 			cast().removeFromStage(ghost);
 		}
 		else {
 			cast().putOnStage(ghost);
 		}
-	}
-
-	private void handleClockSpeedChange() {
-		int fps = app().clock.getFrequency();
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_1) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
-			setClockFrequency(PacManGame.SPEED_1_FPS);
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
-			setClockFrequency(PacManGame.SPEED_2_FPS);
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
-			setClockFrequency(PacManGame.SPEED_3_FPS);
-		}
-		else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_LEFT)) {
-			setClockFrequency(fps <= 10 ? Math.max(1, fps - 1) : fps - 5);
-		}
-		else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_RIGHT)) {
-			setClockFrequency(fps < 10 ? fps + 1 : fps + 5);
-		}
-	}
-
-	private void setClockFrequency(int ticksPerSecond) {
-		app().clock.setFrequency(ticksPerSecond);
-		LOGGER.info(() -> String.format("Clock frequency set to %d ticks/sec", ticksPerSecond));
 	}
 
 	@Override
@@ -203,6 +165,7 @@ public class PlayView extends SimplePlayView {
 		drawInfoText(g);
 		if (showGrid) {
 			drawUpwardsBlockedTileBorders(g);
+			drawSeats(g);
 		}
 		drawScores(g);
 		if (showRoutes) {
@@ -219,15 +182,6 @@ public class PlayView extends SimplePlayView {
 		if (showFrameRate) {
 			drawFPS(g);
 		}
-	}
-
-	private void drawFPS(Graphics2D g) {
-		Pen pen = new Pen(g);
-		pen.color(new Color(200, 200, 200));
-		pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
-		pen.smooth(() -> {
-			pen.draw(String.format("%d|%dfps", app().clock.getRenderRate(), app().clock.getFrequency()), 0, 17);
-		});
 	}
 
 	private void drawUpwardsBlockedTileBorders(Graphics2D g) {
@@ -250,19 +204,17 @@ public class PlayView extends SimplePlayView {
 
 	private void drawActorStates(Graphics2D g) {
 		if (cast().pacMan.getState() != null && cast().pacMan.visible()) {
-			drawText(g, Color.YELLOW, cast().pacMan.tf.getX(), cast().pacMan.tf.getY(),
+			drawSmallText(g, Color.YELLOW, cast().pacMan.tf.getX(), cast().pacMan.tf.getY(),
 					pacManStateText(cast().pacMan));
 		}
 		cast().ghostsOnStage().filter(Ghost::visible).forEach(ghost -> {
-			drawText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
+			drawSmallText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
 		});
 		cast().bonus().ifPresent(bonus -> {
-			drawText(g, Color.YELLOW, bonus.tf.getX(), bonus.tf.getY(), bonusStateText(bonus));
+			String text = String.format("%s,%d|%d", bonus, bonus.state().getTicksRemaining(),
+					bonus.state().getDuration());
+			drawSmallText(g, Color.YELLOW, bonus.tf.getX(), bonus.tf.getY(), text);
 		});
-	}
-
-	private String bonusStateText(Bonus bonus) {
-		return String.format("%s,%d|%d", bonus, bonus.state().getTicksRemaining(), bonus.state().getDuration());
 	}
 
 	private String pacManStateText(PacMan pacMan) {
@@ -278,7 +230,7 @@ public class PlayView extends SimplePlayView {
 
 	private String ghostStateText(Ghost ghost) {
 		StringBuilder text = new StringBuilder();
-		// ghost name if dead
+		// show ghost name if not obvious
 		text.append(ghost.is(DEAD, FRIGHTENED, ENTERING_HOUSE) ? ghost.name() : "");
 		// timer values
 		int duration = ghost.state().getDuration();
@@ -296,13 +248,8 @@ public class PlayView extends SimplePlayView {
 				remaining = attack.getTicksRemaining();
 			}
 		}
-		if (duration == State.ENDLESS) {
-			text.append(String.format("(%s,%s)", ghost.getState(), INFTY));
-		}
-		else {
-			text.append(String.format("(%s,%d|%d)", ghost.getState(), remaining, duration));
-		}
-		// next state
+		text.append(duration == State.ENDLESS ? String.format("(%s,%s)", ghost.getState(), INFTY)
+				: String.format("(%s,%d|%d)", ghost.getState(), remaining, duration));
 		if (ghost.is(LEAVING_HOUSE)) {
 			text.append(String.format("[->%s]", ghost.nextState));
 		}
@@ -310,18 +257,22 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private Color color(Ghost ghost) {
-		return ghost == cast().blinky ? Color.RED
-				: ghost == cast().pinky ? Color.PINK
-						: ghost == cast().inky ? Color.CYAN : ghost == cast().clyde ? Color.ORANGE : Color.WHITE;
+		if (ghost == cast().blinky)
+			return Color.RED;
+		if (ghost == cast().pinky)
+			return Color.PINK;
+		if (ghost == cast().inky)
+			return Color.CYAN;
+		if (ghost == cast().clyde)
+			return Color.ORANGE;
+		throw new IllegalArgumentException("Unknown ghost: " + ghost);
 	}
 
-	private void drawText(Graphics2D g, Color color, float x, float y, String text) {
-		g.translate(x, y);
+	private void drawSmallText(Graphics2D g, Color color, float x, float y, String text) {
 		g.setColor(color);
 		g.setFont(new Font("Arial Narrow", Font.PLAIN, 5));
-		int width = g.getFontMetrics().stringWidth(text);
-		g.drawString(text, -width / 2, -Tile.SIZE / 2);
-		g.translate(-x, -y);
+		int sw = g.getFontMetrics().stringWidth(text);
+		g.drawString(text, x - sw / 2, y - Tile.SIZE / 2);
 	}
 
 	private void drawActorAlignments(Graphics2D g) {
@@ -396,7 +347,6 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawRoutes(Graphics2D g) {
-		drawSeats(g);
 		cast().ghostsOnStage().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));
 	}
 
