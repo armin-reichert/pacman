@@ -1,13 +1,13 @@
 package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.actor.GhostState.CHASING;
+import static de.amr.games.pacman.actor.behavior.Steerings.isHeadingFor;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Mouse;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.PacManGameCast;
-import de.amr.games.pacman.actor.behavior.Steerings;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
@@ -60,7 +60,7 @@ class FollowMouseTestUI extends PlayView implements VisualController {
 		maze().removeFood();
 		theme().snd_ghost_chase().volume(0);
 		cast().putOnStage(cast().blinky);
-		cast().blinky.during(CHASING, Steerings.isHeadingFor(() -> mouseTile));
+		cast().blinky.during(CHASING, isHeadingFor(() -> mouseTile));
 		cast().blinky.setState(CHASING);
 		readMouse();
 	}
@@ -71,10 +71,10 @@ class FollowMouseTestUI extends PlayView implements VisualController {
 
 	@Override
 	public void update() {
+		super.update();
 		if (Mouse.moved()) {
 			readMouse();
 		}
 		cast().blinky.update();
-		super.update();
 	}
 }
