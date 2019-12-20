@@ -23,8 +23,8 @@ public class FollowTargetTilesTestUI extends PlayView implements VisualControlle
 		setShowStates(false);
 		setShowScores(false);
 		setShowGrid(false);
-		targets = Arrays.asList(game.maze.cornerNW, game.maze.ghostHouseSeats[0], game.maze.cornerNE, game.maze.cornerSE,
-				game.maze.pacManHome, game.maze.cornerSW);
+		targets = Arrays.asList(maze().cornerNW, maze().ghostHouseSeats[0], maze().cornerNE, maze().cornerSE,
+				maze().pacManHome, maze().cornerSW);
 	}
 
 	@Override
@@ -36,26 +36,26 @@ public class FollowTargetTilesTestUI extends PlayView implements VisualControlle
 	public void init() {
 		super.init();
 		current = 0;
-		game.init();
-		game.maze.removeFood();
-		cast.theme().snd_ghost_chase().volume(0);
-		cast.putOnStage(cast.blinky);
-		cast.blinky.during(CHASING, Steerings.isHeadingFor(() -> targets.get(current)));
-		cast.blinky.placeAtTile(targets.get(0), 0, 0);
-		cast.blinky.setState(CHASING);
-		cast.blinky.setEnteredNewTile();
+		game().init();
+		maze().removeFood();
+		theme().snd_ghost_chase().volume(0);
+		cast().putOnStage(cast().blinky);
+		cast().blinky.during(CHASING, Steerings.isHeadingFor(() -> targets.get(current)));
+		cast().blinky.placeAtTile(targets.get(0), 0, 0);
+		cast().blinky.setState(CHASING);
+		cast().blinky.setEnteredNewTile();
 	}
 
 	@Override
 	public void update() {
-		if (cast.blinky.tile() == targets.get(current)) {
+		if (cast().blinky.tile() == targets.get(current)) {
 			current += 1;
 			if (current == targets.size()) {
 				current = 0;
-				game.enterLevel(game.level.number + 1);
+				game().enterLevel(game().level.number + 1);
 			}
 		}
-		cast.blinky.update();
+		cast().blinky.update();
 		super.update();
 	}
 }

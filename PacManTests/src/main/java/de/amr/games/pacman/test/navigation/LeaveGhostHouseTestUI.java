@@ -24,10 +24,10 @@ public class LeaveGhostHouseTestUI extends PlayView implements VisualController 
 	@Override
 	public void init() {
 		super.init();
-		game.init();
-		game.maze.removeFood();
-		cast.putOnStage(cast.inky);
-		cast.inky.nextState = GhostState.SCATTERING;
+		game().init();
+		maze().removeFood();
+		cast().putOnStage(cast().inky);
+		cast().inky.nextState = GhostState.SCATTERING;
 		textColor = Color.YELLOW;
 		message = "Press SPACE to unlock";
 	}
@@ -35,10 +35,10 @@ public class LeaveGhostHouseTestUI extends PlayView implements VisualController 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			cast.inky.process(new GhostUnlockedEvent());
+			cast().inky.process(new GhostUnlockedEvent());
 			message = null;
 		}
-		cast.inky.update();
+		cast().inky.update();
 		super.update();
 	}
 

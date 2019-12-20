@@ -30,17 +30,17 @@ public class FollowMouseTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game.init();
-		game.maze.removeFood();
-		cast.theme().snd_ghost_chase().volume(0);
-		cast.putOnStage(cast.blinky);
-		cast.blinky.during(CHASING, Steerings.isHeadingFor(() -> mouseTile));
-		cast.blinky.setState(CHASING);
+		game().init();
+		maze().removeFood();
+		theme().snd_ghost_chase().volume(0);
+		cast().putOnStage(cast().blinky);
+		cast().blinky.during(CHASING, Steerings.isHeadingFor(() -> mouseTile));
+		cast().blinky.setState(CHASING);
 		readMouse();
 	}
 
 	private void readMouse() {
-		mouseTile = game.maze.tileAt(Mouse.getX() / Tile.SIZE, Mouse.getY() / Tile.SIZE);
+		mouseTile = maze().tileAt(Mouse.getX() / Tile.SIZE, Mouse.getY() / Tile.SIZE);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class FollowMouseTestUI extends PlayView implements VisualController {
 		if (Mouse.moved()) {
 			readMouse();
 		}
-		cast.blinky.update();
+		cast().blinky.update();
 		super.update();
 	}
 }

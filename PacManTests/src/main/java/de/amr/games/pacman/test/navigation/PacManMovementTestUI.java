@@ -24,39 +24,39 @@ public class PacManMovementTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game.init();
-		cast.pacMan.addGameEventListener(event -> {
+		game().init();
+		cast().pacMan.addGameEventListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
-				cast.theme().snd_eatPill().play();
+				theme().snd_eatPill().play();
 				foodFound.tile.removeFood();
-				game.level.numPelletsEaten++;
-				if (game.numPelletsRemaining() == 0) {
-					game.maze.restoreFood();
-					game.level.numPelletsEaten = 0;
+				game().level.numPelletsEaten++;
+				if (game().numPelletsRemaining() == 0) {
+					maze().restoreFood();
+					game().level.numPelletsEaten = 0;
 				}
 			}
 		});
-		cast.putOnStage(cast.pacMan);
+		cast().putOnStage(cast().pacMan);
 	}
 
 	@Override
 	public void update() {
 		handleSteeringChange();
-		cast.actorsOnStage().forEach(MazeResident::update);
+		cast().actorsOnStage().forEach(MazeResident::update);
 		super.update();
 	}
 
 	private void handleSteeringChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_M)) {
-			cast.pacMan.setSteering(followsKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
+			cast().pacMan.setSteering(followsKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
 		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_N)) {
-			cast.pacMan.setSteering(
+			cast().pacMan.setSteering(
 					followsKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
 		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_A)) {
-			cast.pacMan.setSteering(avoidingGhosts());
+			cast().pacMan.setSteering(avoidingGhosts());
 		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
-			cast.pacMan.setSteering(isMovingRandomlyWithoutTurningBack());
+			cast().pacMan.setSteering(isMovingRandomlyWithoutTurningBack());
 		}
 	}
 

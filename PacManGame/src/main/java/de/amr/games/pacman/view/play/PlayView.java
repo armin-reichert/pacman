@@ -97,14 +97,14 @@ public class PlayView extends SimplePlayView {
 
 	public void setShowRoutes(boolean showRoutes) {
 		this.showRoutes = showRoutes;
-		cast.pacMan.requireTargetPath = showRoutes;
-		cast.ghosts().forEach(ghost -> ghost.requireTargetPath = showRoutes);
+		cast().pacMan.requireTargetPath = showRoutes;
+		cast().ghosts().forEach(ghost -> ghost.requireTargetPath = showRoutes);
 	}
 
 	public void setShowGrid(boolean showGrid) {
 		this.showGrid = showGrid;
 		if (showGrid && gridImage == null) {
-			gridImage = createGridPattern(cast.game.maze.numRows, cast.game.maze.numCols);
+			gridImage = createGridPattern(cast().game.maze.numRows, cast().game.maze.numCols);
 		}
 	}
 
@@ -131,26 +131,25 @@ public class PlayView extends SimplePlayView {
 			setShowRoutes(!showRoutes);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
-			toggleGhostActivationState(cast.blinky);
+			toggleGhostActivationState(cast().blinky);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_P)) {
-			toggleGhostActivationState(cast.pinky);
+			toggleGhostActivationState(cast().pinky);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_I)) {
-			toggleGhostActivationState(cast.inky);
+			toggleGhostActivationState(cast().inky);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_C)) {
-			toggleGhostActivationState(cast.clyde);
+			toggleGhostActivationState(cast().clyde);
 		}
 		super.update();
 	}
 
 	private void toggleGhostActivationState(Ghost ghost) {
-		if (cast.onStage(ghost)) {
-			cast.removeFromStage(ghost);
-		}
-		else {
-			cast.putOnStage(ghost);
+		if (cast().onStage(ghost)) {
+			cast().removeFromStage(ghost);
+		} else {
+			cast().putOnStage(ghost);
 		}
 	}
 
@@ -158,8 +157,7 @@ public class PlayView extends SimplePlayView {
 	public void draw(Graphics2D g) {
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
-		}
-		else {
+		} else {
 			drawMazeBackground(g);
 		}
 		drawMaze(g);
@@ -191,13 +189,13 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawActorStates(Graphics2D g) {
-		if (cast.pacMan.getState() != null && cast.pacMan.visible()) {
-			drawText(g, Color.YELLOW, cast.pacMan.tf.getX(), cast.pacMan.tf.getY(), pacManStateText(cast.pacMan));
+		if (cast().pacMan.getState() != null && cast().pacMan.visible()) {
+			drawText(g, Color.YELLOW, cast().pacMan.tf.getX(), cast().pacMan.tf.getY(), pacManStateText(cast().pacMan));
 		}
-		cast.ghostsOnStage().filter(Ghost::visible).forEach(ghost -> {
+		cast().ghostsOnStage().filter(Ghost::visible).forEach(ghost -> {
 			drawText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
 		});
-		cast.bonus().ifPresent(bonus -> {
+		cast().bonus().ifPresent(bonus -> {
 			drawText(g, Color.YELLOW, bonus.tf.getX(), bonus.tf.getY(), bonusStateText(bonus));
 		});
 	}
@@ -207,8 +205,9 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private String pacManStateText(PacMan pacMan) {
-		String text = pacMan.state().getDuration() != State.ENDLESS ? String.format("(%s,%d|%d)",
-				pacMan.state().id(), pacMan.state().getTicksRemaining(), pacMan.state().getDuration())
+		String text = pacMan.state().getDuration() != State.ENDLESS
+				? String.format("(%s,%d|%d)", pacMan.state().id(), pacMan.state().getTicksRemaining(),
+						pacMan.state().getDuration())
 				: String.format("(%s,%s)", pacMan.state().id(), INFTY);
 
 		if (Application.app().settings.getAsBoolean("pacMan.immortable")) {
@@ -225,9 +224,9 @@ public class PlayView extends SimplePlayView {
 		int duration = ghost.state().getDuration();
 		int remaining = ghost.state().getTicksRemaining();
 		// Pac-Man power time
-		if (ghost.is(FRIGHTENED) && cast.pacMan.hasPower()) {
-			duration = cast.pacMan.state().getDuration();
-			remaining = cast.pacMan.state().getTicksRemaining();
+		if (ghost.is(FRIGHTENED) && cast().pacMan.hasPower()) {
+			duration = cast().pacMan.state().getDuration();
+			remaining = cast().pacMan.state().getTicksRemaining();
 		}
 		// chasing or scattering time
 		else if (ghost.is(SCATTERING) || ghost.is(CHASING)) {
@@ -239,8 +238,7 @@ public class PlayView extends SimplePlayView {
 		}
 		if (duration == State.ENDLESS) {
 			text.append(String.format("(%s,%s)", ghost.getState(), INFTY));
-		}
-		else {
+		} else {
 			text.append(String.format("(%s,%d|%d)", ghost.getState(), remaining, duration));
 		}
 		// next state
@@ -251,9 +249,9 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private Color color(Ghost ghost) {
-		return ghost == cast.blinky ? Color.RED
-				: ghost == cast.pinky ? Color.PINK
-						: ghost == cast.inky ? Color.CYAN : ghost == cast.clyde ? Color.ORANGE : Color.WHITE;
+		return ghost == cast().blinky ? Color.RED
+				: ghost == cast().pinky ? Color.PINK
+						: ghost == cast().inky ? Color.CYAN : ghost == cast().clyde ? Color.ORANGE : Color.WHITE;
 	}
 
 	private void drawText(Graphics2D g, Color color, float x, float y, String text) {
@@ -266,10 +264,10 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawActorAlignments(Graphics2D g) {
-		if (cast.onStage(cast.pacMan)) {
-			drawActorAlignment(cast.pacMan, g);
+		if (cast().onStage(cast().pacMan)) {
+			drawActorAlignment(cast().pacMan, g);
 		}
-		cast.ghostsOnStage().filter(Ghost::visible).forEach(ghost -> drawActorAlignment(ghost, g));
+		cast().ghostsOnStage().filter(Ghost::visible).forEach(ghost -> drawActorAlignment(ghost, g));
 	}
 
 	private void drawActorAlignment(Entity actor, Graphics2D g) {
@@ -289,7 +287,7 @@ public class PlayView extends SimplePlayView {
 
 	private void drawSeats(Graphics2D g) {
 		IntStream.rangeClosed(0, 3).forEach(seat -> {
-			Tile seatTile = maze.ghostHouseSeats[seat];
+			Tile seatTile = maze().ghostHouseSeats[seat];
 			g.setColor(Color.BLUE);
 			int x = seatTile.centerX(), y = seatTile.y();
 			String text = String.valueOf(seat);
@@ -333,7 +331,7 @@ public class PlayView extends SimplePlayView {
 
 	private void drawRoutes(Graphics2D g) {
 		drawSeats(g);
-		cast.ghostsOnStage().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));
+		cast().ghostsOnStage().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));
 	}
 
 	private void drawRoute(Graphics2D g, Ghost ghost) {
@@ -344,8 +342,7 @@ public class PlayView extends SimplePlayView {
 		boolean drawTargetTileArrow = target != null && ghost.targetPath().size() > 0
 				&& target != ghost.targetPath().get(ghost.targetPath().size() - 1);
 		if (drawTargetTileArrow) {
-			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
-					0);
+			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
 			g.setStroke(dashed);
 			g.setColor(dimmed(ghostColor, 200));
 			int x1 = ghost.centerX(), y1 = ghost.centerY();
@@ -363,11 +360,10 @@ public class PlayView extends SimplePlayView {
 				Tile from = ghost.targetPath().get(i), to = ghost.targetPath().get(i + 1);
 				g.drawLine(from.centerX(), from.centerY(), to.centerX(), to.centerY());
 				if (i + 1 == ghost.targetPath().size() - 1) {
-					drawArrowHead(g, maze.directionBetween(from, to).get(), to.centerX(), to.centerY());
+					drawArrowHead(g, maze().directionBetween(from, to).get(), to.centerX(), to.centerY());
 				}
 			}
-		}
-		else if (ghost.nextDir() != null) {
+		} else if (ghost.nextDir() != null) {
 			// draw direction indicator
 			Direction dir = ghost.nextDir();
 			int x = ghost.centerX(), y = ghost.centerY();
@@ -375,30 +371,29 @@ public class PlayView extends SimplePlayView {
 			drawArrowHead(g, dir, x + dir.dx * Tile.SIZE, y + dir.dy * Tile.SIZE);
 		}
 		// visualize Inky's chasing (target tile may be null if Blinky is not on stage!)
-		if (ghost == cast.inky && ghost.is(CHASING) && ghost.targetTile() != null) {
+		if (ghost == cast().inky && ghost.is(CHASING) && ghost.targetTile() != null) {
 			{
-				int x1 = cast.blinky.tile().centerX(), y1 = cast.blinky.tile().centerY();
+				int x1 = cast().blinky.tile().centerX(), y1 = cast().blinky.tile().centerY();
 				int x2 = ghost.targetTile().centerX(), y2 = ghost.targetTile().centerY();
 				g.setColor(Color.GRAY);
 				g.drawLine(x1, y1, x2, y2);
 			}
 			{
-				Tile pacManTile = cast.pacMan.tile();
-				Direction pacManDir = cast.pacMan.moveDir();
+				Tile pacManTile = cast().pacMan.tile();
+				Direction pacManDir = cast().pacMan.moveDir();
 				int s = Tile.SIZE / 2; // size of target square
 				g.setColor(Color.GRAY);
 				if (app().settings.getAsBoolean("overflowBug") && pacManDir == Direction.UP) {
-					Tile twoAhead = maze.tileToDir(pacManTile, pacManDir, 2);
-					Tile twoLeft = maze.tileToDir(twoAhead, Direction.LEFT, 2);
+					Tile twoAhead = maze().tileToDir(pacManTile, pacManDir, 2);
+					Tile twoLeft = maze().tileToDir(twoAhead, Direction.LEFT, 2);
 					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
 					int x2 = twoAhead.centerX(), y2 = twoAhead.centerY();
 					int x3 = twoLeft.centerX(), y3 = twoLeft.centerY();
 					g.drawLine(x1, y1, x2, y2);
 					g.drawLine(x2, y2, x3, y3);
 					g.fillRect(x3 - s / 2, y3 - s / 2, s, s);
-				}
-				else {
-					Tile twoTilesAhead = cast.pacMan.tilesAhead(2);
+				} else {
+					Tile twoTilesAhead = cast().pacMan.tilesAhead(2);
 					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
 					int x2 = twoTilesAhead.centerX(), y2 = twoTilesAhead.centerY();
 					g.drawLine(x1, y1, x2, y2);
@@ -407,8 +402,8 @@ public class PlayView extends SimplePlayView {
 			}
 		}
 		// draw Clyde's chasing zone
-		if (ghost == cast.clyde && ghost.is(CHASING)) {
-			int cx = cast.clyde.tile().centerX(), cy = cast.clyde.tile().centerY(), r = 8 * Tile.SIZE;
+		if (ghost == cast().clyde && ghost.is(CHASING)) {
+			int cx = cast().clyde.tile().centerX(), cy = cast().clyde.tile().centerY(), r = 8 * Tile.SIZE;
 			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 100));
 			g.drawOval(cx - r, cy - r, 2 * r, 2 * r);
 		}
@@ -416,10 +411,10 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawGhostDotCounters(Graphics2D g) {
-		drawGhostDotCounter(g, cast.pinky, 1, 14);
+		drawGhostDotCounter(g, cast().pinky, 1, 14);
 		drawGhostDotCounter(g, null, 24, 14);
-		drawGhostDotCounter(g, cast.clyde, 1, 20);
-		drawGhostDotCounter(g, cast.inky, 24, 20);
+		drawGhostDotCounter(g, cast().clyde, 1, 20);
+		drawGhostDotCounter(g, cast().inky, 24, 20);
 	}
 
 	private void drawGhostDotCounter(Graphics2D g, Ghost ghost, int col, int row) {
@@ -431,8 +426,7 @@ public class PlayView extends SimplePlayView {
 		}
 		pen.color(Color.WHITE);
 		pen.fontSize(8);
-		pen.draw(String.format("%d", ghost != null ? ghost.dotCounter : cast.game.globalDotCounter), col + 2,
-				row);
+		pen.draw(String.format("%d", ghost != null ? ghost.dotCounter : cast().game.globalDotCounter), col + 2, row);
 	}
 
 }

@@ -13,12 +13,13 @@ import de.amr.easy.game.ui.sprites.Animation;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.view.Controller;
-import de.amr.easy.game.view.View;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.view.PacManView;
 import de.amr.games.pacman.view.Pen;
 
 /**
@@ -26,14 +27,12 @@ import de.amr.games.pacman.view.Pen;
  * 
  * @author Armin Reichert
  */
-public class SimplePlayView implements View, Controller {
+public class SimplePlayView implements PacManView, Controller {
 
-	public final PacManGame game;
-	public final Maze maze;
-	public final PacManGameCast cast;
 	public final Dimension viewSize;
 	public final Animation energizerBlinking;
 
+	private PacManGameCast cast;
 	protected boolean showScores;
 	public boolean mazeFlashing;
 	public String message;
@@ -45,12 +44,30 @@ public class SimplePlayView implements View, Controller {
 
 	public SimplePlayView(PacManGameCast cast) {
 		this.cast = cast;
-		this.game = cast.game;
-		this.maze = game.maze;
 		viewSize = new Dimension(app().settings.width, app().settings.height);
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
 		updateTheme();
+	}
+
+	@Override
+	public PacManGameCast cast() {
+		return cast;
+	}
+
+	@Override
+	public PacManGame game() {
+		return cast.game;
+	}
+
+	@Override
+	public Maze maze() {
+		return cast.game.maze;
+	}
+
+	@Override
+	public PacManTheme theme() {
+		return cast.theme();
 	}
 
 	public void setShowScores(boolean showScores) {
@@ -95,7 +112,7 @@ public class SimplePlayView implements View, Controller {
 
 	protected void drawMazeBackground(Graphics2D g) {
 		g.setColor(cast.theme().color_mazeBackground());
-		g.fillRect(0, 0, maze.numCols * Tile.SIZE, maze.numRows * Tile.SIZE);
+		g.fillRect(0, 0, maze().numCols * Tile.SIZE, maze().numRows * Tile.SIZE);
 	}
 
 	protected Color cellBackground(int col, int row) {
@@ -111,13 +128,13 @@ public class SimplePlayView implements View, Controller {
 			return;
 		}
 		// hide tiles with eaten pellets
-		maze.tiles().filter(Tile::containsEatenFood).forEach(tile -> {
+		maze().tiles().filter(Tile::containsEatenFood).forEach(tile -> {
 			g.setColor(cellBackground(tile.col, tile.row));
 			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 		});
 		// hide energizers when animation is in blank state
 		if (energizerBlinking.currentFrame() == 1) {
-			Arrays.stream(maze.energizers).forEach(tile -> {
+			Arrays.stream(maze().energizers).forEach(tile -> {
 				g.setColor(cellBackground(tile.col, tile.row));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
@@ -125,7 +142,7 @@ public class SimplePlayView implements View, Controller {
 		// draw door open when ghost is passing through
 		if (cast.ghostsOnStage().anyMatch(ghost -> ghost.tile().isDoor())) {
 			g.setColor(cast.theme().color_mazeBackground());
-			g.fillRect(maze.doorLeft.x(), maze.doorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
+			g.fillRect(maze().doorLeft.x(), maze().doorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
 		}
 	}
 
@@ -151,22 +168,22 @@ public class SimplePlayView implements View, Controller {
 		// Points
 		pen.color(Color.YELLOW);
 		pen.draw("SCORE", 1, 1);
-		pen.draw(String.format("LEVEL%2d", game.level.number), 22, 1);
+		pen.draw(String.format("LEVEL%2d", game().level.number), 22, 1);
 		pen.color(Color.WHITE);
-		pen.draw(String.format("%07d", game.score), 1, 2);
+		pen.draw(String.format("%07d", game().score), 1, 2);
 
 		// Highscore
 		pen.color(Color.YELLOW);
 		pen.draw("HIGHSCORE", 10, 1);
 		pen.color(Color.WHITE);
-		pen.draw(String.format("%07d", game.hiscore.points), 10, 2);
-		pen.draw(String.format("L%d", game.hiscore.levelNumber), 16, 2);
+		pen.draw(String.format("%07d", game().hiscore.points), 10, 2);
+		pen.draw(String.format("L%d", game().hiscore.levelNumber), 16, 2);
 
 		// Remaining pellets
 		g.setColor(Color.PINK);
 		g.fillRect(22 * Tile.SIZE + 2, Tile.SIZE + 2, 4, 4);
 		pen.color(Color.WHITE);
-		pen.draw(String.format("%d", game.numPelletsRemaining()), 23, 2);
+		pen.draw(String.format("%d", game().numPelletsRemaining()), 23, 2);
 
 		drawLives(g);
 		drawLevelCounter(g);
@@ -174,15 +191,15 @@ public class SimplePlayView implements View, Controller {
 
 	protected void drawLives(Graphics2D g) {
 		int imageSize = 2 * Tile.SIZE;
-		for (int i = 0, x = imageSize; i < game.lives; ++i, x += imageSize) {
+		for (int i = 0, x = imageSize; i < game().lives; ++i, x += imageSize) {
 			g.drawImage(lifeImage, x, viewSize.height - imageSize, null);
 		}
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
 		int imageSize = 2 * Tile.SIZE;
-		int x = viewSize.width - (game.levelSymbols.size() + 1) * imageSize;
-		for (BonusSymbol symbol : game.levelSymbols) {
+		int x = viewSize.width - (game().levelSymbols.size() + 1) * imageSize;
+		for (BonusSymbol symbol : game().levelSymbols) {
 			Image image = cast.theme().spr_bonusSymbol(symbol).frame(0);
 			g.drawImage(image, x, viewSize.height - imageSize, imageSize, imageSize, null);
 			x += imageSize;

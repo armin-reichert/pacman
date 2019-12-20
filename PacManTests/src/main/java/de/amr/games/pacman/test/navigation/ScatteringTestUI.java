@@ -25,10 +25,10 @@ public class ScatteringTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game.init();
-		game.maze.removeFood();
-		cast.ghosts().forEach(ghost -> {
-			cast.putOnStage(ghost);
+		game().init();
+		maze().removeFood();
+		cast().ghosts().forEach(ghost -> {
+			cast().putOnStage(ghost);
 			ghost.nextState = GhostState.SCATTERING;
 		});
 		textColor = Color.YELLOW;
@@ -38,10 +38,10 @@ public class ScatteringTestUI extends PlayView implements VisualController {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			cast.ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
+			cast().ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
 			message = null;
 		}
-		cast.ghostsOnStage().forEach(Ghost::update);
+		cast().ghostsOnStage().forEach(Ghost::update);
 		super.update();
 	}
 

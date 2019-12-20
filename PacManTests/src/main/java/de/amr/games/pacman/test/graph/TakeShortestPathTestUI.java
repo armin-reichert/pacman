@@ -15,13 +15,11 @@ import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.behavior.Steering;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class TakeShortestPathTestUI extends PlayView implements VisualController {
 
-	final Maze maze;
 	final Ghost ghost;
 	final List<Tile> targets;
 	int current;
@@ -29,10 +27,10 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 	public TakeShortestPathTestUI(PacManGameCast cast) {
 		super(cast);
 		cast.theme().snd_ghost_chase().volume(0);
-		maze = cast.game.maze;
 		ghost = cast.blinky;
-		targets = Arrays.asList(maze.cornerSE, maze.tileAt(15, 23), maze.tileAt(12, 23), maze.cornerSW, maze.tunnelExitLeft,
-				maze.cornerNW, maze.ghostHouseSeats[0], maze.cornerNE, maze.tunnelExitRight, maze.pacManHome);
+		targets = Arrays.asList(maze().cornerSE, maze().tileAt(15, 23), maze().tileAt(12, 23), maze().cornerSW,
+				maze().tunnelExitLeft, maze().cornerNW, maze().ghostHouseSeats[0], maze().cornerNE, maze().tunnelExitRight,
+				maze().pacManHome);
 	}
 
 	Tile currentTarget() {
@@ -42,13 +40,13 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 	@Override
 	public void init() {
 		super.init();
-		game.init();
-		maze.removeFood();
+		game().init();
+		maze().removeFood();
 		current = 0;
-		Steering<Ghost> shortestPath = takingShortestPath(maze, this::currentTarget);
+		Steering<Ghost> shortestPath = takingShortestPath(maze(), this::currentTarget);
 		ghost.during(CHASING, shortestPath);
 		ghost.during(FRIGHTENED, shortestPath);
-		cast.putOnStage(ghost);
+		cast().putOnStage(ghost);
 		ghost.setState(CHASING);
 		textColor = Color.YELLOW;
 		message = "SPACE toggles ghost state";
@@ -62,8 +60,8 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 		current += 1;
 		if (current == targets.size()) {
 			current = 0;
-			game.enterLevel(game.level.number + 1);
-			game.maze.removeFood();
+			game().enterLevel(game().level.number + 1);
+			maze().removeFood();
 		}
 	}
 

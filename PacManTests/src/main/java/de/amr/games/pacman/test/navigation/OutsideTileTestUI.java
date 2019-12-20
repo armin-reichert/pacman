@@ -21,17 +21,17 @@ public class OutsideTileTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game.init();
-		cast.theme().snd_ghost_chase().volume(0);
-		cast.putOnStage(cast.blinky);
-		cast.blinky.during(CHASING,
-				Steerings.isHeadingFor(() -> game.maze.tileAt(100, game.maze.tunnelExitRight.row)));
-		cast.blinky.setState(CHASING);
+		game().init();
+		theme().snd_ghost_chase().volume(0);
+		cast().putOnStage(cast().blinky);
+		cast().blinky.during(CHASING,
+				Steerings.isHeadingFor(() -> maze().tileAt(100, maze().tunnelExitRight.row)));
+		cast().blinky.setState(CHASING);
 	}
 
 	@Override
 	public void update() {
-		cast.blinky.update();
+		cast().blinky.update();
 		super.update();
 	}
 

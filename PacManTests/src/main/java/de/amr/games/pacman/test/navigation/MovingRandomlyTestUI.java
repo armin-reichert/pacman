@@ -27,11 +27,11 @@ public class MovingRandomlyTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game.init();
-		game.maze.removeFood();
-		cast.ghosts().forEach(ghost -> {
-			cast.putOnStage(ghost);
-			ghost.placeAtTile(game.maze.pacManHome, Tile.SIZE / 2, 0);
+		game().init();
+		maze().removeFood();
+		cast().ghosts().forEach(ghost -> {
+			cast().putOnStage(ghost);
+			ghost.placeAtTile(maze().pacManHome, Tile.SIZE / 2, 0);
 			ghost.setState(GhostState.CHASING);
 			ghost.during(GhostState.CHASING, Steerings.isMovingRandomlyWithoutTurningBack());
 		});
@@ -45,7 +45,7 @@ public class MovingRandomlyTestUI extends PlayView implements VisualController {
 			message = null;
 		}
 		if (running) {
-			cast.ghostsOnStage().forEach(Ghost::update);
+			cast().ghostsOnStage().forEach(Ghost::update);
 		}
 		super.update();
 	}
