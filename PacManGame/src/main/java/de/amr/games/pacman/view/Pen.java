@@ -2,9 +2,9 @@ package de.amr.games.pacman.view;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.Rectangle2D;
 
 import de.amr.games.pacman.model.Tile;
 
@@ -44,8 +44,9 @@ public class Pen {
 	public void draw(String s, int col, int row) {
 		g.setColor(color);
 		g.setFont(font);
-		FontMetrics fm = g.getFontMetrics();
-		g.drawString(s, col * Tile.SIZE, (row + 1) * Tile.SIZE - fm.getDescent());
+		Rectangle2D box = g.getFontMetrics().getStringBounds(s, g);
+		float dy = Math.round((Tile.SIZE / 2 + box.getHeight()) / 2);
+		g.drawString(s, col * Tile.SIZE, row * Tile.SIZE + dy);
 	}
 
 	public void hcenter(String s, int viewWidth, int row) {
