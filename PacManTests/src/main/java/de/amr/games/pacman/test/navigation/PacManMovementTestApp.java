@@ -45,7 +45,8 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 
 	public PacManMovementTestUI(PacManGameCast cast) {
 		super(cast);
-		showScores = false;
+		setShowScores(false);
+		setShowGrid(true);
 	}
 
 	@Override
@@ -69,9 +70,9 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 
 	@Override
 	public void update() {
+		super.update();
 		handleSteeringChange();
 		cast().actorsOnStage().forEach(MazeResident::update);
-		super.update();
 	}
 
 	private void handleSteeringChange() {
