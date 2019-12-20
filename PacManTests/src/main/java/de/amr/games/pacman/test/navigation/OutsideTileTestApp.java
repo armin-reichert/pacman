@@ -1,12 +1,12 @@
 package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.actor.GhostState.CHASING;
+import static de.amr.games.pacman.actor.behavior.Steerings.isHeadingFor;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.PacManGameCast;
-import de.amr.games.pacman.actor.behavior.Steerings;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
@@ -40,7 +40,7 @@ class OutsideTileTestUI extends PlayView implements VisualController {
 	public OutsideTileTestUI(PacManGameCast cast) {
 		super(cast);
 		setShowRoutes(true);
-		setShowStates(true);
+		setShowStates(false);
 		setShowScores(false);
 		setShowGrid(false);
 	}
@@ -49,17 +49,17 @@ class OutsideTileTestUI extends PlayView implements VisualController {
 	public void init() {
 		super.init();
 		game().init();
+		maze().removeFood();
 		theme().snd_ghost_chase().volume(0);
 		cast().putOnStage(cast().blinky);
-		cast().blinky.during(CHASING,
-				Steerings.isHeadingFor(() -> maze().tileAt(100, maze().tunnelExitRight.row)));
+		cast().blinky.during(CHASING, isHeadingFor(() -> maze().tileAt(100, maze().tunnelExitRight.row)));
 		cast().blinky.setState(CHASING);
 	}
 
 	@Override
 	public void update() {
-		cast().blinky.update();
 		super.update();
+		cast().blinky.update();
 	}
 
 	@Override
