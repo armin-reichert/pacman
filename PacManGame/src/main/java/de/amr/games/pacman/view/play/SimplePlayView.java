@@ -46,7 +46,7 @@ public class SimplePlayView implements PacManGameView, Controller {
 
 	public SimplePlayView(PacManGameCast cast) {
 		this.cast = cast;
-		cast.changes.addPropertyChangeListener("theme", this);
+		cast.addThemeListener(this);
 		viewSize = new Dimension(app().settings.width, app().settings.height);
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
@@ -84,12 +84,12 @@ public class SimplePlayView implements PacManGameView, Controller {
 	public void setShowScores(boolean showScores) {
 		this.showScores = showScores;
 	}
-	
+
 	public void message(String message, Color color) {
 		this.messageText = message;
 		this.messageColor = color;
 	}
-	
+
 	public void clearMessage() {
 		messageText = null;
 	}

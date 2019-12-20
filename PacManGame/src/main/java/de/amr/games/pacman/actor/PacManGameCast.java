@@ -22,6 +22,7 @@ import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.awt.event.KeyEvent.VK_UP;
 
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashSet;
 import java.util.Optional;
@@ -43,18 +44,16 @@ import de.amr.games.pacman.theme.PacManTheme;
 public class PacManGameCast {
 
 	public final PacManGame game;
-	public final Maze maze;
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
-	public final PropertyChangeSupport changes = new PropertyChangeSupport(this);
 
 	private PacManTheme theme;
 	private Bonus bonus;
 	private final Set<MazeResident> actorsOnStage = new HashSet<>();
+	private final PropertyChangeSupport changes = new PropertyChangeSupport(this);
 
 	public PacManGameCast(PacManGame game, PacManTheme theme) {
 		this.game = game;
-		this.maze = game.maze;
 
 		// create the actors
 
@@ -64,47 +63,51 @@ public class PacManGameCast {
 		inky = new Ghost("Inky", this);
 		clyde = new Ghost("Clyde", this);
 
-		setTheme(theme);
-
 		// configure the actors
+
+		setTheme(theme);
 
 		pacMan.always(followsKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		pacMan.setTeleportingDuration(sec(0.25f));
 
 		blinky.eyes = LEFT;
 		blinky.seat = 0;
-		blinky.during(SCATTERING, isHeadingFor(maze.horizonNE));
+		blinky.during(SCATTERING, isHeadingFor(maze().horizonNE));
 		blinky.during(CHASING, isHeadingFor(pacMan::tile));
 
 		inky.eyes = UP;
 		inky.seat = 1;
-		inky.during(SCATTERING, isHeadingFor(maze.horizonSE));
+		inky.during(SCATTERING, isHeadingFor(maze().horizonSE));
 		inky.during(CHASING, isHeadingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
-			return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
+			return maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
 
 		pinky.eyes = DOWN;
 		pinky.seat = 2;
-		pinky.during(SCATTERING, isHeadingFor(maze.horizonNW));
+		pinky.during(SCATTERING, isHeadingFor(maze().horizonNW));
 		pinky.during(CHASING, isHeadingFor(() -> pacMan.tilesAhead(4)));
 
 		clyde.eyes = UP;
 		clyde.seat = 3;
-		clyde.during(SCATTERING, isHeadingFor(maze.horizonSW));
-		clyde.during(CHASING, isHeadingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
+		clyde.during(SCATTERING, isHeadingFor(maze().horizonSW));
+		clyde.during(CHASING, isHeadingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
 
 		ghosts().forEach(ghost -> {
 			ghost.setTeleportingDuration(sec(0.5f));
-			ghost.during(LEAVING_HOUSE, isLeavingGhostHouse(maze));
+			ghost.during(LEAVING_HOUSE, isLeavingGhostHouse(maze()));
 			ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack());
 			if (ghost != blinky) {
-				ghost.during(LOCKED, isJumpingUpAndDown(maze, ghost.seat));
+				ghost.during(LOCKED, isJumpingUpAndDown(maze(), ghost.seat));
 				ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, ghost.seat));
 			} else {
 				ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, 2));
 			}
 		});
+	}
+
+	public Maze maze() {
+		return game.maze;
 	}
 
 	public PacManTheme theme() {
@@ -116,6 +119,10 @@ public class PacManGameCast {
 		this.theme = newTheme;
 		setActorSprites();
 		changes.firePropertyChange("theme", oldTheme, newTheme);
+	}
+
+	public void addThemeListener(PropertyChangeListener subscriber) {
+		changes.addPropertyChangeListener("theme", subscriber);
 	}
 
 	private void setActorSprites() {
