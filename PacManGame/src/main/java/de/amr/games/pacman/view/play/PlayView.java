@@ -27,6 +27,7 @@ import java.util.stream.IntStream;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.input.Keyboard;
+import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
@@ -34,6 +35,7 @@ import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.view.Pen;
 import de.amr.statemachine.State;
 
@@ -79,11 +81,15 @@ public class PlayView extends SimplePlayView {
 	private boolean showStates = false;
 	private boolean showFrameRate = false;
 	private BufferedImage gridImage;
+	private Sprite pinkySprite, inkySprite, clydeSprite;
 
 	public Supplier<State<GhostState, ?>> fnGhostMotionState = () -> null;
 
 	public PlayView(PacManGameCast cast) {
 		super(cast);
+		pinkySprite = theme().spr_ghostColored(GhostColor.PINK, Direction.RIGHT.ordinal());
+		inkySprite = theme().spr_ghostColored(GhostColor.CYAN, Direction.RIGHT.ordinal());
+		clydeSprite = theme().spr_ghostColored(GhostColor.ORANGE, Direction.RIGHT.ordinal());
 	}
 
 	private Color patternColor(int col, int row) {
@@ -411,22 +417,22 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawGhostDotCounters(Graphics2D g) {
-		drawGhostDotCounter(g, cast().pinky, 1, 14);
-		drawGhostDotCounter(g, null, 24, 14);
-		drawGhostDotCounter(g, cast().clyde, 1, 20);
-		drawGhostDotCounter(g, cast().inky, 24, 20);
+		drawDotCounter(g, pinkySprite, cast.pinky.dotCounter, 1, 14);
+		drawDotCounter(g, null, game().globalDotCounter, 24, 14);
+		drawDotCounter(g, clydeSprite, cast.clyde.dotCounter, 1, 20);
+		drawDotCounter(g, inkySprite, cast.inky.dotCounter, 24, 20);
 	}
 
-	private void drawGhostDotCounter(Graphics2D g, Ghost ghost, int col, int row) {
+	private void drawDotCounter(Graphics2D g, Sprite sprite, int value, int col, int row) {
 		Pen pen = new Pen(g);
-		if (ghost != null) {
+		if (sprite != null) {
 			g.translate(col * Tile.SIZE, row * Tile.SIZE);
-			ghost.sprites.get("color-" + Direction.RIGHT).draw(g);
+			sprite.draw(g);
 			g.translate(-col * Tile.SIZE, -row * Tile.SIZE);
 		}
 		pen.color(Color.WHITE);
 		pen.fontSize(8);
-		pen.draw(String.format("%d", ghost != null ? ghost.dotCounter : cast().game.globalDotCounter), col + 2, row);
+		pen.draw(String.format("%d", value), col + 2, row);
 	}
 
 }
