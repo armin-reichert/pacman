@@ -22,14 +22,15 @@ public class MovingRandomlyWithoutTurningBack<T extends MazeMover> implements St
 	public void steer(T actor) {
 		actor.setTargetPath(Collections.emptyList());
 		actor.setTargetTile(null);
-		/*@formatter:off*/
-		permute(Direction.dirs())
-			.filter(dir -> actor.enteredNewTile())
-			.filter(dir -> dir != actor.moveDir().opposite())
-			.filter(actor::canCrossBorderTo)
-			.findFirst()
-			.ifPresent(actor::setNextDir);
-		/*@formatter:on*/
+		if (actor.enteredNewTile()) {
+			/*@formatter:off*/
+			permute(Direction.dirs())
+				.filter(dir -> dir != actor.moveDir().opposite())
+				.filter(actor::canCrossBorderTo)
+				.findFirst()
+				.ifPresent(actor::setNextDir);
+			/*@formatter:on*/
+		}
 	}
 
 	@Override
