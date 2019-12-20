@@ -19,7 +19,7 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.PacManTheme;
-import de.amr.games.pacman.view.PacManView;
+import de.amr.games.pacman.view.PacManGameView;
 import de.amr.games.pacman.view.Pen;
 
 /**
@@ -27,7 +27,7 @@ import de.amr.games.pacman.view.Pen;
  * 
  * @author Armin Reichert
  */
-public class SimplePlayView implements PacManView, Controller {
+public class SimplePlayView implements PacManGameView, Controller {
 
 	public final Dimension viewSize;
 	public final Animation energizerBlinking;

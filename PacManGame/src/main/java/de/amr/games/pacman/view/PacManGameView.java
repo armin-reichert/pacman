@@ -6,7 +6,12 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.PacManTheme;
 
-public interface PacManView extends View {
+/**
+ * Interface implemented by views of the Pac-Man game.
+ * 
+ * @author Armin Reichert
+ */
+public interface PacManGameView extends View {
 
 	PacManGame game();
 
