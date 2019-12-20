@@ -235,11 +235,11 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 			pen.hcenter("F11 - Fullscreen Mode", width, 22);
 			int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock.getFrequency()) + 1;
 			pen.color(selectedSpeed == 1 ? orange: red);
-			pen.draw("1 Normal", 1, 31);
+			pen.draw("1 - Normal", 1, 31);
 			pen.color(selectedSpeed == 2 ? orange : red);
-			pen.draw("2 Fast", 11, 31);
+			pen.draw("2 - Fast", 11, 31);
 			pen.color(selectedSpeed == 3 ? orange : red);
-			pen.draw("3 Insane", 19, 31);
+			pen.draw("3 - Insane", 19, 31);
 			break;
 		case READY_TO_PLAY:
 			break;
