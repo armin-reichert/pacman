@@ -73,6 +73,5 @@ public class FollowTargetTilesTestUI extends PlayView implements VisualControlle
 			Tile target = targets.get(i);
 			pen.draw("" + i, target.col, target.row);
 		}
-		;
 	}
 }
