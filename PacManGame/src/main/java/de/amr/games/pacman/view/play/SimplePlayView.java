@@ -30,19 +30,16 @@ import de.amr.games.pacman.view.Pen;
  */
 public class SimplePlayView implements PacManGameView, Controller {
 
-	public final Dimension viewSize;
-	public final Animation energizerBlinking;
-
-	private PacManGameCast cast;
+	protected Animation energizerBlinking;
+	protected boolean mazeFlashing;
+	protected Image lifeImage;
+	protected Sprite fullMazeSprite;
+	protected Sprite flashingMazeSprite;
+	protected PacManGameCast cast;
+	protected Dimension viewSize;
 	protected boolean showScores;
-	public boolean mazeFlashing;
-
 	protected String messageText;
 	protected Color messageColor;
-
-	public Image lifeImage;
-	public Sprite fullMazeSprite;
-	public Sprite flashingMazeSprite;
 
 	public SimplePlayView(PacManGameCast cast) {
 		this.cast = cast;
@@ -73,16 +70,38 @@ public class SimplePlayView implements PacManGameView, Controller {
 		return cast.theme();
 	}
 
+	public void setTheme(PacManTheme theme) {
+		lifeImage = theme.spr_pacManWalking(3).frame(1);
+		fullMazeSprite = theme.spr_fullMaze();
+		flashingMazeSprite = theme.spr_flashingMaze();
+	}
+
+	public void setShowScores(boolean showScores) {
+		this.showScores = showScores;
+	}
+
+	@Override
+	public void init() {
+		energizerBlinking.setEnabled(false);
+		mazeFlashing = false;
+		messageColor = Color.YELLOW;
+		clearMessage();
+	}
+
+	@Override
+	public void update() {
+		if (mazeFlashing) {
+			return;
+		}
+		energizerBlinking.update();
+	}
+
 	@Override
 	public void propertyChange(PropertyChangeEvent change) {
 		if ("theme".equals(change.getPropertyName())) {
 			PacManTheme theme = (PacManTheme) change.getNewValue();
 			setTheme(theme);
 		}
-	}
-
-	public void setShowScores(boolean showScores) {
-		this.showScores = showScores;
 	}
 
 	public void message(String message, Color color) {
@@ -94,31 +113,17 @@ public class SimplePlayView implements PacManGameView, Controller {
 		messageText = null;
 	}
 
-	@Override
-	public void init() {
-		energizerBlinking.setEnabled(false);
-		mazeFlashing = false;
-		messageText = null;
-		messageColor = Color.YELLOW;
-	}
-
-	@Override
-	public void update() {
-		if (mazeFlashing) {
-			return;
-		}
-		energizerBlinking.update();
-	}
-
-	public void setTheme(PacManTheme theme) {
-		lifeImage = theme.spr_pacManWalking(3).frame(1);
-		fullMazeSprite = theme.spr_fullMaze();
-		flashingMazeSprite = theme.spr_flashingMaze();
-	}
-
 	public void enableAnimations(boolean state) {
 		flashingMazeSprite.enableAnimation(state);
 		cast.ghostsOnStage().forEach(ghost -> ghost.sprites.enableAnimation(state));
+	}
+
+	public void mazeFlashing(boolean b) {
+		mazeFlashing = b;
+	}
+	
+	public void energizerBlinking(boolean b) {
+		energizerBlinking.setEnabled(b);
 	}
 
 	@Override
