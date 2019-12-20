@@ -1,8 +1,5 @@
 package de.amr.games.pacman;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.model.Tile;
@@ -17,10 +14,6 @@ import de.amr.games.pacman.theme.PacManTheme;
  * @author Armin Reichert
  */
 public class PacManApp extends Application {
-
-	static {
-		Logger.getLogger("StateMachineLogger").setLevel(Level.OFF);
-	}
 
 	public static void main(String[] args) {
 		launch(new PacManApp(), args);

@@ -8,7 +8,6 @@ import static java.util.Arrays.binarySearch;
 
 import java.awt.Graphics2D;
 import java.util.Random;
-import java.util.logging.Logger;
 
 import de.amr.games.pacman.actor.core.AbstractMazeResident;
 import de.amr.games.pacman.actor.fsm.FsmComponent;
@@ -20,7 +19,6 @@ import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.model.Timing;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -62,7 +60,7 @@ public class Bonus extends AbstractMazeResident implements FsmContainer<BonusSta
 
 	private FsmComponent<BonusState> buildFsmComponent(String name) {
 		StateMachine<BonusState, PacManGameEvent> fsm = buildStateMachine(name);
-		fsm.traceTo(Logger.getLogger("StateMachineLogger"), () -> Timing.FPS);
+		fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
 		return new FsmComponent<>(name, fsm);
 	}
 

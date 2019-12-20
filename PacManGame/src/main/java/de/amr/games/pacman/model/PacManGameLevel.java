@@ -5,7 +5,7 @@ package de.amr.games.pacman.model;
  * 
  * @author Armin Reichert
  */
-public class Level {
+public class PacManGameLevel {
 
 	public final BonusSymbol bonusSymbol;
 	public final int bonusValue;
@@ -28,7 +28,7 @@ public class Level {
 	public int ghostsKilledByEnergizer;
 	public int ghostKilledInLevel;
 
-	public Level(BonusSymbol bonusSymbol, int bonusValue, float pacManSpeed, float pacManDotsSpeed, float ghostSpeed,
+	public PacManGameLevel(BonusSymbol bonusSymbol, int bonusValue, float pacManSpeed, float pacManDotsSpeed, float ghostSpeed,
 			float ghostTunnelSpeed, int elroy1DotsLeft, float elroy1Speed, int elroy2DotsLeft, float elroy2Speed,
 			float pacManPowerSpeed, float pacManPowerDotsSpeed, float ghostFrightenedSpeed, int pacManPowerSeconds,
 			int mazeNumFlashes) {

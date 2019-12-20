@@ -16,6 +16,7 @@ import static de.amr.games.pacman.controller.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
 import static de.amr.games.pacman.controller.PacManGameState.START_PLAYING;
+import static de.amr.games.pacman.model.PacManGame.FSM_LOGGER;
 import static de.amr.games.pacman.model.Timing.sec;
 import static de.amr.games.pacman.theme.PacManTheme.MAZE_FLASH_TIME_MILLIS;
 
@@ -23,7 +24,6 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.Sound;
@@ -53,7 +53,6 @@ import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.model.Timing;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.play.PlayView;
@@ -83,7 +82,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		this.theme = theme;
 		buildStateMachine();
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		traceTo(Logger.getLogger("StateMachineLogger"), () -> Timing.FPS);
+		traceTo(PacManGame.FSM_LOGGER, () -> 60);
 	}
 
 	// The finite state machine
@@ -532,9 +531,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	private void handleToggleStateMachineLogging() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_L)) {
-			Logger log = Logger.getLogger("StateMachineLogger");
-			log.setLevel(log.getLevel() == Level.OFF ? Level.INFO : Level.OFF);
-			LOGGER.info("State machine logging changed to " + log.getLevel());
+			FSM_LOGGER.setLevel(FSM_LOGGER.getLevel() == Level.OFF ? Level.INFO : Level.OFF);
+			LOGGER.info("State machine logging changed to " + FSM_LOGGER.getLevel());
 		}
 	}
 

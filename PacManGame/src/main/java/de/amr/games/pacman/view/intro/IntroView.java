@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Logger;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.input.Keyboard;
@@ -25,7 +24,7 @@ import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.AnimationController;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.model.Timing;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.Pen;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
@@ -93,7 +92,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 		gitHubLink.tf.centerX(width);
 
 		buildStateMachine();
-		traceTo(Logger.getLogger("StateMachineLogger"), () -> Timing.FPS);
+		traceTo(PacManGame.FSM_LOGGER, () -> 60);
 	}
 
 	private void buildStateMachine() {

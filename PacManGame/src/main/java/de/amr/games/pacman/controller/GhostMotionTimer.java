@@ -5,11 +5,8 @@ import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Timing.sec;
 
-import java.util.logging.Logger;
-
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.model.Timing;
 import de.amr.statemachine.StateMachine;
 
 /**
@@ -56,7 +53,7 @@ public class GhostMotionTimer extends StateMachine<GhostState, Void> {
 			.when(CHASING).then(SCATTERING).onTimeout().act(() -> ++round)
 		.endStateMachine();
 		/*@formatter:on*/
-		traceTo(Logger.getLogger("StateMachineLogger"), () -> Timing.FPS);
+		traceTo(PacManGame.FSM_LOGGER, () -> 60);
 	}
 
 	@Override

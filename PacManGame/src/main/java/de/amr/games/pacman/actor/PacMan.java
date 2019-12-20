@@ -19,7 +19,6 @@ import static de.amr.games.pacman.model.Timing.sec;
 import static de.amr.games.pacman.model.Timing.speed;
 
 import java.util.Optional;
-import java.util.logging.Logger;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
@@ -39,7 +38,6 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.model.Timing;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
@@ -76,7 +74,7 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 
 	private FsmComponent<PacManState> buildFsmComponent(String name) {
 		StateMachine<PacManState, PacManGameEvent> fsm = buildStateMachine();
-		fsm.traceTo(Logger.getLogger("StateMachineLogger"), () -> Timing.FPS);
+		fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
 		FsmComponent<PacManState> component = new FsmComponent<>(name, fsm);
 		component.publishedEventIsLogged = event -> {
 			// do not write log entry when normal pellet is found

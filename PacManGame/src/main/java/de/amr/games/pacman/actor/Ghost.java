@@ -15,7 +15,6 @@ import static de.amr.games.pacman.model.Timing.speed;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
@@ -34,7 +33,6 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.model.Timing;
 import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.StateMachine.MissingTransitionBehavior;
 
@@ -69,7 +67,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	private FsmComponent<GhostState> buildFsmComponent(String name) {
 		StateMachine<GhostState, PacManGameEvent> fsm = buildStateMachine(name);
 		fsm.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		fsm.traceTo(Logger.getLogger("StateMachineLogger"), () -> Timing.FPS);
+		fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
 		return new FsmComponent<>(name, fsm);
 	}
 
