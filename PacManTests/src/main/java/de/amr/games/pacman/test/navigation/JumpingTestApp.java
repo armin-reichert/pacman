@@ -1,11 +1,15 @@
 package de.amr.games.pacman.test.navigation;
 
 import de.amr.easy.game.Application;
+import de.amr.easy.game.view.View;
+import de.amr.easy.game.view.VisualController;
+import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.view.play.PlayView;
 
 public class JumpingTestApp extends Application {
 
@@ -26,5 +30,35 @@ public class JumpingTestApp extends Application {
 		PacManTheme theme = new ClassicPacManTheme();
 		PacManGameCast cast = new PacManGameCast(game, theme);
 		setController(new JumpingTestUI(cast));
+	}
+}
+
+class JumpingTestUI extends PlayView implements VisualController {
+
+	public JumpingTestUI(PacManGameCast cast) {
+		super(cast);
+		setShowRoutes(false);
+		setShowStates(true);
+		setShowScores(false);
+		setShowGrid(false);
+	}
+
+	@Override
+	public void init() {
+		super.init();
+		game().init();
+		maze().removeFood();
+		cast().ghosts().forEach(cast()::putOnStage);
+	}
+
+	@Override
+	public void update() {
+		cast().ghostsOnStage().forEach(Ghost::update);
+		super.update();
+	}
+
+	@Override
+	public View currentView() {
+		return this;
 	}
 }

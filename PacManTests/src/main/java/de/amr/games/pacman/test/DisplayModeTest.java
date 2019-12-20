@@ -119,7 +119,8 @@ class DisplayModeModel extends DefaultTableModel {
 			String ret;
 			if (bitDepth == DisplayMode.BIT_DEPTH_MULTI) {
 				ret = "Multi";
-			} else {
+			}
+			else {
 				ret = Integer.toString(bitDepth);
 			}
 			return ret;
@@ -129,7 +130,8 @@ class DisplayModeModel extends DefaultTableModel {
 			String ret;
 			if (refreshRate == DisplayMode.REFRESH_RATE_UNKNOWN) {
 				ret = "Unknown";
-			} else {
+			}
+			else {
 				ret = Integer.toString(refreshRate);
 			}
 			return ret;
@@ -180,7 +182,8 @@ public class DisplayModeTest extends JFrame implements ActionListener, ListSelec
 		if (source == exit) {
 			device.setDisplayMode(originalDM);
 			System.exit(0);
-		} else { // if (source == changeDM)
+		}
+		else { // if (source == changeDM)
 			int index = dmList.getSelectionModel().getAnchorSelectionIndex();
 			if (index >= 0) {
 				DisplayModeModel model = (DisplayModeModel) dmList.getModel();
@@ -250,17 +253,19 @@ public class DisplayModeTest extends JFrame implements ActionListener, ListSelec
 		String bd, rr;
 		if (bitDepth == DisplayMode.BIT_DEPTH_MULTI) {
 			bd = "Multi";
-		} else {
+		}
+		else {
 			bd = Integer.toString(bitDepth);
 		}
 		if (refreshRate == DisplayMode.REFRESH_RATE_UNKNOWN) {
 			rr = "Unknown";
-		} else {
+		}
+		else {
 			rr = Integer.toString(refreshRate);
 		}
-		currentDM.setText(COLUMN_NAMES[INDEX_WIDTH] + ": " + newMode.getWidth() + " " + COLUMN_NAMES[INDEX_HEIGHT] + ": "
-				+ newMode.getHeight() + " " + COLUMN_NAMES[INDEX_BITDEPTH] + ": " + bd + " " + COLUMN_NAMES[INDEX_REFRESHRATE]
-				+ ": " + rr);
+		currentDM.setText(COLUMN_NAMES[INDEX_WIDTH] + ": " + newMode.getWidth() + " " + COLUMN_NAMES[INDEX_HEIGHT]
+				+ ": " + newMode.getHeight() + " " + COLUMN_NAMES[INDEX_BITDEPTH] + ": " + bd + " "
+				+ COLUMN_NAMES[INDEX_REFRESHRATE] + ": " + rr);
 	}
 
 	public void begin() {
@@ -271,7 +276,8 @@ public class DisplayModeTest extends JFrame implements ActionListener, ListSelec
 			// Full-screen mode
 			device.setFullScreenWindow(this);
 			validate();
-		} else {
+		}
+		else {
 			// Windowed mode
 			pack();
 			setVisible(true);
