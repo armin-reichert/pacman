@@ -2,6 +2,7 @@ package de.amr.games.pacman.actor.core;
 
 import java.util.List;
 
+import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Tile;
 
@@ -13,15 +14,15 @@ import de.amr.games.pacman.model.Tile;
 public interface MazeMover extends MazeResident {
 
 	/**
-	 * Steers the actor by changing the intended move direction.
+	 * Returns the current steering of this actor.
 	 */
-	void steer();
+	Steering<?> steering();
 
 	/**
 	 * Walks through the maze, either inside the maze or through the teleporting
 	 * space.
 	 */
-	void walkMaze();
+	void step();
 
 	/**
 	 * @return the maximum possible speed (in pixels/tick) for the current frame.

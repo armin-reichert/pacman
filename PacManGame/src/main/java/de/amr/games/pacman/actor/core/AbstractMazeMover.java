@@ -75,13 +75,59 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	}
 
 	/**
-	 * Moves or teleports the actor.
+	 * Moves or teleports the actor one step.
 	 */
 	@Override
-	public void walkMaze() {
+	public void step() {
 		teleporting.update();
 		if (teleporting.is(false)) {
-			moveInsideMaze();
+			stepInsideMaze();
+		}
+	}
+
+	/**
+	 * Movement inside the maze. Handles changing the direction according to the intended move
+	 * direction, moving around corners without losing alignment,
+	 */
+	private void stepInsideMaze() {
+		Tile oldTile = tile();
+		float speed = possibleSpeedTo(moveDir);
+		if (nextDir != null) {
+			float nextDirSpeed = possibleSpeedTo(nextDir);
+			if (nextDirSpeed > 0) {
+				boolean turning = (nextDir == moveDir.turnLeft() || nextDir == moveDir.turnRight());
+				if (turning && steering().onTrack()) {
+					tf.setPosition(oldTile.x(), oldTile.y());
+				}
+				moveDir = nextDir;
+				speed = nextDirSpeed;
+			}
+		}
+		tf.setVelocity(Vector2f.smul(speed, Vector2f.of(moveDir.dx, moveDir.dy)));
+		tf.move();
+		enteredNewTile = !oldTile.equals(tile());
+	}
+
+	/**
+	 * Computes how many pixels this entity can move towards the given direction without crossing the
+	 * border to a forbidden neighbor tile.
+	 */
+	private float possibleSpeedTo(Direction dir) {
+		dir = Objects.requireNonNull(dir);
+		if (canCrossBorderTo(dir)) {
+			return maxSpeed();
+		}
+		switch (dir) {
+		case UP:
+			return -tile().y() + tf.getY();
+		case RIGHT:
+			return tile().x() - tf.getX();
+		case DOWN:
+			return tile().y() - tf.getY();
+		case LEFT:
+			return -tile().x() + tf.getX();
+		default:
+			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}
 	}
 
@@ -193,53 +239,5 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	public void turnAround() {
 		nextDir = moveDir = moveDir.opposite();
 		enteredNewTile = true;
-	}
-
-	protected boolean snapToGrid() {
-		return true;
-	}
-
-	/**
-	 * Movement inside the maze. Handles changing the direction according to the intended move
-	 * direction, moving around corners without losing alignment,
-	 */
-	private void moveInsideMaze() {
-		Tile oldTile = tile();
-		float speed = possibleSpeedTo(nextDir);
-		if (speed > 0) {
-			boolean turning = (nextDir == moveDir.turnLeft() || nextDir == moveDir.turnRight());
-			if (turning && snapToGrid()) {
-				tf.setPosition(oldTile.x(), oldTile.y());
-			}
-			moveDir = nextDir;
-		}
-		else {
-			speed = possibleSpeedTo(moveDir);
-		}
-		tf.setVelocity(Vector2f.smul(speed, Vector2f.of(moveDir.dx, moveDir.dy)));
-		tf.move();
-		enteredNewTile = !oldTile.equals(tile());
-	}
-
-	/**
-	 * Computes how many pixels this entity can move towards the given direction without crossing the
-	 * border to a forbidden neighbor tile.
-	 */
-	private float possibleSpeedTo(Direction dir) {
-		if (canCrossBorderTo(dir)) {
-			return maxSpeed();
-		}
-		switch (dir) {
-		case UP:
-			return -tile().y() + tf.getY();
-		case RIGHT:
-			return tile().x() - tf.getX();
-		case DOWN:
-			return tile().y() - tf.getY();
-		case LEFT:
-			return -tile().x() + tf.getX();
-		default:
-			throw new IllegalArgumentException("Illegal move direction: " + dir);
-		}
 	}
 }

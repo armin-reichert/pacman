@@ -192,23 +192,23 @@ public class SimplePlayView implements PacManGameView, Controller {
 
 		// Points
 		pen.color(Color.YELLOW);
-		pen.draw("SCORE", 1, 1);
-		pen.draw(String.format("LEVEL%2d", game().level.number), 22, 1);
+		pen.draw("SCORE", 1, 0);
+		pen.draw(String.format("LEVEL%2d", game().level.number), 22, 0);
 		pen.color(Color.WHITE);
-		pen.draw(String.format("%07d", game().score), 1, 2);
+		pen.draw(String.format("%07d", game().score), 1, 1);
 
 		// Highscore
 		pen.color(Color.YELLOW);
-		pen.draw("HIGHSCORE", 10, 1);
+		pen.draw("HIGHSCORE", 10, 0);
 		pen.color(Color.WHITE);
-		pen.draw(String.format("%07d", game().hiscore.points), 10, 2);
-		pen.draw(String.format("L%d", game().hiscore.levelNumber), 16, 2);
+		pen.draw(String.format("%07d", game().hiscore.points), 10, 1);
+		pen.draw(String.format("L%d", game().hiscore.levelNumber), 16, 1);
 
 		// Remaining pellets
 		g.setColor(Color.PINK);
-		g.fillRect(22 * Tile.SIZE + 2, Tile.SIZE + 2, 4, 4);
+		g.fillRect(22 * Tile.SIZE + 2, Tile.SIZE + 2, 4, 3);
 		pen.color(Color.WHITE);
-		pen.draw(String.format("%d", game().numPelletsRemaining()), 23, 2);
+		pen.draw(String.format("%d", game().numPelletsRemaining()), 23, 1);
 
 		drawLives(g);
 		drawLevelCounter(g);

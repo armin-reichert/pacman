@@ -23,6 +23,11 @@ public class LeavingGhostHouse implements Steering<Ghost> {
 	}
 
 	@Override
+	public boolean onTrack() {
+		return false;
+	}
+
+	@Override
 	public void steer(Ghost ghost) {
 		int targetX = maze.ghostHouseSeats[0].centerX();
 		int targetY = maze.ghostHouseSeats[0].y();

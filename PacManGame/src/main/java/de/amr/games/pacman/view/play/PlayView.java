@@ -34,6 +34,7 @@ import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.view.Pen;
@@ -57,14 +58,14 @@ public class PlayView extends SimplePlayView {
 
 	private static final String INFTY = Character.toString('\u221E');
 
-	private BufferedImage createGridPattern(int numRows, int numCols) {
+	private BufferedImage createGridImage(Maze maze) {
 		GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
 				.getDefaultConfiguration();
-		BufferedImage img = gc.createCompatibleImage(numCols * Tile.SIZE, numRows * Tile.SIZE + 1,
+		BufferedImage img = gc.createCompatibleImage(maze.numCols * Tile.SIZE, maze.numRows * Tile.SIZE + 1,
 				Transparency.TRANSLUCENT);
 		Graphics2D g = img.createGraphics();
-		for (int row = 0; row < numRows; ++row) {
-			for (int col = 0; col < numCols; ++col) {
+		for (int row = 0; row < maze.numRows; ++row) {
+			for (int col = 0; col < maze.numCols; ++col) {
 				g.setColor(patternColor(col, row));
 				g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 			}
@@ -110,7 +111,7 @@ public class PlayView extends SimplePlayView {
 	public void setShowGrid(boolean showGrid) {
 		this.showGrid = showGrid;
 		if (showGrid && gridImage == null) {
-			gridImage = createGridPattern(cast().game.maze.numRows, cast().game.maze.numCols);
+			gridImage = createGridImage(maze());
 		}
 	}
 
@@ -154,7 +155,8 @@ public class PlayView extends SimplePlayView {
 	private void toggleGhostActivationState(Ghost ghost) {
 		if (cast().onStage(ghost)) {
 			cast().removeFromStage(ghost);
-		} else {
+		}
+		else {
 			cast().putOnStage(ghost);
 		}
 	}
@@ -163,10 +165,15 @@ public class PlayView extends SimplePlayView {
 	public void draw(Graphics2D g) {
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
-		} else {
+		}
+		else {
 			drawMazeBackground(g);
 		}
 		drawMaze(g);
+		drawInfoText(g);
+		if (showGrid) {
+			drawUpwardsBlockedTileBorders(g);
+		}
 		drawScores(g);
 		if (showRoutes) {
 			drawRoutes(g);
@@ -179,7 +186,6 @@ public class PlayView extends SimplePlayView {
 			drawActorStates(g);
 			drawGhostDotCounters(g);
 		}
-		drawInfoText(g);
 		if (showFrameRate) {
 			drawFPS(g);
 		}
@@ -194,9 +200,28 @@ public class PlayView extends SimplePlayView {
 		});
 	}
 
+	private void drawUpwardsBlockedTileBorders(Graphics2D g) {
+		Stroke normal = g.getStroke();
+		Stroke dashedFine = new BasicStroke(0.2f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0,
+				new float[] { 2 }, 0);
+		g.setColor(Color.LIGHT_GRAY);
+		for (int row = 0; row < maze().numRows; ++row) {
+			for (int col = 0; col < maze().numCols; ++col) {
+				if (maze().isNoUpIntersection(maze().tileAt(col, row))) {
+					int x1 = col * Tile.SIZE - Tile.SIZE / 2, y1 = (row - 1) * Tile.SIZE,
+							x2 = (col + 1) * Tile.SIZE + Tile.SIZE / 2, y2 = (row - 1) * Tile.SIZE;
+					g.setStroke(dashedFine);
+					g.drawLine(x1, y1, x2, y2);
+				}
+			}
+		}
+		g.setStroke(normal);
+	}
+
 	private void drawActorStates(Graphics2D g) {
 		if (cast().pacMan.getState() != null && cast().pacMan.visible()) {
-			drawText(g, Color.YELLOW, cast().pacMan.tf.getX(), cast().pacMan.tf.getY(), pacManStateText(cast().pacMan));
+			drawText(g, Color.YELLOW, cast().pacMan.tf.getX(), cast().pacMan.tf.getY(),
+					pacManStateText(cast().pacMan));
 		}
 		cast().ghostsOnStage().filter(Ghost::visible).forEach(ghost -> {
 			drawText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
@@ -211,9 +236,8 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private String pacManStateText(PacMan pacMan) {
-		String text = pacMan.state().getDuration() != State.ENDLESS
-				? String.format("(%s,%d|%d)", pacMan.state().id(), pacMan.state().getTicksRemaining(),
-						pacMan.state().getDuration())
+		String text = pacMan.state().getDuration() != State.ENDLESS ? String.format("(%s,%d|%d)",
+				pacMan.state().id(), pacMan.state().getTicksRemaining(), pacMan.state().getDuration())
 				: String.format("(%s,%s)", pacMan.state().id(), INFTY);
 
 		if (Application.app().settings.getAsBoolean("pacMan.immortable")) {
@@ -244,7 +268,8 @@ public class PlayView extends SimplePlayView {
 		}
 		if (duration == State.ENDLESS) {
 			text.append(String.format("(%s,%s)", ghost.getState(), INFTY));
-		} else {
+		}
+		else {
 			text.append(String.format("(%s,%d|%d)", ghost.getState(), remaining, duration));
 		}
 		// next state
@@ -277,6 +302,9 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawActorAlignment(Entity actor, Graphics2D g) {
+		Stroke normal = g.getStroke();
+		Stroke fine = new BasicStroke(0.2f);
+		g.setStroke(fine);
 		g.setColor(Color.GREEN);
 		g.translate(actor.tf.getX(), actor.tf.getY());
 		int w = actor.tf.getWidth(), h = actor.tf.getHeight();
@@ -289,12 +317,14 @@ public class PlayView extends SimplePlayView {
 			g.drawLine(w, 0, w, h);
 		}
 		g.translate(-actor.tf.getX(), -actor.tf.getY());
+		g.setStroke(normal);
 	}
 
 	private void drawSeats(Graphics2D g) {
+		Ghost[] ghostsBySeat = { cast.blinky, cast.inky, cast.pinky, cast.clyde };
 		IntStream.rangeClosed(0, 3).forEach(seat -> {
 			Tile seatTile = maze().ghostHouseSeats[seat];
-			g.setColor(Color.BLUE);
+			g.setColor(color(ghostsBySeat[seat]));
 			int x = seatTile.centerX(), y = seatTile.y();
 			String text = String.valueOf(seat);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -348,7 +378,8 @@ public class PlayView extends SimplePlayView {
 		boolean drawTargetTileArrow = target != null && ghost.targetPath().size() > 0
 				&& target != ghost.targetPath().get(ghost.targetPath().size() - 1);
 		if (drawTargetTileArrow) {
-			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
+			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
+					0);
 			g.setStroke(dashed);
 			g.setColor(dimmed(ghostColor, 200));
 			int x1 = ghost.centerX(), y1 = ghost.centerY();
@@ -369,7 +400,8 @@ public class PlayView extends SimplePlayView {
 					drawArrowHead(g, maze().directionBetween(from, to).get(), to.centerX(), to.centerY());
 				}
 			}
-		} else if (ghost.nextDir() != null) {
+		}
+		else if (ghost.nextDir() != null) {
 			// draw direction indicator
 			Direction dir = ghost.nextDir();
 			int x = ghost.centerX(), y = ghost.centerY();
@@ -398,7 +430,8 @@ public class PlayView extends SimplePlayView {
 					g.drawLine(x1, y1, x2, y2);
 					g.drawLine(x2, y2, x3, y3);
 					g.fillRect(x3 - s / 2, y3 - s / 2, s, s);
-				} else {
+				}
+				else {
 					Tile twoTilesAhead = cast().pacMan.tilesAhead(2);
 					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
 					int x2 = twoTilesAhead.centerX(), y2 = twoTilesAhead.centerY();

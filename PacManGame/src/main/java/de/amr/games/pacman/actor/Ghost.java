@@ -215,13 +215,15 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		steering.triggerSteering(this);
 	}
 
-	public Steering<Ghost> getSteering() {
+	@Override
+	public Steering<Ghost> steering() {
 		return steeringByState.getOrDefault(fsmComponent.getState(), defaultSteering);
 	}
 
-	@Override
-	public void steer() {
-		getSteering().steer(this);
+	private void walkAndDisplayAs(String spriteKey) {
+		steering().steer(this);
+		step();
+		sprites.select(spriteKey);
 	}
 
 	@Override
@@ -259,20 +261,6 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 			throw new IllegalStateException(
 					String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
 		}
-	}
-
-	@Override
-	protected boolean snapToGrid() {
-		// when entering or leaving the ghost house, pixel-exact movement is needed
-		return !is(ENTERING_HOUSE, LEAVING_HOUSE);
-	}
-
-	private void walkAndDisplayAs(String spriteKey) {
-		steer();
-		if (nextDir() != null) {
-			walkMaze();
-		}
-		sprites.select(spriteKey);
 	}
 
 	private boolean leftHouse() {
