@@ -640,7 +640,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void updateDotCounters() {
 		if (globalDotCounterEnabled) {
 			game.globalDotCounter++;
-			LOGGER.info(() -> String.format("Global dot counter: %d", game.globalDotCounter));
+			LOGGER.fine(() -> String.format("Global dot counter: %d", game.globalDotCounter));
 			if (game.globalDotCounter == 32 && cast.clyde.is(LOCKED)) {
 				globalDotCounterEnabled = false;
 				game.globalDotCounter = 0;
@@ -650,7 +650,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		else {
 			preferredLockedGhost().ifPresent(ghost -> {
 				ghost.dotCounter++;
-				LOGGER.info(() -> String.format("%s's dot counter: %d", ghost.name(), ghost.dotCounter));
+				LOGGER.fine(() -> String.format("%s's dot counter: %d", ghost.name(), ghost.dotCounter));
 			});
 		}
 	}
