@@ -222,7 +222,7 @@ public class ClassicPacManTheme implements PacManTheme {
 	@Override
 	public Font fnt_text() {
 		return Assets.font("font.joystix");
-//		return Assets.font("font.arcadeclassic");
+		// return Assets.font("font.arcadeclassic");
 	}
 
 	private Sound sound(String name) {
@@ -235,8 +235,8 @@ public class ClassicPacManTheme implements PacManTheme {
 
 	@Override
 	public Stream<Sound> snd_clips_all() {
-		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eatPill(), snd_extraLife(), snd_insertCoin(),
-				snd_ready(), snd_ghost_chase(), snd_ghost_dead(), snd_waza());
+		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eatPill(), snd_extraLife(),
+				snd_insertCoin(), snd_ready(), snd_ghost_chase(), snd_ghost_dead(), snd_waza());
 	}
 
 	@Override

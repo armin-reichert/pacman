@@ -200,9 +200,9 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 
 	private void drawTexts(Graphics2D g) {
 		// colors from logo
-		Color orange = new Color(255,163,71);
-//		Color pink = new Color(248, 120, 88);
-		Color red = new Color(171,19,0);
+		Color orange = new Color(255, 163, 71);
+		// Color pink = new Color(248, 120, 88);
+		Color red = new Color(171, 19, 0);
 		Pen pen = new Pen(g);
 		pen.font(theme.fnt_text());
 		switch (getState()) {
@@ -234,7 +234,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 			pen.fontSize(10);
 			pen.hcenter("F11 - Fullscreen Mode", width, 22);
 			int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock.getFrequency()) + 1;
-			pen.color(selectedSpeed == 1 ? orange: red);
+			pen.color(selectedSpeed == 1 ? orange : red);
 			pen.draw("1 - Normal", 1, 31);
 			pen.color(selectedSpeed == 2 ? orange : red);
 			pen.draw("2 - Fast", 11, 31);

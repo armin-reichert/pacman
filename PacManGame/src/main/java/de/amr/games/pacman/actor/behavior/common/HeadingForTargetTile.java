@@ -41,7 +41,7 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	public HeadingForTargetTile(Supplier<Tile> fnTargetTile) {
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 	}
-	
+
 	@Override
 	public boolean onTrack() {
 		return true;

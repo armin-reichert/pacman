@@ -7,13 +7,13 @@ import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
 /**
- * This interface is implemented by entities that implement the
- * {@link FsmControlled} interface by delegating to a component implementing
- * that interface.
+ * This interface is implemented by entities that implement the {@link FsmControlled} interface by
+ * delegating to a component implementing that interface.
  * 
  * @author Armin Reichert
  *
- * @param <S> state type of the finite-state machine
+ * @param <S>
+ *          state type of the finite-state machine
  */
 public interface FsmContainer<S> extends FsmControlled<S> {
 

@@ -1,5 +1,6 @@
 package de.amr.games.pacman.view.play;
 
+import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
@@ -27,6 +28,7 @@ import java.util.stream.IntStream;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.input.Keyboard;
+import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
@@ -35,6 +37,7 @@ import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.view.Pen;
@@ -149,6 +152,8 @@ public class PlayView extends SimplePlayView {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_C)) {
 			toggleGhostActivationState(cast().clyde);
 		}
+		handleClockSpeedChange();
+
 		super.update();
 	}
 
@@ -159,6 +164,30 @@ public class PlayView extends SimplePlayView {
 		else {
 			cast().putOnStage(ghost);
 		}
+	}
+
+	private void handleClockSpeedChange() {
+		int fps = app().clock.getFrequency();
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_1) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
+			setClockFrequency(PacManGame.SPEED_1_FPS);
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
+			setClockFrequency(PacManGame.SPEED_2_FPS);
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
+			setClockFrequency(PacManGame.SPEED_3_FPS);
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_LEFT)) {
+			setClockFrequency(fps <= 10 ? Math.max(1, fps - 1) : fps - 5);
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_RIGHT)) {
+			setClockFrequency(fps < 10 ? fps + 1 : fps + 5);
+		}
+	}
+
+	private void setClockFrequency(int ticksPerSecond) {
+		app().clock.setFrequency(ticksPerSecond);
+		LOGGER.info(() -> String.format("Clock frequency set to %d ticks/sec", ticksPerSecond));
 	}
 
 	@Override

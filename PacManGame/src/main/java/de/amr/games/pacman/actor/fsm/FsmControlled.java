@@ -8,13 +8,13 @@ import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
 /**
- * This interface is implemented by entities which are controlled by a
- * finite-state machine and can register game event listeners for their
- * published game events.
+ * This interface is implemented by entities which are controlled by a finite-state machine and can
+ * register game event listeners for their published game events.
  * 
  * @author Armin Reichert
  *
- * @param <S> state type of the finite-state machine
+ * @param <S>
+ *          state type of the finite-state machine
  */
 public interface FsmControlled<S> extends Controller {
 
@@ -31,21 +31,24 @@ public interface FsmControlled<S> extends Controller {
 	/**
 	 * Adds listener for game events,
 	 * 
-	 * @param listener game event listener
+	 * @param listener
+	 *                   game event listener
 	 */
 	void addGameEventListener(Consumer<PacManGameEvent> listener);
 
 	/**
 	 * Removes listener for game events,
 	 * 
-	 * @param listener game event listener
+	 * @param listener
+	 *                   game event listener
 	 */
 	void removeGameEventListener(Consumer<PacManGameEvent> listener);
 
 	/**
 	 * Sets the new state of this entity. Normally not used directly.
 	 * 
-	 * @param state the new state
+	 * @param state
+	 *                the new state
 	 */
 	void setState(S state);
 
@@ -56,22 +59,23 @@ public interface FsmControlled<S> extends Controller {
 
 	/**
 	 * 
-	 * @param states list of states
+	 * @param states
+	 *                 list of states
 	 * @return tells if this entity currently is in one of the given states
 	 */
 	@SuppressWarnings("unchecked")
 	boolean is(S... states);
 
 	/**
-	 * @return internal state object corresponding to current state. Gives access to
-	 *         timer.
+	 * @return internal state object corresponding to current state. Gives access to timer.
 	 */
 	State<S, PacManGameEvent> state();
 
 	/**
 	 * Lets the controlling state machine immedialtely process the given event.
 	 * 
-	 * @param event game event to process
+	 * @param event
+	 *                game event to process
 	 */
 	void process(PacManGameEvent event);
 }

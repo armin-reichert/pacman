@@ -19,15 +19,13 @@ public interface MazeMover extends MazeResident {
 	Steering<?> steering();
 
 	/**
-	 * Walks through the maze, either inside the maze or through the teleporting
-	 * space.
+	 * Walks through the maze, either inside the maze or through the teleporting space.
 	 */
 	void step();
 
 	/**
-	 * @return the maximum possible speed (in pixels/tick) for the current frame.
-	 *         The actual speed can be lower to avoid moving into inaccessible
-	 *         tiles.
+	 * @return the maximum possible speed (in pixels/tick) for the current frame. The actual speed can
+	 *         be lower to avoid moving into inaccessible tiles.
 	 */
 	float maxSpeed();
 
@@ -67,8 +65,8 @@ public interface MazeMover extends MazeResident {
 	void setTargetPath(List<Tile> path);
 
 	/**
-	 * @return if the steering should compute the complete path to the target tile,
-	 *         for example to visualize the path.
+	 * @return if the steering should compute the complete path to the target tile, for example to
+	 *         visualize the path.
 	 */
 	default boolean requireTargetPath() {
 		return false;
@@ -80,24 +78,26 @@ public interface MazeMover extends MazeResident {
 	boolean canMoveForward();
 
 	/**
-	 * @param dir direction value (N, E, S, W)
+	 * @param dir
+	 *              direction value (N, E, S, W)
 	 * @return if the entity can enter the neighbor tile towards this direction
 	 */
 	boolean canCrossBorderTo(Direction dir);
 
 	/**
-	 * @param tile     some tile
-	 * @param neighbor neighbor the tile
-	 * @return if the entity can move from the tile to the neighbor tile (might be
-	 *         state-dependent)
+	 * @param tile
+	 *                   some tile
+	 * @param neighbor
+	 *                   neighbor the tile
+	 * @return if the entity can move from the tile to the neighbor tile (might be state-dependent)
 	 */
 	boolean canMoveBetween(Tile tile, Tile neighbor);
 
 	/**
 	 * 
-	 * @param n some positive number
-	 * @return the tile located <code>n</code> tiles away in the current move
-	 *         direction
+	 * @param n
+	 *            some positive number
+	 * @return the tile located <code>n</code> tiles away in the current move direction
 	 */
 	Tile tilesAhead(int n);
 }

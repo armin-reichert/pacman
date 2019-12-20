@@ -116,11 +116,12 @@ public class Maze {
 	}
 
 	/**
-	 * @param col a column index
-	 * @param row a row index
-	 * @return the tile with the given coordinates. Tiles outside of the board are
-	 *         either tunnel tiles (if in the same row than the board tunnel tiles)
-	 *         or walls otherwise.
+	 * @param col
+	 *              a column index
+	 * @param row
+	 *              a row index
+	 * @return the tile with the given coordinates. Tiles outside of the board are either tunnel tiles
+	 *         (if in the same row than the board tunnel tiles) or walls otherwise.
 	 */
 	public Tile tileAt(int col, int row) {
 		return insideBoard(col, row) ? tiles[col][row]
@@ -128,21 +129,25 @@ public class Maze {
 	}
 
 	/**
-	 * @param tile reference tile
-	 * @param dir  some direction
-	 * @param n    number of tiles
-	 * @return the tile located <code>n</code> tiles away from the reference tile
-	 *         towards the given direction. This can be a tile outside of the board!
+	 * @param tile
+	 *               reference tile
+	 * @param dir
+	 *               some direction
+	 * @param n
+	 *               number of tiles
+	 * @return the tile located <code>n</code> tiles away from the reference tile towards the given
+	 *         direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
 		return tileAt(tile.col + n * dir.dx, tile.row + n * dir.dy);
 	}
 
 	/**
-	 * @param tile reference tile
-	 * @param dir  some direction
-	 * @return neighbor towards the given direction. This can be a tile outside of
-	 *         the board!
+	 * @param tile
+	 *               reference tile
+	 * @param dir
+	 *               some direction
+	 * @return neighbor towards the given direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, Direction dir) {
 		return tileToDir(tile, dir, 1);

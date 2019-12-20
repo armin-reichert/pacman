@@ -121,7 +121,7 @@ public class SimplePlayView implements PacManGameView, Controller {
 	public void mazeFlashing(boolean b) {
 		mazeFlashing = b;
 	}
-	
+
 	public void energizerBlinking(boolean b) {
 		energizerBlinking.setEnabled(b);
 	}

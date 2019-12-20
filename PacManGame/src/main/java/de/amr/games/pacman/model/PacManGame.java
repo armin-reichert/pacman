@@ -21,12 +21,10 @@ import java.util.logging.Logger;
  * 
  * @author Armin Reichert
  * 
- * @see <a href=
- *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
+ * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
  *      dossier</a>
- * @see <a href=
- *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man
- *      level specifications</a>
+ * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man level
+ *      specifications</a>
  */
 public class PacManGame {
 
@@ -154,7 +152,8 @@ public class PacManGame {
 	}
 
 	/**
-	 * @param tile tile containing food
+	 * @param tile
+	 *               tile containing food
 	 * @return points scored
 	 */
 	public int eatFoodAt(Tile tile) {
@@ -163,7 +162,8 @@ public class PacManGame {
 			level.ghostsKilledByEnergizer = 0;
 			tile.removeFood();
 			return POINTS_ENERGIZER;
-		} else {
+		}
+		else {
 			tile.removeFood();
 			return POINTS_PELLET;
 		}
