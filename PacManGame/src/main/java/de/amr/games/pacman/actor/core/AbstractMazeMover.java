@@ -31,7 +31,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 		{
 			//@formatter:off
 			beginStateMachine()
-				.description(String.format("[Teleporting %s]", name()))
+				.description(String.format("[%s teleporter]", name()))
 				.initialState(false)
 				.states()
 				.transitions()
