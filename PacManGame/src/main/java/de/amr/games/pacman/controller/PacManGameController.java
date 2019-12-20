@@ -109,8 +109,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						theme.snd_ready().play();
 						cast.actors().forEach(cast::putOnStage);
 						playView.init();
-						playView.textColor = Color.YELLOW;
-						playView.message = "Ready!";
+						playView.message("Ready!", Color.YELLOW);
 						playView.setShowScores(true);
 						globalDotCounterEnabled = false;
 						game.globalDotCounter = 0;
@@ -126,7 +125,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						cast.ghosts().forEach(ghost -> ghost.dotCounter = 0);
 						theme.music_playing().volume(.90f);
 						theme.music_playing().loop();
-						playView.message = null;
+						playView.clearMessage();
 						playView.energizerBlinking.setEnabled(true);
 					})
 					.onTick(() -> {
@@ -210,13 +209,12 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						cast.removeBonus();
 						theme.music_gameover().play();
 						playView.enableAnimations(false);
-						playView.textColor = Color.RED;
-						playView.message = "Game   Over!";
+						playView.message("Game   Over!", Color.RED);
 						
 					})
 					.onExit(() -> {
 						theme.music_gameover().stop();
-						playView.message = null;
+						playView.clearMessage();
 					})
 
 			.transitions()

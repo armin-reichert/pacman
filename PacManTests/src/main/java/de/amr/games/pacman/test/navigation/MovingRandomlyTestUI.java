@@ -35,14 +35,14 @@ public class MovingRandomlyTestUI extends PlayView implements VisualController {
 			ghost.setState(GhostState.CHASING);
 			ghost.during(GhostState.CHASING, Steerings.isMovingRandomlyWithoutTurningBack());
 		});
-		message = "Press SPACE";
+		messageText = "Press SPACE";
 	}
 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			running = true;
-			message = null;
+			messageText = null;
 		}
 		if (running) {
 			cast().ghostsOnStage().forEach(Ghost::update);

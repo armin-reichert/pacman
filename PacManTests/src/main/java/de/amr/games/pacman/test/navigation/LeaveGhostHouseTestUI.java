@@ -28,15 +28,15 @@ public class LeaveGhostHouseTestUI extends PlayView implements VisualController 
 		maze().removeFood();
 		cast().putOnStage(cast().inky);
 		cast().inky.nextState = GhostState.SCATTERING;
-		textColor = Color.YELLOW;
-		message = "Press SPACE to unlock";
+		messageColor = Color.YELLOW;
+		messageText = "Press SPACE to unlock";
 	}
 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			cast().inky.process(new GhostUnlockedEvent());
-			message = null;
+			messageText = null;
 		}
 		cast().inky.update();
 		super.update();

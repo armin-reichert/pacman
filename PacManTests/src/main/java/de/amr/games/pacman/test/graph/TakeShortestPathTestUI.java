@@ -48,8 +48,8 @@ public class TakeShortestPathTestUI extends PlayView implements VisualController
 		ghost.during(FRIGHTENED, shortestPath);
 		cast().putOnStage(ghost);
 		ghost.setState(CHASING);
-		textColor = Color.YELLOW;
-		message = "SPACE toggles ghost state";
+		messageColor = Color.YELLOW;
+		messageText = "SPACE toggles ghost state";
 		setShowRoutes(true);
 		setShowStates(true);
 		setShowScores(false);

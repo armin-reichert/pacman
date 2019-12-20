@@ -36,8 +36,9 @@ public class SimplePlayView implements PacManGameView, Controller {
 	private PacManGameCast cast;
 	protected boolean showScores;
 	public boolean mazeFlashing;
-	public String message;
-	public Color textColor;
+
+	protected String messageText;
+	protected Color messageColor;
 
 	public Image lifeImage;
 	public Sprite fullMazeSprite;
@@ -83,13 +84,22 @@ public class SimplePlayView implements PacManGameView, Controller {
 	public void setShowScores(boolean showScores) {
 		this.showScores = showScores;
 	}
+	
+	public void message(String message, Color color) {
+		this.messageText = message;
+		this.messageColor = color;
+	}
+	
+	public void clearMessage() {
+		messageText = null;
+	}
 
 	@Override
 	public void init() {
 		energizerBlinking.setEnabled(false);
 		mazeFlashing = false;
-		message = null;
-		textColor = Color.YELLOW;
+		messageText = null;
+		messageColor = Color.YELLOW;
 	}
 
 	@Override
@@ -217,11 +227,11 @@ public class SimplePlayView implements PacManGameView, Controller {
 	}
 
 	protected void drawInfoText(Graphics2D g) {
-		if (message != null) {
+		if (messageText != null) {
 			Pen pen = new Pen(g);
 			pen.font(cast.theme().fnt_text(11));
-			pen.color(textColor);
-			pen.hcenter(message, viewSize.width, 21);
+			pen.color(messageColor);
+			pen.hcenter(messageText, viewSize.width, 21);
 		}
 	}
 }

@@ -34,15 +34,15 @@ public class InkyChaseTestUI extends PlayView implements VisualController {
 		cast().ghostsOnStage().forEach(ghost -> {
 			ghost.nextState = GhostState.CHASING;
 		});
-		textColor = Color.YELLOW;
-		message = "Press SPACE to start";
+		messageColor = Color.YELLOW;
+		messageText = "Press SPACE to start";
 	}
 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			cast().ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
-			message = null;
+			messageText = null;
 		}
 		cast().pacMan.update();
 		cast().ghostsOnStage().forEach(Ghost::update);
