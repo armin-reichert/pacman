@@ -426,9 +426,7 @@ public class PlayView extends SimplePlayView {
 	private void drawDotCounter(Graphics2D g, Sprite sprite, int value, int col, int row) {
 		Pen pen = new Pen(g);
 		if (sprite != null) {
-			g.translate(col * Tile.SIZE, row * Tile.SIZE);
-			sprite.draw(g);
-			g.translate(-col * Tile.SIZE, -row * Tile.SIZE);
+			g.drawImage(sprite.frame(0), col * Tile.SIZE, row * Tile.SIZE, null);
 		}
 		pen.color(Color.WHITE);
 		pen.fontSize(8);

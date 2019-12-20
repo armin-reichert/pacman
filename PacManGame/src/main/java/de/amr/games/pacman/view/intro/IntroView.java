@@ -207,12 +207,12 @@ public class IntroView extends StateMachine<IntroState, Void> implements View, C
 		pen.font(theme.fnt_text());
 		switch (getState()) {
 		case LOADING_MUSIC:
-			if (textAlpha > 255) {
-				textAlphaInc = -4;
-				textAlpha = 255;
+			if (textAlpha > 160) {
+				textAlphaInc = -2;
+				textAlpha = 160;
 			}
 			else if (textAlpha < 0) {
-				textAlphaInc = 4;
+				textAlphaInc = 2;
 				textAlpha = 0;
 			}
 			pen.color(new Color(255, 255, 255, textAlpha));
