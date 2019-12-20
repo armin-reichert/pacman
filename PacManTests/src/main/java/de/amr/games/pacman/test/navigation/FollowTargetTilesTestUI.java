@@ -2,6 +2,8 @@ package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,6 +12,7 @@ import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.behavior.Steerings;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.view.Pen;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class FollowTargetTilesTestUI extends PlayView implements VisualController {
@@ -22,7 +25,7 @@ public class FollowTargetTilesTestUI extends PlayView implements VisualControlle
 		setShowRoutes(true);
 		setShowStates(false);
 		setShowScores(false);
-		setShowGrid(false);
+		setShowGrid(true);
 		targets = Arrays.asList(maze().cornerNW, maze().ghostHouseSeats[0], maze().cornerNE, maze().cornerSE,
 				maze().pacManHome, maze().cornerSW);
 	}
@@ -53,9 +56,23 @@ public class FollowTargetTilesTestUI extends PlayView implements VisualControlle
 			if (current == targets.size()) {
 				current = 0;
 				game().enterLevel(game().level.number + 1);
+				maze().removeFood();
 			}
 		}
 		cast().blinky.update();
 		super.update();
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		super.draw(g);
+		Pen pen = new Pen(g);
+		pen.color(Color.YELLOW);
+		pen.fontSize(8);
+		for (int i = 0; i < targets.size(); ++i) {
+			Tile target = targets.get(i);
+			pen.draw("" + i, target.col, target.row);
+		}
+		;
 	}
 }
