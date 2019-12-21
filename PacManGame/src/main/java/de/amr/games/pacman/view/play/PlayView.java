@@ -86,13 +86,13 @@ public class PlayView extends SimplePlayView {
 
 	public PlayView(PacManGameCast cast) {
 		super(cast);
-		pinkyImage = thumbnail(GhostColor.PINK);
-		inkyImage = thumbnail(GhostColor.CYAN);
-		clydeImage = thumbnail(GhostColor.ORANGE);
+		pinkyImage = ghostImage(GhostColor.PINK);
+		inkyImage = ghostImage(GhostColor.CYAN);
+		clydeImage = ghostImage(GhostColor.ORANGE);
 	}
 
-	private BufferedImage thumbnail(GhostColor color) {
-		return (BufferedImage) theme().spr_ghostColored(color, Direction.RIGHT.ordinal()).scale(8).frame(0);
+	private BufferedImage ghostImage(GhostColor color) {
+		return (BufferedImage) theme().spr_ghostColored(color, Direction.RIGHT.ordinal()).frame(0);
 	}
 
 	private Color patternColor(int col, int row) {
@@ -435,7 +435,7 @@ public class PlayView extends SimplePlayView {
 	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row) {
 		Pen pen = new Pen(g);
 		if (image != null) {
-			g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, null);
+			g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);
 		}
 		pen.color(Color.WHITE);
 		pen.fontSize(8);
