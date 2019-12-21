@@ -61,7 +61,7 @@ public class Bonus extends AbstractMazeResident implements FsmContainer<BonusSta
 	private FsmComponent<BonusState, PacManGameEvent> buildFsmComponent(String name) {
 		StateMachine<BonusState, PacManGameEvent> fsm = buildStateMachine(name);
 		fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
-		return new FsmComponent<>(name, fsm);
+		return new FsmComponent<>(fsm);
 	}
 
 	private StateMachine<BonusState, PacManGameEvent> buildStateMachine(String name) {

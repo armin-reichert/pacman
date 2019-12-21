@@ -108,7 +108,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 	private FsmComponent<IntroState, Void> buildFsmComponent(String name) {
 		StateMachine<IntroState, Void> fsm = buildStateMachine(name);
 		fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
-		return new FsmComponent<>(name, fsm);
+		return new FsmComponent<>(fsm);
 	}
 
 	private StateMachine<IntroState, Void> buildStateMachine(String description) {

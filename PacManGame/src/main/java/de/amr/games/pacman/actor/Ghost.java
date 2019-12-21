@@ -68,7 +68,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState,
 		StateMachine<GhostState, PacManGameEvent> fsm = buildStateMachine(name);
 		fsm.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
-		return new FsmComponent<>(name, fsm);
+		return new FsmComponent<>(fsm);
 	}
 
 	private StateMachine<GhostState, PacManGameEvent> buildStateMachine(String name) {
@@ -95,7 +95,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState,
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir()))
 					.onExit(() -> {
 						enteredNewTile = true;
-						cast.pacMan.ticksSinceLastMeal = 0;
+						cast.pacMan.clearTicksSinceLastMeal();
 					})
 					
 				.state(LEAVING_HOUSE)
@@ -258,7 +258,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState,
 		case DEAD:
 			return 2 * speed(game.level.ghostSpeed);
 		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
+			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name()));
 		}
 	}
 

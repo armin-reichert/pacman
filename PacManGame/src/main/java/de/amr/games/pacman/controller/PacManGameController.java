@@ -566,7 +566,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			}
 		}
 		int timeout = levelNumber < 5 ? sec(4) : sec(3);
-		if (cast.pacMan.ticksSinceLastMeal > timeout) {
+		if (cast.pacMan.ticksSinceLastMeal() > timeout) {
 			LOGGER.info(
 					() -> String.format("%s can leave house: Pac-Man's eat timeout (%d ticks) reached", ghost.name(), timeout));
 			return true;

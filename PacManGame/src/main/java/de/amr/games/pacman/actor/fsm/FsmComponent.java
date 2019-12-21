@@ -29,13 +29,11 @@ import de.amr.statemachine.StateMachine;
  */
 public class FsmComponent<S, E> implements FsmControlled<S, E> {
 
-	public final String name;
 	public final StateMachine<S, E> fsm;
 	public final Set<Consumer<E>> listeners;
 	public Predicate<E> publishedEventIsLogged;
 
-	public FsmComponent(String name, StateMachine<S, E> fsm) {
-		this.name = name;
+	public FsmComponent(StateMachine<S, E> fsm) {
 		this.fsm = fsm;
 		publishedEventIsLogged = event -> true;
 		listeners = new LinkedHashSet<>();
@@ -48,7 +46,7 @@ public class FsmComponent<S, E> implements FsmControlled<S, E> {
 
 	@Override
 	public String name() {
-		return name;
+		return fsm.getDescription();
 	}
 
 	@Override
@@ -63,7 +61,7 @@ public class FsmComponent<S, E> implements FsmControlled<S, E> {
 
 	public void publish(E event) {
 		if (publishedEventIsLogged.test(event)) {
-			LOGGER.info(() -> String.format("'%s' published event '%s'", name, event));
+			LOGGER.info(() -> String.format("%s published event '%s'", name(), event));
 		}
 		listeners.forEach(listener -> listener.accept(event));
 	}

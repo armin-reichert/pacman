@@ -68,7 +68,7 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 		});
 		cast().putOnStage(cast().pacMan);
 		message("Cursor keys");
-		
+
 	}
 
 	@Override
@@ -80,17 +80,17 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 
 	private void handleSteeringChange() {
 		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_M)) {
-			cast().pacMan.setSteering(followsKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
+			cast().pacMan.steering(followsKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
 			message("Cursor keys");
 		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_N)) {
 			cast().pacMan
-					.setSteering(followsKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
+					.steering(followsKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
 			message("Numpad keys");
 		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_A)) {
-			cast().pacMan.setSteering(avoidingGhosts());
+			cast().pacMan.steering(avoidingGhosts());
 			message("Avoiding ghosts");
 		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_R)) {
-			cast().pacMan.setSteering(isMovingRandomlyWithoutTurningBack());
+			cast().pacMan.steering(isMovingRandomlyWithoutTurningBack());
 			message("Random moves");
 		}
 	}

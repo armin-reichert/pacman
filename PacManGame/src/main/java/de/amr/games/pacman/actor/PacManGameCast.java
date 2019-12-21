@@ -67,7 +67,7 @@ public class PacManGameCast {
 
 		setTheme(theme);
 
-		pacMan.always(followsKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
+		pacMan.steering(followsKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		pacMan.setTeleportingDuration(sec(0.25f));
 
 		blinky.eyes = LEFT;
