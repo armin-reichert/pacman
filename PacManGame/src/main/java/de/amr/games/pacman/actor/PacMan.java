@@ -6,10 +6,9 @@ import static de.amr.games.pacman.actor.BonusState.ACTIVE;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.actor.PacManState.ALIVE;
 import static de.amr.games.pacman.actor.PacManState.DEAD;
-import static de.amr.games.pacman.actor.PacManState.DYING;
 import static de.amr.games.pacman.actor.PacManState.HOME;
-import static de.amr.games.pacman.actor.PacManState.HUNGRY;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.model.Direction.UP;
@@ -28,7 +27,6 @@ import de.amr.games.pacman.actor.fsm.FsmContainer;
 import de.amr.games.pacman.actor.fsm.FsmControlled;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
-import de.amr.games.pacman.controller.event.PacManDiedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
@@ -107,20 +105,16 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 						ticksSinceLastMeal = 0;
 					})
 	
-				.state(HUNGRY)
-					.impl(new HungryState())
+				.state(ALIVE)
+					.impl(new AliveState())
 					
-				.state(DYING)
-					.timeoutAfter(sec(4f))
-					.onEntry(() -> {
-						sprites.select("full");
-					})
+				.state(DEAD)
 	
 			.transitions()
 	
-				.when(HOME).then(HUNGRY)
+				.when(HOME).then(ALIVE)
 				
-				.stay(HUNGRY)
+				.stay(ALIVE)
 					.on(PacManGainsPowerEvent.class)
 					.act(() -> {
 						state().setConstantTimer(sec(game.level.pacManPowerSeconds));
@@ -129,11 +123,8 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 								state().getDuration(), state().getDuration() / 60));
 					})
 					
-				.when(HUNGRY).then(DYING)
+				.when(ALIVE).then(DEAD)
 					.on(PacManKilledEvent.class)
-	
-				.when(DYING).then(DEAD)
-					.on(PacManDiedEvent.class)
 	
 		.endStateMachine();
 		/* @formatter:on */
@@ -166,7 +157,7 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 	@Override
 	public float maxSpeed() {
 		switch (getState()) {
-		case HUNGRY:
+		case ALIVE:
 			return hasPower() ? speed(game.level.pacManPowerSpeed) : speed(game.level.pacManSpeed);
 		default:
 			return 0;
@@ -179,14 +170,14 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 	}
 
 	/**
-	 * NOTE: If the application property <code>overflowBug</code> is <code>true</code>, this method
-	 * simulates the bug in the original Arcade game which occurs if Pac-Man points upwards. In that
-	 * case the same number of tiles to the left is added.
+	 * NOTE: If the application property <code>overflowBug</code> is
+	 * <code>true</code>, this method simulates the bug in the original Arcade game
+	 * which occurs if Pac-Man points upwards. In that case the same number of tiles
+	 * to the left is added.
 	 * 
-	 * @param numTiles
-	 *                   number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
-	 *         direction.
+	 * @param numTiles number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor
+	 *         towards his current move direction.
 	 */
 	@Override
 	public Tile tilesAhead(int numTiles) {
@@ -217,13 +208,13 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 	}
 
 	public boolean hasPower() {
-		return is(HUNGRY) && state().getTicksRemaining() > 0;
+		return is(ALIVE) && state().getTicksRemaining() > 0;
 	}
 
 	/*
 	 * Subclass implementing the HUNGRY state.
 	 */
-	private class HungryState extends State<PacManState, PacManGameEvent> {
+	private class AliveState extends State<PacManState, PacManGameEvent> {
 
 		private int digestion;
 
@@ -236,16 +227,13 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 		public void onTick() {
 			if (startsLosingPower()) {
 				fsmComponent.publish(new PacManGettingWeakerEvent());
-			}
-			else if (getTicksRemaining() == 1) {
+			} else if (getTicksRemaining() == 1) {
 				setConstantTimer(0);
 				cast.theme().snd_waza().stop();
 				fsmComponent.publish(new PacManLostPowerEvent());
-			}
-			else if (mustDigest()) {
+			} else if (mustDigest()) {
 				digest();
-			}
-			else {
+			} else {
 				steering().steer(PacMan.this);
 				step();
 				sprites.select("walking-" + moveDir());
@@ -298,8 +286,7 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 				boolean energizer = pacManTile.containsEnergizer();
 				digestion = energizer ? DIGEST_ENERGIZER_TICKS : DIGEST_PELLET_TICKS;
 				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			}
-			else {
+			} else {
 				ticksSinceLastMeal += 1;
 			}
 
