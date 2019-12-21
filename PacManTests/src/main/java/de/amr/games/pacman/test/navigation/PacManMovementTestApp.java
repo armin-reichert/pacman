@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Keyboard;
+import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.PacManGameCast;
@@ -66,6 +67,8 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 			}
 		});
 		cast().putOnStage(cast().pacMan);
+		message("Cursor keys");
+		
 	}
 
 	@Override
@@ -76,19 +79,19 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 	}
 
 	private void handleSteeringChange() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_M)) {
+		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_M)) {
+			cast().pacMan.setSteering(followsKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
+			message("Cursor keys");
+		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_N)) {
 			cast().pacMan
-					.setSteering(followsKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_N)) {
-			cast().pacMan.setSteering(
-					followsKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_A)) {
+					.setSteering(followsKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
+			message("Numpad keys");
+		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_A)) {
 			cast().pacMan.setSteering(avoidingGhosts());
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
+			message("Avoiding ghosts");
+		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_R)) {
 			cast().pacMan.setSteering(isMovingRandomlyWithoutTurningBack());
+			message("Random moves");
 		}
 	}
 
