@@ -27,7 +27,6 @@ import de.amr.easy.game.view.View;
 import de.amr.games.pacman.actor.fsm.FsmComponent;
 import de.amr.games.pacman.actor.fsm.FsmContainer;
 import de.amr.games.pacman.actor.fsm.FsmControlled;
-import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.AbstractPacManGameView;
@@ -40,7 +39,7 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class IntroView extends AbstractPacManGameView implements FsmContainer<IntroState> {
+public class IntroView extends AbstractPacManGameView implements FsmContainer<IntroState, Void> {
 
 	public enum IntroState {
 		LOADING_MUSIC, SCROLLING_LOGO, SHOWING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
@@ -51,7 +50,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 	public final PacManTheme theme;
 
 	private final String name = "[IntroView]";
-	private final FsmComponent<IntroState> fsm;
+	private final FsmComponent<IntroState, Void> fsm;
 	private final Set<View> activeAnimations = new HashSet<>();
 	private final ImageWidget scrollingLogo;
 	private final ChasePacManAnimation chasePacMan;
@@ -102,20 +101,20 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 	}
 
 	@Override
-	public FsmControlled<IntroState> fsmComponent() {
+	public FsmControlled<IntroState, Void> fsmComponent() {
 		return fsm;
 	}
 
-	private FsmComponent<IntroState> buildFsmComponent(String name) {
-		StateMachine<IntroState, PacManGameEvent> fsm = buildStateMachine(name);
+	private FsmComponent<IntroState, Void> buildFsmComponent(String name) {
+		StateMachine<IntroState, Void> fsm = buildStateMachine(name);
 		fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
 		return new FsmComponent<>(name, fsm);
 	}
 
-	private StateMachine<IntroState, PacManGameEvent> buildStateMachine(String description) {
+	private StateMachine<IntroState, Void> buildStateMachine(String description) {
 		return StateMachine.
 		/*@formatter:off*/
-		beginStateMachine(IntroState.class, PacManGameEvent.class)
+		beginStateMachine(IntroState.class, Void.class)
 			.description(description)
 			.initialState(LOADING_MUSIC)
 			.states()
@@ -246,8 +245,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 			if (textAlpha > 160) {
 				textAlphaInc = -2;
 				textAlpha = 160;
-			}
-			else if (textAlpha < 0) {
+			} else if (textAlpha < 0) {
 				textAlphaInc = 2;
 				textAlpha = 0;
 			}

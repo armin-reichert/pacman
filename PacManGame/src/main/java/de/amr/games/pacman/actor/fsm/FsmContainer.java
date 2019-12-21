@@ -2,40 +2,40 @@ package de.amr.games.pacman.actor.fsm;
 
 import java.util.function.Consumer;
 
-import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
 /**
- * This interface is implemented by entities that implement the {@link FsmControlled} interface by
- * delegating to a component implementing that interface.
+ * This interface is implemented by entities that implement the
+ * {@link FsmControlled} interface by delegating to a component implementing
+ * that interface.
  * 
  * @author Armin Reichert
  *
- * @param <S>
- *          state type of the finite-state machine
+ * @param <S> state type of the finite-state machine
+ * @param <E> event type of the finite-state machine
  */
-public interface FsmContainer<S> extends FsmControlled<S> {
+public interface FsmContainer<S, E> extends FsmControlled<S, E> {
 
 	/**
 	 * The component (delegate) implementing the {@link FsmControlled} interface.
 	 * 
 	 * @return delegate component
 	 */
-	FsmControlled<S> fsmComponent();
+	FsmControlled<S, E> fsmComponent();
 
 	@Override
-	default StateMachine<S, PacManGameEvent> fsm() {
+	default StateMachine<S, E> fsm() {
 		return fsmComponent().fsm();
 	}
 
 	@Override
-	default void addGameEventListener(Consumer<PacManGameEvent> listener) {
+	default void addGameEventListener(Consumer<E> listener) {
 		fsmComponent().addGameEventListener(listener);
 	}
 
 	@Override
-	default void removeGameEventListener(Consumer<PacManGameEvent> listener) {
+	default void removeGameEventListener(Consumer<E> listener) {
 		fsmComponent().removeGameEventListener(listener);
 	}
 
@@ -56,12 +56,12 @@ public interface FsmContainer<S> extends FsmControlled<S> {
 	}
 
 	@Override
-	default State<S, PacManGameEvent> state() {
+	default State<S, E> state() {
 		return fsmComponent().state();
 	}
 
 	@Override
-	default void process(PacManGameEvent event) {
+	default void process(E event) {
 		fsmComponent().process(event);
 	}
 }

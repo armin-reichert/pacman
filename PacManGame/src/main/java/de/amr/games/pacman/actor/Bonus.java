@@ -22,16 +22,16 @@ import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.StateMachine;
 
 /**
- * Bonus symbol (fruit or other symbol) that appears at the maze bonus position for around 9
- * seconds. When consumed, the bonus is displayed for 3 seconds as a number representing its value
- * and then disappears.
+ * Bonus symbol (fruit or other symbol) that appears at the maze bonus position
+ * for around 9 seconds. When consumed, the bonus is displayed for 3 seconds as
+ * a number representing its value and then disappears.
  * 
  * @author Armin Reichert
  */
-public class Bonus extends AbstractMazeResident implements FsmContainer<BonusState> {
+public class Bonus extends AbstractMazeResident implements FsmContainer<BonusState, PacManGameEvent> {
 
 	public final PacManGameCast cast;
-	public final FsmComponent<BonusState> fsmComponent;
+	public final FsmComponent<BonusState, PacManGameEvent> fsmComponent;
 	public final BonusSymbol symbol;
 	public final int value;
 
@@ -54,11 +54,11 @@ public class Bonus extends AbstractMazeResident implements FsmContainer<BonusSta
 	}
 
 	@Override
-	public FsmControlled<BonusState> fsmComponent() {
+	public FsmControlled<BonusState, PacManGameEvent> fsmComponent() {
 		return fsmComponent;
 	}
 
-	private FsmComponent<BonusState> buildFsmComponent(String name) {
+	private FsmComponent<BonusState, PacManGameEvent> buildFsmComponent(String name) {
 		StateMachine<BonusState, PacManGameEvent> fsm = buildStateMachine(name);
 		fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
 		return new FsmComponent<>(name, fsm);

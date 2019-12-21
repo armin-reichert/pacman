@@ -44,11 +44,11 @@ import de.amr.statemachine.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends AbstractMazeMover implements FsmContainer<PacManState> {
+public class PacMan extends AbstractMazeMover implements FsmContainer<PacManState, PacManGameEvent> {
 
 	public final PacManGameCast cast;
 	public final PacManGame game;
-	public final FsmComponent<PacManState> fsmComponent;
+	public final FsmComponent<PacManState, PacManGameEvent> fsmComponent;
 	public int ticksSinceLastMeal;
 	private Steering<PacMan> steering;
 
@@ -70,10 +70,10 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 		this.steering = steering;
 	}
 
-	private FsmComponent<PacManState> buildFsmComponent(String name) {
+	private FsmComponent<PacManState, PacManGameEvent> buildFsmComponent(String name) {
 		StateMachine<PacManState, PacManGameEvent> fsm = buildStateMachine();
 		fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
-		FsmComponent<PacManState> component = new FsmComponent<>(name, fsm);
+		FsmComponent<PacManState, PacManGameEvent> component = new FsmComponent<>(name, fsm);
 		component.publishedEventIsLogged = event -> {
 			// do not write log entry when normal pellet is found
 			if (event instanceof FoodFoundEvent) {
@@ -143,7 +143,7 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 	}
 
 	@Override
-	public FsmControlled<PacManState> fsmComponent() {
+	public FsmControlled<PacManState, PacManGameEvent> fsmComponent() {
 		return fsmComponent;
 	}
 

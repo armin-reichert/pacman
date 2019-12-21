@@ -9,32 +9,32 @@ import java.util.function.Predicate;
 
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
 /**
- * Prototypical implementation of the {@link FsmControlled} interface which can be used as a
- * delegate by an entity class.
+ * Prototypical implementation of the {@link FsmControlled} interface which can
+ * be used as a delegate by an entity class.
  * <p>
- * When an entity cannot inherit directly from the {@link StateMachine} class, it can implement the
- * {@link FsmContainer} interface which delegates to an instance of this class.
+ * When an entity cannot inherit directly from the {@link StateMachine} class,
+ * it can implement the {@link FsmContainer} interface which delegates to an
+ * instance of this class.
  * 
  * @author Armin Reichert
  *
- * @param <S>
- *          state (label) type of the FSM
+ * @param <S> state type of the finite-state machine
+ * @param <E> event type of the finite-state machine
  * 
  * @see {@link PacMan}, {@link Ghost}
  */
-public class FsmComponent<S> implements FsmControlled<S> {
+public class FsmComponent<S, E> implements FsmControlled<S, E> {
 
 	public final String name;
-	public final StateMachine<S, PacManGameEvent> fsm;
-	public final Set<Consumer<PacManGameEvent>> listeners;
-	public Predicate<PacManGameEvent> publishedEventIsLogged;
+	public final StateMachine<S, E> fsm;
+	public final Set<Consumer<E>> listeners;
+	public Predicate<E> publishedEventIsLogged;
 
-	public FsmComponent(String name, StateMachine<S, PacManGameEvent> fsm) {
+	public FsmComponent(String name, StateMachine<S, E> fsm) {
 		this.name = name;
 		this.fsm = fsm;
 		publishedEventIsLogged = event -> true;
@@ -42,7 +42,7 @@ public class FsmComponent<S> implements FsmControlled<S> {
 	}
 
 	@Override
-	public StateMachine<S, PacManGameEvent> fsm() {
+	public StateMachine<S, E> fsm() {
 		return fsm;
 	}
 
@@ -52,16 +52,16 @@ public class FsmComponent<S> implements FsmControlled<S> {
 	}
 
 	@Override
-	public void addGameEventListener(Consumer<PacManGameEvent> listener) {
+	public void addGameEventListener(Consumer<E> listener) {
 		listeners.add(listener);
 	}
 
 	@Override
-	public void removeGameEventListener(Consumer<PacManGameEvent> listener) {
+	public void removeGameEventListener(Consumer<E> listener) {
 		listeners.remove(listener);
 	}
 
-	public void publish(PacManGameEvent event) {
+	public void publish(E event) {
 		if (publishedEventIsLogged.test(event)) {
 			LOGGER.info(() -> String.format("'%s' published event '%s'", name, event));
 		}
@@ -85,12 +85,12 @@ public class FsmComponent<S> implements FsmControlled<S> {
 	}
 
 	@Override
-	public State<S, PacManGameEvent> state() {
+	public State<S, E> state() {
 		return fsm.state();
 	}
 
 	@Override
-	public void process(PacManGameEvent event) {
+	public void process(E event) {
 		fsm.process(event);
 	}
 

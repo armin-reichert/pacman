@@ -41,14 +41,14 @@ import de.amr.statemachine.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState> {
+public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState, PacManGameEvent> {
 
 	private final Map<GhostState, Steering<Ghost>> steeringByState = new EnumMap<>(GhostState.class);
 	private final Steering<Ghost> defaultSteering = isHeadingFor(this::targetTile);
 
 	public final PacManGameCast cast;
 	public final PacManGame game;
-	public final FsmComponent<GhostState> fsmComponent;
+	public final FsmComponent<GhostState, PacManGameEvent> fsmComponent;
 	public Direction eyes;
 	public int seat;
 	public GhostState nextState;
@@ -64,7 +64,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		tf.setHeight(Tile.SIZE);
 	}
 
-	private FsmComponent<GhostState> buildFsmComponent(String name) {
+	private FsmComponent<GhostState, PacManGameEvent> buildFsmComponent(String name) {
 		StateMachine<GhostState, PacManGameEvent> fsm = buildStateMachine(name);
 		fsm.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
@@ -194,7 +194,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 	}
 
 	@Override
-	public FsmControlled<GhostState> fsmComponent() {
+	public FsmControlled<GhostState, PacManGameEvent> fsmComponent() {
 		return fsmComponent;
 	}
 
@@ -258,8 +258,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState>
 		case DEAD:
 			return 2 * speed(game.level.ghostSpeed);
 		default:
-			throw new IllegalStateException(
-					String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
+			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name));
 		}
 	}
 
