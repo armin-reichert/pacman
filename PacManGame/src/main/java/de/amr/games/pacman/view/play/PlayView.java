@@ -32,6 +32,7 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameCast;
+import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
@@ -156,11 +157,16 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private String pacManStateText(PacMan pacMan) {
-		String text = pacMan.state().getDuration() != State.ENDLESS
-				? String.format("(%s,%d|%d)", pacMan.state().id(), pacMan.state().getTicksRemaining(),
-						pacMan.state().getDuration())
-				: String.format("(%s,%s)", pacMan.state().id(), INFTY);
-
+		int duration = pacMan.state().getDuration();
+		String text = "";
+		if (pacMan.is(PacManState.ALIVE) && duration != State.ENDLESS && duration > 0) {
+			text += "Powerful";
+		} else {
+			text += pacMan.getState();
+		}
+		if (duration != State.ENDLESS && duration > 0) {
+			text += String.format("(%d|%d)", pacMan.state().getTicksRemaining(), duration);
+		}
 		if (Application.app().settings.getAsBoolean("pacMan.immortable")) {
 			text += "-immortable";
 		}
