@@ -92,7 +92,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private BufferedImage thumbnail(GhostColor color) {
-		return (BufferedImage) theme().spr_ghostColored(color, Direction.RIGHT.ordinal()).scale(12).frame(0);
+		return (BufferedImage) theme().spr_ghostColored(color, Direction.RIGHT.ordinal()).scale(8).frame(0);
 	}
 
 	private Color patternColor(int col, int row) {
