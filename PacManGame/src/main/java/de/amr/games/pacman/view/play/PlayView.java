@@ -155,66 +155,6 @@ public class PlayView extends SimplePlayView {
 		}
 	}
 
-	@Override
-	public void draw(Graphics2D g) {
-		if (showGrid) {
-			g.drawImage(gridImage, 0, 0, null);
-		} else {
-			drawMazeBackground(g);
-		}
-		drawMaze(g);
-		drawInfoText(g);
-		if (showGrid) {
-			drawUpwardsBlockedTileBorders(g);
-			drawSeats(g);
-		}
-		drawScores(g);
-		if (showRoutes) {
-			drawRoutes(g);
-		}
-		drawActors(g);
-		if (showGrid) {
-			drawActorAlignments(g);
-		}
-		if (showStates) {
-			drawActorStates(g);
-			drawGhostDotCounters(g);
-		}
-		if (showFrameRate) {
-			drawFPS(g);
-		}
-	}
-
-	private void drawUpwardsBlockedTileBorders(Graphics2D g) {
-		Stroke normal = g.getStroke();
-		Stroke dashedFine = new BasicStroke(0.2f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 2 }, 0);
-		g.setColor(Color.LIGHT_GRAY);
-		for (int row = 0; row < maze().numRows; ++row) {
-			for (int col = 0; col < maze().numCols; ++col) {
-				if (maze().isNoUpIntersection(maze().tileAt(col, row))) {
-					int x1 = col * Tile.SIZE - Tile.SIZE / 2, y1 = (row - 1) * Tile.SIZE,
-							x2 = (col + 1) * Tile.SIZE + Tile.SIZE / 2, y2 = (row - 1) * Tile.SIZE;
-					g.setStroke(dashedFine);
-					g.drawLine(x1, y1, x2, y2);
-				}
-			}
-		}
-		g.setStroke(normal);
-	}
-
-	private void drawActorStates(Graphics2D g) {
-		if (cast().pacMan.getState() != null && cast().pacMan.visible()) {
-			drawSmallText(g, Color.YELLOW, cast().pacMan.tf.getX(), cast().pacMan.tf.getY(), pacManStateText(cast().pacMan));
-		}
-		cast().ghostsOnStage().filter(Ghost::visible).forEach(ghost -> {
-			drawSmallText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
-		});
-		cast().bonus().ifPresent(bonus -> {
-			String text = String.format("%s,%d|%d", bonus, bonus.state().getTicksRemaining(), bonus.state().getDuration());
-			drawSmallText(g, Color.YELLOW, bonus.tf.getX(), bonus.tf.getY(), text);
-		});
-	}
-
 	private String pacManStateText(PacMan pacMan) {
 		String text = pacMan.state().getDuration() != State.ENDLESS
 				? String.format("(%s,%d|%d)", pacMan.state().id(), pacMan.state().getTicksRemaining(),
@@ -267,11 +207,54 @@ public class PlayView extends SimplePlayView {
 		throw new IllegalArgumentException("Unknown ghost: " + ghost);
 	}
 
+	@Override
+	public void draw(Graphics2D g) {
+		if (showGrid) {
+			g.drawImage(gridImage, 0, 0, null);
+		} else {
+			drawMazeBackground(g);
+		}
+		drawMaze(g);
+		drawInfoText(g);
+		if (showGrid) {
+			drawUpwardsBlockedTileMarkers(g);
+			drawSeats(g);
+		}
+		drawScores(g);
+		if (showRoutes) {
+			drawRoutes(g);
+		}
+		drawActors(g);
+		if (showGrid) {
+			drawActorAlignments(g);
+		}
+		if (showStates) {
+			drawActorStates(g);
+			drawGhostDotCounters(g);
+		}
+		if (showFrameRate) {
+			drawFPS(g);
+		}
+	}
+
 	private void drawSmallText(Graphics2D g, Color color, float x, float y, String text) {
 		g.setColor(color);
 		g.setFont(new Font("Arial Narrow", Font.PLAIN, 5));
 		int sw = g.getFontMetrics().stringWidth(text);
 		g.drawString(text, x - sw / 2, y - Tile.SIZE / 2);
+	}
+
+	private void drawActorStates(Graphics2D g) {
+		if (cast().pacMan.getState() != null && cast().pacMan.visible()) {
+			drawSmallText(g, Color.YELLOW, cast().pacMan.tf.getX(), cast().pacMan.tf.getY(), pacManStateText(cast().pacMan));
+		}
+		cast().ghostsOnStage().filter(Ghost::visible).forEach(ghost -> {
+			drawSmallText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
+		});
+		cast().bonus().ifPresent(bonus -> {
+			String text = String.format("%s,%d|%d", bonus, bonus.state().getTicksRemaining(), bonus.state().getDuration());
+			drawSmallText(g, Color.YELLOW, bonus.tf.getX(), bonus.tf.getY(), text);
+		});
 	}
 
 	private void drawActorAlignments(Graphics2D g) {
@@ -298,6 +281,19 @@ public class PlayView extends SimplePlayView {
 		}
 		g.translate(-actor.tf.getX(), -actor.tf.getY());
 		g.setStroke(normal);
+	}
+
+	private void drawUpwardsBlockedTileMarkers(Graphics2D g) {
+		g.setColor(dimmed(Color.LIGHT_GRAY, 80));
+		for (int row = 0; row < maze().numRows; ++row) {
+			for (int col = 0; col < maze().numCols; ++col) {
+				Tile tile = maze().tileAt(col, row);
+				if (maze().isNoUpIntersection(tile)) {
+					Tile above = maze().tileToDir(tile, Direction.UP);
+					drawArrowHead(g, Direction.DOWN, above.centerX(), above.y());
+				}
+			}
+		}
 	}
 
 	private void drawSeats(Graphics2D g) {
