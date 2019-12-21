@@ -80,18 +80,18 @@ public class PlayView extends SimplePlayView {
 	private boolean showGrid = false;
 	private boolean showStates = false;
 	private BufferedImage gridImage;
-	private BufferedImage pinkySprite, inkySprite, clydeSprite;
+	private BufferedImage pinkyImage, inkyImage, clydeImage;
 
 	public Supplier<State<GhostState, ?>> fnGhostMotionState = () -> null;
 
 	public PlayView(PacManGameCast cast) {
 		super(cast);
-		pinkySprite = dotCounterImage(GhostColor.PINK);
-		inkySprite = dotCounterImage(GhostColor.CYAN);
-		clydeSprite = dotCounterImage(GhostColor.ORANGE);
+		pinkyImage = thumbnail(GhostColor.PINK);
+		inkyImage = thumbnail(GhostColor.CYAN);
+		clydeImage = thumbnail(GhostColor.ORANGE);
 	}
 
-	private BufferedImage dotCounterImage(GhostColor color) {
+	private BufferedImage thumbnail(GhostColor color) {
 		return (BufferedImage) theme().spr_ghostColored(color, Direction.RIGHT.ordinal()).scale(12).frame(0);
 	}
 
@@ -426,10 +426,10 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawGhostDotCounters(Graphics2D g) {
-		drawDotCounter(g, pinkySprite, cast.pinky.dotCounter, 1, 14);
+		drawDotCounter(g, pinkyImage, cast.pinky.dotCounter, 1, 14);
 		drawDotCounter(g, null, game().globalDotCounter, 24, 14);
-		drawDotCounter(g, clydeSprite, cast.clyde.dotCounter, 1, 20);
-		drawDotCounter(g, inkySprite, cast.inky.dotCounter, 24, 20);
+		drawDotCounter(g, clydeImage, cast.clyde.dotCounter, 1, 20);
+		drawDotCounter(g, inkyImage, cast.inky.dotCounter, 24, 20);
 	}
 
 	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row) {
