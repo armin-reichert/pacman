@@ -47,44 +47,35 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 
 	public final int width;
 	public final int height;
-	public final PacManTheme theme;
 
-	private final String name = "[IntroView]";
+	private final PacManTheme theme;
+	private final String name;
 	private final FsmComponent<IntroState, Void> fsm;
 	private final Set<View> activeAnimations = new HashSet<>();
-	private final ImageWidget scrollingLogo;
-	private final ChasePacManAnimation chasePacMan;
-	private final ChaseGhostsAnimation chaseGhosts;
-	private final GhostPointsAnimation ghostPointsAnimation;
-	private final LinkWidget gitHubLink;
+	private ImageWidget scrollingLogo;
+	private ChasePacManAnimation chasePacMan;
+	private ChaseGhostsAnimation chaseGhosts;
+	private GhostPointsAnimation ghostPointsAnimation;
+	private LinkWidget gitHubLink;
+	private CompletableFuture<Void> musicLoading;
 
 	private int textAlpha = -1;
 	private int textAlphaInc;
 
 	public IntroView(PacManTheme theme, int width, int height) {
-
+		this.name = "IntroView";
 		this.theme = theme;
 		this.width = width;
 		this.height = height;
-
 		scrollingLogo = new ImageWidget(Assets.image("logo.png"));
 		scrollingLogo.tf.centerX(width);
-		scrollingLogo.tf.setY(height);
-		scrollingLogo.tf.setVelocityY(-2f);
-		scrollingLogo.setCompletion(() -> scrollingLogo.tf.getY() <= 20);
-
+		scrollingLogo.tf.setY(20);
 		chasePacMan = new ChasePacManAnimation(theme);
-		chasePacMan.setStartPosition(width, 100);
-		chasePacMan.setEndPosition(-chasePacMan.tf.getWidth(), 100);
-
+		chasePacMan.tf.centerX(width);
+		chasePacMan.tf.setY(100);
 		chaseGhosts = new ChaseGhostsAnimation(theme);
-		chaseGhosts.setStartPosition(-chaseGhosts.tf.getWidth(), 200);
-		chaseGhosts.setEndPosition(width, 200);
-
+		chaseGhosts.tf.setPosition(width, 200);
 		ghostPointsAnimation = new GhostPointsAnimation(theme);
-		ghostPointsAnimation.tf.setY(200);
-		ghostPointsAnimation.tf.centerX(width);
-
 		gitHubLink = LinkWidget.create()
 		/*@formatter:off*/
 			.text("https://github.com/armin-reichert/pacman")
@@ -95,9 +86,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 		/*@formatter:on*/
 		gitHubLink.tf.setY(height - 16);
 		gitHubLink.tf.centerX(width);
-
-		fsm = buildFsmComponent(name);
-		fsm.init();
+		fsm = buildFsmComponent();
 	}
 
 	@Override
@@ -105,43 +94,47 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 		return fsm;
 	}
 
-	private FsmComponent<IntroState, Void> buildFsmComponent(String name) {
-		StateMachine<IntroState, Void> fsm = buildStateMachine(name);
+	private FsmComponent<IntroState, Void> buildFsmComponent() {
+		StateMachine<IntroState, Void> fsm = buildStateMachine();
 		fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
 		return new FsmComponent<>(fsm);
 	}
 
-	private StateMachine<IntroState, Void> buildStateMachine(String description) {
+	private StateMachine<IntroState, Void> buildStateMachine() {
 		return StateMachine.
 		/*@formatter:off*/
 		beginStateMachine(IntroState.class, Void.class)
-			.description(description)
+			.description(String.format("[%s]", name))
 			.initialState(LOADING_MUSIC)
 			.states()
 	
 			  .state(LOADING_MUSIC)
 			  	.onEntry(() -> {
-			  		CompletableFuture.runAsync(() -> {
+			  		musicLoading = CompletableFuture.runAsync(() -> {
 			  			theme.music_playing();
 			  			theme.music_gameover();
-			  		}).thenAccept(result -> {
-			  			setState(SCROLLING_LOGO);
 			  		});
 			  	})
 		
 				.state(SCROLLING_LOGO)
 					.onEntry(() -> {
-						theme.snd_insertCoin().play();
+						scrollingLogo.tf.setY(height);
+						scrollingLogo.tf.setVelocityY(-2f);
+						scrollingLogo.setCompletion(() -> scrollingLogo.tf.getY() <= 20);
 						show(scrollingLogo); 
 						scrollingLogo.startAnimation(); 
+						theme.snd_insertCoin().play();
 					})
 					.onTick(() -> {
-						activeAnimations.forEach(animation -> ((Controller) animation).update());
+						scrollingLogo.update();
 					})
-					.onExit(scrollingLogo::stopAnimation)
 	
 				.state(SHOWING_ANIMATIONS)
 					.onEntry(() -> {
+						chasePacMan.setStartPosition(width, 100);
+						chasePacMan.setEndPosition(-chasePacMan.tf.getWidth(), 100);
+						chaseGhosts.setStartPosition(-chaseGhosts.tf.getWidth(), 200);
+						chaseGhosts.setEndPosition(width, 200);
 						show(chasePacMan, chaseGhosts);
 						start(chasePacMan, chaseGhosts);
 					})
@@ -156,8 +149,10 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 				.state(WAITING_FOR_INPUT)
 					.timeoutAfter(sec(10))
 					.onEntry(() -> {
-						show(ghostPointsAnimation, gitHubLink);
+						ghostPointsAnimation.tf.setY(200);
+						ghostPointsAnimation.tf.centerX(width);
 						ghostPointsAnimation.startAnimation();
+						show(ghostPointsAnimation, gitHubLink);
 					})
 					.onTick(() -> {
 						activeAnimations.forEach(animation -> ((Controller) animation).update());
@@ -170,6 +165,12 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 				.state(READY_TO_PLAY)
 					
 			.transitions()
+			
+				.when(LOADING_MUSIC).then(WAITING_FOR_INPUT)
+					.condition(() -> musicLoading.isDone() && app().settings.getAsBoolean("skipIntro"))
+			
+				.when(LOADING_MUSIC).then(SCROLLING_LOGO)
+					.condition(() -> musicLoading.isDone())
 				
 				.when(SCROLLING_LOGO).then(SHOWING_ANIMATIONS)
 					.condition(() -> scrollingLogo.isAnimationCompleted())
@@ -217,35 +218,39 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 	}
 
 	@Override
+	public void init() {
+		super.init();
+		fsmComponent().init();
+	}
+
+	@Override
 	public void update() {
 		super.update();
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
 			setState(READY_TO_PLAY); // exit shortcut
 		}
-		fsm.update();
+		fsmComponent().update();
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
 		g.setColor(new Color(0, 23, 61));
 		g.fillRect(0, 0, width, height);
-		activeAnimations.forEach(animation -> animation.draw(g));
-		drawTexts(g);
-	}
 
-	private void drawTexts(Graphics2D g) {
 		// colors from logo
 		Color orange = new Color(255, 163, 71);
 		// Color pink = new Color(248, 120, 88);
 		Color red = new Color(171, 19, 0);
 		Pen pen = new Pen(g);
 		pen.font(theme.fnt_text());
+
 		switch (getState()) {
 		case LOADING_MUSIC:
 			if (textAlpha > 160) {
 				textAlphaInc = -2;
 				textAlpha = 160;
-			} else if (textAlpha < 0) {
+			}
+			else if (textAlpha < 0) {
 				textAlphaInc = 2;
 				textAlpha = 0;
 			}
@@ -255,10 +260,15 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 			textAlpha += textAlphaInc;
 			break;
 		case SCROLLING_LOGO:
+			activeAnimations.forEach(animation -> animation.draw(g));
 			break;
 		case SHOWING_ANIMATIONS:
+			scrollingLogo.draw(g);
+			activeAnimations.forEach(animation -> animation.draw(g));
 			break;
 		case WAITING_FOR_INPUT:
+			scrollingLogo.draw(g);
+			chasePacMan.draw(g);
 			if (app().clock.getTicks() % sec(1) < sec(0.5f)) {
 				pen.color(Color.WHITE);
 				pen.fontSize(14);
@@ -274,6 +284,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 			pen.draw("2 - Fast", 11, 31);
 			pen.color(selectedSpeed == 3 ? orange : red);
 			pen.draw("3 - Insane", 19, 31);
+			activeAnimations.forEach(animation -> animation.draw(g));
 			break;
 		case READY_TO_PLAY:
 			break;

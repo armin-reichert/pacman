@@ -31,7 +31,7 @@ public class PacManGame {
 	public static final Logger FSM_LOGGER = Logger.getLogger("StateMachineLogger");
 
 	static {
-		FSM_LOGGER.setLevel(Level.OFF);
+		FSM_LOGGER.setLevel(Level.INFO);
 	}
 
 	public static final String[] BOARD = {
