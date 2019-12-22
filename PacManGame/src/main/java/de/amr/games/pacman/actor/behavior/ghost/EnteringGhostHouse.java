@@ -85,4 +85,9 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 			update();
 		}
 	}
+	
+	@Override
+	public boolean onTrack() {
+		return false;
+	}
 }
