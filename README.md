@@ -1,6 +1,6 @@
 # A hopefully comprehensible Pac-Man implementation using finite-state machines        
 
-[![Pac-Man](https://img.youtube.com/vi/NF8ynftis_U/0.jpg)](https://www.youtube.com/watch?v=NF8ynftis_U)
+[![Pac-Man](https://i3.ytimg.com/vi/_3GhJGIOTp4/maxresdefault.jpg)](https://www.youtube.com/watch?v=_3GhJGIOTp4)
 
 ## Pac-Man? Really? How uncool!
 
