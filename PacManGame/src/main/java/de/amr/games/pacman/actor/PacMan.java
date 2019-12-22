@@ -253,8 +253,8 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 		private Optional<PacManGameEvent> findSomethingInteresting() {
 			Tile pacManTile = tile();
 
-			if (!maze().insideBoard(pacManTile) || !visible) {
-				return Optional.empty(); // when teleporting no events are triggered
+			if (teleporting.is(true)) {
+				return Optional.empty(); // when teleporting, no events are triggered
 			}
 
 			/*@formatter:off*/
