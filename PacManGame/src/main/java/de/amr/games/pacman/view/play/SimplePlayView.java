@@ -13,6 +13,7 @@ import java.util.Arrays;
 import de.amr.easy.game.ui.sprites.Animation;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Maze;
@@ -175,12 +176,12 @@ public class SimplePlayView extends AbstractPacManGameView {
 		cast.bonus().ifPresent(bonus -> {
 			bonus.draw(g);
 		});
-		if (cast.onStage(cast.pacMan)) {
+		if (cast.onStage(cast.pacMan) && cast.pacMan.visible()) {
 			cast.pacMan.draw(g);
 		}
 		// draw dead ghosts (numbers) under living ghosts
-		cast.ghostsOnStage().filter(ghost -> ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
-		cast.ghostsOnStage().filter(ghost -> !ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> !ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {

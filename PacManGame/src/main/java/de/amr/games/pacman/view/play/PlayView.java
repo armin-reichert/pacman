@@ -271,6 +271,9 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawActorAlignment(Entity actor, Graphics2D g) {
+		if (!actor.visible()) {
+			return;
+		}
 		Stroke normal = g.getStroke();
 		Stroke fine = new BasicStroke(0.2f);
 		g.setStroke(fine);
