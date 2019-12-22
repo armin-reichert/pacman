@@ -161,12 +161,24 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						}
 					})
 					.onExit(() -> {
-						LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", game.level.number, game.level.ghostKilledInLevel));
+						LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", 
+								game.level.number, game.level.ghostKilledInLevel));
 					})
 				
 				.state(GHOST_DYING)
-					.impl(new GhostDyingState())
 					.timeoutAfter(sec(1))
+					.onEntry(() -> {
+						cast.pacMan.hide();
+					})
+					.onTick(() -> {
+						cast.bonus().ifPresent(Bonus::update);
+						cast.ghostsOnStage()
+							.filter(ghost -> ghost.is(GhostState.DEAD, GhostState.ENTERING_HOUSE))
+							.forEach(Ghost::update);
+					})
+					.onExit(() -> {
+						cast.pacMan.show();
+					})
 				
 				.state(PACMAN_DYING)
 					.timeoutAfter(() -> game.lives > 1 ? sec(6) : sec(4))
@@ -406,28 +418,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (e.energizer) {
 				enqueue(new PacManGainsPowerEvent());
 			}
-		}
-	}
-
-	/**
-	 * "Ghost dying" state implementation.
-	 */
-	private class GhostDyingState extends State<PacManGameState, PacManGameEvent> {
-
-		@Override
-		public void onEntry() {
-			cast.pacMan.hide();
-		}
-
-		@Override
-		public void onTick() {
-			cast.bonus().ifPresent(Bonus::update);
-			cast.ghostsOnStage().filter(ghost -> ghost.is(GhostState.DEAD, GhostState.ENTERING_HOUSE)).forEach(Ghost::update);
-		}
-
-		@Override
-		public void onExit() {
-			cast.pacMan.show();
 		}
 	}
 
