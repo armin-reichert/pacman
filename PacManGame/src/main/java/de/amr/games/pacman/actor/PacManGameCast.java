@@ -68,7 +68,7 @@ public class PacManGameCast {
 		setTheme(theme);
 
 		pacMan.steering(followsKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
-		pacMan.setTeleportingDuration(sec(0.25f));
+		pacMan.setTeleportingDuration(sec(0.5f));
 
 		blinky.eyes = LEFT;
 		blinky.seat = 0;
@@ -91,8 +91,7 @@ public class PacManGameCast {
 		clyde.eyes = UP;
 		clyde.seat = 3;
 		clyde.during(SCATTERING, isHeadingFor(maze().horizonSW));
-		clyde.during(CHASING,
-				isHeadingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
+		clyde.during(CHASING, isHeadingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
 
 		ghosts().forEach(ghost -> {
 			ghost.setTeleportingDuration(sec(0.5f));
@@ -101,8 +100,7 @@ public class PacManGameCast {
 			if (ghost != blinky) {
 				ghost.during(LOCKED, isJumpingUpAndDown(maze(), ghost.seat));
 				ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, ghost.seat));
-			}
-			else {
+			} else {
 				ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, 2));
 			}
 		});
@@ -147,8 +145,9 @@ public class PacManGameCast {
 			ghost.sprites.set("color-" + dir, theme.spr_ghostColored(color, dir.ordinal()));
 			ghost.sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir.ordinal()));
 		});
-		for (int i = 0; i < 4; ++i) {
-			ghost.sprites.set("value-" + i, theme.spr_greenNumber(i));
+		// sprite keys: "value-1", ..., "value-4"
+		for (int i = 1; i <= 4; ++i) {
+			ghost.sprites.set("value-" + i, theme.spr_greenNumber(i - 1));
 		}
 		ghost.sprites.set("frightened", theme.spr_ghostFrightened());
 		ghost.sprites.set("flashing", theme.spr_ghostFlashing());
