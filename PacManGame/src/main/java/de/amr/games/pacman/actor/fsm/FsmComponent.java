@@ -50,12 +50,12 @@ public class FsmComponent<S, E> implements FsmControlled<S, E> {
 	}
 
 	@Override
-	public void addGameEventListener(Consumer<E> listener) {
+	public void addEventListener(Consumer<E> listener) {
 		listeners.add(listener);
 	}
 
 	@Override
-	public void removeGameEventListener(Consumer<E> listener) {
+	public void removeEventListener(Consumer<E> listener) {
 		listeners.remove(listener);
 	}
 

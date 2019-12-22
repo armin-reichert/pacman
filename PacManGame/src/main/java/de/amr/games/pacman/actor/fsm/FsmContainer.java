@@ -30,13 +30,13 @@ public interface FsmContainer<S, E> extends FsmControlled<S, E> {
 	}
 
 	@Override
-	default void addGameEventListener(Consumer<E> listener) {
-		fsmComponent().addGameEventListener(listener);
+	default void addEventListener(Consumer<E> listener) {
+		fsmComponent().addEventListener(listener);
 	}
 
 	@Override
-	default void removeGameEventListener(Consumer<E> listener) {
-		fsmComponent().removeGameEventListener(listener);
+	default void removeEventListener(Consumer<E> listener) {
+		fsmComponent().removeEventListener(listener);
 	}
 
 	@Override

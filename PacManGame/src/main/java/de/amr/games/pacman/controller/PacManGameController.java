@@ -441,7 +441,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		game = new PacManGame();
 		ghostMotionTimer = new GhostMotionTimer(game);
 		cast = new PacManGameCast(game, theme);
-		cast.pacMan.addGameEventListener(this::process);
+		cast.pacMan.addEventListener(this::process);
 		playView = new PlayView(cast);
 		playView.fnGhostMotionState = ghostMotionTimer::state;
 		show(playView);
