@@ -1,14 +1,11 @@
 package de.amr.games.pacman.actor.fsm;
 
-import static de.amr.easy.game.Application.LOGGER;
-
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
-import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.PacMan;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
 
@@ -25,18 +22,19 @@ import de.amr.statemachine.StateMachine;
  * @param <S> state type of the finite-state machine
  * @param <E> event type of the finite-state machine
  * 
- * @see {@link PacMan}, {@link Ghost}
  */
 public class FsmComponent<S, E> implements FsmControlled<S, E> {
 
 	public final StateMachine<S, E> fsm;
 	public final Set<Consumer<E>> listeners;
 	public Predicate<E> publishedEventIsLogged;
+	public Logger logger;
 
 	public FsmComponent(StateMachine<S, E> fsm) {
 		this.fsm = fsm;
 		publishedEventIsLogged = event -> true;
 		listeners = new LinkedHashSet<>();
+		logger = Logger.getGlobal();
 	}
 
 	@Override
@@ -61,7 +59,7 @@ public class FsmComponent<S, E> implements FsmControlled<S, E> {
 
 	public void publish(E event) {
 		if (publishedEventIsLogged.test(event)) {
-			LOGGER.info(() -> String.format("%s published event '%s'", name(), event));
+			logger.info(() -> String.format("%s published event '%s'", name(), event));
 		}
 		listeners.forEach(listener -> listener.accept(event));
 	}
