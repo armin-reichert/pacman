@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.actor.core.MazeResident;
+import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
@@ -69,6 +70,14 @@ public class PacManGameCast {
 
 		pacMan.steering(followsKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		pacMan.setTeleportingDuration(sec(0.5f));
+		// no logging when non-energizer pellet is found
+		pacMan.fsmComponent.publishedEventIsLogged = event -> {
+			if (event instanceof FoodFoundEvent) {
+				FoodFoundEvent foodFound = (FoodFoundEvent) event;
+				return foodFound.energizer;
+			}
+			return true;
+		};
 
 		blinky.eyes = LEFT;
 		blinky.seat = 0;

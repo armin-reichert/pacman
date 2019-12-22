@@ -45,7 +45,7 @@ import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
+import de.amr.games.pacman.controller.event.PacManLosingPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
@@ -258,7 +258,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.act(playingState::onPacManGainsPower)
 					
 				.stay(PLAYING)
-					.on(PacManGettingWeakerEvent.class)
+					.on(PacManLosingPowerEvent.class)
 					.act(playingState::onPacManGettingWeaker)
 					
 				.stay(PLAYING)

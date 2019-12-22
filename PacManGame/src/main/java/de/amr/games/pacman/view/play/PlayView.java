@@ -32,7 +32,6 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameCast;
-import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
@@ -158,11 +157,9 @@ public class PlayView extends SimplePlayView {
 
 	private String pacManStateText(PacMan pacMan) {
 		int duration = pacMan.state().getDuration();
-		String text = "";
-		if (pacMan.is(PacManState.ALIVE) && duration != State.ENDLESS && duration > 0) {
-			text += "Powerful";
-		} else {
-			text += pacMan.getState();
+		String text = pacMan.getState().name();
+		if (pacMan.hasPower()) {
+			text += "+POWER";
 		}
 		if (duration != State.ENDLESS && duration > 0) {
 			text += String.format("(%d|%d)", pacMan.state().getTicksRemaining(), duration);
@@ -299,7 +296,7 @@ public class PlayView extends SimplePlayView {
 				Tile tile = maze().tileAt(col, row);
 				if (maze().isNoUpIntersection(tile)) {
 					Tile above = maze().tileToDir(tile, Direction.UP);
-					drawArrowHead(g, Direction.DOWN, above.centerX(), above.y());
+					drawArrowHead(g, Direction.DOWN, above.centerX(), above.y() - 2);
 				}
 			}
 		}

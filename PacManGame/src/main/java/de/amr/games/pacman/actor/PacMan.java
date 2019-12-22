@@ -29,9 +29,9 @@ import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.controller.event.PacManGettingWeakerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
+import de.amr.games.pacman.controller.event.PacManLosingPowerEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
@@ -48,51 +48,18 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 
 	public final PacManGameCast cast;
 	public final FsmComponent<PacManState, PacManGameEvent> fsmComponent;
-	private int ticksSinceLastMeal;
 	private Steering<PacMan> steering;
+	private boolean power;
+	private boolean losingPower;
+	private int digestionTicks;
+	private int ticksSinceLastMeal;
 
 	public PacMan(PacManGameCast cast) {
 		super("Pac-Man");
 		this.cast = cast;
-		fsmComponent = buildFsmComponent();
-		// no logging if simple pellet is found
-		fsmComponent.publishedEventIsLogged = event -> {
-			if (event instanceof FoodFoundEvent) {
-				FoodFoundEvent foodFound = (FoodFoundEvent) event;
-				return foodFound.energizer;
-			}
-			return true;
-		};
 		tf.setWidth(Tile.SIZE);
 		tf.setHeight(Tile.SIZE);
-	}
-
-	@Override
-	public FsmControlled<PacManState, PacManGameEvent> fsmComponent() {
-		return fsmComponent;
-	}
-
-	public PacManGame game() {
-		return cast.game;
-	}
-
-	@Override
-	public Maze maze() {
-		return cast.game.maze;
-	}
-
-	public int ticksSinceLastMeal() {
-		return ticksSinceLastMeal;
-	}
-
-	public void clearTicksSinceLastMeal() {
-		ticksSinceLastMeal = -1;
-	}
-
-	private FsmComponent<PacManState, PacManGameEvent> buildFsmComponent() {
-		StateMachine<PacManState, PacManGameEvent> fsm = buildStateMachine();
-		fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
-		return new FsmComponent<>(fsm);
+		fsmComponent = buildFsmComponent();
 	}
 
 	private StateMachine<PacManState, PacManGameEvent> buildStateMachine() {
@@ -116,19 +83,55 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 					})
 	
 				.state(ALIVE)
-					.impl(new AliveState())
+					.onEntry(() -> {
+						digestionTicks = 0;
+						power = losingPower = false;
+					})
+	
+					.onTick(() -> {
+						if (digestionTicks > 0) {
+							--digestionTicks;
+							return;
+						}
+						if (power) {
+							// power ending?
+							if (state().getTicksConsumed() == state().getDuration() * 75 / 100) {
+								losingPower = true;
+								fsmComponent.publish(new PacManLosingPowerEvent());
+								return;
+							}
+							// power lost?
+							if (state().getTicksRemaining() == 0) {
+								cast.theme().snd_waza().stop();
+								// "disable timer"
+								state().setConstantTimer(State.ENDLESS);
+								power = losingPower = false;
+								fsmComponent.publish(new PacManLostPowerEvent());
+								return;
+							}
+						}
+						steering().steer(PacMan.this);
+						step();
+						sprites.select("walking-" + moveDir());
+						sprites.current().get().enableAnimation(canMoveForward());
+						if (!teleporting.is(true)) {
+							inspect(tile()).ifPresent(fsmComponent::publish);
+						}
+				})
 					
 			.transitions()
 	
 				.when(HOME).then(ALIVE)
 				
-				.stay(ALIVE)
+				.stay(ALIVE) // Ah, ha, ha, ha, stayin' alive
 					.on(PacManGainsPowerEvent.class)
 					.act(() -> {
+						power = true;
+						// set and start power timer
 						state().setConstantTimer(sec(game().level.pacManPowerSeconds));
+						FSM_LOGGER.info(() -> String.format("Pac-Man gaining power for %d ticks (%.2f sec)", 
+								state().getDuration(), state().getDuration() / 60f));
 						cast.theme().snd_waza().loop();
-						FSM_LOGGER.info(() -> String.format("%s has power for %d ticks (%.2f sec)", 
-								fsmComponent.name(), state().getDuration(), state().getDuration() / 60f));
 					})
 					
 				.when(ALIVE).then(DEAD)
@@ -136,6 +139,12 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 	
 		.endStateMachine();
 		/* @formatter:on */
+	}
+
+	private FsmComponent<PacManState, PacManGameEvent> buildFsmComponent() {
+		StateMachine<PacManState, PacManGameEvent> fsm = buildStateMachine();
+		fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
+		return new FsmComponent<>(fsm);
 	}
 
 	@Override
@@ -150,20 +159,18 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 		fsmComponent.update();
 	}
 
-	// Movement
+	@Override
+	public FsmControlled<PacManState, PacManGameEvent> fsmComponent() {
+		return fsmComponent;
+	}
+
+	public PacManGame game() {
+		return cast.game;
+	}
 
 	@Override
-	public float maxSpeed() {
-		switch (getState()) {
-		case HOME:
-			return 0;
-		case ALIVE:
-			return hasPower() ? speed(game().level.pacManPowerSpeed) : speed(game().level.pacManSpeed);
-		case DEAD:
-			return 0;
-		default:
-			throw new IllegalStateException();
-		}
+	public Maze maze() {
+		return cast.game.maze;
 	}
 
 	@Override
@@ -174,6 +181,20 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 	public void steering(Steering<PacMan> steering) {
 		this.steering = steering;
 		steering.triggerSteering(this);
+	}
+
+	@Override
+	public float maxSpeed() {
+		switch (getState()) {
+		case HOME:
+			return 0;
+		case ALIVE:
+			return speed(power ? game().level.pacManPowerSpeed : game().level.pacManSpeed);
+		case DEAD:
+			return 0;
+		default:
+			throw new IllegalStateException();
+		}
 	}
 
 	/**
@@ -203,92 +224,59 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 		return super.canMoveBetween(tile, neighbor);
 	}
 
-	// TODO when exactly is Pac-Man's power starting to vanish in the original game?
-
-	public boolean hasPower() {
-		return is(ALIVE) && state().getDuration() != State.ENDLESS && state().getTicksRemaining() > 0;
+	public int ticksSinceLastMeal() {
+		return ticksSinceLastMeal;
 	}
 
-	private boolean startsLosingPower() {
-		return hasPower() && state().getTicksConsumed() == state().getDuration() * 66 / 100;
+	public void clearTicksSinceLastMeal() {
+		ticksSinceLastMeal = -1;
+	}
+
+	public boolean hasPower() {
+		return power;
 	}
 
 	public boolean isLosingPower() {
-		return hasPower() && state().getTicksConsumed() >= state().getDuration() * 66 / 100;
+		return losingPower;
 	}
 
-	/**
-	 * Subclass implementing the ALIVE state.
-	 */
-	private class AliveState extends State<PacManState, PacManGameEvent> {
+	private Optional<PacManGameEvent> inspect(Tile tile) {
 
-		/** Ticks Pac-Man must rest after eating a pellet or energizer. */
-		private int digestion;
+		/*@formatter:off*/
+		Optional<PacManGameEvent> ghostCollision = cast.ghostsOnStage()
+			.filter(ghost -> ghost.tile().equals(tile))
+			.filter(ghost -> ghost.is(CHASING, SCATTERING, FRIGHTENED))
+			.filter(Ghost::visible)
+			.findFirst()
+			.map(PacManGhostCollisionEvent::new);
+		/*@formatter:on*/
 
-		@Override
-		public void onEntry() {
-			digestion = 0;
+		if (ghostCollision.isPresent()) {
+			return ghostCollision;
 		}
 
-		@Override
-		public void onTick() {
-			if (startsLosingPower()) {
-				fsmComponent.publish(new PacManGettingWeakerEvent());
-			} else if (getTicksRemaining() == 1) {
-				// power-mode is ending right now
-				cast.theme().snd_waza().stop();
-				setConstantTimer(State.ENDLESS);
-				fsmComponent.publish(new PacManLostPowerEvent());
-			} else if (digestion > 0) {
-				digestion -= 1;
+		/*@formatter:off*/
+		Optional<PacManGameEvent> activeBonus = cast.bonus()
+			.filter(bonus -> tile == maze().bonusTile)
+			.filter(bonus -> bonus.is(ACTIVE))
+			.map(bonus -> new BonusFoundEvent(bonus.symbol, bonus.value));
+		/*@formatter:on*/
+
+		if (activeBonus.isPresent()) {
+			return activeBonus;
+		}
+
+		if (tile.containsFood()) {
+			ticksSinceLastMeal = 0;
+			if (tile.containsEnergizer()) {
+				digestionTicks = DIGEST_ENERGIZER_TICKS;
+				return Optional.of(new FoodFoundEvent(tile, true));
 			} else {
-				steering().steer(PacMan.this);
-				step();
-				sprites.select("walking-" + moveDir());
-				sprites.current().get().enableAnimation(canMoveForward());
-				findSomethingInteresting().ifPresent(fsmComponent::publish);
+				digestionTicks = DIGEST_PELLET_TICKS;
+				return Optional.of(new FoodFoundEvent(tile, false));
 			}
 		}
-
-		private Optional<PacManGameEvent> findSomethingInteresting() {
-			Tile pacManTile = tile();
-
-			if (teleporting.is(true)) {
-				return Optional.empty(); // when teleporting, no events are triggered
-			}
-
-			/*@formatter:off*/
-			Optional<PacManGameEvent> ghostCollision = cast.ghostsOnStage()
-				.filter(Ghost::visible)
-				.filter(ghost -> ghost.tile().equals(pacManTile))
-				.filter(ghost -> ghost.is(CHASING, SCATTERING, FRIGHTENED))
-				.findFirst()
-				.map(PacManGhostCollisionEvent::new);
-			/*@formatter:on*/
-
-			if (ghostCollision.isPresent()) {
-				return ghostCollision;
-			}
-
-			/*@formatter:off*/
-			Optional<PacManGameEvent> bonusEaten = cast.bonus()
-				.filter(bonus -> pacManTile == maze().bonusTile)
-				.filter(bonus -> bonus.is(ACTIVE))
-				.map(bonus -> new BonusFoundEvent(bonus.symbol, bonus.value));
-			/*@formatter:on*/
-
-			if (bonusEaten.isPresent()) {
-				return bonusEaten;
-			}
-
-			if (pacManTile.containsFood()) {
-				++ticksSinceLastMeal;
-				boolean energizer = pacManTile.containsEnergizer();
-				digestion = energizer ? DIGEST_ENERGIZER_TICKS : DIGEST_PELLET_TICKS;
-				return Optional.of(new FoodFoundEvent(pacManTile, energizer));
-			}
-
-			return Optional.empty();
-		}
+		++ticksSinceLastMeal;
+		return Optional.empty();
 	}
 }
