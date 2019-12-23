@@ -95,7 +95,7 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState,
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir()))
 					.onExit(() -> {
 						enteredNewTile = true;
-						cast.pacMan.clearTicksSinceLastMeal();
+						cast.pacMan.clearStarvingTime();
 					})
 					
 				.state(LEAVING_HOUSE)

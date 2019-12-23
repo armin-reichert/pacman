@@ -80,7 +80,7 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 						setNextDir(RIGHT);
 						sprites.forEach(Sprite::resetAnimation);
 						sprites.select("full");
-						clearTicksSinceLastMeal();
+						clearStarvingTime();
 					})
 	
 				.state(ALIVE)
@@ -235,7 +235,7 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 		return ticksSinceLastMeal;
 	}
 
-	public void clearTicksSinceLastMeal() {
+	public void clearStarvingTime() {
 		ticksSinceLastMeal = -1;
 	}
 
