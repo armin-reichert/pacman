@@ -529,5 +529,4 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			}
 		}
 	}
-
 }

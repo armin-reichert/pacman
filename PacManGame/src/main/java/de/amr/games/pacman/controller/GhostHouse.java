@@ -9,15 +9,22 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacManGameCast;
+import de.amr.games.pacman.model.PacManGame;
 
+/**
+ * Implements the rules when the ghosts can leave the ghost house.
+ * 
+ * @author Armin Reichert
+ */
 public class GhostHouse {
 
 	private final PacManGameCast cast;
-	private boolean globalDotCounterEnabled;
+	private final PacManGame game;
 
 	public GhostHouse(PacManGameCast cast) {
 		this.cast = cast;
-		globalDotCounterEnabled = false;
+		game = cast.game;
+		game.globalDotCounterEnabled = false;
 	}
 
 	/**
@@ -34,7 +41,6 @@ public class GhostHouse {
 	 */
 	public boolean canLeaveHouse(Ghost ghost, int levelNumber) {
 		if (ghost == cast.blinky) {
-			LOGGER.info(() -> "Blinky can always leave house immediatley");
 			return true;
 		}
 		Optional<Ghost> nextGhostToLeaveHouse = preferredLockedGhost();
@@ -47,9 +53,9 @@ public class GhostHouse {
 					ghostDotLimit));
 			return true;
 		}
-		if (globalDotCounterEnabled) {
+		if (game.globalDotCounterEnabled) {
 			int globalDotLimit = globalDotLimit(ghost);
-			if (cast.game.globalDotCounter >= globalDotLimit) {
+			if (game.globalDotCounter >= globalDotLimit) {
 				LOGGER.info(() -> String.format("%s can leave house: global dot limit (%d) reached", ghost.name(),
 						globalDotLimit));
 				return true;
@@ -69,13 +75,13 @@ public class GhostHouse {
 	}
 
 	public void enableGlobalDotCounter() {
-		globalDotCounterEnabled = true;
-		cast.game.globalDotCounter = 0;
+		game.globalDotCounterEnabled = true;
+		game.globalDotCounter = 0;
 		LOGGER.info(() -> "Global dot counter enabled and set to zero");
 	}
 
 	public void disableGlobalDotCounter() {
-		globalDotCounterEnabled = false;
+		game.globalDotCounterEnabled = false;
 		LOGGER.info(() -> "Global dot counter disabled (not reset)");
 	}
 
@@ -85,12 +91,12 @@ public class GhostHouse {
 	}
 
 	public void updateDotCounters() {
-		if (globalDotCounterEnabled) {
-			cast.game.globalDotCounter++;
-			LOGGER.fine(() -> String.format("Global dot counter: %d", cast.game.globalDotCounter));
-			if (cast.game.globalDotCounter == 32 && cast.clyde.is(LOCKED)) {
-				globalDotCounterEnabled = false;
-				cast.game.globalDotCounter = 0;
+		if (game.globalDotCounterEnabled) {
+			game.globalDotCounter++;
+			LOGGER.fine(() -> String.format("Global dot counter: %d", game.globalDotCounter));
+			if (game.globalDotCounter == 32 && cast.clyde.is(LOCKED)) {
+				game.globalDotCounterEnabled = false;
+				game.globalDotCounter = 0;
 				LOGGER.info(() -> "Global dot counter reset to zero");
 			}
 		}
