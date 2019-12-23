@@ -16,7 +16,7 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.theme.PacManTheme;
-import de.amr.games.pacman.view.Pen;
+import de.amr.games.pacman.view.core.Pen;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class FollowTargetTilesTestApp extends Application {

@@ -17,8 +17,8 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.PacManTheme;
-import de.amr.games.pacman.view.AbstractPacManGameView;
-import de.amr.games.pacman.view.Pen;
+import de.amr.games.pacman.view.core.AbstractPacManGameView;
+import de.amr.games.pacman.view.core.Pen;
 
 /**
  * Simple play view providing core functionality for playing.

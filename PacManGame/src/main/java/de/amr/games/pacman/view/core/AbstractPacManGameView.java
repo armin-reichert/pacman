@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view;
+package de.amr.games.pacman.view.core;
 
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
