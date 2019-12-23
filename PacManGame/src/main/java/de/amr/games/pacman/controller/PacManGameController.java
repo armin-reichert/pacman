@@ -22,9 +22,7 @@ import static de.amr.games.pacman.model.Timing.sec;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.util.Optional;
 import java.util.logging.Level;
-import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
@@ -62,16 +60,17 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
+		implements VisualController {
 
 	private PacManGame game;
 	private PacManTheme theme;
 	private PacManGameCast cast;
 	private GhostMotionTimer ghostMotionTimer;
+	private GhostHouse ghostHouse;
 	private View currentView;
 	private IntroView introView;
 	private PlayView playView;
-	public boolean globalDotCounterEnabled;
 
 	public PacManGameController(PacManTheme theme) {
 		super(PacManGameState.class);
@@ -81,6 +80,36 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		traceTo(PacManGame.FSM_LOGGER, () -> 60);
 	}
 
+	private void getReadyForPlaying() {
+		game = new PacManGame();
+		cast = new PacManGameCast(game, theme);
+		cast.pacMan.addEventListener(this::process);
+		ghostMotionTimer = new GhostMotionTimer(game);
+		ghostHouse = new GhostHouse(cast);
+		playView = new PlayView(cast, app().settings.width, app().settings.height);
+		playView.fnGhostMotionState = ghostMotionTimer::state;
+		selectView(playView);
+	}
+
+	@Override
+	public View currentView() {
+		return currentView;
+	}
+
+	@Override
+	public void update() {
+		getInput();
+		super.update();
+		currentView.update();
+	}
+
+	private void getInput() {
+		handleToggleStateMachineLogging();
+		handleToggleGhostFrightenedBehavior();
+		handleToggleOverflowBug();
+		handleCheats();
+	}
+
 	public void startIntro() {
 		setState(INTRO);
 	}
@@ -88,8 +117,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private PlayingState playingState() {
 		return state(PLAYING);
 	}
-
-	// The finite state machine
 
 	private void buildStateMachine() {
 		//@formatter:off
@@ -116,7 +143,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						playView.init();
 						playView.message("Ready!", Color.YELLOW);
 						playView.setShowScores(true);
-						globalDotCounterEnabled = false;
+						ghostHouse.disableGlobalDotCounter();
 						game.globalDotCounter = 0;
 					})
 					.onTick(() -> {
@@ -154,7 +181,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 							game.enterLevel(game.level.number + 1);
 							cast.actorsOnStage().forEach(MazeResident::init);
 							playView.init(); // stops flashing
-							resetGhostDotCounters();
+							ghostHouse.resetGhostDotCounters();
 						} 
 						else if (state().getTicksRemaining() < sec(1.8f)) {
 							cast.ghostsOnStage().forEach(Ghost::update);
@@ -233,7 +260,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			
 				.when(INTRO).then(GETTING_READY)
 					.condition(() -> introView.isComplete())
-					.act(this::createPlayingStage)
+					.act(this::getReadyForPlaying)
 				
 				.when(GETTING_READY).then(START_PLAYING)
 					.onTimeout()
@@ -325,13 +352,16 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			cast.ghosts().forEach(ghost -> ghost.nextState = ghostMotionTimer.getState());
 			Iterable<Ghost> ghosts = cast.ghostsOnStage()::iterator;
 			for (Ghost ghost : ghosts) {
-				if (ghost.is(LOCKED) && canLeaveHouse(ghost, cast.game.level.number)) {
+				if (ghost.is(LOCKED) && ghostHouse.canLeaveHouse(ghost, cast.game.level.number)) {
 					ghost.process(new GhostUnlockedEvent());
-				} else if (ghost.is(CHASING) && ghostMotionTimer.is(SCATTERING)) {
+				}
+				else if (ghost.is(CHASING) && ghostMotionTimer.is(SCATTERING)) {
 					ghost.process(new StartScatteringEvent());
-				} else if (ghost.is(SCATTERING) && ghostMotionTimer.is(CHASING)) {
+				}
+				else if (ghost.is(SCATTERING) && ghostMotionTimer.is(CHASING)) {
 					ghost.process(new StartChasingEvent());
-				} else {
+				}
+				else {
 					ghost.update();
 				}
 			}
@@ -341,7 +371,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			PacManGhostCollisionEvent e = (PacManGhostCollisionEvent) event;
 			if (e.ghost.is(CHASING, SCATTERING)) {
 				enqueue(new PacManKilledEvent(e.ghost));
-			} else if (e.ghost.is(FRIGHTENED)) {
+			}
+			else if (e.ghost.is(FRIGHTENED)) {
 				enqueue(new GhostKilledEvent(e.ghost));
 			}
 		}
@@ -352,7 +383,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			theme.music_playing().stop();
 			cast.pacMan.process(event);
 			playView.energizerBlinking(false);
-			enableGlobalDotCounter();
+			ghostHouse.enableGlobalDotCounter();
 		}
 
 		private void onPacManGainsPower(PacManGameEvent event) {
@@ -400,7 +431,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			int points = game.eatFoodAt(e.tile);
 			int livesBeforeScoring = game.lives;
 			game.score(points);
-			updateDotCounters();
+			ghostHouse.updateDotCounters();
 			theme.snd_eatPill().play();
 			if (game.lives > livesBeforeScoring) {
 				theme.snd_extraLife().play();
@@ -412,7 +443,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (game.isBonusScoreReached()) {
 				cast.addBonus();
 				cast.bonus().ifPresent(bonus -> {
-					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus, bonus.state().getDuration() / 60f));
+					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus,
+							bonus.state().getDuration() / 60f));
 				});
 			}
 			if (e.energizer) {
@@ -430,34 +462,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 	}
 
-	@Override
-	public View currentView() {
-		return currentView;
-	}
-
 	// Controller methods
-
-	private void createPlayingStage() {
-		game = new PacManGame();
-		ghostMotionTimer = new GhostMotionTimer(game);
-		cast = new PacManGameCast(game, theme);
-		cast.pacMan.addEventListener(this::process);
-		playView = new PlayView(cast, app().settings.width, app().settings.height);
-		playView.fnGhostMotionState = ghostMotionTimer::state;
-		selectView(playView);
-	}
-
-	@Override
-	public void update() {
-		super.update();
-		handleToggleStateMachineLogging();
-		handleToggleGhostFrightenedBehavior();
-		handleToggleOverflowBug();
-		handleCheats();
-		if (currentView != null) {
-			currentView.update();
-		}
-	}
 
 	// Input
 
@@ -475,7 +480,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_E)) {
 			game.maze.tiles().filter(Tile::containsPellet).forEach(tile -> {
 				game.eatFoodAt(tile);
-				updateDotCounters();
+				ghostHouse.updateDotCounters();
 			});
 			LOGGER.info(() -> "All pellets eaten");
 		}
@@ -515,7 +520,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				app().settings.set("ghost.originalBehavior", false);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isFleeingToSafeCornerFrom(cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
-			} else {
+			}
+			else {
 				app().settings.set("ghost.originalBehavior", true);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack()));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
@@ -523,96 +529,4 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 	}
 
-	// Ghost house rules
-
-	/**
-	 * Determines if the given ghost can leave the ghost house.
-	 * 
-	 * @param ghost       a ghost
-	 * @param levelNumber the level number
-	 * 
-	 * @see <a href=
-	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
-	 *      Dossier</a>
-	 */
-	private boolean canLeaveHouse(Ghost ghost, int levelNumber) {
-		if (ghost == cast.blinky) {
-			LOGGER.info(() -> "Blinky can always leave house immediatley");
-			return true;
-		}
-		Optional<Ghost> nextGhostToLeaveHouse = preferredLockedGhost();
-		if (!nextGhostToLeaveHouse.isPresent() || nextGhostToLeaveHouse.get() != ghost) {
-			return false;
-		}
-		int ghostDotLimit = ghostDotLimit(ghost, levelNumber);
-		if (ghost.dotCounter >= ghostDotLimit) {
-			LOGGER
-					.info(() -> String.format("%s can leave house: ghost's dot limit (%d) reached", ghost.name(), ghostDotLimit));
-			return true;
-		}
-		if (globalDotCounterEnabled) {
-			int globalDotLimit = globalDotLimit(ghost);
-			if (game.globalDotCounter >= globalDotLimit) {
-				LOGGER.info(
-						() -> String.format("%s can leave house: global dot limit (%d) reached", ghost.name(), globalDotLimit));
-				return true;
-			}
-		}
-		int timeout = levelNumber < 5 ? sec(4) : sec(3);
-		if (cast.pacMan.ticksSinceLastMeal() > timeout) {
-			LOGGER.info(
-					() -> String.format("%s can leave house: Pac-Man's eat timeout (%d ticks) reached", ghost.name(), timeout));
-			return true;
-		}
-		return false;
-	}
-
-	private Optional<Ghost> preferredLockedGhost() {
-		return Stream.of(cast.pinky, cast.inky, cast.clyde).filter(ghost -> ghost.is(LOCKED)).findFirst();
-	}
-
-	private void enableGlobalDotCounter() {
-		globalDotCounterEnabled = true;
-		game.globalDotCounter = 0;
-		LOGGER.info(() -> "Global dot counter enabled and set to zero");
-	}
-
-	private void resetGhostDotCounters() {
-		cast.ghosts().forEach(ghost -> ghost.dotCounter = 0);
-		LOGGER.info(() -> "Ghost dot counters enabled and set to zero");
-	}
-
-	private void updateDotCounters() {
-		if (globalDotCounterEnabled) {
-			game.globalDotCounter++;
-			LOGGER.fine(() -> String.format("Global dot counter: %d", game.globalDotCounter));
-			if (game.globalDotCounter == 32 && cast.clyde.is(LOCKED)) {
-				globalDotCounterEnabled = false;
-				game.globalDotCounter = 0;
-				LOGGER.info(() -> "Global dot counter reset to zero");
-			}
-		} else {
-			preferredLockedGhost().ifPresent(ghost -> {
-				ghost.dotCounter++;
-				LOGGER.fine(() -> String.format("%s's dot counter: %d", ghost.name(), ghost.dotCounter));
-			});
-		}
-	}
-
-	private int ghostDotLimit(Ghost ghost, int levelNumber) {
-		if (ghost == cast.pinky) {
-			return 0;
-		}
-		if (ghost == cast.inky) {
-			return levelNumber == 1 ? 30 : 0;
-		}
-		if (ghost == cast.clyde) {
-			return levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
-		}
-		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");
-	}
-
-	private int globalDotLimit(Ghost ghost) {
-		return (ghost == cast.pinky) ? 7 : (ghost == cast.inky) ? 17 : (ghost == cast.clyde) ? 32 : 0;
-	}
 }
