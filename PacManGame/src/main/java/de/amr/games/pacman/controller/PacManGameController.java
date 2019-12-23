@@ -353,7 +353,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			cast.ghosts().forEach(ghost -> ghost.nextState = ghostMotionTimer.getState());
 			Iterable<Ghost> ghosts = cast.ghostsOnStage()::iterator;
 			for (Ghost ghost : ghosts) {
-				if (ghost.is(LOCKED) && ghostHouse.canLeaveHouse(ghost, cast.game.level.number)) {
+				if (ghost.is(LOCKED) && ghostHouse.isReleasing(ghost)) {
 					ghost.process(new GhostUnlockedEvent());
 				}
 				else if (ghost.is(CHASING) && ghostMotionTimer.is(SCATTERING)) {

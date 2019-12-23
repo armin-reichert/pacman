@@ -231,7 +231,7 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 		return super.canMoveBetween(tile, neighbor);
 	}
 
-	public int ticksSinceLastMeal() {
+	public int starvingTime() {
 		return ticksSinceLastMeal;
 	}
 
