@@ -40,8 +40,8 @@ class EscapeIntoCornerTestUI extends PlayView implements VisualController {
 
 	public EscapeIntoCornerTestUI(PacManGame game, PacManGameCast cast) {
 		super(cast);
-		setShowRoutes(true);
-		setShowStates(true);
+		showRoutes(true);
+		showStates(true);
 		setShowScores(false);
 	}
 

@@ -50,10 +50,10 @@ class EnterGhostHouseTestUI extends PlayView implements VisualController {
 		super(cast);
 		maze = cast.game.maze;
 		inky = cast.inky;
-		setShowRoutes(true);
-		setShowStates(true);
+		showRoutes(true);
+		showStates(true);
 		setShowScores(false);
-		setShowGrid(true);
+		showGrid(true);
 	}
 
 	@Override

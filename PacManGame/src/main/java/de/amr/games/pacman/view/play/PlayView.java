@@ -43,12 +43,12 @@ import de.amr.statemachine.core.State;
  * An extended play view.
  * 
  * <p>
- * Features:
+ * Commands:
  * <ul>
- * <li>Can display grid and alignment of actors (key 'g')
- * <li>Can display actor state (key 's')
- * <li>Can display actor routes (key 'r')
- * <li>Can switch ghosts on and off (keys 'b', 'p', 'i', 'c')
+ * <li>switch ghosts on/off (keys 'b', 'p', 'i', 'c')
+ * <li>display grid, ghosthouse seats and alignment of actors (key 'g')
+ * <li>display actor states and dot counters (key 's')
+ * <li>display actor routes (key 'r')
  * </ul>
  * 
  * @author Armin Reichert
@@ -56,21 +56,6 @@ import de.amr.statemachine.core.State;
 public class PlayView extends SimplePlayView {
 
 	private static final String INFTY = Character.toString('\u221E');
-
-	private BufferedImage createGridImage(Maze maze) {
-		GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-				.getDefaultConfiguration();
-		BufferedImage img = gc.createCompatibleImage(maze.numCols * Tile.SIZE, maze.numRows * Tile.SIZE + 1,
-				Transparency.TRANSLUCENT);
-		Graphics2D g = img.createGraphics();
-		for (int row = 0; row < maze.numRows; ++row) {
-			for (int col = 0; col < maze.numCols; ++col) {
-				g.setColor(patternColor(col, row));
-				g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
-			}
-		}
-		return img;
-	}
 
 	private static Color dimmed(Color color, int alpha) {
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
@@ -95,33 +80,20 @@ public class PlayView extends SimplePlayView {
 		super(cast, app().settings.width, app().settings.height);
 	}
 
-	private BufferedImage ghostImage(GhostColor color) {
-		return (BufferedImage) theme().spr_ghostColored(color, Direction.RIGHT.ordinal()).frame(0);
-	}
-
-	private Color patternColor(int col, int row) {
-		return (row + col) % 2 == 0 ? Color.BLACK : new Color(30, 30, 30);
-	}
-
-	@Override
-	protected Color cellBackground(int col, int row) {
-		return showGrid ? patternColor(col, row) : super.cellBackground(col, row);
-	}
-
-	public void setShowRoutes(boolean showRoutes) {
+	public void showRoutes(boolean showRoutes) {
 		this.showRoutes = showRoutes;
 		cast().pacMan.requireTargetPath = showRoutes;
 		cast().ghosts().forEach(ghost -> ghost.requireTargetPath = showRoutes);
 	}
 
-	public void setShowGrid(boolean showGrid) {
+	public void showGrid(boolean showGrid) {
 		this.showGrid = showGrid;
 		if (showGrid && gridImage == null) {
 			gridImage = createGridImage(maze());
 		}
 	}
 
-	public void setShowStates(boolean showStates) {
+	public void showStates(boolean showStates) {
 		this.showStates = showStates;
 	}
 
@@ -129,13 +101,13 @@ public class PlayView extends SimplePlayView {
 	public void update() {
 		super.update();
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_G)) {
-			setShowGrid(!showGrid);
+			showGrid(!showGrid);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_S)) {
-			setShowStates(!showStates);
+			showStates(!showStates);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
-			setShowRoutes(!showRoutes);
+			showRoutes(!showRoutes);
 		}
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
 			toggleGhost(cast().blinky);
@@ -149,6 +121,64 @@ public class PlayView extends SimplePlayView {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_C)) {
 			toggleGhost(cast().clyde);
 		}
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		if (showGrid) {
+			g.drawImage(gridImage, 0, 0, null);
+		} else {
+			drawMazeBackground(g);
+		}
+		drawMaze(g);
+		drawInfoText(g);
+		if (showGrid) {
+			drawUpwardsBlockedTileMarkers(g);
+			drawSeats(g);
+		}
+		drawScores(g);
+		if (showRoutes) {
+			drawRoutes(g);
+		}
+		drawActors(g);
+		if (showGrid) {
+			drawActorAlignments(g);
+		}
+		if (showStates) {
+			drawActorStates(g);
+			drawGhostDotCounters(g);
+		}
+		if (showFrameRate) {
+			drawFPS(g);
+		}
+	}
+
+	private BufferedImage createGridImage(Maze maze) {
+		GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+				.getDefaultConfiguration();
+		BufferedImage img = gc.createCompatibleImage(maze.numCols * Tile.SIZE, maze.numRows * Tile.SIZE + 1,
+				Transparency.TRANSLUCENT);
+		Graphics2D g = img.createGraphics();
+		for (int row = 0; row < maze.numRows; ++row) {
+			for (int col = 0; col < maze.numCols; ++col) {
+				g.setColor(patternColor(col, row));
+				g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
+			}
+		}
+		return img;
+	}
+
+	private BufferedImage ghostImage(GhostColor color) {
+		return (BufferedImage) theme().spr_ghostColored(color, Direction.RIGHT.ordinal()).frame(0);
+	}
+
+	private Color patternColor(int col, int row) {
+		return (row + col) % 2 == 0 ? Color.BLACK : new Color(30, 30, 30);
+	}
+
+	@Override
+	protected Color cellBackground(int col, int row) {
+		return showGrid ? patternColor(col, row) : super.cellBackground(col, row);
 	}
 
 	private void toggleGhost(Ghost ghost) {
@@ -212,36 +242,6 @@ public class PlayView extends SimplePlayView {
 		if (ghost == cast().clyde)
 			return Color.ORANGE;
 		throw new IllegalArgumentException("Unknown ghost: " + ghost);
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
-		if (showGrid) {
-			g.drawImage(gridImage, 0, 0, null);
-		} else {
-			drawMazeBackground(g);
-		}
-		drawMaze(g);
-		drawInfoText(g);
-		if (showGrid) {
-			drawUpwardsBlockedTileMarkers(g);
-			drawSeats(g);
-		}
-		drawScores(g);
-		if (showRoutes) {
-			drawRoutes(g);
-		}
-		drawActors(g);
-		if (showGrid) {
-			drawActorAlignments(g);
-		}
-		if (showStates) {
-			drawActorStates(g);
-			drawGhostDotCounters(g);
-		}
-		if (showFrameRate) {
-			drawFPS(g);
-		}
 	}
 
 	private void drawSmallText(Graphics2D g, Color color, float x, float y, String text) {

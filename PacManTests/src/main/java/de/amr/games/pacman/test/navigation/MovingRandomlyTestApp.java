@@ -45,10 +45,10 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 
 	public MovingRandomlyTestUI(PacManGameCast cast) {
 		super(cast);
-		setShowRoutes(true);
-		setShowStates(true);
+		showRoutes(true);
+		showStates(true);
 		setShowScores(false);
-		setShowGrid(true);
+		showGrid(true);
 	}
 
 	@Override
