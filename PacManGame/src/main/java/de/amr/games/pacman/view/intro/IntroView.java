@@ -174,9 +174,6 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 				.when(LOADING_MUSIC).then(READY_TO_PLAY)
 					.condition(() -> musicLoading.isDone() && app().settings.getAsBoolean("PacManApp.skipIntro"))
 			
-				.when(LOADING_MUSIC).then(WAITING_FOR_INPUT)
-					.condition(() -> musicLoading.isDone())
-			
 				.when(LOADING_MUSIC).then(SCROLLING_LOGO)
 					.condition(() -> musicLoading.isDone())
 				
