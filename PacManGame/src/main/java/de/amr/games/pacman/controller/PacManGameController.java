@@ -172,6 +172,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onEntry(() -> {
 						theme.snd_clips_all().forEach(Sound::stop);
 						cast.pacMan.sprites.select("full");
+						ghostHouse.resetGhostDotCounters();
 					})
 					.onTick(() -> {
 						if (state().getTicksConsumed() == sec(2)) {
@@ -182,7 +183,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 							game.enterLevel(game.level.number + 1);
 							cast.actorsOnStage().forEach(MazeResident::init);
 							playView.init(); // stops flashing
-							ghostHouse.resetGhostDotCounters();
 						} 
 						else if (state().getTicksRemaining() < sec(1.8f)) {
 							cast.ghostsOnStage().forEach(Ghost::update);

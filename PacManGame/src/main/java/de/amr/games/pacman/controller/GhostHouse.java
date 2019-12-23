@@ -99,6 +99,7 @@ public class GhostHouse {
 		if (!ghostToRelease.isPresent() || ghostToRelease.get() != ghost) {
 			return false;
 		}
+		int pacManStarvingTimeLimit = game.level.number < 5 ? sec(4) : sec(3);
 		if (game.globalDotCounterEnabled) {
 			int globalDotLimit = globalDotLimit(ghost);
 			if (game.globalDotCounter >= globalDotLimit) {
@@ -106,9 +107,10 @@ public class GhostHouse {
 						globalDotLimit));
 				return true;
 			}
-			if (pacManStarvingTimeLimitReached()) {
+			if (pacMan.starvingTime() > pacManStarvingTimeLimit) {
 				LOGGER
-						.info(() -> String.format("%s can leave house: Pac-Man's starving timer expired", ghost.name()));
+						.info(() -> String.format("%s can leave house: Pac-Man's starving time limit reached (%d ticks)",
+								ghost.name(), pacManStarvingTimeLimit));
 				return true;
 			}
 			return false;
@@ -119,15 +121,12 @@ public class GhostHouse {
 					ghostDotLimit));
 			return true;
 		}
-		if (pacManStarvingTimeLimitReached()) {
-			LOGGER.info(() -> String.format("%s can leave house: Pac-Man's eat timeout reached", ghost.name()));
+		if (pacMan.starvingTime() > pacManStarvingTimeLimit) {
+			LOGGER.info(() -> String.format("%s can leave house: Pac-Man's starving time limit reached (%d ticks)",
+					ghost.name(), pacManStarvingTimeLimit));
 			return true;
 		}
 		return false;
-	}
-
-	private boolean pacManStarvingTimeLimitReached() {
-		return pacMan.starvingTime() > (game.level.number < 5 ? sec(4) : sec(3));
 	}
 
 	public void enableGlobalDotCounter() {
