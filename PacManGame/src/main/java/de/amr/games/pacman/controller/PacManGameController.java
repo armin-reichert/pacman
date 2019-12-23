@@ -146,7 +146,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						playView.message("Ready!", Color.YELLOW);
 						playView.setShowScores(true);
 						ghostHouse.disableGlobalDotCounter();
-						ghostHouse.globalDotCounter = 0;
+						ghostHouse.resetGlobalDotCounter();
 					})
 					.onTick(() -> {
 						cast.ghostsOnStage().forEach(Ghost::update);

@@ -32,8 +32,8 @@ public class GhostHouse {
 	private final PacManGame game;
 	private final PacMan pacMan;
 	private final Ghost blinky, pinky, inky, clyde;
-	public boolean globalDotCounterEnabled;
-	public int globalDotCounter;
+	private boolean globalDotCounterEnabled;
+	private int globalDotCounter;
 
 	public GhostHouse(PacManGameCast cast) {
 		game = cast.game;
@@ -131,6 +131,14 @@ public class GhostHouse {
 		return false;
 	}
 
+	public int globalDotCounter() {
+		return globalDotCounter;
+	}
+
+	public void resetGlobalDotCounter() {
+		globalDotCounter = 0;
+	}
+
 	public void enableGlobalDotCounter() {
 		globalDotCounterEnabled = true;
 		globalDotCounter = 0;
@@ -145,5 +153,9 @@ public class GhostHouse {
 	public void resetGhostDotCounters() {
 		pinky.dotCounter = inky.dotCounter = clyde.dotCounter = 0;
 		LOGGER.info(() -> "Ghost dot counters enabled and set to zero");
+	}
+
+	public boolean isGlobalDotCounterEnabled() {
+		return globalDotCounterEnabled;
 	}
 }
