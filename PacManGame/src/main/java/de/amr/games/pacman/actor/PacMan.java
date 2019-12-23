@@ -74,6 +74,7 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 	
 				.state(HOME)
 					.onEntry(() -> {
+						power = losingPower = false;
 						placeAtTile(maze().pacManHome, Tile.SIZE / 2, 0);
 						setMoveDir(RIGHT);
 						setNextDir(RIGHT);
@@ -118,6 +119,12 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 							inspect(tile()).ifPresent(fsmComponent::publish);
 						}
 				})
+					
+				.state(DEAD)
+					.onEntry(() -> {
+						power = losingPower = false;
+						digestionTicks = 0;
+					})
 					
 			.transitions()
 	
