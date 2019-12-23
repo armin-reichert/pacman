@@ -3,6 +3,8 @@ package de.amr.games.pacman.test.navigation;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.behavior.Steerings.isHeadingFor;
 
+import java.util.Optional;
+
 import de.amr.easy.game.Application;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
@@ -63,7 +65,8 @@ class OutsideTileTestUI extends PlayView implements VisualController {
 	}
 
 	@Override
-	public View currentView() {
-		return this;
+	public Optional<View> currentView() {
+		return Optional.of(this);
 	}
+
 }

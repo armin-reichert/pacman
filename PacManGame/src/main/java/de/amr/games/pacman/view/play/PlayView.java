@@ -199,7 +199,7 @@ public class PlayView extends SimplePlayView {
 		if (duration != State.ENDLESS && duration > 0) {
 			text += String.format("(%d|%d)", pacMan.state().getTicksRemaining(), duration);
 		}
-		if (Application.app().settings.getAsBoolean("pacMan.immortable")) {
+		if (Application.app().settings.getAsBoolean("PacMan.immortable")) {
 			text += "-immortable";
 		}
 		return text;
@@ -390,7 +390,7 @@ public class PlayView extends SimplePlayView {
 				Direction pacManDir = cast().pacMan.moveDir();
 				int s = Tile.SIZE / 2; // size of target square
 				g.setColor(Color.GRAY);
-				if (app().settings.getAsBoolean("overflowBug") && pacManDir == Direction.UP) {
+				if (app().settings.getAsBoolean("PacMan.overflowBug") && pacManDir == Direction.UP) {
 					Tile twoAhead = maze().tileToDir(pacManTile, pacManDir, 2);
 					Tile twoLeft = maze().tileToDir(twoAhead, Direction.LEFT, 2);
 					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();

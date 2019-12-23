@@ -7,6 +7,7 @@ import static de.amr.games.pacman.actor.behavior.Steerings.takingShortestPath;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Keyboard;
@@ -97,7 +98,8 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 	}
 
 	@Override
-	public View currentView() {
-		return this;
+	public Optional<View> currentView() {
+		return Optional.of(this);
 	}
+
 }

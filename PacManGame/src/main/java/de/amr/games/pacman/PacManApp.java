@@ -24,10 +24,10 @@ public class PacManApp extends Application {
 		settings.height = 36 * Tile.SIZE;
 		settings.scale = 2;
 		settings.title = "Armin's Pac-Man";
-		settings.set("overflowBug", true);
-		settings.set("skipIntro", true);
-		settings.set("ghost.originalBehavior", true);
-		settings.set("pacMan.immortable", false);
+		settings.set("PacManApp.skipIntro", true);
+		settings.set("Ghost.fleeRandomly", true);
+		settings.set("PacMan.overflowBug", true);
+		settings.set("PacMan.immortable", false);
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.behavior.Steerings.isMovingRandomlyWithoutTurningBack;
 
 import java.awt.event.KeyEvent;
+import java.util.Optional;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Keyboard;
@@ -78,7 +79,8 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 	}
 
 	@Override
-	public View currentView() {
-		return this;
+	public Optional<View> currentView() {
+		return Optional.of(this);
 	}
+
 }

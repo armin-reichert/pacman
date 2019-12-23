@@ -22,6 +22,7 @@ import static de.amr.games.pacman.model.Timing.sec;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import de.amr.easy.game.assets.Sound;
@@ -92,8 +93,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	}
 
 	@Override
-	public View currentView() {
-		return currentView;
+	public Optional<View> currentView() {
+		return Optional.ofNullable(currentView);
 	}
 
 	@Override
@@ -106,7 +107,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void getInput() {
 		handleToggleStateMachineLogging();
 		handleToggleGhostFrightenedBehavior();
-		handleToggleOverflowBug();
+		handleTogglePacManOverflowBug();
 		handleCheats();
 	}
 
@@ -211,7 +212,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.timeoutAfter(() -> game.lives > 1 ? sec(6) : sec(4))
 					.onEntry(() -> {
 						theme.snd_clips_all().forEach(Sound::stop);
-						game.lives -= app().settings.getAsBoolean("pacMan.immortable") ? 0 : 1;
+						game.lives -= app().settings.getAsBoolean("PacMan.immortable") ? 0 : 1;
 					})
 					.onTick(() -> {
 						int passedTime = state().getTicksConsumed();
@@ -493,16 +494,16 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 		/* ALT-"I": Makes Pac-Man immortable */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_I)) {
-			boolean immortable = app().settings.getAsBoolean("pacMan.immortable");
-			app().settings.set("pacMan.immortable", !immortable);
-			LOGGER.info("Pac-Man immortable = " + app().settings.getAsBoolean("pacMan.immortable"));
+			boolean immortable = app().settings.getAsBoolean("PacMan.immortable");
+			app().settings.set("PacMan.immortable", !immortable);
+			LOGGER.info("Pac-Man immortable = " + app().settings.getAsBoolean("PacMan.immortable"));
 		}
 	}
 
-	private void handleToggleOverflowBug() {
+	private void handleTogglePacManOverflowBug() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_O)) {
-			app().settings.set("overflowBug", !app().settings.getAsBoolean("overflowBug"));
-			LOGGER.info("Overflow bug is " + (app().settings.getAsBoolean("overflowBug") ? "on" : "off"));
+			app().settings.set("PacMan.overflowBug", !app().settings.getAsBoolean("PacMan.overflowBug"));
+			LOGGER.info("Overflow bug is " + (app().settings.getAsBoolean("PacMan.overflowBug") ? "on" : "off"));
 		}
 	}
 
@@ -515,14 +516,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	private void handleToggleGhostFrightenedBehavior() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_F)) {
-			boolean original = app().settings.getAsBoolean("ghost.originalBehavior");
+			boolean original = app().settings.getAsBoolean("Ghost.fleeRandomly");
 			if (original) {
-				app().settings.set("ghost.originalBehavior", false);
+				app().settings.set("Ghost.fleeRandomly", false);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isFleeingToSafeCornerFrom(cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
 			}
 			else {
-				app().settings.set("ghost.originalBehavior", true);
+				app().settings.set("Ghost.fleeRandomly", true);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack()));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
 			}

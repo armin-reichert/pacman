@@ -172,7 +172,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 			.transitions()
 			
 				.when(LOADING_MUSIC).then(READY_TO_PLAY)
-					.condition(() -> musicLoading.isDone() && app().settings.getAsBoolean("skipIntro"))
+					.condition(() -> musicLoading.isDone() && app().settings.getAsBoolean("PacManApp.skipIntro"))
 			
 				.when(LOADING_MUSIC).then(WAITING_FOR_INPUT)
 					.condition(() -> musicLoading.isDone())
@@ -259,7 +259,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 				}
 				pen.color(new Color(255, 255, 255, textAlpha));
 				pen.fontSize(16);
-				pen.hcenter("Loading...", width, 18);
+				pen.hcenter("Loading music...", width, 18);
 				textAlpha += textAlphaInc;
 				break;
 			case SCROLLING_LOGO:

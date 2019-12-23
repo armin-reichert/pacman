@@ -2,6 +2,7 @@ package de.amr.games.pacman.test.navigation;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.Optional;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Keyboard;
@@ -71,7 +72,8 @@ class LeaveGhostHouseTestUI extends PlayView implements VisualController {
 	}
 
 	@Override
-	public View currentView() {
-		return this;
+	public Optional<View> currentView() {
+		return Optional.of(this);
 	}
+
 }

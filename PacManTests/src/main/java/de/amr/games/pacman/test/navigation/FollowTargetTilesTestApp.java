@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.view.View;
@@ -57,8 +58,8 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 	}
 
 	@Override
-	public View currentView() {
-		return this;
+	public Optional<View> currentView() {
+		return Optional.of(this);
 	}
 
 	@Override

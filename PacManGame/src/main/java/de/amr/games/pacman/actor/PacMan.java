@@ -205,7 +205,7 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 	}
 
 	/**
-	 * NOTE: If the application property <code>overflowBug</code> is
+	 * NOTE: If the application property <code>PacMan.overflowBug</code> is
 	 * <code>true</code>, this method simulates the bug in the original Arcade game
 	 * which occurs if Pac-Man points upwards. In that case the same number of tiles
 	 * to the left is added.
@@ -217,7 +217,7 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 	@Override
 	public Tile tilesAhead(int numTiles) {
 		Tile tileAhead = maze().tileToDir(tile(), moveDir(), numTiles);
-		if (moveDir() == UP && app().settings.getAsBoolean("overflowBug")) {
+		if (moveDir() == UP && app().settings.getAsBoolean("PacMan.overflowBug")) {
 			return maze().tileToDir(tileAhead, LEFT, numTiles);
 		}
 		return tileAhead;

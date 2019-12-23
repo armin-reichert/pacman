@@ -5,6 +5,7 @@ import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.Optional;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Keyboard;
@@ -77,7 +78,8 @@ class EnterGhostHouseTestUI extends PlayView implements VisualController {
 	}
 
 	@Override
-	public View currentView() {
-		return this;
+	public Optional<View> currentView() {
+		return Optional.of(this);
 	}
+
 }

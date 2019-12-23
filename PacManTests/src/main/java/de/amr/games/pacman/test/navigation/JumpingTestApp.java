@@ -1,5 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
+import java.util.Optional;
+
 import de.amr.easy.game.Application;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
@@ -58,7 +60,7 @@ class JumpingTestUI extends PlayView implements VisualController {
 	}
 
 	@Override
-	public View currentView() {
-		return this;
+	public Optional<View> currentView() {
+		return Optional.of(this);
 	}
 }
