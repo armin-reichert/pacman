@@ -32,6 +32,8 @@ public class GhostHouse {
 	private final PacManGame game;
 	private final PacMan pacMan;
 	private final Ghost blinky, pinky, inky, clyde;
+	public boolean globalDotCounterEnabled;
+	public int globalDotCounter;
 
 	public GhostHouse(PacManGameCast cast) {
 		game = cast.game;
@@ -65,10 +67,10 @@ public class GhostHouse {
 	}
 
 	public void updateDotCounters() {
-		if (game.globalDotCounterEnabled) {
-			game.globalDotCounter++;
-			LOGGER.info(() -> String.format("Global dot counter: %d", game.globalDotCounter));
-			if (game.globalDotCounter == 32 && clyde.is(LOCKED)) {
+		if (globalDotCounterEnabled) {
+			globalDotCounter++;
+			LOGGER.info(() -> String.format("Global dot counter: %d", globalDotCounter));
+			if (globalDotCounter == 32 && clyde.is(LOCKED)) {
 				disableGlobalDotCounter();
 				LOGGER.info(() -> "Global dot counter disabled");
 			}
@@ -100,9 +102,9 @@ public class GhostHouse {
 			return false;
 		}
 		int pacManStarvingTimeLimit = game.level.number < 5 ? sec(4) : sec(3);
-		if (game.globalDotCounterEnabled) {
+		if (globalDotCounterEnabled) {
 			int globalDotLimit = globalDotLimit(ghost);
-			if (game.globalDotCounter >= globalDotLimit) {
+			if (globalDotCounter >= globalDotLimit) {
 				LOGGER.info(() -> String.format("%s can leave house: global dot limit (%d) reached", ghost.name(),
 						globalDotLimit));
 				return true;
@@ -130,13 +132,13 @@ public class GhostHouse {
 	}
 
 	public void enableGlobalDotCounter() {
-		game.globalDotCounterEnabled = true;
-		game.globalDotCounter = 0;
+		globalDotCounterEnabled = true;
+		globalDotCounter = 0;
 		LOGGER.info(() -> "Global dot counter enabled and set to zero");
 	}
 
 	public void disableGlobalDotCounter() {
-		game.globalDotCounterEnabled = false;
+		globalDotCounterEnabled = false;
 		LOGGER.info(() -> "Global dot counter disabled (not reset)");
 	}
 
