@@ -53,7 +53,7 @@ class EnterGhostHouseTestUI extends PlayView implements VisualController {
 		inky = cast.inky;
 		showRoutes(true);
 		showStates(true);
-		setShowScores(false);
+		showScores(false);
 		showGrid(true);
 	}
 

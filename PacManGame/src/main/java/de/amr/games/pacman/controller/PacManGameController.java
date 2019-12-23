@@ -138,8 +138,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						theme.snd_ready().play();
 						cast.actors().forEach(cast::putOnStage);
 						playView.init();
-						playView.message("Ready!", Color.YELLOW);
-						playView.setShowScores(true);
+						playView.message("Ready!");
+						playView.showScores(true);
 						ghostHouse.disableGlobalDotCounter();
 						ghostHouse.resetGlobalDotCounter();
 					})

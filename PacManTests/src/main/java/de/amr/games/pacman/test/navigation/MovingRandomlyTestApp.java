@@ -48,7 +48,7 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 		super(cast);
 		showRoutes(true);
 		showStates(true);
-		setShowScores(false);
+		showScores(false);
 		showGrid(true);
 	}
 

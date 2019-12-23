@@ -43,7 +43,7 @@ public class SimplePlayView extends AbstractPacManGameView {
 		cast.addThemeListener(this);
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
-		updateTheme(cast.theme());
+		updateTheme(theme());
 	}
 
 	public PacManGameCast cast() {
@@ -64,17 +64,6 @@ public class SimplePlayView extends AbstractPacManGameView {
 	}
 
 	@Override
-	public void updateTheme(PacManTheme theme) {
-		lifeImage = theme.spr_pacManWalking(3).frame(1);
-		fullMazeSprite = theme.spr_fullMaze();
-		flashingMazeSprite = theme.spr_flashingMaze();
-	}
-
-	public void setShowScores(boolean showScores) {
-		this.showScores = showScores;
-	}
-
-	@Override
 	public void init() {
 		energizerBlinking.setEnabled(false);
 		mazeFlashing = false;
@@ -85,10 +74,20 @@ public class SimplePlayView extends AbstractPacManGameView {
 	@Override
 	public void update() {
 		super.update();
-		if (mazeFlashing) {
-			return;
+		if (!mazeFlashing) {
+			energizerBlinking.update();
 		}
-		energizerBlinking.update();
+	}
+
+	@Override
+	public void updateTheme(PacManTheme theme) {
+		lifeImage = theme.spr_pacManWalking(3).frame(1);
+		fullMazeSprite = theme.spr_fullMaze();
+		flashingMazeSprite = theme.spr_flashingMaze();
+	}
+
+	public void showScores(boolean showScores) {
+		this.showScores = showScores;
 	}
 
 	public void message(String message, Color color) {
@@ -122,12 +121,12 @@ public class SimplePlayView extends AbstractPacManGameView {
 		drawMazeBackground(g);
 		drawMaze(g);
 		drawActors(g);
-		drawInfoText(g);
+		drawMessage(g);
 		drawScores(g);
 	}
 
 	protected void drawMazeBackground(Graphics2D g) {
-		g.setColor(cast.theme().color_mazeBackground());
+		g.setColor(theme().color_mazeBackground());
 		g.fillRect(0, 0, maze().numCols * Tile.SIZE, maze().numRows * Tile.SIZE);
 	}
 
@@ -157,7 +156,7 @@ public class SimplePlayView extends AbstractPacManGameView {
 		}
 		// draw door open when ghost is passing through
 		if (cast.ghostsOnStage().anyMatch(ghost -> ghost.tile().isDoor())) {
-			g.setColor(cast.theme().color_mazeBackground());
+			g.setColor(theme().color_mazeBackground());
 			g.fillRect(maze().doorLeft.x(), maze().doorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
 		}
 	}
@@ -170,8 +169,10 @@ public class SimplePlayView extends AbstractPacManGameView {
 			cast.pacMan.draw(g);
 		}
 		// draw dead ghosts (numbers) under living ghosts
-		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
-		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> !ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> ghost.is(DEAD))
+				.forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> !ghost.is(DEAD))
+				.forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {
@@ -179,7 +180,7 @@ public class SimplePlayView extends AbstractPacManGameView {
 			return;
 		}
 		try (Pen pen = new Pen(g)) {
-			pen.font(cast.theme().fnt_text(10));
+			pen.font(theme().fnt_text(10));
 			// Points
 			pen.color(Color.YELLOW);
 			pen.draw("SCORE", 1, 0);
@@ -213,16 +214,16 @@ public class SimplePlayView extends AbstractPacManGameView {
 		int imageSize = 2 * Tile.SIZE;
 		int x = width - (game().levelSymbols.size() + 1) * imageSize;
 		for (BonusSymbol symbol : game().levelSymbols) {
-			Image image = cast.theme().spr_bonusSymbol(symbol).frame(0);
+			Image image = theme().spr_bonusSymbol(symbol).frame(0);
 			g.drawImage(image, x, height - imageSize, imageSize, imageSize, null);
 			x += imageSize;
 		}
 	}
 
-	protected void drawInfoText(Graphics2D g) {
+	protected void drawMessage(Graphics2D g) {
 		if (messageText != null) {
 			try (Pen pen = new Pen(g)) {
-				pen.font(cast.theme().fnt_text(11));
+				pen.font(theme().fnt_text(11));
 				pen.color(messageColor);
 				pen.hcenter(messageText, width, 21);
 			}

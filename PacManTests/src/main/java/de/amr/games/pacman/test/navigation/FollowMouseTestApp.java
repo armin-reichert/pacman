@@ -46,7 +46,7 @@ class FollowMouseTestUI extends PlayView implements VisualController {
 		super(cast);
 		showRoutes(true);
 		showStates(false);
-		setShowScores(false);
+		showScores(false);
 		showGrid(true);
 	}
 

@@ -135,7 +135,7 @@ public class PlayView extends SimplePlayView {
 			drawMazeBackground(g);
 		}
 		drawMaze(g);
-		drawInfoText(g);
+		drawMessage(g);
 		if (showGrid) {
 			drawUpwardsBlockedTileMarkers(g);
 			drawSeats(g);

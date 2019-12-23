@@ -58,7 +58,7 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 				maze().tunnelExitRight, maze().pacManHome);
 		showRoutes(true);
 		showStates(true);
-		setShowScores(false);
+		showScores(false);
 		showGrid(true);
 	}
 
