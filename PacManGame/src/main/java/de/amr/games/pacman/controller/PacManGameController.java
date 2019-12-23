@@ -134,14 +134,13 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.timeoutAfter(sec(5))
 					.onEntry(() -> {
 						game.init();
-						theme.snd_clips_all().forEach(Sound::stop);
-						theme.snd_ready().play();
 						cast.actors().forEach(cast::putOnStage);
-						playView.init();
-						playView.message("Ready!");
-						playView.showScores(true);
 						ghostHouse.disableGlobalDotCounter();
 						ghostHouse.resetGlobalDotCounter();
+						playView.init();
+						playView.message("Ready!");
+						theme.snd_clips_all().forEach(Sound::stop);
+						theme.snd_ready().play();
 					})
 					.onTick(() -> {
 						cast.ghostsOnStage().forEach(Ghost::update);

@@ -65,10 +65,10 @@ public class SimplePlayView extends AbstractPacManGameView {
 
 	@Override
 	public void init() {
-		energizerBlinking.setEnabled(false);
-		mazeFlashing = false;
-		messageColor = Color.YELLOW;
-		clearMessage();
+		showScores(true);
+		energizerBlinking(false);
+		mazeFlashing(false);
+		message(null, Color.YELLOW);
 	}
 
 	@Override
@@ -108,53 +108,64 @@ public class SimplePlayView extends AbstractPacManGameView {
 		cast.ghostsOnStage().forEach(ghost -> ghost.sprites.enableAnimation(state));
 	}
 
-	public void mazeFlashing(boolean b) {
-		mazeFlashing = b;
+	public void mazeFlashing(boolean state) {
+		mazeFlashing = state;
 	}
 
-	public void energizerBlinking(boolean b) {
-		energizerBlinking.setEnabled(b);
+	public void energizerBlinking(boolean state) {
+		energizerBlinking.setEnabled(state);
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		drawMazeBackground(g);
-		drawMaze(g);
-		drawActors(g);
-		drawMessage(g);
+		fillBackground(g);
 		drawScores(g);
+		drawMaze(g);
+		drawMessage(g);
+		drawActors(g);
 	}
 
-	protected void drawMazeBackground(Graphics2D g) {
+	protected void fillBackground(Graphics2D g) {
 		g.setColor(theme().color_mazeBackground());
-		g.fillRect(0, 0, maze().numCols * Tile.SIZE, maze().numRows * Tile.SIZE);
-	}
-
-	protected Color cellBackground(int col, int row) {
-		return Color.BLACK;
+		g.fillRect(0, 0, width, height);
 	}
 
 	protected void drawMaze(Graphics2D g) {
-		Sprite mazeSprite = mazeFlashing ? flashingMazeSprite : fullMazeSprite;
-		g.translate(0, 3 * Tile.SIZE);
-		mazeSprite.draw(g);
-		g.translate(0, -3 * Tile.SIZE);
 		if (mazeFlashing) {
-			return;
+			drawFlashingMaze(g);
 		}
+		else {
+			drawNormalMaze(g);
+		}
+	}
+
+	protected void drawFlashingMaze(Graphics2D g) {
+		g.translate(0, 3 * Tile.SIZE);
+		flashingMazeSprite.draw(g);
+		g.translate(0, -3 * Tile.SIZE);
+	}
+
+	protected Color bgColor(Tile tile) {
+		return theme().color_mazeBackground();
+	}
+
+	protected void drawNormalMaze(Graphics2D g) {
+		g.translate(0, 3 * Tile.SIZE);
+		fullMazeSprite.draw(g);
+		g.translate(0, -3 * Tile.SIZE);
 		// hide tiles with eaten pellets
 		maze().tiles().filter(Tile::containsEatenFood).forEach(tile -> {
-			g.setColor(cellBackground(tile.col, tile.row));
+			g.setColor(bgColor(tile));
 			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 		});
-		// hide energizers when animation is in blank state
+		// fill energizer tiles with background color when blinking animation is in dark frame
 		if (energizerBlinking.currentFrame() == 1) {
 			Arrays.stream(maze().energizers).forEach(tile -> {
-				g.setColor(cellBackground(tile.col, tile.row));
+				g.setColor(bgColor(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
 		}
-		// draw door open when ghost is passing through
+		// don't draw door when ghost is passing through
 		if (cast.ghostsOnStage().anyMatch(ghost -> ghost.tile().isDoor())) {
 			g.setColor(theme().color_mazeBackground());
 			g.fillRect(maze().doorLeft.x(), maze().doorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
@@ -165,10 +176,10 @@ public class SimplePlayView extends AbstractPacManGameView {
 		cast.bonus().ifPresent(bonus -> {
 			bonus.draw(g);
 		});
-		if (cast.onStage(cast.pacMan) && cast.pacMan.visible()) {
+		if (cast.pacMan.visible()) {
 			cast.pacMan.draw(g);
 		}
-		// draw dead ghosts (numbers) under living ghosts
+		// draw dead ghosts (numbers) before living ghosts
 		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> ghost.is(DEAD))
 				.forEach(ghost -> ghost.draw(g));
 		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> !ghost.is(DEAD))
@@ -181,7 +192,7 @@ public class SimplePlayView extends AbstractPacManGameView {
 		}
 		try (Pen pen = new Pen(g)) {
 			pen.font(theme().fnt_text(10));
-			// Points
+			// Game score
 			pen.color(Color.YELLOW);
 			pen.draw("SCORE", 1, 0);
 			pen.draw(String.format("LEVEL%2d", game().level.number), 22, 0);
@@ -193,11 +204,11 @@ public class SimplePlayView extends AbstractPacManGameView {
 			pen.color(Color.WHITE);
 			pen.draw(String.format("%07d", game().hiscore.points), 10, 1);
 			pen.draw(String.format("L%d", game().hiscore.levelNumber), 16, 1);
-			// Remaining pellets
+			// Number of remaining pellets
 			g.setColor(Color.PINK);
 			g.fillRect(22 * Tile.SIZE + 2, Tile.SIZE + 2, 4, 3);
 			pen.color(Color.WHITE);
-			pen.draw(String.format("%d", game().numPelletsRemaining()), 23, 1);
+			pen.draw(String.format("%03d", game().numPelletsRemaining()), 23, 1);
 		}
 		drawLives(g);
 		drawLevelCounter(g);
@@ -221,7 +232,7 @@ public class SimplePlayView extends AbstractPacManGameView {
 	}
 
 	protected void drawMessage(Graphics2D g) {
-		if (messageText != null) {
+		if (messageText != null && messageText.trim().length() > 0) {
 			try (Pen pen = new Pen(g)) {
 				pen.font(theme().fnt_text(11));
 				pen.color(messageColor);

@@ -132,7 +132,7 @@ public class PlayView extends SimplePlayView {
 			g.drawImage(gridImage, 0, 0, null);
 		}
 		else {
-			drawMazeBackground(g);
+			fillBackground(g);
 		}
 		drawMaze(g);
 		drawMessage(g);
@@ -181,8 +181,8 @@ public class PlayView extends SimplePlayView {
 	}
 
 	@Override
-	protected Color cellBackground(int col, int row) {
-		return showGrid ? patternColor(col, row) : super.cellBackground(col, row);
+	protected Color bgColor(Tile tile) {
+		return showGrid ? patternColor(tile.col, tile.row) : super.bgColor(tile);
 	}
 
 	private void toggleGhost(Ghost ghost) {
