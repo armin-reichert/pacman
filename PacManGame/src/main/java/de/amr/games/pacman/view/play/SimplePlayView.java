@@ -5,7 +5,6 @@ import static de.amr.games.pacman.actor.GhostState.DEAD;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.beans.PropertyChangeEvent;
 import java.util.Arrays;
 
 import de.amr.easy.game.ui.sprites.Animation;
@@ -44,7 +43,7 @@ public class SimplePlayView extends AbstractPacManGameView {
 		cast.addThemeListener(this);
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
-		updateTheme();
+		updateTheme(cast.theme());
 	}
 
 	public PacManGameCast cast() {
@@ -64,10 +63,11 @@ public class SimplePlayView extends AbstractPacManGameView {
 		return cast.game.maze;
 	}
 
-	public void updateTheme() {
-		lifeImage = theme().spr_pacManWalking(3).frame(1);
-		fullMazeSprite = theme().spr_fullMaze();
-		flashingMazeSprite = theme().spr_flashingMaze();
+	@Override
+	public void updateTheme(PacManTheme theme) {
+		lifeImage = theme.spr_pacManWalking(3).frame(1);
+		fullMazeSprite = theme.spr_fullMaze();
+		flashingMazeSprite = theme.spr_flashingMaze();
 	}
 
 	public void setShowScores(boolean showScores) {
@@ -89,13 +89,6 @@ public class SimplePlayView extends AbstractPacManGameView {
 			return;
 		}
 		energizerBlinking.update();
-	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent change) {
-		if ("theme".equals(change.getPropertyName())) {
-			updateTheme();
-		}
 	}
 
 	public void message(String message, Color color) {

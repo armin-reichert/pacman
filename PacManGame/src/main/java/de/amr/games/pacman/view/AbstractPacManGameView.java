@@ -33,6 +33,31 @@ public abstract class AbstractPacManGameView implements View, Lifecycle, Propert
 		this.height = height;
 	}
 
+	public abstract PacManTheme theme();
+
+	public abstract void updateTheme(PacManTheme theme);
+
+	@Override
+	public void propertyChange(PropertyChangeEvent e) {
+		if ("theme".equals(e.getPropertyName())) {
+			PacManTheme newTheme = (PacManTheme) e.getNewValue();
+			updateTheme(newTheme);
+		}
+	}
+
+	@Override
+	public void init() {
+		showFrameRate = false;
+	}
+
+	@Override
+	public void update() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_T)) {
+			setShowFrameRate(!showFrameRate);
+		}
+		handleClockSpeedChange();
+	}
+
 	public void setShowFrameRate(boolean showFrameRate) {
 		this.showFrameRate = showFrameRate;
 	}
@@ -66,22 +91,4 @@ public abstract class AbstractPacManGameView implements View, Lifecycle, Propert
 		});
 	}
 
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-	}
-
-	@Override
-	public void init() {
-		showFrameRate = false;
-	}
-
-	@Override
-	public void update() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_T)) {
-			setShowFrameRate(!showFrameRate);
-		}
-		handleClockSpeedChange();
-	}
-
-	public abstract PacManTheme theme();
 }
