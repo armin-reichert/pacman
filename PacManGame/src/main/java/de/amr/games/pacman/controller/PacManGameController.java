@@ -89,6 +89,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		ghostHouse = new GhostHouse(cast);
 		playView = new PlayView(cast, app().settings.width, app().settings.height);
 		playView.fnGhostMotionState = ghostMotionTimer::state;
+		playView.ghostHouse = ghostHouse;
 		selectView(playView);
 	}
 

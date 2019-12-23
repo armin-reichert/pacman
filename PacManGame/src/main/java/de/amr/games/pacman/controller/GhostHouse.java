@@ -43,7 +43,7 @@ public class GhostHouse {
 		disableGlobalDotCounter();
 	}
 
-	private Optional<Ghost> preferredLockedGhost() {
+	public Optional<Ghost> preferredLockedGhost() {
 		return Stream.of(pinky, inky, clyde).filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
