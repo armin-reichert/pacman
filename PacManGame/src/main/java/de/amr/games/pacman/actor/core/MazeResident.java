@@ -1,6 +1,6 @@
 package de.amr.games.pacman.actor.core;
 
-import de.amr.easy.game.view.Controller;
+import de.amr.easy.game.view.Lifecycle;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
@@ -9,7 +9,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public interface MazeResident extends Controller {
+public interface MazeResident extends Lifecycle {
 
 	/**
 	 * @return descriptive name

@@ -10,17 +10,17 @@ import java.util.BitSet;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.easy.game.view.AnimationController;
+import de.amr.easy.game.view.AnimationLifecycle;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.theme.PacManTheme;
 
 /**
- * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the
- * ghosts.
+ * An animation showing Pac-Man and the four ghosts frightened and showing the
+ * points scored for the ghosts.
  * 
  * @author Armin Reichert
  */
-public class GhostPointsAnimation extends Entity implements AnimationController, View {
+public class GhostPointsAnimation extends Entity implements AnimationLifecycle, View {
 
 	private final PacManTheme theme;
 	private final Sprite pacMan;
@@ -60,19 +60,19 @@ public class GhostPointsAnimation extends Entity implements AnimationController,
 	}
 
 	@Override
-	public void startAnimation() {
+	public void start() {
 		init();
 		resetGhostTimer();
 		resetEnergizerTimer();
 	}
 
 	@Override
-	public void stopAnimation() {
+	public void stop() {
 		ghostTimer = -1;
 	}
 
 	@Override
-	public boolean isAnimationCompleted() {
+	public boolean complete() {
 		return false;
 	}
 
@@ -85,9 +85,8 @@ public class GhostPointsAnimation extends Entity implements AnimationController,
 			killed.set(killNext);
 			killNext = killNext + 1;
 			if (killed.cardinality() == 5) {
-				stopAnimation();
-			}
-			else {
+				stop();
+			} else {
 				theme.snd_eatGhost().play();
 				resetGhostTimer();
 			}
@@ -111,8 +110,7 @@ public class GhostPointsAnimation extends Entity implements AnimationController,
 		if (energizer) {
 			g.setColor(Color.PINK);
 			g.fillOval(4, 4, 8, 8);
-		}
-		else {
+		} else {
 			g.setColor(Color.PINK);
 			g.setFont(new Font("Arial", Font.BOLD, 8));
 			g.drawString("50", 4, 12);
@@ -123,8 +121,7 @@ public class GhostPointsAnimation extends Entity implements AnimationController,
 			g.translate(x, 0);
 			if (killed.get(i)) {
 				points[i].draw(g);
-			}
-			else {
+			} else {
 				ghost.draw(g);
 			}
 			g.translate(-x, 0);

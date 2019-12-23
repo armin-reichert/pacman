@@ -1,10 +1,8 @@
 package de.amr.games.pacman.view.play;
 
-import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.beans.PropertyChangeEvent;
@@ -36,22 +34,26 @@ public class SimplePlayView extends AbstractPacManGameView {
 	protected Sprite fullMazeSprite;
 	protected Sprite flashingMazeSprite;
 	protected PacManGameCast cast;
-	protected Dimension viewSize;
 	protected boolean showScores;
 	protected String messageText;
 	protected Color messageColor;
 
-	public SimplePlayView(PacManGameCast cast) {
+	public SimplePlayView(PacManGameCast cast, int width, int height) {
+		super(width, height);
 		this.cast = cast;
 		cast.addThemeListener(this);
-		viewSize = new Dimension(app().settings.width, app().settings.height);
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
-		setTheme(cast.theme());
+		updateTheme();
 	}
 
 	public PacManGameCast cast() {
 		return cast;
+	}
+
+	@Override
+	public PacManTheme theme() {
+		return cast.theme();
 	}
 
 	public PacManGame game() {
@@ -62,14 +64,10 @@ public class SimplePlayView extends AbstractPacManGameView {
 		return cast.game.maze;
 	}
 
-	public PacManTheme theme() {
-		return cast.theme();
-	}
-
-	public void setTheme(PacManTheme theme) {
-		lifeImage = theme.spr_pacManWalking(3).frame(1);
-		fullMazeSprite = theme.spr_fullMaze();
-		flashingMazeSprite = theme.spr_flashingMaze();
+	public void updateTheme() {
+		lifeImage = theme().spr_pacManWalking(3).frame(1);
+		fullMazeSprite = theme().spr_fullMaze();
+		flashingMazeSprite = theme().spr_flashingMaze();
 	}
 
 	public void setShowScores(boolean showScores) {
@@ -96,8 +94,7 @@ public class SimplePlayView extends AbstractPacManGameView {
 	@Override
 	public void propertyChange(PropertyChangeEvent change) {
 		if ("theme".equals(change.getPropertyName())) {
-			PacManTheme theme = (PacManTheme) change.getNewValue();
-			setTheme(theme);
+			updateTheme();
 		}
 	}
 
@@ -218,16 +215,16 @@ public class SimplePlayView extends AbstractPacManGameView {
 	protected void drawLives(Graphics2D g) {
 		int imageSize = 2 * Tile.SIZE;
 		for (int i = 0, x = imageSize; i < game().lives; ++i, x += imageSize) {
-			g.drawImage(lifeImage, x, viewSize.height - imageSize, null);
+			g.drawImage(lifeImage, x, height - imageSize, null);
 		}
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
 		int imageSize = 2 * Tile.SIZE;
-		int x = viewSize.width - (game().levelSymbols.size() + 1) * imageSize;
+		int x = width - (game().levelSymbols.size() + 1) * imageSize;
 		for (BonusSymbol symbol : game().levelSymbols) {
 			Image image = cast.theme().spr_bonusSymbol(symbol).frame(0);
-			g.drawImage(image, x, viewSize.height - imageSize, imageSize, imageSize, null);
+			g.drawImage(image, x, height - imageSize, imageSize, imageSize, null);
 			x += imageSize;
 		}
 	}
@@ -237,7 +234,7 @@ public class SimplePlayView extends AbstractPacManGameView {
 			Pen pen = new Pen(g);
 			pen.font(cast.theme().fnt_text(11));
 			pen.color(messageColor);
-			pen.hcenter(messageText, viewSize.width, 21);
+			pen.hcenter(messageText, width, 21);
 		}
 	}
 }

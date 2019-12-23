@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.easy.game.view.AnimationController;
+import de.amr.easy.game.view.AnimationLifecycle;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.theme.PacManTheme;
 
@@ -16,7 +16,7 @@ import de.amr.games.pacman.theme.PacManTheme;
  * 
  * @author Armin Reichert
  */
-public class ChaseGhostsAnimation extends Entity implements View, AnimationController {
+public class ChaseGhostsAnimation extends Entity implements View, AnimationLifecycle {
 
 	private final PacManTheme theme;
 	private final Sprite pacMan;
@@ -58,20 +58,20 @@ public class ChaseGhostsAnimation extends Entity implements View, AnimationContr
 	}
 
 	@Override
-	public void startAnimation() {
+	public void start() {
 		init();
 		tf.setVelocityX(.8f);
 		theme.snd_eatPill().loop();
 	}
 
 	@Override
-	public void stopAnimation() {
+	public void stop() {
 		tf.setVelocityX(0);
 		theme.snd_eatPill().stop();
 	}
 
 	@Override
-	public boolean isAnimationCompleted() {
+	public boolean complete() {
 		return tf.getX() > endPosition.x;
 	}
 

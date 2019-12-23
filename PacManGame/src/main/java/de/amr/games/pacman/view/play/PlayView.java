@@ -84,11 +84,15 @@ public class PlayView extends SimplePlayView {
 
 	public Supplier<State<GhostState, ?>> fnGhostMotionState = () -> null;
 
-	public PlayView(PacManGameCast cast) {
-		super(cast);
+	public PlayView(PacManGameCast cast, int width, int height) {
+		super(cast, width, height);
 		pinkyImage = ghostImage(GhostColor.PINK);
 		inkyImage = ghostImage(GhostColor.CYAN);
 		clydeImage = ghostImage(GhostColor.ORANGE);
+	}
+
+	public PlayView(PacManGameCast cast) {
+		super(cast, app().settings.width, app().settings.height);
 	}
 
 	private BufferedImage ghostImage(GhostColor color) {

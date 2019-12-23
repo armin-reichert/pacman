@@ -10,12 +10,12 @@ import java.awt.Graphics2D;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.easy.game.view.AnimationController;
+import de.amr.easy.game.view.AnimationLifecycle;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.PacManTheme;
 
-public class ChasePacManAnimation extends Entity implements AnimationController, View {
+public class ChasePacManAnimation extends Entity implements AnimationLifecycle, View {
 
 	private final PacManTheme theme;
 	private final Sprite pacMan;
@@ -64,20 +64,20 @@ public class ChasePacManAnimation extends Entity implements AnimationController,
 	}
 
 	@Override
-	public void startAnimation() {
+	public void start() {
 		init();
 		tf.setVelocityX(-0.8f);
 		theme.snd_ghost_chase().loop();
 	}
 
 	@Override
-	public void stopAnimation() {
+	public void stop() {
 		tf.setVelocityX(0);
 		theme.snd_ghost_chase().stop();
 	}
 
 	@Override
-	public boolean isAnimationCompleted() {
+	public boolean complete() {
 		return tf.getX() < endPosition.x;
 	}
 

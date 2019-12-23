@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
-import de.amr.easy.game.view.Controller;
+import de.amr.easy.game.view.Lifecycle;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Bonus;
@@ -45,9 +45,9 @@ import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.controller.event.PacManLosingPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
+import de.amr.games.pacman.controller.event.PacManLosingPowerEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
@@ -68,7 +68,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	private PacManGame game;
 	private PacManTheme theme;
-	private Controller currentView;
+	private Lifecycle currentView;
 	private PacManGameCast cast;
 	private GhostMotionTimer ghostMotionTimer;
 	private PlayingState playingState;
@@ -423,7 +423,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	// View handling
 
-	private void show(Controller view) {
+	private void show(Lifecycle view) {
 		if (this.currentView != view) {
 			this.currentView = view;
 			view.init();
@@ -442,7 +442,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		ghostMotionTimer = new GhostMotionTimer(game);
 		cast = new PacManGameCast(game, theme);
 		cast.pacMan.addEventListener(this::process);
-		playView = new PlayView(cast);
+		playView = new PlayView(cast, app().settings.width, app().settings.height);
 		playView.fnGhostMotionState = ghostMotionTimer::state;
 		show(playView);
 	}
