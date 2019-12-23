@@ -10,9 +10,6 @@ import java.awt.Graphics2D;
 import java.util.Random;
 
 import de.amr.games.pacman.actor.core.AbstractMazeResident;
-import de.amr.games.pacman.actor.fsm.FsmComponent;
-import de.amr.games.pacman.actor.fsm.FsmContainer;
-import de.amr.games.pacman.actor.fsm.FsmControlled;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.BonusSymbol;
@@ -20,6 +17,9 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.StateMachine;
+import de.amr.statemachine.client.FsmComponent;
+import de.amr.statemachine.client.FsmContainer;
+import de.amr.statemachine.client.FsmControlled;
 
 /**
  * Bonus symbol (fruit or other symbol) that appears at the maze bonus position

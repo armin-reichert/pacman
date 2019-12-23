@@ -24,15 +24,15 @@ import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.AnimationController;
 import de.amr.easy.game.view.Controller;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.actor.fsm.FsmComponent;
-import de.amr.games.pacman.actor.fsm.FsmContainer;
-import de.amr.games.pacman.actor.fsm.FsmControlled;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.AbstractPacManGameView;
 import de.amr.games.pacman.view.Pen;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
 import de.amr.statemachine.StateMachine;
+import de.amr.statemachine.client.FsmComponent;
+import de.amr.statemachine.client.FsmContainer;
+import de.amr.statemachine.client.FsmControlled;
 
 /**
  * Intro screen with different animations.

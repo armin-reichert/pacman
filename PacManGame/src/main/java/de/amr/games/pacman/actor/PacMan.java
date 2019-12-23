@@ -22,9 +22,6 @@ import java.util.Optional;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
-import de.amr.games.pacman.actor.fsm.FsmComponent;
-import de.amr.games.pacman.actor.fsm.FsmContainer;
-import de.amr.games.pacman.actor.fsm.FsmControlled;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -38,6 +35,9 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.State;
 import de.amr.statemachine.StateMachine;
+import de.amr.statemachine.client.FsmComponent;
+import de.amr.statemachine.client.FsmContainer;
+import de.amr.statemachine.client.FsmControlled;
 
 /**
  * The one and only.
