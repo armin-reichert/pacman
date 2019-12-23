@@ -12,7 +12,6 @@ import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.controller.PacManGameState.GETTING_READY;
 import static de.amr.games.pacman.controller.PacManGameState.GHOST_DYING;
-import static de.amr.games.pacman.controller.PacManGameState.INITIALIZING;
 import static de.amr.games.pacman.controller.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
@@ -112,10 +111,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		handleCheats();
 	}
 
-	public void startIntro() {
-		setState(INTRO);
-	}
-
 	private PlayingState playingState() {
 		return state(PLAYING);
 	}
@@ -125,7 +120,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		beginStateMachine()
 			
 			.description("[GameController]")
-			.initialState(INITIALIZING)
+			.initialState(INTRO)
 			
 			.states()
 				

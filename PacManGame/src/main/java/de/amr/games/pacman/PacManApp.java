@@ -36,6 +36,6 @@ public class PacManApp extends Application {
 		PacManGameController gameController = new PacManGameController(theme);
 		setController(gameController);
 		setIcon(theme.spr_ghostFrightened().frame(0));
-		gameController.startIntro();
+		gameController.init();
 	}
 }
