@@ -12,7 +12,6 @@ import java.beans.PropertyChangeListener;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
-import de.amr.easy.game.view.Lifecycle;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.PacManTheme;
@@ -22,20 +21,25 @@ import de.amr.games.pacman.theme.PacManTheme;
  * 
  * @author Armin Reichert
  */
-public abstract class AbstractPacManGameView implements View, Lifecycle, PropertyChangeListener {
+public abstract class AbstractPacManGameView implements View, PropertyChangeListener {
 
 	protected final int width;
 	protected final int height;
 	protected boolean showFrameRate;
 
-	public AbstractPacManGameView(int width, int height) {
-		this.width = width;
-		this.height = height;
-	}
-
 	public abstract PacManTheme theme();
 
 	public abstract void updateTheme(PacManTheme theme);
+
+	public AbstractPacManGameView(int width, int height) {
+		this.width = width;
+		this.height = height;
+		showFrameRate = false;
+	}
+
+	public void showFrameRate(boolean show) {
+		this.showFrameRate = show;
+	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent e) {
@@ -53,33 +57,29 @@ public abstract class AbstractPacManGameView implements View, Lifecycle, Propert
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_T)) {
-			setShowFrameRate(!showFrameRate);
+			showFrameRate(!showFrameRate);
 		}
 		handleClockSpeedChange();
 	}
 
-	public void setShowFrameRate(boolean showFrameRate) {
-		this.showFrameRate = showFrameRate;
-	}
-
 	private void handleClockSpeedChange() {
-		int fps = app().clock.getFrequency();
+		int oldClockSpeed = app().clock.getFrequency();
+		int newClockSpeed = oldClockSpeed;
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
-			setClockFrequency(PacManGame.SPEED_1_FPS);
+			newClockSpeed = (PacManGame.SPEED_1_FPS);
 		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
-			setClockFrequency(PacManGame.SPEED_2_FPS);
+			newClockSpeed = (PacManGame.SPEED_2_FPS);
 		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
-			setClockFrequency(PacManGame.SPEED_3_FPS);
+			newClockSpeed = (PacManGame.SPEED_3_FPS);
 		} else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_LEFT)) {
-			setClockFrequency(fps <= 10 ? Math.max(1, fps - 1) : fps - 5);
+			newClockSpeed = (oldClockSpeed <= 10 ? Math.max(1, oldClockSpeed - 1) : oldClockSpeed - 5);
 		} else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_RIGHT)) {
-			setClockFrequency(fps < 10 ? fps + 1 : fps + 5);
+			newClockSpeed = (oldClockSpeed < 10 ? oldClockSpeed + 1 : oldClockSpeed + 5);
 		}
-	}
-
-	private void setClockFrequency(int ticksPerSecond) {
-		app().clock.setFrequency(ticksPerSecond);
-		LOGGER.info(() -> String.format("Clock frequency set to %d ticks/sec", ticksPerSecond));
+		if (newClockSpeed != oldClockSpeed) {
+			app().clock.setFrequency(newClockSpeed);
+			LOGGER.info(String.format("Clock frequency changed to %d ticks/sec", newClockSpeed));
+		}
 	}
 
 	protected void drawFPS(Graphics2D g) {
@@ -90,5 +90,4 @@ public abstract class AbstractPacManGameView implements View, Lifecycle, Propert
 			pen.draw(String.format("%d|%dfps", app().clock.getRenderRate(), app().clock.getFrequency()), 0, 17);
 		});
 	}
-
 }
