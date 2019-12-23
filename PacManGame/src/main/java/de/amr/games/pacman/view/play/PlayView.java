@@ -7,6 +7,7 @@ import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+import static java.lang.Math.PI;
 import static java.lang.Math.round;
 
 import java.awt.BasicStroke;
@@ -16,6 +17,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
+import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.Transparency;
@@ -61,23 +63,25 @@ public class PlayView extends SimplePlayView {
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 	}
 
+	public Supplier<State<GhostState, ?>> fnGhostMotionState = () -> null;
+
 	private boolean showRoutes = false;
 	private boolean showGrid = false;
 	private boolean showStates = false;
-	private BufferedImage gridImage;
-	private BufferedImage pinkyImage, inkyImage, clydeImage;
-
-	public Supplier<State<GhostState, ?>> fnGhostMotionState = () -> null;
+	private final BufferedImage gridImage, pinkyImage, inkyImage, clydeImage;
+	private final Polygon arrowHead;
 
 	public PlayView(PacManGameCast cast, int width, int height) {
 		super(cast, width, height);
+		gridImage = createGridImage(cast.game.maze);
 		pinkyImage = ghostImage(GhostColor.PINK);
 		inkyImage = ghostImage(GhostColor.CYAN);
 		clydeImage = ghostImage(GhostColor.ORANGE);
+		arrowHead = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 	}
 
 	public PlayView(PacManGameCast cast) {
-		super(cast, app().settings.width, app().settings.height);
+		this(cast, app().settings.width, app().settings.height);
 	}
 
 	public void showRoutes(boolean showRoutes) {
@@ -88,9 +92,6 @@ public class PlayView extends SimplePlayView {
 
 	public void showGrid(boolean showGrid) {
 		this.showGrid = showGrid;
-		if (showGrid && gridImage == null) {
-			gridImage = createGridImage(maze());
-		}
 	}
 
 	public void showStates(boolean showStates) {
@@ -327,26 +328,11 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawArrowHead(Graphics2D g, Direction dir, int x, int y) {
-		double angle = 0;
-		switch (dir) {
-		case DOWN:
-			angle = 0;
-			break;
-		case LEFT:
-			angle = Math.PI / 2;
-			break;
-		case RIGHT:
-			angle = -Math.PI / 2;
-			break;
-		case UP:
-			angle = Math.PI;
-			break;
-		default:
-			break;
-		}
+		double[] angleForDir = { PI, -PI / 2, 0, PI / 2 };
+		double angle = angleForDir[dir.ordinal()];
 		g.translate(x, y);
 		g.rotate(angle);
-		g.fillPolygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
+		g.fillPolygon(arrowHead);
 		g.rotate(-angle);
 		g.translate(-x, -y);
 	}
