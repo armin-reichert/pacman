@@ -13,7 +13,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public class Pen {
+public class Pen implements AutoCloseable {
 
 	private final Graphics2D g;
 	private Font font = new Font(Font.DIALOG, Font.PLAIN, 10);
@@ -21,6 +21,11 @@ public class Pen {
 
 	public Pen(Graphics2D g) {
 		this.g = (Graphics2D) g.create();
+	}
+
+	@Override
+	public void close() {
+		g.dispose();
 	}
 
 	public void color(Color c) {
@@ -53,6 +58,5 @@ public class Pen {
 		g.setColor(color);
 		g.setFont(font);
 		g.drawString(s, (viewWidth - g.getFontMetrics().stringWidth(s)) / 2, row * Tile.SIZE);
-
 	}
 }

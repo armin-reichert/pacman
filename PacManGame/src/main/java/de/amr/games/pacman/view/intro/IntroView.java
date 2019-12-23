@@ -238,58 +238,59 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 		g.setColor(new Color(0, 23, 61));
 		g.fillRect(0, 0, width, height);
 
-		// colors from logo
+		// use colors from logo image
 		Color orange = new Color(255, 163, 71);
 		// Color pink = new Color(248, 120, 88);
 		Color red = new Color(171, 19, 0);
-		Pen pen = new Pen(g);
-		pen.font(theme.fnt_text());
 
-		switch (getState()) {
-		case LOADING_MUSIC:
-			if (textAlpha > 160) {
-				textAlphaInc = -2;
-				textAlpha = 160;
-			} else if (textAlpha < 0) {
-				textAlphaInc = 2;
-				textAlpha = 0;
+		try (Pen pen = new Pen(g)) {
+			pen.font(theme.fnt_text());
+			switch (getState()) {
+			case LOADING_MUSIC:
+				if (textAlpha > 160) {
+					textAlphaInc = -2;
+					textAlpha = 160;
+				} else if (textAlpha < 0) {
+					textAlphaInc = 2;
+					textAlpha = 0;
+				}
+				pen.color(new Color(255, 255, 255, textAlpha));
+				pen.fontSize(16);
+				pen.hcenter("Loading...", width, 18);
+				textAlpha += textAlphaInc;
+				break;
+			case SCROLLING_LOGO:
+				activeAnimations.forEach(animation -> animation.draw(g));
+				break;
+			case SHOWING_ANIMATIONS:
+				scrollingLogo.draw(g);
+				activeAnimations.forEach(animation -> animation.draw(g));
+				break;
+			case WAITING_FOR_INPUT:
+				scrollingLogo.draw(g);
+				chasePacMan.draw(g);
+				if (app().clock.getTicks() % sec(1) < sec(0.5f)) {
+					pen.color(Color.WHITE);
+					pen.fontSize(14);
+					pen.hcenter("Press SPACE to start!", width, 18);
+				}
+				pen.color(orange);
+				pen.fontSize(10);
+				pen.hcenter("F11 - Fullscreen Mode", width, 22);
+				int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock.getFrequency()) + 1;
+				pen.color(selectedSpeed == 1 ? orange : red);
+				pen.draw("1 - Normal", 1, 31);
+				pen.color(selectedSpeed == 2 ? orange : red);
+				pen.draw("2 - Fast", 11, 31);
+				pen.color(selectedSpeed == 3 ? orange : red);
+				pen.draw("3 - Insane", 19, 31);
+				activeAnimations.forEach(animation -> animation.draw(g));
+				break;
+			case READY_TO_PLAY:
+				break;
+			default:
+				throw new IllegalStateException();
 			}
-			pen.color(new Color(255, 255, 255, textAlpha));
-			pen.fontSize(16);
-			pen.hcenter("Loading...", width, 18);
-			textAlpha += textAlphaInc;
-			break;
-		case SCROLLING_LOGO:
-			activeAnimations.forEach(animation -> animation.draw(g));
-			break;
-		case SHOWING_ANIMATIONS:
-			scrollingLogo.draw(g);
-			activeAnimations.forEach(animation -> animation.draw(g));
-			break;
-		case WAITING_FOR_INPUT:
-			scrollingLogo.draw(g);
-			chasePacMan.draw(g);
-			if (app().clock.getTicks() % sec(1) < sec(0.5f)) {
-				pen.color(Color.WHITE);
-				pen.fontSize(14);
-				pen.hcenter("Press SPACE to start!", width, 18);
-			}
-			pen.color(orange);
-			pen.fontSize(10);
-			pen.hcenter("F11 - Fullscreen Mode", width, 22);
-			int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock.getFrequency()) + 1;
-			pen.color(selectedSpeed == 1 ? orange : red);
-			pen.draw("1 - Normal", 1, 31);
-			pen.color(selectedSpeed == 2 ? orange : red);
-			pen.draw("2 - Fast", 11, 31);
-			pen.color(selectedSpeed == 3 ? orange : red);
-			pen.draw("3 - Insane", 19, 31);
-			activeAnimations.forEach(animation -> animation.draw(g));
-			break;
-		case READY_TO_PLAY:
-			break;
-		default:
-			throw new IllegalStateException();
 		}
 	}
 }

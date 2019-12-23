@@ -83,11 +83,12 @@ public abstract class AbstractPacManGameView implements View, PropertyChangeList
 	}
 
 	protected void drawFPS(Graphics2D g) {
-		Pen pen = new Pen(g);
-		pen.color(new Color(200, 200, 200));
-		pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
-		pen.smooth(() -> {
-			pen.draw(String.format("%d|%dfps", app().clock.getRenderRate(), app().clock.getFrequency()), 0, 17);
-		});
+		try (Pen pen = new Pen(g)) {
+			pen.color(new Color(200, 200, 200));
+			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
+			pen.smooth(() -> {
+				pen.draw(String.format("%d|%dfps", app().clock.getRenderRate(), app().clock.getFrequency()), 0, 17);
+			});
+		}
 	}
 }

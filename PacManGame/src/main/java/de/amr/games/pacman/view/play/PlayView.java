@@ -439,13 +439,13 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row) {
-		Pen pen = new Pen(g);
-		if (image != null) {
-			g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);
+		try (Pen pen = new Pen(g)) {
+			if (image != null) {
+				g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);
+			}
+			pen.color(Color.WHITE);
+			pen.fontSize(8);
+			pen.draw(String.format("%d", value), col + 2, row);
 		}
-		pen.color(Color.WHITE);
-		pen.fontSize(8);
-		pen.draw(String.format("%d", value), col + 2, row);
 	}
-
 }

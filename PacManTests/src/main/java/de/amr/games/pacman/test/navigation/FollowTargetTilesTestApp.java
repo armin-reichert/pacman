@@ -92,12 +92,13 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 	@Override
 	public void draw(Graphics2D g) {
 		super.draw(g);
-		Pen pen = new Pen(g);
-		pen.color(Color.YELLOW);
-		pen.fontSize(8);
-		for (int i = 0; i < targets.size(); ++i) {
-			Tile target = targets.get(i);
-			pen.draw("" + i, target.col, target.row);
+		try (Pen pen = new Pen(g)) {
+			pen.color(Color.YELLOW);
+			pen.fontSize(8);
+			for (int i = 0; i < targets.size(); ++i) {
+				Tile target = targets.get(i);
+				pen.draw("" + i, target.col, target.row);
+			}
 		}
 	}
 }
