@@ -210,7 +210,7 @@ Pac-Man is steered by holding a key indicating its **intended** direction. As so
 
 ```java
 pacMan = new PacMan(this);
-pacMan.always(followsKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
+pacMan.steering(followsKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 
 static <T extends MazeMover> Steering<T> followsKeys(int... keys) {
 	return actor -> Direction.dirs()
