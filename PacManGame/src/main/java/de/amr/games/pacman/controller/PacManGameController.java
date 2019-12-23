@@ -19,7 +19,6 @@ import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
 import static de.amr.games.pacman.controller.PacManGameState.START_PLAYING;
 import static de.amr.games.pacman.model.PacManGame.FSM_LOGGER;
 import static de.amr.games.pacman.model.Timing.sec;
-import static de.amr.games.pacman.theme.PacManTheme.MAZE_FLASH_TIME_MILLIS;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -67,10 +66,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	private PacManGame game;
 	private PacManTheme theme;
-	private View currentView;
 	private PacManGameCast cast;
 	private GhostMotionTimer ghostMotionTimer;
-	private PlayingState playingState;
+	private View currentView;
 	private IntroView introView;
 	private PlayView playView;
 	public boolean globalDotCounterEnabled;
@@ -87,6 +85,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		setState(INTRO);
 	}
 
+	private PlayingState playingState() {
+		return state(PLAYING);
+	}
+
 	// The finite state machine
 
 	private void buildStateMachine() {
@@ -101,7 +103,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.state(INTRO)
 					.onEntry(() -> {
 						introView = new IntroView(theme, app().settings.width, app().settings.height);
-						show(introView);
+						selectView(introView);
 					})
 				
 				.state(GETTING_READY)
@@ -135,11 +137,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						cast.ghostsOnStage().forEach(Ghost::update);
 					})
 				
-				.state(PLAYING)
-					.impl(playingState = new PlayingState())
+				.state(PLAYING).customState(new PlayingState())
 				
 				.state(CHANGING_LEVEL)
-					.timeoutAfter(() -> sec(4 + game.level.mazeNumFlashes * MAZE_FLASH_TIME_MILLIS / 1000))
+					.timeoutAfter(() -> sec(4 + game.level.mazeNumFlashes * PacManTheme.MAZE_FLASH_TIME_MILLIS / 1000))
 					.onEntry(() -> {
 						theme.snd_clips_all().forEach(Sound::stop);
 						cast.pacMan.sprites.select("full");
@@ -242,35 +243,35 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
-					.act(playingState::onFoodFound)
+					.act(playingState()::onFoodFound)
 					
 				.stay(PLAYING)
 					.on(BonusFoundEvent.class)
-					.act(playingState::onBonusFound)
+					.act(playingState()::onBonusFound)
 					
 				.stay(PLAYING)
 					.on(PacManGhostCollisionEvent.class)
-					.act(playingState::onPacManGhostCollision)
+					.act(playingState()::onPacManGhostCollision)
 					
 				.stay(PLAYING)
 					.on(PacManGainsPowerEvent.class)
-					.act(playingState::onPacManGainsPower)
+					.act(playingState()::onPacManGainsPower)
 					
 				.stay(PLAYING)
 					.on(PacManLosingPowerEvent.class)
-					.act(playingState::onPacManGettingWeaker)
+					.act(playingState()::onPacManGettingWeaker)
 					
 				.stay(PLAYING)
 					.on(PacManLostPowerEvent.class)
-					.act(playingState::onPacManLostPower)
+					.act(playingState()::onPacManLostPower)
 			
 				.when(PLAYING).then(GHOST_DYING)
 					.on(GhostKilledEvent.class)
-					.act(playingState::onGhostKilled)
+					.act(playingState()::onGhostKilled)
 					
 				.when(PLAYING).then(PACMAN_DYING)
 					.on(PacManKilledEvent.class)
-					.act(playingState::onPacManKilled)
+					.act(playingState()::onPacManKilled)
 					
 				.when(PLAYING).then(CHANGING_LEVEL)
 					.on(LevelCompletedEvent.class)
@@ -306,7 +307,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	/**
 	 * "Playing" state implementation.
 	 */
-	private class PlayingState extends State<PacManGameState, PacManGameEvent> {
+	public class PlayingState extends State<PacManGameState, PacManGameEvent> {
 
 		@Override
 		public void onEntry() {
@@ -422,7 +423,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	// View handling
 
-	private void show(View view) {
+	private void selectView(View view) {
 		if (currentView != view) {
 			currentView = view;
 			currentView.init();
@@ -443,7 +444,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		cast.pacMan.addEventListener(this::process);
 		playView = new PlayView(cast, app().settings.width, app().settings.height);
 		playView.fnGhostMotionState = ghostMotionTimer::state;
-		show(playView);
+		selectView(playView);
 	}
 
 	@Override

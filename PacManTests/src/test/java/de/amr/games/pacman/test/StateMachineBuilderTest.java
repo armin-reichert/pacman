@@ -27,7 +27,7 @@ public class StateMachineBuilderTest {
 			.initialState("A")
 			.states()
 				.state("A")
-				.state("B").impl(new StateB())
+				.state("B").customState(new StateB())
 				.state("C")
 			.transitions()
 				.when("A").then("B").on(EventX.class).act(t -> {
