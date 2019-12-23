@@ -30,7 +30,6 @@ import java.util.stream.Stream;
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
-import de.amr.easy.game.view.Lifecycle;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Bonus;
@@ -68,7 +67,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	private PacManGame game;
 	private PacManTheme theme;
-	private Lifecycle currentView;
+	private View currentView;
 	private PacManGameCast cast;
 	private GhostMotionTimer ghostMotionTimer;
 	private PlayingState playingState;
@@ -423,16 +422,16 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	// View handling
 
-	private void show(Lifecycle view) {
-		if (this.currentView != view) {
-			this.currentView = view;
-			view.init();
+	private void show(View view) {
+		if (currentView != view) {
+			currentView = view;
+			currentView.init();
 		}
 	}
 
 	@Override
 	public View currentView() {
-		return (View) currentView;
+		return currentView;
 	}
 
 	// Controller methods
