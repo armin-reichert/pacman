@@ -135,8 +135,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onEntry(() -> {
 						game.init();
 						cast.actors().forEach(cast::putOnStage);
-						ghostHouse.disableGlobalDotCounter();
 						ghostHouse.resetGlobalDotCounter();
+						ghostHouse.resetGhostDotCounters();
+						ghostHouse.disableGlobalDotCounter();
 						playView.init();
 						playView.message("Ready!");
 						theme.snd_clips_all().forEach(Sound::stop);
@@ -149,15 +150,16 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.state(START_PLAYING)
 					.timeoutAfter(sec(1.7f))
 					.onEntry(() -> {
-						ghostMotionTimer.init();
-						cast.ghosts().forEach(ghost -> ghost.dotCounter = 0);
-						theme.music_playing().volume(.90f);
-						theme.music_playing().loop();
 						playView.clearMessage();
 						playView.energizerBlinking(true);
+						theme.music_playing().volume(.90f);
+						theme.music_playing().loop();
 					})
 					.onTick(() -> {
 						cast.ghostsOnStage().forEach(Ghost::update);
+					})
+					.onExit(() -> {
+						ghostMotionTimer.init();
 					})
 				
 				.state(PLAYING).customState(new PlayingState())

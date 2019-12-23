@@ -152,7 +152,7 @@ public class GhostHouse {
 
 	public void resetGhostDotCounters() {
 		pinky.dotCounter = inky.dotCounter = clyde.dotCounter = 0;
-		LOGGER.info(() -> "Ghost dot counters enabled and set to zero");
+		LOGGER.info(() -> "Ghost dot counters set to zero");
 	}
 
 	public boolean isGlobalDotCounterEnabled() {
