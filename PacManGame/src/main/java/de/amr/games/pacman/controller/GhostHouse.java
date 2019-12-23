@@ -137,6 +137,7 @@ public class GhostHouse {
 
 	public void resetGlobalDotCounter() {
 		globalDotCounter = 0;
+		LOGGER.info(() -> "Global dot counter set to zero");
 	}
 
 	public void enableGlobalDotCounter() {
