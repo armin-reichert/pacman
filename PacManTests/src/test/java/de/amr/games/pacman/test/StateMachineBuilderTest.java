@@ -4,8 +4,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import de.amr.statemachine.State;
-import de.amr.statemachine.StateMachine;
+import de.amr.statemachine.core.State;
+import de.amr.statemachine.core.StateMachine;
 
 public class StateMachineBuilderTest {
 

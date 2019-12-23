@@ -16,10 +16,10 @@ import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.client.FsmContainer;
 import de.amr.statemachine.client.FsmControlled;
+import de.amr.statemachine.core.StateMachine;
 
 /**
  * Bonus symbol (fruit or other symbol) that appears at the maze bonus position

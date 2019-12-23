@@ -56,8 +56,8 @@ import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.play.PlayView;
-import de.amr.statemachine.State;
-import de.amr.statemachine.StateMachine;
+import de.amr.statemachine.core.State;
+import de.amr.statemachine.core.StateMachine;
 
 /**
  * The Pac-Man game controller (finite state machine).

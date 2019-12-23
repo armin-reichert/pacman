@@ -10,7 +10,7 @@ import java.util.Objects;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Tile;
-import de.amr.statemachine.StateMachine;
+import de.amr.statemachine.core.StateMachine;
 
 /**
  * Base class for maze movers (ghosts, Pac-Man).

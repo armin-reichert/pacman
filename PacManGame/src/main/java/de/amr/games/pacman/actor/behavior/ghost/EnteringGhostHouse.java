@@ -14,7 +14,7 @@ import de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouse
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.statemachine.StateMachine;
+import de.amr.statemachine.core.StateMachine;
 
 /**
  * A state machine steering a ghost when entering the ghost house.

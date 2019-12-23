@@ -33,11 +33,11 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.statemachine.State;
-import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.client.FsmContainer;
 import de.amr.statemachine.client.FsmControlled;
+import de.amr.statemachine.core.State;
+import de.amr.statemachine.core.StateMachine;
 
 /**
  * The one and only.

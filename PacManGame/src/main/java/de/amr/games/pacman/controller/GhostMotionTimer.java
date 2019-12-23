@@ -7,7 +7,7 @@ import static de.amr.games.pacman.model.Timing.sec;
 
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.statemachine.StateMachine;
+import de.amr.statemachine.core.StateMachine;
 
 /**
  * Controller for the timing of the ghost motion. Ghosts change between chasing and scattering mode

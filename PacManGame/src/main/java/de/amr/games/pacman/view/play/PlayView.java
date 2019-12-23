@@ -37,7 +37,7 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.view.Pen;
-import de.amr.statemachine.State;
+import de.amr.statemachine.core.State;
 
 /**
  * An extended play view.

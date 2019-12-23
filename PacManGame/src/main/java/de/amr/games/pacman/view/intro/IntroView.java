@@ -29,10 +29,10 @@ import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.AbstractPacManGameView;
 import de.amr.games.pacman.view.Pen;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
-import de.amr.statemachine.StateMachine;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.client.FsmContainer;
 import de.amr.statemachine.client.FsmControlled;
+import de.amr.statemachine.core.StateMachine;
 
 /**
  * Intro screen with different animations.
