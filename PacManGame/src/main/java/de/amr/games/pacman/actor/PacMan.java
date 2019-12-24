@@ -25,11 +25,11 @@ import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
-import de.amr.games.pacman.controller.event.PacManLosingPowerEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.Timing;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
@@ -42,125 +42,27 @@ import de.amr.statemachine.core.StateMachine;
 public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManState> {
 
 	public final PacManGameCast cast;
-	public final FsmComponent<PacManState, PacManGameEvent> fsmComponent;
+	private final FsmComponent<PacManState, PacManGameEvent> brain;
 	private Steering<PacMan> steering;
 	private boolean kicking;
-	private boolean losingPower;
+	private boolean tired;
 	private int digestionTicks;
-	private int ticksSinceLastMeal;
+	private int starvingTicks;
 
 	public PacMan(PacManGameCast cast) {
 		super("Pac-Man");
 		this.cast = cast;
 		tf.setWidth(Tile.SIZE);
 		tf.setHeight(Tile.SIZE);
-		fsmComponent = buildFsmComponent();
-	}
-
-	private StateMachine<PacManState, PacManGameEvent> buildStateMachine() {
-		return StateMachine.
-		/* @formatter:off */
-		beginStateMachine(PacManState.class, PacManGameEvent.class)
-				
-			.description(String.format("[%s]", name()))
-			.initialState(SLEEPING)
-	
-			.states()
-	
-				.state(SLEEPING)
-					.onEntry(() -> {
-						kicking = losingPower = false;
-						placeAtTile(maze().pacManHome, Tile.SIZE / 2, 0);
-						setMoveDir(RIGHT);
-						setNextDir(RIGHT);
-						sprites.forEach(Sprite::resetAnimation);
-						sprites.select("full");
-						clearStarvingTime();
-					})
-	
-				.state(ALIVE)
-					.onEntry(() -> {
-						digestionTicks = 0;
-					})
-	
-					.onTick(() -> {
-						if (digestionTicks > 0) {
-							--digestionTicks;
-							return;
-						}
-						if (kicking) {
-							// power ending?
-							if (state().getTicksConsumed() == state().getDuration() * 75 / 100) {
-								losingPower = true;
-								publish(new PacManLosingPowerEvent());
-								return;
-							}
-							// power lost?
-							if (state().getTicksRemaining() == 0) {
-								cast.theme().snd_waza().stop();
-								// "disable timer"
-								state().setConstantTimer(State.ENDLESS);
-								kicking = losingPower = false;
-								publish(new PacManLostPowerEvent());
-								return;
-							}
-						}
-						steering().steer(PacMan.this);
-						step();
-						sprites.select("walking-" + moveDir());
-						sprites.current().get().enableAnimation(canMoveForward());
-						if (!teleporting.is(true)) {
-							inspect(tile()).ifPresent(fsmComponent::publish);
-						}
-				})
-					
-				.state(DEAD)
-					.onEntry(() -> {
-						kicking = losingPower = false;
-						digestionTicks = 0;
-					})
-					
-			.transitions()
-	
-				.stay(ALIVE) // Ah, ha, ha, ha, stayin' alive
-					.on(PacManGainsPowerEvent.class)
-					.act(() -> {
-						kicking = true;
-						// set and start power timer
-						state().setConstantTimer(sec(game().level.pacManPowerSeconds));
-						FSM_LOGGER.info(() -> String.format("Pac-Man gaining power for %d ticks (%.2f sec)", 
-								state().getDuration(), state().getDuration() / 60f));
-						cast.theme().snd_waza().loop();
-					})
-					
-				.when(ALIVE).then(DEAD)
-					.on(PacManKilledEvent.class)
-	
-		.endStateMachine();
-		/* @formatter:on */
-	}
-
-	private FsmComponent<PacManState, PacManGameEvent> buildFsmComponent() {
-		StateMachine<PacManState, PacManGameEvent> fsm = buildStateMachine();
-		fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
-		return new FsmComponent<>(fsm);
-	}
-
-	@Override
-	public void init() {
-		super.init();
-		fsmComponent.init();
-	}
-
-	@Override
-	public void update() {
-		super.update();
-		fsmComponent.update();
-	}
-
-	@Override
-	public FsmComponent<PacManState, PacManGameEvent> fsmComponent() {
-		return fsmComponent;
+		brain = buildBrain();
+		brain.fsm.traceTo(FSM_LOGGER, () -> Timing.FPS);
+		brain.publishedEventIsLogged = event -> {
+			if (event instanceof FoodFoundEvent) {
+				FoodFoundEvent foodFound = (FoodFoundEvent) event;
+				return foodFound.energizer;
+			}
+			return true;
+		};
 	}
 
 	public PacManGame game() {
@@ -170,6 +72,111 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 	@Override
 	public Maze maze() {
 		return cast.game.maze;
+	}
+
+	public boolean isKicking() {
+		return kicking;
+	}
+
+	public boolean isTired() {
+		return tired;
+	}
+
+	@Override
+	public FsmComponent<PacManState, PacManGameEvent> fsmComponent() {
+		return brain;
+	}
+
+	@Override
+	public StateMachine<PacManState, PacManGameEvent> buildFsm() {
+		return StateMachine.
+		/*@formatter:off*/
+		beginStateMachine(PacManState.class, PacManGameEvent.class)
+
+			.description(String.format("[%s]", name()))
+			.initialState(SLEEPING)
+
+			.states()
+
+				.state(SLEEPING)
+					.onEntry(() -> {
+						kicking = tired = false;
+						digestionTicks = 0;
+						clearStarvingTime();
+						placeAtTile(maze().pacManHome, Tile.SIZE / 2, 0);
+						setMoveDir(RIGHT);
+						setNextDir(RIGHT);
+						sprites.forEach(Sprite::resetAnimation);
+						sprites.select("full");
+					})
+
+				.state(ALIVE)
+					.onEntry(() -> {
+						digestionTicks = 0;
+					})
+
+					.onTick(() -> {
+						steering().steer(PacMan.this);
+						if (digestionTicks > 0) {
+							--digestionTicks;
+							return;
+						}
+						if (kicking) {
+							if (state().getTicksConsumed() == state().getDuration() * 75 / 100) {
+								tired = true;
+							}
+							else if (state().getTicksRemaining() == 0) {
+								cast.theme().snd_waza().stop();
+								// "disable timer"
+								state().setConstantTimer(State.ENDLESS);
+								kicking = tired = false;
+								publish(new PacManLostPowerEvent());
+								return;
+							}
+						}
+						step();
+						sprites.select("walking-" + moveDir());
+						sprites.current().get().enableAnimation(canMoveForward());
+						if (!teleporting.is(true)) {
+							inspect(tile()).ifPresent(brain::publish);
+						}
+					})
+
+				.state(DEAD)
+					.onEntry(() -> {
+						kicking = tired = false;
+						digestionTicks = 0;
+						clearStarvingTime();
+					})
+
+			.transitions()
+
+				.stay(ALIVE) // Ah, ha, ha, ha, stayin' alive
+					.on(PacManGainsPowerEvent.class).act(() -> {
+						kicking = true;
+						// set and start power timer
+						state().setConstantTimer(sec(game().level.pacManPowerSeconds));
+						cast.theme().snd_waza().loop();
+						FSM_LOGGER.info(() -> String.format("Pac-Man gaining power for %d ticks (%.2f sec)",
+								state().getDuration(), state().getDuration() / 60f));
+					})
+
+				.when(ALIVE).then(DEAD).on(PacManKilledEvent.class)
+
+		.endStateMachine();
+		/* @formatter:on */
+	}
+
+	@Override
+	public void init() {
+		super.init();
+		brain.init();
+	}
+
+	@Override
+	public void update() {
+		super.update();
+		brain.update();
 	}
 
 	@Override
@@ -197,14 +204,14 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 	}
 
 	/**
-	 * NOTE: If the application property <code>PacMan.overflowBug</code> is
-	 * <code>true</code>, this method simulates the bug in the original Arcade game
-	 * which occurs if Pac-Man points upwards. In that case the same number of tiles
-	 * to the left is added.
+	 * NOTE: If the application property <code>PacMan.overflowBug</code> is <code>true</code>, this
+	 * method simulates the bug in the original Arcade game which occurs if Pac-Man points upwards. In
+	 * that case the same number of tiles to the left is added.
 	 * 
-	 * @param numTiles number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor
-	 *         towards his current move direction.
+	 * @param numTiles
+	 *                   number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
+	 *         direction.
 	 */
 	@Override
 	public Tile tilesAhead(int numTiles) {
@@ -224,45 +231,33 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 	}
 
 	public int starvingTime() {
-		return ticksSinceLastMeal;
+		return starvingTicks;
 	}
 
 	public void clearStarvingTime() {
-		ticksSinceLastMeal = -1;
-	}
-
-	public boolean hasPower() {
-		return kicking;
-	}
-
-	public boolean isLosingPower() {
-		return losingPower;
+		starvingTicks = -1;
 	}
 
 	private Optional<PacManGameEvent> inspect(Tile tile) {
-
-		/*@formatter:off*/
-		Optional<PacManGameEvent> activeBonus = cast.bonus()
-			.filter(bonus -> tile == maze().bonusTile)
-			.filter(bonus -> bonus.is(ACTIVE))
-			.map(bonus -> new BonusFoundEvent(bonus.symbol, bonus.value));
-		/*@formatter:on*/
-
-		if (activeBonus.isPresent()) {
-			return activeBonus;
+		if (tile == maze().bonusTile) {
+			Optional<PacManGameEvent> activeBonusFound = cast.bonus().filter(bonus -> bonus.is(ACTIVE))
+					.map(bonus -> new BonusFoundEvent(bonus.symbol, bonus.value));
+			if (activeBonusFound.isPresent()) {
+				return activeBonusFound;
+			}
 		}
-
 		if (tile.containsFood()) {
-			ticksSinceLastMeal = 0;
+			starvingTicks = 0;
 			if (tile.containsEnergizer()) {
 				digestionTicks = DIGEST_ENERGIZER_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, true));
-			} else {
+			}
+			else {
 				digestionTicks = DIGEST_PELLET_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, false));
 			}
 		}
-		++ticksSinceLastMeal;
+		++starvingTicks;
 		return Optional.empty();
 	}
 }

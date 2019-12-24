@@ -40,40 +40,32 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostState> {
 
-	private final Map<GhostState, Steering<Ghost>> steeringByState = new EnumMap<>(GhostState.class);
-	private final Steering<Ghost> defaultSteering = isHeadingFor(this::targetTile);
-
 	public final PacManGameCast cast;
-	public final PacManGame game;
-	public final FsmComponent<GhostState, PacManGameEvent> fsmComponent;
 	public Direction eyes;
 	public int seat;
+	public int dotCounter;
 	public GhostState nextState;
-
-	public int dotCounter; // used by logic when ghost can leave house
+	private final FsmComponent<GhostState, PacManGameEvent> brain;
+	private final Map<GhostState, Steering<Ghost>> steeringByState = new EnumMap<>(GhostState.class);
+	private final Steering<Ghost> defaultSteering = isHeadingFor(this::targetTile);
 
 	public Ghost(String name, PacManGameCast cast) {
 		super(name);
 		this.cast = cast;
-		this.game = cast.game;
-		fsmComponent = buildFsmComponent(name);
 		tf.setWidth(Tile.SIZE);
 		tf.setHeight(Tile.SIZE);
+		brain = buildBrain();
+		brain.fsm.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
+		brain.fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
 	}
 
-	private FsmComponent<GhostState, PacManGameEvent> buildFsmComponent(String name) {
-		StateMachine<GhostState, PacManGameEvent> fsm = buildStateMachine(name);
-		fsm.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
-		return new FsmComponent<>(fsm);
-	}
-
-	private StateMachine<GhostState, PacManGameEvent> buildStateMachine(String name) {
+	@Override
+	public StateMachine<GhostState, PacManGameEvent> buildFsm() {
 		return StateMachine.
 		/*@formatter:off*/
 		beginStateMachine(GhostState.class, PacManGameEvent.class)
 			 
-			.description(String.format("[%s]", name))
+			.description(String.format("[%s]", name()))
 			.initialState(LOCKED)
 		
 			.states()
@@ -119,14 +111,14 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 				
 				.state(FRIGHTENED)
 					.onTick(() -> {
-						walkAndDisplayAs(cast.pacMan.isLosingPower() ? "flashing" : "frightened");
+						walkAndDisplayAs(cast.pacMan.isTired() ? "flashing" : "frightened");
 						checkPacManCollision();
 					})
 				
 				.state(DEAD)
 					.timeoutAfter(sec(1)) // "dying" time
 					.onEntry(() -> {
-						sprites.select("value-" + game.level.ghostsKilledByEnergizer);
+						sprites.select("value-" + game().level.ghostsKilledByEnergizer);
 						setTargetTile(maze().ghostHouseSeats[0]);
 						turnDeadGhostSoundOn();
 					})
@@ -176,10 +168,10 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 					.act(this::turnAround)
 				
 				.when(FRIGHTENED).then(CHASING)
-					.condition(() -> !cast.pacMan.hasPower() && nextState == CHASING)
+					.condition(() -> !cast.pacMan.isKicking() && nextState == CHASING)
 	
 				.when(FRIGHTENED).then(SCATTERING)
-					.condition(() -> !cast.pacMan.hasPower() && nextState == SCATTERING)
+					.condition(() -> !cast.pacMan.isKicking() && nextState == SCATTERING)
 				
 				.when(FRIGHTENED).then(DEAD)
 					.on(GhostKilledEvent.class)
@@ -191,6 +183,11 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 		.endStateMachine();
 		/*@formatter:on*/
 	}
+	
+	@Override
+	public PacManGame game() {
+		return cast.game;
+	}
 
 	@Override
 	public Maze maze() {
@@ -199,19 +196,19 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 
 	@Override
 	public FsmComponent<GhostState, PacManGameEvent> fsmComponent() {
-		return fsmComponent;
+		return brain;
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		fsmComponent.init();
+		brain.init();
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		fsmComponent.update();
+		brain.update();
 	}
 
 	public void during(GhostState state, Steering<Ghost> steering) {
@@ -248,19 +245,19 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 		boolean outsideHouse = !maze().inGhostHouse(tile());
 		switch (getState()) {
 		case LOCKED:
-			return outsideHouse ? 0 : speed(game.level.ghostSpeed) / 2;
+			return outsideHouse ? 0 : speed(game().level.ghostSpeed) / 2;
 		case LEAVING_HOUSE:
 			//$FALL-THROUGH$
 		case ENTERING_HOUSE:
-			return speed(game.level.ghostSpeed) / 2;
+			return speed(game().level.ghostSpeed) / 2;
 		case CHASING:
 			//$FALL-THROUGH$
 		case SCATTERING:
-			return inTunnel ? speed(game.level.ghostTunnelSpeed) : speed(game.level.ghostSpeed);
+			return inTunnel ? speed(game().level.ghostTunnelSpeed) : speed(game().level.ghostSpeed);
 		case FRIGHTENED:
-			return inTunnel ? speed(game.level.ghostTunnelSpeed) : speed(game.level.ghostFrightenedSpeed);
+			return inTunnel ? speed(game().level.ghostTunnelSpeed) : speed(game().level.ghostFrightenedSpeed);
 		case DEAD:
-			return 2 * speed(game.level.ghostSpeed);
+			return 2 * speed(game().level.ghostSpeed);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name()));
 		}

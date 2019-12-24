@@ -195,7 +195,7 @@ public class PlayView extends SimplePlayView {
 	private String pacManStateText(PacMan pacMan) {
 		int duration = pacMan.state().getDuration();
 		String text = pacMan.getState().name();
-		if (pacMan.hasPower()) {
+		if (pacMan.isKicking()) {
 			text += " and kicking";
 		}
 		if (duration != State.ENDLESS && duration > 0) {
@@ -215,7 +215,7 @@ public class PlayView extends SimplePlayView {
 		int duration = ghost.state().getDuration();
 		int remaining = ghost.state().getTicksRemaining();
 		// Pac-Man power time
-		if (ghost.is(FRIGHTENED) && cast().pacMan.hasPower()) {
+		if (ghost.is(FRIGHTENED) && cast().pacMan.isKicking()) {
 			duration = cast().pacMan.state().getDuration();
 			remaining = cast().pacMan.state().getTicksRemaining();
 		}

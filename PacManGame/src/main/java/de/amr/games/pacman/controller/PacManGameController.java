@@ -46,7 +46,6 @@ import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
-import de.amr.games.pacman.controller.event.PacManLosingPowerEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
@@ -61,7 +60,8 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
+		implements VisualController {
 
 	private PacManGame game;
 	private PacManTheme theme;
@@ -290,10 +290,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.act(playingState()::onPacManGainsPower)
 					
 				.stay(PLAYING)
-					.on(PacManLosingPowerEvent.class)
-					.act(playingState()::onPacManGettingWeaker)
-					
-				.stay(PLAYING)
 					.on(PacManLostPowerEvent.class)
 					.act(playingState()::onPacManLostPower)
 			
@@ -360,7 +356,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				ghost.nextState = ghostCommand.getState();
 				if (ghost.is(LOCKED) && ghostHouse.isReleasing(ghost)) {
 					ghost.process(new GhostUnlockedEvent());
-				} else {
+				}
+				else {
 					ghost.update();
 				}
 			}
@@ -370,7 +367,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			PacManGhostCollisionEvent e = (PacManGhostCollisionEvent) event;
 			if (e.ghost.is(CHASING, SCATTERING)) {
 				enqueue(new PacManKilledEvent(e.ghost));
-			} else if (e.ghost.is(FRIGHTENED)) {
+			}
+			else if (e.ghost.is(FRIGHTENED)) {
 				enqueue(new GhostKilledEvent(e.ghost));
 			}
 		}
@@ -388,10 +386,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			ghostCommand.suspend();
 			cast.ghostsOnStage().forEach(ghost -> ghost.process(event));
 			cast.pacMan.process(event);
-		}
-
-		private void onPacManGettingWeaker(PacManGameEvent event) {
-			cast.ghostsOnStage().forEach(ghost -> ghost.process(event));
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {
@@ -440,7 +434,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (game.isBonusScoreReached()) {
 				cast.addBonus();
 				cast.bonus().ifPresent(bonus -> {
-					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus, bonus.state().getDuration() / 60f));
+					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus,
+							bonus.state().getDuration() / 60f));
 				});
 			}
 			if (e.energizer) {
@@ -505,7 +500,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				app().settings.set("Ghost.fleeRandomly", false);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isFleeingToSafeCornerFrom(cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
-			} else {
+			}
+			else {
 				app().settings.set("Ghost.fleeRandomly", true);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack()));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");

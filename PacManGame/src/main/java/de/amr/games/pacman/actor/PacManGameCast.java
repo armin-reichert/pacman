@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.actor.core.PacManGameActor;
-import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
@@ -56,15 +55,13 @@ public class PacManGameCast {
 	public PacManGameCast(PacManGame game, PacManTheme theme) {
 		this.game = game;
 
-		// create the actors
-
 		pacMan = new PacMan(this);
 		blinky = new Ghost("Blinky", this);
 		pinky = new Ghost("Pinky", this);
 		inky = new Ghost("Inky", this);
 		clyde = new Ghost("Clyde", this);
 
-		// initially, the actors are behind the stage
+		// initially, all actors are off-stage
 		actors().forEach(actor -> setActorOffStage(actor));
 
 		// configure the actors
@@ -73,14 +70,6 @@ public class PacManGameCast {
 
 		pacMan.steering(followsKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		pacMan.setTeleportingDuration(sec(0.5f));
-		// no logging when non-energizer pellet is found
-		pacMan.fsmComponent.publishedEventIsLogged = event -> {
-			if (event instanceof FoodFoundEvent) {
-				FoodFoundEvent foodFound = (FoodFoundEvent) event;
-				return foodFound.energizer;
-			}
-			return true;
-		};
 
 		blinky.eyes = LEFT;
 		blinky.seat = 0;
@@ -103,7 +92,8 @@ public class PacManGameCast {
 		clyde.eyes = UP;
 		clyde.seat = 3;
 		clyde.during(SCATTERING, isHeadingFor(maze().horizonSW));
-		clyde.during(CHASING, isHeadingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
+		clyde.during(CHASING,
+				isHeadingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
 
 		ghosts().forEach(ghost -> {
 			ghost.setTeleportingDuration(sec(0.5f));
@@ -112,7 +102,8 @@ public class PacManGameCast {
 			if (ghost != blinky) {
 				ghost.during(LOCKED, isJumpingUpAndDown(maze(), ghost.seat));
 				ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, ghost.seat));
-			} else {
+			}
+			else {
 				ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, 2));
 			}
 		});
