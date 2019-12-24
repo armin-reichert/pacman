@@ -64,6 +64,9 @@ public class PacManGameCast {
 		inky = new Ghost("Inky", this);
 		clyde = new Ghost("Clyde", this);
 
+		// initially, the actors are behind the stage
+		actors().forEach(actor -> removeFromStage(actor));
+
 		// configure the actors
 
 		setTheme(theme);
