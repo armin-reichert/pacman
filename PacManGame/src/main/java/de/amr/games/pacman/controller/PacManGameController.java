@@ -8,6 +8,7 @@ import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.actor.behavior.Steerings.isFleeingToSafeCornerFrom;
 import static de.amr.games.pacman.actor.behavior.Steerings.isMovingRandomlyWithoutTurningBack;
+import static de.amr.games.pacman.controller.PacManGameState.ABOUT_PLAYING;
 import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.controller.PacManGameState.GETTING_READY;
@@ -15,7 +16,6 @@ import static de.amr.games.pacman.controller.PacManGameState.GHOST_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
-import static de.amr.games.pacman.controller.PacManGameState.ABOUT_PLAYING;
 import static de.amr.games.pacman.model.PacManGame.FSM_LOGGER;
 import static de.amr.games.pacman.model.Timing.sec;
 
@@ -81,6 +81,13 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		buildStateMachine();
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		traceTo(PacManGame.FSM_LOGGER, () -> 60);
+	}
+
+	private void selectView(View view) {
+		if (currentView != view) {
+			currentView = view;
+			currentView.init();
+		}
 	}
 
 	private void createPlayingEnvironment() {
@@ -351,9 +358,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			ghostMotionTimer.update();
 			cast.pacMan.update();
 			cast.bonus().ifPresent(Bonus::update);
-			cast.ghosts().forEach(ghost -> ghost.nextState = ghostMotionTimer.getState());
-			Iterable<Ghost> ghosts = cast.ghostsOnStage()::iterator;
-			for (Ghost ghost : ghosts) {
+			cast.ghosts().forEach(ghost -> {
+				ghost.nextState = ghostMotionTimer.getState();
 				if (ghost.is(LOCKED) && ghostHouse.isReleasing(ghost)) {
 					ghost.process(new GhostUnlockedEvent());
 				} else if (ghost.is(CHASING) && ghostMotionTimer.is(SCATTERING)) {
@@ -363,7 +369,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				} else {
 					ghost.update();
 				}
-			}
+			});
 		}
 
 		private void onPacManGhostCollision(PacManGameEvent event) {
@@ -449,17 +455,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			}
 		}
 	}
-
-	// View handling
-
-	private void selectView(View view) {
-		if (currentView != view) {
-			currentView = view;
-			currentView.init();
-		}
-	}
-
-	// Controller methods
 
 	// Input
 
