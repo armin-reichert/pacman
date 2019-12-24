@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.Arrays;
 
+import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.ui.sprites.Animation;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
@@ -239,5 +240,52 @@ public class SimplePlayView extends AbstractPacManGameView {
 				pen.hcenter(messageText, width, 21);
 			}
 		}
+	}
+
+	// sounds
+
+	public void mute() {
+		theme().snd_clips_all().forEach(Sound::stop);
+	}
+
+	public void playReady() {
+		theme().snd_ready().play();
+	}
+
+	public void playLevelMusic() {
+		theme().music_playing().volume(.90f);
+		theme().music_playing().loop();
+	}
+
+	public void stopLevelMusic() {
+		theme().music_playing().stop();
+	}
+
+	public void playPelletEaten() {
+		theme().snd_eatPill().play();
+	}
+
+	public void playGhostEaten() {
+		theme().snd_eatGhost().play();
+	}
+
+	public void playBonusEaten() {
+		theme().snd_eatFruit().play();
+	}
+
+	public void playPacManDied() {
+		theme().snd_die().play();
+	}
+
+	public void playExtraLife() {
+		theme().snd_extraLife().play();
+	}
+
+	public void playGameOver() {
+		theme().music_gameover().play();
+	}
+	
+	public boolean isGameOverMusicRunning() {
+		return theme().music_gameover().isRunning();
 	}
 }
