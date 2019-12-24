@@ -15,7 +15,7 @@ import static de.amr.games.pacman.controller.PacManGameState.GHOST_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
-import static de.amr.games.pacman.controller.PacManGameState.START_PLAYING;
+import static de.amr.games.pacman.controller.PacManGameState.ABOUT_PLAYING;
 import static de.amr.games.pacman.model.PacManGame.FSM_LOGGER;
 import static de.amr.games.pacman.model.Timing.sec;
 
@@ -150,7 +150,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						cast.actorsOnStage().forEach(PacManGameActor::update);
 					})
 				
-				.state(START_PLAYING)
+				.state(ABOUT_PLAYING)
 					.timeoutAfter(sec(1.7f))
 					.onEntry(() -> {
 						playView.clearMessage();
@@ -263,10 +263,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.condition(() -> introView.isComplete())
 					.act(this::getReadyForPlaying)
 				
-				.when(GETTING_READY).then(START_PLAYING)
+				.when(GETTING_READY).then(ABOUT_PLAYING)
 					.onTimeout()
 				
-				.when(START_PLAYING).then(PLAYING)
+				.when(ABOUT_PLAYING).then(PLAYING)
 					.onTimeout()
 					
 				.stay(PLAYING)
