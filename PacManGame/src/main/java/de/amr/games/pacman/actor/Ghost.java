@@ -19,6 +19,7 @@ import java.util.Map;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
+import de.amr.games.pacman.actor.core.PacManGameActor;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -32,7 +33,6 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.client.FsmComponent;
-import de.amr.statemachine.client.FsmContainer;
 import de.amr.statemachine.client.FsmControlled;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -42,7 +42,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState, PacManGameEvent> {
+public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostState> {
 
 	private final Map<GhostState, Steering<Ghost>> steeringByState = new EnumMap<>(GhostState.class);
 	private final Steering<Ghost> defaultSteering = isHeadingFor(this::targetTile);

@@ -134,7 +134,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.timeoutAfter(sec(5))
 					.onEntry(() -> {
 						game.init();
-						cast.actors().forEach(cast::setOnStage);
+						cast.actors().forEach(cast::setActorOnStage);
 						ghostHouse.resetGlobalDotCounter();
 						ghostHouse.resetGhostDotCounters();
 						ghostHouse.disableGlobalDotCounter();

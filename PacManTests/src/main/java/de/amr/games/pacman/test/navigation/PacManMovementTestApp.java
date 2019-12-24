@@ -67,7 +67,7 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 				}
 			}
 		});
-		cast().setOnStage(cast().pacMan);
+		cast().setActorOnStage(cast().pacMan);
 		message("Cursor keys");
 
 	}

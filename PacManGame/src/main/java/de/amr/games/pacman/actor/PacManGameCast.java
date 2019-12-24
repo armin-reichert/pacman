@@ -29,7 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.actor.core.MazeResident;
+import de.amr.games.pacman.actor.core.PacManGameActor;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
@@ -50,7 +50,7 @@ public class PacManGameCast {
 
 	private PacManTheme theme;
 	private Bonus bonus;
-	private final Set<MazeResident> actorsOnStage = new HashSet<>();
+	private final Set<PacManGameActor<?>> actorsOnStage = new HashSet<>();
 	private final PropertyChangeSupport changes = new PropertyChangeSupport(this);
 
 	public PacManGameCast(PacManGame game, PacManTheme theme) {
@@ -65,7 +65,7 @@ public class PacManGameCast {
 		clyde = new Ghost("Clyde", this);
 
 		// initially, the actors are behind the stage
-		actors().forEach(actor -> setOffStage(actor));
+		actors().forEach(actor -> setActorOffStage(actor));
 
 		// configure the actors
 
@@ -129,7 +129,7 @@ public class PacManGameCast {
 	public void setTheme(PacManTheme newTheme) {
 		PacManTheme oldTheme = this.theme;
 		this.theme = newTheme;
-		setActorSprites();
+		clotheActors();
 		changes.firePropertyChange("theme", oldTheme, newTheme);
 	}
 
@@ -137,22 +137,22 @@ public class PacManGameCast {
 		changes.addPropertyChangeListener("theme", subscriber);
 	}
 
-	private void setActorSprites() {
-		setPacManSprites();
-		setGhostSprites(blinky, GhostColor.RED);
-		setGhostSprites(pinky, GhostColor.PINK);
-		setGhostSprites(inky, GhostColor.CYAN);
-		setGhostSprites(clyde, GhostColor.ORANGE);
+	private void clotheActors() {
+		clothePacMan();
+		clotheGhosts(blinky, GhostColor.RED);
+		clotheGhosts(pinky, GhostColor.PINK);
+		clotheGhosts(inky, GhostColor.CYAN);
+		clotheGhosts(clyde, GhostColor.ORANGE);
 	}
 
-	private void setPacManSprites() {
+	private void clothePacMan() {
 		dirs().forEach(dir -> pacMan.sprites.set("walking-" + dir, theme.spr_pacManWalking(dir.ordinal())));
 		pacMan.sprites.set("dying", theme.spr_pacManDying());
 		pacMan.sprites.set("full", theme.spr_pacManFull());
 		pacMan.sprites.select("full");
 	}
 
-	private void setGhostSprites(Ghost ghost, GhostColor color) {
+	private void clotheGhosts(Ghost ghost, GhostColor color) {
 		dirs().forEach(dir -> {
 			ghost.sprites.set("color-" + dir, theme.spr_ghostColored(color, dir.ordinal()));
 			ghost.sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir.ordinal()));
@@ -173,27 +173,27 @@ public class PacManGameCast {
 		return ghosts().filter(this::onStage);
 	}
 
-	public Stream<MazeResident> actors() {
+	public Stream<PacManGameActor<?>> actors() {
 		return Stream.of(pacMan, blinky, pinky, inky, clyde);
 	}
 
-	public Stream<MazeResident> actorsOnStage() {
+	public Stream<PacManGameActor<?>> actorsOnStage() {
 		return actors().filter(this::onStage);
 	}
 
-	public void setOnStage(MazeResident actor) {
+	public boolean onStage(PacManGameActor<?> actor) {
+		return actorsOnStage.contains(actor);
+	}
+
+	public void setActorOnStage(PacManGameActor<?> actor) {
 		actor.init();
 		actor.show();
 		actorsOnStage.add(actor);
 	}
 
-	public void setOffStage(MazeResident actor) {
+	public void setActorOffStage(PacManGameActor<?> actor) {
 		actor.hide();
 		actorsOnStage.remove(actor);
-	}
-
-	public boolean onStage(MazeResident actor) {
-		return actorsOnStage.contains(actor);
 	}
 
 	public Optional<Bonus> bonus() {

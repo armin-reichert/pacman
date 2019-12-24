@@ -19,6 +19,7 @@ import java.util.Optional;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
+import de.amr.games.pacman.actor.core.PacManGameActor;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -30,7 +31,6 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.client.FsmComponent;
-import de.amr.statemachine.client.FsmContainer;
 import de.amr.statemachine.client.FsmControlled;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
@@ -40,7 +40,7 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends AbstractMazeMover implements FsmContainer<PacManState, PacManGameEvent> {
+public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManState> {
 
 	public final PacManGameCast cast;
 	public final FsmComponent<PacManState, PacManGameEvent> fsmComponent;

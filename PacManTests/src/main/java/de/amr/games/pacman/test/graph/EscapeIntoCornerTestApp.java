@@ -52,9 +52,9 @@ class EscapeIntoCornerTestUI extends PlayView implements VisualController {
 		super.init();
 		game().init();
 		maze().removeFood();
-		cast().setOnStage(cast().pacMan);
+		cast().setActorOnStage(cast().pacMan);
 		cast().pacMan.init();
-		cast().setOnStage(cast().blinky);
+		cast().setActorOnStage(cast().blinky);
 		cast().blinky.during(FRIGHTENED, isFleeingToSafeCornerFrom(cast().pacMan));
 		cast().blinky.init();
 		cast().blinky.setState(FRIGHTENED);
