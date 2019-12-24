@@ -65,7 +65,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	public Supplier<State<GhostState, ?>> fnGhostMotionState = () -> null;
-	public GhostHouse ghostHouse;
+	public GhostHouse ghostHouse; // (optional)
 
 	private boolean showRoutes = false;
 	private boolean showGrid = false;
@@ -425,6 +425,9 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawDotCounters(Graphics2D g) {
+		if (ghostHouse == null) {
+			return; // test scenes etc.
+		}
 		Ghost preferredGhost = ghostHouse.preferredLockedGhost().orElse(null);
 		drawDotCounter(g, pinkyImage, cast.pinky.dotCounter, 1, 14,
 				!ghostHouse.isGlobalDotCounterEnabled() && preferredGhost == cast.pinky);
