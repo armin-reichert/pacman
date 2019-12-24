@@ -10,16 +10,17 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Controller for the timing of the ghost motion. Ghosts change between chasing and scattering mode
- * during each level in several rounds. The duration of these rounds depends on the level and round.
- * When a ghost becomes frightened, the timer is stopped and the ghost resumes later in that state.
+ * Controller for the timing of the ghost attack waves. Ghosts change between
+ * chasing and scattering mode during each level in several rounds. The duration
+ * of these rounds depends on the level and round. When a ghost becomes
+ * frightened, the timer is stopped and the ghost resumes later in that state.
  * 
  * @author Armin Reichert
  * 
  * @see <a href=
  *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=3">Gamasutra</a>
  */
-public class GhostMotionTimer extends StateMachine<GhostState, Void> {
+public class GhostCommand extends StateMachine<GhostState, Void> {
 
 	/*@formatter:off*/
 	private final int[][] times = {
@@ -37,7 +38,7 @@ public class GhostMotionTimer extends StateMachine<GhostState, Void> {
 	private int round; // starts with 1
 	private boolean suspended;
 
-	public GhostMotionTimer(PacManGame game) {
+	public GhostCommand(PacManGame game) {
 		super(GhostState.class);
 		/*@formatter:off*/
 		beginStateMachine()
@@ -72,16 +73,16 @@ public class GhostMotionTimer extends StateMachine<GhostState, Void> {
 
 	public void suspend() {
 		if (!suspended) {
-			LOGGER.info(() -> String.format("%s: suspended %s, remaining time: %d frames (%.2f seconds)",
-					getDescription(), getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
+			LOGGER.info(() -> String.format("%s: suspended %s, remaining time: %d frames (%.2f seconds)", getDescription(),
+					getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
 			suspended = true;
 		}
 	}
 
 	public void resume() {
 		if (suspended) {
-			LOGGER.info(() -> String.format("%s: resumed %s, remaining time: %d frames (%.2f seconds)",
-					getDescription(), getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
+			LOGGER.info(() -> String.format("%s: resumed %s, remaining time: %d frames (%.2f seconds)", getDescription(),
+					getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
 			suspended = false;
 		}
 	}

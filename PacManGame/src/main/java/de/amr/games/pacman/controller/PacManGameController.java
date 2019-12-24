@@ -67,7 +67,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private PacManGame game;
 	private PacManTheme theme;
 	private PacManGameCast cast;
-	private GhostMotionTimer ghostMotionTimer;
+	private GhostCommand ghostCommand;
 	private GhostHouse ghostHouse;
 	private View currentView;
 	private IntroView introView;
@@ -92,10 +92,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		game = new PacManGame();
 		cast = new PacManGameCast(game, theme);
 		cast.actors().forEach(actor -> actor.addEventListener(this::process));
-		ghostMotionTimer = new GhostMotionTimer(game);
+		ghostCommand = new GhostCommand(game);
 		ghostHouse = new GhostHouse(cast);
 		playView = new PlayView(cast, app().settings.width, app().settings.height);
-		playView.fnGhostMotionState = ghostMotionTimer::state;
+		playView.fnGhostMotionState = ghostCommand::state;
 		playView.ghostHouse = ghostHouse;
 		selectView(playView);
 	}
@@ -167,7 +167,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						cast.actorsOnStage().forEach(PacManGameActor::update);
 					})
 					.onExit(() -> {
-						ghostMotionTimer.init();
+						ghostCommand.init();
 					})
 				
 				.state(PLAYING).customState(new PlayingState())
@@ -311,7 +311,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					
 				.when(CHANGING_LEVEL).then(PLAYING)
 					.onTimeout()
-					.act(() -> ghostMotionTimer.init())
+					.act(() -> ghostCommand.init())
 					
 				.when(GHOST_DYING).then(PLAYING)
 					.onTimeout()
@@ -323,7 +323,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.when(PACMAN_DYING).then(PLAYING)
 					.onTimeout()
 					.condition(() -> game.lives > 0)
-					.act(() -> ghostMotionTimer.init())
+					.act(() -> ghostCommand.init())
 			
 				.when(GAME_OVER).then(GETTING_READY)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
@@ -353,16 +353,16 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		@Override
 		public void onTick() {
-			ghostMotionTimer.update();
+			ghostCommand.update();
 			cast.pacMan.update();
 			cast.bonus().ifPresent(Bonus::update);
 			cast.ghosts().forEach(ghost -> {
-				ghost.nextState = ghostMotionTimer.getState();
+				ghost.nextState = ghostCommand.getState();
 				if (ghost.is(LOCKED) && ghostHouse.isReleasing(ghost)) {
 					ghost.process(new GhostUnlockedEvent());
-				} else if (ghost.is(CHASING) && ghostMotionTimer.is(SCATTERING)) {
+				} else if (ghost.is(CHASING) && ghostCommand.is(SCATTERING)) {
 					ghost.process(new StartScatteringEvent());
-				} else if (ghost.is(SCATTERING) && ghostMotionTimer.is(CHASING)) {
+				} else if (ghost.is(SCATTERING) && ghostCommand.is(CHASING)) {
 					ghost.process(new StartChasingEvent());
 				} else {
 					ghost.update();
@@ -389,7 +389,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 
 		private void onPacManGainsPower(PacManGameEvent event) {
-			ghostMotionTimer.suspend();
+			ghostCommand.suspend();
 			cast.ghostsOnStage().forEach(ghost -> ghost.process(event));
 			cast.pacMan.process(event);
 		}
@@ -399,7 +399,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {
-			ghostMotionTimer.resume();
+			ghostCommand.resume();
 			cast.ghostsOnStage().forEach(ghost -> ghost.process(event));
 		}
 
