@@ -115,13 +115,13 @@ game states like changing the level or the dying animations of Pac-Man and the g
 state machine. Further, the more complex states are implemented as subclasses of the generic `State` class. This
 has the advantage that actions which are state-specific can be realized as methods of the state subclass.
 
-The **ghost motion waves** (scattering, chasing) with their level-specific timing are realized by the following state machine:
+The **ghost attack waves** (scattering, chasing) with their level-specific timing are realized by the following state machine:
 
-See [GhostMotionTimer](PacManGame/src/main/java/de/amr/games/pacman/controller/GhostMotionTimer.java)
+See [GhostCommand](PacManGame/src/main/java/de/amr/games/pacman/controller/GhostCommand.java)
 
 ```java
 beginStateMachine()
-	.description("[GhostMotionTimer]")
+	.description("[GhostCommand]")
 	.initialState(SCATTERING)
 .states()
 	.state(SCATTERING)
