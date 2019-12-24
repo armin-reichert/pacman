@@ -42,7 +42,7 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 		super(GhostState.class);
 		/*@formatter:off*/
 		beginStateMachine()
-			.description("[GhostMotionTimer]")
+			.description("[GhostCommand]")
 			.initialState(SCATTERING)
 		.states()
 			.state(SCATTERING)
