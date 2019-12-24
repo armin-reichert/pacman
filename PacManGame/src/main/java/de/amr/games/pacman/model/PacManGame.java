@@ -79,6 +79,7 @@ public class PacManGame {
 	public static final int POINTS_PELLET = 10;
 	public static final int POINTS_ENERGIZER = 50;
 	public static final int POINTS_BONUS[] = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+	public static final int POINTS_GHOSTS[] = { 200, 400, 800, 1600 };
 
 	public static final int DIGEST_PELLET_TICKS = 1;
 	public static final int DIGEST_ENERGIZER_TICKS = 3;
@@ -188,9 +189,9 @@ public class PacManGame {
 	}
 
 	public void scoreKilledGhost(String ghostName) {
+		int points = POINTS_GHOSTS[level.ghostsKilledByEnergizer];
 		level.ghostsKilledByEnergizer += 1;
 		level.ghostKilledInLevel += 1;
-		int points = 100 * (int) Math.pow(2, level.ghostsKilledByEnergizer);
 		score(points);
 		if (level.ghostKilledInLevel == 16) {
 			score(12000);
