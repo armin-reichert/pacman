@@ -2,9 +2,6 @@ package de.amr.games.pacman.actor;
 
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.BonusState.ACTIVE;
-import static de.amr.games.pacman.actor.GhostState.CHASING;
-import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.actor.PacManState.ALIVE;
 import static de.amr.games.pacman.actor.PacManState.DEAD;
 import static de.amr.games.pacman.actor.PacManState.HOME;
@@ -26,7 +23,6 @@ import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLosingPowerEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
@@ -248,19 +244,6 @@ public class PacMan extends AbstractMazeMover implements FsmContainer<PacManStat
 	}
 
 	private Optional<PacManGameEvent> inspect(Tile tile) {
-
-		/*@formatter:off*/
-		Optional<PacManGameEvent> ghostCollision = cast.ghostsOnStage()
-			.filter(ghost -> ghost.tile().equals(tile))
-			.filter(ghost -> ghost.is(CHASING, SCATTERING, FRIGHTENED))
-			.filter(Ghost::visible)
-			.findFirst()
-			.map(PacManGhostCollisionEvent::new);
-		/*@formatter:on*/
-
-		if (ghostCollision.isPresent()) {
-			return ghostCollision;
-		}
 
 		/*@formatter:off*/
 		Optional<PacManGameEvent> activeBonus = cast.bonus()

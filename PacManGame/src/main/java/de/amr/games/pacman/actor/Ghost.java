@@ -23,6 +23,7 @@ import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
+import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
@@ -107,15 +108,24 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState,
 					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir()))
 				
 				.state(SCATTERING)
-					.onTick(() -> walkAndDisplayAs("color-" + moveDir()))
+					.onTick(() -> {
+						walkAndDisplayAs("color-" + moveDir());
+						checkPacManCollision();
+					})
 			
 				.state(CHASING)
 					.onEntry(() -> turnChasingGhostSoundOn())
-					.onTick(() -> walkAndDisplayAs("color-" + moveDir()))
+					.onTick(() -> {
+						walkAndDisplayAs("color-" + moveDir());
+						checkPacManCollision();
+					})
 					.onExit(() -> turnChasingGhostSoundOff())
 				
 				.state(FRIGHTENED)
-					.onTick(() -> walkAndDisplayAs(cast.pacMan.isLosingPower() ? "flashing" : "frightened"))
+					.onTick(() -> {
+						walkAndDisplayAs(cast.pacMan.isLosingPower() ? "flashing" : "frightened");
+						checkPacManCollision();
+					})
 				
 				.state(DEAD)
 					.timeoutAfter(sec(1)) // "dying" time
@@ -259,6 +269,12 @@ public class Ghost extends AbstractMazeMover implements FsmContainer<GhostState,
 			return 2 * speed(game.level.ghostSpeed);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name()));
+		}
+	}
+
+	private void checkPacManCollision() {
+		if (tile().equals(cast.pacMan.tile())) {
+			fsmComponent.publish(new PacManGhostCollisionEvent(this));
 		}
 	}
 

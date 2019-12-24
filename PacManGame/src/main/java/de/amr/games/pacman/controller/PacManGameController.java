@@ -60,8 +60,7 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
-		implements VisualController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
 	private PacManGame game;
 	private PacManTheme theme;
@@ -84,6 +83,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		game = new PacManGame();
 		cast = new PacManGameCast(game, theme);
 		cast.pacMan.addEventListener(this::process);
+		cast.ghosts().forEach(ghost -> ghost.addEventListener(this::process));
 		ghostMotionTimer = new GhostMotionTimer(game);
 		ghostHouse = new GhostHouse(cast);
 		playView = new PlayView(cast, app().settings.width, app().settings.height);
@@ -352,14 +352,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			for (Ghost ghost : ghosts) {
 				if (ghost.is(LOCKED) && ghostHouse.isReleasing(ghost)) {
 					ghost.process(new GhostUnlockedEvent());
-				}
-				else if (ghost.is(CHASING) && ghostMotionTimer.is(SCATTERING)) {
+				} else if (ghost.is(CHASING) && ghostMotionTimer.is(SCATTERING)) {
 					ghost.process(new StartScatteringEvent());
-				}
-				else if (ghost.is(SCATTERING) && ghostMotionTimer.is(CHASING)) {
+				} else if (ghost.is(SCATTERING) && ghostMotionTimer.is(CHASING)) {
 					ghost.process(new StartChasingEvent());
-				}
-				else {
+				} else {
 					ghost.update();
 				}
 			}
@@ -369,8 +366,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			PacManGhostCollisionEvent e = (PacManGhostCollisionEvent) event;
 			if (e.ghost.is(CHASING, SCATTERING)) {
 				enqueue(new PacManKilledEvent(e.ghost));
-			}
-			else if (e.ghost.is(FRIGHTENED)) {
+			} else if (e.ghost.is(FRIGHTENED)) {
 				enqueue(new GhostKilledEvent(e.ghost));
 			}
 		}
@@ -441,8 +437,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (game.isBonusScoreReached()) {
 				cast.addBonus();
 				cast.bonus().ifPresent(bonus -> {
-					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus,
-							bonus.state().getDuration() / 60f));
+					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus, bonus.state().getDuration() / 60f));
 				});
 			}
 			if (e.energizer) {
@@ -518,8 +513,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				app().settings.set("Ghost.fleeRandomly", false);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isFleeingToSafeCornerFrom(cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
-			}
-			else {
+			} else {
 				app().settings.set("Ghost.fleeRandomly", true);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack()));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
