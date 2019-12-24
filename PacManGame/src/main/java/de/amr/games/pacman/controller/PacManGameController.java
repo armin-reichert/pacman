@@ -101,7 +101,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	@Override
 	public void update() {
 		getInput();
-		cheater.handleCheatKeys();
 		super.update();
 		currentView.update();
 	}
@@ -343,6 +342,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onTick() {
 			ghostCommand.update();
+			cheater.handleCheatKeys();
 			cast.actorsOnStage().forEach(PacManGameActor::update);
 			cast.bonus().ifPresent(Bonus::update);
 		}
