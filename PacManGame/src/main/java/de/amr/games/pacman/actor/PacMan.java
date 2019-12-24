@@ -41,7 +41,7 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManState> {
 
-	public final PacManGameCast cast;
+	private final PacManGameCast cast;
 	private final FsmComponent<PacManState, PacManGameEvent> brain;
 	private Steering<PacMan> steering;
 	private boolean kicking;
@@ -65,6 +65,7 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 		};
 	}
 
+	@Override
 	public PacManGame game() {
 		return cast.game;
 	}

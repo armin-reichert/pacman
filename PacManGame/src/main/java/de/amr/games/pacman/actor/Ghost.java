@@ -40,13 +40,13 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostState> {
 
-	public final PacManGameCast cast;
 	public Direction eyes;
 	public int seat;
 	public int dotCounter;
 	public GhostState nextState;
+	private final PacManGameCast cast;
 	private final FsmComponent<GhostState, PacManGameEvent> brain;
-	private final Map<GhostState, Steering<Ghost>> steeringByState = new EnumMap<>(GhostState.class);
+	private final Map<GhostState, Steering<Ghost>> steering = new EnumMap<>(GhostState.class);
 	private final Steering<Ghost> defaultSteering = isHeadingFor(this::targetTile);
 
 	public Ghost(String name, PacManGameCast cast) {
@@ -211,14 +211,14 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 		brain.update();
 	}
 
-	public void during(GhostState state, Steering<Ghost> steering) {
-		steeringByState.put(state, steering);
-		steering.triggerSteering(this);
+	public void during(GhostState state, Steering<Ghost> steeringInState) {
+		steering.put(state, steeringInState);
+		steeringInState.triggerSteering(this);
 	}
 
 	@Override
 	public Steering<Ghost> steering() {
-		return steeringByState.getOrDefault(getState(), defaultSteering);
+		return steering.getOrDefault(getState(), defaultSteering);
 	}
 
 	private void walkAndDisplayAs(String spriteKey) {

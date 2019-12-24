@@ -7,6 +7,7 @@ import java.util.Comparator;
 
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Direction;
@@ -14,10 +15,16 @@ import de.amr.games.pacman.model.Tile;
 
 public class AvoidingGhosts implements Steering<PacMan> {
 
+	private final PacManGameCast cast;
+
+	public AvoidingGhosts(PacManGameCast cast) {
+		this.cast = cast;
+	}
+
 	@Override
 	public void steer(PacMan pacMan) {
 		/*@formatter:off*/
-		pacMan.cast.ghostsOnStage()
+		cast.ghostsOnStage()
 			.filter(ghost -> !pacMan.maze().inGhostHouse(ghost.tile()))
 			.sorted(bySmallestDistanceTo(pacMan))
 			.findFirst()
