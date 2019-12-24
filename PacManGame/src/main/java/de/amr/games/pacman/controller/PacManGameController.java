@@ -33,7 +33,9 @@ import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManGameCast;
+import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.actor.core.MazeResident;
+import de.amr.games.pacman.actor.core.PacManGameActor;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -49,6 +51,7 @@ import de.amr.games.pacman.controller.event.StartChasingEvent;
 import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.Timing;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.play.PlayView;
@@ -60,7 +63,8 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
+		implements VisualController, Timing {
 
 	private PacManGame game;
 	private PacManTheme theme;
@@ -82,8 +86,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void getReadyForPlaying() {
 		game = new PacManGame();
 		cast = new PacManGameCast(game, theme);
-		cast.pacMan.addEventListener(this::process);
-		cast.ghosts().forEach(ghost -> ghost.addEventListener(this::process));
+		cast.actors().forEach(actor -> actor.addEventListener(this::process));
 		ghostMotionTimer = new GhostMotionTimer(game);
 		ghostHouse = new GhostHouse(cast);
 		playView = new PlayView(cast, app().settings.width, app().settings.height);
@@ -144,7 +147,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						theme.snd_ready().play();
 					})
 					.onTick(() -> {
-						cast.ghostsOnStage().forEach(Ghost::update);
+						cast.actorsOnStage().forEach(PacManGameActor::update);
 					})
 				
 				.state(START_PLAYING)
@@ -156,7 +159,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						theme.music_playing().loop();
 					})
 					.onTick(() -> {
-						cast.ghostsOnStage().forEach(Ghost::update);
+						cast.actorsOnStage().forEach(PacManGameActor::update);
 					})
 					.onExit(() -> {
 						ghostMotionTimer.init();
@@ -337,6 +340,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onEntry() {
 			cast.ghostsOnStage().forEach(Ghost::show);
+			cast.pacMan.setState(PacManState.ALIVE);
 			playView.init();
 			playView.enableAnimations(true);
 			playView.energizerBlinking(true);

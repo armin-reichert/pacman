@@ -196,7 +196,7 @@ public class PlayView extends SimplePlayView {
 		int duration = pacMan.state().getDuration();
 		String text = pacMan.getState().name();
 		if (pacMan.hasPower()) {
-			text += "+POWER";
+			text += " and kicking";
 		}
 		if (duration != State.ENDLESS && duration > 0) {
 			text += String.format("(%d|%d)", pacMan.state().getTicksRemaining(), duration);

@@ -11,6 +11,7 @@ import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManGameCast;
+import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
@@ -70,6 +71,7 @@ class InkyChaseTestUI extends PlayView implements VisualController {
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			cast().ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
+			cast().pacMan.setState(PacManState.ALIVE);
 			messageText = null;
 		}
 		cast().pacMan.update();

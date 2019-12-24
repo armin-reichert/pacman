@@ -13,7 +13,8 @@ import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.PacManGameCast;
-import de.amr.games.pacman.actor.core.MazeResident;
+import de.amr.games.pacman.actor.PacManState;
+import de.amr.games.pacman.actor.core.PacManGameActor;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
@@ -68,6 +69,7 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 			}
 		});
 		cast().setActorOnStage(cast().pacMan);
+		cast().pacMan.setState(PacManState.ALIVE);
 		message("Cursor keys");
 
 	}
@@ -76,25 +78,21 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 	public void update() {
 		super.update();
 		handleSteeringChange();
-		cast().actorsOnStage().forEach(MazeResident::update);
+		cast().actorsOnStage().forEach(PacManGameActor::update);
 	}
 
 	private void handleSteeringChange() {
 		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_M)) {
-			cast().pacMan
-					.steering(followsKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
+			cast().pacMan.steering(followsKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
 			message("Cursor keys");
-		}
-		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_N)) {
-			cast().pacMan.steering(
-					followsKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
+		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_N)) {
+			cast().pacMan
+					.steering(followsKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
 			message("Numpad keys");
-		}
-		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_A)) {
+		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_A)) {
 			cast().pacMan.steering(avoidingGhosts());
 			message("Avoiding ghosts");
-		}
-		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_R)) {
+		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_R)) {
 			cast().pacMan.steering(isMovingRandomlyWithoutTurningBack());
 			message("Random moves");
 		}
