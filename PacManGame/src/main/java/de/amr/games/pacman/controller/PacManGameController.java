@@ -2,9 +2,7 @@ package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.actor.behavior.Steerings.isFleeingToSafeCornerFrom;
 import static de.amr.games.pacman.actor.behavior.Steerings.isMovingRandomlyWithoutTurningBack;
 import static de.amr.games.pacman.controller.PacManGameState.ABOUT_PLAYING;
@@ -25,7 +23,6 @@ import java.util.logging.Level;
 
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Bonus;
@@ -43,7 +40,6 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.play.PlayView;
@@ -62,7 +58,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private PacManTheme theme;
 	private PacManGameCast cast;
 	private GhostCommand ghostCommand;
-	private GhostHouseDoorMan ghostHouseDoorMan;
+	GhostHouseDoorMan ghostHouseDoorMan;
+	private Cheater cheater;
 	private View currentView;
 	private IntroView introView;
 	private PlayView playView;
@@ -89,6 +86,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		ghostCommand = new GhostCommand(cast);
 		ghostHouseDoorMan = new GhostHouseDoorMan(cast);
 		cast.ghosts().forEach(ghost -> ghost.doorMan = ghostHouseDoorMan);
+		cheater = new Cheater(cast, this);
 		playView = new PlayView(cast, app().settings.width, app().settings.height);
 		playView.fnGhostMotionState = ghostCommand::state;
 		playView.ghostHouseDoorMan = ghostHouseDoorMan;
@@ -103,6 +101,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	@Override
 	public void update() {
 		getInput();
+		cheater.handleCheatKeys();
 		super.update();
 		currentView.update();
 	}
@@ -111,7 +110,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		handleToggleStateMachineLogging();
 		handleToggleGhostFrightenedBehavior();
 		handleTogglePacManOverflowBug();
-		handleCheats();
 	}
 
 	private PlayingState playingState() {
@@ -420,40 +418,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 	}
 
-	// Input
-
-	private void handleCheats() {
-		/* ALT-"K": Kill all available ghosts */
-		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_K)) {
-			game.level().ghostsKilledByEnergizer = 0;
-			cast.ghostsOnStage().filter(ghost -> ghost.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
-				game.scoreKilledGhost(ghost.name());
-				ghost.process(new GhostKilledEvent(ghost));
-			});
-			LOGGER.info(() -> "All ghosts killed");
-		}
-		/* ALT-"E": Eats all (normal) pellets */
-		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_E)) {
-			game.maze().tiles().filter(Tile::containsPellet).forEach(tile -> {
-				game.eatFoodAt(tile);
-				ghostHouseDoorMan.updateDotCounters();
-			});
-			LOGGER.info(() -> "All pellets eaten");
-		}
-		/* ALT-"L": Selects next level */
-		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
-			if (is(PLAYING)) {
-				LOGGER.info(() -> String.format("Switch to next level (%d)", game.level().number + 1));
-				enqueue(new LevelCompletedEvent());
-			}
-		}
-		/* ALT-"I": Makes Pac-Man immortable */
-		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_I)) {
-			boolean immortable = app().settings.getAsBoolean("PacMan.immortable");
-			app().settings.set("PacMan.immortable", !immortable);
-			LOGGER.info("Pac-Man immortable = " + app().settings.getAsBoolean("PacMan.immortable"));
-		}
-	}
+	// handle keyboard input
 
 	private void handleTogglePacManOverflowBug() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_O)) {
