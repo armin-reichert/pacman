@@ -40,7 +40,6 @@ import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.PacManGame;
@@ -283,10 +282,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.act(playingState()::onBonusFound)
 					
 				.stay(PLAYING)
-					.on(PacManGhostCollisionEvent.class)
-					.act(playingState()::onPacManGhostCollision)
-					
-				.stay(PLAYING)
 					.on(PacManGainsPowerEvent.class)
 					.act(playingState()::onPacManGainsPower)
 					
@@ -352,16 +347,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			ghostCommand.update();
 			cast.actorsOnStage().forEach(PacManGameActor::update);
 			cast.bonus().ifPresent(Bonus::update);
-		}
-
-		private void onPacManGhostCollision(PacManGameEvent event) {
-			PacManGhostCollisionEvent e = (PacManGhostCollisionEvent) event;
-			if (e.ghost.is(CHASING, SCATTERING)) {
-				enqueue(new PacManKilledEvent(e.ghost));
-			}
-			else if (e.ghost.is(FRIGHTENED)) {
-				enqueue(new GhostKilledEvent(e.ghost));
-			}
 		}
 
 		private void onPacManKilled(PacManGameEvent event) {

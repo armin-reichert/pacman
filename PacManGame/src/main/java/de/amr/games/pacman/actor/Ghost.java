@@ -23,7 +23,7 @@ import de.amr.games.pacman.controller.GhostHouseDoorMan;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
+import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
@@ -96,21 +96,21 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 				.state(SCATTERING)
 					.onTick(() -> {
 						walkAndDisplayAs("color-" + moveDir());
-						checkPacManCollision();
+						handlePacManCollision();
 					})
 			
 				.state(CHASING)
 					.onEntry(() -> turnChasingGhostSoundOn())
 					.onTick(() -> {
 						walkAndDisplayAs("color-" + moveDir());
-						checkPacManCollision();
+						handlePacManCollision();
 					})
 					.onExit(() -> turnChasingGhostSoundOff())
 				
 				.state(FRIGHTENED)
 					.onTick(() -> {
 						walkAndDisplayAs(cast.pacMan.isTired() ? "flashing" : "frightened");
-						checkPacManCollision();
+						handlePacManCollision();
 					})
 				
 				.state(DEAD)
@@ -261,9 +261,9 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 		}
 	}
 
-	private void checkPacManCollision() {
+	private void handlePacManCollision() {
 		if (tile().equals(cast.pacMan.tile())) {
-			publish(new PacManGhostCollisionEvent(this));
+			publish(cast.pacMan.isKicking() ? new GhostKilledEvent(this) : new PacManKilledEvent(this));
 		}
 	}
 
