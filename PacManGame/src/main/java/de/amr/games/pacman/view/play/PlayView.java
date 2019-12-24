@@ -130,8 +130,7 @@ public class PlayView extends SimplePlayView {
 	public void draw(Graphics2D g) {
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
-		}
-		else {
+		} else {
 			fillBackground(g);
 		}
 		drawMaze(g);
@@ -150,7 +149,7 @@ public class PlayView extends SimplePlayView {
 		}
 		if (showStates) {
 			drawActorStates(g);
-			drawGhostDotCounters(g);
+			drawDotCounters(g);
 		}
 		if (showFrameRate) {
 			drawFPS(g);
@@ -188,8 +187,7 @@ public class PlayView extends SimplePlayView {
 	private void toggleGhost(Ghost ghost) {
 		if (cast().onStage(ghost)) {
 			cast().removeFromStage(ghost);
-		}
-		else {
+		} else {
 			cast().putOnStage(ghost);
 		}
 	}
@@ -258,15 +256,13 @@ public class PlayView extends SimplePlayView {
 
 	private void drawActorStates(Graphics2D g) {
 		if (cast().pacMan.getState() != null && cast().pacMan.visible()) {
-			drawSmallText(g, Color.YELLOW, cast().pacMan.tf.getX(), cast().pacMan.tf.getY(),
-					pacManStateText(cast().pacMan));
+			drawSmallText(g, Color.YELLOW, cast().pacMan.tf.getX(), cast().pacMan.tf.getY(), pacManStateText(cast().pacMan));
 		}
 		cast().ghostsOnStage().filter(Ghost::visible).forEach(ghost -> {
 			drawSmallText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
 		});
 		cast().bonus().ifPresent(bonus -> {
-			String text = String.format("%s,%d|%d", bonus, bonus.state().getTicksRemaining(),
-					bonus.state().getDuration());
+			String text = String.format("%s,%d|%d", bonus, bonus.state().getTicksRemaining(), bonus.state().getDuration());
 			drawSmallText(g, Color.YELLOW, bonus.tf.getX(), bonus.tf.getY(), text);
 		});
 	}
@@ -343,47 +339,51 @@ public class PlayView extends SimplePlayView {
 		g.translate(-x, -y);
 	}
 
-	private void drawRoutes(Graphics2D g) {
+	private void drawRoutes(Graphics2D g2) {
+		Graphics2D g = (Graphics2D) g2.create();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		cast().ghostsOnStage().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));
+		g.dispose();
 	}
 
 	private void drawRoute(Graphics2D g, Ghost ghost) {
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		Tile target = ghost.targetTile();
+		int pathLen = ghost.targetPath().size();
 		Color ghostColor = color(ghost);
-		Stroke solid = g.getStroke();
-		boolean drawTargetTileArrow = target != null && ghost.targetPath().size() > 0
-				&& target != ghost.targetPath().get(ghost.targetPath().size() - 1);
-		if (drawTargetTileArrow) {
-			Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
-					0);
-			g.setStroke(dashed);
-			g.setColor(dimmed(ghostColor, 200));
+		Stroke solid = new BasicStroke(0.5f);
+		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
+		boolean drawRubberBand = target != null && pathLen > 0 && target != ghost.targetPath().get(pathLen - 1);
+		if (drawRubberBand) {
+			// draw rubber band to target tile
 			int x1 = ghost.centerX(), y1 = ghost.centerY();
 			int x2 = target.centerX(), y2 = target.centerY();
+			g.setStroke(dashed);
+			g.setColor(dimmed(ghostColor, 200));
 			g.drawLine(x1, y1, x2, y2);
-			g.setStroke(solid);
 			g.translate(target.x(), target.y());
 			g.setColor(ghostColor);
-			g.fillRect(Tile.SIZE / 4, Tile.SIZE / 4, Tile.SIZE / 2, Tile.SIZE / 2);
+			g.setStroke(solid);
+			g.fillRect(2, 2, 4, 4);
 			g.translate(-target.x(), -target.y());
 		}
-		if (ghost.targetPath().size() > 1) {
+		if (pathLen > 1) {
+			// draw path
 			g.setColor(dimmed(ghostColor, 200));
 			for (int i = 0; i < ghost.targetPath().size() - 1; ++i) {
 				Tile from = ghost.targetPath().get(i), to = ghost.targetPath().get(i + 1);
+				g.setColor(ghostColor);
+				g.setStroke(solid);
 				g.drawLine(from.centerX(), from.centerY(), to.centerX(), to.centerY());
 				if (i + 1 == ghost.targetPath().size() - 1) {
 					drawArrowHead(g, maze().directionBetween(from, to).get(), to.centerX(), to.centerY());
 				}
 			}
-		}
-		else if (ghost.nextDir() != null) {
+		} else if (ghost.nextDir() != null) {
 			// draw direction indicator
-			Direction dir = ghost.nextDir();
+			Direction nextDir = ghost.nextDir();
 			int x = ghost.centerX(), y = ghost.centerY();
 			g.setColor(ghostColor);
-			drawArrowHead(g, dir, x + dir.dx * Tile.SIZE, y + dir.dy * Tile.SIZE);
+			drawArrowHead(g, nextDir, x + nextDir.dx * Tile.SIZE, y + nextDir.dy * Tile.SIZE);
 		}
 		// visualize Inky's chasing (target tile may be null if Blinky is not on stage!)
 		if (ghost == cast().inky && ghost.is(CHASING) && ghost.targetTile() != null) {
@@ -407,8 +407,7 @@ public class PlayView extends SimplePlayView {
 					g.drawLine(x1, y1, x2, y2);
 					g.drawLine(x2, y2, x3, y3);
 					g.fillRect(x3 - s / 2, y3 - s / 2, s, s);
-				}
-				else {
+				} else {
 					Tile twoTilesAhead = cast().pacMan.tilesAhead(2);
 					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
 					int x2 = twoTilesAhead.centerX(), y2 = twoTilesAhead.centerY();
@@ -423,10 +422,9 @@ public class PlayView extends SimplePlayView {
 			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 100));
 			g.drawOval(cx - r, cy - r, 2 * r, 2 * r);
 		}
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 
-	private void drawGhostDotCounters(Graphics2D g) {
+	private void drawDotCounters(Graphics2D g) {
 		Ghost preferredGhost = ghostHouse.preferredLockedGhost().orElse(null);
 		drawDotCounter(g, pinkyImage, cast.pinky.dotCounter, 1, 14,
 				!ghostHouse.isGlobalDotCounterEnabled() && preferredGhost == cast.pinky);
@@ -437,8 +435,7 @@ public class PlayView extends SimplePlayView {
 		drawDotCounter(g, null, ghostHouse.globalDotCounter(), 24, 14, ghostHouse.isGlobalDotCounterEnabled());
 	}
 
-	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row,
-			boolean emphasized) {
+	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row, boolean emphasized) {
 		try (Pen pen = new Pen(g)) {
 			if (image != null) {
 				g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);
