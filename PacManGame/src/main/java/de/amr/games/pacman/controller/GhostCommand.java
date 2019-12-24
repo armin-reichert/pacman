@@ -6,14 +6,15 @@ import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Timing.sec;
 
 import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Controller for the timing of the ghost attack waves. Ghosts change between
- * chasing and scattering mode during each level in several rounds. The duration
- * of these rounds depends on the level and round. When a ghost becomes
- * frightened, the timer is stopped and the ghost resumes later in that state.
+ * Controller for the timing of the ghost attack waves. Ghosts change between chasing and scattering
+ * mode during each level in several rounds. The duration of these rounds depends on the level and
+ * round. When a ghost becomes frightened, the timer is stopped and the ghost resumes later in that
+ * state.
  * 
  * @author Armin Reichert
  * 
@@ -35,20 +36,22 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 		return levelNumber == 1 ? 0 : levelNumber < 5 ? 1 : 2;
 	}
 
+	private final PacManGameCast cast;
 	private int round; // starts with 1
 	private boolean suspended;
 
-	public GhostCommand(PacManGame game) {
+	public GhostCommand(PacManGameCast cast) {
 		super(GhostState.class);
+		this.cast = cast;
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("[GhostCommand]")
 			.initialState(SCATTERING)
 		.states()
 			.state(SCATTERING)
-				.timeoutAfter(() -> times[row(game.level().number)][2 * round - 2])
+				.timeoutAfter(() -> times[row(cast.game().level().number)][2 * round - 2])
 			.state(CHASING)
-				.timeoutAfter(() -> times[row(game.level().number)][2 * round - 1])
+				.timeoutAfter(() -> times[row(cast.game().level().number)][2 * round - 1])
 		.transitions()
 			.when(SCATTERING).then(CHASING).onTimeout()
 			.when(CHASING).then(SCATTERING).onTimeout().act(() -> ++round)
@@ -68,21 +71,22 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 	public void update() {
 		if (!suspended) {
 			super.update();
+			cast.ghosts().forEach(ghost -> ghost.nextState = getState());
 		}
 	}
 
 	public void suspend() {
 		if (!suspended) {
-			LOGGER.info(() -> String.format("%s: suspended %s, remaining time: %d frames (%.2f seconds)", getDescription(),
-					getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
+			LOGGER.info(() -> String.format("%s: suspended %s, remaining time: %d frames (%.2f seconds)",
+					getDescription(), getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
 			suspended = true;
 		}
 	}
 
 	public void resume() {
 		if (suspended) {
-			LOGGER.info(() -> String.format("%s: resumed %s, remaining time: %d frames (%.2f seconds)", getDescription(),
-					getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
+			LOGGER.info(() -> String.format("%s: resumed %s, remaining time: %d frames (%.2f seconds)",
+					getDescription(), getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
 			suspended = false;
 		}
 	}

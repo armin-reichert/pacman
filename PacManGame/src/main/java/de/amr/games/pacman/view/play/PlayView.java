@@ -34,7 +34,7 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameCast;
-import de.amr.games.pacman.controller.GhostHouse;
+import de.amr.games.pacman.controller.GhostHouseDoorMan;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
@@ -65,7 +65,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	public Supplier<State<GhostState, ?>> fnGhostMotionState = () -> null;
-	public GhostHouse ghostHouse; // (optional)
+	public GhostHouseDoorMan ghostHouseDoorMan; // (optional)
 
 	private boolean showRoutes = false;
 	private boolean showGrid = false;
@@ -425,17 +425,17 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawDotCounters(Graphics2D g) {
-		if (ghostHouse == null) {
+		if (ghostHouseDoorMan == null) {
 			return; // test scenes etc.
 		}
-		Ghost preferredGhost = ghostHouse.preferredLockedGhost().orElse(null);
+		Ghost preferredGhost = ghostHouseDoorMan.preferredLockedGhost().orElse(null);
 		drawDotCounter(g, pinkyImage, cast.pinky.dotCounter, 1, 14,
-				!ghostHouse.isGlobalDotCounterEnabled() && preferredGhost == cast.pinky);
+				!ghostHouseDoorMan.isGlobalDotCounterEnabled() && preferredGhost == cast.pinky);
 		drawDotCounter(g, clydeImage, cast.clyde.dotCounter, 1, 20,
-				!ghostHouse.isGlobalDotCounterEnabled() && preferredGhost == cast.clyde);
+				!ghostHouseDoorMan.isGlobalDotCounterEnabled() && preferredGhost == cast.clyde);
 		drawDotCounter(g, inkyImage, cast.inky.dotCounter, 24, 20,
-				!ghostHouse.isGlobalDotCounterEnabled() && preferredGhost == cast.inky);
-		drawDotCounter(g, null, ghostHouse.globalDotCounter(), 24, 14, ghostHouse.isGlobalDotCounterEnabled());
+				!ghostHouseDoorMan.isGlobalDotCounterEnabled() && preferredGhost == cast.inky);
+		drawDotCounter(g, null, ghostHouseDoorMan.globalDotCounter(), 24, 14, ghostHouseDoorMan.isGlobalDotCounterEnabled());
 	}
 
 	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row, boolean emphasized) {

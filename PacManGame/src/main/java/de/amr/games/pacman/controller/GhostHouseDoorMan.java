@@ -14,16 +14,16 @@ import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.PacManGame;
 
 /**
- * Implements the rules controlling when the ghosts can leave their house.
+ * Controls when the ghosts can leave the house.
  * 
  * @author Armin Reichert
  * 
  * @see <a href=
  *      "https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Gamasutra</a>
  */
-public class GhostHouse {
+public class GhostHouseDoorMan {
 
-	private static final Logger LOGGER = Logger.getLogger(GhostHouse.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(GhostHouseDoorMan.class.getName());
 
 	static {
 		LOGGER.setLevel(Level.INFO);
@@ -34,8 +34,9 @@ public class GhostHouse {
 	private final Ghost blinky, pinky, inky, clyde;
 	private boolean globalDotCounterEnabled;
 	private int globalDotCounter;
+	private boolean closed;
 
-	public GhostHouse(PacManGameCast cast) {
+	public GhostHouseDoorMan(PacManGameCast cast) {
 		game = cast.game();
 		pacMan = cast.pacMan;
 		blinky = cast.blinky;
@@ -43,6 +44,19 @@ public class GhostHouse {
 		inky = cast.inky;
 		clyde = cast.clyde;
 		disableGlobalDotCounter();
+		closed = true;
+	}
+
+	public boolean hasClosedDoor() {
+		return closed;
+	}
+
+	public void closeDoor() {
+		closed = true;
+	}
+
+	public void openDoor() {
+		closed = false;
 	}
 
 	public Optional<Ghost> preferredLockedGhost() {
@@ -94,6 +108,9 @@ public class GhostHouse {
 	 *      Dossier</a>
 	 */
 	public boolean isReleasing(Ghost ghost) {
+		if (closed) {
+			return false;
+		}
 		if (ghost == blinky) {
 			return true;
 		}

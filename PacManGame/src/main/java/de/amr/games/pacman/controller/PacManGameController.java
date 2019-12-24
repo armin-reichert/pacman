@@ -4,7 +4,6 @@ import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.actor.behavior.Steerings.isFleeingToSafeCornerFrom;
 import static de.amr.games.pacman.actor.behavior.Steerings.isMovingRandomlyWithoutTurningBack;
@@ -21,7 +20,6 @@ import static de.amr.games.pacman.model.Timing.sec;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.logging.Level;
 
@@ -35,12 +33,10 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.PacManState;
-import de.amr.games.pacman.actor.core.MazeResident;
 import de.amr.games.pacman.actor.core.PacManGameActor;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
-import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -67,7 +63,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private PacManTheme theme;
 	private PacManGameCast cast;
 	private GhostCommand ghostCommand;
-	private GhostHouse ghostHouse;
+	private GhostHouseDoorMan ghostHouseDoorMan;
 	private View currentView;
 	private IntroView introView;
 	private PlayView playView;
@@ -91,11 +87,12 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		game = new PacManGame();
 		cast = new PacManGameCast(game, theme);
 		cast.actors().forEach(actor -> actor.addEventListener(this::process));
-		ghostCommand = new GhostCommand(game);
-		ghostHouse = new GhostHouse(cast);
+		ghostCommand = new GhostCommand(cast);
+		ghostHouseDoorMan = new GhostHouseDoorMan(cast);
+		cast.ghosts().forEach(ghost -> ghost.doorMan = ghostHouseDoorMan);
 		playView = new PlayView(cast, app().settings.width, app().settings.height);
 		playView.fnGhostMotionState = ghostCommand::state;
-		playView.ghostHouse = ghostHouse;
+		playView.ghostHouseDoorMan = ghostHouseDoorMan;
 		selectView(playView);
 	}
 
@@ -142,9 +139,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onEntry(() -> {
 						game.init();
 						cast.actors().forEach(cast::setActorOnStage);
-						ghostHouse.resetGlobalDotCounter();
-						ghostHouse.resetGhostDotCounters();
-						ghostHouse.disableGlobalDotCounter();
+						ghostHouseDoorMan.resetGlobalDotCounter();
+						ghostHouseDoorMan.resetGhostDotCounters();
+						ghostHouseDoorMan.disableGlobalDotCounter();
+						ghostHouseDoorMan.closeDoor();
 						playView.init();
 						playView.message("Ready!");
 						theme.snd_clips_all().forEach(Sound::stop);
@@ -167,6 +165,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					})
 					.onExit(() -> {
 						ghostCommand.init();
+						ghostHouseDoorMan.openDoor();
 					})
 				
 				.state(PLAYING).customState(new PlayingState())
@@ -176,7 +175,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onEntry(() -> {
 						theme.snd_clips_all().forEach(Sound::stop);
 						cast.pacMan.sprites.select("full");
-						ghostHouse.resetGhostDotCounters();
+						ghostHouseDoorMan.resetGhostDotCounters();
+						ghostHouseDoorMan.closeDoor();
 					})
 					.onTick(() -> {
 						if (state().getTicksConsumed() == sec(2)) {
@@ -185,7 +185,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						}
 						else if (state().getTicksRemaining() == sec(2)) {
 							game.enterLevel(game.level().number + 1);
-							cast.actorsOnStage().forEach(MazeResident::init);
+							cast.actorsOnStage().forEach(PacManGameActor::init);
 							playView.init(); // stops flashing
 						} 
 						else if (state().getTicksRemaining() < sec(1.8f)) {
@@ -193,6 +193,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						}
 					})
 					.onExit(() -> {
+						ghostHouseDoorMan.openDoor();
 						LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", 
 								game.level().number, game.level().ghostKilledInLevel));
 					})
@@ -236,7 +237,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						}
 						// if playing continues, init actors and view
 						if (passedTime == sec(4)) {
-							cast.actorsOnStage().forEach(MazeResident::init);
+							cast.actorsOnStage().forEach(PacManGameActor::init);
 							theme.music_playing().loop();
 							playView.init();
 						}
@@ -349,18 +350,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onTick() {
 			ghostCommand.update();
-			cast.pacMan.update();
+			cast.actorsOnStage().forEach(PacManGameActor::update);
 			cast.bonus().ifPresent(Bonus::update);
-			for (Iterator<Ghost> it = cast.ghostsOnStage().iterator(); it.hasNext();) {
-				Ghost ghost = it.next();
-				ghost.nextState = ghostCommand.getState();
-				if (ghost.is(LOCKED) && ghostHouse.isReleasing(ghost)) {
-					ghost.process(new GhostUnlockedEvent());
-				}
-				else {
-					ghost.update();
-				}
-			}
 		}
 
 		private void onPacManGhostCollision(PacManGameEvent event) {
@@ -379,7 +370,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			theme.music_playing().stop();
 			cast.pacMan.process(event);
 			playView.energizerBlinking(false);
-			ghostHouse.enableGlobalDotCounter();
+			ghostHouseDoorMan.enableGlobalDotCounter();
 		}
 
 		private void onPacManGainsPower(PacManGameEvent event) {
@@ -422,7 +413,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			int points = game.eatFoodAt(e.tile);
 			int livesBeforeScoring = game.lives;
 			game.score(points);
-			ghostHouse.updateDotCounters();
+			ghostHouseDoorMan.updateDotCounters();
 			theme.snd_eatPill().play();
 			if (game.lives > livesBeforeScoring) {
 				theme.snd_extraLife().play();
@@ -460,7 +451,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_E)) {
 			game.maze().tiles().filter(Tile::containsPellet).forEach(tile -> {
 				game.eatFoodAt(tile);
-				ghostHouse.updateDotCounters();
+				ghostHouseDoorMan.updateDotCounters();
 			});
 			LOGGER.info(() -> "All pellets eaten");
 		}
