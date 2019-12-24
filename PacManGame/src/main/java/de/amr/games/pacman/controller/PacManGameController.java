@@ -83,7 +83,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		traceTo(PacManGame.FSM_LOGGER, () -> 60);
 	}
 
-	private void getReadyForPlaying() {
+	private void createPlayingEnvironment() {
 		game = new PacManGame();
 		cast = new PacManGameCast(game, theme);
 		cast.actors().forEach(actor -> actor.addEventListener(this::process));
@@ -261,7 +261,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			
 				.when(INTRO).then(GETTING_READY)
 					.condition(() -> introView.isComplete())
-					.act(this::getReadyForPlaying)
+					.act(this::createPlayingEnvironment)
 				
 				.when(GETTING_READY).then(ABOUT_PLAYING)
 					.onTimeout()
