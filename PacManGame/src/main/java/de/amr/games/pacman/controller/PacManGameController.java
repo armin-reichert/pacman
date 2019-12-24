@@ -21,6 +21,7 @@ import static de.amr.games.pacman.model.Timing.sec;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.logging.Level;
 
@@ -47,8 +48,6 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLosingPowerEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
-import de.amr.games.pacman.controller.event.StartChasingEvent;
-import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.PacManTheme;
@@ -356,18 +355,15 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			ghostCommand.update();
 			cast.pacMan.update();
 			cast.bonus().ifPresent(Bonus::update);
-			cast.ghosts().forEach(ghost -> {
+			for (Iterator<Ghost> it = cast.ghostsOnStage().iterator(); it.hasNext();) {
+				Ghost ghost = it.next();
 				ghost.nextState = ghostCommand.getState();
 				if (ghost.is(LOCKED) && ghostHouse.isReleasing(ghost)) {
 					ghost.process(new GhostUnlockedEvent());
-				} else if (ghost.is(CHASING) && ghostCommand.is(SCATTERING)) {
-					ghost.process(new StartScatteringEvent());
-				} else if (ghost.is(SCATTERING) && ghostCommand.is(CHASING)) {
-					ghost.process(new StartChasingEvent());
 				} else {
 					ghost.update();
 				}
-			});
+			}
 		}
 
 		private void onPacManGhostCollision(PacManGameEvent event) {

@@ -26,8 +26,6 @@ import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
-import de.amr.games.pacman.controller.event.StartChasingEvent;
-import de.amr.games.pacman.controller.event.StartScatteringEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
@@ -165,7 +163,7 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 					.on(GhostKilledEvent.class)
 				
 				.when(CHASING).then(SCATTERING)
-					.on(StartScatteringEvent.class)
+					.condition(() -> nextState == SCATTERING)
 					.act(this::turnAround)
 	
 				.when(SCATTERING).then(FRIGHTENED)
@@ -176,7 +174,7 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 					.on(GhostKilledEvent.class)
 				
 				.when(SCATTERING).then(CHASING)
-					.on(StartChasingEvent.class)
+					.condition(() -> nextState == CHASING)
 					.act(this::turnAround)
 				
 				.when(FRIGHTENED).then(CHASING)
