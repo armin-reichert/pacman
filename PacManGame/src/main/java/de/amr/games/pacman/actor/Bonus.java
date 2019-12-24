@@ -42,7 +42,7 @@ public class Bonus extends AbstractMazeResident implements PacManGameActor<Bonus
 		symbol = cast.game.level.bonusSymbol;
 		value = cast.game.level.bonusValue;
 		brain = buildBrain();
-		brain.fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
+		brain.fsm().traceTo(PacManGame.FSM_LOGGER, () -> 60);
 		tf.setWidth(Tile.SIZE);
 		sprites.set("symbol", cast.theme().spr_bonusSymbol(symbol));
 		sprites.set("number", cast.theme().spr_pinkNumber(binarySearch(PacManGame.POINTS_BONUS, value)));

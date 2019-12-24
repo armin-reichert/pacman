@@ -55,14 +55,8 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 		tf.setWidth(Tile.SIZE);
 		tf.setHeight(Tile.SIZE);
 		brain = buildBrain();
-		brain.fsm.traceTo(FSM_LOGGER, () -> Timing.FPS);
-		brain.publishedEventIsLogged = event -> {
-			if (event instanceof FoodFoundEvent) {
-				FoodFoundEvent foodFound = (FoodFoundEvent) event;
-				return foodFound.energizer;
-			}
-			return true;
-		};
+		brain.fsm().traceTo(FSM_LOGGER, () -> Timing.FPS);
+		brain.doNotLog(event -> event instanceof FoodFoundEvent && !((FoodFoundEvent) event).energizer);
 	}
 
 	@Override

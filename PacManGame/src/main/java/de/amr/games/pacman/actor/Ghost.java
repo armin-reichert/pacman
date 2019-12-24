@@ -55,8 +55,8 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 		tf.setWidth(Tile.SIZE);
 		tf.setHeight(Tile.SIZE);
 		brain = buildBrain();
-		brain.fsm.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		brain.fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
+		brain.fsm().setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
+		brain.fsm().traceTo(PacManGame.FSM_LOGGER, () -> 60);
 	}
 
 	@Override
