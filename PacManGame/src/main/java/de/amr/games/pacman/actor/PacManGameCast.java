@@ -43,7 +43,7 @@ import de.amr.games.pacman.theme.PacManTheme;
  */
 public class PacManGameCast {
 
-	public final PacManGame game;
+	private final PacManGame game;
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
 
@@ -109,8 +109,12 @@ public class PacManGameCast {
 		});
 	}
 
+	public PacManGame game() {
+		return game;
+	}
+
 	public Maze maze() {
-		return game.maze;
+		return game.maze();
 	}
 
 	public PacManTheme theme() {

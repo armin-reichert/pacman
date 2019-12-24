@@ -14,7 +14,6 @@ import de.amr.games.pacman.actor.core.PacManGameActor;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.BonusSymbol;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.client.FsmComponent;
@@ -38,9 +37,9 @@ public class Bonus extends AbstractMazeResident implements PacManGameActor<Bonus
 		super("Bonus");
 		this.cast = cast;
 		tf.setHeight(Tile.SIZE);
-		placeAtTile(cast.game.maze.bonusTile, Tile.SIZE / 2, 0);
-		symbol = cast.game.level.bonusSymbol;
-		value = cast.game.level.bonusValue;
+		placeAtTile(maze().bonusTile, Tile.SIZE / 2, 0);
+		symbol = game().level().bonusSymbol;
+		value = game().level().bonusValue;
 		brain = buildBrain();
 		brain.fsm().traceTo(PacManGame.FSM_LOGGER, () -> 60);
 		tf.setWidth(Tile.SIZE);
@@ -49,13 +48,8 @@ public class Bonus extends AbstractMazeResident implements PacManGameActor<Bonus
 	}
 
 	@Override
-	public PacManGame game() {
-		return cast.game;
-	}
-
-	@Override
-	public Maze maze() {
-		return cast.game.maze;
+	public PacManGameCast cast() {
+		return cast;
 	}
 
 	@Override

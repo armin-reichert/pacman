@@ -82,7 +82,7 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 			current += 1;
 			if (current == targets.size()) {
 				current = 0;
-				game().enterLevel(game().level.number + 1);
+				game().enterLevel(game().level().number + 1);
 				maze().removeFood();
 			}
 		}

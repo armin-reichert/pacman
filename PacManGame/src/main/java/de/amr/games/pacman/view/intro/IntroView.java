@@ -115,9 +115,13 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 			  .state(LOADING_MUSIC)
 			  	.onEntry(() -> {
 			  		musicLoading = CompletableFuture.runAsync(() -> {
-			  			theme().music_playing();
-			  			theme().music_gameover();
+			  			theme.music_playing();
+			  			theme.music_gameover();
+			  			theme.snd_clips_all();
 			  		});
+			  	})
+			  	.onExit(() -> {
+			  		theme.snd_ghost_chase().stop();
 			  	})
 		
 				.state(SCROLLING_LOGO)
@@ -127,7 +131,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 						scrollingLogo.setCompletion(() -> scrollingLogo.tf.getY() <= 20);
 						show(scrollingLogo); 
 						scrollingLogo.start(); 
-						theme().snd_insertCoin().play();
+						theme.snd_insertCoin().play();
 					})
 					.onTick(() -> {
 						scrollingLogo.update();
@@ -249,7 +253,8 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 				if (textAlpha > 160) {
 					textAlphaInc = -2;
 					textAlpha = 160;
-				} else if (textAlpha < 0) {
+				}
+				else if (textAlpha < 0) {
 					textAlphaInc = 2;
 					textAlpha = 0;
 				}

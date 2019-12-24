@@ -26,8 +26,6 @@ import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
-import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.model.Timing;
 import de.amr.statemachine.client.FsmComponent;
@@ -60,13 +58,8 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 	}
 
 	@Override
-	public PacManGame game() {
-		return cast.game;
-	}
-
-	@Override
-	public Maze maze() {
-		return cast.game.maze;
+	public PacManGameCast cast() {
+		return cast;
 	}
 
 	public boolean isKicking() {
@@ -150,7 +143,7 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 					.on(PacManGainsPowerEvent.class).act(() -> {
 						kicking = true;
 						// set and start power timer
-						state().setConstantTimer(sec(game().level.pacManPowerSeconds));
+						state().setConstantTimer(sec(game().level().pacManPowerSeconds));
 						cast.theme().snd_waza().loop();
 						FSM_LOGGER.info(() -> String.format("Pac-Man gaining power for %d ticks (%.2f sec)",
 								state().getDuration(), state().getDuration() / 60f));
@@ -190,7 +183,7 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 		case SLEEPING:
 			return 0;
 		case ALIVE:
-			return speed(kicking ? game().level.pacManPowerSpeed : game().level.pacManSpeed);
+			return speed(kicking ? game().level().pacManPowerSpeed : game().level().pacManSpeed);
 		case DEAD:
 			return 0;
 		default:

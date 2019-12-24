@@ -49,7 +49,7 @@ class EnterGhostHouseTestUI extends PlayView implements VisualController {
 
 	public EnterGhostHouseTestUI(PacManGameCast cast) {
 		super(cast);
-		maze = cast.game.maze;
+		maze = cast.game().maze();
 		inky = cast.inky;
 		showRoutes(true);
 		showStates(true);

@@ -56,11 +56,11 @@ public class SimplePlayView extends AbstractPacManGameView {
 	}
 
 	public PacManGame game() {
-		return cast.game;
+		return cast.game();
 	}
 
 	public Maze maze() {
-		return cast.game.maze;
+		return game().maze();
 	}
 
 	@Override
@@ -195,15 +195,15 @@ public class SimplePlayView extends AbstractPacManGameView {
 			// Game score
 			pen.color(Color.YELLOW);
 			pen.draw("SCORE", 1, 0);
-			pen.draw(String.format("LEVEL%2d", game().level.number), 22, 0);
+			pen.draw(String.format("LEVEL%2d", game().level().number), 22, 0);
 			pen.color(Color.WHITE);
 			pen.draw(String.format("%07d", game().score), 1, 1);
 			// Highscore
 			pen.color(Color.YELLOW);
 			pen.draw("HIGHSCORE", 10, 0);
 			pen.color(Color.WHITE);
-			pen.draw(String.format("%07d", game().hiscore.points), 10, 1);
-			pen.draw(String.format("L%d", game().hiscore.levelNumber), 16, 1);
+			pen.draw(String.format("%07d", game().hiscore().points), 10, 1);
+			pen.draw(String.format("L%d", game().hiscore().levelNumber), 16, 1);
 			// Number of remaining pellets
 			g.setColor(Color.PINK);
 			g.fillRect(22 * Tile.SIZE + 2, Tile.SIZE + 2, 4, 3);
@@ -223,8 +223,8 @@ public class SimplePlayView extends AbstractPacManGameView {
 
 	protected void drawLevelCounter(Graphics2D g) {
 		int imageSize = 2 * Tile.SIZE;
-		int x = width - (game().levelSymbols.size() + 1) * imageSize;
-		for (BonusSymbol symbol : game().levelSymbols) {
+		int x = width - (game().levelSymbols().size() + 1) * imageSize;
+		for (BonusSymbol symbol : game().levelSymbols()) {
 			Image image = theme().spr_bonusSymbol(symbol).frame(0);
 			g.drawImage(image, x, height - imageSize, imageSize, imageSize, null);
 			x += imageSize;

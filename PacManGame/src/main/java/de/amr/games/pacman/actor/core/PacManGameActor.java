@@ -1,6 +1,8 @@
 package de.amr.games.pacman.actor.core;
 
+import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.client.FsmContainer;
@@ -16,7 +18,25 @@ import de.amr.statemachine.core.StateMachine;
  */
 public interface PacManGameActor<S> extends MazeResident, FsmContainer<S, PacManGameEvent> {
 
-	PacManGame game();
+	/**
+	 * @return the cast this actor belongs to.
+	 */
+	PacManGameCast cast();
+
+	/**
+	 * @return the game this actor takes part.
+	 */
+	default PacManGame game() {
+		return cast().game();
+	}
+
+	/**
+	 * @return the maze this actor is residing in..
+	 */
+	@Override
+	default Maze maze() {
+		return cast().maze();
+	}
 
 	/**
 	 * Builds the state machine for this actor.

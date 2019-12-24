@@ -26,7 +26,6 @@ import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.client.FsmComponent;
@@ -117,7 +116,7 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 				.state(DEAD)
 					.timeoutAfter(sec(1)) // "dying" time
 					.onEntry(() -> {
-						sprites.select("value-" + game().level.ghostsKilledByEnergizer);
+						sprites.select("value-" + game().level().ghostsKilledByEnergizer);
 						setTargetTile(maze().ghostHouseSeats[0]);
 						turnDeadGhostSoundOn();
 					})
@@ -185,13 +184,8 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 	}
 
 	@Override
-	public PacManGame game() {
-		return cast.game;
-	}
-
-	@Override
-	public Maze maze() {
-		return cast.game.maze;
+	public PacManGameCast cast() {
+		return cast;
 	}
 
 	@Override
@@ -245,19 +239,19 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 		boolean outsideHouse = !maze().inGhostHouse(tile());
 		switch (getState()) {
 		case LOCKED:
-			return outsideHouse ? 0 : speed(game().level.ghostSpeed) / 2;
+			return outsideHouse ? 0 : speed(game().level().ghostSpeed) / 2;
 		case LEAVING_HOUSE:
 			//$FALL-THROUGH$
 		case ENTERING_HOUSE:
-			return speed(game().level.ghostSpeed) / 2;
+			return speed(game().level().ghostSpeed) / 2;
 		case CHASING:
 			//$FALL-THROUGH$
 		case SCATTERING:
-			return inTunnel ? speed(game().level.ghostTunnelSpeed) : speed(game().level.ghostSpeed);
+			return inTunnel ? speed(game().level().ghostTunnelSpeed) : speed(game().level().ghostSpeed);
 		case FRIGHTENED:
-			return inTunnel ? speed(game().level.ghostTunnelSpeed) : speed(game().level.ghostFrightenedSpeed);
+			return inTunnel ? speed(game().level().ghostTunnelSpeed) : speed(game().level().ghostFrightenedSpeed);
 		case DEAD:
-			return 2 * speed(game().level.ghostSpeed);
+			return 2 * speed(game().level().ghostSpeed);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name()));
 		}

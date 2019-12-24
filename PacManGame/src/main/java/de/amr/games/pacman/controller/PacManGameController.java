@@ -172,7 +172,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.state(PLAYING).customState(new PlayingState())
 				
 				.state(CHANGING_LEVEL)
-					.timeoutAfter(() -> sec(4 + game.level.mazeNumFlashes * PacManTheme.MAZE_FLASH_TIME_MILLIS / 1000))
+					.timeoutAfter(() -> sec(4 + game.level().mazeNumFlashes * PacManTheme.MAZE_FLASH_TIME_MILLIS / 1000))
 					.onEntry(() -> {
 						theme.snd_clips_all().forEach(Sound::stop);
 						cast.pacMan.sprites.select("full");
@@ -181,10 +181,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onTick(() -> {
 						if (state().getTicksConsumed() == sec(2)) {
 							cast.ghostsOnStage().forEach(Ghost::hide);
-							playView.mazeFlashing(game.level.mazeNumFlashes > 0);
+							playView.mazeFlashing(game.level().mazeNumFlashes > 0);
 						}
 						else if (state().getTicksRemaining() == sec(2)) {
-							game.enterLevel(game.level.number + 1);
+							game.enterLevel(game.level().number + 1);
 							cast.actorsOnStage().forEach(MazeResident::init);
 							playView.init(); // stops flashing
 						} 
@@ -194,7 +194,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					})
 					.onExit(() -> {
 						LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", 
-								game.level.number, game.level.ghostKilledInLevel));
+								game.level().number, game.level().ghostKilledInLevel));
 					})
 				
 				.state(GHOST_DYING)
@@ -449,7 +449,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private void handleCheats() {
 		/* ALT-"K": Kill all available ghosts */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_K)) {
-			game.level.ghostsKilledByEnergizer = 0;
+			game.level().ghostsKilledByEnergizer = 0;
 			cast.ghostsOnStage().filter(ghost -> ghost.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
 				game.scoreKilledGhost(ghost.name());
 				ghost.process(new GhostKilledEvent(ghost));
@@ -458,7 +458,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		}
 		/* ALT-"E": Eats all (normal) pellets */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_E)) {
-			game.maze.tiles().filter(Tile::containsPellet).forEach(tile -> {
+			game.maze().tiles().filter(Tile::containsPellet).forEach(tile -> {
 				game.eatFoodAt(tile);
 				ghostHouse.updateDotCounters();
 			});
@@ -467,7 +467,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		/* ALT-"L": Selects next level */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
 			if (is(PLAYING)) {
-				LOGGER.info(() -> String.format("Switch to next level (%d)", game.level.number + 1));
+				LOGGER.info(() -> String.format("Switch to next level (%d)", game.level().number + 1));
 				enqueue(new LevelCompletedEvent());
 			}
 		}

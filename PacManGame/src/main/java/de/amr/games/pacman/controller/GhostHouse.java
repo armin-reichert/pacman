@@ -36,7 +36,7 @@ public class GhostHouse {
 	private int globalDotCounter;
 
 	public GhostHouse(PacManGameCast cast) {
-		game = cast.game;
+		game = cast.game();
 		pacMan = cast.pacMan;
 		blinky = cast.blinky;
 		pinky = cast.pinky;
@@ -54,10 +54,10 @@ public class GhostHouse {
 			return 0;
 		}
 		if (ghost == inky) {
-			return game.level.number == 1 ? 30 : 0;
+			return game.level().number == 1 ? 30 : 0;
 		}
 		if (ghost == clyde) {
-			return game.level.number == 1 ? 60 : game.level.number == 2 ? 50 : 0;
+			return game.level().number == 1 ? 60 : game.level().number == 2 ? 50 : 0;
 		}
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");
 	}
@@ -101,7 +101,7 @@ public class GhostHouse {
 		if (!ghostToRelease.isPresent() || ghostToRelease.get() != ghost) {
 			return false;
 		}
-		int pacManStarvingTimeLimit = game.level.number < 5 ? sec(4) : sec(3);
+		int pacManStarvingTimeLimit = game.level().number < 5 ? sec(4) : sec(3);
 		if (globalDotCounterEnabled) {
 			int globalDotLimit = globalDotLimit(ghost);
 			if (globalDotCounter >= globalDotLimit) {

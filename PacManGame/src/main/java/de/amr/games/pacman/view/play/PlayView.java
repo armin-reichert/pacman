@@ -75,7 +75,7 @@ public class PlayView extends SimplePlayView {
 
 	public PlayView(PacManGameCast cast, int width, int height) {
 		super(cast, width, height);
-		gridImage = createGridImage(cast.game.maze);
+		gridImage = createGridImage(cast.game().maze());
 		pinkyImage = ghostImage(GhostColor.PINK);
 		inkyImage = ghostImage(GhostColor.CYAN);
 		clydeImage = ghostImage(GhostColor.ORANGE);
@@ -196,7 +196,7 @@ public class PlayView extends SimplePlayView {
 		int duration = pacMan.state().getDuration();
 		String text = pacMan.getState().name();
 		if (pacMan.isKicking()) {
-			text += " and kicking";
+			text += " AND KICKING!";
 		}
 		if (duration != State.ENDLESS && duration > 0) {
 			text += String.format("(%d|%d)", pacMan.state().getTicksRemaining(), duration);
