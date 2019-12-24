@@ -28,8 +28,8 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class Bonus extends AbstractMazeResident implements PacManGameActor<BonusState> {
 
-	public final PacManGameCast cast;
-	public final FsmComponent<BonusState, PacManGameEvent> brain;
+	private final PacManGameCast cast;
+	private final FsmComponent<BonusState, PacManGameEvent> brain;
 	public final BonusSymbol symbol;
 	public final int value;
 
@@ -37,12 +37,12 @@ public class Bonus extends AbstractMazeResident implements PacManGameActor<Bonus
 		super("Bonus");
 		this.cast = cast;
 		tf.setHeight(Tile.SIZE);
+		tf.setWidth(Tile.SIZE);
 		placeAtTile(maze().bonusTile, Tile.SIZE / 2, 0);
 		symbol = game().level().bonusSymbol;
 		value = game().level().bonusValue;
 		brain = buildBrain();
 		brain.fsm().traceTo(PacManGame.FSM_LOGGER, () -> 60);
-		tf.setWidth(Tile.SIZE);
 		sprites.set("symbol", cast.theme().spr_bonusSymbol(symbol));
 		sprites.set("number", cast.theme().spr_pinkNumber(binarySearch(PacManGame.POINTS_BONUS, value)));
 	}
