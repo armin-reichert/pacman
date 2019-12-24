@@ -65,7 +65,7 @@ public class PacManGameCast {
 		clyde = new Ghost("Clyde", this);
 
 		// initially, the actors are behind the stage
-		actors().forEach(actor -> removeFromStage(actor));
+		actors().forEach(actor -> setOffStage(actor));
 
 		// configure the actors
 
@@ -181,13 +181,13 @@ public class PacManGameCast {
 		return actors().filter(this::onStage);
 	}
 
-	public void putOnStage(MazeResident actor) {
+	public void setOnStage(MazeResident actor) {
 		actor.init();
 		actor.show();
 		actorsOnStage.add(actor);
 	}
 
-	public void removeFromStage(MazeResident actor) {
+	public void setOffStage(MazeResident actor) {
 		actor.hide();
 		actorsOnStage.remove(actor);
 	}

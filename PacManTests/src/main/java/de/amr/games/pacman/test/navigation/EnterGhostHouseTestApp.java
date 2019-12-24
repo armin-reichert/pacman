@@ -62,7 +62,7 @@ class EnterGhostHouseTestUI extends PlayView implements VisualController {
 		super.init();
 		game().init();
 		maze().removeFood();
-		cast().putOnStage(inky);
+		cast().setOnStage(inky);
 		messageColor = Color.YELLOW;
 		messageText = "SPACE = enter / leave house";
 	}

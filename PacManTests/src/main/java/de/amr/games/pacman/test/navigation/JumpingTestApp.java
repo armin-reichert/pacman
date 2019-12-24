@@ -50,7 +50,7 @@ class JumpingTestUI extends PlayView implements VisualController {
 		super.init();
 		game().init();
 		maze().removeFood();
-		cast().ghosts().forEach(cast()::putOnStage);
+		cast().ghosts().forEach(cast()::setOnStage);
 	}
 
 	@Override
