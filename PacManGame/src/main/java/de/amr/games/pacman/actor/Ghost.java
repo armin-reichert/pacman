@@ -39,7 +39,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostState> {
 
 	public Direction eyes;
-	public int seat;
+	public byte seat;
 	public int dotCounter;
 	public GhostState nextState;
 	public GhostHouseDoorMan doorMan;
