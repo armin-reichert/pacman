@@ -83,8 +83,7 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 					})
 					.onTick(() -> walkAndDisplayAs("color-" + moveDir()))
 					.onExit(() -> {
-						enteredNewTile = true;
-						cast.pacMan.clearStarvingTime();
+						steering().triggerSteering(this);
 					})
 					
 				.state(LEAVING_HOUSE)
@@ -135,12 +134,13 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 			
 				.when(LOCKED).then(LEAVING_HOUSE)
 					.on(GhostUnlockedEvent.class)
+					.act(() -> cast.pacMan.clearStarvingTime())
 			
 				.when(LEAVING_HOUSE).then(SCATTERING)
-					.condition(() -> leftHouse() && nextState == SCATTERING)
+					.condition(() -> hasLeftTheHouse() && nextState == SCATTERING)
 				
 				.when(LEAVING_HOUSE).then(CHASING)
-					.condition(() -> leftHouse() && nextState == CHASING)
+					.condition(() -> hasLeftTheHouse() && nextState == CHASING)
 					
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
 					.condition(() -> nextDir() == null)
@@ -183,7 +183,7 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 		.endStateMachine();
 		/*@formatter:on*/
 	}
-	
+
 	@Override
 	public PacManGame game() {
 		return cast.game;
@@ -269,9 +269,9 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 		}
 	}
 
-	private boolean leftHouse() {
+	private boolean hasLeftTheHouse() {
 		Tile currentTile = tile();
-		return !maze().partOfGhostHouse(currentTile) && tf.getY() - currentTile.y() == 0;
+		return !maze().partOfGhostHouse(currentTile) && tf.getPosition().roundedY() == currentTile.y();
 	}
 
 	public void turnChasingGhostSoundOn() {
