@@ -246,6 +246,8 @@ public class SimplePlayView extends AbstractPacManGameView {
 
 	public void mute() {
 		theme().snd_clips_all().forEach(Sound::stop);
+		theme().music_gameover().stop();
+		theme().music_playing().stop();
 	}
 
 	public void playReady() {
