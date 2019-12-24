@@ -31,7 +31,6 @@ import de.amr.games.pacman.view.core.Pen;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.client.FsmContainer;
-import de.amr.statemachine.client.FsmControlled;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -95,7 +94,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 	}
 
 	@Override
-	public FsmControlled<IntroState, Void> fsmComponent() {
+	public FsmComponent<IntroState, Void> fsmComponent() {
 		return fsm;
 	}
 

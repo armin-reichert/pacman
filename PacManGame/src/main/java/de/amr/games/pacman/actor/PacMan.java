@@ -31,7 +31,6 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.client.FsmComponent;
-import de.amr.statemachine.client.FsmControlled;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 
@@ -94,7 +93,7 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 							// power ending?
 							if (state().getTicksConsumed() == state().getDuration() * 75 / 100) {
 								losingPower = true;
-								fsmComponent.publish(new PacManLosingPowerEvent());
+								publish(new PacManLosingPowerEvent());
 								return;
 							}
 							// power lost?
@@ -103,7 +102,7 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 								// "disable timer"
 								state().setConstantTimer(State.ENDLESS);
 								kicking = losingPower = false;
-								fsmComponent.publish(new PacManLostPowerEvent());
+								publish(new PacManLostPowerEvent());
 								return;
 							}
 						}
@@ -161,7 +160,7 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 	}
 
 	@Override
-	public FsmControlled<PacManState, PacManGameEvent> fsmComponent() {
+	public FsmComponent<PacManState, PacManGameEvent> fsmComponent() {
 		return fsmComponent;
 	}
 

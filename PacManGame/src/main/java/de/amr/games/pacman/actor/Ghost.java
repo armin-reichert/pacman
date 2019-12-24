@@ -25,13 +25,11 @@ import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
-import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.client.FsmComponent;
-import de.amr.statemachine.client.FsmControlled;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
@@ -84,7 +82,7 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 					.onEntry(() -> {
 						visible = true;
 						enteredNewTile = true;
-						nextState = fsmComponent.getState();
+						nextState = getState();
 						placeAtTile(maze().ghostHouseSeats[seat], Tile.SIZE / 2, 0);
 						setMoveDir(eyes);
 						setNextDir(eyes);
@@ -178,12 +176,10 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 					.act(this::turnAround)
 				
 				.when(FRIGHTENED).then(CHASING)
-					.on(PacManLostPowerEvent.class)
-					.condition(() -> nextState == CHASING)
+					.condition(() -> !cast.pacMan.hasPower() && nextState == CHASING)
 	
 				.when(FRIGHTENED).then(SCATTERING)
-					.on(PacManLostPowerEvent.class)
-					.condition(() -> nextState == SCATTERING)
+					.condition(() -> !cast.pacMan.hasPower() && nextState == SCATTERING)
 				
 				.when(FRIGHTENED).then(DEAD)
 					.on(GhostKilledEvent.class)
@@ -202,7 +198,7 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 	}
 
 	@Override
-	public FsmControlled<GhostState, PacManGameEvent> fsmComponent() {
+	public FsmComponent<GhostState, PacManGameEvent> fsmComponent() {
 		return fsmComponent;
 	}
 
@@ -225,7 +221,7 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 
 	@Override
 	public Steering<Ghost> steering() {
-		return steeringByState.getOrDefault(fsmComponent.getState(), defaultSteering);
+		return steeringByState.getOrDefault(getState(), defaultSteering);
 	}
 
 	private void walkAndDisplayAs(String spriteKey) {
@@ -266,13 +262,13 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 		case DEAD:
 			return 2 * speed(game.level.ghostSpeed);
 		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), fsmComponent.name()));
+			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name()));
 		}
 	}
 
 	private void checkPacManCollision() {
 		if (tile().equals(cast.pacMan.tile())) {
-			fsmComponent.publish(new PacManGhostCollisionEvent(this));
+			publish(new PacManGhostCollisionEvent(this));
 		}
 	}
 

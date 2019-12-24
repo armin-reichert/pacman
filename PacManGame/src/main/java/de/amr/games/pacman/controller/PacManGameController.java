@@ -396,7 +396,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onPacManLostPower(PacManGameEvent event) {
 			ghostCommand.resume();
-			cast.ghostsOnStage().forEach(ghost -> ghost.process(event));
 		}
 
 		private void onGhostKilled(PacManGameEvent event) {

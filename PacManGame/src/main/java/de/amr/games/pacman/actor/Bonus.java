@@ -18,7 +18,6 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.client.FsmContainer;
-import de.amr.statemachine.client.FsmControlled;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -54,7 +53,7 @@ public class Bonus extends AbstractMazeResident implements FsmContainer<BonusSta
 	}
 
 	@Override
-	public FsmControlled<BonusState, PacManGameEvent> fsmComponent() {
+	public FsmComponent<BonusState, PacManGameEvent> fsmComponent() {
 		return fsmComponent;
 	}
 
