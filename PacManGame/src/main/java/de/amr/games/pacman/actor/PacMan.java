@@ -81,7 +81,6 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 				.state(ALIVE)
 					.onEntry(() -> {
 						digestionTicks = 0;
-						kicking = losingPower = false;
 					})
 	
 					.onTick(() -> {
