@@ -189,6 +189,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						cast.pacMan.sprites.select("full");
 						ghostHouseDoorMan.resetGhostDotCounters();
 						ghostHouseDoorMan.closeDoor();
+						stopSoundEffects();
 					})
 					.onTick(() -> {
 						if (state().getTicksConsumed() == sec(2)) {
