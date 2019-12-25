@@ -7,14 +7,13 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 
 public class BoardTests {
 
 	@Test
 	public void testBoardLoading() {
-		Maze maze = new Maze(PacManGame.BOARD);
+		Maze maze = new Maze();
 
 		assertEquals(28, maze.numCols);
 		assertEquals(36, maze.numRows);
@@ -40,7 +39,7 @@ public class BoardTests {
 		assertEquals(240, maze.tiles().filter(Tile::containsPellet).count());
 
 		assertTrue(maze.tileAt(0, 3).isWall());
-		assertTrue(maze.tileAt(13, 15).isDoor());
+		assertTrue(maze.isDoor(maze.tileAt(13, 15)));
 		assertTrue(maze.tileAt(1, 4).containsPellet());
 		assertTrue(maze.tileAt(1, 6).containsEnergizer());
 

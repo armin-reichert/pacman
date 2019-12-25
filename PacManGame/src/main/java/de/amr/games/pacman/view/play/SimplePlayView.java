@@ -173,7 +173,7 @@ public class SimplePlayView extends AbstractPacManGameView {
 			});
 		}
 		// don't draw door when ghost is passing through
-		if (cast.ghostsOnStage().anyMatch(ghost -> ghost.tile().isDoor())) {
+		if (cast.ghostsOnStage().anyMatch(ghost -> maze().isDoor(ghost.tile()))) {
 			g.setColor(theme().color_mazeBackground());
 			g.fillRect(maze().doorLeft.x(), maze().doorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
 		}

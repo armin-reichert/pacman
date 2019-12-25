@@ -23,10 +23,12 @@ import java.util.logging.Logger;
  * 
  * @author Armin Reichert
  * 
- * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
+ * @see <a href=
+ *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
  *      dossier</a>
- * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man level
- *      specifications</a>
+ * @see <a href=
+ *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man
+ *      level specifications</a>
  */
 public class PacManGame {
 
@@ -35,46 +37,6 @@ public class PacManGame {
 	static {
 		FSM_LOGGER.setLevel(Level.OFF);
 	}
-
-	public static final String[] BOARD = {
-	/*@formatter:off*/
-	"############################", 
-	"############################", 
-	"############################", 
-	"############################", 
-	"#............##............#", 
-	"#.####.#####.##.#####.####.#", 
-	"#*####.#####.##.#####.####*#", 
-	"#.####.#####.##.#####.####.#", 
-	"#..........................#", 
-	"#.####.##.########.##.####.#", 
-	"#.####.##.########.##.####.#", 
-	"#......##....##....##......#", 
-	"######.##### ## #####.######", 
-	"######.##### ## #####.######", 
-	"######.##    0     ##.######", 
-	"######.## ###  ### ##.######", 
-	"######.## #      # ##.######", 
-	"tttttt.   #1 2 3 #   .tttttt", 
-	"######.## #      # ##.######", 
-	"######.## ######## ##.######", 
-	"######.##    $     ##.######", 
-	"######.## ######## ##.######", 
-	"######.## ######## ##.######", 
-	"#............##............#", 
-	"#.####.#####.##.#####.####.#", 
-	"#.####.#####.##.#####.####.#", 
-	"#*..##.......P .......##..*#", 
-	"###.##.##.########.##.##.###", 
-	"###.##.##.########.##.##.###", 
-	"#......##....##....##......#", 
-	"#.##########.##.##########.#", 
-	"#.##########.##.##########.#", 
-	"#..........................#", 
-	"############################", 
-	"############################", 
-	"############################"}; 
-	/*@formatter:on*/
 
 	public static final int POINTS_PELLET = 10;
 	public static final int POINTS_ENERGIZER = 50;
@@ -117,7 +79,7 @@ public class PacManGame {
 		/*@formatter:on*/
 	};
 
-	private final Maze maze = new Maze(BOARD);
+	private final Maze maze = new Maze();
 	private final Deque<BonusSymbol> levelSymbols = new ArrayDeque<>(7);
 	private final Hiscore hiscore = new Hiscore();
 	private PacManGameLevel level;
@@ -168,8 +130,7 @@ public class PacManGame {
 	}
 
 	/**
-	 * @param tile
-	 *               tile containing food
+	 * @param tile tile containing food
 	 * @return points scored
 	 */
 	public int eatFoodAt(Tile tile) {
@@ -178,8 +139,7 @@ public class PacManGame {
 			level.ghostsKilledByEnergizer = 0;
 			tile.removeFood();
 			return POINTS_ENERGIZER;
-		}
-		else {
+		} else {
 			tile.removeFood();
 			return POINTS_PELLET;
 		}
@@ -213,7 +173,7 @@ public class PacManGame {
 		if (level.ghostKilledInLevel == 16) {
 			score(12000);
 		}
-		LOGGER.info(() -> String.format("Scored %d points for killing %s (%s ghost in sequence)", points,
-				ghostName, new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]));
+		LOGGER.info(() -> String.format("Scored %d points for killing %s (%s ghost in sequence)", points, ghostName,
+				new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]));
 	}
 }

@@ -227,7 +227,7 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (neighbor.isDoor()) {
+		if (maze().isDoor(neighbor)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 		if (maze().isNoUpIntersection(tile) && neighbor == maze().tileToDir(tile, UP)) {

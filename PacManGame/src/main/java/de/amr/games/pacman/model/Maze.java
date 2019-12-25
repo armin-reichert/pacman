@@ -14,83 +14,118 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * The maze, a 2-dimensional grid of tiles.
+ * The Pac-Man game world.
  * 
  * @author Armin Reichert
  */
 public class Maze {
 
+	final String[] data = {
+	/*@formatter:off*/
+	"############################", 
+	"############################", 
+	"############################", 
+	"############################", 
+	"#............##............#", 
+	"#.####.#####.##.#####.####.#", 
+	"#*####.#####.##.#####.####*#", 
+	"#.####.#####.##.#####.####.#", 
+	"#..........................#", 
+	"#.####.##.########.##.####.#", 
+	"#.####.##.########.##.####.#", 
+	"#......##....##....##......#", 
+	"######.##### ## #####.######", 
+	"######.##### ## #####.######", 
+	"######.##          ##.######", 
+	"######.## ###  ### ##.######", 
+	"######.## #      # ##.######", 
+	"tttttt.   #      #   .tttttt", 
+	"######.## #      # ##.######", 
+	"######.## ######## ##.######", 
+	"######.##          ##.######", 
+	"######.## ######## ##.######", 
+	"######.## ######## ##.######", 
+	"#............##............#", 
+	"#.####.#####.##.#####.####.#", 
+	"#.####.#####.##.#####.####.#", 
+	"#*..##.......  .......##..*#", 
+	"###.##.##.########.##.##.###", 
+	"###.##.##.########.##.##.###", 
+	"#......##....##....##......#", 
+	"#.##########.##.##########.#", 
+	"#.##########.##.##########.#", 
+	"#..........................#", 
+	"############################", 
+	"############################", 
+	"############################"}; 
+	/*@formatter:on*/
+
 	public final int numRows;
 	public final int numCols;
-	public final Tile[][] tiles;
-	public Tile pacManHome;
-	public Tile ghostHouseSeats[] = new Tile[4];
-	public Tile bonusTile;
-	public Tile cornerNW, cornerNE, cornerSW, cornerSE;
-	public Tile horizonNE, horizonNW, horizonSE, horizonSW;
-	public Tile tunnelExitLeft, tunnelExitRight;
-	public Tile doorLeft, doorRight;
-	public Tile energizers[] = new Tile[4];
-	public int totalNumPellets;
+	public final int totalNumPellets;
 
+	public final Tile pacManHome;
+	public final Tile ghostHouseSeats[] = new Tile[4];
+	public final Tile bonusTile;
+	public final Tile cornerNW, cornerNE, cornerSW, cornerSE;
+	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
+	public final Tile tunnelExitLeft, tunnelExitRight;
+	public final Tile doorLeft, doorRight;
+	public final Tile energizers[] = new Tile[4];
+
+	private final Tile[][] map;
 	private final Set<Tile> intersections;
 
-	public Maze(String[] map) {
-		numRows = map.length;
-		numCols = map[0].length();
-		tiles = new Tile[numCols][numRows];
+	public Maze() {
+		numRows = data.length;
+		numCols = data[0].length();
+		map = new Tile[numCols][numRows];
 		int energizerCount = 0;
+		int pelletCount = 0;
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				char c = map[row].charAt(col);
-				Tile tile = tiles[col][row] = new Tile((byte) col, (byte) row, c);
-				if (Character.isDigit(c)) {
-					int seat = Integer.valueOf(String.valueOf(c));
-					ghostHouseSeats[seat] = tile;
-					tile.content = SPACE;
-				}
+				char c = data[row].charAt(col);
+				map[col][row] = new Tile((byte) col, (byte) row, c);
 				switch (c) {
 				case PELLET:
-					totalNumPellets += 1;
+					pelletCount += 1;
 					break;
 				case ENERGIZER:
-					totalNumPellets += 1;
-					energizers[energizerCount++] = tile;
-					break;
-				case 'P':
-					pacManHome = tile;
-					tile.content = SPACE;
-					break;
-				case '$':
-					bonusTile = tile;
-					tile.content = SPACE;
+					pelletCount += 1;
+					energizers[energizerCount++] = map[col][row];
 					break;
 				default:
 					break;
 				}
 			}
 		}
+		totalNumPellets = pelletCount;
 
 		// Ghost house
-		doorLeft = tiles[13][15];
-		doorLeft.content = Tile.DOOR;
-		doorRight = tiles[14][15];
-		doorRight.content = Tile.DOOR;
+		doorLeft = map[13][15];
+		doorRight = map[14][15];
+		ghostHouseSeats[0] = map[13][14];
+		ghostHouseSeats[1] = map[11][17];
+		ghostHouseSeats[2] = map[13][17];
+		ghostHouseSeats[3] = map[15][17];
 
-		tunnelExitLeft = tiles[0][17];
-		tunnelExitRight = tiles[27][17];
+		pacManHome = map[13][26];
+		bonusTile = map[13][20];
+
+		tunnelExitLeft = map[0][17];
+		tunnelExitRight = map[27][17];
 
 		// Scattering targets
-		horizonNW = tiles[2][0];
-		horizonNE = tiles[25][0];
-		horizonSW = tiles[0][35];
-		horizonSE = tiles[27][35];
+		horizonNW = map[2][0];
+		horizonNE = map[25][0];
+		horizonSW = map[0][35];
+		horizonSE = map[27][35];
 
 		// Corners inside maze
-		cornerNW = tiles[1][4];
-		cornerNE = tiles[26][4];
-		cornerSW = tiles[1][32];
-		cornerSE = tiles[26][32];
+		cornerNW = map[1][4];
+		cornerNE = map[26][4];
+		cornerSW = map[1][32];
+		cornerSE = map[26][32];
 
 		intersections = tiles()
 		/*@formatter:off*/
@@ -106,48 +141,43 @@ public class Maze {
 		return Direction.dirs()
 				.map(dir -> tileToDir(tile, dir))
 				.filter(this::insideBoard)
-				.filter(neighbor -> !neighbor.isWall() && !neighbor.isDoor())
+				.filter(neighbor -> !neighbor.isWall() && !isDoor(neighbor))
 				.count();
 		/*@formatter:on*/
 	}
 
 	public Stream<Tile> tiles() {
-		return Arrays.stream(tiles).flatMap(Arrays::stream);
+		return Arrays.stream(map).flatMap(Arrays::stream);
 	}
 
 	/**
-	 * @param col
-	 *              a column index
-	 * @param row
-	 *              a row index
-	 * @return the tile with the given coordinates. Tiles outside of the board are either tunnel tiles
-	 *         (if in the same row than the board tunnel tiles) or walls otherwise.
+	 * @param col a column index
+	 * @param row a row index
+	 * @return the tile with the given coordinates. Tiles outside of the board are
+	 *         either tunnel tiles (if in the same row than the board tunnel tiles)
+	 *         or walls otherwise.
 	 */
 	public Tile tileAt(int col, int row) {
-		return insideBoard(col, row) ? tiles[col][row]
+		return insideBoard(col, row) ? map[col][row]
 				: new Tile((byte) col, (byte) row, row == tunnelExitLeft.row ? TUNNEL : WALL);
 	}
 
 	/**
-	 * @param tile
-	 *               reference tile
-	 * @param dir
-	 *               some direction
-	 * @param n
-	 *               number of tiles
-	 * @return the tile located <code>n</code> tiles away from the reference tile towards the given
-	 *         direction. This can be a tile outside of the board!
+	 * @param tile reference tile
+	 * @param dir  some direction
+	 * @param n    number of tiles
+	 * @return the tile located <code>n</code> tiles away from the reference tile
+	 *         towards the given direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
 		return tileAt(tile.col + n * dir.dx, tile.row + n * dir.dy);
 	}
 
 	/**
-	 * @param tile
-	 *               reference tile
-	 * @param dir
-	 *               some direction
-	 * @return neighbor towards the given direction. This can be a tile outside of the board!
+	 * @param tile reference tile
+	 * @param dir  some direction
+	 * @return neighbor towards the given direction. This can be a tile outside of
+	 *         the board!
 	 */
 	public Tile tileToDir(Tile tile, Direction dir) {
 		return tileToDir(tile, dir, 1);
@@ -161,8 +191,12 @@ public class Maze {
 		return insideBoard(tile.col, tile.row);
 	}
 
+	public boolean isDoor(Tile tile) {
+		return tile == doorLeft || tile == doorRight;
+	}
+
 	public boolean inFrontOfGhostHouseDoor(Tile tile) {
-		return tileToDir(tile, Direction.DOWN).isDoor();
+		return isDoor(tileToDir(tile, Direction.DOWN));
 	}
 
 	public Optional<Direction> directionBetween(Tile t1, Tile t2) {
@@ -187,7 +221,7 @@ public class Maze {
 	}
 
 	public boolean isNoUpIntersection(Tile tile) {
-		return tile == tiles[12][14] || tile == tiles[12][26] || tile == tiles[15][14] || tile == tiles[15][26];
+		return tile == map[12][14] || tile == map[12][26] || tile == map[15][14] || tile == map[15][26];
 	}
 
 	public void restoreFood() {
@@ -203,7 +237,7 @@ public class Maze {
 		StringBuilder sb = new StringBuilder();
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				sb.append(tiles[col][row].content);
+				sb.append(map[col][row].content);
 			}
 			sb.append("\n");
 		}

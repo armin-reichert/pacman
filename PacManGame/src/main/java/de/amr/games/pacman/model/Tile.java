@@ -1,10 +1,11 @@
 package de.amr.games.pacman.model;
 
 /**
- * The Pac-Man game world consists of an unbounded grid of tiles. The board tiles are created
- * exactly once when the board/maze is created. Therefore tiles inside the board can be compared by
- * identity where in the general case, tiles have to be compared using equals(). The tile content is
- * not relevant when comparing tiles.
+ * The Pac-Man game world consists of an unbounded grid of tiles. The board
+ * tiles are created exactly once when the board/maze is created. Therefore
+ * tiles inside the board can be compared by identity where in the general case,
+ * tiles have to be compared using equals(). The tile content is not relevant
+ * when comparing tiles.
  * 
  * @author Armin Reichert
  */
@@ -14,7 +15,6 @@ public class Tile {
 	public static final int SIZE = 8;
 
 	public static final char WALL = '#';
-	public static final char DOOR = '=';
 	public static final char TUNNEL = 't';
 	public static final char SPACE = ' ';
 	public static final char PELLET = '.';
@@ -46,10 +46,6 @@ public class Tile {
 		return content == WALL;
 	}
 
-	public boolean isDoor() {
-		return content == DOOR;
-	}
-
 	public boolean containsFood() {
 		return containsPellet() || containsEnergizer();
 	}
@@ -77,11 +73,9 @@ public class Tile {
 	public void removeFood() {
 		if (containsPellet()) {
 			content = EATEN_PELLET;
-		}
-		else if (containsEnergizer()) {
+		} else if (containsEnergizer()) {
 			content = EATEN_ENERGIZER;
-		}
-		else {
+		} else {
 			throw new IllegalArgumentException(String.format("Tile %s does not contain food", this));
 		}
 	}
@@ -89,11 +83,9 @@ public class Tile {
 	public void restoreFood() {
 		if (containsEatenPellet()) {
 			content = PELLET;
-		}
-		else if (containsEatenEnergizer()) {
+		} else if (containsEatenEnergizer()) {
 			content = ENERGIZER;
-		}
-		else {
+		} else {
 			throw new IllegalArgumentException(String.format("Tile %s does not contain eaten food", this));
 		}
 	}
