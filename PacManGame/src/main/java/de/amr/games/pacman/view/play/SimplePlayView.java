@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.Arrays;
 
-import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.ui.sprites.Animation;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
@@ -134,8 +133,7 @@ public class SimplePlayView extends AbstractPacManGameView {
 	protected void drawMaze(Graphics2D g) {
 		if (mazeFlashing) {
 			drawFlashingMaze(g);
-		}
-		else {
+		} else {
 			drawNormalMaze(g);
 		}
 	}
@@ -159,7 +157,8 @@ public class SimplePlayView extends AbstractPacManGameView {
 			g.setColor(bgColor(tile));
 			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 		});
-		// fill energizer tiles with background color when blinking animation is in dark frame
+		// fill energizer tiles with background color when blinking animation is in dark
+		// frame
 		if (energizerBlinking.currentFrame() == 1) {
 			Arrays.stream(maze().energizers).forEach(tile -> {
 				g.setColor(bgColor(tile));
@@ -181,10 +180,8 @@ public class SimplePlayView extends AbstractPacManGameView {
 			cast.pacMan.draw(g);
 		}
 		// draw dead ghosts (numbers) before living ghosts
-		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> ghost.is(DEAD))
-				.forEach(ghost -> ghost.draw(g));
-		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> !ghost.is(DEAD))
-				.forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> !ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {
@@ -242,52 +239,4 @@ public class SimplePlayView extends AbstractPacManGameView {
 		}
 	}
 
-	// sounds
-
-	public void mute() {
-		theme().snd_clips_all().forEach(Sound::stop);
-		theme().music_gameover().stop();
-		theme().music_playing().stop();
-	}
-
-	public void playReady() {
-		theme().snd_ready().play();
-	}
-
-	public void playLevelMusic() {
-		theme().music_playing().volume(.90f);
-		theme().music_playing().loop();
-	}
-
-	public void stopLevelMusic() {
-		theme().music_playing().stop();
-	}
-
-	public void playPelletEaten() {
-		theme().snd_eatPill().play();
-	}
-
-	public void playGhostEaten() {
-		theme().snd_eatGhost().play();
-	}
-
-	public void playBonusEaten() {
-		theme().snd_eatFruit().play();
-	}
-
-	public void playPacManDied() {
-		theme().snd_die().play();
-	}
-
-	public void playExtraLife() {
-		theme().snd_extraLife().play();
-	}
-
-	public void playGameOver() {
-		theme().music_gameover().play();
-	}
-	
-	public boolean isGameOverMusicRunning() {
-		return theme().music_gameover().isRunning();
-	}
 }

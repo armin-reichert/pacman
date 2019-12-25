@@ -216,7 +216,7 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 	}
 
 	private boolean canLeaveHouse() {
-		return doorMan == null || !doorMan.hasClosedDoor() && doorMan.isReleasing(this);
+		return doorMan == null || doorMan.isReleasing(this);
 	}
 
 	private void walkAndDisplayAs(String spriteKey) {
@@ -228,7 +228,7 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
 		if (neighbor.isDoor()) {
-			return is(ENTERING_HOUSE) || is(LEAVING_HOUSE);
+			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 		if (maze().isNoUpIntersection(tile) && neighbor == maze().tileToDir(tile, UP)) {
 			return !is(CHASING, SCATTERING);

@@ -7,6 +7,7 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacManGameCast;
+import de.amr.games.pacman.controller.GhostHouseDoorMan;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
@@ -50,13 +51,16 @@ class JumpingTestUI extends PlayView implements VisualController {
 		super.init();
 		game().init();
 		maze().removeFood();
+		ghostHouseDoorMan = new GhostHouseDoorMan(cast());
+		ghostHouseDoorMan.closeDoor();
+		cast().ghosts().forEach(ghost -> ghost.doorMan = ghostHouseDoorMan);
 		cast().ghosts().forEach(cast()::setActorOnStage);
 	}
 
 	@Override
 	public void update() {
-		cast().ghostsOnStage().forEach(Ghost::update);
 		super.update();
+		cast().ghostsOnStage().forEach(Ghost::update);
 	}
 
 	@Override
