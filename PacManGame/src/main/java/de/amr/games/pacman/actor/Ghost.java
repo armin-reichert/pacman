@@ -264,7 +264,7 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 	private void handlePacManCollision() {
 		if (!isTeleporting() && !cast.pacMan.isTeleporting()) {
 			if (tile().equals(cast.pacMan.tile())) {
-				publish(cast.pacMan.isKicking() ? new GhostKilledEvent(this) : new PacManKilledEvent(this));
+				publish(is(FRIGHTENED) ? new GhostKilledEvent(this) : new PacManKilledEvent(this));
 			}
 		}
 	}
