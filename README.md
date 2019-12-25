@@ -41,53 +41,62 @@ All state machines in this implementation are implemented in a declarative way (
 
 ## State machines in action
 
-Sounds all well and nice, but how does that look in the real code? 
-
-The **intro screen** ([IntroView](PacManGame/src/main/java/de/amr/games/pacman/view/intro/IntroView.java)) shows different animations that have to be coordinated using timers and stop conditions. This is an obvious candidate for using a state machine. The state machine only uses timers, so we can use *Void* as event type. The states are identified using an enumeration type:
+Sounds all well and nice, but how does that look in the real code? To give a first example how the state machine implementations look like, let's consider the **intro screen** ([IntroView](PacManGame/src/main/java/de/amr/games/pacman/view/intro/IntroView.java)) which shows different animations that have to be coordinated using timers and conditions. As this state machine only uses timers and no other events, we can use *Void* as the event type. The states are identified using an enumeration type.
 
 ```java
-beginStateMachine()
-	.description("[IntroView]")
-	.initialState(LOADING_MUSIC)
-	.states()
+beginStateMachine(IntroState.class, Void.class)
+	.description(String.format("[%s]", name))
+	.initialState(SCROLLING_LOGO)
 
-		.state(LOADING_MUSIC)
-			.onEntry(() -> {
-				CompletableFuture.runAsync(() -> {
-					theme.music_playing();
-					theme.music_gameover();
-				}).thenAccept(result -> {
-					setState(SCROLLING_LOGO);
-				});
-			})
+	.states()
 
 		.state(SCROLLING_LOGO)
 			.onEntry(() -> {
 				theme.snd_insertCoin().play();
-				show(scrollingLogo); 
-				scrollingLogo.startAnimation(); 
+				pacManLogo.tf.setY(height);
+				pacManLogo.tf.setVelocityY(-2f);
+				pacManLogo.setCompletion(() -> pacManLogo.tf.getY() <= 20);
+				pacManLogo.show(); 
+				pacManLogo.start(); 
 			})
-			.onExit(scrollingLogo::stopAnimation)
+			.onTick(() -> {
+				pacManLogo.update();
+			})
 
 		.state(SHOWING_ANIMATIONS)
 			.onEntry(() -> {
-				show(chasePacMan, chaseGhosts);
-				start(chasePacMan, chaseGhosts);
+				chasePacMan.setStartPosition(width, 100);
+				chasePacMan.setEndPosition(-chasePacMan.tf.getWidth(), 100);
+				chaseGhosts.setStartPosition(-chaseGhosts.tf.getWidth(), 200);
+				chaseGhosts.setEndPosition(width, 200);
+				chasePacMan.start();
+				chaseGhosts.start();
+			})
+			.onTick(() -> {
+				chasePacMan.update();
+				chaseGhosts.update();
 			})
 			.onExit(() -> {
-				stop(chasePacMan, chaseGhosts);
+				chasePacMan.stop();
+				chaseGhosts.stop();
 				chasePacMan.tf.centerX(width);
 			})
 
 		.state(WAITING_FOR_INPUT)
 			.timeoutAfter(sec(10))
 			.onEntry(() -> {
-				show(ghostPointsAnimation, gitHubLink);
-				ghostPointsAnimation.startAnimation();
+				ghostPointsAnimation.tf.setY(200);
+				ghostPointsAnimation.tf.centerX(width);
+				ghostPointsAnimation.start();
+				gitHubLink.show();
+			})
+			.onTick(() -> {
+				ghostPointsAnimation.update();
 			})
 			.onExit(() -> {
-				ghostPointsAnimation.stopAnimation();
-				hide(ghostPointsAnimation, gitHubLink);
+				ghostPointsAnimation.stop();
+				ghostPointsAnimation.hide();
+				gitHubLink.hide();
 			})
 
 		.state(READY_TO_PLAY)
@@ -95,10 +104,10 @@ beginStateMachine()
 	.transitions()
 
 		.when(SCROLLING_LOGO).then(SHOWING_ANIMATIONS)
-			.condition(() -> scrollingLogo.isAnimationCompleted())
+			.condition(() -> pacManLogo.complete())
 
 		.when(SHOWING_ANIMATIONS).then(WAITING_FOR_INPUT)
-			.condition(() -> chasePacMan.isAnimationCompleted() && chaseGhosts.isAnimationCompleted())
+			.condition(() -> chasePacMan.complete() && chaseGhosts.complete())
 
 		.when(WAITING_FOR_INPUT).then(SHOWING_ANIMATIONS)
 			.onTimeout()
