@@ -12,16 +12,11 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
-import de.amr.easy.game.view.AnimationLifecycle;
-import de.amr.easy.game.view.Lifecycle;
-import de.amr.easy.game.view.View;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.core.AbstractPacManGameView;
@@ -45,20 +40,24 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 	private final String name;
 	private final PacManTheme theme;
 	private final FsmComponent<IntroState, Void> fsm;
-	private final Set<View> activeAnimations = new HashSet<>();
-	private ImageWidget scrollingLogo;
+
+	private ImageWidget pacManLogo;
+	private LinkWidget gitHubLink;
 	private ChasePacManAnimation chasePacMan;
 	private ChaseGhostsAnimation chaseGhosts;
 	private GhostPointsAnimation ghostPointsAnimation;
-	private LinkWidget gitHubLink;
 
 	public IntroView(PacManTheme theme, int width, int height) {
 		super(width, height);
 		this.theme = theme;
 		this.name = "IntroView";
-		scrollingLogo = new ImageWidget(Assets.image("logo.png"));
-		scrollingLogo.tf.centerX(width);
-		scrollingLogo.tf.setY(20);
+		fsm = buildFsmComponent();
+	}
+
+	private void createUIComponents() {
+		pacManLogo = new ImageWidget(Assets.image("logo.png"));
+		pacManLogo.tf.centerX(width);
+		pacManLogo.tf.setY(20);
 		chasePacMan = new ChasePacManAnimation(theme);
 		chasePacMan.tf.centerX(width);
 		chasePacMan.tf.setY(100);
@@ -75,7 +74,6 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 		/*@formatter:on*/
 		gitHubLink.tf.setY(height - 16);
 		gitHubLink.tf.centerX(width);
-		fsm = buildFsmComponent();
 	}
 
 	@Override
@@ -109,15 +107,15 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 	
 				.state(SCROLLING_LOGO)
 					.onEntry(() -> {
-						scrollingLogo.tf.setY(height);
-						scrollingLogo.tf.setVelocityY(-2f);
-						scrollingLogo.setCompletion(() -> scrollingLogo.tf.getY() <= 20);
-						show(scrollingLogo); 
-						scrollingLogo.start(); 
 						theme.snd_insertCoin().play();
+						pacManLogo.tf.setY(height);
+						pacManLogo.tf.setVelocityY(-2f);
+						pacManLogo.setCompletion(() -> pacManLogo.tf.getY() <= 20);
+						pacManLogo.show(); 
+						pacManLogo.start(); 
 					})
 					.onTick(() -> {
-						scrollingLogo.update();
+						pacManLogo.update();
 					})
 	
 				.state(SHOWING_ANIMATIONS)
@@ -126,14 +124,16 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 						chasePacMan.setEndPosition(-chasePacMan.tf.getWidth(), 100);
 						chaseGhosts.setStartPosition(-chaseGhosts.tf.getWidth(), 200);
 						chaseGhosts.setEndPosition(width, 200);
-						show(chasePacMan, chaseGhosts);
-						start(chasePacMan, chaseGhosts);
+						chasePacMan.start();
+						chaseGhosts.start();
 					})
 					.onTick(() -> {
-						activeAnimations.forEach(animation -> ((Lifecycle) animation).update());
+						chasePacMan.update();
+						chaseGhosts.update();
 					})
 					.onExit(() -> {
-						stop(chasePacMan, chaseGhosts);
+						chasePacMan.stop();
+						chaseGhosts.stop();
 						chasePacMan.tf.centerX(width);
 					})
 					
@@ -143,14 +143,15 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 						ghostPointsAnimation.tf.setY(200);
 						ghostPointsAnimation.tf.centerX(width);
 						ghostPointsAnimation.start();
-						show(ghostPointsAnimation, gitHubLink);
+						gitHubLink.show();
 					})
 					.onTick(() -> {
-						activeAnimations.forEach(animation -> ((Lifecycle) animation).update());
+						ghostPointsAnimation.update();
 					})
 					.onExit(() -> {
 						ghostPointsAnimation.stop();
-						hide(ghostPointsAnimation, gitHubLink);
+						ghostPointsAnimation.hide();
+						gitHubLink.hide();
 					})
 					
 				.state(READY_TO_PLAY)
@@ -158,7 +159,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 			.transitions()
 			
 				.when(SCROLLING_LOGO).then(SHOWING_ANIMATIONS)
-					.condition(() -> scrollingLogo.complete())
+					.condition(() -> pacManLogo.complete())
 				
 				.when(SHOWING_ANIMATIONS).then(WAITING_FOR_INPUT)
 					.condition(() -> chasePacMan.complete() && chaseGhosts.complete())
@@ -173,22 +174,6 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 	  /*@formatter:on*/
 	}
 
-	private void show(View... views) {
-		Arrays.stream(views).forEach(activeAnimations::add);
-	}
-
-	private void hide(View... views) {
-		Arrays.stream(views).forEach(activeAnimations::remove);
-	}
-
-	private void start(AnimationLifecycle... animations) {
-		Arrays.stream(animations).forEach(AnimationLifecycle::start);
-	}
-
-	private void stop(AnimationLifecycle... animations) {
-		Arrays.stream(animations).forEach(AnimationLifecycle::stop);
-	}
-
 	public boolean isComplete() {
 		return is(READY_TO_PLAY);
 	}
@@ -200,6 +185,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 
 	@Override
 	public void init() {
+		createUIComponents();
 		super.init();
 		fsmComponent().init();
 	}
@@ -227,15 +213,14 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 			pen.font(theme.fnt_text());
 			switch (getState()) {
 			case SCROLLING_LOGO:
-				activeAnimations.forEach(animation -> animation.draw(g));
+				pacManLogo.draw(g);
 				break;
 			case SHOWING_ANIMATIONS:
-				scrollingLogo.draw(g);
-				activeAnimations.forEach(animation -> animation.draw(g));
+				pacManLogo.draw(g);
+				chaseGhosts.draw(g);
+				chasePacMan.draw(g);
 				break;
 			case WAITING_FOR_INPUT:
-				scrollingLogo.draw(g);
-				chasePacMan.draw(g);
 				if (app().clock.getTicks() % sec(1) < sec(0.5f)) {
 					pen.color(Color.WHITE);
 					pen.fontSize(14);
@@ -251,7 +236,9 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 				pen.draw("2 - Fast", 11, 31);
 				pen.color(selectedSpeed == 3 ? orange : red);
 				pen.draw("3 - Insane", 19, 31);
-				activeAnimations.forEach(animation -> animation.draw(g));
+				pacManLogo.draw(g);
+				chasePacMan.draw(g);
+				ghostPointsAnimation.draw(g);
 				break;
 			case READY_TO_PLAY:
 				break;

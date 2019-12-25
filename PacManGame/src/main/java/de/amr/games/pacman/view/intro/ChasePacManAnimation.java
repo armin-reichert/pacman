@@ -10,12 +10,11 @@ import java.awt.Graphics2D;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.easy.game.view.AnimationLifecycle;
-import de.amr.easy.game.view.View;
+import de.amr.easy.game.view.Animation;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.PacManTheme;
 
-public class ChasePacManAnimation extends Entity implements AnimationLifecycle, View {
+public class ChasePacManAnimation extends Entity implements Animation {
 
 	private final PacManTheme theme;
 	private final Sprite pacMan;
@@ -88,8 +87,7 @@ public class ChasePacManAnimation extends Entity implements AnimationLifecycle, 
 		g.setColor(Color.PINK);
 		if (pill) {
 			g.fillRect(6, 6, 2, 2);
-		}
-		else {
+		} else {
 			g.setFont(new Font("Arial", Font.BOLD, 8));
 			g.drawString("10", 0, 10);
 		}
