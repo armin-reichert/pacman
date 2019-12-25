@@ -66,8 +66,8 @@ public class SimplePlayView extends AbstractPacManGameView {
 	@Override
 	public void init() {
 		showScores(true);
-		energizerBlinking(false);
-		mazeFlashing(false);
+		stopEnergizerBlinking();
+		stopMazeFlashing();
 		message(null, Color.YELLOW);
 	}
 
@@ -108,12 +108,20 @@ public class SimplePlayView extends AbstractPacManGameView {
 		cast.ghostsOnStage().forEach(ghost -> ghost.sprites.enableAnimation(state));
 	}
 
-	public void mazeFlashing(boolean state) {
-		mazeFlashing = state;
+	public void startMazeFlashing() {
+		mazeFlashing = true;
 	}
 
-	public void energizerBlinking(boolean state) {
-		energizerBlinking.setEnabled(state);
+	public void stopMazeFlashing() {
+		mazeFlashing = false;
+	}
+
+	public void startEnergizerBlinking() {
+		energizerBlinking.setEnabled(true);
+	}
+
+	public void stopEnergizerBlinking() {
+		energizerBlinking.setEnabled(false);
 	}
 
 	@Override

@@ -170,7 +170,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.timeoutAfter(sec(1.7f))
 					.onEntry(() -> {
 						playView.clearMessage();
-						playView.energizerBlinking(true);
+						playView.startEnergizerBlinking();
 						playMusicLevelRunning();
 					})
 					.onTick(() -> {
@@ -193,7 +193,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onTick(() -> {
 						if (state().getTicksConsumed() == sec(2)) {
 							cast.ghostsOnStage().forEach(Ghost::hide);
-							playView.mazeFlashing(game.level().mazeNumFlashes > 0);
+							if (game.level().mazeNumFlashes > 0) {
+								playView.startMazeFlashing();
+							} else {
+								playView.stopMazeFlashing();
+							}
 						}
 						else if (state().getTicksRemaining() == sec(2)) {
 							game.enterLevel(game.level().number + 1);
@@ -355,7 +359,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			cast.pacMan.setState(PacManState.ALIVE);
 			playView.init();
 			playView.enableAnimations(true);
-			playView.energizerBlinking(true);
+			playView.startEnergizerBlinking();
 		}
 
 		@Override
@@ -372,7 +376,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			cast.pacMan.process(pacManKilled);
 			stopSoundEffects();
 			stopMusicLevelRunning();
-			playView.energizerBlinking(false);
+			playView.stopEnergizerBlinking();
 			LOGGER.info(
 					() -> String.format("Pac-Man killed by %s at %s", pacManKilled.killer.name(), pacManKilled.killer.tile()));
 		}
