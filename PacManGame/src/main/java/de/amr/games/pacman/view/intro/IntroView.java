@@ -47,8 +47,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 	private ChaseGhostsAnimation chaseGhosts;
 	private GhostPointsAnimation ghostPointsAnimation;
 
-	public IntroView(PacManTheme theme, int width, int height) {
-		super(width, height);
+	public IntroView(PacManTheme theme) {
 		this.theme = theme;
 		this.name = "IntroView";
 		fsm = buildFsmComponent();

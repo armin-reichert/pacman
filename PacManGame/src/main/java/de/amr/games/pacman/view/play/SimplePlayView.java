@@ -37,8 +37,7 @@ public class SimplePlayView extends AbstractPacManGameView {
 	protected String messageText;
 	protected Color messageColor;
 
-	public SimplePlayView(PacManGameCast cast, int width, int height) {
-		super(width, height);
+	public SimplePlayView(PacManGameCast cast) {
 		this.cast = cast;
 		cast.addThemeListener(this);
 		energizerBlinking = new CyclicAnimation(2);

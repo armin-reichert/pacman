@@ -92,7 +92,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		ghostHouseDoorMan = new GhostHouseDoorMan(cast);
 		cast.ghosts().forEach(ghost -> ghost.doorMan = ghostHouseDoorMan);
 		cheater = new Cheater(cast, this);
-		playView = new PlayView(cast, app().settings.width, app().settings.height);
+		playView = new PlayView(cast);
 		playView.fnGhostMotionState = ghostCommand::state;
 		playView.ghostHouseDoorMan = ghostHouseDoorMan;
 		selectView(playView);
@@ -136,13 +136,13 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 							theme.music_gameover();
 							theme.snd_clips_all();
 						});
-						loadingView = new LoadingView(theme, app().settings.width, app().settings.height);
+						loadingView = new LoadingView(theme);
 						selectView(loadingView);
 					})
 					
 				.state(INTRO)
 					.onEntry(() -> {
-						introView = new IntroView(theme, app().settings.width, app().settings.height);
+						introView = new IntroView(theme);
 						selectView(introView);
 					})
 					.onExit(() -> {

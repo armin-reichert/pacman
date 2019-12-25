@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.easy.game.view.View;
@@ -31,9 +32,9 @@ public abstract class AbstractPacManGameView implements View, PropertyChangeList
 
 	public abstract void updateTheme(PacManTheme theme);
 
-	public AbstractPacManGameView(int width, int height) {
-		this.width = width;
-		this.height = height;
+	public AbstractPacManGameView() {
+		this.width = Application.app().settings.width;
+		this.height = Application.app().settings.height;
 		showFrameRate = false;
 	}
 

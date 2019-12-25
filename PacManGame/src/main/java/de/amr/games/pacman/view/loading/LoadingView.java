@@ -15,11 +15,10 @@ import de.amr.games.pacman.view.core.Pen;
 public class LoadingView extends AbstractPacManGameView {
 
 	private PacManTheme theme;
-	private int textAlpha = -1;
-	private int textAlphaInc;
+	private int alpha = -1;
+	private int alphaInc;
 
-	public LoadingView(PacManTheme theme, int width, int height) {
-		super(width, height);
+	public LoadingView(PacManTheme theme) {
 		this.theme = theme;
 	}
 
@@ -27,17 +26,17 @@ public class LoadingView extends AbstractPacManGameView {
 	public void draw(Graphics2D g) {
 		try (Pen pen = new Pen(g)) {
 			pen.font(theme.fnt_text());
-			if (textAlpha > 160) {
-				textAlphaInc = -2;
-				textAlpha = 160;
-			} else if (textAlpha < 0) {
-				textAlphaInc = 2;
-				textAlpha = 0;
+			if (alpha > 160) {
+				alphaInc = -2;
+				alpha = 160;
+			} else if (alpha < 0) {
+				alphaInc = 2;
+				alpha = 0;
 			}
-			pen.color(new Color(255, 255, 255, textAlpha));
+			pen.color(new Color(255, 255, 255, alpha));
 			pen.fontSize(16);
 			pen.hcenter("Loading music...", width, 18);
-			textAlpha += textAlphaInc;
+			alpha += alphaInc;
 		}
 	}
 
