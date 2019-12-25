@@ -52,15 +52,15 @@ beginStateMachine(IntroState.class, Void.class)
 
 		.state(SCROLLING_LOGO)
 			.onEntry(() -> {
-				scrollingLogo.tf.setY(height);
-				scrollingLogo.tf.setVelocityY(-2f);
-				scrollingLogo.setCompletion(() -> scrollingLogo.tf.getY() <= 20);
-				show(scrollingLogo); 
-				scrollingLogo.start(); 
 				theme.snd_insertCoin().play();
+				pacManLogo.tf.setY(height);
+				pacManLogo.tf.setVelocityY(-2f);
+				pacManLogo.setCompletion(() -> pacManLogo.tf.getY() <= 20);
+				pacManLogo.show(); 
+				pacManLogo.start(); 
 			})
 			.onTick(() -> {
-				scrollingLogo.update();
+				pacManLogo.update();
 			})
 
 		.state(SHOWING_ANIMATIONS)
@@ -69,14 +69,16 @@ beginStateMachine(IntroState.class, Void.class)
 				chasePacMan.setEndPosition(-chasePacMan.tf.getWidth(), 100);
 				chaseGhosts.setStartPosition(-chaseGhosts.tf.getWidth(), 200);
 				chaseGhosts.setEndPosition(width, 200);
-				show(chasePacMan, chaseGhosts);
-				start(chasePacMan, chaseGhosts);
+				chasePacMan.start();
+				chaseGhosts.start();
 			})
 			.onTick(() -> {
-				activeAnimations.forEach(animation -> ((Lifecycle) animation).update());
+				chasePacMan.update();
+				chaseGhosts.update();
 			})
 			.onExit(() -> {
-				stop(chasePacMan, chaseGhosts);
+				chasePacMan.stop();
+				chaseGhosts.stop();
 				chasePacMan.tf.centerX(width);
 			})
 
@@ -86,14 +88,15 @@ beginStateMachine(IntroState.class, Void.class)
 				ghostPointsAnimation.tf.setY(200);
 				ghostPointsAnimation.tf.centerX(width);
 				ghostPointsAnimation.start();
-				show(ghostPointsAnimation, gitHubLink);
+				gitHubLink.show();
 			})
 			.onTick(() -> {
-				activeAnimations.forEach(animation -> ((Lifecycle) animation).update());
+				ghostPointsAnimation.update();
 			})
 			.onExit(() -> {
 				ghostPointsAnimation.stop();
-				hide(ghostPointsAnimation, gitHubLink);
+				ghostPointsAnimation.hide();
+				gitHubLink.hide();
 			})
 
 		.state(READY_TO_PLAY)
@@ -101,7 +104,7 @@ beginStateMachine(IntroState.class, Void.class)
 	.transitions()
 
 		.when(SCROLLING_LOGO).then(SHOWING_ANIMATIONS)
-			.condition(() -> scrollingLogo.complete())
+			.condition(() -> pacManLogo.complete())
 
 		.when(SHOWING_ANIMATIONS).then(WAITING_FOR_INPUT)
 			.condition(() -> chasePacMan.complete() && chaseGhosts.complete())
