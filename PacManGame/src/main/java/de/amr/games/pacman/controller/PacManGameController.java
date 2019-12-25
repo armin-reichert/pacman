@@ -129,7 +129,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			
 			.states()
 			
-			  .state(LOADING_MUSIC)
+				.state(LOADING_MUSIC)
 					.onEntry(() -> {
 						musicLoading = CompletableFuture.runAsync(() -> {
 							theme.music_playing();
