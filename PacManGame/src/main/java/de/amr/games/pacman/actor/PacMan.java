@@ -126,7 +126,7 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 						step();
 						sprites.select("walking-" + moveDir());
 						sprites.current().get().enableAnimation(canMoveForward());
-						if (!teleporting.is(true)) {
+						if (!isTeleporting()) {
 							inspect(tile()).ifPresent(brain::publish);
 						}
 					})

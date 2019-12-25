@@ -73,6 +73,11 @@ public interface MazeMover extends MazeResident {
 	}
 
 	/**
+	 * @return if the actor is in teleporting state
+	 */
+	boolean isTeleporting();
+	
+	/**
 	 * @return if the entity can move towards its current move direction
 	 */
 	boolean canMoveForward();

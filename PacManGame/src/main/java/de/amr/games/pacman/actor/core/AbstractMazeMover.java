@@ -28,7 +28,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	 * and the actor is placed at the teleportation target and hidden (to avoid triggering events during
 	 * teleportation). When the timer ends, the actor is made visible again.
 	 */
-	protected StateMachine<Boolean, Void> teleporting = new StateMachine<Boolean, Void>(Boolean.class) {
+	private StateMachine<Boolean, Void> teleporting = new StateMachine<Boolean, Void>(Boolean.class) {
 
 		{
 			//@formatter:off
@@ -188,6 +188,11 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	@Override
 	public boolean requireTargetPath() {
 		return requireTargetPath;
+	}
+	
+	@Override
+	public boolean isTeleporting() {
+		return teleporting.is(true);
 	}
 
 	@Override
