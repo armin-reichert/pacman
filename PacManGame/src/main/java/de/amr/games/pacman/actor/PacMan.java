@@ -96,6 +96,7 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 						setNextDir(RIGHT);
 						sprites.forEach(Sprite::resetAnimation);
 						sprites.select("full");
+						show();
 					})
 
 				.state(ALIVE)
