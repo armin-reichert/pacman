@@ -12,13 +12,13 @@ import de.amr.games.pacman.view.core.Pen;
  * 
  * @author Armin Reichert
  */
-public class LoadingMusicView extends AbstractPacManGameView {
+public class LoadingView extends AbstractPacManGameView {
 
 	private PacManTheme theme;
 	private int textAlpha = -1;
 	private int textAlphaInc;
 
-	public LoadingMusicView(PacManTheme theme, int width, int height) {
+	public LoadingView(PacManTheme theme, int width, int height) {
 		super(width, height);
 		this.theme = theme;
 	}

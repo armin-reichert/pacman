@@ -44,7 +44,7 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.intro.IntroView;
-import de.amr.games.pacman.view.loading.LoadingMusicView;
+import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
@@ -65,7 +65,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private CompletableFuture<Void> musicLoading;
 
 	private View currentView;
-	private LoadingMusicView loadingView;
+	private LoadingView loadingView;
 	private IntroView introView;
 	private PlayView playView;
 
@@ -136,7 +136,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 							theme.music_gameover();
 							theme.snd_clips_all();
 						});
-						loadingView = new LoadingMusicView(theme, app().settings.width, app().settings.height);
+						loadingView = new LoadingView(theme, app().settings.width, app().settings.height);
 						selectView(loadingView);
 					})
 					
