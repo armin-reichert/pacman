@@ -11,6 +11,7 @@ import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.controller.PacManGameState.GETTING_READY;
 import static de.amr.games.pacman.controller.PacManGameState.GHOST_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.INTRO;
+import static de.amr.games.pacman.controller.PacManGameState.LOADING_MUSIC;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
 import static de.amr.games.pacman.model.PacManGame.FSM_LOGGER;
@@ -19,6 +20,7 @@ import static de.amr.games.pacman.model.Timing.sec;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 import de.amr.easy.game.assets.Sound;
@@ -42,6 +44,7 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.PacManTheme;
 import de.amr.games.pacman.view.intro.IntroView;
+import de.amr.games.pacman.view.loading.LoadingMusicView;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
@@ -59,7 +62,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private GhostCommand ghostCommand;
 	GhostHouseDoorMan ghostHouseDoorMan;
 	private Cheater cheater;
+	private CompletableFuture<Void> musicLoading;
+
 	private View currentView;
+	private LoadingMusicView loadingView;
 	private IntroView introView;
 	private PlayView playView;
 
@@ -119,10 +125,21 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		beginStateMachine()
 			
 			.description("[GameController]")
-			.initialState(INTRO)
+			.initialState(LOADING_MUSIC)
 			
 			.states()
-				
+			
+			  .state(LOADING_MUSIC)
+					.onEntry(() -> {
+						musicLoading = CompletableFuture.runAsync(() -> {
+							theme.music_playing();
+							theme.music_gameover();
+							theme.snd_clips_all();
+						});
+						loadingView = new LoadingMusicView(theme, app().settings.width, app().settings.height);
+						selectView(loadingView);
+					})
+					
 				.state(INTRO)
 					.onEntry(() -> {
 						introView = new IntroView(theme, app().settings.width, app().settings.height);
@@ -256,6 +273,13 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					})
 
 			.transitions()
+			
+				.when(LOADING_MUSIC).then(GETTING_READY)
+					.condition(() -> musicLoading.isDone() && app().settings.getAsBoolean("PacManApp.skipIntro"))
+					.act(this::createPlayingEnvironment)
+
+				.when(LOADING_MUSIC).then(INTRO)
+					.condition(() -> musicLoading.isDone())
 			
 				.when(INTRO).then(GETTING_READY)
 					.condition(() -> introView.isComplete())

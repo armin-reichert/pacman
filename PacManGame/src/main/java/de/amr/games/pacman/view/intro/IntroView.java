@@ -2,7 +2,6 @@ package de.amr.games.pacman.view.intro;
 
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.Timing.sec;
-import static de.amr.games.pacman.view.intro.IntroView.IntroState.LOADING_MUSIC;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.READY_TO_PLAY;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.SCROLLING_LOGO;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.SHOWING_ANIMATIONS;
@@ -15,7 +14,6 @@ import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.input.Keyboard;
@@ -41,7 +39,7 @@ import de.amr.statemachine.core.StateMachine;
 public class IntroView extends AbstractPacManGameView implements FsmContainer<IntroState, Void> {
 
 	public enum IntroState {
-		LOADING_MUSIC, SCROLLING_LOGO, SHOWING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
+		SCROLLING_LOGO, SHOWING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
 	};
 
 	private final String name;
@@ -53,10 +51,6 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 	private ChaseGhostsAnimation chaseGhosts;
 	private GhostPointsAnimation ghostPointsAnimation;
 	private LinkWidget gitHubLink;
-	private CompletableFuture<Void> musicLoading;
-
-	private int textAlpha = -1;
-	private int textAlphaInc;
 
 	public IntroView(PacManTheme theme, int width, int height) {
 		super(width, height);
@@ -109,21 +103,10 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 		/*@formatter:off*/
 		beginStateMachine(IntroState.class, Void.class)
 			.description(String.format("[%s]", name))
-			.initialState(LOADING_MUSIC)
+			.initialState(SCROLLING_LOGO)
+
 			.states()
 	
-			  .state(LOADING_MUSIC)
-			  	.onEntry(() -> {
-			  		musicLoading = CompletableFuture.runAsync(() -> {
-			  			theme.music_playing();
-			  			theme.music_gameover();
-			  			theme.snd_clips_all();
-			  		});
-			  	})
-			  	.onExit(() -> {
-			  		theme.snd_ghost_chase().stop();
-			  	})
-		
 				.state(SCROLLING_LOGO)
 					.onEntry(() -> {
 						scrollingLogo.tf.setY(height);
@@ -174,12 +157,6 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 					
 			.transitions()
 			
-				.when(LOADING_MUSIC).then(READY_TO_PLAY)
-					.condition(() -> musicLoading.isDone() && app().settings.getAsBoolean("PacManApp.skipIntro"))
-			
-				.when(LOADING_MUSIC).then(SCROLLING_LOGO)
-					.condition(() -> musicLoading.isDone())
-				
 				.when(SCROLLING_LOGO).then(SHOWING_ANIMATIONS)
 					.condition(() -> scrollingLogo.complete())
 				
@@ -249,20 +226,6 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 		try (Pen pen = new Pen(g)) {
 			pen.font(theme.fnt_text());
 			switch (getState()) {
-			case LOADING_MUSIC:
-				if (textAlpha > 160) {
-					textAlphaInc = -2;
-					textAlpha = 160;
-				}
-				else if (textAlpha < 0) {
-					textAlphaInc = 2;
-					textAlpha = 0;
-				}
-				pen.color(new Color(255, 255, 255, textAlpha));
-				pen.fontSize(16);
-				pen.hcenter("Loading music...", width, 18);
-				textAlpha += textAlphaInc;
-				break;
 			case SCROLLING_LOGO:
 				activeAnimations.forEach(animation -> animation.draw(g));
 				break;
