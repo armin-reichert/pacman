@@ -21,14 +21,13 @@ public class JumpingUpAndDown implements Steering<Ghost> {
 	@Override
 	public void steer(Ghost ghost) {
 		float dy = ghost.tf.getPosition().y - placeY;
-		if (dy < -3) {
+		if (dy < -4) {
 			ghost.setNextDir(Direction.DOWN);
-		}
-		else if (dy > 3) {
+		} else if (dy > 3) {
 			ghost.setNextDir(Direction.UP);
 		}
 	}
-	
+
 	@Override
 	public boolean onTrack() {
 		return false;
