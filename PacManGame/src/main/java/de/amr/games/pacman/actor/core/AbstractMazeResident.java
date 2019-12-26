@@ -5,8 +5,8 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * An entity residing in a maze. This provides tile coordinates and tile-specific methods for an
- * entity.
+ * An entity residing in a maze. This provides tile coordinates and
+ * tile-specific methods for an entity.
  * 
  * @author Armin Reichert
  */
@@ -42,10 +42,5 @@ public abstract class AbstractMazeResident extends Entity implements MazeResiden
 	@Override
 	public void placeAtTile(Tile tile, float xOffset, float yOffset) {
 		tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
-	}
-
-	@Override
-	public int distanceSq(MazeResident other) {
-		return Tile.distanceSq(tile(), other.tile());
 	}
 }

@@ -48,7 +48,8 @@ public class AvoidingGhosts implements Steering<PacMan> {
 	}
 
 	private Comparator<Ghost> bySmallestDistanceTo(PacMan pacMan) {
-		return (ghost1, ghost2) -> Integer.compare(pacMan.distanceSq(ghost1), pacMan.distanceSq(ghost2));
+		return (ghost1, ghost2) -> Integer.compare(distanceSq(pacMan.tile(), ghost1.tile()),
+				distanceSq(pacMan.tile(), ghost2.tile()));
 	}
 
 	private Direction randomAccessibleDir(PacMan pacMan) {

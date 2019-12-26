@@ -16,6 +16,7 @@ import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Direction.dirs;
+import static de.amr.games.pacman.model.Tile.distanceSq;
 import static de.amr.games.pacman.model.Timing.sec;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
@@ -93,7 +94,7 @@ public class PacManGameCast {
 		clyde.seat = 3;
 		clyde.during(SCATTERING, isHeadingFor(maze().horizonSW));
 		clyde.during(CHASING,
-				isHeadingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
+				isHeadingFor(() -> distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
 
 		ghosts().forEach(ghost -> {
 			ghost.setTeleportingDuration(sec(0.5f));
@@ -102,8 +103,7 @@ public class PacManGameCast {
 			if (ghost != blinky) {
 				ghost.during(LOCKED, isJumpingUpAndDown(maze(), ghost.seat));
 				ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, ghost.seat));
-			}
-			else {
+			} else {
 				ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, 2));
 			}
 		});
