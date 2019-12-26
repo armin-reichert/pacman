@@ -54,7 +54,8 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
+		implements VisualController {
 
 	private PacManGame game;
 	private PacManTheme theme;
@@ -75,6 +76,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		buildStateMachine();
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		traceTo(PacManGame.FSM_LOGGER, () -> 60);
+	}
+
+	public Optional<PacManGame> game() {
+		return Optional.ofNullable(game);
 	}
 
 	private void selectView(View view) {
@@ -378,8 +383,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			stopSoundEffects();
 			stopMusicLevelRunning();
 			playView.stopEnergizerBlinking();
-			LOGGER.info(
-					() -> String.format("Pac-Man killed by %s at %s", pacManKilled.killer.name(), pacManKilled.killer.tile()));
+			LOGGER.info(() -> String.format("Pac-Man killed by %s at %s", pacManKilled.killer.name(),
+					pacManKilled.killer.tile()));
 		}
 
 		private void onPacManGainsPower(PacManGameEvent event) {
@@ -433,7 +438,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (game.isBonusScoreReached()) {
 				cast.addBonus();
 				cast.bonus().ifPresent(bonus -> {
-					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus, bonus.state().getDuration() / 60f));
+					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus,
+							bonus.state().getDuration() / 60f));
 				});
 			}
 			if (foodFound.energizer) {
@@ -465,7 +471,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				app().settings.set("Ghost.fleeRandomly", false);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isFleeingToSafeCornerFrom(cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
-			} else {
+			}
+			else {
 				app().settings.set("Ghost.fleeRandomly", true);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack()));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");

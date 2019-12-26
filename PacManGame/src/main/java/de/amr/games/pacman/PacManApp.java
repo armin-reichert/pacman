@@ -2,6 +2,7 @@ package de.amr.games.pacman;
 
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ClassicPacManTheme;
 import de.amr.games.pacman.theme.PacManTheme;
@@ -34,6 +35,7 @@ public class PacManApp extends Application {
 	public void init() {
 		PacManTheme theme = new ClassicPacManTheme();
 		PacManGameController gameController = new PacManGameController(theme);
+		exitHandler = app -> gameController.game().ifPresent(PacManGame::saveHiscore);
 		setController(gameController);
 		setIcon(theme.spr_ghostFrightened().frame(0));
 		gameController.init();
