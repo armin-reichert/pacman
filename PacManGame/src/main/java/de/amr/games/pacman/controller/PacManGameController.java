@@ -236,38 +236,35 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					})
 				
 				.state(PACMAN_DYING)
-					.timeoutAfter(() -> game.lives > 1 ? sec(6) : sec(4))
+					.timeoutAfter(() -> game.lives > 1 ? sec(10) : sec(8))
 					.onEntry(() -> {
 						game.lives -= app().settings.getAsBoolean("PacMan.immortable") ? 0 : 1;
 					})
 					.onTick(() -> {
-						int passedTime = state().getTicksConsumed();
-						// let Pac-Man struggle for half a second
-						if (passedTime == sec(0.5f)) {
-							cast.pacMan.sprites.current().ifPresent(sprite -> sprite.enableAnimation(false));
-						}
-						// after 1.5 sec, start the "dying" animation
-						if (passedTime == sec(1.5f)) {
-							cast.ghostsOnStage().forEach(Ghost::hide);
+						int t = state().getTicksConsumed();
+						if (t == sec(2)) {
+							// Pac-Man stops struggling
+							cast.pacMan.sprites.current().get().enableAnimation(false);
+							cast.pacMan.sprites.select("full");
 							cast.removeBonus();
+							cast.ghostsOnStage().forEach(Ghost::hide);
+						}
+						else if (t == sec(4)) {
+							// start the "dying" animation and hide other actors
 							cast.pacMan.sprites.select("dying");
 							playSoundPacManDied();
 						}
-						// run "dying" animation for 1 second
-						if (passedTime > sec(1.5f) && passedTime < sec(2.5f)) {
-							return;
-						}
-						if (passedTime == sec(2.5f) && game.lives == 0) {
-							return;
-						}
-						// if playing continues, init actors and view
-						if (passedTime == sec(4)) {
+						else if (t == sec(8)) {
+							if (game.lives == 0) {
+								return; // last life lost, game is over
+							}
+							// initialize actors and view for continuing game
 							cast.actorsOnStage().forEach(PacManGameActor::init);
 							playView.init();
 							playMusicLevelRunning();
 						}
-						// let ghosts jump a bit before game play continues
-						if (passedTime > sec(4)) {
+						else if (t > sec(8)) {
+							// let ghosts jump a bit while music is starting
 							cast.ghostsOnStage().forEach(Ghost::update);
 						}
 					})
