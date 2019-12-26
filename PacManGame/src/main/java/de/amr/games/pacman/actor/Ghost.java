@@ -72,9 +72,9 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 				.state(LOCKED)
 					.onEntry(() -> {
 						visible = true;
-						enteredNewTile = true;
 						nextState = getState();
 						placeHalfRightOf(maze().ghostHouseSeats[seat]);
+						enteredNewTile();
 						setMoveDir(eyes);
 						setNextDir(eyes);
 						sprites.select("color-" + moveDir());

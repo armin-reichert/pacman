@@ -15,7 +15,7 @@ import de.amr.games.pacman.model.Timing;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Base class for maze movers (ghosts, Pac-Man).
+ * Base class for entities that can move through the maze.
  * 
  * @author Armin Reichert
  */
@@ -57,12 +57,15 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 		}
 	};
 
-	private Direction moveDir = Direction.RIGHT;
+	// used by steering to indicate if target path should be computed for
+	// visualization
+	public boolean requireTargetPath;
+
+	private Direction moveDir;
 	private Direction nextDir;
 	private Tile targetTile;
-	protected List<Tile> targetPath;
-	public boolean requireTargetPath;
-	protected boolean enteredNewTile;
+	private List<Tile> targetPath;
+	private boolean enteredNewTile;
 
 	public AbstractMazeMover(String name) {
 		super(name);
