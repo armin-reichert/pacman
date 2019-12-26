@@ -19,13 +19,44 @@ import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.model.BonusSymbol;
 
+/**
+ * Theme based on original(?) sprites.
+ * 
+ * @author Armin Reichert
+ */
 public class ClassicPacManTheme implements PacManTheme {
+
+	private static Sound sound(String name, String type) {
+		return Assets.sound("sfx/" + name + "." + type);
+	}
+
+	private static Sound mp3(String name) {
+		return sound(name, "mp3");
+	}
+
+	private static Sound wav(String name) {
+		return sound(name, "wav");
+	}
+
+	private static BufferedImage changeColor(BufferedImage src, int from, int to) {
+		BufferedImage copy = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+		Graphics2D g = copy.createGraphics();
+		g.drawImage(src, 0, 0, null);
+		for (int x = 0; x < copy.getWidth(); ++x) {
+			for (int y = 0; y < copy.getHeight(); ++y) {
+				if (copy.getRGB(x, y) == from) {
+					copy.setRGB(x, y, to);
+				}
+			}
+		}
+		g.dispose();
+		return copy;
+	}
 
 	private final BufferedImage sheet;
 	private final BufferedImage mazeEmpty;
@@ -55,86 +86,66 @@ public class ClassicPacManTheme implements PacManTheme {
 	}
 
 	public ClassicPacManTheme() {
-		sheet = Assets.readImage("arcade_pacman_sprites.png");
+		Assets.storeTrueTypeFont("font.joystix", "Joystix.ttf", Font.PLAIN, 12);
 
-		// Mazes
-		mazeFull = $(0, 0, 224, 248);
-		mazeEmpty = $(228, 0, 224, 248);
+		sheet = Assets.readImage("pacman_sprites.png");
+		mazeFull = Assets.readImage("maze_full.png");
+		mazeEmpty = Assets.readImage("maze_empty.png");
 		int blue = -14605825; // debugger told me this
 		mazeWhite = changeColor(mazeEmpty, blue, Color.WHITE.getRGB());
 
 		// Symbols for bonuses
 		BonusSymbol[] symbols = BonusSymbol.values();
-		BufferedImage[] symbolImages = hstrip(8, 488, 48);
+		BufferedImage[] symbolImages = hstrip(8, 32, 48);
 		for (int i = 0; i < 8; ++i) {
 			symbolMap.put(symbols[i], symbolImages[i]);
 		}
 
 		// Pac-Man
-		pacManFull = $(488, 0);
+		pacManFull = $(32, 0);
 
 		// E, W, N, S -> 0(N), 1(E), 2(S), 3(W)
-		int permuted[] = { 1, 3, 0, 2 };
+		int reorder[] = { 1, 3, 0, 2 };
 		pacManWalking = new BufferedImage[4][];
-		for (int d = 0; d < 4; ++d) {
-			BufferedImage mouthOpen = $(456, d * 16), mouthHalfOpen = $(472, d * 16);
-			pacManWalking[permuted[d]] = new BufferedImage[] { mouthOpen, mouthHalfOpen, pacManFull };
+		for (int dir = 0; dir < 4; ++dir) {
+			BufferedImage mouthOpen = $(0, dir * 16), mouthHalfOpen = $(16, dir * 16);
+			pacManWalking[reorder[dir]] = new BufferedImage[] { mouthOpen, mouthHalfOpen, pacManFull };
 		}
 
-		pacManDying = hstrip(12, 488, 0);
+		pacManDying = hstrip(12, 32, 0);
 
 		// Ghosts
 		ghostColored = new BufferedImage[4][8];
 		for (int color = 0; color < 4; ++color) {
 			for (int i = 0; i < 8; ++i) {
-				ghostColored[color][i] = $(456 + i * 16, 64 + color * 16);
+				ghostColored[color][i] = $(i * 16, 64 + color * 16);
 			}
 		}
 
-		ghostFrightened = hstrip(2, 584, 64);
-		ghostFlashing = hstrip(4, 584, 64);
+		ghostFrightened = hstrip(2, 128, 64);
+		ghostFlashing = hstrip(4, 128, 64);
 
 		ghostEyes = new BufferedImage[4];
-		for (int d = 0; d < 4; ++d) {
-			ghostEyes[permuted[d]] = $(584 + d * 16, 80);
+		for (int dir = 0; dir < 4; ++dir) {
+			ghostEyes[reorder[dir]] = $(128 + dir * 16, 80);
 		}
 
 		// Green numbers (200, 400, 800, 1600)
-		greenNumbers = hstrip(4, 456, 128);
+		greenNumbers = hstrip(4, 0, 128);
 
 		// Pink numbers
 		pinkNumbers = new BufferedImage[8];
 		// horizontal: 100, 300, 500, 700
 		for (int i = 0; i < 4; ++i) {
-			pinkNumbers[i] = $(456 + i * 16, 144);
+			pinkNumbers[i] = $(i * 16, 144);
 		}
 		// 1000
-		pinkNumbers[4] = $(520, 144, 19, 16);
+		pinkNumbers[4] = $(64, 144, 19, 16);
 		// vertical: 2000, 3000, 5000)
 		for (int j = 0; j < 3; ++j) {
-			pinkNumbers[5 + j] = $(512, 160 + j * 16, 2 * 16, 16);
+			pinkNumbers[5 + j] = $(56, 160 + j * 16, 2 * 16, 16);
 		}
-		Application.LOGGER.info("Pac-Man sprites extracted.");
-
-		// Text font
-		Assets.storeTrueTypeFont("font.joystix", "Joystix.ttf", Font.PLAIN, 12);
-
 		LOGGER.info(String.format("Theme '%s' created.", getClass().getSimpleName()));
-	}
-
-	private BufferedImage changeColor(BufferedImage src, int from, int to) {
-		BufferedImage copy = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
-		Graphics2D g = copy.createGraphics();
-		g.drawImage(src, 0, 0, null);
-		for (int x = 0; x < copy.getWidth(); ++x) {
-			for (int y = 0; y < copy.getHeight(); ++y) {
-				if (copy.getRGB(x, y) == from) {
-					copy.setRGB(x, y, to);
-				}
-			}
-		}
-		g.dispose();
-		return copy;
 	}
 
 	@Override
@@ -222,31 +233,22 @@ public class ClassicPacManTheme implements PacManTheme {
 	@Override
 	public Font fnt_text() {
 		return Assets.font("font.joystix");
-		// return Assets.font("font.arcadeclassic");
-	}
-
-	private Sound sound(String name) {
-		return sound(name, "mp3");
-	}
-
-	private Sound sound(String name, String type) {
-		return Assets.sound("sfx/" + name + "." + type);
 	}
 
 	@Override
 	public Stream<Sound> snd_clips_all() {
-		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eatPill(), snd_extraLife(),
-				snd_insertCoin(), snd_ready(), snd_ghost_chase(), snd_ghost_dead(), snd_waza());
+		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eatPill(), snd_extraLife(), snd_insertCoin(),
+				snd_ready(), snd_ghost_chase(), snd_ghost_dead(), snd_waza());
 	}
 
 	@Override
 	public Sound music_playing() {
-		return sound("bgmusic");
+		return mp3("bgmusic");
 	}
 
 	@Override
 	public Sound music_gameover() {
-		return sound("ending");
+		return mp3("ending");
 	}
 
 	@Override
@@ -255,51 +257,51 @@ public class ClassicPacManTheme implements PacManTheme {
 
 	@Override
 	public Sound snd_die() {
-		return sound("die");
+		return mp3("die");
 	}
 
 	@Override
 	public Sound snd_eatFruit() {
-		return sound("eat-fruit");
+		return mp3("eat-fruit");
 	}
 
 	@Override
 	public Sound snd_eatGhost() {
-		return sound("eat-ghost");
+		return mp3("eat-ghost");
 	}
 
 	@Override
 	public Sound snd_eatPill() {
-		return sound("pacman_eat", "wav");
+		return wav("pacman_eat");
 	}
 
 	@Override
 	public Sound snd_extraLife() {
-		return sound("extra-life");
+		return mp3("extra-life");
 	}
 
 	@Override
 	public Sound snd_insertCoin() {
-		return sound("insert-coin");
+		return mp3("insert-coin");
 	}
 
 	@Override
 	public Sound snd_ready() {
-		return sound("ready");
+		return mp3("ready");
 	}
 
 	@Override
 	public Sound snd_ghost_dead() {
-		return sound("ghost_dead", "wav");
+		return wav("ghost_dead");
 	}
 
 	@Override
 	public Sound snd_ghost_chase() {
-		return sound("ghost_chase", "wav");
+		return wav("ghost_chase");
 	}
 
 	@Override
 	public Sound snd_waza() {
-		return sound("waza");
+		return mp3("waza");
 	}
 }
