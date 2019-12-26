@@ -125,6 +125,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		return state(PLAYING);
 	}
 
+	private int mazeFlashingSeconds() {
+		return game.level().mazeNumFlashes * PacManTheme.MAZE_FLASH_TIME_MILLIS / 1000;
+	}
+
 	private void buildStateMachine() {
 		//@formatter:off
 		beginStateMachine()
@@ -176,7 +180,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onEntry(() -> {
 						playView.clearMessage();
 						playView.startEnergizerBlinking();
-						playMusicLevelRunning();
+						loopMusicPlaying();
 					})
 					.onTick(() -> {
 						cast.actorsOnStage().forEach(PacManGameActor::update);
@@ -189,35 +193,38 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.state(PLAYING).customState(new PlayingState())
 				
 				.state(CHANGING_LEVEL)
-					.timeoutAfter(() -> sec(4 + game.level().mazeNumFlashes * PacManTheme.MAZE_FLASH_TIME_MILLIS / 1000))
+					.timeoutAfter(() -> sec(4 + mazeFlashingSeconds()))
 					.onEntry(() -> {
 						cast.pacMan.sprites.select("full");
 						ghostHouseDoorMan.resetGhostDotCounters();
 						ghostHouseDoorMan.closeDoor();
 						stopSoundEffects();
+						stopMusicPlaying();
+						
 					})
 					.onTick(() -> {
-						if (state().getTicksConsumed() == sec(2)) {
+						int t = state().getTicksConsumed();
+						int mazeFlashingSeconds = mazeFlashingSeconds();
+						if (t == sec(2)) {
 							cast.ghostsOnStage().forEach(Ghost::hide);
 							if (game.level().mazeNumFlashes > 0) {
 								playView.startMazeFlashing();
-							} else {
-								playView.stopMazeFlashing();
 							}
 						}
-						else if (state().getTicksRemaining() == sec(2)) {
+						else if (t == sec(2 + mazeFlashingSeconds)) {
+							LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", 
+									game.level().number, game.level().ghostKilledInLevel));
 							game.enterLevel(game.level().number + 1);
 							cast.actorsOnStage().forEach(PacManGameActor::init);
 							playView.init(); // stops flashing
+							loopMusicPlaying();
 						} 
-						else if (state().getTicksRemaining() < sec(1.8f)) {
+						else if (t == sec(4)) {
 							cast.ghostsOnStage().forEach(Ghost::update);
 						}
 					})
 					.onExit(() -> {
 						ghostHouseDoorMan.openDoor();
-						LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", 
-								game.level().number, game.level().ghostKilledInLevel));
 					})
 				
 				.state(GHOST_DYING)
@@ -261,7 +268,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 							// initialize actors and view for continuing game
 							cast.actorsOnStage().forEach(PacManGameActor::init);
 							playView.init();
-							playMusicLevelRunning();
+							loopMusicPlaying();
 						}
 						else if (t > sec(8)) {
 							// let ghosts jump a bit while music is starting
@@ -273,7 +280,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onEntry(() -> {
 						game.saveHiscore();
 						cast.ghostsOnStage().forEach(Ghost::show);
-						cast.removeBonus();
 						playView.enableAnimations(false);
 						playView.message("Game   Over!", Color.RED);
 						playSoundGameOver();
@@ -382,7 +388,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			ghostHouseDoorMan.enableGlobalDotCounter();
 			cast.pacMan.process(pacManKilled);
 			stopSoundEffects();
-			stopMusicLevelRunning();
+			stopMusicPlaying();
 			playView.stopEnergizerBlinking();
 			LOGGER.info(() -> String.format("Pac-Man killed by %s at %s", pacManKilled.killer.name(),
 					pacManKilled.killer.tile()));
@@ -492,17 +498,17 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		theme.music_playing().stop();
 	}
 
-	public void playSoundReady() {
-		theme.snd_ready().play();
+	public void stopMusicPlaying() {
+		theme.music_playing().stop();
 	}
 
-	public void playMusicLevelRunning() {
+	public void loopMusicPlaying() {
 		theme.music_playing().volume(.90f);
 		theme.music_playing().loop();
 	}
 
-	public void stopMusicLevelRunning() {
-		theme.music_playing().stop();
+	public void playSoundReady() {
+		theme.snd_ready().play();
 	}
 
 	public void playSoundPelletEaten() {
