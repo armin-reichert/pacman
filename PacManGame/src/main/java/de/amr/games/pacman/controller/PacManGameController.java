@@ -242,18 +242,22 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					})
 					.onTick(() -> {
 						int passedTime = state().getTicksConsumed();
-						// wait first 1.5 sec before starting the "dying" animation
+						// let Pac-Man struggle for half a second
+						if (passedTime == sec(0.5f)) {
+							cast.pacMan.sprites.current().ifPresent(sprite -> sprite.enableAnimation(false));
+						}
+						// after 1.5 sec, start the "dying" animation
 						if (passedTime == sec(1.5f)) {
 							cast.ghostsOnStage().forEach(Ghost::hide);
 							cast.removeBonus();
 							cast.pacMan.sprites.select("dying");
 							playSoundPacManDied();
 						}
-						// run "dying" animation
+						// run "dying" animation for 1 second
 						if (passedTime > sec(1.5f) && passedTime < sec(2.5f)) {
-							cast.pacMan.update();
+							return;
 						}
-						if (game.lives == 0) {
+						if (passedTime == sec(2.5f) && game.lives == 0) {
 							return;
 						}
 						// if playing continues, init actors and view
