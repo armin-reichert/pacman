@@ -53,5 +53,5 @@ public interface MazeResident extends Lifecycle {
 	 * @param xOffset pixel offset in x-direction
 	 * @param yOffset pixel offset in y-direction
 	 */
-	void placeAtTile(Tile tile, float xOffset, float yOffset);
+	void placeAt(Tile tile, float xOffset, float yOffset);
 }
