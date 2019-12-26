@@ -91,7 +91,7 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 						kicking = tired = false;
 						digestionTicks = 0;
 						clearStarvingTime();
-						placeAt(maze().pacManHome, Tile.SIZE / 2, 0);
+						placeHalfRightOf(maze().pacManHome);
 						setMoveDir(RIGHT);
 						setNextDir(RIGHT);
 						sprites.forEach(Sprite::resetAnimation);

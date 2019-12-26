@@ -12,7 +12,7 @@ package de.amr.games.pacman.model;
 public class Tile {
 
 	/** Tile size in pixels. */
-	public static final int SIZE = 8;
+	public static final byte SIZE = 8;
 
 	public static final char WALL = '#';
 	public static final char TUNNEL = 't';

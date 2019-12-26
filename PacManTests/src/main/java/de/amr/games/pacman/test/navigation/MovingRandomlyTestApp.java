@@ -59,7 +59,7 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 		maze().removeFood();
 		cast().ghosts().forEach(ghost -> {
 			cast().setActorOnStage(ghost);
-			ghost.placeAt(maze().pacManHome, Tile.SIZE / 2, 0);
+			ghost.placeHalfRightOf(maze().pacManHome);
 			ghost.setState(FRIGHTENED);
 			ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack());
 		});

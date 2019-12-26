@@ -40,7 +40,7 @@ public abstract class AbstractMazeResident extends Entity implements MazeResiden
 	}
 
 	@Override
-	public void placeAt(Tile tile, float xOffset, float yOffset) {
+	public void placeAt(Tile tile, byte xOffset, byte yOffset) {
 		tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
 	}
 }

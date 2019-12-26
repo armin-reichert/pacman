@@ -38,7 +38,7 @@ public class Bonus extends AbstractMazeResident implements PacManGameActor<Bonus
 		this.cast = cast;
 		tf.setHeight(Tile.SIZE);
 		tf.setWidth(Tile.SIZE);
-		placeAt(maze().bonusTile, Tile.SIZE / 2, 0);
+		placeHalfRightOf(maze().bonusTile);
 		symbol = game().level().bonusSymbol;
 		value = game().level().bonusValue;
 		brain = buildBrain();
