@@ -363,6 +363,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	 * "PLAYING" state implementation.
 	 */
 	public class PlayingState extends State<PacManGameState, PacManGameEvent> {
+		
+		long lastEatTime;
 
 		@Override
 		public void onEntry() {
@@ -379,6 +381,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			cheatController.update();
 			cast.actorsOnStage().forEach(PacManGameActor::update);
 			cast.bonus().ifPresent(Bonus::update);
+			if (System.currentTimeMillis() - lastEatTime > 250) {
+				stopSoundPelletEaten();
+			}
 		}
 
 		private void onPacManKilled(PacManGameEvent event) {
@@ -432,7 +437,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			int points = game.eatFoodAt(foodFound.tile);
 			int livesBefore = game.lives;
 			game.score(points);
-			playSoundPelletEaten();
+			if (!isSoundRunningPelletEaten()) {
+				startSoundPelletEaten();
+			}
+			lastEatTime = System.currentTimeMillis();
 			if (game.lives > livesBefore) {
 				playSoundExtraLife();
 			}
@@ -507,10 +515,18 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		theme.snd_ready().play();
 	}
 
-	public void playSoundPelletEaten() {
-		theme.snd_eatPill().play();
+	public void startSoundPelletEaten() {
+		theme.snd_eatPill().loop();
 	}
 
+	public void stopSoundPelletEaten() {
+		theme.snd_eatPill().stop();
+	}
+	
+	public boolean isSoundRunningPelletEaten() {
+		return theme.snd_eatPill().isRunning();
+	}
+	
 	public void playSoundGhostEaten() {
 		theme.snd_eatGhost().play();
 	}
