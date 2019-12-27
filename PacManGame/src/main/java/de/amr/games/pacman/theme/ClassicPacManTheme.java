@@ -88,9 +88,9 @@ public class ClassicPacManTheme implements PacManTheme {
 	public ClassicPacManTheme() {
 		Assets.storeTrueTypeFont("font.joystix", "Joystix.ttf", Font.PLAIN, 12);
 
-		sheet = Assets.readImage("pacman_sprites.png");
-		mazeFull = Assets.readImage("maze_full.png");
-		mazeEmpty = Assets.readImage("maze_empty.png");
+		sheet = Assets.readImage("images/pacman_sprites.png");
+		mazeFull = Assets.readImage("images/maze_full.png");
+		mazeEmpty = Assets.readImage("images/maze_empty.png");
 		int blue = -14605825; // debugger told me this
 		mazeWhite = changeColor(mazeEmpty, blue, Color.WHITE.getRGB());
 

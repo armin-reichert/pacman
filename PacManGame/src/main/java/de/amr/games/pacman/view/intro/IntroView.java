@@ -54,7 +54,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 	}
 
 	private void createUIComponents() {
-		pacManLogo = new ImageWidget(Assets.image("logo.png"));
+		pacManLogo = new ImageWidget(Assets.image("images/logo.png"));
 		pacManLogo.tf.centerX(width);
 		pacManLogo.tf.setY(20);
 		chasePacMan = new ChasePacManAnimation(theme);
