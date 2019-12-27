@@ -59,8 +59,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private PacManTheme theme;
 	private PacManGameCast cast;
 	private GhostCommand ghostCommand;
-	GhostHouseDoorMan ghostHouseDoorMan;
-	private Cheater cheater;
+	private GhostHouseDoorMan doorMan;
+	private CheatController cheatController;
 	private CompletableFuture<Void> musicLoading;
 
 	private View currentView;
@@ -74,6 +74,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		buildStateMachine();
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		traceTo(PacManGame.FSM_LOGGER, () -> 60);
+	}
+
+	public Optional<PacManGameCast> cast() {
+		return Optional.ofNullable(cast);
+	}
+
+	public Optional<GhostHouseDoorMan> doorMan() {
+		return Optional.ofNullable(doorMan);
 	}
 
 	public Optional<PacManGame> game() {
@@ -92,12 +100,12 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		cast = new PacManGameCast(game, theme);
 		cast.actors().forEach(actor -> actor.addEventListener(this::process));
 		ghostCommand = new GhostCommand(cast);
-		ghostHouseDoorMan = new GhostHouseDoorMan(cast);
-		cast.ghosts().forEach(ghost -> ghost.doorMan = ghostHouseDoorMan);
-		cheater = new Cheater(cast, this);
+		doorMan = new GhostHouseDoorMan(cast);
+		cast.ghosts().forEach(ghost -> ghost.doorMan = doorMan);
+		cheatController = new CheatController(this);
 		playView = new PlayView(cast);
 		playView.fnGhostMotionState = ghostCommand::state;
-		playView.ghostHouseDoorMan = ghostHouseDoorMan;
+		playView.ghostHouseDoorMan = doorMan;
 		selectView(playView);
 	}
 
@@ -161,10 +169,10 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onEntry(() -> {
 						game.init();
 						cast.actors().forEach(cast::setActorOnStage);
-						ghostHouseDoorMan.resetGlobalDotCounter();
-						ghostHouseDoorMan.resetGhostDotCounters();
-						ghostHouseDoorMan.disableGlobalDotCounter();
-						ghostHouseDoorMan.closeDoor();
+						doorMan.resetGlobalDotCounter();
+						doorMan.resetGhostDotCounters();
+						doorMan.disableGlobalDotCounter();
+						doorMan.closeDoor();
 						playView.init();
 						playSoundReady();
 					})
@@ -180,7 +188,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onExit(() -> {
 						playView.clearMessage();
 						ghostCommand.init();
-						ghostHouseDoorMan.openDoor();
+						doorMan.openDoor();
 					})
 				
 				.state(PLAYING).customState(new PlayingState())
@@ -189,8 +197,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.timeoutAfter(() -> sec(4 + mazeFlashingSeconds()))
 					.onEntry(() -> {
 						cast.pacMan.sprites.select("full");
-						ghostHouseDoorMan.resetGhostDotCounters();
-						ghostHouseDoorMan.closeDoor();
+						doorMan.resetGhostDotCounters();
+						doorMan.closeDoor();
 						stopSoundEffects();
 						stopMusicPlaying();
 						
@@ -217,7 +225,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						}
 					})
 					.onExit(() -> {
-						ghostHouseDoorMan.openDoor();
+						doorMan.openDoor();
 					})
 				
 				.state(GHOST_DYING)
@@ -367,14 +375,14 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		@Override
 		public void onTick() {
 			ghostCommand.update();
-			cheater.handleCheatKeys();
+			cheatController.update();
 			cast.actorsOnStage().forEach(PacManGameActor::update);
 			cast.bonus().ifPresent(Bonus::update);
 		}
 
 		private void onPacManKilled(PacManGameEvent event) {
 			PacManKilledEvent pacManKilled = (PacManKilledEvent) event;
-			ghostHouseDoorMan.enableGlobalDotCounter();
+			doorMan.enableGlobalDotCounter();
 			cast.pacMan.process(pacManKilled);
 			stopSoundEffects();
 			stopMusicPlaying();
@@ -419,7 +427,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent foodFound = (FoodFoundEvent) event;
-			ghostHouseDoorMan.updateDotCounters();
+			doorMan.updateDotCounters();
 			int points = game.eatFoodAt(foodFound.tile);
 			int livesBefore = game.lives;
 			game.score(points);

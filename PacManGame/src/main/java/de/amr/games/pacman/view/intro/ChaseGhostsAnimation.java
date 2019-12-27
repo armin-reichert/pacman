@@ -70,7 +70,7 @@ public class ChaseGhostsAnimation extends Entity implements Animation {
 	}
 
 	@Override
-	public boolean complete() {
+	public boolean isComplete() {
 		return tf.getX() > endPosition.x;
 	}
 

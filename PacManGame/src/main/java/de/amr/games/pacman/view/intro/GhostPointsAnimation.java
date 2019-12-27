@@ -71,7 +71,7 @@ public class GhostPointsAnimation extends Entity implements Animation {
 	}
 
 	@Override
-	public boolean complete() {
+	public boolean isComplete() {
 		return false;
 	}
 

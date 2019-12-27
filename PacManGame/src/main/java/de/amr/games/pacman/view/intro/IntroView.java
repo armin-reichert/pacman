@@ -158,10 +158,10 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 			.transitions()
 			
 				.when(SCROLLING_LOGO).then(SHOWING_ANIMATIONS)
-					.condition(() -> pacManLogo.complete())
+					.condition(() -> pacManLogo.isComplete())
 				
 				.when(SHOWING_ANIMATIONS).then(WAITING_FOR_INPUT)
-					.condition(() -> chasePacMan.complete() && chaseGhosts.complete())
+					.condition(() -> chasePacMan.isComplete() && chaseGhosts.isComplete())
 				
 				.when(WAITING_FOR_INPUT).then(SHOWING_ANIMATIONS)
 					.onTimeout()
@@ -173,6 +173,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 	  /*@formatter:on*/
 	}
 
+	@Override
 	public boolean isComplete() {
 		return is(READY_TO_PLAY);
 	}
