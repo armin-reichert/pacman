@@ -175,9 +175,7 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 		sprites.current().ifPresent(sprite -> {
 			float dx = centerX() - sprite.getWidth() / 2;
 			float dy = centerY() - sprite.getHeight() / 2;
-			g.translate(dx, dy);
-			sprite.draw(g);
-			g.translate(-dx, -dy);
+			sprite.draw(g, dx, dy);
 		});
 	}
 
