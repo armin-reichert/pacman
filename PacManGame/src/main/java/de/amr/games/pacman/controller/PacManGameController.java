@@ -151,7 +151,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						musicLoading = CompletableFuture.runAsync(() -> {
 							theme.music_playing();
 							theme.music_gameover();
-							theme.snd_clips_all();
 						});
 						loadingView = new LoadingView(theme);
 						selectView(loadingView);
@@ -246,7 +245,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					})
 				
 				.state(PACMAN_DYING)
-					.timeoutAfter(() -> game.lives > 1 ? sec(10) : sec(8))
+					.timeoutAfter(() -> game.lives > 1 ? sec(9) : sec(7))
 					.onEntry(() -> {
 						game.lives -= app().settings.getAsBoolean("PacMan.immortable") ? 0 : 1;
 						stopSoundEffects();
@@ -265,7 +264,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 							cast.pacMan.sprites.select("dying");
 							playSoundPacManDied();
 						}
-						else if (t == sec(8)) {
+						else if (t == sec(7)) {
 							if (game.lives > 0) {
 								// initialize actors and view for continuing game
 								cast.actorsOnStage().forEach(PacManGameActor::init);
@@ -273,7 +272,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 								loopMusicPlaying();
 								}
 						}
-						else if (t > sec(8)) {
+						else if (t > sec(7)) {
 							// let ghosts jump a bit while music is starting
 							cast.ghostsOnStage().forEach(Ghost::update);
 						}
