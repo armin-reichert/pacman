@@ -280,7 +280,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onEntry(() -> {
 						game.saveHiscore();
 						cast.ghostsOnStage().forEach(Ghost::show);
-						playView.enableAnimations(false);
+						playView.disableAnimations();
 						playView.message("Game   Over!", Color.RED);
 						playSoundGameOver();
 					})
@@ -371,7 +371,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			cast.ghostsOnStage().forEach(Ghost::show);
 			cast.pacMan.setState(PacManState.ALIVE);
 			playView.init();
-			playView.enableAnimations(true);
+			playView.enableAnimations();
 			playView.startEnergizerBlinking();
 		}
 

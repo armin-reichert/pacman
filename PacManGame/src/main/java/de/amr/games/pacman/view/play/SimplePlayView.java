@@ -102,11 +102,16 @@ public class SimplePlayView extends AbstractPacManGameView {
 		messageText = null;
 	}
 
-	public void enableAnimations(boolean state) {
-		flashingMazeSprite.enableAnimation(state);
-		cast.ghostsOnStage().forEach(ghost -> ghost.sprites.enableAnimation(state));
+	public void enableAnimations() {
+		flashingMazeSprite.enableAnimation(true);
+		cast.ghostsOnStage().forEach(ghost -> ghost.sprites.enableAnimation(true));
 	}
 
+	public void disableAnimations() {
+		flashingMazeSprite.enableAnimation(false);
+		cast.ghostsOnStage().forEach(ghost -> ghost.sprites.enableAnimation(false));
+	}
+	
 	public void startMazeFlashing() {
 		mazeFlashing = true;
 	}
