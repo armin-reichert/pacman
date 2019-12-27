@@ -5,7 +5,6 @@ import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.behavior.Steerings.isFleeingToSafeCornerFrom;
 import static de.amr.games.pacman.actor.behavior.Steerings.isMovingRandomlyWithoutTurningBack;
-import static de.amr.games.pacman.controller.PacManGameState.ABOUT_PLAYING;
 import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.controller.PacManGameState.GETTING_READY;
@@ -54,8 +53,7 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
-		implements VisualController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
 	private PacManGame game;
 	private PacManTheme theme;
@@ -159,7 +157,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					})
 				
 				.state(GETTING_READY)
-					.timeoutAfter(sec(5))
+					.timeoutAfter(sec(7))
 					.onEntry(() -> {
 						game.init();
 						cast.actors().forEach(cast::setActorOnStage);
@@ -168,24 +166,19 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						ghostHouseDoorMan.disableGlobalDotCounter();
 						ghostHouseDoorMan.closeDoor();
 						playView.init();
-						playView.message("Ready!");
 						playSoundReady();
 					})
 					.onTick(() -> {
-						cast.actorsOnStage().forEach(PacManGameActor::update);
-					})
-				
-				.state(ABOUT_PLAYING)
-					.timeoutAfter(sec(1.7f))
-					.onEntry(() -> {
-						playView.clearMessage();
-						playView.startEnergizerBlinking();
-						loopMusicPlaying();
-					})
-					.onTick(() -> {
+						int t = state().getTicksConsumed();
+						if (t == sec(5)) {
+							playView.message("Ready!");
+							playView.startEnergizerBlinking();
+							loopMusicPlaying();
+						}
 						cast.actorsOnStage().forEach(PacManGameActor::update);
 					})
 					.onExit(() -> {
+						playView.clearMessage();
 						ghostCommand.init();
 						ghostHouseDoorMan.openDoor();
 					})
@@ -262,13 +255,12 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 							playSoundPacManDied();
 						}
 						else if (t == sec(8)) {
-							if (game.lives == 0) {
-								return; // last life lost, game is over
-							}
-							// initialize actors and view for continuing game
-							cast.actorsOnStage().forEach(PacManGameActor::init);
-							playView.init();
-							loopMusicPlaying();
+							if (game.lives > 0) {
+								// initialize actors and view for continuing game
+								cast.actorsOnStage().forEach(PacManGameActor::init);
+								playView.init();
+								loopMusicPlaying();
+								}
 						}
 						else if (t > sec(8)) {
 							// let ghosts jump a bit while music is starting
@@ -302,12 +294,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.condition(() -> introView.isComplete())
 					.act(this::createPlayingEnvironment)
 				
-				.when(GETTING_READY).then(ABOUT_PLAYING)
+				.when(GETTING_READY).then(PLAYING)
 					.onTimeout()
 				
-				.when(ABOUT_PLAYING).then(PLAYING)
-					.onTimeout()
-					
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
 					.act(playingState()::onFoodFound)
@@ -390,8 +379,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			stopSoundEffects();
 			stopMusicPlaying();
 			playView.stopEnergizerBlinking();
-			LOGGER.info(() -> String.format("Pac-Man killed by %s at %s", pacManKilled.killer.name(),
-					pacManKilled.killer.tile()));
+			LOGGER.info(
+					() -> String.format("Pac-Man killed by %s at %s", pacManKilled.killer.name(), pacManKilled.killer.tile()));
 		}
 
 		private void onPacManGainsPower(PacManGameEvent event) {
@@ -445,8 +434,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (game.isBonusScoreReached()) {
 				cast.addBonus();
 				cast.bonus().ifPresent(bonus -> {
-					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus,
-							bonus.state().getDuration() / 60f));
+					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus, bonus.state().getDuration() / 60f));
 				});
 			}
 			if (foodFound.energizer) {
@@ -478,8 +466,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				app().settings.set("Ghost.fleeRandomly", false);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isFleeingToSafeCornerFrom(cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
-			}
-			else {
+			} else {
 				app().settings.set("Ghost.fleeRandomly", true);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack()));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
