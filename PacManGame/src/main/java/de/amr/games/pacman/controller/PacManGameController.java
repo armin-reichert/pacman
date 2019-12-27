@@ -249,7 +249,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					})
 					.onTick(() -> {
 						int t = state().getTicksConsumed();
-						if (t == sec(2)) {
+						if (t == sec(1)) {
 							// Pac-Man stops struggling
 							cast.pacMan.sprites.current().get().enableAnimation(false);
 							cast.pacMan.sprites.select("full");
@@ -257,7 +257,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 							cast.ghostsOnStage().forEach(Ghost::hide);
 						}
 						else if (t == sec(4)) {
-							// start the "dying" animation and hide other actors
+							// start the "dying" animation
 							cast.pacMan.sprites.select("dying");
 							playSoundPacManDied();
 						}
