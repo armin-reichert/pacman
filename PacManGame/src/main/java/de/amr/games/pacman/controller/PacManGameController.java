@@ -42,6 +42,7 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.view.core.AbstractPacManGameView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.PlayView;
@@ -53,7 +54,8 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
+		implements VisualController {
 
 	private PacManGame game;
 	private PacManTheme theme;
@@ -63,7 +65,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private CheatController cheatController;
 	private CompletableFuture<Void> musicLoading;
 
-	private View currentView;
+	private AbstractPacManGameView currentView;
 	private LoadingView loadingView;
 	private IntroView introView;
 	private PlayView playView;
@@ -88,7 +90,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		return Optional.ofNullable(game);
 	}
 
-	private void selectView(View view) {
+	private void selectView(AbstractPacManGameView view) {
 		if (currentView != view) {
 			currentView = view;
 			currentView.init();
@@ -363,7 +365,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	 * "PLAYING" state implementation.
 	 */
 	public class PlayingState extends State<PacManGameState, PacManGameEvent> {
-		
+
 		long lastEatTime;
 
 		@Override
@@ -393,8 +395,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			stopSoundEffects();
 			stopMusicPlaying();
 			playView.stopEnergizerBlinking();
-			LOGGER.info(
-					() -> String.format("Pac-Man killed by %s at %s", pacManKilled.killer.name(), pacManKilled.killer.tile()));
+			LOGGER.info(() -> String.format("Pac-Man killed by %s at %s", pacManKilled.killer.name(),
+					pacManKilled.killer.tile()));
 		}
 
 		private void onPacManGainsPower(PacManGameEvent event) {
@@ -451,7 +453,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (game.isBonusScoreReached()) {
 				cast.addBonus();
 				cast.bonus().ifPresent(bonus -> {
-					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus, bonus.state().getDuration() / 60f));
+					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus,
+							bonus.state().getDuration() / 60f));
 				});
 			}
 			if (foodFound.energizer) {
@@ -483,7 +486,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				app().settings.set("Ghost.fleeRandomly", false);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isFleeingToSafeCornerFrom(cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
-			} else {
+			}
+			else {
 				app().settings.set("Ghost.fleeRandomly", true);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack()));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
@@ -522,11 +526,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	public void stopSoundPelletEaten() {
 		theme.snd_eatPill().stop();
 	}
-	
+
 	public boolean isSoundRunningPelletEaten() {
 		return theme.snd_eatPill().isRunning();
 	}
-	
+
 	public void playSoundGhostEaten() {
 		theme.snd_eatGhost().play();
 	}

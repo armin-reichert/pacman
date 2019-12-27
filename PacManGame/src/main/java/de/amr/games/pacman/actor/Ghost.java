@@ -12,10 +12,12 @@ import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Timing.sec;
 import static de.amr.games.pacman.model.Timing.speed;
 
+import java.awt.Graphics2D;
 import java.util.EnumMap;
 import java.util.Map;
 
 import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
 import de.amr.games.pacman.actor.core.PacManGameActor;
@@ -38,6 +40,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostState> {
 
+	public final SpriteMap sprites = new SpriteMap();
 	public Direction eyes;
 	public byte seat;
 	public int dotCounter;
@@ -201,8 +204,18 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 
 	@Override
 	public void update() {
-		super.update();
 		brain.update();
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		sprites.current().ifPresent(sprite -> {
+			float dx = centerX() - sprite.getWidth() / 2;
+			float dy = centerY() - sprite.getHeight() / 2;
+			g.translate(dx, dy);
+			sprite.draw(g);
+			g.translate(-dx, -dy);
+		});
 	}
 
 	public void during(GhostState state, Steering<Ghost> steeringInState) {

@@ -14,9 +14,11 @@ import static de.amr.games.pacman.model.PacManGame.FSM_LOGGER;
 import static de.amr.games.pacman.model.Timing.sec;
 import static de.amr.games.pacman.model.Timing.speed;
 
+import java.awt.Graphics2D;
 import java.util.Optional;
 
 import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
 import de.amr.games.pacman.actor.core.PacManGameActor;
@@ -39,6 +41,7 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManState> {
 
+	public final SpriteMap sprites = new SpriteMap();
 	private final PacManGameCast cast;
 	private final FsmComponent<PacManState, PacManGameEvent> brain;
 	private Steering<PacMan> steering;
@@ -164,8 +167,18 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 
 	@Override
 	public void update() {
-		super.update();
 		brain.update();
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		sprites.current().ifPresent(sprite -> {
+			float dx = centerX() - sprite.getWidth() / 2;
+			float dy = centerY() - sprite.getHeight() / 2;
+			g.translate(dx, dy);
+			sprite.draw(g);
+			g.translate(-dx, -dy);
+		});
 	}
 
 	@Override
@@ -193,14 +206,14 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 	}
 
 	/**
-	 * NOTE: If the application property <code>PacMan.overflowBug</code> is
-	 * <code>true</code>, this method simulates the bug in the original Arcade game
-	 * which occurs if Pac-Man points upwards. In that case the same number of tiles
-	 * to the left is added.
+	 * NOTE: If the application property <code>PacMan.overflowBug</code> is <code>true</code>, this
+	 * method simulates the bug in the original Arcade game which occurs if Pac-Man points upwards. In
+	 * that case the same number of tiles to the left is added.
 	 * 
-	 * @param numTiles number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor
-	 *         towards his current move direction.
+	 * @param numTiles
+	 *                   number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
+	 *         direction.
 	 */
 	@Override
 	public Tile tilesAhead(int numTiles) {
@@ -240,7 +253,8 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 			if (tile.containsEnergizer()) {
 				digestionTicks = DIGEST_ENERGIZER_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, true));
-			} else {
+			}
+			else {
 				digestionTicks = DIGEST_PELLET_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, false));
 			}

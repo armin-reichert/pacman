@@ -9,6 +9,7 @@ import static java.util.Arrays.binarySearch;
 import java.awt.Graphics2D;
 import java.util.Random;
 
+import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.actor.core.AbstractMazeResident;
 import de.amr.games.pacman.actor.core.PacManGameActor;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
@@ -28,6 +29,7 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class Bonus extends AbstractMazeResident implements PacManGameActor<BonusState> {
 
+	private final SpriteMap sprites = new SpriteMap();
 	private final PacManGameCast cast;
 	private final FsmComponent<BonusState, PacManGameEvent> brain;
 	public final BonusSymbol symbol;
@@ -83,13 +85,11 @@ public class Bonus extends AbstractMazeResident implements PacManGameActor<Bonus
 
 	@Override
 	public void init() {
-		super.init();
 		brain.init();
 	}
 
 	@Override
 	public void update() {
-		super.update();
 		brain.update();
 	}
 
