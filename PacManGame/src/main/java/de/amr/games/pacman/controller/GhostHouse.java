@@ -95,8 +95,8 @@ public class GhostHouse implements Lifecycle {
 			}
 		} else {
 			nextCandidate().ifPresent(ghost -> {
-				ghostDotCountersBySeat[ghost.seat] += 1;
-				logger.info(() -> String.format("%s's dot counter: %d", ghost.name(), ghostDotCountersBySeat[ghost.seat]));
+				ghostDotCountersBySeat[ghost.seat()] += 1;
+				logger.info(() -> String.format("%s's dot counter: %d", ghost.name(), ghostDotCountersBySeat[ghost.seat()]));
 			});
 		}
 	}
@@ -130,7 +130,7 @@ public class GhostHouse implements Lifecycle {
 			return false;
 		}
 		int ghostDotLimit = personalDotLimit(ghost);
-		if (ghostDotCountersBySeat[ghost.seat] >= ghostDotLimit) {
+		if (ghostDotCountersBySeat[ghost.seat()] >= ghostDotLimit) {
 			logger
 					.info(() -> String.format("%s can leave house: ghost's dot limit (%d) reached", ghost.name(), ghostDotLimit));
 			return true;

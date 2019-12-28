@@ -42,16 +42,18 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 
 	public final SpriteMap sprites = new SpriteMap();
 	public Direction eyes;
-	public byte seat;
 	public GhostState nextState;
+
 	private final PacManGameCast cast;
+	private final int seat;
 	private final FsmComponent<GhostState, PacManGameEvent> brain;
 	private final Map<GhostState, Steering<Ghost>> steering = new EnumMap<>(GhostState.class);
 	private final Steering<Ghost> defaultSteering = isHeadingFor(this::targetTile);
 
-	public Ghost(String name, PacManGameCast cast) {
+	public Ghost(String name, PacManGameCast cast, int seat) {
 		super(name);
 		this.cast = cast;
+		this.seat = seat;
 		tf.setWidth(Tile.SIZE);
 		tf.setHeight(Tile.SIZE);
 		brain = buildBrain();
@@ -74,7 +76,7 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 					.onEntry(() -> {
 						visible = true;
 						nextState = getState();
-						placeHalfRightOf(maze().ghostHouseSeats[seat]);
+						placeHalfRightOf(myHomeTile());
 						enteredNewTile();
 						setMoveDir(eyes);
 						setNextDir(eyes);
@@ -183,6 +185,10 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 		/*@formatter:on*/
 	}
 
+	private Tile myHomeTile() {
+		return maze().ghostHouseSeats[seat];
+	}
+
 	@Override
 	public PacManGameCast cast() {
 		return cast;
@@ -221,6 +227,10 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 	@Override
 	public Steering<Ghost> steering() {
 		return steering.getOrDefault(getState(), defaultSteering);
+	}
+
+	public int seat() {
+		return seat;
 	}
 
 	private void walkAndDisplayAs(String spriteKey) {

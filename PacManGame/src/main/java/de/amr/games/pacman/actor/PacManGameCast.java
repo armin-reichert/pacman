@@ -57,10 +57,11 @@ public class PacManGameCast {
 		this.game = game;
 
 		pacMan = new PacMan(this);
-		blinky = new Ghost("Blinky", this);
-		pinky = new Ghost("Pinky", this);
-		inky = new Ghost("Inky", this);
-		clyde = new Ghost("Clyde", this);
+
+		blinky = new Ghost("Blinky", this, 0);
+		inky = new Ghost("Inky", this, 1);
+		pinky = new Ghost("Pinky", this, 2);
+		clyde = new Ghost("Clyde", this, 3);
 
 		// initially, all actors are off-stage
 		actors().forEach(actor -> setActorOffStage(actor));
@@ -73,39 +74,36 @@ public class PacManGameCast {
 		pacMan.setTeleportingDuration(sec(0.5f));
 
 		blinky.eyes = LEFT;
-		blinky.seat = 0;
 		blinky.during(SCATTERING, isHeadingFor(maze().horizonNE));
 		blinky.during(CHASING, isHeadingFor(pacMan::tile));
+		blinky.during(ENTERING_HOUSE, isTakingSeat(blinky, pinky.seat()));
 
 		inky.eyes = UP;
-		inky.seat = 1;
 		inky.during(SCATTERING, isHeadingFor(maze().horizonSE));
 		inky.during(CHASING, isHeadingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
+		inky.during(LOCKED, isJumpingUpAndDown(maze(), inky.seat()));
+		inky.during(ENTERING_HOUSE, isTakingSeat(inky, inky.seat()));
 
 		pinky.eyes = DOWN;
-		pinky.seat = 2;
 		pinky.during(SCATTERING, isHeadingFor(maze().horizonNW));
 		pinky.during(CHASING, isHeadingFor(() -> pacMan.tilesAhead(4)));
+		pinky.during(LOCKED, isJumpingUpAndDown(maze(), pinky.seat()));
+		pinky.during(ENTERING_HOUSE, isTakingSeat(pinky, pinky.seat()));
 
 		clyde.eyes = UP;
-		clyde.seat = 3;
 		clyde.during(SCATTERING, isHeadingFor(maze().horizonSW));
 		clyde.during(CHASING,
 				isHeadingFor(() -> distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
+		clyde.during(LOCKED, isJumpingUpAndDown(maze(), clyde.seat()));
+		clyde.during(ENTERING_HOUSE, isTakingSeat(clyde, clyde.seat()));
 
 		ghosts().forEach(ghost -> {
 			ghost.setTeleportingDuration(sec(0.5f));
 			ghost.during(LEAVING_HOUSE, isLeavingGhostHouse(maze()));
 			ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack());
-			if (ghost != blinky) {
-				ghost.during(LOCKED, isJumpingUpAndDown(maze(), ghost.seat));
-				ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, ghost.seat));
-			} else {
-				ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, 2));
-			}
 		});
 	}
 
