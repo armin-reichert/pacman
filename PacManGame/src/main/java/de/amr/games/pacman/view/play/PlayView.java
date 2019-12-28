@@ -64,7 +64,7 @@ public class PlayView extends SimplePlayView {
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 	}
 
-	public Supplier<State<GhostState, ?>> fnGhostMotionState = () -> null;
+	public Supplier<State<GhostState, ?>> fnGhostCommandState = () -> null;
 	public GhostHouse ghostHouse; // (optional)
 
 	private boolean showRoutes = false;
@@ -217,7 +217,7 @@ public class PlayView extends SimplePlayView {
 		}
 		// chasing or scattering time
 		else if (ghost.is(SCATTERING) || ghost.is(CHASING)) {
-			State<GhostState, ?> attack = fnGhostMotionState.get();
+			State<GhostState, ?> attack = fnGhostCommandState.get();
 			if (attack != null) {
 				duration = attack.getDuration();
 				remaining = attack.getTicksRemaining();

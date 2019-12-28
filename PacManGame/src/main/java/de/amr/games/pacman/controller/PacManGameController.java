@@ -89,6 +89,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		return Optional.ofNullable(game);
 	}
 
+	@Override
+	public Optional<View> currentView() {
+		return Optional.ofNullable(currentView);
+	}
+
 	private void selectView(AbstractPacManGameView view) {
 		if (currentView != view) {
 			currentView = view;
@@ -98,41 +103,30 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 	private void createPlayingEnvironment() {
 		game = new PacManGame();
+		game.init();
 		cast = new PacManGameCast(game, theme);
+		cast.actors().forEach(cast::setActorOnStage);
 		cast.actors().forEach(actor -> actor.addEventListener(this::process));
 		ghostCommand = new GhostCommand(cast);
 		ghostHouse = new GhostHouse(cast);
 		cheatController = new CheatController(this);
 		playView = new PlayView(cast);
-		playView.fnGhostMotionState = ghostCommand::state;
+		playView.fnGhostCommandState = ghostCommand::state;
 		playView.ghostHouse = ghostHouse;
 		selectView(playView);
 	}
 
 	@Override
-	public Optional<View> currentView() {
-		return Optional.ofNullable(currentView);
-	}
-
-	@Override
 	public void update() {
-		getInput();
+		handleToggleStateMachineLogging();
+		handleToggleGhostFrightenedBehavior();
+		handleTogglePacManOverflowBug();
 		super.update();
 		currentView.update();
 	}
 
-	private void getInput() {
-		handleToggleStateMachineLogging();
-		handleToggleGhostFrightenedBehavior();
-		handleTogglePacManOverflowBug();
-	}
-
 	private PlayingState playingState() {
 		return state(PLAYING);
-	}
-
-	private int mazeFlashingSeconds() {
-		return game.level().mazeNumFlashes * PacManTheme.MAZE_FLASH_TIME_MILLIS / 1000;
 	}
 
 	private void buildStateMachine() {
@@ -146,10 +140,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			
 				.state(LOADING_MUSIC)
 					.onEntry(() -> {
-						musicLoading = CompletableFuture.runAsync(() -> {
-							theme.music_playing();
-							theme.music_gameover();
-						});
+						loadMusic();
 						loadingView = new LoadingView(theme);
 						selectView(loadingView);
 					})
@@ -166,10 +157,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.state(GETTING_READY)
 					.timeoutAfter(sec(7))
 					.onEntry(() -> {
-						game.init();
-						cast.actors().forEach(cast::setActorOnStage);
-						ghostHouse.init();
-						playView.init();
+						createPlayingEnvironment();
 						playSoundReady();
 					})
 					.onTick(() -> {
@@ -189,7 +177,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				.state(PLAYING).customState(new PlayingState())
 				
 				.state(CHANGING_LEVEL)
-					.timeoutAfter(() -> sec(4 + mazeFlashingSeconds()))
+					.timeoutAfter(() -> sec(4 + playView.mazeFlashingSeconds()))
 					.onEntry(() -> {
 						cast.pacMan.sprites.select("full");
 						ghostHouse.resetGhostDotCounters();
@@ -199,14 +187,13 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					})
 					.onTick(() -> {
 						int t = state().getTicksConsumed();
-						int mazeFlashingSeconds = mazeFlashingSeconds();
 						if (t == sec(2)) {
 							cast.ghostsOnStage().forEach(Ghost::hide);
 							if (game.level().mazeNumFlashes > 0) {
 								playView.startMazeFlashing();
 							}
 						}
-						else if (t == sec(2 + mazeFlashingSeconds)) {
+						else if (t == sec(2 + playView.mazeFlashingSeconds())) {
 							LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", 
 									game.level().number, game.level().ghostKilledInLevel));
 							game.enterLevel(game.level().number + 1);
@@ -285,14 +272,12 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			
 				.when(LOADING_MUSIC).then(GETTING_READY)
 					.condition(() -> musicLoading.isDone() && app().settings.getAsBoolean("PacManApp.skipIntro"))
-					.act(this::createPlayingEnvironment)
 
 				.when(LOADING_MUSIC).then(INTRO)
 					.condition(() -> musicLoading.isDone())
 			
 				.when(INTRO).then(GETTING_READY)
 					.condition(() -> introView.isComplete())
-					.act(this::createPlayingEnvironment)
 				
 				.when(GETTING_READY).then(PLAYING)
 					.onTimeout()
@@ -484,6 +469,13 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	}
 
 	// sounds
+
+	private void loadMusic() {
+		musicLoading = CompletableFuture.runAsync(() -> {
+			theme.music_playing();
+			theme.music_gameover();
+		});
+	}
 
 	public void stopSoundEffects() {
 		theme.snd_clips_all().forEach(Sound::stop);

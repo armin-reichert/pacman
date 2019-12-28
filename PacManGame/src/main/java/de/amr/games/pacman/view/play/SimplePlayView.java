@@ -111,7 +111,11 @@ public class SimplePlayView extends AbstractPacManGameView {
 		flashingMazeSprite.enableAnimation(false);
 		cast.ghostsOnStage().forEach(ghost -> ghost.sprites.enableAnimation(false));
 	}
-	
+
+	public int mazeFlashingSeconds() {
+		return game().level().mazeNumFlashes * PacManTheme.MAZE_FLASH_TIME_MILLIS / 1000;
+	}
+
 	public void startMazeFlashing() {
 		mazeFlashing = true;
 	}
