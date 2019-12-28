@@ -12,8 +12,8 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -27,10 +27,10 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 		AT_DOOR, FALLING, MOVING_LEFT, MOVING_RIGHT, AT_PLACE
 	}
 
-	public EnteringGhostHouse(Maze maze, Ghost ghost, int place) {
+	public EnteringGhostHouse(Ghost ghost, int seatNumber) {
 		super(EnteringHouseState.class);
-		int targetX = maze.ghostHouseSeats[place].centerX();
-		int targetY = maze.ghostHouseSeats[place].y();
+		Tile seat = ghost.maze().ghostHouseSeats[seatNumber];
+		int targetX = seat.centerX(), targetY = seat.y();
 		/*@formatter:off*/
 		beginStateMachine()
 			.initialState(AT_DOOR)
@@ -40,7 +40,7 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 			
 				.state(AT_DOOR)
 					.onEntry(() -> {
-						ghost.setTargetTile(maze.ghostHouseSeats[place]); // only for visualization
+						ghost.setTargetTile(seat); // only for visualization
 						ghost.setTargetPath(Collections.emptyList());
 					})
 					
@@ -80,12 +80,11 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 	public void steer(Ghost ghost) {
 		if (getState() == null || is(AT_PLACE)) {
 			init();
-		}
-		else {
+		} else {
 			update();
 		}
 	}
-	
+
 	@Override
 	public boolean onTrack() {
 		return false;

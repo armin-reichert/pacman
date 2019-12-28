@@ -16,7 +16,6 @@ import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Direction.dirs;
-import static de.amr.games.pacman.model.Tile.distanceSq;
 import static de.amr.games.pacman.model.Timing.sec;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
@@ -44,10 +43,10 @@ import de.amr.games.pacman.theme.PacManTheme;
  */
 public class PacManGameCast {
 
-	private final PacManGame game;
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
 
+	private final PacManGame game;
 	private PacManTheme theme;
 	private Bonus bonus;
 	private final Set<PacManGameActor<?>> actorsOnStage = new HashSet<>();
@@ -76,7 +75,7 @@ public class PacManGameCast {
 		blinky.eyes = LEFT;
 		blinky.during(SCATTERING, isHeadingFor(maze().horizonNE));
 		blinky.during(CHASING, isHeadingFor(pacMan::tile));
-		blinky.during(ENTERING_HOUSE, isTakingSeat(blinky, pinky.seat()));
+		blinky.during(ENTERING_HOUSE, isTakingSeat(blinky, 2));
 
 		inky.eyes = UP;
 		inky.during(SCATTERING, isHeadingFor(maze().horizonSE));
@@ -85,20 +84,20 @@ public class PacManGameCast {
 			return maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
 		inky.during(LOCKED, isJumpingUpAndDown(maze(), inky.seat()));
-		inky.during(ENTERING_HOUSE, isTakingSeat(inky, inky.seat()));
+		inky.during(ENTERING_HOUSE, isTakingSeat(inky));
 
 		pinky.eyes = DOWN;
 		pinky.during(SCATTERING, isHeadingFor(maze().horizonNW));
 		pinky.during(CHASING, isHeadingFor(() -> pacMan.tilesAhead(4)));
 		pinky.during(LOCKED, isJumpingUpAndDown(maze(), pinky.seat()));
-		pinky.during(ENTERING_HOUSE, isTakingSeat(pinky, pinky.seat()));
+		pinky.during(ENTERING_HOUSE, isTakingSeat(pinky));
 
 		clyde.eyes = UP;
 		clyde.during(SCATTERING, isHeadingFor(maze().horizonSW));
 		clyde.during(CHASING,
-				isHeadingFor(() -> distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
+				isHeadingFor(() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
 		clyde.during(LOCKED, isJumpingUpAndDown(maze(), clyde.seat()));
-		clyde.during(ENTERING_HOUSE, isTakingSeat(clyde, clyde.seat()));
+		clyde.during(ENTERING_HOUSE, isTakingSeat(clyde));
 
 		ghosts().forEach(ghost -> {
 			ghost.setTeleportingDuration(sec(0.5f));
