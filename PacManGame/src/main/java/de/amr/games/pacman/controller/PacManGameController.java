@@ -60,7 +60,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	private PacManTheme theme;
 	private PacManGameCast cast;
 	private GhostCommand ghostCommand;
-	private GhostHouseDoorMan doorMan;
+	private GhostHouse ghostHouse;
 	private CheatController cheatController;
 	private CompletableFuture<Void> musicLoading;
 
@@ -81,8 +81,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		return Optional.ofNullable(cast);
 	}
 
-	public Optional<GhostHouseDoorMan> doorMan() {
-		return Optional.ofNullable(doorMan);
+	public Optional<GhostHouse> doorMan() {
+		return Optional.ofNullable(ghostHouse);
 	}
 
 	public Optional<PacManGame> game() {
@@ -101,11 +101,11 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		cast = new PacManGameCast(game, theme);
 		cast.actors().forEach(actor -> actor.addEventListener(this::process));
 		ghostCommand = new GhostCommand(cast);
-		doorMan = new GhostHouseDoorMan(cast);
+		ghostHouse = new GhostHouse(cast);
 		cheatController = new CheatController(this);
 		playView = new PlayView(cast);
 		playView.fnGhostMotionState = ghostCommand::state;
-		playView.ghostHouseDoorMan = doorMan;
+		playView.ghostHouse = ghostHouse;
 		selectView(playView);
 	}
 
@@ -168,10 +168,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onEntry(() -> {
 						game.init();
 						cast.actors().forEach(cast::setActorOnStage);
-						doorMan.resetGlobalDotCounter();
-						doorMan.resetGhostDotCounters();
-						doorMan.disableGlobalDotCounter();
-						doorMan.closeDoor();
+						ghostHouse.init();
 						playView.init();
 						playSoundReady();
 					})
@@ -187,7 +184,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.onExit(() -> {
 						playView.clearMessage();
 						ghostCommand.init();
-						doorMan.openDoor();
 					})
 				
 				.state(PLAYING).customState(new PlayingState())
@@ -196,8 +192,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.timeoutAfter(() -> sec(4 + mazeFlashingSeconds()))
 					.onEntry(() -> {
 						cast.pacMan.sprites.select("full");
-						doorMan.resetGhostDotCounters();
-						doorMan.closeDoor();
+						ghostHouse.resetGhostDotCounters();
 						stopSoundEffects();
 						stopMusicPlaying();
 						
@@ -222,9 +217,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						else if (t == sec(4)) {
 							cast.ghostsOnStage().forEach(Ghost::update);
 						}
-					})
-					.onExit(() -> {
-						doorMan.openDoor();
 					})
 				
 				.state(GHOST_DYING)
@@ -378,7 +370,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		public void onTick() {
 			ghostCommand.update();
 			cheatController.update();
-			doorMan.manageDoor();
+			ghostHouse.update();
 			cast.actorsOnStage().forEach(PacManGameActor::update);
 			cast.bonus().ifPresent(Bonus::update);
 			if (System.currentTimeMillis() - lastEatTime > 250) {
@@ -388,7 +380,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onPacManKilled(PacManGameEvent event) {
 			PacManKilledEvent pacManKilled = (PacManKilledEvent) event;
-			doorMan.enableGlobalDotCounter();
+			ghostHouse.enableGlobalDotCounter();
 			cast.pacMan.process(pacManKilled);
 			stopSoundEffects();
 			stopMusicPlaying();
@@ -433,7 +425,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent foodFound = (FoodFoundEvent) event;
-			doorMan.updateDotCounters();
+			ghostHouse.updateDotCounters();
 			int points = game.eatFoodAt(foodFound.tile);
 			int livesBefore = game.lives;
 			game.score(points);

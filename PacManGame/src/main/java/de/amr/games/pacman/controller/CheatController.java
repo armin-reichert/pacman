@@ -49,7 +49,7 @@ public class CheatController implements Lifecycle {
 				gameController.cast().ifPresent(cast -> {
 					cast.game().maze().tiles().filter(Tile::containsPellet).forEach(tile -> {
 						cast.game().eatFoodAt(tile);
-						gameController.doorMan().ifPresent(GhostHouseDoorMan::updateDotCounters);
+						gameController.doorMan().ifPresent(GhostHouse::updateDotCounters);
 					});
 					LOGGER.info(() -> "All pellets eaten");
 				});

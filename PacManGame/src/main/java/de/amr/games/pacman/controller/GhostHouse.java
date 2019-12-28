@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameCast;
@@ -15,16 +16,16 @@ import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.PacManGame;
 
 /**
- * Controls when the ghosts can leave the house.
+ * The ghost house controls when and in which order ghosts can leave.
  * 
  * @author Armin Reichert
  * 
  * @see <a href=
  *      "https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Gamasutra</a>
  */
-public class GhostHouseDoorMan {
+public class GhostHouse implements Lifecycle {
 
-	private static final Logger LOGGER = Logger.getLogger(GhostHouseDoorMan.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(GhostHouse.class.getName());
 
 	static {
 		LOGGER.setLevel(Level.INFO);
@@ -33,40 +34,34 @@ public class GhostHouseDoorMan {
 	private final PacManGame game;
 	private final PacMan pacMan;
 	private final Ghost blinky, pinky, inky, clyde;
+
 	private boolean globalDotCounterEnabled;
 	private int globalDotCounter;
-	private boolean closed;
 
-	public GhostHouseDoorMan(PacManGameCast cast) {
+	public GhostHouse(PacManGameCast cast) {
 		game = cast.game();
 		pacMan = cast.pacMan;
 		blinky = cast.blinky;
 		pinky = cast.pinky;
 		inky = cast.inky;
 		clyde = cast.clyde;
-		disableGlobalDotCounter();
-		closed = true;
 	}
 
-	public void manageDoor() {
-		preferredLockedGhost().filter(this::canLeave).ifPresent(ghost -> {
+	@Override
+	public void init() {
+		resetGlobalDotCounter();
+		resetGhostDotCounters();
+		disableGlobalDotCounter();
+	}
+
+	@Override
+	public void update() {
+		nextGhostToLeave().filter(this::canLeave).ifPresent(ghost -> {
 			ghost.process(new GhostUnlockedEvent());
 		});
 	}
 
-	public boolean hasClosedDoor() {
-		return closed;
-	}
-
-	public void closeDoor() {
-		closed = true;
-	}
-
-	public void openDoor() {
-		closed = false;
-	}
-
-	public Optional<Ghost> preferredLockedGhost() {
+	public Optional<Ghost> nextGhostToLeave() {
 		return Stream.of(blinky, pinky, inky, clyde).filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
@@ -96,7 +91,7 @@ public class GhostHouseDoorMan {
 				LOGGER.info(() -> "Global dot counter disabled");
 			}
 		} else {
-			preferredLockedGhost().ifPresent(ghost -> {
+			nextGhostToLeave().ifPresent(ghost -> {
 				ghost.dotCounter++;
 				LOGGER.info(() -> String.format("%s's dot counter: %d", ghost.name(), ghost.dotCounter));
 			});
@@ -113,13 +108,10 @@ public class GhostHouseDoorMan {
 	 *      Dossier</a>
 	 */
 	private boolean canLeave(Ghost ghost) {
-		if (closed) {
-			return false;
-		}
 		if (ghost == blinky) {
 			return true;
 		}
-		Optional<Ghost> ghostToRelease = preferredLockedGhost();
+		Optional<Ghost> ghostToRelease = nextGhostToLeave();
 		if (!ghostToRelease.isPresent() || ghostToRelease.get() != ghost) {
 			return false;
 		}
