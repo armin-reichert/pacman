@@ -53,7 +53,6 @@ class JumpingTestUI extends PlayView implements VisualController {
 		maze().removeFood();
 		ghostHouseDoorMan = new GhostHouseDoorMan(cast());
 		ghostHouseDoorMan.closeDoor();
-		cast().ghosts().forEach(ghost -> ghost.doorMan = ghostHouseDoorMan);
 		cast().ghosts().forEach(cast()::setActorOnStage);
 	}
 

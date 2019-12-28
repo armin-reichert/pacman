@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameCast;
+import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.PacManGame;
 
 /**
@@ -47,6 +48,12 @@ public class GhostHouseDoorMan {
 		closed = true;
 	}
 
+	public void manageDoor() {
+		preferredLockedGhost().filter(this::canLeave).ifPresent(ghost -> {
+			ghost.process(new GhostUnlockedEvent());
+		});
+	}
+
 	public boolean hasClosedDoor() {
 		return closed;
 	}
@@ -60,7 +67,7 @@ public class GhostHouseDoorMan {
 	}
 
 	public Optional<Ghost> preferredLockedGhost() {
-		return Stream.of(pinky, inky, clyde).filter(ghost -> ghost.is(LOCKED)).findFirst();
+		return Stream.of(blinky, pinky, inky, clyde).filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
 	private int ghostDotLimit(Ghost ghost) {
@@ -88,8 +95,7 @@ public class GhostHouseDoorMan {
 				disableGlobalDotCounter();
 				LOGGER.info(() -> "Global dot counter disabled");
 			}
-		}
-		else {
+		} else {
 			preferredLockedGhost().ifPresent(ghost -> {
 				ghost.dotCounter++;
 				LOGGER.info(() -> String.format("%s's dot counter: %d", ghost.name(), ghost.dotCounter));
@@ -100,14 +106,13 @@ public class GhostHouseDoorMan {
 	/**
 	 * Determines if the given ghost can leave the ghost house.
 	 * 
-	 * @param ghost
-	 *                a ghost
+	 * @param ghost a ghost
 	 * 
 	 * @see <a href=
 	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
 	 *      Dossier</a>
 	 */
-	public boolean isReleasing(Ghost ghost) {
+	private boolean canLeave(Ghost ghost) {
 		if (closed) {
 			return false;
 		}
@@ -122,22 +127,21 @@ public class GhostHouseDoorMan {
 		if (globalDotCounterEnabled) {
 			int globalDotLimit = globalDotLimit(ghost);
 			if (globalDotCounter >= globalDotLimit) {
-				LOGGER.info(() -> String.format("%s can leave house: global dot limit (%d) reached", ghost.name(),
-						globalDotLimit));
+				LOGGER.info(
+						() -> String.format("%s can leave house: global dot limit (%d) reached", ghost.name(), globalDotLimit));
 				return true;
 			}
 			if (pacMan.starvingTime() > pacManStarvingTimeLimit) {
-				LOGGER
-						.info(() -> String.format("%s can leave house: Pac-Man's starving time limit reached (%d ticks)",
-								ghost.name(), pacManStarvingTimeLimit));
+				LOGGER.info(() -> String.format("%s can leave house: Pac-Man's starving time limit reached (%d ticks)",
+						ghost.name(), pacManStarvingTimeLimit));
 				return true;
 			}
 			return false;
 		}
 		int ghostDotLimit = ghostDotLimit(ghost);
 		if (ghost.dotCounter >= ghostDotLimit) {
-			LOGGER.info(() -> String.format("%s can leave house: ghost's dot limit (%d) reached", ghost.name(),
-					ghostDotLimit));
+			LOGGER
+					.info(() -> String.format("%s can leave house: ghost's dot limit (%d) reached", ghost.name(), ghostDotLimit));
 			return true;
 		}
 		if (pacMan.starvingTime() > pacManStarvingTimeLimit) {

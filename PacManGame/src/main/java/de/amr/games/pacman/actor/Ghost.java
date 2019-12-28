@@ -21,8 +21,8 @@ import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
 import de.amr.games.pacman.actor.core.PacManGameActor;
-import de.amr.games.pacman.controller.GhostHouseDoorMan;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
+import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
@@ -45,7 +45,6 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 	public byte seat;
 	public int dotCounter;
 	public GhostState nextState;
-	public GhostHouseDoorMan doorMan;
 	private final PacManGameCast cast;
 	private final FsmComponent<GhostState, PacManGameEvent> brain;
 	private final Map<GhostState, Steering<Ghost>> steering = new EnumMap<>(GhostState.class);
@@ -135,7 +134,7 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 			.transitions()
 			
 				.when(LOCKED).then(LEAVING_HOUSE)
-					.condition(this::canLeaveHouse)
+					.on(GhostUnlockedEvent.class)
 					.act(() -> cast.pacMan.clearStarvingTime())
 			
 				.when(LEAVING_HOUSE).then(SCATTERING)
@@ -224,10 +223,6 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 	@Override
 	public Steering<Ghost> steering() {
 		return steering.getOrDefault(getState(), defaultSteering);
-	}
-
-	private boolean canLeaveHouse() {
-		return doorMan == null || doorMan.isReleasing(this);
 	}
 
 	private void walkAndDisplayAs(String spriteKey) {
