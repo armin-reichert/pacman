@@ -380,7 +380,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 
 		private void onPacManKilled(PacManGameEvent event) {
 			PacManKilledEvent pacManKilled = (PacManKilledEvent) event;
-			ghostHouse.enableGlobalDotCounter();
+			ghostHouse.enableAndResetGlobalDotCounter();
 			cast.pacMan.process(pacManKilled);
 			stopSoundEffects();
 			stopMusicPlaying();

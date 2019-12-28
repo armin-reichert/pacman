@@ -43,7 +43,6 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 	public final SpriteMap sprites = new SpriteMap();
 	public Direction eyes;
 	public byte seat;
-	public int dotCounter;
 	public GhostState nextState;
 	private final PacManGameCast cast;
 	private final FsmComponent<GhostState, PacManGameEvent> brain;

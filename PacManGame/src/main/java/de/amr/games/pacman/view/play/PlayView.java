@@ -425,14 +425,13 @@ public class PlayView extends SimplePlayView {
 			return; // test scenes etc.
 		}
 		Ghost preferredGhost = ghostHouse.nextCandidate().orElse(null);
-		drawDotCounter(g, pinkyImage, cast.pinky.dotCounter, 1, 14,
+		drawDotCounter(g, pinkyImage, ghostHouse.ghostDotCounter(cast.pinky.seat), 1, 14,
 				!ghostHouse.isGlobalDotCounterEnabled() && preferredGhost == cast.pinky);
-		drawDotCounter(g, clydeImage, cast.clyde.dotCounter, 1, 20,
+		drawDotCounter(g, clydeImage, ghostHouse.ghostDotCounter(cast.clyde.seat), 1, 20,
 				!ghostHouse.isGlobalDotCounterEnabled() && preferredGhost == cast.clyde);
-		drawDotCounter(g, inkyImage, cast.inky.dotCounter, 24, 20,
+		drawDotCounter(g, inkyImage, ghostHouse.ghostDotCounter(cast.inky.seat), 24, 20,
 				!ghostHouse.isGlobalDotCounterEnabled() && preferredGhost == cast.inky);
-		drawDotCounter(g, null, ghostHouse.globalDotCounter(), 24, 14,
-				ghostHouse.isGlobalDotCounterEnabled());
+		drawDotCounter(g, null, ghostHouse.globalDotCounter(), 24, 14, ghostHouse.isGlobalDotCounterEnabled());
 	}
 
 	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row, boolean emphasized) {
