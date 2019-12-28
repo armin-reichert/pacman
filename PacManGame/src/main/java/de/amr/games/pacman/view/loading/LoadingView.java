@@ -21,6 +21,12 @@ public class LoadingView extends AbstractPacManGameView {
 	public LoadingView(PacManTheme theme) {
 		this.theme = theme;
 	}
+	
+	@Override
+		public void init() {
+			super.init();
+			
+		}
 
 	@Override
 	public void draw(Graphics2D g) {
@@ -35,9 +41,10 @@ public class LoadingView extends AbstractPacManGameView {
 			}
 			pen.color(new Color(255, 255, 255, alpha));
 			pen.fontSize(16);
-			pen.hcenter("Loading music...", width, 18);
+			pen.hcenter("Loading music...", width(), 18);
 			alpha += alphaInc;
 		}
+		fpsView.draw(g);
 	}
 
 	@Override

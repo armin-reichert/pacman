@@ -46,12 +46,20 @@ public class Pen implements AutoCloseable {
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 	}
 
-	public void draw(String s, int col, int row) {
+	public void drawAtTilePosition(int col, int row, String s) {
 		g.setColor(color);
 		g.setFont(font);
 		Rectangle2D box = g.getFontMetrics().getStringBounds(s, g);
 		float dy = Math.round((Tile.SIZE / 2 + box.getHeight()) / 2);
 		g.drawString(s, col * Tile.SIZE, row * Tile.SIZE + dy);
+	}
+
+	public void drawAtPosition(float x, float y, String s) {
+		g.setColor(color);
+		g.setFont(font);
+		Rectangle2D box = g.getFontMetrics().getStringBounds(s, g);
+		float dy = Math.round((Tile.SIZE / 2 + box.getHeight()) / 2);
+		g.drawString(s, x, y + dy);
 	}
 
 	public void hcenter(String s, int viewWidth, int row) {

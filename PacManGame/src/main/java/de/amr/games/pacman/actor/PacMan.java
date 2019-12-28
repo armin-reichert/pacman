@@ -93,6 +93,7 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 						kicking = tired = false;
 						digestionTicks = 0;
 						game().clearPacManStarvingTime();
+						state().setConstantTimer(State.ENDLESS);
 						placeHalfRightOf(maze().pacManHome);
 						setMoveDir(RIGHT);
 						setNextDir(RIGHT);

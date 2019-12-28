@@ -55,13 +55,13 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 
 	private void createUIComponents() {
 		pacManLogo = new ImageWidget(Assets.image("images/logo.png"));
-		pacManLogo.tf.centerX(width);
+		pacManLogo.tf.centerX(width());
 		pacManLogo.tf.setY(20);
 		chasePacMan = new ChasePacManAnimation(theme);
-		chasePacMan.tf.centerX(width);
+		chasePacMan.tf.centerX(width());
 		chasePacMan.tf.setY(100);
 		chaseGhosts = new ChaseGhostsAnimation(theme);
-		chaseGhosts.tf.setPosition(width, 200);
+		chaseGhosts.tf.setPosition(width(), 200);
 		ghostPointsAnimation = new GhostPointsAnimation(theme);
 		gitHubLink = LinkWidget.create()
 		/*@formatter:off*/
@@ -71,8 +71,8 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 			.color(Color.LIGHT_GRAY)
 			.build();
 		/*@formatter:on*/
-		gitHubLink.tf.setY(height - 16);
-		gitHubLink.tf.centerX(width);
+		gitHubLink.tf.setY(height() - 16);
+		gitHubLink.tf.centerX(width());
 	}
 
 	@Override
@@ -107,7 +107,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 				.state(SCROLLING_LOGO)
 					.onEntry(() -> {
 						theme.snd_insertCoin().play();
-						pacManLogo.tf.setY(height);
+						pacManLogo.tf.setY(height());
 						pacManLogo.tf.setVelocityY(-2f);
 						pacManLogo.setCompletion(() -> pacManLogo.tf.getY() <= 20);
 						pacManLogo.show(); 
@@ -119,10 +119,10 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 	
 				.state(SHOWING_ANIMATIONS)
 					.onEntry(() -> {
-						chasePacMan.setStartPosition(width, 100);
+						chasePacMan.setStartPosition(width(), 100);
 						chasePacMan.setEndPosition(-chasePacMan.tf.getWidth(), 100);
 						chaseGhosts.setStartPosition(-chaseGhosts.tf.getWidth(), 200);
-						chaseGhosts.setEndPosition(width, 200);
+						chaseGhosts.setEndPosition(width(), 200);
 						chasePacMan.start();
 						chaseGhosts.start();
 					})
@@ -133,14 +133,14 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 					.onExit(() -> {
 						chasePacMan.stop();
 						chaseGhosts.stop();
-						chasePacMan.tf.centerX(width);
+						chasePacMan.tf.centerX(width());
 					})
 					
 				.state(WAITING_FOR_INPUT)
 					.timeoutAfter(sec(10))
 					.onEntry(() -> {
 						ghostPointsAnimation.tf.setY(200);
-						ghostPointsAnimation.tf.centerX(width);
+						ghostPointsAnimation.tf.centerX(width());
 						ghostPointsAnimation.start();
 						gitHubLink.show();
 					})
@@ -202,7 +202,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 	@Override
 	public void draw(Graphics2D g) {
 		g.setColor(new Color(0, 23, 61));
-		g.fillRect(0, 0, width, height);
+		g.fillRect(0, 0, width(), height());
 
 		// use colors from logo image
 		Color orange = new Color(255, 163, 71);
@@ -224,18 +224,20 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 				if (app().clock.getTicks() % sec(1) < sec(0.5f)) {
 					pen.color(Color.WHITE);
 					pen.fontSize(14);
-					pen.hcenter("Press SPACE to start!", width, 18);
+					pen.hcenter("Press SPACE to start!", width(), 18);
 				}
 				pen.color(orange);
 				pen.fontSize(10);
-				pen.hcenter("F11 - Fullscreen Mode", width, 22);
-				int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock.getFrequency()) + 1;
+				pen.hcenter("F11 - Fullscreen Mode", width(), 22);
+				int selectedSpeed = Arrays
+						.asList(PacManGame.SPEED_1_FPS, PacManGame.SPEED_2_FPS, PacManGame.SPEED_3_FPS)
+						.indexOf(app().clock.getFrequency()) + 1;
 				pen.color(selectedSpeed == 1 ? orange : red);
-				pen.draw("1 - Normal", 1, 31);
+				pen.drawAtTilePosition(1, 31, "1 - Normal");
 				pen.color(selectedSpeed == 2 ? orange : red);
-				pen.draw("2 - Fast", 11, 31);
+				pen.drawAtTilePosition(11, 31, "2 - Fast");
 				pen.color(selectedSpeed == 3 ? orange : red);
-				pen.draw("3 - Insane", 19, 31);
+				pen.drawAtTilePosition(19, 31, "3 - Insane");
 				pacManLogo.draw(g);
 				chasePacMan.draw(g);
 				ghostPointsAnimation.draw(g);

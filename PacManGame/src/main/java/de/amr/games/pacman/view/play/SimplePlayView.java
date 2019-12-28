@@ -64,6 +64,8 @@ public class SimplePlayView extends AbstractPacManGameView {
 
 	@Override
 	public void init() {
+		fpsView.tf.setPosition(0, 17 * Tile.SIZE);
+		fpsView.hide();
 		showScores(true);
 		stopEnergizerBlinking();
 		stopMazeFlashing();
@@ -143,13 +145,14 @@ public class SimplePlayView extends AbstractPacManGameView {
 
 	protected void fillBackground(Graphics2D g) {
 		g.setColor(theme().color_mazeBackground());
-		g.fillRect(0, 0, width, height);
+		g.fillRect(0, 0, width(), height());
 	}
 
 	protected void drawMaze(Graphics2D g) {
 		if (mazeFlashing) {
 			drawFlashingMaze(g);
-		} else {
+		}
+		else {
 			drawNormalMaze(g);
 		}
 	}
@@ -196,8 +199,10 @@ public class SimplePlayView extends AbstractPacManGameView {
 			cast.pacMan.draw(g);
 		}
 		// draw dead ghosts (numbers) before living ghosts
-		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
-		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> !ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> ghost.is(DEAD))
+				.forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> !ghost.is(DEAD))
+				.forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {
@@ -208,21 +213,21 @@ public class SimplePlayView extends AbstractPacManGameView {
 			pen.font(theme().fnt_text(10));
 			// Game score
 			pen.color(Color.YELLOW);
-			pen.draw("SCORE", 1, 0);
-			pen.draw(String.format("LEVEL%2d", game().level().number), 22, 0);
+			pen.drawAtTilePosition(1, 0, "SCORE");
+			pen.drawAtTilePosition(22, 0, String.format("LEVEL%2d", game().level().number));
 			pen.color(Color.WHITE);
-			pen.draw(String.format("%07d", game().score), 1, 1);
+			pen.drawAtTilePosition(1, 1, String.format("%07d", game().score));
 			// Highscore
 			pen.color(Color.YELLOW);
-			pen.draw("HIGHSCORE", 10, 0);
+			pen.drawAtTilePosition(10, 0, "HIGHSCORE");
 			pen.color(Color.WHITE);
-			pen.draw(String.format("%07d", game().hiscore().points), 10, 1);
-			pen.draw(String.format("L%d", game().hiscore().levelNumber), 16, 1);
+			pen.drawAtTilePosition(10, 1, String.format("%07d", game().hiscore().points));
+			pen.drawAtTilePosition(16, 1, String.format("L%d", game().hiscore().levelNumber));
 			// Number of remaining pellets
 			g.setColor(Color.PINK);
 			g.fillRect(22 * Tile.SIZE + 2, Tile.SIZE + 2, 4, 3);
 			pen.color(Color.WHITE);
-			pen.draw(String.format("%03d", game().numPelletsRemaining()), 23, 1);
+			pen.drawAtTilePosition(23, 1, String.format("%03d", game().numPelletsRemaining()));
 		}
 		drawLives(g);
 		drawLevelCounter(g);
@@ -231,16 +236,16 @@ public class SimplePlayView extends AbstractPacManGameView {
 	protected void drawLives(Graphics2D g) {
 		int imageSize = 2 * Tile.SIZE;
 		for (int i = 0, x = imageSize; i < game().lives; ++i, x += imageSize) {
-			g.drawImage(lifeImage, x, height - imageSize, null);
+			g.drawImage(lifeImage, x, height() - imageSize, null);
 		}
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
 		int imageSize = 2 * Tile.SIZE;
-		int x = width - (game().levelSymbols().size() + 1) * imageSize;
+		int x = width() - (game().levelSymbols().size() + 1) * imageSize;
 		for (BonusSymbol symbol : game().levelSymbols()) {
 			Image image = theme().spr_bonusSymbol(symbol).frame(0);
-			g.drawImage(image, x, height - imageSize, imageSize, imageSize, null);
+			g.drawImage(image, x, height() - imageSize, imageSize, imageSize, null);
 			x += imageSize;
 		}
 	}
@@ -250,7 +255,7 @@ public class SimplePlayView extends AbstractPacManGameView {
 			try (Pen pen = new Pen(g)) {
 				pen.font(theme().fnt_text(11));
 				pen.color(messageColor);
-				pen.hcenter(messageText, width, 21);
+				pen.hcenter(messageText, width(), 21);
 			}
 		}
 	}

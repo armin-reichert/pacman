@@ -98,7 +98,7 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 			pen.fontSize(8);
 			for (int i = 0; i < targets.size(); ++i) {
 				Tile target = targets.get(i);
-				pen.draw("" + i, target.col, target.row);
+				pen.drawAtTilePosition(target.col, target.row, "" + i);
 			}
 		}
 	}
