@@ -81,7 +81,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		return Optional.ofNullable(cast);
 	}
 
-	public Optional<GhostHouse> doorMan() {
+	public Optional<GhostHouse> ghostHouse() {
 		return Optional.ofNullable(ghostHouse);
 	}
 
