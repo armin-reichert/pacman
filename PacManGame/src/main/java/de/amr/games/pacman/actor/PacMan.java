@@ -48,7 +48,6 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 	private boolean kicking;
 	private boolean tired;
 	private int digestionTicks;
-	private int starvingTicks;
 
 	public PacMan(PacManGameCast cast) {
 		super("Pac-Man");
@@ -93,7 +92,7 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 					.onEntry(() -> {
 						kicking = tired = false;
 						digestionTicks = 0;
-						clearStarvingTime();
+						game().clearPacManStarvingTime();
 						placeHalfRightOf(maze().pacManHome);
 						setMoveDir(RIGHT);
 						setNextDir(RIGHT);
@@ -138,7 +137,7 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 					.onEntry(() -> {
 						kicking = tired = false;
 						digestionTicks = 0;
-						clearStarvingTime();
+						game().clearPacManStarvingTime();
 					})
 
 			.transitions()
@@ -230,14 +229,6 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 		return super.canMoveBetween(tile, neighbor);
 	}
 
-	public int starvingTime() {
-		return starvingTicks;
-	}
-
-	public void clearStarvingTime() {
-		starvingTicks = -1;
-	}
-
 	private Optional<PacManGameEvent> inspect(Tile tile) {
 		if (tile == maze().bonusTile) {
 			Optional<PacManGameEvent> activeBonusFound = cast.bonus().filter(bonus -> bonus.is(ACTIVE))
@@ -247,7 +238,7 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 			}
 		}
 		if (tile.containsFood()) {
-			starvingTicks = 0;
+			game().pacManStarvingTicks = 0;
 			if (tile.containsEnergizer()) {
 				digestionTicks = DIGEST_ENERGIZER_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, true));
@@ -256,7 +247,7 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 				return Optional.of(new FoodFoundEvent(tile, false));
 			}
 		}
-		++starvingTicks;
+		++game().pacManStarvingTicks;
 		return Optional.empty();
 	}
 }

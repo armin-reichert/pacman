@@ -83,12 +83,15 @@ public class PacManGame {
 	private final Deque<BonusSymbol> levelSymbols = new ArrayDeque<>(7);
 	private final Hiscore hiscore = new Hiscore();
 	private PacManGameLevel level;
+	
 	public int lives;
 	public int score;
+	public int pacManStarvingTicks;
 
 	public void init() {
 		lives = 3;
 		score = 0;
+		pacManStarvingTicks = 0;
 		hiscore.load(hiscoreFile);
 		levelSymbols.clear();
 		enterLevel(1);
@@ -175,5 +178,9 @@ public class PacManGame {
 		}
 		LOGGER.info(() -> String.format("Scored %d points for killing %s (%s ghost in sequence)", points, ghostName,
 				new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]));
+	}
+
+	public void clearPacManStarvingTime() {
+		pacManStarvingTicks = -1;
 	}
 }

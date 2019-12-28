@@ -135,7 +135,6 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 			
 				.when(LOCKED).then(LEAVING_HOUSE)
 					.on(GhostUnlockedEvent.class)
-					.act(() -> cast.pacMan.clearStarvingTime())
 			
 				.when(LEAVING_HOUSE).then(SCATTERING)
 					.condition(() -> hasLeftTheHouse() && nextState == SCATTERING)
