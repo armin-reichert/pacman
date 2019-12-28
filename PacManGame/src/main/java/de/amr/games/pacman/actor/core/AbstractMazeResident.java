@@ -30,16 +30,6 @@ public abstract class AbstractMazeResident extends Entity implements MazeResiden
 	}
 
 	@Override
-	public int centerX() {
-		return tf.getCenter().roundedX();
-	}
-
-	@Override
-	public int centerY() {
-		return tf.getCenter().roundedY();
-	}
-
-	@Override
 	public void placeAt(Tile tile, byte xOffset, byte yOffset) {
 		tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
 	}

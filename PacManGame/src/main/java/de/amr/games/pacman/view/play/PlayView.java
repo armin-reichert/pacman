@@ -351,7 +351,7 @@ public class PlayView extends SimplePlayView {
 		boolean drawRubberBand = target != null && pathLen > 0 && target != ghost.targetPath().get(pathLen - 1);
 		if (drawRubberBand) {
 			// draw rubber band to target tile
-			int x1 = ghost.centerX(), y1 = ghost.centerY();
+			int x1 = ghost.tf.getCenter().roundedX(), y1 = ghost.tf.getCenter().roundedY();
 			int x2 = target.centerX(), y2 = target.centerY();
 			g.setStroke(dashed);
 			g.setColor(dimmed(ghostColor, 200));
@@ -377,7 +377,7 @@ public class PlayView extends SimplePlayView {
 		} else if (ghost.nextDir() != null) {
 			// draw direction indicator
 			Direction nextDir = ghost.nextDir();
-			int x = ghost.centerX(), y = ghost.centerY();
+			int x = ghost.tf.getCenter().roundedX(), y = ghost.tf.getCenter().roundedY();
 			g.setColor(ghostColor);
 			drawArrowHead(g, nextDir, x + nextDir.dx * Tile.SIZE, y + nextDir.dy * Tile.SIZE);
 		}

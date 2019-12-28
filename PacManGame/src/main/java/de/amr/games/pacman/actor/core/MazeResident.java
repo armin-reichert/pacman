@@ -37,16 +37,6 @@ public interface MazeResident extends Lifecycle {
 	Tile tile();
 
 	/**
-	 * @return x-coordinate of tile center
-	 */
-	int centerX();
-
-	/**
-	 * @return y-coordinate of tile center
-	 */
-	int centerY();
-
-	/**
 	 * Places this maze resident at the given tile, optionally with some offset.
 	 * 
 	 * @param tile    the tile where this maze mover is placed

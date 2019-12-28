@@ -173,8 +173,8 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 	@Override
 	public void draw(Graphics2D g) {
 		sprites.current().ifPresent(sprite -> {
-			float dx = centerX() - sprite.getWidth() / 2;
-			float dy = centerY() - sprite.getHeight() / 2;
+			float dx = tf.getCenter().x - sprite.getWidth() / 2;
+			float dy = tf.getCenter().y - sprite.getHeight() / 2;
 			sprite.draw(g, dx, dy);
 		});
 	}
@@ -204,14 +204,14 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 	}
 
 	/**
-	 * NOTE: If the application property <code>PacMan.overflowBug</code> is <code>true</code>, this
-	 * method simulates the bug in the original Arcade game which occurs if Pac-Man points upwards. In
-	 * that case the same number of tiles to the left is added.
+	 * NOTE: If the application property <code>PacMan.overflowBug</code> is
+	 * <code>true</code>, this method simulates the bug in the original Arcade game
+	 * which occurs if Pac-Man points upwards. In that case the same number of tiles
+	 * to the left is added.
 	 * 
-	 * @param numTiles
-	 *                   number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move
-	 *         direction.
+	 * @param numTiles number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor
+	 *         towards his current move direction.
 	 */
 	@Override
 	public Tile tilesAhead(int numTiles) {
@@ -251,8 +251,7 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 			if (tile.containsEnergizer()) {
 				digestionTicks = DIGEST_ENERGIZER_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, true));
-			}
-			else {
+			} else {
 				digestionTicks = DIGEST_PELLET_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, false));
 			}
