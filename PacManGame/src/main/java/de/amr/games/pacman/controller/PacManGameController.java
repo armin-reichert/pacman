@@ -38,6 +38,7 @@ import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
+import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.PacManGame;
@@ -54,7 +55,8 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
+public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
+		implements VisualController {
 
 	private PacManGame game;
 	private PacManTheme theme;
@@ -298,13 +300,15 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 					.on(PacManLostPowerEvent.class)
 					.act(playingState()::onPacManLostPower)
 			
-				.when(PLAYING).then(GHOST_DYING)
-					.on(GhostKilledEvent.class)
-					.act(playingState()::onGhostKilled)
-					
-				.when(PLAYING).then(PACMAN_DYING)
+				.stay(PLAYING)
+					.on(PacManGhostCollisionEvent.class)
+					.act(playingState()::onPacManGhostCollision)
+			
+				.when(PLAYING).then(PACMAN_DYING)	
 					.on(PacManKilledEvent.class)
-					.act(playingState()::onPacManKilled)
+
+				.when(PLAYING).then(GHOST_DYING)	
+					.on(GhostKilledEvent.class)
 					
 				.when(PLAYING).then(CHANGING_LEVEL)
 					.on(LevelCompletedEvent.class)
@@ -363,17 +367,6 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			}
 		}
 
-		private void onPacManKilled(PacManGameEvent event) {
-			PacManKilledEvent pacManKilled = (PacManKilledEvent) event;
-			ghostHouse.enableAndResetGlobalDotCounter();
-			cast.pacMan.process(pacManKilled);
-			stopSoundEffects();
-			stopMusicPlaying();
-			playView.stopEnergizerBlinking();
-			LOGGER.info(
-					() -> String.format("Pac-Man killed by %s at %s", pacManKilled.killer.name(), pacManKilled.killer.tile()));
-		}
-
 		private void onPacManGainsPower(PacManGameEvent event) {
 			ghostCommand.suspend();
 			cast.actorsOnStage().forEach(actor -> actor.process(event));
@@ -383,16 +376,33 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			ghostCommand.resume();
 		}
 
-		private void onGhostKilled(PacManGameEvent event) {
-			GhostKilledEvent killed = (GhostKilledEvent) event;
-			LOGGER.info(() -> String.format("Ghost %s killed at %s", killed.ghost.name(), killed.ghost.tile()));
-			int livesBefore = game.lives;
-			game.scoreKilledGhost(killed.ghost.name());
-			if (game.lives > livesBefore) {
-				playSoundExtraLife();
+		private void onPacManGhostCollision(PacManGameEvent event) {
+			if (!cast.pacMan.is(PacManState.ALIVE)) {
+				return;
 			}
-			playSoundGhostEaten();
-			killed.ghost.process(event);
+			PacManGhostCollisionEvent collision = (PacManGhostCollisionEvent) event;
+			if (!collision.ghost.is(GhostState.FRIGHTENED)) {
+				LOGGER.info(() -> String.format("Pac-Man killed by %s at %s", collision.ghost.name(),
+						collision.ghost.tile()));
+				ghostHouse.enableAndResetGlobalDotCounter();
+				stopSoundEffects();
+				stopMusicPlaying();
+				playView.stopEnergizerBlinking();
+				cast.pacMan.process(new PacManKilledEvent(collision.ghost));
+				enqueue(new PacManKilledEvent(collision.ghost));
+			}
+			else {
+				LOGGER.info(
+						() -> String.format("Ghost %s killed at %s", collision.ghost.name(), collision.ghost.tile()));
+				int livesBefore = game.lives;
+				game.scoreKilledGhost(collision.ghost.name());
+				if (game.lives > livesBefore) {
+					playSoundExtraLife();
+				}
+				playSoundGhostEaten();
+				collision.ghost.process(new GhostKilledEvent(collision.ghost));
+				enqueue(new GhostKilledEvent(collision.ghost));
+			}
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
@@ -428,7 +438,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (game.isBonusScoreReached()) {
 				cast.addBonus();
 				cast.bonus().ifPresent(bonus -> {
-					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus, bonus.state().getDuration() / 60f));
+					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus,
+							bonus.state().getDuration() / 60f));
 				});
 			}
 			if (foodFound.energizer) {
@@ -460,7 +471,8 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				app().settings.set("Ghost.fleeRandomly", false);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isFleeingToSafeCornerFrom(cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
-			} else {
+			}
+			else {
 				app().settings.set("Ghost.fleeRandomly", true);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack()));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");

@@ -33,6 +33,7 @@ import de.amr.games.pacman.model.Timing;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
+import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
  * The one and only.
@@ -56,6 +57,7 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 		tf.setHeight(Tile.SIZE);
 		brain = buildBrain();
 		brain.fsm().traceTo(FSM_LOGGER, () -> Timing.FPS);
+		brain.fsm().setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
 		brain.doNotLog(event -> event instanceof FoodFoundEvent && !((FoodFoundEvent) event).energizer);
 	}
 

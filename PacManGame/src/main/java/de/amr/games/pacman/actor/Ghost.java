@@ -25,7 +25,7 @@ import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.controller.event.PacManKilledEvent;
+import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
@@ -276,9 +276,9 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 	}
 
 	private void handlePacManCollision() {
-		if (!isTeleporting() && !cast.pacMan.isTeleporting()) {
+		if (!isTeleporting() && !cast.pacMan.isTeleporting() && cast.pacMan.is(PacManState.ALIVE)) {
 			if (tile().equals(cast.pacMan.tile())) {
-				publish(is(FRIGHTENED) ? new GhostKilledEvent(this) : new PacManKilledEvent(this));
+				publish(new PacManGhostCollisionEvent(this));
 			}
 		}
 	}
