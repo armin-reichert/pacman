@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.PacManGame;
@@ -31,20 +30,14 @@ public class GhostHouse implements Lifecycle {
 		LOGGER.setLevel(Level.INFO);
 	}
 
+	private final PacManGameCast cast;
 	private final PacManGame game;
-	private final PacMan pacMan;
-	private final Ghost blinky, pinky, inky, clyde;
-
 	private boolean globalDotCounterEnabled;
 	private int globalDotCounter;
 
 	public GhostHouse(PacManGameCast cast) {
+		this.cast = cast;
 		game = cast.game();
-		pacMan = cast.pacMan;
-		blinky = cast.blinky;
-		pinky = cast.pinky;
-		inky = cast.inky;
-		clyde = cast.clyde;
 	}
 
 	@Override
@@ -56,42 +49,42 @@ public class GhostHouse implements Lifecycle {
 
 	@Override
 	public void update() {
-		nextGhostToLeave().filter(this::canLeave).ifPresent(ghost -> {
+		nextCandidate().filter(this::canLeave).ifPresent(ghost -> {
 			ghost.process(new GhostUnlockedEvent());
 		});
 	}
 
-	public Optional<Ghost> nextGhostToLeave() {
-		return Stream.of(blinky, pinky, inky, clyde).filter(ghost -> ghost.is(LOCKED)).findFirst();
+	public Optional<Ghost> nextCandidate() {
+		return Stream.of(cast.blinky, cast.pinky, cast.inky, cast.clyde).filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
 	private int ghostDotLimit(Ghost ghost) {
-		if (ghost == pinky) {
+		if (ghost == cast.blinky || ghost == cast.pinky) {
 			return 0;
 		}
-		if (ghost == inky) {
+		if (ghost == cast.inky) {
 			return game.level().number == 1 ? 30 : 0;
 		}
-		if (ghost == clyde) {
+		if (ghost == cast.clyde) {
 			return game.level().number == 1 ? 60 : game.level().number == 2 ? 50 : 0;
 		}
-		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");
+		throw new IllegalArgumentException("Ghost must be either Blinky, Pinky, Inky or Clyde");
 	}
 
 	private int globalDotLimit(Ghost ghost) {
-		return (ghost == pinky) ? 7 : (ghost == inky) ? 17 : (ghost == clyde) ? 32 : 0;
+		return (ghost == cast.pinky) ? 7 : (ghost == cast.inky) ? 17 : (ghost == cast.clyde) ? 32 : 0;
 	}
 
 	public void updateDotCounters() {
 		if (globalDotCounterEnabled) {
 			globalDotCounter++;
 			LOGGER.info(() -> String.format("Global dot counter: %d", globalDotCounter));
-			if (globalDotCounter == 32 && clyde.is(LOCKED)) {
+			if (globalDotCounter == 32 && cast.clyde.is(LOCKED)) {
 				disableGlobalDotCounter();
 				LOGGER.info(() -> "Global dot counter disabled");
 			}
 		} else {
-			nextGhostToLeave().ifPresent(ghost -> {
+			nextCandidate().ifPresent(ghost -> {
 				ghost.dotCounter++;
 				LOGGER.info(() -> String.format("%s's dot counter: %d", ghost.name(), ghost.dotCounter));
 			});
@@ -108,13 +101,6 @@ public class GhostHouse implements Lifecycle {
 	 *      Dossier</a>
 	 */
 	private boolean canLeave(Ghost ghost) {
-		if (ghost == blinky) {
-			return true;
-		}
-		Optional<Ghost> ghostToRelease = nextGhostToLeave();
-		if (!ghostToRelease.isPresent() || ghostToRelease.get() != ghost) {
-			return false;
-		}
 		int pacManStarvingTimeLimit = game.level().number < 5 ? sec(4) : sec(3);
 		if (globalDotCounterEnabled) {
 			int globalDotLimit = globalDotLimit(ghost);
@@ -123,7 +109,7 @@ public class GhostHouse implements Lifecycle {
 						() -> String.format("%s can leave house: global dot limit (%d) reached", ghost.name(), globalDotLimit));
 				return true;
 			}
-			if (pacMan.starvingTime() > pacManStarvingTimeLimit) {
+			if (cast.pacMan.starvingTime() > pacManStarvingTimeLimit) {
 				LOGGER.info(() -> String.format("%s can leave house: Pac-Man's starving time limit reached (%d ticks)",
 						ghost.name(), pacManStarvingTimeLimit));
 				return true;
@@ -136,7 +122,7 @@ public class GhostHouse implements Lifecycle {
 					.info(() -> String.format("%s can leave house: ghost's dot limit (%d) reached", ghost.name(), ghostDotLimit));
 			return true;
 		}
-		if (pacMan.starvingTime() > pacManStarvingTimeLimit) {
+		if (cast.pacMan.starvingTime() > pacManStarvingTimeLimit) {
 			LOGGER.info(() -> String.format("%s can leave house: Pac-Man's starving time limit reached (%d ticks)",
 					ghost.name(), pacManStarvingTimeLimit));
 			return true;
@@ -165,7 +151,7 @@ public class GhostHouse implements Lifecycle {
 	}
 
 	public void resetGhostDotCounters() {
-		pinky.dotCounter = inky.dotCounter = clyde.dotCounter = 0;
+		cast.pinky.dotCounter = cast.inky.dotCounter = cast.clyde.dotCounter = 0;
 		LOGGER.info(() -> "Ghost dot counters set to zero");
 	}
 

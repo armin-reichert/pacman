@@ -424,7 +424,7 @@ public class PlayView extends SimplePlayView {
 		if (ghostHouse == null) {
 			return; // test scenes etc.
 		}
-		Ghost preferredGhost = ghostHouse.nextGhostToLeave().orElse(null);
+		Ghost preferredGhost = ghostHouse.nextCandidate().orElse(null);
 		drawDotCounter(g, pinkyImage, cast.pinky.dotCounter, 1, 14,
 				!ghostHouse.isGlobalDotCounterEnabled() && preferredGhost == cast.pinky);
 		drawDotCounter(g, clydeImage, cast.clyde.dotCounter, 1, 20,
