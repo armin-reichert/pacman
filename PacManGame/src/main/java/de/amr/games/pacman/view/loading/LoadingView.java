@@ -21,12 +21,16 @@ public class LoadingView extends AbstractPacManGameView {
 	public LoadingView(PacManTheme theme) {
 		this.theme = theme;
 	}
-	
+
 	@Override
-		public void init() {
-			super.init();
-			
-		}
+	public PacManTheme theme() {
+		return theme;
+	}
+
+	@Override
+	public void onThemeChanged(PacManTheme theme) {
+		this.theme = theme;
+	}
 
 	@Override
 	public void draw(Graphics2D g) {
@@ -35,7 +39,8 @@ public class LoadingView extends AbstractPacManGameView {
 			if (alpha > 160) {
 				alphaInc = -2;
 				alpha = 160;
-			} else if (alpha < 0) {
+			}
+			else if (alpha < 0) {
 				alphaInc = 2;
 				alpha = 0;
 			}
@@ -45,14 +50,5 @@ public class LoadingView extends AbstractPacManGameView {
 			alpha += alphaInc;
 		}
 		fpsView.draw(g);
-	}
-
-	@Override
-	public PacManTheme theme() {
-		return theme;
-	}
-
-	@Override
-	public void updateTheme(PacManTheme theme) {
 	}
 }

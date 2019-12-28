@@ -81,7 +81,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 	}
 
 	@Override
-	public void updateTheme(PacManTheme theme) {
+	public void onThemeChanged(PacManTheme theme) {
 	}
 
 	@Override

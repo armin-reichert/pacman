@@ -42,7 +42,7 @@ public class SimplePlayView extends AbstractPacManGameView {
 		cast.addThemeListener(this);
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
-		updateTheme(theme());
+		onThemeChanged(theme());
 	}
 
 	public PacManGameCast cast() {
@@ -81,7 +81,7 @@ public class SimplePlayView extends AbstractPacManGameView {
 	}
 
 	@Override
-	public void updateTheme(PacManTheme theme) {
+	public void onThemeChanged(PacManTheme theme) {
 		lifeImage = theme.spr_pacManWalking(3).frame(1);
 		fullMazeSprite = theme.spr_fullMaze();
 		flashingMazeSprite = theme.spr_flashingMaze();

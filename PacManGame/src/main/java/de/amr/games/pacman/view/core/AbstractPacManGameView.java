@@ -26,7 +26,7 @@ public abstract class AbstractPacManGameView implements View, Lifecycle, Propert
 
 	public abstract PacManTheme theme();
 
-	public abstract void updateTheme(PacManTheme theme);
+	public abstract void onThemeChanged(PacManTheme theme);
 
 	public int width() {
 		return app().settings.width;
@@ -40,7 +40,7 @@ public abstract class AbstractPacManGameView implements View, Lifecycle, Propert
 	public void propertyChange(PropertyChangeEvent e) {
 		if ("theme".equals(e.getPropertyName())) {
 			PacManTheme newTheme = (PacManTheme) e.getNewValue();
-			updateTheme(newTheme);
+			onThemeChanged(newTheme);
 		}
 	}
 
