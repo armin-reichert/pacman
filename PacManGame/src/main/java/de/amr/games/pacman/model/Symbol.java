@@ -1,8 +1,8 @@
 package de.amr.games.pacman.model;
 
 /**
- * Bonus symbols in sprite sheet order.
+ * Symbols in sprite sheet order.
  */
-public enum BonusSymbol {
+public enum Symbol {
 	CHERRIES, STRAWBERRY, PEACH, APPLE, GRAPES, GALAXIAN, BELL, KEY;
 }

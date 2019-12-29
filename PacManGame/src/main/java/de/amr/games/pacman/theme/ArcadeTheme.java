@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.model.BonusSymbol;
+import de.amr.games.pacman.model.Symbol;
 
 /**
  * Theme based on original(?) sprites.
@@ -71,7 +71,7 @@ public class ArcadeTheme implements Theme {
 	private final BufferedImage ghostEyes[];
 	private final BufferedImage greenNumbers[];
 	private final BufferedImage pinkNumbers[];
-	private final Map<BonusSymbol, BufferedImage> symbolMap = new HashMap<>();
+	private final Map<Symbol, BufferedImage> symbolMap = new HashMap<>();
 
 	private BufferedImage $(int x, int y, int w, int h) {
 		return sheet.getSubimage(x, y, w, h);
@@ -95,7 +95,7 @@ public class ArcadeTheme implements Theme {
 		mazeWhite = changeColor(mazeEmpty, blue, Color.WHITE.getRGB());
 
 		// Symbols for bonuses
-		BonusSymbol[] symbols = BonusSymbol.values();
+		Symbol[] symbols = Symbol.values();
 		BufferedImage[] symbolImages = hstrip(8, 32, 48);
 		for (int i = 0; i < 8; ++i) {
 			symbolMap.put(symbols[i], symbolImages[i]);
@@ -164,7 +164,7 @@ public class ArcadeTheme implements Theme {
 	}
 
 	@Override
-	public Sprite spr_bonusSymbol(BonusSymbol symbol) {
+	public Sprite spr_bonusSymbol(Symbol symbol) {
 		return Sprite.of(symbolMap.get(symbol));
 	}
 

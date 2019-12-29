@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.model.BonusSymbol;
+import de.amr.games.pacman.model.Symbol;
 
 public interface Theme {
 
@@ -18,7 +18,7 @@ public interface Theme {
 
 	Sprite spr_flashingMaze();
 
-	Sprite spr_bonusSymbol(BonusSymbol symbol);
+	Sprite spr_bonusSymbol(Symbol symbol);
 
 	Sprite spr_pacManFull();
 

@@ -1,14 +1,14 @@
 package de.amr.games.pacman.model;
 
 import static de.amr.easy.game.Application.LOGGER;
-import static de.amr.games.pacman.model.BonusSymbol.APPLE;
-import static de.amr.games.pacman.model.BonusSymbol.BELL;
-import static de.amr.games.pacman.model.BonusSymbol.CHERRIES;
-import static de.amr.games.pacman.model.BonusSymbol.GALAXIAN;
-import static de.amr.games.pacman.model.BonusSymbol.GRAPES;
-import static de.amr.games.pacman.model.BonusSymbol.KEY;
-import static de.amr.games.pacman.model.BonusSymbol.PEACH;
-import static de.amr.games.pacman.model.BonusSymbol.STRAWBERRY;
+import static de.amr.games.pacman.model.Symbol.APPLE;
+import static de.amr.games.pacman.model.Symbol.BELL;
+import static de.amr.games.pacman.model.Symbol.CHERRIES;
+import static de.amr.games.pacman.model.Symbol.GALAXIAN;
+import static de.amr.games.pacman.model.Symbol.GRAPES;
+import static de.amr.games.pacman.model.Symbol.KEY;
+import static de.amr.games.pacman.model.Symbol.PEACH;
+import static de.amr.games.pacman.model.Symbol.STRAWBERRY;
 
 import java.io.File;
 import java.util.ArrayDeque;
@@ -80,7 +80,7 @@ public class Game {
 	};
 
 	private final Maze maze = new Maze();
-	private final Deque<BonusSymbol> levelSymbols = new ArrayDeque<>(7);
+	private final Deque<Symbol> levelSymbols = new ArrayDeque<>(7);
 	private final Hiscore hiscore = new Hiscore();
 	private GameLevel level;
 
@@ -124,7 +124,7 @@ public class Game {
 		return level;
 	}
 
-	public Collection<BonusSymbol> levelSymbols() {
+	public Collection<Symbol> levelSymbols() {
 		return Collections.unmodifiableCollection(levelSymbols);
 	}
 

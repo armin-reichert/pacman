@@ -12,7 +12,7 @@ import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.model.BonusSymbol;
+import de.amr.games.pacman.model.Symbol;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
@@ -240,7 +240,7 @@ public class SimplePlayView extends PacManGameView {
 	protected void drawLevelCounter(Graphics2D g) {
 		int imageSize = 2 * Tile.SIZE;
 		int x = width() - (game().levelSymbols().size() + 1) * imageSize;
-		for (BonusSymbol symbol : game().levelSymbols()) {
+		for (Symbol symbol : game().levelSymbols()) {
 			Image image = theme().spr_bonusSymbol(symbol).frame(0);
 			g.drawImage(image, x, height() - imageSize, imageSize, imageSize, null);
 			x += imageSize;

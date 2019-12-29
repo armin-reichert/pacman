@@ -14,8 +14,8 @@ import de.amr.games.pacman.actor.core.AbstractMazeResident;
 import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Symbol;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.core.StateMachine;
 
@@ -31,8 +31,8 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 	private final SpriteMap sprites = new SpriteMap();
 	private final Cast cast;
 	private final FsmComponent<BonusState, PacManGameEvent> brain;
-	public final BonusSymbol symbol;
-	public final int value;
+	private final Symbol symbol;
+	private final int value;
 
 	public Bonus(Cast cast) {
 		super("Bonus");
@@ -44,6 +44,14 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 		brain.fsm().traceTo(Game.FSM_LOGGER, () -> 60);
 		sprites.set("symbol", cast.theme().spr_bonusSymbol(symbol));
 		sprites.set("number", cast.theme().spr_pinkNumber(binarySearch(Game.POINTS_BONUS, value)));
+	}
+
+	public Symbol symbol() {
+		return symbol;
+	}
+
+	public int value() {
+		return value;
 	}
 
 	@Override

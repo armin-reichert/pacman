@@ -233,7 +233,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	private Optional<PacManGameEvent> inspect(Tile tile) {
 		if (tile == maze().bonusTile) {
 			Optional<PacManGameEvent> activeBonusFound = cast.bonus().filter(bonus -> bonus.is(ACTIVE))
-					.map(bonus -> new BonusFoundEvent(bonus.symbol, bonus.value));
+					.map(bonus -> new BonusFoundEvent(bonus.symbol(), bonus.value()));
 			if (activeBonusFound.isPresent()) {
 				return activeBonusFound;
 			}
