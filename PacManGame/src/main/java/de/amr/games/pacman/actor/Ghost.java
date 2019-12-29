@@ -77,7 +77,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 						placeHalfRightOf(myHomeTile());
 						enteredNewTile();
 						setMoveDir(eyes);
-						setNextDir(eyes);
+						setWishDir(eyes);
 						sprites.select("color-" + moveDir());
 						sprites.forEach(Sprite::resetAnimation);
 					})
@@ -88,10 +88,10 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 					
 				.state(LEAVING_HOUSE)
 					.onTick(() -> makeStepAndDisplayAs("color-" + moveDir()))
-					.onExit(() -> setNextDir(Direction.LEFT))
+					.onExit(() -> setWishDir(Direction.LEFT))
 				
 				.state(ENTERING_HOUSE)
-					.onEntry(() -> setNextDir(Direction.DOWN))
+					.onEntry(() -> setWishDir(Direction.DOWN))
 					.onTick(() -> makeStepAndDisplayAs("eyes-" + moveDir()))
 				
 				.state(SCATTERING)
@@ -142,7 +142,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 					.condition(() -> hasLeftTheHouse() && nextState == CHASING)
 					
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
-					.condition(() -> nextDir() == null)
+					.condition(() -> wishDir() == null)
 				
 				.when(CHASING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)

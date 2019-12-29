@@ -28,7 +28,7 @@ public class MovingRandomlyWithoutTurningBack<T extends MazeMover> implements St
 				.filter(dir -> dir != actor.moveDir().opposite())
 				.filter(actor::canCrossBorderTo)
 				.findFirst()
-				.ifPresent(actor::setNextDir);
+				.ifPresent(actor::setWishDir);
 			/*@formatter:on*/
 		}
 	}

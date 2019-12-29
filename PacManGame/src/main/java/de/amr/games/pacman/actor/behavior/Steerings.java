@@ -38,7 +38,7 @@ public interface Steerings {
 		return actor -> Direction.dirs()
 				.filter(dir -> Keyboard.keyDown(keys[dir.ordinal()]))
 				.findAny()
-				.ifPresent(actor::setNextDir);
+				.ifPresent(actor::setWishDir);
 		/*@formatter:on*/
 	}
 

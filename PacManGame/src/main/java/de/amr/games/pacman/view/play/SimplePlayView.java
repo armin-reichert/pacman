@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.Arrays;
 
-import de.amr.easy.game.ui.sprites.Animation;
+import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.actor.Cast;
@@ -27,7 +27,7 @@ import de.amr.games.pacman.view.core.Pen;
  */
 public class SimplePlayView extends PacManGameView {
 
-	protected Animation energizerBlinking;
+	protected SpriteAnimation energizerBlinking;
 	protected boolean mazeFlashing;
 	protected Image lifeImage;
 	protected Sprite fullMazeSprite;

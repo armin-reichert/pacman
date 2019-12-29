@@ -22,9 +22,9 @@ public class JumpingUpAndDown implements Steering<Ghost> {
 	public void steer(Ghost ghost) {
 		float dy = ghost.tf.getPosition().y - placeY;
 		if (dy < -4) {
-			ghost.setNextDir(Direction.DOWN);
+			ghost.setWishDir(Direction.DOWN);
 		} else if (dy > 3) {
-			ghost.setNextDir(Direction.UP);
+			ghost.setWishDir(Direction.UP);
 		}
 	}
 

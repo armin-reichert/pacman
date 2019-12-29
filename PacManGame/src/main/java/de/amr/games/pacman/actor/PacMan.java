@@ -96,7 +96,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 						state().setConstantTimer(State.ENDLESS);
 						placeHalfRightOf(maze().pacManHome);
 						setMoveDir(RIGHT);
-						setNextDir(RIGHT);
+						setWishDir(RIGHT);
 						sprites.forEach(Sprite::resetAnimation);
 						sprites.select("full");
 						show();

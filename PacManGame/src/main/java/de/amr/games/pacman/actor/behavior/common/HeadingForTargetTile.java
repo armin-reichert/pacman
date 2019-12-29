@@ -51,7 +51,7 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 		Tile targetTile = fnTargetTile.get();
 		if (targetTile != null && actor.enteredNewTile()) {
 			Direction nextDir = nextDir(actor, actor.moveDir(), actor.tile(), targetTile);
-			actor.setNextDir(nextDir);
+			actor.setWishDir(nextDir);
 			actor.setTargetTile(targetTile);
 			actor.setTargetPath(actor.requireTargetPath() ? pathToTargetTile(actor, targetTile) : emptyList());
 		}

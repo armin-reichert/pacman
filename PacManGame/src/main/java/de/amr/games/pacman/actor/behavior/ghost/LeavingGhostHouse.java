@@ -33,13 +33,13 @@ public class LeavingGhostHouse implements Steering<Ghost> {
 		int targetY = maze.ghostHouseSeats[0].y();
 		if (aboutEqual(1, ghost.tf.getX(), targetX)) {
 			ghost.tf.setX(targetX);
-			ghost.setNextDir(Direction.UP);
+			ghost.setWishDir(Direction.UP);
 		} else if (ghost.tf.getX() < targetX) {
-			ghost.setNextDir(Direction.RIGHT);
+			ghost.setWishDir(Direction.RIGHT);
 		} else if (ghost.tf.getX() > targetX) {
-			ghost.setNextDir(Direction.LEFT);
+			ghost.setWishDir(Direction.LEFT);
 		} else if (ghost.tf.getY() <= targetY) {
-			ghost.setNextDir(null); // got out
+			ghost.setWishDir(null); // got out
 		}
 	}
 }

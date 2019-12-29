@@ -29,7 +29,7 @@ public class AvoidingGhosts implements Steering<PacMan> {
 			.sorted(bySmallestDistanceTo(pacMan))
 			.findFirst()
 			.ifPresent(ghost -> {
-				pacMan.setNextDir(Direction.dirs()
+				pacMan.setWishDir(Direction.dirs()
 						.filter(pacMan::canCrossBorderTo)
 						.sorted(byLargestDistanceOfNeighborTile(pacMan, ghost))
 						.findAny()

@@ -46,21 +46,21 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 					
 				.state(AT_PLACE)
 					.onEntry(() -> {
-						ghost.setNextDir(null);
+						ghost.setWishDir(null);
 					})
 					
 			.transitions()
 	
 				.when(AT_DOOR).then(FALLING)
-					.act(() -> ghost.setNextDir(Direction.DOWN))
+					.act(() -> ghost.setWishDir(Direction.DOWN))
 	
 				.when(FALLING).then(MOVING_LEFT)
 					.condition(() -> ghost.tf.getY() >= targetY && ghost.tf.getX() > targetX)
-					.act(() -> ghost.setNextDir(Direction.LEFT))
+					.act(() -> ghost.setWishDir(Direction.LEFT))
 				
 				.when(FALLING).then(MOVING_RIGHT)
 					.condition(() -> ghost.tf.getY() >= targetY && ghost.tf.getX() < targetX)
-					.act(() -> ghost.setNextDir(Direction.RIGHT))
+					.act(() -> ghost.setWishDir(Direction.RIGHT))
 	
 				.when(FALLING).then(AT_PLACE)
 					.condition(() -> ghost.tf.getY() >= targetY && ghost.tf.getX() == targetX)

@@ -38,7 +38,7 @@ public abstract class TakingPrecomputedPath<T extends MazeMover> implements Stee
 	protected abstract List<Tile> computePath(T actor, Tile targetTile);
 
 	protected boolean isPathInvalid(T actor) {
-		return actor.nextDir() == null || path.size() == 0 || first(path) != actor.tile()
+		return actor.wishDir() == null || path.size() == 0 || first(path) != actor.tile()
 				|| last(path) != actor.targetTile();
 	}
 
@@ -58,6 +58,6 @@ public abstract class TakingPrecomputedPath<T extends MazeMover> implements Stee
 			actor.setTargetTile(last(path));
 			actor.setTargetPath(path);
 		}
-		actor.setNextDir(maze.alongPath(path).orElse(null));
+		actor.setWishDir(maze.alongPath(path).orElse(null));
 	}
 }

@@ -372,9 +372,9 @@ public class PlayView extends SimplePlayView {
 					drawArrowHead(g, maze().directionBetween(from, to).get(), to.centerX(), to.centerY());
 				}
 			}
-		} else if (ghost.nextDir() != null) {
+		} else if (ghost.wishDir() != null) {
 			// draw direction indicator
-			Direction nextDir = ghost.nextDir();
+			Direction nextDir = ghost.wishDir();
 			int x = ghost.tf.getCenter().roundedX(), y = ghost.tf.getCenter().roundedY();
 			g.setColor(ghostColor);
 			drawArrowHead(g, nextDir, x + nextDir.dx * Tile.SIZE, y + nextDir.dy * Tile.SIZE);
