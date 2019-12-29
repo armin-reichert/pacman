@@ -18,7 +18,7 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Symbol;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
-import de.amr.games.pacman.view.core.PacManGameView;
+import de.amr.games.pacman.view.core.GameView;
 import de.amr.games.pacman.view.core.Pen;
 
 /**
@@ -26,7 +26,7 @@ import de.amr.games.pacman.view.core.Pen;
  * 
  * @author Armin Reichert
  */
-public class SimplePlayView extends PacManGameView {
+public class SimplePlayView extends GameView {
 
 	protected SpriteAnimation energizerBlinking;
 	protected boolean mazeFlashing;

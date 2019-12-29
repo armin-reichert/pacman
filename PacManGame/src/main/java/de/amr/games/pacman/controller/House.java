@@ -23,7 +23,7 @@ import de.amr.games.pacman.model.Game;
  * @see <a href=
  *      "https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Gamasutra</a>
  */
-public class GhostHouse implements Lifecycle {
+public class House implements Lifecycle {
 
 	private final Logger logger = Logger.getLogger(getClass().getName());
 	private final Cast cast;
@@ -31,7 +31,7 @@ public class GhostHouse implements Lifecycle {
 	private int ghostDotCountersBySeat[] = new int[4];
 	private int globalDotCounter;
 
-	public GhostHouse(Cast cast) {
+	public House(Cast cast) {
 		this.cast = cast;
 		logger.setLevel(Level.INFO);
 	}

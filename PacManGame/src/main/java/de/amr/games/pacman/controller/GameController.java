@@ -44,7 +44,7 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.Theme;
-import de.amr.games.pacman.view.core.PacManGameView;
+import de.amr.games.pacman.view.core.GameView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.PlayView;
@@ -63,11 +63,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private Theme theme;
 	private Cast cast;
 	private GhostCommand ghostCommand;
-	private GhostHouse ghostHouse;
-	private CheatController cheatController;
+	private House house;
+	private Cheats cheats;
 	private CompletableFuture<Void> musicLoading;
 
-	private PacManGameView currentView;
+	private GameView currentView;
 	private LoadingView loadingView;
 	private IntroView introView;
 	private PlayView playView;
@@ -89,8 +89,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return Optional.ofNullable(cast);
 	}
 
-	public Optional<GhostHouse> ghostHouse() {
-		return Optional.ofNullable(ghostHouse);
+	public Optional<House> ghostHouse() {
+		return Optional.ofNullable(house);
 	}
 
 	public Optional<Game> game() {
@@ -102,7 +102,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return Optional.ofNullable(currentView);
 	}
 
-	private void showView(PacManGameView view) {
+	private void showView(GameView view) {
 		if (currentView != view) {
 			currentView = view;
 			currentView.init();
@@ -118,8 +118,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			actor.addEventListener(this::process);
 		});
 		ghostCommand = new GhostCommand(cast);
-		ghostHouse = new GhostHouse(cast);
-		cheatController = new CheatController(this);
+		house = new House(cast);
+		cheats = new Cheats(this);
 		createPlayView();
 		showView(playView);
 	}
@@ -127,7 +127,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void createPlayView() {
 		playView = new PlayView(cast);
 		playView.fnGhostCommandState = ghostCommand::state;
-		playView.ghostHouse = ghostHouse;
+		playView.ghostHouse = house;
 		playView.showFPS = () -> showFPS;
 		playView.showGrid = () -> showGrid;
 		playView.showRoutes = () -> showRoutes;
@@ -201,7 +201,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.timeoutAfter(() -> sec(4 + playView.mazeFlashingSeconds()))
 					.onEntry(() -> {
 						cast.pacMan.sprites.select("full");
-						ghostHouse.resetGhostDotCounters();
+						house.resetGhostDotCounters();
 						stopSoundEffects();
 						
 					})
@@ -377,8 +377,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		public void onTick() {
 
 			ghostCommand.update();
-			cheatController.update();
-			ghostHouse.update();
+			cheats.update();
+			house.update();
 			cast.actorsOnStage().forEach(Actor::update);
 			cast.bonus().ifPresent(Bonus::update);
 			if (System.currentTimeMillis() - lastEatTime > 250) {
@@ -403,7 +403,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (!collision.ghost.is(GhostState.FRIGHTENED)) {
 				LOGGER.info(() -> String.format("Pac-Man killed by %s at %s", collision.ghost.name(),
 						collision.ghost.tile()));
-				ghostHouse.enableAndResetGlobalDotCounter();
+				house.enableAndResetGlobalDotCounter();
 				stopSoundEffects();
 				stopMusicPlaying();
 				playView.stopEnergizerBlinking();
@@ -439,7 +439,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent foodFound = (FoodFoundEvent) event;
-			ghostHouse.updateDotCounters();
+			house.updateDotCounters();
 			int points = game.eatFoodAt(foodFound.tile);
 			int livesBefore = game.lives;
 			game.score(points);

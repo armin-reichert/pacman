@@ -20,11 +20,11 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public class CheatController implements Lifecycle {
+public class Cheats implements Lifecycle {
 
 	private final GameController gameController;
 
-	public CheatController(GameController gameController) {
+	public Cheats(GameController gameController) {
 		this.gameController = gameController;
 	}
 
@@ -49,7 +49,7 @@ public class CheatController implements Lifecycle {
 				gameController.cast().ifPresent(cast -> {
 					cast.game().maze().tiles().filter(Tile::containsPellet).forEach(tile -> {
 						cast.game().eatFoodAt(tile);
-						gameController.ghostHouse().ifPresent(GhostHouse::updateDotCounters);
+						gameController.ghostHouse().ifPresent(House::updateDotCounters);
 					});
 					LOGGER.info(() -> "All pellets eaten");
 				});

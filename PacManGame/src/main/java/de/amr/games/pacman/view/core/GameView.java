@@ -14,7 +14,7 @@ import de.amr.games.pacman.theme.Theme;
  * 
  * @author Armin Reichert
  */
-public abstract class PacManGameView implements View, Lifecycle, PropertyChangeListener {
+public abstract class GameView implements View, Lifecycle, PropertyChangeListener {
 
 	public abstract Theme theme();
 
