@@ -102,7 +102,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return Optional.ofNullable(currentView);
 	}
 
-	private void selectView(PacManGameView view) {
+	private void showView(PacManGameView view) {
 		if (currentView != view) {
 			currentView = view;
 			currentView.init();
@@ -113,11 +113,18 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		game = new Game();
 		game.init();
 		cast = new Cast(game, theme);
-		cast.actors().forEach(cast::setActorOnStage);
-		cast.actors().forEach(actor -> actor.addEventListener(this::process));
+		cast.actors().forEach(actor -> {
+			cast.setActorOnStage(actor);
+			actor.addEventListener(this::process);
+		});
 		ghostCommand = new GhostCommand(cast);
 		ghostHouse = new GhostHouse(cast);
 		cheatController = new CheatController(this);
+		createPlayView();
+		showView(playView);
+	}
+
+	private void createPlayView() {
 		playView = new PlayView(cast);
 		playView.fnGhostCommandState = ghostCommand::state;
 		playView.ghostHouse = ghostHouse;
@@ -125,16 +132,15 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		playView.showGrid = () -> showGrid;
 		playView.showRoutes = () -> showRoutes;
 		playView.showStates = () -> showStates;
-		selectView(playView);
 	}
 
 	@Override
 	public void update() {
-		handleToggleStateMachineLogging();
-		handleToggleGhostFrightenedBehavior();
-		handleTogglePacManOverflowBug();
-		handleSpeedChange();
-		handlePlayViewSettings();
+		onChangeStateMachineLogging();
+		onChangeGhostFrightenedBehavior();
+		onChangePacManOverflowBug();
+		onChangeClockSpeed();
+		onChangePlayViewSettings();
 		super.update();
 		currentView.update();
 	}
@@ -156,13 +162,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onEntry(() -> {
 						loadMusic();
 						loadingView = new LoadingView(theme);
-						selectView(loadingView);
+						showView(loadingView);
 					})
 					
 				.state(INTRO)
 					.onEntry(() -> {
 						introView = new IntroView(theme);
-						selectView(introView);
+						showView(introView);
 					})
 					.onExit(() -> {
 						stopSoundEffects();
@@ -463,31 +469,31 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	// handle input
 
-	private void handleSpeedChange() {
-		int oldClockSpeed = app().clock.getFrequency();
-		int newClockSpeed = oldClockSpeed;
+	private void onChangeClockSpeed() {
+		int oldFreq = app().clock.getFrequency();
+		int newFreq = oldFreq;
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
-			newClockSpeed = Game.SPEED_1_FPS;
+			newFreq = Game.SPEED_1_FPS;
 		}
 		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
-			newClockSpeed = Game.SPEED_2_FPS;
+			newFreq = Game.SPEED_2_FPS;
 		}
 		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
-			newClockSpeed = Game.SPEED_3_FPS;
+			newFreq = Game.SPEED_3_FPS;
 		}
 		else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_LEFT)) {
-			newClockSpeed = (oldClockSpeed <= 10 ? Math.max(1, oldClockSpeed - 1) : oldClockSpeed - 5);
+			newFreq = (oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
 		}
 		else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_RIGHT)) {
-			newClockSpeed = (oldClockSpeed < 10 ? oldClockSpeed + 1 : oldClockSpeed + 5);
+			newFreq = (oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
 		}
-		if (newClockSpeed != oldClockSpeed) {
-			app().clock.setFrequency(newClockSpeed);
-			LOGGER.info(String.format("Clock frequency changed to %d ticks/sec", newClockSpeed));
+		if (newFreq != oldFreq) {
+			app().clock.setFrequency(newFreq);
+			LOGGER.info(String.format("Clock frequency changed to %d ticks/sec", newFreq));
 		}
 	}
 
-	private void handlePlayViewSettings() {
+	private void onChangePlayViewSettings() {
 		if (currentView != playView) {
 			return;
 		}
@@ -505,21 +511,21 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	private void handleTogglePacManOverflowBug() {
+	private void onChangePacManOverflowBug() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_O)) {
 			app().settings.set("PacMan.overflowBug", !app().settings.getAsBoolean("PacMan.overflowBug"));
 			LOGGER.info("Overflow bug is " + (app().settings.getAsBoolean("PacMan.overflowBug") ? "on" : "off"));
 		}
 	}
 
-	private void handleToggleStateMachineLogging() {
+	private void onChangeStateMachineLogging() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_L)) {
 			FSM_LOGGER.setLevel(FSM_LOGGER.getLevel() == Level.OFF ? Level.INFO : Level.OFF);
 			LOGGER.info("State machine logging changed to " + FSM_LOGGER.getLevel());
 		}
 	}
 
-	private void handleToggleGhostFrightenedBehavior() {
+	private void onChangeGhostFrightenedBehavior() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_F)) {
 			boolean original = app().settings.getAsBoolean("Ghost.fleeRandomly");
 			if (original) {
