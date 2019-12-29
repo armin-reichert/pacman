@@ -85,7 +85,6 @@ public class PlayView extends SimplePlayView {
 	@Override
 	public void update() {
 		super.update();
-		fps.update();
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
 			toggleGhost(cast().blinky);
 		}

@@ -24,6 +24,7 @@ import java.util.logging.Level;
 
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
+import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Bonus;
@@ -132,6 +133,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		handleToggleStateMachineLogging();
 		handleToggleGhostFrightenedBehavior();
 		handleTogglePacManOverflowBug();
+		handleSpeedChange();
 		handlePlayViewSettings();
 		super.update();
 		currentView.update();
@@ -460,6 +462,30 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	// handle input
+
+	private void handleSpeedChange() {
+		int oldClockSpeed = app().clock.getFrequency();
+		int newClockSpeed = oldClockSpeed;
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_1) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
+			newClockSpeed = Game.SPEED_1_FPS;
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
+			newClockSpeed = Game.SPEED_2_FPS;
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
+			newClockSpeed = Game.SPEED_3_FPS;
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_LEFT)) {
+			newClockSpeed = (oldClockSpeed <= 10 ? Math.max(1, oldClockSpeed - 1) : oldClockSpeed - 5);
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_RIGHT)) {
+			newClockSpeed = (oldClockSpeed < 10 ? oldClockSpeed + 1 : oldClockSpeed + 5);
+		}
+		if (newClockSpeed != oldClockSpeed) {
+			app().clock.setFrequency(newClockSpeed);
+			LOGGER.info(String.format("Clock frequency changed to %d ticks/sec", newClockSpeed));
+		}
+	}
 
 	private void handlePlayViewSettings() {
 		if (currentView != playView) {
