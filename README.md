@@ -53,7 +53,7 @@ beginStateMachine(IntroState.class, Void.class)
 		.state(SCROLLING_LOGO)
 			.onEntry(() -> {
 				theme.snd_insertCoin().play();
-				pacManLogo.tf.setY(height);
+				pacManLogo.tf.setY(height());
 				pacManLogo.tf.setVelocityY(-2f);
 				pacManLogo.setCompletion(() -> pacManLogo.tf.getY() <= 20);
 				pacManLogo.show(); 
@@ -65,10 +65,10 @@ beginStateMachine(IntroState.class, Void.class)
 
 		.state(SHOWING_ANIMATIONS)
 			.onEntry(() -> {
-				chasePacMan.setStartPosition(width, 100);
+				chasePacMan.setStartPosition(width(), 100);
 				chasePacMan.setEndPosition(-chasePacMan.tf.getWidth(), 100);
 				chaseGhosts.setStartPosition(-chaseGhosts.tf.getWidth(), 200);
-				chaseGhosts.setEndPosition(width, 200);
+				chaseGhosts.setEndPosition(width(), 200);
 				chasePacMan.start();
 				chaseGhosts.start();
 			})
@@ -79,14 +79,14 @@ beginStateMachine(IntroState.class, Void.class)
 			.onExit(() -> {
 				chasePacMan.stop();
 				chaseGhosts.stop();
-				chasePacMan.tf.centerX(width);
+				chasePacMan.tf.centerX(width());
 			})
 
 		.state(WAITING_FOR_INPUT)
 			.timeoutAfter(sec(10))
 			.onEntry(() -> {
 				ghostPointsAnimation.tf.setY(200);
-				ghostPointsAnimation.tf.centerX(width);
+				ghostPointsAnimation.tf.centerX(width());
 				ghostPointsAnimation.start();
 				gitHubLink.show();
 			})
@@ -104,10 +104,10 @@ beginStateMachine(IntroState.class, Void.class)
 	.transitions()
 
 		.when(SCROLLING_LOGO).then(SHOWING_ANIMATIONS)
-			.condition(() -> pacManLogo.complete())
+			.condition(() -> pacManLogo.isComplete())
 
 		.when(SHOWING_ANIMATIONS).then(WAITING_FOR_INPUT)
-			.condition(() -> chasePacMan.complete() && chaseGhosts.complete())
+			.condition(() -> chasePacMan.isComplete() && chaseGhosts.isComplete())
 
 		.when(WAITING_FOR_INPUT).then(SHOWING_ANIMATIONS)
 			.onTimeout()
@@ -247,9 +247,9 @@ Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
 blinky.eyes = LEFT;
-blinky.seat = 0;
-blinky.during(SCATTERING, isHeadingFor(maze.horizonNE));
+blinky.during(SCATTERING, isHeadingFor(maze().horizonNE));
 blinky.during(CHASING, isHeadingFor(pacMan::tile));
+blinky.during(ENTERING_HOUSE, isTakingSeat(blinky, 2));
 ```
 
 <img src="PacManDoc/blinky.png"/>
@@ -263,12 +263,13 @@ Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to ge
 
 ```java
 inky.eyes = UP;
-inky.seat = 1;
-inky.during(SCATTERING, isHeadingFor(maze.horizonSE));
+inky.during(SCATTERING, isHeadingFor(maze().horizonSE));
 inky.during(CHASING, isHeadingFor(() -> {
 	Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
-	return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
+	return maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 }));
+inky.during(LOCKED, isJumpingUpAndDown(maze(), inky.seat()));
+inky.during(ENTERING_HOUSE, isTakingSeat(inky));
 ```
 
 <img src="PacManDoc/inky.png"/>
@@ -279,9 +280,10 @@ Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current
 
 ```java
 pinky.eyes = DOWN;
-pinky.seat = 2;
-pinky.during(SCATTERING, isHeadingFor(maze.horizonNW));
+pinky.during(SCATTERING, isHeadingFor(maze().horizonNW));
 pinky.during(CHASING, isHeadingFor(() -> pacMan.tilesAhead(4)));
+pinky.during(LOCKED, isJumpingUpAndDown(maze(), pinky.seat()));
+pinky.during(ENTERING_HOUSE, isTakingSeat(pinky));
 ```
 
 <img src="PacManDoc/pinky.png"/>
@@ -292,9 +294,11 @@ Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from 
 
 ```java
 clyde.eyes = UP;
-clyde.seat = 3;
-clyde.during(SCATTERING, isHeadingFor(maze.horizonSW));
-clyde.during(CHASING, isHeadingFor(() -> clyde.distanceSq(pacMan) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
+clyde.during(SCATTERING, isHeadingFor(maze().horizonSW));
+clyde.during(CHASING,
+		isHeadingFor(() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
+clyde.during(LOCKED, isJumpingUpAndDown(maze(), clyde.seat()));
+clyde.during(ENTERING_HOUSE, isTakingSeat(clyde));
 ```
 
 <img src="PacManDoc/clyde.png"/>
@@ -313,14 +317,8 @@ In the *frightened*, *locked*, *entering house* and *leaving house* modes, the g
 ```java
 ghosts().forEach(ghost -> {
 	ghost.setTeleportingDuration(sec(0.5f));
-	ghost.during(LEAVING_HOUSE, isLeavingGhostHouse(maze));
+	ghost.during(LEAVING_HOUSE, isLeavingGhostHouse(maze()));
 	ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack());
-	if (ghost != blinky) {
-		ghost.during(LOCKED, isJumpingUpAndDown(maze, ghost.seat));
-		ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, ghost.seat));
-	} else {
-		ghost.during(ENTERING_HOUSE, isTakingSeat(ghost, 2));
-	}
 });
 ```
 
