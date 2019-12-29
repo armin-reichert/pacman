@@ -118,7 +118,7 @@ beginStateMachine(IntroState.class, Void.class)
 .endStateMachine();
 ```
 
-A more complex state machine is used for implementing the **global game control** ([PacManGameController](PacManGame/src/main/java/de/amr/games/pacman/controller/PacManGameController.java)). It processes game events which
+A more complex state machine is used for implementing the **global game controller** ([GameController](PacManGame/src/main/java/de/amr/games/pacman/controller/GameController.java)). It processes game events which
 are created during the game play, for example when Pac-Man finds food or meets ghosts. Also the different
 game states like changing the level or the dying animations of Pac-Man and the ghosts are controlled by this
 state machine. Further, the more complex states are implemented as subclasses of the generic `State` class. This
