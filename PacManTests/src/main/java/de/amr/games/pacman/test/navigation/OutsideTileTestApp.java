@@ -41,10 +41,10 @@ class OutsideTileTestUI extends PlayView implements VisualController {
 
 	public OutsideTileTestUI(Cast cast) {
 		super(cast);
-		showRoutes(true);
-		showStates(false);
-		showScores(false);
-		showGrid(false);
+		showRoutes = () -> true;
+		showStates = () -> false;
+		showScores = () -> false;
+		showGrid = () -> false;
 	}
 
 	@Override

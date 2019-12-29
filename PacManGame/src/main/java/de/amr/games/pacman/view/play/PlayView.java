@@ -26,6 +26,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
@@ -41,20 +42,12 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
+import de.amr.games.pacman.view.core.FPSDisplay;
 import de.amr.games.pacman.view.core.Pen;
 import de.amr.statemachine.core.State;
 
 /**
  * An extended play view.
- * 
- * <p>
- * Commands:
- * <ul>
- * <li>switch ghosts on/off (keys 'b', 'p', 'i', 'c')
- * <li>display grid, ghosthouse seats and alignment of actors (key 'g')
- * <li>display actor states and dot counters (key 's')
- * <li>display actor routes (key 'r')
- * </ul>
  * 
  * @author Armin Reichert
  */
@@ -69,14 +62,19 @@ public class PlayView extends SimplePlayView {
 	public Supplier<State<GhostState, ?>> fnGhostCommandState = () -> null;
 	public GhostHouse ghostHouse; // (optional)
 
-	private boolean showRoutes = false;
-	private boolean showGrid = false;
-	private boolean showStates = false;
+	public BooleanSupplier showFPS = () -> false;
+	public BooleanSupplier showRoutes = () -> false;
+	public BooleanSupplier showGrid = () -> false;
+	public BooleanSupplier showStates = () -> false;
+
+	private FPSDisplay fps;
 	private final BufferedImage gridImage, pinkyImage, inkyImage, clydeImage;
 	private final Polygon arrowHead;
 
 	public PlayView(Cast cast) {
 		super(cast);
+		fps = new FPSDisplay();
+		fps.tf.setPosition(0, 17 * Tile.SIZE);
 		gridImage = createGridImage(cast.game().maze());
 		pinkyImage = ghostImage(GhostColor.PINK);
 		inkyImage = ghostImage(GhostColor.CYAN);
@@ -84,41 +82,10 @@ public class PlayView extends SimplePlayView {
 		arrowHead = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 	}
 
-	public void showRoutes(boolean showRoutes) {
-		this.showRoutes = showRoutes;
-		cast().ghosts().forEach(ghost -> {
-			Arrays.asList(GhostState.values()).forEach(state -> {
-				ghost.steeringForState(state).computeTargetPath(showRoutes);
-			});
-		});
-	}
-
-	public void showGrid(boolean showGrid) {
-		this.showGrid = showGrid;
-	}
-
-	public void showStates(boolean showStates) {
-		this.showStates = showStates;
-	}
-
-	@Override
-	public void init() {
-		super.init();
-		cast().ghosts().forEach(ghost -> ghost.steering().computeTargetPath(showRoutes));
-	}
-
 	@Override
 	public void update() {
 		super.update();
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_G)) {
-			showGrid(!showGrid);
-		}
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_S)) {
-			showStates(!showStates);
-		}
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
-			showRoutes(!showRoutes);
-		}
+		fps.update();
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
 			toggleGhost(cast().blinky);
 		}
@@ -135,31 +102,31 @@ public class PlayView extends SimplePlayView {
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (showGrid) {
+		if (showGrid.getAsBoolean()) {
 			g.drawImage(gridImage, 0, 0, null);
 		}
 		else {
 			fillBackground(g);
 		}
 		drawMaze(g);
+		drawFPS(g);
 		drawMessage(g);
-		if (showGrid) {
+		if (showGrid.getAsBoolean()) {
 			drawUpwardsBlockedTileMarkers(g);
 			drawSeats(g);
 		}
 		drawScores(g);
-		if (showRoutes) {
+		if (showRoutes.getAsBoolean()) {
 			drawRoutes(g);
 		}
 		drawActors(g);
-		if (showGrid) {
+		if (showGrid.getAsBoolean()) {
 			drawActorAlignments(g);
 		}
-		if (showStates) {
+		if (showStates.getAsBoolean()) {
 			drawActorStates(g);
 			drawDotCounters(g);
 		}
-		fpsView.draw(g);
 	}
 
 	private BufferedImage createGridImage(Maze maze) {
@@ -187,7 +154,7 @@ public class PlayView extends SimplePlayView {
 
 	@Override
 	protected Color bgColor(Tile tile) {
-		return showGrid ? patternColor(tile.col, tile.row) : super.bgColor(tile);
+		return showGrid.getAsBoolean() ? patternColor(tile.col, tile.row) : super.bgColor(tile);
 	}
 
 	private void toggleGhost(Ghost ghost) {
@@ -259,6 +226,12 @@ public class PlayView extends SimplePlayView {
 		g.setFont(new Font("Arial Narrow", Font.PLAIN, 5));
 		int sw = g.getFontMetrics().stringWidth(text);
 		g.drawString(text, x - sw / 2, y - Tile.SIZE / 2);
+	}
+
+	private void drawFPS(Graphics2D g) {
+		if (showFPS.getAsBoolean()) {
+			fps.draw(g);
+		}
 	}
 
 	private void drawActorStates(Graphics2D g) {
@@ -349,6 +322,13 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawRoutes(Graphics2D g2) {
+		boolean show = showRoutes.getAsBoolean();
+		// TODO
+		cast().ghosts().forEach(ghost -> {
+			Arrays.asList(GhostState.values()).forEach(state -> {
+				ghost.steeringForState(state).computeTargetPath(show);
+			});
+		});
 		Graphics2D g = (Graphics2D) g2.create();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		cast().ghostsOnStage().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));

@@ -72,6 +72,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private PlayView playView;
 
 	private boolean showFPS;
+	private boolean showRoutes;
+	private boolean showStates;
+	private boolean showGrid;
 
 	public GameController(Theme theme) {
 		super(PacManGameState.class);
@@ -102,12 +105,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		if (currentView != view) {
 			currentView = view;
 			currentView.init();
-			if (showFPS) {
-				currentView.fpsView.show();
-			}
-			else {
-				currentView.fpsView.hide();
-			}
 		}
 	}
 
@@ -123,6 +120,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		playView = new PlayView(cast);
 		playView.fnGhostCommandState = ghostCommand::state;
 		playView.ghostHouse = ghostHouse;
+		playView.showFPS = () -> showFPS;
+		playView.showGrid = () -> showGrid;
+		playView.showRoutes = () -> showRoutes;
+		playView.showStates = () -> showStates;
 		selectView(playView);
 	}
 
@@ -131,7 +132,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		handleToggleStateMachineLogging();
 		handleToggleGhostFrightenedBehavior();
 		handleTogglePacManOverflowBug();
-		handleTogggleFPS();
+		handlePlayViewSettings();
 		super.update();
 		currentView.update();
 	}
@@ -174,6 +175,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onTick(() -> {
 						int t = state().getTicksConsumed();
 						if (t == sec(5)) {
+							playView.messageColor(Color.YELLOW);
 							playView.message("Ready!");
 							playView.startEnergizerBlinking();
 							loopMusicPlaying();
@@ -269,7 +271,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						game.saveHiscore();
 						cast.ghostsOnStage().forEach(Ghost::show);
 						playView.disableAnimations();
-						playView.message("Game   Over!", Color.RED);
+						playView.messageColor(Color.RED);
+						playView.message("Game   Over!");
 						playSoundGameOver();
 					})
 					.onExit(() -> {
@@ -351,7 +354,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	 */
 	public class PlayingState extends State<PacManGameState, PacManGameEvent> {
 
-		long lastEatTime;
+		private long lastEatTime;
 
 		@Override
 		public void onEntry() {
@@ -364,6 +367,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onTick() {
+
 			ghostCommand.update();
 			cheatController.update();
 			ghostHouse.update();
@@ -455,7 +459,25 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	// handle keyboard input
+	// handle input
+
+	private void handlePlayViewSettings() {
+		if (currentView != playView) {
+			return;
+		}
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_T)) {
+			showFPS = !showFPS;
+		}
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_G)) {
+			showGrid = !showGrid;
+		}
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_S)) {
+			showStates = !showStates;
+		}
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
+			showRoutes = !showRoutes;
+		}
+	}
 
 	private void handleTogglePacManOverflowBug() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_O)) {
@@ -483,18 +505,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				app().settings.set("Ghost.fleeRandomly", true);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack()));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
-			}
-		}
-	}
-
-	private void handleTogggleFPS() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_T)) {
-			showFPS = !showFPS;
-			if (showFPS) {
-				currentView.fpsView.show();
-			}
-			else {
-				currentView.fpsView.hide();
 			}
 		}
 	}

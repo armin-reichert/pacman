@@ -49,10 +49,10 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 
 	public FollowTargetTilesTestUI(Cast cast) {
 		super(cast);
-		showRoutes(true);
-		showStates(false);
-		showScores(false);
-		showGrid(true);
+		showRoutes = () -> true;
+		showStates = () -> false;
+		showScores = () -> false;
+		showGrid = () -> true;
 		targets = Arrays.asList(maze().cornerNW, maze().ghostHouseSeats[0], maze().cornerNE, maze().cornerSE,
 				maze().pacManHome, maze().cornerSW);
 	}

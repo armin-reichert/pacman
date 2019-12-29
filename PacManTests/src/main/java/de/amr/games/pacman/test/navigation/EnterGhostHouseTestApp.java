@@ -44,10 +44,10 @@ class EnterGhostHouseTestUI extends PlayView implements VisualController {
 
 	public EnterGhostHouseTestUI(Cast cast) {
 		super(cast);
-		showRoutes(true);
-		showStates(true);
-		showScores(false);
-		showGrid(true);
+		showRoutes = () -> true;
+		showStates = () -> true;
+		showScores = () -> false;
+		showGrid = () -> true;
 	}
 
 	@Override

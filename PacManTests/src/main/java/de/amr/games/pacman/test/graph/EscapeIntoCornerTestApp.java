@@ -42,9 +42,9 @@ class EscapeIntoCornerTestUI extends PlayView implements VisualController {
 
 	public EscapeIntoCornerTestUI(Game game, Cast cast) {
 		super(cast);
-		showRoutes(true);
-		showStates(true);
-		showScores(false);
+		showRoutes = () -> true;
+		showStates = () -> true;
+		showScores = () -> false;
 	}
 
 	@Override

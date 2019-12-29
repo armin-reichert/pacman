@@ -53,7 +53,6 @@ public class LoadingView extends PacManGameView {
 
 	@Override
 	public void init() {
-		super.init();
 		direction = Direction.RIGHT;
 		x = 0;
 		y = 9 * Tile.SIZE;
@@ -62,7 +61,6 @@ public class LoadingView extends PacManGameView {
 
 	@Override
 	public void update() {
-		super.update();
 		if (x > 40 * Tile.SIZE) {
 			direction = Direction.LEFT;
 			y = 27 * Tile.SIZE;
@@ -71,7 +69,8 @@ public class LoadingView extends PacManGameView {
 			for (int i = 1; i < 4; ++i) {
 				ghostDist[i] = ghostDist[i - 1] + (5 + new Random().nextInt(5)) * Tile.SIZE;
 			}
-		} else if (x < -50 * Tile.SIZE) {
+		}
+		else if (x < -50 * Tile.SIZE) {
 			direction = Direction.RIGHT;
 			y = 9 * Tile.SIZE;
 			speed = 0.9f;
@@ -86,7 +85,8 @@ public class LoadingView extends PacManGameView {
 			if (alpha > 160) {
 				alphaInc = -2;
 				alpha = 160;
-			} else if (alpha < 0) {
+			}
+			else if (alpha < 0) {
 				alphaInc = 2;
 				alpha = 0;
 			}
@@ -97,11 +97,11 @@ public class LoadingView extends PacManGameView {
 		}
 		if (direction == Direction.RIGHT) {
 			pacManRight.draw(g, x, y);
-		} else {
+		}
+		else {
 			for (int i = 0; i < 4; ++i) {
 				ghostsLeft[i].draw(g, x + ghostDist[i], y);
 			}
 		}
-		fpsView.draw(g);
 	}
 }

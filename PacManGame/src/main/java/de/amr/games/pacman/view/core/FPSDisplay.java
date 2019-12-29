@@ -19,7 +19,7 @@ import de.amr.games.pacman.model.Game;
  * 
  * @author Armin Reichert
  */
-public class FPSView extends Entity implements Lifecycle {
+public class FPSDisplay extends Entity implements Lifecycle {
 
 	@Override
 	public void init() {

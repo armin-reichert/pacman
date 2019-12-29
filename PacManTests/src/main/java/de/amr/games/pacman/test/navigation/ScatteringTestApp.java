@@ -8,9 +8,9 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
+import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
@@ -44,10 +44,10 @@ class ScatteringTestUI extends PlayView implements VisualController {
 
 	public ScatteringTestUI(Cast cast) {
 		super(cast);
-		showRoutes(true);
-		showStates(false);
-		showScores(false);
-		showGrid(false);
+		showRoutes = () -> true;
+		showStates = () -> false;
+		showScores = () -> false;
+		showGrid = () -> false;
 	}
 
 	@Override
@@ -59,7 +59,8 @@ class ScatteringTestUI extends PlayView implements VisualController {
 			cast().setActorOnStage(ghost);
 			ghost.nextState = GhostState.SCATTERING;
 		});
-		message("Press SPACE to start", Color.YELLOW);
+		messageColor(Color.YELLOW);
+		message("Press SPACE to start");
 	}
 
 	@Override

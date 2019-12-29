@@ -186,13 +186,11 @@ public class IntroView extends PacManGameView implements FsmContainer<IntroState
 	@Override
 	public void init() {
 		createUIComponents();
-		super.init();
 		fsmComponent().init();
 	}
 
 	@Override
 	public void update() {
-		super.update();
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
 			setState(READY_TO_PLAY); // exit shortcut
 		}

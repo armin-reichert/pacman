@@ -6,15 +6,16 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.Arrays;
+import java.util.function.BooleanSupplier;
 
-import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.model.Symbol;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.Symbol;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.core.PacManGameView;
@@ -33,9 +34,10 @@ public class SimplePlayView extends PacManGameView {
 	protected Sprite fullMazeSprite;
 	protected Sprite flashingMazeSprite;
 	protected Cast cast;
-	protected boolean showScores;
 	protected String messageText;
 	protected Color messageColor;
+
+	public BooleanSupplier showScores = () -> true;
 
 	public SimplePlayView(Cast cast) {
 		this.cast = cast;
@@ -64,16 +66,13 @@ public class SimplePlayView extends PacManGameView {
 
 	@Override
 	public void init() {
-		fpsView.tf.setPosition(0, 17 * Tile.SIZE);
-		showScores(true);
 		stopEnergizerBlinking();
 		stopMazeFlashing();
-		message(null, Color.YELLOW);
+		clearMessage();
 	}
 
 	@Override
 	public void update() {
-		super.update();
 		if (!mazeFlashing) {
 			energizerBlinking.update();
 		}
@@ -86,12 +85,7 @@ public class SimplePlayView extends PacManGameView {
 		flashingMazeSprite = theme.spr_flashingMaze();
 	}
 
-	public void showScores(boolean showScores) {
-		this.showScores = showScores;
-	}
-
-	public void message(String message, Color color) {
-		this.messageText = message;
+	public void messageColor(Color color) {
 		this.messageColor = color;
 	}
 
@@ -150,7 +144,8 @@ public class SimplePlayView extends PacManGameView {
 	protected void drawMaze(Graphics2D g) {
 		if (mazeFlashing) {
 			drawFlashingMaze(g);
-		} else {
+		}
+		else {
 			drawNormalMaze(g);
 		}
 	}
@@ -197,12 +192,14 @@ public class SimplePlayView extends PacManGameView {
 			cast.pacMan.draw(g);
 		}
 		// draw dead ghosts (numbers) before living ghosts
-		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
-		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> !ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> ghost.is(DEAD))
+				.forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> !ghost.is(DEAD))
+				.forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {
-		if (!showScores) {
+		if (!showScores.getAsBoolean()) {
 			return;
 		}
 		try (Pen pen = new Pen(g)) {

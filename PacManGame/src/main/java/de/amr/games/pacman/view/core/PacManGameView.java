@@ -16,12 +16,6 @@ import de.amr.games.pacman.theme.Theme;
  */
 public abstract class PacManGameView implements View, Lifecycle, PropertyChangeListener {
 
-	public final FPSView fpsView;
-
-	public PacManGameView() {
-		fpsView = new FPSView();
-	}
-
 	public abstract Theme theme();
 
 	public abstract void onThemeChanged(Theme theme);
@@ -40,15 +34,5 @@ public abstract class PacManGameView implements View, Lifecycle, PropertyChangeL
 			Theme newTheme = (Theme) e.getNewValue();
 			onThemeChanged(newTheme);
 		}
-	}
-
-	@Override
-	public void init() {
-		fpsView.init();
-	}
-
-	@Override
-	public void update() {
-		fpsView.update();
 	}
 }
