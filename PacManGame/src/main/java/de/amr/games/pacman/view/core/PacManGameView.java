@@ -9,24 +9,24 @@ import java.beans.PropertyChangeListener;
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.theme.Theme;
 
 /**
  * Base class for views with common functionality.
  * 
  * @author Armin Reichert
  */
-public abstract class AbstractPacManGameView implements View, Lifecycle, PropertyChangeListener {
+public abstract class PacManGameView implements View, Lifecycle, PropertyChangeListener {
 
 	public final FPSView fpsView;
 
-	public AbstractPacManGameView() {
+	public PacManGameView() {
 		fpsView = new FPSView();
 	}
 
-	public abstract PacManTheme theme();
+	public abstract Theme theme();
 
-	public abstract void onThemeChanged(PacManTheme theme);
+	public abstract void onThemeChanged(Theme theme);
 
 	public int width() {
 		return app().settings.width;
@@ -39,7 +39,7 @@ public abstract class AbstractPacManGameView implements View, Lifecycle, Propert
 	@Override
 	public void propertyChange(PropertyChangeEvent e) {
 		if ("theme".equals(e.getPropertyName())) {
-			PacManTheme newTheme = (PacManTheme) e.getNewValue();
+			Theme newTheme = (Theme) e.getNewValue();
 			onThemeChanged(newTheme);
 		}
 	}
@@ -56,8 +56,7 @@ public abstract class AbstractPacManGameView implements View, Lifecycle, Propert
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_T)) {
 			if (fpsView.visible()) {
 				fpsView.hide();
-			}
-			else {
+			} else {
 				fpsView.show();
 			}
 		}

@@ -14,12 +14,12 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.PacManGameCast;
+import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.behavior.Steering;
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.ClassicPacManTheme;
-import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.theme.ArcadeTheme;
+import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class TakeShortestPathTestApp extends Application {
@@ -37,9 +37,9 @@ public class TakeShortestPathTestApp extends Application {
 
 	@Override
 	public void init() {
-		PacManGame game = new PacManGame();
-		PacManTheme theme = new ClassicPacManTheme();
-		PacManGameCast cast = new PacManGameCast(game, theme);
+		Game game = new Game();
+		Theme theme = new ArcadeTheme();
+		Cast cast = new Cast(game, theme);
 		setController(new TakeShortestPathTestUI(cast));
 	}
 }
@@ -50,7 +50,7 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 	final List<Tile> targets;
 	int targetIndex;
 
-	public TakeShortestPathTestUI(PacManGameCast cast) {
+	public TakeShortestPathTestUI(Cast cast) {
 		super(cast);
 		ghost = cast.blinky;
 		targets = Arrays.asList(maze().cornerSE, maze().tileAt(15, 23), maze().tileAt(12, 23), maze().cornerSW,

@@ -34,14 +34,11 @@ public class LeavingGhostHouse implements Steering<Ghost> {
 		if (aboutEqual(1, ghost.tf.getX(), targetX)) {
 			ghost.tf.setX(targetX);
 			ghost.setNextDir(Direction.UP);
-		}
-		else if (ghost.tf.getX() < targetX) {
+		} else if (ghost.tf.getX() < targetX) {
 			ghost.setNextDir(Direction.RIGHT);
-		}
-		else if (ghost.tf.getX() > targetX) {
+		} else if (ghost.tf.getX() > targetX) {
 			ghost.setNextDir(Direction.LEFT);
-		}
-		else if (ghost.tf.getY() <= targetY) {
+		} else if (ghost.tf.getY() <= targetY) {
 			ghost.setNextDir(null); // got out
 		}
 	}

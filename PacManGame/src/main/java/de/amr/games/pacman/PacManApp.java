@@ -1,11 +1,11 @@
 package de.amr.games.pacman;
 
 import de.amr.easy.game.Application;
-import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.controller.GameController;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.ClassicPacManTheme;
-import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.theme.ArcadeTheme;
+import de.amr.games.pacman.theme.Theme;
 
 /**
  * The Pac-Man game application.
@@ -33,9 +33,9 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
-		PacManTheme theme = new ClassicPacManTheme();
-		PacManGameController gameController = new PacManGameController(theme);
-		exitHandler = app -> gameController.game().ifPresent(PacManGame::saveHiscore);
+		Theme theme = new ArcadeTheme();
+		GameController gameController = new GameController(theme);
+		exitHandler = app -> gameController.game().ifPresent(Game::saveHiscore);
 		setController(gameController);
 		setIcon(theme.spr_ghostFrightened().frame(0));
 		gameController.init();

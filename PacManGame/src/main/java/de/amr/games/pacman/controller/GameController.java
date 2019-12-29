@@ -13,7 +13,7 @@ import static de.amr.games.pacman.controller.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.PacManGameState.LOADING_MUSIC;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
-import static de.amr.games.pacman.model.PacManGame.FSM_LOGGER;
+import static de.amr.games.pacman.model.Game.FSM_LOGGER;
 import static de.amr.games.pacman.model.Timing.sec;
 
 import java.awt.Color;
@@ -27,11 +27,11 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Bonus;
+import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.PacManState;
-import de.amr.games.pacman.actor.core.PacManGameActor;
+import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -41,9 +41,9 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
-import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.theme.PacManTheme;
-import de.amr.games.pacman.view.core.AbstractPacManGameView;
+import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.theme.Theme;
+import de.amr.games.pacman.view.core.PacManGameView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.PlayView;
@@ -55,31 +55,30 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class PacManGameController extends StateMachine<PacManGameState, PacManGameEvent>
-		implements VisualController {
+public class GameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
-	private PacManGame game;
-	private PacManTheme theme;
-	private PacManGameCast cast;
+	private Game game;
+	private Theme theme;
+	private Cast cast;
 	private GhostCommand ghostCommand;
 	private GhostHouse ghostHouse;
 	private CheatController cheatController;
 	private CompletableFuture<Void> musicLoading;
 
-	private AbstractPacManGameView currentView;
+	private PacManGameView currentView;
 	private LoadingView loadingView;
 	private IntroView introView;
 	private PlayView playView;
 
-	public PacManGameController(PacManTheme theme) {
+	public GameController(Theme theme) {
 		super(PacManGameState.class);
 		this.theme = theme;
 		buildStateMachine();
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		traceTo(PacManGame.FSM_LOGGER, () -> 60);
+		traceTo(Game.FSM_LOGGER, () -> 60);
 	}
 
-	public Optional<PacManGameCast> cast() {
+	public Optional<Cast> cast() {
 		return Optional.ofNullable(cast);
 	}
 
@@ -87,7 +86,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		return Optional.ofNullable(ghostHouse);
 	}
 
-	public Optional<PacManGame> game() {
+	public Optional<Game> game() {
 		return Optional.ofNullable(game);
 	}
 
@@ -96,7 +95,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 		return Optional.ofNullable(currentView);
 	}
 
-	private void selectView(AbstractPacManGameView view) {
+	private void selectView(PacManGameView view) {
 		if (currentView != view) {
 			currentView = view;
 			currentView.init();
@@ -104,9 +103,9 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 	}
 
 	private void createPlayingEnvironment() {
-		game = new PacManGame();
+		game = new Game();
 		game.init();
-		cast = new PacManGameCast(game, theme);
+		cast = new Cast(game, theme);
 		cast.actors().forEach(cast::setActorOnStage);
 		cast.actors().forEach(actor -> actor.addEventListener(this::process));
 		ghostCommand = new GhostCommand(cast);
@@ -169,7 +168,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 							playView.startEnergizerBlinking();
 							loopMusicPlaying();
 						}
-						cast.actorsOnStage().forEach(PacManGameActor::update);
+						cast.actorsOnStage().forEach(Actor::update);
 					})
 					.onExit(() -> {
 						playView.clearMessage();
@@ -195,15 +194,15 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 								playView.startMazeFlashing();
 							}
 						}
-						else if (t == sec(2 + playView.mazeFlashingSeconds())) {
+						if (t == sec(2 + playView.mazeFlashingSeconds())) {
 							LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", 
 									game.level().number, game.level().ghostKilledInLevel));
 							game.enterLevel(game.level().number + 1);
-							cast.actorsOnStage().forEach(PacManGameActor::init);
+							cast.actorsOnStage().forEach(Actor::init);
 							playView.init(); // stops flashing
 							loopMusicPlaying();
 						} 
-						else if (t == sec(4)) {
+						if (t == sec(4)) {
 							cast.ghostsOnStage().forEach(Ghost::update);
 						}
 					})
@@ -246,7 +245,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 						else if (t == sec(7)) {
 							if (game.lives > 0) {
 								// initialize actors and view for continuing game
-								cast.actorsOnStage().forEach(PacManGameActor::init);
+								cast.actorsOnStage().forEach(Actor::init);
 								playView.init();
 								loopMusicPlaying();
 								}
@@ -360,7 +359,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			ghostCommand.update();
 			cheatController.update();
 			ghostHouse.update();
-			cast.actorsOnStage().forEach(PacManGameActor::update);
+			cast.actorsOnStage().forEach(Actor::update);
 			cast.bonus().ifPresent(Bonus::update);
 			if (System.currentTimeMillis() - lastEatTime > 250) {
 				stopSoundPelletEaten();
@@ -382,18 +381,15 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			}
 			PacManGhostCollisionEvent collision = (PacManGhostCollisionEvent) event;
 			if (!collision.ghost.is(GhostState.FRIGHTENED)) {
-				LOGGER.info(() -> String.format("Pac-Man killed by %s at %s", collision.ghost.name(),
-						collision.ghost.tile()));
+				LOGGER.info(() -> String.format("Pac-Man killed by %s at %s", collision.ghost.name(), collision.ghost.tile()));
 				ghostHouse.enableAndResetGlobalDotCounter();
 				stopSoundEffects();
 				stopMusicPlaying();
 				playView.stopEnergizerBlinking();
 				cast.pacMan.process(new PacManKilledEvent(collision.ghost));
 				enqueue(new PacManKilledEvent(collision.ghost));
-			}
-			else {
-				LOGGER.info(
-						() -> String.format("Ghost %s killed at %s", collision.ghost.name(), collision.ghost.tile()));
+			} else {
+				LOGGER.info(() -> String.format("Ghost %s killed at %s", collision.ghost.name(), collision.ghost.tile()));
 				int livesBefore = game.lives;
 				game.scoreKilledGhost(collision.ghost.name());
 				if (game.lives > livesBefore) {
@@ -438,8 +434,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 			if (game.isBonusScoreReached()) {
 				cast.addBonus();
 				cast.bonus().ifPresent(bonus -> {
-					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus,
-							bonus.state().getDuration() / 60f));
+					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus, bonus.state().getDuration() / 60f));
 				});
 			}
 			if (foodFound.energizer) {
@@ -471,8 +466,7 @@ public class PacManGameController extends StateMachine<PacManGameState, PacManGa
 				app().settings.set("Ghost.fleeRandomly", false);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isFleeingToSafeCornerFrom(cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
-			}
-			else {
+			} else {
 				app().settings.set("Ghost.fleeRandomly", true);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack()));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");

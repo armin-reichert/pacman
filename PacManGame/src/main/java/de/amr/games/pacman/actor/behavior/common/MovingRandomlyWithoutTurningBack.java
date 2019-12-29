@@ -9,12 +9,12 @@ import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Direction;
 
 /**
- * A steering that causes an actor to move randomly through the maze without ever turning back.
+ * A steering that causes an actor to move randomly through the maze without
+ * ever turning back.
  * 
  * @author Armin Reichert
  *
- * @param <T>
- *          actor type
+ * @param <T> actor type
  */
 public class MovingRandomlyWithoutTurningBack<T extends MazeMover> implements Steering<T> {
 

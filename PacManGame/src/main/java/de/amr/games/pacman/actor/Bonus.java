@@ -11,31 +11,31 @@ import java.util.Random;
 
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.actor.core.AbstractMazeResident;
-import de.amr.games.pacman.actor.core.PacManGameActor;
+import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.BonusSymbol;
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Bonus symbol (fruit or other symbol) that appears at the maze bonus position for around 9
- * seconds. When consumed, the bonus is displayed for 3 seconds as a number representing its value
- * and then disappears.
+ * Bonus symbol (fruit or other symbol) that appears at the maze bonus position
+ * for around 9 seconds. When consumed, the bonus is displayed for 3 seconds as
+ * a number representing its value and then disappears.
  * 
  * @author Armin Reichert
  */
-public class Bonus extends AbstractMazeResident implements PacManGameActor<BonusState> {
+public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 
 	private final SpriteMap sprites = new SpriteMap();
-	private final PacManGameCast cast;
+	private final Cast cast;
 	private final FsmComponent<BonusState, PacManGameEvent> brain;
 	public final BonusSymbol symbol;
 	public final int value;
 
-	public Bonus(PacManGameCast cast) {
+	public Bonus(Cast cast) {
 		super("Bonus");
 		this.cast = cast;
 		tf.setHeight(Tile.SIZE);
@@ -44,13 +44,13 @@ public class Bonus extends AbstractMazeResident implements PacManGameActor<Bonus
 		symbol = game().level().bonusSymbol;
 		value = game().level().bonusValue;
 		brain = buildBrain();
-		brain.fsm().traceTo(PacManGame.FSM_LOGGER, () -> 60);
+		brain.fsm().traceTo(Game.FSM_LOGGER, () -> 60);
 		sprites.set("symbol", cast.theme().spr_bonusSymbol(symbol));
-		sprites.set("number", cast.theme().spr_pinkNumber(binarySearch(PacManGame.POINTS_BONUS, value)));
+		sprites.set("number", cast.theme().spr_pinkNumber(binarySearch(Game.POINTS_BONUS, value)));
 	}
 
 	@Override
-	public PacManGameCast cast() {
+	public Cast cast() {
 		return cast;
 	}
 

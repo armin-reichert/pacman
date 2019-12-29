@@ -20,14 +20,14 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
-import de.amr.games.pacman.actor.core.PacManGameActor;
+import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.core.StateMachine;
@@ -38,19 +38,19 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostState> {
+public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 
 	public final SpriteMap sprites = new SpriteMap();
 	public Direction eyes;
 	public GhostState nextState;
 
-	private final PacManGameCast cast;
+	private final Cast cast;
 	private final int seat;
 	private final FsmComponent<GhostState, PacManGameEvent> brain;
 	private final Map<GhostState, Steering<Ghost>> steering = new EnumMap<>(GhostState.class);
 	private final Steering<Ghost> defaultSteering = isHeadingFor(this::targetTile);
 
-	public Ghost(String name, PacManGameCast cast, int seat) {
+	public Ghost(String name, Cast cast, int seat) {
 		super(name);
 		this.cast = cast;
 		this.seat = seat;
@@ -58,7 +58,7 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 		tf.setHeight(Tile.SIZE);
 		brain = buildBrain();
 		brain.fsm().setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		brain.fsm().traceTo(PacManGame.FSM_LOGGER, () -> 60);
+		brain.fsm().traceTo(Game.FSM_LOGGER, () -> 60);
 	}
 
 	@Override
@@ -190,7 +190,7 @@ public class Ghost extends AbstractMazeMover implements PacManGameActor<GhostSta
 	}
 
 	@Override
-	public PacManGameCast cast() {
+	public Cast cast() {
 		return cast;
 	}
 

@@ -29,30 +29,30 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.actor.core.PacManGameActor;
+import de.amr.games.pacman.actor.core.Actor;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
-import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.theme.Theme;
 
 /**
- * The cast (set of actors) in the PacMan game.
+ * The cast (set of actors) of the Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class PacManGameCast {
+public class Cast {
 
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
 
-	private final PacManGame game;
-	private PacManTheme theme;
+	private final Game game;
+	private Theme theme;
 	private Bonus bonus;
-	private final Set<PacManGameActor<?>> actorsOnStage = new HashSet<>();
+	private final Set<Actor<?>> actorsOnStage = new HashSet<>();
 	private final PropertyChangeSupport changes = new PropertyChangeSupport(this);
 
-	public PacManGameCast(PacManGame game, PacManTheme theme) {
+	public Cast(Game game, Theme theme) {
 		this.game = game;
 
 		pacMan = new PacMan(this);
@@ -106,7 +106,7 @@ public class PacManGameCast {
 		});
 	}
 
-	public PacManGame game() {
+	public Game game() {
 		return game;
 	}
 
@@ -114,12 +114,12 @@ public class PacManGameCast {
 		return game.maze();
 	}
 
-	public PacManTheme theme() {
+	public Theme theme() {
 		return theme;
 	}
 
-	public void setTheme(PacManTheme newTheme) {
-		PacManTheme oldTheme = this.theme;
+	public void setTheme(Theme newTheme) {
+		Theme oldTheme = this.theme;
 		this.theme = newTheme;
 		clotheActors();
 		changes.firePropertyChange("theme", oldTheme, newTheme);
@@ -165,25 +165,25 @@ public class PacManGameCast {
 		return ghosts().filter(this::onStage);
 	}
 
-	public Stream<PacManGameActor<?>> actors() {
+	public Stream<Actor<?>> actors() {
 		return Stream.of(pacMan, blinky, pinky, inky, clyde);
 	}
 
-	public Stream<PacManGameActor<?>> actorsOnStage() {
+	public Stream<Actor<?>> actorsOnStage() {
 		return actors().filter(this::onStage);
 	}
 
-	public boolean onStage(PacManGameActor<?> actor) {
+	public boolean onStage(Actor<?> actor) {
 		return actorsOnStage.contains(actor);
 	}
 
-	public void setActorOnStage(PacManGameActor<?> actor) {
+	public void setActorOnStage(Actor<?> actor) {
 		actor.init();
 		actor.show();
 		actorsOnStage.add(actor);
 	}
 
-	public void setActorOffStage(PacManGameActor<?> actor) {
+	public void setActorOffStage(Actor<?> actor) {
 		actor.hide();
 		actorsOnStage.remove(actor);
 	}

@@ -10,8 +10,8 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
-import de.amr.games.pacman.theme.PacManTheme;
-import de.amr.games.pacman.view.core.AbstractPacManGameView;
+import de.amr.games.pacman.theme.Theme;
+import de.amr.games.pacman.view.core.PacManGameView;
 import de.amr.games.pacman.view.core.Pen;
 
 /**
@@ -19,9 +19,9 @@ import de.amr.games.pacman.view.core.Pen;
  * 
  * @author Armin Reichert
  */
-public class LoadingView extends AbstractPacManGameView {
+public class LoadingView extends PacManGameView {
 
-	private PacManTheme theme;
+	private Theme theme;
 	private int alpha = -1;
 	private int alphaInc;
 	private Sprite pacManRight;
@@ -31,7 +31,7 @@ public class LoadingView extends AbstractPacManGameView {
 	private float x, y;
 	private float speed;
 
-	public LoadingView(PacManTheme theme) {
+	public LoadingView(Theme theme) {
 		this.theme = theme;
 		pacManRight = theme.spr_pacManWalking(Direction.RIGHT.ordinal());
 		ghostsLeft = new Sprite[4];
@@ -42,12 +42,12 @@ public class LoadingView extends AbstractPacManGameView {
 	}
 
 	@Override
-	public PacManTheme theme() {
+	public Theme theme() {
 		return theme;
 	}
 
 	@Override
-	public void onThemeChanged(PacManTheme theme) {
+	public void onThemeChanged(Theme theme) {
 		this.theme = theme;
 	}
 
@@ -71,8 +71,7 @@ public class LoadingView extends AbstractPacManGameView {
 			for (int i = 1; i < 4; ++i) {
 				ghostDist[i] = ghostDist[i - 1] + (5 + new Random().nextInt(5)) * Tile.SIZE;
 			}
-		}
-		else if (x < - 50 * Tile.SIZE) {
+		} else if (x < -50 * Tile.SIZE) {
 			direction = Direction.RIGHT;
 			y = 9 * Tile.SIZE;
 			speed = 0.9f;
@@ -87,8 +86,7 @@ public class LoadingView extends AbstractPacManGameView {
 			if (alpha > 160) {
 				alphaInc = -2;
 				alpha = 160;
-			}
-			else if (alpha < 0) {
+			} else if (alpha < 0) {
 				alphaInc = 2;
 				alpha = 0;
 			}
@@ -99,8 +97,7 @@ public class LoadingView extends AbstractPacManGameView {
 		}
 		if (direction == Direction.RIGHT) {
 			pacManRight.draw(g, x, y);
-		}
-		else {
+		} else {
 			for (int i = 0; i < 4; ++i) {
 				ghostsLeft[i].draw(g, x + ghostDist[i], y);
 			}

@@ -12,7 +12,7 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.core.StateMachine;
 
@@ -73,7 +73,7 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 					
 		.endStateMachine();
 		/*@formatter:on*/
-		traceTo(PacManGame.FSM_LOGGER, () -> 60);
+		traceTo(Game.FSM_LOGGER, () -> 60);
 	}
 
 	@Override

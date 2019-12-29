@@ -11,7 +11,7 @@ import java.util.BitSet;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.view.Animation;
-import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.theme.Theme;
 
 /**
  * An animation showing Pac-Man and the four ghosts frightened and showing the
@@ -21,7 +21,7 @@ import de.amr.games.pacman.theme.PacManTheme;
  */
 public class GhostPointsAnimation extends Entity implements Animation {
 
-	private final PacManTheme theme;
+	private final Theme theme;
 	private final Sprite pacMan;
 	private final Sprite ghost;
 	private final Sprite[] points = new Sprite[4];
@@ -31,7 +31,7 @@ public class GhostPointsAnimation extends Entity implements Animation {
 	private int energizerTimer;
 	private boolean energizer;
 
-	public GhostPointsAnimation(PacManTheme theme) {
+	public GhostPointsAnimation(Theme theme) {
 		this.theme = theme;
 		pacMan = theme.spr_pacManWalking(E);
 		ghost = theme.spr_ghostFrightened();

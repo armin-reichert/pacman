@@ -29,7 +29,7 @@ import de.amr.games.pacman.model.BonusSymbol;
  * 
  * @author Armin Reichert
  */
-public class ClassicPacManTheme implements PacManTheme {
+public class ArcadeTheme implements Theme {
 
 	private static Sound sound(String name, String type) {
 		return Assets.sound("sfx/" + name + "." + type);
@@ -85,7 +85,7 @@ public class ClassicPacManTheme implements PacManTheme {
 		return IntStream.range(0, n).mapToObj(i -> $(x + i * 16, y)).toArray(BufferedImage[]::new);
 	}
 
-	public ClassicPacManTheme() {
+	public ArcadeTheme() {
 		Assets.storeTrueTypeFont("font.joystix", "Joystix.ttf", Font.PLAIN, 12);
 
 		sheet = Assets.readImage("images/pacman_sprites.png");

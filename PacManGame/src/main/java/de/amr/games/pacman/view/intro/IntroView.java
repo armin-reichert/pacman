@@ -17,9 +17,9 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
-import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.theme.PacManTheme;
-import de.amr.games.pacman.view.core.AbstractPacManGameView;
+import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.theme.Theme;
+import de.amr.games.pacman.view.core.PacManGameView;
 import de.amr.games.pacman.view.core.Pen;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
 import de.amr.statemachine.client.FsmComponent;
@@ -31,14 +31,14 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class IntroView extends AbstractPacManGameView implements FsmContainer<IntroState, Void> {
+public class IntroView extends PacManGameView implements FsmContainer<IntroState, Void> {
 
 	public enum IntroState {
 		SCROLLING_LOGO, SHOWING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
 	};
 
 	private final String name;
-	private final PacManTheme theme;
+	private final Theme theme;
 	private final FsmComponent<IntroState, Void> fsm;
 
 	private ImageWidget pacManLogo;
@@ -47,7 +47,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 	private ChaseGhostsAnimation chaseGhosts;
 	private GhostPointsAnimation ghostPointsAnimation;
 
-	public IntroView(PacManTheme theme) {
+	public IntroView(Theme theme) {
 		this.theme = theme;
 		this.name = "IntroView";
 		fsm = buildFsmComponent();
@@ -76,12 +76,12 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 	}
 
 	@Override
-	public PacManTheme theme() {
+	public Theme theme() {
 		return theme;
 	}
 
 	@Override
-	public void onThemeChanged(PacManTheme theme) {
+	public void onThemeChanged(Theme theme) {
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 
 	private FsmComponent<IntroState, Void> buildFsmComponent() {
 		StateMachine<IntroState, Void> fsm = buildStateMachine();
-		fsm.traceTo(PacManGame.FSM_LOGGER, () -> 60);
+		fsm.traceTo(Game.FSM_LOGGER, () -> 60);
 		return new FsmComponent<>(fsm);
 	}
 
@@ -229,8 +229,7 @@ public class IntroView extends AbstractPacManGameView implements FsmContainer<In
 				pen.color(orange);
 				pen.fontSize(10);
 				pen.hcenter("F11 - Fullscreen Mode", width(), 22);
-				int selectedSpeed = Arrays
-						.asList(PacManGame.SPEED_1_FPS, PacManGame.SPEED_2_FPS, PacManGame.SPEED_3_FPS)
+				int selectedSpeed = Arrays.asList(Game.SPEED_1_FPS, Game.SPEED_2_FPS, Game.SPEED_3_FPS)
 						.indexOf(app().clock.getFrequency()) + 1;
 				pen.color(selectedSpeed == 1 ? orange : red);
 				pen.drawAtTilePosition(1, 31, "1 - Normal");

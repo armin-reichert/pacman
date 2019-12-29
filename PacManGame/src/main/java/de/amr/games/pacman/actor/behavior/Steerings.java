@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import de.amr.easy.game.input.Keyboard;
+import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.actor.behavior.common.HeadingForTargetTile;
 import de.amr.games.pacman.actor.behavior.common.MovingRandomlyWithoutTurningBack;
 import de.amr.games.pacman.actor.behavior.common.TakingFixedPath;
@@ -164,7 +164,7 @@ public interface Steerings {
 	/**
 	 * /** TODO: in progress.
 	 */
-	static Steering<PacMan> avoidingGhosts(PacManGameCast cast) {
+	static Steering<PacMan> avoidingGhosts(Cast cast) {
 		return new AvoidingGhosts(cast);
 	}
 }

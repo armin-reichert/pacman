@@ -8,9 +8,9 @@ import static de.amr.games.pacman.actor.PacManState.SLEEPING;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.model.Direction.UP;
-import static de.amr.games.pacman.model.PacManGame.DIGEST_ENERGIZER_TICKS;
-import static de.amr.games.pacman.model.PacManGame.DIGEST_PELLET_TICKS;
-import static de.amr.games.pacman.model.PacManGame.FSM_LOGGER;
+import static de.amr.games.pacman.model.Game.DIGEST_ENERGIZER_TICKS;
+import static de.amr.games.pacman.model.Game.DIGEST_PELLET_TICKS;
+import static de.amr.games.pacman.model.Game.FSM_LOGGER;
 import static de.amr.games.pacman.model.Timing.sec;
 import static de.amr.games.pacman.model.Timing.speed;
 
@@ -21,7 +21,7 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
-import de.amr.games.pacman.actor.core.PacManGameActor;
+import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -40,17 +40,17 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManState> {
+public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 
 	public final SpriteMap sprites = new SpriteMap();
-	private final PacManGameCast cast;
+	private final Cast cast;
 	private final FsmComponent<PacManState, PacManGameEvent> brain;
 	private Steering<PacMan> steering;
 	private boolean kicking;
 	private boolean tired;
 	private int digestionTicks;
 
-	public PacMan(PacManGameCast cast) {
+	public PacMan(Cast cast) {
 		super("Pac-Man");
 		this.cast = cast;
 		tf.setWidth(Tile.SIZE);
@@ -62,7 +62,7 @@ public class PacMan extends AbstractMazeMover implements PacManGameActor<PacManS
 	}
 
 	@Override
-	public PacManGameCast cast() {
+	public Cast cast() {
 		return cast;
 	}
 

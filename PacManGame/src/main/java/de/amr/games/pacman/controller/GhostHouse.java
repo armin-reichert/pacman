@@ -10,10 +10,10 @@ import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.controller.Lifecycle;
+import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.Game;
 
 /**
  * The ghost house controls when and in which order ghosts can leave.
@@ -26,17 +26,17 @@ import de.amr.games.pacman.model.PacManGame;
 public class GhostHouse implements Lifecycle {
 
 	private final Logger logger = Logger.getLogger(getClass().getName());
-	private final PacManGameCast cast;
+	private final Cast cast;
 	private boolean globalDotCounterEnabled;
 	private int ghostDotCountersBySeat[] = new int[4];
 	private int globalDotCounter;
 
-	public GhostHouse(PacManGameCast cast) {
+	public GhostHouse(Cast cast) {
 		this.cast = cast;
 		logger.setLevel(Level.INFO);
 	}
 
-	public PacManGame game() {
+	public Game game() {
 		return cast.game();
 	}
 

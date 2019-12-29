@@ -11,11 +11,11 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
-import de.amr.games.pacman.actor.PacManGameCast;
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.actor.Cast;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.ClassicPacManTheme;
-import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.theme.ArcadeTheme;
+import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class EnterGhostHouseTestApp extends Application {
@@ -33,16 +33,16 @@ public class EnterGhostHouseTestApp extends Application {
 
 	@Override
 	public void init() {
-		PacManGame game = new PacManGame();
-		PacManTheme theme = new ClassicPacManTheme();
-		PacManGameCast cast = new PacManGameCast(game, theme);
+		Game game = new Game();
+		Theme theme = new ArcadeTheme();
+		Cast cast = new Cast(game, theme);
 		setController(new EnterGhostHouseTestUI(cast));
 	}
 }
 
 class EnterGhostHouseTestUI extends PlayView implements VisualController {
 
-	public EnterGhostHouseTestUI(PacManGameCast cast) {
+	public EnterGhostHouseTestUI(Cast cast) {
 		super(cast);
 		showRoutes(true);
 		showStates(true);

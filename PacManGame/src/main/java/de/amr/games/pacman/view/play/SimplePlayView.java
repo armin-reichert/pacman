@@ -10,14 +10,14 @@ import java.util.Arrays;
 import de.amr.easy.game.ui.sprites.Animation;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.model.BonusSymbol;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.PacManTheme;
-import de.amr.games.pacman.view.core.AbstractPacManGameView;
+import de.amr.games.pacman.theme.Theme;
+import de.amr.games.pacman.view.core.PacManGameView;
 import de.amr.games.pacman.view.core.Pen;
 
 /**
@@ -25,19 +25,19 @@ import de.amr.games.pacman.view.core.Pen;
  * 
  * @author Armin Reichert
  */
-public class SimplePlayView extends AbstractPacManGameView {
+public class SimplePlayView extends PacManGameView {
 
 	protected Animation energizerBlinking;
 	protected boolean mazeFlashing;
 	protected Image lifeImage;
 	protected Sprite fullMazeSprite;
 	protected Sprite flashingMazeSprite;
-	protected PacManGameCast cast;
+	protected Cast cast;
 	protected boolean showScores;
 	protected String messageText;
 	protected Color messageColor;
 
-	public SimplePlayView(PacManGameCast cast) {
+	public SimplePlayView(Cast cast) {
 		this.cast = cast;
 		cast.addThemeListener(this);
 		energizerBlinking = new CyclicAnimation(2);
@@ -45,16 +45,16 @@ public class SimplePlayView extends AbstractPacManGameView {
 		onThemeChanged(theme());
 	}
 
-	public PacManGameCast cast() {
+	public Cast cast() {
 		return cast;
 	}
 
 	@Override
-	public PacManTheme theme() {
+	public Theme theme() {
 		return cast.theme();
 	}
 
-	public PacManGame game() {
+	public Game game() {
 		return cast.game();
 	}
 
@@ -81,7 +81,7 @@ public class SimplePlayView extends AbstractPacManGameView {
 	}
 
 	@Override
-	public void onThemeChanged(PacManTheme theme) {
+	public void onThemeChanged(Theme theme) {
 		lifeImage = theme.spr_pacManWalking(3).frame(1);
 		fullMazeSprite = theme.spr_fullMaze();
 		flashingMazeSprite = theme.spr_flashingMaze();
@@ -115,7 +115,7 @@ public class SimplePlayView extends AbstractPacManGameView {
 	}
 
 	public int mazeFlashingSeconds() {
-		return game().level().mazeNumFlashes * PacManTheme.MAZE_FLASH_TIME_MILLIS / 1000;
+		return game().level().mazeNumFlashes * Theme.MAZE_FLASH_TIME_MILLIS / 1000;
 	}
 
 	public void startMazeFlashing() {
@@ -151,8 +151,7 @@ public class SimplePlayView extends AbstractPacManGameView {
 	protected void drawMaze(Graphics2D g) {
 		if (mazeFlashing) {
 			drawFlashingMaze(g);
-		}
-		else {
+		} else {
 			drawNormalMaze(g);
 		}
 	}
@@ -199,10 +198,8 @@ public class SimplePlayView extends AbstractPacManGameView {
 			cast.pacMan.draw(g);
 		}
 		// draw dead ghosts (numbers) before living ghosts
-		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> ghost.is(DEAD))
-				.forEach(ghost -> ghost.draw(g));
-		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> !ghost.is(DEAD))
-				.forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> !ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {

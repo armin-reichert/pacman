@@ -1,9 +1,9 @@
 package de.amr.games.pacman.actor.core;
 
-import de.amr.games.pacman.actor.PacManGameCast;
+import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.client.FsmContainer;
 import de.amr.statemachine.core.StateMachine;
@@ -13,20 +13,19 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  *
- * @param <S>
- *          state identifier type
+ * @param <S> state identifier type
  */
-public interface PacManGameActor<S> extends MazeResident, FsmContainer<S, PacManGameEvent> {
+public interface Actor<S> extends MazeResident, FsmContainer<S, PacManGameEvent> {
 
 	/**
 	 * @return the cast this actor belongs to.
 	 */
-	PacManGameCast cast();
+	Cast cast();
 
 	/**
 	 * @return the game this actor takes part.
 	 */
-	default PacManGame game() {
+	default Game game() {
 		return cast().game();
 	}
 

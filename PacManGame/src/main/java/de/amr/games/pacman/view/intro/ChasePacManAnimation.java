@@ -12,11 +12,11 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.view.Animation;
 import de.amr.games.pacman.theme.GhostColor;
-import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.theme.Theme;
 
 public class ChasePacManAnimation extends Entity implements Animation {
 
-	private final PacManTheme theme;
+	private final Theme theme;
 	private final Sprite pacMan;
 	private final Sprite ghosts[] = new Sprite[4];
 	private int pillTimer;
@@ -24,7 +24,7 @@ public class ChasePacManAnimation extends Entity implements Animation {
 	private Vector2f endPosition;
 	private boolean pill;
 
-	public ChasePacManAnimation(PacManTheme theme) {
+	public ChasePacManAnimation(Theme theme) {
 		this.theme = theme;
 		pacMan = theme.spr_pacManWalking(W);
 		ghosts[0] = theme.spr_ghostColored(GhostColor.RED, W);

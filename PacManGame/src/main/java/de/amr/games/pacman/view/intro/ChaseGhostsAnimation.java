@@ -8,16 +8,17 @@ import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.view.Animation;
-import de.amr.games.pacman.theme.PacManTheme;
+import de.amr.games.pacman.theme.Theme;
 
 /**
- * An animation showing Pac-Man chasing the ghosts and scoring points for each killed ghost.
+ * An animation showing Pac-Man chasing the ghosts and scoring points for each
+ * killed ghost.
  * 
  * @author Armin Reichert
  */
 public class ChaseGhostsAnimation extends Entity implements Animation {
 
-	private final PacManTheme theme;
+	private final Theme theme;
 	private final Sprite pacMan;
 	private final Sprite ghost;
 	private final Sprite[] points = new Sprite[4];
@@ -27,7 +28,7 @@ public class ChaseGhostsAnimation extends Entity implements Animation {
 	private float pacManX;
 	private int ghostsKilled;
 
-	public ChaseGhostsAnimation(PacManTheme theme) {
+	public ChaseGhostsAnimation(Theme theme) {
 		this.theme = theme;
 		pacMan = theme.spr_pacManWalking(E);
 		ghost = theme.spr_ghostFrightened();
@@ -100,8 +101,7 @@ public class ChaseGhostsAnimation extends Entity implements Animation {
 			g.translate(18 * (i + 1), 0);
 			if (killed[i]) {
 				points[i].draw(g);
-			}
-			else {
+			} else {
 				ghost.draw(g);
 			}
 			g.translate(-18 * (i + 1), 0);

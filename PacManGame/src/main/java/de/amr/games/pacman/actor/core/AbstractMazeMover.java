@@ -9,7 +9,7 @@ import java.util.Objects;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.model.Timing;
 import de.amr.statemachine.core.StateMachine;
@@ -77,7 +77,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 		targetTile = null;
 		targetPath = Collections.emptyList();
 		enteredNewTile = true;
-		teleporting.traceTo(PacManGame.FSM_LOGGER, () -> Timing.FPS);
+		teleporting.traceTo(Game.FSM_LOGGER, () -> Timing.FPS);
 		teleporting.init();
 	}
 

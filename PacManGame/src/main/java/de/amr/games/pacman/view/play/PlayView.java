@@ -30,10 +30,10 @@ import java.util.stream.IntStream;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.input.Keyboard;
+import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.actor.PacManGameCast;
 import de.amr.games.pacman.controller.GhostHouse;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
@@ -73,7 +73,7 @@ public class PlayView extends SimplePlayView {
 	private final BufferedImage gridImage, pinkyImage, inkyImage, clydeImage;
 	private final Polygon arrowHead;
 
-	public PlayView(PacManGameCast cast) {
+	public PlayView(Cast cast) {
 		super(cast);
 		gridImage = createGridImage(cast.game().maze());
 		pinkyImage = ghostImage(GhostColor.PINK);
@@ -126,8 +126,7 @@ public class PlayView extends SimplePlayView {
 	public void draw(Graphics2D g) {
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
-		}
-		else {
+		} else {
 			fillBackground(g);
 		}
 		drawMaze(g);
@@ -182,8 +181,7 @@ public class PlayView extends SimplePlayView {
 	private void toggleGhost(Ghost ghost) {
 		if (cast().onStage(ghost)) {
 			cast().setActorOffStage(ghost);
-		}
-		else {
+		} else {
 			cast().setActorOnStage(ghost);
 		}
 	}
@@ -252,15 +250,13 @@ public class PlayView extends SimplePlayView {
 
 	private void drawActorStates(Graphics2D g) {
 		if (cast().pacMan.getState() != null && cast().pacMan.visible()) {
-			drawSmallText(g, Color.YELLOW, cast().pacMan.tf.getX(), cast().pacMan.tf.getY(),
-					pacManStateText(cast().pacMan));
+			drawSmallText(g, Color.YELLOW, cast().pacMan.tf.getX(), cast().pacMan.tf.getY(), pacManStateText(cast().pacMan));
 		}
 		cast().ghostsOnStage().filter(Ghost::visible).forEach(ghost -> {
 			drawSmallText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
 		});
 		cast().bonus().ifPresent(bonus -> {
-			String text = String.format("%s,%d|%d", bonus, bonus.state().getTicksRemaining(),
-					bonus.state().getDuration());
+			String text = String.format("%s,%d|%d", bonus, bonus.state().getTicksRemaining(), bonus.state().getDuration());
 			drawSmallText(g, Color.YELLOW, bonus.tf.getX(), bonus.tf.getY(), text);
 		});
 	}
@@ -349,8 +345,7 @@ public class PlayView extends SimplePlayView {
 		int pathLen = ghost.targetPath().size();
 		Color ghostColor = color(ghost);
 		Stroke solid = new BasicStroke(0.5f);
-		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
-				0);
+		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
 		boolean drawRubberBand = target != null && pathLen > 0 && target != ghost.targetPath().get(pathLen - 1);
 		if (drawRubberBand) {
 			// draw rubber band to target tile
@@ -377,8 +372,7 @@ public class PlayView extends SimplePlayView {
 					drawArrowHead(g, maze().directionBetween(from, to).get(), to.centerX(), to.centerY());
 				}
 			}
-		}
-		else if (ghost.nextDir() != null) {
+		} else if (ghost.nextDir() != null) {
 			// draw direction indicator
 			Direction nextDir = ghost.nextDir();
 			int x = ghost.tf.getCenter().roundedX(), y = ghost.tf.getCenter().roundedY();
@@ -407,8 +401,7 @@ public class PlayView extends SimplePlayView {
 					g.drawLine(x1, y1, x2, y2);
 					g.drawLine(x2, y2, x3, y3);
 					g.fillRect(x3 - s / 2, y3 - s / 2, s, s);
-				}
-				else {
+				} else {
 					Tile twoTilesAhead = cast().pacMan.tilesAhead(2);
 					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
 					int x2 = twoTilesAhead.centerX(), y2 = twoTilesAhead.centerY();
@@ -439,8 +432,7 @@ public class PlayView extends SimplePlayView {
 		drawDotCounter(g, null, ghostHouse.globalDotCounter(), 24, 14, ghostHouse.isGlobalDotCounterEnabled());
 	}
 
-	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row,
-			boolean emphasized) {
+	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row, boolean emphasized) {
 		try (Pen pen = new Pen(g)) {
 			if (image != null) {
 				g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);

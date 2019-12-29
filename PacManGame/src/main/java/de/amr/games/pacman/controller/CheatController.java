@@ -22,9 +22,9 @@ import de.amr.games.pacman.model.Tile;
  */
 public class CheatController implements Lifecycle {
 
-	private final PacManGameController gameController;
+	private final GameController gameController;
 
-	public CheatController(PacManGameController gameController) {
+	public CheatController(GameController gameController) {
 		this.gameController = gameController;
 	}
 
