@@ -47,15 +47,13 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 	private final Cast cast;
 	private final int seat;
 	private final FsmComponent<GhostState, PacManGameEvent> brain;
-	private final Map<GhostState, Steering<Ghost>> steering = new EnumMap<>(GhostState.class);
+	private final Map<GhostState, Steering<Ghost>> steerings = new EnumMap<>(GhostState.class);
 	private final Steering<Ghost> defaultSteering = isHeadingFor(this::targetTile);
 
 	public Ghost(String name, Cast cast, int seat) {
 		super(name);
 		this.cast = cast;
 		this.seat = seat;
-		tf.setWidth(Tile.SIZE);
-		tf.setHeight(Tile.SIZE);
 		brain = buildBrain();
 		brain.fsm().setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		brain.fsm().traceTo(Game.FSM_LOGGER, () -> 60);
@@ -83,37 +81,37 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 						sprites.select("color-" + moveDir());
 						sprites.forEach(Sprite::resetAnimation);
 					})
-					.onTick(() -> walkAndDisplayAs("color-" + moveDir()))
+					.onTick(() -> makeStepAndDisplayAs("color-" + moveDir()))
 					.onExit(() -> {
 						steering().triggerSteering(this);
 					})
 					
 				.state(LEAVING_HOUSE)
-					.onTick(() -> walkAndDisplayAs("color-" + moveDir()))
+					.onTick(() -> makeStepAndDisplayAs("color-" + moveDir()))
 					.onExit(() -> setNextDir(Direction.LEFT))
 				
 				.state(ENTERING_HOUSE)
 					.onEntry(() -> setNextDir(Direction.DOWN))
-					.onTick(() -> walkAndDisplayAs("eyes-" + moveDir()))
+					.onTick(() -> makeStepAndDisplayAs("eyes-" + moveDir()))
 				
 				.state(SCATTERING)
 					.onTick(() -> {
-						walkAndDisplayAs("color-" + moveDir());
-						handlePacManCollision();
+						makeStepAndDisplayAs("color-" + moveDir());
+						checkPacManCollision();
 					})
 			
 				.state(CHASING)
 					.onEntry(() -> turnChasingGhostSoundOn())
 					.onTick(() -> {
-						walkAndDisplayAs("color-" + moveDir());
-						handlePacManCollision();
+						makeStepAndDisplayAs("color-" + moveDir());
+						checkPacManCollision();
 					})
 					.onExit(() -> turnChasingGhostSoundOff())
 				
 				.state(FRIGHTENED)
 					.onTick(() -> {
-						walkAndDisplayAs(cast.pacMan.isTired() ? "flashing" : "frightened");
-						handlePacManCollision();
+						makeStepAndDisplayAs(cast.pacMan.isTired() ? "flashing" : "frightened");
+						checkPacManCollision();
 					})
 				
 				.state(DEAD)
@@ -125,7 +123,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 					})
 					.onTick(() -> {
 						if (state().isTerminated()) { // "dead"
-							walkAndDisplayAs("eyes-" + moveDir());
+							makeStepAndDisplayAs("eyes-" + moveDir());
 						}
 					})
 					.onExit(() -> {
@@ -219,24 +217,17 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 		});
 	}
 
-	public void during(GhostState state, Steering<Ghost> steeringInState) {
-		steering.put(state, steeringInState);
-		steeringInState.triggerSteering(this);
+	public void during(GhostState state, Steering<Ghost> steering) {
+		steerings.put(state, steering);
 	}
 
 	@Override
 	public Steering<Ghost> steering() {
-		return steering.getOrDefault(getState(), defaultSteering);
+		return steerings.getOrDefault(getState(), defaultSteering);
 	}
 
 	public int seat() {
 		return seat;
-	}
-
-	private void walkAndDisplayAs(String spriteKey) {
-		steering().steer(this);
-		step();
-		sprites.select(spriteKey);
 	}
 
 	@Override
@@ -275,11 +266,16 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 		}
 	}
 
-	private void handlePacManCollision() {
-		if (!isTeleporting() && !cast.pacMan.isTeleporting() && cast.pacMan.is(PacManState.ALIVE)) {
-			if (tile().equals(cast.pacMan.tile())) {
-				publish(new PacManGhostCollisionEvent(this));
-			}
+	private void makeStepAndDisplayAs(String spriteKey) {
+		steering().steer(this);
+		step();
+		sprites.select(spriteKey);
+	}
+
+	private void checkPacManCollision() {
+		if (!isTeleporting() && !cast.pacMan.isTeleporting() && cast.pacMan.is(PacManState.ALIVE)
+				&& tile().equals(cast.pacMan.tile())) {
+			publish(new PacManGhostCollisionEvent(this));
 		}
 	}
 
@@ -287,6 +283,8 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 		Tile currentTile = tile();
 		return !maze().partOfGhostHouse(currentTile) && tf.getPosition().roundedY() == currentTile.y();
 	}
+
+	// TODO move sound methods into some central handler
 
 	public void turnChasingGhostSoundOn() {
 		if (!cast.theme().snd_ghost_chase().isRunning()) {

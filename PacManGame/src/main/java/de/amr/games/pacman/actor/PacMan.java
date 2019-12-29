@@ -53,8 +53,6 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	public PacMan(Cast cast) {
 		super("Pac-Man");
 		this.cast = cast;
-		tf.setWidth(Tile.SIZE);
-		tf.setHeight(Tile.SIZE);
 		brain = buildBrain();
 		brain.fsm().traceTo(FSM_LOGGER, () -> Timing.FPS);
 		brain.fsm().setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);

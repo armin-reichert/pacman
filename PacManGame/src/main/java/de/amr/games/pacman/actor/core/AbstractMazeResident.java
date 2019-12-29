@@ -16,6 +16,8 @@ public abstract class AbstractMazeResident extends Entity implements MazeResiden
 
 	public AbstractMazeResident(String name) {
 		this.name = name;
+		tf.setWidth(Tile.SIZE);
+		tf.setHeight(Tile.SIZE);
 	}
 
 	@Override

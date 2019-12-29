@@ -16,7 +16,6 @@ import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.BonusSymbol;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.core.StateMachine;
 
@@ -38,8 +37,6 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 	public Bonus(Cast cast) {
 		super("Bonus");
 		this.cast = cast;
-		tf.setHeight(Tile.SIZE);
-		tf.setWidth(Tile.SIZE);
 		placeHalfRightOf(maze().bonusTile);
 		symbol = game().level().bonusSymbol;
 		value = game().level().bonusValue;
