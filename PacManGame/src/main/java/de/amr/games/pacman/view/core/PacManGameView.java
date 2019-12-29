@@ -2,12 +2,10 @@ package de.amr.games.pacman.view.core;
 
 import static de.amr.easy.game.Application.app;
 
-import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import de.amr.easy.game.controller.Lifecycle;
-import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.theme.Theme;
 
@@ -53,12 +51,5 @@ public abstract class PacManGameView implements View, Lifecycle, PropertyChangeL
 	@Override
 	public void update() {
 		fpsView.update();
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_T)) {
-			if (fpsView.visible()) {
-				fpsView.hide();
-			} else {
-				fpsView.show();
-			}
-		}
 	}
 }

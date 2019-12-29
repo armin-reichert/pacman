@@ -55,7 +55,8 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class GameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
+public class GameController extends StateMachine<PacManGameState, PacManGameEvent>
+		implements VisualController {
 
 	private Game game;
 	private Theme theme;
@@ -69,6 +70,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private LoadingView loadingView;
 	private IntroView introView;
 	private PlayView playView;
+
+	private boolean showFPS;
 
 	public GameController(Theme theme) {
 		super(PacManGameState.class);
@@ -122,6 +125,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		handleToggleStateMachineLogging();
 		handleToggleGhostFrightenedBehavior();
 		handleTogglePacManOverflowBug();
+		handleTogggleFPS();
 		super.update();
 		currentView.update();
 	}
@@ -183,7 +187,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						cast.pacMan.sprites.select("full");
 						ghostHouse.resetGhostDotCounters();
 						stopSoundEffects();
-						stopMusicPlaying();
 						
 					})
 					.onTick(() -> {
@@ -200,7 +203,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							game.enterLevel(game.level().number + 1);
 							cast.actorsOnStage().forEach(Actor::init);
 							playView.init(); // stops flashing
-							loopMusicPlaying();
 						} 
 						if (t == sec(4)) {
 							cast.ghostsOnStage().forEach(Ghost::update);
@@ -381,15 +383,18 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 			PacManGhostCollisionEvent collision = (PacManGhostCollisionEvent) event;
 			if (!collision.ghost.is(GhostState.FRIGHTENED)) {
-				LOGGER.info(() -> String.format("Pac-Man killed by %s at %s", collision.ghost.name(), collision.ghost.tile()));
+				LOGGER.info(() -> String.format("Pac-Man killed by %s at %s", collision.ghost.name(),
+						collision.ghost.tile()));
 				ghostHouse.enableAndResetGlobalDotCounter();
 				stopSoundEffects();
 				stopMusicPlaying();
 				playView.stopEnergizerBlinking();
 				cast.pacMan.process(new PacManKilledEvent(collision.ghost));
 				enqueue(new PacManKilledEvent(collision.ghost));
-			} else {
-				LOGGER.info(() -> String.format("Ghost %s killed at %s", collision.ghost.name(), collision.ghost.tile()));
+			}
+			else {
+				LOGGER.info(
+						() -> String.format("Ghost %s killed at %s", collision.ghost.name(), collision.ghost.tile()));
 				int livesBefore = game.lives;
 				game.scoreKilledGhost(collision.ghost.name());
 				if (game.lives > livesBefore) {
@@ -434,7 +439,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (game.isBonusScoreReached()) {
 				cast.addBonus();
 				cast.bonus().ifPresent(bonus -> {
-					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus, bonus.state().getDuration() / 60f));
+					LOGGER.info(() -> String.format("Bonus %s added, time: %.2f sec", bonus,
+							bonus.state().getDuration() / 60f));
 				});
 			}
 			if (foodFound.energizer) {
@@ -466,10 +472,25 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				app().settings.set("Ghost.fleeRandomly", false);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isFleeingToSafeCornerFrom(cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
-			} else {
+			}
+			else {
 				app().settings.set("Ghost.fleeRandomly", true);
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack()));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
+			}
+		}
+	}
+
+	private void handleTogggleFPS() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_T)) {
+			if (currentView().isPresent()) {
+				showFPS = !showFPS;
+				if (showFPS) {
+					playView.fpsView.show();
+				}
+				else {
+					playView.fpsView.hide();
+				}
 			}
 		}
 	}
