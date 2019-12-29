@@ -44,8 +44,7 @@ public abstract class PacManGameView implements View, Lifecycle, PropertyChangeL
 
 	@Override
 	public void init() {
-		fpsView.tf.setPosition(0, 0);
-		fpsView.hide();
+		fpsView.init();
 	}
 
 	@Override

@@ -102,6 +102,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		if (currentView != view) {
 			currentView = view;
 			currentView.init();
+			if (showFPS) {
+				currentView.fpsView.show();
+			}
+			else {
+				currentView.fpsView.hide();
+			}
 		}
 	}
 
@@ -483,14 +489,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void handleTogggleFPS() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_T)) {
-			if (currentView().isPresent()) {
-				showFPS = !showFPS;
-				if (showFPS) {
-					playView.fpsView.show();
-				}
-				else {
-					playView.fpsView.hide();
-				}
+			showFPS = !showFPS;
+			if (showFPS) {
+				currentView.fpsView.show();
+			}
+			else {
+				currentView.fpsView.hide();
 			}
 		}
 	}

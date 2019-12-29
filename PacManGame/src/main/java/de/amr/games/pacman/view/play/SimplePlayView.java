@@ -65,7 +65,6 @@ public class SimplePlayView extends PacManGameView {
 	@Override
 	public void init() {
 		fpsView.tf.setPosition(0, 17 * Tile.SIZE);
-		fpsView.hide();
 		showScores(true);
 		stopEnergizerBlinking();
 		stopMazeFlashing();
