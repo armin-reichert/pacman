@@ -6,8 +6,6 @@ import static de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.Enteri
 import static de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState.MOVING_LEFT;
 import static de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState.MOVING_RIGHT;
 
-import java.util.Collections;
-
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState;
@@ -41,7 +39,6 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 				.state(AT_DOOR)
 					.onEntry(() -> {
 						ghost.setTargetTile(seat); // only for visualization
-						ghost.setTargetPath(Collections.emptyList());
 					})
 					
 				.state(AT_PLACE)
@@ -80,13 +77,14 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 	public void steer(Ghost ghost) {
 		if (getState() == null || is(AT_PLACE)) {
 			init();
-		} else {
+		}
+		else {
 			update();
 		}
 	}
 
 	@Override
-	public boolean onTrack() {
+	public boolean stayOnTrack() {
 		return false;
 	}
 }

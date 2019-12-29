@@ -2,9 +2,6 @@ package de.amr.games.pacman.actor.core;
 
 import static de.amr.games.pacman.model.Direction.RIGHT;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 import de.amr.easy.game.math.Vector2f;
@@ -56,14 +53,9 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 		}
 	};
 
-	// used by steering to indicate if target path should be computed for
-	// visualization
-	public boolean requireTargetPath;
-
 	private Direction moveDir;
 	private Direction wishDir;
 	private Tile targetTile;
-	private List<Tile> targetPath;
 	private boolean enteredNewTile;
 
 	public AbstractMazeMover(String name) {
@@ -74,7 +66,6 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	public void init() {
 		moveDir = wishDir = RIGHT;
 		targetTile = null;
-		targetPath = Collections.emptyList();
 		enteredNewTile = true;
 		teleporting.traceTo(Game.FSM_LOGGER, () -> Timing.FPS);
 		teleporting.init();
@@ -102,7 +93,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 			float nextDirSpeed = possibleSpeedTo(wishDir);
 			if (nextDirSpeed > 0) {
 				boolean turning = (wishDir == moveDir.turnLeft() || wishDir == moveDir.turnRight());
-				if (turning && steering().onTrack()) {
+				if (turning && steering().stayOnTrack()) {
 					tf.setPosition(oldTile.x(), oldTile.y());
 				}
 				moveDir = wishDir;
@@ -119,7 +110,9 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	 * border to a forbidden neighbor tile.
 	 */
 	private float possibleSpeedTo(Direction dir) {
-		dir = Objects.requireNonNull(dir);
+		if (dir == null) {
+			return 0;
+		}
 		if (canCrossBorderTo(dir)) {
 			return maxSpeed();
 		}
@@ -175,22 +168,6 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	@Override
 	public void setTargetTile(Tile tile) {
 		targetTile = tile;
-	}
-
-	@Override
-	public List<Tile> targetPath() {
-		return targetPath;
-	}
-
-	@Override
-	public void setTargetPath(List<Tile> path) {
-		path = Objects.requireNonNull(path, "Target path must not be null");
-		targetPath = new ArrayList<>(path);
-	}
-
-	@Override
-	public boolean requireTargetPath() {
-		return requireTargetPath;
 	}
 
 	@Override

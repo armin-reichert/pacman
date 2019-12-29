@@ -24,6 +24,8 @@ import java.awt.Transparency;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
@@ -84,8 +86,11 @@ public class PlayView extends SimplePlayView {
 
 	public void showRoutes(boolean showRoutes) {
 		this.showRoutes = showRoutes;
-		cast().pacMan.requireTargetPath = showRoutes;
-		cast().ghosts().forEach(ghost -> ghost.requireTargetPath = showRoutes);
+		cast().ghosts().forEach(ghost -> {
+			Arrays.asList(GhostState.values()).forEach(state -> {
+				ghost.steeringForState(state).computeTargetPath(showRoutes);
+			});
+		});
 	}
 
 	public void showGrid(boolean showGrid) {
@@ -94,6 +99,12 @@ public class PlayView extends SimplePlayView {
 
 	public void showStates(boolean showStates) {
 		this.showStates = showStates;
+	}
+
+	@Override
+	public void init() {
+		super.init();
+		cast().ghosts().forEach(ghost -> ghost.steering().computeTargetPath(showRoutes));
 	}
 
 	@Override
@@ -126,7 +137,8 @@ public class PlayView extends SimplePlayView {
 	public void draw(Graphics2D g) {
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
-		} else {
+		}
+		else {
 			fillBackground(g);
 		}
 		drawMaze(g);
@@ -181,7 +193,8 @@ public class PlayView extends SimplePlayView {
 	private void toggleGhost(Ghost ghost) {
 		if (cast().onStage(ghost)) {
 			cast().setActorOffStage(ghost);
-		} else {
+		}
+		else {
 			cast().setActorOnStage(ghost);
 		}
 	}
@@ -250,13 +263,15 @@ public class PlayView extends SimplePlayView {
 
 	private void drawActorStates(Graphics2D g) {
 		if (cast().pacMan.getState() != null && cast().pacMan.visible()) {
-			drawSmallText(g, Color.YELLOW, cast().pacMan.tf.getX(), cast().pacMan.tf.getY(), pacManStateText(cast().pacMan));
+			drawSmallText(g, Color.YELLOW, cast().pacMan.tf.getX(), cast().pacMan.tf.getY(),
+					pacManStateText(cast().pacMan));
 		}
 		cast().ghostsOnStage().filter(Ghost::visible).forEach(ghost -> {
 			drawSmallText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
 		});
 		cast().bonus().ifPresent(bonus -> {
-			String text = String.format("%s,%d|%d", bonus, bonus.state().getTicksRemaining(), bonus.state().getDuration());
+			String text = String.format("%s,%d|%d", bonus, bonus.state().getTicksRemaining(),
+					bonus.state().getDuration());
 			drawSmallText(g, Color.YELLOW, bonus.tf.getX(), bonus.tf.getY(), text);
 		});
 	}
@@ -342,11 +357,13 @@ public class PlayView extends SimplePlayView {
 
 	private void drawRoute(Graphics2D g, Ghost ghost) {
 		Tile target = ghost.targetTile();
-		int pathLen = ghost.targetPath().size();
+		List<Tile> targetPath = ghost.steering().targetPath();
+		int pathLen = targetPath.size();
 		Color ghostColor = color(ghost);
 		Stroke solid = new BasicStroke(0.5f);
-		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
-		boolean drawRubberBand = target != null && pathLen > 0 && target != ghost.targetPath().get(pathLen - 1);
+		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
+				0);
+		boolean drawRubberBand = target != null && pathLen > 0 && target != targetPath.get(pathLen - 1);
 		if (drawRubberBand) {
 			// draw rubber band to target tile
 			int x1 = ghost.tf.getCenter().roundedX(), y1 = ghost.tf.getCenter().roundedY();
@@ -363,16 +380,17 @@ public class PlayView extends SimplePlayView {
 		if (pathLen > 1) {
 			// draw path
 			g.setColor(dimmed(ghostColor, 200));
-			for (int i = 0; i < ghost.targetPath().size() - 1; ++i) {
-				Tile from = ghost.targetPath().get(i), to = ghost.targetPath().get(i + 1);
+			for (int i = 0; i < targetPath.size() - 1; ++i) {
+				Tile from = targetPath.get(i), to = targetPath.get(i + 1);
 				g.setColor(ghostColor);
 				g.setStroke(solid);
 				g.drawLine(from.centerX(), from.centerY(), to.centerX(), to.centerY());
-				if (i + 1 == ghost.targetPath().size() - 1) {
+				if (i + 1 == targetPath.size() - 1) {
 					drawArrowHead(g, maze().directionBetween(from, to).get(), to.centerX(), to.centerY());
 				}
 			}
-		} else if (ghost.wishDir() != null) {
+		}
+		else if (ghost.wishDir() != null) {
 			// draw direction indicator
 			Direction nextDir = ghost.wishDir();
 			int x = ghost.tf.getCenter().roundedX(), y = ghost.tf.getCenter().roundedY();
@@ -401,7 +419,8 @@ public class PlayView extends SimplePlayView {
 					g.drawLine(x1, y1, x2, y2);
 					g.drawLine(x2, y2, x3, y3);
 					g.fillRect(x3 - s / 2, y3 - s / 2, s, s);
-				} else {
+				}
+				else {
 					Tile twoTilesAhead = cast().pacMan.tilesAhead(2);
 					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
 					int x2 = twoTilesAhead.centerX(), y2 = twoTilesAhead.centerY();
@@ -432,7 +451,8 @@ public class PlayView extends SimplePlayView {
 		drawDotCounter(g, null, ghostHouse.globalDotCounter(), 24, 14, ghostHouse.isGlobalDotCounterEnabled());
 	}
 
-	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row, boolean emphasized) {
+	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row,
+			boolean emphasized) {
 		try (Pen pen = new Pen(g)) {
 			if (image != null) {
 				g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);

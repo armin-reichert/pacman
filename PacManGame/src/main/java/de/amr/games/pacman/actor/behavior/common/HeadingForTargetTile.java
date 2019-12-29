@@ -4,10 +4,10 @@ import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.model.Direction.UP;
-import static java.util.Collections.emptyList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
@@ -23,10 +23,11 @@ import de.amr.games.pacman.model.Tile;
 /**
  * Steers an actor towards a target tile.
  * 
- * The detailed behavior is described <a href=
- * "http://gameinternals.com/understanding-pac-man-ghost-behavior">here</a>.
+ * The detailed behavior is described
+ * <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here</a>.
  * 
- * @param <T> type of actor
+ * @param <T>
+ *          type of actor
  * 
  * @author Armin Reichert
  */
@@ -36,14 +37,28 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	private static final List<Direction> UP_LEFT_DOWN_RIGHT = Arrays.asList(UP, LEFT, DOWN, RIGHT);
 
 	private Supplier<Tile> fnTargetTile;
+	private List<Tile> targetPath;
+	private boolean computePath;
 
 	public HeadingForTargetTile(Supplier<Tile> fnTargetTile) {
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
+		targetPath = Collections.emptyList();
+		computePath = false;
 	}
 
 	@Override
-	public boolean onTrack() {
+	public void computeTargetPath(boolean b) {
+		computePath = b;
+	}
+
+	@Override
+	public boolean stayOnTrack() {
 		return true;
+	}
+
+	@Override
+	public List<Tile> targetPath() {
+		return new ArrayList<>(targetPath);
 	}
 
 	@Override
@@ -53,19 +68,18 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 			Direction nextDir = nextDir(actor, actor.moveDir(), actor.tile(), targetTile);
 			actor.setWishDir(nextDir);
 			actor.setTargetTile(targetTile);
-			actor.setTargetPath(actor.requireTargetPath() ? pathToTargetTile(actor, targetTile) : emptyList());
+			targetPath = computePath ? pathToTargetTile(actor, targetTile) : Collections.emptyList();
 		}
 	}
 
 	/**
-	 * Computes the next move direction as described <a href=
-	 * "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
+	 * Computes the next move direction as described
+	 * <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
 	 * 
 	 * <p>
-	 * Note: We use separate parameters for the actor's move direction, current tile
-	 * and target tile instead of the members of the actor itself because the
-	 * {@link #pathToTargetTile(MazeMover)} method uses this method without actually
-	 * placing the actor at each tile of the path.
+	 * Note: We use separate parameters for the actor's move direction, current tile and target tile
+	 * instead of the members of the actor itself because the {@link #pathToTargetTile(MazeMover)}
+	 * method uses this method without actually placing the actor at each tile of the path.
 	 */
 	private Direction nextDir(T actor, Direction moveDir, Tile currentTile, Tile targetTile) {
 		Maze maze = actor.maze();
@@ -86,10 +100,11 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	}
 
 	/**
-	 * Computes the complete path the actor would traverse until it would reach the
-	 * target tile, a cycle would occur or the path would leave the board.
+	 * Computes the complete path the actor would traverse until it would reach the target tile, a cycle
+	 * would occur or the path would leave the board.
 	 * 
-	 * @param actor actor for which the path is computed
+	 * @param actor
+	 *                actor for which the path is computed
 	 * @return the path the actor would take when moving to its target tile
 	 */
 	private List<Tile> pathToTargetTile(T actor, Tile targetTile) {

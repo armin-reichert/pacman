@@ -225,6 +225,10 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 	public Steering<Ghost> steering() {
 		return steerings.getOrDefault(getState(), defaultSteering);
 	}
+	
+	public Steering<Ghost> steeringForState(GhostState state) {
+		return steerings.getOrDefault(state, defaultSteering);
+	}
 
 	public int seat() {
 		return seat;

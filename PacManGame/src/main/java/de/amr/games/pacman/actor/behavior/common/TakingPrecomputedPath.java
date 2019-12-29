@@ -27,19 +27,24 @@ public abstract class TakingPrecomputedPath<T extends MazeMover> implements Stee
 
 	protected final Maze maze;
 	protected final Supplier<Tile> fnTargetTile;
-	protected List<Tile> path;
+	protected List<Tile> targetPath;
 
 	public TakingPrecomputedPath(Maze maze, Supplier<Tile> fnTargetTile) {
 		this.maze = maze;
 		this.fnTargetTile = fnTargetTile;
-		this.path = new ArrayList<>();
+		this.targetPath = new ArrayList<>();
+	}
+
+	@Override
+	public List<Tile> targetPath() {
+		return targetPath;
 	}
 
 	protected abstract List<Tile> computePath(T actor, Tile targetTile);
 
 	protected boolean isPathInvalid(T actor) {
-		return actor.wishDir() == null || path.size() == 0 || first(path) != actor.tile()
-				|| last(path) != actor.targetTile();
+		return actor.wishDir() == null || targetPath.size() == 0 || first(targetPath) != actor.tile()
+				|| last(targetPath) != actor.targetTile();
 	}
 
 	@Override
@@ -47,17 +52,16 @@ public abstract class TakingPrecomputedPath<T extends MazeMover> implements Stee
 		Tile targetTile = fnTargetTile.get();
 		if (targetTile == null) {
 			actor.setTargetTile(null);
-			actor.setTargetPath(Collections.emptyList());
+			targetPath = Collections.emptyList();
 			return;
 		}
-		for (int i = 0; i < path.indexOf(actor.tile()); ++i) {
-			path.remove(0);
+		for (int i = 0; i < targetPath.indexOf(actor.tile()); ++i) {
+			targetPath.remove(0);
 		}
 		if (isPathInvalid(actor)) {
-			path = computePath(actor, targetTile);
-			actor.setTargetTile(last(path));
-			actor.setTargetPath(path);
+			targetPath = computePath(actor, targetTile);
+			actor.setTargetTile(last(targetPath));
 		}
-		actor.setWishDir(maze.alongPath(path).orElse(null));
+		actor.setWishDir(maze.alongPath(targetPath).orElse(null));
 	}
 }

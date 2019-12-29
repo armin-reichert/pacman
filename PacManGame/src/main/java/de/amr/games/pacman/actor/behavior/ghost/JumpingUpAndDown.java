@@ -29,7 +29,7 @@ public class JumpingUpAndDown implements Steering<Ghost> {
 	}
 
 	@Override
-	public boolean onTrack() {
+	public boolean stayOnTrack() {
 		return false;
 	}
 }

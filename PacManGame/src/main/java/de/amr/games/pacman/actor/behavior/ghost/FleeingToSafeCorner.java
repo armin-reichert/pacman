@@ -31,7 +31,7 @@ public class FleeingToSafeCorner<T extends MazeMover> extends TakingPrecomputedP
 	}
 
 	@Override
-	public boolean onTrack() {
+	public boolean stayOnTrack() {
 		return true;
 	}
 
