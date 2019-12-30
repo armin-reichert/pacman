@@ -5,6 +5,7 @@ import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ArcadeTheme;
+import de.amr.games.pacman.theme.MSXTheme;
 import de.amr.games.pacman.theme.Theme;
 
 /**
@@ -34,7 +35,7 @@ public class PacManApp extends Application {
 	@Override
 	public void init() {
 		Theme theme = new ArcadeTheme();
-//		Theme theme = new MSXTheme();
+		theme = new MSXTheme();
 		GameController gameController = new GameController(theme);
 		exitHandler = app -> gameController.game().ifPresent(Game::saveHiscore);
 		setController(gameController);

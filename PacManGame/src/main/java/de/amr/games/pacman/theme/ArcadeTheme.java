@@ -54,48 +54,48 @@ public class ArcadeTheme implements Theme {
 
 		// Symbols for bonuses
 		Symbol[] symbols = Symbol.values();
-		BufferedImage[] symbolImages = hstrip(8, 32, 48);
+		BufferedImage[] symbolImages = hstrip(8, 2, 3);
 		for (int i = 0; i < 8; ++i) {
 			symbolMap.put(symbols[i], symbolImages[i]);
 		}
 
 		// Pac-Man
-		pacManFull = $(32, 0);
+		pacManFull = t(2, 0);
 
 		// E, W, N, S -> 0(N), 1(E), 2(S), 3(W)
 		int reorder[] = { 1, 3, 0, 2 };
 		pacManWalking = new BufferedImage[4][];
 		for (int dir = 0; dir < 4; ++dir) {
-			BufferedImage mouthOpen = $(0, dir * 16), mouthHalfOpen = $(16, dir * 16);
+			BufferedImage mouthOpen = t(0, dir), mouthHalfOpen = t(1, dir);
 			pacManWalking[reorder[dir]] = new BufferedImage[] { mouthOpen, mouthHalfOpen, pacManFull };
 		}
 
-		pacManDying = hstrip(12, 32, 0);
+		pacManDying = hstrip(12, 2, 0);
 
 		// Ghosts
 		ghostColored = new BufferedImage[4][8];
 		for (int color = 0; color < 4; ++color) {
 			for (int i = 0; i < 8; ++i) {
-				ghostColored[color][i] = $(i * 16, 64 + color * 16);
+				ghostColored[color][i] = t(i, 4 + color);
 			}
 		}
 
-		ghostFrightened = hstrip(2, 128, 64);
-		ghostFlashing = hstrip(4, 128, 64);
+		ghostFrightened = hstrip(2, 8, 4);
+		ghostFlashing = hstrip(4, 8, 4);
 
 		ghostEyes = new BufferedImage[4];
 		for (int dir = 0; dir < 4; ++dir) {
-			ghostEyes[reorder[dir]] = $(128 + dir * 16, 80);
+			ghostEyes[reorder[dir]] = t(8 + dir, 5);
 		}
 
 		// Green numbers (200, 400, 800, 1600)
-		greenNumbers = hstrip(4, 0, 128);
+		greenNumbers = hstrip(4, 0, 8);
 
 		// Pink numbers
 		pinkNumbers = new BufferedImage[8];
 		// horizontal: 100, 300, 500, 700
 		for (int i = 0; i < 4; ++i) {
-			pinkNumbers[i] = $(i * 16, 144);
+			pinkNumbers[i] = t(i, 9);
 		}
 		// 1000
 		pinkNumbers[4] = $(64, 144, 19, 16);
@@ -109,6 +109,11 @@ public class ArcadeTheme implements Theme {
 	@Override
 	public BufferedImage spritesheet() {
 		return sheet;
+	}
+	
+	@Override
+	public int raster() {
+		return 16;
 	}
 
 	@Override

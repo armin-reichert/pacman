@@ -40,13 +40,38 @@ public interface Theme {
 		return spritesheet().getSubimage(x, y, w, h);
 	}
 
-	default BufferedImage $(int x, int y) {
-		return $(x, y, 16, 16);
+	/**
+	 * Extracts the tile at the given raster position.
+	 * 
+	 * @param col
+	 *             raster x-coordinate (column, zero based)
+	 * @param row
+	 *             raster y-coordinate (row, zero-based)
+	 * @return subimage of specified tile
+	 */
+	default BufferedImage t(int col, int row) {
+		return $(col * raster(), row * raster(), raster(), raster());
 	}
 
-	default BufferedImage[] hstrip(int n, int x, int y) {
-		return IntStream.range(0, n).mapToObj(i -> $(x + i * 16, y)).toArray(BufferedImage[]::new);
+	/**
+	 * Extracts a horizontal strip of tiles from the spritesheet.
+	 * 
+	 * @param n
+	 *             number of tiles
+	 * @param col
+	 *             raster x-coordinate (column, zero based)
+	 * @param row
+	 *             raster y-coordinate (row, zero-based)
+	 * @return subimage of specified tiles
+	 */
+	default BufferedImage[] hstrip(int n, int col, int row) {
+		return IntStream.range(0, n).mapToObj(i -> t(col + i, row)).toArray(BufferedImage[]::new);
 	}
+
+	/**
+	 * @return raster size (pixels)
+	 */
+	int raster();
 
 	BufferedImage spritesheet();
 

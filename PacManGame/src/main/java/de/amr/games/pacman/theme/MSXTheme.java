@@ -1,6 +1,9 @@
 package de.amr.games.pacman.theme;
 
 import static de.amr.easy.game.Application.LOGGER;
+import static de.amr.easy.game.assets.Assets.readImage;
+import static de.amr.easy.game.assets.Assets.scaledImage;
+import static de.amr.easy.game.assets.Assets.storeTrueTypeFont;
 import static de.amr.easy.game.ui.sprites.AnimationType.BACK_AND_FORTH;
 import static de.amr.easy.game.ui.sprites.AnimationType.CYCLIC;
 import static de.amr.easy.game.ui.sprites.AnimationType.LINEAR;
@@ -43,75 +46,69 @@ public class MSXTheme implements Theme {
 	private final BufferedImage ghostFlashing[];
 	private final BufferedImage ghostEyes[];
 	private final BufferedImage greenNumbers[];
-	private final BufferedImage pinkNumbers[];
 	private final Map<Symbol, BufferedImage> symbolMap = new HashMap<>();
 
 	public MSXTheme() {
-		Assets.storeTrueTypeFont("font.joystix", "Joystix.ttf", Font.PLAIN, 12);
+		storeTrueTypeFont("font.joystix", "Joystix.ttf", Font.PLAIN, 12);
 
-		mazeFull = Assets.readImage("images/msx/maze_full.png");
-		mazeEmpty = Assets.readImage("images/msx/maze_empty.png");
-
+		mazeFull = scaledImage(readImage("images/msx/maze_full.png"), 28 * 8, 31 * 8);
+		mazeEmpty = scaledImage(readImage("images/msx/maze_empty.png"), 28 * 8, 31 * 8);
 		int blue = -14605825; // debugger told me this
 		mazeWhite = changeColor(mazeEmpty, blue, Color.WHITE.getRGB());
 
 		// Symbols for bonuses
 		Symbol[] symbols = Symbol.values();
-		BufferedImage[] symbolImages = hstrip(8, 0, 64);
+		BufferedImage[] symbolImages = hstrip(8, 0, 4);
 		for (int i = 0; i < 8; ++i) {
 			symbolMap.put(symbols[i], symbolImages[i]);
 		}
 
 		// Pac-Man
-		pacManFull = $(0, 16);
+		pacManFull = t(0, 1);
 
-		// E, W, N, S -> 0(N), 1(E), 2(S), 3(W)
-		int reorder[] = { 1, 3, 0, 2 };
-		pacManWalking = new BufferedImage[4][];
-		for (int dir = 0; dir < 4; ++dir) {
-			BufferedImage mouthOpen = $(0, dir * 16), mouthHalfOpen = $(16, dir * 16);
-			pacManWalking[reorder[dir]] = new BufferedImage[] { mouthOpen, mouthHalfOpen, pacManFull };
-		}
+		// 0=UP, 1=RIGHT, 2=DOWN, 3=LEFT
+		pacManWalking = new BufferedImage[][] {
+			/*@formatter:off*/
+			{ t(0, 1), t(2, 0), t(3, 0) }, 
+			{ t(0, 1), t(0, 0), t(1, 0) },
+			{ t(0, 1), t(6, 0), t(7, 0) }, 
+			{ t(0, 1), t(4, 0), t(5, 0) }
+			/*@formatter:on*/
+		};
 
-		pacManDying = hstrip(12, 32, 0);
+		pacManDying = hstrip(11, 0, 1);
 
-		// Ghosts
+		// 0=RED, 1=PINK, 2=CYAN, 3=ORANGE
 		ghostColored = new BufferedImage[4][8];
 		for (int color = 0; color < 4; ++color) {
 			for (int i = 0; i < 8; ++i) {
-				ghostColored[color][i] = $(i * 16, 64 + color * 16);
+				ghostColored[color][i] = t(i, 5 + color);
 			}
 		}
 
-		ghostFrightened = hstrip(2, 128, 64);
-		ghostFlashing = hstrip(4, 128, 64);
+		ghostFrightened = hstrip(2, 0, 9);
+		ghostFlashing = hstrip(2, 0, 9); // TODO
 
-		ghostEyes = new BufferedImage[4];
-		for (int dir = 0; dir < 4; ++dir) {
-			ghostEyes[reorder[dir]] = $(128 + dir * 16, 80);
-		}
+		// 0=UP, 1=RIGHT, 2=DOWN, 3=LEFT
+		ghostEyes = new BufferedImage[] { t(3, 9), t(2, 9), t(5, 9), t(4, 9) };
 
 		// Green numbers (200, 400, 800, 1600)
-		greenNumbers = hstrip(4, 0, 128);
+		greenNumbers = hstrip(4, 0, 10);
 
-		// Pink numbers
-		pinkNumbers = new BufferedImage[8];
-		// horizontal: 100, 300, 500, 700
-		for (int i = 0; i < 4; ++i) {
-			pinkNumbers[i] = $(i * 16, 144);
-		}
-		// 1000
-		pinkNumbers[4] = $(64, 144, 19, 16);
-		// vertical: 2000, 3000, 5000)
-		for (int j = 0; j < 3; ++j) {
-			pinkNumbers[5 + j] = $(56, 160 + j * 16, 2 * 16, 16);
-		}
+		// 100, 300, 500, 700, 1000, 2000, 3000, 5000
+		// TODO no sprites for these!
+
 		LOGGER.info(String.format("Theme '%s' created.", getClass().getSimpleName()));
 	}
 
 	@Override
 	public BufferedImage spritesheet() {
 		return sheet;
+	}
+
+	@Override
+	public int raster() {
+		return 16;
 	}
 
 	@Override
@@ -198,7 +195,7 @@ public class MSXTheme implements Theme {
 
 	@Override
 	public Sprite spr_pinkNumber(int i) {
-		return Sprite.of(pinkNumbers[i]);
+		return null; // TODO
 	}
 
 	@Override
@@ -208,8 +205,8 @@ public class MSXTheme implements Theme {
 
 	@Override
 	public Stream<Sound> snd_clips_all() {
-		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eatPill(), snd_extraLife(), snd_insertCoin(),
-				snd_ready(), snd_ghost_chase(), snd_ghost_dead(), snd_waza());
+		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eatPill(), snd_extraLife(),
+				snd_insertCoin(), snd_ready(), snd_ghost_chase(), snd_ghost_dead(), snd_waza());
 	}
 
 	@Override
