@@ -19,7 +19,7 @@ import de.amr.games.pacman.view.core.Pen;
  * 
  * @author Armin Reichert
  */
-public class LoadingView extends GameView {
+public class LoadingView implements GameView {
 
 	private Theme theme;
 	private int alpha = -1;
@@ -69,8 +69,7 @@ public class LoadingView extends GameView {
 			for (int i = 1; i < 4; ++i) {
 				ghostDist[i] = ghostDist[i - 1] + (5 + new Random().nextInt(5)) * Tile.SIZE;
 			}
-		}
-		else if (x < -50 * Tile.SIZE) {
+		} else if (x < -50 * Tile.SIZE) {
 			direction = Direction.RIGHT;
 			y = 9 * Tile.SIZE;
 			speed = 0.9f;
@@ -85,8 +84,7 @@ public class LoadingView extends GameView {
 			if (alpha > 160) {
 				alphaInc = -2;
 				alpha = 160;
-			}
-			else if (alpha < 0) {
+			} else if (alpha < 0) {
 				alphaInc = 2;
 				alpha = 0;
 			}
@@ -97,8 +95,7 @@ public class LoadingView extends GameView {
 		}
 		if (direction == Direction.RIGHT) {
 			pacManRight.draw(g, x, y);
-		}
-		else {
+		} else {
 			for (int i = 0; i < 4; ++i) {
 				ghostsLeft[i].draw(g, x + ghostDist[i], y);
 			}

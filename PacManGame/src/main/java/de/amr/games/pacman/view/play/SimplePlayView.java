@@ -26,7 +26,7 @@ import de.amr.games.pacman.view.core.Pen;
  * 
  * @author Armin Reichert
  */
-public class SimplePlayView extends GameView {
+public class SimplePlayView implements GameView {
 
 	protected SpriteAnimation energizerBlinking;
 	protected boolean mazeFlashing;
@@ -144,8 +144,7 @@ public class SimplePlayView extends GameView {
 	protected void drawMaze(Graphics2D g) {
 		if (mazeFlashing) {
 			drawFlashingMaze(g);
-		}
-		else {
+		} else {
 			drawNormalMaze(g);
 		}
 	}
@@ -192,10 +191,8 @@ public class SimplePlayView extends GameView {
 			cast.pacMan.draw(g);
 		}
 		// draw dead ghosts (numbers) before living ghosts
-		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> ghost.is(DEAD))
-				.forEach(ghost -> ghost.draw(g));
-		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> !ghost.is(DEAD))
-				.forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> !ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {

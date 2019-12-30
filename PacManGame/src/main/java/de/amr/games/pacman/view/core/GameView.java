@@ -10,26 +10,26 @@ import de.amr.easy.game.view.View;
 import de.amr.games.pacman.theme.Theme;
 
 /**
- * Base class for views with common functionality.
+ * Common interface for all views in Pac-Man.
  * 
  * @author Armin Reichert
  */
-public abstract class GameView implements View, Lifecycle, PropertyChangeListener {
+public interface GameView extends View, Lifecycle, PropertyChangeListener {
 
-	public abstract Theme theme();
-
-	public abstract void onThemeChanged(Theme theme);
-
-	public int width() {
+	default int width() {
 		return app().settings.width;
 	}
 
-	public int height() {
+	default int height() {
 		return app().settings.height;
 	}
 
+	Theme theme();
+
+	void onThemeChanged(Theme theme);
+
 	@Override
-	public void propertyChange(PropertyChangeEvent e) {
+	default void propertyChange(PropertyChangeEvent e) {
 		if ("theme".equals(e.getPropertyName())) {
 			Theme newTheme = (Theme) e.getNewValue();
 			onThemeChanged(newTheme);
