@@ -8,6 +8,11 @@ import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.model.Symbol;
 
+/**
+ * Common interface for themes used in Pac-Man.
+ * 
+ * @author Armin Reichert
+ */
 public interface Theme {
 
 	public static final int MAZE_FLASH_TIME_MILLIS = 400;
@@ -79,5 +84,4 @@ public interface Theme {
 	Sound snd_waza();
 
 	Stream<Sound> snd_clips_all();
-
 }
