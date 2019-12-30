@@ -94,8 +94,8 @@ public class Cast {
 
 		clyde.eyes = UP;
 		clyde.during(SCATTERING, isHeadingFor(maze().horizonSW));
-		clyde.during(CHASING,
-				isHeadingFor(() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
+		clyde.during(CHASING, isHeadingFor(
+				() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
 		clyde.during(LOCKED, isJumpingUpAndDown(maze(), clyde.seat()));
 		clyde.during(ENTERING_HOUSE, isTakingSeat(clyde));
 
@@ -149,9 +149,9 @@ public class Cast {
 			ghost.sprites.set("color-" + dir, theme.spr_ghostColored(color, dir.ordinal()));
 			ghost.sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir.ordinal()));
 		});
-		// sprite keys: "value-1", ..., "value-4"
-		for (int i = 1; i <= 4; ++i) {
-			ghost.sprites.set("value-" + i, theme.spr_greenNumber(i - 1));
+		// sprite keys: "number-200", "number-400", "number-800", "number-1600"
+		for (int number : new int[] { 200, 400, 800, 1600 }) {
+			ghost.sprites.set("number-" + number, theme.spr_number(number));
 		}
 		ghost.sprites.set("frightened", theme.spr_ghostFrightened());
 		ghost.sprites.set("flashing", theme.spr_ghostFlashing());

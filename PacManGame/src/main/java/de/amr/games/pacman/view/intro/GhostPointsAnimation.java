@@ -14,8 +14,8 @@ import de.amr.easy.game.view.Animation;
 import de.amr.games.pacman.theme.Theme;
 
 /**
- * An animation showing Pac-Man and the four ghosts frightened and showing the
- * points scored for the ghosts.
+ * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the
+ * ghosts.
  * 
  * @author Armin Reichert
  */
@@ -35,8 +35,9 @@ public class GhostPointsAnimation extends Entity implements Animation {
 		this.theme = theme;
 		pacMan = theme.spr_pacManWalking(E);
 		ghost = theme.spr_ghostFrightened();
-		for (int i = 0; i < 4; ++i) {
-			points[i] = theme.spr_greenNumber(i);
+		int i = 0;
+		for (int number : new int[] { 200, 400, 800, 1600 }) {
+			points[i++] = theme.spr_number(number);
 		}
 		ghostTimer = -1;
 		tf.setWidth(90);
@@ -85,7 +86,8 @@ public class GhostPointsAnimation extends Entity implements Animation {
 			killNext = killNext + 1;
 			if (killed.cardinality() == 5) {
 				stop();
-			} else {
+			}
+			else {
 				theme.snd_eatGhost().play();
 				resetGhostTimer();
 			}
@@ -109,7 +111,8 @@ public class GhostPointsAnimation extends Entity implements Animation {
 		if (energizer) {
 			g.setColor(Color.PINK);
 			g.fillOval(4, 4, 8, 8);
-		} else {
+		}
+		else {
 			g.setColor(Color.PINK);
 			g.setFont(new Font("Arial", Font.BOLD, 8));
 			g.drawString("50", 4, 12);
@@ -120,7 +123,8 @@ public class GhostPointsAnimation extends Entity implements Animation {
 			g.translate(x, 0);
 			if (killed.get(i)) {
 				points[i].draw(g);
-			} else {
+			}
+			else {
 				ghost.draw(g);
 			}
 			g.translate(-x, 0);

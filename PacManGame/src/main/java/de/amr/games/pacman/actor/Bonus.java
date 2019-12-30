@@ -4,7 +4,6 @@ import static de.amr.games.pacman.actor.BonusState.ACTIVE;
 import static de.amr.games.pacman.actor.BonusState.CONSUMED;
 import static de.amr.games.pacman.actor.BonusState.INACTIVE;
 import static de.amr.games.pacman.model.Timing.sec;
-import static java.util.Arrays.binarySearch;
 
 import java.awt.Graphics2D;
 import java.util.Random;
@@ -20,9 +19,9 @@ import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Bonus symbol (fruit or other symbol) that appears at the maze bonus position
- * for around 9 seconds. When consumed, the bonus is displayed for 3 seconds as
- * a number representing its value and then disappears.
+ * Bonus symbol (fruit or other symbol) that appears at the maze bonus position for around 9
+ * seconds. When consumed, the bonus is displayed for 3 seconds as a number representing its value
+ * and then disappears.
  * 
  * @author Armin Reichert
  */
@@ -43,7 +42,7 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 		brain = buildBrain();
 		brain.fsm().setLogger(Game.FSM_LOGGER);
 		sprites.set("symbol", cast.theme().spr_bonusSymbol(symbol));
-		sprites.set("number", cast.theme().spr_pinkNumber(binarySearch(Game.POINTS_BONUS, value)));
+		sprites.set("value", cast.theme().spr_number(value));
 	}
 
 	public Symbol symbol() {
@@ -77,7 +76,7 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 					.onEntry(() -> sprites.select("symbol"))
 				.state(CONSUMED)
 					.timeoutAfter(sec(3))
-					.onEntry(() -> sprites.select("number"))
+					.onEntry(() -> sprites.select("value"))
 				.state(INACTIVE)
 					.onEntry(cast::removeBonus)
 			.transitions()

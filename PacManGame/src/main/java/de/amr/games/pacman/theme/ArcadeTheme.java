@@ -1,6 +1,7 @@
 package de.amr.games.pacman.theme;
 
 import static de.amr.easy.game.Application.LOGGER;
+import static de.amr.easy.game.assets.Assets.storeTrueTypeFont;
 import static de.amr.easy.game.ui.sprites.AnimationType.BACK_AND_FORTH;
 import static de.amr.easy.game.ui.sprites.AnimationType.CYCLIC;
 import static de.amr.easy.game.ui.sprites.AnimationType.LINEAR;
@@ -31,10 +32,9 @@ public class ArcadeTheme implements Theme {
 
 	private final BufferedImage sheet = Assets.readImage("images/arcade/sprites.png");
 	private final BufferedImage mazeEmpty = Assets.readImage("images/arcade/maze_empty.png");
+	private final BufferedImage mazeEmptyWhite;
 	private final BufferedImage mazeFull = Assets.readImage("images/arcade/maze_full.png");
 	private final BufferedImage logo = Assets.readImage("images/arcade/logo.png");
-
-	private final BufferedImage mazeWhite;
 	private final BufferedImage pacManFull;
 	private final BufferedImage pacManWalking[][];
 	private final BufferedImage pacManDying[];
@@ -47,30 +47,28 @@ public class ArcadeTheme implements Theme {
 	private final Map<Symbol, BufferedImage> symbolMap = new HashMap<>();
 
 	public ArcadeTheme() {
-		Assets.storeTrueTypeFont("font.joystix", "Joystix.ttf", Font.PLAIN, 12);
+		storeTrueTypeFont("font.joystix", "Joystix.ttf", Font.PLAIN, 12);
 
 		int blue = -14605825; // debugger told me this
-		mazeWhite = changeColor(mazeEmpty, blue, Color.WHITE.getRGB());
+		mazeEmptyWhite = changeColor(mazeEmpty, blue, Color.WHITE.getRGB());
 
-		// Symbols for bonuses
-		Symbol[] symbols = Symbol.values();
-		BufferedImage[] symbolImages = hstrip(8, 2, 3);
-		for (int i = 0; i < 8; ++i) {
-			symbolMap.put(symbols[i], symbolImages[i]);
+		// Symbols
+		BufferedImage[] symbolImages = ht(8, 2, 3);
+		for (Symbol symbol : Symbol.values()) {
+			symbolMap.put(symbol, symbolImages[symbol.ordinal()]);
 		}
 
 		// Pac-Man
 		pacManFull = t(2, 0);
-
-		// E, W, N, S -> 0(N), 1(E), 2(S), 3(W)
-		int reorder[] = { 1, 3, 0, 2 };
-		pacManWalking = new BufferedImage[4][];
-		for (int dir = 0; dir < 4; ++dir) {
-			BufferedImage mouthOpen = t(0, dir), mouthHalfOpen = t(1, dir);
-			pacManWalking[reorder[dir]] = new BufferedImage[] { mouthOpen, mouthHalfOpen, pacManFull };
-		}
-
-		pacManDying = hstrip(12, 2, 0);
+		pacManDying = ht(12, 2, 0);
+		pacManWalking = new BufferedImage[][] {
+			/*@formatter:off*/
+			{ t(0, 2), t(1, 2), pacManFull }, 
+			{ t(0, 0), t(1, 0), pacManFull },
+			{ t(0, 3), t(1, 3), pacManFull }, 
+			{ t(0, 1), t(1, 1), pacManFull }
+			/*@formatter:on*/
+		};
 
 		// Ghosts
 		ghostColored = new BufferedImage[4][8];
@@ -79,38 +77,67 @@ public class ArcadeTheme implements Theme {
 				ghostColored[color][i] = t(i, 4 + color);
 			}
 		}
-
-		ghostFrightened = hstrip(2, 8, 4);
-		ghostFlashing = hstrip(4, 8, 4);
-
-		ghostEyes = new BufferedImage[4];
-		for (int dir = 0; dir < 4; ++dir) {
-			ghostEyes[reorder[dir]] = t(8 + dir, 5);
-		}
+		ghostFrightened = ht(2, 8, 4);
+		ghostFlashing = ht(4, 8, 4);
+		ghostEyes = new BufferedImage[] { t(10, 5), t(8, 5), t(11, 5), t(9, 5) };
 
 		// Green numbers (200, 400, 800, 1600)
-		greenNumbers = hstrip(4, 0, 8);
+		greenNumbers = ht(4, 0, 8);
 
 		// Pink numbers
-		pinkNumbers = new BufferedImage[8];
 		// horizontal: 100, 300, 500, 700
+		// 1000
+		// vertical: 2000, 3000, 5000)
+		pinkNumbers = new BufferedImage[8];
 		for (int i = 0; i < 4; ++i) {
 			pinkNumbers[i] = t(i, 9);
 		}
-		// 1000
-		pinkNumbers[4] = $(64, 144, 19, 16);
-		// vertical: 2000, 3000, 5000)
+		pinkNumbers[4] = crop(64, 144, 19, 16);
 		for (int j = 0; j < 3; ++j) {
-			pinkNumbers[5 + j] = $(56, 160 + j * 16, 2 * 16, 16);
+			pinkNumbers[5 + j] = crop(56, 160 + j * 16, 2 * 16, 16);
 		}
+
 		LOGGER.info(String.format("Theme '%s' created.", getClass().getSimpleName()));
+	}
+
+	@Override
+	public Sprite spr_number(int number) {
+		switch (number) {
+		case 200:
+			return Sprite.of(greenNumbers[0]);
+		case 400:
+			return Sprite.of(greenNumbers[1]);
+		case 800:
+			return Sprite.of(greenNumbers[2]);
+		case 1600:
+			return Sprite.of(greenNumbers[3]);
+
+		case 100:
+			return Sprite.of(pinkNumbers[0]);
+		case 300:
+			return Sprite.of(pinkNumbers[1]);
+		case 500:
+			return Sprite.of(pinkNumbers[2]);
+		case 700:
+			return Sprite.of(pinkNumbers[3]);
+		case 1000:
+			return Sprite.of(pinkNumbers[4]);
+		case 2000:
+			return Sprite.of(pinkNumbers[5]);
+		case 3000:
+			return Sprite.of(pinkNumbers[6]);
+		case 5000:
+			return Sprite.of(pinkNumbers[7]);
+		default:
+			throw new IllegalArgumentException("No sprite found for number" + number);
+		}
 	}
 
 	@Override
 	public BufferedImage spritesheet() {
 		return sheet;
 	}
-	
+
 	@Override
 	public int raster() {
 		return 16;
@@ -133,7 +160,7 @@ public class ArcadeTheme implements Theme {
 
 	@Override
 	public Sprite spr_flashingMaze() {
-		return Sprite.of(mazeEmpty, mazeWhite).animate(CYCLIC, MAZE_FLASH_TIME_MILLIS / 2);
+		return Sprite.of(mazeEmpty, mazeEmptyWhite).animate(CYCLIC, MAZE_FLASH_TIME_MILLIS / 2);
 	}
 
 	@Override
@@ -194,24 +221,14 @@ public class ArcadeTheme implements Theme {
 	}
 
 	@Override
-	public Sprite spr_greenNumber(int i) {
-		return Sprite.of(greenNumbers[i]);
-	}
-
-	@Override
-	public Sprite spr_pinkNumber(int i) {
-		return Sprite.of(pinkNumbers[i]);
-	}
-
-	@Override
 	public Font fnt_text() {
 		return Assets.font("font.joystix");
 	}
 
 	@Override
 	public Stream<Sound> snd_clips_all() {
-		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eatPill(), snd_extraLife(), snd_insertCoin(),
-				snd_ready(), snd_ghost_chase(), snd_ghost_dead(), snd_waza());
+		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eatPill(), snd_extraLife(),
+				snd_insertCoin(), snd_ready(), snd_ghost_chase(), snd_ghost_dead(), snd_waza());
 	}
 
 	@Override

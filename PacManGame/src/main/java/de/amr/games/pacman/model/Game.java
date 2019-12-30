@@ -23,12 +23,10 @@ import java.util.logging.Logger;
  * 
  * @author Armin Reichert
  * 
- * @see <a href=
- *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
+ * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
  *      dossier</a>
- * @see <a href=
- *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man
- *      level specifications</a>
+ * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man level
+ *      specifications</a>
  */
 public class Game {
 
@@ -38,10 +36,10 @@ public class Game {
 		FSM_LOGGER.setLevel(Level.OFF);
 	}
 
-	public static final int POINTS_PELLET = 10;
-	public static final int POINTS_ENERGIZER = 50;
-	public static final int POINTS_BONUS[] = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
-	public static final int POINTS_GHOSTS[] = { 200, 400, 800, 1600 };
+	public static final int POINTS_PELLET_EATEN = 10;
+	public static final int POINTS_ENERGIZER_EATEN = 50;
+	public static final int POINTS_BONUS_EATEN[] = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+	public static final int POINTS_GHOST_EATEN[] = { 200, 400, 800, 1600 };
 
 	public static final int DIGEST_PELLET_TICKS = 1;
 	public static final int DIGEST_ENERGIZER_TICKS = 3;
@@ -50,9 +48,9 @@ public class Game {
 	public static final int SPEED_2_FPS = 70;
 	public static final int SPEED_3_FPS = 80;
 
-	final File hiscoreFile = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
+	File hiscoreFile = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
 
-	final GameLevel[] levels = new GameLevel[] {
+	GameLevel[] levels = new GameLevel[] {
 		/*@formatter:off*/
 		null, // level numbering starts at 1
 		new GameLevel(CHERRIES,   100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6, 5 ),
@@ -79,10 +77,10 @@ public class Game {
 		/*@formatter:on*/
 	};
 
-	private final Maze maze = new Maze();
-	private final Deque<Symbol> levelSymbols = new ArrayDeque<>(7);
-	private final Hiscore hiscore = new Hiscore();
-	private GameLevel level;
+	Maze maze = new Maze();
+	Deque<Symbol> levelSymbols = new ArrayDeque<>(7);
+	Hiscore hiscore = new Hiscore();
+	GameLevel level;
 
 	public int lives;
 	public int score;
@@ -133,7 +131,8 @@ public class Game {
 	}
 
 	/**
-	 * @param tile tile containing food
+	 * @param tile
+	 *               tile containing food
 	 * @return points scored
 	 */
 	public int eatFoodAt(Tile tile) {
@@ -141,10 +140,11 @@ public class Game {
 		if (tile.containsEnergizer()) {
 			level.ghostsKilledByEnergizer = 0;
 			tile.removeFood();
-			return POINTS_ENERGIZER;
-		} else {
+			return POINTS_ENERGIZER_EATEN;
+		}
+		else {
 			tile.removeFood();
-			return POINTS_PELLET;
+			return POINTS_PELLET_EATEN;
 		}
 	}
 
@@ -169,15 +169,15 @@ public class Game {
 	}
 
 	public void scoreKilledGhost(String ghostName) {
-		int points = POINTS_GHOSTS[level.ghostsKilledByEnergizer];
+		int points = POINTS_GHOST_EATEN[level.ghostsKilledByEnergizer];
 		level.ghostsKilledByEnergizer += 1;
 		level.ghostKilledInLevel += 1;
 		score(points);
 		if (level.ghostKilledInLevel == 16) {
 			score(12000);
 		}
-		LOGGER.info(() -> String.format("Scored %d points for killing %s (%s ghost in sequence)", points, ghostName,
-				new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]));
+		LOGGER.info(() -> String.format("Scored %d points for killing %s (%s ghost in sequence)", points,
+				ghostName, new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]));
 	}
 
 	public void clearPacManStarvingTime() {

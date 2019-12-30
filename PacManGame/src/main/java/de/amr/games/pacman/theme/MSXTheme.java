@@ -45,7 +45,7 @@ public class MSXTheme implements Theme {
 	private final BufferedImage ghostFrightened[];
 	private final BufferedImage ghostFlashing[];
 	private final BufferedImage ghostEyes[];
-	private final BufferedImage greenNumbers[];
+	private final BufferedImage numbers[];
 	private final Map<Symbol, BufferedImage> symbolMap = new HashMap<>();
 
 	public MSXTheme() {
@@ -58,7 +58,7 @@ public class MSXTheme implements Theme {
 
 		// Symbols for bonuses
 		Symbol[] symbols = Symbol.values();
-		BufferedImage[] symbolImages = hstrip(8, 0, 4);
+		BufferedImage[] symbolImages = ht(8, 0, 4);
 		for (int i = 0; i < 8; ++i) {
 			symbolMap.put(symbols[i], symbolImages[i]);
 		}
@@ -76,7 +76,7 @@ public class MSXTheme implements Theme {
 			/*@formatter:on*/
 		};
 
-		pacManDying = hstrip(11, 0, 1);
+		pacManDying = ht(11, 0, 1);
 
 		// 0=RED, 1=PINK, 2=CYAN, 3=ORANGE
 		ghostColored = new BufferedImage[4][8];
@@ -86,14 +86,14 @@ public class MSXTheme implements Theme {
 			}
 		}
 
-		ghostFrightened = hstrip(2, 0, 9);
-		ghostFlashing = hstrip(2, 0, 9); // TODO
+		ghostFrightened = ht(2, 0, 9);
+		ghostFlashing = ht(2, 0, 9); // TODO
 
 		// 0=UP, 1=RIGHT, 2=DOWN, 3=LEFT
 		ghostEyes = new BufferedImage[] { t(3, 9), t(2, 9), t(5, 9), t(4, 9) };
 
 		// Green numbers (200, 400, 800, 1600)
-		greenNumbers = hstrip(4, 0, 10);
+		numbers = ht(4, 0, 10);
 
 		// 100, 300, 500, 700, 1000, 2000, 3000, 5000
 		// TODO no sprites for these!
@@ -189,13 +189,35 @@ public class MSXTheme implements Theme {
 	}
 
 	@Override
-	public Sprite spr_greenNumber(int i) {
-		return Sprite.of(greenNumbers[i]);
-	}
-
-	@Override
-	public Sprite spr_pinkNumber(int i) {
-		return null; // TODO
+	public Sprite spr_number(int number) {
+		switch (number) {
+		case 200:
+			return Sprite.of(numbers[0]);
+		case 400:
+			return Sprite.of(numbers[1]);
+		case 800:
+			return Sprite.of(numbers[2]);
+		case 1600:
+			return Sprite.of(numbers[3]);
+		case 100:
+			return null; // TODO
+		case 300:
+			return null; // TODO
+		case 500:
+			return null; // TODO
+		case 700:
+			return null; // TODO
+		case 1000:
+			return null; // TODO
+		case 2000:
+			return null; // TODO
+		case 3000:
+			return null; // TODO
+		case 5000:
+			return null; // TODO
+		default:
+			throw new IllegalArgumentException("No sprite found for number" + number);
+		}
 	}
 
 	@Override

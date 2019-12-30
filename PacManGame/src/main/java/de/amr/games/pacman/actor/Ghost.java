@@ -9,6 +9,7 @@ import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.actor.behavior.Steerings.isHeadingFor;
 import static de.amr.games.pacman.model.Direction.UP;
+import static de.amr.games.pacman.model.Game.POINTS_GHOST_EATEN;
 import static de.amr.games.pacman.model.Timing.sec;
 import static de.amr.games.pacman.model.Timing.speed;
 
@@ -117,7 +118,8 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 				.state(DEAD)
 					.timeoutAfter(sec(1)) // "dying" time
 					.onEntry(() -> {
-						sprites.select("value-" + game().level().ghostsKilledByEnergizer);
+						int points = POINTS_GHOST_EATEN[game().level().ghostsKilledByEnergizer - 1];
+						sprites.select("number-" + points);
 						setTargetTile(maze().ghostHouseSeats[0]);
 						turnDeadGhostSoundOn();
 					})
