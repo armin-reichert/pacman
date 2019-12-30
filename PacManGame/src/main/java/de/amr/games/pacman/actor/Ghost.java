@@ -56,7 +56,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 		this.seat = seat;
 		brain = buildBrain();
 		brain.fsm().setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		brain.fsm().traceTo(Game.FSM_LOGGER, () -> 60);
+		brain.fsm().setLogger(Game.FSM_LOGGER);
 	}
 
 	@Override
@@ -225,7 +225,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 	public Steering<Ghost> steering() {
 		return steerings.getOrDefault(getState(), defaultSteering);
 	}
-	
+
 	public Steering<Ghost> steeringForState(GhostState state) {
 		return steerings.getOrDefault(state, defaultSteering);
 	}

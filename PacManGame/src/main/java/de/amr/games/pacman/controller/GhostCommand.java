@@ -57,7 +57,7 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 			.when(CHASING).then(SCATTERING).onTimeout().act(() -> ++round)
 		.endStateMachine();
 		/*@formatter:on*/
-		traceTo(Game.FSM_LOGGER, () -> 60);
+		setLogger(Game.FSM_LOGGER);
 	}
 
 	@Override

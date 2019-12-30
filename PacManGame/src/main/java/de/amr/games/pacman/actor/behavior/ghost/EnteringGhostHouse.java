@@ -70,7 +70,7 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 					
 		.endStateMachine();
 		/*@formatter:on*/
-		traceTo(Game.FSM_LOGGER, () -> 60);
+		setLogger(Game.FSM_LOGGER);
 	}
 
 	@Override

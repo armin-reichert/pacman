@@ -41,7 +41,7 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 		symbol = game().level().bonusSymbol;
 		value = game().level().bonusValue;
 		brain = buildBrain();
-		brain.fsm().traceTo(Game.FSM_LOGGER, () -> 60);
+		brain.fsm().setLogger(Game.FSM_LOGGER);
 		sprites.set("symbol", cast.theme().spr_bonusSymbol(symbol));
 		sprites.set("number", cast.theme().spr_pinkNumber(binarySearch(Game.POINTS_BONUS, value)));
 	}

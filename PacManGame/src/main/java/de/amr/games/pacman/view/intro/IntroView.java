@@ -91,7 +91,7 @@ public class IntroView extends GameView implements FsmContainer<IntroState, Void
 
 	private FsmComponent<IntroState, Void> buildFsmComponent() {
 		StateMachine<IntroState, Void> fsm = buildStateMachine();
-		fsm.traceTo(Game.FSM_LOGGER, () -> 60);
+		fsm.setLogger(Game.FSM_LOGGER);
 		return new FsmComponent<>(fsm);
 	}
 

@@ -28,8 +28,8 @@ import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.model.Timing;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
@@ -54,7 +54,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 		super("Pac-Man");
 		this.cast = cast;
 		brain = buildBrain();
-		brain.fsm().traceTo(FSM_LOGGER, () -> Timing.FPS);
+		brain.fsm().setLogger(Game.FSM_LOGGER);
 		brain.fsm().setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
 		brain.doNotLog(event -> event instanceof FoodFoundEvent && !((FoodFoundEvent) event).energizer);
 	}
