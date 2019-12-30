@@ -2,8 +2,12 @@ package de.amr.games.pacman.theme;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.model.Symbol;
@@ -16,6 +20,37 @@ import de.amr.games.pacman.model.Symbol;
 public interface Theme {
 
 	public static final int MAZE_FLASH_TIME_MILLIS = 400;
+
+	default BufferedImage changeColor(BufferedImage src, int from, int to) {
+		BufferedImage copy = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+		Graphics2D g = copy.createGraphics();
+		g.drawImage(src, 0, 0, null);
+		for (int x = 0; x < copy.getWidth(); ++x) {
+			for (int y = 0; y < copy.getHeight(); ++y) {
+				if (copy.getRGB(x, y) == from) {
+					copy.setRGB(x, y, to);
+				}
+			}
+		}
+		g.dispose();
+		return copy;
+	}
+
+	default BufferedImage $(int x, int y, int w, int h) {
+		return spritesheet().getSubimage(x, y, w, h);
+	}
+
+	default BufferedImage $(int x, int y) {
+		return $(x, y, 16, 16);
+	}
+
+	default BufferedImage[] hstrip(int n, int x, int y) {
+		return IntStream.range(0, n).mapToObj(i -> $(x + i * 16, y)).toArray(BufferedImage[]::new);
+	}
+
+	BufferedImage spritesheet();
+
+	BufferedImage img_logo();
 
 	Sprite spr_emptyMaze();
 
@@ -53,15 +88,23 @@ public interface Theme {
 		return Color.BLACK;
 	}
 
-	// Background music
+	// Sound
+
+	default Sound sound(String name, String type) {
+		return Assets.sound("sfx/" + name + "." + type);
+	}
+
+	default Sound mp3(String name) {
+		return sound(name, "mp3");
+	}
+
+	default Sound wav(String name) {
+		return sound(name, "wav");
+	}
 
 	Sound music_playing();
 
 	Sound music_gameover();
-
-	void loadMusic();
-
-	// Clips
 
 	Sound snd_die();
 

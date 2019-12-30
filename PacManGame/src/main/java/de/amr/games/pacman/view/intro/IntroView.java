@@ -13,7 +13,6 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 
-import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
@@ -54,7 +53,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 	}
 
 	private void createUIComponents() {
-		pacManLogo = new ImageWidget(Assets.image("images/logo.png"));
+		pacManLogo = new ImageWidget(theme.img_logo());
 		pacManLogo.tf.centerX(width());
 		pacManLogo.tf.setY(20);
 		chasePacMan = new ChasePacManAnimation(theme);

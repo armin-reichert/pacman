@@ -23,16 +23,16 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.model.Symbol;
 
 /**
- * Theme based on original(?) sprites.
+ * Theme based on MSX sprites.
  * 
  * @author Armin Reichert
  */
-public class ArcadeTheme implements Theme {
+public class MSXTheme implements Theme {
 
-	private final BufferedImage sheet = Assets.readImage("images/arcade/sprites.png");
-	private final BufferedImage mazeEmpty = Assets.readImage("images/arcade/maze_empty.png");
-	private final BufferedImage mazeFull = Assets.readImage("images/arcade/maze_full.png");
-	private final BufferedImage logo = Assets.readImage("images/arcade/logo.png");
+	private final BufferedImage sheet = Assets.readImage("images/msx/sprites.png");
+	private final BufferedImage mazeEmpty;
+	private final BufferedImage mazeFull;
+	private final BufferedImage logo = Assets.readImage("images/msx/logo.png");
 
 	private final BufferedImage mazeWhite;
 	private final BufferedImage pacManFull;
@@ -46,8 +46,11 @@ public class ArcadeTheme implements Theme {
 	private final BufferedImage pinkNumbers[];
 	private final Map<Symbol, BufferedImage> symbolMap = new HashMap<>();
 
-	public ArcadeTheme() {
+	public MSXTheme() {
 		Assets.storeTrueTypeFont("font.joystix", "Joystix.ttf", Font.PLAIN, 12);
+
+		mazeFull = Assets.readImage("images/maze_full.png");
+		mazeEmpty = Assets.readImage("images/maze_empty.png");
 
 		int blue = -14605825; // debugger told me this
 		mazeWhite = changeColor(mazeEmpty, blue, Color.WHITE.getRGB());
