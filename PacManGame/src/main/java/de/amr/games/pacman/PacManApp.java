@@ -35,7 +35,7 @@ public class PacManApp extends Application {
 	@Override
 	public void init() {
 		Theme theme = new ArcadeTheme();
-		theme = new MSXTheme();
+//		theme = new MSXTheme();
 		GameController gameController = new GameController(theme);
 		exitHandler = app -> gameController.game().ifPresent(Game::saveHiscore);
 		setController(gameController);
