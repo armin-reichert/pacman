@@ -49,21 +49,21 @@ public class MSXTheme implements Theme {
 	public MSXTheme() {
 		Assets.storeTrueTypeFont("font.joystix", "Joystix.ttf", Font.PLAIN, 12);
 
-		mazeFull = Assets.readImage("images/maze_full.png");
-		mazeEmpty = Assets.readImage("images/maze_empty.png");
+		mazeFull = Assets.readImage("images/msx/maze_full.png");
+		mazeEmpty = Assets.readImage("images/msx/maze_empty.png");
 
 		int blue = -14605825; // debugger told me this
 		mazeWhite = changeColor(mazeEmpty, blue, Color.WHITE.getRGB());
 
 		// Symbols for bonuses
 		Symbol[] symbols = Symbol.values();
-		BufferedImage[] symbolImages = hstrip(8, 32, 48);
+		BufferedImage[] symbolImages = hstrip(8, 0, 64);
 		for (int i = 0; i < 8; ++i) {
 			symbolMap.put(symbols[i], symbolImages[i]);
 		}
 
 		// Pac-Man
-		pacManFull = $(32, 0);
+		pacManFull = $(0, 16);
 
 		// E, W, N, S -> 0(N), 1(E), 2(S), 3(W)
 		int reorder[] = { 1, 3, 0, 2 };
