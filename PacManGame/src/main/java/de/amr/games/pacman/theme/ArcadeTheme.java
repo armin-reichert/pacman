@@ -14,7 +14,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -44,7 +44,7 @@ public class ArcadeTheme implements Theme {
 	private final BufferedImage ghostEyes[];
 	private final BufferedImage greenNumbers[];
 	private final BufferedImage pinkNumbers[];
-	private final Map<Symbol, BufferedImage> symbolMap = new HashMap<>();
+	private final Map<Symbol, BufferedImage> symbolMap = new EnumMap<>(Symbol.class);
 
 	public ArcadeTheme() {
 		storeTrueTypeFont("font.joystix", "Joystix.ttf", Font.PLAIN, 12);
@@ -84,18 +84,14 @@ public class ArcadeTheme implements Theme {
 		// Green numbers (200, 400, 800, 1600)
 		greenNumbers = ht(4, 0, 8);
 
-		// Pink numbers
-		// horizontal: 100, 300, 500, 700
-		// 1000
-		// vertical: 2000, 3000, 5000)
-		pinkNumbers = new BufferedImage[8];
-		for (int i = 0; i < 4; ++i) {
-			pinkNumbers[i] = t(i, 9);
-		}
-		pinkNumbers[4] = crop(64, 144, 19, 16);
-		for (int j = 0; j < 3; ++j) {
-			pinkNumbers[5 + j] = crop(56, 160 + j * 16, 2 * 16, 16);
-		}
+		// Pink numbers (100, 300, 500, 700, 1000, 2000, 3000, 5000)
+		pinkNumbers = new BufferedImage[] {
+			/*@formatter:off*/
+			t(0,9), t(1,9), t(2,9), t(3,9), 
+			crop(64, 144, 19, 16),
+			crop(56, 160, 32, 16),crop(56, 176, 32, 16),crop(56, 192, 32, 16)
+			/*@formatter:on*/
+		};
 
 		LOGGER.info(String.format("Theme '%s' created.", getClass().getSimpleName()));
 	}
@@ -111,7 +107,6 @@ public class ArcadeTheme implements Theme {
 			return Sprite.of(greenNumbers[2]);
 		case 1600:
 			return Sprite.of(greenNumbers[3]);
-
 		case 100:
 			return Sprite.of(pinkNumbers[0]);
 		case 300:

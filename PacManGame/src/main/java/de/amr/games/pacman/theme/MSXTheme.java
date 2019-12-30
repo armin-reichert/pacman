@@ -2,7 +2,6 @@ package de.amr.games.pacman.theme;
 
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.assets.Assets.readImage;
-import static de.amr.easy.game.assets.Assets.scaledImage;
 import static de.amr.easy.game.assets.Assets.storeTrueTypeFont;
 import static de.amr.easy.game.ui.sprites.AnimationType.BACK_AND_FORTH;
 import static de.amr.easy.game.ui.sprites.AnimationType.CYCLIC;
@@ -16,7 +15,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -32,10 +31,10 @@ import de.amr.games.pacman.model.Symbol;
  */
 public class MSXTheme implements Theme {
 
-	private final BufferedImage sheet = Assets.readImage("images/msx/sprites.png");
+	private final BufferedImage sheet;
 	private final BufferedImage mazeEmpty;
 	private final BufferedImage mazeFull;
-	private final BufferedImage logo = Assets.readImage("images/msx/logo.png");
+	private final BufferedImage logo;
 
 	private final BufferedImage mazeWhite;
 	private final BufferedImage pacManFull;
@@ -46,15 +45,17 @@ public class MSXTheme implements Theme {
 	private final BufferedImage ghostFlashing[];
 	private final BufferedImage ghostEyes[];
 	private final BufferedImage numbers[];
-	private final Map<Symbol, BufferedImage> symbolMap = new HashMap<>();
+	private final Map<Symbol, BufferedImage> symbolMap = new EnumMap<>(Symbol.class);
 
 	public MSXTheme() {
 		storeTrueTypeFont("font.joystix", "Joystix.ttf", Font.PLAIN, 12);
 
-		mazeFull = scaledImage(readImage("images/msx/maze_full.png"), 28 * 8, 31 * 8);
-		mazeEmpty = scaledImage(readImage("images/msx/maze_empty.png"), 28 * 8, 31 * 8);
+		sheet = readImage("images/msx/sprites.png");
+		mazeFull = readImage("images/msx/maze_full.png");
+		mazeEmpty = readImage("images/msx/maze_empty.png");
 		int blue = -14605825; // debugger told me this
 		mazeWhite = changeColor(mazeEmpty, blue, Color.WHITE.getRGB());
+		logo = readImage("images/msx/logo.png");
 
 		// Symbols for bonuses
 		Symbol[] symbols = Symbol.values();
@@ -65,8 +66,7 @@ public class MSXTheme implements Theme {
 
 		// Pac-Man
 		pacManFull = t(0, 1);
-
-		// 0=UP, 1=RIGHT, 2=DOWN, 3=LEFT
+		pacManDying = ht(11, 0, 1);
 		pacManWalking = new BufferedImage[][] {
 			/*@formatter:off*/
 			{ t(0, 1), t(2, 0), t(3, 0) }, 
@@ -76,8 +76,6 @@ public class MSXTheme implements Theme {
 			/*@formatter:on*/
 		};
 
-		pacManDying = ht(11, 0, 1);
-
 		// 0=RED, 1=PINK, 2=CYAN, 3=ORANGE
 		ghostColored = new BufferedImage[4][8];
 		for (int color = 0; color < 4; ++color) {
@@ -85,14 +83,12 @@ public class MSXTheme implements Theme {
 				ghostColored[color][i] = t(i, 5 + color);
 			}
 		}
-
 		ghostFrightened = ht(2, 0, 9);
 		ghostFlashing = ht(2, 0, 9); // TODO
 
-		// 0=UP, 1=RIGHT, 2=DOWN, 3=LEFT
 		ghostEyes = new BufferedImage[] { t(3, 9), t(2, 9), t(5, 9), t(4, 9) };
 
-		// Green numbers (200, 400, 800, 1600)
+		// 200, 400, 800, 1600
 		numbers = ht(4, 0, 10);
 
 		// 100, 300, 500, 700, 1000, 2000, 3000, 5000
