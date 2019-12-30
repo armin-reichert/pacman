@@ -172,11 +172,13 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 
 	@Override
 	public void draw(Graphics2D g) {
-		sprites.current().ifPresent(sprite -> {
-			float dx = tf.getCenter().x - sprite.getWidth() / 2;
-			float dy = tf.getCenter().y - sprite.getHeight() / 2;
-			sprite.draw(g, dx, dy);
-		});
+		if (visible()) {
+			sprites.current().ifPresent(sprite -> {
+				float dx = tf.getCenter().x - sprite.getWidth() / 2;
+				float dy = tf.getCenter().y - sprite.getHeight() / 2;
+				sprite.draw(g, dx, dy);
+			});
+		}
 	}
 
 	@Override

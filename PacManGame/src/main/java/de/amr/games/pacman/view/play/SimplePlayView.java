@@ -12,7 +12,6 @@ import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.games.pacman.actor.Cast;
-import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Symbol;
@@ -184,15 +183,11 @@ public class SimplePlayView implements GameView {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		cast.bonus().ifPresent(bonus -> {
-			bonus.draw(g);
-		});
-		if (cast.pacMan.visible()) {
-			cast.pacMan.draw(g);
-		}
-		// draw dead ghosts (numbers) before living ghosts
-		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
-		cast.ghostsOnStage().filter(Ghost::visible).filter(ghost -> !ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
+		cast.bonus().ifPresent(bonus -> bonus.draw(g));
+		cast.pacMan.draw(g);
+		// draw dead ghosts (numbers) under living ghosts
+		cast.ghostsOnStage().filter(ghost -> ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
+		cast.ghostsOnStage().filter(ghost -> !ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {
