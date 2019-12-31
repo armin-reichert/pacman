@@ -74,8 +74,8 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 		if (enabled()) {
 			Tile targetTile = fnTargetTile.get();
 			if (targetTile != null) {
-				Direction nextDir = nextDir(actor.moveDir(), actor.tile(), targetTile);
-				actor.setWishDir(nextDir);
+				Direction dirToTarget = dirToTarget(actor.moveDir(), actor.tile(), targetTile);
+				actor.setWishDir(dirToTarget);
 				actor.setTargetTile(targetTile);
 				targetPath = computePath ? pathToTargetTile(targetTile) : Collections.emptyList();
 			}
@@ -89,14 +89,15 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	 * <p>
 	 * Note: We use separate parameters for the actor's move direction, current tile
 	 * and target tile instead of the members of the actor itself because the
-	 * {@link #pathToTargetTile(MazeMover)} method uses this method without actually
+	 * {@link #pathToTargetTile(Tile)} method uses this method without actually
 	 * placing the actor at each tile of the path.
 	 */
-	private Direction nextDir(Direction moveDir, Tile currentTile, Tile targetTile) {
+	private Direction dirToTarget(Direction moveDir, Tile currentTile, Tile targetTile) {
 		Function<Direction, Tile> neighbor = dir -> actor.maze().tileToDir(currentTile, dir);
 		Function<Direction, Integer> neighborDistToTarget = dir -> Tile.distanceSq(neighbor.apply(dir), targetTile);
 		/*@formatter:off*/
-		return UP_LEFT_DOWN_RIGHT.stream()
+		return UP_LEFT_DOWN_RIGHT
+			.stream()
 			.filter(dir -> dir != moveDir.opposite())
 			.filter(dir -> actor.canMoveBetween(currentTile, neighbor.apply(dir)))
 			.sorted(comparing(neighborDistToTarget).thenComparingInt(UP_LEFT_DOWN_RIGHT::indexOf))
@@ -118,14 +119,14 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 		Direction currentDir = actor.moveDir();
 		path.add(currentTile);
 		while (!currentTile.equals(targetTile)) {
-			Direction nextDir = nextDir(currentDir, currentTile, targetTile);
-			Tile nextTile = maze.tileToDir(currentTile, nextDir);
+			Direction dir = dirToTarget(currentDir, currentTile, targetTile);
+			Tile nextTile = maze.tileToDir(currentTile, dir);
 			if (!maze.insideBoard(nextTile) || path.contains(nextTile)) {
 				break;
 			}
 			path.add(nextTile);
 			currentTile = nextTile;
-			currentDir = nextDir;
+			currentDir = dir;
 		}
 		return new ArrayList<>(path);
 	}
