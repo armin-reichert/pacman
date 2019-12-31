@@ -21,19 +21,21 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Facade with different steerings.
+ * Factory of steerings.
  * 
  * @author Armin Reichert
  */
 public interface Steerings {
 
 	/**
-	 * @param keys steering key codes in order UP, RIGHT, DOWN, LEFT
+	 * @param actor the steered actor
+	 * @param keys  steering key codes in order UP, RIGHT, DOWN, LEFT
 	 * 
 	 * @return steering using the given keys
 	 */
-	static <T extends MazeMover> Steering<T> followsKeys(T actor, int... keys) {
+	static <T extends MazeMover> Steering<T> followsKeys(T actor, int up, int right, int down, int left) {
 		/*@formatter:off*/
+		int keys[] = { up, right, down, left};
 		return () -> Direction.dirs()
 				.filter(dir -> Keyboard.keyDown(keys[dir.ordinal()]))
 				.findAny()
@@ -63,8 +65,8 @@ public interface Steerings {
 	}
 
 	/**
-	 * Lets the actor head for a possibly changing target tile (may be unreachable)
-	 * by taking the "best" direction at every intersection.
+	 * Lets the actor head for a variable (probably unreachable) target tile by
+	 * taking the "best" direction at every intersection.
 	 * 
 	 * @return behavior where actor heads for the target tile
 	 */
@@ -73,8 +75,8 @@ public interface Steerings {
 	}
 
 	/**
-	 * Lets the actor head for a fixed target tile (may be unreachable) by taking
-	 * the "best" direction at every intersection.
+	 * Lets the actor head for a constant (probably unreachable) target tile by
+	 * taking the "best" direction at every intersection.
 	 * 
 	 * @return behavior where actor heads for the target tile
 	 */
@@ -108,7 +110,8 @@ public interface Steerings {
 	}
 
 	/**
-	 * Lets the actor follow a fixed path to the target.
+	 * Lets the actor follow a fixed path to the target. As the rules for accessing
+	 * tiles are not checked, the actor may get stuck.
 	 * 
 	 * @param actor the steered actor
 	 * @param path  the path to follow
@@ -125,7 +128,6 @@ public interface Steerings {
 	/**
 	 * Lets a ghost enter the ghost house and move to its seat.
 	 * 
-	 * @param maze  the maze
 	 * @param ghost the ghost
 	 * 
 	 * @return behavior which lets a ghost enter the house and take its seat
@@ -138,14 +140,13 @@ public interface Steerings {
 	 * Lets a ghost enter the ghost house and move to the seat with the given
 	 * number.
 	 * 
-	 * @param maze       the maze
-	 * @param ghost      the ghost
-	 * @param seatNumber seat number
+	 * @param ghost the ghost
+	 * @param seat  seat number
 	 * 
 	 * @return behavior which lets a ghost enter the house and take its seat
 	 */
-	static Steering<Ghost> isTakingSeat(Ghost ghost, int seatNumber) {
-		return new EnteringGhostHouse(ghost, seatNumber);
+	static Steering<Ghost> isTakingSeat(Ghost ghost, int seat) {
+		return new EnteringGhostHouse(ghost, seat);
 	}
 
 	/**
@@ -160,7 +161,7 @@ public interface Steerings {
 	}
 
 	/**
-	 * /** TODO: in progress.
+	 * experimental.
 	 */
 	static Steering<PacMan> avoidingGhosts(Cast cast) {
 		return new AvoidingGhosts(cast);
