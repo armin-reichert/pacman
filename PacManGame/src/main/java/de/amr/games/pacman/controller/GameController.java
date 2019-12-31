@@ -254,7 +254,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							cast.removeBonus();
 							cast.ghostsOnStage().forEach(Ghost::hide);
 						}
-						else if (t == sec(4)) {
+						else if (t == sec(3)) {
 							// start the "dying" animation
 							cast.pacMan.sprites.select("dying");
 							playSoundPacManDied();
@@ -265,7 +265,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 								cast.actorsOnStage().forEach(Actor::init);
 								playView.init();
 								loopMusicPlaying();
-								}
+							}
 						}
 						else if (t > sec(7)) {
 							// let ghosts jump a bit while music is starting
