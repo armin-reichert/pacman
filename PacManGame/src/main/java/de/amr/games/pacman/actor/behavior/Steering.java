@@ -9,8 +9,8 @@ import de.amr.games.pacman.model.Tile;
 /**
  * Interface for steering of actors.
  * 
- * @param <T>
- *          type of steered entity, must implement the {@link MazeMover} interface
+ * @param <T> type of steered entity, must implement the {@link MazeMover}
+ *            interface
  * 
  * @author Armin Reichert
  */
@@ -18,26 +18,25 @@ import de.amr.games.pacman.model.Tile;
 public interface Steering<T extends MazeMover> {
 
 	/**
-	 * Steers the actor towards its target tile or wherever it should move in its current state.
+	 * Steers the actor towards its target tile or wherever it should move in its
+	 * current state.
 	 * 
-	 * @param actor
-	 *                the steered actor
+	 * @param actor the steered actor
 	 */
-	void steer(T actor);
+	void steer();
 
 	/**
-	 * Some steerings like {@link Steerings#headingForTargetTile()} need a trigger before they start
-	 * working.
-	 * 
-	 * @param actor
-	 *                the steered actor
+	 * @return if the steering is enabled. Some steerings require a certain
+	 *         precondition, for example that the actor has entered a new tile,
+	 *         before they execute.
 	 */
-	default void triggerSteering(T actor) {
-		actor.setEnteredNewTile();
+	default boolean enabled() {
+		return true;
 	}
 
 	/**
-	 * @return tells if the steering requires the actor to always stay aligned with the grid
+	 * @return tells if the steering requires the actor to always stay aligned with
+	 *         the grid
 	 */
 	default boolean stayOnTrack() {
 		return true;
@@ -51,10 +50,10 @@ public interface Steering<T extends MazeMover> {
 	}
 
 	/**
-	 * Tells the steering to compute the complete path to the target tile. Steerings may ignore this.
+	 * Tells the steering to compute the complete path to the target tile. Steerings
+	 * may ignore this.
 	 * 
-	 * @param b
-	 *            if target path should be computed
+	 * @param b if target path should be computed
 	 */
 	default void computeTargetPath(boolean b) {
 

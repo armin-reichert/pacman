@@ -109,7 +109,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 					})
 
 					.onTick(() -> {
-						steering().steer(PacMan.this);
+						steering().steer();
 						if (digestionTicks > 0) {
 							--digestionTicks;
 							return;
@@ -190,7 +190,6 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 
 	public void steering(Steering<PacMan> steering) {
 		this.steering = steering;
-		steering.triggerSteering(this);
 	}
 
 	@Override

@@ -69,40 +69,40 @@ public class Cast {
 
 		setTheme(theme);
 
-		pacMan.steering(followsKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
+		pacMan.steering(followsKeys(pacMan, VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		pacMan.setTeleportingDuration(sec(0.5f));
 
 		blinky.eyes = LEFT;
-		blinky.during(SCATTERING, isHeadingFor(maze().horizonNE));
-		blinky.during(CHASING, isHeadingFor(pacMan::tile));
+		blinky.during(SCATTERING, isHeadingFor(blinky, maze().horizonNE));
+		blinky.during(CHASING, isHeadingFor(blinky, pacMan::tile));
 		blinky.during(ENTERING_HOUSE, isTakingSeat(blinky, 2));
 
 		inky.eyes = UP;
-		inky.during(SCATTERING, isHeadingFor(maze().horizonSE));
-		inky.during(CHASING, isHeadingFor(() -> {
+		inky.during(SCATTERING, isHeadingFor(inky, maze().horizonSE));
+		inky.during(CHASING, isHeadingFor(inky, () -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
-		inky.during(LOCKED, isJumpingUpAndDown(maze(), inky.seat()));
+		inky.during(LOCKED, isJumpingUpAndDown(inky));
 		inky.during(ENTERING_HOUSE, isTakingSeat(inky));
 
 		pinky.eyes = DOWN;
-		pinky.during(SCATTERING, isHeadingFor(maze().horizonNW));
-		pinky.during(CHASING, isHeadingFor(() -> pacMan.tilesAhead(4)));
-		pinky.during(LOCKED, isJumpingUpAndDown(maze(), pinky.seat()));
+		pinky.during(SCATTERING, isHeadingFor(pinky, maze().horizonNW));
+		pinky.during(CHASING, isHeadingFor(pinky, () -> pacMan.tilesAhead(4)));
+		pinky.during(LOCKED, isJumpingUpAndDown(pinky));
 		pinky.during(ENTERING_HOUSE, isTakingSeat(pinky));
 
 		clyde.eyes = UP;
-		clyde.during(SCATTERING, isHeadingFor(maze().horizonSW));
-		clyde.during(CHASING, isHeadingFor(
+		clyde.during(SCATTERING, isHeadingFor(clyde, maze().horizonSW));
+		clyde.during(CHASING, isHeadingFor(clyde,
 				() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
-		clyde.during(LOCKED, isJumpingUpAndDown(maze(), clyde.seat()));
+		clyde.during(LOCKED, isJumpingUpAndDown(clyde));
 		clyde.during(ENTERING_HOUSE, isTakingSeat(clyde));
 
 		ghosts().forEach(ghost -> {
 			ghost.setTeleportingDuration(sec(0.5f));
-			ghost.during(LEAVING_HOUSE, isLeavingGhostHouse(maze()));
-			ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack());
+			ghost.during(LEAVING_HOUSE, isLeavingGhostHouse(ghost));
+			ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack(ghost));
 		});
 	}
 

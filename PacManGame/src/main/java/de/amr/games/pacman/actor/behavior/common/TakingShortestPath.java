@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.core.MazeMover;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.MazeGraph;
 import de.amr.games.pacman.model.Tile;
 
@@ -18,8 +17,8 @@ public class TakingShortestPath<T extends MazeMover> extends TakingPrecomputedPa
 
 	protected MazeGraph graph;
 
-	public TakingShortestPath(Maze maze, Supplier<Tile> fnTargetTile) {
-		super(maze, fnTargetTile);
+	public TakingShortestPath(T actor, Supplier<Tile> fnTargetTile) {
+		super(actor, fnTargetTile);
 		graph = new MazeGraph(maze);
 	}
 

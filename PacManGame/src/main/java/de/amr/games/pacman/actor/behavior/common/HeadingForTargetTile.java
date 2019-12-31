@@ -37,11 +37,13 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	/** Directions in the order used to compute the next move direction */
 	private static final List<Direction> UP_LEFT_DOWN_RIGHT = Arrays.asList(UP, LEFT, DOWN, RIGHT);
 
+	private final T actor;
 	private Supplier<Tile> fnTargetTile;
 	private List<Tile> targetPath;
 	private boolean computePath;
 
-	public HeadingForTargetTile(Supplier<Tile> fnTargetTile) {
+	public HeadingForTargetTile(T actor, Supplier<Tile> fnTargetTile) {
+		this.actor = actor;
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 		targetPath = Collections.emptyList();
 		computePath = false;
@@ -58,18 +60,25 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	}
 
 	@Override
+	public boolean enabled() {
+		return actor.enteredNewTile();
+	}
+
+	@Override
 	public List<Tile> targetPath() {
 		return new ArrayList<>(targetPath);
 	}
 
 	@Override
-	public void steer(T actor) {
-		Tile targetTile = fnTargetTile.get();
-		if (targetTile != null && actor.enteredNewTile()) {
-			Direction nextDir = nextDir(actor, actor.moveDir(), actor.tile(), targetTile);
-			actor.setWishDir(nextDir);
-			actor.setTargetTile(targetTile);
-			targetPath = computePath ? pathToTargetTile(actor, targetTile) : Collections.emptyList();
+	public void steer() {
+		if (enabled()) {
+			Tile targetTile = fnTargetTile.get();
+			if (targetTile != null) {
+				Direction nextDir = nextDir(actor.moveDir(), actor.tile(), targetTile);
+				actor.setWishDir(nextDir);
+				actor.setTargetTile(targetTile);
+				targetPath = computePath ? pathToTargetTile(targetTile) : Collections.emptyList();
+			}
 		}
 	}
 
@@ -83,7 +92,7 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	 * {@link #pathToTargetTile(MazeMover)} method uses this method without actually
 	 * placing the actor at each tile of the path.
 	 */
-	private Direction nextDir(T actor, Direction moveDir, Tile currentTile, Tile targetTile) {
+	private Direction nextDir(Direction moveDir, Tile currentTile, Tile targetTile) {
 		Function<Direction, Tile> neighbor = dir -> actor.maze().tileToDir(currentTile, dir);
 		Function<Direction, Integer> neighborDistToTarget = dir -> Tile.distanceSq(neighbor.apply(dir), targetTile);
 		/*@formatter:off*/
@@ -100,17 +109,16 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	 * Computes the complete path the actor would traverse until it would reach the
 	 * target tile, a cycle would occur or the path would leave the board.
 	 * 
-	 * @param actor actor for which the path is computed
 	 * @return the path the actor would take when moving to its target tile
 	 */
-	private List<Tile> pathToTargetTile(T actor, Tile targetTile) {
+	private List<Tile> pathToTargetTile(Tile targetTile) {
 		Maze maze = actor.maze();
 		Set<Tile> path = new LinkedHashSet<>();
 		Tile currentTile = actor.tile();
 		Direction currentDir = actor.moveDir();
 		path.add(currentTile);
 		while (!currentTile.equals(targetTile)) {
-			Direction nextDir = nextDir(actor, currentDir, currentTile, targetTile);
+			Direction nextDir = nextDir(currentDir, currentTile, targetTile);
 			Tile nextTile = maze.tileToDir(currentTile, nextDir);
 			if (!maze.insideBoard(nextTile) || path.contains(nextTile)) {
 				break;

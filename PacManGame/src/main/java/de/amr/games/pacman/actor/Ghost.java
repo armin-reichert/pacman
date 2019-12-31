@@ -49,7 +49,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 	private final int seat;
 	private final FsmComponent<GhostState, PacManGameEvent> brain;
 	private final Map<GhostState, Steering<Ghost>> steerings = new EnumMap<>(GhostState.class);
-	private final Steering<Ghost> defaultSteering = isHeadingFor(this::targetTile);
+	private final Steering<Ghost> defaultSteering = isHeadingFor(this, this::targetTile);
 
 	public Ghost(String name, Cast cast, int seat) {
 		super(name);
@@ -83,9 +83,6 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 						sprites.forEach(Sprite::resetAnimation);
 					})
 					.onTick(() -> makeStepAndDisplayAs("color-" + moveDir()))
-					.onExit(() -> {
-						steering().triggerSteering(this);
-					})
 					
 				.state(LEAVING_HOUSE)
 					.onTick(() -> makeStepAndDisplayAs("color-" + moveDir()))
@@ -275,7 +272,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 	}
 
 	private void makeStepAndDisplayAs(String spriteKey) {
-		steering().steer(this);
+		steering().steer();
 		step();
 		sprites.select(spriteKey);
 	}

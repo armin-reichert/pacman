@@ -74,11 +74,10 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 	}
 
 	@Override
-	public void steer(Ghost ghost) {
+	public void steer() {
 		if (getState() == null || is(AT_PLACE)) {
 			init();
-		}
-		else {
+		} else {
 			update();
 		}
 	}

@@ -18,7 +18,6 @@ import de.amr.games.pacman.actor.behavior.ghost.LeavingGhostHouse;
 import de.amr.games.pacman.actor.behavior.pacman.AvoidingGhosts;
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -33,9 +32,9 @@ public interface Steerings {
 	 * 
 	 * @return steering using the given keys
 	 */
-	static <T extends MazeMover> Steering<T> followsKeys(int... keys) {
+	static <T extends MazeMover> Steering<T> followsKeys(T actor, int... keys) {
 		/*@formatter:off*/
-		return actor -> Direction.dirs()
+		return () -> Direction.dirs()
 				.filter(dir -> Keyboard.keyDown(keys[dir.ordinal()]))
 				.findAny()
 				.ifPresent(actor::setWishDir);
@@ -43,14 +42,13 @@ public interface Steerings {
 	}
 
 	/**
-	 * Lets the ghost jump up and down.
+	 * Lets the ghost jump up and down at its seat in the house.
 	 * 
-	 * @param maze            the maze
-	 * @param ghostHousePlace the ghosthouse place number
+	 * @param ghost the jumping ghost
 	 * @return behavior which lets the ghost jump
 	 */
-	static Steering<Ghost> isJumpingUpAndDown(Maze maze, int ghostHousePlace) {
-		return new JumpingUpAndDown(maze, ghostHousePlace);
+	static Steering<Ghost> isJumpingUpAndDown(Ghost ghost) {
+		return new JumpingUpAndDown(ghost, ghost.seat());
 	}
 
 	/**
@@ -60,8 +58,8 @@ public interface Steerings {
 	 * 
 	 * @return random move behavior
 	 */
-	static <T extends MazeMover> Steering<T> isMovingRandomlyWithoutTurningBack() {
-		return new MovingRandomlyWithoutTurningBack<>();
+	static <T extends MazeMover> Steering<T> isMovingRandomlyWithoutTurningBack(T actor) {
+		return new MovingRandomlyWithoutTurningBack<>(actor);
 	}
 
 	/**
@@ -70,8 +68,8 @@ public interface Steerings {
 	 * 
 	 * @return behavior where actor heads for the target tile
 	 */
-	static <T extends MazeMover> Steering<T> isHeadingFor(Supplier<Tile> fnTargetTile) {
-		return new HeadingForTargetTile<>(fnTargetTile);
+	static <T extends MazeMover> Steering<T> isHeadingFor(T actor, Supplier<Tile> fnTargetTile) {
+		return new HeadingForTargetTile<>(actor, fnTargetTile);
 	}
 
 	/**
@@ -80,8 +78,8 @@ public interface Steerings {
 	 * 
 	 * @return behavior where actor heads for the target tile
 	 */
-	static <T extends MazeMover> Steering<T> isHeadingFor(Tile targetTile) {
-		return new HeadingForTargetTile<>(() -> targetTile);
+	static <T extends MazeMover> Steering<T> isHeadingFor(T actor, Tile targetTile) {
+		return new HeadingForTargetTile<>(actor, () -> targetTile);
 	}
 
 	/**
@@ -91,37 +89,37 @@ public interface Steerings {
 	 * 
 	 * @return behavior where actor flees to a "safe" maze corner
 	 */
-	static <T extends MazeMover> Steering<T> isFleeingToSafeCornerFrom(MazeMover attacker) {
-		return new FleeingToSafeCorner<>(attacker.maze(), attacker::tile);
+	static Steering<MazeMover> isFleeingToSafeCornerFrom(MazeMover attacker) {
+		return new FleeingToSafeCorner(attacker, attacker::tile);
 	}
 
 	/**
 	 * Lets the actor follow the shortest path to the target. This may be not
 	 * possible, depending on the actor's current state.
 	 * 
-	 * @param maze     the maze
+	 * @param actor    the steered actor
 	 * @param fnTarget function supplying the target tile at time of decision
 	 * 
 	 * @return behavior where an actor follows the shortest (according to Manhattan
 	 *         distance) path to a target tile
 	 */
-	static <T extends MazeMover> Steering<T> takingShortestPath(Maze maze, Supplier<Tile> fnTarget) {
-		return new TakingShortestPath<>(maze, fnTarget);
+	static <T extends MazeMover> Steering<T> takingShortestPath(T actor, Supplier<Tile> fnTarget) {
+		return new TakingShortestPath<>(actor, fnTarget);
 	}
 
 	/**
 	 * Lets the actor follow a fixed path to the target.
 	 * 
-	 * @param maze the maze
-	 * @param path the path to follow
+	 * @param actor the steered actor
+	 * @param path  the path to follow
 	 * 
 	 * @return behavior where actor follows the given path
 	 */
-	static <T extends MazeMover> Steering<T> takingFixedPath(Maze maze, List<Tile> path) {
+	static <T extends MazeMover> Steering<T> takingFixedPath(T actor, List<Tile> path) {
 		if (path.isEmpty()) {
 			throw new IllegalArgumentException("Path must not be empty");
 		}
-		return new TakingFixedPath<>(maze, path);
+		return new TakingFixedPath<>(actor, path);
 	}
 
 	/**
@@ -153,12 +151,12 @@ public interface Steerings {
 	/**
 	 * Lets a ghost leave the ghost house.
 	 * 
-	 * @param maze the maze
+	 * @param ghost the ghost
 	 * 
 	 * @return behavior which lets a ghost leave the ghost house
 	 */
-	static Steering<Ghost> isLeavingGhostHouse(Maze maze) {
-		return new LeavingGhostHouse(maze);
+	static Steering<Ghost> isLeavingGhostHouse(Ghost ghost) {
+		return new LeavingGhostHouse(ghost);
 	}
 
 	/**
