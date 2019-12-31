@@ -53,7 +53,6 @@ class LeaveGhostHouseTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game().init();
 		maze().removeFood();
 		cast().setActorOnStage(cast().inky);
 		cast().inky.nextState = GhostState.SCATTERING;

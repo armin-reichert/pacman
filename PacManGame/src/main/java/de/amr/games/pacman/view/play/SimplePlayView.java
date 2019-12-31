@@ -227,8 +227,8 @@ public class SimplePlayView implements GameView {
 
 	protected void drawLevelCounter(Graphics2D g) {
 		int imageSize = 2 * Tile.SIZE;
-		int x = width() - (game().levelSymbols().size() + 1) * imageSize;
-		for (Symbol symbol : game().levelSymbols()) {
+		int x = width() - (game().levelCounter().size() + 1) * imageSize;
+		for (Symbol symbol : game().levelCounter()) {
 			Image image = theme().spr_bonusSymbol(symbol).frame(0);
 			g.drawImage(image, x, height() - imageSize, imageSize, imageSize, null);
 			x += imageSize;

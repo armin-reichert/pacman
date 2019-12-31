@@ -18,7 +18,7 @@ public interface Timing {
 	 * frames. In level 5 this gives 4*2 + 12 = 20 steps in 16 frames, which gives
 	 * 1.25 pixels / frame.
 	 * <p>
-	 * The table from Gamasutra ({@link Game#levels}) states that this corresponds
+	 * The table from Gamasutra ({@link Game#LEVELS}) states that this corresponds
 	 * to 100% base speed for Pac-Man at level 5. Therefore I use 1.25 pixel/frame.
 	 * 
 	 */

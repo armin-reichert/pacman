@@ -110,7 +110,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void createPlayingEnvironment() {
 		game = new Game();
-		game.init();
 		cast = new Cast(game, theme);
 		cast.actors().forEach(actor -> {
 			cast.setActorOnStage(actor);
@@ -214,7 +213,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						}
 						if (t == sec(2 + playView.mazeFlashingSeconds())) {
 							LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", 
-									game.level().number, game.level().ghostKilledInLevel));
+									game.level().number, game.level().ghostsKilledInLevel));
 							game.enterLevel(game.level().number + 1);
 							cast.actorsOnStage().forEach(Actor::init);
 							playView.init(); // stops flashing

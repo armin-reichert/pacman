@@ -65,7 +65,6 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game().init();
 		maze().removeFood();
 		targetIndex = 0;
 		cast.theme().snd_ghost_chase().volume(0);
