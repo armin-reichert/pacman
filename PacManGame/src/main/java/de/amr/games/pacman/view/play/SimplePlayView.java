@@ -27,12 +27,12 @@ import de.amr.games.pacman.view.core.Pen;
  */
 public class SimplePlayView implements GameView {
 
+	protected final Cast cast;
 	protected SpriteAnimation energizerBlinking;
 	protected boolean mazeFlashing;
 	protected Image lifeImage;
 	protected Sprite fullMazeSprite;
 	protected Sprite flashingMazeSprite;
-	protected Cast cast;
 	protected String messageText;
 	protected Color messageColor;
 
@@ -135,6 +135,10 @@ public class SimplePlayView implements GameView {
 		drawActors(g);
 	}
 
+	protected Color bgColor(Tile tile) {
+		return theme().color_mazeBackground();
+	}
+
 	protected void fillBackground(Graphics2D g) {
 		g.setColor(theme().color_mazeBackground());
 		g.fillRect(0, 0, width(), height());
@@ -142,43 +146,25 @@ public class SimplePlayView implements GameView {
 
 	protected void drawMaze(Graphics2D g) {
 		if (mazeFlashing) {
-			drawFlashingMaze(g);
+			flashingMazeSprite.draw(g, 0, 3 * Tile.SIZE);
 		} else {
-			drawNormalMaze(g);
-		}
-	}
-
-	protected void drawFlashingMaze(Graphics2D g) {
-		g.translate(0, 3 * Tile.SIZE);
-		flashingMazeSprite.draw(g);
-		g.translate(0, -3 * Tile.SIZE);
-	}
-
-	protected Color bgColor(Tile tile) {
-		return theme().color_mazeBackground();
-	}
-
-	protected void drawNormalMaze(Graphics2D g) {
-		g.translate(0, 3 * Tile.SIZE);
-		fullMazeSprite.draw(g);
-		g.translate(0, -3 * Tile.SIZE);
-		// hide tiles with eaten pellets
-		maze().tiles().filter(Tile::containsEatenFood).forEach(tile -> {
-			g.setColor(bgColor(tile));
-			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
-		});
-		// fill energizer tiles with background color when blinking animation is in dark
-		// frame
-		if (energizerBlinking.currentFrame() == 1) {
-			Arrays.stream(maze().energizers).forEach(tile -> {
+			fullMazeSprite.draw(g, 0, 3 * Tile.SIZE);
+			maze().tiles().filter(Tile::containsEatenFood).forEach(tile -> {
 				g.setColor(bgColor(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
-		}
-		// don't draw door when ghost is passing through
-		if (cast.ghostsOnStage().anyMatch(ghost -> maze().isDoor(ghost.tile()))) {
-			g.setColor(theme().color_mazeBackground());
-			g.fillRect(maze().doorLeft.x(), maze().doorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
+			// hide energizer tiles when blinking animation is dark
+			if (energizerBlinking.currentFrame() == 1) {
+				Arrays.stream(maze().energizers).forEach(tile -> {
+					g.setColor(bgColor(tile));
+					g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
+				});
+			}
+			// hide door when ghost is passing through
+			if (cast.ghostsOnStage().anyMatch(ghost -> maze().isDoor(ghost.tile()))) {
+				g.setColor(theme().color_mazeBackground());
+				g.fillRect(maze().doorLeft.x(), maze().doorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
+			}
 		}
 	}
 
@@ -244,5 +230,4 @@ public class SimplePlayView implements GameView {
 			}
 		}
 	}
-
 }
