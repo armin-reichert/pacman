@@ -147,6 +147,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 				.stay(ALIVE) // Ah, ha, ha, ha, stayin' alive
 					.on(PacManGainsPowerEvent.class).act(() -> {
 						kicking = true;
+						tired = false;
 						// set and start power timer
 						state().setConstantTimer(sec(game().level().pacManPowerSeconds));
 						cast.theme().snd_waza().loop();
