@@ -3,6 +3,7 @@ package de.amr.games.pacman.controller;
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.actor.behavior.Steerings.isFleeingToSafeCorner;
 import static de.amr.games.pacman.actor.behavior.Steerings.isMovingRandomlyWithoutTurningBack;
 import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
@@ -520,8 +521,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			boolean original = app().settings.getAsBoolean("Ghost.fleeRandomly");
 			if (original) {
 				app().settings.set("Ghost.fleeRandomly", false);
-				// TODO fixme
-//				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isFleeingToSafeCornerFrom(cast.pacMan)));
+				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isFleeingToSafeCorner(ghost, cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
 			} else {
 				app().settings.set("Ghost.fleeRandomly", true);

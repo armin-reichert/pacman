@@ -4,9 +4,9 @@ import static de.amr.datastruct.StreamUtils.permute;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.behavior.common.TakingPrecomputedPath;
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Maze;
@@ -14,19 +14,18 @@ import de.amr.games.pacman.model.MazeGraph;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Lets a ghost escape to the "safest" maze corner depending on Pac-Man's
- * current position. The "safest" corner is defined by the maximum distance of
- * Pac-Man to any tile on the path from the actor's current position to the
- * corner. When the target corner is reached the next corner is computed.
+ * Lets a ghost escape to the "safest" maze corner depending on Pac-Man's current position. The "safest" corner is
+ * defined by the maximum distance of Pac-Man to any tile on the path from the actor's current position to the corner.
+ * When the target corner is reached the next corner is computed.
  * 
  * @author Armin Reichert
  */
-public class FleeingToSafeCorner extends TakingPrecomputedPath<MazeMover> {
+public class FleeingToSafeCorner extends TakingPrecomputedPath<Ghost> {
 
-	protected MazeGraph graph;
+	private final MazeGraph graph;
 
-	public FleeingToSafeCorner(MazeMover attacker, Supplier<Tile> chaserTileSupplier) {
-		super(attacker, chaserTileSupplier);
+	public FleeingToSafeCorner(Ghost refugee, MazeMover attacker) {
+		super(refugee, attacker::tile);
 		graph = new MazeGraph(maze);
 	}
 
@@ -36,7 +35,7 @@ public class FleeingToSafeCorner extends TakingPrecomputedPath<MazeMover> {
 	}
 
 	@Override
-	protected List<Tile> computePath(MazeMover refugee, Tile targetTile) {
+	protected List<Tile> computePath(Ghost refugee, Tile targetTile) {
 		Tile target = refugee.tile();
 		while (target.equals(refugee.tile())) {
 			target = safeCorner(refugee);

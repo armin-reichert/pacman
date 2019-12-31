@@ -12,6 +12,9 @@ import de.amr.games.pacman.model.Tile;
 
 /**
  * Steering using a precomputed path.
+ * 
+ * @param <T>
+ *          type of steered actor
  *
  * @author Armin Reichert
  */
