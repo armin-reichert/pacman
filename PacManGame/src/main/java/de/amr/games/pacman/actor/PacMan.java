@@ -56,7 +56,8 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 		brain = buildBrain();
 		brain.fsm().setLogger(Game.FSM_LOGGER);
 		brain.fsm().setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
-		brain.doNotLog(event -> event instanceof FoodFoundEvent && !((FoodFoundEvent) event).energizer);
+		brain.fsm().doNotLogEventProcessingIf(PacManGameEvent::isTrivial);
+		brain.doNotLogEventPublishingIf(PacManGameEvent::isTrivial);
 	}
 
 	@Override

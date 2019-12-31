@@ -283,7 +283,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 	private void checkPacManCollision() {
 		if (!isTeleporting() && !cast.pacMan.isTeleporting() && cast.pacMan.is(PacManState.ALIVE)
 				&& tile().equals(cast.pacMan.tile())) {
-			publish(new PacManGhostCollisionEvent(this));
+			publish(new PacManGhostCollisionEvent(this, tile()));
 		}
 	}
 

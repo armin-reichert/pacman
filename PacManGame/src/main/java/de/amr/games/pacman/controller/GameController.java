@@ -82,6 +82,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		buildStateMachine();
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		setLogger(Game.FSM_LOGGER);
+		doNotLogEventProcessingIf(PacManGameEvent::isTrivial);
 	}
 
 	public Optional<Cast> cast() {

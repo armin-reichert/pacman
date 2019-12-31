@@ -88,7 +88,7 @@ public class House implements Lifecycle {
 	public void updateDotCounters() {
 		if (globalDotCounterEnabled) {
 			globalDotCounter++;
-			logger.info(() -> String.format("Global dot counter: %d", globalDotCounter));
+//			logger.info(() -> String.format("Global dot counter: %d", globalDotCounter));
 			if (globalDotCounter == 32 && cast.clyde.is(LOCKED)) {
 				disableGlobalDotCounter();
 				logger.info(() -> "Global dot counter disabled (Clyde still locked when counter reached 32)");
@@ -96,7 +96,7 @@ public class House implements Lifecycle {
 		} else {
 			nextCandidate().ifPresent(ghost -> {
 				ghostDotCountersBySeat[ghost.seat()] += 1;
-				logger.info(() -> String.format("%s's dot counter: %d", ghost.name(), ghostDotCountersBySeat[ghost.seat()]));
+//				logger.info(() -> String.format("%s's dot counter: %d", ghost.name(), ghostDotCountersBySeat[ghost.seat()]));
 			});
 		}
 	}
