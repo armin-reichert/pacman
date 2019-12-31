@@ -22,7 +22,8 @@ public class AvoidingGhosts implements Steering<PacMan> {
 	}
 
 	@Override
-	public void steer(PacMan pacMan) {
+	public void steer() {
+		PacMan pacMan = cast.pacMan;
 		/*@formatter:off*/
 		cast.ghostsOnStage()
 			.filter(ghost -> !pacMan.maze().inGhostHouse(ghost.tile()))

@@ -21,12 +21,12 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public class FleeingToSafeCorner<T extends MazeMover> extends TakingPrecomputedPath<T> {
+public class FleeingToSafeCorner extends TakingPrecomputedPath<MazeMover> {
 
 	protected MazeGraph graph;
 
-	public FleeingToSafeCorner(Maze maze, Supplier<Tile> chaserTileSupplier) {
-		super(maze, chaserTileSupplier);
+	public FleeingToSafeCorner(MazeMover attacker, Supplier<Tile> chaserTileSupplier) {
+		super(attacker, chaserTileSupplier);
 		graph = new MazeGraph(maze);
 	}
 
@@ -36,7 +36,7 @@ public class FleeingToSafeCorner<T extends MazeMover> extends TakingPrecomputedP
 	}
 
 	@Override
-	protected List<Tile> computePath(T refugee, Tile targetTile) {
+	protected List<Tile> computePath(MazeMover refugee, Tile targetTile) {
 		Tile target = refugee.tile();
 		while (target.equals(refugee.tile())) {
 			target = safeCorner(refugee);
@@ -44,7 +44,7 @@ public class FleeingToSafeCorner<T extends MazeMover> extends TakingPrecomputedP
 		return graph.shortestPath(refugee.tile(), target);
 	}
 
-	private Tile safeCorner(T refugee) {
+	private Tile safeCorner(MazeMover refugee) {
 		Tile refugeeTile = refugee.tile();
 		Tile chaserTile = fnTargetTile.get();
 		//@formatter:off

@@ -58,7 +58,6 @@ class EnterGhostHouseTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game().init();
 		maze().removeFood();
 		cast().setActorOnStage(cast().inky);
 		messageColor = Color.YELLOW;

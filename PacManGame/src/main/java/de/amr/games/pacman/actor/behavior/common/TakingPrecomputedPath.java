@@ -25,12 +25,14 @@ public abstract class TakingPrecomputedPath<T extends MazeMover> implements Stee
 		return list.isEmpty() ? null : list.get(list.size() - 1);
 	}
 
+	protected final T actor;
 	protected final Maze maze;
 	protected final Supplier<Tile> fnTargetTile;
 	protected List<Tile> targetPath;
 
-	public TakingPrecomputedPath(Maze maze, Supplier<Tile> fnTargetTile) {
-		this.maze = maze;
+	public TakingPrecomputedPath(T actor, Supplier<Tile> fnTargetTile) {
+		this.actor = actor;
+		this.maze = actor.maze();
 		this.fnTargetTile = fnTargetTile;
 		this.targetPath = new ArrayList<>();
 	}
@@ -48,7 +50,7 @@ public abstract class TakingPrecomputedPath<T extends MazeMover> implements Stee
 	}
 
 	@Override
-	public void steer(T actor) {
+	public void steer() {
 		Tile targetTile = fnTargetTile.get();
 		if (targetTile == null) {
 			actor.setTargetTile(null);

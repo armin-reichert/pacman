@@ -10,8 +10,8 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
-import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.Cast;
+import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ArcadeTheme;
@@ -55,13 +55,12 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game().init();
 		maze().removeFood();
 		cast().ghosts().forEach(ghost -> {
 			cast().setActorOnStage(ghost);
 			ghost.placeHalfRightOf(maze().pacManHome);
 			ghost.setState(FRIGHTENED);
-			ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack());
+			ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack(ghost));
 		});
 		message("Press SPACE");
 	}

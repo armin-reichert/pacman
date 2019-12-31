@@ -56,7 +56,8 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 		brain = buildBrain();
 		brain.fsm().setLogger(Game.FSM_LOGGER);
 		brain.fsm().setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
-		brain.doNotLog(event -> event instanceof FoodFoundEvent && !((FoodFoundEvent) event).energizer);
+		brain.fsm().doNotLogEventProcessingIf(PacManGameEvent::isTrivial);
+		brain.doNotLogEventPublishingIf(PacManGameEvent::isTrivial);
 	}
 
 	@Override
@@ -108,7 +109,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 					})
 
 					.onTick(() -> {
-						steering().steer(PacMan.this);
+						steering().steer();
 						if (digestionTicks > 0) {
 							--digestionTicks;
 							return;
@@ -146,6 +147,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 				.stay(ALIVE) // Ah, ha, ha, ha, stayin' alive
 					.on(PacManGainsPowerEvent.class).act(() -> {
 						kicking = true;
+						tired = false;
 						// set and start power timer
 						state().setConstantTimer(sec(game().level().pacManPowerSeconds));
 						cast.theme().snd_waza().loop();
@@ -188,7 +190,6 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 
 	public void steering(Steering<PacMan> steering) {
 		this.steering = steering;
-		steering.triggerSteering(this);
 	}
 
 	@Override

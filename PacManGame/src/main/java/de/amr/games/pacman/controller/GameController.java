@@ -3,7 +3,6 @@ package de.amr.games.pacman.controller;
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.actor.behavior.Steerings.isFleeingToSafeCornerFrom;
 import static de.amr.games.pacman.actor.behavior.Steerings.isMovingRandomlyWithoutTurningBack;
 import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
@@ -82,6 +81,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		buildStateMachine();
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		setLogger(Game.FSM_LOGGER);
+		doNotLogEventProcessingIf(PacManGameEvent::isTrivial);
 	}
 
 	public Optional<Cast> cast() {
@@ -110,7 +110,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void createPlayingEnvironment() {
 		game = new Game();
-		game.init();
 		cast = new Cast(game, theme);
 		cast.actors().forEach(actor -> {
 			cast.setActorOnStage(actor);
@@ -214,7 +213,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						}
 						if (t == sec(2 + playView.mazeFlashingSeconds())) {
 							LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", 
-									game.level().number, game.level().ghostKilledInLevel));
+									game.level().number, game.level().ghostsKilledInLevel));
 							game.enterLevel(game.level().number + 1);
 							cast.actorsOnStage().forEach(Actor::init);
 							playView.init(); // stops flashing
@@ -521,11 +520,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			boolean original = app().settings.getAsBoolean("Ghost.fleeRandomly");
 			if (original) {
 				app().settings.set("Ghost.fleeRandomly", false);
-				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isFleeingToSafeCornerFrom(cast.pacMan)));
+				// TODO fixme
+//				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isFleeingToSafeCornerFrom(cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
 			} else {
 				app().settings.set("Ghost.fleeRandomly", true);
-				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack()));
+				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack(ghost)));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
 			}
 		}

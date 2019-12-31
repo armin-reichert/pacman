@@ -4,6 +4,7 @@ import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.model.Direction.UP;
+import static java.util.Comparator.comparing;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.behavior.Steering;
@@ -23,11 +25,10 @@ import de.amr.games.pacman.model.Tile;
 /**
  * Steers an actor towards a target tile.
  * 
- * The detailed behavior is described
- * <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here</a>.
+ * The detailed behavior is described <a href=
+ * "http://gameinternals.com/understanding-pac-man-ghost-behavior">here</a>.
  * 
- * @param <T>
- *          type of actor
+ * @param <T> type of actor
  * 
  * @author Armin Reichert
  */
@@ -36,11 +37,13 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	/** Directions in the order used to compute the next move direction */
 	private static final List<Direction> UP_LEFT_DOWN_RIGHT = Arrays.asList(UP, LEFT, DOWN, RIGHT);
 
+	private final T actor;
 	private Supplier<Tile> fnTargetTile;
 	private List<Tile> targetPath;
 	private boolean computePath;
 
-	public HeadingForTargetTile(Supplier<Tile> fnTargetTile) {
+	public HeadingForTargetTile(T actor, Supplier<Tile> fnTargetTile) {
+		this.actor = actor;
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 		targetPath = Collections.emptyList();
 		computePath = false;
@@ -57,71 +60,73 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	}
 
 	@Override
+	public boolean enabled() {
+		return actor.enteredNewTile();
+	}
+
+	@Override
 	public List<Tile> targetPath() {
 		return new ArrayList<>(targetPath);
 	}
 
 	@Override
-	public void steer(T actor) {
-		Tile targetTile = fnTargetTile.get();
-		if (targetTile != null && actor.enteredNewTile()) {
-			Direction nextDir = nextDir(actor, actor.moveDir(), actor.tile(), targetTile);
-			actor.setWishDir(nextDir);
-			actor.setTargetTile(targetTile);
-			targetPath = computePath ? pathToTargetTile(actor, targetTile) : Collections.emptyList();
+	public void steer() {
+		if (enabled()) {
+			Tile targetTile = fnTargetTile.get();
+			if (targetTile != null) {
+				Direction dirToTarget = dirToTarget(actor.moveDir(), actor.tile(), targetTile);
+				actor.setWishDir(dirToTarget);
+				actor.setTargetTile(targetTile);
+				targetPath = computePath ? pathToTargetTile(targetTile) : Collections.emptyList();
+			}
 		}
 	}
 
 	/**
-	 * Computes the next move direction as described
-	 * <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
+	 * Computes the next move direction as described <a href=
+	 * "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
 	 * 
 	 * <p>
-	 * Note: We use separate parameters for the actor's move direction, current tile and target tile
-	 * instead of the members of the actor itself because the {@link #pathToTargetTile(MazeMover)}
-	 * method uses this method without actually placing the actor at each tile of the path.
+	 * Note: We use separate parameters for the actor's move direction, current tile
+	 * and target tile instead of the members of the actor itself because the
+	 * {@link #pathToTargetTile(Tile)} method uses this method without actually
+	 * placing the actor at each tile of the path.
 	 */
-	private Direction nextDir(T actor, Direction moveDir, Tile currentTile, Tile targetTile) {
-		Maze maze = actor.maze();
+	private Direction dirToTarget(Direction moveDir, Tile currentTile, Tile targetTile) {
+		Function<Direction, Tile> neighbor = dir -> actor.maze().tileToDir(currentTile, dir);
+		Function<Direction, Integer> neighborDistToTarget = dir -> Tile.distanceSq(neighbor.apply(dir), targetTile);
 		/*@formatter:off*/
-		return UP_LEFT_DOWN_RIGHT.stream()
+		return UP_LEFT_DOWN_RIGHT
+			.stream()
 			.filter(dir -> dir != moveDir.opposite())
-			.filter(dir -> actor.canMoveBetween(currentTile, maze.tileToDir(currentTile, dir)))
-			.sorted((dir1, dir2) -> {
-				Tile neighbor1 = maze.tileToDir(currentTile, dir1);
-				Tile neighbor2 = maze.tileToDir(currentTile, dir2);
-				int cmpByDistance = Integer.compare(Tile.distanceSq(neighbor1, targetTile), Tile.distanceSq(neighbor2, targetTile));
-				return cmpByDistance != 0
-					? cmpByDistance
-					: Integer.compare(UP_LEFT_DOWN_RIGHT.indexOf(dir1), UP_LEFT_DOWN_RIGHT.indexOf(dir2));
-			})
-			.findFirst().orElseThrow(IllegalStateException::new);
+			.filter(dir -> actor.canMoveBetween(currentTile, neighbor.apply(dir)))
+			.sorted(comparing(neighborDistToTarget).thenComparingInt(UP_LEFT_DOWN_RIGHT::indexOf))
+			.findFirst()
+			.orElseThrow(IllegalStateException::new);
 		/*@formatter:on*/
 	}
 
 	/**
-	 * Computes the complete path the actor would traverse until it would reach the target tile, a cycle
-	 * would occur or the path would leave the board.
+	 * Computes the complete path the actor would traverse until it would reach the
+	 * target tile, a cycle would occur or the path would leave the board.
 	 * 
-	 * @param actor
-	 *                actor for which the path is computed
 	 * @return the path the actor would take when moving to its target tile
 	 */
-	private List<Tile> pathToTargetTile(T actor, Tile targetTile) {
+	private List<Tile> pathToTargetTile(Tile targetTile) {
 		Maze maze = actor.maze();
 		Set<Tile> path = new LinkedHashSet<>();
 		Tile currentTile = actor.tile();
 		Direction currentDir = actor.moveDir();
 		path.add(currentTile);
 		while (!currentTile.equals(targetTile)) {
-			Direction nextDir = nextDir(actor, currentDir, currentTile, targetTile);
-			Tile nextTile = maze.tileToDir(currentTile, nextDir);
+			Direction dir = dirToTarget(currentDir, currentTile, targetTile);
+			Tile nextTile = maze.tileToDir(currentTile, dir);
 			if (!maze.insideBoard(nextTile) || path.contains(nextTile)) {
 				break;
 			}
 			path.add(nextTile);
 			currentTile = nextTile;
-			currentDir = nextDir;
+			currentDir = dir;
 		}
 		return new ArrayList<>(path);
 	}

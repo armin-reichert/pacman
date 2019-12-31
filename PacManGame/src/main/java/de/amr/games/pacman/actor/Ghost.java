@@ -9,7 +9,7 @@ import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.actor.behavior.Steerings.isHeadingFor;
 import static de.amr.games.pacman.model.Direction.UP;
-import static de.amr.games.pacman.model.Game.POINTS_GHOST_EATEN;
+import static de.amr.games.pacman.model.Game.POINTS_GHOST;
 import static de.amr.games.pacman.model.Timing.sec;
 import static de.amr.games.pacman.model.Timing.speed;
 
@@ -49,7 +49,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 	private final int seat;
 	private final FsmComponent<GhostState, PacManGameEvent> brain;
 	private final Map<GhostState, Steering<Ghost>> steerings = new EnumMap<>(GhostState.class);
-	private final Steering<Ghost> defaultSteering = isHeadingFor(this::targetTile);
+	private final Steering<Ghost> defaultSteering = isHeadingFor(this, this::targetTile);
 
 	public Ghost(String name, Cast cast, int seat) {
 		super(name);
@@ -83,9 +83,6 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 						sprites.forEach(Sprite::resetAnimation);
 					})
 					.onTick(() -> makeStepAndDisplayAs("color-" + moveDir()))
-					.onExit(() -> {
-						steering().triggerSteering(this);
-					})
 					
 				.state(LEAVING_HOUSE)
 					.onTick(() -> makeStepAndDisplayAs("color-" + moveDir()))
@@ -118,7 +115,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 				.state(DEAD)
 					.timeoutAfter(sec(1)) // "dying" time
 					.onEntry(() -> {
-						int points = POINTS_GHOST_EATEN[game().level().ghostsKilledByEnergizer - 1];
+						int points = POINTS_GHOST[game().level().ghostsKilledByEnergizer - 1];
 						sprites.select("number-" + points);
 						setTargetTile(maze().ghostHouseSeats[0]);
 						turnDeadGhostSoundOn();
@@ -275,7 +272,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 	}
 
 	private void makeStepAndDisplayAs(String spriteKey) {
-		steering().steer(this);
+		steering().steer();
 		step();
 		sprites.select(spriteKey);
 	}
@@ -283,7 +280,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 	private void checkPacManCollision() {
 		if (!isTeleporting() && !cast.pacMan.isTeleporting() && cast.pacMan.is(PacManState.ALIVE)
 				&& tile().equals(cast.pacMan.tile())) {
-			publish(new PacManGhostCollisionEvent(this));
+			publish(new PacManGhostCollisionEvent(this, tile()));
 		}
 	}
 
