@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
+import de.amr.games.pacman.PacManApp.PacManAppSettings;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
 import de.amr.games.pacman.actor.core.Actor;
@@ -207,7 +208,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	}
 
 	/**
-	 * NOTE: If the application property <code>PacMan.overflowBug</code> is
+	 * NOTE: If the application property <code>overflowBug</code> is
 	 * <code>true</code>, this method simulates the bug in the original Arcade game
 	 * which occurs if Pac-Man points upwards. In that case the same number of tiles
 	 * to the left is added.
@@ -219,7 +220,8 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	@Override
 	public Tile tilesAhead(int numTiles) {
 		Tile tileAhead = maze().tileToDir(tile(), moveDir(), numTiles);
-		if (moveDir() == UP && app().settings.getAsBoolean("PacMan.overflowBug")) {
+		PacManAppSettings settings = (PacManAppSettings) app().settings;
+		if (moveDir() == UP && settings.overflowBug) {
 			return maze().tileToDir(tileAhead, LEFT, numTiles);
 		}
 		return tileAhead;

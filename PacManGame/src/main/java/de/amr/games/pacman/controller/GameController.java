@@ -27,6 +27,7 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
+import de.amr.games.pacman.PacManApp.PacManAppSettings;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
@@ -290,7 +291,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			.transitions()
 			
 				.when(LOADING_MUSIC).then(GETTING_READY)
-					.condition(() -> musicLoading.isDone() && app().settings.getAsBoolean("PacManApp.skipIntro"))
+					.condition(() -> musicLoading.isDone() 
+							&& ((PacManAppSettings) app().settings).skipIntro)
 
 				.when(LOADING_MUSIC).then(INTRO)
 					.condition(() -> musicLoading.isDone())
@@ -504,8 +506,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void onChangePacManOverflowBug() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_O)) {
-			app().settings.set("PacMan.overflowBug", !app().settings.getAsBoolean("PacMan.overflowBug"));
-			LOGGER.info("Overflow bug is " + (app().settings.getAsBoolean("PacMan.overflowBug") ? "on" : "off"));
+			PacManAppSettings settings = (PacManAppSettings) app().settings;
+			settings.overflowBug = !settings.overflowBug;
+			LOGGER.info("Overflow bug is " + (settings.overflowBug ? "on" : "off"));
 		}
 	}
 
@@ -518,13 +521,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void onChangeGhostFrightenedBehavior() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_F)) {
-			boolean original = app().settings.getAsBoolean("Ghost.fleeRandomly");
+			PacManAppSettings settings = ((PacManAppSettings) app().settings);
+			boolean original = settings.ghostsFleeRandomly;
 			if (original) {
-				app().settings.set("Ghost.fleeRandomly", false);
+				settings.ghostsFleeRandomly = false;
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isFleeingToSafeCorner(ghost, cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
 			} else {
-				app().settings.set("Ghost.fleeRandomly", true);
+				settings.ghostsFleeRandomly = true;
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack(ghost)));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
 			}

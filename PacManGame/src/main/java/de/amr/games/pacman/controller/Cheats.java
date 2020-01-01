@@ -1,16 +1,17 @@
 package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.LOGGER;
-import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 
 import java.awt.event.KeyEvent;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
+import de.amr.games.pacman.PacManApp.PacManAppSettings;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.model.Tile;
@@ -34,7 +35,7 @@ public class Cheats implements Lifecycle {
 
 	@Override
 	public void update() {
-		
+
 		/* ALT-"K": Kill all available ghosts */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_K)) {
 			gameController.cast().ifPresent(cast -> {
@@ -57,7 +58,7 @@ public class Cheats implements Lifecycle {
 				LOGGER.info(() -> "All pellets eaten");
 			});
 		}
-		
+
 		/* ALT-"L": Selects next level */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
 			gameController.cast().ifPresent(cast -> {
@@ -65,12 +66,12 @@ public class Cheats implements Lifecycle {
 				gameController.enqueue(new LevelCompletedEvent());
 			});
 		}
-		
+
 		/* ALT-"I": Makes Pac-Man immortable */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_I)) {
-			boolean immortable = app().settings.getAsBoolean("PacMan.immortable");
-			app().settings.set("PacMan.immortable", !immortable);
-			LOGGER.info("Pac-Man immortable = " + app().settings.getAsBoolean("PacMan.immortable"));
+			PacManAppSettings settings = (PacManAppSettings) Application.app().settings;
+			settings.pacManImmortable = !settings.pacManImmortable;
+			LOGGER.info("Pac-Man immortable = " + settings.pacManImmortable);
 		}
 	}
 }
