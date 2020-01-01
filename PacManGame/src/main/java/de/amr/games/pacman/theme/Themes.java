@@ -8,11 +8,13 @@ package de.amr.games.pacman.theme;
 public interface Themes {
 
 	static Theme createTheme(String name) {
-		switch (name) {
-		case "Arcade":
+		switch (name.toLowerCase()) {
+		case "arcade":
 			return new ArcadeTheme();
-		case "MSX":
+		case "msx":
 			return new MSXTheme();
+		case "sharpx68000":
+			return new SharpX68000Theme();
 		default:
 			throw new IllegalArgumentException("Unknown theme: " + name);
 		}

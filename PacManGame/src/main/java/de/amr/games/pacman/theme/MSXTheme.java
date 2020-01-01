@@ -103,7 +103,7 @@ public class MSXTheme implements Theme {
 	}
 
 	@Override
-	public int raster() {
+	public int cs() {
 		return 16;
 	}
 

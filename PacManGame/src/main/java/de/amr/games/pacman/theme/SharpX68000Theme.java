@@ -28,13 +28,13 @@ import de.amr.games.pacman.model.Symbol;
  * 
  * @author Armin Reichert
  */
-public class ArcadeTheme implements Theme {
+public class SharpX68000Theme implements Theme {
 
-	private final BufferedImage sheet = Assets.readImage("images/arcade/sprites.png");
-	private final BufferedImage mazeEmpty = Assets.readImage("images/arcade/maze_empty.png");
+	private final BufferedImage sheet = Assets.readImage("images/sharpx68000/sprites.png");
+	private final BufferedImage mazeEmpty = Assets.readImage("images/sharpx68000/maze_empty.png");
 	private final BufferedImage mazeEmptyWhite;
-	private final BufferedImage mazeFull = Assets.readImage("images/arcade/maze_full.png");
-	private final BufferedImage logo = Assets.readImage("images/arcade/logo.png");
+	private final BufferedImage mazeFull = Assets.readImage("images/sharpx68000/maze_full.png");
+	private final BufferedImage logo = Assets.readImage("images/sharpx68000/logo.png");
 	private final BufferedImage pacManFull;
 	private final BufferedImage pacManWalking[][];
 	private final BufferedImage pacManDying[];
@@ -46,40 +46,89 @@ public class ArcadeTheme implements Theme {
 	private final BufferedImage pinkNumbers[];
 	private final Map<Symbol, BufferedImage> symbolMap = new EnumMap<>(Symbol.class);
 
-	public ArcadeTheme() {
+	@Override
+	public BufferedImage spritesheet() {
+		return sheet;
+	}
+
+	@Override
+	public int cs() {
+		return 8;
+	}
+
+	public SharpX68000Theme() {
+
+		final int up = 0, right = 1, down = 2, left = 3;
+		final int big = 16; // 2x2 small cells
+		BufferedImage area;
+
 		storeTrueTypeFont("font.joystix", "Joystix.ttf", Font.PLAIN, 12);
 
 		int blue = -14605825; // debugger told me this
 		mazeEmptyWhite = changeColor(mazeEmpty, blue, Color.WHITE.getRGB());
 
 		// Symbols
-		BufferedImage[] symbolImages = ht(8, 2, 3);
+		area = crop(0, 4 * big, 8 * big, big);
 		for (Symbol symbol : Symbol.values()) {
-			symbolMap.put(symbol, symbolImages[symbol.ordinal()]);
+			int i = symbol.ordinal();
+			symbolMap.put(symbol, area.getSubimage(i * big, 0, big, big));
 		}
 
 		// Pac-Man
-		pacManFull = t(2, 0);
-		pacManDying = ht(12, 2, 0);
-		pacManWalking = new BufferedImage[][] {
-			/*@formatter:off*/
-			{ t(0, 2), t(1, 2), pacManFull }, 
-			{ t(0, 0), t(1, 0), pacManFull },
-			{ t(0, 3), t(1, 3), pacManFull }, 
-			{ t(0, 1), t(1, 1), pacManFull }
-			/*@formatter:on*/
+		pacManFull = crop(0, 0, big, big);
+
+		area = crop(0, 3 * big, 10 * big, big);
+		pacManDying = new BufferedImage[10];
+		for (int i = 0; i < 10; ++i) {
+			pacManDying[i] = area.getSubimage(i * big, 0, big, big);
+		}
+
+		pacManWalking = new BufferedImage[4][3];
+		/*@formatter:off*/
+		pacManWalking[down] = new BufferedImage[] { 
+				crop(0 * big, 0 * big, big, big),
+				crop(1 * big, 0 * big, big, big),
+				crop(2 * big, 0 * big, big, big)
 		};
+		pacManWalking[left] = new BufferedImage[] {
+				crop(0 * big, 1 * big, big, big),
+				crop(1 * big, 1 * big, big, big),
+				crop(2 * big, 1 * big, big, big)
+		};
+		pacManWalking[right] = new BufferedImage[] { 
+				crop(0 * big, 2 * big, big, big),
+				crop(1 * big, 2 * big, big, big),
+				crop(2 * big, 2 * big, big, big)
+		};
+		pacManWalking[up] = new BufferedImage[] { 
+				crop(0 * big, 3 * big, big, big),
+				crop(1 * big, 3 * big, big, big),
+				crop(2 * big, 3 * big, big, big)
+		};
+		/*@formatter:on*/
 
 		// Ghosts
 		ghostColored = new BufferedImage[4][8];
 		for (int color = 0; color < 4; ++color) {
 			for (int i = 0; i < 8; ++i) {
-				ghostColored[color][i] = t(i, 4 + color);
+				ghostColored[color][i] = crop(i * big, (6 + color) * big, big, big);
 			}
 		}
-		ghostFrightened = ht(2, 8, 4);
-		ghostFlashing = ht(4, 8, 4);
-		ghostEyes = new BufferedImage[] { t(10, 5), t(8, 5), t(11, 5), t(9, 5) };
+		ghostFrightened = new BufferedImage[2];
+		ghostFrightened[0] = crop(8 * big, 6 * big, big, big);
+		ghostFrightened[1] = crop(9 * big, 6 * big, big, big);
+
+		ghostFlashing = new BufferedImage[4];
+		ghostFlashing[0] = ghostFrightened[0];
+		ghostFlashing[1] = crop(10 * big, 6 * big, big, big);
+		ghostFlashing[2] = ghostFrightened[1];
+		ghostFlashing[0] = crop(11 * big, 6 * big, big, big);
+
+		ghostEyes = new BufferedImage[4];
+		ghostEyes[down] = crop(8 * big, 7 * big, big, big);
+		ghostEyes[left] = crop(9 * big, 7 * big, big, big);
+		ghostEyes[right] = crop(10 * big, 7 * big, big, big);
+		ghostEyes[up] = crop(11 * big, 7 * big, big, big);
 
 		// Green numbers (200, 400, 800, 1600)
 		greenNumbers = ht(4, 0, 8);
@@ -129,28 +178,18 @@ public class ArcadeTheme implements Theme {
 	}
 
 	@Override
-	public BufferedImage spritesheet() {
-		return sheet;
-	}
-
-	@Override
-	public int cs() {
-		return 16;
-	}
-
-	@Override
 	public BufferedImage img_logo() {
 		return logo;
 	}
 
 	@Override
 	public Sprite spr_emptyMaze() {
-		return Sprite.of(mazeEmpty);
+		return Sprite.of(mazeEmpty).scale(228, 248);
 	}
 
 	@Override
 	public Sprite spr_fullMaze() {
-		return Sprite.of(mazeFull);
+		return Sprite.of(mazeFull).scale(228, 248);
 	}
 
 	@Override
@@ -222,8 +261,8 @@ public class ArcadeTheme implements Theme {
 
 	@Override
 	public Stream<Sound> snd_clips_all() {
-		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eatPill(), snd_extraLife(),
-				snd_insertCoin(), snd_ready(), snd_ghost_chase(), snd_ghost_dead(), snd_waza());
+		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eatPill(), snd_extraLife(), snd_insertCoin(),
+				snd_ready(), snd_ghost_chase(), snd_ghost_dead(), snd_waza());
 	}
 
 	@Override

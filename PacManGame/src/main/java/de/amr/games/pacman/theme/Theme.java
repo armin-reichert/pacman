@@ -50,7 +50,7 @@ public interface Theme {
 	default BufferedImage crop(int x, int y, int w, int h) {
 		return spritesheet().getSubimage(x, y, w, h);
 	}
-
+	
 	/**
 	 * Extracts the tile at the given raster position.
 	 * 
@@ -61,7 +61,7 @@ public interface Theme {
 	 * @return subimage of specified tile
 	 */
 	default BufferedImage t(int col, int row) {
-		return crop(col * raster(), row * raster(), raster(), raster());
+		return crop(col * cs(), row * cs(), cs(), cs());
 	}
 
 	/**
@@ -82,7 +82,7 @@ public interface Theme {
 	/**
 	 * @return raster size (pixels)
 	 */
-	int raster();
+	int cs();
 
 	BufferedImage spritesheet();
 
