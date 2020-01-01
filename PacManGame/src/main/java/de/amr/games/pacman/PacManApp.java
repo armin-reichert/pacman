@@ -8,8 +8,8 @@ import de.amr.games.pacman.PacManApp.PacManAppSettings;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.ArcadeTheme;
 import de.amr.games.pacman.theme.Theme;
+import de.amr.games.pacman.theme.Themes;
 
 /**
  * The Pac-Man game application.
@@ -33,6 +33,9 @@ public class PacManApp extends Application<PacManAppSettings> {
 
 		@Parameter(names = { "-pacManImmortable" }, description = "if set, Pac-Man keeps lives when killed")
 		public boolean pacManImmortable = false;
+
+		@Parameter(names = { "-theme" }, description = "the theme name e.g. 'Arcade'")
+		public String theme = "Arcade";
 	}
 
 	public static void main(String[] args) {
@@ -51,8 +54,7 @@ public class PacManApp extends Application<PacManAppSettings> {
 
 	@Override
 	public void init() {
-		Theme theme = new ArcadeTheme();
-//		theme = new MSXTheme();
+		Theme theme = Themes.createTheme(settings.theme);
 		GameController gameController = new GameController(theme);
 		exitHandler = app -> gameController.game().ifPresent(Game::saveHiscore);
 		setController(gameController);
