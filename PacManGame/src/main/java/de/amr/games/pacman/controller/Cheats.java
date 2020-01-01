@@ -34,6 +34,7 @@ public class Cheats implements Lifecycle {
 
 	@Override
 	public void update() {
+		
 		/* ALT-"K": Kill all available ghosts */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_K)) {
 			gameController.cast().ifPresent(cast -> {
@@ -44,29 +45,32 @@ public class Cheats implements Lifecycle {
 				});
 				LOGGER.info(() -> "All ghosts killed");
 			});
-			/* ALT-"E": Eats all (normal) pellets */
-			if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_E)) {
-				gameController.cast().ifPresent(cast -> {
-					cast.game().maze().tiles().filter(Tile::containsPellet).forEach(tile -> {
-						cast.game().eatFoodAt(tile);
-						gameController.ghostHouse().ifPresent(House::updateDotCounters);
-					});
-					LOGGER.info(() -> "All pellets eaten");
+		}
+
+		/* ALT-"E": Eats all (normal) pellets */
+		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_E)) {
+			gameController.cast().ifPresent(cast -> {
+				cast.game().maze().tiles().filter(Tile::containsPellet).forEach(tile -> {
+					cast.game().eatFoodAt(tile);
+					gameController.ghostHouse().ifPresent(House::updateDotCounters);
 				});
-			}
-			/* ALT-"L": Selects next level */
-			if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
-				gameController.cast().ifPresent(cast -> {
-					LOGGER.info(() -> String.format("Switch to next level (%d)", cast.game().level().number + 1));
-					gameController.enqueue(new LevelCompletedEvent());
-				});
-			}
-			/* ALT-"I": Makes Pac-Man immortable */
-			if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_I)) {
-				boolean immortable = app().settings.getAsBoolean("PacMan.immortable");
-				app().settings.set("PacMan.immortable", !immortable);
-				LOGGER.info("Pac-Man immortable = " + app().settings.getAsBoolean("PacMan.immortable"));
-			}
+				LOGGER.info(() -> "All pellets eaten");
+			});
+		}
+		
+		/* ALT-"L": Selects next level */
+		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
+			gameController.cast().ifPresent(cast -> {
+				LOGGER.info(() -> String.format("Switch to next level (%d)", cast.game().level().number + 1));
+				gameController.enqueue(new LevelCompletedEvent());
+			});
+		}
+		
+		/* ALT-"I": Makes Pac-Man immortable */
+		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_I)) {
+			boolean immortable = app().settings.getAsBoolean("PacMan.immortable");
+			app().settings.set("PacMan.immortable", !immortable);
+			LOGGER.info("Pac-Man immortable = " + app().settings.getAsBoolean("PacMan.immortable"));
 		}
 	}
 }
