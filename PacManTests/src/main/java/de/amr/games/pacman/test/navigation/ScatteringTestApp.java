@@ -4,21 +4,20 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ArcadeTheme;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.play.PlayView;
 
-public class ScatteringTestApp extends Application {
+public class ScatteringTestApp extends PacManApp {
 
 	public static void main(String[] args) {
 		launch(new ScatteringTestApp(), args);
@@ -26,9 +25,6 @@ public class ScatteringTestApp extends Application {
 
 	public ScatteringTestApp() {
 		settings.title = "Scattering";
-		settings.width = 28 * Tile.SIZE;
-		settings.height = 36 * Tile.SIZE;
-		settings.scale = 2;
 	}
 
 	@Override

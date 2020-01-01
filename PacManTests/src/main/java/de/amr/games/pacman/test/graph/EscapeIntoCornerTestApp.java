@@ -6,18 +6,17 @@ import static de.amr.games.pacman.actor.behavior.Steerings.isFleeingToSafeCorner
 
 import java.util.Optional;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.core.MazeResident;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ArcadeTheme;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.play.PlayView;
 
-public class EscapeIntoCornerTestApp extends Application {
+public class EscapeIntoCornerTestApp extends PacManApp {
 
 	public static void main(String[] args) {
 		launch(new EscapeIntoCornerTestApp(), args);
@@ -25,9 +24,6 @@ public class EscapeIntoCornerTestApp extends Application {
 
 	public EscapeIntoCornerTestApp() {
 		settings.title = "Escape Into Corner";
-		settings.width = 28 * Tile.SIZE;
-		settings.height = 36 * Tile.SIZE;
-		settings.scale = 2;
 	}
 
 	@Override

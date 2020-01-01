@@ -6,19 +6,18 @@ import static de.amr.games.pacman.actor.behavior.Steerings.isMovingRandomlyWitho
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ArcadeTheme;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.play.PlayView;
 
-public class MovingRandomlyTestApp extends Application {
+public class MovingRandomlyTestApp extends PacManApp {
 
 	public static void main(String[] args) {
 		launch(new MovingRandomlyTestApp(), args);
@@ -26,9 +25,6 @@ public class MovingRandomlyTestApp extends Application {
 
 	public MovingRandomlyTestApp() {
 		settings.title = "Moving Randomly";
-		settings.width = 28 * Tile.SIZE;
-		settings.height = 36 * Tile.SIZE;
-		settings.scale = 2;
 	}
 
 	@Override

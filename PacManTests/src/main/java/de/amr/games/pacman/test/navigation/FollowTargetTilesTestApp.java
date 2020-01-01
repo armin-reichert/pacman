@@ -8,9 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.behavior.Steerings;
 import de.amr.games.pacman.model.Game;
@@ -20,7 +20,7 @@ import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.core.Pen;
 import de.amr.games.pacman.view.play.PlayView;
 
-public class FollowTargetTilesTestApp extends Application {
+public class FollowTargetTilesTestApp extends PacManApp {
 
 	public static void main(String[] args) {
 		launch(new FollowTargetTilesTestApp(), args);
@@ -28,9 +28,6 @@ public class FollowTargetTilesTestApp extends Application {
 
 	public FollowTargetTilesTestApp() {
 		settings.title = "Follow Target Tiles";
-		settings.width = 28 * Tile.SIZE;
-		settings.height = 36 * Tile.SIZE;
-		settings.scale = 2;
 	}
 
 	@Override

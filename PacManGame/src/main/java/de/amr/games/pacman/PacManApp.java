@@ -1,11 +1,12 @@
 package de.amr.games.pacman;
 
 import de.amr.easy.game.Application;
+import de.amr.easy.game.config.AppSettings;
+import de.amr.games.pacman.PacManApp.PacManAppSettings;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ArcadeTheme;
-import de.amr.games.pacman.theme.MSXTheme;
 import de.amr.games.pacman.theme.Theme;
 
 /**
@@ -15,13 +16,19 @@ import de.amr.games.pacman.theme.Theme;
  * 
  * @author Armin Reichert
  */
-public class PacManApp extends Application {
+public class PacManApp extends Application<PacManAppSettings> {
+
+	public class PacManAppSettings extends AppSettings {
+
+	}
 
 	public static void main(String[] args) {
 		launch(new PacManApp(), args);
 	}
 
-	public PacManApp() {
+	@Override
+	public PacManAppSettings createAppSettings() {
+		PacManAppSettings settings = new PacManAppSettings();
 		settings.width = 28 * Tile.SIZE;
 		settings.height = 36 * Tile.SIZE;
 		settings.scale = 2;
@@ -30,6 +37,7 @@ public class PacManApp extends Application {
 		settings.set("Ghost.fleeRandomly", true);
 		settings.set("PacMan.overflowBug", true);
 		settings.set("PacMan.immortable", false);
+		return settings;
 	}
 
 	@Override
