@@ -184,12 +184,12 @@ public class SharpX68000Theme implements Theme {
 
 	@Override
 	public Sprite spr_emptyMaze() {
-		return Sprite.of(mazeEmpty).scale(228, 248);
+		return Sprite.of(mazeEmpty);
 	}
 
 	@Override
 	public Sprite spr_fullMaze() {
-		return Sprite.of(mazeFull).scale(228, 248);
+		return Sprite.of(mazeFull);
 	}
 
 	@Override
