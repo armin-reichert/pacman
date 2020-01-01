@@ -191,6 +191,10 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 		return cast;
 	}
 
+	public int seat() {
+		return seat;
+	}
+
 	@Override
 	public FsmComponent<GhostState, PacManGameEvent> fsmComponent() {
 		return brain;
@@ -224,15 +228,11 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 
 	@Override
 	public Steering<Ghost> steering() {
-		return steerings.getOrDefault(getState(), defaultSteering);
+		return steeringForState(getState());
 	}
 
 	public Steering<Ghost> steeringForState(GhostState state) {
 		return steerings.getOrDefault(state, defaultSteering);
-	}
-
-	public int seat() {
-		return seat;
 	}
 
 	@Override
@@ -247,8 +247,8 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 	}
 
 	@Override
-	/* TODO: Some values are still guessed */
 	public float maxSpeed() {
+		// TODO: Some values are still guessed  
 		boolean inTunnel = tile().isTunnel();
 		boolean outsideHouse = !maze().inGhostHouse(tile());
 		switch (getState()) {
