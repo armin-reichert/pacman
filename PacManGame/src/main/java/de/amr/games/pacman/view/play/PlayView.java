@@ -365,7 +365,7 @@ public class PlayView extends SimplePlayView {
 				g.setStroke(solid);
 				g.drawLine(from.centerX(), from.centerY(), to.centerX(), to.centerY());
 				if (i + 1 == targetPath.size() - 1) {
-					drawArrowHead(g, maze().directionBetween(from, to).get(), to.centerX(), to.centerY());
+					drawArrowHead(g, maze().direction(from, to).get(), to.centerX(), to.centerY());
 				}
 			}
 		}

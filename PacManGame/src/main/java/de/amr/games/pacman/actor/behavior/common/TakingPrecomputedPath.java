@@ -3,18 +3,19 @@ package de.amr.games.pacman.actor.behavior.common;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.MazeMover;
+import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
  * Steering using a precomputed path.
  * 
- * @param <T>
- *          type of steered actor
+ * @param <T> type of steered actor
  *
  * @author Armin Reichert
  */
@@ -52,6 +53,10 @@ public abstract class TakingPrecomputedPath<T extends MazeMover> implements Stee
 				|| last(targetPath) != actor.targetTile();
 	}
 
+	protected Optional<Direction> alongPath(List<Tile> path) {
+		return path.size() < 2 ? Optional.empty() : maze.direction(path.get(0), path.get(1));
+	}
+
 	@Override
 	public void steer() {
 		Tile targetTile = fnTargetTile.get();
@@ -67,6 +72,6 @@ public abstract class TakingPrecomputedPath<T extends MazeMover> implements Stee
 			targetPath = computePath(actor, targetTile);
 			actor.setTargetTile(last(targetPath));
 		}
-		actor.setWishDir(maze.alongPath(targetPath).orElse(null));
+		actor.setWishDir(alongPath(targetPath).orElse(null));
 	}
 }
