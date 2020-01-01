@@ -131,25 +131,23 @@ public class Cast {
 
 	private void clotheActors() {
 		clothePacMan();
-		clotheGhosts(blinky, GhostColor.RED);
-		clotheGhosts(pinky, GhostColor.PINK);
-		clotheGhosts(inky, GhostColor.CYAN);
-		clotheGhosts(clyde, GhostColor.ORANGE);
+		clotheGhost(blinky, GhostColor.RED);
+		clotheGhost(pinky, GhostColor.PINK);
+		clotheGhost(inky, GhostColor.CYAN);
+		clotheGhost(clyde, GhostColor.ORANGE);
 	}
 
 	private void clothePacMan() {
 		dirs().forEach(dir -> pacMan.sprites.set("walking-" + dir, theme.spr_pacManWalking(dir.ordinal())));
 		pacMan.sprites.set("dying", theme.spr_pacManDying());
 		pacMan.sprites.set("full", theme.spr_pacManFull());
-		pacMan.sprites.select("full");
 	}
 
-	private void clotheGhosts(Ghost ghost, GhostColor color) {
+	private void clotheGhost (Ghost ghost, GhostColor color) {
 		dirs().forEach(dir -> {
 			ghost.sprites.set("color-" + dir, theme.spr_ghostColored(color, dir.ordinal()));
 			ghost.sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir.ordinal()));
 		});
-		// sprite keys: "number-200", "number-400", "number-800", "number-1600"
 		for (int number : new int[] { 200, 400, 800, 1600 }) {
 			ghost.sprites.set("number-" + number, theme.spr_number(number));
 		}
