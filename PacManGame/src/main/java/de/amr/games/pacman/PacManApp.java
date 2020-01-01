@@ -32,7 +32,7 @@ public class PacManApp extends Application<PacManAppSettings> {
 		public boolean ghostsFleeRandomly = true;
 
 		@Parameter(names = { "-pacManImmortable" }, description = "if set, Pac-Man keeps lives when killed")
-		public boolean pacManImmortable = true;
+		public boolean pacManImmortable = false;
 	}
 
 	public static void main(String[] args) {
