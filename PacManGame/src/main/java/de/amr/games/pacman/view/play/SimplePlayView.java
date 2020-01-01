@@ -28,8 +28,8 @@ import de.amr.games.pacman.view.core.Pen;
 public class SimplePlayView implements GameView {
 
 	protected final Cast cast;
-	protected SpriteAnimation energizerBlinking;
 	protected boolean mazeFlashing;
+	protected SpriteAnimation energizerBlinking;
 	protected Image lifeImage;
 	protected Sprite fullMazeSprite;
 	protected Sprite flashingMazeSprite;
@@ -40,10 +40,20 @@ public class SimplePlayView implements GameView {
 
 	public SimplePlayView(Cast cast) {
 		this.cast = cast;
-		cast.addThemeListener(this);
+		mazeFlashing = false;
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
+		cast.addThemeListener(this);
 		onThemeChanged(theme());
+		messageText = null;
+		messageColor = Color.YELLOW;
+	}
+
+	@Override
+	public void onThemeChanged(Theme theme) {
+		lifeImage = theme.spr_pacManWalking(3).frame(1);
+		fullMazeSprite = theme.spr_fullMaze();
+		flashingMazeSprite = theme.spr_flashingMaze();
 	}
 
 	public Cast cast() {
@@ -75,13 +85,6 @@ public class SimplePlayView implements GameView {
 		if (!mazeFlashing) {
 			energizerBlinking.update();
 		}
-	}
-
-	@Override
-	public void onThemeChanged(Theme theme) {
-		lifeImage = theme.spr_pacManWalking(3).frame(1);
-		fullMazeSprite = theme.spr_fullMaze();
-		flashingMazeSprite = theme.spr_flashingMaze();
 	}
 
 	public void messageColor(Color color) {

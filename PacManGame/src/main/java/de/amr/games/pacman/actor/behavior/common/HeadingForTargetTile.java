@@ -25,10 +25,10 @@ import de.amr.games.pacman.model.Tile;
 /**
  * Steers an actor towards a target tile.
  * 
- * The detailed behavior is described <a href=
- * "http://gameinternals.com/understanding-pac-man-ghost-behavior">here</a>.
+ * The detailed behavior is described <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here</a>.
  * 
- * @param <T> type of actor
+ * @param <T>
+ *          type of actor
  * 
  * @author Armin Reichert
  */
@@ -77,20 +77,19 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 				Direction dirToTarget = dirToTarget(actor.moveDir(), actor.tile(), targetTile);
 				actor.setWishDir(dirToTarget);
 				actor.setTargetTile(targetTile);
-				targetPath = computePath ? pathToTargetTile(targetTile) : Collections.emptyList();
+				targetPath = computePath ? pathTo(targetTile) : Collections.emptyList();
 			}
 		}
 	}
 
 	/**
-	 * Computes the next move direction as described <a href=
-	 * "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
+	 * Computes the next move direction as described
+	 * <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
 	 * 
 	 * <p>
-	 * Note: We use separate parameters for the actor's move direction, current tile
-	 * and target tile instead of the members of the actor itself because the
-	 * {@link #pathToTargetTile(Tile)} method uses this method without actually
-	 * placing the actor at each tile of the path.
+	 * Note: We use separate parameters for the actor's move direction, current tile and target tile instead of the
+	 * members of the actor itself because the {@link #pathTo(Tile)} method uses this method without actually placing the
+	 * actor at each tile of the path.
 	 */
 	private Direction dirToTarget(Direction moveDir, Tile currentTile, Tile targetTile) {
 		Function<Direction, Tile> neighbor = dir -> actor.maze().tileToDir(currentTile, dir);
@@ -107,12 +106,12 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	}
 
 	/**
-	 * Computes the complete path the actor would traverse until it would reach the
-	 * target tile, a cycle would occur or the path would leave the board.
+	 * Computes the complete path the actor would traverse until it would reach the given target tile, a cycle would occur
+	 * or the path would leave the board.
 	 * 
 	 * @return the path the actor would take when moving to its target tile
 	 */
-	private List<Tile> pathToTargetTile(Tile targetTile) {
+	private List<Tile> pathTo(Tile targetTile) {
 		Maze maze = actor.maze();
 		Set<Tile> path = new LinkedHashSet<>();
 		Tile currentTile = actor.tile();

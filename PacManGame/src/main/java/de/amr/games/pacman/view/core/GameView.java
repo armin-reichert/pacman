@@ -24,6 +24,14 @@ public interface GameView extends View, Lifecycle, PropertyChangeListener {
 		return app().settings.height;
 	}
 
+	@Override
+	default void show() {
+	}
+
+	@Override
+	default void hide() {
+	}
+
 	Theme theme();
 
 	void onThemeChanged(Theme theme);
