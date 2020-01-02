@@ -344,6 +344,9 @@ However, for a graph of such a small size, the used algorithm doesn't matter ver
   - F2 opens a dialog where the game loop frequency and (full-)screen resolution can be changed
   - F11 toggles between window and full-screen exclusive mode
 - Game 
+  - Skip intro screen: -skipIntro
+  - Simulate overflow bug: -overflowBug true/false
+  - Make Pac-Man immortable: -pacManImmortable
   - Speed can be changed during game 
     - Continuosly: ALT-LEFT = slower, ALT-RIGHT = faster
     - Fixed speeds: '1' = normal speed, '2' = fast, '3' = very fast
