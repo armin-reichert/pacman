@@ -218,14 +218,13 @@ for any event that has no effect in the current state. The Ghost's state machine
 Pac-Man is steered by holding a key indicating its **intended** direction. As soon as Pac-Man reaches a tile where it can move towards this direction it changes its move direction accordingly. ("Cornering" is not yet implemented). In the code, this is implemented by setting the steering function as shown below. This makes it very easy to replace the manual steering by some sort of automatic steering ("AI"):
 
 ```java
-pacMan = new PacMan(this);
-pacMan.steering(followsKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
+pacMan.steering(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 
-static <T extends MazeMover> Steering<T> followsKeys(int... keys) {
-	return actor -> Direction.dirs()
+default Steering isFollowingKeys(int... keys) {
+	return () -> Direction.dirs()
 			.filter(dir -> Keyboard.keyDown(keys[dir.ordinal()]))
 			.findAny()
-			.ifPresent(actor::setNextDir);
+			.ifPresent(this::setWishDir);
 }
 ```
 
@@ -247,11 +246,10 @@ Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
 blinky.eyes = LEFT;
-blinky.during(SCATTERING, isHeadingFor(maze().horizonNE));
-blinky.during(CHASING, isHeadingFor(pacMan::tile));
-blinky.during(ENTERING_HOUSE, isTakingSeat(blinky, 2));
+blinky.during(SCATTERING, blinky.isHeadingFor(maze().horizonNE));
+blinky.during(CHASING, blinky.isHeadingFor(pacMan::tile));
+blinky.during(ENTERING_HOUSE, blinky.isTakingSeat(2));
 ```
-
 <img src="PacManDoc/blinky.png"/>
 
 ### Inky (the cyan ghost)
@@ -263,13 +261,13 @@ Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to ge
 
 ```java
 inky.eyes = UP;
-inky.during(SCATTERING, isHeadingFor(maze().horizonSE));
-inky.during(CHASING, isHeadingFor(() -> {
+inky.during(SCATTERING, inky.isHeadingFor(maze().horizonSE));
+inky.during(CHASING, inky.isHeadingFor(() -> {
 	Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 	return maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 }));
-inky.during(LOCKED, isJumpingUpAndDown(maze(), inky.seat()));
-inky.during(ENTERING_HOUSE, isTakingSeat(inky));
+inky.during(LOCKED, inky.isJumpingUpAndDown());
+inky.during(ENTERING_HOUSE, inky.isTakingOwnSeat());
 ```
 
 <img src="PacManDoc/inky.png"/>
@@ -280,10 +278,10 @@ Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current
 
 ```java
 pinky.eyes = DOWN;
-pinky.during(SCATTERING, isHeadingFor(maze().horizonNW));
-pinky.during(CHASING, isHeadingFor(() -> pacMan.tilesAhead(4)));
-pinky.during(LOCKED, isJumpingUpAndDown(maze(), pinky.seat()));
-pinky.during(ENTERING_HOUSE, isTakingSeat(pinky));
+pinky.during(SCATTERING, pinky.isHeadingFor(maze().horizonNW));
+pinky.during(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
+pinky.during(LOCKED, pinky.isJumpingUpAndDown());
+pinky.during(ENTERING_HOUSE, pinky.isTakingOwnSeat());
 ```
 
 <img src="PacManDoc/pinky.png"/>
@@ -294,11 +292,11 @@ Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from 
 
 ```java
 clyde.eyes = UP;
-clyde.during(SCATTERING, isHeadingFor(maze().horizonSW));
-clyde.during(CHASING,
-		isHeadingFor(() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
-clyde.during(LOCKED, isJumpingUpAndDown(maze(), clyde.seat()));
-clyde.during(ENTERING_HOUSE, isTakingSeat(clyde));
+clyde.during(SCATTERING, clyde.isHeadingFor(maze().horizonSW));
+clyde.during(CHASING, clyde
+		.isHeadingFor(() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
+clyde.during(LOCKED, clyde.isJumpingUpAndDown());
+clyde.during(ENTERING_HOUSE, pinky.isTakingOwnSeat());
 ```
 
 <img src="PacManDoc/clyde.png"/>
@@ -312,13 +310,13 @@ cannot reverse direction this results in a cyclic movement around the walls in t
 
 <img src="PacManDoc/scattering.png"/>
 
-In the *frightened*, *locked*, *entering house* and *leaving house* modes, the ghosts (mostly) have the same behavior:
+The remaining behavior is specified as follows:
 
 ```java
 ghosts().forEach(ghost -> {
 	ghost.setTeleportingDuration(sec(0.5f));
-	ghost.during(LEAVING_HOUSE, isLeavingGhostHouse(maze()));
-	ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack());
+	ghost.during(LEAVING_HOUSE, ghost.isLeavingGhostHouse());
+	ghost.during(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
 });
 ```
 
@@ -346,6 +344,9 @@ However, for a graph of such a small size, the used algorithm doesn't matter ver
   - F2 opens a dialog where the game loop frequency and (full-)screen resolution can be changed
   - F11 toggles between window and full-screen exclusive mode
 - Game 
+  - Skip intro screen: -skipIntro
+  - Simulate overflow bug: -overflowBug true/false
+  - Make Pac-Man immortable: -pacManImmortable
   - Speed can be changed during game 
     - Continuosly: ALT-LEFT = slower, ALT-RIGHT = faster
     - Fixed speeds: '1' = normal speed, '2' = fast, '3' = very fast
