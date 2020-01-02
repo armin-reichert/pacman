@@ -208,7 +208,11 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 
 	@Override
 	public void update() {
+		Steering steeringBefore = steering();
 		brain.update();
+		if (steeringBefore != steering()) {
+			setEnteredNewTile(); // trigger steering
+		}
 	}
 
 	@Override

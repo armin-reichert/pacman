@@ -22,15 +22,6 @@ public interface Steering {
 	void steer();
 
 	/**
-	 * @return if the steering is enabled. Some steerings require a certain
-	 *         precondition, for example that the actor has entered a new tile,
-	 *         before they execute.
-	 */
-	default boolean enabled() {
-		return true;
-	}
-
-	/**
 	 * @return tells if the steering requires the actor to always stay aligned with
 	 *         the grid
 	 */

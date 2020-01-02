@@ -57,18 +57,13 @@ public class HeadingForTargetTile implements Steering {
 	}
 
 	@Override
-	public boolean enabled() {
-		return actor.enteredNewTile();
-	}
-
-	@Override
 	public List<Tile> targetPath() {
 		return new ArrayList<>(targetPath);
 	}
 
 	@Override
 	public void steer() {
-		if (enabled()) {
+		if (actor.enteredNewTile()) {
 			Tile targetTile = fnTargetTile.get();
 			if (targetTile != null) {
 				Direction dirToTarget = dirToTarget(actor.moveDir(), actor.tile(), targetTile);

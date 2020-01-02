@@ -191,7 +191,10 @@ public class PacMan extends AbstractMazeMover implements SteerableMazeMover, Act
 	}
 
 	public void steering(Steering steering) {
-		this.steering = steering;
+		if (this.steering != steering) {
+			this.steering = steering;
+			setEnteredNewTile();
+		}
 	}
 
 	@Override

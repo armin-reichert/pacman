@@ -22,7 +22,7 @@ public class MovingRandomlyWithoutTurningBack implements Steering {
 	@Override
 	public void steer() {
 		actor.setTargetTile(null);
-		if (enabled()) {
+		if (actor.enteredNewTile()) {
 			/*@formatter:off*/
 			permute(Direction.dirs())
 				.filter(dir -> dir != actor.moveDir().opposite())
@@ -31,11 +31,6 @@ public class MovingRandomlyWithoutTurningBack implements Steering {
 				.ifPresent(actor::setWishDir);
 			/*@formatter:on*/
 		}
-	}
-
-	@Override
-	public boolean enabled() {
-		return actor.enteredNewTile();
 	}
 
 	@Override
