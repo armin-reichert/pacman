@@ -1,6 +1,6 @@
 package de.amr.games.pacman.actor.core;
 
-import de.amr.games.pacman.actor.behavior.Steering;
+import de.amr.games.pacman.actor.behavior.common.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Tile;
 

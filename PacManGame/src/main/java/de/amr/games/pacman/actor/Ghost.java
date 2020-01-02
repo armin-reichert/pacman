@@ -18,7 +18,7 @@ import java.util.Map;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
-import de.amr.games.pacman.actor.behavior.Steering;
+import de.amr.games.pacman.actor.behavior.common.Steering;
 import de.amr.games.pacman.actor.behavior.ghost.SteerableGhost;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
 import de.amr.games.pacman.actor.core.Actor;

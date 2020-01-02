@@ -2,7 +2,6 @@ package de.amr.games.pacman.actor.behavior.common;
 
 import static de.amr.datastruct.StreamUtils.permute;
 
-import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Direction;
 

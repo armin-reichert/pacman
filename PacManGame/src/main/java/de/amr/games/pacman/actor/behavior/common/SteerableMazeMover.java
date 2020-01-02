@@ -1,13 +1,9 @@
-package de.amr.games.pacman.actor.behavior;
+package de.amr.games.pacman.actor.behavior.common;
 
 import java.util.List;
 import java.util.function.Supplier;
 
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.actor.behavior.common.HeadingForTargetTile;
-import de.amr.games.pacman.actor.behavior.common.MovingRandomlyWithoutTurningBack;
-import de.amr.games.pacman.actor.behavior.common.TakingFixedPath;
-import de.amr.games.pacman.actor.behavior.common.TakingShortestPath;
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Tile;
@@ -25,9 +21,8 @@ public interface SteerableMazeMover extends MazeMover {
 	 * 
 	 * @return steering using the given keys
 	 */
-	default Steering isFollowingKeys(int up, int right, int down, int left) {
+	default Steering isFollowingKeys(int... keys) {
 		/*@formatter:off*/
-		int keys[] = { up, right, down, left};
 		return () -> Direction.dirs()
 				.filter(dir -> Keyboard.keyDown(keys[dir.ordinal()]))
 				.findAny()

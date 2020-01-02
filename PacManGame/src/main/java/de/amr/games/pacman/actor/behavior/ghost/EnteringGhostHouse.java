@@ -7,7 +7,7 @@ import static de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.Enteri
 import static de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState.MOVING_RIGHT;
 
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.behavior.Steering;
+import de.amr.games.pacman.actor.behavior.common.Steering;
 import de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
