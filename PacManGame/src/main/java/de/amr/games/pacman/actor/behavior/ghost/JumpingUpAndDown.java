@@ -9,7 +9,7 @@ import de.amr.games.pacman.model.Direction;
  * 
  * @author Armin Reichert
  */
-public class JumpingUpAndDown implements Steering<Ghost> {
+public class JumpingUpAndDown implements Steering {
 
 	private final Ghost ghost;
 	private final int placeY;

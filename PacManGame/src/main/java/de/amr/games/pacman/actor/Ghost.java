@@ -48,8 +48,8 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 	private final Cast cast;
 	private final int seat;
 	private final FsmComponent<GhostState, PacManGameEvent> brain;
-	private final Map<GhostState, Steering<Ghost>> steerings = new EnumMap<>(GhostState.class);
-	private final Steering<Ghost> defaultSteering = isHeadingFor(this, this::targetTile);
+	private final Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
+	private final Steering defaultSteering = isHeadingFor(this, this::targetTile);
 
 	public Ghost(String name, Cast cast, int seat) {
 		super(name);
@@ -222,16 +222,16 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 		}
 	}
 
-	public void during(GhostState state, Steering<Ghost> steering) {
+	public void during(GhostState state, Steering steering) {
 		steerings.put(state, steering);
 	}
 
 	@Override
-	public Steering<Ghost> steering() {
+	public Steering steering() {
 		return steeringForState(getState());
 	}
 
-	public Steering<Ghost> steeringForState(GhostState state) {
+	public Steering steeringForState(GhostState state) {
 		return steerings.getOrDefault(state, defaultSteering);
 	}
 
@@ -248,7 +248,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 
 	@Override
 	public float maxSpeed() {
-		// TODO: Some values are still guessed  
+		// TODO: Some values are still guessed
 		boolean inTunnel = tile().isTunnel();
 		boolean outsideHouse = !maze().inGhostHouse(tile());
 		switch (getState()) {

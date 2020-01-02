@@ -15,11 +15,11 @@ import de.amr.games.pacman.model.Tile;
 /**
  * Steering using a precomputed path.
  * 
- * @param <T> type of steered actor
+ * @param <MazeMover> type of steered actor
  *
  * @author Armin Reichert
  */
-public abstract class TakingPrecomputedPath<T extends MazeMover> implements Steering<T> {
+public abstract class TakingPrecomputedPath implements Steering {
 
 	static Tile first(List<Tile> list) {
 		return list.isEmpty() ? null : list.get(0);
@@ -29,12 +29,12 @@ public abstract class TakingPrecomputedPath<T extends MazeMover> implements Stee
 		return list.isEmpty() ? null : list.get(list.size() - 1);
 	}
 
-	protected final T actor;
+	protected final MazeMover actor;
 	protected final Maze maze;
 	protected final Supplier<Tile> fnTargetTile;
 	protected List<Tile> targetPath;
 
-	public TakingPrecomputedPath(T actor, Supplier<Tile> fnTargetTile) {
+	public TakingPrecomputedPath(MazeMover actor, Supplier<Tile> fnTargetTile) {
 		this.actor = actor;
 		this.maze = actor.maze();
 		this.fnTargetTile = fnTargetTile;
@@ -46,9 +46,9 @@ public abstract class TakingPrecomputedPath<T extends MazeMover> implements Stee
 		return targetPath;
 	}
 
-	protected abstract List<Tile> computePath(T actor, Tile targetTile);
+	protected abstract List<Tile> computePath(MazeMover actor, Tile targetTile);
 
-	protected boolean isPathInvalid(T actor) {
+	protected boolean isPathInvalid(MazeMover actor) {
 		return actor.wishDir() == null || targetPath.size() == 0 || first(targetPath) != actor.tile()
 				|| last(targetPath) != actor.targetTile();
 	}

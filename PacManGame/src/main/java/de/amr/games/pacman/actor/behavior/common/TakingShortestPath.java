@@ -13,17 +13,17 @@ import de.amr.games.pacman.model.Tile;
  *
  * @author Armin Reichert
  */
-public class TakingShortestPath<T extends MazeMover> extends TakingPrecomputedPath<T> {
+public class TakingShortestPath extends TakingPrecomputedPath {
 
 	protected MazeGraph graph;
 
-	public TakingShortestPath(T actor, Supplier<Tile> fnTargetTile) {
+	public TakingShortestPath(MazeMover actor, Supplier<Tile> fnTargetTile) {
 		super(actor, fnTargetTile);
 		graph = new MazeGraph(maze);
 	}
 
 	@Override
-	protected List<Tile> computePath(T actor, Tile targetTile) {
+	protected List<Tile> computePath(MazeMover actor, Tile targetTile) {
 		return graph.shortestPath(actor.tile(), targetTile);
 	}
 }

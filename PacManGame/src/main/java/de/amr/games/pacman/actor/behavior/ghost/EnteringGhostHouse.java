@@ -19,7 +19,7 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> implements Steering<Ghost> {
+public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> implements Steering {
 
 	public enum EnteringHouseState {
 		AT_DOOR, FALLING, MOVING_LEFT, MOVING_RIGHT, AT_PLACE

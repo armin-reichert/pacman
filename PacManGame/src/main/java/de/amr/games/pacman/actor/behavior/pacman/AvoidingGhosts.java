@@ -13,7 +13,7 @@ import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Tile;
 
-public class AvoidingGhosts implements Steering<PacMan> {
+public class AvoidingGhosts implements Steering {
 
 	private final Cast cast;
 

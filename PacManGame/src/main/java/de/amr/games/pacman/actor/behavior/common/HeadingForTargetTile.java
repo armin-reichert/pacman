@@ -25,24 +25,22 @@ import de.amr.games.pacman.model.Tile;
 /**
  * Steers an actor towards a target tile.
  * 
- * The detailed behavior is described <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here</a>.
- * 
- * @param <T>
- *          type of actor
+ * The detailed behavior is described <a href=
+ * "http://gameinternals.com/understanding-pac-man-ghost-behavior">here</a>.
  * 
  * @author Armin Reichert
  */
-public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
+public class HeadingForTargetTile implements Steering {
 
 	/** Directions in the order used to compute the next move direction */
 	private static final List<Direction> UP_LEFT_DOWN_RIGHT = Arrays.asList(UP, LEFT, DOWN, RIGHT);
 
-	private final T actor;
+	private final MazeMover actor;
 	private Supplier<Tile> fnTargetTile;
 	private List<Tile> targetPath;
 	private boolean computePath;
 
-	public HeadingForTargetTile(T actor, Supplier<Tile> fnTargetTile) {
+	public HeadingForTargetTile(MazeMover actor, Supplier<Tile> fnTargetTile) {
 		this.actor = actor;
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 		targetPath = Collections.emptyList();
@@ -83,12 +81,13 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	}
 
 	/**
-	 * Computes the next move direction as described
-	 * <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
+	 * Computes the next move direction as described <a href=
+	 * "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
 	 * 
 	 * <p>
-	 * Note: We use separate parameters for the actor's move direction, current tile and target tile instead of the
-	 * members of the actor itself because the {@link #pathTo(Tile)} method uses this method without actually placing the
+	 * Note: We use separate parameters for the actor's move direction, current tile
+	 * and target tile instead of the members of the actor itself because the
+	 * {@link #pathTo(Tile)} method uses this method without actually placing the
 	 * actor at each tile of the path.
 	 */
 	private Direction dirToTarget(Direction moveDir, Tile currentTile, Tile targetTile) {
@@ -106,8 +105,8 @@ public class HeadingForTargetTile<T extends MazeMover> implements Steering<T> {
 	}
 
 	/**
-	 * Computes the complete path the actor would traverse until it would reach the given target tile, a cycle would occur
-	 * or the path would leave the board.
+	 * Computes the complete path the actor would traverse until it would reach the
+	 * given target tile, a cycle would occur or the path would leave the board.
 	 * 
 	 * @return the path the actor would take when moving to its target tile
 	 */

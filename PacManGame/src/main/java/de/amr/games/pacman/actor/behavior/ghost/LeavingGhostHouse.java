@@ -9,7 +9,7 @@ import de.amr.games.pacman.model.Direction;
  * 
  * @author Armin Reichert
  */
-public class LeavingGhostHouse implements Steering<Ghost> {
+public class LeavingGhostHouse implements Steering {
 
 	private static boolean aboutEqual(float tolerance, float f1, float f2) {
 		return Math.abs(f1 - f2) <= tolerance;

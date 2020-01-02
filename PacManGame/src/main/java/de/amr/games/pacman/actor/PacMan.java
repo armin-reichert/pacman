@@ -46,7 +46,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	public final SpriteMap sprites = new SpriteMap();
 	private final Cast cast;
 	private final FsmComponent<PacManState, PacManGameEvent> brain;
-	private Steering<PacMan> steering;
+	private Steering steering;
 	private boolean kicking;
 	private boolean tired;
 	private int digestionTicks;
@@ -185,11 +185,11 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	}
 
 	@Override
-	public Steering<PacMan> steering() {
+	public Steering steering() {
 		return steering;
 	}
 
-	public void steering(Steering<PacMan> steering) {
+	public void steering(Steering steering) {
 		this.steering = steering;
 	}
 

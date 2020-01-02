@@ -6,17 +6,17 @@ import java.util.List;
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Tile;
 
-public class TakingFixedPath<T extends MazeMover> extends TakingPrecomputedPath<T> {
+public class TakingFixedPath extends TakingPrecomputedPath {
 
 	private List<Tile> path;
 
-	public TakingFixedPath(T actor, List<Tile> path) {
+	public TakingFixedPath(MazeMover actor, List<Tile> path) {
 		super(actor, () -> path.get(path.size() - 1));
 		this.path = new ArrayList<>(path);
 	}
 
 	@Override
-	protected List<Tile> computePath(T actor, Tile targetTile) {
+	protected List<Tile> computePath(MazeMover actor, Tile targetTile) {
 		return path;
 	}
 }

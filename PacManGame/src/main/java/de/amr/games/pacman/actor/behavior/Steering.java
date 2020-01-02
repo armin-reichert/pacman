@@ -3,19 +3,15 @@ package de.amr.games.pacman.actor.behavior;
 import java.util.Collections;
 import java.util.List;
 
-import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Tile;
 
 /**
  * Interface for steering of actors.
  * 
- * @param <T> type of steered entity, must implement the {@link MazeMover}
- *            interface
- * 
  * @author Armin Reichert
  */
 @FunctionalInterface
-public interface Steering<T extends MazeMover> {
+public interface Steering {
 
 	/**
 	 * Steers the actor towards its target tile or wherever it should move in its

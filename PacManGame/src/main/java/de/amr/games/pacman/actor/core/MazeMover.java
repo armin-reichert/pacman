@@ -14,7 +14,7 @@ public interface MazeMover extends MazeResident {
 	/**
 	 * Returns the current steering of this actor.
 	 */
-	Steering<?> steering();
+	Steering steering();
 
 	/**
 	 * Moves one step, either inside the maze or through the teleporting space.
@@ -22,8 +22,9 @@ public interface MazeMover extends MazeResident {
 	void step();
 
 	/**
-	 * @return the maximum possible speed (in pixels/tick) for the next step. The actual speed can be
-	 *         lower to avoid crossing borders into inaccessible tiles.
+	 * @return the maximum possible speed (in pixels/tick) for the next step. The
+	 *         actual speed can be lower to avoid crossing borders into inaccessible
+	 *         tiles.
 	 */
 	float maxSpeed();
 
@@ -35,8 +36,7 @@ public interface MazeMover extends MazeResident {
 	/**
 	 * Sets the move direction.
 	 * 
-	 * @param dir
-	 *              move direction
+	 * @param dir move direction
 	 */
 	void setMoveDir(Direction dir);
 
@@ -48,8 +48,7 @@ public interface MazeMover extends MazeResident {
 	/**
 	 * Sets the next/intended move direction.
 	 * 
-	 * @param dir
-	 *              intended direction
+	 * @param dir intended direction
 	 */
 	void setWishDir(Direction dir);
 
@@ -71,8 +70,7 @@ public interface MazeMover extends MazeResident {
 	/**
 	 * Sets the current target tile.
 	 * 
-	 * @param tile
-	 *               target tile
+	 * @param tile target tile
 	 */
 	void setTargetTile(Tile tile);
 
@@ -87,26 +85,24 @@ public interface MazeMover extends MazeResident {
 	boolean canMoveForward();
 
 	/**
-	 * @param dir
-	 *              direction value (N, E, S, W)
+	 * @param dir direction value (N, E, S, W)
 	 * @return if the entity can enter the neighbor tile towards this direction
 	 */
 	boolean canCrossBorderTo(Direction dir);
 
 	/**
-	 * @param tile
-	 *                   some tile
-	 * @param neighbor
-	 *                   neighbor the tile
-	 * @return if the entity can move from the tile to the neighbor tile (might be state-dependent)
+	 * @param tile     some tile
+	 * @param neighbor neighbor the tile
+	 * @return if the entity can move from the tile to the neighbor tile (might be
+	 *         state-dependent)
 	 */
 	boolean canMoveBetween(Tile tile, Tile neighbor);
 
 	/**
 	 * 
-	 * @param n
-	 *            some positive number
-	 * @return the tile located <code>n</code> tiles ahead the current move direction
+	 * @param n some positive number
+	 * @return the tile located <code>n</code> tiles ahead the current move
+	 *         direction
 	 */
 	Tile tilesAhead(int n);
 }

@@ -66,7 +66,7 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 		targetIndex = 0;
 		cast.theme().snd_ghost_chase().volume(0);
 		cast().setActorOnStage(ghost);
-		Steering<Ghost> shortestPath = takingShortestPath(ghost, () -> targets.get(targetIndex));
+		Steering shortestPath = takingShortestPath(ghost, () -> targets.get(targetIndex));
 		ghost.during(CHASING, shortestPath);
 		ghost.during(FRIGHTENED, shortestPath);
 		ghost.setState(CHASING);

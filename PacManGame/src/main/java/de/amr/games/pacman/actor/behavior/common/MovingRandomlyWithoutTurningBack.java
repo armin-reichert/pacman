@@ -11,14 +11,12 @@ import de.amr.games.pacman.model.Direction;
  * ever turning back.
  * 
  * @author Armin Reichert
- *
- * @param <T> actor type
  */
-public class MovingRandomlyWithoutTurningBack<T extends MazeMover> implements Steering<T> {
+public class MovingRandomlyWithoutTurningBack implements Steering {
 
-	private final T actor;
+	private final MazeMover actor;
 
-	public MovingRandomlyWithoutTurningBack(T actor) {
+	public MovingRandomlyWithoutTurningBack(MazeMover actor) {
 		this.actor = actor;
 	}
 
