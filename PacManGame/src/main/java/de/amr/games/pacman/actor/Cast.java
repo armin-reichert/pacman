@@ -6,12 +6,6 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.actor.behavior.Steerings.followsKeys;
-import static de.amr.games.pacman.actor.behavior.Steerings.isHeadingFor;
-import static de.amr.games.pacman.actor.behavior.Steerings.isJumpingUpAndDown;
-import static de.amr.games.pacman.actor.behavior.Steerings.isLeavingGhostHouse;
-import static de.amr.games.pacman.actor.behavior.Steerings.isMovingRandomlyWithoutTurningBack;
-import static de.amr.games.pacman.actor.behavior.Steerings.isTakingSeat;
 import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
@@ -69,40 +63,40 @@ public class Cast {
 
 		setTheme(theme);
 
-		pacMan.steering(followsKeys(pacMan, VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
+		pacMan.steering(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		pacMan.setTeleportingDuration(sec(0.5f));
 
 		blinky.eyes = LEFT;
-		blinky.during(SCATTERING, isHeadingFor(blinky, maze().horizonNE));
-		blinky.during(CHASING, isHeadingFor(blinky, pacMan::tile));
-		blinky.during(ENTERING_HOUSE, isTakingSeat(blinky, 2));
+		blinky.during(SCATTERING, blinky.isHeadingFor(maze().horizonNE));
+		blinky.during(CHASING, blinky.isHeadingFor(pacMan::tile));
+		blinky.during(ENTERING_HOUSE, blinky.isTakingSeat(2));
 
 		inky.eyes = UP;
-		inky.during(SCATTERING, isHeadingFor(inky, maze().horizonSE));
-		inky.during(CHASING, isHeadingFor(inky, () -> {
+		inky.during(SCATTERING, inky.isHeadingFor(maze().horizonSE));
+		inky.during(CHASING, inky.isHeadingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
-		inky.during(LOCKED, isJumpingUpAndDown(inky));
-		inky.during(ENTERING_HOUSE, isTakingSeat(inky));
+		inky.during(LOCKED, inky.isJumpingUpAndDown());
+		inky.during(ENTERING_HOUSE, inky.isTakingOwnSeat());
 
 		pinky.eyes = DOWN;
-		pinky.during(SCATTERING, isHeadingFor(pinky, maze().horizonNW));
-		pinky.during(CHASING, isHeadingFor(pinky, () -> pacMan.tilesAhead(4)));
-		pinky.during(LOCKED, isJumpingUpAndDown(pinky));
-		pinky.during(ENTERING_HOUSE, isTakingSeat(pinky));
+		pinky.during(SCATTERING, pinky.isHeadingFor(maze().horizonNW));
+		pinky.during(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
+		pinky.during(LOCKED, pinky.isJumpingUpAndDown());
+		pinky.during(ENTERING_HOUSE, pinky.isTakingOwnSeat());
 
 		clyde.eyes = UP;
-		clyde.during(SCATTERING, isHeadingFor(clyde, maze().horizonSW));
-		clyde.during(CHASING, isHeadingFor(clyde,
-				() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
-		clyde.during(LOCKED, isJumpingUpAndDown(clyde));
-		clyde.during(ENTERING_HOUSE, isTakingSeat(clyde));
+		clyde.during(SCATTERING, clyde.isHeadingFor(maze().horizonSW));
+		clyde.during(CHASING, clyde
+				.isHeadingFor(() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
+		clyde.during(LOCKED, clyde.isJumpingUpAndDown());
+		clyde.during(ENTERING_HOUSE, pinky.isTakingOwnSeat());
 
 		ghosts().forEach(ghost -> {
 			ghost.setTeleportingDuration(sec(0.5f));
-			ghost.during(LEAVING_HOUSE, isLeavingGhostHouse(ghost));
-			ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack(ghost));
+			ghost.during(LEAVING_HOUSE, ghost.isLeavingGhostHouse());
+			ghost.during(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
 		});
 	}
 
@@ -143,7 +137,7 @@ public class Cast {
 		pacMan.sprites.set("full", theme.spr_pacManFull());
 	}
 
-	private void clotheGhost (Ghost ghost, GhostColor color) {
+	private void clotheGhost(Ghost ghost, GhostColor color) {
 		dirs().forEach(dir -> {
 			ghost.sprites.set("color-" + dir, theme.spr_ghostColored(color, dir.ordinal()));
 			ghost.sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir.ordinal()));

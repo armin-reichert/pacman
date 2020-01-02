@@ -1,7 +1,6 @@
 package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.actor.GhostState.CHASING;
-import static de.amr.games.pacman.actor.behavior.Steerings.isHeadingFor;
 
 import java.util.Optional;
 
@@ -49,7 +48,7 @@ class OutsideTileTestUI extends PlayView implements VisualController {
 		maze().removeFood();
 		theme().snd_ghost_chase().volume(0);
 		cast().setActorOnStage(cast().blinky);
-		cast().blinky.during(CHASING, isHeadingFor(cast().blinky, () -> maze().tileAt(100, maze().tunnelExitRight.row)));
+		cast().blinky.during(CHASING, cast().blinky.isHeadingFor(() -> maze().tileAt(100, maze().tunnelExitRight.row)));
 		cast().blinky.setState(CHASING);
 	}
 

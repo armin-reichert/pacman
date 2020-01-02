@@ -1,9 +1,5 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.actor.behavior.Steerings.avoidingGhosts;
-import static de.amr.games.pacman.actor.behavior.Steerings.followsKeys;
-import static de.amr.games.pacman.actor.behavior.Steerings.isMovingRandomlyWithoutTurningBack;
-
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 
@@ -80,18 +76,18 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 
 	private void handleSteeringChange() {
 		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_M)) {
-			cast().pacMan
-					.steering(followsKeys(cast().pacMan, KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
+			cast().pacMan.steering(
+					cast().pacMan.isFollowingKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
 			message("Cursor keys");
 		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_N)) {
-			cast().pacMan.steering(followsKeys(cast().pacMan, KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2,
-					KeyEvent.VK_NUMPAD4));
+			cast().pacMan.steering(cast().pacMan.isFollowingKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6,
+					KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
 			message("Numpad keys");
-		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_A)) {
-			cast().pacMan.steering(avoidingGhosts(cast()));
-			message("Avoiding ghosts");
+//		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_A)) {
+//			cast().pacMan.steering(avoidingGhosts(cast()));
+//			message("Avoiding ghosts");
 		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_R)) {
-			cast().pacMan.steering(isMovingRandomlyWithoutTurningBack(cast().pacMan));
+			cast().pacMan.steering(cast().pacMan.isMovingRandomlyWithoutTurningBack());
 			message("Random moves");
 		}
 	}

@@ -12,7 +12,6 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Cast;
-import de.amr.games.pacman.actor.behavior.Steerings;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ArcadeTheme;
@@ -66,7 +65,7 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 		maze().removeFood();
 		theme().snd_ghost_chase().volume(0);
 		cast().setActorOnStage(cast().blinky);
-		cast().blinky.during(CHASING, Steerings.isHeadingFor(cast().blinky, () -> targets.get(current)));
+		cast().blinky.during(CHASING, cast().blinky.isHeadingFor(() -> targets.get(current)));
 		cast().blinky.placeAt(targets.get(0));
 		cast().blinky.setState(CHASING);
 		cast().blinky.setEnteredNewTile();

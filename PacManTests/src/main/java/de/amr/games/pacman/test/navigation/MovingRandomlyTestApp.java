@@ -1,7 +1,6 @@
 package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.actor.behavior.Steerings.isMovingRandomlyWithoutTurningBack;
 
 import java.awt.event.KeyEvent;
 import java.util.Optional;
@@ -56,7 +55,7 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 			cast().setActorOnStage(ghost);
 			ghost.placeHalfRightOf(maze().pacManHome);
 			ghost.setState(FRIGHTENED);
-			ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack(ghost));
+			ghost.during(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
 		});
 		message("Press SPACE");
 	}

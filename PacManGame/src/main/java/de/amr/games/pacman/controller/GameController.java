@@ -3,8 +3,6 @@ package de.amr.games.pacman.controller;
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.actor.behavior.Steerings.isFleeingToSafeCorner;
-import static de.amr.games.pacman.actor.behavior.Steerings.isMovingRandomlyWithoutTurningBack;
 import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.controller.PacManGameState.GETTING_READY;
@@ -525,11 +523,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			boolean original = settings.ghostsFleeRandomly;
 			if (original) {
 				settings.ghostsFleeRandomly = false;
-				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isFleeingToSafeCorner(ghost, cast.pacMan)));
+				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, ghost.isFleeingToSafeCorner(cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
 			} else {
 				settings.ghostsFleeRandomly = true;
-				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, isMovingRandomlyWithoutTurningBack(ghost)));
+				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack()));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
 			}
 		}

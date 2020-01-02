@@ -7,7 +7,6 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.actor.behavior.Steerings.isHeadingFor;
 import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Game.POINTS_GHOST;
 import static de.amr.games.pacman.model.Timing.sec;
@@ -20,6 +19,7 @@ import java.util.Map;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.actor.behavior.Steering;
+import de.amr.games.pacman.actor.behavior.ghost.SteerableGhost;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
 import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -39,7 +39,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
+public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<GhostState> {
 
 	public final SpriteMap sprites = new SpriteMap();
 	public Direction eyes;
@@ -49,7 +49,7 @@ public class Ghost extends AbstractMazeMover implements Actor<GhostState> {
 	private final int seat;
 	private final FsmComponent<GhostState, PacManGameEvent> brain;
 	private final Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
-	private final Steering defaultSteering = isHeadingFor(this, this::targetTile);
+	private final Steering defaultSteering = isHeadingFor(this::targetTile);
 
 	public Ghost(String name, Cast cast, int seat) {
 		super(name);

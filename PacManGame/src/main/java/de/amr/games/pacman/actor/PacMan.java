@@ -20,6 +20,7 @@ import java.util.Optional;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.PacManAppSettings;
+import de.amr.games.pacman.actor.behavior.SteerableMazeMover;
 import de.amr.games.pacman.actor.behavior.Steering;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
 import de.amr.games.pacman.actor.core.Actor;
@@ -41,7 +42,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
+public class PacMan extends AbstractMazeMover implements SteerableMazeMover, Actor<PacManState> {
 
 	public final SpriteMap sprites = new SpriteMap();
 	private final Cast cast;

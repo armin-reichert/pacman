@@ -2,7 +2,6 @@ package de.amr.games.pacman.test.graph;
 
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.actor.behavior.Steerings.takingShortestPath;
 
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
@@ -66,9 +65,9 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 		targetIndex = 0;
 		cast.theme().snd_ghost_chase().volume(0);
 		cast().setActorOnStage(ghost);
-		Steering shortestPath = takingShortestPath(ghost, () -> targets.get(targetIndex));
-		ghost.during(CHASING, shortestPath);
-		ghost.during(FRIGHTENED, shortestPath);
+		Steering steering = ghost.isTakingShortestPath(() -> targets.get(targetIndex));
+		ghost.during(CHASING, steering);
+		ghost.during(FRIGHTENED, steering);
 		ghost.setState(CHASING);
 		message("SPACE toggles ghost state");
 	}
