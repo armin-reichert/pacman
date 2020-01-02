@@ -220,8 +220,7 @@ Pac-Man is steered by holding a key indicating its **intended** direction. As so
 ```java
 pacMan.steering(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 
-default Steering isFollowingKeys(int up, int right, int down, int left) {
-	int keys[] = { up, right, down, left};
+default Steering isFollowingKeys(int... keys) {
 	return () -> Direction.dirs()
 			.filter(dir -> Keyboard.keyDown(keys[dir.ordinal()]))
 			.findAny()
