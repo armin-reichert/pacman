@@ -20,7 +20,7 @@ import de.amr.games.pacman.theme.Themes;
  */
 public class PacManApp extends Application<PacManAppSettings> {
 
-	public class PacManAppSettings extends AppSettings {
+	public static class PacManAppSettings extends AppSettings {
 
 		@Parameter(names = { "-skipIntro" }, description = "start app without intro screen")
 		public boolean skipIntro = false;
