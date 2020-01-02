@@ -7,6 +7,7 @@ import java.beans.PropertyChangeListener;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.view.View;
+import de.amr.games.pacman.PacManAppSettings;
 import de.amr.games.pacman.theme.Theme;
 
 /**
@@ -31,7 +32,11 @@ public interface GameView extends View, Lifecycle, PropertyChangeListener {
 	@Override
 	default void hide() {
 	}
-
+	
+	default PacManAppSettings settings() {
+		return (PacManAppSettings) app().settings;
+	}
+	
 	Theme theme();
 
 	void onThemeChanged(Theme theme);

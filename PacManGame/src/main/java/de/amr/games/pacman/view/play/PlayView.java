@@ -1,6 +1,5 @@
 package de.amr.games.pacman.view.play;
 
-import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
@@ -30,10 +29,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.PacManAppSettings;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
@@ -173,7 +170,7 @@ public class PlayView extends SimplePlayView {
 		if (duration != State.ENDLESS && duration > 0) {
 			text += String.format("(%d|%d)", pacMan.state().getTicksRemaining(), duration);
 		}
-		if (Application.app().settings.getAsBoolean("PacMan.immortable")) {
+		if (settings().pacManImmortable) {
 			text += "-immortable";
 		}
 		return text;
@@ -384,8 +381,7 @@ public class PlayView extends SimplePlayView {
 				Direction pacManDir = cast().pacMan.moveDir();
 				int s = Tile.SIZE / 2; // size of target square
 				g.setColor(Color.GRAY);
-				PacManAppSettings settings = (PacManAppSettings) app().settings;
-				if (settings.overflowBug && pacManDir == Direction.UP) {
+				if (settings().overflowBug && pacManDir == Direction.UP) {
 					Tile twoAhead = maze().tileToDir(pacManTile, pacManDir, 2);
 					Tile twoLeft = maze().tileToDir(twoAhead, Direction.LEFT, 2);
 					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
