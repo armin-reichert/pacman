@@ -22,6 +22,7 @@ public class MovingRandomlyWithoutTurningBack implements Steering {
 				.filter(actor::canCrossBorderTo)
 				.findFirst()
 				.ifPresent(actor::setWishDir);
+			/*@formatter:on*/
 		}
 	}
 
