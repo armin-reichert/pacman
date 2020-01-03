@@ -221,9 +221,9 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	public void draw(Graphics2D g) {
 		if (visible()) {
 			sprites.current().ifPresent(sprite -> {
-				float dx = tf.getCenter().x - sprite.getWidth() / 2;
-				float dy = tf.getCenter().y - sprite.getHeight() / 2;
-				sprite.draw(g, dx, dy);
+				float x = tf.getCenter().x - sprite.getWidth() / 2;
+				float y = tf.getCenter().y - sprite.getHeight() / 2;
+				sprite.draw(g, x, y);
 			});
 		}
 	}
