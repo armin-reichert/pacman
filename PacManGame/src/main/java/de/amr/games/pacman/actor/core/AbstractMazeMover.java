@@ -20,9 +20,8 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	/**
 	 * Anonymous inner class implementing teleporting control.
 	 * <p>
-	 * When an actor (Ghost, Pac-Man) crosses the border of the board in the tunnel,
-	 * a timer is started and the actor is placed at the teleportation target and
-	 * hidden (to avoid triggering events during teleportation). When the timer
+	 * When an actor (Ghost, Pac-Man) crosses the border of the board in the tunnel, a timer is started and the actor is
+	 * placed at the teleportation target and hidden (to avoid triggering events during teleportation). When the timer
 	 * ends, the actor is made visible again.
 	 */
 	private StateMachine<Boolean, Void> teleporting = new StateMachine<Boolean, Void>(Boolean.class) {
@@ -72,29 +71,23 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	}
 
 	/**
-	 * Moves or teleports the actor one step.
+	 * Moves or teleports the actor one step. Handles changing the direction according to the wish direction, moving
+	 * around corners without losing alignment,
 	 */
 	@Override
 	public void step() {
 		teleporting.update();
-		if (teleporting.is(false)) {
-			stepInsideMaze();
+		if (isTeleporting()) {
+			return; // wait for teleporting state machine timeout
 		}
-	}
-
-	/**
-	 * Movement inside the maze. Handles changing the direction according to the
-	 * intended move direction, moving around corners without losing alignment,
-	 */
-	private void stepInsideMaze() {
-		Tile oldTile = tile();
+		Tile tileBeforeStep = tile();
 		float speed = possibleSpeedTo(moveDir);
 		if (wishDir != moveDir) {
 			float nextDirSpeed = possibleSpeedTo(wishDir);
 			if (nextDirSpeed > 0) {
 				boolean turning = (wishDir == moveDir.turnLeft() || wishDir == moveDir.turnRight());
 				if (turning && steering().requiresGridAlignment()) {
-					tf.setPosition(oldTile.x(), oldTile.y());
+					tf.setPosition(tileBeforeStep.x(), tileBeforeStep.y());
 				}
 				moveDir = wishDir;
 				speed = nextDirSpeed;
@@ -102,12 +95,12 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 		}
 		tf.setVelocity(Vector2f.smul(speed, Vector2f.of(moveDir.dx, moveDir.dy)));
 		tf.move();
-		enteredNewTile = !oldTile.equals(tile());
+		enteredNewTile = !tileBeforeStep.equals(tile());
 	}
 
 	/**
-	 * Computes how many pixels this entity can move towards the given direction
-	 * without crossing the border to a forbidden neighbor tile.
+	 * Computes how many pixels this entity can move towards the given direction without crossing the border to a
+	 * forbidden neighbor tile.
 	 */
 	private float possibleSpeedTo(Direction dir) {
 		if (dir == null) {
@@ -153,11 +146,6 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	@Override
 	public boolean enteredNewTile() {
 		return enteredNewTile;
-	}
-
-	@Override
-	public void setEnteredNewTile() {
-		this.enteredNewTile = true;
 	}
 
 	@Override
@@ -214,7 +202,8 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	/**
 	 * Sets the teleporting duration for this actor.
 	 * 
-	 * @param ticks how many ticks the teleporting is running
+	 * @param ticks
+	 *                how many ticks the teleporting is running
 	 */
 	public void setTeleportingDuration(int ticks) {
 		teleporting.state(true).setConstantTimer(ticks);

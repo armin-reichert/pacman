@@ -65,10 +65,10 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 		maze().removeFood();
 		theme().snd_ghost_chase().volume(0);
 		cast().setActorOnStage(cast().blinky);
-		cast().blinky.during(CHASING, cast().blinky.isHeadingFor(() -> targets.get(current)));
 		cast().blinky.placeAt(targets.get(0));
+		cast().blinky.during(CHASING, cast().blinky.isHeadingFor(() -> targets.get(current)));
 		cast().blinky.setState(CHASING);
-		cast().blinky.setEnteredNewTile();
+		cast().blinky.steering().trigger();
 	}
 
 	@Override

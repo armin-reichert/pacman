@@ -1,5 +1,6 @@
 package de.amr.games.pacman.actor;
 
+import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
@@ -210,10 +211,10 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 
 	@Override
 	public void update() {
-		Steering steeringBefore = steering();
+		GhostState stateBefore = getState();
 		brain.update();
-		if (steeringBefore != steering()) {
-			setEnteredNewTile(); // trigger steering
+		if (getState() != stateBefore) {
+			LOGGER.info(String.format("%s state changed from %s to %s", name(), stateBefore, getState()));
 		}
 	}
 
@@ -277,10 +278,22 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		}
 	}
 
+	private Steering prevSteering;
+
+	private String name(Steering steering) {
+		return steering != null ? steering.getClass().getSimpleName() : "none";
+	}
+
 	private void makeStepAndDisplayAs(String spriteKey) {
+		if (prevSteering != steering()) {
+			LOGGER.info(String.format("%s steering (%s @ %s) changed from %s to %s", name(), getState(), tile(),
+					name(prevSteering), name(steering())));
+			steering().trigger();
+		}
 		steering().steer();
 		step();
 		sprites.select(spriteKey);
+		prevSteering = steering();
 	}
 
 	private void checkPacManCollision() {

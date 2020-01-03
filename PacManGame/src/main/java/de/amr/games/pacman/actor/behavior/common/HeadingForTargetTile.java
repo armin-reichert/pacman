@@ -38,12 +38,36 @@ public class HeadingForTargetTile implements Steering {
 	private final Supplier<Tile> fnTargetTile;
 	private List<Tile> targetPath;
 	private boolean computePath;
+	private boolean forcedOnce;
 
 	public HeadingForTargetTile(MazeMover actor, Supplier<Tile> fnTargetTile) {
 		this.actor = actor;
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 		targetPath = Collections.emptyList();
 		computePath = false;
+		forcedOnce = false;
+	}
+
+	@Override
+	public void steer() {
+		if (actor.enteredNewTile() || forcedOnce) {
+			forcedOnce = false;
+			targetPath = Collections.emptyList();
+			Tile targetTile = fnTargetTile.get();
+			if (targetTile != null) {
+				Direction dirToTarget = dirToTarget(actor.moveDir(), actor.tile(), targetTile);
+				actor.setWishDir(dirToTarget);
+				actor.setTargetTile(targetTile);
+				if (computePath) {
+					targetPath = pathTo(targetTile);
+				}
+			}
+		}
+	}
+	
+	@Override
+	public void trigger() {
+		forcedOnce = true;
 	}
 
 	@Override
@@ -59,22 +83,6 @@ public class HeadingForTargetTile implements Steering {
 	@Override
 	public List<Tile> targetPath() {
 		return new ArrayList<>(targetPath);
-	}
-
-	@Override
-	public void steer() {
-		if (actor.enteredNewTile()) {
-			targetPath = Collections.emptyList();
-			Tile targetTile = fnTargetTile.get();
-			if (targetTile != null) {
-				Direction dirToTarget = dirToTarget(actor.moveDir(), actor.tile(), targetTile);
-				actor.setWishDir(dirToTarget);
-				actor.setTargetTile(targetTile);
-				if (computePath) {
-					targetPath = pathTo(targetTile);
-				}
-			}
-		}
 	}
 
 	/**
