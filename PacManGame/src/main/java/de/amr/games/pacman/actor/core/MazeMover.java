@@ -85,7 +85,7 @@ public interface MazeMover extends MazeResident {
 	boolean canMoveForward();
 
 	/**
-	 * @param dir direction value (N, E, S, W)
+	 * @param dir direction
 	 * @return if the entity can enter the neighbor tile towards this direction
 	 */
 	boolean canCrossBorderTo(Direction dir);

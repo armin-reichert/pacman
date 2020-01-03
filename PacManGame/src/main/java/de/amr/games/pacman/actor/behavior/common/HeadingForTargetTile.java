@@ -35,7 +35,7 @@ public class HeadingForTargetTile implements Steering {
 	private static final List<Direction> UP_LEFT_DOWN_RIGHT = Arrays.asList(UP, LEFT, DOWN, RIGHT);
 
 	private final MazeMover actor;
-	private Supplier<Tile> fnTargetTile;
+	private final Supplier<Tile> fnTargetTile;
 	private List<Tile> targetPath;
 	private boolean computePath;
 
@@ -64,14 +64,15 @@ public class HeadingForTargetTile implements Steering {
 	@Override
 	public void steer() {
 		if (actor.enteredNewTile()) {
+			targetPath = Collections.emptyList();
 			Tile targetTile = fnTargetTile.get();
 			if (targetTile != null) {
 				Direction dirToTarget = dirToTarget(actor.moveDir(), actor.tile(), targetTile);
 				actor.setWishDir(dirToTarget);
 				actor.setTargetTile(targetTile);
-				targetPath = computePath ? pathTo(targetTile) : Collections.emptyList();
-			} else {
-				targetPath = Collections.emptyList();
+				if (computePath) {
+					targetPath = pathTo(targetTile);
+				}
 			}
 		}
 	}
