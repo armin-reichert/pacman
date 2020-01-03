@@ -4,11 +4,11 @@ import de.amr.datastruct.StreamUtils;
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Direction;
 
-public class RandomMoves implements Steering {
+public class MovingRandomlyWithoutTurningBack implements Steering {
 
 	private MazeMover actor;
 
-	public RandomMoves(MazeMover actor) {
+	public MovingRandomlyWithoutTurningBack(MazeMover actor) {
 		this.actor = actor;
 	}
 

@@ -20,18 +20,18 @@ public interface SteerableMazeMover extends MazeMover {
 	 * @return steering using the given keys
 	 */
 	default Steering isFollowingKeys(int... keys) {
-		return new KeyboardSteering(this, keys);
+		return new FollowingKeys(this, keys);
 	}
 
 	/**
-	 * Lets the actor move randomly though the maze while respecting the
-	 * accessibility rules (for example, chasing and scattering ghost may not move
-	 * upwards at dedicated tiles. Also reversing the direction is never allowed.
+	 * Lets the actor move randomly through the maze while respecting the maze
+	 * structure (for example, chasing and scattering ghost may not move upwards at
+	 * dedicated tiles. Also reversing the direction is never allowed.
 	 * 
 	 * @return random move behavior
 	 */
 	default Steering isMovingRandomlyWithoutTurningBack() {
-		return new RandomMoves(this);
+		return new MovingRandomlyWithoutTurningBack(this);
 	}
 
 	/**
@@ -75,11 +75,10 @@ public interface SteerableMazeMover extends MazeMover {
 	 * 
 	 * @return behavior where actor follows the given path
 	 */
-	default Steering takingFixedPath(List<Tile> path) {
+	default Steering isTakingFixedPath(List<Tile> path) {
 		if (path.isEmpty()) {
 			throw new IllegalArgumentException("Path must not be empty");
 		}
 		return new TakingFixedPath(this, path);
 	}
-
 }

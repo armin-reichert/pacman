@@ -4,12 +4,12 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.model.Direction;
 
-public class KeyboardSteering implements Steering {
+public class FollowingKeys implements Steering {
 
 	private MazeMover actor;
 	private int[] keys;
 
-	public KeyboardSteering(MazeMover actor, int... keys) {
+	public FollowingKeys(MazeMover actor, int... keys) {
 		this.actor = actor;
 		this.keys = keys;
 	}
