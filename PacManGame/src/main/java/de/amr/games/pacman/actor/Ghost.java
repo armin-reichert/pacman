@@ -89,7 +89,6 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 					.onExit(() -> setWishDir(Direction.LEFT))
 				
 				.state(ENTERING_HOUSE)
-					.onEntry(() -> setWishDir(Direction.DOWN))
 					.onTick(() -> makeStepAndDisplayAs("eyes-" + moveDir()))
 				
 				.state(SCATTERING)

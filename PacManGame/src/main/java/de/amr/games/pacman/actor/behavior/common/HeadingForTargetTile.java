@@ -70,6 +70,8 @@ public class HeadingForTargetTile implements Steering {
 				actor.setWishDir(dirToTarget);
 				actor.setTargetTile(targetTile);
 				targetPath = computePath ? pathTo(targetTile) : Collections.emptyList();
+			} else {
+				targetPath = Collections.emptyList();
 			}
 		}
 	}

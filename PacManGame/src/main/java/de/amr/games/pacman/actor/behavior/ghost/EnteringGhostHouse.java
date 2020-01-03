@@ -39,6 +39,7 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 				.state(AT_DOOR)
 					.onEntry(() -> {
 						ghost.setTargetTile(seat); // only for visualization
+						ghost.setWishDir(Direction.DOWN);
 					})
 					
 				.state(AT_PLACE)

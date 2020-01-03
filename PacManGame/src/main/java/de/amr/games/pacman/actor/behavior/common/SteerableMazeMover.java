@@ -1,5 +1,7 @@
 package de.amr.games.pacman.actor.behavior.common;
 
+import static de.amr.datastruct.StreamUtils.permute;
+
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -38,7 +40,18 @@ public interface SteerableMazeMover extends MazeMover {
 	 * @return random move behavior
 	 */
 	default Steering isMovingRandomlyWithoutTurningBack() {
-		return new MovingRandomlyWithoutTurningBack(this);
+		return () -> {
+			setTargetTile(null);
+			if (enteredNewTile()) {
+				/*@formatter:off*/
+				permute(Direction.dirs())
+					.filter(dir -> dir != moveDir().opposite())
+					.filter(this::canCrossBorderTo)
+					.findFirst()
+					.ifPresent(this::setWishDir);
+				/*@formatter:on*/
+			}
+		};
 	}
 
 	/**
