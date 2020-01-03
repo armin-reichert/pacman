@@ -10,7 +10,6 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-@FunctionalInterface
 public interface Steering {
 
 	/**
@@ -25,9 +24,7 @@ public interface Steering {
 	 * @return tells if the steering requires the actor to always stay aligned with
 	 *         the grid
 	 */
-	default boolean stayOnTrack() {
-		return true;
-	}
+	boolean requiresGridAlignment();
 
 	/**
 	 * @return the complete path to the target id the implementing class computes it
@@ -42,7 +39,5 @@ public interface Steering {
 	 * 
 	 * @param b if target path should be computed
 	 */
-	default void computeTargetPath(boolean b) {
-
-	}
+	void enableTargetPathComputation(boolean b);
 }

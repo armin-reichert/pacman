@@ -31,12 +31,12 @@ public class FleeingToSafeCorner extends TakingPrecomputedPath {
 	}
 
 	@Override
-	public boolean stayOnTrack() {
+	public boolean requiresGridAlignment() {
 		return true;
 	}
 
 	@Override
-	protected List<Tile> computePath(MazeMover refugee, Tile targetTile) {
+	protected List<Tile> pathToTarget(MazeMover refugee, Tile targetTile) {
 		Tile target = refugee.tile();
 		while (target.equals(refugee.tile())) {
 			target = safeCorner(refugee);

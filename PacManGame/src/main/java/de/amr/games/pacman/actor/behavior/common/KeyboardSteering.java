@@ -1,0 +1,30 @@
+package de.amr.games.pacman.actor.behavior.common;
+
+import de.amr.easy.game.input.Keyboard;
+import de.amr.games.pacman.actor.core.MazeMover;
+import de.amr.games.pacman.model.Direction;
+
+public class KeyboardSteering implements Steering {
+
+	private MazeMover actor;
+	private int[] keys;
+
+	public KeyboardSteering(MazeMover actor, int... keys) {
+		this.actor = actor;
+		this.keys = keys;
+	}
+
+	@Override
+	public void steer() {
+		Direction.dirs().filter(dir -> Keyboard.keyDown(keys[dir.ordinal()])).findAny().ifPresent(actor::setWishDir);
+	}
+
+	@Override
+	public boolean requiresGridAlignment() {
+		return true;
+	}
+
+	@Override
+	public void enableTargetPathComputation(boolean b) {
+	}
+}

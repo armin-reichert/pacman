@@ -84,7 +84,11 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 	}
 
 	@Override
-	public boolean stayOnTrack() {
+	public boolean requiresGridAlignment() {
 		return false;
+	}
+
+	@Override
+	public void enableTargetPathComputation(boolean b) {
 	}
 }

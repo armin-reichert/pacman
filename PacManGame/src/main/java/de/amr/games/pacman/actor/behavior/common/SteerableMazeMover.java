@@ -1,13 +1,9 @@
 package de.amr.games.pacman.actor.behavior.common;
 
-import static de.amr.datastruct.StreamUtils.permute;
-
 import java.util.List;
 import java.util.function.Supplier;
 
-import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.actor.core.MazeMover;
-import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -24,12 +20,7 @@ public interface SteerableMazeMover extends MazeMover {
 	 * @return steering using the given keys
 	 */
 	default Steering isFollowingKeys(int... keys) {
-		/*@formatter:off*/
-		return () -> Direction.dirs()
-				.filter(dir -> Keyboard.keyDown(keys[dir.ordinal()]))
-				.findAny()
-				.ifPresent(this::setWishDir);
-		/*@formatter:on*/
+		return new KeyboardSteering(this, keys);
 	}
 
 	/**
@@ -40,18 +31,7 @@ public interface SteerableMazeMover extends MazeMover {
 	 * @return random move behavior
 	 */
 	default Steering isMovingRandomlyWithoutTurningBack() {
-		return () -> {
-			setTargetTile(null);
-			if (enteredNewTile()) {
-				/*@formatter:off*/
-				permute(Direction.dirs())
-					.filter(dir -> dir != moveDir().opposite())
-					.filter(this::canCrossBorderTo)
-					.findFirst()
-					.ifPresent(this::setWishDir);
-				/*@formatter:on*/
-			}
-		};
+		return new RandomMoves(this);
 	}
 
 	/**

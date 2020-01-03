@@ -30,7 +30,12 @@ public class JumpingUpAndDown implements Steering {
 	}
 
 	@Override
-	public boolean stayOnTrack() {
+	public boolean requiresGridAlignment() {
 		return false;
 	}
+
+	@Override
+	public void enableTargetPathComputation(boolean b) {
+	}
+
 }

@@ -41,11 +41,20 @@ public abstract class TakingPrecomputedPath implements Steering {
 	}
 
 	@Override
+	public boolean requiresGridAlignment() {
+		return true;
+	}
+
+	@Override
+	public void enableTargetPathComputation(boolean b) {
+	}
+
+	@Override
 	public List<Tile> targetPath() {
 		return targetPath;
 	}
 
-	protected abstract List<Tile> computePath(MazeMover actor, Tile targetTile);
+	protected abstract List<Tile> pathToTarget(MazeMover actor, Tile targetTile);
 
 	protected boolean isPathInvalid(MazeMover actor) {
 		return actor.wishDir() == null || targetPath.size() == 0 || first(targetPath) != actor.tile()
@@ -68,7 +77,7 @@ public abstract class TakingPrecomputedPath implements Steering {
 			targetPath.remove(0);
 		}
 		if (isPathInvalid(actor)) {
-			targetPath = computePath(actor, targetTile);
+			targetPath = pathToTarget(actor, targetTile);
 			actor.setTargetTile(last(targetPath));
 		}
 		actor.setWishDir(alongPath(targetPath).orElse(null));

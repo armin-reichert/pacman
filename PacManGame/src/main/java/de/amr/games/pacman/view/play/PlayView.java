@@ -319,7 +319,7 @@ public class PlayView extends SimplePlayView {
 		// TODO
 		cast().ghosts().forEach(ghost -> {
 			Arrays.asList(GhostState.values()).forEach(state -> {
-				ghost.steeringForState(state).computeTargetPath(show);
+				ghost.steeringForState(state).enableTargetPathComputation(show);
 			});
 		});
 		Graphics2D g = (Graphics2D) g2.create();

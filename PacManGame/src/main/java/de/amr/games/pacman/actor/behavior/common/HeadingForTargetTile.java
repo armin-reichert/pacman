@@ -47,12 +47,12 @@ public class HeadingForTargetTile implements Steering {
 	}
 
 	@Override
-	public void computeTargetPath(boolean b) {
+	public void enableTargetPathComputation(boolean b) {
 		computePath = b;
 	}
 
 	@Override
-	public boolean stayOnTrack() {
+	public boolean requiresGridAlignment() {
 		return true;
 	}
 

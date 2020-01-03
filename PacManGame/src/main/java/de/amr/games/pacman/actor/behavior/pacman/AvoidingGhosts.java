@@ -22,6 +22,15 @@ public class AvoidingGhosts implements Steering {
 	}
 
 	@Override
+	public void enableTargetPathComputation(boolean b) {
+	}
+
+	@Override
+	public boolean requiresGridAlignment() {
+		return true;
+	}
+
+	@Override
 	public void steer() {
 		PacMan pacMan = cast.pacMan;
 		/*@formatter:off*/

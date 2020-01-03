@@ -93,7 +93,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 			float nextDirSpeed = possibleSpeedTo(wishDir);
 			if (nextDirSpeed > 0) {
 				boolean turning = (wishDir == moveDir.turnLeft() || wishDir == moveDir.turnRight());
-				if (turning && steering().stayOnTrack()) {
+				if (turning && steering().requiresGridAlignment()) {
 					tf.setPosition(oldTile.x(), oldTile.y());
 				}
 				moveDir = wishDir;
