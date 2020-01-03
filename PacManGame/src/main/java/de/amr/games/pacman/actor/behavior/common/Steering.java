@@ -15,29 +15,26 @@ public interface Steering {
 	/**
 	 * Steers the actor towards its target tile or wherever it should move in its
 	 * current state.
-	 * 
-	 * @param actor the steered actor
 	 */
 	void steer();
 
 	/**
-	 * @return tells if the steering requires the actor to always stay aligned with
-	 *         the grid
+	 * @return tells if the steering requires that moving always keeps the actor
+	 *         aligned with the grid
 	 */
 	boolean requiresGridAlignment();
 
 	/**
-	 * @return the complete path to the target id the implementing class computes it
+	 * @return the path from the actor position to the target tile
 	 */
 	default List<Tile> targetPath() {
 		return Collections.emptyList();
 	}
 
 	/**
-	 * Tells the steering to compute the complete path to the target tile. Steerings
-	 * may ignore this.
+	 * Tells the steering to compute the target path. Steerings may ignore this.
 	 * 
-	 * @param b if target path should be computed
+	 * @param enabled if target path should be computed
 	 */
-	void enableTargetPathComputation(boolean b);
+	void enableTargetPathComputation(boolean enabled);
 }
