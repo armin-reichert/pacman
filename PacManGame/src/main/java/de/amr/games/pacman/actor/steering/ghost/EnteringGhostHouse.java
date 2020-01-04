@@ -76,11 +76,16 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 
 	@Override
 	public void steer() {
-		if (getState() == null || is(AT_PLACE)) {
-			init();
-		} else {
-			update();
-		}
+		update();
+	}
+
+	@Override
+	public boolean isComplete() {
+		return is(AT_PLACE);
+	}
+
+	@Override
+	public void force() {
 	}
 
 	@Override

@@ -16,9 +16,43 @@ public class LeavingGhostHouse implements Steering {
 	}
 
 	private final Ghost ghost;
+	private boolean complete;
 
 	public LeavingGhostHouse(Ghost ghost) {
 		this.ghost = ghost;
+	}
+
+	@Override
+	public void steer() {
+		int targetX = ghost.maze().ghostHouseSeats[0].centerX();
+		int targetY = ghost.maze().ghostHouseSeats[0].y();
+		if (ghost.tf.getY() <= targetY) {
+			complete = true;
+		}
+		else if (aboutEqual(1, ghost.tf.getX(), targetX)) {
+			ghost.tf.setX(targetX);
+			ghost.setWishDir(Direction.UP);
+		}
+		else if (ghost.tf.getX() < targetX) {
+			ghost.setWishDir(Direction.RIGHT);
+		}
+		else if (ghost.tf.getX() > targetX) {
+			ghost.setWishDir(Direction.LEFT);
+		}
+	}
+
+	@Override
+	public void init() {
+		complete = false;
+	}
+
+	@Override
+	public boolean isComplete() {
+		return complete;
+	}
+
+	@Override
+	public void force() {
 	}
 
 	@Override
@@ -28,21 +62,5 @@ public class LeavingGhostHouse implements Steering {
 
 	@Override
 	public void enableTargetPathComputation(boolean b) {
-	}
-
-	@Override
-	public void steer() {
-		int targetX = ghost.maze().ghostHouseSeats[0].centerX();
-		int targetY = ghost.maze().ghostHouseSeats[0].y();
-		if (aboutEqual(1, ghost.tf.getX(), targetX)) {
-			ghost.tf.setX(targetX);
-			ghost.setWishDir(Direction.UP);
-		} else if (ghost.tf.getX() < targetX) {
-			ghost.setWishDir(Direction.RIGHT);
-		} else if (ghost.tf.getX() > targetX) {
-			ghost.setWishDir(Direction.LEFT);
-		} else if (ghost.tf.getY() <= targetY) {
-			ghost.setWishDir(null); // got out
-		}
 	}
 }

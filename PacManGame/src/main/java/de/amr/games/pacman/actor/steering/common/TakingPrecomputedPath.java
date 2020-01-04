@@ -15,7 +15,8 @@ import de.amr.games.pacman.model.Tile;
 /**
  * Steering using a precomputed path.
  * 
- * @param <MazeMover> type of steered actor
+ * @param <MazeMover>
+ *          type of steered actor
  *
  * @author Armin Reichert
  */
@@ -39,6 +40,14 @@ public abstract class TakingPrecomputedPath implements Steering {
 		this.maze = actor.maze();
 		this.fnTargetTile = fnTargetTile;
 		this.targetPath = new ArrayList<>();
+	}
+
+	@Override
+	public void init() {
+	}
+
+	@Override
+	public void force() {
 	}
 
 	@Override

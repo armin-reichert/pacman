@@ -24,9 +24,18 @@ public class JumpingUpAndDown implements Steering {
 		float dy = ghost.tf.getPosition().y - placeY;
 		if (dy < -4) {
 			ghost.setWishDir(Direction.DOWN);
-		} else if (dy > 3) {
+		}
+		else if (dy > 3) {
 			ghost.setWishDir(Direction.UP);
 		}
+	}
+
+	@Override
+	public void init() {
+	}
+
+	@Override
+	public void force() {
 	}
 
 	@Override

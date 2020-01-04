@@ -28,6 +28,14 @@ public class MovingRandomlyWithoutTurningBack implements Steering {
 	}
 
 	@Override
+	public void init() {
+	}
+
+	@Override
+	public void force() {
+	}
+
+	@Override
 	public boolean requiresGridAlignment() {
 		return true;
 	}

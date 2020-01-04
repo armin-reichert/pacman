@@ -39,20 +39,25 @@ public class HeadingForTargetTile implements Steering {
 	private final Supplier<Tile> fnTargetTile;
 	private List<Tile> targetPath;
 	private boolean computePath;
-	private boolean forcedOnce;
+	private boolean forced;
 
 	public HeadingForTargetTile(MazeMover actor, Supplier<Tile> fnTargetTile) {
 		this.actor = actor;
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 		targetPath = Collections.emptyList();
 		computePath = false;
-		forcedOnce = false;
+		forced = false;
+	}
+	
+	@Override
+	public void init() {
+		targetPath = Collections.emptyList();
 	}
 
 	@Override
 	public void steer() {
-		if (actor.enteredNewTile() || forcedOnce) {
-			forcedOnce = false;
+		if (actor.enteredNewTile() || forced) {
+			forced = false;
 			targetPath = Collections.emptyList();
 			Tile targetTile = fnTargetTile.get();
 			if (targetTile != null) {
@@ -68,7 +73,7 @@ public class HeadingForTargetTile implements Steering {
 	
 	@Override
 	public void force() {
-		forcedOnce = true;
+		forced = true;
 	}
 
 	@Override

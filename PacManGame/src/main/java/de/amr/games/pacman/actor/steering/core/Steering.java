@@ -18,10 +18,23 @@ public interface Steering {
 	void steer();
 
 	/**
+	 * Some steerings needs to be initialized.
+	 */
+	void init();
+
+	/**
+	 * Some steerings have an explicit final state.
+	 * 
+	 * @return if steering reached its final state
+	 */
+	default boolean isComplete() {
+		return false;
+	}
+
+	/**
 	 * Triggers the steering once even if the precondition is not fulfilled.
 	 */
-	default void force() {
-	}
+	void force();
 
 	/**
 	 * @return tells if the steering requires that moving always keeps the actor aligned with the grid

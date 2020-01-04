@@ -22,6 +22,14 @@ public class AvoidingGhosts implements Steering {
 	}
 
 	@Override
+	public void init() {
+	}
+
+	@Override
+	public void force() {
+	}
+
+	@Override
 	public void enableTargetPathComputation(boolean b) {
 	}
 

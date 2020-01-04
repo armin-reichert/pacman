@@ -22,6 +22,8 @@ import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
 import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.actor.steering.core.Steering;
+import de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse;
+import de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState;
 import de.amr.games.pacman.actor.steering.ghost.SteerableGhost;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
@@ -93,9 +95,11 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 					.onTick(() -> moveAndShowAs("color-" + moveDir()))
 					
 				.state(LEAVING_HOUSE)
+					.onEntry(() -> steering().init())
 					.onTick(() -> moveAndShowAs("color-" + moveDir()))
 				
 				.state(ENTERING_HOUSE)
+					.onEntry(() -> steering().init())
 					.onTick(() -> moveAndShowAs("eyes-" + moveDir()))
 				
 				.state(SCATTERING)
@@ -141,15 +145,15 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 					.on(GhostUnlockedEvent.class)
 			
 				.when(LEAVING_HOUSE).then(SCATTERING)
-					.condition(() -> hasLeftTheHouse() && nextState == SCATTERING)
+					.condition(() -> steering().isComplete() && nextState == SCATTERING)
 					.act(() -> forceMove(Direction.LEFT))
 				
 				.when(LEAVING_HOUSE).then(CHASING)
-					.condition(() -> hasLeftTheHouse() && nextState == CHASING)
+					.condition(() -> steering().isComplete() && nextState == CHASING)
 					.act(() -> forceMove(Direction.LEFT))
 					
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
-					.condition(() -> wishDir() == null)
+					.condition(this::hasTakenSeat)
 				
 				.when(CHASING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
@@ -296,6 +300,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 
 	private void moveAndShowAs(String spriteKey) {
 		if (prevSteering != steering()) {
+			steering().init();
 			steering().force();
 			LOGGER.info(String.format("%s: steering changed, was: %s now: %s", this, name(prevSteering), name(steering())));
 		}
@@ -312,9 +317,15 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		}
 	}
 
-	private boolean hasLeftTheHouse() {
-		Tile currentTile = tile();
-		return !maze().partOfGhostHouse(currentTile) && tf.getPosition().roundedY() == currentTile.y();
+	private boolean hasTakenSeat() {
+		if (getState() == ENTERING_HOUSE) {
+			EnteringGhostHouse entering = (EnteringGhostHouse) steering();
+			LOGGER.info("entering house");
+			if (entering.is(EnteringHouseState.AT_PLACE)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	// TODO move sound methods into some central handler
