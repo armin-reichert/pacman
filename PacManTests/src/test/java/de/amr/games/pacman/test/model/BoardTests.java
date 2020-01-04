@@ -23,8 +23,8 @@ public class BoardTests {
 		assertNotNull(maze.ghostHouseSeats[1]);
 		assertNotNull(maze.ghostHouseSeats[2]);
 		assertNotNull(maze.ghostHouseSeats[3]);
-		assertNotNull(maze.tunnelExitLeft);
-		assertNotNull(maze.tunnelExitRight);
+		assertNotNull(maze.portalLeft);
+		assertNotNull(maze.portalRight);
 		assertNotNull(maze.bonusTile);
 		assertNotNull(maze.cornerNW);
 		assertNotNull(maze.cornerNE);

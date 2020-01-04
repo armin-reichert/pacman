@@ -69,7 +69,7 @@ public class Maze {
 	public final Tile bonusTile;
 	public final Tile cornerNW, cornerNE, cornerSW, cornerSE;
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
-	public final Tile tunnelExitLeft, tunnelExitRight;
+	public final Tile portalLeft, portalRight;
 	public final Tile doorLeft, doorRight;
 	public final Tile energizers[] = new Tile[4];
 
@@ -112,8 +112,8 @@ public class Maze {
 		pacManHome = map[13][26];
 		bonusTile = map[13][20];
 
-		tunnelExitLeft = map[0][17];
-		tunnelExitRight = map[27][17];
+		portalLeft = new Tile((byte) -1, (byte) 17, TUNNEL);
+		portalRight = new Tile((byte) 28, (byte) 17, TUNNEL);
 
 		// Scattering targets
 		horizonNW = map[2][0];
@@ -151,33 +151,46 @@ public class Maze {
 	}
 
 	/**
-	 * @param col a column index
-	 * @param row a row index
-	 * @return the tile with the given coordinates. Tiles outside of the board are
-	 *         either tunnel tiles (if in the same row than the board tunnel tiles)
-	 *         or walls otherwise.
+	 * @param col
+	 *              a column index
+	 * @param row
+	 *              a row index
+	 * @return the tile with the given coordinates. Tiles outside of the board are tunnel tiles (if in the same row as the
+	 *         board tunnel) or walls otherwise.
 	 */
 	public Tile tileAt(int col, int row) {
-		return insideBoard(col, row) ? map[col][row]
-				: new Tile((byte) col, (byte) row, row == tunnelExitLeft.row ? TUNNEL : WALL);
+		if (insideBoard(col, row)) {
+			return map[col][row];
+		}
+		if (portalLeft.col == col && portalLeft.row == row) {
+			return portalLeft;
+		}
+		if (portalRight.col == col && portalRight.row == row) {
+			return portalRight;
+		}
+		return new Tile((byte) col, (byte) row, portalRight.row == row ? TUNNEL : WALL);
 	}
 
 	/**
-	 * @param tile reference tile
-	 * @param dir  some direction
-	 * @param n    number of tiles
-	 * @return the tile located <code>n</code> tiles away from the reference tile
-	 *         towards the given direction. This can be a tile outside of the board!
+	 * @param tile
+	 *               reference tile
+	 * @param dir
+	 *               some direction
+	 * @param n
+	 *               number of tiles
+	 * @return the tile located <code>n</code> tiles away from the reference tile towards the given direction. This can be
+	 *         a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
 		return tileAt(tile.col + n * dir.dx, tile.row + n * dir.dy);
 	}
 
 	/**
-	 * @param tile reference tile
-	 * @param dir  some direction
-	 * @return neighbor towards the given direction. This can be a tile outside of
-	 *         the board!
+	 * @param tile
+	 *               reference tile
+	 * @param dir
+	 *               some direction
+	 * @return neighbor towards the given direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, Direction dir) {
 		return tileToDir(tile, dir, 1);

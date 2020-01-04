@@ -20,9 +20,8 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	/**
 	 * Anonymous inner class implementing teleporting control.
 	 * <p>
-	 * When an actor (Ghost, Pac-Man) crosses the border of the board in the tunnel,
-	 * a timer is started and the actor is placed at the teleportation target and
-	 * hidden (to avoid triggering events during teleportation). When the timer
+	 * When an actor (Ghost, Pac-Man) crosses the border of the board in the tunnel, a timer is started and the actor is
+	 * placed at the teleportation target and hidden (to avoid triggering events during teleportation). When the timer
 	 * ends, the actor is made visible again.
 	 */
 	private StateMachine<Boolean, Void> teleporting = new StateMachine<Boolean, Void>(Boolean.class) {
@@ -34,7 +33,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 				.initialState(false)
 				.states()
 				.transitions()
-					.when(false).then(true).condition(() -> tf.getX() > exitR())
+					.when(false).then(true).condition(() -> tf.getX() > exitR() + Tile.SIZE)
 						.act(() -> { tf.setX(exitL()); hide(); })
 					.when(false).then(true).condition(() -> tf.getX() < exitL())
 						.act(() -> { tf.setX(exitR()); hide(); })
@@ -45,11 +44,11 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 		}
 
 		private int exitL() {
-			return (maze().tunnelExitLeft.col - 1) * Tile.SIZE;
+			return maze().portalLeft.col * Tile.SIZE;
 		}
 
 		private int exitR() {
-			return (maze().tunnelExitRight.col + 1) * Tile.SIZE;
+			return maze().portalRight.col * Tile.SIZE;
 		}
 	};
 
@@ -72,9 +71,8 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	}
 
 	/**
-	 * Moves or teleports the actor one step. Handles changing the direction
-	 * according to the wish direction, moving around corners without losing
-	 * alignment,
+	 * Moves or teleports the actor one step. Handles changing the direction according to the wish direction, moving
+	 * around corners without losing alignment,
 	 */
 	@Override
 	public void step() {
@@ -101,8 +99,8 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	}
 
 	/**
-	 * Computes how many pixels this entity can move towards the given direction
-	 * without crossing the border to a forbidden neighbor tile.
+	 * Computes how many pixels this entity can move towards the given direction without crossing the border to a
+	 * forbidden neighbor tile.
 	 */
 	private float possibleSpeed(Tile currentTile, Direction dir) {
 		if (canCrossBorderTo(dir)) {
@@ -197,7 +195,8 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	/**
 	 * Sets the teleporting duration for this actor.
 	 * 
-	 * @param ticks how many ticks the teleporting is running
+	 * @param ticks
+	 *                how many ticks the teleporting is running
 	 */
 	public void setTeleportingDuration(int ticks) {
 		teleporting.state(true).setConstantTimer(ticks);

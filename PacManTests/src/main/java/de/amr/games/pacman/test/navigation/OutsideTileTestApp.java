@@ -48,7 +48,7 @@ class OutsideTileTestUI extends PlayView implements VisualController {
 		maze().removeFood();
 		theme().snd_ghost_chase().volume(0);
 		cast().setActorOnStage(cast().blinky);
-		cast().blinky.during(CHASING, cast().blinky.isHeadingFor(() -> maze().tileAt(100, maze().tunnelExitRight.row)));
+		cast().blinky.during(CHASING, cast().blinky.isHeadingFor(() -> maze().tileAt(100, maze().portalRight.row)));
 		cast().blinky.setState(CHASING);
 	}
 

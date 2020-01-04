@@ -22,8 +22,8 @@ public class MazeMovement extends StateMachine<MazeMovementState, Void> {
 
 	public MazeMovement() {
 		super(MazeMovementState.class);
-		leftPortal = maze.tileToDir(maze.tunnelExitLeft, Direction.LEFT);
-		rightPortal = maze.tileToDir(maze.tunnelExitRight, Direction.RIGHT);
+		leftPortal = maze.tileToDir(maze.portalLeft, Direction.LEFT);
+		rightPortal = maze.tileToDir(maze.portalRight, Direction.RIGHT);
 		//@formatter:off
 		beginStateMachine()
 		.description("MazeMovement")
