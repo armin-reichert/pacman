@@ -10,6 +10,10 @@ import de.amr.games.pacman.model.Tile;
  * @author Armin Reichert
  */
 public interface MazeMover extends MazeResident {
+	
+	enum State {
+		MOVING, TELEPORTING;
+	}
 
 	/**
 	 * Returns the current steering of this actor.
