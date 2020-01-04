@@ -213,7 +213,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	 * Turns around and triggers a new steering.
 	 */
 	public void turnAround() {
-		wishDir = moveDir = moveDir.opposite();
+		wishDir = moveDir.opposite();
 		steering().trigger();
 	}
 }
