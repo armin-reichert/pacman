@@ -320,7 +320,6 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	private boolean hasTakenSeat() {
 		if (getState() == ENTERING_HOUSE) {
 			EnteringGhostHouse entering = (EnteringGhostHouse) steering();
-			LOGGER.info("entering house");
 			if (entering.is(EnteringHouseState.AT_PLACE)) {
 				return true;
 			}
