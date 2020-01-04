@@ -51,10 +51,10 @@ public class Cast {
 
 		pacMan = new PacMan(this);
 
-		blinky = new Ghost("Blinky", this, 0);
-		inky = new Ghost("Inky", this, 1);
-		pinky = new Ghost("Pinky", this, 2);
-		clyde = new Ghost("Clyde", this, 3);
+		blinky = new Ghost(this, "Blinky", 0, LEFT);
+		inky = new Ghost(this, "Inky", 1, UP);
+		pinky = new Ghost(this, "Pinky", 2, DOWN);
+		clyde = new Ghost(this, "Clyde", 3, UP);
 
 		// initially, all actors are off-stage
 		actors().forEach(actor -> setActorOffStage(actor));
@@ -66,12 +66,10 @@ public class Cast {
 		pacMan.steering(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		pacMan.setTeleportingDuration(sec(0.5f));
 
-		blinky.eyes = LEFT;
 		blinky.during(SCATTERING, blinky.isHeadingFor(maze().horizonNE));
 		blinky.during(CHASING, blinky.isHeadingFor(pacMan::tile));
 		blinky.during(ENTERING_HOUSE, blinky.isTakingSeat(2));
 
-		inky.eyes = UP;
 		inky.during(SCATTERING, inky.isHeadingFor(maze().horizonSE));
 		inky.during(CHASING, inky.isHeadingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
@@ -80,13 +78,11 @@ public class Cast {
 		inky.during(LOCKED, inky.isJumpingUpAndDown());
 		inky.during(ENTERING_HOUSE, inky.isTakingOwnSeat());
 
-		pinky.eyes = DOWN;
 		pinky.during(SCATTERING, pinky.isHeadingFor(maze().horizonNW));
 		pinky.during(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
 		pinky.during(LOCKED, pinky.isJumpingUpAndDown());
 		pinky.during(ENTERING_HOUSE, pinky.isTakingOwnSeat());
 
-		clyde.eyes = UP;
 		clyde.during(SCATTERING, clyde.isHeadingFor(maze().horizonSW));
 		clyde.during(CHASING, clyde
 				.isHeadingFor(() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
