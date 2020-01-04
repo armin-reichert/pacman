@@ -186,7 +186,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 			return false;
 		}
 		if (neighbor.isTunnel()) {
-			return true; // includes tiles outside board used for teleportation!
+			return true; // includes portal tiles
 		}
 		return maze().insideBoard(neighbor);
 	}
