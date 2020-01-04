@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor.behavior.pacman;
+package de.amr.games.pacman.actor.steering.pacman;
 
 import static de.amr.datastruct.StreamUtils.permute;
 import static de.amr.games.pacman.model.Tile.distanceSq;
@@ -8,8 +8,8 @@ import java.util.Comparator;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.actor.behavior.common.Steering;
 import de.amr.games.pacman.actor.core.MazeMover;
+import de.amr.games.pacman.actor.steering.core.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Tile;
 

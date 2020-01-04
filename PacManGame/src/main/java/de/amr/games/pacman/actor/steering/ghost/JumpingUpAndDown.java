@@ -1,7 +1,7 @@
-package de.amr.games.pacman.actor.behavior.ghost;
+package de.amr.games.pacman.actor.steering.ghost;
 
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.behavior.common.Steering;
+import de.amr.games.pacman.actor.steering.core.Steering;
 import de.amr.games.pacman.model.Direction;
 
 /**

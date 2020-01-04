@@ -1,9 +1,9 @@
-package de.amr.games.pacman.actor.behavior.ghost;
+package de.amr.games.pacman.actor.steering.ghost;
 
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.behavior.common.SteerableMazeMover;
-import de.amr.games.pacman.actor.behavior.common.Steering;
 import de.amr.games.pacman.actor.core.MazeMover;
+import de.amr.games.pacman.actor.steering.common.SteerableMazeMover;
+import de.amr.games.pacman.actor.steering.core.Steering;
 
 /**
  * Interface with ghost-specific steerings that can be used by any ghost.

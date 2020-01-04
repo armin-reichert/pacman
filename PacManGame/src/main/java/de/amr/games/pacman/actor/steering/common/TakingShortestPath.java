@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor.behavior.common;
+package de.amr.games.pacman.actor.steering.common;
 
 import java.util.List;
 import java.util.function.Supplier;

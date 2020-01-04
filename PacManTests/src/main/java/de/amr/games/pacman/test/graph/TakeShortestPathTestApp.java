@@ -14,7 +14,7 @@ import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.behavior.common.Steering;
+import de.amr.games.pacman.actor.steering.core.Steering;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ArcadeTheme;

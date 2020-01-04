@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor.behavior.common;
+package de.amr.games.pacman.actor.steering.common;
 
 import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
@@ -17,6 +17,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.core.MazeMover;
+import de.amr.games.pacman.actor.steering.core.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;

@@ -1,14 +1,14 @@
-package de.amr.games.pacman.actor.behavior.ghost;
+package de.amr.games.pacman.actor.steering.ghost;
 
-import static de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState.AT_DOOR;
-import static de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState.AT_PLACE;
-import static de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState.FALLING;
-import static de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState.MOVING_LEFT;
-import static de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState.MOVING_RIGHT;
+import static de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState.AT_DOOR;
+import static de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState.AT_PLACE;
+import static de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState.FALLING;
+import static de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState.MOVING_LEFT;
+import static de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState.MOVING_RIGHT;
 
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.behavior.common.Steering;
-import de.amr.games.pacman.actor.behavior.ghost.EnteringGhostHouse.EnteringHouseState;
+import de.amr.games.pacman.actor.steering.core.Steering;
+import de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
