@@ -148,25 +148,25 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 				
 				.when(CHASING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
-					.act(this::turnAround)
+					.act(() -> forceMove(moveDir().opposite()))
 				
 				.when(CHASING).then(DEAD)
 					.on(GhostKilledEvent.class)
 				
 				.when(CHASING).then(SCATTERING)
 					.condition(() -> nextState == SCATTERING)
-					.act(this::turnAround)
+					.act(() -> forceMove(moveDir().opposite()))
 	
 				.when(SCATTERING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
-					.act(this::turnAround)
+					.act(() -> forceMove(moveDir().opposite()))
 				
 				.when(SCATTERING).then(DEAD)
 					.on(GhostKilledEvent.class)
 				
 				.when(SCATTERING).then(CHASING)
 					.condition(() -> nextState == CHASING)
-					.act(this::turnAround)
+					.act(() -> forceMove(moveDir().opposite()))
 				
 				.when(FRIGHTENED).then(CHASING)
 					.condition(() -> !cast.pacMan.isKicking() && nextState == CHASING)
