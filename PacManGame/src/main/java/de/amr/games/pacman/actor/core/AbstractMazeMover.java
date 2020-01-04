@@ -1,5 +1,7 @@
 package de.amr.games.pacman.actor.core;
 
+import static de.amr.games.pacman.actor.core.AbstractMazeMover.MoveState.MOVING;
+import static de.amr.games.pacman.actor.core.AbstractMazeMover.MoveState.TELEPORTING;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 
 import java.util.Objects;
@@ -17,38 +19,32 @@ import de.amr.statemachine.core.StateMachine;
  */
 public abstract class AbstractMazeMover extends AbstractMazeResident implements MazeMover {
 
-	/**
-	 * Anonymous inner class implementing teleporting control.
-	 * <p>
-	 * When an actor (Ghost, Pac-Man) crosses the border of the board in the tunnel, a timer is started and the actor is
-	 * placed at the teleportation target and hidden (to avoid triggering events during teleportation). When the timer
-	 * ends, the actor is made visible again.
-	 */
-	private StateMachine<Boolean, Void> teleporting = new StateMachine<Boolean, Void>(Boolean.class) {
+	public enum MoveState {
+		MOVING, TELEPORTING
+	}
+
+	private final StateMachine<MoveState, Void> movement = new StateMachine<MoveState, Void>(MoveState.class) {
 
 		{
 			//@formatter:off
 			beginStateMachine()
-				.description(String.format("[%s teleporter]", name()))
-				.initialState(false)
+				.description(String.format("[%s movement]", name()))
+				.initialState(MOVING)
 				.states()
+					.state(MOVING)
+						.onTick(() -> moveInsideMaze())
+					.state(TELEPORTING)
+						.timeoutAfter(() -> teleportingTicks)
+						.onEntry(() -> hide())
+						.onExit(() -> show())
 				.transitions()
-					.when(false).then(true).condition(() -> tf.getX() > exitR() + Tile.SIZE)
-						.act(() -> { tf.setX(exitL()); hide(); })
-					.when(false).then(true).condition(() -> tf.getX() < exitL())
-						.act(() -> { tf.setX(exitR()); hide(); })
-					.when(true).then(false).onTimeout()
-						.act(() -> show())
+					.when(MOVING).then(TELEPORTING)
+						.condition(() -> enteredPortal())
+						.act(() -> placeAtPortalExit())
+					.when(TELEPORTING).then(MOVING)
+						.onTimeout()
 			.endStateMachine();
 			//@formatter:on
-		}
-
-		private int exitL() {
-			return maze().portalLeft.col * Tile.SIZE;
-		}
-
-		private int exitR() {
-			return maze().portalRight.col * Tile.SIZE;
 		}
 	};
 
@@ -56,10 +52,11 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	private Direction wishDir;
 	private Tile targetTile;
 	private boolean enteredNewTile;
+	private int teleportingTicks;
 
 	public AbstractMazeMover(String name) {
 		super(name);
-		teleporting.setLogger(Game.FSM_LOGGER);
+		movement.setLogger(Game.FSM_LOGGER);
 	}
 
 	@Override
@@ -67,7 +64,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 		moveDir = wishDir = RIGHT;
 		targetTile = null;
 		enteredNewTile = true;
-		teleporting.init();
+		movement.init();
 	}
 
 	/**
@@ -76,26 +73,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	 */
 	@Override
 	public void step() {
-		teleporting.update();
-		if (isTeleporting()) {
-			return; // wait for teleporting state machine timeout
-		}
-		Tile tileBeforeStep = tile();
-		float speed = possibleSpeed(tileBeforeStep, moveDir);
-		if (wishDir != null && wishDir != moveDir) {
-			float wishDirSpeed = possibleSpeed(tileBeforeStep, wishDir);
-			if (wishDirSpeed > 0) {
-				boolean turning = (wishDir == moveDir.turnLeft() || wishDir == moveDir.turnRight());
-				if (turning && steering().requiresGridAlignment()) {
-					tf.setPosition(tileBeforeStep.x(), tileBeforeStep.y());
-				}
-				moveDir = wishDir;
-				speed = wishDirSpeed;
-			}
-		}
-		tf.setVelocity(Vector2f.smul(speed, Vector2f.of(moveDir.dx, moveDir.dy)));
-		tf.move();
-		enteredNewTile = !tileBeforeStep.equals(tile());
+		movement.update();
 	}
 
 	/**
@@ -121,6 +99,48 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 		}
 	}
 
+	private void moveInsideMaze() {
+		Tile tileBeforeStep = tile();
+		float speed = possibleSpeed(tileBeforeStep, moveDir);
+		if (wishDir != null && wishDir != moveDir) {
+			float wishDirSpeed = possibleSpeed(tileBeforeStep, wishDir);
+			if (wishDirSpeed > 0) {
+				boolean turning = (wishDir == moveDir.turnLeft() || wishDir == moveDir.turnRight());
+				if (turning && steering().requiresGridAlignment()) {
+					tf.setPosition(tileBeforeStep.x(), tileBeforeStep.y());
+				}
+				moveDir = wishDir;
+				speed = wishDirSpeed;
+			}
+		}
+		tf.setVelocity(Vector2f.smul(speed, Vector2f.of(moveDir.dx, moveDir.dy)));
+		tf.move();
+		enteredNewTile = !tileBeforeStep.equals(tile());
+	}
+
+	private void placeAtPortalExit() {
+		Tile tile = tile();
+		if (tile.equals(maze().portalLeft)) {
+			placeAt(maze().portalRight);
+		}
+		else if (tile.equals(maze().portalRight)) {
+			placeAt(maze().portalLeft);
+		}
+	}
+
+	private boolean enteredPortal() {
+		return enteredNewTile() && maze().isPortal(tile());
+	}
+
+	public void setTeleportingDuration(int ticks) {
+		teleportingTicks = ticks;
+	}
+
+	@Override
+	public boolean enteredNewTile() {
+		return enteredNewTile;
+	}
+
 	@Override
 	public Direction moveDir() {
 		return moveDir;
@@ -141,9 +161,12 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 		wishDir = dir;
 	}
 
-	@Override
-	public boolean enteredNewTile() {
-		return enteredNewTile;
+	/**
+	 * Turns around and triggers a new steering.
+	 */
+	public void turnAround() {
+		wishDir = moveDir.opposite();
+		steering().trigger();
 	}
 
 	@Override
@@ -158,7 +181,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 
 	@Override
 	public boolean isTeleporting() {
-		return teleporting.is(true);
+		return movement.is(TELEPORTING);
 	}
 
 	@Override
@@ -190,23 +213,5 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	public void placeAt(Tile tile, byte xOffset, byte yOffset) {
 		super.placeAt(tile, xOffset, yOffset);
 		enteredNewTile = !tile.equals(tile());
-	}
-
-	/**
-	 * Sets the teleporting duration for this actor.
-	 * 
-	 * @param ticks
-	 *                how many ticks the teleporting is running
-	 */
-	public void setTeleportingDuration(int ticks) {
-		teleporting.state(true).setConstantTimer(ticks);
-	}
-
-	/**
-	 * Turns around and triggers a new steering.
-	 */
-	public void turnAround() {
-		wishDir = moveDir.opposite();
-		steering().trigger();
 	}
 }

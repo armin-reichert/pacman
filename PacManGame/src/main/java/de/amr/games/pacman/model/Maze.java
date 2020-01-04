@@ -211,6 +211,10 @@ public class Maze {
 	public boolean inFrontOfGhostHouseDoor(Tile tile) {
 		return isDoor(tileToDir(tile, Direction.DOWN));
 	}
+	
+	public boolean isPortal(Tile tile) {
+		return tile.equals(portalLeft) || tile.equals(portalRight);
+	}
 
 	public Optional<Direction> direction(Tile t1, Tile t2) {
 		int dx = t2.col - t1.col, dy = t2.row - t1.row;
