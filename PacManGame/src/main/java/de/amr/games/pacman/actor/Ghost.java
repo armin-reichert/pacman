@@ -44,8 +44,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 
 	public final SpriteMap sprites = new SpriteMap();
 	public Direction eyes;
-	public GhostState nextState;
-
+	private GhostState nextState;
 	private final Cast cast;
 	private final int seat;
 	private final FsmComponent<GhostState, PacManGameEvent> brain;
@@ -202,6 +201,14 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	@Override
 	public FsmComponent<GhostState, PacManGameEvent> fsmComponent() {
 		return brain;
+	}
+	
+	public void setNextState(GhostState nextState) {
+		this.nextState = nextState;
+	}
+	
+	public GhostState nextState() {
+		return nextState;
 	}
 
 	@Override

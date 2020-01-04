@@ -71,7 +71,7 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 	public void update() {
 		if (!suspended) {
 			super.update();
-			cast.ghosts().forEach(ghost -> ghost.nextState = getState());
+			cast.ghosts().forEach(ghost -> ghost.setNextState(getState()));
 		}
 	}
 

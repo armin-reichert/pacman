@@ -1,5 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
+import static de.amr.games.pacman.actor.GhostState.CHASING;
+
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
@@ -10,7 +12,6 @@ import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
@@ -56,7 +57,7 @@ class InkyChaseTestUI extends PlayView implements VisualController {
 		cast().setActorOnStage(cast().inky);
 		cast().setActorOnStage(cast().blinky);
 		cast().ghostsOnStage().forEach(ghost -> {
-			ghost.nextState = GhostState.CHASING;
+			ghost.setNextState(CHASING);
 		});
 		messageColor = Color.YELLOW;
 		messageText = "Press SPACE to start";
