@@ -64,6 +64,11 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	}
 
 	@Override
+	public String toString() {
+		return String.format("(%s, col:%d, row:%d, %s)", name(), tile().col, tile().row, getState());
+	}
+
+	@Override
 	public StateMachine<GhostState, PacManGameEvent> buildFsm() {
 		return StateMachine.
 		/*@formatter:off*/
@@ -85,31 +90,31 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 						sprites.select("color-" + moveDir());
 						sprites.forEach(Sprite::resetAnimation);
 					})
-					.onTick(() -> makeStepAndDisplayAs("color-" + moveDir()))
+					.onTick(() -> moveAndShowAs("color-" + moveDir()))
 					
 				.state(LEAVING_HOUSE)
-					.onTick(() -> makeStepAndDisplayAs("color-" + moveDir()))
+					.onTick(() -> moveAndShowAs("color-" + moveDir()))
 				
 				.state(ENTERING_HOUSE)
-					.onTick(() -> makeStepAndDisplayAs("eyes-" + moveDir()))
+					.onTick(() -> moveAndShowAs("eyes-" + moveDir()))
 				
 				.state(SCATTERING)
 					.onTick(() -> {
-						makeStepAndDisplayAs("color-" + moveDir());
+						moveAndShowAs("color-" + moveDir());
 						checkPacManCollision();
 					})
 			
 				.state(CHASING)
 					.onEntry(() -> turnChasingGhostSoundOn())
 					.onTick(() -> {
-						makeStepAndDisplayAs("color-" + moveDir());
+						moveAndShowAs("color-" + moveDir());
 						checkPacManCollision();
 					})
 					.onExit(() -> turnChasingGhostSoundOff())
 				
 				.state(FRIGHTENED)
 					.onTick(() -> {
-						makeStepAndDisplayAs(cast.pacMan.isTired() ? "flashing" : "frightened");
+						moveAndShowAs(cast.pacMan.isTired() ? "flashing" : "frightened");
 						checkPacManCollision();
 					})
 				
@@ -123,7 +128,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 					})
 					.onTick(() -> {
 						if (state().isTerminated()) { // "dead"
-							makeStepAndDisplayAs("eyes-" + moveDir());
+							moveAndShowAs("eyes-" + moveDir());
 						}
 					})
 					.onExit(() -> {
@@ -222,11 +227,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 
 	@Override
 	public void update() {
-		GhostState stateBefore = getState();
 		brain.update();
-		if (getState() != stateBefore) {
-			LOGGER.info(String.format("%s state changed from %s to %s", name(), stateBefore, getState()));
-		}
 	}
 
 	@Override
@@ -293,16 +294,15 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		return steering != null ? steering.getClass().getSimpleName() : "none";
 	}
 
-	private void makeStepAndDisplayAs(String spriteKey) {
+	private void moveAndShowAs(String spriteKey) {
 		if (prevSteering != steering()) {
-			LOGGER.info(String.format("%s steering (%s @ %s) changed from %s to %s", name(), getState(), tile(),
-					name(prevSteering), name(steering())));
 			steering().force();
+			LOGGER.info(String.format("%s: steering changed, was: %s now: %s", this, name(prevSteering), name(steering())));
 		}
 		steering().steer();
 		super.update(); // move or teleport
-		sprites.select(spriteKey);
 		prevSteering = steering();
+		sprites.select(spriteKey);
 	}
 
 	private void checkPacManCollision() {
