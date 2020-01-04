@@ -42,11 +42,6 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 						ghost.setWishDir(Direction.DOWN);
 					})
 					
-				.state(AT_PLACE)
-					.onEntry(() -> {
-						ghost.setWishDir(null);
-					})
-					
 			.transitions()
 	
 				.when(AT_DOOR).then(FALLING)
