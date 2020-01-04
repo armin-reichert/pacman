@@ -68,7 +68,7 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 		cast().blinky.placeAt(targets.get(0));
 		cast().blinky.during(CHASING, cast().blinky.isHeadingFor(() -> targets.get(current)));
 		cast().blinky.setState(CHASING);
-		cast().blinky.steering().trigger();
+		cast().blinky.steering().force();
 	}
 
 	@Override

@@ -20,7 +20,7 @@ public interface Steering {
 	/**
 	 * Triggers the steering once even if the precondition is not fulfilled.
 	 */
-	default void trigger() {
+	default void force() {
 	}
 
 	/**

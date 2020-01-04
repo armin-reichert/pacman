@@ -67,7 +67,7 @@ public class HeadingForTargetTile implements Steering {
 	}
 	
 	@Override
-	public void trigger() {
+	public void force() {
 		forcedOnce = true;
 	}
 

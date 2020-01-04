@@ -297,7 +297,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		if (prevSteering != steering()) {
 			LOGGER.info(String.format("%s steering (%s @ %s) changed from %s to %s", name(), getState(), tile(),
 					name(prevSteering), name(steering())));
-			steering().trigger();
+			steering().force();
 		}
 		steering().steer();
 		super.update(); // move or teleport

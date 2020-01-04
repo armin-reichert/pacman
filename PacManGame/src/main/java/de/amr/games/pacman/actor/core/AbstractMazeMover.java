@@ -155,7 +155,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 
 	public void forceMove(Direction dir) {
 		wishDir = dir;
-		steering().trigger();
+		steering().force();
 		movement.update();
 	}
 
