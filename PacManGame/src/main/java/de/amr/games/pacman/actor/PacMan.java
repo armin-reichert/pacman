@@ -129,9 +129,7 @@ public class PacMan extends AbstractMazeMover implements SteerableMazeMover, Act
 								return;
 							}
 						}
-						step();
-						sprites.select("walking-" + moveDir());
-						sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
+						moveOneStep();
 						if (!isTeleporting()) {
 							inspect(tile()).ifPresent(brain::publish);
 						}
@@ -209,14 +207,13 @@ public class PacMan extends AbstractMazeMover implements SteerableMazeMover, Act
 	}
 
 	/**
-	 * NOTE: If the application property <code>overflowBug</code> is
-	 * <code>true</code>, this method simulates the bug in the original Arcade game
-	 * which occurs if Pac-Man points upwards. In that case the same number of tiles
-	 * to the left is added.
+	 * NOTE: If the application property <code>overflowBug</code> is <code>true</code>, this method simulates the bug in
+	 * the original Arcade game which occurs if Pac-Man points upwards. In that case the same number of tiles to the left
+	 * is added.
 	 * 
-	 * @param numTiles number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor
-	 *         towards his current move direction.
+	 * @param numTiles
+	 *                   number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of the actor towards his current move direction.
 	 */
 	@Override
 	public Tile tilesAhead(int numTiles) {
@@ -236,6 +233,12 @@ public class PacMan extends AbstractMazeMover implements SteerableMazeMover, Act
 		return super.canMoveBetween(tile, neighbor);
 	}
 
+	private void moveOneStep() {
+		super.update(); // move or teleport
+		sprites.select("walking-" + moveDir());
+		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
+	}
+
 	private Optional<PacManGameEvent> inspect(Tile tile) {
 		if (tile == maze().bonusTile) {
 			Optional<PacManGameEvent> activeBonusFound = cast.bonus().filter(bonus -> bonus.is(ACTIVE))
@@ -249,7 +252,8 @@ public class PacMan extends AbstractMazeMover implements SteerableMazeMover, Act
 			if (tile.containsEnergizer()) {
 				digestionTicks = DIGEST_ENERGIZER_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, true));
-			} else {
+			}
+			else {
 				digestionTicks = DIGEST_PELLET_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, false));
 			}

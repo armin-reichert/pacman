@@ -43,6 +43,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<GhostState> {
 
 	public final SpriteMap sprites = new SpriteMap();
+
 	private final Direction eyes;
 	private final Cast cast;
 	private final int seat;
@@ -50,6 +51,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	private final Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
 	private final Steering defaultSteering = isHeadingFor(this::targetTile);
 	private GhostState nextState;
+	private Steering prevSteering;
 
 	public Ghost(Cast cast, String name, int seat, Direction eyes) {
 		super(name);
@@ -135,11 +137,11 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 			
 				.when(LEAVING_HOUSE).then(SCATTERING)
 					.condition(() -> hasLeftTheHouse() && nextState == SCATTERING)
-					.act(() -> {setWishDir(Direction.LEFT); steering().trigger(); step();})
+					.act(() -> forceMove(Direction.LEFT))
 				
 				.when(LEAVING_HOUSE).then(CHASING)
 					.condition(() -> hasLeftTheHouse() && nextState == CHASING)
-					.act(() -> {setWishDir(Direction.LEFT); steering().trigger(); step();})
+					.act(() -> forceMove(Direction.LEFT))
 					
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
 					.condition(() -> wishDir() == null)
@@ -287,8 +289,6 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		}
 	}
 
-	private Steering prevSteering;
-
 	private String name(Steering steering) {
 		return steering != null ? steering.getClass().getSimpleName() : "none";
 	}
@@ -300,7 +300,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 			steering().trigger();
 		}
 		steering().steer();
-		step();
+		super.update(); // move or teleport
 		sprites.select(spriteKey);
 		prevSteering = steering();
 	}

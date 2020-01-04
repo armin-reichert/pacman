@@ -67,12 +67,8 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 		movement.init();
 	}
 
-	/**
-	 * Moves or teleports the actor one step. Handles changing the direction according to the wish direction, moving
-	 * around corners without losing alignment,
-	 */
 	@Override
-	public void step() {
+	public void update() {
 		movement.update();
 	}
 
@@ -165,8 +161,13 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	 * Turns around and triggers a new steering.
 	 */
 	public void turnAround() {
-		wishDir = moveDir.opposite();
+		forceMove(moveDir.opposite());
+	}
+
+	public void forceMove(Direction dir) {
+		wishDir = dir;
 		steering().trigger();
+		movement.update();
 	}
 
 	@Override

@@ -17,11 +17,6 @@ public interface MazeMover extends MazeResident {
 	Steering steering();
 
 	/**
-	 * Moves one step, either inside the maze or through the teleporting space.
-	 */
-	void step();
-
-	/**
 	 * @return the maximum possible speed (in pixels/tick) for the next step. The actual speed can be lower to avoid
 	 *         crossing borders into inaccessible tiles.
 	 */
