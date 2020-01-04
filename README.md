@@ -172,33 +172,31 @@ beginStateMachine(BonusState.class, PacManGameEvent.class)
 .endStateMachine();
 ```
 
-When an actor leaves the board inside a tunnel it enters *teleporting* mode. In this implementation, the teleporting duration can be specified for each actor individually (no idea if this makes much sense) and the teleporting is controlled by the following state machine:
+When an actor leaves the board inside a tunnel it enters *teleporting* mode. In this implementation, the teleporting duration can be specified for each actor individually (no idea if this makes much sense) and the movement state of an actor is controlled by the following state machine:
 
 ```java
-private StateMachine<Boolean, Void> teleporting = new StateMachine<Boolean, Void>(Boolean.class) {
+private final StateMachine<MoveState, Void> movement = new StateMachine<MoveState, Void>(MoveState.class) {
+
 	{
 		//@formatter:off
 		beginStateMachine()
-			.description(String.format("[Teleporting %s]", name()))
-			.initialState(false)
+			.description(String.format("[%s movement]", name()))
+			.initialState(MOVING)
 			.states()
+				.state(MOVING)
+					.onTick(() -> moveInsideMaze())
+				.state(TELEPORTING)
+					.timeoutAfter(() -> teleportingTicks)
+					.onEntry(() -> hide())
+					.onExit(() -> show())
 			.transitions()
-				.when(false).then(true).condition(() -> tf.getX() > exitR())
-					.act(() -> { tf.setX(exitL()); hide(); })
-				.when(false).then(true).condition(() -> tf.getX() < exitL())
-					.act(() -> { tf.setX(exitR()); hide(); })
-				.when(true).then(false).onTimeout()
-					.act(() -> show())
+				.when(MOVING).then(TELEPORTING)
+					.condition(() -> enteredPortal())
+					.act(() -> placeAtPortalExit())
+				.when(TELEPORTING).then(MOVING)
+					.onTimeout()
 		.endStateMachine();
 		//@formatter:on
-	}
-
-	private int exitL() {
-		return (maze().tunnelExitLeft.col - 1) * Tile.SIZE;
-	}
-
-	private int exitR() {
-		return (maze().tunnelExitRight.col + 1) * Tile.SIZE;
 	}
 };
 ```
