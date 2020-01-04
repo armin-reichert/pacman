@@ -77,11 +77,6 @@ public interface MazeMover extends MazeResident {
 	boolean isTeleporting();
 
 	/**
-	 * @return if the entity can move towards its current move direction
-	 */
-	boolean canMoveForward();
-
-	/**
 	 * @param dir
 	 *              direction
 	 * @return if the entity can enter the neighbor tile towards this direction

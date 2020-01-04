@@ -131,7 +131,7 @@ public class PacMan extends AbstractMazeMover implements SteerableMazeMover, Act
 						}
 						step();
 						sprites.select("walking-" + moveDir());
-						sprites.current().get().enableAnimation(canMoveForward());
+						sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
 						if (!isTeleporting()) {
 							inspect(tile()).ifPresent(brain::publish);
 						}

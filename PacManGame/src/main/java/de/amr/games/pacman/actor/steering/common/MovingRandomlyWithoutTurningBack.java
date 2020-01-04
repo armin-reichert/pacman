@@ -16,7 +16,7 @@ public class MovingRandomlyWithoutTurningBack implements Steering {
 	@Override
 	public void steer() {
 		actor.setTargetTile(null);
-		if (actor.enteredNewTile()) {
+		if (actor.enteredNewTile() || !actor.canCrossBorderTo(actor.moveDir())) {
 			/*@formatter:off*/
 			StreamUtils.permute(Direction.dirs())
 				.filter(dir -> dir != actor.moveDir().opposite())
