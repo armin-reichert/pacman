@@ -83,14 +83,14 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 		Tile tileBeforeStep = tile();
 		float speed = possibleSpeedTo(moveDir);
 		if (wishDir != moveDir) {
-			float nextDirSpeed = possibleSpeedTo(wishDir);
-			if (nextDirSpeed > 0) {
+			float wishDirSpeed = possibleSpeedTo(wishDir);
+			if (wishDirSpeed > 0) {
 				boolean turning = (wishDir == moveDir.turnLeft() || wishDir == moveDir.turnRight());
 				if (turning && steering().requiresGridAlignment()) {
 					tf.setPosition(tileBeforeStep.x(), tileBeforeStep.y());
 				}
 				moveDir = wishDir;
-				speed = nextDirSpeed;
+				speed = wishDirSpeed;
 			}
 		}
 		tf.setVelocity(Vector2f.smul(speed, Vector2f.of(moveDir.dx, moveDir.dy)));
@@ -214,6 +214,6 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	 */
 	public void turnAround() {
 		wishDir = moveDir = moveDir.opposite();
-		enteredNewTile = true;
+		steering().trigger();
 	}
 }

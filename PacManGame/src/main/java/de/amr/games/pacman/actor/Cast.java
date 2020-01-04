@@ -91,7 +91,7 @@ public class Cast {
 		clyde.during(CHASING, clyde
 				.isHeadingFor(() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
 		clyde.during(LOCKED, clyde.isJumpingUpAndDown());
-		clyde.during(ENTERING_HOUSE, pinky.isTakingOwnSeat());
+		clyde.during(ENTERING_HOUSE, clyde.isTakingOwnSeat());
 
 		ghosts().forEach(ghost -> {
 			ghost.setTeleportingDuration(sec(0.5f));
