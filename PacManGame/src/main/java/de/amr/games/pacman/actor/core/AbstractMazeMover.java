@@ -1,7 +1,7 @@
 package de.amr.games.pacman.actor.core;
 
-import static de.amr.games.pacman.actor.core.MazeMover.State.MOVING;
-import static de.amr.games.pacman.actor.core.MazeMover.State.TELEPORTING;
+import static de.amr.games.pacman.actor.core.MazeMover.MoveState.MOVING;
+import static de.amr.games.pacman.actor.core.MazeMover.MoveState.TELEPORTING;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 
 import java.util.Objects;
@@ -19,8 +19,7 @@ import de.amr.statemachine.core.StateMachine;
  */
 public abstract class AbstractMazeMover extends AbstractMazeResident implements MazeMover {
 
-	private final StateMachine<MazeMover.State, Void> movement = new StateMachine<MazeMover.State, Void>(
-			MazeMover.State.class) {
+	private final StateMachine<MoveState, Void> movement = new StateMachine<MoveState, Void>(MoveState.class) {
 
 		{
 			//@formatter:off

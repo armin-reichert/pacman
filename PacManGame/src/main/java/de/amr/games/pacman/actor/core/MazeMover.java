@@ -11,7 +11,7 @@ import de.amr.games.pacman.model.Tile;
  */
 public interface MazeMover extends MazeResident {
 	
-	enum State {
+	enum MoveState {
 		MOVING, TELEPORTING;
 	}
 
