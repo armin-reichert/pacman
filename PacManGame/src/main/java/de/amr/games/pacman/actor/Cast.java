@@ -64,7 +64,6 @@ public class Cast {
 		setTheme(theme);
 
 		pacMan.steering(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
-		pacMan.steering(pacMan.isMovingRandomlyWithoutTurningBack()); //TODO remove me
 		pacMan.setTeleportingDuration(sec(0.5f));
 
 		blinky.during(SCATTERING, blinky.isHeadingFor(maze().horizonNE));

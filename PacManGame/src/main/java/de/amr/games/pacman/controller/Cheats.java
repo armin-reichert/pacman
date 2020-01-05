@@ -73,5 +73,6 @@ public class Cheats implements Lifecycle {
 			settings.pacManImmortable = !settings.pacManImmortable;
 			LOGGER.info("Pac-Man immortable = " + settings.pacManImmortable);
 		}
+
 	}
 }

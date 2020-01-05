@@ -13,6 +13,10 @@ import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
 import static de.amr.games.pacman.model.Game.FSM_LOGGER;
 import static de.amr.games.pacman.model.Timing.sec;
+import static java.awt.event.KeyEvent.VK_DOWN;
+import static java.awt.event.KeyEvent.VK_LEFT;
+import static java.awt.event.KeyEvent.VK_RIGHT;
+import static java.awt.event.KeyEvent.VK_UP;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -20,6 +24,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
@@ -108,6 +113,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
+	private PacManAppSettings settings() {
+		return (PacManAppSettings) app().settings;
+	}
+
 	private void createPlayingEnvironment() {
 		game = new Game();
 		cast = new Cast(game, theme);
@@ -115,11 +124,28 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			cast.setActorOnStage(actor);
 			actor.addEventListener(this::process);
 		});
+		demoMode(settings().demoMode);
 		ghostCommand = new GhostCommand(cast);
 		house = new House(cast);
 		cheats = new Cheats(this);
 		createPlayView();
 		showView(playView);
+	}
+
+	private void demoMode(boolean on) {
+		if (on) {
+			settings().pacManImmortable = true;
+			cast().ifPresent(cast -> {
+				cast.pacMan.steering(cast.pacMan.isMovingRandomlyWithoutTurningBack());
+			});
+		}
+		else {
+			settings().pacManImmortable = false;
+			cast().ifPresent(cast -> {
+				cast.pacMan.steering(cast.pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
+			});
+		}
+		LOGGER.info("Demo mode = " + on);
 	}
 
 	private void createPlayView() {
@@ -139,6 +165,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		onChangePacManOverflowBug();
 		onChangeClockSpeed();
 		onChangePlayViewSettings();
+		onChangeDemoMode();
 		super.update();
 		currentView.update();
 	}
@@ -241,7 +268,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(PACMAN_DYING)
 					.timeoutAfter(() -> game.lives > 1 ? sec(9) : sec(7))
 					.onEntry(() -> {
-						game.lives -= ((PacManAppSettings)app().settings).pacManImmortable ? 0 : 1;
+						game.lives -= settings().pacManImmortable ? 0 : 1;
 						stopSoundEffects();
 					})
 					.onTick(() -> {
@@ -290,7 +317,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			
 				.when(LOADING_MUSIC).then(GETTING_READY)
 					.condition(() -> musicLoading.isDone() 
-							&& ((PacManAppSettings) app().settings).skipIntro)
+							&& settings().skipIntro)
 
 				.when(LOADING_MUSIC).then(INTRO)
 					.condition(() -> musicLoading.isDone())
@@ -407,7 +434,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				playView.stopEnergizerBlinking();
 				cast.pacMan.process(new PacManKilledEvent(collision.ghost));
 				enqueue(new PacManKilledEvent(collision.ghost));
-			} else {
+			}
+			else {
 				LOGGER.info(() -> String.format("Ghost %s killed at %s", collision.ghost.name(), collision.ghost.tile()));
 				int livesBefore = game.lives;
 				game.scoreKilledGhost(collision.ghost.name());
@@ -469,13 +497,17 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		int newFreq = oldFreq;
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
 			newFreq = Game.SPEED_1_FPS;
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
 			newFreq = Game.SPEED_2_FPS;
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
+		}
+		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			newFreq = Game.SPEED_3_FPS;
-		} else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_LEFT)) {
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_LEFT)) {
 			newFreq = (oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
-		} else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_RIGHT)) {
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_RIGHT)) {
 			newFreq = (oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
 		}
 		if (newFreq != oldFreq) {
@@ -504,9 +536,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void onChangePacManOverflowBug() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_O)) {
-			PacManAppSettings settings = (PacManAppSettings) app().settings;
-			settings.overflowBug = !settings.overflowBug;
-			LOGGER.info("Overflow bug is " + (settings.overflowBug ? "on" : "off"));
+			settings().overflowBug = !settings().overflowBug;
+			LOGGER.info("Overflow bug is " + (settings().overflowBug ? "on" : "off"));
 		}
 	}
 
@@ -519,17 +550,26 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void onChangeGhostFrightenedBehavior() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_F)) {
-			PacManAppSettings settings = ((PacManAppSettings) app().settings);
-			boolean original = settings.ghostsFleeRandomly;
+			boolean original = settings().ghostsFleeRandomly;
 			if (original) {
-				settings.ghostsFleeRandomly = false;
+				settings().ghostsFleeRandomly = false;
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, ghost.isFleeingToSafeCorner(cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
-			} else {
-				settings.ghostsFleeRandomly = true;
+			}
+			else {
+				settings().ghostsFleeRandomly = true;
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack()));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
 			}
+		}
+	}
+
+	private void onChangeDemoMode() {
+		/* ALT-"J": Demo mode: Makes Pac-Man immortable and moving randomly. */
+		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_J)) {
+			PacManAppSettings settings = (PacManAppSettings) Application.app().settings;
+			settings.demoMode = !settings.demoMode;
+			demoMode(settings.demoMode);
 		}
 	}
 

@@ -24,6 +24,9 @@ public class PacManAppSettings extends AppSettings {
 	@Parameter(names = { "-pacManImmortable" }, description = "if set, Pac-Man keeps lives when killed")
 	public boolean pacManImmortable = false;
 
+	@Parameter(names = { "-demoMode" }, description = "Pac-Man moves automatically and keeps lives when killed")
+	public boolean demoMode = false;
+
 	@Parameter(names = { "-theme" }, description = "the theme name e.g. 'Arcade'")
 	public String theme = "Arcade";
 }
