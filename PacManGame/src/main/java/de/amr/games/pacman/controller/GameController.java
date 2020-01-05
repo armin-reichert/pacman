@@ -2,6 +2,7 @@ package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
+import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
@@ -29,7 +30,6 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
-import de.amr.games.pacman.PacManAppSettings;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
@@ -78,8 +78,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private boolean showRoutes;
 	private boolean showStates;
 	private boolean showGrid;
-
-	private PacManAppSettings settings = (PacManAppSettings) app().settings();
 
 	public GameController(Theme theme) {
 		super(PacManGameState.class);
