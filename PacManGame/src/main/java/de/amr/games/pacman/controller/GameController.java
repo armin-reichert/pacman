@@ -241,7 +241,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(PACMAN_DYING)
 					.timeoutAfter(() -> game.lives > 1 ? sec(9) : sec(7))
 					.onEntry(() -> {
-						game.lives -= app().settings.getAsBoolean("PacMan.immortable") ? 0 : 1;
+						game.lives -= ((PacManAppSettings)app().settings).pacManImmortable ? 0 : 1;
 						stopSoundEffects();
 					})
 					.onTick(() -> {

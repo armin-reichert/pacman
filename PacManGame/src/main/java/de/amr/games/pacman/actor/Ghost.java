@@ -22,8 +22,6 @@ import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
 import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.actor.steering.core.Steering;
-import de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse;
-import de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState;
 import de.amr.games.pacman.actor.steering.ghost.SteerableGhost;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
@@ -153,7 +151,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 					.act(() -> forceMove(Direction.LEFT))
 					
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
-					.condition(this::hasTakenSeat)
+					.condition(() -> steering().isComplete())
 				
 				.when(CHASING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
@@ -315,16 +313,6 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 				&& tile().equals(cast.pacMan.tile())) {
 			publish(new PacManGhostCollisionEvent(this, tile()));
 		}
-	}
-
-	private boolean hasTakenSeat() {
-		if (getState() == ENTERING_HOUSE) {
-			EnteringGhostHouse entering = (EnteringGhostHouse) steering();
-			if (entering.is(EnteringHouseState.AT_PLACE)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	// TODO move sound methods into some central handler
