@@ -15,6 +15,7 @@ import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.steering.core.Steering;
+import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ArcadeTheme;
@@ -50,8 +51,8 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 		super(cast);
 		ghost = cast.blinky;
 		targets = Arrays.asList(maze().cornerSE, maze().tileAt(15, 23), maze().tileAt(12, 23), maze().cornerSW,
-				maze().portalLeft, maze().cornerNW, maze().ghostHouseSeats[0], maze().cornerNE, maze().portalRight,
-				maze().pacManHome);
+				maze().tileToDir(maze().portalLeft, Direction.RIGHT), maze().cornerNW, maze().ghostHouseSeats[0],
+				maze().cornerNE, maze().tileToDir(maze().portalRight, Direction.LEFT), maze().pacManHome);
 		showRoutes = () -> true;
 		showStates = () -> true;
 		showScores = () -> false;
