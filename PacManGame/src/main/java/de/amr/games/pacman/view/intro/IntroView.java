@@ -237,6 +237,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 				pacManLogo.draw(g);
 				chasePacMan.draw(g);
 				ghostPointsAnimation.draw(g);
+				gitHubLink.draw(g);
 				break;
 			case READY_TO_PLAY:
 				break;
