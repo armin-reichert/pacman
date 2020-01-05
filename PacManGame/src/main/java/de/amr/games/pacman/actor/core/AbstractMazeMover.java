@@ -69,23 +69,24 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	}
 
 	/**
-	 * Computes how many pixels this entity can move towards the given direction without crossing the border to a
-	 * forbidden neighbor tile.
+	 * Computes how many pixels this entity can move towards the given direction
+	 * without crossing the border to a forbidden neighbor tile.
 	 */
 	private float possibleSpeed(Tile currentTile, Direction dir) {
+		float maxSpeed = maxSpeed();
 		if (canCrossBorderTo(dir)) {
-			return maxSpeed();
+			return maxSpeed;
 		}
 		float offsetX = tf.getX() - currentTile.x(), offsetY = tf.getY() - currentTile.y();
 		switch (dir) {
 		case UP:
-			return offsetY;
+			return Math.min(offsetY, maxSpeed);
 		case DOWN:
-			return -offsetY;
+			return Math.min(-offsetY, maxSpeed);
 		case LEFT:
-			return offsetX;
+			return Math.min(offsetX, maxSpeed);
 		case RIGHT:
-			return -offsetX;
+			return Math.min(-offsetX, maxSpeed);
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}
@@ -114,8 +115,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 		Tile tile = tile();
 		if (tile.equals(maze().portalLeft)) {
 			placeAt(maze().portalRight);
-		}
-		else if (tile.equals(maze().portalRight)) {
+		} else if (tile.equals(maze().portalRight)) {
 			placeAt(maze().portalLeft);
 		}
 	}
