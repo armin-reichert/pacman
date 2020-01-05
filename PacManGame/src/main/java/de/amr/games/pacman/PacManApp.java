@@ -36,9 +36,9 @@ public class PacManApp extends Application {
 	public void init() {
 		Theme theme = Themes.createTheme(settings.theme);
 		GameController gameController = new GameController(theme);
-		exitHandler = app -> gameController.game().ifPresent(Game::saveHiscore);
 		setController(gameController);
 		setIcon(theme.spr_ghostFrightened().frame(0));
+		setExitHandler(app -> gameController.game().ifPresent(Game::saveHiscore));
 		gameController.init();
 	}
 }
