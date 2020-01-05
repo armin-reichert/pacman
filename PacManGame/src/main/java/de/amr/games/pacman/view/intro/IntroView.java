@@ -218,7 +218,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 				chasePacMan.draw(g);
 				break;
 			case WAITING_FOR_INPUT:
-				if (app().clock.getTicks() % sec(1) < sec(0.5f)) {
+				if (app().clock().getTicks() % sec(1) < sec(0.5f)) {
 					pen.color(Color.WHITE);
 					pen.fontSize(14);
 					pen.hcenter("Press SPACE to start!", width(), 18);
@@ -227,7 +227,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 				pen.fontSize(10);
 				pen.hcenter("F11 - Fullscreen Mode", width(), 22);
 				int selectedSpeed = Arrays.asList(Game.SPEED_1_FPS, Game.SPEED_2_FPS, Game.SPEED_3_FPS)
-						.indexOf(app().clock.getFrequency()) + 1;
+						.indexOf(app().clock().getFrequency()) + 1;
 				pen.color(selectedSpeed == 1 ? orange : red);
 				pen.drawAtTilePosition(1, 31, "1 - Normal");
 				pen.color(selectedSpeed == 2 ? orange : red);

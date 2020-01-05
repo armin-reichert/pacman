@@ -24,12 +24,12 @@ public class LeaveGhostHouseTestApp extends PacManApp {
 	}
 
 	public LeaveGhostHouseTestApp() {
-		settings.title = "Leave Ghost House";
+		settings().title = "Leave Ghost House";
 	}
 
 	@Override
 	public void init() {
-		clock.setFrequency(10);
+		clock().setFrequency(10);
 		Game game = new Game();
 		Theme theme = new ArcadeTheme();
 		Cast cast = new Cast(game, theme);

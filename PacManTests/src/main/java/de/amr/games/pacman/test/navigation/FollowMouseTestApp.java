@@ -22,7 +22,7 @@ public class FollowMouseTestApp extends PacManApp {
 	}
 
 	public FollowMouseTestApp() {
-		settings.title = "Follow Mouse";
+		settings().title = "Follow Mouse";
 	}
 
 	@Override

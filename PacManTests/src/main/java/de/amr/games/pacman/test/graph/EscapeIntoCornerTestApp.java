@@ -22,7 +22,7 @@ public class EscapeIntoCornerTestApp extends PacManApp {
 	}
 
 	public EscapeIntoCornerTestApp() {
-		settings.title = "Escape Into Corner";
+		settings().title = "Escape Into Corner";
 	}
 
 	@Override

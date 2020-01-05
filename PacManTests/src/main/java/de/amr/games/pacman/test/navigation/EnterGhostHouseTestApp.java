@@ -24,7 +24,7 @@ public class EnterGhostHouseTestApp extends PacManApp {
 	}
 
 	public EnterGhostHouseTestApp() {
-		settings.title = "Enter Ghost House";
+		settings().title = "Enter Ghost House";
 	}
 
 	@Override

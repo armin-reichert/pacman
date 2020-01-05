@@ -20,7 +20,7 @@ public class OutsideTileTestApp extends PacManApp {
 	}
 
 	public OutsideTileTestApp() {
-		settings.title = "Follow Tile Outside Maze";
+		settings().title = "Follow Tile Outside Maze";
 	}
 
 	@Override

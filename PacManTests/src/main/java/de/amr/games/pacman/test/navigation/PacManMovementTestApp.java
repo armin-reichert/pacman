@@ -25,7 +25,7 @@ public class PacManMovementTestApp extends PacManApp {
 	}
 
 	public PacManMovementTestApp() {
-		settings.title = "Pac-Man Movement";
+		settings().title = "Pac-Man Movement";
 	}
 
 	@Override

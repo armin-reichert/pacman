@@ -19,7 +19,7 @@ public class JumpingTestApp extends PacManApp {
 	}
 
 	public JumpingTestApp() {
-		settings.title = "Jumping";
+		settings().title = "Jumping";
 	}
 
 	@Override

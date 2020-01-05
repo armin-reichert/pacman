@@ -26,7 +26,7 @@ public class InkyChaseTestApp extends PacManApp {
 	}
 
 	public InkyChaseTestApp() {
-		settings.title = "Inky Chasing";
+		settings().title = "Inky Chasing";
 	}
 
 	@Override

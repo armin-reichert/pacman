@@ -23,7 +23,7 @@ public class FPSDisplay extends Entity {
 				pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
 				pen.smooth(() -> {
 					pen.drawAtPosition(tf.getX(), tf.getY(),
-							String.format("%d|%dfps", app().clock.getRenderRate(), app().clock.getFrequency()));
+							String.format("%d|%dfps", app().clock().getRenderRate(), app().clock().getFrequency()));
 				});
 			}
 		}

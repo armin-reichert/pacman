@@ -18,11 +18,11 @@ import de.amr.games.pacman.theme.Theme;
 public interface GameView extends View, Lifecycle, PropertyChangeListener {
 
 	default int width() {
-		return app().settings.width;
+		return app().settings().width;
 	}
 
 	default int height() {
-		return app().settings.height;
+		return app().settings().height;
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public interface GameView extends View, Lifecycle, PropertyChangeListener {
 	}
 	
 	default PacManAppSettings settings() {
-		return (PacManAppSettings) app().settings;
+		return (PacManAppSettings) app().settings();
 	}
 	
 	Theme theme();

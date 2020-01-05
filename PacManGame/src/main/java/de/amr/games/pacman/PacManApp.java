@@ -32,7 +32,7 @@ public class PacManApp extends Application<PacManAppSettings> {
 
 	@Override
 	public void init() {
-		Theme theme = Themes.createTheme(settings.theme);
+		Theme theme = Themes.createTheme(settings().theme);
 		GameController gameController = new GameController(theme);
 		exitHandler = app -> gameController.game().ifPresent(Game::saveHiscore);
 		setController(gameController);

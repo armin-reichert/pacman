@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
-import static de.amr.easy.game.Application.app;
+import static de.amr.games.pacman.model.Timing.sec;
 import static de.amr.graph.grid.impl.Grid4Topology.E;
 
 import java.awt.Color;
@@ -14,8 +14,7 @@ import de.amr.easy.game.view.Animation;
 import de.amr.games.pacman.theme.Theme;
 
 /**
- * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the
- * ghosts.
+ * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the ghosts.
  * 
  * @author Armin Reichert
  */
@@ -45,11 +44,11 @@ public class GhostPointsAnimation extends Entity implements Animation {
 	}
 
 	private void resetGhostTimer() {
-		ghostTimer = app().clock.sec(1);
+		ghostTimer = sec(1);
 	}
 
 	private void resetEnergizerTimer() {
-		energizerTimer = app().clock.sec(0.5f);
+		energizerTimer = sec(0.5f);
 	}
 
 	@Override

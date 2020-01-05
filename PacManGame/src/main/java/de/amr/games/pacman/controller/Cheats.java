@@ -1,13 +1,13 @@
 package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.LOGGER;
+import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 
 import java.awt.event.KeyEvent;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
@@ -35,6 +35,7 @@ public class Cheats implements Lifecycle {
 
 	@Override
 	public void update() {
+		PacManAppSettings settings = (PacManAppSettings) app().settings();
 
 		/* ALT-"K": Kill all available ghosts */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_K)) {
@@ -69,10 +70,8 @@ public class Cheats implements Lifecycle {
 
 		/* ALT-"I": Makes Pac-Man immortable */
 		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_I)) {
-			PacManAppSettings settings = (PacManAppSettings) Application.app().settings;
 			settings.pacManImmortable = !settings.pacManImmortable;
 			LOGGER.info("Pac-Man immortable = " + settings.pacManImmortable);
 		}
-
 	}
 }

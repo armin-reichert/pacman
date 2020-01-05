@@ -23,7 +23,7 @@ public class MovingRandomlyTestApp extends PacManApp {
 	}
 
 	public MovingRandomlyTestApp() {
-		settings.title = "Moving Randomly";
+		settings().title = "Moving Randomly";
 	}
 
 	@Override

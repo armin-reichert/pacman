@@ -29,7 +29,7 @@ public class TakeShortestPathTestApp extends PacManApp {
 	}
 
 	public TakeShortestPathTestApp() {
-		settings.title = "Take Shortest Path";
+		settings().title = "Take Shortest Path";
 	}
 
 	@Override

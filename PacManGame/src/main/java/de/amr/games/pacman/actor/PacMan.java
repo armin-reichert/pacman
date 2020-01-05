@@ -218,7 +218,7 @@ public class PacMan extends AbstractMazeMover implements SteerableMazeMover, Act
 	@Override
 	public Tile tilesAhead(int numTiles) {
 		Tile tileAhead = maze().tileToDir(tile(), moveDir(), numTiles);
-		PacManAppSettings settings = (PacManAppSettings) app().settings;
+		PacManAppSettings settings = (PacManAppSettings) app().settings();
 		if (moveDir() == UP && settings.overflowBug) {
 			return maze().tileToDir(tileAhead, LEFT, numTiles);
 		}

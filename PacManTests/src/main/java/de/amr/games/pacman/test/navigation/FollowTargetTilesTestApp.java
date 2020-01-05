@@ -26,7 +26,7 @@ public class FollowTargetTilesTestApp extends PacManApp {
 	}
 
 	public FollowTargetTilesTestApp() {
-		settings.title = "Follow Target Tiles";
+		settings().title = "Follow Target Tiles";
 	}
 
 	@Override

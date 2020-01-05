@@ -25,7 +25,7 @@ public class ScatteringTestApp extends PacManApp {
 	}
 
 	public ScatteringTestApp() {
-		settings.title = "Scattering";
+		settings().title = "Scattering";
 	}
 
 	@Override

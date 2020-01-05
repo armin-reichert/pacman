@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
-import static de.amr.easy.game.Application.app;
+import static de.amr.games.pacman.model.Timing.sec;
 import static de.amr.graph.grid.impl.Grid4Topology.W;
 
 import java.awt.Color;
@@ -47,7 +47,7 @@ public class ChasePacManAnimation extends Entity implements Animation {
 	@Override
 	public void init() {
 		tf.setPosition(startPosition);
-		pillTimer = app().clock.sec(0.5f);
+		pillTimer = sec(0.5f);
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class ChasePacManAnimation extends Entity implements Animation {
 		}
 		if (pillTimer == 0) {
 			pill = !pill;
-			pillTimer = app().clock.sec(0.5f);
+			pillTimer = sec(0.5f);
 		}
 	}
 
@@ -87,7 +87,8 @@ public class ChasePacManAnimation extends Entity implements Animation {
 		g.setColor(Color.PINK);
 		if (pill) {
 			g.fillRect(6, 6, 2, 2);
-		} else {
+		}
+		else {
 			g.setFont(new Font("Arial", Font.BOLD, 8));
 			g.drawString("10", 0, 10);
 		}
