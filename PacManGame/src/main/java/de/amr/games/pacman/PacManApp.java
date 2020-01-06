@@ -6,7 +6,6 @@ import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
-import de.amr.games.pacman.theme.Themes;
 
 /**
  * The Pac-Man game application.
@@ -34,7 +33,7 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
-		Theme theme = Themes.createTheme(settings.theme);
+		Theme theme = Theme.createTheme(settings.theme);
 		GameController gameController = new GameController(theme);
 		setController(gameController);
 		setIcon(theme.spr_ghostFrightened().frame(0));
