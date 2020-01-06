@@ -280,7 +280,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							cast.pacMan.sprites.select("dying");
 							playSoundPacManDied();
 						}
-						else if (t == sec(7)) {
+						else if (t == sec(7) - 1) {
 							if (game.lives > 0) {
 								// initialize actors and view for continuing game
 								cast.actorsOnStage().forEach(Actor::init);
