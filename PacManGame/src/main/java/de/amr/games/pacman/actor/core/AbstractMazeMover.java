@@ -55,7 +55,6 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 		movement.setLogger(Game.FSM_LOGGER);
 	}
 
-	@Override
 	public void init() {
 		moveDir = wishDir = RIGHT;
 		targetTile = null;
@@ -64,7 +63,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	}
 
 	@Override
-	public void update() {
+	public void step() {
 		movement.update();
 	}
 
@@ -124,6 +123,12 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 		return enteredNewTile() && maze().isPortal(tile());
 	}
 
+	public void forceMove(Direction dir) {
+		wishDir = dir;
+		steering().force();
+		movement.update();
+	}
+
 	public void setTeleportingDuration(int ticks) {
 		teleportingTicks = ticks;
 	}
@@ -151,12 +156,6 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	@Override
 	public void setWishDir(Direction dir) {
 		wishDir = dir;
-	}
-
-	public void forceMove(Direction dir) {
-		wishDir = dir;
-		steering().force();
-		movement.update();
 	}
 
 	@Override

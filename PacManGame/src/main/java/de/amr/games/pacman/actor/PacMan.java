@@ -111,27 +111,26 @@ public class PacMan extends AbstractMazeMover implements SteerableMazeMover, Act
 					})
 
 					.onTick(() -> {
-						steering().steer();
 						if (digestionTicks > 0) {
 							--digestionTicks;
 							return;
 						}
 						if (kicking) {
-							if (state().getTicksConsumed() == state().getDuration() * 75 / 100) {
+							int t = state().getTicksConsumed();
+							if (t == state().getDuration() * 75 / 100) {
 								tired = true;
 							}
-							else if (state().getTicksRemaining() == 0) {
+							else if (t == state().getDuration()) {
 								cast.theme().snd_waza().stop();
-								// "disable timer"
 								state().setConstantTimer(State.ENDLESS);
 								kicking = tired = false;
 								publish(new PacManLostPowerEvent());
 								return;
 							}
 						}
-						moveOneStep();
+						step();
 						if (!isTeleporting()) {
-							checkTile().ifPresent(brain::publish);
+							findSomethingInteresting().ifPresent(brain::publish);
 						}
 					})
 
@@ -170,6 +169,14 @@ public class PacMan extends AbstractMazeMover implements SteerableMazeMover, Act
 	@Override
 	public void update() {
 		brain.update();
+	}
+
+	@Override
+	public void step() {
+		steering().steer();
+		super.step();
+		sprites.select("walking-" + moveDir());
+		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
 	}
 
 	@Override
@@ -232,13 +239,7 @@ public class PacMan extends AbstractMazeMover implements SteerableMazeMover, Act
 		return super.canMoveBetween(tile, neighbor);
 	}
 
-	private void moveOneStep() {
-		super.update(); // move or teleport
-		sprites.select("walking-" + moveDir());
-		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
-	}
-
-	private Optional<PacManGameEvent> checkTile() {
+	private Optional<PacManGameEvent> findSomethingInteresting() {
 		Tile tile = tile();
 		if (tile == maze().bonusTile) {
 			Optional<PacManGameEvent> activeBonusFound = cast.bonus().filter(bonus -> bonus.is(ACTIVE))

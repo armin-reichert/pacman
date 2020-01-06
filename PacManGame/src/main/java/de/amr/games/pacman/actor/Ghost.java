@@ -90,33 +90,33 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 						sprites.select("color-" + moveDir());
 						sprites.forEach(Sprite::resetAnimation);
 					})
-					.onTick(() -> moveAndShowAs("color-" + moveDir()))
+					.onTick(() -> step("color-" + moveDir()))
 					
 				.state(LEAVING_HOUSE)
 					.onEntry(() -> steering().init())
-					.onTick(() -> moveAndShowAs("color-" + moveDir()))
+					.onTick(() -> step("color-" + moveDir()))
 				
 				.state(ENTERING_HOUSE)
 					.onEntry(() -> steering().init())
-					.onTick(() -> moveAndShowAs("eyes-" + moveDir()))
+					.onTick(() -> step("eyes-" + moveDir()))
 				
 				.state(SCATTERING)
 					.onTick(() -> {
-						moveAndShowAs("color-" + moveDir());
+						step("color-" + moveDir());
 						checkPacManCollision();
 					})
 			
 				.state(CHASING)
 					.onEntry(() -> turnChasingGhostSoundOn())
 					.onTick(() -> {
-						moveAndShowAs("color-" + moveDir());
+						step("color-" + moveDir());
 						checkPacManCollision();
 					})
 					.onExit(() -> turnChasingGhostSoundOff())
 				
 				.state(FRIGHTENED)
 					.onTick(() -> {
-						moveAndShowAs(cast.pacMan.isTired() ? "flashing" : "frightened");
+						step(cast.pacMan.isTired() ? "flashing" : "frightened");
 						checkPacManCollision();
 					})
 				
@@ -130,7 +130,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 					})
 					.onTick(() -> {
 						if (state().isTerminated()) { // "dead"
-							moveAndShowAs("eyes-" + moveDir());
+							step("eyes-" + moveDir());
 						}
 					})
 					.onExit(() -> {
@@ -233,6 +233,23 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	}
 
 	@Override
+	public void step() {
+		if (prevSteering != steering()) {
+			steering().init();
+			steering().force();
+			LOGGER.info(String.format("%s: steering changed, was: %s now: %s", this, name(prevSteering), name(steering())));
+		}
+		steering().steer();
+		super.step();
+		prevSteering = steering();
+	}
+
+	private void step(String spriteKey) {
+		step();
+		sprites.select(spriteKey);
+	}
+
+	@Override
 	public void draw(Graphics2D g) {
 		if (visible()) {
 			sprites.current().ifPresent(sprite -> {
@@ -294,18 +311,6 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 
 	private String name(Steering steering) {
 		return steering != null ? steering.getClass().getSimpleName() : "none";
-	}
-
-	private void moveAndShowAs(String spriteKey) {
-		if (prevSteering != steering()) {
-			steering().init();
-			steering().force();
-			LOGGER.info(String.format("%s: steering changed, was: %s now: %s", this, name(prevSteering), name(steering())));
-		}
-		steering().steer();
-		super.update(); // move or teleport
-		prevSteering = steering();
-		sprites.select(spriteKey);
 	}
 
 	private void checkPacManCollision() {

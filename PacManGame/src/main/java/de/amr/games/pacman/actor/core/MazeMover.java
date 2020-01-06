@@ -16,6 +16,11 @@ public interface MazeMover extends MazeResident {
 	}
 
 	/**
+	 * Moves one step ans executes the afterStep code.
+	 */
+	void step();
+
+	/**
 	 * Returns the current steering of this actor.
 	 */
 	Steering steering();
