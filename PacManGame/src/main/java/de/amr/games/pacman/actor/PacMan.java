@@ -1,6 +1,6 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.easy.game.Application.app;
+import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.actor.BonusState.ACTIVE;
 import static de.amr.games.pacman.actor.PacManState.ALIVE;
 import static de.amr.games.pacman.actor.PacManState.DEAD;
@@ -131,7 +131,7 @@ public class PacMan extends AbstractMazeMover implements SteerableMazeMover, Act
 						}
 						moveOneStep();
 						if (!isTeleporting()) {
-							inspect(tile()).ifPresent(brain::publish);
+							checkTile().ifPresent(brain::publish);
 						}
 					})
 
@@ -202,24 +202,23 @@ public class PacMan extends AbstractMazeMover implements SteerableMazeMover, Act
 		case DEAD:
 			return 0;
 		default:
-			throw new IllegalStateException();
+			throw new IllegalStateException("Illegal Pac-Man state: " + getState());
 		}
 	}
 
 	/**
-	 * NOTE: If the application property <code>overflowBug</code> is
-	 * <code>true</code>, this method simulates the bug in the original Arcade game
-	 * which occurs if Pac-Man points upwards. In that case the same number of tiles
-	 * to the left is added.
+	 * NOTE: If the application property {@link PacManAppSettings#overflowBug} is
+	 * <code>true</code>, this method simulates the bug from the original Arcade
+	 * game where, if Pac-Man points upwards, the position ahead of Pac-Man is
+	 * wrongly calculated by adding the same number of tiles to the left.
 	 * 
 	 * @param numTiles number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of the actor
-	 *         towards his current move direction.
+	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards
+	 *         his current move direction.
 	 */
 	@Override
 	public Tile tilesAhead(int numTiles) {
 		Tile tileAhead = maze().tileToDir(tile(), moveDir(), numTiles);
-		PacManAppSettings settings = (PacManAppSettings) app().settings();
 		if (moveDir() == UP && settings.overflowBug) {
 			return maze().tileToDir(tileAhead, LEFT, numTiles);
 		}
@@ -240,7 +239,8 @@ public class PacMan extends AbstractMazeMover implements SteerableMazeMover, Act
 		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
 	}
 
-	private Optional<PacManGameEvent> inspect(Tile tile) {
+	private Optional<PacManGameEvent> checkTile() {
+		Tile tile = tile();
 		if (tile == maze().bonusTile) {
 			Optional<PacManGameEvent> activeBonusFound = cast.bonus().filter(bonus -> bonus.is(ACTIVE))
 					.map(bonus -> new BonusFoundEvent(bonus.symbol(), bonus.value()));
