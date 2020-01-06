@@ -40,19 +40,19 @@ public interface MazeMover extends MazeResident {
 	void setMoveDir(Direction dir);
 
 	/**
-	 * @return next (=intended) move direction
+	 * @return intended move direction
 	 */
 	Direction wishDir();
 
 	/**
-	 * Sets the next/intended move direction.
+	 * Sets the intended move direction.
 	 * 
 	 * @param dir intended direction
 	 */
 	void setWishDir(Direction dir);
 
 	/**
-	 * @return if a new tile has been entered
+	 * @return if a new tile has been entered at the last step
 	 */
 	boolean enteredNewTile();
 

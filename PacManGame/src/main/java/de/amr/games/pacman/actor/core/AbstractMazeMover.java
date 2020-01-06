@@ -176,8 +176,8 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 
 	@Override
 	public boolean canCrossBorderTo(Direction dir) {
-		Tile currentTile = tile();
-		return canMoveBetween(currentTile, maze().tileToDir(currentTile, dir));
+		Tile currentTile = tile(), neighbor = maze().tileToDir(currentTile, dir);
+		return canMoveBetween(currentTile, neighbor);
 	}
 
 	@Override
