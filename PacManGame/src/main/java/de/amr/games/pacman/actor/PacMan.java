@@ -216,7 +216,6 @@ public class PacMan extends AbstractMazeMover implements SteerableMazeMover, Act
 	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards
 	 *         his current move direction.
 	 */
-	@Override
 	public Tile tilesAhead(int numTiles) {
 		Tile tileAhead = maze().tileToDir(tile(), moveDir(), numTiles);
 		if (moveDir() == UP && settings.overflowBug) {

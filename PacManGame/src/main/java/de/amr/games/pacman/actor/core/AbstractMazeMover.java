@@ -192,14 +192,6 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	}
 
 	@Override
-	public Tile tilesAhead(int numTiles) {
-		if (numTiles < 0) {
-			throw new IllegalArgumentException("Number of tiles must be positive but is " + numTiles);
-		}
-		return maze().tileToDir(tile(), moveDir, numTiles);
-	}
-
-	@Override
 	public void placeAt(Tile tile, byte xOffset, byte yOffset) {
 		super.placeAt(tile, xOffset, yOffset);
 		enteredNewTile = !tile.equals(tile());
