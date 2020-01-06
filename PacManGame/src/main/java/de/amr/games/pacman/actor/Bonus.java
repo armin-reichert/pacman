@@ -19,9 +19,9 @@ import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Bonus symbol (fruit or other symbol) that appears at the maze bonus position for around 9
- * seconds. When consumed, the bonus is displayed for 3 seconds as a number representing its value
- * and then disappears.
+ * Bonus symbol (fruit or other symbol) that appears at the maze bonus position
+ * for around 9 seconds. When consumed, the bonus is displayed for 3 seconds as
+ * a number representing its value and then disappears.
  * 
  * @author Armin Reichert
  */
@@ -39,7 +39,7 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 		placeHalfRightOf(maze().bonusTile);
 		symbol = game().level().bonusSymbol;
 		value = game().level().bonusValue;
-		brain = buildBrain();
+		brain = new FsmComponent<>(buildFsm());
 		brain.fsm().setLogger(Game.FSM_LOGGER);
 		sprites.set("symbol", cast.theme().spr_bonusSymbol(symbol));
 		sprites.set("value", cast.theme().spr_number(value));

@@ -58,7 +58,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		this.cast = cast;
 		this.seat = seat;
 		this.eyes = eyes;
-		brain = buildBrain();
+		brain = new FsmComponent<>(buildFsm());
 		brain.fsm().setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		brain.fsm().setLogger(Game.FSM_LOGGER);
 	}
