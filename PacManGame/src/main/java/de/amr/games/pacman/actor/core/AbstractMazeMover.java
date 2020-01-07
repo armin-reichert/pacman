@@ -50,8 +50,9 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	private boolean enteredNewTile;
 	private int teleportingTicks;
 
-	public AbstractMazeMover(String name) {
-		super(name);
+	public abstract String name();
+
+	public AbstractMazeMover() {
 		movement.setLogger(Game.FSM_LOGGER);
 	}
 

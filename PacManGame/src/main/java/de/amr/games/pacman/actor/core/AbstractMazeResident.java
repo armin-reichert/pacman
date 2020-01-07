@@ -12,17 +12,9 @@ import de.amr.games.pacman.model.Tile;
  */
 public abstract class AbstractMazeResident extends Entity implements MazeResident {
 
-	private final String name;
-
-	public AbstractMazeResident(String name) {
-		this.name = name;
+	public AbstractMazeResident() {
 		tf.setWidth(Tile.SIZE);
 		tf.setHeight(Tile.SIZE);
-	}
-
-	@Override
-	public String name() {
-		return name;
 	}
 
 	@Override

@@ -45,6 +45,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 
 	public final SpriteMap sprites = new SpriteMap();
 
+	private final String name;
 	private final Direction eyes;
 	private final Cast cast;
 	private final int seat;
@@ -55,7 +56,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	private Steering prevSteering;
 
 	public Ghost(Cast cast, String name, int seat, Direction eyes) {
-		super(name);
+		this.name = name;
 		this.cast = cast;
 		this.seat = seat;
 		this.eyes = eyes;
@@ -65,8 +66,13 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	}
 
 	@Override
+	public String name() {
+		return name;
+	}
+
+	@Override
 	public String toString() {
-		return String.format("(%s, col:%d, row:%d, %s)", name(), tile().col, tile().row, getState());
+		return String.format("(%s, col:%d, row:%d, %s)", name, tile().col, tile().row, getState());
 	}
 
 	@Override
@@ -75,7 +81,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		/*@formatter:off*/
 		beginStateMachine(GhostState.class, PacManGameEvent.class)
 			 
-			.description(String.format("[%s]", name()))
+			.description(String.format("[%s]", name))
 			.initialState(LOCKED)
 		
 			.states()
@@ -311,7 +317,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		case DEAD:
 			return 2 * speed(game().level().ghostSpeed);
 		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name()));
+			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name));
 		}
 	}
 

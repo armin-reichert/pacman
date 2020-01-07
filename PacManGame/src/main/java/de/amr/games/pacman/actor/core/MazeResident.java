@@ -12,11 +12,6 @@ import de.amr.games.pacman.model.Tile;
 public interface MazeResident extends View {
 
 	/**
-	 * @return descriptive name
-	 */
-	String name();
-
-	/**
 	 * @return my maze
 	 */
 	Maze maze();

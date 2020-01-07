@@ -54,13 +54,17 @@ public class PacMan extends AbstractMazeMover implements SteerableMazeMover, Act
 	private int digestionTicks;
 
 	public PacMan(Cast cast) {
-		super("Pac-Man");
 		this.cast = cast;
 		brain = new FsmComponent<>(buildFsm());
 		brain.fsm().setLogger(Game.FSM_LOGGER);
 		brain.fsm().setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
 		brain.fsm().doNotLogEventProcessingIf(PacManGameEvent::isTrivial);
 		brain.doNotLogEventPublishingIf(PacManGameEvent::isTrivial);
+	}
+
+	@Override
+	public String name() {
+		return "Pac-Man";
 	}
 
 	@Override
@@ -92,7 +96,7 @@ public class PacMan extends AbstractMazeMover implements SteerableMazeMover, Act
 		/*@formatter:off*/
 		beginStateMachine(PacManState.class, PacManGameEvent.class)
 
-			.description(String.format("[%s]", name()))
+			.description("[Pac-Man]")
 			.initialState(SLEEPING)
 
 			.states()

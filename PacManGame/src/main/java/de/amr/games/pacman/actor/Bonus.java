@@ -35,7 +35,6 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 	private final int value;
 
 	public Bonus(Cast cast) {
-		super("Bonus");
 		this.cast = cast;
 		placeHalfRightOf(maze().bonusTile);
 		symbol = game().level().bonusSymbol;
@@ -58,7 +57,7 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 	public Cast cast() {
 		return cast;
 	}
-	
+
 	@Override
 	public Maze maze() {
 		return cast.maze();
@@ -74,7 +73,7 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 		return StateMachine.
 		/*@formatter:off*/
 		beginStateMachine(BonusState.class, PacManGameEvent.class)
-			.description(String.format("[%s]", name()))
+			.description("[Bonus]")
 			.initialState(ACTIVE)
 			.states()
 				.state(ACTIVE)
