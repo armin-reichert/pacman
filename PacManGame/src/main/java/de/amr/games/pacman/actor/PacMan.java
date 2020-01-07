@@ -31,6 +31,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.core.State;
@@ -65,6 +66,11 @@ public class PacMan extends AbstractMazeMover implements SteerableMazeMover, Act
 	@Override
 	public Cast cast() {
 		return cast;
+	}
+
+	@Override
+	public Maze maze() {
+		return cast.maze();
 	}
 
 	public boolean isKicking() {

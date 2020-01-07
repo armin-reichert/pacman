@@ -30,6 +30,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.core.StateMachine;
@@ -202,6 +203,11 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	@Override
 	public Cast cast() {
 		return cast;
+	}
+
+	@Override
+	public Maze maze() {
+		return cast.maze();
 	}
 
 	public int seat() {

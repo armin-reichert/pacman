@@ -14,6 +14,7 @@ import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Symbol;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.core.StateMachine;
@@ -56,6 +57,11 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 	@Override
 	public Cast cast() {
 		return cast;
+	}
+	
+	@Override
+	public Maze maze() {
+		return cast.maze();
 	}
 
 	@Override

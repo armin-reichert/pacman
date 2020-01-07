@@ -178,11 +178,6 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 	}
 
 	@Override
-	public String name() {
-		return name;
-	}
-
-	@Override
 	public void init() {
 		createUIComponents();
 		fsmComponent().init();
