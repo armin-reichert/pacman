@@ -140,7 +140,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 								return;
 							}
 						}
-						step();
+						moveOneStep();
 						if (!isTeleporting()) {
 							findSomethingInteresting().ifPresent(brain::publish);
 						}
@@ -184,9 +184,9 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	}
 
 	@Override
-	public void step() {
+	public void moveOneStep() {
 		steering().steer();
-		super.step();
+		super.moveOneStep();
 		sprites.select("walking-" + moveDir());
 		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
 	}

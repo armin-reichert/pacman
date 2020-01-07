@@ -92,7 +92,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 					.onEntry(() -> {
 						visible = true;
 						nextState = getState();
-						placeHalfRightOf(myHomeTile());
+						placeHalfRightOf(maze().ghostHouseSeats[seat]);
 						enteredNewTile();
 						setMoveDir(eyes);
 						setWishDir(eyes);
@@ -204,10 +204,6 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		/*@formatter:on*/
 	}
 
-	private Tile myHomeTile() {
-		return maze().ghostHouseSeats[seat];
-	}
-
 	@Override
 	public Cast cast() {
 		return cast;
@@ -227,7 +223,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		return brain;
 	}
 
-	public void setNextState(GhostState nextState) {
+	public void continueInState(GhostState nextState) {
 		this.nextState = nextState;
 	}
 
@@ -247,23 +243,6 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	}
 
 	@Override
-	public void step() {
-		if (prevSteering != steering()) {
-			steering().init();
-			steering().force();
-			LOGGER.info(String.format("%s: steering changed, was: %s now: %s", this, name(prevSteering), name(steering())));
-		}
-		steering().steer();
-		super.step();
-		prevSteering = steering();
-	}
-
-	private void step(String spriteKey) {
-		step();
-		sprites.select(spriteKey);
-	}
-
-	@Override
 	public void draw(Graphics2D g) {
 		if (visible()) {
 			sprites.current().ifPresent(sprite -> {
@@ -274,17 +253,34 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		}
 	}
 
+	@Override
+	public void moveOneStep() {
+		if (prevSteering != steering()) {
+			steering().init();
+			steering().force();
+			LOGGER.info(String.format("%s: steering changed, was: %s now: %s", this, name(prevSteering), name(steering())));
+		}
+		steering().steer();
+		super.moveOneStep();
+		prevSteering = steering();
+	}
+
+	private void step(String spriteKey) {
+		moveOneStep();
+		sprites.select(spriteKey);
+	}
+
 	public void during(GhostState state, Steering steering) {
 		steerings.put(state, steering);
 	}
 
-	@Override
-	public Steering steering() {
-		return steeringForState(getState());
+	public Steering steering(GhostState state) {
+		return steerings.getOrDefault(state, defaultSteering);
 	}
 
-	public Steering steeringForState(GhostState state) {
-		return steerings.getOrDefault(state, defaultSteering);
+	@Override
+	public Steering steering() {
+		return steering(getState());
 	}
 
 	@Override

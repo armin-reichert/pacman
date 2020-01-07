@@ -27,21 +27,9 @@ public interface MazeMover {
 	Tile tile();
 
 	/**
-	 * Moves one step ans executes the afterStep code.
-	 */
-	void step();
-
-	/**
 	 * Returns the current steering of this actor.
 	 */
 	Steering steering();
-
-	/**
-	 * @return the maximum possible speed (in pixels/tick) for the next step. The
-	 *         actual speed can be lower to avoid crossing borders into inaccessible
-	 *         tiles.
-	 */
-	float maxSpeed();
 
 	/**
 	 * @return current move direction

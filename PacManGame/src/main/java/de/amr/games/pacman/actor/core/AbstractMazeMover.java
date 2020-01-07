@@ -51,6 +51,11 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	private boolean enteredNewTile;
 	private int teleportingTicks;
 
+	/**
+	 * @return maximum distance (in pixels) this entity can move in the next step
+	 */
+	protected abstract float maxSpeed();
+
 	public abstract String name();
 
 	public AbstractMazeMover() {
@@ -64,8 +69,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 		movement.init();
 	}
 
-	@Override
-	public void step() {
+	protected void moveOneStep() {
 		movement.update();
 	}
 
