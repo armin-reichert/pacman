@@ -32,7 +32,7 @@ public abstract class AbstractMazeResident extends Entity {
 	 * @param xOffset pixel offset in x-direction
 	 * @param yOffset pixel offset in y-direction
 	 */
-	public void placeAt(Tile tile, byte xOffset, byte yOffset) {
+	public void placeAt(Tile tile, float xOffset, float yOffset) {
 		tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
 	}
 
@@ -42,7 +42,7 @@ public abstract class AbstractMazeResident extends Entity {
 	 * @param tile the tile where this maze mover is placed
 	 */
 	public void placeAt(Tile tile) {
-		placeAt(tile, (byte) 0, (byte) 0);
+		placeAt(tile, 0, 0);
 	}
 
 	/**
@@ -51,6 +51,6 @@ public abstract class AbstractMazeResident extends Entity {
 	 * @param tile the tile where this maze mover is placed
 	 */
 	public void placeHalfRightOf(Tile tile) {
-		placeAt(tile, (byte) (Tile.SIZE / 2), (byte) 0);
+		placeAt(tile, Tile.SIZE / 2, 0);
 	}
 }

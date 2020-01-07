@@ -193,7 +193,7 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	}
 
 	@Override
-	public void placeAt(Tile tile, byte xOffset, byte yOffset) {
+	public void placeAt(Tile tile, float xOffset, float yOffset) {
 		super.placeAt(tile, xOffset, yOffset);
 		enteredNewTile = !tile.equals(tile());
 	}
