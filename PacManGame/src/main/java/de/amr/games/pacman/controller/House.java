@@ -115,6 +115,11 @@ public class House implements Lifecycle {
 			return true;
 		}
 		int pacManStarvingTimeLimit = game().level().number < 5 ? sec(4) : sec(3);
+		if (game().pacManStarvingTicks > pacManStarvingTimeLimit) {
+			logger.info(() -> String.format("%s can leave house: Pac-Man's starving time limit (%d ticks) reached",
+					ghost.name(), pacManStarvingTimeLimit));
+			return true;
+		}
 		if (globalDotCounterEnabled) {
 			int globalDotLimit = globalDotLimit(ghost);
 			if (globalDotCounter >= globalDotLimit) {
@@ -133,11 +138,6 @@ public class House implements Lifecycle {
 		if (ghostDotCountersBySeat[ghost.seat()] >= ghostDotLimit) {
 			logger
 					.info(() -> String.format("%s can leave house: ghost's dot limit (%d) reached", ghost.name(), ghostDotLimit));
-			return true;
-		}
-		if (game().pacManStarvingTicks > pacManStarvingTimeLimit) {
-			logger.info(() -> String.format("%s can leave house: Pac-Man's starving time limit (%d ticks) reached",
-					ghost.name(), pacManStarvingTimeLimit));
 			return true;
 		}
 		return false;
