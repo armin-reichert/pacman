@@ -2,7 +2,6 @@ package de.amr.games.pacman.actor.steering.ghost;
 
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.core.MazeMover;
-import de.amr.games.pacman.actor.steering.common.SteerableMazeMover;
 import de.amr.games.pacman.actor.steering.core.Steering;
 
 /**
@@ -10,7 +9,7 @@ import de.amr.games.pacman.actor.steering.core.Steering;
  * 
  * @author Armin Reichert
  */
-public interface SteerableGhost extends SteerableMazeMover {
+public interface SteerableGhost {
 
 	default Ghost thisGhost() {
 		return (Ghost) this;
