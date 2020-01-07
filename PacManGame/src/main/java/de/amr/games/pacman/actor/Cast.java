@@ -182,6 +182,7 @@ public class Cast {
 
 	public void addBonus() {
 		bonus = new Bonus(this);
+		bonus.placeHalfRightOf(maze().bonusTile);
 		bonus.init();
 	}
 

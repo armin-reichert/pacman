@@ -36,7 +36,6 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 
 	public Bonus(Cast cast) {
 		this.cast = cast;
-		placeHalfRightOf(maze().bonusTile);
 		symbol = cast.game().level().bonusSymbol;
 		value = cast.game().level().bonusValue;
 		brain = new FsmComponent<>(buildFsm());
