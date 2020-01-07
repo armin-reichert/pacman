@@ -8,7 +8,7 @@ import de.amr.games.pacman.actor.steering.core.Steering;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Interface with steerings that can be used by any maze mover.
+ * Maze mover with different steerings.
  * 
  * @author Armin Reichert
  */

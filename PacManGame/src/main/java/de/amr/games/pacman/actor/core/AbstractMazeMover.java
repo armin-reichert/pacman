@@ -7,6 +7,7 @@ import static de.amr.games.pacman.model.Direction.RIGHT;
 import java.util.Objects;
 
 import de.amr.easy.game.math.Vector2f;
+import de.amr.games.pacman.actor.steering.common.SteerableMazeMover;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
@@ -17,7 +18,7 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public abstract class AbstractMazeMover extends AbstractMazeResident implements MazeMover {
+public abstract class AbstractMazeMover extends AbstractMazeResident implements SteerableMazeMover {
 
 	private final StateMachine<MoveState, Void> movement = new StateMachine<MoveState, Void>(MoveState.class) {
 

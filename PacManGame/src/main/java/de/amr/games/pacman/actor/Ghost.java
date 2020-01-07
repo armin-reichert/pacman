@@ -44,7 +44,6 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<GhostState> {
 
 	public final SpriteMap sprites = new SpriteMap();
-
 	private final String name;
 	private final Direction eyes;
 	private final Cast cast;
@@ -65,6 +64,10 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		brain.fsm().setLogger(Game.FSM_LOGGER);
 	}
 
+	private Game game() {
+		return cast.game();
+	}
+
 	@Override
 	public String name() {
 		return name;
@@ -75,7 +78,6 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		return String.format("(%s, col:%d, row:%d, %s)", name, tile().col, tile().row, getState());
 	}
 
-	@Override
 	public StateMachine<GhostState, PacManGameEvent> buildFsm() {
 		return StateMachine.
 		/*@formatter:off*/

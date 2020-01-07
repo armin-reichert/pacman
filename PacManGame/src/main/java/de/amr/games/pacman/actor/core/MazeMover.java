@@ -2,6 +2,7 @@ package de.amr.games.pacman.actor.core;
 
 import de.amr.games.pacman.actor.steering.core.Steering;
 import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -9,11 +10,21 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public interface MazeMover extends MazeResident {
+public interface MazeMover {
 
 	enum MoveState {
 		MOVING, TELEPORTING;
 	}
+
+	/**
+	 * @return the maze where this entity is moving
+	 */
+	Maze maze();
+
+	/**
+	 * @return tile where this entity is located
+	 */
+	Tile tile();
 
 	/**
 	 * Moves one step ans executes the afterStep code.

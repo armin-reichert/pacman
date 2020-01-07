@@ -37,8 +37,8 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 	public Bonus(Cast cast) {
 		this.cast = cast;
 		placeHalfRightOf(maze().bonusTile);
-		symbol = game().level().bonusSymbol;
-		value = game().level().bonusValue;
+		symbol = cast.game().level().bonusSymbol;
+		value = cast.game().level().bonusValue;
 		brain = new FsmComponent<>(buildFsm());
 		brain.fsm().setLogger(Game.FSM_LOGGER);
 		sprites.set("symbol", cast.theme().spr_bonusSymbol(symbol));
@@ -68,7 +68,6 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 		return brain;
 	}
 
-	@Override
 	public StateMachine<BonusState, PacManGameEvent> buildFsm() {
 		return StateMachine.
 		/*@formatter:off*/
