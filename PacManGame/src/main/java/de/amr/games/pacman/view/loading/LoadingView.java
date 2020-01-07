@@ -42,6 +42,15 @@ public class LoadingView implements GameView {
 	}
 
 	@Override
+	public boolean visible() {
+		return true;
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+	}
+
+	@Override
 	public Theme theme() {
 		return theme;
 	}

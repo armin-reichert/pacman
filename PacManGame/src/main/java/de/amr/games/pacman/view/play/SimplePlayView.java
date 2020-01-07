@@ -48,6 +48,16 @@ public class SimplePlayView implements GameView {
 		messageText = null;
 		messageColor = Color.YELLOW;
 	}
+	
+	@Override
+	public boolean visible() {
+		return true;
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+	}
+
 
 	@Override
 	public void onThemeChanged(Theme theme) {

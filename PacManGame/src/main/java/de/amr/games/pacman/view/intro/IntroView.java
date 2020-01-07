@@ -52,6 +52,15 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 		fsm = buildFsmComponent();
 	}
 
+	@Override
+	public boolean visible() {
+		return true;
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+	}
+
 	private void createUIComponents() {
 		pacManLogo = new ImageWidget(theme.img_logo());
 		pacManLogo.tf.centerX(width());
@@ -109,7 +118,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 						pacManLogo.tf.setY(height());
 						pacManLogo.tf.setVelocityY(-2f);
 						pacManLogo.setCompletion(() -> pacManLogo.tf.getY() <= 20);
-						pacManLogo.show(); 
+						pacManLogo.setVisible(true); 
 						pacManLogo.start(); 
 					})
 					.onTick(() -> {
@@ -141,15 +150,15 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 						ghostPointsAnimation.tf.setY(200);
 						ghostPointsAnimation.tf.centerX(width());
 						ghostPointsAnimation.start();
-						gitHubLink.show();
+						gitHubLink.setVisible(true);
 					})
 					.onTick(() -> {
 						ghostPointsAnimation.update();
 					})
 					.onExit(() -> {
 						ghostPointsAnimation.stop();
-						ghostPointsAnimation.hide();
-						gitHubLink.hide();
+						ghostPointsAnimation.setVisible(false);
+						gitHubLink.setVisible(false);
 					})
 					
 				.state(READY_TO_PLAY)

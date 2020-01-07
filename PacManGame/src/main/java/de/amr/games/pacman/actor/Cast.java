@@ -167,12 +167,12 @@ public class Cast {
 
 	public void setActorOnStage(Actor<?> actor) {
 		actor.init();
-		actor.show();
+		actor.setVisible(true);
 		actorsOnStage.add(actor);
 	}
 
 	public void setActorOffStage(Actor<?> actor) {
-		actor.hide();
+		actor.setVisible(false);
 		actorsOnStage.remove(actor);
 	}
 

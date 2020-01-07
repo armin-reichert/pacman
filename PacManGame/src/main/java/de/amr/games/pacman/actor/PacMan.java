@@ -114,7 +114,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 						setWishDir(RIGHT);
 						sprites.forEach(Sprite::resetAnimation);
 						sprites.select("full");
-						show();
+						setVisible(true);
 					})
 
 				.state(ALIVE)

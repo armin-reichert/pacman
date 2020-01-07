@@ -6,8 +6,8 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.statemachine.client.FsmContainer;
 
 /**
- * An actor (ghost, Pac-Man, bonus) is an entity controlled by a contained
- * finite-state machine.
+ * An actor (ghost, Pac-Man, bonus) is a visible entity controlled by a
+ * contained finite-state machine.
  * 
  * @author Armin Reichert
  *

@@ -228,7 +228,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onTick(() -> {
 						int t = state().getTicksConsumed();
 						if (t == sec(2)) {
-							cast.ghostsOnStage().forEach(Ghost::hide);
+							cast.ghostsOnStage().forEach(ghost -> ghost.setVisible(false));
 							if (game.level().mazeNumFlashes > 0) {
 								playView.startMazeFlashing();
 							}
@@ -248,7 +248,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(GHOST_DYING)
 					.timeoutAfter(sec(1))
 					.onEntry(() -> {
-						cast.pacMan.hide();
+						cast.pacMan.setVisible(false);
 					})
 					.onTick(() -> {
 						cast.bonus().ifPresent(Bonus::update);
@@ -257,7 +257,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							.forEach(Ghost::update);
 					})
 					.onExit(() -> {
-						cast.pacMan.show();
+						cast.pacMan.setVisible(true);
 					})
 				
 				.state(PACMAN_DYING)
@@ -273,7 +273,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							cast.pacMan.sprites.current().get().enableAnimation(false);
 							cast.pacMan.sprites.select("full");
 							cast.removeBonus();
-							cast.ghostsOnStage().forEach(Ghost::hide);
+							cast.ghostsOnStage().forEach(ghost -> ghost.setVisible(false));
 						}
 						else if (t == sec(3)) {
 							// start the "dying" animation
@@ -297,7 +297,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(GAME_OVER)
 					.onEntry(() -> {
 						game.saveHiscore();
-						cast.ghostsOnStage().forEach(Ghost::show);
+						cast.ghostsOnStage().forEach(ghost -> ghost.setVisible(true));
 						playView.disableAnimations();
 						playView.messageColor(Color.RED);
 						playView.message("Game   Over!");
@@ -387,7 +387,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onEntry() {
-			cast.ghostsOnStage().forEach(Ghost::show);
+			cast.ghostsOnStage().forEach(ghost -> ghost.setVisible(true));
 			cast.pacMan.setState(PacManState.ALIVE);
 			playView.init();
 			playView.enableAnimations();
