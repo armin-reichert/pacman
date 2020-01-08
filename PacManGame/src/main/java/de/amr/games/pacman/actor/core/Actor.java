@@ -4,7 +4,7 @@ import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.theme.Theme;
-import de.amr.statemachine.client.FsmContainer;
+import de.amr.statemachine.api.FsmContainer;
 
 /**
  * An actor (ghost, Pac-Man, bonus) is a visible entity controlled by a

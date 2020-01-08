@@ -37,7 +37,7 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.Theme;
-import de.amr.statemachine.client.FsmComponent;
+import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
@@ -53,7 +53,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	private final int seat;
 	private final Direction eyes;
 	private final SpriteMap sprites = new SpriteMap();
-	private final FsmComponent<GhostState, PacManGameEvent> brain;
+	private final Fsm<GhostState, PacManGameEvent> brain;
 	private final Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
 	private final Steering defaultSteering = isHeadingFor(this::targetTile);
 	private GhostState nextState;
@@ -64,9 +64,14 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		this.name = name;
 		this.seat = seat;
 		this.eyes = eyes;
-		brain = new FsmComponent<>(buildFsm());
-		brain.fsm().setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		brain.fsm().setLogger(Game.FSM_LOGGER);
+		brain = buildFsm();
+		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
+		brain.setLogger(Game.FSM_LOGGER);
+	}
+
+	@Override
+	public Fsm<GhostState, PacManGameEvent> fsm() {
+		return brain;
 	}
 
 	@Override
@@ -226,11 +231,6 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 
 	public int seat() {
 		return seat;
-	}
-
-	@Override
-	public FsmComponent<GhostState, PacManGameEvent> fsmComponent() {
-		return brain;
 	}
 
 	public void continueInState(GhostState nextState) {

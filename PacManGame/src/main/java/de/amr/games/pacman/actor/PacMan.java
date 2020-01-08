@@ -36,7 +36,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
-import de.amr.statemachine.client.FsmComponent;
+import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -50,7 +50,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 
 	public final SpriteMap sprites = new SpriteMap();
 	private final Cast cast;
-	private final FsmComponent<PacManState, PacManGameEvent> brain;
+	private final Fsm<PacManState, PacManGameEvent> brain;
 	private Steering steering;
 	private boolean kicking;
 	private boolean tired;
@@ -58,11 +58,16 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 
 	public PacMan(Cast cast) {
 		this.cast = cast;
-		brain = new FsmComponent<>(buildFsm());
-		brain.fsm().setLogger(Game.FSM_LOGGER);
-		brain.fsm().setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
-		brain.fsm().doNotLogEventProcessingIf(PacManGameEvent::isTrivial);
+		brain = buildFsm();
+		brain.setLogger(Game.FSM_LOGGER);
+		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
+		brain.doNotLogEventProcessingIf(PacManGameEvent::isTrivial);
 		brain.doNotLogEventPublishingIf(PacManGameEvent::isTrivial);
+	}
+
+	@Override
+	public Fsm<PacManState, PacManGameEvent> fsm() {
+		return brain;
 	}
 
 	public void dress() {
@@ -101,11 +106,6 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 
 	public boolean isTired() {
 		return tired;
-	}
-
-	@Override
-	public FsmComponent<PacManState, PacManGameEvent> fsmComponent() {
-		return brain;
 	}
 
 	public StateMachine<PacManState, PacManGameEvent> buildFsm() {

@@ -19,7 +19,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Symbol;
 import de.amr.games.pacman.theme.Theme;
-import de.amr.statemachine.client.FsmComponent;
+import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -33,7 +33,7 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 
 	private final SpriteMap sprites = new SpriteMap();
 	private final Cast cast;
-	private final FsmComponent<BonusState, PacManGameEvent> brain;
+	private final Fsm<BonusState, PacManGameEvent> brain;
 	private final Symbol symbol;
 	private final int value;
 
@@ -41,8 +41,8 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 		this.cast = cast;
 		symbol = cast.game().level().bonusSymbol;
 		value = cast.game().level().bonusValue;
-		brain = new FsmComponent<>(buildFsm());
-		brain.fsm().setLogger(Game.FSM_LOGGER);
+		brain = buildFsm();
+		brain.setLogger(Game.FSM_LOGGER);
 		dress();
 	}
 
@@ -75,7 +75,7 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 	}
 
 	@Override
-	public FsmComponent<BonusState, PacManGameEvent> fsmComponent() {
+	public Fsm<BonusState, PacManGameEvent> fsm() {
 		return brain;
 	}
 

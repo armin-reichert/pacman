@@ -21,8 +21,8 @@ import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.core.GameView;
 import de.amr.games.pacman.view.core.Pen;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
-import de.amr.statemachine.client.FsmComponent;
-import de.amr.statemachine.client.FsmContainer;
+import de.amr.statemachine.api.Fsm;
+import de.amr.statemachine.api.FsmContainer;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -38,7 +38,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 
 	private final String name;
 	private final Theme theme;
-	private final FsmComponent<IntroState, Void> fsm;
+	private final Fsm<IntroState, Void> fsm;
 
 	private ImageWidget pacManLogo;
 	private LinkWidget gitHubLink;
@@ -49,7 +49,8 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 	public IntroView(Theme theme) {
 		this.theme = theme;
 		this.name = "IntroView";
-		fsm = buildFsmComponent();
+		fsm = buildStateMachine();
+		fsm.setLogger(Game.FSM_LOGGER);
 	}
 
 	@Override
@@ -93,14 +94,8 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 	}
 
 	@Override
-	public FsmComponent<IntroState, Void> fsmComponent() {
+	public Fsm<IntroState, Void> fsm() {
 		return fsm;
-	}
-
-	private FsmComponent<IntroState, Void> buildFsmComponent() {
-		StateMachine<IntroState, Void> fsm = buildStateMachine();
-		fsm.setLogger(Game.FSM_LOGGER);
-		return new FsmComponent<>(fsm);
 	}
 
 	private StateMachine<IntroState, Void> buildStateMachine() {
@@ -189,7 +184,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 	@Override
 	public void init() {
 		createUIComponents();
-		fsmComponent().init();
+		fsm().init();
 	}
 
 	@Override
@@ -197,7 +192,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
 			setState(READY_TO_PLAY); // exit shortcut
 		}
-		fsmComponent().update();
+		fsm().update();
 	}
 
 	@Override
