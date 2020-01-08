@@ -308,9 +308,9 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		case LOCKED:
 			return outsideHouse ? 0 : speed(game().level().ghostSpeed) / 2;
 		case LEAVING_HOUSE:
-			//$FALL-THROUGH$
-		case ENTERING_HOUSE:
 			return speed(game().level().ghostSpeed) / 2;
+		case ENTERING_HOUSE:
+			return speed(game().level().ghostSpeed);
 		case CHASING:
 			//$FALL-THROUGH$
 		case SCATTERING:
