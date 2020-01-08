@@ -58,7 +58,7 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 
 	@Override
 	public Theme theme() {
-		return theme();
+		return cast.theme();
 	}
 
 	public Symbol symbol() {
