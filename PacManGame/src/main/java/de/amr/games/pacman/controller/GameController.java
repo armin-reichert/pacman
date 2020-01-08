@@ -513,9 +513,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			newFreq = Game.SPEED_2_FPS;
 		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			newFreq = Game.SPEED_3_FPS;
-		} else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_LEFT)) {
+		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
 			newFreq = (oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
-		} else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_RIGHT)) {
+		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
 			newFreq = (oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
 		}
 		if (newFreq != oldFreq) {
@@ -572,8 +572,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	private void onChangeDemoMode() {
-		/* ALT-"J": Demo mode: Makes Pac-Man immortable and moving randomly. */
-		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_J)) {
+		/* CONTROL-"J": Demo mode: Makes Pac-Man immortable and moving randomly. */
+		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_J)) {
 			settings.demoMode = !settings.demoMode;
 			demoMode(settings.demoMode);
 		}

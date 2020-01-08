@@ -37,8 +37,8 @@ public class Cheats implements Lifecycle {
 	public void update() {
 		PacManAppSettings settings = (PacManAppSettings) app().settings();
 
-		/* ALT-"K": Kill all available ghosts */
-		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_K)) {
+		/* CONTROL-"K": Kill all available ghosts */
+		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_K)) {
 			gameController.cast().ifPresent(cast -> {
 				cast.game().level().ghostsKilledByEnergizer = 0;
 				cast.ghostsOnStage().filter(ghost -> ghost.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
@@ -49,8 +49,8 @@ public class Cheats implements Lifecycle {
 			});
 		}
 
-		/* ALT-"E": Eats all (normal) pellets */
-		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_E)) {
+		/* CONTROL-"E": Eats all (normal) pellets */
+		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_E)) {
 			gameController.cast().ifPresent(cast -> {
 				cast.game().maze().tiles().filter(Tile::containsPellet).forEach(tile -> {
 					cast.game().eatFoodAt(tile);
@@ -60,16 +60,16 @@ public class Cheats implements Lifecycle {
 			});
 		}
 
-		/* ALT-"L": Selects next level */
-		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_PLUS)) {
+		/* CONTROL-"L": Selects next level */
+		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_PLUS)) {
 			gameController.cast().ifPresent(cast -> {
 				LOGGER.info(() -> String.format("Switch to next level (%d)", cast.game().level().number + 1));
 				gameController.enqueue(new LevelCompletedEvent());
 			});
 		}
 
-		/* ALT-"I": Makes Pac-Man immortable */
-		if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_I)) {
+		/* CONTROL-"I": Makes Pac-Man immortable */
+		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_I)) {
 			settings.pacManImmortable = !settings.pacManImmortable;
 			LOGGER.info("Pac-Man immortable = " + settings.pacManImmortable);
 		}
