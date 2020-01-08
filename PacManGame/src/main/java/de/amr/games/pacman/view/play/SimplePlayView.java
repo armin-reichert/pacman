@@ -159,7 +159,8 @@ public class SimplePlayView implements GameView {
 	protected void drawMaze(Graphics2D g) {
 		if (mazeFlashing) {
 			flashingMazeSprite.draw(g, 0, 3 * Tile.SIZE);
-		} else {
+		}
+		else {
 			fullMazeSprite.draw(g, 0, 3 * Tile.SIZE);
 			maze().tiles().filter(Tile::containsEatenFood).forEach(tile -> {
 				g.setColor(bgColor(tile));
@@ -181,7 +182,7 @@ public class SimplePlayView implements GameView {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		cast.bonus().ifPresent(bonus -> bonus.draw(g));
+		cast.bonus.draw(g);
 		cast.pacMan.draw(g);
 		// draw dead ghosts (numbers) under living ghosts
 		cast.ghostsOnStage().filter(ghost -> ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));

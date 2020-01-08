@@ -18,7 +18,6 @@ import static java.awt.event.KeyEvent.VK_UP;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -37,11 +36,11 @@ public class Cast {
 
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
+	public final Bonus bonus;
 	private final Set<Actor<?>> actorsOnStage = new HashSet<>();
 	private final PropertyChangeSupport changes = new PropertyChangeSupport(this);
 	private final Game game;
 	private Theme theme;
-	private Bonus bonus;
 
 	public Cast(Game game, Theme theme) {
 		this.game = game;
@@ -52,6 +51,7 @@ public class Cast {
 		inky = new Ghost(this, "Inky", 1, UP);
 		pinky = new Ghost(this, "Pinky", 2, DOWN);
 		clyde = new Ghost(this, "Clyde", 3, UP);
+		bonus = new Bonus(this);
 
 		dressActors();
 		actors().forEach(actor -> actor.setVisible(false));
@@ -93,6 +93,9 @@ public class Cast {
 		clyde.during(CHASING, clyde.isHeadingFor(
 				() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : game().maze().horizonSW));
 		clyde.setTeleportingDuration(sec(0.5f));
+		
+		bonus.placeHalfRightOf(game().maze().bonusTile);
+		bonus.setVisible(false);
 	}
 
 	public Game game() {
@@ -118,9 +121,6 @@ public class Cast {
 		pinky.dress(GhostColor.PINK);
 		inky.dress(GhostColor.CYAN);
 		clyde.dress(GhostColor.ORANGE);
-		if (bonus != null) {
-			bonus.dress();
-		}
 	}
 
 	public void addThemeListener(PropertyChangeListener subscriber) {
@@ -158,17 +158,13 @@ public class Cast {
 		actorsOnStage.remove(actor);
 	}
 
-	public Optional<Bonus> bonus() {
-		return Optional.ofNullable(bonus);
+	public void showBonus() {
+		bonus.setSymbol(game().level().bonusSymbol);
+		bonus.setValue(game().level().bonusValue);
+		bonus.activate();
 	}
 
-	public void addBonus() {
-		bonus = new Bonus(this);
-		bonus.placeHalfRightOf(game().maze().bonusTile);
+	public void hideBonus() {
 		bonus.init();
-	}
-
-	public void removeBonus() {
-		bonus = null;
 	}
 }

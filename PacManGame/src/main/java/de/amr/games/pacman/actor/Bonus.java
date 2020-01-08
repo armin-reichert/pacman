@@ -23,32 +23,23 @@ import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Bonus symbol (fruit or other symbol) that appears at the maze bonus position
- * for around 9 seconds. When consumed, the bonus is displayed for 3 seconds as
- * a number representing its value and then disappears.
+ * Bonus symbol (fruit or other symbol) that appears at the maze bonus position for around 9 seconds. When consumed, the
+ * bonus is displayed for 3 seconds as a number representing its value and then disappears.
  * 
  * @author Armin Reichert
  */
 public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 
-	private final SpriteMap sprites = new SpriteMap();
 	private final Cast cast;
 	private final Fsm<BonusState, PacManGameEvent> brain;
-	private final Symbol symbol;
-	private final int value;
+	private final SpriteMap sprites = new SpriteMap();
+	private Symbol symbol;
+	private int value;
 
 	public Bonus(Cast cast) {
 		this.cast = cast;
-		symbol = cast.game().level().bonusSymbol;
-		value = cast.game().level().bonusValue;
 		brain = buildFsm();
 		brain.setLogger(Game.FSM_LOGGER);
-		dress();
-	}
-
-	public void dress() {
-		sprites.set("symbol", theme().spr_bonusSymbol(symbol));
-		sprites.set("value", theme().spr_number(value));
 	}
 
 	@Override
@@ -61,14 +52,6 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 		return cast.theme();
 	}
 
-	public Symbol symbol() {
-		return symbol;
-	}
-
-	public int value() {
-		return value;
-	}
-
 	@Override
 	public Maze maze() {
 		return cast.game().maze();
@@ -79,21 +62,46 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 		return brain;
 	}
 
+	public Symbol symbol() {
+		return symbol;
+	}
+
+	public void setSymbol(Symbol symbol) {
+		this.symbol = symbol;
+		sprites.set("symbol", theme().spr_bonusSymbol(symbol));
+	}
+
+	public int value() {
+		return value;
+	}
+
+	public void setValue(int value) {
+		this.value = value;
+		sprites.set("value", theme().spr_number(value));
+	}
+
+	public void activate() {
+		brain.setState(ACTIVE);
+	}
+
 	public StateMachine<BonusState, PacManGameEvent> buildFsm() {
 		return StateMachine.
 		/*@formatter:off*/
 		beginStateMachine(BonusState.class, PacManGameEvent.class)
 			.description("[Bonus]")
-			.initialState(ACTIVE)
+			.initialState(INACTIVE)
 			.states()
+				.state(INACTIVE)
+					.onEntry(() -> setVisible(false))
 				.state(ACTIVE)
 					.timeoutAfter(() -> sec(9 + new Random().nextFloat()))
-					.onEntry(() -> sprites.select("symbol"))
+					.onEntry(() -> {
+						sprites.select("symbol");
+						setVisible(true);
+					})
 				.state(CONSUMED)
 					.timeoutAfter(sec(3))
 					.onEntry(() -> sprites.select("value"))
-				.state(INACTIVE)
-					.onEntry(cast::removeBonus)
 			.transitions()
 				.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
 				.when(ACTIVE).then(INACTIVE).onTimeout()

@@ -1,5 +1,6 @@
 package de.amr.games.pacman.view.play;
 
+import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
@@ -32,12 +33,12 @@ import java.util.stream.IntStream;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.PacManApp;
+import de.amr.games.pacman.actor.Bonus;
+import de.amr.games.pacman.actor.BonusState;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.House;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
@@ -103,7 +104,8 @@ public class PlayView extends SimplePlayView {
 	public void draw(Graphics2D g) {
 		if (showGrid.getAsBoolean()) {
 			g.drawImage(gridImage, 0, 0, null);
-		} else {
+		}
+		else {
 			fillBackground(g);
 		}
 		drawMaze(g);
@@ -159,27 +161,75 @@ public class PlayView extends SimplePlayView {
 	private void toggleGhost(Ghost ghost) {
 		if (cast().onStage(ghost)) {
 			cast().setActorOffStage(ghost);
-		} else {
+		}
+		else {
 			cast().setActorOnStage(ghost);
 		}
 	}
 
-	private String pacManStateText(PacMan pacMan) {
-		int duration = pacMan.state().getDuration();
-		String text = pacMan.getState().name();
-		if (pacMan.isKicking()) {
-			text += " AND KICKING!";
-		}
-		if (duration != State.ENDLESS && duration > 0) {
-			text += String.format("(%d|%d)", pacMan.state().getTicksRemaining(), duration);
-		}
-		if (settings().pacManImmortable) {
-			text += "-immortable";
-		}
-		return text;
+	private Color color(Ghost ghost) {
+		if (ghost == cast().blinky)
+			return Color.RED;
+		if (ghost == cast().pinky)
+			return Color.PINK;
+		if (ghost == cast().inky)
+			return Color.CYAN;
+		if (ghost == cast().clyde)
+			return Color.ORANGE;
+		throw new IllegalArgumentException("Unknown ghost: " + ghost);
 	}
 
-	private String ghostStateText(Ghost ghost) {
+	private void drawSmallText(Graphics2D g, Color color, float x, float y, String text) {
+		g.setColor(color);
+		g.setFont(new Font("Arial Narrow", Font.PLAIN, 5));
+		int sw = g.getFontMetrics().stringWidth(text);
+		g.drawString(text, x - sw / 2, y - Tile.SIZE / 2);
+	}
+
+	private void drawPlayMode(Graphics2D g) {
+		if (settings.demoMode) {
+			try (Pen pen = new Pen(g)) {
+				pen.font(theme().fnt_text(11));
+				pen.color(Color.DARK_GRAY);
+				pen.hcenter("Demo Mode", width(), 21);
+			}
+		}
+	}
+
+	private void drawFPS(Graphics2D g) {
+		if (showFPS.getAsBoolean()) {
+			fps.draw(g);
+		}
+	}
+
+	private void drawActorStates(Graphics2D g) {
+		cast.ghostsOnStage().forEach(ghost -> drawGhostState(g, ghost));
+		drawPacManState(g);
+		drawBonusState(g);
+	}
+
+	private void drawPacManState(Graphics2D g) {
+		PacMan pacMan = cast().pacMan;
+		if (pacMan.visible()) {
+			String text = pacMan.getState().name();
+			if (pacMan.isKicking()) {
+				text += " AND KICKING!";
+			}
+			int duration = pacMan.state().getDuration(), remaining = pacMan.state().getTicksRemaining();
+			if (duration != State.ENDLESS && duration > 0) {
+				text += String.format("(%d|%d)", remaining, duration);
+			}
+			if (settings().pacManImmortable) {
+				text += "-immortable";
+			}
+			drawSmallText(g, Color.YELLOW, pacMan.tf.getX(), pacMan.tf.getY(), text);
+		}
+	}
+
+	private void drawGhostState(Graphics2D g, Ghost ghost) {
+		if (!ghost.visible()) {
+			return;
+		}
 		StringBuilder text = new StringBuilder();
 		// show ghost name if not obvious
 		text.append(ghost.is(DEAD, FRIGHTENED, ENTERING_HOUSE) ? ghost.name() : "");
@@ -204,49 +254,35 @@ public class PlayView extends SimplePlayView {
 		if (ghost.is(LEAVING_HOUSE)) {
 			text.append(String.format("[->%s]", ghost.nextState()));
 		}
-		return text.toString();
+		drawSmallText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), text.toString());
 	}
 
-	private Color color(Ghost ghost) {
-		if (ghost == cast().blinky)
-			return Color.RED;
-		if (ghost == cast().pinky)
-			return Color.PINK;
-		if (ghost == cast().inky)
-			return Color.CYAN;
-		if (ghost == cast().clyde)
-			return Color.ORANGE;
-		throw new IllegalArgumentException("Unknown ghost: " + ghost);
-	}
-
-	private void drawSmallText(Graphics2D g, Color color, float x, float y, String text) {
-		g.setColor(color);
-		g.setFont(new Font("Arial Narrow", Font.PLAIN, 5));
-		int sw = g.getFontMetrics().stringWidth(text);
-		g.drawString(text, x - sw / 2, y - Tile.SIZE / 2);
-	}
-
-	private void drawFPS(Graphics2D g) {
-		if (showFPS.getAsBoolean()) {
-			fps.draw(g);
+	private void drawBonusState(Graphics2D g) {
+		Bonus bonus = cast().bonus;
+		String text = "";
+		if (bonus.getState() == BonusState.INACTIVE) {
+			text = "Bonus inactive";
 		}
+		else {
+			text = String.format("%s,%d|%d", bonus, bonus.state().getTicksRemaining(), bonus.state().getDuration());
+		}
+		drawSmallText(g, Color.YELLOW, bonus.tf.getX(), bonus.tf.getY(), text);
 	}
 
-	private void drawActorStates(Graphics2D g) {
-		if (cast().pacMan.getState() != null && cast().pacMan.visible()) {
-			drawSmallText(g, Color.YELLOW, cast().pacMan.tf.getX(), cast().pacMan.tf.getY(), pacManStateText(cast().pacMan));
+	private void drawPacManStarvingTime(Graphics2D g, Image image, int col, int row) {
+		int time = cast.game().pacManStarvingTicks;
+		try (Pen pen = new Pen(g)) {
+			if (image != null) {
+				g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);
+			}
+			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
+			pen.color(Color.WHITE);
+			pen.smooth(() -> pen.drawAtTilePosition(col + 2, row, time == -1 ? INFTY : String.format("%d", time)));
 		}
-		cast().ghostsOnStage().filter(Ghost::visible).forEach(ghost -> {
-			drawSmallText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), ghostStateText(ghost));
-		});
-		cast().bonus().ifPresent(bonus -> {
-			String text = String.format("%s,%d|%d", bonus, bonus.state().getTicksRemaining(), bonus.state().getDuration());
-			drawSmallText(g, Color.YELLOW, bonus.tf.getX(), bonus.tf.getY(), text);
-		});
 	}
 
 	private void drawActorAlignments(Graphics2D g) {
-		cast().actorsOnStage().filter(Actor::visible).forEach(actor -> drawActorAlignment(actor.entity(), g));
+		cast().actorsOnStage().forEach(actor -> drawActorAlignment(actor.entity(), g));
 	}
 
 	private void drawActorAlignment(Entity actor, Graphics2D g) {
@@ -361,7 +397,8 @@ public class PlayView extends SimplePlayView {
 					drawArrowHead(g, maze().direction(from, to).get(), to.centerX(), to.centerY());
 				}
 			}
-		} else if (ghost.wishDir() != null) {
+		}
+		else if (ghost.wishDir() != null) {
 			// draw direction indicator
 			Direction nextDir = ghost.wishDir();
 			int x = ghost.tf.getCenter().roundedX(), y = ghost.tf.getCenter().roundedY();
@@ -390,7 +427,8 @@ public class PlayView extends SimplePlayView {
 					g.drawLine(x1, y1, x2, y2);
 					g.drawLine(x2, y2, x3, y3);
 					g.fillRect(x3 - s / 2, y3 - s / 2, s, s);
-				} else {
+				}
+				else {
 					Tile twoTilesAhead = cast().pacMan.tilesAhead(2);
 					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
 					int x2 = twoTilesAhead.centerX(), y2 = twoTilesAhead.centerY();
@@ -428,29 +466,6 @@ public class PlayView extends SimplePlayView {
 			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
 			pen.color(emphasized ? Color.GREEN : Color.WHITE);
 			pen.smooth(() -> pen.drawAtTilePosition(col + 2, row, String.format("%d", value)));
-		}
-	}
-
-	private void drawPacManStarvingTime(Graphics2D g, Image image, int col, int row) {
-		int time = cast.game().pacManStarvingTicks;
-		try (Pen pen = new Pen(g)) {
-			if (image != null) {
-				g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);
-			}
-			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
-			pen.color(Color.WHITE);
-			pen.smooth(() -> pen.drawAtTilePosition(col + 2, row, time == -1 ? INFTY : String.format("%d", time)));
-		}
-
-	}
-
-	private void drawPlayMode(Graphics2D g) {
-		if (PacManApp.settings.demoMode) {
-			try (Pen pen = new Pen(g)) {
-				pen.font(theme().fnt_text(11));
-				pen.color(Color.DARK_GRAY);
-				pen.hcenter("Demo Mode", width(), 21);
-			}
 		}
 	}
 }

@@ -242,14 +242,13 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	}
 
 	/**
-	 * NOTE: If the application property {@link PacManAppSettings#overflowBug} is
-	 * <code>true</code>, this method simulates the bug from the original Arcade
-	 * game where, if Pac-Man points upwards, the position ahead of Pac-Man is
-	 * wrongly calculated by adding the same number of tiles to the left.
+	 * NOTE: If the application property {@link PacManAppSettings#overflowBug} is <code>true</code>, this method simulates
+	 * the bug from the original Arcade game where, if Pac-Man points upwards, the position ahead of Pac-Man is wrongly
+	 * calculated by adding the same number of tiles to the left.
 	 * 
-	 * @param numTiles number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards
-	 *         his current move direction.
+	 * @param numTiles
+	 *                   number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards his current move direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
 		Tile tileAhead = maze().tileToDir(tile(), moveDir(), numTiles);
@@ -270,10 +269,8 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	private Optional<PacManGameEvent> findSomethingInteresting() {
 		Tile tile = tile();
 		if (tile == maze().bonusTile) {
-			Optional<PacManGameEvent> activeBonusFound = cast.bonus().filter(bonus -> bonus.is(ACTIVE))
-					.map(bonus -> new BonusFoundEvent(bonus.symbol(), bonus.value()));
-			if (activeBonusFound.isPresent()) {
-				return activeBonusFound;
+			if (cast.bonus.is(ACTIVE)) {
+				return Optional.of(new BonusFoundEvent(cast.bonus.symbol(), cast.bonus.value()));
 			}
 		}
 		if (tile.containsFood()) {
@@ -281,7 +278,8 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 			if (tile.containsEnergizer()) {
 				digestionTicks = DIGEST_ENERGIZER_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, true));
-			} else {
+			}
+			else {
 				digestionTicks = DIGEST_PELLET_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, false));
 			}
