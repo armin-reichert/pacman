@@ -133,8 +133,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			cast().ifPresent(cast -> {
 				cast.pacMan.steering(cast.pacMan.isMovingRandomlyWithoutTurningBack());
 			});
-		}
-		else {
+		} else {
 			settings.pacManImmortable = false;
 			cast().ifPresent(cast -> {
 				cast.pacMan.steering(cast.pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
@@ -396,7 +395,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onTick() {
-
 			ghostCommand.update();
 			cheats.update();
 			house.update();
@@ -404,6 +402,26 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			cast.bonus().ifPresent(Bonus::update);
 			if (System.currentTimeMillis() - lastEatTime > 250) {
 				stopSoundPelletEaten();
+			}
+			updateGhostSound();
+		}
+
+		@Override
+		public void onExit() {
+			turnChasingGhostSoundOff();
+			turnDeadGhostSoundOff();
+		}
+
+		private void updateGhostSound() {
+			if (cast.ghostsOnStage().anyMatch(ghost -> ghost.is(GhostState.CHASING))) {
+				turnChasingGhostSoundOn();
+			} else {
+				turnChasingGhostSoundOff();
+			}
+			if (cast.ghostsOnStage().anyMatch(ghost -> ghost.is(GhostState.DEAD))) {
+				turnDeadGhostSoundOn();
+			} else {
+				turnDeadGhostSoundOff();
 			}
 		}
 
@@ -429,8 +447,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				playView.stopEnergizerBlinking();
 				cast.pacMan.process(new PacManKilledEvent(collision.ghost));
 				enqueue(new PacManKilledEvent(collision.ghost));
-			}
-			else {
+			} else {
 				LOGGER.info(() -> String.format("Ghost %s killed at %s", collision.ghost.name(), collision.ghost.tile()));
 				int livesBefore = game.lives;
 				game.scoreKilledGhost(collision.ghost.name());
@@ -492,17 +509,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		int newFreq = oldFreq;
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
 			newFreq = Game.SPEED_1_FPS;
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_2) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
 			newFreq = Game.SPEED_2_FPS;
-		}
-		else if (Keyboard.keyPressedOnce(KeyEvent.VK_3) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
+		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			newFreq = Game.SPEED_3_FPS;
-		}
-		else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_LEFT)) {
+		} else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_LEFT)) {
 			newFreq = (oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
-		}
-		else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_RIGHT)) {
+		} else if (Keyboard.keyPressedOnce(Modifier.ALT, KeyEvent.VK_RIGHT)) {
 			newFreq = (oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
 		}
 		if (newFreq != oldFreq) {
@@ -550,8 +563,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				settings.ghostsFleeRandomly = false;
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, ghost.isFleeingToSafeCorner(cast.pacMan)));
 				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
-			}
-			else {
+			} else {
 				settings.ghostsFleeRandomly = true;
 				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack()));
 				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
@@ -633,4 +645,25 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public boolean isGameOverMusicRunning() {
 		return theme.music_gameover().isRunning();
 	}
+
+	public void turnChasingGhostSoundOn() {
+		if (!theme.snd_ghost_chase().isRunning()) {
+			theme.snd_ghost_chase().loop();
+		}
+	}
+
+	public void turnChasingGhostSoundOff() {
+		theme.snd_ghost_chase().stop();
+	}
+
+	public void turnDeadGhostSoundOn() {
+		if (!theme.snd_ghost_dead().isRunning()) {
+			theme.snd_ghost_dead().loop();
+		}
+	}
+
+	public void turnDeadGhostSoundOff() {
+		theme.snd_ghost_dead().stop();
+	}
+
 }

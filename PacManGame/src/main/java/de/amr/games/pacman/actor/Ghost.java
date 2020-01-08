@@ -136,12 +136,10 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 					})
 			
 				.state(CHASING)
-					.onEntry(() -> turnChasingGhostSoundOn())
 					.onTick(() -> {
 						step("color-" + moveDir());
 						checkPacManCollision();
 					})
-					.onExit(() -> turnChasingGhostSoundOff())
 				
 				.state(FRIGHTENED)
 					.onTick(() -> {
@@ -155,15 +153,11 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 						int points = POINTS_GHOST[game().level().ghostsKilledByEnergizer - 1];
 						sprites.select("number-" + points);
 						setTargetTile(maze().ghostHouseSeats[0]);
-						turnDeadGhostSoundOn();
 					})
 					.onTick(() -> {
 						if (state().isTerminated()) { // "dead"
 							step("eyes-" + moveDir());
 						}
-					})
-					.onExit(() -> {
-						turnDeadGhostSoundOff();
 					})
 				
 			.transitions()
@@ -338,34 +332,6 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		if (!isTeleporting() && !cast.pacMan.isTeleporting() && cast.pacMan.is(PacManState.ALIVE)
 				&& tile().equals(cast.pacMan.tile())) {
 			publish(new PacManGhostCollisionEvent(this, tile()));
-		}
-	}
-
-	// TODO move sound methods into some central handler
-
-	public void turnChasingGhostSoundOn() {
-		if (!theme().snd_ghost_chase().isRunning()) {
-			theme().snd_ghost_chase().loop();
-		}
-	}
-
-	public void turnChasingGhostSoundOff() {
-		// if caller is the last chasing ghost, turn sound off
-		if (cast.ghostsOnStage().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.is(CHASING))) {
-			theme().snd_ghost_chase().stop();
-		}
-	}
-
-	public void turnDeadGhostSoundOn() {
-		if (!theme().snd_ghost_dead().isRunning()) {
-			theme().snd_ghost_dead().loop();
-		}
-	}
-
-	public void turnDeadGhostSoundOff() {
-		// if caller is the last dead ghost, turn sound off
-		if (cast.ghostsOnStage().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.is(DEAD))) {
-			theme().snd_ghost_dead().stop();
 		}
 	}
 
