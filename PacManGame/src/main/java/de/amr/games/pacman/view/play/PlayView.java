@@ -16,6 +16,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
@@ -68,7 +69,7 @@ public class PlayView extends SimplePlayView {
 	public BooleanSupplier showStates = () -> false;
 
 	private FPSDisplay fps;
-	private final BufferedImage gridImage, pinkyImage, inkyImage, clydeImage;
+	private final BufferedImage gridImage, inkyImage, clydeImage;
 	private final Polygon arrowHead;
 
 	public PlayView(Cast cast) {
@@ -76,7 +77,6 @@ public class PlayView extends SimplePlayView {
 		fps = new FPSDisplay();
 		fps.tf.setPosition(0, 17 * Tile.SIZE);
 		gridImage = createGridImage(cast.game().maze());
-		pinkyImage = ghostImage(GhostColor.PINK);
 		inkyImage = ghostImage(GhostColor.CYAN);
 		clydeImage = ghostImage(GhostColor.ORANGE);
 		arrowHead = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
@@ -412,8 +412,7 @@ public class PlayView extends SimplePlayView {
 			return; // test scenes etc.
 		}
 		Ghost preferredGhost = ghostHouse.nextCandidate().orElse(null);
-		drawDotCounter(g, pinkyImage, ghostHouse.ghostDotCounter(cast.pinky.seat()), 1, 14,
-				!ghostHouse.isGlobalDotCounterEnabled() && preferredGhost == cast.pinky);
+		drawPacManStarvingTime(g, cast.pacMan.sprites.get("full").frame(0), 1, 14);
 		drawDotCounter(g, clydeImage, ghostHouse.ghostDotCounter(cast.clyde.seat()), 1, 20,
 				!ghostHouse.isGlobalDotCounterEnabled() && preferredGhost == cast.clyde);
 		drawDotCounter(g, inkyImage, ghostHouse.ghostDotCounter(cast.inky.seat()), 24, 20,
@@ -431,7 +430,20 @@ public class PlayView extends SimplePlayView {
 			pen.smooth(() -> pen.drawAtTilePosition(col + 2, row, String.format("%d", value)));
 		}
 	}
-	
+
+	private void drawPacManStarvingTime(Graphics2D g, Image image, int col, int row) {
+		int time = cast.game().pacManStarvingTicks;
+		try (Pen pen = new Pen(g)) {
+			if (image != null) {
+				g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);
+			}
+			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
+			pen.color(Color.WHITE);
+			pen.smooth(() -> pen.drawAtTilePosition(col + 2, row, time == -1 ? INFTY : String.format("%d", time)));
+		}
+
+	}
+
 	private void drawPlayMode(Graphics2D g) {
 		if (PacManApp.settings.demoMode) {
 			try (Pen pen = new Pen(g)) {
