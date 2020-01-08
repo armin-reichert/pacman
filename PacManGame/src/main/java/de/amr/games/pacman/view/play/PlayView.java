@@ -31,6 +31,7 @@ import java.util.stream.IntStream;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.input.Keyboard;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
@@ -107,6 +108,7 @@ public class PlayView extends SimplePlayView {
 		}
 		drawMaze(g);
 		drawFPS(g);
+		drawPlayMode(g);
 		drawMessage(g);
 		if (showGrid.getAsBoolean()) {
 			drawUpwardsBlockedTileMarkers(g);
@@ -427,6 +429,16 @@ public class PlayView extends SimplePlayView {
 			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
 			pen.color(emphasized ? Color.GREEN : Color.WHITE);
 			pen.smooth(() -> pen.drawAtTilePosition(col + 2, row, String.format("%d", value)));
+		}
+	}
+	
+	private void drawPlayMode(Graphics2D g) {
+		if (PacManApp.settings.demoMode) {
+			try (Pen pen = new Pen(g)) {
+				pen.font(theme().fnt_text(11));
+				pen.color(Color.DARK_GRAY);
+				pen.hcenter("Demo Mode", width(), 21);
+			}
 		}
 	}
 }
