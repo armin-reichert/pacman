@@ -43,18 +43,22 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 		value = cast.game().level().bonusValue;
 		brain = new FsmComponent<>(buildFsm());
 		brain.fsm().setLogger(Game.FSM_LOGGER);
-		dress(cast.theme());
+		dress();
 	}
 
-	public void dress(Theme theme) {
-		sprites.set("symbol", cast.theme().spr_bonusSymbol(symbol));
-		sprites.set("value", cast.theme().spr_number(value));
-
+	public void dress() {
+		sprites.set("symbol", theme().spr_bonusSymbol(symbol));
+		sprites.set("value", theme().spr_number(value));
 	}
 
 	@Override
 	public Entity entity() {
 		return this;
+	}
+
+	@Override
+	public Theme theme() {
+		return theme();
 	}
 
 	public Symbol symbol() {
@@ -67,7 +71,7 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 
 	@Override
 	public Maze maze() {
-		return cast.maze();
+		return cast.game().maze();
 	}
 
 	@Override

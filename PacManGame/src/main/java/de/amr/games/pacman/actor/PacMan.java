@@ -65,15 +65,20 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 		brain.doNotLogEventPublishingIf(PacManGameEvent::isTrivial);
 	}
 
-	public void dress(Theme theme) {
-		dirs().forEach(dir -> sprites.set("walking-" + dir, theme.spr_pacManWalking(dir.ordinal())));
-		sprites.set("dying", theme.spr_pacManDying());
-		sprites.set("full", theme.spr_pacManFull());
+	public void dress() {
+		dirs().forEach(dir -> sprites.set("walking-" + dir, theme().spr_pacManWalking(dir.ordinal())));
+		sprites.set("dying", theme().spr_pacManDying());
+		sprites.set("full", theme().spr_pacManFull());
 	}
 
 	@Override
 	public Entity entity() {
 		return this;
+	}
+
+	@Override
+	public Theme theme() {
+		return cast.theme();
 	}
 
 	@Override
@@ -83,7 +88,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 
 	@Override
 	public Maze maze() {
-		return cast.maze();
+		return game().maze();
 	}
 
 	private Game game() {

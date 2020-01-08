@@ -74,6 +74,11 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		return this;
 	}
 
+	@Override
+	public Theme theme() {
+		return cast.theme();
+	}
+
 	private Game game() {
 		return cast.game();
 	}
@@ -216,7 +221,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 
 	@Override
 	public Maze maze() {
-		return cast.maze();
+		return cast.game().maze();
 	}
 
 	public int seat() {
@@ -339,41 +344,41 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	// TODO move sound methods into some central handler
 
 	public void turnChasingGhostSoundOn() {
-		if (!cast.theme().snd_ghost_chase().isRunning()) {
-			cast.theme().snd_ghost_chase().loop();
+		if (!theme().snd_ghost_chase().isRunning()) {
+			theme().snd_ghost_chase().loop();
 		}
 	}
 
 	public void turnChasingGhostSoundOff() {
 		// if caller is the last chasing ghost, turn sound off
 		if (cast.ghostsOnStage().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.is(CHASING))) {
-			cast.theme().snd_ghost_chase().stop();
+			theme().snd_ghost_chase().stop();
 		}
 	}
 
 	public void turnDeadGhostSoundOn() {
-		if (!cast.theme().snd_ghost_dead().isRunning()) {
-			cast.theme().snd_ghost_dead().loop();
+		if (!theme().snd_ghost_dead().isRunning()) {
+			theme().snd_ghost_dead().loop();
 		}
 	}
 
 	public void turnDeadGhostSoundOff() {
 		// if caller is the last dead ghost, turn sound off
 		if (cast.ghostsOnStage().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.is(DEAD))) {
-			cast.theme().snd_ghost_dead().stop();
+			theme().snd_ghost_dead().stop();
 		}
 	}
 
-	public void dress(Theme theme, GhostColor color) {
+	public void dress(GhostColor color) {
 		dirs().forEach(dir -> {
-			sprites.set("color-" + dir, theme.spr_ghostColored(color, dir.ordinal()));
-			sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir.ordinal()));
+			sprites.set("color-" + dir, theme().spr_ghostColored(color, dir.ordinal()));
+			sprites.set("eyes-" + dir, theme().spr_ghostEyes(dir.ordinal()));
 		});
 		for (int number : new int[] { 200, 400, 800, 1600 }) {
-			sprites.set("number-" + number, theme.spr_number(number));
+			sprites.set("number-" + number, theme().spr_number(number));
 		}
-		sprites.set("frightened", theme.spr_ghostFrightened());
-		sprites.set("flashing", theme.spr_ghostFlashing());
+		sprites.set("frightened", theme().spr_ghostFrightened());
+		sprites.set("flashing", theme().spr_ghostFlashing());
 	}
 
 	public void enableAnimations(boolean b) {

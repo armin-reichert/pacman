@@ -24,7 +24,6 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.Theme;
@@ -38,53 +37,48 @@ public class Cast {
 
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
-
+	private final Set<Actor<?>> actorsOnStage = new HashSet<>();
+	private final PropertyChangeSupport changes = new PropertyChangeSupport(this);
 	private final Game game;
 	private Theme theme;
 	private Bonus bonus;
-	private final Set<Actor<?>> actorsOnStage = new HashSet<>();
-	private final PropertyChangeSupport changes = new PropertyChangeSupport(this);
 
 	public Cast(Game game, Theme theme) {
 		this.game = game;
+		this.theme = theme;
 
 		pacMan = new PacMan(this);
-
 		blinky = new Ghost(this, "Blinky", 0, LEFT);
 		inky = new Ghost(this, "Inky", 1, UP);
 		pinky = new Ghost(this, "Pinky", 2, DOWN);
 		clyde = new Ghost(this, "Clyde", 3, UP);
 
-		// initially, all actors are off-stage
-		actors().forEach(actor -> setActorOffStage(actor));
-
-		// configure the actors
-
-		setTheme(theme);
+		dressActors();
+		actors().forEach(actor -> actor.setVisible(false));
 
 		pacMan.steering(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		pacMan.setTeleportingDuration(sec(0.5f));
 
-		blinky.during(SCATTERING, blinky.isHeadingFor(maze().horizonNE));
+		blinky.during(SCATTERING, blinky.isHeadingFor(game().maze().horizonNE));
 		blinky.during(CHASING, blinky.isHeadingFor(pacMan::tile));
 		blinky.during(ENTERING_HOUSE, blinky.isTakingSeat(2));
 
-		inky.during(SCATTERING, inky.isHeadingFor(maze().horizonSE));
+		inky.during(SCATTERING, inky.isHeadingFor(game().maze().horizonSE));
 		inky.during(CHASING, inky.isHeadingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
-			return maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
+			return game().maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
 		inky.during(LOCKED, inky.isJumpingUpAndDown());
 		inky.during(ENTERING_HOUSE, inky.isTakingOwnSeat());
 
-		pinky.during(SCATTERING, pinky.isHeadingFor(maze().horizonNW));
+		pinky.during(SCATTERING, pinky.isHeadingFor(game().maze().horizonNW));
 		pinky.during(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
 		pinky.during(LOCKED, pinky.isJumpingUpAndDown());
 		pinky.during(ENTERING_HOUSE, pinky.isTakingOwnSeat());
 
-		clyde.during(SCATTERING, clyde.isHeadingFor(maze().horizonSW));
+		clyde.during(SCATTERING, clyde.isHeadingFor(game().maze().horizonSW));
 		clyde.during(CHASING, clyde
-				.isHeadingFor(() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
+				.isHeadingFor(() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : game().maze().horizonSW));
 		clyde.during(LOCKED, clyde.isJumpingUpAndDown());
 		clyde.during(ENTERING_HOUSE, clyde.isTakingOwnSeat());
 
@@ -99,26 +93,28 @@ public class Cast {
 		return game;
 	}
 
-	public Maze maze() {
-		return game.maze();
-	}
-
 	public Theme theme() {
 		return theme;
 	}
 
 	public void setTheme(Theme newTheme) {
 		Theme oldTheme = this.theme;
-		this.theme = newTheme;
-		pacMan.dress(theme);
-		blinky.dress(theme, GhostColor.RED);
-		pinky.dress(theme, GhostColor.PINK);
-		inky.dress(theme, GhostColor.CYAN);
-		clyde.dress(theme, GhostColor.ORANGE);
-		if (bonus != null) {
-			bonus.dress(theme);
+		if (newTheme != oldTheme) {
+			this.theme = newTheme;
+			dressActors();
+			changes.firePropertyChange("theme", oldTheme, newTheme);
 		}
-		changes.firePropertyChange("theme", oldTheme, newTheme);
+	}
+
+	private void dressActors() {
+		pacMan.dress();
+		blinky.dress(GhostColor.RED);
+		pinky.dress(GhostColor.PINK);
+		inky.dress(GhostColor.CYAN);
+		clyde.dress(GhostColor.ORANGE);
+		if (bonus != null) {
+			bonus.dress();
+		}
 	}
 
 	public void addThemeListener(PropertyChangeListener subscriber) {
@@ -162,7 +158,7 @@ public class Cast {
 
 	public void addBonus() {
 		bonus = new Bonus(this);
-		bonus.placeHalfRightOf(maze().bonusTile);
+		bonus.placeHalfRightOf(game().maze().bonusTile);
 		bonus.init();
 	}
 
