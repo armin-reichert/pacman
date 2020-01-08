@@ -337,12 +337,13 @@ However, for a graph of such a small size, the used algorithm doesn't matter ver
   - CTRL-p pauses/resumes the game
   - F2 opens a dialog where the game loop frequency and (full-)screen resolution can be changed
   - F11 toggles between window and full-screen exclusive mode
-- Game 
-  - Skip intro screen: -skipIntro
-  - Simulate overflow bug: -overflowBug true/false
-  - Make Pac-Man immortable: -pacManImmortable
-  - Speed can be changed during game 
-    - Continuosly: ALT-LEFT = slower, ALT-RIGHT = faster
+- Game
+  - Command-line parameters:
+    - `-skipIntro`: skips intro screen
+    - `-overflowBug true/false`: simulates overflow bug from Arcade version
+    - `-pacManImmortable`: Pac-Man keeps live after being killed
+  - The overall speed can be changed during the game; 
+    - Continuosly: CTRL-LEFT = slower, CTRL-RIGHT = faster
     - Fixed speeds: '1' = normal speed, '2' = fast, '3' = very fast
     - 't' toggles display of current framerate
   - 'b', 'p', 'i', 'c' toggles the presence of the 4 ghosts in the game
@@ -352,12 +353,12 @@ However, for a graph of such a small size, the used algorithm doesn't matter ver
   - 'g' toggles the display of the grid and the alignment of the actors on the grid
   - 'o' toggles the simulation of the overflow bug which occurs in the original Arcade game when Pac-Man is looking upwards
 - Cheats
-  - ALT-'k' kills all ghosts
-  - ALT-'e' eats all pellets except the energizers
-  - ALT-'+' switches to the next level
-  - ALT-'i' makes Pac-Man immortable (does not lose live after being killed)
+  - CTRL-'k' kills all ghosts
+  - CTRL-'e' eats all pellets except the energizers
+  - CTRL-'+' switches to the next level
+  - CTRL-'i' makes Pac-Man immortable (does not lose live after being killed)
 - Logging/tracing
-  - Tracing of used state machines can be switched on/off (key 'l')
+  - Tracing of used state machines can be switched on/off (key 'L')
 
 ## References
 
