@@ -69,18 +69,18 @@ public class Cast {
 			return game().maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
 		inky.during(LOCKED, inky.isJumpingUpAndDown());
-		inky.during(ENTERING_HOUSE, inky.isTakingOwnSeat());
+		inky.during(ENTERING_HOUSE, inky.isTakingSeat());
 
 		pinky.during(SCATTERING, pinky.isHeadingFor(game().maze().horizonNW));
 		pinky.during(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
 		pinky.during(LOCKED, pinky.isJumpingUpAndDown());
-		pinky.during(ENTERING_HOUSE, pinky.isTakingOwnSeat());
+		pinky.during(ENTERING_HOUSE, pinky.isTakingSeat());
 
 		clyde.during(SCATTERING, clyde.isHeadingFor(game().maze().horizonSW));
 		clyde.during(CHASING, clyde
 				.isHeadingFor(() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : game().maze().horizonSW));
 		clyde.during(LOCKED, clyde.isJumpingUpAndDown());
-		clyde.during(ENTERING_HOUSE, clyde.isTakingOwnSeat());
+		clyde.during(ENTERING_HOUSE, clyde.isTakingSeat());
 
 		ghosts().forEach(ghost -> {
 			ghost.setTeleportingDuration(sec(0.5f));

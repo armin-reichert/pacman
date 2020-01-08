@@ -40,7 +40,7 @@ public interface SteerableGhost {
 	 * 
 	 * @return behavior which lets a ghost enter the house and take its seat
 	 */
-	default Steering isTakingOwnSeat() {
+	default Steering isTakingSeat() {
 		return new EnteringGhostHouse(thisGhost(), thisGhost().seat());
 	}
 
