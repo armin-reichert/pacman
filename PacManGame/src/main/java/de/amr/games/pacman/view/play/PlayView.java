@@ -35,6 +35,7 @@ import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.House;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
@@ -243,10 +244,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawActorAlignments(Graphics2D g) {
-		if (cast().onStage(cast().pacMan)) {
-			drawActorAlignment(cast().pacMan, g);
-		}
-		cast().ghostsOnStage().filter(Ghost::visible).forEach(ghost -> drawActorAlignment(ghost, g));
+		cast().actorsOnStage().filter(Actor::visible).forEach(actor -> drawActorAlignment(actor.entity(), g));
 	}
 
 	private void drawActorAlignment(Entity actor, Graphics2D g) {

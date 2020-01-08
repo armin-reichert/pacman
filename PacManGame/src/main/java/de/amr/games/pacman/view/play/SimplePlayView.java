@@ -48,7 +48,7 @@ public class SimplePlayView implements GameView {
 		messageText = null;
 		messageColor = Color.YELLOW;
 	}
-	
+
 	@Override
 	public boolean visible() {
 		return true;
@@ -57,7 +57,6 @@ public class SimplePlayView implements GameView {
 	@Override
 	public void setVisible(boolean visible) {
 	}
-
 
 	@Override
 	public void onThemeChanged(Theme theme) {
@@ -111,12 +110,12 @@ public class SimplePlayView implements GameView {
 
 	public void enableAnimations() {
 		flashingMazeSprite.enableAnimation(true);
-		cast.ghostsOnStage().forEach(ghost -> ghost.sprites.enableAnimation(true));
+		cast.ghostsOnStage().forEach(ghost -> ghost.enableAnimations(true));
 	}
 
 	public void disableAnimations() {
 		flashingMazeSprite.enableAnimation(false);
-		cast.ghostsOnStage().forEach(ghost -> ghost.sprites.enableAnimation(false));
+		cast.ghostsOnStage().forEach(ghost -> ghost.enableAnimations(false));
 	}
 
 	public int mazeFlashingSeconds() {

@@ -9,7 +9,6 @@ import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
-import static de.amr.games.pacman.model.Direction.dirs;
 import static de.amr.games.pacman.model.Timing.sec;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
@@ -111,38 +110,19 @@ public class Cast {
 	public void setTheme(Theme newTheme) {
 		Theme oldTheme = this.theme;
 		this.theme = newTheme;
-		clotheActors();
+		pacMan.dress(theme);
+		blinky.dress(theme, GhostColor.RED);
+		pinky.dress(theme, GhostColor.PINK);
+		inky.dress(theme, GhostColor.CYAN);
+		clyde.dress(theme, GhostColor.ORANGE);
+		if (bonus != null) {
+			bonus.dress(theme);
+		}
 		changes.firePropertyChange("theme", oldTheme, newTheme);
 	}
 
 	public void addThemeListener(PropertyChangeListener subscriber) {
 		changes.addPropertyChangeListener("theme", subscriber);
-	}
-
-	private void clotheActors() {
-		clothePacMan();
-		clotheGhost(blinky, GhostColor.RED);
-		clotheGhost(pinky, GhostColor.PINK);
-		clotheGhost(inky, GhostColor.CYAN);
-		clotheGhost(clyde, GhostColor.ORANGE);
-	}
-
-	private void clothePacMan() {
-		dirs().forEach(dir -> pacMan.sprites.set("walking-" + dir, theme.spr_pacManWalking(dir.ordinal())));
-		pacMan.sprites.set("dying", theme.spr_pacManDying());
-		pacMan.sprites.set("full", theme.spr_pacManFull());
-	}
-
-	private void clotheGhost(Ghost ghost, GhostColor color) {
-		dirs().forEach(dir -> {
-			ghost.sprites.set("color-" + dir, theme.spr_ghostColored(color, dir.ordinal()));
-			ghost.sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir.ordinal()));
-		});
-		for (int number : new int[] { 200, 400, 800, 1600 }) {
-			ghost.sprites.set("number-" + number, theme.spr_number(number));
-		}
-		ghost.sprites.set("frightened", theme.spr_ghostFrightened());
-		ghost.sprites.set("flashing", theme.spr_ghostFlashing());
 	}
 
 	public Stream<Ghost> ghosts() {

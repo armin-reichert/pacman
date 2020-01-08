@@ -8,6 +8,7 @@ import static de.amr.games.pacman.actor.PacManState.SLEEPING;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.model.Direction.UP;
+import static de.amr.games.pacman.model.Direction.dirs;
 import static de.amr.games.pacman.model.Game.DIGEST_ENERGIZER_TICKS;
 import static de.amr.games.pacman.model.Game.DIGEST_PELLET_TICKS;
 import static de.amr.games.pacman.model.Game.FSM_LOGGER;
@@ -17,6 +18,8 @@ import static de.amr.games.pacman.model.Timing.speed;
 import java.awt.Graphics2D;
 import java.util.Optional;
 
+import de.amr.easy.game.entity.Entity;
+import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.PacManAppSettings;
@@ -32,6 +35,7 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
@@ -61,14 +65,20 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 		brain.doNotLogEventPublishingIf(PacManGameEvent::isTrivial);
 	}
 
-	@Override
-	public String name() {
-		return "Pac-Man";
+	public void dress(Theme theme) {
+		dirs().forEach(dir -> sprites.set("walking-" + dir, theme.spr_pacManWalking(dir.ordinal())));
+		sprites.set("dying", theme.spr_pacManDying());
+		sprites.set("full", theme.spr_pacManFull());
 	}
 
 	@Override
-	public Cast cast() {
-		return cast;
+	public Entity entity() {
+		return this;
+	}
+
+	@Override
+	public String name() {
+		return "Pac-Man";
 	}
 
 	@Override
@@ -195,8 +205,9 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	public void draw(Graphics2D g) {
 		if (visible()) {
 			sprites.current().ifPresent(sprite -> {
-				float x = tf.getCenter().x - sprite.getWidth() / 2;
-				float y = tf.getCenter().y - sprite.getHeight() / 2;
+				Vector2f center = tf.getCenter();
+				float x = center.x - sprite.getWidth() / 2;
+				float y = center.y - sprite.getHeight() / 2;
 				sprite.draw(g, x, y);
 			});
 		}

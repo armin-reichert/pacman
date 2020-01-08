@@ -9,6 +9,7 @@ import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Direction.UP;
+import static de.amr.games.pacman.model.Direction.dirs;
 import static de.amr.games.pacman.model.Game.POINTS_GHOST;
 import static de.amr.games.pacman.model.Timing.sec;
 import static de.amr.games.pacman.model.Timing.speed;
@@ -17,6 +18,8 @@ import java.awt.Graphics2D;
 import java.util.EnumMap;
 import java.util.Map;
 
+import de.amr.easy.game.entity.Entity;
+import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.actor.core.AbstractMazeMover;
@@ -32,6 +35,8 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.theme.GhostColor;
+import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -43,7 +48,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<GhostState> {
 
-	public final SpriteMap sprites = new SpriteMap();
+	private final SpriteMap sprites = new SpriteMap();
 	private final String name;
 	private final Direction eyes;
 	private final Cast cast;
@@ -62,6 +67,11 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		brain = new FsmComponent<>(buildFsm());
 		brain.fsm().setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		brain.fsm().setLogger(Game.FSM_LOGGER);
+	}
+
+	@Override
+	public Entity entity() {
+		return this;
 	}
 
 	private Game game() {
@@ -205,11 +215,6 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	}
 
 	@Override
-	public Cast cast() {
-		return cast;
-	}
-
-	@Override
 	public Maze maze() {
 		return cast.maze();
 	}
@@ -246,8 +251,9 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	public void draw(Graphics2D g) {
 		if (visible()) {
 			sprites.current().ifPresent(sprite -> {
-				float x = tf.getCenter().x - sprite.getWidth() / 2;
-				float y = tf.getCenter().y - sprite.getHeight() / 2;
+				Vector2f center = tf.getCenter();
+				float x = center.x - sprite.getWidth() / 2;
+				float y = center.y - sprite.getHeight() / 2;
 				sprite.draw(g, x, y);
 			});
 		}
@@ -356,5 +362,21 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		if (cast.ghostsOnStage().filter(ghost -> this != ghost).noneMatch(ghost -> ghost.is(DEAD))) {
 			cast.theme().snd_ghost_dead().stop();
 		}
+	}
+
+	public void dress(Theme theme, GhostColor color) {
+		dirs().forEach(dir -> {
+			sprites.set("color-" + dir, theme.spr_ghostColored(color, dir.ordinal()));
+			sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir.ordinal()));
+		});
+		for (int number : new int[] { 200, 400, 800, 1600 }) {
+			sprites.set("number-" + number, theme.spr_number(number));
+		}
+		sprites.set("frightened", theme.spr_ghostFrightened());
+		sprites.set("flashing", theme.spr_ghostFlashing());
+	}
+
+	public void enableAnimations(boolean b) {
+		sprites.enableAnimation(b);
 	}
 }

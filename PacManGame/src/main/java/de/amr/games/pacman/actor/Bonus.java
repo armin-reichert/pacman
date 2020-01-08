@@ -8,6 +8,8 @@ import static de.amr.games.pacman.model.Timing.sec;
 import java.awt.Graphics2D;
 import java.util.Random;
 
+import de.amr.easy.game.entity.Entity;
+import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.actor.core.AbstractMazeResident;
 import de.amr.games.pacman.actor.core.Actor;
@@ -16,6 +18,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Symbol;
+import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.client.FsmComponent;
 import de.amr.statemachine.core.StateMachine;
 
@@ -40,8 +43,18 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 		value = cast.game().level().bonusValue;
 		brain = new FsmComponent<>(buildFsm());
 		brain.fsm().setLogger(Game.FSM_LOGGER);
+		dress(cast.theme());
+	}
+
+	public void dress(Theme theme) {
 		sprites.set("symbol", cast.theme().spr_bonusSymbol(symbol));
 		sprites.set("value", cast.theme().spr_number(value));
+
+	}
+
+	@Override
+	public Entity entity() {
+		return this;
 	}
 
 	public Symbol symbol() {
@@ -50,11 +63,6 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 
 	public int value() {
 		return value;
-	}
-
-	@Override
-	public Cast cast() {
-		return cast;
 	}
 
 	@Override
@@ -104,8 +112,9 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 	public void draw(Graphics2D g) {
 		if (visible()) {
 			sprites.current().ifPresent(sprite -> {
-				float x = tf.getCenter().x - sprite.getWidth() / 2;
-				float y = tf.getCenter().y - sprite.getHeight() / 2;
+				Vector2f center = tf.getCenter();
+				float x = center.x - sprite.getWidth() / 2;
+				float y = center.y - sprite.getHeight() / 2;
 				sprite.draw(g, x, y);
 			});
 		}
