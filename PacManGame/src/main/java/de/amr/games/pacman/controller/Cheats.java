@@ -1,7 +1,7 @@
 package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.LOGGER;
-import static de.amr.easy.game.Application.app;
+import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
@@ -11,7 +11,6 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
-import de.amr.games.pacman.PacManAppSettings;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
@@ -36,7 +35,6 @@ public class Cheats implements Lifecycle {
 
 	@Override
 	public void update() {
-		PacManAppSettings settings = (PacManAppSettings) app().settings();
 
 		/* CONTROL-"K": Kill all available ghosts */
 		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_K)) {
