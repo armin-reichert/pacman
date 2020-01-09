@@ -2,7 +2,6 @@ package de.amr.games.pacman.controller;
 
 import java.util.concurrent.CompletableFuture;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.assets.Sound;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.GhostState;
@@ -26,7 +25,6 @@ public class SoundController {
 	public void updatePlayingSounds(Cast cast) {
 		if (theme.snd_eatPill().isRunning() && System.currentTimeMillis() - lastPelletEatenTimeMillis > 250) {
 			theme.snd_eatPill().stop();
-			Application.LOGGER.info("Pellet eaten sound stopped");
 		}
 		if (cast.ghostsOnStage().anyMatch(ghost -> ghost.is(GhostState.CHASING))) {
 			if (!theme.snd_ghost_chase().isRunning()) {
@@ -84,7 +82,6 @@ public class SoundController {
 	public void pelletEaten() {
 		if (!theme.snd_eatPill().isRunning()) {
 			theme.snd_eatPill().loop();
-			Application.LOGGER.info("Pellet eaten sound started");
 		}
 		lastPelletEatenTimeMillis = System.currentTimeMillis();
 	}
