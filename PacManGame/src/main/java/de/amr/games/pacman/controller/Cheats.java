@@ -35,19 +35,31 @@ public class Cheats implements Lifecycle {
 
 	@Override
 	public void update() {
+		killAllGhosts();
+		eatAllPellets();
+		switchToNextLevel();
+		toggleMakePacManImmortable();
+	}
 
-		/* CONTROL-"K": Kill all available ghosts */
-		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_K)) {
+	private void toggleMakePacManImmortable() {
+		/* CONTROL-"I": Makes Pac-Man immortable */
+		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_I)) {
+			settings.pacManImmortable = !settings.pacManImmortable;
+			LOGGER.info("Pac-Man immortable = " + settings.pacManImmortable);
+		}
+	}
+
+	private void switchToNextLevel() {
+		/* CONTROL-"L": Selects next level */
+		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_PLUS)) {
 			gameController.cast().ifPresent(cast -> {
-				cast.game().level().ghostsKilledByEnergizer = 0;
-				cast.ghostsOnStage().filter(ghost -> ghost.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
-					cast.game().scoreKilledGhost(ghost.name());
-					ghost.process(new GhostKilledEvent(ghost));
-				});
-				LOGGER.info(() -> "All ghosts killed");
+				LOGGER.info(() -> String.format("Switch to next level (%d)", cast.game().level().number + 1));
+				gameController.enqueue(new LevelCompletedEvent());
 			});
 		}
+	}
 
+	private void eatAllPellets() {
 		/* CONTROL-"E": Eats all (normal) pellets */
 		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_E)) {
 			gameController.cast().ifPresent(cast -> {
@@ -61,19 +73,19 @@ public class Cheats implements Lifecycle {
 				LOGGER.info(() -> "All pellets eaten");
 			});
 		}
+	}
 
-		/* CONTROL-"L": Selects next level */
-		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_PLUS)) {
+	private void killAllGhosts() {
+		/* CONTROL-"K": Kill all available ghosts */
+		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_K)) {
 			gameController.cast().ifPresent(cast -> {
-				LOGGER.info(() -> String.format("Switch to next level (%d)", cast.game().level().number + 1));
-				gameController.enqueue(new LevelCompletedEvent());
+				cast.game().level().ghostsKilledByEnergizer = 0;
+				cast.ghostsOnStage().filter(ghost -> ghost.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
+					cast.game().scoreKilledGhost(ghost.name());
+					ghost.process(new GhostKilledEvent(ghost));
+				});
+				LOGGER.info(() -> "All ghosts killed");
 			});
-		}
-
-		/* CONTROL-"I": Makes Pac-Man immortable */
-		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_I)) {
-			settings.pacManImmortable = !settings.pacManImmortable;
-			LOGGER.info("Pac-Man immortable = " + settings.pacManImmortable);
 		}
 	}
 }
