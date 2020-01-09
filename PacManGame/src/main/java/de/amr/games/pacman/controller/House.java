@@ -12,51 +12,107 @@ import java.util.stream.Stream;
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
+import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
 
 /**
- * The ghost house controls when and in which order ghosts can leave.
+ * This class controls when and in which order locked ghosts can leave the ghost house.
  * 
  * @author Armin Reichert
  * 
- * @see <a href=
- *      "https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Gamasutra</a>
+ * @see <a href= "https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Gamasutra</a>
  */
 public class House implements Lifecycle {
 
-	private final Logger logger = Logger.getLogger(getClass().getName());
+	private static class DotCounter {
+
+		int dots;
+		boolean enabled;
+	}
+
+	private final Logger logger;
 	private final Cast cast;
-	private boolean globalDotCounterEnabled;
-	private int ghostDotCountersBySeat[] = new int[4];
-	private int globalDotCounter;
+	private final DotCounter globalCounter;
+	private final int[] ghostCounters;
 
 	public House(Cast cast) {
 		this.cast = cast;
+		globalCounter = new DotCounter();
+		ghostCounters = new int[4];
+		logger = Logger.getLogger(getClass().getName());
 		logger.setLevel(Level.INFO);
-	}
-
-	public Game game() {
-		return cast.game();
 	}
 
 	@Override
 	public void init() {
-		disableGlobalDotCounter();
-		resetGlobalDotCounter();
-		resetGhostDotCounters();
+		globalCounter.enabled = false;
+		globalCounter.dots = 0;
+		resetGhostCounters();
 	}
 
 	@Override
 	public void update() {
+		if (cast.blinky.is(LOCKED)) {
+			unlock(cast.blinky);
+		}
 		nextCandidate().filter(this::canLeave).ifPresent(ghost -> {
 			game().clearPacManStarvingTime();
-			ghost.process(new GhostUnlockedEvent());
+			unlock(ghost);
 		});
 	}
 
-	public Optional<Ghost> nextCandidate() {
-		return Stream.of(cast.blinky, cast.pinky, cast.inky, cast.clyde).filter(ghost -> ghost.is(LOCKED)).findFirst();
+	public void onFoodFound(FoodFoundEvent e) {
+		if (globalCounter.enabled) {
+			globalCounter.dots++;
+			if (globalCounter.dots == 32 && cast.clyde.is(LOCKED)) {
+				globalCounter.enabled = false;
+				logger.info(() -> "Global dot counter disabled (Clyde still locked when counter reached 32)");
+			}
+		}
+		else {
+			nextCandidate().ifPresent(ghost -> {
+				ghostCounters[ghost.seat()] += 1;
+			});
+		}
+	}
+
+	public void onLevelChange() {
+		resetGhostCounters();
+	}
+
+	public boolean isPreferredGhost(Ghost ghost) {
+		return nextCandidate().map(next -> next == ghost).orElse(false);
+	}
+
+	public int globalDotCount() {
+		return globalCounter.dots;
+	}
+
+	public boolean isGlobalDotCounterEnabled() {
+		return globalCounter.enabled;
+	}
+
+	public void enableAndResetGlobalDotCounter() {
+		globalCounter.enabled = true;
+		globalCounter.dots = 0;
+		logger.info(() -> "Global dot counter enabled and set to zero");
+	}
+
+	public int ghostDotCounter(int seat) {
+		return ghostCounters[seat];
+	}
+
+	private Game game() {
+		return cast.game();
+	}
+
+	private Optional<Ghost> nextCandidate() {
+		return Stream.of(cast.pinky, cast.inky, cast.clyde).filter(ghost -> ghost.is(LOCKED)).findFirst();
+	}
+
+	private void unlock(Ghost ghost) {
+		ghost.process(new GhostUnlockedEvent());
 	}
 
 	private int personalDotLimit(Ghost ghost) {
@@ -85,94 +141,41 @@ public class House implements Lifecycle {
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");
 	}
 
-	public void updateDotCounters() {
-		if (globalDotCounterEnabled) {
-			globalDotCounter++;
-//			logger.info(() -> String.format("Global dot counter: %d", globalDotCounter));
-			if (globalDotCounter == 32 && cast.clyde.is(LOCKED)) {
-				disableGlobalDotCounter();
-				logger.info(() -> "Global dot counter disabled (Clyde still locked when counter reached 32)");
-			}
-		} else {
-			nextCandidate().ifPresent(ghost -> {
-				ghostDotCountersBySeat[ghost.seat()] += 1;
-//				logger.info(() -> String.format("%s's dot counter: %d", ghost.name(), ghostDotCountersBySeat[ghost.seat()]));
-			});
-		}
+	private void resetGhostCounters() {
+		Arrays.fill(ghostCounters, 0);
+		logger.info(() -> "Ghost dot counters reset to zero");
 	}
 
 	/**
 	 * Determines if the given ghost can leave the ghost house.
 	 * 
-	 * @param ghost a ghost
+	 * @param ghost
+	 *                a ghost
 	 * 
-	 * @see <a href=
-	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
-	 *      Dossier</a>
+	 * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man Dossier</a>
 	 */
 	private boolean canLeave(Ghost ghost) {
-		if (ghost == cast.blinky) {
-			return true;
-		}
 		int pacManStarvingTimeLimit = game().level().number < 5 ? sec(4) : sec(3);
 		if (game().pacManStarvingTicks > pacManStarvingTimeLimit) {
 			logger.info(() -> String.format("%s can leave house: Pac-Man's starving time limit (%d ticks) reached",
 					ghost.name(), pacManStarvingTimeLimit));
 			return true;
 		}
-		if (globalDotCounterEnabled) {
+		if (globalCounter.enabled) {
 			int globalDotLimit = globalDotLimit(ghost);
-			if (globalDotCounter >= globalDotLimit) {
+			if (globalCounter.dots >= globalDotLimit) {
 				logger.info(
 						() -> String.format("%s can leave house: global dot limit (%d) reached", ghost.name(), globalDotLimit));
-				return true;
-			}
-			if (game().pacManStarvingTicks >= pacManStarvingTimeLimit) {
-				logger.info(() -> String.format("%s can leave house: Pac-Man's starving time limit (%d ticks) reached",
-						ghost.name(), pacManStarvingTimeLimit));
 				return true;
 			}
 			return false;
 		}
 		int ghostDotLimit = personalDotLimit(ghost);
-		if (ghostDotCountersBySeat[ghost.seat()] >= ghostDotLimit) {
+		if (ghostCounters[ghost.seat()] >= ghostDotLimit) {
 			logger
 					.info(() -> String.format("%s can leave house: ghost's dot limit (%d) reached", ghost.name(), ghostDotLimit));
 			return true;
 		}
 		return false;
-	}
-
-	public int globalDotCounter() {
-		return globalDotCounter;
-	}
-
-	public void resetGlobalDotCounter() {
-		globalDotCounter = 0;
-		logger.info(() -> "Global dot counter set to zero");
-	}
-
-	public void enableAndResetGlobalDotCounter() {
-		globalDotCounterEnabled = true;
-		globalDotCounter = 0;
-		logger.info(() -> "Global dot counter enabled and set to zero");
-	}
-
-	public void disableGlobalDotCounter() {
-		globalDotCounterEnabled = false;
-		logger.info(() -> "Global dot counter disabled (not reset)");
-	}
-
-	public void resetGhostDotCounters() {
-		Arrays.fill(ghostDotCountersBySeat, 0);
-		logger.info(() -> "Ghost dot counters reset to zero");
-	}
-
-	public int ghostDotCounter(int seat) {
-		return ghostDotCountersBySeat[seat];
-	}
-
-	public boolean isGlobalDotCounterEnabled() {
-		return globalDotCounterEnabled;
 	}
 }

@@ -12,6 +12,7 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.games.pacman.PacManAppSettings;
+import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.model.Tile;
@@ -54,7 +55,10 @@ public class Cheats implements Lifecycle {
 			gameController.cast().ifPresent(cast -> {
 				cast.game().maze().tiles().filter(Tile::containsPellet).forEach(tile -> {
 					cast.game().eatFoodAt(tile);
-					gameController.ghostHouse().ifPresent(House::updateDotCounters);
+					gameController.ghostHouse().ifPresent(house -> {
+						house.onFoodFound(new FoodFoundEvent(tile, false));
+						house.update();
+					});
 				});
 				LOGGER.info(() -> "All pellets eaten");
 			});

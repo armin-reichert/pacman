@@ -221,7 +221,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.timeoutAfter(() -> sec(4 + playView.mazeFlashingSeconds()))
 					.onEntry(() -> {
 						cast.pacMan.sprites.select("full");
-						house.resetGhostDotCounters();
+						house.onLevelChange();
 						stopSoundEffects();
 						
 					})
@@ -477,7 +477,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent foodFound = (FoodFoundEvent) event;
-			house.updateDotCounters();
+			house.onFoodFound(foodFound);
 			int points = game.eatFoodAt(foodFound.tile);
 			int livesBefore = game.lives;
 			game.score(points);

@@ -126,7 +126,7 @@ public class PlayView extends SimplePlayView {
 		}
 		if (showStates.getAsBoolean()) {
 			drawActorStates(g);
-			drawDotCounters(g);
+			drawGhostHouseState(g);
 		}
 	}
 
@@ -269,12 +269,12 @@ public class PlayView extends SimplePlayView {
 		drawSmallText(g, Color.YELLOW, bonus.tf.getX(), bonus.tf.getY(), text);
 	}
 
-	private void drawPacManStarvingTime(Graphics2D g, Image image, int col, int row) {
+	private void drawPacManStarvingTime(Graphics2D g) {
+		Image image = cast.pacMan.sprites.get("walking-" + Direction.RIGHT).frame(0);
+		int col = 1, row = 14;
 		int time = cast.game().pacManStarvingTicks;
+		g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);
 		try (Pen pen = new Pen(g)) {
-			if (image != null) {
-				g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);
-			}
 			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
 			pen.color(Color.WHITE);
 			pen.smooth(() -> pen.drawAtTilePosition(col + 2, row, time == -1 ? INFTY : String.format("%d", time)));
@@ -445,17 +445,16 @@ public class PlayView extends SimplePlayView {
 		}
 	}
 
-	private void drawDotCounters(Graphics2D g) {
+	private void drawGhostHouseState(Graphics2D g) {
 		if (ghostHouse == null) {
-			return; // test scenes etc.
+			return; // test scenes may have no ghost house
 		}
-		Ghost preferredGhost = ghostHouse.nextCandidate().orElse(null);
-		drawPacManStarvingTime(g, cast.pacMan.sprites.get("full").frame(0), 1, 14);
+		drawPacManStarvingTime(g);
 		drawDotCounter(g, clydeImage, ghostHouse.ghostDotCounter(cast.clyde.seat()), 1, 20,
-				!ghostHouse.isGlobalDotCounterEnabled() && preferredGhost == cast.clyde);
+				!ghostHouse.isGlobalDotCounterEnabled() && ghostHouse.isPreferredGhost(cast.clyde));
 		drawDotCounter(g, inkyImage, ghostHouse.ghostDotCounter(cast.inky.seat()), 24, 20,
-				!ghostHouse.isGlobalDotCounterEnabled() && preferredGhost == cast.inky);
-		drawDotCounter(g, null, ghostHouse.globalDotCounter(), 24, 14, ghostHouse.isGlobalDotCounterEnabled());
+				!ghostHouse.isGlobalDotCounterEnabled() && ghostHouse.isPreferredGhost(cast.inky));
+		drawDotCounter(g, null, ghostHouse.globalDotCount(), 24, 14, ghostHouse.isGlobalDotCounterEnabled());
 	}
 
 	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row, boolean emphasized) {
