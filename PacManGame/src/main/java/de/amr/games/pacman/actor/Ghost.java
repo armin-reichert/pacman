@@ -342,6 +342,8 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	}
 
 	public void enableAnimations(boolean b) {
-		sprites.enableAnimation(b);
+		for (Sprite sprite : sprites) {
+			sprite.enableAnimation(b);
+		}
 	}
 }
