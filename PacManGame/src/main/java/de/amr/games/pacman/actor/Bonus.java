@@ -11,7 +11,6 @@ import java.util.Random;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.SpriteMap;
-import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Game;
@@ -19,6 +18,7 @@ import de.amr.games.pacman.model.Symbol;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.api.Fsm;
+import de.amr.statemachine.api.FsmContainer;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -28,30 +28,20 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Bonus extends Entity implements Actor<BonusState> {
+public class Bonus extends Entity implements FsmContainer<BonusState, PacManGameEvent> {
 
-	private final Cast cast;
 	private final Fsm<BonusState, PacManGameEvent> brain;
+	private Theme theme;
 	private final SpriteMap sprites = new SpriteMap();
 	private Symbol symbol;
 	private int value;
 
-	public Bonus(Cast cast) {
-		this.cast = cast;
+	public Bonus(Theme theme) {
+		this.theme = theme;
 		tf.setWidth(Tile.SIZE);
 		tf.setHeight(Tile.SIZE);
 		brain = buildFsm();
 		brain.setLogger(Game.FSM_LOGGER);
-	}
-
-	@Override
-	public Entity entity() {
-		return this;
-	}
-
-	@Override
-	public Theme theme() {
-		return cast.theme();
 	}
 
 	@Override
@@ -65,7 +55,7 @@ public class Bonus extends Entity implements Actor<BonusState> {
 
 	public void setSymbol(Symbol symbol) {
 		this.symbol = symbol;
-		sprites.set("symbol", theme().spr_bonusSymbol(symbol));
+		sprites.set("symbol", theme.spr_bonusSymbol(symbol));
 	}
 
 	public int value() {
@@ -74,7 +64,7 @@ public class Bonus extends Entity implements Actor<BonusState> {
 
 	public void setValue(int value) {
 		this.value = value;
-		sprites.set("value", theme().spr_number(value));
+		sprites.set("value", theme.spr_number(value));
 	}
 
 	public void activate() {

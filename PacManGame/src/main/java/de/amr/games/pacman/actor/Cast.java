@@ -51,7 +51,6 @@ public class Cast {
 		inky = new Ghost(this, "Inky", 1, UP);
 		pinky = new Ghost(this, "Pinky", 2, DOWN);
 		clyde = new Ghost(this, "Clyde", 3, UP);
-		bonus = new Bonus(this);
 
 		dressActors();
 		actors().forEach(actor -> actor.setVisible(false));
@@ -94,8 +93,9 @@ public class Cast {
 				() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : game().maze().horizonSW));
 		clyde.setTeleportingDuration(sec(0.5f));
 
+		bonus = new Bonus(theme);
 		bonus.tf.setPosition(game().maze().bonusTile.centerX(), game().maze().bonusTile.y());
-		bonus.setVisible(false);
+		bonus.init();
 	}
 
 	public Game game() {
