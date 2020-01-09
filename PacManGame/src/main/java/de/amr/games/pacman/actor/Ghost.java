@@ -139,6 +139,9 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 					.onTick(() -> {
 						step(cast.pacMan.isTired() ? "flashing" : "frightened");
 						checkPacManCollision();
+						if (!cast.pacMan.isKicking()) {
+							resumeState(nextState);
+						}
 					})
 				
 				.state(DEAD)
@@ -191,12 +194,6 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 				.when(SCATTERING).then(CHASING)
 					.condition(() -> nextState == CHASING)
 					.act(() -> forceMove(moveDir().opposite()))
-				
-				.when(FRIGHTENED).then(CHASING)
-					.condition(() -> !cast.pacMan.isKicking() && nextState == CHASING)
-	
-				.when(FRIGHTENED).then(SCATTERING)
-					.condition(() -> !cast.pacMan.isKicking() && nextState == SCATTERING)
 				
 				.when(FRIGHTENED).then(DEAD)
 					.on(GhostKilledEvent.class)
