@@ -1,5 +1,7 @@
 package de.amr.games.pacman;
 
+import java.util.logging.Level;
+
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.GameController;
@@ -35,6 +37,7 @@ public class PacManApp extends Application {
 	public void init() {
 		Theme theme = Theme.createTheme(settings.theme);
 		setIcon(theme.spr_ghostFrightened().frame(0));
+		Game.FSM_LOGGER.setLevel(Level.INFO);
 		GameController gameController = new GameController(theme);
 		setController(gameController);
 		setExitHandler(app -> gameController.game().ifPresent(Game::saveHiscore));

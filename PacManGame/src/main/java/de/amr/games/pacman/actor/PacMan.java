@@ -57,6 +57,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	private int digestionTicks;
 
 	public PacMan(Cast cast) {
+		super("Pac-Man");
 		this.cast = cast;
 		brain = buildFsm();
 		brain.setLogger(Game.FSM_LOGGER);
@@ -84,11 +85,6 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	@Override
 	public Theme theme() {
 		return cast.theme();
-	}
-
-	@Override
-	public String name() {
-		return "Pac-Man";
 	}
 
 	@Override

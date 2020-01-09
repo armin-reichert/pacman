@@ -20,31 +20,8 @@ import de.amr.statemachine.core.StateMachine;
  */
 public abstract class AbstractMazeMover extends AbstractMazeResident implements SteerableMazeMover {
 
-	private final StateMachine<MoveState, Void> movement = new StateMachine<MoveState, Void>(MoveState.class) {
-
-		{
-			//@formatter:off
-			beginStateMachine()
-				.description(String.format("[%s movement]", name()))
-				.initialState(MOVING)
-				.states()
-					.state(MOVING)
-						.onTick(() -> moveInsideMaze())
-					.state(TELEPORTING)
-						.timeoutAfter(() -> teleportingTicks)
-						.onEntry(() -> setVisible(false))
-						.onExit(() -> setVisible(true))
-				.transitions()
-					.when(MOVING).then(TELEPORTING)
-						.condition(() -> enteredPortal())
-						.act(() -> placeAtPortalExit())
-					.when(TELEPORTING).then(MOVING)
-						.onTimeout()
-			.endStateMachine();
-			//@formatter:on
-		}
-	};
-
+	private final String name;
+	private final StateMachine<MoveState, Void> movement;
 	private Direction moveDir;
 	private Direction wishDir;
 	private Tile targetTile;
@@ -56,9 +33,32 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 	 */
 	protected abstract float maxSpeed();
 
-	public abstract String name();
+	public AbstractMazeMover(String name) {
+		this.name = name;
+		movement = new StateMachine<MoveState, Void>(MoveState.class) {
 
-	public AbstractMazeMover() {
+			{
+				//@formatter:off
+				beginStateMachine()
+					.description(String.format("[%s movement]", name))
+					.initialState(MOVING)
+					.states()
+						.state(MOVING)
+							.onTick(() -> moveInsideMaze())
+						.state(TELEPORTING)
+							.timeoutAfter(() -> teleportingTicks)
+							.onEntry(() -> setVisible(false))
+							.onExit(() -> setVisible(true))
+					.transitions()
+						.when(MOVING).then(TELEPORTING)
+							.condition(() -> enteredPortal())
+							.act(() -> placeAtPortalExit())
+						.when(TELEPORTING).then(MOVING)
+							.onTimeout()
+				.endStateMachine();
+				//@formatter:on
+			}
+		};
 		movement.setLogger(Game.FSM_LOGGER);
 	}
 
@@ -67,6 +67,10 @@ public abstract class AbstractMazeMover extends AbstractMazeResident implements 
 		targetTile = null;
 		enteredNewTile = true;
 		movement.init();
+	}
+
+	public String name() {
+		return name;
 	}
 
 	protected void moveOneStep() {

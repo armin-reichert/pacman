@@ -49,7 +49,6 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<GhostState> {
 
 	private final Cast cast;
-	private final String name;
 	private final int seat;
 	private final Direction eyes;
 	private final SpriteMap sprites = new SpriteMap();
@@ -60,8 +59,8 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	private Steering prevSteering;
 
 	public Ghost(Cast cast, String name, int seat, Direction eyes) {
+		super(name);
 		this.cast = cast;
-		this.name = name;
 		this.seat = seat;
 		this.eyes = eyes;
 		brain = buildFsm();
@@ -89,13 +88,8 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	}
 
 	@Override
-	public String name() {
-		return name;
-	}
-
-	@Override
 	public String toString() {
-		return String.format("(%s, col:%d, row:%d, %s)", name, tile().col, tile().row, getState());
+		return String.format("(%s, col:%d, row:%d, %s)", name(), tile().col, tile().row, getState());
 	}
 
 	public StateMachine<GhostState, PacManGameEvent> buildFsm() {
@@ -103,7 +97,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		/*@formatter:off*/
 		beginStateMachine(GhostState.class, PacManGameEvent.class)
 			 
-			.description(String.format("[%s]", name))
+			.description(String.format("[%s]", name()))
 			.initialState(LOCKED)
 		
 			.states()
@@ -320,7 +314,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		case DEAD:
 			return 2 * speed(game().level().ghostSpeed);
 		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name));
+			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name()));
 		}
 	}
 
