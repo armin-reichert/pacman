@@ -11,24 +11,24 @@ import java.util.Random;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.SpriteMap;
-import de.amr.games.pacman.actor.core.AbstractMazeResident;
 import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Symbol;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Bonus symbol (fruit or other symbol) that appears at the maze bonus position for around 9 seconds. When consumed, the
- * bonus is displayed for 3 seconds as a number representing its value and then disappears.
+ * Bonus symbol (fruit or other symbol) that appears at the maze bonus position
+ * for around 9 seconds. When consumed, the bonus is displayed for 3 seconds as
+ * a number representing its value and then disappears.
  * 
  * @author Armin Reichert
  */
-public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
+public class Bonus extends Entity implements Actor<BonusState> {
 
 	private final Cast cast;
 	private final Fsm<BonusState, PacManGameEvent> brain;
@@ -38,6 +38,8 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 
 	public Bonus(Cast cast) {
 		this.cast = cast;
+		tf.setWidth(Tile.SIZE);
+		tf.setHeight(Tile.SIZE);
 		brain = buildFsm();
 		brain.setLogger(Game.FSM_LOGGER);
 	}
@@ -50,11 +52,6 @@ public class Bonus extends AbstractMazeResident implements Actor<BonusState> {
 	@Override
 	public Theme theme() {
 		return cast.theme();
-	}
-
-	@Override
-	public Maze maze() {
-		return cast.game().maze();
 	}
 
 	@Override

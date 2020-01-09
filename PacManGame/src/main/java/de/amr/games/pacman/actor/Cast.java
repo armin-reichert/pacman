@@ -93,8 +93,8 @@ public class Cast {
 		clyde.during(CHASING, clyde.isHeadingFor(
 				() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : game().maze().horizonSW));
 		clyde.setTeleportingDuration(sec(0.5f));
-		
-		bonus.placeHalfRightOf(game().maze().bonusTile);
+
+		bonus.tf.setPosition(game().maze().bonusTile.centerX(), game().maze().bonusTile.y());
 		bonus.setVisible(false);
 	}
 

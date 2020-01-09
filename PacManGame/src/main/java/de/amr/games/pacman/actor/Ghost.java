@@ -252,7 +252,6 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		}
 	}
 
-	@Override
 	public void moveOneStep() {
 		if (prevSteering != steering()) {
 			steering().init();
@@ -260,7 +259,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 			LOGGER.info(String.format("%s: steering changed, was: %s now: %s", this, name(prevSteering), name(steering())));
 		}
 		steering().steer();
-		super.moveOneStep();
+		movement.update();
 		prevSteering = steering();
 	}
 
