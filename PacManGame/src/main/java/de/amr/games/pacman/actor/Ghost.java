@@ -113,7 +113,13 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 						sprites.select("color-" + moveDir());
 						sprites.forEach(Sprite::resetAnimation);
 					})
-					.onTick(() -> step("color-" + moveDir()))
+					.onTick(() -> {
+						if (cast.pacMan.isKicking()) {
+							step(cast.pacMan.isTired() ? "flashing" : "frightened");
+						} else {
+							step("color-" + moveDir());
+						}
+					})
 					
 				.state(LEAVING_HOUSE)
 					.onEntry(() -> steering().init())

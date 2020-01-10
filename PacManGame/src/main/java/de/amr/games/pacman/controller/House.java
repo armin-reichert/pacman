@@ -168,7 +168,6 @@ public class House implements Lifecycle {
 						() -> String.format("%s can leave house: global dot limit (%d) reached", ghost.name(), globalDotLimit));
 				return true;
 			}
-			return false;
 		}
 		int ghostDotLimit = personalDotLimit(ghost);
 		if (ghostCounters[ghost.seat()] >= ghostDotLimit) {
