@@ -118,7 +118,6 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 					.onEntry(() -> {
 						kicking = tired = false;
 						digestionTicks = 0;
-						game().clearPacManStarvingTime();
 						state().setConstantTimer(State.ENDLESS);
 						placeHalfRightOf(maze().pacManHome);
 						setMoveDir(RIGHT);
@@ -161,7 +160,6 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 					.onEntry(() -> {
 						kicking = tired = false;
 						digestionTicks = 0;
-						game().clearPacManStarvingTime();
 					})
 
 			.transitions()
@@ -237,14 +235,13 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	}
 
 	/**
-	 * NOTE: If the application property {@link PacManAppSettings#overflowBug} is
-	 * <code>true</code>, this method simulates the bug from the original Arcade
-	 * game where, if Pac-Man points upwards, the position ahead of Pac-Man is
-	 * wrongly calculated by adding the same number of tiles to the left.
+	 * NOTE: If the application property {@link PacManAppSettings#overflowBug} is <code>true</code>, this method simulates
+	 * the bug from the original Arcade game where, if Pac-Man points upwards, the position ahead of Pac-Man is wrongly
+	 * calculated by adding the same number of tiles to the left.
 	 * 
-	 * @param numTiles number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards
-	 *         his current move direction.
+	 * @param numTiles
+	 *                   number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards his current move direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
 		Tile tileAhead = maze().tileToDir(tile(), moveDir(), numTiles);
@@ -270,16 +267,15 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 			}
 		}
 		if (tile.containsFood()) {
-			game().pacManStarvingTicks = 0;
 			if (tile.containsEnergizer()) {
 				digestionTicks = DIGEST_ENERGIZER_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, true));
-			} else {
+			}
+			else {
 				digestionTicks = DIGEST_PELLET_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, false));
 			}
 		}
-		++game().pacManStarvingTicks;
 		return Optional.empty();
 	}
 }

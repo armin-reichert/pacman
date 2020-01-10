@@ -55,7 +55,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	private final Fsm<GhostState, PacManGameEvent> brain;
 	private final Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
 	private final Steering defaultSteering = isHeadingFor(this::targetTile);
-	private GhostState afterFrightenedState;
+	private GhostState followState;
 	private Steering prevSteering;
 
 	public Ghost(Cast cast, String name, int seat, Direction eyes) {
@@ -64,7 +64,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		this.seat = seat;
 		this.eyes = eyes;
 		brain = buildFsm();
-		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
+		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
 		brain.setLogger(Game.FSM_LOGGER);
 	}
 
@@ -105,7 +105,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 				.state(LOCKED)
 					.onEntry(() -> {
 						visible = true;
-						afterFrightenedState = getState();
+						followState = getState();
 						placeHalfRightOf(maze().ghostHouseSeats[seat]);
 						enteredNewTile();
 						setMoveDir(eyes);
@@ -146,7 +146,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 				.state(FRIGHTENED)
 					.onTick(() -> {
 						if (!cast.pacMan.isKicking()) {
-							resumeState(afterFrightenedState);
+							resumeState(followState);
 							return;
 						}
 						step(cast.pacMan.isTired() ? "flashing" : "frightened");
@@ -171,14 +171,20 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 				.when(LOCKED).then(LEAVING_HOUSE)
 					.on(GhostUnlockedEvent.class)
 			
+				.stay(LOCKED)
+					.on(PacManGainsPowerEvent.class)
+					
 				.when(LEAVING_HOUSE).then(SCATTERING)
-					.condition(() -> steering().isComplete() && afterFrightenedState == SCATTERING)
+					.condition(() -> steering().isComplete() && followState == SCATTERING)
 					.act(() -> forceMove(Direction.LEFT))
 				
 				.when(LEAVING_HOUSE).then(CHASING)
-					.condition(() -> steering().isComplete() && afterFrightenedState == CHASING)
+					.condition(() -> steering().isComplete() && followState == CHASING)
 					.act(() -> forceMove(Direction.LEFT))
-					
+				
+				.stay(LEAVING_HOUSE)
+					.on(PacManGainsPowerEvent.class)
+				
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
 					.condition(() -> steering().isComplete())
 				
@@ -190,7 +196,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 					.on(GhostKilledEvent.class)
 				
 				.when(CHASING).then(SCATTERING)
-					.condition(() -> afterFrightenedState == SCATTERING)
+					.condition(() -> followState == SCATTERING)
 					.act(() -> forceMove(moveDir().opposite()))
 	
 				.when(SCATTERING).then(FRIGHTENED)
@@ -201,8 +207,12 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 					.on(GhostKilledEvent.class)
 				
 				.when(SCATTERING).then(CHASING)
-					.condition(() -> afterFrightenedState == CHASING)
+					.condition(() -> followState == CHASING)
 					.act(() -> forceMove(moveDir().opposite()))
+				
+				.stay(FRIGHTENED)
+					.on(PacManGainsPowerEvent.class)
+					.act(() -> state().resetTimer())
 				
 				.when(FRIGHTENED).then(DEAD)
 					.on(GhostKilledEvent.class)
@@ -227,12 +237,12 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		return seat;
 	}
 
-	public void setAfterFrightenedState(GhostState state) {
-		this.afterFrightenedState = state;
+	public void setFollowState(GhostState state) {
+		this.followState = state;
 	}
 
-	public GhostState afterFrightenedState() {
-		return afterFrightenedState;
+	public GhostState followState() {
+		return followState;
 	}
 
 	@Override

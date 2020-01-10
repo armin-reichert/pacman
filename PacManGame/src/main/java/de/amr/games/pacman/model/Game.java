@@ -23,12 +23,8 @@ import java.util.logging.Logger;
  * 
  * @author Armin Reichert
  * 
- * @see <a href=
- *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
- *      dossier</a>
- * @see <a href=
- *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man
- *      level specifications</a>
+ * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man dossier</a>
+ * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man level specifications</a>
  */
 public class Game {
 
@@ -85,7 +81,6 @@ public class Game {
 	private GameLevel level;
 	public int lives;
 	public int score;
-	public int pacManStarvingTicks;
 
 	public Game() {
 		maze = new Maze();
@@ -95,7 +90,6 @@ public class Game {
 		levelCounter.clear();
 		lives = 3;
 		score = 0;
-		pacManStarvingTicks = 0;
 		enterLevel(1);
 	}
 
@@ -135,7 +129,8 @@ public class Game {
 	}
 
 	/**
-	 * @param tile tile containing food
+	 * @param tile
+	 *               tile containing food
 	 * @return points scored
 	 */
 	public int eatFoodAt(Tile tile) {
@@ -144,7 +139,8 @@ public class Game {
 			level.ghostsKilledByEnergizer = 0;
 			tile.removeFood();
 			return POINTS_ENERGIZER;
-		} else {
+		}
+		else {
 			tile.removeFood();
 			return POINTS_PELLET;
 		}
@@ -180,9 +176,5 @@ public class Game {
 		}
 		LOGGER.info(() -> String.format("Scored %d points for killing %s (%s ghost in sequence)", points, ghostName,
 				new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]));
-	}
-
-	public void clearPacManStarvingTime() {
-		pacManStarvingTicks = -1;
 	}
 }

@@ -145,7 +145,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void createPlayView() {
 		playView = new PlayView(cast);
 		playView.fnGhostCommandState = ghostCommand::state;
-		playView.ghostHouse = house;
+		playView.house = house;
 		playView.showFPS = () -> showFPS;
 		playView.showGrid = () -> showGrid;
 		playView.showRoutes = () -> showRoutes;
@@ -420,7 +420,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			PacManGhostCollisionEvent collision = (PacManGhostCollisionEvent) event;
 			if (!collision.ghost.is(GhostState.FRIGHTENED)) {
 				LOGGER.info(() -> String.format("Pac-Man killed by %s at %s", collision.ghost.name(), collision.ghost.tile()));
-				house.enableAndResetGlobalDotCounter();
+				house.onLifeLost();
 				sound.muteAll();
 				playView.stopEnergizerBlinking();
 				cast.pacMan.process(new PacManKilledEvent(collision.ghost));
