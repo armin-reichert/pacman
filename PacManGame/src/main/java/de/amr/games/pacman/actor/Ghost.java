@@ -123,7 +123,13 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 					
 				.state(LEAVING_HOUSE)
 					.onEntry(() -> steering().init())
-					.onTick(() -> step("color-" + moveDir()))
+					.onTick(() -> {
+						if (cast.pacMan.isKicking()) {
+							step(cast.pacMan.isTired() ? "flashing" : "frightened");
+						} else {
+							step("color-" + moveDir());
+						}
+					})
 				
 				.state(ENTERING_HOUSE)
 					.onEntry(() -> steering().init())
