@@ -46,6 +46,10 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 	private ChaseGhostsAnimation chaseGhosts;
 	private GhostPointsAnimation ghostPointsAnimation;
 
+	private Color orange = new Color(255, 163, 71);
+//	private Color pink = new Color(248, 120, 88);
+	private Color red = new Color(171, 19, 0);
+
 	public IntroView(Theme theme) {
 		this.theme = theme;
 		this.name = "IntroView";
@@ -199,14 +203,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 	public void draw(Graphics2D g) {
 		g.setColor(new Color(0, 23, 61));
 		g.fillRect(0, 0, width(), height());
-
-		// use colors from logo image
-		Color orange = new Color(255, 163, 71);
-		// Color pink = new Color(248, 120, 88);
-		Color red = new Color(171, 19, 0);
-
 		try (Pen pen = new Pen(g)) {
-			pen.font(theme.fnt_text());
 			switch (getState()) {
 			case SCROLLING_LOGO:
 				pacManLogo.draw(g);
@@ -215,34 +212,61 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 				pacManLogo.draw(g);
 				chaseGhosts.draw(g);
 				chasePacMan.draw(g);
+				drawFullScreenMode(g, 31);
 				break;
 			case WAITING_FOR_INPUT:
-				if (app().clock().getTicks() % sec(1) < sec(0.5f)) {
-					pen.color(Color.WHITE);
-					pen.fontSize(14);
-					pen.hcenter("Press SPACE to start!", width(), 18);
-				}
-				pen.color(orange);
-				pen.fontSize(10);
-				pen.hcenter("F11 - Fullscreen Mode", width(), 22);
-				int selectedSpeed = Arrays.asList(Game.SPEED_1_FPS, Game.SPEED_2_FPS, Game.SPEED_3_FPS)
-						.indexOf(app().clock().getFrequency()) + 1;
-				pen.color(selectedSpeed == 1 ? orange : red);
-				pen.drawAtTilePosition(1, 31, "1 - Normal");
-				pen.color(selectedSpeed == 2 ? orange : red);
-				pen.drawAtTilePosition(11, 31, "2 - Fast");
-				pen.color(selectedSpeed == 3 ? orange : red);
-				pen.drawAtTilePosition(19, 31, "3 - Insane");
 				pacManLogo.draw(g);
 				chasePacMan.draw(g);
 				ghostPointsAnimation.draw(g);
 				gitHubLink.draw(g);
+				if (app().clock().getTicks() % sec(1) < sec(0.5f)) {
+					drawPressSpaceToStart(g, 18);
+				}
+				drawSpeedSelection(g, 22);
+				drawFullScreenMode(g, 31);
 				break;
 			case READY_TO_PLAY:
 				break;
 			default:
 				throw new IllegalStateException();
 			}
+		}
+	}
+
+	private void drawPressSpaceToStart(Graphics2D g, int row) {
+		try (Pen pen = new Pen(g)) {
+			pen.font(theme.fnt_text());
+			pen.fontSize(14);
+			pen.color(Color.WHITE);
+			pen.hcenter("Press SPACE to start!", width(), row);
+		}
+	}
+
+	private void drawFullScreenMode(Graphics2D g, int row) {
+		try (Pen pen = new Pen(g)) {
+			pen.font(theme.fnt_text());
+			pen.fontSize(10);
+			pen.color(orange);
+			if (app().inFullScreenMode()) {
+				pen.hcenter("F11 - Window Mode", width(), row);
+			} else {
+				pen.hcenter("F11 - Fullscreen Mode", width(), row);
+			}
+		}
+	}
+
+	private void drawSpeedSelection(Graphics2D g, int row) {
+		int selectedSpeed = Arrays.asList(Game.SPEED_1_FPS, Game.SPEED_2_FPS, Game.SPEED_3_FPS)
+				.indexOf(app().clock().getFrequency()) + 1;
+		try (Pen pen = new Pen(g)) {
+			pen.font(theme.fnt_text());
+			pen.fontSize(10);
+			pen.color(selectedSpeed == 1 ? orange : red);
+			pen.drawAtTilePosition(1, row, "1 - Normal");
+			pen.color(selectedSpeed == 2 ? orange : red);
+			pen.drawAtTilePosition(11, row, "2 - Fast");
+			pen.color(selectedSpeed == 3 ? orange : red);
+			pen.drawAtTilePosition(19, row, "3 - Insane");
 		}
 	}
 }
