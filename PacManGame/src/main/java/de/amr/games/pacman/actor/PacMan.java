@@ -139,11 +139,11 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 							return;
 						}
 						if (kicking) {
-							int t = state().getTicksConsumed();
-							if (t == state().getDuration() * 75 / 100) {
+							int remaining = state().getTicksRemaining();
+							if (remaining > 0 && remaining < sec(2)) {
 								tired = true;
 							}
-							else if (t == state().getDuration()) {
+							if (remaining == 0) {
 								cast.theme().snd_waza().stop();
 								state().setConstantTimer(State.ENDLESS);
 								kicking = tired = false;

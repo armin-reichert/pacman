@@ -207,7 +207,7 @@ public class ArcadeTheme implements Theme {
 
 	@Override
 	public Sprite spr_ghostFlashing() {
-		return Sprite.of(ghostFlashing).animate(CYCLIC, 100);
+		return Sprite.of(ghostFlashing).animate(CYCLIC, 50);
 	}
 
 	@Override
