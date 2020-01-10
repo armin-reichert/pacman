@@ -157,7 +157,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 					.timeoutAfter(sec(1)) // "dying" time
 					.onEntry(() -> {
 						int points = POINTS_GHOST[game().level().ghostsKilledByEnergizer - 1];
-						sprites.select("number-" + points);
+						sprites.select("points-" + points);
 						setTargetTile(maze().ghostHouseSeats[0]);
 					})
 					.onTick(() -> {
@@ -339,8 +339,8 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 			sprites.set("color-" + dir, theme().spr_ghostColored(color, dir.ordinal()));
 			sprites.set("eyes-" + dir, theme().spr_ghostEyes(dir.ordinal()));
 		});
-		for (int number : new int[] { 200, 400, 800, 1600 }) {
-			sprites.set("number-" + number, theme().spr_number(number));
+		for (int points : Game.POINTS_GHOST) {
+			sprites.set("points-" + points, theme().spr_number(points));
 		}
 		sprites.set("frightened", theme().spr_ghostFrightened());
 		sprites.set("flashing", theme().spr_ghostFlashing());

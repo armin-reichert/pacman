@@ -47,6 +47,7 @@ public abstract class AbstractMazeMover extends Entity implements SteerableMazeM
 					.initialState(MOVING)
 					.states()
 						.state(MOVING)
+						.onEntry(() -> setVisible(true))
 							.onTick(() -> moveInsideMaze())
 						.state(TELEPORTING)
 							.timeoutAfter(() -> teleportingTicks)
