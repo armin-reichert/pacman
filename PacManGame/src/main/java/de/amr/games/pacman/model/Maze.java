@@ -168,7 +168,7 @@ public class Maze {
 		if (portalRight.col == col && portalRight.row == row) {
 			return portalRight;
 		}
-		return new Tile((byte) col, (byte) row, portalRight.row == row ? TUNNEL : WALL);
+		return new Tile((byte) col, (byte) row, WALL);
 	}
 
 	/**
@@ -203,7 +203,7 @@ public class Maze {
 	public boolean insideBoard(Tile tile) {
 		return insideBoard(tile.col, tile.row);
 	}
-
+	
 	public boolean isDoor(Tile tile) {
 		return tile == doorLeft || tile == doorRight;
 	}
