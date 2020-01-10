@@ -252,7 +252,7 @@ public class PlayView extends SimplePlayView {
 		text.append(duration == State.ENDLESS ? String.format("(%s,%s)", ghost.getState(), INFTY)
 				: String.format("(%s,%d|%d)", ghost.getState(), remaining, duration));
 		if (ghost.is(LEAVING_HOUSE)) {
-			text.append(String.format("[->%s]", ghost.nextState()));
+			text.append(String.format("[->%s]", ghost.afterFrightenedState()));
 		}
 		drawSmallText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), text.toString());
 	}
