@@ -54,9 +54,7 @@ public class House {
 		if (cast.blinky.is(LOCKED)) {
 			unlock(cast.blinky);
 		}
-		preferredLockedGhost().filter(this::canLeaveHome).ifPresent(ghost -> {
-			unlock(ghost);
-		});
+		preferredLockedGhost().filter(this::canLeaveHome).ifPresent(ghost -> unlock(ghost));
 		pacManStarvingTicks += 1;
 	}
 
@@ -129,7 +127,7 @@ public class House {
 	 */
 	private boolean canLeaveHome(Ghost ghost) {
 		int pacManStarvingTimeLimit = game().level().number < 5 ? sec(4) : sec(3);
-		if (pacManStarvingTicks > pacManStarvingTimeLimit) {
+		if (pacManStarvingTicks >= pacManStarvingTimeLimit) {
 			logger.info(() -> String.format("%s can leave house: Pac-Man's starving time limit (%d ticks) reached",
 					ghost.name(), pacManStarvingTimeLimit));
 			pacManStarvingTicks = 0;
