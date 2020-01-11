@@ -151,12 +151,11 @@ public class Maze {
 	}
 
 	/**
-	 * @param col
-	 *              a column index
-	 * @param row
-	 *              a row index
-	 * @return the tile with the given coordinates. Tiles outside of the board are tunnel tiles (if in the same row as the
-	 *         board tunnel) or walls otherwise.
+	 * @param col a column index
+	 * @param row a row index
+	 * @return the tile with the given coordinates. Tiles outside of the board are
+	 *         tunnel tiles (if in the same row as the board tunnel) or walls
+	 *         otherwise.
 	 */
 	public Tile tileAt(int col, int row) {
 		if (insideBoard(col, row)) {
@@ -172,25 +171,27 @@ public class Maze {
 	}
 
 	/**
-	 * @param tile
-	 *               reference tile
-	 * @param dir
-	 *               some direction
-	 * @param n
-	 *               number of tiles
-	 * @return the tile located <code>n</code> tiles away from the reference tile towards the given direction. This can be
-	 *         a tile outside of the board!
+	 * @param tile reference tile
+	 * @param dir  some direction
+	 * @param n    number of tiles
+	 * @return the tile located <code>n</code> tiles away from the reference tile
+	 *         towards the given direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
+		if (tile.equals(portalLeft) && dir == Direction.LEFT) {
+			return portalRight;
+		}
+		if (tile.equals(portalRight) && dir == Direction.RIGHT) {
+			return portalLeft;
+		}
 		return tileAt(tile.col + n * dir.dx, tile.row + n * dir.dy);
 	}
 
 	/**
-	 * @param tile
-	 *               reference tile
-	 * @param dir
-	 *               some direction
-	 * @return neighbor towards the given direction. This can be a tile outside of the board!
+	 * @param tile reference tile
+	 * @param dir  some direction
+	 * @return neighbor towards the given direction. This can be a tile outside of
+	 *         the board!
 	 */
 	public Tile tileToDir(Tile tile, Direction dir) {
 		return tileToDir(tile, dir, 1);
@@ -203,7 +204,7 @@ public class Maze {
 	public boolean insideBoard(Tile tile) {
 		return insideBoard(tile.col, tile.row);
 	}
-	
+
 	public boolean isDoor(Tile tile) {
 		return tile == doorLeft || tile == doorRight;
 	}
@@ -211,7 +212,7 @@ public class Maze {
 	public boolean inFrontOfGhostHouseDoor(Tile tile) {
 		return isDoor(tileToDir(tile, Direction.DOWN));
 	}
-	
+
 	public boolean isPortal(Tile tile) {
 		return tile.equals(portalLeft) || tile.equals(portalRight);
 	}
