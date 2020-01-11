@@ -21,18 +21,23 @@ import de.amr.games.pacman.view.core.GameView;
 import de.amr.games.pacman.view.core.Pen;
 
 /**
- * Simple play view providing core functionality for playing.
+ * Simple play view providing core functionality.
  * 
  * @author Armin Reichert
  */
 public class SimplePlayView implements GameView {
 
+	enum Mode {
+		EMPTY_MAZE, CROWDED_MAZE, FLASHING_MAZE
+	}
+
 	protected final Cast cast;
-	protected boolean mazeFlashing;
+	protected Mode mode;
 	protected SpriteAnimation energizerBlinking;
-	protected Image lifeImage;
-	protected Sprite fullMazeSprite;
-	protected Sprite flashingMazeSprite;
+	protected Image imageLife;
+	protected Sprite spriteMazeEmpty;
+	protected Sprite spriteMazeFull;
+	protected Sprite spriteMazeFlashing;
 	protected String messageText;
 	protected Color messageColor;
 
@@ -40,7 +45,7 @@ public class SimplePlayView implements GameView {
 
 	public SimplePlayView(Cast cast) {
 		this.cast = cast;
-		mazeFlashing = false;
+		mode = Mode.CROWDED_MAZE;
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
 		cast.addThemeListener(this);
@@ -60,9 +65,10 @@ public class SimplePlayView implements GameView {
 
 	@Override
 	public void onThemeChanged(Theme theme) {
-		lifeImage = theme.spr_pacManWalking(3).frame(1);
-		fullMazeSprite = theme.spr_fullMaze();
-		flashingMazeSprite = theme.spr_flashingMaze();
+		imageLife = theme.spr_pacManWalking(3).frame(1);
+		spriteMazeFull = theme.spr_fullMaze();
+		spriteMazeEmpty = theme.spr_emptyMaze();
+		spriteMazeFlashing = theme.spr_flashingMaze();
 	}
 
 	public Cast cast() {
@@ -85,13 +91,13 @@ public class SimplePlayView implements GameView {
 	@Override
 	public void init() {
 		stopEnergizerBlinking();
-		stopMazeFlashing();
 		clearMessage();
+		showCrowdedMaze();
 	}
 
 	@Override
 	public void update() {
-		if (!mazeFlashing) {
+		if (mode == Mode.CROWDED_MAZE) {
 			energizerBlinking.update();
 		}
 	}
@@ -109,12 +115,12 @@ public class SimplePlayView implements GameView {
 	}
 
 	public void enableAnimations() {
-		flashingMazeSprite.enableAnimation(true);
+		spriteMazeFlashing.enableAnimation(true);
 		cast.ghostsOnStage().forEach(ghost -> ghost.enableAnimations(true));
 	}
 
 	public void disableAnimations() {
-		flashingMazeSprite.enableAnimation(false);
+		spriteMazeFlashing.enableAnimation(false);
 		cast.ghostsOnStage().forEach(ghost -> ghost.enableAnimations(false));
 	}
 
@@ -122,12 +128,16 @@ public class SimplePlayView implements GameView {
 		return game().level().mazeNumFlashes * Theme.MAZE_FLASH_TIME_MILLIS / 1000;
 	}
 
-	public void startMazeFlashing() {
-		mazeFlashing = true;
+	public void showEmptyMaze() {
+		mode = Mode.EMPTY_MAZE;
 	}
 
-	public void stopMazeFlashing() {
-		mazeFlashing = false;
+	public void showFlashingMaze() {
+		mode = Mode.FLASHING_MAZE;
+	}
+
+	public void showCrowdedMaze() {
+		mode = Mode.CROWDED_MAZE;
 	}
 
 	public void startEnergizerBlinking() {
@@ -157,28 +167,47 @@ public class SimplePlayView implements GameView {
 	}
 
 	protected void drawMaze(Graphics2D g) {
-		if (mazeFlashing) {
-			flashingMazeSprite.draw(g, 0, 3 * Tile.SIZE);
+		switch (mode) {
+		case CROWDED_MAZE:
+			drawCrowdedMaze(g);
+			break;
+		case EMPTY_MAZE:
+			drawEmptyMaze(g);
+			break;
+		case FLASHING_MAZE:
+			drawFlashingMaze(g);
+			break;
+		default:
+			break;
 		}
-		else {
-			fullMazeSprite.draw(g, 0, 3 * Tile.SIZE);
-			maze().tiles().filter(Tile::containsEatenFood).forEach(tile -> {
+	}
+
+	protected void drawCrowdedMaze(Graphics2D g) {
+		spriteMazeFull.draw(g, 0, 3 * Tile.SIZE);
+		maze().tiles().filter(Tile::containsEatenFood).forEach(tile -> {
+			g.setColor(bgColor(tile));
+			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
+		});
+		// hide energizer tiles when blinking animation is dark
+		if (energizerBlinking.currentFrame() == 1) {
+			Arrays.stream(maze().energizers).forEach(tile -> {
 				g.setColor(bgColor(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
-			// hide energizer tiles when blinking animation is dark
-			if (energizerBlinking.currentFrame() == 1) {
-				Arrays.stream(maze().energizers).forEach(tile -> {
-					g.setColor(bgColor(tile));
-					g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
-				});
-			}
-			// hide door when ghost is passing through
-			if (cast.ghostsOnStage().anyMatch(ghost -> maze().isDoor(ghost.tile()))) {
-				g.setColor(theme().color_mazeBackground());
-				g.fillRect(maze().doorLeft.x(), maze().doorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
-			}
 		}
+		// hide door when ghost is passing through
+		if (cast.ghostsOnStage().anyMatch(ghost -> maze().isDoor(ghost.tile()))) {
+			g.setColor(theme().color_mazeBackground());
+			g.fillRect(maze().doorLeft.x(), maze().doorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
+		}
+	}
+
+	protected void drawEmptyMaze(Graphics2D g) {
+		spriteMazeEmpty.draw(g, 0, 3 * Tile.SIZE);
+	}
+
+	protected void drawFlashingMaze(Graphics2D g) {
+		spriteMazeFlashing.draw(g, 0, 3 * Tile.SIZE);
 	}
 
 	protected void drawActors(Graphics2D g) {
@@ -220,7 +249,7 @@ public class SimplePlayView implements GameView {
 	protected void drawLives(Graphics2D g) {
 		int imageSize = 2 * Tile.SIZE;
 		for (int i = 0, x = imageSize; i < game().lives; ++i, x += imageSize) {
-			g.drawImage(lifeImage, x, height() - imageSize, null);
+			g.drawImage(imageLife, x, height() - imageSize, null);
 		}
 	}
 
