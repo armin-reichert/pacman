@@ -194,8 +194,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						createPlayingEnvironment();
 						sound.gameReady();
 					})
-					.onTick(() -> {
-						int t = state().getTicksConsumed();
+					.onTick((state, t, remaining) -> {
 						if (t == sec(5)) {
 							playView.messageColor(Color.YELLOW);
 							playView.message("Ready!");
@@ -221,13 +220,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", 
 								game.level().number, game.level().ghostsKilledInLevel));
 					})
-					.onTick(() -> {
-						int t = state().getTicksConsumed();
+					.onTick((state, t, remaining) -> {
 						float f = playView.mazeFlashingSeconds();
-						
-						// during first two seconds: do nothing
-						
-						// at second 2: hide ghosts, start flashing
+						// During first two seconds, do nothing. At second 2, hide ghosts and start flashing.
 						if (t == sec(2)) {
 							cast.ghostsOnStage().forEach(ghost -> ghost.setVisible(false));
 							if (f > 0) {
@@ -235,19 +230,19 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							}
 						}
 
-						// after flashing: show empty maze
+						// After flashing, show empty maze.
 						if (t == sec(2 + f)) {
 							playView.showEmptyMaze();
 						}
 						
-						// after two more seconds: change level, show crowded maze
+						// After two more seconds, change level and show crowded maze.
 						if (t == sec(4 + f)) {
 							game.enterLevel(game.level().number + 1);
 							cast.actorsOnStage().forEach(Actor::init);
 							playView.init();
 						}
 						
-						// after two more seconds until end: let ghosts jump 
+						// After two more seconds until end of state, let ghosts jump inside the house. 
 						if (t >= sec(6 + f)) {
 							cast.ghostsOnStage().forEach(Ghost::update);
 						}
@@ -274,8 +269,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						game.lives -= settings.pacManImmortable ? 0 : 1;
 						sound.muteSoundEffects();
 					})
-					.onTick(() -> {
-						int t = state().getTicksConsumed();
+					.onTick((state, t, remaining) -> {
 						if (t == sec(1)) {
 							// Pac-Man stops struggling
 							cast.pacMan.sprites.current().get().enableAnimation(false);
