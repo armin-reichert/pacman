@@ -418,27 +418,27 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		private void onPacManGhostCollision(PacManGameEvent event) {
-			if (!cast.pacMan.is(PacManState.ALIVE)) {
-				return;
-			}
 			PacManGhostCollisionEvent collision = (PacManGhostCollisionEvent) event;
-			if (!collision.ghost.is(GhostState.FRIGHTENED)) {
-				LOGGER.info(() -> String.format("Pac-Man killed by %s at %s", collision.ghost.name(), collision.ghost.tile()));
-				house.onLifeLost();
-				sound.muteAll();
-				playView.stopEnergizerBlinking();
-				cast.pacMan.process(new PacManKilledEvent(collision.ghost));
-				enqueue(new PacManKilledEvent(collision.ghost));
-			} else {
-				LOGGER.info(() -> String.format("Ghost %s killed at %s", collision.ghost.name(), collision.ghost.tile()));
+			Ghost ghost = collision.ghost;
+			if (ghost.is(FRIGHTENED)) {
+				// Ghost killed
 				int livesBefore = game.lives;
-				game.scoreKilledGhost(collision.ghost.name());
+				game.scoreKilledGhost(ghost.name());
 				if (game.lives > livesBefore) {
 					sound.extraLife();
 				}
 				sound.ghostEaten();
-				collision.ghost.process(new GhostKilledEvent(collision.ghost));
-				enqueue(new GhostKilledEvent(collision.ghost));
+				ghost.process(new GhostKilledEvent(ghost));
+				enqueue(new GhostKilledEvent(ghost));
+				LOGGER.info(() -> String.format("Ghost %s killed at %s", ghost.name(), ghost.tile()));
+			} else {
+				// Pac-Man killed
+				house.onLifeLost();
+				sound.muteAll();
+				playView.stopEnergizerBlinking();
+				cast.pacMan.process(new PacManKilledEvent(ghost));
+				enqueue(new PacManKilledEvent(ghost));
+				LOGGER.info(() -> String.format("Pac-Man killed by %s at %s", ghost.name(), ghost.tile()));
 			}
 		}
 

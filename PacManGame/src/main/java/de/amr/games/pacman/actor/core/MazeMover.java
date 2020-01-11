@@ -91,4 +91,12 @@ public interface MazeMover {
 	 *         tile (might be state-dependent)
 	 */
 	boolean canMoveBetween(Tile tile, Tile neighbor);
+
+	/**
+	 * @param other other actor
+	 * @return if both actors occupy the same tile
+	 */
+	default boolean onSameTileAs(MazeMover other) {
+		return tile().equals(other.tile());
+	}
 }

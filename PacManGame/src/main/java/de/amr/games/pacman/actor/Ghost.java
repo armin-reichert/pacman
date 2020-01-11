@@ -146,6 +146,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 				.state(FRIGHTENED)
 					.onTick(() -> {
 						if (!cast.pacMan.isKicking()) {
+							LOGGER.info(String.format("%s resumes state %s", this, followState));
 							resumeState(followState);
 							return;
 						}
@@ -212,7 +213,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 				
 				.stay(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
-					.act(() -> state().resetTimer())
+					.act(() -> restartTimer(FRIGHTENED))
 				
 				.when(FRIGHTENED).then(DEAD)
 					.on(GhostKilledEvent.class)
@@ -338,8 +339,10 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	}
 
 	private void checkPacManCollision() {
-		if (!isTeleporting() && !cast.pacMan.isTeleporting() && cast.pacMan.is(PacManState.ALIVE)
-				&& tile().equals(cast.pacMan.tile())) {
+		if (isTeleporting() || cast.pacMan.isTeleporting()) {
+			return;
+		}
+		if (onSameTileAs(cast.pacMan) && cast.pacMan.is(PacManState.ALIVE)) {
 			publish(new PacManGhostCollisionEvent(this, tile()));
 		}
 	}

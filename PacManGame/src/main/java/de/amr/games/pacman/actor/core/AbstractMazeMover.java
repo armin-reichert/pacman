@@ -112,7 +112,7 @@ public abstract class AbstractMazeMover extends Entity implements SteerableMazeM
 	public void placeHalfRightOf(Tile tile) {
 		placeAt(tile, Tile.SIZE / 2, 0);
 	}
-
+	
 	public void setTeleportingDuration(int ticks) {
 		teleportingTicks = ticks;
 	}
