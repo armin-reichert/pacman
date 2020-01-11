@@ -333,10 +333,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.act(playingState()::onBonusFound)
 					
 				.stay(PLAYING)
-					.on(PacManGainsPowerEvent.class)
-					.act(playingState()::onPacManGainsPower)
-					
-				.stay(PLAYING)
 					.on(PacManLostPowerEvent.class)
 					.act(playingState()::onPacManLostPower)
 			
@@ -408,11 +404,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			sound.muteGhostSounds();
 		}
 
-		private void onPacManGainsPower(PacManGameEvent event) {
-			ghostCommand.suspend();
-			cast.actorsOnStage().forEach(actor -> actor.process(event));
-		}
-
 		private void onPacManLostPower(PacManGameEvent event) {
 			ghostCommand.resume();
 		}
@@ -473,7 +464,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						() -> String.format("Bonus %s added, time: %.2f sec", cast.bonus, cast.bonus.state().getDuration() / 60f));
 			}
 			if (foodFound.energizer) {
-				enqueue(new PacManGainsPowerEvent());
+				ghostCommand.suspend();
+				cast.pacMan.process(new PacManGainsPowerEvent());
+				cast.ghostsOnStage().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
 			}
 		}
 	}

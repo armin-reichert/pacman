@@ -18,6 +18,7 @@ import static de.amr.games.pacman.model.Timing.speed;
 import java.awt.Graphics2D;
 import java.util.Optional;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
@@ -147,6 +148,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 								state().setConstantTimer(State.ENDLESS);
 								kicking = tired = false;
 								publish(new PacManLostPowerEvent());
+								Application.LOGGER.info("Pac-Man lost power");
 								return;
 							}
 						}
@@ -174,7 +176,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 						FSM_LOGGER.info(() -> String.format("Pac-Man gaining power for %d ticks (%.2f sec)",
 								state().getDuration(), state().getDuration() / 60f));
 					})
-
+					
 				.when(ALIVE).then(DEAD).on(PacManKilledEvent.class)
 
 		.endStateMachine();
@@ -235,13 +237,14 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	}
 
 	/**
-	 * NOTE: If the application property {@link PacManAppSettings#overflowBug} is <code>true</code>, this method simulates
-	 * the bug from the original Arcade game where, if Pac-Man points upwards, the position ahead of Pac-Man is wrongly
-	 * calculated by adding the same number of tiles to the left.
+	 * NOTE: If the application property {@link PacManAppSettings#overflowBug} is
+	 * <code>true</code>, this method simulates the bug from the original Arcade
+	 * game where, if Pac-Man points upwards, the position ahead of Pac-Man is
+	 * wrongly calculated by adding the same number of tiles to the left.
 	 * 
-	 * @param numTiles
-	 *                   number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards his current move direction.
+	 * @param numTiles number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards
+	 *         his current move direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
 		Tile tileAhead = maze().tileToDir(tile(), moveDir(), numTiles);
@@ -270,8 +273,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 			if (tile.containsEnergizer()) {
 				digestionTicks = DIGEST_ENERGIZER_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, true));
-			}
-			else {
+			} else {
 				digestionTicks = DIGEST_PELLET_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, false));
 			}
