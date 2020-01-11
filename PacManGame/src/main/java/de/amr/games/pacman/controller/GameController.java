@@ -212,31 +212,43 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(PLAYING).customState(new PlayingState())
 				
 				.state(CHANGING_LEVEL)
-					.timeoutAfter(() -> sec(playView.mazeFlashingSeconds() + 8))
+					.timeoutAfter(() -> sec(playView.mazeFlashingSeconds() + 6))
 					.onEntry(() -> {
 						cast.pacMan.sprites.select("full");
 						house.onLevelChange();
 						sound.muteSoundEffects();
+						playView.stopEnergizerBlinking();
+						LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", 
+								game.level().number, game.level().ghostsKilledInLevel));
 					})
 					.onTick(() -> {
 						int t = state().getTicksConsumed();
+						float f = playView.mazeFlashingSeconds();
+						
+						// during first two seconds: do nothing
+						
+						// at second 2: hide ghosts, start flashing
 						if (t == sec(2)) {
 							cast.ghostsOnStage().forEach(ghost -> ghost.setVisible(false));
-							if (game.level().mazeNumFlashes > 0) {
+							if (f > 0) {
 								playView.showFlashingMaze();
 							}
 						}
-						if (t == sec(2 + playView.mazeFlashingSeconds())) {
+
+						// after flashing: show empty maze
+						if (t == sec(2 + f)) {
 							playView.showEmptyMaze();
 						}
-						if (t == sec(6)+ playView.mazeFlashingSeconds()) {
-							LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", 
-									game.level().number, game.level().ghostsKilledInLevel));
+						
+						// after two more seconds: change level, show crowded maze
+						if (t == sec(4 + f)) {
 							game.enterLevel(game.level().number + 1);
 							cast.actorsOnStage().forEach(Actor::init);
 							playView.init();
 						}
-						if (t > sec(6) + playView.mazeFlashingSeconds()) {
+						
+						// after two more seconds until end: let ghosts jump 
+						if (t >= sec(6 + f)) {
 							cast.ghostsOnStage().forEach(Ghost::update);
 						}
 					})

@@ -124,8 +124,8 @@ public class SimplePlayView implements GameView {
 		cast.ghostsOnStage().forEach(ghost -> ghost.enableAnimations(false));
 	}
 
-	public int mazeFlashingSeconds() {
-		return game().level().mazeNumFlashes * Theme.MAZE_FLASH_TIME_MILLIS / 1000;
+	public float mazeFlashingSeconds() {
+		return game().level().mazeNumFlashes * Theme.MAZE_FLASH_TIME_MILLIS / 1000f;
 	}
 
 	public void showEmptyMaze() {

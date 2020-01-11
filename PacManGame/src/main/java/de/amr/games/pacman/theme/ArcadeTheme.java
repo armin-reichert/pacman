@@ -155,7 +155,7 @@ public class ArcadeTheme implements Theme {
 
 	@Override
 	public Sprite spr_flashingMaze() {
-		return Sprite.of(mazeEmpty, mazeEmptyWhite).animate(CYCLIC, MAZE_FLASH_TIME_MILLIS / 2);
+		return Sprite.of(mazeEmptyWhite, mazeEmpty).animate(CYCLIC, MAZE_FLASH_TIME_MILLIS / 2);
 	}
 
 	@Override
