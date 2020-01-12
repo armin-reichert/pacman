@@ -214,7 +214,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 				.when(DEAD).then(ENTERING_HOUSE)
 					.condition(() -> maze().inFrontOfGhostHouseDoor(tile()))
 					.act(() -> {
-						placeHalfRightOf(maze().ghostHouseSeats[0]);
+						tf.setPosition(cast.seatPosition(0));
 						setWishDir(Direction.DOWN);
 					})
 				
