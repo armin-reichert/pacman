@@ -66,7 +66,7 @@ public class Cheats implements Lifecycle {
 				cast.game().maze().tiles().filter(Tile::containsPellet).forEach(tile -> {
 					cast.game().eatFoodAt(tile);
 					gameController.ghostHouse().ifPresent(house -> {
-						house.onFoodFound(new FoodFoundEvent(tile, false));
+						house.onPacManFoundFood(new FoodFoundEvent(tile, false));
 						house.update();
 					});
 				});

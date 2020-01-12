@@ -60,7 +60,7 @@ public class House {
 		pacManStarvingTicks += 1;
 	}
 
-	public void onFoodFound(FoodFoundEvent e) {
+	public void onPacManFoundFood(FoodFoundEvent e) {
 		pacManStarvingTicks = 0;
 		if (globalCounter.enabled) {
 			globalCounter.dots++;

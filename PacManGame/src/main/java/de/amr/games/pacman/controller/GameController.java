@@ -37,7 +37,6 @@ import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
-import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
@@ -118,7 +117,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			actor.addEventListener(this::process);
 		});
 		cast.bonus.init();
-		demoMode(cast, settings.demoMode);
+		enterDemoMode(settings.demoMode);
 		ghostCommand = new GhostCommand(cast);
 		house = new House(cast);
 		cheats = new Cheats(this);
@@ -126,7 +125,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		showView(playView);
 	}
 
-	private void demoMode(Cast cast, boolean on) {
+	private void enterDemoMode(boolean on) {
 		if (on) {
 			settings.pacManImmortable = true;
 			cast.pacMan.steering(cast.pacMan.isMovingRandomlyWithoutTurningBack());
@@ -149,12 +148,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	@Override
 	public void update() {
-		onChangeStateMachineLogging();
-		onChangeGhostFrightenedBehavior();
-		onChangePacManOverflowBug();
-		onChangeClockSpeed();
-		onChangePlayViewSettings();
-		onChangeDemoMode();
+		handleChangeStateMachineLogging();
+		handleChangeGhostFrightenedBehavior();
+		handleChangePacManOverflowBug();
+		handleChangeClockSpeed();
+		handleChangePlayViewSettings();
+		handleChangeDemoMode();
 		super.update();
 		currentView.update();
 	}
@@ -331,7 +330,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
-					.act(playingState()::onFoodFound)
+					.act(playingState()::onPacManFoundFood)
 					
 				.stay(PLAYING)
 					.on(BonusFoundEvent.class)
@@ -450,9 +449,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			cast.bonus.process(event);
 		}
 
-		private void onFoodFound(PacManGameEvent event) {
+		private void onPacManFoundFood(PacManGameEvent event) {
 			FoodFoundEvent foodFound = (FoodFoundEvent) event;
-			house.onFoodFound(foodFound);
+			house.onPacManFoundFood(foodFound);
 			int points = game.eatFoodAt(foodFound.tile);
 			int livesBefore = game.lives;
 			game.score(points);
@@ -472,15 +471,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (foodFound.energizer) {
 				ghostCommand.suspend();
 				sound.pacManGainsPower();
-				cast.pacMan.process(new PacManGainsPowerEvent());
-				cast.ghostsOnStage().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
+				cast.pacMan.gainPower();
 			}
 		}
 	}
 
 	// handle input
 
-	private void onChangeClockSpeed() {
+	private void handleChangeClockSpeed() {
 		int oldFreq = app().clock().getFrequency();
 		int newFreq = oldFreq;
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_1) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
@@ -500,7 +498,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	private void onChangePlayViewSettings() {
+	private void handleChangePlayViewSettings() {
 		if (currentView != playView) {
 			return;
 		}
@@ -518,21 +516,21 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	private void onChangePacManOverflowBug() {
+	private void handleChangePacManOverflowBug() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_O)) {
 			settings.overflowBug = !settings.overflowBug;
 			LOGGER.info("Overflow bug is " + (settings.overflowBug ? "on" : "off"));
 		}
 	}
 
-	private void onChangeStateMachineLogging() {
+	private void handleChangeStateMachineLogging() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_L)) {
 			FSM_LOGGER.setLevel(FSM_LOGGER.getLevel() == Level.OFF ? Level.INFO : Level.OFF);
 			LOGGER.info("State machine logging changed to " + FSM_LOGGER.getLevel());
 		}
 	}
 
-	private void onChangeGhostFrightenedBehavior() {
+	private void handleChangeGhostFrightenedBehavior() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_F)) {
 			boolean original = settings.ghostsFleeRandomly;
 			if (original) {
@@ -547,11 +545,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	private void onChangeDemoMode() {
+	private void handleChangeDemoMode() {
 		/* CONTROL-"J": Demo mode: Makes Pac-Man immortable and moving randomly. */
 		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_J) && cast != null) {
 			settings.demoMode = !settings.demoMode;
-			demoMode(cast, settings.demoMode);
+			enterDemoMode(settings.demoMode);
 		}
 	}
 }

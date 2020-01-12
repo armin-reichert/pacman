@@ -87,6 +87,11 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 		return cast.game();
 	}
 
+	public void gainPower() {
+		powerTicksRemaining = sec(game().level().pacManPowerSeconds);
+		cast.ghostsOnStage().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
+	}
+
 	public boolean hasPower() {
 		return powerTicksRemaining > 0;
 	}
@@ -148,11 +153,6 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 
 			.transitions()
 
-				.stay(EATING)
-					.on(PacManGainsPowerEvent.class).act(() -> {
-						powerTicksRemaining = sec(game().level().pacManPowerSeconds);
-					})
-				
 				.when(EATING).then(DEAD).on(PacManKilledEvent.class)
 
 		.endStateMachine();
