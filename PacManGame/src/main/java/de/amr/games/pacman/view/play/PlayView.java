@@ -210,15 +210,11 @@ public class PlayView extends SimplePlayView {
 		PacMan pacMan = cast().pacMan;
 		if (pacMan.visible()) {
 			String text = pacMan.getState().name();
-			if (pacMan.hasPower()) {
-				text += " AND KICKING!";
-			}
-			int duration = pacMan.state().getDuration(), remaining = pacMan.state().getTicksRemaining();
-			if (duration != State.ENDLESS && duration > 0) {
-				text += String.format("(%d|%d)", remaining, duration);
+			if (pacMan.powerTicks() > 0) {
+				text = String.format("POWER(%d)", pacMan.powerTicks());
 			}
 			if (settings().pacManImmortable) {
-				text += "-immortable";
+				text += ",lives " + INFTY;
 			}
 			drawSmallText(g, Color.YELLOW, pacMan.tf.getX(), pacMan.tf.getY(), text);
 		}
@@ -234,11 +230,6 @@ public class PlayView extends SimplePlayView {
 		// timer values
 		int duration = ghost.state().getDuration();
 		int remaining = ghost.state().getTicksRemaining();
-		// Pac-Man power time
-//		if (ghost.is(FRIGHTENED) && cast().pacMan.isKicking()) {
-//			duration = cast().pacMan.state().getDuration();
-//			remaining = cast().pacMan.state().getTicksRemaining();
-//		}
 		// chasing or scattering time
 		if (ghost.is(SCATTERING, CHASING)) {
 			State<GhostState, ?> attack = fnGhostCommandState.get();

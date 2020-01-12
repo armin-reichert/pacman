@@ -2,8 +2,8 @@ package de.amr.games.pacman.actor;
 
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.actor.BonusState.ACTIVE;
-import static de.amr.games.pacman.actor.PacManState.ALIVE;
 import static de.amr.games.pacman.actor.PacManState.DEAD;
+import static de.amr.games.pacman.actor.PacManState.EATING;
 import static de.amr.games.pacman.actor.PacManState.SLEEPING;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.RIGHT;
@@ -11,6 +11,7 @@ import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Direction.dirs;
 import static de.amr.games.pacman.model.Game.DIGEST_ENERGIZER_TICKS;
 import static de.amr.games.pacman.model.Game.DIGEST_PELLET_TICKS;
+import static de.amr.games.pacman.model.Timing.sec;
 import static de.amr.games.pacman.model.Timing.speed;
 
 import java.awt.Graphics2D;
@@ -35,7 +36,6 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.api.Fsm;
-import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
@@ -50,7 +50,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	private final Cast cast;
 	private final Fsm<PacManState, PacManGameEvent> brain;
 	private Steering steering;
-	private boolean power;
+	private int powerTicksRemaining;
 	private int digestionTicks;
 
 	public PacMan(Cast cast) {
@@ -66,12 +66,6 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	@Override
 	public Fsm<PacManState, PacManGameEvent> fsm() {
 		return brain;
-	}
-
-	public void dress() {
-		dirs().forEach(dir -> sprites.set("walking-" + dir, theme().spr_pacManWalking(dir.ordinal())));
-		sprites.set("dying", theme().spr_pacManDying());
-		sprites.set("full", theme().spr_pacManFull());
 	}
 
 	@Override
@@ -94,7 +88,11 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	}
 
 	public boolean hasPower() {
-		return power;
+		return powerTicksRemaining > 0;
+	}
+
+	public int powerTicks() {
+		return powerTicksRemaining;
 	}
 
 	public StateMachine<PacManState, PacManGameEvent> buildFsm() {
@@ -109,35 +107,32 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 
 				.state(SLEEPING)
 					.onEntry(() -> {
-						power = false;
+						powerTicksRemaining = 0;
 						digestionTicks = 0;
-						state().setConstantTimer(State.ENDLESS);
 						placeHalfRightOf(maze().pacManHome);
 						setMoveDir(RIGHT);
 						setWishDir(RIGHT);
+						setVisible(true);
 						sprites.forEach(Sprite::resetAnimation);
 						sprites.select("full");
-						setVisible(true);
 					})
 
-				.state(ALIVE)
+				.state(EATING)
 					.onEntry(() -> {
 						digestionTicks = 0;
 					})
 
 					.onTick(() -> {
-						if (digestionTicks > 0) {
-							--digestionTicks;
-							return;
-						}
-						if (power) {
-							int remaining = state().getTicksRemaining();
-							if (remaining == 0) {
-								cast.theme().snd_waza().stop();
-								power = false;
+						if (powerTicksRemaining > 0) {
+							powerTicksRemaining -= 1;
+							if (powerTicksRemaining == 0) {
 								publish(new PacManLostPowerEvent());
 								return;
 							}
+						}
+						if (digestionTicks > 0) {
+							--digestionTicks;
+							return;
 						}
 						moveOneStep();
 						if (!isTeleporting()) {
@@ -147,19 +142,18 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 
 				.state(DEAD)
 					.onEntry(() -> {
-						power = false;
+						powerTicksRemaining = 0;
 						digestionTicks = 0;
 					})
 
 			.transitions()
 
-				.stay(ALIVE) // Ah, ha, ha, ha, stayin' alive
+				.stay(EATING)
 					.on(PacManGainsPowerEvent.class).act(() -> {
-						power = true;
-						cast.theme().snd_waza().loop();
+						powerTicksRemaining = sec(game().level().pacManPowerSeconds);
 					})
-					
-				.when(ALIVE).then(DEAD).on(PacManKilledEvent.class)
+				
+				.when(EATING).then(DEAD).on(PacManKilledEvent.class)
 
 		.endStateMachine();
 		/* @formatter:on */
@@ -176,23 +170,30 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 		brain.update();
 	}
 
+	private Optional<PacManGameEvent> findSomethingInteresting() {
+		Tile tile = tile();
+		if (tile == maze().bonusTile) {
+			if (cast.bonus.is(ACTIVE)) {
+				return Optional.of(new BonusFoundEvent(cast.bonus.symbol(), cast.bonus.value()));
+			}
+		}
+		if (tile.containsFood()) {
+			if (tile.containsEnergizer()) {
+				digestionTicks = DIGEST_ENERGIZER_TICKS;
+				return Optional.of(new FoodFoundEvent(tile, true));
+			} else {
+				digestionTicks = DIGEST_PELLET_TICKS;
+				return Optional.of(new FoodFoundEvent(tile, false));
+			}
+		}
+		return Optional.empty();
+	}
+
 	public void moveOneStep() {
 		steering().steer();
 		movement.update();
 		sprites.select("walking-" + moveDir());
 		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
-		if (visible()) {
-			sprites.current().ifPresent(sprite -> {
-				Vector2f center = tf.getCenter();
-				float x = center.x - sprite.getWidth() / 2;
-				float y = center.y - sprite.getHeight() / 2;
-				sprite.draw(g, x, y);
-			});
-		}
 	}
 
 	@Override
@@ -209,8 +210,8 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 		switch (getState()) {
 		case SLEEPING:
 			return 0;
-		case ALIVE:
-			return speed(power ? game().level().pacManPowerSpeed : game().level().pacManSpeed);
+		case EATING:
+			return speed(hasPower() ? game().level().pacManPowerSpeed : game().level().pacManSpeed);
 		case DEAD:
 			return 0;
 		default:
@@ -244,22 +245,21 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 		return super.canMoveBetween(tile, neighbor);
 	}
 
-	private Optional<PacManGameEvent> findSomethingInteresting() {
-		Tile tile = tile();
-		if (tile == maze().bonusTile) {
-			if (cast.bonus.is(ACTIVE)) {
-				return Optional.of(new BonusFoundEvent(cast.bonus.symbol(), cast.bonus.value()));
-			}
+	@Override
+	public void draw(Graphics2D g) {
+		if (visible()) {
+			sprites.current().ifPresent(sprite -> {
+				Vector2f center = tf.getCenter();
+				float x = center.x - sprite.getWidth() / 2;
+				float y = center.y - sprite.getHeight() / 2;
+				sprite.draw(g, x, y);
+			});
 		}
-		if (tile.containsFood()) {
-			if (tile.containsEnergizer()) {
-				digestionTicks = DIGEST_ENERGIZER_TICKS;
-				return Optional.of(new FoodFoundEvent(tile, true));
-			} else {
-				digestionTicks = DIGEST_PELLET_TICKS;
-				return Optional.of(new FoodFoundEvent(tile, false));
-			}
-		}
-		return Optional.empty();
+	}
+
+	public void dress() {
+		dirs().forEach(dir -> sprites.set("walking-" + dir, theme().spr_pacManWalking(dir.ordinal())));
+		sprites.set("dying", theme().spr_pacManDying());
+		sprites.set("full", theme().spr_pacManFull());
 	}
 }

@@ -30,16 +30,14 @@ public class SoundController {
 			if (!theme.snd_ghost_chase().isRunning()) {
 				theme.snd_ghost_chase().loop();
 			}
-		}
-		else {
+		} else {
 			theme.snd_ghost_chase().stop();
 		}
 		if (cast.ghostsOnStage().anyMatch(ghost -> ghost.is(GhostState.DEAD))) {
 			if (!theme.snd_ghost_dead().isRunning()) {
 				theme.snd_ghost_dead().loop();
 			}
-		}
-		else {
+		} else {
 			theme.snd_ghost_dead().stop();
 		}
 	}
@@ -94,6 +92,16 @@ public class SoundController {
 		theme.snd_eatFruit().play();
 	}
 
+	public void pacManLostPower() {
+		theme.snd_waza().stop();
+	}
+
+	public void pacManGainsPower() {
+		if (!theme.snd_waza().isRunning()) {
+			theme.snd_waza().loop();
+		}
+	}
+
 	public void pacManDied() {
 		theme.snd_die().play();
 	}
@@ -109,4 +117,5 @@ public class SoundController {
 	public boolean isGameOverMusicRunning() {
 		return theme.music_gameover().isRunning();
 	}
+
 }

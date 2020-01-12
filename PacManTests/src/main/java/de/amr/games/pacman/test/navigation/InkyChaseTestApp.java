@@ -67,7 +67,7 @@ class InkyChaseTestUI extends PlayView implements VisualController {
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			cast().ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
-			cast().pacMan.setState(PacManState.ALIVE);
+			cast().pacMan.setState(PacManState.EATING);
 			messageText = null;
 		}
 		cast().pacMan.update();

@@ -388,7 +388,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		@Override
 		public void onEntry() {
 			cast.ghostsOnStage().forEach(ghost -> ghost.setVisible(true));
-			cast.pacMan.setState(PacManState.ALIVE);
+			cast.pacMan.setState(PacManState.EATING);
 			playView.init();
 			playView.enableAnimations();
 			playView.startEnergizerBlinking();
@@ -410,6 +410,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {
+			sound.pacManLostPower();
 			ghostCommand.resume();
 		}
 
@@ -470,6 +471,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 			if (foodFound.energizer) {
 				ghostCommand.suspend();
+				sound.pacManGainsPower();
 				cast.pacMan.process(new PacManGainsPowerEvent());
 				cast.ghostsOnStage().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
 			}

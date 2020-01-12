@@ -319,7 +319,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		if (isTeleporting() || cast.pacMan.isTeleporting()) {
 			return;
 		}
-		if (onSameTileAs(cast.pacMan) && cast.pacMan.is(PacManState.ALIVE)) {
+		if (onSameTileAs(cast.pacMan) && cast.pacMan.is(PacManState.EATING)) {
 			publish(new PacManGhostCollisionEvent(this, tile()));
 		}
 	}

@@ -66,7 +66,7 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 			}
 		});
 		cast().setActorOnStage(pac);
-		pac.setState(PacManState.ALIVE);
+		pac.setState(PacManState.EATING);
 		message("Cursor keys");
 		startEnergizerBlinking();
 	}

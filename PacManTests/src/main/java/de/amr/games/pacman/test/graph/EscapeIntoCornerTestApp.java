@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test.graph;
 
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.actor.PacManState.ALIVE;
+import static de.amr.games.pacman.actor.PacManState.EATING;
 
 import java.util.Optional;
 
@@ -49,7 +49,7 @@ class EscapeIntoCornerTestUI extends PlayView implements VisualController {
 		maze().removeFood();
 		cast().setActorOnStage(cast().pacMan);
 		cast().pacMan.init();
-		cast().pacMan.setState(ALIVE);
+		cast().pacMan.setState(EATING);
 		cast().setActorOnStage(cast().blinky);
 		cast().blinky.during(FRIGHTENED, cast().blinky.isFleeingToSafeCorner(cast().pacMan));
 		cast().blinky.init();
