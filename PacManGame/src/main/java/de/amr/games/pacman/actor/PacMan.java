@@ -11,14 +11,11 @@ import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Direction.dirs;
 import static de.amr.games.pacman.model.Game.DIGEST_ENERGIZER_TICKS;
 import static de.amr.games.pacman.model.Game.DIGEST_PELLET_TICKS;
-import static de.amr.games.pacman.model.Game.FSM_LOGGER;
-import static de.amr.games.pacman.model.Timing.sec;
 import static de.amr.games.pacman.model.Timing.speed;
 
 import java.awt.Graphics2D;
 import java.util.Optional;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
@@ -53,8 +50,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	private final Cast cast;
 	private final Fsm<PacManState, PacManGameEvent> brain;
 	private Steering steering;
-	private boolean kicking;
-	private boolean tired;
+	private boolean power;
 	private int digestionTicks;
 
 	public PacMan(Cast cast) {
@@ -97,12 +93,8 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 		return cast.game();
 	}
 
-	public boolean isKicking() {
-		return kicking;
-	}
-
-	public boolean isTired() {
-		return tired;
+	public boolean hasPower() {
+		return power;
 	}
 
 	public StateMachine<PacManState, PacManGameEvent> buildFsm() {
@@ -117,7 +109,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 
 				.state(SLEEPING)
 					.onEntry(() -> {
-						kicking = tired = false;
+						power = false;
 						digestionTicks = 0;
 						state().setConstantTimer(State.ENDLESS);
 						placeHalfRightOf(maze().pacManHome);
@@ -138,17 +130,12 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 							--digestionTicks;
 							return;
 						}
-						if (kicking) {
+						if (power) {
 							int remaining = state().getTicksRemaining();
-							if (remaining > 0 && remaining < sec(1.5f)) {
-								tired = true;
-							}
 							if (remaining == 0) {
 								cast.theme().snd_waza().stop();
-								state().setConstantTimer(State.ENDLESS);
-								kicking = tired = false;
+								power = false;
 								publish(new PacManLostPowerEvent());
-								Application.LOGGER.info("Pac-Man lost power");
 								return;
 							}
 						}
@@ -160,7 +147,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 
 				.state(DEAD)
 					.onEntry(() -> {
-						kicking = tired = false;
+						power = false;
 						digestionTicks = 0;
 					})
 
@@ -168,13 +155,8 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 
 				.stay(ALIVE) // Ah, ha, ha, ha, stayin' alive
 					.on(PacManGainsPowerEvent.class).act(() -> {
-						kicking = true;
-						tired = false;
-						// set and start power timer
-						state().setConstantTimer(sec(game().level().pacManPowerSeconds));
+						power = true;
 						cast.theme().snd_waza().loop();
-						FSM_LOGGER.info(() -> String.format("Pac-Man gaining power for %d ticks (%.2f sec)",
-								state().getDuration(), state().getDuration() / 60f));
 					})
 					
 				.when(ALIVE).then(DEAD).on(PacManKilledEvent.class)
@@ -228,7 +210,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 		case SLEEPING:
 			return 0;
 		case ALIVE:
-			return speed(kicking ? game().level().pacManPowerSpeed : game().level().pacManSpeed);
+			return speed(power ? game().level().pacManPowerSpeed : game().level().pacManSpeed);
 		case DEAD:
 			return 0;
 		default:

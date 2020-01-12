@@ -113,12 +113,8 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 						sprites.select("color-" + moveDir());
 						sprites.forEach(Sprite::resetAnimation);
 					})
-					.onTick(() -> {
-						if (cast.pacMan.isKicking()) {
-							step(cast.pacMan.isTired() ? "flashing" : "frightened");
-						} else {
-							step("color-" + moveDir());
-						}
+					.onTick((state, t, remaining) -> {
+							step(cast.pacMan.hasPower() ? "frightened" : "color-" + moveDir());
 					})
 					
 				.state(LEAVING_HOUSE)
@@ -144,13 +140,9 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 					})
 				
 				.state(FRIGHTENED)
-					.onTick(() -> {
-						if (!cast.pacMan.isKicking()) {
-							LOGGER.info(String.format("%s resumes state %s", this, followState));
-							resumeState(followState);
-							return;
-						}
-						step(cast.pacMan.isTired() ? "flashing" : "frightened");
+					.timeoutAfter(() -> sec(game().level().pacManPowerSeconds))
+					.onTick((state, t, remaining) -> {
+						step(remaining < sec(2) ? "flashing" : "frightened");
 						checkPacManCollision();
 					})
 				
@@ -217,6 +209,14 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 				
 				.when(FRIGHTENED).then(DEAD)
 					.on(GhostKilledEvent.class)
+				
+				.when(FRIGHTENED).then(SCATTERING)
+					.onTimeout()
+					.condition(() -> followState == SCATTERING)
+					
+				.when(FRIGHTENED).then(CHASING)
+					.onTimeout()
+					.condition(() -> followState == CHASING)
 					
 				.when(DEAD).then(ENTERING_HOUSE)
 					.condition(() -> maze().inFrontOfGhostHouseDoor(tile()))
@@ -255,34 +255,6 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	@Override
 	public void update() {
 		brain.update();
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
-		if (visible()) {
-			sprites.current().ifPresent(sprite -> {
-				Vector2f center = tf.getCenter();
-				float x = center.x - sprite.getWidth() / 2;
-				float y = center.y - sprite.getHeight() / 2;
-				sprite.draw(g, x, y);
-			});
-		}
-	}
-
-	public void moveOneStep() {
-		if (prevSteering != steering()) {
-			steering().init();
-			steering().force();
-			LOGGER.info(String.format("%s: steering changed, was: %s now: %s", this, name(prevSteering), name(steering())));
-		}
-		steering().steer();
-		movement.update();
-		prevSteering = steering();
-	}
-
-	private void step(String spriteKey) {
-		moveOneStep();
-		sprites.select(spriteKey);
 	}
 
 	public void during(GhostState state, Steering steering) {
@@ -334,8 +306,24 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		}
 	}
 
+	private void step(String spriteKey) {
+		moveOneStep();
+		sprites.select(spriteKey);
+	}
+
+	public void moveOneStep() {
+		if (prevSteering != steering()) {
+			steering().init();
+			steering().force();
+			LOGGER.info(String.format("%s: steering changed, was: %s now: %s", this, name(prevSteering), name(steering())));
+		}
+		steering().steer();
+		movement.update();
+		prevSteering = steering();
+	}
+
 	private String name(Steering steering) {
-		return steering != null ? steering.getClass().getSimpleName() : "none";
+		return steering != null ? steering.getClass().getSimpleName() : "no steering";
 	}
 
 	private void checkPacManCollision() {
@@ -344,6 +332,18 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		}
 		if (onSameTileAs(cast.pacMan) && cast.pacMan.is(PacManState.ALIVE)) {
 			publish(new PacManGhostCollisionEvent(this, tile()));
+		}
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		if (visible()) {
+			sprites.current().ifPresent(sprite -> {
+				Vector2f center = tf.getCenter();
+				float x = center.x - sprite.getWidth() / 2;
+				float y = center.y - sprite.getHeight() / 2;
+				sprite.draw(g, x, y);
+			});
 		}
 	}
 

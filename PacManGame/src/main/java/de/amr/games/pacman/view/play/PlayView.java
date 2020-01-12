@@ -17,7 +17,6 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
-import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
@@ -70,7 +69,7 @@ public class PlayView extends SimplePlayView {
 	public BooleanSupplier showStates = () -> false;
 
 	private FPSDisplay fps;
-	private final BufferedImage gridImage, inkyImage, clydeImage;
+	private final BufferedImage gridImage, inkyImage, clydeImage, pacManImage;
 	private final Polygon arrowHead;
 
 	public PlayView(Cast cast) {
@@ -80,6 +79,7 @@ public class PlayView extends SimplePlayView {
 		gridImage = createGridImage(cast.game().maze());
 		inkyImage = ghostImage(GhostColor.CYAN);
 		clydeImage = ghostImage(GhostColor.ORANGE);
+		pacManImage = (BufferedImage) theme().spr_pacManWalking(Direction.RIGHT.ordinal()).frame(0);
 		arrowHead = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 	}
 
@@ -104,8 +104,7 @@ public class PlayView extends SimplePlayView {
 	public void draw(Graphics2D g) {
 		if (showGrid.getAsBoolean()) {
 			g.drawImage(gridImage, 0, 0, null);
-		}
-		else {
+		} else {
 			fillBackground(g);
 		}
 		drawMaze(g);
@@ -161,8 +160,7 @@ public class PlayView extends SimplePlayView {
 	private void toggleGhost(Ghost ghost) {
 		if (cast().onStage(ghost)) {
 			cast().setActorOffStage(ghost);
-		}
-		else {
+		} else {
 			cast().setActorOnStage(ghost);
 		}
 	}
@@ -212,7 +210,7 @@ public class PlayView extends SimplePlayView {
 		PacMan pacMan = cast().pacMan;
 		if (pacMan.visible()) {
 			String text = pacMan.getState().name();
-			if (pacMan.isKicking()) {
+			if (pacMan.hasPower()) {
 				text += " AND KICKING!";
 			}
 			int duration = pacMan.state().getDuration(), remaining = pacMan.state().getTicksRemaining();
@@ -237,12 +235,12 @@ public class PlayView extends SimplePlayView {
 		int duration = ghost.state().getDuration();
 		int remaining = ghost.state().getTicksRemaining();
 		// Pac-Man power time
-		if (ghost.is(FRIGHTENED) && cast().pacMan.isKicking()) {
-			duration = cast().pacMan.state().getDuration();
-			remaining = cast().pacMan.state().getTicksRemaining();
-		}
+//		if (ghost.is(FRIGHTENED) && cast().pacMan.isKicking()) {
+//			duration = cast().pacMan.state().getDuration();
+//			remaining = cast().pacMan.state().getTicksRemaining();
+//		}
 		// chasing or scattering time
-		else if (ghost.is(SCATTERING) || ghost.is(CHASING)) {
+		if (ghost.is(SCATTERING, CHASING)) {
 			State<GhostState, ?> attack = fnGhostCommandState.get();
 			if (attack != null) {
 				duration = attack.getDuration();
@@ -262,18 +260,16 @@ public class PlayView extends SimplePlayView {
 		String text = "";
 		if (bonus.getState() == BonusState.INACTIVE) {
 			text = "Bonus inactive";
-		}
-		else {
+		} else {
 			text = String.format("%s,%d|%d", bonus, bonus.state().getTicksRemaining(), bonus.state().getDuration());
 		}
 		drawSmallText(g, Color.YELLOW, bonus.tf.getX(), bonus.tf.getY(), text);
 	}
 
 	private void drawPacManStarvingTime(Graphics2D g) {
-		Image image = cast.pacMan.sprites.get("walking-" + Direction.RIGHT).frame(0);
 		int col = 1, row = 14;
 		int time = house.pacManStarvingTicks();
-		g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);
+		g.drawImage(pacManImage, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);
 		try (Pen pen = new Pen(g)) {
 			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
 			pen.color(Color.WHITE);
@@ -397,8 +393,7 @@ public class PlayView extends SimplePlayView {
 					drawArrowHead(g, maze().direction(from, to).get(), to.centerX(), to.centerY());
 				}
 			}
-		}
-		else if (ghost.wishDir() != null) {
+		} else if (ghost.wishDir() != null) {
 			// draw direction indicator
 			Direction nextDir = ghost.wishDir();
 			int x = ghost.tf.getCenter().roundedX(), y = ghost.tf.getCenter().roundedY();
@@ -427,8 +422,7 @@ public class PlayView extends SimplePlayView {
 					g.drawLine(x1, y1, x2, y2);
 					g.drawLine(x2, y2, x3, y3);
 					g.fillRect(x3 - s / 2, y3 - s / 2, s, s);
-				}
-				else {
+				} else {
 					Tile twoTilesAhead = cast().pacMan.tilesAhead(2);
 					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
 					int x2 = twoTilesAhead.centerX(), y2 = twoTilesAhead.centerY();

@@ -272,7 +272,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onTick((state, t, remaining) -> {
 						if (t == sec(1)) {
 							// Pac-Man stops struggling
-							cast.pacMan.sprites.current().get().enableAnimation(false);
 							cast.pacMan.sprites.select("full");
 							cast.hideBonus();
 							cast.ghostsOnStage().forEach(ghost -> ghost.setVisible(false));
