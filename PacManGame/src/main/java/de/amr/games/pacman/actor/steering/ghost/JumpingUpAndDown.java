@@ -12,20 +12,19 @@ import de.amr.games.pacman.model.Direction;
 public class JumpingUpAndDown implements Steering {
 
 	private final Ghost ghost;
-	private final int placeY;
+	private final float baseY;
 
-	public JumpingUpAndDown(Ghost ghost, int place) {
+	public JumpingUpAndDown(Ghost ghost, float baseY) {
 		this.ghost = ghost;
-		placeY = ghost.maze().ghostHouseSeats[place].y();
+		this.baseY = baseY;
 	}
 
 	@Override
 	public void steer() {
-		float dy = ghost.tf.getPosition().y - placeY;
+		float dy = ghost.tf.getPosition().y - baseY;
 		if (dy < -4) {
 			ghost.setWishDir(Direction.DOWN);
-		}
-		else if (dy > 3) {
+		} else if (dy > 3) {
 			ghost.setWishDir(Direction.UP);
 		}
 	}
@@ -46,5 +45,4 @@ public class JumpingUpAndDown implements Steering {
 	@Override
 	public void enableTargetPathComputation(boolean b) {
 	}
-
 }

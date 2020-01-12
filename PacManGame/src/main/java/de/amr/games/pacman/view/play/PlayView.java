@@ -444,9 +444,9 @@ public class PlayView extends SimplePlayView {
 			return; // test scenes may have no ghost house
 		}
 		drawPacManStarvingTime(g);
-		drawDotCounter(g, clydeImage, house.ghostDotCount(cast.clyde.seat()), 1, 20,
+		drawDotCounter(g, clydeImage, house.ghostDotCount(cast.clyde), 1, 20,
 				!house.isGlobalDotCounterEnabled() && house.isPreferredGhost(cast.clyde));
-		drawDotCounter(g, inkyImage, house.ghostDotCount(cast.inky.seat()), 24, 20,
+		drawDotCounter(g, inkyImage, house.ghostDotCount(cast.inky), 24, 20,
 				!house.isGlobalDotCounterEnabled() && house.isPreferredGhost(cast.inky));
 		drawDotCounter(g, null, house.globalDotCount(), 24, 14, house.isGlobalDotCounterEnabled());
 	}

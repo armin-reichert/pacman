@@ -1,5 +1,6 @@
 package de.amr.games.pacman.actor.steering.ghost;
 
+import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.actor.steering.core.Steering;
@@ -20,8 +21,8 @@ public interface SteerableGhost {
 	 * 
 	 * @return behavior which lets the ghost jump
 	 */
-	default Steering isJumpingUpAndDown() {
-		return new JumpingUpAndDown(thisGhost(), thisGhost().seat());
+	default Steering isJumpingUpAndDown(Vector2f seatPosition) {
+		return new JumpingUpAndDown(thisGhost(), seatPosition.y);
 	}
 
 	/**
@@ -36,15 +37,6 @@ public interface SteerableGhost {
 	}
 
 	/**
-	 * Lets a ghost enter the ghost house and move to its seat.
-	 * 
-	 * @return behavior which lets a ghost enter the house and take its seat
-	 */
-	default Steering isTakingSeat() {
-		return new EnteringGhostHouse(thisGhost(), thisGhost().seat());
-	}
-
-	/**
 	 * Lets a ghost enter the ghost house and move to the seat with the given
 	 * number.
 	 * 
@@ -52,8 +44,8 @@ public interface SteerableGhost {
 	 * 
 	 * @return behavior which lets a ghost enter the house and take its seat
 	 */
-	default Steering isTakingSeat(int seat) {
-		return new EnteringGhostHouse(thisGhost(), seat);
+	default Steering isTakingSeat(Vector2f seatPosition) {
+		return new EnteringGhostHouse(thisGhost(), seatPosition);
 	}
 
 	/**

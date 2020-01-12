@@ -17,10 +17,12 @@ import static java.awt.event.KeyEvent.VK_UP;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
@@ -41,16 +43,17 @@ public class Cast {
 	private final PropertyChangeSupport changes = new PropertyChangeSupport(this);
 	private final Game game;
 	private Theme theme;
+	private Ghost[] seats = new Ghost[4];
 
 	public Cast(Game game, Theme theme) {
 		this.game = game;
 		this.theme = theme;
 
 		pacMan = new PacMan(this);
-		blinky = new Ghost(this, "Blinky", 0, LEFT);
-		inky = new Ghost(this, "Inky", 1, UP);
-		pinky = new Ghost(this, "Pinky", 2, DOWN);
-		clyde = new Ghost(this, "Clyde", 3, UP);
+		blinky = new Ghost(this, "Blinky", LEFT);
+		inky = new Ghost(this, "Inky", UP);
+		pinky = new Ghost(this, "Pinky", DOWN);
+		clyde = new Ghost(this, "Clyde", UP);
 
 		dressActors();
 		actors().forEach(actor -> actor.setVisible(false));
@@ -58,15 +61,17 @@ public class Cast {
 		pacMan.steering(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		pacMan.setTeleportingDuration(sec(0.5f));
 
-		blinky.during(ENTERING_HOUSE, blinky.isTakingSeat(2));
+		seats[0] = blinky;
+		blinky.during(ENTERING_HOUSE, blinky.isTakingSeat(seatPosition(2)));
 		blinky.during(LEAVING_HOUSE, blinky.isLeavingGhostHouse());
 		blinky.during(FRIGHTENED, blinky.isMovingRandomlyWithoutTurningBack());
 		blinky.during(SCATTERING, blinky.isHeadingFor(game().maze().horizonNE));
 		blinky.during(CHASING, blinky.isHeadingFor(pacMan::tile));
 		blinky.setTeleportingDuration(sec(0.5f));
 
-		inky.during(LOCKED, inky.isJumpingUpAndDown());
-		inky.during(ENTERING_HOUSE, inky.isTakingSeat());
+		seats[1] = inky;
+		inky.during(LOCKED, inky.isJumpingUpAndDown(seatPosition(1)));
+		inky.during(ENTERING_HOUSE, inky.isTakingSeat(seatPosition(1)));
 		inky.during(LEAVING_HOUSE, inky.isLeavingGhostHouse());
 		inky.during(FRIGHTENED, inky.isMovingRandomlyWithoutTurningBack());
 		inky.during(SCATTERING, inky.isHeadingFor(game().maze().horizonSE));
@@ -76,16 +81,18 @@ public class Cast {
 		}));
 		inky.setTeleportingDuration(sec(0.5f));
 
-		pinky.during(LOCKED, pinky.isJumpingUpAndDown());
-		pinky.during(ENTERING_HOUSE, pinky.isTakingSeat());
+		seats[2] = pinky;
+		pinky.during(LOCKED, pinky.isJumpingUpAndDown(seatPosition(2)));
+		pinky.during(ENTERING_HOUSE, pinky.isTakingSeat(seatPosition(2)));
 		pinky.during(LEAVING_HOUSE, pinky.isLeavingGhostHouse());
 		pinky.during(FRIGHTENED, pinky.isMovingRandomlyWithoutTurningBack());
 		pinky.during(SCATTERING, pinky.isHeadingFor(game().maze().horizonNW));
 		pinky.during(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
 		pinky.setTeleportingDuration(sec(0.5f));
 
-		clyde.during(LOCKED, clyde.isJumpingUpAndDown());
-		clyde.during(ENTERING_HOUSE, clyde.isTakingSeat());
+		seats[3] = clyde;
+		clyde.during(LOCKED, clyde.isJumpingUpAndDown(seatPosition(3)));
+		clyde.during(ENTERING_HOUSE, clyde.isTakingSeat(seatPosition(3)));
 		clyde.during(LEAVING_HOUSE, clyde.isLeavingGhostHouse());
 		clyde.during(FRIGHTENED, clyde.isMovingRandomlyWithoutTurningBack());
 		clyde.during(SCATTERING, clyde.isHeadingFor(game().maze().horizonSW));
@@ -104,6 +111,19 @@ public class Cast {
 
 	public Theme theme() {
 		return theme;
+	}
+
+	public int seat(Ghost ghost) {
+		return Arrays.asList(seats).indexOf(ghost);
+	}
+
+	public Vector2f seatPosition(int seat) {
+		Tile seatTile = game.maze().ghostHouseSeats[seat];
+		return Vector2f.of(seatTile.centerX(), seatTile.y());
+	}
+
+	public void placeOnSeat(Ghost ghost) {
+		ghost.tf.setPosition(seatPosition(seat(ghost)));
 	}
 
 	public void setTheme(Theme newTheme) {

@@ -16,11 +16,13 @@ import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
 
 /**
- * This class controls when and in which order locked ghosts can leave the ghost house.
+ * This class controls when and in which order locked ghosts can leave the ghost
+ * house.
  * 
  * @author Armin Reichert
  * 
- * @see <a href= "https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Gamasutra</a>
+ * @see <a href=
+ *      "https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Gamasutra</a>
  */
 public class House {
 
@@ -67,10 +69,9 @@ public class House {
 				globalCounter.enabled = false;
 				logger.info(() -> "Global dot counter reset and disabled (Clyde was locked when counter reached 32)");
 			}
-		}
-		else {
+		} else {
 			preferredLockedGhost().ifPresent(ghost -> {
-				ghostDotCount[ghost.seat()] += 1;
+				ghostDotCount[cast.seat(ghost)] += 1;
 			});
 		}
 	}
@@ -97,8 +98,8 @@ public class House {
 		return globalCounter.enabled;
 	}
 
-	public int ghostDotCount(int seat) {
-		return ghostDotCount[seat];
+	public int ghostDotCount(Ghost ghost) {
+		return ghostDotCount[cast.seat(ghost)];
 	}
 
 	public int pacManStarvingTicks() {
@@ -120,10 +121,11 @@ public class House {
 	/**
 	 * Determines if the given ghost can leave the ghost house.
 	 * 
-	 * @param ghost
-	 *                a ghost
+	 * @param ghost a ghost
 	 * 
-	 * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man Dossier</a>
+	 * @see <a href=
+	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
+	 *      Dossier</a>
 	 */
 	private boolean canLeaveHome(Ghost ghost) {
 		int pacManStarvingTimeLimit = game().level().number < 5 ? sec(4) : sec(3);
@@ -140,10 +142,9 @@ public class House {
 						.info(() -> String.format("%s can leave house: global dot limit (%d) reached", ghost.name(), globalLimit));
 				return true;
 			}
-		}
-		else {
+		} else {
 			int personalLimit = personalDotLimit(ghost);
-			if (ghostDotCount[ghost.seat()] >= personalLimit) {
+			if (ghostDotCount[cast.seat(ghost)] >= personalLimit) {
 				logger.info(
 						() -> String.format("%s can leave house: ghost's dot limit (%d) reached", ghost.name(), personalLimit));
 				return true;
