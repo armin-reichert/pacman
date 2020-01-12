@@ -174,6 +174,9 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
 					.condition(() -> steering().isComplete())
 				
+				.stay(ENTERING_HOUSE)
+					.on(PacManGainsPowerEvent.class)
+				
 				.when(CHASING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
 					.act(() -> forceMove(moveDir().opposite()))
@@ -296,8 +299,12 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	}
 
 	private void step(String spriteKey) {
-		moveOneStep();
-		sprites.select(spriteKey);
+		if (isTeleporting()) {
+			movement.update();
+		} else {
+			moveOneStep();
+			sprites.select(spriteKey);
+		}
 	}
 
 	public void moveOneStep() {

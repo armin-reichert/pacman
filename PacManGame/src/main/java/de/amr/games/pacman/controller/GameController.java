@@ -31,7 +31,6 @@ import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -327,6 +326,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				
 				.when(GETTING_READY).then(PLAYING)
 					.onTimeout()
+					.act(() -> playingState().reset())
 				
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
@@ -355,7 +355,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					
 				.when(CHANGING_LEVEL).then(PLAYING)
 					.onTimeout()
-					.act(() -> ghostCommand.init())
+					.act(() -> {
+						ghostCommand.init();
+						playingState().reset();
+					})
 					
 				.when(GHOST_DYING).then(PLAYING)
 					.onTimeout()
@@ -367,7 +370,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.when(PACMAN_DYING).then(PLAYING)
 					.onTimeout()
 					.condition(() -> game.lives > 0)
-					.act(() -> ghostCommand.init())
+					.act(() -> {
+						ghostCommand.init();
+						playingState().reset();
+					})
 			
 				.when(GAME_OVER).then(GETTING_READY)
 					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
@@ -385,15 +391,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public class PlayingState extends State<PacManGameState, PacManGameEvent> {
 
 		@Override
-		public void onEntry() {
-			cast.ghostsOnStage().forEach(ghost -> ghost.setVisible(true));
-			cast.pacMan.setState(PacManState.EATING);
-			playView.init();
-			playView.enableAnimations();
-			playView.startEnergizerBlinking();
-		}
-
-		@Override
 		public void onTick() {
 			ghostCommand.update();
 			cheats.update();
@@ -406,6 +403,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		@Override
 		public void onExit() {
 			sound.muteGhostSounds();
+		}
+		
+		private void reset() {
+			cast.ghostsOnStage().forEach(ghost -> ghost.setVisible(true));
+			cast.pacMan.startEating();
+			playView.init();
+			playView.enableAnimations();
+			playView.startEnergizerBlinking();
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {

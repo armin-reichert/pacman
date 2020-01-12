@@ -87,6 +87,13 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 		return cast.game();
 	}
 
+	public void startEating() {
+		if (getState() == SLEEPING) {
+			setState(EATING);
+		} else
+			throw new IllegalStateException();
+	}
+
 	public void gainPower() {
 		powerTicksRemaining = sec(game().level().pacManPowerSeconds);
 		cast.ghostsOnStage().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
