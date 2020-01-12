@@ -49,7 +49,6 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<GhostState> {
 
 	private final Cast cast;
-	private final Direction eyes;
 	private final SpriteMap sprites = new SpriteMap();
 	private final Fsm<GhostState, PacManGameEvent> brain;
 	private final Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
@@ -57,10 +56,9 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	private GhostState followState;
 	private Steering prevSteering;
 
-	public Ghost(Cast cast, String name, Direction eyes) {
+	public Ghost(Cast cast, String name) {
 		super(name);
 		this.cast = cast;
-		this.eyes = eyes;
 		brain = buildFsm();
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
 		brain.setLogger(Game.FSM_LOGGER);
@@ -102,12 +100,9 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	
 				.state(LOCKED)
 					.onEntry(() -> {
-						visible = true;
-						followState = getState();
 						cast.placeOnSeat(this);
-						enteredNewTile();
-						setMoveDir(eyes);
-						setWishDir(eyes);
+						setVisible(true);
+						followState = getState();
 						sprites.select("color-" + moveDir());
 						sprites.forEach(Sprite::resetAnimation);
 					})

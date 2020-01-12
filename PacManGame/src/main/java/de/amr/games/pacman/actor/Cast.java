@@ -19,11 +19,13 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.core.Actor;
+import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
@@ -39,21 +41,26 @@ public class Cast {
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
 	public final Bonus bonus;
+
+	private final List<Ghost> seats;
+	private final List<Direction> eyes;
 	private final Set<Actor<?>> actorsOnStage = new HashSet<>();
 	private final PropertyChangeSupport changes = new PropertyChangeSupport(this);
 	private final Game game;
 	private Theme theme;
-	private Ghost[] seats = new Ghost[4];
 
 	public Cast(Game game, Theme theme) {
 		this.game = game;
 		this.theme = theme;
 
 		pacMan = new PacMan(this);
-		blinky = new Ghost(this, "Blinky", LEFT);
-		inky = new Ghost(this, "Inky", UP);
-		pinky = new Ghost(this, "Pinky", DOWN);
-		clyde = new Ghost(this, "Clyde", UP);
+		blinky = new Ghost(this, "Blinky");
+		inky = new Ghost(this, "Inky");
+		pinky = new Ghost(this, "Pinky");
+		clyde = new Ghost(this, "Clyde");
+
+		seats = Arrays.asList(blinky, inky, pinky, clyde);
+		eyes = Arrays.asList(LEFT, UP, DOWN, UP);
 
 		dressActors();
 		actors().forEach(actor -> actor.setVisible(false));
@@ -61,7 +68,6 @@ public class Cast {
 		pacMan.steering(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		pacMan.setTeleportingDuration(sec(0.5f));
 
-		seats[0] = blinky;
 		blinky.during(ENTERING_HOUSE, blinky.isTakingSeat(seatPosition(2)));
 		blinky.during(LEAVING_HOUSE, blinky.isLeavingGhostHouse());
 		blinky.during(FRIGHTENED, blinky.isMovingRandomlyWithoutTurningBack());
@@ -69,7 +75,6 @@ public class Cast {
 		blinky.during(CHASING, blinky.isHeadingFor(pacMan::tile));
 		blinky.setTeleportingDuration(sec(0.5f));
 
-		seats[1] = inky;
 		inky.during(LOCKED, inky.isJumpingUpAndDown(seatPosition(1)));
 		inky.during(ENTERING_HOUSE, inky.isTakingSeat(seatPosition(1)));
 		inky.during(LEAVING_HOUSE, inky.isLeavingGhostHouse());
@@ -81,7 +86,6 @@ public class Cast {
 		}));
 		inky.setTeleportingDuration(sec(0.5f));
 
-		seats[2] = pinky;
 		pinky.during(LOCKED, pinky.isJumpingUpAndDown(seatPosition(2)));
 		pinky.during(ENTERING_HOUSE, pinky.isTakingSeat(seatPosition(2)));
 		pinky.during(LEAVING_HOUSE, pinky.isLeavingGhostHouse());
@@ -90,7 +94,6 @@ public class Cast {
 		pinky.during(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
 		pinky.setTeleportingDuration(sec(0.5f));
 
-		seats[3] = clyde;
 		clyde.during(LOCKED, clyde.isJumpingUpAndDown(seatPosition(3)));
 		clyde.during(ENTERING_HOUSE, clyde.isTakingSeat(seatPosition(3)));
 		clyde.during(LEAVING_HOUSE, clyde.isLeavingGhostHouse());
@@ -114,7 +117,11 @@ public class Cast {
 	}
 
 	public int seat(Ghost ghost) {
-		return Arrays.asList(seats).indexOf(ghost);
+		return seats.indexOf(ghost);
+	}
+
+	public Direction eyes(Ghost ghost) {
+		return eyes.get(seat(ghost));
 	}
 
 	public Vector2f seatPosition(int seat) {
@@ -124,6 +131,9 @@ public class Cast {
 
 	public void placeOnSeat(Ghost ghost) {
 		ghost.tf.setPosition(seatPosition(seat(ghost)));
+		ghost.setMoveDir(eyes(ghost));
+		ghost.setWishDir(eyes(ghost));
+		ghost.enteredNewTile();
 	}
 
 	public void setTheme(Theme newTheme) {
