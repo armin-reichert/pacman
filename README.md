@@ -243,9 +243,12 @@ The *frightened* behavior has two different implementations (just as a demonstra
 Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
-blinky.during(SCATTERING, blinky.isHeadingFor(maze().horizonNE));
+blinky.during(ENTERING_HOUSE, blinky.isTakingSeat(seatPosition(2)));
+blinky.during(LEAVING_HOUSE, blinky.isLeavingGhostHouse());
+blinky.during(FRIGHTENED, blinky.isMovingRandomlyWithoutTurningBack());
+blinky.during(SCATTERING, blinky.isHeadingFor(game().maze().horizonNE));
 blinky.during(CHASING, blinky.isHeadingFor(pacMan::tile));
-blinky.during(ENTERING_HOUSE, blinky.isTakingSeat(2));
+blinky.setTeleportingDuration(sec(0.5f));
 ```
 <img src="PacManDoc/blinky.png"/>
 
@@ -257,13 +260,16 @@ Consider the vector `V` from Blinky's position `B` to the position `P` two tiles
 Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-inky.during(SCATTERING, inky.isHeadingFor(maze().horizonSE));
+inky.during(LOCKED, inky.isJumpingUpAndDown(seatPosition(1)));
+inky.during(ENTERING_HOUSE, inky.isTakingSeat(seatPosition(1)));
+inky.during(LEAVING_HOUSE, inky.isLeavingGhostHouse());
+inky.during(FRIGHTENED, inky.isMovingRandomlyWithoutTurningBack());
+inky.during(SCATTERING, inky.isHeadingFor(game().maze().horizonSE));
 inky.during(CHASING, inky.isHeadingFor(() -> {
 	Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
-	return maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
+	return game().maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 }));
-inky.during(LOCKED, inky.isJumpingUpAndDown());
-inky.during(ENTERING_HOUSE, inky.isTakingOwnSeat());
+inky.setTeleportingDuration(sec(0.5f));
 ```
 
 <img src="PacManDoc/inky.png"/>
@@ -273,10 +279,13 @@ inky.during(ENTERING_HOUSE, inky.isTakingOwnSeat());
 Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position. In the original game there is an overflow error leading to a different behavior: when Pac-Man looks upwards, the tile ahead of Pac-Man is falsely computed with an additional number of steps to the west. This behavior is active by default and can be toggled using the 'o'-key.
 
 ```java
-pinky.during(SCATTERING, pinky.isHeadingFor(maze().horizonNW));
+pinky.during(LOCKED, pinky.isJumpingUpAndDown(seatPosition(2)));
+pinky.during(ENTERING_HOUSE, pinky.isTakingSeat(seatPosition(2)));
+pinky.during(LEAVING_HOUSE, pinky.isLeavingGhostHouse());
+pinky.during(FRIGHTENED, pinky.isMovingRandomlyWithoutTurningBack());
+pinky.during(SCATTERING, pinky.isHeadingFor(game().maze().horizonNW));
 pinky.during(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
-pinky.during(LOCKED, pinky.isJumpingUpAndDown());
-pinky.during(ENTERING_HOUSE, pinky.isTakingOwnSeat());
+pinky.setTeleportingDuration(sec(0.5f));
 ```
 
 <img src="PacManDoc/pinky.png"/>
@@ -286,11 +295,14 @@ pinky.during(ENTERING_HOUSE, pinky.isTakingOwnSeat());
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
 
 ```java
-clyde.during(SCATTERING, clyde.isHeadingFor(maze().horizonSW));
-clyde.during(CHASING, clyde
-		.isHeadingFor(() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze().horizonSW));
-clyde.during(LOCKED, clyde.isJumpingUpAndDown());
-clyde.during(ENTERING_HOUSE, pinky.isTakingOwnSeat());
+clyde.during(LOCKED, clyde.isJumpingUpAndDown(seatPosition(3)));
+clyde.during(ENTERING_HOUSE, clyde.isTakingSeat(seatPosition(3)));
+clyde.during(LEAVING_HOUSE, clyde.isLeavingGhostHouse());
+clyde.during(FRIGHTENED, clyde.isMovingRandomlyWithoutTurningBack());
+clyde.during(SCATTERING, clyde.isHeadingFor(game().maze().horizonSW));
+clyde.during(CHASING, clyde.isHeadingFor(
+		() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : game().maze().horizonSW));
+clyde.setTeleportingDuration(sec(0.5f));
 ```
 
 <img src="PacManDoc/clyde.png"/>
@@ -303,16 +315,6 @@ In *scattering* mode, each ghost tries to reach his "scattering target" which is
 cannot reverse direction this results in a cyclic movement around the walls in the corresponding corner of the maze.
 
 <img src="PacManDoc/scattering.png"/>
-
-The remaining behavior is specified as follows:
-
-```java
-ghosts().forEach(ghost -> {
-	ghost.setTeleportingDuration(sec(0.5f));
-	ghost.during(LEAVING_HOUSE, ghost.isLeavingGhostHouse());
-	ghost.during(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
-});
-```
 
 ## Graph-based pathfinding
 
