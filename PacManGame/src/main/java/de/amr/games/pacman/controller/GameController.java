@@ -214,6 +214,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.timeoutAfter(() -> sec(playView.mazeFlashingSeconds() + 6))
 					.onEntry(() -> {
 						cast.pacMan.sprites.select("full");
+						cast.ghostsOnStage().forEach(ghost -> ghost.enableAnimations(false));
 						house.onLevelChange();
 						sound.muteSoundEffects();
 						playView.stopEnergizerBlinking();
@@ -242,7 +243,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							playView.init();
 						}
 						
-						// After two more seconds until end of state, let ghosts jump inside the house. 
+						// After two more seconds, enable ghosts again
+						if (t == sec(6 + f)) {
+							cast.ghostsOnStage().forEach(ghost -> ghost.enableAnimations(true));
+						}
+						
+						// Until end of state, let ghosts jump inside the house. 
 						if (t >= sec(6 + f)) {
 							cast.ghostsOnStage().forEach(Ghost::update);
 						}
