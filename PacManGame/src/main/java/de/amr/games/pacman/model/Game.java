@@ -48,7 +48,7 @@ public class Game {
 
 	static final File HISCORE_FILE = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
 
-	static final GameLevel[] LEVELS = new GameLevel[] {
+	static final GameLevel[] LEVELS = {
 		/*@formatter:off*/
 		null, // level numbering starts at 1
 		new GameLevel(CHERRIES,   100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6, 5 ),
