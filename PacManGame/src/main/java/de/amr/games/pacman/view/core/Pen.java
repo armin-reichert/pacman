@@ -2,6 +2,7 @@ package de.amr.games.pacman.view.core;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
@@ -16,11 +17,11 @@ import de.amr.games.pacman.model.Tile;
 public class Pen implements AutoCloseable {
 
 	private final Graphics2D g;
-	private Font font = new Font(Font.DIALOG, Font.PLAIN, 10);
-	private Color color = Color.BLUE;
 
-	public Pen(Graphics2D g) {
-		this.g = (Graphics2D) g.create();
+	public Pen(Graphics2D g2) {
+		g = (Graphics2D) g2.create();
+		g.setFont(new Font(Font.DIALOG, Font.PLAIN, 10));
+		g.setColor(Color.BLUE);
 	}
 
 	@Override
@@ -29,15 +30,19 @@ public class Pen implements AutoCloseable {
 	}
 
 	public void color(Color c) {
-		color = c;
+		g.setColor(c);
 	}
 
 	public void font(Font f) {
-		font = f;
+		g.setFont(f);
+	}
+
+	public FontMetrics getFontMetrics() {
+		return g.getFontMetrics();
 	}
 
 	public void fontSize(float size) {
-		font = font.deriveFont(size);
+		g.setFont(g.getFont().deriveFont(size));
 	}
 
 	public void smooth(Runnable ops) {
@@ -47,24 +52,17 @@ public class Pen implements AutoCloseable {
 	}
 
 	public void drawAtTilePosition(int col, int row, String s) {
-		g.setColor(color);
-		g.setFont(font);
 		Rectangle2D box = g.getFontMetrics().getStringBounds(s, g);
 		float dy = Math.round((Tile.SIZE / 2 + box.getHeight()) / 2);
 		g.drawString(s, col * Tile.SIZE, row * Tile.SIZE + dy);
 	}
 
-	public void drawAtPosition(float x, float y, String s) {
-		g.setColor(color);
-		g.setFont(font);
-		Rectangle2D box = g.getFontMetrics().getStringBounds(s, g);
-		float dy = Math.round((Tile.SIZE / 2 + box.getHeight()) / 2);
-		g.drawString(s, x, y + dy);
+	public void drawString(String s, float x, float y) {
+		g.drawString(s, x, y);
 	}
 
-	public void hcenter(String s, int viewWidth, int row) {
-		g.setColor(color);
-		g.setFont(font);
-		g.drawString(s, (viewWidth - g.getFontMetrics().stringWidth(s)) / 2, row * Tile.SIZE);
+	public void hcenter(String s, int containerWidth, int row) {
+		float x = (containerWidth - getFontMetrics().stringWidth(s)) / 2, y = row * Tile.SIZE;
+		g.drawString(s, x, y);
 	}
 }

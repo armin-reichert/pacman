@@ -1,5 +1,6 @@
 package de.amr.games.pacman;
 
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 
 import de.amr.easy.game.Application;
@@ -23,6 +24,7 @@ public class PacManApp extends Application {
 	}
 
 	public static final PacManAppSettings settings = new PacManAppSettings();
+	public static final ResourceBundle texts = ResourceBundle.getBundle("texts");
 
 	@Override
 	public AppSettings createAppSettings() {
@@ -35,6 +37,7 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
+		LOGGER.info("User language is " + texts.getLocale().getDisplayLanguage());
 		Theme theme = Theme.createTheme(settings.theme);
 		setIcon(theme.spr_ghostFrightened().frame(0));
 		Game.FSM_LOGGER.setLevel(Level.INFO);

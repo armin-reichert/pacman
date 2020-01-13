@@ -1,6 +1,8 @@
 package de.amr.games.pacman.view.intro;
 
 import static de.amr.easy.game.Application.app;
+import static de.amr.games.pacman.PacManApp.settings;
+import static de.amr.games.pacman.PacManApp.texts;
 import static de.amr.games.pacman.model.Timing.sec;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.READY_TO_PLAY;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.SCROLLING_LOGO;
@@ -9,6 +11,7 @@ import static de.amr.games.pacman.view.intro.IntroView.IntroState.WAITING_FOR_IN
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
@@ -17,6 +20,7 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.core.GameView;
 import de.amr.games.pacman.view.core.Pen;
@@ -47,7 +51,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 	private GhostPointsAnimation ghostPointsAnimation;
 
 	private Color orange = new Color(255, 163, 71);
-//	private Color pink = new Color(248, 120, 88);
+	// private Color pink = new Color(248, 120, 88);
 	private Color red = new Color(171, 19, 0);
 
 	public IntroView(Theme theme) {
@@ -238,7 +242,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 			pen.font(theme.fnt_text());
 			pen.fontSize(14);
 			pen.color(Color.WHITE);
-			pen.hcenter("Press SPACE to start!", width(), row);
+			pen.hcenter(texts.getString("press_space_to_start"), width(), row);
 		}
 	}
 
@@ -248,25 +252,34 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 			pen.fontSize(10);
 			pen.color(orange);
 			if (app().inFullScreenMode()) {
-				pen.hcenter("F11 - Window Mode", width(), row);
-			} else {
-				pen.hcenter("F11 - Fullscreen Mode", width(), row);
+				pen.hcenter("F11 - " + texts.getString("window_mode"), width(), row);
+			}
+			else {
+				pen.hcenter("F11 - " + texts.getString("fullscreen_mode"), width(), row);
 			}
 		}
 	}
 
 	private void drawSpeedSelection(Graphics2D g, int row) {
+		String t1 = "1 - " + texts.getString("normal");
+		String t2 = "2 - " + texts.getString("fast");
+		String t3 = "3 - " + texts.getString("insane");
 		int selectedSpeed = Arrays.asList(Game.SPEED_1_FPS, Game.SPEED_2_FPS, Game.SPEED_3_FPS)
 				.indexOf(app().clock().getFrequency()) + 1;
 		try (Pen pen = new Pen(g)) {
 			pen.font(theme.fnt_text());
 			pen.fontSize(10);
+			FontMetrics fm = pen.getFontMetrics();
+			int w1 = fm.stringWidth(t1), w2 = fm.stringWidth(t2), w3 = fm.stringWidth(t3);
+			float s = (settings.width - (w1 + w2 + w3)) / 4f;
+			float x1 = s, x2 = x1 + w1 + s, x3 = x2 + w2 + s;
+			int y = row * Tile.SIZE;
 			pen.color(selectedSpeed == 1 ? orange : red);
-			pen.drawAtTilePosition(1, row, "1 - Normal");
+			pen.drawString(t1, x1, y);
 			pen.color(selectedSpeed == 2 ? orange : red);
-			pen.drawAtTilePosition(11, row, "2 - Fast");
+			pen.drawString(t2, x2, y);
 			pen.color(selectedSpeed == 3 ? orange : red);
-			pen.drawAtTilePosition(19, row, "3 - Insane");
+			pen.drawString(t3, x3, y);
 		}
 	}
 }

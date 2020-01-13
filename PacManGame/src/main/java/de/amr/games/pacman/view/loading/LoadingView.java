@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Random;
 
 import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
@@ -98,8 +99,8 @@ public class LoadingView implements GameView {
 				alpha = 0;
 			}
 			pen.color(new Color(255, 255, 255, alpha));
-			pen.fontSize(16);
-			pen.hcenter("Loading music...", width(), 18);
+			pen.fontSize(14);
+			pen.hcenter(PacManApp.texts.getString("loading_music"), width(), 18);
 			alpha += alphaInc;
 		}
 		if (direction == Direction.RIGHT) {
