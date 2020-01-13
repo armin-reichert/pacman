@@ -14,10 +14,6 @@ import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
 import static de.amr.games.pacman.model.Game.FSM_LOGGER;
 import static de.amr.games.pacman.model.Timing.sec;
-import static java.awt.event.KeyEvent.VK_DOWN;
-import static java.awt.event.KeyEvent.VK_LEFT;
-import static java.awt.event.KeyEvent.VK_RIGHT;
-import static java.awt.event.KeyEvent.VK_UP;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -108,7 +104,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	private void createPlayingEnvironment() {
+	private void createPlayEnvironment() {
 		game = new Game();
 		cast = new Cast(game, theme);
 		cast.actors().forEach(actor -> {
@@ -116,23 +112,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			actor.addEventListener(this::process);
 		});
 		cast.bonus.init();
-		enterDemoMode(settings.demoMode);
+		cast.setDemoMode(settings.demoMode);
 		ghostCommand = new GhostCommand(cast);
 		house = new House(cast);
 		cheats = new Cheats(this);
-		createPlayView();
-		showView(playView);
-	}
-
-	private void enterDemoMode(boolean on) {
-		if (on) {
-			settings.pacManImmortable = true;
-			cast.pacMan.steering(cast.pacMan.isMovingRandomlyWithoutTurningBack());
-		} else {
-			settings.pacManImmortable = false;
-			cast.pacMan.steering(cast.pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
-		}
-		LOGGER.info("Demo mode = " + on);
 	}
 
 	private void createPlayView() {
@@ -189,7 +172,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(GETTING_READY)
 					.timeoutAfter(sec(7))
 					.onEntry(() -> {
-						createPlayingEnvironment();
+						createPlayEnvironment();
+						createPlayView();
+						showView(playView);
 						sound.gameReady();
 					})
 					.onTick((state, t, remaining) -> {
@@ -220,6 +205,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 					.onTick((state, t, remaining) -> {
 						float f = playView.mazeFlashingSeconds();
+
 						// During first two seconds, do nothing. At second 2, hide ghosts and start flashing.
 						if (t == sec(2)) {
 							cast.ghostsOnStage().forEach(ghost -> ghost.setVisible(false));
@@ -552,7 +538,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		/* CONTROL-"J": Demo mode: Makes Pac-Man immortable and moving randomly. */
 		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_J) && cast != null) {
 			settings.demoMode = !settings.demoMode;
-			enterDemoMode(settings.demoMode);
+			cast.setDemoMode(settings.demoMode);
 		}
 	}
 }

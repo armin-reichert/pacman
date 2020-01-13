@@ -1,5 +1,7 @@
 package de.amr.games.pacman.actor;
 
+import static de.amr.easy.game.Application.LOGGER;
+import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
@@ -143,6 +145,17 @@ public class Cast {
 			dressActors();
 			changes.firePropertyChange("theme", oldTheme, newTheme);
 		}
+	}
+
+	public void setDemoMode(boolean on) {
+		if (on) {
+			settings.pacManImmortable = true;
+			pacMan.steering(pacMan.isMovingRandomlyWithoutTurningBack());
+		} else {
+			settings.pacManImmortable = false;
+			pacMan.steering(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
+		}
+		LOGGER.info("Demo mode = " + on);
 	}
 
 	private void dressActors() {
