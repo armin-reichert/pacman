@@ -203,7 +203,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 					.onExit(() -> {
 						playView.clearMessage();
-						ghostCommand.init();
 					})
 				
 				.state(PLAYING).customState(new PlayingState())
@@ -356,7 +355,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.when(CHANGING_LEVEL).then(PLAYING)
 					.onTimeout()
 					.act(() -> {
-						ghostCommand.init();
 						playingState().reset();
 					})
 					
@@ -371,7 +369,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onTimeout()
 					.condition(() -> game.lives > 0)
 					.act(() -> {
-						ghostCommand.init();
 						playingState().reset();
 					})
 			
@@ -404,8 +401,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		public void onExit() {
 			sound.muteGhostSounds();
 		}
-		
+
 		private void reset() {
+			ghostCommand.init();
 			cast.ghostsOnStage().forEach(ghost -> ghost.setVisible(true));
 			cast.pacMan.startEating();
 			playView.init();
