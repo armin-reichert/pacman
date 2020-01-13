@@ -75,7 +75,7 @@ public class PlayView extends SimplePlayView {
 	public PlayView(Cast cast) {
 		super(cast);
 		fps = new FPSDisplay();
-		fps.tf.setPosition(0, 17 * Tile.SIZE);
+		fps.tf.setPosition(0, 18 * Tile.SIZE);
 		gridImage = createGridImage(cast.game().maze());
 		inkyImage = ghostImage(GhostColor.CYAN);
 		clydeImage = ghostImage(GhostColor.ORANGE);
