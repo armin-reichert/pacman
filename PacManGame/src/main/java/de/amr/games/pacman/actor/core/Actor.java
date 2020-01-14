@@ -1,7 +1,7 @@
 package de.amr.games.pacman.actor.core;
 
-import static de.amr.games.pacman.actor.core.MazeMoving.MoveState.MOVING;
-import static de.amr.games.pacman.actor.core.MazeMoving.MoveState.TELEPORTING;
+import static de.amr.games.pacman.actor.core.Actor.MoveState.MOVING;
+import static de.amr.games.pacman.actor.core.Actor.MoveState.TELEPORTING;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 
 import java.util.Objects;
@@ -21,6 +21,10 @@ import de.amr.statemachine.core.StateMachine;
  * @author Armin Reichert
  */
 public abstract class Actor<S> extends MazeResident<S> implements MazeMoving {
+
+	enum MoveState {
+		MOVING, TELEPORTING;
+	}
 
 	private final Cast cast;
 	private final String name;

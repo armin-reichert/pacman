@@ -10,10 +10,6 @@ import de.amr.games.pacman.model.Tile;
  */
 public interface MazeMoving extends MazeResiding {
 
-	enum MoveState {
-		MOVING, TELEPORTING;
-	}
-
 	/**
 	 * @return the current move direction
 	 */
