@@ -48,8 +48,6 @@ public abstract class Actor<S> extends MazeResident<S> implements MazeMoving {
 	public Actor(Cast cast, String name) {
 		this.cast = cast;
 		this.name = name;
-		tf.setWidth(Tile.SIZE);
-		tf.setHeight(Tile.SIZE);
 		movement = new StateMachine<MoveState, Void>(MoveState.class) {
 
 			{

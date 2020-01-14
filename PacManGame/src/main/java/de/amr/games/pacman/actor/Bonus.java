@@ -15,7 +15,6 @@ import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Symbol;
-import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -37,8 +36,6 @@ public class Bonus extends MazeResident<BonusState> {
 
 	public Bonus(Cast cast) {
 		this.cast = cast;
-		tf.setWidth(Tile.SIZE);
-		tf.setHeight(Tile.SIZE);
 		brain = buildFsm();
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
 		brain.setLogger(Game.FSM_LOGGER);

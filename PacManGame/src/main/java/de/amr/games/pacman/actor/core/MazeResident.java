@@ -14,6 +14,11 @@ public abstract class MazeResident<S> extends Entity implements FsmContainer<S, 
 
 	public abstract Cast cast();
 
+	public MazeResident() {
+		tf.setWidth(Tile.SIZE);
+		tf.setHeight(Tile.SIZE);
+	}
+
 	public Game game() {
 		return cast().game();
 	}
