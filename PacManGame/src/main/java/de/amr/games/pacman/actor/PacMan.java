@@ -64,6 +64,11 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	}
 
 	@Override
+	public String toString() {
+		return String.format("(%s, col:%d, row:%d, %s)", name(), tile().col, tile().row, getState());
+	}
+
+	@Override
 	public Fsm<PacManState, PacManGameEvent> fsm() {
 		return brain;
 	}
@@ -112,7 +117,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 		/*@formatter:off*/
 		beginStateMachine(PacManState.class, PacManGameEvent.class)
 
-			.description("[Pac-Man]")
+			.description(PacMan.this::toString)
 			.initialState(SLEEPING)
 
 			.states()

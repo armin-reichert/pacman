@@ -93,7 +93,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		/*@formatter:off*/
 		beginStateMachine(GhostState.class, PacManGameEvent.class)
 			 
-			.description(String.format("[%s]", name()))
+			.description(Ghost.this::toString)
 			.initialState(LOCKED)
 		
 			.states()
@@ -311,7 +311,7 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 		if (prevSteering != steering()) {
 			steering().init();
 			steering().force();
-			LOGGER.info(String.format("%s: steering changed, was: %s now: %s", this, name(prevSteering), name(steering())));
+			LOGGER.info(String.format("%s steering changed from %s to %s", this, name(prevSteering), name(steering())));
 		}
 		steering().steer();
 		movement.update();
