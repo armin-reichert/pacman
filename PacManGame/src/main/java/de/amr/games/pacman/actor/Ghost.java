@@ -47,7 +47,6 @@ public class Ghost extends Actor<GhostState> implements SteerableGhost {
 	private final SpriteMap sprites = new SpriteMap();
 	private final Fsm<GhostState, PacManGameEvent> brain;
 	private final Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
-	private final Steering defaultSteering = isHeadingFor(this::targetTile);
 	private GhostState followState;
 	private Steering prevSteering;
 
@@ -124,7 +123,6 @@ public class Ghost extends Actor<GhostState> implements SteerableGhost {
 					.onEntry(() -> {
 						int points = POINTS_GHOST[game().level().ghostsKilledByEnergizer - 1];
 						sprites.select("points-" + points);
-						setTargetTile(maze().ghostHouseSeats[0]);
 					})
 					.onTick(() -> {
 						if (state().isTerminated()) { // "dead"
@@ -229,7 +227,10 @@ public class Ghost extends Actor<GhostState> implements SteerableGhost {
 	}
 
 	public Steering steering(GhostState state) {
-		return steerings.getOrDefault(state, defaultSteering);
+		if (steerings.containsKey(state)) {
+			return steerings.get(state);
+		}
+		throw new IllegalArgumentException(String.format("%s: No steering found for state %s", this, state));
 	}
 
 	@Override

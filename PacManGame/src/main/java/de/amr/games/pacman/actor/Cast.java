@@ -3,6 +3,7 @@ package de.amr.games.pacman.actor;
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
+import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
@@ -70,11 +71,13 @@ public class Cast {
 		pacMan.steering(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		pacMan.setTeleportingDuration(sec(0.5f));
 
+		blinky.during(LOCKED, blinky.isHeadingFor(blinky::tile));
 		blinky.during(ENTERING_HOUSE, blinky.isTakingSeat(seatPosition(2)));
 		blinky.during(LEAVING_HOUSE, blinky.isLeavingGhostHouse());
 		blinky.during(FRIGHTENED, blinky.isMovingRandomlyWithoutTurningBack());
 		blinky.during(SCATTERING, blinky.isHeadingFor(game().maze().horizonNE));
 		blinky.during(CHASING, blinky.isHeadingFor(pacMan::tile));
+		blinky.during(DEAD, blinky.isHeadingFor(() -> game().maze().ghostHouseSeats[0]));
 		blinky.setTeleportingDuration(sec(0.5f));
 
 		inky.during(LOCKED, inky.isJumpingUpAndDown(seatPosition(1)));
@@ -86,6 +89,7 @@ public class Cast {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return game().maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
+		inky.during(DEAD, inky.isHeadingFor(() -> game().maze().ghostHouseSeats[0]));
 		inky.setTeleportingDuration(sec(0.5f));
 
 		pinky.during(LOCKED, pinky.isJumpingUpAndDown(seatPosition(2)));
@@ -94,6 +98,7 @@ public class Cast {
 		pinky.during(FRIGHTENED, pinky.isMovingRandomlyWithoutTurningBack());
 		pinky.during(SCATTERING, pinky.isHeadingFor(game().maze().horizonNW));
 		pinky.during(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
+		pinky.during(DEAD, pinky.isHeadingFor(() -> game().maze().ghostHouseSeats[0]));
 		pinky.setTeleportingDuration(sec(0.5f));
 
 		clyde.during(LOCKED, clyde.isJumpingUpAndDown(seatPosition(3)));
@@ -103,6 +108,7 @@ public class Cast {
 		clyde.during(SCATTERING, clyde.isHeadingFor(game().maze().horizonSW));
 		clyde.during(CHASING, clyde.isHeadingFor(
 				() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : game().maze().horizonSW));
+		clyde.during(DEAD, clyde.isHeadingFor(() -> game().maze().ghostHouseSeats[0]));
 		clyde.setTeleportingDuration(sec(0.5f));
 
 		bonus = new Bonus(this);
