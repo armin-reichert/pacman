@@ -121,7 +121,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 					.onEntry(() -> {
 						powerTicksRemaining = 0;
 						digestionTicks = 0;
-						placeHalfRightOf(maze().pacManHome);
+						tf.setPosition(maze().pacManHome.centerX(), maze().pacManHome.y());
 						setMoveDir(RIGHT);
 						setWishDir(RIGHT);
 						setVisible(true);

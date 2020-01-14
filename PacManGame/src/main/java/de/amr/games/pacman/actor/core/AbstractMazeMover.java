@@ -104,15 +104,6 @@ public abstract class AbstractMazeMover extends Entity implements SteerableMazeM
 		placeAt(tile, 0, 0);
 	}
 
-	/**
-	 * Places this entity between the given tile and its right neighbor tile.
-	 * 
-	 * @param tile the tile where this maze mover is placed
-	 */
-	public void placeHalfRightOf(Tile tile) {
-		placeAt(tile, Tile.SIZE / 2, 0);
-	}
-	
 	public void setTeleportingDuration(int ticks) {
 		teleportingTicks = ticks;
 	}
