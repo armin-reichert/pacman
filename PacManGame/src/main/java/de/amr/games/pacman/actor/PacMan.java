@@ -43,7 +43,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class PacMan extends Actor<PacManState> implements SteerableMazeMover {
 
-	public final SpriteMap sprites = new SpriteMap();
+	private final SpriteMap sprites = new SpriteMap();
 	private final Fsm<PacManState, PacManGameEvent> brain;
 	private Steering steering;
 	private int powerTicksRemaining;
@@ -249,5 +249,13 @@ public class PacMan extends Actor<PacManState> implements SteerableMazeMover {
 		dirs().forEach(dir -> sprites.set("walking-" + dir, theme().spr_pacManWalking(dir.ordinal())));
 		sprites.set("dying", theme().spr_pacManDying());
 		sprites.set("full", theme().spr_pacManFull());
+	}
+
+	public void showFull() {
+		sprites.select("full");
+	}
+
+	public void showDying() {
+		sprites.select("dying");
 	}
 }
