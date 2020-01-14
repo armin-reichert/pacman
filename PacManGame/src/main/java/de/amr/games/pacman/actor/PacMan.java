@@ -17,13 +17,12 @@ import static de.amr.games.pacman.model.Timing.speed;
 import java.awt.Graphics2D;
 import java.util.Optional;
 
-import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.PacManAppSettings;
-import de.amr.games.pacman.actor.core.AbstractMazeMover;
 import de.amr.games.pacman.actor.core.Actor;
+import de.amr.games.pacman.actor.steering.common.SteerableMazeMover;
 import de.amr.games.pacman.actor.steering.core.Steering;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -32,9 +31,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -44,18 +41,16 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
+public class PacMan extends Actor<PacManState> implements SteerableMazeMover {
 
 	public final SpriteMap sprites = new SpriteMap();
-	private final Cast cast;
 	private final Fsm<PacManState, PacManGameEvent> brain;
 	private Steering steering;
 	private int powerTicksRemaining;
 	private int digestionTicks;
 
 	public PacMan(Cast cast) {
-		super("Pac-Man");
-		this.cast = cast;
+		super(cast, "Pac-Man");
 		brain = buildFsm();
 		brain.setLogger(Game.FSM_LOGGER);
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
@@ -73,25 +68,6 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 		return brain;
 	}
 
-	@Override
-	public Entity entity() {
-		return this;
-	}
-
-	@Override
-	public Theme theme() {
-		return cast.theme();
-	}
-
-	@Override
-	public Maze maze() {
-		return game().maze();
-	}
-
-	private Game game() {
-		return cast.game();
-	}
-
 	public void startEating() {
 		if (getState() == SLEEPING) {
 			setState(EATING);
@@ -101,7 +77,7 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 
 	public void gainPower() {
 		powerTicksRemaining = sec(game().level().pacManPowerSeconds);
-		cast.ghostsOnStage().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
+		cast().ghostsOnStage().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
 	}
 
 	public boolean hasPower() {
@@ -185,8 +161,8 @@ public class PacMan extends AbstractMazeMover implements Actor<PacManState> {
 	private Optional<PacManGameEvent> findSomethingInteresting() {
 		Tile tile = tile();
 		if (tile == maze().bonusTile) {
-			if (cast.bonus.is(ACTIVE)) {
-				return Optional.of(new BonusFoundEvent(cast.bonus.symbol(), cast.bonus.value()));
+			if (cast().bonus.is(ACTIVE)) {
+				return Optional.of(new BonusFoundEvent(cast().bonus.symbol(), cast().bonus.value()));
 			}
 		}
 		if (tile.containsFood()) {

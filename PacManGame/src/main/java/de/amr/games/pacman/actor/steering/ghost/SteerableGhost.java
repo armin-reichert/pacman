@@ -2,7 +2,8 @@ package de.amr.games.pacman.actor.steering.ghost;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.core.MazeMover;
+import de.amr.games.pacman.actor.core.MazeMoving;
+import de.amr.games.pacman.actor.steering.common.SteerableMazeMover;
 import de.amr.games.pacman.actor.steering.core.Steering;
 
 /**
@@ -10,7 +11,7 @@ import de.amr.games.pacman.actor.steering.core.Steering;
  * 
  * @author Armin Reichert
  */
-public interface SteerableGhost {
+public interface SteerableGhost extends SteerableMazeMover {
 
 	default Ghost thisGhost() {
 		return (Ghost) this;
@@ -32,7 +33,7 @@ public interface SteerableGhost {
 	 * 
 	 * @return behavior where actor flees to a "safe" maze corner
 	 */
-	default Steering isFleeingToSafeCorner(MazeMover attacker) {
+	default Steering isFleeingToSafeCorner(MazeMoving attacker) {
 		return new FleeingToSafeCorner(thisGhost(), attacker);
 	}
 

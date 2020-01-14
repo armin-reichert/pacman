@@ -1,15 +1,15 @@
 package de.amr.games.pacman.actor.steering.common;
 
 import de.amr.datastruct.StreamUtils;
-import de.amr.games.pacman.actor.core.MazeMover;
+import de.amr.games.pacman.actor.core.MazeMoving;
 import de.amr.games.pacman.actor.steering.core.Steering;
 import de.amr.games.pacman.model.Direction;
 
 public class MovingRandomlyWithoutTurningBack implements Steering {
 
-	private MazeMover actor;
+	private MazeMoving actor;
 
-	public MovingRandomlyWithoutTurningBack(MazeMover actor) {
+	public MovingRandomlyWithoutTurningBack(MazeMoving actor) {
 		this.actor = actor;
 	}
 

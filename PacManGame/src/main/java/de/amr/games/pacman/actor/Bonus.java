@@ -8,18 +8,17 @@ import static de.amr.games.pacman.model.Timing.sec;
 import java.awt.Graphics2D;
 import java.util.Random;
 
-import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.SpriteMap;
+import de.amr.games.pacman.actor.core.MazeResident;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Symbol;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.api.Fsm;
-import de.amr.statemachine.api.FsmContainer;
 import de.amr.statemachine.core.StateMachine;
+import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
  * Bonus symbol (fruit or other symbol) that appears at the maze bonus position
@@ -28,20 +27,26 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class Bonus extends Entity implements FsmContainer<BonusState, PacManGameEvent> {
+public class Bonus extends MazeResident<BonusState> {
 
+	public final SpriteMap sprites = new SpriteMap();
 	private final Fsm<BonusState, PacManGameEvent> brain;
-	private Theme theme;
-	private final SpriteMap sprites = new SpriteMap();
+	private final Cast cast;
 	private Symbol symbol;
 	private int value;
 
-	public Bonus(Theme theme) {
-		this.theme = theme;
+	public Bonus(Cast cast) {
+		this.cast = cast;
 		tf.setWidth(Tile.SIZE);
 		tf.setHeight(Tile.SIZE);
 		brain = buildFsm();
+		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
 		brain.setLogger(Game.FSM_LOGGER);
+	}
+
+	@Override
+	public Cast cast() {
+		return cast;
 	}
 
 	@Override
@@ -55,7 +60,7 @@ public class Bonus extends Entity implements FsmContainer<BonusState, PacManGame
 
 	public void setSymbol(Symbol symbol) {
 		this.symbol = symbol;
-		sprites.set("symbol", theme.spr_bonusSymbol(symbol));
+		sprites.set("symbol", theme().spr_bonusSymbol(symbol));
 	}
 
 	public int value() {
@@ -64,7 +69,7 @@ public class Bonus extends Entity implements FsmContainer<BonusState, PacManGame
 
 	public void setValue(int value) {
 		this.value = value;
-		sprites.set("value", theme.spr_number(value));
+		sprites.set("value", theme().spr_number(value));
 	}
 
 	public void activate() {

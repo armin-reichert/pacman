@@ -1,8 +1,6 @@
 package de.amr.games.pacman.actor.core;
 
-import de.amr.games.pacman.actor.steering.core.Steering;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -10,26 +8,11 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public interface MazeMover {
+public interface MazeMoving extends MazeResiding {
 
 	enum MoveState {
 		MOVING, TELEPORTING;
 	}
-
-	/**
-	 * @return the maze where this entity is moving
-	 */
-	Maze maze();
-
-	/**
-	 * @return the tile where this entity is located
-	 */
-	Tile tile();
-
-	/**
-	 * @return the current steering of this entity
-	 */
-	Steering steering();
 
 	/**
 	 * @return the current move direction
@@ -92,11 +75,4 @@ public interface MazeMover {
 	 */
 	boolean canMoveBetween(Tile tile, Tile neighbor);
 
-	/**
-	 * @param other other actor
-	 * @return if both actors occupy the same tile
-	 */
-	default boolean onSameTileAs(MazeMover other) {
-		return tile().equals(other.tile());
-	}
 }

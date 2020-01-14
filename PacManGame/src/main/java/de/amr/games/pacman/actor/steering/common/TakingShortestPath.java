@@ -3,7 +3,7 @@ package de.amr.games.pacman.actor.steering.common;
 import java.util.List;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.actor.core.MazeMover;
+import de.amr.games.pacman.actor.core.MazeMoving;
 import de.amr.games.pacman.model.MazeGraph;
 import de.amr.games.pacman.model.Tile;
 
@@ -17,13 +17,13 @@ public class TakingShortestPath extends TakingPrecomputedPath {
 
 	protected MazeGraph graph;
 
-	public TakingShortestPath(MazeMover actor, Supplier<Tile> fnTargetTile) {
+	public TakingShortestPath(MazeMoving actor, Supplier<Tile> fnTargetTile) {
 		super(actor, fnTargetTile);
 		graph = new MazeGraph(maze);
 	}
 
 	@Override
-	protected List<Tile> pathToTarget(MazeMover actor, Tile targetTile) {
+	protected List<Tile> pathToTarget(MazeMoving actor, Tile targetTile) {
 		return graph.shortestPath(actor.tile(), targetTile);
 	}
 }

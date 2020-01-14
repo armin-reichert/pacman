@@ -18,11 +18,9 @@ import java.awt.Graphics2D;
 import java.util.EnumMap;
 import java.util.Map;
 
-import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
-import de.amr.games.pacman.actor.core.AbstractMazeMover;
 import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.actor.steering.core.Steering;
 import de.amr.games.pacman.actor.steering.ghost.SteerableGhost;
@@ -33,10 +31,8 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
-import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -46,19 +42,17 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<GhostState> {
+public class Ghost extends Actor<GhostState> implements SteerableGhost {
 
-	private final Cast cast;
-	private final SpriteMap sprites = new SpriteMap();
-	private final Fsm<GhostState, PacManGameEvent> brain;
+	public final SpriteMap sprites = new SpriteMap();
+	private Fsm<GhostState, PacManGameEvent> brain;
 	private final Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
 	private final Steering defaultSteering = isHeadingFor(this::targetTile);
 	private GhostState followState;
 	private Steering prevSteering;
 
 	public Ghost(Cast cast, String name) {
-		super(name);
-		this.cast = cast;
+		super(cast, name);
 		brain = buildFsm();
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
 		brain.setLogger(Game.FSM_LOGGER);
@@ -67,20 +61,6 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	@Override
 	public Fsm<GhostState, PacManGameEvent> fsm() {
 		return brain;
-	}
-
-	@Override
-	public Entity entity() {
-		return this;
-	}
-
-	@Override
-	public Theme theme() {
-		return cast.theme();
-	}
-
-	private Game game() {
-		return cast.game();
 	}
 
 	@Override
@@ -100,14 +80,14 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	
 				.state(LOCKED)
 					.onEntry(() -> {
-						cast.placeOnSeat(this);
+						cast().placeOnSeat(this);
 						setVisible(true);
 						followState = getState();
 						sprites.select("color-" + moveDir());
 						sprites.forEach(Sprite::resetAnimation);
 					})
 					.onTick((state, t, remaining) -> {
-							step(cast.pacMan.hasPower() ? "frightened" : "color-" + moveDir());
+							step(cast().pacMan.hasPower() ? "frightened" : "color-" + moveDir());
 					})
 					
 				.state(LEAVING_HOUSE)
@@ -217,17 +197,12 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 				.when(DEAD).then(ENTERING_HOUSE)
 					.condition(() -> maze().inFrontOfGhostHouseDoor(tile()))
 					.act(() -> {
-						tf.setPosition(cast.seatPosition(0));
+						tf.setPosition(cast().seatPosition(0));
 						setWishDir(Direction.DOWN);
 					})
 				
 		.endStateMachine();
 		/*@formatter:on*/
-	}
-
-	@Override
-	public Maze maze() {
-		return cast.game().maze();
 	}
 
 	public void setFollowState(GhostState state) {
@@ -323,10 +298,10 @@ public class Ghost extends AbstractMazeMover implements SteerableGhost, Actor<Gh
 	}
 
 	private void checkPacManCollision() {
-		if (isTeleporting() || cast.pacMan.isTeleporting()) {
+		if (isTeleporting() || cast().pacMan.isTeleporting()) {
 			return;
 		}
-		if (onSameTileAs(cast.pacMan) && cast.pacMan.is(PacManState.EATING)) {
+		if (onSameTileAs(cast().pacMan) && cast().pacMan.is(PacManState.EATING)) {
 			publish(new PacManGhostCollisionEvent(this, tile()));
 		}
 	}
