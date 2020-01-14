@@ -24,17 +24,13 @@ import de.amr.statemachine.core.StateMachine;
 public class GhostCommand extends StateMachine<GhostState, Void> {
 
 	/*@formatter:off*/
-	private final int[][] times = {
+	private static final int[][] TIMES = {
 		// round 1            round 2            round 3              round 4
 		{  sec(7), sec(20),   sec(7), sec(20),   sec(5), sec(  20),   sec(5), Integer.MAX_VALUE },	// Level 1
 		{  sec(7), sec(20),   sec(7), sec(20),   sec(5), sec(1033),        1, Integer.MAX_VALUE },	// Levels 2-4
 		{  sec(5), sec(20),   sec(5), sec(20),   sec(5), sec(1037),        1, Integer.MAX_VALUE },	// Levels 5+
 	};
 	/*@formatter:on*/
-
-	private int row(int levelNumber) {
-		return levelNumber == 1 ? 0 : levelNumber < 5 ? 1 : 2;
-	}
 
 	private final Cast cast;
 	private int round; // starts with 1
@@ -49,15 +45,29 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 			.initialState(SCATTERING)
 		.states()
 			.state(SCATTERING)
-				.timeoutAfter(() -> times[row(cast.game().level().number)][2 * round - 2])
+				.timeoutAfter(this::scatterDuration)
 			.state(CHASING)
-				.timeoutAfter(() -> times[row(cast.game().level().number)][2 * round - 1])
+				.timeoutAfter(this::chaseDuration)
 		.transitions()
 			.when(SCATTERING).then(CHASING).onTimeout()
 			.when(CHASING).then(SCATTERING).onTimeout().act(() -> ++round)
 		.endStateMachine();
 		/*@formatter:on*/
 		setLogger(Game.FSM_LOGGER);
+	}
+
+	private int entry(int col) {
+		int level = cast.game().level().number;
+		int row = level == 1 ? 0 : level <= 4 ? 1 : 2;
+		return TIMES[row][col];
+	}
+
+	private int scatterDuration() {
+		return entry(2 * round - 2);
+	}
+
+	private int chaseDuration() {
+		return entry(2 * round - 1);
 	}
 
 	@Override
