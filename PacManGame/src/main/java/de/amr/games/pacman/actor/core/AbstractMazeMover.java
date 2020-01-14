@@ -166,9 +166,11 @@ public abstract class AbstractMazeMover extends Entity implements SteerableMazeM
 	}
 
 	public void forceMove(Direction dir) {
-		wishDir = dir;
-		steering().force();
-		movement.update();
+		if (canCrossBorderTo(dir)) {
+			wishDir = dir;
+			steering().force();
+			movement.update();
+		}
 	}
 
 	/**
