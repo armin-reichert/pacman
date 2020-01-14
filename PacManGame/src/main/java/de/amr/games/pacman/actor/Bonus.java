@@ -29,7 +29,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Bonus extends MazeResident<BonusState> {
 
-	public final SpriteMap sprites = new SpriteMap();
+	private final SpriteMap sprites = new SpriteMap();
 	private final Fsm<BonusState, PacManGameEvent> brain;
 	private final Cast cast;
 	private Symbol symbol;

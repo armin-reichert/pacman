@@ -44,8 +44,8 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends Actor<GhostState> implements SteerableGhost {
 
-	public final SpriteMap sprites = new SpriteMap();
-	private Fsm<GhostState, PacManGameEvent> brain;
+	private final SpriteMap sprites = new SpriteMap();
+	private final Fsm<GhostState, PacManGameEvent> brain;
 	private final Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
 	private final Steering defaultSteering = isHeadingFor(this::targetTile);
 	private GhostState followState;
