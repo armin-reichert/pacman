@@ -65,7 +65,7 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 		maze().removeFood();
 		targetIndex = 0;
 		cast.theme().snd_ghost_chase().volume(0);
-		cast().setActorOnStage(ghost);
+		cast().putOnStage(ghost);
 		Steering steering = ghost.isTakingShortestPath(() -> targets.get(targetIndex));
 		ghost.during(CHASING, steering);
 		ghost.during(FRIGHTENED, steering);

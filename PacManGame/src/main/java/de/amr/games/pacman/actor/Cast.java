@@ -196,13 +196,13 @@ public class Cast {
 		return actorsOnStage.contains(actor);
 	}
 
-	public void setActorOnStage(Actor<?> actor) {
+	public void putOnStage(Actor<?> actor) {
 		actor.init();
 		actor.setVisible(true);
 		actorsOnStage.add(actor);
 	}
 
-	public void setActorOffStage(Actor<?> actor) {
+	public void pullFromStage(Actor<?> actor) {
 		actor.setVisible(false);
 		actorsOnStage.remove(actor);
 	}

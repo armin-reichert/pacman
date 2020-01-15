@@ -53,9 +53,9 @@ class InkyChaseTestUI extends PlayView implements VisualController {
 		super.init();
 		maze().removeFood();
 		theme().snd_ghost_chase().volume(0);
-		cast().setActorOnStage(cast().pacMan);
-		cast().setActorOnStage(cast().inky);
-		cast().setActorOnStage(cast().blinky);
+		cast().putOnStage(cast().pacMan);
+		cast().putOnStage(cast().inky);
+		cast().putOnStage(cast().blinky);
 		cast().ghostsOnStage().forEach(ghost -> {
 			ghost.setFollowState(CHASING);
 		});
