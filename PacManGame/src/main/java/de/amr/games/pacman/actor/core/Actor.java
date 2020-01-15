@@ -15,8 +15,11 @@ import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Base class for actors (ghosts, Pac-Man). Actors know how to move through the
- * maze and are controlled using a finite-state machine.
+ * Base class for actors (ghosts, Pac-Man). Actors know how to move through the maze and are controlled using a
+ * finite-state machine.
+ * 
+ * @param <S>
+ *          state identifier type
  * 
  * @author Armin Reichert
  */
@@ -96,9 +99,12 @@ public abstract class Actor<S> extends MazeResident<S> implements MazeMoving {
 	/**
 	 * Places this entity at the given tile with given pixel offsets.
 	 * 
-	 * @param tile    tile
-	 * @param xOffset pixel offset in x-direction
-	 * @param yOffset pixel offset in y-direction
+	 * @param tile
+	 *                  tile
+	 * @param xOffset
+	 *                  pixel offset in x-direction
+	 * @param yOffset
+	 *                  pixel offset in y-direction
 	 */
 	public void placeAt(Tile tile, float xOffset, float yOffset) {
 		tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
@@ -108,7 +114,8 @@ public abstract class Actor<S> extends MazeResident<S> implements MazeMoving {
 	/**
 	 * Places this entity exactly over the given tile.
 	 * 
-	 * @param tile the tile where this maze mover is placed
+	 * @param tile
+	 *               the tile where this maze mover is placed
 	 */
 	public void placeAt(Tile tile) {
 		placeAt(tile, 0, 0);
@@ -184,8 +191,8 @@ public abstract class Actor<S> extends MazeResident<S> implements MazeMoving {
 	}
 
 	/**
-	 * Computes how many pixels this entity can move towards the given direction
-	 * without crossing the border to a forbidden neighbor tile.
+	 * Computes how many pixels this entity can move towards the given direction without crossing the border to a
+	 * forbidden neighbor tile.
 	 */
 	private float possibleSpeed(Tile currentTile, Direction dir) {
 		float maxSpeed = maxSpeed();
@@ -230,7 +237,8 @@ public abstract class Actor<S> extends MazeResident<S> implements MazeMoving {
 		Tile tile = tile();
 		if (tile.equals(maze().portalLeft)) {
 			placeAt(maze().portalRight);
-		} else if (tile.equals(maze().portalRight)) {
+		}
+		else if (tile.equals(maze().portalRight)) {
 			placeAt(maze().portalLeft);
 		}
 	}
