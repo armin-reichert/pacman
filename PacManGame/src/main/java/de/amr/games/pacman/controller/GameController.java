@@ -108,7 +108,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		game = new Game();
 		cast = new Cast(game, theme);
 		cast.actors().forEach(actor -> {
-			cast.putOnStage(actor);
+			cast.putActorOnStage(actor);
 			actor.addEventListener(this::process);
 		});
 		cast.bonus.init();
