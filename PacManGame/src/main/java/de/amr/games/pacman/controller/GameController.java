@@ -27,7 +27,7 @@ import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.core.Actor;
+import de.amr.games.pacman.actor.core.MovingActor;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -184,7 +184,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							playView.startEnergizerBlinking();
 							sound.gameStarts();
 						}
-						cast.actorsOnStage().forEach(Actor::update);
+						cast.actorsOnStage().forEach(MovingActor::update);
 					})
 					.onExit(() -> {
 						playView.clearMessage();
@@ -222,7 +222,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						// After two more seconds, change level and show crowded maze.
 						if (t == sec(4 + f)) {
 							game.enterLevel(game.level().number + 1);
-							cast.actorsOnStage().forEach(Actor::init);
+							cast.actorsOnStage().forEach(MovingActor::init);
 							playView.init();
 						}
 						
@@ -273,7 +273,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						else if (t == sec(7) - 1) {
 							if (game.lives > 0) {
 								// initialize actors and view for continuing game
-								cast.actorsOnStage().forEach(Actor::init);
+								cast.actorsOnStage().forEach(MovingActor::init);
 								playView.init();
 								sound.gameStarts();
 							}
@@ -378,7 +378,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			ghostCommand.update();
 			cheats.update();
 			house.update();
-			cast.actorsOnStage().forEach(Actor::update);
+			cast.actorsOnStage().forEach(MovingActor::update);
 			cast.bonus.update();
 			sound.updatePlayingSounds(cast);
 		}

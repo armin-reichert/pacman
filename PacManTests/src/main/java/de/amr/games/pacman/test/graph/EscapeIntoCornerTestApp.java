@@ -9,7 +9,7 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Cast;
-import de.amr.games.pacman.actor.core.Actor;
+import de.amr.games.pacman.actor.core.MovingActor;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.ArcadeTheme;
 import de.amr.games.pacman.theme.Theme;
@@ -59,7 +59,7 @@ class EscapeIntoCornerTestUI extends PlayView implements VisualController {
 	@Override
 	public void update() {
 		super.update();
-		cast().actorsOnStage().forEach(Actor::update);
+		cast().actorsOnStage().forEach(MovingActor::update);
 	}
 
 	@Override

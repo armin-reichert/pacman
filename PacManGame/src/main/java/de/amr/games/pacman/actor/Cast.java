@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.actor.core.Actor;
+import de.amr.games.pacman.actor.core.MovingActor;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
@@ -47,7 +47,7 @@ public class Cast {
 
 	private final List<Ghost> seats;
 	private final List<Direction> eyes;
-	private final Set<Actor<?>> actorsOnStage = new HashSet<>();
+	private final Set<MovingActor<?>> actorsOnStage = new HashSet<>();
 	private final PropertyChangeSupport changes = new PropertyChangeSupport(this);
 	private final Game game;
 	private Theme theme;
@@ -184,25 +184,25 @@ public class Cast {
 		return ghosts().filter(this::onStage);
 	}
 
-	public Stream<Actor<?>> actors() {
+	public Stream<MovingActor<?>> actors() {
 		return Stream.of(pacMan, blinky, pinky, inky, clyde);
 	}
 
-	public Stream<Actor<?>> actorsOnStage() {
+	public Stream<MovingActor<?>> actorsOnStage() {
 		return actors().filter(this::onStage);
 	}
 
-	public boolean onStage(Actor<?> actor) {
+	public boolean onStage(MovingActor<?> actor) {
 		return actorsOnStage.contains(actor);
 	}
 
-	public void putActorOnStage(Actor<?> actor) {
+	public void putActorOnStage(MovingActor<?> actor) {
 		actor.init();
 		actor.setVisible(true);
 		actorsOnStage.add(actor);
 	}
 
-	public void pullActorFromStage(Actor<?> actor) {
+	public void pullActorFromStage(MovingActor<?> actor) {
 		actor.setVisible(false);
 		actorsOnStage.remove(actor);
 	}

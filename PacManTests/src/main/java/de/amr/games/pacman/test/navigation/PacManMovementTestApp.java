@@ -11,7 +11,7 @@ import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManState;
-import de.amr.games.pacman.actor.core.Actor;
+import de.amr.games.pacman.actor.core.MovingActor;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.ArcadeTheme;
@@ -75,7 +75,7 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 	public void update() {
 		super.update();
 		handleSteeringChange();
-		cast().actorsOnStage().forEach(Actor::update);
+		cast().actorsOnStage().forEach(MovingActor::update);
 	}
 
 	private void handleSteeringChange() {

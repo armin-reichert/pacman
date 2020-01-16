@@ -10,7 +10,7 @@ import java.util.Random;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.SpriteMap;
-import de.amr.games.pacman.actor.core.MazeResident;
+import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Game;
@@ -26,7 +26,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Bonus extends MazeResident<BonusState> {
+public class Bonus extends Actor<BonusState> {
 
 	private final SpriteMap sprites = new SpriteMap();
 	private final Fsm<BonusState, PacManGameEvent> brain;
