@@ -10,6 +10,13 @@ import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.api.FsmContainer;
 
+/**
+ * Superclass for all actors.
+ * 
+ * @author Armin Reichert
+ *
+ * @param <S> state identifier type
+ */
 public abstract class MazeResident<S> extends Entity implements FsmContainer<S, PacManGameEvent>, MazeResiding {
 
 	public abstract Cast cast();
