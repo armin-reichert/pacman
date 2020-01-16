@@ -3,8 +3,8 @@ package de.amr.games.pacman.actor.steering.common;
 import java.util.List;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.actor.core.MazeMoving;
 import de.amr.games.pacman.actor.steering.core.Steering;
+import de.amr.games.pacman.model.MazeMoving;
 import de.amr.games.pacman.model.Tile;
 
 /**

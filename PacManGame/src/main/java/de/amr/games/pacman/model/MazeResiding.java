@@ -1,7 +1,4 @@
-package de.amr.games.pacman.actor.core;
-
-import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.Tile;
+package de.amr.games.pacman.model;
 
 /**
  * Implemented by entities that reside in a maze.

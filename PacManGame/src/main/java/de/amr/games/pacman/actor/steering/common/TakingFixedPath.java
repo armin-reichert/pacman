@@ -3,7 +3,7 @@ package de.amr.games.pacman.actor.steering.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.amr.games.pacman.actor.core.MazeMoving;
+import de.amr.games.pacman.model.MazeMoving;
 import de.amr.games.pacman.model.Tile;
 
 public class TakingFixedPath extends TakingPrecomputedPath {
