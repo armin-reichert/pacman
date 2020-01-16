@@ -159,9 +159,9 @@ public class PlayView extends SimplePlayView {
 
 	private void toggleGhost(Ghost ghost) {
 		if (cast().onStage(ghost)) {
-			cast().setActorOffStage(ghost);
+			cast().pullActorFromStage(ghost);
 		} else {
-			cast().setActorOnStage(ghost);
+			cast().putActorOnStage(ghost);
 		}
 	}
 
