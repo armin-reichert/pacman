@@ -130,12 +130,48 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	@Override
 	public void update() {
-		handleChangeStateMachineLogging();
-		handleChangeGhostFrightenedBehavior();
-		handleChangePacManOverflowBug();
-		handleChangeClockSpeed();
-		handleChangePlayViewSettings();
-		handleChangeDemoMode();
+		if (Keyboard.keyPressedOnce("f")) {
+			changeGhostFrightenedBehavior();
+		}
+		else if (Keyboard.keyPressedOnce("g") && currentView == playView) {
+			showGrid = !showGrid;
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, "j")) {
+			changeDemoMode();
+		}
+		else if (Keyboard.keyPressedOnce("l")) {
+			changeStateMachineLogging();
+		}
+		else if (Keyboard.keyPressedOnce("o")) {
+			changePacManOverflowBug();
+		}
+		else if (Keyboard.keyPressedOnce("s") && currentView == playView) {
+			showStates = !showStates;
+		}
+		else if (Keyboard.keyPressedOnce("t") && currentView == playView) {
+			showFPS = !showFPS;
+		}
+		else if (Keyboard.keyPressedOnce("r") && currentView == playView) {
+			showRoutes = !showRoutes;
+		}
+		else if (Keyboard.keyPressedOnce("1") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
+			changeClockFrequency(Game.SPEED_1_FPS);
+		}
+		else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
+			changeClockFrequency(Game.SPEED_1_FPS);
+		}
+		else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
+			changeClockFrequency(Game.SPEED_1_FPS);
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
+			int oldFreq = app().clock().getFrequency();
+			changeClockFrequency(oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
+			int oldFreq = app().clock().getFrequency();
+			changeClockFrequency(oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
+		}
+
 		super.update();
 		currentView.update();
 	}
@@ -416,7 +452,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				ghost.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
 				LOGGER.info(() -> String.format("Ghost %s killed at %s", ghost.name(), ghost.tile()));
-			} else {
+			}
+			else {
 				// Pac-Man killed
 				house.onLifeLost();
 				sound.muteAll();
@@ -465,80 +502,42 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	// handle input
-
-	private void handleChangeClockSpeed() {
-		int oldFreq = app().clock().getFrequency();
-		int newFreq = oldFreq;
-		if (Keyboard.keyPressedOnce("1") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
-			newFreq = Game.SPEED_1_FPS;
-		} else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
-			newFreq = Game.SPEED_2_FPS;
-		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
-			newFreq = Game.SPEED_3_FPS;
-		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
-			newFreq = (oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
-		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
-			newFreq = (oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
-		}
-		if (newFreq != oldFreq) {
-			app().clock().setFrequency(newFreq);
-			LOGGER.info(String.format("Clock frequency changed to %d ticks/sec", newFreq));
+	private void changeClockFrequency(int newValue) {
+		if (app().clock().getFrequency() != newValue) {
+			app().clock().setFrequency(newValue);
+			LOGGER.info(String.format("Clock frequency changed to %d ticks/sec", newValue));
 		}
 	}
 
-	private void handleChangePlayViewSettings() {
-		if (currentView != playView) {
-			return;
+	private void changePacManOverflowBug() {
+		settings.overflowBug = !settings.overflowBug;
+		LOGGER.info(() -> "Overflow bug is " + (settings.overflowBug ? "on" : "off"));
+	}
+
+	private void changeStateMachineLogging() {
+		FSM_LOGGER.setLevel(FSM_LOGGER.getLevel() == Level.OFF ? Level.INFO : Level.OFF);
+		LOGGER.info(() -> "State machine logging changed to " + FSM_LOGGER.getLevel());
+	}
+
+	private void changeGhostFrightenedBehavior() {
+		boolean original = settings.ghostsFleeRandomly;
+		if (original) {
+			settings.ghostsFleeRandomly = false;
+			cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, ghost.isFleeingToSafeCorner(cast.pacMan)));
+			LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
 		}
-		if (Keyboard.keyPressedOnce("t")) {
-			showFPS = !showFPS;
-		}
-		if (Keyboard.keyPressedOnce("g")) {
-			showGrid = !showGrid;
-		}
-		if (Keyboard.keyPressedOnce("s")) {
-			showStates = !showStates;
-		}
-		if (Keyboard.keyPressedOnce("r")) {
-			showRoutes = !showRoutes;
+		else {
+			settings.ghostsFleeRandomly = true;
+			cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack()));
+			LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
 		}
 	}
 
-	private void handleChangePacManOverflowBug() {
-		if (Keyboard.keyPressedOnce("O")) {
-			settings.overflowBug = !settings.overflowBug;
-			LOGGER.info("Overflow bug is " + (settings.overflowBug ? "on" : "off"));
-		}
-	}
-
-	private void handleChangeStateMachineLogging() {
-		if (Keyboard.keyPressedOnce("L")) {
-			FSM_LOGGER.setLevel(FSM_LOGGER.getLevel() == Level.OFF ? Level.INFO : Level.OFF);
-			LOGGER.info("State machine logging changed to " + FSM_LOGGER.getLevel());
-		}
-	}
-
-	private void handleChangeGhostFrightenedBehavior() {
-		if (Keyboard.keyPressedOnce("F")) {
-			boolean original = settings.ghostsFleeRandomly;
-			if (original) {
-				settings.ghostsFleeRandomly = false;
-				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, ghost.isFleeingToSafeCorner(cast.pacMan)));
-				LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
-			} else {
-				settings.ghostsFleeRandomly = true;
-				cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack()));
-				LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
-			}
-		}
-	}
-
-	private void handleChangeDemoMode() {
-		/* CONTROL-"J": Demo mode: Makes Pac-Man immortable and moving randomly. */
-		if (Keyboard.keyPressedOnce(Modifier.CONTROL, "J") && cast != null) {
+	private void changeDemoMode() {
+		if (cast != null) {
 			settings.demoMode = !settings.demoMode;
 			cast.setDemoMode(settings.demoMode);
+			LOGGER.info(() -> "Demo mode is " + (settings.demoMode ? "on" : "off"));
 		}
 	}
 }
