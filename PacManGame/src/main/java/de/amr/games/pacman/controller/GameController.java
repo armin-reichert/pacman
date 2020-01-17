@@ -158,10 +158,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			changeClockFrequency(Game.SPEED_1_FPS);
 		}
 		else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
-			changeClockFrequency(Game.SPEED_1_FPS);
+			changeClockFrequency(Game.SPEED_2_FPS);
 		}
 		else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
-			changeClockFrequency(Game.SPEED_1_FPS);
+			changeClockFrequency(Game.SPEED_3_FPS);
 		}
 		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
 			int oldFreq = app().clock().getFrequency();
