@@ -178,7 +178,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 					.onTimeout()
 				
 				.when(WAITING_FOR_INPUT).then(READY_TO_PLAY)
-					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+					.condition(() -> Keyboard.keyPressedOnce(" "))
 	
 		.endStateMachine();
 	  /*@formatter:on*/

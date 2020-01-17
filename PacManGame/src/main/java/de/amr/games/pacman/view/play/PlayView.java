@@ -21,7 +21,6 @@ import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.Transparency;
-import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
@@ -86,16 +85,16 @@ public class PlayView extends SimplePlayView {
 	@Override
 	public void update() {
 		super.update();
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_B)) {
+		if (Keyboard.keyPressedOnce("B")) {
 			toggleGhost(cast().blinky);
 		}
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_P)) {
+		if (Keyboard.keyPressedOnce("P")) {
 			toggleGhost(cast().pinky);
 		}
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_I)) {
+		if (Keyboard.keyPressedOnce("I")) {
 			toggleGhost(cast().inky);
 		}
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_C)) {
+		if (Keyboard.keyPressedOnce("C")) {
 			toggleGhost(cast().clyde);
 		}
 	}

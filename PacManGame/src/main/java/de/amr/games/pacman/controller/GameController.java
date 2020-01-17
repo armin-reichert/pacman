@@ -359,7 +359,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 			
 				.when(GAME_OVER).then(GETTING_READY)
-					.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+					.condition(() -> Keyboard.keyPressedOnce(" "))
 					
 				.when(GAME_OVER).then(INTRO)
 					.condition(() -> !sound.isGameOverMusicRunning())
@@ -470,11 +470,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void handleChangeClockSpeed() {
 		int oldFreq = app().clock().getFrequency();
 		int newFreq = oldFreq;
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_1) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
+		if (Keyboard.keyPressedOnce("1") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
 			newFreq = Game.SPEED_1_FPS;
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_2) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
+		} else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
 			newFreq = Game.SPEED_2_FPS;
-		} else if (Keyboard.keyPressedOnce(KeyEvent.VK_3) || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
+		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			newFreq = Game.SPEED_3_FPS;
 		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
 			newFreq = (oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
@@ -491,36 +491,36 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		if (currentView != playView) {
 			return;
 		}
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_T)) {
+		if (Keyboard.keyPressedOnce("t")) {
 			showFPS = !showFPS;
 		}
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_G)) {
+		if (Keyboard.keyPressedOnce("g")) {
 			showGrid = !showGrid;
 		}
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_S)) {
+		if (Keyboard.keyPressedOnce("s")) {
 			showStates = !showStates;
 		}
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_R)) {
+		if (Keyboard.keyPressedOnce("r")) {
 			showRoutes = !showRoutes;
 		}
 	}
 
 	private void handleChangePacManOverflowBug() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_O)) {
+		if (Keyboard.keyPressedOnce("O")) {
 			settings.overflowBug = !settings.overflowBug;
 			LOGGER.info("Overflow bug is " + (settings.overflowBug ? "on" : "off"));
 		}
 	}
 
 	private void handleChangeStateMachineLogging() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_L)) {
+		if (Keyboard.keyPressedOnce("L")) {
 			FSM_LOGGER.setLevel(FSM_LOGGER.getLevel() == Level.OFF ? Level.INFO : Level.OFF);
 			LOGGER.info("State machine logging changed to " + FSM_LOGGER.getLevel());
 		}
 	}
 
 	private void handleChangeGhostFrightenedBehavior() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_F)) {
+		if (Keyboard.keyPressedOnce("F")) {
 			boolean original = settings.ghostsFleeRandomly;
 			if (original) {
 				settings.ghostsFleeRandomly = false;
@@ -536,7 +536,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void handleChangeDemoMode() {
 		/* CONTROL-"J": Demo mode: Makes Pac-Man immortable and moving randomly. */
-		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_J) && cast != null) {
+		if (Keyboard.keyPressedOnce(Modifier.CONTROL, "J") && cast != null) {
 			settings.demoMode = !settings.demoMode;
 			cast.setDemoMode(settings.demoMode);
 		}

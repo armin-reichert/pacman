@@ -6,8 +6,6 @@ import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 
-import java.awt.event.KeyEvent;
-
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
@@ -43,7 +41,7 @@ public class Cheats implements Lifecycle {
 
 	private void toggleMakePacManImmortable() {
 		/* CONTROL-"I": Makes Pac-Man immortable */
-		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_I)) {
+		if (Keyboard.keyPressedOnce(Modifier.CONTROL, "i")) {
 			settings.pacManImmortable = !settings.pacManImmortable;
 			LOGGER.info("Pac-Man immortable = " + settings.pacManImmortable);
 		}
@@ -51,7 +49,7 @@ public class Cheats implements Lifecycle {
 
 	private void switchToNextLevel() {
 		/* CONTROL-"L": Selects next level */
-		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_PLUS)) {
+		if (Keyboard.keyPressedOnce(Modifier.CONTROL, "+")) {
 			gameController.cast().ifPresent(cast -> {
 				LOGGER.info(() -> String.format("Switch to next level (%d)", cast.game().level().number + 1));
 				gameController.enqueue(new LevelCompletedEvent());
@@ -61,7 +59,7 @@ public class Cheats implements Lifecycle {
 
 	private void eatAllPellets() {
 		/* CONTROL-"E": Eats all (normal) pellets */
-		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_E)) {
+		if (Keyboard.keyPressedOnce(Modifier.CONTROL, "e")) {
 			gameController.cast().ifPresent(cast -> {
 				cast.game().maze().tiles().filter(Tile::containsPellet).forEach(tile -> {
 					cast.game().eatFoodAt(tile);
@@ -77,7 +75,7 @@ public class Cheats implements Lifecycle {
 
 	private void killAllGhosts() {
 		/* CONTROL-"K": Kill all available ghosts */
-		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_K)) {
+		if (Keyboard.keyPressedOnce(Modifier.CONTROL, "k")) {
 			gameController.cast().ifPresent(cast -> {
 				cast.game().level().ghostsKilledByEnergizer = 0;
 				cast.ghostsOnStage().filter(ghost -> ghost.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
