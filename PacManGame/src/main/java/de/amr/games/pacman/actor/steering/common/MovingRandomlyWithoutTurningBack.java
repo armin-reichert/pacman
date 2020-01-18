@@ -1,7 +1,7 @@
 package de.amr.games.pacman.actor.steering.common;
 
 import de.amr.datastruct.StreamUtils;
-import de.amr.games.pacman.actor.steering.core.Steering;
+import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.MazeMoving;
 

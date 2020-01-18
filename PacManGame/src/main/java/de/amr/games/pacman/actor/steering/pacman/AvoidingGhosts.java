@@ -8,7 +8,7 @@ import java.util.Comparator;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.actor.steering.core.Steering;
+import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.MazeMoving;
 import de.amr.games.pacman.model.Tile;

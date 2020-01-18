@@ -8,7 +8,7 @@ import static de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.Enteri
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.steering.core.Steering;
+import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;

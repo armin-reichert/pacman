@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.Cast;
-import de.amr.games.pacman.actor.steering.core.Steering;
+import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.MazeMoving;

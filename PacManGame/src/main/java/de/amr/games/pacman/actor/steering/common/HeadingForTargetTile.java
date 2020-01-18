@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.actor.steering.core.Steering;
+import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.MazeMoving;
