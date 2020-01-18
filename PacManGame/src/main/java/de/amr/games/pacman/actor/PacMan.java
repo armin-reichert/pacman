@@ -71,7 +71,8 @@ public class PacMan extends MovingActor<PacManState> implements SteerableMazeMov
 	public void startEating() {
 		if (getState() == SLEEPING) {
 			setState(EATING);
-		} else
+		}
+		else
 			throw new IllegalStateException();
 	}
 
@@ -153,11 +154,6 @@ public class PacMan extends MovingActor<PacManState> implements SteerableMazeMov
 		brain.init();
 	}
 
-	@Override
-	public void update() {
-		brain.update();
-	}
-
 	private Optional<PacManGameEvent> findSomethingInteresting() {
 		Tile tile = tile();
 		if (tile == maze().bonusTile) {
@@ -169,7 +165,8 @@ public class PacMan extends MovingActor<PacManState> implements SteerableMazeMov
 			if (tile.containsEnergizer()) {
 				digestionTicks = DIGEST_ENERGIZER_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, true));
-			} else {
+			}
+			else {
 				digestionTicks = DIGEST_PELLET_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, false));
 			}
@@ -208,14 +205,13 @@ public class PacMan extends MovingActor<PacManState> implements SteerableMazeMov
 	}
 
 	/**
-	 * NOTE: If the application property {@link PacManAppSettings#overflowBug} is
-	 * <code>true</code>, this method simulates the bug from the original Arcade
-	 * game where, if Pac-Man points upwards, the position ahead of Pac-Man is
-	 * wrongly calculated by adding the same number of tiles to the left.
+	 * NOTE: If the application property {@link PacManAppSettings#overflowBug} is <code>true</code>, this method simulates
+	 * the bug from the original Arcade game where, if Pac-Man points upwards, the position ahead of Pac-Man is wrongly
+	 * calculated by adding the same number of tiles to the left.
 	 * 
-	 * @param numTiles number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards
-	 *         his current move direction.
+	 * @param numTiles
+	 *                   number of tiles
+	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards his current move direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
 		Tile tileAhead = maze().tileToDir(tile(), moveDir(), numTiles);

@@ -20,9 +20,8 @@ import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
- * Bonus symbol (fruit or other symbol) that appears at the maze bonus position
- * for around 9 seconds. When consumed, the bonus is displayed for 3 seconds as
- * a number representing its value and then disappears.
+ * Bonus symbol (fruit or other symbol) that appears at the maze bonus position for around 9 seconds. When consumed, the
+ * bonus is displayed for 3 seconds as a number representing its value and then disappears.
  * 
  * @author Armin Reichert
  */
@@ -97,16 +96,6 @@ public class Bonus extends Actor<BonusState> {
 				.when(CONSUMED).then(INACTIVE).onTimeout()
 		.endStateMachine();
 		/*@formatter:on*/
-	}
-
-	@Override
-	public void init() {
-		brain.init();
-	}
-
-	@Override
-	public void update() {
-		brain.update();
 	}
 
 	@Override
