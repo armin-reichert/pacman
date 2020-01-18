@@ -20,8 +20,8 @@ public interface SteerableMazeMover extends MazeMoving {
 	 * 
 	 * @return steering using the given keys
 	 */
-	default Steering isFollowingKeys(int... keys) {
-		return new FollowingKeys(this, keys);
+	default Steering isFollowingKeys(int up, int right, int down, int left) {
+		return new FollowingKeys(this, up, right, down, left);
 	}
 
 	/**
