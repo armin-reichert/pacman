@@ -45,8 +45,8 @@ public class Cast {
 	public final Ghost blinky, pinky, inky, clyde;
 	public final Bonus bonus;
 
-	private final List<Ghost> seats;
-	private final List<Direction> eyes;
+	private final List<Ghost> seatAssignment;
+	private final List<Direction> seatGhostDirections;
 	private final Set<MovingActor<?>> actorsOnStage = new HashSet<>();
 	private final PropertyChangeSupport changes = new PropertyChangeSupport(this);
 	private final Game game;
@@ -62,8 +62,8 @@ public class Cast {
 		pinky = new Ghost(this, "Pinky");
 		clyde = new Ghost(this, "Clyde");
 
-		seats = Arrays.asList(blinky, inky, pinky, clyde);
-		eyes = Arrays.asList(LEFT, UP, DOWN, UP);
+		seatAssignment = Arrays.asList(blinky, inky, pinky, clyde);
+		seatGhostDirections = Arrays.asList(LEFT, UP, DOWN, UP);
 
 		dressActors();
 		actors().forEach(actor -> actor.setVisible(false));
@@ -125,11 +125,11 @@ public class Cast {
 	}
 
 	public int seat(Ghost ghost) {
-		return seats.indexOf(ghost);
+		return seatAssignment.indexOf(ghost);
 	}
 
-	public Direction eyes(Ghost ghost) {
-		return eyes.get(seat(ghost));
+	public Direction seatGhostDirection(Ghost ghost) {
+		return seatGhostDirections.get(seat(ghost));
 	}
 
 	public Vector2f seatPosition(int seat) {
@@ -139,8 +139,8 @@ public class Cast {
 
 	public void placeOnSeat(Ghost ghost) {
 		ghost.tf.setPosition(seatPosition(seat(ghost)));
-		ghost.setMoveDir(eyes(ghost));
-		ghost.setWishDir(eyes(ghost));
+		ghost.setMoveDir(seatGhostDirection(ghost));
+		ghost.setWishDir(seatGhostDirection(ghost));
 		ghost.enteredNewTile();
 	}
 
