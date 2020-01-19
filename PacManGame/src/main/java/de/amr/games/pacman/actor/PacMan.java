@@ -186,7 +186,7 @@ public class PacMan extends MovingActor<PacManState> implements SteerableMazeMov
 		return steering;
 	}
 
-	public void steering(Steering steering) {
+	public void behavior(Steering steering) {
 		this.steering = steering;
 	}
 

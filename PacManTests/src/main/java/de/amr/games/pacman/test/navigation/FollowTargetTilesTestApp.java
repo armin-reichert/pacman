@@ -66,7 +66,7 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 		theme().snd_ghost_chase().volume(0);
 		cast().putActorOnStage(cast().blinky);
 		cast().blinky.placeAt(targets.get(0));
-		cast().blinky.during(CHASING, cast().blinky.isHeadingFor(() -> targets.get(current)));
+		cast().blinky.behavior(CHASING, cast().blinky.isHeadingFor(() -> targets.get(current)));
 		cast().blinky.setState(CHASING);
 		cast().blinky.steering().force();
 	}

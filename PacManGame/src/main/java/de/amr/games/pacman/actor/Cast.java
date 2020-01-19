@@ -68,47 +68,47 @@ public class Cast {
 		dressActors();
 		actors().forEach(actor -> actor.setVisible(false));
 
-		pacMan.steering(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
+		pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		pacMan.setTeleportingDuration(sec(0.5f));
 
-		blinky.during(LOCKED, blinky.isHeadingFor(blinky::tile));
-		blinky.during(ENTERING_HOUSE, blinky.isTakingSeat(seatPosition(2)));
-		blinky.during(LEAVING_HOUSE, blinky.isLeavingGhostHouse());
-		blinky.during(FRIGHTENED, blinky.isMovingRandomlyWithoutTurningBack());
-		blinky.during(SCATTERING, blinky.isHeadingFor(game().maze().horizonNE));
-		blinky.during(CHASING, blinky.isHeadingFor(pacMan::tile));
-		blinky.during(DEAD, blinky.isHeadingFor(() -> game().maze().ghostHouseSeats[0]));
+		blinky.behavior(LOCKED, blinky.isHeadingFor(blinky::tile));
+		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(seatPosition(2)));
+		blinky.behavior(LEAVING_HOUSE, blinky.isLeavingGhostHouse());
+		blinky.behavior(FRIGHTENED, blinky.isMovingRandomlyWithoutTurningBack());
+		blinky.behavior(SCATTERING, blinky.isHeadingFor(game().maze().horizonNE));
+		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
+		blinky.behavior(DEAD, blinky.isHeadingFor(() -> game().maze().ghostHouseSeats[0]));
 		blinky.setTeleportingDuration(sec(0.5f));
 
-		inky.during(LOCKED, inky.isJumpingUpAndDown(seatPosition(1)));
-		inky.during(ENTERING_HOUSE, inky.isTakingSeat(seatPosition(1)));
-		inky.during(LEAVING_HOUSE, inky.isLeavingGhostHouse());
-		inky.during(FRIGHTENED, inky.isMovingRandomlyWithoutTurningBack());
-		inky.during(SCATTERING, inky.isHeadingFor(game().maze().horizonSE));
-		inky.during(CHASING, inky.isHeadingFor(() -> {
+		inky.behavior(LOCKED, inky.isJumpingUpAndDown(seatPosition(1)));
+		inky.behavior(ENTERING_HOUSE, inky.isTakingSeat(seatPosition(1)));
+		inky.behavior(LEAVING_HOUSE, inky.isLeavingGhostHouse());
+		inky.behavior(FRIGHTENED, inky.isMovingRandomlyWithoutTurningBack());
+		inky.behavior(SCATTERING, inky.isHeadingFor(game().maze().horizonSE));
+		inky.behavior(CHASING, inky.isHeadingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return game().maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
-		inky.during(DEAD, inky.isHeadingFor(() -> game().maze().ghostHouseSeats[0]));
+		inky.behavior(DEAD, inky.isHeadingFor(() -> game().maze().ghostHouseSeats[0]));
 		inky.setTeleportingDuration(sec(0.5f));
 
-		pinky.during(LOCKED, pinky.isJumpingUpAndDown(seatPosition(2)));
-		pinky.during(ENTERING_HOUSE, pinky.isTakingSeat(seatPosition(2)));
-		pinky.during(LEAVING_HOUSE, pinky.isLeavingGhostHouse());
-		pinky.during(FRIGHTENED, pinky.isMovingRandomlyWithoutTurningBack());
-		pinky.during(SCATTERING, pinky.isHeadingFor(game().maze().horizonNW));
-		pinky.during(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
-		pinky.during(DEAD, pinky.isHeadingFor(() -> game().maze().ghostHouseSeats[0]));
+		pinky.behavior(LOCKED, pinky.isJumpingUpAndDown(seatPosition(2)));
+		pinky.behavior(ENTERING_HOUSE, pinky.isTakingSeat(seatPosition(2)));
+		pinky.behavior(LEAVING_HOUSE, pinky.isLeavingGhostHouse());
+		pinky.behavior(FRIGHTENED, pinky.isMovingRandomlyWithoutTurningBack());
+		pinky.behavior(SCATTERING, pinky.isHeadingFor(game().maze().horizonNW));
+		pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
+		pinky.behavior(DEAD, pinky.isHeadingFor(() -> game().maze().ghostHouseSeats[0]));
 		pinky.setTeleportingDuration(sec(0.5f));
 
-		clyde.during(LOCKED, clyde.isJumpingUpAndDown(seatPosition(3)));
-		clyde.during(ENTERING_HOUSE, clyde.isTakingSeat(seatPosition(3)));
-		clyde.during(LEAVING_HOUSE, clyde.isLeavingGhostHouse());
-		clyde.during(FRIGHTENED, clyde.isMovingRandomlyWithoutTurningBack());
-		clyde.during(SCATTERING, clyde.isHeadingFor(game().maze().horizonSW));
-		clyde.during(CHASING, clyde.isHeadingFor(
+		clyde.behavior(LOCKED, clyde.isJumpingUpAndDown(seatPosition(3)));
+		clyde.behavior(ENTERING_HOUSE, clyde.isTakingSeat(seatPosition(3)));
+		clyde.behavior(LEAVING_HOUSE, clyde.isLeavingGhostHouse());
+		clyde.behavior(FRIGHTENED, clyde.isMovingRandomlyWithoutTurningBack());
+		clyde.behavior(SCATTERING, clyde.isHeadingFor(game().maze().horizonSW));
+		clyde.behavior(CHASING, clyde.isHeadingFor(
 				() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : game().maze().horizonSW));
-		clyde.during(DEAD, clyde.isHeadingFor(() -> game().maze().ghostHouseSeats[0]));
+		clyde.behavior(DEAD, clyde.isHeadingFor(() -> game().maze().ghostHouseSeats[0]));
 		clyde.setTeleportingDuration(sec(0.5f));
 
 		bonus = new Bonus(this);
@@ -156,10 +156,10 @@ public class Cast {
 	public void setDemoMode(boolean on) {
 		if (on) {
 			settings.pacManImmortable = true;
-			pacMan.steering(pacMan.isMovingRandomlyWithoutTurningBack());
+			pacMan.behavior(pacMan.isMovingRandomlyWithoutTurningBack());
 		} else {
 			settings.pacManImmortable = false;
-			pacMan.steering(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
+			pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		}
 		LOGGER.info("Demo mode = " + on);
 	}

@@ -217,7 +217,7 @@ public class Ghost extends MovingActor<GhostState> implements SteerableGhost {
 		brain.init();
 	}
 
-	public void during(GhostState state, Steering steering) {
+	public void behavior(GhostState state, Steering steering) {
 		steerings.put(state, steering);
 	}
 

@@ -67,8 +67,8 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 		cast.theme().snd_ghost_chase().volume(0);
 		cast().putActorOnStage(ghost);
 		Steering steering = ghost.isTakingShortestPath(() -> targets.get(targetIndex));
-		ghost.during(CHASING, steering);
-		ghost.during(FRIGHTENED, steering);
+		ghost.behavior(CHASING, steering);
+		ghost.behavior(FRIGHTENED, steering);
 		ghost.setState(CHASING);
 		message("SPACE toggles ghost state");
 	}

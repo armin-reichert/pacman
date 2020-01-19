@@ -523,12 +523,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		boolean original = settings.ghostsFleeRandomly;
 		if (original) {
 			settings.ghostsFleeRandomly = false;
-			cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, ghost.isFleeingToSafeCorner(cast.pacMan)));
+			cast.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.isFleeingToSafeCorner(cast.pacMan)));
 			LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
 		}
 		else {
 			settings.ghostsFleeRandomly = true;
-			cast.ghosts().forEach(ghost -> ghost.during(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack()));
+			cast.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack()));
 			LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
 		}
 	}
