@@ -111,7 +111,7 @@ public class HeadingForTargetTile implements Steering {
 			.filter(dir -> actor.canMoveBetween(currentTile, neighbor.apply(dir)))
 			.sorted(comparing(neighborDistToTarget).thenComparingInt(UP_LEFT_DOWN_RIGHT::indexOf))
 			.findFirst()
-			.orElseThrow(IllegalStateException::new);
+			.orElseThrow(() -> new IllegalStateException("Could not compute direction for " + actor));
 		/*@formatter:on*/
 	}
 
