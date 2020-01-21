@@ -16,16 +16,26 @@ import de.amr.statemachine.api.FsmContainer;
  * 
  * @author Armin Reichert
  *
- * @param <S>
- *          state identifier type
+ * @param <S> state identifier type
  */
 public abstract class Actor<S> extends Entity implements FsmContainer<S, PacManGameEvent>, MazeResiding {
 
-	public abstract Cast cast();
+	private final Cast cast;
+	private final String name;
 
-	public Actor() {
+	public Actor(Cast cast, String name) {
+		this.cast = cast;
+		this.name = name;
 		tf.setWidth(Tile.SIZE);
 		tf.setHeight(Tile.SIZE);
+	}
+
+	public Cast cast() {
+		return cast;
+	}
+
+	public String name() {
+		return name;
 	}
 
 	public Game game() {

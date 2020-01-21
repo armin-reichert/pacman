@@ -29,8 +29,6 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMoving {
 		MOVING, TELEPORTING;
 	}
 
-	private final Cast cast;
-	private final String name;
 	protected final StateMachine<MoveState, Void> movement;
 	private Direction moveDir;
 	private Direction wishDir;
@@ -49,8 +47,7 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMoving {
 	protected abstract float maxSpeed();
 
 	public MovingActor(Cast cast, String name) {
-		this.cast = cast;
-		this.name = name;
+		super(cast, name);
 		movement = new StateMachine<MoveState, Void>(MoveState.class) {
 
 			{
@@ -77,15 +74,6 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMoving {
 			}
 		};
 		movement.setLogger(Game.FSM_LOGGER);
-	}
-
-	@Override
-	public Cast cast() {
-		return cast;
-	}
-
-	public String name() {
-		return name;
 	}
 
 	@Override

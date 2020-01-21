@@ -20,8 +20,9 @@ import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
- * Bonus symbol (fruit or other symbol) that appears at the maze bonus position for around 9 seconds. When consumed, the
- * bonus is displayed for 3 seconds as a number representing its value and then disappears.
+ * Bonus symbol (fruit or other symbol) that appears at the maze bonus position
+ * for around 9 seconds. When consumed, the bonus is displayed for 3 seconds as
+ * a number representing its value and then disappears.
  * 
  * @author Armin Reichert
  */
@@ -29,20 +30,14 @@ public class Bonus extends Actor<BonusState> {
 
 	private final SpriteMap sprites = new SpriteMap();
 	private final Fsm<BonusState, PacManGameEvent> brain;
-	private final Cast cast;
 	private Symbol symbol;
 	private int value;
 
 	public Bonus(Cast cast) {
-		this.cast = cast;
+		super(cast, "Bonus");
 		brain = buildFsm();
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
 		brain.setLogger(Game.FSM_LOGGER);
-	}
-
-	@Override
-	public Cast cast() {
-		return cast;
 	}
 
 	@Override
@@ -76,7 +71,7 @@ public class Bonus extends Actor<BonusState> {
 		return StateMachine.
 		/*@formatter:off*/
 		beginStateMachine(BonusState.class, PacManGameEvent.class)
-			.description("[Bonus]")
+			.description(String.format("[%s]", name()))
 			.initialState(INACTIVE)
 			.states()
 				.state(INACTIVE)
