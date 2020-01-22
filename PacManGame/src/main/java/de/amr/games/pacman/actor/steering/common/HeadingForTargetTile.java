@@ -111,7 +111,9 @@ public class HeadingForTargetTile implements Steering {
 			.filter(dir -> actor.canMoveBetween(currentTile, neighbor.apply(dir)))
 			.sorted(comparing(neighborDistToTarget).thenComparingInt(UP_LEFT_DOWN_RIGHT::indexOf))
 			.findFirst()
-			.orElseThrow(() -> new IllegalStateException("Could not compute direction for " + actor));
+			// when a ghost is on a portal tile and the steering has just changed it may happen
+			// that no direction can be computed. In that case keep the move direction:
+			.orElse(actor.moveDir());
 		/*@formatter:on*/
 	}
 

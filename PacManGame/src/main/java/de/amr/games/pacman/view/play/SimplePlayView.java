@@ -49,7 +49,8 @@ public class SimplePlayView implements GameView {
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
 		cast.addThemeListener(this);
-		onThemeChanged(theme());
+		cast.bonus.tf.setPosition(maze().bonusTile.centerX(), maze().bonusTile.y());
+  		onThemeChanged(theme());
 		messageText = null;
 		messageColor = Color.YELLOW;
 	}

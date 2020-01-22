@@ -112,7 +112,6 @@ public class Cast {
 		clyde.setTeleportingDuration(sec(0.5f));
 
 		bonus = new Bonus(this);
-		bonus.tf.setPosition(game().maze().bonusTile.centerX(), game().maze().bonusTile.y());
 		bonus.init();
 	}
 
