@@ -16,10 +16,11 @@ import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Base class for all moving actors (ghosts, Pac-Man). Actors know how to move
- * through the maze and are controlled using a finite-state machine.
+ * Base class for all moving actors (ghosts, Pac-Man). Actors know how to move through the maze and are controlled using
+ * a finite-state machine.
  * 
- * @param <S> state identifier type
+ * @param <S>
+ *          state identifier type
  * 
  * @author Armin Reichert
  */
@@ -57,18 +58,16 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMoving {
 					.initialState(MOVING)
 					.states()
 						.state(MOVING)
-						.onEntry(() -> setVisible(true))
-							.onTick(() -> moveInsideMaze())
+							.onTick(MovingActor.this::moveInsideMaze)
 						.state(TELEPORTING)
 							.timeoutAfter(() -> teleportingTicks)
 							.onEntry(() -> setVisible(false))
 							.onExit(() -> setVisible(true))
 					.transitions()
 						.when(MOVING).then(TELEPORTING)
-							.condition(() -> enteredPortal())
-							.act(() -> traversePortal())
+							.condition(() -> enteredLeftPortal() || enteredRightPortal())
 						.when(TELEPORTING).then(MOVING)
-							.onTimeout()
+							.onTimeout().act(MovingActor.this::teleport)
 				.endStateMachine();
 				//@formatter:on
 			}
@@ -87,9 +86,12 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMoving {
 	/**
 	 * Places this entity at the given tile with given pixel offsets.
 	 * 
-	 * @param tile    tile
-	 * @param xOffset pixel offset in x-direction
-	 * @param yOffset pixel offset in y-direction
+	 * @param tile
+	 *                  tile
+	 * @param xOffset
+	 *                  pixel offset in x-direction
+	 * @param yOffset
+	 *                  pixel offset in y-direction
 	 */
 	public void placeAt(Tile tile, float xOffset, float yOffset) {
 		tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
@@ -99,7 +101,8 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMoving {
 	/**
 	 * Places this entity exactly over the given tile.
 	 * 
-	 * @param tile the tile where this maze mover is placed
+	 * @param tile
+	 *               the tile where this maze mover is placed
 	 */
 	public void placeAt(Tile tile) {
 		placeAt(tile, 0, 0);
@@ -175,8 +178,8 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMoving {
 	}
 
 	/**
-	 * Computes how many pixels this entity can move towards the given direction
-	 * without crossing the border to a forbidden neighbor tile.
+	 * Computes how many pixels this entity can move towards the given direction without crossing the border to a
+	 * forbidden neighbor tile.
 	 */
 	private float possibleSpeed(Tile currentTile, Direction dir) {
 		float maxSpeed = maxSpeed();
@@ -217,16 +220,21 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMoving {
 		enteredNewTile = !tileBeforeStep.equals(tile());
 	}
 
-	private void traversePortal() {
-		Tile tile = tile();
-		if (tile.equals(maze().portalLeft)) {
-			placeAt(maze().portalRight);
-		} else if (tile.equals(maze().portalRight)) {
+	private void teleport() {
+		if (enteredRightPortal()) {
 			placeAt(maze().portalLeft);
 		}
+		else if (enteredLeftPortal()) {
+			placeAt(maze().portalRight);
+		}
+		enteredNewTile = true;
 	}
 
-	private boolean enteredPortal() {
-		return enteredNewTile() && maze().isPortal(tile());
+	private boolean enteredLeftPortal() {
+		return tf.getPosition().x < maze().portalLeft.x();
+	}
+
+	private boolean enteredRightPortal() {
+		return tf.getPosition().x > maze().portalRight.x();
 	}
 }
