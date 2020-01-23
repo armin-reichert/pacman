@@ -3,7 +3,9 @@ package de.amr.games.pacman.controller;
 import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.PacManApp.settings;
+import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.controller.PacManGameState.GETTING_READY;
@@ -37,6 +39,7 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.core.GameView;
 import de.amr.games.pacman.view.intro.IntroView;
@@ -57,13 +60,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private Cast cast;
 	private GhostCommand ghostCommand;
 	private House house;
-	private Cheats cheats;
 	private SoundController sound;
 
-	private GameView currentView;
-	private LoadingView loadingView;
-	private IntroView introView;
+	private final LoadingView loadingView;
+	private final IntroView introView;
 	private PlayView playView;
+	private GameView currentView;
 
 	private boolean showFPS;
 	private boolean showRoutes;
@@ -78,6 +80,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		setLogger(Game.FSM_LOGGER);
 		doNotLogEventProcessingIf(PacManGameEvent::isTrivial);
+		loadingView = new LoadingView(theme);
+		introView = new IntroView(theme);
 	}
 
 	public Optional<Cast> cast() {
@@ -115,10 +119,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		cast.setDemoMode(settings.demoMode);
 		ghostCommand = new GhostCommand(cast);
 		house = new House(cast);
-		cheats = new Cheats(this);
-	}
-
-	private void createPlayView() {
 		playView = new PlayView(cast);
 		playView.fnGhostCommandState = ghostCommand::state;
 		playView.house = house;
@@ -130,44 +130,44 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	@Override
 	public void update() {
-		if (Keyboard.keyPressedOnce("f")) {
-			changeGhostFrightenedBehavior();
+		if (getState() == PLAYING) {
+			if (Keyboard.keyPressedOnce("d")) {
+				changeDemoMode();
+			} else if (Keyboard.keyPressedOnce("e")) {
+				eatAllPellets();
+			} else if (Keyboard.keyPressedOnce("f")) {
+				changeGhostFrightenedBehavior();
+			} else if (Keyboard.keyPressedOnce("g")) {
+				showGrid = !showGrid;
+			} else if (Keyboard.keyPressedOnce("i")) {
+				toggleMakePacManImmortable();
+			} else if (Keyboard.keyPressedOnce("k")) {
+				killAllGhosts();
+			} else if (Keyboard.keyPressedOnce("l")) {
+				changeStateMachineLogging();
+			} else if (Keyboard.keyPressedOnce("o")) {
+				changePacManOverflowBug();
+			} else if (Keyboard.keyPressedOnce("s")) {
+				showStates = !showStates;
+			} else if (Keyboard.keyPressedOnce("t")) {
+				showFPS = !showFPS;
+			} else if (Keyboard.keyPressedOnce("r")) {
+				showRoutes = !showRoutes;
+			} else if (Keyboard.keyPressedOnce("+")) {
+				switchToNextLevel();
+			}
 		}
-		else if (Keyboard.keyPressedOnce("g") && currentView == playView) {
-			showGrid = !showGrid;
-		}
-		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, "j")) {
-			changeDemoMode();
-		}
-		else if (Keyboard.keyPressedOnce("l")) {
-			changeStateMachineLogging();
-		}
-		else if (Keyboard.keyPressedOnce("o")) {
-			changePacManOverflowBug();
-		}
-		else if (Keyboard.keyPressedOnce("s") && currentView == playView) {
-			showStates = !showStates;
-		}
-		else if (Keyboard.keyPressedOnce("t") && currentView == playView) {
-			showFPS = !showFPS;
-		}
-		else if (Keyboard.keyPressedOnce("r") && currentView == playView) {
-			showRoutes = !showRoutes;
-		}
-		else if (Keyboard.keyPressedOnce("1") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
+
+		if (Keyboard.keyPressedOnce("1") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
 			changeClockFrequency(Game.SPEED_1_FPS);
-		}
-		else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
+		} else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
 			changeClockFrequency(Game.SPEED_2_FPS);
-		}
-		else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
+		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			changeClockFrequency(Game.SPEED_3_FPS);
-		}
-		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
+		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
 			int oldFreq = app().clock().getFrequency();
 			changeClockFrequency(oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
-		}
-		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
+		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
 			int oldFreq = app().clock().getFrequency();
 			changeClockFrequency(oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
 		}
@@ -192,13 +192,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(LOADING_MUSIC)
 					.onEntry(() -> {
 						sound.loadMusic();
-						loadingView = new LoadingView(theme);
 						showView(loadingView);
 					})
 					
 				.state(INTRO)
 					.onEntry(() -> {
-						introView = new IntroView(theme);
 						showView(introView);
 					})
 					.onExit(() -> {
@@ -209,7 +207,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.timeoutAfter(sec(7))
 					.onEntry(() -> {
 						createPlayEnvironment();
-						createPlayView();
 						showView(playView);
 						sound.gameReady();
 					})
@@ -406,7 +403,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		@Override
 		public void onTick() {
 			ghostCommand.update();
-			cheats.update();
 			house.update();
 			cast.actorsOnStage().forEach(MovingActor::update);
 			cast.bonus.update();
@@ -446,8 +442,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				ghost.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
 				LOGGER.info(() -> String.format("Ghost %s killed at %s", ghost.name(), ghost.tile()));
-			}
-			else {
+			} else {
 				// Pac-Man killed
 				house.onLifeLost();
 				sound.muteAll();
@@ -519,8 +514,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			settings.ghostsFleeRandomly = false;
 			cast.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.isFleeingToSafeCorner(cast.pacMan)));
 			LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
-		}
-		else {
+		} else {
 			settings.ghostsFleeRandomly = true;
 			cast.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack()));
 			LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
@@ -533,5 +527,36 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			cast.setDemoMode(settings.demoMode);
 			LOGGER.info(() -> "Demo mode is " + (settings.demoMode ? "on" : "off"));
 		}
+	}
+
+	private void toggleMakePacManImmortable() {
+		/* CONTROL-"I": Makes Pac-Man immortable */
+		if (Keyboard.keyPressedOnce(Modifier.CONTROL, "i")) {
+			settings.pacManImmortable = !settings.pacManImmortable;
+			LOGGER.info("Pac-Man immortable = " + settings.pacManImmortable);
+		}
+	}
+
+	private void switchToNextLevel() {
+		LOGGER.info(() -> String.format("Switch to next level (%d)", cast.game().level().number + 1));
+		enqueue(new LevelCompletedEvent());
+	}
+
+	private void eatAllPellets() {
+		game.maze().tiles().filter(Tile::containsPellet).forEach(tile -> {
+			game.eatFoodAt(tile);
+			house.onPacManFoundFood(new FoodFoundEvent(tile, false));
+			house.update();
+		});
+		LOGGER.info(() -> "All pellets eaten");
+	}
+
+	private void killAllGhosts() {
+		game.level().ghostsKilledByEnergizer = 0;
+		cast.ghostsOnStage().filter(ghost -> ghost.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
+			game.scoreKilledGhost(ghost.name());
+			ghost.process(new GhostKilledEvent(ghost));
+		});
+		LOGGER.info(() -> "All ghosts killed");
 	}
 }
