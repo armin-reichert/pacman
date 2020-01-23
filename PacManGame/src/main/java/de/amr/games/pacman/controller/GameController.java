@@ -517,8 +517,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	private void changeGhostFrightenedBehavior() {
-		boolean original = settings.ghostsFleeRandomly;
-		if (original) {
+		if (settings.ghostsFleeRandomly) {
 			settings.ghostsFleeRandomly = false;
 			cast.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.isFleeingToSafeCorner(cast.pacMan)));
 			LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
@@ -530,23 +529,18 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	private void changeDemoMode() {
-		if (cast != null) {
-			settings.demoMode = !settings.demoMode;
-			cast.setDemoMode(settings.demoMode);
-			LOGGER.info(() -> "Demo mode is " + (settings.demoMode ? "on" : "off"));
-		}
+		settings.demoMode = !settings.demoMode;
+		cast.setDemoMode(settings.demoMode);
+		LOGGER.info(() -> "Demo mode is " + (settings.demoMode ? "on" : "off"));
 	}
 
 	private void toggleMakePacManImmortable() {
-		/* CONTROL-"I": Makes Pac-Man immortable */
-		if (Keyboard.keyPressedOnce(Modifier.CONTROL, "i")) {
-			settings.pacManImmortable = !settings.pacManImmortable;
-			LOGGER.info("Pac-Man immortable = " + settings.pacManImmortable);
-		}
+		settings.pacManImmortable = !settings.pacManImmortable;
+		LOGGER.info("Pac-Man immortable = " + settings.pacManImmortable);
 	}
 
 	private void switchToNextLevel() {
-		LOGGER.info(() -> String.format("Switch to next level (%d)", cast.game().level().number + 1));
+		LOGGER.info(() -> String.format("Switching to level %d", game.level().number + 1));
 		enqueue(new LevelCompletedEvent());
 	}
 
