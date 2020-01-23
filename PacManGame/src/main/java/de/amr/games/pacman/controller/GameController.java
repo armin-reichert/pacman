@@ -306,13 +306,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							cast.pacMan.showDying();
 							sound.pacManDied();
 						}
-						else if (t == sec(7) - 1) {
-							if (game.lives > 0) {
-								// initialize actors and view for continuing game
-								cast.actorsOnStage().forEach(MovingActor::init);
-								playView.init();
-								sound.gameStarts();
-							}
+						else if (t == sec(7) - 1 && game.lives > 0) {
+							// initialize actors and view, continue game
+							cast.actorsOnStage().forEach(MovingActor::init);
+							playView.init();
+							sound.gameStarts();
 						}
 						else if (t > sec(7)) {
 							// let ghosts jump a bit while music is starting
@@ -347,7 +345,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				
 				.when(GETTING_READY).then(PLAYING)
 					.onTimeout()
-					.act(() -> playingState().reset())
+					.act(playingState()::reset)
 				
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
@@ -376,9 +374,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					
 				.when(CHANGING_LEVEL).then(PLAYING)
 					.onTimeout()
-					.act(() -> {
-						playingState().reset();
-					})
+					.act(playingState()::reset)
 					
 				.when(GHOST_DYING).then(PLAYING)
 					.onTimeout()
@@ -390,9 +386,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.when(PACMAN_DYING).then(PLAYING)
 					.onTimeout()
 					.condition(() -> game.lives > 0)
-					.act(() -> {
-						playingState().reset();
-					})
+					.act(playingState()::reset)
 			
 				.when(GAME_OVER).then(GETTING_READY)
 					.condition(() -> Keyboard.keyPressedOnce(" "))
