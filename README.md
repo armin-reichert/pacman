@@ -347,20 +347,22 @@ However, for a graph of such a small size, the used algorithm doesn't matter ver
   - The overall speed can be changed during the game; 
     - Continuosly: CTRL-LEFT = slower, CTRL-RIGHT = faster
     - Fixed speeds: '1' = normal speed, '2' = fast, '3' = very fast
-    - 't' toggles display of current framerate
-  - 'b', 'p', 'i', 'c' toggles the presence of the 4 ghosts in the game
+  - 'b' toggles the presence of Blinky
+  - 'c' toggles the presence of Clyde
+  - 'd' toggles between normal play mode and demo mode where Pac-Man moves randomly
+  - 'e' eats all pellets except the energizers
   - 'f' toggles the ghost's *frightened* behavior between "random" (original) and "select safe corner"
-  - 's' toggles the display of actor states and timers
-  - 'r' toggles the display of actor routes and target tiles
   - 'g' toggles the display of the grid and the alignment of the actors on the grid
+  - 'i' toggles the presence of Inky
+  - 'k' kills all ghosts
+  - 'l' toggles the tracing of the used state machines
+  - 'm' makes Pac-Man immortable (does not lose live after being killed)
   - 'o' toggles the simulation of the overflow bug which occurs in the original Arcade game when Pac-Man is looking upwards
-- Cheats
-  - CTRL-'k' kills all ghosts
-  - CTRL-'e' eats all pellets except the energizers
-  - CTRL-'+' switches to the next level
-  - CTRL-'i' makes Pac-Man immortable (does not lose live after being killed)
-- Logging/tracing
-  - Tracing of used state machines can be switched on/off (key 'L')
+  - 'p' toggles the presence of Pinky
+  - 'r' toggles the display of actor routes and target tiles
+  - 's' toggles the display of actor states and timers
+  - 't' toggles display of timing information (target vs. actual framerate)
+  - '+' switches to the next level
 
 ## References
 
