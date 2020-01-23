@@ -131,7 +131,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	@Override
 	public void update() {
 		if (getState() == PLAYING) {
-			if (Keyboard.keyPressedOnce("d")) {
+			if (Keyboard.keyPressedOnce("b")) {
+				toggleGhost(cast.blinky);
+			} else if (Keyboard.keyPressedOnce("c")) {
+				toggleGhost(cast.clyde);
+			} else if (Keyboard.keyPressedOnce("d")) {
 				changeDemoMode();
 			} else if (Keyboard.keyPressedOnce("e")) {
 				eatAllPellets();
@@ -140,13 +144,17 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			} else if (Keyboard.keyPressedOnce("g")) {
 				showGrid = !showGrid;
 			} else if (Keyboard.keyPressedOnce("i")) {
-				toggleMakePacManImmortable();
+				toggleGhost(cast.inky);
 			} else if (Keyboard.keyPressedOnce("k")) {
 				killAllGhosts();
 			} else if (Keyboard.keyPressedOnce("l")) {
 				changeStateMachineLogging();
+			} else if (Keyboard.keyPressedOnce("m")) {
+				toggleMakePacManImmortable();
 			} else if (Keyboard.keyPressedOnce("o")) {
 				changePacManOverflowBug();
+			} else if (Keyboard.keyPressedOnce("p")) {
+				toggleGhost(cast.pinky);
 			} else if (Keyboard.keyPressedOnce("s")) {
 				showStates = !showStates;
 			} else if (Keyboard.keyPressedOnce("t")) {
@@ -549,6 +557,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			house.update();
 		});
 		LOGGER.info(() -> "All pellets eaten");
+	}
+
+	private void toggleGhost(Ghost ghost) {
+		if (cast.onStage(ghost)) {
+			cast.pullActorFromStage(ghost);
+		} else {
+			cast.putActorOnStage(ghost);
+		}
 	}
 
 	private void killAllGhosts() {

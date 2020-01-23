@@ -30,7 +30,6 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import de.amr.easy.game.entity.Entity;
-import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.BonusState;
 import de.amr.games.pacman.actor.Cast;
@@ -80,23 +79,6 @@ public class PlayView extends SimplePlayView {
 		clydeImage = ghostImage(GhostColor.ORANGE);
 		pacManImage = (BufferedImage) theme().spr_pacManWalking(Direction.RIGHT.ordinal()).frame(0);
 		arrowHead = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
-	}
-
-	@Override
-	public void update() {
-		super.update();
-		if (Keyboard.keyPressedOnce("B")) {
-			toggleGhost(cast().blinky);
-		}
-		if (Keyboard.keyPressedOnce("P")) {
-			toggleGhost(cast().pinky);
-		}
-		if (Keyboard.keyPressedOnce("I")) {
-			toggleGhost(cast().inky);
-		}
-		if (Keyboard.keyPressedOnce("C")) {
-			toggleGhost(cast().clyde);
-		}
 	}
 
 	@Override
@@ -154,14 +136,6 @@ public class PlayView extends SimplePlayView {
 	@Override
 	protected Color bgColor(Tile tile) {
 		return showGrid.getAsBoolean() ? patternColor(tile.col, tile.row) : super.bgColor(tile);
-	}
-
-	private void toggleGhost(Ghost ghost) {
-		if (cast().onStage(ghost)) {
-			cast().pullActorFromStage(ghost);
-		} else {
-			cast().putActorOnStage(ghost);
-		}
 	}
 
 	private Color color(Ghost ghost) {
