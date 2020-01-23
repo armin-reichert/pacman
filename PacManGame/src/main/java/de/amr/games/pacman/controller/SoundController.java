@@ -30,14 +30,16 @@ public class SoundController {
 			if (!theme.snd_ghost_chase().isRunning()) {
 				theme.snd_ghost_chase().loop();
 			}
-		} else {
+		}
+		else {
 			theme.snd_ghost_chase().stop();
 		}
 		if (cast.ghostsOnStage().anyMatch(ghost -> ghost.is(GhostState.DEAD))) {
 			if (!theme.snd_ghost_dead().isRunning()) {
 				theme.snd_ghost_dead().loop();
 			}
-		} else {
+		}
+		else {
 			theme.snd_ghost_dead().stop();
 		}
 	}
@@ -50,7 +52,7 @@ public class SoundController {
 	}
 
 	public boolean isMusicLoadingComplete() {
-		return musicLoading.isDone();
+		return musicLoading != null && musicLoading.isDone();
 	}
 
 	public void muteAll() {

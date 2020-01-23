@@ -108,7 +108,7 @@ public class PacMan extends MovingActor<PacManState> implements SteerableMazeMov
 						setWishDir(RIGHT);
 						setVisible(true);
 						sprites.forEach(Sprite::resetAnimation);
-						sprites.select("full");
+						showFull();
 					})
 
 				.state(EATING)
@@ -177,8 +177,7 @@ public class PacMan extends MovingActor<PacManState> implements SteerableMazeMov
 	public void moveOneStep() {
 		steering().steer();
 		movement.update();
-		sprites.select("walking-" + moveDir());
-		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
+		showWalking();
 	}
 
 	@Override
@@ -253,5 +252,10 @@ public class PacMan extends MovingActor<PacManState> implements SteerableMazeMov
 
 	public void showDying() {
 		sprites.select("dying");
+	}
+
+	public void showWalking() {
+		sprites.select("walking-" + moveDir());
+		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
 	}
 }
