@@ -130,7 +130,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	@Override
 	public void update() {
-		if (getState() == PLAYING) {
+		if (currentView == playView) {
 			if (Keyboard.keyPressedOnce("b")) {
 				toggleGhost(cast.blinky);
 			} else if (Keyboard.keyPressedOnce("c")) {
