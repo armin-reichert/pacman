@@ -7,6 +7,7 @@ import static de.amr.games.pacman.model.Direction.RIGHT;
 import java.util.Objects;
 
 import de.amr.games.pacman.actor.Cast;
+import de.amr.games.pacman.actor.steering.MazeMover;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;

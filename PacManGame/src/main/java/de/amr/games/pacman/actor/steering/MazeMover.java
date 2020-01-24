@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor.core;
+package de.amr.games.pacman.actor.steering;
 
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;

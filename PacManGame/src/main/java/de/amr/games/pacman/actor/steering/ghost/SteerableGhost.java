@@ -2,7 +2,7 @@ package de.amr.games.pacman.actor.steering.ghost;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.core.MazeMover;
+import de.amr.games.pacman.actor.steering.MazeMover;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.actor.steering.common.SteerableMazeMover;
 

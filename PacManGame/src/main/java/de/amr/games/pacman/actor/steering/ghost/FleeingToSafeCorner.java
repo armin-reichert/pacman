@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.core.MazeMover;
+import de.amr.games.pacman.actor.steering.MazeMover;
 import de.amr.games.pacman.actor.steering.common.TakingPrecomputedPath;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.MazeGraph;
