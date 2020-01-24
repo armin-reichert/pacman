@@ -23,10 +23,6 @@ public interface Theme {
 		switch (name.toLowerCase()) {
 		case "arcade":
 			return new ArcadeTheme();
-		case "msx":
-			return new MSXTheme();
-		case "sharpx68000":
-			return new SharpX68000Theme();
 		default:
 			throw new IllegalArgumentException("Unknown theme: " + name);
 		}
@@ -50,10 +46,14 @@ public interface Theme {
 	}
 
 	/**
-	 * @param x x-coordinate (pixel) of left-upper corner
-	 * @param y y-coordinate (pixel) of left-upper corner
-	 * @param w width (pixel)
-	 * @param h height (pixel)
+	 * @param x
+	 *            x-coordinate (pixel) of left-upper corner
+	 * @param y
+	 *            y-coordinate (pixel) of left-upper corner
+	 * @param w
+	 *            width (pixel)
+	 * @param h
+	 *            height (pixel)
 	 * @return sub-image with given left-upper corner and size
 	 */
 	default BufferedImage crop(int x, int y, int w, int h) {
@@ -63,8 +63,10 @@ public interface Theme {
 	/**
 	 * Extracts the tile at the given raster position.
 	 * 
-	 * @param col raster x-coordinate (column, zero based)
-	 * @param row raster y-coordinate (row, zero-based)
+	 * @param col
+	 *              raster x-coordinate (column, zero based)
+	 * @param row
+	 *              raster y-coordinate (row, zero-based)
 	 * @return subimage of specified tile
 	 */
 	default BufferedImage t(int col, int row) {
@@ -74,9 +76,12 @@ public interface Theme {
 	/**
 	 * Extracts a horizontal strip of tiles from the spritesheet.
 	 * 
-	 * @param n   number of tiles
-	 * @param col raster x-coordinate (column, zero based)
-	 * @param row raster y-coordinate (row, zero-based)
+	 * @param n
+	 *              number of tiles
+	 * @param col
+	 *              raster x-coordinate (column, zero based)
+	 * @param row
+	 *              raster y-coordinate (row, zero-based)
 	 * @return subimage of specified tiles
 	 */
 	default BufferedImage[] ht(int n, int col, int row) {
