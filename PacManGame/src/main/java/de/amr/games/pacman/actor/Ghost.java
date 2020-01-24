@@ -278,10 +278,10 @@ public class Ghost extends MovingActor<GhostState> implements SteerableGhost {
 				steering().init();
 				steering().force();
 				LOGGER.info(String.format("%s steering changed from %s to %s", this, name(prevSteering), name(steering())));
+				prevSteering = steering();
 			}
 			steering().steer();
 			move();
-			prevSteering = steering();
 			sprites.select(spriteKey);
 		}
 	}
