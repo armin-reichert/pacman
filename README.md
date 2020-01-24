@@ -200,7 +200,7 @@ movement = new StateMachine<MoveState, Void>(MoveState.class) {
 };
 ```
 
-The state type of this state machine is just the built-in type `Boolean`. Using an explicit state machine for such a simple control case may seem like shooting at sparrows with cannons but serves to illustrate how seamlessly state machines can be used. 
+Using an explicit state machine for such a simple control case may seem like shooting at sparrows with cannons but serves to illustrate how seamlessly state machines can be integrated in the code.
 
 ## Tracing
 
