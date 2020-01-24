@@ -11,8 +11,8 @@ import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Direction.dirs;
 import static de.amr.games.pacman.model.Game.POINTS_GHOST;
+import static de.amr.games.pacman.model.Timing.relSpeed;
 import static de.amr.games.pacman.model.Timing.sec;
-import static de.amr.games.pacman.model.Timing.speed;
 
 import java.awt.Graphics2D;
 import java.util.EnumMap;
@@ -245,25 +245,25 @@ public class Ghost extends MovingActor<GhostState> implements SteerableGhost {
 	}
 
 	@Override
-	public float maxSpeed() {
+	public float speed() {
 		// TODO: Some values are still guessed
 		boolean inTunnel = tile().isTunnel();
 		boolean outsideHouse = !maze().inGhostHouse(tile());
 		switch (getState()) {
 		case LOCKED:
-			return outsideHouse ? 0 : speed(game().level().ghostSpeed) / 2;
+			return outsideHouse ? 0 : relSpeed(game().level().ghostSpeed) / 2;
 		case LEAVING_HOUSE:
-			return speed(game().level().ghostSpeed) / 2;
+			return relSpeed(game().level().ghostSpeed) / 2;
 		case ENTERING_HOUSE:
-			return speed(game().level().ghostSpeed);
+			return relSpeed(game().level().ghostSpeed);
 		case CHASING:
 			//$FALL-THROUGH$
 		case SCATTERING:
-			return inTunnel ? speed(game().level().ghostTunnelSpeed) : speed(game().level().ghostSpeed);
+			return inTunnel ? relSpeed(game().level().ghostTunnelSpeed) : relSpeed(game().level().ghostSpeed);
 		case FRIGHTENED:
-			return inTunnel ? speed(game().level().ghostTunnelSpeed) : speed(game().level().ghostFrightenedSpeed);
+			return inTunnel ? relSpeed(game().level().ghostTunnelSpeed) : relSpeed(game().level().ghostFrightenedSpeed);
 		case DEAD:
-			return 2 * speed(game().level().ghostSpeed);
+			return 2 * relSpeed(game().level().ghostSpeed);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name()));
 		}
@@ -271,22 +271,19 @@ public class Ghost extends MovingActor<GhostState> implements SteerableGhost {
 
 	private void step(String spriteKey) {
 		if (isTeleporting()) {
-			movement.update();
-		} else {
-			moveOneStep();
+			move();
+		}
+		else {
+			if (prevSteering != steering()) {
+				steering().init();
+				steering().force();
+				LOGGER.info(String.format("%s steering changed from %s to %s", this, name(prevSteering), name(steering())));
+			}
+			steering().steer();
+			move();
+			prevSteering = steering();
 			sprites.select(spriteKey);
 		}
-	}
-
-	public void moveOneStep() {
-		if (prevSteering != steering()) {
-			steering().init();
-			steering().force();
-			LOGGER.info(String.format("%s steering changed from %s to %s", this, name(prevSteering), name(steering())));
-		}
-		steering().steer();
-		movement.update();
-		prevSteering = steering();
 	}
 
 	private String name(Steering steering) {
@@ -297,7 +294,7 @@ public class Ghost extends MovingActor<GhostState> implements SteerableGhost {
 		if (isTeleporting() || cast().pacMan.isTeleporting()) {
 			return;
 		}
-		if (onSameTileAs(cast().pacMan) && cast().pacMan.is(PacManState.EATING)) {
+		if (tile().equals(cast().pacMan.tile()) && cast().pacMan.is(PacManState.EATING)) {
 			publish(new PacManGhostCollisionEvent(this, tile()));
 		}
 	}

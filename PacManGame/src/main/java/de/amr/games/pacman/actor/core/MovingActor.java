@@ -6,46 +6,33 @@ import static de.amr.games.pacman.model.Direction.RIGHT;
 
 import java.util.Objects;
 
-import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.MazeMoving;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Base class for all moving actors (ghosts, Pac-Man). Actors know how to move through the maze and are controlled using
- * a finite-state machine.
+ * Base class for all moving actors (ghosts, Pac-Man).
  * 
  * @param <S>
  *          state identifier type
  * 
  * @author Armin Reichert
  */
-public abstract class MovingActor<S> extends Actor<S> implements MazeMoving {
+public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 
 	enum MoveState {
 		MOVING, TELEPORTING;
 	}
 
-	protected final StateMachine<MoveState, Void> movement;
+	private final StateMachine<MoveState, ?> movement;
 	private Direction moveDir;
 	private Direction wishDir;
 	private Tile targetTile;
 	private boolean enteredNewTile;
 	private int teleportingTicks;
-
-	/**
-	 * @return current steering for this actor
-	 */
-	public abstract Steering steering();
-
-	/**
-	 * @return maximum distance (in pixels) this actor can move in the next step
-	 */
-	protected abstract float maxSpeed();
 
 	public MovingActor(Cast cast, String name) {
 		super(cast, name);
@@ -58,7 +45,7 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMoving {
 					.initialState(MOVING)
 					.states()
 						.state(MOVING)
-							.onTick(MovingActor.this::moveInsideMaze)
+							.onTick(() -> makeStepInsideMaze())
 						.state(TELEPORTING)
 							.timeoutAfter(() -> teleportingTicks)
 							.onEntry(() -> setVisible(false))
@@ -67,13 +54,18 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMoving {
 						.when(MOVING).then(TELEPORTING)
 							.condition(() -> enteredLeftPortal() || enteredRightPortal())
 						.when(TELEPORTING).then(MOVING)
-							.onTimeout().act(MovingActor.this::teleport)
+							.onTimeout()
+							.act(() -> teleport())
 				.endStateMachine();
 				//@formatter:on
 			}
 		};
 		movement.setLogger(Game.FSM_LOGGER);
 	}
+
+	public abstract Steering steering();
+
+	protected abstract float speed();
 
 	@Override
 	public void init() {
@@ -83,27 +75,11 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMoving {
 		movement.init();
 	}
 
-	/**
-	 * Places this entity at the given tile with given pixel offsets.
-	 * 
-	 * @param tile
-	 *                  tile
-	 * @param xOffset
-	 *                  pixel offset in x-direction
-	 * @param yOffset
-	 *                  pixel offset in y-direction
-	 */
 	public void placeAt(Tile tile, float xOffset, float yOffset) {
 		tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
 		enteredNewTile = !tile.equals(tile());
 	}
 
-	/**
-	 * Places this entity exactly over the given tile.
-	 * 
-	 * @param tile
-	 *               the tile where this maze mover is placed
-	 */
 	public void placeAt(Tile tile) {
 		placeAt(tile, 0, 0);
 	}
@@ -169,11 +145,15 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMoving {
 		return maze().insideBoard(neighbor);
 	}
 
-	public void forceMove(Direction dir) {
+	protected void move() {
+		movement.update();
+	}
+
+	protected void forceMove(Direction dir) {
 		if (canCrossBorderTo(dir)) {
 			wishDir = dir;
 			steering().force();
-			movement.update();
+			move();
 		}
 	}
 
@@ -181,43 +161,43 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMoving {
 	 * Computes how many pixels this entity can move towards the given direction without crossing the border to a
 	 * forbidden neighbor tile.
 	 */
-	private float possibleSpeed(Tile currentTile, Direction dir) {
-		float maxSpeed = maxSpeed();
+	private float possibleMoveDistance(Tile currentTile, Direction dir) {
+		float dist = speed();
 		if (canCrossBorderTo(dir)) {
-			return maxSpeed;
+			return dist;
 		}
 		float offsetX = tf.getX() - currentTile.x(), offsetY = tf.getY() - currentTile.y();
 		switch (dir) {
 		case UP:
-			return Math.min(offsetY, maxSpeed);
+			return Math.min(offsetY, dist);
 		case DOWN:
-			return Math.min(-offsetY, maxSpeed);
+			return Math.min(-offsetY, dist);
 		case LEFT:
-			return Math.min(offsetX, maxSpeed);
+			return Math.min(offsetX, dist);
 		case RIGHT:
-			return Math.min(-offsetX, maxSpeed);
+			return Math.min(-offsetX, dist);
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}
 	}
 
-	private void moveInsideMaze() {
-		Tile tileBeforeStep = tile();
-		float speed = possibleSpeed(tileBeforeStep, moveDir);
+	private void makeStepInsideMaze() {
+		Tile tile = tile();
+		float speed = possibleMoveDistance(tile, moveDir);
 		if (wishDir != null && wishDir != moveDir) {
-			float wishDirSpeed = possibleSpeed(tileBeforeStep, wishDir);
+			float wishDirSpeed = possibleMoveDistance(tile, wishDir);
 			if (wishDirSpeed > 0) {
-				boolean turning = (wishDir == moveDir.turnLeft() || wishDir == moveDir.turnRight());
-				if (turning && steering().requiresGridAlignment()) {
-					tf.setPosition(tileBeforeStep.x(), tileBeforeStep.y());
+				boolean corner = (wishDir == moveDir.turnLeft() || wishDir == moveDir.turnRight());
+				if (corner && steering().requiresGridAlignment()) {
+					placeAt(tile);
 				}
 				moveDir = wishDir;
 				speed = wishDirSpeed;
 			}
 		}
-		tf.setVelocity(Vector2f.smul(speed, Vector2f.of(moveDir.dx, moveDir.dy)));
+		tf.setVelocity(speed * moveDir.dx, speed * moveDir.dy);
 		tf.move();
-		enteredNewTile = !tileBeforeStep.equals(tile());
+		enteredNewTile = !tile.equals(tile());
 	}
 
 	private void teleport() {
@@ -227,7 +207,6 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMoving {
 		else if (enteredLeftPortal()) {
 			placeAt(maze().portalRight);
 		}
-		enteredNewTile = true;
 	}
 
 	private boolean enteredLeftPortal() {

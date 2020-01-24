@@ -11,8 +11,8 @@ import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Direction.dirs;
 import static de.amr.games.pacman.model.Game.DIGEST_ENERGIZER_TICKS;
 import static de.amr.games.pacman.model.Game.DIGEST_PELLET_TICKS;
+import static de.amr.games.pacman.model.Timing.relSpeed;
 import static de.amr.games.pacman.model.Timing.sec;
-import static de.amr.games.pacman.model.Timing.speed;
 
 import java.awt.Graphics2D;
 import java.util.Optional;
@@ -108,7 +108,7 @@ public class PacMan extends MovingActor<PacManState> implements SteerableMazeMov
 						setWishDir(RIGHT);
 						setVisible(true);
 						sprites.forEach(Sprite::resetAnimation);
-						showFull();
+						showFullFace();
 					})
 
 				.state(EATING)
@@ -128,7 +128,7 @@ public class PacMan extends MovingActor<PacManState> implements SteerableMazeMov
 							--digestionTicks;
 							return;
 						}
-						moveOneStep();
+						makeStep();
 						if (!isTeleporting()) {
 							findSomethingInteresting().ifPresent(brain::publish);
 						}
@@ -174,10 +174,10 @@ public class PacMan extends MovingActor<PacManState> implements SteerableMazeMov
 		return Optional.empty();
 	}
 
-	public void moveOneStep() {
+	public void makeStep() {
 		steering().steer();
-		movement.update();
-		showWalking();
+		move();
+		showWalkingAnimation();
 	}
 
 	@Override
@@ -190,12 +190,12 @@ public class PacMan extends MovingActor<PacManState> implements SteerableMazeMov
 	}
 
 	@Override
-	public float maxSpeed() {
+	public float speed() {
 		switch (getState()) {
 		case SLEEPING:
 			return 0;
 		case EATING:
-			return speed(hasPower() ? game().level().pacManPowerSpeed : game().level().pacManSpeed);
+			return relSpeed(hasPower() ? game().level().pacManPowerSpeed : game().level().pacManSpeed);
 		case DEAD:
 			return 0;
 		default:
@@ -246,15 +246,15 @@ public class PacMan extends MovingActor<PacManState> implements SteerableMazeMov
 		sprites.set("full", theme().spr_pacManFull());
 	}
 
-	public void showFull() {
+	public void showFullFace() {
 		sprites.select("full");
 	}
 
-	public void showDying() {
+	public void showDyingAnimation() {
 		sprites.select("dying");
 	}
 
-	public void showWalking() {
+	public void showWalkingAnimation() {
 		sprites.select("walking-" + moveDir());
 		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
 	}

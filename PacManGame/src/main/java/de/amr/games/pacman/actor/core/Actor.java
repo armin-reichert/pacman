@@ -6,7 +6,6 @@ import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.MazeResiding;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.api.FsmContainer;
@@ -16,9 +15,10 @@ import de.amr.statemachine.api.FsmContainer;
  * 
  * @author Armin Reichert
  *
- * @param <S> state identifier type
+ * @param <S>
+ *          state identifier type
  */
-public abstract class Actor<S> extends Entity implements FsmContainer<S, PacManGameEvent>, MazeResiding {
+public abstract class Actor<S> extends Entity implements FsmContainer<S, PacManGameEvent> {
 
 	private final Cast cast;
 	private final String name;
@@ -42,7 +42,6 @@ public abstract class Actor<S> extends Entity implements FsmContainer<S, PacManG
 		return cast().game();
 	}
 
-	@Override
 	public Maze maze() {
 		return game().maze();
 	}
@@ -51,7 +50,6 @@ public abstract class Actor<S> extends Entity implements FsmContainer<S, PacManG
 		return cast().theme();
 	}
 
-	@Override
 	public Tile tile() {
 		Vector2f center = tf.getCenter();
 		return maze().tileAt(center.roundedX() / Tile.SIZE, center.roundedY() / Tile.SIZE);

@@ -75,7 +75,7 @@ public class LoadingView implements GameView {
 		}
 		pacMan.tf.setVelocityX(2.5f * pacMan.moveDir().dx);
 		pacMan.tf.move();
-		pacMan.showWalking();
+		pacMan.showWalkingAnimation();
 	}
 
 	@Override

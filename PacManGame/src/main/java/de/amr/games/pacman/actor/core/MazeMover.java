@@ -1,11 +1,25 @@
-package de.amr.games.pacman.model;
+package de.amr.games.pacman.actor.core;
+
+import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.Tile;
 
 /**
  * Implemented by entities that can move through a maze.
  * 
  * @author Armin Reichert
  */
-public interface MazeMoving extends MazeResiding {
+public interface MazeMover {
+
+	/**
+	 * @return tile position
+	 */
+	Tile tile();
+
+	/**
+	 * @return the maze where this mover is located
+	 */
+	Maze maze();
 
 	/**
 	 * @return the current move direction
@@ -15,7 +29,8 @@ public interface MazeMoving extends MazeResiding {
 	/**
 	 * Sets the move direction.
 	 * 
-	 * @param dir new move direction
+	 * @param dir
+	 *              new move direction
 	 */
 	void setMoveDir(Direction dir);
 
@@ -27,7 +42,8 @@ public interface MazeMoving extends MazeResiding {
 	/**
 	 * Sets the wanted move direction.
 	 * 
-	 * @param dir the wanted move direction
+	 * @param dir
+	 *              the wanted move direction
 	 */
 	void setWishDir(Direction dir);
 
@@ -44,7 +60,8 @@ public interface MazeMoving extends MazeResiding {
 	/**
 	 * Sets the target tile.
 	 * 
-	 * @param tile target tile of this entity
+	 * @param tile
+	 *               target tile of this entity
 	 */
 	void setTargetTile(Tile tile);
 
@@ -54,17 +71,18 @@ public interface MazeMoving extends MazeResiding {
 	boolean isTeleporting();
 
 	/**
-	 * @param dir direction
-	 * @return if the entity can move into the neighbor tile towards the given
-	 *         direction
+	 * @param dir
+	 *              direction
+	 * @return if the entity can move into the neighbor tile towards the given direction
 	 */
 	boolean canCrossBorderTo(Direction dir);
 
 	/**
-	 * @param tile     some tile
-	 * @param neighbor neighbor the tile
-	 * @return tells if the entity can move from the given tile tile to the neighbor
-	 *         tile (might be state-dependent)
+	 * @param tile
+	 *                   some tile
+	 * @param neighbor
+	 *                   neighbor the tile
+	 * @return tells if the entity can move from the given tile tile to the neighbor tile (might be state-dependent)
 	 */
 	boolean canMoveBetween(Tile tile, Tile neighbor);
 

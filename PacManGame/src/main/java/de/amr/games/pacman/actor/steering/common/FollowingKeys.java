@@ -1,16 +1,16 @@
 package de.amr.games.pacman.actor.steering.common;
 
 import de.amr.easy.game.input.Keyboard;
+import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.MazeMoving;
 
 public class FollowingKeys implements Steering {
 
-	private MazeMoving actor;
+	private MazeMover actor;
 	private int[] keys;
 
-	public FollowingKeys(MazeMoving actor, int... keys) {
+	public FollowingKeys(MazeMover actor, int... keys) {
 		this.actor = actor;
 		this.keys = keys;
 	}

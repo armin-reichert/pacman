@@ -8,9 +8,9 @@ import java.util.Comparator;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.actor.core.MazeMover;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.MazeMoving;
 import de.amr.games.pacman.model.Tile;
 
 public class AvoidingGhosts implements Steering {
@@ -56,7 +56,7 @@ public class AvoidingGhosts implements Steering {
 		/*@formatter:on*/
 	}
 
-	private Comparator<Direction> byLargestDistanceOfNeighborTile(PacMan pacMan, MazeMoving ghost) {
+	private Comparator<Direction> byLargestDistanceOfNeighborTile(PacMan pacMan, MazeMover ghost) {
 		Tile pacManTile = pacMan.tile(), ghostTile = ghost.tile();
 		return (dir1, dir2) -> {
 			Tile neighborTile1 = pacMan.maze().tileToDir(pacManTile, dir1),
