@@ -175,26 +175,25 @@ beginStateMachine(BonusState.class, PacManGameEvent.class)
 When an actor leaves the board inside a tunnel it enters *teleporting* mode. In this implementation, the teleporting duration can be specified for each actor individually (no idea if this makes much sense) and the movement state of an actor is controlled by the following state machine:
 
 ```java
-StateMachine<MoveState, Void> movement = new StateMachine<MoveState, Void>(MoveState.class) {
+movement = new StateMachine<MoveState, Void>(MoveState.class) {
 
 	{
 		//@formatter:off
 		beginStateMachine()
-			.description(String.format("[%s movement]", name()))
+			.description(String.format("[%s movement]", name))
 			.initialState(MOVING)
 			.states()
 				.state(MOVING)
-					.onTick(() -> moveInsideMaze())
+					.onTick(MovingActor.this::moveInsideMaze)
 				.state(TELEPORTING)
 					.timeoutAfter(() -> teleportingTicks)
-					.onEntry(() -> hide())
-					.onExit(() -> show())
+					.onEntry(() -> setVisible(false))
+					.onExit(() -> setVisible(true))
 			.transitions()
 				.when(MOVING).then(TELEPORTING)
-					.condition(() -> enteredPortal())
-					.act(() -> placeAtPortalExit())
+					.condition(() -> enteredLeftPortal() || enteredRightPortal())
 				.when(TELEPORTING).then(MOVING)
-					.onTimeout()
+					.onTimeout().act(MovingActor.this::teleport)
 		.endStateMachine();
 		//@formatter:on
 	}
