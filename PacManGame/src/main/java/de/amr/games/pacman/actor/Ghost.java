@@ -286,6 +286,14 @@ public class Ghost extends MovingActor<GhostState> implements SteerableGhost {
 		}
 	}
 
+	private void forceMove(Direction dir) {
+		if (canCrossBorderTo(dir)) {
+			setWishDir(dir);
+			steering().force();
+			move();
+		}
+	}
+
 	private String name(Steering steering) {
 		return steering != null ? steering.getClass().getSimpleName() : "no steering";
 	}

@@ -1,7 +1,7 @@
 package de.amr.games.pacman.actor.core;
 
-import static de.amr.games.pacman.actor.core.MovingActor.MoveState.MOVING;
-import static de.amr.games.pacman.actor.core.MovingActor.MoveState.TELEPORTING;
+import static de.amr.games.pacman.actor.core.MovingActor.Movement.MOVING_INSIDE_MAZE;
+import static de.amr.games.pacman.actor.core.MovingActor.Movement.TELEPORTING;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 
 import java.util.Objects;
@@ -24,11 +24,11 @@ import de.amr.statemachine.core.StateMachine;
  */
 public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 
-	enum MoveState {
-		MOVING, TELEPORTING;
+	enum Movement {
+		MOVING_INSIDE_MAZE, TELEPORTING;
 	}
 
-	private final StateMachine<MoveState, ?> movement;
+	private final StateMachine<Movement, ?> movement;
 	private Direction moveDir;
 	private Direction wishDir;
 	private Tile targetTile;
@@ -37,31 +37,32 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 
 	public MovingActor(Cast cast, String name) {
 		super(cast, name);
-		movement = new StateMachine<MoveState, Void>(MoveState.class) {
-
-			{
-				//@formatter:off
-				beginStateMachine()
-					.description(String.format("[%s movement]", name))
-					.initialState(MOVING)
-					.states()
-						.state(MOVING)
-							.onTick(() -> makeStepInsideMaze())
-						.state(TELEPORTING)
-							.timeoutAfter(() -> teleportingTicks)
-							.onEntry(() -> setVisible(false))
-							.onExit(() -> setVisible(true))
-					.transitions()
-						.when(MOVING).then(TELEPORTING)
-							.condition(() -> enteredLeftPortal() || enteredRightPortal())
-						.when(TELEPORTING).then(MOVING)
-							.onTimeout()
-							.act(() -> teleport())
-				.endStateMachine();
-				//@formatter:on
-			}
-		};
+		movement = buildMovementControl();
 		movement.setLogger(Game.FSM_LOGGER);
+	}
+
+	private StateMachine<Movement, ?> buildMovementControl() {
+		StateMachine<Movement, Void> fsm = StateMachine
+		//@formatter:off
+			.beginStateMachine(Movement.class, Void.class)
+				.description(String.format("[%s movement]", name()))
+				.initialState(MOVING_INSIDE_MAZE)
+				.states()
+					.state(MOVING_INSIDE_MAZE)
+						.onTick(() -> makeStepInsideMaze())
+					.state(TELEPORTING)
+						.timeoutAfter(() -> teleportingTicks)
+						.onEntry(() -> setVisible(false))
+						.onExit(() -> setVisible(true))
+				.transitions()
+					.when(MOVING_INSIDE_MAZE).then(TELEPORTING)
+						.condition(() -> enteredLeftPortal() || enteredRightPortal())
+					.when(TELEPORTING).then(MOVING_INSIDE_MAZE)
+						.onTimeout()
+						.act(() -> teleport())
+			.endStateMachine();
+		//@formatter:on
+		return fsm;
 	}
 
 	public abstract Steering steering();
@@ -76,13 +77,13 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 		movement.init();
 	}
 
+	public void placeAt(Tile tile) {
+		placeAt(tile, 0, 0);
+	}
+
 	public void placeAt(Tile tile, float xOffset, float yOffset) {
 		tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
 		enteredNewTile = !tile.equals(tile());
-	}
-
-	public void placeAt(Tile tile) {
-		placeAt(tile, 0, 0);
 	}
 
 	public void setTeleportingDuration(int ticks) {
@@ -148,14 +149,6 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 
 	protected void move() {
 		movement.update();
-	}
-
-	protected void forceMove(Direction dir) {
-		if (canCrossBorderTo(dir)) {
-			wishDir = dir;
-			steering().force();
-			move();
-		}
 	}
 
 	/**
