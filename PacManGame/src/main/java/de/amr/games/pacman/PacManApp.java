@@ -31,7 +31,7 @@ public class PacManApp extends Application {
 		settings.width = 28 * Tile.SIZE;
 		settings.height = 36 * Tile.SIZE;
 		settings.scale = 2;
-		settings.title = "Armin's Pac-Man";
+		settings.title = texts.getString("app.title");
 		return settings;
 	}
 
