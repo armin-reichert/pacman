@@ -38,7 +38,6 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 	public MovingActor(Cast cast, String name) {
 		super(cast, name);
 		movement = buildMovementControl();
-		movement.setLogger(Game.FSM_LOGGER);
 	}
 
 	private StateMachine<Movement, ?> buildMovementControl() {
@@ -62,6 +61,7 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 						.act(() -> teleport())
 			.endStateMachine();
 		//@formatter:on
+		fsm.setLogger(Game.FSM_LOGGER);
 		return fsm;
 	}
 
