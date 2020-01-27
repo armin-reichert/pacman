@@ -17,7 +17,8 @@ import de.amr.statemachine.core.StateMachine;
 /**
  * Base class for all moving actors (ghosts, Pac-Man).
  * 
- * @param <S> state identifier type
+ * @param <S>
+ *          state identifier type
  * 
  * @author Armin Reichert
  */
@@ -83,7 +84,6 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 		enteredNewTile = !tile.equals(tile());
 	}
 
-	@Override
 	public boolean isTeleporting() {
 		return movement.is(TELEPORTING);
 	}
@@ -102,7 +102,6 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 		return moveDir;
 	}
 
-	@Override
 	public void setMoveDir(Direction dir) {
 		moveDir = Objects.requireNonNull(dir);
 	}
@@ -149,8 +148,8 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 	}
 
 	/**
-	 * Computes how many pixels this entity can move towards the given direction
-	 * without crossing the border to a forbidden neighbor tile.
+	 * Computes how many pixels this entity can move towards the given direction without crossing the border to a
+	 * forbidden neighbor tile.
 	 */
 	private float possibleMoveDistance(Tile currentTile, Direction dir) {
 		float dist = speed();
@@ -194,7 +193,8 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 	private void teleport() {
 		if (enteredRightPortal()) {
 			placeAt(maze().portalLeft);
-		} else if (enteredLeftPortal()) {
+		}
+		else if (enteredLeftPortal()) {
 			placeAt(maze().portalRight);
 		}
 	}

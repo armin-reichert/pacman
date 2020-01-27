@@ -27,14 +27,6 @@ public interface MazeMover {
 	Direction moveDir();
 
 	/**
-	 * Sets the move direction.
-	 * 
-	 * @param dir
-	 *              new move direction
-	 */
-	void setMoveDir(Direction dir);
-
-	/**
 	 * @return the wanted move direction
 	 */
 	Direction wishDir();
@@ -64,11 +56,6 @@ public interface MazeMover {
 	 *               target tile of this entity
 	 */
 	void setTargetTile(Tile tile);
-
-	/**
-	 * @return tells if the actor is in teleporting mode
-	 */
-	boolean isTeleporting();
 
 	/**
 	 * @param dir
