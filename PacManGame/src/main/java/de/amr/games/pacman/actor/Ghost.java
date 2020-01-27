@@ -152,25 +152,25 @@ public class Ghost extends MovingActor<GhostState> implements SteerableGhost {
 				
 				.when(CHASING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
-					.act(() -> forceMove(moveDir().opposite()))
+					.act(() -> turnBack())
 				
 				.when(CHASING).then(DEAD)
 					.on(GhostKilledEvent.class)
 				
 				.when(CHASING).then(SCATTERING)
 					.condition(() -> followState == SCATTERING)
-					.act(() -> forceMove(moveDir().opposite()))
+					.act(() -> turnBack())
 	
 				.when(SCATTERING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
-					.act(() -> forceMove(moveDir().opposite()))
+					.act(() -> turnBack())
 				
 				.when(SCATTERING).then(DEAD)
 					.on(GhostKilledEvent.class)
 				
 				.when(SCATTERING).then(CHASING)
 					.condition(() -> followState == CHASING)
-					.act(() -> forceMove(moveDir().opposite()))
+					.act(() -> turnBack())
 				
 				.stay(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
@@ -284,6 +284,10 @@ public class Ghost extends MovingActor<GhostState> implements SteerableGhost {
 	private void forceMove(Direction dir) {
 		setWishDir(dir);
 		move();
+	}
+
+	private void turnBack() {
+		forceMove(moveDir().opposite());
 	}
 
 	private String name(Steering steering) {
