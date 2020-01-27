@@ -17,8 +17,7 @@ import de.amr.statemachine.core.StateMachine;
 /**
  * Base class for all moving actors (ghosts, Pac-Man).
  * 
- * @param <S>
- *          state identifier type
+ * @param <S> state identifier type
  * 
  * @author Armin Reichert
  */
@@ -33,7 +32,6 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 	private Direction wishDir;
 	private Tile targetTile;
 	private boolean enteredNewTile;
-	private int teleportingTicks;
 
 	public MovingActor(Cast cast, String name) {
 		super(cast, name);
@@ -50,7 +48,6 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 					.state(MOVING_INSIDE_MAZE)
 						.onTick(() -> makeStepInsideMaze())
 					.state(TELEPORTING)
-						.timeoutAfter(() -> teleportingTicks)
 						.onEntry(() -> setVisible(false))
 						.onExit(() -> setVisible(true))
 				.transitions()
@@ -86,8 +83,13 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 		enteredNewTile = !tile.equals(tile());
 	}
 
+	@Override
+	public boolean isTeleporting() {
+		return movement.is(TELEPORTING);
+	}
+
 	public void setTeleportingDuration(int ticks) {
-		teleportingTicks = ticks;
+		movement.state(TELEPORTING).setConstantTimer(ticks);
 	}
 
 	@Override
@@ -126,11 +128,6 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 	}
 
 	@Override
-	public boolean isTeleporting() {
-		return movement.is(TELEPORTING);
-	}
-
-	@Override
 	public boolean canCrossBorderTo(Direction dir) {
 		Tile currentTile = tile(), neighbor = maze().tileToDir(currentTile, dir);
 		return canMoveBetween(currentTile, neighbor);
@@ -152,8 +149,8 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 	}
 
 	/**
-	 * Computes how many pixels this entity can move towards the given direction without crossing the border to a
-	 * forbidden neighbor tile.
+	 * Computes how many pixels this entity can move towards the given direction
+	 * without crossing the border to a forbidden neighbor tile.
 	 */
 	private float possibleMoveDistance(Tile currentTile, Direction dir) {
 		float dist = speed();
@@ -197,8 +194,7 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 	private void teleport() {
 		if (enteredRightPortal()) {
 			placeAt(maze().portalLeft);
-		}
-		else if (enteredLeftPortal()) {
+		} else if (enteredLeftPortal()) {
 			placeAt(maze().portalRight);
 		}
 	}
