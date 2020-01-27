@@ -29,13 +29,13 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import de.amr.easy.game.entity.Entity;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.BonusState;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.House;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
@@ -245,7 +245,7 @@ public class PlayView extends SimplePlayView {
 		cast().actorsOnStage().forEach(actor -> drawActorAlignment(actor, g));
 	}
 
-	private void drawActorAlignment(Entity actor, Graphics2D g) {
+	private void drawActorAlignment(Actor<?> actor, Graphics2D g) {
 		if (!actor.visible()) {
 			return;
 		}

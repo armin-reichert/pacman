@@ -15,8 +15,7 @@ import de.amr.statemachine.api.FsmContainer;
  * 
  * @author Armin Reichert
  *
- * @param <S>
- *          state identifier type
+ * @param <S> state identifier type
  */
 public abstract class Actor<S> extends Entity implements FsmContainer<S, PacManGameEvent> {
 
