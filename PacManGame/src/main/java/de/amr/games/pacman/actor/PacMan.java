@@ -59,11 +59,6 @@ public class PacMan extends MovingActor<PacManState> implements SteerableMazeMov
 	}
 
 	@Override
-	public String toString() {
-		return String.format("(%s, col:%d, row:%d, %s)", name(), tile().col, tile().row, getState());
-	}
-
-	@Override
 	public Fsm<PacManState, PacManGameEvent> fsm() {
 		return brain;
 	}

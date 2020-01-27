@@ -15,7 +15,8 @@ import de.amr.statemachine.api.FsmContainer;
  * 
  * @author Armin Reichert
  *
- * @param <S> state identifier type
+ * @param <S>
+ *          state identifier type
  */
 public abstract class Actor<S> extends Entity implements FsmContainer<S, PacManGameEvent> {
 
@@ -27,6 +28,11 @@ public abstract class Actor<S> extends Entity implements FsmContainer<S, PacManG
 		this.name = name;
 		tf.setWidth(Tile.SIZE);
 		tf.setHeight(Tile.SIZE);
+	}
+
+	@Override
+	public String toString() {
+		return String.format("(%s, col:%d, row:%d, %s)", name(), tile().col, tile().row, getState());
 	}
 
 	public String name() {

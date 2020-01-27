@@ -62,11 +62,6 @@ public class Ghost extends MovingActor<GhostState> implements SteerableGhost {
 		return brain;
 	}
 
-	@Override
-	public String toString() {
-		return String.format("(%s, col:%d, row:%d, %s)", name(), tile().col, tile().row, getState());
-	}
-
 	public StateMachine<GhostState, PacManGameEvent> buildFsm() {
 		return StateMachine.
 		/*@formatter:off*/
@@ -289,7 +284,8 @@ public class Ghost extends MovingActor<GhostState> implements SteerableGhost {
 	private void forceMove(Direction dir) {
 		if (canCrossBorderTo(dir)) {
 			setWishDir(dir);
-			steering().force();
+//			steering().force();
+//			steering().steer();
 			move();
 		}
 	}
