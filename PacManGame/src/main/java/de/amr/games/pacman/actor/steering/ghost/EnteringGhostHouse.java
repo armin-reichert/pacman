@@ -25,7 +25,7 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 		AT_DOOR, FALLING, MOVING_LEFT, MOVING_RIGHT, AT_PLACE
 	}
 
-	public EnteringGhostHouse(Ghost ghost, Vector2f seatPosition) {
+	public EnteringGhostHouse(Ghost ghost, Vector2f target) {
 		super(EnteringHouseState.class);
 		/*@formatter:off*/
 		beginStateMachine()
@@ -37,7 +37,7 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 				.state(AT_DOOR)
 					.onEntry(() -> {
 						// target tile is only used for route visualization
-						ghost.setTargetTile(ghost.maze().tileAt(seatPosition.roundedX(), seatPosition.roundedY()));
+						ghost.setTargetTile(ghost.maze().tileAt(target.roundedX(), target.roundedY()));
 						ghost.setWishDir(Direction.DOWN);
 					})
 					
@@ -47,21 +47,21 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 					.act(() -> ghost.setWishDir(Direction.DOWN))
 	
 				.when(FALLING).then(MOVING_LEFT)
-					.condition(() -> ghost.tf.getY() >= seatPosition.y && ghost.tf.getX() > seatPosition.x)
+					.condition(() -> ghost.tf.getY() >= target.y && ghost.tf.getX() > target.x)
 					.act(() -> ghost.setWishDir(Direction.LEFT))
 				
 				.when(FALLING).then(MOVING_RIGHT)
-					.condition(() -> ghost.tf.getY() >= seatPosition.y && ghost.tf.getX() < seatPosition.x)
+					.condition(() -> ghost.tf.getY() >= target.y && ghost.tf.getX() < target.x)
 					.act(() -> ghost.setWishDir(Direction.RIGHT))
 	
 				.when(FALLING).then(AT_PLACE)
-					.condition(() -> ghost.tf.getY() >= seatPosition.y && ghost.tf.getX() == seatPosition.x)
+					.condition(() -> ghost.tf.getY() >= target.y && ghost.tf.getX() == target.x)
 				
 				.when(MOVING_LEFT).then(AT_PLACE)
-					.condition(() -> ghost.tf.getX() <= seatPosition.x)
+					.condition(() -> ghost.tf.getX() <= target.x)
 					
 				.when(MOVING_RIGHT).then(AT_PLACE)
-					.condition(() -> ghost.tf.getX() >= seatPosition.x)
+					.condition(() -> ghost.tf.getX() >= target.x)
 					
 		.endStateMachine();
 		/*@formatter:on*/

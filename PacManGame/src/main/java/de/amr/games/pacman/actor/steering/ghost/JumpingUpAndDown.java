@@ -1,31 +1,32 @@
 package de.amr.games.pacman.actor.steering.ghost;
 
-import de.amr.games.pacman.actor.Ghost;
+import de.amr.games.pacman.actor.core.MovingActor;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 
 /**
- * Lets a ghost jump up and down at its place in the house.
+ * Lets an actor (e.g. a ghost) jump up and down relative to a specified position.
  * 
  * @author Armin Reichert
  */
 public class JumpingUpAndDown implements Steering {
 
-	private final Ghost ghost;
+	private final MovingActor<?> actor;
 	private final float baseY;
 
-	public JumpingUpAndDown(Ghost ghost, float baseY) {
-		this.ghost = ghost;
+	public JumpingUpAndDown(MovingActor<?> actor, float baseY) {
+		this.actor = actor;
 		this.baseY = baseY;
 	}
 
 	@Override
 	public void steer() {
-		float dy = ghost.tf.getPosition().y - baseY;
+		float dy = actor.tf.getPosition().y - baseY;
 		if (dy < -4) {
-			ghost.setWishDir(Direction.DOWN);
-		} else if (dy > 3) {
-			ghost.setWishDir(Direction.UP);
+			actor.setWishDir(Direction.DOWN);
+		}
+		else if (dy > 3) {
+			actor.setWishDir(Direction.UP);
 		}
 	}
 

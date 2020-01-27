@@ -23,7 +23,7 @@ import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.PacManAppSettings;
 import de.amr.games.pacman.actor.core.MovingActor;
 import de.amr.games.pacman.actor.steering.Steering;
-import de.amr.games.pacman.actor.steering.common.SteerableMazeMover;
+import de.amr.games.pacman.actor.steering.common.CommonSteerings;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -41,7 +41,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends MovingActor<PacManState> implements SteerableMazeMover {
+public class PacMan extends MovingActor<PacManState> implements CommonSteerings {
 
 	private final SpriteMap sprites = new SpriteMap();
 	private final Fsm<PacManState, PacManGameEvent> brain;

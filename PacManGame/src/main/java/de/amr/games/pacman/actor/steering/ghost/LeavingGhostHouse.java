@@ -1,8 +1,11 @@
 package de.amr.games.pacman.actor.steering.ghost;
 
+import static de.amr.games.pacman.model.Direction.LEFT;
+import static de.amr.games.pacman.model.Direction.RIGHT;
+import static de.amr.games.pacman.model.Direction.UP;
+
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.steering.Steering;
-import de.amr.games.pacman.model.Direction;
 
 /**
  * Steering for ghost leaving the house.
@@ -11,7 +14,7 @@ import de.amr.games.pacman.model.Direction;
  */
 public class LeavingGhostHouse implements Steering {
 
-	private static boolean aboutEqual(float tolerance, float f1, float f2) {
+	private static boolean differAtMost(float tolerance, float f1, float f2) {
 		return Math.abs(f1 - f2) <= tolerance;
 	}
 
@@ -29,15 +32,15 @@ public class LeavingGhostHouse implements Steering {
 		if (ghost.tf.getY() <= targetY) {
 			complete = true;
 		}
-		else if (aboutEqual(1, ghost.tf.getX(), targetX)) {
+		else if (differAtMost(1, ghost.tf.getX(), targetX)) {
 			ghost.tf.setX(targetX);
-			ghost.setWishDir(Direction.UP);
+			ghost.setWishDir(UP);
 		}
 		else if (ghost.tf.getX() < targetX) {
-			ghost.setWishDir(Direction.RIGHT);
+			ghost.setWishDir(RIGHT);
 		}
 		else if (ghost.tf.getX() > targetX) {
-			ghost.setWishDir(Direction.LEFT);
+			ghost.setWishDir(LEFT);
 		}
 	}
 
