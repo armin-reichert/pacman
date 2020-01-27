@@ -40,6 +40,32 @@ public class Bonus extends Actor<BonusState> {
 		brain.setLogger(Game.FSM_LOGGER);
 	}
 
+	private StateMachine<BonusState, PacManGameEvent> buildFsm() {
+		return StateMachine.
+		/*@formatter:off*/
+		beginStateMachine(BonusState.class, PacManGameEvent.class)
+			.description(String.format("[%s]", name()))
+			.initialState(INACTIVE)
+			.states()
+				.state(INACTIVE)
+					.onEntry(() -> setVisible(false))
+				.state(ACTIVE)
+					.timeoutAfter(() -> sec(9 + new Random().nextFloat()))
+					.onEntry(() -> {
+						sprites.select("symbol");
+						setVisible(true);
+					})
+				.state(CONSUMED)
+					.timeoutAfter(sec(3))
+					.onEntry(() -> sprites.select("value"))
+			.transitions()
+				.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
+				.when(ACTIVE).then(INACTIVE).onTimeout()
+				.when(CONSUMED).then(INACTIVE).onTimeout()
+		.endStateMachine();
+		/*@formatter:on*/
+	}
+
 	@Override
 	public Fsm<BonusState, PacManGameEvent> fsm() {
 		return brain;
@@ -65,32 +91,6 @@ public class Bonus extends Actor<BonusState> {
 
 	public void activate() {
 		brain.setState(ACTIVE);
-	}
-
-	public StateMachine<BonusState, PacManGameEvent> buildFsm() {
-		return StateMachine.
-		/*@formatter:off*/
-		beginStateMachine(BonusState.class, PacManGameEvent.class)
-			.description(String.format("[%s]", name()))
-			.initialState(INACTIVE)
-			.states()
-				.state(INACTIVE)
-					.onEntry(() -> setVisible(false))
-				.state(ACTIVE)
-					.timeoutAfter(() -> sec(9 + new Random().nextFloat()))
-					.onEntry(() -> {
-						sprites.select("symbol");
-						setVisible(true);
-					})
-				.state(CONSUMED)
-					.timeoutAfter(sec(3))
-					.onEntry(() -> sprites.select("value"))
-			.transitions()
-				.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
-				.when(ACTIVE).then(INACTIVE).onTimeout()
-				.when(CONSUMED).then(INACTIVE).onTimeout()
-		.endStateMachine();
-		/*@formatter:on*/
 	}
 
 	@Override
