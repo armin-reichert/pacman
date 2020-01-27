@@ -42,7 +42,7 @@ public class PacManApp extends Application {
 		setIcon(theme.spr_ghostFrightened().frame(0));
 		Game.FSM_LOGGER.setLevel(Level.INFO);
 		GameController gameController = new GameController(theme);
+		setExitHandler(app -> gameController.onExit());
 		setController(gameController);
-		setExitHandler(app -> gameController.game().ifPresent(Game::saveHiscore));
 	}
 }
