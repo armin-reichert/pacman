@@ -11,7 +11,7 @@ import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.api.FsmContainer;
 
 /**
- * Superclass for all actors residing in the maze.
+ * Base class for state-machine controlled actors in the maze.
  * 
  * @author Armin Reichert
  *
@@ -29,12 +29,12 @@ public abstract class Actor<S> extends Entity implements FsmContainer<S, PacManG
 		tf.setHeight(Tile.SIZE);
 	}
 
-	public Cast cast() {
-		return cast;
-	}
-
 	public String name() {
 		return name;
+	}
+
+	public Cast cast() {
+		return cast;
 	}
 
 	public Game game() {
@@ -42,7 +42,7 @@ public abstract class Actor<S> extends Entity implements FsmContainer<S, PacManG
 	}
 
 	public Maze maze() {
-		return game().maze();
+		return cast().game().maze();
 	}
 
 	public Theme theme() {
