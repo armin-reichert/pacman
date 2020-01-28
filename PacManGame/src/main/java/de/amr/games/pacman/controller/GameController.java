@@ -193,6 +193,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			changeClockFrequency(oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
 		}
 
+		if (eventQ().size() >= 2) {
+			FSM_LOGGER.warning("Event queue contains more than one element");
+		}
 		super.update();
 		currentView.update();
 	}
