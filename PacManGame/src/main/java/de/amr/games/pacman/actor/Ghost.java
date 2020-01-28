@@ -193,6 +193,9 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 						tf.setPosition(cast().seatPosition(0));
 						setWishDir(Direction.DOWN);
 					})
+					
+				.stay(DEAD)
+					.on(PacManGainsPowerEvent.class)
 				
 		.endStateMachine();
 		/*@formatter:on*/
