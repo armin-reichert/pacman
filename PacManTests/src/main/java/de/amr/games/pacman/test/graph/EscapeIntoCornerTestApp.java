@@ -5,6 +5,7 @@ import static de.amr.games.pacman.actor.PacManState.EATING;
 
 import java.util.Optional;
 
+import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
@@ -18,11 +19,12 @@ import de.amr.games.pacman.view.play.PlayView;
 public class EscapeIntoCornerTestApp extends PacManApp {
 
 	public static void main(String[] args) {
-		launch(new EscapeIntoCornerTestApp(), args);
+		launch(EscapeIntoCornerTestApp.class, args);
 	}
 
-	public EscapeIntoCornerTestApp() {
-		settings().title = "Escape Into Corner";
+	@Override
+	protected void configure(AppSettings settings) {
+		settings.title = "Escape Into Corner";
 	}
 
 	@Override

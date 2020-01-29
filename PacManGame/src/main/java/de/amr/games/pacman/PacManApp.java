@@ -19,20 +19,20 @@ import de.amr.games.pacman.theme.Theme;
  */
 public class PacManApp extends Application {
 
-	public static void main(String[] args) {
-		launch(new PacManApp(), args);
-	}
-
-	public static final PacManAppSettings settings = new PacManAppSettings();
 	public static final ResourceBundle texts = ResourceBundle.getBundle("texts");
 
+	public static final PacManAppSettings settings = new PacManAppSettings();
+
+	public static void main(String[] args) {
+		launch(PacManApp.class, settings, args);
+	}
+
 	@Override
-	public AppSettings createAppSettings() {
+	protected void configure(AppSettings settings) {
 		settings.width = 28 * Tile.SIZE;
 		settings.height = 36 * Tile.SIZE;
 		settings.scale = 2;
 		settings.title = texts.getString("app.title");
-		return settings;
 	}
 
 	@Override

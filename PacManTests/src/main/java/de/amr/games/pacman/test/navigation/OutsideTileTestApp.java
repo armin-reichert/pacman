@@ -4,6 +4,7 @@ import static de.amr.games.pacman.actor.GhostState.CHASING;
 
 import java.util.Optional;
 
+import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
@@ -16,11 +17,12 @@ import de.amr.games.pacman.view.play.PlayView;
 public class OutsideTileTestApp extends PacManApp {
 
 	public static void main(String[] args) {
-		launch(new OutsideTileTestApp(), args);
+		launch(OutsideTileTestApp.class, args);
 	}
 
-	public OutsideTileTestApp() {
-		settings().title = "Follow Tile Outside Maze";
+	@Override
+	protected void configure(AppSettings settings) {
+		settings.title = "Follow Tile Outside Maze";
 	}
 
 	@Override

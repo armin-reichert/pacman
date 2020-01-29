@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
@@ -25,11 +26,12 @@ import de.amr.games.pacman.view.play.PlayView;
 public class TakeShortestPathTestApp extends PacManApp {
 
 	public static void main(String[] args) {
-		launch(new TakeShortestPathTestApp(), args);
+		launch(TakeShortestPathTestApp.class, args);
 	}
 
-	public TakeShortestPathTestApp() {
-		settings().title = "Take Shortest Path";
+	@Override
+	protected void configure(AppSettings settings) {
+		settings.title = "Take Shortest Path";
 	}
 
 	@Override

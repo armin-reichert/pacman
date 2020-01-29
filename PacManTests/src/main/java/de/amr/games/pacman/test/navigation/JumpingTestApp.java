@@ -2,6 +2,7 @@ package de.amr.games.pacman.test.navigation;
 
 import java.util.Optional;
 
+import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
@@ -15,11 +16,12 @@ import de.amr.games.pacman.view.play.PlayView;
 public class JumpingTestApp extends PacManApp {
 
 	public static void main(String[] args) {
-		launch(new JumpingTestApp(), args);
+		launch(JumpingTestApp.class, args);
 	}
 
-	public JumpingTestApp() {
-		settings().title = "Jumping";
+	@Override
+	protected void configure(AppSettings settings) {
+		settings.title = "Jumping";
 	}
 
 	@Override

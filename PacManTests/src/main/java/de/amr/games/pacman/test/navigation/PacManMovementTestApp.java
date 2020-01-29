@@ -3,6 +3,7 @@ package de.amr.games.pacman.test.navigation;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 
+import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.easy.game.view.View;
@@ -21,11 +22,12 @@ import de.amr.games.pacman.view.play.PlayView;
 public class PacManMovementTestApp extends PacManApp {
 
 	public static void main(String[] args) {
-		launch(new PacManMovementTestApp(), args);
+		launch(PacManMovementTestApp.class, args);
 	}
 
-	public PacManMovementTestApp() {
-		settings().title = "Pac-Man Movement";
+	@Override
+	protected void configure(AppSettings settings) {
+		settings.title = "Pac-Man Movement";
 	}
 
 	@Override
@@ -82,14 +84,16 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_M)) {
 			pac.behavior(pac.isFollowingKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
 			message("Cursor keys");
-		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_N)) {
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_N)) {
 			pac.behavior(
 					pac.isFollowingKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
 			message("Numpad keys");
-//		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_A)) {
-//			pac.steering(avoidingGhosts(cast()));
-//			message("Avoiding ghosts");
-		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_R)) {
+			// } else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_A)) {
+			// pac.steering(avoidingGhosts(cast()));
+			// message("Avoiding ghosts");
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_R)) {
 			pac.behavior(pac.isMovingRandomlyWithoutTurningBack());
 			message("Random moves");
 		}

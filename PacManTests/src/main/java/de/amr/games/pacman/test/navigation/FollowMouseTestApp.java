@@ -4,6 +4,7 @@ import static de.amr.games.pacman.actor.GhostState.CHASING;
 
 import java.util.Optional;
 
+import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Mouse;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
@@ -18,11 +19,12 @@ import de.amr.games.pacman.view.play.PlayView;
 public class FollowMouseTestApp extends PacManApp {
 
 	public static void main(String[] args) {
-		launch(new FollowMouseTestApp(), args);
+		launch(FollowMouseTestApp.class, args);
 	}
 
-	public FollowMouseTestApp() {
-		settings().title = "Follow Mouse";
+	@Override
+	protected void configure(AppSettings settings) {
+		settings.title = "Follow Mouse";
 	}
 
 	@Override

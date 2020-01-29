@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 
+import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
@@ -20,11 +21,12 @@ import de.amr.games.pacman.view.play.PlayView;
 public class LeaveGhostHouseTestApp extends PacManApp {
 
 	public static void main(String[] args) {
-		launch(new LeaveGhostHouseTestApp(), args);
+		launch(LeaveGhostHouseTestApp.class, args);
 	}
 
-	public LeaveGhostHouseTestApp() {
-		settings().title = "Leave Ghost House";
+	@Override
+	protected void configure(AppSettings settings) {
+		settings.title = "Leave Ghost House";
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
@@ -22,11 +23,12 @@ import de.amr.games.pacman.view.play.PlayView;
 public class FollowTargetTilesTestApp extends PacManApp {
 
 	public static void main(String[] args) {
-		launch(new FollowTargetTilesTestApp(), args);
+		launch(FollowTargetTilesTestApp.class, args);
 	}
 
-	public FollowTargetTilesTestApp() {
-		settings().title = "Follow Target Tiles";
+	@Override
+	protected void configure(AppSettings settings) {
+		settings.title = "Follow Target Tiles";
 	}
 
 	@Override
