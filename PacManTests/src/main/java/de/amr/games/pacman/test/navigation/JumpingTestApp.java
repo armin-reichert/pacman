@@ -21,6 +21,7 @@ public class JumpingTestApp extends PacManApp {
 
 	@Override
 	protected void configure(AppSettings settings) {
+		super.configure(settings);
 		settings.title = "Jumping";
 	}
 

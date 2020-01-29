@@ -27,6 +27,7 @@ public class PacManMovementTestApp extends PacManApp {
 
 	@Override
 	protected void configure(AppSettings settings) {
+		super.configure(settings);
 		settings.title = "Pac-Man Movement";
 	}
 

@@ -22,6 +22,7 @@ public class OutsideTileTestApp extends PacManApp {
 
 	@Override
 	protected void configure(AppSettings settings) {
+		super.configure(settings);
 		settings.title = "Follow Tile Outside Maze";
 	}
 

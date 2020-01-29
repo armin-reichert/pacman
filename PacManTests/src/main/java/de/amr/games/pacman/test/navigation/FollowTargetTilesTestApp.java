@@ -28,6 +28,7 @@ public class FollowTargetTilesTestApp extends PacManApp {
 
 	@Override
 	protected void configure(AppSettings settings) {
+		super.configure(settings);
 		settings.title = "Follow Target Tiles";
 	}
 

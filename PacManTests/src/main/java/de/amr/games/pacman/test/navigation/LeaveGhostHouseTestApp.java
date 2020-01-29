@@ -26,6 +26,7 @@ public class LeaveGhostHouseTestApp extends PacManApp {
 
 	@Override
 	protected void configure(AppSettings settings) {
+		super.configure(settings);
 		settings.title = "Leave Ghost House";
 	}
 

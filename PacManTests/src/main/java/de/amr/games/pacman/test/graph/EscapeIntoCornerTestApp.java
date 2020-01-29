@@ -24,6 +24,7 @@ public class EscapeIntoCornerTestApp extends PacManApp {
 
 	@Override
 	protected void configure(AppSettings settings) {
+		super.configure(settings);
 		settings.title = "Escape Into Corner";
 	}
 

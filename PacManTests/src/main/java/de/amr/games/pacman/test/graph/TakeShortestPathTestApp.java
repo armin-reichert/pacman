@@ -31,6 +31,7 @@ public class TakeShortestPathTestApp extends PacManApp {
 
 	@Override
 	protected void configure(AppSettings settings) {
+		super.configure(settings);
 		settings.title = "Take Shortest Path";
 	}
 

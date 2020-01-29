@@ -24,6 +24,7 @@ public class FollowMouseTestApp extends PacManApp {
 
 	@Override
 	protected void configure(AppSettings settings) {
+		super.configure(settings);
 		settings.title = "Follow Mouse";
 	}
 

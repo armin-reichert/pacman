@@ -25,6 +25,7 @@ public class MovingRandomlyTestApp extends PacManApp {
 
 	@Override
 	protected void configure(AppSettings settings) {
+		super.configure(settings);
 		settings.title = "Moving Randomly";
 	}
 

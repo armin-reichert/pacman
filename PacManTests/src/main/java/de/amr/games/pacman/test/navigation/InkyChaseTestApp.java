@@ -28,6 +28,7 @@ public class InkyChaseTestApp extends PacManApp {
 
 	@Override
 	protected void configure(AppSettings settings) {
+		super.configure(settings);
 		settings.title = "Inky Chasing";
 	}
 
