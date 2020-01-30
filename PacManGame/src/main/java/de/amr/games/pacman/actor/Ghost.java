@@ -80,7 +80,7 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 						sprites.select("color-" + moveDir());
 						sprites.forEach(Sprite::resetAnimation);
 					})
-					.onTick((state, t, remaining) -> {
+					.onTick(() -> {
 							step(cast().pacMan.hasPower() ? "frightened" : "color-" + moveDir());
 					})
 					
