@@ -1,6 +1,6 @@
 package de.amr.games.pacman.model;
 
-import static de.amr.easy.game.Application.LOGGER;
+import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.model.Symbol.APPLE;
 import static de.amr.games.pacman.model.Symbol.BELL;
 import static de.amr.games.pacman.model.Symbol.CHERRIES;
@@ -23,8 +23,12 @@ import java.util.logging.Logger;
  * 
  * @author Armin Reichert
  * 
- * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man dossier</a>
- * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man level specifications</a>
+ * @see <a href=
+ *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
+ *      dossier</a>
+ * @see <a href=
+ *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man
+ *      level specifications</a>
  */
 public class Game {
 
@@ -94,7 +98,7 @@ public class Game {
 	}
 
 	public void enterLevel(int n) {
-		LOGGER.info(() -> "Enter level " + n);
+		loginfo("Enter level %d", n);
 		level = LEVELS[Math.min(n, LEVELS.length - 1)];
 		level.number = n;
 		level.numPelletsEaten = 0;
@@ -129,8 +133,7 @@ public class Game {
 	}
 
 	/**
-	 * @param tile
-	 *               tile containing food
+	 * @param tile tile containing food
 	 * @return points scored
 	 */
 	public int eatFoodAt(Tile tile) {
@@ -139,8 +142,7 @@ public class Game {
 			level.ghostsKilledByEnergizer = 0;
 			tile.removeFood();
 			return POINTS_ENERGIZER;
-		}
-		else {
+		} else {
 			tile.removeFood();
 			return POINTS_PELLET;
 		}
@@ -174,7 +176,7 @@ public class Game {
 		if (level.ghostsKilledInLevel == 16) {
 			score(12000);
 		}
-		LOGGER.info(() -> String.format("Scored %d points for killing %s (%s ghost in sequence)", points, ghostName,
-				new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]));
+		loginfo("Scored %d points for killing %s (%s ghost in sequence)", points, ghostName,
+				new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]);
 	}
 }

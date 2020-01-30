@@ -37,7 +37,7 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
-		LOGGER.info("User language is " + texts.getLocale().getDisplayLanguage());
+		loginfo("User language is %s", texts.getLocale().getDisplayLanguage());
 		Theme theme = Theme.createTheme(settings.theme);
 		setIcon(theme.spr_ghostFrightened().frame(0));
 		Game.FSM_LOGGER.setLevel(Level.INFO);

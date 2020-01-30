@@ -1,7 +1,7 @@
 package de.amr.games.pacman.controller;
 
-import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.easy.game.Application.app;
+import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
@@ -127,68 +127,49 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		if (currentView == playView) {
 			if (Keyboard.keyPressedOnce("b")) {
 				toggleGhost(cast.blinky);
-			}
-			else if (Keyboard.keyPressedOnce("c")) {
+			} else if (Keyboard.keyPressedOnce("c")) {
 				toggleGhost(cast.clyde);
-			}
-			else if (Keyboard.keyPressedOnce("d")) {
+			} else if (Keyboard.keyPressedOnce("d")) {
 				changeDemoMode();
-			}
-			else if (Keyboard.keyPressedOnce("e")) {
+			} else if (Keyboard.keyPressedOnce("e")) {
 				eatAllPellets();
-			}
-			else if (Keyboard.keyPressedOnce("f")) {
+			} else if (Keyboard.keyPressedOnce("f")) {
 				changeGhostFrightenedBehavior();
-			}
-			else if (Keyboard.keyPressedOnce("g")) {
+			} else if (Keyboard.keyPressedOnce("g")) {
 				showGrid = !showGrid;
-			}
-			else if (Keyboard.keyPressedOnce("i")) {
+			} else if (Keyboard.keyPressedOnce("i")) {
 				toggleGhost(cast.inky);
-			}
-			else if (Keyboard.keyPressedOnce("k")) {
+			} else if (Keyboard.keyPressedOnce("k")) {
 				killAllGhosts();
-			}
-			else if (Keyboard.keyPressedOnce("l")) {
+			} else if (Keyboard.keyPressedOnce("l")) {
 				changeStateMachineLogging();
-			}
-			else if (Keyboard.keyPressedOnce("m")) {
+			} else if (Keyboard.keyPressedOnce("m")) {
 				toggleMakePacManImmortable();
-			}
-			else if (Keyboard.keyPressedOnce("o")) {
+			} else if (Keyboard.keyPressedOnce("o")) {
 				changePacManOverflowBug();
-			}
-			else if (Keyboard.keyPressedOnce("p")) {
+			} else if (Keyboard.keyPressedOnce("p")) {
 				toggleGhost(cast.pinky);
-			}
-			else if (Keyboard.keyPressedOnce("s")) {
+			} else if (Keyboard.keyPressedOnce("s")) {
 				showStates = !showStates;
-			}
-			else if (Keyboard.keyPressedOnce("t")) {
+			} else if (Keyboard.keyPressedOnce("t")) {
 				showFPS = !showFPS;
-			}
-			else if (Keyboard.keyPressedOnce("r")) {
+			} else if (Keyboard.keyPressedOnce("r")) {
 				showRoutes = !showRoutes;
-			}
-			else if (Keyboard.keyPressedOnce("+")) {
+			} else if (Keyboard.keyPressedOnce("+")) {
 				switchToNextLevel();
 			}
 		}
 
 		if (Keyboard.keyPressedOnce("1") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
 			changeClockFrequency(Game.SPEED_1_FPS);
-		}
-		else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
+		} else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
 			changeClockFrequency(Game.SPEED_2_FPS);
-		}
-		else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
+		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			changeClockFrequency(Game.SPEED_3_FPS);
-		}
-		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
+		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
 			int oldFreq = app().clock().getFrequency();
 			changeClockFrequency(oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
-		}
-		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
+		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
 			int oldFreq = app().clock().getFrequency();
 			changeClockFrequency(oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
 		}
@@ -257,8 +238,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						house.onLevelChange();
 						sound.muteSoundEffects();
 						playView.stopEnergizerBlinking();
-						LOGGER.info(() -> String.format("Ghosts killed in level %d: %d", 
-								game.level().number, game.level().ghostsKilledInLevel));
+						loginfo("Ghosts killed in level %d: %d", game.level().number, game.level().ghostsKilledInLevel);
 					})
 					.onTick((state, t, remaining) -> {
 						float f = playView.mazeFlashingSeconds();
@@ -465,21 +445,20 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				sound.ghostEaten();
 				ghost.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
-				LOGGER.info(() -> String.format("Ghost %s killed at %s", ghost.name(), ghost.tile()));
-			}
-			else {
+				loginfo("Ghost %s killed at %s", ghost.name(), ghost.tile());
+			} else {
 				// Pac-Man killed
 				house.onLifeLost();
 				sound.muteAll();
 				playView.stopEnergizerBlinking();
 				cast.pacMan.process(new PacManKilledEvent(ghost));
 				enqueue(new PacManKilledEvent(ghost));
-				LOGGER.info(() -> String.format("Pac-Man killed by %s at %s", ghost.name(), ghost.tile()));
+				loginfo("Pac-Man killed by %s at %s", ghost.name(), ghost.tile());
 			}
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
-			LOGGER.info(() -> String.format("PacMan found %s and wins %d points", cast.bonus.symbol(), cast.bonus.value()));
+			loginfo("PacMan found %s and wins %d points", cast.bonus.symbol(), cast.bonus.value());
 			int livesBefore = game.lives;
 			game.score(cast.bonus.value());
 			sound.bonusEaten();
@@ -505,8 +484,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 			if (game.isBonusScoreReached()) {
 				cast.showBonus();
-				LOGGER.info(
-						() -> String.format("Bonus %s added, time: %.2f sec", cast.bonus, cast.bonus.state().getDuration() / 60f));
+				loginfo("Bonus %s added, time: %.2f sec", cast.bonus, cast.bonus.state().getDuration() / 60f);
 			}
 			if (foodFound.energizer) {
 				ghostCommand.suspend();
@@ -519,46 +497,45 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void changeClockFrequency(int newValue) {
 		if (app().clock().getFrequency() != newValue) {
 			app().clock().setFrequency(newValue);
-			LOGGER.info(String.format("Clock frequency changed to %d ticks/sec", newValue));
+			loginfo("Clock frequency changed to %d ticks/sec", newValue);
 		}
 	}
 
 	private void changePacManOverflowBug() {
 		settings.overflowBug = !settings.overflowBug;
-		LOGGER.info(() -> "Overflow bug is " + (settings.overflowBug ? "on" : "off"));
+		loginfo("Overflow bug is %s", (settings.overflowBug ? "on" : "off"));
 	}
 
 	private void changeStateMachineLogging() {
 		FSM_LOGGER.setLevel(FSM_LOGGER.getLevel() == Level.OFF ? Level.INFO : Level.OFF);
-		LOGGER.info(() -> "State machine logging changed to " + FSM_LOGGER.getLevel());
+		loginfo("State machine logging changed to %s", FSM_LOGGER.getLevel());
 	}
 
 	private void changeGhostFrightenedBehavior() {
 		if (settings.ghostsFleeRandomly) {
 			settings.ghostsFleeRandomly = false;
 			cast.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.isFleeingToSafeCorner(cast.pacMan)));
-			LOGGER.info(() -> "Changed ghost escape behavior to escaping via safe route");
-		}
-		else {
+			loginfo("Changed ghost escape behavior to escaping via safe route");
+		} else {
 			settings.ghostsFleeRandomly = true;
 			cast.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack()));
-			LOGGER.info(() -> "Changed ghost escape behavior to original random movement");
+			loginfo("Changed ghost escape behavior to original random movement");
 		}
 	}
 
 	private void changeDemoMode() {
 		settings.demoMode = !settings.demoMode;
 		cast.setDemoMode(settings.demoMode);
-		LOGGER.info(() -> "Demo mode is " + (settings.demoMode ? "on" : "off"));
+		loginfo("Demo mode is %s", (settings.demoMode ? "on" : "off"));
 	}
 
 	private void toggleMakePacManImmortable() {
 		settings.pacManImmortable = !settings.pacManImmortable;
-		LOGGER.info("Pac-Man immortable = " + settings.pacManImmortable);
+		loginfo("Pac-Man immortable = %s", settings.pacManImmortable);
 	}
 
 	private void switchToNextLevel() {
-		LOGGER.info(() -> String.format("Switching to level %d", game.level().number + 1));
+		loginfo("Switching to level %d", game.level().number + 1);
 		enqueue(new LevelCompletedEvent());
 	}
 
@@ -568,14 +545,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			house.onPacManFoundFood(new FoodFoundEvent(tile, false));
 			house.update();
 		});
-		LOGGER.info(() -> "All pellets eaten");
+		loginfo("All pellets eaten");
 	}
 
 	private void toggleGhost(Ghost ghost) {
 		if (cast.onStage(ghost)) {
 			cast.pullActorFromStage(ghost);
-		}
-		else {
+		} else {
 			cast.putActorOnStage(ghost);
 		}
 	}
@@ -586,6 +562,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			game.scoreKilledGhost(ghost.name());
 			ghost.process(new GhostKilledEvent(ghost));
 		});
-		LOGGER.info(() -> "All ghosts killed");
+		loginfo("All ghosts killed");
 	}
 }

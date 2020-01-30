@@ -1,6 +1,6 @@
 package de.amr.games.pacman.model;
 
-import static de.amr.easy.game.Application.LOGGER;
+import static de.amr.easy.game.Application.loginfo;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +51,7 @@ public class MazeGraph {
 			GraphSearch pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
 			Path path = pathfinder.findPath(vertex(source), vertex(target));
 			pathFinderCalls += 1;
-			LOGGER.info(String.format("%d'th pathfinding executed", pathFinderCalls));
+			loginfo("%d'th pathfinding executed", pathFinderCalls);
 			return path.vertexStream().map(this::tile).collect(Collectors.toList());
 		}
 		return Collections.emptyList();

@@ -1,6 +1,6 @@
 package de.amr.games.pacman.controller;
 
-import static de.amr.easy.game.Application.LOGGER;
+import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Timing.sec;
@@ -87,16 +87,16 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 
 	public void suspend() {
 		if (!suspended) {
-			LOGGER.info(() -> String.format("%s: suspended %s, remaining time: %d frames (%.2f seconds)", getDescription(),
-					getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
+			loginfo("%s: suspended %s, remaining time: %d frames (%.2f seconds)", getDescription(), getState(),
+					state().getTicksRemaining(), state().getTicksRemaining() / 60f);
 			suspended = true;
 		}
 	}
 
 	public void resume() {
 		if (suspended) {
-			LOGGER.info(() -> String.format("%s: resumed %s, remaining time: %d frames (%.2f seconds)", getDescription(),
-					getState(), state().getTicksRemaining(), state().getTicksRemaining() / 60f));
+			loginfo("%s: resumed %s, remaining time: %d frames (%.2f seconds)", getDescription(), getState(),
+					state().getTicksRemaining(), state().getTicksRemaining() / 60f);
 			suspended = false;
 		}
 	}

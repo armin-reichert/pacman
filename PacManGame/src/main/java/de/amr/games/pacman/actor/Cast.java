@@ -1,6 +1,5 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.easy.game.Application.LOGGER;
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
@@ -156,12 +155,10 @@ public class Cast {
 		if (on) {
 			settings.pacManImmortable = true;
 			pacMan.behavior(pacMan.isMovingRandomlyWithoutTurningBack());
-		}
-		else {
+		} else {
 			settings.pacManImmortable = false;
 			pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		}
-		LOGGER.info("Demo mode = " + on);
 	}
 
 	private void dressActors() {

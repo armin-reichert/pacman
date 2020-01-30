@@ -1,12 +1,11 @@
 package de.amr.games.pacman.controller;
 
+import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.model.Timing.sec;
 
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.actor.Cast;
@@ -32,7 +31,6 @@ public class House {
 		boolean enabled;
 	}
 
-	private final Logger logger;
 	private final Cast cast;
 	private final DotCounter globalCounter;
 	private final int[] ghostDotCount;
@@ -42,8 +40,6 @@ public class House {
 		this.cast = cast;
 		globalCounter = new DotCounter();
 		ghostDotCount = new int[4];
-		logger = Logger.getLogger(getClass().getName());
-		logger.setLevel(Level.INFO);
 	}
 
 	public void init() {
@@ -67,7 +63,7 @@ public class House {
 			if (globalCounter.dots == 32 && cast.clyde.is(LOCKED)) {
 				globalCounter.dots = 0;
 				globalCounter.enabled = false;
-				logger.info(() -> "Global dot counter reset and disabled (Clyde was locked when counter reached 32)");
+				loginfo("Global dot counter reset and disabled (Clyde was locked when counter reached 32)");
 			}
 		} else {
 			preferredLockedGhost().ifPresent(ghost -> {
@@ -83,7 +79,7 @@ public class House {
 	public void onLifeLost() {
 		globalCounter.enabled = true;
 		globalCounter.dots = 0;
-		logger.info(() -> "Global dot counter enabled and set to zero");
+		loginfo("Global dot counter enabled and set to zero");
 	}
 
 	public boolean isPreferredGhost(Ghost ghost) {
@@ -130,23 +126,21 @@ public class House {
 	private boolean canLeaveHome(Ghost ghost) {
 		int pacManStarvingTimeLimit = game().level().number < 5 ? sec(4) : sec(3);
 		if (pacManStarvingTicks >= pacManStarvingTimeLimit) {
-			logger.info(() -> String.format("%s can leave house: Pac-Man's starving time limit (%d ticks) reached",
-					ghost.name(), pacManStarvingTimeLimit));
+			loginfo("%s can leave house: Pac-Man's starving time limit (%d ticks) reached", ghost.name(),
+					pacManStarvingTimeLimit);
 			pacManStarvingTicks = 0;
 			return true;
 		}
 		if (globalCounter.enabled) {
 			int globalLimit = globalDotLimit(ghost);
 			if (globalCounter.dots >= globalLimit) {
-				logger
-						.info(() -> String.format("%s can leave house: global dot limit (%d) reached", ghost.name(), globalLimit));
+				loginfo("%s can leave house: global dot limit (%d) reached", ghost.name(), globalLimit);
 				return true;
 			}
 		} else {
 			int personalLimit = personalDotLimit(ghost);
 			if (ghostDotCount[cast.seat(ghost)] >= personalLimit) {
-				logger.info(
-						() -> String.format("%s can leave house: ghost's dot limit (%d) reached", ghost.name(), personalLimit));
+				loginfo("%s can leave house: ghost's dot limit (%d) reached", ghost.name(), personalLimit);
 				return true;
 			}
 		}
@@ -181,6 +175,6 @@ public class House {
 
 	private void resetGhostDotCount() {
 		Arrays.fill(ghostDotCount, 0);
-		logger.info(() -> "Ghost dot counters reset to zero");
+		loginfo("Ghost dot counters reset to zero");
 	}
 }

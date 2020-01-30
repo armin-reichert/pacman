@@ -1,6 +1,6 @@
 package de.amr.games.pacman.theme;
 
-import static de.amr.easy.game.Application.LOGGER;
+import static de.amr.easy.game.Application.loginfo;
 import static de.amr.easy.game.assets.Assets.storeTrueTypeFont;
 import static de.amr.easy.game.ui.sprites.AnimationType.BACK_AND_FORTH;
 import static de.amr.easy.game.ui.sprites.AnimationType.CYCLIC;
@@ -93,7 +93,7 @@ public class ArcadeTheme implements Theme {
 			/*@formatter:on*/
 		};
 
-		LOGGER.info(String.format("Theme '%s' created.", getClass().getSimpleName()));
+		loginfo("Theme '%s' created.", getClass().getName());
 	}
 
 	@Override
@@ -222,8 +222,8 @@ public class ArcadeTheme implements Theme {
 
 	@Override
 	public Stream<Sound> snd_clips_all() {
-		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eatPill(), snd_extraLife(),
-				snd_insertCoin(), snd_ready(), snd_ghost_chase(), snd_ghost_dead(), snd_waza());
+		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eatPill(), snd_extraLife(), snd_insertCoin(),
+				snd_ready(), snd_ghost_chase(), snd_ghost_dead(), snd_waza());
 	}
 
 	@Override
