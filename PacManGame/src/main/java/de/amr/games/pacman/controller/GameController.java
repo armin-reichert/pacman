@@ -103,7 +103,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			cast.putActorOnStage(actor);
 			actor.addEventListener(this::process);
 		});
-		cast.bonus.init();
 		cast.setDemoMode(settings.demoMode);
 		ghostCommand = new GhostCommand(cast);
 		house = new House(cast);
