@@ -86,9 +86,7 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 					
 				.state(LEAVING_HOUSE)
 					.onEntry(() -> steering().init())
-					.onTick(() -> {
-						step("color-" + moveDir());
-					})
+					.onTick(() -> step("color-" + moveDir()))
 				
 				.state(ENTERING_HOUSE)
 					.onEntry(() -> steering().init())
