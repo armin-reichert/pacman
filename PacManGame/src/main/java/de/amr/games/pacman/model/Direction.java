@@ -36,11 +36,11 @@ public enum Direction implements Iterable<Direction> {
 		return OPPOSITE[ordinal()];
 	}
 
-	public Direction turnLeft() {
+	public Direction left() {
 		return LEFT_OF[ordinal()];
 	}
 
-	public Direction turnRight() {
+	public Direction right() {
 		return RIGHT_OF[ordinal()];
 	}
 }

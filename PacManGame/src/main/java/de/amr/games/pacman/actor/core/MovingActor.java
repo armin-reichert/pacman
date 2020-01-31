@@ -178,7 +178,7 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 		if (wishDir != null && wishDir != moveDir) {
 			float wishDirSpeed = possibleMoveDistance(tile, wishDir);
 			if (wishDirSpeed > 0) {
-				boolean corner = (wishDir == moveDir.turnLeft() || wishDir == moveDir.turnRight());
+				boolean corner = (wishDir == moveDir.left() || wishDir == moveDir.right());
 				if (corner && steering().requiresGridAlignment()) {
 					placeAt(tile);
 				}
