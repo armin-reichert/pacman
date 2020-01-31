@@ -1,7 +1,7 @@
 package de.amr.games.pacman.actor.steering.ghost;
 
 import static de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState.AT_DOOR;
-import static de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState.AT_PLACE;
+import static de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState.TARGET_REACHED;
 import static de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState.FALLING;
 import static de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState.MOVING_LEFT;
 import static de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState.MOVING_RIGHT;
@@ -24,7 +24,7 @@ import de.amr.statemachine.core.StateMachine;
 public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> implements Steering {
 
 	public enum EnteringHouseState {
-		AT_DOOR, FALLING, MOVING_LEFT, MOVING_RIGHT, AT_PLACE
+		AT_DOOR, FALLING, MOVING_LEFT, MOVING_RIGHT, TARGET_REACHED
 	}
 
 	public EnteringGhostHouse(Ghost ghost, Vector2f target) {
@@ -56,13 +56,13 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 					.condition(() -> ghost.tf.getY() >= target.y && ghost.tf.getX() < target.x)
 					.act(() -> ghost.setWishDir(RIGHT))
 	
-				.when(FALLING).then(AT_PLACE)
+				.when(FALLING).then(TARGET_REACHED)
 					.condition(() -> ghost.tf.getY() >= target.y && ghost.tf.getX() == target.x)
 				
-				.when(MOVING_LEFT).then(AT_PLACE)
+				.when(MOVING_LEFT).then(TARGET_REACHED)
 					.condition(() -> ghost.tf.getX() <= target.x)
 					
-				.when(MOVING_RIGHT).then(AT_PLACE)
+				.when(MOVING_RIGHT).then(TARGET_REACHED)
 					.condition(() -> ghost.tf.getX() >= target.x)
 					
 		.endStateMachine();
@@ -77,7 +77,7 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 
 	@Override
 	public boolean isComplete() {
-		return is(AT_PLACE);
+		return is(TARGET_REACHED);
 	}
 
 	@Override
