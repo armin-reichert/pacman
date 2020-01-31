@@ -8,8 +8,7 @@ import de.amr.games.pacman.model.MazeGraph;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Steering which computes the shortest path (using graph path finding) to the
- * target tile.
+ * Lets an actor follow the shortest path (using graph path finding) to the target tile.
  *
  * @author Armin Reichert
  */

@@ -13,10 +13,8 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Steering using a precomputed path.
+ * Lets an actor follow a pre-computed path.
  * 
- * @param <MazeMover> type of steered actor
- *
  * @author Armin Reichert
  */
 public abstract class TakingPrecomputedPath implements Steering {

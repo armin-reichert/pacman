@@ -6,6 +6,11 @@ import java.util.List;
 import de.amr.games.pacman.actor.steering.MazeMover;
 import de.amr.games.pacman.model.Tile;
 
+/**
+ * Lets an actor follow a fixed path.
+ * 
+ * @author Armin Reichert
+ */
 public class TakingFixedPath extends TakingPrecomputedPath {
 
 	private List<Tile> path;

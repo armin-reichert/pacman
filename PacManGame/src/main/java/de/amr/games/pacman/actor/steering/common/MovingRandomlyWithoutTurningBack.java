@@ -5,6 +5,11 @@ import de.amr.games.pacman.actor.steering.MazeMover;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 
+/**
+ * Lets an actor move randomly but never reverse direction.
+ * 
+ * @author Armin Reichert
+ */
 public class MovingRandomlyWithoutTurningBack implements Steering {
 
 	private MazeMover actor;
