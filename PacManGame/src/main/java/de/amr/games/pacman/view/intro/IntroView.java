@@ -58,7 +58,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 		this.theme = theme;
 		this.name = "IntroView";
 		fsm = buildStateMachine();
-		fsm.setLogger(Game.FSM_LOGGER);
+		fsm.getTracer().setLogger(Game.FSM_LOGGER);
 	}
 
 	@Override

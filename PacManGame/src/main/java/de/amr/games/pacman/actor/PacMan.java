@@ -52,7 +52,7 @@ public class PacMan extends MovingActor<PacManState> implements CommonSteerings 
 	public PacMan(Cast cast) {
 		super(cast, "Pac-Man");
 		brain = buildFsm();
-		brain.setLogger(Game.FSM_LOGGER);
+		brain.getTracer().setLogger(Game.FSM_LOGGER);
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
 		brain.doNotLogEventProcessingIf(PacManGameEvent::isTrivial);
 		brain.doNotLogEventPublishingIf(PacManGameEvent::isTrivial);

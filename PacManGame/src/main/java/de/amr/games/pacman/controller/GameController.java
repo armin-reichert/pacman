@@ -78,7 +78,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		sound = new SoundController(theme);
 		buildStateMachine();
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		setLogger(Game.FSM_LOGGER);
+		getTracer().setLogger(Game.FSM_LOGGER);
 		doNotLogEventProcessingIf(PacManGameEvent::isTrivial);
 		loadingView = new LoadingView(theme);
 		introView = new IntroView(theme);

@@ -54,7 +54,7 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 		super(cast, name);
 		brain = buildFsm();
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
-		brain.setLogger(Game.FSM_LOGGER);
+		brain.getTracer().setLogger(Game.FSM_LOGGER);
 	}
 
 	@Override

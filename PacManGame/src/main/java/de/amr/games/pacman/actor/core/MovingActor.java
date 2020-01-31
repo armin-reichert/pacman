@@ -59,7 +59,7 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 						.act(() -> teleport())
 			.endStateMachine();
 		//@formatter:on
-		fsm.setLogger(Game.FSM_LOGGER);
+		fsm.getTracer().setLogger(Game.FSM_LOGGER);
 		return fsm;
 	}
 

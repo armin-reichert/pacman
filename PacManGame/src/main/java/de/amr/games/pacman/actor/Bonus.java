@@ -37,7 +37,7 @@ public class Bonus extends Actor<BonusState> {
 		super(cast, "Bonus");
 		brain = buildFsm();
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
-		brain.setLogger(Game.FSM_LOGGER);
+		brain.getTracer().setLogger(Game.FSM_LOGGER);
 	}
 
 	private StateMachine<BonusState, PacManGameEvent> buildFsm() {

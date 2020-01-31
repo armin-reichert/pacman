@@ -53,7 +53,7 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 			.when(CHASING).then(SCATTERING).onTimeout().act(() -> ++round)
 		.endStateMachine();
 		/*@formatter:on*/
-		setLogger(Game.FSM_LOGGER);
+		getTracer().setLogger(Game.FSM_LOGGER);
 	}
 
 	private int entry(int col) {

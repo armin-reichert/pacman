@@ -67,7 +67,7 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 					
 		.endStateMachine();
 		/*@formatter:on*/
-		setLogger(Game.FSM_LOGGER);
+		getTracer().setLogger(Game.FSM_LOGGER);
 	}
 
 	@Override
