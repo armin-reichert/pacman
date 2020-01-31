@@ -29,8 +29,7 @@ public interface GhostSteerings extends CommonSteerings {
 	/**
 	 * Lets the actor avoid the attacker's path by walking to a "safe" maze corner.
 	 * 
-	 * @param attacker
-	 *                   the attacking actor
+	 * @param attacker the attacking actor
 	 * 
 	 * @return behavior where actor flees to a "safe" maze corner
 	 */
@@ -39,15 +38,16 @@ public interface GhostSteerings extends CommonSteerings {
 	}
 
 	/**
-	 * Lets a ghost enter the ghost house and move to the seat with the given number.
+	 * Lets a ghost enter the ghost house and move to the seat with the given
+	 * position.
 	 * 
-	 * @param seat
-	 *               seat number
+	 * @param seatPosition seat position
 	 * 
 	 * @return behavior which lets a ghost enter the house and take its seat
 	 */
 	default Steering isTakingSeat(Vector2f seatPosition) {
-		return new EnteringGhostHouse(steeredGhost(), seatPosition);
+		// add 3 pixel so that ghost dives deeper into ghost house
+		return new EnteringGhostHouse(steeredGhost(), Vector2f.of(seatPosition.x, seatPosition.y + 3));
 	}
 
 	/**
