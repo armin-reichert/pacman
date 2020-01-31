@@ -1,6 +1,5 @@
 package de.amr.games.pacman.model;
 
-import static de.amr.games.pacman.model.Direction.dirs;
 import static de.amr.games.pacman.model.Tile.ENERGIZER;
 import static de.amr.games.pacman.model.Tile.PELLET;
 import static de.amr.games.pacman.model.Tile.SPACE;
@@ -12,6 +11,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import de.amr.easy.game.math.Vector2f;
 
 /**
  * The Pac-Man game world.
@@ -151,11 +152,12 @@ public class Maze {
 	}
 
 	/**
-	 * @param col a column index
-	 * @param row a row index
-	 * @return the tile with the given coordinates. Tiles outside of the board are
-	 *         tunnel tiles (if in the same row as the board tunnel) or walls
-	 *         otherwise.
+	 * @param col
+	 *              a column index
+	 * @param row
+	 *              a row index
+	 * @return the tile with the given coordinates. Tiles outside of the board are tunnel tiles (if in
+	 *         the same row as the board tunnel) or walls otherwise.
 	 */
 	public Tile tileAt(int col, int row) {
 		if (insideBoard(col, row)) {
@@ -171,11 +173,14 @@ public class Maze {
 	}
 
 	/**
-	 * @param tile reference tile
-	 * @param dir  some direction
-	 * @param n    number of tiles
-	 * @return the tile located <code>n</code> tiles away from the reference tile
-	 *         towards the given direction. This can be a tile outside of the board!
+	 * @param tile
+	 *               reference tile
+	 * @param dir
+	 *               some direction
+	 * @param n
+	 *               number of tiles
+	 * @return the tile located <code>n</code> tiles away from the reference tile towards the given
+	 *         direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
 		if (tile.equals(portalLeft) && dir == Direction.LEFT) {
@@ -184,14 +189,16 @@ public class Maze {
 		if (tile.equals(portalRight) && dir == Direction.RIGHT) {
 			return portalLeft;
 		}
-		return tileAt(tile.col + n * dir.dx, tile.row + n * dir.dy);
+		Vector2f dirVector = dir.vector();
+		return tileAt(tile.col + n * dirVector.roundedX(), tile.row + n * dirVector.roundedY());
 	}
 
 	/**
-	 * @param tile reference tile
-	 * @param dir  some direction
-	 * @return neighbor towards the given direction. This can be a tile outside of
-	 *         the board!
+	 * @param tile
+	 *               reference tile
+	 * @param dir
+	 *               some direction
+	 * @return neighbor towards the given direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, Direction dir) {
 		return tileToDir(tile, dir, 1);
@@ -218,8 +225,8 @@ public class Maze {
 	}
 
 	public Optional<Direction> direction(Tile t1, Tile t2) {
-		int dx = t2.col - t1.col, dy = t2.row - t1.row;
-		return dirs().filter(dir -> dir.dx == dx && dir.dy == dy).findFirst();
+		Vector2f dirVector = Vector2f.of(t2.col - t1.col, t2.row - t1.row);
+		return Direction.dirs().filter(dir -> dir.vector().equals(dirVector)).findFirst();
 	}
 
 	public boolean partOfGhostHouse(Tile tile) {

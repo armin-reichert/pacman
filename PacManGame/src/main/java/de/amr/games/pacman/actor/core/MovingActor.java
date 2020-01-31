@@ -6,6 +6,7 @@ import static de.amr.games.pacman.model.Direction.RIGHT;
 
 import java.util.Objects;
 
+import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.steering.MazeMover;
 import de.amr.games.pacman.actor.steering.Steering;
@@ -148,8 +149,8 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 	}
 
 	/**
-	 * Computes how many pixels this entity can move towards the given direction without crossing the border to a
-	 * forbidden neighbor tile.
+	 * Computes how many pixels this entity can move towards the given direction without crossing the
+	 * border to a forbidden neighbor tile.
 	 */
 	private float possibleMoveDistance(Tile currentTile, Direction dir) {
 		float dist = speed();
@@ -185,7 +186,7 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 				speed = wishDirSpeed;
 			}
 		}
-		tf.setVelocity(speed * moveDir.dx, speed * moveDir.dy);
+		tf.setVelocity(Vector2f.smul(speed, moveDir.vector()));
 		tf.move();
 		enteredNewTile = !tile.equals(tile());
 	}
@@ -193,8 +194,7 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 	private void teleport() {
 		if (enteredRightPortal()) {
 			placeAt(maze().portalLeft);
-		}
-		else if (enteredLeftPortal()) {
+		} else if (enteredLeftPortal()) {
 			placeAt(maze().portalRight);
 		}
 	}

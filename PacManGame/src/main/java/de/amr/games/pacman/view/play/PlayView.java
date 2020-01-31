@@ -29,6 +29,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
+import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.BonusState;
 import de.amr.games.pacman.actor.Cast;
@@ -330,7 +331,8 @@ public class PlayView extends SimplePlayView {
 		int pathLen = targetPath.size();
 		Color ghostColor = color(ghost);
 		Stroke solid = new BasicStroke(0.5f);
-		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
+		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
+				0);
 		boolean drawRubberBand = target != null && pathLen > 0 && target != targetPath.get(pathLen - 1);
 		if (drawRubberBand) {
 			// draw rubber band to target tile
@@ -362,7 +364,8 @@ public class PlayView extends SimplePlayView {
 			Direction nextDir = ghost.wishDir();
 			int x = ghost.tf.getCenter().roundedX(), y = ghost.tf.getCenter().roundedY();
 			g.setColor(ghostColor);
-			drawArrowHead(g, nextDir, x + nextDir.dx * Tile.SIZE, y + nextDir.dy * Tile.SIZE);
+			Vector2f dirVector = nextDir.vector();
+			drawArrowHead(g, nextDir, x + dirVector.roundedX() * Tile.SIZE, y + dirVector.roundedY() * Tile.SIZE);
 		}
 		// visualize Inky's chasing (target tile may be null if Blinky is not on stage!)
 		if (ghost == cast().inky && ghost.is(CHASING) && ghost.targetTile() != null) {
@@ -415,7 +418,8 @@ public class PlayView extends SimplePlayView {
 		drawDotCounter(g, null, house.globalDotCount(), 24, 14, house.isGlobalDotCounterEnabled());
 	}
 
-	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row, boolean emphasized) {
+	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row,
+			boolean emphasized) {
 		try (Pen pen = new Pen(g)) {
 			if (image != null) {
 				g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);

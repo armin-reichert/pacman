@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Random;
 
+import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.PacMan;
@@ -73,7 +74,7 @@ public class LoadingView implements GameView {
 				inc = -inc;
 			}
 		}
-		pacMan.tf.setVelocityX(2.5f * pacMan.moveDir().dx);
+		pacMan.tf.setVelocity(Vector2f.smul(2.5f, pacMan.moveDir().vector()));
 		pacMan.tf.move();
 		pacMan.showWalkingAnimation();
 	}
@@ -85,8 +86,7 @@ public class LoadingView implements GameView {
 			if (alpha > 160) {
 				alphaInc = -2;
 				alpha = 160;
-			}
-			else if (alpha < 0) {
+			} else if (alpha < 0) {
 				alphaInc = 2;
 				alpha = 0;
 			}
