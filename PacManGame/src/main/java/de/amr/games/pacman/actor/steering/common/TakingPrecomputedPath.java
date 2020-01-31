@@ -15,8 +15,7 @@ import de.amr.games.pacman.model.Tile;
 /**
  * Steering using a precomputed path.
  * 
- * @param <MazeMover>
- *          type of steered actor
+ * @param <MazeMover> type of steered actor
  *
  * @author Armin Reichert
  */
@@ -43,20 +42,26 @@ public abstract class TakingPrecomputedPath implements Steering {
 	}
 
 	@Override
-	public void init() {
-	}
-
-	@Override
-	public void force() {
+	public void steer() {
+		Tile targetTile = fnTargetTile.get();
+		if (targetTile == null) {
+			actor.setTargetTile(null);
+			targetPath = Collections.emptyList();
+			return;
+		}
+		for (int i = 0; i < targetPath.indexOf(actor.tile()); ++i) {
+			targetPath.remove(0);
+		}
+		if (isPathInvalid(actor)) {
+			targetPath = pathToTarget(actor, targetTile);
+			actor.setTargetTile(last(targetPath));
+		}
+		actor.setWishDir(alongPath(targetPath).orElse(null));
 	}
 
 	@Override
 	public boolean requiresGridAlignment() {
 		return true;
-	}
-
-	@Override
-	public void enableTargetPathComputation(boolean b) {
 	}
 
 	@Override
@@ -73,23 +78,5 @@ public abstract class TakingPrecomputedPath implements Steering {
 
 	protected Optional<Direction> alongPath(List<Tile> path) {
 		return path.size() < 2 ? Optional.empty() : maze.direction(path.get(0), path.get(1));
-	}
-
-	@Override
-	public void steer() {
-		Tile targetTile = fnTargetTile.get();
-		if (targetTile == null) {
-			actor.setTargetTile(null);
-			targetPath = Collections.emptyList();
-			return;
-		}
-		for (int i = 0; i < targetPath.indexOf(actor.tile()); ++i) {
-			targetPath.remove(0);
-		}
-		if (isPathInvalid(actor)) {
-			targetPath = pathToTarget(actor, targetTile);
-			actor.setTargetTile(last(targetPath));
-		}
-		actor.setWishDir(alongPath(targetPath).orElse(null));
 	}
 }

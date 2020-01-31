@@ -31,15 +31,12 @@ public class LeavingGhostHouse implements Steering {
 		int targetY = ghost.maze().ghostHouseSeats[0].y();
 		if (ghost.tf.getY() <= targetY) {
 			complete = true;
-		}
-		else if (differAtMost(1, ghost.tf.getX(), targetX)) {
+		} else if (differAtMost(1, ghost.tf.getX(), targetX)) {
 			ghost.tf.setX(targetX);
 			ghost.setWishDir(UP);
-		}
-		else if (ghost.tf.getX() < targetX) {
+		} else if (ghost.tf.getX() < targetX) {
 			ghost.setWishDir(RIGHT);
-		}
-		else if (ghost.tf.getX() > targetX) {
+		} else if (ghost.tf.getX() > targetX) {
 			ghost.setWishDir(LEFT);
 		}
 	}
@@ -55,15 +52,7 @@ public class LeavingGhostHouse implements Steering {
 	}
 
 	@Override
-	public void force() {
-	}
-
-	@Override
 	public boolean requiresGridAlignment() {
 		return false;
-	}
-
-	@Override
-	public void enableTargetPathComputation(boolean b) {
 	}
 }

@@ -27,19 +27,7 @@ public class FollowingKeys implements Steering {
 	}
 
 	@Override
-	public void init() {
-	}
-
-	@Override
-	public void force() {
-	}
-
-	@Override
 	public boolean requiresGridAlignment() {
 		return true;
-	}
-
-	@Override
-	public void enableTargetPathComputation(boolean b) {
 	}
 }
