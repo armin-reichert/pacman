@@ -26,11 +26,10 @@ public class LoadingView implements GameView {
 	private final Cast cast;
 	private final PacMan pacMan;
 
-	private int alpha = -1;
+	private int alpha;
 	private int alphaInc;
-	private int inc;
-
-	private int count;
+	private int ghostCount;
+	private int ghostInc;
 
 	public LoadingView(Theme theme) {
 		cast = new Cast(new Game(), theme);
@@ -55,48 +54,46 @@ public class LoadingView implements GameView {
 	public void init() {
 		pacMan.init();
 		pacMan.setState(PacManState.EATING);
-		count = 0;
-		inc = 1;
+		ghostCount = 0;
+		ghostInc = 1;
 	}
 
 	@Override
 	public void update() {
-		if (pacMan.tf.getX() > 0.8f * width() || pacMan.tf.getX() < 0.2 * width()) {
+		if (pacMan.tf.getX() > 0.9f * width() || pacMan.tf.getX() < 0.1 * width()) {
 			pacMan.setMoveDir(pacMan.moveDir().opposite());
-			count += inc;
-			if (count == 10 || count == 0) {
-				inc = -inc;
+			ghostCount += ghostInc;
+			if (ghostCount == 10 || ghostCount == 0) {
+				ghostInc = -ghostInc;
 			}
 		}
 		pacMan.tf.setVelocity(Vector2f.smul(2.5f, pacMan.moveDir().vector()));
 		pacMan.tf.move();
 		pacMan.showWalkingAnimation();
+		alpha += alphaInc;
+		if (alpha >= 160) {
+			alphaInc = -2;
+			alpha = 160;
+		} else if (alpha <= 0) {
+			alphaInc = 2;
+			alpha = 0;
+		}
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
 		try (Pen pen = new Pen(g)) {
-			pen.font(theme().fnt_text());
-			if (alpha > 160) {
-				alphaInc = -2;
-				alpha = 160;
-			} else if (alpha < 0) {
-				alphaInc = 2;
-				alpha = 0;
-			}
 			pen.color(new Color(255, 0, 0, alpha));
+			pen.font(theme().fnt_text());
 			pen.fontSize(14);
 			pen.hcenter(PacManApp.texts.getString("loading_music"), width(), 18);
-			alpha += alphaInc;
 		}
 		pacMan.draw(g);
-		GhostColor randomColor;
-		Direction randomDirection;
-		int x = width() / 2 - (count / 2) * 20;
-		for (int i = 0; i < count; ++i) {
-			randomColor = GhostColor.values()[new Random().nextInt(4)];
-			randomDirection = Direction.values()[new Random().nextInt(4)];
-			cast.theme().spr_ghostColored(randomColor, randomDirection.ordinal()).draw(g, x, pacMan.tf.getY() + 20);
+		float x = width() / 2 - (ghostCount / 2) * 20, y = pacMan.tf.getY() + 20;
+		for (int i = 0; i < ghostCount; ++i) {
+			GhostColor color = GhostColor.values()[new Random().nextInt(4)];
+			Direction dir = Direction.values()[new Random().nextInt(4)];
+			cast.theme().spr_ghostColored(color, dir.ordinal()).draw(g, x, y);
 			x += 20;
 		}
 	}
