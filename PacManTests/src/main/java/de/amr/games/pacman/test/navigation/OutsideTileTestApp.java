@@ -29,16 +29,16 @@ public class OutsideTileTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
+		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		Cast cast = new Cast(game, theme);
-		setController(new OutsideTileTestUI(cast));
+		setController(new OutsideTileTestUI(cast, theme));
 	}
 }
 
 class OutsideTileTestUI extends PlayView implements VisualController {
 
-	public OutsideTileTestUI(Cast cast) {
-		super(cast);
+	public OutsideTileTestUI(Cast cast, Theme theme) {
+		super(cast, theme);
 		showRoutes = () -> true;
 		showStates = () -> false;
 		showScores = () -> false;
@@ -49,16 +49,16 @@ class OutsideTileTestUI extends PlayView implements VisualController {
 	public void init() {
 		super.init();
 		maze().removeFood();
-		theme().snd_ghost_chase().volume(0);
-		cast().putActorOnStage(cast().blinky);
-		cast().blinky.behavior(CHASING, cast().blinky.isHeadingFor(() -> maze().tileAt(100, maze().portalRight.row)));
-		cast().blinky.setState(CHASING);
+		theme.snd_ghost_chase().volume(0);
+		cast.putActorOnStage(cast.blinky);
+		cast.blinky.behavior(CHASING, cast.blinky.isHeadingFor(() -> maze().tileAt(100, maze().portalRight.row)));
+		cast.blinky.setState(CHASING);
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		cast().blinky.update();
+		cast.blinky.update();
 	}
 
 	@Override

@@ -49,11 +49,9 @@ public class Cast {
 	private final Set<MovingActor<?>> actorsOnStage = new HashSet<>();
 	private final PropertyChangeSupport changes = new PropertyChangeSupport(this);
 	private final Game game;
-	private Theme theme;
 
-	public Cast(Game game, Theme theme) {
+	public Cast(Game game) {
 		this.game = game;
-		this.theme = theme;
 
 		pacMan = new PacMan(this);
 		blinky = new Ghost(this, "Blinky");
@@ -63,12 +61,6 @@ public class Cast {
 
 		seatAssignment = Arrays.asList(blinky, inky, pinky, clyde);
 		seatGhostDirections = Arrays.asList(LEFT, UP, DOWN, UP);
-
-		pacMan.dress(theme);
-		blinky.dress(theme, GhostColor.RED);
-		pinky.dress(theme, GhostColor.PINK);
-		inky.dress(theme, GhostColor.CYAN);
-		clyde.dress(theme, GhostColor.ORANGE);
 
 		pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		pacMan.setTeleportingDuration(sec(0.5f));
@@ -122,8 +114,12 @@ public class Cast {
 		return game;
 	}
 
-	public Theme theme() {
-		return theme;
+	public void dressActors(Theme theme) {
+		pacMan.dress(theme);
+		blinky.dress(theme, GhostColor.RED);
+		pinky.dress(theme, GhostColor.PINK);
+		inky.dress(theme, GhostColor.CYAN);
+		clyde.dress(theme, GhostColor.ORANGE);
 	}
 
 	public int seat(Ghost ghost) {
@@ -150,8 +146,7 @@ public class Cast {
 		if (on) {
 			settings.pacManImmortable = true;
 			pacMan.behavior(pacMan.isMovingRandomlyWithoutTurningBack());
-		}
-		else {
+		} else {
 			settings.pacManImmortable = false;
 			pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		}
@@ -192,7 +187,7 @@ public class Cast {
 		actorsOnStage.remove(actor);
 	}
 
-	public void showBonus() {
+	public void showBonus(Theme theme) {
 		bonus.setSymbol(theme, game().level().bonusSymbol);
 		bonus.setValue(theme, game().level().bonusValue);
 		bonus.activate();

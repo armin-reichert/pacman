@@ -35,9 +35,9 @@ public class FollowTargetTilesTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
+		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		Cast cast = new Cast(game, theme);
-		setController(new FollowTargetTilesTestUI(cast));
+		setController(new FollowTargetTilesTestUI(cast, theme));
 	}
 }
 
@@ -46,8 +46,8 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 	private List<Tile> targets;
 	private int current;
 
-	public FollowTargetTilesTestUI(Cast cast) {
-		super(cast);
+	public FollowTargetTilesTestUI(Cast cast, Theme theme) {
+		super(cast, theme);
 		showRoutes = () -> true;
 		showStates = () -> false;
 		showScores = () -> false;
@@ -66,17 +66,17 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 		super.init();
 		current = 0;
 		maze().removeFood();
-		theme().snd_ghost_chase().volume(0);
-		cast().putActorOnStage(cast().blinky);
-		cast().blinky.placeAt(targets.get(0));
-		cast().blinky.behavior(CHASING, cast().blinky.isHeadingFor(() -> targets.get(current)));
-		cast().blinky.setState(CHASING);
-		cast().blinky.steering().force();
+		theme.snd_ghost_chase().volume(0);
+		cast.putActorOnStage(cast.blinky);
+		cast.blinky.placeAt(targets.get(0));
+		cast.blinky.behavior(CHASING, cast.blinky.isHeadingFor(() -> targets.get(current)));
+		cast.blinky.setState(CHASING);
+		cast.blinky.steering().force();
 	}
 
 	@Override
 	public void update() {
-		if (cast().blinky.tile() == targets.get(current)) {
+		if (cast.blinky.tile() == targets.get(current)) {
 			current += 1;
 			if (current == targets.size()) {
 				current = 0;
@@ -84,7 +84,7 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 				maze().removeFood();
 			}
 		}
-		cast().blinky.update();
+		cast.blinky.update();
 		super.update();
 	}
 

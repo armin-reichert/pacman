@@ -101,8 +101,7 @@ public class ChaseGhostsAnimation extends Entity implements Animation {
 			g.translate(18 * (i + 1), 0);
 			if (killed[i]) {
 				points[i].draw(g);
-			}
-			else {
+			} else {
 				ghost.draw(g);
 			}
 			g.translate(-18 * (i + 1), 0);

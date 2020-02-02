@@ -24,6 +24,7 @@ import de.amr.games.pacman.view.core.Pen;
 public class LoadingView implements GameView {
 
 	private final Cast cast;
+	private final Theme theme;
 	private final PacMan pacMan;
 
 	private int alpha;
@@ -32,7 +33,9 @@ public class LoadingView implements GameView {
 	private int ghostInc;
 
 	public LoadingView(Theme theme) {
-		cast = new Cast(new Game(), theme);
+		this.theme = theme;
+		cast = new Cast(new Game());
+		cast.dressActors(theme);
 		pacMan = cast.pacMan;
 	}
 
@@ -43,11 +46,6 @@ public class LoadingView implements GameView {
 
 	@Override
 	public void setVisible(boolean visible) {
-	}
-
-	@Override
-	public Theme theme() {
-		return cast.theme();
 	}
 
 	@Override
@@ -84,7 +82,7 @@ public class LoadingView implements GameView {
 	public void draw(Graphics2D g) {
 		try (Pen pen = new Pen(g)) {
 			pen.color(new Color(255, 0, 0, alpha));
-			pen.font(theme().fnt_text());
+			pen.font(theme.fnt_text());
 			pen.fontSize(14);
 			pen.hcenter(PacManApp.texts.getString("loading_music"), width(), 18);
 		}
@@ -93,7 +91,7 @@ public class LoadingView implements GameView {
 		for (int i = 0; i < ghostCount; ++i) {
 			GhostColor color = GhostColor.values()[new Random().nextInt(4)];
 			Direction dir = Direction.values()[new Random().nextInt(4)];
-			cast.theme().spr_ghostColored(color, dir.ordinal()).draw(g, x, y);
+			theme.spr_ghostColored(color, dir.ordinal()).draw(g, x, y);
 			x += 20;
 		}
 	}

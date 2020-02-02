@@ -18,7 +18,8 @@ public class PacManAppSettings extends AppSettings {
 			"-overflowBug" }, description = "simulate the overflow bug from the original Arcade game", arity = 1)
 	public boolean overflowBug = true;
 
-	@Parameter(names = { "-ghostsFleeRandomly" }, description = "default ghost behavior when FRIGHTENED", arity = 1)
+	@Parameter(names = {
+			"-ghostsFleeRandomly" }, description = "default ghost behavior when FRIGHTENED", arity = 1)
 	public boolean ghostsFleeRandomly = true;
 
 	@Parameter(names = { "-pacManImmortable" }, description = "if set, Pac-Man keeps lives when killed")

@@ -38,9 +38,9 @@ public class TakeShortestPathTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
+		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		Cast cast = new Cast(game, theme);
-		setController(new TakeShortestPathTestUI(cast));
+		setController(new TakeShortestPathTestUI(cast, theme));
 	}
 }
 
@@ -50,8 +50,8 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 	final List<Tile> targets;
 	int targetIndex;
 
-	public TakeShortestPathTestUI(Cast cast) {
-		super(cast);
+	public TakeShortestPathTestUI(Cast cast, Theme theme) {
+		super(cast, theme);
 		ghost = cast.blinky;
 		targets = Arrays.asList(maze().cornerSE, maze().tileAt(15, 23), maze().tileAt(12, 23), maze().cornerSW,
 				maze().tileToDir(maze().portalLeft, Direction.RIGHT), maze().cornerNW, maze().ghostHouseSeats[0],
@@ -67,8 +67,8 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 		super.init();
 		maze().removeFood();
 		targetIndex = 0;
-		cast.theme().snd_ghost_chase().volume(0);
-		cast().putActorOnStage(ghost);
+		theme.snd_ghost_chase().volume(0);
+		cast.putActorOnStage(ghost);
 		Steering steering = ghost.isTakingShortestPath(() -> targets.get(targetIndex));
 		ghost.behavior(CHASING, steering);
 		ghost.behavior(FRIGHTENED, steering);
@@ -100,5 +100,4 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 	public Optional<View> currentView() {
 		return Optional.of(this);
 	}
-
 }

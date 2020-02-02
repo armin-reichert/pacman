@@ -12,12 +12,12 @@ public interface Timing {
 	/**
 	 * I am still not sure about the correct base speed.
 	 * <p>
-	 * In Shaun Williams' Pac-Man remake (https://github.com/masonicGIT/pacman/blob/master/src/Actor.js) there is a speed
-	 * table giving the number of steps (=pixels?) Pac-Man is moving in 16 frames. In level 5 this gives 4*2 + 12 = 20
-	 * steps in 16 frames, which gives 1.25 pixels / frame.
+	 * In Shaun Williams' Pac-Man remake (https://github.com/masonicGIT/pacman/blob/master/src/Actor.js)
+	 * there is a speed table giving the number of steps (=pixels?) Pac-Man is moving in 16 frames. In
+	 * level 5 this gives 4*2 + 12 = 20 steps in 16 frames, which gives 1.25 pixels / frame.
 	 * <p>
-	 * The table from Gamasutra ({@link Game#LEVELS}) states that this corresponds to 100% base speed for Pac-Man at level
-	 * 5. Therefore I use 1.25 pixel/frame.
+	 * The table from Gamasutra ({@link Game#LEVELS}) states that this corresponds to 100% base speed
+	 * for Pac-Man at level 5. Therefore I use 1.25 pixel/frame.
 	 * 
 	 */
 	static final float BASE_SPEED = 1.25f;

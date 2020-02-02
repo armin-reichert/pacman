@@ -11,10 +11,10 @@ import de.amr.games.pacman.model.Game;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Controller for the timing of the ghost attack waves. Ghosts change between
- * chasing and scattering mode during each level in several rounds. The duration
- * of these rounds depends on the level and round. When a ghost becomes
- * frightened, the timer is stopped and the ghost resumes later in that state.
+ * Controller for the timing of the ghost attack waves. Ghosts change between chasing and scattering
+ * mode during each level in several rounds. The duration of these rounds depends on the level and
+ * round. When a ghost becomes frightened, the timer is stopped and the ghost resumes later in that
+ * state.
  * 
  * @author Armin Reichert
  * 

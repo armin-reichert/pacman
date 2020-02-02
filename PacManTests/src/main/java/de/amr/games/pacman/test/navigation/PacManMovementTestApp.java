@@ -34,9 +34,9 @@ public class PacManMovementTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
+		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		Cast cast = new Cast(game, theme);
-		setController(new PacManMovementTestUI(cast));
+		setController(new PacManMovementTestUI(cast, theme));
 	}
 }
 
@@ -44,8 +44,8 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 
 	private PacMan pac;
 
-	public PacManMovementTestUI(Cast cast) {
-		super(cast);
+	public PacManMovementTestUI(Cast cast, Theme theme) {
+		super(cast, theme);
 		pac = cast.pacMan;
 		showRoutes = () -> false;
 		showStates = () -> false;
@@ -59,7 +59,7 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 		pac.addEventListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
-				theme().snd_eatPill().play();
+				theme.snd_eatPill().play();
 				foodFound.tile.removeFood();
 				game().level().numPelletsEaten++;
 				if (game().numPelletsRemaining() == 0) {
@@ -68,7 +68,7 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 				}
 			}
 		});
-		cast().putActorOnStage(pac);
+		cast.putActorOnStage(pac);
 		pac.setState(PacManState.EATING);
 		message("Cursor keys");
 		startEnergizerBlinking();
@@ -78,23 +78,21 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 	public void update() {
 		super.update();
 		handleSteeringChange();
-		cast().actorsOnStage().forEach(MovingActor::update);
+		cast.actorsOnStage().forEach(MovingActor::update);
 	}
 
 	private void handleSteeringChange() {
 		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_M)) {
 			pac.behavior(pac.isFollowingKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
 			message("Cursor keys");
-		}
-		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_N)) {
-			pac.behavior(
-					pac.isFollowingKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
+		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_N)) {
+			pac.behavior(pac.isFollowingKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2,
+					KeyEvent.VK_NUMPAD4));
 			message("Numpad keys");
 			// } else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_A)) {
-			// pac.steering(avoidingGhosts(cast()));
+			// pac.steering(avoidingGhosts(cast));
 			// message("Avoiding ghosts");
-		}
-		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_R)) {
+		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_R)) {
 			pac.behavior(pac.isMovingRandomlyWithoutTurningBack());
 			message("Random moves");
 		}
@@ -104,5 +102,4 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 	public Optional<View> currentView() {
 		return Optional.of(this);
 	}
-
 }

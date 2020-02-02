@@ -15,8 +15,7 @@ import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
 
 /**
- * This class controls when and in which order locked ghosts can leave the ghost
- * house.
+ * This class controls when and in which order locked ghosts can leave the ghost house.
  * 
  * @author Armin Reichert
  * 
@@ -117,7 +116,8 @@ public class House {
 	/**
 	 * Determines if the given ghost can leave the ghost house.
 	 * 
-	 * @param ghost a ghost
+	 * @param ghost
+	 *                a ghost
 	 * 
 	 * @see <a href=
 	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man

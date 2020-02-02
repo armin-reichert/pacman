@@ -31,9 +31,9 @@ public class FollowMouseTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
+		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		Cast cast = new Cast(game, theme);
-		setController(new FollowMouseTestUI(cast));
+		setController(new FollowMouseTestUI(cast, theme));
 	}
 }
 
@@ -41,8 +41,8 @@ class FollowMouseTestUI extends PlayView implements VisualController {
 
 	private Tile mouseTile;
 
-	public FollowMouseTestUI(Cast cast) {
-		super(cast);
+	public FollowMouseTestUI(Cast cast, Theme theme) {
+		super(cast, theme);
 		showRoutes = () -> true;
 		showStates = () -> false;
 		showScores = () -> false;
@@ -58,10 +58,10 @@ class FollowMouseTestUI extends PlayView implements VisualController {
 	public void init() {
 		super.init();
 		maze().removeFood();
-		theme().snd_ghost_chase().volume(0);
-		cast().putActorOnStage(cast().blinky);
-		cast().blinky.behavior(CHASING, cast().blinky.isHeadingFor(() -> mouseTile));
-		cast().blinky.setState(CHASING);
+		theme.snd_ghost_chase().volume(0);
+		cast.putActorOnStage(cast.blinky);
+		cast.blinky.behavior(CHASING, cast.blinky.isHeadingFor(() -> mouseTile));
+		cast.blinky.setState(CHASING);
 		readMouse();
 	}
 
@@ -75,6 +75,6 @@ class FollowMouseTestUI extends PlayView implements VisualController {
 		if (Mouse.moved()) {
 			readMouse();
 		}
-		cast().blinky.update();
+		cast.blinky.update();
 	}
 }

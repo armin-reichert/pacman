@@ -270,8 +270,7 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 	private void step(String spriteKey) {
 		if (isTeleporting()) {
 			move();
-		}
-		else {
+		} else {
 			if (prevSteering != steering()) {
 				steering().init();
 				steering().force();

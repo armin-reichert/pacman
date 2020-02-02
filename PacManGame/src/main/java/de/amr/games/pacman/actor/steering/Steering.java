@@ -13,8 +13,7 @@ import de.amr.games.pacman.model.Tile;
 public interface Steering {
 
 	/**
-	 * Steers the actor towards its target tile or wherever it should move in its
-	 * current state.
+	 * Steers the actor towards its target tile or wherever it should move in its current state.
 	 */
 	void steer();
 
@@ -40,8 +39,7 @@ public interface Steering {
 	}
 
 	/**
-	 * @return tells if the steering requires that moving always keeps the actor
-	 *         aligned with the grid
+	 * @return tells if the steering requires that moving always keeps the actor aligned with the grid
 	 */
 	boolean requiresGridAlignment();
 
@@ -55,7 +53,8 @@ public interface Steering {
 	/**
 	 * Tells the steering to compute the target path. Steerings may ignore this.
 	 * 
-	 * @param enabled if target path should be computed
+	 * @param enabled
+	 *                  if target path should be computed
 	 */
 	default void enableTargetPathComputation(boolean enabled) {
 	}

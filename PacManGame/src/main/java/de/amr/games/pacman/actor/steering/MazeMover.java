@@ -69,7 +69,8 @@ public interface MazeMover {
 	 *                   some tile
 	 * @param neighbor
 	 *                   neighbor the tile
-	 * @return tells if the entity can move from the given tile tile to the neighbor tile (might be state-dependent)
+	 * @return tells if the entity can move from the given tile tile to the neighbor tile (might be
+	 *         state-dependent)
 	 */
 	boolean canMoveBetween(Tile tile, Tile neighbor);
 

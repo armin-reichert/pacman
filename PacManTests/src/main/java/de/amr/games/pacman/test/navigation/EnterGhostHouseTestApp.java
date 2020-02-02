@@ -33,16 +33,16 @@ public class EnterGhostHouseTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
+		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		Cast cast = new Cast(game, theme);
-		setController(new EnterGhostHouseTestUI(cast));
+		setController(new EnterGhostHouseTestUI(cast, theme));
 	}
 }
 
 class EnterGhostHouseTestUI extends PlayView implements VisualController {
 
-	public EnterGhostHouseTestUI(Cast cast) {
-		super(cast);
+	public EnterGhostHouseTestUI(Cast cast, Theme theme) {
+		super(cast, theme);
 		showRoutes = () -> true;
 		showStates = () -> true;
 		showScores = () -> false;
@@ -58,7 +58,7 @@ class EnterGhostHouseTestUI extends PlayView implements VisualController {
 	public void init() {
 		super.init();
 		maze().removeFood();
-		cast().putActorOnStage(cast().inky);
+		cast.putActorOnStage(cast.inky);
 		messageColor = Color.YELLOW;
 		messageText = "SPACE = enter / leave house";
 	}

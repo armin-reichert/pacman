@@ -34,16 +34,16 @@ public class LeaveGhostHouseTestApp extends PacManApp {
 	public void init() {
 		clock().setFrequency(10);
 		Game game = new Game();
+		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		Cast cast = new Cast(game, theme);
-		setController(new LeaveGhostHouseTestUI(cast));
+		setController(new LeaveGhostHouseTestUI(cast, theme));
 	}
 }
 
 class LeaveGhostHouseTestUI extends PlayView implements VisualController {
 
-	public LeaveGhostHouseTestUI(Cast cast) {
-		super(cast);
+	public LeaveGhostHouseTestUI(Cast cast, Theme theme) {
+		super(cast, theme);
 		showRoutes = () -> true;
 		showStates = () -> true;
 		showScores = () -> false;
@@ -54,8 +54,8 @@ class LeaveGhostHouseTestUI extends PlayView implements VisualController {
 	public void init() {
 		super.init();
 		maze().removeFood();
-		cast().putActorOnStage(cast().inky);
-		cast().inky.setFollowState(SCATTERING);
+		cast.putActorOnStage(cast.inky);
+		cast.inky.setFollowState(SCATTERING);
 		messageColor = Color.YELLOW;
 		messageText = "Press SPACE to unlock";
 	}
@@ -63,10 +63,10 @@ class LeaveGhostHouseTestUI extends PlayView implements VisualController {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			cast().inky.process(new GhostUnlockedEvent());
+			cast.inky.process(new GhostUnlockedEvent());
 			messageText = null;
 		}
-		cast().inky.update();
+		cast.inky.update();
 		super.update();
 	}
 

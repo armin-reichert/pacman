@@ -34,16 +34,16 @@ public class ScatteringTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
+		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		Cast cast = new Cast(game, theme);
-		setController(new ScatteringTestUI(cast));
+		setController(new ScatteringTestUI(cast, theme));
 	}
 }
 
 class ScatteringTestUI extends PlayView implements VisualController {
 
-	public ScatteringTestUI(Cast cast) {
-		super(cast);
+	public ScatteringTestUI(Cast cast, Theme theme) {
+		super(cast, theme);
 		showRoutes = () -> true;
 		showStates = () -> false;
 		showScores = () -> false;
@@ -76,5 +76,4 @@ class ScatteringTestUI extends PlayView implements VisualController {
 	public Optional<View> currentView() {
 		return Optional.of(this);
 	}
-
 }

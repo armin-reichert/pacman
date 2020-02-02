@@ -93,11 +93,6 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 	}
 
 	@Override
-	public Theme theme() {
-		return theme;
-	}
-
-	@Override
 	public Fsm<IntroState, Void> fsm() {
 		return fsm;
 	}

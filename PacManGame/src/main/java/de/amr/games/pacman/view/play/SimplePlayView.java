@@ -32,6 +32,7 @@ public class SimplePlayView implements GameView {
 	}
 
 	protected final Cast cast;
+	protected final Theme theme;
 	protected Mode mode;
 	protected SpriteAnimation energizerBlinking;
 	protected Image imageLife;
@@ -43,18 +44,20 @@ public class SimplePlayView implements GameView {
 
 	public BooleanSupplier showScores = () -> true;
 
-	public SimplePlayView(Cast cast) {
+	public SimplePlayView(Cast cast, Theme theme) {
 		this.cast = cast;
+		this.theme = theme;
 		mode = Mode.CROWDED_MAZE;
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
-		cast.bonus.tf.setPosition(maze().bonusTile.centerX(), maze().bonusTile.y());
-		imageLife = cast.theme().spr_pacManWalking(3).frame(1);
-		spriteMazeFull = cast.theme().spr_fullMaze();
-		spriteMazeEmpty = cast.theme().spr_emptyMaze();
-		spriteMazeFlashing = cast.theme().spr_flashingMaze();
+		imageLife = theme.spr_pacManWalking(3).frame(1);
+		spriteMazeFull = theme.spr_fullMaze();
+		spriteMazeEmpty = theme.spr_emptyMaze();
+		spriteMazeFlashing = theme.spr_flashingMaze();
 		messageText = null;
 		messageColor = Color.YELLOW;
+		cast.dressActors(theme);
+		cast.bonus.tf.setPosition(maze().bonusTile.centerX(), maze().bonusTile.y());
 	}
 
 	@Override
@@ -68,11 +71,6 @@ public class SimplePlayView implements GameView {
 
 	public Cast cast() {
 		return cast;
-	}
-
-	@Override
-	public Theme theme() {
-		return cast.theme();
 	}
 
 	public Game game() {
@@ -153,11 +151,11 @@ public class SimplePlayView implements GameView {
 	}
 
 	protected Color bgColor(Tile tile) {
-		return theme().color_mazeBackground();
+		return theme.color_mazeBackground();
 	}
 
 	protected void fillBackground(Graphics2D g) {
-		g.setColor(theme().color_mazeBackground());
+		g.setColor(theme.color_mazeBackground());
 		g.fillRect(0, 0, width(), height());
 	}
 
@@ -192,7 +190,7 @@ public class SimplePlayView implements GameView {
 		}
 		// hide door when ghost is passing through
 		if (cast.ghostsOnStage().anyMatch(ghost -> maze().isDoor(ghost.tile()))) {
-			g.setColor(theme().color_mazeBackground());
+			g.setColor(theme.color_mazeBackground());
 			g.fillRect(maze().doorLeft.x(), maze().doorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
 		}
 	}
@@ -218,7 +216,7 @@ public class SimplePlayView implements GameView {
 			return;
 		}
 		try (Pen pen = new Pen(g)) {
-			pen.font(theme().fnt_text(10));
+			pen.font(theme.fnt_text(10));
 			// Game score
 			pen.color(Color.YELLOW);
 			pen.drawAtTilePosition(1, 0, "SCORE");
@@ -252,7 +250,7 @@ public class SimplePlayView implements GameView {
 		int imageSize = 2 * Tile.SIZE;
 		int x = width() - (game().levelCounter().size() + 1) * imageSize;
 		for (Symbol symbol : game().levelCounter()) {
-			Image image = theme().spr_bonusSymbol(symbol).frame(0);
+			Image image = theme.spr_bonusSymbol(symbol).frame(0);
 			g.drawImage(image, x, height() - imageSize, imageSize, imageSize, null);
 			x += imageSize;
 		}
@@ -261,7 +259,7 @@ public class SimplePlayView implements GameView {
 	protected void drawMessage(Graphics2D g) {
 		if (messageText != null && messageText.trim().length() > 0) {
 			try (Pen pen = new Pen(g)) {
-				pen.font(theme().fnt_text(11));
+				pen.font(theme.fnt_text(11));
 				pen.color(messageColor);
 				pen.hcenter(messageText, width(), 21);
 			}

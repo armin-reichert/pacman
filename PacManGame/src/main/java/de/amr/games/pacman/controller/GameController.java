@@ -53,7 +53,8 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class GameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
+public class GameController extends StateMachine<PacManGameState, PacManGameEvent>
+		implements VisualController {
 
 	private Game game;
 	private Theme theme;
@@ -98,7 +99,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void createPlayEnvironment() {
 		game = new Game();
-		cast = new Cast(game, theme);
+		cast = new Cast(game);
 		cast.actors().forEach(actor -> {
 			cast.putActorOnStage(actor);
 			actor.addEventListener(this::process);
@@ -106,7 +107,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		cast.setDemoMode(settings.demoMode);
 		ghostCommand = new GhostCommand(cast);
 		house = new House(cast);
-		playView = new PlayView(cast);
+		playView = new PlayView(cast, theme);
 		playView.fnGhostCommandState = ghostCommand::state;
 		playView.house = house;
 		playView.showFPS = () -> showFPS;
@@ -482,7 +483,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				return;
 			}
 			if (game.isBonusScoreReached()) {
-				cast.showBonus();
+				cast.showBonus(theme);
 				loginfo("Bonus %s added, time: %.2f sec", cast.bonus, cast.bonus.state().getDuration() / 60f);
 			}
 			if (foodFound.energizer) {

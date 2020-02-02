@@ -32,9 +32,9 @@ public class MovingRandomlyTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
+		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		Cast cast = new Cast(game, theme);
-		setController(new MovingRandomlyTestUI(cast));
+		setController(new MovingRandomlyTestUI(cast, theme));
 	}
 }
 
@@ -42,8 +42,8 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 
 	boolean started;
 
-	public MovingRandomlyTestUI(Cast cast) {
-		super(cast);
+	public MovingRandomlyTestUI(Cast cast, Theme theme) {
+		super(cast, theme);
 		showRoutes = () -> true;
 		showStates = () -> true;
 		showScores = () -> false;
@@ -54,11 +54,12 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 	public void init() {
 		super.init();
 		maze().removeFood();
-		cast().ghosts().forEach(ghost -> {
-			cast().putActorOnStage(ghost);
+		cast.ghosts().forEach(ghost -> {
+			cast.putActorOnStage(ghost);
 			ghost.tf.setPosition(maze().pacManHome.centerX(), maze().pacManHome.y());
-			ghost.setState(FRIGHTENED);
 			ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
+			ghost.state(FRIGHTENED).setConstantTimer(Integer.MAX_VALUE);
+			ghost.setState(FRIGHTENED);
 		});
 		message("Press SPACE");
 	}
@@ -71,7 +72,7 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 			clearMessage();
 		}
 		if (started) {
-			cast().ghostsOnStage().forEach(Ghost::update);
+			cast.ghostsOnStage().forEach(Ghost::update);
 		}
 	}
 
@@ -79,5 +80,4 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 	public Optional<View> currentView() {
 		return Optional.of(this);
 	}
-
 }

@@ -14,7 +14,8 @@ import de.amr.easy.game.view.Animation;
 import de.amr.games.pacman.theme.Theme;
 
 /**
- * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the ghosts.
+ * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the
+ * ghosts.
  * 
  * @author Armin Reichert
  */
@@ -85,8 +86,7 @@ public class GhostPointsAnimation extends Entity implements Animation {
 			killNext = killNext + 1;
 			if (killed.cardinality() == 5) {
 				stop();
-			}
-			else {
+			} else {
 				theme.snd_eatGhost().play();
 				resetGhostTimer();
 			}
@@ -110,8 +110,7 @@ public class GhostPointsAnimation extends Entity implements Animation {
 		if (energizer) {
 			g.setColor(Color.PINK);
 			g.fillOval(4, 4, 8, 8);
-		}
-		else {
+		} else {
 			g.setColor(Color.PINK);
 			g.setFont(new Font("Arial", Font.BOLD, 8));
 			g.drawString("50", 4, 12);
@@ -122,8 +121,7 @@ public class GhostPointsAnimation extends Entity implements Animation {
 			g.translate(x, 0);
 			if (killed.get(i)) {
 				points[i].draw(g);
-			}
-			else {
+			} else {
 				ghost.draw(g);
 			}
 			g.translate(-x, 0);

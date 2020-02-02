@@ -42,6 +42,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
+import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.core.FPSDisplay;
 import de.amr.games.pacman.view.core.Pen;
 import de.amr.statemachine.core.State;
@@ -71,14 +72,14 @@ public class PlayView extends SimplePlayView {
 	private final BufferedImage gridImage, inkyImage, clydeImage, pacManImage;
 	private final Polygon arrowHead;
 
-	public PlayView(Cast cast) {
-		super(cast);
+	public PlayView(Cast cast, Theme theme) {
+		super(cast, theme);
 		fps = new FPSDisplay();
 		fps.tf.setPosition(0, 18 * Tile.SIZE);
 		gridImage = createGridImage(cast.game().maze());
 		inkyImage = ghostImage(GhostColor.CYAN);
 		clydeImage = ghostImage(GhostColor.ORANGE);
-		pacManImage = (BufferedImage) theme().spr_pacManWalking(Direction.RIGHT.ordinal()).frame(0);
+		pacManImage = (BufferedImage) theme.spr_pacManWalking(Direction.RIGHT.ordinal()).frame(0);
 		arrowHead = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 	}
 
@@ -127,7 +128,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private BufferedImage ghostImage(GhostColor color) {
-		return (BufferedImage) theme().spr_ghostColored(color, Direction.RIGHT.ordinal()).frame(0);
+		return (BufferedImage) theme.spr_ghostColored(color, Direction.RIGHT.ordinal()).frame(0);
 	}
 
 	private Color patternColor(int col, int row) {
@@ -161,7 +162,7 @@ public class PlayView extends SimplePlayView {
 	private void drawPlayMode(Graphics2D g) {
 		if (settings.demoMode) {
 			try (Pen pen = new Pen(g)) {
-				pen.font(theme().fnt_text(11));
+				pen.font(theme.fnt_text(11));
 				pen.color(Color.DARK_GRAY);
 				pen.hcenter("Demo Mode", width(), 21);
 			}
@@ -182,7 +183,7 @@ public class PlayView extends SimplePlayView {
 
 	private void drawPacManState(Graphics2D g) {
 		PacMan pacMan = cast().pacMan;
-		if (pacMan.visible()) {
+		if (pacMan.visible() && pacMan.getState() != null) {
 			String text = pacMan.getState().name();
 			if (pacMan.powerTicks() > 0) {
 				text = String.format("POWER(%d)", pacMan.powerTicks());
@@ -331,7 +332,8 @@ public class PlayView extends SimplePlayView {
 		int pathLen = targetPath.size();
 		Color ghostColor = color(ghost);
 		Stroke solid = new BasicStroke(0.5f);
-		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
+		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
+				0);
 		boolean drawRubberBand = target != null && pathLen > 0 && target != targetPath.get(pathLen - 1);
 		if (drawRubberBand) {
 			// draw rubber band to target tile
@@ -417,7 +419,8 @@ public class PlayView extends SimplePlayView {
 		drawDotCounter(g, null, house.globalDotCount(), 24, 14, house.isGlobalDotCounterEnabled());
 	}
 
-	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row, boolean emphasized) {
+	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row,
+			boolean emphasized) {
 		try (Pen pen = new Pen(g)) {
 			if (image != null) {
 				g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);

@@ -35,16 +35,16 @@ public class InkyChaseTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
+		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		Cast cast = new Cast(game, theme);
-		setController(new InkyChaseTestUI(cast));
+		setController(new InkyChaseTestUI(cast, theme));
 	}
 }
 
 class InkyChaseTestUI extends PlayView implements VisualController {
 
-	public InkyChaseTestUI(Cast cast) {
-		super(cast);
+	public InkyChaseTestUI(Cast cast, Theme theme) {
+		super(cast, theme);
 		showRoutes = () -> true;
 		showStates = () -> false;
 		showScores = () -> false;
@@ -55,11 +55,11 @@ class InkyChaseTestUI extends PlayView implements VisualController {
 	public void init() {
 		super.init();
 		maze().removeFood();
-		theme().snd_ghost_chase().volume(0);
-		cast().putActorOnStage(cast().pacMan);
-		cast().putActorOnStage(cast().inky);
-		cast().putActorOnStage(cast().blinky);
-		cast().ghostsOnStage().forEach(ghost -> {
+		theme.snd_ghost_chase().volume(0);
+		cast.putActorOnStage(cast.pacMan);
+		cast.putActorOnStage(cast.inky);
+		cast.putActorOnStage(cast.blinky);
+		cast.ghostsOnStage().forEach(ghost -> {
 			ghost.setFollowState(CHASING);
 		});
 		messageColor = Color.YELLOW;
@@ -69,12 +69,12 @@ class InkyChaseTestUI extends PlayView implements VisualController {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			cast().ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
-			cast().pacMan.setState(PacManState.EATING);
+			cast.ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
+			cast.pacMan.setState(PacManState.EATING);
 			messageText = null;
 		}
-		cast().pacMan.update();
-		cast().ghostsOnStage().forEach(Ghost::update);
+		cast.pacMan.update();
+		cast.ghostsOnStage().forEach(Ghost::update);
 		super.update();
 	}
 

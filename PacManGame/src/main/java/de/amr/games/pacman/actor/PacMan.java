@@ -67,8 +67,7 @@ public class PacMan extends MovingActor<PacManState> implements CommonSteerings 
 	public void startEating() {
 		if (getState() == SLEEPING) {
 			setState(EATING);
-		}
-		else
+		} else
 			throw new IllegalStateException();
 	}
 
@@ -161,8 +160,7 @@ public class PacMan extends MovingActor<PacManState> implements CommonSteerings 
 			if (tile.containsEnergizer()) {
 				digestionTicks = DIGEST_ENERGIZER_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, true));
-			}
-			else {
+			} else {
 				digestionTicks = DIGEST_PELLET_TICKS;
 				return Optional.of(new FoodFoundEvent(tile, false));
 			}

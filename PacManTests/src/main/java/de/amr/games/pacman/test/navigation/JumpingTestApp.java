@@ -28,16 +28,16 @@ public class JumpingTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
+		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		Cast cast = new Cast(game, theme);
-		setController(new JumpingTestUI(cast));
+		setController(new JumpingTestUI(cast, theme));
 	}
 }
 
 class JumpingTestUI extends PlayView implements VisualController {
 
-	public JumpingTestUI(Cast cast) {
-		super(cast);
+	public JumpingTestUI(Cast cast, Theme theme) {
+		super(cast, theme);
 		showRoutes = () -> false;
 		showStates = () -> true;
 		showScores = () -> false;
@@ -48,13 +48,13 @@ class JumpingTestUI extends PlayView implements VisualController {
 	public void init() {
 		super.init();
 		maze().removeFood();
-		cast().ghosts().forEach(cast()::putActorOnStage);
+		cast.ghosts().forEach(cast::putActorOnStage);
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		cast().ghostsOnStage().forEach(Ghost::update);
+		cast.ghostsOnStage().forEach(Ghost::update);
 	}
 
 	@Override

@@ -31,16 +31,16 @@ public class EscapeIntoCornerTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
+		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		Cast ensemble = new Cast(game, theme);
-		setController(new EscapeIntoCornerTestUI(game, ensemble));
+		setController(new EscapeIntoCornerTestUI(cast, theme));
 	}
 }
 
 class EscapeIntoCornerTestUI extends PlayView implements VisualController {
 
-	public EscapeIntoCornerTestUI(Game game, Cast cast) {
-		super(cast);
+	public EscapeIntoCornerTestUI(Cast cast, Theme theme) {
+		super(cast, theme);
 		showRoutes = () -> true;
 		showStates = () -> true;
 		showScores = () -> false;
@@ -50,19 +50,19 @@ class EscapeIntoCornerTestUI extends PlayView implements VisualController {
 	public void init() {
 		super.init();
 		maze().removeFood();
-		cast().putActorOnStage(cast().pacMan);
-		cast().pacMan.init();
-		cast().pacMan.setState(EATING);
-		cast().putActorOnStage(cast().blinky);
-		cast().blinky.behavior(FRIGHTENED, cast().blinky.isFleeingToSafeCorner(cast().pacMan));
-		cast().blinky.init();
-		cast().blinky.setState(FRIGHTENED);
+		cast.putActorOnStage(cast.pacMan);
+		cast.pacMan.init();
+		cast.pacMan.setState(EATING);
+		cast.putActorOnStage(cast.blinky);
+		cast.blinky.behavior(FRIGHTENED, cast.blinky.isFleeingToSafeCorner(cast.pacMan));
+		cast.blinky.init();
+		cast.blinky.setState(FRIGHTENED);
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		cast().actorsOnStage().forEach(MovingActor::update);
+		cast.actorsOnStage().forEach(MovingActor::update);
 	}
 
 	@Override

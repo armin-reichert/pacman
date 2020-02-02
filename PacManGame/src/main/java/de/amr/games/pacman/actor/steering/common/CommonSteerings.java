@@ -31,8 +31,9 @@ public interface CommonSteerings extends MazeMover {
 	}
 
 	/**
-	 * Lets the actor move randomly through the maze while respecting the maze structure (for example, chasing and
-	 * scattering ghost may not move upwards at dedicated tiles. Also reversing the direction is never allowed.
+	 * Lets the actor move randomly through the maze while respecting the maze structure (for example,
+	 * chasing and scattering ghost may not move upwards at dedicated tiles. Also reversing the
+	 * direction is never allowed.
 	 * 
 	 * @return random move behavior
 	 */
@@ -41,8 +42,8 @@ public interface CommonSteerings extends MazeMover {
 	}
 
 	/**
-	 * Lets the actor head for a variable (probably unreachable) target tile by taking the "best" direction at every
-	 * intersection.
+	 * Lets the actor head for a variable (probably unreachable) target tile by taking the "best"
+	 * direction at every intersection.
 	 * 
 	 * @return behavior where actor heads for the target tile
 	 */
@@ -51,8 +52,8 @@ public interface CommonSteerings extends MazeMover {
 	}
 
 	/**
-	 * Lets the actor head for a constant (probably unreachable) target tile by taking the "best" direction at every
-	 * intersection.
+	 * Lets the actor head for a constant (probably unreachable) target tile by taking the "best"
+	 * direction at every intersection.
 	 * 
 	 * @return behavior where actor heads for the target tile
 	 */
@@ -61,21 +62,22 @@ public interface CommonSteerings extends MazeMover {
 	}
 
 	/**
-	 * Lets the actor follow the shortest path to the target. Depending on the actor's current state, this path might not
-	 * be completely accessible for the actor.
+	 * Lets the actor follow the shortest path to the target. Depending on the actor's current state,
+	 * this path might not be completely accessible for the actor.
 	 * 
 	 * @param fnTarget
 	 *                   function supplying the target tile
 	 * 
-	 * @return behavior where an actor follows the shortest (using Manhattan distance) path to a target tile
+	 * @return behavior where an actor follows the shortest (using Manhattan distance) path to a target
+	 *         tile
 	 */
 	default Steering isTakingShortestPath(Supplier<Tile> fnTarget) {
 		return new TakingShortestPath(this, fnTarget);
 	}
 
 	/**
-	 * Lets the actor follow a fixed path to the target. As the rules for accessing tiles are not checked, the actor may
-	 * get stuck.
+	 * Lets the actor follow a fixed path to the target. As the rules for accessing tiles are not
+	 * checked, the actor may get stuck.
 	 * 
 	 * @param path
 	 *               the path to follow
