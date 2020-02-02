@@ -23,7 +23,6 @@ import de.amr.games.pacman.view.core.Pen;
  */
 public class LoadingView implements GameView {
 
-	private final Theme theme;
 	private final Cast cast;
 	private final PacMan pacMan;
 
@@ -34,7 +33,6 @@ public class LoadingView implements GameView {
 	private int count;
 
 	public LoadingView(Theme theme) {
-		this.theme = theme;
 		cast = new Cast(new Game(), theme);
 		pacMan = cast.pacMan;
 	}
@@ -50,7 +48,7 @@ public class LoadingView implements GameView {
 
 	@Override
 	public Theme theme() {
-		return theme;
+		return cast.theme();
 	}
 
 	@Override
@@ -78,7 +76,7 @@ public class LoadingView implements GameView {
 	@Override
 	public void draw(Graphics2D g) {
 		try (Pen pen = new Pen(g)) {
-			pen.font(theme.fnt_text());
+			pen.font(theme().fnt_text());
 			if (alpha > 160) {
 				alphaInc = -2;
 				alpha = 160;
