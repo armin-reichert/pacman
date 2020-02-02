@@ -15,6 +15,7 @@ import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Symbol;
+import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -75,18 +76,18 @@ public class Bonus extends Actor<BonusState> {
 		return symbol;
 	}
 
-	public void setSymbol(Symbol symbol) {
+	public void setSymbol(Theme theme, Symbol symbol) {
 		this.symbol = symbol;
-		sprites.set("symbol", theme().spr_bonusSymbol(symbol));
+		sprites.set("symbol", theme.spr_bonusSymbol(symbol));
 	}
 
 	public int value() {
 		return value;
 	}
 
-	public void setValue(int value) {
+	public void setValue(Theme theme, int value) {
 		this.value = value;
-		sprites.set("value", theme().spr_number(value));
+		sprites.set("value", theme.spr_number(value));
 	}
 
 	public void activate() {

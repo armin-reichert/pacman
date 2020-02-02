@@ -64,8 +64,11 @@ public class Cast {
 		seatAssignment = Arrays.asList(blinky, inky, pinky, clyde);
 		seatGhostDirections = Arrays.asList(LEFT, UP, DOWN, UP);
 
-		dressActors();
-		actors().forEach(actor -> actor.setVisible(false));
+		pacMan.dress(theme);
+		blinky.dress(theme, GhostColor.RED);
+		pinky.dress(theme, GhostColor.PINK);
+		inky.dress(theme, GhostColor.CYAN);
+		clyde.dress(theme, GhostColor.ORANGE);
 
 		pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		pacMan.setTeleportingDuration(sec(0.5f));
@@ -105,8 +108,9 @@ public class Cast {
 		clyde.behavior(LEAVING_HOUSE, clyde.isLeavingGhostHouse());
 		clyde.behavior(FRIGHTENED, clyde.isMovingRandomlyWithoutTurningBack());
 		clyde.behavior(SCATTERING, clyde.isHeadingFor(game().maze().horizonSW));
-		clyde.behavior(CHASING, clyde.isHeadingFor(
-				() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : game().maze().horizonSW));
+		clyde.behavior(CHASING,
+				clyde.isHeadingFor(() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile()
+						: game().maze().horizonSW));
 		clyde.behavior(DEAD, clyde.isHeadingFor(() -> game().maze().ghostHouseSeats[0]));
 		clyde.setTeleportingDuration(sec(0.5f));
 
@@ -146,18 +150,11 @@ public class Cast {
 		if (on) {
 			settings.pacManImmortable = true;
 			pacMan.behavior(pacMan.isMovingRandomlyWithoutTurningBack());
-		} else {
+		}
+		else {
 			settings.pacManImmortable = false;
 			pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		}
-	}
-
-	private void dressActors() {
-		pacMan.dress();
-		blinky.dress(GhostColor.RED);
-		pinky.dress(GhostColor.PINK);
-		inky.dress(GhostColor.CYAN);
-		clyde.dress(GhostColor.ORANGE);
 	}
 
 	public void addThemeListener(PropertyChangeListener subscriber) {
@@ -196,8 +193,8 @@ public class Cast {
 	}
 
 	public void showBonus() {
-		bonus.setSymbol(game().level().bonusSymbol);
-		bonus.setValue(game().level().bonusValue);
+		bonus.setSymbol(theme, game().level().bonusSymbol);
+		bonus.setValue(theme, game().level().bonusValue);
 		bonus.activate();
 	}
 

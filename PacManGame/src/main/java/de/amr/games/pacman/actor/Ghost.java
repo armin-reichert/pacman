@@ -33,6 +33,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
+import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -257,7 +258,8 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 		case SCATTERING:
 			return inTunnel ? relSpeed(game().level().ghostTunnelSpeed) : relSpeed(game().level().ghostSpeed);
 		case FRIGHTENED:
-			return inTunnel ? relSpeed(game().level().ghostTunnelSpeed) : relSpeed(game().level().ghostFrightenedSpeed);
+			return inTunnel ? relSpeed(game().level().ghostTunnelSpeed)
+					: relSpeed(game().level().ghostFrightenedSpeed);
 		case DEAD:
 			return 2 * relSpeed(game().level().ghostSpeed);
 		default:
@@ -268,7 +270,8 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 	private void step(String spriteKey) {
 		if (isTeleporting()) {
 			move();
-		} else {
+		}
+		else {
 			if (prevSteering != steering()) {
 				steering().init();
 				steering().force();
@@ -315,16 +318,16 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 		}
 	}
 
-	public void dress(GhostColor color) {
+	public void dress(Theme theme, GhostColor color) {
 		dirs().forEach(dir -> {
-			sprites.set("color-" + dir, theme().spr_ghostColored(color, dir.ordinal()));
-			sprites.set("eyes-" + dir, theme().spr_ghostEyes(dir.ordinal()));
+			sprites.set("color-" + dir, theme.spr_ghostColored(color, dir.ordinal()));
+			sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir.ordinal()));
 		});
 		for (int points : Game.POINTS_GHOST) {
-			sprites.set("points-" + points, theme().spr_number(points));
+			sprites.set("points-" + points, theme.spr_number(points));
 		}
-		sprites.set("frightened", theme().spr_ghostFrightened());
-		sprites.set("flashing", theme().spr_ghostFlashing());
+		sprites.set("frightened", theme.spr_ghostFrightened());
+		sprites.set("flashing", theme.spr_ghostFlashing());
 	}
 
 	public void enableAnimations(boolean b) {

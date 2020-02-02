@@ -7,7 +7,6 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.api.FsmContainer;
 
 /**
@@ -49,10 +48,6 @@ public abstract class Actor<S> extends Entity implements FsmContainer<S, PacManG
 
 	public Maze maze() {
 		return cast().game().maze();
-	}
-
-	public Theme theme() {
-		return cast().theme();
 	}
 
 	public Tile tile() {

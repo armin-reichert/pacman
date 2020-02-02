@@ -8,7 +8,6 @@ import static de.amr.games.pacman.actor.PacManState.SLEEPING;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.model.Direction.UP;
-import static de.amr.games.pacman.model.Direction.dirs;
 import static de.amr.games.pacman.model.Game.DIGEST_ENERGIZER_TICKS;
 import static de.amr.games.pacman.model.Game.DIGEST_PELLET_TICKS;
 import static de.amr.games.pacman.model.Timing.relSpeed;
@@ -30,8 +29,10 @@ import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
+import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -199,13 +200,14 @@ public class PacMan extends MovingActor<PacManState> implements CommonSteerings 
 	}
 
 	/**
-	 * NOTE: If the application property {@link PacManAppSettings#overflowBug} is <code>true</code>, this method simulates
-	 * the bug from the original Arcade game where, if Pac-Man points upwards, the position ahead of Pac-Man is wrongly
-	 * calculated by adding the same number of tiles to the left.
+	 * NOTE: If the application property {@link PacManAppSettings#overflowBug} is <code>true</code>,
+	 * this method simulates the bug from the original Arcade game where, if Pac-Man points upwards, the
+	 * position ahead of Pac-Man is wrongly calculated by adding the same number of tiles to the left.
 	 * 
 	 * @param numTiles
 	 *                   number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards his current move direction.
+	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards his current move
+	 *         direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
 		Tile tileAhead = maze().tileToDir(tile(), moveDir(), numTiles);
@@ -235,10 +237,10 @@ public class PacMan extends MovingActor<PacManState> implements CommonSteerings 
 		}
 	}
 
-	public void dress() {
-		dirs().forEach(dir -> sprites.set("walking-" + dir, theme().spr_pacManWalking(dir.ordinal())));
-		sprites.set("dying", theme().spr_pacManDying());
-		sprites.set("full", theme().spr_pacManFull());
+	public void dress(Theme theme) {
+		Direction.dirs().forEach(dir -> sprites.set("walking-" + dir, theme.spr_pacManWalking(dir.ordinal())));
+		sprites.set("dying", theme.spr_pacManDying());
+		sprites.set("full", theme.spr_pacManFull());
 	}
 
 	public void showFullFace() {
