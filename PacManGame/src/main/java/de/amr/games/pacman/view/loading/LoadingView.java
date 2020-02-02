@@ -54,10 +54,6 @@ public class LoadingView implements GameView {
 	}
 
 	@Override
-	public void onThemeChanged(Theme theme) {
-	}
-
-	@Override
 	public void init() {
 		pacMan.init();
 		pacMan.setState(PacManState.EATING);

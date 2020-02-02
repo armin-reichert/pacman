@@ -98,10 +98,6 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 	}
 
 	@Override
-	public void onThemeChanged(Theme theme) {
-	}
-
-	@Override
 	public Fsm<IntroState, Void> fsm() {
 		return fsm;
 	}
@@ -253,8 +249,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 			pen.color(orange);
 			if (app().inFullScreenMode()) {
 				pen.hcenter("F11 - " + texts.getString("window_mode"), width(), row);
-			}
-			else {
+			} else {
 				pen.hcenter("F11 - " + texts.getString("fullscreen_mode"), width(), row);
 			}
 		}

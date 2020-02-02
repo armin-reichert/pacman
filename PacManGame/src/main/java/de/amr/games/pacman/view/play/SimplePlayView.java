@@ -48,9 +48,11 @@ public class SimplePlayView implements GameView {
 		mode = Mode.CROWDED_MAZE;
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
-		cast.addThemeListener(this);
 		cast.bonus.tf.setPosition(maze().bonusTile.centerX(), maze().bonusTile.y());
-  		onThemeChanged(theme());
+		imageLife = cast.theme().spr_pacManWalking(3).frame(1);
+		spriteMazeFull = cast.theme().spr_fullMaze();
+		spriteMazeEmpty = cast.theme().spr_emptyMaze();
+		spriteMazeFlashing = cast.theme().spr_flashingMaze();
 		messageText = null;
 		messageColor = Color.YELLOW;
 	}
@@ -62,14 +64,6 @@ public class SimplePlayView implements GameView {
 
 	@Override
 	public void setVisible(boolean visible) {
-	}
-
-	@Override
-	public void onThemeChanged(Theme theme) {
-		imageLife = theme.spr_pacManWalking(3).frame(1);
-		spriteMazeFull = theme.spr_fullMaze();
-		spriteMazeEmpty = theme.spr_emptyMaze();
-		spriteMazeFlashing = theme.spr_flashingMaze();
 	}
 
 	public Cast cast() {

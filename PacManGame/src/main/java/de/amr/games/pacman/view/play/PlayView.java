@@ -187,7 +187,7 @@ public class PlayView extends SimplePlayView {
 			if (pacMan.powerTicks() > 0) {
 				text = String.format("POWER(%d)", pacMan.powerTicks());
 			}
-			if (settings().pacManImmortable) {
+			if (settings.pacManImmortable) {
 				text += ",lives " + INFTY;
 			}
 			drawSmallText(g, Color.YELLOW, pacMan.tf.getX(), pacMan.tf.getY(), text);
@@ -331,8 +331,7 @@ public class PlayView extends SimplePlayView {
 		int pathLen = targetPath.size();
 		Color ghostColor = color(ghost);
 		Stroke solid = new BasicStroke(0.5f);
-		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
-				0);
+		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
 		boolean drawRubberBand = target != null && pathLen > 0 && target != targetPath.get(pathLen - 1);
 		if (drawRubberBand) {
 			// draw rubber band to target tile
@@ -380,7 +379,7 @@ public class PlayView extends SimplePlayView {
 				Direction pacManDir = cast().pacMan.moveDir();
 				int s = Tile.SIZE / 2; // size of target square
 				g.setColor(Color.GRAY);
-				if (settings().overflowBug && pacManDir == Direction.UP) {
+				if (settings.overflowBug && pacManDir == Direction.UP) {
 					Tile twoAhead = maze().tileToDir(pacManTile, pacManDir, 2);
 					Tile twoLeft = maze().tileToDir(twoAhead, Direction.LEFT, 2);
 					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
@@ -418,8 +417,7 @@ public class PlayView extends SimplePlayView {
 		drawDotCounter(g, null, house.globalDotCount(), 24, 14, house.isGlobalDotCounterEnabled());
 	}
 
-	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row,
-			boolean emphasized) {
+	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row, boolean emphasized) {
 		try (Pen pen = new Pen(g)) {
 			if (image != null) {
 				g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);

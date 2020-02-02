@@ -142,15 +142,6 @@ public class Cast {
 		ghost.enteredNewTile();
 	}
 
-	public void setTheme(Theme newTheme) {
-		Theme oldTheme = this.theme;
-		if (newTheme != oldTheme) {
-			this.theme = newTheme;
-			dressActors();
-			changes.firePropertyChange("theme", oldTheme, newTheme);
-		}
-	}
-
 	public void setDemoMode(boolean on) {
 		if (on) {
 			settings.pacManImmortable = true;
