@@ -17,8 +17,6 @@ import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.awt.event.KeyEvent.VK_UP;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -47,7 +45,6 @@ public class Cast {
 	private final List<Ghost> seatAssignment;
 	private final List<Direction> seatGhostDirections;
 	private final Set<MovingActor<?>> actorsOnStage = new HashSet<>();
-	private final PropertyChangeSupport changes = new PropertyChangeSupport(this);
 	private final Game game;
 
 	public Cast(Game game) {
@@ -150,10 +147,6 @@ public class Cast {
 			settings.pacManImmortable = false;
 			pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		}
-	}
-
-	public void addThemeListener(PropertyChangeListener subscriber) {
-		changes.addPropertyChangeListener("theme", subscriber);
 	}
 
 	public Stream<Ghost> ghosts() {
