@@ -58,7 +58,8 @@ public class LoadingView implements GameView {
 
 	@Override
 	public void update() {
-		if (pacMan.tf.getX() > 0.9f * width() || pacMan.tf.getX() < 0.1 * width()) {
+		float x = pacMan.tf.getCenter().x;
+		if (x > 0.9f * width() || x < 0.1 * width()) {
 			pacMan.setMoveDir(pacMan.moveDir().opposite());
 			ghostCount += ghostInc;
 			if (ghostCount == 10 || ghostCount == 0) {
