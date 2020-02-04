@@ -167,10 +167,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			changeClockFrequency(Game.SPEED_3_FPS);
 		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
-			int oldFreq = app().clock().getFrequency();
+			int oldFreq = app().clock().getTargetFramerate();
 			changeClockFrequency(oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
 		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
-			int oldFreq = app().clock().getFrequency();
+			int oldFreq = app().clock().getTargetFramerate();
 			changeClockFrequency(oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
 		}
 
@@ -495,8 +495,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	private void changeClockFrequency(int newValue) {
-		if (app().clock().getFrequency() != newValue) {
-			app().clock().setFrequency(newValue);
+		if (app().clock().getTargetFramerate() != newValue) {
+			app().clock().setTargetFramerate(newValue);
 			loginfo("Clock frequency changed to %d ticks/sec", newValue);
 		}
 	}

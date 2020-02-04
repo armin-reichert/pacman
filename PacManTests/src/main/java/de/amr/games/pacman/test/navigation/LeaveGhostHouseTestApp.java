@@ -32,7 +32,7 @@ public class LeaveGhostHouseTestApp extends PacManApp {
 
 	@Override
 	public void init() {
-		clock().setFrequency(10);
+		clock().setTargetFramerate(10);
 		Game game = new Game();
 		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();

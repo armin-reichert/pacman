@@ -214,7 +214,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 				chasePacMan.draw(g);
 				ghostPointsAnimation.draw(g);
 				gitHubLink.draw(g);
-				if (app().clock().getTicks() % sec(1) < sec(0.5f)) {
+				if (app().clock().getTotalTicks() % sec(1) < sec(0.5f)) {
 					drawPressSpaceToStart(g, 18);
 				}
 				drawSpeedSelection(g, 22);
@@ -255,7 +255,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 		String t2 = "2 - " + texts.getString("fast");
 		String t3 = "3 - " + texts.getString("insane");
 		int selectedSpeed = Arrays.asList(Game.SPEED_1_FPS, Game.SPEED_2_FPS, Game.SPEED_3_FPS)
-				.indexOf(app().clock().getFrequency()) + 1;
+				.indexOf(app().clock().getTargetFramerate()) + 1;
 		try (Pen pen = new Pen(g)) {
 			pen.font(theme.fnt_text());
 			pen.fontSize(10);
