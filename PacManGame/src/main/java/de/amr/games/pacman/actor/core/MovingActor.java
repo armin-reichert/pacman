@@ -84,7 +84,7 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 	}
 
 	public void setTeleportingDuration(int ticks) {
-		movement.state(TELEPORTING).setConstantTimer(ticks);
+		movement.state(TELEPORTING).setTimer(ticks);
 	}
 
 	@Override

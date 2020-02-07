@@ -213,8 +213,11 @@ public class PlayView extends SimplePlayView {
 				remaining = attack.getTicksRemaining();
 			}
 		}
-		text.append(duration == State.ENDLESS ? String.format("(%s,%s)", ghost.getState(), INFTY)
-				: String.format("(%s,%d|%d)", ghost.getState(), remaining, duration));
+		if (duration != Integer.MAX_VALUE) {
+			text.append(String.format("(%s,%d|%d)", ghost.getState(), remaining, duration));
+		} else {
+			text.append(String.format("(%s,%s)", ghost.getState(), INFTY));
+		}
 		if (ghost.is(LEAVING_HOUSE)) {
 			text.append(String.format("[->%s]", ghost.followState()));
 		}
