@@ -132,7 +132,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private Color patternColor(int col, int row) {
-		return (row + col) % 2 == 0 ? Color.BLACK : new Color(30, 30, 30);
+		return (row + col) % 2 == 0 ? Color.BLACK : new Color(80, 80, 80);
 	}
 
 	@Override
@@ -270,7 +270,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawUpwardsBlockedTileMarkers(Graphics2D g) {
-		g.setColor(dimmed(Color.LIGHT_GRAY, 80));
+		g.setColor(Color.WHITE);
 		for (int row = 0; row < maze().numRows; ++row) {
 			for (int col = 0; col < maze().numCols; ++col) {
 				Tile tile = maze().tileAt(col, row);
