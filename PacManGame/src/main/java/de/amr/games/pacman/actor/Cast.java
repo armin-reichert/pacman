@@ -104,7 +104,6 @@ public class Cast {
 		clyde.setTeleportingDuration(sec(0.5f));
 
 		bonus = new Bonus(this);
-		bonus.init();
 	}
 
 	public Game game() {
@@ -143,7 +142,8 @@ public class Cast {
 		if (on) {
 			settings.pacManImmortable = true;
 			pacMan.behavior(pacMan.isMovingRandomlyWithoutTurningBack());
-		} else {
+		}
+		else {
 			settings.pacManImmortable = false;
 			pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		}

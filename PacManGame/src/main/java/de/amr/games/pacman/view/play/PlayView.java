@@ -120,7 +120,7 @@ public class PlayView extends SimplePlayView {
 		Graphics2D g = img.createGraphics();
 		for (int row = 0; row < maze.numRows; ++row) {
 			for (int col = 0; col < maze.numCols; ++col) {
-				g.setColor(patternColor(col, row));
+				g.setColor(bgColor(col, row));
 				g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 			}
 		}
@@ -131,13 +131,13 @@ public class PlayView extends SimplePlayView {
 		return (BufferedImage) theme.spr_ghostColored(color, Direction.RIGHT.ordinal()).frame(0);
 	}
 
-	private Color patternColor(int col, int row) {
+	private Color bgColor(int col, int row) {
 		return (row + col) % 2 == 0 ? Color.BLACK : new Color(80, 80, 80);
 	}
 
 	@Override
 	protected Color bgColor(Tile tile) {
-		return showGrid.getAsBoolean() ? patternColor(tile.col, tile.row) : super.bgColor(tile);
+		return showGrid.getAsBoolean() ? bgColor(tile.col, tile.row) : super.bgColor(tile);
 	}
 
 	private Color color(Ghost ghost) {
@@ -317,7 +317,6 @@ public class PlayView extends SimplePlayView {
 
 	private void drawRoutes(Graphics2D g2) {
 		boolean show = showRoutes.getAsBoolean();
-		// TODO
 		cast().ghosts().forEach(ghost -> {
 			Arrays.asList(GhostState.values()).forEach(state -> {
 				ghost.steering(state).enableTargetPathComputation(show);

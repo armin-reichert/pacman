@@ -181,9 +181,9 @@ public class SimplePlayView implements GameView {
 			g.setColor(bgColor(tile));
 			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 		});
-		// hide energizer tiles when blinking animation is dark
+		// hide active energizers when blinking animation is in dark phase
 		if (energizerBlinking.currentFrame() == 1) {
-			Arrays.stream(maze().energizers).forEach(tile -> {
+			Arrays.stream(maze().energizers).filter(tile -> !tile.containsEatenEnergizer()).forEach(tile -> {
 				g.setColor(bgColor(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
