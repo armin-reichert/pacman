@@ -229,6 +229,10 @@ public class Maze {
 		return Direction.dirs().filter(dir -> dir.vector().equals(dirVector)).findFirst();
 	}
 
+	public Vector2f seatPosition(int seat) {
+		return Vector2f.of(ghostHouseSeats[seat].centerX(), ghostHouseSeats[seat].y());
+	}
+
 	public boolean partOfGhostHouse(Tile tile) {
 		return 15 <= tile.row && tile.row <= 19 && 10 <= tile.col && tile.col <= 17;
 	}

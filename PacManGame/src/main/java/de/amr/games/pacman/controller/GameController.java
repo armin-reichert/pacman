@@ -16,6 +16,10 @@ import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
 import static de.amr.games.pacman.model.Game.FSM_LOGGER;
 import static de.amr.games.pacman.model.Timing.sec;
+import static java.awt.event.KeyEvent.VK_DOWN;
+import static java.awt.event.KeyEvent.VK_LEFT;
+import static java.awt.event.KeyEvent.VK_RIGHT;
+import static java.awt.event.KeyEvent.VK_UP;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -104,7 +108,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			cast.putActorOnStage(actor);
 			actor.addEventListener(this::process);
 		});
-		cast.setDemoMode(settings.demoMode);
 		ghostCommand = new GhostCommand(cast);
 		house = new House(cast);
 		playView = new PlayView(cast, theme);
@@ -127,49 +130,68 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		if (currentView == playView) {
 			if (Keyboard.keyPressedOnce("b")) {
 				toggleGhost(cast.blinky);
-			} else if (Keyboard.keyPressedOnce("c")) {
+			}
+			else if (Keyboard.keyPressedOnce("c")) {
 				toggleGhost(cast.clyde);
-			} else if (Keyboard.keyPressedOnce("d")) {
+			}
+			else if (Keyboard.keyPressedOnce("d")) {
 				changeDemoMode();
-			} else if (Keyboard.keyPressedOnce("e")) {
+			}
+			else if (Keyboard.keyPressedOnce("e")) {
 				eatAllPellets();
-			} else if (Keyboard.keyPressedOnce("f")) {
+			}
+			else if (Keyboard.keyPressedOnce("f")) {
 				changeGhostFrightenedBehavior();
-			} else if (Keyboard.keyPressedOnce("g")) {
+			}
+			else if (Keyboard.keyPressedOnce("g")) {
 				showGrid = !showGrid;
-			} else if (Keyboard.keyPressedOnce("i")) {
+			}
+			else if (Keyboard.keyPressedOnce("i")) {
 				toggleGhost(cast.inky);
-			} else if (Keyboard.keyPressedOnce("k")) {
+			}
+			else if (Keyboard.keyPressedOnce("k")) {
 				killAllGhosts();
-			} else if (Keyboard.keyPressedOnce("l")) {
+			}
+			else if (Keyboard.keyPressedOnce("l")) {
 				changeStateMachineLogging();
-			} else if (Keyboard.keyPressedOnce("m")) {
+			}
+			else if (Keyboard.keyPressedOnce("m")) {
 				toggleMakePacManImmortable();
-			} else if (Keyboard.keyPressedOnce("o")) {
+			}
+			else if (Keyboard.keyPressedOnce("o")) {
 				changePacManOverflowBug();
-			} else if (Keyboard.keyPressedOnce("p")) {
+			}
+			else if (Keyboard.keyPressedOnce("p")) {
 				toggleGhost(cast.pinky);
-			} else if (Keyboard.keyPressedOnce("s")) {
+			}
+			else if (Keyboard.keyPressedOnce("s")) {
 				showStates = !showStates;
-			} else if (Keyboard.keyPressedOnce("t")) {
+			}
+			else if (Keyboard.keyPressedOnce("t")) {
 				showFPS = !showFPS;
-			} else if (Keyboard.keyPressedOnce("r")) {
+			}
+			else if (Keyboard.keyPressedOnce("r")) {
 				showRoutes = !showRoutes;
-			} else if (Keyboard.keyPressedOnce("+")) {
+			}
+			else if (Keyboard.keyPressedOnce("+")) {
 				switchToNextLevel();
 			}
 		}
 
 		if (Keyboard.keyPressedOnce("1") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
 			changeClockFrequency(Game.SPEED_1_FPS);
-		} else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
+		}
+		else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
 			changeClockFrequency(Game.SPEED_2_FPS);
-		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
+		}
+		else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			changeClockFrequency(Game.SPEED_3_FPS);
-		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
 			int oldFreq = app().clock().getTargetFramerate();
 			changeClockFrequency(oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
-		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
 			int oldFreq = app().clock().getTargetFramerate();
 			changeClockFrequency(oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
 		}
@@ -214,6 +236,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						createPlayEnvironment();
 						showView(playView);
 						sound.gameReady();
+						setDemoMode(settings.demoMode);
 					})
 					.onTick((state, t, remaining) -> {
 						if (t == sec(5)) {
@@ -446,7 +469,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				ghost.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
 				loginfo("Ghost %s killed at %s", ghost.name(), ghost.tile());
-			} else {
+			}
+			else {
 				// Pac-Man killed
 				house.onLifeLost();
 				sound.muteAll();
@@ -516,7 +540,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			settings.ghostsFleeRandomly = false;
 			cast.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.isFleeingToSafeCorner(cast.pacMan)));
 			loginfo("Changed ghost escape behavior to escaping via safe route");
-		} else {
+		}
+		else {
 			settings.ghostsFleeRandomly = true;
 			cast.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack()));
 			loginfo("Changed ghost escape behavior to original random movement");
@@ -525,8 +550,19 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void changeDemoMode() {
 		settings.demoMode = !settings.demoMode;
-		cast.setDemoMode(settings.demoMode);
+		setDemoMode(settings.demoMode);
 		loginfo("Demo mode is %s", (settings.demoMode ? "on" : "off"));
+	}
+
+	private void setDemoMode(boolean on) {
+		if (on) {
+			settings.pacManImmortable = true;
+			cast.pacMan.behavior(cast.pacMan.isMovingRandomlyWithoutTurningBack());
+		}
+		else {
+			settings.pacManImmortable = false;
+			cast.pacMan.behavior(cast.pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
+		}
 	}
 
 	private void toggleMakePacManImmortable() {
@@ -551,7 +587,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void toggleGhost(Ghost ghost) {
 		if (cast.onStage(ghost)) {
 			cast.pullActorFromStage(ghost);
-		} else {
+		}
+		else {
 			cast.putActorOnStage(ghost);
 		}
 	}

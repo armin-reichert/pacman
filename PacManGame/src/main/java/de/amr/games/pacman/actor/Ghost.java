@@ -189,7 +189,7 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 				.when(DEAD).then(ENTERING_HOUSE)
 					.condition(() -> maze().inFrontOfGhostHouseDoor(tile()))
 					.act(() -> {
-						tf.setPosition(cast().seatPosition(0));
+						tf.setPosition(maze().seatPosition(0));
 						setWishDir(Direction.DOWN);
 					})
 					
@@ -270,7 +270,8 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 	private void step(String spriteKey) {
 		if (isTeleporting()) {
 			move();
-		} else {
+		}
+		else {
 			if (prevSteering != steering()) {
 				steering().init();
 				steering().force();
