@@ -152,12 +152,17 @@ public class Maze {
 	}
 
 	/**
+	 * Returns the tile at the given tile position. This is either a tile inside the board, a portal
+	 * tile or a wall outside. Tiles inside the board and the two portal tiles are created once so
+	 * equality can be tested using <code>==</code>. Other tiles are created on-demand and must be
+	 * compared using {@link Object#equals(Object)}. For tiles outside of the board, the column and row
+	 * index must fit into a byte.
+	 * 
 	 * @param col
 	 *              a column index
 	 * @param row
 	 *              a row index
-	 * @return the tile with the given coordinates. Tiles outside of the board are tunnel tiles (if in
-	 *         the same row as the board tunnel) or walls otherwise.
+	 * @return the tile with the given coordinates.
 	 */
 	public Tile tileAt(int col, int row) {
 		if (insideBoard(col, row)) {
@@ -189,8 +194,8 @@ public class Maze {
 		if (tile.equals(portalRight) && dir == Direction.RIGHT) {
 			return portalLeft;
 		}
-		Vector2f dirVector = dir.vector();
-		return tileAt(tile.col + n * dirVector.roundedX(), tile.row + n * dirVector.roundedY());
+		Vector2f v = dir.vector();
+		return tileAt(tile.col + n * v.roundedX(), tile.row + n * v.roundedY());
 	}
 
 	/**
@@ -220,13 +225,9 @@ public class Maze {
 		return isDoor(tileToDir(tile, Direction.DOWN));
 	}
 
-	public boolean isPortal(Tile tile) {
-		return tile.equals(portalLeft) || tile.equals(portalRight);
-	}
-
 	public Optional<Direction> direction(Tile t1, Tile t2) {
-		Vector2f dirVector = Vector2f.of(t2.col - t1.col, t2.row - t1.row);
-		return Direction.dirs().filter(dir -> dir.vector().equals(dirVector)).findFirst();
+		Vector2f v = Vector2f.of(t2.col - t1.col, t2.row - t1.row);
+		return Direction.dirs().filter(dir -> dir.vector().equals(v)).findFirst();
 	}
 
 	public Vector2f seatPosition(int seat) {
