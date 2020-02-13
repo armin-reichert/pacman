@@ -17,11 +17,10 @@ import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.awt.event.KeyEvent.VK_UP;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.actor.core.MovingActor;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
@@ -43,7 +42,6 @@ public class Cast {
 
 	private final List<Ghost> seatOrder;
 	private final List<Direction> seatEyesDir;
-	private final Set<MovingActor<?>> actorsOnStage = new HashSet<>();
 	private final Game game;
 	private final Maze maze;
 
@@ -97,8 +95,8 @@ public class Cast {
 		clyde.behavior(LEAVING_HOUSE, clyde.isLeavingGhostHouse());
 		clyde.behavior(FRIGHTENED, clyde.isMovingRandomlyWithoutTurningBack());
 		clyde.behavior(SCATTERING, clyde.isHeadingFor(maze.horizonSW));
-		clyde.behavior(CHASING, clyde.isHeadingFor(
-				() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
+		clyde.behavior(CHASING, clyde
+				.isHeadingFor(() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
 		clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostHouseSeats[0]));
 		clyde.setTeleportingDuration(sec(0.5f));
 
@@ -138,7 +136,7 @@ public class Cast {
 	}
 
 	public Stream<Ghost> ghostsOnStage() {
-		return ghosts().filter(this::onStage);
+		return ghosts().filter(Ghost::isActing);
 	}
 
 	public Stream<MovingActor<?>> actors() {
@@ -146,22 +144,7 @@ public class Cast {
 	}
 
 	public Stream<MovingActor<?>> actorsOnStage() {
-		return actors().filter(this::onStage);
-	}
-
-	public boolean onStage(MovingActor<?> actor) {
-		return actorsOnStage.contains(actor);
-	}
-
-	public void putActorOnStage(MovingActor<?> actor) {
-		actor.init();
-		actor.setVisible(true);
-		actorsOnStage.add(actor);
-	}
-
-	public void pullActorFromStage(MovingActor<?> actor) {
-		actor.setVisible(false);
-		actorsOnStage.remove(actor);
+		return actors().filter(Actor::isActing);
 	}
 
 	public void showBonus(Theme theme) {

@@ -5,6 +5,7 @@ import static de.amr.games.pacman.actor.GhostState.CHASING;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
@@ -56,9 +57,7 @@ class InkyChaseTestUI extends PlayView implements VisualController {
 		super.init();
 		maze().removeFood();
 		theme.snd_ghost_chase().volume(0);
-		cast.putActorOnStage(cast.pacMan);
-		cast.putActorOnStage(cast.inky);
-		cast.putActorOnStage(cast.blinky);
+		Stream.of(cast.pacMan, cast.inky, cast.blinky).forEach(actor -> actor.setActing(true));
 		cast.ghostsOnStage().forEach(ghost -> {
 			ghost.setFollowState(CHASING);
 		});

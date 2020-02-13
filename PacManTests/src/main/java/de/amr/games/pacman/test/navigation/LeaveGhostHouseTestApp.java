@@ -54,7 +54,7 @@ class LeaveGhostHouseTestUI extends PlayView implements VisualController {
 	public void init() {
 		super.init();
 		maze().removeFood();
-		cast.putActorOnStage(cast.inky);
+		cast.blinky.setActing(true);
 		cast.inky.setFollowState(SCATTERING);
 		messageColor = Color.YELLOW;
 		messageText = "Press SPACE to unlock";

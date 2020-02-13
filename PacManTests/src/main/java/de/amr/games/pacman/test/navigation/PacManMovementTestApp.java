@@ -42,11 +42,11 @@ public class PacManMovementTestApp extends PacManApp {
 
 class PacManMovementTestUI extends PlayView implements VisualController {
 
-	private PacMan pac;
+	private PacMan pacMan;
 
 	public PacManMovementTestUI(Cast cast, Theme theme) {
 		super(cast, theme);
-		pac = cast.pacMan;
+		pacMan = cast.pacMan;
 		showRoutes = () -> false;
 		showStates = () -> false;
 		showScores = () -> false;
@@ -56,7 +56,7 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		pac.addEventListener(event -> {
+		pacMan.addEventListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
 				theme.snd_eatPill().play();
@@ -68,8 +68,8 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 				}
 			}
 		});
-		cast.putActorOnStage(pac);
-		pac.setState(PacManState.EATING);
+		pacMan.setActing(true);
+		pacMan.setState(PacManState.EATING);
 		message("Cursor keys");
 		startEnergizerBlinking();
 	}
@@ -83,17 +83,17 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 
 	private void handleSteeringChange() {
 		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_M)) {
-			pac.behavior(pac.isFollowingKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
+			pacMan.behavior(pacMan.isFollowingKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
 			message("Cursor keys");
 		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_N)) {
-			pac.behavior(pac.isFollowingKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2,
-					KeyEvent.VK_NUMPAD4));
+			pacMan.behavior(
+					pacMan.isFollowingKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
 			message("Numpad keys");
 			// } else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_A)) {
 			// pac.steering(avoidingGhosts(cast));
 			// message("Avoiding ghosts");
 		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_R)) {
-			pac.behavior(pac.isMovingRandomlyWithoutTurningBack());
+			pacMan.behavior(pacMan.isMovingRandomlyWithoutTurningBack());
 			message("Random moves");
 		}
 	}

@@ -14,19 +14,34 @@ import de.amr.statemachine.api.FsmContainer;
  * 
  * @author Armin Reichert
  *
- * @param <S>
- *          state identifier type
+ * @param <S> state identifier type
  */
 public abstract class Actor<S> extends Entity implements FsmContainer<S, PacManGameEvent> {
 
 	private final Cast cast;
 	private final String name;
+	private boolean acting;
 
 	public Actor(Cast cast, String name) {
 		this.cast = cast;
 		this.name = name;
+		acting = false;
 		tf.setWidth(Tile.SIZE);
 		tf.setHeight(Tile.SIZE);
+	}
+
+	public boolean isActing() {
+		return acting;
+	}
+
+	public void setActing(boolean acting) {
+		this.acting = acting;
+		if (acting) {
+			setVisible(true);
+			init();
+		} else {
+			setVisible(false);
+		}
 	}
 
 	@Override
