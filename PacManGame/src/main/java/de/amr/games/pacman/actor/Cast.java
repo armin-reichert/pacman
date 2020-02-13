@@ -104,6 +104,26 @@ public class Cast {
 		seatEyesDir = Arrays.asList(LEFT, UP, DOWN, UP);
 	}
 
+	public Game game() {
+		return game;
+	}
+
+	public Stream<Ghost> ghosts() {
+		return Stream.of(blinky, pinky, inky, clyde);
+	}
+
+	public Stream<Ghost> ghostsOnStage() {
+		return ghosts().filter(Ghost::isActing);
+	}
+
+	public Stream<MovingActor<?>> movingActors() {
+		return Stream.of(pacMan, blinky, pinky, inky, clyde);
+	}
+
+	public Stream<MovingActor<?>> movingActorsOnStage() {
+		return movingActors().filter(Actor::isActing);
+	}
+
 	public void dressActors(Theme theme) {
 		pacMan.dress(theme);
 		blinky.dress(theme, GhostColor.RED);
@@ -125,35 +145,5 @@ public class Cast {
 		ghost.setMoveDir(seatEyesDir(ghost));
 		ghost.setWishDir(seatEyesDir(ghost));
 		ghost.enteredNewTile();
-	}
-
-	public Game game() {
-		return game;
-	}
-
-	public Stream<Ghost> ghosts() {
-		return Stream.of(blinky, pinky, inky, clyde);
-	}
-
-	public Stream<Ghost> ghostsOnStage() {
-		return ghosts().filter(Ghost::isActing);
-	}
-
-	public Stream<MovingActor<?>> actors() {
-		return Stream.of(pacMan, blinky, pinky, inky, clyde);
-	}
-
-	public Stream<MovingActor<?>> actorsOnStage() {
-		return actors().filter(Actor::isActing);
-	}
-
-	public void showBonus(Theme theme) {
-		bonus.setSymbol(theme, game().level().bonusSymbol);
-		bonus.setValue(theme, game().level().bonusValue);
-		bonus.activate();
-	}
-
-	public void hideBonus() {
-		bonus.init();
 	}
 }

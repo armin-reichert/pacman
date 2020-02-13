@@ -103,7 +103,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void createPlayEnvironment() {
 		game = new Game();
 		cast = new Cast(game);
-		cast.actors().forEach(actor -> {
+		cast.movingActors().forEach(actor -> {
 			actor.setActing(true);
 			actor.addEventListener(this::process);
 		});
@@ -225,7 +225,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							playView.startEnergizerBlinking();
 							sound.gameStarts();
 						}
-						cast.actorsOnStage().forEach(MovingActor::update);
+						cast.movingActorsOnStage().forEach(MovingActor::update);
 					})
 					.onExit(() -> {
 						playView.clearMessage();
@@ -262,7 +262,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						// After two more seconds, change level and show crowded maze.
 						if (t == sec(4 + f)) {
 							game.enterLevel(game.level().number + 1);
-							cast.actorsOnStage().forEach(MovingActor::init);
+							cast.movingActorsOnStage().forEach(MovingActor::init);
 							playView.init();
 						}
 						
@@ -302,7 +302,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						if (t == sec(1)) {
 							// Pac-Man stops struggling
 							cast.pacMan.showFullFace();
-							cast.hideBonus();
+							cast.bonus.hide();
 							cast.ghostsOnStage().forEach(ghost -> ghost.setVisible(false));
 						}
 						else if (t == sec(3)) {
@@ -312,7 +312,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						}
 						else if (t == sec(7) - 1 && game.lives > 0) {
 							// initialize actors and view, continue game
-							cast.actorsOnStage().forEach(MovingActor::init);
+							cast.movingActorsOnStage().forEach(MovingActor::init);
 							playView.init();
 							sound.gameStarts();
 						}
@@ -411,7 +411,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		public void onTick() {
 			ghostCommand.update();
 			house.update();
-			cast.actorsOnStage().forEach(MovingActor::update);
+			cast.movingActorsOnStage().forEach(MovingActor::update);
 			cast.bonus.update();
 			sound.updatePlayingSounds(cast);
 		}
@@ -486,7 +486,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				return;
 			}
 			if (game.isBonusScoreReached()) {
-				cast.showBonus(theme);
+				cast.bonus.show(theme);
 				loginfo("Bonus %s added, time: %.2f sec", cast.bonus, cast.bonus.state().getDuration() / 60f);
 			}
 			if (foodFound.energizer) {

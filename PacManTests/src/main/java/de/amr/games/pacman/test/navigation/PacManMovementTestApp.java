@@ -78,7 +78,7 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 	public void update() {
 		super.update();
 		handleSteeringChange();
-		cast.actorsOnStage().forEach(MovingActor::update);
+		cast.movingActorsOnStage().forEach(MovingActor::update);
 	}
 
 	private void handleSteeringChange() {

@@ -62,7 +62,7 @@ class EscapeIntoCornerTestUI extends PlayView implements VisualController {
 	@Override
 	public void update() {
 		super.update();
-		cast.actorsOnStage().forEach(MovingActor::update);
+		cast.movingActorsOnStage().forEach(MovingActor::update);
 	}
 
 	@Override
