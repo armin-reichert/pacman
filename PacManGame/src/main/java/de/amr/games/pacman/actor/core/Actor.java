@@ -25,9 +25,9 @@ public abstract class Actor<S> extends Entity implements FsmContainer<S, PacManG
 	public Actor(Cast cast, String name) {
 		this.cast = cast;
 		this.name = name;
-		acting = false;
 		tf.setWidth(Tile.SIZE);
 		tf.setHeight(Tile.SIZE);
+		setActing(false);
 	}
 
 	public boolean isActing() {
