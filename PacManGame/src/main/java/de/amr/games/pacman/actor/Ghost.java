@@ -50,6 +50,8 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 	private final Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
 	private GhostState followState;
 	private Steering prevSteering;
+	private int seatNumber;
+	private Direction seatEyesDir;
 
 	public Ghost(Cast cast, String name) {
 		super(cast, name);
@@ -75,7 +77,7 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 	
 				.state(LOCKED)
 					.onEntry(() -> {
-						cast().placeOnSeat(this);
+						takeSeat();
 						setVisible(true);
 						followState = getState();
 						sprites.select("color-" + moveDir());
@@ -214,6 +216,29 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 		brain.init();
 	}
 
+	public int getSeatNumber() {
+		return seatNumber;
+	}
+
+	public void setSeatNumber(int seatNumber) {
+		this.seatNumber = seatNumber;
+	}
+
+	public Direction getSeatEyesDir() {
+		return seatEyesDir;
+	}
+
+	public void setSeatEyesDir(Direction seatEyesDir) {
+		this.seatEyesDir = seatEyesDir;
+	}
+
+	public void takeSeat() {
+		tf.setPosition(maze().seatPosition(seatNumber));
+		setMoveDir(seatEyesDir);
+		setWishDir(seatEyesDir);
+		enteredNewTile();
+	}
+
 	public void behavior(GhostState state, Steering steering) {
 		steerings.put(state, steering);
 	}
@@ -258,8 +283,7 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 		case SCATTERING:
 			return inTunnel ? relSpeed(game().level().ghostTunnelSpeed) : relSpeed(game().level().ghostSpeed);
 		case FRIGHTENED:
-			return inTunnel ? relSpeed(game().level().ghostTunnelSpeed)
-					: relSpeed(game().level().ghostFrightenedSpeed);
+			return inTunnel ? relSpeed(game().level().ghostTunnelSpeed) : relSpeed(game().level().ghostFrightenedSpeed);
 		case DEAD:
 			return 2 * relSpeed(game().level().ghostSpeed);
 		default:
@@ -270,8 +294,7 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 	private void step(String spriteKey) {
 		if (isTeleporting()) {
 			move();
-		}
-		else {
+		} else {
 			if (prevSteering != steering()) {
 				steering().init();
 				steering().force();

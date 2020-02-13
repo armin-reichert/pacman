@@ -15,7 +15,8 @@ import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
 
 /**
- * This class controls when and in which order locked ghosts can leave the ghost house.
+ * This class controls when and in which order locked ghosts can leave the ghost
+ * house.
  * 
  * @author Armin Reichert
  * 
@@ -66,7 +67,7 @@ public class House {
 			}
 		} else {
 			preferredLockedGhost().ifPresent(ghost -> {
-				ghostDotCount[cast.seat(ghost)] += 1;
+				ghostDotCount[ghost.getSeatNumber()] += 1;
 			});
 		}
 	}
@@ -94,7 +95,7 @@ public class House {
 	}
 
 	public int ghostDotCount(Ghost ghost) {
-		return ghostDotCount[cast.seat(ghost)];
+		return ghostDotCount[ghost.getSeatNumber()];
 	}
 
 	public int pacManStarvingTicks() {
@@ -116,8 +117,7 @@ public class House {
 	/**
 	 * Determines if the given ghost can leave the ghost house.
 	 * 
-	 * @param ghost
-	 *                a ghost
+	 * @param ghost a ghost
 	 * 
 	 * @see <a href=
 	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
@@ -139,7 +139,7 @@ public class House {
 			}
 		} else {
 			int personalLimit = personalDotLimit(ghost);
-			if (ghostDotCount[cast.seat(ghost)] >= personalLimit) {
+			if (ghostDotCount[ghost.getSeatNumber()] >= personalLimit) {
 				loginfo("%s can leave house: ghost's dot limit (%d) reached", ghost.name(), personalLimit);
 				return true;
 			}
