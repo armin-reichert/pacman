@@ -52,7 +52,7 @@ public class House {
 		if (cast.blinky.is(LOCKED)) {
 			unlock(cast.blinky);
 		}
-		preferredLockedGhost().filter(this::canLeaveHome).ifPresent(ghost -> unlock(ghost));
+		preferredLockedGhost().filter(this::canLeaveHome).ifPresent(this::unlock);
 		pacManStarvingTicks += 1;
 	}
 
