@@ -220,15 +220,12 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 		return seatNumber;
 	}
 
-	public void setSeatNumber(int seatNumber) {
-		this.seatNumber = seatNumber;
-	}
-
 	public Direction getSeatEyesDir() {
 		return seatEyesDir;
 	}
 
-	public void setSeatEyesDir(Direction seatEyesDir) {
+	public void assignSeat(int seatNumber, Direction seatEyesDir) {
+		this.seatNumber = seatNumber;
 		this.seatEyesDir = seatEyesDir;
 	}
 
