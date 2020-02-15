@@ -8,11 +8,11 @@ import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Common steerings.
+ * Maze mover with common steerings.
  * 
  * @author Armin Reichert
  */
-public interface CommonSteerings extends MazeMover {
+public interface SteeredMazeMover extends MazeMover {
 
 	/**
 	 * @param up
