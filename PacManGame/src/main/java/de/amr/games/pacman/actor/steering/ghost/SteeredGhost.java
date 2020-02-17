@@ -11,7 +11,7 @@ import de.amr.games.pacman.actor.steering.common.SteeredMazeMover;
  * 
  * @author Armin Reichert
  */
-public interface GhostSteerings extends SteeredMazeMover {
+public interface SteeredGhost extends SteeredMazeMover {
 
 	default Ghost steeredGhost() {
 		return (Ghost) this;
