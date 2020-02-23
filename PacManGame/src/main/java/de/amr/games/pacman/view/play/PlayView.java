@@ -132,7 +132,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private Color bgColor(int col, int row) {
-		return (row + col) % 2 == 0 ? Color.BLACK : new Color(80, 80, 80);
+		return (row + col) % 2 == 0 ? Color.BLACK : new Color(40, 40, 40);
 	}
 
 	@Override
