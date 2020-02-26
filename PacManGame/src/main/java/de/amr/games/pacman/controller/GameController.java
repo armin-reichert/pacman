@@ -132,11 +132,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			} else if (Keyboard.keyPressedOnce("c")) {
 				toggleGhostActing(cast.clyde);
 			} else if (Keyboard.keyPressedOnce("d")) {
-				changeDemoMode();
+				toggleDemoMode();
 			} else if (Keyboard.keyPressedOnce("e")) {
 				eatAllPellets();
 			} else if (Keyboard.keyPressedOnce("f")) {
-				changeGhostFrightenedBehavior();
+				toggleGhostFrightenedBehavior();
 			} else if (Keyboard.keyPressedOnce("g")) {
 				showGrid = !showGrid;
 			} else if (Keyboard.keyPressedOnce("i")) {
@@ -144,11 +144,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			} else if (Keyboard.keyPressedOnce("k")) {
 				killAllGhosts();
 			} else if (Keyboard.keyPressedOnce("l")) {
-				changeStateMachineLogging();
+				toggleStateMachineLogging();
 			} else if (Keyboard.keyPressedOnce("m")) {
 				toggleMakePacManImmortable();
 			} else if (Keyboard.keyPressedOnce("o")) {
-				changePacManOverflowBug();
+				togglePacManOverflowBug();
 			} else if (Keyboard.keyPressedOnce("p")) {
 				toggleGhostActing(cast.pinky);
 			} else if (Keyboard.keyPressedOnce("s")) {
@@ -504,17 +504,17 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	private void changePacManOverflowBug() {
+	private void togglePacManOverflowBug() {
 		settings.overflowBug = !settings.overflowBug;
 		loginfo("Overflow bug is %s", (settings.overflowBug ? "on" : "off"));
 	}
 
-	private void changeStateMachineLogging() {
+	private void toggleStateMachineLogging() {
 		FSM_LOGGER.setLevel(FSM_LOGGER.getLevel() == Level.OFF ? Level.INFO : Level.OFF);
 		loginfo("State machine logging changed to %s", FSM_LOGGER.getLevel());
 	}
 
-	private void changeGhostFrightenedBehavior() {
+	private void toggleGhostFrightenedBehavior() {
 		if (settings.ghostsFleeRandomly) {
 			settings.ghostsFleeRandomly = false;
 			cast.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.isFleeingToSafeCorner(cast.pacMan)));
@@ -526,7 +526,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	private void changeDemoMode() {
+	private void toggleDemoMode() {
 		settings.demoMode = !settings.demoMode;
 		setDemoMode(settings.demoMode);
 		loginfo("Demo mode is %s", (settings.demoMode ? "on" : "off"));
