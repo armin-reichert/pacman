@@ -1,7 +1,6 @@
 package de.amr.games.pacman.actor.steering.pacman;
 
 import static de.amr.datastruct.StreamUtils.permute;
-import static de.amr.games.pacman.model.Tile.distanceSq;
 
 import java.util.Comparator;
 
@@ -49,13 +48,13 @@ public class AvoidingGhosts implements Steering {
 		return (dir1, dir2) -> {
 			Tile neighborTile1 = pacMan.maze().tileToDir(pacManTile, dir1),
 					neighborTile2 = pacMan.maze().tileToDir(pacManTile, dir2);
-			return -Integer.compare(distanceSq(neighborTile1, ghostTile), distanceSq(neighborTile2, ghostTile));
+			return -Integer.compare(neighborTile1.distSq(ghostTile), neighborTile2.distSq(ghostTile));
 		};
 	}
 
 	private Comparator<Ghost> bySmallestDistanceTo(PacMan pacMan) {
-		return (ghost1, ghost2) -> Integer.compare(distanceSq(pacMan.tile(), ghost1.tile()),
-				distanceSq(pacMan.tile(), ghost2.tile()));
+		return (ghost1, ghost2) -> Integer.compare(pacMan.tile().distSq(ghost1.tile()),
+				pacMan.tile().distSq(ghost2.tile()));
 	}
 
 	private Direction randomAccessibleDir(PacMan pacMan) {

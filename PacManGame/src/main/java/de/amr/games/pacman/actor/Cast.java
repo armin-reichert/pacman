@@ -93,8 +93,8 @@ public class Cast {
 		clyde.behavior(LEAVING_HOUSE, clyde.isLeavingGhostHouse());
 		clyde.behavior(FRIGHTENED, clyde.isMovingRandomlyWithoutTurningBack());
 		clyde.behavior(SCATTERING, clyde.isHeadingFor(maze.horizonSW));
-		clyde.behavior(CHASING, clyde
-				.isHeadingFor(() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
+		clyde.behavior(CHASING,
+				clyde.isHeadingFor(() -> clyde.tile().distSq(pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
 		clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostHouseSeats[0]));
 	}
 
