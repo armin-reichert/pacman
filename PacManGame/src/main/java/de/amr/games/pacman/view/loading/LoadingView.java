@@ -40,15 +40,6 @@ public class LoadingView implements GameView {
 	}
 
 	@Override
-	public boolean visible() {
-		return true;
-	}
-
-	@Override
-	public void setVisible(boolean visible) {
-	}
-
-	@Override
 	public void init() {
 		pacMan.init();
 		pacMan.setState(PacManState.EATING);

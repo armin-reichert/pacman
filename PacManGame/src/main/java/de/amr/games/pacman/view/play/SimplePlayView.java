@@ -60,15 +60,6 @@ public class SimplePlayView implements GameView {
 		cast.bonus.tf.setPosition(maze().bonusTile.centerX(), maze().bonusTile.y());
 	}
 
-	@Override
-	public boolean visible() {
-		return true;
-	}
-
-	@Override
-	public void setVisible(boolean visible) {
-	}
-
 	public Cast cast() {
 		return cast;
 	}

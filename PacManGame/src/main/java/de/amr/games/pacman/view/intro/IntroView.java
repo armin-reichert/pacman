@@ -61,15 +61,6 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 		fsm.getTracer().setLogger(Game.FSM_LOGGER);
 	}
 
-	@Override
-	public boolean visible() {
-		return true;
-	}
-
-	@Override
-	public void setVisible(boolean visible) {
-	}
-
 	private void createUIComponents() {
 		pacManLogo = new ImageWidget(theme.img_logo());
 		pacManLogo.tf.centerX(width());
