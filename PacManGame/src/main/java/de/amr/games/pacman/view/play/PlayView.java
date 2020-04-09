@@ -60,7 +60,7 @@ public class PlayView extends SimplePlayView {
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 	}
 
-	public Supplier<State<GhostState, ?>> fnGhostCommandState = () -> null;
+	public Supplier<State<GhostState>> fnGhostCommandState = () -> null;
 	public House house; // (optional)
 
 	public BooleanSupplier showFPS = () -> false;
@@ -207,7 +207,7 @@ public class PlayView extends SimplePlayView {
 		int remaining = ghost.state().getTicksRemaining();
 		// chasing or scattering time
 		if (ghost.is(SCATTERING, CHASING)) {
-			State<GhostState, ?> attack = fnGhostCommandState.get();
+			State<GhostState> attack = fnGhostCommandState.get();
 			if (attack != null) {
 				duration = attack.getDuration();
 				remaining = attack.getTicksRemaining();
@@ -334,8 +334,7 @@ public class PlayView extends SimplePlayView {
 		int pathLen = targetPath.size();
 		Color ghostColor = color(ghost);
 		Stroke solid = new BasicStroke(0.5f);
-		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 },
-				0);
+		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
 		boolean drawRubberBand = target != null && pathLen > 0 && target != targetPath.get(pathLen - 1);
 		if (drawRubberBand) {
 			// draw rubber band to target tile
@@ -421,8 +420,7 @@ public class PlayView extends SimplePlayView {
 		drawDotCounter(g, null, house.globalDotCount(), 24, 14, house.isGlobalDotCounterEnabled());
 	}
 
-	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row,
-			boolean emphasized) {
+	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row, boolean emphasized) {
 		try (Pen pen = new Pen(g)) {
 			if (image != null) {
 				g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);

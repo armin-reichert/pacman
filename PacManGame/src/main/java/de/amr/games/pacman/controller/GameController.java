@@ -405,7 +405,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	/**
 	 * "PLAYING" state implementation.
 	 */
-	public class PlayingState extends State<PacManGameState, PacManGameEvent> {
+	public class PlayingState extends State<PacManGameState> {
 
 		@Override
 		public void onTick() {
