@@ -5,12 +5,9 @@ import static de.amr.games.pacman.actor.BonusState.CONSUMED;
 import static de.amr.games.pacman.actor.BonusState.INACTIVE;
 import static de.amr.games.pacman.model.Timing.sec;
 
-import java.awt.Graphics2D;
 import java.util.Random;
 
-import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.SpriteMap;
-import de.amr.easy.game.view.View;
 import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -28,9 +25,9 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Bonus extends Actor<BonusState> implements View {
+public class Bonus extends Actor<BonusState> {
 
-	private final SpriteMap sprites = new SpriteMap();
+	public final SpriteMap sprites = new SpriteMap();
 	private final Fsm<BonusState, PacManGameEvent> brain;
 	private Symbol symbol;
 	private int value;
@@ -100,18 +97,6 @@ public class Bonus extends Actor<BonusState> implements View {
 
 	public void hide() {
 		init();
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
-		if (visible) {
-			sprites.current().ifPresent(sprite -> {
-				Vector2f center = tf.getCenter();
-				float x = center.x - sprite.getWidth() / 2;
-				float y = center.y - sprite.getHeight() / 2;
-				sprite.draw(g, x, y);
-			});
-		}
 	}
 
 	@Override

@@ -12,14 +12,11 @@ import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Timing.relSpeed;
 import static de.amr.games.pacman.model.Timing.sec;
 
-import java.awt.Graphics2D;
 import java.util.EnumMap;
 import java.util.Map;
 
-import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
-import de.amr.easy.game.view.View;
 import de.amr.games.pacman.actor.core.MovingActor;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.actor.steering.ghost.SteeredGhost;
@@ -41,7 +38,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends MovingActor<GhostState> implements SteeredGhost, View {
+public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 
 	public final SpriteMap sprites = new SpriteMap();
 	private final Fsm<GhostState, PacManGameEvent> brain;
@@ -326,18 +323,6 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost, View
 		}
 		if (tile().equals(game.pacMan.tile()) && game.pacMan.is(PacManState.EATING)) {
 			publish(new PacManGhostCollisionEvent(this, tile()));
-		}
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
-		if (visible) {
-			sprites.current().ifPresent(sprite -> {
-				Vector2f center = tf.getCenter();
-				float x = center.x - sprite.getWidth() / 2;
-				float y = center.y - sprite.getHeight() / 2;
-				sprite.draw(g, x, y);
-			});
 		}
 	}
 

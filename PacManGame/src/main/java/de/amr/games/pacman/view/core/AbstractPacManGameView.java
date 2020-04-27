@@ -2,6 +2,10 @@ package de.amr.games.pacman.view.core;
 
 import static de.amr.games.pacman.model.Direction.dirs;
 
+import java.awt.Graphics2D;
+
+import de.amr.easy.game.math.Vector2f;
+import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.model.Direction;
@@ -35,5 +39,38 @@ public abstract class AbstractPacManGameView implements PacManGameView {
 		}
 		ghost.sprites.set("frightened", theme.spr_ghostFrightened());
 		ghost.sprites.set("flashing", theme.spr_ghostFlashing());
+	}
+
+	protected void drawPacMan(PacMan pacMan, Graphics2D g) {
+		if (pacMan.visible) {
+			pacMan.sprites.current().ifPresent(sprite -> {
+				Vector2f center = pacMan.tf.getCenter();
+				float x = center.x - sprite.getWidth() / 2;
+				float y = center.y - sprite.getHeight() / 2;
+				sprite.draw(g, x, y);
+			});
+		}
+	}
+
+	protected void drawGhost(Ghost ghost, Graphics2D g) {
+		if (ghost.visible) {
+			ghost.sprites.current().ifPresent(sprite -> {
+				Vector2f center = ghost.tf.getCenter();
+				float x = center.x - sprite.getWidth() / 2;
+				float y = center.y - sprite.getHeight() / 2;
+				sprite.draw(g, x, y);
+			});
+		}
+	}
+
+	public void drawBonus(Bonus bonus, Graphics2D g) {
+		if (bonus.visible) {
+			bonus.sprites.current().ifPresent(sprite -> {
+				Vector2f center = bonus.tf.getCenter();
+				float x = center.x - sprite.getWidth() / 2;
+				float y = center.y - sprite.getHeight() / 2;
+				sprite.draw(g, x, y);
+			});
+		}
 	}
 }

@@ -1,16 +1,16 @@
 package de.amr.games.pacman.view.play;
 
+import static de.amr.games.pacman.actor.GhostState.DEAD;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 
-import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
-import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Symbol;
 import de.amr.games.pacman.model.Tile;
@@ -181,22 +181,11 @@ public class SimplePlayView extends AbstractPacManGameView {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		game.bonus.draw(g);
-		drawPacMan(g);
-		// draw dead ghosts (numbers) under living ghosts
-		game.ghostsOnStage().filter(ghost -> ghost.is(GhostState.DEAD)).forEach(ghost -> ghost.draw(g));
-		game.ghostsOnStage().filter(ghost -> !ghost.is(GhostState.DEAD)).forEach(ghost -> ghost.draw(g));
-	}
-
-	protected void drawPacMan(Graphics2D g) {
-		if (game.pacMan.visible) {
-			game.pacMan.sprites.current().ifPresent(sprite -> {
-				Vector2f center = game.pacMan.tf.getCenter();
-				float x = center.x - sprite.getWidth() / 2;
-				float y = center.y - sprite.getHeight() / 2;
-				sprite.draw(g, x, y);
-			});
-		}
+		drawBonus(game.bonus, g);
+		drawPacMan(game.pacMan, g);
+		// draw dead ghosts (points) under living ghosts
+		game.ghostsOnStage().filter(ghost -> ghost.is(DEAD)).forEach(ghost -> drawGhost(ghost, g));
+		game.ghostsOnStage().filter(ghost -> !ghost.is(DEAD)).forEach(ghost -> drawGhost(ghost, g));
 	}
 
 	protected void drawScores(Graphics2D g) {
