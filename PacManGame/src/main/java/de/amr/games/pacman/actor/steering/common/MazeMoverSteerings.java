@@ -12,7 +12,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public interface SteeredMazeMover extends MazeMover {
+public interface MazeMoverSteerings extends MazeMover {
 
 	/**
 	 * @param up    key for moving up
