@@ -183,7 +183,7 @@ public class PlayView extends SimplePlayView {
 
 	private void drawPacManState(Graphics2D g) {
 		PacMan pacMan = cast().pacMan;
-		if (pacMan.visible() && pacMan.getState() != null) {
+		if (pacMan.visible && pacMan.getState() != null) {
 			String text = pacMan.getState().name();
 			if (pacMan.powerTicks() > 0) {
 				text = String.format("POWER(%d)", pacMan.powerTicks());
@@ -196,7 +196,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawGhostState(Graphics2D g, Ghost ghost) {
-		if (!ghost.visible()) {
+		if (!ghost.visible) {
 			return;
 		}
 		StringBuilder text = new StringBuilder();
@@ -251,7 +251,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawActorAlignment(Actor<?> actor, Graphics2D g) {
-		if (!actor.visible()) {
+		if (!actor.visible) {
 			return;
 		}
 		Stroke normal = g.getStroke();
@@ -324,7 +324,7 @@ public class PlayView extends SimplePlayView {
 		});
 		Graphics2D g = (Graphics2D) g2.create();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		cast().ghostsOnStage().filter(Ghost::visible).forEach(ghost -> drawRoute(g, ghost));
+		cast().ghostsOnStage().filter(ghost -> ghost.visible).forEach(ghost -> drawRoute(g, ghost));
 		g.dispose();
 	}
 

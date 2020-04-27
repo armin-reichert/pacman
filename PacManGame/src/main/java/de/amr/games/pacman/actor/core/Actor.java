@@ -36,11 +36,9 @@ public abstract class Actor<S> extends Entity implements FsmContainer<S, PacManG
 
 	public void setActing(boolean acting) {
 		this.acting = acting;
+		visible = acting;
 		if (acting) {
-			setVisible(true);
 			init();
-		} else {
-			setVisible(false);
 		}
 	}
 

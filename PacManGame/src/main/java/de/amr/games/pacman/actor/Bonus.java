@@ -10,6 +10,7 @@ import java.util.Random;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.SpriteMap;
+import de.amr.easy.game.view.View;
 import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -27,7 +28,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Bonus extends Actor<BonusState> {
+public class Bonus extends Actor<BonusState> implements View {
 
 	private final SpriteMap sprites = new SpriteMap();
 	private final Fsm<BonusState, PacManGameEvent> brain;
@@ -50,12 +51,12 @@ public class Bonus extends Actor<BonusState> {
 			.initialState(INACTIVE)
 			.states()
 				.state(INACTIVE)
-					.onEntry(() -> setVisible(false))
+					.onEntry(() -> visible = false)
 				.state(ACTIVE)
 					.timeoutAfter(() -> sec(9 + new Random().nextFloat()))
 					.onEntry(() -> {
 						sprites.select("symbol");
-						setVisible(true);
+						visible = true;
 					})
 				.state(CONSUMED)
 					.timeoutAfter(sec(3))
@@ -96,14 +97,14 @@ public class Bonus extends Actor<BonusState> {
 		setValue(theme, game().level().bonusValue);
 		brain.setState(ACTIVE);
 	}
-	
+
 	public void hide() {
 		init();
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (visible()) {
+		if (visible) {
 			sprites.current().ifPresent(sprite -> {
 				Vector2f center = tf.getCenter();
 				float x = center.x - sprite.getWidth() / 2;

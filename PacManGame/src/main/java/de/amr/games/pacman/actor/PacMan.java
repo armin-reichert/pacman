@@ -19,6 +19,7 @@ import java.util.Optional;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
+import de.amr.easy.game.view.View;
 import de.amr.games.pacman.PacManAppSettings;
 import de.amr.games.pacman.actor.core.MovingActor;
 import de.amr.games.pacman.actor.steering.Steering;
@@ -42,7 +43,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover {
+public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover, View {
 
 	private final SpriteMap sprites = new SpriteMap();
 	private final Fsm<PacManState, PacManGameEvent> brain;
@@ -101,7 +102,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 						tf.setPosition(maze().pacManHome.centerX(), maze().pacManHome.y());
 						setMoveDir(RIGHT);
 						setWishDir(RIGHT);
-						setVisible(true);
+						visible = true;
 						sprites.forEach(Sprite::resetAnimation);
 						showFullFace();
 					})
@@ -223,7 +224,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (visible()) {
+		if (visible) {
 			sprites.current().ifPresent(sprite -> {
 				Vector2f center = tf.getCenter();
 				float x = center.x - sprite.getWidth() / 2;

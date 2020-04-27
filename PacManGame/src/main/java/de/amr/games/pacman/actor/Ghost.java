@@ -21,6 +21,7 @@ import java.util.Map;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
+import de.amr.easy.game.view.View;
 import de.amr.games.pacman.actor.core.MovingActor;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.actor.steering.ghost.SteeredGhost;
@@ -43,7 +44,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
+public class Ghost extends MovingActor<GhostState> implements SteeredGhost, View {
 
 	private final SpriteMap sprites = new SpriteMap();
 	private final Fsm<GhostState, PacManGameEvent> brain;
@@ -78,7 +79,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 				.state(LOCKED)
 					.onEntry(() -> {
 						takeSeat();
-						setVisible(true);
+						visible = true;
 						followState = getState();
 						sprites.select("color-" + moveDir());
 						sprites.forEach(Sprite::resetAnimation);
@@ -328,7 +329,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (visible()) {
+		if (visible) {
 			sprites.current().ifPresent(sprite -> {
 				Vector2f center = tf.getCenter();
 				float x = center.x - sprite.getWidth() / 2;

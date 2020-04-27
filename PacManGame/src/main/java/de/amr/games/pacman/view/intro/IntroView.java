@@ -103,7 +103,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 						pacManLogo.tf.setY(height());
 						pacManLogo.tf.setVelocityY(-2f);
 						pacManLogo.setCompletion(() -> pacManLogo.tf.getY() <= 20);
-						pacManLogo.setVisible(true); 
+						pacManLogo.visible = true; 
 						pacManLogo.start(); 
 					})
 					.onTick(() -> {
@@ -135,15 +135,15 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 						ghostPointsAnimation.tf.setY(200);
 						ghostPointsAnimation.tf.centerX(width());
 						ghostPointsAnimation.start();
-						gitHubLink.setVisible(true);
+						gitHubLink.visible = true;
 					})
 					.onTick(() -> {
 						ghostPointsAnimation.update();
 					})
 					.onExit(() -> {
 						ghostPointsAnimation.stop();
-						ghostPointsAnimation.setVisible(false);
-						gitHubLink.setVisible(false);
+						ghostPointsAnimation.visible = false;
+						gitHubLink.visible = false;
 					})
 					
 				.state(READY_TO_PLAY)
