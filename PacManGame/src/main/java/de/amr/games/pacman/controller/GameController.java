@@ -101,7 +101,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void createPlayEnvironment() {
 		game = new Game();
 		game.movingActors().forEach(actor -> {
-			actor.setActing(true);
+			game.pushActorOnStage(actor);
 			actor.addEventListener(this::process);
 		});
 		ghostCommand = new GhostCommand(game);
@@ -559,7 +559,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	private void toggleGhostActing(Ghost ghost) {
-		ghost.setActing(!ghost.acting);
+		if (game.onStage(ghost)) {
+			game.pullActorFromStage(ghost);
+		} else {
+			game.pushActorOnStage(ghost);
+		}
 	}
 
 	private void killAllGhosts() {

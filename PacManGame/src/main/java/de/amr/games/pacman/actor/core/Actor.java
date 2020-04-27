@@ -18,22 +18,12 @@ public abstract class Actor<S> extends Entity implements FsmContainer<S, PacManG
 
 	public final Game game;
 	public final String name;
-	public boolean acting;
 
 	public Actor(Game game, String name) {
 		this.game = game;
 		this.name = name;
 		tf.width = (Tile.SIZE);
 		tf.height = (Tile.SIZE);
-		setActing(false);
-	}
-
-	public void setActing(boolean acting) {
-		this.acting = acting;
-		visible = acting;
-		if (acting) {
-			init();
-		}
 	}
 
 	@Override

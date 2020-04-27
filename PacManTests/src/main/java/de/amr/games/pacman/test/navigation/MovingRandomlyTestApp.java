@@ -53,7 +53,7 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 		super.init();
 		game.maze.removeFood();
 		game.ghosts().forEach(ghost -> {
-			ghost.setActing(true);
+			game.pushActorOnStage(ghost);
 			ghost.tf.setPosition(game.maze.pacManHome.centerX(), game.maze.pacManHome.y());
 			ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
 			ghost.state(FRIGHTENED).removeTimer();

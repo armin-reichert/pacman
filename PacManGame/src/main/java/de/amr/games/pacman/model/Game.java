@@ -30,6 +30,8 @@ import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -103,6 +105,7 @@ public class Game {
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
 	public final Bonus bonus;
+	private final Set<MovingActor<?>> actorsOnStage = new HashSet<>();
 
 	public final Maze maze;
 	private final Deque<Symbol> levelCounter;
@@ -183,7 +186,7 @@ public class Game {
 	}
 
 	public Stream<Ghost> ghostsOnStage() {
-		return ghosts().filter(ghost -> ghost.acting);
+		return ghosts().filter(ghost -> actorsOnStage.contains(ghost));
 	}
 
 	public Stream<MovingActor<?>> movingActors() {
@@ -191,7 +194,24 @@ public class Game {
 	}
 
 	public Stream<MovingActor<?>> movingActorsOnStage() {
-		return movingActors().filter(actor -> actor.acting);
+		return movingActors().filter(actor -> actorsOnStage.contains(actor));
+	}
+	
+	public boolean onStage(MovingActor<?> actor) {
+		return actorsOnStage.contains(actor);
+	}
+
+	public void pushActorOnStage(MovingActor<?> actor) {
+		actorsOnStage.add(actor);
+		actor.init();
+		actor.visible = true;
+		loginfo("%s has been pushed onto stage", actor.name);
+	}
+
+	public void pullActorFromStage(MovingActor<?> actor) {
+		actorsOnStage.remove(actor);
+		actor.visible = false;
+		loginfo("%s has been pulled from stage", actor.name);
 	}
 
 	public void enterLevel(int n) {
