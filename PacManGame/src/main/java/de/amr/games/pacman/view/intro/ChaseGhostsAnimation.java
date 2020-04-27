@@ -11,7 +11,8 @@ import de.amr.easy.game.view.Animation;
 import de.amr.games.pacman.theme.Theme;
 
 /**
- * An animation showing Pac-Man chasing the ghosts and scoring points for each killed ghost.
+ * An animation showing Pac-Man chasing the ghosts and scoring points for each
+ * killed ghost.
  * 
  * @author Armin Reichert
  */
@@ -35,8 +36,8 @@ public class ChaseGhostsAnimation extends Entity implements Animation {
 		for (int number : new int[] { 200, 400, 800, 1600 }) {
 			points[i++] = theme.spr_number(number);
 		}
-		tf.width =(5 * 18);
-		tf.height =(18);
+		tf.width = (5 * 18);
+		tf.height = (18);
 	}
 
 	public void setStartPosition(float x, float y) {
@@ -60,13 +61,13 @@ public class ChaseGhostsAnimation extends Entity implements Animation {
 	@Override
 	public void start() {
 		init();
-		tf.setVelocityX(.8f);
+		tf.vx = .8f;
 		theme.snd_eatPill().loop();
 	}
 
 	@Override
 	public void stop() {
-		tf.setVelocityX(0);
+		tf.vx = 0;
 		theme.snd_eatPill().stop();
 	}
 
@@ -77,7 +78,7 @@ public class ChaseGhostsAnimation extends Entity implements Animation {
 
 	@Override
 	public void update() {
-		if (tf.getVelocityX() > 0) {
+		if (tf.vx > 0) {
 			tf.move();
 			if (tf.x + tf.width < 0) {
 				return;

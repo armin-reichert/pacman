@@ -32,8 +32,8 @@ public class ChasePacManAnimation extends Entity implements Animation {
 		ghosts[2] = theme.spr_ghostColored(GhostColor.CYAN, W);
 		ghosts[3] = theme.spr_ghostColored(GhostColor.ORANGE, W);
 		pill = true;
-		tf.width =(88);
-		tf.height =(16);
+		tf.width = (88);
+		tf.height = (16);
 	}
 
 	public void setStartPosition(float x, float y) {
@@ -65,13 +65,13 @@ public class ChasePacManAnimation extends Entity implements Animation {
 	@Override
 	public void start() {
 		init();
-		tf.setVelocityX(-0.8f);
+		tf.vx = -0.8f;
 		theme.snd_ghost_chase().loop();
 	}
 
 	@Override
 	public void stop() {
-		tf.setVelocityX(0);
+		tf.vx = 0;
 		theme.snd_ghost_chase().stop();
 	}
 

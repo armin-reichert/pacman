@@ -100,8 +100,8 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 				.state(SCROLLING_LOGO)
 					.onEntry(() -> {
 						theme.snd_insertCoin().play();
-						pacManLogo.tf.y=(height());
-						pacManLogo.tf.setVelocityY(-2f);
+						pacManLogo.tf.y = height();
+						pacManLogo.tf.vy = -2f;
 						pacManLogo.setCompletion(() -> pacManLogo.tf.y <= 20);
 						pacManLogo.visible = true; 
 						pacManLogo.start(); 
