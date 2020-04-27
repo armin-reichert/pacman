@@ -186,7 +186,7 @@ public class Game {
 	}
 
 	public Stream<Ghost> ghostsOnStage() {
-		return ghosts().filter(ghost -> actorsOnStage.contains(ghost));
+		return ghosts().filter(this::onStage);
 	}
 
 	public Stream<MovingActor<?>> movingActors() {
@@ -194,9 +194,9 @@ public class Game {
 	}
 
 	public Stream<MovingActor<?>> movingActorsOnStage() {
-		return movingActors().filter(actor -> actorsOnStage.contains(actor));
+		return movingActors().filter(this::onStage);
 	}
-	
+
 	public boolean onStage(MovingActor<?> actor) {
 		return actorsOnStage.contains(actor);
 	}
