@@ -22,7 +22,7 @@ import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
-import de.amr.games.pacman.view.core.GameView;
+import de.amr.games.pacman.view.core.PacManGameView;
 import de.amr.games.pacman.view.core.Pen;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
 import de.amr.statemachine.api.Fsm;
@@ -34,7 +34,7 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class IntroView implements GameView, FsmContainer<IntroState, Void> {
+public class IntroView implements PacManGameView, FsmContainer<IntroState, Void> {
 
 	public enum IntroState {
 		SCROLLING_LOGO, SHOWING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY

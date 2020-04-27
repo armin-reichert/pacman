@@ -22,8 +22,6 @@ import de.amr.games.pacman.actor.core.MovingActor;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.GhostColor;
-import de.amr.games.pacman.theme.Theme;
 
 /**
  * The cast (set of actors) of the Pac-Man game.
@@ -32,11 +30,10 @@ import de.amr.games.pacman.theme.Theme;
  */
 public class Cast {
 
+	private final Game game;
 	public final PacMan pacMan;
 	public final Ghost blinky, pinky, inky, clyde;
 	public final Bonus bonus;
-
-	private final Game game;
 
 	public Cast(Game game) {
 		this.game = game;
@@ -96,14 +93,6 @@ public class Cast {
 		clyde.behavior(CHASING,
 				clyde.isHeadingFor(() -> clyde.tile().distSq(pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
 		clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostHouseSeats[0]));
-	}
-
-	public void dressActors(Theme theme) {
-		pacMan.dress(theme);
-		blinky.dress(theme, GhostColor.RED);
-		pinky.dress(theme, GhostColor.PINK);
-		inky.dress(theme, GhostColor.CYAN);
-		clyde.dress(theme, GhostColor.ORANGE);
 	}
 
 	public Game game() {

@@ -45,7 +45,7 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
-import de.amr.games.pacman.view.core.GameView;
+import de.amr.games.pacman.view.core.PacManGameView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.PlayView;
@@ -69,7 +69,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private final LoadingView loadingView;
 	private final IntroView introView;
 	private PlayView playView;
-	private GameView currentView;
+	private PacManGameView currentView;
 
 	private boolean showFPS;
 	private boolean showRoutes;
@@ -93,7 +93,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return Optional.ofNullable(currentView);
 	}
 
-	private void showView(GameView view) {
+	private void showView(PacManGameView view) {
 		if (currentView != view) {
 			currentView = view;
 			currentView.init();

@@ -9,7 +9,6 @@ import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Direction.UP;
-import static de.amr.games.pacman.model.Direction.dirs;
 import static de.amr.games.pacman.model.Game.POINTS_GHOST;
 import static de.amr.games.pacman.model.Timing.relSpeed;
 import static de.amr.games.pacman.model.Timing.sec;
@@ -33,8 +32,6 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.GhostColor;
-import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -46,7 +43,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends MovingActor<GhostState> implements SteeredGhost, View {
 
-	private final SpriteMap sprites = new SpriteMap();
+	public final SpriteMap sprites = new SpriteMap();
 	private final Fsm<GhostState, PacManGameEvent> brain;
 	private final Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
 	private GhostState followState;
@@ -337,18 +334,6 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost, View
 				sprite.draw(g, x, y);
 			});
 		}
-	}
-
-	public void dress(Theme theme, GhostColor color) {
-		dirs().forEach(dir -> {
-			sprites.set("color-" + dir, theme.spr_ghostColored(color, dir.ordinal()));
-			sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir.ordinal()));
-		});
-		for (int points : Game.POINTS_GHOST) {
-			sprites.set("points-" + points, theme.spr_number(points));
-		}
-		sprites.set("frightened", theme.spr_ghostFrightened());
-		sprites.set("flashing", theme.spr_ghostFlashing());
 	}
 
 	public void enableAnimations(boolean b) {

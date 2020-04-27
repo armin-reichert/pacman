@@ -8,6 +8,7 @@ import java.awt.Image;
 import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 
+import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
@@ -17,7 +18,7 @@ import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Symbol;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
-import de.amr.games.pacman.view.core.GameView;
+import de.amr.games.pacman.view.core.AbstractPacManGameView;
 import de.amr.games.pacman.view.core.Pen;
 
 /**
@@ -25,7 +26,7 @@ import de.amr.games.pacman.view.core.Pen;
  * 
  * @author Armin Reichert
  */
-public class SimplePlayView implements GameView {
+public class SimplePlayView extends AbstractPacManGameView {
 
 	enum Mode {
 		EMPTY_MAZE, CROWDED_MAZE, FLASHING_MAZE
@@ -56,7 +57,7 @@ public class SimplePlayView implements GameView {
 		spriteMazeFlashing = theme.spr_flashingMaze();
 		messageText = null;
 		messageColor = Color.YELLOW;
-		cast.dressActors(theme);
+		dress(theme, cast);
 		cast.bonus.tf.setPosition(maze().bonusTile.centerX(), maze().bonusTile.y());
 	}
 
@@ -196,10 +197,21 @@ public class SimplePlayView implements GameView {
 
 	protected void drawActors(Graphics2D g) {
 		cast.bonus.draw(g);
-		cast.pacMan.draw(g);
+		drawPacMan(g);
 		// draw dead ghosts (numbers) under living ghosts
 		cast.ghostsOnStage().filter(ghost -> ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
 		cast.ghostsOnStage().filter(ghost -> !ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
+	}
+
+	protected void drawPacMan(Graphics2D g) {
+		if (cast.pacMan.visible) {
+			cast.pacMan.sprites.current().ifPresent(sprite -> {
+				Vector2f center = cast.pacMan.tf.getCenter();
+				float x = center.x - sprite.getWidth() / 2;
+				float y = center.y - sprite.getHeight() / 2;
+				sprite.draw(g, x, y);
+			});
+		}
 	}
 
 	protected void drawScores(Graphics2D g) {

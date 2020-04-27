@@ -13,13 +13,10 @@ import static de.amr.games.pacman.model.Game.DIGEST_PELLET_TICKS;
 import static de.amr.games.pacman.model.Timing.relSpeed;
 import static de.amr.games.pacman.model.Timing.sec;
 
-import java.awt.Graphics2D;
 import java.util.Optional;
 
-import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
-import de.amr.easy.game.view.View;
 import de.amr.games.pacman.PacManAppSettings;
 import de.amr.games.pacman.actor.core.MovingActor;
 import de.amr.games.pacman.actor.steering.Steering;
@@ -30,10 +27,8 @@ import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
-import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -43,9 +38,9 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover, View {
+public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover {
 
-	private final SpriteMap sprites = new SpriteMap();
+	public final SpriteMap sprites = new SpriteMap();
 	private final Fsm<PacManState, PacManGameEvent> brain;
 	private Steering steering;
 	private int powerTicksRemaining;
@@ -220,24 +215,6 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 			return false;
 		}
 		return super.canMoveBetween(tile, neighbor);
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
-		if (visible) {
-			sprites.current().ifPresent(sprite -> {
-				Vector2f center = tf.getCenter();
-				float x = center.x - sprite.getWidth() / 2;
-				float y = center.y - sprite.getHeight() / 2;
-				sprite.draw(g, x, y);
-			});
-		}
-	}
-
-	public void dress(Theme theme) {
-		Direction.dirs().forEach(dir -> sprites.set("walking-" + dir, theme.spr_pacManWalking(dir.ordinal())));
-		sprites.set("dying", theme.spr_pacManDying());
-		sprites.set("full", theme.spr_pacManFull());
 	}
 
 	public void showFullFace() {
