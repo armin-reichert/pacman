@@ -151,7 +151,7 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 		if (canCrossBorderTo(dir)) {
 			return dist;
 		}
-		float offsetX = tf.getX() - currentTile.x(), offsetY = tf.getY() - currentTile.y();
+		float offsetX = tf.x - currentTile.x(), offsetY = tf.y - currentTile.y();
 		switch (dir) {
 		case UP:
 			return Math.min(offsetY, dist);

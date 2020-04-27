@@ -79,7 +79,7 @@ public class LoadingView implements GameView {
 			pen.hcenter(PacManApp.texts.getString("loading_music"), width(), 18);
 		}
 		pacMan.draw(g);
-		float x = width() / 2 - (ghostCount / 2) * 20, y = pacMan.tf.getY() + 20;
+		float x = width() / 2 - (ghostCount / 2) * 20, y = pacMan.tf.y + 20;
 		for (int i = 0; i < ghostCount; ++i) {
 			GhostColor color = GhostColor.values()[new Random().nextInt(4)];
 			Direction dir = Direction.values()[new Random().nextInt(4)];

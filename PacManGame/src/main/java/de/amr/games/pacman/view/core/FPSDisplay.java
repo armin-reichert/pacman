@@ -24,7 +24,7 @@ public class FPSDisplay extends Entity implements View {
 				pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
 				pen.smooth(() -> {
 					String text = String.format("%d|%dfps", app().clock().getFrameRate(), app().clock().getTargetFramerate());
-					pen.drawString(text, tf.getX(), tf.getY());
+					pen.drawString(text, tf.x, tf.y);
 				});
 			}
 		}

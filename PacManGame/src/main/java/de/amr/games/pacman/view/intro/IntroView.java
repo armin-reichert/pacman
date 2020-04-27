@@ -64,10 +64,10 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 	private void createUIComponents() {
 		pacManLogo = new ImageWidget(theme.img_logo());
 		pacManLogo.tf.centerX(width());
-		pacManLogo.tf.setY(20);
+		pacManLogo.tf.y=(20);
 		chasePacMan = new ChasePacManAnimation(theme);
 		chasePacMan.tf.centerX(width());
-		chasePacMan.tf.setY(100);
+		chasePacMan.tf.y=(100);
 		chaseGhosts = new ChaseGhostsAnimation(theme);
 		chaseGhosts.tf.setPosition(width(), 200);
 		ghostPointsAnimation = new GhostPointsAnimation(theme);
@@ -79,7 +79,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 			.color(Color.LIGHT_GRAY)
 			.build();
 		/*@formatter:on*/
-		gitHubLink.tf.setY(height() - 16);
+		gitHubLink.tf.y=(height() - 16);
 		gitHubLink.tf.centerX(width());
 	}
 
@@ -100,9 +100,9 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 				.state(SCROLLING_LOGO)
 					.onEntry(() -> {
 						theme.snd_insertCoin().play();
-						pacManLogo.tf.setY(height());
+						pacManLogo.tf.y=(height());
 						pacManLogo.tf.setVelocityY(-2f);
-						pacManLogo.setCompletion(() -> pacManLogo.tf.getY() <= 20);
+						pacManLogo.setCompletion(() -> pacManLogo.tf.y <= 20);
 						pacManLogo.visible = true; 
 						pacManLogo.start(); 
 					})
@@ -113,8 +113,8 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 				.state(SHOWING_ANIMATIONS)
 					.onEntry(() -> {
 						chasePacMan.setStartPosition(width(), 100);
-						chasePacMan.setEndPosition(-chasePacMan.tf.getWidth(), 100);
-						chaseGhosts.setStartPosition(-chaseGhosts.tf.getWidth(), 200);
+						chasePacMan.setEndPosition(-chasePacMan.tf.width, 100);
+						chaseGhosts.setStartPosition(-chaseGhosts.tf.width, 200);
 						chaseGhosts.setEndPosition(width(), 200);
 						chasePacMan.start();
 						chaseGhosts.start();
@@ -132,7 +132,7 @@ public class IntroView implements GameView, FsmContainer<IntroState, Void> {
 				.state(WAITING_FOR_INPUT)
 					.timeoutAfter(sec(10))
 					.onEntry(() -> {
-						ghostPointsAnimation.tf.setY(200);
+						ghostPointsAnimation.tf.y=(200);
 						ghostPointsAnimation.tf.centerX(width());
 						ghostPointsAnimation.start();
 						gitHubLink.visible = true;

@@ -49,21 +49,21 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 					.act(() -> ghost.setWishDir(DOWN))
 	
 				.when(FALLING).then(MOVING_LEFT)
-					.condition(() -> ghost.tf.getY() >= target.y && ghost.tf.getX() > target.x)
+					.condition(() -> ghost.tf.y >= target.y && ghost.tf.x > target.x)
 					.act(() -> ghost.setWishDir(LEFT))
 				
 				.when(FALLING).then(MOVING_RIGHT)
-					.condition(() -> ghost.tf.getY() >= target.y && ghost.tf.getX() < target.x)
+					.condition(() -> ghost.tf.y >= target.y && ghost.tf.x < target.x)
 					.act(() -> ghost.setWishDir(RIGHT))
 	
 				.when(FALLING).then(TARGET_REACHED)
-					.condition(() -> ghost.tf.getY() >= target.y && ghost.tf.getX() == target.x)
+					.condition(() -> ghost.tf.y >= target.y && ghost.tf.x == target.x)
 				
 				.when(MOVING_LEFT).then(TARGET_REACHED)
-					.condition(() -> ghost.tf.getX() <= target.x)
+					.condition(() -> ghost.tf.x <= target.x)
 					
 				.when(MOVING_RIGHT).then(TARGET_REACHED)
-					.condition(() -> ghost.tf.getX() >= target.x)
+					.condition(() -> ghost.tf.x >= target.x)
 					
 		.endStateMachine();
 		/*@formatter:on*/

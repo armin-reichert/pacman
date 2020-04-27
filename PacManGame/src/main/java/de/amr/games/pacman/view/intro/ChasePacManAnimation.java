@@ -32,8 +32,8 @@ public class ChasePacManAnimation extends Entity implements Animation {
 		ghosts[2] = theme.spr_ghostColored(GhostColor.CYAN, W);
 		ghosts[3] = theme.spr_ghostColored(GhostColor.ORANGE, W);
 		pill = true;
-		tf.setWidth(88);
-		tf.setHeight(16);
+		tf.width =(88);
+		tf.height =(16);
 	}
 
 	public void setStartPosition(float x, float y) {
@@ -77,13 +77,13 @@ public class ChasePacManAnimation extends Entity implements Animation {
 
 	@Override
 	public boolean isComplete() {
-		return tf.getX() < endPosition.x;
+		return tf.x < endPosition.x;
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
 		int x = 0;
-		g.translate(tf.getX(), tf.getY());
+		g.translate(tf.x, tf.y);
 		g.setColor(Color.PINK);
 		if (pill) {
 			g.fillRect(6, 6, 2, 2);
@@ -101,6 +101,6 @@ public class ChasePacManAnimation extends Entity implements Animation {
 			ghosts[i].draw(g);
 			g.translate(-x, 0);
 		}
-		g.translate(-tf.getX(), -tf.getY());
+		g.translate(-tf.x, -tf.y);
 	}
 }

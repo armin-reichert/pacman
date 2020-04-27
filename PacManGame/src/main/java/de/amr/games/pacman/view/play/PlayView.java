@@ -191,7 +191,7 @@ public class PlayView extends SimplePlayView {
 			if (settings.pacManImmortable) {
 				text += ",lives " + INFTY;
 			}
-			drawSmallText(g, Color.YELLOW, pacMan.tf.getX(), pacMan.tf.getY(), text);
+			drawSmallText(g, Color.YELLOW, pacMan.tf.x, pacMan.tf.y, text);
 		}
 	}
 
@@ -221,7 +221,7 @@ public class PlayView extends SimplePlayView {
 		if (ghost.is(LEAVING_HOUSE)) {
 			text.append(String.format("[->%s]", ghost.followState()));
 		}
-		drawSmallText(g, color(ghost), ghost.tf.getX(), ghost.tf.getY(), text.toString());
+		drawSmallText(g, color(ghost), ghost.tf.x, ghost.tf.y, text.toString());
 	}
 
 	private void drawBonusState(Graphics2D g) {
@@ -232,7 +232,7 @@ public class PlayView extends SimplePlayView {
 		} else {
 			text = String.format("%s,%d|%d", bonus, bonus.state().getTicksRemaining(), bonus.state().getDuration());
 		}
-		drawSmallText(g, Color.YELLOW, bonus.tf.getX(), bonus.tf.getY(), text);
+		drawSmallText(g, Color.YELLOW, bonus.tf.x, bonus.tf.y, text);
 	}
 
 	private void drawPacManStarvingTime(Graphics2D g) {
@@ -258,17 +258,17 @@ public class PlayView extends SimplePlayView {
 		Stroke fine = new BasicStroke(0.2f);
 		g.setStroke(fine);
 		g.setColor(Color.GREEN);
-		g.translate(actor.tf.getX(), actor.tf.getY());
-		int w = actor.tf.getWidth(), h = actor.tf.getHeight();
-		if (round(actor.tf.getY()) % Tile.SIZE == 0) {
+		g.translate(actor.tf.x, actor.tf.y);
+		int w = actor.tf.width, h = actor.tf.height;
+		if (round(actor.tf.y) % Tile.SIZE == 0) {
 			g.drawLine(0, 0, w, 0);
 			g.drawLine(0, h, w, h);
 		}
-		if (round(actor.tf.getX()) % Tile.SIZE == 0) {
+		if (round(actor.tf.x) % Tile.SIZE == 0) {
 			g.drawLine(0, 0, 0, h);
 			g.drawLine(w, 0, w, h);
 		}
-		g.translate(-actor.tf.getX(), -actor.tf.getY());
+		g.translate(-actor.tf.x, -actor.tf.y);
 		g.setStroke(normal);
 	}
 

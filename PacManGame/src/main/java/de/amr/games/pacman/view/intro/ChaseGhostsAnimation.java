@@ -35,8 +35,8 @@ public class ChaseGhostsAnimation extends Entity implements Animation {
 		for (int number : new int[] { 200, 400, 800, 1600 }) {
 			points[i++] = theme.spr_number(number);
 		}
-		tf.setWidth(5 * 18);
-		tf.setHeight(18);
+		tf.width =(5 * 18);
+		tf.height =(18);
 	}
 
 	public void setStartPosition(float x, float y) {
@@ -72,14 +72,14 @@ public class ChaseGhostsAnimation extends Entity implements Animation {
 
 	@Override
 	public boolean isComplete() {
-		return tf.getX() > endPosition.x;
+		return tf.x > endPosition.x;
 	}
 
 	@Override
 	public void update() {
 		if (tf.getVelocityX() > 0) {
 			tf.move();
-			if (tf.getX() + tf.getWidth() < 0) {
+			if (tf.x + tf.width < 0) {
 				return;
 			}
 			pacManX += 0.3f;
@@ -96,7 +96,7 @@ public class ChaseGhostsAnimation extends Entity implements Animation {
 
 	@Override
 	public void draw(Graphics2D g) {
-		g.translate(tf.getX(), tf.getY());
+		g.translate(tf.x, tf.y);
 		for (int i = 0; i < 4; ++i) {
 			g.translate(18 * (i + 1), 0);
 			if (killed[i]) {
@@ -109,6 +109,6 @@ public class ChaseGhostsAnimation extends Entity implements Animation {
 		g.translate(pacManX, 0);
 		pacMan.draw(g);
 		g.translate(-pacManX, 0);
-		g.translate(-tf.getX(), -tf.getY());
+		g.translate(-tf.x, -tf.y);
 	}
 }

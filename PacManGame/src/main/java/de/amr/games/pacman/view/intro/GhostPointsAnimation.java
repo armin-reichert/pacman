@@ -40,8 +40,8 @@ public class GhostPointsAnimation extends Entity implements Animation {
 			points[i++] = theme.spr_number(number);
 		}
 		ghostTimer = -1;
-		tf.setWidth(90);
-		tf.setHeight(18);
+		tf.width =(90);
+		tf.height =(18);
 	}
 
 	private void resetGhostTimer() {
@@ -102,7 +102,7 @@ public class GhostPointsAnimation extends Entity implements Animation {
 
 	@Override
 	public void draw(Graphics2D g) {
-		g.translate(tf.getX(), tf.getY());
+		g.translate(tf.x, tf.y);
 		int x = 0;
 		pacMan.draw(g);
 		x += 12;
@@ -126,6 +126,6 @@ public class GhostPointsAnimation extends Entity implements Animation {
 			}
 			g.translate(-x, 0);
 		}
-		g.translate(-tf.getX(), -tf.getY());
+		g.translate(-tf.x, -tf.y);
 	}
 }
