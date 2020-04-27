@@ -28,6 +28,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
@@ -46,8 +47,8 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 	private int powerTicksRemaining;
 	private int digestionTicks;
 
-	public PacMan(Cast cast) {
-		super(cast, "Pac-Man");
+	public PacMan(Game game) {
+		super(game, "Pac-Man");
 		brain = buildFsm();
 		brain.getTracer().setLogger(Game.FSM_LOGGER);
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
@@ -60,6 +61,11 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 		return brain;
 	}
 
+	@Override
+	public Maze maze() {
+		return game.maze;
+	}
+
 	public void startEating() {
 		if (getState() == SLEEPING) {
 			setState(EATING);
@@ -68,8 +74,8 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 	}
 
 	public void gainPower() {
-		powerTicksRemaining = sec(game().level().pacManPowerSeconds);
-		cast().ghostsOnStage().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
+		powerTicksRemaining = sec(game.level().pacManPowerSeconds);
+		game.ghostsOnStage().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
 	}
 
 	public boolean hasPower() {
@@ -147,8 +153,8 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 
 	private Optional<PacManGameEvent> findSomethingInteresting() {
 		Tile tile = tile();
-		if (tile == maze().bonusTile && cast().bonus.is(ACTIVE)) {
-			return Optional.of(new BonusFoundEvent(cast().bonus.symbol(), cast().bonus.value()));
+		if (tile == maze().bonusTile && game.bonus.is(ACTIVE)) {
+			return Optional.of(new BonusFoundEvent(game.bonus.symbol(), game.bonus.value()));
 		}
 		if (tile.containsFood()) {
 			if (tile.containsEnergizer()) {
@@ -183,7 +189,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 		case SLEEPING:
 			return 0;
 		case EATING:
-			return relSpeed(hasPower() ? game().level().pacManPowerSpeed : game().level().pacManSpeed);
+			return relSpeed(hasPower() ? game.level().pacManPowerSpeed : game.level().pacManSpeed);
 		case DEAD:
 			return 0;
 		default:

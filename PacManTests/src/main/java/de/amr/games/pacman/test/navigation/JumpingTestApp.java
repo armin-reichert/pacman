@@ -6,7 +6,6 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.ArcadeTheme;
@@ -28,16 +27,15 @@ public class JumpingTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
-		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		setController(new JumpingTestUI(cast, theme));
+		setController(new JumpingTestUI(game, theme));
 	}
 }
 
 class JumpingTestUI extends PlayView implements VisualController {
 
-	public JumpingTestUI(Cast cast, Theme theme) {
-		super(cast, theme);
+	public JumpingTestUI(Game game, Theme theme) {
+		super(game, theme);
 		showRoutes = () -> false;
 		showStates = () -> true;
 		showScores = () -> false;
@@ -47,14 +45,14 @@ class JumpingTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		maze().removeFood();
-		cast.ghosts().forEach(ghost -> ghost.setActing(true));
+		game.maze.removeFood();
+		game.ghosts().forEach(ghost -> ghost.setActing(true));
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		cast.ghostsOnStage().forEach(Ghost::update);
+		game.ghostsOnStage().forEach(Ghost::update);
 	}
 
 	@Override

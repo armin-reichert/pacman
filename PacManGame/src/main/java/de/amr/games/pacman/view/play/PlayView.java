@@ -32,13 +32,13 @@ import java.util.stream.IntStream;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.BonusState;
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.House;
 import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.GhostColor;
@@ -72,11 +72,11 @@ public class PlayView extends SimplePlayView {
 	private final BufferedImage gridImage, inkyImage, clydeImage, pacManImage;
 	private final Polygon arrowHead;
 
-	public PlayView(Cast cast, Theme theme) {
-		super(cast, theme);
+	public PlayView(Game game, Theme theme) {
+		super(game, theme);
 		fps = new FPSDisplay();
 		fps.tf.setPosition(0, 18 * Tile.SIZE);
-		gridImage = createGridImage(cast.game().maze());
+		gridImage = createGridImage(game.maze);
 		inkyImage = ghostImage(GhostColor.CYAN);
 		clydeImage = ghostImage(GhostColor.ORANGE);
 		pacManImage = (BufferedImage) theme.spr_pacManWalking(Direction.RIGHT.ordinal()).frame(0);
@@ -141,13 +141,13 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private Color color(Ghost ghost) {
-		if (ghost == cast().blinky)
+		if (ghost == game.blinky)
 			return Color.RED;
-		if (ghost == cast().pinky)
+		if (ghost == game.pinky)
 			return Color.PINK;
-		if (ghost == cast().inky)
+		if (ghost == game.inky)
 			return Color.CYAN;
-		if (ghost == cast().clyde)
+		if (ghost == game.clyde)
 			return Color.ORANGE;
 		throw new IllegalArgumentException("Unknown ghost: " + ghost);
 	}
@@ -176,13 +176,13 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawActorStates(Graphics2D g) {
-		cast.ghostsOnStage().forEach(ghost -> drawGhostState(g, ghost));
+		game.ghostsOnStage().forEach(ghost -> drawGhostState(g, ghost));
 		drawPacManState(g);
 		drawBonusState(g);
 	}
 
 	private void drawPacManState(Graphics2D g) {
-		PacMan pacMan = cast().pacMan;
+		PacMan pacMan = game.pacMan;
 		if (pacMan.visible && pacMan.getState() != null) {
 			String text = pacMan.getState().name();
 			if (pacMan.powerTicks() > 0) {
@@ -201,7 +201,7 @@ public class PlayView extends SimplePlayView {
 		}
 		StringBuilder text = new StringBuilder();
 		// show ghost name if not obvious
-		text.append(ghost.is(DEAD, FRIGHTENED, ENTERING_HOUSE) ? ghost.name() : "");
+		text.append(ghost.is(DEAD, FRIGHTENED, ENTERING_HOUSE) ? ghost.name : "");
 		// timer values
 		int duration = ghost.state().getDuration();
 		int remaining = ghost.state().getTicksRemaining();
@@ -225,7 +225,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawBonusState(Graphics2D g) {
-		Bonus bonus = cast().bonus;
+		Bonus bonus = game.bonus;
 		String text = "";
 		if (bonus.getState() == BonusState.INACTIVE) {
 			text = "Bonus inactive";
@@ -247,7 +247,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawActorAlignments(Graphics2D g) {
-		cast().movingActorsOnStage().forEach(actor -> drawActorAlignment(actor, g));
+		game.movingActorsOnStage().forEach(actor -> drawActorAlignment(actor, g));
 	}
 
 	private void drawActorAlignment(Actor<?> actor, Graphics2D g) {
@@ -274,11 +274,11 @@ public class PlayView extends SimplePlayView {
 
 	private void drawUpwardsBlockedTileMarkers(Graphics2D g) {
 		g.setColor(Color.WHITE);
-		for (int row = 0; row < maze().numRows; ++row) {
-			for (int col = 0; col < maze().numCols; ++col) {
-				Tile tile = maze().tileAt(col, row);
-				if (maze().isNoUpIntersection(tile)) {
-					Tile above = maze().tileToDir(tile, Direction.UP);
+		for (int row = 0; row < game.maze.numRows; ++row) {
+			for (int col = 0; col < game.maze.numCols; ++col) {
+				Tile tile = game.maze.tileAt(col, row);
+				if (game.maze.isNoUpIntersection(tile)) {
+					Tile above = game.maze.tileToDir(tile, Direction.UP);
 					drawArrowHead(g, Direction.DOWN, above.centerX(), above.y() - 2);
 				}
 			}
@@ -286,9 +286,9 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawSeats(Graphics2D g) {
-		Ghost[] ghostsBySeat = { cast.blinky, cast.inky, cast.pinky, cast.clyde };
+		Ghost[] ghostsBySeat = { game.blinky, game.inky, game.pinky, game.clyde };
 		IntStream.rangeClosed(0, 3).forEach(seat -> {
-			Tile seatTile = maze().ghostHouseSeats[seat];
+			Tile seatTile = game.maze.ghostHouseSeats[seat];
 			g.setColor(color(ghostsBySeat[seat]));
 			int x = seatTile.centerX(), y = seatTile.y();
 			String text = String.valueOf(seat);
@@ -317,14 +317,14 @@ public class PlayView extends SimplePlayView {
 
 	private void drawRoutes(Graphics2D g2) {
 		boolean show = showRoutes.getAsBoolean();
-		cast().ghosts().forEach(ghost -> {
+		game.ghosts().forEach(ghost -> {
 			Arrays.asList(GhostState.values()).forEach(state -> {
 				ghost.steering(state).enableTargetPathComputation(show);
 			});
 		});
 		Graphics2D g = (Graphics2D) g2.create();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		cast().ghostsOnStage().filter(ghost -> ghost.visible).forEach(ghost -> drawRoute(g, ghost));
+		game.ghostsOnStage().filter(ghost -> ghost.visible).forEach(ghost -> drawRoute(g, ghost));
 		g.dispose();
 	}
 
@@ -358,7 +358,7 @@ public class PlayView extends SimplePlayView {
 				g.setStroke(solid);
 				g.drawLine(from.centerX(), from.centerY(), to.centerX(), to.centerY());
 				if (i + 1 == targetPath.size() - 1) {
-					drawArrowHead(g, maze().direction(from, to).get(), to.centerX(), to.centerY());
+					drawArrowHead(g, game.maze.direction(from, to).get(), to.centerX(), to.centerY());
 				}
 			}
 		} else if (ghost.wishDir() != null) {
@@ -370,21 +370,21 @@ public class PlayView extends SimplePlayView {
 			drawArrowHead(g, nextDir, x + dirVector.roundedX() * Tile.SIZE, y + dirVector.roundedY() * Tile.SIZE);
 		}
 		// visualize Inky's chasing (target tile may be null if Blinky is not on stage!)
-		if (ghost == cast().inky && ghost.is(CHASING) && ghost.targetTile() != null) {
+		if (ghost == game.inky && ghost.is(CHASING) && ghost.targetTile() != null) {
 			{
-				int x1 = cast().blinky.tile().centerX(), y1 = cast().blinky.tile().centerY();
+				int x1 = game.blinky.tile().centerX(), y1 = game.blinky.tile().centerY();
 				int x2 = ghost.targetTile().centerX(), y2 = ghost.targetTile().centerY();
 				g.setColor(Color.GRAY);
 				g.drawLine(x1, y1, x2, y2);
 			}
 			{
-				Tile pacManTile = cast().pacMan.tile();
-				Direction pacManDir = cast().pacMan.moveDir();
+				Tile pacManTile = game.pacMan.tile();
+				Direction pacManDir = game.pacMan.moveDir();
 				int s = Tile.SIZE / 2; // size of target square
 				g.setColor(Color.GRAY);
 				if (settings.overflowBug && pacManDir == Direction.UP) {
-					Tile twoAhead = maze().tileToDir(pacManTile, pacManDir, 2);
-					Tile twoLeft = maze().tileToDir(twoAhead, Direction.LEFT, 2);
+					Tile twoAhead = game.maze.tileToDir(pacManTile, pacManDir, 2);
+					Tile twoLeft = game.maze.tileToDir(twoAhead, Direction.LEFT, 2);
 					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
 					int x2 = twoAhead.centerX(), y2 = twoAhead.centerY();
 					int x3 = twoLeft.centerX(), y3 = twoLeft.centerY();
@@ -392,7 +392,7 @@ public class PlayView extends SimplePlayView {
 					g.drawLine(x2, y2, x3, y3);
 					g.fillRect(x3 - s / 2, y3 - s / 2, s, s);
 				} else {
-					Tile twoTilesAhead = cast().pacMan.tilesAhead(2);
+					Tile twoTilesAhead = game.pacMan.tilesAhead(2);
 					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
 					int x2 = twoTilesAhead.centerX(), y2 = twoTilesAhead.centerY();
 					g.drawLine(x1, y1, x2, y2);
@@ -401,8 +401,8 @@ public class PlayView extends SimplePlayView {
 			}
 		}
 		// draw Clyde's chasing zone
-		if (ghost == cast().clyde && ghost.is(CHASING)) {
-			int cx = cast().clyde.tile().centerX(), cy = cast().clyde.tile().centerY(), r = 8 * Tile.SIZE;
+		if (ghost == game.clyde && ghost.is(CHASING)) {
+			int cx = game.clyde.tile().centerX(), cy = game.clyde.tile().centerY(), r = 8 * Tile.SIZE;
 			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 100));
 			g.drawOval(cx - r, cy - r, 2 * r, 2 * r);
 		}
@@ -413,10 +413,10 @@ public class PlayView extends SimplePlayView {
 			return; // test scenes may have no ghost house
 		}
 		drawPacManStarvingTime(g);
-		drawDotCounter(g, clydeImage, house.ghostDotCount(cast.clyde), 1, 20,
-				!house.isGlobalDotCounterEnabled() && house.isPreferredGhost(cast.clyde));
-		drawDotCounter(g, inkyImage, house.ghostDotCount(cast.inky), 24, 20,
-				!house.isGlobalDotCounterEnabled() && house.isPreferredGhost(cast.inky));
+		drawDotCounter(g, clydeImage, house.ghostDotCount(game.clyde), 1, 20,
+				!house.isGlobalDotCounterEnabled() && house.isPreferredGhost(game.clyde));
+		drawDotCounter(g, inkyImage, house.ghostDotCount(game.inky), 24, 20,
+				!house.isGlobalDotCounterEnabled() && house.isPreferredGhost(game.inky));
 		drawDotCounter(g, null, house.globalDotCount(), 24, 14, house.isGlobalDotCounterEnabled());
 	}
 

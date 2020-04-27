@@ -13,7 +13,6 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
@@ -38,9 +37,8 @@ public class TakeShortestPathTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
-		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		setController(new TakeShortestPathTestUI(cast, theme));
+		setController(new TakeShortestPathTestUI(game, theme));
 	}
 }
 
@@ -50,12 +48,12 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 	final List<Tile> targets;
 	int targetIndex;
 
-	public TakeShortestPathTestUI(Cast cast, Theme theme) {
-		super(cast, theme);
-		ghost = cast.blinky;
-		targets = Arrays.asList(maze().cornerSE, maze().tileAt(15, 23), maze().tileAt(12, 23), maze().cornerSW,
-				maze().tileToDir(maze().portalLeft, Direction.RIGHT), maze().cornerNW, maze().ghostHouseSeats[0],
-				maze().cornerNE, maze().tileToDir(maze().portalRight, Direction.LEFT), maze().pacManHome);
+	public TakeShortestPathTestUI(Game game, Theme theme) {
+		super(game, theme);
+		ghost = game.blinky;
+		targets = Arrays.asList(game.maze.cornerSE, game.maze.tileAt(15, 23), game.maze.tileAt(12, 23), game.maze.cornerSW,
+				game.maze.tileToDir(game.maze.portalLeft, Direction.RIGHT), game.maze.cornerNW, game.maze.ghostHouseSeats[0],
+				game.maze.cornerNE, game.maze.tileToDir(game.maze.portalRight, Direction.LEFT), game.maze.pacManHome);
 		showRoutes = () -> true;
 		showStates = () -> true;
 		showScores = () -> false;
@@ -65,7 +63,7 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		maze().removeFood();
+		game.maze.removeFood();
 		targetIndex = 0;
 		theme.snd_ghost_chase().volume(0);
 		ghost.setActing(true);
@@ -79,8 +77,8 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 	private void nextTarget() {
 		if (++targetIndex == targets.size()) {
 			targetIndex = 0;
-			game().enterLevel(game().level().number + 1);
-			maze().removeFood();
+			game.enterLevel(game.level().number + 1);
+			game.maze.removeFood();
 		}
 	}
 

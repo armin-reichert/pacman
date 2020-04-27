@@ -12,7 +12,6 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.ArcadeTheme;
 import de.amr.games.pacman.theme.Theme;
@@ -33,16 +32,15 @@ public class EnterGhostHouseTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
-		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		setController(new EnterGhostHouseTestUI(cast, theme));
+		setController(new EnterGhostHouseTestUI(game, theme));
 	}
 }
 
 class EnterGhostHouseTestUI extends PlayView implements VisualController {
 
-	public EnterGhostHouseTestUI(Cast cast, Theme theme) {
-		super(cast, theme);
+	public EnterGhostHouseTestUI(Game game, Theme theme) {
+		super(game, theme);
 		showRoutes = () -> true;
 		showStates = () -> true;
 		showScores = () -> false;
@@ -57,8 +55,8 @@ class EnterGhostHouseTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		maze().removeFood();
-		cast.inky.setActing(true);
+		game.maze.removeFood();
+		game.inky.setActing(true);
 		messageColor = Color.YELLOW;
 		messageText = "SPACE = enter / leave house";
 	}
@@ -66,10 +64,10 @@ class EnterGhostHouseTestUI extends PlayView implements VisualController {
 	@Override
 	public void update() {
 		super.update();
-		boolean outside = !maze().partOfGhostHouse(cast.inky.tile());
+		boolean outside = !game.maze.partOfGhostHouse(game.inky.tile());
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			cast.inky.setState(outside ? ENTERING_HOUSE : LEAVING_HOUSE);
+			game.inky.setState(outside ? ENTERING_HOUSE : LEAVING_HOUSE);
 		}
-		cast.inky.update();
+		game.inky.update();
 	}
 }

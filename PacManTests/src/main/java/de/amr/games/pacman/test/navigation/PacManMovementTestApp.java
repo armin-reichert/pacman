@@ -9,7 +9,6 @@ import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.actor.core.MovingActor;
@@ -34,9 +33,8 @@ public class PacManMovementTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
-		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		setController(new PacManMovementTestUI(cast, theme));
+		setController(new PacManMovementTestUI(game, theme));
 	}
 }
 
@@ -44,9 +42,9 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 
 	private PacMan pacMan;
 
-	public PacManMovementTestUI(Cast cast, Theme theme) {
-		super(cast, theme);
-		pacMan = cast.pacMan;
+	public PacManMovementTestUI(Game game, Theme theme) {
+		super(game, theme);
+		pacMan = game.pacMan;
 		showRoutes = () -> false;
 		showStates = () -> false;
 		showScores = () -> false;
@@ -61,10 +59,10 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
 				theme.snd_eatPill().play();
 				foodFound.tile.removeFood();
-				game().level().numPelletsEaten++;
-				if (game().numPelletsRemaining() == 0) {
-					maze().restoreFood();
-					game().level().numPelletsEaten = 0;
+				game.level().numPelletsEaten++;
+				if (game.numPelletsRemaining() == 0) {
+					game.maze.restoreFood();
+					game.level().numPelletsEaten = 0;
 				}
 			}
 		});
@@ -78,7 +76,7 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 	public void update() {
 		super.update();
 		handleSteeringChange();
-		cast.movingActorsOnStage().forEach(MovingActor::update);
+		game.movingActorsOnStage().forEach(MovingActor::update);
 	}
 
 	private void handleSteeringChange() {
@@ -90,7 +88,7 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 					pacMan.isFollowingKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
 			message("Numpad keys");
 			// } else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_A)) {
-			// pac.steering(avoidingGhosts(cast));
+			// pac.steering(avoidingGhosts(game));
 			// message("Avoiding ghosts");
 		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_R)) {
 			pacMan.behavior(pacMan.isMovingRandomlyWithoutTurningBack());

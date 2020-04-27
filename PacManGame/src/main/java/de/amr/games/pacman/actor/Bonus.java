@@ -35,8 +35,8 @@ public class Bonus extends Actor<BonusState> implements View {
 	private Symbol symbol;
 	private int value;
 
-	public Bonus(Cast cast) {
-		super(cast, "Bonus");
+	public Bonus(Game game) {
+		super(game, "Bonus");
 		brain = buildFsm();
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
 		brain.getTracer().setLogger(Game.FSM_LOGGER);
@@ -47,7 +47,7 @@ public class Bonus extends Actor<BonusState> implements View {
 		return StateMachine.
 		/*@formatter:off*/
 		beginStateMachine(BonusState.class, PacManGameEvent.class)
-			.description(String.format("[%s]", name()))
+			.description(String.format("[%s]", name))
 			.initialState(INACTIVE)
 			.states()
 				.state(INACTIVE)
@@ -93,8 +93,8 @@ public class Bonus extends Actor<BonusState> implements View {
 	}
 
 	public void show(Theme theme) {
-		setSymbol(theme, game().level().bonusSymbol);
-		setValue(theme, game().level().bonusValue);
+		setSymbol(theme, game.level().bonusSymbol);
+		setValue(theme, game.level().bonusValue);
 		brain.setState(ACTIVE);
 	}
 

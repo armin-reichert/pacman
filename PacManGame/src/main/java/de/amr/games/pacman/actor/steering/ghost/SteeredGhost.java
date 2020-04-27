@@ -29,8 +29,7 @@ public interface SteeredGhost extends SteeredMazeMover {
 	/**
 	 * Lets the actor avoid the attacker's path by walking to a "safe" maze corner.
 	 * 
-	 * @param attacker
-	 *                   the attacking actor
+	 * @param attacker the attacking actor
 	 * 
 	 * @return behavior where actor flees to a "safe" maze corner
 	 */
@@ -39,10 +38,10 @@ public interface SteeredGhost extends SteeredMazeMover {
 	}
 
 	/**
-	 * Lets a ghost enter the ghost house and move to the seat with the given position.
+	 * Lets a ghost enter the ghost house and move to the seat with the given
+	 * position.
 	 * 
-	 * @param seatPosition
-	 *                       seat position
+	 * @param seatPosition seat position
 	 * 
 	 * @return behavior which lets a ghost enter the house and take its seat
 	 */

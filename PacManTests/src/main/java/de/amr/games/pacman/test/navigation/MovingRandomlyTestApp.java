@@ -10,7 +10,6 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.ArcadeTheme;
@@ -32,9 +31,8 @@ public class MovingRandomlyTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
-		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		setController(new MovingRandomlyTestUI(cast, theme));
+		setController(new MovingRandomlyTestUI(game, theme));
 	}
 }
 
@@ -42,8 +40,8 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 
 	boolean started;
 
-	public MovingRandomlyTestUI(Cast cast, Theme theme) {
-		super(cast, theme);
+	public MovingRandomlyTestUI(Game game, Theme theme) {
+		super(game, theme);
 		showRoutes = () -> true;
 		showStates = () -> true;
 		showScores = () -> false;
@@ -53,10 +51,10 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		maze().removeFood();
-		cast.ghosts().forEach(ghost -> {
+		game.maze.removeFood();
+		game.ghosts().forEach(ghost -> {
 			ghost.setActing(true);
-			ghost.tf.setPosition(maze().pacManHome.centerX(), maze().pacManHome.y());
+			ghost.tf.setPosition(game.maze.pacManHome.centerX(), game.maze.pacManHome.y());
 			ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
 			ghost.state(FRIGHTENED).removeTimer();
 			ghost.setState(FRIGHTENED);
@@ -72,7 +70,7 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 			clearMessage();
 		}
 		if (started) {
-			cast.ghostsOnStage().forEach(Ghost::update);
+			game.ghostsOnStage().forEach(Ghost::update);
 		}
 	}
 

@@ -6,7 +6,6 @@ import java.util.Random;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
@@ -22,7 +21,7 @@ import de.amr.games.pacman.view.core.Pen;
  */
 public class LoadingView extends AbstractPacManGameView {
 
-	private final Cast cast;
+	private final Game game;
 	private final Theme theme;
 
 	private int alpha;
@@ -32,31 +31,31 @@ public class LoadingView extends AbstractPacManGameView {
 
 	public LoadingView(Theme theme) {
 		this.theme = theme;
-		cast = new Cast(new Game());
-		dress(theme, cast);
+		game = new Game();
+		dress(theme, game);
 	}
 
 	@Override
 	public void init() {
-		cast.pacMan.init();
-		cast.pacMan.setState(PacManState.EATING);
+		game.pacMan.init();
+		game.pacMan.setState(PacManState.EATING);
 		ghostCount = 0;
 		ghostInc = 1;
 	}
 
 	@Override
 	public void update() {
-		float x = cast.pacMan.tf.getCenter().x;
+		float x = game.pacMan.tf.getCenter().x;
 		if (x > 0.9f * width() || x < 0.1 * width()) {
-			cast.pacMan.setMoveDir(cast.pacMan.moveDir().opposite());
+			game.pacMan.setMoveDir(game.pacMan.moveDir().opposite());
 			ghostCount += ghostInc;
 			if (ghostCount == 10 || ghostCount == 0) {
 				ghostInc = -ghostInc;
 			}
 		}
-		cast.pacMan.tf.setVelocity(Vector2f.smul(2.5f, cast.pacMan.moveDir().vector()));
-		cast.pacMan.tf.move();
-		cast.pacMan.showWalkingAnimation();
+		game.pacMan.tf.setVelocity(Vector2f.smul(2.5f, game.pacMan.moveDir().vector()));
+		game.pacMan.tf.move();
+		game.pacMan.showWalkingAnimation();
 		alpha += alphaInc;
 		if (alpha >= 160) {
 			alphaInc = -2;
@@ -76,7 +75,7 @@ public class LoadingView extends AbstractPacManGameView {
 			pen.hcenter(PacManApp.texts.getString("loading_music"), width(), 18);
 		}
 		drawPacMan(g);
-		float x = width() / 2 - (ghostCount / 2) * 20, y = cast.pacMan.tf.y + 20;
+		float x = width() / 2 - (ghostCount / 2) * 20, y = game.pacMan.tf.y + 20;
 		for (int i = 0; i < ghostCount; ++i) {
 			GhostColor color = GhostColor.values()[new Random().nextInt(4)];
 			Direction dir = Direction.values()[new Random().nextInt(4)];
@@ -86,14 +85,13 @@ public class LoadingView extends AbstractPacManGameView {
 	}
 
 	protected void drawPacMan(Graphics2D g) {
-		if (cast.pacMan.visible) {
-			cast.pacMan.sprites.current().ifPresent(sprite -> {
-				Vector2f center = cast.pacMan.tf.getCenter();
+		if (game.pacMan.visible) {
+			game.pacMan.sprites.current().ifPresent(sprite -> {
+				Vector2f center = game.pacMan.tf.getCenter();
 				float x = center.x - sprite.getWidth() / 2;
 				float y = center.y - sprite.getHeight() / 2;
 				sprite.draw(g, x, y);
 			});
 		}
 	}
-
 }

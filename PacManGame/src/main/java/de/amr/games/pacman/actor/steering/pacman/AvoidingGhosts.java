@@ -4,20 +4,20 @@ import static de.amr.datastruct.StreamUtils.permute;
 
 import java.util.Comparator;
 
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.steering.MazeMover;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 
 public class AvoidingGhosts implements Steering {
 
-	private final Cast cast;
+	private final Game game;
 
-	public AvoidingGhosts(Cast cast) {
-		this.cast = cast;
+	public AvoidingGhosts(Game game) {
+		this.game = game;
 	}
 
 	@Override
@@ -27,9 +27,9 @@ public class AvoidingGhosts implements Steering {
 
 	@Override
 	public void steer() {
-		PacMan pacMan = cast.pacMan;
+		PacMan pacMan = game.pacMan;
 		/*@formatter:off*/
-		cast.ghostsOnStage()
+		game.ghostsOnStage()
 			.filter(ghost -> !pacMan.maze().inGhostHouse(ghost.tile()))
 			.sorted(bySmallestDistanceTo(pacMan))
 			.findFirst()

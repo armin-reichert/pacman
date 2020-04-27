@@ -9,7 +9,6 @@ import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Direction.UP;
-import static de.amr.games.pacman.model.Game.POINTS_GHOST;
 import static de.amr.games.pacman.model.Timing.relSpeed;
 import static de.amr.games.pacman.model.Timing.sec;
 
@@ -31,6 +30,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
@@ -51,8 +51,8 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost, View
 	private int seatNumber;
 	private Direction seatEyesDir;
 
-	public Ghost(Cast cast, String name) {
-		super(cast, name);
+	public Ghost(Game game, String name) {
+		super(game, name);
 		brain = buildFsm();
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
 		brain.getTracer().setLogger(Game.FSM_LOGGER);
@@ -61,6 +61,11 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost, View
 	@Override
 	public Fsm<GhostState, PacManGameEvent> fsm() {
 		return brain;
+	}
+
+	@Override
+	public Maze maze() {
+		return game.maze;
 	}
 
 	public StateMachine<GhostState, PacManGameEvent> buildFsm() {
@@ -82,7 +87,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost, View
 						sprites.forEach(Sprite::resetAnimation);
 					})
 					.onTick(() -> {
-							step(cast().pacMan.hasPower() ? "frightened" : "color-" + moveDir());
+							step(game.pacMan.hasPower() ? "frightened" : "color-" + moveDir());
 					})
 					
 				.state(LEAVING_HOUSE)
@@ -106,7 +111,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost, View
 					})
 				
 				.state(FRIGHTENED)
-					.timeoutAfter(() -> sec(game().level().pacManPowerSeconds))
+					.timeoutAfter(() -> sec(game.level().pacManPowerSeconds))
 					.onTick((state, t, remaining) -> {
 						step(remaining < sec(2) ? "flashing" : "frightened");
 						checkPacManCollision();
@@ -115,7 +120,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost, View
 				.state(DEAD)
 					.timeoutAfter(sec(1)) // "dying" time
 					.onEntry(() -> {
-						int points = POINTS_GHOST[game().level().ghostsKilledByEnergizer - 1];
+						int points = Game.POINTS_GHOST[game.level().ghostsKilledByEnergizer - 1];
 						sprites.select("points-" + points);
 					})
 					.onTick(() -> {
@@ -268,21 +273,21 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost, View
 		boolean outsideHouse = !maze().inGhostHouse(tile());
 		switch (getState()) {
 		case LOCKED:
-			return outsideHouse ? 0 : relSpeed(game().level().ghostSpeed) / 2;
+			return outsideHouse ? 0 : relSpeed(game.level().ghostSpeed) / 2;
 		case LEAVING_HOUSE:
-			return relSpeed(game().level().ghostSpeed) / 2;
+			return relSpeed(game.level().ghostSpeed) / 2;
 		case ENTERING_HOUSE:
-			return relSpeed(game().level().ghostSpeed);
+			return relSpeed(game.level().ghostSpeed);
 		case CHASING:
 			//$FALL-THROUGH$
 		case SCATTERING:
-			return inTunnel ? relSpeed(game().level().ghostTunnelSpeed) : relSpeed(game().level().ghostSpeed);
+			return inTunnel ? relSpeed(game.level().ghostTunnelSpeed) : relSpeed(game.level().ghostSpeed);
 		case FRIGHTENED:
-			return inTunnel ? relSpeed(game().level().ghostTunnelSpeed) : relSpeed(game().level().ghostFrightenedSpeed);
+			return inTunnel ? relSpeed(game.level().ghostTunnelSpeed) : relSpeed(game.level().ghostFrightenedSpeed);
 		case DEAD:
-			return 2 * relSpeed(game().level().ghostSpeed);
+			return 2 * relSpeed(game.level().ghostSpeed);
 		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name()));
+			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name));
 		}
 	}
 
@@ -316,10 +321,10 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost, View
 	}
 
 	private void checkPacManCollision() {
-		if (isTeleporting() || cast().pacMan.isTeleporting()) {
+		if (isTeleporting() || game.pacMan.isTeleporting()) {
 			return;
 		}
-		if (tile().equals(cast().pacMan.tile()) && cast().pacMan.is(PacManState.EATING)) {
+		if (tile().equals(game.pacMan.tile()) && game.pacMan.is(PacManState.EATING)) {
 			publish(new PacManGhostCollisionEvent(this, tile()));
 		}
 	}

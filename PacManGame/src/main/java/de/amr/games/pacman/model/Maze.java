@@ -152,16 +152,15 @@ public class Maze {
 	}
 
 	/**
-	 * Returns the tile at the given tile position. This is either a tile inside the board, a portal
-	 * tile or a wall outside. Tiles inside the board and the two portal tiles are created once so
-	 * equality can be tested using <code>==</code>. Other tiles are created on-demand and must be
-	 * compared using {@link Object#equals(Object)}. For tiles outside of the board, the column and row
-	 * index must fit into a byte.
+	 * Returns the tile at the given tile position. This is either a tile inside the
+	 * board, a portal tile or a wall outside. Tiles inside the board and the two
+	 * portal tiles are created once so equality can be tested using
+	 * <code>==</code>. Other tiles are created on-demand and must be compared using
+	 * {@link Object#equals(Object)}. For tiles outside of the board, the column and
+	 * row index must fit into a byte.
 	 * 
-	 * @param col
-	 *              a column index
-	 * @param row
-	 *              a row index
+	 * @param col a column index
+	 * @param row a row index
 	 * @return the tile with the given coordinates.
 	 */
 	public Tile tileAt(int col, int row) {
@@ -178,14 +177,11 @@ public class Maze {
 	}
 
 	/**
-	 * @param tile
-	 *               reference tile
-	 * @param dir
-	 *               some direction
-	 * @param n
-	 *               number of tiles
-	 * @return the tile located <code>n</code> tiles away from the reference tile towards the given
-	 *         direction. This can be a tile outside of the board!
+	 * @param tile reference tile
+	 * @param dir  some direction
+	 * @param n    number of tiles
+	 * @return the tile located <code>n</code> tiles away from the reference tile
+	 *         towards the given direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
 		if (tile.equals(portalLeft) && dir == Direction.LEFT) {
@@ -199,11 +195,10 @@ public class Maze {
 	}
 
 	/**
-	 * @param tile
-	 *               reference tile
-	 * @param dir
-	 *               some direction
-	 * @return neighbor towards the given direction. This can be a tile outside of the board!
+	 * @param tile reference tile
+	 * @param dir  some direction
+	 * @return neighbor towards the given direction. This can be a tile outside of
+	 *         the board!
 	 */
 	public Tile tileToDir(Tile tile, Direction dir) {
 		return tileToDir(tile, dir, 1);

@@ -15,8 +15,8 @@ import de.amr.graph.pathfinder.api.Path;
 import de.amr.graph.pathfinder.impl.AStarSearch;
 
 /**
- * Adds a grid graph structure to the maze such that graph path finder algorithms can be run on the
- * maze.
+ * Adds a grid graph structure to the maze such that graph path finder
+ * algorithms can be run on the maze.
  * 
  * @author Armin Reichert
  */

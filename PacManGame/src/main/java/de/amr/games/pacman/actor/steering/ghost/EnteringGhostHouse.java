@@ -1,10 +1,10 @@
 package de.amr.games.pacman.actor.steering.ghost;
 
 import static de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState.AT_DOOR;
-import static de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState.TARGET_REACHED;
 import static de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState.FALLING;
 import static de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState.MOVING_LEFT;
 import static de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState.MOVING_RIGHT;
+import static de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState.TARGET_REACHED;
 import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.RIGHT;
@@ -32,7 +32,7 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 		/*@formatter:off*/
 		beginStateMachine()
 			.initialState(AT_DOOR)
-			.description(String.format("[%s entering house]", ghost.name()))
+			.description(String.format("[%s entering house]", ghost.name))
 
 			.states()
 			

@@ -27,10 +27,10 @@ public class LeavingGhostHouse implements Steering {
 		Tile houseExit = ghost.maze().ghostHouseSeats[0];
 		int targetX = houseExit.centerX(), targetY = houseExit.y();
 		if (ghost.tf.y <= targetY) {
-			ghost.tf.y=(targetY);
+			ghost.tf.y = (targetY);
 			complete = true;
 		} else if (Math.round(ghost.tf.x) == targetX) {
-			ghost.tf.x=(targetX);
+			ghost.tf.x = (targetX);
 			ghost.setWishDir(UP);
 		} else if (ghost.tf.x < targetX) {
 			ghost.setWishDir(RIGHT);

@@ -1,6 +1,16 @@
 package de.amr.games.pacman.model;
 
 import static de.amr.easy.game.Application.loginfo;
+import static de.amr.games.pacman.actor.GhostState.CHASING;
+import static de.amr.games.pacman.actor.GhostState.DEAD;
+import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.actor.GhostState.LOCKED;
+import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.model.Direction.DOWN;
+import static de.amr.games.pacman.model.Direction.LEFT;
+import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Symbol.APPLE;
 import static de.amr.games.pacman.model.Symbol.BELL;
 import static de.amr.games.pacman.model.Symbol.CHERRIES;
@@ -9,6 +19,11 @@ import static de.amr.games.pacman.model.Symbol.GRAPES;
 import static de.amr.games.pacman.model.Symbol.KEY;
 import static de.amr.games.pacman.model.Symbol.PEACH;
 import static de.amr.games.pacman.model.Symbol.STRAWBERRY;
+import static de.amr.games.pacman.model.Timing.sec;
+import static java.awt.event.KeyEvent.VK_DOWN;
+import static java.awt.event.KeyEvent.VK_LEFT;
+import static java.awt.event.KeyEvent.VK_RIGHT;
+import static java.awt.event.KeyEvent.VK_UP;
 
 import java.io.File;
 import java.util.ArrayDeque;
@@ -17,16 +32,24 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
+
+import de.amr.games.pacman.actor.Bonus;
+import de.amr.games.pacman.actor.Ghost;
+import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.actor.core.MovingActor;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.
  * 
  * @author Armin Reichert
  * 
- * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
+ * @see <a href=
+ *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
  *      dossier</a>
- * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man level
- *      specifications</a>
+ * @see <a href=
+ *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man
+ *      level specifications</a>
  */
 public class Game {
 
@@ -77,7 +100,11 @@ public class Game {
 		/*@formatter:on*/
 	};
 
-	private final Maze maze;
+	public final PacMan pacMan;
+	public final Ghost blinky, pinky, inky, clyde;
+	public final Bonus bonus;
+
+	public final Maze maze;
 	private final Deque<Symbol> levelCounter;
 	private final Hiscore hiscore;
 	private GameLevel level;
@@ -92,7 +119,79 @@ public class Game {
 		levelCounter.clear();
 		lives = 3;
 		score = 0;
+		pacMan = new PacMan(this);
+		blinky = new Ghost(this, "Blinky");
+		inky = new Ghost(this, "Inky");
+		pinky = new Ghost(this, "Pinky");
+		clyde = new Ghost(this, "Clyde");
+		bonus = new Bonus(this);
+		configureActors(maze);
 		enterLevel(1);
+	}
+
+	private void configureActors(Maze maze) {
+		pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
+		pacMan.setTeleportingDuration(sec(0.5f));
+
+		blinky.assignSeat(0, LEFT);
+		blinky.setTeleportingDuration(sec(0.5f));
+		blinky.behavior(LOCKED, blinky.isHeadingFor(blinky::tile));
+		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(maze.seatPosition(2)));
+		blinky.behavior(LEAVING_HOUSE, blinky.isLeavingGhostHouse());
+		blinky.behavior(FRIGHTENED, blinky.isMovingRandomlyWithoutTurningBack());
+		blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
+		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
+		blinky.behavior(DEAD, blinky.isHeadingFor(() -> maze.ghostHouseSeats[0]));
+
+		inky.assignSeat(1, UP);
+		inky.setTeleportingDuration(sec(0.5f));
+		inky.behavior(LOCKED, inky.isJumpingUpAndDown(maze.seatPosition(1)));
+		inky.behavior(ENTERING_HOUSE, inky.isTakingSeat(maze.seatPosition(1)));
+		inky.behavior(LEAVING_HOUSE, inky.isLeavingGhostHouse());
+		inky.behavior(FRIGHTENED, inky.isMovingRandomlyWithoutTurningBack());
+		inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
+		inky.behavior(CHASING, inky.isHeadingFor(() -> {
+			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
+			return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
+		}));
+		inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostHouseSeats[0]));
+
+		pinky.assignSeat(2, DOWN);
+		pinky.setTeleportingDuration(sec(0.5f));
+		pinky.behavior(LOCKED, pinky.isJumpingUpAndDown(maze.seatPosition(2)));
+		pinky.behavior(ENTERING_HOUSE, pinky.isTakingSeat(maze.seatPosition(2)));
+		pinky.behavior(LEAVING_HOUSE, pinky.isLeavingGhostHouse());
+		pinky.behavior(FRIGHTENED, pinky.isMovingRandomlyWithoutTurningBack());
+		pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
+		pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
+		pinky.behavior(DEAD, pinky.isHeadingFor(() -> maze.ghostHouseSeats[0]));
+
+		clyde.assignSeat(3, UP);
+		clyde.setTeleportingDuration(sec(0.5f));
+		clyde.behavior(LOCKED, clyde.isJumpingUpAndDown(maze.seatPosition(3)));
+		clyde.behavior(ENTERING_HOUSE, clyde.isTakingSeat(maze.seatPosition(3)));
+		clyde.behavior(LEAVING_HOUSE, clyde.isLeavingGhostHouse());
+		clyde.behavior(FRIGHTENED, clyde.isMovingRandomlyWithoutTurningBack());
+		clyde.behavior(SCATTERING, clyde.isHeadingFor(maze.horizonSW));
+		clyde.behavior(CHASING,
+				clyde.isHeadingFor(() -> clyde.tile().distSq(pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
+		clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostHouseSeats[0]));
+	}
+
+	public Stream<Ghost> ghosts() {
+		return Stream.of(blinky, pinky, inky, clyde);
+	}
+
+	public Stream<Ghost> ghostsOnStage() {
+		return ghosts().filter(ghost -> ghost.acting);
+	}
+
+	public Stream<MovingActor<?>> movingActors() {
+		return Stream.of(pacMan, blinky, pinky, inky, clyde);
+	}
+
+	public Stream<MovingActor<?>> movingActorsOnStage() {
+		return movingActors().filter(actor -> actor.acting);
 	}
 
 	public void enterLevel(int n) {
@@ -108,10 +207,6 @@ public class Game {
 		levelCounter.addFirst(level.bonusSymbol);
 		maze.restoreFood();
 		saveHiscore();
-	}
-
-	public Maze maze() {
-		return maze;
 	}
 
 	public Hiscore hiscore() {
@@ -131,8 +226,7 @@ public class Game {
 	}
 
 	/**
-	 * @param tile
-	 *               tile containing food
+	 * @param tile tile containing food
 	 * @return points scored
 	 */
 	public int eatFoodAt(Tile tile) {

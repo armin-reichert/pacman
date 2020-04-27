@@ -11,7 +11,6 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.ArcadeTheme;
@@ -34,16 +33,15 @@ public class LeaveGhostHouseTestApp extends PacManApp {
 	public void init() {
 		clock().setTargetFramerate(10);
 		Game game = new Game();
-		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		setController(new LeaveGhostHouseTestUI(cast, theme));
+		setController(new LeaveGhostHouseTestUI(game, theme));
 	}
 }
 
 class LeaveGhostHouseTestUI extends PlayView implements VisualController {
 
-	public LeaveGhostHouseTestUI(Cast cast, Theme theme) {
-		super(cast, theme);
+	public LeaveGhostHouseTestUI(Game game, Theme theme) {
+		super(game, theme);
 		showRoutes = () -> true;
 		showStates = () -> true;
 		showScores = () -> false;
@@ -53,9 +51,9 @@ class LeaveGhostHouseTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		maze().removeFood();
-		cast.blinky.setActing(true);
-		cast.inky.setFollowState(SCATTERING);
+		game.maze.removeFood();
+		game.blinky.setActing(true);
+		game.inky.setFollowState(SCATTERING);
 		messageColor = Color.YELLOW;
 		messageText = "Press SPACE to unlock";
 	}
@@ -63,10 +61,10 @@ class LeaveGhostHouseTestUI extends PlayView implements VisualController {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			cast.inky.process(new GhostUnlockedEvent());
+			game.inky.process(new GhostUnlockedEvent());
 			messageText = null;
 		}
-		cast.inky.update();
+		game.inky.update();
 		super.update();
 	}
 

@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
@@ -31,13 +30,13 @@ public class House {
 		boolean enabled;
 	}
 
-	private final Cast cast;
+	private final Game game;
 	private final DotCounter globalCounter;
 	private final int[] ghostDotCount;
 	private int pacManStarvingTicks;
 
-	public House(Cast cast) {
-		this.cast = cast;
+	public House(Game game) {
+		this.game = game;
 		globalCounter = new DotCounter();
 		ghostDotCount = new int[4];
 	}
@@ -49,8 +48,8 @@ public class House {
 	}
 
 	public void update() {
-		if (cast.blinky.is(LOCKED)) {
-			unlock(cast.blinky);
+		if (game.blinky.is(LOCKED)) {
+			unlock(game.blinky);
 		}
 		preferredLockedGhost().filter(this::canLeaveHome).ifPresent(this::unlock);
 		pacManStarvingTicks += 1;
@@ -60,7 +59,7 @@ public class House {
 		pacManStarvingTicks = 0;
 		if (globalCounter.enabled) {
 			globalCounter.dots++;
-			if (globalCounter.dots == 32 && cast.clyde.is(LOCKED)) {
+			if (globalCounter.dots == 32 && game.clyde.is(LOCKED)) {
 				globalCounter.dots = 0;
 				globalCounter.enabled = false;
 				loginfo("Global dot counter reset and disabled (Clyde was locked when counter reached 32)");
@@ -102,12 +101,8 @@ public class House {
 		return pacManStarvingTicks;
 	}
 
-	private Game game() {
-		return cast.game();
-	}
-
 	private Optional<Ghost> preferredLockedGhost() {
-		return Stream.of(cast.pinky, cast.inky, cast.clyde).filter(ghost -> ghost.is(LOCKED)).findFirst();
+		return Stream.of(game.pinky, game.inky, game.clyde).filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
 	private void unlock(Ghost ghost) {
@@ -124,9 +119,9 @@ public class House {
 	 *      Dossier</a>
 	 */
 	private boolean canLeaveHome(Ghost ghost) {
-		int pacManStarvingTimeLimit = game().level().number < 5 ? sec(4) : sec(3);
+		int pacManStarvingTimeLimit = game.level().number < 5 ? sec(4) : sec(3);
 		if (pacManStarvingTicks >= pacManStarvingTimeLimit) {
-			loginfo("%s can leave house: Pac-Man's starving time limit (%d ticks) reached", ghost.name(),
+			loginfo("%s can leave house: Pac-Man's starving time limit (%d ticks) reached", ghost.name,
 					pacManStarvingTimeLimit);
 			pacManStarvingTicks = 0;
 			return true;
@@ -134,13 +129,13 @@ public class House {
 		if (globalCounter.enabled) {
 			int globalLimit = globalDotLimit(ghost);
 			if (globalCounter.dots >= globalLimit) {
-				loginfo("%s can leave house: global dot limit (%d) reached", ghost.name(), globalLimit);
+				loginfo("%s can leave house: global dot limit (%d) reached", ghost.name, globalLimit);
 				return true;
 			}
 		} else {
 			int personalLimit = personalDotLimit(ghost);
 			if (ghostDotCount[ghost.getSeatNumber()] >= personalLimit) {
-				loginfo("%s can leave house: ghost's dot limit (%d) reached", ghost.name(), personalLimit);
+				loginfo("%s can leave house: ghost's dot limit (%d) reached", ghost.name, personalLimit);
 				return true;
 			}
 		}
@@ -148,26 +143,26 @@ public class House {
 	}
 
 	private int personalDotLimit(Ghost ghost) {
-		if (ghost == cast.pinky) {
+		if (ghost == game.pinky) {
 			return 0;
 		}
-		if (ghost == cast.inky) {
-			return game().level().number == 1 ? 30 : 0;
+		if (ghost == game.inky) {
+			return game.level().number == 1 ? 30 : 0;
 		}
-		if (ghost == cast.clyde) {
-			return game().level().number == 1 ? 60 : game().level().number == 2 ? 50 : 0;
+		if (ghost == game.clyde) {
+			return game.level().number == 1 ? 60 : game.level().number == 2 ? 50 : 0;
 		}
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");
 	}
 
 	private int globalDotLimit(Ghost ghost) {
-		if (ghost == cast.pinky) {
+		if (ghost == game.pinky) {
 			return 7;
 		}
-		if (ghost == cast.inky) {
+		if (ghost == game.inky) {
 			return 17;
 		}
-		if (ghost == cast.clyde) {
+		if (ghost == game.clyde) {
 			return 32;
 		}
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");

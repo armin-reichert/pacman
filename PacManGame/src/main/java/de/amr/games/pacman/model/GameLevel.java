@@ -28,10 +28,10 @@ public class GameLevel {
 	public int ghostsKilledByEnergizer;
 	public int ghostsKilledInLevel;
 
-	public GameLevel(Symbol bonusSymbol, int bonusValue, float pacManSpeed, float pacManDotsSpeed,
-			float ghostSpeed, float ghostTunnelSpeed, int elroy1DotsLeft, float elroy1Speed, int elroy2DotsLeft,
-			float elroy2Speed, float pacManPowerSpeed, float pacManPowerDotsSpeed, float ghostFrightenedSpeed,
-			int pacManPowerSeconds, int mazeNumFlashes) {
+	public GameLevel(Symbol bonusSymbol, int bonusValue, float pacManSpeed, float pacManDotsSpeed, float ghostSpeed,
+			float ghostTunnelSpeed, int elroy1DotsLeft, float elroy1Speed, int elroy2DotsLeft, float elroy2Speed,
+			float pacManPowerSpeed, float pacManPowerDotsSpeed, float ghostFrightenedSpeed, int pacManPowerSeconds,
+			int mazeNumFlashes) {
 		this.bonusSymbol = bonusSymbol;
 		this.bonusValue = bonusValue;
 		this.pacManSpeed = pacManSpeed;

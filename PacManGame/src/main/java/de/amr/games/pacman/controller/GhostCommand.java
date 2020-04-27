@@ -5,16 +5,15 @@ import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Timing.sec;
 
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.Game;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Controller for the timing of the ghost attack waves. Ghosts change between chasing and scattering
- * mode during each level in several rounds. The duration of these rounds depends on the level and
- * round. When a ghost becomes frightened, the timer is stopped and the ghost resumes later in that
- * state.
+ * Controller for the timing of the ghost attack waves. Ghosts change between
+ * chasing and scattering mode during each level in several rounds. The duration
+ * of these rounds depends on the level and round. When a ghost becomes
+ * frightened, the timer is stopped and the ghost resumes later in that state.
  * 
  * @author Armin Reichert
  * 
@@ -32,13 +31,13 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 	};
 	/*@formatter:on*/
 
-	private final Cast cast;
+	private final Game game;
 	private int round; // starts with 1
 	private boolean suspended;
 
-	public GhostCommand(Cast cast) {
+	public GhostCommand(Game game) {
 		super(GhostState.class);
-		this.cast = cast;
+		this.game = game;
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("[GhostCommand]")
@@ -57,7 +56,7 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 	}
 
 	private int entry(int col) {
-		int level = cast.game().level().number;
+		int level = game.level().number;
 		int row = level == 1 ? 0 : level <= 4 ? 1 : 2;
 		return TIMES[row][col];
 	}
@@ -81,7 +80,7 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 	public void update() {
 		if (!suspended) {
 			super.update();
-			cast.ghosts().forEach(ghost -> ghost.setFollowState(getState()));
+			game.ghosts().forEach(ghost -> ghost.setFollowState(getState()));
 		}
 	}
 

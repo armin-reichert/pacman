@@ -14,8 +14,8 @@ import de.amr.easy.game.view.Animation;
 import de.amr.games.pacman.theme.Theme;
 
 /**
- * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the
- * ghosts.
+ * An animation showing Pac-Man and the four ghosts frightened and showing the
+ * points scored for the ghosts.
  * 
  * @author Armin Reichert
  */
@@ -40,8 +40,8 @@ public class GhostPointsAnimation extends Entity implements Animation {
 			points[i++] = theme.spr_number(number);
 		}
 		ghostTimer = -1;
-		tf.width =(90);
-		tf.height =(18);
+		tf.width = (90);
+		tf.height = (18);
 	}
 
 	private void resetGhostTimer() {

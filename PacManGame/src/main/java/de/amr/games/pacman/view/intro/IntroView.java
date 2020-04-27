@@ -64,10 +64,10 @@ public class IntroView implements PacManGameView, FsmContainer<IntroState, Void>
 	private void createUIComponents() {
 		pacManLogo = new ImageWidget(theme.img_logo());
 		pacManLogo.tf.centerX(width());
-		pacManLogo.tf.y=(20);
+		pacManLogo.tf.y = (20);
 		chasePacMan = new ChasePacManAnimation(theme);
 		chasePacMan.tf.centerX(width());
-		chasePacMan.tf.y=(100);
+		chasePacMan.tf.y = (100);
 		chaseGhosts = new ChaseGhostsAnimation(theme);
 		chaseGhosts.tf.setPosition(width(), 200);
 		ghostPointsAnimation = new GhostPointsAnimation(theme);
@@ -79,7 +79,7 @@ public class IntroView implements PacManGameView, FsmContainer<IntroState, Void>
 			.color(Color.LIGHT_GRAY)
 			.build();
 		/*@formatter:on*/
-		gitHubLink.tf.y=(height() - 16);
+		gitHubLink.tf.y = (height() - 16);
 		gitHubLink.tf.centerX(width());
 	}
 

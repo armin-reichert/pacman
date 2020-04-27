@@ -15,7 +15,6 @@ public class PacManGhostCollisionEvent extends PacManGameEvent {
 
 	@Override
 	public String toString() {
-		return String.format("PacManGhostCollision(with %s at col %d row %d)", ghost.name(), where.col,
-				where.row);
+		return String.format("PacManGhostCollision(with %s at col %d row %d)", ghost.name, where.col, where.row);
 	}
 }

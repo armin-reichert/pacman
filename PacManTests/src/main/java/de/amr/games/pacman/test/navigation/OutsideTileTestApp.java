@@ -8,7 +8,6 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.ArcadeTheme;
 import de.amr.games.pacman.theme.Theme;
@@ -29,16 +28,15 @@ public class OutsideTileTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
-		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		setController(new OutsideTileTestUI(cast, theme));
+		setController(new OutsideTileTestUI(game, theme));
 	}
 }
 
 class OutsideTileTestUI extends PlayView implements VisualController {
 
-	public OutsideTileTestUI(Cast cast, Theme theme) {
-		super(cast, theme);
+	public OutsideTileTestUI(Game game, Theme theme) {
+		super(game, theme);
 		showRoutes = () -> true;
 		showStates = () -> false;
 		showScores = () -> false;
@@ -48,17 +46,17 @@ class OutsideTileTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		maze().removeFood();
+		game.maze.removeFood();
 		theme.snd_ghost_chase().volume(0);
-		cast.blinky.setActing(true);
-		cast.blinky.behavior(CHASING, cast.blinky.isHeadingFor(() -> maze().tileAt(100, maze().portalRight.row)));
-		cast.blinky.setState(CHASING);
+		game.blinky.setActing(true);
+		game.blinky.behavior(CHASING, game.blinky.isHeadingFor(() -> game.maze.tileAt(100, game.maze.portalRight.row)));
+		game.blinky.setState(CHASING);
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		cast.blinky.update();
+		game.blinky.update();
 	}
 
 	@Override

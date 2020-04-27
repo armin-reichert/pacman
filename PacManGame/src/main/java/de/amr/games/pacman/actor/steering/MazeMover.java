@@ -34,8 +34,7 @@ public interface MazeMover {
 	/**
 	 * Sets the wanted move direction.
 	 * 
-	 * @param dir
-	 *              the wanted move direction
+	 * @param dir the wanted move direction
 	 */
 	void setWishDir(Direction dir);
 
@@ -52,25 +51,22 @@ public interface MazeMover {
 	/**
 	 * Sets the target tile.
 	 * 
-	 * @param tile
-	 *               target tile of this entity
+	 * @param tile target tile of this entity
 	 */
 	void setTargetTile(Tile tile);
 
 	/**
-	 * @param dir
-	 *              direction
-	 * @return if the entity can move into the neighbor tile towards the given direction
+	 * @param dir direction
+	 * @return if the entity can move into the neighbor tile towards the given
+	 *         direction
 	 */
 	boolean canCrossBorderTo(Direction dir);
 
 	/**
-	 * @param tile
-	 *                   some tile
-	 * @param neighbor
-	 *                   neighbor the tile
-	 * @return tells if the entity can move from the given tile tile to the neighbor tile (might be
-	 *         state-dependent)
+	 * @param tile     some tile
+	 * @param neighbor neighbor the tile
+	 * @return tells if the entity can move from the given tile tile to the neighbor
+	 *         tile (might be state-dependent)
 	 */
 	boolean canMoveBetween(Tile tile, Tile neighbor);
 

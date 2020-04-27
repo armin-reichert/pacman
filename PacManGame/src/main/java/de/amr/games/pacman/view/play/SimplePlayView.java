@@ -1,7 +1,5 @@
 package de.amr.games.pacman.view.play;
 
-import static de.amr.games.pacman.actor.GhostState.DEAD;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -12,9 +10,8 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
-import de.amr.games.pacman.actor.Cast;
+import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Symbol;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
@@ -32,7 +29,7 @@ public class SimplePlayView extends AbstractPacManGameView {
 		EMPTY_MAZE, CROWDED_MAZE, FLASHING_MAZE
 	}
 
-	protected final Cast cast;
+	protected final Game game;
 	protected final Theme theme;
 	protected Mode mode;
 	protected SpriteAnimation energizerBlinking;
@@ -45,8 +42,8 @@ public class SimplePlayView extends AbstractPacManGameView {
 
 	public BooleanSupplier showScores = () -> true;
 
-	public SimplePlayView(Cast cast, Theme theme) {
-		this.cast = cast;
+	public SimplePlayView(Game game, Theme theme) {
+		this.game = game;
 		this.theme = theme;
 		mode = Mode.CROWDED_MAZE;
 		energizerBlinking = new CyclicAnimation(2);
@@ -57,20 +54,8 @@ public class SimplePlayView extends AbstractPacManGameView {
 		spriteMazeFlashing = theme.spr_flashingMaze();
 		messageText = null;
 		messageColor = Color.YELLOW;
-		dress(theme, cast);
-		cast.bonus.tf.setPosition(maze().bonusTile.centerX(), maze().bonusTile.y());
-	}
-
-	public Cast cast() {
-		return cast;
-	}
-
-	public Game game() {
-		return cast.game();
-	}
-
-	public Maze maze() {
-		return game().maze();
+		dress(theme, game);
+		game.bonus.tf.setPosition(game.maze.bonusTile.centerX(), game.maze.bonusTile.y());
 	}
 
 	@Override
@@ -101,16 +86,16 @@ public class SimplePlayView extends AbstractPacManGameView {
 
 	public void enableAnimations() {
 		spriteMazeFlashing.enableAnimation(true);
-		cast.ghostsOnStage().forEach(ghost -> ghost.enableAnimations(true));
+		game.ghostsOnStage().forEach(ghost -> ghost.enableAnimations(true));
 	}
 
 	public void disableAnimations() {
 		spriteMazeFlashing.enableAnimation(false);
-		cast.ghostsOnStage().forEach(ghost -> ghost.enableAnimations(false));
+		game.ghostsOnStage().forEach(ghost -> ghost.enableAnimations(false));
 	}
 
 	public float mazeFlashingSeconds() {
-		return game().level().mazeNumFlashes * Theme.MAZE_FLASH_TIME_MILLIS / 1000f;
+		return game.level().mazeNumFlashes * Theme.MAZE_FLASH_TIME_MILLIS / 1000f;
 	}
 
 	public void showEmptyMaze() {
@@ -169,21 +154,21 @@ public class SimplePlayView extends AbstractPacManGameView {
 
 	protected void drawCrowdedMaze(Graphics2D g) {
 		spriteMazeFull.draw(g, 0, 3 * Tile.SIZE);
-		maze().tiles().filter(Tile::containsEatenFood).forEach(tile -> {
+		game.maze.tiles().filter(Tile::containsEatenFood).forEach(tile -> {
 			g.setColor(bgColor(tile));
 			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 		});
 		// hide active energizers when blinking animation is in dark phase
 		if (energizerBlinking.currentFrame() == 1) {
-			Arrays.stream(maze().energizers).filter(tile -> !tile.containsEatenEnergizer()).forEach(tile -> {
+			Arrays.stream(game.maze.energizers).filter(tile -> !tile.containsEatenEnergizer()).forEach(tile -> {
 				g.setColor(bgColor(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
 		}
 		// hide door when ghost is passing through
-		if (cast.ghostsOnStage().anyMatch(ghost -> maze().isDoor(ghost.tile()))) {
+		if (game.ghostsOnStage().anyMatch(ghost -> game.maze.isDoor(ghost.tile()))) {
 			g.setColor(theme.color_mazeBackground());
-			g.fillRect(maze().doorLeft.x(), maze().doorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
+			g.fillRect(game.maze.doorLeft.x(), game.maze.doorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
 		}
 	}
 
@@ -196,17 +181,17 @@ public class SimplePlayView extends AbstractPacManGameView {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		cast.bonus.draw(g);
+		game.bonus.draw(g);
 		drawPacMan(g);
 		// draw dead ghosts (numbers) under living ghosts
-		cast.ghostsOnStage().filter(ghost -> ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
-		cast.ghostsOnStage().filter(ghost -> !ghost.is(DEAD)).forEach(ghost -> ghost.draw(g));
+		game.ghostsOnStage().filter(ghost -> ghost.is(GhostState.DEAD)).forEach(ghost -> ghost.draw(g));
+		game.ghostsOnStage().filter(ghost -> !ghost.is(GhostState.DEAD)).forEach(ghost -> ghost.draw(g));
 	}
 
 	protected void drawPacMan(Graphics2D g) {
-		if (cast.pacMan.visible) {
-			cast.pacMan.sprites.current().ifPresent(sprite -> {
-				Vector2f center = cast.pacMan.tf.getCenter();
+		if (game.pacMan.visible) {
+			game.pacMan.sprites.current().ifPresent(sprite -> {
+				Vector2f center = game.pacMan.tf.getCenter();
 				float x = center.x - sprite.getWidth() / 2;
 				float y = center.y - sprite.getHeight() / 2;
 				sprite.draw(g, x, y);
@@ -223,20 +208,20 @@ public class SimplePlayView extends AbstractPacManGameView {
 			// Game score
 			pen.color(Color.YELLOW);
 			pen.drawAtTilePosition(1, 0, "SCORE");
-			pen.drawAtTilePosition(22, 0, String.format("LEVEL%2d", game().level().number));
+			pen.drawAtTilePosition(22, 0, String.format("LEVEL%2d", game.level().number));
 			pen.color(Color.WHITE);
-			pen.drawAtTilePosition(1, 1, String.format("%07d", game().score));
+			pen.drawAtTilePosition(1, 1, String.format("%07d", game.score));
 			// Highscore
 			pen.color(Color.YELLOW);
 			pen.drawAtTilePosition(10, 0, "HIGHSCORE");
 			pen.color(Color.WHITE);
-			pen.drawAtTilePosition(10, 1, String.format("%07d", game().hiscore().points));
-			pen.drawAtTilePosition(16, 1, String.format("L%d", game().hiscore().levelNumber));
+			pen.drawAtTilePosition(10, 1, String.format("%07d", game.hiscore().points));
+			pen.drawAtTilePosition(16, 1, String.format("L%d", game.hiscore().levelNumber));
 			// Number of remaining pellets
 			g.setColor(Color.PINK);
 			g.fillRect(22 * Tile.SIZE + 2, Tile.SIZE + 2, 4, 3);
 			pen.color(Color.WHITE);
-			pen.drawAtTilePosition(23, 1, String.format("%03d", game().numPelletsRemaining()));
+			pen.drawAtTilePosition(23, 1, String.format("%03d", game.numPelletsRemaining()));
 		}
 		drawLives(g);
 		drawLevelCounter(g);
@@ -244,15 +229,15 @@ public class SimplePlayView extends AbstractPacManGameView {
 
 	protected void drawLives(Graphics2D g) {
 		int imageSize = 2 * Tile.SIZE;
-		for (int i = 0, x = imageSize; i < game().lives; ++i, x += imageSize) {
+		for (int i = 0, x = imageSize; i < game.lives; ++i, x += imageSize) {
 			g.drawImage(imageLife, x, height() - imageSize, null);
 		}
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
 		int imageSize = 2 * Tile.SIZE;
-		int x = width() - (game().levelCounter().size() + 1) * imageSize;
-		for (Symbol symbol : game().levelCounter()) {
+		int x = width() - (game.levelCounter().size() + 1) * imageSize;
+		for (Symbol symbol : game.levelCounter()) {
 			Image image = theme.spr_bonusSymbol(symbol).frame(0);
 			g.drawImage(image, x, height() - imageSize, imageSize, imageSize, null);
 			x += imageSize;

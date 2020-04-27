@@ -2,7 +2,6 @@ package de.amr.games.pacman.view.core;
 
 import static de.amr.games.pacman.model.Direction.dirs;
 
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.model.Direction;
@@ -12,12 +11,12 @@ import de.amr.games.pacman.theme.Theme;
 
 public abstract class AbstractPacManGameView implements PacManGameView {
 
-	public void dress(Theme theme, Cast cast) {
-		dress(theme, cast.pacMan);
-		dress(theme, cast.blinky, GhostColor.RED);
-		dress(theme, cast.pinky, GhostColor.PINK);
-		dress(theme, cast.inky, GhostColor.CYAN);
-		dress(theme, cast.clyde, GhostColor.ORANGE);
+	public void dress(Theme theme, Game game) {
+		dress(theme, game.pacMan);
+		dress(theme, game.blinky, GhostColor.RED);
+		dress(theme, game.pinky, GhostColor.PINK);
+		dress(theme, game.inky, GhostColor.CYAN);
+		dress(theme, game.clyde, GhostColor.ORANGE);
 	}
 
 	private void dress(Theme theme, PacMan pacMan) {

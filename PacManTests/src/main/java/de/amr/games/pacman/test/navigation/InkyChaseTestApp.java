@@ -12,7 +12,6 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
@@ -36,16 +35,15 @@ public class InkyChaseTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
-		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		setController(new InkyChaseTestUI(cast, theme));
+		setController(new InkyChaseTestUI(game, theme));
 	}
 }
 
 class InkyChaseTestUI extends PlayView implements VisualController {
 
-	public InkyChaseTestUI(Cast cast, Theme theme) {
-		super(cast, theme);
+	public InkyChaseTestUI(Game game, Theme theme) {
+		super(game, theme);
 		showRoutes = () -> true;
 		showStates = () -> false;
 		showScores = () -> false;
@@ -55,10 +53,10 @@ class InkyChaseTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		maze().removeFood();
+		game.maze.removeFood();
 		theme.snd_ghost_chase().volume(0);
-		Stream.of(cast.pacMan, cast.inky, cast.blinky).forEach(actor -> actor.setActing(true));
-		cast.ghostsOnStage().forEach(ghost -> {
+		Stream.of(game.pacMan, game.inky, game.blinky).forEach(actor -> actor.setActing(true));
+		game.ghostsOnStage().forEach(ghost -> {
 			ghost.setFollowState(CHASING);
 		});
 		messageColor = Color.YELLOW;
@@ -68,12 +66,12 @@ class InkyChaseTestUI extends PlayView implements VisualController {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			cast.ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
-			cast.pacMan.setState(PacManState.EATING);
+			game.ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
+			game.pacMan.setState(PacManState.EATING);
 			messageText = null;
 		}
-		cast.pacMan.update();
-		cast.ghostsOnStage().forEach(Ghost::update);
+		game.pacMan.update();
+		game.ghostsOnStage().forEach(Ghost::update);
 		super.update();
 	}
 

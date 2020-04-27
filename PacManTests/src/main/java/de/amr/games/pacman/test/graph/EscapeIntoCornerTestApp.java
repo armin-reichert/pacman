@@ -9,7 +9,6 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.core.MovingActor;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.ArcadeTheme;
@@ -31,16 +30,15 @@ public class EscapeIntoCornerTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
-		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		setController(new EscapeIntoCornerTestUI(cast, theme));
+		setController(new EscapeIntoCornerTestUI(game, theme));
 	}
 }
 
 class EscapeIntoCornerTestUI extends PlayView implements VisualController {
 
-	public EscapeIntoCornerTestUI(Cast cast, Theme theme) {
-		super(cast, theme);
+	public EscapeIntoCornerTestUI(Game game, Theme theme) {
+		super(game, theme);
 		showRoutes = () -> true;
 		showStates = () -> true;
 		showScores = () -> false;
@@ -49,20 +47,20 @@ class EscapeIntoCornerTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		maze().removeFood();
-		cast.pacMan.setActing(true);
-		cast.pacMan.init();
-		cast.pacMan.setState(EATING);
-		cast.blinky.setActing(true);
-		cast.blinky.behavior(FRIGHTENED, cast.blinky.isFleeingToSafeCorner(cast.pacMan));
-		cast.blinky.init();
-		cast.blinky.setState(FRIGHTENED);
+		game.maze.removeFood();
+		game.pacMan.setActing(true);
+		game.pacMan.init();
+		game.pacMan.setState(EATING);
+		game.blinky.setActing(true);
+		game.blinky.behavior(FRIGHTENED, game.blinky.isFleeingToSafeCorner(game.pacMan));
+		game.blinky.init();
+		game.blinky.setState(FRIGHTENED);
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		cast.movingActorsOnStage().forEach(MovingActor::update);
+		game.movingActorsOnStage().forEach(MovingActor::update);
 	}
 
 	@Override

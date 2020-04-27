@@ -12,7 +12,6 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ArcadeTheme;
@@ -35,9 +34,8 @@ public class FollowTargetTilesTestApp extends PacManApp {
 	@Override
 	public void init() {
 		Game game = new Game();
-		Cast cast = new Cast(game);
 		Theme theme = new ArcadeTheme();
-		setController(new FollowTargetTilesTestUI(cast, theme));
+		setController(new FollowTargetTilesTestUI(game, theme));
 	}
 }
 
@@ -46,14 +44,14 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 	private List<Tile> targets;
 	private int current;
 
-	public FollowTargetTilesTestUI(Cast cast, Theme theme) {
-		super(cast, theme);
+	public FollowTargetTilesTestUI(Game game, Theme theme) {
+		super(game, theme);
 		showRoutes = () -> true;
 		showStates = () -> false;
 		showScores = () -> false;
 		showGrid = () -> true;
-		targets = Arrays.asList(maze().cornerNW, maze().ghostHouseSeats[0], maze().cornerNE, maze().cornerSE,
-				maze().pacManHome, maze().cornerSW);
+		targets = Arrays.asList(game.maze.cornerNW, game.maze.ghostHouseSeats[0], game.maze.cornerNE, game.maze.cornerSE,
+				game.maze.pacManHome, game.maze.cornerSW);
 	}
 
 	@Override
@@ -65,26 +63,26 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 	public void init() {
 		super.init();
 		current = 0;
-		maze().removeFood();
+		game.maze.removeFood();
 		theme.snd_ghost_chase().volume(0);
-		cast.blinky.setActing(true);
-		cast.blinky.placeAt(targets.get(0));
-		cast.blinky.behavior(CHASING, cast.blinky.isHeadingFor(() -> targets.get(current)));
-		cast.blinky.setState(CHASING);
-		cast.blinky.steering().force();
+		game.blinky.setActing(true);
+		game.blinky.placeAt(targets.get(0));
+		game.blinky.behavior(CHASING, game.blinky.isHeadingFor(() -> targets.get(current)));
+		game.blinky.setState(CHASING);
+		game.blinky.steering().force();
 	}
 
 	@Override
 	public void update() {
-		if (cast.blinky.tile() == targets.get(current)) {
+		if (game.blinky.tile() == targets.get(current)) {
 			current += 1;
 			if (current == targets.size()) {
 				current = 0;
-				game().enterLevel(game().level().number + 1);
-				maze().removeFood();
+				game.enterLevel(game.level().number + 1);
+				game.maze.removeFood();
 			}
 		}
-		cast.blinky.update();
+		game.blinky.update();
 		super.update();
 	}
 

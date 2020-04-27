@@ -7,7 +7,6 @@ import static de.amr.games.pacman.model.Direction.RIGHT;
 import java.util.Objects;
 
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.actor.Cast;
 import de.amr.games.pacman.actor.steering.MazeMover;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
@@ -34,12 +33,12 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 	private Tile targetTile;
 	private boolean enteredNewTile;
 
-	public MovingActor(Cast cast, String name) {
-		super(cast, name);
+	public MovingActor(Game game, String name) {
+		super(game, name);
 		movement = StateMachine
 		//@formatter:off
 			.beginStateMachine(Movement.class, Void.class)
-				.description(String.format("[%s movement]", name()))
+				.description(String.format("[%s movement]", name))
 				.initialState(MOVING_INSIDE_MAZE)
 				.states()
 					.state(MOVING_INSIDE_MAZE)
