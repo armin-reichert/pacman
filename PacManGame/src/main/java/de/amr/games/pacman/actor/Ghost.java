@@ -20,6 +20,7 @@ import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.actor.core.MovingActor;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.actor.steering.ghost.GhostSteerings;
+import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -52,7 +53,7 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 		super(game, name);
 		brain = buildFsm();
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
-		brain.getTracer().setLogger(Game.FSM_LOGGER);
+		brain.getTracer().setLogger(PacManStateMachineLogging.LOG);
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import java.util.Arrays;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
+import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
@@ -58,7 +59,7 @@ public class IntroView extends PacManGameView implements FsmContainer<IntroState
 		this.theme = theme;
 		this.name = "IntroView";
 		fsm = buildStateMachine();
-		fsm.getTracer().setLogger(Game.FSM_LOGGER);
+		fsm.getTracer().setLogger(PacManStateMachineLogging.LOG);
 	}
 
 	private void createUIComponents() {

@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
 
@@ -40,7 +40,7 @@ public class PacManApp extends Application {
 		loginfo("User language is %s", texts.getLocale().getDisplayLanguage());
 		Theme theme = Theme.createTheme(settings.theme);
 		setIcon(theme.spr_ghostFrightened().frame(0));
-		Game.FSM_LOGGER.setLevel(Level.INFO);
+		PacManStateMachineLogging.LOG.setLevel(Level.INFO);
 		GameController gameController = new GameController(theme);
 		setExitHandler(app -> gameController.onExit());
 		setController(gameController);

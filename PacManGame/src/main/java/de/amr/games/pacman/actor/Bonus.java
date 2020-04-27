@@ -9,6 +9,7 @@ import java.util.Random;
 
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.actor.core.Actor;
+import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Game;
@@ -36,7 +37,7 @@ public class Bonus extends Actor<BonusState> {
 		super(game, "Bonus");
 		brain = buildFsm();
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
-		brain.getTracer().setLogger(Game.FSM_LOGGER);
+		brain.getTracer().setLogger(PacManStateMachineLogging.LOG);
 		init();
 	}
 

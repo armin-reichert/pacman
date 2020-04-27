@@ -14,7 +14,6 @@ import static de.amr.games.pacman.controller.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.PacManGameState.LOADING_MUSIC;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
-import static de.amr.games.pacman.model.Game.FSM_LOGGER;
 import static de.amr.games.pacman.model.Timing.sec;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
@@ -24,7 +23,6 @@ import static java.awt.event.KeyEvent.VK_UP;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
-import java.util.logging.Level;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
@@ -80,7 +78,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		sound = new SoundController(theme);
 		buildStateMachine();
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		getTracer().setLogger(Game.FSM_LOGGER);
+		getTracer().setLogger(PacManStateMachineLogging.LOG);
 		doNotLogEventProcessingIf(PacManGameEvent::isTrivial);
 		loadingView = new LoadingView(theme);
 		introView = new IntroView(theme);
@@ -174,7 +172,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		if (eventQ().size() >= 2) {
-			FSM_LOGGER.warning("Event queue contains more than one element");
+			PacManStateMachineLogging.LOG.warning("Event queue contains more than one element");
 		}
 		super.update();
 		currentView.update();
@@ -507,8 +505,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	private void toggleStateMachineLogging() {
-		FSM_LOGGER.setLevel(FSM_LOGGER.getLevel() == Level.OFF ? Level.INFO : Level.OFF);
-		loginfo("State machine logging changed to %s", FSM_LOGGER.getLevel());
+		PacManStateMachineLogging.toggle();
+		loginfo("State machine logging changed to %s", PacManStateMachineLogging.LOG.getLevel());
 	}
 
 	private void toggleGhostFrightenedBehavior() {

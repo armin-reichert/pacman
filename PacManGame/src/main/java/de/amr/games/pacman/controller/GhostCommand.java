@@ -52,7 +52,7 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 			.when(CHASING).then(SCATTERING).onTimeout().act(() -> ++round)
 		.endStateMachine();
 		/*@formatter:on*/
-		getTracer().setLogger(Game.FSM_LOGGER);
+		getTracer().setLogger(PacManStateMachineLogging.LOG);
 	}
 
 	private int entry(int col) {

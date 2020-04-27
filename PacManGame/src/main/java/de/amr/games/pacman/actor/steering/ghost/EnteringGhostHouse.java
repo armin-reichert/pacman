@@ -13,7 +13,7 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -67,7 +67,7 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 					
 		.endStateMachine();
 		/*@formatter:on*/
-		getTracer().setLogger(Game.FSM_LOGGER);
+		getTracer().setLogger(PacManStateMachineLogging.LOG);
 	}
 
 	@Override

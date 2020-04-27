@@ -32,8 +32,6 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.actor.Bonus;
@@ -54,12 +52,6 @@ import de.amr.games.pacman.actor.core.MovingActor;
  *      level specifications</a>
  */
 public class Game {
-
-	public static final Logger FSM_LOGGER = Logger.getLogger("StateMachineLogger");
-
-	static {
-		FSM_LOGGER.setLevel(Level.OFF);
-	}
 
 	public static final int POINTS_PELLET = 10;
 	public static final int POINTS_ENERGIZER = 50;

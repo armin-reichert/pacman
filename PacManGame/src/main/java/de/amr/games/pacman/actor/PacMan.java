@@ -21,6 +21,7 @@ import de.amr.games.pacman.PacManAppSettings;
 import de.amr.games.pacman.actor.core.MovingActor;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.actor.steering.common.MazeMoverSteerings;
+import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -50,7 +51,7 @@ public class PacMan extends MovingActor<PacManState> implements MazeMoverSteerin
 	public PacMan(Game game) {
 		super(game, "Pac-Man");
 		brain = buildFsm();
-		brain.getTracer().setLogger(Game.FSM_LOGGER);
+		brain.getTracer().setLogger(PacManStateMachineLogging.LOG);
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
 		brain.doNotLogEventProcessingIf(PacManGameEvent::isTrivial);
 		brain.doNotLogEventPublishingIf(PacManGameEvent::isTrivial);

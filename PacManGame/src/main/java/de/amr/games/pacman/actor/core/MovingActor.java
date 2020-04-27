@@ -9,6 +9,7 @@ import java.util.Objects;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.steering.MazeMover;
 import de.amr.games.pacman.actor.steering.Steering;
+import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
@@ -54,7 +55,7 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 						.act(() -> teleport())
 			.endStateMachine();
 		//@formatter:on
-		movement.getTracer().setLogger(Game.FSM_LOGGER);
+		movement.getTracer().setLogger(PacManStateMachineLogging.LOG);
 	}
 
 	public abstract Steering steering();
