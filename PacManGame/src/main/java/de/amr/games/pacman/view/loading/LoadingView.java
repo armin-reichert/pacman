@@ -11,7 +11,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.Theme;
-import de.amr.games.pacman.view.core.AbstractPacManGameView;
+import de.amr.games.pacman.view.core.PacManGameView;
 import de.amr.games.pacman.view.core.Pen;
 
 /**
@@ -19,7 +19,7 @@ import de.amr.games.pacman.view.core.Pen;
  * 
  * @author Armin Reichert
  */
-public class LoadingView extends AbstractPacManGameView {
+public class LoadingView extends PacManGameView {
 
 	private final Game game;
 	private final Theme theme;

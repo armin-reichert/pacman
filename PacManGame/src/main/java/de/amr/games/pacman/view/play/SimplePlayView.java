@@ -15,7 +15,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Symbol;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
-import de.amr.games.pacman.view.core.AbstractPacManGameView;
+import de.amr.games.pacman.view.core.PacManGameView;
 import de.amr.games.pacman.view.core.Pen;
 
 /**
@@ -23,7 +23,7 @@ import de.amr.games.pacman.view.core.Pen;
  * 
  * @author Armin Reichert
  */
-public class SimplePlayView extends AbstractPacManGameView {
+public class SimplePlayView extends PacManGameView {
 
 	enum Mode {
 		EMPTY_MAZE, CROWDED_MAZE, FLASHING_MAZE

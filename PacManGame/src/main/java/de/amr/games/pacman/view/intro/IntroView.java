@@ -34,7 +34,7 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class IntroView implements PacManGameView, FsmContainer<IntroState, Void> {
+public class IntroView extends PacManGameView implements FsmContainer<IntroState, Void> {
 
 	public enum IntroState {
 		SCROLLING_LOGO, SHOWING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
