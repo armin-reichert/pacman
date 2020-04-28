@@ -34,8 +34,8 @@ import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.BonusState;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.actor.MovingActor;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.House;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
@@ -250,7 +250,7 @@ public class PlayView extends SimplePlayView {
 		game.movingActorsOnStage().forEach(actor -> drawActorAlignment(actor, g));
 	}
 
-	private void drawActorAlignment(Actor<?> actor, Graphics2D g) {
+	private void drawActorAlignment(MovingActor<?> actor, Graphics2D g) {
 		if (!actor.visible) {
 			return;
 		}

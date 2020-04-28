@@ -7,15 +7,17 @@ import static de.amr.games.pacman.model.Timing.sec;
 
 import java.util.Random;
 
+import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.SpriteMap;
-import de.amr.games.pacman.actor.core.Actor;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Symbol;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.statemachine.api.Fsm;
+import de.amr.statemachine.api.FsmContainer;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
@@ -26,15 +28,18 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Bonus extends Actor<BonusState> {
+public class Bonus extends Entity implements FsmContainer<BonusState, PacManGameEvent> {
 
+	public final Game game;
 	public final SpriteMap sprites = new SpriteMap();
 	private final Fsm<BonusState, PacManGameEvent> brain;
 	private Symbol symbol;
 	private int value;
 
 	public Bonus(Game game) {
-		super(game, "Bonus");
+		this.game = game;
+		tf.width = Tile.SIZE;
+		tf.height = Tile.SIZE;
 		brain = buildFsm();
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOG);
@@ -45,7 +50,7 @@ public class Bonus extends Actor<BonusState> {
 		return StateMachine.
 		/*@formatter:off*/
 		beginStateMachine(BonusState.class, PacManGameEvent.class)
-			.description(String.format("[%s]", name))
+			.description(String.format("[%s]", "Bonus"))
 			.initialState(INACTIVE)
 			.states()
 				.state(INACTIVE)

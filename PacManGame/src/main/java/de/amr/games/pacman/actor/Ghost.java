@@ -17,7 +17,6 @@ import java.util.Map;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
-import de.amr.games.pacman.actor.core.MovingActor;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.actor.steering.ghost.GhostSteerings;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
@@ -36,6 +35,10 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
  * A ghost.
+ * 
+ * <p>
+ * Ghosts have a "brain" (finite-state machine) defining the ghost's behavior
+ * (steering, look).
  * 
  * @author Armin Reichert
  */

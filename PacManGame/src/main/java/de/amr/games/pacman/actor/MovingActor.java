@@ -1,33 +1,38 @@
-package de.amr.games.pacman.actor.core;
+package de.amr.games.pacman.actor;
 
-import static de.amr.games.pacman.actor.core.MovingActor.Movement.MOVING_INSIDE_MAZE;
-import static de.amr.games.pacman.actor.core.MovingActor.Movement.TELEPORTING;
+import static de.amr.games.pacman.actor.MovingActor.Movement.MOVING_INSIDE_MAZE;
+import static de.amr.games.pacman.actor.MovingActor.Movement.TELEPORTING;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 
 import java.util.Objects;
 
+import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.steering.MazeMover;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
+import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
+import de.amr.statemachine.api.FsmContainer;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Base class for all moving actors (ghosts, Pac-Man).
+ * Base class for actors moving through the maze (ghosts, Pac-Man).
  * 
  * @param <S> state identifier type
  * 
  * @author Armin Reichert
  */
-public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
+public abstract class MovingActor<S> extends Entity implements FsmContainer<S, PacManGameEvent>, MazeMover {
 
 	enum Movement {
 		MOVING_INSIDE_MAZE, TELEPORTING;
 	}
 
+	public final Game game;
+	public final String name;
 	private final StateMachine<Movement, ?> movement;
 	private Direction moveDir;
 	private Direction wishDir;
@@ -35,7 +40,10 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 	private boolean enteredNewTile;
 
 	public MovingActor(Game game, String name) {
-		super(game, name);
+		this.game = game;
+		this.name = name;
+		tf.width = Tile.SIZE;
+		tf.height = Tile.SIZE;
 		movement = StateMachine
 		//@formatter:off
 			.beginStateMachine(Movement.class, Void.class)
@@ -58,9 +66,21 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 		movement.getTracer().setLogger(PacManStateMachineLogging.LOG);
 	}
 
+	/**
+	 * @return the current steering for this actor depending on its state etc.
+	 */
 	public abstract Steering steering();
 
-	protected abstract float speed();
+	/**
+	 * @return the actor's speed in pixels/tick depending on the actor state, maze
+	 *         position etc.
+	 */
+	public abstract float speed();
+
+	@Override
+	public String toString() {
+		return String.format("(%s, col:%d, row:%d, %s)", name, tile().col, tile().row, getState());
+	}
 
 	@Override
 	public void init() {
@@ -85,6 +105,12 @@ public abstract class MovingActor<S> extends Actor<S> implements MazeMover {
 
 	public void setTeleportingDuration(int ticks) {
 		movement.state(TELEPORTING).setTimer(ticks);
+	}
+
+	@Override
+	public Tile tile() {
+		Vector2f center = tf.getCenter();
+		return game.maze.tileAt(center.roundedX() / Tile.SIZE, center.roundedY() / Tile.SIZE);
 	}
 
 	@Override
