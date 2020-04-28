@@ -95,7 +95,7 @@ public class SimplePlayView extends PacManGameView {
 	}
 
 	public float mazeFlashingSeconds() {
-		return game.level().mazeNumFlashes * Theme.MAZE_FLASH_TIME_MILLIS / 1000f;
+		return game.level.mazeNumFlashes * Theme.MAZE_FLASH_TIME_MILLIS / 1000f;
 	}
 
 	public void showEmptyMaze() {
@@ -197,15 +197,15 @@ public class SimplePlayView extends PacManGameView {
 			// Game score
 			pen.color(Color.YELLOW);
 			pen.drawAtTilePosition(1, 0, "SCORE");
-			pen.drawAtTilePosition(22, 0, String.format("LEVEL%2d", game.level().number));
+			pen.drawAtTilePosition(22, 0, String.format("LEVEL%2d", game.level.number));
 			pen.color(Color.WHITE);
 			pen.drawAtTilePosition(1, 1, String.format("%07d", game.score));
 			// Highscore
 			pen.color(Color.YELLOW);
 			pen.drawAtTilePosition(10, 0, "HIGHSCORE");
 			pen.color(Color.WHITE);
-			pen.drawAtTilePosition(10, 1, String.format("%07d", game.hiscore().points));
-			pen.drawAtTilePosition(16, 1, String.format("L%d", game.hiscore().levelNumber));
+			pen.drawAtTilePosition(10, 1, String.format("%07d", game.hiscore.points));
+			pen.drawAtTilePosition(16, 1, String.format("L%d", game.hiscore.levelNumber));
 			// Number of remaining pellets
 			g.setColor(Color.PINK);
 			g.fillRect(22 * Tile.SIZE + 2, Tile.SIZE + 2, 4, 3);
@@ -225,8 +225,8 @@ public class SimplePlayView extends PacManGameView {
 
 	protected void drawLevelCounter(Graphics2D g) {
 		int imageSize = 2 * Tile.SIZE;
-		int x = width() - (game.levelCounter().size() + 1) * imageSize;
-		for (Symbol symbol : game.levelCounter()) {
+		int x = width() - (game.levelCounter.size() + 1) * imageSize;
+		for (Symbol symbol : game.levelCounter) {
 			Image image = theme.spr_bonusSymbol(symbol).frame(0);
 			g.drawImage(image, x, height() - imageSize, imageSize, imageSize, null);
 			x += imageSize;

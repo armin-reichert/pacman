@@ -109,7 +109,7 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 					})
 				
 				.state(FRIGHTENED)
-					.timeoutAfter(() -> sec(game.level().pacManPowerSeconds))
+					.timeoutAfter(() -> sec(game.level.pacManPowerSeconds))
 					.onTick((state, t, remaining) -> {
 						step(remaining < sec(2) ? "flashing" : "frightened");
 						checkPacManCollision();
@@ -118,7 +118,7 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 				.state(DEAD)
 					.timeoutAfter(sec(1)) // "dying" time
 					.onEntry(() -> {
-						int points = Game.POINTS_GHOST[game.level().ghostsKilledByEnergizer - 1];
+						int points = Game.POINTS_GHOST[game.level.ghostsKilledByEnergizer - 1];
 						sprites.select("points-" + points);
 					})
 					.onTick(() -> {
@@ -271,19 +271,19 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 		boolean outsideHouse = !maze().inGhostHouse(tile());
 		switch (getState()) {
 		case LOCKED:
-			return outsideHouse ? 0 : relSpeed(game.level().ghostSpeed) / 2;
+			return outsideHouse ? 0 : relSpeed(game.level.ghostSpeed) / 2;
 		case LEAVING_HOUSE:
-			return relSpeed(game.level().ghostSpeed) / 2;
+			return relSpeed(game.level.ghostSpeed) / 2;
 		case ENTERING_HOUSE:
-			return relSpeed(game.level().ghostSpeed);
+			return relSpeed(game.level.ghostSpeed);
 		case CHASING:
 			//$FALL-THROUGH$
 		case SCATTERING:
-			return inTunnel ? relSpeed(game.level().ghostTunnelSpeed) : relSpeed(game.level().ghostSpeed);
+			return inTunnel ? relSpeed(game.level.ghostTunnelSpeed) : relSpeed(game.level.ghostSpeed);
 		case FRIGHTENED:
-			return inTunnel ? relSpeed(game.level().ghostTunnelSpeed) : relSpeed(game.level().ghostFrightenedSpeed);
+			return inTunnel ? relSpeed(game.level.ghostTunnelSpeed) : relSpeed(game.level.ghostFrightenedSpeed);
 		case DEAD:
-			return 2 * relSpeed(game.level().ghostSpeed);
+			return 2 * relSpeed(game.level.ghostSpeed);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name));
 		}

@@ -75,7 +75,7 @@ public class PacMan extends MovingActor<PacManState> implements MazeMoverSteerin
 	}
 
 	public void gainPower() {
-		powerTicksRemaining = sec(game.level().pacManPowerSeconds);
+		powerTicksRemaining = sec(game.level.pacManPowerSeconds);
 		game.ghostsOnStage().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
 	}
 
@@ -190,7 +190,7 @@ public class PacMan extends MovingActor<PacManState> implements MazeMoverSteerin
 		case SLEEPING:
 			return 0;
 		case EATING:
-			return relSpeed(hasPower() ? game.level().pacManPowerSpeed : game.level().pacManSpeed);
+			return relSpeed(hasPower() ? game.level.pacManPowerSpeed : game.level.pacManSpeed);
 		case DEAD:
 			return 0;
 		default:

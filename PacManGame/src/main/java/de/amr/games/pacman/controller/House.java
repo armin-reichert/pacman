@@ -119,7 +119,7 @@ public class House {
 	 *      Dossier</a>
 	 */
 	private boolean canLeaveHome(Ghost ghost) {
-		int pacManStarvingTimeLimit = game.level().number < 5 ? sec(4) : sec(3);
+		int pacManStarvingTimeLimit = game.level.number < 5 ? sec(4) : sec(3);
 		if (pacManStarvingTicks >= pacManStarvingTimeLimit) {
 			loginfo("%s can leave house: Pac-Man's starving time limit (%d ticks) reached", ghost.name,
 					pacManStarvingTimeLimit);
@@ -147,10 +147,10 @@ public class House {
 			return 0;
 		}
 		if (ghost == game.inky) {
-			return game.level().number == 1 ? 30 : 0;
+			return game.level.number == 1 ? 30 : 0;
 		}
 		if (ghost == game.clyde) {
-			return game.level().number == 1 ? 60 : game.level().number == 2 ? 50 : 0;
+			return game.level.number == 1 ? 60 : game.level.number == 2 ? 50 : 0;
 		}
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");
 	}

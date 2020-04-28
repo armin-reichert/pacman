@@ -91,8 +91,8 @@ public class Bonus extends Actor<BonusState> {
 	}
 
 	public void show(Theme theme) {
-		setSymbol(theme, game.level().bonusSymbol);
-		setValue(theme, game.level().bonusValue);
+		setSymbol(theme, game.level.bonusSymbol);
+		setValue(theme, game.level.bonusValue);
 		brain.setState(ACTIVE);
 	}
 

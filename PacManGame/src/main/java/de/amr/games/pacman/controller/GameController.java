@@ -236,7 +236,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						house.onLevelChange();
 						sound.muteSoundEffects();
 						playView.stopEnergizerBlinking();
-						loginfo("Ghosts killed in level %d: %d", game.level().number, game.level().ghostsKilledInLevel);
+						loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilledInLevel);
 					})
 					.onTick((state, t, remaining) -> {
 						float f = playView.mazeFlashingSeconds();
@@ -256,7 +256,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						
 						// After two more seconds, change level and show crowded maze.
 						if (t == sec(4 + f)) {
-							game.enterLevel(game.level().number + 1);
+							game.enterLevel(game.level.number + 1);
 							game.movingActorsOnStage().forEach(MovingActor::init);
 							playView.init();
 						}
@@ -543,7 +543,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	private void switchToNextLevel() {
-		loginfo("Switching to level %d", game.level().number + 1);
+		loginfo("Switching to level %d", game.level.number + 1);
 		enqueue(new LevelCompletedEvent());
 	}
 
@@ -565,7 +565,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	private void killAllGhosts() {
-		game.level().ghostsKilledByEnergizer = 0;
+		game.level.ghostsKilledByEnergizer = 0;
 		game.ghostsOnStage().filter(ghost -> ghost.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
 			game.scoreKilledGhost(ghost.name);
 			ghost.process(new GhostKilledEvent(ghost));

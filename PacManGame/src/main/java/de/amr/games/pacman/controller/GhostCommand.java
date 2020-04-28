@@ -56,7 +56,7 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 	}
 
 	private int entry(int col) {
-		int level = game.level().number;
+		int level = game.level.number;
 		int row = level == 1 ? 0 : level <= 4 ? 1 : 2;
 		return TIMES[row][col];
 	}

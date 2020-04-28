@@ -27,8 +27,6 @@ import static java.awt.event.KeyEvent.VK_UP;
 
 import java.io.File;
 import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
@@ -100,9 +98,9 @@ public class Game {
 	private final Set<MovingActor<?>> actorsOnStage = new HashSet<>();
 
 	public final Maze maze;
-	private final Deque<Symbol> levelCounter;
-	private final Hiscore hiscore;
-	private GameLevel level;
+	public final Deque<Symbol> levelCounter;
+	public final Hiscore hiscore;
+	public GameLevel level;
 	public int lives;
 	public int score;
 
@@ -218,18 +216,6 @@ public class Game {
 		levelCounter.addFirst(level.bonusSymbol);
 		maze.restoreFood();
 		saveHiscore();
-	}
-
-	public Hiscore hiscore() {
-		return hiscore;
-	}
-
-	public GameLevel level() {
-		return level;
-	}
-
-	public Collection<Symbol> levelCounter() {
-		return Collections.unmodifiableCollection(levelCounter);
 	}
 
 	public int numPelletsRemaining() {
