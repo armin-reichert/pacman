@@ -92,17 +92,17 @@ public class Game {
 		/*@formatter:on*/
 	};
 
-	public final PacMan pacMan;
-	public final Ghost blinky, pinky, inky, clyde;
-	public final Bonus bonus;
-	private final Set<MovingActor<?>> actorsOnStage = new HashSet<>();
-
-	public final Maze maze;
-	public final Deque<Symbol> levelCounter;
-	public final Hiscore hiscore;
+	public PacMan pacMan;
+	public Ghost blinky, pinky, inky, clyde;
+	public Bonus bonus;
+	public Maze maze;
+	public Deque<Symbol> levelCounter;
+	public Hiscore hiscore;
 	public GameLevel level;
 	public int lives;
 	public int score;
+
+	private Set<MovingActor<?>> actorsOnStage = new HashSet<>();
 
 	public Game() {
 		lives = 3;
