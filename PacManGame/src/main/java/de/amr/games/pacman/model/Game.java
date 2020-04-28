@@ -63,8 +63,6 @@ public class Game {
 	public static final int SPEED_2_FPS = 70;
 	public static final int SPEED_3_FPS = 80;
 
-	static final File HISCORE_FILE = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
-
 	static final GameLevel[] LEVELS = {
 		/*@formatter:off*/
 		null, // level numbering starts at 1
@@ -108,8 +106,8 @@ public class Game {
 		lives = 3;
 		score = 0;
 		levelCounter = new ArrayDeque<>(7);
-		hiscore = new Hiscore();
-		hiscore.load(HISCORE_FILE);
+		hiscore = new Hiscore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
+		hiscore.load();
 		maze = new Maze();
 		pacMan = new PacMan(this);
 		blinky = new Ghost(this, "Blinky");
@@ -215,7 +213,7 @@ public class Game {
 		}
 		levelCounter.addFirst(level.bonusSymbol);
 		maze.restoreFood();
-		saveHiscore();
+		hiscore.save();
 	}
 
 	public int numPelletsRemaining() {
@@ -240,10 +238,6 @@ public class Game {
 
 	public boolean isBonusScoreReached() {
 		return level.numPelletsEaten == 70 || level.numPelletsEaten == 170;
-	}
-
-	public void saveHiscore() {
-		hiscore.save(HISCORE_FILE);
 	}
 
 	public void score(int points) {

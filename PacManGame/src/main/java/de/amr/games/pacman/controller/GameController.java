@@ -115,7 +115,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	public void onExit() {
 		if (game != null) {
-			game.saveHiscore();
+			game.hiscore.save();
 		}
 	}
 
@@ -319,7 +319,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				
 				.state(GAME_OVER)
 					.onEntry(() -> {
-						game.saveHiscore();
+						game.hiscore.save();
 						game.ghostsOnStage().forEach(ghost -> ghost.visible = true);
 						playView.disableAnimations();
 						playView.messageColor(Color.RED);

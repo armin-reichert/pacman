@@ -16,10 +16,15 @@ import java.util.Properties;
  */
 public class Hiscore {
 
+	public File file;
 	public int levelNumber = 1;
 	public int points = 0;
 
-	public void load(File file) {
+	public Hiscore(File file) {
+		this.file = file;
+	}
+
+	public void load() {
 		loginfo("Loading highscore from %s", file);
 		Properties p = new Properties();
 		try {
@@ -35,7 +40,7 @@ public class Hiscore {
 		}
 	}
 
-	public void save(File file) {
+	public void save() {
 		loginfo("Save highscore to %s", file);
 		Properties p = new Properties();
 		p.setProperty("score", Integer.toString(points));
