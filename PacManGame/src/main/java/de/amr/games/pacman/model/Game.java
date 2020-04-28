@@ -107,24 +107,23 @@ public class Game {
 	public int score;
 
 	public Game() {
-		maze = new Maze();
+		lives = 3;
+		score = 0;
 		levelCounter = new ArrayDeque<>(7);
 		hiscore = new Hiscore();
 		hiscore.load(HISCORE_FILE);
-		levelCounter.clear();
-		lives = 3;
-		score = 0;
+		maze = new Maze();
 		pacMan = new PacMan(this);
 		blinky = new Ghost(this, "Blinky");
 		inky = new Ghost(this, "Inky");
 		pinky = new Ghost(this, "Pinky");
 		clyde = new Ghost(this, "Clyde");
 		bonus = new Bonus(this);
-		configureActors(maze);
+		configureActors();
 		enterLevel(1);
 	}
 
-	private void configureActors(Maze maze) {
+	private void configureActors() {
 		pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		pacMan.setTeleportingDuration(sec(0.5f));
 
