@@ -84,14 +84,10 @@ public class SimplePlayView extends PacManGameView {
 		messageText = null;
 	}
 
-	public void enableAnimations() {
-		spriteMazeFlashing.enableAnimation(true);
-		game.ghostsOnStage().forEach(ghost -> ghost.enableAnimations(true));
-	}
-
-	public void disableAnimations() {
-		spriteMazeFlashing.enableAnimation(false);
-		game.ghostsOnStage().forEach(ghost -> ghost.enableAnimations(false));
+	public void enableGhostAnimations(boolean enabled) {
+		game.ghostsOnStage().forEach(ghost -> {
+			ghost.sprites.forEach(sprite -> sprite.enableAnimation(enabled));
+		});
 	}
 
 	public float mazeFlashingSeconds() {

@@ -232,9 +232,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.timeoutAfter(() -> sec(playView.mazeFlashingSeconds() + 6))
 					.onEntry(() -> {
 						game.pacMan.showFullFace();
-						game.ghostsOnStage().forEach(ghost -> ghost.enableAnimations(false));
 						house.onLevelChange();
 						sound.muteSoundEffects();
+						playView.enableGhostAnimations(false);
 						playView.stopEnergizerBlinking();
 						loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilledInLevel);
 					})
@@ -261,9 +261,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							playView.init();
 						}
 						
-						// After two more seconds, enable ghosts again
+						// After two more seconds, enable ghost animations again
 						if (t == sec(6 + f)) {
-							game.ghostsOnStage().forEach(ghost -> ghost.enableAnimations(true));
+							playView.enableGhostAnimations(true);
 						}
 						
 						// Until end of state, let ghosts jump inside the house. 
@@ -321,7 +321,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onEntry(() -> {
 						game.hiscore.save();
 						game.ghostsOnStage().forEach(ghost -> ghost.visible = true);
-						playView.disableAnimations();
+						playView.enableGhostAnimations(false);
 						playView.messageColor(Color.RED);
 						playView.message("Game   Over!");
 						sound.gameOver();
@@ -421,7 +421,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			game.ghostsOnStage().forEach(ghost -> ghost.visible = true);
 			game.pacMan.startEating();
 			playView.init();
-			playView.enableAnimations();
+			playView.enableGhostAnimations(true);
 			playView.startEnergizerBlinking();
 		}
 

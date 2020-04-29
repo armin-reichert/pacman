@@ -302,10 +302,4 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 			publish(new PacManGhostCollisionEvent(this, tile()));
 		}
 	}
-
-	public void enableAnimations(boolean b) {
-		for (Sprite sprite : sprites) {
-			sprite.enableAnimation(b);
-		}
-	}
 }
