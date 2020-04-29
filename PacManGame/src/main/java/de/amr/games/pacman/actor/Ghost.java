@@ -18,7 +18,7 @@ import java.util.Map;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.actor.steering.Steering;
-import de.amr.games.pacman.actor.steering.ghost.GhostSteerings;
+import de.amr.games.pacman.actor.steering.ghost.SteeredGhost;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
@@ -42,7 +42,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
+public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 
 	public final SpriteMap sprites = new SpriteMap();
 	private final Fsm<GhostState, PacManGameEvent> brain;

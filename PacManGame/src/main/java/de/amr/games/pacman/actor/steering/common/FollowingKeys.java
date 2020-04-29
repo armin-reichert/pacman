@@ -3,7 +3,7 @@ package de.amr.games.pacman.actor.steering.common;
 import static de.amr.games.pacman.model.Direction.dirs;
 
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.actor.steering.MazeMover;
+import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.steering.Steering;
 
 /**

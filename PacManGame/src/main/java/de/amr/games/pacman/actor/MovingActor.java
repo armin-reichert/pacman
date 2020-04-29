@@ -8,7 +8,6 @@ import java.util.Objects;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.actor.steering.MazeMover;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -19,7 +18,8 @@ import de.amr.statemachine.api.FsmContainer;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Base class for actors moving through the maze (ghosts, Pac-Man).
+ * Base class for actors moving through the maze and controlled by a
+ * finite-state machine.
  * 
  * @param <S> state identifier type
  * 

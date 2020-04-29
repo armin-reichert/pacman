@@ -2,16 +2,16 @@ package de.amr.games.pacman.actor.steering.ghost;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.steering.MazeMover;
+import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.steering.Steering;
-import de.amr.games.pacman.actor.steering.common.MazeMoverSteerings;
+import de.amr.games.pacman.actor.steering.common.SteeredMazeMover;
 
 /**
  * Ghost-specific steerings.
  * 
  * @author Armin Reichert
  */
-public interface GhostSteerings extends MazeMoverSteerings {
+public interface SteeredGhost extends SteeredMazeMover {
 
 	default Ghost steeredGhost() {
 		return (Ghost) this;

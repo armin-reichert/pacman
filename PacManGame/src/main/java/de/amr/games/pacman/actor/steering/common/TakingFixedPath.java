@@ -3,7 +3,7 @@ package de.amr.games.pacman.actor.steering.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.amr.games.pacman.actor.steering.MazeMover;
+import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.model.Tile;
 
 /**

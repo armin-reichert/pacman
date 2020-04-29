@@ -5,8 +5,8 @@ import static de.amr.datastruct.StreamUtils.permute;
 import java.util.Comparator;
 
 import de.amr.games.pacman.actor.Ghost;
+import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.actor.steering.MazeMover;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
