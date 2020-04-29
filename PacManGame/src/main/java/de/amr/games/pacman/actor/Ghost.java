@@ -27,7 +27,6 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
@@ -62,11 +61,6 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	@Override
 	public Fsm<GhostState, PacManGameEvent> fsm() {
 		return brain;
-	}
-
-	@Override
-	public Maze maze() {
-		return game.maze;
 	}
 
 	public StateMachine<GhostState, PacManGameEvent> buildFsm() {

@@ -13,6 +13,7 @@ import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.api.FsmContainer;
 import de.amr.statemachine.core.StateMachine;
@@ -76,6 +77,11 @@ public abstract class MovingActor<S> extends Entity implements FsmContainer<S, P
 	 *         position etc.
 	 */
 	public abstract float speed();
+
+	@Override
+	public Maze maze() {
+		return game.maze;
+	}
 
 	@Override
 	public String toString() {
