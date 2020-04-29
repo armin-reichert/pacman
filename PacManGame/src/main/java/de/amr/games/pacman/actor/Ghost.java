@@ -8,6 +8,8 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.model.Direction.DOWN;
+import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Timing.relSpeed;
 import static de.amr.games.pacman.model.Timing.sec;
@@ -43,30 +45,18 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 
-	public final SpriteMap sprites = new SpriteMap();
-	private final Fsm<GhostState, PacManGameEvent> brain;
-	private final Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
+	public SpriteMap sprites = new SpriteMap();
 	public GhostState followState;
 	public int seatNumber;
 	public Direction seatEyesDir;
 	private Steering prevSteering;
+	private Fsm<GhostState, PacManGameEvent> brain;
+	private Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
 
 	public Ghost(Game game, String name) {
 		super(game, name);
-		brain = buildFsm();
-		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
-		brain.getTracer().setLogger(PacManStateMachineLogging.LOG);
-	}
-
-	@Override
-	public Fsm<GhostState, PacManGameEvent> fsm() {
-		return brain;
-	}
-
-	public StateMachine<GhostState, PacManGameEvent> buildFsm() {
-		return StateMachine.
 		/*@formatter:off*/
-		beginStateMachine(GhostState.class, PacManGameEvent.class)
+		brain = StateMachine.beginStateMachine(GhostState.class, PacManGameEvent.class)
 			 
 			.description(Ghost.this::toString)
 			.initialState(LOCKED)
@@ -134,11 +124,11 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					
 				.when(LEAVING_HOUSE).then(SCATTERING)
 					.condition(() -> steering().isComplete() && followState == SCATTERING)
-					.act(() -> forceMove(Direction.LEFT))
+					.act(() -> forceMoving(LEFT))
 				
 				.when(LEAVING_HOUSE).then(CHASING)
 					.condition(() -> steering().isComplete() && followState == CHASING)
-					.act(() -> forceMove(Direction.LEFT))
+					.act(() -> forceMoving(LEFT))
 				
 				.stay(LEAVING_HOUSE)
 					.on(PacManGainsPowerEvent.class)
@@ -151,25 +141,25 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 				
 				.when(CHASING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
-					.act(() -> turnBack())
+					.act(() -> forceTurningBack())
 				
 				.when(CHASING).then(DEAD)
 					.on(GhostKilledEvent.class)
 				
 				.when(CHASING).then(SCATTERING)
 					.condition(() -> followState == SCATTERING)
-					.act(() -> turnBack())
+					.act(() -> forceTurningBack())
 	
 				.when(SCATTERING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
-					.act(() -> turnBack())
+					.act(() -> forceTurningBack())
 				
 				.when(SCATTERING).then(DEAD)
 					.on(GhostKilledEvent.class)
 				
 				.when(SCATTERING).then(CHASING)
 					.condition(() -> followState == CHASING)
-					.act(() -> turnBack())
+					.act(() -> forceTurningBack())
 				
 				.stay(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
@@ -190,7 +180,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					.condition(() -> maze().inFrontOfGhostHouseDoor(tile()))
 					.act(() -> {
 						tf.setPosition(maze().seatPosition(0));
-						setWishDir(Direction.DOWN);
+						setWishDir(DOWN);
 					})
 					
 				.stay(DEAD)
@@ -198,6 +188,13 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 				
 		.endStateMachine();
 		/*@formatter:on*/
+		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
+		brain.getTracer().setLogger(PacManStateMachineLogging.LOG);
+	}
+
+	@Override
+	public Fsm<GhostState, PacManGameEvent> fsm() {
+		return brain;
 	}
 
 	@Override
@@ -242,12 +239,9 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 
 	@Override
 	public float speed() {
-		// TODO: Some values are still guessed
-		boolean inTunnel = tile().isTunnel();
-		boolean outsideHouse = !maze().inGhostHouse(tile());
 		switch (getState()) {
 		case LOCKED:
-			return outsideHouse ? 0 : relSpeed(game.level.ghostSpeed) / 2;
+			return maze().inGhostHouse(tile()) ? relSpeed(game.level.ghostSpeed) / 2 : 0;
 		case LEAVING_HOUSE:
 			return relSpeed(game.level.ghostSpeed) / 2;
 		case ENTERING_HOUSE:
@@ -255,9 +249,9 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		case CHASING:
 			//$FALL-THROUGH$
 		case SCATTERING:
-			return inTunnel ? relSpeed(game.level.ghostTunnelSpeed) : relSpeed(game.level.ghostSpeed);
+			return tile().isTunnel() ? relSpeed(game.level.ghostTunnelSpeed) : relSpeed(game.level.ghostSpeed);
 		case FRIGHTENED:
-			return inTunnel ? relSpeed(game.level.ghostTunnelSpeed) : relSpeed(game.level.ghostFrightenedSpeed);
+			return tile().isTunnel() ? relSpeed(game.level.ghostTunnelSpeed) : relSpeed(game.level.ghostFrightenedSpeed);
 		case DEAD:
 			return 2 * relSpeed(game.level.ghostSpeed);
 		default:
@@ -281,13 +275,13 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		}
 	}
 
-	private void forceMove(Direction dir) {
+	private void forceMoving(Direction dir) {
 		setWishDir(dir);
 		move();
 	}
 
-	private void turnBack() {
-		forceMove(moveDir().opposite());
+	private void forceTurningBack() {
+		forceMoving(moveDir().opposite());
 	}
 
 	private String name(Steering steering) {
