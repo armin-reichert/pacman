@@ -57,7 +57,7 @@ class InkyChaseTestUI extends PlayView implements VisualController {
 		theme.snd_ghost_chase().volume(0);
 		Stream.of(game.pacMan, game.inky, game.blinky).forEach(game::pushActorOnStage);
 		game.ghostsOnStage().forEach(ghost -> {
-			ghost.setFollowState(CHASING);
+			ghost.followState = CHASING;
 		});
 		messageColor = Color.YELLOW;
 		messageText = "Press SPACE to start";

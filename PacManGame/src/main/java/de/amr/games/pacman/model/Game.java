@@ -123,7 +123,8 @@ public class Game {
 		pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		pacMan.setTeleportingDuration(sec(0.5f));
 
-		blinky.assignSeat(0, LEFT);
+		blinky.seatNumber = 0;
+		blinky.seatEyesDir = LEFT;
 		blinky.setTeleportingDuration(sec(0.5f));
 		blinky.behavior(LOCKED, blinky.isHeadingFor(blinky::tile));
 		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(maze.seatPosition(2)));
@@ -133,7 +134,8 @@ public class Game {
 		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
 		blinky.behavior(DEAD, blinky.isHeadingFor(() -> maze.ghostHouseSeats[0]));
 
-		inky.assignSeat(1, UP);
+		inky.seatNumber = 1;
+		inky.seatEyesDir = UP;
 		inky.setTeleportingDuration(sec(0.5f));
 		inky.behavior(LOCKED, inky.isJumpingUpAndDown(maze.seatPosition(1)));
 		inky.behavior(ENTERING_HOUSE, inky.isTakingSeat(maze.seatPosition(1)));
@@ -146,7 +148,8 @@ public class Game {
 		}));
 		inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostHouseSeats[0]));
 
-		pinky.assignSeat(2, DOWN);
+		pinky.seatNumber = 2;
+		pinky.seatEyesDir = DOWN;
 		pinky.setTeleportingDuration(sec(0.5f));
 		pinky.behavior(LOCKED, pinky.isJumpingUpAndDown(maze.seatPosition(2)));
 		pinky.behavior(ENTERING_HOUSE, pinky.isTakingSeat(maze.seatPosition(2)));
@@ -156,7 +159,8 @@ public class Game {
 		pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
 		pinky.behavior(DEAD, pinky.isHeadingFor(() -> maze.ghostHouseSeats[0]));
 
-		clyde.assignSeat(3, UP);
+		clyde.seatNumber = 3;
+		clyde.seatEyesDir = UP;
 		clyde.setTeleportingDuration(sec(0.5f));
 		clyde.behavior(LOCKED, clyde.isJumpingUpAndDown(maze.seatPosition(3)));
 		clyde.behavior(ENTERING_HOUSE, clyde.isTakingSeat(maze.seatPosition(3)));

@@ -219,7 +219,7 @@ public class PlayView extends SimplePlayView {
 			text.append(String.format("(%s,%s)", ghost.getState(), INFTY));
 		}
 		if (ghost.is(LEAVING_HOUSE)) {
-			text.append(String.format("[->%s]", ghost.followState()));
+			text.append(String.format("[->%s]", ghost.followState));
 		}
 		drawSmallText(g, color(ghost), ghost.tf.x, ghost.tf.y, text.toString());
 	}

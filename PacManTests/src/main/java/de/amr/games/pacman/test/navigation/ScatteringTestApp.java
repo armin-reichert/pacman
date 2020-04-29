@@ -1,5 +1,7 @@
 package de.amr.games.pacman.test.navigation;
 
+import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
@@ -10,7 +12,6 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.ArcadeTheme;
@@ -53,7 +54,7 @@ class ScatteringTestUI extends PlayView implements VisualController {
 		game.maze.removeFood();
 		game.ghosts().forEach(ghost -> {
 			game.pushActorOnStage(ghost);
-			ghost.setFollowState(GhostState.SCATTERING);
+			ghost.followState = SCATTERING;
 		});
 		messageColor(Color.YELLOW);
 		message("Press SPACE to start");

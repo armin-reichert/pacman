@@ -47,10 +47,10 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 	public final SpriteMap sprites = new SpriteMap();
 	private final Fsm<GhostState, PacManGameEvent> brain;
 	private final Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
-	private GhostState followState;
+	public GhostState followState;
+	public int seatNumber;
+	public Direction seatEyesDir;
 	private Steering prevSteering;
-	private int seatNumber;
-	private Direction seatEyesDir;
 
 	public Ghost(Game game, String name) {
 		super(game, name);
@@ -206,31 +206,10 @@ public class Ghost extends MovingActor<GhostState> implements GhostSteerings {
 		/*@formatter:on*/
 	}
 
-	public void setFollowState(GhostState state) {
-		this.followState = state;
-	}
-
-	public GhostState followState() {
-		return followState;
-	}
-
 	@Override
 	public void init() {
 		super.init();
 		brain.init();
-	}
-
-	public int getSeatNumber() {
-		return seatNumber;
-	}
-
-	public Direction getSeatEyesDir() {
-		return seatEyesDir;
-	}
-
-	public void assignSeat(int seatNumber, Direction seatEyesDir) {
-		this.seatNumber = seatNumber;
-		this.seatEyesDir = seatEyesDir;
 	}
 
 	public void takeSeat() {

@@ -80,7 +80,7 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 	public void update() {
 		if (!suspended) {
 			super.update();
-			game.ghosts().forEach(ghost -> ghost.setFollowState(getState()));
+			game.ghosts().forEach(ghost -> ghost.followState = getState());
 		}
 	}
 
