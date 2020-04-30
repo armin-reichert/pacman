@@ -72,7 +72,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 						sprites.forEach(Sprite::resetAnimation);
 					})
 					.onTick(() -> {
-							step(game.pacMan.powerTicksLeft > 0 ? "frightened" : "color-" + moveDir());
+							step(game.pacMan.powerTicks > 0 ? "frightened" : "color-" + moveDir());
 					})
 					
 				.state(LEAVING_HOUSE)

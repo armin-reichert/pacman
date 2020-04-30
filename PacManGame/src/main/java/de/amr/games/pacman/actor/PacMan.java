@@ -39,7 +39,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover {
 
 	public final SpriteMap sprites = new SpriteMap();
-	public int powerTicksLeft;
+	public int powerTicks;
 	private int digestionTicks;
 	private final Fsm<PacManState, PacManGameEvent> brain;
 	private Steering steering;
@@ -56,7 +56,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 
 				.state(SLEEPING)
 					.onEntry(() -> {
-						powerTicksLeft = 0;
+						powerTicks = 0;
 						digestionTicks = 0;
 						tf.setPosition(maze().pacManHome.centerX(), maze().pacManHome.y());
 						setMoveDir(RIGHT);
@@ -72,9 +72,9 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 					})
 
 					.onTick(() -> {
-						if (powerTicksLeft > 0) {
-							powerTicksLeft -= 1;
-							if (powerTicksLeft == 0) {
+						if (powerTicks > 0) {
+							powerTicks -= 1;
+							if (powerTicks == 0) {
 								publish(new PacManLostPowerEvent());
 								return;
 							}
@@ -91,7 +91,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 
 				.state(DEAD)
 					.onEntry(() -> {
-						powerTicksLeft = 0;
+						powerTicks = 0;
 						digestionTicks = 0;
 					})
 
@@ -157,7 +157,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 		case SLEEPING:
 			return 0;
 		case EATING:
-			return relSpeed(powerTicksLeft > 0 ? game.level.pacManPowerSpeed : game.level.pacManSpeed);
+			return relSpeed(powerTicks > 0 ? game.level.pacManPowerSpeed : game.level.pacManSpeed);
 		case DEAD:
 			return 0;
 		default:

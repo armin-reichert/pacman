@@ -185,8 +185,8 @@ public class PlayView extends SimplePlayView {
 		PacMan pacMan = game.pacMan;
 		if (pacMan.visible && pacMan.getState() != null) {
 			String text = pacMan.getState().name();
-			if (pacMan.powerTicksLeft > 0) {
-				text = String.format("POWER(%d)", pacMan.powerTicksLeft);
+			if (pacMan.powerTicks > 0) {
+				text = String.format("POWER(%d)", pacMan.powerTicks);
 			}
 			if (settings.pacManImmortable) {
 				text += ",lives " + INFTY;
