@@ -48,11 +48,71 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 
 	public PacMan(Game game) {
 		super(game, "Pac-Man");
-		brain = buildFsm();
+		/*@formatter:off*/
+		brain = StateMachine.beginStateMachine(PacManState.class, PacManGameEvent.class)
+
+			.description(PacMan.this::toString)
+			.initialState(SLEEPING)
+
+			.states()
+
+				.state(SLEEPING)
+					.onEntry(() -> {
+						powerTicksRemaining = 0;
+						digestionTicks = 0;
+						tf.setPosition(maze().pacManHome.centerX(), maze().pacManHome.y());
+						setMoveDir(RIGHT);
+						setWishDir(RIGHT);
+						visible = true;
+						sprites.forEach(Sprite::resetAnimation);
+						sprites.select("full");
+					})
+
+				.state(EATING)
+					.onEntry(() -> {
+						digestionTicks = 0;
+					})
+
+					.onTick(() -> {
+						if (powerTicksRemaining > 0) {
+							powerTicksRemaining -= 1;
+							if (powerTicksRemaining == 0) {
+								publish(new PacManLostPowerEvent());
+								return;
+							}
+						}
+						if (digestionTicks > 0) {
+							--digestionTicks;
+							return;
+						}
+						makeStep();
+						if (!isTeleporting()) {
+							findSomethingInteresting().ifPresent(this::publish);
+						}
+					})
+
+				.state(DEAD)
+					.onEntry(() -> {
+						powerTicksRemaining = 0;
+						digestionTicks = 0;
+					})
+
+			.transitions()
+
+				.when(EATING).then(DEAD).on(PacManKilledEvent.class)
+
+		.endStateMachine();
+		/* @formatter:on */
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOG);
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
 		brain.doNotLogEventProcessingIf(PacManGameEvent::isTrivial);
 		brain.doNotLogEventPublishingIf(PacManGameEvent::isTrivial);
+	}
+
+	@Override
+	public void init() {
+		super.init();
+		brain.init();
 	}
 
 	@Override
@@ -80,71 +140,6 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 		return powerTicksRemaining;
 	}
 
-	public StateMachine<PacManState, PacManGameEvent> buildFsm() {
-		return StateMachine.
-		/*@formatter:off*/
-		beginStateMachine(PacManState.class, PacManGameEvent.class)
-
-			.description(PacMan.this::toString)
-			.initialState(SLEEPING)
-
-			.states()
-
-				.state(SLEEPING)
-					.onEntry(() -> {
-						powerTicksRemaining = 0;
-						digestionTicks = 0;
-						tf.setPosition(maze().pacManHome.centerX(), maze().pacManHome.y());
-						setMoveDir(RIGHT);
-						setWishDir(RIGHT);
-						visible = true;
-						sprites.forEach(Sprite::resetAnimation);
-						showFullFace();
-					})
-
-				.state(EATING)
-					.onEntry(() -> {
-						digestionTicks = 0;
-					})
-
-					.onTick(() -> {
-						if (powerTicksRemaining > 0) {
-							powerTicksRemaining -= 1;
-							if (powerTicksRemaining == 0) {
-								publish(new PacManLostPowerEvent());
-								return;
-							}
-						}
-						if (digestionTicks > 0) {
-							--digestionTicks;
-							return;
-						}
-						makeStep();
-						if (!isTeleporting()) {
-							findSomethingInteresting().ifPresent(brain::publish);
-						}
-					})
-
-				.state(DEAD)
-					.onEntry(() -> {
-						powerTicksRemaining = 0;
-						digestionTicks = 0;
-					})
-
-			.transitions()
-
-				.when(EATING).then(DEAD).on(PacManKilledEvent.class)
-
-		.endStateMachine();
-		/* @formatter:on */
-	}
-
-	@Override
-	public void init() {
-		super.init();
-		brain.init();
-	}
-
 	private Optional<PacManGameEvent> findSomethingInteresting() {
 		Tile tile = tile();
 		if (tile == maze().bonusTile && game.bonus.is(ACTIVE)) {
@@ -165,7 +160,8 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 	public void makeStep() {
 		steering().steer();
 		move();
-		showWalkingAnimation();
+		sprites.select("walking-" + moveDir());
+		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
 	}
 
 	@Override
@@ -215,18 +211,5 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 			return false;
 		}
 		return super.canMoveBetween(tile, neighbor);
-	}
-
-	public void showFullFace() {
-		sprites.select("full");
-	}
-
-	public void showDyingAnimation() {
-		sprites.select("dying");
-	}
-
-	public void showWalkingAnimation() {
-		sprites.select("walking-" + moveDir());
-		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
 	}
 }

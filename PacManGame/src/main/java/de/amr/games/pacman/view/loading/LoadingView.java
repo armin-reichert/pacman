@@ -55,7 +55,7 @@ public class LoadingView extends PacManGameView {
 		}
 		game.pacMan.tf.setVelocity(Vector2f.smul(2.5f, game.pacMan.moveDir().vector()));
 		game.pacMan.tf.move();
-		game.pacMan.showWalkingAnimation();
+		game.pacMan.sprites.select("walking-" + game.pacMan.moveDir());
 		alpha += alphaInc;
 		if (alpha >= 160) {
 			alphaInc = -2;

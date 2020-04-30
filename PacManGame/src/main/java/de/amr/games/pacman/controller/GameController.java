@@ -231,7 +231,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(CHANGING_LEVEL)
 					.timeoutAfter(() -> sec(playView.mazeFlashingSeconds() + 6))
 					.onEntry(() -> {
-						game.pacMan.showFullFace();
+						game.pacMan.sprites.select("full");
 						house.onLevelChange();
 						sound.muteSoundEffects();
 						playView.enableGhostAnimations(false);
@@ -296,13 +296,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onTick((state, t, remaining) -> {
 						if (t == sec(1)) {
 							// Pac-Man stops struggling
-							game.pacMan.showFullFace();
+							game.pacMan.sprites.select("full");
 							game.bonus.hide();
 							game.ghostsOnStage().forEach(ghost -> ghost.visible = false);
 						}
 						else if (t == sec(3)) {
 							// start the "dying" animation
-							game.pacMan.showDyingAnimation();
+							game.pacMan.sprites.select("dying");
 							sound.pacManDied();
 						}
 						else if (t == sec(7) - 1 && game.lives > 0) {
