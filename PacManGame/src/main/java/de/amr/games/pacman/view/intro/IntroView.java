@@ -140,6 +140,7 @@ public class IntroView extends PacManGameView implements FsmContainer<IntroState
 					})
 					.onTick(() -> {
 						ghostPointsAnimation.update();
+						gitHubLink.update();
 					})
 					.onExit(() -> {
 						ghostPointsAnimation.stop();
