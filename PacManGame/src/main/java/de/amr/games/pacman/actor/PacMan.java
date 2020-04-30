@@ -11,7 +11,6 @@ import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Game.DIGEST_ENERGIZER_TICKS;
 import static de.amr.games.pacman.model.Game.DIGEST_PELLET_TICKS;
 import static de.amr.games.pacman.model.Timing.relSpeed;
-import static de.amr.games.pacman.model.Timing.sec;
 
 import java.util.Optional;
 
@@ -23,7 +22,6 @@ import de.amr.games.pacman.actor.steering.common.SteeredMazeMover;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
-import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
@@ -41,10 +39,10 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover {
 
 	public final SpriteMap sprites = new SpriteMap();
+	public int powerTicksLeft;
+	private int digestionTicks;
 	private final Fsm<PacManState, PacManGameEvent> brain;
 	private Steering steering;
-	private int powerTicksRemaining;
-	private int digestionTicks;
 
 	public PacMan(Game game) {
 		super(game, "Pac-Man");
@@ -58,7 +56,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 
 				.state(SLEEPING)
 					.onEntry(() -> {
-						powerTicksRemaining = 0;
+						powerTicksLeft = 0;
 						digestionTicks = 0;
 						tf.setPosition(maze().pacManHome.centerX(), maze().pacManHome.y());
 						setMoveDir(RIGHT);
@@ -74,9 +72,9 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 					})
 
 					.onTick(() -> {
-						if (powerTicksRemaining > 0) {
-							powerTicksRemaining -= 1;
-							if (powerTicksRemaining == 0) {
+						if (powerTicksLeft > 0) {
+							powerTicksLeft -= 1;
+							if (powerTicksLeft == 0) {
 								publish(new PacManLostPowerEvent());
 								return;
 							}
@@ -93,7 +91,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 
 				.state(DEAD)
 					.onEntry(() -> {
-						powerTicksRemaining = 0;
+						powerTicksLeft = 0;
 						digestionTicks = 0;
 					})
 
@@ -118,26 +116,6 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 	@Override
 	public Fsm<PacManState, PacManGameEvent> fsm() {
 		return brain;
-	}
-
-	public void startEating() {
-		if (getState() == SLEEPING) {
-			setState(EATING);
-		} else
-			throw new IllegalStateException();
-	}
-
-	public void gainPower() {
-		powerTicksRemaining = sec(game.level.pacManPowerSeconds);
-		game.ghostsOnStage().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
-	}
-
-	public boolean hasPower() {
-		return powerTicksRemaining > 0;
-	}
-
-	public int powerTicks() {
-		return powerTicksRemaining;
 	}
 
 	private Optional<PacManGameEvent> findSomethingInteresting() {
@@ -179,7 +157,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 		case SLEEPING:
 			return 0;
 		case EATING:
-			return relSpeed(hasPower() ? game.level.pacManPowerSpeed : game.level.pacManSpeed);
+			return relSpeed(powerTicksLeft > 0 ? game.level.pacManPowerSpeed : game.level.pacManSpeed);
 		case DEAD:
 			return 0;
 		default:

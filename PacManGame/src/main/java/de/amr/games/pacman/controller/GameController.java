@@ -31,10 +31,12 @@ import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MovingActor;
+import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
+import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
@@ -419,7 +421,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		private void reset() {
 			ghostCommand.init();
 			game.ghostsOnStage().forEach(ghost -> ghost.visible = true);
-			game.pacMan.startEating();
+			game.pacMan.setState(PacManState.EATING);
 			playView.init();
 			playView.enableGhostAnimations(true);
 			playView.startEnergizerBlinking();
@@ -487,7 +489,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (foodFound.energizer) {
 				ghostCommand.suspend();
 				sound.pacManGainsPower();
-				game.pacMan.gainPower();
+				game.pacMan.powerTicksLeft = sec(game.level.pacManPowerSeconds);
+				game.ghostsOnStage().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
 			}
 		}
 	}
