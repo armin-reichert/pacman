@@ -88,7 +88,7 @@ public class PlayView extends SimplePlayView {
 		if (showGrid.getAsBoolean()) {
 			g.drawImage(gridImage, 0, 0, null);
 		} else {
-			fillBackground(g);
+			fillBackground(g, theme.color_mazeBackground());
 		}
 		drawMaze(g);
 		drawFPS(g);

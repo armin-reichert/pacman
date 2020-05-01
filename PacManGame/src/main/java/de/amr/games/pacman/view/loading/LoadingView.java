@@ -21,18 +21,13 @@ import de.amr.games.pacman.view.core.Pen;
  */
 public class LoadingView extends PacManGameView {
 
-	private final Game game;
-	private final Theme theme;
-
 	private int alpha;
 	private int alphaInc;
 	private int ghostCount;
 	private int ghostInc;
 
 	public LoadingView(Theme theme) {
-		this.theme = theme;
-		game = new Game();
-		dress(theme, game);
+		super(new Game(), theme);
 	}
 
 	@Override
@@ -60,7 +55,8 @@ public class LoadingView extends PacManGameView {
 		if (alpha >= 160) {
 			alphaInc = -2;
 			alpha = 160;
-		} else if (alpha <= 0) {
+		}
+		else if (alpha <= 0) {
 			alphaInc = 2;
 			alpha = 0;
 		}

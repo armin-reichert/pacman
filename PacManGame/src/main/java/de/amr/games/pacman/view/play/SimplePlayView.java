@@ -29,8 +29,6 @@ public class SimplePlayView extends PacManGameView {
 		EMPTY_MAZE, CROWDED_MAZE, FLASHING_MAZE
 	}
 
-	protected final Game game;
-	protected final Theme theme;
 	protected Mode mode;
 	protected SpriteAnimation energizerBlinking;
 	protected Image imageLife;
@@ -43,8 +41,7 @@ public class SimplePlayView extends PacManGameView {
 	public BooleanSupplier showScores = () -> true;
 
 	public SimplePlayView(Game game, Theme theme) {
-		this.game = game;
-		this.theme = theme;
+		super(game, theme);
 		mode = Mode.CROWDED_MAZE;
 		energizerBlinking = new CyclicAnimation(2);
 		energizerBlinking.setFrameDuration(150);
@@ -54,7 +51,6 @@ public class SimplePlayView extends PacManGameView {
 		spriteMazeFlashing = theme.spr_flashingMaze();
 		messageText = null;
 		messageColor = Color.YELLOW;
-		dress(theme, game);
 		game.bonus.tf.setPosition(game.maze.bonusTile.centerX(), game.maze.bonusTile.y());
 	}
 
@@ -116,7 +112,7 @@ public class SimplePlayView extends PacManGameView {
 
 	@Override
 	public void draw(Graphics2D g) {
-		fillBackground(g);
+		fillBackground(g, theme.color_mazeBackground());
 		drawScores(g);
 		drawMaze(g);
 		drawMessage(g);
@@ -125,11 +121,6 @@ public class SimplePlayView extends PacManGameView {
 
 	protected Color bgColor(Tile tile) {
 		return theme.color_mazeBackground();
-	}
-
-	protected void fillBackground(Graphics2D g) {
-		g.setColor(theme.color_mazeBackground());
-		g.fillRect(0, 0, width(), height());
 	}
 
 	protected void drawMaze(Graphics2D g) {
@@ -177,11 +168,12 @@ public class SimplePlayView extends PacManGameView {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		drawBonus(game.bonus, g);
-		drawPacMan(game.pacMan, g);
-		// draw dead ghosts (points) under living ghosts
-		game.ghostsOnStage().filter(ghost -> ghost.is(DEAD)).forEach(ghost -> drawGhost(ghost, g));
-		game.ghostsOnStage().filter(ghost -> !ghost.is(DEAD)).forEach(ghost -> drawGhost(ghost, g));
+		drawActor(g, game.bonus, game.bonus.sprites);
+		drawActor(g, game.pacMan, game.pacMan.sprites);
+		// draw dead ghosts (points) below living ghosts
+		game.ghostsOnStage().filter(ghost -> ghost.is(DEAD)).forEach(ghost -> drawActor(g, ghost, ghost.sprites));
+		game.ghostsOnStage().filter(ghost -> !ghost.is(DEAD))
+				.forEach(ghost -> drawActor(g, ghost, ghost.sprites));
 	}
 
 	protected void drawScores(Graphics2D g) {

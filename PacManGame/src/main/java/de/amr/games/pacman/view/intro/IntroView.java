@@ -42,7 +42,6 @@ public class IntroView extends PacManGameView implements FsmContainer<IntroState
 	};
 
 	private final String name;
-	private final Theme theme;
 	private final Fsm<IntroState, Void> fsm;
 
 	private ImageWidget pacManLogo;
@@ -56,7 +55,7 @@ public class IntroView extends PacManGameView implements FsmContainer<IntroState
 	private Color red = new Color(171, 19, 0);
 
 	public IntroView(Theme theme) {
-		this.theme = theme;
+		super(theme);
 		this.name = "IntroView";
 		fsm = buildStateMachine();
 		fsm.getTracer().setLogger(PacManStateMachineLogging.LOG);
@@ -237,7 +236,8 @@ public class IntroView extends PacManGameView implements FsmContainer<IntroState
 			pen.color(orange);
 			if (app().inFullScreenMode()) {
 				pen.hcenter("F11 - " + texts.getString("window_mode"), width(), row);
-			} else {
+			}
+			else {
 				pen.hcenter("F11 - " + texts.getString("fullscreen_mode"), width(), row);
 			}
 		}
