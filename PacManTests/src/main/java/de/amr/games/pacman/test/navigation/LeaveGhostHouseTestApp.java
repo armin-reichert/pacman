@@ -11,6 +11,7 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
+import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.ArcadeTheme;
@@ -52,7 +53,7 @@ class LeaveGhostHouseTestUI extends PlayView implements VisualController {
 	public void init() {
 		super.init();
 		game.maze.removeFood();
-		game.pushActorOnStage(game.blinky);
+		game.pushActorOnStage(game.inky);
 		game.inky.followState = SCATTERING;
 		messageColor = Color.YELLOW;
 		messageText = "Press SPACE to unlock";
@@ -60,7 +61,7 @@ class LeaveGhostHouseTestUI extends PlayView implements VisualController {
 
 	@Override
 	public void update() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE) && game.inky.is(GhostState.LOCKED)) {
 			game.inky.process(new GhostUnlockedEvent());
 			messageText = null;
 		}
