@@ -1,6 +1,6 @@
 package de.amr.games.pacman.controller.event;
 
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.tiles.Tile;
 
 public class FoodFoundEvent extends PacManGameEvent {
 

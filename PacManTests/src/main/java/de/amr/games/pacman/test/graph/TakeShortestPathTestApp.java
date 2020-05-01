@@ -17,7 +17,7 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.tiles.Tile;
 import de.amr.games.pacman.theme.ArcadeTheme;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.play.PlayView;

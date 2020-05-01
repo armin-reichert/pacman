@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import de.amr.games.pacman.model.tiles.Tile;
 import de.amr.graph.core.api.UndirectedEdge;
 import de.amr.graph.grid.api.GridGraph2D;
 import de.amr.graph.grid.impl.Grid4Topology;
@@ -33,7 +34,7 @@ public class MazeGraph {
 		grid.fill();
 		//@formatter:off
 		grid.edges()
-			.filter(edge -> tile(edge.either()).isWall() || tile(edge.other()).isWall())
+			.filter(edge -> maze.isWall(tile(edge.either())) || maze.isWall(tile(edge.other())))
 			.forEach(grid::removeEdge);
 		/*@formatter:on*/
 	}

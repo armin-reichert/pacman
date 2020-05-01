@@ -42,7 +42,6 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.core.PacManGameView;
 import de.amr.games.pacman.view.intro.IntroView;
@@ -56,7 +55,8 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class GameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
+public class GameController extends StateMachine<PacManGameState, PacManGameEvent>
+		implements VisualController {
 
 	private Game game;
 	private Theme theme;
@@ -126,49 +126,68 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		if (currentView == playView) {
 			if (Keyboard.keyPressedOnce("b")) {
 				toggleGhostActing(game.blinky);
-			} else if (Keyboard.keyPressedOnce("c")) {
+			}
+			else if (Keyboard.keyPressedOnce("c")) {
 				toggleGhostActing(game.clyde);
-			} else if (Keyboard.keyPressedOnce("d")) {
+			}
+			else if (Keyboard.keyPressedOnce("d")) {
 				toggleDemoMode();
-			} else if (Keyboard.keyPressedOnce("e")) {
+			}
+			else if (Keyboard.keyPressedOnce("e")) {
 				eatAllPellets();
-			} else if (Keyboard.keyPressedOnce("f")) {
+			}
+			else if (Keyboard.keyPressedOnce("f")) {
 				toggleGhostFrightenedBehavior();
-			} else if (Keyboard.keyPressedOnce("g")) {
+			}
+			else if (Keyboard.keyPressedOnce("g")) {
 				showGrid = !showGrid;
-			} else if (Keyboard.keyPressedOnce("i")) {
+			}
+			else if (Keyboard.keyPressedOnce("i")) {
 				toggleGhostActing(game.inky);
-			} else if (Keyboard.keyPressedOnce("k")) {
+			}
+			else if (Keyboard.keyPressedOnce("k")) {
 				killAllGhosts();
-			} else if (Keyboard.keyPressedOnce("l")) {
+			}
+			else if (Keyboard.keyPressedOnce("l")) {
 				toggleStateMachineLogging();
-			} else if (Keyboard.keyPressedOnce("m")) {
+			}
+			else if (Keyboard.keyPressedOnce("m")) {
 				toggleMakePacManImmortable();
-			} else if (Keyboard.keyPressedOnce("o")) {
+			}
+			else if (Keyboard.keyPressedOnce("o")) {
 				togglePacManOverflowBug();
-			} else if (Keyboard.keyPressedOnce("p")) {
+			}
+			else if (Keyboard.keyPressedOnce("p")) {
 				toggleGhostActing(game.pinky);
-			} else if (Keyboard.keyPressedOnce("s")) {
+			}
+			else if (Keyboard.keyPressedOnce("s")) {
 				showStates = !showStates;
-			} else if (Keyboard.keyPressedOnce("t")) {
+			}
+			else if (Keyboard.keyPressedOnce("t")) {
 				showFPS = !showFPS;
-			} else if (Keyboard.keyPressedOnce("r")) {
+			}
+			else if (Keyboard.keyPressedOnce("r")) {
 				showRoutes = !showRoutes;
-			} else if (Keyboard.keyPressedOnce("+")) {
+			}
+			else if (Keyboard.keyPressedOnce("+")) {
 				switchToNextLevel();
 			}
 		}
 
 		if (Keyboard.keyPressedOnce("1") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
 			changeClockFrequency(Game.SPEED_1_FPS);
-		} else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
+		}
+		else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
 			changeClockFrequency(Game.SPEED_2_FPS);
-		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
+		}
+		else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			changeClockFrequency(Game.SPEED_3_FPS);
-		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
 			int oldFreq = app().clock().getTargetFramerate();
 			changeClockFrequency(oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
-		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
 			int oldFreq = app().clock().getTargetFramerate();
 			changeClockFrequency(oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
 		}
@@ -446,7 +465,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				ghost.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
 				loginfo("Ghost %s killed at %s", ghost.name, ghost.tile());
-			} else {
+			}
+			else {
 				// Pac-Man killed
 				house.onLifeLost();
 				sound.muteAll();
@@ -517,7 +537,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			settings.ghostsFleeRandomly = false;
 			game.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.isFleeingToSafeCorner(game.pacMan)));
 			loginfo("Changed ghost escape behavior to escaping via safe route");
-		} else {
+		}
+		else {
 			settings.ghostsFleeRandomly = true;
 			game.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack()));
 			loginfo("Changed ghost escape behavior to original random movement");
@@ -534,7 +555,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		if (on) {
 			settings.pacManImmortable = true;
 			game.pacMan.behavior(game.pacMan.isMovingRandomlyWithoutTurningBack());
-		} else {
+		}
+		else {
 			settings.pacManImmortable = false;
 			game.pacMan.behavior(game.pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		}
@@ -551,7 +573,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	private void eatAllPellets() {
-		game.maze.tiles().filter(Tile::containsPellet).forEach(tile -> {
+		game.maze.tiles().filter(game.maze::isPellet).forEach(tile -> {
 			game.eatFoodAt(tile);
 			house.onPacManFoundFood(new FoodFoundEvent(tile, false));
 			house.update();
@@ -562,7 +584,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void toggleGhostActing(Ghost ghost) {
 		if (game.onStage(ghost)) {
 			game.pullActorFromStage(ghost);
-		} else {
+		}
+		else {
 			game.pushActorOnStage(ghost);
 		}
 	}

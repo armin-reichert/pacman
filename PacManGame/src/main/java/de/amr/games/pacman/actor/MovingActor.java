@@ -14,15 +14,15 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.tiles.Tile;
 import de.amr.statemachine.api.FsmContainer;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Base class for actors moving through the maze and controlled by a
- * finite-state machine.
+ * Base class for actors moving through the maze and controlled by a finite-state machine.
  * 
- * @param <S> state identifier type
+ * @param <S>
+ *          state identifier type
  * 
  * @author Armin Reichert
  */
@@ -73,8 +73,7 @@ public abstract class MovingActor<S> extends Entity implements FsmContainer<S, P
 	public abstract Steering steering();
 
 	/**
-	 * @return the actor's speed in pixels/tick depending on the actor state, maze
-	 *         position etc.
+	 * @return the actor's speed in pixels/tick depending on the actor state, maze position etc.
 	 */
 	public abstract float speed();
 
@@ -161,10 +160,10 @@ public abstract class MovingActor<S> extends Entity implements FsmContainer<S, P
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (neighbor.isWall()) {
+		if (maze().isWall(neighbor)) {
 			return false;
 		}
-		if (neighbor.isTunnel()) {
+		if (maze().isTunnel(neighbor)) {
 			return true; // includes portal tiles
 		}
 		return maze().insideBoard(neighbor);
@@ -175,8 +174,8 @@ public abstract class MovingActor<S> extends Entity implements FsmContainer<S, P
 	}
 
 	/**
-	 * Computes how many pixels this entity can move towards the given direction
-	 * without crossing the border to a forbidden neighbor tile.
+	 * Computes how many pixels this entity can move towards the given direction without crossing the
+	 * border to a forbidden neighbor tile.
 	 */
 	private float possibleMoveDistance(Tile currentTile, Direction dir) {
 		float dist = speed();
@@ -220,7 +219,8 @@ public abstract class MovingActor<S> extends Entity implements FsmContainer<S, P
 	private void teleport() {
 		if (enteredRightPortal()) {
 			placeAt(maze().portalLeft);
-		} else if (enteredLeftPortal()) {
+		}
+		else if (enteredLeftPortal()) {
 			placeAt(maze().portalRight);
 		}
 	}

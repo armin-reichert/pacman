@@ -6,7 +6,7 @@ import static de.amr.games.pacman.model.Direction.UP;
 
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.steering.Steering;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.tiles.Tile;
 
 /**
  * Steers a ghost out of the house.

@@ -58,7 +58,7 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
 				theme.snd_eatPill().play();
-				foodFound.tile.removeFood();
+				game.maze.removeFood(foodFound.tile);
 				game.level.numPelletsEaten++;
 				if (game.numPelletsRemaining() == 0) {
 					game.maze.restoreFood();
@@ -81,16 +81,19 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 
 	private void handleSteeringChange() {
 		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_M)) {
-			pacMan.behavior(pacMan.isFollowingKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
-			message("Cursor keys");
-		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_N)) {
 			pacMan.behavior(
-					pacMan.isFollowingKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
+					pacMan.isFollowingKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
+			message("Cursor keys");
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_N)) {
+			pacMan.behavior(pacMan.isFollowingKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2,
+					KeyEvent.VK_NUMPAD4));
 			message("Numpad keys");
 			// } else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_A)) {
 			// pac.steering(avoidingGhosts(game));
 			// message("Avoiding ghosts");
-		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_R)) {
+		}
+		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_R)) {
 			pacMan.behavior(pacMan.isMovingRandomlyWithoutTurningBack());
 			message("Random moves");
 		}

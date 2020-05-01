@@ -13,7 +13,7 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Symbol;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.tiles.Tile;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.core.PacManGameView;
 import de.amr.games.pacman.view.core.Pen;
@@ -141,13 +141,13 @@ public class SimplePlayView extends PacManGameView {
 
 	protected void drawCrowdedMaze(Graphics2D g) {
 		spriteMazeFull.draw(g, 0, 3 * Tile.SIZE);
-		game.maze.tiles().filter(Tile::containsEatenFood).forEach(tile -> {
+		game.maze.tiles().filter(game.maze::isEatenFood).forEach(tile -> {
 			g.setColor(bgColor(tile));
 			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 		});
 		// hide active energizers when blinking animation is in dark phase
 		if (energizerBlinking.currentFrame() == 1) {
-			Arrays.stream(game.maze.energizers).filter(tile -> !tile.containsEatenEnergizer()).forEach(tile -> {
+			Arrays.stream(game.maze.energizers).filter(tile -> !game.maze.isEatenEnergizer(tile)).forEach(tile -> {
 				g.setColor(bgColor(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});

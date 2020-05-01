@@ -11,7 +11,7 @@ import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.steering.common.TakingPrecomputedPath;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.MazeGraph;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.tiles.Tile;
 
 /**
  * Lets a ghost escape to the "safest" maze corner depending on Pac-Man's

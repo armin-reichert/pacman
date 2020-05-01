@@ -36,18 +36,17 @@ import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.MovingActor;
 import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.model.tiles.Tile;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.
  * 
  * @author Armin Reichert
  * 
- * @see <a href=
- *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
+ * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
  *      dossier</a>
- * @see <a href=
- *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man
- *      level specifications</a>
+ * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man level
+ *      specifications</a>
  */
 public class Game {
 
@@ -167,8 +166,8 @@ public class Game {
 		clyde.behavior(LEAVING_HOUSE, clyde.isLeavingGhostHouse());
 		clyde.behavior(FRIGHTENED, clyde.isMovingRandomlyWithoutTurningBack());
 		clyde.behavior(SCATTERING, clyde.isHeadingFor(maze.horizonSW));
-		clyde.behavior(CHASING,
-				clyde.isHeadingFor(() -> clyde.tile().distSq(pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
+		clyde.behavior(CHASING, clyde
+				.isHeadingFor(() -> clyde.tile().distSq(pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
 		clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostHouseSeats[0]));
 	}
 
@@ -225,19 +224,22 @@ public class Game {
 	}
 
 	/**
-	 * @param tile tile containing food
+	 * @param tile
+	 *               tile containing food
 	 * @return points scored
 	 */
 	public int eatFoodAt(Tile tile) {
 		level.numPelletsEaten += 1;
-		if (tile.containsEnergizer()) {
+		if (maze.isEnergizer(tile)) {
 			level.ghostsKilledByEnergizer = 0;
-			tile.removeFood();
+			maze.removeFood(tile);
 			return POINTS_ENERGIZER;
-		} else {
-			tile.removeFood();
+		}
+		else if (maze.isPellet(tile)) {
+			maze.removeFood(tile);
 			return POINTS_PELLET;
 		}
+		throw new IllegalArgumentException("No food tile");
 	}
 
 	public boolean isBonusScoreReached() {

@@ -29,7 +29,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.tiles.Tile;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -38,8 +38,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * A ghost.
  * 
  * <p>
- * Ghosts have a "brain" (finite-state machine) defining the ghost's behavior
- * (steering, look).
+ * Ghosts have a "brain" (finite-state machine) defining the ghost's behavior (steering, look).
  * 
  * @author Armin Reichert
  */
@@ -249,9 +248,11 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		case CHASING:
 			//$FALL-THROUGH$
 		case SCATTERING:
-			return tile().isTunnel() ? relSpeed(game.level.ghostTunnelSpeed) : relSpeed(game.level.ghostSpeed);
+			return maze().isTunnel(tile()) ? relSpeed(game.level.ghostTunnelSpeed)
+					: relSpeed(game.level.ghostSpeed);
 		case FRIGHTENED:
-			return tile().isTunnel() ? relSpeed(game.level.ghostTunnelSpeed) : relSpeed(game.level.ghostFrightenedSpeed);
+			return maze().isTunnel(tile()) ? relSpeed(game.level.ghostTunnelSpeed)
+					: relSpeed(game.level.ghostFrightenedSpeed);
 		case DEAD:
 			return 2 * relSpeed(game.level.ghostSpeed);
 		default:
@@ -262,7 +263,8 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	private void step(String spriteKey) {
 		if (isTeleporting()) {
 			move();
-		} else {
+		}
+		else {
 			if (prevSteering != steering()) {
 				steering().init();
 				steering().force();

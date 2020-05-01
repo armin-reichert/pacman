@@ -9,7 +9,7 @@ import javax.swing.SwingUtilities;
 
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.MazeGraph;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.tiles.Tile;
 import de.amr.graph.grid.ui.rendering.ConfigurableGridRenderer;
 import de.amr.graph.grid.ui.rendering.GridCanvas;
 import de.amr.graph.grid.ui.rendering.GridRenderer;
@@ -51,10 +51,10 @@ public class BoardPreview extends JFrame {
 		r.fnPassageColor = (cell, dir) -> Color.WHITE;
 		r.fnCellBgColor = cell -> {
 			Tile tile = tile(cell);
-			if (tile.isWall()) {
+			if (maze.isWall(tile)) {
 				return Color.BLACK;
 			}
-			if (tile.isTunnel()) {
+			if (maze.isTunnel(tile)) {
 				return Color.LIGHT_GRAY;
 			}
 			if (maze.inGhostHouse(tile)) {
@@ -97,12 +97,21 @@ public class BoardPreview extends JFrame {
 		if (tile == maze.pacManHome) {
 			return "O";
 		}
-		if (tile.isWall()) {
+		if (maze.isWall(tile)) {
 			return "";
 		}
-		if (tile.containsEnergizer()) {
+		if (maze.isTunnel(tile)) {
+			return "T";
+		}
+		if (maze.isPellet(tile)) {
+			return ".";
+		}
+		if (maze.isEnergizer(tile)) {
 			return "E";
 		}
-		return String.valueOf(tile.content);
+		if (maze.isSpace(tile)) {
+			return " ";
+		}
+		return "?";
 	}
 }

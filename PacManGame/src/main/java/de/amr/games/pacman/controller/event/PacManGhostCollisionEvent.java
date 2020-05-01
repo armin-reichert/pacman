@@ -1,7 +1,7 @@
 package de.amr.games.pacman.controller.event;
 
 import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.tiles.Tile;
 
 public class PacManGhostCollisionEvent extends PacManGameEvent {
 
