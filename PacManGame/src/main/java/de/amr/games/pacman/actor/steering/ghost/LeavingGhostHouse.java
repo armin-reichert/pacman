@@ -16,21 +16,23 @@ import de.amr.games.pacman.model.Tile;
 public class LeavingGhostHouse implements Steering {
 
 	private final Ghost ghost;
-	private boolean complete;
 
 	public LeavingGhostHouse(Ghost ghost) {
 		this.ghost = ghost;
 	}
 
+	private Tile ghostHouseExit() {
+		return ghost.maze().ghostHouseSeats[0];
+	}
+
 	@Override
 	public void steer() {
-		Tile houseExit = ghost.maze().ghostHouseSeats[0];
-		int targetX = houseExit.centerX(), targetY = houseExit.y();
+		Tile exit = ghostHouseExit();
+		int targetX = exit.centerX(), targetY = exit.y();
 		if (ghost.tf.y <= targetY) {
-			ghost.tf.y = (targetY);
-			complete = true;
+			ghost.tf.y = targetY;
 		} else if (Math.round(ghost.tf.x) == targetX) {
-			ghost.tf.x = (targetX);
+			ghost.tf.x = targetX;
 			ghost.setWishDir(UP);
 		} else if (ghost.tf.x < targetX) {
 			ghost.setWishDir(RIGHT);
@@ -40,13 +42,8 @@ public class LeavingGhostHouse implements Steering {
 	}
 
 	@Override
-	public void init() {
-		complete = false;
-	}
-
-	@Override
 	public boolean isComplete() {
-		return complete;
+		return ghost.tf.y == ghostHouseExit().y();
 	}
 
 	@Override
