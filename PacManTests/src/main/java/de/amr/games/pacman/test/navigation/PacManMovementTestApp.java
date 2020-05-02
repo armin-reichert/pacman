@@ -68,7 +68,7 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 		});
 		game.stage.add(pacMan);
 		pacMan.setState(PacManState.EATING);
-		message("Cursor keys");
+		message.text = "Cursor keys";
 		startEnergizerBlinking();
 	}
 
@@ -83,19 +83,19 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_M)) {
 			pacMan.behavior(
 					pacMan.isFollowingKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
-			message("Cursor keys");
+			message.text = "Cursor keys";
 		}
 		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_N)) {
 			pacMan.behavior(pacMan.isFollowingKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2,
 					KeyEvent.VK_NUMPAD4));
-			message("Numpad keys");
+			message.text = "Numpad keys";
 			// } else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_A)) {
 			// pac.steering(avoidingGhosts(game));
 			// message("Avoiding ghosts");
 		}
 		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_R)) {
 			pacMan.behavior(pacMan.isMovingRandomlyWithoutTurningBack());
-			message("Random moves");
+			message.text = "Random moves";
 		}
 	}
 

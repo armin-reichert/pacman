@@ -24,8 +24,34 @@ import de.amr.games.pacman.theme.Theme;
  */
 public abstract class PacManGameView implements Lifecycle, View {
 
+	public class Message {
+
+		public String text;
+		public Color color;
+		public int fontSize;
+		public int row;
+
+		public Message() {
+			text = "";
+			color = Color.YELLOW;
+			fontSize = 11;
+			row = 21;
+		}
+
+		public void draw(Graphics2D g) {
+			if (text != null && text.trim().length() > 0) {
+				try (Pen pen = new Pen(g)) {
+					pen.font(theme.fnt_text(fontSize));
+					pen.color(color);
+					pen.hcenter(text, width(), row);
+				}
+			}
+		}
+	}
+
 	public final Game game; // optional
 	public final Theme theme;
+	public final Message message;
 
 	public int width() {
 		return app().settings().width;
@@ -38,16 +64,23 @@ public abstract class PacManGameView implements Lifecycle, View {
 	protected PacManGameView(Theme theme) {
 		this.game = null;
 		this.theme = Objects.requireNonNull(theme);
+		message = new Message();
 	}
 
 	protected PacManGameView(Game game, Theme theme) {
 		this.game = Objects.requireNonNull(game);
 		this.theme = Objects.requireNonNull(theme);
+		message = new Message();
 		dressPacMan();
 		dressGhost(game.blinky, GhostColor.RED);
 		dressGhost(game.pinky, GhostColor.PINK);
 		dressGhost(game.inky, GhostColor.CYAN);
 		dressGhost(game.clyde, GhostColor.ORANGE);
+	}
+
+	@Override
+	public void init() {
+		message.text = "";
 	}
 
 	private void dressPacMan() {
@@ -82,5 +115,9 @@ public abstract class PacManGameView implements Lifecycle, View {
 				sprite.draw(g, x, y);
 			});
 		}
+	}
+
+	protected void drawMessage(Graphics2D g) {
+		message.draw(g);
 	}
 }

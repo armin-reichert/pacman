@@ -26,7 +26,7 @@ import de.amr.games.pacman.view.core.Pen;
  */
 public class SimplePlayView extends PacManGameView {
 
-	enum Mode {
+	public enum Mode {
 		EMPTY_MAZE, CROWDED_MAZE, FLASHING_MAZE
 	}
 
@@ -36,8 +36,6 @@ public class SimplePlayView extends PacManGameView {
 	protected Sprite spriteMazeEmpty;
 	protected Sprite spriteMazeFull;
 	protected Sprite spriteMazeFlashing;
-	protected String messageText;
-	protected Color messageColor;
 
 	public BooleanSupplier showScores = () -> true;
 
@@ -50,15 +48,13 @@ public class SimplePlayView extends PacManGameView {
 		spriteMazeFull = theme.spr_fullMaze();
 		spriteMazeEmpty = theme.spr_emptyMaze();
 		spriteMazeFlashing = theme.spr_flashingMaze();
-		messageText = null;
-		messageColor = Color.YELLOW;
 		game.bonus.tf.setPosition(game.maze.bonusTile.centerX(), game.maze.bonusTile.y());
 	}
 
 	@Override
 	public void init() {
+		super.init();
 		stopEnergizerBlinking();
-		clearMessage();
 		showCrowdedMaze();
 	}
 
@@ -67,18 +63,6 @@ public class SimplePlayView extends PacManGameView {
 		if (mode == Mode.CROWDED_MAZE) {
 			energizerBlinking.update();
 		}
-	}
-
-	public void messageColor(Color color) {
-		this.messageColor = color;
-	}
-
-	public void message(String message) {
-		this.messageText = message;
-	}
-
-	public void clearMessage() {
-		messageText = null;
 	}
 
 	public void enableGhostAnimations(boolean enabled) {
@@ -154,7 +138,8 @@ public class SimplePlayView extends PacManGameView {
 			});
 		}
 		// draw door open when any ghost is entering or leaving the house
-		if (game.ghostsOnStage().anyMatch(ghost -> ghost.is(GhostState.ENTERING_HOUSE, GhostState.LEAVING_HOUSE))) {
+		if (game.ghostsOnStage()
+				.anyMatch(ghost -> ghost.is(GhostState.ENTERING_HOUSE, GhostState.LEAVING_HOUSE))) {
 			g.setColor(theme.color_mazeBackground());
 			g.fillRect(game.maze.doorLeft.x(), game.maze.doorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
 		}
@@ -219,16 +204,6 @@ public class SimplePlayView extends PacManGameView {
 			Image image = theme.spr_bonusSymbol(symbol).frame(0);
 			g.drawImage(image, x, height() - imageSize, imageSize, imageSize, null);
 			x += imageSize;
-		}
-	}
-
-	protected void drawMessage(Graphics2D g) {
-		if (messageText != null && messageText.trim().length() > 0) {
-			try (Pen pen = new Pen(g)) {
-				pen.font(theme.fnt_text(11));
-				pen.color(messageColor);
-				pen.hcenter(messageText, width(), 21);
-			}
 		}
 	}
 }

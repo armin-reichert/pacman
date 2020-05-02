@@ -51,9 +51,10 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 	public TakeShortestPathTestUI(Game game, Theme theme) {
 		super(game, theme);
 		ghost = game.blinky;
-		targets = Arrays.asList(game.maze.cornerSE, game.maze.tileAt(15, 23), game.maze.tileAt(12, 23), game.maze.cornerSW,
-				game.maze.tileToDir(game.maze.portalLeft, Direction.RIGHT), game.maze.cornerNW, game.maze.ghostHouseSeats[0],
-				game.maze.cornerNE, game.maze.tileToDir(game.maze.portalRight, Direction.LEFT), game.maze.pacManHome);
+		targets = Arrays.asList(game.maze.cornerSE, game.maze.tileAt(15, 23), game.maze.tileAt(12, 23),
+				game.maze.cornerSW, game.maze.tileToDir(game.maze.portalLeft, Direction.RIGHT), game.maze.cornerNW,
+				game.maze.ghostHouseSeats[0], game.maze.cornerNE,
+				game.maze.tileToDir(game.maze.portalRight, Direction.LEFT), game.maze.pacManHome);
 		showRoutes = () -> true;
 		showStates = () -> true;
 		showScores = () -> false;
@@ -71,7 +72,7 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 		ghost.behavior(CHASING, steering);
 		ghost.behavior(FRIGHTENED, steering);
 		ghost.setState(CHASING);
-		message("SPACE toggles ghost state");
+		message.text = "SPACE toggles ghost state";
 	}
 
 	private void nextTarget() {

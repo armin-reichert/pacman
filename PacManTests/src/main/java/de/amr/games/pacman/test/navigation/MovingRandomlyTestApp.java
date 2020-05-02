@@ -59,7 +59,7 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 			ghost.state(FRIGHTENED).removeTimer();
 			ghost.setState(FRIGHTENED);
 		});
-		message("Press SPACE");
+		message.text = "Press SPACE";
 	}
 
 	@Override
@@ -67,7 +67,7 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 		super.update();
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			started = true;
-			clearMessage();
+			message.text = "";
 		}
 		if (started) {
 			game.ghostsOnStage().forEach(Ghost::update);

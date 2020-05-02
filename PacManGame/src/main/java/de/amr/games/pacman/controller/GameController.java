@@ -236,15 +236,15 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 					.onTick((state, t, remaining) -> {
 						if (t == sec(5)) {
-							playView.messageColor(Color.YELLOW);
-							playView.message("Ready!");
+							playView.message.color = Color.YELLOW;
+							playView.message.text = "Ready!";
 							playView.startEnergizerBlinking();
 							sound.gameStarts();
 						}
 						game.movingActorsOnStage().forEach(MovingActor::update);
 					})
 					.onExit(() -> {
-						playView.clearMessage();
+						playView.message.text = "";
 					})
 				
 				.state(PLAYING).customState(new PlayingState())
@@ -343,12 +343,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						game.hiscore.save();
 						game.ghostsOnStage().forEach(ghost -> ghost.visible = true);
 						playView.enableGhostAnimations(false);
-						playView.messageColor(Color.RED);
-						playView.message("Game   Over!");
+						playView.message.color = Color.RED;
+						playView.message.text = "Game   Over!";
 						sound.gameOver();
 					})
 					.onExit(() -> {
-						playView.clearMessage();
+						playView.message.text = "";
 						sound.muteAll();
 					})
 

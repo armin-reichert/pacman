@@ -2,7 +2,6 @@ package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 
@@ -56,15 +55,14 @@ class ScatteringTestUI extends PlayView implements VisualController {
 			game.stage.add(ghost);
 			ghost.followState = SCATTERING;
 		});
-		messageColor(Color.YELLOW);
-		message("Press SPACE to start");
+		message.text = "Press SPACE to start";
 	}
 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			game.ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
-			clearMessage();
+			message.text = "";
 		}
 		game.ghostsOnStage().forEach(Ghost::update);
 		super.update();
