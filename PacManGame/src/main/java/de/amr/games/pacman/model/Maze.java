@@ -107,9 +107,7 @@ public class Maze {
 					foodCount += 1;
 					break;
 				case ENERGIZER:
-					Energizer energizer = new Energizer(col, row);
-					map[col][row] = energizer;
-					energizers[energizerCount++] = energizer;
+					map[col][row] = energizers[energizerCount++] = new Energizer(col, row);
 					foodCount += 1;
 					break;
 				default:
