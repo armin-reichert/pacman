@@ -498,7 +498,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (game.lives > livesBefore) {
 				sound.extraLife();
 			}
-			if (game.numPelletsRemaining() == 0) {
+			if (game.remainingFoodCount() == 0) {
 				enqueue(new LevelCompletedEvent());
 				return;
 			}

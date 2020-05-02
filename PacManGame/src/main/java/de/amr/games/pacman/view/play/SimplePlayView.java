@@ -198,7 +198,7 @@ public class SimplePlayView extends PacManGameView {
 			g.setColor(Color.PINK);
 			g.fillRect(22 * Tile.SIZE + 2, Tile.SIZE + 2, 4, 3);
 			pen.color(Color.WHITE);
-			pen.drawAtTilePosition(23, 1, String.format("%03d", game.numPelletsRemaining()));
+			pen.drawAtTilePosition(23, 1, String.format("%03d", game.remainingFoodCount()));
 		}
 		drawLives(g);
 		drawLevelCounter(g);

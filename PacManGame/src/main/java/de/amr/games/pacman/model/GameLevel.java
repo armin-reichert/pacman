@@ -24,7 +24,7 @@ public class GameLevel {
 	public final int mazeNumFlashes;
 
 	public int number;
-	public int numPelletsEaten;
+	public int eatenFoodCount;
 	public int ghostsKilledByEnergizer;
 	public int ghostsKilledInLevel;
 

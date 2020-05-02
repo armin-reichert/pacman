@@ -189,7 +189,7 @@ public class Game {
 		loginfo("Enter level %d", n);
 		level = LEVELS[Math.min(n, LEVELS.length - 1)];
 		level.number = n;
-		level.numPelletsEaten = 0;
+		level.eatenFoodCount = 0;
 		level.ghostsKilledByEnergizer = 0;
 		level.ghostsKilledInLevel = 0;
 		if (levelCounter.size() == 7) {
@@ -200,8 +200,8 @@ public class Game {
 		hiscore.save();
 	}
 
-	public int numPelletsRemaining() {
-		return maze.totalFoodCount - level.numPelletsEaten;
+	public int remainingFoodCount() {
+		return maze.totalFoodCount - level.eatenFoodCount;
 	}
 
 	/**
@@ -210,7 +210,7 @@ public class Game {
 	 * @return points scored
 	 */
 	public int eatFoodAt(Tile tile) {
-		level.numPelletsEaten += 1;
+		level.eatenFoodCount += 1;
 		if (maze.isEnergizer(tile)) {
 			level.ghostsKilledByEnergizer = 0;
 			maze.removeFood(tile);
@@ -224,7 +224,7 @@ public class Game {
 	}
 
 	public boolean isBonusScoreReached() {
-		return level.numPelletsEaten == 70 || level.numPelletsEaten == 170;
+		return level.eatenFoodCount == 70 || level.eatenFoodCount == 170;
 	}
 
 	public void score(int points) {
