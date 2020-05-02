@@ -106,19 +106,19 @@ public class Game {
 		score = 0;
 		levelCounter = new ArrayDeque<>(7);
 		hiscore = new Hiscore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
-		hiscore.load();
 		maze = new Maze();
+		createActors();
+		enterLevel(1);
+	}
+
+	private void createActors() {
 		pacMan = new PacMan(this);
 		blinky = new Ghost(this, "Blinky");
 		inky = new Ghost(this, "Inky");
 		pinky = new Ghost(this, "Pinky");
 		clyde = new Ghost(this, "Clyde");
 		bonus = new Bonus(this);
-		configureActors();
-		enterLevel(1);
-	}
 
-	private void configureActors() {
 		pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		pacMan.setTeleportingDuration(sec(0.5f));
 

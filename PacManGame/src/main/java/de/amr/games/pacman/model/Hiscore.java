@@ -22,6 +22,7 @@ public class Hiscore {
 
 	public Hiscore(File file) {
 		this.file = file;
+		load();
 	}
 
 	public void load() {
