@@ -53,7 +53,7 @@ class ScatteringTestUI extends PlayView implements VisualController {
 		super.init();
 		game.maze.removeFood();
 		game.ghosts().forEach(ghost -> {
-			game.pushActorOnStage(ghost);
+			game.stage.add(ghost);
 			ghost.followState = SCATTERING;
 		});
 		messageColor(Color.YELLOW);

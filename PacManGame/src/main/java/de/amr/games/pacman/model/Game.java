@@ -28,8 +28,6 @@ import static java.awt.event.KeyEvent.VK_UP;
 import java.io.File;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.actor.Bonus;
@@ -93,13 +91,12 @@ public class Game {
 	public Ghost blinky, pinky, inky, clyde;
 	public Bonus bonus;
 	public Maze maze;
+	public Stage stage;
 	public Deque<Symbol> levelCounter;
 	public Hiscore hiscore;
 	public GameLevel level;
 	public int lives;
 	public int score;
-
-	private Set<MovingActor<?>> actorsOnStage = new HashSet<>();
 
 	public Game() {
 		lives = 3;
@@ -107,6 +104,7 @@ public class Game {
 		levelCounter = new ArrayDeque<>(7);
 		hiscore = new Hiscore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
 		maze = new Maze();
+		stage = new Stage();
 		createActors();
 		enterLevel(1);
 	}
@@ -176,7 +174,7 @@ public class Game {
 	}
 
 	public Stream<Ghost> ghostsOnStage() {
-		return ghosts().filter(this::onStage);
+		return ghosts().filter(stage::contains);
 	}
 
 	public Stream<MovingActor<?>> movingActors() {
@@ -184,24 +182,7 @@ public class Game {
 	}
 
 	public Stream<MovingActor<?>> movingActorsOnStage() {
-		return movingActors().filter(this::onStage);
-	}
-
-	public boolean onStage(MovingActor<?> actor) {
-		return actorsOnStage.contains(actor);
-	}
-
-	public void pushActorOnStage(MovingActor<?> actor) {
-		actorsOnStage.add(actor);
-		actor.init();
-		actor.visible = true;
-		loginfo("%s has been pushed onto stage", actor.name);
-	}
-
-	public void pullActorFromStage(MovingActor<?> actor) {
-		actorsOnStage.remove(actor);
-		actor.visible = false;
-		loginfo("%s has been pulled from stage", actor.name);
+		return movingActors().filter(stage::contains);
 	}
 
 	public void enterLevel(int n) {
