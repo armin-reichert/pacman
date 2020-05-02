@@ -70,24 +70,13 @@ public class LoadingView extends PacManGameView {
 			pen.fontSize(14);
 			pen.hcenter(PacManApp.texts.getString("loading_music"), width(), 18);
 		}
-		drawPacMan(g);
+		drawActor(g, game.pacMan, game.pacMan.sprites);
 		float x = width() / 2 - (ghostCount / 2) * 20, y = game.pacMan.tf.y + 20;
 		for (int i = 0; i < ghostCount; ++i) {
 			GhostColor color = GhostColor.values()[new Random().nextInt(4)];
 			Direction dir = Direction.values()[new Random().nextInt(4)];
 			theme.spr_ghostColored(color, dir.ordinal()).draw(g, x, y);
 			x += 20;
-		}
-	}
-
-	protected void drawPacMan(Graphics2D g) {
-		if (game.pacMan.visible) {
-			game.pacMan.sprites.current().ifPresent(sprite -> {
-				Vector2f center = game.pacMan.tf.getCenter();
-				float x = center.x - sprite.getWidth() / 2;
-				float y = center.y - sprite.getHeight() / 2;
-				sprite.draw(g, x, y);
-			});
 		}
 	}
 }
