@@ -201,7 +201,7 @@ public class Game {
 	}
 
 	public int numPelletsRemaining() {
-		return maze.totalNumPellets - level.numPelletsEaten;
+		return maze.totalFoodCount - level.numPelletsEaten;
 	}
 
 	/**

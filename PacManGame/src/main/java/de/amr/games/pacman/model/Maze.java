@@ -21,13 +21,13 @@ import de.amr.games.pacman.model.tiles.Wall;
  */
 public class Maze {
 
-	public static final char WALL = '#';
-	public static final char TUNNEL = 't';
-	public static final char SPACE = ' ';
-	public static final char PELLET = '.';
-	public static final char ENERGIZER = '*';
+	static final char WALL = '#';
+	static final char TUNNEL = 't';
+	static final char SPACE = ' ';
+	static final char PELLET = '.';
+	static final char ENERGIZER = '*';
 
-	final String[] data = {
+	static final String[] MAP = {
 	/*@formatter:off*/
 	"############################", 
 	"############################", 
@@ -69,7 +69,7 @@ public class Maze {
 
 	public final int numRows;
 	public final int numCols;
-	public final int totalNumPellets;
+	public final int totalFoodCount;
 
 	public final Tile pacManHome;
 	public final Tile ghostHouseSeats[] = new Tile[4];
@@ -84,14 +84,14 @@ public class Maze {
 	private final Set<Tile> intersections;
 
 	public Maze() {
-		numRows = data.length;
-		numCols = data[0].length();
+		numRows = MAP.length;
+		numCols = MAP[0].length();
 		map = new Tile[numCols][numRows];
 		int energizerCount = 0;
-		int pelletCount = 0;
+		int foodCount = 0;
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				char c = data[row].charAt(col);
+				char c = MAP[row].charAt(col);
 				switch (c) {
 				case SPACE:
 					map[col][row] = new Space(col, row);
@@ -104,20 +104,20 @@ public class Maze {
 					break;
 				case PELLET:
 					map[col][row] = new Pellet(col, row);
-					pelletCount += 1;
+					foodCount += 1;
 					break;
 				case ENERGIZER:
 					Energizer energizer = new Energizer(col, row);
 					map[col][row] = energizer;
 					energizers[energizerCount++] = energizer;
-					pelletCount += 1;
+					foodCount += 1;
 					break;
 				default:
 					throw new IllegalArgumentException("Unknown tile content: " + c);
 				}
 			}
 		}
-		totalNumPellets = pelletCount;
+		totalFoodCount = foodCount;
 
 		// Ghost house
 		doorLeft = map[13][15];
