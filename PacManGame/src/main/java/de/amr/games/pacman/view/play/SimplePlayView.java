@@ -11,6 +11,7 @@ import java.util.function.BooleanSupplier;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
+import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Symbol;
 import de.amr.games.pacman.model.tiles.Tile;
@@ -152,8 +153,8 @@ public class SimplePlayView extends PacManGameView {
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
 		}
-		// hide door when ghost is passing through
-		if (game.ghostsOnStage().anyMatch(ghost -> game.maze.isDoor(ghost.tile()))) {
+		// draw door open when any ghost is entering or leaving the house
+		if (game.ghostsOnStage().anyMatch(ghost -> ghost.is(GhostState.ENTERING_HOUSE, GhostState.LEAVING_HOUSE))) {
 			g.setColor(theme.color_mazeBackground());
 			g.fillRect(game.maze.doorLeft.x(), game.maze.doorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
 		}
