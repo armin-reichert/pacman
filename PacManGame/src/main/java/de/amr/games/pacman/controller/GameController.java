@@ -350,7 +350,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
-					.act(playingState()::onPacManFoundFood)
+					.act(playingState()::onFoodFound)
 					
 				.stay(PLAYING)
 					.on(BonusFoundEvent.class)
@@ -468,10 +468,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			game.bonus.process(event);
 		}
 
-		private void onPacManFoundFood(PacManGameEvent event) {
-			FoodFoundEvent foodFound = (FoodFoundEvent) event;
-			house.onPacManFoundFood(foodFound);
-			int points = game.eatFoodAt(foodFound.pellet);
+		private void onFoodFound(PacManGameEvent event) {
+			FoodFoundEvent found = (FoodFoundEvent) event;
+			house.onPacManFoundFood(found);
+			int points = game.eatFood(found.pellet);
 			int livesBefore = game.lives;
 			game.score(points);
 			sound.pelletEaten();
@@ -486,7 +486,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				game.bonus.show(theme);
 				loginfo("Bonus %s added, time: %.2f sec", game.bonus, game.bonus.state().getDuration() / 60f);
 			}
-			if (foodFound.pellet.energizer) {
+			if (found.pellet.energizer) {
 				ghostCommand.suspend();
 				sound.pacManGainsPower();
 				game.pacMan.powerTicks = sec(game.level.pacManPowerSeconds);
@@ -552,7 +552,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void eatAllNormalPellets() {
 		game.maze.tiles().filter(game.maze::isNormalPellet).forEach(tile -> {
-			game.eatFoodAt(tile);
+			game.eatFood(tile);
 			house.onPacManFoundFood(new FoodFoundEvent((Pellet) tile));
 			house.update();
 		});

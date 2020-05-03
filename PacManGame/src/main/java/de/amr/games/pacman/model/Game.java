@@ -210,7 +210,7 @@ public class Game {
 	 * @param tile tile containing food
 	 * @return points scored
 	 */
-	public int eatFoodAt(Tile tile) {
+	public int eatFood(Tile tile) {
 		level.eatenFoodCount += 1;
 		if (maze.isEnergizer(tile)) {
 			level.ghostsKilledByEnergizer = 0;
