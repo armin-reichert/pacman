@@ -11,7 +11,6 @@ import de.amr.games.pacman.model.tiles.Energizer;
 import de.amr.games.pacman.model.tiles.Pellet;
 import de.amr.games.pacman.model.tiles.Space;
 import de.amr.games.pacman.model.tiles.Tile;
-import de.amr.games.pacman.model.tiles.Tunnel;
 import de.amr.games.pacman.model.tiles.Wall;
 
 /**
@@ -22,7 +21,6 @@ import de.amr.games.pacman.model.tiles.Wall;
 public class Maze {
 
 	static final char WALL = '#';
-	static final char TUNNEL = 't';
 	static final char SPACE = ' ';
 	static final char PELLET = '.';
 	static final char ENERGIZER = '*';
@@ -46,7 +44,7 @@ public class Maze {
 	"######.##          ##.######", 
 	"######.## ###  ### ##.######", 
 	"######.## #      # ##.######", 
-	"tttttt.   #      #   .tttttt", 
+	"      .   #      #   .      ", 
 	"######.## #      # ##.######", 
 	"######.## ######## ##.######", 
 	"######.##          ##.######", 
@@ -76,7 +74,7 @@ public class Maze {
 	public final Tile bonusTile;
 	public final Tile cornerNW, cornerNE, cornerSW, cornerSE;
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
-	public final Tunnel portalLeft, portalRight;
+	public final Tile portalLeft, portalRight;
 	public final Tile doorLeft, doorRight;
 	public final Energizer energizers[] = new Energizer[4];
 
@@ -98,9 +96,6 @@ public class Maze {
 					break;
 				case WALL:
 					map[col][row] = new Wall(col, row);
-					break;
-				case TUNNEL:
-					map[col][row] = new Tunnel(col, row);
 					break;
 				case PELLET:
 					map[col][row] = new Pellet(col, row);
@@ -128,8 +123,8 @@ public class Maze {
 		pacManHome = map[13][26];
 		bonusTile = map[13][20];
 
-		portalLeft = new Tunnel(-1, 17);
-		portalRight = new Tunnel(28, 17);
+		portalLeft = new Space(-1, 17);
+		portalRight = new Space(28, 17);
 
 		// Scattering targets
 		horizonNW = map[2][0];
@@ -167,16 +162,15 @@ public class Maze {
 	}
 
 	/**
-	 * Returns the tile at the given tile position. This is either a tile inside the board, a portal
-	 * tile or a wall outside. Tiles inside the board and the two portal tiles are created once so
-	 * equality can be tested using <code>==</code>. Other tiles are created on-demand and must be
-	 * compared using {@link Object#equals(Object)}. For tiles outside of the board, the column and row
-	 * index must fit into a byte.
+	 * Returns the tile at the given tile position. This is either a tile inside the
+	 * board, a portal tile or a wall outside. Tiles inside the board and the two
+	 * portal tiles are created once so equality can be tested using
+	 * <code>==</code>. Other tiles are created on-demand and must be compared using
+	 * {@link Object#equals(Object)}. For tiles outside of the board, the column and
+	 * row index must fit into a byte.
 	 * 
-	 * @param col
-	 *              a column index
-	 * @param row
-	 *              a row index
+	 * @param col a column index
+	 * @param row a row index
 	 * @return the tile with the given coordinates.
 	 */
 	public Tile tileAt(int col, int row) {
@@ -193,14 +187,11 @@ public class Maze {
 	}
 
 	/**
-	 * @param tile
-	 *               reference tile
-	 * @param dir
-	 *               some direction
-	 * @param n
-	 *               number of tiles
-	 * @return the tile located <code>n</code> tiles away from the reference tile towards the given
-	 *         direction. This can be a tile outside of the board!
+	 * @param tile reference tile
+	 * @param dir  some direction
+	 * @param n    number of tiles
+	 * @return the tile located <code>n</code> tiles away from the reference tile
+	 *         towards the given direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
 		if (tile.equals(portalLeft) && dir == Direction.LEFT) {
@@ -214,11 +205,10 @@ public class Maze {
 	}
 
 	/**
-	 * @param tile
-	 *               reference tile
-	 * @param dir
-	 *               some direction
-	 * @return neighbor towards the given direction. This can be a tile outside of the board!
+	 * @param tile reference tile
+	 * @param dir  some direction
+	 * @return neighbor towards the given direction. This can be a tile outside of
+	 *         the board!
 	 */
 	public Tile tileToDir(Tile tile, Direction dir) {
 		return tileToDir(tile, dir, 1);
@@ -241,7 +231,7 @@ public class Maze {
 	}
 
 	public boolean isTunnel(Tile tile) {
-		return tile instanceof Tunnel;
+		return tile.row == 17 && (-1 <= tile.col && tile.col <= 5 || tile.col >= 22 && tile.col <= 28);
 	}
 
 	public boolean isSpace(Tile tile) {
@@ -275,11 +265,9 @@ public class Maze {
 	public void removeFood(Tile tile) {
 		if (isPellet(tile)) {
 			((Pellet) tile).eaten = true;
-		}
-		else if (isEnergizer(tile)) {
+		} else if (isEnergizer(tile)) {
 			((Energizer) tile).eaten = true;
-		}
-		else {
+		} else {
 			throw new IllegalArgumentException(String.format("Tile %s does not contain food", this));
 		}
 	}
@@ -287,11 +275,9 @@ public class Maze {
 	public void restoreFood(Tile tile) {
 		if (isEatenPellet(tile)) {
 			((Pellet) tile).eaten = false;
-		}
-		else if (isEatenEnergizer(tile)) {
+		} else if (isEatenEnergizer(tile)) {
 			((Energizer) tile).eaten = false;
-		}
-		else {
+		} else {
 			throw new IllegalArgumentException(String.format("Tile %s does not contain eaten food", this));
 		}
 	}
