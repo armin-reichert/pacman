@@ -1,6 +1,8 @@
 package de.amr.games.pacman.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,7 +24,7 @@ public class Maze {
 	static final char WALL = '#';
 	static final char SPACE = ' ';
 	static final char PELLET = '.';
-	static final char ENERGIZER = '*';
+	static final char ENERGIZER = 'E';
 
 	static final String[] MAP = {
 	/*@formatter:off*/
@@ -32,7 +34,7 @@ public class Maze {
 	"############################", 
 	"#............##............#", 
 	"#.####.#####.##.#####.####.#", 
-	"#*####.#####.##.#####.####*#", 
+	"#E####.#####.##.#####.####E#", 
 	"#.####.#####.##.#####.####.#", 
 	"#..........................#", 
 	"#.####.##.########.##.####.#", 
@@ -52,7 +54,7 @@ public class Maze {
 	"#............##............#", 
 	"#.####.#####.##.#####.####.#", 
 	"#.####.#####.##.#####.####.#", 
-	"#*..##.......  .......##..*#", 
+	"#E..##.......  .......##..E#", 
 	"###.##.##.########.##.##.###", 
 	"###.##.##.########.##.##.###", 
 	"#......##....##....##......#", 
@@ -75,7 +77,7 @@ public class Maze {
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile portalLeft, portalRight;
 	public final Tile doorLeft, doorRight;
-	public final Tile energizers[] = new Tile[4];
+	public final List<Pellet> energizers = new ArrayList<>();
 
 	private final Tile[][] map;
 	private final Set<Tile> intersections;
@@ -84,7 +86,6 @@ public class Maze {
 		numRows = MAP.length;
 		numCols = MAP[0].length();
 		map = new Tile[numCols][numRows];
-		int energizerCount = 0;
 		int foodCount = 0;
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
@@ -103,7 +104,8 @@ public class Maze {
 				case ENERGIZER:
 					Pellet pellet = new Pellet(col, row);
 					pellet.energizer = true;
-					map[col][row] = energizers[energizerCount++] = pellet;
+					map[col][row] = pellet;
+					energizers.add(pellet);
 					foodCount += 1;
 					break;
 				default:

@@ -5,7 +5,6 @@ import static de.amr.games.pacman.actor.GhostState.DEAD;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
@@ -126,21 +125,20 @@ public class SimplePlayView extends PacManGameView {
 
 	protected void drawCrowdedMaze(Graphics2D g) {
 		spriteMazeFull.draw(g, 0, 3 * Tile.SIZE);
-		game.maze.tiles()
-				.filter(tile -> game.maze.isEatenNormalPellet(tile) || game.maze.isEatenEnergizer(tile)).forEach(tile -> {
-			g.setColor(bgColor(tile));
-			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
-		});
+		game.maze.tiles().filter(tile -> game.maze.isEatenNormalPellet(tile) || game.maze.isEatenEnergizer(tile))
+				.forEach(tile -> {
+					g.setColor(bgColor(tile));
+					g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
+				});
 		// hide active energizers when blinking animation is in dark phase
 		if (energizerBlinking.currentFrame() == 1) {
-			Arrays.stream(game.maze.energizers).filter(tile -> !game.maze.isEatenEnergizer(tile)).forEach(tile -> {
+			game.maze.energizers.stream().filter(tile -> !game.maze.isEatenEnergizer(tile)).forEach(tile -> {
 				g.setColor(bgColor(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
 		}
 		// draw door open when any ghost is entering or leaving the house
-		if (game.ghostsOnStage()
-				.anyMatch(ghost -> ghost.is(GhostState.ENTERING_HOUSE, GhostState.LEAVING_HOUSE))) {
+		if (game.ghostsOnStage().anyMatch(ghost -> ghost.is(GhostState.ENTERING_HOUSE, GhostState.LEAVING_HOUSE))) {
 			g.setColor(theme.color_mazeBackground());
 			g.fillRect(game.maze.doorLeft.x(), game.maze.doorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
 		}
@@ -159,8 +157,7 @@ public class SimplePlayView extends PacManGameView {
 		drawActor(g, game.pacMan, game.pacMan.sprites);
 		// draw dead ghosts (points) below living ghosts
 		game.ghostsOnStage().filter(ghost -> ghost.is(DEAD)).forEach(ghost -> drawActor(g, ghost, ghost.sprites));
-		game.ghostsOnStage().filter(ghost -> !ghost.is(DEAD))
-				.forEach(ghost -> drawActor(g, ghost, ghost.sprites));
+		game.ghostsOnStage().filter(ghost -> !ghost.is(DEAD)).forEach(ghost -> drawActor(g, ghost, ghost.sprites));
 	}
 
 	protected void drawScores(Graphics2D g) {
