@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.model.tiles.Energizer;
 import de.amr.games.pacman.model.tiles.Pellet;
 import de.amr.games.pacman.model.tiles.Space;
 import de.amr.games.pacman.model.tiles.Tile;
@@ -76,7 +75,7 @@ public class Maze {
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile portalLeft, portalRight;
 	public final Tile doorLeft, doorRight;
-	public final Energizer energizers[] = new Energizer[4];
+	public final Tile energizers[] = new Tile[4];
 
 	private final Tile[][] map;
 	private final Set<Tile> intersections;
@@ -102,7 +101,9 @@ public class Maze {
 					foodCount += 1;
 					break;
 				case ENERGIZER:
-					map[col][row] = energizers[energizerCount++] = new Energizer(col, row);
+					Pellet pellet = new Pellet(col, row);
+					pellet.energizer = true;
+					map[col][row] = energizers[energizerCount++] = pellet;
 					foodCount += 1;
 					break;
 				default:
@@ -238,48 +239,56 @@ public class Maze {
 		return tile instanceof Space;
 	}
 
-	public boolean isPellet(Tile tile) {
-		return tile instanceof Pellet && !((Pellet) tile).eaten;
+	public boolean isNormalPellet(Tile tile) {
+		if (tile instanceof Pellet) {
+			Pellet pellet = (Pellet) tile;
+			return !pellet.energizer && !pellet.eaten;
+		}
+		return false;
 	}
 
-	public boolean isEatenPellet(Tile tile) {
-		return tile instanceof Pellet && ((Pellet) tile).eaten;
+	public boolean isEatenNormalPellet(Tile tile) {
+		if (tile instanceof Pellet) {
+			Pellet pellet = (Pellet) tile;
+			return !pellet.energizer && pellet.eaten;
+		}
+		return false;
 	}
 
 	public boolean isEnergizer(Tile tile) {
-		return tile instanceof Energizer && !((Energizer) tile).eaten;
+		if (tile instanceof Pellet) {
+			Pellet pellet = (Pellet) tile;
+			return pellet.energizer && !pellet.eaten;
+		}
+		return false;
 	}
 
 	public boolean isEatenEnergizer(Tile tile) {
-		return tile instanceof Energizer && ((Energizer) tile).eaten;
-	}
-
-	public boolean isFood(Tile tile) {
-		return isPellet(tile) || isEnergizer(tile);
-	}
-
-	public boolean isEatenFood(Tile tile) {
-		return isEatenPellet(tile) || isEatenEnergizer(tile);
+		if (tile instanceof Pellet) {
+			Pellet pellet = (Pellet) tile;
+			return pellet.energizer && pellet.eaten;
+		}
+		return false;
 	}
 
 	public void removeFood(Tile tile) {
-		if (isPellet(tile)) {
+		if (tile instanceof Pellet) {
 			((Pellet) tile).eaten = true;
-		} else if (isEnergizer(tile)) {
-			((Energizer) tile).eaten = true;
-		} else {
-			throw new IllegalArgumentException(String.format("Tile %s does not contain food", this));
 		}
 	}
 
+	public void removeFood() {
+		tiles().forEach(this::removeFood);
+	}
+
 	public void restoreFood(Tile tile) {
-		if (isEatenPellet(tile)) {
+		if (tile instanceof Pellet) {
 			((Pellet) tile).eaten = false;
-		} else if (isEatenEnergizer(tile)) {
-			((Energizer) tile).eaten = false;
-		} else {
-			throw new IllegalArgumentException(String.format("Tile %s does not contain eaten food", this));
 		}
+	}
+
+	public void restoreFood() {
+		tiles().forEach(this::restoreFood);
 	}
 
 	public boolean inFrontOfGhostHouseDoor(Tile tile) {
@@ -309,13 +318,5 @@ public class Maze {
 
 	public boolean isNoUpIntersection(Tile tile) {
 		return tile == map[12][14] || tile == map[12][26] || tile == map[15][14] || tile == map[15][26];
-	}
-
-	public void restoreFood() {
-		tiles().filter(this::isEatenFood).forEach(this::restoreFood);
-	}
-
-	public void removeFood() {
-		tiles().filter(this::isFood).forEach(this::removeFood);
 	}
 }

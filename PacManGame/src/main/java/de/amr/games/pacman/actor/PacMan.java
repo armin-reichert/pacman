@@ -123,14 +123,13 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 		if (tile == maze().bonusTile && game.bonus.is(ACTIVE)) {
 			return Optional.of(new BonusFoundEvent(game.bonus.symbol(), game.bonus.value()));
 		}
-		if (maze().isFood(tile)) {
-			if (maze().isEnergizer(tile)) {
-				digestionTicks = DIGEST_ENERGIZER_TICKS;
-				return Optional.of(new FoodFoundEvent(tile, true));
-			} else {
-				digestionTicks = DIGEST_PELLET_TICKS;
-				return Optional.of(new FoodFoundEvent(tile, false));
-			}
+		if (maze().isEnergizer(tile)) {
+			digestionTicks = DIGEST_ENERGIZER_TICKS;
+			return Optional.of(new FoodFoundEvent(tile, true));
+		}
+		if (maze().isNormalPellet(tile)) {
+			digestionTicks = DIGEST_PELLET_TICKS;
+			return Optional.of(new FoodFoundEvent(tile, false));
 		}
 		return Optional.empty();
 	}

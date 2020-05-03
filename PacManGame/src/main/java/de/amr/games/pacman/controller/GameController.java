@@ -573,7 +573,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	private void eatAllPellets() {
-		game.maze.tiles().filter(game.maze::isPellet).forEach(tile -> {
+		game.maze.tiles().filter(game.maze::isNormalPellet).forEach(tile -> {
 			game.eatFoodAt(tile);
 			house.onPacManFoundFood(new FoodFoundEvent(tile, false));
 			house.update();

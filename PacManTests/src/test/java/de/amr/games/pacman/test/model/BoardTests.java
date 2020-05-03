@@ -35,11 +35,11 @@ public class BoardTests {
 		assertNotNull(maze.horizonSE);
 
 		assertEquals(4, maze.tiles().filter(maze::isEnergizer).count());
-		assertEquals(240, maze.tiles().filter(maze::isPellet).count());
+		assertEquals(240, maze.tiles().filter(maze::isNormalPellet).count());
 
 		assertTrue(maze.isWall(maze.tileAt(0, 3)));
 		assertTrue(maze.isDoor(maze.tileAt(13, 15)));
-		assertTrue(maze.isPellet(maze.tileAt(1, 4)));
+		assertTrue(maze.isNormalPellet(maze.tileAt(1, 4)));
 		assertTrue(maze.isEnergizer(maze.tileAt(1, 6)));
 
 		assertEquals(maze.tileAt(0, 0), maze.tileAt(0, 0));

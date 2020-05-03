@@ -216,7 +216,7 @@ public class Game {
 			maze.removeFood(tile);
 			return POINTS_ENERGIZER;
 		}
-		else if (maze.isPellet(tile)) {
+		else if (maze.isNormalPellet(tile)) {
 			maze.removeFood(tile);
 			return POINTS_PELLET;
 		}
