@@ -41,10 +41,12 @@ import de.amr.games.pacman.model.tiles.Tile;
  * 
  * @author Armin Reichert
  * 
- * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
+ * @see <a href=
+ *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
  *      dossier</a>
- * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man level
- *      specifications</a>
+ * @see <a href=
+ *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man
+ *      level specifications</a>
  */
 public class Game {
 
@@ -164,8 +166,8 @@ public class Game {
 		clyde.behavior(LEAVING_HOUSE, clyde.isLeavingGhostHouse());
 		clyde.behavior(FRIGHTENED, clyde.isMovingRandomlyWithoutTurningBack());
 		clyde.behavior(SCATTERING, clyde.isHeadingFor(maze.horizonSW));
-		clyde.behavior(CHASING, clyde
-				.isHeadingFor(() -> clyde.tile().distSq(pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
+		clyde.behavior(CHASING,
+				clyde.isHeadingFor(() -> clyde.tile().distSq(pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
 		clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostHouseSeats[0]));
 	}
 
@@ -196,7 +198,7 @@ public class Game {
 			levelCounter.removeLast();
 		}
 		levelCounter.addFirst(level.bonusSymbol);
-		maze.restoreFood();
+		maze.tiles().forEach(maze::restoreFood);
 		hiscore.save();
 	}
 
@@ -205,8 +207,7 @@ public class Game {
 	}
 
 	/**
-	 * @param tile
-	 *               tile containing food
+	 * @param tile tile containing food
 	 * @return points scored
 	 */
 	public int eatFoodAt(Tile tile) {
@@ -215,8 +216,7 @@ public class Game {
 			level.ghostsKilledByEnergizer = 0;
 			maze.removeFood(tile);
 			return POINTS_ENERGIZER;
-		}
-		else if (maze.isNormalPellet(tile)) {
+		} else if (maze.isNormalPellet(tile)) {
 			maze.removeFood(tile);
 			return POINTS_PELLET;
 		}

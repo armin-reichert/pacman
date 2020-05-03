@@ -54,7 +54,7 @@ class EnterGhostHouseTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game.maze.removeFood();
+		game.maze.tiles().forEach(game.maze::removeFood);
 		game.stage.add(game.inky);
 		message.text = "SPACE = enter / leave house";
 		message.fontSize = 9;

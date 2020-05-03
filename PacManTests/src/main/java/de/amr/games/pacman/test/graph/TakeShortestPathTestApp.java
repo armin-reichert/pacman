@@ -51,10 +51,9 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 	public TakeShortestPathTestUI(Game game, Theme theme) {
 		super(game, theme);
 		ghost = game.blinky;
-		targets = Arrays.asList(game.maze.cornerSE, game.maze.tileAt(15, 23), game.maze.tileAt(12, 23),
-				game.maze.cornerSW, game.maze.tileToDir(game.maze.portalLeft, Direction.RIGHT), game.maze.cornerNW,
-				game.maze.ghostHouseSeats[0], game.maze.cornerNE,
-				game.maze.tileToDir(game.maze.portalRight, Direction.LEFT), game.maze.pacManHome);
+		targets = Arrays.asList(game.maze.cornerSE, game.maze.tileAt(15, 23), game.maze.tileAt(12, 23), game.maze.cornerSW,
+				game.maze.tileToDir(game.maze.portalLeft, Direction.RIGHT), game.maze.cornerNW, game.maze.ghostHouseSeats[0],
+				game.maze.cornerNE, game.maze.tileToDir(game.maze.portalRight, Direction.LEFT), game.maze.pacManHome);
 		showRoutes = () -> true;
 		showStates = () -> true;
 		showScores = () -> false;
@@ -64,7 +63,7 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game.maze.removeFood();
+		game.maze.tiles().forEach(game.maze::removeFood);
 		targetIndex = 0;
 		theme.snd_ghost_chase().volume(0);
 		game.stage.add(ghost);
@@ -79,7 +78,7 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 		if (++targetIndex == targets.size()) {
 			targetIndex = 0;
 			game.enterLevel(game.level.number + 1);
-			game.maze.removeFood();
+			game.maze.tiles().forEach(game.maze::removeFood);
 		}
 	}
 

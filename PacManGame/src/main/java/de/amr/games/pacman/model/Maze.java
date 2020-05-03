@@ -279,18 +279,10 @@ public class Maze {
 		}
 	}
 
-	public void removeFood() {
-		tiles().forEach(this::removeFood);
-	}
-
 	public void restoreFood(Tile tile) {
 		if (tile instanceof Pellet) {
 			((Pellet) tile).eaten = false;
 		}
-	}
-
-	public void restoreFood() {
-		tiles().forEach(this::restoreFood);
 	}
 
 	public boolean inFrontOfGhostHouseDoor(Tile tile) {

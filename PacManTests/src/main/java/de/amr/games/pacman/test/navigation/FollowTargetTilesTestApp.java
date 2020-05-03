@@ -63,7 +63,7 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 	public void init() {
 		super.init();
 		current = 0;
-		game.maze.removeFood();
+		game.maze.tiles().forEach(game.maze::removeFood);
 		theme.snd_ghost_chase().volume(0);
 		game.stage.add(game.blinky);
 		game.blinky.placeAt(targets.get(0));
@@ -79,7 +79,7 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 			if (current == targets.size()) {
 				current = 0;
 				game.enterLevel(game.level.number + 1);
-				game.maze.removeFood();
+				game.maze.tiles().forEach(game.maze::removeFood);
 			}
 		}
 		game.blinky.update();

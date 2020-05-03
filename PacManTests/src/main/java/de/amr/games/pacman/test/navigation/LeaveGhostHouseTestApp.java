@@ -51,7 +51,7 @@ class LeaveGhostHouseTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game.maze.removeFood();
+		game.maze.tiles().forEach(game.maze::removeFood);
 		game.stage.add(game.inky);
 		game.inky.followState = SCATTERING;
 		message.text = "Press SPACE to unlock";
