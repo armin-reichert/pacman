@@ -64,6 +64,8 @@ public class Maze {
 	/*@formatter:on*/
 
 	private final Tile[][] map;
+	private final Set<Tile> intersections = new HashSet<>();
+	private final Set<Tile> noUpIntersections = new HashSet<>();
 
 	public final int numRows;
 	public final int numCols;
@@ -78,7 +80,6 @@ public class Maze {
 	public final Tile portalLeft, portalRight;
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
 	public final Tile energizers[] = new Tile[4];
-	public final Set<Tile> intersections = new HashSet<>();
 
 	public Maze() {
 		numRows = MAP.length;
@@ -159,6 +160,8 @@ public class Maze {
 			map[12][32], map[15][32]
 		//@formatter:on
 		));
+
+		noUpIntersections.addAll(Arrays.asList(map[12][14], map[15][14], map[12][26], map[15][26]));
 	}
 
 	public Stream<Tile> tiles() {
@@ -232,7 +235,7 @@ public class Maze {
 	}
 
 	public boolean isNoUpIntersection(Tile tile) {
-		return tile == map[12][14] || tile == map[12][26] || tile == map[15][14] || tile == map[15][26];
+		return noUpIntersections.contains(tile);
 	}
 
 	public boolean insideGhostHouse(Tile tile) {
