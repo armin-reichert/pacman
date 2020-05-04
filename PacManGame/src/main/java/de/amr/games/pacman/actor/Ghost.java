@@ -38,7 +38,8 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * A ghost.
  * 
  * <p>
- * Ghosts have a "brain" (finite-state machine) defining the ghost's behavior (steering, look).
+ * Ghosts have a "brain" (finite-state machine) defining the ghost's behavior
+ * (steering, look).
  * 
  * @author Armin Reichert
  */
@@ -46,8 +47,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 
 	public SpriteMap sprites = new SpriteMap();
 	public GhostState followState;
-	public int seatNumber;
-	public Direction seatEyesDir;
+	public int seat;
 	private Steering prevSteering;
 	private Fsm<GhostState, PacManGameEvent> brain;
 	private Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
@@ -203,9 +203,9 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	}
 
 	public void takeSeat() {
-		tf.setPosition(maze().seatPosition(seatNumber));
-		setMoveDir(seatEyesDir);
-		setWishDir(seatEyesDir);
+		tf.setPosition(maze().seatPosition(seat));
+		setMoveDir(maze().ghostHouseSeatDir[seat]);
+		setWishDir(maze().ghostHouseSeatDir[seat]);
 		enteredNewTile();
 	}
 
@@ -248,8 +248,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		case CHASING:
 			//$FALL-THROUGH$
 		case SCATTERING:
-			return maze().isTunnel(tile()) ? relSpeed(game.level.ghostTunnelSpeed)
-					: relSpeed(game.level.ghostSpeed);
+			return maze().isTunnel(tile()) ? relSpeed(game.level.ghostTunnelSpeed) : relSpeed(game.level.ghostSpeed);
 		case FRIGHTENED:
 			return maze().isTunnel(tile()) ? relSpeed(game.level.ghostTunnelSpeed)
 					: relSpeed(game.level.ghostFrightenedSpeed);
@@ -263,8 +262,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	private void step(String spriteKey) {
 		if (isTeleporting()) {
 			move();
-		}
-		else {
+		} else {
 			if (prevSteering != steering()) {
 				steering().init();
 				steering().force();

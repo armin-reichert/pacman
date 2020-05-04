@@ -69,6 +69,7 @@ public class Maze {
 
 	public final Tile pacManHome;
 	public final Tile ghostHouseSeats[] = new Tile[4];
+	public final Direction ghostHouseSeatDir[] = new Direction[4];
 	public final Tile bonusTile;
 	public final Tile cornerNW, cornerNE, cornerSW, cornerSE;
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
@@ -120,6 +121,11 @@ public class Maze {
 		ghostHouseSeats[1] = map[11][17];
 		ghostHouseSeats[2] = map[13][17];
 		ghostHouseSeats[3] = map[15][17];
+		
+		ghostHouseSeatDir[0] = Direction.LEFT;
+		ghostHouseSeatDir[1] = Direction.UP;
+		ghostHouseSeatDir[2] = Direction.DOWN;
+		ghostHouseSeatDir[3] = Direction.UP;
 
 		pacManHome = map[13][26];
 		bonusTile = map[13][20];
