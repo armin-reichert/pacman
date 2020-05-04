@@ -57,7 +57,7 @@ public class BoardPreview extends JFrame {
 			if (maze.isTunnel(tile)) {
 				return Color.LIGHT_GRAY;
 			}
-			if (maze.inGhostHouse(tile)) {
+			if (maze.insideGhostHouse(tile)) {
 				return Color.CYAN;
 			}
 			if (maze.isNoUpIntersection(tile)) {

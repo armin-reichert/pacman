@@ -63,7 +63,7 @@ class EnterGhostHouseTestUI extends PlayView implements VisualController {
 	@Override
 	public void update() {
 		super.update();
-		boolean outside = !game.maze.partOfGhostHouse(game.inky.tile());
+		boolean outside = !game.maze.insideGhostHouse(game.inky.tile());
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			game.inky.setState(outside ? ENTERING_HOUSE : LEAVING_HOUSE);
 		}

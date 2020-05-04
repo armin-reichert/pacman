@@ -1,8 +1,6 @@
 package de.amr.games.pacman.model;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,7 +22,6 @@ public class Maze {
 	static final char WALL = '#';
 	static final char SPACE = ' ';
 	static final char PELLET = '.';
-	static final char ENERGIZER = 'E';
 
 	static final String[] MAP = {
 	/*@formatter:off*/
@@ -34,7 +31,7 @@ public class Maze {
 	"############################", 
 	"#............##............#", 
 	"#.####.#####.##.#####.####.#", 
-	"#E####.#####.##.#####.####E#", 
+	"#.####.#####.##.#####.####.#", 
 	"#.####.#####.##.#####.####.#", 
 	"#..........................#", 
 	"#.####.##.########.##.####.#", 
@@ -54,7 +51,7 @@ public class Maze {
 	"#............##............#", 
 	"#.####.#####.##.#####.####.#", 
 	"#.####.#####.##.#####.####.#", 
-	"#E..##.......  .......##..E#", 
+	"#...##.......  .......##...#", 
 	"###.##.##.########.##.##.###", 
 	"###.##.##.########.##.##.###", 
 	"#......##....##....##......#", 
@@ -76,8 +73,8 @@ public class Maze {
 	public final Tile cornerNW, cornerNE, cornerSW, cornerSE;
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile portalLeft, portalRight;
-	public final Tile doorLeft, doorRight;
-	public final List<Pellet> energizers = new ArrayList<>();
+	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
+	public final Tile energizers[] = new Tile[4];
 
 	private final Tile[][] map;
 	private final Set<Tile> intersections;
@@ -101,13 +98,6 @@ public class Maze {
 					map[col][row] = new Pellet(col, row);
 					foodCount += 1;
 					break;
-				case ENERGIZER:
-					Pellet pellet = new Pellet(col, row);
-					pellet.energizer = true;
-					map[col][row] = pellet;
-					energizers.add(pellet);
-					foodCount += 1;
-					break;
 				default:
 					throw new IllegalArgumentException("Unknown tile content: " + c);
 				}
@@ -115,9 +105,17 @@ public class Maze {
 		}
 		totalFoodCount = foodCount;
 
-		// Ghost house
-		doorLeft = map[13][15];
-		doorRight = map[14][15];
+		energizers[0] = map[1][6];
+		energizers[1] = map[1][26];
+		energizers[2] = map[26][6];
+		energizers[3] = map[26][26];
+		for (Tile tile : energizers) {
+			((Pellet) tile).energizer = true;
+		}
+
+		ghostHouseDoorLeft = map[13][15];
+		ghostHouseDoorRight = map[14][15];
+
 		ghostHouseSeats[0] = map[13][14];
 		ghostHouseSeats[1] = map[11][17];
 		ghostHouseSeats[2] = map[13][17];
@@ -143,20 +141,20 @@ public class Maze {
 
 		intersections = tiles()
 		/*@formatter:off*/
-				.filter(tile -> numFreeNeighborTiles(tile) > 2)
-				.filter(tile -> !inFrontOfGhostHouseDoor(tile))
-				.filter(tile -> !partOfGhostHouse(tile))
-				.collect(Collectors.toSet());
+			.filter(tile -> numFreeNeighborTiles(tile) > 2)
+			.filter(tile -> !atGhostHouseDoor(tile))
+			.filter(tile -> !partOfGhostHouse(tile))
+			.collect(Collectors.toSet());
 		/*@formatter:on*/
 	}
 
 	private long numFreeNeighborTiles(Tile tile) {
 		/*@formatter:off*/
 		return Direction.dirs()
-				.map(dir -> tileToDir(tile, dir))
-				.filter(this::insideBoard)
-				.filter(neighbor -> !isWall(neighbor) && !isDoor(neighbor))
-				.count();
+			.map(dir -> tileToDir(tile, dir))
+			.filter(this::insideBoard)
+			.filter(neighbor -> !isWall(neighbor) && !isDoor(neighbor))
+			.count();
 		/*@formatter:on*/
 	}
 
@@ -166,14 +164,10 @@ public class Maze {
 
 	/**
 	 * Returns the tile at the given tile position. This is either a tile inside the
-	 * board, a portal tile or a wall outside. Tiles inside the board and the two
-	 * portal tiles are created once so equality can be tested using
-	 * <code>==</code>. Other tiles are created on-demand and must be compared using
-	 * {@link Object#equals(Object)}. For tiles outside of the board, the column and
-	 * row index must fit into a byte.
+	 * board, a portal tile or a wall outside.
 	 * 
-	 * @param col a column index
-	 * @param row a row index
+	 * @param col column index
+	 * @param row row index
 	 * @return the tile with the given coordinates.
 	 */
 	public Tile tileAt(int col, int row) {
@@ -217,6 +211,11 @@ public class Maze {
 		return tileToDir(tile, dir, 1);
 	}
 
+	public Optional<Direction> direction(Tile t1, Tile t2) {
+		Vector2f v = Vector2f.of(t2.col - t1.col, t2.row - t1.row);
+		return Direction.dirs().filter(dir -> dir.vector().equals(v)).findFirst();
+	}
+
 	public boolean insideBoard(int col, int row) {
 		return 0 <= col && col < numCols && 0 <= row && row < numRows;
 	}
@@ -225,8 +224,32 @@ public class Maze {
 		return insideBoard(tile.col, tile.row);
 	}
 
-	public boolean isDoor(Tile tile) {
-		return tile == doorLeft || tile == doorRight;
+	public boolean isIntersection(Tile tile) {
+		return intersections.contains(tile);
+	}
+
+	public boolean isNoUpIntersection(Tile tile) {
+		return tile == map[12][14] || tile == map[12][26] || tile == map[15][14] || tile == map[15][26];
+	}
+
+	public boolean insideGhostHouse(Tile tile) {
+		return partOfGhostHouse(tile) && isSpace(tile);
+	}
+
+	public boolean partOfGhostHouse(Tile tile) {
+		return 15 <= tile.row && tile.row <= 19 && 10 <= tile.col && tile.col <= 17;
+	}
+
+	public boolean atGhostHouseDoor(Tile tile) {
+		return isDoor(tileToDir(tile, Direction.DOWN));
+	}
+
+	public Vector2f seatPosition(int seat) {
+		return Vector2f.of(ghostHouseSeats[seat].centerX(), ghostHouseSeats[seat].y());
+	}
+
+	public boolean isSpace(Tile tile) {
+		return tile instanceof Space;
 	}
 
 	public boolean isWall(Tile tile) {
@@ -237,8 +260,8 @@ public class Maze {
 		return tile.row == 17 && (-1 <= tile.col && tile.col <= 5 || tile.col >= 22 && tile.col <= 28);
 	}
 
-	public boolean isSpace(Tile tile) {
-		return tile instanceof Space;
+	public boolean isDoor(Tile tile) {
+		return tile == ghostHouseDoorLeft || tile == ghostHouseDoorRight;
 	}
 
 	public boolean isNormalPellet(Tile tile) {
@@ -283,34 +306,5 @@ public class Maze {
 		if (tile instanceof Pellet) {
 			((Pellet) tile).eaten = false;
 		}
-	}
-
-	public boolean inFrontOfGhostHouseDoor(Tile tile) {
-		return isDoor(tileToDir(tile, Direction.DOWN));
-	}
-
-	public Optional<Direction> direction(Tile t1, Tile t2) {
-		Vector2f v = Vector2f.of(t2.col - t1.col, t2.row - t1.row);
-		return Direction.dirs().filter(dir -> dir.vector().equals(v)).findFirst();
-	}
-
-	public Vector2f seatPosition(int seat) {
-		return Vector2f.of(ghostHouseSeats[seat].centerX(), ghostHouseSeats[seat].y());
-	}
-
-	public boolean partOfGhostHouse(Tile tile) {
-		return 15 <= tile.row && tile.row <= 19 && 10 <= tile.col && tile.col <= 17;
-	}
-
-	public boolean inGhostHouse(Tile tile) {
-		return partOfGhostHouse(tile) && isSpace(tile);
-	}
-
-	public boolean isIntersection(Tile tile) {
-		return intersections.contains(tile);
-	}
-
-	public boolean isNoUpIntersection(Tile tile) {
-		return tile == map[12][14] || tile == map[12][26] || tile == map[15][14] || tile == map[15][26];
 	}
 }

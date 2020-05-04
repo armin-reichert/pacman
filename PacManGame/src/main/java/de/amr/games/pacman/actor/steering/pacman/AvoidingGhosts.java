@@ -30,7 +30,7 @@ public class AvoidingGhosts implements Steering {
 		PacMan pacMan = game.pacMan;
 		/*@formatter:off*/
 		game.ghostsOnStage()
-			.filter(ghost -> !pacMan.maze().inGhostHouse(ghost.tile()))
+			.filter(ghost -> !pacMan.maze().insideGhostHouse(ghost.tile()))
 			.sorted(bySmallestDistanceTo(pacMan))
 			.findFirst()
 			.ifPresent(ghost -> {

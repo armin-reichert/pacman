@@ -176,7 +176,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					.condition(() -> followState == CHASING)
 					
 				.when(DEAD).then(ENTERING_HOUSE)
-					.condition(() -> maze().inFrontOfGhostHouseDoor(tile()))
+					.condition(() -> maze().atGhostHouseDoor(tile()))
 					.act(() -> {
 						tf.setPosition(maze().seatPosition(0));
 						setWishDir(DOWN);
@@ -240,7 +240,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	public float speed() {
 		switch (getState()) {
 		case LOCKED:
-			return maze().inGhostHouse(tile()) ? relSpeed(game.level.ghostSpeed) / 2 : 0;
+			return maze().insideGhostHouse(tile()) ? relSpeed(game.level.ghostSpeed) / 2 : 0;
 		case LEAVING_HOUSE:
 			return relSpeed(game.level.ghostSpeed) / 2;
 		case ENTERING_HOUSE:
