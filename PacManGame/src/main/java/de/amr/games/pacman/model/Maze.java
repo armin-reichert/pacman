@@ -1,9 +1,9 @@
 package de.amr.games.pacman.model;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
@@ -63,6 +63,8 @@ public class Maze {
 	"############################"}; 
 	/*@formatter:on*/
 
+	private final Tile[][] map;
+
 	public final int numRows;
 	public final int numCols;
 	public final int totalFoodCount;
@@ -76,9 +78,7 @@ public class Maze {
 	public final Tile portalLeft, portalRight;
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
 	public final Tile energizers[] = new Tile[4];
-
-	private final Tile[][] map;
-	private final Set<Tile> intersections;
+	public final Set<Tile> intersections = new HashSet<>();
 
 	public Maze() {
 		numRows = MAP.length;
@@ -121,7 +121,7 @@ public class Maze {
 		ghostHouseSeats[1] = map[11][17];
 		ghostHouseSeats[2] = map[13][17];
 		ghostHouseSeats[3] = map[15][17];
-		
+
 		ghostHouseSeatDir[0] = Direction.LEFT;
 		ghostHouseSeatDir[1] = Direction.UP;
 		ghostHouseSeatDir[2] = Direction.DOWN;
@@ -145,23 +145,29 @@ public class Maze {
 		cornerSW = map[1][32];
 		cornerSE = map[26][32];
 
-		intersections = tiles()
-		/*@formatter:off*/
-			.filter(tile -> numFreeNeighborTiles(tile) > 2)
-			.filter(tile -> !atGhostHouseDoor(tile))
-			.filter(tile -> !partOfGhostHouse(tile))
-			.collect(Collectors.toSet());
-		/*@formatter:on*/
-	}
+		intersections.addAll(Arrays.asList(
+		//@formatter:off
+		map[6][4],   map[21][4],
+		map[1][8],   map[6][8],	  map[9][8],   map[12][8], map[15][8], map[18][8], map[21][8], map[26][8],
+		map[6][11],	 map[21][11],
+		map[12][14], map[15][14],
+		map[6][17],  map[9][17],	map[18][17], map[21][17],
+		map[9][20],	 map[18][20],
+		map[6][23],	 map[9][23],	map[18][23], map[21][23],
+		map[6][26],	 map[9][26],	map[12][26], map[15][26],	map[18][26], map[21][26],	
+		map[3][29],	 map[24][29],
+		map[12][32], map[15][32]
+		//@formatter:on
+		));
 
-	private long numFreeNeighborTiles(Tile tile) {
-		/*@formatter:off*/
-		return Direction.dirs()
-			.map(dir -> tileToDir(tile, dir))
-			.filter(this::insideBoard)
-			.filter(neighbor -> !isWall(neighbor) && !isDoor(neighbor))
-			.count();
-		/*@formatter:on*/
+		for (int row = 0; row < numRows; ++row) {
+			for (int col = 0; col < numCols; ++col) {
+				Tile tile = map[col][row];
+				if (isIntersection(tile)) {
+					System.out.println("map[" + tile.col + "][" + tile.row + "],");
+				}
+			}
+		}
 	}
 
 	public Stream<Tile> tiles() {
