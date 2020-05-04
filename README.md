@@ -1,15 +1,11 @@
-# A hopefully comprehensible Pac-Man implementation using finite-state machines        
+# A (hopefully comprehensible) Pac-Man implementation using finite-state machines        
 
 [![Pac-Man](https://i3.ytimg.com/vi/_3GhJGIOTp4/maxresdefault.jpg)](https://www.youtube.com/watch?v=_3GhJGIOTp4)
 
-## Pac-Man? Really? How uncool!
+The only computer game I played regularly was a Pac-Man clone named ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running at the time (1984) on my Apple II+ clone, on a monochrome monitor with a single crappy little speaker, but that hypnotising sound is still in my head.
 
-My personal fascination for "Pac-Man" comes from the fact that the single computer game I played regularly was  ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running on my Apple II+ clone in the mid-eighties, on a monochrome monitor, but what a sound came out of my crappy PC speaker! 
-
-But also today, a seemingly simple game like Pac-Man can be very instructive from a programmer's point of view.
-  
-## The programming challenge
-Implementing Pac-Man is challenging not because of the core game functionality like implementing a game loop, updating and drawing entities, handling collisions etc. but for others reasons:
+## The challenge
+Implementing Pac-Man was quite challenging (for me) not because of the core game functionality like implementing a game loop, updating and drawing entities, handling collisions etc. but for others reasons:
 
 First, implementing a good representation of the maze and the correct movement of the game characters 
 through the maze are not trivial. Pac-Man's movement direction is controlled by the keyboard and the intended move direction can be selected already before Pac-Man actually can turn to that direction. 
@@ -41,7 +37,9 @@ All state machines in this implementation are implemented in a declarative way (
 
 ## State machines in action
 
-Sounds all well and nice, but how does that look in the real code? To give a first example how the state machine implementations look like, let's consider the **intro screen** ([IntroView](PacManGame/src/main/java/de/amr/games/pacman/view/intro/IntroView.java)) which shows different animations that have to be coordinated using timers and conditions. As this state machine only uses timers and no other events, we can use *Void* as the event type. The states are identified using an enumeration type.
+Sounds well and nice, but how does that look in the real code? 
+
+To give a first example, consider the **intro screen** ([IntroView](PacManGame/src/main/java/de/amr/games/pacman/view/intro/IntroView.java)) which shows different animations coordinated using timers and conditions. As this state machine only uses timers and no other events, *Void* is specified as event type. The states are identified by an enumeration type.
 
 ```java
 beginStateMachine(IntroState.class, Void.class)
@@ -53,10 +51,10 @@ beginStateMachine(IntroState.class, Void.class)
 		.state(SCROLLING_LOGO)
 			.onEntry(() -> {
 				theme.snd_insertCoin().play();
-				pacManLogo.tf.setY(height());
-				pacManLogo.tf.setVelocityY(-2f);
-				pacManLogo.setCompletion(() -> pacManLogo.tf.getY() <= 20);
-				pacManLogo.show(); 
+				pacManLogo.tf.y = height();
+				pacManLogo.tf.vy = -2f;
+				pacManLogo.setCompletion(() -> pacManLogo.tf.y <= 20);
+				pacManLogo.visible = true; 
 				pacManLogo.start(); 
 			})
 			.onTick(() -> {
@@ -66,8 +64,8 @@ beginStateMachine(IntroState.class, Void.class)
 		.state(SHOWING_ANIMATIONS)
 			.onEntry(() -> {
 				chasePacMan.setStartPosition(width(), 100);
-				chasePacMan.setEndPosition(-chasePacMan.tf.getWidth(), 100);
-				chaseGhosts.setStartPosition(-chaseGhosts.tf.getWidth(), 200);
+				chasePacMan.setEndPosition(-chasePacMan.tf.width, 100);
+				chaseGhosts.setStartPosition(-chaseGhosts.tf.width, 200);
 				chaseGhosts.setEndPosition(width(), 200);
 				chasePacMan.start();
 				chaseGhosts.start();
@@ -85,18 +83,19 @@ beginStateMachine(IntroState.class, Void.class)
 		.state(WAITING_FOR_INPUT)
 			.timeoutAfter(sec(10))
 			.onEntry(() -> {
-				ghostPointsAnimation.tf.setY(200);
+				ghostPointsAnimation.tf.y=(200);
 				ghostPointsAnimation.tf.centerX(width());
 				ghostPointsAnimation.start();
-				gitHubLink.show();
+				gitHubLink.visible = true;
 			})
 			.onTick(() -> {
 				ghostPointsAnimation.update();
+				gitHubLink.update();
 			})
 			.onExit(() -> {
 				ghostPointsAnimation.stop();
-				ghostPointsAnimation.hide();
-				gitHubLink.hide();
+				ghostPointsAnimation.visible = false;
+				gitHubLink.visible = false;
 			})
 
 		.state(READY_TO_PLAY)
@@ -113,7 +112,7 @@ beginStateMachine(IntroState.class, Void.class)
 			.onTimeout()
 
 		.when(WAITING_FOR_INPUT).then(READY_TO_PLAY)
-			.condition(() -> Keyboard.keyPressedOnce(KeyEvent.VK_SPACE))
+			.condition(() -> Keyboard.keyPressedOnce(" "))
 
 .endStateMachine();
 ```
@@ -134,13 +133,12 @@ beginStateMachine()
 	.initialState(SCATTERING)
 .states()
 	.state(SCATTERING)
-		.timeoutAfter(() -> game.level.scatterTicks(round))
+		.timeoutAfter(this::scatterDuration)
 	.state(CHASING)
-		.timeoutAfter(() -> game.level.chasingTicks(round))
-		.onExit(() -> ++round)
+		.timeoutAfter(this::chaseDuration)
 .transitions()
 	.when(SCATTERING).then(CHASING).onTimeout()
-	.when(CHASING).then(SCATTERING).onTimeout()
+	.when(CHASING).then(SCATTERING).onTimeout().act(() -> ++round)
 .endStateMachine();
 ```
 
@@ -154,17 +152,20 @@ Even a simple entity like the **bonus symbol** ([Bonus](PacManGame/src/main/java
 
 ```java
 beginStateMachine(BonusState.class, PacManGameEvent.class)
-	.description(String.format("[%s]", name))
-	.initialState(ACTIVE)
+	.description(String.format("[%s]", "Bonus"))
+	.initialState(INACTIVE)
 	.states()
+		.state(INACTIVE)
+			.onEntry(() -> visible = false)
 		.state(ACTIVE)
 			.timeoutAfter(() -> sec(9 + new Random().nextFloat()))
-			.onEntry(() -> sprites.select("symbol"))
+			.onEntry(() -> {
+				sprites.select("symbol");
+				visible = true;
+			})
 		.state(CONSUMED)
 			.timeoutAfter(sec(3))
-			.onEntry(() -> sprites.select("number"))
-		.state(INACTIVE)
-			.onEntry(cast::removeBonus)
+			.onEntry(() -> sprites.select("value"))
 	.transitions()
 		.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
 		.when(ACTIVE).then(INACTIVE).onTimeout()
@@ -175,29 +176,25 @@ beginStateMachine(BonusState.class, PacManGameEvent.class)
 When an actor leaves the board inside a tunnel it enters *teleporting* mode. In this implementation, the teleporting duration can be specified for each actor individually (no idea if this makes much sense) and the movement state of an actor is controlled by the following state machine:
 
 ```java
-movement = new StateMachine<MoveState, Void>(MoveState.class) {
-
-	{
-		//@formatter:off
-		beginStateMachine()
-			.description(String.format("[%s movement]", name))
-			.initialState(MOVING)
-			.states()
-				.state(MOVING)
-					.onTick(MovingActor.this::moveInsideMaze)
-				.state(TELEPORTING)
-					.timeoutAfter(() -> teleportingTicks)
-					.onEntry(() -> setVisible(false))
-					.onExit(() -> setVisible(true))
-			.transitions()
-				.when(MOVING).then(TELEPORTING)
-					.condition(() -> enteredLeftPortal() || enteredRightPortal())
-				.when(TELEPORTING).then(MOVING)
-					.onTimeout().act(MovingActor.this::teleport)
-		.endStateMachine();
-		//@formatter:on
-	}
-};
+movement = StateMachine
+//@formatter:off
+	.beginStateMachine(Movement.class, Void.class)
+		.description(String.format("[%s movement]", name))
+		.initialState(MOVING_INSIDE_MAZE)
+		.states()
+			.state(MOVING_INSIDE_MAZE)
+				.onTick(() -> makeStepInsideMaze())
+			.state(TELEPORTING)
+				.onEntry(() -> visible = false)
+				.onExit(() -> visible = true)
+		.transitions()
+			.when(MOVING_INSIDE_MAZE).then(TELEPORTING)
+				.condition(() -> enteredLeftPortal() || enteredRightPortal())
+			.when(TELEPORTING).then(MOVING_INSIDE_MAZE)
+				.onTimeout()
+				.act(() -> teleport())
+	.endStateMachine();
+//@formatter:on
 ```
 
 Using an explicit state machine for such a simple control case may seem like shooting at sparrows with cannons but serves to illustrate how seamlessly state machines can be integrated in the code.
@@ -242,12 +239,13 @@ The *frightened* behavior has two different implementations (just as a demonstra
 Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
-blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(seatPosition(2)));
+blinky.behavior(LOCKED, blinky.isHeadingFor(blinky::tile));
+blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(maze.seatPosition(2)));
 blinky.behavior(LEAVING_HOUSE, blinky.isLeavingGhostHouse());
 blinky.behavior(FRIGHTENED, blinky.isMovingRandomlyWithoutTurningBack());
-blinky.behavior(SCATTERING, blinky.isHeadingFor(game().maze().horizonNE));
+blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
 blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
-blinky.setTeleportingDuration(sec(0.5f));
+blinky.behavior(DEAD, blinky.isHeadingFor(() -> maze.ghostHouseSeats[0]));
 ```
 <img src="PacManDoc/blinky.png"/>
 
@@ -259,16 +257,16 @@ Consider the vector `V` from Blinky's position `B` to the position `P` two tiles
 Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-inky.behavior(LOCKED, inky.isJumpingUpAndDown(seatPosition(1)));
-inky.behavior(ENTERING_HOUSE, inky.isTakingSeat(seatPosition(1)));
+inky.behavior(LOCKED, inky.isJumpingUpAndDown(maze.seatPosition(1)));
+inky.behavior(ENTERING_HOUSE, inky.isTakingSeat(maze.seatPosition(1)));
 inky.behavior(LEAVING_HOUSE, inky.isLeavingGhostHouse());
 inky.behavior(FRIGHTENED, inky.isMovingRandomlyWithoutTurningBack());
-inky.behavior(SCATTERING, inky.isHeadingFor(game().maze().horizonSE));
+inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
 inky.behavior(CHASING, inky.isHeadingFor(() -> {
 	Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
-	return game().maze().tileAt(2 * p.col - b.col, 2 * p.row - b.row);
+	return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 }));
-inky.setTeleportingDuration(sec(0.5f));
+inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostHouseSeats[0]));
 ```
 
 <img src="PacManDoc/inky.png"/>
@@ -278,13 +276,13 @@ inky.setTeleportingDuration(sec(0.5f));
 Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position. In the original game there is an overflow error leading to a different behavior: when Pac-Man looks upwards, the tile ahead of Pac-Man is falsely computed with an additional number of steps to the west. This behavior is active by default and can be toggled using the 'o'-key.
 
 ```java
-pinky.behavior(LOCKED, pinky.isJumpingUpAndDown(seatPosition(2)));
-pinky.behavior(ENTERING_HOUSE, pinky.isTakingSeat(seatPosition(2)));
+pinky.behavior(LOCKED, pinky.isJumpingUpAndDown(maze.seatPosition(2)));
+pinky.behavior(ENTERING_HOUSE, pinky.isTakingSeat(maze.seatPosition(2)));
 pinky.behavior(LEAVING_HOUSE, pinky.isLeavingGhostHouse());
 pinky.behavior(FRIGHTENED, pinky.isMovingRandomlyWithoutTurningBack());
-pinky.behavior(SCATTERING, pinky.isHeadingFor(game().maze().horizonNW));
+pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
 pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
-pinky.setTeleportingDuration(sec(0.5f));
+pinky.behavior(DEAD, pinky.isHeadingFor(() -> maze.ghostHouseSeats[0]));
 ```
 
 <img src="PacManDoc/pinky.png"/>
@@ -294,14 +292,14 @@ pinky.setTeleportingDuration(sec(0.5f));
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
 
 ```java
-clyde.behavior(LOCKED, clyde.isJumpingUpAndDown(seatPosition(3)));
-clyde.behavior(ENTERING_HOUSE, clyde.isTakingSeat(seatPosition(3)));
+clyde.behavior(LOCKED, clyde.isJumpingUpAndDown(maze.seatPosition(3)));
+clyde.behavior(ENTERING_HOUSE, clyde.isTakingSeat(maze.seatPosition(3)));
 clyde.behavior(LEAVING_HOUSE, clyde.isLeavingGhostHouse());
 clyde.behavior(FRIGHTENED, clyde.isMovingRandomlyWithoutTurningBack());
-clyde.behavior(SCATTERING, clyde.isHeadingFor(game().maze().horizonSW));
-clyde.behavior(CHASING, clyde.isHeadingFor(
-		() -> Tile.distanceSq(clyde.tile(), pacMan.tile()) > 8 * 8 ? pacMan.tile() : game().maze().horizonSW));
-clyde.setTeleportingDuration(sec(0.5f));
+clyde.behavior(SCATTERING, clyde.isHeadingFor(maze.horizonSW));
+clyde.behavior(CHASING,
+		clyde.isHeadingFor(() -> clyde.tile().distSq(pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
+clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostHouseSeats[0]));
 ```
 
 <img src="PacManDoc/clyde.png"/>
