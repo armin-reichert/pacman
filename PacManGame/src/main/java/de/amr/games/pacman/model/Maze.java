@@ -147,27 +147,18 @@ public class Maze {
 
 		intersections.addAll(Arrays.asList(
 		//@formatter:off
-		map[6][4],   map[21][4],
-		map[1][8],   map[6][8],	  map[9][8],   map[12][8], map[15][8], map[18][8], map[21][8], map[26][8],
-		map[6][11],	 map[21][11],
-		map[12][14], map[15][14],
-		map[6][17],  map[9][17],	map[18][17], map[21][17],
-		map[9][20],	 map[18][20],
-		map[6][23],	 map[9][23],	map[18][23], map[21][23],
-		map[6][26],	 map[9][26],	map[12][26], map[15][26],	map[18][26], map[21][26],	
-		map[3][29],	 map[24][29],
-		map[12][32], map[15][32]
+			map[6][4],   map[21][4],
+			map[1][8],   map[6][8],	  map[9][8],   map[12][8], map[15][8], map[18][8], map[21][8], map[26][8],
+			map[6][11],	 map[21][11],
+			map[12][14], map[15][14],
+			map[6][17],  map[9][17],	map[18][17], map[21][17],
+			map[9][20],	 map[18][20],
+			map[6][23],	 map[9][23],	map[18][23], map[21][23],
+			map[6][26],	 map[9][26],	map[12][26], map[15][26],	map[18][26], map[21][26],	
+			map[3][29],	 map[24][29],
+			map[12][32], map[15][32]
 		//@formatter:on
 		));
-
-		for (int row = 0; row < numRows; ++row) {
-			for (int col = 0; col < numCols; ++col) {
-				Tile tile = map[col][row];
-				if (isIntersection(tile)) {
-					System.out.println("map[" + tile.col + "][" + tile.row + "],");
-				}
-			}
-		}
 	}
 
 	public Stream<Tile> tiles() {
