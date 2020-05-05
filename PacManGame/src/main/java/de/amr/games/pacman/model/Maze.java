@@ -72,14 +72,15 @@ public class Maze {
 	public final int totalFoodCount;
 
 	public final Tile pacManHome;
-	public final Tile ghostHouseSeats[] = new Tile[4];
-	public final Direction ghostHouseSeatDir[] = new Direction[4];
+	public final Tile ghostHouseSeats[];
+	public final Direction ghostHouseSeatDirs[];
+	public final Tile ghostHouseEntry;
 	public final Tile bonusTile;
 	public final Tile cornerNW, cornerNE, cornerSW, cornerSE;
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile portalLeft, portalRight;
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
-	public final Tile energizers[] = new Tile[4];
+	public final Pellet energizers[];
 
 	public Maze() {
 		numRows = MAP.length;
@@ -107,26 +108,17 @@ public class Maze {
 		}
 		totalFoodCount = foodCount;
 
-		energizers[0] = map[1][6];
-		energizers[1] = map[1][26];
-		energizers[2] = map[26][6];
-		energizers[3] = map[26][26];
-		for (Tile tile : energizers) {
-			((Pellet) tile).energizer = true;
+		energizers = new Pellet[] { (Pellet) map[1][6], (Pellet) map[1][26], (Pellet) map[26][6], (Pellet) map[26][26] };
+		for (Pellet pellet : energizers) {
+			pellet.energizer = true;
 		}
 
+		ghostHouseEntry = map[13][14];
 		ghostHouseDoorLeft = map[13][15];
 		ghostHouseDoorRight = map[14][15];
 
-		ghostHouseSeats[0] = map[13][14];
-		ghostHouseSeats[1] = map[11][17];
-		ghostHouseSeats[2] = map[13][17];
-		ghostHouseSeats[3] = map[15][17];
-
-		ghostHouseSeatDir[0] = Direction.LEFT;
-		ghostHouseSeatDir[1] = Direction.UP;
-		ghostHouseSeatDir[2] = Direction.DOWN;
-		ghostHouseSeatDir[3] = Direction.UP;
+		ghostHouseSeats = new Tile[] { map[13][14], map[11][17], map[13][17], map[15][17] };
+		ghostHouseSeatDirs = new Direction[] { Direction.LEFT, Direction.UP, Direction.DOWN, Direction.UP };
 
 		pacManHome = map[13][26];
 		bonusTile = map[13][20];

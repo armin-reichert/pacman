@@ -127,7 +127,7 @@ public class Game {
 		blinky.behavior(FRIGHTENED, blinky.isMovingRandomlyWithoutTurningBack());
 		blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
 		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
-		blinky.behavior(DEAD, blinky.isHeadingFor(() -> maze.ghostHouseSeats[0]));
+		blinky.behavior(DEAD, blinky.isHeadingFor(() -> maze.ghostHouseEntry));
 
 		inky.seat = 1;
 		inky.setTeleportingDuration(sec(0.5f));
@@ -140,7 +140,7 @@ public class Game {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
-		inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostHouseSeats[0]));
+		inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostHouseEntry));
 
 		pinky.seat = 2;
 		pinky.setTeleportingDuration(sec(0.5f));
@@ -150,7 +150,7 @@ public class Game {
 		pinky.behavior(FRIGHTENED, pinky.isMovingRandomlyWithoutTurningBack());
 		pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
 		pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
-		pinky.behavior(DEAD, pinky.isHeadingFor(() -> maze.ghostHouseSeats[0]));
+		pinky.behavior(DEAD, pinky.isHeadingFor(() -> maze.ghostHouseEntry));
 
 		clyde.seat = 3;
 		clyde.setTeleportingDuration(sec(0.5f));
@@ -161,7 +161,7 @@ public class Game {
 		clyde.behavior(SCATTERING, clyde.isHeadingFor(maze.horizonSW));
 		clyde.behavior(CHASING,
 				clyde.isHeadingFor(() -> clyde.tile().distSq(pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
-		clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostHouseSeats[0]));
+		clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostHouseEntry));
 	}
 
 	public Stream<Ghost> ghosts() {

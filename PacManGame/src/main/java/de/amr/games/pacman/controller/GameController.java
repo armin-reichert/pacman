@@ -52,7 +52,7 @@ import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * The Pac-Man game controller (finite state machine).
+ * The Pac-Man game controller (finite-state machine).
  * 
  * @author Armin Reichert
  */
