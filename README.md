@@ -249,28 +249,6 @@ blinky.behavior(DEAD, blinky.isHeadingFor(() -> maze.ghostHouseEntry));
 ```
 <img src="PacManDoc/blinky.png"/>
 
-### Inky (the cyan ghost)
-
-Inky heads for a position that depends on Blinky's current position and the position two tiles ahead of Pac-Man:
-
-Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man, so `V = (P - B)`. 
-Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
-
-```java
-inky.behavior(LOCKED, inky.isJumpingUpAndDown(maze.seatPosition(1)));
-inky.behavior(ENTERING_HOUSE, inky.isTakingSeat(maze.seatPosition(1)));
-inky.behavior(LEAVING_HOUSE, inky.isLeavingGhostHouse());
-inky.behavior(FRIGHTENED, inky.isMovingRandomlyWithoutTurningBack());
-inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
-inky.behavior(CHASING, inky.isHeadingFor(() -> {
-	Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
-	return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
-}));
-inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostHouseEntry));
-```
-
-<img src="PacManDoc/inky.png"/>
-
 ### Pinky
 
 Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position. In the original game there is an overflow error leading to a different behavior: when Pac-Man looks upwards, the tile ahead of Pac-Man is falsely computed with an additional number of steps to the west. This behavior is active by default and can be toggled using the 'o'-key.
@@ -303,6 +281,28 @@ clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostHouseEntry));
 ```
 
 <img src="PacManDoc/clyde.png"/>
+
+### Inky (the cyan ghost)
+
+Inky heads for a position that depends on Blinky's current position and the position two tiles ahead of Pac-Man:
+
+Consider the vector `V` from Blinky's position `B` to the position `P` two tiles ahead of Pac-Man, so `V = (P - B)`. 
+Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
+
+```java
+inky.behavior(LOCKED, inky.isJumpingUpAndDown(maze.seatPosition(1)));
+inky.behavior(ENTERING_HOUSE, inky.isTakingSeat(maze.seatPosition(1)));
+inky.behavior(LEAVING_HOUSE, inky.isLeavingGhostHouse());
+inky.behavior(FRIGHTENED, inky.isMovingRandomlyWithoutTurningBack());
+inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
+inky.behavior(CHASING, inky.isHeadingFor(() -> {
+	Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
+	return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
+}));
+inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostHouseEntry));
+```
+
+<img src="PacManDoc/inky.png"/>
 
 The visualization of the attack behaviors can be toggled during the game by pressing the 'r'-key ("show/hide routes").
 
