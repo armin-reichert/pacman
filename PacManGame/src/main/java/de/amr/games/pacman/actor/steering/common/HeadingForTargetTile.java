@@ -42,7 +42,7 @@ public class HeadingForTargetTile implements Steering {
 	private boolean forced;
 
 	public HeadingForTargetTile(MazeMover actor, Supplier<Tile> fnTargetTile) {
-		this.actor = actor;
+		this.actor = Objects.requireNonNull(actor);
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 		targetPath = Collections.emptyList();
 		computePath = false;

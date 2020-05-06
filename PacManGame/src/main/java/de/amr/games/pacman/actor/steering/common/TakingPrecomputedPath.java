@@ -3,6 +3,7 @@ package de.amr.games.pacman.actor.steering.common;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -33,9 +34,9 @@ public abstract class TakingPrecomputedPath implements Steering {
 	protected List<Tile> targetPath;
 
 	public TakingPrecomputedPath(MazeMover actor, Supplier<Tile> fnTargetTile) {
-		this.actor = actor;
+		this.actor = Objects.requireNonNull(actor);
 		this.maze = actor.maze();
-		this.fnTargetTile = fnTargetTile;
+		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 		this.targetPath = new ArrayList<>();
 	}
 
