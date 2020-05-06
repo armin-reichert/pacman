@@ -245,7 +245,7 @@ blinky.behavior(LEAVING_HOUSE, blinky.isLeavingGhostHouse());
 blinky.behavior(FRIGHTENED, blinky.isMovingRandomlyWithoutTurningBack());
 blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
 blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
-blinky.behavior(DEAD, blinky.isHeadingFor(() -> maze.ghostHouseSeats[0]));
+blinky.behavior(DEAD, blinky.isHeadingFor(() -> maze.ghostHouseEntry));
 ```
 <img src="PacManDoc/blinky.png"/>
 
@@ -266,7 +266,7 @@ inky.behavior(CHASING, inky.isHeadingFor(() -> {
 	Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 	return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
 }));
-inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostHouseSeats[0]));
+inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostHouseEntry));
 ```
 
 <img src="PacManDoc/inky.png"/>
@@ -282,7 +282,7 @@ pinky.behavior(LEAVING_HOUSE, pinky.isLeavingGhostHouse());
 pinky.behavior(FRIGHTENED, pinky.isMovingRandomlyWithoutTurningBack());
 pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
 pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
-pinky.behavior(DEAD, pinky.isHeadingFor(() -> maze.ghostHouseSeats[0]));
+pinky.behavior(DEAD, pinky.isHeadingFor(() -> maze.ghostHouseEntry));
 ```
 
 <img src="PacManDoc/pinky.png"/>
@@ -299,7 +299,7 @@ clyde.behavior(FRIGHTENED, clyde.isMovingRandomlyWithoutTurningBack());
 clyde.behavior(SCATTERING, clyde.isHeadingFor(maze.horizonSW));
 clyde.behavior(CHASING,
 		clyde.isHeadingFor(() -> clyde.tile().distSq(pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
-clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostHouseSeats[0]));
+clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostHouseEntry));
 ```
 
 <img src="PacManDoc/clyde.png"/>
