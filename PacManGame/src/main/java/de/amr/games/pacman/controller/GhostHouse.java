@@ -22,7 +22,7 @@ import de.amr.games.pacman.model.Game;
  * @see <a href=
  *      "https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Gamasutra</a>
  */
-public class House {
+public class GhostHouse {
 
 	private static class DotCounter {
 
@@ -35,7 +35,7 @@ public class House {
 	private final int[] ghostDotCount;
 	private int pacManStarvingTicks;
 
-	public House(Game game) {
+	public GhostHouse(Game game) {
 		this.game = game;
 		globalCounter = new DotCounter();
 		ghostDotCount = new int[4];

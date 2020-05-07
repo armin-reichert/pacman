@@ -36,7 +36,7 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MovingActor;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.controller.House;
+import de.amr.games.pacman.controller.GhostHouse;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
@@ -61,7 +61,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	public Supplier<State<GhostState>> fnGhostCommandState = () -> null;
-	public House house; // (optional)
+	public GhostHouse house; // (optional)
 
 	public BooleanSupplier showFPS = () -> false;
 	public BooleanSupplier showRoutes = () -> false;

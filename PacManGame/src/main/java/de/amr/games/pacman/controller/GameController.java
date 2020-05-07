@@ -59,17 +59,19 @@ import de.amr.statemachine.core.StateMachine;
 public class GameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
 	private Game game;
+
 	private Theme theme;
-	private GhostCommand ghostCommand;
-	private House house;
 	private SoundController sound;
 
-	private final LoadingView loadingView;
-	private final IntroView introView;
+	private LoadingView loadingView;
+	private IntroView introView;
 	private PlayView playView;
 	private PacManGameView currentView;
 
-	private boolean showFPS;
+	private GhostCommand ghostCommand;
+	private GhostHouse ghostHouse;
+
+	private boolean showFrameRate;
 	private boolean showRoutes;
 	private boolean showStates;
 	private boolean showGrid;
@@ -77,13 +79,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public GameController(Theme theme) {
 		super(PacManGameState.class);
 		this.theme = theme;
+		loadingView = new LoadingView(theme);
+		introView = new IntroView(theme);
 		sound = new SoundController(theme);
 		buildStateMachine();
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		getTracer().setLogger(PacManStateMachineLogging.LOG);
 		doNotLogEventProcessingIf(PacManGameEvent::isTrivial);
-		loadingView = new LoadingView(theme);
-		introView = new IntroView(theme);
 	}
 
 	@Override
@@ -105,11 +107,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			actor.addEventListener(this::process);
 		});
 		ghostCommand = new GhostCommand(game);
-		house = new House(game);
+		ghostHouse = new GhostHouse(game);
 		playView = new PlayView(game, theme);
 		playView.fnGhostCommandState = ghostCommand::state;
-		playView.house = house;
-		playView.showFPS = () -> showFPS;
+		playView.house = ghostHouse;
+		playView.showFPS = () -> showFrameRate;
 		playView.showGrid = () -> showGrid;
 		playView.showRoutes = () -> showRoutes;
 		playView.showStates = () -> showStates;
@@ -151,7 +153,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			} else if (Keyboard.keyPressedOnce("s")) {
 				showStates = !showStates;
 			} else if (Keyboard.keyPressedOnce("t")) {
-				showFPS = !showFPS;
+				showFrameRate = !showFrameRate;
 			} else if (Keyboard.keyPressedOnce("r")) {
 				showRoutes = !showRoutes;
 			} else if (Keyboard.keyPressedOnce("+")) {
@@ -234,7 +236,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.timeoutAfter(() -> sec(playView.mazeFlashingSeconds() + 6))
 					.onEntry(() -> {
 						game.pacMan.sprites.select("full");
-						house.onLevelChange();
+						ghostHouse.onLevelChange();
 						sound.muteSoundEffects();
 						playView.enableGhostAnimations(false);
 						playView.stopEnergizerBlinking();
@@ -407,7 +409,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		@Override
 		public void onTick() {
 			ghostCommand.update();
-			house.update();
+			ghostHouse.update();
 			game.movingActorsOnStage().forEach(MovingActor::update);
 			game.bonus.update();
 			sound.updatePlayingSounds(game);
@@ -448,7 +450,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				loginfo("Ghost %s killed at %s", ghost.name, ghost.tile());
 			} else {
 				// Pac-Man killed
-				house.onLifeLost();
+				ghostHouse.onLifeLost();
 				sound.muteAll();
 				playView.stopEnergizerBlinking();
 				game.pacMan.process(new PacManKilledEvent(ghost));
@@ -470,7 +472,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent found = (FoodFoundEvent) event;
-			house.onPacManFoundFood(found);
+			ghostHouse.onPacManFoundFood(found);
 			int points = game.eatFood(found.pellet);
 			int livesBefore = game.lives;
 			game.score(points);
@@ -553,8 +555,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void eatAllNormalPellets() {
 		game.maze.tiles().filter(game.maze::isNormalPellet).map(tile -> (Pellet) tile).forEach(pellet -> {
 			game.eatFood(pellet);
-			house.onPacManFoundFood(new FoodFoundEvent(pellet));
-			house.update();
+			ghostHouse.onPacManFoundFood(new FoodFoundEvent(pellet));
+			ghostHouse.update();
 		});
 		loginfo("All pellets eaten");
 	}

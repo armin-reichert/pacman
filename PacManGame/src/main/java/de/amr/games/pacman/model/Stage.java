@@ -24,12 +24,12 @@ public class Stage {
 		actors.add(actor);
 		actor.init();
 		actor.visible = true;
-		loginfo("%s has been added to stage", actor.name);
+		loginfo("%s entered the stage", actor.name);
 	}
 
 	public void remove(MovingActor<?> actor) {
 		actors.remove(actor);
 		actor.visible = false;
-		loginfo("%s has been removed from stage", actor.name);
+		loginfo("%s left the stage", actor.name);
 	}
 }
