@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import de.amr.easy.game.config.AppSettings;
+import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
@@ -16,7 +17,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.tiles.Tile;
 import de.amr.games.pacman.theme.ArcadeTheme;
 import de.amr.games.pacman.theme.Theme;
-import de.amr.games.pacman.view.core.Pen;
 import de.amr.games.pacman.view.play.PlayView;
 
 public class FollowTargetTilesTestApp extends PacManApp {
@@ -94,7 +94,7 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 			pen.fontSize(8);
 			for (int i = 0; i < targets.size(); ++i) {
 				Tile target = targets.get(i);
-				pen.drawAtTilePosition(target.col, target.row, "" + i);
+				pen.drawAtGridPosition(String.valueOf(i), target.col, target.row, Tile.SIZE);
 			}
 		}
 	}

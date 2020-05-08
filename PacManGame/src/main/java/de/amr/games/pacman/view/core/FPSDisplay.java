@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.entity.Entity;
+import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
 
 /**

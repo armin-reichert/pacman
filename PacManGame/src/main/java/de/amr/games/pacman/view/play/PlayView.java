@@ -30,6 +30,7 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.BonusState;
 import de.amr.games.pacman.actor.Ghost;
@@ -44,7 +45,6 @@ import de.amr.games.pacman.model.tiles.Tile;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.core.FPSDisplay;
-import de.amr.games.pacman.view.core.Pen;
 import de.amr.statemachine.core.State;
 
 /**
@@ -164,7 +164,7 @@ public class PlayView extends SimplePlayView {
 			try (Pen pen = new Pen(g)) {
 				pen.font(theme.fnt_text(11));
 				pen.color(Color.DARK_GRAY);
-				pen.hcenter("Demo Mode", width(), 21);
+				pen.hcenter("Demo Mode", width(), 21, Tile.SIZE);
 			}
 		}
 	}
@@ -242,7 +242,7 @@ public class PlayView extends SimplePlayView {
 		try (Pen pen = new Pen(g)) {
 			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
 			pen.color(Color.WHITE);
-			pen.smooth(() -> pen.drawAtTilePosition(col + 2, row, time == -1 ? INFTY : String.format("%d", time)));
+			pen.smooth(() -> pen.drawAtGridPosition(time == -1 ? INFTY : String.format("%d", time), col + 2, row, Tile.SIZE));
 		}
 	}
 
@@ -427,7 +427,7 @@ public class PlayView extends SimplePlayView {
 			}
 			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
 			pen.color(emphasized ? Color.GREEN : Color.WHITE);
-			pen.smooth(() -> pen.drawAtTilePosition(col + 2, row, String.format("%d", value)));
+			pen.smooth(() -> pen.drawAtGridPosition(String.format("%d", value), col + 2, row, Tile.SIZE));
 		}
 	}
 }

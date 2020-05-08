@@ -5,14 +5,15 @@ import java.awt.Graphics2D;
 import java.util.Random;
 
 import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.tiles.Tile;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.core.PacManGameView;
-import de.amr.games.pacman.view.core.Pen;
 
 /**
  * View displayed while the music files are loaded.
@@ -68,7 +69,7 @@ public class LoadingView extends PacManGameView {
 			pen.color(new Color(255, 0, 0, alpha));
 			pen.font(theme.fnt_text());
 			pen.fontSize(14);
-			pen.hcenter(PacManApp.texts.getString("loading_music"), width(), 18);
+			pen.hcenter(PacManApp.texts.getString("loading_music"), width(), 18, Tile.SIZE);
 		}
 		drawActor(g, game.pacMan, game.pacMan.sprites);
 		float x = width() / 2 - (ghostCount / 2) * 20, y = game.pacMan.tf.y + 20;

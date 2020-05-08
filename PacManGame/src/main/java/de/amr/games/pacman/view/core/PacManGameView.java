@@ -11,9 +11,11 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.SpriteMap;
+import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.tiles.Tile;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.Theme;
 
@@ -43,7 +45,7 @@ public abstract class PacManGameView implements Lifecycle, View {
 				try (Pen pen = new Pen(g)) {
 					pen.font(theme.fnt_text(fontSize));
 					pen.color(color);
-					pen.hcenter(text, width(), row);
+					pen.hcenter(text, width(), row, Tile.SIZE);
 				}
 			}
 		}

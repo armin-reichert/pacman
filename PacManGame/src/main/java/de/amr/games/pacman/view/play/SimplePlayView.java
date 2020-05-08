@@ -11,13 +11,13 @@ import java.util.function.BooleanSupplier;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
+import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Symbol;
 import de.amr.games.pacman.model.tiles.Tile;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.core.PacManGameView;
-import de.amr.games.pacman.view.core.Pen;
 
 /**
  * Simple play view providing core functionality.
@@ -169,21 +169,21 @@ public class SimplePlayView extends PacManGameView {
 			pen.font(theme.fnt_text(10));
 			// Game score
 			pen.color(Color.YELLOW);
-			pen.drawAtTilePosition(1, 0, "SCORE");
-			pen.drawAtTilePosition(22, 0, String.format("LEVEL%2d", game.level.number));
+			pen.drawAtGridPosition("SCORE", 1, 0, Tile.SIZE);
+			pen.drawAtGridPosition(String.format("LEVEL%2d", game.level.number), 22, 0, Tile.SIZE);
 			pen.color(Color.WHITE);
-			pen.drawAtTilePosition(1, 1, String.format("%07d", game.score));
+			pen.drawAtGridPosition(String.format("%07d", game.score), 1, 1, Tile.SIZE);
 			// Highscore
 			pen.color(Color.YELLOW);
-			pen.drawAtTilePosition(10, 0, "HIGHSCORE");
+			pen.drawAtGridPosition("HIGHSCORE", 10, 0, Tile.SIZE);
 			pen.color(Color.WHITE);
-			pen.drawAtTilePosition(10, 1, String.format("%07d", game.hiscore.points));
-			pen.drawAtTilePosition(16, 1, String.format("L%d", game.hiscore.levelNumber));
+			pen.drawAtGridPosition(String.format("%07d", game.hiscore.points), 10, 1, Tile.SIZE);
+			pen.drawAtGridPosition(String.format("L%d", game.hiscore.levelNumber), 16, 1, Tile.SIZE);
 			// Number of remaining pellets
 			g.setColor(Color.PINK);
 			g.fillRect(22 * Tile.SIZE + 2, Tile.SIZE + 2, 4, 3);
 			pen.color(Color.WHITE);
-			pen.drawAtTilePosition(23, 1, String.format("%03d", game.remainingFoodCount()));
+			pen.drawAtGridPosition(String.format("%03d", game.remainingFoodCount()), 23, 1, Tile.SIZE);
 		}
 		drawLives(g);
 		drawLevelCounter(g);

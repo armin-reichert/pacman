@@ -19,12 +19,12 @@ import java.util.Arrays;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
+import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.tiles.Tile;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.core.PacManGameView;
-import de.amr.games.pacman.view.core.Pen;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.api.FsmContainer;
@@ -225,7 +225,7 @@ public class IntroView extends PacManGameView implements FsmContainer<IntroState
 			pen.font(theme.fnt_text());
 			pen.fontSize(14);
 			pen.color(Color.WHITE);
-			pen.hcenter(texts.getString("press_space_to_start"), width(), row);
+			pen.hcenter(texts.getString("press_space_to_start"), width(), row, Tile.SIZE);
 		}
 	}
 
@@ -235,10 +235,10 @@ public class IntroView extends PacManGameView implements FsmContainer<IntroState
 			pen.fontSize(10);
 			pen.color(orange);
 			if (app().inFullScreenMode()) {
-				pen.hcenter("F11 - " + texts.getString("window_mode"), width(), row);
+				pen.hcenter("F11 - " + texts.getString("window_mode"), width(), row, Tile.SIZE);
 			}
 			else {
-				pen.hcenter("F11 - " + texts.getString("fullscreen_mode"), width(), row);
+				pen.hcenter("F11 - " + texts.getString("fullscreen_mode"), width(), row, Tile.SIZE);
 			}
 		}
 	}
