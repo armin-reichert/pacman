@@ -172,10 +172,10 @@ public class Maze {
 	 *         towards the given direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
-		if (isPortalLeft(tile) && dir == Direction.LEFT) {
+		if (tile.equals(portalLeft) && dir == Direction.LEFT) {
 			return portalRight;
 		}
-		if (isPortalRight(tile) && dir == Direction.RIGHT) {
+		if (tile.equals(portalRight) && dir == Direction.RIGHT) {
 			return portalLeft;
 		}
 		Vector2f v = dir.vector();
@@ -230,15 +230,7 @@ public class Maze {
 	}
 
 	public boolean isPortal(Tile tile) {
-		return isPortalLeft(tile) || isPortalRight(tile);
-	}
-
-	public boolean isPortalLeft(Tile tile) {
-		return tile.equals(new Tile(-1, 17));
-	}
-
-	public boolean isPortalRight(Tile tile) {
-		return tile.equals(new Tile(28, 17));
+		return tile.equals(portalLeft) || tile.equals(portalRight);
 	}
 
 	public boolean isWall(Tile tile) {
