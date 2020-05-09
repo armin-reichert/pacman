@@ -229,10 +229,7 @@ public class Maze {
 		if (tile.equals(portalLeft) || tile.equals(portalRight)) {
 			return false;
 		}
-		if (!insideBoard(tile)) {
-			return true;
-		}
-		return is(tile.col, tile.row, WALL);
+		return !insideBoard(tile) || is(tile.col, tile.row, WALL);
 	}
 
 	public boolean isTunnel(Tile tile) {
