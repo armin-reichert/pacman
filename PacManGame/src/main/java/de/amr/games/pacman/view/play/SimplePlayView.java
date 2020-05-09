@@ -125,7 +125,7 @@ public class SimplePlayView extends PacManGameView {
 
 	protected void drawCrowdedMaze(Graphics2D g) {
 		spriteMazeFull.draw(g, 0, 3 * Tile.SIZE);
-		game.maze.tiles().filter(tile -> game.maze.isEatenNormalPellet(tile) || game.maze.isEatenEnergizer(tile))
+		game.maze.tiles().filter(tile -> game.maze.isEatenSimplePellet(tile) || game.maze.isEatenEnergizer(tile))
 				.forEach(tile -> {
 					g.setColor(bgColor(tile));
 					g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);

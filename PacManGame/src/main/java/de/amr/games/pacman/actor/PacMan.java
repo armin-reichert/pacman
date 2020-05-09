@@ -127,7 +127,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 			digestionTicks = DIGEST_ENERGIZER_TICKS;
 			return Optional.of(new FoodFoundEvent(tile));
 		}
-		if (maze().isNormalPellet(tile)) {
+		if (maze().isSimplePellet(tile)) {
 			digestionTicks = DIGEST_PELLET_TICKS;
 			return Optional.of(new FoodFoundEvent(tile));
 		}

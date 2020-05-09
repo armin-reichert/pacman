@@ -208,7 +208,7 @@ public class Game {
 			level.ghostsKilledByEnergizer = 0;
 			maze.removeFood(tile);
 			return POINTS_ENERGIZER;
-		} else if (maze.isNormalPellet(tile)) {
+		} else if (maze.isSimplePellet(tile)) {
 			maze.removeFood(tile);
 			return POINTS_PELLET;
 		}

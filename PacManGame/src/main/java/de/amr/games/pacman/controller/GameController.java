@@ -132,7 +132,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			} else if (Keyboard.keyPressedOnce("d")) {
 				toggleDemoMode();
 			} else if (Keyboard.keyPressedOnce("e")) {
-				eatAllNormalPellets();
+				eatAllSimplePellets();
 			} else if (Keyboard.keyPressedOnce("f")) {
 				toggleGhostFrightenedBehavior();
 			} else if (Keyboard.keyPressedOnce("g")) {
@@ -552,13 +552,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		enqueue(new LevelCompletedEvent());
 	}
 
-	private void eatAllNormalPellets() {
-		game.maze.tiles().filter(game.maze::isNormalPellet).forEach(tile -> {
+	private void eatAllSimplePellets() {
+		game.maze.tiles().filter(game.maze::isSimplePellet).forEach(tile -> {
 			game.eatFood(tile);
 			ghostHouse.onPacManFoundFood(new FoodFoundEvent(tile));
 			ghostHouse.update();
 		});
-		loginfo("All pellets eaten");
+		loginfo("All simple pellets eaten");
 	}
 
 	private void toggleGhostActing(Ghost ghost) {

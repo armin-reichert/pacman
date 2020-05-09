@@ -59,8 +59,7 @@ public class Maze {
 	// bitmasks
 	static final byte BM_WALL = 1;
 	static final byte BM_FOOD = 2; // normal pellet or energizer
-	static final byte BM_ENERGIZER = 4;
-	static final byte BM_EATEN = 8;
+	static final byte BM_EATEN = 4;
 
 	private final byte[][] map;
 
@@ -144,7 +143,6 @@ public class Maze {
 				case 'e':
 					set(col, row, BM_FOOD);
 					if (c == 'e') {
-						set(col, row, BM_ENERGIZER);
 						energizerTiles.add(new Tile(col, row));
 					}
 					foodCount += 1;
@@ -251,31 +249,31 @@ public class Maze {
 		return tile.equals(ghostHouseDoorLeft) || tile.equals(ghostHouseDoorRight);
 	}
 
-	public boolean isNormalPellet(Tile tile) {
-		return insideBoard(tile) && isSet(tile.col, tile.row, BM_FOOD) && !isSet(tile.col, tile.row, BM_ENERGIZER)
+	public boolean isSimplePellet(Tile tile) {
+		return insideBoard(tile) && !energizerTiles.contains(tile) && isSet(tile.col, tile.row, BM_FOOD)
 				&& !isSet(tile.col, tile.row, BM_EATEN);
 	}
 
-	public boolean isEatenNormalPellet(Tile tile) {
-		return insideBoard(tile) && isSet(tile.col, tile.row, BM_FOOD) && isSet(tile.col, tile.row, BM_EATEN);
-	}
-
 	public boolean isEnergizer(Tile tile) {
-		return insideBoard(tile) && isSet(tile.col, tile.row, BM_ENERGIZER) && !isSet(tile.col, tile.row, BM_EATEN);
+		return energizerTiles.contains(tile) && !isSet(tile.col, tile.row, BM_EATEN);
 	}
 
 	public boolean isEatenEnergizer(Tile tile) {
-		return insideBoard(tile) && isSet(tile.col, tile.row, BM_ENERGIZER) && isSet(tile.col, tile.row, BM_EATEN);
+		return energizerTiles.contains(tile) && isSet(tile.col, tile.row, BM_EATEN);
+	}
+
+	public boolean isEatenSimplePellet(Tile tile) {
+		return insideBoard(tile) && isSet(tile.col, tile.row, BM_FOOD) && isSet(tile.col, tile.row, BM_EATEN);
 	}
 
 	public void removeFood(Tile tile) {
-		if (isNormalPellet(tile) || isEnergizer(tile)) {
+		if (isSimplePellet(tile) || isEnergizer(tile)) {
 			set(tile.col, tile.row, BM_EATEN);
 		}
 	}
 
 	public void restoreFood(Tile tile) {
-		if (isEatenNormalPellet(tile) || isEatenEnergizer(tile)) {
+		if (isEatenSimplePellet(tile) || isEatenEnergizer(tile)) {
 			clear(tile.col, tile.row, BM_EATEN);
 		}
 	}

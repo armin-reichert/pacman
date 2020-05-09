@@ -103,7 +103,7 @@ public class BoardPreview extends JFrame {
 		if (maze.isTunnel(tile)) {
 			return "T";
 		}
-		if (maze.isNormalPellet(tile)) {
+		if (maze.isSimplePellet(tile)) {
 			return ".";
 		}
 		if (maze.isEnergizer(tile)) {
