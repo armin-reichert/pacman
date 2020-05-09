@@ -5,7 +5,6 @@ import static de.amr.games.pacman.actor.GhostState.DEAD;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
@@ -133,7 +132,7 @@ public class SimplePlayView extends PacManGameView {
 				});
 		// hide active energizers when blinking animation is in dark phase
 		if (energizerBlinking.currentFrame() == 1) {
-			Arrays.stream(game.maze.energizers).filter(tile -> !game.maze.isEatenEnergizer(tile)).forEach(tile -> {
+			game.maze.energizerTiles.stream().filter(tile -> !game.maze.isEatenEnergizer(tile)).forEach(tile -> {
 				g.setColor(bgColor(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});

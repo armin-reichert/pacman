@@ -1,11 +1,13 @@
 package de.amr.games.pacman.model;
 
+import java.util.Objects;
+
 /**
  * The Pac-Man game world consists of an unbounded grid of tiles.
  * 
  * @author Armin Reichert
  */
-public abstract class Tile {
+public final class Tile {
 
 	/** Tile size in pixels. */
 	public static final byte SIZE = 8;
@@ -13,7 +15,7 @@ public abstract class Tile {
 	public final byte col;
 	public final byte row;
 
-	protected Tile(int col, int row) {
+	public Tile(int col, int row) {
 		this.col = (byte) col;
 		this.row = (byte) row;
 	}
@@ -35,8 +37,7 @@ public abstract class Tile {
 	}
 
 	/**
-	 * @param tile
-	 *               other tile
+	 * @param tile other tile
 	 * @return straight line distance in tiles (squared).
 	 */
 	public int distSq(Tile tile) {
@@ -46,17 +47,19 @@ public abstract class Tile {
 
 	@Override
 	public int hashCode() {
-		int sum = col + row;
-		return sum * (sum + 1) / 2 + col;
+		return Objects.hash(col, row);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof Tile) {
-			Tile other = (Tile) obj;
-			return col == other.col && row == other.row;
-		}
-		return super.equals(obj);
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Tile other = (Tile) obj;
+		return col == other.col && row == other.row;
 	}
 
 	@Override

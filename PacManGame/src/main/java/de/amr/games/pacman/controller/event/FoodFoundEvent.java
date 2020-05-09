@@ -1,17 +1,17 @@
 package de.amr.games.pacman.controller.event;
 
-import de.amr.games.pacman.model.Maze.Pellet;
+import de.amr.games.pacman.model.Tile;
 
 public class FoodFoundEvent extends PacManGameEvent {
 
-	public final Pellet pellet;
+	public final Tile tile;
 
-	public FoodFoundEvent(Pellet pellet) {
-		this.pellet = pellet;
+	public FoodFoundEvent(Tile tile) {
+		this.tile = tile;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("FoodFound(%s)", pellet.energizer ? "Energizer" : "Pellet");
+		return String.format("FoodFound(%s)", tile);
 	}
 }

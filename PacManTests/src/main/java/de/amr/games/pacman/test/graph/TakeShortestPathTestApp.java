@@ -51,7 +51,7 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 	public TakeShortestPathTestUI(Game game, Theme theme) {
 		super(game, theme);
 		ghost = game.blinky;
-		targets = Arrays.asList(game.maze.cornerSE, game.maze.tileAt(15, 23), game.maze.tileAt(12, 23), game.maze.cornerSW,
+		targets = Arrays.asList(game.maze.cornerSE, new Tile(15, 23), new Tile(12, 23), game.maze.cornerSW,
 				game.maze.tileToDir(game.maze.portalLeft, Direction.RIGHT), game.maze.cornerNW, game.maze.ghostHouseEntry,
 				game.maze.cornerNE, game.maze.tileToDir(game.maze.portalRight, Direction.LEFT), game.maze.pacManHome);
 		showRoutes = () -> true;

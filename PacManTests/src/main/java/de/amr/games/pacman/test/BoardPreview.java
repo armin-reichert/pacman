@@ -41,7 +41,7 @@ public class BoardPreview extends JFrame {
 	}
 
 	private Tile tile(int cell) {
-		return maze.tileAt(graph.grid.col(cell), graph.grid.row(cell));
+		return new Tile(graph.grid.col(cell), graph.grid.row(cell));
 	}
 
 	private GridRenderer createRenderer() {
@@ -79,22 +79,22 @@ public class BoardPreview extends JFrame {
 
 	private String text(int cell) {
 		Tile tile = tile(cell);
-		if (tile == maze.ghostHouseSeats[0] || tile == maze.horizonNE) {
+		if (tile.equals(maze.ghostHouseSeats[0]) || tile.equals(maze.horizonNE)) {
 			return "B";
 		}
-		if (tile == maze.ghostHouseSeats[1] || tile == maze.horizonSE) {
+		if (tile.equals(maze.ghostHouseSeats[1]) || tile.equals(maze.horizonSE)) {
 			return "I";
 		}
-		if (tile == maze.ghostHouseSeats[2] || tile == maze.horizonNW) {
+		if (tile.equals(maze.ghostHouseSeats[2]) || tile.equals(maze.horizonNW)) {
 			return "P";
 		}
-		if (tile == maze.ghostHouseSeats[3] || tile == maze.horizonSW) {
+		if (tile.equals(maze.ghostHouseSeats[3]) || tile.equals(maze.horizonSW)) {
 			return "C";
 		}
-		if (tile == maze.bonusTile) {
+		if (tile.equals(maze.bonusTile)) {
 			return "$";
 		}
-		if (tile == maze.pacManHome) {
+		if (tile.equals(maze.pacManHome)) {
 			return "O";
 		}
 		if (maze.isWall(tile)) {
@@ -109,9 +109,6 @@ public class BoardPreview extends JFrame {
 		if (maze.isEnergizer(tile)) {
 			return "E";
 		}
-		if (maze.isSpace(tile)) {
-			return " ";
-		}
-		return "?";
+		return " ";
 	}
 }

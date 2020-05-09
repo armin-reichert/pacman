@@ -43,7 +43,7 @@ public class MazeGraph {
 	}
 
 	public Tile tile(int vertex) {
-		return maze.tileAt(grid.col(vertex), grid.row(vertex));
+		return new Tile(grid.col(vertex), grid.row(vertex));
 	}
 
 	public List<Tile> shortestPath(Tile source, Tile target) {

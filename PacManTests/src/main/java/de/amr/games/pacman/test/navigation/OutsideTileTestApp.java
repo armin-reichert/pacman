@@ -9,6 +9,7 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ArcadeTheme;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.play.PlayView;
@@ -49,7 +50,7 @@ class OutsideTileTestUI extends PlayView implements VisualController {
 		game.maze.tiles().forEach(game.maze::removeFood);
 		theme.snd_ghost_chase().volume(0);
 		game.stage.add(game.blinky);
-		game.blinky.behavior(CHASING, game.blinky.isHeadingFor(() -> game.maze.tileAt(100, game.maze.portalRight.row)));
+		game.blinky.behavior(CHASING, game.blinky.isHeadingFor(() -> new Tile(100, game.maze.portalRight.row)));
 		game.blinky.setState(CHASING);
 	}
 

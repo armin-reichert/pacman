@@ -64,7 +64,7 @@ class FollowMouseTestUI extends PlayView implements VisualController {
 	}
 
 	private void readMouse() {
-		mouseTile = game.maze.tileAt(Mouse.getX() / Tile.SIZE, Mouse.getY() / Tile.SIZE);
+		mouseTile = new Tile(Mouse.getX() / Tile.SIZE, Mouse.getY() / Tile.SIZE);
 	}
 
 	@Override

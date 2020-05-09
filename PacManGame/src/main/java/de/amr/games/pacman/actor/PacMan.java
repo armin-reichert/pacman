@@ -27,7 +27,6 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.model.Maze.Pellet;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -121,16 +120,16 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 
 	private Optional<PacManGameEvent> findSomethingInteresting() {
 		Tile tile = tile();
-		if (tile == maze().bonusTile && game.bonus.is(ACTIVE)) {
+		if (tile.equals(maze().bonusTile) && game.bonus.is(ACTIVE)) {
 			return Optional.of(new BonusFoundEvent(game.bonus.symbol(), game.bonus.value()));
 		}
 		if (maze().isEnergizer(tile)) {
 			digestionTicks = DIGEST_ENERGIZER_TICKS;
-			return Optional.of(new FoodFoundEvent((Pellet) tile));
+			return Optional.of(new FoodFoundEvent(tile));
 		}
 		if (maze().isNormalPellet(tile)) {
 			digestionTicks = DIGEST_PELLET_TICKS;
-			return Optional.of(new FoodFoundEvent((Pellet) tile));
+			return Optional.of(new FoodFoundEvent(tile));
 		}
 		return Optional.empty();
 	}

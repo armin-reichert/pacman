@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
@@ -15,32 +16,6 @@ import de.amr.easy.game.math.Vector2f;
  */
 public class Maze {
 
-	static class Space extends Tile {
-
-		public Space(int col, int row) {
-			super(col, row);
-		}
-	}
-
-	static class Wall extends Tile {
-
-		public Wall(int col, int row) {
-			super(col, row);
-		}
-	}
-
-	public static class Pellet extends Tile {
-
-		public boolean eaten;
-		public boolean energizer;
-
-		public Pellet(int col, int row) {
-			super(col, row);
-			eaten = false;
-			energizer = false;
-		}
-	}
-
 	static final String[] MAP = {
 	/*@formatter:off*/
 	"############################", 
@@ -49,7 +24,7 @@ public class Maze {
 	"############################", 
 	"#............##............#", 
 	"#.####.#####.##.#####.####.#", 
-	"#.####.#####.##.#####.####.#", 
+	"#e####.#####.##.#####.####e#", 
 	"#.####.#####.##.#####.####.#", 
 	"#..........................#", 
 	"#.####.##.########.##.####.#", 
@@ -69,7 +44,7 @@ public class Maze {
 	"#............##............#", 
 	"#.####.#####.##.#####.####.#", 
 	"#.####.#####.##.#####.####.#", 
-	"#...##.......  .......##...#", 
+	"#e..##.......  .......##..e#", 
 	"###.##.##.########.##.##.###", 
 	"###.##.##.########.##.##.###", 
 	"#......##....##....##......#", 
@@ -81,122 +56,112 @@ public class Maze {
 	"############################"}; 
 	/*@formatter:on*/
 
-	private final Tile[][] map;
-	private final Set<Tile> intersections = new HashSet<>();
-	private final Set<Tile> noUpIntersections = new HashSet<>();
+	// bitmasks
+	static final byte BM_WALL = 1;
+	static final byte BM_FOOD = 2; // normal pellet or energizer
+	static final byte BM_ENERGIZER = 4;
+	static final byte BM_EATEN = 8;
 
-	public final int numRows;
-	public final int numCols;
+	private final byte[][] map;
+
+	public final int numRows = 36;
+	public final int numCols = 28;
 	public final int totalFoodCount;
 
+	public final Set<Tile> intersections;
+	public final Set<Tile> noUpIntersections;
+	public final Set<Tile> energizerTiles;
 	public final Tile pacManHome;
 	public final Tile ghostHouseSeats[];
 	public final Direction ghostHouseSeatDirs[];
 	public final Tile ghostHouseEntry;
+	public final Tile portalLeft, portalRight;
 	public final Tile bonusTile;
 	public final Tile cornerNW, cornerNE, cornerSW, cornerSE;
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
-	public final Tile portalLeft, portalRight;
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
-	public final Tile energizers[];
+
+	private boolean isSet(int col, int row, byte mask) {
+		return (map[col][row] & mask) != 0;
+	}
+
+	private void set(int col, int row, byte mask) {
+		map[col][row] |= mask;
+	}
+
+	private void clear(int col, int row, byte mask) {
+		map[col][row] &= ~mask;
+	}
 
 	public Maze() {
-		numRows = MAP.length;
-		numCols = MAP[0].length();
-		map = new Tile[numCols][numRows];
+		portalLeft = new Tile(-1, 17);
+		portalRight = new Tile(28, 17);
+
+		intersections = new HashSet<>(Arrays.asList(new Tile(6, 4), new Tile(21, 4), new Tile(1, 8), new Tile(6, 8),
+				new Tile(9, 8), new Tile(12, 8), new Tile(15, 8), new Tile(18, 8), new Tile(21, 8), new Tile(26, 8),
+				new Tile(6, 11), new Tile(21, 11), new Tile(12, 14), new Tile(15, 14), new Tile(6, 17), new Tile(9, 17),
+				new Tile(18, 17), new Tile(21, 17), new Tile(9, 20), new Tile(18, 20), new Tile(6, 23), new Tile(9, 23),
+				new Tile(18, 23), new Tile(21, 23), new Tile(6, 26), new Tile(9, 26), new Tile(12, 26), new Tile(15, 26),
+				new Tile(18, 26), new Tile(21, 26), new Tile(3, 29), new Tile(24, 29), new Tile(12, 32), new Tile(15, 32)));
+
+		noUpIntersections = new HashSet<>(
+				Arrays.asList(new Tile(12, 14), new Tile(15, 14), new Tile(12, 26), new Tile(15, 26)));
+
+		ghostHouseEntry = new Tile(13, 14);
+		ghostHouseDoorLeft = new Tile(13, 15);
+		ghostHouseDoorRight = new Tile(14, 15);
+
+		ghostHouseSeats = new Tile[] { new Tile(13, 14), new Tile(11, 17), new Tile(13, 17), new Tile(15, 17) };
+		ghostHouseSeatDirs = new Direction[] { Direction.LEFT, Direction.UP, Direction.DOWN, Direction.UP };
+
+		pacManHome = new Tile(13, 26);
+		bonusTile = new Tile(13, 20);
+
+		// Scattering targets
+		horizonNW = new Tile(2, 0);
+		horizonNE = new Tile(25, 0);
+		horizonSW = new Tile(0, 35);
+		horizonSE = new Tile(27, 35);
+
+		// Corners inside maze
+		cornerNW = new Tile(1, 4);
+		cornerNE = new Tile(26, 4);
+		cornerSW = new Tile(1, 32);
+		cornerSE = new Tile(26, 32);
+
+		// map
 		int foodCount = 0;
+		energizerTiles = new HashSet<>();
+		map = new byte[numCols][numRows];
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
 				char c = MAP[row].charAt(col);
 				switch (c) {
-				case ' ':
-					map[col][row] = new Space(col, row);
-					break;
 				case '#':
-					map[col][row] = new Wall(col, row);
+					set(col, row, BM_WALL);
 					break;
 				case '.':
-					map[col][row] = new Pellet(col, row);
+				case 'e':
+					set(col, row, BM_FOOD);
+					if (c == 'e') {
+						set(col, row, BM_ENERGIZER);
+						energizerTiles.add(new Tile(col, row));
+					}
 					foodCount += 1;
 					break;
 				default:
-					throw new IllegalArgumentException("Unknown tile content: " + c);
+					break;
 				}
 			}
 		}
 		totalFoodCount = foodCount;
-
-		energizers = new Pellet[] { (Pellet) map[1][6], (Pellet) map[1][26], (Pellet) map[26][6], (Pellet) map[26][26] };
-		for (Tile pellet : energizers) {
-			((Pellet) pellet).energizer = true;
-		}
-
-		ghostHouseEntry = map[13][14];
-		ghostHouseDoorLeft = map[13][15];
-		ghostHouseDoorRight = map[14][15];
-
-		ghostHouseSeats = new Tile[] { map[13][14], map[11][17], map[13][17], map[15][17] };
-		ghostHouseSeatDirs = new Direction[] { Direction.LEFT, Direction.UP, Direction.DOWN, Direction.UP };
-
-		pacManHome = map[13][26];
-		bonusTile = map[13][20];
-
-		portalLeft = new Space(-1, 17);
-		portalRight = new Space(28, 17);
-
-		// Scattering targets
-		horizonNW = map[2][0];
-		horizonNE = map[25][0];
-		horizonSW = map[0][35];
-		horizonSE = map[27][35];
-
-		// Corners inside maze
-		cornerNW = map[1][4];
-		cornerNE = map[26][4];
-		cornerSW = map[1][32];
-		cornerSE = map[26][32];
-
-		intersections.addAll(Arrays.asList(
-		//@formatter:off
-			map[6][4],   map[21][4],
-			map[1][8],   map[6][8],	  map[9][8],   map[12][8], map[15][8], map[18][8], map[21][8], map[26][8],
-			map[6][11],	 map[21][11],
-			map[12][14], map[15][14],
-			map[6][17],  map[9][17],	map[18][17], map[21][17],
-			map[9][20],	 map[18][20],
-			map[6][23],	 map[9][23],	map[18][23], map[21][23],
-			map[6][26],	 map[9][26],	map[12][26], map[15][26],	map[18][26], map[21][26],	
-			map[3][29],	 map[24][29],
-			map[12][32], map[15][32]
-		//@formatter:on
-		));
-
-		noUpIntersections.addAll(Arrays.asList(map[12][14], map[15][14], map[12][26], map[15][26]));
-	}
-
-	public Stream<Tile> tiles() {
-		return Arrays.stream(map).flatMap(Arrays::stream);
 	}
 
 	/**
-	 * Returns the tile at the given tile position. This is either a tile inside the
-	 * board, a portal tile or a wall outside.
-	 * 
-	 * @param col column index
-	 * @param row row index
-	 * @return the tile with the given coordinates.
+	 * @return stream of tiles inside the board (no portal tiles)
 	 */
-	public Tile tileAt(int col, int row) {
-		if (insideBoard(col, row)) {
-			return map[col][row];
-		}
-		if (portalLeft.col == col && portalLeft.row == row) {
-			return portalLeft;
-		}
-		if (portalRight.col == col && portalRight.row == row) {
-			return portalRight;
-		}
-		return new Wall(col, row);
+	public Stream<Tile> tiles() {
+		return IntStream.range(0, numRows * numCols).mapToObj(i -> new Tile(i % numCols, i / numCols));
 	}
 
 	/**
@@ -207,14 +172,14 @@ public class Maze {
 	 *         towards the given direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
-		if (tile.equals(portalLeft) && dir == Direction.LEFT) {
+		if (isPortalLeft(tile) && dir == Direction.LEFT) {
 			return portalRight;
 		}
-		if (tile.equals(portalRight) && dir == Direction.RIGHT) {
+		if (isPortalRight(tile) && dir == Direction.RIGHT) {
 			return portalLeft;
 		}
 		Vector2f v = dir.vector();
-		return tileAt(tile.col + n * v.roundedX(), tile.row + n * v.roundedY());
+		return new Tile(tile.col + n * v.roundedX(), tile.row + n * v.roundedY());
 	}
 
 	/**
@@ -249,7 +214,7 @@ public class Maze {
 	}
 
 	public boolean insideGhostHouse(Tile tile) {
-		return partOfGhostHouse(tile) && isSpace(tile);
+		return partOfGhostHouse(tile) && !isWall(tile);
 	}
 
 	public boolean partOfGhostHouse(Tile tile) {
@@ -264,12 +229,26 @@ public class Maze {
 		return Vector2f.of(ghostHouseSeats[seat].centerX(), ghostHouseSeats[seat].y());
 	}
 
-	public boolean isSpace(Tile tile) {
-		return tile instanceof Space;
+	public boolean isPortal(Tile tile) {
+		return isPortalLeft(tile) || isPortalRight(tile);
+	}
+
+	public boolean isPortalLeft(Tile tile) {
+		return tile.equals(new Tile(-1, 17));
+	}
+
+	public boolean isPortalRight(Tile tile) {
+		return tile.equals(new Tile(28, 17));
 	}
 
 	public boolean isWall(Tile tile) {
-		return tile instanceof Wall;
+		if (isPortal(tile)) {
+			return false;
+		}
+		if (!insideBoard(tile)) {
+			return true;
+		}
+		return isSet(tile.col, tile.row, BM_WALL);
 	}
 
 	public boolean isTunnel(Tile tile) {
@@ -277,50 +256,35 @@ public class Maze {
 	}
 
 	public boolean isDoor(Tile tile) {
-		return tile == ghostHouseDoorLeft || tile == ghostHouseDoorRight;
+		return tile.equals(ghostHouseDoorLeft) || tile.equals(ghostHouseDoorRight);
 	}
 
 	public boolean isNormalPellet(Tile tile) {
-		if (tile instanceof Pellet) {
-			Pellet pellet = (Pellet) tile;
-			return !pellet.energizer && !pellet.eaten;
-		}
-		return false;
+		return insideBoard(tile) && isSet(tile.col, tile.row, BM_FOOD) && !isSet(tile.col, tile.row, BM_ENERGIZER)
+				&& !isSet(tile.col, tile.row, BM_EATEN);
 	}
 
 	public boolean isEatenNormalPellet(Tile tile) {
-		if (tile instanceof Pellet) {
-			Pellet pellet = (Pellet) tile;
-			return !pellet.energizer && pellet.eaten;
-		}
-		return false;
+		return insideBoard(tile) && isSet(tile.col, tile.row, BM_FOOD) && isSet(tile.col, tile.row, BM_EATEN);
 	}
 
 	public boolean isEnergizer(Tile tile) {
-		if (tile instanceof Pellet) {
-			Pellet pellet = (Pellet) tile;
-			return pellet.energizer && !pellet.eaten;
-		}
-		return false;
+		return insideBoard(tile) && isSet(tile.col, tile.row, BM_ENERGIZER) && !isSet(tile.col, tile.row, BM_EATEN);
 	}
 
 	public boolean isEatenEnergizer(Tile tile) {
-		if (tile instanceof Pellet) {
-			Pellet pellet = (Pellet) tile;
-			return pellet.energizer && pellet.eaten;
-		}
-		return false;
+		return insideBoard(tile) && isSet(tile.col, tile.row, BM_ENERGIZER) && isSet(tile.col, tile.row, BM_EATEN);
 	}
 
 	public void removeFood(Tile tile) {
-		if (tile instanceof Pellet) {
-			((Pellet) tile).eaten = true;
+		if (isNormalPellet(tile) || isEnergizer(tile)) {
+			set(tile.col, tile.row, BM_EATEN);
 		}
 	}
 
 	public void restoreFood(Tile tile) {
-		if (tile instanceof Pellet) {
-			((Pellet) tile).eaten = false;
+		if (isEatenNormalPellet(tile) || isEatenEnergizer(tile)) {
+			clear(tile.col, tile.row, BM_EATEN);
 		}
 	}
 }

@@ -14,6 +14,7 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.actor.steering.ghost.EnteringGhostHouse.EnteringHouseState;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
+import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -39,7 +40,7 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 				.state(AT_DOOR)
 					.onEntry(() -> {
 						// target tile is only used for route visualization
-						ghost.setTargetTile(ghost.maze().tileAt(target.roundedX(), target.roundedY()));
+						ghost.setTargetTile(new Tile(target.roundedX(), target.roundedY()));
 						ghost.setWishDir(DOWN);
 					})
 					

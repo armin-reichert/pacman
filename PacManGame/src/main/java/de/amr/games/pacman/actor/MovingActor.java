@@ -115,7 +115,7 @@ public abstract class MovingActor<S> extends Entity implements FsmContainer<S, P
 	@Override
 	public Tile tile() {
 		Vector2f center = tf.getCenter();
-		return game.maze.tileAt(center.roundedX() / Tile.SIZE, center.roundedY() / Tile.SIZE);
+		return new Tile(center.roundedX() / Tile.SIZE, center.roundedY() / Tile.SIZE);
 	}
 
 	@Override

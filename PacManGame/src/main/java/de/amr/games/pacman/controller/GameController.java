@@ -42,7 +42,6 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Maze.Pellet;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.core.PacManGameView;
 import de.amr.games.pacman.view.intro.IntroView;
@@ -472,8 +471,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent found = (FoodFoundEvent) event;
+			boolean energizer = game.maze.isEnergizer(found.tile);
 			ghostHouse.onPacManFoundFood(found);
-			int points = game.eatFood(found.pellet);
+			int points = game.eatFood(found.tile);
 			int livesBefore = game.lives;
 			game.score(points);
 			sound.pelletEaten();
@@ -488,7 +488,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				game.bonus.show(theme);
 				loginfo("Bonus %s added, time: %.2f sec", game.bonus, game.bonus.state().getDuration() / 60f);
 			}
-			if (found.pellet.energizer) {
+			if (energizer) {
 				ghostCommand.suspend();
 				sound.pacManGainsPower();
 				game.pacMan.powerTicks = sec(game.level.pacManPowerSeconds);
@@ -553,9 +553,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	private void eatAllNormalPellets() {
-		game.maze.tiles().filter(game.maze::isNormalPellet).map(tile -> (Pellet) tile).forEach(pellet -> {
-			game.eatFood(pellet);
-			ghostHouse.onPacManFoundFood(new FoodFoundEvent(pellet));
+		game.maze.tiles().filter(game.maze::isNormalPellet).forEach(tile -> {
+			game.eatFood(tile);
+			ghostHouse.onPacManFoundFood(new FoodFoundEvent(tile));
 			ghostHouse.update();
 		});
 		loginfo("All pellets eaten");
