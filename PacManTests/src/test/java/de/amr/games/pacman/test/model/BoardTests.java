@@ -23,8 +23,6 @@ public class BoardTests {
 		assertNotNull(maze.ghostHouseSeats[1]);
 		assertNotNull(maze.ghostHouseSeats[2]);
 		assertNotNull(maze.ghostHouseSeats[3]);
-		assertNotNull(maze.portalLeft);
-		assertNotNull(maze.portalRight);
 		assertNotNull(maze.bonusTile);
 		assertNotNull(maze.cornerNW);
 		assertNotNull(maze.cornerNE);
@@ -42,6 +40,8 @@ public class BoardTests {
 		assertTrue(maze.isDoor(new Tile(13, 15)));
 		assertTrue(maze.isSimplePellet(new Tile(1, 4)));
 		assertTrue(maze.isEnergizer(new Tile(1, 6)));
+		assertTrue(maze.portalLeft.equals(new Tile(-1,17)));
+		assertTrue(maze.portalRight.equals(new Tile(28,17)));
 
 		assertEquals(new Tile(0, 0), new Tile(0, 0));
 	}
