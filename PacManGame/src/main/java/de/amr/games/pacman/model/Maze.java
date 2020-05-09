@@ -16,7 +16,7 @@ import de.amr.easy.game.math.Vector2f;
  */
 public class Maze {
 
-	static final String[] MAP = {
+	static final String[] FLOORPLAN = {
 	/*@formatter:off*/
 	"############################", 
 	"############################", 
@@ -57,11 +57,11 @@ public class Maze {
 	/*@formatter:on*/
 
 	// bitmasks
-	static final byte BM_WALL = 1;
-	static final byte BM_FOOD = 2; // normal pellet or energizer
-	static final byte BM_EATEN = 4;
+	static final byte WALL = 1 << 0;
+	static final byte FOOD = 1 << 1; // simple pellet or energizer
+	static final byte EATEN = 1 << 2;
 
-	private final byte[][] map;
+	private final byte[][] content;
 
 	public final int numRows = 36;
 	public final int numCols = 28;
@@ -81,15 +81,15 @@ public class Maze {
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
 
 	private boolean isSet(int col, int row, byte mask) {
-		return (map[col][row] & mask) != 0;
+		return (content[col][row] & mask) != 0;
 	}
 
 	private void set(int col, int row, byte mask) {
-		map[col][row] |= mask;
+		content[col][row] |= mask;
 	}
 
 	private void clear(int col, int row, byte mask) {
-		map[col][row] &= ~mask;
+		content[col][row] &= ~mask;
 	}
 
 	public Maze() {
@@ -128,20 +128,19 @@ public class Maze {
 		cornerSW = new Tile(1, 32);
 		cornerSE = new Tile(26, 32);
 
-		// map
 		int foodCount = 0;
 		energizerTiles = new HashSet<>();
-		map = new byte[numCols][numRows];
+		content = new byte[numCols][numRows];
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				char c = MAP[row].charAt(col);
+				char c = FLOORPLAN[row].charAt(col);
 				switch (c) {
 				case '#':
-					set(col, row, BM_WALL);
+					set(col, row, WALL);
 					break;
 				case '.':
 				case 'e':
-					set(col, row, BM_FOOD);
+					set(col, row, FOOD);
 					if (c == 'e') {
 						energizerTiles.add(new Tile(col, row));
 					}
@@ -195,12 +194,8 @@ public class Maze {
 		return Direction.dirs().filter(dir -> dir.vector().equals(v)).findFirst();
 	}
 
-	public boolean insideBoard(int col, int row) {
-		return 0 <= col && col < numCols && 0 <= row && row < numRows;
-	}
-
 	public boolean insideBoard(Tile tile) {
-		return insideBoard(tile.col, tile.row);
+		return 0 <= tile.col && tile.col < numCols && 0 <= tile.row && tile.row < numRows;
 	}
 
 	public boolean isIntersection(Tile tile) {
@@ -227,18 +222,14 @@ public class Maze {
 		return Vector2f.of(ghostHouseSeats[seat].centerX(), ghostHouseSeats[seat].y());
 	}
 
-	public boolean isPortal(Tile tile) {
-		return tile.equals(portalLeft) || tile.equals(portalRight);
-	}
-
 	public boolean isWall(Tile tile) {
-		if (isPortal(tile)) {
+		if (tile.equals(portalLeft) || tile.equals(portalRight)) {
 			return false;
 		}
 		if (!insideBoard(tile)) {
 			return true;
 		}
-		return isSet(tile.col, tile.row, BM_WALL);
+		return isSet(tile.col, tile.row, WALL);
 	}
 
 	public boolean isTunnel(Tile tile) {
@@ -250,31 +241,31 @@ public class Maze {
 	}
 
 	public boolean isSimplePellet(Tile tile) {
-		return insideBoard(tile) && !energizerTiles.contains(tile) && isSet(tile.col, tile.row, BM_FOOD)
-				&& !isSet(tile.col, tile.row, BM_EATEN);
+		return insideBoard(tile) && !energizerTiles.contains(tile) && isSet(tile.col, tile.row, FOOD)
+				&& !isSet(tile.col, tile.row, EATEN);
 	}
 
 	public boolean isEnergizer(Tile tile) {
-		return energizerTiles.contains(tile) && !isSet(tile.col, tile.row, BM_EATEN);
+		return energizerTiles.contains(tile) && !isSet(tile.col, tile.row, EATEN);
 	}
 
 	public boolean isEatenEnergizer(Tile tile) {
-		return energizerTiles.contains(tile) && isSet(tile.col, tile.row, BM_EATEN);
+		return energizerTiles.contains(tile) && isSet(tile.col, tile.row, EATEN);
 	}
 
 	public boolean isEatenSimplePellet(Tile tile) {
-		return insideBoard(tile) && isSet(tile.col, tile.row, BM_FOOD) && isSet(tile.col, tile.row, BM_EATEN);
+		return insideBoard(tile) && isSet(tile.col, tile.row, FOOD) && isSet(tile.col, tile.row, EATEN);
 	}
 
 	public void removeFood(Tile tile) {
 		if (isSimplePellet(tile) || isEnergizer(tile)) {
-			set(tile.col, tile.row, BM_EATEN);
+			set(tile.col, tile.row, EATEN);
 		}
 	}
 
 	public void restoreFood(Tile tile) {
 		if (isEatenSimplePellet(tile) || isEatenEnergizer(tile)) {
-			clear(tile.col, tile.row, BM_EATEN);
+			clear(tile.col, tile.row, EATEN);
 		}
 	}
 }
