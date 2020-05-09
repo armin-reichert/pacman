@@ -60,6 +60,7 @@ public class Maze {
 	static final byte WALL = 1 << 0;
 	static final byte FOOD = 1 << 1; // simple pellet or energizer
 	static final byte EATEN = 1 << 2;
+	static final byte ENERGIZER = 1 << 3;
 
 	private final byte[][] content;
 
@@ -69,7 +70,6 @@ public class Maze {
 
 	public final Set<Tile> intersections;
 	public final Set<Tile> noUpIntersections;
-	public final Set<Tile> energizerTiles;
 	public final Tile pacManHome;
 	public final Tile ghostHouseSeats[];
 	public final Direction ghostHouseSeatDirs[];
@@ -80,7 +80,11 @@ public class Maze {
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
 
-	private boolean isSet(int col, int row, byte mask) {
+	private boolean is(Tile tile, byte mask) {
+		return insideBoard(tile) && is(tile.col, tile.row, mask);
+	}
+
+	private boolean is(int col, int row, byte mask) {
 		return (content[col][row] & mask) != 0;
 	}
 
@@ -88,7 +92,7 @@ public class Maze {
 		content[col][row] |= mask;
 	}
 
-	private void clear(int col, int row, byte mask) {
+	private void unset(int col, int row, byte mask) {
 		content[col][row] &= ~mask;
 	}
 
@@ -129,7 +133,6 @@ public class Maze {
 		cornerSE = new Tile(26, 32);
 
 		int foodCount = 0;
-		energizerTiles = new HashSet<>();
 		content = new byte[numCols][numRows];
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
@@ -142,7 +145,7 @@ public class Maze {
 				case 'e':
 					set(col, row, FOOD);
 					if (c == 'e') {
-						energizerTiles.add(new Tile(col, row));
+						set(col, row, ENERGIZER);
 					}
 					foodCount += 1;
 					break;
@@ -229,7 +232,7 @@ public class Maze {
 		if (!insideBoard(tile)) {
 			return true;
 		}
-		return isSet(tile.col, tile.row, WALL);
+		return is(tile.col, tile.row, WALL);
 	}
 
 	public boolean isTunnel(Tile tile) {
@@ -241,31 +244,30 @@ public class Maze {
 	}
 
 	public boolean isSimplePellet(Tile tile) {
-		return insideBoard(tile) && !energizerTiles.contains(tile) && isSet(tile.col, tile.row, FOOD)
-				&& !isSet(tile.col, tile.row, EATEN);
+		return is(tile, FOOD) && !is(tile, EATEN) && !is(tile, ENERGIZER);
 	}
 
 	public boolean isEnergizer(Tile tile) {
-		return energizerTiles.contains(tile) && !isSet(tile.col, tile.row, EATEN);
+		return is(tile, ENERGIZER) && !is(tile, EATEN);
 	}
 
 	public boolean isEatenEnergizer(Tile tile) {
-		return energizerTiles.contains(tile) && isSet(tile.col, tile.row, EATEN);
+		return is(tile, ENERGIZER) && is(tile, EATEN);
 	}
 
 	public boolean isEatenSimplePellet(Tile tile) {
-		return insideBoard(tile) && isSet(tile.col, tile.row, FOOD) && isSet(tile.col, tile.row, EATEN);
+		return is(tile, FOOD) && is(tile, EATEN);
 	}
 
 	public void removeFood(Tile tile) {
-		if (isSimplePellet(tile) || isEnergizer(tile)) {
+		if (is(tile, FOOD)) {
 			set(tile.col, tile.row, EATEN);
 		}
 	}
 
 	public void restoreFood(Tile tile) {
-		if (isEatenSimplePellet(tile) || isEatenEnergizer(tile)) {
-			clear(tile.col, tile.row, EATEN);
+		if (is(tile, FOOD) && is(tile, EATEN)) {
+			unset(tile.col, tile.row, EATEN);
 		}
 	}
 }

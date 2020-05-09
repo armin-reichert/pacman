@@ -132,7 +132,7 @@ public class SimplePlayView extends PacManGameView {
 				});
 		// hide active energizers when blinking animation is in dark phase
 		if (energizerBlinking.currentFrame() == 1) {
-			game.maze.energizerTiles.stream().filter(tile -> !game.maze.isEatenEnergizer(tile)).forEach(tile -> {
+			game.maze.tiles().filter(tile -> game.maze.isEnergizer(tile)).forEach(tile -> {
 				g.setColor(bgColor(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
