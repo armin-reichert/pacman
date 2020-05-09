@@ -10,7 +10,7 @@ import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.tiles.Tile;
+import de.amr.games.pacman.model.Tile;
 
 public class AvoidingGhosts implements Steering {
 

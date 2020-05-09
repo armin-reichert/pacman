@@ -7,10 +7,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.model.tiles.Pellet;
-import de.amr.games.pacman.model.tiles.Space;
-import de.amr.games.pacman.model.tiles.Tile;
-import de.amr.games.pacman.model.tiles.Wall;
 
 /**
  * The Pac-Man game world.
@@ -19,9 +15,31 @@ import de.amr.games.pacman.model.tiles.Wall;
  */
 public class Maze {
 
-	static final char WALL = '#';
-	static final char SPACE = ' ';
-	static final char PELLET = '.';
+	static class Space extends Tile {
+
+		public Space(int col, int row) {
+			super(col, row);
+		}
+	}
+
+	static class Wall extends Tile {
+
+		public Wall(int col, int row) {
+			super(col, row);
+		}
+	}
+
+	public static class Pellet extends Tile {
+
+		public boolean eaten;
+		public boolean energizer;
+
+		public Pellet(int col, int row) {
+			super(col, row);
+			eaten = false;
+			energizer = false;
+		}
+	}
 
 	static final String[] MAP = {
 	/*@formatter:off*/
@@ -80,7 +98,7 @@ public class Maze {
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile portalLeft, portalRight;
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
-	public final Pellet energizers[];
+	public final Tile energizers[];
 
 	public Maze() {
 		numRows = MAP.length;
@@ -91,13 +109,13 @@ public class Maze {
 			for (int col = 0; col < numCols; ++col) {
 				char c = MAP[row].charAt(col);
 				switch (c) {
-				case SPACE:
+				case ' ':
 					map[col][row] = new Space(col, row);
 					break;
-				case WALL:
+				case '#':
 					map[col][row] = new Wall(col, row);
 					break;
-				case PELLET:
+				case '.':
 					map[col][row] = new Pellet(col, row);
 					foodCount += 1;
 					break;
@@ -109,8 +127,8 @@ public class Maze {
 		totalFoodCount = foodCount;
 
 		energizers = new Pellet[] { (Pellet) map[1][6], (Pellet) map[1][26], (Pellet) map[26][6], (Pellet) map[26][26] };
-		for (Pellet pellet : energizers) {
-			pellet.energizer = true;
+		for (Tile pellet : energizers) {
+			((Pellet) pellet).energizer = true;
 		}
 
 		ghostHouseEntry = map[13][14];

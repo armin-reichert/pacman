@@ -31,7 +31,6 @@ import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.MovingActor;
 import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.model.tiles.Tile;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.

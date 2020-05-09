@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model.tiles;
+package de.amr.games.pacman.model;
 
 /**
  * The Pac-Man game world consists of an unbounded grid of tiles.

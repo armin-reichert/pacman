@@ -3,7 +3,7 @@ package de.amr.games.pacman.actor.steering;
 import java.util.Collections;
 import java.util.List;
 
-import de.amr.games.pacman.model.tiles.Tile;
+import de.amr.games.pacman.model.Tile;
 
 /**
  * Interface for steering of actors.

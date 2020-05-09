@@ -20,7 +20,7 @@ import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.tiles.Tile;
+import de.amr.games.pacman.model.Tile;
 
 /**
  * Steers an actor towards a target tile.

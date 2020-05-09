@@ -2,7 +2,7 @@ package de.amr.games.pacman.actor;
 
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
-import de.amr.games.pacman.model.tiles.Tile;
+import de.amr.games.pacman.model.Tile;
 
 /**
  * Implemented by entities that can move through a maze.

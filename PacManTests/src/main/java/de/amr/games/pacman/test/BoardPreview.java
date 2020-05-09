@@ -9,7 +9,7 @@ import javax.swing.SwingUtilities;
 
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.MazeGraph;
-import de.amr.games.pacman.model.tiles.Tile;
+import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.ui.rendering.ConfigurableGridRenderer;
 import de.amr.graph.grid.ui.rendering.GridCanvas;
 import de.amr.graph.grid.ui.rendering.GridRenderer;

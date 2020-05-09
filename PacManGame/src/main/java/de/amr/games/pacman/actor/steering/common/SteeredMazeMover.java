@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.steering.Steering;
-import de.amr.games.pacman.model.tiles.Tile;
+import de.amr.games.pacman.model.Tile;
 
 /**
  * Maze mover with common steerings.
