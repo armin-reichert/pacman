@@ -1,9 +1,7 @@
 package de.amr.games.pacman.model;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -56,11 +54,8 @@ public class Maze {
 	"############################"}; 
 	/*@formatter:on*/
 
-	// bitmasks
-	static final byte WALL = 1 << 0;
-	static final byte FOOD = 1 << 1; // simple pellet or energizer
-	static final byte EATEN = 1 << 2;
-	static final byte ENERGIZER = 1 << 3;
+	// bits
+	static final byte WALL = 0, FOOD = 1, EATEN = 2, ENERGIZER = 3, INTERSECTION = 4, UPWARDS_BLOCKED = 5;
 
 	private final byte[][] content;
 
@@ -68,8 +63,6 @@ public class Maze {
 	public final int numCols = 28;
 	public final int totalFoodCount;
 
-	public final Set<Tile> intersections;
-	public final Set<Tile> noUpIntersections;
 	public final Tile pacManHome;
 	public final Tile ghostHouseSeats[];
 	public final Direction ghostHouseSeatDirs[];
@@ -80,35 +73,31 @@ public class Maze {
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
 
-	private boolean is(Tile tile, byte mask) {
-		return insideBoard(tile) && is(tile.col, tile.row, mask);
+	private boolean is(Tile tile, byte bit) {
+		return insideBoard(tile) && is(tile.col, tile.row, bit);
 	}
 
-	private boolean is(int col, int row, byte mask) {
-		return (content[col][row] & mask) != 0;
+	private boolean is(int col, int row, byte bit) {
+		return (content[col][row] & 1 << bit) != 0;
 	}
 
-	private void set(int col, int row, byte mask) {
-		content[col][row] |= mask;
+	private void set(Tile tile, byte bit) {
+		set(tile.col, tile.row, bit);
 	}
 
-	private void unset(int col, int row, byte mask) {
-		content[col][row] &= ~mask;
+	private void set(int col, int row, byte bit) {
+		content[col][row] |= 1 << bit;
+	}
+
+	private void unset(int col, int row, byte bit) {
+		content[col][row] &= ~(1 << bit);
 	}
 
 	public Maze() {
+		content = new byte[numCols][numRows];
+
 		portalLeft = new Tile(-1, 17);
 		portalRight = new Tile(28, 17);
-
-		intersections = new HashSet<>(Arrays.asList(new Tile(6, 4), new Tile(21, 4), new Tile(1, 8), new Tile(6, 8),
-				new Tile(9, 8), new Tile(12, 8), new Tile(15, 8), new Tile(18, 8), new Tile(21, 8), new Tile(26, 8),
-				new Tile(6, 11), new Tile(21, 11), new Tile(12, 14), new Tile(15, 14), new Tile(6, 17), new Tile(9, 17),
-				new Tile(18, 17), new Tile(21, 17), new Tile(9, 20), new Tile(18, 20), new Tile(6, 23), new Tile(9, 23),
-				new Tile(18, 23), new Tile(21, 23), new Tile(6, 26), new Tile(9, 26), new Tile(12, 26), new Tile(15, 26),
-				new Tile(18, 26), new Tile(21, 26), new Tile(3, 29), new Tile(24, 29), new Tile(12, 32), new Tile(15, 32)));
-
-		noUpIntersections = new HashSet<>(
-				Arrays.asList(new Tile(12, 14), new Tile(15, 14), new Tile(12, 26), new Tile(15, 26)));
 
 		ghostHouseEntry = new Tile(13, 14);
 		ghostHouseDoorLeft = new Tile(13, 15);
@@ -132,8 +121,20 @@ public class Maze {
 		cornerSW = new Tile(1, 32);
 		cornerSE = new Tile(26, 32);
 
+		for (Tile tile : Arrays.asList(new Tile(6, 4), new Tile(21, 4), new Tile(1, 8), new Tile(6, 8), new Tile(9, 8),
+				new Tile(12, 8), new Tile(15, 8), new Tile(18, 8), new Tile(21, 8), new Tile(26, 8), new Tile(6, 11),
+				new Tile(21, 11), new Tile(12, 14), new Tile(15, 14), new Tile(6, 17), new Tile(9, 17), new Tile(18, 17),
+				new Tile(21, 17), new Tile(9, 20), new Tile(18, 20), new Tile(6, 23), new Tile(9, 23), new Tile(18, 23),
+				new Tile(21, 23), new Tile(6, 26), new Tile(9, 26), new Tile(12, 26), new Tile(15, 26), new Tile(18, 26),
+				new Tile(21, 26), new Tile(3, 29), new Tile(24, 29), new Tile(12, 32), new Tile(15, 32))) {
+			set(tile, INTERSECTION);
+		}
+
+		for (Tile tile : Arrays.asList(new Tile(12, 14), new Tile(15, 14), new Tile(12, 26), new Tile(15, 26))) {
+			set(tile, UPWARDS_BLOCKED);
+		}
+
 		int foodCount = 0;
-		content = new byte[numCols][numRows];
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
 				char c = FLOORPLAN[row].charAt(col);
@@ -202,11 +203,11 @@ public class Maze {
 	}
 
 	public boolean isIntersection(Tile tile) {
-		return intersections.contains(tile);
+		return is(tile, INTERSECTION);
 	}
 
 	public boolean isNoUpIntersection(Tile tile) {
-		return noUpIntersections.contains(tile);
+		return is(tile, UPWARDS_BLOCKED);
 	}
 
 	public boolean insideGhostHouse(Tile tile) {
