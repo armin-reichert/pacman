@@ -230,7 +230,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		if (maze().isDoor(neighbor)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
-		if (maze().isNoUpIntersection(tile) && neighbor.equals(maze().tileToDir(tile, UP))) {
+		if (maze().isUpwardsBlocked(tile) && neighbor.equals(maze().tileToDir(tile, UP))) {
 			return !is(CHASING, SCATTERING);
 		}
 		return super.canMoveBetween(tile, neighbor);

@@ -195,7 +195,7 @@ public class Maze {
 		return is(tile, INTERSECTION);
 	}
 
-	public boolean isNoUpIntersection(Tile tile) {
+	public boolean isUpwardsBlocked(Tile tile) {
 		return is(tile, UPWARDS_BLOCKED);
 	}
 
