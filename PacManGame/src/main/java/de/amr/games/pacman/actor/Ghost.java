@@ -204,8 +204,8 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 
 	public void takeSeat() {
 		tf.setPosition(maze().seatPosition(seat));
-		setMoveDir(maze().ghostHouseSeatDirs[seat]);
-		setWishDir(maze().ghostHouseSeatDirs[seat]);
+		setMoveDir(maze().ghostHomeDir[seat]);
+		setWishDir(maze().ghostHomeDir[seat]);
 		enteredNewTile();
 	}
 

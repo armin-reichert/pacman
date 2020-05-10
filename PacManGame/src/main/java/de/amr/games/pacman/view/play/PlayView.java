@@ -288,7 +288,7 @@ public class PlayView extends SimplePlayView {
 	private void drawSeats(Graphics2D g) {
 		Ghost[] ghostsBySeat = { game.blinky, game.inky, game.pinky, game.clyde };
 		IntStream.rangeClosed(0, 3).forEach(seat -> {
-			Tile seatTile = game.maze.ghostHouseSeats[seat];
+			Tile seatTile = game.maze.ghostHome[seat];
 			g.setColor(color(ghostsBySeat[seat]));
 			int x = seatTile.centerX(), y = seatTile.y();
 			String text = String.valueOf(seat);

@@ -57,15 +57,13 @@ public class Maze {
 	// bits
 	static final byte WALL = 0, FOOD = 1, EATEN = 2, ENERGIZER = 3, INTERSECTION = 4, UPWARDS_BLOCKED = 5;
 
-	private final byte[][] content;
-
 	public final int numRows = 36;
 	public final int numCols = 28;
 	public final int totalFoodCount;
 
 	public final Tile pacManHome;
-	public final Tile ghostHouseSeats[];
-	public final Direction ghostHouseSeatDirs[];
+	public final Tile ghostHome[];
+	public final Direction ghostHomeDir[];
 	public final Tile ghostHouseEntry;
 	public final Tile portalLeft, portalRight;
 	public final Tile bonusTile;
@@ -73,12 +71,10 @@ public class Maze {
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
 
-	private boolean is(Tile tile, byte bit) {
-		return insideBoard(tile) && is(tile.col, tile.row, bit);
-	}
+	private final byte[][] content = new byte[numCols][numRows];
 
-	private boolean is(int col, int row, byte bit) {
-		return (content[col][row] & 1 << bit) != 0;
+	private boolean is(Tile tile, byte bit) {
+		return insideBoard(tile) && (content[tile.col][tile.row] & (1 << bit)) != 0;
 	}
 
 	private void set(Tile tile, byte bit) {
@@ -86,7 +82,7 @@ public class Maze {
 	}
 
 	private void set(int col, int row, byte bit) {
-		content[col][row] |= 1 << bit;
+		content[col][row] |= (1 << bit);
 	}
 
 	private void unset(int col, int row, byte bit) {
@@ -94,8 +90,6 @@ public class Maze {
 	}
 
 	public Maze() {
-		content = new byte[numCols][numRows];
-
 		portalLeft = new Tile(-1, 17);
 		portalRight = new Tile(28, 17);
 
@@ -103,8 +97,8 @@ public class Maze {
 		ghostHouseDoorLeft = new Tile(13, 15);
 		ghostHouseDoorRight = new Tile(14, 15);
 
-		ghostHouseSeats = new Tile[] { new Tile(13, 14), new Tile(11, 17), new Tile(13, 17), new Tile(15, 17) };
-		ghostHouseSeatDirs = new Direction[] { Direction.LEFT, Direction.UP, Direction.DOWN, Direction.UP };
+		ghostHome = new Tile[] { new Tile(13, 14), new Tile(11, 17), new Tile(13, 17), new Tile(15, 17) };
+		ghostHomeDir = new Direction[] { Direction.LEFT, Direction.UP, Direction.DOWN, Direction.UP };
 
 		pacManHome = new Tile(13, 26);
 		bonusTile = new Tile(13, 20);
@@ -223,14 +217,14 @@ public class Maze {
 	}
 
 	public Vector2f seatPosition(int seat) {
-		return Vector2f.of(ghostHouseSeats[seat].centerX(), ghostHouseSeats[seat].y());
+		return Vector2f.of(ghostHome[seat].centerX(), ghostHome[seat].y());
 	}
 
 	public boolean isWall(Tile tile) {
 		if (tile.equals(portalLeft) || tile.equals(portalRight)) {
 			return false;
 		}
-		return !insideBoard(tile) || is(tile.col, tile.row, WALL);
+		return !insideBoard(tile) || is(tile, WALL);
 	}
 
 	public boolean isTunnel(Tile tile) {
