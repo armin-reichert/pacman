@@ -132,20 +132,15 @@ public class Maze {
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
 				char c = FLOORPLAN[row].charAt(col);
-				switch (c) {
-				case '#':
+				if (c == '#') {
 					set(col, row, WALL);
-					break;
-				case '.':
-				case 'e':
+				} else if (c == '.') {
 					set(col, row, FOOD);
-					if (c == 'e') {
-						set(col, row, ENERGIZER);
-					}
-					foodCount += 1;
-					break;
-				default:
-					break;
+					++foodCount;
+				} else if (c == 'e') {
+					set(col, row, FOOD);
+					set(col, row, ENERGIZER);
+					++foodCount;
 				}
 			}
 		}
