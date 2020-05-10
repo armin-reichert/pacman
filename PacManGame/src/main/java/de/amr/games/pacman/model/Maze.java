@@ -85,7 +85,11 @@ public class Maze {
 		content[col][row] |= (1 << bit);
 	}
 
-	private void unset(int col, int row, byte bit) {
+	private void clr(Tile tile, byte bit) {
+		clr(tile.col, tile.row, bit);
+	}
+	
+	private void clr(int col, int row, byte bit) {
 		content[col][row] &= ~(1 << bit);
 	}
 
@@ -244,13 +248,13 @@ public class Maze {
 
 	public void removeFood(Tile tile) {
 		if (is(tile, FOOD)) {
-			set(tile.col, tile.row, EATEN);
+			set(tile, EATEN);
 		}
 	}
 
 	public void restoreFood(Tile tile) {
-		if (is(tile, FOOD) && is(tile, EATEN)) {
-			unset(tile.col, tile.row, EATEN);
+		if (is(tile, FOOD)) {
+			clr(tile, EATEN);
 		}
 	}
 }
