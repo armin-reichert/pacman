@@ -59,7 +59,7 @@ public class Maze {
 
 	public final int numRows = 36;
 	public final int numCols = 28;
-	public final int totalFoodCount;
+	public final int totalFoodCount = 244;
 
 	public final Tile pacManHome;
 	public final Tile ghostHome[];
@@ -128,7 +128,6 @@ public class Maze {
 			set(tile, UPWARDS_BLOCKED);
 		}
 
-		int foodCount = 0;
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
 				char c = FLOORPLAN[row].charAt(col);
@@ -136,15 +135,12 @@ public class Maze {
 					set(col, row, WALL);
 				} else if (c == '.') {
 					set(col, row, FOOD);
-					++foodCount;
 				} else if (c == 'e') {
 					set(col, row, FOOD);
 					set(col, row, ENERGIZER);
-					++foodCount;
 				}
 			}
 		}
-		totalFoodCount = foodCount;
 	}
 
 	/**
