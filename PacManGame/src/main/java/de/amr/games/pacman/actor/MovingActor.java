@@ -15,6 +15,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.Timing;
 import de.amr.statemachine.api.FsmContainer;
 import de.amr.statemachine.core.StateMachine;
 
@@ -64,6 +65,7 @@ public abstract class MovingActor<S> extends Entity implements FsmContainer<S, P
 						.act(() -> teleport())
 			.endStateMachine();
 		//@formatter:on
+		setTeleportingDuration(Timing.sec(0.5f));
 		movement.getTracer().setLogger(PacManStateMachineLogging.LOG);
 	}
 

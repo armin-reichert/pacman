@@ -16,7 +16,6 @@ import static de.amr.games.pacman.model.Symbol.GRAPES;
 import static de.amr.games.pacman.model.Symbol.KEY;
 import static de.amr.games.pacman.model.Symbol.PEACH;
 import static de.amr.games.pacman.model.Symbol.STRAWBERRY;
-import static de.amr.games.pacman.model.Timing.sec;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -116,10 +115,8 @@ public class Game {
 		bonus = new Bonus(this);
 
 		pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
-		pacMan.setTeleportingDuration(sec(0.5f));
 
 		blinky.seat = 0;
-		blinky.setTeleportingDuration(sec(0.5f));
 		blinky.behavior(LOCKED, blinky.isHeadingFor(blinky::tile));
 		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(maze.seatPosition(2)));
 		blinky.behavior(LEAVING_HOUSE, blinky.isLeavingGhostHouse());
@@ -129,7 +126,6 @@ public class Game {
 		blinky.behavior(DEAD, blinky.isHeadingFor(() -> maze.ghostHouseEntry));
 
 		inky.seat = 1;
-		inky.setTeleportingDuration(sec(0.5f));
 		inky.behavior(LOCKED, inky.isJumpingUpAndDown(maze.seatPosition(1)));
 		inky.behavior(ENTERING_HOUSE, inky.isTakingSeat(maze.seatPosition(1)));
 		inky.behavior(LEAVING_HOUSE, inky.isLeavingGhostHouse());
@@ -142,7 +138,6 @@ public class Game {
 		inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostHouseEntry));
 
 		pinky.seat = 2;
-		pinky.setTeleportingDuration(sec(0.5f));
 		pinky.behavior(LOCKED, pinky.isJumpingUpAndDown(maze.seatPosition(2)));
 		pinky.behavior(ENTERING_HOUSE, pinky.isTakingSeat(maze.seatPosition(2)));
 		pinky.behavior(LEAVING_HOUSE, pinky.isLeavingGhostHouse());
@@ -152,7 +147,6 @@ public class Game {
 		pinky.behavior(DEAD, pinky.isHeadingFor(() -> maze.ghostHouseEntry));
 
 		clyde.seat = 3;
-		clyde.setTeleportingDuration(sec(0.5f));
 		clyde.behavior(LOCKED, clyde.isJumpingUpAndDown(maze.seatPosition(3)));
 		clyde.behavior(ENTERING_HOUSE, clyde.isTakingSeat(maze.seatPosition(3)));
 		clyde.behavior(LEAVING_HOUSE, clyde.isLeavingGhostHouse());
