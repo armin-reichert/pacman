@@ -216,6 +216,16 @@ public class Maze {
 		}
 	}
 
+	public void removeFood() {
+		for (int row = 0; row < numRows; ++row) {
+			for (int col = 0; col < numCols; ++col) {
+				if (is(row, col, FOOD)) {
+					set(row, col, EATEN, true);
+				}
+			}
+		}
+	}
+	
 	public void restoreFood() {
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {

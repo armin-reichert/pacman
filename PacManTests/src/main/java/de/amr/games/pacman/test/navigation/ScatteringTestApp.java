@@ -50,7 +50,7 @@ class ScatteringTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game.maze.tiles().forEach(game.maze::removeFood);
+		game.maze.removeFood();
 		game.ghosts().forEach(ghost -> {
 			game.stage.add(ghost);
 			ghost.followState = SCATTERING;

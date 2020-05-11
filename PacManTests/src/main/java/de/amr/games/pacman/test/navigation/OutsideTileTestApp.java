@@ -47,7 +47,7 @@ class OutsideTileTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game.maze.tiles().forEach(game.maze::removeFood);
+		game.maze.removeFood();
 		theme.snd_ghost_chase().volume(0);
 		game.stage.add(game.blinky);
 		game.blinky.behavior(CHASING, game.blinky.isHeadingFor(() -> new Tile(100, game.maze.portalRight.row)));

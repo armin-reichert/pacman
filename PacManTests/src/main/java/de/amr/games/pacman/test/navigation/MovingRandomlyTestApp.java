@@ -51,7 +51,7 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game.maze.tiles().forEach(game.maze::removeFood);
+		game.maze.removeFood();
 		game.ghosts().forEach(ghost -> {
 			game.stage.add(ghost);
 			ghost.tf.setPosition(game.maze.pacManHome.centerX(), game.maze.pacManHome.y());
