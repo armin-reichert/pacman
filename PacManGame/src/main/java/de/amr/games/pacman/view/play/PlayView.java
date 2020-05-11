@@ -278,7 +278,7 @@ public class PlayView extends SimplePlayView {
 			for (int col = 0; col < game.maze.numCols; ++col) {
 				Tile tile = new Tile(col, row);
 				if (game.maze.isUpwardsBlocked(tile)) {
-					Tile above = game.maze.tileToDir(tile, Direction.UP);
+					Tile above = game.maze.neighbor(tile, Direction.UP);
 					drawArrowHead(g, Direction.DOWN, above.centerX(), above.y() - 2);
 				}
 			}

@@ -156,7 +156,7 @@ public abstract class MovingActor<S> extends Entity implements FsmContainer<S, P
 
 	@Override
 	public boolean canCrossBorderTo(Direction dir) {
-		Tile currentTile = tile(), neighbor = maze().tileToDir(currentTile, dir);
+		Tile currentTile = tile(), neighbor = maze().neighbor(currentTile, dir);
 		return canMoveBetween(currentTile, neighbor);
 	}
 

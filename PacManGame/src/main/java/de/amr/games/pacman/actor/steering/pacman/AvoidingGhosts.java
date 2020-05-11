@@ -46,8 +46,8 @@ public class AvoidingGhosts implements Steering {
 	private Comparator<Direction> byLargestDistanceOfNeighborTile(PacMan pacMan, MazeMover ghost) {
 		Tile pacManTile = pacMan.tile(), ghostTile = ghost.tile();
 		return (dir1, dir2) -> {
-			Tile neighborTile1 = pacMan.maze().tileToDir(pacManTile, dir1),
-					neighborTile2 = pacMan.maze().tileToDir(pacManTile, dir2);
+			Tile neighborTile1 = pacMan.maze().neighbor(pacManTile, dir1),
+					neighborTile2 = pacMan.maze().neighbor(pacManTile, dir2);
 			return -Integer.compare(neighborTile1.distSq(ghostTile), neighborTile2.distSq(ghostTile));
 		};
 	}

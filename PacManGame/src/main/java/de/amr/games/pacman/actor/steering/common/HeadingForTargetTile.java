@@ -102,7 +102,7 @@ public class HeadingForTargetTile implements Steering {
 	 * actor at each tile of the path.
 	 */
 	private Direction dirToTarget(Direction moveDir, Tile currentTile, Tile targetTile) {
-		Function<Direction, Tile> neighbor = dir -> actor.maze().tileToDir(currentTile, dir);
+		Function<Direction, Tile> neighbor = dir -> actor.maze().neighbor(currentTile, dir);
 		Function<Direction, Integer> neighborDistToTarget = dir -> neighbor.apply(dir).distSq(targetTile);
 		/*@formatter:off*/
 		return UP_LEFT_DOWN_RIGHT
@@ -131,7 +131,7 @@ public class HeadingForTargetTile implements Steering {
 		path.add(currentTile);
 		while (!currentTile.equals(targetTile)) {
 			Direction dir = dirToTarget(currentDir, currentTile, targetTile);
-			Tile nextTile = maze.tileToDir(currentTile, dir);
+			Tile nextTile = maze.neighbor(currentTile, dir);
 			if (!maze.insideBoard(nextTile) || path.contains(nextTile)) {
 				break;
 			}

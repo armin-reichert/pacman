@@ -150,7 +150,7 @@ public class Maze {
 	 * @return neighbor towards the given direction. This can be a tile outside of
 	 *         the board!
 	 */
-	public Tile tileToDir(Tile tile, Direction dir) {
+	public Tile neighbor(Tile tile, Direction dir) {
 		return tileToDir(tile, dir, 1);
 	}
 
@@ -176,7 +176,7 @@ public class Maze {
 	}
 
 	public boolean atGhostHouseDoor(Tile tile) {
-		return isDoor(tileToDir(tile, Direction.DOWN));
+		return isDoor(neighbor(tile, Direction.DOWN));
 	}
 
 	public Vector2f seatPosition(int seat) {
