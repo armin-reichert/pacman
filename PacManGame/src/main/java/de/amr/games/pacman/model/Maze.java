@@ -84,10 +84,6 @@ public class Maze {
 		return (content[row][col] & (1 << bit)) != 0;
 	}
 
-	private void set(Tile t, byte bit, boolean value) {
-		set(t.row, t.col, bit, value);
-	}
-
 	private void set(int row, int col, byte bit, boolean value) {
 		if (value) {
 			content[row][col] |= (1 << bit);
@@ -216,7 +212,7 @@ public class Maze {
 
 	public void removeFood(Tile tile) {
 		if (is(tile, FOOD)) {
-			set(tile, EATEN, true);
+			set(tile.row, tile.col, EATEN, true);
 		}
 	}
 
