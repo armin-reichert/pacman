@@ -1,6 +1,5 @@
 package de.amr.games.pacman.model;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -14,7 +13,10 @@ import de.amr.easy.game.math.Vector2f;
  */
 public class Maze {
 
-	static final byte[][] FLOORPLAN = {
+	// bits
+	static final byte WALL = 0, FOOD = 1, ENERGIZER = 2, EATEN = 3, INTERSECTION = 4, UPWARDS_BLOCKED = 5;
+
+	final byte[][] content = {
 		//@formatter:off
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
@@ -55,9 +57,6 @@ public class Maze {
 		//@formatter:on
 	};
 
-	// bits
-	static final byte WALL = 0, FOOD = 1, ENERGIZER = 2, EATEN = 3, INTERSECTION = 4, UPWARDS_BLOCKED = 5;
-
 	public final int numRows = 36;
 	public final int numCols = 28;
 	public final int totalFoodCount = 244;
@@ -71,8 +70,6 @@ public class Maze {
 	public final Tile cornerNW, cornerNE, cornerSW, cornerSE;
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
-
-	private final byte[][] content = Arrays.copyOf(FLOORPLAN, FLOORPLAN.length);
 
 	private boolean is(Tile t, byte bit) {
 		return insideBoard(t) && (content[t.row][t.col] & (1 << bit)) != 0;
