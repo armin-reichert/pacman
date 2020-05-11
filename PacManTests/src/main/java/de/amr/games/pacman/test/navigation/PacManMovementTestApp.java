@@ -61,7 +61,7 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 				game.maze.removeFood(foodFound.tile);
 				game.level.eatenFoodCount++;
 				if (game.remainingFoodCount() == 0) {
-					game.maze.tiles().forEach(game.maze::restoreFood);
+					game.maze.restoreFood();
 					game.level.eatenFoodCount = 0;
 				}
 			}

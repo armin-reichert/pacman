@@ -184,7 +184,7 @@ public class Game {
 			levelCounter.removeLast();
 		}
 		levelCounter.addFirst(level.bonusSymbol);
-		maze.tiles().forEach(maze::restoreFood);
+		maze.restoreFood();
 		hiscore.save();
 	}
 

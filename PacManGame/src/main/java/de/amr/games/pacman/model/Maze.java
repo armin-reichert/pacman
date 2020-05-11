@@ -72,15 +72,23 @@ public class Maze {
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
 
 	private boolean is(Tile t, byte bit) {
-		return insideBoard(t) && (content[t.row][t.col] & (1 << bit)) != 0;
+		return insideBoard(t) && is(t.row, t.col, bit);
 	}
 
-	private void set(Tile t, byte bit) {
-		content[t.row][t.col] |= (1 << bit);
+	private boolean is(int row, int col, byte bit) {
+		return (content[row][col] & (1 << bit)) != 0;
 	}
 
-	private void clr(Tile t, byte bit) {
-		content[t.row][t.col] &= ~(1 << bit);
+	private void set(Tile t, byte bit, boolean value) {
+		set(t.row, t.col, bit, value);
+	}
+
+	private void set(int row, int col, byte bit, boolean value) {
+		if (value) {
+			content[row][col] |= (1 << bit);
+		} else {
+			content[row][col] &= ~(1 << bit);
+		}
 	}
 
 	public Maze() {
@@ -203,13 +211,17 @@ public class Maze {
 
 	public void removeFood(Tile tile) {
 		if (is(tile, FOOD)) {
-			set(tile, EATEN);
+			set(tile, EATEN, true);
 		}
 	}
 
-	public void restoreFood(Tile tile) {
-		if (is(tile, FOOD)) {
-			clr(tile, EATEN);
+	public void restoreFood() {
+		for (int row = 0; row < numRows; ++row) {
+			for (int col = 0; col < numCols; ++col) {
+				if (is(row, col, FOOD)) {
+					set(row, col, EATEN, false);
+				}
+			}
 		}
 	}
 }
