@@ -1,6 +1,8 @@
 package de.amr.games.pacman.model;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -71,6 +73,9 @@ public class Maze {
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
 
+	private final List<Tile> boardTiles = IntStream.range(0, numRows * numCols)
+			.mapToObj(i -> new Tile(i % numCols, i / numCols)).collect(Collectors.toList());
+
 	private boolean is(Tile t, byte bit) {
 		return insideBoard(t) && is(t.row, t.col, bit);
 	}
@@ -122,7 +127,7 @@ public class Maze {
 	 * @return stream of tiles inside the board (no portal tiles)
 	 */
 	public Stream<Tile> tiles() {
-		return IntStream.range(0, numRows * numCols).mapToObj(i -> new Tile(i % numCols, i / numCols));
+		return boardTiles.stream();
 	}
 
 	/**
