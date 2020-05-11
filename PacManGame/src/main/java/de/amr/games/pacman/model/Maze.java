@@ -18,7 +18,7 @@ public class Maze {
 	// bits
 	static final byte WALL = 0, FOOD = 1, ENERGIZER = 2, EATEN = 3, INTERSECTION = 4, UPWARDS_BLOCKED = 5;
 
-	final byte[][] content = {
+	byte[][] content = {
 		//@formatter:off
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
@@ -73,8 +73,10 @@ public class Maze {
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
 
-	private final List<Tile> boardTiles = IntStream.range(0, numRows * numCols)
-			.mapToObj(i -> new Tile(i % numCols, i / numCols)).collect(Collectors.toList());
+	private final List<Tile> playingAreaTiles = IntStream.range(0, numRows * numCols).filter(i -> {
+		int row = i / numCols;
+		return row >= 4 && row <= 32;
+	}).mapToObj(i -> new Tile(i % numCols, i / numCols)).collect(Collectors.toList());
 
 	private boolean is(Tile t, byte bit) {
 		return insideBoard(t) && is(t.row, t.col, bit);
@@ -120,10 +122,11 @@ public class Maze {
 	}
 
 	/**
-	 * @return stream of tiles inside the board (no portal tiles)
+	 * @return stream of tiles of the playing area (walls above and below playing
+	 *         area and portal tiles are omitted)
 	 */
-	public Stream<Tile> tiles() {
-		return boardTiles.stream();
+	public Stream<Tile> playingArea() {
+		return playingAreaTiles.stream();
 	}
 
 	/**
@@ -225,7 +228,7 @@ public class Maze {
 			}
 		}
 	}
-	
+
 	public void restoreFood() {
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
