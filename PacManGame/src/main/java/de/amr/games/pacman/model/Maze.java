@@ -193,16 +193,12 @@ public class Maze {
 		return is(tile, FOOD) && !is(tile, EATEN) && !is(tile, ENERGIZER);
 	}
 
-	public boolean isEatenSimplePellet(Tile tile) {
-		return is(tile, FOOD) && is(tile, EATEN) && !is(tile, ENERGIZER);
-	}
-
 	public boolean isEnergizer(Tile tile) {
 		return is(tile, ENERGIZER) && !is(tile, EATEN);
 	}
 
-	public boolean isEatenEnergizer(Tile tile) {
-		return is(tile, ENERGIZER) && is(tile, EATEN);
+	public boolean isEatenFood(Tile tile) {
+		return is(tile, FOOD) && is(tile, EATEN);
 	}
 
 	public void removeFood(Tile tile) {
