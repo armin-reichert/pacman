@@ -163,11 +163,7 @@ public class Maze {
 	}
 
 	public boolean insideGhostHouse(Tile tile) {
-		return partOfGhostHouse(tile) && !isWall(tile);
-	}
-
-	public boolean partOfGhostHouse(Tile tile) {
-		return 15 <= tile.row && tile.row <= 19 && 10 <= tile.col && tile.col <= 17;
+		return isDoor(tile) || 16 <= tile.row && tile.row <= 18 && 11 <= tile.col && tile.col <= 16;
 	}
 
 	public boolean atGhostHouseDoor(Tile tile) {
