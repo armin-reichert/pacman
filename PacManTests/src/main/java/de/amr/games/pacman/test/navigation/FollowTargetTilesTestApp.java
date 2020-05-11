@@ -74,7 +74,7 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 
 	@Override
 	public void update() {
-		if (game.blinky.tile() == targets.get(current)) {
+		if (game.blinky.tile().equals(targets.get(current))) {
 			current += 1;
 			if (current == targets.size()) {
 				current = 0;
