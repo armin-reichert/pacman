@@ -125,14 +125,14 @@ public class SimplePlayView extends PacManGameView {
 
 	protected void drawCrowdedMaze(Graphics2D g) {
 		spriteMazeFull.draw(g, 0, 3 * Tile.SIZE);
-		game.maze.tiles().filter(tile -> game.maze.isEatenSimplePellet(tile) || game.maze.isEatenEnergizer(tile))
-				.forEach(tile -> {
-					g.setColor(bgColor(tile));
-					g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
-				});
+		// hide eaten food
+		game.maze.tiles().filter(game.maze::isEatenFood).forEach(tile -> {
+			g.setColor(bgColor(tile));
+			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
+		});
 		// hide active energizers when blinking animation is in dark phase
 		if (energizerBlinking.currentFrame() == 1) {
-			game.maze.tiles().filter(tile -> game.maze.isEnergizer(tile)).forEach(tile -> {
+			game.maze.tiles().filter(game.maze::isEnergizer).forEach(tile -> {
 				g.setColor(bgColor(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
