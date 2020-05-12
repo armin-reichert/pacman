@@ -40,22 +40,18 @@ public class BoardPreview extends JFrame {
 		setVisible(true);
 	}
 
-	private Tile tile(int cell) {
-		return new Tile(graph.grid.col(cell), graph.grid.row(cell));
-	}
-
 	private GridRenderer createRenderer() {
 		ConfigurableGridRenderer r = new WallPassageGridRenderer();
 		r.fnCellSize = () -> TS;
 		r.fnPassageWidth = (u, v) -> TS - 1;
 		r.fnPassageColor = (cell, dir) -> Color.WHITE;
 		r.fnCellBgColor = cell -> {
-			Tile tile = tile(cell);
+			Tile tile = graph.tile(cell);
 			if (maze.isWall(tile)) {
-				return Color.BLACK;
+				return Color.LIGHT_GRAY;
 			}
 			if (maze.isTunnel(tile)) {
-				return Color.LIGHT_GRAY;
+				return Color.GRAY;
 			}
 			if (maze.insideGhostHouse(tile)) {
 				return Color.CYAN;
@@ -72,13 +68,13 @@ public class BoardPreview extends JFrame {
 			return Color.WHITE;
 		};
 		r.fnText = this::text;
-		r.fnTextColor = cell -> Color.RED;
-		r.fnTextFont = cell -> new Font("Arial Bold", Font.BOLD, TS * 70 / 100);
+		r.fnTextColor = cell -> Color.BLUE;
+		r.fnTextFont = cell -> new Font("Arial Bold", Font.BOLD, TS * 75 / 100);
 		return r;
 	}
 
 	private String text(int cell) {
-		Tile tile = tile(cell);
+		Tile tile = graph.tile(cell);
 		if (tile.equals(maze.ghostHome[0]) || tile.equals(maze.horizonNE)) {
 			return "B";
 		}
@@ -100,14 +96,11 @@ public class BoardPreview extends JFrame {
 		if (maze.isWall(tile)) {
 			return "";
 		}
-		if (maze.isTunnel(tile)) {
-			return "T";
-		}
 		if (maze.isSimplePellet(tile)) {
-			return ".";
+			return "o";
 		}
 		if (maze.isEnergizer(tile)) {
-			return "E";
+			return "O";
 		}
 		return " ";
 	}
