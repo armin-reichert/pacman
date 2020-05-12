@@ -260,19 +260,20 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	}
 
 	private void step(String spriteKey) {
-		if (isTeleporting()) {
-			move();
-		} else {
-			if (prevSteering != steering()) {
-				steering().init();
-				steering().force();
-				loginfo("%s steering changed from %s to %s", this, name(prevSteering), name(steering()));
-				prevSteering = steering();
-			}
-			steering().steer();
-			move();
-			sprites.select(spriteKey);
+		Steering currentSteering = steering();
+		if (prevSteering != currentSteering) {
+			loginfo("%s steering changed from %s to %s", this, steeringName(prevSteering), steeringName(currentSteering));
+			currentSteering.init();
+			currentSteering.force();
+			prevSteering = currentSteering;
 		}
+		currentSteering.steer();
+		move();
+		sprites.select(spriteKey);
+	}
+
+	private String steeringName(Steering steering) {
+		return steering != null ? steering.getClass().getSimpleName() : "no steering";
 	}
 
 	private void forceMoving(Direction dir) {
@@ -284,15 +285,11 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		forceMoving(moveDir().opposite());
 	}
 
-	private String name(Steering steering) {
-		return steering != null ? steering.getClass().getSimpleName() : "no steering";
-	}
-
 	private void checkPacManCollision() {
-		if (isTeleporting() || game.pacMan.isTeleporting()) {
+		if (isTeleporting() || game.pacMan.isTeleporting() || game.pacMan.is(PacManState.DEAD)) {
 			return;
 		}
-		if (tile().equals(game.pacMan.tile()) && game.pacMan.is(PacManState.EATING)) {
+		if (tile().equals(game.pacMan.tile())) {
 			publish(new PacManGhostCollisionEvent(this, tile()));
 		}
 	}
