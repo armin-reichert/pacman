@@ -205,7 +205,7 @@ The processing of all used state machines can be traced. If a state machine proc
 find a suitable state transition, a runtime exception is thrown by default. This is very useful for finding 
 gaps in the state machine definition in the development stage. Afterwards, this behavior can be changed so
 that only a message is logged for unhandled events. This avoids the need for specifying "empty" transitions
-for any event that has no effect in the current state. The Ghost's state machine makes use of that feature.
+for any event that has no effect in the current state.
 
 ## Pac-Man steering
 
