@@ -115,8 +115,8 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 	}
 
 	@Override
-	public float speed() {
-		switch (getState()) {
+	public float speed(Tile tile, PacManState state) {
+		switch (state) {
 		case SLEEPING:
 			return 0;
 		case EATING:
@@ -124,7 +124,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 		case DEAD:
 			return 0;
 		default:
-			throw new IllegalStateException("Illegal Pac-Man state: " + getState());
+			throw new IllegalStateException("Illegal Pac-Man state: " + state);
 		}
 	}
 

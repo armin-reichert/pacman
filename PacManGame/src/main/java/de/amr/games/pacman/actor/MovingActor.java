@@ -107,10 +107,11 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 	}
 
 	/**
-	 * @return the actor's speed in pixels/tick depending on the actor state, maze
-	 *         position etc.
+	 * @param tile in the maze
+	 * @parm state actor state
+	 * @return the actor's speed at this tile in this state (in pixels/tick)
 	 */
-	public abstract float speed();
+	public abstract float speed(Tile tile, STATE state);
 
 	@Override
 	public Maze maze() {
@@ -224,7 +225,7 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 	 * without crossing the border to a forbidden neighbor tile.
 	 */
 	private float possibleMoveDistance(Tile currentTile, Direction dir) {
-		float dist = speed();
+		float dist = speed(currentTile, getState());
 		if (canCrossBorderTo(dir)) {
 			return dist;
 		}

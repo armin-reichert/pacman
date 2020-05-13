@@ -200,10 +200,10 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	}
 
 	@Override
-	public float speed() {
-		switch (getState()) {
+	public float speed(Tile tile, GhostState state) {
+		switch (state) {
 		case LOCKED:
-			return maze().insideGhostHouse(tile()) ? relSpeed(game.level.ghostSpeed) / 2 : 0;
+			return maze().insideGhostHouse(tile) ? relSpeed(game.level.ghostSpeed) / 2 : 0;
 		case LEAVING_HOUSE:
 			return relSpeed(game.level.ghostSpeed) / 2;
 		case ENTERING_HOUSE:
@@ -211,14 +211,13 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		case CHASING:
 			//$FALL-THROUGH$
 		case SCATTERING:
-			return maze().isTunnel(tile()) ? relSpeed(game.level.ghostTunnelSpeed) : relSpeed(game.level.ghostSpeed);
+			return maze().isTunnel(tile) ? relSpeed(game.level.ghostTunnelSpeed) : relSpeed(game.level.ghostSpeed);
 		case FRIGHTENED:
-			return maze().isTunnel(tile()) ? relSpeed(game.level.ghostTunnelSpeed)
-					: relSpeed(game.level.ghostFrightenedSpeed);
+			return maze().isTunnel(tile) ? relSpeed(game.level.ghostTunnelSpeed) : relSpeed(game.level.ghostFrightenedSpeed);
 		case DEAD:
 			return 2 * relSpeed(game.level.ghostSpeed);
 		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", getState(), name));
+			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", state, name));
 		}
 	}
 
