@@ -71,11 +71,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private GhostCommand ghostCommand;
 	private GhostHouse ghostHouse;
 
-	private boolean showFrameRate;
-	private boolean showRoutes;
-	private boolean showStates;
-	private boolean showGrid;
-
 	public GameController(Theme theme) {
 		super(PacManGameState.class);
 		this.theme = theme;
@@ -111,10 +106,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		playView = new PlayView(game, theme);
 		playView.fnGhostCommandState = ghostCommand::state;
 		playView.house = ghostHouse;
-		playView.showFPS = () -> showFrameRate;
-		playView.showGrid = () -> showGrid;
-		playView.showRoutes = () -> showRoutes;
-		playView.showStates = () -> showStates;
 	}
 
 	public void onExit() {
@@ -167,7 +158,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			} else if (Keyboard.keyPressedOnce("f")) {
 				toggleGhostFrightenedBehavior();
 			} else if (Keyboard.keyPressedOnce("g")) {
-				showGrid = !showGrid;
+				playView.showGrid = !playView.showGrid;
 			} else if (Keyboard.keyPressedOnce("i")) {
 				toggleGhostOnStage(game.inky);
 			} else if (Keyboard.keyPressedOnce("k")) {
@@ -181,11 +172,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			} else if (Keyboard.keyPressedOnce("p")) {
 				toggleGhostOnStage(game.pinky);
 			} else if (Keyboard.keyPressedOnce("s")) {
-				showStates = !showStates;
+				playView.showStates = !playView.showStates;
 			} else if (Keyboard.keyPressedOnce("t")) {
-				showFrameRate = !showFrameRate;
+				playView.showFrameRate = !playView.showFrameRate;
 			} else if (Keyboard.keyPressedOnce("r")) {
-				showRoutes = !showRoutes;
+				playView.showRoutes = !playView.showRoutes;
 			} else if (Keyboard.keyPressedOnce("+")) {
 				switchToNextLevel();
 			}

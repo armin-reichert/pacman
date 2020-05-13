@@ -5,7 +5,6 @@ import static de.amr.games.pacman.actor.GhostState.DEAD;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.util.function.BooleanSupplier;
 
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
@@ -36,7 +35,7 @@ public class SimplePlayView extends PacManGameView {
 	protected Sprite spriteMazeFull;
 	protected Sprite spriteMazeFlashing;
 
-	public BooleanSupplier showScores = () -> true;
+	public boolean showScores = true;
 
 	public SimplePlayView(Game game, Theme theme) {
 		super(game, theme);
@@ -161,7 +160,7 @@ public class SimplePlayView extends PacManGameView {
 	}
 
 	protected void drawScores(Graphics2D g) {
-		if (!showScores.getAsBoolean()) {
+		if (!showScores) {
 			return;
 		}
 		try (Pen pen = new Pen(g)) {

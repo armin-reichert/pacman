@@ -41,10 +41,10 @@ class FollowMouseTestUI extends PlayView implements VisualController {
 
 	public FollowMouseTestUI(Game game, Theme theme) {
 		super(game, theme);
-		showRoutes = () -> true;
-		showStates = () -> false;
-		showScores = () -> false;
-		showGrid = () -> true;
+		showRoutes = true;
+		showStates = false;
+		showScores = false;
+		showGrid = true;
 	}
 
 	@Override

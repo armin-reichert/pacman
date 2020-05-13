@@ -41,10 +41,10 @@ class ScatteringTestUI extends PlayView implements VisualController {
 
 	public ScatteringTestUI(Game game, Theme theme) {
 		super(game, theme);
-		showRoutes = () -> true;
-		showStates = () -> false;
-		showScores = () -> false;
-		showGrid = () -> false;
+		showRoutes = true;
+		showStates = false;
+		showScores = false;
+		showGrid = false;
 	}
 
 	@Override

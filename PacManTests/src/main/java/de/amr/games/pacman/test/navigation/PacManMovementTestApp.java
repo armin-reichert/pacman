@@ -45,10 +45,10 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 	public PacManMovementTestUI(Game game, Theme theme) {
 		super(game, theme);
 		pacMan = game.pacMan;
-		showRoutes = () -> false;
-		showStates = () -> false;
-		showScores = () -> false;
-		showGrid = () -> true;
+		showRoutes = false;
+		showStates = false;
+		showScores = false;
+		showGrid = true;
 	}
 
 	@Override

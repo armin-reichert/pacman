@@ -42,10 +42,10 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 
 	public MovingRandomlyTestUI(Game game, Theme theme) {
 		super(game, theme);
-		showRoutes = () -> true;
-		showStates = () -> true;
-		showScores = () -> false;
-		showGrid = () -> true;
+		showRoutes = true;
+		showStates = true;
+		showScores = false;
+		showGrid = true;
 	}
 
 	@Override

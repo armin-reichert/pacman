@@ -43,10 +43,10 @@ class InkyChaseTestUI extends PlayView implements VisualController {
 
 	public InkyChaseTestUI(Game game, Theme theme) {
 		super(game, theme);
-		showRoutes = () -> true;
-		showStates = () -> false;
-		showScores = () -> false;
-		showGrid = () -> false;
+		showRoutes = true;
+		showStates = false;
+		showScores = false;
+		showGrid = false;
 	}
 
 	@Override

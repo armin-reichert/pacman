@@ -42,10 +42,10 @@ class LeaveGhostHouseTestUI extends PlayView implements VisualController {
 
 	public LeaveGhostHouseTestUI(Game game, Theme theme) {
 		super(game, theme);
-		showRoutes = () -> true;
-		showStates = () -> true;
-		showScores = () -> false;
-		showGrid = () -> true;
+		showRoutes = true;
+		showStates = true;
+		showScores = false;
+		showGrid = true;
 	}
 
 	@Override

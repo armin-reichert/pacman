@@ -25,7 +25,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
@@ -63,10 +62,10 @@ public class PlayView extends SimplePlayView {
 	public Supplier<State<GhostState>> fnGhostCommandState = () -> null;
 	public GhostHouse house; // (optional)
 
-	public BooleanSupplier showFPS = () -> false;
-	public BooleanSupplier showRoutes = () -> false;
-	public BooleanSupplier showGrid = () -> false;
-	public BooleanSupplier showStates = () -> false;
+	public boolean showFrameRate = false;
+	public boolean showRoutes = false;
+	public boolean showGrid = false;
+	public boolean showStates = false;
 
 	private FPSDisplay fps;
 	private final BufferedImage gridImage, inkyImage, clydeImage, pacManImage;
@@ -85,7 +84,7 @@ public class PlayView extends SimplePlayView {
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (showGrid.getAsBoolean()) {
+		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
 		} else {
 			fillBackground(g, theme.color_mazeBackground());
@@ -94,19 +93,19 @@ public class PlayView extends SimplePlayView {
 		drawFPS(g);
 		drawPlayMode(g);
 		drawMessage(g);
-		if (showGrid.getAsBoolean()) {
+		if (showGrid) {
 			drawUpwardsBlockedTileMarkers(g);
 			drawSeats(g);
 		}
 		drawScores(g);
-		if (showRoutes.getAsBoolean()) {
+		if (showRoutes) {
 			drawRoutes(g);
 		}
 		drawActors(g);
-		if (showGrid.getAsBoolean()) {
+		if (showGrid) {
 			drawActorAlignments(g);
 		}
-		if (showStates.getAsBoolean()) {
+		if (showStates) {
 			drawActorStates(g);
 			drawGhostHouseState(g);
 		}
@@ -137,7 +136,7 @@ public class PlayView extends SimplePlayView {
 
 	@Override
 	protected Color bgColor(Tile tile) {
-		return showGrid.getAsBoolean() ? bgColor(tile.col, tile.row) : super.bgColor(tile);
+		return showGrid ? bgColor(tile.col, tile.row) : super.bgColor(tile);
 	}
 
 	private Color color(Ghost ghost) {
@@ -170,7 +169,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawFPS(Graphics2D g) {
-		if (showFPS.getAsBoolean()) {
+		if (showFrameRate) {
 			fps.draw(g);
 		}
 	}
@@ -316,10 +315,9 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawRoutes(Graphics2D g2) {
-		boolean show = showRoutes.getAsBoolean();
 		game.ghosts().forEach(ghost -> {
 			Arrays.asList(GhostState.values()).forEach(state -> {
-				ghost.steering(state).enableTargetPathComputation(show);
+				ghost.steering(state).enableTargetPathComputation(showRoutes);
 			});
 		});
 		Graphics2D g = (Graphics2D) g2.create();
