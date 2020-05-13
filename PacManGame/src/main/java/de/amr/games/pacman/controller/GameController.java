@@ -116,16 +116,15 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	@Override
 	public void update() {
-		handleGlobalKeyInput();
-		handleViewSpecificKeyInput();
-		if (eventQ().size() >= 2) {
-			PacManStateMachineLogging.LOG.warning("Event queue contains more than one element");
-		}
+		handleInput();
 		super.update();
 		currentView.update();
+		if (!eventQ().isEmpty()) {
+			PacManStateMachineLogging.LOG.warning("Event queue not empty after update");
+		}
 	}
 
-	private void handleGlobalKeyInput() {
+	private void handleInput() {
 		if (Keyboard.keyPressedOnce("1") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
 			changeClockFrequency(Game.SPEED_1_FPS);
 		} else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
@@ -139,9 +138,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			int oldFreq = app().clock().getTargetFramerate();
 			changeClockFrequency(oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
 		}
-	}
-
-	private void handleViewSpecificKeyInput() {
 		if (currentView == introView) {
 			if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
 				introView.setState(READY_TO_PLAY); // shortcut for skipping intro
