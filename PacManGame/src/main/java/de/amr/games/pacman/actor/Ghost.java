@@ -15,10 +15,8 @@ import static de.amr.games.pacman.model.Timing.relSpeed;
 import static de.amr.games.pacman.model.Timing.sec;
 
 import java.util.EnumMap;
-import java.util.Map;
 
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.actor.steering.ghost.SteeredGhost;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
@@ -29,7 +27,6 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
@@ -44,15 +41,13 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 
-	public SpriteMap sprites = new SpriteMap();
-	public GhostState followState;
 	public int seat;
+	public GhostState followState;
 	private Steering prevSteering;
-	private Fsm<GhostState, PacManGameEvent> brain;
-	private Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
 
 	public Ghost(Game game, String name) {
 		super(game, name);
+		steerings = new EnumMap<>(GhostState.class);
 		/*@formatter:off*/
 		brain = StateMachine.beginStateMachine(GhostState.class, PacManGameEvent.class)
 			 
@@ -191,33 +186,6 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		/*@formatter:on*/
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOG);
-	}
-
-	@Override
-	public Fsm<GhostState, PacManGameEvent> fsm() {
-		return brain;
-	}
-
-	@Override
-	public void init() {
-		super.init();
-		brain.init();
-	}
-
-	public void behavior(GhostState state, Steering steering) {
-		steerings.put(state, steering);
-	}
-
-	public Steering steering(GhostState state) {
-		if (steerings.containsKey(state)) {
-			return steerings.get(state);
-		}
-		throw new IllegalArgumentException(String.format("%s: No steering found for state %s", this, state));
-	}
-
-	@Override
-	public Steering steering() {
-		return steering(getState());
 	}
 
 	@Override

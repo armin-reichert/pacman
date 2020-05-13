@@ -12,10 +12,10 @@ import static de.amr.games.pacman.model.Game.DIGEST_ENERGIZER_TICKS;
 import static de.amr.games.pacman.model.Game.DIGEST_PELLET_TICKS;
 import static de.amr.games.pacman.model.Timing.relSpeed;
 
+import java.util.EnumMap;
 import java.util.Optional;
 
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.PacManAppSettings;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.actor.steering.common.SteeredMazeMover;
@@ -27,7 +27,6 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
@@ -38,14 +37,12 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover {
 
-	public final SpriteMap sprites = new SpriteMap();
 	public int powerTicks;
-	private int digestionTicks;
-	private final Fsm<PacManState, PacManGameEvent> brain;
-	private Steering steering;
+	public int digestionTicks;
 
 	public PacMan(Game game) {
 		super(game, "Pac-Man");
+		steerings = new EnumMap<>(PacManState.class);
 		/*@formatter:off*/
 		brain = StateMachine.beginStateMachine(PacManState.class, PacManGameEvent.class)
 
@@ -106,47 +103,15 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 		brain.doNotLogEventPublishingIf(PacManGameEvent::isTrivial);
 	}
 
-	@Override
-	public void init() {
-		super.init();
-		brain.init();
-	}
-
-	@Override
-	public Fsm<PacManState, PacManGameEvent> fsm() {
-		return brain;
-	}
-
-	private void move() {
-		steering.steer();
-		movement.update();
-		sprites.select("walking-" + moveDir());
-		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
-	}
-
-	private Optional<PacManGameEvent> findSomethingInteresting() {
-		Tile tile = tile();
-		if (tile.equals(maze().bonusTile) && game.bonus.is(ACTIVE)) {
-			return Optional.of(new BonusFoundEvent(game.bonus.symbol(), game.bonus.value()));
-		}
-		if (maze().isEnergizer(tile)) {
-			digestionTicks = DIGEST_ENERGIZER_TICKS;
-			return Optional.of(new FoodFoundEvent(tile));
-		}
-		if (maze().isSimplePellet(tile)) {
-			digestionTicks = DIGEST_PELLET_TICKS;
-			return Optional.of(new FoodFoundEvent(tile));
-		}
-		return Optional.empty();
-	}
-
-	@Override
-	public Steering steering() {
-		return steering;
-	}
-
+	/**
+	 * Defines the steering used in every state.
+	 * 
+	 * @param steering steering to use in every state
+	 */
 	public void behavior(Steering steering) {
-		this.steering = steering;
+		for (PacManState state : PacManState.values()) {
+			behavior(state, steering);
+		}
 	}
 
 	@Override
@@ -161,6 +126,14 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 		default:
 			throw new IllegalStateException("Illegal Pac-Man state: " + getState());
 		}
+	}
+
+	@Override
+	public boolean canMoveBetween(Tile tile, Tile neighbor) {
+		if (maze().isDoor(neighbor)) {
+			return false;
+		}
+		return super.canMoveBetween(tile, neighbor);
 	}
 
 	/**
@@ -181,11 +154,26 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 		return tileAhead;
 	}
 
-	@Override
-	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (maze().isDoor(neighbor)) {
-			return false;
+	private void move() {
+		steering().steer();
+		movement.update();
+		sprites.select("walking-" + moveDir());
+		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
+	}
+
+	private Optional<PacManGameEvent> findSomethingInteresting() {
+		Tile tile = tile();
+		if (tile.equals(maze().bonusTile) && game.bonus.is(ACTIVE)) {
+			return Optional.of(new BonusFoundEvent(game.bonus.symbol(), game.bonus.value()));
 		}
-		return super.canMoveBetween(tile, neighbor);
+		if (maze().isEnergizer(tile)) {
+			digestionTicks = DIGEST_ENERGIZER_TICKS;
+			return Optional.of(new FoodFoundEvent(tile));
+		}
+		if (maze().isSimplePellet(tile)) {
+			digestionTicks = DIGEST_PELLET_TICKS;
+			return Optional.of(new FoodFoundEvent(tile));
+		}
+		return Optional.empty();
 	}
 }

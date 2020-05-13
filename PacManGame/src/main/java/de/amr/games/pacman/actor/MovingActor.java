@@ -4,10 +4,12 @@ import static de.amr.games.pacman.actor.MovingActor.Movement.MOVING_INSIDE_MAZE;
 import static de.amr.games.pacman.actor.MovingActor.Movement.TELEPORTING;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 
+import java.util.Map;
 import java.util.Objects;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -16,6 +18,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.model.Timing;
+import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.api.FsmContainer;
 import de.amr.statemachine.core.StateMachine;
 
@@ -23,11 +26,11 @@ import de.amr.statemachine.core.StateMachine;
  * Base class for actors moving through the maze and controlled by a
  * finite-state machine.
  * 
- * @param <S> state identifier type
+ * @param <STATE> state identifier type
  * 
  * @author Armin Reichert
  */
-public abstract class MovingActor<S> extends Entity implements FsmContainer<S, PacManGameEvent>, MazeMover {
+public abstract class MovingActor<STATE> extends Entity implements FsmContainer<STATE, PacManGameEvent>, MazeMover {
 
 	enum Movement {
 		MOVING_INSIDE_MAZE, TELEPORTING;
@@ -35,7 +38,11 @@ public abstract class MovingActor<S> extends Entity implements FsmContainer<S, P
 
 	public final Game game;
 	public final String name;
-	protected final StateMachine<Movement, ?> movement;
+	public final SpriteMap sprites = new SpriteMap();
+
+	protected Fsm<STATE, PacManGameEvent> brain;
+	protected Map<STATE, Steering> steerings;
+	protected StateMachine<Movement, ?> movement;
 	protected Direction moveDir;
 	protected Direction wishDir;
 	protected Tile targetTile;
@@ -72,7 +79,32 @@ public abstract class MovingActor<S> extends Entity implements FsmContainer<S, P
 	/**
 	 * @return the current steering for this actor depending on its state etc.
 	 */
-	public abstract Steering steering();
+	public Steering steering() {
+		return steerings.get(getState());
+	}
+
+	/**
+	 * Returns the steering for the given state.
+	 * 
+	 * @param state state
+	 * @return steering defined for this state
+	 */
+	public Steering steering(STATE state) {
+		if (steerings.containsKey(state)) {
+			return steerings.get(state);
+		}
+		throw new IllegalArgumentException(String.format("%s: No steering found for state %s", this, state));
+	}
+
+	/**
+	 * Defines the steering for the given state.
+	 * 
+	 * @param state    state
+	 * @param steering steering defined for this state
+	 */
+	public void behavior(STATE state, Steering steering) {
+		steerings.put(state, steering);
+	}
 
 	/**
 	 * @return the actor's speed in pixels/tick depending on the actor state, maze
@@ -91,10 +123,16 @@ public abstract class MovingActor<S> extends Entity implements FsmContainer<S, P
 	}
 
 	@Override
+	public Fsm<STATE, PacManGameEvent> fsm() {
+		return brain;
+	}
+
+	@Override
 	public void init() {
 		moveDir = wishDir = RIGHT;
 		targetTile = null;
 		enteredNewTile = true;
+		brain.init();
 		movement.init();
 	}
 
