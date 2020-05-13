@@ -268,7 +268,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 			prevSteering = currentSteering;
 		}
 		currentSteering.steer();
-		move();
+		movement.update();
 		sprites.select(spriteKey);
 	}
 
@@ -278,7 +278,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 
 	private void forceMoving(Direction dir) {
 		setWishDir(dir);
-		move();
+		movement.update();
 	}
 
 	private void forceTurningBack() {

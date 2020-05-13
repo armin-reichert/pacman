@@ -49,7 +49,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 		/*@formatter:off*/
 		brain = StateMachine.beginStateMachine(PacManState.class, PacManGameEvent.class)
 
-			.description(PacMan.this::toString)
+			.description(this::toString)
 			.initialState(SLEEPING)
 
 			.states()
@@ -58,12 +58,11 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 					.onEntry(() -> {
 						powerTicks = 0;
 						digestionTicks = 0;
-						tf.setPosition(maze().pacManHome.centerX(), maze().pacManHome.y());
-						setMoveDir(RIGHT);
-						setWishDir(RIGHT);
+						moveDir = wishDir = RIGHT;
 						visible = true;
 						sprites.forEach(Sprite::resetAnimation);
 						sprites.select("full");
+						tf.setPosition(maze().pacManHome.centerX(), maze().pacManHome.y());
 					})
 
 				.state(EATING)
@@ -83,7 +82,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 							--digestionTicks;
 							return;
 						}
-						makeStep();
+						move();
 						if (!isTeleporting()) {
 							findSomethingInteresting().ifPresent(this::publish);
 						}
@@ -118,6 +117,13 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 		return brain;
 	}
 
+	private void move() {
+		steering.steer();
+		movement.update();
+		sprites.select("walking-" + moveDir());
+		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
+	}
+
 	private Optional<PacManGameEvent> findSomethingInteresting() {
 		Tile tile = tile();
 		if (tile.equals(maze().bonusTile) && game.bonus.is(ACTIVE)) {
@@ -132,13 +138,6 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 			return Optional.of(new FoodFoundEvent(tile));
 		}
 		return Optional.empty();
-	}
-
-	public void makeStep() {
-		steering().steer();
-		move();
-		sprites.select("walking-" + moveDir());
-		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
 	}
 
 	@Override
