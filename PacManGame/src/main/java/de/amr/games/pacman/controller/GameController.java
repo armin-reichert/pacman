@@ -15,6 +15,7 @@ import static de.amr.games.pacman.controller.PacManGameState.LOADING_MUSIC;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
 import static de.amr.games.pacman.model.Timing.sec;
+import static de.amr.games.pacman.view.intro.IntroView.IntroState.READY_TO_PLAY;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -124,7 +125,37 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	@Override
 	public void update() {
-		if (currentView == playView) {
+		handleGlobalKeyInput();
+		handleViewSpecificKeyInput();
+		if (eventQ().size() >= 2) {
+			PacManStateMachineLogging.LOG.warning("Event queue contains more than one element");
+		}
+		super.update();
+		currentView.update();
+	}
+
+	private void handleGlobalKeyInput() {
+		if (Keyboard.keyPressedOnce("1") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
+			changeClockFrequency(Game.SPEED_1_FPS);
+		} else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
+			changeClockFrequency(Game.SPEED_2_FPS);
+		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
+			changeClockFrequency(Game.SPEED_3_FPS);
+		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
+			int oldFreq = app().clock().getTargetFramerate();
+			changeClockFrequency(oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
+		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
+			int oldFreq = app().clock().getTargetFramerate();
+			changeClockFrequency(oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
+		}
+	}
+
+	private void handleViewSpecificKeyInput() {
+		if (currentView == introView) {
+			if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
+				introView.setState(READY_TO_PLAY); // shortcut for skipping intro
+			}
+		} else if (currentView == playView) {
 			if (Keyboard.keyPressedOnce("b")) {
 				toggleGhostOnStage(game.blinky);
 			} else if (Keyboard.keyPressedOnce("c")) {
@@ -159,26 +190,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				switchToNextLevel();
 			}
 		}
-
-		if (Keyboard.keyPressedOnce("1") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
-			changeClockFrequency(Game.SPEED_1_FPS);
-		} else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
-			changeClockFrequency(Game.SPEED_2_FPS);
-		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
-			changeClockFrequency(Game.SPEED_3_FPS);
-		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
-			int oldFreq = app().clock().getTargetFramerate();
-			changeClockFrequency(oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
-		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
-			int oldFreq = app().clock().getTargetFramerate();
-			changeClockFrequency(oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
-		}
-
-		if (eventQ().size() >= 2) {
-			PacManStateMachineLogging.LOG.warning("Event queue contains more than one element");
-		}
-		super.update();
-		currentView.update();
 	}
 
 	private PlayingState playingState() {

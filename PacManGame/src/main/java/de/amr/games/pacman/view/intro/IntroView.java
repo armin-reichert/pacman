@@ -13,7 +13,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
 import java.util.Arrays;
 
 import de.amr.easy.game.input.Keyboard;
@@ -180,9 +179,6 @@ public class IntroView extends PacManGameView implements FsmContainer<IntroState
 
 	@Override
 	public void update() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
-			setState(READY_TO_PLAY); // exit shortcut
-		}
 		fsm().update();
 	}
 
@@ -236,8 +232,7 @@ public class IntroView extends PacManGameView implements FsmContainer<IntroState
 			pen.color(orange);
 			if (app().inFullScreenMode()) {
 				pen.hcenter("F11 - " + texts.getString("window_mode"), width(), row, Tile.SIZE);
-			}
-			else {
+			} else {
 				pen.hcenter("F11 - " + texts.getString("fullscreen_mode"), width(), row, Tile.SIZE);
 			}
 		}
