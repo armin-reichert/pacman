@@ -27,7 +27,6 @@ import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
-import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.api.Fsm;
@@ -64,40 +63,43 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	
 				.state(LOCKED)
 					.onEntry(() -> {
-						takeSeat();
 						visible = true;
-						followState = getState();
+						setWishDir(maze().ghostHomeDir[seat]);
+						setMoveDir(wishDir());
+						tf.setPosition(maze().seatPosition(seat));
+						enteredNewTile();
 						sprites.select("color-" + moveDir());
 						sprites.forEach(Sprite::resetAnimation);
+						followState = getState();
 					})
 					.onTick(() -> {
-							step(game.pacMan.powerTicks > 0 ? "frightened" : "color-" + moveDir());
+							move(game.pacMan.powerTicks > 0 ? "frightened" : "color-" + moveDir());
 					})
 					
 				.state(LEAVING_HOUSE)
 					.onEntry(() -> steering().init())
-					.onTick(() -> step("color-" + moveDir()))
+					.onTick(() -> move("color-" + moveDir()))
 				
 				.state(ENTERING_HOUSE)
 					.onEntry(() -> steering().init())
-					.onTick(() -> step("eyes-" + moveDir()))
+					.onTick(() -> move("eyes-" + moveDir()))
 				
 				.state(SCATTERING)
 					.onTick(() -> {
-						step("color-" + moveDir());
+						move("color-" + moveDir());
 						checkPacManCollision();
 					})
 			
 				.state(CHASING)
 					.onTick(() -> {
-						step("color-" + moveDir());
+						move("color-" + moveDir());
 						checkPacManCollision();
 					})
 				
 				.state(FRIGHTENED)
 					.timeoutAfter(() -> sec(game.level.pacManPowerSeconds))
 					.onTick((state, t, remaining) -> {
-						step(remaining < sec(2) ? "flashing" : "frightened");
+						move(remaining < sec(2) ? "flashing" : "frightened");
 						checkPacManCollision();
 					})
 				
@@ -109,7 +111,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					})
 					.onTick(() -> {
 						if (state().isTerminated()) { // "dead"
-							step("eyes-" + moveDir());
+							move("eyes-" + moveDir());
 						}
 					})
 				
@@ -202,13 +204,6 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		brain.init();
 	}
 
-	public void takeSeat() {
-		tf.setPosition(maze().seatPosition(seat));
-		setMoveDir(maze().ghostHomeDir[seat]);
-		setWishDir(maze().ghostHomeDir[seat]);
-		enteredNewTile();
-	}
-
 	public void behavior(GhostState state, Steering steering) {
 		steerings.put(state, steering);
 	}
@@ -259,10 +254,10 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		}
 	}
 
-	private void step(String spriteKey) {
+	private void move(String spriteKey) {
 		Steering currentSteering = steering();
 		if (prevSteering != currentSteering) {
-			loginfo("%s steering changed from %s to %s", this, steeringName(prevSteering), steeringName(currentSteering));
+			loginfo("%s steering changed from %s to %s", this, Steering.name(prevSteering), Steering.name(currentSteering));
 			currentSteering.init();
 			currentSteering.force();
 			prevSteering = currentSteering;
@@ -270,19 +265,6 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		currentSteering.steer();
 		movement.update();
 		sprites.select(spriteKey);
-	}
-
-	private String steeringName(Steering steering) {
-		return steering != null ? steering.getClass().getSimpleName() : "no steering";
-	}
-
-	private void forceMoving(Direction dir) {
-		setWishDir(dir);
-		movement.update();
-	}
-
-	private void forceTurningBack() {
-		forceMoving(moveDir().opposite());
 	}
 
 	private void checkPacManCollision() {

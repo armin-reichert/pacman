@@ -12,6 +12,10 @@ import de.amr.games.pacman.model.Tile;
  */
 public interface Steering {
 
+	static String name(Steering s) {
+		return s == null ? "no steering" : s.getClass().getSimpleName();
+	}
+
 	/**
 	 * Steers the actor towards its target tile or wherever it should move in its
 	 * current state.

@@ -172,6 +172,15 @@ public abstract class MovingActor<S> extends Entity implements FsmContainer<S, P
 		return maze().insideBoard(neighbor);
 	}
 
+	protected void forceMoving(Direction dir) {
+		setWishDir(dir);
+		movement.update();
+	}
+
+	protected void forceTurningBack() {
+		forceMoving(moveDir().opposite());
+	}
+
 	/**
 	 * Computes how many pixels this entity can move towards the given direction
 	 * without crossing the border to a forbidden neighbor tile.
