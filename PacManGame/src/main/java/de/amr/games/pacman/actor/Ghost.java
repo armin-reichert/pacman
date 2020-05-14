@@ -74,9 +74,14 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 				.state(LEAVING_HOUSE)
 					.onEntry(() -> steering().init())
 					.onTick(() -> move("color-" + moveDir()))
+					.onExit(() -> forceMoving(LEFT))
 				
 				.state(ENTERING_HOUSE)
-					.onEntry(() -> steering().init())
+					.onEntry(() -> {
+						tf.setPosition(maze().seatPosition(0));
+						setWishDir(DOWN);
+						steering().init();
+					})
 					.onTick(() -> move("eyes-" + moveDir()))
 				
 				.state(SCATTERING)
@@ -120,11 +125,9 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					
 				.when(LEAVING_HOUSE).then(SCATTERING)
 					.condition(() -> steering().isComplete() && followState == SCATTERING)
-					.act(() -> forceMoving(LEFT))
 				
 				.when(LEAVING_HOUSE).then(CHASING)
 					.condition(() -> steering().isComplete() && followState == CHASING)
-					.act(() -> forceMoving(LEFT))
 				
 				.stay(LEAVING_HOUSE)
 					.on(PacManGainsPowerEvent.class)
@@ -174,10 +177,6 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					
 				.when(DEAD).then(ENTERING_HOUSE)
 					.condition(() -> maze().atGhostHouseDoor(tile()))
-					.act(() -> {
-						tf.setPosition(maze().seatPosition(0));
-						setWishDir(DOWN);
-					})
 					
 				.stay(DEAD)
 					.on(PacManGainsPowerEvent.class)
