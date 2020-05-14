@@ -338,9 +338,12 @@ However, for a graph of such a small size, the used algorithm doesn't matter ver
   - F11 toggles between window and full-screen exclusive mode
 - Game
   - Command-line parameters:
-    - `-skipIntro`: skips intro screen
-    - `-overflowBug true/false`: simulates overflow bug from Arcade version
-    - `-pacManImmortable`: Pac-Man keeps live after being killed
+    - `-skipIntro` (default=false): intro screen is skipped
+    - `-overflowBug` (default=true): simulates overflow bug from Arcade version
+    - `-pacManImmortable` (default=false): Pac-Man keeps live after being killed
+    - `-ghostsFleeRandomly` (default=true): ghosts flee in random directions when frightened. If this is set to false, they choose a "safe" corner to flee to.
+    - `-ghostsDangerous` (default=true): deadly ghost collisions are detected 
+    - `-demoMode`: Pac-Man moves randomly and is immortable
   - The overall speed can be changed during the game; 
     - Continuosly: CTRL-LEFT = slower, CTRL-RIGHT = faster
     - Fixed speeds: '1' = normal speed, '2' = fast, '3' = very fast
@@ -359,6 +362,7 @@ However, for a graph of such a small size, the used algorithm doesn't matter ver
   - 'r' toggles the display of actor routes and target tiles
   - 's' toggles the display of actor states and timers
   - 't' toggles display of timing information (target vs. actual framerate)
+  - 'x' toggles if ghost collisions may kill Pac-Man
   - '+' switches to the next level
 
 ## References
