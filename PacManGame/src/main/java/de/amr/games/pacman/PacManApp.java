@@ -3,6 +3,8 @@ package de.amr.games.pacman;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
+import com.beust.jcommander.Parameter;
+
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.GameController;
@@ -19,9 +21,34 @@ import de.amr.games.pacman.theme.Theme;
  */
 public class PacManApp extends Application {
 
+	public static class Settings extends AppSettings {
+
+		@Parameter(names = { "-demoMode" }, description = "Pac-Man moves automatically, stays alive when killed")
+		public boolean demoMode = false;
+
+		@Parameter(names = { "-ghostsFleeRandomly" }, description = "default frightened ghost behavior", arity = 1)
+		public boolean ghostsFleeRandomly = true;
+
+		@Parameter(names = { "-ghostsDangerous" }, description = "if set, ghosts can kill Pac-Man", arity = 1)
+		public boolean ghostsDangerous = true;
+
+		@Parameter(names = {
+				"-overflowBug" }, description = "simulate the overflow bug from the original Arcade game", arity = 1)
+		public boolean overflowBug = true;
+
+		@Parameter(names = { "-pacManImmortable" }, description = "if set, Pac-Man keeps lives when killed")
+		public boolean pacManImmortable = false;
+
+		@Parameter(names = { "-skipIntro" }, description = "start app without intro screen")
+		public boolean skipIntro = false;
+
+		@Parameter(names = { "-theme" }, description = "the theme name e.g. 'Arcade'")
+		public String theme = "Arcade";
+	}
+
 	public static final ResourceBundle texts = ResourceBundle.getBundle("texts");
 
-	public static final PacManAppSettings settings = new PacManAppSettings();
+	public static final Settings settings = new Settings();
 
 	public static void main(String[] args) {
 		launch(PacManApp.class, settings, args);
@@ -44,7 +71,6 @@ public class PacManApp extends Application {
 		loginfo("\tPacMan immortable: %s", settings.pacManImmortable);
 		loginfo("\tSkip Intro: %s", settings.skipIntro);
 		loginfo("\tTheme: %s", settings.theme);
-
 	}
 
 	@Override
