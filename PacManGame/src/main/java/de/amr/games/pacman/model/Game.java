@@ -16,6 +16,7 @@ import static de.amr.games.pacman.model.Symbol.GRAPES;
 import static de.amr.games.pacman.model.Symbol.KEY;
 import static de.amr.games.pacman.model.Symbol.PEACH;
 import static de.amr.games.pacman.model.Symbol.STRAWBERRY;
+import static de.amr.games.pacman.model.Timing.relSpeed;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -28,8 +29,10 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.Ghost;
+import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.actor.MovingActor;
 import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.actor.PacManState;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.
@@ -235,5 +238,39 @@ public class Game {
 		}
 		loginfo("Scored %d points for killing %s (%s ghost in sequence)", points, ghostName,
 				new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]);
+	}
+
+	public float pacManSpeed(PacManState state) {
+		switch (state) {
+		case SLEEPING:
+			return 0;
+		case EATING:
+			return relSpeed(pacMan.powerTicks > 0 ? level.pacManPowerSpeed : level.pacManSpeed);
+		case DEAD:
+			return 0;
+		default:
+			throw new IllegalStateException("Illegal Pac-Man state: " + state);
+		}
+	}
+
+	public float ghostSpeed(Tile tile, GhostState state) {
+		switch (state) {
+		case LOCKED:
+			return maze.insideGhostHouse(tile) ? relSpeed(level.ghostSpeed) / 2 : 0;
+		case LEAVING_HOUSE:
+			return relSpeed(level.ghostSpeed) / 2;
+		case ENTERING_HOUSE:
+			return relSpeed(level.ghostSpeed);
+		case CHASING:
+			//$FALL-THROUGH$
+		case SCATTERING:
+			return maze.isTunnel(tile) ? relSpeed(level.ghostTunnelSpeed) : relSpeed(level.ghostSpeed);
+		case FRIGHTENED:
+			return maze.isTunnel(tile) ? relSpeed(level.ghostTunnelSpeed) : relSpeed(level.ghostFrightenedSpeed);
+		case DEAD:
+			return 2 * relSpeed(level.ghostSpeed);
+		default:
+			throw new IllegalStateException(String.format("Illegal ghost state %s", state));
+		}
 	}
 }

@@ -60,7 +60,7 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 				.initialState(MOVING_INSIDE_MAZE)
 				.states()
 					.state(MOVING_INSIDE_MAZE)
-						.onTick(() -> makeStepInsideMaze())
+						.onTick(() -> moveInsideMaze())
 					.state(TELEPORTING)
 						.onEntry(() -> visible = false)
 						.onExit(() -> visible = true)
@@ -222,33 +222,35 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 
 	/**
 	 * Computes how many pixels this entity can move towards the given direction
-	 * without crossing the border to a forbidden neighbor tile.
+	 * without entering an inaccessible neighbor tile.
+	 * 
+	 * @param tile tile from where to move
+	 * @param dir  move direction
 	 */
-	private float possibleMoveDistance(Tile currentTile, Direction dir) {
-		float dist = speed(currentTile, getState());
+	private float maxMoveDistance(Tile tile, Direction dir) {
 		if (canCrossBorderTo(dir)) {
-			return dist;
+			return speed(tile, getState());
 		}
-		float offsetX = tf.x - currentTile.x(), offsetY = tf.y - currentTile.y();
+		float offsetX = tf.x - tile.x(), offsetY = tf.y - tile.y();
 		switch (dir) {
 		case UP:
-			return Math.min(offsetY, dist);
+			return Math.min(offsetY, speed(tile, getState()));
 		case DOWN:
-			return Math.min(-offsetY, dist);
+			return Math.min(-offsetY, speed(tile, getState()));
 		case LEFT:
-			return Math.min(offsetX, dist);
+			return Math.min(offsetX, speed(tile, getState()));
 		case RIGHT:
-			return Math.min(-offsetX, dist);
+			return Math.min(-offsetX, speed(tile, getState()));
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}
 	}
 
-	private void makeStepInsideMaze() {
+	private void moveInsideMaze() {
 		Tile tile = tile();
-		float speed = possibleMoveDistance(tile, moveDir);
+		float speed = maxMoveDistance(tile, moveDir);
 		if (wishDir != null && wishDir != moveDir) {
-			float wishDirSpeed = possibleMoveDistance(tile, wishDir);
+			float wishDirSpeed = maxMoveDistance(tile, wishDir);
 			if (wishDirSpeed > 0) {
 				boolean corner = (wishDir == moveDir.left() || wishDir == moveDir.right());
 				if (corner && steering().requiresGridAlignment()) {

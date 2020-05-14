@@ -10,7 +10,6 @@ import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Game.DIGEST_ENERGIZER_TICKS;
 import static de.amr.games.pacman.model.Game.DIGEST_PELLET_TICKS;
-import static de.amr.games.pacman.model.Timing.relSpeed;
 
 import java.util.EnumMap;
 import java.util.Optional;
@@ -116,16 +115,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 
 	@Override
 	public float speed(Tile tile, PacManState state) {
-		switch (state) {
-		case SLEEPING:
-			return 0;
-		case EATING:
-			return relSpeed(powerTicks > 0 ? game.level.pacManPowerSpeed : game.level.pacManSpeed);
-		case DEAD:
-			return 0;
-		default:
-			throw new IllegalStateException("Illegal Pac-Man state: " + state);
-		}
+		return game.pacManSpeed(getState());
 	}
 
 	@Override

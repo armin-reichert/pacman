@@ -11,7 +11,6 @@ import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
-import static de.amr.games.pacman.model.Timing.relSpeed;
 import static de.amr.games.pacman.model.Timing.sec;
 
 import java.util.EnumMap;
@@ -200,24 +199,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 
 	@Override
 	public float speed(Tile tile, GhostState state) {
-		switch (state) {
-		case LOCKED:
-			return maze().insideGhostHouse(tile) ? relSpeed(game.level.ghostSpeed) / 2 : 0;
-		case LEAVING_HOUSE:
-			return relSpeed(game.level.ghostSpeed) / 2;
-		case ENTERING_HOUSE:
-			return relSpeed(game.level.ghostSpeed);
-		case CHASING:
-			//$FALL-THROUGH$
-		case SCATTERING:
-			return maze().isTunnel(tile) ? relSpeed(game.level.ghostTunnelSpeed) : relSpeed(game.level.ghostSpeed);
-		case FRIGHTENED:
-			return maze().isTunnel(tile) ? relSpeed(game.level.ghostTunnelSpeed) : relSpeed(game.level.ghostFrightenedSpeed);
-		case DEAD:
-			return 2 * relSpeed(game.level.ghostSpeed);
-		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s for %s", state, name));
-		}
+		return game.ghostSpeed(tile(), getState());
 	}
 
 	private void move(String spriteKey) {
