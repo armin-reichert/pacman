@@ -31,9 +31,9 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 public class Bonus extends Entity implements FsmContainer<BonusState, PacManGameEvent> {
 
 	public final Game game;
-	public final SpriteMap sprites = new SpriteMap();
 	public Symbol symbol;
 	public int value;
+	public final SpriteMap sprites = new SpriteMap();
 	private final Fsm<BonusState, PacManGameEvent> brain;
 
 	public Bonus(Game game) {
@@ -77,23 +77,15 @@ public class Bonus extends Entity implements FsmContainer<BonusState, PacManGame
 		return brain;
 	}
 
-	public void setSymbol(Theme theme, Symbol symbol) {
-		this.symbol = symbol;
+	public void activate(Theme theme) {
+		brain.setState(ACTIVE);
+		symbol = game.level.bonusSymbol;
+		value = game.level.bonusValue;
 		sprites.set("symbol", theme.spr_bonusSymbol(symbol));
-	}
-
-	public void setValue(Theme theme, int value) {
-		this.value = value;
 		sprites.set("value", theme.spr_number(value));
 	}
 
-	public void show(Theme theme) {
-		setSymbol(theme, game.level.bonusSymbol);
-		setValue(theme, game.level.bonusValue);
-		brain.setState(ACTIVE);
-	}
-
-	public void hide() {
+	public void deactivate() {
 		init();
 	}
 

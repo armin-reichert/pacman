@@ -300,7 +300,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						if (t == sec(1)) {
 							// Pac-Man stops struggling
 							game.pacMan.sprites.select("full");
-							game.bonus.hide();
+							game.bonus.deactivate();
 							game.ghostsOnStage().forEach(ghost -> ghost.visible = false);
 						}
 						else if (t == sec(3)) {
@@ -487,7 +487,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				return;
 			}
 			if (game.isBonusScoreReached()) {
-				game.bonus.show(theme);
+				game.bonus.activate(theme);
 				loginfo("Bonus %s added, time: %.2f sec", game.bonus, game.bonus.state().getDuration() / 60f);
 			}
 			if (energizer) {
