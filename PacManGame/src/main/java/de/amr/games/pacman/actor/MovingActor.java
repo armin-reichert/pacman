@@ -71,11 +71,19 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 						.condition(() -> enteredLeftPortal() || enteredRightPortal())
 					.when(TELEPORTING).then(MOVING_INSIDE_MAZE)
 						.onTimeout()
-						.act(() -> teleport())
+						.act(() -> placeAt(enteredRightPortal() ? maze.portalLeft : maze.portalRight))
 			.endStateMachine();
 		//@formatter:on
 		setTeleportingDuration(Timing.sec(0.5f));
 		movement.getTracer().setLogger(PacManStateMachineLogging.LOG);
+	}
+
+	private boolean enteredLeftPortal() {
+		return tf.getPosition().x < maze.portalLeft.x();
+	}
+
+	private boolean enteredRightPortal() {
+		return tf.getPosition().x > maze.portalRight.x();
 	}
 
 	/**
@@ -259,21 +267,5 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 		tf.setVelocity(Vector2f.smul(speed, moveDir.vector()));
 		tf.move();
 		enteredNewTile = !tile.equals(tile());
-	}
-
-	private void teleport() {
-		if (enteredRightPortal()) {
-			placeAt(maze.portalLeft);
-		} else if (enteredLeftPortal()) {
-			placeAt(maze.portalRight);
-		}
-	}
-
-	private boolean enteredLeftPortal() {
-		return tf.getPosition().x < maze.portalLeft.x();
-	}
-
-	private boolean enteredRightPortal() {
-		return tf.getPosition().x > maze.portalRight.x();
 	}
 }
