@@ -32,9 +32,9 @@ public class Bonus extends Entity implements FsmContainer<BonusState, PacManGame
 
 	public final Game game;
 	public final SpriteMap sprites = new SpriteMap();
+	public Symbol symbol;
+	public int value;
 	private final Fsm<BonusState, PacManGameEvent> brain;
-	private Symbol symbol;
-	private int value;
 
 	public Bonus(Game game) {
 		this.game = game;
@@ -77,17 +77,9 @@ public class Bonus extends Entity implements FsmContainer<BonusState, PacManGame
 		return brain;
 	}
 
-	public Symbol symbol() {
-		return symbol;
-	}
-
 	public void setSymbol(Theme theme, Symbol symbol) {
 		this.symbol = symbol;
 		sprites.set("symbol", theme.spr_bonusSymbol(symbol));
-	}
-
-	public int value() {
-		return value;
 	}
 
 	public void setValue(Theme theme, int value) {
