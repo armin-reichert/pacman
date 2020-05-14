@@ -24,6 +24,9 @@ public class PacManAppSettings extends AppSettings {
 	@Parameter(names = { "-pacManImmortable" }, description = "if set, Pac-Man keeps lives when killed")
 	public boolean pacManImmortable = false;
 
+	@Parameter(names = { "-ghostsIgnored" }, description = "if set, Pac-Man ignores ghosts")
+	public boolean ghostsIgnored = false;
+	
 	@Parameter(names = { "-demoMode" }, description = "Pac-Man moves automatically and keeps lives when killed")
 	public boolean demoMode = false;
 

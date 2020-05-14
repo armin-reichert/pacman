@@ -173,6 +173,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				playView.showFrameRate = !playView.showFrameRate;
 			} else if (Keyboard.keyPressedOnce("r")) {
 				playView.showRoutes = !playView.showRoutes;
+			} else if (Keyboard.keyPressedOnce("x")) {
+				toggleGhostsIgnored();
 			} else if (Keyboard.keyPressedOnce("+")) {
 				switchToNextLevel();
 			}
@@ -522,6 +524,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			game.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack()));
 			loginfo("Changed ghost escape behavior to original random movement");
 		}
+	}
+
+	private void toggleGhostsIgnored() {
+		settings.ghostsIgnored = !settings.ghostsIgnored;
+		loginfo("Ghosts are %s", settings.ghostsIgnored ? "ignored" : "detected");
 	}
 
 	private void toggleDemoMode() {
