@@ -114,11 +114,6 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 	}
 
 	@Override
-	public float speed(Tile tile, PacManState state) {
-		return game.pacManSpeed(getState());
-	}
-
-	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
 		if (maze().isDoor(neighbor)) {
 			return false;

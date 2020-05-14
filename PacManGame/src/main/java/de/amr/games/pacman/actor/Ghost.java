@@ -197,11 +197,6 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		return super.canMoveBetween(tile, neighbor);
 	}
 
-	@Override
-	public float speed(Tile tile, GhostState state) {
-		return game.ghostSpeed(tile(), getState());
-	}
-
 	private void move(String spriteKey) {
 		Steering currentSteering = steering();
 		if (prevSteering != currentSteering) {

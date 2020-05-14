@@ -117,6 +117,9 @@ public class Game {
 		clyde = new Ghost(this, "Clyde");
 		bonus = new Bonus(this);
 
+		pacMan.fnSpeed = this::pacManSpeed;
+		ghosts().forEach(ghost -> ghost.fnSpeed = this::ghostSpeed);
+
 		pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 
 		blinky.seat = 0;
@@ -240,7 +243,7 @@ public class Game {
 				new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]);
 	}
 
-	public float pacManSpeed(PacManState state) {
+	public float pacManSpeed(Tile tile, PacManState state) {
 		switch (state) {
 		case SLEEPING:
 			return 0;

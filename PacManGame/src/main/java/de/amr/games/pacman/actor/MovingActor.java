@@ -6,6 +6,7 @@ import static de.amr.games.pacman.model.Direction.RIGHT;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
@@ -39,6 +40,8 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 	public final Game game;
 	public final String name;
 	public final SpriteMap sprites = new SpriteMap();
+
+	public BiFunction<Tile, STATE, Float> fnSpeed = (tile, state) -> 0f;
 
 	protected Fsm<STATE, PacManGameEvent> brain;
 	protected Map<STATE, Steering> steerings;
@@ -105,13 +108,6 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 	public void behavior(STATE state, Steering steering) {
 		steerings.put(state, steering);
 	}
-
-	/**
-	 * @param tile in the maze
-	 * @parm state actor state
-	 * @return the actor's speed at this tile in this state (in pixels/tick)
-	 */
-	public abstract float speed(Tile tile, STATE state);
 
 	@Override
 	public Maze maze() {
@@ -228,19 +224,20 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 	 * @param dir  move direction
 	 */
 	private float maxMoveDistance(Tile tile, Direction dir) {
+		float speed = fnSpeed.apply(tile, getState());
 		if (canCrossBorderTo(dir)) {
-			return speed(tile, getState());
+			return speed;
 		}
 		float offsetX = tf.x - tile.x(), offsetY = tf.y - tile.y();
 		switch (dir) {
 		case UP:
-			return Math.min(offsetY, speed(tile, getState()));
+			return Math.min(offsetY, speed);
 		case DOWN:
-			return Math.min(-offsetY, speed(tile, getState()));
+			return Math.min(-offsetY, speed);
 		case LEFT:
-			return Math.min(offsetX, speed(tile, getState()));
+			return Math.min(offsetX, speed);
 		case RIGHT:
-			return Math.min(-offsetX, speed(tile, getState()));
+			return Math.min(-offsetX, speed);
 		default:
 			throw new IllegalArgumentException("Illegal move direction: " + dir);
 		}
