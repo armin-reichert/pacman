@@ -57,7 +57,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 						visible = true;
 						sprites.forEach(Sprite::resetAnimation);
 						sprites.select("full");
-						tf.setPosition(maze().pacManHome.centerX(), maze().pacManHome.y());
+						tf.setPosition(maze.pacManHome.centerX(), maze.pacManHome.y());
 					})
 
 				.state(EATING)
@@ -114,7 +114,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (maze().isDoor(neighbor)) {
+		if (maze.isDoor(neighbor)) {
 			return false;
 		}
 		return super.canMoveBetween(tile, neighbor);
@@ -131,9 +131,9 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 	 *         his current move direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
-		Tile tileAhead = maze().tileToDir(tile(), moveDir(), numTiles);
-		if (moveDir() == UP && settings.overflowBug) {
-			return maze().tileToDir(tileAhead, LEFT, numTiles);
+		Tile tileAhead = maze.tileToDir(tile(), moveDir, numTiles);
+		if (moveDir == UP && settings.overflowBug) {
+			return maze.tileToDir(tileAhead, LEFT, numTiles);
 		}
 		return tileAhead;
 	}
@@ -141,20 +141,20 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 	private void move() {
 		steering().steer();
 		movement.update();
-		sprites.select("walking-" + moveDir());
+		sprites.select("walking-" + moveDir);
 		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
 	}
 
 	private Optional<PacManGameEvent> findSomethingInteresting(Game game) {
 		Tile tile = tile();
-		if (tile.equals(maze().bonusTile) && game.bonus.is(ACTIVE)) {
+		if (tile.equals(maze.bonusTile) && game.bonus.is(ACTIVE)) {
 			return Optional.of(new BonusFoundEvent(game.bonus.symbol(), game.bonus.value()));
 		}
-		if (maze().isEnergizer(tile)) {
+		if (maze.isEnergizer(tile)) {
 			digestionTicks = DIGEST_ENERGIZER_TICKS;
 			return Optional.of(new FoodFoundEvent(tile));
 		}
-		if (maze().isSimplePellet(tile)) {
+		if (maze.isSimplePellet(tile)) {
 			digestionTicks = DIGEST_PELLET_TICKS;
 			return Optional.of(new FoodFoundEvent(tile));
 		}
