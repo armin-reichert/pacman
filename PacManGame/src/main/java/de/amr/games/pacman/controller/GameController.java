@@ -174,7 +174,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			} else if (Keyboard.keyPressedOnce("r")) {
 				playView.showRoutes = !playView.showRoutes;
 			} else if (Keyboard.keyPressedOnce("x")) {
-				toggleGhostsIgnored();
+				toggleGhostsDangerous();
 			} else if (Keyboard.keyPressedOnce("+")) {
 				switchToNextLevel();
 			}
@@ -437,7 +437,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			PacManGhostCollisionEvent collision = (PacManGhostCollisionEvent) event;
 			Ghost ghost = collision.ghost;
 			if (ghost.is(FRIGHTENED)) {
-				// Ghost killed
+				// Ghost got killed
 				int livesBefore = game.lives;
 				game.scoreKilledGhost(ghost.name);
 				if (game.lives > livesBefore) {
@@ -448,13 +448,15 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				enqueue(new GhostKilledEvent(ghost));
 				loginfo("Ghost %s killed at %s", ghost.name, ghost.tile());
 			} else {
-				// Pac-Man killed
-				ghostHouse.onLifeLost();
-				sound.muteAll();
-				playView.stopEnergizerBlinking();
-				game.pacMan.process(new PacManKilledEvent(ghost));
-				enqueue(new PacManKilledEvent(ghost));
-				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.tile());
+				if (settings.ghostsDangerous) {
+					// Pac-Man got killed
+					ghostHouse.onLifeLost();
+					sound.muteAll();
+					playView.stopEnergizerBlinking();
+					game.pacMan.process(new PacManKilledEvent(ghost));
+					enqueue(new PacManKilledEvent(ghost));
+					loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.tile());
+				}
 			}
 		}
 
@@ -526,9 +528,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	private void toggleGhostsIgnored() {
-		settings.ghostsIgnored = !settings.ghostsIgnored;
-		loginfo("Ghosts are %s", settings.ghostsIgnored ? "ignored" : "detected");
+	private void toggleGhostsDangerous() {
+		settings.ghostsDangerous = !settings.ghostsDangerous;
+		loginfo("Ghosts are %s", settings.ghostsDangerous ? "dangerous" : "harmless");
 	}
 
 	private void toggleDemoMode() {

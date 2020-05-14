@@ -1,7 +1,6 @@
 package de.amr.games.pacman.actor;
 
 import static de.amr.easy.game.Application.loginfo;
-import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
@@ -235,14 +234,11 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	}
 
 	private void checkPacManCollision() {
-		if (settings.ghostsIgnored) {
-			return;
-		}
 		if (isTeleporting() || game.pacMan.isTeleporting() || game.pacMan.is(PacManState.DEAD)) {
 			return;
 		}
 		if (tile().equals(game.pacMan.tile())) {
-			publish(new PacManGhostCollisionEvent(this, tile()));
+			publish(new PacManGhostCollisionEvent(this));
 		}
 	}
 }
