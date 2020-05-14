@@ -40,7 +40,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 	public int digestionTicks;
 
 	public PacMan(Game game) {
-		super(game, "Pac-Man");
+		super(game.maze, "Pac-Man");
 		steerings = new EnumMap<>(PacManState.class);
 		/*@formatter:off*/
 		brain = StateMachine.beginStateMachine(PacManState.class, PacManGameEvent.class)
@@ -80,7 +80,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 						}
 						move();
 						if (!isTeleporting()) {
-							findSomethingInteresting().ifPresent(this::publish);
+							findSomethingInteresting(game).ifPresent(this::publish);
 						}
 					})
 
@@ -146,7 +146,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
 	}
 
-	private Optional<PacManGameEvent> findSomethingInteresting() {
+	private Optional<PacManGameEvent> findSomethingInteresting(Game game) {
 		Tile tile = tile();
 		if (tile.equals(maze().bonusTile) && game.bonus.is(ACTIVE)) {
 			return Optional.of(new BonusFoundEvent(game.bonus.symbol(), game.bonus.value()));

@@ -45,12 +45,12 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	private Steering prevSteering;
 
 	public Ghost(Game game, String name) {
-		super(game, name);
+		super(game.maze, name);
 		steerings = new EnumMap<>(GhostState.class);
 		/*@formatter:off*/
 		brain = StateMachine.beginStateMachine(GhostState.class, PacManGameEvent.class)
 			 
-			.description(Ghost.this::toString)
+			.description(this::toString)
 			.initialState(LOCKED)
 		
 			.states()
@@ -86,20 +86,20 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 				.state(SCATTERING)
 					.onTick(() -> {
 						move("color-" + moveDir());
-						checkPacManCollision();
+						checkCollision(game.pacMan);
 					})
 			
 				.state(CHASING)
 					.onTick(() -> {
 						move("color-" + moveDir());
-						checkPacManCollision();
+						checkCollision(game.pacMan);
 					})
 				
 				.state(FRIGHTENED)
 					.timeoutAfter(() -> sec(game.level.pacManPowerSeconds))
 					.onTick((state, t, remaining) -> {
 						move(remaining < sec(2) ? "flashing" : "frightened");
-						checkPacManCollision();
+						checkCollision(game.pacMan);
 					})
 				
 				.state(DEAD)
@@ -210,11 +210,11 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		sprites.select(spriteKey);
 	}
 
-	private void checkPacManCollision() {
-		if (isTeleporting() || game.pacMan.isTeleporting() || game.pacMan.is(PacManState.DEAD)) {
+	private void checkCollision(PacMan pacMan) {
+		if (isTeleporting() || pacMan.isTeleporting() || pacMan.is(PacManState.DEAD)) {
 			return;
 		}
-		if (tile().equals(game.pacMan.tile())) {
+		if (tile().equals(pacMan.tile())) {
 			publish(new PacManGhostCollisionEvent(this));
 		}
 	}

@@ -15,7 +15,6 @@ import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.model.Timing;
@@ -37,7 +36,7 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 		MOVING_INSIDE_MAZE, TELEPORTING;
 	}
 
-	public final Game game;
+	public final Maze maze;
 	public final String name;
 	public final SpriteMap sprites = new SpriteMap();
 
@@ -51,8 +50,8 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 	protected Tile targetTile;
 	protected boolean enteredNewTile;
 
-	public MovingActor(Game game, String name) {
-		this.game = game;
+	public MovingActor(Maze maze, String name) {
+		this.maze = maze;
 		this.name = name;
 		tf.width = Tile.SIZE;
 		tf.height = Tile.SIZE;
@@ -111,7 +110,7 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 
 	@Override
 	public Maze maze() {
-		return game.maze;
+		return maze;
 	}
 
 	@Override
@@ -192,19 +191,19 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 
 	@Override
 	public boolean canCrossBorderTo(Direction dir) {
-		Tile currentTile = tile(), neighbor = maze().neighbor(currentTile, dir);
+		Tile currentTile = tile(), neighbor = maze.neighbor(currentTile, dir);
 		return canMoveBetween(currentTile, neighbor);
 	}
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (maze().isWall(neighbor)) {
+		if (maze.isWall(neighbor)) {
 			return false;
 		}
-		if (maze().isTunnel(neighbor)) {
+		if (maze.isTunnel(neighbor)) {
 			return true; // includes portal tiles
 		}
-		return maze().insideBoard(neighbor);
+		return maze.insideBoard(neighbor);
 	}
 
 	protected void forceMoving(Direction dir) {
@@ -264,17 +263,17 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 
 	private void teleport() {
 		if (enteredRightPortal()) {
-			placeAt(maze().portalLeft);
+			placeAt(maze.portalLeft);
 		} else if (enteredLeftPortal()) {
-			placeAt(maze().portalRight);
+			placeAt(maze.portalRight);
 		}
 	}
 
 	private boolean enteredLeftPortal() {
-		return tf.getPosition().x < maze().portalLeft.x();
+		return tf.getPosition().x < maze.portalLeft.x();
 	}
 
 	private boolean enteredRightPortal() {
-		return tf.getPosition().x > maze().portalRight.x();
+		return tf.getPosition().x > maze.portalRight.x();
 	}
 }
