@@ -117,11 +117,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	@Override
 	public void update() {
 		handleInput();
+		if (eventQ.size() > 1) {
+			PacManStateMachineLogging.loginfo("%s: Event queue has more than one entry: %s", getDescription(), eventQ);
+		}
 		super.update();
 		currentView.update();
-		if (!eventQ().isEmpty()) {
-			PacManStateMachineLogging.LOG.warning("Event queue not empty after update");
-		}
 	}
 
 	private void handleInput() {

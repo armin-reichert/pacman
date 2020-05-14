@@ -40,7 +40,7 @@ public class PacManApp extends Application {
 		loginfo("User language is %s", texts.getLocale().getDisplayLanguage());
 		Theme theme = Theme.createTheme(settings.theme);
 		setIcon(theme.spr_ghostFrightened().frame(0));
-		PacManStateMachineLogging.LOG.setLevel(Level.INFO);
+		PacManStateMachineLogging.setLevel(Level.INFO);
 		GameController gameController = new GameController(theme);
 		setExitHandler(app -> gameController.onExit());
 		setController(gameController);
