@@ -36,6 +36,18 @@ public class PacManApp extends Application {
 	}
 
 	@Override
+	protected void printSettings() {
+		super.printSettings();
+		loginfo("\tGhosts dangerous: %s", settings.ghostsDangerous);
+		loginfo("\tGhosts flee randomly: %s", settings.ghostsFleeRandomly);
+		loginfo("\tOverflow Bug: %s", settings.overflowBug);
+		loginfo("\tPacMan immortable: %s", settings.pacManImmortable);
+		loginfo("\tSkip Intro: %s", settings.skipIntro);
+		loginfo("\tTheme: %s", settings.theme);
+
+	}
+
+	@Override
 	public void init() {
 		loginfo("User language is %s", texts.getLocale().getDisplayLanguage());
 		Theme theme = Theme.createTheme(settings.theme);
