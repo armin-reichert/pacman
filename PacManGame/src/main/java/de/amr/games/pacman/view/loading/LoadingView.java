@@ -28,7 +28,7 @@ public class LoadingView extends PacManGameView {
 	private int ghostInc;
 
 	public LoadingView(Theme theme) {
-		super(new Game(), theme);
+		super(new Game(1), theme);
 	}
 
 	@Override

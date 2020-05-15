@@ -98,7 +98,7 @@ public class Game {
 	public int lives;
 	public int score;
 
-	public Game() {
+	public Game(int startLevel) {
 		lives = 3;
 		score = 0;
 		levelCounter = new ArrayDeque<>(7);
@@ -106,7 +106,26 @@ public class Game {
 		maze = new Maze();
 		stage = new Stage();
 		createActors();
-		enterLevel(1);
+		enterLevel(startLevel);
+	}
+
+	public Game() {
+		this(1);
+	}
+
+	public void enterLevel(int n) {
+		loginfo("Enter level %d", n);
+		level = LEVELS[Math.min(n, LEVELS.length - 1)];
+		level.number = n;
+		level.eatenFoodCount = 0;
+		level.ghostsKilledByEnergizer = 0;
+		level.ghostsKilledInLevel = 0;
+		if (levelCounter.size() == 7) {
+			levelCounter.removeLast();
+		}
+		levelCounter.addFirst(level.bonusSymbol);
+		maze.restoreFood();
+		hiscore.save();
 	}
 
 	private void createActors() {
@@ -177,21 +196,6 @@ public class Game {
 
 	public Stream<MovingActor<?>> movingActorsOnStage() {
 		return movingActors().filter(stage::contains);
-	}
-
-	public void enterLevel(int n) {
-		loginfo("Enter level %d", n);
-		level = LEVELS[Math.min(n, LEVELS.length - 1)];
-		level.number = n;
-		level.eatenFoodCount = 0;
-		level.ghostsKilledByEnergizer = 0;
-		level.ghostsKilledInLevel = 0;
-		if (levelCounter.size() == 7) {
-			levelCounter.removeLast();
-		}
-		levelCounter.addFirst(level.bonusSymbol);
-		maze.restoreFood();
-		hiscore.save();
 	}
 
 	public int remainingFoodCount() {

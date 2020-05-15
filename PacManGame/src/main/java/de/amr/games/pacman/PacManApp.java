@@ -42,6 +42,9 @@ public class PacManApp extends Application {
 		@Parameter(names = { "-skipIntro" }, description = "start app without intro screen")
 		public boolean skipIntro = false;
 
+		@Parameter(names = { "-startLevel" }, description = "number of starting level")
+		public int startLevel = 1;
+
 		@Parameter(names = { "-theme" }, description = "the theme name e.g. 'Arcade'")
 		public String theme = "Arcade";
 	}
@@ -70,6 +73,7 @@ public class PacManApp extends Application {
 		loginfo("\tOverflow Bug: %s", settings.overflowBug);
 		loginfo("\tPacMan immortable: %s", settings.pacManImmortable);
 		loginfo("\tSkip Intro: %s", settings.skipIntro);
+		loginfo("\tStart level: %d", settings.startLevel);
 		loginfo("\tTheme: %s", settings.theme);
 	}
 

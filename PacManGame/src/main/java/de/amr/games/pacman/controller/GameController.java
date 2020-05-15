@@ -96,7 +96,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	private void createPlayEnvironment() {
-		game = new Game();
+		game = new Game(settings.startLevel);
 		game.movingActors().forEach(actor -> {
 			game.stage.add(actor);
 			actor.addEventListener(this::process);
@@ -490,9 +490,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				game.bonus.activate(theme);
 				loginfo("Bonus %s added, time: %.2f sec", game.bonus, game.bonus.state().getDuration() / 60f);
 			}
-			if (energizer) {
-				ghostCommand.suspend();
+			if (energizer && game.level.pacManPowerSeconds > 0) {
 				sound.pacManGainsPower();
+				ghostCommand.suspend();
 				game.pacMan.powerTicks = sec(game.level.pacManPowerSeconds);
 				game.ghostsOnStage().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
 			}

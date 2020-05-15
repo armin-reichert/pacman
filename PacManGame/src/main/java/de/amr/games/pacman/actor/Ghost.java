@@ -130,7 +130,6 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 				
 				.when(CHASING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
-					.condition(() -> game.level.pacManPowerSeconds > 0)
 					.act(() -> forceTurningBack())
 				
 				.when(CHASING).then(DEAD)
@@ -142,7 +141,6 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	
 				.when(SCATTERING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
-					.condition(() -> game.level.pacManPowerSeconds > 0)
 					.act(() -> forceTurningBack())
 				
 				.when(SCATTERING).then(DEAD)
