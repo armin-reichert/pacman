@@ -119,26 +119,18 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 				.when(LOCKED).then(LEAVING_HOUSE)
 					.on(GhostUnlockedEvent.class)
 			
-				.stay(LOCKED)
-					.on(PacManGainsPowerEvent.class)
-					
 				.when(LEAVING_HOUSE).then(SCATTERING)
 					.condition(() -> steering().isComplete() && followState == SCATTERING)
 				
 				.when(LEAVING_HOUSE).then(CHASING)
 					.condition(() -> steering().isComplete() && followState == CHASING)
 				
-				.stay(LEAVING_HOUSE)
-					.on(PacManGainsPowerEvent.class)
-				
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
 					.condition(() -> steering().isComplete())
 				
-				.stay(ENTERING_HOUSE)
-					.on(PacManGainsPowerEvent.class)
-				
 				.when(CHASING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
+					.condition(() -> game.level.pacManPowerSeconds > 0)
 					.act(() -> forceTurningBack())
 				
 				.when(CHASING).then(DEAD)
@@ -150,6 +142,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	
 				.when(SCATTERING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
+					.condition(() -> game.level.pacManPowerSeconds > 0)
 					.act(() -> forceTurningBack())
 				
 				.when(SCATTERING).then(DEAD)
@@ -158,7 +151,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 				.when(SCATTERING).then(CHASING)
 					.condition(() -> followState == CHASING)
 					.act(() -> forceTurningBack())
-				
+					
 				.stay(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
 					.act(() -> restartTimer(FRIGHTENED))
@@ -177,12 +170,9 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 				.when(DEAD).then(ENTERING_HOUSE)
 					.condition(() -> maze().atGhostHouseDoor(tile()))
 					
-				.stay(DEAD)
-					.on(PacManGainsPowerEvent.class)
-				
 		.endStateMachine();
 		/*@formatter:on*/
-		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
+		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOG);
 	}
 
