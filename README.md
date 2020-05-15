@@ -339,7 +339,7 @@ However, for a graph of such a small size, the used algorithm doesn't matter ver
 - Game
   - Command-line parameters:
     - `-skipIntro` (default=false): intro screen is skipped
-    - `startLevel`(default=1): starts the game in the specified level
+    - `-startLevel`(default=1): starts the game in the specified level
     - `-overflowBug` (default=true): simulates overflow bug from Arcade version
     - `-pacManImmortable` (default=false): Pac-Man keeps live after being killed
     - `-ghostsFleeRandomly` (default=true): ghosts flee in random directions when frightened. If this is set to false, they choose a "safe" corner to flee to.
