@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.amr.games.pacman</groupId>
 	<artifactId>PacManGame</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>PacManGame</name>
 	<description>Pac-Man game using explicit state machines</description>
 	<build>
@@ -28,6 +28,7 @@
 							<mainClass>de.amr.games.pacman.PacManApp</mainClass>
 						</manifest>
 					</archive>
+					<appendAssemblyId>false</appendAssemblyId>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
