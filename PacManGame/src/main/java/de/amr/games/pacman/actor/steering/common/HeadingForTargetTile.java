@@ -33,17 +33,21 @@ import de.amr.games.pacman.model.Tile;
 public class HeadingForTargetTile implements Steering {
 
 	/** Directions in the order used to compute the next move direction */
-	private static final List<Direction> UP_LEFT_DOWN_RIGHT = Arrays.asList(UP, LEFT, DOWN, RIGHT);
+	static final List<Direction> UP_LEFT_DOWN_RIGHT = Arrays.asList(UP, LEFT, DOWN, RIGHT);
 
-	private final MazeMover actor;
-	private final Supplier<Tile> fnTargetTile;
-	private List<Tile> targetPath;
-	private boolean computePath;
-	private boolean forced;
+	Supplier<Tile> fnTargetTile;
+	MazeMover actor;
+	List<Tile> targetPath;
+	boolean computePath;
+	boolean forced;
 
 	public HeadingForTargetTile(MazeMover actor, Supplier<Tile> fnTargetTile) {
+		this(actor);
+		this.fnTargetTile = fnTargetTile;
+	}
+
+	HeadingForTargetTile(MazeMover actor) {
 		this.actor = Objects.requireNonNull(actor);
-		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 		targetPath = Collections.emptyList();
 		computePath = false;
 		forced = false;
