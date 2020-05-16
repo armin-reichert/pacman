@@ -214,12 +214,14 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 		return maze.insideBoard(neighbor);
 	}
 
-	protected void forceMoving(Direction dir) {
+	@Override
+	public void forceMoving(Direction dir) {
 		setWishDir(dir);
 		movement.update();
 	}
 
-	protected void forceTurningBack() {
+	@Override
+	public void forceTurningBack() {
 		forceMoving(moveDir().opposite());
 	}
 

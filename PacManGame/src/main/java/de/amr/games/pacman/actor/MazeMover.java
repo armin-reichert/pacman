@@ -70,4 +70,8 @@ public interface MazeMover {
 	 */
 	boolean canMoveBetween(Tile tile, Tile neighbor);
 
+	void forceMoving(Direction dir);
+
+	void forceTurningBack();
+
 }
