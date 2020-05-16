@@ -44,12 +44,10 @@ public class DemoModeMovement implements Steering {
 
 	@Override
 	public void steer() {
-		Tile currentLocation = pacMan.tile();
-		Tile ahead = game.maze.neighbor(currentLocation, pacMan.moveDir());
-		if (pacMan.canMoveBetween(currentLocation, ahead) && !pacMan.enteredNewTile()) {
+		if (pacMan.canCrossBorderTo(pacMan.moveDir()) && !pacMan.enteredNewTile()) {
 			return;
 		}
-		if (isDangerousGhostInSight()) {
+		if (isDangerousGhostApproaching()) {
 			pacMan.forceTurningBack();
 			return;
 		}
@@ -60,8 +58,8 @@ public class DemoModeMovement implements Steering {
 			if (dir == pacMan.moveDir().opposite()) {
 				continue;
 			}
-			Tile neighbor = game.maze.neighbor(currentLocation, dir);
-			if (pacMan.canMoveBetween(currentLocation, neighbor)) {
+			if (pacMan.canCrossBorderTo(dir)) {
+				Tile neighbor = game.maze.neighbor(pacMan.tile(), dir);
 				Tile nearestFood = nearestFood(neighbor);
 				if (nearestFood != null) {
 					int d = manhattanDistance(neighbor, nearestFood);
@@ -86,10 +84,15 @@ public class DemoModeMovement implements Steering {
 		//@formatter:on
 	}
 
-	boolean isDangerousGhostInSight() {
-		Tile ahead = game.maze.neighbor(pacMan.tile(), pacMan.moveDir());
-		Tile twoAhead = game.maze.tileToDir(pacMan.tile(), pacMan.moveDir(), 2);
-		return game.ghostsOnStage().filter(ghost -> !ghost.is(GhostState.FRIGHTENED))
-				.anyMatch(ghost -> ghost.tile().equals(ahead) || ghost.tile().equals(twoAhead));
+	boolean isDangerousGhostApproaching() {
+		Tile pacManLocation = pacMan.tile();
+		Tile ahead1 = game.maze.neighbor(pacManLocation, pacMan.moveDir());
+		Tile ahead2 = game.maze.tileToDir(pacManLocation, pacMan.moveDir(), 2);
+		//@formatter:off
+		return game.ghostsOnStage().anyMatch(
+				ghost -> !ghost.is(GhostState.FRIGHTENED) 
+				&& (ghost.tile().equals(ahead1) || ghost.tile().equals(ahead2))
+				&& ghost.moveDir() == pacMan.moveDir().opposite());
+		//@formatter:on
 	}
 }
