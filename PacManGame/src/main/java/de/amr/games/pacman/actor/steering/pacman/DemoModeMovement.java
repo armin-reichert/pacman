@@ -49,7 +49,7 @@ public class DemoModeMovement implements Steering {
 		if (pacMan.canMoveBetween(currentLocation, ahead) && !pacMan.enteredNewTile()) {
 			return;
 		}
-		if (isDangerousGhostInsight()) {
+		if (isDangerousGhostInSight()) {
 			pacMan.forceTurningBack();
 			return;
 		}
@@ -86,7 +86,7 @@ public class DemoModeMovement implements Steering {
 		//@formatter:on
 	}
 
-	boolean isDangerousGhostInsight() {
+	boolean isDangerousGhostInSight() {
 		Tile ahead = game.maze.neighbor(pacMan.tile(), pacMan.moveDir());
 		Tile twoAhead = game.maze.tileToDir(pacMan.tile(), pacMan.moveDir(), 2);
 		return game.ghostsOnStage().filter(ghost -> !ghost.is(GhostState.FRIGHTENED))
