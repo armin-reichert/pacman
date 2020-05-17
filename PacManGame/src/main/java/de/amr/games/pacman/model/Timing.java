@@ -36,7 +36,7 @@ public interface Timing {
 	 * @param fraction fraction of base speed
 	 * @return speed (pixels/tick) corresponding to given fraction of base speed
 	 */
-	static float relSpeed(float fraction) {
+	static float speed(float fraction) {
 		return fraction * BASE_SPEED;
 	}
 }

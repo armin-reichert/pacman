@@ -16,7 +16,7 @@ import static de.amr.games.pacman.model.Symbol.GRAPES;
 import static de.amr.games.pacman.model.Symbol.KEY;
 import static de.amr.games.pacman.model.Symbol.PEACH;
 import static de.amr.games.pacman.model.Symbol.STRAWBERRY;
-import static de.amr.games.pacman.model.Timing.relSpeed;
+import static de.amr.games.pacman.model.Timing.speed;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -254,7 +254,7 @@ public class Game {
 		case SLEEPING:
 			return 0;
 		case EATING:
-			return relSpeed(pacMan.powerTicks > 0 ? level.pacManPowerSpeed : level.pacManSpeed);
+			return speed(pacMan.powerTicks > 0 ? level.pacManPowerSpeed : level.pacManSpeed);
 		case DEAD:
 			return 0;
 		default:
@@ -265,19 +265,19 @@ public class Game {
 	public float ghostSpeed(Tile tile, GhostState state) {
 		switch (state) {
 		case LOCKED:
-			return maze.insideGhostHouse(tile) ? relSpeed(level.ghostSpeed) / 2 : 0;
+			return maze.insideGhostHouse(tile) ? speed(level.ghostSpeed) / 2 : 0;
 		case LEAVING_HOUSE:
-			return relSpeed(level.ghostSpeed) / 2;
+			return speed(level.ghostSpeed) / 2;
 		case ENTERING_HOUSE:
-			return relSpeed(level.ghostSpeed);
+			return speed(level.ghostSpeed);
 		case CHASING:
 			//$FALL-THROUGH$
 		case SCATTERING:
-			return maze.isTunnel(tile) ? relSpeed(level.ghostTunnelSpeed) : relSpeed(level.ghostSpeed);
+			return maze.isTunnel(tile) ? speed(level.ghostTunnelSpeed) : speed(level.ghostSpeed);
 		case FRIGHTENED:
-			return maze.isTunnel(tile) ? relSpeed(level.ghostTunnelSpeed) : relSpeed(level.ghostFrightenedSpeed);
+			return maze.isTunnel(tile) ? speed(level.ghostTunnelSpeed) : speed(level.ghostFrightenedSpeed);
 		case DEAD:
-			return 2 * relSpeed(level.ghostSpeed);
+			return 2 * speed(level.ghostSpeed);
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s", state));
 		}
