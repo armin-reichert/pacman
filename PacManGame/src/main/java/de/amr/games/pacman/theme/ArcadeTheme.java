@@ -278,7 +278,7 @@ public class ArcadeTheme implements Theme {
 
 	@Override
 	public Sound snd_ghost_chase() {
-		return wav("ghost_chase");
+		return mp3("ghost_chase");
 	}
 
 	@Override
