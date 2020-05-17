@@ -3,7 +3,7 @@ package de.amr.games.pacman.model;
 import java.util.Objects;
 
 /**
- * The Pac-Man game world consists of an unbounded grid of tiles.
+ * The Pac-Man game world consists of a (potentially unbounded) grid of tiles.
  * 
  * @author Armin Reichert
  */
@@ -37,11 +37,11 @@ public final class Tile {
 	}
 
 	/**
-	 * @param tile other tile
-	 * @return straight line distance in tiles (squared).
+	 * @param other other tile
+	 * @return squared Euclidean distance measured in tiles
 	 */
-	public int distSq(Tile tile) {
-		int dx = col - tile.col, dy = row - tile.row;
+	public int distSq(Tile other) {
+		int dx = col - other.col, dy = row - other.row;
 		return dx * dx + dy * dy;
 	}
 
