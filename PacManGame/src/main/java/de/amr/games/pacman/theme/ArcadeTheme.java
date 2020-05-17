@@ -253,7 +253,7 @@ public class ArcadeTheme implements Theme {
 
 	@Override
 	public Sound snd_eatPill() {
-		return wav("pacman_eat");
+		return mp3("eating");
 	}
 
 	@Override
@@ -273,7 +273,7 @@ public class ArcadeTheme implements Theme {
 
 	@Override
 	public Sound snd_ghost_dead() {
-		return wav("ghost_dead");
+		return mp3("ghost_dead");
 	}
 
 	@Override
