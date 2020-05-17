@@ -240,7 +240,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						sound.muteSoundEffects();
 						playView.enableGhostAnimations(false);
 						playView.stopEnergizerBlinking();
-						loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilledInLevel);
+						loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilled);
 					})
 					.onTick((state, t, remaining) -> {
 						float f = playView.mazeFlashingSeconds();

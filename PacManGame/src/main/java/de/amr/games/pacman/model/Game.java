@@ -50,6 +50,8 @@ public class Game {
 
 	public static final int POINTS_PELLET = 10;
 	public static final int POINTS_ENERGIZER = 50;
+	public static final int POINTS_EXTRA_LIFE = 10_000;
+	public static final int POINTS_KILLED_ALL_GHOSTS = 12_000;
 	public static final int POINTS_BONUS[] = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 	public static final int POINTS_GHOST[] = { 200, 400, 800, 1600 };
 
@@ -119,7 +121,7 @@ public class Game {
 		level.number = n;
 		level.eatenFoodCount = 0;
 		level.ghostsKilledByEnergizer = 0;
-		level.ghostsKilledInLevel = 0;
+		level.ghostsKilled = 0;
 		if (levelCounter.size() == 7) {
 			levelCounter.removeLast();
 		}
@@ -230,7 +232,7 @@ public class Game {
 			hiscore.points = score;
 			hiscore.levelNumber = level.number;
 		}
-		if (oldScore < 10_000 && 10_000 <= score) {
+		if (oldScore < POINTS_EXTRA_LIFE && POINTS_EXTRA_LIFE <= score) {
 			lives += 1;
 		}
 	}
@@ -238,10 +240,10 @@ public class Game {
 	public void scoreKilledGhost(String ghostName) {
 		int points = POINTS_GHOST[level.ghostsKilledByEnergizer];
 		level.ghostsKilledByEnergizer += 1;
-		level.ghostsKilledInLevel += 1;
+		level.ghostsKilled += 1;
 		score(points);
-		if (level.ghostsKilledInLevel == 16) {
-			score(12000);
+		if (level.ghostsKilled == 16) {
+			score(POINTS_KILLED_ALL_GHOSTS);
 		}
 		loginfo("Scored %d points for killing %s (%s ghost in sequence)", points, ghostName,
 				new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]);

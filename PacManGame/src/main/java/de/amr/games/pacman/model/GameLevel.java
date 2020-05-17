@@ -26,7 +26,7 @@ public class GameLevel {
 	public int number;
 	public int eatenFoodCount;
 	public int ghostsKilledByEnergizer;
-	public int ghostsKilledInLevel;
+	public int ghostsKilled;
 
 	public GameLevel(Symbol bonusSymbol, int bonusValue, float pacManSpeed, float pacManDotsSpeed, float ghostSpeed,
 			float ghostTunnelSpeed, int elroy1DotsLeft, float elroy1Speed, int elroy2DotsLeft, float elroy2Speed,
