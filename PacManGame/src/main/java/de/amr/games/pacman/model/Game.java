@@ -47,21 +47,15 @@ import de.amr.games.pacman.actor.PacManState;
  */
 public class Game {
 
-	public static final int SPEED_1_FPS = 60;
-	public static final int SPEED_2_FPS = 70;
-	public static final int SPEED_3_FPS = 80;
-
-	/**
-	 * I am still not sure about the correct base speed.
-	 * <p>
-	 * In Shaun Williams' Pac-Man remake
+	/*
+	 * I am still not sure about the correct base speed. <p> In Shaun Williams'
+	 * Pac-Man remake
 	 * (https://github.com/masonicGIT/pacman/blob/master/src/Actor.js) there is a
 	 * speed table giving the number of steps (=pixels?) Pac-Man is moving in 16
 	 * frames. In level 5 this gives 4*2 + 12 = 20 steps in 16 frames, which gives
-	 * 1.25 pixels / frame.
-	 * <p>
-	 * The table from Gamasutra ({@link Game#LEVELS}) states that this corresponds
-	 * to 100% base speed for Pac-Man at level 5. Therefore I use 1.25 pixel/frame.
+	 * 1.25 pixels / frame. <p> The table from Gamasutra ({@link Game#LEVELS})
+	 * states that this corresponds to 100% base speed for Pac-Man at level 5.
+	 * Therefore I use 1.25 pixel/frame.
 	 * 
 	 */
 	static final float BASE_SPEED = 1.25f;
@@ -82,13 +76,14 @@ public class Game {
 		return fraction * BASE_SPEED;
 	}
 
+	public static final int SPEED_1_FPS = 60, SPEED_2_FPS = 70, SPEED_3_FPS = 80;
+
 	public static final int POINTS_PELLET = 10;
 	public static final int POINTS_ENERGIZER = 50;
 	public static final int POINTS_EXTRA_LIFE = 10_000;
 	public static final int POINTS_KILLED_ALL_GHOSTS = 12_000;
 	public static final int POINTS_BONUS[] = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 	public static final int POINTS_GHOST[] = { 200, 400, 800, 1600 };
-
 	public static final int DIGEST_PELLET_TICKS = 1;
 	public static final int DIGEST_ENERGIZER_TICKS = 3;
 
