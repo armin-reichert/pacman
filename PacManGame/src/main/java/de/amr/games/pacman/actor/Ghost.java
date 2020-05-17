@@ -11,7 +11,7 @@ import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
-import static de.amr.games.pacman.model.Timing.sec;
+import static de.amr.games.pacman.model.Game.sec;
 
 import java.util.EnumMap;
 

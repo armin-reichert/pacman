@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
-import static de.amr.games.pacman.model.Timing.sec;
+import static de.amr.games.pacman.model.Game.sec;
 import static de.amr.graph.grid.impl.Grid4Topology.W;
 
 import java.awt.Color;

@@ -16,7 +16,6 @@ import static de.amr.games.pacman.model.Symbol.GRAPES;
 import static de.amr.games.pacman.model.Symbol.KEY;
 import static de.amr.games.pacman.model.Symbol.PEACH;
 import static de.amr.games.pacman.model.Symbol.STRAWBERRY;
-import static de.amr.games.pacman.model.Timing.speed;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -48,6 +47,42 @@ import de.amr.games.pacman.actor.PacManState;
  */
 public class Game {
 
+	public static final int FPS = 60;
+	public static final int SPEED_1_FPS = FPS;
+	public static final int SPEED_2_FPS = FPS + 10;
+	public static final int SPEED_3_FPS = FPS + 20;
+
+	/**
+	 * I am still not sure about the correct base speed.
+	 * <p>
+	 * In Shaun Williams' Pac-Man remake
+	 * (https://github.com/masonicGIT/pacman/blob/master/src/Actor.js) there is a
+	 * speed table giving the number of steps (=pixels?) Pac-Man is moving in 16
+	 * frames. In level 5 this gives 4*2 + 12 = 20 steps in 16 frames, which gives
+	 * 1.25 pixels / frame.
+	 * <p>
+	 * The table from Gamasutra ({@link Game#LEVELS}) states that this corresponds
+	 * to 100% base speed for Pac-Man at level 5. Therefore I use 1.25 pixel/frame.
+	 * 
+	 */
+	static final float BASE_SPEED = 1.25f;
+
+	/**
+	 * @param fraction fraction of seconds
+	 * @return ticks corresponding to given fraction of seconds
+	 */
+	public static int sec(float fraction) {
+		return Math.round(FPS * fraction);
+	}
+
+	/**
+	 * @param fraction fraction of base speed
+	 * @return speed (pixels/tick) corresponding to given fraction of base speed
+	 */
+	public static float speed(float fraction) {
+		return fraction * BASE_SPEED;
+	}
+
 	public static final int POINTS_PELLET = 10;
 	public static final int POINTS_ENERGIZER = 50;
 	public static final int POINTS_EXTRA_LIFE = 10_000;
@@ -57,10 +92,6 @@ public class Game {
 
 	public static final int DIGEST_PELLET_TICKS = 1;
 	public static final int DIGEST_ENERGIZER_TICKS = 3;
-
-	public static final int SPEED_1_FPS = 60;
-	public static final int SPEED_2_FPS = 70;
-	public static final int SPEED_3_FPS = 80;
 
 	static final GameLevel[] LEVELS = {
 		/*@formatter:off*/

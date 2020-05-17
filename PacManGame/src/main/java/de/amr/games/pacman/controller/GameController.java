@@ -14,7 +14,7 @@ import static de.amr.games.pacman.controller.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.PacManGameState.LOADING_MUSIC;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
-import static de.amr.games.pacman.model.Timing.sec;
+import static de.amr.games.pacman.model.Game.sec;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.READY_TO_PLAY;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;

@@ -3,6 +3,7 @@ package de.amr.games.pacman.actor;
 import static de.amr.games.pacman.actor.MovingActor.Movement.MOVING_INSIDE_MAZE;
 import static de.amr.games.pacman.actor.MovingActor.Movement.TELEPORTING;
 import static de.amr.games.pacman.model.Direction.RIGHT;
+import static de.amr.games.pacman.model.Game.sec;
 
 import java.util.Map;
 import java.util.Objects;
@@ -17,7 +18,6 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.model.Timing;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.api.FsmContainer;
 import de.amr.statemachine.core.StateMachine;
@@ -74,7 +74,7 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 						.act(() -> placeAt(enteredRightPortal() ? maze.portalLeft : maze.portalRight))
 			.endStateMachine();
 		//@formatter:on
-		setTeleportingDuration(Timing.sec(0.5f));
+		setTeleportingDuration(sec(0.5f));
 		movement.getTracer().setLogger(PacManStateMachineLogging.LOG);
 	}
 

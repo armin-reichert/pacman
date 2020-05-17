@@ -3,7 +3,7 @@ package de.amr.games.pacman.view.intro;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.PacManApp.texts;
-import static de.amr.games.pacman.model.Timing.sec;
+import static de.amr.games.pacman.model.Game.sec;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.READY_TO_PLAY;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.SCROLLING_LOGO;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.SHOWING_ANIMATIONS;

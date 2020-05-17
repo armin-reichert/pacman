@@ -3,7 +3,7 @@ package de.amr.games.pacman.actor;
 import static de.amr.games.pacman.actor.BonusState.ACTIVE;
 import static de.amr.games.pacman.actor.BonusState.CONSUMED;
 import static de.amr.games.pacman.actor.BonusState.INACTIVE;
-import static de.amr.games.pacman.model.Timing.sec;
+import static de.amr.games.pacman.model.Game.sec;
 
 import java.util.Random;
 

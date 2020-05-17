@@ -3,7 +3,7 @@ package de.amr.games.pacman.controller;
 import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.model.Timing.sec;
+import static de.amr.games.pacman.model.Game.sec;
 
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.model.Game;
