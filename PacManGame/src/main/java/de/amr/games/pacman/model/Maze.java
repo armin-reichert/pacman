@@ -69,7 +69,6 @@ public class Maze {
 	public final Tile ghostHouseEntry;
 	public final Tile portalLeft, portalRight;
 	public final Tile bonusTile;
-	public final Tile cornerNW, cornerNE, cornerSW, cornerSE;
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
 
@@ -108,17 +107,11 @@ public class Maze {
 		pacManHome = new Tile(13, 26);
 		bonusTile = new Tile(13, 20);
 
-		// Scattering targets
+		// (unreachable) scattering targets
 		horizonNW = new Tile(2, 0);
 		horizonNE = new Tile(25, 0);
 		horizonSW = new Tile(0, 35);
 		horizonSE = new Tile(27, 35);
-
-		// Corners inside maze
-		cornerNW = new Tile(1, 4);
-		cornerNE = new Tile(26, 4);
-		cornerSW = new Tile(1, 32);
-		cornerSE = new Tile(26, 32);
 	}
 
 	/**
