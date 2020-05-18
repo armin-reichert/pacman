@@ -106,14 +106,13 @@ public class HeadingForTargetTile implements Steering {
 	 * actor at each tile of the path.
 	 */
 	private Direction dirToTarget(Direction moveDir, Tile currentTile, Tile targetTile) {
-		Function<Direction, Tile> neighbor = dir -> actor.maze().neighbor(currentTile, dir);
-		Function<Direction, Integer> neighborDistToTarget = dir -> neighbor.apply(dir).distSq(targetTile);
+		Function<Direction, Tile> fnNeighbor = dir -> actor.maze().neighbor(currentTile, dir);
+		Function<Direction, Integer> fnNeighborDistToTarget = dir -> fnNeighbor.apply(dir).distSq(targetTile);
 		/*@formatter:off*/
-		return UP_LEFT_DOWN_RIGHT
-			.stream()
+		return UP_LEFT_DOWN_RIGHT.stream()
 			.filter(dir -> dir != moveDir.opposite())
-			.filter(dir -> actor.canMoveBetween(currentTile, neighbor.apply(dir)))
-			.sorted(comparing(neighborDistToTarget).thenComparingInt(UP_LEFT_DOWN_RIGHT::indexOf))
+			.filter(dir -> actor.canMoveBetween(currentTile, fnNeighbor.apply(dir)))
+			.sorted(comparing(fnNeighborDistToTarget).thenComparingInt(UP_LEFT_DOWN_RIGHT::indexOf))
 			.findFirst()
 			// when a ghost is on a portal tile and the steering has just changed it may happen
 			// that no direction can be computed. In that case keep the move direction:
