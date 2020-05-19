@@ -2,9 +2,9 @@ package de.amr.games.pacman.actor.steering.ghost;
 
 import static de.amr.datastruct.StreamUtils.permute;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
 
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.MazeMover;
@@ -24,15 +24,12 @@ import de.amr.games.pacman.model.Tile;
 public class FleeingToSafeCorner extends TakingPrecomputedPath {
 
 	final MazeGraph graph;
-	final Tile cornerNW, cornerNE, cornerSW, cornerSE;
+	final Tile[] corners;
 
-	public FleeingToSafeCorner(Ghost refugee, MazeMover attacker) {
+	public FleeingToSafeCorner(Ghost refugee, MazeMover attacker, Tile... corners) {
 		super(refugee, attacker::tile);
 		graph = new MazeGraph(maze);
-		cornerNW = new Tile(1, 4);
-		cornerNE = new Tile(26, 4);
-		cornerSW = new Tile(1, 32);
-		cornerSE = new Tile(26, 32);
+		this.corners = Arrays.copyOf(corners, corners.length);
 	}
 
 	@Override
@@ -53,7 +50,7 @@ public class FleeingToSafeCorner extends TakingPrecomputedPath {
 		Tile refugeeTile = refugee.tile();
 		Tile chaserTile = fnTargetTile.get();
 		//@formatter:off
-		return permute(Stream.of(cornerNW, cornerNE, cornerSE, cornerSW))
+		return permute(Arrays.stream(corners))
 			.filter(corner -> !corner.equals(refugeeTile))
 			.sorted(byDist(maze,refugeeTile, chaserTile).reversed())
 			.findFirst().get();

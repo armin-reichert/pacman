@@ -5,6 +5,7 @@ import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.MazeMover;
 import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.actor.steering.common.SteeredMazeMover;
+import de.amr.games.pacman.model.Tile;
 
 /**
  * Ghost-specific steerings.
@@ -30,11 +31,12 @@ public interface SteeredGhost extends SteeredMazeMover {
 	 * Lets the actor avoid the attacker's path by walking to a "safe" maze corner.
 	 * 
 	 * @param attacker the attacking actor
+	 * @param corners  list of tiles representing maze corners
 	 * 
 	 * @return behavior where actor flees to a "safe" maze corner
 	 */
-	default Steering isFleeingToSafeCorner(MazeMover attacker) {
-		return new FleeingToSafeCorner(steeredGhost(), attacker);
+	default Steering isFleeingToSafeCorner(MazeMover attacker, Tile... corners) {
+		return new FleeingToSafeCorner(steeredGhost(), attacker, corners);
 	}
 
 	/**
