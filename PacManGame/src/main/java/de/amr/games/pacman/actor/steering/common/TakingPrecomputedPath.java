@@ -71,8 +71,8 @@ public abstract class TakingPrecomputedPath implements Steering {
 	protected abstract List<Tile> pathToTarget(MazeMover actor, Tile targetTile);
 
 	protected boolean isPathInvalid(MazeMover actor) {
-		return actor.wishDir() == null || targetPath.size() == 0 || first(targetPath) != actor.tile()
-				|| last(targetPath) != actor.targetTile();
+		return actor.wishDir() == null || targetPath.size() == 0 || !first(targetPath).equals(actor.tile())
+				|| !last(targetPath).equals(actor.targetTile());
 	}
 
 	protected Optional<Direction> alongPath(List<Tile> path) {
