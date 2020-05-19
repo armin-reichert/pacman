@@ -195,12 +195,12 @@ public class SimplePlayView extends PacManGameView {
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
-		int imageSize = 2 * Tile.SIZE;
-		int x = width() - (game.levelCounter.size() + 1) * imageSize;
-		for (Symbol symbol : game.levelCounter) {
-			Image image = theme.spr_bonusSymbol(symbol).frame(0);
-			g.drawImage(image, x, height() - imageSize, imageSize, imageSize, null);
-			x += imageSize;
+		int first = Math.max(0, game.levelCounter.size() - 7);
+		int n = Math.min(7, game.levelCounter.size());
+		int sz = 2 * Tile.SIZE; // image size
+		for (int i = 0, x = width() - 2 * sz; i < n; ++i, x -= sz) {
+			Symbol symbol = game.levelCounter.get(first + i);
+			g.drawImage(theme.spr_bonusSymbol(symbol).frame(0), x, height() - sz, sz, sz, null);
 		}
 	}
 }

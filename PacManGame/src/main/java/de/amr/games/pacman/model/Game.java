@@ -22,8 +22,8 @@ import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.awt.event.KeyEvent.VK_UP;
 
 import java.io.File;
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.actor.Bonus;
@@ -119,7 +119,7 @@ public class Game {
 	public Bonus bonus;
 	public Maze maze;
 	public Stage stage;
-	public Deque<Symbol> levelCounter;
+	public List<Symbol> levelCounter;
 	public Hiscore hiscore;
 	public GameLevel level;
 	public int lives;
@@ -128,7 +128,7 @@ public class Game {
 	public Game(int startLevel) {
 		lives = 3;
 		score = 0;
-		levelCounter = new ArrayDeque<>(7);
+		levelCounter = new ArrayList<>();
 		hiscore = new Hiscore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
 		maze = new Maze();
 		stage = new Stage();
@@ -147,10 +147,7 @@ public class Game {
 		level.eatenFoodCount = 0;
 		level.ghostsKilledByEnergizer = 0;
 		level.ghostsKilled = 0;
-		if (levelCounter.size() == 7) {
-			levelCounter.removeLast();
-		}
-		levelCounter.addFirst(level.bonusSymbol);
+		levelCounter.add(level.bonusSymbol);
 		maze.restoreFood();
 		hiscore.save();
 	}
