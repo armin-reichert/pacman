@@ -188,9 +188,9 @@ public class SimplePlayView extends PacManGameView {
 	}
 
 	protected void drawLives(Graphics2D g) {
-		int imageSize = 2 * Tile.SIZE;
-		for (int i = 0, x = imageSize; i < game.lives; ++i, x += imageSize) {
-			g.drawImage(imageLife, x, height() - imageSize, null);
+		int sz = 2 * Tile.SIZE;
+		for (int i = 0, x = sz; i < game.lives; ++i, x += sz) {
+			g.drawImage(imageLife, x, height() - sz, null);
 		}
 	}
 
