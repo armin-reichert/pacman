@@ -2,6 +2,16 @@
 
 [![Pac-Man](https://i3.ytimg.com/vi/_3GhJGIOTp4/maxresdefault.jpg)](https://www.youtube.com/watch?v=_3GhJGIOTp4)
 
+## How to build and run this program
+
+```
+cd path/to/PacManGame
+mvn clean install assembly:single
+java -jar target\PacManGame-1.0.jar
+```
+
+## These were the times
+
 The only computer game I played regularly was a Pac-Man clone named ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running at the time (1984) on my Apple II+ clone, on a monochrome monitor with a single crappy little speaker, but that hypnotising sound is still in my head.
 
 ## The challenge
