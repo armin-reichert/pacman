@@ -32,6 +32,9 @@ public class PacManApp extends Application {
 		@Parameter(names = { "-ghostsDangerous" }, description = "if set, ghosts can kill Pac-Man", arity = 1)
 		public boolean ghostsDangerous = true;
 
+		@Parameter(names = { "-pathFinder" }, description = "path finder algorithm (astar, bfs, bestfs)")
+		public String pathFinder = "astar";
+
 		@Parameter(names = {
 				"-overflowBug" }, description = "simulate the overflow bug from the original Arcade game", arity = 1)
 		public boolean overflowBug = true;
@@ -70,6 +73,7 @@ public class PacManApp extends Application {
 		super.printSettings();
 		loginfo("\tGhosts dangerous: %s", settings.ghostsDangerous);
 		loginfo("\tGhosts flee randomly: %s", settings.ghostsFleeRandomly);
+		loginfo("\tPath finder: %s", settings.pathFinder);
 		loginfo("\tOverflow Bug: %s", settings.overflowBug);
 		loginfo("\tPacMan immortable: %s", settings.pacManImmortable);
 		loginfo("\tSkip Intro: %s", settings.skipIntro);

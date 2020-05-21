@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import de.amr.games.pacman.PacManApp;
 import de.amr.graph.core.api.UndirectedEdge;
 import de.amr.graph.grid.api.GridGraph2D;
 import de.amr.graph.grid.impl.Grid4Topology;
@@ -13,6 +14,8 @@ import de.amr.graph.grid.impl.GridGraph;
 import de.amr.graph.pathfinder.api.GraphSearch;
 import de.amr.graph.pathfinder.api.Path;
 import de.amr.graph.pathfinder.impl.AStarSearch;
+import de.amr.graph.pathfinder.impl.BestFirstSearch;
+import de.amr.graph.pathfinder.impl.BreadthFirstSearch;
 
 /**
  * Adds a grid graph structure to the maze such that graph path finder
@@ -48,12 +51,25 @@ public class MazeGraph {
 
 	public List<Tile> shortestPath(Tile source, Tile target) {
 		if (maze.insideBoard(source) && maze.insideBoard(target)) {
-			GraphSearch pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
+			GraphSearch pathfinder = createPathFinder(target);
 			Path path = pathfinder.findPath(vertex(source), vertex(target));
 			pathFinderCalls += 1;
-			loginfo("%d'th pathfinding executed", pathFinderCalls);
+			loginfo("%d'th pathfinding (%s) executed", pathFinderCalls, pathfinder.getClass().getSimpleName());
 			return path.vertexStream().map(this::tile).collect(Collectors.toList());
 		}
 		return Collections.emptyList();
+	}
+
+	private GraphSearch createPathFinder(Tile target) {
+		switch (PacManApp.settings.pathFinder) {
+		case "astar":
+			return new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
+		case "bfs":
+			return new BreadthFirstSearch(grid);
+		case "bestfs":
+			return new BestFirstSearch(grid, v -> grid.manhattan(v, vertex(target)));
+		default:
+			return new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
+		}
 	}
 }
