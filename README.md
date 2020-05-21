@@ -327,7 +327,7 @@ cannot reverse direction this results in a cyclic movement around the walls in t
 
 The original Pac-Man game did not use any graph-based pathfinding. To still give an example how graph-based pathfinding can be useful, there is an additional implementation of the *frightened* behavior: when Pac-Man eats a power-pill each frightened ghost choses the "safest" corner to flee to. It computes the shortest path to each corner and selects the one with the largest distance to Pac-Man's current position. Here, the distance of a path from Pac-Man's position is defined as the minimum distance of any tile on the path from Pac-Man's position.
 
-The wrapper class [MazeGraph](PacManGame/src/main/java/de/amr/games/pacman/model/MazeGraph.java) adds a (grid) graph structure to the maze. This allows running the generic graph algorithms from my [graph library](https://github.com/armin-reichert/graph) on the maze. For example, shortest paths in the maze can then be computed by just calling the *findPath(Tile source, Tile target)* method on the maze graph. This method runs an [A* search](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html) on the underlying graph. The graph library provides a whole number of search algorithms like BFS or Dijkstra. The code to compute a shortest path between two tiles using the A* algorithm with Manhattan distance heuristics looks like this:
+The wrapper class [MazeGraph](PacManGame/src/main/java/de/amr/games/pacman/model/MazeGraph.java) adds a (grid) graph structure to the maze. This allows running the generic graph algorithms from my [graph library](https://github.com/armin-reichert/graph) on the maze. For example, shortest paths in the maze can then be computed by just calling the *findPath(Tile source, Tile target)* method on the maze graph. This method runs either an [A* search](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html), a breadth-first search or a best-first search on the underlying graph, see configuration options below. The graph library provides a whole number of search algorithms like BFS or Dijkstra. The code to compute a shortest path between two tiles using the A* algorithm with Manhattan distance heuristics looks like this:
 
 ```java
 GraphSearch pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
@@ -353,6 +353,7 @@ However, for a graph of such a small size, the used algorithm doesn't matter ver
     - `-overflowBug` (default=true): simulates overflow bug from Arcade version
     - `-pacManImmortable` (default=false): Pac-Man keeps live after being killed
     - `-ghostsFleeRandomly` (default=true): ghosts flee in random directions when frightened. If this is set to false, they choose a "safe" corner to flee to.
+    - `-pathFinder`(default=astar): select the path finder algorithm (astar, bfs, bestfs) used for computing the safe paths
     - `-ghostsDangerous` (default=true): deadly ghost collisions are detected 
     - `-demoMode`: Pac-Man moves randomly and is immortable
   - The overall speed can be changed during the game; 
