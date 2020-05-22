@@ -32,9 +32,9 @@ public class DemoModeMovement implements Steering {
 	PacMan pacMan;
 	Game game;
 
-	public DemoModeMovement(Game game, PacMan actor) {
+	public DemoModeMovement(Game game) {
 		this.game = game;
-		this.pacMan = actor;
+		this.pacMan = game.pacMan;
 	}
 
 	@Override

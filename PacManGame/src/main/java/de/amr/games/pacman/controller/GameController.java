@@ -539,16 +539,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void toggleDemoMode() {
 		settings.demoMode = !settings.demoMode;
 		setDemoMode(settings.demoMode);
-		loginfo("Demo mode is %s", (settings.demoMode ? "on" : "off"));
+		loginfo("Demo mode is %s", settings.demoMode ? "on" : "off");
 	}
 
 	private void setDemoMode(boolean on) {
+		settings.pacManImmortable = on;
 		if (on) {
-			settings.pacManImmortable = true;
-//			game.pacMan.behavior(game.pacMan.isMovingRandomlyWithoutTurningBack());
-			game.pacMan.behavior(new DemoModeMovement(game, game.pacMan));
+			game.pacMan.behavior(new DemoModeMovement(game));
 		} else {
-			settings.pacManImmortable = false;
 			game.pacMan.behavior(game.pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		}
 	}
