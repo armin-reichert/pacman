@@ -6,12 +6,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.view.Pen;
-import de.amr.easy.game.view.View;
-import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
@@ -33,13 +30,11 @@ public class FollowTargetTilesTestApp extends PacManApp {
 
 	@Override
 	public void init() {
-		Game game = new Game();
-		Theme theme = new ArcadeTheme();
-		setController(new FollowTargetTilesTestUI(game, theme));
+		setController(new FollowTargetTilesTestUI(new Game(), new ArcadeTheme()));
 	}
 }
 
-class FollowTargetTilesTestUI extends PlayView implements VisualController {
+class FollowTargetTilesTestUI extends PlayView {
 
 	private List<Tile> targets;
 	private int current;
@@ -52,11 +47,6 @@ class FollowTargetTilesTestUI extends PlayView implements VisualController {
 		showGrid = true;
 		targets = Arrays.asList(game.maze.cornerNW, game.maze.ghostHouseEntry, game.maze.cornerNE, game.maze.cornerSE,
 				game.maze.pacManHome, game.maze.cornerSW);
-	}
-
-	@Override
-	public Optional<View> currentView() {
-		return Optional.of(this);
 	}
 
 	@Override

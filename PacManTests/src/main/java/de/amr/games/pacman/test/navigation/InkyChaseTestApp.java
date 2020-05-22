@@ -3,13 +3,10 @@ package de.amr.games.pacman.test.navigation;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 
 import java.awt.event.KeyEvent;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.easy.game.view.View;
-import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacManState;
@@ -33,13 +30,11 @@ public class InkyChaseTestApp extends PacManApp {
 
 	@Override
 	public void init() {
-		Game game = new Game();
-		Theme theme = new ArcadeTheme();
-		setController(new InkyChaseTestUI(game, theme));
+		setController(new InkyChaseTestUI(new Game(), new ArcadeTheme()));
 	}
 }
 
-class InkyChaseTestUI extends PlayView implements VisualController {
+class InkyChaseTestUI extends PlayView {
 
 	public InkyChaseTestUI(Game game, Theme theme) {
 		super(game, theme);
@@ -72,10 +67,4 @@ class InkyChaseTestUI extends PlayView implements VisualController {
 		game.ghostsOnStage().forEach(Ghost::update);
 		super.update();
 	}
-
-	@Override
-	public Optional<View> currentView() {
-		return Optional.of(this);
-	}
-
 }

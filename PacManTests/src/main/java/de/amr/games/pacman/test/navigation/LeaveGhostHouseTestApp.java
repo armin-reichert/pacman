@@ -3,12 +3,9 @@ package de.amr.games.pacman.test.navigation;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 
 import java.awt.event.KeyEvent;
-import java.util.Optional;
 
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.easy.game.view.View;
-import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
@@ -32,13 +29,11 @@ public class LeaveGhostHouseTestApp extends PacManApp {
 	@Override
 	public void init() {
 		clock().setTargetFramerate(10);
-		Game game = new Game();
-		Theme theme = new ArcadeTheme();
-		setController(new LeaveGhostHouseTestUI(game, theme));
+		setController(new LeaveGhostHouseTestUI(new Game(), new ArcadeTheme()));
 	}
 }
 
-class LeaveGhostHouseTestUI extends PlayView implements VisualController {
+class LeaveGhostHouseTestUI extends PlayView {
 
 	public LeaveGhostHouseTestUI(Game game, Theme theme) {
 		super(game, theme);
@@ -65,10 +60,5 @@ class LeaveGhostHouseTestUI extends PlayView implements VisualController {
 		}
 		game.inky.update();
 		super.update();
-	}
-
-	@Override
-	public Optional<View> currentView() {
-		return Optional.of(this);
 	}
 }

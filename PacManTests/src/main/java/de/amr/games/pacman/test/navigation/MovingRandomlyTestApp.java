@@ -3,12 +3,9 @@ package de.amr.games.pacman.test.navigation;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 
 import java.awt.event.KeyEvent;
-import java.util.Optional;
 
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.easy.game.view.View;
-import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.model.Game;
@@ -30,13 +27,11 @@ public class MovingRandomlyTestApp extends PacManApp {
 
 	@Override
 	public void init() {
-		Game game = new Game();
-		Theme theme = new ArcadeTheme();
-		setController(new MovingRandomlyTestUI(game, theme));
+		setController(new MovingRandomlyTestUI(new Game(), new ArcadeTheme()));
 	}
 }
 
-class MovingRandomlyTestUI extends PlayView implements VisualController {
+class MovingRandomlyTestUI extends PlayView {
 
 	boolean started;
 
@@ -72,10 +67,5 @@ class MovingRandomlyTestUI extends PlayView implements VisualController {
 		if (started) {
 			game.ghostsOnStage().forEach(Ghost::update);
 		}
-	}
-
-	@Override
-	public Optional<View> currentView() {
-		return Optional.of(this);
 	}
 }

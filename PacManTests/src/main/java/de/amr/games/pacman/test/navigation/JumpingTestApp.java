@@ -1,10 +1,6 @@
 package de.amr.games.pacman.test.navigation;
 
-import java.util.Optional;
-
 import de.amr.easy.game.config.AppSettings;
-import de.amr.easy.game.view.View;
-import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.model.Game;
@@ -26,13 +22,11 @@ public class JumpingTestApp extends PacManApp {
 
 	@Override
 	public void init() {
-		Game game = new Game();
-		Theme theme = new ArcadeTheme();
-		setController(new JumpingTestUI(game, theme));
+		setController(new JumpingTestUI(new Game(), new ArcadeTheme()));
 	}
 }
 
-class JumpingTestUI extends PlayView implements VisualController {
+class JumpingTestUI extends PlayView {
 
 	public JumpingTestUI(Game game, Theme theme) {
 		super(game, theme);
@@ -53,10 +47,5 @@ class JumpingTestUI extends PlayView implements VisualController {
 	public void update() {
 		super.update();
 		game.ghostsOnStage().forEach(Ghost::update);
-	}
-
-	@Override
-	public Optional<View> currentView() {
-		return Optional.of(this);
 	}
 }

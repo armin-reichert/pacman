@@ -3,12 +3,9 @@ package de.amr.games.pacman.test.navigation;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 
 import java.awt.event.KeyEvent;
-import java.util.Optional;
 
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.easy.game.view.View;
-import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
@@ -31,13 +28,11 @@ public class ScatteringTestApp extends PacManApp {
 
 	@Override
 	public void init() {
-		Game game = new Game();
-		Theme theme = new ArcadeTheme();
-		setController(new ScatteringTestUI(game, theme));
+		setController(new ScatteringTestUI(new Game(), new ArcadeTheme()));
 	}
 }
 
-class ScatteringTestUI extends PlayView implements VisualController {
+class ScatteringTestUI extends PlayView {
 
 	public ScatteringTestUI(Game game, Theme theme) {
 		super(game, theme);
@@ -66,10 +61,5 @@ class ScatteringTestUI extends PlayView implements VisualController {
 		}
 		game.ghostsOnStage().forEach(Ghost::update);
 		super.update();
-	}
-
-	@Override
-	public Optional<View> currentView() {
-		return Optional.of(this);
 	}
 }

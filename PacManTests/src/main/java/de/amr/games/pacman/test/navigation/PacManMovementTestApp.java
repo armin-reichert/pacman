@@ -1,13 +1,10 @@
 package de.amr.games.pacman.test.navigation;
 
 import java.awt.event.KeyEvent;
-import java.util.Optional;
 
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
-import de.amr.easy.game.view.View;
-import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.MovingActor;
 import de.amr.games.pacman.actor.PacMan;
@@ -32,13 +29,11 @@ public class PacManMovementTestApp extends PacManApp {
 
 	@Override
 	public void init() {
-		Game game = new Game();
-		Theme theme = new ArcadeTheme();
-		setController(new PacManMovementTestUI(game, theme));
+		setController(new PacManMovementTestUI(new Game(), new ArcadeTheme()));
 	}
 }
 
-class PacManMovementTestUI extends PlayView implements VisualController {
+class PacManMovementTestUI extends PlayView {
 
 	private PacMan pacMan;
 
@@ -94,10 +89,5 @@ class PacManMovementTestUI extends PlayView implements VisualController {
 			pacMan.behavior(pacMan.isMovingRandomlyWithoutTurningBack());
 			message.text = "Random moves";
 		}
-	}
-
-	@Override
-	public Optional<View> currentView() {
-		return Optional.of(this);
 	}
 }
