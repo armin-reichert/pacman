@@ -2,12 +2,8 @@ package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 
-import java.util.Optional;
-
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Mouse;
-import de.amr.easy.game.view.View;
-import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
@@ -24,20 +20,18 @@ public class FollowMouseTestApp extends PacManApp {
 	@Override
 	protected void configure(AppSettings settings) {
 		super.configure(settings);
-		settings.title = "Follow Mouse";
+		settings.title = "Pac-Man Follows Mouse";
 	}
 
 	@Override
 	public void init() {
-		Game game = new Game();
-		Theme theme = new ArcadeTheme();
-		setController(new FollowMouseTestUI(game, theme));
+		setController(new FollowMouseTestUI(new Game(), new ArcadeTheme()));
 	}
 }
 
-class FollowMouseTestUI extends PlayView implements VisualController {
+class FollowMouseTestUI extends PlayView {
 
-	private Tile mouseTile;
+	private Tile mousePosition;
 
 	public FollowMouseTestUI(Game game, Theme theme) {
 		super(game, theme);
@@ -48,23 +42,18 @@ class FollowMouseTestUI extends PlayView implements VisualController {
 	}
 
 	@Override
-	public Optional<View> currentView() {
-		return Optional.of(this);
-	}
-
-	@Override
 	public void init() {
 		super.init();
 		game.maze.removeFood();
 		theme.snd_ghost_chase().volume(0);
 		game.stage.add(game.blinky);
-		game.blinky.behavior(CHASING, game.blinky.isHeadingFor(() -> mouseTile));
+		game.blinky.behavior(CHASING, game.blinky.isHeadingFor(() -> mousePosition));
 		game.blinky.setState(CHASING);
 		readMouse();
 	}
 
 	private void readMouse() {
-		mouseTile = new Tile(Mouse.getX() / Tile.SIZE, Mouse.getY() / Tile.SIZE);
+		mousePosition = new Tile(Mouse.getX() / Tile.SIZE, Mouse.getY() / Tile.SIZE);
 	}
 
 	@Override
