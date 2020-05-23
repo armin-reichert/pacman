@@ -45,8 +45,9 @@ class FollowTargetTilesTestUI extends PlayView {
 		showStates = false;
 		showScores = false;
 		showGrid = true;
-		targets = Arrays.asList(game.maze.cornerNW, game.maze.ghostHouseEntry, game.maze.cornerNE, game.maze.cornerSE,
-				game.maze.pacManHome, game.maze.cornerSW);
+
+		targets = Arrays.asList(game.maze.cornerNW(), game.maze.ghostHouseEntry, game.maze.cornerNE(), game.maze.cornerSE(),
+				game.maze.pacManHome, game.maze.cornerSW());
 	}
 
 	@Override

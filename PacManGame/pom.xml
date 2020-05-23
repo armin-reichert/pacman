@@ -61,7 +61,7 @@
 		<dependency>
 			<groupId>de.amr.statemachine</groupId>
 			<artifactId>StateMachine</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 	</dependencies>
 	<url>https://github.com/armin-reichert/pacman</url>

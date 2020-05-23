@@ -115,8 +115,8 @@ public class Maze {
 	}
 
 	/**
-	 * @return stream of tiles of the playing area (walls above and below playing
-	 *         area and portal tiles are omitted)
+	 * @return stream of tiles of the playing area (walls above and below playing area and portal tiles
+	 *         are omitted)
 	 */
 	public Stream<Tile> playingArea() {
 		return playingAreaTiles.stream();
@@ -126,8 +126,8 @@ public class Maze {
 	 * @param tile reference tile
 	 * @param dir  some direction
 	 * @param n    number of tiles
-	 * @return the tile located <code>n</code> tiles away from the reference tile
-	 *         towards the given direction. This can be a tile outside of the board!
+	 * @return the tile located <code>n</code> tiles away from the reference tile towards the given
+	 *         direction. This can be a tile outside of the board!
 	 */
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
 		if (tile.equals(portalLeft) && dir == Direction.LEFT) {
@@ -143,8 +143,7 @@ public class Maze {
 	/**
 	 * @param tile reference tile
 	 * @param dir  some direction
-	 * @return neighbor towards the given direction. This can be a tile outside of
-	 *         the board!
+	 * @return neighbor towards the given direction. This can be a tile outside of the board!
 	 */
 	public Tile neighbor(Tile tile, Direction dir) {
 		return tileToDir(tile, dir, 1);
@@ -230,5 +229,23 @@ public class Maze {
 				}
 			}
 		}
+	}
+
+	// these corner positions are not needed in the original game
+
+	public Tile cornerNW() {
+		return new Tile(1, 4);
+	}
+
+	public Tile cornerNE() {
+		return new Tile(26, 4);
+	}
+
+	public Tile cornerSW() {
+		return new Tile(1, 32);
+	}
+
+	public Tile cornerSE() {
+		return new Tile(26, 32);
 	}
 }

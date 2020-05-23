@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.amr.games.pacman.test</groupId>
 	<artifactId>PacManTests</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>PacManTests</name>
 	<description>Pac-Man game tests</description>
 	<build>
@@ -37,11 +37,6 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>de.amr.games.pacman</groupId>
-			<artifactId>PacManGame</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
@@ -51,6 +46,11 @@
 			<groupId>de.amr.graph</groupId>
 			<artifactId>graph-viz</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>de.amr.games.pacman</groupId>
+			<artifactId>PacManGame</artifactId>
+			<version>1.0</version>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>

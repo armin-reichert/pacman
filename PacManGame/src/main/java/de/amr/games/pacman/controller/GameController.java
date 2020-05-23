@@ -44,7 +44,6 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.core.PacManGameView;
 import de.amr.games.pacman.view.intro.IntroView;
@@ -521,8 +520,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void toggleGhostFrightenedBehavior() {
 		if (settings.ghostsFleeRandomly) {
 			settings.ghostsFleeRandomly = false;
-			game.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.isFleeingToSafeCorner(game.pacMan, new Tile(1, 4),
-					new Tile(26, 4), new Tile(1, 32), new Tile(26, 32))));
+			game.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.isFleeingToSafeCorner(game.pacMan,
+					game.maze.cornerNW(), game.maze.cornerNE(), game.maze.cornerSW(), game.maze.cornerSE())));
 			loginfo("Ghosts escape behavior is: Fleeing to maze corners");
 		} else {
 			settings.ghostsFleeRandomly = true;
