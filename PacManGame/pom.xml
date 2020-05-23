@@ -39,11 +39,6 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>de.amr.easy.game</groupId>
-			<artifactId>EasyGame</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>de.amr.graph</groupId>
 			<artifactId>graph-core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
@@ -61,6 +56,11 @@
 		<dependency>
 			<groupId>de.amr.statemachine</groupId>
 			<artifactId>StateMachine</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>de.amr.easy.game</groupId>
+			<artifactId>EasyGame</artifactId>
 			<version>1.0</version>
 		</dependency>
 	</dependencies>
