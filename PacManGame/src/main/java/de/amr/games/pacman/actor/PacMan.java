@@ -6,7 +6,6 @@ import static de.amr.games.pacman.actor.PacManState.DEAD;
 import static de.amr.games.pacman.actor.PacManState.EATING;
 import static de.amr.games.pacman.actor.PacManState.SLEEPING;
 import static de.amr.games.pacman.model.Direction.LEFT;
-import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Game.DIGEST_ENERGIZER_TICKS;
 import static de.amr.games.pacman.model.Game.DIGEST_PELLET_TICKS;
@@ -23,6 +22,7 @@ import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
+import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.core.StateMachine;
@@ -53,7 +53,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 					.onEntry(() -> {
 						powerTicks = 0;
 						digestionTicks = 0;
-						moveDir = wishDir = RIGHT;
+						moveDir = wishDir = Direction.RIGHT;
 						visible = true;
 						sprites.forEach(Sprite::resetAnimation);
 						sprites.select("full");
@@ -78,6 +78,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 							return;
 						}
 						move();
+						show("walking-" + moveDir);
 						if (!isTeleporting()) {
 							findSomethingInteresting(game).ifPresent(this::publish);
 						}
@@ -121,14 +122,13 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 	}
 
 	/**
-	 * NOTE: If the application property {@link PacManAppSettings#overflowBug} is
-	 * <code>true</code>, this method simulates the bug from the original Arcade
-	 * game where, if Pac-Man points upwards, the position ahead of Pac-Man is
-	 * wrongly calculated by adding the same number of tiles to the left.
+	 * NOTE: If the application property {@link PacManAppSettings#overflowBug} is <code>true</code>,
+	 * this method simulates the bug from the original Arcade game where, if Pac-Man points upwards, the
+	 * position ahead of Pac-Man is wrongly calculated by adding the same number of tiles to the left.
 	 * 
 	 * @param numTiles number of tiles
-	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards
-	 *         his current move direction.
+	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards his current move
+	 *         direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
 		Tile tileAhead = maze.tileToDir(tile(), moveDir, numTiles);
@@ -141,7 +141,10 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 	private void move() {
 		steering().steer();
 		movement.update();
-		sprites.select("walking-" + moveDir);
+	}
+
+	private void show(String spriteKey) {
+		sprites.select(spriteKey);
 		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
 	}
 

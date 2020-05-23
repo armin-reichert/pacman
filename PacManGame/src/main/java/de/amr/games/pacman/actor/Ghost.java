@@ -33,8 +33,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * A ghost.
  * 
  * <p>
- * Ghosts have a "brain" (finite-state machine) defining the ghost's behavior
- * (steering, look).
+ * Ghosts have a "brain" (finite-state machine) defining the ghost's behavior (steering, look).
  * 
  * @author Armin Reichert
  */
@@ -57,22 +56,26 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	
 				.state(LOCKED)
 					.onEntry(() -> {
+						followState = getState();
 						visible = true;
 						setWishDir(maze().ghostHomeDir[seat]);
 						setMoveDir(wishDir());
 						tf.setPosition(maze().seatPosition(seat));
 						enteredNewTile();
-						sprites.select("color-" + moveDir());
 						sprites.forEach(Sprite::resetAnimation);
-						followState = getState();
+						show("color-" + moveDir());
 					})
 					.onTick(() -> {
-							move(game.pacMan.powerTicks > 0 ? "frightened" : "color-" + moveDir());
+						move();
+						show(game.pacMan.powerTicks > 0 ? "frightened" : "color-" + moveDir());
 					})
 					
 				.state(LEAVING_HOUSE)
 					.onEntry(() -> steering().init())
-					.onTick(() -> move("color-" + moveDir()))
+					.onTick(() -> {
+						move();
+						show("color-" + moveDir());
+					})
 					.onExit(() -> forceMoving(LEFT))
 				
 				.state(ENTERING_HOUSE)
@@ -81,24 +84,30 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 						setWishDir(DOWN);
 						steering().init();
 					})
-					.onTick(() -> move("eyes-" + moveDir()))
+					.onTick(() -> {
+						move();
+						show("eyes-" + moveDir());
+					})
 				
 				.state(SCATTERING)
 					.onTick(() -> {
-						move("color-" + moveDir());
+						move();
+						show("color-" + moveDir());
 						checkCollision(game.pacMan);
 					})
 			
 				.state(CHASING)
 					.onTick(() -> {
-						move("color-" + moveDir());
+						move();
+						show("color-" + moveDir());
 						checkCollision(game.pacMan);
 					})
 				
 				.state(FRIGHTENED)
 					.timeoutAfter(() -> sec(game.level.pacManPowerSeconds))
 					.onTick((state, t, remaining) -> {
-						move(remaining < sec(2) ? "flashing" : "frightened");
+						move();
+						show(remaining < sec(2) ? "flashing" : "frightened");
 						checkCollision(game.pacMan);
 					})
 				
@@ -110,7 +119,8 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					})
 					.onTick(() -> {
 						if (state().isTerminated()) { // "dead"
-							move("eyes-" + moveDir());
+							move();
+							show("eyes-" + moveDir());
 						}
 					})
 				
@@ -185,7 +195,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		return super.canMoveBetween(tile, neighbor);
 	}
 
-	private void move(String spriteKey) {
+	private void move() {
 		Steering currentSteering = steering();
 		if (prevSteering != currentSteering) {
 			loginfo("%s steering changed from %s to %s", this, Steering.name(prevSteering), Steering.name(currentSteering));
@@ -195,6 +205,9 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		}
 		currentSteering.steer();
 		movement.update();
+	}
+
+	private void show(String spriteKey) {
 		sprites.select(spriteKey);
 	}
 
