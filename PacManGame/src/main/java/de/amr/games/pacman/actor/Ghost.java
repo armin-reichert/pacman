@@ -59,22 +59,22 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 						followState = getState();
 						visible = true;
 						setWishDir(maze().ghostHomeDir[seat]);
-						setMoveDir(wishDir());
+						setMoveDir(wishDir);
 						tf.setPosition(maze().seatPosition(seat));
 						enteredNewTile();
 						sprites.forEach(Sprite::resetAnimation);
-						show("color-" + moveDir());
+						show("color-" + moveDir);
 					})
 					.onTick(() -> {
 						move();
-						show(game.pacMan.powerTicks > 0 ? "frightened" : "color-" + moveDir());
+						show(game.pacMan.powerTicks > 0 ? "frightened" : "color-" + moveDir);
 					})
 					
 				.state(LEAVING_HOUSE)
 					.onEntry(() -> steering().init())
 					.onTick(() -> {
 						move();
-						show("color-" + moveDir());
+						show("color-" + moveDir);
 					})
 					.onExit(() -> forceMoving(LEFT))
 				
@@ -86,20 +86,20 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					})
 					.onTick(() -> {
 						move();
-						show("eyes-" + moveDir());
+						show("eyes-" + moveDir);
 					})
 				
 				.state(SCATTERING)
 					.onTick(() -> {
 						move();
-						show("color-" + moveDir());
+						show("color-" + moveDir);
 						checkCollision(game.pacMan);
 					})
 			
 				.state(CHASING)
 					.onTick(() -> {
 						move();
-						show("color-" + moveDir());
+						show("color-" + moveDir);
 						checkCollision(game.pacMan);
 					})
 				
@@ -120,7 +120,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					.onTick(() -> {
 						if (state().isTerminated()) { // "dead"
 							move();
-							show("eyes-" + moveDir());
+							show("eyes-" + moveDir);
 						}
 					})
 				
