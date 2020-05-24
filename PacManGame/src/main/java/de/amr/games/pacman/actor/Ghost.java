@@ -58,9 +58,9 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					.onEntry(() -> {
 						followState = getState();
 						visible = true;
-						setWishDir(maze().ghostHomeDir[seat]);
+						setWishDir(maze.ghostHomeDir[seat]);
 						setMoveDir(wishDir);
-						tf.setPosition(maze().seatPosition(seat));
+						tf.setPosition(maze.seatPosition(seat));
 						enteredNewTile();
 						sprites.forEach(Sprite::resetAnimation);
 						show("color-" + moveDir);
@@ -80,7 +80,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 				
 				.state(ENTERING_HOUSE)
 					.onEntry(() -> {
-						tf.setPosition(maze().seatPosition(0));
+						tf.setPosition(maze.seatPosition(0));
 						setWishDir(DOWN);
 						steering().init();
 					})
@@ -176,7 +176,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					.condition(() -> followState == CHASING)
 					
 				.when(DEAD).then(ENTERING_HOUSE)
-					.condition(() -> maze().atGhostHouseDoor(tile()))
+					.condition(() -> maze.atGhostHouseDoor(tile()))
 					
 		.endStateMachine();
 		/*@formatter:on*/
@@ -186,10 +186,10 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (maze().isDoor(neighbor)) {
+		if (maze.isDoor(neighbor)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
-		if (maze().isUpwardsBlocked(tile) && neighbor.equals(maze().neighbor(tile, UP))) {
+		if (maze.isUpwardsBlocked(tile) && neighbor.equals(maze.neighbor(tile, UP))) {
 			return !is(CHASING, SCATTERING);
 		}
 		return super.canMoveBetween(tile, neighbor);
