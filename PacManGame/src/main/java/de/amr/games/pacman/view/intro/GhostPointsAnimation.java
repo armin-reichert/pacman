@@ -8,18 +8,17 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.BitSet;
 
-import de.amr.easy.game.entity.Entity;
+import de.amr.easy.game.entity.GameObject;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.easy.game.view.Animation;
 import de.amr.games.pacman.theme.Theme;
 
 /**
- * An animation showing Pac-Man and the four ghosts frightened and showing the
- * points scored for the ghosts.
+ * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the
+ * ghosts.
  * 
  * @author Armin Reichert
  */
-public class GhostPointsAnimation extends Entity implements Animation {
+public class GhostPointsAnimation extends GameObject {
 
 	private final Theme theme;
 	private final Sprite pacMan;

@@ -4,19 +4,19 @@ import static de.amr.graph.grid.impl.Grid4Topology.E;
 
 import java.awt.Graphics2D;
 
+import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.easy.game.view.Animation;
+import de.amr.easy.game.view.View;
 import de.amr.games.pacman.theme.Theme;
 
 /**
- * An animation showing Pac-Man chasing the ghosts and scoring points for each
- * killed ghost.
+ * An animation showing Pac-Man chasing the ghosts and scoring points for each killed ghost.
  * 
  * @author Armin Reichert
  */
-public class ChaseGhostsAnimation extends Entity implements Animation {
+public class ChaseGhostsAnimation extends Entity implements Lifecycle, View {
 
 	private final Theme theme;
 	private final Sprite pacMan;

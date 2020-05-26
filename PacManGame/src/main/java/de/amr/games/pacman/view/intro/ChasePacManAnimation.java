@@ -7,14 +7,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 
-import de.amr.easy.game.entity.Entity;
+import de.amr.easy.game.entity.GameObject;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.easy.game.view.Animation;
 import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.Theme;
 
-public class ChasePacManAnimation extends Entity implements Animation {
+public class ChasePacManAnimation extends GameObject {
 
 	private final Theme theme;
 	private final Sprite pacMan;
