@@ -120,6 +120,7 @@ public abstract class PacManGameView implements Lifecycle, View {
 	}
 
 	protected void drawMessage(Graphics2D g) {
+		message.fontSize=8;
 		message.draw(g);
 	}
 }

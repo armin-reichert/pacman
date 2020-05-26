@@ -219,7 +219,6 @@ public class IntroView extends PacManGameView implements FsmContainer<IntroState
 	private void drawPressSpaceToStart(Graphics2D g, int row) {
 		try (Pen pen = new Pen(g)) {
 			pen.font(theme.fnt_text());
-			pen.fontSize(14);
 			pen.color(Color.WHITE);
 			pen.hcenter(texts.getString("press_space_to_start"), width(), row, Tile.SIZE);
 		}
@@ -228,7 +227,6 @@ public class IntroView extends PacManGameView implements FsmContainer<IntroState
 	private void drawFullScreenMode(Graphics2D g, int row) {
 		try (Pen pen = new Pen(g)) {
 			pen.font(theme.fnt_text());
-			pen.fontSize(10);
 			pen.color(orange);
 			if (app().inFullScreenMode()) {
 				pen.hcenter("F11 - " + texts.getString("window_mode"), width(), row, Tile.SIZE);
@@ -246,7 +244,7 @@ public class IntroView extends PacManGameView implements FsmContainer<IntroState
 				.indexOf(app().clock().getTargetFramerate()) + 1;
 		try (Pen pen = new Pen(g)) {
 			pen.font(theme.fnt_text());
-			pen.fontSize(10);
+			pen.fontSize(6);
 			FontMetrics fm = pen.getFontMetrics();
 			int w1 = fm.stringWidth(t1), w2 = fm.stringWidth(t2), w3 = fm.stringWidth(t3);
 			float s = (settings.width - (w1 + w2 + w3)) / 4f;

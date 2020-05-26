@@ -68,7 +68,7 @@ public class LoadingView extends PacManGameView {
 		try (Pen pen = new Pen(g)) {
 			pen.color(new Color(255, 0, 0, alpha));
 			pen.font(theme.fnt_text());
-			pen.fontSize(14);
+			pen.fontSize(10);
 			pen.hcenter(PacManApp.texts.getString("loading_music"), width(), 18, Tile.SIZE);
 		}
 		drawActor(g, game.pacMan, game.pacMan.sprites);

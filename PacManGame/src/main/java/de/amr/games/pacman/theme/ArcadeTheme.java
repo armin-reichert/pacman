@@ -47,7 +47,7 @@ public class ArcadeTheme implements Theme {
 	private final Map<Symbol, BufferedImage> symbolMap = new EnumMap<>(Symbol.class);
 
 	public ArcadeTheme() {
-		storeTrueTypeFont("font.joystix", "Joystix.ttf", Font.PLAIN, 12);
+		storeTrueTypeFont("font.hud", "PressStart2P-Regular.ttf", Font.PLAIN, 8);
 
 		int blue = -14605825; // debugger told me this
 		mazeEmptyWhite = changeColor(mazeEmpty, blue, Color.WHITE.getRGB());
@@ -217,7 +217,7 @@ public class ArcadeTheme implements Theme {
 
 	@Override
 	public Font fnt_text() {
-		return Assets.font("font.joystix");
+		return Assets.font("font.hud");
 	}
 
 	@Override

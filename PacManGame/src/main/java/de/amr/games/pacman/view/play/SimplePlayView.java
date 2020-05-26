@@ -163,26 +163,41 @@ public class SimplePlayView extends PacManGameView {
 		if (!showScores) {
 			return;
 		}
+		g.translate(0, 1);
 		try (Pen pen = new Pen(g)) {
-			pen.font(theme.fnt_text(10));
+			pen.font(theme.fnt_text());
+			int col;
+
 			// Game score
+			col = 1;
 			pen.color(Color.YELLOW);
-			pen.drawAtGridPosition("SCORE", 1, 0, Tile.SIZE);
-			pen.drawAtGridPosition(String.format("LEVEL%2d", game.level.number), 22, 0, Tile.SIZE);
+			pen.drawAtGridPosition("Score".toUpperCase(), col, 0, Tile.SIZE);
+
 			pen.color(Color.WHITE);
-			pen.drawAtGridPosition(String.format("%07d", game.score), 1, 1, Tile.SIZE);
+			pen.drawAtGridPosition(String.format("%07d", game.score), col, 1, Tile.SIZE);
+
 			// Highscore
+			col = 9;
 			pen.color(Color.YELLOW);
-			pen.drawAtGridPosition("HIGHSCORE", 10, 0, Tile.SIZE);
+			pen.drawAtGridPosition("Highscore".toUpperCase(), col, 0, Tile.SIZE);
+
 			pen.color(Color.WHITE);
-			pen.drawAtGridPosition(String.format("%07d", game.hiscore.points), 10, 1, Tile.SIZE);
-			pen.drawAtGridPosition(String.format("L%d", game.hiscore.levelNumber), 16, 1, Tile.SIZE);
+			pen.drawAtGridPosition(String.format("%07d", game.hiscore.points), col, 1, Tile.SIZE);
+			pen.drawAtGridPosition(String.format("L%02d", game.hiscore.levelNumber), col + 7, 1, Tile.SIZE);
+
 			// Number of remaining pellets
-			g.setColor(Color.PINK);
-			g.fillRect(22 * Tile.SIZE + 2, Tile.SIZE + 2, 4, 3);
+			col = 20;
+			pen.color(Color.YELLOW);
+			pen.drawAtGridPosition(String.format("Level".toUpperCase()), col, 0, Tile.SIZE);
+
 			pen.color(Color.WHITE);
-			pen.drawAtGridPosition(String.format("%03d", game.remainingFoodCount()), 23, 1, Tile.SIZE);
+			pen.drawAtGridPosition(String.format("%02d", game.level.number), col, 1, Tile.SIZE);
+			g.setColor(Color.PINK);
+			g.fillRect((col + 2) * Tile.SIZE + 2, Tile.SIZE + 2, 3, 3);
+			pen.color(Color.WHITE);
+			pen.drawAtGridPosition(String.format("%03d", game.remainingFoodCount()), col + 3, 1, Tile.SIZE);
 		}
+		g.translate(0, -1);
 		drawLives(g);
 		drawLevelCounter(g);
 	}
