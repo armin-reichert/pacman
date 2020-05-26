@@ -327,7 +327,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						game.ghostsOnStage().forEach(ghost -> ghost.visible = true);
 						playView.enableGhostAnimations(false);
 						playView.message.color = Color.RED;
-						playView.message.text = "Game   Over!";
+						playView.message.text = "Game Over!";
 						sound.gameOver();
 					})
 					.onExit(() -> {

@@ -162,8 +162,9 @@ public class SimplePlayView extends PacManGameView {
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
-		int first = Math.max(0, game.levelCounter.size() - 7);
-		int n = Math.min(7, game.levelCounter.size());
+		int max = 7;
+		int first = Math.max(0, game.levelCounter.size() - max);
+		int n = Math.min(max, game.levelCounter.size());
 		int sz = 2 * Tile.SIZE; // image size
 		for (int i = 0, x = width() - 2 * sz; i < n; ++i, x -= sz) {
 			Symbol symbol = game.levelCounter.get(first + i);
@@ -176,14 +177,14 @@ public class SimplePlayView extends PacManGameView {
 	 */
 	private class MazeView extends StateMachine<MazeMode, Void> implements View {
 
-		Sprite spriteMazeEmpty, spriteMazeFull, spriteMazeFlashing;
+		Sprite spriteEmptyMaze, spriteFullMaze, spriteFlashingMaze;
 		SpriteAnimation energizerBlinking;
 
 		public MazeView() {
 			super(MazeMode.class);
-			spriteMazeFull = theme.spr_fullMaze();
-			spriteMazeEmpty = theme.spr_emptyMaze();
-			spriteMazeFlashing = theme.spr_flashingMaze();
+			spriteFullMaze = theme.spr_fullMaze();
+			spriteEmptyMaze = theme.spr_emptyMaze();
+			spriteFlashingMaze = theme.spr_flashingMaze();
 			energizerBlinking = new CyclicAnimation(2);
 			energizerBlinking.setFrameDuration(150);
 			game.bonus.tf.setPosition(game.maze.bonusTile.centerX(), game.maze.bonusTile.y());
@@ -193,7 +194,7 @@ public class SimplePlayView extends PacManGameView {
 				.initialState(CROWDED)
 				.states()
 					.state(CROWDED)
-						.onEntry(() -> setEnergizersBlinking(false))
+						.onEntry(() -> energizerBlinking.setEnabled(false))
 						.onTick(() -> energizerBlinking.update())
 				.transitions()
 			.endStateMachine();
@@ -204,7 +205,7 @@ public class SimplePlayView extends PacManGameView {
 		@Override
 		public void draw(Graphics2D g) {
 			if (getState() == CROWDED) {
-				spriteMazeFull.draw(g, 0, 3 * Tile.SIZE);
+				spriteFullMaze.draw(g, 0, 3 * Tile.SIZE);
 				// hide eaten food
 				game.maze.playingArea().filter(game.maze::isEatenFood).forEach(tile -> {
 					g.setColor(bgColor(tile));
@@ -223,9 +224,9 @@ public class SimplePlayView extends PacManGameView {
 					g.fillRect(game.maze.ghostHouseDoorLeft.x(), game.maze.ghostHouseDoorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
 				}
 			} else if (getState() == EMPTY) {
-				spriteMazeEmpty.draw(g, 0, 3 * Tile.SIZE);
+				spriteEmptyMaze.draw(g, 0, 3 * Tile.SIZE);
 			} else if (getState() == FLASHING) {
-				spriteMazeFlashing.draw(g, 0, 3 * Tile.SIZE);
+				spriteFlashingMaze.draw(g, 0, 3 * Tile.SIZE);
 			}
 		}
 	}
