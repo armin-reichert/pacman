@@ -30,12 +30,12 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class SimplePlayView extends PacManGameView {
 
-	enum MazeMode {
+	public enum MazeMode {
 		EMPTY, CROWDED, FLASHING
 	}
 
 	public boolean showScores = true;
-	private MazeView mazeView;
+	public MazeView mazeView;
 	private Image imageLife;
 
 	public SimplePlayView(Game game, Theme theme) {
@@ -70,18 +70,6 @@ public class SimplePlayView extends PacManGameView {
 
 	public float mazeFlashingSeconds() {
 		return game.level.mazeNumFlashes * Theme.MAZE_FLASH_TIME_MILLIS / 1000f;
-	}
-
-	public void showEmptyMaze() {
-		mazeView.setState(EMPTY);
-	}
-
-	public void showFlashingMaze() {
-		mazeView.setState(FLASHING);
-	}
-
-	public void showCrowdedMaze() {
-		mazeView.setState(CROWDED);
 	}
 
 	public void setEnergizersBlinking(boolean enabled) {
@@ -175,7 +163,7 @@ public class SimplePlayView extends PacManGameView {
 	/**
 	 * Inner class realizing the maze view which can be in any of states EMPTY, CROWDED or FLASHING.
 	 */
-	private class MazeView extends StateMachine<MazeMode, Void> implements View {
+	public class MazeView extends StateMachine<MazeMode, Void> implements View {
 
 		Sprite spriteEmptyMaze, spriteFullMaze, spriteFlashingMaze;
 		SpriteAnimation energizerBlinking;

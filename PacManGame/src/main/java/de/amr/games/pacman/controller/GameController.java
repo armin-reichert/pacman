@@ -49,6 +49,7 @@ import de.amr.games.pacman.view.core.PacManGameView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.PlayView;
+import de.amr.games.pacman.view.play.SimplePlayView.MazeMode;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 
@@ -249,13 +250,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						if (t == sec(2)) {
 							game.ghostsOnStage().forEach(ghost -> ghost.visible = false);
 							if (f > 0) {
-								playView.showFlashingMaze();
+								playView.mazeView.setState(MazeMode.FLASHING);
 							}
 						}
 
 						// After flashing, show empty maze.
 						if (t == sec(2 + f)) {
-							playView.showEmptyMaze();
+							playView.mazeView.setState(MazeMode.EMPTY);
 						}
 						
 						// After two more seconds, change level and show crowded maze.
