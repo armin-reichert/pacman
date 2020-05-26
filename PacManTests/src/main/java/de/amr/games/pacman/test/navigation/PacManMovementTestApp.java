@@ -64,7 +64,7 @@ class PacManMovementTestUI extends PlayView {
 		game.stage.add(pacMan);
 		pacMan.setState(PacManState.EATING);
 		message.text = "Cursor keys";
-		setEnergizersBlinking(true);
+		mazeView.energizersBlinking.setEnabled(true);
 	}
 
 	@Override

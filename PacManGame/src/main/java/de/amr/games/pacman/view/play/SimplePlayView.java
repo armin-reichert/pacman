@@ -72,10 +72,6 @@ public class SimplePlayView extends PacManGameView {
 		return game.level.mazeNumFlashes * Theme.MAZE_FLASH_TIME_MILLIS / 1000f;
 	}
 
-	public void setEnergizersBlinking(boolean enabled) {
-		mazeView.energizerBlinking.setEnabled(enabled);
-	}
-
 	protected Color bgColor(Tile tile) {
 		return theme.color_mazeBackground();
 	}
@@ -165,16 +161,16 @@ public class SimplePlayView extends PacManGameView {
 	 */
 	public class MazeView extends StateMachine<MazeMode, Void> implements View {
 
-		Sprite spriteEmptyMaze, spriteFullMaze, spriteFlashingMaze;
-		SpriteAnimation energizerBlinking;
+		public Sprite spriteEmptyMaze, spriteFullMaze, spriteFlashingMaze;
+		public SpriteAnimation energizersBlinking;
 
 		public MazeView() {
 			super(MazeMode.class);
 			spriteFullMaze = theme.spr_fullMaze();
 			spriteEmptyMaze = theme.spr_emptyMaze();
 			spriteFlashingMaze = theme.spr_flashingMaze();
-			energizerBlinking = new CyclicAnimation(2);
-			energizerBlinking.setFrameDuration(150);
+			energizersBlinking = new CyclicAnimation(2);
+			energizersBlinking.setFrameDuration(150);
 			game.bonus.tf.setPosition(game.maze.bonusTile.centerX(), game.maze.bonusTile.y());
 			//@formatter:off
 			beginStateMachine()
@@ -182,8 +178,8 @@ public class SimplePlayView extends PacManGameView {
 				.initialState(CROWDED)
 				.states()
 					.state(CROWDED)
-						.onEntry(() -> energizerBlinking.setEnabled(false))
-						.onTick(() -> energizerBlinking.update())
+						.onEntry(() -> energizersBlinking.setEnabled(false))
+						.onTick(() -> energizersBlinking.update())
 				.transitions()
 			.endStateMachine();
 			//@formatter:on
@@ -200,7 +196,7 @@ public class SimplePlayView extends PacManGameView {
 					g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 				});
 				// hide active energizers when blinking animation is in dark phase
-				if (energizerBlinking.currentFrame() == 1) {
+				if (energizersBlinking.currentFrame() == 1) {
 					game.maze.playingArea().filter(game.maze::isEnergizer).forEach(tile -> {
 						g.setColor(bgColor(tile));
 						g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
