@@ -87,7 +87,9 @@ public class PlayView extends SimplePlayView {
 	public void draw(Graphics2D g) {
 		drawBackground(g);
 		drawMaze(g);
-		drawFPS(g);
+		if (showFrameRate) {
+			fps.draw(g);
+		}
 		drawPlayMode(g);
 		drawMessage(g);
 		if (showGrid) {
@@ -132,7 +134,7 @@ public class PlayView extends SimplePlayView {
 		Graphics2D g = img.createGraphics();
 		for (int row = 0; row < maze.numRows; ++row) {
 			for (int col = 0; col < maze.numCols; ++col) {
-				g.setColor(tileColor(col, row));
+				g.setColor(patternColor(col, row));
 				g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 			}
 		}
@@ -143,13 +145,13 @@ public class PlayView extends SimplePlayView {
 		return (BufferedImage) theme.spr_ghostColored(color, Direction.RIGHT.ordinal()).frame(0);
 	}
 
-	private Color tileColor(int col, int row) {
+	private Color patternColor(int col, int row) {
 		return (row + col) % 2 == 0 ? Color.BLACK : new Color(40, 40, 40);
 	}
 
 	@Override
 	protected Color tileColor(Tile tile) {
-		return showGrid ? tileColor(tile.col, tile.row) : super.tileColor(tile);
+		return showGrid ? patternColor(tile.col, tile.row) : super.tileColor(tile);
 	}
 
 	private Color ghostColor(Ghost ghost) {
@@ -178,12 +180,6 @@ public class PlayView extends SimplePlayView {
 				pen.color(Color.DARK_GRAY);
 				pen.hcenter("Demo Mode", width(), 21, Tile.SIZE);
 			}
-		}
-	}
-
-	private void drawFPS(Graphics2D g) {
-		if (showFrameRate) {
-			fps.draw(g);
 		}
 	}
 
