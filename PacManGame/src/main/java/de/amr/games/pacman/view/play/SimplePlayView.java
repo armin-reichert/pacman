@@ -163,41 +163,48 @@ public class SimplePlayView extends PacManGameView {
 		if (!showScores) {
 			return;
 		}
-		g.translate(0, 1);
+		g.translate(0, 3);
 		try (Pen pen = new Pen(g)) {
 			pen.font(theme.fnt_text());
 			int col;
+			Color hilight = Color.YELLOW;
 
 			// Game score
 			col = 1;
-			pen.color(Color.YELLOW);
+			pen.color(hilight);
 			pen.drawAtGridPosition("Score".toUpperCase(), col, 0, Tile.SIZE);
 
 			pen.color(Color.WHITE);
+			pen.down(1);
 			pen.drawAtGridPosition(String.format("%07d", game.score), col, 1, Tile.SIZE);
+			pen.up(1);
 
 			// Highscore
 			col = 9;
-			pen.color(Color.YELLOW);
+			pen.color(hilight);
 			pen.drawAtGridPosition("Highscore".toUpperCase(), col, 0, Tile.SIZE);
 
 			pen.color(Color.WHITE);
+			pen.down(1);
 			pen.drawAtGridPosition(String.format("%07d", game.hiscore.points), col, 1, Tile.SIZE);
 			pen.drawAtGridPosition(String.format("L%02d", game.hiscore.levelNumber), col + 7, 1, Tile.SIZE);
+			pen.up(1);
 
 			// Number of remaining pellets
 			col = 20;
-			pen.color(Color.YELLOW);
+			pen.color(hilight);
 			pen.drawAtGridPosition(String.format("Level".toUpperCase()), col, 0, Tile.SIZE);
 
 			pen.color(Color.WHITE);
+			pen.down(1);
 			pen.drawAtGridPosition(String.format("%02d", game.level.number), col, 1, Tile.SIZE);
 			g.setColor(Color.PINK);
 			g.fillRect((col + 2) * Tile.SIZE + 2, Tile.SIZE + 2, 3, 3);
 			pen.color(Color.WHITE);
 			pen.drawAtGridPosition(String.format("%03d", game.remainingFoodCount()), col + 3, 1, Tile.SIZE);
+			pen.up(1);
 		}
-		g.translate(0, -1);
+		g.translate(0, -3);
 		drawLives(g);
 		drawLevelCounter(g);
 	}
