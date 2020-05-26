@@ -34,7 +34,6 @@ public class SimplePlayView extends PacManGameView {
 		EMPTY, CROWDED, FLASHING
 	}
 
-	public boolean showScores = true;
 	public MazeView mazeView;
 	private Image imageLife;
 
@@ -57,7 +56,7 @@ public class SimplePlayView extends PacManGameView {
 
 	@Override
 	public void draw(Graphics2D g) {
-		fillBackground(g, theme.color_mazeBackground());
+		drawBackground(g);
 		drawScores(g);
 		drawMaze(g);
 		drawMessage(g);
@@ -75,6 +74,10 @@ public class SimplePlayView extends PacManGameView {
 	protected Color bgColor(Tile tile) {
 		return theme.color_mazeBackground();
 	}
+	
+	protected void drawBackground(Graphics2D g) {
+		fillBackground(g, theme.color_mazeBackground());
+	}
 
 	protected void drawMaze(Graphics2D g) {
 		mazeView.draw(g);
@@ -89,9 +92,6 @@ public class SimplePlayView extends PacManGameView {
 	}
 
 	protected void drawScores(Graphics2D g) {
-		if (!showScores) {
-			return;
-		}
 		Color hilight = Color.YELLOW;
 		int col;
 		g.translate(0, 3); // margin between score and upper window border

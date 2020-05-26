@@ -65,6 +65,7 @@ public class PlayView extends SimplePlayView {
 	public boolean showFrameRate = false;
 	public boolean showRoutes = false;
 	public boolean showGrid = false;
+	public boolean showScores = true;
 	public boolean showStates = false;
 
 	private FPSDisplay fps;
@@ -84,11 +85,7 @@ public class PlayView extends SimplePlayView {
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (showGrid) {
-			g.drawImage(gridImage, 0, 0, null);
-		} else {
-			fillBackground(g, theme.color_mazeBackground());
-		}
+		drawBackground(g);
 		drawMaze(g);
 		drawFPS(g);
 		drawPlayMode(g);
@@ -97,7 +94,9 @@ public class PlayView extends SimplePlayView {
 			drawUpwardsBlockedTileMarkers(g);
 			drawSeats(g);
 		}
-		drawScores(g);
+		if (showScores) {
+			drawScores(g);
+		}
 		if (showRoutes) {
 			drawRoutes(g);
 		}
@@ -108,6 +107,15 @@ public class PlayView extends SimplePlayView {
 		if (showStates) {
 			drawActorStates(g);
 			drawGhostHouseState(g);
+		}
+	}
+
+	@Override
+	protected void drawBackground(Graphics2D g) {
+		if (showGrid) {
+			g.drawImage(gridImage, 0, 0, null);
+		} else {
+			super.drawBackground(g);
 		}
 	}
 
