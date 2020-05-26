@@ -97,6 +97,11 @@ public class PlayView extends SimplePlayView {
 		if (showScores) {
 			drawScores(g);
 		}
+		Arrays.asList(GhostState.values()).forEach(state -> {
+			game.ghosts().forEach(ghost -> {
+				ghost.steering(state).enableTargetPathComputation(showRoutes);
+			});
+		});
 		if (showRoutes) {
 			drawRoutes(g);
 		}
@@ -127,7 +132,7 @@ public class PlayView extends SimplePlayView {
 		Graphics2D g = img.createGraphics();
 		for (int row = 0; row < maze.numRows; ++row) {
 			for (int col = 0; col < maze.numCols; ++col) {
-				g.setColor(bgColor(col, row));
+				g.setColor(tileColor(col, row));
 				g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 			}
 		}
@@ -138,16 +143,16 @@ public class PlayView extends SimplePlayView {
 		return (BufferedImage) theme.spr_ghostColored(color, Direction.RIGHT.ordinal()).frame(0);
 	}
 
-	private Color bgColor(int col, int row) {
+	private Color tileColor(int col, int row) {
 		return (row + col) % 2 == 0 ? Color.BLACK : new Color(40, 40, 40);
 	}
 
 	@Override
-	protected Color bgColor(Tile tile) {
-		return showGrid ? bgColor(tile.col, tile.row) : super.bgColor(tile);
+	protected Color tileColor(Tile tile) {
+		return showGrid ? tileColor(tile.col, tile.row) : super.tileColor(tile);
 	}
 
-	private Color color(Ghost ghost) {
+	private Color ghostColor(Ghost ghost) {
 		if (ghost == game.blinky)
 			return Color.RED;
 		if (ghost == game.pinky)
@@ -228,7 +233,7 @@ public class PlayView extends SimplePlayView {
 		if (ghost.is(LEAVING_HOUSE)) {
 			text.append(String.format("[->%s]", ghost.followState));
 		}
-		drawSmallText(g, color(ghost), ghost.tf.x, ghost.tf.y, text.toString());
+		drawSmallText(g, ghostColor(ghost), ghost.tf.x, ghost.tf.y, text.toString());
 	}
 
 	private void drawBonusState(Graphics2D g) {
@@ -296,7 +301,7 @@ public class PlayView extends SimplePlayView {
 		Ghost[] ghostsBySeat = { game.blinky, game.inky, game.pinky, game.clyde };
 		IntStream.rangeClosed(0, 3).forEach(seat -> {
 			Tile seatTile = game.maze.ghostHome[seat];
-			g.setColor(color(ghostsBySeat[seat]));
+			g.setColor(ghostColor(ghostsBySeat[seat]));
 			int x = seatTile.centerX(), y = seatTile.y();
 			String text = String.valueOf(seat);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -323,11 +328,6 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawRoutes(Graphics2D g2) {
-		game.ghosts().forEach(ghost -> {
-			Arrays.asList(GhostState.values()).forEach(state -> {
-				ghost.steering(state).enableTargetPathComputation(showRoutes);
-			});
-		});
 		Graphics2D g = (Graphics2D) g2.create();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		game.ghostsOnStage().filter(ghost -> ghost.visible).forEach(ghost -> drawRoute(g, ghost));
@@ -338,7 +338,7 @@ public class PlayView extends SimplePlayView {
 		Tile target = ghost.targetTile();
 		List<Tile> targetPath = ghost.steering().targetPath();
 		int pathLen = targetPath.size();
-		Color ghostColor = color(ghost);
+		Color ghostColor = ghostColor(ghost);
 		Stroke solid = new BasicStroke(0.5f);
 		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
 		boolean drawRubberBand = target != null && pathLen > 0 && target != targetPath.get(pathLen - 1);
@@ -416,7 +416,7 @@ public class PlayView extends SimplePlayView {
 
 	private void drawGhostHouseState(Graphics2D g) {
 		if (house == null) {
-			return; // test scenes may have no ghost house
+			return; // test scenes can have no ghost house
 		}
 		drawPacManStarvingTime(g);
 		drawDotCounter(g, clydeImage, house.ghostDotCount(game.clyde), 1, 20,

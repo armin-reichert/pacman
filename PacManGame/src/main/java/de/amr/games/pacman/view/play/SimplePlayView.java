@@ -35,11 +35,9 @@ public class SimplePlayView extends PacManGameView {
 	}
 
 	public MazeView mazeView;
-	private Image pacManLookingLeft;
 
 	public SimplePlayView(Game game, Theme theme) {
 		super(game, theme);
-		pacManLookingLeft = theme.spr_pacManWalking(3).frame(1);
 		mazeView = new MazeView();
 	}
 
@@ -67,7 +65,7 @@ public class SimplePlayView extends PacManGameView {
 		game.ghosts().flatMap(ghost -> ghost.sprites.values()).forEach(sprite -> sprite.enableAnimation(enabled));
 	}
 
-	protected Color bgColor(Tile tile) {
+	protected Color tileColor(Tile tile) {
 		return theme.color_mazeBackground();
 	}
 
@@ -136,6 +134,7 @@ public class SimplePlayView extends PacManGameView {
 
 	protected void drawLives(Graphics2D g) {
 		int sz = 2 * Tile.SIZE;
+		Image pacManLookingLeft = theme.spr_pacManWalking(3).frame(1);
 		for (int i = 0, x = sz; i < game.lives; ++i, x += sz) {
 			g.drawImage(pacManLookingLeft, x, height() - sz, null);
 		}
@@ -188,13 +187,13 @@ public class SimplePlayView extends PacManGameView {
 				spriteFullMaze.draw(g, 0, 3 * Tile.SIZE);
 				// hide eaten food
 				game.maze.playingArea().filter(game.maze::isEatenFood).forEach(tile -> {
-					g.setColor(bgColor(tile));
+					g.setColor(tileColor(tile));
 					g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 				});
 				// hide active energizers when blinking animation is in dark phase
 				if (energizersBlinking.currentFrame() == 1) {
 					game.maze.playingArea().filter(game.maze::isEnergizer).forEach(tile -> {
-						g.setColor(bgColor(tile));
+						g.setColor(tileColor(tile));
 						g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 					});
 				}
