@@ -35,11 +35,11 @@ public class SimplePlayView extends PacManGameView {
 	}
 
 	public MazeView mazeView;
-	private Image imageLife;
+	private Image pacManLookingLeft;
 
 	public SimplePlayView(Game game, Theme theme) {
 		super(game, theme);
-		imageLife = theme.spr_pacManWalking(3).frame(1);
+		pacManLookingLeft = theme.spr_pacManWalking(3).frame(1);
 		mazeView = new MazeView();
 	}
 
@@ -64,17 +64,13 @@ public class SimplePlayView extends PacManGameView {
 	}
 
 	public void enableGhostAnimations(boolean enabled) {
-		game.ghostsOnStage().flatMap(ghost -> ghost.sprites.values()).forEach(sprite -> sprite.enableAnimation(enabled));
-	}
-
-	public float mazeFlashingSeconds() {
-		return game.level.mazeNumFlashes * Theme.MAZE_FLASH_TIME_MILLIS / 1000f;
+		game.ghosts().flatMap(ghost -> ghost.sprites.values()).forEach(sprite -> sprite.enableAnimation(enabled));
 	}
 
 	protected Color bgColor(Tile tile) {
 		return theme.color_mazeBackground();
 	}
-	
+
 	protected void drawBackground(Graphics2D g) {
 		fillBackground(g, theme.color_mazeBackground());
 	}
@@ -141,7 +137,7 @@ public class SimplePlayView extends PacManGameView {
 	protected void drawLives(Graphics2D g) {
 		int sz = 2 * Tile.SIZE;
 		for (int i = 0, x = sz; i < game.lives; ++i, x += sz) {
-			g.drawImage(imageLife, x, height() - sz, null);
+			g.drawImage(pacManLookingLeft, x, height() - sz, null);
 		}
 	}
 

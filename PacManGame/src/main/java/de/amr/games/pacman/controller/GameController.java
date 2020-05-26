@@ -183,6 +183,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
+	private float mazeFlashingSeconds() {
+		return game.level.mazeNumFlashes * Theme.MAZE_FLASH_TIME_MILLIS / 1000f;
+	}
+
 	private PlayingState playingState() {
 		return state(PLAYING);
 	}
@@ -234,7 +238,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(PLAYING).customState(new PlayingState())
 				
 				.state(CHANGING_LEVEL)
-					.timeoutAfter(() -> sec(playView.mazeFlashingSeconds() + 6))
+					.timeoutAfter(() -> sec(mazeFlashingSeconds() + 6))
 					.onEntry(() -> {
 						game.pacMan.sprites.select("full");
 						ghostHouse.onLevelChange();
@@ -244,35 +248,35 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilled);
 					})
 					.onTick((state, t, remaining) -> {
-						float f = playView.mazeFlashingSeconds();
+						float flashingSeconds = mazeFlashingSeconds();
 
 						// During first two seconds, do nothing. At second 2, hide ghosts and start flashing.
 						if (t == sec(2)) {
 							game.ghostsOnStage().forEach(ghost -> ghost.visible = false);
-							if (f > 0) {
+							if (flashingSeconds > 0) {
 								playView.mazeView.setState(MazeMode.FLASHING);
 							}
 						}
 
 						// After flashing, show empty maze.
-						if (t == sec(2 + f)) {
+						if (t == sec(2 + flashingSeconds)) {
 							playView.mazeView.setState(MazeMode.EMPTY);
 						}
 						
 						// After two more seconds, change level and show crowded maze.
-						if (t == sec(4 + f)) {
+						if (t == sec(4 + flashingSeconds)) {
 							game.enterLevel(game.level.number + 1);
 							game.movingActorsOnStage().forEach(MovingActor::init);
 							playView.init();
 						}
 						
 						// After two more seconds, enable ghost animations again
-						if (t == sec(6 + f)) {
+						if (t == sec(6 + flashingSeconds)) {
 							playView.enableGhostAnimations(true);
 						}
 						
 						// Until end of state, let ghosts jump inside the house. 
-						if (t >= sec(6 + f)) {
+						if (t >= sec(6 + flashingSeconds)) {
 							game.ghostsOnStage().forEach(Ghost::update);
 						}
 					})
