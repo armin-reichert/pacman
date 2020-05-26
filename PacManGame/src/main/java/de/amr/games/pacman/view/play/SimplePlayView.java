@@ -52,7 +52,7 @@ public class SimplePlayView extends PacManGameView {
 	@Override
 	public void init() {
 		super.init();
-		stopEnergizerBlinking();
+		setEnergizersBlinking(false);
 		showCrowdedMaze();
 	}
 
@@ -85,12 +85,8 @@ public class SimplePlayView extends PacManGameView {
 		mode = Mode.CROWDED_MAZE;
 	}
 
-	public void startEnergizerBlinking() {
-		energizerBlinking.setEnabled(true);
-	}
-
-	public void stopEnergizerBlinking() {
-		energizerBlinking.setEnabled(false);
+	public void setEnergizersBlinking(boolean blinking) {
+		energizerBlinking.setEnabled(blinking);
 	}
 
 	@Override
@@ -163,19 +159,19 @@ public class SimplePlayView extends PacManGameView {
 		if (!showScores) {
 			return;
 		}
-		g.translate(0, 3);
+		Color hilight = Color.YELLOW;
+		int col;
+		g.translate(0, 3); // margin between score and upper window border
 		try (Pen pen = new Pen(g)) {
 			pen.font(theme.fnt_text());
-			int col;
-			Color hilight = Color.YELLOW;
 
 			// Game score
 			col = 1;
 			pen.color(hilight);
 			pen.drawAtGridPosition("Score".toUpperCase(), col, 0, Tile.SIZE);
 
-			pen.color(Color.WHITE);
 			pen.down(1);
+			pen.color(Color.WHITE);
 			pen.drawAtGridPosition(String.format("%07d", game.score), col, 1, Tile.SIZE);
 			pen.up(1);
 
@@ -183,28 +179,28 @@ public class SimplePlayView extends PacManGameView {
 			col = 9;
 			pen.color(hilight);
 			pen.drawAtGridPosition("Highscore".toUpperCase(), col, 0, Tile.SIZE);
-
-			pen.color(Color.WHITE);
 			pen.down(1);
+			pen.color(Color.WHITE);
 			pen.drawAtGridPosition(String.format("%07d", game.hiscore.points), col, 1, Tile.SIZE);
 			pen.drawAtGridPosition(String.format("L%02d", game.hiscore.levelNumber), col + 7, 1, Tile.SIZE);
 			pen.up(1);
 
-			// Number of remaining pellets
 			col = 20;
 			pen.color(hilight);
 			pen.drawAtGridPosition(String.format("Level".toUpperCase()), col, 0, Tile.SIZE);
-
-			pen.color(Color.WHITE);
+			// Level number
 			pen.down(1);
+			pen.color(Color.WHITE);
 			pen.drawAtGridPosition(String.format("%02d", game.level.number), col, 1, Tile.SIZE);
+			// Number of remaining pellets
 			g.setColor(Color.PINK);
-			g.fillRect((col + 2) * Tile.SIZE + 2, Tile.SIZE + 2, 3, 3);
+			g.fillRect((col + 2) * Tile.SIZE + 2, Tile.SIZE + 2, 3, 3); // dot image
 			pen.color(Color.WHITE);
 			pen.drawAtGridPosition(String.format("%03d", game.remainingFoodCount()), col + 3, 1, Tile.SIZE);
 			pen.up(1);
 		}
 		g.translate(0, -3);
+
 		drawLives(g);
 		drawLevelCounter(g);
 	}
