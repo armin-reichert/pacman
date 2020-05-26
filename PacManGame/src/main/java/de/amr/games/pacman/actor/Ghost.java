@@ -112,13 +112,13 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					})
 				
 				.state(DEAD)
-					.timeoutAfter(sec(1)) // "dying" time
+					.timeoutAfter(sec(1)) // time while ghost is drawn as scored points
 					.onEntry(() -> {
 						int points = Game.POINTS_GHOST[game.level.ghostsKilledByEnergizer - 1];
 						sprites.select("points-" + points);
 					})
 					.onTick(() -> {
-						if (state().isTerminated()) { // "dead"
+						if (state().isTerminated()) { // eyes returning to ghost home
 							move();
 							show("eyes-" + moveDir);
 						}

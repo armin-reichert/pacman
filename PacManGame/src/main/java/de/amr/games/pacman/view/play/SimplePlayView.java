@@ -1,6 +1,7 @@
 package de.amr.games.pacman.view.play;
 
 import static de.amr.games.pacman.actor.GhostState.DEAD;
+import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.view.play.SimplePlayView.MazeMode.CROWDED;
 import static de.amr.games.pacman.view.play.SimplePlayView.MazeMode.EMPTY;
 import static de.amr.games.pacman.view.play.SimplePlayView.MazeMode.FLASHING;
@@ -80,9 +81,11 @@ public class SimplePlayView extends PacManGameView {
 	protected void drawActors(Graphics2D g) {
 		drawActor(g, game.bonus, game.bonus.sprites);
 		drawActor(g, game.pacMan, game.pacMan.sprites);
-		// draw dead ghosts (points) below living ghosts
-		game.ghostsOnStage().filter(ghost -> ghost.is(DEAD)).forEach(ghost -> drawActor(g, ghost, ghost.sprites));
-		game.ghostsOnStage().filter(ghost -> !ghost.is(DEAD)).forEach(ghost -> drawActor(g, ghost, ghost.sprites));
+		// draw dead ghosts (as number or eyes) under living ghosts
+		game.ghostsOnStage().filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
+				.forEach(ghost -> drawActor(g, ghost, ghost.sprites));
+		game.ghostsOnStage().filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
+				.forEach(ghost -> drawActor(g, ghost, ghost.sprites));
 	}
 
 	protected void drawScores(Graphics2D g) {
