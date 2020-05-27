@@ -49,7 +49,7 @@ class EnterGhostHouseTestUI extends PlayView {
 		super.init();
 		game.maze.removeFood();
 		game.stage.add(game.inky);
-		message.text = "SPACE = enter / leave house";
+		message.text = "SPACE = enter/leave house";
 		message.fontSize = 9;
 	}
 
