@@ -24,12 +24,13 @@ import java.awt.Stroke;
 import java.awt.Transparency;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.IntStream;
+import java.util.stream.Collectors;
 
 import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.actor.Bonus;
 import de.amr.games.pacman.actor.BonusState;
@@ -40,10 +41,8 @@ import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.controller.GhostHouse;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
-import de.amr.games.pacman.view.core.FPSDisplay;
 import de.amr.statemachine.core.State;
 
 /**
@@ -55,7 +54,7 @@ public class PlayView extends SimplePlayView {
 
 	private static final String INFTY = Character.toString('\u221E');
 
-	private static Color dimmed(Color color, int alpha) {
+	private static Color alpha(Color color, int alpha) {
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 	}
 
@@ -63,24 +62,24 @@ public class PlayView extends SimplePlayView {
 	public GhostHouse house; // (optional)
 
 	public boolean showFrameRate = false;
-	public boolean showRoutes = false;
 	public boolean showGrid = false;
+	public boolean showRoutes = false;
 	public boolean showScores = true;
 	public boolean showStates = false;
 
-	private FPSDisplay fps;
+	private FrameRateWidget frameRateDisplay;
 	private final BufferedImage gridImage, inkyImage, clydeImage, pacManImage;
-	private final Polygon arrowHead;
+	private final Polygon arrowHead = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 
 	public PlayView(Game game, Theme theme) {
 		super(game, theme);
-		fps = new FPSDisplay();
-		fps.tf.setPosition(0, 18 * Tile.SIZE);
-		gridImage = createGridImage(game.maze);
+		frameRateDisplay = new FrameRateWidget();
+		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
+		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
+		gridImage = createGridPattern(game.maze.numCols, game.maze.numRows);
 		inkyImage = ghostImage(Theme.CYAN_GHOST);
 		clydeImage = ghostImage(Theme.ORANGE_GHOST);
 		pacManImage = (BufferedImage) theme.spr_pacManWalking(RIGHT).frame(0);
-		arrowHead = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 	}
 
 	@Override
@@ -88,7 +87,7 @@ public class PlayView extends SimplePlayView {
 		drawBackground(g);
 		drawMaze(g);
 		if (showFrameRate) {
-			fps.draw(g);
+			frameRateDisplay.draw(g);
 		}
 		drawPlayMode(g);
 		drawMessage(g);
@@ -99,11 +98,7 @@ public class PlayView extends SimplePlayView {
 		if (showScores) {
 			drawScores(g);
 		}
-		Arrays.asList(GhostState.values()).forEach(state -> {
-			game.ghosts().forEach(ghost -> {
-				ghost.steering(state).enableTargetPathComputation(showRoutes);
-			});
-		});
+		game.ghosts().map(Ghost::steering).forEach(steering -> steering.enableTargetPathComputation(showRoutes));
 		if (showRoutes) {
 			drawRoutes(g);
 		}
@@ -126,14 +121,13 @@ public class PlayView extends SimplePlayView {
 		}
 	}
 
-	private BufferedImage createGridImage(Maze maze) {
+	private BufferedImage createGridPattern(int cols, int rows) {
 		GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
 				.getDefaultConfiguration();
-		BufferedImage img = gc.createCompatibleImage(maze.numCols * Tile.SIZE, maze.numRows * Tile.SIZE + 1,
-				Transparency.TRANSLUCENT);
+		BufferedImage img = gc.createCompatibleImage(cols * Tile.SIZE, rows * Tile.SIZE + 1, Transparency.TRANSLUCENT);
 		Graphics2D g = img.createGraphics();
-		for (int row = 0; row < maze.numRows; ++row) {
-			for (int col = 0; col < maze.numCols; ++col) {
+		for (int row = 0; row < rows; ++row) {
+			for (int col = 0; col < cols; ++col) {
 				g.setColor(patternColor(col, row));
 				g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 			}
@@ -141,12 +135,12 @@ public class PlayView extends SimplePlayView {
 		return img;
 	}
 
-	private BufferedImage ghostImage(int color) {
-		return (BufferedImage) theme.spr_ghostColored(color, Direction.RIGHT).frame(0);
-	}
-
 	private Color patternColor(int col, int row) {
 		return (row + col) % 2 == 0 ? Color.BLACK : new Color(40, 40, 40);
+	}
+
+	private BufferedImage ghostImage(int color) {
+		return (BufferedImage) theme.spr_ghostColored(color, Direction.RIGHT).frame(0);
 	}
 
 	@Override
@@ -294,10 +288,12 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawSeats(Graphics2D g) {
-		Ghost[] ghostsBySeat = { game.blinky, game.inky, game.pinky, game.clyde };
-		IntStream.rangeClosed(0, 3).forEach(seat -> {
+		List<Ghost> ghostsBySeat = game.ghosts().sorted(Comparator.comparingInt(ghost -> ghost.seat))
+				.collect(Collectors.toList());
+		for (int seat = 0; seat < 4; ++seat) {
 			Tile seatTile = game.maze.ghostHome[seat];
-			g.setColor(ghostColor(ghostsBySeat[seat]));
+			Ghost ghostAtSeat = ghostsBySeat.get(seat);
+			g.setColor(ghostColor(ghostAtSeat));
 			int x = seatTile.centerX(), y = seatTile.y();
 			String text = String.valueOf(seat);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -310,7 +306,7 @@ public class PlayView extends SimplePlayView {
 			g.setColor(Color.WHITE);
 			g.drawString(text, x + (Tile.SIZE - Math.round(r.getWidth())) / 2, y + Tile.SIZE - 2);
 			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-		});
+		}
 	}
 
 	private void drawArrowHead(Graphics2D g, Direction dir, int x, int y) {
@@ -343,7 +339,7 @@ public class PlayView extends SimplePlayView {
 			int x1 = ghost.tf.getCenter().roundedX(), y1 = ghost.tf.getCenter().roundedY();
 			int x2 = target.centerX(), y2 = target.centerY();
 			g.setStroke(dashed);
-			g.setColor(dimmed(ghostColor, 200));
+			g.setColor(alpha(ghostColor, 200));
 			g.drawLine(x1, y1, x2, y2);
 			g.translate(target.x(), target.y());
 			g.setColor(ghostColor);
@@ -353,7 +349,7 @@ public class PlayView extends SimplePlayView {
 		}
 		if (pathLen > 1) {
 			// draw path
-			g.setColor(dimmed(ghostColor, 200));
+			g.setColor(alpha(ghostColor, 200));
 			for (int i = 0; i < targetPath.size() - 1; ++i) {
 				Tile from = targetPath.get(i), to = targetPath.get(i + 1);
 				g.setColor(ghostColor);
