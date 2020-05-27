@@ -59,7 +59,7 @@ public class ArcadeTheme implements Theme {
 		return crop(col * tileSize, row * tileSize, tileSize, tileSize);
 	}
 
-	BufferedImage[] ht(int n, int col, int row) {
+	BufferedImage[] nHorTiles(int n, int col, int row) {
 		return IntStream.range(0, n).mapToObj(i -> t(col + i, row)).toArray(BufferedImage[]::new);
 	}
 
@@ -67,14 +67,14 @@ public class ArcadeTheme implements Theme {
 		return Assets.sound("sfx/" + name + ".mp3");
 	}
 
-	BufferedImage changeColor(BufferedImage src, int from, int to) {
-		BufferedImage copy = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+	BufferedImage exchangeColor(BufferedImage img, int oldColorRGB, int newColorRGB) {
+		BufferedImage copy = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
 		Graphics2D g = copy.createGraphics();
-		g.drawImage(src, 0, 0, null);
+		g.drawImage(img, 0, 0, null);
 		for (int x = 0; x < copy.getWidth(); ++x) {
 			for (int y = 0; y < copy.getHeight(); ++y) {
-				if (copy.getRGB(x, y) == from) {
-					copy.setRGB(x, y, to);
+				if (copy.getRGB(x, y) == oldColorRGB) {
+					copy.setRGB(x, y, newColorRGB);
 				}
 			}
 		}
@@ -85,18 +85,18 @@ public class ArcadeTheme implements Theme {
 	public ArcadeTheme() {
 		storeTrueTypeFont("font.hud", "PressStart2P-Regular.ttf", Font.PLAIN, 8);
 
-		int blue = -14605825; // debugger told me this
-		mazeEmptyWhite = changeColor(mazeEmpty, blue, Color.WHITE.getRGB());
+		// debugger told me RGB value of blue color in maze image
+		mazeEmptyWhite = exchangeColor(mazeEmpty, -14605825, Color.WHITE.getRGB());
 
 		// Symbols
-		BufferedImage[] symbolImages = ht(8, 2, 3);
+		BufferedImage[] symbolImages = nHorTiles(8, 2, 3);
 		for (Symbol symbol : Symbol.values()) {
 			symbolMap.put(symbol, symbolImages[symbol.ordinal()]);
 		}
 
 		// Pac-Man
 		pacManFull = t(2, 0);
-		pacManDying = ht(12, 2, 0);
+		pacManDying = nHorTiles(12, 2, 0);
 		pacManWalking = new BufferedImage[][] {
 			/*@formatter:off*/
 			{ t(0, 2), t(1, 2), pacManFull }, 
@@ -113,12 +113,12 @@ public class ArcadeTheme implements Theme {
 				ghostColored[color][i] = t(i, 4 + color);
 			}
 		}
-		ghostFrightened = ht(2, 8, 4);
-		ghostFlashing = ht(4, 8, 4);
+		ghostFrightened = nHorTiles(2, 8, 4);
+		ghostFlashing = nHorTiles(4, 8, 4);
 		ghostEyes = new BufferedImage[] { t(10, 5), t(8, 5), t(11, 5), t(9, 5) };
 
 		// Green numbers (200, 400, 800, 1600)
-		greenNumbers = ht(4, 0, 8);
+		greenNumbers = nHorTiles(4, 0, 8);
 
 		// Pink numbers (100, 300, 500, 700, 1000, 2000, 3000, 5000)
 		pinkNumbers = new BufferedImage[] {
