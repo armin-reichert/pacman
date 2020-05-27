@@ -10,6 +10,8 @@ import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 import static java.lang.Math.PI;
 import static java.lang.Math.round;
+import static java.util.Comparator.comparingInt;
+import static java.util.stream.Collectors.toList;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -24,10 +26,8 @@ import java.awt.Stroke;
 import java.awt.Transparency;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
@@ -290,8 +290,7 @@ public class PlayView extends SimplePlayView {
 	private void drawSeats(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		List<Ghost> ghostsBySeat = game.ghosts().sorted(Comparator.comparingInt(ghost -> ghost.seat))
-				.collect(Collectors.toList());
+		List<Ghost> ghostsBySeat = game.ghosts().sorted(comparingInt(ghost -> ghost.seat)).collect(toList());
 		for (int seat = 0; seat < 4; ++seat) {
 			Tile seatTile = game.maze.ghostHome[seat];
 			Ghost ghostAtSeat = ghostsBySeat.get(seat);
@@ -327,45 +326,43 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawRoute(Graphics2D g, Ghost ghost) {
-		Tile target = ghost.targetTile();
-		List<Tile> targetPath = ghost.steering().targetPath();
-		int pathLen = targetPath.size();
-		Color ghostColor = ghostColor(ghost);
 		Stroke solid = new BasicStroke(0.5f);
 		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
-		boolean drawRubberBand = target != null && pathLen > 0 && target != targetPath.get(pathLen - 1);
-		if (drawRubberBand) {
+		Tile targetTile = ghost.targetTile();
+		List<Tile> path = ghost.steering().targetPath();
+		int len = path.size();
+		Color ghostColor = ghostColor(ghost);
+		if (targetTile != null && len > 0 && targetTile != path.get(len - 1)) {
 			// draw rubber band to target tile
 			int x1 = ghost.tf.getCenter().roundedX(), y1 = ghost.tf.getCenter().roundedY();
-			int x2 = target.centerX(), y2 = target.centerY();
+			int x2 = targetTile.centerX(), y2 = targetTile.centerY();
 			g.setStroke(dashed);
 			g.setColor(alpha(ghostColor, 200));
 			g.drawLine(x1, y1, x2, y2);
-			g.translate(target.x(), target.y());
+			g.translate(targetTile.x(), targetTile.y());
 			g.setColor(ghostColor);
 			g.setStroke(solid);
 			g.fillRect(2, 2, 4, 4);
-			g.translate(-target.x(), -target.y());
+			g.translate(-targetTile.x(), -targetTile.y());
 		}
-		if (pathLen > 1) {
+		if (len > 1) {
 			// draw path
 			g.setColor(alpha(ghostColor, 200));
-			for (int i = 0; i < targetPath.size() - 1; ++i) {
-				Tile from = targetPath.get(i), to = targetPath.get(i + 1);
+			for (int i = 0; i < path.size() - 1; ++i) {
+				Tile from = path.get(i), to = path.get(i + 1);
 				g.setColor(ghostColor);
 				g.setStroke(solid);
 				g.drawLine(from.centerX(), from.centerY(), to.centerX(), to.centerY());
-				if (i + 1 == targetPath.size() - 1) {
+				if (i + 1 == len - 1) {
 					drawArrowHead(g, game.maze.direction(from, to).get(), to.centerX(), to.centerY());
 				}
 			}
 		} else if (ghost.wishDir() != null) {
 			// draw direction indicator
-			Direction nextDir = ghost.wishDir();
 			int x = ghost.tf.getCenter().roundedX(), y = ghost.tf.getCenter().roundedY();
 			g.setColor(ghostColor);
-			Vector2f dirVector = nextDir.vector();
-			drawArrowHead(g, nextDir, x + dirVector.roundedX() * Tile.SIZE, y + dirVector.roundedY() * Tile.SIZE);
+			Vector2f dirVector = ghost.wishDir().vector();
+			drawArrowHead(g, ghost.wishDir(), x + dirVector.roundedX() * Tile.SIZE, y + dirVector.roundedY() * Tile.SIZE);
 		}
 		// visualize Inky's chasing (target tile may be null if Blinky is not on stage!)
 		if (ghost == game.inky && ghost.is(CHASING) && ghost.targetTile() != null) {
