@@ -55,6 +55,24 @@ public class PlayView extends SimplePlayView {
 
 	private static final String INFTY = Character.toString('\u221E');
 
+	private static BufferedImage createGridPattern(int cols, int rows) {
+		GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+				.getDefaultConfiguration();
+		BufferedImage img = gc.createCompatibleImage(cols * Tile.SIZE, rows * Tile.SIZE + 1, Transparency.TRANSLUCENT);
+		Graphics2D g = img.createGraphics();
+		for (int row = 0; row < rows; ++row) {
+			for (int col = 0; col < cols; ++col) {
+				g.setColor(patternColor(col, row));
+				g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
+			}
+		}
+		return img;
+	}
+
+	private static Color patternColor(int col, int row) {
+		return (row + col) % 2 == 0 ? Color.BLACK : new Color(40, 40, 40);
+	}
+
 	private static Color alpha(Color color, int alpha) {
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 	}
@@ -78,8 +96,8 @@ public class PlayView extends SimplePlayView {
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
 		gridImage = createGridPattern(game.maze.numCols, game.maze.numRows);
-		inkyImage = ghostImage(Theme.CYAN_GHOST);
-		clydeImage = ghostImage(Theme.ORANGE_GHOST);
+		inkyImage = (BufferedImage) theme.spr_ghostColored(Theme.CYAN_GHOST, Direction.RIGHT).frame(0);
+		clydeImage = (BufferedImage) theme.spr_ghostColored(Theme.ORANGE_GHOST, Direction.RIGHT).frame(0);
 		pacManImage = (BufferedImage) theme.spr_pacManWalking(RIGHT).frame(0);
 	}
 
@@ -121,28 +139,6 @@ public class PlayView extends SimplePlayView {
 		} else {
 			super.drawBackground(g);
 		}
-	}
-
-	private BufferedImage createGridPattern(int cols, int rows) {
-		GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-				.getDefaultConfiguration();
-		BufferedImage img = gc.createCompatibleImage(cols * Tile.SIZE, rows * Tile.SIZE + 1, Transparency.TRANSLUCENT);
-		Graphics2D g = img.createGraphics();
-		for (int row = 0; row < rows; ++row) {
-			for (int col = 0; col < cols; ++col) {
-				g.setColor(patternColor(col, row));
-				g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
-			}
-		}
-		return img;
-	}
-
-	private Color patternColor(int col, int row) {
-		return (row + col) % 2 == 0 ? Color.BLACK : new Color(40, 40, 40);
-	}
-
-	private BufferedImage ghostImage(int color) {
-		return (BufferedImage) theme.spr_ghostColored(color, Direction.RIGHT).frame(0);
 	}
 
 	@Override
