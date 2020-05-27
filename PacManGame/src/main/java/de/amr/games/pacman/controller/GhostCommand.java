@@ -1,8 +1,8 @@
 package de.amr.games.pacman.controller;
 
-import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.PacManStateMachineLogging.loginfo;
 import static de.amr.games.pacman.model.Game.sec;
 
 import de.amr.games.pacman.actor.GhostState;
@@ -10,10 +10,10 @@ import de.amr.games.pacman.model.Game;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Controller for the timing of the ghost attack waves. Ghosts change between
- * chasing and scattering mode during each level in several rounds. The duration
- * of these rounds depends on the level and round. When a ghost becomes
- * frightened, the timer is stopped and the ghost resumes later in that state.
+ * Controller for the timing of the ghost attack waves. Ghosts change between chasing and scattering
+ * mode during each level in several rounds. The duration of these rounds depends on the level and
+ * round. When a ghost becomes frightened, the timer is stopped and the ghost resumes later in that
+ * state.
  * 
  * @author Armin Reichert
  * 
