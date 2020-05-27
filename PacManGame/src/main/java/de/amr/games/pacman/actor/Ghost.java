@@ -1,6 +1,5 @@
 package de.amr.games.pacman.actor;
 
-import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
@@ -198,7 +197,8 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	private void move() {
 		Steering currentSteering = steering();
 		if (prevSteering != currentSteering) {
-			loginfo("%s steering changed from %s to %s", this, Steering.name(prevSteering), Steering.name(currentSteering));
+			PacManStateMachineLogging.loginfo("%s steering changed from %s to %s", this, Steering.name(prevSteering),
+					Steering.name(currentSteering));
 			currentSteering.init();
 			currentSteering.force();
 			prevSteering = currentSteering;
