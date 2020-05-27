@@ -63,16 +63,8 @@ public class ArcadeTheme implements Theme {
 		return IntStream.range(0, n).mapToObj(i -> t(col + i, row)).toArray(BufferedImage[]::new);
 	}
 
-	Sound sound(String name, String type) {
-		return Assets.sound("sfx/" + name + "." + type);
-	}
-
 	Sound mp3(String name) {
-		return sound(name, "mp3");
-	}
-
-	Sound wav(String name) {
-		return sound(name, "wav");
+		return Assets.sound("sfx/" + name + ".mp3");
 	}
 
 	BufferedImage changeColor(BufferedImage src, int from, int to) {
