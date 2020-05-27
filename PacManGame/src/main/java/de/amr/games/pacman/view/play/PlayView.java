@@ -27,6 +27,7 @@ import java.awt.Transparency;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import de.amr.easy.game.math.Vector2f;
@@ -98,7 +99,8 @@ public class PlayView extends SimplePlayView {
 		if (showScores) {
 			drawScores(g);
 		}
-		game.ghosts().map(Ghost::steering).forEach(steering -> steering.enableTargetPathComputation(showRoutes));
+		game.ghosts().map(Ghost::steering).filter(Objects::nonNull)
+				.forEach(steering -> steering.enableTargetPathComputation(showRoutes));
 		if (showRoutes) {
 			drawRoutes(g);
 		}
