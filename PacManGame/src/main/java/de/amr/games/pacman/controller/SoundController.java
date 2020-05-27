@@ -54,13 +54,13 @@ public class SoundController {
 	}
 
 	public void muteAll() {
-		muteSoundEffects();
+		muteAllClips();
 		theme.music_playing().stop();
 		theme.music_gameover().stop();
 	}
 
-	public void muteSoundEffects() {
-		theme.snd_clips_all().forEach(Sound::stop);
+	public void muteAllClips() {
+		theme.clips_all().forEach(Sound::stop);
 	}
 
 	public void muteGhostSounds() {
@@ -117,5 +117,4 @@ public class SoundController {
 	public boolean isGameOverMusicRunning() {
 		return theme.music_gameover().isRunning();
 	}
-
 }

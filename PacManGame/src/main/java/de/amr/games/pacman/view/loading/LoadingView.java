@@ -56,8 +56,7 @@ public class LoadingView extends PacManGameView {
 		if (alpha >= 160) {
 			alphaInc = -2;
 			alpha = 160;
-		}
-		else if (alpha <= 0) {
+		} else if (alpha <= 0) {
 			alphaInc = 2;
 			alpha = 0;
 		}

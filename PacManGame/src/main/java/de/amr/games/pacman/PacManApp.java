@@ -10,6 +10,7 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.theme.ArcadeTheme;
 import de.amr.games.pacman.theme.Theme;
 
 /**
@@ -84,7 +85,7 @@ public class PacManApp extends Application {
 	@Override
 	public void init() {
 		loginfo("User language is %s", texts.getLocale().getDisplayLanguage());
-		Theme theme = Theme.createTheme(settings.theme);
+		Theme theme = new ArcadeTheme(); // only theme existing yet
 		setIcon(theme.spr_ghostFrightened().frame(0));
 		PacManStateMachineLogging.setLevel(Level.INFO);
 		GameController gameController = new GameController(theme);

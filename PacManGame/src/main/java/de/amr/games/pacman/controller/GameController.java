@@ -184,7 +184,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	private float mazeFlashingSeconds() {
-		return game.level.mazeNumFlashes * Theme.MAZE_FLASH_TIME_MILLIS / 1000f;
+		return game.level.mazeNumFlashes * 0.4f;
 	}
 
 	private PlayingState playingState() {
@@ -242,7 +242,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onEntry(() -> {
 						game.pacMan.sprites.select("full");
 						ghostHouse.onLevelChange();
-						sound.muteSoundEffects();
+						sound.muteAllClips();
 						playView.enableGhostAnimations(false);
 						playView.mazeView.energizersBlinking.setEnabled(false);
 						loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilled);
@@ -300,7 +300,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.timeoutAfter(() -> game.lives > 1 ? sec(9) : sec(7))
 					.onEntry(() -> {
 						game.lives -= settings.pacManImmortable ? 0 : 1;
-						sound.muteSoundEffects();
+						sound.muteAllClips();
 					})
 					.onTick((state, t, remaining) -> {
 						if (t == sec(1)) {

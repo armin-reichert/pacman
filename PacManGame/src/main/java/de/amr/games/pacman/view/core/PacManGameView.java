@@ -43,7 +43,8 @@ public abstract class PacManGameView implements Lifecycle, View {
 		public void draw(Graphics2D g) {
 			if (text != null && text.trim().length() > 0) {
 				try (Pen pen = new Pen(g)) {
-					pen.font(theme.fnt_text(fontSize));
+					pen.font(theme.fnt_text());
+					pen.fontSize(fontSize);
 					pen.color(color);
 					pen.hcenter(text, width(), row, Tile.SIZE);
 				}
@@ -120,7 +121,7 @@ public abstract class PacManGameView implements Lifecycle, View {
 	}
 
 	protected void drawMessage(Graphics2D g) {
-		message.fontSize=8;
+		message.fontSize = 8;
 		message.draw(g);
 	}
 }

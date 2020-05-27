@@ -12,10 +12,12 @@ import static de.amr.graph.grid.impl.Grid4Topology.W;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.Assets;
@@ -29,6 +31,8 @@ import de.amr.games.pacman.model.Symbol;
  * @author Armin Reichert
  */
 public class ArcadeTheme implements Theme {
+
+	private final int tileSize = 16;
 
 	private final BufferedImage sheet = Assets.readImage("images/arcade/sprites.png");
 	private final BufferedImage mazeEmpty = Assets.readImage("images/arcade/maze_empty.png");
@@ -45,6 +49,45 @@ public class ArcadeTheme implements Theme {
 	private final BufferedImage greenNumbers[];
 	private final BufferedImage pinkNumbers[];
 	private final Map<Symbol, BufferedImage> symbolMap = new EnumMap<>(Symbol.class);
+
+	BufferedImage crop(int x, int y, int w, int h) {
+		return sheet.getSubimage(x, y, w, h);
+	}
+
+	BufferedImage t(int col, int row) {
+		return crop(col * tileSize, row * tileSize, tileSize, tileSize);
+	}
+
+	BufferedImage[] ht(int n, int col, int row) {
+		return IntStream.range(0, n).mapToObj(i -> t(col + i, row)).toArray(BufferedImage[]::new);
+	}
+
+	Sound sound(String name, String type) {
+		return Assets.sound("sfx/" + name + "." + type);
+	}
+
+	Sound mp3(String name) {
+		return sound(name, "mp3");
+	}
+
+	Sound wav(String name) {
+		return sound(name, "wav");
+	}
+
+	BufferedImage changeColor(BufferedImage src, int from, int to) {
+		BufferedImage copy = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+		Graphics2D g = copy.createGraphics();
+		g.drawImage(src, 0, 0, null);
+		for (int x = 0; x < copy.getWidth(); ++x) {
+			for (int y = 0; y < copy.getHeight(); ++y) {
+				if (copy.getRGB(x, y) == from) {
+					copy.setRGB(x, y, to);
+				}
+			}
+		}
+		g.dispose();
+		return copy;
+	}
 
 	public ArcadeTheme() {
 		storeTrueTypeFont("font.hud", "PressStart2P-Regular.ttf", Font.PLAIN, 8);
@@ -98,44 +141,16 @@ public class ArcadeTheme implements Theme {
 
 	@Override
 	public Sprite spr_number(int number) {
-		switch (number) {
-		case 200:
-			return Sprite.of(greenNumbers[0]);
-		case 400:
-			return Sprite.of(greenNumbers[1]);
-		case 800:
-			return Sprite.of(greenNumbers[2]);
-		case 1600:
-			return Sprite.of(greenNumbers[3]);
-		case 100:
-			return Sprite.of(pinkNumbers[0]);
-		case 300:
-			return Sprite.of(pinkNumbers[1]);
-		case 500:
-			return Sprite.of(pinkNumbers[2]);
-		case 700:
-			return Sprite.of(pinkNumbers[3]);
-		case 1000:
-			return Sprite.of(pinkNumbers[4]);
-		case 2000:
-			return Sprite.of(pinkNumbers[5]);
-		case 3000:
-			return Sprite.of(pinkNumbers[6]);
-		case 5000:
-			return Sprite.of(pinkNumbers[7]);
-		default:
+		int index = Arrays.asList(200, 400, 800, 1600, 100, 300, 500, 700, 1000, 2000, 3000, 5000).indexOf(number);
+		if (index == -1) {
 			throw new IllegalArgumentException("No sprite found for number" + number);
 		}
+		return Sprite.of(index < 4 ? greenNumbers[index] : pinkNumbers[index - 4]);
 	}
 
 	@Override
-	public BufferedImage spritesheet() {
-		return sheet;
-	}
-
-	@Override
-	public int cs() {
-		return 16;
+	public Color color_mazeBackground() {
+		return Color.BLACK;
 	}
 
 	@Override
@@ -155,7 +170,7 @@ public class ArcadeTheme implements Theme {
 
 	@Override
 	public Sprite spr_flashingMaze() {
-		return Sprite.of(mazeEmptyWhite, mazeEmpty).animate(CYCLIC, MAZE_FLASH_TIME_MILLIS / 2);
+		return Sprite.of(mazeEmptyWhite, mazeEmpty).animate(CYCLIC, 200);
 	}
 
 	@Override
@@ -221,7 +236,7 @@ public class ArcadeTheme implements Theme {
 	}
 
 	@Override
-	public Stream<Sound> snd_clips_all() {
+	public Stream<Sound> clips_all() {
 		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eatPill(), snd_extraLife(), snd_insertCoin(),
 				snd_ready(), snd_ghost_chase(), snd_ghost_dead(), snd_waza());
 	}
