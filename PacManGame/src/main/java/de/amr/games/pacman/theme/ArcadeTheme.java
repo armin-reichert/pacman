@@ -5,10 +5,6 @@ import static de.amr.easy.game.assets.Assets.storeTrueTypeFont;
 import static de.amr.easy.game.ui.sprites.AnimationType.BACK_AND_FORTH;
 import static de.amr.easy.game.ui.sprites.AnimationType.CYCLIC;
 import static de.amr.easy.game.ui.sprites.AnimationType.LINEAR;
-import static de.amr.games.pacman.model.Direction.DOWN;
-import static de.amr.games.pacman.model.Direction.LEFT;
-import static de.amr.games.pacman.model.Direction.RIGHT;
-import static de.amr.games.pacman.model.Direction.UP;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -50,6 +46,21 @@ public class ArcadeTheme implements Theme {
 	private final BufferedImage greenNumbers[];
 	private final BufferedImage pinkNumbers[];
 	private final Map<Symbol, BufferedImage> symbolMap = new EnumMap<>(Symbol.class);
+
+	// in the spritesheet, the order of directions is: RIGHT, LEFT, UP, DOWN
+	int sheetOrder(Direction dir) {
+		switch (dir) {
+		case DOWN:
+			return 3;
+		case LEFT:
+			return 1;
+		case RIGHT:
+			return 0;
+		case UP:
+			return 2;
+		}
+		throw new IllegalArgumentException("Illegal direction: " + dir);
+	}
 
 	BufferedImage crop(int x, int y, int w, int h) {
 		return sheet.getSubimage(x, y, w, h);
@@ -99,10 +110,10 @@ public class ArcadeTheme implements Theme {
 		pacManDying = nHorTiles(12, 2, 0);
 		pacManWalking = new BufferedImage[][] {
 			/*@formatter:off*/
-			{ t(0, 2), t(1, 2), pacManFull }, 
-			{ t(0, 0), t(1, 0), pacManFull },
-			{ t(0, 3), t(1, 3), pacManFull }, 
-			{ t(0, 1), t(1, 1), pacManFull }
+			{ t(0, 0), t(1, 0), pacManFull }, // RIGHT
+			{ t(0, 1), t(1, 1), pacManFull }, // LEFT
+			{ t(0, 2), t(1, 2), pacManFull }, // UP
+			{ t(0, 3), t(1, 3), pacManFull }  // DOWN
 			/*@formatter:on*/
 		};
 
@@ -115,7 +126,7 @@ public class ArcadeTheme implements Theme {
 		}
 		ghostFrightened = nHorTiles(2, 8, 4);
 		ghostFlashing = nHorTiles(4, 8, 4);
-		ghostEyes = new BufferedImage[] { t(10, 5), t(8, 5), t(11, 5), t(9, 5) };
+		ghostEyes = nHorTiles(4, 8, 5);
 
 		// Green numbers (200, 400, 800, 1600)
 		greenNumbers = nHorTiles(4, 0, 8);
@@ -178,7 +189,7 @@ public class ArcadeTheme implements Theme {
 
 	@Override
 	public Sprite spr_pacManWalking(Direction dir) {
-		return Sprite.of(pacManWalking[dir.ordinal()]).animate(BACK_AND_FORTH, 20);
+		return Sprite.of(pacManWalking[sheetOrder(dir)]).animate(BACK_AND_FORTH, 20);
 	}
 
 	@Override
@@ -188,9 +199,7 @@ public class ArcadeTheme implements Theme {
 
 	@Override
 	public Sprite spr_ghostColored(int color, Direction dir) {
-		int i = Stream.of(RIGHT, LEFT, UP, DOWN).filter(d -> d == dir).map(Direction::ordinal).findFirst()
-				.orElseThrow(() -> new IllegalArgumentException("Illegal direction: " + dir));
-		BufferedImage[] frames = Arrays.copyOfRange(ghostColored[color], 2 * i, 2 * (i + 1));
+		BufferedImage[] frames = Arrays.copyOfRange(ghostColored[color], 2 * sheetOrder(dir), 2 * (sheetOrder(dir) + 1));
 		return Sprite.of(frames).animate(BACK_AND_FORTH, 300);
 	}
 
@@ -206,7 +215,7 @@ public class ArcadeTheme implements Theme {
 
 	@Override
 	public Sprite spr_ghostEyes(Direction dir) {
-		return Sprite.of(ghostEyes[dir.ordinal()]);
+		return Sprite.of(ghostEyes[sheetOrder(dir)]);
 	}
 
 	@Override

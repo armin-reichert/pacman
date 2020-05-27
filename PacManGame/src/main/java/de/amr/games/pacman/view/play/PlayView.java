@@ -288,6 +288,8 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawSeats(Graphics2D g) {
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		List<Ghost> ghostsBySeat = game.ghosts().sorted(Comparator.comparingInt(ghost -> ghost.seat))
 				.collect(Collectors.toList());
 		for (int seat = 0; seat < 4; ++seat) {
@@ -296,17 +298,15 @@ public class PlayView extends SimplePlayView {
 			g.setColor(ghostColor(ghostAtSeat));
 			int x = seatTile.centerX(), y = seatTile.y();
 			String text = String.valueOf(seat);
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.drawRoundRect(x, y, Tile.SIZE, Tile.SIZE, 2, 2);
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 6));
 			FontMetrics fm = g.getFontMetrics();
 			Rectangle2D r = fm.getStringBounds(text, g);
-			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			g.setColor(Color.WHITE);
 			g.drawString(text, x + (Tile.SIZE - Math.round(r.getWidth())) / 2, y + Tile.SIZE - 2);
-			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 		}
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 	}
 
 	private void drawArrowHead(Graphics2D g, Direction dir, int x, int y) {
