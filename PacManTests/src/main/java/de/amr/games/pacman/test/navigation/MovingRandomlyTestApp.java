@@ -4,16 +4,17 @@ import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 
 import java.awt.event.KeyEvent;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ArcadeTheme;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.play.PlayView;
 
-public class MovingRandomlyTestApp extends PacManApp {
+public class MovingRandomlyTestApp extends Application {
 
 	public static void main(String[] args) {
 		launch(MovingRandomlyTestApp.class, args);
@@ -21,7 +22,9 @@ public class MovingRandomlyTestApp extends PacManApp {
 
 	@Override
 	protected void configure(AppSettings settings) {
-		super.configure(settings);
+		settings.width = 28 * Tile.SIZE;
+		settings.height = 36 * Tile.SIZE;
+		settings.scale = 2;
 		settings.title = "Moving Randomly";
 	}
 

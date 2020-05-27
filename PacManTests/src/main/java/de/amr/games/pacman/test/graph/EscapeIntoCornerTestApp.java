@@ -5,17 +5,18 @@ import static de.amr.games.pacman.actor.PacManState.EATING;
 
 import java.util.Optional;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
-import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.MovingActor;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ArcadeTheme;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.play.PlayView;
 
-public class EscapeIntoCornerTestApp extends PacManApp {
+public class EscapeIntoCornerTestApp extends Application {
 
 	public static void main(String[] args) {
 		launch(EscapeIntoCornerTestApp.class, args);
@@ -23,7 +24,9 @@ public class EscapeIntoCornerTestApp extends PacManApp {
 
 	@Override
 	protected void configure(AppSettings settings) {
-		super.configure(settings);
+		settings.width = 28 * Tile.SIZE;
+		settings.height = 36 * Tile.SIZE;
+		settings.scale = 2;
 		settings.title = "Escape Into Corner";
 	}
 

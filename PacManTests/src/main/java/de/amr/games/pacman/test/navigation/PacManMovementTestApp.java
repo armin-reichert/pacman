@@ -2,20 +2,21 @@ package de.amr.games.pacman.test.navigation;
 
 import java.awt.event.KeyEvent;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
-import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.MovingActor;
 import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ArcadeTheme;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.play.PlayView;
 
-public class PacManMovementTestApp extends PacManApp {
+public class PacManMovementTestApp extends Application {
 
 	public static void main(String[] args) {
 		launch(PacManMovementTestApp.class, args);
@@ -23,7 +24,9 @@ public class PacManMovementTestApp extends PacManApp {
 
 	@Override
 	protected void configure(AppSettings settings) {
-		super.configure(settings);
+		settings.width = 28 * Tile.SIZE;
+		settings.height = 36 * Tile.SIZE;
+		settings.scale = 2;
 		settings.title = "Pac-Man Movement";
 	}
 

@@ -5,18 +5,19 @@ import static de.amr.games.pacman.actor.GhostState.CHASING;
 import java.awt.event.KeyEvent;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.ArcadeTheme;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.play.PlayView;
 
-public class InkyChaseTestApp extends PacManApp {
+public class InkyChaseTestApp extends Application {
 
 	public static void main(String[] args) {
 		launch(InkyChaseTestApp.class, args);
@@ -24,7 +25,9 @@ public class InkyChaseTestApp extends PacManApp {
 
 	@Override
 	protected void configure(AppSettings settings) {
-		super.configure(settings);
+		settings.width = 28 * Tile.SIZE;
+		settings.height = 36 * Tile.SIZE;
+		settings.scale = 2;
 		settings.title = "Inky Chasing";
 	}
 
