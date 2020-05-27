@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
-import static de.amr.graph.grid.impl.Grid4Topology.E;
+import static de.amr.games.pacman.model.Direction.RIGHT;
 
 import java.awt.Graphics2D;
 
@@ -30,7 +30,7 @@ public class ChaseGhostsAnimation extends Entity implements Lifecycle, View {
 
 	public ChaseGhostsAnimation(Theme theme) {
 		this.theme = theme;
-		pacMan = theme.spr_pacManWalking(E);
+		pacMan = theme.spr_pacManWalking(RIGHT);
 		ghost = theme.spr_ghostFrightened();
 		int i = 0;
 		for (int number : new int[] { 200, 400, 800, 1600 }) {

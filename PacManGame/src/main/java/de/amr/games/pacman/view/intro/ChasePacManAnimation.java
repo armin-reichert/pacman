@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.intro;
 
+import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Game.sec;
-import static de.amr.graph.grid.impl.Grid4Topology.W;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -25,11 +25,11 @@ public class ChasePacManAnimation extends GameObject {
 
 	public ChasePacManAnimation(Theme theme) {
 		this.theme = theme;
-		pacMan = theme.spr_pacManWalking(W);
-		ghosts[0] = theme.spr_ghostColored(GhostColor.RED, W);
-		ghosts[1] = theme.spr_ghostColored(GhostColor.PINK, W);
-		ghosts[2] = theme.spr_ghostColored(GhostColor.CYAN, W);
-		ghosts[3] = theme.spr_ghostColored(GhostColor.ORANGE, W);
+		pacMan = theme.spr_pacManWalking(LEFT);
+		ghosts[0] = theme.spr_ghostColored(GhostColor.RED, LEFT);
+		ghosts[1] = theme.spr_ghostColored(GhostColor.PINK, LEFT);
+		ghosts[2] = theme.spr_ghostColored(GhostColor.CYAN, LEFT);
+		ghosts[3] = theme.spr_ghostColored(GhostColor.ORANGE, LEFT);
 		pill = true;
 		tf.width = (88);
 		tf.height = (16);

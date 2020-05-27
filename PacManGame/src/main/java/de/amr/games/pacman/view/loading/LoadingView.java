@@ -75,7 +75,7 @@ public class LoadingView extends PacManGameView {
 		for (int i = 0; i < ghostCount; ++i) {
 			GhostColor color = GhostColor.values()[new Random().nextInt(4)];
 			Direction dir = Direction.values()[new Random().nextInt(4)];
-			theme.spr_ghostColored(color, dir.ordinal()).draw(g, x, y);
+			theme.spr_ghostColored(color, dir).draw(g, x, y);
 			x += 20;
 		}
 	}

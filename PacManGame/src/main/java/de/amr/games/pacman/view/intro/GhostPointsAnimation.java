@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.intro;
 
+import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.model.Game.sec;
-import static de.amr.graph.grid.impl.Grid4Topology.E;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -32,7 +32,7 @@ public class GhostPointsAnimation extends GameObject {
 
 	public GhostPointsAnimation(Theme theme) {
 		this.theme = theme;
-		pacMan = theme.spr_pacManWalking(E);
+		pacMan = theme.spr_pacManWalking(RIGHT);
 		ghost = theme.spr_ghostFrightened();
 		int i = 0;
 		for (int number : new int[] { 200, 400, 800, 1600 }) {

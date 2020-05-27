@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Symbol;
 
 /**
@@ -30,17 +31,17 @@ public interface Theme {
 
 	Sprite spr_pacManFull();
 
-	Sprite spr_pacManWalking(int dir);
+	Sprite spr_pacManWalking(Direction dir);
 
 	Sprite spr_pacManDying();
 
-	Sprite spr_ghostColored(GhostColor color, int direction);
+	Sprite spr_ghostColored(GhostColor color, Direction dir);
 
 	Sprite spr_ghostFrightened();
 
 	Sprite spr_ghostFlashing();
 
-	Sprite spr_ghostEyes(int dir);
+	Sprite spr_ghostEyes(Direction dir);
 
 	Sprite spr_number(int number);
 

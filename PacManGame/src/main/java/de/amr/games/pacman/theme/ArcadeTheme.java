@@ -5,10 +5,10 @@ import static de.amr.easy.game.assets.Assets.storeTrueTypeFont;
 import static de.amr.easy.game.ui.sprites.AnimationType.BACK_AND_FORTH;
 import static de.amr.easy.game.ui.sprites.AnimationType.CYCLIC;
 import static de.amr.easy.game.ui.sprites.AnimationType.LINEAR;
-import static de.amr.graph.grid.impl.Grid4Topology.E;
-import static de.amr.graph.grid.impl.Grid4Topology.N;
-import static de.amr.graph.grid.impl.Grid4Topology.S;
-import static de.amr.graph.grid.impl.Grid4Topology.W;
+import static de.amr.games.pacman.model.Direction.DOWN;
+import static de.amr.games.pacman.model.Direction.LEFT;
+import static de.amr.games.pacman.model.Direction.RIGHT;
+import static de.amr.games.pacman.model.Direction.UP;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.Sound;
 import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Symbol;
 
 /**
@@ -184,8 +185,8 @@ public class ArcadeTheme implements Theme {
 	}
 
 	@Override
-	public Sprite spr_pacManWalking(int dir) {
-		return Sprite.of(pacManWalking[dir]).animate(BACK_AND_FORTH, 20);
+	public Sprite spr_pacManWalking(Direction dir) {
+		return Sprite.of(pacManWalking[dir.ordinal()]).animate(BACK_AND_FORTH, 20);
 	}
 
 	@Override
@@ -194,24 +195,10 @@ public class ArcadeTheme implements Theme {
 	}
 
 	@Override
-	public Sprite spr_ghostColored(GhostColor color, int direction) {
-		BufferedImage[] frames;
-		switch (direction) {
-		case E:
-			frames = Arrays.copyOfRange(ghostColored[color.ordinal()], 0, 2);
-			break;
-		case W:
-			frames = Arrays.copyOfRange(ghostColored[color.ordinal()], 2, 4);
-			break;
-		case N:
-			frames = Arrays.copyOfRange(ghostColored[color.ordinal()], 4, 6);
-			break;
-		case S:
-			frames = Arrays.copyOfRange(ghostColored[color.ordinal()], 6, 8);
-			break;
-		default:
-			throw new IllegalArgumentException("Illegal direction: " + direction);
-		}
+	public Sprite spr_ghostColored(GhostColor color, Direction dir) {
+		int i = Stream.of(RIGHT, LEFT, UP, DOWN).filter(d -> d == dir).map(Direction::ordinal).findFirst()
+				.orElseThrow(() -> new IllegalArgumentException("Illegal direction: " + dir));
+		BufferedImage[] frames = Arrays.copyOfRange(ghostColored[color.ordinal()], 2 * i, 2 * (i + 1));
 		return Sprite.of(frames).animate(BACK_AND_FORTH, 300);
 	}
 
@@ -226,8 +213,8 @@ public class ArcadeTheme implements Theme {
 	}
 
 	@Override
-	public Sprite spr_ghostEyes(int dir) {
-		return Sprite.of(ghostEyes[dir]);
+	public Sprite spr_ghostEyes(Direction dir) {
+		return Sprite.of(ghostEyes[dir.ordinal()]);
 	}
 
 	@Override

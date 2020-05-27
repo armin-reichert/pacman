@@ -2,6 +2,7 @@ package de.amr.games.pacman.view.play;
 
 import static de.amr.games.pacman.actor.GhostState.DEAD;
 import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.view.play.SimplePlayView.MazeMode.CROWDED;
 import static de.amr.games.pacman.view.play.SimplePlayView.MazeMode.EMPTY;
 import static de.amr.games.pacman.view.play.SimplePlayView.MazeMode.FLASHING;
@@ -137,7 +138,7 @@ public class SimplePlayView extends PacManGameView {
 
 	protected void drawLives(Graphics2D g) {
 		int sz = 2 * Tile.SIZE;
-		Image pacManLookingLeft = theme.spr_pacManWalking(3).frame(1);
+		Image pacManLookingLeft = theme.spr_pacManWalking(LEFT).frame(1);
 		for (int i = 0, x = sz; i < game.lives; ++i, x += sz) {
 			g.drawImage(pacManLookingLeft, x, height() - sz, null);
 		}

@@ -87,15 +87,15 @@ public abstract class PacManGameView implements Lifecycle, View {
 	}
 
 	private void dressPacMan() {
-		dirs().forEach(dir -> game.pacMan.sprites.set("walking-" + dir, theme.spr_pacManWalking(dir.ordinal())));
+		dirs().forEach(dir -> game.pacMan.sprites.set("walking-" + dir, theme.spr_pacManWalking(dir)));
 		game.pacMan.sprites.set("dying", theme.spr_pacManDying());
 		game.pacMan.sprites.set("full", theme.spr_pacManFull());
 	}
 
 	private void dressGhost(Ghost ghost, GhostColor color) {
 		dirs().forEach(dir -> {
-			ghost.sprites.set("color-" + dir, theme.spr_ghostColored(color, dir.ordinal()));
-			ghost.sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir.ordinal()));
+			ghost.sprites.set("color-" + dir, theme.spr_ghostColored(color, dir));
+			ghost.sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir));
 		});
 		ghost.sprites.set("frightened", theme.spr_ghostFrightened());
 		ghost.sprites.set("flashing", theme.spr_ghostFlashing());

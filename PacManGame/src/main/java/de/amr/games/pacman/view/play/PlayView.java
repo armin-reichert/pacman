@@ -7,6 +7,7 @@ import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.model.Direction.RIGHT;
 import static java.lang.Math.PI;
 import static java.lang.Math.round;
 
@@ -79,7 +80,7 @@ public class PlayView extends SimplePlayView {
 		gridImage = createGridImage(game.maze);
 		inkyImage = ghostImage(GhostColor.CYAN);
 		clydeImage = ghostImage(GhostColor.ORANGE);
-		pacManImage = (BufferedImage) theme.spr_pacManWalking(Direction.RIGHT.ordinal()).frame(0);
+		pacManImage = (BufferedImage) theme.spr_pacManWalking(RIGHT).frame(0);
 		arrowHead = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 	}
 
@@ -142,7 +143,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private BufferedImage ghostImage(GhostColor color) {
-		return (BufferedImage) theme.spr_ghostColored(color, Direction.RIGHT.ordinal()).frame(0);
+		return (BufferedImage) theme.spr_ghostColored(color, Direction.RIGHT).frame(0);
 	}
 
 	private Color patternColor(int col, int row) {
