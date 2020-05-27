@@ -195,10 +195,10 @@ public class ArcadeTheme implements Theme {
 	}
 
 	@Override
-	public Sprite spr_ghostColored(GhostColor color, Direction dir) {
+	public Sprite spr_ghostColored(int color, Direction dir) {
 		int i = Stream.of(RIGHT, LEFT, UP, DOWN).filter(d -> d == dir).map(Direction::ordinal).findFirst()
 				.orElseThrow(() -> new IllegalArgumentException("Illegal direction: " + dir));
-		BufferedImage[] frames = Arrays.copyOfRange(ghostColored[color.ordinal()], 2 * i, 2 * (i + 1));
+		BufferedImage[] frames = Arrays.copyOfRange(ghostColored[color], 2 * i, 2 * (i + 1));
 		return Sprite.of(frames).animate(BACK_AND_FORTH, 300);
 	}
 

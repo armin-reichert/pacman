@@ -42,7 +42,6 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.core.FPSDisplay;
 import de.amr.statemachine.core.State;
@@ -78,8 +77,8 @@ public class PlayView extends SimplePlayView {
 		fps = new FPSDisplay();
 		fps.tf.setPosition(0, 18 * Tile.SIZE);
 		gridImage = createGridImage(game.maze);
-		inkyImage = ghostImage(GhostColor.CYAN);
-		clydeImage = ghostImage(GhostColor.ORANGE);
+		inkyImage = ghostImage(Theme.CYAN_GHOST);
+		clydeImage = ghostImage(Theme.ORANGE_GHOST);
 		pacManImage = (BufferedImage) theme.spr_pacManWalking(RIGHT).frame(0);
 		arrowHead = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 	}
@@ -142,7 +141,7 @@ public class PlayView extends SimplePlayView {
 		return img;
 	}
 
-	private BufferedImage ghostImage(GhostColor color) {
+	private BufferedImage ghostImage(int color) {
 		return (BufferedImage) theme.spr_ghostColored(color, Direction.RIGHT).frame(0);
 	}
 

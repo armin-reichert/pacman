@@ -16,7 +16,6 @@ import de.amr.easy.game.view.View;
 import de.amr.games.pacman.actor.Ghost;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.Theme;
 
 /**
@@ -75,10 +74,10 @@ public abstract class PacManGameView implements Lifecycle, View {
 		this.theme = Objects.requireNonNull(theme);
 		message = new Message();
 		dressPacMan();
-		dressGhost(game.blinky, GhostColor.RED);
-		dressGhost(game.pinky, GhostColor.PINK);
-		dressGhost(game.inky, GhostColor.CYAN);
-		dressGhost(game.clyde, GhostColor.ORANGE);
+		dressGhost(game.blinky, Theme.RED_GHOST);
+		dressGhost(game.pinky, Theme.PINK_GHOST);
+		dressGhost(game.inky, Theme.CYAN_GHOST);
+		dressGhost(game.clyde, Theme.ORANGE_GHOST);
 	}
 
 	@Override
@@ -92,7 +91,7 @@ public abstract class PacManGameView implements Lifecycle, View {
 		game.pacMan.sprites.set("full", theme.spr_pacManFull());
 	}
 
-	private void dressGhost(Ghost ghost, GhostColor color) {
+	private void dressGhost(Ghost ghost, int color) {
 		dirs().forEach(dir -> {
 			ghost.sprites.set("color-" + dir, theme.spr_ghostColored(color, dir));
 			ghost.sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir));

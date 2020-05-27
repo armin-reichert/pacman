@@ -17,6 +17,8 @@ import de.amr.games.pacman.model.Symbol;
  */
 public interface Theme {
 
+	static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
+
 	BufferedImage img_logo();
 
 	Color color_mazeBackground();
@@ -35,7 +37,7 @@ public interface Theme {
 
 	Sprite spr_pacManDying();
 
-	Sprite spr_ghostColored(GhostColor color, Direction dir);
+	Sprite spr_ghostColored(int color, Direction dir);
 
 	Sprite spr_ghostFrightened();
 

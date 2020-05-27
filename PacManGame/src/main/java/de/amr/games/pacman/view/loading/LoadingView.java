@@ -11,7 +11,6 @@ import de.amr.games.pacman.actor.PacManState;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.GhostColor;
 import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.core.PacManGameView;
 
@@ -73,7 +72,7 @@ public class LoadingView extends PacManGameView {
 		drawActor(g, game.pacMan, game.pacMan.sprites);
 		float x = width() / 2 - (ghostCount / 2) * 20, y = game.pacMan.tf.y + 20;
 		for (int i = 0; i < ghostCount; ++i) {
-			GhostColor color = GhostColor.values()[new Random().nextInt(4)];
+			int color = new Random().nextInt(4);
 			Direction dir = Direction.values()[new Random().nextInt(4)];
 			theme.spr_ghostColored(color, dir).draw(g, x, y);
 			x += 20;
