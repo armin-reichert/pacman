@@ -11,8 +11,8 @@ public class PacManStateMachineLogging {
 		LOG.setLevel(Level.OFF);
 	}
 
-	public static void setLevel(Level level) {
-		LOG.setLevel(level);
+	public static void setEnabled(boolean enabled) {
+		LOG.setLevel(enabled ? Level.INFO : Level.OFF);
 	}
 
 	public static void toggle() {

@@ -1,7 +1,6 @@
 package de.amr.games.pacman;
 
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 
 import com.beust.jcommander.Parameter;
 
@@ -84,7 +83,7 @@ public class PacManApp extends Application {
 		loginfo("User language is %s", texts.getLocale().getDisplayLanguage());
 		Theme theme = new ArcadeTheme(); // only theme existing yet
 		setIcon(theme.spr_ghostFrightened().frame(0));
-		PacManStateMachineLogging.setLevel(Level.INFO);
+		PacManStateMachineLogging.setEnabled(true);
 		GameController gameController = new GameController(theme);
 		setExitHandler(app -> gameController.saveHiscore());
 		setController(gameController);
