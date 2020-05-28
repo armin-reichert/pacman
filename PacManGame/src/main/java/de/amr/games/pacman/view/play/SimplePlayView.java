@@ -10,6 +10,7 @@ import static de.amr.games.pacman.view.play.SimplePlayView.MazeMode.FLASHING;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
@@ -90,9 +91,11 @@ public class SimplePlayView extends PacManGameView {
 	}
 
 	protected void drawScores(Graphics2D g) {
+		int topMargin = 3;
+		int lineOffset = 2;
 		Color hilight = Color.YELLOW;
 		int col;
-		g.translate(0, 3); // margin between score and upper window border
+		g.translate(0, topMargin); // margin between score and upper window border
 		try (Pen pen = new Pen(g)) {
 			pen.font(theme.fnt_text());
 
@@ -101,36 +104,40 @@ public class SimplePlayView extends PacManGameView {
 			pen.color(hilight);
 			pen.drawAtGridPosition("Score".toUpperCase(), col, 0, Tile.SIZE);
 
-			pen.down(1);
+			pen.down(lineOffset);
 			pen.color(Color.WHITE);
 			pen.drawAtGridPosition(String.format("%07d", game.score), col, 1, Tile.SIZE);
-			pen.up(1);
+			pen.up(lineOffset);
 
 			// Highscore
 			col = 9;
 			pen.color(hilight);
 			pen.drawAtGridPosition("Highscore".toUpperCase(), col, 0, Tile.SIZE);
-			pen.down(1);
+			pen.down(lineOffset);
 			pen.color(Color.WHITE);
 			pen.drawAtGridPosition(String.format("%07d", game.hiscore.points), col, 1, Tile.SIZE);
 			pen.drawAtGridPosition(String.format("L%02d", game.hiscore.levelNumber), col + 7, 1, Tile.SIZE);
-			pen.up(1);
+			pen.up(lineOffset);
 
 			col = 20;
 			pen.color(hilight);
 			pen.drawAtGridPosition(String.format("Level".toUpperCase()), col, 0, Tile.SIZE);
 			// Level number
-			pen.down(1);
+			pen.down(lineOffset);
 			pen.color(Color.WHITE);
 			pen.drawAtGridPosition(String.format("%02d", game.level.number), col, 1, Tile.SIZE);
 			// Number of remaining pellets
 			g.setColor(Color.PINK);
-			g.fillRect((col + 2) * Tile.SIZE + 2, Tile.SIZE + 2, 3, 3); // dot image
+			g.translate(0, (topMargin + lineOffset) - 2);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.fillOval((col + 2) * Tile.SIZE + 2, Tile.SIZE, 4, 4); // dot image
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			g.translate(0, -(topMargin + lineOffset) + 2);
 			pen.color(Color.WHITE);
 			pen.drawAtGridPosition(String.format("%03d", game.remainingFoodCount()), col + 3, 1, Tile.SIZE);
-			pen.up(1);
+			pen.up(lineOffset);
 		}
-		g.translate(0, -3);
+		g.translate(0, -topMargin);
 
 		drawLives(g);
 		drawLevelCounter(g);
