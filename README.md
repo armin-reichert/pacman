@@ -348,14 +348,14 @@ However, for a graph of such a small size, the used algorithm doesn't matter ver
   - F11 toggles between window and full-screen exclusive mode
 - Game
   - Command-line parameters:
-    - `-skipIntro` (default=false): intro screen is skipped
-    - `-startLevel`(default=1): starts the game in the specified level
-    - `-overflowBug` (default=true): simulates overflow bug from Arcade version
-    - `-pacManImmortable` (default=false): Pac-Man keeps live after being killed
-    - `-ghostsFleeRandomly` (default=true): ghosts flee in random directions when frightened. If this is set to false, they choose a "safe" corner to flee to.
-    - `-pathFinder`(default=astar): select the path finder algorithm (astar, bfs, bestfs) used for computing the safe paths
-    - `-ghostsDangerous` (default=true): deadly ghost collisions are detected 
     - `-demoMode`: Pac-Man moves randomly and is immortable
+    - `-ghostsDangerous true/false` (default:true): deadly ghost collisions are detected 
+    - `-ghostsFleeRandomly true/false` (default:true): ghosts flee in random directions when frightened. If this is set to false, they choose a "safe" corner to flee to.
+    - `-overflowBug true/false` (default:true): simulates overflow bug from Arcade version
+    - `-pacManImmortable` (default:false): Pac-Man keeps live after being killed
+    - `-pathFinder`(default:astar): select the path finder algorithm (astar, bfs, bestfs) used for computing the safe paths
+    - `-skipIntro` (default:false): intro screen is skipped
+    - `-startLevel`(default:1): starts the game in the specified level
   - The overall speed can be changed during the game; 
     - Continuosly: CTRL-LEFT = slower, CTRL-RIGHT = faster
     - Fixed speeds: '1' = normal speed, '2' = fast, '3' = very fast
