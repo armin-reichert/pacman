@@ -2,7 +2,7 @@
 
 ## These were the times
 
-The only computer game I played regularly was a Pac-Man clone named ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running at the time (1984) on my Apple II+ clone, on a monochrome monitor with a single crappy little speaker, but that [hypnotizing sound](PacManDoc/Snack Attack for the Apple II.mp3) is still in my head.
+The only computer game I played regularly was a Pac-Man clone named ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running at the time (1984) on my Apple II+ clone, on a monochrome monitor with a single crappy little speaker, but that [hypnotizing sound](PacManDoc/SnackAttackAppleII.mp3") is still in my head.
 
 [![Pac-Man](https://i3.ytimg.com/vi/_3GhJGIOTp4/maxresdefault.jpg)](https://www.youtube.com/watch?v=_3GhJGIOTp4)
 
