@@ -1,5 +1,9 @@
 # A (hopefully comprehensible) Pac-Man implementation using finite-state machines        
 
+## These were the times
+
+The only computer game I played regularly was a Pac-Man clone named ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running at the time (1984) on my Apple II+ clone, on a monochrome monitor with a single crappy little speaker, but its hypnotizing sound is still in my head.
+
 [![Pac-Man](https://i3.ytimg.com/vi/_3GhJGIOTp4/maxresdefault.jpg)](https://www.youtube.com/watch?v=_3GhJGIOTp4)
 
 ## How to build and run this program
@@ -10,11 +14,49 @@ mvn clean install assembly:single
 java -jar target\PacManGame-1.0.jar
 ```
 
-## These were the times
+## Features
 
-The only computer game I played regularly was a Pac-Man clone named ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running at the time (1984) on my Apple II+ clone, on a monochrome monitor with a single crappy little speaker, but that hypnotising sound is still in my head.
+- The following settings can be changed via command-line arguments (`java -jar pacman.jar arguments...`):
+  - Scaling: e.g. `-scale 2.5`
+  - Full-screen mode on start: `-fullScreenOnStart`
+  - Full-screen resolution & depth: e.g. `-fullScreenMode 800,600,32`
+  - Window title: e.g. `-title "Pac-Man Game"`
+- General
+  - CTRL-p pauses/resumes the game
+  - F2 opens a dialog where the game loop frequency and (full-)screen resolution can be changed
+  - F11 toggles between window and full-screen exclusive mode
+- Game
+  - Command-line parameters:
+    - `-demoMode`: Pac-Man moves randomly and is immortable
+    - `-ghostsDangerous true/false` (default:true): deadly ghost collisions are detected 
+    - `-ghostsFleeRandomly true/false` (default:true): ghosts flee in random directions when frightened. If this is set to false, they choose a "safe" corner to flee to.
+    - `-overflowBug true/false` (default:true): simulates overflow bug from Arcade version
+    - `-pacManImmortable` (default:false): Pac-Man keeps live after being killed
+    - `-pathFinder`(default:astar): select the path finder algorithm (astar, bfs, bestfs) used for computing the safe paths
+    - `-skipIntro` (default:false): intro screen is skipped
+    - `-startLevel`(default:1): starts the game in the specified level
+  - The overall speed can be changed during the game; 
+    - Continuosly: CTRL-LEFT = slower, CTRL-RIGHT = faster
+    - Fixed speeds: '1' = normal speed, '2' = fast, '3' = very fast
+  - 'b' toggles the presence of Blinky
+  - 'c' toggles the presence of Clyde
+  - 'd' toggles between normal play mode and demo mode where Pac-Man moves randomly
+  - 'e' eats all pellets except the energizers
+  - 'f' toggles the ghost's *frightened* behavior between "random" (original) and "select safe corner"
+  - 'g' toggles the display of the grid and the alignment of the actors on the grid
+  - 'i' toggles the presence of Inky
+  - 'k' kills all ghosts
+  - 'l' toggles the tracing of the used state machines
+  - 'm' makes Pac-Man immortable (does not lose live after being killed)
+  - 'o' toggles the simulation of the overflow bug which occurs in the original Arcade game when Pac-Man is looking upwards
+  - 'p' toggles the presence of Pinky
+  - 'r' toggles the display of actor routes and target tiles
+  - 's' toggles the display of actor states and timers
+  - 't' toggles display of timing information (target vs. actual framerate)
+  - 'x' toggles if ghost collisions may kill Pac-Man
+  - '+' switches to the next level
 
-## The challenge
+## The implementation challenge
 Implementing Pac-Man was quite challenging (for me) not because of the core game functionality like implementing a game loop, updating and drawing entities, handling collisions etc. but for others reasons:
 
 First, implementing a good representation of the maze and the correct movement of the game characters 
@@ -334,48 +376,6 @@ GraphSearch pathfinder = new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
 Path path = pathfinder.findPath(vertex(source), vertex(target));
 ```
 However, for a graph of such a small size, the used algorithm doesn't matter very much, a Breadth-First Search would also run with sufficient performance in this use case.
-
-## Additional features
-
-- The following settings can be changed via command-line arguments (`java -jar pacman.jar arguments...`):
-  - Scaling: e.g. `-scale 2.5`
-  - Full-screen mode on start: `-fullScreenOnStart`
-  - Full-screen resolution & depth: e.g. `-fullScreenMode 800,600,32`
-  - Window title: e.g. `-title "Pac-Man Game"`
-- General
-  - CTRL-p pauses/resumes the game
-  - F2 opens a dialog where the game loop frequency and (full-)screen resolution can be changed
-  - F11 toggles between window and full-screen exclusive mode
-- Game
-  - Command-line parameters:
-    - `-demoMode`: Pac-Man moves randomly and is immortable
-    - `-ghostsDangerous true/false` (default:true): deadly ghost collisions are detected 
-    - `-ghostsFleeRandomly true/false` (default:true): ghosts flee in random directions when frightened. If this is set to false, they choose a "safe" corner to flee to.
-    - `-overflowBug true/false` (default:true): simulates overflow bug from Arcade version
-    - `-pacManImmortable` (default:false): Pac-Man keeps live after being killed
-    - `-pathFinder`(default:astar): select the path finder algorithm (astar, bfs, bestfs) used for computing the safe paths
-    - `-skipIntro` (default:false): intro screen is skipped
-    - `-startLevel`(default:1): starts the game in the specified level
-  - The overall speed can be changed during the game; 
-    - Continuosly: CTRL-LEFT = slower, CTRL-RIGHT = faster
-    - Fixed speeds: '1' = normal speed, '2' = fast, '3' = very fast
-  - 'b' toggles the presence of Blinky
-  - 'c' toggles the presence of Clyde
-  - 'd' toggles between normal play mode and demo mode where Pac-Man moves randomly
-  - 'e' eats all pellets except the energizers
-  - 'f' toggles the ghost's *frightened* behavior between "random" (original) and "select safe corner"
-  - 'g' toggles the display of the grid and the alignment of the actors on the grid
-  - 'i' toggles the presence of Inky
-  - 'k' kills all ghosts
-  - 'l' toggles the tracing of the used state machines
-  - 'm' makes Pac-Man immortable (does not lose live after being killed)
-  - 'o' toggles the simulation of the overflow bug which occurs in the original Arcade game when Pac-Man is looking upwards
-  - 'p' toggles the presence of Pinky
-  - 'r' toggles the display of actor routes and target tiles
-  - 's' toggles the display of actor states and timers
-  - 't' toggles display of timing information (target vs. actual framerate)
-  - 'x' toggles if ghost collisions may kill Pac-Man
-  - '+' switches to the next level
 
 ## References
 
