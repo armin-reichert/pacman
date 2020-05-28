@@ -86,7 +86,7 @@ public class PacManApp extends Application {
 		setIcon(theme.spr_ghostFrightened().frame(0));
 		PacManStateMachineLogging.setLevel(Level.INFO);
 		GameController gameController = new GameController(theme);
-		setExitHandler(app -> gameController.onExit());
+		setExitHandler(app -> gameController.saveHiscore());
 		setController(gameController);
 	}
 }

@@ -110,7 +110,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		playView.house = ghostHouse;
 	}
 
-	public void onExit() {
+	public void saveHiscore() {
 		if (game != null) {
 			game.hiscore.save();
 		}
