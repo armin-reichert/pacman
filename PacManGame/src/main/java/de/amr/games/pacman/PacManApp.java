@@ -48,9 +48,6 @@ public class PacManApp extends Application {
 
 		@Parameter(names = { "-startLevel" }, description = "number of starting level")
 		public int startLevel = 1;
-
-		@Parameter(names = { "-theme" }, description = "the theme name e.g. 'Arcade'")
-		public String theme = "Arcade";
 	}
 
 	public static final ResourceBundle texts = ResourceBundle.getBundle("texts");
@@ -79,7 +76,6 @@ public class PacManApp extends Application {
 		loginfo("\tPacMan immortable: %s", settings.pacManImmortable);
 		loginfo("\tSkip Intro: %s", settings.skipIntro);
 		loginfo("\tStart level: %d", settings.startLevel);
-		loginfo("\tTheme: %s", settings.theme);
 	}
 
 	@Override
