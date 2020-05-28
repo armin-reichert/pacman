@@ -24,29 +24,30 @@ public class PacManApp extends Application {
 
 	public static class Settings extends AppSettings {
 
-		@Parameter(names = { "-demoMode" }, description = "Pac-Man moves automatically, stays alive when killed")
+		@Parameter(names = { "-demoMode" }, description = "Pac-Man moves automatically")
 		public boolean demoMode = false;
 
-		@Parameter(names = { "-ghostsFleeRandomly" }, description = "default frightened ghost behavior", arity = 1)
+		@Parameter(names = {
+				"-ghostsFleeRandomly" }, description = "frightened ghosts flee randomly (true) or into safe corner (false)", arity = 1)
 		public boolean ghostsFleeRandomly = true;
 
-		@Parameter(names = { "-ghostsDangerous" }, description = "if set, ghosts can kill Pac-Man", arity = 1)
+		@Parameter(names = { "-ghostsDangerous" }, description = "ghosts kill Pac-Man on collision", arity = 1)
 		public boolean ghostsDangerous = true;
 
-		@Parameter(names = { "-pathFinder" }, description = "path finder algorithm (astar, bfs, bestfs)")
+		@Parameter(names = { "-pathFinder" }, description = "used path finding algorithm (astar, bfs, bestfs)")
 		public String pathFinder = "astar";
 
 		@Parameter(names = {
-				"-overflowBug" }, description = "simulate the overflow bug from the original Arcade game", arity = 1)
+				"-overflowBug" }, description = "enable overflow bug as in the original Arcade game", arity = 1)
 		public boolean overflowBug = true;
 
-		@Parameter(names = { "-pacManImmortable" }, description = "if set, Pac-Man keeps lives when killed")
+		@Parameter(names = { "-pacManImmortable" }, description = "Pac-Man stays alive when killed by ghost")
 		public boolean pacManImmortable = false;
 
-		@Parameter(names = { "-skipIntro" }, description = "start app without intro screen")
+		@Parameter(names = { "-skipIntro" }, description = "game starts without intro screen")
 		public boolean skipIntro = false;
 
-		@Parameter(names = { "-startLevel" }, description = "number of starting level")
+		@Parameter(names = { "-startLevel" }, description = "game starts in specified level")
 		public int startLevel = 1;
 	}
 
