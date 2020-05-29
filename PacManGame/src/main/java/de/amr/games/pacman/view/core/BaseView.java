@@ -65,14 +65,6 @@ public abstract class BaseView implements Lifecycle, View {
 		clearMessage();
 	}
 
-	public void dressActors(PacMan pacMan, Ghost redGhost, Ghost pinkGhost, Ghost cyanGhost, Ghost orangeGhost) {
-		dressPacMan(pacMan);
-		dressGhost(redGhost, Theme.RED_GHOST);
-		dressGhost(pinkGhost, Theme.PINK_GHOST);
-		dressGhost(cyanGhost, Theme.CYAN_GHOST);
-		dressGhost(orangeGhost, Theme.ORANGE_GHOST);
-	}
-
 	public void dressPacMan(PacMan pacMan) {
 		dirs().forEach(dir -> pacMan.sprites.set("walking-" + dir, theme.spr_pacManWalking(dir)));
 		pacMan.sprites.set("dying", theme.spr_pacManDying());
