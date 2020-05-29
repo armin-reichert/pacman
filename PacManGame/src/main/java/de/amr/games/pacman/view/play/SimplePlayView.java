@@ -49,17 +49,17 @@ public class SimplePlayView extends BaseView {
 		super(theme);
 		this.game = game;
 		mazeView = new MazeView();
+		dressPacMan(game.pacMan);
+		dressGhost(game.blinky, Theme.RED_GHOST);
+		dressGhost(game.pinky, Theme.PINK_GHOST);
+		dressGhost(game.inky, Theme.CYAN_GHOST);
+		dressGhost(game.clyde, Theme.ORANGE_GHOST);
 	}
 
 	@Override
 	public void init() {
 		mazeView.init();
 		clearMessage();
-		dressPacMan(game.pacMan);
-		dressGhost(game.blinky, Theme.RED_GHOST);
-		dressGhost(game.pinky, Theme.PINK_GHOST);
-		dressGhost(game.inky, Theme.CYAN_GHOST);
-		dressGhost(game.clyde, Theme.ORANGE_GHOST);
 	}
 
 	@Override
