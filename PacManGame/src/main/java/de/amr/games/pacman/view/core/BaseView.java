@@ -5,7 +5,6 @@ import static de.amr.games.pacman.model.Direction.dirs;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.util.Objects;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.entity.Entity;
@@ -14,6 +13,7 @@ import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.actor.Ghost;
+import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
@@ -23,37 +23,18 @@ import de.amr.games.pacman.theme.Theme;
  * 
  * @author Armin Reichert
  */
-public abstract class PacManGameView implements Lifecycle, View {
+public abstract class BaseView implements Lifecycle, View {
 
-	public class Message {
-
-		public String text;
-		public Color color;
-		public int fontSize;
-		public int row;
-
-		public Message() {
-			text = "";
-			color = Color.YELLOW;
-			fontSize = 11;
-			row = 21;
-		}
-
-		public void draw(Graphics2D g) {
-			if (text != null && text.trim().length() > 0) {
-				try (Pen pen = new Pen(g)) {
-					pen.font(theme.fnt_text());
-					pen.fontSize(fontSize);
-					pen.color(color);
-					pen.hcenter(text, width(), row, Tile.SIZE);
-				}
-			}
-		}
-	}
-
-	public final Game game; // optional
 	public final Theme theme;
-	public final Message message;
+
+	private String messageText = "";
+	private Color messageColor = Color.YELLOW;
+	private int messageFontSize = 8;
+	private int messageRow = 21;
+
+	public BaseView(Theme theme) {
+		this.theme = theme;
+	}
 
 	public int width() {
 		return app().settings().width;
@@ -63,35 +44,42 @@ public abstract class PacManGameView implements Lifecycle, View {
 		return app().settings().height;
 	}
 
-	protected PacManGameView(Theme theme) {
-		this.game = null;
-		this.theme = Objects.requireNonNull(theme);
-		message = new Message();
+	public void showMessage(String text, Color color, int fontSize) {
+		messageText = text;
+		messageColor = color;
+		messageFontSize = fontSize;
 	}
 
-	protected PacManGameView(Game game, Theme theme) {
-		this.game = Objects.requireNonNull(game);
-		this.theme = Objects.requireNonNull(theme);
-		message = new Message();
-		dressPacMan();
-		dressGhost(game.blinky, Theme.RED_GHOST);
-		dressGhost(game.pinky, Theme.PINK_GHOST);
-		dressGhost(game.inky, Theme.CYAN_GHOST);
-		dressGhost(game.clyde, Theme.ORANGE_GHOST);
+	public void showMessage(String text, Color color) {
+		messageText = text;
+		messageColor = color;
+		messageFontSize = 8;
+	}
+
+	public void clearMessage() {
+		messageText = "";
 	}
 
 	@Override
 	public void init() {
-		message.text = "";
+		clearMessage();
 	}
 
-	private void dressPacMan() {
-		dirs().forEach(dir -> game.pacMan.sprites.set("walking-" + dir, theme.spr_pacManWalking(dir)));
-		game.pacMan.sprites.set("dying", theme.spr_pacManDying());
-		game.pacMan.sprites.set("full", theme.spr_pacManFull());
+	public void dressActors(PacMan pacMan, Ghost redGhost, Ghost pinkGhost, Ghost cyanGhost, Ghost orangeGhost) {
+		dressPacMan(pacMan);
+		dressGhost(redGhost, Theme.RED_GHOST);
+		dressGhost(pinkGhost, Theme.PINK_GHOST);
+		dressGhost(cyanGhost, Theme.CYAN_GHOST);
+		dressGhost(orangeGhost, Theme.ORANGE_GHOST);
 	}
 
-	private void dressGhost(Ghost ghost, int color) {
+	public void dressPacMan(PacMan pacMan) {
+		dirs().forEach(dir -> pacMan.sprites.set("walking-" + dir, theme.spr_pacManWalking(dir)));
+		pacMan.sprites.set("dying", theme.spr_pacManDying());
+		pacMan.sprites.set("full", theme.spr_pacManFull());
+	}
+
+	public void dressGhost(Ghost ghost, int color) {
 		dirs().forEach(dir -> {
 			ghost.sprites.set("color-" + dir, theme.spr_ghostColored(color, dir));
 			ghost.sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir));
@@ -120,7 +108,13 @@ public abstract class PacManGameView implements Lifecycle, View {
 	}
 
 	protected void drawMessage(Graphics2D g) {
-		message.fontSize = 8;
-		message.draw(g);
+		if (messageText != null && messageText.trim().length() > 0) {
+			try (Pen pen = new Pen(g)) {
+				pen.font(theme.fnt_text());
+				pen.fontSize(messageFontSize);
+				pen.color(messageColor);
+				pen.hcenter(messageText, width(), messageRow, Tile.SIZE);
+			}
+		}
 	}
 }

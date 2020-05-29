@@ -3,6 +3,7 @@ package de.amr.games.pacman.test.navigation;
 import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import de.amr.easy.game.Application;
@@ -49,8 +50,7 @@ class EnterGhostHouseTestUI extends PlayView {
 		super.init();
 		game.maze.removeFood();
 		game.stage.add(game.inky);
-		message.text = "SPACE = enter/leave house";
-		message.fontSize = 9;
+		showMessage("SPACE = Enter/leave house", Color.WHITE, 8);
 	}
 
 	@Override

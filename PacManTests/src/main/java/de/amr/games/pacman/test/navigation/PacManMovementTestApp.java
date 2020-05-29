@@ -1,5 +1,6 @@
 package de.amr.games.pacman.test.navigation;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import de.amr.easy.game.Application;
@@ -66,7 +67,7 @@ class PacManMovementTestUI extends PlayView {
 		});
 		game.stage.add(pacMan);
 		pacMan.setState(PacManState.EATING);
-		message.text = "Cursor keys";
+		showMessage("Cursor keys", Color.WHITE);
 		mazeView.energizersBlinking.setEnabled(true);
 	}
 
@@ -80,17 +81,14 @@ class PacManMovementTestUI extends PlayView {
 	private void handleSteeringChange() {
 		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_M)) {
 			pacMan.behavior(pacMan.isFollowingKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
-			message.text = "Cursor keys";
+			showMessage("Cursor keys", Color.WHITE);
 		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_N)) {
 			pacMan.behavior(
 					pacMan.isFollowingKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
-			message.text = "Numpad keys";
-			// } else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_A)) {
-			// pac.steering(avoidingGhosts(game));
-			// message("Avoiding ghosts");
+			showMessage("Numpad keys", Color.WHITE);
 		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_R)) {
 			pacMan.behavior(pacMan.isMovingRandomlyWithoutTurningBack());
-			message.text = "Random moves";
+			showMessage("Move randomly", Color.WHITE);
 		}
 	}
 }

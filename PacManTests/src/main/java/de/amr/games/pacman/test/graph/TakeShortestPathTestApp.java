@@ -3,6 +3,7 @@ package de.amr.games.pacman.test.graph;
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
@@ -73,7 +74,7 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 		ghost.behavior(CHASING, steering);
 		ghost.behavior(FRIGHTENED, steering);
 		ghost.setState(CHASING);
-		message.text = "SPACE toggles ghost state";
+		showMessage("SPACE toggles ghost state", Color.WHITE);
 	}
 
 	private void nextTarget() {

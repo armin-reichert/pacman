@@ -2,6 +2,7 @@ package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.actor.GhostState.CHASING;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.stream.Stream;
 
@@ -56,7 +57,7 @@ class InkyChaseTestUI extends PlayView {
 		game.ghostsOnStage().forEach(ghost -> {
 			ghost.followState = CHASING;
 		});
-		message.text = "Press SPACE to start";
+		showMessage("Press SPACE to start", Color.WHITE);
 	}
 
 	@Override
@@ -64,7 +65,7 @@ class InkyChaseTestUI extends PlayView {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			game.ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
 			game.pacMan.setState(PacManState.EATING);
-			message.text = "";
+			clearMessage();
 		}
 		game.pacMan.update();
 		game.ghostsOnStage().forEach(Ghost::update);

@@ -2,6 +2,7 @@ package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import de.amr.easy.game.Application;
@@ -57,7 +58,7 @@ class MovingRandomlyTestUI extends PlayView {
 			ghost.state(FRIGHTENED).removeTimer();
 			ghost.setState(FRIGHTENED);
 		});
-		message.text = "Press SPACE";
+		showMessage("Press SPACE", Color.WHITE);
 	}
 
 	@Override
@@ -65,7 +66,7 @@ class MovingRandomlyTestUI extends PlayView {
 		super.update();
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			started = true;
-			message.text = "";
+			clearMessage();
 		}
 		if (started) {
 			game.ghostsOnStage().forEach(Ghost::update);

@@ -2,6 +2,7 @@ package de.amr.games.pacman.test.navigation;
 
 import static de.amr.games.pacman.actor.GhostState.SCATTERING;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import de.amr.easy.game.Application;
@@ -52,14 +53,14 @@ class LeaveGhostHouseTestUI extends PlayView {
 		game.maze.removeFood();
 		game.stage.add(game.inky);
 		game.inky.followState = SCATTERING;
-		message.text = "Press SPACE to unlock";
+		showMessage("Press SPACE to unlock", Color.WHITE);
 	}
 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE) && game.inky.is(GhostState.LOCKED)) {
 			game.inky.process(new GhostUnlockedEvent());
-			message.text = "";
+			clearMessage();
 		}
 		game.inky.update();
 		super.update();

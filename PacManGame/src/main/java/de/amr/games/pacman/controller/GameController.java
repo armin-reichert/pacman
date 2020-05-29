@@ -45,7 +45,7 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.theme.Theme;
-import de.amr.games.pacman.view.core.PacManGameView;
+import de.amr.games.pacman.view.core.BaseView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.PlayView;
@@ -68,7 +68,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private LoadingView loadingView;
 	private IntroView introView;
 	private PlayView playView;
-	private PacManGameView currentView;
+	private BaseView currentView;
 
 	private GhostCommand ghostCommand;
 	private GhostHouse ghostHouse;
@@ -90,7 +90,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return Optional.ofNullable(currentView);
 	}
 
-	private void showView(PacManGameView view) {
+	private void showView(BaseView view) {
 		if (currentView != view) {
 			currentView = view;
 			currentView.init();
@@ -224,15 +224,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 					.onTick((state, t, remaining) -> {
 						if (t == sec(5)) {
-							playView.message.color = Color.YELLOW;
-							playView.message.text = "Ready!";
+							playView.showMessage("Ready!", Color.YELLOW);
 							playView.mazeView.energizersBlinking.setEnabled(true);
 							sound.gameStarts();
 						}
 						game.movingActorsOnStage().forEach(MovingActor::update);
 					})
 					.onExit(() -> {
-						playView.message.text = "";
+						playView.clearMessage();
 					})
 				
 				.state(PLAYING).customState(new PlayingState())
@@ -331,12 +330,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						game.hiscore.save();
 						game.ghostsOnStage().forEach(ghost -> ghost.visible = true);
 						playView.enableGhostAnimations(false);
-						playView.message.color = Color.RED;
-						playView.message.text = "Game Over!";
+						playView.showMessage("Game Over!", Color.RED);
 						sound.gameOver();
 					})
 					.onExit(() -> {
-						playView.message.text = "";
+						playView.clearMessage();
 						sound.muteAll();
 					})
 

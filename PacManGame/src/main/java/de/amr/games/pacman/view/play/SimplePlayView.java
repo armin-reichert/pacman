@@ -23,7 +23,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Symbol;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
-import de.amr.games.pacman.view.core.PacManGameView;
+import de.amr.games.pacman.view.core.BaseView;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -31,17 +31,20 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class SimplePlayView extends PacManGameView {
+public class SimplePlayView extends BaseView {
 
 	public enum MazeMode {
 		EMPTY, CROWDED, FLASHING
 	}
 
+	public Game game;
 	public MazeView mazeView;
 
 	public SimplePlayView(Game game, Theme theme) {
-		super(game, theme);
+		super(theme);
+		this.game = game;
 		mazeView = new MazeView();
+		dressActors(game.pacMan, game.blinky, game.pinky, game.inky, game.clyde);
 	}
 
 	@Override

@@ -23,7 +23,7 @@ import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
-import de.amr.games.pacman.view.core.PacManGameView;
+import de.amr.games.pacman.view.core.BaseView;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.api.FsmContainer;
@@ -34,7 +34,7 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class IntroView extends PacManGameView implements FsmContainer<IntroState, Void> {
+public class IntroView extends BaseView implements FsmContainer<IntroState, Void> {
 
 	public enum IntroState {
 		SCROLLING_LOGO, SHOWING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY

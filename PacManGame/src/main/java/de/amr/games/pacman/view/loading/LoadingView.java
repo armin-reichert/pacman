@@ -12,22 +12,25 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.theme.Theme;
-import de.amr.games.pacman.view.core.PacManGameView;
+import de.amr.games.pacman.view.core.BaseView;
 
 /**
  * View displayed while the music files are loaded.
  * 
  * @author Armin Reichert
  */
-public class LoadingView extends PacManGameView {
+public class LoadingView extends BaseView {
 
+	private Game game;
 	private int alpha;
 	private int alphaInc;
 	private int ghostCount;
 	private int ghostInc;
 
 	public LoadingView(Theme theme) {
-		super(new Game(1), theme);
+		super(theme);
+		game = new Game(1);
+		dressPacMan(game.pacMan);
 	}
 
 	@Override
