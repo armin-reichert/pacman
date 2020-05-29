@@ -102,7 +102,7 @@ public class SimplePlayView extends BaseView {
 
 	protected void drawBackground(Graphics2D g) {
 		g.setColor(theme.color_mazeBackground());
-		g.fillRect(0, 0, width(), height());
+		g.fillRect(0, 0, width, height);
 	}
 
 	protected void drawMaze(Graphics2D g) {
@@ -115,7 +115,7 @@ public class SimplePlayView extends BaseView {
 				pen.font(theme.fnt_text());
 				pen.fontSize(messageFontSize);
 				pen.color(messageColor);
-				pen.hcenter(messageText, width(), messageRow, Tile.SIZE);
+				pen.hcenter(messageText, width, messageRow, Tile.SIZE);
 			}
 		}
 	}
@@ -187,7 +187,7 @@ public class SimplePlayView extends BaseView {
 		int sz = 2 * Tile.SIZE;
 		Image pacManLookingLeft = theme.spr_pacManWalking(LEFT).frame(1);
 		for (int i = 0, x = sz; i < game.lives; ++i, x += sz) {
-			g.drawImage(pacManLookingLeft, x, height() - sz, null);
+			g.drawImage(pacManLookingLeft, x, height - sz, null);
 		}
 	}
 
@@ -196,9 +196,9 @@ public class SimplePlayView extends BaseView {
 		int first = Math.max(0, game.levelCounter.size() - max);
 		int n = Math.min(max, game.levelCounter.size());
 		int sz = 2 * Tile.SIZE; // image size
-		for (int i = 0, x = width() - 2 * sz; i < n; ++i, x -= sz) {
+		for (int i = 0, x = width - 2 * sz; i < n; ++i, x -= sz) {
 			Symbol symbol = game.levelCounter.get(first + i);
-			g.drawImage(theme.spr_bonusSymbol(symbol).frame(0), x, height() - sz, sz, sz, null);
+			g.drawImage(theme.spr_bonusSymbol(symbol).frame(0), x, height - sz, sz, sz, null);
 		}
 	}
 

@@ -23,17 +23,12 @@ import de.amr.games.pacman.theme.Theme;
 public abstract class BaseView implements Lifecycle, View {
 
 	public final Theme theme;
+	public final int width, height;
 
 	public BaseView(Theme theme) {
 		this.theme = theme;
-	}
-
-	public int width() {
-		return app().settings().width;
-	}
-
-	public int height() {
-		return app().settings().height;
+		width = app().settings().width;
+		height = app().settings().height;
 	}
 
 	public void dressPacMan(PacMan pacMan) {

@@ -44,7 +44,7 @@ public class LoadingView extends BaseView {
 	@Override
 	public void update() {
 		float x = game.pacMan.tf.getCenter().x;
-		if (x > 0.9f * width() || x < 0.1 * width()) {
+		if (x > 0.9f * width || x < 0.1 * width) {
 			game.pacMan.setMoveDir(game.pacMan.moveDir().opposite());
 			ghostCount += ghostInc;
 			if (ghostCount == 10 || ghostCount == 0) {
@@ -70,10 +70,10 @@ public class LoadingView extends BaseView {
 			pen.color(new Color(255, 0, 0, alpha));
 			pen.font(theme.fnt_text());
 			pen.fontSize(10);
-			pen.hcenter(PacManApp.texts.getString("loading_music"), width(), 18, Tile.SIZE);
+			pen.hcenter(PacManApp.texts.getString("loading_music"), width, 18, Tile.SIZE);
 		}
 		drawActor(g, game.pacMan, game.pacMan.sprites);
-		float x = width() / 2 - (ghostCount / 2) * 20, y = game.pacMan.tf.y + 20;
+		float x = width / 2 - (ghostCount / 2) * 20, y = game.pacMan.tf.y + 20;
 		for (int i = 0; i < ghostCount; ++i) {
 			int color = new Random().nextInt(4);
 			Direction dir = Direction.values()[new Random().nextInt(4)];
