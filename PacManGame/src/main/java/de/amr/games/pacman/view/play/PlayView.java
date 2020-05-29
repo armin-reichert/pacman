@@ -103,7 +103,11 @@ public class PlayView extends SimplePlayView {
 
 	@Override
 	public void draw(Graphics2D g) {
-		drawBackground(g);
+		if (showGrid) {
+			g.drawImage(gridImage, 0, 0, null);
+		} else {
+			drawBackground(g);
+		}
 		drawMaze(g);
 		if (showFrameRate) {
 			frameRateDisplay.draw(g);
@@ -129,15 +133,6 @@ public class PlayView extends SimplePlayView {
 		if (showStates) {
 			drawActorStates(g);
 			drawGhostHouseState(g);
-		}
-	}
-
-	@Override
-	protected void drawBackground(Graphics2D g) {
-		if (showGrid) {
-			g.drawImage(gridImage, 0, 0, null);
-		} else {
-			super.drawBackground(g);
 		}
 	}
 
