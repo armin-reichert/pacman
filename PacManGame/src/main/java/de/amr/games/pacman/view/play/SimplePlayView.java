@@ -40,6 +40,11 @@ public class SimplePlayView extends BaseView {
 	public final Game game;
 	public final MazeView mazeView;
 
+	private String messageText = "";
+	private Color messageColor = Color.YELLOW;
+	private int messageFontSize = 8;
+	private int messageRow = 21;
+
 	public SimplePlayView(Game game, Theme theme) {
 		super(theme);
 		this.game = game;
@@ -48,13 +53,13 @@ public class SimplePlayView extends BaseView {
 
 	@Override
 	public void init() {
-		super.init();
+		mazeView.init();
+		clearMessage();
 		dressPacMan(game.pacMan);
 		dressGhost(game.blinky, Theme.RED_GHOST);
 		dressGhost(game.pinky, Theme.PINK_GHOST);
 		dressGhost(game.inky, Theme.CYAN_GHOST);
 		dressGhost(game.clyde, Theme.ORANGE_GHOST);
-		mazeView.init();
 	}
 
 	@Override
@@ -71,6 +76,22 @@ public class SimplePlayView extends BaseView {
 		drawActors(g);
 	}
 
+	public void showMessage(String text, Color color, int fontSize) {
+		messageText = text;
+		messageColor = color;
+		messageFontSize = fontSize;
+	}
+
+	public void showMessage(String text, Color color) {
+		messageText = text;
+		messageColor = color;
+		messageFontSize = 8;
+	}
+
+	public void clearMessage() {
+		messageText = "";
+	}
+
 	public void enableGhostAnimations(boolean enabled) {
 		game.ghosts().flatMap(ghost -> ghost.sprites.values()).forEach(sprite -> sprite.enableAnimation(enabled));
 	}
@@ -80,11 +101,23 @@ public class SimplePlayView extends BaseView {
 	}
 
 	protected void drawBackground(Graphics2D g) {
-		fillBackground(g, theme.color_mazeBackground());
+		g.setColor(theme.color_mazeBackground());
+		g.fillRect(0, 0, width(), height());
 	}
 
 	protected void drawMaze(Graphics2D g) {
 		mazeView.draw(g);
+	}
+
+	protected void drawMessage(Graphics2D g) {
+		if (messageText != null && messageText.trim().length() > 0) {
+			try (Pen pen = new Pen(g)) {
+				pen.font(theme.fnt_text());
+				pen.fontSize(messageFontSize);
+				pen.color(messageColor);
+				pen.hcenter(messageText, width(), messageRow, Tile.SIZE);
+			}
+		}
 	}
 
 	protected void drawActors(Graphics2D g) {
