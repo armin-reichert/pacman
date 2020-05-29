@@ -4,11 +4,9 @@ import static de.amr.games.pacman.model.Direction.RIGHT;
 
 import java.awt.Graphics2D;
 
-import de.amr.easy.game.controller.Lifecycle;
-import de.amr.easy.game.entity.Entity;
+import de.amr.easy.game.entity.GameObject;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.easy.game.view.View;
 import de.amr.games.pacman.theme.Theme;
 
 /**
@@ -16,7 +14,7 @@ import de.amr.games.pacman.theme.Theme;
  * 
  * @author Armin Reichert
  */
-public class ChaseGhostsAnimation extends Entity implements Lifecycle, View {
+public class ChaseGhostsAnimation extends GameObject {
 
 	private final Theme theme;
 	private final Sprite pacMan;
