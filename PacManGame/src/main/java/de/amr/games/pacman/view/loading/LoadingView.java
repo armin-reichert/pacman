@@ -7,12 +7,12 @@ import java.util.Random;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.actor.PacManState;
+import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.core.BaseView;
+import de.amr.games.pacman.view.theme.Theme;
 
 /**
  * View displayed while the music files are loaded.

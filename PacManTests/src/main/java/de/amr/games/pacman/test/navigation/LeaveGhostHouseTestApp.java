@@ -1,6 +1,6 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -8,13 +8,13 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.ArcadeTheme;
-import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.play.PlayView;
+import de.amr.games.pacman.view.theme.ArcadeTheme;
+import de.amr.games.pacman.view.theme.Theme;
 
 public class LeaveGhostHouseTestApp extends Application {
 

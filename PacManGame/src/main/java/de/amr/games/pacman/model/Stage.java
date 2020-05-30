@@ -5,7 +5,7 @@ import static de.amr.easy.game.Application.loginfo;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.amr.games.pacman.actor.MovingActor;
+import de.amr.games.pacman.controller.actor.MovingActor;
 
 /**
  * Manages the actors which take part in the game.

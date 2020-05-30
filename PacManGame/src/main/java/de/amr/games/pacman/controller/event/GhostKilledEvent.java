@@ -1,6 +1,6 @@
 package de.amr.games.pacman.controller.event;
 
-import de.amr.games.pacman.actor.Ghost;
+import de.amr.games.pacman.controller.actor.Ghost;
 
 public class GhostKilledEvent extends PacManGameEvent {
 

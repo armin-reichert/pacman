@@ -3,9 +3,9 @@ package de.amr.games.pacman.controller;
 import java.util.concurrent.CompletableFuture;
 
 import de.amr.easy.game.assets.Sound;
-import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.theme.Theme;
+import de.amr.games.pacman.view.theme.Theme;
 
 /**
  * Controls music and sound.

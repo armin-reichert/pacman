@@ -10,7 +10,7 @@ import java.util.BitSet;
 
 import de.amr.easy.game.entity.GameObject;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.theme.Theme;
+import de.amr.games.pacman.view.theme.Theme;
 
 /**
  * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the

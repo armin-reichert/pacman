@@ -1,14 +1,14 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.actor.GhostState.CHASING;
+import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.ArcadeTheme;
-import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.play.PlayView;
+import de.amr.games.pacman.view.theme.ArcadeTheme;
+import de.amr.games.pacman.view.theme.Theme;
 
 /**
  * Test for heading for a tile outside of the maze.

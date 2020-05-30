@@ -1,4 +1,4 @@
-package de.amr.games.pacman.theme;
+package de.amr.games.pacman.view.theme;
 
 import static de.amr.easy.game.Application.loginfo;
 import static de.amr.easy.game.assets.Assets.storeTrueTypeFont;

@@ -7,15 +7,15 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
-import de.amr.games.pacman.actor.MovingActor;
-import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.actor.PacManState;
+import de.amr.games.pacman.controller.actor.MovingActor;
+import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.ArcadeTheme;
-import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.play.PlayView;
+import de.amr.games.pacman.view.theme.ArcadeTheme;
+import de.amr.games.pacman.view.theme.Theme;
 
 public class PacManMovementTestApp extends Application {
 

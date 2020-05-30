@@ -2,12 +2,12 @@ package de.amr.games.pacman.test.navigation;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
-import de.amr.games.pacman.actor.Ghost;
+import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.ArcadeTheme;
-import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.play.PlayView;
+import de.amr.games.pacman.view.theme.ArcadeTheme;
+import de.amr.games.pacman.view.theme.Theme;
 
 public class JumpingTestApp extends Application {
 

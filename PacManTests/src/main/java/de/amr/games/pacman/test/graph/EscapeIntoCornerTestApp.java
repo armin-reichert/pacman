@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test.graph;
 
-import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.actor.PacManState.EATING;
+import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.controller.actor.PacManState.EATING;
 
 import java.util.Optional;
 
@@ -9,12 +9,12 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
-import de.amr.games.pacman.actor.MovingActor;
+import de.amr.games.pacman.controller.actor.MovingActor;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.ArcadeTheme;
-import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.play.PlayView;
+import de.amr.games.pacman.view.theme.ArcadeTheme;
+import de.amr.games.pacman.view.theme.Theme;
 
 public class EscapeIntoCornerTestApp extends Application {
 

@@ -1,10 +1,10 @@
-package de.amr.games.pacman.actor.steering.ghost;
+package de.amr.games.pacman.controller.actor.steering.ghost;
 
 import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.UP;
 
-import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.steering.Steering;
+import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.steering.Steering;
 
 /**
  * Lets a ghost jump up and down relative to a specified position.

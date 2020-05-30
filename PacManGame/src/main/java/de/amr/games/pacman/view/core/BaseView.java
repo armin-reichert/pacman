@@ -10,10 +10,10 @@ import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.PacMan;
+import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.theme.Theme;
+import de.amr.games.pacman.view.theme.Theme;
 
 /**
  * Base class of all views in the game.

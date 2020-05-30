@@ -1,12 +1,12 @@
 package de.amr.games.pacman.view.play;
 
 import static de.amr.games.pacman.PacManApp.settings;
-import static de.amr.games.pacman.actor.GhostState.CHASING;
-import static de.amr.games.pacman.actor.GhostState.DEAD;
-import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
-import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
+import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
+import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 import static java.lang.Math.PI;
 import static java.lang.Math.round;
@@ -33,17 +33,17 @@ import java.util.function.Supplier;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.easy.game.view.Pen;
-import de.amr.games.pacman.actor.Bonus;
-import de.amr.games.pacman.actor.BonusState;
-import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.MovingActor;
-import de.amr.games.pacman.actor.PacMan;
 import de.amr.games.pacman.controller.GhostHouse;
+import de.amr.games.pacman.controller.actor.Bonus;
+import de.amr.games.pacman.controller.actor.BonusState;
+import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.GhostState;
+import de.amr.games.pacman.controller.actor.MovingActor;
+import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.Theme;
+import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.State;
 
 /**

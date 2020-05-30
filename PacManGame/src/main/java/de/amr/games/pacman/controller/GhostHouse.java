@@ -1,14 +1,14 @@
 package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.loginfo;
-import static de.amr.games.pacman.actor.GhostState.LOCKED;
+import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.model.Game.sec;
 
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.actor.Ghost;
+import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;

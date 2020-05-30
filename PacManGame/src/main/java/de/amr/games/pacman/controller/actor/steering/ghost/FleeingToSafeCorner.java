@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor.steering.ghost;
+package de.amr.games.pacman.controller.actor.steering.ghost;
 
 import static de.amr.datastruct.StreamUtils.permute;
 
@@ -6,9 +6,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.MazeMover;
-import de.amr.games.pacman.actor.steering.common.TakingPrecomputedPath;
+import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.MazeMover;
+import de.amr.games.pacman.controller.actor.steering.common.TakingPrecomputedPath;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.MazeGraph;
 import de.amr.games.pacman.model.Tile;

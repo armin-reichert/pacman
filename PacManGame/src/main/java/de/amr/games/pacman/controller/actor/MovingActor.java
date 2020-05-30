@@ -1,7 +1,7 @@
-package de.amr.games.pacman.actor;
+package de.amr.games.pacman.controller.actor;
 
-import static de.amr.games.pacman.actor.MovingActor.Movement.MOVING_INSIDE_MAZE;
-import static de.amr.games.pacman.actor.MovingActor.Movement.TELEPORTING;
+import static de.amr.games.pacman.controller.actor.MovingActor.Movement.MOVING_INSIDE_MAZE;
+import static de.amr.games.pacman.controller.actor.MovingActor.Movement.TELEPORTING;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.model.Game.sec;
 
@@ -12,8 +12,8 @@ import java.util.function.BiFunction;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.SpriteMap;
-import de.amr.games.pacman.actor.steering.Steering;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
+import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;

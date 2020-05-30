@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor;
+package de.amr.games.pacman.controller.actor;
 
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;

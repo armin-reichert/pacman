@@ -1,10 +1,10 @@
-package de.amr.games.pacman.actor.steering.ghost;
+package de.amr.games.pacman.controller.actor.steering.ghost;
 
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.MazeMover;
-import de.amr.games.pacman.actor.steering.Steering;
-import de.amr.games.pacman.actor.steering.common.SteeredMazeMover;
+import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.MazeMover;
+import de.amr.games.pacman.controller.actor.steering.Steering;
+import de.amr.games.pacman.controller.actor.steering.common.SteeredMazeMover;
 import de.amr.games.pacman.model.Tile;
 
 /**

@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.play;
 
-import static de.amr.games.pacman.actor.GhostState.DEAD;
-import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
+import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.view.play.SimplePlayView.MazeMode.CROWDED;
 import static de.amr.games.pacman.view.play.SimplePlayView.MazeMode.EMPTY;
@@ -18,12 +18,12 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.actor.GhostState;
+import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Symbol;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.Theme;
 import de.amr.games.pacman.view.core.BaseView;
+import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine;
 
 /**

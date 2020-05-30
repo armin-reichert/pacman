@@ -9,8 +9,8 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.theme.ArcadeTheme;
-import de.amr.games.pacman.theme.Theme;
+import de.amr.games.pacman.view.theme.ArcadeTheme;
+import de.amr.games.pacman.view.theme.Theme;
 
 /**
  * The Pac-Man game application.

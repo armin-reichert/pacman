@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor.steering.common;
+package de.amr.games.pacman.controller.actor.steering.common;
 
 import static de.amr.games.pacman.model.Direction.dirs;
 
@@ -6,8 +6,8 @@ import java.util.EnumMap;
 import java.util.Objects;
 
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.actor.MazeMover;
-import de.amr.games.pacman.actor.steering.Steering;
+import de.amr.games.pacman.controller.actor.MazeMover;
+import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 
 /**

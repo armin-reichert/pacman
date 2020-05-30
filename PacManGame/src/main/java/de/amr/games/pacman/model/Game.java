@@ -1,13 +1,13 @@
 package de.amr.games.pacman.model;
 
 import static de.amr.easy.game.Application.loginfo;
-import static de.amr.games.pacman.actor.GhostState.CHASING;
-import static de.amr.games.pacman.actor.GhostState.DEAD;
-import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
-import static de.amr.games.pacman.actor.GhostState.LOCKED;
-import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
+import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
+import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
+import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Symbol.APPLE;
 import static de.amr.games.pacman.model.Symbol.BELL;
 import static de.amr.games.pacman.model.Symbol.CHERRIES;
@@ -26,12 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.actor.Bonus;
-import de.amr.games.pacman.actor.Ghost;
-import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.MovingActor;
-import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.actor.PacManState;
+import de.amr.games.pacman.controller.actor.Bonus;
+import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.GhostState;
+import de.amr.games.pacman.controller.actor.MovingActor;
+import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.actor.PacManState;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.

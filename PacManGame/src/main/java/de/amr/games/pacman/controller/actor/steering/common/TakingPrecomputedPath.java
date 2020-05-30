@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor.steering.common;
+package de.amr.games.pacman.controller.actor.steering.common;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,8 +7,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.actor.MazeMover;
-import de.amr.games.pacman.actor.steering.Steering;
+import de.amr.games.pacman.controller.actor.MazeMover;
+import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;

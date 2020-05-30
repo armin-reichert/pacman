@@ -1,4 +1,4 @@
-package de.amr.games.pacman.actor.steering;
+package de.amr.games.pacman.controller.actor.steering;
 
 import java.util.Collections;
 import java.util.List;

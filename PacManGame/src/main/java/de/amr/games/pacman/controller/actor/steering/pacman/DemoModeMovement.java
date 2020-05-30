@@ -1,13 +1,13 @@
-package de.amr.games.pacman.actor.steering.pacman;
+package de.amr.games.pacman.controller.actor.steering.pacman;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
-import de.amr.games.pacman.actor.BonusState;
-import de.amr.games.pacman.actor.GhostState;
-import de.amr.games.pacman.actor.PacMan;
-import de.amr.games.pacman.actor.steering.Steering;
+import de.amr.games.pacman.controller.actor.BonusState;
+import de.amr.games.pacman.controller.actor.GhostState;
+import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;

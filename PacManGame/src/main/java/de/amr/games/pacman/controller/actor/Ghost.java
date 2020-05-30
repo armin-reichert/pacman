@@ -1,12 +1,12 @@
-package de.amr.games.pacman.actor;
+package de.amr.games.pacman.controller.actor;
 
-import static de.amr.games.pacman.actor.GhostState.CHASING;
-import static de.amr.games.pacman.actor.GhostState.DEAD;
-import static de.amr.games.pacman.actor.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.actor.GhostState.LEAVING_HOUSE;
-import static de.amr.games.pacman.actor.GhostState.LOCKED;
-import static de.amr.games.pacman.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
+import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
+import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
+import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
@@ -15,9 +15,9 @@ import static de.amr.games.pacman.model.Game.sec;
 import java.util.EnumMap;
 
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.actor.steering.Steering;
-import de.amr.games.pacman.actor.steering.ghost.SteeredGhost;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
+import de.amr.games.pacman.controller.actor.steering.Steering;
+import de.amr.games.pacman.controller.actor.steering.ghost.SteeredGhost;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;

@@ -1,10 +1,10 @@
-package de.amr.games.pacman.actor;
+package de.amr.games.pacman.controller.actor;
 
 import static de.amr.games.pacman.PacManApp.settings;
-import static de.amr.games.pacman.actor.BonusState.ACTIVE;
-import static de.amr.games.pacman.actor.PacManState.DEAD;
-import static de.amr.games.pacman.actor.PacManState.EATING;
-import static de.amr.games.pacman.actor.PacManState.SLEEPING;
+import static de.amr.games.pacman.controller.actor.BonusState.ACTIVE;
+import static de.amr.games.pacman.controller.actor.PacManState.DEAD;
+import static de.amr.games.pacman.controller.actor.PacManState.EATING;
+import static de.amr.games.pacman.controller.actor.PacManState.SLEEPING;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Game.DIGEST_ENERGIZER_TICKS;
@@ -14,9 +14,9 @@ import java.util.EnumMap;
 import java.util.Optional;
 
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.actor.steering.Steering;
-import de.amr.games.pacman.actor.steering.common.SteeredMazeMover;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
+import de.amr.games.pacman.controller.actor.steering.Steering;
+import de.amr.games.pacman.controller.actor.steering.common.SteeredMazeMover;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
