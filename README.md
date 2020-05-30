@@ -1,9 +1,5 @@
 # A (hopefully comprehensible) Pac-Man implementation using finite-state machines        
 
-## These were the times
-
-The only computer game I played regularly was a Pac-Man clone named ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running at the time (1984) on my Apple II+ clone, on a monochrome monitor with a single crappy little speaker, but its hypnotizing sound is still in my head.
-
 ## How to build and run this program
 
 ```
@@ -56,8 +52,19 @@ java -jar target\PacManGame-1.0.jar
   - 'x' toggles if ghost collisions may kill Pac-Man
   - '+' switches to the next level
 
-## The implementation challenge
-Implementing Pac-Man was quite challenging (for me) not because of the core game functionality like implementing a game loop, updating and drawing entities, handling collisions etc. but for others reasons:
+## These were the times
+
+The only computer game I played regularly was a Pac-Man clone named ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running at the time (1984) on my Apple II+ clone, on a monochrome monitor with a single crappy little speaker, but its hypnotizing sound is still in my head.
+
+When I saw some of the Pac-Man clone implementations on YouTube some years ago, I asked myself: how would I do that, as a software developer with a certain experience but one who never has implemented a real game before? 
+
+I shortly looked into existing code, for example [here](https://github.com/leonardo-ono/Java2DPacmanGame) or [here](https://github.com/yichen0831/Pacman_libGdx) or [here](https://github.com/urossss/Pac-Man) which I didn't find bad at all. I also found many articles and blog posts talking about how the Pac-Man actors can be modelled by finite-state machines and how their individual behaviour ("AI") make this game so entertaining. But what I could not find was an implementation where these aspects were still cleary visible inside the code!
+
+And so my challenge was born: 
+
+Can I implement a Pac-Man clone in a way, that the finite-state machines remain explicitly visible inside the code?
+
+## Issues to solve
 
 First, implementing a good representation of the maze and the correct movement of the game characters 
 through the maze are not trivial. Pac-Man's movement direction is controlled by the keyboard and the intended move direction can be selected already before Pac-Man actually can turn to that direction. 
@@ -69,7 +76,6 @@ Which part of your program should coordinate this? Should the code be distribute
 some kind of mediator, some central game control? Where should the game rules (points, lives, levels etc.) be implemented? 
 Should this be placed in some kind of *model* (in the sense of the Model-View-Controller pattern)?
 
-I looked into existing code, for example [here](https://github.com/leonardo-ono/Java2DPacmanGame) or [here](https://github.com/yichen0831/Pacman_libGdx) or [here](https://github.com/urossss/Pac-Man) which I find not bad at all. But I wanted something different, namely an implementation where you can directly see the underlying state machines.
 
 ## Finite-state machines
 
