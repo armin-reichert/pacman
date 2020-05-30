@@ -58,11 +58,13 @@ The only computer game I played regularly was a Pac-Man clone named ["Snack Atta
 
 When I saw some of the Pac-Man clone implementations on YouTube some years ago, I asked myself: how would I do that, as a software developer with a certain experience but one who never has implemented a real game before? 
 
-I shortly looked into existing code, for example [here](https://github.com/leonardo-ono/Java2DPacmanGame) or [here](https://github.com/yichen0831/Pacman_libGdx) or [here](https://github.com/urossss/Pac-Man) which I didn't find bad at all, but I could not clearly see the underlying state machines in the code anymore.
+I shortly looked into existing code, for example [here](https://github.com/leonardo-ono/Java2DPacmanGame) or [here](https://github.com/yichen0831/Pacman_libGdx) or [here](https://github.com/urossss/Pac-Man) which I didn't find bad at all. I also found many articles and blog posts talking about how the Pac-Man actors can be modelled by finite-state machines and how their individual behaviour ("AI") make this game so entertaining. But what I could not find was an implementation where these aspects were still cleary visible inside the code!
 
-And so the challenge was born: Can I implement this game in a way, that the finite-state machines are still explicitly visible inside the code?   
+And so my challenge was born: 
 
-## The challenge
+Can I implement a Pac-Man clone in a way, that the finite-state machines remain explicitly visible inside the code?
+
+## Issues to solve
 
 First, implementing a good representation of the maze and the correct movement of the game characters 
 through the maze are not trivial. Pac-Man's movement direction is controlled by the keyboard and the intended move direction can be selected already before Pac-Man actually can turn to that direction. 
