@@ -4,8 +4,6 @@
 
 The only computer game I played regularly was a Pac-Man clone named ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running at the time (1984) on my Apple II+ clone, on a monochrome monitor with a single crappy little speaker, but its hypnotizing sound is still in my head.
 
-[![Pac-Man](https://i3.ytimg.com/vi/_3GhJGIOTp4/maxresdefault.jpg)](https://www.youtube.com/watch?v=_3GhJGIOTp4)
-
 ## How to build and run this program
 
 ```
@@ -13,6 +11,8 @@ cd path/to/PacManGame
 mvn clean install assembly:single
 java -jar target\PacManGame-1.0.jar
 ```
+
+[![Pac-Man](https://i3.ytimg.com/vi/_3GhJGIOTp4/maxresdefault.jpg)](https://www.youtube.com/watch?v=_3GhJGIOTp4)
 
 ## Features
 
@@ -196,11 +196,11 @@ beginStateMachine()
 
 The actors in this implementation are also controlled by finite-state machines:
 
-**Pac-Man** ([Pac-Man](PacManGame/src/main/java/de/amr/games/pacman/actor/PacMan.java))
+**Pac-Man** ([Pac-Man](PacManGame/src/main/java/de/amr/games/pacman/controller/actor/PacMan.java))
 
-The **ghosts** ([Ghost](PacManGame/src/main/java/de/amr/games/pacman/actor/Ghost.java))
+The **ghosts** ([Ghost](PacManGame/src/main/java/de/amr/games/pacman/controller/actor/Ghost.java))
 
-Even a simple entity like the **bonus symbol** ([Bonus](PacManGame/src/main/java/de/amr/games/pacman/actor/Bonus.java)) which appears at certain scores uses a finite-state machine to implement its lifecycle:
+Even a simple entity like the **bonus symbol** ([Bonus](PacManGame/src/main/java/de/amr/games/pacman/controller/actor/Bonus.java)) which appears at certain scores uses a finite-state machine to implement its lifecycle:
 
 ```java
 beginStateMachine(BonusState.class, PacManGameEvent.class)
