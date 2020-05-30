@@ -450,7 +450,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				sound.ghostEaten();
 				ghost.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
-				loginfo("Ghost %s killed at %s", ghost.name, ghost.tile());
+				loginfo("%s got killed at %s", ghost.name, ghost.tile());
 			} else {
 				if (settings.ghostsDangerous) {
 					// Pac-Man got killed
