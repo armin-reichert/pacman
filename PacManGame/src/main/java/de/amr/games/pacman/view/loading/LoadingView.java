@@ -30,7 +30,7 @@ public class LoadingView extends BaseView {
 	public LoadingView(Theme theme) {
 		super(theme);
 		game = new Game(1);
-		dressPacMan(game.pacMan);
+		game.pacMan.takeClothes(theme);
 	}
 
 	@Override

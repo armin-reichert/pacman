@@ -23,8 +23,10 @@ import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
+import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
@@ -181,6 +183,18 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		/*@formatter:on*/
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOG);
+	}
+
+	public void takeClothes(Theme theme, int color) {
+		Direction.dirs().forEach(dir -> {
+			sprites.set("color-" + dir, theme.spr_ghostColored(color, dir));
+			sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir));
+		});
+		sprites.set("frightened", theme.spr_ghostFrightened());
+		sprites.set("flashing", theme.spr_ghostFlashing());
+		for (int points : Game.POINTS_GHOST) {
+			sprites.set("points-" + points, theme.spr_number(points));
+		}
 	}
 
 	@Override

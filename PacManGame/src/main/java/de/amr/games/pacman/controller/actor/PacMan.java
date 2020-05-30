@@ -7,6 +7,7 @@ import static de.amr.games.pacman.controller.actor.PacManState.EATING;
 import static de.amr.games.pacman.controller.actor.PacManState.SLEEPING;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
+import static de.amr.games.pacman.model.Direction.dirs;
 import static de.amr.games.pacman.model.Game.DIGEST_ENERGIZER_TICKS;
 import static de.amr.games.pacman.model.Game.DIGEST_PELLET_TICKS;
 
@@ -25,6 +26,7 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
@@ -100,6 +102,12 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
 		brain.doNotLogEventProcessingIf(PacManGameEvent::isTrivial);
 		brain.doNotLogEventPublishingIf(PacManGameEvent::isTrivial);
+	}
+
+	public void takeClothes(Theme theme) {
+		dirs().forEach(dir -> sprites.set("walking-" + dir, theme.spr_pacManWalking(dir)));
+		sprites.set("dying", theme.spr_pacManDying());
+		sprites.set("full", theme.spr_pacManFull());
 	}
 
 	/**
