@@ -1,4 +1,4 @@
-package de.amr.games.pacman.test.graph;
+package de.amr.games.pacman.test.navigation.graph;
 
 import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.actor.PacManState.EATING;
