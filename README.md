@@ -23,6 +23,7 @@ java -jar target\PacManGame-1.0.jar
   - F11 toggles between window and full-screen exclusive mode
 - Game
   - Command-line parameters:
+    - `-help`, `-usage`: list all available command-line parameters
     - `-demoMode`: Pac-Man moves randomly and is immortable
     - `-ghostsDangerous true/false` (default:true): deadly ghost collisions are detected 
     - `-ghostsFleeRandomly true/false` (default:true): ghosts flee in random directions when frightened. If this is set to false, they choose a "safe" corner to flee to.
