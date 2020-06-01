@@ -27,26 +27,26 @@ public class PacManApp extends Application {
 		public boolean demoMode = false;
 
 		@Parameter(names = {
-				"-ghostsFleeRandomly" }, description = "frightened ghosts flee randomly (true) or into safe corner (false)", arity = 1)
+				"-ghostsFleeRandomly" }, description = "Frightened ghosts flee randomly (true) or into safe corner (false)", arity = 1)
 		public boolean ghostsFleeRandomly = true;
 
-		@Parameter(names = { "-ghostsDangerous" }, description = "ghosts kill Pac-Man on collision", arity = 1)
+		@Parameter(names = { "-ghostsDangerous" }, description = "Ghost collisions are detected", arity = 1)
 		public boolean ghostsDangerous = true;
 
-		@Parameter(names = { "-pathFinder" }, description = "used path finding algorithm (astar, bfs, bestfs)")
+		@Parameter(names = { "-pathFinder" }, description = "Used path finding algorithm (astar, bfs, bestfs)")
 		public String pathFinder = "astar";
 
 		@Parameter(names = {
-				"-overflowBug" }, description = "enable overflow bug as in the original Arcade game", arity = 1)
+				"-overflowBug" }, description = "Enable overflow bug as in the original Arcade game", arity = 1)
 		public boolean overflowBug = true;
 
 		@Parameter(names = { "-pacManImmortable" }, description = "Pac-Man stays alive when killed by ghost")
 		public boolean pacManImmortable = false;
 
-		@Parameter(names = { "-skipIntro" }, description = "game starts without intro screen")
+		@Parameter(names = { "-skipIntro" }, description = "Game starts without intro screen")
 		public boolean skipIntro = false;
 
-		@Parameter(names = { "-startLevel" }, description = "game starts in specified level")
+		@Parameter(names = { "-startLevel" }, description = "Game starts in specified level")
 		public int startLevel = 1;
 	}
 
@@ -64,6 +64,7 @@ public class PacManApp extends Application {
 		settings.height = 36 * Tile.SIZE;
 		settings.scale = 2;
 		settings.title = texts.getString("app.title");
+		PacManStateMachineLogging.setEnabled(true);
 	}
 
 	@Override
@@ -76,14 +77,13 @@ public class PacManApp extends Application {
 		loginfo("\tPacMan immortable: %s", settings.pacManImmortable);
 		loginfo("\tSkip Intro: %s", settings.skipIntro);
 		loginfo("\tStart level: %d", settings.startLevel);
+		loginfo("User language is %s", texts.getLocale().getDisplayLanguage());
 	}
 
 	@Override
 	public void init() {
-		loginfo("User language is %s", texts.getLocale().getDisplayLanguage());
-		Theme theme = new ArcadeTheme(); // only theme existing yet
+		Theme theme = new ArcadeTheme(); // the only theme yet
 		setIcon(theme.spr_ghostFrightened().frame(0));
-		PacManStateMachineLogging.setEnabled(true);
 		GameController gameController = new GameController(theme);
 		setExitHandler(app -> gameController.saveHiscore());
 		setController(gameController);
