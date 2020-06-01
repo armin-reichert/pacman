@@ -12,12 +12,12 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 
-import de.amr.easy.game.Application;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
+import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Symbol;
@@ -229,7 +229,7 @@ public class SimplePlayView extends BaseView {
 				.transitions()
 			.endStateMachine();
 			//@formatter:on
-			getTracer().setLogger(Application.LOGGER);
+			getTracer().setLogger(PacManStateMachineLogging.LOG);
 		}
 
 		@Override
