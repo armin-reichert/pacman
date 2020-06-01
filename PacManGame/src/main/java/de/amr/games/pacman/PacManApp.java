@@ -64,7 +64,6 @@ public class PacManApp extends Application {
 		settings.height = 36 * Tile.SIZE;
 		settings.scale = 2;
 		settings.title = texts.getString("app.title");
-		PacManStateMachineLogging.setEnabled(true);
 	}
 
 	@Override
@@ -82,9 +81,10 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
+		PacManStateMachineLogging.setEnabled(false);
 		Theme theme = new ArcadeTheme(); // the only theme yet
-		setIcon(theme.spr_ghostFrightened().frame(0));
 		GameController gameController = new GameController(theme);
+		setIcon(theme.spr_ghostFrightened().frame(0));
 		setExitHandler(app -> gameController.saveHiscore());
 		setController(gameController);
 	}
