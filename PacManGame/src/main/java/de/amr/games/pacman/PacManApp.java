@@ -8,6 +8,7 @@ import com.beust.jcommander.Parameter;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
+import de.amr.games.pacman.controller.EnhancedGameController;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.Tile;
@@ -31,6 +32,9 @@ public class PacManApp extends Application {
 		@Parameter(names = {
 				"-ghostsFleeRandomly" }, description = "Frightened ghosts flee randomly (true) or into safe corner (false)", arity = 1)
 		public boolean ghostsFleeRandomly = true;
+
+		@Parameter(names = { "-simpleMode" }, description = "Strips all extra functionality not need for just playing")
+		public boolean simpleMode = false;
 
 		@Parameter(names = { "-ghostsDangerous" }, description = "Ghost collisions are detected", arity = 1)
 		public boolean ghostsDangerous = true;
@@ -85,7 +89,8 @@ public class PacManApp extends Application {
 	public void init() {
 		PacManStateMachineLogging.setEnabled(false);
 		Theme theme = new ArcadeTheme(); // the only theme yet
-		GameController gameController = new GameController(theme);
+		GameController gameController = settings.simpleMode? new GameController(theme)
+				: new EnhancedGameController(theme);
 		setIcon(theme.spr_ghostFrightened().frame(0));
 		onStateEntry(CLOSED, gameController::saveHiscore);
 		setController(gameController);
