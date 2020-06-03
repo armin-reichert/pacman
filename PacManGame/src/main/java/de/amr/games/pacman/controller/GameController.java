@@ -505,7 +505,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void changeClockFrequency(int newValue) {
 		if (app().clock().getTargetFramerate() != newValue) {
-			app().clock().setTargetFramerate(newValue);
+			app().clock().setTargetFrameRate(newValue);
 			loginfo("Clock frequency changed to %d ticks/sec", newValue);
 		}
 	}

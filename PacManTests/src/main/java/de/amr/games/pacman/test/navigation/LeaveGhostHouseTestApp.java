@@ -32,7 +32,7 @@ public class LeaveGhostHouseTestApp extends Application {
 
 	@Override
 	public void init() {
-		clock().setTargetFramerate(10);
+		clock().setTargetFrameRate(10);
 		setController(new LeaveGhostHouseTestUI(new Game(), new ArcadeTheme()));
 	}
 }

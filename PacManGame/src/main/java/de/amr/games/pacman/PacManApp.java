@@ -1,5 +1,7 @@
 package de.amr.games.pacman;
 
+import static de.amr.easy.game.Application.ApplicationState.CLOSED;
+
 import java.util.ResourceBundle;
 
 import com.beust.jcommander.Parameter;
@@ -85,7 +87,7 @@ public class PacManApp extends Application {
 		Theme theme = new ArcadeTheme(); // the only theme yet
 		GameController gameController = new GameController(theme);
 		setIcon(theme.spr_ghostFrightened().frame(0));
-		setExitHandler(app -> gameController.saveHiscore());
+		onStateEntry(CLOSED, gameController::saveHiscore);
 		setController(gameController);
 	}
 }
