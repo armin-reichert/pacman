@@ -9,7 +9,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
 
@@ -22,12 +21,6 @@ import de.amr.games.pacman.model.Game;
  *      "https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Gamasutra</a>
  */
 public class GhostHouse {
-
-	private static class DotCounter {
-
-		int dots;
-		boolean enabled;
-	}
 
 	private final Game game;
 	private final DotCounter globalCounter;
@@ -54,7 +47,7 @@ public class GhostHouse {
 		pacManStarvingTicks += 1;
 	}
 
-	public void onPacManFoundFood(FoodFoundEvent e) {
+	public void onPacManFoundFood() {
 		pacManStarvingTicks = 0;
 		if (globalCounter.enabled) {
 			globalCounter.dots++;
@@ -81,7 +74,7 @@ public class GhostHouse {
 	}
 
 	public boolean isPreferredGhost(Ghost ghost) {
-		return preferredLockedGhost().map(next -> next == ghost).orElse(false);
+		return preferredLockedGhost().orElse(null) == ghost;
 	}
 
 	public int globalDotCount() {
@@ -101,8 +94,8 @@ public class GhostHouse {
 	}
 
 	private Optional<Ghost> preferredLockedGhost() {
-		return Stream.of(game.pinky, game.inky, game.clyde).filter(ghost -> game.stage.contains(ghost))
-				.filter(ghost -> ghost.is(LOCKED)).findFirst();
+		return Stream.of(game.pinky, game.inky, game.clyde).filter(game.stage::contains).filter(ghost -> ghost.is(LOCKED))
+				.findFirst();
 	}
 
 	private void unlock(Ghost ghost) {
@@ -172,4 +165,9 @@ public class GhostHouse {
 		Arrays.fill(ghostDotCount, 0);
 		loginfo("Ghost dot counters reset to zero");
 	}
+}
+
+class DotCounter {
+	int dots;
+	boolean enabled;
 }

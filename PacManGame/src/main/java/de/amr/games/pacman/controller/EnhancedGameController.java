@@ -10,7 +10,6 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
-import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
 import de.amr.games.pacman.model.Game;
@@ -140,7 +139,7 @@ public class EnhancedGameController extends GameController {
 	private void eatAllSimplePellets() {
 		game.maze.playingArea().filter(game.maze::isSimplePellet).forEach(tile -> {
 			game.eatFood(tile, false);
-			ghostHouse.onPacManFoundFood(new FoodFoundEvent(tile, false));
+			ghostHouse.onPacManFoundFood();
 			ghostHouse.update();
 		});
 		loginfo("All simple pellets eaten");
