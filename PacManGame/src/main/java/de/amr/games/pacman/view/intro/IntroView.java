@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.util.Arrays;
 
 import de.amr.easy.game.input.Keyboard;
@@ -179,6 +180,9 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 
 	@Override
 	public void update() {
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
+			setState(READY_TO_PLAY); // shortcut for skipping intro
+		}
 		fsm().update();
 	}
 

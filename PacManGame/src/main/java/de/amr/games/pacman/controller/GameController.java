@@ -12,14 +12,12 @@ import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
 import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.Game.sec;
-import static de.amr.games.pacman.view.intro.IntroView.IntroState.READY_TO_PLAY;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.awt.event.KeyEvent.VK_UP;
 
 import java.awt.Color;
-import java.awt.event.KeyEvent;
 import java.util.Optional;
 
 import de.amr.easy.game.input.Keyboard;
@@ -158,11 +156,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onEntry(() -> {
 						showView(introView);
 					})
-					.onTick(() -> {
-						if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
-							introView.setState(READY_TO_PLAY); // shortcut for skipping intro
-						}
-					})
 					.onExit(() -> {
 						sound.muteAll();
 					})
@@ -300,7 +293,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			
 				.when(INTRO).then(GETTING_READY)
 					.condition(() -> introView.isComplete())
-				
+					
 				.when(GETTING_READY).then(PLAYING)
 					.onTimeout()
 					.act(playingState()::reset)
