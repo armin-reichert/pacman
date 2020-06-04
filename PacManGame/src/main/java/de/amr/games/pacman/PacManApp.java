@@ -76,6 +76,7 @@ public class PacManApp extends Application {
 	protected void printSettings() {
 		super.printSettings();
 		loginfo("\tSimple mode: %s", settings.simpleMode);
+		loginfo("\tDemo mode: %s", settings.demoMode);
 		loginfo("\tGhosts dangerous: %s", settings.ghostsDangerous);
 		loginfo("\tGhosts flee randomly: %s", settings.ghostsFleeRandomly);
 		loginfo("\tPath finder: %s", settings.pathFinder);
