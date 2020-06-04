@@ -4,14 +4,16 @@ import de.amr.games.pacman.model.Tile;
 
 public class FoodFoundEvent extends PacManGameEvent {
 
+	public final boolean energizer;
 	public final Tile tile;
 
-	public FoodFoundEvent(Tile tile) {
+	public FoodFoundEvent(Tile tile, boolean energizer) {
 		this.tile = tile;
+		this.energizer = energizer;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("FoodFound(%s)", tile);
+		return String.format(energizer ? "FoodFound(energizer at %s)" : "FoodFound(pellet at %s)", tile);
 	}
 }

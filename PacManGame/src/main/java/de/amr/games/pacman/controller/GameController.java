@@ -78,7 +78,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		buildStateMachine();
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		getTracer().setLogger(PacManStateMachineLogging.LOG);
-		doNotLogEventProcessingIf(PacManGameEvent::isTrivial);
+		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent && !((FoodFoundEvent) e).energizer);
 	}
 
 	@Override

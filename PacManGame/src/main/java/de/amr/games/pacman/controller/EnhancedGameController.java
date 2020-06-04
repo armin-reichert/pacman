@@ -140,7 +140,7 @@ public class EnhancedGameController extends GameController {
 	private void eatAllSimplePellets() {
 		game.maze.playingArea().filter(game.maze::isSimplePellet).forEach(tile -> {
 			game.eatFood(tile);
-			ghostHouse.onPacManFoundFood(new FoodFoundEvent(tile));
+			ghostHouse.onPacManFoundFood(new FoodFoundEvent(tile, false));
 			ghostHouse.update();
 		});
 		loginfo("All simple pellets eaten");

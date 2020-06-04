@@ -100,8 +100,8 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 		/* @formatter:on */
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOG);
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
-		brain.doNotLogEventProcessingIf(PacManGameEvent::isTrivial);
-		brain.doNotLogEventPublishingIf(PacManGameEvent::isTrivial);
+		brain.doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent && !((FoodFoundEvent) e).energizer);
+		brain.doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent && !((FoodFoundEvent) e).energizer);
 	}
 
 	public void takeClothes(Theme theme) {
@@ -163,11 +163,11 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 		}
 		if (maze.isEnergizer(tile)) {
 			digestionTicks = DIGEST_ENERGIZER_TICKS;
-			return Optional.of(new FoodFoundEvent(tile));
+			return Optional.of(new FoodFoundEvent(tile, true));
 		}
 		if (maze.isSimplePellet(tile)) {
 			digestionTicks = DIGEST_PELLET_TICKS;
-			return Optional.of(new FoodFoundEvent(tile));
+			return Optional.of(new FoodFoundEvent(tile, false));
 		}
 		return Optional.empty();
 	}
