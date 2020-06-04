@@ -93,7 +93,7 @@ public class PacManApp extends Application {
 		Theme theme = new ArcadeTheme(); // the only theme yet
 		GameController gameController = settings.simpleMode ? new GameController(theme) : new EnhancedGameController(theme);
 		setIcon(theme.spr_ghostFrightened().frame(0));
-		onStateEntry(CLOSED, gameController::saveHiscore);
+		onStateEntry(CLOSED, closed -> gameController.saveHiscore());
 		setController(gameController);
 	}
 }
