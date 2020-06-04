@@ -429,9 +429,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent found = (FoodFoundEvent) event;
-			boolean energizer = game.maze.isEnergizer(found.tile);
 			ghostHouse.onPacManFoundFood(found);
-			int points = game.eatFood(found.tile);
+			int points = game.eatFood(found.tile, found.energizer);
 			int livesBefore = game.lives;
 			game.score(points);
 			sound.pelletEaten();
@@ -446,7 +445,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				game.bonus.activate(theme);
 				loginfo("Bonus %s added, time: %.2f sec", game.bonus, game.bonus.state().getDuration() / 60f);
 			}
-			if (energizer && game.level.pacManPowerSeconds > 0) {
+			if (found.energizer && game.level.pacManPowerSeconds > 0) {
 				sound.pacManGainsPower();
 				ghostCommand.suspend();
 				game.pacMan.powerTicks = sec(game.level.pacManPowerSeconds);

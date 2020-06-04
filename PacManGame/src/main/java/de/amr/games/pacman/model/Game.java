@@ -38,24 +38,20 @@ import de.amr.games.pacman.controller.actor.PacManState;
  * 
  * @author Armin Reichert
  * 
- * @see <a href=
- *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
+ * @see <a href= "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php">Pac-Man
  *      dossier</a>
- * @see <a href=
- *      "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man
- *      level specifications</a>
+ * @see <a href= "http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">Pac-Man level
+ *      specifications</a>
  */
 public class Game {
 
 	/*
-	 * I am still not sure about the correct base speed. <p> In Shaun Williams'
-	 * Pac-Man remake
-	 * (https://github.com/masonicGIT/pacman/blob/master/src/Actor.js) there is a
-	 * speed table giving the number of steps (=pixels?) Pac-Man is moving in 16
-	 * frames. In level 5 this gives 4*2 + 12 = 20 steps in 16 frames, which gives
-	 * 1.25 pixels / frame. <p> The table from Gamasutra ({@link Game#LEVELS})
-	 * states that this corresponds to 100% base speed for Pac-Man at level 5.
-	 * Therefore I use 1.25 pixel/frame.
+	 * I am still not sure about the correct base speed. <p> In Shaun Williams' Pac-Man remake
+	 * (https://github.com/masonicGIT/pacman/blob/master/src/Actor.js) there is a speed table giving the
+	 * number of steps (=pixels?) Pac-Man is moving in 16 frames. In level 5 this gives 4*2 + 12 = 20
+	 * steps in 16 frames, which gives 1.25 pixels / frame. <p> The table from Gamasutra ({@link
+	 * Game#LEVELS}) states that this corresponds to 100% base speed for Pac-Man at level 5. Therefore I
+	 * use 1.25 pixel/frame.
 	 * 
 	 */
 	static final float BASE_SPEED = 1.25f;
@@ -230,17 +226,19 @@ public class Game {
 	 * @param tile tile containing food
 	 * @return points scored
 	 */
-	public int eatFood(Tile tile) {
+	public int eatFood(Tile tile, boolean energizer) {
+		if (!maze.isSimplePellet(tile) && !maze.isEnergizer(tile)) {
+			loginfo("Tile %s does not contain food");
+			return 0;
+		}
+		maze.removeFood(tile);
 		level.eatenFoodCount += 1;
-		if (maze.isEnergizer(tile)) {
+		if (energizer) {
 			level.ghostsKilledByEnergizer = 0;
-			maze.removeFood(tile);
 			return POINTS_ENERGIZER;
-		} else if (maze.isSimplePellet(tile)) {
-			maze.removeFood(tile);
+		} else {
 			return POINTS_PELLET;
 		}
-		throw new IllegalArgumentException("No food tile");
 	}
 
 	public boolean isBonusScoreReached() {
