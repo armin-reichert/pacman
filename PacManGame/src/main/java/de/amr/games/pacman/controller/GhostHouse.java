@@ -14,8 +14,7 @@ import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
 
 /**
- * This class controls when and in which order locked ghosts can leave the ghost
- * house.
+ * This class controls when and in which order locked ghosts can leave the ghost house.
  * 
  * @author Armin Reichert
  * 
@@ -48,7 +47,7 @@ public class GhostHouse {
 	}
 
 	public void update() {
-		if (game.blinky.is(LOCKED)) {
+		if (game.stage.contains(game.blinky) && game.blinky.is(LOCKED)) {
 			unlock(game.blinky);
 		}
 		preferredLockedGhost().filter(this::canLeaveHome).ifPresent(this::unlock);
@@ -102,7 +101,8 @@ public class GhostHouse {
 	}
 
 	private Optional<Ghost> preferredLockedGhost() {
-		return Stream.of(game.pinky, game.inky, game.clyde).filter(ghost -> ghost.is(LOCKED)).findFirst();
+		return Stream.of(game.pinky, game.inky, game.clyde).filter(ghost -> game.stage.contains(ghost))
+				.filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
 	private void unlock(Ghost ghost) {
