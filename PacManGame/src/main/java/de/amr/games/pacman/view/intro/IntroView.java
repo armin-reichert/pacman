@@ -58,7 +58,7 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 		super(theme);
 		this.name = "IntroView";
 		fsm = buildStateMachine();
-		fsm.getTracer().setLogger(PacManStateMachineLogging.LOG);
+		fsm.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 	}
 
 	private void createUIComponents() {

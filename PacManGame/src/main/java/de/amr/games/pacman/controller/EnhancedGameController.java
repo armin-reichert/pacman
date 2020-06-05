@@ -99,7 +99,7 @@ public class EnhancedGameController extends GameController {
 
 	private void toggleStateMachineLogging() {
 		PacManStateMachineLogging.toggle();
-		loginfo("State machine logging changed to %s", PacManStateMachineLogging.LOG.getLevel());
+		loginfo("State machine logging changed to %s", PacManStateMachineLogging.LOGGER.getLevel());
 	}
 
 	private void toggleGhostFrightenedBehavior() {

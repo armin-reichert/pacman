@@ -75,7 +75,7 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 			.endStateMachine();
 		//@formatter:on
 		setTeleportingDuration(sec(0.5f));
-		movement.getTracer().setLogger(PacManStateMachineLogging.LOG);
+		movement.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 	}
 
 	private boolean enteredLeftPortal() {

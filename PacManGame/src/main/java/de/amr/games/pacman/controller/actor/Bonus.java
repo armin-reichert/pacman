@@ -42,7 +42,7 @@ public class Bonus extends Entity implements FsmContainer<BonusState, PacManGame
 		tf.height = Tile.SIZE;
 		brain = buildFsm();
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
-		brain.getTracer().setLogger(PacManStateMachineLogging.LOG);
+		brain.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 		init();
 	}
 

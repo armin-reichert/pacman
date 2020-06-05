@@ -229,7 +229,7 @@ public class SimplePlayView extends BaseView {
 				.transitions()
 			.endStateMachine();
 			//@formatter:on
-			getTracer().setLogger(PacManStateMachineLogging.LOG);
+			getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 		}
 
 		@Override

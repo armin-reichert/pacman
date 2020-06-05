@@ -68,7 +68,7 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 					
 		.endStateMachine();
 		/*@formatter:on*/
-		getTracer().setLogger(PacManStateMachineLogging.LOG);
+		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 	}
 
 	@Override

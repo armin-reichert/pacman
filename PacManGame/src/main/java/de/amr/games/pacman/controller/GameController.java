@@ -75,7 +75,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		sound = new SoundController(theme);
 		buildStateMachine();
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		getTracer().setLogger(PacManStateMachineLogging.LOG);
+		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent && !((FoodFoundEvent) e).energizer);
 	}
 

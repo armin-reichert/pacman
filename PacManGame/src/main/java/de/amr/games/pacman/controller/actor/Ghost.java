@@ -182,7 +182,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		.endStateMachine();
 		/*@formatter:on*/
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		brain.getTracer().setLogger(PacManStateMachineLogging.LOG);
+		brain.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 	}
 
 	public void takeClothes(Theme theme, int color) {
