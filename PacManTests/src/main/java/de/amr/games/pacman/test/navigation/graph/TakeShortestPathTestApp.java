@@ -21,7 +21,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class TakeShortestPathTestApp extends Application {
 
@@ -39,9 +38,7 @@ public class TakeShortestPathTestApp extends Application {
 
 	@Override
 	public void init() {
-		Game game = new Game();
-		Theme theme = new ArcadeTheme();
-		setController(new TakeShortestPathTestUI(game, theme));
+		setController(new TakeShortestPathTestUI());
 	}
 }
 
@@ -51,8 +48,8 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 	final List<Tile> targets;
 	int targetIndex;
 
-	public TakeShortestPathTestUI(Game game, Theme theme) {
-		super(game, theme);
+	public TakeShortestPathTestUI() {
+		super(new Game(), new ArcadeTheme());
 		ghost = game.blinky;
 		targets = Arrays.asList(game.maze.cornerSE(), new Tile(15, 23), new Tile(12, 23), game.maze.cornerSW(),
 				game.maze.neighbor(game.maze.portalLeft, Direction.RIGHT), game.maze.cornerNW(), game.maze.ghostHouseEntry,

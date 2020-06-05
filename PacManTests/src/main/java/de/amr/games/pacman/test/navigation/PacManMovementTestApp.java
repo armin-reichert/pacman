@@ -15,7 +15,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class PacManMovementTestApp extends Application {
 
@@ -33,7 +32,7 @@ public class PacManMovementTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new PacManMovementTestUI(new Game(), new ArcadeTheme()));
+		setController(new PacManMovementTestUI());
 	}
 }
 
@@ -41,8 +40,8 @@ class PacManMovementTestUI extends PlayView {
 
 	private PacMan pacMan;
 
-	public PacManMovementTestUI(Game game, Theme theme) {
-		super(game, theme);
+	public PacManMovementTestUI() {
+		super(new Game(), new ArcadeTheme());
 		pacMan = game.pacMan;
 		showRoutes = false;
 		showStates = false;

@@ -14,7 +14,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class EscapeIntoCornerTestApp extends Application {
 
@@ -32,16 +31,14 @@ public class EscapeIntoCornerTestApp extends Application {
 
 	@Override
 	public void init() {
-		Game game = new Game();
-		Theme theme = new ArcadeTheme();
-		setController(new EscapeIntoCornerTestUI(game, theme));
+		setController(new EscapeIntoCornerTestUI());
 	}
 }
 
 class EscapeIntoCornerTestUI extends PlayView implements VisualController {
 
-	public EscapeIntoCornerTestUI(Game game, Theme theme) {
-		super(game, theme);
+	public EscapeIntoCornerTestUI() {
+		super(new Game(), new ArcadeTheme());
 		showRoutes = true;
 		showStates = true;
 		showScores = false;

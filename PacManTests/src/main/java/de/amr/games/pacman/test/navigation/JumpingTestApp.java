@@ -7,7 +7,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class JumpingTestApp extends Application {
 
@@ -25,14 +24,14 @@ public class JumpingTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new JumpingTestUI(new Game(), new ArcadeTheme()));
+		setController(new JumpingTestUI());
 	}
 }
 
 class JumpingTestUI extends PlayView {
 
-	public JumpingTestUI(Game game, Theme theme) {
-		super(game, theme);
+	public JumpingTestUI() {
+		super(new Game(), new ArcadeTheme());
 		showRoutes = false;
 		showStates = true;
 		showScores = false;

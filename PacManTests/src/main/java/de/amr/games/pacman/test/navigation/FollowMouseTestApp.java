@@ -9,7 +9,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class FollowMouseTestApp extends Application {
 
@@ -27,7 +26,7 @@ public class FollowMouseTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new FollowMouseTestUI(new Game(), new ArcadeTheme()));
+		setController(new FollowMouseTestUI());
 	}
 }
 
@@ -35,8 +34,8 @@ class FollowMouseTestUI extends PlayView {
 
 	private Tile mousePosition = new Tile(0, 0);
 
-	public FollowMouseTestUI(Game game, Theme theme) {
-		super(game, theme);
+	public FollowMouseTestUI() {
+		super(new Game(), new ArcadeTheme());
 		showRoutes = true;
 		showStates = false;
 		showScores = false;

@@ -14,7 +14,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class LeaveGhostHouseTestApp extends Application {
 
@@ -33,14 +32,14 @@ public class LeaveGhostHouseTestApp extends Application {
 	@Override
 	public void init() {
 		clock().setTargetFrameRate(10);
-		setController(new LeaveGhostHouseTestUI(new Game(), new ArcadeTheme()));
+		setController(new LeaveGhostHouseTestUI());
 	}
 }
 
 class LeaveGhostHouseTestUI extends PlayView {
 
-	public LeaveGhostHouseTestUI(Game game, Theme theme) {
-		super(game, theme);
+	public LeaveGhostHouseTestUI() {
+		super(new Game(), new ArcadeTheme());
 		showRoutes = true;
 		showStates = true;
 		showScores = false;

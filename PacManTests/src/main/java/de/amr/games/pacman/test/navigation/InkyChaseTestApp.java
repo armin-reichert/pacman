@@ -16,7 +16,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class InkyChaseTestApp extends Application {
 
@@ -34,14 +33,14 @@ public class InkyChaseTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new InkyChaseTestUI(new Game(), new ArcadeTheme()));
+		setController(new InkyChaseTestUI());
 	}
 }
 
 class InkyChaseTestUI extends PlayView {
 
-	public InkyChaseTestUI(Game game, Theme theme) {
-		super(game, theme);
+	public InkyChaseTestUI() {
+		super(new Game(), new ArcadeTheme());
 		showRoutes = true;
 		showStates = false;
 		showScores = false;

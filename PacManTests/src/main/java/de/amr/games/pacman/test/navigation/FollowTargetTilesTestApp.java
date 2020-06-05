@@ -14,7 +14,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class FollowTargetTilesTestApp extends Application {
 
@@ -32,7 +31,7 @@ public class FollowTargetTilesTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new FollowTargetTilesTestUI(new Game(), new ArcadeTheme()));
+		setController(new FollowTargetTilesTestUI());
 	}
 }
 
@@ -41,8 +40,8 @@ class FollowTargetTilesTestUI extends PlayView {
 	private List<Tile> targets;
 	private int current;
 
-	public FollowTargetTilesTestUI(Game game, Theme theme) {
-		super(game, theme);
+	public FollowTargetTilesTestUI() {
+		super(new Game(), new ArcadeTheme());
 		showRoutes = true;
 		showStates = false;
 		showScores = false;

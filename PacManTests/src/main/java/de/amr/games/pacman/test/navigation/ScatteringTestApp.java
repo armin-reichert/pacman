@@ -14,7 +14,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class ScatteringTestApp extends Application {
 
@@ -32,14 +31,14 @@ public class ScatteringTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new ScatteringTestUI(new Game(), new ArcadeTheme()));
+		setController(new ScatteringTestUI());
 	}
 }
 
 class ScatteringTestUI extends PlayView {
 
-	public ScatteringTestUI(Game game, Theme theme) {
-		super(game, theme);
+	public ScatteringTestUI() {
+		super(new Game(), new ArcadeTheme());
 		showRoutes = true;
 		showStates = false;
 		showScores = false;

@@ -8,7 +8,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
-import de.amr.games.pacman.view.theme.Theme;
 
 /**
  * Test for heading for a tile outside of the maze.
@@ -30,14 +29,14 @@ public class OutsideTileTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new OutsideTileTestUI(new Game(), new ArcadeTheme()));
+		setController(new OutsideTileTestUI());
 	}
 }
 
 class OutsideTileTestUI extends PlayView {
 
-	public OutsideTileTestUI(Game game, Theme theme) {
-		super(game, theme);
+	public OutsideTileTestUI() {
+		super(new Game(), new ArcadeTheme());
 		showRoutes = true;
 		showStates = false;
 		showScores = false;

@@ -13,7 +13,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class EnterGhostHouseTestApp extends Application {
 
@@ -31,14 +30,14 @@ public class EnterGhostHouseTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new EnterGhostHouseTestUI(new Game(), new ArcadeTheme()));
+		setController(new EnterGhostHouseTestUI());
 	}
 }
 
 class EnterGhostHouseTestUI extends PlayView {
 
-	public EnterGhostHouseTestUI(Game game, Theme theme) {
-		super(game, theme);
+	public EnterGhostHouseTestUI() {
+		super(new Game(), new ArcadeTheme());
 		showRoutes = true;
 		showStates = true;
 		showScores = false;

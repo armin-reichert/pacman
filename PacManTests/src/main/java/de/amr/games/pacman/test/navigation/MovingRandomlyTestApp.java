@@ -13,7 +13,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class MovingRandomlyTestApp extends Application {
 
@@ -31,7 +30,7 @@ public class MovingRandomlyTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new MovingRandomlyTestUI(new Game(), new ArcadeTheme()));
+		setController(new MovingRandomlyTestUI());
 	}
 }
 
@@ -39,8 +38,8 @@ class MovingRandomlyTestUI extends PlayView {
 
 	boolean started;
 
-	public MovingRandomlyTestUI(Game game, Theme theme) {
-		super(game, theme);
+	public MovingRandomlyTestUI() {
+		super(new Game(), new ArcadeTheme());
 		showRoutes = true;
 		showStates = true;
 		showScores = false;
