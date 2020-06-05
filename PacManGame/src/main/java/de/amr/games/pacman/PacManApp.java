@@ -75,16 +75,16 @@ public class PacManApp extends Application {
 	@Override
 	protected void printSettings() {
 		super.printSettings();
-		printValue("Demo mode", "%s", settings.demoMode);
+		printValue("Demo Mode", "%s", settings.demoMode);
 		printValue("Ghosts dangerous", "%s", settings.ghostsDangerous);
 		printValue("Ghosts flee randomly", "%s", settings.ghostsFleeRandomly);
 		printValue("Overflow Bug", "%s", settings.overflowBug);
-		printValue("PacMan immortable", "%s", settings.pacManImmortable);
-		printValue("Path finder", "%s", settings.pathFinder);
-		printValue("Simple mode", "%s", settings.simpleMode);
+		printValue("Pac-Man immortable", "%s", settings.pacManImmortable);
+		printValue("Pathfinder", "%s", settings.pathFinder);
+		printValue("Simple Mode", "%s", settings.simpleMode);
 		printValue("Skip Intro", "%s", settings.skipIntro);
-		printValue("Start level", "%d", settings.startLevel);
-		printValue("User language", "%s", texts.getLocale().getDisplayLanguage());
+		printValue("Startlevel", "%d", settings.startLevel);
+		printValue("User Language", "%s", texts.getLocale().getDisplayLanguage());
 	}
 
 	@Override
