@@ -33,7 +33,7 @@ public class FollowMouseTestApp extends Application {
 
 class FollowMouseTestUI extends PlayView {
 
-	private Tile mousePosition;
+	private Tile mousePosition = new Tile(0, 0);
 
 	public FollowMouseTestUI(Game game, Theme theme) {
 		super(game, theme);
@@ -51,18 +51,13 @@ class FollowMouseTestUI extends PlayView {
 		game.stage.add(game.blinky);
 		game.blinky.behavior(CHASING, game.blinky.isHeadingFor(() -> mousePosition));
 		game.blinky.setState(CHASING);
-		readMouse();
-	}
-
-	private void readMouse() {
-		mousePosition = new Tile(Mouse.getX() / Tile.SIZE, Mouse.getY() / Tile.SIZE);
 	}
 
 	@Override
 	public void update() {
 		super.update();
 		if (Mouse.moved()) {
-			readMouse();
+			mousePosition = new Tile(Mouse.getX() / Tile.SIZE, Mouse.getY() / Tile.SIZE);
 		}
 		game.blinky.update();
 	}
