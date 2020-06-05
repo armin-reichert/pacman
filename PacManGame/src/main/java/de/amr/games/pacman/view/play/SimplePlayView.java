@@ -146,20 +146,21 @@ public class SimplePlayView extends BaseView {
 
 			pen.down(lineOffset);
 			pen.color(Color.WHITE);
-			pen.drawAtGridPosition(String.format("%07d", game.score), col, 1, Tile.SIZE);
+			pen.drawAtGridPosition(String.format("%7d", game.score), col, 1, Tile.SIZE);
 			pen.up(lineOffset);
 
 			// Highscore
 			col = 9;
 			pen.color(hilight);
-			pen.drawAtGridPosition("Highscore".toUpperCase(), col, 0, Tile.SIZE);
+			pen.drawAtGridPosition("High Score".toUpperCase(), col, 0, Tile.SIZE);
 			pen.down(lineOffset);
 			pen.color(Color.WHITE);
-			pen.drawAtGridPosition(String.format("%07d", game.hiscore.points), col, 1, Tile.SIZE);
+			pen.drawAtGridPosition(String.format("%7d", game.hiscore.points), col, 1, Tile.SIZE);
+			pen.color(Color.LIGHT_GRAY);
 			pen.drawAtGridPosition(String.format("L%02d", game.hiscore.levelNumber), col + 7, 1, Tile.SIZE);
 			pen.up(lineOffset);
 
-			col = 20;
+			col = 21;
 			pen.color(hilight);
 			pen.drawAtGridPosition(String.format("Level".toUpperCase()), col, 0, Tile.SIZE);
 			// Level number
@@ -239,13 +240,13 @@ public class SimplePlayView extends BaseView {
 				// hide eaten food
 				game.maze.playingArea().filter(game.maze::isEatenFood).forEach(tile -> {
 					g.setColor(tileColor(tile));
-					g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
+					g.fillRect(tile.x(), tile.y(), Tile.SIZE + 1, Tile.SIZE + 1);
 				});
 				// hide active energizers when blinking animation is in dark phase
 				if (energizersBlinking.currentFrame() == 1) {
 					game.maze.playingArea().filter(game.maze::isEnergizer).forEach(tile -> {
 						g.setColor(tileColor(tile));
-						g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
+						g.fillRect(tile.x(), tile.y(), Tile.SIZE + 1, Tile.SIZE + 1);
 					});
 				}
 				// draw door open when any ghost is entering or leaving the house
