@@ -1,18 +1,27 @@
 # A (hopefully comprehensible) Pac-Man implementation using finite-state machines        
 
-## How to build and run this program
+## How to run the executable jar file
+
+Download the executable "PacManGame-1.0.jar" from the releases folder and double-click it. If you want to use the command-line arguments, open a command window and enter
 
 ```
-cd path/to/PacManGame
+java -jar PacManGame-1.0.jar command-line-args...
+```
+
+## How to build the executable jar file
+
+Clone all needed repositories (see pom.xml) and enter the following commands:
+
+```
+cd your/path/to/git/repository/pacman/PacManGame
 mvn clean install assembly:single
-java -jar target\PacManGame-1.0.jar
 ```
 
 [![Pac-Man](https://i3.ytimg.com/vi/_3GhJGIOTp4/maxresdefault.jpg)](https://www.youtube.com/watch?v=_3GhJGIOTp4)
 
 ## Features
 
-- The following settings can be changed via command-line arguments (`java -jar pacman.jar arguments...`):
+- The following settings can be changed via command-line arguments:
   - Scaling: e.g. `-scale 2.5`
   - Full-screen mode on start: `-fullScreenOnStart`
   - Full-screen resolution & depth: e.g. `-fullScreenMode 800,600,32`
