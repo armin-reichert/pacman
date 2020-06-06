@@ -386,7 +386,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			PacManGhostCollisionEvent collision = (PacManGhostCollisionEvent) event;
 			Ghost ghost = collision.ghost;
 			if (ghost.is(FRIGHTENED)) {
-				// Ghost got killed
 				int livesBefore = game.lives;
 				game.scoreKilledGhost(ghost.name);
 				if (game.lives > livesBefore) {
@@ -396,16 +395,16 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				ghost.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
 				loginfo("%s got killed at %s", ghost.name, ghost.tile());
-			} else {
-				if (settings.ghostsDangerous) {
-					// Pac-Man got killed
-					ghostHouse.onLifeLost();
-					sound.muteAll();
-					playView.mazeView.energizersBlinking.setEnabled(false);
-					game.pacMan.process(new PacManKilledEvent(ghost));
-					enqueue(new PacManKilledEvent(ghost));
-					loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.tile());
-				}
+				return;
+			}
+
+			if (!settings.ghostsHarmless) {
+				ghostHouse.onLifeLost();
+				sound.muteAll();
+				playView.mazeView.energizersBlinking.setEnabled(false);
+				game.pacMan.process(new PacManKilledEvent(ghost));
+				enqueue(new PacManKilledEvent(ghost));
+				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.tile());
 			}
 		}
 

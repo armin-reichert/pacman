@@ -29,8 +29,8 @@ public class PacManApp extends Application {
 		@Parameter(names = { "-demoMode" }, description = "Pac-Man moves automatically")
 		public boolean demoMode = false;
 
-		@Parameter(names = { "-ghostsDangerous" }, description = "Ghost collisions are detected", arity = 1)
-		public boolean ghostsDangerous = true;
+		@Parameter(names = { "-ghostsHarmless" }, description = "Ghost collisions are harmless")
+		public boolean ghostsHarmless = false;
 
 		@Parameter(names = {
 				"-ghostsFleeRandomly" }, description = "Frightened ghosts flee randomly (true) or into safe corner (false)", arity = 1)
@@ -76,7 +76,7 @@ public class PacManApp extends Application {
 	protected void printSettings() {
 		super.printSettings();
 		printValue("Demo Mode", "%s", settings.demoMode);
-		printValue("Ghosts dangerous", "%s", settings.ghostsDangerous);
+		printValue("Ghosts harmless", "%s", settings.ghostsHarmless);
 		printValue("Ghosts flee randomly", "%s", settings.ghostsFleeRandomly);
 		printValue("Overflow Bug", "%s", settings.overflowBug);
 		printValue("Pac-Man immortable", "%s", settings.pacManImmortable);

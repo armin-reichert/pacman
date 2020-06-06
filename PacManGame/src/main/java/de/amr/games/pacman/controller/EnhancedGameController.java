@@ -78,7 +78,7 @@ public class EnhancedGameController extends GameController {
 			} else if (Keyboard.keyPressedOnce("r")) {
 				playView.showRoutes = !playView.showRoutes;
 			} else if (Keyboard.keyPressedOnce("x")) {
-				toggleGhostsDangerous();
+				toggleGhostsHarmless();
 			} else if (Keyboard.keyPressedOnce("+")) {
 				switchToNextLevel();
 			}
@@ -115,9 +115,9 @@ public class EnhancedGameController extends GameController {
 		}
 	}
 
-	private void toggleGhostsDangerous() {
-		settings.ghostsDangerous = !settings.ghostsDangerous;
-		loginfo("Ghosts are %s", settings.ghostsDangerous ? "dangerous" : "harmless");
+	private void toggleGhostsHarmless() {
+		settings.ghostsHarmless = !settings.ghostsHarmless;
+		loginfo("Ghosts are %s", settings.ghostsHarmless ? "harmless" : "dangerous");
 	}
 
 	private void toggleDemoMode() {
