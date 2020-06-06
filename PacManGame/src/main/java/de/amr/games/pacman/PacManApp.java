@@ -45,7 +45,7 @@ public class PacManApp extends Application {
 		@Parameter(names = { "-pathFinder" }, description = "Used path finding algorithm (astar, bfs, bestfs)")
 		public String pathFinder = "astar";
 
-		@Parameter(names = { "-simpleMode" }, description = "Strips all extra functionality not need for just playing")
+		@Parameter(names = { "-simpleMode" }, description = "Strips all extra functionality not needed for just playing")
 		public boolean simpleMode = false;
 
 		@Parameter(names = { "-skipIntro" }, description = "Game starts without intro screen")
