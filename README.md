@@ -1,62 +1,74 @@
 # A (hopefully comprehensible) Pac-Man implementation using finite-state machines        
 
-## How to build and run this program
+## How to run the game
+
+Download the executable "PacManGame-1.0.jar" from the [releases](https://github.com/armin-reichert/pacman/releases) folder and double-click the file. 
+
+If you want to use the command-line arguments (see below), open a command window and enter
 
 ```
-cd path/to/PacManGame
+cd directory/where/jarfile/was/downloaded
+java -jar PacManGame-1.0.jar command-line-args...
+```
+
+## How to build the executable jar file
+
+Clone all needed repositories (see pom.xml) and enter the following commands:
+
+```
+cd your/path/to/git/repository/pacman/PacManGame
 mvn clean install assembly:single
-java -jar target\PacManGame-1.0.jar
 ```
 
 [![Pac-Man](https://i3.ytimg.com/vi/_3GhJGIOTp4/maxresdefault.jpg)](https://www.youtube.com/watch?v=_3GhJGIOTp4)
 
 ## Features
 
-- The following settings can be changed via command-line arguments (`java -jar pacman.jar arguments...`):
+- CTRL+P pauses/resumes the game
+- F2 opens a dialog where the game clock frequency and (full-)screen resolution can be changed
+- F11 toggles between window and full-screen exclusive mode
+  
+General command-line arguments:
   - Scaling: e.g. `-scale 2.5`
   - Full-screen mode on start: `-fullScreenOnStart`
   - Full-screen resolution & depth: e.g. `-fullScreenMode 800,600,32`
   - Window title: e.g. `-title "Pac-Man Game"`
-- General
-  - CTRL-p pauses/resumes the game
-  - F2 opens a dialog where the game loop frequency and (full-)screen resolution can be changed
-  - F11 toggles between window and full-screen exclusive mode
-- Game
-  - Command-line parameters:
-    - `-help`, `-usage`: list all available command-line parameters
-    - `-demoMode`: Pac-Man moves randomly and is immortable
-    - `-simpleMode true/false` (default:false): in simple mode only the basic playing functionality is enabled
-    - `-ghostsDangerous true/false` (default:true): deadly ghost collisions are detected 
-    - `-ghostsFleeRandomly true/false` (default:true): ghosts flee in random directions when frightened. If this is set to false, they choose a "safe" corner to flee to
-    - `-pacManImmortable` (default:false): Pac-Man keeps live after being killed
-    - `-overflowBug true/false` (default:true): simulates overflow bug from Arcade version
-    - `-pathFinder`(default:astar): select the path finder algorithm (astar, bfs, bestfs) used for computing the safe paths
-    - `-skipIntro` (default:false): intro screen is skipped
-    - `-startLevel`(default:1): starts the game in the specified level
-  - In enhanced mode, the following extra functions are available:
+
+Game-specific command-line arguments:
+  - `-help`, `-usage`: list all available command-line parameters
+  - `-demoMode`: Pac-Man moves randomly and is immortable
+  - `-simpleMode` (default: false): in simple mode only the basic playing functionality is enabled
+  - `-ghostsHarmless` (default: false): deadly ghost collisions are detected 
+  - `-ghostsSafeCorner` (default: false): ghosts flee to safe corners and not randomly as in the original game
+  - `-pacManImmortable` (default: false): Pac-Man keeps live after being killed
+  - `-overflowBug true|false` (default: true): simulates overflow bug from Arcade version
+  - `-pathFinder`(default: astar): the path finder algorithm (astar, bfs, bestfs) used for computing the safe paths
+  - `-skipIntro` (default: false): intro screen is skipped
+  - `-startLevel`(default: 1): starts the game in the specified level
+  - In enhanced mode, the following additional functions are available:
     - The overall speed can be changed during the game; 
       - Continuosly: CTRL-LEFT = slower, CTRL-RIGHT = faster
-      - Fixed speeds: '1' = normal speed, '2' = fast, '3' = very fast
-    - 'b' toggles the presence of Blinky
-    - 'c' toggles the presence of Clyde
-    - 'd' toggles between normal play mode and demo mode where Pac-Man moves randomly
-    - 'e' eats all pellets except the energizers
-    - 'f' toggles the ghost's *frightened* behavior between "random" (original) and "select safe corner"
-    - 'g' toggles the display of the grid and the alignment of the actors on the grid
-    - 'i' toggles the presence of Inky
-    - 'k' kills all ghosts
-    - 'l' toggles the tracing of the used state machines
-    - 'm' makes Pac-Man immortable (does not lose live after being killed)
-    - 'o' toggles the simulation of the overflow bug which occurs in the original Arcade game when Pac-Man is looking upwards
-    - 'p' toggles the presence of Pinky
-    - 'r' toggles the display of actor routes and target tiles
-    - 's' toggles the display of actor states and timers
-    - 't' toggles display of timing information (target vs. actual framerate)
-    - 'x' toggles if ghost collisions may kill Pac-Man
-    - '+' switches to the next level
+      - Fixed: '1' = normal speed, '2' = fast, '3' = very fast
+      - 'b' toggles the presence of Blinky
+      - 'c' toggles the presence of Clyde
+      - 'd' toggles between normal play mode and demo mode where Pac-Man moves randomly
+      - 'e' eats all pellets except the energizers
+      - 'f' toggles the ghost's *frightened* behavior between "random" (original) and "select safe corner"
+      - 'g' toggles the display of the grid and the alignment of the actors on the grid
+      - 'i' toggles the presence of Inky
+      - 'k' kills all ghosts
+      - 'l' toggles the tracing of the used state machines
+      - 'm' makes Pac-Man immortable (does not lose live after being killed)
+      - 'o' toggles the simulation of the overflow bug which occurs in the original Arcade game when Pac-Man is looking upwards
+      - 'p' toggles the presence of Pinky
+      - 'r' toggles the display of actor routes and target tiles
+      - 's' toggles the display of actor states and timers
+      - 't' toggles display of timing information (target vs. actual framerate)
+      - 'x' toggles if ghost collisions may kill Pac-Man
+      - '+' switches to the next level
 
 ## These were the times
-
+  
 The only computer game I played regularly was a Pac-Man clone named ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running at the time (1984) on my Apple II+ clone, on a monochrome monitor with a single crappy little speaker, but its hypnotizing sound is still in my head.
 
 When I saw some of the Pac-Man clone implementations on YouTube some years ago, I asked myself: how would I do that, as a software developer with a certain experience but one who never has implemented a real game before? 
