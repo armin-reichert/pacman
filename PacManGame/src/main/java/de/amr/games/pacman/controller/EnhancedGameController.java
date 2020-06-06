@@ -103,15 +103,15 @@ public class EnhancedGameController extends GameController {
 	}
 
 	private void toggleGhostFrightenedBehavior() {
-		if (settings.ghostsFleeRandomly) {
-			settings.ghostsFleeRandomly = false;
-			game.ghosts().forEach(ghost -> ghost.behavior(GhostState.FRIGHTENED, ghost.isFleeingToSafeCorner(game.pacMan,
-					game.maze.cornerNW(), game.maze.cornerNE(), game.maze.cornerSW(), game.maze.cornerSE())));
-			loginfo("Ghosts escape behavior is: Fleeing to maze corners");
-		} else {
-			settings.ghostsFleeRandomly = true;
+		if (settings.ghostsSafeCorner) {
+			settings.ghostsSafeCorner = false;
 			game.ghosts().forEach(ghost -> ghost.behavior(GhostState.FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack()));
 			loginfo("Ghost escape behavior is: Random movement");
+		} else {
+			settings.ghostsSafeCorner = true;
+			game.ghosts().forEach(ghost -> ghost.behavior(GhostState.FRIGHTENED, ghost.isFleeingToSafeCorner(game.pacMan,
+					game.maze.cornerNW(), game.maze.cornerNE(), game.maze.cornerSW(), game.maze.cornerSE())));
+			loginfo("Ghosts escape behavior is: Fleeing to safe corners");
 		}
 	}
 
