@@ -370,7 +370,7 @@ public class PlayView extends SimplePlayView {
 				Direction pacManDir = game.pacMan.moveDir();
 				int s = Tile.SIZE / 2; // size of target square
 				g.setColor(Color.GRAY);
-				if (settings.overflowBug && pacManDir == Direction.UP) {
+				if (!settings.fixOverflowBug && pacManDir == Direction.UP) {
 					Tile twoAhead = game.maze.tileToDir(pacManTile, pacManDir, 2);
 					Tile twoLeft = game.maze.tileToDir(twoAhead, Direction.LEFT, 2);
 					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();

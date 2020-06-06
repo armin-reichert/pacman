@@ -35,9 +35,8 @@ public class PacManApp extends Application {
 		@Parameter(names = { "-ghostsSafeCorner" }, description = "Ghosts don't flee randomly but to a safe corner")
 		public boolean ghostsSafeCorner = false;
 
-		@Parameter(names = {
-				"-overflowBug" }, description = "Enable overflow bug as in the original Arcade game", arity = 1)
-		public boolean overflowBug = true;
+		@Parameter(names = { "-fixOverflowBug" }, description = "Fixes thee overflow bug from the original Arcade game")
+		public boolean fixOverflowBug = false;
 
 		@Parameter(names = { "-pacManImmortable" }, description = "Pac-Man stays alive when killed by ghost")
 		public boolean pacManImmortable = false;
@@ -77,7 +76,7 @@ public class PacManApp extends Application {
 		printValue("Demo Mode", "%s", settings.demoMode);
 		printValue("Ghosts harmless", "%s", settings.ghostsHarmless);
 		printValue("Ghosts flee to safe corner", "%s", settings.ghostsSafeCorner);
-		printValue("Overflow Bug", "%s", settings.overflowBug);
+		printValue("Fix Overflow Bug", "%s", settings.fixOverflowBug);
 		printValue("Pac-Man immortable", "%s", settings.pacManImmortable);
 		printValue("Pathfinder", "%s", settings.pathFinder);
 		printValue("Simple Mode", "%s", settings.simpleMode);

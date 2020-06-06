@@ -140,7 +140,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 	 */
 	public Tile tilesAhead(int numTiles) {
 		Tile tileAhead = maze.tileToDir(tile(), moveDir, numTiles);
-		if (moveDir == UP && settings.overflowBug) {
+		if (moveDir == UP && !settings.fixOverflowBug) {
 			return maze.tileToDir(tileAhead, LEFT, numTiles);
 		}
 		return tileAhead;

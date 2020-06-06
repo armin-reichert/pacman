@@ -93,8 +93,8 @@ public class EnhancedGameController extends GameController {
 	}
 
 	private void togglePacManOverflowBug() {
-		settings.overflowBug = !settings.overflowBug;
-		loginfo("Overflow bug is %s", (settings.overflowBug ? "on" : "off"));
+		settings.fixOverflowBug = !settings.fixOverflowBug;
+		loginfo("Overflow bug is %s", settings.fixOverflowBug ? "fixed" : "active");
 	}
 
 	private void toggleStateMachineLogging() {
