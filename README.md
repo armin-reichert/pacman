@@ -25,14 +25,14 @@ java -jar target\PacManGame-1.0.jar
   - Command-line parameters:
     - `-help`, `-usage`: list all available command-line parameters
     - `-demoMode`: Pac-Man moves randomly and is immortable
-    - `-simpleMode true/false` (default:false): in simple mode only the basic playing functionality is enabled
-    - `-ghostsDangerous true/false` (default:true): deadly ghost collisions are detected 
-    - `-ghostsFleeRandomly true/false` (default:true): ghosts flee in random directions when frightened. If this is set to false, they choose a "safe" corner to flee to
-    - `-pacManImmortable` (default:false): Pac-Man keeps live after being killed
-    - `-overflowBug true/false` (default:true): simulates overflow bug from Arcade version
-    - `-pathFinder`(default:astar): select the path finder algorithm (astar, bfs, bestfs) used for computing the safe paths
-    - `-skipIntro` (default:false): intro screen is skipped
-    - `-startLevel`(default:1): starts the game in the specified level
+    - `-simpleMode (default: false): in simple mode only the basic playing functionality is enabled
+    - `-ghostsHarmless` (default: false): deadly ghost collisions are detected 
+    - `-ghostsFleeRandomly true/false` (default: true): ghosts flee in random directions when frightened. If this is set to false, they choose a "safe" corner to flee to
+    - `-pacManImmortable` (default: false): Pac-Man keeps live after being killed
+    - `-overflowBug true/false` (default: true): simulates overflow bug from Arcade version
+    - `-pathFinder`(default: astar): the path finder algorithm (astar, bfs, bestfs) used for computing the safe paths
+    - `-skipIntro` (default: false): intro screen is skipped
+    - `-startLevel`(default: 1): starts the game in the specified level
   - In enhanced mode, the following extra functions are available:
     - The overall speed can be changed during the game; 
       - Continuosly: CTRL-LEFT = slower, CTRL-RIGHT = faster
