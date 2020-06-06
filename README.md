@@ -39,7 +39,7 @@ Game-specific command-line arguments:
   - `-demoMode`: Pac-Man moves randomly and is immortable
   - `-simpleMode` (default: false): in simple mode only the basic playing functionality is enabled
   - `-ghostsHarmless` (default: false): deadly ghost collisions are detected 
-  - `-ghostsFleeRandomly true|false` (default: true): ghosts flee in random directions when frightened. If this is set to false, they choose a "safe" corner to flee to
+  - `-ghostsSafeCorner` (default: false): ghosts flee to safe corners and not randomly as in the original game
   - `-pacManImmortable` (default: false): Pac-Man keeps live after being killed
   - `-overflowBug true|false` (default: true): simulates overflow bug from Arcade version
   - `-pathFinder`(default: astar): the path finder algorithm (astar, bfs, bestfs) used for computing the safe paths
