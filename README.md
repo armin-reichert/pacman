@@ -1,6 +1,6 @@
 # A (hopefully comprehensible) Pac-Man implementation using finite-state machines        
 
-## How to run the executable jar file
+## How to run the game
 
 Download the executable "PacManGame-1.0.jar" from the [releases](https://github.com/armin-reichert/pacman/releases) folder and double-click the file. 
 
