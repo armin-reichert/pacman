@@ -45,6 +45,7 @@ Game-specific command-line arguments:
   - `-pathFinder`(default: astar): the path finder algorithm (astar, bfs, bestfs) used for computing the safe paths
   - `-skipIntro` (default: false): intro screen is skipped
   - `-startLevel`(default: 1): starts the game in the specified level
+
 In enhanced mode, the following additional functions are available:
   - The overall speed can be changed during the game; 
     - Continuosly: CTRL-LEFT = slower, CTRL-RIGHT = faster
