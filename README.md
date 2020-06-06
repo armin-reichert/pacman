@@ -24,15 +24,15 @@ mvn clean install assembly:single
 
 ## Features
 
-- CTRL-p pauses/resumes the game
-- F2 opens a dialog where the game loop frequency and (full-)screen resolution can be changed
+- CTRL+P pauses/resumes the game
+- F2 opens a dialog where the game clock frequency and (full-)screen resolution can be changed
 - F11 toggles between window and full-screen exclusive mode
   
-Common command-line arguments:
-	- Scaling: e.g. `-scale 2.5`
-	- Full-screen mode on start: `-fullScreenOnStart`
-	- Full-screen resolution & depth: e.g. `-fullScreenMode 800,600,32`
-	- Window title: e.g. `-title "Pac-Man Game"`
+General command-line arguments:
+  - Scaling: e.g. `-scale 2.5`
+  - Full-screen mode on start: `-fullScreenOnStart`
+  - Full-screen resolution & depth: e.g. `-fullScreenMode 800,600,32`
+  - Window title: e.g. `-title "Pac-Man Game"`
 
 Game-specific command-line arguments:
   - `-help`, `-usage`: list all available command-line parameters
@@ -45,30 +45,30 @@ Game-specific command-line arguments:
   - `-pathFinder`(default: astar): the path finder algorithm (astar, bfs, bestfs) used for computing the safe paths
   - `-skipIntro` (default: false): intro screen is skipped
   - `-startLevel`(default: 1): starts the game in the specified level
-  - In enhanced mode, the following extra functions are available:
+  - In enhanced mode, the following additional functions are available:
     - The overall speed can be changed during the game; 
-		  - Continuosly: CTRL-LEFT = slower, CTRL-RIGHT = faster
-		  - Fixed: '1' = normal speed, '2' = fast, '3' = very fast
-		- 'b' toggles the presence of Blinky
-		- 'c' toggles the presence of Clyde
-		- 'd' toggles between normal play mode and demo mode where Pac-Man moves randomly
-		- 'e' eats all pellets except the energizers
-		- 'f' toggles the ghost's *frightened* behavior between "random" (original) and "select safe corner"
-		- 'g' toggles the display of the grid and the alignment of the actors on the grid
-		- 'i' toggles the presence of Inky
-		- 'k' kills all ghosts
-		- 'l' toggles the tracing of the used state machines
-		- 'm' makes Pac-Man immortable (does not lose live after being killed)
-		- 'o' toggles the simulation of the overflow bug which occurs in the original Arcade game when Pac-Man is looking upwards
-		- 'p' toggles the presence of Pinky
-		- 'r' toggles the display of actor routes and target tiles
-		- 's' toggles the display of actor states and timers
-		- 't' toggles display of timing information (target vs. actual framerate)
-		- 'x' toggles if ghost collisions may kill Pac-Man
-		- '+' switches to the next level
+      - Continuosly: CTRL-LEFT = slower, CTRL-RIGHT = faster
+      - Fixed: '1' = normal speed, '2' = fast, '3' = very fast
+      - 'b' toggles the presence of Blinky
+      - 'c' toggles the presence of Clyde
+      - 'd' toggles between normal play mode and demo mode where Pac-Man moves randomly
+      - 'e' eats all pellets except the energizers
+      - 'f' toggles the ghost's *frightened* behavior between "random" (original) and "select safe corner"
+      - 'g' toggles the display of the grid and the alignment of the actors on the grid
+      - 'i' toggles the presence of Inky
+      - 'k' kills all ghosts
+      - 'l' toggles the tracing of the used state machines
+      - 'm' makes Pac-Man immortable (does not lose live after being killed)
+      - 'o' toggles the simulation of the overflow bug which occurs in the original Arcade game when Pac-Man is looking upwards
+      - 'p' toggles the presence of Pinky
+      - 'r' toggles the display of actor routes and target tiles
+      - 's' toggles the display of actor states and timers
+      - 't' toggles display of timing information (target vs. actual framerate)
+      - 'x' toggles if ghost collisions may kill Pac-Man
+      - '+' switches to the next level
 
 ## These were the times
-
+  
 The only computer game I played regularly was a Pac-Man clone named ["Snack Attack"](https://www.youtube.com/watch?v=ivAZkuBbpsM), running at the time (1984) on my Apple II+ clone, on a monochrome monitor with a single crappy little speaker, but its hypnotizing sound is still in my head.
 
 When I saw some of the Pac-Man clone implementations on YouTube some years ago, I asked myself: how would I do that, as a software developer with a certain experience but one who never has implemented a real game before? 
