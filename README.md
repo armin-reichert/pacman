@@ -36,7 +36,7 @@ General command-line arguments:
 
 Game-specific command-line arguments:
   - `-help`, `-usage`: list all available command-line parameters
-  - `-demoMode`: Pac-Man moves randomly and is immortable
+  - `-demoMode`: Pac-Man moves automatically and is immortable
   - `-simpleMode` (default: false): in simple mode only the basic playing functionality is enabled
   - `-ghostsHarmless` (default: false): deadly ghost collisions are detected 
   - `-ghostsSafeCorner` (default: false): ghosts flee to safe corners and not randomly as in the original game
@@ -45,27 +45,28 @@ Game-specific command-line arguments:
   - `-pathFinder`(default: astar): the path finder algorithm (astar, bfs, bestfs) used for computing the safe paths
   - `-skipIntro` (default: false): intro screen is skipped
   - `-startLevel`(default: 1): starts the game in the specified level
-  - In enhanced mode, the following additional functions are available:
-    - The overall speed can be changed during the game; 
-      - Continuosly: CTRL-LEFT = slower, CTRL-RIGHT = faster
-      - Fixed: '1' = normal speed, '2' = fast, '3' = very fast
-    - 'b' toggles the presence of Blinky
-    - 'c' toggles the presence of Clyde
-    - 'd' toggles between normal play mode and demo mode where Pac-Man moves randomly
-    - 'e' eats all pellets except the energizers
-    - 'f' toggles the ghost's *frightened* behavior between "random" (original) and "select safe corner"
-    - 'g' toggles the display of the grid and the alignment of the actors on the grid
-    - 'i' toggles the presence of Inky
-    - 'k' kills all ghosts
-    - 'l' toggles the tracing of the used state machines
-    - 'm' makes Pac-Man immortable (does not lose live after being killed)
-    - 'o' toggles the simulation of the overflow bug which occurs in the original Arcade game when Pac-Man is looking upwards
-    - 'p' toggles the presence of Pinky
-    - 'r' toggles the display of actor routes and target tiles
-    - 's' toggles the display of actor states and timers
-    - 't' toggles display of timing information (target vs. actual framerate)
-    - 'x' toggles if ghost collisions may kill Pac-Man
-    - '+' switches to the next level
+
+In enhanced mode, the following additional functions are available:
+  - The overall speed can be changed during the game; 
+    - Continuosly: CTRL-LEFT = slower, CTRL-RIGHT = faster
+    - Fixed: '1' = normal speed, '2' = fast, '3' = very fast
+  - 'b' toggles the presence of Blinky
+  - 'c' toggles the presence of Clyde
+  - 'd' toggles between normal play mode and demo mode where Pac-Man moves automatically
+  - 'e' eats all pellets except the energizers
+  - 'f' toggles the ghost's *frightened* behavior between "random" (original) and "select safe corner"
+  - 'g' toggles the display of the grid and the alignment of the actors on the grid
+  - 'i' toggles the presence of Inky
+  - 'k' kills all ghosts
+  - 'l' toggles the tracing of the used state machines
+  - 'm' makes Pac-Man immortable (does not lose live after being killed)
+  - 'o' toggles the simulation of the overflow bug which occurs in the original Arcade game when Pac-Man is looking upwards
+  - 'p' toggles the presence of Pinky
+  - 'r' toggles the display of actor routes and target tiles
+  - 's' toggles the display of actor states and timers
+  - 't' toggles display of timing information (target vs. actual framerate)
+  - 'x' toggles if ghost collisions may kill Pac-Man
+  - '+' switches to the next level
 
 ## These were the times
   
