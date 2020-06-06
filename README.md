@@ -41,7 +41,7 @@ Game-specific command-line arguments:
   - `-ghostsHarmless` (default: false): deadly ghost collisions are detected 
   - `-ghostsSafeCorner` (default: false): ghosts flee to safe corners and not randomly as in the original game
   - `-pacManImmortable` (default: false): Pac-Man keeps live after being killed
-  - `-overflowBug true|false` (default: true): simulates overflow bug from Arcade version
+  - `-fixOverflowBug` (default: false): fix overflow bug from Arcade version
   - `-pathFinder`(default: astar): the path finder algorithm (astar, bfs, bestfs) used for computing the safe paths
   - `-skipIntro` (default: false): intro screen is skipped
   - `-startLevel`(default: 1): starts the game in the specified level
