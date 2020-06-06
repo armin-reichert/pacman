@@ -49,23 +49,23 @@ Game-specific command-line arguments:
     - The overall speed can be changed during the game; 
       - Continuosly: CTRL-LEFT = slower, CTRL-RIGHT = faster
       - Fixed: '1' = normal speed, '2' = fast, '3' = very fast
-      - 'b' toggles the presence of Blinky
-      - 'c' toggles the presence of Clyde
-      - 'd' toggles between normal play mode and demo mode where Pac-Man moves randomly
-      - 'e' eats all pellets except the energizers
-      - 'f' toggles the ghost's *frightened* behavior between "random" (original) and "select safe corner"
-      - 'g' toggles the display of the grid and the alignment of the actors on the grid
-      - 'i' toggles the presence of Inky
-      - 'k' kills all ghosts
-      - 'l' toggles the tracing of the used state machines
-      - 'm' makes Pac-Man immortable (does not lose live after being killed)
-      - 'o' toggles the simulation of the overflow bug which occurs in the original Arcade game when Pac-Man is looking upwards
-      - 'p' toggles the presence of Pinky
-      - 'r' toggles the display of actor routes and target tiles
-      - 's' toggles the display of actor states and timers
-      - 't' toggles display of timing information (target vs. actual framerate)
-      - 'x' toggles if ghost collisions may kill Pac-Man
-      - '+' switches to the next level
+    - 'b' toggles the presence of Blinky
+    - 'c' toggles the presence of Clyde
+    - 'd' toggles between normal play mode and demo mode where Pac-Man moves randomly
+    - 'e' eats all pellets except the energizers
+    - 'f' toggles the ghost's *frightened* behavior between "random" (original) and "select safe corner"
+    - 'g' toggles the display of the grid and the alignment of the actors on the grid
+    - 'i' toggles the presence of Inky
+    - 'k' kills all ghosts
+    - 'l' toggles the tracing of the used state machines
+    - 'm' makes Pac-Man immortable (does not lose live after being killed)
+    - 'o' toggles the simulation of the overflow bug which occurs in the original Arcade game when Pac-Man is looking upwards
+    - 'p' toggles the presence of Pinky
+    - 'r' toggles the display of actor routes and target tiles
+    - 's' toggles the display of actor states and timers
+    - 't' toggles display of timing information (target vs. actual framerate)
+    - 'x' toggles if ghost collisions may kill Pac-Man
+    - '+' switches to the next level
 
 ## These were the times
   
