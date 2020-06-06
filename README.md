@@ -2,9 +2,12 @@
 
 ## How to run the executable jar file
 
-Download the executable "PacManGame-1.0.jar" from the releases folder and double-click it. If you want to use the command-line arguments, open a command window and enter
+Download the executable "PacManGame-1.0.jar" from the [releases](https://github.com/armin-reichert/pacman/releases) folder and double-click the file. 
+
+If you want to use the command-line arguments (see below), open a command window and enter
 
 ```
+cd directory/where/jarfile/was/downloaded
 java -jar PacManGame-1.0.jar command-line-args...
 ```
 
