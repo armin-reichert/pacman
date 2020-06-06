@@ -36,7 +36,7 @@ General command-line arguments:
 
 Game-specific command-line arguments:
   - `-help`, `-usage`: list all available command-line parameters
-  - `-demoMode`: Pac-Man moves randomly and is immortable
+  - `-demoMode`: Pac-Man moves automatically and is immortable
   - `-simpleMode` (default: false): in simple mode only the basic playing functionality is enabled
   - `-ghostsHarmless` (default: false): deadly ghost collisions are detected 
   - `-ghostsSafeCorner` (default: false): ghosts flee to safe corners and not randomly as in the original game
@@ -52,7 +52,7 @@ In enhanced mode, the following additional functions are available:
     - Fixed: '1' = normal speed, '2' = fast, '3' = very fast
   - 'b' toggles the presence of Blinky
   - 'c' toggles the presence of Clyde
-  - 'd' toggles between normal play mode and demo mode where Pac-Man moves randomly
+  - 'd' toggles between normal play mode and demo mode where Pac-Man moves automatically
   - 'e' eats all pellets except the energizers
   - 'f' toggles the ghost's *frightened* behavior between "random" (original) and "select safe corner"
   - 'g' toggles the display of the grid and the alignment of the actors on the grid
