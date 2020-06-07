@@ -271,7 +271,7 @@ movement = StateMachine
 //@formatter:on
 ```
 
-Using an explicit state machine for such a simple control case may seem like shooting at sparrows with cannons but serves to illustrate how seamlessly state machines can be integrated in the code.
+Using an explicit state machine for such a simple control case may seem like shooting with cannons at sparrows but it serves to illustrate how seamlessly state machines can be integrated.
 
 ## Tracing
 
