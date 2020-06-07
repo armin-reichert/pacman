@@ -23,8 +23,7 @@ import de.amr.statemachine.api.FsmContainer;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Base class for actors moving through the maze and controlled by a
- * finite-state machine.
+ * Base class for actors moving through the maze and controlled by a finite-state machine.
  * 
  * @param <STATE> state identifier type
  * 
@@ -44,7 +43,7 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 
 	protected Fsm<STATE, PacManGameEvent> brain;
 	protected Map<STATE, Steering> steerings;
-	protected StateMachine<Movement, ?> movement;
+	protected StateMachine<Movement, Void> movement;
 	protected Direction moveDir;
 	protected Direction wishDir;
 	protected Tile targetTile;
@@ -87,7 +86,7 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 	}
 
 	/**
-	 * @return the current steering for this actor depending on its state etc.
+	 * @return the current steering for this actor.
 	 */
 	public Steering steering() {
 		return steerings.get(getState());
@@ -226,8 +225,8 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 	}
 
 	/**
-	 * Computes how many pixels this entity can move towards the given direction
-	 * without entering an inaccessible neighbor tile.
+	 * Computes how many pixels this entity can move towards the given direction without entering an
+	 * inaccessible neighbor tile.
 	 * 
 	 * @param tile tile from where to move
 	 * @param dir  move direction

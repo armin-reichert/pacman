@@ -15,6 +15,7 @@ import java.util.EnumMap;
 import java.util.Optional;
 
 import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.controller.actor.steering.common.SteeredMazeMover;
@@ -130,9 +131,10 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 	}
 
 	/**
-	 * NOTE: If the application property {@link PacManAppSettings#overflowBug} is <code>true</code>,
-	 * this method simulates the bug from the original Arcade game where, if Pac-Man points upwards, the
-	 * position ahead of Pac-Man is wrongly calculated by adding the same number of tiles to the left.
+	 * NOTE: Depending on the application setting {@link PacManApp.Settings#fixOverflowBug}, this method
+	 * simulates/fixes the overflow bug from the original Arcade game which causes, if Pac-Man points
+	 * upwards, the wrong calculation of the position ahead of Pac-Man (namely adding the same number of
+	 * tiles to the left).
 	 * 
 	 * @param numTiles number of tiles
 	 * @return the tile located <code>numTiles</code> tiles ahead of Pac-Man towards his current move
