@@ -105,8 +105,6 @@ public class PlayView extends SimplePlayView {
 	public void draw(Graphics2D g) {
 		if (showGrid) {
 			g.drawImage(gridImage, 0, 0, null);
-		} else {
-			drawBackground(g);
 		}
 		drawMaze(g);
 		if (showFrameRate) {

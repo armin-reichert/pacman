@@ -1,6 +1,5 @@
 package de.amr.games.pacman.view.theme;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.util.stream.Stream;
@@ -20,8 +19,6 @@ public interface Theme {
 	static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 
 	BufferedImage img_logo();
-
-	Color color_mazeBackground();
 
 	Sprite spr_emptyMaze();
 

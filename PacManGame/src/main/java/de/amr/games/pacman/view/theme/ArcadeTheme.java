@@ -153,11 +153,6 @@ public class ArcadeTheme implements Theme {
 	}
 
 	@Override
-	public Color color_mazeBackground() {
-		return Color.BLACK;
-	}
-
-	@Override
 	public BufferedImage img_logo() {
 		return logo;
 	}

@@ -69,7 +69,6 @@ public class SimplePlayView extends BaseView {
 
 	@Override
 	public void draw(Graphics2D g) {
-		drawBackground(g);
 		drawScores(g);
 		drawMaze(g);
 		drawMessage(g);
@@ -97,12 +96,7 @@ public class SimplePlayView extends BaseView {
 	}
 
 	protected Color tileColor(Tile tile) {
-		return theme.color_mazeBackground();
-	}
-
-	protected void drawBackground(Graphics2D g) {
-		g.setColor(theme.color_mazeBackground());
-		g.fillRect(0, 0, width, height);
+		return Color.BLACK;
 	}
 
 	protected void drawMaze(Graphics2D g) {
@@ -251,7 +245,7 @@ public class SimplePlayView extends BaseView {
 				}
 				// draw door open when any ghost is entering or leaving the house
 				if (game.ghostsOnStage().anyMatch(ghost -> ghost.is(GhostState.ENTERING_HOUSE, GhostState.LEAVING_HOUSE))) {
-					g.setColor(theme.color_mazeBackground());
+					g.setColor(Color.BLACK);
 					g.fillRect(game.maze.ghostHouseDoorLeft.x(), game.maze.ghostHouseDoorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
 				}
 			} else if (getState() == EMPTY) {
