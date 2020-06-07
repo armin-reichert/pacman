@@ -164,8 +164,8 @@ public class PlayView extends SimplePlayView {
 		if (settings.demoMode) {
 			try (Pen pen = new Pen(g)) {
 				pen.font(theme.fnt_text());
-				pen.color(Color.DARK_GRAY);
-				pen.hcenter("Demo Mode", width, 21, Tile.SIZE);
+				pen.color(Color.LIGHT_GRAY);
+				pen.hcenter("Demo Mode", width, 15, Tile.SIZE);
 			}
 		}
 	}
