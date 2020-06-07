@@ -13,7 +13,7 @@ java -jar PacManGame-1.0.jar command-line-args...
 
 ## How to build the executable jar file
 
-Clone all needed repositories (see pom.xml) and enter the following commands:
+Clone all used repositories (see pom.xml), build each of them using 'mvn clean install' and then enter:
 
 ```
 cd your/path/to/git/repository/pacman/PacManGame
@@ -41,7 +41,7 @@ Game-specific command-line arguments:
   - `-ghostsHarmless` (default: false): deadly ghost collisions are detected 
   - `-ghostsSafeCorner` (default: false): ghosts flee to safe corners and not randomly as in the original game
   - `-pacManImmortable` (default: false): Pac-Man keeps live after being killed
-  - `-overflowBug true|false` (default: true): simulates overflow bug from Arcade version
+  - `-fixOverflowBug` (default: false): fix overflow bug from Arcade version
   - `-pathFinder`(default: astar): the path finder algorithm (astar, bfs, bestfs) used for computing the safe paths
   - `-skipIntro` (default: false): intro screen is skipped
   - `-startLevel`(default: 1): starts the game in the specified level
@@ -271,7 +271,7 @@ movement = StateMachine
 //@formatter:on
 ```
 
-Using an explicit state machine for such a simple control case may seem like shooting at sparrows with cannons but serves to illustrate how seamlessly state machines can be integrated in the code.
+Using an explicit state machine for such a simple control case may seem like shooting with cannons at sparrows but it serves to illustrate how seamlessly state machines can be integrated.
 
 ## Tracing
 
