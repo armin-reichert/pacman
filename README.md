@@ -13,7 +13,7 @@ java -jar PacManGame-1.0.jar command-line-args...
 
 ## How to build the executable jar file
 
-Clone all needed repositories (see pom.xml) and enter the following commands:
+Clone all used repositories (see pom.xml), build each of them using 'mvn clean install' and then enter:
 
 ```
 cd your/path/to/git/repository/pacman/PacManGame
