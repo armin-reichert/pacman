@@ -221,10 +221,6 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		movement.update();
 	}
 
-	private void show(String spriteKey) {
-		sprites.select(spriteKey);
-	}
-
 	private void checkCollision(PacMan pacMan) {
 		if (isTeleporting() || pacMan.isTeleporting() || pacMan.is(PacManState.DEAD)) {
 			return;
