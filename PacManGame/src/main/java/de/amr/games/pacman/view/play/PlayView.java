@@ -18,8 +18,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsEnvironment;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
@@ -30,6 +28,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.easy.game.view.Pen;
@@ -54,23 +53,25 @@ import de.amr.statemachine.core.State;
 public class PlayView extends SimplePlayView {
 
 	private static final String INFTY = Character.toString('\u221E');
+	private static final Color[] GRID_PATTERN = { Color.BLACK, new Color(40, 40, 40) };
 
-	private static BufferedImage createGridPattern(int cols, int rows) {
-		GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-				.getDefaultConfiguration();
-		BufferedImage img = gc.createCompatibleImage(cols * Tile.SIZE, rows * Tile.SIZE + 1, Transparency.TRANSLUCENT);
+	private static BufferedImage createGridPatternImage(int cols, int rows) {
+		int width = cols * Tile.SIZE, height = rows * Tile.SIZE + 1;
+		BufferedImage img = Assets.createBufferedImage(width, height, Transparency.TRANSLUCENT);
 		Graphics2D g = img.createGraphics();
+		g.setColor(GRID_PATTERN[0]);
+		g.fillRect(0, 0, width, height);
 		for (int row = 0; row < rows; ++row) {
 			for (int col = 0; col < cols; ++col) {
-				g.setColor(patternColor(col, row));
-				g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
+				int patternIndex = (row + col) % GRID_PATTERN.length;
+				if (patternIndex != 0) {
+					g.setColor(GRID_PATTERN[patternIndex]);
+					g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
+				}
 			}
 		}
+		g.dispose();
 		return img;
-	}
-
-	private static Color patternColor(int col, int row) {
-		return (row + col) % 2 == 0 ? Color.BLACK : new Color(40, 40, 40);
 	}
 
 	private static Color alpha(Color color, int alpha) {
@@ -95,7 +96,7 @@ public class PlayView extends SimplePlayView {
 		frameRateDisplay = new FrameRateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
-		gridImage = createGridPattern(game.maze.numCols, game.maze.numRows);
+		gridImage = createGridPatternImage(game.maze.numCols, game.maze.numRows);
 		inkyImage = (BufferedImage) theme.spr_ghostColored(Theme.CYAN_GHOST, Direction.RIGHT).frame(0);
 		clydeImage = (BufferedImage) theme.spr_ghostColored(Theme.ORANGE_GHOST, Direction.RIGHT).frame(0);
 		pacManImage = (BufferedImage) theme.spr_pacManWalking(RIGHT).frame(0);
@@ -136,7 +137,8 @@ public class PlayView extends SimplePlayView {
 
 	@Override
 	protected Color tileColor(Tile tile) {
-		return showGrid ? patternColor(tile.col, tile.row) : super.tileColor(tile);
+		int patternIndex = (tile.col + tile.row) % GRID_PATTERN.length;
+		return showGrid ? GRID_PATTERN[patternIndex] : super.tileColor(tile);
 	}
 
 	private Color ghostColor(Ghost ghost) {
