@@ -157,7 +157,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						showView(introView);
 					})
 					.onExit(() -> {
-						sound.muteAll();
+						sound.stopAll();
 					})
 				
 				.state(GETTING_READY)
@@ -186,7 +186,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onEntry(() -> {
 						game.pacMan.sprites.select("full");
 						ghostHouse.onLevelChange();
-						sound.muteAllClips();
+						sound.stopAllClips();
 						playView.enableGhostAnimations(false);
 						playView.mazeView.energizersBlinking.setEnabled(false);
 						loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilled);
@@ -244,7 +244,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.timeoutAfter(() -> game.lives > 1 ? sec(9) : sec(7))
 					.onEntry(() -> {
 						game.lives -= settings.pacManImmortable ? 0 : 1;
-						sound.muteAllClips();
+						sound.stopAllClips();
 					})
 					.onTick((state, t, remaining) -> {
 						if (t == sec(1)) {
@@ -280,7 +280,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 					.onExit(() -> {
 						playView.clearMessage();
-						sound.muteAll();
+						sound.stopAll();
 					})
 
 			.transitions()
@@ -365,7 +365,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		@Override
 		public void onExit() {
-			sound.muteGhostSounds();
+			sound.stopGhostSounds();
 		}
 
 		private void reset() {
@@ -400,7 +400,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 			if (!settings.ghostsHarmless) {
 				ghostHouse.onLifeLost();
-				sound.muteAll();
+				sound.stopAll();
 				playView.mazeView.energizersBlinking.setEnabled(false);
 				game.pacMan.process(new PacManKilledEvent(ghost));
 				enqueue(new PacManKilledEvent(ghost));

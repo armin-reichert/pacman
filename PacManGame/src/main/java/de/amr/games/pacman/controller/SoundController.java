@@ -53,17 +53,17 @@ public class SoundController {
 		return musicLoading != null && musicLoading.isDone();
 	}
 
-	public void muteAll() {
-		muteAllClips();
+	public void stopAll() {
+		stopAllClips();
 		theme.music_playing().stop();
 		theme.music_gameover().stop();
 	}
 
-	public void muteAllClips() {
+	public void stopAllClips() {
 		theme.clips_all().forEach(Sound::stop);
 	}
 
-	public void muteGhostSounds() {
+	public void stopGhostSounds() {
 		theme.snd_ghost_chase().stop();
 		theme.snd_ghost_dead().stop();
 	}
