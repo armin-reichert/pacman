@@ -53,34 +53,6 @@ import de.amr.statemachine.core.State;
 public class PlayView extends SimplePlayView {
 
 	private static final String INFTY = Character.toString('\u221E');
-	private static final Color[] GRID_PATTERN = { Color.BLACK, new Color(40, 40, 40) };
-
-	private static int patternIndex(int col, int row) {
-		return (col + row) % GRID_PATTERN.length;
-	}
-
-	private static BufferedImage createGridPatternImage(int cols, int rows) {
-		int width = cols * Tile.SIZE, height = rows * Tile.SIZE + 1;
-		BufferedImage img = Assets.createBufferedImage(width, height, Transparency.TRANSLUCENT);
-		Graphics2D g = img.createGraphics();
-		g.setColor(GRID_PATTERN[0]);
-		g.fillRect(0, 0, width, height);
-		for (int row = 0; row < rows; ++row) {
-			for (int col = 0; col < cols; ++col) {
-				int patternIndex = patternIndex(col, row);
-				if (patternIndex != 0) {
-					g.setColor(GRID_PATTERN[patternIndex]);
-					g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
-				}
-			}
-		}
-		g.dispose();
-		return img;
-	}
-
-	private static Color alpha(Color color, int alpha) {
-		return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
-	}
 
 	public Supplier<State<GhostState>> fnGhostCommandState = () -> null;
 	public GhostHouse house; // (optional)
@@ -94,6 +66,7 @@ public class PlayView extends SimplePlayView {
 	private FrameRateWidget frameRateDisplay;
 	private final BufferedImage gridImage, inkyImage, clydeImage, pacManImage;
 	private final Polygon arrowHead = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
+	private final Color[] gridPatternColor = { Color.BLACK, new Color(40, 40, 40) };
 
 	public PlayView(Game game, Theme theme) {
 		super(game, theme);
@@ -141,7 +114,7 @@ public class PlayView extends SimplePlayView {
 
 	@Override
 	protected Color tileColor(Tile tile) {
-		return showGrid ? GRID_PATTERN[patternIndex(tile.col, tile.row)] : super.tileColor(tile);
+		return showGrid ? gridPatternColor[patternIndex(tile.col, tile.row)] : super.tileColor(tile);
 	}
 
 	private Color ghostColor(Ghost ghost) {
@@ -420,5 +393,32 @@ public class PlayView extends SimplePlayView {
 			pen.color(emphasized ? Color.GREEN : Color.WHITE);
 			pen.smooth(() -> pen.drawAtGridPosition(String.format("%d", value), col + 2, row, Tile.SIZE));
 		}
+	}
+
+	private int patternIndex(int col, int row) {
+		return (col + row) % gridPatternColor.length;
+	}
+
+	private BufferedImage createGridPatternImage(int cols, int rows) {
+		int width = cols * Tile.SIZE, height = rows * Tile.SIZE + 1;
+		BufferedImage img = Assets.createBufferedImage(width, height, Transparency.TRANSLUCENT);
+		Graphics2D g = img.createGraphics();
+		g.setColor(gridPatternColor[0]);
+		g.fillRect(0, 0, width, height);
+		for (int row = 0; row < rows; ++row) {
+			for (int col = 0; col < cols; ++col) {
+				int patternIndex = patternIndex(col, row);
+				if (patternIndex != 0) {
+					g.setColor(gridPatternColor[patternIndex]);
+					g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
+				}
+			}
+		}
+		g.dispose();
+		return img;
+	}
+
+	private Color alpha(Color color, int alpha) {
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 	}
 }
