@@ -101,6 +101,7 @@ public class GhostPointsAnimation extends GameObject {
 
 	@Override
 	public void draw(Graphics2D g) {
+		g = (Graphics2D) g.create();
 		g.translate(tf.x, tf.y);
 		int x = 0;
 		pacMan.draw(g);
@@ -126,5 +127,6 @@ public class GhostPointsAnimation extends GameObject {
 			g.translate(-x, 0);
 		}
 		g.translate(-tf.x, -tf.y);
+		g.dispose();
 	}
 }

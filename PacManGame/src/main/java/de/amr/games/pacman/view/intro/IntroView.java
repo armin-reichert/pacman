@@ -188,6 +188,7 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 
 	@Override
 	public void draw(Graphics2D g) {
+		g = (Graphics2D) g.create();
 		g.setColor(new Color(0, 23, 61));
 		g.fillRect(0, 0, width, height);
 		try (Pen pen = new Pen(g)) {
@@ -218,6 +219,7 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 				throw new IllegalStateException();
 			}
 		}
+		g.dispose();
 	}
 
 	private void drawPressSpaceToStart(Graphics2D g, int row) {

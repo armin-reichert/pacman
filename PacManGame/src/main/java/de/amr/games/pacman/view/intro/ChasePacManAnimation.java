@@ -80,6 +80,7 @@ public class ChasePacManAnimation extends GameObject {
 
 	@Override
 	public void draw(Graphics2D g) {
+		g = (Graphics2D) g.create();
 		int x = 0;
 		g.translate(tf.x, tf.y);
 		g.setColor(Color.PINK);
@@ -100,5 +101,6 @@ public class ChasePacManAnimation extends GameObject {
 			g.translate(-x, 0);
 		}
 		g.translate(-tf.x, -tf.y);
+		g.dispose();
 	}
 }

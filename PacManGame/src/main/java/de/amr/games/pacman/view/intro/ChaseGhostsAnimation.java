@@ -95,6 +95,7 @@ public class ChaseGhostsAnimation extends GameObject {
 
 	@Override
 	public void draw(Graphics2D g) {
+		g = (Graphics2D) g.create();
 		g.translate(tf.x, tf.y);
 		for (int i = 0; i < 4; ++i) {
 			g.translate(18 * (i + 1), 0);
@@ -109,5 +110,6 @@ public class ChaseGhostsAnimation extends GameObject {
 		pacMan.draw(g);
 		g.translate(-pacManX, 0);
 		g.translate(-tf.x, -tf.y);
+		g.dispose();
 	}
 }
