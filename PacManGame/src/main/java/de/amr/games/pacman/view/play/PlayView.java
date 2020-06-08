@@ -55,6 +55,10 @@ public class PlayView extends SimplePlayView {
 	private static final String INFTY = Character.toString('\u221E');
 	private static final Color[] GRID_PATTERN = { Color.BLACK, new Color(40, 40, 40) };
 
+	private static int patternIndex(int col, int row) {
+		return (col + row) % GRID_PATTERN.length;
+	}
+
 	private static BufferedImage createGridPatternImage(int cols, int rows) {
 		int width = cols * Tile.SIZE, height = rows * Tile.SIZE + 1;
 		BufferedImage img = Assets.createBufferedImage(width, height, Transparency.TRANSLUCENT);
@@ -63,7 +67,7 @@ public class PlayView extends SimplePlayView {
 		g.fillRect(0, 0, width, height);
 		for (int row = 0; row < rows; ++row) {
 			for (int col = 0; col < cols; ++col) {
-				int patternIndex = (row + col) % GRID_PATTERN.length;
+				int patternIndex = patternIndex(col, row);
 				if (patternIndex != 0) {
 					g.setColor(GRID_PATTERN[patternIndex]);
 					g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
@@ -137,8 +141,7 @@ public class PlayView extends SimplePlayView {
 
 	@Override
 	protected Color tileColor(Tile tile) {
-		int patternIndex = (tile.col + tile.row) % GRID_PATTERN.length;
-		return showGrid ? GRID_PATTERN[patternIndex] : super.tileColor(tile);
+		return showGrid ? GRID_PATTERN[patternIndex(tile.col, tile.row)] : super.tileColor(tile);
 	}
 
 	private Color ghostColor(Ghost ghost) {
