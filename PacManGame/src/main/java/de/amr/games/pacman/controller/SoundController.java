@@ -2,7 +2,7 @@ package de.amr.games.pacman.controller;
 
 import java.util.concurrent.CompletableFuture;
 
-import de.amr.easy.game.assets.Sound;
+import de.amr.easy.game.assets.SoundClip;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.view.theme.Theme;
@@ -60,7 +60,7 @@ public class SoundController {
 	}
 
 	public void stopAllClips() {
-		theme.clips_all().forEach(Sound::stop);
+		theme.clips_all().forEach(SoundClip::stop);
 	}
 
 	public void stopGhostSounds() {

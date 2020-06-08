@@ -17,7 +17,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.Assets;
-import de.amr.easy.game.assets.Sound;
+import de.amr.easy.game.assets.SoundClip;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Symbol;
@@ -74,7 +74,7 @@ public class ArcadeTheme implements Theme {
 		return IntStream.range(0, n).mapToObj(i -> t(col + i, row)).toArray(BufferedImage[]::new);
 	}
 
-	Sound mp3(String name) {
+	SoundClip mp3(String name) {
 		return Assets.sound("sfx/" + name + ".mp3");
 	}
 
@@ -219,68 +219,68 @@ public class ArcadeTheme implements Theme {
 	}
 
 	@Override
-	public Stream<Sound> clips_all() {
+	public Stream<SoundClip> clips_all() {
 		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eatPill(), snd_extraLife(), snd_insertCoin(),
 				snd_ready(), snd_ghost_chase(), snd_ghost_dead(), snd_waza());
 	}
 
 	@Override
-	public Sound music_playing() {
+	public SoundClip music_playing() {
 		return mp3("bgmusic");
 	}
 
 	@Override
-	public Sound music_gameover() {
+	public SoundClip music_gameover() {
 		return mp3("ending");
 	}
 
 	@Override
-	public Sound snd_die() {
+	public SoundClip snd_die() {
 		return mp3("die");
 	}
 
 	@Override
-	public Sound snd_eatFruit() {
+	public SoundClip snd_eatFruit() {
 		return mp3("eat-fruit");
 	}
 
 	@Override
-	public Sound snd_eatGhost() {
+	public SoundClip snd_eatGhost() {
 		return mp3("eat-ghost");
 	}
 
 	@Override
-	public Sound snd_eatPill() {
+	public SoundClip snd_eatPill() {
 		return mp3("eating");
 	}
 
 	@Override
-	public Sound snd_extraLife() {
+	public SoundClip snd_extraLife() {
 		return mp3("extra-life");
 	}
 
 	@Override
-	public Sound snd_insertCoin() {
+	public SoundClip snd_insertCoin() {
 		return mp3("insert-coin");
 	}
 
 	@Override
-	public Sound snd_ready() {
+	public SoundClip snd_ready() {
 		return mp3("ready");
 	}
 
 	@Override
-	public Sound snd_ghost_dead() {
+	public SoundClip snd_ghost_dead() {
 		return mp3("ghost-dead");
 	}
 
 	@Override
-	public Sound snd_ghost_chase() {
+	public SoundClip snd_ghost_chase() {
 		return mp3("ghost-chase");
 	}
 
 	@Override
-	public Sound snd_waza() {
+	public SoundClip snd_waza() {
 		return mp3("waza");
 	}
 }

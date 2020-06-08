@@ -4,7 +4,7 @@ import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.assets.Sound;
+import de.amr.easy.game.assets.SoundClip;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Symbol;
@@ -46,29 +46,29 @@ public interface Theme {
 
 	Font fnt_text();
 
-	Sound music_playing();
+	SoundClip music_playing();
 
-	Sound music_gameover();
+	SoundClip music_gameover();
 
-	Sound snd_die();
+	SoundClip snd_die();
 
-	Sound snd_eatFruit();
+	SoundClip snd_eatFruit();
 
-	Sound snd_eatGhost();
+	SoundClip snd_eatGhost();
 
-	Sound snd_eatPill();
+	SoundClip snd_eatPill();
 
-	Sound snd_extraLife();
+	SoundClip snd_extraLife();
 
-	Sound snd_insertCoin();
+	SoundClip snd_insertCoin();
 
-	Sound snd_ready();
+	SoundClip snd_ready();
 
-	Sound snd_ghost_chase();
+	SoundClip snd_ghost_chase();
 
-	Sound snd_ghost_dead();
+	SoundClip snd_ghost_dead();
 
-	Sound snd_waza();
+	SoundClip snd_waza();
 
-	Stream<Sound> clips_all();
+	Stream<SoundClip> clips_all();
 }
