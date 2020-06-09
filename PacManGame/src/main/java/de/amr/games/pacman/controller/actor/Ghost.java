@@ -10,6 +10,7 @@ import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
+import static de.amr.games.pacman.model.Game.POINTS_GHOST;
 import static de.amr.games.pacman.model.Game.sec;
 
 import java.util.EnumMap;
@@ -130,8 +131,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 				.state(DEAD)
 					.timeoutAfter(sec(1)) // time while ghost is drawn as number of scored points
 					.onEntry(() -> {
-						int points = Game.POINTS_GHOST[game.level.ghostsKilledByEnergizer - 1];
-						sprites.select("points-" + points);
+						showPoints(POINTS_GHOST[game.level.ghostsKilledByEnergizer - 1]);
 					})
 					.onTick((state, t, remaining) -> {
 						if (remaining == 0) { // show as eyes returning to ghost home
