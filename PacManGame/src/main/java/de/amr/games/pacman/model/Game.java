@@ -120,7 +120,7 @@ public class Game {
 	public int score;
 
 	public Game(int startLevel) {
-		lives = 1;
+		lives = 3;
 		score = 0;
 		levelCounter = new ArrayList<>();
 		hiscore = new Hiscore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
@@ -268,44 +268,65 @@ public class Game {
 	}
 
 	float pacManSpeed(Tile tile, PacManState state) {
+		float fraction = 0;
 		switch (state) {
+		case SLEEPING:
+		case DEAD:
+			break;
 		case EATING:
 			if (pacMan.powerTicks > 0) {
 				if (remainingFoodCount() < level.elroy2DotsLeft) {
-					return speed(level.elroy2Speed);
+					fraction = level.elroy2Speed;
+				} else if (remainingFoodCount() < level.elroy1DotsLeft) {
+					fraction = level.elroy1Speed;
+				} else {
+					fraction = level.pacManPowerSpeed;
 				}
-				if (remainingFoodCount() < level.elroy1DotsLeft) {
-					return speed(level.elroy1Speed);
-				}
-				return speed(level.pacManPowerSpeed);
+			} else {
+				fraction = level.pacManSpeed;
 			}
-			return level.pacManSpeed;
-		case SLEEPING:
-		case DEAD:
-			return 0;
+			break;
 		default:
 			throw new IllegalStateException("Illegal Pac-Man state: " + state);
 		}
+		return speed(fraction);
 	}
 
 	float ghostSpeed(Tile tile, GhostState state) {
+		float fraction = 0;
 		switch (state) {
 		case LOCKED:
-			return maze.insideGhostHouse(tile) ? speed(level.ghostSpeed) / 2 : 0;
+			if (maze.insideGhostHouse(tile)) {
+				fraction = level.ghostSpeed / 2;
+			}
+			break;
 		case LEAVING_HOUSE:
-			return speed(level.ghostSpeed) / 2;
+			fraction = level.ghostSpeed / 2;
+			break;
 		case ENTERING_HOUSE:
-			return speed(level.ghostSpeed);
+			fraction = level.ghostSpeed;
+			break;
 		case CHASING:
-			//$FALL-THROUGH$
 		case SCATTERING:
-			return maze.isTunnel(tile) ? speed(level.ghostTunnelSpeed) : speed(level.ghostSpeed);
+			if (maze.isTunnel(tile)) {
+				fraction = level.ghostTunnelSpeed;
+			} else {
+				fraction = level.ghostSpeed;
+			}
+			break;
 		case FRIGHTENED:
-			return maze.isTunnel(tile) ? speed(level.ghostTunnelSpeed) : speed(level.ghostFrightenedSpeed);
+			if (maze.isTunnel(tile)) {
+				fraction = level.ghostTunnelSpeed;
+			} else {
+				fraction = level.ghostFrightenedSpeed;
+			}
+			break;
 		case DEAD:
-			return 2 * speed(level.ghostSpeed);
+			fraction = 2 * level.ghostSpeed;
+			break;
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s", state));
 		}
+		return speed(fraction);
 	}
 }

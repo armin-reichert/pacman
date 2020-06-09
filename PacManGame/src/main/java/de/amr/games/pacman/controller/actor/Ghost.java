@@ -67,12 +67,16 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 						tf.setPosition(maze.seatPosition(seat));
 						enteredNewTile();
 						sprites.forEach(Sprite::resetAnimation);
-						show("color-" + moveDir);
+						showColored();
 					})
 					.onTick(() -> {
 						move();
 						// not sure if ghost locked inside house should look frightened
-						show(game.pacMan.powerTicks > 0 ? "frightened" : "color-" + moveDir);
+						if (game.pacMan.powerTicks > 0) {
+							showFrightened();
+						} else {
+							showColored();
+						}
 					})
 					
 				.state(LEAVING_HOUSE)
@@ -81,7 +85,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					})
 					.onTick(() -> {
 						move();
-						show("color-" + moveDir);
+						showColored();
 					})
 					.onExit(() -> forceMoving(LEFT))
 				
@@ -93,20 +97,20 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					})
 					.onTick(() -> {
 						move();
-						show("eyes-" + moveDir);
+						showEyes();
 					})
 				
 				.state(SCATTERING)
 					.onTick(() -> {
 						move();
-						show("color-" + moveDir);
+						showColored();
 						checkCollision(game.pacMan);
 					})
 			
 				.state(CHASING)
 					.onTick(() -> {
 						move();
-						show("color-" + moveDir);
+						showColored();
 						checkCollision(game.pacMan);
 					})
 				
@@ -115,7 +119,11 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					.onTick((state, t, remaining) -> {
 						move();
 						// not sure about exact timing
-						show(remaining < sec(2) ? "flashing" : "frightened");
+						if (remaining < sec(2)) {
+							showFlashing();
+						} else  {
+							showFrightened();
+						}
 						checkCollision(game.pacMan);
 					})
 				
@@ -128,7 +136,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					.onTick((state, t, remaining) -> {
 						if (remaining == 0) { // show as eyes returning to ghost home
 							move();
-							show("eyes-" + moveDir);
+							showEyes();
 						}
 					})
 				
@@ -202,6 +210,26 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		for (int points : Game.POINTS_GHOST) {
 			sprites.set("points-" + points, theme.spr_number(points));
 		}
+	}
+
+	public void showColored() {
+		sprites.select("color-" + moveDir);
+	}
+
+	public void showFrightened() {
+		sprites.select("frightened");
+	}
+
+	public void showEyes() {
+		sprites.select("eyes-" + moveDir);
+	}
+
+	public void showFlashing() {
+		sprites.select("flashing");
+	}
+
+	public void showPoints(int points) {
+		sprites.select("points-" + points);
 	}
 
 	@Override

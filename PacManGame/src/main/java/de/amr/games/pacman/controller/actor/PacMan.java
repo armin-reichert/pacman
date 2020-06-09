@@ -83,7 +83,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 							return;
 						}
 						move();
-						show("walking-" + moveDir);
+						showWalking();
 						if (!isTeleporting()) {
 							findSomethingInteresting(game).ifPresent(this::publish);
 						}
@@ -110,6 +110,19 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 		dirs().forEach(dir -> sprites.set("walking-" + dir, theme.spr_pacManWalking(dir)));
 		sprites.set("dying", theme.spr_pacManDying());
 		sprites.set("full", theme.spr_pacManFull());
+	}
+
+	public void showWalking() {
+		sprites.select("walking-" + moveDir);
+		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
+	}
+
+	public void showDying() {
+		sprites.select("dying");
+	}
+
+	public void showFull() {
+		sprites.select("full");
 	}
 
 	/**
@@ -152,12 +165,6 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 	private void move() {
 		steering().steer();
 		movement.update();
-	}
-
-	@Override
-	public void show(String spriteKey) {
-		sprites.select(spriteKey);
-		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
 	}
 
 	private Optional<PacManGameEvent> findSomethingInteresting(Game game) {

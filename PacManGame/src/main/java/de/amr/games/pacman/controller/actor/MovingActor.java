@@ -224,10 +224,6 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 		forceMoving(moveDir().opposite());
 	}
 
-	public void show(String spriteKey) {
-		sprites.select(spriteKey);
-	}
-
 	/**
 	 * Computes how many pixels this entity can move towards the given direction without entering an
 	 * inaccessible neighbor tile.

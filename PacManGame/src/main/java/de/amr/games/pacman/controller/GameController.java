@@ -202,7 +202,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(CHANGING_LEVEL)
 					.timeoutAfter(() -> sec(mazeFlashingSeconds() + 6))
 					.onEntry(() -> {
-						game.pacMan.sprites.select("full");
+						game.pacMan.showFull();
 						ghostHouse.onLevelChange();
 						sound.stopAllClips();
 						playView.enableGhostAnimations(false);
@@ -265,16 +265,16 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						sound.stopAllClips();
 					})
 					.onTick((state, t, remaining) -> {
-						int waitTime = sec(0.5f), 
+						int waitTime = sec(1f), 
 								dyingStartTime = waitTime + sec(1.5f),
 								dyingEndTime = dyingStartTime + sec(3f);
 						if (t == waitTime) {
 							game.bonus.deactivate();
 							game.ghostsOnStage().forEach(ghost -> ghost.visible = false);
-							game.pacMan.sprites.select("full");
+							game.pacMan.showFull();
 						}
 						else if (t == dyingStartTime) {
-							game.pacMan.sprites.select("dying");
+							game.pacMan.showDying();
 							sound.pacManDied();
 						}
 						else if (t == dyingEndTime && game.lives > 0) {
@@ -294,19 +294,25 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							ghost.init();
 							ghost.placeAt(game.maze.ghostHouseEntry);
 							ghost.setWishDir(new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT);
-							ghost.setState(GhostState.SCATTERING);
+							ghost.setState(new Random().nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});
-						playView.enableGhostAnimations(false);
 						playView.showMessage("Game Over!", Color.RED);
 						sound.gameOver();
 					})
 					.onTick(() -> {
 						game.ghostsOnStage().forEach(ghost -> {
 							ghost.move();
-							ghost.show("color-" + ghost.moveDir());
+							if (ghost.getState() == GhostState.FRIGHTENED) {
+								ghost.showFrightened();
+							} else {
+								ghost.showColored();
+							}
 						});
 					})
 					.onExit(() -> {
+						game.ghostsOnStage().forEach(ghost -> {
+							ghost.init();
+						});
 						playView.clearMessage();
 						sound.stopAll();
 					})
@@ -398,7 +404,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		private void reset() {
 			ghostCommand.init();
-			game.ghostsOnStage().forEach(ghost -> ghost.visible = true);
+			game.ghostsOnStage().forEach(ghost -> ghost.init());
+			game.pacMan.init();
 			game.pacMan.setState(PacManState.EATING);
 			playView.init();
 			playView.enableGhostAnimations(true);
