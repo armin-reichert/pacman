@@ -62,7 +62,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 						visible = true;
 						tf.setPosition(maze.pacManHome.centerX(), maze.pacManHome.y());
 						sprites.forEach(Sprite::resetAnimation);
-						sprites.select("full");
+						showFull();
 					})
 
 				.state(EATING)
@@ -72,8 +72,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 
 					.onTick(() -> {
 						if (powerTicks > 0) {
-							powerTicks -= 1;
-							if (powerTicks == 0) {
+							if (--powerTicks == 0) {
 								publish(new PacManLostPowerEvent());
 								return;
 							}
