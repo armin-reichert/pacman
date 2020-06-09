@@ -317,8 +317,6 @@ public class Game {
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s", state));
 		}
-		return
-
-		speed(fraction);
+		return speed(fraction);
 	}
 }
