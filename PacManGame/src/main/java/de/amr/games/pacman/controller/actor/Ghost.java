@@ -40,8 +40,12 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 
+	/** Number of ghost house seat (0-3). */
 	public int seat;
+
+	/** State to enter after frightening ends. */
 	public GhostState followState;
+
 	private Steering prevSteering;
 
 	public Ghost(Game game, String name) {
@@ -57,10 +61,9 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	
 				.state(LOCKED)
 					.onEntry(() -> {
-						followState = getState();
+						followState = LOCKED;
 						visible = true;
-						setWishDir(maze.ghostHomeDir[seat]);
-						setMoveDir(wishDir);
+						moveDir = wishDir = maze.ghostHomeDir[seat];
 						tf.setPosition(maze.seatPosition(seat));
 						enteredNewTile();
 						sprites.forEach(Sprite::resetAnimation);
@@ -68,11 +71,14 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					})
 					.onTick(() -> {
 						move();
+						// not sure if ghost locked inside house should look frightened
 						show(game.pacMan.powerTicks > 0 ? "frightened" : "color-" + moveDir);
 					})
 					
 				.state(LEAVING_HOUSE)
-					.onEntry(() -> steering().init())
+					.onEntry(() -> {
+						steering().init();
+					})
 					.onTick(() -> {
 						move();
 						show("color-" + moveDir);
@@ -82,7 +88,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 				.state(ENTERING_HOUSE)
 					.onEntry(() -> {
 						tf.setPosition(maze.seatPosition(0));
-						setWishDir(DOWN);
+						moveDir = wishDir = DOWN;
 						steering().init();
 					})
 					.onTick(() -> {
@@ -108,18 +114,19 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					.timeoutAfter(() -> sec(game.level.pacManPowerSeconds))
 					.onTick((state, t, remaining) -> {
 						move();
+						// not sure about exact timing
 						show(remaining < sec(2) ? "flashing" : "frightened");
 						checkCollision(game.pacMan);
 					})
 				
 				.state(DEAD)
-					.timeoutAfter(sec(1)) // time while ghost is drawn as scored points
+					.timeoutAfter(sec(1)) // time while ghost is drawn as number of scored points
 					.onEntry(() -> {
 						int points = Game.POINTS_GHOST[game.level.ghostsKilledByEnergizer - 1];
 						sprites.select("points-" + points);
 					})
-					.onTick(() -> {
-						if (state().isTerminated()) { // eyes returning to ghost home
+					.onTick((state, t, remaining) -> {
+						if (remaining == 0) { // show as eyes returning to ghost home
 							move();
 							show("eyes-" + moveDir);
 						}
