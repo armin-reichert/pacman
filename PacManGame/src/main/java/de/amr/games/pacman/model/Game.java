@@ -274,17 +274,7 @@ public class Game {
 		case DEAD:
 			break;
 		case EATING:
-			if (pacMan.powerTicks > 0) {
-				if (remainingFoodCount() < level.elroy2DotsLeft) {
-					fraction = level.elroy2Speed;
-				} else if (remainingFoodCount() < level.elroy1DotsLeft) {
-					fraction = level.elroy1Speed;
-				} else {
-					fraction = level.pacManPowerSpeed;
-				}
-			} else {
-				fraction = level.pacManSpeed;
-			}
+			fraction = pacMan.powerTicks > 0 ? level.pacManPowerSpeed : level.pacManSpeed;
 			break;
 		default:
 			throw new IllegalStateException("Illegal Pac-Man state: " + state);
@@ -296,9 +286,7 @@ public class Game {
 		float fraction = 0;
 		switch (state) {
 		case LOCKED:
-			if (maze.insideGhostHouse(tile)) {
-				fraction = level.ghostSpeed / 2;
-			}
+			fraction = maze.insideGhostHouse(tile) ? level.ghostSpeed / 2 : 0;
 			break;
 		case LEAVING_HOUSE:
 			fraction = level.ghostSpeed / 2;
@@ -307,19 +295,21 @@ public class Game {
 			fraction = level.ghostSpeed;
 			break;
 		case CHASING:
-		case SCATTERING:
 			if (maze.isTunnel(tile)) {
 				fraction = level.ghostTunnelSpeed;
+			} else if (remainingFoodCount() < level.elroy2DotsLeft) {
+				fraction = level.elroy2Speed;
+			} else if (remainingFoodCount() < level.elroy1DotsLeft) {
+				fraction = level.elroy1Speed;
 			} else {
 				fraction = level.ghostSpeed;
 			}
 			break;
+		case SCATTERING:
+			fraction = maze.isTunnel(tile) ? level.ghostTunnelSpeed : level.ghostSpeed;
+			break;
 		case FRIGHTENED:
-			if (maze.isTunnel(tile)) {
-				fraction = level.ghostTunnelSpeed;
-			} else {
-				fraction = level.ghostFrightenedSpeed;
-			}
+			fraction = maze.isTunnel(tile) ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed;
 			break;
 		case DEAD:
 			fraction = 2 * level.ghostSpeed;
@@ -327,6 +317,8 @@ public class Game {
 		default:
 			throw new IllegalStateException(String.format("Illegal ghost state %s", state));
 		}
-		return speed(fraction);
+		return
+
+		speed(fraction);
 	}
 }
