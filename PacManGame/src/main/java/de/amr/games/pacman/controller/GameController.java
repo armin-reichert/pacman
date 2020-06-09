@@ -257,31 +257,30 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 				
 				.state(PACMAN_DYING)
-					.timeoutAfter(() -> game.lives > 1 ? sec(9) : sec(7))
+					.timeoutAfter(() -> game.lives > 1 ? sec(7) : sec(5))
 					.onEntry(() -> {
 						game.lives -= settings.pacManImmortable ? 0 : 1;
 						sound.stopAllClips();
 					})
 					.onTick((state, t, remaining) -> {
-						if (t == sec(1)) {
-							// Pac-Man stops struggling
-							game.pacMan.sprites.select("full");
+						int waitTime = sec(0.5f), 
+								dyingStartTime = waitTime + sec(1.5f),
+								dyingEndTime = dyingStartTime + sec(3f);
+						if (t == waitTime) {
 							game.bonus.deactivate();
 							game.ghostsOnStage().forEach(ghost -> ghost.visible = false);
+							game.pacMan.sprites.select("full");
 						}
-						else if (t == sec(3)) {
-							// start the "dying" animation
+						else if (t == dyingStartTime) {
 							game.pacMan.sprites.select("dying");
 							sound.pacManDied();
 						}
-						else if (t == sec(7) - 1 && game.lives > 0) {
-							// initialize actors and view, continue game
+						else if (t == dyingEndTime && game.lives > 0) {
+							sound.gameStarts();
 							game.movingActorsOnStage().forEach(MovingActor::init);
 							playView.init();
-							sound.gameStarts();
 						}
-						else if (t > sec(7)) {
-							// let ghosts jump a bit while music is starting
+						else if (t > dyingEndTime) {
 							game.ghostsOnStage().forEach(Ghost::update);
 						}
 					})

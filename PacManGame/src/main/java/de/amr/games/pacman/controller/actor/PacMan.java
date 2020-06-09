@@ -38,7 +38,10 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover {
 
+	/** Number of ticks Pac-Man has power after eating an energizer. */
 	public int powerTicks;
+
+	/** Number of ticks Pac-Man is not moving after eating. */
 	public int digestionTicks;
 
 	public PacMan(Game game) {
@@ -54,13 +57,12 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 
 				.state(SLEEPING)
 					.onEntry(() -> {
-						powerTicks = 0;
-						digestionTicks = 0;
+						powerTicks = digestionTicks = 0;
 						moveDir = wishDir = Direction.RIGHT;
 						visible = true;
+						tf.setPosition(maze.pacManHome.centerX(), maze.pacManHome.y());
 						sprites.forEach(Sprite::resetAnimation);
 						sprites.select("full");
-						tf.setPosition(maze.pacManHome.centerX(), maze.pacManHome.y());
 					})
 
 				.state(EATING)
@@ -89,8 +91,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 
 				.state(DEAD)
 					.onEntry(() -> {
-						powerTicks = 0;
-						digestionTicks = 0;
+						powerTicks = digestionTicks = 0;
 					})
 
 			.transitions()

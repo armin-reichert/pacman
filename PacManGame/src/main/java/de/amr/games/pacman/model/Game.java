@@ -267,10 +267,8 @@ public class Game {
 				new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]);
 	}
 
-	public float pacManSpeed(Tile tile, PacManState state) {
+	float pacManSpeed(Tile tile, PacManState state) {
 		switch (state) {
-		case SLEEPING:
-			return 0;
 		case EATING:
 			if (pacMan.powerTicks > 0) {
 				if (remainingFoodCount() < level.elroy2DotsLeft) {
@@ -282,6 +280,7 @@ public class Game {
 				return speed(level.pacManPowerSpeed);
 			}
 			return level.pacManSpeed;
+		case SLEEPING:
 		case DEAD:
 			return 0;
 		default:
@@ -289,7 +288,7 @@ public class Game {
 		}
 	}
 
-	public float ghostSpeed(Tile tile, GhostState state) {
+	float ghostSpeed(Tile tile, GhostState state) {
 		switch (state) {
 		case LOCKED:
 			return maze.insideGhostHouse(tile) ? speed(level.ghostSpeed) / 2 : 0;
