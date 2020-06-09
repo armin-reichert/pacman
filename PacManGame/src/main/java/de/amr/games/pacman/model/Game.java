@@ -72,8 +72,6 @@ public class Game {
 		return fraction * BASE_SPEED;
 	}
 
-	public static final int SPEED_1_FPS = 60, SPEED_2_FPS = 70, SPEED_3_FPS = 80;
-
 	public static final int POINTS_PELLET = 10;
 	public static final int POINTS_ENERGIZER = 50;
 	public static final int POINTS_EXTRA_LIFE = 10_000;
@@ -83,7 +81,7 @@ public class Game {
 	public static final int DIGEST_PELLET_TICKS = 1;
 	public static final int DIGEST_ENERGIZER_TICKS = 3;
 
-	static final GameLevel[] LEVELS = {
+	final GameLevel[] levels = {
 		/*@formatter:off*/
 		null, // level numbering starts at 1
 		new GameLevel(CHERRIES,   100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6, 5 ),
@@ -138,7 +136,7 @@ public class Game {
 
 	public void enterLevel(int n) {
 		loginfo("Enter level %d", n);
-		level = LEVELS[Math.min(n, LEVELS.length - 1)];
+		level = levels[Math.min(n, levels.length - 1)];
 		level.number = n;
 		level.eatenFoodCount = 0;
 		level.ghostsKilledByEnergizer = 0;
@@ -274,7 +272,16 @@ public class Game {
 		case SLEEPING:
 			return 0;
 		case EATING:
-			return speed(pacMan.powerTicks > 0 ? level.pacManPowerSpeed : level.pacManSpeed);
+			if (pacMan.powerTicks > 0) {
+				if (remainingFoodCount() < level.elroy2DotsLeft) {
+					return speed(level.elroy2Speed);
+				}
+				if (remainingFoodCount() < level.elroy1DotsLeft) {
+					return speed(level.elroy1Speed);
+				}
+				return speed(level.pacManPowerSpeed);
+			}
+			return level.pacManSpeed;
 		case DEAD:
 			return 0;
 		default:

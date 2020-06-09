@@ -21,7 +21,6 @@ import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
-import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.core.BaseView;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
@@ -246,8 +245,7 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 		String t1 = "1 - " + texts.getString("normal");
 		String t2 = "2 - " + texts.getString("fast");
 		String t3 = "3 - " + texts.getString("insane");
-		int selectedSpeed = Arrays.asList(Game.SPEED_1_FPS, Game.SPEED_2_FPS, Game.SPEED_3_FPS)
-				.indexOf(app().clock().getTargetFramerate()) + 1;
+		int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock().getTargetFramerate()) + 1;
 		try (Pen pen = new Pen(g)) {
 			pen.font(theme.fnt_text());
 			pen.fontSize(6);

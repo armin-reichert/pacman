@@ -12,7 +12,6 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
-import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**
@@ -33,13 +32,7 @@ public class EnhancedGameController extends GameController {
 	}
 
 	private void handleInput() {
-		if (Keyboard.keyPressedOnce("1") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
-			changeClockFrequency(Game.SPEED_1_FPS);
-		} else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
-			changeClockFrequency(Game.SPEED_2_FPS);
-		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
-			changeClockFrequency(Game.SPEED_3_FPS);
-		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
+		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
 			int oldFreq = app().clock().getTargetFramerate();
 			changeClockFrequency(oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
 		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
@@ -82,13 +75,6 @@ public class EnhancedGameController extends GameController {
 			} else if (Keyboard.keyPressedOnce("+")) {
 				switchToNextLevel();
 			}
-		}
-	}
-
-	private void changeClockFrequency(int newValue) {
-		if (app().clock().getTargetFramerate() != newValue) {
-			app().clock().setTargetFrameRate(newValue);
-			loginfo("Clock frequency changed to %d ticks/sec", newValue);
 		}
 	}
 

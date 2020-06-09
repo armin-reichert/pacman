@@ -1,5 +1,6 @@
 package de.amr.games.pacman.controller;
 
+import static de.amr.easy.game.Application.app;
 import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
@@ -18,6 +19,7 @@ import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.awt.event.KeyEvent.VK_UP;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.util.Optional;
 
 import de.amr.easy.game.input.Keyboard;
@@ -120,8 +122,22 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
+	protected void changeClockFrequency(int newValue) {
+		if (app().clock().getTargetFramerate() != newValue) {
+			app().clock().setTargetFrameRate(newValue);
+			loginfo("Clock frequency changed to %d ticks/sec", newValue);
+		}
+	}
+
 	@Override
 	public void update() {
+		if (Keyboard.keyPressedOnce("1") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
+			changeClockFrequency(60);
+		} else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
+			changeClockFrequency(70);
+		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
+			changeClockFrequency(80);
+		}
 		if (eventQ.size() > 1) {
 			PacManStateMachineLogging.loginfo("%s: Event queue has more than one entry: %s", getDescription(), eventQ);
 		}
