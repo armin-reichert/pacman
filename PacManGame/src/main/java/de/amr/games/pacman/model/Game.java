@@ -120,7 +120,7 @@ public class Game {
 	public int score;
 
 	public Game(int startLevel) {
-		lives = 3;
+		lives = 1;
 		score = 0;
 		levelCounter = new ArrayList<>();
 		hiscore = new Hiscore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));

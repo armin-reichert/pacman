@@ -21,6 +21,7 @@ import static java.awt.event.KeyEvent.VK_UP;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
+import java.util.Random;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
@@ -39,6 +40,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
+import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.view.core.BaseView;
 import de.amr.games.pacman.view.intro.IntroView;
@@ -288,10 +290,21 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(GAME_OVER)
 					.onEntry(() -> {
 						game.hiscore.save();
-						game.ghostsOnStage().forEach(ghost -> ghost.visible = true);
+						game.ghostsOnStage().forEach(ghost -> {
+							ghost.init();
+							ghost.placeAt(game.maze.ghostHouseEntry);
+							ghost.setWishDir(new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT);
+							ghost.setState(GhostState.SCATTERING);
+						});
 						playView.enableGhostAnimations(false);
 						playView.showMessage("Game Over!", Color.RED);
 						sound.gameOver();
+					})
+					.onTick(() -> {
+						game.ghostsOnStage().forEach(ghost -> {
+							ghost.move();
+							ghost.show("color-" + ghost.moveDir());
+						});
 					})
 					.onExit(() -> {
 						playView.clearMessage();

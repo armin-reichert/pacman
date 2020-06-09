@@ -224,7 +224,7 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 		forceMoving(moveDir().opposite());
 	}
 
-	protected void show(String spriteKey) {
+	public void show(String spriteKey) {
 		sprites.select(spriteKey);
 	}
 

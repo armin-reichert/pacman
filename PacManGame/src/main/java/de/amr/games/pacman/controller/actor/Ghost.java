@@ -215,7 +215,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		return super.canMoveBetween(tile, neighbor);
 	}
 
-	private void move() {
+	public void move() {
 		Steering currentSteering = steering();
 		if (prevSteering != currentSteering) {
 			PacManStateMachineLogging.loginfo("%s steering changed from %s to %s", this, Steering.name(prevSteering),

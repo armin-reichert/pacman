@@ -155,7 +155,7 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 	}
 
 	@Override
-	protected void show(String spriteKey) {
+	public void show(String spriteKey) {
 		sprites.select(spriteKey);
 		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
 	}
