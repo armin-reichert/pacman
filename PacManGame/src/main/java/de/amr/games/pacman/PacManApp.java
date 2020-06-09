@@ -2,6 +2,7 @@ package de.amr.games.pacman;
 
 import static de.amr.easy.game.Application.ApplicationState.CLOSED;
 
+import java.awt.DisplayMode;
 import java.util.ResourceBundle;
 
 import com.beust.jcommander.Parameter;
@@ -68,6 +69,7 @@ public class PacManApp extends Application {
 		settings.height = 36 * Tile.SIZE;
 		settings.scale = 2;
 		settings.title = texts.getString("app.title");
+		settings.fullScreenMode = new DisplayMode(800, 600, 32, 60);
 	}
 
 	@Override
