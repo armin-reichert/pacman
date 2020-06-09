@@ -148,7 +148,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	private float mazeFlashingSeconds() {
-		return game.level.mazeNumFlashes * 0.4f;
+		return game.level.numFlashes * 0.4f;
 	}
 
 	private PlayingState playingState() {

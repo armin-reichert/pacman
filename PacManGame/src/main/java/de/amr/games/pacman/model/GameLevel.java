@@ -21,7 +21,7 @@ public class GameLevel {
 	public final float pacManPowerDotsSpeed;
 	public final float ghostFrightenedSpeed;
 	public final int pacManPowerSeconds;
-	public final int mazeNumFlashes;
+	public final int numFlashes;
 
 	public int number;
 	public int eatenFoodCount;
@@ -31,7 +31,7 @@ public class GameLevel {
 	public GameLevel(Symbol bonusSymbol, int bonusValue, float pacManSpeed, float pacManDotsSpeed, float ghostSpeed,
 			float ghostTunnelSpeed, int elroy1DotsLeft, float elroy1Speed, int elroy2DotsLeft, float elroy2Speed,
 			float pacManPowerSpeed, float pacManPowerDotsSpeed, float ghostFrightenedSpeed, int pacManPowerSeconds,
-			int mazeNumFlashes) {
+			int numFlashes) {
 		this.bonusSymbol = bonusSymbol;
 		this.bonusValue = bonusValue;
 		this.pacManSpeed = pacManSpeed;
@@ -46,6 +46,6 @@ public class GameLevel {
 		this.pacManPowerDotsSpeed = pacManPowerDotsSpeed;
 		this.ghostFrightenedSpeed = ghostFrightenedSpeed;
 		this.pacManPowerSeconds = pacManPowerSeconds;
-		this.mazeNumFlashes = mazeNumFlashes;
+		this.numFlashes = numFlashes;
 	}
 }

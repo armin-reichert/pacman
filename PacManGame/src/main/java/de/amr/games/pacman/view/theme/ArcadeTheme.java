@@ -28,7 +28,7 @@ import de.amr.games.pacman.model.Symbol;
  * @author Armin Reichert
  */
 public class ArcadeTheme implements Theme {
-
+	
 	private final int tileSize = 16;
 
 	private final BufferedImage sheet = Assets.readImage("images/arcade/sprites.png");
@@ -169,7 +169,7 @@ public class ArcadeTheme implements Theme {
 
 	@Override
 	public Sprite spr_flashingMaze() {
-		return Sprite.of(mazeEmptyWhite, mazeEmpty).animate(CYCLIC, 200);
+		return Sprite.of(mazeEmptyWhite, mazeEmpty).animate(CYCLIC, 500);
 	}
 
 	@Override
@@ -200,12 +200,12 @@ public class ArcadeTheme implements Theme {
 
 	@Override
 	public Sprite spr_ghostFrightened() {
-		return Sprite.of(ghostFrightened).animate(CYCLIC, 300);
+		return Sprite.of(ghostFrightened);
 	}
 
 	@Override
 	public Sprite spr_ghostFlashing() {
-		return Sprite.of(ghostFlashing).animate(CYCLIC, 50);
+		return Sprite.of(ghostFlashing).animate(CYCLIC, 125); // 4 frames take 0.5 sec
 	}
 
 	@Override

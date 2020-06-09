@@ -119,8 +119,9 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					.timeoutAfter(() -> sec(game.level.pacManPowerSeconds))
 					.onTick((state, t, remaining) -> {
 						move();
-						// not sure about exact timing
-						if (remaining < sec(2)) {
+						// one flashing animation takes 0.5 sec
+						int flashTicks = sec(game.level.numFlashes * 0.5f);
+						if (remaining < flashTicks) {
 							showFlashing();
 						} else  {
 							showFrightened();
