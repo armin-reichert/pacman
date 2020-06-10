@@ -160,6 +160,7 @@ public class Game {
 		pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 
 		blinky.seat = 0;
+		blinky.insane = true;
 		blinky.behavior(LOCKED, blinky.isHeadingFor(blinky::tile));
 		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(maze.seatPosition(2)));
 		blinky.behavior(LEAVING_HOUSE, blinky.isLeavingGhostHouse());
@@ -267,9 +268,10 @@ public class Game {
 				new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]);
 	}
 
-	float pacManSpeed(Tile tile, PacManState state) {
+	float pacManSpeed(MovingActor<PacManState> actor) {
+		PacMan pacMan = (PacMan) actor;
 		float fraction = 0;
-		switch (state) {
+		switch (pacMan.getState()) {
 		case SLEEPING:
 		case DEAD:
 			break;
@@ -277,16 +279,17 @@ public class Game {
 			fraction = pacMan.powerTicks > 0 ? level.pacManPowerSpeed : level.pacManSpeed;
 			break;
 		default:
-			throw new IllegalStateException("Illegal Pac-Man state: " + state);
+			throw new IllegalStateException("Illegal Pac-Man state: " + pacMan.getState());
 		}
 		return speed(fraction);
 	}
 
-	float ghostSpeed(Tile tile, GhostState state) {
+	float ghostSpeed(MovingActor<GhostState> actor) {
+		Ghost ghost = (Ghost) actor;
 		float fraction = 0;
-		switch (state) {
+		switch (ghost.getState()) {
 		case LOCKED:
-			fraction = maze.insideGhostHouse(tile) ? level.ghostSpeed / 2 : 0;
+			fraction = maze.insideGhostHouse(ghost.tile()) ? level.ghostSpeed / 2 : 0;
 			break;
 		case LEAVING_HOUSE:
 			fraction = level.ghostSpeed / 2;
@@ -295,27 +298,25 @@ public class Game {
 			fraction = level.ghostSpeed;
 			break;
 		case CHASING:
-			if (maze.isTunnel(tile)) {
+		case SCATTERING:
+			if (maze.isTunnel(ghost.tile())) {
 				fraction = level.ghostTunnelSpeed;
-			} else if (remainingFoodCount() < level.elroy2DotsLeft) {
+			} else if (ghost.cruiseElroyState == 2) {
 				fraction = level.elroy2Speed;
-			} else if (remainingFoodCount() < level.elroy1DotsLeft) {
+			} else if (ghost.cruiseElroyState == 1) {
 				fraction = level.elroy1Speed;
 			} else {
 				fraction = level.ghostSpeed;
 			}
 			break;
-		case SCATTERING:
-			fraction = maze.isTunnel(tile) ? level.ghostTunnelSpeed : level.ghostSpeed;
-			break;
 		case FRIGHTENED:
-			fraction = maze.isTunnel(tile) ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed;
+			fraction = maze.isTunnel(ghost.tile()) ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed;
 			break;
 		case DEAD:
 			fraction = 2 * level.ghostSpeed;
 			break;
 		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s", state));
+			throw new IllegalStateException(String.format("Illegal ghost state %s", ghost.getState()));
 		}
 		return speed(fraction);
 	}

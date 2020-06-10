@@ -1,5 +1,6 @@
 package de.amr.games.pacman.controller.actor;
 
+import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
 import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
 import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
@@ -47,6 +48,11 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	/** State to enter after frightening ends. */
 	public GhostState followState;
 
+	/** If this ghost is suffering from the "Elroy disease". */
+	public boolean insane;
+
+	public int cruiseElroyState; // 0, 1, 2
+
 	private Steering prevSteering;
 
 	public Ghost(Game game, String name) {
@@ -65,6 +71,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 						followState = LOCKED;
 						visible = true;
 						moveDir = wishDir = maze.ghostHomeDir[seat];
+						cruiseElroyState = 0;
 						tf.setPosition(maze.seatPosition(seat));
 						enteredNewTile();
 						sprites.forEach(Sprite::resetAnimation);
@@ -103,6 +110,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 				
 				.state(SCATTERING)
 					.onTick(() -> {
+						updateCruiseElroyState(game);
 						move();
 						showColored();
 						checkCollision(game.pacMan);
@@ -110,6 +118,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 			
 				.state(CHASING)
 					.onTick(() -> {
+						updateCruiseElroyState(game);
 						move();
 						showColored();
 						checkCollision(game.pacMan);
@@ -165,7 +174,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 				.when(CHASING).then(SCATTERING)
 					.condition(() -> followState == SCATTERING)
 					.act(() -> forceTurningBack())
-	
+					
 				.when(SCATTERING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
 					.act(() -> forceTurningBack())
@@ -199,6 +208,22 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 		/*@formatter:on*/
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+	}
+
+	private void updateCruiseElroyState(Game game) {
+		if (!insane) {
+			return;
+		}
+		if (cruiseElroyState < 1 && game.remainingFoodCount() <= game.level.elroy1DotsLeft) {
+			changeElroyState(1, game.remainingFoodCount());
+		} else if (cruiseElroyState < 2 && game.remainingFoodCount() <= game.level.elroy2DotsLeft) {
+			changeElroyState(2, game.remainingFoodCount());
+		}
+	}
+
+	private void changeElroyState(int value, int pelletsLeft) {
+		cruiseElroyState = value;
+		loginfo("%s's Elroy state changed to %d, pellets left: %d", name, value, pelletsLeft);
 	}
 
 	public void takeClothes(Theme theme, int color) {

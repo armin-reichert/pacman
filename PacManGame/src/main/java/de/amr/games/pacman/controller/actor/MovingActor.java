@@ -7,7 +7,7 @@ import static de.amr.games.pacman.model.Game.sec;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
@@ -39,7 +39,7 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 	public final String name;
 	public final SpriteMap sprites = new SpriteMap();
 
-	public BiFunction<Tile, STATE, Float> fnSpeed = (tile, state) -> 0f;
+	public Function<MovingActor<STATE>, Float> fnSpeed = actor -> 0f;
 
 	protected Fsm<STATE, PacManGameEvent> brain;
 	protected Map<STATE, Steering> steerings;
@@ -232,7 +232,7 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 	 * @param dir  move direction
 	 */
 	private float maxMoveDistance(Tile tile, Direction dir) {
-		float speed = fnSpeed.apply(tile, getState());
+		float speed = fnSpeed.apply(this);
 		if (canCrossBorderTo(dir)) {
 			return speed;
 		}
