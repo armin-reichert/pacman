@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.math.Vector2f;
-import de.amr.easy.game.ui.widgets.FrameRateWidget;
+import de.amr.easy.game.ui.widgets.FramerateWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.GhostHouse;
 import de.amr.games.pacman.controller.actor.Bonus;
@@ -63,14 +63,14 @@ public class PlayView extends SimplePlayView {
 	public boolean showScores = true;
 	public boolean showStates = false;
 
-	private FrameRateWidget frameRateDisplay;
+	private FramerateWidget frameRateDisplay;
 	private final BufferedImage gridImage, inkyImage, clydeImage, pacManImage;
 	private final Polygon arrowHead = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 	private final Color[] gridPatternColor = { Color.BLACK, new Color(40, 40, 40) };
 
 	public PlayView(Game game, Theme theme) {
 		super(game, theme);
-		frameRateDisplay = new FrameRateWidget();
+		frameRateDisplay = new FramerateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
 		gridImage = createGridPatternImage(game.maze.numCols, game.maze.numRows);
