@@ -8,14 +8,6 @@ import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.model.Symbol.APPLE;
-import static de.amr.games.pacman.model.Symbol.BELL;
-import static de.amr.games.pacman.model.Symbol.CHERRIES;
-import static de.amr.games.pacman.model.Symbol.GALAXIAN;
-import static de.amr.games.pacman.model.Symbol.GRAPES;
-import static de.amr.games.pacman.model.Symbol.KEY;
-import static de.amr.games.pacman.model.Symbol.PEACH;
-import static de.amr.games.pacman.model.Symbol.STRAWBERRY;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -45,23 +37,54 @@ import de.amr.games.pacman.controller.actor.PacManState;
  */
 public class Game {
 
-	/*
-	 * I am still not sure about the correct base speed. <p> In Shaun Williams' Pac-Man remake
-	 * (https://github.com/masonicGIT/pacman/blob/master/src/Actor.js) there is a speed table giving the
-	 * number of steps (=pixels?) Pac-Man is moving in 16 frames. In level 5 this gives 4*2 + 12 = 20
-	 * steps in 16 frames, which gives 1.25 pixels / frame. <p> The table from Gamasutra ({@link
-	 * Game#LEVELS}) states that this corresponds to 100% base speed for Pac-Man at level 5. Therefore I
-	 * use 1.25 pixel/frame.
-	 * 
+	/**
+	 * <img src="http://www.gamasutra.com/db_area/images/feature/3938/tablea1.png">
+	 */
+	public static final String[] LEVELS = {
+		/*@formatter:off*/
+		"CHERRIES,   100,  80%,  71%,  75%,  40%,  20,  80%,  10,  85%,  90%, 79%, 50%, 6, 5",
+		"STRAWBERRY, 300,  90%,  79%,  85%,  45%,  30,  90%,  15,  95%,  95%, 83%, 55%, 5, 5",
+		"PEACH,      500,  90%,  79%,  85%,  45%,  40,  90%,  20,  95%,  95%, 83%, 55%, 4, 5",
+		"PEACH,      500,  90%,  79%,  85%,  50%,  40, 100%,  20,  95%,  95%, 83%, 55%, 3, 5",
+		"APPLE,      700, 100%,  87%,  95%,  50%,  40, 100%,  20, 105%, 100%, 87%, 60%, 2, 5",
+		"APPLE,      700, 100%,  87%,  95%,  50%,  50, 100%,  25, 105%, 100%, 87%, 60%, 5, 5",
+		"GRAPES,    1000, 100%,  87%,  95%,  50%,  50, 100%,  25, 105%, 100%, 87%, 60%, 2, 5",
+		"GRAPES,    1000, 100%,  87%,  95%,  50%,  50, 100%,  25, 105%, 100%, 87%, 60%, 2, 5",
+		"GALAXIAN,  2000, 100%,  87%,  95%,  50%,  60, 100%,  30, 105%, 100%, 87%, 60%, 1, 3",
+		"GALAXIAN,  2000, 100%,  87%,  95%,  50%,  60, 100%,  30, 105%, 100%, 87%, 60%, 5, 5",
+		"BELL,      3000, 100%,  87%,  95%,  50%,  60, 100%,  30, 105%, 100%, 87%, 60%, 2, 5",
+		"BELL,      3000, 100%,  87%,  95%,  50%,  80, 100%,  40, 105%, 100%, 87%, 60%, 1, 3",
+		"KEY,       5000, 100%,  87%,  95%,  50%,  80, 100%,  40, 105%, 100%, 87%, 60%, 1, 3",
+		"KEY,       5000, 100%,  87%,  95%,  50%,  80, 100%,  40, 105%, 100%, 87%, 60%, 3, 5",
+		"KEY,       5000, 100%,  87%,  95%,  50%, 100, 100%,  50, 105%, 100%, 87%, 60%, 1, 3",
+		"KEY,       5000, 100%,  87%,  95%,  50%, 100, 100%,  50, 105%,   0%,  0%,  0%, 1, 3",
+		"KEY,       5000, 100%,  87%,  95%,  50%, 100, 100%,  50, 105%, 100%, 87%, 60%, 0, 0",
+		"KEY,       5000, 100%,  87%,  95%,  50%, 100, 100%,  50, 105%,   0%,   0%, 0%, 1, 0",
+		"KEY,       5000, 100%,  87%,  95%,  50%, 120, 100%,  60, 105%,   0%,   0%, 0%, 0, 0",
+		"KEY,       5000, 100%,  87%,  95%,  50%, 120, 100%,  60, 105%,   0%,   0%, 0%, 0, 0",
+		"KEY,       5000,  90%,  79%,  95%,  50%, 120, 100%,  60, 105%,   0%,   0%, 0%, 0, 0",
+		/*@formatter:on*/
+	};
+
+	/**
+	 * In Shaun William's <a href="https://github.com/masonicGIT/pacman">Pac-Man remake</a> there is a
+	 * speed table giving the number of steps (=pixels?) which Pac-Man is moving in 16 frames. In level
+	 * 5, he uses 4 * 2 + 12 = 20 steps in 16 frames, which is 1.25 pixels/frame. The table from
+	 * Gamasutra ({@link Game#LEVELS}) states that this corresponds to 100% base speed for Pac-Man at
+	 * level 5. Therefore I use 1.25 pixel/frame for 100% speed.
 	 */
 	static final float BASE_SPEED = 1.25f;
 
 	/**
-	 * @param fraction fraction of seconds
-	 * @return ticks corresponding to given fraction of seconds
+	 * Returns the number of ticks corresponding to the given time (in seconds) for a framerate of 60
+	 * ticks/sec. This is useful to be able to speed up the actors by increasing the framerate of the
+	 * game but keep all timer values as they are at 60 ticks/sec.
+	 * 
+	 * @param seconds seconds
+	 * @return ticks corresponding to given number of seconds
 	 */
-	public static int sec(float fraction) {
-		return Math.round(60 * fraction);
+	public static int sec(float seconds) {
+		return Math.round(60 * seconds);
 	}
 
 	/**
@@ -80,33 +103,6 @@ public class Game {
 	public static final int POINTS_GHOST[] = { 200, 400, 800, 1600 };
 	public static final int DIGEST_PELLET_TICKS = 1;
 	public static final int DIGEST_ENERGIZER_TICKS = 3;
-
-	final GameLevel[] levels = {
-		/*@formatter:off*/
-		null, // level numbering starts at 1
-		new GameLevel(CHERRIES,   100,  .80f, .71f, .75f, .40f,  20, .8f,  10,  .85f, .90f, .79f, .50f,   6, 5 ),
-		new GameLevel(STRAWBERRY, 300,  .90f, .79f, .85f, .45f,  30, .9f,  15,  .95f, .95f, .83f, .55f,   5, 5 ),
-		new GameLevel(PEACH,      500,  .90f, .79f, .85f, .45f,  40, .9f,  20,  .95f, .95f, .83f, .55f,   4, 5 ),
-		new GameLevel(PEACH,      500,  .90f, .79f, .85f, .50f,  40,  1f,  20,  .95f, .95f, .83f, .55f,   3, 5 ),
-		new GameLevel(APPLE,      700,    1f, .87f, .95f, .50f,  40,  1f,  20, 1.05f,   1f, .87f, .60f,   2, 5 ),
-		new GameLevel(APPLE,      700,    1f, .87f, .95f, .50f,  50,  1f,  25, 1.05f,   1f, .87f, .60f,   5, 5 ),
-		new GameLevel(GRAPES,    1000,    1f, .87f, .95f, .50f,  50,  1f,  25, 1.05f,   1f, .87f, .60f,   2, 5 ),
-		new GameLevel(GRAPES,    1000,    1f, .87f, .95f, .50f,  50,  1f,  25, 1.05f,   1f, .87f, .60f,   2, 5 ),
-		new GameLevel(GALAXIAN,  2000,    1f, .87f, .95f, .50f,  60,  1f,  30, 1.05f,   1f, .87f, .60f,   1, 3 ),
-		new GameLevel(GALAXIAN,  2000,    1f, .87f, .95f, .50f,  60,  1f,  30, 1.05f,   1f, .87f, .60f,   5, 5 ),
-		new GameLevel(BELL,      3000,    1f, .87f, .95f, .50f,  60,  1f,  30, 1.05f,   1f, .87f, .60f,   2, 5 ),
-		new GameLevel(BELL,      3000,    1f, .87f, .95f, .50f,  80,  1f,  40, 1.05f,   1f, .87f, .60f,   1, 3 ),
-		new GameLevel(KEY,       5000,    1f, .87f, .95f, .50f,  80,  1f,  40, 1.05f,   1f, .87f, .60f,   1, 3 ),
-		new GameLevel(KEY,       5000,    1f, .87f, .95f, .50f,  80,  1f,  40, 1.05f,   1f, .87f, .60f,   3, 5 ),
-		new GameLevel(KEY,       5000,    1f, .87f, .95f, .50f, 100,  1f,  50, 1.05f,   1f, .87f, .60f,   1, 3 ),
-		new GameLevel(KEY,       5000,    1f, .87f, .95f, .50f, 100,  1f,  50, 1.05f,   0f,   0f,   0f,   0, 0 ),
-		new GameLevel(KEY,       5000,    1f, .87f, .95f, .50f, 100,  1f,  50, 1.05f,   1f, .87f, .60f,   1, 3 ),
-		new GameLevel(KEY,       5000,    1f, .87f, .95f, .50f, 100,  1f,  50, 1.05f,   0f,   0f,   0f,   0, 0 ),
-		new GameLevel(KEY,       5000,    1f, .87f, .95f, .50f, 120,  1f,  60, 1.05f,   0f,   0f,   0f,   0, 0 ),
-		new GameLevel(KEY,       5000,    1f, .87f, .95f, .50f, 120,  1f,  60, 1.05f,   0f,   0f,   0f,   0, 0 ),
-		new GameLevel(KEY,       5000,  .90f, .79f, .95f, .50f, 120,  1f,  60, 1.05f,   0f,   0f,   0f,   0, 0 ),
-		/*@formatter:on*/
-	};
 
 	public PacMan pacMan;
 	public Ghost blinky, pinky, inky, clyde;
@@ -134,9 +130,14 @@ public class Game {
 		this(1);
 	}
 
+	/**
+	 * Enters level with given number (starting at 1).
+	 * 
+	 * @param n level number (1-...)
+	 */
 	public void enterLevel(int n) {
 		loginfo("Enter level %d", n);
-		level = levels[Math.min(n, levels.length - 1)];
+		level = level(n);
 		level.number = n;
 		level.eatenFoodCount = 0;
 		level.ghostsKilledByEnergizer = 0;
@@ -144,6 +145,14 @@ public class Game {
 		levelCounter.add(level.bonusSymbol);
 		maze.restoreFood();
 		hiscore.save();
+	}
+
+	private GameLevel level(int n) {
+		if (n < 1) {
+			throw new IllegalArgumentException("Level numbering starts at 1");
+		}
+		n -= 1; // level numbering starts with
+		return new GameLevel(LEVELS[Math.min(n, LEVELS.length - 1)]);
 	}
 
 	private void createActors() {
@@ -222,7 +231,8 @@ public class Game {
 	}
 
 	/**
-	 * @param tile tile containing food
+	 * @param tile      tile containing food
+	 * @param energizer tells if the pellet is an energizer
 	 * @return points scored
 	 */
 	public int eatFood(Tile tile, boolean energizer) {

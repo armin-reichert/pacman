@@ -1,5 +1,14 @@
 package de.amr.games.pacman.model;
 
+import static java.util.stream.Collectors.toList;
+
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+
 /**
  * Data structure storing the level-specific values.
  * 
@@ -7,21 +16,21 @@ package de.amr.games.pacman.model;
  */
 public class GameLevel {
 
-	public final Symbol bonusSymbol;
-	public final int bonusValue;
-	public final float pacManSpeed;
-	public final float pacManDotsSpeed;
-	public final float ghostSpeed;
-	public final float ghostTunnelSpeed;
-	public final int elroy1DotsLeft;
-	public final float elroy1Speed;
-	public final int elroy2DotsLeft;
-	public final float elroy2Speed;
-	public final float pacManPowerSpeed;
-	public final float pacManPowerDotsSpeed;
-	public final float ghostFrightenedSpeed;
-	public final int pacManPowerSeconds;
-	public final int numFlashes;
+	public Symbol bonusSymbol;
+	public int bonusValue;
+	public float pacManSpeed;
+	public float pacManDotsSpeed;
+	public float ghostSpeed;
+	public float ghostTunnelSpeed;
+	public int elroy1DotsLeft;
+	public float elroy1Speed;
+	public int elroy2DotsLeft;
+	public float elroy2Speed;
+	public float pacManPowerSpeed;
+	public float pacManPowerDotsSpeed;
+	public float ghostFrightenedSpeed;
+	public int pacManPowerSeconds;
+	public int numFlashes;
 
 	public int number;
 	public int eatenFoodCount;
@@ -47,5 +56,42 @@ public class GameLevel {
 		this.ghostFrightenedSpeed = ghostFrightenedSpeed;
 		this.pacManPowerSeconds = pacManPowerSeconds;
 		this.numFlashes = numFlashes;
+	}
+
+	public GameLevel(String levelSpec) {
+		List<String> fields = Arrays.stream(levelSpec.split(",")).map(String::strip).collect(toList());
+		for (Iterator<String> i = fields.iterator(); i.hasNext();) {
+			bonusSymbol = Symbol.valueOf(i.next());
+			bonusValue = intValue(i.next());
+			pacManSpeed = percentValue(i.next());
+			pacManDotsSpeed = percentValue(i.next());
+			ghostSpeed = percentValue(i.next());
+			ghostTunnelSpeed = percentValue(i.next());
+			elroy1DotsLeft = intValue(i.next());
+			elroy1Speed = percentValue(i.next());
+			elroy2DotsLeft = intValue(i.next());
+			elroy2Speed = percentValue(i.next());
+			pacManPowerSpeed = percentValue(i.next());
+			pacManPowerDotsSpeed = percentValue(i.next());
+			ghostFrightenedSpeed = percentValue(i.next());
+			pacManPowerSeconds = intValue(i.next());
+			numFlashes = intValue(i.next());
+		}
+	}
+
+	int intValue(String s) {
+		try {
+			return DecimalFormat.getNumberInstance(Locale.ENGLISH).parse(s).intValue();
+		} catch (ParseException x) {
+			throw new RuntimeException(x);
+		}
+	}
+
+	float percentValue(String s) {
+		try {
+			return DecimalFormat.getPercentInstance(Locale.ENGLISH).parse(s).floatValue();
+		} catch (ParseException x) {
+			throw new RuntimeException(x);
+		}
 	}
 }
