@@ -98,7 +98,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void createPlayEnvironment() {
 		game = new Game(settings.startLevel);
 		game.movingActors().forEach(actor -> {
-			game.stage.add(actor);
+			game.putOnStage(actor);
 			actor.addEventListener(this::process);
 		});
 		ghostCommand = new GhostCommand(game);

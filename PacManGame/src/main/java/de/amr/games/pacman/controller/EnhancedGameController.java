@@ -80,10 +80,10 @@ public class EnhancedGameController extends GameController {
 	}
 
 	private void toggleGhostOnStage(Ghost ghost) {
-		if (game.stage.contains(ghost)) {
-			game.stage.remove(ghost);
+		if (game.onStage(ghost)) {
+			game.pullFromStage(ghost);
 		} else {
-			game.stage.add(ghost);
+			game.putOnStage(ghost);
 		}
 	}
 

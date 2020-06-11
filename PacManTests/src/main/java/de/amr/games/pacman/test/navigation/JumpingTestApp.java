@@ -42,7 +42,7 @@ class JumpingTestUI extends PlayView {
 	public void init() {
 		super.init();
 		game.maze.removeFood();
-		game.ghosts().forEach(game.stage::add);
+		game.ghosts().forEach(game::putOnStage);
 	}
 
 	@Override

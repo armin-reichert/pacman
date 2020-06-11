@@ -48,7 +48,7 @@ class OutsideTileTestUI extends PlayView {
 		super.init();
 		game.maze.removeFood();
 		theme.snd_ghost_chase().volume(0);
-		game.stage.add(game.blinky);
+		game.putOnStage(game.blinky);
 		game.blinky.behavior(CHASING, game.blinky.isHeadingFor(() -> new Tile(100, game.maze.portalRight.row)));
 		game.blinky.setState(CHASING);
 	}

@@ -15,7 +15,9 @@ import static java.awt.event.KeyEvent.VK_UP;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.actor.Bonus;
@@ -108,12 +110,13 @@ public class Game {
 	public Ghost blinky, pinky, inky, clyde;
 	public Bonus bonus;
 	public Maze maze;
-	public Stage stage;
 	public List<Symbol> levelCounter;
 	public Hiscore hiscore;
 	public GameLevel level;
 	public int lives;
 	public int score;
+
+	private Set<MovingActor<?>> stage = new HashSet<>();
 
 	public Game(int startLevel) {
 		lives = 3;
@@ -121,7 +124,6 @@ public class Game {
 		levelCounter = new ArrayList<>();
 		hiscore = new Hiscore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
 		maze = new Maze();
-		stage = new Stage();
 		createActors();
 		enterLevel(startLevel);
 	}
@@ -337,5 +339,22 @@ public class Game {
 			throw new IllegalStateException(String.format("Illegal ghost state %s", ghost.getState()));
 		}
 		return speed(fraction);
+	}
+	
+	public boolean onStage(MovingActor<?> actor) {
+		return stage.contains(actor);
+	}
+
+	public void putOnStage(MovingActor<?> actor) {
+		stage.add(actor);
+		actor.init();
+		actor.visible = true;
+		loginfo("%s entered the stage", actor.name);
+	}
+
+	public void pullFromStage(MovingActor<?> actor) {
+		stage.remove(actor);
+		actor.visible = false;
+		loginfo("%s left the stage", actor.name);
 	}
 }

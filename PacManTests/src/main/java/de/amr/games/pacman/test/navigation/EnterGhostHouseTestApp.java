@@ -48,7 +48,7 @@ class EnterGhostHouseTestUI extends PlayView {
 	public void init() {
 		super.init();
 		game.maze.removeFood();
-		game.stage.add(game.inky);
+		game.putOnStage(game.inky);
 		showMessage("SPACE = Enter/leave house", Color.WHITE, 8);
 	}
 
