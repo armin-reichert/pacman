@@ -230,28 +230,32 @@ public class SimplePlayView extends BaseView {
 		@Override
 		public void draw(Graphics2D g) {
 			if (getState() == CROWDED) {
-				spriteFullMaze.draw(g, 0, 3 * Tile.SIZE);
-				// hide eaten food
-				game.maze.playingArea().filter(game.maze::isEatenFood).forEach(tile -> {
-					g.setColor(tileColor(tile));
-					g.fillRect(tile.x(), tile.y(), Tile.SIZE + 1, Tile.SIZE + 1);
-				});
-				// hide active energizers when blinking animation is in dark phase
-				if (energizersBlinking.currentFrame() == 1) {
-					game.maze.playingArea().filter(game.maze::isEnergizer).forEach(tile -> {
-						g.setColor(tileColor(tile));
-						g.fillRect(tile.x(), tile.y(), Tile.SIZE + 1, Tile.SIZE + 1);
-					});
-				}
-				// draw door open when any ghost is entering or leaving the house
-				if (game.ghostsOnStage().anyMatch(ghost -> ghost.is(GhostState.ENTERING_HOUSE, GhostState.LEAVING_HOUSE))) {
-					g.setColor(Color.BLACK);
-					g.fillRect(game.maze.ghostHouseDoorLeft.x(), game.maze.ghostHouseDoorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
-				}
+				drawCrowdedMaze(g);
 			} else if (getState() == EMPTY) {
 				spriteEmptyMaze.draw(g, 0, 3 * Tile.SIZE);
 			} else if (getState() == FLASHING) {
 				spriteFlashingMaze.draw(g, 0, 3 * Tile.SIZE);
+			}
+		}
+
+		private void drawCrowdedMaze(Graphics2D g) {
+			spriteFullMaze.draw(g, 0, 3 * Tile.SIZE);
+			// hide eaten food
+			game.maze.playingArea().filter(game.maze::isEatenFood).forEach(tile -> {
+				g.setColor(tileColor(tile));
+				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
+			});
+			// hide active energizers when blinking animation is in dark phase
+			if (energizersBlinking.currentFrame() == 1) {
+				game.maze.playingArea().filter(game.maze::isEnergizer).forEach(tile -> {
+					g.setColor(tileColor(tile));
+					g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
+				});
+			}
+			// draw door open when any ghost is entering or leaving the house
+			if (game.ghostsOnStage().anyMatch(ghost -> ghost.is(GhostState.ENTERING_HOUSE, GhostState.LEAVING_HOUSE))) {
+				g.setColor(Color.BLACK);
+				g.fillRect(game.maze.ghostHouseDoorLeft.x(), game.maze.ghostHouseDoorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
 			}
 		}
 	}

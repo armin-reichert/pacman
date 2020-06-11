@@ -3,6 +3,7 @@ package de.amr.games.pacman.controller;
 import static de.amr.easy.game.Application.app;
 import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.PacManApp.settings;
+import static de.amr.games.pacman.controller.PacManGameState.PLAYING;
 
 import java.awt.event.KeyEvent;
 
@@ -78,6 +79,14 @@ public class EnhancedGameController extends GameController {
 		}
 	}
 
+	private void toggleGhostOnStage(Ghost ghost) {
+		if (game.stage.contains(ghost)) {
+			game.stage.remove(ghost);
+		} else {
+			game.stage.add(ghost);
+		}
+	}
+
 	private void togglePacManOverflowBug() {
 		settings.fixOverflowBug = !settings.fixOverflowBug;
 		loginfo("Overflow bug is %s", settings.fixOverflowBug ? "fixed" : "active");
@@ -123,6 +132,9 @@ public class EnhancedGameController extends GameController {
 	}
 
 	private void eatAllSimplePellets() {
+		if (getState() != PLAYING) {
+			return;
+		}
 		game.maze.playingArea().filter(game.maze::isSimplePellet).forEach(tile -> {
 			game.eatFood(tile, false);
 			ghostHouse.onPacManFoundFood();
@@ -131,15 +143,10 @@ public class EnhancedGameController extends GameController {
 		loginfo("All simple pellets eaten");
 	}
 
-	private void toggleGhostOnStage(Ghost ghost) {
-		if (game.stage.contains(ghost)) {
-			game.stage.remove(ghost);
-		} else {
-			game.stage.add(ghost);
-		}
-	}
-
 	private void killAllGhosts() {
+		if (getState() != PLAYING) {
+			return;
+		}
 		game.level.ghostsKilledByEnergizer = 0;
 		game.ghostsOnStage().filter(ghost -> ghost.is(GhostState.CHASING, GhostState.SCATTERING, GhostState.FRIGHTENED))
 				.forEach(ghost -> {
