@@ -216,7 +216,7 @@ public class Game {
 		clyde.behavior(FRIGHTENED, clyde.isMovingRandomlyWithoutTurningBack());
 		clyde.behavior(SCATTERING, clyde.isHeadingFor(maze.horizonSW));
 		clyde.behavior(CHASING,
-				clyde.isHeadingFor(() -> clyde.tile().distSq(pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
+				clyde.isHeadingFor(() -> clyde.tile().distance(pacMan.tile()) > 8 ? pacMan.tile() : maze.horizonSW));
 		clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostHouseEntry));
 	}
 
@@ -340,7 +340,7 @@ public class Game {
 		}
 		return speed(fraction);
 	}
-	
+
 	public boolean onStage(MovingActor<?> actor) {
 		return stage.contains(actor);
 	}

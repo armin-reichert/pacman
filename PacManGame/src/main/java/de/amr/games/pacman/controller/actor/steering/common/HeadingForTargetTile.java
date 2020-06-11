@@ -25,8 +25,8 @@ import de.amr.games.pacman.model.Tile;
 /**
  * Steers an actor towards a target tile.
  * 
- * The detailed behavior is described <a href=
- * "http://gameinternals.com/understanding-pac-man-ghost-behavior">here</a>.
+ * The detailed behavior is described
+ * <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here</a>.
  * 
  * @author Armin Reichert
  */
@@ -96,18 +96,17 @@ public class HeadingForTargetTile implements Steering {
 	}
 
 	/**
-	 * Computes the next move direction as described <a href=
-	 * "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
+	 * Computes the next move direction as described
+	 * <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
 	 * 
 	 * <p>
-	 * Note: We use separate parameters for the actor's move direction, current tile
-	 * and target tile instead of the members of the actor itself because the
-	 * {@link #pathTo(Tile)} method uses this method without actually placing the
-	 * actor at each tile of the path.
+	 * Note: We use separate parameters for the actor's move direction, current tile and target tile
+	 * instead of the members of the actor itself because the {@link #pathTo(Tile)} method uses this
+	 * method without actually placing the actor at each tile of the path.
 	 */
 	private Direction dirToTarget(Direction moveDir, Tile currentTile, Tile targetTile) {
 		Function<Direction, Tile> fnNeighbor = dir -> actor.maze().neighbor(currentTile, dir);
-		Function<Direction, Integer> fnNeighborDistToTarget = dir -> fnNeighbor.apply(dir).distSq(targetTile);
+		Function<Direction, Double> fnNeighborDistToTarget = dir -> fnNeighbor.apply(dir).distance(targetTile);
 		/*@formatter:off*/
 		return UP_LEFT_DOWN_RIGHT.stream()
 			.filter(dir -> dir != moveDir.opposite())
@@ -121,8 +120,8 @@ public class HeadingForTargetTile implements Steering {
 	}
 
 	/**
-	 * Computes the complete path the actor would traverse until it would reach the
-	 * given target tile, a cycle would occur or the path would leave the board.
+	 * Computes the complete path the actor would traverse until it would reach the given target tile, a
+	 * cycle would occur or the path would leave the board.
 	 * 
 	 * @return the path the actor would take when moving to its target tile
 	 */

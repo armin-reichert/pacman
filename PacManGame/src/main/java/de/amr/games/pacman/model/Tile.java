@@ -38,11 +38,11 @@ public final class Tile {
 
 	/**
 	 * @param other other tile
-	 * @return squared Euclidean distance measured in tiles
+	 * @return Euclidean distance measured in tiles
 	 */
-	public int distSq(Tile other) {
+	public double distance(Tile other) {
 		int dx = col - other.col, dy = row - other.row;
-		return dx * dx + dy * dy;
+		return Math.sqrt(dx * dx + dy * dy);
 	}
 
 	@Override
