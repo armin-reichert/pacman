@@ -15,6 +15,7 @@ import static de.amr.games.pacman.model.Game.POINTS_GHOST;
 import static de.amr.games.pacman.model.Game.sec;
 
 import java.util.EnumMap;
+import java.util.function.Function;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
@@ -41,6 +42,9 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * @author Armin Reichert
  */
 public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
+
+	/** Speed function for the ghost. */
+	public Function<Ghost, Float> fnSpeed = me -> 0f;
 
 	/** Number of ghost house seat (0-3). */
 	public int seat;
@@ -224,6 +228,11 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	private void changeElroyState(int value, int pelletsLeft) {
 		cruiseElroyState = value;
 		loginfo("%s's Elroy state changed to %d, pellets left: %d", name, value, pelletsLeft);
+	}
+
+	@Override
+	public float currentSpeed() {
+		return fnSpeed.apply(this);
 	}
 
 	public void takeClothes(Theme theme, int color) {

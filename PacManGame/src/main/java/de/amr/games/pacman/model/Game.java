@@ -8,6 +8,7 @@ import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.actor.PacManState.EATING;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -18,14 +19,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.actor.Bonus;
 import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.MovingActor;
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.controller.actor.PacManState;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.
@@ -75,19 +75,7 @@ public class Game {
 	 * Gamasutra ({@link Game#LEVELS}) states that this corresponds to 100% base speed for Pac-Man at
 	 * level 5. Therefore I use 1.25 pixel/frame for 100% speed.
 	 */
-	static final float BASE_SPEED = 1.25f;
-
-	/**
-	 * Returns the number of ticks corresponding to the given time (in seconds) for a framerate of 60
-	 * ticks/sec. This is useful to be able to speed up the actors by increasing the framerate of the
-	 * game but keep all timer values as they are at 60 ticks/sec.
-	 * 
-	 * @param seconds seconds
-	 * @return ticks corresponding to given number of seconds
-	 */
-	public static int sec(float seconds) {
-		return Math.round(60 * seconds);
-	}
+	public static final float BASE_SPEED = 1.25f;
 
 	/**
 	 * @param fraction fraction of base speed
@@ -95,6 +83,17 @@ public class Game {
 	 */
 	public static float speed(float fraction) {
 		return fraction * BASE_SPEED;
+	}
+
+	/**
+	 * Returns the number of ticks corresponding to the given time (in seconds) for a framerate of 60
+	 * ticks/sec.
+	 * 
+	 * @param seconds seconds
+	 * @return ticks corresponding to given number of seconds
+	 */
+	public static int sec(float seconds) {
+		return Math.round(60 * seconds);
 	}
 
 	public static final int POINTS_PELLET = 10;
@@ -118,6 +117,11 @@ public class Game {
 
 	private Set<MovingActor<?>> stage = new HashSet<>();
 
+	/**
+	 * Creates a game starting with the given level.
+	 * 
+	 * @param startLevel start level number (1-...)
+	 */
 	public Game(int startLevel) {
 		lives = 3;
 		score = 0;
@@ -128,6 +132,9 @@ public class Game {
 		enterLevel(startLevel);
 	}
 
+	/**
+	 * Creates a game starting with the first level.
+	 */
 	public Game() {
 		this(1);
 	}
@@ -166,6 +173,9 @@ public class Game {
 	}
 
 	private void createActors() {
+
+		// create actor instances
+
 		pacMan = new PacMan(this);
 		blinky = new Ghost(this, "Blinky");
 		inky = new Ghost(this, "Inky");
@@ -173,8 +183,7 @@ public class Game {
 		clyde = new Ghost(this, "Clyde");
 		bonus = new Bonus(this);
 
-		pacMan.fnSpeed = this::pacManSpeed;
-		ghosts().forEach(ghost -> ghost.fnSpeed = this::ghostSpeed);
+		// define actor behavior
 
 		pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 
@@ -218,29 +227,81 @@ public class Game {
 		clyde.behavior(CHASING,
 				clyde.isHeadingFor(() -> clyde.tile().distance(pacMan.tile()) > 8 ? pacMan.tile() : maze.horizonSW));
 		clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostHouseEntry));
+
+		// define actor speed
+
+		pacMan.fnSpeed = self -> self.is(EATING) ? speed(self.powerTicks > 0 ? level.pacManPowerSpeed : level.pacManSpeed)
+				: 0;
+
+		Function<Ghost, Float> fnGhostSpeed = ghost -> {
+			switch (ghost.getState()) {
+			case LOCKED:
+				return speed(maze.insideGhostHouse(ghost.tile()) ? level.ghostSpeed / 2 : 0);
+			case LEAVING_HOUSE:
+				return speed(level.ghostSpeed / 2);
+			case ENTERING_HOUSE:
+				return speed(level.ghostSpeed);
+			case CHASING:
+			case SCATTERING:
+				if (maze.isTunnel(ghost.tile())) {
+					return speed(level.ghostTunnelSpeed);
+				} else if (ghost.cruiseElroyState == 2) {
+					return speed(level.elroy2Speed);
+				} else if (ghost.cruiseElroyState == 1) {
+					return speed(level.elroy1Speed);
+				} else {
+					return speed(level.ghostSpeed);
+				}
+			case FRIGHTENED:
+				return speed(maze.isTunnel(ghost.tile()) ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed);
+			case DEAD:
+				return speed(2 * level.ghostSpeed);
+			default:
+				throw new IllegalStateException(String.format("Illegal ghost state %s", ghost.getState()));
+			}
+		};
+
+		ghosts().forEach(ghost -> ghost.fnSpeed = fnGhostSpeed);
 	}
 
+	/**
+	 * @return stream of all ghosts
+	 */
 	public Stream<Ghost> ghosts() {
 		return Stream.of(blinky, pinky, inky, clyde);
 	}
 
+	/**
+	 * @return stream of ghosts currently on stage
+	 */
 	public Stream<Ghost> ghostsOnStage() {
 		return ghosts().filter(stage::contains);
 	}
 
+	/**
+	 * @return stream of all moving actors (ghosts and Pac-Man)
+	 */
 	public Stream<MovingActor<?>> movingActors() {
 		return Stream.of(pacMan, blinky, pinky, inky, clyde);
 	}
 
+	/**
+	 * @return stream of moving actors currently on stage (ghosts and Pac-Man)
+	 */
 	public Stream<MovingActor<?>> movingActorsOnStage() {
 		return movingActors().filter(stage::contains);
 	}
 
+	/**
+	 * @return number of remaining pellets and energizers
+	 */
 	public int remainingFoodCount() {
 		return maze.totalFoodCount - level.eatenFoodCount;
 	}
 
 	/**
+	 * Eats the pellet or eenrgizer on the given tile.
+	 * 
 	 * @param tile      tile containing food
 	 * @param energizer tells if the pellet is an energizer
 	 * @return points scored
@@ -260,10 +321,18 @@ public class Game {
 		}
 	}
 
+	/**
+	 * @return {@code true} if a score for activating the bonus symbol is reached
+	 */
 	public boolean isBonusScoreReached() {
 		return level.eatenFoodCount == 70 || level.eatenFoodCount == 170;
 	}
 
+	/**
+	 * Score the given number of points and handles high score, extra life etc.
+	 * 
+	 * @param points scored points
+	 */
 	public void score(int points) {
 		int oldScore = score;
 		score += points;
@@ -276,6 +345,12 @@ public class Game {
 		}
 	}
 
+	/**
+	 * Scores for killing a ghost. Value of a killed ghost doubles if killed in series using the same
+	 * energizer.
+	 * 
+	 * @param ghostName name of killed ghost, just for logging
+	 */
 	public void scoreKilledGhost(String ghostName) {
 		int points = POINTS_GHOST[level.ghostsKilledByEnergizer];
 		level.ghostsKilledByEnergizer += 1;
@@ -288,63 +363,19 @@ public class Game {
 				new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]);
 	}
 
-	float pacManSpeed(MovingActor<PacManState> actor) {
-		PacMan pacMan = (PacMan) actor;
-		float fraction = 0;
-		switch (pacMan.getState()) {
-		case SLEEPING:
-		case DEAD:
-			break;
-		case EATING:
-			fraction = pacMan.powerTicks > 0 ? level.pacManPowerSpeed : level.pacManSpeed;
-			break;
-		default:
-			throw new IllegalStateException("Illegal Pac-Man state: " + pacMan.getState());
-		}
-		return speed(fraction);
-	}
-
-	float ghostSpeed(MovingActor<GhostState> actor) {
-		Ghost ghost = (Ghost) actor;
-		float fraction = 0;
-		switch (ghost.getState()) {
-		case LOCKED:
-			fraction = maze.insideGhostHouse(ghost.tile()) ? level.ghostSpeed / 2 : 0;
-			break;
-		case LEAVING_HOUSE:
-			fraction = level.ghostSpeed / 2;
-			break;
-		case ENTERING_HOUSE:
-			fraction = level.ghostSpeed;
-			break;
-		case CHASING:
-		case SCATTERING:
-			if (maze.isTunnel(ghost.tile())) {
-				fraction = level.ghostTunnelSpeed;
-			} else if (ghost.cruiseElroyState == 2) {
-				fraction = level.elroy2Speed;
-			} else if (ghost.cruiseElroyState == 1) {
-				fraction = level.elroy1Speed;
-			} else {
-				fraction = level.ghostSpeed;
-			}
-			break;
-		case FRIGHTENED:
-			fraction = maze.isTunnel(ghost.tile()) ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed;
-			break;
-		case DEAD:
-			fraction = 2 * level.ghostSpeed;
-			break;
-		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s", ghost.getState()));
-		}
-		return speed(fraction);
-	}
-
+	/**
+	 * @param actor a ghost or Pac-Man
+	 * @return {@code true} if the actor is currently on stage
+	 */
 	public boolean onStage(MovingActor<?> actor) {
 		return stage.contains(actor);
 	}
 
+	/**
+	 * Puts the given actor on stage.
+	 * 
+	 * @param actor a ghost or Pac-Man
+	 */
 	public void putOnStage(MovingActor<?> actor) {
 		stage.add(actor);
 		actor.init();
@@ -352,6 +383,11 @@ public class Game {
 		loginfo("%s entered the stage", actor.name);
 	}
 
+	/**
+	 * Pulls the given actor from stage.
+	 * 
+	 * @param actor a ghost or Pac-Man
+	 */
 	public void pullFromStage(MovingActor<?> actor) {
 		stage.remove(actor);
 		actor.visible = false;

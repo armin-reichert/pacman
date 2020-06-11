@@ -13,6 +13,7 @@ import static de.amr.games.pacman.model.Game.DIGEST_PELLET_TICKS;
 
 import java.util.EnumMap;
 import java.util.Optional;
+import java.util.function.Function;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.PacManApp;
@@ -43,6 +44,9 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 
 	/** Number of ticks Pac-Man is not moving after eating. */
 	public int digestionTicks;
+
+	/** Speed function. */
+	public Function<PacMan, Float> fnSpeed = self -> 0f;
 
 	public PacMan(Game game) {
 		super(game.maze, "Pac-Man");
@@ -103,6 +107,11 @@ public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
 		brain.doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent && !((FoodFoundEvent) e).energizer);
 		brain.doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent && !((FoodFoundEvent) e).energizer);
+	}
+
+	@Override
+	public float currentSpeed() {
+		return fnSpeed.apply(this);
 	}
 
 	public void takeClothes(Theme theme) {

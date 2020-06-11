@@ -7,7 +7,6 @@ import static de.amr.games.pacman.model.Game.sec;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
@@ -38,8 +37,6 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 	public final Maze maze;
 	public final String name;
 	public final SpriteMap sprites = new SpriteMap();
-
-	public Function<MovingActor<STATE>, Float> fnSpeed = actor -> 0f;
 
 	protected Fsm<STATE, PacManGameEvent> brain;
 	protected Map<STATE, Steering> steerings;
@@ -84,6 +81,11 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 	private boolean enteredRightPortal() {
 		return tf.getPosition().x > maze.portalRight.x();
 	}
+
+	/**
+	 * @return current speed in pixels.
+	 */
+	public abstract float currentSpeed();
 
 	/**
 	 * @return the current steering for this actor.
@@ -232,7 +234,7 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 	 * @param dir  move direction
 	 */
 	private float maxMoveDistance(Tile tile, Direction dir) {
-		float speed = fnSpeed.apply(this);
+		float speed = currentSpeed();
 		if (canCrossBorderTo(dir)) {
 			return speed;
 		}
