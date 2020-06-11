@@ -151,8 +151,10 @@ public class Game {
 		if (n < 1) {
 			throw new IllegalArgumentException("Level numbering starts at 1");
 		}
-		n -= 1; // level numbering starts with
-		return new GameLevel(LEVELS[Math.min(n, LEVELS.length - 1)]);
+		if (n > LEVELS.length) {
+			n = LEVELS.length;
+		}
+		return new GameLevel(LEVELS[n - 1]);
 	}
 
 	private void createActors() {
