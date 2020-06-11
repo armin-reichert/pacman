@@ -37,61 +37,37 @@ public class GameLevel {
 	public int ghostsKilledByEnergizer;
 	public int ghostsKilled;
 
-	public GameLevel(Symbol bonusSymbol, int bonusValue, float pacManSpeed, float pacManDotsSpeed, float ghostSpeed,
-			float ghostTunnelSpeed, int elroy1DotsLeft, float elroy1Speed, int elroy2DotsLeft, float elroy2Speed,
-			float pacManPowerSpeed, float pacManPowerDotsSpeed, float ghostFrightenedSpeed, int pacManPowerSeconds,
-			int numFlashes) {
-		this.bonusSymbol = bonusSymbol;
-		this.bonusValue = bonusValue;
-		this.pacManSpeed = pacManSpeed;
-		this.pacManDotsSpeed = pacManPowerDotsSpeed;
-		this.ghostSpeed = ghostSpeed;
-		this.ghostTunnelSpeed = ghostTunnelSpeed;
-		this.elroy1DotsLeft = elroy1DotsLeft;
-		this.elroy1Speed = elroy1Speed;
-		this.elroy2DotsLeft = elroy2DotsLeft;
-		this.elroy2Speed = elroy2Speed;
-		this.pacManPowerSpeed = pacManPowerSpeed;
-		this.pacManPowerDotsSpeed = pacManPowerDotsSpeed;
-		this.ghostFrightenedSpeed = ghostFrightenedSpeed;
-		this.pacManPowerSeconds = pacManPowerSeconds;
-		this.numFlashes = numFlashes;
+	public static GameLevel parse(String levelSpec) throws ParseException {
+		GameLevel level = new GameLevel();
+		List<String> fields = Arrays.stream(levelSpec.trim().split(",")).map(String::strip).collect(toList());
+		if (fields.size() != 15) {
+			throw new IllegalArgumentException(
+					String.format("Level specification must contain 15 fields but has %d!", fields.size()));
+		}
+		Iterator<String> f = fields.iterator();
+		level.bonusSymbol = Symbol.valueOf(f.next());
+		level.bonusValue = integer(f.next());
+		level.pacManSpeed = percent(f.next());
+		level.pacManDotsSpeed = percent(f.next());
+		level.ghostSpeed = percent(f.next());
+		level.ghostTunnelSpeed = percent(f.next());
+		level.elroy1DotsLeft = integer(f.next());
+		level.elroy1Speed = percent(f.next());
+		level.elroy2DotsLeft = integer(f.next());
+		level.elroy2Speed = percent(f.next());
+		level.pacManPowerSpeed = percent(f.next());
+		level.pacManPowerDotsSpeed = percent(f.next());
+		level.ghostFrightenedSpeed = percent(f.next());
+		level.pacManPowerSeconds = integer(f.next());
+		level.numFlashes = integer(f.next());
+		return level;
 	}
 
-	public GameLevel(String levelSpec) {
-		List<String> fields = Arrays.stream(levelSpec.split(",")).map(String::strip).collect(toList());
-		for (Iterator<String> i = fields.iterator(); i.hasNext();) {
-			bonusSymbol = Symbol.valueOf(i.next());
-			bonusValue = intValue(i.next());
-			pacManSpeed = percentValue(i.next());
-			pacManDotsSpeed = percentValue(i.next());
-			ghostSpeed = percentValue(i.next());
-			ghostTunnelSpeed = percentValue(i.next());
-			elroy1DotsLeft = intValue(i.next());
-			elroy1Speed = percentValue(i.next());
-			elroy2DotsLeft = intValue(i.next());
-			elroy2Speed = percentValue(i.next());
-			pacManPowerSpeed = percentValue(i.next());
-			pacManPowerDotsSpeed = percentValue(i.next());
-			ghostFrightenedSpeed = percentValue(i.next());
-			pacManPowerSeconds = intValue(i.next());
-			numFlashes = intValue(i.next());
-		}
+	static int integer(String s) throws ParseException {
+		return DecimalFormat.getNumberInstance(Locale.ENGLISH).parse(s).intValue();
 	}
 
-	int intValue(String s) {
-		try {
-			return DecimalFormat.getNumberInstance(Locale.ENGLISH).parse(s).intValue();
-		} catch (ParseException x) {
-			throw new RuntimeException(x);
-		}
-	}
-
-	float percentValue(String s) {
-		try {
-			return DecimalFormat.getPercentInstance(Locale.ENGLISH).parse(s).floatValue();
-		} catch (ParseException x) {
-			throw new RuntimeException(x);
-		}
+	static float percent(String s) throws ParseException {
+		return DecimalFormat.getPercentInstance(Locale.ENGLISH).parse(s).floatValue();
 	}
 }

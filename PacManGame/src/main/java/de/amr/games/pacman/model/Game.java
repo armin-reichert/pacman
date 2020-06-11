@@ -150,12 +150,17 @@ public class Game {
 		if (n > LEVELS.length) {
 			n = LEVELS.length;
 		}
-		GameLevel level = new GameLevel(LEVELS[n - 1]);
-		level.number = n;
-		level.eatenFoodCount = 0;
-		level.ghostsKilledByEnergizer = 0;
-		level.ghostsKilled = 0;
-		return level;
+		try {
+			GameLevel level = GameLevel.parse(LEVELS[n - 1]);
+			level.number = n;
+			return level;
+		} catch (Exception x) {
+			loginfo("ERROR: Data for level %d are invalid!", n);
+			loginfo("%s", LEVELS[n - 1]);
+			loginfo(x.getMessage());
+			System.exit(0);
+			return null;
+		}
 	}
 
 	private void createActors() {
