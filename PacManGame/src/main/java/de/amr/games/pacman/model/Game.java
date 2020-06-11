@@ -138,10 +138,6 @@ public class Game {
 	public void enterLevel(int n) {
 		loginfo("Enter level %d", n);
 		level = level(n);
-		level.number = n;
-		level.eatenFoodCount = 0;
-		level.ghostsKilledByEnergizer = 0;
-		level.ghostsKilled = 0;
 		levelCounter.add(level.bonusSymbol);
 		maze.restoreFood();
 		hiscore.save();
@@ -154,7 +150,12 @@ public class Game {
 		if (n > LEVELS.length) {
 			n = LEVELS.length;
 		}
-		return new GameLevel(LEVELS[n - 1]);
+		GameLevel level = new GameLevel(LEVELS[n - 1]);
+		level.number = n;
+		level.eatenFoodCount = 0;
+		level.ghostsKilledByEnergizer = 0;
+		level.ghostsKilled = 0;
+		return level;
 	}
 
 	private void createActors() {
