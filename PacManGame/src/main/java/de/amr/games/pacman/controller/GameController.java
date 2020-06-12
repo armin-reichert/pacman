@@ -468,9 +468,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				enqueue(new LevelCompletedEvent());
 				return;
 			}
-			if (game.isBonusScoreReached()) {
+			if (game.activateBonus()) {
 				game.bonus.activate(theme);
-				loginfo("Bonus %s added, time: %.2f sec", game.bonus, game.bonus.state().getDuration() / 60f);
+				loginfo("Bonus %s activated, time: %.2f sec", game.bonus, game.bonus.state().getDuration() / 60f);
 			}
 			if (found.energizer && game.level.pacManPowerSeconds > 0) {
 				sound.pacManGainsPower();

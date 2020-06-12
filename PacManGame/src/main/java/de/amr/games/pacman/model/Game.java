@@ -323,9 +323,9 @@ public class Game {
 	}
 
 	/**
-	 * @return {@code true} if a score for activating the bonus symbol is reached
+	 * @return {@code true} if the number of eaten pellets causes the bonus to get activated
 	 */
-	public boolean isBonusScoreReached() {
+	public boolean activateBonus() {
 		return level.eatenFoodCount == BONUS_ACTIVATION[0] || level.eatenFoodCount == BONUS_ACTIVATION[1];
 	}
 
