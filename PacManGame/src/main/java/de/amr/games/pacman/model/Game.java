@@ -104,6 +104,7 @@ public class Game {
 	public static final int POINTS_GHOST[] = { 200, 400, 800, 1600 };
 	public static final int DIGEST_PELLET_TICKS = 1;
 	public static final int DIGEST_ENERGIZER_TICKS = 3;
+	public static final int[] BONUS_ACTIVATION = { 70, 170 };
 
 	public PacMan pacMan;
 	public Ghost blinky, pinky, inky, clyde;
@@ -325,7 +326,7 @@ public class Game {
 	 * @return {@code true} if a score for activating the bonus symbol is reached
 	 */
 	public boolean isBonusScoreReached() {
-		return level.eatenFoodCount == 70 || level.eatenFoodCount == 170;
+		return level.eatenFoodCount == BONUS_ACTIVATION[0] || level.eatenFoodCount == BONUS_ACTIVATION[1];
 	}
 
 	/**
