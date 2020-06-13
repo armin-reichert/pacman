@@ -35,7 +35,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * A ghost.
  * 
  * <p>
- * Ghosts are creatures with additional behaviors like enteringand leaving the ghost house or
+ * Ghosts are creatures with additional behaviors like entering and leaving the ghost house or
  * jumping up and down at some position.
  * 
  * @author Armin Reichert
@@ -51,11 +51,11 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 	/** State to enter after frightening state ends. */
 	public GhostState followState;
 
-	/** Insane ghosts suffer from the "Elroy disease". */
+	/** Insane ghosts suffer from the "cruise elroy disease". */
 	public boolean insane;
 
-	/** Insanity ("cruise elroy") state. */
-	public int insanity; // 0, 1, 2
+	/** Insanity ("cruise elroy") level. */
+	public int insanityLevel; // 0, 1, 2
 
 	/** Steering before steering changes. */
 	private Steering prevSteering;
@@ -75,7 +75,7 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 						followState = LOCKED;
 						visible = true;
 						moveDir = wishDir = maze.ghostSeats[seat].startDir;
-						insanity = 0;
+						insanityLevel = 0;
 						tf.setPosition(maze.ghostSeats[seat].position);
 						enteredNewTile();
 						sprites.forEach(Sprite::resetAnimation);
@@ -114,7 +114,7 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 				
 				.state(SCATTERING)
 					.onTick(() -> {
-						updateCruiseElroyState(game);
+						updateInsanityLevel(game);
 						move();
 						showColored();
 						checkCollision(game.pacMan);
@@ -122,7 +122,7 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 			
 				.state(CHASING)
 					.onTick(() -> {
-						updateCruiseElroyState(game);
+						updateInsanityLevel(game);
 						move();
 						showColored();
 						checkCollision(game.pacMan);
@@ -214,20 +214,28 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 	}
 
-	private void updateCruiseElroyState(Game game) {
-		if (!insane) {
-			return;
+	@Override
+	public boolean canMoveBetween(Tile tile, Tile neighbor) {
+		if (maze.isDoor(neighbor)) {
+			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
-		if (insanity < 1 && game.remainingFoodCount() <= game.level.elroy1DotsLeft) {
-			changeElroyState(1, game.remainingFoodCount());
-		} else if (insanity < 2 && game.remainingFoodCount() <= game.level.elroy2DotsLeft) {
-			changeElroyState(2, game.remainingFoodCount());
+		if (maze.isUpwardsBlocked(tile) && neighbor.equals(maze.neighbor(tile, UP))) {
+			return !is(CHASING, SCATTERING);
 		}
+		return super.canMoveBetween(tile, neighbor);
 	}
 
-	private void changeElroyState(int value, int pelletsLeft) {
-		insanity = value;
-		loginfo("%s's Elroy state changed to %d, pellets left: %d", name, value, pelletsLeft);
+	public void move() {
+		Steering currentSteering = steering();
+		if (prevSteering != currentSteering) {
+			PacManStateMachineLogging.loginfo("%s steering changed from %s to %s", this, Steering.name(prevSteering),
+					Steering.name(currentSteering));
+			currentSteering.init();
+			currentSteering.force();
+			prevSteering = currentSteering;
+		}
+		currentSteering.steer();
+		movement.update();
 	}
 
 	@Override
@@ -267,36 +275,26 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 		sprites.select("points-" + points);
 	}
 
-	@Override
-	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (maze.isDoor(neighbor)) {
-			return is(ENTERING_HOUSE, LEAVING_HOUSE);
-		}
-		if (maze.isUpwardsBlocked(tile) && neighbor.equals(maze.neighbor(tile, UP))) {
-			return !is(CHASING, SCATTERING);
-		}
-		return super.canMoveBetween(tile, neighbor);
-	}
-
-	public void move() {
-		Steering currentSteering = steering();
-		if (prevSteering != currentSteering) {
-			PacManStateMachineLogging.loginfo("%s steering changed from %s to %s", this, Steering.name(prevSteering),
-					Steering.name(currentSteering));
-			currentSteering.init();
-			currentSteering.force();
-			prevSteering = currentSteering;
-		}
-		currentSteering.steer();
-		movement.update();
-	}
-
 	private void checkCollision(PacMan pacMan) {
 		if (isTeleporting() || pacMan.isTeleporting() || pacMan.is(PacManState.DEAD)) {
 			return;
 		}
 		if (tile().equals(pacMan.tile())) {
 			publish(new PacManGhostCollisionEvent(this));
+		}
+	}
+
+	private void updateInsanityLevel(Game game) {
+		if (!insane) {
+			return;
+		}
+		int pelletsLeft = game.remainingFoodCount();
+		if (insanityLevel < 1 && pelletsLeft <= game.level.elroy1DotsLeft) {
+			insanityLevel = 1;
+			loginfo("%s's insanity changed to %d, pellets left: %d", name, insanityLevel, pelletsLeft);
+		} else if (insanityLevel < 2 && pelletsLeft <= game.level.elroy2DotsLeft) {
+			insanityLevel = 2;
+			loginfo("%s's insanity changed to %d, pellets left: %d", name, insanityLevel, pelletsLeft);
 		}
 	}
 }
