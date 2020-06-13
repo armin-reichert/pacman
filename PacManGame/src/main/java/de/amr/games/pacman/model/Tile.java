@@ -3,7 +3,7 @@ package de.amr.games.pacman.model;
 import java.util.Objects;
 
 /**
- * The Pac-Man game world consists of a (potentially unbounded) grid of tiles.
+ * The Pac-Man game world is a grid of tiles.
  * 
  * @author Armin Reichert
  */

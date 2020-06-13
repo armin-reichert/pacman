@@ -1,10 +1,8 @@
 package de.amr.games.pacman.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
 
@@ -18,7 +16,7 @@ public class Maze {
 	// bits
 	static final byte WALL = 0, FOOD = 1, ENERGIZER = 2, EATEN = 3, INTERSECTION = 4, UPWARDS_BLOCKED = 5;
 
-	byte[][] content = {
+	byte[][] map = {
 		//@formatter:off
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
@@ -72,28 +70,33 @@ public class Maze {
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
 
-	private final List<Tile> playingAreaTiles = IntStream.range(0, numRows * numCols).filter(i -> {
-		int row = i / numCols;
-		return row >= 4 && row <= 32;
-	}).mapToObj(i -> new Tile(i % numCols, i / numCols)).collect(Collectors.toList());
+	public final List<Tile> playingArea;
 
-	private boolean is(Tile t, byte bit) {
-		return insideBoard(t) && is(t.row, t.col, bit);
+	private boolean isset(Tile t, byte bit) {
+		return insideBoard(t) && isset(t.row, t.col, bit);
 	}
 
-	private boolean is(int row, int col, byte bit) {
-		return (content[row][col] & (1 << bit)) != 0;
+	private boolean isset(int row, int col, byte bit) {
+		return (map[row][col] & (1 << bit)) != 0;
 	}
 
 	private void set(int row, int col, byte bit, boolean value) {
 		if (value) {
-			content[row][col] |= (1 << bit);
+			map[row][col] |= (1 << bit);
 		} else {
-			content[row][col] &= ~(1 << bit);
+			map[row][col] &= ~(1 << bit);
 		}
 	}
 
 	public Maze() {
+
+		playingArea = new ArrayList<>();
+		for (int row = 4; row <= 32; ++row) {
+			for (int col = 0; col < numCols; ++col) {
+				playingArea.add(new Tile(col, row));
+			}
+		}
+
 		portalLeft = new Tile(-1, 17);
 		portalRight = new Tile(28, 17);
 
@@ -112,14 +115,6 @@ public class Maze {
 		horizonNE = new Tile(25, 0);
 		horizonSW = new Tile(0, 35);
 		horizonSE = new Tile(27, 35);
-	}
-
-	/**
-	 * @return stream of tiles of the playing area (walls above and below playing area and portal tiles
-	 *         are omitted)
-	 */
-	public Stream<Tile> playingArea() {
-		return playingAreaTiles.stream();
 	}
 
 	/**
@@ -159,11 +154,11 @@ public class Maze {
 	}
 
 	public boolean isIntersection(Tile tile) {
-		return is(tile, INTERSECTION);
+		return isset(tile, INTERSECTION);
 	}
 
 	public boolean isUpwardsBlocked(Tile tile) {
-		return is(tile, UPWARDS_BLOCKED);
+		return isset(tile, UPWARDS_BLOCKED);
 	}
 
 	public boolean insideGhostHouse(Tile tile) {
@@ -182,7 +177,7 @@ public class Maze {
 		if (tile.equals(portalLeft) || tile.equals(portalRight)) {
 			return false;
 		}
-		return !insideBoard(tile) || is(tile, WALL);
+		return !insideBoard(tile) || isset(tile, WALL);
 	}
 
 	public boolean isTunnel(Tile tile) {
@@ -193,20 +188,20 @@ public class Maze {
 		return tile.equals(ghostHouseDoorLeft) || tile.equals(ghostHouseDoorRight);
 	}
 
-	public boolean isSimplePellet(Tile tile) {
-		return is(tile, FOOD) && !is(tile, EATEN) && !is(tile, ENERGIZER);
+	public boolean containsSimplePellet(Tile tile) {
+		return isset(tile, FOOD) && !isset(tile, EATEN) && !isset(tile, ENERGIZER);
 	}
 
-	public boolean isEnergizer(Tile tile) {
-		return is(tile, ENERGIZER) && !is(tile, EATEN);
+	public boolean containsEnergizer(Tile tile) {
+		return isset(tile, ENERGIZER) && !isset(tile, EATEN);
 	}
 
-	public boolean isEatenFood(Tile tile) {
-		return is(tile, FOOD) && is(tile, EATEN);
+	public boolean containsEatenFood(Tile tile) {
+		return isset(tile, FOOD) && isset(tile, EATEN);
 	}
 
 	public void removeFood(Tile tile) {
-		if (is(tile, FOOD)) {
+		if (isset(tile, FOOD)) {
 			set(tile.row, tile.col, EATEN, true);
 		}
 	}
@@ -214,7 +209,7 @@ public class Maze {
 	public void removeFood() {
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				if (is(row, col, FOOD)) {
+				if (isset(row, col, FOOD)) {
 					set(row, col, EATEN, true);
 				}
 			}
@@ -224,7 +219,7 @@ public class Maze {
 	public void restoreFood() {
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				if (is(row, col, FOOD)) {
+				if (isset(row, col, FOOD)) {
 					set(row, col, EATEN, false);
 				}
 			}

@@ -96,10 +96,10 @@ public class BoardPreview extends JFrame {
 		if (maze.isWall(tile)) {
 			return "";
 		}
-		if (maze.isSimplePellet(tile)) {
+		if (maze.containsSimplePellet(tile)) {
 			return "o";
 		}
-		if (maze.isEnergizer(tile)) {
+		if (maze.containsEnergizer(tile)) {
 			return "O";
 		}
 		return " ";

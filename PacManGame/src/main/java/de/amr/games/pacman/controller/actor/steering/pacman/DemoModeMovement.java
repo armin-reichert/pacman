@@ -77,8 +77,8 @@ public class DemoModeMovement implements Steering {
 			return game.maze.bonusTile;
 		}
 		//@formatter:off
-		return game.maze.playingArea()
-			.filter(t -> game.maze.isEnergizer(t) || game.maze.isSimplePellet(t))
+		return game.maze.playingArea.stream()
+			.filter(t -> game.maze.containsEnergizer(t) || game.maze.containsSimplePellet(t))
 			.sorted(Comparator.comparing(foodLocation -> euclideanDistance(tile, foodLocation)))
 			.findFirst().orElse(null);
 		//@formatter:on
