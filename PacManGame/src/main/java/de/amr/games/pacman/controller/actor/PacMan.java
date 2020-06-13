@@ -63,7 +63,7 @@ public class PacMan extends Creature<PacManState> {
 						power = digestionTicks = 0;
 						moveDir = wishDir = Direction.RIGHT;
 						visible = true;
-						tf.setPosition(maze.pacManHome.centerX(), maze.pacManHome.y());
+						tf.setPosition(maze.pacManSeat.position);
 						sprites.forEach(Sprite::resetAnimation);
 						showFull();
 					})
@@ -176,7 +176,7 @@ public class PacMan extends Creature<PacManState> {
 
 	private Optional<PacManGameEvent> findSomethingInteresting(Game game) {
 		Tile tile = tile();
-		if (tile.equals(maze.bonusTile) && game.bonus.is(ACTIVE)) {
+		if (tile.equals(maze.bonusSeat.tile) && game.bonus.is(ACTIVE)) {
 			return Optional.of(new BonusFoundEvent(game.bonus.symbol, game.bonus.value));
 		}
 		if (maze.containsEnergizer(tile)) {

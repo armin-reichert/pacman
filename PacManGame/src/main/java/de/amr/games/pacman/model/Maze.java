@@ -65,11 +65,12 @@ public class Maze {
 	public final int numCols = 28;
 	public final int totalFoodCount;
 
-	public final Tile pacManHome;
-	public final GhostSeat[] ghostSeats;
+	public final Seat pacManSeat;
+	public final Seat ghostSeats[];
+	public final Seat bonusSeat;
+
 	public final Tile ghostHouseEntry;
 	public final Tile portalLeft, portalRight;
-	public final Tile bonusTile;
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
 
@@ -103,16 +104,16 @@ public class Maze {
 		ghostHouseDoorRight = tile(14, 15);
 
 		//@formatter:off
-		ghostSeats = new GhostSeat[] { 
-				new GhostSeat(13, 14, Direction.LEFT), 
-				new GhostSeat(11, 17, Direction.UP),
-				new GhostSeat(13, 17, Direction.DOWN),
-				new GhostSeat(15, 17, Direction.UP),
+		ghostSeats = new Seat[] { 
+				new Seat(13, 14, Direction.LEFT), 
+				new Seat(11, 17, Direction.UP),
+				new Seat(13, 17, Direction.DOWN),
+				new Seat(15, 17, Direction.UP),
 				};
 		//@formatter:on
 
-		pacManHome = tile(13, 26);
-		bonusTile = tile(13, 20);
+		pacManSeat = new Seat(13, 26, Direction.RIGHT);
+		bonusSeat = new Seat(13, 20, null);
 
 		// (unreachable) scattering targets
 		horizonNW = tile(2, 0);

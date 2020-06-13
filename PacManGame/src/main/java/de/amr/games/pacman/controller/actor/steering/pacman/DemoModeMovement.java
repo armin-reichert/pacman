@@ -74,7 +74,7 @@ public class DemoModeMovement implements Steering {
 
 	Tile nearestFood(Tile tile) {
 		if (game.bonus.is(BonusState.ACTIVE)) {
-			return game.maze.bonusTile;
+			return game.maze.bonusSeat.tile;
 		}
 		//@formatter:off
 		return game.maze.playingArea()

@@ -87,10 +87,10 @@ public class BoardPreview extends JFrame {
 		if (tile.equals(maze.ghostSeats[3].tile) || tile.equals(maze.horizonSW)) {
 			return "C";
 		}
-		if (tile.equals(maze.bonusTile)) {
+		if (tile.equals(maze.bonusSeat.tile)) {
 			return "$";
 		}
-		if (tile.equals(maze.pacManHome)) {
+		if (tile.equals(maze.pacManSeat.tile)) {
 			return "O";
 		}
 		if (maze.isWall(tile)) {

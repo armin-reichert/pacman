@@ -212,7 +212,7 @@ public class SimplePlayView extends BaseView {
 			spriteFlashingMaze = theme.spr_flashingMaze();
 			energizersBlinking = new CyclicAnimation(2);
 			energizersBlinking.setFrameDuration(150);
-			game.bonus.tf.setPosition(game.maze.bonusTile.centerX(), game.maze.bonusTile.y());
+			game.bonus.tf.setPosition(game.maze.bonusSeat.position);
 			//@formatter:off
 			beginStateMachine()
 				.description("[Maze View]")
