@@ -468,7 +468,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				enqueue(new LevelCompletedEvent());
 				return;
 			}
-			if (game.activateBonus()) {
+			if (game.isBonusDue()) {
 				game.bonus.activate(theme);
 				loginfo("Bonus %s activated, time: %.2f sec", game.bonus, game.bonus.state().getDuration() / 60f);
 			}

@@ -67,6 +67,16 @@ public class Game {
 		/*@formatter:on*/
 	};
 
+	public static final int POINTS_PELLET = 10;
+	public static final int POINTS_ENERGIZER = 50;
+	public static final int POINTS_EXTRA_LIFE = 10_000;
+	public static final int POINTS_KILLED_ALL_GHOSTS = 12_000;
+	public static final int POINTS_BONUS[] = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+	public static final int POINTS_GHOST[] = { 200, 400, 800, 1600 };
+	public static final int DIGEST_PELLET_TICKS = 1;
+	public static final int DIGEST_ENERGIZER_TICKS = 3;
+	public static final int BONUS_ACTIVATION[] = { 70, 170 };
+
 	/**
 	 * In Shaun William's <a href="https://github.com/masonicGIT/pacman">Pac-Man remake</a> there is a
 	 * speed table giving the number of steps (=pixels?) which Pac-Man is moving in 16 frames. In level
@@ -94,16 +104,6 @@ public class Game {
 	public static int sec(float seconds) {
 		return Math.round(60 * seconds);
 	}
-
-	public static final int POINTS_PELLET = 10;
-	public static final int POINTS_ENERGIZER = 50;
-	public static final int POINTS_EXTRA_LIFE = 10_000;
-	public static final int POINTS_KILLED_ALL_GHOSTS = 12_000;
-	public static final int POINTS_BONUS[] = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
-	public static final int POINTS_GHOST[] = { 200, 400, 800, 1600 };
-	public static final int DIGEST_PELLET_TICKS = 1;
-	public static final int DIGEST_ENERGIZER_TICKS = 3;
-	public static final int[] BONUS_ACTIVATION = { 70, 170 };
 
 	public PacMan pacMan;
 	public Ghost blinky, pinky, inky, clyde;
@@ -324,9 +324,9 @@ public class Game {
 	}
 
 	/**
-	 * @return {@code true} if the number of eaten pellets causes the bonus to get activated
+	 * @return {@code true} if the number of eaten pellets causes the bonus to get active
 	 */
-	public boolean activateBonus() {
+	public boolean isBonusDue() {
 		return level.eatenFoodCount == BONUS_ACTIVATION[0] || level.eatenFoodCount == BONUS_ACTIVATION[1];
 	}
 
