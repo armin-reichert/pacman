@@ -42,7 +42,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
+public class Ghost extends Creature<GhostState> implements SteeredGhost {
 
 	/** Speed function for the ghost. */
 	public BiFunction<Ghost, GameLevel, Float> fnSpeed = (self, level) -> 0f;

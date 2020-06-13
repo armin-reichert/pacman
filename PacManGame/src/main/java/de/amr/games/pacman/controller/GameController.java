@@ -28,7 +28,7 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
-import de.amr.games.pacman.controller.actor.MovingActor;
+import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.controller.actor.steering.pacman.DemoModeMovement;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
@@ -191,7 +191,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							playView.mazeView.energizersBlinking.setEnabled(true);
 							sound.gameStarts();
 						}
-						game.movingActorsOnStage().forEach(MovingActor::update);
+						game.movingActorsOnStage().forEach(Creature::update);
 					})
 					.onExit(() -> {
 						playView.clearMessage();
@@ -228,7 +228,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						// After two more seconds, change level and show crowded maze.
 						if (t == sec(4 + flashingSeconds)) {
 							game.enterLevel(game.level.number + 1);
-							game.movingActorsOnStage().forEach(MovingActor::init);
+							game.movingActorsOnStage().forEach(Creature::init);
 							playView.init();
 						}
 						
@@ -279,7 +279,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						}
 						else if (t == dyingEndTime && game.lives > 0) {
 							sound.gameStarts();
-							game.movingActorsOnStage().forEach(MovingActor::init);
+							game.movingActorsOnStage().forEach(Creature::init);
 							playView.init();
 						}
 						else if (t > dyingEndTime) {
@@ -392,7 +392,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		public void onTick() {
 			ghostCommand.update();
 			ghostHouse.update();
-			game.movingActorsOnStage().forEach(MovingActor::update);
+			game.movingActorsOnStage().forEach(Creature::update);
 			game.bonus.update();
 			sound.updatePlayingSounds(game);
 		}

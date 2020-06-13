@@ -1,7 +1,7 @@
 package de.amr.games.pacman.controller.actor;
 
-import static de.amr.games.pacman.controller.actor.MovingActor.Movement.MOVING_INSIDE_MAZE;
-import static de.amr.games.pacman.controller.actor.MovingActor.Movement.TELEPORTING;
+import static de.amr.games.pacman.controller.actor.Creature.Movement.MOVING_INSIDE_MAZE;
+import static de.amr.games.pacman.controller.actor.Creature.Movement.TELEPORTING;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.model.Game.sec;
 
@@ -23,13 +23,14 @@ import de.amr.statemachine.api.FsmContainer;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Base class for actors moving through the maze and controlled by a finite-state machine.
+ * Base class for a creature that can move through the maze and uses finite-state machine to control
+ * its behavior.
  * 
  * @param <STATE> state identifier type
  * 
  * @author Armin Reichert
  */
-public abstract class MovingActor<STATE> extends Entity implements FsmContainer<STATE, PacManGameEvent>, MazeMover {
+public abstract class Creature<STATE> extends Entity implements FsmContainer<STATE, PacManGameEvent>, MazeMover {
 
 	enum Movement {
 		MOVING_INSIDE_MAZE, TELEPORTING;
@@ -48,7 +49,7 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 	protected Tile targetTile;
 	protected boolean enteredNewTile;
 
-	public MovingActor(Game game, String name) {
+	public Creature(Game game, String name) {
 		this.game = game;
 		this.maze = game.maze;
 		this.name = name;

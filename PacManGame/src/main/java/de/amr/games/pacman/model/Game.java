@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.actor.Bonus;
 import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.MovingActor;
+import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.PacMan;
 
 /**
@@ -115,7 +115,7 @@ public class Game {
 	public int lives;
 	public int score;
 
-	private Set<MovingActor<?>> stage = new HashSet<>();
+	private Set<Creature<?>> stage = new HashSet<>();
 
 	/**
 	 * Creates a game starting with the given level.
@@ -283,14 +283,14 @@ public class Game {
 	/**
 	 * @return stream of all moving actors (ghosts and Pac-Man)
 	 */
-	public Stream<MovingActor<?>> movingActors() {
+	public Stream<Creature<?>> movingActors() {
 		return Stream.of(pacMan, blinky, pinky, inky, clyde);
 	}
 
 	/**
 	 * @return stream of moving actors currently on stage (ghosts and Pac-Man)
 	 */
-	public Stream<MovingActor<?>> movingActorsOnStage() {
+	public Stream<Creature<?>> movingActorsOnStage() {
 		return movingActors().filter(stage::contains);
 	}
 
@@ -369,7 +369,7 @@ public class Game {
 	 * @param actor a ghost or Pac-Man
 	 * @return {@code true} if the actor is currently on stage
 	 */
-	public boolean onStage(MovingActor<?> actor) {
+	public boolean onStage(Creature<?> actor) {
 		return stage.contains(actor);
 	}
 
@@ -378,7 +378,7 @@ public class Game {
 	 * 
 	 * @param actor a ghost or Pac-Man
 	 */
-	public void putOnStage(MovingActor<?> actor) {
+	public void putOnStage(Creature<?> actor) {
 		stage.add(actor);
 		actor.init();
 		actor.visible = true;
@@ -390,7 +390,7 @@ public class Game {
 	 * 
 	 * @param actor a ghost or Pac-Man
 	 */
-	public void pullFromStage(MovingActor<?> actor) {
+	public void pullFromStage(Creature<?> actor) {
 		stage.remove(actor);
 		actor.visible = false;
 		loginfo("%s left the stage", actor.name);

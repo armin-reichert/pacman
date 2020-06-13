@@ -7,7 +7,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
-import de.amr.games.pacman.controller.actor.MovingActor;
+import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -74,7 +74,7 @@ class PacManMovementTestUI extends PlayView {
 	public void update() {
 		super.update();
 		handleSteeringChange();
-		game.movingActorsOnStage().forEach(MovingActor::update);
+		game.movingActorsOnStage().forEach(Creature::update);
 	}
 
 	private void handleSteeringChange() {

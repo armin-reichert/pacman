@@ -38,7 +38,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends MovingActor<PacManState> implements SteeredMazeMover {
+public class PacMan extends Creature<PacManState> implements SteeredMazeMover {
 
 	/** Number of ticks Pac-Man has power after eating an energizer. */
 	public int power;
