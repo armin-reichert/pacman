@@ -24,7 +24,6 @@ import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
-import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.Tile;
@@ -61,7 +60,7 @@ public class PacMan extends Creature<PacManState> {
 				.state(SLEEPING)
 					.onEntry(() -> {
 						power = digestionTicks = 0;
-						moveDir = wishDir = Direction.RIGHT;
+						moveDir = wishDir = maze.pacManSeat.startDir;
 						visible = true;
 						tf.setPosition(maze.pacManSeat.position);
 						sprites.forEach(Sprite::resetAnimation);
