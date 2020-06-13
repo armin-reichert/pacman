@@ -191,7 +191,7 @@ public class Game {
 		blinky.seat = 0;
 		blinky.insane = true;
 		blinky.behavior(LOCKED, blinky.isHeadingFor(blinky::tile));
-		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(maze.seatPosition(2)));
+		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(maze.ghostSeats[2].position));
 		blinky.behavior(LEAVING_HOUSE, blinky.isLeavingGhostHouse());
 		blinky.behavior(FRIGHTENED, blinky.isMovingRandomlyWithoutTurningBack());
 		blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
@@ -199,8 +199,8 @@ public class Game {
 		blinky.behavior(DEAD, blinky.isHeadingFor(() -> maze.ghostHouseEntry));
 
 		inky.seat = 1;
-		inky.behavior(LOCKED, inky.isJumpingUpAndDown(maze.seatPosition(1)));
-		inky.behavior(ENTERING_HOUSE, inky.isTakingSeat(maze.seatPosition(1)));
+		inky.behavior(LOCKED, inky.isJumpingUpAndDown(maze.ghostSeats[1].position));
+		inky.behavior(ENTERING_HOUSE, inky.isTakingSeat(maze.ghostSeats[1].position));
 		inky.behavior(LEAVING_HOUSE, inky.isLeavingGhostHouse());
 		inky.behavior(FRIGHTENED, inky.isMovingRandomlyWithoutTurningBack());
 		inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
@@ -211,8 +211,8 @@ public class Game {
 		inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostHouseEntry));
 
 		pinky.seat = 2;
-		pinky.behavior(LOCKED, pinky.isJumpingUpAndDown(maze.seatPosition(2)));
-		pinky.behavior(ENTERING_HOUSE, pinky.isTakingSeat(maze.seatPosition(2)));
+		pinky.behavior(LOCKED, pinky.isJumpingUpAndDown(maze.ghostSeats[2].position));
+		pinky.behavior(ENTERING_HOUSE, pinky.isTakingSeat(maze.ghostSeats[2].position));
 		pinky.behavior(LEAVING_HOUSE, pinky.isLeavingGhostHouse());
 		pinky.behavior(FRIGHTENED, pinky.isMovingRandomlyWithoutTurningBack());
 		pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
@@ -220,8 +220,8 @@ public class Game {
 		pinky.behavior(DEAD, pinky.isHeadingFor(() -> maze.ghostHouseEntry));
 
 		clyde.seat = 3;
-		clyde.behavior(LOCKED, clyde.isJumpingUpAndDown(maze.seatPosition(3)));
-		clyde.behavior(ENTERING_HOUSE, clyde.isTakingSeat(maze.seatPosition(3)));
+		clyde.behavior(LOCKED, clyde.isJumpingUpAndDown(maze.ghostSeats[3].position));
+		clyde.behavior(ENTERING_HOUSE, clyde.isTakingSeat(maze.ghostSeats[3].position));
 		clyde.behavior(LEAVING_HOUSE, clyde.isLeavingGhostHouse());
 		clyde.behavior(FRIGHTENED, clyde.isMovingRandomlyWithoutTurningBack());
 		clyde.behavior(SCATTERING, clyde.isHeadingFor(maze.horizonSW));

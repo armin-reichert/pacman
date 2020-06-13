@@ -1,8 +1,8 @@
 package de.amr.games.pacman.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
 
@@ -12,6 +12,10 @@ import de.amr.easy.game.math.Vector2f;
  * @author Armin Reichert
  */
 public class Maze {
+
+	private static Tile tile(int col, int row) {
+		return new Tile(col, row);
+	}
 
 	// bits
 	static final byte WALL = 0, FOOD = 1, ENERGIZER = 2, EATEN = 3, INTERSECTION = 4, UPWARDS_BLOCKED = 5;
@@ -59,24 +63,23 @@ public class Maze {
 
 	public final int numRows = 36;
 	public final int numCols = 28;
-	public final int totalFoodCount = 244;
+	public final int totalFoodCount;
 
 	public final Tile pacManHome;
-	public final Tile ghostHome[];
-	public final Direction ghostHomeDir[];
+	public final GhostSeat[] ghostSeats;
 	public final Tile ghostHouseEntry;
 	public final Tile portalLeft, portalRight;
 	public final Tile bonusTile;
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
 
-	public final List<Tile> playingArea;
+	// bit operations
 
-	private boolean isset(Tile t, byte bit) {
-		return insideBoard(t) && isset(t.row, t.col, bit);
+	private boolean on(Tile t, byte bit) {
+		return insideBoard(t) && off(t.row, t.col, bit);
 	}
 
-	private boolean isset(int row, int col, byte bit) {
+	private boolean off(int row, int col, byte bit) {
 		return (map[row][col] & (1 << bit)) != 0;
 	}
 
@@ -90,31 +93,39 @@ public class Maze {
 
 	public Maze() {
 
-		playingArea = new ArrayList<>();
-		for (int row = 4; row <= 32; ++row) {
-			for (int col = 0; col < numCols; ++col) {
-				playingArea.add(new Tile(col, row));
-			}
-		}
+		totalFoodCount = (int) playingArea().filter(tile -> containsSimplePellet(tile) || containsEnergizer(tile)).count();
 
-		portalLeft = new Tile(-1, 17);
-		portalRight = new Tile(28, 17);
+		portalLeft = tile(-1, 17);
+		portalRight = tile(28, 17);
 
-		ghostHouseEntry = new Tile(13, 14);
-		ghostHouseDoorLeft = new Tile(13, 15);
-		ghostHouseDoorRight = new Tile(14, 15);
+		ghostHouseEntry = tile(13, 14);
+		ghostHouseDoorLeft = tile(13, 15);
+		ghostHouseDoorRight = tile(14, 15);
 
-		ghostHome = new Tile[] { new Tile(13, 14), new Tile(11, 17), new Tile(13, 17), new Tile(15, 17) };
-		ghostHomeDir = new Direction[] { Direction.LEFT, Direction.UP, Direction.DOWN, Direction.UP };
+		//@formatter:off
+		ghostSeats = new GhostSeat[] { 
+				new GhostSeat(13, 14, Direction.LEFT), 
+				new GhostSeat(11, 17, Direction.UP),
+				new GhostSeat(13, 17, Direction.DOWN),
+				new GhostSeat(15, 17, Direction.UP),
+				};
+		//@formatter:on
 
-		pacManHome = new Tile(13, 26);
-		bonusTile = new Tile(13, 20);
+		pacManHome = tile(13, 26);
+		bonusTile = tile(13, 20);
 
 		// (unreachable) scattering targets
-		horizonNW = new Tile(2, 0);
-		horizonNE = new Tile(25, 0);
-		horizonSW = new Tile(0, 35);
-		horizonSE = new Tile(27, 35);
+		horizonNW = tile(2, 0);
+		horizonNE = tile(25, 0);
+		horizonSW = tile(0, 35);
+		horizonSE = tile(27, 35);
+	}
+
+	/**
+	 * @return stream of tiles of the playing area (omitting wall areas used for the scores)
+	 */
+	public Stream<Tile> playingArea() {
+		return IntStream.range(4 * numCols, 33 * numCols).mapToObj(i -> tile(i % numCols, i / numCols));
 	}
 
 	/**
@@ -132,7 +143,7 @@ public class Maze {
 			return portalLeft;
 		}
 		Vector2f v = dir.vector();
-		return new Tile(tile.col + n * v.roundedX(), tile.row + n * v.roundedY());
+		return tile(tile.col + n * v.roundedX(), tile.row + n * v.roundedY());
 	}
 
 	/**
@@ -154,11 +165,11 @@ public class Maze {
 	}
 
 	public boolean isIntersection(Tile tile) {
-		return isset(tile, INTERSECTION);
+		return on(tile, INTERSECTION);
 	}
 
 	public boolean isUpwardsBlocked(Tile tile) {
-		return isset(tile, UPWARDS_BLOCKED);
+		return on(tile, UPWARDS_BLOCKED);
 	}
 
 	public boolean insideGhostHouse(Tile tile) {
@@ -169,15 +180,11 @@ public class Maze {
 		return isDoor(neighbor(tile, Direction.DOWN));
 	}
 
-	public Vector2f seatPosition(int seat) {
-		return Vector2f.of(ghostHome[seat].centerX(), ghostHome[seat].y());
-	}
-
 	public boolean isWall(Tile tile) {
 		if (tile.equals(portalLeft) || tile.equals(portalRight)) {
 			return false;
 		}
-		return !insideBoard(tile) || isset(tile, WALL);
+		return !insideBoard(tile) || on(tile, WALL);
 	}
 
 	public boolean isTunnel(Tile tile) {
@@ -189,19 +196,19 @@ public class Maze {
 	}
 
 	public boolean containsSimplePellet(Tile tile) {
-		return isset(tile, FOOD) && !isset(tile, EATEN) && !isset(tile, ENERGIZER);
+		return on(tile, FOOD) && !on(tile, EATEN) && !on(tile, ENERGIZER);
 	}
 
 	public boolean containsEnergizer(Tile tile) {
-		return isset(tile, ENERGIZER) && !isset(tile, EATEN);
+		return on(tile, ENERGIZER) && !on(tile, EATEN);
 	}
 
 	public boolean containsEatenFood(Tile tile) {
-		return isset(tile, FOOD) && isset(tile, EATEN);
+		return on(tile, FOOD) && on(tile, EATEN);
 	}
 
 	public void removeFood(Tile tile) {
-		if (isset(tile, FOOD)) {
+		if (on(tile, FOOD)) {
 			set(tile.row, tile.col, EATEN, true);
 		}
 	}
@@ -209,7 +216,7 @@ public class Maze {
 	public void removeFood() {
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				if (isset(row, col, FOOD)) {
+				if (off(row, col, FOOD)) {
 					set(row, col, EATEN, true);
 				}
 			}
@@ -219,7 +226,7 @@ public class Maze {
 	public void restoreFood() {
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				if (isset(row, col, FOOD)) {
+				if (off(row, col, FOOD)) {
 					set(row, col, EATEN, false);
 				}
 			}
@@ -229,18 +236,18 @@ public class Maze {
 	// these corner positions are not needed in the original game
 
 	public Tile cornerNW() {
-		return new Tile(1, 4);
+		return tile(1, 4);
 	}
 
 	public Tile cornerNE() {
-		return new Tile(26, 4);
+		return tile(26, 4);
 	}
 
 	public Tile cornerSW() {
-		return new Tile(1, 32);
+		return tile(1, 32);
 	}
 
 	public Tile cornerSE() {
-		return new Tile(26, 32);
+		return tile(26, 32);
 	}
 }

@@ -74,9 +74,9 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					.onEntry(() -> {
 						followState = LOCKED;
 						visible = true;
-						moveDir = wishDir = maze.ghostHomeDir[seat];
+						moveDir = wishDir = maze.ghostSeats[seat].exitDir;
 						cruiseElroyState = 0;
-						tf.setPosition(maze.seatPosition(seat));
+						tf.setPosition(maze.ghostSeats[seat].position);
 						enteredNewTile();
 						sprites.forEach(Sprite::resetAnimation);
 						showColored();
@@ -103,7 +103,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 				
 				.state(ENTERING_HOUSE)
 					.onEntry(() -> {
-						tf.setPosition(maze.seatPosition(0));
+						tf.setPosition(maze.ghostSeats[0].position);
 						moveDir = wishDir = DOWN;
 						steering().init();
 					})

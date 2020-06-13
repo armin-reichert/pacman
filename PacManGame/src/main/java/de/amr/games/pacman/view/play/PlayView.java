@@ -261,10 +261,10 @@ public class PlayView extends SimplePlayView {
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		List<Ghost> ghostsBySeat = game.ghosts().sorted(comparingInt(ghost -> ghost.seat)).collect(toList());
 		for (int seat = 0; seat < 4; ++seat) {
-			Tile seatTile = game.maze.ghostHome[seat];
+			Vector2f seatPosition = game.maze.ghostSeats[seat].position;
 			Ghost ghostAtSeat = ghostsBySeat.get(seat);
 			g.setColor(ghostColor(ghostAtSeat));
-			int x = seatTile.centerX(), y = seatTile.y();
+			int x = seatPosition.roundedX(), y = seatPosition.roundedY();
 			String text = String.valueOf(seat);
 			g.drawRoundRect(x, y, Tile.SIZE, Tile.SIZE, 2, 2);
 			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 6));

@@ -27,27 +27,29 @@ public class MazeTests {
 	}
 
 	@Test
-	public void testMazeContent() {
+	public void testMazeStructure() {
 		assertNotNull(maze.pacManHome);
-		assertNotNull(maze.ghostHome[0]);
-		assertNotNull(maze.ghostHome[1]);
-		assertNotNull(maze.ghostHome[2]);
-		assertNotNull(maze.ghostHome[3]);
+		assertNotNull(maze.ghostSeats[0]);
+		assertNotNull(maze.ghostSeats[1]);
+		assertNotNull(maze.ghostSeats[2]);
+		assertNotNull(maze.ghostSeats[3]);
 		assertNotNull(maze.bonusTile);
 		assertNotNull(maze.horizonNE);
 		assertNotNull(maze.horizonNW);
 		assertNotNull(maze.horizonSW);
 		assertNotNull(maze.horizonSE);
-
-		assertEquals(4, maze.playingArea.stream().filter(maze::containsEnergizer).count());
-		assertEquals(240, maze.playingArea.stream().filter(maze::containsSimplePellet).count());
-
-		assertTrue(maze.isWall(new Tile(0, 3)));
-		assertTrue(maze.isDoor(new Tile(13, 15)));
-		assertTrue(maze.containsSimplePellet(new Tile(1, 4)));
-		assertTrue(maze.containsEnergizer(new Tile(1, 6)));
 		assertTrue(maze.portalLeft.equals(new Tile(-1, 17)));
 		assertTrue(maze.portalRight.equals(new Tile(28, 17)));
+		assertTrue(maze.isWall(new Tile(0, 3)));
+		assertTrue(maze.isDoor(new Tile(13, 15)));
+	}
+
+	@Test
+	public void testMazeContent() {
+		assertEquals(4, maze.playingArea().filter(maze::containsEnergizer).count());
+		assertEquals(maze.totalFoodCount - 4, maze.playingArea().filter(maze::containsSimplePellet).count());
+		assertTrue(maze.containsSimplePellet(new Tile(1, 4)));
+		assertTrue(maze.containsEnergizer(new Tile(1, 6)));
 	}
 
 	@Test
