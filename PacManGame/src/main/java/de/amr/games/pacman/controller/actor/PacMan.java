@@ -49,8 +49,7 @@ public class PacMan extends Creature<PacManState> {
 	public BiFunction<PacMan, GameLevel, Float> fnSpeed = (self, level) -> 0f;
 
 	public PacMan(Game game) {
-		super(game, "Pac-Man");
-		steerings = new EnumMap<>(PacManState.class);
+		super(game, "Pac-Man", new EnumMap<>(PacManState.class));
 		/*@formatter:off*/
 		brain = StateMachine.beginStateMachine(PacManState.class, PacManGameEvent.class)
 

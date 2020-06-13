@@ -250,9 +250,9 @@ public class Game {
 		case SCATTERING:
 			if (maze.isTunnel(ghost.tile())) {
 				return speed(level.ghostTunnelSpeed);
-			} else if (ghost.cruiseElroyState == 2) {
+			} else if (ghost.insanity == 2) {
 				return speed(level.elroy2Speed);
-			} else if (ghost.cruiseElroyState == 1) {
+			} else if (ghost.insanity == 1) {
 				return speed(level.elroy1Speed);
 			} else {
 				return speed(level.ghostSpeed);

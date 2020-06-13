@@ -50,10 +50,11 @@ public abstract class Creature<STATE> extends Entity implements FsmContainer<STA
 	protected Tile targetTile;
 	protected boolean enteredNewTile;
 
-	public Creature(Game game, String name) {
+	public Creature(Game game, String name, Map<STATE, Steering> steerings) {
 		this.game = game;
 		this.maze = game.maze;
 		this.name = name;
+		this.steerings = steerings;
 		tf.width = Tile.SIZE;
 		tf.height = Tile.SIZE;
 		movement = StateMachine

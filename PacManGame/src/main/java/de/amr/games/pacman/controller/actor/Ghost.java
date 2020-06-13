@@ -8,10 +8,7 @@ import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.model.Direction.DOWN;
-import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
-import static de.amr.games.pacman.model.Game.POINTS_GHOST;
 import static de.amr.games.pacman.model.Game.sec;
 
 import java.util.EnumMap;
@@ -45,25 +42,26 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends Creature<GhostState> implements GhostBehavior {
 
-	/** Speed function for the ghost. */
+	/** Pluggable speed function for the ghost. */
 	public BiFunction<Ghost, GameLevel, Float> fnSpeed = (self, level) -> 0f;
 
-	/** Number of ghost house seat (0-3). */
+	/** Ghost house seat number (0-3). */
 	public int seat;
 
-	/** State to enter after frightening ends. */
+	/** State to enter after frightening state ends. */
 	public GhostState followState;
 
-	/** If this ghost is suffering from the "Elroy disease". */
+	/** Insane ghosts suffer from the "Elroy disease". */
 	public boolean insane;
 
-	public int cruiseElroyState; // 0, 1, 2
+	/** Insanity ("cruise elroy") state. */
+	public int insanity; // 0, 1, 2
 
+	/** Steering before steering changes. */
 	private Steering prevSteering;
 
 	public Ghost(Game game, String name) {
-		super(game, name);
-		steerings = new EnumMap<>(GhostState.class);
+		super(game, name, new EnumMap<>(GhostState.class));
 		/*@formatter:off*/
 		brain = StateMachine.beginStateMachine(GhostState.class, PacManGameEvent.class)
 			 
@@ -77,7 +75,7 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 						followState = LOCKED;
 						visible = true;
 						moveDir = wishDir = maze.ghostSeats[seat].startDir;
-						cruiseElroyState = 0;
+						insanity = 0;
 						tf.setPosition(maze.ghostSeats[seat].position);
 						enteredNewTile();
 						sprites.forEach(Sprite::resetAnimation);
@@ -101,12 +99,12 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 						move();
 						showColored();
 					})
-					.onExit(() -> forceMoving(LEFT))
+					.onExit(() -> forceMoving(Direction.LEFT))
 				
 				.state(ENTERING_HOUSE)
 					.onEntry(() -> {
 						tf.setPosition(maze.ghostSeats[0].position);
-						moveDir = wishDir = DOWN;
+						moveDir = wishDir = Direction.DOWN;
 						steering().init();
 					})
 					.onTick(() -> {
@@ -147,7 +145,7 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 				.state(DEAD)
 					.timeoutAfter(sec(1)) // time while ghost is drawn as number of scored points
 					.onEntry(() -> {
-						showPoints(POINTS_GHOST[game.level.ghostsKilledByEnergizer - 1]);
+						showPoints(Game.POINTS_GHOST[game.level.ghostsKilledByEnergizer - 1]);
 					})
 					.onTick((state, t, remaining) -> {
 						if (remaining == 0) { // show as eyes returning to ghost home
@@ -220,15 +218,15 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 		if (!insane) {
 			return;
 		}
-		if (cruiseElroyState < 1 && game.remainingFoodCount() <= game.level.elroy1DotsLeft) {
+		if (insanity < 1 && game.remainingFoodCount() <= game.level.elroy1DotsLeft) {
 			changeElroyState(1, game.remainingFoodCount());
-		} else if (cruiseElroyState < 2 && game.remainingFoodCount() <= game.level.elroy2DotsLeft) {
+		} else if (insanity < 2 && game.remainingFoodCount() <= game.level.elroy2DotsLeft) {
 			changeElroyState(2, game.remainingFoodCount());
 		}
 	}
 
 	private void changeElroyState(int value, int pelletsLeft) {
-		cruiseElroyState = value;
+		insanity = value;
 		loginfo("%s's Elroy state changed to %d, pellets left: %d", name, value, pelletsLeft);
 	}
 
