@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.actor.Bonus;
@@ -231,38 +230,40 @@ public class Game {
 
 		// define actor speed
 
-		pacMan.fnSpeed = self -> self.is(EATING) ? speed(self.powerTicks > 0 ? level.pacManPowerSpeed : level.pacManSpeed)
-				: 0;
+		pacMan.fnSpeed = this::pacManSpeed;
+		ghosts().forEach(ghost -> ghost.fnSpeed = this::ghostSpeed);
+	}
 
-		Function<Ghost, Float> fnGhostSpeed = ghost -> {
-			switch (ghost.getState()) {
-			case LOCKED:
-				return speed(maze.insideGhostHouse(ghost.tile()) ? level.ghostSpeed / 2 : 0);
-			case LEAVING_HOUSE:
-				return speed(level.ghostSpeed / 2);
-			case ENTERING_HOUSE:
+	private float pacManSpeed(PacMan pacMan, GameLevel level) {
+		return pacMan.is(EATING) ? speed(pacMan.power > 0 ? level.pacManPowerSpeed : level.pacManSpeed) : 0;
+	}
+
+	private float ghostSpeed(Ghost ghost, GameLevel level) {
+		switch (ghost.getState()) {
+		case LOCKED:
+			return speed(maze.insideGhostHouse(ghost.tile()) ? level.ghostSpeed / 2 : 0);
+		case LEAVING_HOUSE:
+			return speed(level.ghostSpeed / 2);
+		case ENTERING_HOUSE:
+			return speed(level.ghostSpeed);
+		case CHASING:
+		case SCATTERING:
+			if (maze.isTunnel(ghost.tile())) {
+				return speed(level.ghostTunnelSpeed);
+			} else if (ghost.cruiseElroyState == 2) {
+				return speed(level.elroy2Speed);
+			} else if (ghost.cruiseElroyState == 1) {
+				return speed(level.elroy1Speed);
+			} else {
 				return speed(level.ghostSpeed);
-			case CHASING:
-			case SCATTERING:
-				if (maze.isTunnel(ghost.tile())) {
-					return speed(level.ghostTunnelSpeed);
-				} else if (ghost.cruiseElroyState == 2) {
-					return speed(level.elroy2Speed);
-				} else if (ghost.cruiseElroyState == 1) {
-					return speed(level.elroy1Speed);
-				} else {
-					return speed(level.ghostSpeed);
-				}
-			case FRIGHTENED:
-				return speed(maze.isTunnel(ghost.tile()) ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed);
-			case DEAD:
-				return speed(2 * level.ghostSpeed);
-			default:
-				throw new IllegalStateException(String.format("Illegal ghost state %s", ghost.getState()));
 			}
-		};
-
-		ghosts().forEach(ghost -> ghost.fnSpeed = fnGhostSpeed);
+		case FRIGHTENED:
+			return speed(maze.isTunnel(ghost.tile()) ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed);
+		case DEAD:
+			return speed(2 * level.ghostSpeed);
+		default:
+			throw new IllegalStateException(String.format("Illegal ghost state %s", ghost.getState()));
+		}
 	}
 
 	/**

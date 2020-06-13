@@ -15,6 +15,7 @@ import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.api.Fsm;
@@ -34,6 +35,7 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 		MOVING_INSIDE_MAZE, TELEPORTING;
 	}
 
+	public final Game game;
 	public final Maze maze;
 	public final String name;
 	public final SpriteMap sprites = new SpriteMap();
@@ -46,8 +48,9 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 	protected Tile targetTile;
 	protected boolean enteredNewTile;
 
-	public MovingActor(Maze maze, String name) {
-		this.maze = maze;
+	public MovingActor(Game game, String name) {
+		this.game = game;
+		this.maze = game.maze;
 		this.name = name;
 		tf.width = Tile.SIZE;
 		tf.height = Tile.SIZE;
@@ -85,7 +88,7 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 	/**
 	 * @return current speed in pixels.
 	 */
-	public abstract float currentSpeed();
+	public abstract float currentSpeed(Game game);
 
 	/**
 	 * @return the current steering for this actor.
@@ -234,7 +237,7 @@ public abstract class MovingActor<STATE> extends Entity implements FsmContainer<
 	 * @param dir  move direction
 	 */
 	private float maxMoveDistance(Tile tile, Direction dir) {
-		float speed = currentSpeed();
+		float speed = currentSpeed(game);
 		if (canCrossBorderTo(dir)) {
 			return speed;
 		}

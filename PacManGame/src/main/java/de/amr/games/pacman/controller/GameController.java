@@ -475,7 +475,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (found.energizer && game.level.pacManPowerSeconds > 0) {
 				sound.pacManGainsPower();
 				ghostCommand.suspend();
-				game.pacMan.powerTicks = sec(game.level.pacManPowerSeconds);
+				game.pacMan.power = sec(game.level.pacManPowerSeconds);
 				game.ghostsOnStage().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
 			}
 		}

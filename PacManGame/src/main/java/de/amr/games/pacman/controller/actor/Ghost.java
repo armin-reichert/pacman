@@ -15,7 +15,7 @@ import static de.amr.games.pacman.model.Game.POINTS_GHOST;
 import static de.amr.games.pacman.model.Game.sec;
 
 import java.util.EnumMap;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
@@ -28,6 +28,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine;
@@ -44,7 +45,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 
 	/** Speed function for the ghost. */
-	public Function<Ghost, Float> fnSpeed = me -> 0f;
+	public BiFunction<Ghost, GameLevel, Float> fnSpeed = (self, level) -> 0f;
 
 	/** Number of ghost house seat (0-3). */
 	public int seat;
@@ -60,7 +61,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	private Steering prevSteering;
 
 	public Ghost(Game game, String name) {
-		super(game.maze, name);
+		super(game, name);
 		steerings = new EnumMap<>(GhostState.class);
 		/*@formatter:off*/
 		brain = StateMachine.beginStateMachine(GhostState.class, PacManGameEvent.class)
@@ -84,7 +85,7 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 					.onTick(() -> {
 						move();
 						// not sure if ghost locked inside house should look frightened
-						if (game.pacMan.powerTicks > 0) {
+						if (game.pacMan.power > 0) {
 							showFrightened();
 						} else {
 							showColored();
@@ -231,8 +232,8 @@ public class Ghost extends MovingActor<GhostState> implements SteeredGhost {
 	}
 
 	@Override
-	public float currentSpeed() {
-		return fnSpeed.apply(this);
+	public float currentSpeed(Game game) {
+		return fnSpeed.apply(this, game.level);
 	}
 
 	public void takeClothes(Theme theme, int color) {
