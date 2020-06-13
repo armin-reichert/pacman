@@ -36,7 +36,7 @@ public class PacManApp extends Application {
 		@Parameter(names = { "-ghostsSafeCorner" }, description = "Ghosts don't flee randomly but to a safe corner")
 		public boolean ghostsSafeCorner = false;
 
-		@Parameter(names = { "-fixOverflowBug" }, description = "Fixes thee overflow bug from the original Arcade game")
+		@Parameter(names = { "-fixOverflowBug" }, description = "Fixes the overflow bug from the original Arcade game")
 		public boolean fixOverflowBug = false;
 
 		@Parameter(names = { "-pacManImmortable" }, description = "Pac-Man stays alive when killed by ghost")
