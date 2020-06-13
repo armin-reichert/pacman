@@ -13,6 +13,7 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.steering.Steering;
+import de.amr.games.pacman.controller.actor.steering.common.CreatureBehavior;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
@@ -30,7 +31,7 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public abstract class Creature<STATE> extends Entity implements FsmContainer<STATE, PacManGameEvent>, MazeMover {
+public abstract class Creature<STATE> extends Entity implements FsmContainer<STATE, PacManGameEvent>, CreatureBehavior {
 
 	enum Movement {
 		MOVING_INSIDE_MAZE, TELEPORTING;

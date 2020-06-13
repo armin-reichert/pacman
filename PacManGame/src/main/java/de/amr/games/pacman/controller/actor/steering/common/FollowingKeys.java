@@ -6,7 +6,7 @@ import java.util.EnumMap;
 import java.util.Objects;
 
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.controller.actor.MazeMover;
+import de.amr.games.pacman.controller.actor.MovingThroughMaze;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 
@@ -17,10 +17,10 @@ import de.amr.games.pacman.model.Direction;
  */
 public class FollowingKeys implements Steering {
 
-	private MazeMover actor;
+	private MovingThroughMaze actor;
 	private EnumMap<Direction, Integer> keys = new EnumMap<>(Direction.class);
 
-	public FollowingKeys(MazeMover actor, int upKey, int rightKey, int downKey, int leftKey) {
+	public FollowingKeys(MovingThroughMaze actor, int upKey, int rightKey, int downKey, int leftKey) {
 		this.actor = Objects.requireNonNull(actor);
 		keys.put(Direction.UP, upKey);
 		keys.put(Direction.RIGHT, rightKey);

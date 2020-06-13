@@ -19,7 +19,6 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.steering.Steering;
-import de.amr.games.pacman.controller.actor.steering.common.SteeredMazeMover;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -38,7 +37,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends Creature<PacManState> implements SteeredMazeMover {
+public class PacMan extends Creature<PacManState> {
 
 	/** Number of ticks Pac-Man has power after eating an energizer. */
 	public int power;

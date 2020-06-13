@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.controller.actor.MazeMover;
+import de.amr.games.pacman.controller.actor.MovingThroughMaze;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
@@ -28,12 +28,12 @@ public abstract class TakingPrecomputedPath implements Steering {
 		return list.isEmpty() ? null : list.get(list.size() - 1);
 	}
 
-	protected final MazeMover actor;
+	protected final MovingThroughMaze actor;
 	protected final Maze maze;
 	protected final Supplier<Tile> fnTargetTile;
 	protected List<Tile> targetPath;
 
-	public TakingPrecomputedPath(MazeMover actor, Supplier<Tile> fnTargetTile) {
+	public TakingPrecomputedPath(MovingThroughMaze actor, Supplier<Tile> fnTargetTile) {
 		this.actor = Objects.requireNonNull(actor);
 		this.maze = actor.maze();
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
@@ -68,9 +68,9 @@ public abstract class TakingPrecomputedPath implements Steering {
 		return targetPath;
 	}
 
-	protected abstract List<Tile> pathToTarget(MazeMover actor, Tile targetTile);
+	protected abstract List<Tile> pathToTarget(MovingThroughMaze actor, Tile targetTile);
 
-	protected boolean isPathInvalid(MazeMover actor) {
+	protected boolean isPathInvalid(MovingThroughMaze actor) {
 		return actor.wishDir() == null || targetPath.size() == 0 || !first(targetPath).equals(actor.tile())
 				|| !last(targetPath).equals(actor.targetTile());
 	}

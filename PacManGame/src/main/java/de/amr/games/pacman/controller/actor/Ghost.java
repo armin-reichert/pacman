@@ -20,7 +20,7 @@ import java.util.function.BiFunction;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.steering.Steering;
-import de.amr.games.pacman.controller.actor.steering.ghost.SteeredGhost;
+import de.amr.games.pacman.controller.actor.steering.ghost.GhostBehavior;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -38,11 +38,12 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * A ghost.
  * 
  * <p>
- * Ghosts have a "brain" (finite-state machine) defining the ghost's behavior (steering, look).
+ * Ghosts are creatures with additional behaviors like enteringand leaving the ghost house or
+ * jumping up and down at some position.
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Creature<GhostState> implements SteeredGhost {
+public class Ghost extends Creature<GhostState> implements GhostBehavior {
 
 	/** Speed function for the ghost. */
 	public BiFunction<Ghost, GameLevel, Float> fnSpeed = (self, level) -> 0f;

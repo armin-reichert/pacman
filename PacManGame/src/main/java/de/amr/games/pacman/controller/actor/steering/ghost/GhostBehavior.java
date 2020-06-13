@@ -2,17 +2,17 @@ package de.amr.games.pacman.controller.actor.steering.ghost;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.MazeMover;
+import de.amr.games.pacman.controller.actor.MovingThroughMaze;
 import de.amr.games.pacman.controller.actor.steering.Steering;
-import de.amr.games.pacman.controller.actor.steering.common.SteeredMazeMover;
+import de.amr.games.pacman.controller.actor.steering.common.CreatureBehavior;
 import de.amr.games.pacman.model.Tile;
 
 /**
- * Ghost-specific steerings.
+ * Ghost-specific behaviors.
  * 
  * @author Armin Reichert
  */
-public interface SteeredGhost extends SteeredMazeMover {
+public interface GhostBehavior extends CreatureBehavior {
 
 	default Ghost steeredGhost() {
 		return (Ghost) this;
@@ -35,13 +35,12 @@ public interface SteeredGhost extends SteeredMazeMover {
 	 * 
 	 * @return behavior where actor flees to a "safe" maze corner
 	 */
-	default Steering isFleeingToSafeCorner(MazeMover attacker, Tile... corners) {
+	default Steering isFleeingToSafeCorner(MovingThroughMaze attacker, Tile... corners) {
 		return new FleeingToSafeCorner(steeredGhost(), attacker, corners);
 	}
 
 	/**
-	 * Lets a ghost enter the ghost house and move to the seat with the given
-	 * position.
+	 * Lets a ghost enter the ghost house and move to the seat with the given position.
 	 * 
 	 * @param seatPosition seat position
 	 * 

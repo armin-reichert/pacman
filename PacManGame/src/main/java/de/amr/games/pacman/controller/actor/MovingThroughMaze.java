@@ -9,7 +9,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public interface MazeMover {
+public interface MovingThroughMaze {
 
 	/**
 	 * @return tile position
@@ -57,16 +57,15 @@ public interface MazeMover {
 
 	/**
 	 * @param dir direction
-	 * @return if the entity can move into the neighbor tile towards the given
-	 *         direction
+	 * @return if the entity can move into the neighbor tile towards the given direction
 	 */
 	boolean canCrossBorderTo(Direction dir);
 
 	/**
 	 * @param tile     some tile
 	 * @param neighbor neighbor the tile
-	 * @return tells if the entity can move from the given tile tile to the neighbor
-	 *         tile (might be state-dependent)
+	 * @return tells if the entity can move from the given tile tile to the neighbor tile (might be
+	 *         state-dependent)
 	 */
 	boolean canMoveBetween(Tile tile, Tile neighbor);
 

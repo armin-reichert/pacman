@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.controller.actor.MazeMover;
+import de.amr.games.pacman.controller.actor.MovingThroughMaze;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
@@ -36,17 +36,17 @@ public class HeadingForTargetTile implements Steering {
 	static final List<Direction> UP_LEFT_DOWN_RIGHT = Arrays.asList(UP, LEFT, DOWN, RIGHT);
 
 	Supplier<Tile> fnTargetTile;
-	MazeMover actor;
+	MovingThroughMaze actor;
 	List<Tile> targetPath;
 	boolean computePath;
 	boolean forced;
 
-	public HeadingForTargetTile(MazeMover actor, Supplier<Tile> fnTargetTile) {
+	public HeadingForTargetTile(MovingThroughMaze actor, Supplier<Tile> fnTargetTile) {
 		this(actor);
 		this.fnTargetTile = fnTargetTile;
 	}
 
-	HeadingForTargetTile(MazeMover actor) {
+	HeadingForTargetTile(MovingThroughMaze actor) {
 		this.actor = Objects.requireNonNull(actor);
 		targetPath = Collections.emptyList();
 		computePath = false;
