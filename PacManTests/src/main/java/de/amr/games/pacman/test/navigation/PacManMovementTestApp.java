@@ -74,7 +74,7 @@ class PacManMovementTestUI extends PlayView {
 	public void update() {
 		super.update();
 		handleSteeringChange();
-		game.movingActorsOnStage().forEach(Creature::update);
+		game.creaturesOnStage().forEach(Creature::update);
 	}
 
 	private void handleSteeringChange() {

@@ -22,8 +22,8 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.actor.Bonus;
-import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.Creature;
+import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 
 /**
@@ -281,17 +281,17 @@ public class Game {
 	}
 
 	/**
-	 * @return stream of all moving actors (ghosts and Pac-Man)
+	 * @return stream of all creatures (ghosts and Pac-Man)
 	 */
-	public Stream<Creature<?>> movingActors() {
+	public Stream<Creature<?>> creatures() {
 		return Stream.of(pacMan, blinky, pinky, inky, clyde);
 	}
 
 	/**
-	 * @return stream of moving actors currently on stage (ghosts and Pac-Man)
+	 * @return stream of creatures currently on stage (ghosts and Pac-Man)
 	 */
-	public Stream<Creature<?>> movingActorsOnStage() {
-		return movingActors().filter(stage::contains);
+	public Stream<Creature<?>> creaturesOnStage() {
+		return creatures().filter(stage::contains);
 	}
 
 	/**

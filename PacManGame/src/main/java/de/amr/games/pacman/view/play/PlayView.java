@@ -218,7 +218,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawActorAlignments(Graphics2D g) {
-		game.movingActorsOnStage().forEach(actor -> drawActorAlignment(actor, g));
+		game.creaturesOnStage().forEach(actor -> drawActorAlignment(actor, g));
 	}
 
 	private void drawActorAlignment(Creature<?> actor, Graphics2D g) {

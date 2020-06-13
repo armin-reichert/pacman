@@ -97,7 +97,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void createPlayEnvironment() {
 		game = new Game(settings.startLevel);
-		game.movingActors().forEach(actor -> {
+		game.creatures().forEach(actor -> {
 			game.putOnStage(actor);
 			actor.addEventListener(this::process);
 		});
@@ -191,7 +191,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							playView.mazeView.energizersBlinking.setEnabled(true);
 							sound.gameStarts();
 						}
-						game.movingActorsOnStage().forEach(Creature::update);
+						game.creaturesOnStage().forEach(Creature::update);
 					})
 					.onExit(() -> {
 						playView.clearMessage();
@@ -228,7 +228,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						// After two more seconds, change level and show crowded maze.
 						if (t == sec(4 + flashingSeconds)) {
 							game.enterLevel(game.level.number + 1);
-							game.movingActorsOnStage().forEach(Creature::init);
+							game.creaturesOnStage().forEach(Creature::init);
 							playView.init();
 						}
 						
@@ -279,7 +279,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						}
 						else if (t == dyingEndTime && game.lives > 0) {
 							sound.gameStarts();
-							game.movingActorsOnStage().forEach(Creature::init);
+							game.creaturesOnStage().forEach(Creature::init);
 							playView.init();
 						}
 						else if (t > dyingEndTime) {
@@ -392,7 +392,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		public void onTick() {
 			ghostCommand.update();
 			ghostHouse.update();
-			game.movingActorsOnStage().forEach(Creature::update);
+			game.creaturesOnStage().forEach(Creature::update);
 			game.bonus.update();
 			sound.updatePlayingSounds(game);
 		}
