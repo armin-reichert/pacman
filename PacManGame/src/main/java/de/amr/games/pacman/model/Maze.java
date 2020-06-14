@@ -9,30 +9,21 @@ import de.amr.easy.game.math.Vector2f;
  * The Pac-Man game world.
  * 
  * <p>
- * Map information (content and structural) is stored in 6 bit positions. For example, 48 (binary
+ * Information (content and structural) is stored in 6 bit positions. For example, 48 (binary
  * 110000) is an intersection where chasing ghosts can only move downwards.
  * 
  * @author Armin Reichert
  */
 public class Maze {
 
-	/** Tile represents a wall. */
-	static final byte B_WALL = 0;
-
-	/** Tile contains (eaten or uneaten) food. */
-	static final byte B_FOOD = 1;
-
-	/** Tile contains (eaten or uneaten) energizer. */
-	static final byte B_ENERGIZER = 2;
-
-	/** Tile contains eaten food. */
-	static final byte B_EATEN = 3;
-
-	/** Tile represents an intersection point. */
-	static final byte B_INTERSECTION = 4;
-
-	/** Tile represents a one-way road downwards. */
-	static final byte B_ONE_WAY_DOWN = 5;
+	//@formatter:off
+	static final byte BM_WALL         = 0b000001;
+	static final byte BM_FOOD         = 0b000010;
+	static final byte BM_ENERGIZER    = 0b000100;
+	static final byte BM_EATEN        = 0b001000;
+	static final byte BM_INTERSECTION = 0b010000;
+	static final byte BM_ONE_WAY_DOWN = 0b100000;
+	//@formatter:on
 
 	byte[][] map = {
 		//@formatter:off
@@ -93,20 +84,20 @@ public class Maze {
 
 	// bit operations
 
-	private boolean is_1(int row, int col, byte bit) {
-		return (map[row][col] & (1 << bit)) != 0;
+	private boolean is_1(int row, int col, byte bitMask) {
+		return (map[row][col] & bitMask) != 0;
 	}
 
-	private boolean is_1(Tile tile, byte bit) {
-		return insideMap(tile) && is_1(tile.row, tile.col, bit);
+	private boolean is_1(Tile tile, byte bitMask) {
+		return insideMap(tile) && is_1(tile.row, tile.col, bitMask);
 	}
 
-	private void set_0(int row, int col, byte bit) {
-		map[row][col] &= ~(1 << bit);
+	private void set_0(int row, int col, byte bitMask) {
+		map[row][col] &= ~bitMask;
 	}
 
-	private void set_1(int row, int col, byte bit) {
-		map[row][col] |= (1 << bit);
+	private void set_1(int row, int col, byte bitMask) {
+		map[row][col] |= bitMask;
 	}
 
 	public Maze() {
@@ -139,7 +130,7 @@ public class Maze {
 		int foodCount = 0;
 		for (int row = arenaTopRow; row <= arenaBottomRow; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				if (is_1(row, col, B_FOOD)) {
+				if (is_1(row, col, BM_FOOD)) {
 					++foodCount;
 				}
 			}
@@ -188,11 +179,11 @@ public class Maze {
 	}
 
 	public boolean isIntersection(Tile tile) {
-		return is_1(tile, B_INTERSECTION);
+		return is_1(tile, BM_INTERSECTION);
 	}
 
 	public boolean isOneWayDown(Tile tile) {
-		return is_1(tile, B_ONE_WAY_DOWN);
+		return is_1(tile, BM_ONE_WAY_DOWN);
 	}
 
 	public boolean insideGhostHouse(Tile tile) {
@@ -207,7 +198,7 @@ public class Maze {
 		if (tile.equals(portalLeft) || tile.equals(portalRight)) {
 			return false;
 		}
-		return !insideMap(tile) || is_1(tile, B_WALL);
+		return !insideMap(tile) || is_1(tile, BM_WALL);
 	}
 
 	public boolean isTunnel(Tile tile) {
@@ -219,28 +210,28 @@ public class Maze {
 	}
 
 	public boolean containsSimplePellet(Tile tile) {
-		return is_1(tile, B_FOOD) && !is_1(tile, B_EATEN) && !is_1(tile, B_ENERGIZER);
+		return is_1(tile, BM_FOOD) && !is_1(tile, BM_EATEN) && !is_1(tile, BM_ENERGIZER);
 	}
 
 	public boolean containsEnergizer(Tile tile) {
-		return is_1(tile, B_ENERGIZER) && !is_1(tile, B_EATEN);
+		return is_1(tile, BM_ENERGIZER) && !is_1(tile, BM_EATEN);
 	}
 
 	public boolean containsEatenFood(Tile tile) {
-		return is_1(tile, B_FOOD) && is_1(tile, B_EATEN);
+		return is_1(tile, BM_FOOD) && is_1(tile, BM_EATEN);
 	}
 
 	public void eatFood(Tile tile) {
-		if (is_1(tile, B_FOOD)) {
-			set_1(tile.row, tile.col, B_EATEN);
+		if (is_1(tile, BM_FOOD)) {
+			set_1(tile.row, tile.col, BM_EATEN);
 		}
 	}
 
 	public void removeFood() {
 		for (int row = arenaTopRow; row <= arenaBottomRow; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				if (is_1(row, col, B_FOOD)) {
-					set_1(row, col, B_EATEN);
+				if (is_1(row, col, BM_FOOD)) {
+					set_1(row, col, BM_EATEN);
 				}
 			}
 		}
@@ -249,8 +240,8 @@ public class Maze {
 	public void restoreFood() {
 		for (int row = arenaTopRow; row <= arenaBottomRow; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				if (is_1(row, col, B_FOOD)) {
-					set_0(row, col, B_EATEN);
+				if (is_1(row, col, BM_FOOD)) {
+					set_0(row, col, BM_EATEN);
 				}
 			}
 		}
