@@ -77,6 +77,10 @@ public class Maze {
 
 	public final int numRows = 36;
 	public final int numCols = 28;
+
+	public final int arenaTopRow = 4;
+	public final int arenaBottomRow = 32;
+
 	public final int totalFoodCount;
 
 	public final Seat pacManSeat;
@@ -144,7 +148,8 @@ public class Maze {
 	 *         scores)
 	 */
 	public Stream<Tile> arena() {
-		return IntStream.range(4 * numCols, 33 * numCols).mapToObj(i -> Tile.at(i % numCols, i / numCols));
+		return IntStream.range(arenaTopRow * numCols, (arenaBottomRow + 1) * numCols)
+				.mapToObj(i -> Tile.at(i % numCols, i / numCols));
 	}
 
 	/**
@@ -224,7 +229,7 @@ public class Maze {
 	}
 
 	public void removeFood() {
-		for (int row = 0; row < numRows; ++row) {
+		for (int row = arenaTopRow; row <= arenaBottomRow; ++row) {
 			for (int col = 0; col < numCols; ++col) {
 				if (is_1(row, col, B_FOOD)) {
 					set_1(row, col, B_EATEN);
@@ -234,7 +239,7 @@ public class Maze {
 	}
 
 	public void restoreFood() {
-		for (int row = 0; row < numRows; ++row) {
+		for (int row = arenaTopRow; row <= arenaBottomRow; ++row) {
 			for (int col = 0; col < numCols; ++col) {
 				if (is_1(row, col, B_FOOD)) {
 					set_0(row, col, B_EATEN);
