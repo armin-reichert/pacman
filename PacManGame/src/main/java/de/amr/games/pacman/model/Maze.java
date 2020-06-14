@@ -17,8 +17,28 @@ public class Maze {
 		return new Tile(col, row);
 	}
 
-	// bits
-	static final byte WALL = 0, FOOD = 1, ENERGIZER = 2, EATEN = 3, INTERSECTION = 4, UPWARDS_BLOCKED = 5;
+	/*
+	 * Map information (content and structural) is stored in 6 bit positions. For example, 48 (binary
+	 * 110000) is an intersection where chasing ghosts can only move downwards.
+	 */
+
+	/** Tile represents a wall. */
+	static final byte B_WALL = 0;
+
+	/** Tile contains (eaten or uneaten) food. */
+	static final byte B_FOOD = 1;
+
+	/** Tile contains (eaten or uneaten) energizer. */
+	static final byte B_ENERGIZER = 2;
+
+	/** Tile contains eaten food. */
+	static final byte B_EATEN = 3;
+
+	/** Tile represents an intersection point. */
+	static final byte B_INTERSECTION = 4;
+
+	/** Tile represents a one-way road downwards. */
+	static final byte B_ONLY_DOWN = 5;
 
 	byte[][] map = {
 		//@formatter:off
@@ -26,35 +46,35 @@ public class Maze {
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-		{ 1, 2, 2, 2, 2, 2, 18, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 18, 2, 2, 2, 2, 2, 1 },
+		{ 1, 2, 2, 2, 2, 2,18, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2,18, 2, 2, 2, 2, 2, 1 },
 		{ 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1 },
 		{ 1, 6, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 6, 1 },
 		{ 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1 },
-		{ 1, 18, 2, 2, 2, 2, 18, 2, 2, 18, 2, 2, 18, 2, 2, 18, 2, 2, 18, 2, 2, 18, 2, 2, 2, 2, 18, 1 },
+		{ 1,18, 2, 2, 2, 2,18, 2, 2,18, 2, 2,18, 2, 2,18, 2, 2,18, 2, 2,18, 2, 2, 2, 2,18, 1 },
 		{ 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2, 1 },
 		{ 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2, 1 },
-		{ 1, 2, 2, 2, 2, 2, 18, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 18, 2, 2, 2, 2, 2, 1 },
+		{ 1, 2, 2, 2, 2, 2,18, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1,18, 2, 2, 2, 2, 2, 1 },
 		{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1 },
 		{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1 },
-		{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 0, 0, 48, 0, 0, 48, 0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1 },
+		{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 0, 0,48, 0, 0,48, 0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1 },
 		{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1 },
 		{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1 },
-		{ 0, 0, 0, 0, 0, 0, 18, 0, 0, 16, 1, 0, 0, 0, 0, 0, 0, 1, 16, 0, 0, 18, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0,18, 0, 0,16, 1, 0, 0, 0, 0, 0, 0, 1,16, 0, 0,18, 0, 0, 0, 0, 0, 0 },
 		{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1 },
 		{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1 },
-		{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 16, 0, 0, 0, 0, 0, 0, 0, 0, 16, 1, 1, 2, 1, 1, 1, 1, 1, 1 },
+		{ 1, 1, 1, 1, 1, 1, 2, 1, 1,16, 0, 0, 0, 0, 0, 0, 0, 0,16, 1, 1, 2, 1, 1, 1, 1, 1, 1 },
 		{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1 },
 		{ 1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1 },
-		{ 1, 2, 2, 2, 2, 2, 18, 2, 2, 18, 2, 2, 2, 1, 1, 2, 2, 2, 18, 2, 2, 18, 2, 2, 2, 2, 2, 1 },
+		{ 1, 2, 2, 2, 2, 2,18, 2, 2,18, 2, 2, 2, 1, 1, 2, 2, 2,18, 2, 2,18, 2, 2, 2, 2, 2, 1 },
 		{ 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1 },
 		{ 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1 },
-		{ 1, 6, 2, 2, 1, 1, 18, 2, 2, 18, 2, 2, 50, 0, 0, 50, 2, 2, 18, 2, 2, 18, 1, 1, 2, 2, 6, 1 },
+		{ 1, 6, 2, 2, 1, 1,18, 2, 2,18, 2, 2,50, 0, 0,50, 2, 2,18, 2, 2,18, 1, 1, 2, 2, 6, 1 },
 		{ 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1 },
 		{ 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1 },
-		{ 1, 2, 2, 18, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 18, 2, 2, 1 },
+		{ 1, 2, 2,18, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2,18, 2, 2, 1 },
 		{ 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1 },
 		{ 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1 },
-		{ 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 18, 2, 2, 18, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1 },
+		{ 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,18, 2, 2,18, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1 },
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
@@ -69,7 +89,6 @@ public class Maze {
 	public final Seat ghostSeats[];
 	public final Seat bonusSeat;
 
-	public final Tile ghostHouseEntry;
 	public final Tile portalLeft, portalRight;
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
@@ -99,7 +118,6 @@ public class Maze {
 		portalLeft = tile(-1, 17);
 		portalRight = tile(28, 17);
 
-		ghostHouseEntry = tile(13, 14);
 		ghostHouseDoorLeft = tile(13, 15);
 		ghostHouseDoorRight = tile(14, 15);
 
@@ -166,11 +184,11 @@ public class Maze {
 	}
 
 	public boolean isIntersection(Tile tile) {
-		return on(tile, INTERSECTION);
+		return on(tile, B_INTERSECTION);
 	}
 
 	public boolean isUpwardsBlocked(Tile tile) {
-		return on(tile, UPWARDS_BLOCKED);
+		return on(tile, B_ONLY_DOWN);
 	}
 
 	public boolean insideGhostHouse(Tile tile) {
@@ -185,7 +203,7 @@ public class Maze {
 		if (tile.equals(portalLeft) || tile.equals(portalRight)) {
 			return false;
 		}
-		return !insideBoard(tile) || on(tile, WALL);
+		return !insideBoard(tile) || on(tile, B_WALL);
 	}
 
 	public boolean isTunnel(Tile tile) {
@@ -197,28 +215,28 @@ public class Maze {
 	}
 
 	public boolean containsSimplePellet(Tile tile) {
-		return on(tile, FOOD) && !on(tile, EATEN) && !on(tile, ENERGIZER);
+		return on(tile, B_FOOD) && !on(tile, B_EATEN) && !on(tile, B_ENERGIZER);
 	}
 
 	public boolean containsEnergizer(Tile tile) {
-		return on(tile, ENERGIZER) && !on(tile, EATEN);
+		return on(tile, B_ENERGIZER) && !on(tile, B_EATEN);
 	}
 
 	public boolean containsEatenFood(Tile tile) {
-		return on(tile, FOOD) && on(tile, EATEN);
+		return on(tile, B_FOOD) && on(tile, B_EATEN);
 	}
 
-	public void removeFood(Tile tile) {
-		if (on(tile, FOOD)) {
-			set(tile.row, tile.col, EATEN, true);
+	public void eatFood(Tile tile) {
+		if (on(tile, B_FOOD)) {
+			set(tile.row, tile.col, B_EATEN, true);
 		}
 	}
 
 	public void removeFood() {
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				if (off(row, col, FOOD)) {
-					set(row, col, EATEN, true);
+				if (off(row, col, B_FOOD)) {
+					set(row, col, B_EATEN, true);
 				}
 			}
 		}
@@ -227,14 +245,15 @@ public class Maze {
 	public void restoreFood() {
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				if (off(row, col, FOOD)) {
-					set(row, col, EATEN, false);
+				if (off(row, col, B_FOOD)) {
+					set(row, col, B_EATEN, false);
 				}
 			}
 		}
 	}
 
-	// these corner positions are not needed in the original game
+	// these corner positions are not needed in the original game. The algorithm to select a safe corner
+	// for ghosts escaping Pac-Man uses these positions.
 
 	public Tile cornerNW() {
 		return tile(1, 4);

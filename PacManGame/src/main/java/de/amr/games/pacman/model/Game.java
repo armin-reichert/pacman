@@ -195,7 +195,7 @@ public class Game {
 		blinky.behavior(FRIGHTENED, blinky.isMovingRandomlyWithoutTurningBack());
 		blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
 		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
-		blinky.behavior(DEAD, blinky.isHeadingFor(() -> maze.ghostHouseEntry));
+		blinky.behavior(DEAD, blinky.isHeadingFor(() -> maze.ghostSeats[0].tile));
 
 		inky.seat = 1;
 		inky.behavior(LOCKED, inky.isJumpingUpAndDown(maze.ghostSeats[1].position));
@@ -207,7 +207,7 @@ public class Game {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return new Tile(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
-		inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostHouseEntry));
+		inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostSeats[0].tile));
 
 		pinky.seat = 2;
 		pinky.behavior(LOCKED, pinky.isJumpingUpAndDown(maze.ghostSeats[2].position));
@@ -216,7 +216,7 @@ public class Game {
 		pinky.behavior(FRIGHTENED, pinky.isMovingRandomlyWithoutTurningBack());
 		pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
 		pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
-		pinky.behavior(DEAD, pinky.isHeadingFor(() -> maze.ghostHouseEntry));
+		pinky.behavior(DEAD, pinky.isHeadingFor(() -> maze.ghostSeats[0].tile));
 
 		clyde.seat = 3;
 		clyde.behavior(LOCKED, clyde.isJumpingUpAndDown(maze.ghostSeats[3].position));
@@ -226,7 +226,7 @@ public class Game {
 		clyde.behavior(SCATTERING, clyde.isHeadingFor(maze.horizonSW));
 		clyde.behavior(CHASING,
 				clyde.isHeadingFor(() -> clyde.tile().distance(pacMan.tile()) > 8 ? pacMan.tile() : maze.horizonSW));
-		clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostHouseEntry));
+		clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostSeats[0].tile));
 
 		// define actor speed
 
@@ -313,7 +313,7 @@ public class Game {
 			loginfo("Tile %s does not contain food");
 			return 0;
 		}
-		maze.removeFood(tile);
+		maze.eatFood(tile);
 		level.eatenFoodCount += 1;
 		if (energizer) {
 			level.ghostsKilledByEnergizer = 0;

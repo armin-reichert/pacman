@@ -23,7 +23,7 @@ public class LeavingGhostHouse implements Steering {
 
 	@Override
 	public void steer() {
-		Tile exit = ghost.maze().ghostHouseEntry;
+		Tile exit = ghost.maze().ghostSeats[0].tile;
 		int targetX = exit.centerX(), targetY = exit.y();
 		if (ghost.tf.y <= targetY) {
 			ghost.tf.y = targetY;
@@ -39,7 +39,7 @@ public class LeavingGhostHouse implements Steering {
 
 	@Override
 	public boolean isComplete() {
-		return ghost.tf.y == ghost.maze().ghostHouseEntry.y();
+		return ghost.tf.y == ghost.maze().ghostSeats[0].tile.y();
 	}
 
 	@Override
