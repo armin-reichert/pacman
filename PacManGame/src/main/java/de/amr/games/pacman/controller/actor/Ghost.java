@@ -10,9 +10,9 @@ import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Game.sec;
+import static de.amr.games.pacman.model.Game.speed;
 
 import java.util.EnumMap;
-import java.util.function.BiFunction;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
@@ -25,7 +25,6 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine;
@@ -41,9 +40,6 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * @author Armin Reichert
  */
 public class Ghost extends Creature<GhostState> implements GhostBehavior {
-
-	/** Pluggable speed function for the ghost. */
-	public BiFunction<Ghost, GameLevel, Float> fnSpeed = (self, level) -> 0f;
 
 	/** Ghost house seat number (0-3). */
 	public int seat;
@@ -240,7 +236,31 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 
 	@Override
 	public float currentSpeed(Game game) {
-		return fnSpeed.apply(this, game.level);
+		switch (getState()) {
+		case LOCKED:
+			return speed(maze.insideGhostHouse(tile()) ? game.level.ghostSpeed / 2 : 0);
+		case LEAVING_HOUSE:
+			return speed(game.level.ghostSpeed / 2);
+		case ENTERING_HOUSE:
+			return speed(game.level.ghostSpeed);
+		case CHASING:
+		case SCATTERING:
+			if (maze.isTunnel(tile())) {
+				return speed(game.level.ghostTunnelSpeed);
+			} else if (insanityLevel == 2) {
+				return speed(game.level.elroy2Speed);
+			} else if (insanityLevel == 1) {
+				return speed(game.level.elroy1Speed);
+			} else {
+				return speed(game.level.ghostSpeed);
+			}
+		case FRIGHTENED:
+			return speed(maze.isTunnel(tile()) ? game.level.ghostTunnelSpeed : game.level.ghostFrightenedSpeed);
+		case DEAD:
+			return speed(2 * game.level.ghostSpeed);
+		default:
+			throw new IllegalStateException(String.format("Illegal ghost state %s", getState()));
+		}
 	}
 
 	public void takeClothes(Theme theme, int color) {

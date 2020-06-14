@@ -8,7 +8,6 @@ import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.controller.actor.PacManState.EATING;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -227,43 +226,6 @@ public class Game {
 		clyde.behavior(CHASING,
 				clyde.isHeadingFor(() -> clyde.tile().distance(pacMan.tile()) > 8 ? pacMan.tile() : maze.horizonSW));
 		clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostSeats[0].tile));
-
-		// define actor speed
-
-		pacMan.fnSpeed = this::pacManSpeed;
-		ghosts().forEach(ghost -> ghost.fnSpeed = this::ghostSpeed);
-	}
-
-	private float pacManSpeed(PacMan pacMan, GameLevel level) {
-		return pacMan.is(EATING) ? speed(pacMan.power > 0 ? level.pacManPowerSpeed : level.pacManSpeed) : 0;
-	}
-
-	private float ghostSpeed(Ghost ghost, GameLevel level) {
-		switch (ghost.getState()) {
-		case LOCKED:
-			return speed(maze.insideGhostHouse(ghost.tile()) ? level.ghostSpeed / 2 : 0);
-		case LEAVING_HOUSE:
-			return speed(level.ghostSpeed / 2);
-		case ENTERING_HOUSE:
-			return speed(level.ghostSpeed);
-		case CHASING:
-		case SCATTERING:
-			if (maze.isTunnel(ghost.tile())) {
-				return speed(level.ghostTunnelSpeed);
-			} else if (ghost.insanityLevel == 2) {
-				return speed(level.elroy2Speed);
-			} else if (ghost.insanityLevel == 1) {
-				return speed(level.elroy1Speed);
-			} else {
-				return speed(level.ghostSpeed);
-			}
-		case FRIGHTENED:
-			return speed(maze.isTunnel(ghost.tile()) ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed);
-		case DEAD:
-			return speed(2 * level.ghostSpeed);
-		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s", ghost.getState()));
-		}
 	}
 
 	/**

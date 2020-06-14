@@ -10,10 +10,10 @@ import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Direction.dirs;
 import static de.amr.games.pacman.model.Game.DIGEST_ENERGIZER_TICKS;
 import static de.amr.games.pacman.model.Game.DIGEST_PELLET_TICKS;
+import static de.amr.games.pacman.model.Game.speed;
 
 import java.util.EnumMap;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.PacManApp;
@@ -25,7 +25,6 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine;
@@ -43,9 +42,6 @@ public class PacMan extends Creature<PacManState> {
 
 	/** Number of ticks Pac-Man is not moving after eating. */
 	public int digestionTicks;
-
-	/** Speed function. */
-	public BiFunction<PacMan, GameLevel, Float> fnSpeed = (self, level) -> 0f;
 
 	public PacMan(Game game) {
 		super(game, "Pac-Man", new EnumMap<>(PacManState.class));
@@ -109,7 +105,7 @@ public class PacMan extends Creature<PacManState> {
 
 	@Override
 	public float currentSpeed(Game game) {
-		return fnSpeed.apply(this, game.level);
+		return is(EATING) ? speed(power > 0 ? game.level.pacManPowerSpeed : game.level.pacManSpeed) : 0;
 	}
 
 	public void takeClothes(Theme theme) {
