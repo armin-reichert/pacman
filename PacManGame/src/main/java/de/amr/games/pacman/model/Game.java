@@ -147,7 +147,7 @@ public class Game {
 		loginfo("Enter level %d", n);
 		level = level(n);
 		levelCounter.add(level.bonusSymbol);
-		maze.restoreFood();
+		maze.restoreAllFood();
 		hiscore.save();
 	}
 

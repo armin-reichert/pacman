@@ -47,7 +47,7 @@ class EscapeIntoCornerTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game.maze.removeFood();
+		game.maze.eatAllFood();
 		game.putOnStage(game.pacMan);
 		game.pacMan.setState(EATING);
 		game.putOnStage(game.blinky);

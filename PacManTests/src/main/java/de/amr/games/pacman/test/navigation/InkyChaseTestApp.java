@@ -50,7 +50,7 @@ class InkyChaseTestUI extends PlayView {
 	@Override
 	public void init() {
 		super.init();
-		game.maze.removeFood();
+		game.maze.eatAllFood();
 		theme.snd_ghost_chase().volume(0);
 		Stream.of(game.pacMan, game.inky, game.blinky).forEach(game::putOnStage);
 		game.ghostsOnStage().forEach(ghost -> {

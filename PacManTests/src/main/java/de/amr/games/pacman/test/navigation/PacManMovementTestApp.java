@@ -59,7 +59,7 @@ class PacManMovementTestUI extends PlayView {
 				game.maze.eatFood(foodFound.tile);
 				game.level.eatenFoodCount++;
 				if (game.remainingFoodCount() == 0) {
-					game.maze.restoreFood();
+					game.maze.restoreAllFood();
 					game.level.eatenFoodCount = 0;
 				}
 			}

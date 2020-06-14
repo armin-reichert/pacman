@@ -85,24 +85,27 @@ public class Maze {
 
 	// bit operations
 
-	private boolean is_1(int row, int col, byte bitMask) {
-		return (map[row][col] & bitMask) != 0;
+	private boolean is(int row, int col, byte mask) {
+		return (map[row][col] & mask) != 0;
 	}
 
-	private boolean is_1(Tile tile, byte bitMask) {
-		return insideMap(tile) && is_1(tile.row, tile.col, bitMask);
+	private boolean is(Tile tile, byte mask) {
+		return insideMap(tile) && is(tile.row, tile.col, mask);
 	}
 
-	private void set_0(int row, int col, byte bitMask) {
-		map[row][col] &= ~bitMask;
+	private boolean not(Tile tile, byte mask) {
+		return !is(tile, mask);
 	}
 
-	private void set_1(int row, int col, byte bitMask) {
-		map[row][col] |= bitMask;
+	private void clr(int row, int col, byte mask) {
+		map[row][col] &= ~mask;
+	}
+
+	private void set(int row, int col, byte mask) {
+		map[row][col] |= mask;
 	}
 
 	public Maze() {
-
 		pacManSeat = new Seat(13, 26, Direction.RIGHT);
 
 		//@formatter:off
@@ -137,7 +140,7 @@ public class Maze {
 		int foodCount = 0;
 		for (int row = arenaTopRow; row <= arenaBottomRow; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				if (is_1(row, col, BM_FOOD)) {
+				if (is(row, col, BM_FOOD)) {
 					++foodCount;
 				}
 			}
@@ -186,11 +189,11 @@ public class Maze {
 	}
 
 	public boolean isIntersection(Tile tile) {
-		return is_1(tile, BM_INTERSECTION);
+		return is(tile, BM_INTERSECTION);
 	}
 
 	public boolean isOneWayDown(Tile tile) {
-		return is_1(tile, BM_ONE_WAY_DOWN);
+		return is(tile, BM_ONE_WAY_DOWN);
 	}
 
 	public boolean insideGhostHouse(Tile tile) {
@@ -205,7 +208,7 @@ public class Maze {
 		if (tile.equals(portalLeft) || tile.equals(portalRight)) {
 			return false;
 		}
-		return !insideMap(tile) || is_1(tile, BM_WALL);
+		return !insideMap(tile) || is(tile, BM_WALL);
 	}
 
 	public boolean isTunnel(Tile tile) {
@@ -217,38 +220,36 @@ public class Maze {
 	}
 
 	public boolean containsSimplePellet(Tile tile) {
-		return is_1(tile, BM_FOOD) && !is_1(tile, BM_EATEN) && !is_1(tile, BM_ENERGIZER);
+		return is(tile, BM_FOOD) && not(tile, BM_ENERGIZER) && not(tile, BM_EATEN);
 	}
 
 	public boolean containsEnergizer(Tile tile) {
-		return is_1(tile, BM_ENERGIZER) && !is_1(tile, BM_EATEN);
+		return is(tile, BM_ENERGIZER) && not(tile, BM_EATEN);
 	}
 
 	public boolean containsEatenFood(Tile tile) {
-		return is_1(tile, BM_FOOD) && is_1(tile, BM_EATEN);
+		return is(tile, BM_EATEN) && is(tile, BM_FOOD);
 	}
 
 	public void eatFood(Tile tile) {
-		if (is_1(tile, BM_FOOD)) {
-			set_1(tile.row, tile.col, BM_EATEN);
-		}
+		set(tile.row, tile.col, BM_EATEN);
 	}
 
-	public void removeFood() {
+	public void eatAllFood() {
 		for (int row = arenaTopRow; row <= arenaBottomRow; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				if (is_1(row, col, BM_FOOD)) {
-					set_1(row, col, BM_EATEN);
+				if (is(row, col, BM_FOOD)) {
+					set(row, col, BM_EATEN);
 				}
 			}
 		}
 	}
 
-	public void restoreFood() {
+	public void restoreAllFood() {
 		for (int row = arenaTopRow; row <= arenaBottomRow; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				if (is_1(row, col, BM_FOOD)) {
-					set_0(row, col, BM_EATEN);
+				if (is(row, col, BM_FOOD)) {
+					clr(row, col, BM_EATEN);
 				}
 			}
 		}
