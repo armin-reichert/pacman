@@ -1,6 +1,9 @@
 package de.amr.games.pacman.model;
 
 import java.util.Objects;
+import java.util.Optional;
+
+import de.amr.easy.game.math.Vector2f;
 
 /**
  * The Pac-Man game world is a grid of tiles.
@@ -11,6 +14,10 @@ public final class Tile {
 
 	/** Tile size in pixels. */
 	public static final byte SIZE = 8;
+
+	public static Tile at(int col, int row) {
+		return new Tile(col, row);
+	}
 
 	public final byte col;
 	public final byte row;
@@ -43,6 +50,19 @@ public final class Tile {
 	public double distance(Tile other) {
 		int dx = col - other.col, dy = row - other.row;
 		return Math.sqrt(dx * dx + dy * dy);
+	}
+
+	public boolean inCols(int colMin, int colMax) {
+		return colMin <= col && col <= colMax;
+	}
+
+	public boolean inRows(int rowMin, int rowMax) {
+		return rowMin <= row && row <= rowMax;
+	}
+
+	public Optional<Direction> dirTo(Tile other) {
+		Vector2f v = Vector2f.of(other.col - col, other.row - row);
+		return Direction.dirs().filter(dir -> dir.vector().equals(v)).findFirst();
 	}
 
 	@Override

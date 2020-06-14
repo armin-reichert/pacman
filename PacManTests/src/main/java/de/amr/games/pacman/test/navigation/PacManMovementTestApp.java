@@ -56,7 +56,7 @@ class PacManMovementTestUI extends PlayView {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
 				theme.snd_eatPill().play();
-				game.maze.removeFood(foodFound.tile);
+				game.maze.eatFood(foodFound.tile);
 				game.level.eatenFoodCount++;
 				if (game.remainingFoodCount() == 0) {
 					game.maze.restoreFood();

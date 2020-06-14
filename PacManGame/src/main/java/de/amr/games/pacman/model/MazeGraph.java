@@ -50,7 +50,7 @@ public class MazeGraph {
 	}
 
 	public List<Tile> shortestPath(Tile source, Tile target) {
-		if (maze.insideBoard(source) && maze.insideBoard(target)) {
+		if (maze.insideMap(source) && maze.insideMap(target)) {
 			GraphSearch pathfinder = createPathFinder(target);
 			Path path = pathfinder.findPath(vertex(source), vertex(target));
 			pathFinderCalls += 1;

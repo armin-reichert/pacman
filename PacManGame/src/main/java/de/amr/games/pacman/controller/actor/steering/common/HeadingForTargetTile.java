@@ -134,7 +134,7 @@ public class HeadingForTargetTile implements Steering {
 		while (!currentTile.equals(targetTile)) {
 			Direction dir = dirToTarget(currentDir, currentTile, targetTile);
 			Tile nextTile = maze.neighbor(currentTile, dir);
-			if (!maze.insideBoard(nextTile) || path.contains(nextTile)) {
+			if (!maze.insideMap(nextTile) || path.contains(nextTile)) {
 				break;
 			}
 			path.add(nextTile);

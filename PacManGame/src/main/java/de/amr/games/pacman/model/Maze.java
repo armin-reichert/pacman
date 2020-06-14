@@ -1,6 +1,5 @@
 package de.amr.games.pacman.model;
 
-import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -9,18 +8,13 @@ import de.amr.easy.game.math.Vector2f;
 /**
  * The Pac-Man game world.
  * 
+ * <p>
+ * Map information (content and structural) is stored in 6 bit positions. For example, 48 (binary
+ * 110000) is an intersection where chasing ghosts can only move downwards.
+ * 
  * @author Armin Reichert
  */
 public class Maze {
-
-	private static Tile tile(int col, int row) {
-		return new Tile(col, row);
-	}
-
-	/*
-	 * Map information (content and structural) is stored in 6 bit positions. For example, 48 (binary
-	 * 110000) is an intersection where chasing ghosts can only move downwards.
-	 */
 
 	/** Tile represents a wall. */
 	static final byte B_WALL = 0;
@@ -38,7 +32,7 @@ public class Maze {
 	static final byte B_INTERSECTION = 4;
 
 	/** Tile represents a one-way road downwards. */
-	static final byte B_ONLY_DOWN = 5;
+	static final byte B_ONE_WAY_DOWN = 5;
 
 	byte[][] map = {
 		//@formatter:off
@@ -95,31 +89,25 @@ public class Maze {
 
 	// bit operations
 
-	private boolean on(Tile t, byte bit) {
-		return insideBoard(t) && off(t.row, t.col, bit);
-	}
-
-	private boolean off(int row, int col, byte bit) {
+	private boolean is_1(int row, int col, byte bit) {
 		return (map[row][col] & (1 << bit)) != 0;
 	}
 
-	private void set(int row, int col, byte bit, boolean value) {
-		if (value) {
-			map[row][col] |= (1 << bit);
-		} else {
-			map[row][col] &= ~(1 << bit);
-		}
+	private boolean is_1(Tile t, byte bit) {
+		return insideMap(t) && is_1(t.row, t.col, bit);
+	}
+
+	private void set_0(int row, int col, byte bit) {
+		map[row][col] &= ~(1 << bit);
+	}
+
+	private void set_1(int row, int col, byte bit) {
+		map[row][col] |= (1 << bit);
 	}
 
 	public Maze() {
 
-		totalFoodCount = (int) playingArea().filter(tile -> containsSimplePellet(tile) || containsEnergizer(tile)).count();
-
-		portalLeft = tile(-1, 17);
-		portalRight = tile(28, 17);
-
-		ghostHouseDoorLeft = tile(13, 15);
-		ghostHouseDoorRight = tile(14, 15);
+		pacManSeat = new Seat(13, 26, Direction.RIGHT);
 
 		//@formatter:off
 		ghostSeats = new Seat[] { 
@@ -130,29 +118,41 @@ public class Maze {
 				};
 		//@formatter:on
 
-		pacManSeat = new Seat(13, 26, Direction.RIGHT);
 		bonusSeat = new Seat(13, 20, null);
 
+		portalLeft = Tile.at(-1, 17);
+		portalRight = Tile.at(28, 17);
+
+		ghostHouseDoorLeft = Tile.at(13, 15);
+		ghostHouseDoorRight = Tile.at(14, 15);
+
 		// (unreachable) scattering targets
-		horizonNW = tile(2, 0);
-		horizonNE = tile(25, 0);
-		horizonSW = tile(0, 35);
-		horizonSE = tile(27, 35);
+		horizonNW = Tile.at(2, 0);
+		horizonNE = Tile.at(25, 0);
+		horizonSW = Tile.at(0, 35);
+		horizonSE = Tile.at(27, 35);
+
+		totalFoodCount = (int) arena().filter(tile -> containsSimplePellet(tile) || containsEnergizer(tile)).count();
+	}
+
+	public boolean insideMap(Tile tile) {
+		return tile.inCols(0, numCols - 1) && tile.inRows(0, numRows - 1);
 	}
 
 	/**
-	 * @return stream of tiles of the playing area (omitting wall areas used for the scores)
+	 * @return Tiles comprising the playing area (omitting the areas above and below used for the
+	 *         scores)
 	 */
-	public Stream<Tile> playingArea() {
-		return IntStream.range(4 * numCols, 33 * numCols).mapToObj(i -> tile(i % numCols, i / numCols));
+	public Stream<Tile> arena() {
+		return IntStream.range(4 * numCols, 33 * numCols).mapToObj(i -> Tile.at(i % numCols, i / numCols));
 	}
 
 	/**
 	 * @param tile reference tile
 	 * @param dir  some direction
 	 * @param n    number of tiles
-	 * @return the tile located <code>n</code> tiles away from the reference tile towards the given
-	 *         direction. This can be a tile outside of the board!
+	 * @return The tile located <code>n</code> tiles away from the reference tile towards the given
+	 *         direction. This can be a tile outside of the map.
 	 */
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
 		if (tile.equals(portalLeft) && dir == Direction.LEFT) {
@@ -162,37 +162,28 @@ public class Maze {
 			return portalLeft;
 		}
 		Vector2f v = dir.vector();
-		return tile(tile.col + n * v.roundedX(), tile.row + n * v.roundedY());
+		return Tile.at(tile.col + n * v.roundedX(), tile.row + n * v.roundedY());
 	}
 
 	/**
 	 * @param tile reference tile
 	 * @param dir  some direction
-	 * @return neighbor towards the given direction. This can be a tile outside of the board!
+	 * @return Neighbor towards the given direction. This can be a tile outside of the map.
 	 */
 	public Tile neighbor(Tile tile, Direction dir) {
 		return tileToDir(tile, dir, 1);
 	}
 
-	public Optional<Direction> direction(Tile t1, Tile t2) {
-		Vector2f v = Vector2f.of(t2.col - t1.col, t2.row - t1.row);
-		return Direction.dirs().filter(dir -> dir.vector().equals(v)).findFirst();
-	}
-
-	public boolean insideBoard(Tile tile) {
-		return 0 <= tile.col && tile.col < numCols && 0 <= tile.row && tile.row < numRows;
-	}
-
 	public boolean isIntersection(Tile tile) {
-		return on(tile, B_INTERSECTION);
+		return is_1(tile, B_INTERSECTION);
 	}
 
-	public boolean isUpwardsBlocked(Tile tile) {
-		return on(tile, B_ONLY_DOWN);
+	public boolean isOneWayDown(Tile tile) {
+		return is_1(tile, B_ONE_WAY_DOWN);
 	}
 
 	public boolean insideGhostHouse(Tile tile) {
-		return isDoor(tile) || 16 <= tile.row && tile.row <= 18 && 11 <= tile.col && tile.col <= 16;
+		return isDoor(tile) || tile.inCols(11, 16) && tile.inRows(16, 18);
 	}
 
 	public boolean atGhostHouseDoor(Tile tile) {
@@ -203,11 +194,11 @@ public class Maze {
 		if (tile.equals(portalLeft) || tile.equals(portalRight)) {
 			return false;
 		}
-		return !insideBoard(tile) || on(tile, B_WALL);
+		return !insideMap(tile) || is_1(tile, B_WALL);
 	}
 
 	public boolean isTunnel(Tile tile) {
-		return tile.row == 17 && (-1 <= tile.col && tile.col <= 5 || tile.col >= 22 && tile.col <= 28);
+		return tile.row == 17 && (tile.inCols(-1, 5) || tile.inCols(22, 28));
 	}
 
 	public boolean isDoor(Tile tile) {
@@ -215,28 +206,28 @@ public class Maze {
 	}
 
 	public boolean containsSimplePellet(Tile tile) {
-		return on(tile, B_FOOD) && !on(tile, B_EATEN) && !on(tile, B_ENERGIZER);
+		return is_1(tile, B_FOOD) && !is_1(tile, B_EATEN) && !is_1(tile, B_ENERGIZER);
 	}
 
 	public boolean containsEnergizer(Tile tile) {
-		return on(tile, B_ENERGIZER) && !on(tile, B_EATEN);
+		return is_1(tile, B_ENERGIZER) && !is_1(tile, B_EATEN);
 	}
 
 	public boolean containsEatenFood(Tile tile) {
-		return on(tile, B_FOOD) && on(tile, B_EATEN);
+		return is_1(tile, B_FOOD) && is_1(tile, B_EATEN);
 	}
 
 	public void eatFood(Tile tile) {
-		if (on(tile, B_FOOD)) {
-			set(tile.row, tile.col, B_EATEN, true);
+		if (is_1(tile, B_FOOD)) {
+			set_1(tile.row, tile.col, B_EATEN);
 		}
 	}
 
 	public void removeFood() {
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				if (off(row, col, B_FOOD)) {
-					set(row, col, B_EATEN, true);
+				if (is_1(row, col, B_FOOD)) {
+					set_1(row, col, B_EATEN);
 				}
 			}
 		}
@@ -245,29 +236,31 @@ public class Maze {
 	public void restoreFood() {
 		for (int row = 0; row < numRows; ++row) {
 			for (int col = 0; col < numCols; ++col) {
-				if (off(row, col, B_FOOD)) {
-					set(row, col, B_EATEN, false);
+				if (is_1(row, col, B_FOOD)) {
+					set_0(row, col, B_EATEN);
 				}
 			}
 		}
 	}
 
-	// these corner positions are not needed in the original game. The algorithm to select a safe corner
-	// for ghosts escaping Pac-Man uses these positions.
+	/*
+	 * These inner corner positions are not needed in the original game. The algorithm to select a safe
+	 * corner for ghosts escaping Pac-Man uses them.
+	 */
 
 	public Tile cornerNW() {
-		return tile(1, 4);
+		return Tile.at(1, 4);
 	}
 
 	public Tile cornerNE() {
-		return tile(26, 4);
+		return Tile.at(26, 4);
 	}
 
 	public Tile cornerSW() {
-		return tile(1, 32);
+		return Tile.at(1, 32);
 	}
 
 	public Tile cornerSE() {
-		return tile(26, 32);
+		return Tile.at(26, 32);
 	}
 }

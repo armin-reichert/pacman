@@ -218,7 +218,7 @@ public abstract class Creature<STATE> extends Entity implements FsmContainer<STA
 		if (maze.isTunnel(neighbor)) {
 			return true; // includes portal tiles
 		}
-		return maze.insideBoard(neighbor);
+		return maze.insideMap(neighbor);
 	}
 
 	@Override

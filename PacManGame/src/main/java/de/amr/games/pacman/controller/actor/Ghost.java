@@ -219,7 +219,7 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 		if (maze.isDoor(neighbor)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
-		if (maze.isUpwardsBlocked(tile) && neighbor.equals(maze.neighbor(tile, UP))) {
+		if (maze.isOneWayDown(tile) && neighbor.equals(maze.neighbor(tile, UP))) {
 			return !is(CHASING, SCATTERING);
 		}
 		return super.canMoveBetween(tile, neighbor);

@@ -76,6 +76,6 @@ public abstract class TakingPrecomputedPath implements Steering {
 	}
 
 	protected Optional<Direction> alongPath(List<Tile> path) {
-		return path.size() < 2 ? Optional.empty() : maze.direction(path.get(0), path.get(1));
+		return path.size() < 2 ? Optional.empty() : path.get(0).dirTo(path.get(1));
 	}
 }

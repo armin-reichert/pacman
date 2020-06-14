@@ -248,7 +248,7 @@ public class PlayView extends SimplePlayView {
 		for (int row = 0; row < game.maze.numRows; ++row) {
 			for (int col = 0; col < game.maze.numCols; ++col) {
 				Tile tile = new Tile(col, row);
-				if (game.maze.isUpwardsBlocked(tile)) {
+				if (game.maze.isOneWayDown(tile)) {
 					Tile above = game.maze.neighbor(tile, Direction.UP);
 					drawArrowHead(g, Direction.DOWN, above.centerX(), above.y() - 2);
 				}
@@ -323,7 +323,7 @@ public class PlayView extends SimplePlayView {
 				g.setStroke(solid);
 				g.drawLine(from.centerX(), from.centerY(), to.centerX(), to.centerY());
 				if (i + 1 == len - 1) {
-					drawArrowHead(g, game.maze.direction(from, to).get(), to.centerX(), to.centerY());
+					drawArrowHead(g, from.dirTo(to).get(), to.centerX(), to.centerY());
 				}
 			}
 		} else if (ghost.wishDir() != null) {
