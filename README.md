@@ -125,7 +125,7 @@ beginStateMachine(IntroState.class, Void.class)
 		.state(SCROLLING_LOGO)
 			.onEntry(() -> {
 				theme.snd_insertCoin().play();
-				pacManLogo.tf.y = height();
+				pacManLogo.tf.y = height;
 				pacManLogo.tf.vy = -2f;
 				pacManLogo.setCompletion(() -> pacManLogo.tf.y <= 20);
 				pacManLogo.visible = true; 
@@ -137,10 +137,10 @@ beginStateMachine(IntroState.class, Void.class)
 
 		.state(SHOWING_ANIMATIONS)
 			.onEntry(() -> {
-				chasePacMan.setStartPosition(width(), 100);
+				chasePacMan.setStartPosition(width, 100);
 				chasePacMan.setEndPosition(-chasePacMan.tf.width, 100);
 				chaseGhosts.setStartPosition(-chaseGhosts.tf.width, 200);
-				chaseGhosts.setEndPosition(width(), 200);
+				chaseGhosts.setEndPosition(width, 200);
 				chasePacMan.start();
 				chaseGhosts.start();
 			})
@@ -151,14 +151,14 @@ beginStateMachine(IntroState.class, Void.class)
 			.onExit(() -> {
 				chasePacMan.stop();
 				chaseGhosts.stop();
-				chasePacMan.tf.centerX(width());
+				chasePacMan.tf.centerX(width);
 			})
 
 		.state(WAITING_FOR_INPUT)
 			.timeoutAfter(sec(10))
 			.onEntry(() -> {
 				ghostPointsAnimation.tf.y=(200);
-				ghostPointsAnimation.tf.centerX(width());
+				ghostPointsAnimation.tf.centerX(width);
 				ghostPointsAnimation.start();
 				gitHubLink.visible = true;
 			})
@@ -313,13 +313,15 @@ The *frightened* behavior has two different implementations (just as a demonstra
 Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
-blinky.behavior(LOCKED, blinky.isHeadingFor(blinky::tile));
-blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(maze.seatPosition(2)));
-blinky.behavior(LEAVING_HOUSE, blinky.isLeavingGhostHouse());
-blinky.behavior(FRIGHTENED, blinky.isMovingRandomlyWithoutTurningBack());
-blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
-blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
-blinky.behavior(DEAD, blinky.isHeadingFor(() -> maze.ghostHouseEntry));
+	blinky.seat = 0;
+	blinky.insane = true;
+	blinky.behavior(LOCKED, blinky.isHeadingFor(blinky::tile));
+	blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(maze.ghostSeats[2].position));
+	blinky.behavior(LEAVING_HOUSE, blinky.isLeavingGhostHouse());
+	blinky.behavior(FRIGHTENED, blinky.isMovingRandomlyWithoutTurningBack());
+	blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
+	blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
+	blinky.behavior(DEAD, blinky.isHeadingFor(() -> maze.ghostHouseEntry));
 ```
 <img src="PacManDoc/blinky.png"/>
 
@@ -328,33 +330,17 @@ blinky.behavior(DEAD, blinky.isHeadingFor(() -> maze.ghostHouseEntry));
 Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position. In the original game there is an overflow error leading to a different behavior: when Pac-Man looks upwards, the tile ahead of Pac-Man is falsely computed with an additional number of steps to the west. This behavior is active by default and can be toggled using the 'o'-key.
 
 ```java
-pinky.behavior(LOCKED, pinky.isJumpingUpAndDown(maze.seatPosition(2)));
-pinky.behavior(ENTERING_HOUSE, pinky.isTakingSeat(maze.seatPosition(2)));
-pinky.behavior(LEAVING_HOUSE, pinky.isLeavingGhostHouse());
-pinky.behavior(FRIGHTENED, pinky.isMovingRandomlyWithoutTurningBack());
-pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
-pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
-pinky.behavior(DEAD, pinky.isHeadingFor(() -> maze.ghostHouseEntry));
+	pinky.seat = 2;
+	pinky.behavior(LOCKED, pinky.isJumpingUpAndDown(maze.ghostSeats[2].position));
+	pinky.behavior(ENTERING_HOUSE, pinky.isTakingSeat(maze.ghostSeats[2].position));
+	pinky.behavior(LEAVING_HOUSE, pinky.isLeavingGhostHouse());
+	pinky.behavior(FRIGHTENED, pinky.isMovingRandomlyWithoutTurningBack());
+	pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
+	pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
+	pinky.behavior(DEAD, pinky.isHeadingFor(() -> maze.ghostHouseEntry));
 ```
 
 <img src="PacManDoc/pinky.png"/>
-
-### Clyde (the orange ghost)
-
-Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
-
-```java
-clyde.behavior(LOCKED, clyde.isJumpingUpAndDown(maze.seatPosition(3)));
-clyde.behavior(ENTERING_HOUSE, clyde.isTakingSeat(maze.seatPosition(3)));
-clyde.behavior(LEAVING_HOUSE, clyde.isLeavingGhostHouse());
-clyde.behavior(FRIGHTENED, clyde.isMovingRandomlyWithoutTurningBack());
-clyde.behavior(SCATTERING, clyde.isHeadingFor(maze.horizonSW));
-clyde.behavior(CHASING,
-		clyde.isHeadingFor(() -> clyde.tile().distSq(pacMan.tile()) > 8 * 8 ? pacMan.tile() : maze.horizonSW));
-clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostHouseEntry));
-```
-
-<img src="PacManDoc/clyde.png"/>
 
 ### Inky (the cyan ghost)
 
@@ -364,19 +350,38 @@ Consider the vector `V` from Blinky's position `B` to the position `P` two tiles
 Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-inky.behavior(LOCKED, inky.isJumpingUpAndDown(maze.seatPosition(1)));
-inky.behavior(ENTERING_HOUSE, inky.isTakingSeat(maze.seatPosition(1)));
-inky.behavior(LEAVING_HOUSE, inky.isLeavingGhostHouse());
-inky.behavior(FRIGHTENED, inky.isMovingRandomlyWithoutTurningBack());
-inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
-inky.behavior(CHASING, inky.isHeadingFor(() -> {
-	Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
-	return maze.tileAt(2 * p.col - b.col, 2 * p.row - b.row);
-}));
-inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostHouseEntry));
+	inky.seat = 1;
+	inky.behavior(LOCKED, inky.isJumpingUpAndDown(maze.ghostSeats[1].position));
+	inky.behavior(ENTERING_HOUSE, inky.isTakingSeat(maze.ghostSeats[1].position));
+	inky.behavior(LEAVING_HOUSE, inky.isLeavingGhostHouse());
+	inky.behavior(FRIGHTENED, inky.isMovingRandomlyWithoutTurningBack());
+	inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
+	inky.behavior(CHASING, inky.isHeadingFor(() -> {
+		Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
+		return new Tile(2 * p.col - b.col, 2 * p.row - b.row);
+	}));
+	inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostHouseEntry));
 ```
 
 <img src="PacManDoc/inky.png"/>
+
+### Clyde (the orange ghost)
+
+Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
+
+```java
+	clyde.seat = 3;
+	clyde.behavior(LOCKED, clyde.isJumpingUpAndDown(maze.ghostSeats[3].position));
+	clyde.behavior(ENTERING_HOUSE, clyde.isTakingSeat(maze.ghostSeats[3].position));
+	clyde.behavior(LEAVING_HOUSE, clyde.isLeavingGhostHouse());
+	clyde.behavior(FRIGHTENED, clyde.isMovingRandomlyWithoutTurningBack());
+	clyde.behavior(SCATTERING, clyde.isHeadingFor(maze.horizonSW));
+	clyde.behavior(CHASING,
+			clyde.isHeadingFor(() -> clyde.tile().distance(pacMan.tile()) > 8 ? pacMan.tile() : maze.horizonSW));
+	clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostHouseEntry));
+```
+
+<img src="PacManDoc/clyde.png"/>
 
 The visualization of the attack behaviors can be toggled during the game by pressing the 'r'-key ("show/hide routes").
 
