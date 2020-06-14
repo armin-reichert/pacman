@@ -93,8 +93,8 @@ public class Maze {
 		return (map[row][col] & (1 << bit)) != 0;
 	}
 
-	private boolean is_1(Tile t, byte bit) {
-		return insideMap(t) && is_1(t.row, t.col, bit);
+	private boolean is_1(Tile tile, byte bit) {
+		return insideMap(tile) && is_1(tile.row, tile.col, bit);
 	}
 
 	private void set_0(int row, int col, byte bit) {
