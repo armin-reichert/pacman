@@ -21,7 +21,7 @@ public class FollowMouseTestApp extends Application {
 		settings.width = 28 * Tile.SIZE;
 		settings.height = 36 * Tile.SIZE;
 		settings.scale = 2;
-		settings.title = "Pac-Man Follows Mouse";
+		settings.title = "Blinky Follows Mouse";
 	}
 
 	@Override
@@ -46,7 +46,6 @@ class FollowMouseTestUI extends PlayView {
 	public void init() {
 		super.init();
 		game.maze.removeFood();
-		theme.snd_ghost_chase().volume(0);
 		game.putOnStage(game.blinky);
 		game.blinky.behavior(CHASING, game.blinky.isHeadingFor(() -> mousePosition));
 		game.blinky.setState(CHASING);
