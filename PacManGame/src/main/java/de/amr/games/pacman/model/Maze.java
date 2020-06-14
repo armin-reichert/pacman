@@ -81,6 +81,7 @@ public class Maze {
 	public final Tile portalLeft, portalRight;
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
+	public final Tile cornerNW, cornerNE, cornerSW, cornerSE;
 
 	// bit operations
 
@@ -126,6 +127,12 @@ public class Maze {
 		horizonNE = Tile.at(25, 0);
 		horizonSW = Tile.at(0, 35);
 		horizonSE = Tile.at(27, 35);
+
+		// only used by algorithm to calculate routes to "safe" corner for fleeing ghosts
+		cornerNW = Tile.at(1, 4);
+		cornerNE = Tile.at(26, 4);
+		cornerSW = Tile.at(1, 32);
+		cornerSE = Tile.at(26, 32);
 
 		int foodCount = 0;
 		for (int row = arenaTopRow; row <= arenaBottomRow; ++row) {
@@ -245,26 +252,5 @@ public class Maze {
 				}
 			}
 		}
-	}
-
-	/*
-	 * These inner corner positions are not needed in the original game. The algorithm to select a safe
-	 * corner for ghosts escaping Pac-Man uses them.
-	 */
-
-	public Tile cornerNW() {
-		return Tile.at(1, 4);
-	}
-
-	public Tile cornerNE() {
-		return Tile.at(26, 4);
-	}
-
-	public Tile cornerSW() {
-		return Tile.at(1, 32);
-	}
-
-	public Tile cornerSE() {
-		return Tile.at(26, 32);
 	}
 }

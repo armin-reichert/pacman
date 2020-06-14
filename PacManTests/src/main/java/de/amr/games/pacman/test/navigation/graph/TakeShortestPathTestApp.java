@@ -18,6 +18,7 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
@@ -47,13 +48,15 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 	final Ghost ghost;
 	final List<Tile> targets;
 	int targetIndex;
+	Maze maze;
 
 	public TakeShortestPathTestUI() {
 		super(new Game(), new ArcadeTheme());
+		maze = game.maze;
 		ghost = game.blinky;
-		targets = Arrays.asList(game.maze.cornerSE(), Tile.at(15, 23), Tile.at(12, 23), game.maze.cornerSW(),
-				game.maze.neighbor(game.maze.portalLeft, Direction.RIGHT), game.maze.cornerNW(), game.maze.ghostSeats[0].tile,
-				game.maze.cornerNE(), game.maze.neighbor(game.maze.portalRight, Direction.LEFT), game.maze.pacManSeat.tile);
+		targets = Arrays.asList(maze.cornerSE, Tile.at(15, 23), Tile.at(12, 23), maze.cornerSW,
+				maze.neighbor(maze.portalLeft, Direction.RIGHT), maze.cornerNW, maze.ghostSeats[0].tile, maze.cornerNE,
+				maze.neighbor(maze.portalRight, Direction.LEFT), maze.pacManSeat.tile);
 		showRoutes = true;
 		showStates = true;
 		showScores = false;
@@ -63,7 +66,7 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game.maze.removeFood();
+		maze.removeFood();
 		targetIndex = 0;
 		theme.snd_ghost_chase().volume(0);
 		game.putOnStage(ghost);
@@ -78,7 +81,7 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 		if (++targetIndex == targets.size()) {
 			targetIndex = 0;
 			game.enterLevel(game.level.number + 1);
-			game.maze.removeFood();
+			maze.removeFood();
 		}
 	}
 

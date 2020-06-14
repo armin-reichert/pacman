@@ -11,6 +11,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
@@ -39,23 +40,25 @@ class FollowTargetTilesTestUI extends PlayView {
 
 	private List<Tile> targets;
 	private int current;
+	private Maze maze;
 
 	public FollowTargetTilesTestUI() {
 		super(new Game(), new ArcadeTheme());
+		maze = game.maze;
 		showRoutes = true;
 		showStates = false;
 		showScores = false;
 		showGrid = true;
 
-		targets = Arrays.asList(game.maze.cornerNW(), game.maze.ghostSeats[0].tile, game.maze.cornerNE(), game.maze.cornerSE(),
-				game.maze.pacManSeat.tile, game.maze.cornerSW());
+		targets = Arrays.asList(maze.cornerNW, maze.ghostSeats[0].tile, maze.cornerNE, maze.cornerSE, maze.pacManSeat.tile,
+				maze.cornerSW);
 	}
 
 	@Override
 	public void init() {
 		super.init();
 		current = 0;
-		game.maze.removeFood();
+		maze.removeFood();
 		theme.snd_ghost_chase().volume(0);
 		game.putOnStage(game.blinky);
 		game.blinky.placeAt(targets.get(0));
@@ -71,7 +74,7 @@ class FollowTargetTilesTestUI extends PlayView {
 			if (current == targets.size()) {
 				current = 0;
 				game.enterLevel(game.level.number + 1);
-				game.maze.removeFood();
+				maze.removeFood();
 			}
 		}
 		game.blinky.update();
