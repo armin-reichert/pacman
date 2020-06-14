@@ -136,7 +136,15 @@ public class Maze {
 		horizonSW = Tile.at(0, 35);
 		horizonSE = Tile.at(27, 35);
 
-		totalFoodCount = (int) arena().filter(tile -> containsSimplePellet(tile) || containsEnergizer(tile)).count();
+		int foodCount = 0;
+		for (int row = arenaTopRow; row <= arenaBottomRow; ++row) {
+			for (int col = 0; col < numCols; ++col) {
+				if (is_1(row, col, B_FOOD)) {
+					++foodCount;
+				}
+			}
+		}
+		totalFoodCount = foodCount;
 	}
 
 	public boolean insideMap(Tile tile) {
