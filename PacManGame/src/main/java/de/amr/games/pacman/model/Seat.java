@@ -15,7 +15,7 @@ public class Seat {
 	public final Direction startDir;
 
 	public Seat(int col, int row, Direction dir) {
-		tile = new Tile(col, row);
+		tile = Tile.at(col, row);
 		position = Vector2f.of(tile.centerX(), tile.y());
 		startDir = dir;
 	}

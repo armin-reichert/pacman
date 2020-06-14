@@ -205,7 +205,7 @@ public class Game {
 		inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
 		inky.behavior(CHASING, inky.isHeadingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
-			return new Tile(2 * p.col - b.col, 2 * p.row - b.row);
+			return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
 		inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostSeats[0].tile));
 

@@ -247,7 +247,7 @@ public class PlayView extends SimplePlayView {
 		g.setColor(Color.WHITE);
 		for (int row = 0; row < game.maze.numRows; ++row) {
 			for (int col = 0; col < game.maze.numCols; ++col) {
-				Tile tile = new Tile(col, row);
+				Tile tile = Tile.at(col, row);
 				if (game.maze.isOneWayDown(tile)) {
 					Tile above = game.maze.neighbor(tile, Direction.UP);
 					drawArrowHead(g, Direction.DOWN, above.centerX(), above.y() - 2);

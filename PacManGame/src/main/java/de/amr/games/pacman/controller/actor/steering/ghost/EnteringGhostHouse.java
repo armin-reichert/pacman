@@ -40,7 +40,7 @@ public class EnteringGhostHouse extends StateMachine<EnteringHouseState, Void> i
 				.state(AT_DOOR)
 					.onEntry(() -> {
 						// target tile is only used for route visualization
-						ghost.setTargetTile(new Tile(target.roundedX(), target.roundedY()));
+						ghost.setTargetTile(Tile.at(target.roundedX(), target.roundedY()));
 						ghost.setWishDir(DOWN);
 					})
 					

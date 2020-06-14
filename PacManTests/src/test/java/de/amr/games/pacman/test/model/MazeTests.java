@@ -38,26 +38,26 @@ public class MazeTests {
 		assertNotNull(maze.horizonNW);
 		assertNotNull(maze.horizonSW);
 		assertNotNull(maze.horizonSE);
-		assertTrue(maze.portalLeft.equals(new Tile(-1, 17)));
-		assertTrue(maze.portalRight.equals(new Tile(28, 17)));
-		assertTrue(maze.isWall(new Tile(0, 3)));
-		assertTrue(maze.isDoor(new Tile(13, 15)));
+		assertTrue(maze.portalLeft.equals(Tile.at(-1, 17)));
+		assertTrue(maze.portalRight.equals(Tile.at(28, 17)));
+		assertTrue(maze.isWall(Tile.at(0, 3)));
+		assertTrue(maze.isDoor(Tile.at(13, 15)));
 	}
 
 	@Test
 	public void testMazeContent() {
 		assertEquals(4, maze.arena().filter(maze::containsEnergizer).count());
 		assertEquals(maze.totalFoodCount - 4, maze.arena().filter(maze::containsSimplePellet).count());
-		assertTrue(maze.containsSimplePellet(new Tile(1, 4)));
-		assertTrue(maze.containsEnergizer(new Tile(1, 6)));
+		assertTrue(maze.containsSimplePellet(Tile.at(1, 4)));
+		assertTrue(maze.containsEnergizer(Tile.at(1, 6)));
 	}
 
 	@Test
 	public void testTiles() {
-		assertEquals(new Tile(0, 0), new Tile(0, 0));
-		assertNotEquals(new Tile(0, 0), new Tile(1, 0));
-		assertEquals(4, new Tile(0, 0).distance(new Tile(0, 4)), 0);
-		assertEquals(4, new Tile(0, 0).distance(new Tile(4, 0)), 0);
-		assertEquals(Math.sqrt(32), new Tile(0, 0).distance(new Tile(4, 4)), 0);
+		assertEquals(Tile.at(0, 0), Tile.at(0, 0));
+		assertNotEquals(Tile.at(0, 0), Tile.at(1, 0));
+		assertEquals(4, Tile.at(0, 0).distance(Tile.at(0, 4)), 0);
+		assertEquals(4, Tile.at(0, 0).distance(Tile.at(4, 0)), 0);
+		assertEquals(Math.sqrt(32), Tile.at(0, 0).distance(Tile.at(4, 4)), 0);
 	}
 }

@@ -167,7 +167,7 @@ public abstract class Creature<STATE> extends Entity implements FsmContainer<STA
 	@Override
 	public Tile tile() {
 		Vector2f center = tf.getCenter();
-		return new Tile(center.roundedX() / Tile.SIZE, center.roundedY() / Tile.SIZE);
+		return Tile.at(center.roundedX() / Tile.SIZE, center.roundedY() / Tile.SIZE);
 	}
 
 	@Override
