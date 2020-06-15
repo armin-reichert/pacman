@@ -41,20 +41,21 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends Creature<GhostState> implements GhostBehavior {
 
+	public enum Insanity {
+		IMMUNE, HEALTHY, CRUISE_ELROY1, CRUISE_ELROY2
+	};
+
 	/** Tile headed for when ghost scatters out. */
 	public Tile scatteringTarget;
 
 	/** State to enter after frightening state ends. */
 	public GhostState followState;
 
-	/** Insane ghosts suffer from the "cruise elroy disease". */
-	public boolean insane;
+	/** Keep track of steering changes. */
+	public Steering lastSteering;
 
 	/** Insanity ("cruise elroy") level. */
-	public int insanityLevel; // 0, 1, 2
-
-	/** Steering before steering changes. */
-	private Steering prevSteering;
+	public Insanity insanity = Insanity.IMMUNE;
 
 	public Ghost(Game game, String name) {
 		super(game, name, new EnumMap<>(GhostState.class));
@@ -70,7 +71,9 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 					.onEntry(() -> {
 						followState = LOCKED;
 						visible = true;
-						insanityLevel = 0;
+						if (insanity != Insanity.IMMUNE) {
+							insanity = Insanity.HEALTHY;
+						}
 						moveDir = wishDir = seat.startDir;
 						tf.setPosition(seat.position);
 						enteredNewTile();
@@ -110,7 +113,7 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 				
 				.state(SCATTERING)
 					.onTick(() -> {
-						updateInsanityLevel(game);
+						updateInsanity(game);
 						move();
 						showColored();
 						checkCollision(game.pacMan);
@@ -118,7 +121,7 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 			
 				.state(CHASING)
 					.onTick(() -> {
-						updateInsanityLevel(game);
+						updateInsanity(game);
 						move();
 						showColored();
 						checkCollision(game.pacMan);
@@ -223,12 +226,12 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 
 	public void move() {
 		Steering currentSteering = steering();
-		if (prevSteering != currentSteering) {
-			PacManStateMachineLogging.loginfo("%s steering changed from %s to %s", this, Steering.name(prevSteering),
+		if (lastSteering != currentSteering) {
+			PacManStateMachineLogging.loginfo("%s steering changed from %s to %s", this, Steering.name(lastSteering),
 					Steering.name(currentSteering));
 			currentSteering.init();
 			currentSteering.force();
-			prevSteering = currentSteering;
+			lastSteering = currentSteering;
 		}
 		currentSteering.steer();
 		movement.update();
@@ -247,12 +250,18 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 		case SCATTERING:
 			if (maze.isTunnel(tile())) {
 				return speed(game.level.ghostTunnelSpeed);
-			} else if (insanityLevel == 2) {
-				return speed(game.level.elroy2Speed);
-			} else if (insanityLevel == 1) {
-				return speed(game.level.elroy1Speed);
 			} else {
-				return speed(game.level.ghostSpeed);
+				switch (insanity) {
+				case CRUISE_ELROY2:
+					return speed(game.level.elroy2Speed);
+				case CRUISE_ELROY1:
+					return speed(game.level.elroy1Speed);
+				case HEALTHY:
+				case IMMUNE:
+					return speed(game.level.ghostSpeed);
+				default:
+					throw new IllegalArgumentException("Illegal ghost state: " + getState());
+				}
 			}
 		case FRIGHTENED:
 			return speed(maze.isTunnel(tile()) ? game.level.ghostTunnelSpeed : game.level.ghostFrightenedSpeed);
@@ -304,17 +313,19 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 		}
 	}
 
-	private void updateInsanityLevel(Game game) {
-		if (!insane) {
+	private void updateInsanity(Game game) {
+		if (insanity == Insanity.IMMUNE) {
 			return;
 		}
 		int pelletsLeft = game.remainingFoodCount();
-		if (insanityLevel < 1 && pelletsLeft <= game.level.elroy1DotsLeft) {
-			insanityLevel = 1;
-			loginfo("%s's insanity changed to %d, pellets left: %d", name, insanityLevel, pelletsLeft);
-		} else if (insanityLevel < 2 && pelletsLeft <= game.level.elroy2DotsLeft) {
-			insanityLevel = 2;
-			loginfo("%s's insanity changed to %d, pellets left: %d", name, insanityLevel, pelletsLeft);
+		Insanity oldInsanity = insanity;
+		if (pelletsLeft <= game.level.elroy2DotsLeft) {
+			insanity = Insanity.CRUISE_ELROY2;
+		} else if (pelletsLeft <= game.level.elroy1DotsLeft) {
+			insanity = Insanity.CRUISE_ELROY1;
+		}
+		if (oldInsanity != insanity) {
+			loginfo("%s's insanity changed from %s to %s, pellets left: %d", name, oldInsanity, insanity, pelletsLeft);
 		}
 	}
 }

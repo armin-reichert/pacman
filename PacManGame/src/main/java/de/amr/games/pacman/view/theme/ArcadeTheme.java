@@ -28,7 +28,7 @@ import de.amr.games.pacman.model.Symbol;
  * @author Armin Reichert
  */
 public class ArcadeTheme implements Theme {
-	
+
 	private final int tileSize = 16;
 
 	private final BufferedImage sheet = Assets.readImage("images/arcade/sprites.png");
@@ -58,8 +58,9 @@ public class ArcadeTheme implements Theme {
 			return 0;
 		case UP:
 			return 2;
+		default:
+			throw new IllegalArgumentException("Illegal direction: " + dir);
 		}
-		throw new IllegalArgumentException("Illegal direction: " + dir);
 	}
 
 	BufferedImage crop(int x, int y, int w, int h) {

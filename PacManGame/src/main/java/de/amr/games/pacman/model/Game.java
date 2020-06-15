@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.actor.Bonus;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.Ghost.Insanity;
 import de.amr.games.pacman.controller.actor.PacMan;
 
 /**
@@ -214,7 +215,7 @@ public class Game {
 
 		// individual ghost behavior
 
-		blinky.insane = true; // becomes "cruise elroy"
+		blinky.insanity = Insanity.HEALTHY; // healthy but may become "cruise elroy"
 		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
 
 		inky.behavior(CHASING, inky.isHeadingFor(() -> {
