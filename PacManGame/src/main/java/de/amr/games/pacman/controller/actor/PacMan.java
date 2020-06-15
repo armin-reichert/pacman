@@ -11,6 +11,7 @@ import static de.amr.games.pacman.model.Direction.dirs;
 import static de.amr.games.pacman.model.Game.DIGEST_ENERGIZER_TICKS;
 import static de.amr.games.pacman.model.Game.DIGEST_PELLET_TICKS;
 import static de.amr.games.pacman.model.Game.speed;
+import static de.amr.statemachine.core.StateMachine.beginStateMachine;
 
 import java.util.EnumMap;
 import java.util.Optional;
@@ -27,7 +28,6 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.theme.Theme;
-import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
@@ -40,13 +40,13 @@ public class PacMan extends Creature<PacManState> {
 	/** Number of ticks Pac-Man has power after eating an energizer. */
 	public int power;
 
-	/** Number of ticks Pac-Man is not moving after eating. */
-	public int digestionTicks;
+	/** Number of ticks Pac-Man is not moving after having eaten a pellet. */
+	public int digestion;
 
 	public PacMan(Game game) {
 		super(game, "Pac-Man", new EnumMap<>(PacManState.class));
 		/*@formatter:off*/
-		brain = StateMachine.beginStateMachine(PacManState.class, PacManGameEvent.class)
+		brain = beginStateMachine(PacManState.class, PacManGameEvent.class)
 
 			.description(this::toString)
 			.initialState(SLEEPING)
@@ -55,7 +55,7 @@ public class PacMan extends Creature<PacManState> {
 
 				.state(SLEEPING)
 					.onEntry(() -> {
-						power = digestionTicks = 0;
+						power = digestion = 0;
 						moveDir = wishDir = maze.pacManSeat.startDir;
 						visible = true;
 						tf.setPosition(maze.pacManSeat.position);
@@ -65,7 +65,7 @@ public class PacMan extends Creature<PacManState> {
 
 				.state(EATING)
 					.onEntry(() -> {
-						digestionTicks = 0;
+						digestion = 0;
 					})
 
 					.onTick(() -> {
@@ -75,8 +75,8 @@ public class PacMan extends Creature<PacManState> {
 								return;
 							}
 						}
-						if (digestionTicks > 0) {
-							--digestionTicks;
+						if (digestion > 0) {
+							--digestion;
 							return;
 						}
 						move();
@@ -88,7 +88,7 @@ public class PacMan extends Creature<PacManState> {
 
 				.state(DEAD)
 					.onEntry(() -> {
-						power = digestionTicks = 0;
+						power = digestion = 0;
 					})
 
 			.transitions()
@@ -175,11 +175,11 @@ public class PacMan extends Creature<PacManState> {
 			return Optional.of(new BonusFoundEvent(game.bonus.symbol, game.bonus.value));
 		}
 		if (maze.containsEnergizer(tile)) {
-			digestionTicks = DIGEST_ENERGIZER_TICKS;
+			digestion = DIGEST_ENERGIZER_TICKS;
 			return Optional.of(new FoodFoundEvent(tile, true));
 		}
 		if (maze.containsSimplePellet(tile)) {
-			digestionTicks = DIGEST_PELLET_TICKS;
+			digestion = DIGEST_PELLET_TICKS;
 			return Optional.of(new FoodFoundEvent(tile, false));
 		}
 		return Optional.empty();

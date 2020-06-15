@@ -17,6 +17,16 @@ public interface MovingThroughMaze {
 	Tile tile();
 
 	/**
+	 * Euclidean distance (in tiles) between this and the other entity.
+	 * 
+	 * @param other other entity
+	 * @return Euclidean distance measured in tiles
+	 */
+	default double distance(MovingThroughMaze other) {
+		return tile().distance(other.tile());
+	}
+
+	/**
 	 * @return the maze where this mover is located
 	 */
 	Maze maze();
@@ -69,8 +79,16 @@ public interface MovingThroughMaze {
 	 */
 	boolean canMoveBetween(Tile tile, Tile neighbor);
 
+	/**
+	 * Forces the entity to move to the given direction.
+	 * 
+	 * @param dir direction
+	 */
 	void forceMoving(Direction dir);
 
+	/**
+	 * Forces the entity to move to the opposite direction.
+	 */
 	void forceTurningBack();
 
 }

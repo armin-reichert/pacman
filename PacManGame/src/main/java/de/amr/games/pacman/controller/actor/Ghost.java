@@ -41,8 +41,8 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends Creature<GhostState> implements GhostBehavior {
 
-	/** Ghost house seat number (0-3). */
-	public int seat;
+	/** Tile headed for when ghost scatters out. */
+	public Tile scatteringTarget;
 
 	/** State to enter after frightening state ends. */
 	public GhostState followState;
@@ -70,9 +70,9 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 					.onEntry(() -> {
 						followState = LOCKED;
 						visible = true;
-						moveDir = wishDir = maze.ghostSeats[seat].startDir;
 						insanityLevel = 0;
-						tf.setPosition(maze.ghostSeats[seat].position);
+						moveDir = wishDir = seat.startDir;
+						tf.setPosition(seat.position);
 						enteredNewTile();
 						sprites.forEach(Sprite::resetAnimation);
 						showColored();

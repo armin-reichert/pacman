@@ -18,6 +18,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.Seat;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.api.FsmContainer;
@@ -41,6 +42,7 @@ public abstract class Creature<STATE> extends Entity implements FsmContainer<STA
 	public final Maze maze;
 	public final String name;
 	public final SpriteMap sprites = new SpriteMap();
+	public Seat seat;
 
 	protected Fsm<STATE, PacManGameEvent> brain;
 	protected Map<STATE, Steering> steerings;
@@ -130,7 +132,8 @@ public abstract class Creature<STATE> extends Entity implements FsmContainer<STA
 
 	@Override
 	public String toString() {
-		return String.format("(%s, col:%d, row:%d, %s)", name, tile().col, tile().row, getState());
+		Tile tile = tile();
+		return String.format("(%s, col:%d, row:%d, %s)", name, tile.col, tile.row, getState());
 	}
 
 	@Override

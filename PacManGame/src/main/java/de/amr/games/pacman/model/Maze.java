@@ -106,18 +106,17 @@ public class Maze {
 	}
 
 	public Maze() {
-		pacManSeat = new Seat(13, 26, Direction.RIGHT);
 
 		//@formatter:off
 		ghostSeats = new Seat[] { 
-				new Seat(13, 14, Direction.LEFT), 
-				new Seat(11, 17, Direction.UP),
-				new Seat(13, 17, Direction.DOWN),
-				new Seat(15, 17, Direction.UP),
+				new Seat(0, 13, 14, Direction.LEFT), 
+				new Seat(1, 11, 17, Direction.UP),
+				new Seat(2, 13, 17, Direction.DOWN),
+				new Seat(3, 15, 17, Direction.UP),
 				};
 		//@formatter:on
-
-		bonusSeat = new Seat(13, 20, null);
+		pacManSeat = new Seat(4, 13, 26, Direction.RIGHT);
+		bonusSeat = new Seat(5, 13, 20, null);
 
 		portalLeft = Tile.at(-1, 17);
 		portalRight = Tile.at(28, 17);

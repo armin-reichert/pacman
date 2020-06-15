@@ -182,50 +182,50 @@ public class Game {
 		clyde = new Ghost(this, "Clyde");
 		bonus = new Bonus(this);
 
-		// define actor behavior
+		// assign seats
+
+		pacMan.seat = maze.pacManSeat;
+		blinky.seat = maze.ghostSeats[0];
+		inky.seat = maze.ghostSeats[1];
+		pinky.seat = maze.ghostSeats[2];
+		clyde.seat = maze.ghostSeats[3];
+
+		// assign scattering targets
+
+		blinky.scatteringTarget = maze.horizonNE;
+		inky.scatteringTarget = maze.horizonSE;
+		pinky.scatteringTarget = maze.horizonNW;
+		clyde.scatteringTarget = maze.horizonSW;
+
+		// define behavior
 
 		pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 
-		blinky.seat = 0;
-		blinky.insane = true;
-		blinky.behavior(LOCKED, blinky.isHeadingFor(blinky::tile));
-		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(maze.ghostSeats[2].position));
-		blinky.behavior(LEAVING_HOUSE, blinky.isLeavingGhostHouse());
-		blinky.behavior(FRIGHTENED, blinky.isMovingRandomlyWithoutTurningBack());
-		blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
-		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
-		blinky.behavior(DEAD, blinky.isHeadingFor(() -> maze.ghostSeats[0].tile));
+		// common ghost behavior
 
-		inky.seat = 1;
-		inky.behavior(LOCKED, inky.isJumpingUpAndDown(maze.ghostSeats[1].position));
-		inky.behavior(ENTERING_HOUSE, inky.isTakingSeat(maze.ghostSeats[1].position));
-		inky.behavior(LEAVING_HOUSE, inky.isLeavingGhostHouse());
-		inky.behavior(FRIGHTENED, inky.isMovingRandomlyWithoutTurningBack());
-		inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
+		ghosts().forEach(ghost -> {
+			ghost.behavior(LOCKED, ghost.isJumpingUpAndDown(ghost.seat.position));
+			ghost.behavior(ENTERING_HOUSE, ghost.isTakingSeat(ghost.seat.position));
+			ghost.behavior(LEAVING_HOUSE, ghost.isLeavingGhostHouse());
+			ghost.behavior(SCATTERING, ghost.isHeadingFor(ghost.scatteringTarget));
+			ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
+			ghost.behavior(DEAD, ghost.isHeadingFor(() -> maze.ghostSeats[0].tile));
+		});
+
+		// individual ghost behavior
+
+		blinky.insane = true; // becomes "cruise elroy"
+		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
+
 		inky.behavior(CHASING, inky.isHeadingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
-		inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostSeats[0].tile));
 
-		pinky.seat = 2;
-		pinky.behavior(LOCKED, pinky.isJumpingUpAndDown(maze.ghostSeats[2].position));
-		pinky.behavior(ENTERING_HOUSE, pinky.isTakingSeat(maze.ghostSeats[2].position));
-		pinky.behavior(LEAVING_HOUSE, pinky.isLeavingGhostHouse());
-		pinky.behavior(FRIGHTENED, pinky.isMovingRandomlyWithoutTurningBack());
-		pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
 		pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
-		pinky.behavior(DEAD, pinky.isHeadingFor(() -> maze.ghostSeats[0].tile));
 
-		clyde.seat = 3;
-		clyde.behavior(LOCKED, clyde.isJumpingUpAndDown(maze.ghostSeats[3].position));
-		clyde.behavior(ENTERING_HOUSE, clyde.isTakingSeat(maze.ghostSeats[3].position));
-		clyde.behavior(LEAVING_HOUSE, clyde.isLeavingGhostHouse());
-		clyde.behavior(FRIGHTENED, clyde.isMovingRandomlyWithoutTurningBack());
-		clyde.behavior(SCATTERING, clyde.isHeadingFor(maze.horizonSW));
 		clyde.behavior(CHASING,
-				clyde.isHeadingFor(() -> clyde.tile().distance(pacMan.tile()) > 8 ? pacMan.tile() : maze.horizonSW));
-		clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostSeats[0].tile));
+				clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : clyde.scatteringTarget));
 	}
 
 	/**

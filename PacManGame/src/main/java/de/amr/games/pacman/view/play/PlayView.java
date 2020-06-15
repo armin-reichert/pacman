@@ -10,8 +10,6 @@ import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 import static java.lang.Math.PI;
 import static java.lang.Math.round;
-import static java.util.Comparator.comparingInt;
-import static java.util.stream.Collectors.toList;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -35,9 +33,9 @@ import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.GhostHouse;
 import de.amr.games.pacman.controller.actor.Bonus;
 import de.amr.games.pacman.controller.actor.BonusState;
+import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
-import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
@@ -92,7 +90,7 @@ public class PlayView extends SimplePlayView {
 		drawMessage(g);
 		if (showGrid) {
 			drawUpwardsBlockedTileMarkers(g);
-			drawSeats(g);
+			drawGhostSeats(g);
 		}
 		if (showScores) {
 			drawScores(g);
@@ -256,23 +254,20 @@ public class PlayView extends SimplePlayView {
 		}
 	}
 
-	private void drawSeats(Graphics2D g) {
+	private void drawGhostSeats(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		List<Ghost> ghostsBySeat = game.ghosts().sorted(comparingInt(ghost -> ghost.seat)).collect(toList());
-		for (int seat = 0; seat < 4; ++seat) {
-			Vector2f seatPosition = game.maze.ghostSeats[seat].position;
-			Ghost ghostAtSeat = ghostsBySeat.get(seat);
-			g.setColor(ghostColor(ghostAtSeat));
-			int x = seatPosition.roundedX(), y = seatPosition.roundedY();
-			String text = String.valueOf(seat);
+		game.ghosts().forEach(ghost -> {
+			g.setColor(ghostColor(ghost));
+			int x = ghost.seat.position.roundedX(), y = ghost.seat.position.roundedY();
+			String text = String.valueOf(ghost.seat.number);
 			g.drawRoundRect(x, y, Tile.SIZE, Tile.SIZE, 2, 2);
 			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 6));
 			FontMetrics fm = g.getFontMetrics();
 			Rectangle2D r = fm.getStringBounds(text, g);
 			g.setColor(Color.WHITE);
 			g.drawString(text, x + (Tile.SIZE - Math.round(r.getWidth())) / 2, y + Tile.SIZE - 2);
-		}
+		});
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 	}
