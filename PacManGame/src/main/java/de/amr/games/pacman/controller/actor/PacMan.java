@@ -79,7 +79,8 @@ public class PacMan extends Creature<PacManState> {
 							--digestion;
 							return;
 						}
-						move();
+						steering().steer();
+						movement.update();
 						showWalking();
 						if (!isTeleporting()) {
 							findSomethingInteresting(game).ifPresent(this::publish);
@@ -128,14 +129,12 @@ public class PacMan extends Creature<PacManState> {
 	}
 
 	/**
-	 * Defines the steering used in every state.
+	 * Defines the steering used in the {@link PacManState#EATING} state.
 	 * 
 	 * @param steering steering to use in every state
 	 */
 	public void behavior(Steering steering) {
-		for (PacManState state : PacManState.values()) {
-			behavior(state, steering);
-		}
+		behavior(EATING, steering);
 	}
 
 	@Override
@@ -162,11 +161,6 @@ public class PacMan extends Creature<PacManState> {
 			return maze.tileToDir(tileAhead, LEFT, numTiles);
 		}
 		return tileAhead;
-	}
-
-	private void move() {
-		steering().steer();
-		movement.update();
 	}
 
 	private Optional<PacManGameEvent> findSomethingInteresting(Game game) {

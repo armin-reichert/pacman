@@ -12,13 +12,27 @@ import de.amr.games.pacman.model.Tile;
  */
 public interface Steering {
 
+	/**
+	 * A do-nothing steering ("null object pattern").
+	 */
+	static Steering NONE = new Steering() {
+
+		@Override
+		public void steer() {
+		}
+
+		@Override
+		public boolean requiresGridAlignment() {
+			return false;
+		}
+	};
+
 	static String name(Steering s) {
 		return s == null ? "no steering" : s.getClass().getSimpleName();
 	}
 
 	/**
-	 * Steers the actor towards its target tile or wherever it should move in its
-	 * current state.
+	 * Steers the actor towards its target tile or wherever it should move in its current state.
 	 */
 	void steer();
 
@@ -44,8 +58,7 @@ public interface Steering {
 	}
 
 	/**
-	 * @return tells if the steering requires that moving always keeps the actor
-	 *         aligned with the grid
+	 * @return tells if the steering requires that moving always keeps the actor aligned with the grid
 	 */
 	boolean requiresGridAlignment();
 

@@ -99,7 +99,7 @@ public abstract class Creature<STATE> extends Entity implements FsmContainer<STA
 	 * @return the current steering for this actor.
 	 */
 	public Steering steering() {
-		return steerings.get(getState());
+		return steerings.getOrDefault(getState(), Steering.NONE);
 	}
 
 	/**
