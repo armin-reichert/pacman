@@ -287,13 +287,6 @@ Pac-Man is steered by holding a key indicating its **intended** direction. As so
 
 ```java
 pacMan.steering(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
-
-default Steering isFollowingKeys(int... keys) {
-	return () -> Direction.dirs()
-			.filter(dir -> Keyboard.keyDown(keys[dir.ordinal()]))
-			.findAny()
-			.ifPresent(this::setWishDir);
-}
 ```
 
 ## Ghost steering ("AI")
@@ -308,20 +301,35 @@ The ghost behavior only differs for the *chasing* state namely in the logic for 
 
 The *frightened* behavior has two different implementations (just as a demonstration how the behavior can be exchanged during the game) and can be toggled for all ghosts at once by pressing the 'f'-key.
 
+### Common ghost behavior
+
+The common behavior of all ghosts is defined by the following code:
+
+```java
+ghosts().forEach(ghost -> {
+	ghost.behavior(LOCKED, ghost.isJumpingUpAndDown(ghost.seat.position));
+	ghost.behavior(ENTERING_HOUSE, ghost.isTakingSeat(ghost.seat.position));
+	ghost.behavior(LEAVING_HOUSE, ghost.isLeavingGhostHouse());
+	ghost.behavior(SCATTERING, ghost.isHeadingFor(ghost.scatteringTarget));
+	ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
+	ghost.behavior(DEAD, ghost.isHeadingFor(() -> maze.ghostSeats[0].tile));
+});
+```
+
+The only difference in ghost behavior is in the "CHASING" state:
+
 ### Blinky (the red ghost)
+
+Blinky is special because he becomes "insane" when the number of remaining pellets reaches certain values depending on the current game level. He becomes "cruise elroy" whatever that means.
+
+```java
+blinky.insane = true;
+```
 
 Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
-blinky.seat = 0;
-blinky.insane = true;
-blinky.behavior(LOCKED, blinky.isHeadingFor(blinky::tile));
-blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(maze.ghostSeats[2].position));
-blinky.behavior(LEAVING_HOUSE, blinky.isLeavingGhostHouse());
-blinky.behavior(FRIGHTENED, blinky.isMovingRandomlyWithoutTurningBack());
-blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
 blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
-blinky.behavior(DEAD, blinky.isHeadingFor(() -> maze.ghostHouseEntry));
 ```
 <img src="PacManDoc/blinky.png"/>
 
@@ -330,14 +338,7 @@ blinky.behavior(DEAD, blinky.isHeadingFor(() -> maze.ghostHouseEntry));
 Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position. In the original game there is an overflow error leading to a different behavior: when Pac-Man looks upwards, the tile ahead of Pac-Man is falsely computed with an additional number of steps to the west. This behavior is active by default and can be toggled using the 'o'-key.
 
 ```java
-pinky.seat = 2;
-pinky.behavior(LOCKED, pinky.isJumpingUpAndDown(maze.ghostSeats[2].position));
-pinky.behavior(ENTERING_HOUSE, pinky.isTakingSeat(maze.ghostSeats[2].position));
-pinky.behavior(LEAVING_HOUSE, pinky.isLeavingGhostHouse());
-pinky.behavior(FRIGHTENED, pinky.isMovingRandomlyWithoutTurningBack());
-pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
 pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
-pinky.behavior(DEAD, pinky.isHeadingFor(() -> maze.ghostHouseEntry));
 ```
 
 <img src="PacManDoc/pinky.png"/>
@@ -350,17 +351,10 @@ Consider the vector `V` from Blinky's position `B` to the position `P` two tiles
 Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-inky.seat = 1;
-inky.behavior(LOCKED, inky.isJumpingUpAndDown(maze.ghostSeats[1].position));
-inky.behavior(ENTERING_HOUSE, inky.isTakingSeat(maze.ghostSeats[1].position));
-inky.behavior(LEAVING_HOUSE, inky.isLeavingGhostHouse());
-inky.behavior(FRIGHTENED, inky.isMovingRandomlyWithoutTurningBack());
-inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
 inky.behavior(CHASING, inky.isHeadingFor(() -> {
 	Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
-	return new Tile(2 * p.col - b.col, 2 * p.row - b.row);
+	return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
 }));
-inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostHouseEntry));
 ```
 
 <img src="PacManDoc/inky.png"/>
@@ -370,25 +364,24 @@ inky.behavior(DEAD, inky.isHeadingFor(() -> maze.ghostHouseEntry));
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
 
 ```java
-clyde.seat = 3;
-clyde.behavior(LOCKED, clyde.isJumpingUpAndDown(maze.ghostSeats[3].position));
-clyde.behavior(ENTERING_HOUSE, clyde.isTakingSeat(maze.ghostSeats[3].position));
-clyde.behavior(LEAVING_HOUSE, clyde.isLeavingGhostHouse());
-clyde.behavior(FRIGHTENED, clyde.isMovingRandomlyWithoutTurningBack());
-clyde.behavior(SCATTERING, clyde.isHeadingFor(maze.horizonSW));
-clyde.behavior(CHASING,
-		clyde.isHeadingFor(() -> clyde.tile().distance(pacMan.tile()) > 8 ? pacMan.tile() : maze.horizonSW));
-clyde.behavior(DEAD, clyde.isHeadingFor(() -> maze.ghostHouseEntry));
+clyde.behavior(CHASING, clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : clyde.scatteringTarget));
 ```
-
 <img src="PacManDoc/clyde.png"/>
 
-The visualization of the attack behaviors can be toggled during the game by pressing the 'r'-key ("show/hide routes").
+### Visualization of attack behavior
+
+The visualization of the ghost attack behavior i.e. the routes to their current target tile can be activated during the game by pressing the 'r'-key ("show/hide routes").
 
 ### Scattering
 
-In *scattering* mode, each ghost tries to reach his "scattering target" which is a tile outside of the maze. Because ghosts
-cannot reverse direction this results in a cyclic movement around the walls in the corresponding corner of the maze.
+In *scattering* state, each ghost tries to reach his individual "scattering target". Because ghosts cannot reverse their move direction this results in a cyclic movement around the walls in the corresponding corner of the maze. These target tiles are unreachable tiles ("at the horizon") outside of the playing area:
+
+```java
+blinky.scatteringTarget = maze.horizonNE;
+inky.scatteringTarget = maze.horizonSE;
+pinky.scatteringTarget = maze.horizonNW;
+clyde.scatteringTarget = maze.horizonSW;
+```
 
 <img src="PacManDoc/scattering.png"/>
 
