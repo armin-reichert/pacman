@@ -56,9 +56,9 @@ public class PacMan extends Creature<PacManState> {
 				.state(SLEEPING)
 					.onEntry(() -> {
 						power = digestion = 0;
-						moveDir = wishDir = maze.pacManSeat.startDir;
 						visible = true;
-						tf.setPosition(maze.pacManSeat.position);
+						moveDir = wishDir = seat.startDir;
+						tf.setPosition(seat.position);
 						sprites.forEach(Sprite::resetAnimation);
 						showFull();
 					})
