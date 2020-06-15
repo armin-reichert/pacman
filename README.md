@@ -320,10 +320,15 @@ The only difference in ghost behavior is in the "CHASING" state:
 
 ### Blinky (the red ghost)
 
-Blinky is special because he becomes "insane" when the number of remaining pellets reaches certain values depending on the current game level. He becomes "cruise elroy" whatever that means.
+Blinky is special because he becomes "insane" when the number of remaining pellets reaches certain values depending on the current game level. He becomes "cruise elroy" whatever that means. Initially, Blinky is healthy, all other ghosts are "immune".
 
 ```java
-blinky.insane = true;
+blinky.insanity = Insanity.HEALTHY;
+```
+
+where the insanity values are defined by this enumeration type:
+```java
+public enum Insanity { IMMUNE, HEALTHY, CRUISE_ELROY1, CRUISE_ELROY };
 ```
 
 Blinky's chasing behavior is to directly attack Pac-Man:
