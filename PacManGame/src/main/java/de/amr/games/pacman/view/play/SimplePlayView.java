@@ -149,9 +149,9 @@ public class SimplePlayView extends BaseView {
 			pen.drawAtGridPosition("High Score".toUpperCase(), col, 0, Tile.SIZE);
 			pen.down(lineOffset);
 			pen.color(Color.WHITE);
-			pen.drawAtGridPosition(String.format("%7d", game.hiscore.points), col, 1, Tile.SIZE);
+			pen.drawAtGridPosition(String.format("%7d", game.hiscore.hiscore), col, 1, Tile.SIZE);
 			pen.color(Color.LIGHT_GRAY);
-			pen.drawAtGridPosition(String.format("L%02d", game.hiscore.levelNumber), col + 7, 1, Tile.SIZE);
+			pen.drawAtGridPosition(String.format("L%02d", game.hiscore.hiscoreLevel), col + 7, 1, Tile.SIZE);
 			pen.up(lineOffset);
 
 			col = 21;

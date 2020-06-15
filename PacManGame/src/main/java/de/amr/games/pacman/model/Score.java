@@ -7,6 +7,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Properties;
 
 /**
@@ -14,13 +17,16 @@ import java.util.Properties;
  * 
  * @author Armin Reichert
  */
-public class Hiscore {
+public class Score {
 
 	public File file;
-	public int levelNumber = 1;
-	public int points = 0;
+	public int hiscore = 0;
+	public int hiscoreLevel = 1;
+	public Date hiscoreTime;
 
-	public Hiscore(File file) {
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+
+	public Score(File file) {
 		this.file = file;
 		load();
 	}
@@ -30,11 +36,16 @@ public class Hiscore {
 		Properties p = new Properties();
 		try {
 			p.loadFromXML(new FileInputStream(file));
-			points = Integer.valueOf(p.getProperty("score"));
-			levelNumber = Integer.valueOf(p.getProperty("level"));
+			hiscore = Integer.valueOf(p.getProperty("score"));
+			hiscoreLevel = Integer.valueOf(p.getProperty("level"));
+			String time = p.getProperty("time");
+			if (time != null) {
+				hiscoreTime = dateFormat.parse(p.getProperty("time"));
+			}
 		} catch (FileNotFoundException e) {
-			points = 0;
-			levelNumber = 1;
+			hiscore = 0;
+			hiscoreLevel = 1;
+			hiscoreTime = Calendar.getInstance().getTime();
 		} catch (Exception e) {
 			loginfo("Could not load hiscore from file %s", file);
 			throw new RuntimeException(e);
@@ -44,8 +55,9 @@ public class Hiscore {
 	public void save() {
 		loginfo("Save highscore to %s", file);
 		Properties p = new Properties();
-		p.setProperty("score", Integer.toString(points));
-		p.setProperty("level", Integer.toString(levelNumber));
+		p.setProperty("score", Integer.toString(hiscore));
+		p.setProperty("level", Integer.toString(hiscoreLevel));
+		p.setProperty("time", dateFormat.format(Calendar.getInstance().getTime()));
 		try {
 			p.storeToXML(new FileOutputStream(file), "Pac-Man Highscore");
 		} catch (IOException e) {

@@ -110,7 +110,7 @@ public class Game {
 	public Bonus bonus;
 	public Maze maze;
 	public List<Symbol> levelCounter;
-	public Hiscore hiscore;
+	public Score hiscore;
 	public GameLevel level;
 	public int lives;
 	public int score;
@@ -126,7 +126,7 @@ public class Game {
 		lives = 3;
 		score = 0;
 		levelCounter = new ArrayList<>();
-		hiscore = new Hiscore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
+		hiscore = new Score(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
 		maze = new Maze();
 		createActors();
 		enterLevel(startLevel);
@@ -301,9 +301,9 @@ public class Game {
 	public void score(int points) {
 		int oldScore = score;
 		score += points;
-		if (score > hiscore.points) {
-			hiscore.points = score;
-			hiscore.levelNumber = level.number;
+		if (score > hiscore.hiscore) {
+			hiscore.hiscore = score;
+			hiscore.hiscoreLevel = level.number;
 		}
 		if (oldScore < POINTS_EXTRA_LIFE && POINTS_EXTRA_LIFE <= score) {
 			lives += 1;
