@@ -44,7 +44,8 @@ import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.State;
 
 /**
- * An extended play view.
+ * An extended play view that can visualize actor states, the ghost house pellet counters, ghost
+ * routes, the grid background, ghost seats and the current framerate.
  * 
  * @author Armin Reichert
  */
@@ -294,6 +295,7 @@ public class PlayView extends SimplePlayView {
 			.filter(ghost -> ghost.visible)
 			.forEach(ghost -> drawGhostRoute(g, ghost));
 		//@formatter:on
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 
 	private void drawGhostRoute(Graphics2D g, Ghost ghost) {
