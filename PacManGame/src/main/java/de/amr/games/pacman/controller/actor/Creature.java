@@ -25,10 +25,10 @@ import de.amr.statemachine.api.FsmContainer;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Base class for a creature that can move through the maze and uses finite-state machine to control
- * its behavior.
+ * A creature (ghost, Pac-Man) is an entity that can move through the maze and uses finite-state
+ * machine to control its behavior.
  * 
- * @param <STATE> state identifier type
+ * @param <STATE> state (identifier) type
  * 
  * @author Armin Reichert
  */
@@ -91,7 +91,8 @@ public abstract class Creature<STATE> extends Entity implements FsmContainer<STA
 	}
 
 	/**
-	 * @return current speed in pixels.
+	 * @param game the game
+	 * @return how many pixels this creature can move at most in the current frame
 	 */
 	public abstract float currentSpeed(Game game);
 
@@ -236,8 +237,8 @@ public abstract class Creature<STATE> extends Entity implements FsmContainer<STA
 	}
 
 	/**
-	 * Computes how many pixels this entity can move towards the given direction without entering an
-	 * inaccessible neighbor tile.
+	 * Computes how many pixels this creature can move towards the given direction at its current speed
+	 * before entering an inaccessible neighbor tile.
 	 * 
 	 * @param tile tile from where to move
 	 * @param dir  move direction
