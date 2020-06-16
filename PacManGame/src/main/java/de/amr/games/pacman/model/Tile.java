@@ -16,6 +16,26 @@ public final class Tile {
 	public static final byte SIZE = 8;
 
 	/**
+	 * @param either either tile
+	 * @param other  other tile
+	 * @return Euclidean distance measured in tiles
+	 */
+	public static double euclideanDistance(Tile either, Tile other) {
+		int dx = either.col - other.col, dy = either.row - other.row;
+		return Math.sqrt(dx * dx + dy * dy);
+	}
+
+	/**
+	 * @param either either tile
+	 * @param other  other tile
+	 * @return Manhattan distance measured in tiles
+	 */
+	public static int manhattanDistance(Tile either, Tile other) {
+		int dx = Math.abs(either.col - other.col), dy = Math.abs(either.row - other.row);
+		return dx + dy;
+	}
+
+	/**
 	 * Nicer constructor function.
 	 * 
 	 * @param col tile column index
@@ -77,8 +97,7 @@ public final class Tile {
 	 * @return Euclidean distance to other tile measured in tiles
 	 */
 	public double distance(Tile other) {
-		int dx = col - other.col, dy = row - other.row;
-		return Math.sqrt(dx * dx + dy * dy);
+		return euclideanDistance(this, other);
 	}
 
 	/**
@@ -86,8 +105,7 @@ public final class Tile {
 	 * @return Manhattan distance to other tile measured in tiles
 	 */
 	public int manhattanDistance(Tile other) {
-		int dx = Math.abs(col - other.col), dy = Math.abs(row - other.row);
-		return dx + dy;
+		return manhattanDistance(this, other);
 	}
 
 	/**

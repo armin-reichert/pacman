@@ -1,9 +1,12 @@
 package de.amr.games.pacman.controller.actor.steering.pacman;
 
-import static java.util.Comparator.comparing;
+import static de.amr.games.pacman.model.Tile.manhattanDistance;
+import static java.util.Comparator.comparingInt;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.actor.BonusState;
 import de.amr.games.pacman.controller.actor.GhostState;
@@ -11,6 +14,7 @@ import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -20,11 +24,13 @@ import de.amr.games.pacman.model.Tile;
  */
 public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
-	PacMan pacMan;
-	Game game;
+	final PacMan pacMan;
+	final Game game;
+	final Maze maze;
 
 	public SearchingForFoodAndAvoidingGhosts(Game game) {
 		this.game = game;
+		this.maze = game.maze;
 		this.pacMan = game.pacMan;
 	}
 
@@ -63,22 +69,31 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		}
 	}
 
-	Tile preferredFood(Tile currentLocation) {
-		if (game.bonus.is(BonusState.ACTIVE)) {
-			return game.maze.bonusSeat.tile;
-		}
-		//@formatter:off
-		return game.maze.arena()
-			.filter(game.maze::containsFood)
-			.sorted(comparing(currentLocation::manhattanDistance))
-			.findFirst().orElse(null);
-		//@formatter:on
+	Stream<Tile> foodTiles() {
+		return maze.arena().filter(maze::containsFood);
+	}
+
+	Tile preferredFood(Tile here) {
+		return activeBonus().or(() -> energizerAtMostAwayFrom(here, 20)).or(() -> nearestFoodFrom(here)).orElse(null);
+	}
+
+	Optional<Tile> activeBonus() {
+		return game.bonus.is(BonusState.ACTIVE) ? Optional.of(maze.bonusSeat.tile) : Optional.empty();
+	}
+
+	Optional<Tile> energizerAtMostAwayFrom(Tile here, int distance) {
+		return foodTiles().filter(maze::containsEnergizer).filter(energizer -> here.manhattanDistance(energizer) < distance)
+				.findAny();
+	}
+
+	Optional<Tile> nearestFoodFrom(Tile here) {
+		return foodTiles().sorted(comparingInt(food -> manhattanDistance(here, food))).findFirst();
 	}
 
 	boolean isDangerousGhostApproaching() {
 		Tile pacManLocation = pacMan.tile();
-		Tile ahead1 = game.maze.neighbor(pacManLocation, pacMan.moveDir());
-		Tile ahead2 = game.maze.tileToDir(pacManLocation, pacMan.moveDir(), 2);
+		Tile ahead1 = maze.neighbor(pacManLocation, pacMan.moveDir());
+		Tile ahead2 = maze.tileToDir(pacManLocation, pacMan.moveDir(), 2);
 		//@formatter:off
 		return game.ghostsOnStage().anyMatch(
 				ghost -> !ghost.is(GhostState.FRIGHTENED) 
