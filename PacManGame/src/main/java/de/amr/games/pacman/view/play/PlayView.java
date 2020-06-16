@@ -23,7 +23,6 @@ import java.awt.Transparency;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Supplier;
 
 import de.amr.easy.game.assets.Assets;
@@ -37,6 +36,7 @@ import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
@@ -51,6 +51,25 @@ import de.amr.statemachine.core.State;
 public class PlayView extends SimplePlayView {
 
 	private static final String INFTY = Character.toString('\u221E');
+
+	private static Color alpha(Color color, int alpha) {
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+	}
+
+	private static Color ghostColor(Ghost ghost) {
+		switch (ghost.name) {
+		case "Blinky":
+			return Color.RED;
+		case "Pinky":
+			return Color.PINK;
+		case "Inky":
+			return Color.CYAN;
+		case "Clyde":
+			return Color.ORANGE;
+		default:
+			throw new IllegalArgumentException("Ghost name unknown: " + ghost.name);
+		}
+	}
 
 	public Supplier<State<GhostState>> fnGhostCommandState = () -> null;
 	public GhostHouse house; // (optional)
@@ -95,10 +114,8 @@ public class PlayView extends SimplePlayView {
 		if (showScores) {
 			drawScores(g);
 		}
-		game.ghosts().map(Ghost::steering).filter(Objects::nonNull)
-				.forEach(steering -> steering.enableTargetPathComputation(showRoutes));
 		if (showRoutes) {
-			drawRoutes(g);
+			drawGhostRoutes(g);
 		}
 		drawActors(g);
 		if (showGrid) {
@@ -113,18 +130,6 @@ public class PlayView extends SimplePlayView {
 	@Override
 	protected Color tileColor(Tile tile) {
 		return showGrid ? gridPatternColor[patternIndex(tile.col, tile.row)] : super.tileColor(tile);
-	}
-
-	private Color ghostColor(Ghost ghost) {
-		if (ghost == game.blinky)
-			return Color.RED;
-		if (ghost == game.pinky)
-			return Color.PINK;
-		if (ghost == game.inky)
-			return Color.CYAN;
-		if (ghost == game.clyde)
-			return Color.ORANGE;
-		throw new IllegalArgumentException("Unknown ghost: " + ghost);
 	}
 
 	private void drawSmallText(Graphics2D g, Color color, float x, float y, String text) {
@@ -242,13 +247,12 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawUpwardsBlockedTileMarkers(Graphics2D g) {
-		g.setColor(Color.WHITE);
 		for (int row = 0; row < game.maze.numRows; ++row) {
 			for (int col = 0; col < game.maze.numCols; ++col) {
 				Tile tile = Tile.at(col, row);
 				if (game.maze.isOneWayDown(tile)) {
 					Tile above = game.maze.neighbor(tile, Direction.UP);
-					drawArrowHead(g, Direction.DOWN, above.centerX(), above.y() - 2);
+					drawDirectionIndicator(g, Color.WHITE, Direction.DOWN, above.centerX(), above.y() - 2);
 				}
 			}
 		}
@@ -272,99 +276,133 @@ public class PlayView extends SimplePlayView {
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 	}
 
-	private void drawArrowHead(Graphics2D g, Direction dir, int x, int y) {
+	private void drawDirectionIndicator(Graphics2D g, Color color, Direction dir, int x, int y) {
 		double[] angleForDir = { PI, -PI / 2, 0, PI / 2 };
 		double angle = angleForDir[dir.ordinal()];
 		g.translate(x, y);
 		g.rotate(angle);
+		g.setColor(color);
 		g.fillPolygon(arrowHead);
 		g.rotate(-angle);
 		g.translate(-x, -y);
 	}
 
-	private void drawRoutes(Graphics2D g2) {
-		Graphics2D g = (Graphics2D) g2.create();
+	private void drawGhostRoutes(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		game.ghostsOnStage().filter(ghost -> ghost.visible).forEach(ghost -> drawRoute(g, ghost));
-		g.dispose();
+		//@formatter:off
+		game.ghostsOnStage()
+			.filter(ghost -> ghost.visible)
+			.forEach(ghost -> drawGhostRoute(g, ghost));
+		//@formatter:on
 	}
 
-	private void drawRoute(Graphics2D g, Ghost ghost) {
+	private void drawGhostRoute(Graphics2D g, Ghost ghost) {
+		if (ghost.steering() instanceof PathProvidingSteering) {
+			PathProvidingSteering steering = (PathProvidingSteering) ghost.steering();
+			steering.setPathComputationEnabled(true);
+			drawTargetPathAndRubberBand(g, ghost, steering);
+		} else if (ghost.wishDir() != null) {
+			Vector2f v = ghost.wishDir().vector();
+			drawDirectionIndicator(g, ghostColor(ghost), ghost.wishDir(),
+					ghost.tf.getCenter().roundedX() + v.roundedX() * Tile.SIZE,
+					ghost.tf.getCenter().roundedY() + v.roundedY() * Tile.SIZE);
+		}
+		if (ghost.targetTile() == null) {
+			return;
+		}
+		if (ghost == game.inky) {
+			drawInkyChasing(g, game.inky);
+		} else if (ghost == game.clyde) {
+			drawClydeChasingArea(g, game.clyde);
+		}
+	}
+
+	private void drawTargetPathAndRubberBand(Graphics2D g, Ghost ghost, PathProvidingSteering steering) {
+		g = (Graphics2D) g.create();
+		Tile targetTile = ghost.targetTile();
+		if (targetTile == null) {
+			return;
+		}
+		List<Tile> path = steering.pathToTarget();
+		if (path.size() == 0 || targetTile == path.get(path.size() - 1)) {
+			return;
+		}
 		Stroke solid = new BasicStroke(0.5f);
 		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
-		Tile targetTile = ghost.targetTile();
-		List<Tile> path = ghost.steering().targetPath();
-		int len = path.size();
 		Color ghostColor = ghostColor(ghost);
-		if (targetTile != null && len > 0 && targetTile != path.get(len - 1)) {
-			// draw rubber band to target tile
-			int x1 = ghost.tf.getCenter().roundedX(), y1 = ghost.tf.getCenter().roundedY();
-			int x2 = targetTile.centerX(), y2 = targetTile.centerY();
-			g.setStroke(dashed);
-			g.setColor(alpha(ghostColor, 200));
-			g.drawLine(x1, y1, x2, y2);
-			g.translate(targetTile.x(), targetTile.y());
-			g.setColor(ghostColor);
-			g.setStroke(solid);
-			g.fillRect(2, 2, 4, 4);
-			g.translate(-targetTile.x(), -targetTile.y());
-		}
-		if (len > 1) {
-			// draw path
+		// draw rubber band to target tile
+		int x1 = ghost.tf.getCenter().roundedX(), y1 = ghost.tf.getCenter().roundedY();
+		int x2 = targetTile.centerX(), y2 = targetTile.centerY();
+		g.setStroke(dashed);
+		g.setColor(alpha(ghostColor, 200));
+		g.drawLine(x1, y1, x2, y2);
+		g.translate(targetTile.x(), targetTile.y());
+		g.setColor(ghostColor);
+		g.setStroke(solid);
+		g.fillRect(2, 2, 4, 4);
+		g.translate(-targetTile.x(), -targetTile.y());
+		if (path.size() > 1) {
 			g.setColor(alpha(ghostColor, 200));
 			for (int i = 0; i < path.size() - 1; ++i) {
 				Tile from = path.get(i), to = path.get(i + 1);
 				g.setColor(ghostColor);
 				g.setStroke(solid);
 				g.drawLine(from.centerX(), from.centerY(), to.centerX(), to.centerY());
-				if (i + 1 == len - 1) {
-					drawArrowHead(g, from.dirTo(to).get(), to.centerX(), to.centerY());
-				}
-			}
-		} else if (ghost.wishDir() != null) {
-			// draw direction indicator
-			int x = ghost.tf.getCenter().roundedX(), y = ghost.tf.getCenter().roundedY();
-			g.setColor(ghostColor);
-			Vector2f dirVector = ghost.wishDir().vector();
-			drawArrowHead(g, ghost.wishDir(), x + dirVector.roundedX() * Tile.SIZE, y + dirVector.roundedY() * Tile.SIZE);
-		}
-		// visualize Inky's chasing (target tile may be null if Blinky is not on stage!)
-		if (ghost == game.inky && ghost.is(CHASING) && ghost.targetTile() != null) {
-			{
-				int x1 = game.blinky.tile().centerX(), y1 = game.blinky.tile().centerY();
-				int x2 = ghost.targetTile().centerX(), y2 = ghost.targetTile().centerY();
-				g.setColor(Color.GRAY);
-				g.drawLine(x1, y1, x2, y2);
-			}
-			{
-				Tile pacManTile = game.pacMan.tile();
-				Direction pacManDir = game.pacMan.moveDir();
-				int s = Tile.SIZE / 2; // size of target square
-				g.setColor(Color.GRAY);
-				if (!settings.fixOverflowBug && pacManDir == Direction.UP) {
-					Tile twoAhead = game.maze.tileToDir(pacManTile, pacManDir, 2);
-					Tile twoLeft = game.maze.tileToDir(twoAhead, Direction.LEFT, 2);
-					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
-					int x2 = twoAhead.centerX(), y2 = twoAhead.centerY();
-					int x3 = twoLeft.centerX(), y3 = twoLeft.centerY();
-					g.drawLine(x1, y1, x2, y2);
-					g.drawLine(x2, y2, x3, y3);
-					g.fillRect(x3 - s / 2, y3 - s / 2, s, s);
-				} else {
-					Tile twoTilesAhead = game.pacMan.tilesAhead(2);
-					int x1 = pacManTile.centerX(), y1 = pacManTile.centerY();
-					int x2 = twoTilesAhead.centerX(), y2 = twoTilesAhead.centerY();
-					g.drawLine(x1, y1, x2, y2);
-					g.fillRect(x2 - s / 2, y2 - s / 2, s, s);
+				if (i + 1 == path.size() - 1) {
+					drawDirectionIndicator(g, ghostColor, from.dirTo(to).get(), to.centerX(), to.centerY());
 				}
 			}
 		}
-		// draw Clyde's chasing zone
-		if (ghost == game.clyde && ghost.is(CHASING)) {
-			int cx = game.clyde.tile().centerX(), cy = game.clyde.tile().centerY(), r = 8 * Tile.SIZE;
-			g.setColor(new Color(ghostColor.getRed(), ghostColor.getGreen(), ghostColor.getBlue(), 100));
-			g.drawOval(cx - r, cy - r, 2 * r, 2 * r);
+		g.dispose();
+	}
+
+	private void drawInkyChasing(Graphics2D g, Ghost inky) {
+		if (!inky.is(CHASING)) {
+			return;
 		}
+		int x1, y1, x2, y2, x3, y3;
+		x1 = game.blinky.tile().centerX();
+		y1 = game.blinky.tile().centerY();
+		x2 = inky.targetTile().centerX();
+		y2 = inky.targetTile().centerY();
+		g.setColor(Color.GRAY);
+		g.drawLine(x1, y1, x2, y2);
+		Tile pacManTile = game.pacMan.tile();
+		Direction pacManDir = game.pacMan.moveDir();
+		int s = Tile.SIZE / 2; // size of target square
+		g.setColor(Color.GRAY);
+		if (!settings.fixOverflowBug && pacManDir == Direction.UP) {
+			Tile twoAhead = game.maze.tileToDir(pacManTile, pacManDir, 2);
+			Tile twoLeft = game.maze.tileToDir(twoAhead, Direction.LEFT, 2);
+			x1 = pacManTile.centerX();
+			y1 = pacManTile.centerY();
+			x2 = twoAhead.centerX();
+			y2 = twoAhead.centerY();
+			x3 = twoLeft.centerX();
+			y3 = twoLeft.centerY();
+			g.drawLine(x1, y1, x2, y2);
+			g.drawLine(x2, y2, x3, y3);
+			g.fillRect(x3 - s / 2, y3 - s / 2, s, s);
+		} else {
+			Tile twoTilesAhead = game.pacMan.tilesAhead(2);
+			x1 = pacManTile.centerX();
+			y1 = pacManTile.centerY();
+			x2 = twoTilesAhead.centerX();
+			y2 = twoTilesAhead.centerY();
+			g.drawLine(x1, y1, x2, y2);
+			g.fillRect(x2 - s / 2, y2 - s / 2, s, s);
+		}
+	}
+
+	private void drawClydeChasingArea(Graphics2D g, Ghost clyde) {
+		if (!clyde.is(CHASING)) {
+			return;
+		}
+		Color ghostColor = ghostColor(game.clyde);
+		int cx = game.clyde.tile().centerX(), cy = game.clyde.tile().centerY();
+		int r = 8 * Tile.SIZE;
+		g.setColor(alpha(ghostColor, 100));
+		g.drawOval(cx - r, cy - r, 2 * r, 2 * r);
 	}
 
 	private void drawGhostHouseState(Graphics2D g) {
@@ -411,9 +449,5 @@ public class PlayView extends SimplePlayView {
 		}
 		g.dispose();
 		return img;
-	}
-
-	private Color alpha(Color color, int alpha) {
-		return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 	}
 }

@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.controller.actor.MovingThroughMaze;
-import de.amr.games.pacman.controller.actor.steering.Steering;
+import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
@@ -18,7 +18,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public abstract class TakingPrecomputedPath implements Steering {
+public abstract class TakingPrecomputedPath implements PathProvidingSteering {
 
 	static Tile first(List<Tile> list) {
 		return list.isEmpty() ? null : list.get(0);
@@ -64,8 +64,17 @@ public abstract class TakingPrecomputedPath implements Steering {
 	}
 
 	@Override
-	public List<Tile> targetPath() {
+	public List<Tile> pathToTarget() {
 		return targetPath;
+	}
+
+	@Override
+	public boolean isPathComputationEnabled() {
+		return true;
+	}
+
+	@Override
+	public void setPathComputationEnabled(boolean enabled) {
 	}
 
 	protected abstract List<Tile> pathToTarget(MovingThroughMaze actor, Tile targetTile);

@@ -17,7 +17,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.controller.actor.MovingThroughMaze;
-import de.amr.games.pacman.controller.actor.steering.Steering;
+import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.Tile;
@@ -30,16 +30,16 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public class HeadingForTargetTile implements Steering {
+public class HeadingForTargetTile implements PathProvidingSteering {
 
 	/** Directions in the order used to compute the next move direction */
 	static final List<Direction> UP_LEFT_DOWN_RIGHT = Arrays.asList(UP, LEFT, DOWN, RIGHT);
 
-	Supplier<Tile> fnTargetTile;
-	MovingThroughMaze actor;
-	List<Tile> targetPath;
-	boolean computePath;
-	boolean forced;
+	private Supplier<Tile> fnTargetTile;
+	private MovingThroughMaze actor;
+	private List<Tile> targetPath;
+	private boolean pathComputed;
+	private boolean forced;
 
 	public HeadingForTargetTile(MovingThroughMaze actor, Supplier<Tile> fnTargetTile) {
 		this(actor);
@@ -49,7 +49,7 @@ public class HeadingForTargetTile implements Steering {
 	HeadingForTargetTile(MovingThroughMaze actor) {
 		this.actor = Objects.requireNonNull(actor);
 		targetPath = Collections.emptyList();
-		computePath = false;
+		pathComputed = false;
 		forced = false;
 	}
 
@@ -68,7 +68,7 @@ public class HeadingForTargetTile implements Steering {
 				Direction dirToTarget = dirToTarget(actor.moveDir(), actor.tile(), targetTile);
 				actor.setWishDir(dirToTarget);
 				actor.setTargetTile(targetTile);
-				if (computePath) {
+				if (pathComputed) {
 					targetPath = pathTo(targetTile);
 				}
 			}
@@ -81,8 +81,13 @@ public class HeadingForTargetTile implements Steering {
 	}
 
 	@Override
-	public void enableTargetPathComputation(boolean b) {
-		computePath = b;
+	public void setPathComputationEnabled(boolean enabled) {
+		this.pathComputed = enabled;
+	}
+
+	@Override
+	public boolean isPathComputationEnabled() {
+		return pathComputed;
 	}
 
 	@Override
@@ -91,7 +96,7 @@ public class HeadingForTargetTile implements Steering {
 	}
 
 	@Override
-	public List<Tile> targetPath() {
+	public List<Tile> pathToTarget() {
 		return new ArrayList<>(targetPath);
 	}
 
