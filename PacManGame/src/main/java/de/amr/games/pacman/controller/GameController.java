@@ -26,9 +26,9 @@ import java.util.Random;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
+import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
-import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.controller.actor.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
@@ -422,7 +422,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			Ghost ghost = collision.ghost;
 			if (ghost.is(FRIGHTENED)) {
 				int livesBefore = game.lives;
-				game.scoreKilledGhost(ghost.name);
+				game.scoreGhostKilled(ghost);
 				if (game.lives > livesBefore) {
 					sound.extraLife();
 				}

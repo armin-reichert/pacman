@@ -150,7 +150,7 @@ public class EnhancedGameController extends GameController {
 		game.level.ghostsKilledByEnergizer = 0;
 		game.ghostsOnStage().filter(ghost -> ghost.is(GhostState.CHASING, GhostState.SCATTERING, GhostState.FRIGHTENED))
 				.forEach(ghost -> {
-					game.scoreKilledGhost(ghost.name);
+					game.scoreGhostKilled(ghost);
 					ghost.process(new GhostKilledEvent(ghost));
 				});
 		loginfo("All ghosts killed");
