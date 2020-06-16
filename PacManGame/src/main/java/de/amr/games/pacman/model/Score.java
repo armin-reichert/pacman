@@ -7,9 +7,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 /**
@@ -22,9 +21,9 @@ public class Score {
 	public File file;
 	public int hiscore = 0;
 	public int hiscoreLevel = 1;
-	public Date hiscoreTime;
+	public ZonedDateTime hiscoreTime;
 
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
 
 	public Score(File file) {
 		this.file = file;
@@ -40,15 +39,14 @@ public class Score {
 			hiscoreLevel = Integer.valueOf(p.getProperty("level"));
 			String time = p.getProperty("time");
 			if (time != null) {
-				hiscoreTime = dateFormat.parse(p.getProperty("time"));
+				hiscoreTime = ZonedDateTime.parse(p.getProperty("time"), formatter);
 			}
 		} catch (FileNotFoundException e) {
 			hiscore = 0;
 			hiscoreLevel = 1;
-			hiscoreTime = Calendar.getInstance().getTime();
+			hiscoreTime = ZonedDateTime.now();
 		} catch (Exception e) {
 			loginfo("Could not load hiscore from file %s", file);
-			throw new RuntimeException(e);
 		}
 	}
 
@@ -57,7 +55,7 @@ public class Score {
 		Properties p = new Properties();
 		p.setProperty("score", Integer.toString(hiscore));
 		p.setProperty("level", Integer.toString(hiscoreLevel));
-		p.setProperty("time", dateFormat.format(Calendar.getInstance().getTime()));
+		p.setProperty("time", ZonedDateTime.now().format(formatter));
 		try {
 			p.storeToXML(new FileOutputStream(file), "Pac-Man Highscore");
 		} catch (IOException e) {
