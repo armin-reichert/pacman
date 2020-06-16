@@ -30,7 +30,7 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.PacManState;
-import de.amr.games.pacman.controller.actor.steering.pacman.DemoModeMovement;
+import de.amr.games.pacman.controller.actor.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -112,7 +112,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public void setDemoMode(boolean on) {
 		settings.pacManImmortable = on;
 		if (on) {
-			game.pacMan.behavior(new DemoModeMovement(game));
+			game.pacMan.behavior(new SearchingForFoodAndAvoidingGhosts(game));
 		} else {
 			game.pacMan.behavior(game.pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		}

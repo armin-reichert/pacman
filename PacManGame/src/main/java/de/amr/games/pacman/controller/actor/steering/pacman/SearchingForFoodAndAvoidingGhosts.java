@@ -1,8 +1,9 @@
 package de.amr.games.pacman.controller.actor.steering.pacman;
 
+import static java.util.Comparator.comparing;
+
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 
 import de.amr.games.pacman.controller.actor.BonusState;
 import de.amr.games.pacman.controller.actor.GhostState;
@@ -17,22 +18,12 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public class DemoModeMovement implements Steering {
-
-	static int manhattanDistance(Tile t1, Tile t2) {
-		int dx = Math.abs(t1.col - t2.col), dy = Math.abs(t1.row - t2.row);
-		return dx + dy;
-	}
-
-	static double euclideanDistance(Tile t1, Tile t2) {
-		int dx = t1.col - t2.col, dy = t1.row - t2.row;
-		return Math.sqrt(dx * dx + dy * dy);
-	}
+public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
 	PacMan pacMan;
 	Game game;
 
-	public DemoModeMovement(Game game) {
+	public SearchingForFoodAndAvoidingGhosts(Game game) {
 		this.game = game;
 		this.pacMan = game.pacMan;
 	}
@@ -60,9 +51,9 @@ public class DemoModeMovement implements Steering {
 			}
 			if (pacMan.canCrossBorderTo(dir)) {
 				Tile neighbor = game.maze.neighbor(pacMan.tile(), dir);
-				Tile nearestFood = nearestFood(neighbor);
+				Tile nearestFood = preferredFood(neighbor);
 				if (nearestFood != null) {
-					int d = manhattanDistance(neighbor, nearestFood);
+					int d = neighbor.manhattanDistance(nearestFood);
 					if (d < minDistance) {
 						pacMan.setWishDir(dir);
 						minDistance = d;
@@ -72,14 +63,14 @@ public class DemoModeMovement implements Steering {
 		}
 	}
 
-	Tile nearestFood(Tile tile) {
+	Tile preferredFood(Tile currentLocation) {
 		if (game.bonus.is(BonusState.ACTIVE)) {
 			return game.maze.bonusSeat.tile;
 		}
 		//@formatter:off
 		return game.maze.arena()
-			.filter(t -> game.maze.containsEnergizer(t) || game.maze.containsSimplePellet(t))
-			.sorted(Comparator.comparing(foodLocation -> euclideanDistance(tile, foodLocation)))
+			.filter(game.maze::containsFood)
+			.sorted(comparing(currentLocation::manhattanDistance))
 			.findFirst().orElse(null);
 		//@formatter:on
 	}

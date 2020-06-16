@@ -272,7 +272,7 @@ public class Game {
 	 * @return points scored
 	 */
 	public int eatFood(Tile tile, boolean energizer) {
-		if (!maze.containsSimplePellet(tile) && !maze.containsEnergizer(tile)) {
+		if (!maze.containsFood(tile)) {
 			loginfo("Tile %s does not contain food");
 			return 0;
 		}

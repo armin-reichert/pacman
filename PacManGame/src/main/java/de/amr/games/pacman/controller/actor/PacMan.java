@@ -168,13 +168,10 @@ public class PacMan extends Creature<PacManState> {
 		if (tile.equals(maze.bonusSeat.tile) && game.bonus.is(ACTIVE)) {
 			return Optional.of(new BonusFoundEvent(game.bonus.symbol, game.bonus.value));
 		}
-		if (maze.containsEnergizer(tile)) {
-			digestion = DIGEST_ENERGIZER_TICKS;
-			return Optional.of(new FoodFoundEvent(tile, true));
-		}
-		if (maze.containsSimplePellet(tile)) {
-			digestion = DIGEST_PELLET_TICKS;
-			return Optional.of(new FoodFoundEvent(tile, false));
+		if (maze.containsFood(tile)) {
+			boolean energizer = maze.containsEnergizer(tile);
+			digestion = energizer ? DIGEST_ENERGIZER_TICKS : DIGEST_PELLET_TICKS;
+			return Optional.of(new FoodFoundEvent(tile, energizer));
 		}
 		return Optional.empty();
 	}

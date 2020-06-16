@@ -100,7 +100,7 @@ public class BoardPreview extends JFrame {
 			return "o";
 		}
 		if (maze.containsEnergizer(tile)) {
-			return "O";
+			return "Ö";
 		}
 		return " ";
 	}

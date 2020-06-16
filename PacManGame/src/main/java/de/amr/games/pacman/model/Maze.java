@@ -148,7 +148,7 @@ public class Maze {
 	}
 
 	public boolean insideMap(Tile tile) {
-		return tile.inCols(0, numCols - 1) && tile.inRows(0, numRows - 1);
+		return tile.inColumnRange(0, numCols - 1) && tile.inRowRange(0, numRows - 1);
 	}
 
 	/**
@@ -196,7 +196,7 @@ public class Maze {
 	}
 
 	public boolean insideGhostHouse(Tile tile) {
-		return isDoor(tile) || tile.inCols(11, 16) && tile.inRows(16, 18);
+		return isDoor(tile) || tile.inColumnRange(11, 16) && tile.inRowRange(16, 18);
 	}
 
 	public boolean atGhostHouseDoor(Tile tile) {
@@ -211,7 +211,7 @@ public class Maze {
 	}
 
 	public boolean isTunnel(Tile tile) {
-		return tile.row == 17 && (tile.inCols(-1, 5) || tile.inCols(22, 28));
+		return tile.row == 17 && (tile.inColumnRange(-1, 5) || tile.inColumnRange(22, 28));
 	}
 
 	public boolean isDoor(Tile tile) {
@@ -224,6 +224,10 @@ public class Maze {
 
 	public boolean containsEnergizer(Tile tile) {
 		return is(tile, BM_ENERGIZER) && not(tile, BM_EATEN);
+	}
+
+	public boolean containsFood(Tile tile) {
+		return not(tile, BM_EATEN) && is(tile, BM_FOOD);
 	}
 
 	public boolean containsEatenFood(Tile tile) {
