@@ -59,24 +59,24 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 		/*@formatter:on*/
 	}
 
-	private final MazeMover actor;
+	private final MazeMover mover;
 	private final Supplier<Tile> fnTargetTile;
 	private final LinkedHashSet<Tile> path = new LinkedHashSet<>();
 	private boolean forced;
 	private boolean pathComputationEnabled;
 
-	public HeadingForTargetTile(MazeMover actor, Supplier<Tile> fnTargetTile) {
-		this.actor = Objects.requireNonNull(actor);
+	public HeadingForTargetTile(MazeMover mover, Supplier<Tile> fnTargetTile) {
+		this.mover = Objects.requireNonNull(mover);
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 	}
 
 	@Override
 	public void steer() {
-		if (actor.enteredNewTile() || forced) {
+		if (mover.enteredNewTile() || forced) {
 			forced = false;
-			actor.setTargetTile(fnTargetTile.get());
-			if (actor.targetTile() != null) {
-				actor.setWishDir(bestDir(actor, actor.moveDir(), actor.tile(), actor.targetTile()));
+			mover.setTargetTile(fnTargetTile.get());
+			if (mover.targetTile() != null) {
+				mover.setWishDir(bestDir(mover, mover.moveDir(), mover.tile(), mover.targetTile()));
 				if (pathComputationEnabled) {
 					computePath();
 				}
@@ -87,17 +87,17 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	}
 
 	/**
-	 * Computes the path the actor would traverse until reaching the target tile, a cycle would occur or
+	 * Computes the path the entity would traverse until reaching the target tile, a cycle would occur or
 	 * the path would leave the map.
 	 */
 	private void computePath() {
-		Maze maze = actor.maze();
-		Tile currentTile = actor.tile(), targetTile = actor.targetTile();
-		Direction currentDir = actor.moveDir();
+		Maze maze = mover.maze();
+		Tile currentTile = mover.tile(), targetTile = mover.targetTile();
+		Direction currentDir = mover.moveDir();
 		path.clear();
 		path.add(currentTile);
 		while (!currentTile.equals(targetTile)) {
-			Direction dir = bestDir(actor, currentDir, currentTile, targetTile);
+			Direction dir = bestDir(mover, currentDir, currentTile, targetTile);
 			Tile nextTile = maze.neighbor(currentTile, dir);
 			if (!maze.insideMap(nextTile) || path.contains(nextTile)) {
 				return;
