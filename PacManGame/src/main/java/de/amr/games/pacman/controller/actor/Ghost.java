@@ -169,25 +169,25 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 				
 				.when(CHASING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
-					.act(() -> forceReverse())
+					.act(() -> reverseDirection())
 				
 				.when(CHASING).then(DEAD)
 					.on(GhostKilledEvent.class)
 				
 				.when(CHASING).then(SCATTERING)
 					.condition(() -> followState == SCATTERING)
-					.act(() -> forceReverse())
+					.act(() -> reverseDirection())
 					
 				.when(SCATTERING).then(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
-					.act(() -> forceReverse())
+					.act(() -> reverseDirection())
 				
 				.when(SCATTERING).then(DEAD)
 					.on(GhostKilledEvent.class)
 				
 				.when(SCATTERING).then(CHASING)
 					.condition(() -> followState == CHASING)
-					.act(() -> forceReverse())
+					.act(() -> reverseDirection())
 					
 				.stay(FRIGHTENED)
 					.on(PacManGainsPowerEvent.class)
