@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import de.amr.easy.game.assets.Assets;
+import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.widgets.FramerateWidget;
 import de.amr.easy.game.view.Pen;
@@ -85,6 +86,7 @@ public class PlayView extends SimplePlayView {
 	private final BufferedImage gridImage, inkyImage, clydeImage, pacManImage;
 	private final Polygon arrowHead = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 	private final Color[] gridPatternColor = { Color.BLACK, new Color(40, 40, 40) };
+	private final Font smallFont = new Font("Arial Narrow", Font.PLAIN, 6);
 
 	public PlayView(Game game, Theme theme) {
 		super(game, theme);
@@ -133,11 +135,12 @@ public class PlayView extends SimplePlayView {
 		return showGrid ? gridPatternColor[patternIndex(tile.col, tile.row)] : super.tileColor(tile);
 	}
 
-	private void drawSmallText(Graphics2D g, Color color, float x, float y, String text) {
-		g.setColor(color);
-		g.setFont(new Font("Arial Narrow", Font.PLAIN, 5));
-		int sw = g.getFontMetrics().stringWidth(text);
-		g.drawString(text, x - sw / 2, y - Tile.SIZE / 2);
+	private void drawEntityState(Graphics2D g, Entity entity, String text, Color color) {
+		try (Pen pen = new Pen(g)) {
+			pen.color(color);
+			pen.font(smallFont);
+			pen.drawCentered(text, entity.tf.getCenter().x, entity.tf.getCenter().y - 2);
+		}
 	}
 
 	private void drawPlayMode(Graphics2D g) {
@@ -152,22 +155,19 @@ public class PlayView extends SimplePlayView {
 
 	private void drawActorStates(Graphics2D g) {
 		game.ghostsOnStage().forEach(ghost -> drawGhostState(g, ghost));
-		drawPacManState(g);
+		drawPacManState(g, game.pacMan);
 		drawBonusState(g, game.bonus);
 	}
 
-	private void drawPacManState(Graphics2D g) {
-		PacMan pacMan = game.pacMan;
-		if (pacMan.visible && pacMan.getState() != null) {
-			String text = pacMan.getState().name();
-			if (pacMan.power > 0) {
-				text = String.format("POWER(%d)", pacMan.power);
-			}
-			if (settings.pacManImmortable) {
-				text += ",lives " + INFTY;
-			}
-			drawSmallText(g, Color.YELLOW, pacMan.tf.x, pacMan.tf.y, text);
+	private void drawPacManState(Graphics2D g, PacMan pacMan) {
+		if (!pacMan.visible) {
+			return;
 		}
+		String text = pacMan.power > 0 ? String.format("POWER(%d)", pacMan.power) : pacMan.getState().name();
+		if (settings.pacManImmortable) {
+			text += "immortable";
+		}
+		drawEntityState(g, pacMan, text, Color.YELLOW);
 	}
 
 	private void drawGhostState(Graphics2D g, Ghost ghost) {
@@ -196,18 +196,14 @@ public class PlayView extends SimplePlayView {
 		if (ghost.is(LEAVING_HOUSE)) {
 			text.append(String.format("[->%s]", ghost.followState));
 		}
-		drawSmallText(g, ghostColor(ghost), ghost.tf.x, ghost.tf.y, text.toString());
+		drawEntityState(g, ghost, text.toString(), ghostColor(ghost));
 	}
 
 	private void drawBonusState(Graphics2D g, Bonus bonus) {
 		State<BonusState> state = bonus.state();
 		String text = bonus.is(BonusState.INACTIVE) ? "Bonus inactive"
 				: String.format("%s,%d|%d", bonus, state.getTicksRemaining(), state.getDuration());
-		try (Pen pen = new Pen(g)) {
-			pen.font(new Font("Arial Narrow", Font.PLAIN, 5));
-			pen.color(Color.YELLOW);
-			pen.hcenter(text, width, game.maze.bonusSeat.tile.row, Tile.SIZE);
-		}
+		drawEntityState(g, bonus, text, Color.YELLOW);
 	}
 
 	private void drawPacManStarvingTime(Graphics2D g) {

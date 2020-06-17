@@ -255,11 +255,11 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 			float x1 = s, x2 = x1 + w1 + s, x3 = x2 + w2 + s;
 			int y = row * Tile.SIZE;
 			pen.color(selectedSpeed == 1 ? orange : red);
-			pen.drawString(t1, x1, y);
+			pen.draw(t1, x1, y);
 			pen.color(selectedSpeed == 2 ? orange : red);
-			pen.drawString(t2, x2, y);
+			pen.draw(t2, x2, y);
 			pen.color(selectedSpeed == 3 ? orange : red);
-			pen.drawString(t3, x3, y);
+			pen.draw(t3, x3, y);
 		}
 	}
 }
