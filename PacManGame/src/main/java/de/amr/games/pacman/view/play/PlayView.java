@@ -278,14 +278,12 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawDirectionIndicator(Graphics2D g, Color color, Direction dir, int x, int y) {
-		double[] angleForDir = { PI, -PI / 2, 0, PI / 2 };
-		double angle = angleForDir[dir.ordinal()];
+		g = (Graphics2D) g.create();
 		g.translate(x, y);
-		g.rotate(angle);
+		g.rotate((dir.ordinal() - 2) * (PI / 2));
 		g.setColor(color);
 		g.fillPolygon(arrowHead);
-		g.rotate(-angle);
-		g.translate(-x, -y);
+		g.dispose();
 	}
 
 	private void drawGhostRoutes(Graphics2D g) {
