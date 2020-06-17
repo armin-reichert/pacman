@@ -8,11 +8,9 @@ import static java.util.Comparator.comparing;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -33,43 +31,30 @@ import de.amr.games.pacman.model.Tile;
 public class HeadingForTargetTile implements PathProvidingSteering {
 
 	/** Directions in the order used to compute the next move direction */
-	static final List<Direction> UP_LEFT_DOWN_RIGHT = Arrays.asList(UP, LEFT, DOWN, RIGHT);
+	private static final List<Direction> UP_LEFT_DOWN_RIGHT = Arrays.asList(UP, LEFT, DOWN, RIGHT);
 
-	private Supplier<Tile> fnTargetTile;
-	private MovingThroughMaze actor;
-	private List<Tile> targetPath;
-	private boolean pathComputed;
+	private final MovingThroughMaze actor;
+	private final Supplier<Tile> fnTargetTile;
+	private final LinkedHashSet<Tile> path = new LinkedHashSet<>();
 	private boolean forced;
+	private boolean pathComputationEnabled;
 
 	public HeadingForTargetTile(MovingThroughMaze actor, Supplier<Tile> fnTargetTile) {
-		this(actor);
-		this.fnTargetTile = fnTargetTile;
-	}
-
-	HeadingForTargetTile(MovingThroughMaze actor) {
 		this.actor = Objects.requireNonNull(actor);
-		targetPath = Collections.emptyList();
-		pathComputed = false;
-		forced = false;
-	}
-
-	@Override
-	public void init() {
-		targetPath = Collections.emptyList();
+		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 	}
 
 	@Override
 	public void steer() {
 		if (actor.enteredNewTile() || forced) {
 			forced = false;
-			targetPath = Collections.emptyList();
 			Tile targetTile = fnTargetTile.get();
 			if (targetTile != null) {
 				Direction dirToTarget = dirToTarget(actor.moveDir(), actor.tile(), targetTile);
 				actor.setWishDir(dirToTarget);
 				actor.setTargetTile(targetTile);
-				if (pathComputed) {
-					targetPath = pathTo(targetTile);
+				if (pathComputationEnabled) {
+					computePath(targetTile);
 				}
 			}
 		}
@@ -82,12 +67,15 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 
 	@Override
 	public void setPathComputationEnabled(boolean enabled) {
-		this.pathComputed = enabled;
+		if (pathComputationEnabled != enabled) {
+			path.clear();
+		}
+		pathComputationEnabled = enabled;
 	}
 
 	@Override
 	public boolean isPathComputationEnabled() {
-		return pathComputed;
+		return pathComputationEnabled;
 	}
 
 	@Override
@@ -97,7 +85,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 
 	@Override
 	public List<Tile> pathToTarget() {
-		return new ArrayList<>(targetPath);
+		return new ArrayList<>(path);
 	}
 
 	/**
@@ -128,13 +116,14 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	 * Computes the complete path the actor would traverse until it would reach the given target tile, a
 	 * cycle would occur or the path would leave the board.
 	 * 
+	 * @param targetTile target tile
 	 * @return the path the actor would take when moving to its target tile
 	 */
-	private List<Tile> pathTo(Tile targetTile) {
+	private void computePath(Tile targetTile) {
 		Maze maze = actor.maze();
-		Set<Tile> path = new LinkedHashSet<>();
 		Tile currentTile = actor.tile();
 		Direction currentDir = actor.moveDir();
+		path.clear();
 		path.add(currentTile);
 		while (!currentTile.equals(targetTile)) {
 			Direction dir = dirToTarget(currentDir, currentTile, targetTile);
@@ -146,6 +135,5 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 			currentTile = nextTile;
 			currentDir = dir;
 		}
-		return new ArrayList<>(path);
 	}
 }

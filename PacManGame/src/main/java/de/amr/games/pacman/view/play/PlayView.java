@@ -284,19 +284,18 @@ public class PlayView extends SimplePlayView {
 
 	private void drawGhostRoutes(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		//@formatter:off
-		game.ghostsOnStage()
-			.filter(ghost -> ghost.visible)
-			.forEach(ghost -> drawGhostRoute(g, ghost));
-		//@formatter:on
+		game.ghostsOnStage().forEach(ghost -> drawGhostRoute(g, ghost));
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 
 	private void drawGhostRoute(Graphics2D g, Ghost ghost) {
-		if (ghost.steering() instanceof PathProvidingSteering) {
+		if (ghost.steering() instanceof PathProvidingSteering && ghost.targetTile() != null) {
+			drawTargetTileRubberband(g, ghost, ghost.targetTile());
 			PathProvidingSteering steering = (PathProvidingSteering) ghost.steering();
-			steering.setPathComputationEnabled(true);
-			drawTargetPathAndRubberBand(g, ghost, steering);
+			if (!steering.isPathComputationEnabled()) {
+				steering.setPathComputationEnabled(true);
+			}
+			drawTargetTilePath(g, steering.pathToTarget(), ghostColor(ghost));
 		} else if (ghost.wishDir() != null) {
 			Vector2f v = ghost.wishDir().vector();
 			drawDirectionIndicator(g, ghostColor(ghost), ghost.wishDir(),
@@ -313,30 +312,12 @@ public class PlayView extends SimplePlayView {
 		}
 	}
 
-	private void drawTargetPathAndRubberBand(Graphics2D g, Ghost ghost, PathProvidingSteering steering) {
+	private void drawTargetTilePath(Graphics2D g, List<Tile> path, Color ghostColor) {
+		if (path.isEmpty()) {
+			return;
+		}
 		g = (Graphics2D) g.create();
-		Tile targetTile = ghost.targetTile();
-		if (targetTile == null) {
-			return;
-		}
-		List<Tile> path = steering.pathToTarget();
-		if (path.size() == 0 || targetTile == path.get(path.size() - 1)) {
-			return;
-		}
 		Stroke solid = new BasicStroke(0.5f);
-		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
-		Color ghostColor = ghostColor(ghost);
-		// draw rubber band to target tile
-		int x1 = ghost.tf.getCenter().roundedX(), y1 = ghost.tf.getCenter().roundedY();
-		int x2 = targetTile.centerX(), y2 = targetTile.centerY();
-		g.setStroke(dashed);
-		g.setColor(alpha(ghostColor, 200));
-		g.drawLine(x1, y1, x2, y2);
-		g.translate(targetTile.x(), targetTile.y());
-		g.setColor(ghostColor);
-		g.setStroke(solid);
-		g.fillRect(2, 2, 4, 4);
-		g.translate(-targetTile.x(), -targetTile.y());
 		if (path.size() > 1) {
 			g.setColor(alpha(ghostColor, 200));
 			for (int i = 0; i < path.size() - 1; ++i) {
@@ -349,6 +330,27 @@ public class PlayView extends SimplePlayView {
 				}
 			}
 		}
+		g.dispose();
+	}
+
+	private void drawTargetTileRubberband(Graphics2D g, Ghost ghost, Tile targetTile) {
+		if (targetTile == null) {
+			return;
+		}
+		g = (Graphics2D) g.create();
+		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
+		Stroke solid = new BasicStroke(0.5f);
+		Color ghostColor = ghostColor(ghost);
+		int x1 = ghost.tf.getCenter().roundedX(), y1 = ghost.tf.getCenter().roundedY();
+		int x2 = targetTile.centerX(), y2 = targetTile.centerY();
+		g.setStroke(dashed);
+		g.setColor(alpha(ghostColor, 200));
+		g.drawLine(x1, y1, x2, y2);
+		g.translate(targetTile.x(), targetTile.y());
+		g.setColor(ghostColor);
+		g.setStroke(solid);
+		g.fillRect(2, 2, 4, 4);
+		g.translate(-targetTile.x(), -targetTile.y());
 		g.dispose();
 	}
 
