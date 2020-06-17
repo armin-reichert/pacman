@@ -33,6 +33,35 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	/** Directions in the order used to compute the next move direction */
 	private static final List<Direction> UP_LEFT_DOWN_RIGHT = Arrays.asList(UP, LEFT, DOWN, RIGHT);
 
+	/**
+	 * Computes the next move direction as described
+	 * <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
+	 * <p>
+	 * When a ghost is on a portal tile and the steering has just changed, it may happen that no
+	 * direction can be computed. In that case we keep the move direction.
+	 * <p>
+	 * Note: We use separate parameters for the actor's move direction, current tile and target tile
+	 * instead of the members of the actor itself because the {@link #pathTo(Tile)} method uses this
+	 * method without actually placing the actor at each tile of the path.
+	 * 
+	 * @param mover      actor moving through the maze
+	 * @param moveDir    current move direction
+	 * @param tile       current tile
+	 * @param targetTile target tile
+	 */
+	private static Direction computeBestDir(MovingThroughMaze mover, Direction moveDir, Tile tile, Tile targetTile) {
+		Function<Direction, Double> fnDistFromNeighborToTarget = dir -> mover.maze().neighbor(tile, dir)
+				.distance(targetTile);
+		/*@formatter:off*/
+		return UP_LEFT_DOWN_RIGHT.stream()
+			.filter(dir -> dir != moveDir.opposite())
+			.filter(dir -> mover.canMoveBetween(tile, mover.maze().neighbor(tile, dir)))
+			.sorted(comparing(fnDistFromNeighborToTarget).thenComparingInt(UP_LEFT_DOWN_RIGHT::indexOf))
+			.findFirst()
+			.orElse(mover.moveDir());
+		/*@formatter:on*/
+	}
+
 	private final MovingThroughMaze actor;
 	private final Supplier<Tile> fnTargetTile;
 	private final LinkedHashSet<Tile> path = new LinkedHashSet<>();
@@ -49,7 +78,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 		Tile targetTile = fnTargetTile.get();
 		if (targetTile != null && (actor.enteredNewTile() || forced)) {
 			actor.setTargetTile(targetTile);
-			actor.setWishDir(computeBestDir(actor.moveDir(), actor.tile(), targetTile));
+			actor.setWishDir(computeBestDir(actor, actor.moveDir(), actor.tile(), targetTile));
 			if (pathComputationEnabled) {
 				computePath(targetTile);
 			}
@@ -86,30 +115,6 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	}
 
 	/**
-	 * Computes the next move direction as described
-	 * <a href= "http://gameinternals.com/understanding-pac-man-ghost-behavior">here.</a>
-	 * 
-	 * <p>
-	 * Note: We use separate parameters for the actor's move direction, current tile and target tile
-	 * instead of the members of the actor itself because the {@link #pathTo(Tile)} method uses this
-	 * method without actually placing the actor at each tile of the path.
-	 */
-	private Direction computeBestDir(Direction moveDir, Tile currentTile, Tile targetTile) {
-		Function<Direction, Tile> fnNeighbor = dir -> actor.maze().neighbor(currentTile, dir);
-		Function<Direction, Double> fnNeighborDistToTarget = dir -> fnNeighbor.apply(dir).distance(targetTile);
-		/*@formatter:off*/
-		return UP_LEFT_DOWN_RIGHT.stream()
-			.filter(dir -> dir != moveDir.opposite())
-			.filter(dir -> actor.canMoveBetween(currentTile, fnNeighbor.apply(dir)))
-			.sorted(comparing(fnNeighborDistToTarget).thenComparingInt(UP_LEFT_DOWN_RIGHT::indexOf))
-			.findFirst()
-			// when a ghost is on a portal tile and the steering has just changed it may happen
-			// that no direction can be computed. In that case keep the move direction:
-			.orElse(actor.moveDir());
-		/*@formatter:on*/
-	}
-
-	/**
 	 * Computes the path the actor would traverse until reaching the target tile, a cycle would occur or
 	 * the path would leave the map.
 	 * 
@@ -122,7 +127,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 		path.clear();
 		path.add(currentTile);
 		while (!currentTile.equals(targetTile)) {
-			Direction dir = computeBestDir(currentDir, currentTile, targetTile);
+			Direction dir = computeBestDir(actor, currentDir, currentTile, targetTile);
 			Tile nextTile = maze.neighbor(currentTile, dir);
 			if (!maze.insideMap(nextTile) || path.contains(nextTile)) {
 				break;
