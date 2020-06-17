@@ -217,6 +217,52 @@ public class Ghost extends Creature<GhostState> {
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 	}
 
+	/**
+	 * @return steering which lets the ghost jump up and down in its seat
+	 */
+	public Steering isJumpingAtSeat() {
+		return new JumpingUpAndDown(this, seat.position.y);
+	}
+
+	/**
+	 * Lets the actor avoid the attacker's path by walking to a "safe" maze corner.
+	 * 
+	 * @param attacker the attacking actor
+	 * @return steering where actor flees to a "safe" maze corner
+	 */
+	public Steering isFleeingToSafeCorner(MazeMover attacker) {
+		return new FleeingToSafeCorner(this, attacker, game.maze.cornerNW, game.maze.cornerNE, game.maze.cornerSW,
+				game.maze.cornerSE);
+	}
+
+	/**
+	 * @return steering for bringing ghost back to ghost house entry
+	 */
+	public Steering isReturningToHouse() {
+		return isHeadingFor(maze.ghostSeats[0].tile);
+	}
+
+	/**
+	 * @return steering for letting ghost scattering out and circling in its corner
+	 */
+	public Steering isScatteringOut() {
+		return isHeadingFor(scatteringTarget);
+	}
+
+	/**
+	 * @return steering which lets ghost enter the house and taking its seat
+	 */
+	public Steering isTakingSeat() {
+		return new EnteringGhostHouse(this, Vector2f.of(seat.position.x, seat.position.y + 3));
+	}
+
+	/**
+	 * @return steering which lets a ghost leave the ghost house
+	 */
+	public Steering isLeavingGhostHouse() {
+		return new LeavingGhostHouse(this);
+	}
+
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
 		if (maze.isDoor(neighbor)) {
@@ -331,47 +377,5 @@ public class Ghost extends Creature<GhostState> {
 		if (oldInsanity != insanity) {
 			loginfo("%s's insanity changed from %s to %s, pellets left: %d", name, oldInsanity, insanity, pelletsLeft);
 		}
-	}
-
-	/**
-	 * Lets the ghost jump up and down at its own seat in the house.
-	 * 
-	 * @return behavior which lets the ghost jump
-	 */
-	public Steering isJumpingUpAndDown(Vector2f seatPosition) {
-		return new JumpingUpAndDown(this, seatPosition.y);
-	}
-
-	/**
-	 * Lets the actor avoid the attacker's path by walking to a "safe" maze corner.
-	 * 
-	 * @param attacker the attacking actor
-	 * @param corners  list of tiles representing maze corners
-	 * 
-	 * @return behavior where actor flees to a "safe" maze corner
-	 */
-	public Steering isFleeingToSafeCorner(MazeMover attacker, Tile... corners) {
-		return new FleeingToSafeCorner(this, attacker, corners);
-	}
-
-	/**
-	 * Lets a ghost enter the ghost house and move to the seat with the given position.
-	 * 
-	 * @param seatPosition seat position
-	 * 
-	 * @return behavior which lets a ghost enter the house and take its seat
-	 */
-	public Steering isTakingSeat(Vector2f seatPosition) {
-		// add 3 pixel so that ghost dives deeper into ghost house
-		return new EnteringGhostHouse(this, Vector2f.of(seatPosition.x, seatPosition.y + 3));
-	}
-
-	/**
-	 * Lets a ghost leave the ghost house.
-	 * 
-	 * @return behavior which lets a ghost leave the ghost house
-	 */
-	public Steering isLeavingGhostHouse() {
-		return new LeavingGhostHouse(this);
 	}
 }

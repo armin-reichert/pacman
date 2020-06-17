@@ -104,8 +104,7 @@ public class EnhancedGameController extends GameController {
 			loginfo("Ghost escape behavior is: Random movement");
 		} else {
 			settings.ghostsSafeCorner = true;
-			game.ghosts().forEach(ghost -> ghost.behavior(GhostState.FRIGHTENED, ghost.isFleeingToSafeCorner(game.pacMan,
-					game.maze.cornerNW, game.maze.cornerNE, game.maze.cornerSW, game.maze.cornerSE)));
+			game.ghosts().forEach(ghost -> ghost.behavior(GhostState.FRIGHTENED, ghost.isFleeingToSafeCorner(game.pacMan)));
 			loginfo("Ghosts escape behavior is: Fleeing to safe corners");
 		}
 	}
