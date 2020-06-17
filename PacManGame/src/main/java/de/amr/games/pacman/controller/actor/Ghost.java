@@ -14,10 +14,14 @@ import static de.amr.games.pacman.model.Game.speed;
 
 import java.util.EnumMap;
 
+import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.steering.Steering;
-import de.amr.games.pacman.controller.actor.steering.ghost.GhostBehavior;
+import de.amr.games.pacman.controller.actor.steering.ghost.EnteringGhostHouse;
+import de.amr.games.pacman.controller.actor.steering.ghost.FleeingToSafeCorner;
+import de.amr.games.pacman.controller.actor.steering.ghost.JumpingUpAndDown;
+import de.amr.games.pacman.controller.actor.steering.ghost.LeavingGhostHouse;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -39,7 +43,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Creature<GhostState> implements GhostBehavior {
+public class Ghost extends Creature<GhostState> {
 
 	public enum Insanity {
 		IMMUNE, HEALTHY, CRUISE_ELROY1, CRUISE_ELROY2
@@ -327,5 +331,47 @@ public class Ghost extends Creature<GhostState> implements GhostBehavior {
 		if (oldInsanity != insanity) {
 			loginfo("%s's insanity changed from %s to %s, pellets left: %d", name, oldInsanity, insanity, pelletsLeft);
 		}
+	}
+
+	/**
+	 * Lets the ghost jump up and down at its own seat in the house.
+	 * 
+	 * @return behavior which lets the ghost jump
+	 */
+	public Steering isJumpingUpAndDown(Vector2f seatPosition) {
+		return new JumpingUpAndDown(this, seatPosition.y);
+	}
+
+	/**
+	 * Lets the actor avoid the attacker's path by walking to a "safe" maze corner.
+	 * 
+	 * @param attacker the attacking actor
+	 * @param corners  list of tiles representing maze corners
+	 * 
+	 * @return behavior where actor flees to a "safe" maze corner
+	 */
+	public Steering isFleeingToSafeCorner(MazeMover attacker, Tile... corners) {
+		return new FleeingToSafeCorner(this, attacker, corners);
+	}
+
+	/**
+	 * Lets a ghost enter the ghost house and move to the seat with the given position.
+	 * 
+	 * @param seatPosition seat position
+	 * 
+	 * @return behavior which lets a ghost enter the house and take its seat
+	 */
+	public Steering isTakingSeat(Vector2f seatPosition) {
+		// add 3 pixel so that ghost dives deeper into ghost house
+		return new EnteringGhostHouse(this, Vector2f.of(seatPosition.x, seatPosition.y + 3));
+	}
+
+	/**
+	 * Lets a ghost leave the ghost house.
+	 * 
+	 * @return behavior which lets a ghost leave the ghost house
+	 */
+	public Steering isLeavingGhostHouse() {
+		return new LeavingGhostHouse(this);
 	}
 }
