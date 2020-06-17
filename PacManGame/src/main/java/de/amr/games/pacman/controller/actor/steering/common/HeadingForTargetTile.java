@@ -75,14 +75,15 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 
 	@Override
 	public void steer() {
-		Tile targetTile = fnTargetTile.get();
-		if (targetTile != null && (actor.enteredNewTile() || forced)) {
-			actor.setTargetTile(targetTile);
-			actor.setWishDir(computeBestDir(actor, actor.moveDir(), actor.tile(), targetTile));
-			if (pathComputationEnabled) {
-				computePath(targetTile);
-			}
+		if (actor.enteredNewTile() || forced) {
 			forced = false;
+			actor.setTargetTile(fnTargetTile.get());
+			if (actor.targetTile() != null) {
+				actor.setWishDir(computeBestDir(actor, actor.moveDir(), actor.tile(), actor.targetTile()));
+				if (pathComputationEnabled) {
+					computePath(actor.targetTile());
+				}
+			}
 		}
 	}
 
