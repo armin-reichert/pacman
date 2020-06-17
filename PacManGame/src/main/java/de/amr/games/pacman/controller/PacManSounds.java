@@ -12,13 +12,13 @@ import de.amr.games.pacman.view.theme.Theme;
  * 
  * @author Armin Reichert
  */
-public class SoundController {
+public class PacManSounds {
 
 	private Theme theme;
 	private CompletableFuture<Void> musicLoading;
 	private long lastPelletEatenTimeMillis;
 
-	public SoundController(Theme theme) {
+	public PacManSounds(Theme theme) {
 		this.theme = theme;
 	}
 
@@ -104,6 +104,11 @@ public class SoundController {
 
 	public void pacManDied() {
 		theme.snd_die().play();
+		theme.music_playing().stop();
+	}
+
+	public void resumePlayingMusic() {
+		theme.music_playing().start();
 	}
 
 	public void extraLife() {
@@ -111,6 +116,7 @@ public class SoundController {
 	}
 
 	public void gameOver() {
+		theme.music_playing().stop();
 		theme.music_gameover().play();
 	}
 

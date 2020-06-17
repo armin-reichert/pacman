@@ -61,7 +61,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected Game game;
 
 	protected Theme theme;
-	protected SoundController sound;
+	protected PacManSounds sound;
 
 	protected LoadingView loadingView;
 	protected IntroView introView;
@@ -76,7 +76,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		this.theme = theme;
 		loadingView = new LoadingView(theme);
 		introView = new IntroView(theme);
-		sound = new SoundController(theme);
+		sound = new PacManSounds(theme);
 		buildStateMachine();
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
@@ -189,7 +189,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						if (t == sec(5)) {
 							playView.showMessage("Ready!", Color.YELLOW);
 							playView.mazeView.energizersBlinking.setEnabled(true);
-							sound.gameStarts();
+							theme.music_playing().play();
 						}
 						game.creaturesOnStage().forEach(Creature::update);
 					})
@@ -278,7 +278,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							sound.pacManDied();
 						}
 						else if (t == dyingEndTime && game.lives > 0) {
-							sound.gameStarts();
 							game.creaturesOnStage().forEach(Creature::init);
 							playView.init();
 						}
@@ -403,6 +402,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		private void reset() {
+			sound.resumePlayingMusic();
 			ghostCommand.init();
 			game.ghostsOnStage().forEach(ghost -> ghost.init());
 			game.pacMan.init();
