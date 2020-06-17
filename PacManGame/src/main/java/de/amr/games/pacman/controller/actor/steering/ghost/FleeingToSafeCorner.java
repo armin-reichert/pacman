@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.MovingThroughMaze;
+import de.amr.games.pacman.controller.actor.MazeMover;
 import de.amr.games.pacman.controller.actor.steering.common.TakingPrecomputedPath;
 import de.amr.games.pacman.model.Maze;
 import de.amr.games.pacman.model.MazeGraph;
@@ -26,7 +26,7 @@ public class FleeingToSafeCorner extends TakingPrecomputedPath {
 	final MazeGraph graph;
 	final Tile[] corners;
 
-	public FleeingToSafeCorner(Ghost refugee, MovingThroughMaze attacker, Tile... corners) {
+	public FleeingToSafeCorner(Ghost refugee, MazeMover attacker, Tile... corners) {
 		super(refugee, attacker::tile);
 		graph = new MazeGraph(maze);
 		this.corners = Arrays.copyOf(corners, corners.length);
@@ -38,7 +38,7 @@ public class FleeingToSafeCorner extends TakingPrecomputedPath {
 	}
 
 	@Override
-	protected List<Tile> pathToTarget(MovingThroughMaze refugee, Tile targetTile) {
+	protected List<Tile> pathToTarget(MazeMover refugee, Tile targetTile) {
 		Tile target = refugee.tile();
 		while (target.equals(refugee.tile())) {
 			target = safeCorner(refugee);
@@ -46,7 +46,7 @@ public class FleeingToSafeCorner extends TakingPrecomputedPath {
 		return graph.shortestPath(refugee.tile(), target);
 	}
 
-	private Tile safeCorner(MovingThroughMaze refugee) {
+	private Tile safeCorner(MazeMover refugee) {
 		Tile refugeeTile = refugee.tile();
 		Tile chaserTile = fnTargetTile.get();
 		//@formatter:off

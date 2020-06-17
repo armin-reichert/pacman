@@ -3,7 +3,7 @@ package de.amr.games.pacman.controller.actor.steering.common;
 import java.util.List;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.controller.actor.MovingThroughMaze;
+import de.amr.games.pacman.controller.actor.MazeMover;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Tile;
 
@@ -12,7 +12,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public interface CreatureBehavior extends MovingThroughMaze {
+public interface CreatureBehavior extends MazeMover {
 
 	/**
 	 * @param up    key for moving up

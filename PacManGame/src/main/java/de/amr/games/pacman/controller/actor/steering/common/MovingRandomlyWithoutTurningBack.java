@@ -3,7 +3,7 @@ package de.amr.games.pacman.controller.actor.steering.common;
 import java.util.Objects;
 
 import de.amr.datastruct.StreamUtils;
-import de.amr.games.pacman.controller.actor.MovingThroughMaze;
+import de.amr.games.pacman.controller.actor.MazeMover;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 
@@ -14,9 +14,9 @@ import de.amr.games.pacman.model.Direction;
  */
 public class MovingRandomlyWithoutTurningBack implements Steering {
 
-	private MovingThroughMaze actor;
+	private MazeMover actor;
 
-	public MovingRandomlyWithoutTurningBack(MovingThroughMaze actor) {
+	public MovingRandomlyWithoutTurningBack(MazeMover actor) {
 		this.actor = Objects.requireNonNull(actor);
 	}
 

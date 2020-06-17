@@ -4,17 +4,17 @@ import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.model.Direction.UP;
+import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.controller.actor.MovingThroughMaze;
+import de.amr.games.pacman.controller.actor.MazeMover;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Maze;
@@ -29,9 +29,6 @@ import de.amr.games.pacman.model.Tile;
  * @author Armin Reichert
  */
 public class HeadingForTargetTile implements PathProvidingSteering {
-
-	/** Directions in the order used to compute the next move direction */
-	private static final List<Direction> UP_LEFT_DOWN_RIGHT = Arrays.asList(UP, LEFT, DOWN, RIGHT);
 
 	/**
 	 * Computes the next move direction as described
@@ -49,26 +46,26 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	 * @param tile       current tile
 	 * @param targetTile target tile
 	 */
-	private static Direction computeBestDir(MovingThroughMaze mover, Direction moveDir, Tile tile, Tile targetTile) {
+	private static Direction bestDir(MazeMover mover, Direction moveDir, Tile tile, Tile targetTile) {
 		Function<Direction, Double> fnDistFromNeighborToTarget = dir -> mover.maze().neighbor(tile, dir)
 				.distance(targetTile);
 		/*@formatter:off*/
-		return UP_LEFT_DOWN_RIGHT.stream()
+		return Direction.dirs()
 			.filter(dir -> dir != moveDir.opposite())
 			.filter(dir -> mover.canMoveBetween(tile, mover.maze().neighbor(tile, dir)))
-			.sorted(comparing(fnDistFromNeighborToTarget).thenComparingInt(UP_LEFT_DOWN_RIGHT::indexOf))
+			.sorted(comparing(fnDistFromNeighborToTarget).thenComparingInt(asList(UP, LEFT, DOWN, RIGHT)::indexOf))
 			.findFirst()
 			.orElse(mover.moveDir());
 		/*@formatter:on*/
 	}
 
-	private final MovingThroughMaze actor;
+	private final MazeMover actor;
 	private final Supplier<Tile> fnTargetTile;
 	private final LinkedHashSet<Tile> path = new LinkedHashSet<>();
 	private boolean forced;
 	private boolean pathComputationEnabled;
 
-	public HeadingForTargetTile(MovingThroughMaze actor, Supplier<Tile> fnTargetTile) {
+	public HeadingForTargetTile(MazeMover actor, Supplier<Tile> fnTargetTile) {
 		this.actor = Objects.requireNonNull(actor);
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 	}
@@ -79,7 +76,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 			forced = false;
 			actor.setTargetTile(fnTargetTile.get());
 			if (actor.targetTile() != null) {
-				actor.setWishDir(computeBestDir(actor, actor.moveDir(), actor.tile(), actor.targetTile()));
+				actor.setWishDir(bestDir(actor, actor.moveDir(), actor.tile(), actor.targetTile()));
 				if (pathComputationEnabled) {
 					computePath();
 				}
@@ -100,7 +97,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 		path.clear();
 		path.add(currentTile);
 		while (!currentTile.equals(targetTile)) {
-			Direction dir = computeBestDir(actor, currentDir, currentTile, targetTile);
+			Direction dir = bestDir(actor, currentDir, currentTile, targetTile);
 			Tile nextTile = maze.neighbor(currentTile, dir);
 			if (!maze.insideMap(nextTile) || path.contains(nextTile)) {
 				return;

@@ -2,7 +2,7 @@ package de.amr.games.pacman.controller.actor.steering.ghost;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.MovingThroughMaze;
+import de.amr.games.pacman.controller.actor.MazeMover;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.controller.actor.steering.common.CreatureBehavior;
 import de.amr.games.pacman.model.Tile;
@@ -35,7 +35,7 @@ public interface GhostBehavior extends CreatureBehavior {
 	 * 
 	 * @return behavior where actor flees to a "safe" maze corner
 	 */
-	default Steering isFleeingToSafeCorner(MovingThroughMaze attacker, Tile... corners) {
+	default Steering isFleeingToSafeCorner(MazeMover attacker, Tile... corners) {
 		return new FleeingToSafeCorner(steeredGhost(), attacker, corners);
 	}
 

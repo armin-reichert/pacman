@@ -9,7 +9,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public interface MovingThroughMaze {
+public interface MazeMover {
 
 	/**
 	 * @return tile position
@@ -22,7 +22,7 @@ public interface MovingThroughMaze {
 	 * @param other other entity
 	 * @return Euclidean distance measured in tiles
 	 */
-	default double distance(MovingThroughMaze other) {
+	default double distance(MazeMover other) {
 		return tile().distance(other.tile());
 	}
 
