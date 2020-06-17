@@ -89,6 +89,28 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 		}
 	}
 
+	/**
+	 * Computes the path the actor would traverse until reaching the target tile, a cycle would occur or
+	 * the path would leave the map.
+	 */
+	private void computePath() {
+		Maze maze = actor.maze();
+		Tile currentTile = actor.tile(), targetTile = actor.targetTile();
+		Direction currentDir = actor.moveDir();
+		path.clear();
+		path.add(currentTile);
+		while (!currentTile.equals(targetTile)) {
+			Direction dir = computeBestDir(actor, currentDir, currentTile, targetTile);
+			Tile nextTile = maze.neighbor(currentTile, dir);
+			if (!maze.insideMap(nextTile) || path.contains(nextTile)) {
+				return;
+			}
+			path.add(nextTile);
+			currentTile = nextTile;
+			currentDir = dir;
+		}
+	}
+
 	@Override
 	public void force() {
 		forced = true;
@@ -115,29 +137,5 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	@Override
 	public List<Tile> pathToTarget() {
 		return new ArrayList<>(path);
-	}
-
-	/**
-	 * Computes the path the actor would traverse until reaching the target tile, a cycle would occur or
-	 * the path would leave the map.
-	 * 
-	 * @param targetTile target tile
-	 */
-	private void computePath() {
-		Maze maze = actor.maze();
-		Tile currentTile = actor.tile(), targetTile = actor.targetTile();
-		Direction currentDir = actor.moveDir();
-		path.clear();
-		path.add(currentTile);
-		while (!currentTile.equals(targetTile)) {
-			Direction dir = computeBestDir(actor, currentDir, currentTile, targetTile);
-			Tile nextTile = maze.neighbor(currentTile, dir);
-			if (!maze.insideMap(nextTile) || path.contains(nextTile)) {
-				break;
-			}
-			path.add(nextTile);
-			currentTile = nextTile;
-			currentDir = dir;
-		}
 	}
 }
