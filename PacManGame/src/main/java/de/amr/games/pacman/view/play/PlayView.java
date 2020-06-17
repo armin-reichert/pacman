@@ -200,6 +200,9 @@ public class PlayView extends SimplePlayView {
 		if (!ghost.visible) {
 			return;
 		}
+		if (ghost.getState() == null) {
+			return; // may happen in test applications where not all ghosts are used
+		}
 		StringBuilder text = new StringBuilder();
 		// show ghost name if not obvious
 		text.append(ghost.is(DEAD, FRIGHTENED, ENTERING_HOUSE) ? ghost.name : "");
