@@ -46,17 +46,14 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 
 	@Override
 	public void steer() {
-		if (actor.enteredNewTile() || forced) {
-			forced = false;
-			Tile targetTile = fnTargetTile.get();
-			if (targetTile != null) {
-				Direction dirToTarget = dirToTarget(actor.moveDir(), actor.tile(), targetTile);
-				actor.setWishDir(dirToTarget);
-				actor.setTargetTile(targetTile);
-				if (pathComputationEnabled) {
-					computePath(targetTile);
-				}
+		Tile targetTile = fnTargetTile.get();
+		if (targetTile != null && (actor.enteredNewTile() || forced)) {
+			actor.setTargetTile(targetTile);
+			actor.setWishDir(computeBestDir(actor.moveDir(), actor.tile(), targetTile));
+			if (pathComputationEnabled) {
+				computePath(targetTile);
 			}
+			forced = false;
 		}
 	}
 
@@ -97,7 +94,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	 * instead of the members of the actor itself because the {@link #pathTo(Tile)} method uses this
 	 * method without actually placing the actor at each tile of the path.
 	 */
-	private Direction dirToTarget(Direction moveDir, Tile currentTile, Tile targetTile) {
+	private Direction computeBestDir(Direction moveDir, Tile currentTile, Tile targetTile) {
 		Function<Direction, Tile> fnNeighbor = dir -> actor.maze().neighbor(currentTile, dir);
 		Function<Direction, Double> fnNeighborDistToTarget = dir -> fnNeighbor.apply(dir).distance(targetTile);
 		/*@formatter:off*/
@@ -113,11 +110,10 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	}
 
 	/**
-	 * Computes the complete path the actor would traverse until it would reach the given target tile, a
-	 * cycle would occur or the path would leave the board.
+	 * Computes the path the actor would traverse until reaching the target tile, a cycle would occur or
+	 * the path would leave the map.
 	 * 
 	 * @param targetTile target tile
-	 * @return the path the actor would take when moving to its target tile
 	 */
 	private void computePath(Tile targetTile) {
 		Maze maze = actor.maze();
@@ -126,7 +122,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 		path.clear();
 		path.add(currentTile);
 		while (!currentTile.equals(targetTile)) {
-			Direction dir = dirToTarget(currentDir, currentTile, targetTile);
+			Direction dir = computeBestDir(currentDir, currentTile, targetTile);
 			Tile nextTile = maze.neighbor(currentTile, dir);
 			if (!maze.insideMap(nextTile) || path.contains(nextTile)) {
 				break;
