@@ -53,6 +53,9 @@ import de.amr.statemachine.core.State;
 public class PlayView extends SimplePlayView {
 
 	private static final String INFTY = Character.toString('\u221E');
+	private static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
+	private static final Color[] GRID_PATTERN = { Color.BLACK, new Color(40, 40, 40) };
+	private static final Font SMALL_FONT = new Font("Arial Narrow", Font.PLAIN, 6);
 
 	private static Color alpha(Color color, int alpha) {
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
@@ -73,6 +76,29 @@ public class PlayView extends SimplePlayView {
 		}
 	}
 
+	private static int patternIndex(int col, int row) {
+		return (col + row) % GRID_PATTERN.length;
+	}
+
+	private static BufferedImage createGridPatternImage(int cols, int rows) {
+		int width = cols * Tile.SIZE, height = rows * Tile.SIZE + 1;
+		BufferedImage img = Assets.createBufferedImage(width, height, Transparency.TRANSLUCENT);
+		Graphics2D g = img.createGraphics();
+		g.setColor(GRID_PATTERN[0]);
+		g.fillRect(0, 0, width, height);
+		for (int row = 0; row < rows; ++row) {
+			for (int col = 0; col < cols; ++col) {
+				int i = patternIndex(col, row);
+				if (i != 0) {
+					g.setColor(GRID_PATTERN[i]);
+					g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
+				}
+			}
+		}
+		g.dispose();
+		return img;
+	}
+
 	public Supplier<State<GhostState>> fnGhostCommandState = () -> null;
 	public GhostHouse house; // (optional)
 
@@ -84,9 +110,6 @@ public class PlayView extends SimplePlayView {
 
 	private FramerateWidget frameRateDisplay;
 	private final BufferedImage gridImage, inkyImage, clydeImage, pacManImage;
-	private final Polygon arrowHead = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
-	private final Color[] gridPatternColor = { Color.BLACK, new Color(40, 40, 40) };
-	private final Font smallFont = new Font("Arial Narrow", Font.PLAIN, 6);
 
 	public PlayView(Game game, Theme theme) {
 		super(game, theme);
@@ -132,13 +155,13 @@ public class PlayView extends SimplePlayView {
 
 	@Override
 	protected Color tileColor(Tile tile) {
-		return showGrid ? gridPatternColor[patternIndex(tile.col, tile.row)] : super.tileColor(tile);
+		return showGrid ? GRID_PATTERN[patternIndex(tile.col, tile.row)] : super.tileColor(tile);
 	}
 
 	private void drawEntityState(Graphics2D g, Entity entity, String text, Color color) {
 		try (Pen pen = new Pen(g)) {
 			pen.color(color);
-			pen.font(smallFont);
+			pen.font(SMALL_FONT);
 			pen.drawCentered(text, entity.tf.getCenter().x, entity.tf.getCenter().y - 2);
 		}
 	}
@@ -278,7 +301,7 @@ public class PlayView extends SimplePlayView {
 		g.translate(x, y);
 		g.rotate((dir.ordinal() - 2) * (PI / 2));
 		g.setColor(color);
-		g.fillPolygon(arrowHead);
+		g.fillPolygon(TRIANGLE);
 		g.dispose();
 	}
 
@@ -313,21 +336,17 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawTargetTilePath(Graphics2D g, List<Tile> path, Color ghostColor) {
-		if (path.isEmpty()) {
+		if (path.size() <= 1) {
 			return;
 		}
 		g = (Graphics2D) g.create();
-		Stroke solid = new BasicStroke(0.5f);
-		if (path.size() > 1) {
-			g.setColor(alpha(ghostColor, 200));
-			for (int i = 0; i < path.size() - 1; ++i) {
-				Tile from = path.get(i), to = path.get(i + 1);
-				g.setColor(ghostColor);
-				g.setStroke(solid);
-				g.drawLine(from.centerX(), from.centerY(), to.centerX(), to.centerY());
-				if (i + 1 == path.size() - 1) {
-					drawDirectionIndicator(g, ghostColor, from.dirTo(to).get(), to.centerX(), to.centerY());
-				}
+		g.setStroke(new BasicStroke(0.5f));
+		g.setColor(alpha(ghostColor, 200));
+		for (int i = 0; i < path.size() - 1; ++i) {
+			Tile from = path.get(i), to = path.get(i + 1);
+			g.drawLine(from.centerX(), from.centerY(), to.centerX(), to.centerY());
+			if (i == path.size() - 2) {
+				drawDirectionIndicator(g, ghostColor, from.dirTo(to).get(), to.centerX(), to.centerY());
 			}
 		}
 		g.dispose();
@@ -338,19 +357,22 @@ public class PlayView extends SimplePlayView {
 			return;
 		}
 		g = (Graphics2D) g.create();
+
+		// draw dashed line from ghost position to target tile
 		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
-		Stroke solid = new BasicStroke(0.5f);
-		Color ghostColor = ghostColor(ghost);
 		int x1 = ghost.tf.getCenter().roundedX(), y1 = ghost.tf.getCenter().roundedY();
 		int x2 = targetTile.centerX(), y2 = targetTile.centerY();
 		g.setStroke(dashed);
-		g.setColor(alpha(ghostColor, 200));
+		g.setColor(alpha(ghostColor(ghost), 200));
 		g.drawLine(x1, y1, x2, y2);
+
+		// draw solid rectangle indicating target tile
 		g.translate(targetTile.x(), targetTile.y());
-		g.setColor(ghostColor);
-		g.setStroke(solid);
+		g.setColor(ghostColor(ghost));
+		g.setStroke(new BasicStroke(0.5f));
 		g.fillRect(2, 2, 4, 4);
 		g.translate(-targetTile.x(), -targetTile.y());
+
 		g.dispose();
 	}
 
@@ -424,28 +446,5 @@ public class PlayView extends SimplePlayView {
 			pen.color(emphasized ? Color.GREEN : Color.WHITE);
 			pen.smooth(() -> pen.drawAtGridPosition(String.format("%d", value), col + 2, row, Tile.SIZE));
 		}
-	}
-
-	private int patternIndex(int col, int row) {
-		return (col + row) % gridPatternColor.length;
-	}
-
-	private BufferedImage createGridPatternImage(int cols, int rows) {
-		int width = cols * Tile.SIZE, height = rows * Tile.SIZE + 1;
-		BufferedImage img = Assets.createBufferedImage(width, height, Transparency.TRANSLUCENT);
-		Graphics2D g = img.createGraphics();
-		g.setColor(gridPatternColor[0]);
-		g.fillRect(0, 0, width, height);
-		for (int row = 0; row < rows; ++row) {
-			for (int col = 0; col < cols; ++col) {
-				int patternIndex = patternIndex(col, row);
-				if (patternIndex != 0) {
-					g.setColor(gridPatternColor[patternIndex]);
-					g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
-				}
-			}
-		}
-		g.dispose();
-		return img;
 	}
 }
