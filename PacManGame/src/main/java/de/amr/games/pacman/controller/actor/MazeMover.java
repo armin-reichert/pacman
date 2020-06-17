@@ -87,8 +87,9 @@ public interface MazeMover {
 	void forceMoving(Direction dir);
 
 	/**
-	 * Forces the entity to move to the opposite direction.
+	 * Forces the entity to reverse its current move direction.
 	 */
-	void forceTurningBack();
-
+	default void forceReverse() {
+		forceMoving(moveDir().opposite());
+	}
 }

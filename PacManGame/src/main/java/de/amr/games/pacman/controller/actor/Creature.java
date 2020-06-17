@@ -231,11 +231,6 @@ public abstract class Creature<STATE> extends Entity implements FsmContainer<STA
 		movement.update();
 	}
 
-	@Override
-	public void forceTurningBack() {
-		forceMoving(moveDir().opposite());
-	}
-
 	/**
 	 * Computes how many pixels this creature can move towards the given direction at its current speed
 	 * before entering an inaccessible neighbor tile.

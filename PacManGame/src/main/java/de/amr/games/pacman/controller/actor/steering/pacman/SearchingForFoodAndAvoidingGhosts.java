@@ -45,7 +45,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 			return; // no decision necessary, move on
 		}
 		if (isDangerousGhostApproaching()) {
-			pacMan.forceTurningBack();
+			pacMan.forceReverse();
 			return;
 		}
 		Direction[] dirsShuffled = Direction.values();
