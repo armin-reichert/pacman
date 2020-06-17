@@ -81,8 +81,10 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 			if (actor.targetTile() != null) {
 				actor.setWishDir(computeBestDir(actor, actor.moveDir(), actor.tile(), actor.targetTile()));
 				if (pathComputationEnabled) {
-					computePath(actor.targetTile());
+					computePath();
 				}
+			} else {
+				path.clear();
 			}
 		}
 	}
@@ -121,9 +123,9 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	 * 
 	 * @param targetTile target tile
 	 */
-	private void computePath(Tile targetTile) {
+	private void computePath() {
 		Maze maze = actor.maze();
-		Tile currentTile = actor.tile();
+		Tile currentTile = actor.tile(), targetTile = actor.targetTile();
 		Direction currentDir = actor.moveDir();
 		path.clear();
 		path.add(currentTile);
