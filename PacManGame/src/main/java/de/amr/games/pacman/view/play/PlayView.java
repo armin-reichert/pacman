@@ -153,7 +153,7 @@ public class PlayView extends SimplePlayView {
 	private void drawActorStates(Graphics2D g) {
 		game.ghostsOnStage().forEach(ghost -> drawGhostState(g, ghost));
 		drawPacManState(g);
-		drawBonusState(g);
+		drawBonusState(g, game.bonus);
 	}
 
 	private void drawPacManState(Graphics2D g) {
@@ -199,15 +199,15 @@ public class PlayView extends SimplePlayView {
 		drawSmallText(g, ghostColor(ghost), ghost.tf.x, ghost.tf.y, text.toString());
 	}
 
-	private void drawBonusState(Graphics2D g) {
-		Bonus bonus = game.bonus;
-		String text = "";
-		if (bonus.getState() == BonusState.INACTIVE) {
-			text = "Bonus inactive";
-		} else {
-			text = String.format("%s,%d|%d", bonus, bonus.state().getTicksRemaining(), bonus.state().getDuration());
+	private void drawBonusState(Graphics2D g, Bonus bonus) {
+		State<BonusState> state = bonus.state();
+		String text = bonus.is(BonusState.INACTIVE) ? "Bonus inactive"
+				: String.format("%s,%d|%d", bonus, state.getTicksRemaining(), state.getDuration());
+		try (Pen pen = new Pen(g)) {
+			pen.font(new Font("Arial Narrow", Font.PLAIN, 5));
+			pen.color(Color.YELLOW);
+			pen.hcenter(text, width, game.maze.bonusSeat.tile.row, Tile.SIZE);
 		}
-		drawSmallText(g, Color.YELLOW, bonus.tf.x, bonus.tf.y, text);
 	}
 
 	private void drawPacManStarvingTime(Graphics2D g) {
