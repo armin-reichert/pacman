@@ -307,12 +307,12 @@ The common behavior of all ghosts is defined by the following code:
 
 ```java
 ghosts().forEach(ghost -> {
-	ghost.behavior(LOCKED, ghost.isJumpingUpAndDown(ghost.seat.position));
-	ghost.behavior(ENTERING_HOUSE, ghost.isTakingSeat(ghost.seat.position));
+	ghost.behavior(LOCKED, ghost.isJumpingAtSeat());
+	ghost.behavior(ENTERING_HOUSE, ghost.isTakingSeat());
 	ghost.behavior(LEAVING_HOUSE, ghost.isLeavingGhostHouse());
-	ghost.behavior(SCATTERING, ghost.isHeadingFor(ghost.scatteringTarget));
+	ghost.behavior(SCATTERING, ghost.isScatteringOut());
 	ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
-	ghost.behavior(DEAD, ghost.isHeadingFor(() -> maze.ghostSeats[0].tile));
+	ghost.behavior(DEAD, ghost.isReturningToHouse());
 });
 ```
 
