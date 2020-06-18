@@ -320,15 +320,37 @@ The only difference in ghost behavior is in the "CHASING" state:
 
 ### Blinky (the red ghost)
 
-Blinky is special because he becomes "insane" when the number of remaining pellets reaches certain values depending on the current game level. He becomes "cruise elroy" whatever that means. Initially, Blinky is healthy, all other ghosts are "immune".
+Blinky is special because he becomes "insane" when the number of remaining pellets reaches certain values depending on the current game level. He then becomes "cruise elroy" whatever that means. All other ghosts are "immune".
+
+This behavior is implemented by the following state machine:
 
 ```java
-blinky.insanity = Insanity.SANE;
+beginStateMachine(Sanity.class, Void.class)
+	.initialState(IMMUNE)
+	.description(() -> String.format("[%s sanity]", name))
+	.states()
+	.transitions()
+
+		.when(IMMUNE).then(INFECTABLE).condition(() -> name.equals("Blinky"))
+
+		.when(INFECTABLE).then(CRUISE_ELROY2)
+			.condition(() -> game.remainingFoodCount() <= game.level.elroy2DotsLeft)
+
+		.when(INFECTABLE).then(CRUISE_ELROY1)
+			.condition(() -> game.remainingFoodCount() <= game.level.elroy1DotsLeft)
+
+		.when(CRUISE_ELROY1).then(CRUISE_ELROY2)
+			.condition(() -> game.remainingFoodCount() <= game.level.elroy2DotsLeft)
+
+.endStateMachine();
 ```
 
-where the insanity values are defined by this enumeration type:
+where the states are from this enumeration type:
+
 ```java
-public enum Insanity { IMMUNE, SANE, CRUISE_ELROY1, CRUISE_ELROY };
+enum Sanity {
+	INFECTABLE, CRUISE_ELROY1, CRUISE_ELROY2, IMMUNE;
+};
 ```
 
 Blinky's chasing behavior is to directly attack Pac-Man:
