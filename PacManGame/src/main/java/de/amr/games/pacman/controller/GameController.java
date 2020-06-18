@@ -97,15 +97,15 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void createPlayEnvironment() {
 		game = new Game(settings.startLevel);
+		playView = new PlayView(game, theme);
+		ghostCommand = new GhostCommand(game);
+		ghostHouse = new GhostHouse(game);
+		playView.fnGhostCommandState = ghostCommand::state;
+		playView.house = ghostHouse;
 		game.creatures().forEach(actor -> {
 			game.putOnStage(actor);
 			actor.addEventListener(this::process);
 		});
-		ghostCommand = new GhostCommand(game);
-		ghostHouse = new GhostHouse(game);
-		playView = new PlayView(game, theme);
-		playView.fnGhostCommandState = ghostCommand::state;
-		playView.house = ghostHouse;
 		setDemoMode(settings.demoMode);
 	}
 
@@ -271,11 +271,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						if (t == waitTime) {
 							game.bonus.deactivate();
 							game.ghostsOnStage().forEach(ghost -> ghost.visible = false);
-							game.pacMan.showDying();
-							game.pacMan.sprites.current().get().enableAnimation(false);
+							game.pacMan.showDying().enableAnimation(false);
 						}
 						else if (t == dyingStartTime) {
-							game.pacMan.sprites.current().get().enableAnimation(true);
+							game.pacMan.showDying().enableAnimation(true);
 							sound.pacManDied();
 						}
 						else if (t == dyingEndTime && game.lives > 0) {

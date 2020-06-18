@@ -115,17 +115,18 @@ public class PacMan extends Creature<PacManState> {
 		sprites.set("full", theme.spr_pacManFull());
 	}
 
-	public void showWalking() {
-		sprites.select("walking-" + moveDir);
-		sprites.current().get().enableAnimation(tf.getVelocity().length() > 0);
+	public Sprite showWalking() {
+		Sprite sprite = sprites.select("walking-" + moveDir).get();
+		sprite.enableAnimation(tf.getVelocity().length() > 0);
+		return sprite;
 	}
 
-	public void showDying() {
-		sprites.select("dying");
+	public Sprite showDying() {
+		return sprites.select("dying").get();
 	}
 
-	public void showFull() {
-		sprites.select("full");
+	public Sprite showFull() {
+		return sprites.select("full").get();
 	}
 
 	/**
