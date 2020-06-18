@@ -46,17 +46,17 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 public class Ghost extends Creature<GhostState> {
 
 	public enum Insanity {
-		IMMUNE, HEALTHY, CRUISE_ELROY1, CRUISE_ELROY2
+		IMMUNE, SANE, CRUISE_ELROY1, CRUISE_ELROY2
 	};
 
 	/** Tile headed for when ghost scatters out. */
 	public Tile scatteringTarget;
 
 	/** State to enter after frightening state ends. */
-	public GhostState followState;
+	public GhostState subsequentState;
 
-	/** Keep track of steering changes. */
-	public Steering lastSteering;
+	/** Keeps track of steering changes. */
+	public Steering previousSteering;
 
 	/** Insanity ("cruise elroy") level. */
 	public Insanity insanity = Insanity.IMMUNE;
@@ -73,10 +73,10 @@ public class Ghost extends Creature<GhostState> {
 	
 				.state(LOCKED)
 					.onEntry(() -> {
-						followState = LOCKED;
+						subsequentState = LOCKED;
 						visible = true;
 						if (insanity != Insanity.IMMUNE) {
-							insanity = Insanity.HEALTHY;
+							insanity = Insanity.SANE;
 						}
 						moveDir = wishDir = seat.startDir;
 						tf.setPosition(seat.position);
@@ -163,10 +163,10 @@ public class Ghost extends Creature<GhostState> {
 					.on(GhostUnlockedEvent.class)
 			
 				.when(LEAVING_HOUSE).then(SCATTERING)
-					.condition(() -> steering().isComplete() && followState == SCATTERING)
+					.condition(() -> steering().isComplete() && subsequentState == SCATTERING)
 				
 				.when(LEAVING_HOUSE).then(CHASING)
-					.condition(() -> steering().isComplete() && followState == CHASING)
+					.condition(() -> steering().isComplete() && subsequentState == CHASING)
 				
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
 					.condition(() -> steering().isComplete())
@@ -179,7 +179,7 @@ public class Ghost extends Creature<GhostState> {
 					.on(GhostKilledEvent.class)
 				
 				.when(CHASING).then(SCATTERING)
-					.condition(() -> followState == SCATTERING)
+					.condition(() -> subsequentState == SCATTERING)
 					.act(() -> reverseDirection())
 					
 				.when(SCATTERING).then(FRIGHTENED)
@@ -190,7 +190,7 @@ public class Ghost extends Creature<GhostState> {
 					.on(GhostKilledEvent.class)
 				
 				.when(SCATTERING).then(CHASING)
-					.condition(() -> followState == CHASING)
+					.condition(() -> subsequentState == CHASING)
 					.act(() -> reverseDirection())
 					
 				.stay(FRIGHTENED)
@@ -202,11 +202,11 @@ public class Ghost extends Creature<GhostState> {
 				
 				.when(FRIGHTENED).then(SCATTERING)
 					.onTimeout()
-					.condition(() -> followState == SCATTERING)
+					.condition(() -> subsequentState == SCATTERING)
 					
 				.when(FRIGHTENED).then(CHASING)
 					.onTimeout()
-					.condition(() -> followState == CHASING)
+					.condition(() -> subsequentState == CHASING)
 					
 				.when(DEAD).then(ENTERING_HOUSE)
 					.condition(() -> maze.atGhostHouseDoor(tile()))
@@ -220,7 +220,7 @@ public class Ghost extends Creature<GhostState> {
 	/**
 	 * @return steering which lets the ghost jump up and down in its seat
 	 */
-	public Steering isJumpingAtSeat() {
+	public Steering isBouncingOnSeat() {
 		return new JumpingUpAndDown(this, seat.position.y);
 	}
 
@@ -276,12 +276,12 @@ public class Ghost extends Creature<GhostState> {
 
 	public void move() {
 		Steering currentSteering = steering();
-		if (lastSteering != currentSteering) {
-			PacManStateMachineLogging.loginfo("%s steering changed from %s to %s", this, Steering.name(lastSteering),
+		if (previousSteering != currentSteering) {
+			PacManStateMachineLogging.loginfo("%s steering changed from %s to %s", this, Steering.name(previousSteering),
 					Steering.name(currentSteering));
 			currentSteering.init();
 			currentSteering.force();
-			lastSteering = currentSteering;
+			previousSteering = currentSteering;
 		}
 		currentSteering.steer();
 		movement.update();
@@ -306,7 +306,7 @@ public class Ghost extends Creature<GhostState> {
 					return speed(game.level.elroy2Speed);
 				case CRUISE_ELROY1:
 					return speed(game.level.elroy1Speed);
-				case HEALTHY:
+				case SANE:
 				case IMMUNE:
 					return speed(game.level.ghostSpeed);
 				default:

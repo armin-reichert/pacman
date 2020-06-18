@@ -54,7 +54,7 @@ class InkyChaseTestUI extends PlayView {
 		theme.snd_ghost_chase().volume(0);
 		Stream.of(game.pacMan, game.inky, game.blinky).forEach(game::putOnStage);
 		game.ghostsOnStage().forEach(ghost -> {
-			ghost.followState = CHASING;
+			ghost.subsequentState = CHASING;
 		});
 		showMessage("Press SPACE to start", Color.WHITE);
 	}

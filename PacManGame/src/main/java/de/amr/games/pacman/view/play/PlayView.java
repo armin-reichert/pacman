@@ -223,7 +223,7 @@ public class PlayView extends SimplePlayView {
 			text.append(String.format("(%s,%s)", ghost.getState(), INFTY));
 		}
 		if (ghost.is(LEAVING_HOUSE)) {
-			text.append(String.format("[->%s]", ghost.followState));
+			text.append(String.format("[->%s]", ghost.subsequentState));
 		}
 		drawEntityState(g, ghost, text.toString(), ghostColor(ghost));
 	}

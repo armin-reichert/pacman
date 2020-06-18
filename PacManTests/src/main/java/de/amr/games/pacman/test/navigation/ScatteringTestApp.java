@@ -51,7 +51,7 @@ class ScatteringTestUI extends PlayView {
 		game.maze.eatAllFood();
 		game.ghosts().forEach(ghost -> {
 			game.putOnStage(ghost);
-			ghost.followState = SCATTERING;
+			ghost.subsequentState = SCATTERING;
 		});
 		showMessage("Press SPACE to start", Color.WHITE);
 	}

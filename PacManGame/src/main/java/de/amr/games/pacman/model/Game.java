@@ -205,7 +205,7 @@ public class Game {
 		// common ghost behavior
 
 		ghosts().forEach(ghost -> {
-			ghost.behavior(LOCKED, ghost.isJumpingAtSeat());
+			ghost.behavior(LOCKED, ghost.isBouncingOnSeat());
 			ghost.behavior(ENTERING_HOUSE, ghost.isTakingSeat());
 			ghost.behavior(LEAVING_HOUSE, ghost.isLeavingGhostHouse());
 			ghost.behavior(SCATTERING, ghost.isScatteringOut());
@@ -215,7 +215,7 @@ public class Game {
 
 		// individual ghost behavior
 
-		blinky.insanity = Insanity.HEALTHY; // healthy but may become "cruise elroy"
+		blinky.insanity = Insanity.SANE; // healthy but may become "cruise elroy"
 		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
 
 		inky.behavior(CHASING, inky.isHeadingFor(() -> {
