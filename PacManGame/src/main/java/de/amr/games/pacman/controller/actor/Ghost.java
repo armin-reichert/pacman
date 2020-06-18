@@ -87,7 +87,7 @@ public class Ghost extends Creature<GhostState> {
 	public Ghost(Game game, String name) {
 		super(game, name, new EnumMap<>(GhostState.class));
 		/*@formatter:off*/
-		brain = StateMachine.beginStateMachine(GhostState.class, PacManGameEvent.class)
+		brain = beginStateMachine(GhostState.class, PacManGameEvent.class)
 			 
 			.description(this::toString)
 			.initialState(LOCKED)
@@ -322,18 +322,17 @@ public class Ghost extends Creature<GhostState> {
 		case SCATTERING:
 			if (maze.isTunnel(tile())) {
 				return speed(game.level.ghostTunnelSpeed);
-			} else {
-				switch (sanity.getState()) {
-				case CRUISE_ELROY2:
-					return speed(game.level.elroy2Speed);
-				case CRUISE_ELROY1:
-					return speed(game.level.elroy1Speed);
-				case INFECTABLE:
-				case IMMUNE:
-					return speed(game.level.ghostSpeed);
-				default:
-					throw new IllegalArgumentException("Illegal ghost state: " + getState());
-				}
+			}
+			switch (sanity.getState()) {
+			case CRUISE_ELROY1:
+				return speed(game.level.elroy1Speed);
+			case CRUISE_ELROY2:
+				return speed(game.level.elroy2Speed);
+			case INFECTABLE:
+			case IMMUNE:
+				return speed(game.level.ghostSpeed);
+			default:
+				throw new IllegalArgumentException("Illegal ghost sanity state: " + sanity.getState());
 			}
 		case FRIGHTENED:
 			return speed(maze.isTunnel(tile()) ? game.level.ghostTunnelSpeed : game.level.ghostFrightenedSpeed);
