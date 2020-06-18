@@ -70,6 +70,7 @@ public class PacManApp extends Application {
 		settings.scale = 2;
 		settings.title = texts.getString("app.title");
 		settings.fullScreenMode = new DisplayMode(800, 600, 32, 60);
+		PacManStateMachineLogging.setEnabled(false);
 	}
 
 	@Override
@@ -89,11 +90,10 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
-		PacManStateMachineLogging.setEnabled(false);
-		Theme theme = new ArcadeTheme(); // the only theme yet
-		GameController gameController = settings.simpleMode ? new GameController(theme) : new EnhancedGameController(theme);
+		Theme theme = new ArcadeTheme();
+		GameController controller = settings.simpleMode ? new GameController(theme) : new EnhancedGameController(theme);
+		setController(controller);
 		setIcon(theme.spr_ghostFrightened().frame(0));
-		onEntry(CLOSED, closed -> gameController.saveHiscore());
-		setController(gameController);
+		onEntry(CLOSED, closedState -> controller.saveHiscore());
 	}
 }
