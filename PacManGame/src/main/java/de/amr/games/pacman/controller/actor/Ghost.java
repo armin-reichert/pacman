@@ -117,7 +117,7 @@ public class Ghost extends Creature<GhostState> {
 				
 				.state(SCATTERING)
 					.onTick(() -> {
-						updateInsanity(game);
+						updateInsanity();
 						move();
 						showColored();
 						checkPacManCollision();
@@ -125,7 +125,7 @@ public class Ghost extends Creature<GhostState> {
 			
 				.state(CHASING)
 					.onTick(() -> {
-						updateInsanity(game);
+						updateInsanity();
 						move();
 						showColored();
 						checkPacManCollision();
@@ -361,7 +361,7 @@ public class Ghost extends Creature<GhostState> {
 		}
 	}
 
-	private void updateInsanity(Game game) {
+	private void updateInsanity() {
 		if (insanity == Insanity.IMMUNE) {
 			return;
 		}
