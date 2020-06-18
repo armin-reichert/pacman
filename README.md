@@ -323,7 +323,7 @@ The only difference in ghost behavior is in the "CHASING" state:
 Blinky is special because he becomes "insane" when the number of remaining pellets reaches certain values depending on the current game level. He becomes "cruise elroy" whatever that means. Initially, Blinky is healthy, all other ghosts are "immune".
 
 ```java
-blinky.insanity = Insanity.HEALTHY;
+blinky.insanity = Insanity.SANE;
 ```
 
 where the insanity values are defined by this enumeration type:
