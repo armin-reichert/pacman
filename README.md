@@ -328,7 +328,7 @@ blinky.insanity = Insanity.SANE;
 
 where the insanity values are defined by this enumeration type:
 ```java
-public enum Insanity { IMMUNE, HEALTHY, CRUISE_ELROY1, CRUISE_ELROY };
+public enum Insanity { IMMUNE, SANE, CRUISE_ELROY1, CRUISE_ELROY };
 ```
 
 Blinky's chasing behavior is to directly attack Pac-Man:
