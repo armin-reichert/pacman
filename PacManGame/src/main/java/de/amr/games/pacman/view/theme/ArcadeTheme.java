@@ -108,7 +108,7 @@ public class ArcadeTheme implements Theme {
 
 		// Pac-Man
 		pacManFull = t(2, 0);
-		pacManDying = nHorTiles(12, 2, 0);
+		pacManDying = nHorTiles(11, 3, 0);
 		pacManWalking = new BufferedImage[][] {
 			/*@formatter:off*/
 			{ t(0, 0), t(1, 0), pacManFull }, // RIGHT
