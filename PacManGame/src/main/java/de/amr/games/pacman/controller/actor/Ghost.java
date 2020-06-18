@@ -1,6 +1,9 @@
 package de.amr.games.pacman.controller.actor;
 
-import static de.amr.easy.game.Application.loginfo;
+import static de.amr.games.pacman.controller.actor.Ghost.Sanity.CRUISE_ELROY1;
+import static de.amr.games.pacman.controller.actor.Ghost.Sanity.CRUISE_ELROY2;
+import static de.amr.games.pacman.controller.actor.Ghost.Sanity.IMMUNE;
+import static de.amr.games.pacman.controller.actor.Ghost.Sanity.INFECTABLE;
 import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
 import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
 import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
@@ -11,6 +14,7 @@ import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Game.sec;
 import static de.amr.games.pacman.model.Game.speed;
+import static de.amr.statemachine.core.StateMachine.beginStateMachine;
 
 import java.util.EnumMap;
 
@@ -45,9 +49,31 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends Creature<GhostState> {
 
-	public enum Insanity {
-		IMMUNE, SANE, CRUISE_ELROY1, CRUISE_ELROY2
+	public enum Sanity {
+		INFECTABLE, CRUISE_ELROY1, CRUISE_ELROY2, IMMUNE;
 	};
+
+	public StateMachine<Sanity, Void> sanity =
+	//@formatter:off
+		beginStateMachine(Sanity.class, Void.class)
+			.initialState(IMMUNE)
+			.description(() -> String.format("[%s sanity]", name))
+			.states()
+			.transitions()
+				
+				.when(IMMUNE).then(INFECTABLE).condition(() -> name.equals("Blinky"))
+			
+				.when(INFECTABLE).then(CRUISE_ELROY2)
+					.condition(() -> game.remainingFoodCount() <= game.level.elroy2DotsLeft)
+					
+				.when(INFECTABLE).then(CRUISE_ELROY1)
+					.condition(() -> game.remainingFoodCount() <= game.level.elroy1DotsLeft)
+				
+				.when(CRUISE_ELROY1).then(CRUISE_ELROY2)
+					.condition(() -> game.remainingFoodCount() <= game.level.elroy2DotsLeft)
+					
+		.endStateMachine();
+		//@formatter:on
 
 	/** Tile headed for when ghost scatters out. */
 	public Tile scatteringTarget;
@@ -57,9 +83,6 @@ public class Ghost extends Creature<GhostState> {
 
 	/** Keeps track of steering changes. */
 	public Steering previousSteering;
-
-	/** Insanity ("cruise elroy") level. */
-	public Insanity insanity = Insanity.IMMUNE;
 
 	public Ghost(Game game, String name) {
 		super(game, name, new EnumMap<>(GhostState.class));
@@ -75,14 +98,12 @@ public class Ghost extends Creature<GhostState> {
 					.onEntry(() -> {
 						subsequentState = LOCKED;
 						visible = true;
-						if (insanity != Insanity.IMMUNE) {
-							insanity = Insanity.SANE;
-						}
 						moveDir = wishDir = seat.startDir;
 						tf.setPosition(seat.position);
 						enteredNewTile();
 						sprites.forEach(Sprite::resetAnimation);
 						showColored();
+						sanity.init();
 					})
 					.onTick(() -> {
 						move();
@@ -117,7 +138,7 @@ public class Ghost extends Creature<GhostState> {
 				
 				.state(SCATTERING)
 					.onTick(() -> {
-						updateInsanity();
+						sanity.update();
 						move();
 						showColored();
 						checkPacManCollision();
@@ -125,7 +146,7 @@ public class Ghost extends Creature<GhostState> {
 			
 				.state(CHASING)
 					.onTick(() -> {
-						updateInsanity();
+						sanity.update();
 						move();
 						showColored();
 						checkPacManCollision();
@@ -215,6 +236,7 @@ public class Ghost extends Creature<GhostState> {
 		/*@formatter:on*/
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+		sanity.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 	}
 
 	/**
@@ -301,12 +323,12 @@ public class Ghost extends Creature<GhostState> {
 			if (maze.isTunnel(tile())) {
 				return speed(game.level.ghostTunnelSpeed);
 			} else {
-				switch (insanity) {
+				switch (sanity.getState()) {
 				case CRUISE_ELROY2:
 					return speed(game.level.elroy2Speed);
 				case CRUISE_ELROY1:
 					return speed(game.level.elroy1Speed);
-				case SANE:
+				case INFECTABLE:
 				case IMMUNE:
 					return speed(game.level.ghostSpeed);
 				default:
@@ -358,22 +380,6 @@ public class Ghost extends Creature<GhostState> {
 		if (tile().equals(game.pacMan.tile()) && !isTeleporting() && !game.pacMan.isTeleporting()
 				&& !game.pacMan.is(PacManState.DEAD)) {
 			publish(new PacManGhostCollisionEvent(this));
-		}
-	}
-
-	private void updateInsanity() {
-		if (insanity == Insanity.IMMUNE) {
-			return;
-		}
-		int pelletsLeft = game.remainingFoodCount();
-		Insanity oldInsanity = insanity;
-		if (pelletsLeft <= game.level.elroy2DotsLeft) {
-			insanity = Insanity.CRUISE_ELROY2;
-		} else if (pelletsLeft <= game.level.elroy1DotsLeft) {
-			insanity = Insanity.CRUISE_ELROY1;
-		}
-		if (oldInsanity != insanity) {
-			loginfo("%s's insanity changed from %s to %s, pellets left: %d", name, oldInsanity, insanity, pelletsLeft);
 		}
 	}
 }
