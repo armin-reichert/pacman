@@ -120,7 +120,7 @@ public class Ghost extends Creature<GhostState> {
 						updateInsanity(game);
 						move();
 						showColored();
-						checkCollision(game.pacMan);
+						checkPacManCollision();
 					})
 			
 				.state(CHASING)
@@ -128,7 +128,7 @@ public class Ghost extends Creature<GhostState> {
 						updateInsanity(game);
 						move();
 						showColored();
-						checkCollision(game.pacMan);
+						checkPacManCollision();
 					})
 				
 				.state(FRIGHTENED)
@@ -142,7 +142,7 @@ public class Ghost extends Creature<GhostState> {
 						} else  {
 							showFrightened();
 						}
-						checkCollision(game.pacMan);
+						checkPacManCollision();
 					})
 				
 				.state(DEAD)
@@ -354,11 +354,9 @@ public class Ghost extends Creature<GhostState> {
 		sprites.select("points-" + points);
 	}
 
-	private void checkCollision(PacMan pacMan) {
-		if (isTeleporting() || pacMan.isTeleporting() || pacMan.is(PacManState.DEAD)) {
-			return;
-		}
-		if (tile().equals(pacMan.tile())) {
+	private void checkPacManCollision() {
+		if (tile().equals(game.pacMan.tile()) && !isTeleporting() && !game.pacMan.isTeleporting()
+				&& !game.pacMan.is(PacManState.DEAD)) {
 			publish(new PacManGhostCollisionEvent(this));
 		}
 	}
