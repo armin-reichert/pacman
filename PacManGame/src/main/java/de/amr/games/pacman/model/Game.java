@@ -215,6 +215,7 @@ public class Game {
 		// individual ghost behavior
 
 		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
+		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(maze.ghostSeats[2]));
 
 		inky.behavior(CHASING, inky.isHeadingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);

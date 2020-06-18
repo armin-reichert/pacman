@@ -22,7 +22,7 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.steering.Steering;
-import de.amr.games.pacman.controller.actor.steering.ghost.EnteringGhostHouse;
+import de.amr.games.pacman.controller.actor.steering.ghost.EnteringHouse;
 import de.amr.games.pacman.controller.actor.steering.ghost.FleeingToSafeCorner;
 import de.amr.games.pacman.controller.actor.steering.ghost.JumpingUpAndDown;
 import de.amr.games.pacman.controller.actor.steering.ghost.LeavingGhostHouse;
@@ -33,6 +33,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Seat;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine;
@@ -116,9 +117,7 @@ public class Ghost extends Creature<GhostState> {
 					})
 					
 				.state(LEAVING_HOUSE)
-					.onEntry(() -> {
-						steering().init();
-					})
+					.onEntry(() -> steering().init())
 					.onTick(() -> {
 						move();
 						showColored();
@@ -126,11 +125,7 @@ public class Ghost extends Creature<GhostState> {
 					.onExit(() -> forceMoving(Direction.LEFT))
 				
 				.state(ENTERING_HOUSE)
-					.onEntry(() -> {
-						tf.setPosition(maze.ghostSeats[0].position);
-						moveDir = wishDir = Direction.DOWN;
-						steering().init();
-					})
+					.onEntry(() -> steering().init())
 					.onTick(() -> {
 						move();
 						showEyes();
@@ -275,7 +270,14 @@ public class Ghost extends Creature<GhostState> {
 	 * @return steering which lets ghost enter the house and taking its seat
 	 */
 	public Steering isTakingSeat() {
-		return new EnteringGhostHouse(this, Vector2f.of(seat.position.x, seat.position.y + 3));
+		return isTakingSeat(seat);
+	}
+
+	/**
+	 * @return steering which lets ghost enter the house and taking the specified seat
+	 */
+	public Steering isTakingSeat(Seat seat) {
+		return new EnteringHouse(this, Vector2f.of(seat.position.x, seat.position.y + 3));
 	}
 
 	/**
