@@ -74,7 +74,7 @@ public class Ghost extends Creature<GhostState> {
 					.condition(() -> game.remainingFoodCount() <= game.level.elroy2DotsLeft)
 					
 		.endStateMachine();
-		//@formatter:on
+	//@formatter:on
 
 	/** Tile headed for when ghost scatters out. */
 	public Tile scatteringTarget;
