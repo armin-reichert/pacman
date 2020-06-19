@@ -23,6 +23,7 @@ import java.util.EnumMap;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
+import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.controller.actor.steering.ghost.FleeingToSafeCorner;
 import de.amr.games.pacman.controller.actor.steering.ghost.TakingSeat;
@@ -313,6 +314,9 @@ public class Ghost extends Creature<GhostState> {
 		if (previousSteering != currentSteering) {
 			currentSteering.init();
 			currentSteering.force();
+			if (previousSteering instanceof PathProvidingSteering) {
+//				((PathProvidingSteering) previousSteering).setPathComputationEnabled(false);
+			}
 			previousSteering = currentSteering;
 		}
 		currentSteering.steer();
