@@ -9,20 +9,6 @@ package de.amr.games.pacman.controller.actor.steering;
 public interface Steering {
 
 	/**
-	 * A do-nothing steering ("null object pattern").
-	 */
-	static Steering NONE = new Steering() {
-
-		@Override
-		public void steer() {
-		}
-	};
-
-	static String name(Steering s) {
-		return s == null ? "no steering" : s.getClass().getSimpleName();
-	}
-
-	/**
 	 * Steers the actor towards its target tile or wherever it should move in its current state.
 	 */
 	void steer();

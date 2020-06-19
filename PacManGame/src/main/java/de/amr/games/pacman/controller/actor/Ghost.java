@@ -321,8 +321,6 @@ public class Ghost extends Creature<GhostState> {
 	public void move() {
 		Steering currentSteering = steering();
 		if (previousSteering != currentSteering) {
-			PacManStateMachineLogging.loginfo("%s steering changed from %s to %s", this, Steering.name(previousSteering),
-					Steering.name(currentSteering));
 			currentSteering.init();
 			currentSteering.force();
 			previousSteering = currentSteering;

@@ -106,7 +106,9 @@ public abstract class Creature<STATE> extends Entity implements MazeMover, FsmCo
 	 * @return the current steering for this actor.
 	 */
 	public Steering steering() {
-		return steerings.getOrDefault(getState(), Steering.NONE);
+		return steerings.getOrDefault(getState(), () -> {
+			// do nothing
+		});
 	}
 
 	/**
