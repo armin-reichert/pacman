@@ -309,14 +309,13 @@ ghosts().forEach(ghost -> {
 	ghost.behavior(LOCKED, ghost::bouncingOnSeat);
 	ghost.behavior(ENTERING_HOUSE, ghost.isTakingSeat());
 	ghost.behavior(LEAVING_HOUSE, ghost::leavingGhostHouse);
-	ghost.behavior(SCATTERING, ghost.isScatteringOut());
 	ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
 	ghost.behavior(DEAD, ghost.isReturningToHouse());
 });
 ```
 Note that for the simple steerings like "bouncing on seat" and "leaving ghost house" just a method in the Ghost class is used. For steerings which require additional "state" or have additional parameters, using an instance of a steering class (which happens behind the is... calls) is the more general approach.
 
-The only difference in ghost behavior is in the "CHASING" state. 
+The only difference in ghost behavior are the target tiles in the "CHASING" and "SCATTERING" state. 
 
 ### Blinky (the red ghost)
 
@@ -404,10 +403,10 @@ The visualization of the ghost attack behavior i.e. the routes to their current 
 In *scattering* state, each ghost tries to reach his individual "scattering target". Because ghosts cannot reverse their move direction this results in a cyclic movement around the walls in the corresponding corner of the maze. These target tiles are unreachable tiles ("at the horizon") outside of the playing area:
 
 ```java
-blinky.scatteringTarget = maze.horizonNE;
-inky.scatteringTarget = maze.horizonSE;
-pinky.scatteringTarget = maze.horizonNW;
-clyde.scatteringTarget = maze.horizonSW;
+blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
+inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
+pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
+clyde.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSW));
 ```
 
 <img src="PacManDoc/scattering.png"/>
