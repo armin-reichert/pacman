@@ -6,6 +6,7 @@ import static de.amr.games.pacman.model.Game.sec;
 
 import javax.swing.table.AbstractTableModel;
 
+import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
@@ -15,6 +16,7 @@ public class GhostStateModel extends AbstractTableModel {
 
 	private static final String[] columnNames = { "Name", "State", "Remaining", "Duration" };
 
+	private GameController gameController;
 	private Game game;
 	private GhostCommand ghostCommand;
 
@@ -26,7 +28,7 @@ public class GhostStateModel extends AbstractTableModel {
 
 		public Data(PacMan pacMan) {
 			name = "Pac-Man";
-			state = pacMan.power == 0 ? pacMan.getState().name() : "Power";
+			state = pacMan.power == 0 ? pacMan.getState().name() : "POWER";
 			ticksRemaining = pacMan.power == 0 ? pacMan.state().getTicksRemaining() : pacMan.power;
 			duration = pacMan.power == 0 ? pacMan.state().getDuration() : sec(game.level.pacManPowerSeconds);
 		}
@@ -38,35 +40,24 @@ public class GhostStateModel extends AbstractTableModel {
 					: ghost.state().getTicksRemaining();
 			duration = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getDuration() : ghost.state().getDuration();
 		}
-	}
 
-	private Ghost ghost(int index) {
-		switch (index) {
-		case 0:
-			return game.blinky;
-		case 1:
-			return game.pinky;
-		case 2:
-			return game.inky;
-		case 3:
-			return game.clyde;
-		default:
-			return null;
+		public Data(GameController controller) {
+			name = "GameController";
+			state = controller.getState().name();
+			ticksRemaining = controller.state().getTicksRemaining();
+			duration = controller.state().getDuration();
 		}
 	}
 
-	public void setGame(Game game, GhostCommand ghostCommand) {
-		this.game = game;
-		this.ghostCommand = ghostCommand;
-	}
-
-	public void update() {
-		fireTableDataChanged();
+	public GhostStateModel(GameController gameController) {
+		this.gameController = gameController;
+		game = gameController.game;
+		ghostCommand = gameController.ghostCommand;
 	}
 
 	@Override
 	public int getRowCount() {
-		return 5;
+		return 6;
 	}
 
 	@Override
@@ -81,7 +72,7 @@ public class GhostStateModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		Data data = rowIndex == 4 ? new Data(game.pacMan) : new Data(ghost(rowIndex));
+		Data data = getData(rowIndex);
 		switch (columnIndex) {
 		case 0:
 			return data.name;
@@ -91,6 +82,29 @@ public class GhostStateModel extends AbstractTableModel {
 			return data.ticksRemaining == Integer.MAX_VALUE ? Character.toString('\u221E') : data.ticksRemaining;
 		case 3:
 			return data.duration == Integer.MAX_VALUE ? Character.toString('\u221E') : data.duration;
+		default:
+			return null;
+		}
+	}
+
+	public void update() {
+		fireTableDataChanged();
+	}
+
+	private Data getData(int rowIndex) {
+		return rowIndex == 5 ? new Data(gameController) : rowIndex == 4 ? new Data(game.pacMan) : new Data(ghost(rowIndex));
+	}
+
+	private Ghost ghost(int index) {
+		switch (index) {
+		case 0:
+			return game.blinky;
+		case 1:
+			return game.pinky;
+		case 2:
+			return game.inky;
+		case 3:
+			return game.clyde;
 		default:
 			return null;
 		}

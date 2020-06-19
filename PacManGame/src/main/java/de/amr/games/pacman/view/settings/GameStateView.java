@@ -3,19 +3,18 @@ package de.amr.games.pacman.view.settings;
 import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import de.amr.games.pacman.controller.GhostCommand;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.controller.GameController;
 import net.miginfocom.swing.MigLayout;
-import javax.swing.JScrollPane;
 
-public class GhostStateView extends JPanel {
+public class GameStateView extends JPanel {
 
 	private JTable table;
 	public GhostStateModel model;
 
-	public GhostStateView() {
+	public GameStateView() {
 		setLayout(new BorderLayout(0, 0));
 
 		JPanel content = new JPanel();
@@ -29,9 +28,8 @@ public class GhostStateView extends JPanel {
 		scrollPane.setViewportView(table);
 	}
 
-	public void setGame(Game game, GhostCommand ghostCommand) {
-		model = new GhostStateModel();
-		model.setGame(game, ghostCommand);
+	public void attach(GameController gameController) {
+		model = new GhostStateModel(gameController);
 		table.setModel(model);
 	}
 }

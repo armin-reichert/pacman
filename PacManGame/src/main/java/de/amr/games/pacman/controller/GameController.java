@@ -47,7 +47,7 @@ import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.play.SimplePlayView.MazeMode;
-import de.amr.games.pacman.view.settings.GhostStateView;
+import de.amr.games.pacman.view.settings.GameStateView;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
@@ -59,7 +59,7 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class GameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
-	protected Game game;
+	public Game game;
 
 	protected Theme theme;
 	protected PacManSounds sound;
@@ -69,9 +69,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected PlayView playView;
 	protected BaseView currentView;
 
-	protected GhostStateView ghostStateView;
+	protected GameStateView gameStateView;
 
-	protected GhostCommand ghostCommand;
+	public GhostCommand ghostCommand;
 	protected GhostHouse ghostHouse;
 
 	public GameController(Theme theme) {
@@ -112,11 +112,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		setDemoMode(settings.demoMode);
 
 		// add custom tab in settings dialog
-		if (ghostStateView == null) {
-			ghostStateView = new GhostStateView();
-			app().addCustomSettingsTab("Actor State", ghostStateView);
+		if (gameStateView == null) {
+			gameStateView = new GameStateView();
+			app().addCustomSettingsTab("Game State", gameStateView);
 		}
-		ghostStateView.setGame(game, ghostCommand);
+		gameStateView.attach(this);
 	}
 
 	public void saveScore() {
@@ -156,8 +156,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 		super.update();
 		currentView.update();
-		if (ghostStateView != null) {
-			ghostStateView.model.update();
+		if (gameStateView != null) {
+			gameStateView.model.update();
 		}
 	}
 
