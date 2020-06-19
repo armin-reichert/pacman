@@ -306,9 +306,9 @@ The common behavior of all ghosts is defined by the following code:
 
 ```java
 ghosts().forEach(ghost -> {
-	ghost.behavior(LOCKED, ghost.isBouncingOnSeat());
+	ghost.behavior(LOCKED, ghost::bouncingOnSeat);
 	ghost.behavior(ENTERING_HOUSE, ghost.isTakingSeat());
-	ghost.behavior(LEAVING_HOUSE, ghost.isLeavingGhostHouse());
+	ghost.behavior(LEAVING_HOUSE, ghost::leavingGhostHouse);
 	ghost.behavior(SCATTERING, ghost.isScatteringOut());
 	ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
 	ghost.behavior(DEAD, ghost.isReturningToHouse());
