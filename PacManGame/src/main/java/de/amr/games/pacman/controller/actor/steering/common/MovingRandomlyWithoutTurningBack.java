@@ -1,8 +1,11 @@
 package de.amr.games.pacman.controller.actor.steering.common;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.shuffle;
+
+import java.util.Arrays;
 import java.util.Objects;
 
-import de.amr.datastruct.StreamUtils;
 import de.amr.games.pacman.controller.actor.MazeMover;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
@@ -15,22 +18,31 @@ import de.amr.games.pacman.model.Direction;
 public class MovingRandomlyWithoutTurningBack implements Steering {
 
 	private MazeMover actor;
+	private boolean forced;
 
 	public MovingRandomlyWithoutTurningBack(MazeMover actor) {
 		this.actor = Objects.requireNonNull(actor);
 	}
 
 	@Override
+	public void force() {
+		forced = true;
+	}
+
+	@Override
 	public void steer() {
 		actor.setTargetTile(null);
-		if (actor.enteredNewTile() || !actor.canCrossBorderTo(actor.moveDir())) {
+		if (forced || actor.enteredNewTile() || !actor.canCrossBorderTo(actor.moveDir())) {
 			/*@formatter:off*/
-			StreamUtils.permute(Direction.dirs())
+			Direction[] dirs = Direction.values();
+			shuffle(asList(dirs));
+			Arrays.stream(dirs)
 				.filter(dir -> dir != actor.moveDir().opposite())
 				.filter(actor::canCrossBorderTo)
 				.findFirst()
 				.ifPresent(actor::setWishDir);
 			/*@formatter:on*/
+			forced = false;
 		}
 	}
 
