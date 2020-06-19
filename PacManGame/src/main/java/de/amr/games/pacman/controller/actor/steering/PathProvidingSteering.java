@@ -19,10 +19,10 @@ public interface PathProvidingSteering extends Steering {
 	/**
 	 * @param enabled if {@code true} the steering computes the complete path to the target
 	 */
-	void setPathComputationEnabled(boolean enabled);
+	void setPathComputed(boolean enabled);
 
 	/**
 	 * @return tells if the steering computes the complete path to the target
 	 */
-	boolean isPathComputationEnabled();
+	boolean isPathComputed();
 }

@@ -321,8 +321,8 @@ public class PlayView extends SimplePlayView {
 		if (ghost.steering() instanceof PathProvidingSteering && ghost.targetTile() != null) {
 			drawTargetTileRubberband(g, ghost, ghost.targetTile());
 			PathProvidingSteering steering = (PathProvidingSteering) ghost.steering();
-			if (!steering.isPathComputationEnabled()) {
-				steering.setPathComputationEnabled(true);
+			if (!steering.isPathComputed()) {
+				steering.setPathComputed(true);
 			}
 			drawTargetTilePath(g, steering.pathToTarget(), ghostColor(ghost));
 		} else if (ghost.wishDir() != null) {

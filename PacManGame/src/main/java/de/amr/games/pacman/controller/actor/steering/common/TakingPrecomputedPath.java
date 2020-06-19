@@ -69,12 +69,12 @@ public abstract class TakingPrecomputedPath implements PathProvidingSteering {
 	}
 
 	@Override
-	public boolean isPathComputationEnabled() {
+	public boolean isPathComputed() {
 		return true;
 	}
 
 	@Override
-	public void setPathComputationEnabled(boolean enabled) {
+	public void setPathComputed(boolean enabled) {
 	}
 
 	protected abstract List<Tile> pathToTarget(MazeMover actor, Tile targetTile);

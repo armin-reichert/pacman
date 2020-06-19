@@ -41,19 +41,18 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	 * instead of the members of the actor itself because the {@link #pathTo(Tile)} method uses this
 	 * method without actually placing the actor at each tile of the path.
 	 * 
-	 * @param mover      actor moving through the maze
-	 * @param moveDir    current move direction
-	 * @param tile       current tile
-	 * @param targetTile target tile
+	 * @param mover   actor moving through the maze
+	 * @param moveDir current move direction
+	 * @param tile    current tile
+	 * @param target  target tile
 	 */
-	private static Direction bestDir(MazeMover mover, Direction moveDir, Tile tile, Tile targetTile) {
-		Function<Direction, Double> fnDistFromNeighborToTarget = dir -> mover.maze().neighbor(tile, dir)
-				.distance(targetTile);
+	private static Direction bestDir(MazeMover mover, Direction moveDir, Tile tile, Tile target) {
+		Function<Direction, Double> fnNeighborDistToTarget = dir -> mover.maze().neighbor(tile, dir).distance(target);
 		/*@formatter:off*/
 		return Direction.dirs()
 			.filter(dir -> dir != moveDir.opposite())
 			.filter(dir -> mover.canMoveBetween(tile, mover.maze().neighbor(tile, dir)))
-			.sorted(comparing(fnDistFromNeighborToTarget).thenComparingInt(asList(UP, LEFT, DOWN, RIGHT)::indexOf))
+			.sorted(comparing(fnNeighborDistToTarget).thenComparingInt(asList(UP, LEFT, DOWN, RIGHT)::indexOf))
 			.findFirst()
 			.orElse(mover.moveDir());
 		/*@formatter:on*/
@@ -63,7 +62,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	private final Supplier<Tile> fnTargetTile;
 	private final LinkedHashSet<Tile> path = new LinkedHashSet<>();
 	private boolean forced;
-	private boolean pathComputationEnabled;
+	private boolean pathComputed;
 
 	public HeadingForTargetTile(MazeMover mover, Supplier<Tile> fnTargetTile) {
 		this.mover = Objects.requireNonNull(mover);
@@ -77,7 +76,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 			mover.setTargetTile(fnTargetTile.get());
 			if (mover.targetTile() != null) {
 				mover.setWishDir(bestDir(mover, mover.moveDir(), mover.tile(), mover.targetTile()));
-				if (pathComputationEnabled) {
+				if (pathComputed) {
 					computePath();
 				}
 			} else {
@@ -87,8 +86,8 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	}
 
 	/**
-	 * Computes the path the entity would traverse until reaching the target tile, a cycle would occur or
-	 * the path would leave the map.
+	 * Computes the path the entity would traverse until reaching the target tile, a cycle would occur
+	 * or the path would leave the map.
 	 */
 	private void computePath() {
 		Maze maze = mover.maze();
@@ -114,16 +113,16 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	}
 
 	@Override
-	public void setPathComputationEnabled(boolean enabled) {
-		if (pathComputationEnabled != enabled) {
+	public void setPathComputed(boolean computed) {
+		if (pathComputed != computed) {
 			path.clear();
 		}
-		pathComputationEnabled = enabled;
+		pathComputed = computed;
 	}
 
 	@Override
-	public boolean isPathComputationEnabled() {
-		return pathComputationEnabled;
+	public boolean isPathComputed() {
+		return pathComputed;
 	}
 
 	@Override
