@@ -55,5 +55,7 @@ public interface Steering {
 	/**
 	 * @return tells if the steering requires that moving always keeps the actor aligned with the grid
 	 */
-	boolean requiresGridAlignment();
+	default boolean requiresGridAlignment() {
+		return false;
+	}
 }

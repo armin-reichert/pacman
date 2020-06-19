@@ -41,9 +41,4 @@ public class LeavingGhostHouse implements Steering {
 	public boolean isComplete() {
 		return ghost.tf.y == ghost.maze().ghostSeats[0].tile.y();
 	}
-
-	@Override
-	public boolean requiresGridAlignment() {
-		return false;
-	}
 }

@@ -30,9 +30,4 @@ public class JumpingUpAndDown implements Steering {
 			ghost.setWishDir(UP);
 		}
 	}
-
-	@Override
-	public boolean requiresGridAlignment() {
-		return false;
-	}
 }

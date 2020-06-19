@@ -80,9 +80,4 @@ public class EnteringHouse extends StateMachine<State, Void> implements Steering
 	public boolean isComplete() {
 		return is(TARGET_REACHED);
 	}
-
-	@Override
-	public boolean requiresGridAlignment() {
-		return false;
-	}
 }
