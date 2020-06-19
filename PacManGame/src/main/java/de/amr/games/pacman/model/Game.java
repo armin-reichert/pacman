@@ -206,20 +206,25 @@ public class Game {
 
 		// individual ghost behavior
 
-		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(maze.ghostSeats[2]));
+		// scattering
+		
 		blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
+		inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
+		pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
+		clyde.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSW));
+		
+		// chasing
+		
+		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(maze.ghostSeats[2]));
 		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
 
-		inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
 		inky.behavior(CHASING, inky.isHeadingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
 
-		pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
 		pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
 
-		clyde.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSW));
 		clyde.behavior(CHASING, clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : maze.horizonSW));
 	}
 
