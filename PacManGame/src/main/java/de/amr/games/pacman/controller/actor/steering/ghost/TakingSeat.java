@@ -1,18 +1,17 @@
 package de.amr.games.pacman.controller.actor.steering.ghost;
 
-import static de.amr.games.pacman.controller.actor.steering.ghost.EnteringHouse.State.FALLING;
-import static de.amr.games.pacman.controller.actor.steering.ghost.EnteringHouse.State.MOVING_LEFT;
-import static de.amr.games.pacman.controller.actor.steering.ghost.EnteringHouse.State.MOVING_RIGHT;
-import static de.amr.games.pacman.controller.actor.steering.ghost.EnteringHouse.State.TARGET_REACHED;
+import static de.amr.games.pacman.controller.actor.steering.ghost.TakingSeat.State.FALLING;
+import static de.amr.games.pacman.controller.actor.steering.ghost.TakingSeat.State.MOVING_LEFT;
+import static de.amr.games.pacman.controller.actor.steering.ghost.TakingSeat.State.MOVING_RIGHT;
+import static de.amr.games.pacman.controller.actor.steering.ghost.TakingSeat.State.TARGET_REACHED;
 import static de.amr.games.pacman.model.Direction.DOWN;
-import static de.amr.games.pacman.model.Direction.LEFT;
-import static de.amr.games.pacman.model.Direction.RIGHT;
 
-import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.steering.Steering;
-import de.amr.games.pacman.controller.actor.steering.ghost.EnteringHouse.State;
+import de.amr.games.pacman.controller.actor.steering.ghost.TakingSeat.State;
+import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.Seat;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -20,20 +19,15 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class EnteringHouse extends StateMachine<State, Void> implements Steering {
+public class TakingSeat extends StateMachine<State, Void> implements Steering {
 
 	public enum State {
 		FALLING, MOVING_LEFT, MOVING_RIGHT, TARGET_REACHED
 	}
 
-	/**
-	 * Creates a steering for a ghost to enter the house.
-	 * 
-	 * @param ghost  ghost that wants to enter the house
-	 * @param target target position inside house
-	 */
-	public EnteringHouse(Ghost ghost, Vector2f target) {
+	public TakingSeat(Ghost ghost, Seat seat) {
 		super(State.class);
+		int offsetY = 3;
 		/*@formatter:off*/
 		beginStateMachine()
 			.initialState(FALLING)
@@ -45,26 +39,27 @@ public class EnteringHouse extends StateMachine<State, Void> implements Steering
 					.onEntry(() -> {
 						// place the ghost exactly at the ghost house entry and start falling down
 						ghost.tf.setPosition(ghost.maze.ghostSeats[0].position);
-						ghost.setWishDir(DOWN);					})
+						ghost.setWishDir(DOWN);					
+					})
 					
 			.transitions()
 	
 				.when(FALLING).then(MOVING_LEFT)
-					.condition(() -> ghost.tf.y >= target.y && ghost.tf.x > target.x)
-					.act(() -> ghost.setWishDir(LEFT))
+					.condition(() -> ghost.tf.y >= seat.position.y + offsetY && ghost.tf.x > seat.position.x)
+					.act(() -> ghost.setWishDir(Direction.LEFT))
 				
 				.when(FALLING).then(MOVING_RIGHT)
-					.condition(() -> ghost.tf.y >= target.y && ghost.tf.x < target.x)
-					.act(() -> ghost.setWishDir(RIGHT))
+					.condition(() -> ghost.tf.y >= seat.position.y + offsetY && ghost.tf.x < seat.position.x)
+					.act(() -> ghost.setWishDir(Direction.RIGHT))
 	
 				.when(FALLING).then(TARGET_REACHED)
-					.condition(() -> ghost.tf.y >= target.y && ghost.tf.x == target.x)
+					.condition(() -> ghost.tf.y >= seat.position.y + offsetY && ghost.tf.x == seat.position.x)
 				
 				.when(MOVING_LEFT).then(TARGET_REACHED)
-					.condition(() -> ghost.tf.x <= target.x)
+					.condition(() -> ghost.tf.x <= seat.position.x)
 					
 				.when(MOVING_RIGHT).then(TARGET_REACHED)
-					.condition(() -> ghost.tf.x >= target.x)
+					.condition(() -> ghost.tf.x >= seat.position.x)
 					
 		.endStateMachine();
 		/*@formatter:on*/

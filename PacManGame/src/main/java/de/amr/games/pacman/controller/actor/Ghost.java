@@ -21,12 +21,11 @@ import static de.amr.statemachine.core.StateMachine.beginStateMachine;
 
 import java.util.EnumMap;
 
-import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.steering.Steering;
-import de.amr.games.pacman.controller.actor.steering.ghost.EnteringHouse;
 import de.amr.games.pacman.controller.actor.steering.ghost.FleeingToSafeCorner;
+import de.amr.games.pacman.controller.actor.steering.ghost.TakingSeat;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -305,7 +304,7 @@ public class Ghost extends Creature<GhostState> {
 	 * @return steering which lets ghost enter the house and taking the specified seat
 	 */
 	public Steering isTakingSeat(Seat seat) {
-		return new EnteringHouse(this, Vector2f.of(seat.position.x, seat.position.y + 3));
+		return new TakingSeat(this, seat);
 	}
 
 	@Override
