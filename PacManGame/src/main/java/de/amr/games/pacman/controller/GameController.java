@@ -47,6 +47,7 @@ import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.play.SimplePlayView.MazeMode;
+import de.amr.games.pacman.view.settings.GhostStateView;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
@@ -67,6 +68,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected IntroView introView;
 	protected PlayView playView;
 	protected BaseView currentView;
+
+	protected GhostStateView ghostStateView;
 
 	protected GhostCommand ghostCommand;
 	protected GhostHouse ghostHouse;
@@ -107,6 +110,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			actor.addEventListener(this::process);
 		});
 		setDemoMode(settings.demoMode);
+
+		// add custom tab in settings dialog
+		if (ghostStateView == null) {
+			ghostStateView = new GhostStateView();
+			app().addCustomSettingsTab("Actor State", ghostStateView);
+		}
+		ghostStateView.setGame(game, ghostCommand);
 	}
 
 	public void saveScore() {
@@ -146,6 +156,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 		super.update();
 		currentView.update();
+		if (ghostStateView != null) {
+			ghostStateView.model.update();
+		}
 	}
 
 	private float mazeFlashingSeconds() {
