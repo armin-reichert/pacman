@@ -314,8 +314,9 @@ ghosts().forEach(ghost -> {
 	ghost.behavior(DEAD, ghost.isReturningToHouse());
 });
 ```
+Note that for the simple steerings like "bouncing on seat" and "leaving ghost house" just a method in the Ghost class is used. For steerings which require additional "state" or have additional parameters, using an instance of a steering class (which happens behind the is... calls) is the more general approach.
 
-The only difference in ghost behavior is in the "CHASING" state:
+The only difference in ghost behavior is in the "CHASING" state. 
 
 ### Blinky (the red ghost)
 
