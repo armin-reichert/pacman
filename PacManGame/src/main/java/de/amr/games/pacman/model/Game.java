@@ -316,15 +316,19 @@ public class Game {
 	 * @param ghost killed ghost
 	 */
 	public void scoreGhostKilled(Ghost ghost) {
-		int points = POINTS_GHOST[level.ghostsKilledByEnergizer];
 		level.ghostsKilledByEnergizer += 1;
 		level.ghostsKilled += 1;
-		score(points);
 		if (level.ghostsKilled == 16) {
 			score(POINTS_KILLED_ALL_GHOSTS);
 		}
+		int points = killedGhostPoints();
+		score(points);
 		loginfo("Scored %d points for killing %s (%s ghost in sequence)", points, ghost.name,
 				new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]);
+	}
+
+	public int killedGhostPoints() {
+		return POINTS_GHOST[level.ghostsKilledByEnergizer - 1];
 	}
 
 	/**

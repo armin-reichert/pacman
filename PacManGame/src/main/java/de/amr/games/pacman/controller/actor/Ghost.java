@@ -164,7 +164,7 @@ public class Ghost extends Creature<GhostState> {
 				.state(DEAD)
 					.timeoutAfter(sec(1)) // time while ghost is drawn as number of scored points
 					.onEntry(() -> {
-						showPoints(Game.POINTS_GHOST[game.level.ghostsKilledByEnergizer - 1]);
+						showPoints(game.killedGhostPoints());
 					})
 					.onTick((state, t, remaining) -> {
 						if (remaining == 0) { // show as eyes returning to ghost home
