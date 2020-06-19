@@ -207,16 +207,16 @@ public class Game {
 		// individual ghost behavior
 
 		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(maze.ghostSeats[2]));
-		
+
 		// scattering
-		
+
 		blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
 		inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
 		pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
 		clyde.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSW));
-		
+
 		// chasing
-		
+
 		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
 		inky.behavior(CHASING, inky.isHeadingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
@@ -325,6 +325,10 @@ public class Game {
 				new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]);
 	}
 
+	/**
+	 * @return current value of a killed ghost. Value doubles for each ghost killed by the same
+	 *         energizer.
+	 */
 	public int killedGhostPoints() {
 		return POINTS_GHOST[level.ghostsKilledByEnergizer - 1];
 	}
