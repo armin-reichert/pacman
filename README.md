@@ -317,7 +317,22 @@ Note that for the simple steerings like "bouncing on seat" and "leaving ghost ho
 
 The only difference in ghost behavior are the target tiles in the "CHASING" and "SCATTERING" state. 
 
-### Blinky (the red ghost)
+### Scattering
+
+In *scattering* state, each ghost tries to reach his individual "scattering target". Because ghosts cannot reverse their move direction this results in a cyclic movement around the walls in the corresponding corner of the maze. These target tiles are unreachable tiles ("at the horizon") outside of the playing area:
+
+```java
+blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
+inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
+pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
+clyde.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSW));
+```
+
+<img src="PacManDoc/scattering.png"/>
+
+### Chasing
+
+#### Blinky (the red ghost)
 
 Blinky is special because he becomes "insane" when the number of remaining pellets reaches certain values depending on the current game level. He then becomes "cruise elroy" whatever that means. All other ghosts are "immune".
 
@@ -359,7 +374,7 @@ blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
 ```
 <img src="PacManDoc/blinky.png"/>
 
-### Pinky
+#### Pinky
 
 Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position. In the original game there is an overflow error leading to a different behavior: when Pac-Man looks upwards, the tile ahead of Pac-Man is falsely computed with an additional number of steps to the west. This behavior is active by default and can be toggled using the 'o'-key.
 
@@ -369,7 +384,7 @@ pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
 
 <img src="PacManDoc/pinky.png"/>
 
-### Inky (the cyan ghost)
+#### Inky (the cyan ghost)
 
 Inky heads for a position that depends on Blinky's current position and the position two tiles ahead of Pac-Man:
 
@@ -385,7 +400,7 @@ inky.behavior(CHASING, inky.isHeadingFor(() -> {
 
 <img src="PacManDoc/inky.png"/>
 
-### Clyde (the orange ghost)
+#### Clyde (the orange ghost)
 
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
 
@@ -397,19 +412,6 @@ clyde.behavior(CHASING, clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pa
 ### Visualization of attack behavior
 
 The visualization of the ghost attack behavior i.e. the routes to their current target tile can be activated during the game by pressing the 'r'-key ("show/hide routes").
-
-### Scattering
-
-In *scattering* state, each ghost tries to reach his individual "scattering target". Because ghosts cannot reverse their move direction this results in a cyclic movement around the walls in the corresponding corner of the maze. These target tiles are unreachable tiles ("at the horizon") outside of the playing area:
-
-```java
-blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
-inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
-pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
-clyde.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSW));
-```
-
-<img src="PacManDoc/scattering.png"/>
 
 ## Graph-based pathfinding
 
