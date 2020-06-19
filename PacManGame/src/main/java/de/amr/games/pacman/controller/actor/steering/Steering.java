@@ -5,6 +5,7 @@ package de.amr.games.pacman.controller.actor.steering;
  * 
  * @author Armin Reichert
  */
+@FunctionalInterface
 public interface Steering {
 
 	/**
@@ -14,11 +15,6 @@ public interface Steering {
 
 		@Override
 		public void steer() {
-		}
-
-		@Override
-		public boolean requiresGridAlignment() {
-			return false;
 		}
 	};
 

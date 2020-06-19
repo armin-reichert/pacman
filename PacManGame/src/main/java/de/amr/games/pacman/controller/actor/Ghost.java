@@ -11,6 +11,7 @@ import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Game.sec;
 import static de.amr.games.pacman.model.Game.speed;
@@ -24,7 +25,6 @@ import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.controller.actor.steering.ghost.EnteringHouse;
 import de.amr.games.pacman.controller.actor.steering.ghost.FleeingToSafeCorner;
-import de.amr.games.pacman.controller.actor.steering.ghost.JumpingUpAndDown;
 import de.amr.games.pacman.controller.actor.steering.ghost.LeavingGhostHouse;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
@@ -235,10 +235,15 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	/**
-	 * @return steering which lets the ghost jump up and down in its seat
+	 * Lets the ghost jump up and down in its seat.
 	 */
-	public Steering isBouncingOnSeat() {
-		return new JumpingUpAndDown(this, seat.position.y);
+	public void bouncingOnSeat() {
+		float dy = tf.y - seat.position.y;
+		if (dy < -4) {
+			setWishDir(DOWN);
+		} else if (dy > 3) {
+			setWishDir(UP);
+		}
 	}
 
 	/**

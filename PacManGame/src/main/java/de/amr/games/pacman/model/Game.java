@@ -204,7 +204,7 @@ public class Game {
 		// common ghost behavior
 
 		ghosts().forEach(ghost -> {
-			ghost.behavior(LOCKED, ghost.isBouncingOnSeat());
+			ghost.behavior(LOCKED, ghost::bouncingOnSeat);
 			ghost.behavior(ENTERING_HOUSE, ghost.isTakingSeat());
 			ghost.behavior(LEAVING_HOUSE, ghost.isLeavingGhostHouse());
 			ghost.behavior(SCATTERING, ghost.isScatteringOut());
