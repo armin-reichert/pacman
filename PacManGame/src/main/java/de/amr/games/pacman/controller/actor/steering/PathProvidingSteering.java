@@ -11,9 +11,18 @@ import de.amr.games.pacman.model.Tile;
  */
 public interface PathProvidingSteering extends Steering {
 
+	/**
+	 * @return the path from the current position of the actor to its current target tile
+	 */
 	List<Tile> pathToTarget();
 
+	/**
+	 * @param enabled if {@code true} the steering computes the complete path to the target
+	 */
 	void setPathComputationEnabled(boolean enabled);
 
+	/**
+	 * @return tells if the steering computes the complete path to the target
+	 */
 	boolean isPathComputationEnabled();
 }
