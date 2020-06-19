@@ -109,18 +109,19 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		setDemoMode(settings.demoMode);
 	}
 
+	public void saveScore() {
+		if (game == null) {
+			return;
+		}
+		game.gameScore.save();
+	}
+
 	public void setDemoMode(boolean on) {
 		settings.pacManImmortable = on;
 		if (on) {
 			game.pacMan.behavior(new SearchingForFoodAndAvoidingGhosts(game));
 		} else {
 			game.pacMan.behavior(game.pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
-		}
-	}
-
-	public void saveHiscore() {
-		if (game != null) {
-			game.hiscore.save();
 		}
 	}
 
@@ -288,7 +289,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				
 				.state(GAME_OVER)
 					.onEntry(() -> {
-						game.hiscore.save();
 						game.ghostsOnStage().forEach(ghost -> {
 							ghost.init();
 							ghost.placeAt(game.maze.ghostSeats[0].tile);

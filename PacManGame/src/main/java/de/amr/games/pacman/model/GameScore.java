@@ -12,22 +12,27 @@ import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 /**
- * Data structure storing the highscore.
+ * Data structure storing the game (high) score.
  * 
  * @author Armin Reichert
  */
-public class Score {
+public class GameScore {
 
-	public File file;
+	/** High score points */
 	public int hiscore = 0;
+
+	/** High score level */
 	public int hiscoreLevel = 1;
+
+	/** High score time */
 	public ZonedDateTime hiscoreTime;
 
+	private boolean needsUpdate;
+	private File file;
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
 
-	public Score(File file) {
+	public GameScore(File file) {
 		this.file = file;
-		load();
 	}
 
 	public void load() {
@@ -42,25 +47,39 @@ public class Score {
 				hiscoreTime = ZonedDateTime.parse(p.getProperty("time"), formatter);
 			}
 		} catch (FileNotFoundException e) {
+			loginfo("High score file not available, creating new one");
 			hiscore = 0;
-			hiscoreLevel = 1;
+			hiscoreLevel = 0;
 			hiscoreTime = ZonedDateTime.now();
+			save();
 		} catch (Exception e) {
 			loginfo("Could not load hiscore from file %s", file);
 		}
 	}
 
+	public void update(GameLevel level, int score) {
+		if (score > hiscore) {
+			hiscore = score;
+			hiscoreLevel = level.number;
+			hiscoreTime = ZonedDateTime.now();
+			needsUpdate = true;
+		}
+	}
+
 	public void save() {
-		loginfo("Save highscore to %s", file);
-		Properties p = new Properties();
-		p.setProperty("score", Integer.toString(hiscore));
-		p.setProperty("level", Integer.toString(hiscoreLevel));
-		p.setProperty("time", ZonedDateTime.now().format(formatter));
-		try {
-			p.storeToXML(new FileOutputStream(file), "Pac-Man Highscore");
-		} catch (IOException e) {
-			loginfo("Could not save hiscore in file %s", file);
-			throw new RuntimeException(e);
+		if (needsUpdate) {
+			loginfo("Save highscore to %s", file);
+			Properties p = new Properties();
+			p.setProperty("score", Integer.toString(hiscore));
+			p.setProperty("level", Integer.toString(hiscoreLevel));
+			p.setProperty("time", ZonedDateTime.now().format(formatter));
+			try {
+				p.storeToXML(new FileOutputStream(file), "Pac-Man Highscore");
+				needsUpdate = false;
+			} catch (IOException e) {
+				loginfo("Could not save hiscore in file %s", file);
+				throw new RuntimeException(e);
+			}
 		}
 	}
 }

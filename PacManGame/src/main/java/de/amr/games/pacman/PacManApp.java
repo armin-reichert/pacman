@@ -1,7 +1,5 @@
 package de.amr.games.pacman;
 
-import static de.amr.easy.game.Application.ApplicationState.CLOSED;
-
 import java.awt.DisplayMode;
 import java.util.ResourceBundle;
 
@@ -94,6 +92,6 @@ public class PacManApp extends Application {
 		GameController controller = settings.simpleMode ? new GameController(theme) : new EnhancedGameController(theme);
 		setController(controller);
 		setIcon(theme.spr_ghostFrightened().frame(0));
-		onEntry(CLOSED, closedState -> controller.saveHiscore());
+		onEntry(ApplicationState.CLOSED, state -> controller.saveScore());
 	}
 }
