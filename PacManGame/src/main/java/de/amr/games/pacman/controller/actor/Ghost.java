@@ -12,6 +12,8 @@ import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Direction.DOWN;
+import static de.amr.games.pacman.model.Direction.LEFT;
+import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Game.sec;
 import static de.amr.games.pacman.model.Game.speed;
@@ -25,7 +27,6 @@ import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.controller.actor.steering.ghost.EnteringHouse;
 import de.amr.games.pacman.controller.actor.steering.ghost.FleeingToSafeCorner;
-import de.amr.games.pacman.controller.actor.steering.ghost.LeavingGhostHouse;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -179,10 +180,10 @@ public class Ghost extends Creature<GhostState> {
 					.on(GhostUnlockedEvent.class)
 			
 				.when(LEAVING_HOUSE).then(SCATTERING)
-					.condition(() -> steering().isComplete() && subsequentState == SCATTERING)
+					.condition(() -> hasLeftGhostHouse() && subsequentState == SCATTERING)
 				
 				.when(LEAVING_HOUSE).then(CHASING)
-					.condition(() -> steering().isComplete() && subsequentState == CHASING)
+					.condition(() -> hasLeftGhostHouse() && subsequentState == CHASING)
 				
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
 					.condition(() -> steering().isComplete())
@@ -247,6 +248,28 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	/**
+	 * lets a ghost leave the ghost house
+	 */
+	public void leavingGhostHouse() {
+		Tile exit = maze.ghostSeats[0].tile;
+		int targetX = exit.centerX(), targetY = exit.y();
+		if (tf.y <= targetY) {
+			tf.y = targetY;
+		} else if (Math.round(tf.x) == targetX) {
+			tf.x = targetX;
+			setWishDir(UP);
+		} else if (tf.x < targetX) {
+			setWishDir(RIGHT);
+		} else if (tf.x > targetX) {
+			setWishDir(LEFT);
+		}
+	}
+
+	private boolean hasLeftGhostHouse() {
+		return tf.y == maze.ghostSeats[0].tile.y();
+	}
+
+	/**
 	 * Lets the actor avoid the attacker's path by walking to a "safe" maze corner.
 	 * 
 	 * @param attacker the attacking actor
@@ -283,13 +306,6 @@ public class Ghost extends Creature<GhostState> {
 	 */
 	public Steering isTakingSeat(Seat seat) {
 		return new EnteringHouse(this, Vector2f.of(seat.position.x, seat.position.y + 3));
-	}
-
-	/**
-	 * @return steering which lets a ghost leave the ghost house
-	 */
-	public Steering isLeavingGhostHouse() {
-		return new LeavingGhostHouse(this);
 	}
 
 	@Override

@@ -206,7 +206,7 @@ public class Game {
 		ghosts().forEach(ghost -> {
 			ghost.behavior(LOCKED, ghost::bouncingOnSeat);
 			ghost.behavior(ENTERING_HOUSE, ghost.isTakingSeat());
-			ghost.behavior(LEAVING_HOUSE, ghost.isLeavingGhostHouse());
+			ghost.behavior(LEAVING_HOUSE, ghost::leavingGhostHouse);
 			ghost.behavior(SCATTERING, ghost.isScatteringOut());
 			ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
 			ghost.behavior(DEAD, ghost.isReturningToHouse());
