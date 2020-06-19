@@ -76,9 +76,6 @@ public class Ghost extends Creature<GhostState> {
 		.endStateMachine();
 	//@formatter:on
 
-	/** Tile headed for when ghost scatters out. */
-	public Tile scatteringTarget;
-
 	/** State to enter after frightening state ends. */
 	public GhostState subsequentState;
 
@@ -284,13 +281,6 @@ public class Ghost extends Creature<GhostState> {
 	 */
 	public Steering isReturningToHouse() {
 		return isHeadingFor(maze.ghostSeats[0].tile);
-	}
-
-	/**
-	 * @return steering for letting ghost scattering out and circling in its corner
-	 */
-	public Steering isScatteringOut() {
-		return isHeadingFor(scatteringTarget);
 	}
 
 	/**

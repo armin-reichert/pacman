@@ -190,13 +190,6 @@ public class Game {
 		pinky.seat = maze.ghostSeats[2];
 		clyde.seat = maze.ghostSeats[3];
 
-		// assign scattering targets
-
-		blinky.scatteringTarget = maze.horizonNE;
-		inky.scatteringTarget = maze.horizonSE;
-		pinky.scatteringTarget = maze.horizonNW;
-		clyde.scatteringTarget = maze.horizonSW;
-
 		// define behavior
 
 		pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
@@ -207,25 +200,27 @@ public class Game {
 			ghost.behavior(LOCKED, ghost::bouncingOnSeat);
 			ghost.behavior(ENTERING_HOUSE, ghost.isTakingSeat());
 			ghost.behavior(LEAVING_HOUSE, ghost::leavingGhostHouse);
-			ghost.behavior(SCATTERING, ghost.isScatteringOut());
 			ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
 			ghost.behavior(DEAD, ghost.isReturningToHouse());
 		});
 
 		// individual ghost behavior
 
-		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
 		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(maze.ghostSeats[2]));
+		blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
+		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
 
+		inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
 		inky.behavior(CHASING, inky.isHeadingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
 
+		pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
 		pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
 
-		clyde.behavior(CHASING,
-				clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : clyde.scatteringTarget));
+		clyde.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSW));
+		clyde.behavior(CHASING, clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : maze.horizonSW));
 	}
 
 	/**
