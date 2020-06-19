@@ -213,7 +213,7 @@ public class Game {
 		blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
 		inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
 		pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
-		clyde.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSW));
+		clyde.behavior(SCATTERING, clyde.isHeadingFor(maze.horizonSW));
 
 		// chasing
 
