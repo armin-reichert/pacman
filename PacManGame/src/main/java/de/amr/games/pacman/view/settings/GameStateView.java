@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.TableColumnModel;
 
 import de.amr.games.pacman.controller.GameController;
 import net.miginfocom.swing.MigLayout;
@@ -28,14 +29,12 @@ public class GameStateView extends JPanel {
 		scrollPane.setViewportView(table);
 	}
 
-	public void attach(GameController gameController) {
+	public void createModel(GameController gameController) {
 		model = new GameStateViewModel(gameController);
 		table.setModel(model);
-		table.getColumnModel().getColumn(GameStateViewModel.Columns.TILE.ordinal())
-				.setCellRenderer(new TileColumnRenderer());
-		table.getColumnModel().getColumn(GameStateViewModel.Columns.REMAINING.ordinal())
-				.setCellRenderer(new TicksColumnRenderer());
-		table.getColumnModel().getColumn(GameStateViewModel.Columns.DURATION.ordinal())
-				.setCellRenderer(new TicksColumnRenderer());
+		TableColumnModel columns = table.getColumnModel();
+		columns.getColumn(GameStateViewModel.Columns.Tile.ordinal()).setCellRenderer(new TileColumnRenderer());
+		columns.getColumn(GameStateViewModel.Columns.Remaining.ordinal()).setCellRenderer(new TicksColumnRenderer());
+		columns.getColumn(GameStateViewModel.Columns.Duration.ordinal()).setCellRenderer(new TicksColumnRenderer());
 	}
 }

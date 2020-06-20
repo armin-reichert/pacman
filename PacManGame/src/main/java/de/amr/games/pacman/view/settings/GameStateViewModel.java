@@ -18,10 +18,8 @@ public class GameStateViewModel extends AbstractTableModel {
 	static final int NUM_ROWS = 6;
 
 	public enum Columns {
-		NAME, TILE, STATE, REMAINING, DURATION
+		Name, Tile, Target, State, Remaining, Duration;
 	};
-
-	private static final String[] columnNames = { "Name", "Tile", "State", "Remaining", "Duration" };
 
 	private GameController gameController;
 	private Game game;
@@ -35,6 +33,7 @@ public class GameStateViewModel extends AbstractTableModel {
 		int ticksRemaining;
 		int duration;
 		Tile tile;
+		Tile target;
 		boolean pacManCollision;
 
 		public Data(PacMan pacMan) {
@@ -52,6 +51,7 @@ public class GameStateViewModel extends AbstractTableModel {
 					: ghost.state().getTicksRemaining();
 			duration = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getDuration() : ghost.state().getDuration();
 			tile = ghost.tile();
+			target = ghost.targetTile();
 			pacManCollision = tile.equals(game.pacMan.tile());
 		}
 
@@ -81,9 +81,9 @@ public class GameStateViewModel extends AbstractTableModel {
 
 	@Override
 	public String getColumnName(int column) {
-		return columnNames[column];
+		return Columns.values()[column].name();
 	}
-	
+
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		return super.getColumnClass(columnIndex);
@@ -93,15 +93,17 @@ public class GameStateViewModel extends AbstractTableModel {
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		computeData(rowIndex);
 		switch (Columns.values()[columnIndex]) {
-		case NAME:
+		case Name:
 			return data[rowIndex].name;
-		case TILE:
+		case Tile:
 			return data[rowIndex].tile != null ? data[rowIndex].tile : "";
-		case STATE:
+		case Target:
+			return data[rowIndex].target != null ? data[rowIndex].target : "";
+		case State:
 			return data[rowIndex].state;
-		case REMAINING:
+		case Remaining:
 			return data[rowIndex].ticksRemaining;
-		case DURATION:
+		case Duration:
 			return data[rowIndex].duration;
 		default:
 			return null;

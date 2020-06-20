@@ -100,23 +100,26 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void createPlayEnvironment() {
 		game = new Game(settings.startLevel);
-		playView = new PlayView(game, theme);
 		ghostCommand = new GhostCommand(game);
 		ghostHouse = new GhostHouse(game);
+
+		playView = new PlayView(game, theme);
 		playView.ghostCommand = ghostCommand;
 		playView.house = ghostHouse;
-		game.creatures().forEach(actor -> {
-			game.putOnStage(actor);
-			actor.addEventListener(this::process);
-		});
-		setDemoMode(settings.demoMode);
 
 		// add custom tab in settings dialog
 		if (gameStateView == null) {
 			gameStateView = new GameStateView();
 			app().addCustomSettingsTab("Game State", gameStateView);
 		}
-		gameStateView.attach(this);
+		gameStateView.createModel(this);
+
+		setDemoMode(settings.demoMode);
+		game.creatures().forEach(actor -> {
+			game.putOnStage(actor);
+			actor.addEventListener(this::process);
+		});
+
 	}
 
 	public void saveScore() {
