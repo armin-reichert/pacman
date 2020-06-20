@@ -12,7 +12,7 @@ import net.miginfocom.swing.MigLayout;
 public class GameStateView extends JPanel {
 
 	private JTable table;
-	public GhostStateModel model;
+	public GameStateViewModel model;
 
 	public GameStateView() {
 		setLayout(new BorderLayout(0, 0));
@@ -29,7 +29,13 @@ public class GameStateView extends JPanel {
 	}
 
 	public void attach(GameController gameController) {
-		model = new GhostStateModel(gameController);
+		model = new GameStateViewModel(gameController);
 		table.setModel(model);
+		table.getColumnModel().getColumn(GameStateViewModel.Columns.TILE.ordinal())
+				.setCellRenderer(new TileColumnRenderer());
+		table.getColumnModel().getColumn(GameStateViewModel.Columns.REMAINING.ordinal())
+				.setCellRenderer(new TicksColumnRenderer());
+		table.getColumnModel().getColumn(GameStateViewModel.Columns.DURATION.ordinal())
+				.setCellRenderer(new TicksColumnRenderer());
 	}
 }

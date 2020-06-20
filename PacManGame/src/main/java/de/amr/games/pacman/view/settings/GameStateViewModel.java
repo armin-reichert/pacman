@@ -13,7 +13,13 @@ import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 
-public class GhostStateModel extends AbstractTableModel {
+public class GameStateViewModel extends AbstractTableModel {
+
+	static final int NUM_ROWS = 6;
+
+	public enum Columns {
+		NAME, TILE, STATE, REMAINING, DURATION
+	};
 
 	private static final String[] columnNames = { "Name", "Tile", "State", "Remaining", "Duration" };
 
@@ -21,12 +27,15 @@ public class GhostStateModel extends AbstractTableModel {
 	private Game game;
 	private GhostCommand ghostCommand;
 
+	public Data[] data = new Data[NUM_ROWS];
+
 	class Data {
 		String name;
 		String state;
 		int ticksRemaining;
 		int duration;
 		Tile tile;
+		boolean pacManCollision;
 
 		public Data(PacMan pacMan) {
 			name = "Pac-Man";
@@ -43,6 +52,7 @@ public class GhostStateModel extends AbstractTableModel {
 					: ghost.state().getTicksRemaining();
 			duration = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getDuration() : ghost.state().getDuration();
 			tile = ghost.tile();
+			pacManCollision = tile.equals(game.pacMan.tile());
 		}
 
 		public Data(GameController controller) {
@@ -53,7 +63,7 @@ public class GhostStateModel extends AbstractTableModel {
 		}
 	}
 
-	public GhostStateModel(GameController gameController) {
+	public GameStateViewModel(GameController gameController) {
 		this.gameController = gameController;
 		game = gameController.game;
 		ghostCommand = gameController.ghostCommand;
@@ -66,28 +76,33 @@ public class GhostStateModel extends AbstractTableModel {
 
 	@Override
 	public int getColumnCount() {
-		return columnNames.length;
+		return Columns.values().length;
 	}
 
 	@Override
 	public String getColumnName(int column) {
 		return columnNames[column];
 	}
+	
+	@Override
+	public Class<?> getColumnClass(int columnIndex) {
+		return super.getColumnClass(columnIndex);
+	}
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		Data data = getData(rowIndex);
-		switch (columnIndex) {
-		case 0:
-			return data.name;
-		case 1:
-			return data.tile != null ? data.tile : "";
-		case 2:
-			return data.state;
-		case 3:
-			return data.ticksRemaining == Integer.MAX_VALUE ? Character.toString('\u221E') : data.ticksRemaining;
-		case 4:
-			return data.duration == Integer.MAX_VALUE ? Character.toString('\u221E') : data.duration;
+		computeData(rowIndex);
+		switch (Columns.values()[columnIndex]) {
+		case NAME:
+			return data[rowIndex].name;
+		case TILE:
+			return data[rowIndex].tile != null ? data[rowIndex].tile : "";
+		case STATE:
+			return data[rowIndex].state;
+		case REMAINING:
+			return data[rowIndex].ticksRemaining;
+		case DURATION:
+			return data[rowIndex].duration;
 		default:
 			return null;
 		}
@@ -97,8 +112,9 @@ public class GhostStateModel extends AbstractTableModel {
 		fireTableDataChanged();
 	}
 
-	private Data getData(int rowIndex) {
-		return rowIndex == 5 ? new Data(gameController) : rowIndex == 4 ? new Data(game.pacMan) : new Data(ghost(rowIndex));
+	public void computeData(int rowIndex) {
+		data[rowIndex] = rowIndex == 5 ? new Data(gameController)
+				: rowIndex == 4 ? new Data(game.pacMan) : new Data(ghost(rowIndex));
 	}
 
 	private Ghost ghost(int index) {
