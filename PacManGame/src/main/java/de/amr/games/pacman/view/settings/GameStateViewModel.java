@@ -8,6 +8,7 @@ import javax.swing.table.AbstractTableModel;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostCommand;
+import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacMan;
@@ -17,7 +18,28 @@ import de.amr.games.pacman.model.Tile;
 
 public class GameStateViewModel extends AbstractTableModel {
 
+	public enum Column {
+		OnStage(Boolean.class, true), Name(String.class, false), Tile(Tile.class, false), Target(Tile.class, false),
+		State(Object.class, false), Remaining(Integer.class, false), Duration(Integer.class, false);
+
+		private Column(Class<?> class_, boolean editable) {
+			this.class_ = class_;
+			this.editable = editable;
+		}
+
+		public Class<?> class_;
+		public boolean editable;
+
+		public static Column at(int col) {
+			return Column.values()[col];
+		}
+	};
+
+	static final int NUM_ROWS = 5;
+	static final int PACMAN_ROW = 4;
+
 	static class Data {
+		boolean onStage;
 		String name;
 		String state;
 		int ticksRemaining;
@@ -27,6 +49,7 @@ public class GameStateViewModel extends AbstractTableModel {
 		boolean pacManCollision;
 
 		public Data(Game game, PacMan pacMan) {
+			onStage = game.onStage(pacMan);
 			name = "Pac-Man";
 			state = pacMan.power == 0 ? pacMan.getState().name() : "POWER";
 			ticksRemaining = pacMan.power == 0 ? pacMan.state().getTicksRemaining() : pacMan.power;
@@ -35,6 +58,7 @@ public class GameStateViewModel extends AbstractTableModel {
 		}
 
 		public Data(Game game, GhostCommand ghostCommand, Ghost ghost) {
+			onStage = game.onStage(ghost);
 			name = ghost.name;
 			state = ghost.getState().name();
 			ticksRemaining = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getTicksRemaining()
@@ -50,11 +74,11 @@ public class GameStateViewModel extends AbstractTableModel {
 
 		//@formatter:off
 		Object[][] data = {
-				{ "Blinky", Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
-				{ "Pinky", Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
-				{ "Inky", Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
-				{ "Clyde", Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
-				{ "Pac-Man", Tile.at(0, 0), Tile.at(0, 0), PacManState.SLEEPING, 0, 0, false },
+				{ true, "Blinky", Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
+				{ false, "Pinky", Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
+				{ true, "Inky", Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
+				{ true, "Clyde", Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
+				{ true, "Pac-Man", Tile.at(0, 0), Tile.at(0, 0), PacManState.SLEEPING, 0, 0, false },
 		};
 		//@formatter:on
 
@@ -63,12 +87,6 @@ public class GameStateViewModel extends AbstractTableModel {
 			return data[row][col];
 		}
 	};
-
-	public enum Columns {
-		Name, Tile, Target, State, Remaining, Duration;
-	};
-
-	static final int NUM_ROWS = 5;
 
 	public GameController gameController;
 	public Game game;
@@ -91,17 +109,22 @@ public class GameStateViewModel extends AbstractTableModel {
 
 	@Override
 	public int getColumnCount() {
-		return Columns.values().length;
+		return Column.values().length;
 	}
 
 	@Override
 	public String getColumnName(int col) {
-		return Columns.values()[col].name();
+		return Column.at(col).name();
 	}
 
 	@Override
 	public Class<?> getColumnClass(int col) {
-		return super.getColumnClass(col);
+		return Column.at(col).class_;
+	}
+
+	@Override
+	public boolean isCellEditable(int row, int col) {
+		return Column.at(col).editable && row != PACMAN_ROW;
 	}
 
 	@Override
@@ -109,7 +132,9 @@ public class GameStateViewModel extends AbstractTableModel {
 		if (data[row] == null) {
 			return null;
 		}
-		switch (Columns.values()[col]) {
+		switch (Column.at(col)) {
+		case OnStage:
+			return data[row].onStage;
 		case Name:
 			return data[row].name;
 		case Tile:
@@ -127,15 +152,27 @@ public class GameStateViewModel extends AbstractTableModel {
 		}
 	}
 
-	public void update() {
-		for (int row = 0; row < NUM_ROWS; ++row) {
-			computeRow(row);
+	@Override
+	public void setValueAt(Object value, int row, int col) {
+		Column column = Column.at(col);
+		if (column == Column.OnStage && row != PACMAN_ROW) {
+			boolean onStage = (boolean) value;
+			Creature<?> creature = ghost(row);
+			if (onStage) {
+				game.putOnStage(creature);
+			} else {
+				game.pullFromStage(creature);
+			}
+			data[row].onStage = (boolean) value;
+			fireTableCellUpdated(row, col);
 		}
-		fireTableDataChanged();
 	}
 
-	public void computeRow(int row) {
-		data[row] = (row == 4) ? new Data(game, game.pacMan) : new Data(game, ghostCommand, ghost(row));
+	public void update() {
+		for (int row = 0; row < NUM_ROWS; ++row) {
+			data[row] = (row == PACMAN_ROW) ? new Data(game, game.pacMan) : new Data(game, ghostCommand, ghost(row));
+		}
+		fireTableDataChanged();
 	}
 
 	private Ghost ghost(int i) {

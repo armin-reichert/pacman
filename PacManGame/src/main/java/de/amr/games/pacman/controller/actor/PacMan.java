@@ -99,7 +99,7 @@ public class PacMan extends Creature<PacManState> {
 		.endStateMachine();
 		/* @formatter:on */
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
-		brain.setMissingTransitionBehavior(MissingTransitionBehavior.EXCEPTION);
+		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		brain.doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent && !((FoodFoundEvent) e).energizer);
 		brain.doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent && !((FoodFoundEvent) e).energizer);
 	}

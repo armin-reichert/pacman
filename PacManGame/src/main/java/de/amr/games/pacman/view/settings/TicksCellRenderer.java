@@ -5,9 +5,9 @@ import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
-public class TicksColumnRenderer extends DefaultTableCellRenderer {
+public class TicksCellRenderer extends DefaultTableCellRenderer {
 
-	public static String formatTicks(int ticks) {
+	private static String formatTicks(int ticks) {
 		if (ticks == Integer.MAX_VALUE) {
 			return Character.toString('\u221E');
 		}
