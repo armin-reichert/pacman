@@ -25,8 +25,10 @@ mvn clean install assembly:single
 ## Features
 
 - CTRL+P pauses/resumes the game
-- F2 opens a dialog where the game clock frequency and (full-)screen resolution can be changed
+- F2 opens a settings dialog where the game clock frequency and (full-)screen resolution can be changed
 - F11 toggles between window and full-screen exclusive mode
+- The settings dialog contains two custom tabs displaying the game and actor state and the values used by the current level.
+
   
 General command-line arguments:
   - Scaling: e.g. `-scale 2.5`
@@ -412,6 +414,18 @@ clyde.behavior(CHASING, clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pa
 ### Visualization of attack behavior
 
 The visualization of the ghost attack behavior i.e. the routes to their current target tile can be activated during the game by pressing the 'r'-key ("show/hide routes").
+
+### Visualization of game state
+
+There are two ways of getting information about the current game and actor state: either inside the playing view where state names and timer values are displayed at the actors themselves, or in the application settings dialog that can be opened using the F2-key. An application can add its own  tabs to this dialog using the Application API. In the Pac-Man game, there are two custom tabs:
+
+#### Game state tab
+
+<img src="PacManDoc/game-state-view.png">
+
+#### Game level tab
+
+<img src="PacManDoc/game-level-view.png">
 
 ## Graph-based pathfinding
 
