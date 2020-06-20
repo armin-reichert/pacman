@@ -47,10 +47,10 @@ public final class Tile {
 	}
 
 	/** Tile column index. Left to right, zero based. */
-	public final byte col;
+	public final short col;
 
 	/** Tile row index. Top to bottom, zero based. */
-	public final byte row;
+	public final short row;
 
 	/**
 	 * Constructor function.
@@ -60,8 +60,8 @@ public final class Tile {
 	 * @return new tile
 	 */
 	public Tile(int col, int row) {
-		this.col = (byte) col;
-		this.row = (byte) row;
+		this.col = (short) col;
+		this.row = (short) row;
 	}
 
 	/**
