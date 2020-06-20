@@ -108,7 +108,7 @@ public class PacManSounds {
 	}
 
 	public void resumePlayingMusic() {
-		theme.music_playing().start();
+		theme.music_playing().loop();
 	}
 
 	public void extraLife() {
