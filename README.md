@@ -413,6 +413,18 @@ clyde.behavior(CHASING, clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pa
 
 The visualization of the ghost attack behavior i.e. the routes to their current target tile can be activated during the game by pressing the 'r'-key ("show/hide routes").
 
+### Visualization of game state
+
+There are two ways of getting information about the current game and actor state: either inside the playing view where state names and timer values are displayed at the actors themselves, or in the application settings dialog that can be opened using the F2-key. An application can add its own  tabs to this dialog using the Application API. In the Pac-Man game, there are two custom tabs:
+
+#### Game state tab
+
+<img src="PacManDoc/game-state-view.png">
+
+#### Game level tab
+
+<img src="PacManDoc/game-level-view.png">
+
 ## Graph-based pathfinding
 
 The original Pac-Man game did not use any graph-based pathfinding. To still give an example how graph-based pathfinding can be useful, there is an additional implementation of the *frightened* behavior: when Pac-Man eats a power-pill each frightened ghost choses the "safest" corner to flee to. It computes the shortest path to each corner and selects the one with the largest distance to Pac-Man's current position. Here, the distance of a path from Pac-Man's position is defined as the minimum distance of any tile on the path from Pac-Man's position.
