@@ -35,7 +35,7 @@ public class GameLevelViewModel extends AbstractTableModel {
 
 	@Override
 	public String getColumnName(int col) {
-		return "";
+		return col == 0 ? "Parameter" : "Value";
 	}
 
 	@Override
