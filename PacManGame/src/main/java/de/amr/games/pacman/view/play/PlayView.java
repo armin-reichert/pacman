@@ -23,7 +23,6 @@ import java.awt.Transparency;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
-import java.util.function.Supplier;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.entity.Entity;
@@ -42,6 +41,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.theme.Theme;
+import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.State;
 
 /**
@@ -99,14 +99,14 @@ public class PlayView extends SimplePlayView {
 		return img;
 	}
 
-	public Supplier<State<GhostState>> fnGhostCommandState = () -> null;
-	public GhostHouse house; // (optional)
-
 	public boolean showFrameRate = false;
 	public boolean showGrid = false;
 	public boolean showRoutes = false;
 	public boolean showScores = true;
 	public boolean showStates = false;
+
+	public Fsm<GhostState, ?> ghostCommand; // (optional)
+	public GhostHouse house; // (optional)
 
 	private FramerateWidget frameRateDisplay;
 	private final BufferedImage gridImage, inkyImage, clydeImage, pacManImage;
@@ -211,10 +211,9 @@ public class PlayView extends SimplePlayView {
 		int remaining = ghost.state().getTicksRemaining();
 		// chasing or scattering time
 		if (ghost.is(SCATTERING, CHASING)) {
-			State<GhostState> attack = fnGhostCommandState.get();
-			if (attack != null) {
-				duration = attack.getDuration();
-				remaining = attack.getTicksRemaining();
+			if (ghostCommand.state() != null) {
+				duration = ghostCommand.state().getDuration();
+				remaining = ghostCommand.state().getTicksRemaining();
 			}
 		}
 		if (duration != Integer.MAX_VALUE) {

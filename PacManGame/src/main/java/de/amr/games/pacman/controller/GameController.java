@@ -103,7 +103,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		playView = new PlayView(game, theme);
 		ghostCommand = new GhostCommand(game);
 		ghostHouse = new GhostHouse(game);
-		playView.fnGhostCommandState = ghostCommand::state;
+		playView.ghostCommand = ghostCommand;
 		playView.house = ghostHouse;
 		game.creatures().forEach(actor -> {
 			game.putOnStage(actor);
