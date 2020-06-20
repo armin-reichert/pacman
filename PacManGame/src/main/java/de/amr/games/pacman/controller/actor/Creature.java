@@ -179,7 +179,9 @@ public abstract class Creature<STATE> extends Entity implements MazeMover, FsmCo
 	@Override
 	public Tile tile() {
 		Vector2f center = tf.getCenter();
-		return Tile.at(center.roundedX() / Tile.SIZE, center.roundedY() / Tile.SIZE);
+		int col = (int) (center.x >= 0 ? center.x / Tile.SIZE : Math.floor(center.x / Tile.SIZE));
+		int row = (int) (center.y >= 0 ? center.y / Tile.SIZE : Math.floor(center.y / Tile.SIZE));
+		return Tile.at(col, row);
 	}
 
 	@Override

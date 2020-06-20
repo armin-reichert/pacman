@@ -164,7 +164,7 @@ public class GameStateViewModel extends AbstractTableModel {
 				game.pullFromStage(creature);
 			}
 			data[row].onStage = (boolean) value;
-			fireTableCellUpdated(row, col);
+			fireTableDataChanged();
 		}
 	}
 

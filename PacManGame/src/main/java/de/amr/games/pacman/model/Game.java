@@ -358,6 +358,7 @@ public class Game {
 	public void pullFromStage(Creature<?> actor) {
 		stage.remove(actor);
 		actor.visible = false;
+		actor.placeAt(Tile.at(-1, -1));
 		loginfo("%s left the stage", actor.name);
 	}
 }
