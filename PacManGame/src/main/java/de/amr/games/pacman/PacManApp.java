@@ -76,7 +76,7 @@ public class PacManApp extends Application {
 		super.printSettings();
 		printValue("Demo Mode", "%s", settings.demoMode);
 		printValue("Ghosts harmless", "%s", settings.ghostsHarmless);
-		printValue("Ghosts flee to safe corner", "%s", settings.ghostsSafeCorner);
+		printValue("Ghosts flee into corner", "%s", settings.ghostsSafeCorner);
 		printValue("Fix Overflow Bug", "%s", settings.fixOverflowBug);
 		printValue("Pac-Man immortable", "%s", settings.pacManImmortable);
 		printValue("Pathfinder", "%s", settings.pathFinder);
