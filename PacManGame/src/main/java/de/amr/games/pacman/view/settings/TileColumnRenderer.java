@@ -13,7 +13,7 @@ public class TileColumnRenderer extends DefaultTableCellRenderer {
 			int row, int column) {
 		GameStateViewModel model = (GameStateViewModel) table.getModel();
 		if (model.data[row].pacManCollision) {
-			setBackground(Color.RED);
+			setBackground(new Color(255, 0, 0, 100));
 		} else {
 			setBackground(table.getBackground());
 		}

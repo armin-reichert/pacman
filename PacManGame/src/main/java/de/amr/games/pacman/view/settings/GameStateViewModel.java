@@ -15,19 +15,18 @@ import de.amr.games.pacman.model.Tile;
 
 public class GameStateViewModel extends AbstractTableModel {
 
-	static final int NUM_ROWS = 6;
-
 	public enum Columns {
 		Name, Tile, Target, State, Remaining, Duration;
 	};
 
-	private GameController gameController;
-	private Game game;
-	private GhostCommand ghostCommand;
+	static final int NUM_ROWS = 5;
 
+	public GameController gameController;
+	public Game game;
+	public GhostCommand ghostCommand;
 	public Data[] data = new Data[NUM_ROWS];
 
-	class Data {
+	static class Data {
 		String name;
 		String state;
 		int ticksRemaining;
@@ -36,7 +35,7 @@ public class GameStateViewModel extends AbstractTableModel {
 		Tile target;
 		boolean pacManCollision;
 
-		public Data(PacMan pacMan) {
+		public Data(Game game, PacMan pacMan) {
 			name = "Pac-Man";
 			state = pacMan.power == 0 ? pacMan.getState().name() : "POWER";
 			ticksRemaining = pacMan.power == 0 ? pacMan.state().getTicksRemaining() : pacMan.power;
@@ -44,7 +43,7 @@ public class GameStateViewModel extends AbstractTableModel {
 			tile = pacMan.tile();
 		}
 
-		public Data(Ghost ghost) {
+		public Data(Game game, GhostCommand ghostCommand, Ghost ghost) {
 			name = ghost.name;
 			state = ghost.getState().name();
 			ticksRemaining = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getTicksRemaining()
@@ -53,13 +52,6 @@ public class GameStateViewModel extends AbstractTableModel {
 			tile = ghost.tile();
 			target = ghost.targetTile();
 			pacManCollision = tile.equals(game.pacMan.tile());
-		}
-
-		public Data(GameController controller) {
-			name = "GameController";
-			state = controller.getState().name();
-			ticksRemaining = controller.state().getTicksRemaining();
-			duration = controller.state().getDuration();
 		}
 	}
 
@@ -71,7 +63,7 @@ public class GameStateViewModel extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		return 6;
+		return NUM_ROWS;
 	}
 
 	@Override
@@ -80,47 +72,48 @@ public class GameStateViewModel extends AbstractTableModel {
 	}
 
 	@Override
-	public String getColumnName(int column) {
-		return Columns.values()[column].name();
+	public String getColumnName(int col) {
+		return Columns.values()[col].name();
 	}
 
 	@Override
-	public Class<?> getColumnClass(int columnIndex) {
-		return super.getColumnClass(columnIndex);
+	public Class<?> getColumnClass(int col) {
+		return super.getColumnClass(col);
 	}
 
 	@Override
-	public Object getValueAt(int rowIndex, int columnIndex) {
-		computeData(rowIndex);
-		switch (Columns.values()[columnIndex]) {
+	public Object getValueAt(int row, int col) {
+		switch (Columns.values()[col]) {
 		case Name:
-			return data[rowIndex].name;
+			return data[row].name;
 		case Tile:
-			return data[rowIndex].tile != null ? data[rowIndex].tile : "";
+			return data[row].tile != null ? data[row].tile : "";
 		case Target:
-			return data[rowIndex].target != null ? data[rowIndex].target : "";
+			return data[row].target != null ? data[row].target : "";
 		case State:
-			return data[rowIndex].state;
+			return data[row].state;
 		case Remaining:
-			return data[rowIndex].ticksRemaining;
+			return data[row].ticksRemaining;
 		case Duration:
-			return data[rowIndex].duration;
+			return data[row].duration;
 		default:
 			return null;
 		}
 	}
 
 	public void update() {
+		for (int row = 0; row < NUM_ROWS; ++row) {
+			computeRow(row);
+		}
 		fireTableDataChanged();
 	}
 
-	public void computeData(int rowIndex) {
-		data[rowIndex] = rowIndex == 5 ? new Data(gameController)
-				: rowIndex == 4 ? new Data(game.pacMan) : new Data(ghost(rowIndex));
+	public void computeRow(int row) {
+		data[row] = (row == 4) ? new Data(game, game.pacMan) : new Data(game, ghostCommand, ghost(row));
 	}
 
-	private Ghost ghost(int index) {
-		switch (index) {
+	private Ghost ghost(int i) {
+		switch (i) {
 		case 0:
 			return game.blinky;
 		case 1:
