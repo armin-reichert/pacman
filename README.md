@@ -25,8 +25,10 @@ mvn clean install assembly:single
 ## Features
 
 - CTRL+P pauses/resumes the game
-- F2 opens a dialog where the game clock frequency and (full-)screen resolution can be changed
+- F2 opens a settings dialog where the game clock frequency and (full-)screen resolution can be changed
 - F11 toggles between window and full-screen exclusive mode
+- The settings dialog contains two custom tabs displaying the game and actor state and the values used by the current level.
+
   
 General command-line arguments:
   - Scaling: e.g. `-scale 2.5`
