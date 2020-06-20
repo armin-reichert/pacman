@@ -47,6 +47,7 @@ import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.play.SimplePlayView.MazeMode;
+import de.amr.games.pacman.view.settings.GameLevelView;
 import de.amr.games.pacman.view.settings.GameStateView;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.State;
@@ -70,6 +71,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected BaseView currentView;
 
 	protected GameStateView gameStateView;
+	protected GameLevelView gameLevelView;
 
 	public GhostCommand ghostCommand;
 	protected GhostHouse ghostHouse;
@@ -107,12 +109,20 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		playView.ghostCommand = ghostCommand;
 		playView.house = ghostHouse;
 
-		// add custom tab in settings dialog
+		// add custom tabs in settings dialog
+
 		if (gameStateView == null) {
 			gameStateView = new GameStateView();
 			app().addCustomSettingsTab("Game State", gameStateView);
 		}
 		gameStateView.createModel(this);
+
+		if (gameLevelView == null) {
+			gameLevelView = new GameLevelView();
+			app().addCustomSettingsTab("Game Level", gameLevelView);
+		}
+		gameLevelView.createModel(game);
+
 		app().selectCustomSettingsTab(0);
 
 		setDemoMode(settings.demoMode);
@@ -162,6 +172,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		currentView.update();
 		if (gameStateView != null) {
 			gameStateView.model.update();
+		}
+		if (gameLevelView != null) {
+			gameLevelView.model.update();
 		}
 	}
 
