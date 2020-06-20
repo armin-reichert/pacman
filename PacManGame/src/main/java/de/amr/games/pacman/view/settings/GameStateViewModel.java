@@ -13,14 +13,24 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.PacManState;
+import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 
 public class GameStateViewModel extends AbstractTableModel {
 
 	public enum Column {
-		OnStage(Boolean.class, true), Name(String.class, false), Tile(Tile.class, false), Target(Tile.class, false),
-		State(Object.class, false), Remaining(Integer.class, false), Duration(Integer.class, false);
+		//@formatter:off
+		OnStage(Boolean.class, true), 
+		Name(String.class, false), 
+		Tile(Tile.class, false), 
+		Target(Tile.class, false),
+		MoveDir(Direction.class, false),
+		WishDir(Direction.class, false),
+		State(Object.class, false), 
+		Remaining(Integer.class, false), 
+		Duration(Integer.class, false);
+		//@formatter:on
 
 		private Column(Class<?> class_, boolean editable) {
 			this.class_ = class_;
@@ -41,6 +51,8 @@ public class GameStateViewModel extends AbstractTableModel {
 	static class Data {
 		boolean onStage;
 		String name;
+		Direction moveDir;
+		Direction wishDir;
 		String state;
 		int ticksRemaining;
 		int duration;
@@ -51,6 +63,8 @@ public class GameStateViewModel extends AbstractTableModel {
 		public Data(Game game, PacMan pacMan) {
 			onStage = game.onStage(pacMan);
 			name = "Pac-Man";
+			moveDir = pacMan.moveDir();
+			wishDir = pacMan.wishDir();
 			state = pacMan.power == 0 ? pacMan.getState().name() : "POWER";
 			ticksRemaining = pacMan.power == 0 ? pacMan.state().getTicksRemaining() : pacMan.power;
 			duration = pacMan.power == 0 ? pacMan.state().getDuration() : sec(game.level.pacManPowerSeconds);
@@ -60,6 +74,8 @@ public class GameStateViewModel extends AbstractTableModel {
 		public Data(Game game, GhostCommand ghostCommand, Ghost ghost) {
 			onStage = game.onStage(ghost);
 			name = ghost.name;
+			moveDir = ghost.moveDir();
+			wishDir = ghost.wishDir();
 			state = ghost.getState().name();
 			ticksRemaining = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getTicksRemaining()
 					: ghost.state().getTicksRemaining();
@@ -74,11 +90,11 @@ public class GameStateViewModel extends AbstractTableModel {
 
 		//@formatter:off
 		Object[][] data = {
-				{ true, "Blinky", Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
-				{ false, "Pinky", Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
-				{ true, "Inky", Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
-				{ true, "Clyde", Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
-				{ true, "Pac-Man", Tile.at(0, 0), Tile.at(0, 0), PacManState.SLEEPING, 0, 0, false },
+				{ true, "Blinky", Direction.DOWN, Direction.LEFT, Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
+				{ false, "Pinky", Direction.DOWN, Direction.LEFT, Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
+				{ true, "Inky", Direction.DOWN, Direction.LEFT, Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
+				{ true, "Clyde", Direction.DOWN, Direction.LEFT, Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
+				{ true, "Pac-Man", Direction.DOWN, Direction.LEFT, Tile.at(0, 0), Tile.at(0, 0), PacManState.SLEEPING, 0, 0, false },
 		};
 		//@formatter:on
 
@@ -137,6 +153,10 @@ public class GameStateViewModel extends AbstractTableModel {
 			return data[row].onStage;
 		case Name:
 			return data[row].name;
+		case MoveDir:
+			return data[row].moveDir;
+		case WishDir:
+			return data[row].wishDir;
 		case Tile:
 			return data[row].tile != null ? data[row].tile : "";
 		case Target:
