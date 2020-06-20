@@ -130,7 +130,22 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			game.putOnStage(actor);
 			actor.addEventListener(this::process);
 		});
+	}
 
+	public void setShowingActorRoutes(boolean selected) {
+		playView.showRoutes = selected;
+	}
+
+	public boolean isShowingActorRoutes() {
+		return playView.showRoutes;
+	}
+
+	public void setShowingStates(boolean selected) {
+		playView.showStates = selected;
+	}
+
+	public boolean isShowingStates() {
+		return playView.showStates;
 	}
 
 	public void saveScore() {
@@ -172,6 +187,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		currentView.update();
 		if (gameStateView != null) {
 			gameStateView.model.update();
+			gameStateView.update();
 		}
 		if (gameLevelView != null) {
 			gameLevelView.model.update();

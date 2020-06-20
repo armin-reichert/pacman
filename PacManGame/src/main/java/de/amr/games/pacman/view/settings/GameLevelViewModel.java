@@ -10,6 +10,11 @@ import de.amr.games.pacman.model.GameLevel;
 
 public class GameLevelViewModel extends AbstractTableModel {
 
+	static final String[] names = { "Level", "Pellets Eaten", "Ghosts Killed in Sequence", "Ghosts Killed in Level",
+			"Bonus", "Bonus value", "Pac-Man Speed", "Pac-Man Dots Speed", "Ghost Speed", "Ghost Tunnel Speed",
+			"Elroy1 Dots Left", "Elroy1 Speed", "Elroy2 Dots Left", "Elroy2 Speed", "Pac-Man Power Speed",
+			"Pac-Man Power Dots Speed", "Ghost Frightened Speed", "Pac-Man Power (seconds)", "Number of Flashes", };
+
 	private Game game;
 
 	public GameLevelViewModel(Game game) {
@@ -25,7 +30,7 @@ public class GameLevelViewModel extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		return 19;
+		return names.length;
 	}
 
 	@Override
@@ -42,54 +47,9 @@ public class GameLevelViewModel extends AbstractTableModel {
 	public Object getValueAt(int row, int col) {
 		switch (col) {
 		case 0:
-			return name(row);
+			return names[row];
 		case 1:
 			return value(row);
-		default:
-			return null;
-		}
-	}
-
-	private String name(int row) {
-		switch (row) {
-		case 0:
-			return "Level";
-		case 1:
-			return "Pellets Eaten";
-		case 2:
-			return "Ghosts Killed in Sequence";
-		case 3:
-			return "Ghosts Killed in Level";
-		case 4:
-			return "Bonus";
-		case 5:
-			return "Bonus value";
-		case 6:
-			return "Pac-Man Speed";
-		case 7:
-			return "Pac-Man Dots Speed";
-		case 8:
-			return "Ghost Speed";
-		case 9:
-			return "Ghost Tunnel Speed";
-		case 10:
-			return "Elroy1 Dots Left";
-		case 11:
-			return "Elroy1 Speed";
-		case 12:
-			return "Elroy2 Dots Left";
-		case 13:
-			return "Elroy2 Speed";
-		case 14:
-			return "Pac-Man Power Speed";
-		case 15:
-			return "Pac-Man Power Dots Speed";
-		case 16:
-			return "Ghost Frightened Speed";
-		case 17:
-			return "Pac-Man Power (seconds)";
-		case 18:
-			return "Number of Flashes";
 		default:
 			return null;
 		}
@@ -140,5 +100,4 @@ public class GameLevelViewModel extends AbstractTableModel {
 			return null;
 		}
 	}
-
 }
