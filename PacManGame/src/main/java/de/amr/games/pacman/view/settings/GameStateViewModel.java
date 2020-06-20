@@ -106,6 +106,9 @@ public class GameStateViewModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int row, int col) {
+		if (data[row] == null) {
+			return null;
+		}
 		switch (Columns.values()[col]) {
 		case Name:
 			return data[row].name;

@@ -111,9 +111,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		if (gameStateView == null) {
 			gameStateView = new GameStateView();
 			app().addCustomSettingsTab("Game State", gameStateView);
-			app().selectCustomSettingsTab(0);
 		}
 		gameStateView.createModel(this);
+		app().selectCustomSettingsTab(0);
 
 		setDemoMode(settings.demoMode);
 		game.creatures().forEach(actor -> {
