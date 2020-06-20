@@ -9,22 +9,13 @@ import javax.swing.table.AbstractTableModel;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 
 public class GameStateViewModel extends AbstractTableModel {
-
-	public enum Columns {
-		Name, Tile, Target, State, Remaining, Duration;
-	};
-
-	static final int NUM_ROWS = 5;
-
-	public GameController gameController;
-	public Game game;
-	public GhostCommand ghostCommand;
-	public Data[] data = new Data[NUM_ROWS];
 
 	static class Data {
 		String name;
@@ -53,6 +44,38 @@ public class GameStateViewModel extends AbstractTableModel {
 			target = ghost.targetTile();
 			pacManCollision = tile.equals(game.pacMan.tile());
 		}
+	}
+
+	static GameStateViewModel SAMPLE_DATA = new GameStateViewModel() {
+
+		//@formatter:off
+		Object[][] data = {
+				{ "Blinky", Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
+				{ "Pinky", Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
+				{ "Inky", Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
+				{ "Clyde", Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
+				{ "Pac-Man", Tile.at(0, 0), Tile.at(0, 0), PacManState.SLEEPING, 0, 0, false },
+		};
+		//@formatter:on
+
+		@Override
+		public Object getValueAt(int row, int col) {
+			return data[row][col];
+		}
+	};
+
+	public enum Columns {
+		Name, Tile, Target, State, Remaining, Duration;
+	};
+
+	static final int NUM_ROWS = 5;
+
+	public GameController gameController;
+	public Game game;
+	public GhostCommand ghostCommand;
+	public Data[] data = new Data[NUM_ROWS];
+
+	private GameStateViewModel() {
 	}
 
 	public GameStateViewModel(GameController gameController) {

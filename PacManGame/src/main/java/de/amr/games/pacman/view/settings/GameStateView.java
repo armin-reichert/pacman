@@ -36,6 +36,7 @@ public class GameStateView extends JPanel {
 
 		table = new JTable();
 		scrollPane.setViewportView(table);
+		table.setModel(GameStateViewModel.SAMPLE_DATA);
 	}
 
 	public void createModel(GameController gameController) {
