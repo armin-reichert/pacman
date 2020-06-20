@@ -54,6 +54,7 @@ public class GameStateView extends JPanel {
 		});
 		table.setModel(model);
 		column(Column.Tile).setCellRenderer(new TileCellRenderer());
+		column(Column.Speed).setCellRenderer(new SpeedCellRenderer());
 		column(Column.Remaining).setCellRenderer(new TicksCellRenderer());
 		column(Column.Duration).setCellRenderer(new TicksCellRenderer());
 	}

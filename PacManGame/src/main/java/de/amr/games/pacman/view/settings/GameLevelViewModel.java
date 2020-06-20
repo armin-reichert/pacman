@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.settings;
 
-import java.text.DecimalFormat;
-import java.util.Locale;
+import static de.amr.games.pacman.view.settings.Formatting.integer;
+import static de.amr.games.pacman.view.settings.Formatting.percent;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -141,11 +141,4 @@ public class GameLevelViewModel extends AbstractTableModel {
 		}
 	}
 
-	static String integer(int i) {
-		return DecimalFormat.getNumberInstance(Locale.ENGLISH).format(i);
-	}
-
-	static String percent(float f) {
-		return DecimalFormat.getPercentInstance(Locale.ENGLISH).format(f);
-	}
 }
