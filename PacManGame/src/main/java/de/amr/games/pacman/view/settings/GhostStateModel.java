@@ -11,10 +11,11 @@ import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.Tile;
 
 public class GhostStateModel extends AbstractTableModel {
 
-	private static final String[] columnNames = { "Name", "State", "Remaining", "Duration" };
+	private static final String[] columnNames = { "Name", "Tile", "State", "Remaining", "Duration" };
 
 	private GameController gameController;
 	private Game game;
@@ -25,12 +26,14 @@ public class GhostStateModel extends AbstractTableModel {
 		String state;
 		int ticksRemaining;
 		int duration;
+		Tile tile;
 
 		public Data(PacMan pacMan) {
 			name = "Pac-Man";
 			state = pacMan.power == 0 ? pacMan.getState().name() : "POWER";
 			ticksRemaining = pacMan.power == 0 ? pacMan.state().getTicksRemaining() : pacMan.power;
 			duration = pacMan.power == 0 ? pacMan.state().getDuration() : sec(game.level.pacManPowerSeconds);
+			tile = pacMan.tile();
 		}
 
 		public Data(Ghost ghost) {
@@ -39,6 +42,7 @@ public class GhostStateModel extends AbstractTableModel {
 			ticksRemaining = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getTicksRemaining()
 					: ghost.state().getTicksRemaining();
 			duration = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getDuration() : ghost.state().getDuration();
+			tile = ghost.tile();
 		}
 
 		public Data(GameController controller) {
@@ -77,10 +81,12 @@ public class GhostStateModel extends AbstractTableModel {
 		case 0:
 			return data.name;
 		case 1:
-			return data.state;
+			return data.tile != null ? data.tile : "";
 		case 2:
-			return data.ticksRemaining == Integer.MAX_VALUE ? Character.toString('\u221E') : data.ticksRemaining;
+			return data.state;
 		case 3:
+			return data.ticksRemaining == Integer.MAX_VALUE ? Character.toString('\u221E') : data.ticksRemaining;
+		case 4:
 			return data.duration == Integer.MAX_VALUE ? Character.toString('\u221E') : data.duration;
 		default:
 			return null;
