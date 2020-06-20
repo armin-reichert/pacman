@@ -8,7 +8,7 @@ import javax.swing.table.AbstractTableModel;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostCommand;
-import de.amr.games.pacman.controller.actor.Creature;
+import de.amr.games.pacman.controller.actor.Bonus;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacMan;
@@ -45,8 +45,9 @@ public class GameStateViewModel extends AbstractTableModel {
 		}
 	};
 
-	static final int NUM_ROWS = 5;
-	static final int PACMAN_ROW = 4;
+	public enum Row {
+		Blinky, Pinky, Inky, Clyde, PacMan, Bonus
+	}
 
 	static class Data {
 		boolean onStage;
@@ -84,6 +85,13 @@ public class GameStateViewModel extends AbstractTableModel {
 			target = ghost.targetTile();
 			pacManCollision = tile.equals(game.pacMan.tile());
 		}
+
+		public Data(Game game, Bonus bonus) {
+			onStage = bonus.visible;
+			name = bonus.symbol != null ? bonus.toString() : "Bonus";
+			state = bonus.getState().name();
+			tile = game.maze.bonusSeat.tile;
+		}
 	}
 
 	static GameStateViewModel SAMPLE_DATA = new GameStateViewModel() {
@@ -107,7 +115,7 @@ public class GameStateViewModel extends AbstractTableModel {
 	public GameController gameController;
 	public Game game;
 	public GhostCommand ghostCommand;
-	public Data[] data = new Data[NUM_ROWS];
+	public Data[] data = new Data[Row.values().length];
 
 	private GameStateViewModel() {
 	}
@@ -120,7 +128,7 @@ public class GameStateViewModel extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		return NUM_ROWS;
+		return Row.values().length;
 	}
 
 	@Override
@@ -140,7 +148,7 @@ public class GameStateViewModel extends AbstractTableModel {
 
 	@Override
 	public boolean isCellEditable(int row, int col) {
-		return Column.at(col).editable && row != PACMAN_ROW;
+		return Column.at(col).editable && row < Row.PacMan.ordinal();
 	}
 
 	@Override
@@ -175,13 +183,19 @@ public class GameStateViewModel extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object value, int row, int col) {
 		Column column = Column.at(col);
-		if (column == Column.OnStage && row != PACMAN_ROW) {
+		if (column == Column.OnStage && row < Row.PacMan.ordinal()) {
 			boolean onStage = (boolean) value;
-			Creature<?> creature = ghost(row);
+			//@formatter:off
+			Ghost ghost = 
+					row == Row.Blinky.ordinal() ? game.blinky
+				: row == Row.Pinky.ordinal() ? game.pinky 
+				: row == Row.Inky.ordinal() ? game.inky 
+				: game.clyde;
+			//@formatter:on
 			if (onStage) {
-				game.putOnStage(creature);
+				game.putOnStage(ghost);
 			} else {
-				game.pullFromStage(creature);
+				game.pullFromStage(ghost);
 			}
 			data[row].onStage = (boolean) value;
 			fireTableDataChanged();
@@ -189,24 +203,12 @@ public class GameStateViewModel extends AbstractTableModel {
 	}
 
 	public void update() {
-		for (int row = 0; row < NUM_ROWS; ++row) {
-			data[row] = (row == PACMAN_ROW) ? new Data(game, game.pacMan) : new Data(game, ghostCommand, ghost(row));
-		}
+		data[Row.Blinky.ordinal()] = new Data(game, ghostCommand, game.blinky);
+		data[Row.Pinky.ordinal()] = new Data(game, ghostCommand, game.pinky);
+		data[Row.Inky.ordinal()] = new Data(game, ghostCommand, game.inky);
+		data[Row.Clyde.ordinal()] = new Data(game, ghostCommand, game.clyde);
+		data[Row.PacMan.ordinal()] = new Data(game, game.pacMan);
+		data[Row.Bonus.ordinal()] = new Data(game, game.bonus);
 		fireTableDataChanged();
-	}
-
-	private Ghost ghost(int i) {
-		switch (i) {
-		case 0:
-			return game.blinky;
-		case 1:
-			return game.pinky;
-		case 2:
-			return game.inky;
-		case 3:
-			return game.clyde;
-		default:
-			return null;
-		}
 	}
 }
