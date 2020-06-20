@@ -1,7 +1,12 @@
 package de.amr.games.pacman.view.settings;
 
+import static de.amr.games.pacman.controller.actor.BonusState.INACTIVE;
 import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
+import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.controller.actor.PacManState.SLEEPING;
+import static de.amr.games.pacman.model.Direction.DOWN;
+import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Game.sec;
 
 import javax.swing.table.AbstractTableModel;
@@ -10,9 +15,7 @@ import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.Bonus;
 import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
@@ -52,13 +55,13 @@ public class GameStateViewModel extends AbstractTableModel {
 	static class Data {
 		boolean onStage;
 		String name;
+		Tile tile;
+		Tile target;
 		Direction moveDir;
 		Direction wishDir;
 		String state;
 		int ticksRemaining;
 		int duration;
-		Tile tile;
-		Tile target;
 		boolean pacManCollision;
 
 		public Data(Game game, PacMan pacMan) {
@@ -98,11 +101,12 @@ public class GameStateViewModel extends AbstractTableModel {
 
 		//@formatter:off
 		Object[][] data = {
-				{ true, "Blinky", Direction.DOWN, Direction.LEFT, Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
-				{ false, "Pinky", Direction.DOWN, Direction.LEFT, Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
-				{ true, "Inky", Direction.DOWN, Direction.LEFT, Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
-				{ true, "Clyde", Direction.DOWN, Direction.LEFT, Tile.at(0, 0), Tile.at(0, 0), GhostState.LOCKED, 0, 0, false },
-				{ true, "Pac-Man", Direction.DOWN, Direction.LEFT, Tile.at(0, 0), Tile.at(0, 0), PacManState.SLEEPING, 0, 0, false },
+		{ true,  "Blinky",  Tile.at(0, 0), Tile.at(0, 0), DOWN, LEFT, LOCKED,    0, 0, false },
+		{ false, "Pinky",   Tile.at(0, 0), Tile.at(0, 0), DOWN, LEFT, LOCKED,    0, 0, false },
+		{ true,  "Inky",    Tile.at(0, 0), Tile.at(0, 0), DOWN, LEFT, LOCKED,    0, 0, false },
+		{ true,  "Clyde",   Tile.at(0, 0), Tile.at(0, 0), DOWN, LEFT, LOCKED,    0, 0, false },
+		{ true,  "Pac-Man", Tile.at(0, 0), null,          DOWN, LEFT, SLEEPING,  0, 0, false },
+		{ true,  "Bonus",   Tile.at(0, 0), null,          null, null, INACTIVE,  0, 0, false },
 		};
 		//@formatter:on
 
