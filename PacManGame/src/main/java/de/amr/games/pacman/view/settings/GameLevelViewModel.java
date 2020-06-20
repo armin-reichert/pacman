@@ -35,7 +35,7 @@ public class GameLevelViewModel extends AbstractTableModel {
 
 	@Override
 	public String getColumnName(int col) {
-		return col == 0 ? "Parameter" : "Value";
+		return col == 0 ? "" : "Value";
 	}
 
 	@Override
@@ -72,6 +72,24 @@ public class GameLevelViewModel extends AbstractTableModel {
 			return "Ghost Speed";
 		case 9:
 			return "Ghost Tunnel Speed";
+		case 10:
+			return "Elroy1 Dots Left";
+		case 11:
+			return "Elroy1 Speed";
+		case 12:
+			return "Elroy2 Dots Left";
+		case 13:
+			return "Elroy2 Speed";
+		case 14:
+			return "Pac-Man Power Speed";
+		case 15:
+			return "Pac-Man Power Dots Speed";
+		case 16:
+			return "Ghost Frightened Speed";
+		case 17:
+			return "Pac-Man Power (seconds)";
+		case 18:
+			return "Number of Flashes";
 		default:
 			return null;
 		}
@@ -100,6 +118,24 @@ public class GameLevelViewModel extends AbstractTableModel {
 			return percent(level.ghostSpeed);
 		case 9:
 			return percent(level.ghostTunnelSpeed);
+		case 10:
+			return integer(level.elroy1DotsLeft);
+		case 11:
+			return percent(level.elroy1Speed);
+		case 12:
+			return integer(level.elroy2DotsLeft);
+		case 13:
+			return percent(level.elroy2Speed);
+		case 14:
+			return percent(level.pacManPowerSpeed);
+		case 15:
+			return percent(level.pacManPowerDotsSpeed);
+		case 16:
+			return percent(level.ghostFrightenedSpeed);
+		case 17:
+			return integer(level.pacManPowerSeconds);
+		case 18:
+			return integer(level.numFlashes);
 		default:
 			return null;
 		}
@@ -112,5 +148,4 @@ public class GameLevelViewModel extends AbstractTableModel {
 	static String percent(float f) {
 		return DecimalFormat.getPercentInstance(Locale.ENGLISH).format(f);
 	}
-
 }
