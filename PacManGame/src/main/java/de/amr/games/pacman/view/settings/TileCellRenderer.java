@@ -11,7 +11,7 @@ public class TileCellRenderer extends DefaultTableCellRenderer {
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 			int row, int column) {
-		GameStateViewModel model = (GameStateViewModel) table.getModel();
+		GameStateTableModel model = (GameStateTableModel) table.getModel();
 		if (model.data[row].pacManCollision) {
 			setBackground(new Color(255, 0, 0, 100));
 		} else {

@@ -9,7 +9,8 @@ import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import de.amr.games.pacman.view.settings.GameStateViewModel.Row;
+import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.view.settings.GameStateTableModel.Row;
 
 public class SpeedCellRenderer extends DefaultTableCellRenderer {
 
@@ -17,12 +18,12 @@ public class SpeedCellRenderer extends DefaultTableCellRenderer {
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 			int row, int column) {
 		super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		GameStateViewModel model = (GameStateViewModel) table.getModel();
+		GameStateTableModel model = (GameStateTableModel) table.getModel();
 		float speed = (float) value;
 		setText(Formatting.pixelsPerSec(speed));
-		if (row == Row.Blinky.ordinal() && model.game.blinky.sanity.is(CRUISE_ELROY1, CRUISE_ELROY2)) {
+		Game game = model.gameController.game;
+		if (row == Row.Blinky.ordinal() && game.blinky.sanity.is(CRUISE_ELROY1, CRUISE_ELROY2)) {
 			setBackground(new Color(255, 0, 0, 100));
-			setToolTipText(model.game.blinky.sanity.getState().name());
 		} else {
 			setBackground(table.getBackground());
 		}

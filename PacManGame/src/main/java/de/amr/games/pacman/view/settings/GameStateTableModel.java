@@ -1,36 +1,36 @@
 package de.amr.games.pacman.view.settings;
 
 import static de.amr.games.pacman.controller.actor.BonusState.INACTIVE;
-import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
 import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
-import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.controller.actor.PacManState.SLEEPING;
 import static de.amr.games.pacman.model.Direction.DOWN;
 import static de.amr.games.pacman.model.Direction.LEFT;
-import static de.amr.games.pacman.model.Game.sec;
 
 import javax.swing.table.AbstractTableModel;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostCommand;
-import de.amr.games.pacman.controller.actor.Bonus;
 import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 
-public class GameStateViewModel extends AbstractTableModel {
+/**
+ * Data model of the table displaying actor data.
+ * 
+ * @author Armin Reichert
+ */
+public class GameStateTableModel extends AbstractTableModel {
 
 	public enum Column {
 		//@formatter:off
-		OnStage("", Boolean.class, true), 
-		Name(String.class, false), 
+		OnStage("On Stage", Boolean.class, true), 
+		Name("Actor", String.class, false), 
 		Tile(Tile.class, false), 
 		Target(Tile.class, false),
 		MoveDir(Direction.class, false),
 		WishDir(Direction.class, false),
-		Speed("Speed (px/s)", Float.class, false),
+		Speed("Pixel/sec", Float.class, false),
 		State(Object.class, false), 
 		Remaining(Integer.class, false), 
 		Duration(Integer.class, false);
@@ -61,57 +61,7 @@ public class GameStateViewModel extends AbstractTableModel {
 		Blinky, Pinky, Inky, Clyde, PacMan, Bonus
 	}
 
-	static class Data {
-		boolean onStage;
-		String name;
-		Tile tile;
-		Tile target;
-		Direction moveDir;
-		Direction wishDir;
-		float speed;
-		String state;
-		int ticksRemaining;
-		int duration;
-		boolean pacManCollision;
-
-		public Data(Game game, PacMan pacMan) {
-			onStage = game.onStage(pacMan);
-			name = "Pac-Man";
-			tile = pacMan.tile();
-			moveDir = pacMan.moveDir();
-			wishDir = pacMan.wishDir();
-			speed = pacMan.currentSpeed(game);
-			state = pacMan.power == 0 ? pacMan.getState().name() : "POWER";
-			ticksRemaining = pacMan.power == 0 ? pacMan.state().getTicksRemaining() : pacMan.power;
-			duration = pacMan.power == 0 ? pacMan.state().getDuration() : sec(game.level.pacManPowerSeconds);
-		}
-
-		public Data(Game game, GhostCommand ghostCommand, Ghost ghost) {
-			onStage = game.onStage(ghost);
-			name = ghost.name;
-			tile = ghost.tile();
-			target = ghost.targetTile();
-			moveDir = ghost.moveDir();
-			wishDir = ghost.wishDir();
-			speed = ghost.currentSpeed(game);
-			state = ghost.getState().name();
-			ticksRemaining = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getTicksRemaining()
-					: ghost.state().getTicksRemaining();
-			duration = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getDuration() : ghost.state().getDuration();
-			pacManCollision = tile.equals(game.pacMan.tile());
-		}
-
-		public Data(Game game, Bonus bonus) {
-			onStage = bonus.visible;
-			name = bonus.symbol != null ? bonus.toString() : "Bonus";
-			tile = game.maze.bonusSeat.tile;
-			state = bonus.getState().name();
-			ticksRemaining = bonus.state().getTicksRemaining();
-			duration = bonus.state().getDuration();
-		}
-	}
-
-	static GameStateViewModel SAMPLE_DATA = new GameStateViewModel() {
+	static final GameStateTableModel SAMPLE_DATA = new GameStateTableModel() {
 
 		//@formatter:off
 		Object[][] data = {
@@ -131,17 +81,25 @@ public class GameStateViewModel extends AbstractTableModel {
 	};
 
 	public GameController gameController;
-	public Game game;
-	public GhostCommand ghostCommand;
-	public Data[] data = new Data[Row.values().length];
+	public ActorData[] data = new ActorData[Row.values().length];
 
-	private GameStateViewModel() {
+	private GameStateTableModel() {
 	}
 
-	public GameStateViewModel(GameController gameController) {
+	public GameStateTableModel(GameController gameController) {
 		this.gameController = gameController;
-		game = gameController.game;
-		ghostCommand = gameController.ghostCommand;
+	}
+
+	public void update() {
+		Game game = gameController.game;
+		GhostCommand ghostCommand = gameController.ghostCommand;
+		data[Row.Blinky.ordinal()] = new ActorData(game, ghostCommand, game.blinky);
+		data[Row.Pinky.ordinal()] = new ActorData(game, ghostCommand, game.pinky);
+		data[Row.Inky.ordinal()] = new ActorData(game, ghostCommand, game.inky);
+		data[Row.Clyde.ordinal()] = new ActorData(game, ghostCommand, game.clyde);
+		data[Row.PacMan.ordinal()] = new ActorData(game, game.pacMan);
+		data[Row.Bonus.ordinal()] = new ActorData(game, game.bonus);
+		fireTableDataChanged();
 	}
 
 	@Override
@@ -204,6 +162,7 @@ public class GameStateViewModel extends AbstractTableModel {
 	public void setValueAt(Object value, int row, int col) {
 		Column column = Column.at(col);
 		if (column == Column.OnStage && row < Row.PacMan.ordinal()) {
+			Game game = gameController.game;
 			boolean onStage = (boolean) value;
 			//@formatter:off
 			Ghost ghost = 
@@ -220,15 +179,5 @@ public class GameStateViewModel extends AbstractTableModel {
 			data[row].onStage = (boolean) value;
 			fireTableDataChanged();
 		}
-	}
-
-	public void update() {
-		data[Row.Blinky.ordinal()] = new Data(game, ghostCommand, game.blinky);
-		data[Row.Pinky.ordinal()] = new Data(game, ghostCommand, game.pinky);
-		data[Row.Inky.ordinal()] = new Data(game, ghostCommand, game.inky);
-		data[Row.Clyde.ordinal()] = new Data(game, ghostCommand, game.clyde);
-		data[Row.PacMan.ordinal()] = new Data(game, game.pacMan);
-		data[Row.Bonus.ordinal()] = new Data(game, game.bonus);
-		fireTableDataChanged();
 	}
 }

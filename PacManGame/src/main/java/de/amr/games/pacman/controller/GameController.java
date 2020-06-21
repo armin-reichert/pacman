@@ -184,13 +184,17 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			PacManStateMachineLogging.loginfo("%s: Event queue has more than one entry: %s", getDescription(), eventQ);
 		}
 		super.update();
+
+		// update main view
 		currentView.update();
+
+		// update custom tabs in settings dialog
 		if (gameStateView != null) {
-			gameStateView.model.update();
-			gameStateView.update();
+			gameStateView.tableModel.update();
+			gameStateView.updateViewState();
 		}
 		if (gameLevelView != null) {
-			gameLevelView.model.update();
+			gameLevelView.tableModel.update();
 		}
 	}
 
