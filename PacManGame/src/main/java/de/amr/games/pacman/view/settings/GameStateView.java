@@ -23,9 +23,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.view.settings.GameStateTableModel.Column;
 import de.amr.games.pacman.view.settings.GameStateTableModel.Row;
 import net.miginfocom.swing.MigLayout;
-import java.awt.Component;
-import javax.swing.Box;
-import javax.swing.ScrollPaneConstants;
 
 /**
  * Displays information (state, timer values, directions, speed) about the actors and the global
@@ -41,6 +38,15 @@ public class GameStateView extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			JCheckBox cb = (JCheckBox) e.getSource();
 			gameController.setShowingActorRoutes(cb.isSelected());
+		}
+	};
+
+	Action actionShowGrid = new AbstractAction("Show Grid") {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JCheckBox cb = (JCheckBox) e.getSource();
+			gameController.setShowingGrid(cb.isSelected());
 		}
 	};
 
@@ -60,6 +66,7 @@ public class GameStateView extends JPanel {
 	private JCheckBox cbShowStates;
 	private GhostHouseStateView ghostHouseStateView;
 	private JPanel panel;
+	private JCheckBox cbShowGrid;
 
 	public GameStateView() {
 		setLayout(new BorderLayout(0, 0));
@@ -92,6 +99,10 @@ public class GameStateView extends JPanel {
 		cbShowRoutes = new JCheckBox("Show Routes");
 		cbShowRoutes.setAction(actionShowRoutes);
 		content.add(cbShowRoutes, "flowx,cell 0 3");
+
+		cbShowGrid = new JCheckBox("Show Grid");
+		cbShowGrid.setAction(actionShowGrid);
+		content.add(cbShowGrid, "cell 0 3");
 
 		cbShowStates = new JCheckBox("Show States and Counters");
 		cbShowStates.setAction(actionShowStates);
@@ -135,6 +146,7 @@ public class GameStateView extends JPanel {
 		}
 		lblGameControllerState.setText(stateText);
 		cbShowRoutes.setSelected(gameController.isShowingActorRoutes());
+		cbShowGrid.setSelected(gameController.isShowingGrid());
 		cbShowStates.setSelected(gameController.isShowingStates());
 		ghostHouseStateView.updateViewState();
 	}

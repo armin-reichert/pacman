@@ -140,6 +140,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return playView.showRoutes;
 	}
 
+	public void setShowingGrid(boolean selected) {
+		playView.showGrid = selected;
+	}
+
+	public boolean isShowingGrid() {
+		return playView.showGrid;
+	}
+
 	public void setShowingStates(boolean selected) {
 		playView.showStates = selected;
 	}
