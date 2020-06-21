@@ -33,6 +33,6 @@ public class GameLevelView extends JPanel {
 	}
 
 	public void updateViewState() {
-		tableModel.update();
+		tableModel.fireTableDataChanged();
 	}
 }

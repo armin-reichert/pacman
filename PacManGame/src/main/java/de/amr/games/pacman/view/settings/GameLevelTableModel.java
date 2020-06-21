@@ -10,10 +10,30 @@ import de.amr.games.pacman.model.GameLevel;
 
 public class GameLevelTableModel extends AbstractTableModel {
 
-	static final String[] names = { "Level", "Pellets Eaten", "Ghosts Killed in Sequence", "Ghosts Killed in Level",
-			"Bonus", "Bonus value", "Pac-Man Speed", "Pac-Man Dots Speed", "Ghost Speed", "Ghost Tunnel Speed",
-			"Elroy1 Dots Left", "Elroy1 Speed", "Elroy2 Dots Left", "Elroy2 Speed", "Pac-Man Power Speed",
-			"Pac-Man Power Dots Speed", "Ghost Frightened Speed", "Pac-Man Power (seconds)", "Number of Flashes", };
+	//@formatter:off
+	static final String[] PARAMETER_NAMES = { 
+			"Level", 
+			"Pellets Eaten", 
+			"Ghosts Killed in Sequence", 
+			"Ghosts Killed in Level",
+			// from here all are constant per level
+			"Bonus", 
+			"Bonus value", 
+			"Pac-Man Speed", 
+			"Pac-Man Dots Speed", 
+			"Ghost Speed", 
+			"Ghost Tunnel Speed",
+			"Elroy 1 Dots Left", 
+			"Elroy 1 Speed", 
+			"Elroy 2 Dots Left", 
+			"Elroy 2 Speed", 
+			"Pac-Man Power Speed",
+			"Pac-Man Power Dots Speed", 
+			"Ghost Frightened Speed", 
+			"Pac-Man Power (seconds)", 
+			"Number of Flashes", 
+		};
+		//@formatter:on
 
 	private Game game;
 
@@ -21,13 +41,9 @@ public class GameLevelTableModel extends AbstractTableModel {
 		this.game = game;
 	}
 
-	public void update() {
-		fireTableDataChanged();
-	}
-
 	@Override
 	public int getRowCount() {
-		return names.length;
+		return PARAMETER_NAMES.length;
 	}
 
 	@Override
@@ -42,17 +58,10 @@ public class GameLevelTableModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int row, int col) {
-		switch (col) {
-		case 0:
-			return names[row];
-		case 1:
-			return value(row);
-		default:
-			return null;
-		}
+		return col == 0 ? PARAMETER_NAMES[row] : parameterValue(row);
 	}
 
-	private String value(int row) {
+	private String parameterValue(int row) {
 		GameLevel level = game.level;
 		switch (row) {
 		case 0:
