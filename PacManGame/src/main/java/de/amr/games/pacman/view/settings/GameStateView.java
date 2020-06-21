@@ -23,6 +23,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.view.settings.GameStateTableModel.Column;
 import de.amr.games.pacman.view.settings.GameStateTableModel.Row;
 import net.miginfocom.swing.MigLayout;
+import java.awt.Dimension;
 
 /**
  * Displays information (state, timer values, directions, speed) about the actors and the global
@@ -67,13 +68,14 @@ public class GameStateView extends JPanel {
 	private GhostHouseStateView ghostHouseStateView;
 	private JPanel panel;
 	private JCheckBox cbShowGrid;
+	private JPanel checkBoxesPanel;
 
 	public GameStateView() {
 		setLayout(new BorderLayout(0, 0));
 
 		JPanel content = new JPanel();
 		add(content, BorderLayout.CENTER);
-		content.setLayout(new MigLayout("", "[grow]", "[][][][grow][]"));
+		content.setLayout(new MigLayout("", "[grow]", "[][][][][grow,top]"));
 
 		lblGameControllerState = new JLabel("Game Controller State");
 		lblGameControllerState.setForeground(Color.BLUE);
@@ -84,29 +86,33 @@ public class GameStateView extends JPanel {
 		content.add(scrollPane, "cell 0 1,growx,aligny top");
 
 		table = new JTable();
+		table.setPreferredScrollableViewportSize(new Dimension(450, 350));
 		scrollPane.setViewportView(table);
 		table.setModel(GameStateTableModel.SAMPLE_DATA);
 
 		panel = new JPanel();
 		panel.setBorder(
 				new TitledBorder(null, "Ghost House", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(59, 59, 59)));
-		content.add(panel, "cell 0 2,alignx left,aligny top");
+		content.add(panel, "cell 0 2,growx,aligny top");
 		panel.setLayout(new MigLayout("", "[grow]", "[grow]"));
 
 		ghostHouseStateView = new GhostHouseStateView();
-		panel.add(ghostHouseStateView, "cell 0 0,grow");
+		panel.add(ghostHouseStateView, "cell 0 0,growx,aligny top");
+
+		checkBoxesPanel = new JPanel();
+		content.add(checkBoxesPanel, "cell 0 3,growx");
 
 		cbShowRoutes = new JCheckBox("Show Routes");
+		checkBoxesPanel.add(cbShowRoutes);
 		cbShowRoutes.setAction(actionShowRoutes);
-		content.add(cbShowRoutes, "flowx,cell 0 3");
 
 		cbShowGrid = new JCheckBox("Show Grid");
+		checkBoxesPanel.add(cbShowGrid);
 		cbShowGrid.setAction(actionShowGrid);
-		content.add(cbShowGrid, "cell 0 3");
 
 		cbShowStates = new JCheckBox("Show States and Counters");
+		checkBoxesPanel.add(cbShowStates);
 		cbShowStates.setAction(actionShowStates);
-		content.add(cbShowStates, "cell 0 3");
 	}
 
 	/**
