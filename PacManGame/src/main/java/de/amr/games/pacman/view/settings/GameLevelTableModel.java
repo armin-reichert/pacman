@@ -8,6 +8,11 @@ import javax.swing.table.AbstractTableModel;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.GameLevel;
 
+/**
+ * Model of the table displaying all level-dependent parameters.
+ * 
+ * @author Armin Reichert
+ */
 public class GameLevelTableModel extends AbstractTableModel {
 
 	//@formatter:off
