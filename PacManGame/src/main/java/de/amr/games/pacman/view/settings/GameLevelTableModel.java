@@ -22,10 +22,7 @@ public class GameLevelTableModel extends AbstractTableModel {
 	}
 
 	public void update() {
-		fireTableCellUpdated(0, 1);
-		fireTableCellUpdated(1, 1);
-		fireTableCellUpdated(2, 1);
-		fireTableCellUpdated(3, 1);
+		fireTableDataChanged();
 	}
 
 	@Override
