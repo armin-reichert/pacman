@@ -66,6 +66,8 @@ public class LoadingView extends BaseView {
 
 	@Override
 	public void draw(Graphics2D g) {
+		g.setColor(new Color(0, 23, 61));
+		g.fillRect(0, 0, width, height);
 		try (Pen pen = new Pen(g)) {
 			pen.color(new Color(255, 0, 0, alpha));
 			pen.font(theme.fnt_text());
