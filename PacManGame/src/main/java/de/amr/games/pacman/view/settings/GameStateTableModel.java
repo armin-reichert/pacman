@@ -9,7 +9,6 @@ import static de.amr.games.pacman.model.Direction.LEFT;
 import javax.swing.table.AbstractTableModel;
 
 import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
@@ -61,6 +60,7 @@ public class GameStateTableModel extends AbstractTableModel {
 		Blinky, Pinky, Inky, Clyde, PacMan, Bonus
 	}
 
+	// sample data for window builder
 	static final GameStateTableModel SAMPLE_DATA = new GameStateTableModel() {
 
 		//@formatter:off
@@ -82,24 +82,15 @@ public class GameStateTableModel extends AbstractTableModel {
 
 	public GameController gameController;
 	public ActorData[] data = new ActorData[Row.values().length];
+	public Ghost[] ghostByRow;
 
 	private GameStateTableModel() {
 	}
 
 	public GameStateTableModel(GameController gameController) {
 		this.gameController = gameController;
-	}
-
-	public void update() {
 		Game game = gameController.game;
-		GhostCommand ghostCommand = gameController.ghostCommand;
-		data[Row.Blinky.ordinal()] = new ActorData(game, ghostCommand, game.blinky);
-		data[Row.Pinky.ordinal()] = new ActorData(game, ghostCommand, game.pinky);
-		data[Row.Inky.ordinal()] = new ActorData(game, ghostCommand, game.inky);
-		data[Row.Clyde.ordinal()] = new ActorData(game, ghostCommand, game.clyde);
-		data[Row.PacMan.ordinal()] = new ActorData(game, game.pacMan);
-		data[Row.Bonus.ordinal()] = new ActorData(game, game.bonus);
-		fireTableDataChanged();
+		ghostByRow = new Ghost[] { game.blinky, game.pinky, game.inky, game.clyde };
 	}
 
 	@Override
@@ -161,23 +152,9 @@ public class GameStateTableModel extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object value, int row, int col) {
 		Column column = Column.at(col);
-		if (column == Column.OnStage && row < Row.PacMan.ordinal()) {
-			Game game = gameController.game;
-			boolean onStage = (boolean) value;
-			//@formatter:off
-			Ghost ghost = 
-					row == Row.Blinky.ordinal() ? game.blinky
-				: row == Row.Pinky.ordinal() ? game.pinky 
-				: row == Row.Inky.ordinal() ? game.inky 
-				: game.clyde;
-			//@formatter:on
-			if (onStage) {
-				game.putOnStage(ghost);
-			} else {
-				game.pullFromStage(ghost);
-			}
+		if (column == Column.OnStage) {
 			data[row].onStage = (boolean) value;
-			fireTableDataChanged();
+			fireTableCellUpdated(row, col);
 		}
 	}
 }

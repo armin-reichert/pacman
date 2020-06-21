@@ -27,7 +27,7 @@ public class GameLevelView extends JPanel {
 		scrollPane.setViewportView(table);
 	}
 
-	public void createModel(Game game) {
+	public void attachTo(Game game) {
 		tableModel = new GameLevelViewModel(game);
 		table.setModel(tableModel);
 	}

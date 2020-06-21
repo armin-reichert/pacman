@@ -17,7 +17,11 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 
 import de.amr.games.pacman.controller.GameController;
+import de.amr.games.pacman.controller.GhostCommand;
+import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.view.settings.GameStateTableModel.Column;
+import de.amr.games.pacman.view.settings.GameStateTableModel.Row;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -27,8 +31,6 @@ import net.miginfocom.swing.MigLayout;
  * @author Armin Reichert
  */
 public class GameStateView extends JPanel {
-
-	public GameStateTableModel tableModel;
 
 	Action actionShowRoutes = new AbstractAction("Show Routes") {
 
@@ -87,9 +89,23 @@ public class GameStateView extends JPanel {
 	 * 
 	 * @param gameController the game controller
 	 */
-	public void createModel(GameController gameController) {
+	public void attachTo(GameController gameController) {
 		this.gameController = gameController;
-		tableModel = new GameStateTableModel(gameController);
+		GameStateTableModel tableModel = new GameStateTableModel(gameController);
+		tableModel.addTableModelListener(e -> {
+			if (e.getColumn() == Column.OnStage.ordinal()) {
+				int row = e.getFirstRow();
+				if (row != Row.PacMan.ordinal() && row != Row.Bonus.ordinal()) {
+					Ghost ghost = tableModel.ghostByRow[row];
+					boolean onStage = tableModel.data[row].onStage;
+					if (onStage) {
+						gameController.game.putOnStage(ghost);
+					} else {
+						gameController.game.pullFromStage(ghost);
+					}
+				}
+			}
+		});
 		table.setModel(tableModel);
 		column(Column.Tile).setCellRenderer(new TileCellRenderer());
 		column(Column.Speed).setCellRenderer(new SpeedCellRenderer());
@@ -111,5 +127,20 @@ public class GameStateView extends JPanel {
 		lblGameControllerState.setText(stateText);
 		cbShowRoutes.setSelected(gameController.isShowingActorRoutes());
 		cbShowStates.setSelected(gameController.isShowingStates());
+	}
+
+	public void updateTableData() {
+		if (table.getModel() instanceof GameStateTableModel) {
+			GameStateTableModel model = (GameStateTableModel) table.getModel();
+			Game game = gameController.game;
+			GhostCommand ghostCommand = gameController.ghostCommand;
+			model.data[Row.Blinky.ordinal()] = new ActorData(game, ghostCommand, game.blinky);
+			model.data[Row.Pinky.ordinal()] = new ActorData(game, ghostCommand, game.pinky);
+			model.data[Row.Inky.ordinal()] = new ActorData(game, ghostCommand, game.inky);
+			model.data[Row.Clyde.ordinal()] = new ActorData(game, ghostCommand, game.clyde);
+			model.data[Row.PacMan.ordinal()] = new ActorData(game, game.pacMan);
+			model.data[Row.Bonus.ordinal()] = new ActorData(game, game.bonus);
+			model.fireTableDataChanged();
+		}
 	}
 }

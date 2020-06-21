@@ -11,12 +11,15 @@ public class TileCellRenderer extends DefaultTableCellRenderer {
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 			int row, int column) {
+		super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		GameStateTableModel model = (GameStateTableModel) table.getModel();
-		if (model.data[row].pacManCollision) {
-			setBackground(new Color(255, 0, 0, 100));
-		} else {
-			setBackground(table.getBackground());
+		if (model != null) {
+			if (model.data[row].pacManCollision) {
+				setBackground(new Color(255, 0, 0, 100));
+			} else {
+				setBackground(table.getBackground());
+			}
 		}
-		return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+		return this;
 	}
 }

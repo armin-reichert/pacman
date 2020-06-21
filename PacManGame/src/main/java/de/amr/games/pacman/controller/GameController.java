@@ -115,13 +115,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			gameStateView = new GameStateView();
 			app().addCustomSettingsTab("Game State", gameStateView);
 		}
-		gameStateView.createModel(this);
+		gameStateView.attachTo(this);
 
 		if (gameLevelView == null) {
 			gameLevelView = new GameLevelView();
 			app().addCustomSettingsTab("Game Level", gameLevelView);
 		}
-		gameLevelView.createModel(game);
+		gameLevelView.attachTo(game);
 
 		app().selectCustomSettingsTab(0);
 
@@ -190,7 +190,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		// update custom tabs in settings dialog
 		if (gameStateView != null) {
-			gameStateView.tableModel.update();
+			gameStateView.updateTableData();
 			gameStateView.updateViewState();
 		}
 		if (gameLevelView != null) {
