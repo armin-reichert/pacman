@@ -51,7 +51,7 @@ class MovingRandomlyTestUI extends PlayView {
 		super.init();
 		game.maze.eatAllFood();
 		game.ghosts().forEach(ghost -> {
-			game.putOnStage(ghost);
+			game.takePart(ghost);
 			ghost.tf.setPosition(game.maze.pacManSeat.position);
 			ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
 			ghost.state(FRIGHTENED).removeTimer();

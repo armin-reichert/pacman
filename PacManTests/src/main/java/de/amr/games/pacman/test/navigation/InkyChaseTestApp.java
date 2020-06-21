@@ -52,7 +52,7 @@ class InkyChaseTestUI extends PlayView {
 		super.init();
 		game.maze.eatAllFood();
 		theme.snd_ghost_chase().volume(0);
-		Stream.of(game.pacMan, game.inky, game.blinky).forEach(game::putOnStage);
+		Stream.of(game.pacMan, game.inky, game.blinky).forEach(game::takePart);
 		game.ghostsOnStage().forEach(ghost -> {
 			ghost.subsequentState = CHASING;
 		});

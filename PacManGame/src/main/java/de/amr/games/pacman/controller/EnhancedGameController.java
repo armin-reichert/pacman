@@ -80,11 +80,7 @@ public class EnhancedGameController extends GameController {
 	}
 
 	private void toggleGhostOnStage(Ghost ghost) {
-		if (game.onStage(ghost)) {
-			game.pullFromStage(ghost);
-		} else {
-			game.putOnStage(ghost);
-		}
+		game.takePart(ghost, !game.takesPart(ghost));
 	}
 
 	private void togglePacManOverflowBug() {

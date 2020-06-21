@@ -127,7 +127,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		setDemoMode(settings.demoMode);
 		game.creatures().forEach(actor -> {
-			game.putOnStage(actor);
+			game.takePart(actor);
 			actor.addEventListener(this::process);
 		});
 	}

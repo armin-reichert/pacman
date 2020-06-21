@@ -125,7 +125,7 @@ public class GameStateTableModel extends AbstractTableModel {
 		}
 		switch (Column.at(col)) {
 		case OnStage:
-			return data[row].onStage;
+			return data[row].takesPart;
 		case Name:
 			return data[row].name;
 		case MoveDir:
@@ -153,7 +153,7 @@ public class GameStateTableModel extends AbstractTableModel {
 	public void setValueAt(Object value, int row, int col) {
 		Column column = Column.at(col);
 		if (column == Column.OnStage) {
-			data[row].onStage = (boolean) value;
+			data[row].takesPart = (boolean) value;
 			fireTableCellUpdated(row, col);
 		}
 	}

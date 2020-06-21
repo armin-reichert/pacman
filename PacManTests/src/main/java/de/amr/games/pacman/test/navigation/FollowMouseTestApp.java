@@ -46,7 +46,7 @@ class FollowMouseTestUI extends PlayView {
 	public void init() {
 		super.init();
 		game.maze.eatAllFood();
-		game.putOnStage(game.blinky);
+		game.takePart(game.blinky);
 		game.blinky.behavior(CHASING, game.blinky.isHeadingFor(() -> mousePosition));
 		game.blinky.setState(CHASING);
 	}

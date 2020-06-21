@@ -114,7 +114,7 @@ public class Game {
 	public int lives;
 	public int score;
 
-	private Set<Creature<?>> stage = new HashSet<>();
+	private Set<Creature<?>> actorsTakingPart = new HashSet<>();
 
 	/**
 	 * Creates a game starting with the given level.
@@ -237,7 +237,7 @@ public class Game {
 	 * @return stream of ghosts currently on stage
 	 */
 	public Stream<Ghost> ghostsOnStage() {
-		return ghosts().filter(stage::contains);
+		return ghosts().filter(actorsTakingPart::contains);
 	}
 
 	/**
@@ -251,7 +251,7 @@ public class Game {
 	 * @return stream of creatures currently on stage (ghosts and Pac-Man)
 	 */
 	public Stream<Creature<?>> creaturesOnStage() {
-		return creatures().filter(stage::contains);
+		return creatures().filter(actorsTakingPart::contains);
 	}
 
 	/**
@@ -334,31 +334,32 @@ public class Game {
 	 * @param actor a ghost or Pac-Man
 	 * @return {@code true} if the actor is currently on stage
 	 */
-	public boolean onStage(Creature<?> actor) {
-		return stage.contains(actor);
+	public boolean takesPart(Creature<?> actor) {
+		return actorsTakingPart.contains(actor);
 	}
 
 	/**
-	 * Puts the given actor on stage.
+	 * Lets the actor take part at the game.
 	 * 
-	 * @param actor a ghost or Pac-Man
+	 * @param actor     a ghost or Pac-Man
+	 * @param takesPart if the actors takes part
 	 */
-	public void putOnStage(Creature<?> actor) {
-		stage.add(actor);
-		actor.init();
-		actor.visible = true;
-		loginfo("%s entered the stage", actor.name);
+	public void takePart(Creature<?> actor, boolean takesPart) {
+		if (takesPart) {
+			actorsTakingPart.add(actor);
+			actor.init();
+			actor.visible = true;
+			loginfo("%s entered the game", actor.name);
+		} else {
+			actorsTakingPart.remove(actor);
+			actor.visible = false;
+			actor.placeAt(Tile.at(-1, -1));
+			loginfo("%s left the game", actor.name);
+
+		}
 	}
 
-	/**
-	 * Pulls the given actor from stage.
-	 * 
-	 * @param actor a ghost or Pac-Man
-	 */
-	public void pullFromStage(Creature<?> actor) {
-		stage.remove(actor);
-		actor.visible = false;
-		actor.placeAt(Tile.at(-1, -1));
-		loginfo("%s left the stage", actor.name);
+	public void takePart(Creature<?> actor) {
+		takePart(actor, true);
 	}
 }

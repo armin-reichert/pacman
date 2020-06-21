@@ -60,7 +60,7 @@ class FollowTargetTilesTestUI extends PlayView {
 		current = 0;
 		maze.eatAllFood();
 		theme.snd_ghost_chase().volume(0);
-		game.putOnStage(game.blinky);
+		game.takePart(game.blinky);
 		game.blinky.placeAt(targets.get(0));
 		game.blinky.behavior(CHASING, game.blinky.isHeadingFor(() -> targets.get(current)));
 		game.blinky.setState(CHASING);

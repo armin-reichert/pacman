@@ -64,7 +64,7 @@ class PacManMovementTestUI extends PlayView {
 				}
 			}
 		});
-		game.putOnStage(pacMan);
+		game.takePart(pacMan);
 		pacMan.setState(PacManState.EATING);
 		showMessage("Cursor keys", Color.WHITE);
 		mazeView.energizersBlinking.setEnabled(true);

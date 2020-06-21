@@ -40,7 +40,7 @@ public class GhostHouse {
 	}
 
 	public void update() {
-		if (game.onStage(game.blinky) && game.blinky.is(LOCKED)) {
+		if (game.takesPart(game.blinky) && game.blinky.is(LOCKED)) {
 			unlock(game.blinky);
 		}
 		preferredLockedGhost().filter(this::canLeaveHome).ifPresent(this::unlock);
@@ -94,7 +94,7 @@ public class GhostHouse {
 	}
 
 	private Optional<Ghost> preferredLockedGhost() {
-		return Stream.of(game.pinky, game.inky, game.clyde).filter(game::onStage).filter(ghost -> ghost.is(LOCKED))
+		return Stream.of(game.pinky, game.inky, game.clyde).filter(game::takesPart).filter(ghost -> ghost.is(LOCKED))
 				.findFirst();
 	}
 

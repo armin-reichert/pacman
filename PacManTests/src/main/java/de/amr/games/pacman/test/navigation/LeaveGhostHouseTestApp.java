@@ -50,7 +50,7 @@ class LeaveGhostHouseTestUI extends PlayView {
 	public void init() {
 		super.init();
 		game.maze.eatAllFood();
-		game.putOnStage(game.inky);
+		game.takePart(game.inky);
 		game.inky.subsequentState = SCATTERING;
 		showMessage("Press SPACE to unlock", Color.WHITE);
 	}

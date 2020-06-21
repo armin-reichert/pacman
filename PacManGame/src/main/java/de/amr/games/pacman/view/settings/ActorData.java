@@ -18,7 +18,7 @@ import de.amr.games.pacman.model.Tile;
  * @author Armin Reichert
  */
 class ActorData {
-	boolean onStage;
+	boolean takesPart;
 	String name;
 	Tile tile;
 	Tile target;
@@ -31,7 +31,7 @@ class ActorData {
 	boolean pacManCollision;
 
 	public ActorData(Game game, PacMan pacMan) {
-		onStage = game.onStage(pacMan);
+		takesPart = game.takesPart(pacMan);
 		name = "Pac-Man";
 		tile = pacMan.tile();
 		moveDir = pacMan.moveDir();
@@ -43,7 +43,7 @@ class ActorData {
 	}
 
 	public ActorData(Game game, GhostCommand ghostCommand, Ghost ghost) {
-		onStage = game.onStage(ghost);
+		takesPart = game.takesPart(ghost);
 		name = ghost.name;
 		tile = ghost.tile();
 		target = ghost.targetTile();
@@ -58,7 +58,7 @@ class ActorData {
 	}
 
 	public ActorData(Game game, Bonus bonus) {
-		onStage = bonus.visible;
+		takesPart = bonus.visible;
 		name = bonus.symbol != null ? bonus.toString() : "Bonus";
 		tile = game.maze.bonusSeat.tile;
 		state = bonus.getState().name();

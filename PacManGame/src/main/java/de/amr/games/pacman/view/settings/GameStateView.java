@@ -18,7 +18,6 @@ import javax.swing.table.TableColumn;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostCommand;
-import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.view.settings.GameStateTableModel.Column;
 import de.amr.games.pacman.view.settings.GameStateTableModel.Row;
@@ -96,13 +95,7 @@ public class GameStateView extends JPanel {
 			if (e.getColumn() == Column.OnStage.ordinal()) {
 				int row = e.getFirstRow();
 				if (row != Row.PacMan.ordinal() && row != Row.Bonus.ordinal()) {
-					Ghost ghost = tableModel.ghostByRow[row];
-					boolean onStage = tableModel.data[row].onStage;
-					if (onStage) {
-						gameController.game.putOnStage(ghost);
-					} else {
-						gameController.game.pullFromStage(ghost);
-					}
+					gameController.game.takePart(tableModel.ghostByRow[row], tableModel.data[row].takesPart);
 				}
 			}
 		});
