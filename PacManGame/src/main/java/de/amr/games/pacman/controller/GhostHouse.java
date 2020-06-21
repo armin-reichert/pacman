@@ -135,7 +135,7 @@ public class GhostHouse {
 		return false;
 	}
 
-	private int personalDotLimit(Ghost ghost) {
+	public int personalDotLimit(Ghost ghost) {
 		if (ghost == game.pinky) {
 			return 0;
 		}
@@ -148,7 +148,7 @@ public class GhostHouse {
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");
 	}
 
-	private int globalDotLimit(Ghost ghost) {
+	public int globalDotLimit(Ghost ghost) {
 		if (ghost == game.pinky) {
 			return 7;
 		}

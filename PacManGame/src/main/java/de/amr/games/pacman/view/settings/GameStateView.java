@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.TableColumn;
 
 import de.amr.games.pacman.controller.GameController;
@@ -22,6 +23,9 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.view.settings.GameStateTableModel.Column;
 import de.amr.games.pacman.view.settings.GameStateTableModel.Row;
 import net.miginfocom.swing.MigLayout;
+import java.awt.Component;
+import javax.swing.Box;
+import javax.swing.ScrollPaneConstants;
 
 /**
  * Displays information (state, timer values, directions, speed) about the actors and the global
@@ -54,13 +58,15 @@ public class GameStateView extends JPanel {
 	private JLabel lblGameControllerState;
 	private JCheckBox cbShowRoutes;
 	private JCheckBox cbShowStates;
+	private GhostHouseStateView ghostHouseStateView;
+	private JPanel panel;
 
 	public GameStateView() {
 		setLayout(new BorderLayout(0, 0));
 
 		JPanel content = new JPanel();
 		add(content, BorderLayout.CENTER);
-		content.setLayout(new MigLayout("", "[grow]", "[][grow][][grow]"));
+		content.setLayout(new MigLayout("", "[grow]", "[][][][grow][]"));
 
 		lblGameControllerState = new JLabel("Game Controller State");
 		lblGameControllerState.setForeground(Color.BLUE);
@@ -68,19 +74,28 @@ public class GameStateView extends JPanel {
 		content.add(lblGameControllerState, "cell 0 0,alignx center");
 
 		JScrollPane scrollPane = new JScrollPane();
-		content.add(scrollPane, "cell 0 1,grow");
+		content.add(scrollPane, "cell 0 1,growx,aligny top");
 
 		table = new JTable();
 		scrollPane.setViewportView(table);
 		table.setModel(GameStateTableModel.SAMPLE_DATA);
 
+		panel = new JPanel();
+		panel.setBorder(
+				new TitledBorder(null, "Ghost House", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(59, 59, 59)));
+		content.add(panel, "cell 0 2,alignx left,aligny top");
+		panel.setLayout(new MigLayout("", "[grow]", "[grow]"));
+
+		ghostHouseStateView = new GhostHouseStateView();
+		panel.add(ghostHouseStateView, "cell 0 0,grow");
+
 		cbShowRoutes = new JCheckBox("Show Routes");
 		cbShowRoutes.setAction(actionShowRoutes);
-		content.add(cbShowRoutes, "flowx,cell 0 2");
+		content.add(cbShowRoutes, "flowx,cell 0 3");
 
 		cbShowStates = new JCheckBox("Show States and Counters");
 		cbShowStates.setAction(actionShowStates);
-		content.add(cbShowStates, "cell 0 2");
+		content.add(cbShowStates, "cell 0 3");
 	}
 
 	/**
@@ -104,6 +119,7 @@ public class GameStateView extends JPanel {
 		column(Column.Speed).setCellRenderer(new SpeedCellRenderer());
 		column(Column.Remaining).setCellRenderer(new TicksCellRenderer());
 		column(Column.Duration).setCellRenderer(new TicksCellRenderer());
+		ghostHouseStateView.attachTo(gameController);
 		updateViewState();
 	}
 
@@ -120,6 +136,7 @@ public class GameStateView extends JPanel {
 		lblGameControllerState.setText(stateText);
 		cbShowRoutes.setSelected(gameController.isShowingActorRoutes());
 		cbShowStates.setSelected(gameController.isShowingStates());
+		ghostHouseStateView.updateViewState();
 	}
 
 	public void updateTableData() {

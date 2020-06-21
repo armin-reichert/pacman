@@ -74,7 +74,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected GameLevelView gameLevelView;
 
 	public GhostCommand ghostCommand;
-	protected GhostHouse ghostHouse;
+	public GhostHouse ghostHouse;
 
 	public GameController(Theme theme) {
 		super(PacManGameState.class);
