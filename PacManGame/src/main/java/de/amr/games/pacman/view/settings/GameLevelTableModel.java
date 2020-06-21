@@ -8,7 +8,7 @@ import javax.swing.table.AbstractTableModel;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.GameLevel;
 
-public class GameLevelViewModel extends AbstractTableModel {
+public class GameLevelTableModel extends AbstractTableModel {
 
 	static final String[] names = { "Level", "Pellets Eaten", "Ghosts Killed in Sequence", "Ghosts Killed in Level",
 			"Bonus", "Bonus value", "Pac-Man Speed", "Pac-Man Dots Speed", "Ghost Speed", "Ghost Tunnel Speed",
@@ -17,7 +17,7 @@ public class GameLevelViewModel extends AbstractTableModel {
 
 	private Game game;
 
-	public GameLevelViewModel(Game game) {
+	public GameLevelTableModel(Game game) {
 		this.game = game;
 	}
 

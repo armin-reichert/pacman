@@ -11,7 +11,7 @@ import net.miginfocom.swing.MigLayout;
 
 public class GameLevelView extends JPanel {
 	private JTable table;
-	public GameLevelViewModel tableModel;
+	public GameLevelTableModel tableModel;
 
 	public GameLevelView() {
 		setLayout(new BorderLayout(0, 0));
@@ -28,8 +28,11 @@ public class GameLevelView extends JPanel {
 	}
 
 	public void attachTo(Game game) {
-		tableModel = new GameLevelViewModel(game);
+		tableModel = new GameLevelTableModel(game);
 		table.setModel(tableModel);
 	}
 
+	public void updateViewState() {
+		tableModel.update();
+	}
 }
