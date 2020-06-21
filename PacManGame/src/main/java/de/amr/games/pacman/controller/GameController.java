@@ -62,7 +62,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	public Game game;
 
-	protected Theme theme;
+	public Theme theme;
 	protected PacManSounds sound;
 
 	protected LoadingView loadingView;

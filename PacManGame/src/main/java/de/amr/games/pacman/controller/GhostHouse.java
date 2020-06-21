@@ -93,7 +93,7 @@ public class GhostHouse {
 		return pacManStarvingTicks;
 	}
 
-	private Optional<Ghost> preferredLockedGhost() {
+	public Optional<Ghost> preferredLockedGhost() {
 		return Stream.of(game.pinky, game.inky, game.clyde).filter(game::takesPart).filter(ghost -> ghost.is(LOCKED))
 				.findFirst();
 	}
