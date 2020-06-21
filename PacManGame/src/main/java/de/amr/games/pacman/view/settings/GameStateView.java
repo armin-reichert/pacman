@@ -139,6 +139,7 @@ public class GameStateView extends JPanel {
 	}
 
 	public void updateViewState() {
+		updateTableData();
 		String stateText = gameController.getState().name();
 		if (gameController.state().getDuration() != Integer.MAX_VALUE) {
 			stateText = String.format("%s (%s sec of %s sec remaining)", gameController.getState(),
@@ -151,7 +152,7 @@ public class GameStateView extends JPanel {
 		ghostHouseStateView.updateViewState();
 	}
 
-	public void updateTableData() {
+	private void updateTableData() {
 		if (table.getModel() instanceof GameStateTableModel) {
 			GameStateTableModel model = (GameStateTableModel) table.getModel();
 			Game game = gameController.game;

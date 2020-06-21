@@ -36,10 +36,12 @@ class ActorData {
 		tile = pacMan.tile();
 		moveDir = pacMan.moveDir();
 		wishDir = pacMan.wishDir();
-		speed = pacMan.currentSpeed(game);
-		state = pacMan.power == 0 ? pacMan.getState().name() : "POWER";
-		ticksRemaining = pacMan.power == 0 ? pacMan.state().getTicksRemaining() : pacMan.power;
-		duration = pacMan.power == 0 ? pacMan.state().getDuration() : sec(game.level.pacManPowerSeconds);
+		if (pacMan.getState() != null) {
+			speed = pacMan.currentSpeed(game);
+			state = pacMan.power == 0 ? pacMan.getState().name() : "POWER";
+			ticksRemaining = pacMan.power == 0 ? pacMan.state().getTicksRemaining() : pacMan.power;
+			duration = pacMan.power == 0 ? pacMan.state().getDuration() : sec(game.level.pacManPowerSeconds);
+		}
 	}
 
 	public ActorData(Game game, GhostCommand ghostCommand, Ghost ghost) {
@@ -49,11 +51,13 @@ class ActorData {
 		target = ghost.targetTile();
 		moveDir = ghost.moveDir();
 		wishDir = ghost.wishDir();
-		speed = ghost.currentSpeed(game);
-		state = ghost.getState().name();
-		ticksRemaining = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getTicksRemaining()
-				: ghost.state().getTicksRemaining();
-		duration = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getDuration() : ghost.state().getDuration();
+		if (ghost.getState() != null) {
+			speed = ghost.currentSpeed(game);
+			state = ghost.getState().name();
+			ticksRemaining = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getTicksRemaining()
+					: ghost.state().getTicksRemaining();
+			duration = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getDuration() : ghost.state().getDuration();
+		}
 		pacManCollision = tile.equals(game.pacMan.tile());
 	}
 
