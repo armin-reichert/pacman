@@ -14,12 +14,10 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.TableColumn;
 
+import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.view.dashboard.states.GameStateTableModel.Field;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -28,7 +26,7 @@ import net.miginfocom.swing.MigLayout;
  * 
  * @author Armin Reichert
  */
-public class GameStateView extends JPanel {
+public class GameStateView extends JPanel implements Lifecycle {
 
 	Action actionShowRoutes = new AbstractAction("Show Routes") {
 
@@ -58,7 +56,7 @@ public class GameStateView extends JPanel {
 	};
 
 	private GameController gameController;
-	private JTable table;
+	private GameStateTable table;
 	private JLabel lblGameControllerState;
 	private JCheckBox cbShowRoutes;
 	private JCheckBox cbShowStates;
@@ -82,11 +80,10 @@ public class GameStateView extends JPanel {
 		JScrollPane scrollPane = new JScrollPane();
 		content.add(scrollPane, "cell 0 1,growx,aligny top");
 
-		table = new JTable();
+		table = new GameStateTable();
 		table.setRowHeight(24);
 		table.setPreferredScrollableViewportSize(new Dimension(450, 350));
 		scrollPane.setViewportView(table);
-		table.setModel(GameStateTableModel.SAMPLE_DATA);
 
 		panel = new JPanel();
 		panel.setBorder(
@@ -120,32 +117,27 @@ public class GameStateView extends JPanel {
 	 */
 	public void attachTo(GameController gameController) {
 		this.gameController = gameController;
-		GameStateTableModel tableModel = new GameStateTableModel(gameController);
-		table.setModel(tableModel);
-		column(Field.Tile).setCellRenderer(new TileRenderer(tableModel));
-		column(Field.Speed).setCellRenderer(new SpeedRenderer(tableModel));
-		column(Field.Remaining).setCellRenderer(new TicksRenderer());
-		column(Field.Duration).setCellRenderer(new TicksRenderer());
+		table.setModel(new GameStateTableModel(gameController));
 		ghostHouseStateView.attachTo(gameController);
-		updateViewState();
+		update();
 	}
 
-	private TableColumn column(Field column) {
-		return table.getColumnModel().getColumn(column.ordinal());
+	@Override
+	public void init() {
 	}
 
-	public void updateViewState() {
-		((GameStateTableModel) table.getModel()).update();
+	@Override
+	public void update() {
 		String stateText = gameController.getState().name();
 		if (gameController.state().getDuration() != Integer.MAX_VALUE) {
 			stateText = String.format("%s (%s sec of %s sec remaining)", gameController.getState(),
 					seconds(gameController.state().getTicksRemaining()), seconds(gameController.state().getDuration()));
 		}
 		lblGameControllerState.setText(stateText);
+		table.update();
+		ghostHouseStateView.updateViewState();
 		cbShowRoutes.setSelected(gameController.isShowingActorRoutes());
 		cbShowGrid.setSelected(gameController.isShowingGrid());
 		cbShowStates.setSelected(gameController.isShowingStates());
-		ghostHouseStateView.updateViewState();
 	}
-
 }

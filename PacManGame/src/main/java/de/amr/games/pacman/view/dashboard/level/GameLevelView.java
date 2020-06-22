@@ -32,7 +32,7 @@ public class GameLevelView extends JPanel {
 		table.setModel(tableModel);
 	}
 
-	public void updateViewState() {
+	public void update() {
 		tableModel.fireTableDataChanged();
 	}
 }

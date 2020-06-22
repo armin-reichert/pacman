@@ -1,11 +1,5 @@
 package de.amr.games.pacman.view.dashboard.states;
 
-import static de.amr.games.pacman.controller.actor.BonusState.INACTIVE;
-import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
-import static de.amr.games.pacman.controller.actor.PacManState.SLEEPING;
-import static de.amr.games.pacman.model.Direction.DOWN;
-import static de.amr.games.pacman.model.Direction.LEFT;
-
 import javax.swing.table.AbstractTableModel;
 
 import de.amr.games.pacman.controller.GameController;
@@ -22,6 +16,17 @@ import de.amr.games.pacman.model.Tile;
  * @author Armin Reichert
  */
 class GameStateTableModel extends AbstractTableModel {
+
+	public final static GameStateTableModel LOREM_IPSUM = new GameStateTableModel();
+
+	static {
+		LOREM_IPSUM.record(ActorRow.Blinky).name = "Blinky";
+		LOREM_IPSUM.record(ActorRow.Pinky).name = "Pinky";
+		LOREM_IPSUM.record(ActorRow.Inky).name = "Inky";
+		LOREM_IPSUM.record(ActorRow.Clyde).name = "Clyde";
+		LOREM_IPSUM.record(ActorRow.PacMan).name = "Pac-Man";
+		LOREM_IPSUM.record(ActorRow.Bonus).name = "Bonus";
+	}
 
 	public enum Field {
 		//@formatter:off
@@ -63,36 +68,20 @@ class GameStateTableModel extends AbstractTableModel {
 		Blinky, Pinky, Inky, Clyde, PacMan, Bonus
 	}
 
-	// sample data for window builder
-	static final GameStateTableModel SAMPLE_DATA = new GameStateTableModel() {
-
-		//@formatter:off
-		Object[][] data = {
-		{ true,  "Blinky",  Tile.at(0, 0), Tile.at(0, 0), DOWN, LEFT, 0f, LOCKED,    0, 0, false },
-		{ false, "Pinky",   Tile.at(0, 0), Tile.at(0, 0), DOWN, LEFT, 0f, LOCKED,    0, 0, false },
-		{ true,  "Inky",    Tile.at(0, 0), Tile.at(0, 0), DOWN, LEFT, 0f, LOCKED,    0, 0, false },
-		{ true,  "Clyde",   Tile.at(0, 0), Tile.at(0, 0), DOWN, LEFT, 0f, LOCKED,    0, 0, false },
-		{ true,  "Pac-Man", Tile.at(0, 0), null,          DOWN, LEFT, 0f, SLEEPING,  0, 0, false },
-		{ true,  "Bonus",   Tile.at(0, 0), null,          null, null, 0f, INACTIVE,  0, 0, false },
-		};
-		//@formatter:on
-
-		@Override
-		public Object getValueAt(int row, int col) {
-			return data[row][col];
-		}
-	};
-
 	public GameController gameController;
 	public Ghost[] ghostByRow;
-	private ActorRecord[] records = new ActorRecord[ActorRow.values().length];
+	private final GameStateRecord[] records;
 
-	private GameStateTableModel() {
-		// used for sample data
+	public GameStateTableModel() {
+		records = new GameStateRecord[ActorRow.values().length];
+		for (int i = 0; i < records.length; ++i) {
+			records[i] = new GameStateRecord();
+		}
 	}
 
 	public GameStateTableModel(GameController gameController) {
 		this.gameController = gameController;
+		records = new GameStateRecord[ActorRow.values().length];
 		Game game = gameController.game;
 		ghostByRow = new Ghost[] { game.blinky, game.pinky, game.inky, game.clyde };
 		addTableModelListener(e -> {
@@ -108,18 +97,18 @@ class GameStateTableModel extends AbstractTableModel {
 	public void update() {
 		Game game = gameController.game;
 		GhostCommand ghostCommand = gameController.ghostCommand;
-		records[ActorRow.Blinky.ordinal()] = new ActorRecord(game, ghostCommand, game.blinky);
-		records[ActorRow.Pinky.ordinal()] = new ActorRecord(game, ghostCommand, game.pinky);
-		records[ActorRow.Inky.ordinal()] = new ActorRecord(game, ghostCommand, game.inky);
-		records[ActorRow.Clyde.ordinal()] = new ActorRecord(game, ghostCommand, game.clyde);
-		records[ActorRow.PacMan.ordinal()] = new ActorRecord(game, game.pacMan);
-		records[ActorRow.Bonus.ordinal()] = new ActorRecord(game, game.bonus);
+		records[ActorRow.Blinky.ordinal()] = new GameStateRecord(game, ghostCommand, game.blinky);
+		records[ActorRow.Pinky.ordinal()] = new GameStateRecord(game, ghostCommand, game.pinky);
+		records[ActorRow.Inky.ordinal()] = new GameStateRecord(game, ghostCommand, game.inky);
+		records[ActorRow.Clyde.ordinal()] = new GameStateRecord(game, ghostCommand, game.clyde);
+		records[ActorRow.PacMan.ordinal()] = new GameStateRecord(game, game.pacMan);
+		records[ActorRow.Bonus.ordinal()] = new GameStateRecord(game, game.bonus);
 		fireTableDataChanged();
 	}
 
 	@Override
 	public Object getValueAt(int row, int col) {
-		ActorRecord r = records[row];
+		GameStateRecord r = records[row];
 		switch (Field.at(col)) {
 		case OnStage:
 			return r.takesPart;
@@ -156,11 +145,11 @@ class GameStateTableModel extends AbstractTableModel {
 		}
 	}
 
-	public ActorRecord record(ActorRow row) {
+	public GameStateRecord record(ActorRow row) {
 		return records[row.ordinal()];
 	}
 
-	public ActorRecord record(int row) {
+	public GameStateRecord record(int row) {
 		return records[row];
 	}
 

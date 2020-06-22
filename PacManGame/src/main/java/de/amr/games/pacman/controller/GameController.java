@@ -198,10 +198,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		// update custom tabs in settings dialog
 		if (gameStateView != null) {
-			gameStateView.updateViewState();
+			gameStateView.update();
 		}
 		if (gameLevelView != null) {
-			gameLevelView.updateViewState();
+			gameLevelView.update();
 		}
 	}
 
