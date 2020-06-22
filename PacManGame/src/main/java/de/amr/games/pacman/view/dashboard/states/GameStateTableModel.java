@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.dashboard;
+package de.amr.games.pacman.view.dashboard.states;
 
 import static de.amr.games.pacman.controller.actor.BonusState.INACTIVE;
 import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
@@ -9,7 +9,9 @@ import static de.amr.games.pacman.model.Direction.LEFT;
 import javax.swing.table.AbstractTableModel;
 
 import de.amr.games.pacman.controller.GameController;
+import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.Ghost.Sanity;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
@@ -30,7 +32,8 @@ public class GameStateTableModel extends AbstractTableModel {
 		MoveDir(Direction.class, false),
 		WishDir(Direction.class, false),
 		Speed("Pixel/sec", Float.class, false),
-		State(Object.class, false), 
+		State(Object.class, false),
+		GhostSanity(Sanity.class, false),
 		Remaining(Integer.class, false), 
 		Duration(Integer.class, false);
 		//@formatter:on
@@ -81,18 +84,45 @@ public class GameStateTableModel extends AbstractTableModel {
 	};
 
 	public GameController gameController;
-
-	public ActorRecord[] records = new ActorRecord[ActorRow.values().length];
-
 	public Ghost[] ghostByRow;
+	private ActorRecord[] records = new ActorRecord[ActorRow.values().length];
 
 	private GameStateTableModel() {
+		// used for sample data
 	}
 
 	public GameStateTableModel(GameController gameController) {
 		this.gameController = gameController;
 		Game game = gameController.game;
 		ghostByRow = new Ghost[] { game.blinky, game.pinky, game.inky, game.clyde };
+		addTableModelListener(e -> {
+			if (e.getColumn() == Field.OnStage.ordinal()) {
+				int row = e.getFirstRow();
+				if (row != ActorRow.PacMan.ordinal() && row != ActorRow.Bonus.ordinal()) {
+					gameController.game.takePart(ghostByRow[row], records[row].takesPart);
+				}
+			}
+		});
+	}
+
+	public void update() {
+		Game game = gameController.game;
+		GhostCommand ghostCommand = gameController.ghostCommand;
+		records[ActorRow.Blinky.ordinal()] = new ActorRecord(game, ghostCommand, game.blinky);
+		records[ActorRow.Pinky.ordinal()] = new ActorRecord(game, ghostCommand, game.pinky);
+		records[ActorRow.Inky.ordinal()] = new ActorRecord(game, ghostCommand, game.inky);
+		records[ActorRow.Clyde.ordinal()] = new ActorRecord(game, ghostCommand, game.clyde);
+		records[ActorRow.PacMan.ordinal()] = new ActorRecord(game, game.pacMan);
+		records[ActorRow.Bonus.ordinal()] = new ActorRecord(game, game.bonus);
+		fireTableDataChanged();
+	}
+
+	public ActorRecord record(ActorRow row) {
+		return records[row.ordinal()];
+	}
+
+	public ActorRecord record(int row) {
+		return records[row];
 	}
 
 	@Override

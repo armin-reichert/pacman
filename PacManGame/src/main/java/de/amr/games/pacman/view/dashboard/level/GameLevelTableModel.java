@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.dashboard;
+package de.amr.games.pacman.view.dashboard.level;
 
 import static de.amr.games.pacman.view.dashboard.Formatting.integer;
 import static de.amr.games.pacman.view.dashboard.Formatting.percent;

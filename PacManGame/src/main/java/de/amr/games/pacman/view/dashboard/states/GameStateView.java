@@ -1,9 +1,10 @@
-package de.amr.games.pacman.view.dashboard;
+package de.amr.games.pacman.view.dashboard.states;
 
 import static de.amr.games.pacman.view.dashboard.Formatting.seconds;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 
@@ -18,12 +19,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.TableColumn;
 
 import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.controller.GhostCommand;
-import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.view.dashboard.GameStateTableModel.Field;
-import de.amr.games.pacman.view.dashboard.GameStateTableModel.ActorRow;
+import de.amr.games.pacman.view.dashboard.states.GameStateTableModel.Field;
 import net.miginfocom.swing.MigLayout;
-import java.awt.Dimension;
 
 /**
  * Displays information (state, timer values, directions, speed) about the actors and the global
@@ -124,17 +121,9 @@ public class GameStateView extends JPanel {
 	public void attachTo(GameController gameController) {
 		this.gameController = gameController;
 		GameStateTableModel tableModel = new GameStateTableModel(gameController);
-		tableModel.addTableModelListener(e -> {
-			if (e.getColumn() == Field.OnStage.ordinal()) {
-				int row = e.getFirstRow();
-				if (row != ActorRow.PacMan.ordinal() && row != ActorRow.Bonus.ordinal()) {
-					gameController.game.takePart(tableModel.ghostByRow[row], tableModel.records[row].takesPart);
-				}
-			}
-		});
 		table.setModel(tableModel);
-		column(Field.Tile).setCellRenderer(new TileRenderer());
-		column(Field.Speed).setCellRenderer(new SpeedRenderer());
+		column(Field.Tile).setCellRenderer(new TileRenderer(tableModel));
+		column(Field.Speed).setCellRenderer(new SpeedRenderer(tableModel));
 		column(Field.Remaining).setCellRenderer(new TicksRenderer());
 		column(Field.Duration).setCellRenderer(new TicksRenderer());
 		ghostHouseStateView.attachTo(gameController);
@@ -146,7 +135,7 @@ public class GameStateView extends JPanel {
 	}
 
 	public void updateViewState() {
-		updateTableData();
+		((GameStateTableModel) table.getModel()).update();
 		String stateText = gameController.getState().name();
 		if (gameController.state().getDuration() != Integer.MAX_VALUE) {
 			stateText = String.format("%s (%s sec of %s sec remaining)", gameController.getState(),
@@ -159,18 +148,4 @@ public class GameStateView extends JPanel {
 		ghostHouseStateView.updateViewState();
 	}
 
-	private void updateTableData() {
-		if (table.getModel() instanceof GameStateTableModel) {
-			GameStateTableModel model = (GameStateTableModel) table.getModel();
-			Game game = gameController.game;
-			GhostCommand ghostCommand = gameController.ghostCommand;
-			model.records[ActorRow.Blinky.ordinal()] = new ActorRecord(game, ghostCommand, game.blinky);
-			model.records[ActorRow.Pinky.ordinal()] = new ActorRecord(game, ghostCommand, game.pinky);
-			model.records[ActorRow.Inky.ordinal()] = new ActorRecord(game, ghostCommand, game.inky);
-			model.records[ActorRow.Clyde.ordinal()] = new ActorRecord(game, ghostCommand, game.clyde);
-			model.records[ActorRow.PacMan.ordinal()] = new ActorRecord(game, game.pacMan);
-			model.records[ActorRow.Bonus.ordinal()] = new ActorRecord(game, game.bonus);
-			model.fireTableDataChanged();
-		}
-	}
 }

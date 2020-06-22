@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.dashboard;
+package de.amr.games.pacman.view.dashboard.states;
 
 import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
@@ -7,6 +7,7 @@ import static de.amr.games.pacman.model.Game.sec;
 import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.Bonus;
 import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.Ghost.Sanity;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
@@ -17,18 +18,20 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-class ActorRecord {
-	boolean takesPart;
-	String name;
-	Tile tile;
-	Tile target;
-	Direction moveDir;
-	Direction wishDir;
-	float speed;
-	String state;
-	int ticksRemaining;
-	int duration;
-	boolean pacManCollision;
+public class ActorRecord {
+
+	public boolean takesPart;
+	public String name;
+	public Tile tile;
+	public Tile target;
+	public Direction moveDir;
+	public Direction wishDir;
+	public float speed;
+	public String state;
+	public Sanity ghostSanity;
+	public int ticksRemaining;
+	public int duration;
+	public boolean pacManCollision;
 
 	public ActorRecord(Game game, PacMan pacMan) {
 		takesPart = game.takesPart(pacMan);
@@ -58,6 +61,7 @@ class ActorRecord {
 					: ghost.state().getTicksRemaining();
 			duration = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getDuration() : ghost.state().getDuration();
 		}
+		ghostSanity = ghost.sanity.getState();
 		pacManCollision = tile.equals(game.pacMan.tile());
 	}
 

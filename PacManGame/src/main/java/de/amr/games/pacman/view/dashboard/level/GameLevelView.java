@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.dashboard;
+package de.amr.games.pacman.view.dashboard.level;
 
 import java.awt.BorderLayout;
 

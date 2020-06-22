@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.dashboard;
+package de.amr.games.pacman.view.dashboard.states;
 
 import static de.amr.games.pacman.view.dashboard.Formatting.ticksAndSeconds;
 
