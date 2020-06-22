@@ -34,7 +34,8 @@ public class GameStateTable extends JTable {
 				int row, int column) {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			GameStateTableModel gstm = (GameStateTableModel) table.getModel();
-			setBackground(gstm.record(row).pacManCollision ? HILIGHT_COLOR : table.getBackground());
+			GameStateRecord r = gstm.record(row);
+			setBackground(r != null && r.pacManCollision ? HILIGHT_COLOR : table.getBackground());
 			return this;
 		}
 	}
@@ -45,7 +46,9 @@ public class GameStateTable extends JTable {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			setText(ticksAndSeconds((int) value));
+			if (value != null) {
+				setText(ticksAndSeconds((int) value));
+			}
 			return this;
 		}
 	}
@@ -61,11 +64,14 @@ public class GameStateTable extends JTable {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			float speed = (float) value;
-			setText(pixelsPerSec(speed));
-			GameStateTableModel gstm = (GameStateTableModel) table.getModel();
-			setBackground(row == ROW_BLINKY && isBlinkyInsane(gstm) && speed >= gstm.record(ROW_PACMAN).speed ? HILIGHT_COLOR
-					: table.getBackground());
+			if (value != null) {
+				float speed = (float) value;
+				setText(pixelsPerSec(speed));
+				GameStateTableModel gstm = (GameStateTableModel) table.getModel();
+				setBackground(
+						row == ROW_BLINKY && isBlinkyInsane(gstm) && speed >= gstm.record(ROW_PACMAN).speed ? HILIGHT_COLOR
+								: table.getBackground());
+			}
 			return this;
 		}
 	}

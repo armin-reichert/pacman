@@ -114,6 +114,9 @@ class GameStateTableModel extends AbstractTableModel {
 	@Override
 	public Object getValueAt(int row, int col) {
 		GameStateRecord r = records[row];
+		if (r == null) {
+			return null;
+		}
 		switch (Field.at(col)) {
 		case OnStage:
 			return r.takesPart;
