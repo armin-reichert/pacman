@@ -18,7 +18,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public class ActorRecord {
+class ActorRecord {
 
 	public boolean takesPart;
 	public String name;

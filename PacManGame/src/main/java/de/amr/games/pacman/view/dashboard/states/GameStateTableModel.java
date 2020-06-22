@@ -21,7 +21,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-public class GameStateTableModel extends AbstractTableModel {
+class GameStateTableModel extends AbstractTableModel {
 
 	public enum Field {
 		//@formatter:off
@@ -117,6 +117,45 @@ public class GameStateTableModel extends AbstractTableModel {
 		fireTableDataChanged();
 	}
 
+	@Override
+	public Object getValueAt(int row, int col) {
+		ActorRecord r = records[row];
+		switch (Field.at(col)) {
+		case OnStage:
+			return r.takesPart;
+		case Name:
+			return r.name;
+		case MoveDir:
+			return r.moveDir;
+		case WishDir:
+			return r.wishDir;
+		case Tile:
+			return r.tile;
+		case Target:
+			return r.target;
+		case Speed:
+			return r.speed;
+		case State:
+			return r.state;
+		case Remaining:
+			return r.ticksRemaining;
+		case Duration:
+			return r.duration;
+		case GhostSanity:
+			return r.ghostSanity;
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public void setValueAt(Object value, int row, int col) {
+		if (Field.at(col) == Field.OnStage) {
+			records[row].takesPart = (boolean) value;
+			fireTableCellUpdated(row, col);
+		}
+	}
+
 	public ActorRecord record(ActorRow row) {
 		return records[row.ordinal()];
 	}
@@ -148,42 +187,5 @@ public class GameStateTableModel extends AbstractTableModel {
 	@Override
 	public boolean isCellEditable(int row, int col) {
 		return Field.at(col).editable && row < ActorRow.PacMan.ordinal();
-	}
-
-	@Override
-	public Object getValueAt(int row, int col) {
-		ActorRecord r = records[row];
-		switch (Field.at(col)) {
-		case OnStage:
-			return r.takesPart;
-		case Name:
-			return r.name;
-		case MoveDir:
-			return r.moveDir;
-		case WishDir:
-			return r.wishDir;
-		case Tile:
-			return r.tile;
-		case Target:
-			return r.target;
-		case Speed:
-			return r.speed;
-		case State:
-			return r.state;
-		case Remaining:
-			return r.ticksRemaining;
-		case Duration:
-			return r.duration;
-		default:
-			return null;
-		}
-	}
-
-	@Override
-	public void setValueAt(Object value, int row, int col) {
-		if (Field.at(col) == Field.OnStage) {
-			records[row].takesPart = (boolean) value;
-			fireTableCellUpdated(row, col);
-		}
 	}
 }

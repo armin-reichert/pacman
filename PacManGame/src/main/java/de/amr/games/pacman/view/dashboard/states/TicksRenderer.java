@@ -7,7 +7,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import de.amr.games.pacman.view.dashboard.Formatting;
 
-public class TicksRenderer extends DefaultTableCellRenderer {
+class TicksRenderer extends DefaultTableCellRenderer {
 
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,

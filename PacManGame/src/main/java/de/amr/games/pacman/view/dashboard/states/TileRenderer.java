@@ -6,7 +6,7 @@ import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
-public class TileRenderer extends DefaultTableCellRenderer {
+class TileRenderer extends DefaultTableCellRenderer {
 
 	private final GameStateTableModel model;
 

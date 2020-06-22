@@ -17,9 +17,9 @@ import de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ActorRow;
  * 
  * @author Armin Reichert
  */
-public class SpeedRenderer extends DefaultTableCellRenderer {
+class SpeedRenderer extends DefaultTableCellRenderer {
 
-	private GameStateTableModel model;
+	private final GameStateTableModel model;
 
 	public SpeedRenderer(GameStateTableModel model) {
 		this.model = model;
