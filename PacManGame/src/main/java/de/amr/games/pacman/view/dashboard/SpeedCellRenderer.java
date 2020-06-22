@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.settings;
+package de.amr.games.pacman.view.dashboard;
 
 import static de.amr.games.pacman.controller.actor.Ghost.Sanity.CRUISE_ELROY1;
 import static de.amr.games.pacman.controller.actor.Ghost.Sanity.CRUISE_ELROY2;
@@ -10,7 +10,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.view.settings.GameStateTableModel.Row;
+import de.amr.games.pacman.view.dashboard.GameStateTableModel.Row;
 
 public class SpeedCellRenderer extends DefaultTableCellRenderer {
 

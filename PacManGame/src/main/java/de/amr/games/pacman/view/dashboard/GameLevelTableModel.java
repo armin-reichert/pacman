@@ -1,7 +1,7 @@
-package de.amr.games.pacman.view.settings;
+package de.amr.games.pacman.view.dashboard;
 
-import static de.amr.games.pacman.view.settings.Formatting.integer;
-import static de.amr.games.pacman.view.settings.Formatting.percent;
+import static de.amr.games.pacman.view.dashboard.Formatting.integer;
+import static de.amr.games.pacman.view.dashboard.Formatting.percent;
 
 import javax.swing.table.AbstractTableModel;
 

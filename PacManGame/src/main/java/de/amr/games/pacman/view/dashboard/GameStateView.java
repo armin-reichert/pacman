@@ -1,6 +1,6 @@
-package de.amr.games.pacman.view.settings;
+package de.amr.games.pacman.view.dashboard;
 
-import static de.amr.games.pacman.view.settings.Formatting.seconds;
+import static de.amr.games.pacman.view.dashboard.Formatting.seconds;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -20,8 +20,8 @@ import javax.swing.table.TableColumn;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.view.settings.GameStateTableModel.Column;
-import de.amr.games.pacman.view.settings.GameStateTableModel.Row;
+import de.amr.games.pacman.view.dashboard.GameStateTableModel.Column;
+import de.amr.games.pacman.view.dashboard.GameStateTableModel.Row;
 import net.miginfocom.swing.MigLayout;
 import java.awt.Dimension;
 

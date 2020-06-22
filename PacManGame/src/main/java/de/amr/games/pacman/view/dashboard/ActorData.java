@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.settings;
+package de.amr.games.pacman.view.dashboard;
 
 import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;

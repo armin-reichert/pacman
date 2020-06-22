@@ -1,6 +1,6 @@
-package de.amr.games.pacman.view.settings;
+package de.amr.games.pacman.view.dashboard;
 
-import static de.amr.games.pacman.view.settings.Formatting.ticksAndSeconds;
+import static de.amr.games.pacman.view.dashboard.Formatting.ticksAndSeconds;
 
 import java.awt.Color;
 import java.awt.Font;
