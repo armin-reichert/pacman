@@ -17,7 +17,7 @@ import de.amr.games.pacman.model.Tile;
  * 
  * @author Armin Reichert
  */
-class ActorData {
+class ActorRecord {
 	boolean takesPart;
 	String name;
 	Tile tile;
@@ -30,7 +30,7 @@ class ActorData {
 	int duration;
 	boolean pacManCollision;
 
-	public ActorData(Game game, PacMan pacMan) {
+	public ActorRecord(Game game, PacMan pacMan) {
 		takesPart = game.takesPart(pacMan);
 		name = "Pac-Man";
 		tile = pacMan.tile();
@@ -44,7 +44,7 @@ class ActorData {
 		}
 	}
 
-	public ActorData(Game game, GhostCommand ghostCommand, Ghost ghost) {
+	public ActorRecord(Game game, GhostCommand ghostCommand, Ghost ghost) {
 		takesPart = game.takesPart(ghost);
 		name = ghost.name;
 		tile = ghost.tile();
@@ -61,12 +61,14 @@ class ActorData {
 		pacManCollision = tile.equals(game.pacMan.tile());
 	}
 
-	public ActorData(Game game, Bonus bonus) {
+	public ActorRecord(Game game, Bonus bonus) {
 		takesPart = bonus.visible;
 		name = bonus.symbol != null ? bonus.toString() : "Bonus";
 		tile = game.maze.bonusSeat.tile;
-		state = bonus.getState().name();
-		ticksRemaining = bonus.state().getTicksRemaining();
-		duration = bonus.state().getDuration();
+		if (bonus.getState() != null) {
+			state = bonus.getState().name();
+			ticksRemaining = bonus.state().getTicksRemaining();
+			duration = bonus.state().getDuration();
+		}
 	}
 }

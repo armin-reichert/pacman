@@ -21,7 +21,7 @@ import de.amr.games.pacman.model.Tile;
  */
 public class GameStateTableModel extends AbstractTableModel {
 
-	public enum Column {
+	public enum Field {
 		//@formatter:off
 		OnStage("On Stage", Boolean.class, true), 
 		Name("Actor", String.class, false), 
@@ -35,13 +35,13 @@ public class GameStateTableModel extends AbstractTableModel {
 		Duration(Integer.class, false);
 		//@formatter:on
 
-		private Column(Class<?> class_, boolean editable) {
+		private Field(Class<?> class_, boolean editable) {
 			this.name = name();
 			this.class_ = class_;
 			this.editable = editable;
 		}
 
-		private Column(String name, Class<?> class_, boolean editable) {
+		private Field(String name, Class<?> class_, boolean editable) {
 			this.name = name;
 			this.class_ = class_;
 			this.editable = editable;
@@ -51,12 +51,12 @@ public class GameStateTableModel extends AbstractTableModel {
 		public Class<?> class_;
 		public boolean editable;
 
-		public static Column at(int col) {
-			return Column.values()[col];
+		public static Field at(int col) {
+			return Field.values()[col];
 		}
 	};
 
-	public enum Row {
+	public enum ActorRow {
 		Blinky, Pinky, Inky, Clyde, PacMan, Bonus
 	}
 
@@ -81,7 +81,9 @@ public class GameStateTableModel extends AbstractTableModel {
 	};
 
 	public GameController gameController;
-	public ActorData[] data = new ActorData[Row.values().length];
+
+	public ActorRecord[] records = new ActorRecord[ActorRow.values().length];
+
 	public Ghost[] ghostByRow;
 
 	private GameStateTableModel() {
@@ -95,55 +97,53 @@ public class GameStateTableModel extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		return Row.values().length;
+		return ActorRow.values().length;
 	}
 
 	@Override
 	public int getColumnCount() {
-		return Column.values().length;
+		return Field.values().length;
 	}
 
 	@Override
 	public String getColumnName(int col) {
-		return Column.at(col).name;
+		return Field.at(col).name;
 	}
 
 	@Override
 	public Class<?> getColumnClass(int col) {
-		return Column.at(col).class_;
+		return Field.at(col).class_;
 	}
 
 	@Override
 	public boolean isCellEditable(int row, int col) {
-		return Column.at(col).editable && row < Row.PacMan.ordinal();
+		return Field.at(col).editable && row < ActorRow.PacMan.ordinal();
 	}
 
 	@Override
 	public Object getValueAt(int row, int col) {
-		if (data[row] == null) {
-			return null;
-		}
-		switch (Column.at(col)) {
+		ActorRecord r = records[row];
+		switch (Field.at(col)) {
 		case OnStage:
-			return data[row].takesPart;
+			return r.takesPart;
 		case Name:
-			return data[row].name;
+			return r.name;
 		case MoveDir:
-			return data[row].moveDir;
+			return r.moveDir;
 		case WishDir:
-			return data[row].wishDir;
+			return r.wishDir;
 		case Tile:
-			return data[row].tile;
+			return r.tile;
 		case Target:
-			return data[row].target;
+			return r.target;
 		case Speed:
-			return data[row].speed;
+			return r.speed;
 		case State:
-			return data[row].state;
+			return r.state;
 		case Remaining:
-			return data[row].ticksRemaining;
+			return r.ticksRemaining;
 		case Duration:
-			return data[row].duration;
+			return r.duration;
 		default:
 			return null;
 		}
@@ -151,9 +151,8 @@ public class GameStateTableModel extends AbstractTableModel {
 
 	@Override
 	public void setValueAt(Object value, int row, int col) {
-		Column column = Column.at(col);
-		if (column == Column.OnStage) {
-			data[row].takesPart = (boolean) value;
+		if (Field.at(col) == Field.OnStage) {
+			records[row].takesPart = (boolean) value;
 			fireTableCellUpdated(row, col);
 		}
 	}

@@ -20,8 +20,8 @@ import javax.swing.table.TableColumn;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.view.dashboard.GameStateTableModel.Column;
-import de.amr.games.pacman.view.dashboard.GameStateTableModel.Row;
+import de.amr.games.pacman.view.dashboard.GameStateTableModel.Field;
+import de.amr.games.pacman.view.dashboard.GameStateTableModel.ActorRow;
 import net.miginfocom.swing.MigLayout;
 import java.awt.Dimension;
 
@@ -125,23 +125,23 @@ public class GameStateView extends JPanel {
 		this.gameController = gameController;
 		GameStateTableModel tableModel = new GameStateTableModel(gameController);
 		tableModel.addTableModelListener(e -> {
-			if (e.getColumn() == Column.OnStage.ordinal()) {
+			if (e.getColumn() == Field.OnStage.ordinal()) {
 				int row = e.getFirstRow();
-				if (row != Row.PacMan.ordinal() && row != Row.Bonus.ordinal()) {
-					gameController.game.takePart(tableModel.ghostByRow[row], tableModel.data[row].takesPart);
+				if (row != ActorRow.PacMan.ordinal() && row != ActorRow.Bonus.ordinal()) {
+					gameController.game.takePart(tableModel.ghostByRow[row], tableModel.records[row].takesPart);
 				}
 			}
 		});
 		table.setModel(tableModel);
-		column(Column.Tile).setCellRenderer(new TileCellRenderer());
-		column(Column.Speed).setCellRenderer(new SpeedCellRenderer());
-		column(Column.Remaining).setCellRenderer(new TicksCellRenderer());
-		column(Column.Duration).setCellRenderer(new TicksCellRenderer());
+		column(Field.Tile).setCellRenderer(new TileRenderer());
+		column(Field.Speed).setCellRenderer(new SpeedRenderer());
+		column(Field.Remaining).setCellRenderer(new TicksRenderer());
+		column(Field.Duration).setCellRenderer(new TicksRenderer());
 		ghostHouseStateView.attachTo(gameController);
 		updateViewState();
 	}
 
-	private TableColumn column(Column column) {
+	private TableColumn column(Field column) {
 		return table.getColumnModel().getColumn(column.ordinal());
 	}
 
@@ -164,12 +164,12 @@ public class GameStateView extends JPanel {
 			GameStateTableModel model = (GameStateTableModel) table.getModel();
 			Game game = gameController.game;
 			GhostCommand ghostCommand = gameController.ghostCommand;
-			model.data[Row.Blinky.ordinal()] = new ActorData(game, ghostCommand, game.blinky);
-			model.data[Row.Pinky.ordinal()] = new ActorData(game, ghostCommand, game.pinky);
-			model.data[Row.Inky.ordinal()] = new ActorData(game, ghostCommand, game.inky);
-			model.data[Row.Clyde.ordinal()] = new ActorData(game, ghostCommand, game.clyde);
-			model.data[Row.PacMan.ordinal()] = new ActorData(game, game.pacMan);
-			model.data[Row.Bonus.ordinal()] = new ActorData(game, game.bonus);
+			model.records[ActorRow.Blinky.ordinal()] = new ActorRecord(game, ghostCommand, game.blinky);
+			model.records[ActorRow.Pinky.ordinal()] = new ActorRecord(game, ghostCommand, game.pinky);
+			model.records[ActorRow.Inky.ordinal()] = new ActorRecord(game, ghostCommand, game.inky);
+			model.records[ActorRow.Clyde.ordinal()] = new ActorRecord(game, ghostCommand, game.clyde);
+			model.records[ActorRow.PacMan.ordinal()] = new ActorRecord(game, game.pacMan);
+			model.records[ActorRow.Bonus.ordinal()] = new ActorRecord(game, game.bonus);
 			model.fireTableDataChanged();
 		}
 	}

@@ -6,7 +6,7 @@ import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
-public class TileCellRenderer extends DefaultTableCellRenderer {
+public class TileRenderer extends DefaultTableCellRenderer {
 
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
@@ -14,7 +14,7 @@ public class TileCellRenderer extends DefaultTableCellRenderer {
 		super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		GameStateTableModel model = (GameStateTableModel) table.getModel();
 		if (model != null) {
-			if (model.data[row].pacManCollision) {
+			if (model.records[row].pacManCollision) {
 				setBackground(new Color(255, 0, 0, 100));
 			} else {
 				setBackground(table.getBackground());
