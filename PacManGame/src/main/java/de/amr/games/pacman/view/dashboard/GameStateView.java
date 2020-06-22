@@ -86,6 +86,7 @@ public class GameStateView extends JPanel {
 		content.add(scrollPane, "cell 0 1,growx,aligny top");
 
 		table = new JTable();
+		table.setRowHeight(24);
 		table.setPreferredScrollableViewportSize(new Dimension(450, 350));
 		scrollPane.setViewportView(table);
 		table.setModel(GameStateTableModel.SAMPLE_DATA);
