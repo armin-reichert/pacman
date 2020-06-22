@@ -1,4 +1,4 @@
-# A (hopefully comprehensible) Pac-Man implementation using finite-state machines        
+## A (hopefully comprehensible) Pac-Man implementation using finite-state machines        
 
 ## How to run the game
 
