@@ -17,15 +17,24 @@ import de.amr.games.pacman.model.Tile;
  */
 class GameStateTableModel extends AbstractTableModel {
 
+	public static final int NUM_ROWS = 6;
+
+	public static final int ROW_BLINKY = 0;
+	public static final int ROW_PINKY = 1;
+	public static final int ROW_INKY = 2;
+	public static final int ROW_CLYDE = 3;
+	public static final int ROW_PACMAN = 4;
+	public static final int ROW_BONUS = 5;
+
 	public final static GameStateTableModel LOREM_IPSUM = new GameStateTableModel();
 
 	static {
-		LOREM_IPSUM.record(ActorRow.Blinky).name = "Blinky";
-		LOREM_IPSUM.record(ActorRow.Pinky).name = "Pinky";
-		LOREM_IPSUM.record(ActorRow.Inky).name = "Inky";
-		LOREM_IPSUM.record(ActorRow.Clyde).name = "Clyde";
-		LOREM_IPSUM.record(ActorRow.PacMan).name = "Pac-Man";
-		LOREM_IPSUM.record(ActorRow.Bonus).name = "Bonus";
+		LOREM_IPSUM.record(ROW_BLINKY).name = "Blinky";
+		LOREM_IPSUM.record(ROW_PINKY).name = "Pinky";
+		LOREM_IPSUM.record(ROW_INKY).name = "Inky";
+		LOREM_IPSUM.record(ROW_CLYDE).name = "Clyde";
+		LOREM_IPSUM.record(ROW_PACMAN).name = "Pac-Man";
+		LOREM_IPSUM.record(ROW_BONUS).name = "Bonus";
 	}
 
 	public enum Field {
@@ -64,16 +73,12 @@ class GameStateTableModel extends AbstractTableModel {
 		}
 	};
 
-	public enum ActorRow {
-		Blinky, Pinky, Inky, Clyde, PacMan, Bonus
-	}
-
 	public GameController gameController;
 	public Ghost[] ghostByRow;
 	private final GameStateRecord[] records;
 
 	public GameStateTableModel() {
-		records = new GameStateRecord[ActorRow.values().length];
+		records = new GameStateRecord[NUM_ROWS];
 		for (int i = 0; i < records.length; ++i) {
 			records[i] = new GameStateRecord();
 		}
@@ -81,13 +86,13 @@ class GameStateTableModel extends AbstractTableModel {
 
 	public GameStateTableModel(GameController gameController) {
 		this.gameController = gameController;
-		records = new GameStateRecord[ActorRow.values().length];
+		records = new GameStateRecord[NUM_ROWS];
 		Game game = gameController.game;
 		ghostByRow = new Ghost[] { game.blinky, game.pinky, game.inky, game.clyde };
 		addTableModelListener(e -> {
 			if (e.getColumn() == Field.OnStage.ordinal()) {
 				int row = e.getFirstRow();
-				if (row != ActorRow.PacMan.ordinal() && row != ActorRow.Bonus.ordinal()) {
+				if (row != ROW_PACMAN && row != ROW_BONUS) {
 					gameController.game.takePart(ghostByRow[row], records[row].takesPart);
 				}
 			}
@@ -97,12 +102,12 @@ class GameStateTableModel extends AbstractTableModel {
 	public void update() {
 		Game game = gameController.game;
 		GhostCommand ghostCommand = gameController.ghostCommand;
-		records[ActorRow.Blinky.ordinal()] = new GameStateRecord(game, ghostCommand, game.blinky);
-		records[ActorRow.Pinky.ordinal()] = new GameStateRecord(game, ghostCommand, game.pinky);
-		records[ActorRow.Inky.ordinal()] = new GameStateRecord(game, ghostCommand, game.inky);
-		records[ActorRow.Clyde.ordinal()] = new GameStateRecord(game, ghostCommand, game.clyde);
-		records[ActorRow.PacMan.ordinal()] = new GameStateRecord(game, game.pacMan);
-		records[ActorRow.Bonus.ordinal()] = new GameStateRecord(game, game.bonus);
+		records[ROW_BLINKY] = new GameStateRecord(game, ghostCommand, game.blinky);
+		records[ROW_PINKY] = new GameStateRecord(game, ghostCommand, game.pinky);
+		records[ROW_INKY] = new GameStateRecord(game, ghostCommand, game.inky);
+		records[ROW_CLYDE] = new GameStateRecord(game, ghostCommand, game.clyde);
+		records[ROW_PACMAN] = new GameStateRecord(game, game.pacMan);
+		records[ROW_BONUS] = new GameStateRecord(game, game.bonus);
 		fireTableDataChanged();
 	}
 
@@ -145,17 +150,13 @@ class GameStateTableModel extends AbstractTableModel {
 		}
 	}
 
-	public GameStateRecord record(ActorRow row) {
-		return records[row.ordinal()];
-	}
-
 	public GameStateRecord record(int row) {
 		return records[row];
 	}
 
 	@Override
 	public int getRowCount() {
-		return ActorRow.values().length;
+		return NUM_ROWS;
 	}
 
 	@Override
@@ -175,6 +176,6 @@ class GameStateTableModel extends AbstractTableModel {
 
 	@Override
 	public boolean isCellEditable(int row, int col) {
-		return Field.at(col).editable && row < ActorRow.PacMan.ordinal();
+		return Field.at(col).editable && row < ROW_PACMAN;
 	}
 }

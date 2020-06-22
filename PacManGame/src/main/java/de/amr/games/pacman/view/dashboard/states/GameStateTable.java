@@ -1,6 +1,10 @@
 package de.amr.games.pacman.view.dashboard.states;
 
+import static de.amr.games.pacman.controller.actor.Ghost.Sanity.CRUISE_ELROY1;
+import static de.amr.games.pacman.controller.actor.Ghost.Sanity.CRUISE_ELROY2;
 import static de.amr.games.pacman.view.dashboard.Formatting.pixelsPerSec;
+import static de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ROW_BLINKY;
+import static de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ROW_PACMAN;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -12,7 +16,6 @@ import javax.swing.table.TableModel;
 
 import de.amr.games.pacman.controller.actor.Ghost.Sanity;
 import de.amr.games.pacman.view.dashboard.Formatting;
-import de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ActorRow;
 import de.amr.games.pacman.view.dashboard.states.GameStateTableModel.Field;
 
 /**
@@ -54,12 +57,12 @@ public class GameStateTable extends JTable {
 	static class SpeedCellRenderer extends DefaultTableCellRenderer {
 
 		private float pacManSpeed(GameStateTableModel model) {
-			return model.record(ActorRow.PacMan).speed;
+			return model.record(ROW_PACMAN).speed;
 		}
 
 		private boolean isBlinkyInsane(GameStateTableModel model) {
-			Sanity sanity = model.record(ActorRow.Blinky).ghostSanity;
-			return sanity == Sanity.CRUISE_ELROY1 || sanity == Sanity.CRUISE_ELROY2;
+			Sanity sanity = model.record(ROW_BLINKY).ghostSanity;
+			return sanity == CRUISE_ELROY1 || sanity == CRUISE_ELROY2;
 		}
 
 		@Override
@@ -69,7 +72,7 @@ public class GameStateTable extends JTable {
 			GameStateTableModel model = (GameStateTableModel) table.getModel();
 			float speed = (float) value;
 			setText(pixelsPerSec(speed));
-			if (row == ActorRow.Blinky.ordinal() && isBlinkyInsane(model) && speed >= pacManSpeed(model)) {
+			if (row == ROW_BLINKY && isBlinkyInsane(model) && speed >= pacManSpeed(model)) {
 				setBackground(HILIGHT_COLOR);
 			} else {
 				setBackground(table.getBackground());
@@ -90,7 +93,7 @@ public class GameStateTable extends JTable {
 		column(Field.Remaining).setCellRenderer(new TicksCellRenderer());
 		column(Field.Duration).setCellRenderer(new TicksCellRenderer());
 	}
-	
+
 	public void update() {
 		((GameStateTableModel) getModel()).update();
 	}
