@@ -3,6 +3,7 @@ package de.amr.games.pacman.view.dashboard.states;
 import static de.amr.games.pacman.controller.actor.Ghost.Sanity.CRUISE_ELROY1;
 import static de.amr.games.pacman.controller.actor.Ghost.Sanity.CRUISE_ELROY2;
 import static de.amr.games.pacman.view.dashboard.Formatting.pixelsPerSec;
+import static de.amr.games.pacman.view.dashboard.Formatting.ticksAndSeconds;
 import static de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ROW_BLINKY;
 import static de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ROW_PACMAN;
 
@@ -15,7 +16,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 import de.amr.games.pacman.controller.actor.Ghost.Sanity;
-import de.amr.games.pacman.view.dashboard.Formatting;
 import de.amr.games.pacman.view.dashboard.states.GameStateTableModel.Field;
 
 /**
@@ -34,11 +34,7 @@ public class GameStateTable extends JTable {
 				int row, int column) {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			GameStateTableModel gstm = (GameStateTableModel) table.getModel();
-			if (gstm.record(row).pacManCollision) {
-				setBackground(HILIGHT_COLOR);
-			} else {
-				setBackground(table.getBackground());
-			}
+			setBackground(gstm.record(row).pacManCollision ? HILIGHT_COLOR : table.getBackground());
 			return this;
 		}
 	}
@@ -49,18 +45,14 @@ public class GameStateTable extends JTable {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			setText(Formatting.ticksAndSeconds((int) value));
+			setText(ticksAndSeconds((int) value));
 			return this;
 		}
 	}
 
 	static class SpeedCellRenderer extends DefaultTableCellRenderer {
 
-		private float pacManSpeed(GameStateTableModel model) {
-			return model.record(ROW_PACMAN).speed;
-		}
-
-		private boolean isBlinkyInsane(GameStateTableModel model) {
+		private static boolean isBlinkyInsane(GameStateTableModel model) {
 			Sanity sanity = model.record(ROW_BLINKY).ghostSanity;
 			return sanity == CRUISE_ELROY1 || sanity == CRUISE_ELROY2;
 		}
@@ -69,14 +61,11 @@ public class GameStateTable extends JTable {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			GameStateTableModel model = (GameStateTableModel) table.getModel();
 			float speed = (float) value;
 			setText(pixelsPerSec(speed));
-			if (row == ROW_BLINKY && isBlinkyInsane(model) && speed >= pacManSpeed(model)) {
-				setBackground(HILIGHT_COLOR);
-			} else {
-				setBackground(table.getBackground());
-			}
+			GameStateTableModel gstm = (GameStateTableModel) table.getModel();
+			setBackground(row == ROW_BLINKY && isBlinkyInsane(gstm) && speed >= gstm.record(ROW_PACMAN).speed ? HILIGHT_COLOR
+					: table.getBackground());
 			return this;
 		}
 	}
