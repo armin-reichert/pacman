@@ -172,8 +172,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 	}
 
 	private Color trafficLightColor(Ghost ghost) {
-		boolean insideHouse = gameController.game.maze.insideGhostHouse(ghost.tile());
-		if (!insideHouse) {
+		if (!ghost.isInsideHouse()) {
 			return null;
 		}
 		if (!ghost.is(LOCKED)) {

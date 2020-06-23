@@ -55,9 +55,8 @@ class EnterGhostHouseTestUI extends PlayView {
 	@Override
 	public void update() {
 		super.update();
-		boolean outside = !game.maze.insideGhostHouse(game.inky.tile());
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			game.inky.setState(outside ? ENTERING_HOUSE : LEAVING_HOUSE);
+			game.inky.setState(game.blinky.isInsideHouse() ? LEAVING_HOUSE : ENTERING_HOUSE);
 		}
 		game.inky.update();
 	}

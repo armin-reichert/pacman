@@ -321,7 +321,7 @@ public class Ghost extends Creature<GhostState> {
 	public float currentSpeed(Game game) {
 		switch (getState()) {
 		case LOCKED:
-			return speed(maze.insideGhostHouse(tile()) ? game.level.ghostSpeed / 2 : 0);
+			return speed(isInsideHouse() ? game.level.ghostSpeed / 2 : 0);
 		case LEAVING_HOUSE:
 			return speed(game.level.ghostSpeed / 2);
 		case ENTERING_HOUSE:
@@ -381,6 +381,10 @@ public class Ghost extends Creature<GhostState> {
 
 	public void showPoints(int points) {
 		sprites.select("points-" + points);
+	}
+
+	public boolean isInsideHouse() {
+		return maze.insideGhostHouse(tile());
 	}
 
 	private void checkPacManCollision() {
