@@ -29,19 +29,18 @@ public class GameStateView extends JPanel implements Lifecycle {
 	private GameController gameController;
 	private GameStateTable table;
 	private JLabel lblGameState;
-	private GhostHouseStateView ghostHouseStateView;
-	private JPanel ghostHouseTitle;
 	private JCheckBox cbShowRoutes;
 	private JCheckBox cbShowStates;
 	private JCheckBox cbShowGrid;
 	private JPanel checkBoxesPanel;
+	private GhostHouseStateView ghostHouseStateView;
 
 	public GameStateView() {
 		setLayout(new BorderLayout(0, 0));
 
 		JPanel content = new JPanel();
 		add(content, BorderLayout.CENTER);
-		content.setLayout(new MigLayout("", "[grow]", "[][][][][grow,top]"));
+		content.setLayout(new MigLayout("", "[grow]", "[][][grow][][][grow,top]"));
 
 		lblGameState = new JLabel("Game Controller State");
 		lblGameState.setForeground(Color.BLUE);
@@ -56,17 +55,11 @@ public class GameStateView extends JPanel implements Lifecycle {
 		table.setPreferredScrollableViewportSize(new Dimension(450, 350));
 		scrollPane.setViewportView(table);
 
-		ghostHouseTitle = new JPanel();
-		ghostHouseTitle.setBorder(
-				new TitledBorder(null, "Ghost House", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(59, 59, 59)));
-		content.add(ghostHouseTitle, "cell 0 2,growx,aligny top");
-		ghostHouseTitle.setLayout(new MigLayout("", "[grow]", "[grow]"));
-
 		ghostHouseStateView = new GhostHouseStateView();
-		ghostHouseTitle.add(ghostHouseStateView, "cell 0 0,growx,aligny top");
+		content.add(ghostHouseStateView, "cell 0 2,grow");
 
 		checkBoxesPanel = new JPanel();
-		content.add(checkBoxesPanel, "cell 0 3,growx");
+		content.add(checkBoxesPanel, "cell 0 4,growx");
 
 		cbShowRoutes = new JCheckBox("Show Routes");
 		checkBoxesPanel.add(cbShowRoutes);

@@ -22,6 +22,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.view.theme.Theme;
 import net.miginfocom.swing.MigLayout;
+import javax.swing.border.TitledBorder;
 
 /**
  * Displays the ghost house counters that control which ghost can leave the house.
@@ -49,6 +50,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 	private JLabel lblClydeTrafficLight;
 
 	public GhostHouseStateView() {
+		setBorder(new TitledBorder(null, "Ghost House", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		setLayout(new MigLayout("", "[][][][][][][][][]", "[10px:10px:10px][][]"));
 
 		lblPinkyTrafficLight = new JLabel(" ");
