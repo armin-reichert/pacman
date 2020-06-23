@@ -57,12 +57,10 @@ public class Ghost extends Creature<GhostState> {
 	public StateMachine<Sanity, Void> sanity =
 	//@formatter:off
 		beginStateMachine(Sanity.class, Void.class)
-			.initialState(IMMUNE)
+			.initialState(name.equals("Blinky") ? INFECTABLE : IMMUNE)
 			.description(() -> String.format("[%s sanity]", name))
 			.states()
 			.transitions()
-				
-				.when(IMMUNE).then(INFECTABLE).condition(() -> name.equals("Blinky"))
 			
 				.when(INFECTABLE).then(CRUISE_ELROY2)
 					.condition(() -> game.remainingFoodCount() <= game.level.elroy2DotsLeft)
@@ -99,9 +97,9 @@ public class Ghost extends Creature<GhostState> {
 						moveDir = wishDir = seat.startDir;
 						tf.setPosition(seat.position);
 						enteredNewTile();
+						sanity.init();
 						sprites.forEach(Sprite::resetAnimation);
 						showColored();
-						sanity.init();
 					})
 					.onTick(() -> {
 						move();
