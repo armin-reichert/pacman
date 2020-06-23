@@ -3,6 +3,7 @@ package de.amr.games.pacman.view.dashboard.states;
 import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.view.dashboard.Formatting.ticksAndSeconds;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
 
@@ -12,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.ui.sprites.Sprite;
@@ -22,7 +24,6 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.view.theme.Theme;
 import net.miginfocom.swing.MigLayout;
-import javax.swing.border.TitledBorder;
 
 /**
  * Displays the ghost house counters that control which ghost can leave the house.
@@ -45,25 +46,22 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 	private JLabel lblClydeDots;
 	private JLabel lblDotCounters;
 	private JLabel lblStarving;
-	private JLabel lblPinkyTrafficLight;
-	private JLabel lblInkyTrafficLight;
-	private JLabel lblClydeTrafficLight;
+	private TrafficLightsWidget trafficPinky;
+	private TrafficLightsWidget trafficInky;
+	private TrafficLightsWidget trafficClyde;
 
 	public GhostHouseStateView() {
 		setBorder(new TitledBorder(null, "Ghost House", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		setLayout(new MigLayout("", "[][][][][][][][][]", "[10px:10px:10px][][]"));
 
-		lblPinkyTrafficLight = new JLabel("traffic_light");
-		lblPinkyTrafficLight.setHorizontalAlignment(SwingConstants.CENTER);
-		add(lblPinkyTrafficLight, "cell 2 0,alignx center");
+		trafficPinky = new TrafficLightsWidget();
+		add(trafficPinky, "cell 2 0,alignx center");
 
-		lblInkyTrafficLight = new JLabel("traffic_light");
-		lblInkyTrafficLight.setHorizontalAlignment(SwingConstants.CENTER);
-		add(lblInkyTrafficLight, "cell 4 0,alignx center");
+		trafficInky = new TrafficLightsWidget();
+		add(trafficInky, "cell 4 0,alignx center");
 
-		lblClydeTrafficLight = new JLabel("traffic_light");
-		lblClydeTrafficLight.setHorizontalAlignment(SwingConstants.CENTER);
-		add(lblClydeTrafficLight, "cell 6 0,alignx center");
+		trafficClyde = new TrafficLightsWidget();
+		add(trafficClyde, "cell 6 0,alignx center");
 
 		lblDotCounters = new JLabel("Dot counters");
 		add(lblDotCounters, "cell 0 1");
@@ -142,15 +140,15 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 		tfPinkyDots.setText(formatDots(game.pinky));
 		tfPinkyDots.setEnabled(!house.isGlobalDotCounterEnabled());
-		updateTrafficLight(lblPinkyTrafficLight, game.pinky);
+		updateTrafficLight(trafficPinky, game.pinky);
 
 		tfInkyDots.setText(formatDots(game.inky));
 		tfInkyDots.setEnabled(!house.isGlobalDotCounterEnabled());
-		updateTrafficLight(lblInkyTrafficLight, game.inky);
+		updateTrafficLight(trafficInky, game.inky);
 
 		tfClydeDots.setText(formatDots(game.clyde));
 		tfClydeDots.setEnabled(!house.isGlobalDotCounterEnabled());
-		updateTrafficLight(lblClydeTrafficLight, game.clyde);
+		updateTrafficLight(trafficClyde, game.clyde);
 
 		tfGlobalDots.setText(String.format("%d", house.globalDotCount()));
 		tfGlobalDots.setEnabled(house.isGlobalDotCounterEnabled());
@@ -173,27 +171,27 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		return new ImageIcon(sprite.frame(0).getScaledInstance(size, size, Image.SCALE_SMOOTH));
 	}
 
-	private TrafficLights.Light trafficLight(Ghost ghost) {
+	private Color trafficLightColor(Ghost ghost) {
 		boolean insideHouse = gameController.game.maze.insideGhostHouse(ghost.tile());
 		if (!insideHouse) {
 			return null;
 		}
 		if (!ghost.is(LOCKED)) {
-			return TrafficLights.Light.GREEN;
+			return Color.GREEN;
 		}
 		Ghost next = house.preferredLockedGhost().orElse(null);
-		return ghost == next ? TrafficLights.Light.YELLOW : TrafficLights.Light.RED;
+		return ghost == next ? Color.YELLOW : Color.RED;
 	}
 
-	private void updateTrafficLight(JLabel label, Ghost ghost) {
-		label.setText("");
-		TrafficLights.Light light = trafficLight(ghost);
-		if (light == null || !gameController.game.maze.insideGhostHouse(ghost.tile())) {
-			label.setIcon(null);
+	private void updateTrafficLight(TrafficLightsWidget trafficLight, Ghost ghost) {
+		Color color = trafficLightColor(ghost);
+		if (color != null) {
+			trafficLight.setVisible(true);
+			trafficLight.setRed(color == Color.RED);
+			trafficLight.setYellow(color == Color.YELLOW);
+			trafficLight.setGreen(color == Color.GREEN);
 		} else {
-			TrafficLights lights = new TrafficLights(10);
-			lights.set(light);
-			label.setIcon(lights);
+			trafficLight.setVisible(false);
 		}
 	}
 
