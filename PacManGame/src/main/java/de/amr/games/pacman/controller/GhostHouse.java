@@ -111,7 +111,7 @@ public class GhostHouse {
 	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
 	 *      Dossier</a>
 	 */
-	private boolean canLeaveHome(Ghost ghost) {
+	public boolean canLeaveHome(Ghost ghost) {
 		int pacManStarvingTimeLimit = game.level.number < 5 ? sec(4) : sec(3);
 		if (pacManStarvingTicks >= pacManStarvingTimeLimit) {
 			loginfo("%s can leave house: Pac-Man's starving time limit (%d ticks) reached", ghost.name,

@@ -15,6 +15,7 @@ import javax.swing.border.TitledBorder;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.GameController;
+import de.amr.statemachine.core.State;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -31,7 +32,7 @@ public class GameStateView extends JPanel implements Lifecycle {
 	private JCheckBox cbShowRoutes;
 	private JCheckBox cbShowStates;
 	private GhostHouseStateView ghostHouseStateView;
-	private JPanel panel;
+	private JPanel ghostHouseTitle;
 	private JCheckBox cbShowGrid;
 	private JPanel checkBoxesPanel;
 
@@ -55,14 +56,14 @@ public class GameStateView extends JPanel implements Lifecycle {
 		table.setPreferredScrollableViewportSize(new Dimension(450, 350));
 		scrollPane.setViewportView(table);
 
-		panel = new JPanel();
-		panel.setBorder(
+		ghostHouseTitle = new JPanel();
+		ghostHouseTitle.setBorder(
 				new TitledBorder(null, "Ghost House", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(59, 59, 59)));
-		content.add(panel, "cell 0 2,growx,aligny top");
-		panel.setLayout(new MigLayout("", "[grow]", "[grow]"));
+		content.add(ghostHouseTitle, "cell 0 2,growx,aligny top");
+		ghostHouseTitle.setLayout(new MigLayout("", "[grow]", "[grow]"));
 
 		ghostHouseStateView = new GhostHouseStateView();
-		panel.add(ghostHouseStateView, "cell 0 0,growx,aligny top");
+		ghostHouseTitle.add(ghostHouseStateView, "cell 0 0,growx,aligny top");
 
 		checkBoxesPanel = new JPanel();
 		content.add(checkBoxesPanel, "cell 0 3,growx");
@@ -87,9 +88,8 @@ public class GameStateView extends JPanel implements Lifecycle {
 	 */
 	public void attachTo(GameController gameController) {
 		this.gameController = gameController;
-		table.setModel(new GameStateTableModel(gameController));
 		ghostHouseStateView.attachTo(gameController);
-		update();
+		table.setModel(new GameStateTableModel(gameController));
 	}
 
 	@Override
@@ -98,14 +98,14 @@ public class GameStateView extends JPanel implements Lifecycle {
 
 	@Override
 	public void update() {
-		String stateText = gameController.getState().name();
-		if (gameController.state().getDuration() != Integer.MAX_VALUE) {
-			stateText = String.format("%s (%s sec of %s sec remaining)", gameController.getState(),
-					seconds(gameController.state().getTicksRemaining()), seconds(gameController.state().getDuration()));
-		}
+		State<?> state = gameController.state();
+		int remaining = state.getTicksRemaining(), duration = state.getDuration();
+		String stateText = duration != Integer.MAX_VALUE
+				? String.format("%s (%s of %s sec remaining)", state.id(), seconds(remaining), seconds(duration))
+				: state.id().toString();
 		lblGameControllerState.setText(stateText);
 		table.update();
-		ghostHouseStateView.updateViewState();
+		ghostHouseStateView.update();
 		cbShowRoutes.setSelected(gameController.isShowingActorRoutes());
 		cbShowGrid.setSelected(gameController.isShowingGrid());
 		cbShowStates.setSelected(gameController.isShowingStates());

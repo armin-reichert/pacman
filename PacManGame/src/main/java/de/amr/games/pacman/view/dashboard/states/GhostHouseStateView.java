@@ -6,12 +6,15 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import de.amr.easy.game.controller.Lifecycle;
+import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostHouse;
 import de.amr.games.pacman.controller.actor.Ghost;
@@ -20,7 +23,12 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.view.theme.Theme;
 import net.miginfocom.swing.MigLayout;
 
-public class GhostHouseStateView extends JPanel {
+/**
+ * Displays the ghost house counters that control which ghost can leave the house.
+ * 
+ * @author Armin Reichert
+ */
+public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	private GameController gameController;
 	private GhostHouse house;
@@ -43,7 +51,7 @@ public class GhostHouseStateView extends JPanel {
 		lblDotCounters = new JLabel("Dot counters");
 		add(lblDotCounters, "cell 0 0");
 
-		lblPinkyDots = new JLabel("<Icon>");
+		lblPinkyDots = new JLabel("Pinky");
 		lblPinkyDots.setFont(new Font("SansSerif", Font.PLAIN, 24));
 		add(lblPinkyDots, "cell 1 0,alignx trailing,aligny center");
 
@@ -52,7 +60,7 @@ public class GhostHouseStateView extends JPanel {
 		add(tfPinkyDots, "flowx,cell 2 0,alignx left,aligny center");
 		tfPinkyDots.setColumns(8);
 
-		lblInkyDots = new JLabel("<Icon>");
+		lblInkyDots = new JLabel("Inky");
 		lblInkyDots.setFont(new Font("SansSerif", Font.PLAIN, 24));
 		add(lblInkyDots, "cell 3 0,alignx trailing,aligny center");
 
@@ -61,7 +69,7 @@ public class GhostHouseStateView extends JPanel {
 		add(tfInkyDots, "cell 4 0,alignx left");
 		tfInkyDots.setColumns(8);
 
-		lblClydeDots = new JLabel("<Icon>");
+		lblClydeDots = new JLabel("Clyde");
 		lblClydeDots.setFont(new Font("SansSerif", Font.PLAIN, 24));
 		add(lblClydeDots, "cell 5 0,alignx trailing,aligny center");
 
@@ -81,7 +89,7 @@ public class GhostHouseStateView extends JPanel {
 		lblStarving = new JLabel("Starving Time");
 		add(lblStarving, "cell 0 1");
 
-		lblPacManStarving = new JLabel("<Icon>");
+		lblPacManStarving = new JLabel("Pac-Man");
 		lblPacManStarving.setFont(new Font("SansSerif", Font.PLAIN, 24));
 		lblPacManStarving.setHorizontalTextPosition(SwingConstants.RIGHT);
 		add(lblPacManStarving, "cell 1 1,alignx trailing,aligny center");
@@ -95,25 +103,35 @@ public class GhostHouseStateView extends JPanel {
 	public void attachTo(GameController gameController) {
 		this.gameController = gameController;
 		house = gameController.ghostHouse;
-		setGhostLabelIcon(lblPinkyDots, Theme.PINK_GHOST);
-		setGhostLabelIcon(lblInkyDots, Theme.CYAN_GHOST);
-		setGhostLabelIcon(lblClydeDots, Theme.ORANGE_GHOST);
-		lblPacManStarving.setIcon(
-				new ImageIcon(gameController.theme.spr_pacManFull().frame(0).getScaledInstance(24, 24, Image.SCALE_SMOOTH)));
-		lblPacManStarving.setText("");
+		init();
 	}
 
-	private void setGhostLabelIcon(JLabel label, int color) {
+	@Override
+	public void init() {
+		int size = 24;
+		setIconOnly(lblPinkyDots, ghost(Theme.PINK_GHOST, size));
+		setIconOnly(lblInkyDots, ghost(Theme.CYAN_GHOST, size));
+		setIconOnly(lblClydeDots, ghost(Theme.ORANGE_GHOST, size));
+		setIconOnly(lblPacManStarving, pacMan(size));
+	}
+
+	private void setIconOnly(JLabel label, Icon icon) {
 		label.setText("");
-		label.setIcon(ghostIcon(color, label.getFont().getSize()));
+		label.setIcon(icon);
 	}
 
-	private ImageIcon ghostIcon(int color, int size) {
-		return new ImageIcon(gameController.theme.spr_ghostColored(color, Direction.RIGHT).frame(0).getScaledInstance(size,
-				size, Image.SCALE_SMOOTH));
+	private ImageIcon ghost(int color, int size) {
+		Sprite sprite = gameController.theme.spr_ghostColored(color, Direction.RIGHT);
+		return new ImageIcon(sprite.frame(0).getScaledInstance(size, size, Image.SCALE_SMOOTH));
 	}
 
-	public void updateViewState() {
+	private ImageIcon pacMan(int size) {
+		Sprite sprite = gameController.theme.spr_pacManFull();
+		return new ImageIcon(sprite.frame(0).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+	}
+
+	@Override
+	public void update() {
 		Game game = gameController.game;
 		Ghost nextGhostLeaving = house.preferredLockedGhost().orElse(null);
 
