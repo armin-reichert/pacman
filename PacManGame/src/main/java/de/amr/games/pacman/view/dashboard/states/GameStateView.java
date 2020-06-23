@@ -6,10 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -27,33 +24,6 @@ import net.miginfocom.swing.MigLayout;
  * @author Armin Reichert
  */
 public class GameStateView extends JPanel implements Lifecycle {
-
-	Action actionShowRoutes = new AbstractAction("Show Routes") {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			JCheckBox cb = (JCheckBox) e.getSource();
-			gameController.setShowingActorRoutes(cb.isSelected());
-		}
-	};
-
-	Action actionShowGrid = new AbstractAction("Show Grid") {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			JCheckBox cb = (JCheckBox) e.getSource();
-			gameController.setShowingGrid(cb.isSelected());
-		}
-	};
-
-	Action actionShowStates = new AbstractAction("Show States and Counters") {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			JCheckBox cb = (JCheckBox) e.getSource();
-			gameController.setShowingStates(cb.isSelected());
-		}
-	};
 
 	private GameController gameController;
 	private GameStateTable table;
@@ -99,15 +69,15 @@ public class GameStateView extends JPanel implements Lifecycle {
 
 		cbShowRoutes = new JCheckBox("Show Routes");
 		checkBoxesPanel.add(cbShowRoutes);
-		cbShowRoutes.setAction(actionShowRoutes);
+		cbShowRoutes.addActionListener(e -> gameController.setShowingActorRoutes(cbShowRoutes.isSelected()));
 
 		cbShowGrid = new JCheckBox("Show Grid");
 		checkBoxesPanel.add(cbShowGrid);
-		cbShowGrid.setAction(actionShowGrid);
+		cbShowGrid.addActionListener(e -> gameController.setShowingGrid(cbShowGrid.isSelected()));
 
 		cbShowStates = new JCheckBox("Show States and Counters");
 		checkBoxesPanel.add(cbShowStates);
-		cbShowStates.setAction(actionShowStates);
+		cbShowStates.addActionListener(e -> gameController.setShowingStates(cbShowStates.isSelected()));
 	}
 
 	/**
