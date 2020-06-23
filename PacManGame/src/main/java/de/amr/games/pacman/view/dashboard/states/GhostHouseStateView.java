@@ -53,17 +53,17 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		setBorder(new TitledBorder(null, "Ghost House", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		setLayout(new MigLayout("", "[][][][][][][][][]", "[10px:10px:10px][][]"));
 
-		lblPinkyTrafficLight = new JLabel(" ");
-		lblPinkyTrafficLight.setHorizontalAlignment(SwingConstants.RIGHT);
-		add(lblPinkyTrafficLight, "cell 1 0,growx");
+		lblPinkyTrafficLight = new JLabel("traffic_light");
+		lblPinkyTrafficLight.setHorizontalAlignment(SwingConstants.CENTER);
+		add(lblPinkyTrafficLight, "cell 2 0,alignx center");
 
-		lblInkyTrafficLight = new JLabel(" ");
-		lblInkyTrafficLight.setHorizontalAlignment(SwingConstants.RIGHT);
-		add(lblInkyTrafficLight, "cell 3 0,growx");
+		lblInkyTrafficLight = new JLabel("traffic_light");
+		lblInkyTrafficLight.setHorizontalAlignment(SwingConstants.CENTER);
+		add(lblInkyTrafficLight, "cell 4 0,alignx center");
 
-		lblClydeTrafficLight = new JLabel(" ");
-		lblClydeTrafficLight.setHorizontalAlignment(SwingConstants.RIGHT);
-		add(lblClydeTrafficLight, "cell 5 0,growx");
+		lblClydeTrafficLight = new JLabel("traffic_light");
+		lblClydeTrafficLight.setHorizontalAlignment(SwingConstants.CENTER);
+		add(lblClydeTrafficLight, "cell 6 0,alignx center");
 
 		lblDotCounters = new JLabel("Dot counters");
 		add(lblDotCounters, "cell 0 1");
@@ -186,6 +186,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 	}
 
 	private void updateTrafficLight(JLabel label, Ghost ghost) {
+		label.setText("");
 		TrafficLights.Light light = trafficLight(ghost);
 		if (light == null || !gameController.game.maze.insideGhostHouse(ghost.tile())) {
 			label.setIcon(null);

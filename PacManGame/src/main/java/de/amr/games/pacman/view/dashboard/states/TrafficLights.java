@@ -14,16 +14,20 @@ class TrafficLights implements Icon {
 		GREEN, YELLOW, RED
 	};
 
-	private int height;
+	private int lightDiameter;
+	private int longSide;
+	private int shortSide;
 	private boolean red;
 	private boolean yellow;
 	private boolean green;
 	private Color lightOff = Color.DARK_GRAY;
 	private Color frameColor = Color.LIGHT_GRAY;
-	private int margin = 1;
+	private int margin = 2;
 
-	public TrafficLights(int height) {
-		this.height = height;
+	public TrafficLights(int diameter) {
+		lightDiameter = diameter;
+		shortSide = lightDiameter + 2 * margin;
+		longSide = 3 * shortSide;
 	}
 
 	public void set(Light... lights) {
@@ -43,27 +47,26 @@ class TrafficLights implements Icon {
 
 	@Override
 	public synchronized void paintIcon(Component c, Graphics gc, int x, int y) {
-		int d = height - 2 * margin; // light diameter
 		Graphics2D g = (Graphics2D) gc.create();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setColor(frameColor);
 		g.fillRect(x, y, getIconWidth(), getIconHeight());
 		g.setColor(red ? Color.RED : lightOff);
-		g.fillOval(x + margin, y + margin, d, d);
+		g.fillOval(x + margin, y + margin, lightDiameter, lightDiameter);
 		g.setColor(yellow ? Color.YELLOW : lightOff);
-		g.fillOval(x + height + margin, y + margin, d, d);
+		g.fillOval(x + shortSide + margin, y + margin, lightDiameter, lightDiameter);
 		g.setColor(green ? Color.GREEN : lightOff);
-		g.fillOval(x + 2 * height + margin, y + margin, d, d);
+		g.fillOval(x + 2 * shortSide + margin, y + margin, lightDiameter, lightDiameter);
 		g.dispose();
 	}
 
 	@Override
 	public int getIconWidth() {
-		return 3 * height;
+		return longSide;
 	}
 
 	@Override
 	public int getIconHeight() {
-		return height;
+		return shortSide;
 	}
 }
