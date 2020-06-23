@@ -28,11 +28,11 @@ public class GameStateView extends JPanel implements Lifecycle {
 
 	private GameController gameController;
 	private GameStateTable table;
-	private JLabel lblGameControllerState;
-	private JCheckBox cbShowRoutes;
-	private JCheckBox cbShowStates;
+	private JLabel lblGameState;
 	private GhostHouseStateView ghostHouseStateView;
 	private JPanel ghostHouseTitle;
+	private JCheckBox cbShowRoutes;
+	private JCheckBox cbShowStates;
 	private JCheckBox cbShowGrid;
 	private JPanel checkBoxesPanel;
 
@@ -43,10 +43,10 @@ public class GameStateView extends JPanel implements Lifecycle {
 		add(content, BorderLayout.CENTER);
 		content.setLayout(new MigLayout("", "[grow]", "[][][][][grow,top]"));
 
-		lblGameControllerState = new JLabel("Game Controller State");
-		lblGameControllerState.setForeground(Color.BLUE);
-		lblGameControllerState.setFont(new Font("SansSerif", Font.BOLD, 16));
-		content.add(lblGameControllerState, "cell 0 0,alignx center");
+		lblGameState = new JLabel("Game Controller State");
+		lblGameState.setForeground(Color.BLUE);
+		lblGameState.setFont(new Font("SansSerif", Font.BOLD, 16));
+		content.add(lblGameState, "cell 0 0,alignx center");
 
 		JScrollPane scrollPane = new JScrollPane();
 		content.add(scrollPane, "cell 0 1,growx,aligny top");
@@ -89,25 +89,30 @@ public class GameStateView extends JPanel implements Lifecycle {
 	public void attachTo(GameController gameController) {
 		this.gameController = gameController;
 		ghostHouseStateView.attachTo(gameController);
-		table.setModel(new GameStateTableModel(gameController));
+		init();
 	}
 
 	@Override
 	public void init() {
+		table.setModel(new GameStateTableModel(gameController));
 	}
 
 	@Override
 	public void update() {
+		table.update();
+		ghostHouseStateView.update();
+		updateStateLabel();
+		cbShowRoutes.setSelected(gameController.isShowingActorRoutes());
+		cbShowGrid.setSelected(gameController.isShowingGrid());
+		cbShowStates.setSelected(gameController.isShowingStates());
+	}
+
+	private void updateStateLabel() {
 		State<?> state = gameController.state();
 		int remaining = state.getTicksRemaining(), duration = state.getDuration();
 		String stateText = duration != Integer.MAX_VALUE
 				? String.format("%s (%s of %s sec remaining)", state.id(), seconds(remaining), seconds(duration))
 				: state.id().toString();
-		lblGameControllerState.setText(stateText);
-		table.update();
-		ghostHouseStateView.update();
-		cbShowRoutes.setSelected(gameController.isShowingActorRoutes());
-		cbShowGrid.setSelected(gameController.isShowingGrid());
-		cbShowStates.setSelected(gameController.isShowingStates());
+		lblGameState.setText(stateText);
 	}
 }
