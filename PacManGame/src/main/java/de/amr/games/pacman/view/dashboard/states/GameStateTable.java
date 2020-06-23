@@ -77,7 +77,7 @@ public class GameStateTable extends JTable {
 	}
 
 	public GameStateTable() {
-		super(GameStateTableModel.LOREM_IPSUM);
+		super(new GameStateTableModel());
 	}
 
 	@Override

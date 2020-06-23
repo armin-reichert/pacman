@@ -11,7 +11,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.border.TitledBorder;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.GameController;
@@ -54,6 +53,7 @@ public class GameStateView extends JPanel implements Lifecycle {
 		table.setRowHeight(24);
 		table.setPreferredScrollableViewportSize(new Dimension(450, 350));
 		scrollPane.setViewportView(table);
+		table.setModel(new GameStateTableModel());
 
 		ghostHouseStateView = new GhostHouseStateView();
 		content.add(ghostHouseStateView, "cell 0 2,grow");
@@ -87,7 +87,8 @@ public class GameStateView extends JPanel implements Lifecycle {
 
 	@Override
 	public void init() {
-		table.setModel(new GameStateTableModel(gameController));
+		GameStateTableModel model = new GameStateTableModel(gameController);
+		table.setModel(model);
 	}
 
 	@Override

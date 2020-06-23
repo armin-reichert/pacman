@@ -26,17 +26,6 @@ class GameStateTableModel extends AbstractTableModel {
 	public static final int ROW_PACMAN = 4;
 	public static final int ROW_BONUS = 5;
 
-	public final static GameStateTableModel LOREM_IPSUM = new GameStateTableModel();
-
-	static {
-		LOREM_IPSUM.record(ROW_BLINKY).name = "Blinky";
-		LOREM_IPSUM.record(ROW_PINKY).name = "Pinky";
-		LOREM_IPSUM.record(ROW_INKY).name = "Inky";
-		LOREM_IPSUM.record(ROW_CLYDE).name = "Clyde";
-		LOREM_IPSUM.record(ROW_PACMAN).name = "Pac-Man";
-		LOREM_IPSUM.record(ROW_BONUS).name = "Bonus";
-	}
-
 	public enum Field {
 		//@formatter:off
 		OnStage("On Stage", Boolean.class, true), 
@@ -73,12 +62,13 @@ class GameStateTableModel extends AbstractTableModel {
 		}
 	};
 
-	public GameController gameController;
-	public Ghost[] ghostByRow;
+	private GameController gameController;
+
+	private Ghost[] ghostByRow;
 	private final GameStateRecord[] records;
 
 	public GameStateTableModel() {
-		records = new GameStateRecord[NUM_ROWS];
+		records = createRecords();
 		for (int i = 0; i < records.length; ++i) {
 			records[i] = new GameStateRecord();
 		}
@@ -86,7 +76,7 @@ class GameStateTableModel extends AbstractTableModel {
 
 	public GameStateTableModel(GameController gameController) {
 		this.gameController = gameController;
-		records = new GameStateRecord[NUM_ROWS];
+		records = createRecords();
 		Game game = gameController.game;
 		ghostByRow = new Ghost[] { game.blinky, game.pinky, game.inky, game.clyde };
 		addTableModelListener(e -> {
@@ -99,24 +89,41 @@ class GameStateTableModel extends AbstractTableModel {
 		});
 	}
 
+	private GameStateRecord[] createRecords() {
+		GameStateRecord[] records = new GameStateRecord[NUM_ROWS];
+		for (int i = 0; i < records.length; ++i) {
+			records[i] = new GameStateRecord();
+		}
+		records[ROW_BLINKY].name = "Blinky";
+		records[ROW_PINKY].name = "Pinky";
+		records[ROW_INKY].name = "Inky";
+		records[ROW_CLYDE].name = "Clyde";
+		records[ROW_PACMAN].name = "Pac-Man";
+		records[ROW_BONUS].name = "Bonus";
+		return records;
+	}
+
+	public GameController getGameController() {
+		return gameController;
+	}
+
 	public void update() {
-		Game game = gameController.game;
-		GhostCommand ghostCommand = gameController.ghostCommand;
-		records[ROW_BLINKY] = new GameStateRecord(game, ghostCommand, game.blinky);
-		records[ROW_PINKY] = new GameStateRecord(game, ghostCommand, game.pinky);
-		records[ROW_INKY] = new GameStateRecord(game, ghostCommand, game.inky);
-		records[ROW_CLYDE] = new GameStateRecord(game, ghostCommand, game.clyde);
-		records[ROW_PACMAN] = new GameStateRecord(game, game.pacMan);
-		records[ROW_BONUS] = new GameStateRecord(game, game.bonus);
-		fireTableDataChanged();
+		if (gameController != null) {
+			Game game = gameController.game;
+			GhostCommand ghostCommand = gameController.ghostCommand;
+			records[ROW_BLINKY] = new GameStateRecord(game, ghostCommand, game.blinky);
+			records[ROW_PINKY] = new GameStateRecord(game, ghostCommand, game.pinky);
+			records[ROW_INKY] = new GameStateRecord(game, ghostCommand, game.inky);
+			records[ROW_CLYDE] = new GameStateRecord(game, ghostCommand, game.clyde);
+			records[ROW_PACMAN] = new GameStateRecord(game, game.pacMan);
+			records[ROW_BONUS] = new GameStateRecord(game, game.bonus);
+			fireTableDataChanged();
+		}
 	}
 
 	@Override
 	public Object getValueAt(int row, int col) {
 		GameStateRecord r = records[row];
-		if (r == null) {
-			return null;
-		}
 		switch (Field.at(col)) {
 		case OnStage:
 			return r.takesPart;
