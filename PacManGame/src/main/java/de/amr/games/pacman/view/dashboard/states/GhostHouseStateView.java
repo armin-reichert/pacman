@@ -115,21 +115,6 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		setIconOnly(lblPacManStarving, pacMan(size));
 	}
 
-	private void setIconOnly(JLabel label, Icon icon) {
-		label.setText("");
-		label.setIcon(icon);
-	}
-
-	private ImageIcon ghost(int color, int size) {
-		Sprite sprite = gameController.theme.spr_ghostColored(color, Direction.RIGHT);
-		return new ImageIcon(sprite.frame(0).getScaledInstance(size, size, Image.SCALE_SMOOTH));
-	}
-
-	private ImageIcon pacMan(int size) {
-		Sprite sprite = gameController.theme.spr_pacManFull();
-		return new ImageIcon(sprite.frame(0).getScaledInstance(size, size, Image.SCALE_SMOOTH));
-	}
-
 	@Override
 	public void update() {
 		Game game = gameController.game;
@@ -151,6 +136,21 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		tfGlobalDots.setEnabled(house.isGlobalDotCounterEnabled());
 
 		tfPacManStarvingTime.setText(ticksAndSeconds(house.pacManStarvingTicks()));
+	}
+
+	private void setIconOnly(JLabel label, Icon icon) {
+		label.setText("");
+		label.setIcon(icon);
+	}
+
+	private ImageIcon ghost(int color, int size) {
+		Sprite sprite = gameController.theme.spr_ghostColored(color, Direction.RIGHT);
+		return new ImageIcon(sprite.frame(0).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+	}
+
+	private ImageIcon pacMan(int size) {
+		Sprite sprite = gameController.theme.spr_pacManFull();
+		return new ImageIcon(sprite.frame(0).getScaledInstance(size, size, Image.SCALE_SMOOTH));
 	}
 
 	private void markTextField(JTextField tf, boolean hilight) {
