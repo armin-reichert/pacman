@@ -343,12 +343,10 @@ This behavior is implemented by the following state machine:
 
 ```java
 beginStateMachine(Sanity.class, Void.class)
-	.initialState(IMMUNE)
+	.initialState(name.equals("Blinky") ? INFECTABLE : IMMUNE)
 	.description(() -> String.format("[%s sanity]", name))
 	.states()
 	.transitions()
-
-		.when(IMMUNE).then(INFECTABLE).condition(() -> name.equals("Blinky"))
 
 		.when(INFECTABLE).then(CRUISE_ELROY2)
 			.condition(() -> game.remainingFoodCount() <= game.level.elroy2DotsLeft)
