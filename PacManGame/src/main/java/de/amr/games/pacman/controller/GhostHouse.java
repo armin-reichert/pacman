@@ -1,6 +1,8 @@
 package de.amr.games.pacman.controller;
 
 import static de.amr.easy.game.Application.loginfo;
+import static de.amr.games.pacman.controller.Decision.confirmed;
+import static de.amr.games.pacman.controller.Decision.rejected;
 import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.model.Game.sec;
 
@@ -43,7 +45,14 @@ public class GhostHouse {
 		if (game.takesPart(game.blinky) && game.blinky.is(LOCKED)) {
 			unlock(game.blinky);
 		}
-		preferredLockedGhost().filter(this::canLeaveHome).ifPresent(this::unlock);
+		Ghost nextToLeave = preferredLockedGhost().orElse(null);
+		if (nextToLeave != null) {
+			Decision decision = decideIfGhostCanLeave(nextToLeave);
+			if (decision.confirmed) {
+				loginfo(decision.reason);
+				unlock(nextToLeave);
+			}
+		}
 		pacManStarvingTicks += 1;
 	}
 
@@ -106,33 +115,45 @@ public class GhostHouse {
 	 * Determines if the given ghost can leave the ghost house.
 	 * 
 	 * @param ghost a ghost
+	 * @return if the ghost can leave
+	 */
+	public boolean canLeave(Ghost ghost) {
+		return decideIfGhostCanLeave(ghost).confirmed;
+	}
+
+	/**
+	 * @param ghost a ghost
+	 * @return decision why ghost can leave
 	 * 
 	 * @see <a href=
 	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
 	 *      Dossier</a>
 	 */
-	public boolean canLeaveHome(Ghost ghost) {
-		int pacManStarvingTimeLimit = game.level.number < 5 ? sec(4) : sec(3);
-		if (pacManStarvingTicks >= pacManStarvingTimeLimit) {
-			loginfo("%s can leave house: Pac-Man's starving time limit (%d ticks) reached", ghost.name,
-					pacManStarvingTimeLimit);
+	private Decision decideIfGhostCanLeave(Ghost ghost) {
+		if (!ghost.is(LOCKED)) {
+			return confirmed("Ghost is not locked");
+		}
+		if (pacManStarvingTicks >= pacManStarvingTimeLimit()) {
 			pacManStarvingTicks = 0;
-			return true;
+			return confirmed("%s can leave house: Pac-Man's starving time limit (%d ticks) reached", ghost.name,
+					pacManStarvingTimeLimit());
 		}
 		if (globalCounter.enabled) {
 			int globalLimit = globalDotLimit(ghost);
 			if (globalCounter.dots >= globalLimit) {
-				loginfo("%s can leave house: global dot limit (%d) reached", ghost.name, globalLimit);
-				return true;
+				return confirmed("%s can leave house: global dot limit (%d) reached", ghost.name, globalLimit);
 			}
 		} else {
 			int personalLimit = personalDotLimit(ghost);
 			if (ghostDotCount[ghost.seat.number] >= personalLimit) {
-				loginfo("%s can leave house: ghost's dot limit (%d) reached", ghost.name, personalLimit);
-				return true;
+				return confirmed("%s can leave house: ghost's dot limit (%d) reached", ghost.name, personalLimit);
 			}
 		}
-		return false;
+		return rejected("");
+	}
+
+	private int pacManStarvingTimeLimit() {
+		return game.level.number < 5 ? sec(4) : sec(3);
 	}
 
 	public int personalDotLimit(Ghost ghost) {
@@ -164,6 +185,25 @@ public class GhostHouse {
 	private void resetGhostDotCount() {
 		Arrays.fill(ghostDotCount, 0);
 		loginfo("Ghost dot counters reset to zero");
+	}
+}
+
+class Decision {
+	public boolean confirmed;
+	public String reason;
+
+	static Decision confirmed(String msg, Object... args) {
+		Decision d = new Decision();
+		d.confirmed = true;
+		d.reason = String.format(msg, args);
+		return d;
+	}
+
+	static Decision rejected(String msg, Object... args) {
+		Decision d = new Decision();
+		d.confirmed = false;
+		d.reason = String.format(msg, args);
+		return d;
 	}
 }
 

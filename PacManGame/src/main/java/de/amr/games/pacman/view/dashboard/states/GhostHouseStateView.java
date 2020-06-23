@@ -1,8 +1,8 @@
 package de.amr.games.pacman.view.dashboard.states;
 
+import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.view.dashboard.Formatting.ticksAndSeconds;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
 
@@ -44,59 +44,78 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 	private JLabel lblClydeDots;
 	private JLabel lblDotCounters;
 	private JLabel lblStarving;
+	private JLabel lblPinkyTrafficLight;
+	private JLabel lblInkyTrafficLight;
+	private JLabel lblClydeTrafficLight;
 
 	public GhostHouseStateView() {
-		setLayout(new MigLayout("", "[][][][][][][][][]", "[][]"));
+		setLayout(new MigLayout("", "[][][][][][][][][]", "[10px:10px:10px][][]"));
+
+		lblPinkyTrafficLight = new JLabel(" ");
+		lblPinkyTrafficLight.setHorizontalAlignment(SwingConstants.RIGHT);
+		add(lblPinkyTrafficLight, "cell 1 0,growx");
+
+		lblInkyTrafficLight = new JLabel(" ");
+		lblInkyTrafficLight.setHorizontalAlignment(SwingConstants.RIGHT);
+		add(lblInkyTrafficLight, "cell 3 0,growx");
+
+		lblClydeTrafficLight = new JLabel(" ");
+		lblClydeTrafficLight.setHorizontalAlignment(SwingConstants.RIGHT);
+		add(lblClydeTrafficLight, "cell 5 0,growx");
 
 		lblDotCounters = new JLabel("Dot counters");
-		add(lblDotCounters, "cell 0 0");
+		add(lblDotCounters, "cell 0 1");
 
 		lblPinkyDots = new JLabel("Pinky");
-		lblPinkyDots.setFont(new Font("SansSerif", Font.PLAIN, 24));
-		add(lblPinkyDots, "cell 1 0,alignx trailing,aligny center");
+		lblPinkyDots.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblPinkyDots.setFont(new Font("Monospaced", Font.BOLD, 24));
+		add(lblPinkyDots, "cell 1 1,alignx right,aligny center");
 
 		tfPinkyDots = new JTextField();
 		tfPinkyDots.setEditable(false);
-		add(tfPinkyDots, "flowx,cell 2 0,alignx left,aligny center");
+		add(tfPinkyDots, "flowx,cell 2 1,alignx left,aligny center");
 		tfPinkyDots.setColumns(8);
 
 		lblInkyDots = new JLabel("Inky");
-		lblInkyDots.setFont(new Font("SansSerif", Font.PLAIN, 24));
-		add(lblInkyDots, "cell 3 0,alignx trailing,aligny center");
+		lblInkyDots.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblInkyDots.setFont(new Font("Monospaced", Font.BOLD, 24));
+		add(lblInkyDots, "cell 3 1,alignx right,aligny center");
 
 		tfInkyDots = new JTextField();
 		tfInkyDots.setEditable(false);
-		add(tfInkyDots, "cell 4 0,alignx left");
+		add(tfInkyDots, "cell 4 1,alignx left");
 		tfInkyDots.setColumns(8);
 
 		lblClydeDots = new JLabel("Clyde");
-		lblClydeDots.setFont(new Font("SansSerif", Font.PLAIN, 24));
-		add(lblClydeDots, "cell 5 0,alignx trailing,aligny center");
+		lblClydeDots.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblClydeDots.setFont(new Font("Monospaced", Font.BOLD, 24));
+		add(lblClydeDots, "cell 5 1,alignx right,aligny center");
 
 		tfClydeDots = new JTextField();
 		tfClydeDots.setEditable(false);
-		add(tfClydeDots, "cell 6 0,alignx left");
+		add(tfClydeDots, "cell 6 1,alignx left");
 		tfClydeDots.setColumns(8);
 
 		JLabel lblGlobalDots = new JLabel("Global");
-		add(lblGlobalDots, "cell 7 0,alignx trailing");
+		add(lblGlobalDots, "cell 7 1,alignx trailing");
 
 		tfGlobalDots = new JTextField();
 		tfGlobalDots.setEditable(false);
-		add(tfGlobalDots, "cell 8 0,alignx left");
+		add(tfGlobalDots, "cell 8 1,alignx left");
 		tfGlobalDots.setColumns(8);
 
 		lblStarving = new JLabel("Starving Time");
-		add(lblStarving, "cell 0 1");
+		add(lblStarving, "cell 0 2");
 
 		lblPacManStarving = new JLabel("Pac-Man");
-		lblPacManStarving.setFont(new Font("SansSerif", Font.PLAIN, 24));
+		lblPacManStarving.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblPacManStarving.setFont(new Font("Monospaced", Font.BOLD, 24));
 		lblPacManStarving.setHorizontalTextPosition(SwingConstants.RIGHT);
-		add(lblPacManStarving, "cell 1 1,alignx trailing,aligny center");
+		add(lblPacManStarving, "cell 1 2,alignx right,aligny center");
 
 		tfPacManStarvingTime = new JTextField();
 		tfPacManStarvingTime.setEditable(false);
-		add(tfPacManStarvingTime, "cell 2 1,alignx left");
+		add(tfPacManStarvingTime, "cell 2 2,alignx left");
 		tfPacManStarvingTime.setColumns(8);
 	}
 
@@ -108,7 +127,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	@Override
 	public void init() {
-		int size = 24;
+		int size = 30;
 		setIconOnly(lblPinkyDots, ghost(Theme.PINK_GHOST, size));
 		setIconOnly(lblInkyDots, ghost(Theme.CYAN_GHOST, size));
 		setIconOnly(lblClydeDots, ghost(Theme.ORANGE_GHOST, size));
@@ -118,19 +137,18 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 	@Override
 	public void update() {
 		Game game = gameController.game;
-		Ghost nextGhostLeaving = house.preferredLockedGhost().orElse(null);
 
 		tfPinkyDots.setText(formatDots(game.pinky));
 		tfPinkyDots.setEnabled(!house.isGlobalDotCounterEnabled());
-		markTextField(tfPinkyDots, nextGhostLeaving == game.pinky);
+		updateTrafficLight(lblPinkyTrafficLight, game.pinky);
 
 		tfInkyDots.setText(formatDots(game.inky));
 		tfInkyDots.setEnabled(!house.isGlobalDotCounterEnabled());
-		markTextField(tfInkyDots, nextGhostLeaving == game.inky);
+		updateTrafficLight(lblInkyTrafficLight, game.inky);
 
 		tfClydeDots.setText(formatDots(game.clyde));
 		tfClydeDots.setEnabled(!house.isGlobalDotCounterEnabled());
-		markTextField(tfClydeDots, nextGhostLeaving == game.clyde);
+		updateTrafficLight(lblClydeTrafficLight, game.clyde);
 
 		tfGlobalDots.setText(String.format("%d", house.globalDotCount()));
 		tfGlobalDots.setEnabled(house.isGlobalDotCounterEnabled());
@@ -149,12 +167,31 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 	}
 
 	private ImageIcon pacMan(int size) {
-		Sprite sprite = gameController.theme.spr_pacManFull();
+		Sprite sprite = gameController.theme.spr_pacManWalking(Direction.RIGHT);
 		return new ImageIcon(sprite.frame(0).getScaledInstance(size, size, Image.SCALE_SMOOTH));
 	}
 
-	private void markTextField(JTextField tf, boolean hilight) {
-		tf.setBackground(hilight ? Color.GREEN : Color.WHITE);
+	private TrafficLights.Light trafficLight(Ghost ghost) {
+		boolean insideHouse = gameController.game.maze.insideGhostHouse(ghost.tile());
+		if (!insideHouse) {
+			return null;
+		}
+		if (!ghost.is(LOCKED)) {
+			return TrafficLights.Light.GREEN;
+		}
+		Ghost next = house.preferredLockedGhost().orElse(null);
+		return ghost == next ? TrafficLights.Light.YELLOW : TrafficLights.Light.RED;
+	}
+
+	private void updateTrafficLight(JLabel label, Ghost ghost) {
+		TrafficLights.Light light = trafficLight(ghost);
+		if (light == null || !gameController.game.maze.insideGhostHouse(ghost.tile())) {
+			label.setIcon(null);
+		} else {
+			TrafficLights lights = new TrafficLights(10);
+			lights.set(light);
+			label.setIcon(lights);
+		}
 	}
 
 	private String formatDots(Ghost ghost) {
