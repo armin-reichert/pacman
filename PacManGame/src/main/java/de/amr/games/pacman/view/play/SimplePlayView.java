@@ -3,6 +3,7 @@ package de.amr.games.pacman.view.play;
 import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
 import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.Direction.LEFT;
+import static de.amr.games.pacman.view.core.EntityRenderer.drawEntity;
 import static de.amr.games.pacman.view.play.SimplePlayView.MazeMode.CROWDED;
 import static de.amr.games.pacman.view.play.SimplePlayView.MazeMode.EMPTY;
 import static de.amr.games.pacman.view.play.SimplePlayView.MazeMode.FLASHING;
@@ -109,19 +110,19 @@ public class SimplePlayView extends BaseView {
 				pen.font(theme.fnt_text());
 				pen.fontSize(messageFontSize);
 				pen.color(messageColor);
-				pen.hcenter(messageText, width, messageRow, Tile.SIZE);
+				pen.hcenter(messageText, width(), messageRow, Tile.SIZE);
 			}
 		}
 	}
 
 	protected void drawActors(Graphics2D g) {
-		drawActor(g, game.bonus, game.bonus.sprites);
-		drawActor(g, game.pacMan, game.pacMan.sprites);
+		drawEntity(g, game.bonus, game.bonus.sprites);
+		drawEntity(g, game.pacMan, game.pacMan.sprites);
 		// draw dead ghosts (as number or eyes) under living ghosts
 		game.ghostsOnStage().filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
-				.forEach(ghost -> drawActor(g, ghost, ghost.sprites));
+				.forEach(ghost -> drawEntity(g, ghost, ghost.sprites));
 		game.ghostsOnStage().filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
-				.forEach(ghost -> drawActor(g, ghost, ghost.sprites));
+				.forEach(ghost -> drawEntity(g, ghost, ghost.sprites));
 	}
 
 	protected void drawScores(Graphics2D g) {
@@ -182,7 +183,7 @@ public class SimplePlayView extends BaseView {
 		int sz = 2 * Tile.SIZE;
 		Image pacManLookingLeft = theme.spr_pacManWalking(LEFT).frame(1);
 		for (int i = 0, x = sz; i < game.lives; ++i, x += sz) {
-			g.drawImage(pacManLookingLeft, x, height - sz, null);
+			g.drawImage(pacManLookingLeft, x, height() - sz, null);
 		}
 	}
 
@@ -191,9 +192,9 @@ public class SimplePlayView extends BaseView {
 		int first = Math.max(0, game.levelCounter.size() - max);
 		int n = Math.min(max, game.levelCounter.size());
 		int sz = 2 * Tile.SIZE; // image size
-		for (int i = 0, x = width - 2 * sz; i < n; ++i, x -= sz) {
+		for (int i = 0, x = width() - 2 * sz; i < n; ++i, x -= sz) {
 			Symbol symbol = game.levelCounter.get(first + i);
-			g.drawImage(theme.spr_bonusSymbol(symbol).frame(0), x, height - sz, sz, sz, null);
+			g.drawImage(theme.spr_bonusSymbol(symbol).frame(0), x, height() - sz, sz, sz, null);
 		}
 	}
 
