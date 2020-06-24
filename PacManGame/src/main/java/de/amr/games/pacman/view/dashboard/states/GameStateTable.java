@@ -13,7 +13,7 @@ import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumn;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import de.amr.games.pacman.controller.actor.Ghost;
@@ -31,10 +31,6 @@ public class GameStateTable extends JTable {
 
 	static class TileCellRenderer extends DefaultTableCellRenderer {
 
-		static void apply(TableColumn column) {
-			column.setCellRenderer(new TileCellRenderer());
-		}
-
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
@@ -47,10 +43,6 @@ public class GameStateTable extends JTable {
 	}
 
 	static class TicksCellRenderer extends DefaultTableCellRenderer {
-
-		static void apply(TableColumn column) {
-			column.setCellRenderer(new TicksCellRenderer());
-		}
 
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
@@ -65,11 +57,7 @@ public class GameStateTable extends JTable {
 
 	static class SpeedCellRenderer extends DefaultTableCellRenderer {
 
-		static void apply(TableColumn column) {
-			column.setCellRenderer(new SpeedCellRenderer());
-		}
-
-		private static boolean isBlinkyInsane(GameStateTableModel model) {
+		private boolean isBlinkyInsane(GameStateTableModel model) {
 			Sanity sanity = model.record(ROW_BLINKY).ghostSanity;
 			return sanity == ELROY1 || sanity == ELROY2;
 		}
@@ -98,14 +86,22 @@ public class GameStateTable extends JTable {
 	@Override
 	public void setModel(TableModel model) {
 		super.setModel(model);
-		configureColumns();
+		configureRenderers();
 	}
 
-	private void configureColumns() {
-		TileCellRenderer.apply(column(ColumnInfo.Tile));
-		SpeedCellRenderer.apply(column(ColumnInfo.Speed));
-		TicksCellRenderer.apply(column(ColumnInfo.Remaining));
-		TicksCellRenderer.apply(column(ColumnInfo.Duration));
+	public void update() {
+		getGameStateTableModel().update();
+	}
+
+	private void configureRenderers() {
+		renderer(ColumnInfo.Tile, new TileCellRenderer());
+		renderer(ColumnInfo.Speed, new SpeedCellRenderer());
+		renderer(ColumnInfo.Remaining, new TicksCellRenderer());
+		renderer(ColumnInfo.Duration, new TicksCellRenderer());
+	}
+
+	private void renderer(ColumnInfo columnInfo, TableCellRenderer renderer) {
+		getColumnModel().getColumn(columnInfo.ordinal()).setCellRenderer(renderer);
 	}
 
 	@Override
@@ -123,13 +119,5 @@ public class GameStateTable extends JTable {
 
 	private GameStateTableModel getGameStateTableModel() {
 		return (GameStateTableModel) getModel();
-	}
-
-	public void update() {
-		getGameStateTableModel().update();
-	}
-
-	private TableColumn column(ColumnInfo info) {
-		return getColumnModel().getColumn(info.ordinal());
 	}
 }
