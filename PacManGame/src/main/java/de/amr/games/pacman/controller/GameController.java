@@ -115,17 +115,17 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		if (gameStateView == null) {
 			gameStateView = new GameStateView();
-			app().addCustomSettingsTab("Game State", gameStateView);
+			app().f2Dialog().addTab("Game State", gameStateView);
 		}
 		gameStateView.attachTo(this);
 
 		if (gameLevelView == null) {
 			gameLevelView = new GameLevelView();
-			app().addCustomSettingsTab("Game Level", gameLevelView);
+			app().f2Dialog().addTab("Game Level", gameLevelView);
 		}
 		gameLevelView.attachTo(game);
 
-		app().selectCustomSettingsTab(0);
+		app().f2Dialog().selectCustomTab(0);
 
 		setDemoMode(settings.demoMode);
 		game.creatures().forEach(actor -> {
