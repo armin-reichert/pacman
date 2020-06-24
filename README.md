@@ -348,13 +348,13 @@ beginStateMachine(Sanity.class, Void.class)
 	.states()
 	.transitions()
 
-		.when(INFECTABLE).then(CRUISE_ELROY2)
+		.when(INFECTABLE).then(ELROY2)
 			.condition(() -> game.remainingFoodCount() <= game.level.elroy2DotsLeft)
 
-		.when(INFECTABLE).then(CRUISE_ELROY1)
+		.when(INFECTABLE).then(ELROY1)
 			.condition(() -> game.remainingFoodCount() <= game.level.elroy1DotsLeft)
 
-		.when(CRUISE_ELROY1).then(CRUISE_ELROY2)
+		.when(ELROY1).then(ELROY2)
 			.condition(() -> game.remainingFoodCount() <= game.level.elroy2DotsLeft)
 
 .endStateMachine();
