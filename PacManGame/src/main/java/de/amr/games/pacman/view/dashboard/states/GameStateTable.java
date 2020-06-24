@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.dashboard.states;
 
-import static de.amr.games.pacman.controller.actor.Ghost.Sanity.CRUISE_ELROY1;
-import static de.amr.games.pacman.controller.actor.Ghost.Sanity.CRUISE_ELROY2;
+import static de.amr.games.pacman.controller.actor.Ghost.Sanity.ELROY1;
+import static de.amr.games.pacman.controller.actor.Ghost.Sanity.ELROY2;
 import static de.amr.games.pacman.view.dashboard.Formatting.pixelsPerSec;
 import static de.amr.games.pacman.view.dashboard.Formatting.ticksAndSeconds;
 import static de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ROW_BLINKY;
@@ -57,7 +57,7 @@ public class GameStateTable extends JTable {
 
 		private static boolean isBlinkyInsane(GameStateTableModel model) {
 			Sanity sanity = model.record(ROW_BLINKY).ghostSanity;
-			return sanity == CRUISE_ELROY1 || sanity == CRUISE_ELROY2;
+			return sanity == ELROY1 || sanity == ELROY2;
 		}
 
 		@Override

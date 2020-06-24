@@ -1,7 +1,7 @@
 package de.amr.games.pacman.controller.actor;
 
-import static de.amr.games.pacman.controller.actor.Ghost.Sanity.CRUISE_ELROY1;
-import static de.amr.games.pacman.controller.actor.Ghost.Sanity.CRUISE_ELROY2;
+import static de.amr.games.pacman.controller.actor.Ghost.Sanity.ELROY1;
+import static de.amr.games.pacman.controller.actor.Ghost.Sanity.ELROY2;
 import static de.amr.games.pacman.controller.actor.Ghost.Sanity.IMMUNE;
 import static de.amr.games.pacman.controller.actor.Ghost.Sanity.INFECTABLE;
 import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
@@ -51,7 +51,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 public class Ghost extends Creature<GhostState> {
 
 	public enum Sanity {
-		INFECTABLE, CRUISE_ELROY1, CRUISE_ELROY2, IMMUNE;
+		INFECTABLE, ELROY1, ELROY2, IMMUNE;
 	};
 
 	public StateMachine<Sanity, Void> sanity =
@@ -62,13 +62,13 @@ public class Ghost extends Creature<GhostState> {
 			.states()
 			.transitions()
 			
-				.when(INFECTABLE).then(CRUISE_ELROY2)
+				.when(INFECTABLE).then(ELROY2)
 					.condition(() -> game.remainingFoodCount() <= game.level.elroy2DotsLeft)
 					
-				.when(INFECTABLE).then(CRUISE_ELROY1)
+				.when(INFECTABLE).then(ELROY1)
 					.condition(() -> game.remainingFoodCount() <= game.level.elroy1DotsLeft)
 				
-				.when(CRUISE_ELROY1).then(CRUISE_ELROY2)
+				.when(ELROY1).then(ELROY2)
 					.condition(() -> game.remainingFoodCount() <= game.level.elroy2DotsLeft)
 					
 		.endStateMachine();
@@ -332,9 +332,9 @@ public class Ghost extends Creature<GhostState> {
 				return speed(game.level.ghostTunnelSpeed);
 			}
 			switch (sanity.getState()) {
-			case CRUISE_ELROY1:
+			case ELROY1:
 				return speed(game.level.elroy1Speed);
-			case CRUISE_ELROY2:
+			case ELROY2:
 				return speed(game.level.elroy2Speed);
 			case INFECTABLE:
 			case IMMUNE:
