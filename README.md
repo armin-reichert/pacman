@@ -364,7 +364,7 @@ where the states are from this enumeration type:
 
 ```java
 enum Sanity {
-	INFECTABLE, CRUISE_ELROY1, CRUISE_ELROY2, IMMUNE;
+	INFECTABLE, ELROY1, ELROY2, IMMUNE;
 };
 ```
 
