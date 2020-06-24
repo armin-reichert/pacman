@@ -6,6 +6,7 @@ import static de.amr.games.pacman.model.Game.sec;
 
 import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.Bonus;
+import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.Ghost.Sanity;
 import de.amr.games.pacman.controller.actor.PacMan;
@@ -20,6 +21,7 @@ import de.amr.games.pacman.model.Tile;
  */
 class GameStateRecord {
 
+	public Creature<?> creature;
 	public boolean takesPart;
 	public String name;
 	public Tile tile;
@@ -37,6 +39,7 @@ class GameStateRecord {
 	}
 
 	public GameStateRecord(Game game, PacMan pacMan) {
+		creature = pacMan;
 		takesPart = game.takesPart(pacMan);
 		name = "Pac-Man";
 		tile = pacMan.tile();
@@ -51,6 +54,7 @@ class GameStateRecord {
 	}
 
 	public GameStateRecord(Game game, GhostCommand ghostCommand, Ghost ghost) {
+		creature = ghost;
 		takesPart = game.takesPart(ghost);
 		name = ghost.name;
 		tile = ghost.tile();

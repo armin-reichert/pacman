@@ -4,7 +4,6 @@ import javax.swing.table.AbstractTableModel;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostCommand;
-import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.Ghost.Sanity;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
@@ -26,9 +25,9 @@ class GameStateTableModel extends AbstractTableModel {
 	public static final int ROW_PACMAN = 4;
 	public static final int ROW_BONUS = 5;
 
-	public enum Field {
+	public enum ColumnInfo {
 		//@formatter:off
-		OnStage("On Stage", Boolean.class, true), 
+		OnStage("", Boolean.class, true), 
 		Name("Actor", String.class, false), 
 		Tile(Tile.class, false), 
 		Target(Tile.class, false),
@@ -41,13 +40,13 @@ class GameStateTableModel extends AbstractTableModel {
 		Duration(Integer.class, false);
 		//@formatter:on
 
-		private Field(Class<?> class_, boolean editable) {
+		private ColumnInfo(Class<?> class_, boolean editable) {
 			this.name = name();
 			this.class_ = class_;
 			this.editable = editable;
 		}
 
-		private Field(String name, Class<?> class_, boolean editable) {
+		private ColumnInfo(String name, Class<?> class_, boolean editable) {
 			this.name = name;
 			this.class_ = class_;
 			this.editable = editable;
@@ -57,15 +56,13 @@ class GameStateTableModel extends AbstractTableModel {
 		public Class<?> class_;
 		public boolean editable;
 
-		public static Field at(int col) {
-			return Field.values()[col];
+		public static ColumnInfo at(int col) {
+			return ColumnInfo.values()[col];
 		}
 	};
 
-	private GameController gameController;
-
-	private Ghost[] ghostByRow;
-	private final GameStateRecord[] records;
+	GameController gameController;
+	GameStateRecord[] records;
 
 	public GameStateTableModel() {
 		records = createRecords();
@@ -77,16 +74,6 @@ class GameStateTableModel extends AbstractTableModel {
 	public GameStateTableModel(GameController gameController) {
 		this.gameController = gameController;
 		records = createRecords();
-		Game game = gameController.game;
-		ghostByRow = new Ghost[] { game.blinky, game.pinky, game.inky, game.clyde };
-		addTableModelListener(e -> {
-			if (e.getColumn() == Field.OnStage.ordinal()) {
-				int row = e.getFirstRow();
-				if (row != ROW_PACMAN && row != ROW_BONUS) {
-					gameController.game.takePart(ghostByRow[row], records[row].takesPart);
-				}
-			}
-		});
 	}
 
 	private GameStateRecord[] createRecords() {
@@ -124,7 +111,7 @@ class GameStateTableModel extends AbstractTableModel {
 	@Override
 	public Object getValueAt(int row, int col) {
 		GameStateRecord r = records[row];
-		switch (Field.at(col)) {
+		switch (ColumnInfo.at(col)) {
 		case OnStage:
 			return r.takesPart;
 		case Name:
@@ -154,9 +141,13 @@ class GameStateTableModel extends AbstractTableModel {
 
 	@Override
 	public void setValueAt(Object value, int row, int col) {
-		if (Field.at(col) == Field.OnStage) {
+		switch (ColumnInfo.at(col)) {
+		case OnStage:
 			records[row].takesPart = (boolean) value;
 			fireTableCellUpdated(row, col);
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -171,21 +162,21 @@ class GameStateTableModel extends AbstractTableModel {
 
 	@Override
 	public int getColumnCount() {
-		return Field.values().length;
+		return ColumnInfo.values().length;
 	}
 
 	@Override
 	public String getColumnName(int col) {
-		return Field.at(col).name;
+		return ColumnInfo.at(col).name;
 	}
 
 	@Override
 	public Class<?> getColumnClass(int col) {
-		return Field.at(col).class_;
+		return ColumnInfo.at(col).class_;
 	}
 
 	@Override
 	public boolean isCellEditable(int row, int col) {
-		return Field.at(col).editable && row < ROW_PACMAN;
+		return ColumnInfo.at(col).editable;
 	}
 }
