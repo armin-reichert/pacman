@@ -114,6 +114,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			game.takePart(actor);
 			actor.addEventListener(this::process);
 		});
+
+		app().f2Dialog().ifPresent(f2 -> f2.selectCustomTab(0));
 	}
 
 	public void setShowingActorRoutes(boolean selected) {

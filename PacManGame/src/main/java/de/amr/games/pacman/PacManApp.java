@@ -103,10 +103,10 @@ public class PacManApp extends Application {
 	@Override
 	public void configureF2Dialog(F2DialogAPI dialog) {
 		GameStateView gameStateView = new GameStateView();
-		dialog.addCustomTab("Game State", gameStateView);
+		dialog.addCustomTab("Game State", gameStateView, () -> controller.game != null);
 		gameStateView.attachTo(controller);
 		GameLevelView gameLevelView = new GameLevelView();
-		dialog.addCustomTab("Game Level", gameLevelView);
+		dialog.addCustomTab("Game Level", gameLevelView, () -> controller.game != null);
 		gameLevelView.attachTo(controller);
 		dialog.selectCustomTab(0);
 	}
