@@ -72,23 +72,23 @@ public class PacManApp extends Application {
 		settings.height = 36 * Tile.SIZE;
 		settings.scale = 2;
 		settings.title = texts.getString("app.title");
-		settings.fullScreenMode = new DisplayMode(800, 600, 32, 60);
+		settings.fullScreenMode = new DisplayMode(400, 300, 32, 50);
 		PacManStateMachineLogging.setEnabled(false);
 	}
 
 	@Override
 	protected void printSettings() {
 		super.printSettings();
-		printValue("Demo Mode", "%s", settings.demoMode);
-		printValue("Ghosts harmless", "%s", settings.ghostsHarmless);
-		printValue("Ghosts flee into corner", "%s", settings.ghostsSafeCorner);
-		printValue("Fix Overflow Bug", "%s", settings.fixOverflowBug);
-		printValue("Pac-Man immortable", "%s", settings.pacManImmortable);
-		printValue("Pathfinder", "%s", settings.pathFinder);
-		printValue("Simple Mode", "%s", settings.simpleMode);
-		printValue("Skip Intro", "%s", settings.skipIntro);
-		printValue("Startlevel", "%d", settings.startLevel);
-		printValue("User Language", "%s", texts.getLocale().getDisplayLanguage());
+		settings.printValue("Demo Mode", "%s", settings.demoMode);
+		settings.printValue("Ghosts harmless", "%s", settings.ghostsHarmless);
+		settings.printValue("Ghosts flee into corner", "%s", settings.ghostsSafeCorner);
+		settings.printValue("Fix Overflow Bug", "%s", settings.fixOverflowBug);
+		settings.printValue("Pac-Man immortable", "%s", settings.pacManImmortable);
+		settings.printValue("Pathfinder", "%s", settings.pathFinder);
+		settings.printValue("Simple Mode", "%s", settings.simpleMode);
+		settings.printValue("Skip Intro", "%s", settings.skipIntro);
+		settings.printValue("Startlevel", "%d", settings.startLevel);
+		settings.printValue("User Language", "%s", texts.getLocale().getDisplayLanguage());
 	}
 
 	@Override
@@ -108,7 +108,5 @@ public class PacManApp extends Application {
 		GameLevelView gameLevelView = new GameLevelView();
 		dialog.addCustomTab("Game Level", gameLevelView, () -> controller.game != null);
 		gameLevelView.attachTo(controller);
-		dialog.selectCustomTab(0);
 	}
-
 }
