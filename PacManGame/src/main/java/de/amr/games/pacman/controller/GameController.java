@@ -23,8 +23,6 @@ import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.Random;
 
-import javax.swing.SwingUtilities;
-
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
@@ -115,13 +113,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		if (gameStateView == null) {
 			gameStateView = new GameStateView();
-			app().f2Dialog().addTab("Game State", gameStateView);
+			app().f2Dialog().addCustomTab("Game State", gameStateView);
 		}
 		gameStateView.attachTo(this);
 
 		if (gameLevelView == null) {
 			gameLevelView = new GameLevelView();
-			app().f2Dialog().addTab("Game Level", gameLevelView);
+			app().f2Dialog().addCustomTab("Game Level", gameLevelView);
 		}
 		gameLevelView.attachTo(game);
 
@@ -195,15 +193,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 		super.update();
 
-		SwingUtilities.invokeLater(() -> {
-			currentView.update();
-			if (gameStateView != null) {
-				gameStateView.update();
-			}
-			if (gameLevelView != null) {
-				gameLevelView.update();
-			}
-		});
+		currentView.update();
+		if (gameStateView != null) {
+			gameStateView.update();
+		}
+		if (gameLevelView != null) {
+			gameLevelView.update();
+		}
 	}
 
 	private float mazeFlashingSeconds() {
