@@ -16,7 +16,7 @@ import de.amr.games.pacman.model.GameLevel;
 public class GameLevelTableModel extends AbstractTableModel {
 
 	//@formatter:off
-	static final String[] PARAMETER_NAMES = { 
+	static final String[] LEVEL_PARAMS = { 
 			"Level", 
 			"Pellets Eaten", 
 			"Ghosts Killed in Sequence", 
@@ -42,13 +42,21 @@ public class GameLevelTableModel extends AbstractTableModel {
 
 	private Game game;
 
+	public GameLevelTableModel() {
+		// no game, empty model
+	}
+
 	public GameLevelTableModel(Game game) {
 		this.game = game;
 	}
 
+	public boolean hasGame() {
+		return game != null;
+	}
+
 	@Override
 	public int getRowCount() {
-		return PARAMETER_NAMES.length;
+		return game != null ? LEVEL_PARAMS.length : 0;
 	}
 
 	@Override
@@ -63,11 +71,16 @@ public class GameLevelTableModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int row, int col) {
-		return col == 0 ? PARAMETER_NAMES[row] : parameterValue(row);
+		if (col == 0) {
+			return LEVEL_PARAMS[row];
+		}
+		if (col == 1) {
+			return game != null ? levelValue(game.level, row) : null;
+		}
+		throw new IllegalArgumentException("Illegal column index; " + col);
 	}
 
-	private String parameterValue(int row) {
-		GameLevel level = game.level;
+	private String levelValue(GameLevel level, int row) {
 		switch (row) {
 		case 0:
 			return integer(level.number);

@@ -6,10 +6,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import de.amr.games.pacman.model.Game;
+import de.amr.easy.game.controller.Lifecycle;
+import de.amr.games.pacman.controller.GameController;
 import net.miginfocom.swing.MigLayout;
 
-public class GameLevelView extends JPanel {
+public class GameLevelView extends JPanel implements Lifecycle {
+
+	private GameController controller;
 	private JTable table;
 	public GameLevelTableModel tableModel;
 
@@ -24,15 +27,31 @@ public class GameLevelView extends JPanel {
 		content.add(scrollPane, "cell 0 0,grow");
 
 		table = new JTable();
+		table.setRowSelectionAllowed(false);
 		scrollPane.setViewportView(table);
 	}
 
-	public void attachTo(Game game) {
-		tableModel = new GameLevelTableModel(game);
+	public void attachTo(GameController controller) {
+		this.controller = controller;
+		init();
+	}
+
+	@Override
+	public void init() {
+		if (controller.game != null) {
+			tableModel = new GameLevelTableModel(controller.game);
+		} else {
+			tableModel = new GameLevelTableModel();
+		}
 		table.setModel(tableModel);
 	}
 
+	@Override
 	public void update() {
-		tableModel.fireTableDataChanged();
+		if (!tableModel.hasGame()) {
+			init();
+		} else {
+			tableModel.fireTableDataChanged();
+		}
 	}
 }

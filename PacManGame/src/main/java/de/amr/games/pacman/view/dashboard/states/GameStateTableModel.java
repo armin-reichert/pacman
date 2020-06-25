@@ -4,6 +4,7 @@ import javax.swing.table.AbstractTableModel;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostCommand;
+import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.Ghost.Sanity;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
@@ -61,8 +62,8 @@ class GameStateTableModel extends AbstractTableModel {
 		}
 	};
 
-	GameController gameController;
-	GameStateRecord[] records;
+	private GameController gameController;
+	private GameStateRecord[] records;
 
 	public GameStateTableModel() {
 		records = createRecords();
@@ -74,6 +75,15 @@ class GameStateTableModel extends AbstractTableModel {
 	public GameStateTableModel(GameController gameController) {
 		this.gameController = gameController;
 		records = createRecords();
+		addTableModelListener(e -> {
+			if (e.getColumn() == ColumnInfo.OnStage.ordinal()) {
+				int row = e.getFirstRow();
+				GameStateRecord r = records[row];
+				if (r.creature instanceof Ghost) {
+					gameController.game.takePart(r.creature, r.takesPart);
+				}
+			}
+		});
 	}
 
 	private GameStateRecord[] createRecords() {
@@ -92,6 +102,10 @@ class GameStateTableModel extends AbstractTableModel {
 
 	public GameController getGameController() {
 		return gameController;
+	}
+	
+	public boolean hasGame() {
+		return gameController != null && gameController.game != null;
 	}
 
 	public void update() {

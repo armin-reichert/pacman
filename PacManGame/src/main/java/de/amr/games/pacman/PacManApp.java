@@ -7,10 +7,13 @@ import com.beust.jcommander.Parameter;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
+import de.amr.easy.game.ui.f2dialog.F2DialogAPI;
 import de.amr.games.pacman.controller.EnhancedGameController;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.view.dashboard.level.GameLevelView;
+import de.amr.games.pacman.view.dashboard.states.GameStateView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 import de.amr.games.pacman.view.theme.Theme;
 
@@ -61,6 +64,8 @@ public class PacManApp extends Application {
 		launch(PacManApp.class, settings, args);
 	}
 
+	private GameController controller;
+
 	@Override
 	protected void configure(AppSettings settings) {
 		settings.width = 28 * Tile.SIZE;
@@ -89,9 +94,21 @@ public class PacManApp extends Application {
 	@Override
 	public void init() {
 		Theme theme = new ArcadeTheme();
-		GameController controller = settings.simpleMode ? new GameController(theme) : new EnhancedGameController(theme);
+		controller = settings.simpleMode ? new GameController(theme) : new EnhancedGameController(theme);
 		setController(controller);
 		setIcon(theme.spr_ghostFrightened().frame(0));
 		onEntry(ApplicationState.CLOSED, state -> controller.saveScore());
 	}
+
+	@Override
+	public void configureF2Dialog(F2DialogAPI dialog) {
+		GameStateView gameStateView = new GameStateView();
+		dialog.addCustomTab("Game State", gameStateView);
+		gameStateView.attachTo(controller);
+		GameLevelView gameLevelView = new GameLevelView();
+		dialog.addCustomTab("Game Level", gameLevelView);
+		gameLevelView.attachTo(controller);
+		dialog.selectCustomTab(0);
+	}
+
 }

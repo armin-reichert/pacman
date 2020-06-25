@@ -11,12 +11,10 @@ import java.awt.Color;
 import java.awt.Component;
 
 import javax.swing.JTable;
-import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
-import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.Ghost.Sanity;
 import de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ColumnInfo;
 
@@ -102,19 +100,6 @@ public class GameStateTable extends JTable {
 
 	private void renderer(ColumnInfo columnInfo, TableCellRenderer renderer) {
 		getColumnModel().getColumn(columnInfo.ordinal()).setCellRenderer(renderer);
-	}
-
-	@Override
-	public void tableChanged(TableModelEvent e) {
-		super.tableChanged(e);
-		GameStateTableModel model = getGameStateTableModel();
-		if (e.getColumn() == ColumnInfo.OnStage.ordinal()) {
-			int row = e.getFirstRow();
-			GameStateRecord r = model.records[row];
-			if (r.creature instanceof Ghost) {
-				model.gameController.game.takePart(r.creature, r.takesPart);
-			}
-		}
 	}
 
 	private GameStateTableModel getGameStateTableModel() {

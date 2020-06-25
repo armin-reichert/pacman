@@ -33,7 +33,6 @@ import net.miginfocom.swing.MigLayout;
 public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	private GameController gameController;
-	private GhostHouse house;
 
 	private JTextField tfPinkyDots;
 	private JTextField tfInkyDots;
@@ -121,7 +120,6 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	public void attachTo(GameController gameController) {
 		this.gameController = gameController;
-		house = gameController.ghostHouse;
 		init();
 	}
 
@@ -137,18 +135,22 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 	@Override
 	public void update() {
 		Game game = gameController.game;
+		GhostHouse house = gameController.ghostHouse;
+		if (game == null || house == null) {
+			return;
+		}
 
-		tfPinkyDots.setText(formatDots(game.pinky));
+		tfPinkyDots.setText(formatDots(house, game.pinky));
 		tfPinkyDots.setEnabled(!house.isGlobalDotCounterEnabled());
-		updateTrafficLight(trafficPinky, game.pinky);
+		updateTrafficLight(trafficPinky, house, game.pinky);
 
-		tfInkyDots.setText(formatDots(game.inky));
+		tfInkyDots.setText(formatDots(house, game.inky));
 		tfInkyDots.setEnabled(!house.isGlobalDotCounterEnabled());
-		updateTrafficLight(trafficInky, game.inky);
+		updateTrafficLight(trafficInky, house, game.inky);
 
-		tfClydeDots.setText(formatDots(game.clyde));
+		tfClydeDots.setText(formatDots(house, game.clyde));
 		tfClydeDots.setEnabled(!house.isGlobalDotCounterEnabled());
-		updateTrafficLight(trafficClyde, game.clyde);
+		updateTrafficLight(trafficClyde, house, game.clyde);
 
 		tfGlobalDots.setText(String.format("%d", house.globalDotCount()));
 		tfGlobalDots.setEnabled(house.isGlobalDotCounterEnabled());
@@ -171,7 +173,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		return new ImageIcon(sprite.frame(0).getScaledInstance(size, size, Image.SCALE_SMOOTH));
 	}
 
-	private Color trafficLightColor(Ghost ghost) {
+	private Color trafficLightColor(GhostHouse house, Ghost ghost) {
 		if (!ghost.isInsideHouse()) {
 			return null;
 		}
@@ -182,8 +184,8 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		return ghost == next ? Color.YELLOW : Color.RED;
 	}
 
-	private void updateTrafficLight(TrafficLightsWidget trafficLight, Ghost ghost) {
-		Color color = trafficLightColor(ghost);
+	private void updateTrafficLight(TrafficLightsWidget trafficLight, GhostHouse house, Ghost ghost) {
+		Color color = trafficLightColor(house, ghost);
 		if (color != null) {
 			trafficLight.setVisible(true);
 			trafficLight.setRed(color == Color.RED);
@@ -194,7 +196,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		}
 	}
 
-	private String formatDots(Ghost ghost) {
+	private String formatDots(GhostHouse house, Ghost ghost) {
 		return String.format("%d p:%d g:%d", house.ghostDotCount(ghost), house.personalDotLimit(ghost),
 				house.globalDotLimit(ghost));
 	}

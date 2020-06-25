@@ -87,18 +87,32 @@ public class GameStateView extends JPanel implements Lifecycle {
 
 	@Override
 	public void init() {
-		GameStateTableModel model = new GameStateTableModel(gameController);
-		table.setModel(model);
+		createTableModel();
+	}
+
+	private void createTableModel() {
+		if (gameController.game != null) {
+			GameStateTableModel model = new GameStateTableModel(gameController);
+			table.setModel(model);
+		}
 	}
 
 	@Override
 	public void update() {
-		table.update();
-		ghostHouseStateView.update();
-		updateStateLabel();
-		cbShowRoutes.setSelected(gameController.isShowingActorRoutes());
-		cbShowGrid.setSelected(gameController.isShowingGrid());
-		cbShowStates.setSelected(gameController.isShowingStates());
+		if (gameController != null) {
+			GameStateTableModel tableModel = (GameStateTableModel) table.getModel();
+			if (!tableModel.hasGame()) {
+				createTableModel();
+			}
+			if (gameController.game != null) {
+				table.update();
+				ghostHouseStateView.update();
+				updateStateLabel();
+				cbShowRoutes.setSelected(gameController.isShowingActorRoutes());
+				cbShowGrid.setSelected(gameController.isShowingGrid());
+				cbShowStates.setSelected(gameController.isShowingStates());
+			}
+		}
 	}
 
 	private void updateStateLabel() {

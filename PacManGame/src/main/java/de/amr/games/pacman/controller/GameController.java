@@ -109,22 +109,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		playView.ghostCommand = ghostCommand;
 		playView.house = ghostHouse;
 
-		// add custom tabs in settings dialog
-
-		if (gameStateView == null) {
-			gameStateView = new GameStateView();
-			app().f2Dialog().addCustomTab("Game State", gameStateView);
-		}
-		gameStateView.attachTo(this);
-
-		if (gameLevelView == null) {
-			gameLevelView = new GameLevelView();
-			app().f2Dialog().addCustomTab("Game Level", gameLevelView);
-		}
-		gameLevelView.attachTo(game);
-
-		app().f2Dialog().selectCustomTab(0);
-
 		setDemoMode(settings.demoMode);
 		game.creatures().forEach(actor -> {
 			game.takePart(actor);
