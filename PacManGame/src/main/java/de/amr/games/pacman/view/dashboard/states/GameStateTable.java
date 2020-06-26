@@ -13,7 +13,7 @@ import de.amr.games.pacman.view.dashboard.util.Formatting;
 import de.amr.games.pacman.view.dashboard.util.UniversalFormatter;
 
 /**
- * Displays detailed information about the actors in the game that is updated at every tick.
+ * Displays detailed information about the actors in the game.
  * 
  * @author Armin Reichert
  */
