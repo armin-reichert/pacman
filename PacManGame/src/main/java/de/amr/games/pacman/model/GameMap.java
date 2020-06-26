@@ -49,6 +49,7 @@ public class GameMap {
 	private boolean inRange(int i, int min, int max) {
 		return min <= i && i <= max;
 	}
+
 	// API
 
 	public boolean contains(int row, int col) {

@@ -20,8 +20,6 @@ public class PacManWorld {
 		}
 	}
 
-	public final int mapTopRow = 4;
-	public final int mapBottomRow = 32;
 	public final int totalFoodCount;
 	public final Seat pacManSeat;
 	public final Seat ghostSeats[];
@@ -50,7 +48,7 @@ public class PacManWorld {
 		// scan for portal
 		portal = new Portal();
 		int portalRow = -1;
-		for (int row = mapTopRow; row <= mapBottomRow; ++row) {
+		for (int row = 0; row < map.numRows; ++row) {
 			if (map.isTunnel(row, 0)) {
 				portalRow = row;
 				break;
@@ -76,15 +74,19 @@ public class PacManWorld {
 		cornerSW = Tile.xy(1, 32);
 		cornerSE = Tile.xy(26, 32);
 
-		int foodCount = 0;
-		for (int row = mapTopRow; row <= mapBottomRow; ++row) {
+		totalFoodCount = countFood(map);
+	}
+
+	private int countFood(GameMap map) {
+		int n = 0;
+		for (int row = 0; row < map.numRows; ++row) {
 			for (int col = 0; col < map.numCols; ++col) {
 				if (map.isFood(row, col)) {
-					++foodCount;
+					++n;
 				}
 			}
 		}
-		totalFoodCount = foodCount;
+		return n;
 	}
 
 	public int mapWidth() {
@@ -99,7 +101,7 @@ public class PacManWorld {
 	 * @return Tiles comprising the map only (omitting the areas above and below used for the scores)
 	 */
 	public Stream<Tile> mapTiles() {
-		return IntStream.range(mapTopRow * map.numCols, (mapBottomRow + 1) * map.numCols)
+		return IntStream.range(4 * map.numCols, (4 + map.numRows + 1) * map.numCols)
 				.mapToObj(i -> Tile.xy(i % map.numCols, i / map.numCols));
 	}
 
@@ -131,7 +133,7 @@ public class PacManWorld {
 	}
 
 	public void eatAllFood() {
-		for (int row = mapTopRow; row <= mapBottomRow; ++row) {
+		for (int row = 0; row < map.numRows; ++row) {
 			for (int col = 0; col < map.numCols; ++col) {
 				if (map.isFood(row, col)) {
 					map.eatFood(row, col);
@@ -141,7 +143,7 @@ public class PacManWorld {
 	}
 
 	public void restoreAllFood() {
-		for (int row = mapTopRow; row <= mapBottomRow; ++row) {
+		for (int row = 0; row < map.numRows; ++row) {
 			for (int col = 0; col < map.numCols; ++col) {
 				if (map.isFood(row, col)) {
 					map.restoreFood(row, col);
@@ -218,5 +220,4 @@ public class PacManWorld {
 			map.eatFood(tile.row, tile.col);
 		}
 	}
-
 }
