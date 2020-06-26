@@ -1,5 +1,12 @@
 package de.amr.games.pacman.model;
 
+import static de.amr.games.pacman.model.GameMap.B_EATEN;
+import static de.amr.games.pacman.model.GameMap.B_ENERGIZER;
+import static de.amr.games.pacman.model.GameMap.B_FOOD;
+import static de.amr.games.pacman.model.GameMap.B_INTERSECTION;
+import static de.amr.games.pacman.model.GameMap.B_ONE_WAY_DOWN;
+import static de.amr.games.pacman.model.GameMap.B_TUNNEL;
+
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -49,7 +56,7 @@ public class PacManWorld {
 		portal = new Portal();
 		int portalRow = -1;
 		for (int row = 0; row < map.numRows; ++row) {
-			if (map.isTunnel(row, 0)) {
+			if (map.is1(row, 0, B_TUNNEL)) {
 				portalRow = row;
 				break;
 			}
@@ -81,7 +88,7 @@ public class PacManWorld {
 		int n = 0;
 		for (int row = 0; row < map.numRows; ++row) {
 			for (int col = 0; col < map.numCols; ++col) {
-				if (map.isFood(row, col)) {
+				if (map.is1(row, col, B_FOOD)) {
 					++n;
 				}
 			}
@@ -133,27 +140,15 @@ public class PacManWorld {
 	}
 
 	public void eatAllFood() {
-		for (int row = 0; row < map.numRows; ++row) {
-			for (int col = 0; col < map.numCols; ++col) {
-				if (map.isFood(row, col)) {
-					map.eatFood(row, col);
-				}
-			}
-		}
+		mapTiles().forEach(this::eatFood);
 	}
 
 	public void restoreAllFood() {
-		for (int row = 0; row < map.numRows; ++row) {
-			for (int col = 0; col < map.numCols; ++col) {
-				if (map.isFood(row, col)) {
-					map.restoreFood(row, col);
-				}
-			}
-		}
+		mapTiles().forEach(this::restoreFood);
 	}
 
 	public boolean insideMap(Tile tile) {
-		return map.contains(tile.row, tile.col);
+		return map.inRange(tile.row, tile.col);
 	}
 
 	public boolean insideGhostHouse(Tile tile) {
@@ -166,13 +161,13 @@ public class PacManWorld {
 
 	public boolean isInaccessible(Tile tile) {
 		if (insideMap(tile)) {
-			return map.isWall(tile.row, tile.col);
+			return map.is1(tile.row, tile.col, GameMap.B_WALL);
 		}
 		return !portal.contains(tile);
 	}
 
 	public boolean isTunnel(Tile tile) {
-		return insideMap(tile) && map.isTunnel(tile.row, tile.col);
+		return insideMap(tile) && map.is1(tile.row, tile.col, B_TUNNEL);
 	}
 
 	public boolean isDoor(Tile tile) {
@@ -180,23 +175,23 @@ public class PacManWorld {
 	}
 
 	public boolean isOneWayDown(Tile tile) {
-		return insideMap(tile) && map.isOneWayDown(tile.row, tile.col);
+		return insideMap(tile) && map.is1(tile.row, tile.col, B_ONE_WAY_DOWN);
 	}
 
 	public boolean isIntersection(Tile tile) {
-		return insideMap(tile) && map.isIntersection(tile.row, tile.col);
+		return insideMap(tile) && map.is1(tile.row, tile.col, B_INTERSECTION);
 	}
 
 	public boolean isFood(Tile tile) {
-		return insideMap(tile) && map.isFood(tile.row, tile.col);
+		return insideMap(tile) && map.is1(tile.row, tile.col, B_FOOD);
 	}
 
 	public boolean isEatenFood(Tile tile) {
-		return insideMap(tile) && map.isEatenFood(tile.row, tile.col);
+		return insideMap(tile) && map.is1(tile.row, tile.col, B_EATEN);
 	}
 
 	public boolean isEnergizer(Tile tile) {
-		return insideMap(tile) && map.isEnergizer(tile.row, tile.col);
+		return insideMap(tile) && map.is1(tile.row, tile.col, B_ENERGIZER);
 	}
 
 	public boolean containsSimplePellet(Tile tile) {
@@ -204,20 +199,26 @@ public class PacManWorld {
 	}
 
 	public boolean containsEnergizer(Tile tile) {
-		return insideMap(tile) && map.containsEnergizer(tile.row, tile.col);
+		return insideMap(tile) && map.is1(tile.row, tile.col, B_ENERGIZER) && map.is0(tile.row, tile.col, B_EATEN);
 	}
 
 	public boolean containsFood(Tile tile) {
-		return insideMap(tile) && map.containsFood(tile.row, tile.col);
+		return insideMap(tile) && map.is0(tile.row, tile.col, B_EATEN) && map.is1(tile.row, tile.col, B_FOOD);
 	}
 
 	public boolean containsEatenFood(Tile tile) {
-		return insideMap(tile) && map.containsEatenFood(tile.row, tile.col);
+		return insideMap(tile) && map.is1(tile.row, tile.col, B_EATEN) && map.is1(tile.row, tile.col, B_FOOD);
 	}
 
 	public void eatFood(Tile tile) {
 		if (insideMap(tile)) {
-			map.eatFood(tile.row, tile.col);
+			map.set1(tile.row, tile.col, B_EATEN);
+		}
+	}
+
+	public void restoreFood(Tile tile) {
+		if (insideMap(tile)) {
+			map.set0(tile.row, tile.col, B_EATEN);
 		}
 	}
 }
