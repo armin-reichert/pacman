@@ -161,7 +161,7 @@ class GameStateTableModel extends AbstractTableModel {
 	void fillBonusRecord(GameStateRecord r, Game game, Bonus bonus) {
 		r.takesPart = bonus.visible;
 		r.name = bonus.symbol != null ? bonus.toString() : "Bonus";
-		r.tile = game.maze.bonusSeat.tile;
+		r.tile = game.world.bonusSeat.tile;
 		if (bonus.getState() != null) {
 			r.state = bonus.getState().name();
 			r.ticksRemaining = bonus.state().getTicksRemaining();

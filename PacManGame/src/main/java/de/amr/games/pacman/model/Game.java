@@ -107,7 +107,7 @@ public class Game {
 	public PacMan pacMan;
 	public Ghost blinky, pinky, inky, clyde;
 	public Bonus bonus;
-	public Maze maze;
+	public PacManWorld world;
 	public List<Symbol> levelCounter;
 	public GameScore gameScore;
 	public GameLevel level;
@@ -121,12 +121,12 @@ public class Game {
 	 * 
 	 * @param startLevel start level number (1-...)
 	 */
-	public Game(int startLevel) {
+	public Game(GameMap map, int startLevel) {
 		lives = 3;
 		score = 0;
 		levelCounter = new ArrayList<>();
 		gameScore = new GameScore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
-		maze = new Maze();
+		world = new PacManWorld(map);
 		createActors();
 		enterLevel(startLevel);
 	}
@@ -135,7 +135,7 @@ public class Game {
 	 * Creates a game starting with the first level.
 	 */
 	public Game() {
-		this(1);
+		this(Maps.PACMAN_MAP, 1);
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class Game {
 		loginfo("Enter level %d", n);
 		level = level(n);
 		levelCounter.add(level.bonusSymbol);
-		maze.restoreAllFood();
+		world.restoreAllFood();
 		gameScore.load();
 	}
 
@@ -184,11 +184,11 @@ public class Game {
 
 		// assign seats
 
-		pacMan.seat = maze.pacManSeat;
-		blinky.seat = maze.ghostSeats[0];
-		inky.seat = maze.ghostSeats[1];
-		pinky.seat = maze.ghostSeats[2];
-		clyde.seat = maze.ghostSeats[3];
+		pacMan.seat = world.pacManSeat;
+		blinky.seat = world.ghostSeats[0];
+		inky.seat = world.ghostSeats[1];
+		pinky.seat = world.ghostSeats[2];
+		clyde.seat = world.ghostSeats[3];
 
 		// define behavior
 
@@ -206,14 +206,14 @@ public class Game {
 
 		// individual ghost behavior
 
-		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(maze.ghostSeats[2]));
+		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(world.ghostSeats[2]));
 
 		// scattering
 
-		blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
-		inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
-		pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
-		clyde.behavior(SCATTERING, clyde.isHeadingFor(maze.horizonSW));
+		blinky.behavior(SCATTERING, blinky.isHeadingFor(world.horizonNE));
+		inky.behavior(SCATTERING, inky.isHeadingFor(world.horizonSE));
+		pinky.behavior(SCATTERING, pinky.isHeadingFor(world.horizonNW));
+		clyde.behavior(SCATTERING, clyde.isHeadingFor(world.horizonSW));
 
 		// chasing
 
@@ -223,7 +223,7 @@ public class Game {
 			return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
 		pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
-		clyde.behavior(CHASING, clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : maze.horizonSW));
+		clyde.behavior(CHASING, clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : world.horizonSW));
 	}
 
 	/**
@@ -258,7 +258,7 @@ public class Game {
 	 * @return number of remaining pellets and energizers
 	 */
 	public int remainingFoodCount() {
-		return maze.totalFoodCount - level.eatenFoodCount;
+		return world.totalFoodCount - level.eatenFoodCount;
 	}
 
 	/**
@@ -269,11 +269,11 @@ public class Game {
 	 * @return points scored
 	 */
 	public int eatFood(Tile tile, boolean energizer) {
-		if (!maze.containsFood(tile)) {
+		if (!world.containsFood(tile)) {
 			loginfo("Tile %s does not contain food", tile);
 			return 0;
 		}
-		maze.eatFood(tile);
+		world.eatFood(tile);
 		level.eatenFoodCount += 1;
 		if (energizer) {
 			level.ghostsKilledByEnergizer = 0;

@@ -38,7 +38,7 @@ public class TakingSeat extends StateMachine<State, Void> implements Steering {
 				.state(FALLING)
 					.onEntry(() -> {
 						// place the ghost exactly at the ghost house entry and start falling down
-						ghost.tf.setPosition(ghost.maze.ghostSeats[0].position);
+						ghost.tf.setPosition(ghost.world.ghostSeats[0].position);
 						ghost.setWishDir(DOWN);					
 					})
 					

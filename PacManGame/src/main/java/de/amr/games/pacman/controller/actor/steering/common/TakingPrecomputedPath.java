@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.controller.actor.MazeMover;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.PacManWorld;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -29,13 +29,13 @@ public abstract class TakingPrecomputedPath implements PathProvidingSteering {
 	}
 
 	protected final MazeMover actor;
-	protected final Maze maze;
+	protected final PacManWorld maze;
 	protected final Supplier<Tile> fnTargetTile;
 	protected List<Tile> targetPath;
 
 	public TakingPrecomputedPath(MazeMover actor, Supplier<Tile> fnTargetTile) {
 		this.actor = Objects.requireNonNull(actor);
-		this.maze = actor.maze();
+		this.maze = actor.world();
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 		this.targetPath = new ArrayList<>();
 	}

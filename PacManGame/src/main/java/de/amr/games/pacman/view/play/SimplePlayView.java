@@ -213,7 +213,7 @@ public class SimplePlayView extends BaseView {
 			spriteFlashingMaze = theme.spr_flashingMaze();
 			energizersBlinking = new CyclicAnimation(2);
 			energizersBlinking.setFrameDuration(150);
-			game.bonus.tf.setPosition(game.maze.bonusSeat.position);
+			game.bonus.tf.setPosition(game.world.bonusSeat.position);
 			//@formatter:off
 			beginStateMachine()
 				.description("[Maze View]")
@@ -242,13 +242,13 @@ public class SimplePlayView extends BaseView {
 		private void drawCrowdedMaze(Graphics2D g) {
 			spriteFullMaze.draw(g, 0, 3 * Tile.SIZE);
 			// hide eaten food
-			game.maze.arena().filter(game.maze::containsEatenFood).forEach(tile -> {
+			game.world.mapTiles().filter(game.world::containsEatenFood).forEach(tile -> {
 				g.setColor(tileColor(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
 			// hide active energizers when blinking animation is in dark phase
 			if (energizersBlinking.currentFrame() == 1) {
-				game.maze.arena().filter(game.maze::containsEnergizer).forEach(tile -> {
+				game.world.mapTiles().filter(game.world::containsEnergizer).forEach(tile -> {
 					g.setColor(tileColor(tile));
 					g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 				});
@@ -256,7 +256,7 @@ public class SimplePlayView extends BaseView {
 			// draw door open when any ghost is entering or leaving the house
 			if (game.ghostsOnStage().anyMatch(ghost -> ghost.is(GhostState.ENTERING_HOUSE, GhostState.LEAVING_HOUSE))) {
 				g.setColor(Color.BLACK);
-				g.fillRect(game.maze.ghostHouseDoorLeft.x(), game.maze.ghostHouseDoorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
+				g.fillRect(game.world.ghostHouseDoorLeft.x(), game.world.ghostHouseDoorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
 			}
 		}
 	}

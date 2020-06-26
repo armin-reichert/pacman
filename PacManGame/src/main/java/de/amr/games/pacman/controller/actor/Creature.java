@@ -23,7 +23,7 @@ import de.amr.games.pacman.controller.actor.steering.common.TakingShortestPath;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.PacManWorld;
 import de.amr.games.pacman.model.Seat;
 import de.amr.games.pacman.model.Tile;
 import de.amr.statemachine.api.Fsm;
@@ -45,7 +45,7 @@ public abstract class Creature<STATE> extends Entity implements MazeMover, FsmCo
 	}
 
 	public final Game game;
-	public final Maze maze;
+	public final PacManWorld world;
 	public final String name;
 	public final SpriteMap sprites = new SpriteMap();
 	public Seat seat;
@@ -60,7 +60,7 @@ public abstract class Creature<STATE> extends Entity implements MazeMover, FsmCo
 
 	public Creature(Game game, String name, Map<STATE, Steering> steerings) {
 		this.game = game;
-		this.maze = game.maze;
+		this.world = game.world;
 		this.name = name;
 		this.steerings = steerings;
 		tf.width = Tile.SIZE;
@@ -81,7 +81,7 @@ public abstract class Creature<STATE> extends Entity implements MazeMover, FsmCo
 						.condition(() -> enteredLeftPortal() || enteredRightPortal())
 					.when(TELEPORTING).then(MOVING_INSIDE_MAZE)
 						.onTimeout()
-						.act(() -> placeAt(enteredRightPortal() ? maze.portalLeft : maze.portalRight))
+						.act(() -> placeAt(enteredRightPortal() ? world.portal.left : world.portal.right))
 			.endStateMachine();
 		//@formatter:on
 		setTeleportingDuration(sec(0.5f));
@@ -89,11 +89,11 @@ public abstract class Creature<STATE> extends Entity implements MazeMover, FsmCo
 	}
 
 	private boolean enteredLeftPortal() {
-		return tf.getPosition().x < maze.portalLeft.x();
+		return tf.getPosition().x < world.portal.left.x();
 	}
 
 	private boolean enteredRightPortal() {
-		return tf.getPosition().x > maze.portalRight.x();
+		return tf.getPosition().x > world.portal.right.x();
 	}
 
 	/**
@@ -135,8 +135,8 @@ public abstract class Creature<STATE> extends Entity implements MazeMover, FsmCo
 	}
 
 	@Override
-	public Maze maze() {
-		return maze;
+	public PacManWorld world() {
+		return world;
 	}
 
 	@Override
@@ -220,19 +220,13 @@ public abstract class Creature<STATE> extends Entity implements MazeMover, FsmCo
 
 	@Override
 	public boolean canCrossBorderTo(Direction dir) {
-		Tile currentTile = tile(), neighbor = maze.neighbor(currentTile, dir);
+		Tile currentTile = tile(), neighbor = world.neighbor(currentTile, dir);
 		return canMoveBetween(currentTile, neighbor);
 	}
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (maze.isWall(neighbor)) {
-			return false;
-		}
-		if (maze.isTunnel(neighbor)) {
-			return true; // includes portal tiles
-		}
-		return maze.insideMap(neighbor);
+		return !world.isInaccessible(neighbor);
 	}
 
 	@Override

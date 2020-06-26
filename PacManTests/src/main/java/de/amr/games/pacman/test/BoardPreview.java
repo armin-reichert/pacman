@@ -7,8 +7,9 @@ import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.Maps;
 import de.amr.games.pacman.model.MazeGraph;
+import de.amr.games.pacman.model.PacManWorld;
 import de.amr.games.pacman.model.Tile;
 import de.amr.graph.grid.ui.rendering.ConfigurableGridRenderer;
 import de.amr.graph.grid.ui.rendering.GridCanvas;
@@ -23,12 +24,12 @@ public class BoardPreview extends JFrame {
 		SwingUtilities.invokeLater(BoardPreview::new);
 	}
 
-	private Maze maze;
+	private PacManWorld world;
 	private MazeGraph graph;
 
 	public BoardPreview() {
-		maze = new Maze();
-		graph = new MazeGraph(maze);
+		world = new PacManWorld(Maps.PACMAN_MAP);
+		graph = new MazeGraph(world);
 		setTitle("Pac-Man Maze Preview");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		GridCanvas canvas = new GridCanvas(graph.grid, TS);
@@ -47,22 +48,22 @@ public class BoardPreview extends JFrame {
 		r.fnPassageColor = (cell, dir) -> Color.WHITE;
 		r.fnCellBgColor = cell -> {
 			Tile tile = graph.tile(cell);
-			if (maze.isWall(tile)) {
+			if (world.isInaccessible(tile)) {
 				return Color.LIGHT_GRAY;
 			}
-			if (maze.isTunnel(tile)) {
+			if (world.isTunnel(tile)) {
 				return Color.GRAY;
 			}
-			if (maze.insideGhostHouse(tile)) {
+			if (world.insideGhostHouse(tile)) {
 				return Color.CYAN;
 			}
-			if (maze.isOneWayDown(tile)) {
+			if (world.isOneWayDown(tile)) {
 				return Color.YELLOW;
 			}
-			if (maze.isIntersection(tile)) {
+			if (world.isIntersection(tile)) {
 				return Color.GREEN;
 			}
-			if (maze.isDoor(tile)) {
+			if (world.isDoor(tile)) {
 				return Color.PINK;
 			}
 			return Color.WHITE;
@@ -75,33 +76,36 @@ public class BoardPreview extends JFrame {
 
 	private String text(int cell) {
 		Tile tile = graph.tile(cell);
-		if (tile.equals(maze.ghostSeats[0].tile) || tile.equals(maze.horizonNE)) {
+		if (tile.equals(world.ghostSeats[0].tile) || tile.equals(world.horizonNE)) {
 			return "B";
 		}
-		if (tile.equals(maze.ghostSeats[1].tile) || tile.equals(maze.horizonSE)) {
+		if (tile.equals(world.ghostSeats[1].tile) || tile.equals(world.horizonSE)) {
 			return "I";
 		}
-		if (tile.equals(maze.ghostSeats[2].tile) || tile.equals(maze.horizonNW)) {
+		if (tile.equals(world.ghostSeats[2].tile) || tile.equals(world.horizonNW)) {
 			return "P";
 		}
-		if (tile.equals(maze.ghostSeats[3].tile) || tile.equals(maze.horizonSW)) {
+		if (tile.equals(world.ghostSeats[3].tile) || tile.equals(world.horizonSW)) {
 			return "C";
 		}
-		if (tile.equals(maze.bonusSeat.tile)) {
+		if (tile.equals(world.bonusSeat.tile)) {
 			return "$";
 		}
-		if (tile.equals(maze.pacManSeat.tile)) {
+		if (tile.equals(world.pacManSeat.tile)) {
 			return "O";
 		}
-		if (maze.isWall(tile)) {
+		if (world.isInaccessible(tile)) {
 			return "";
 		}
-		if (maze.containsSimplePellet(tile)) {
+		if (world.containsSimplePellet(tile)) {
 			return "o";
 		}
-		if (maze.containsEnergizer(tile)) {
+		if (world.containsEnergizer(tile)) {
 			return "Ö";
 		}
-		return " ";
+		if (world.portal.contains(tile)) {
+			return "@";
+		}
+		return "";
 	}
 }

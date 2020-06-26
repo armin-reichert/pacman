@@ -11,7 +11,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.PacManWorld;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
@@ -40,11 +40,11 @@ class FollowTargetTilesTestUI extends PlayView {
 
 	private List<Tile> targets;
 	private int current;
-	private Maze maze;
+	private PacManWorld maze;
 
 	public FollowTargetTilesTestUI() {
 		super(new Game(), new ArcadeTheme());
-		maze = game.maze;
+		maze = game.world;
 		showRoutes = true;
 		showStates = false;
 		showScores = false;

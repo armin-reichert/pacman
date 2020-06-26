@@ -116,7 +116,7 @@ public class PlayView extends SimplePlayView {
 		frameRateDisplay = new FramerateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
-		gridImage = createGridPatternImage(game.maze.numCols, game.maze.numRows);
+		gridImage = createGridPatternImage(game.world.mapWidth(), game.world.mapHeight());
 		inkyImage = (BufferedImage) theme.spr_ghostColored(Theme.CYAN_GHOST, Direction.RIGHT).frame(0);
 		clydeImage = (BufferedImage) theme.spr_ghostColored(Theme.ORANGE_GHOST, Direction.RIGHT).frame(0);
 		pacManImage = (BufferedImage) theme.spr_pacManWalking(RIGHT).frame(0);
@@ -273,11 +273,11 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawUpwardsBlockedTileMarkers(Graphics2D g) {
-		for (int row = 0; row < game.maze.numRows; ++row) {
-			for (int col = 0; col < game.maze.numCols; ++col) {
+		for (int row = 0; row < game.world.mapHeight(); ++row) {
+			for (int col = 0; col < game.world.mapWidth(); ++col) {
 				Tile tile = Tile.at(col, row);
-				if (game.maze.isOneWayDown(tile)) {
-					Tile above = game.maze.neighbor(tile, Direction.UP);
+				if (game.world.isOneWayDown(tile)) {
+					Tile above = game.world.neighbor(tile, Direction.UP);
 					drawDirectionIndicator(g, Color.WHITE, Direction.DOWN, above.centerX(), above.y() - 2);
 				}
 			}
@@ -398,8 +398,8 @@ public class PlayView extends SimplePlayView {
 		int s = Tile.SIZE / 2; // size of target square
 		g.setColor(Color.GRAY);
 		if (!settings.fixOverflowBug && pacManDir == Direction.UP) {
-			Tile twoAhead = game.maze.tileToDir(pacManTile, pacManDir, 2);
-			Tile twoLeft = game.maze.tileToDir(twoAhead, Direction.LEFT, 2);
+			Tile twoAhead = game.world.tileToDir(pacManTile, pacManDir, 2);
+			Tile twoLeft = game.world.tileToDir(twoAhead, Direction.LEFT, 2);
 			x1 = pacManTile.centerX();
 			y1 = pacManTile.centerY();
 			x2 = twoAhead.centerX();

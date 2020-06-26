@@ -1,7 +1,7 @@
 package de.amr.games.pacman.controller.actor;
 
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.PacManWorld;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -29,7 +29,7 @@ public interface MazeMover {
 	/**
 	 * @return the maze where this mover is located
 	 */
-	Maze maze();
+	PacManWorld world();
 
 	/**
 	 * @return the current move direction

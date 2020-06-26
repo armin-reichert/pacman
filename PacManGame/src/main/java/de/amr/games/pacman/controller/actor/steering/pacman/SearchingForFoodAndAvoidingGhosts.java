@@ -14,7 +14,7 @@ import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.PacManWorld;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -26,11 +26,11 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
 	final PacMan pacMan;
 	final Game game;
-	final Maze maze;
+	final PacManWorld world;
 
 	public SearchingForFoodAndAvoidingGhosts(Game game) {
 		this.game = game;
-		this.maze = game.maze;
+		this.world = game.world;
 		this.pacMan = game.pacMan;
 	}
 
@@ -56,7 +56,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 				continue;
 			}
 			if (pacMan.canCrossBorderTo(dir)) {
-				Tile neighbor = game.maze.neighbor(pacMan.tile(), dir);
+				Tile neighbor = game.world.neighbor(pacMan.tile(), dir);
 				Optional<Tile> foodLocation = preferredFoodLocationFrom(neighbor);
 				if (foodLocation.isPresent()) {
 					int d = neighbor.manhattanDistance(foodLocation.get());
@@ -70,7 +70,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	Stream<Tile> foodTiles() {
-		return maze.arena().filter(maze::containsFood);
+		return world.mapTiles().filter(world::containsFood);
 	}
 
 	Optional<Tile> preferredFoodLocationFrom(Tile here) {
@@ -78,15 +78,15 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	Optional<Tile> activeBonusAtMostAway(Tile here, int maxDistance) {
-		return game.bonus.is(BonusState.ACTIVE) && here.manhattanDistance(maze.bonusSeat.tile) <= maxDistance
-				? Optional.of(maze.bonusSeat.tile)
+		return game.bonus.is(BonusState.ACTIVE) && here.manhattanDistance(world.bonusSeat.tile) <= maxDistance
+				? Optional.of(world.bonusSeat.tile)
 				: Optional.empty();
 	}
 
 	Optional<Tile> energizerAtMostAwayFrom(Tile here, int maxDistance) {
 		//@formatter:off
 		return foodTiles()
-				.filter(maze::containsEnergizer)
+				.filter(world::containsEnergizer)
 				.filter(energizer -> here.manhattanDistance(energizer) <= maxDistance)
 				.findAny();
 		//@formatter:on
@@ -98,8 +98,8 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
 	boolean isDangerousGhostApproaching() {
 		Tile pacManLocation = pacMan.tile();
-		Tile ahead1 = maze.neighbor(pacManLocation, pacMan.moveDir());
-		Tile ahead2 = maze.tileToDir(pacManLocation, pacMan.moveDir(), 2);
+		Tile ahead1 = world.neighbor(pacManLocation, pacMan.moveDir());
+		Tile ahead2 = world.tileToDir(pacManLocation, pacMan.moveDir(), 2);
 		//@formatter:off
 		return game.ghostsOnStage().anyMatch(
 				ghost -> !ghost.is(GhostState.FRIGHTENED) 

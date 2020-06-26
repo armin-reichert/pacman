@@ -9,7 +9,7 @@ import java.util.List;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.MazeMover;
 import de.amr.games.pacman.controller.actor.steering.common.TakingPrecomputedPath;
-import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.PacManWorld;
 import de.amr.games.pacman.model.MazeGraph;
 import de.amr.games.pacman.model.Tile;
 
@@ -57,7 +57,7 @@ public class FleeingToSafeCorner extends TakingPrecomputedPath {
 		//@formatter:on
 	}
 
-	private Comparator<Tile> byDist(Maze maze, Tile refugeeTile, Tile chaserTile) {
+	private Comparator<Tile> byDist(PacManWorld maze, Tile refugeeTile, Tile chaserTile) {
 		return (corner1, corner2) -> {
 			double dist1 = minDistFromPath(maze, graph.shortestPath(refugeeTile, corner1), chaserTile);
 			double dist2 = minDistFromPath(maze, graph.shortestPath(refugeeTile, corner2), chaserTile);
@@ -71,7 +71,7 @@ public class FleeingToSafeCorner extends TakingPrecomputedPath {
 		return Math.abs(dx) + Math.abs(dy);
 	}
 
-	private int minDistFromPath(Maze maze, List<Tile> path, Tile tile) {
+	private int minDistFromPath(PacManWorld maze, List<Tile> path, Tile tile) {
 		int min = Integer.MAX_VALUE;
 		for (Tile t : path) {
 			int dist = manhattanDist(t, tile);

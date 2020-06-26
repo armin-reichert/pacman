@@ -140,7 +140,7 @@ public class PacMan extends Creature<PacManState> {
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (maze.isDoor(neighbor)) {
+		if (world.isDoor(neighbor)) {
 			return false;
 		}
 		return super.canMoveBetween(tile, neighbor);
@@ -157,20 +157,20 @@ public class PacMan extends Creature<PacManState> {
 	 *         direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
-		Tile tileAhead = maze.tileToDir(tile(), moveDir, numTiles);
+		Tile tileAhead = world.tileToDir(tile(), moveDir, numTiles);
 		if (moveDir == UP && !settings.fixOverflowBug) {
-			return maze.tileToDir(tileAhead, LEFT, numTiles);
+			return world.tileToDir(tileAhead, LEFT, numTiles);
 		}
 		return tileAhead;
 	}
 
 	private Optional<PacManGameEvent> findSomethingInteresting(Game game) {
 		Tile tile = tile();
-		if (tile.equals(maze.bonusSeat.tile) && game.bonus.is(ACTIVE)) {
+		if (tile.equals(world.bonusSeat.tile) && game.bonus.is(ACTIVE)) {
 			return Optional.of(new BonusFoundEvent(game.bonus.symbol, game.bonus.value));
 		}
-		if (maze.containsFood(tile)) {
-			boolean energizer = maze.containsEnergizer(tile);
+		if (world.containsFood(tile)) {
+			boolean energizer = world.containsEnergizer(tile);
 			digestion = energizer ? DIGEST_ENERGIZER_TICKS : DIGEST_PELLET_TICKS;
 			return Optional.of(new FoodFoundEvent(tile, energizer));
 		}

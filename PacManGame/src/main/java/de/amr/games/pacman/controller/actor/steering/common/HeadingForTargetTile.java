@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.controller.actor.MazeMover;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Maze;
+import de.amr.games.pacman.model.PacManWorld;
 import de.amr.games.pacman.model.Tile;
 
 /**
@@ -47,11 +47,11 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	 * @param target  target tile
 	 */
 	private static Direction bestDir(MazeMover mover, Direction moveDir, Tile tile, Tile target) {
-		Function<Direction, Double> fnNeighborDistToTarget = dir -> mover.maze().neighbor(tile, dir).distance(target);
+		Function<Direction, Double> fnNeighborDistToTarget = dir -> mover.world().neighbor(tile, dir).distance(target);
 		/*@formatter:off*/
 		return Direction.dirs()
 			.filter(dir -> dir != moveDir.opposite())
-			.filter(dir -> mover.canMoveBetween(tile, mover.maze().neighbor(tile, dir)))
+			.filter(dir -> mover.canMoveBetween(tile, mover.world().neighbor(tile, dir)))
 			.sorted(comparing(fnNeighborDistToTarget).thenComparingInt(asList(UP, LEFT, DOWN, RIGHT)::indexOf))
 			.findFirst()
 			.orElse(mover.moveDir());
@@ -90,15 +90,15 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	 * or the path would leave the map.
 	 */
 	private void computePath() {
-		Maze maze = mover.maze();
+		PacManWorld world = mover.world();
 		Tile currentTile = mover.tile(), targetTile = mover.targetTile();
 		Direction currentDir = mover.moveDir();
 		path.clear();
 		path.add(currentTile);
 		while (!currentTile.equals(targetTile)) {
 			Direction dir = bestDir(mover, currentDir, currentTile, targetTile);
-			Tile nextTile = maze.neighbor(currentTile, dir);
-			if (!maze.insideMap(nextTile) || path.contains(nextTile)) {
+			Tile nextTile = world.neighbor(currentTile, dir);
+			if (!world.insideMap(nextTile) || path.contains(nextTile)) {
 				return;
 			}
 			path.add(nextTile);

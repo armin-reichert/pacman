@@ -18,25 +18,25 @@ import de.amr.graph.pathfinder.impl.BestFirstSearch;
 import de.amr.graph.pathfinder.impl.BreadthFirstSearch;
 
 /**
- * Adds a grid graph structure to the maze such that graph path finder
- * algorithms can be run on the maze.
+ * Adds a grid graph structure to the maze such that graph path finder algorithms can be run on the
+ * maze.
  * 
  * @author Armin Reichert
  */
 public class MazeGraph {
 
-	public final Maze maze;
+	public final PacManWorld world;
 	public final GridGraph2D<Tile, Void> grid;
 	private int pathFinderCalls;
 
-	public MazeGraph(Maze maze) {
-		this.maze = maze;
-		grid = new GridGraph<>(maze.numCols, maze.numRows, Grid4Topology.get(), this::tile, (u, v) -> null,
+	public MazeGraph(PacManWorld world) {
+		this.world = world;
+		grid = new GridGraph<>(world.mapWidth(), world.mapHeight(), Grid4Topology.get(), this::tile, (u, v) -> null,
 				UndirectedEdge::new);
 		grid.fill();
 		//@formatter:off
 		grid.edges()
-			.filter(edge -> maze.isWall(tile(edge.either())) || maze.isWall(tile(edge.other())))
+			.filter(edge -> world.isInaccessible(tile(edge.either())) || world.isInaccessible(tile(edge.other())))
 			.forEach(grid::removeEdge);
 		/*@formatter:on*/
 	}
@@ -50,7 +50,7 @@ public class MazeGraph {
 	}
 
 	public List<Tile> shortestPath(Tile source, Tile target) {
-		if (maze.insideMap(source) && maze.insideMap(target)) {
+		if (world.insideMap(source) && world.insideMap(target)) {
 			GraphSearch pathfinder = createPathFinder(target);
 			Path path = pathfinder.findPath(vertex(source), vertex(target));
 			pathFinderCalls += 1;

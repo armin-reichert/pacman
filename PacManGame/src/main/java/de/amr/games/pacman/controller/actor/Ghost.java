@@ -220,7 +220,7 @@ public class Ghost extends Creature<GhostState> {
 					.condition(() -> subsequentState == CHASING)
 					
 				.when(DEAD).then(ENTERING_HOUSE)
-					.condition(() -> maze.atGhostHouseDoor(tile()))
+					.condition(() -> world.atGhostHouseDoor(tile()))
 					
 		.endStateMachine();
 		/*@formatter:on*/
@@ -245,7 +245,7 @@ public class Ghost extends Creature<GhostState> {
 	 * lets a ghost leave the ghost house
 	 */
 	public void leavingGhostHouse() {
-		Tile exit = maze.ghostSeats[0].tile;
+		Tile exit = world.ghostSeats[0].tile;
 		int targetX = exit.centerX(), targetY = exit.y();
 		if (tf.y <= targetY) {
 			tf.y = targetY;
@@ -260,7 +260,7 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	private boolean hasLeftGhostHouse() {
-		return tf.y == maze.ghostSeats[0].tile.y();
+		return tf.y == world.ghostSeats[0].tile.y();
 	}
 
 	/**
@@ -270,15 +270,15 @@ public class Ghost extends Creature<GhostState> {
 	 * @return steering where actor flees to a "safe" maze corner
 	 */
 	public Steering isFleeingToSafeCorner(MazeMover attacker) {
-		return new FleeingToSafeCorner(this, attacker, game.maze.cornerNW, game.maze.cornerNE, game.maze.cornerSW,
-				game.maze.cornerSE);
+		return new FleeingToSafeCorner(this, attacker, game.world.cornerNW, game.world.cornerNE, game.world.cornerSW,
+				game.world.cornerSE);
 	}
 
 	/**
 	 * @return steering for bringing ghost back to ghost house entry
 	 */
 	public Steering isReturningToHouse() {
-		return isHeadingFor(maze.ghostSeats[0].tile);
+		return isHeadingFor(world.ghostSeats[0].tile);
 	}
 
 	/**
@@ -297,10 +297,10 @@ public class Ghost extends Creature<GhostState> {
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (maze.isDoor(neighbor)) {
+		if (world.isDoor(neighbor)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
-		if (maze.isOneWayDown(tile) && neighbor.equals(maze.neighbor(tile, UP))) {
+		if (world.isOneWayDown(tile) && neighbor.equals(world.neighbor(tile, UP))) {
 			return !is(CHASING, SCATTERING);
 		}
 		return super.canMoveBetween(tile, neighbor);
@@ -328,7 +328,7 @@ public class Ghost extends Creature<GhostState> {
 			return speed(game.level.ghostSpeed);
 		case CHASING:
 		case SCATTERING:
-			if (maze.isTunnel(tile())) {
+			if (world.isTunnel(tile())) {
 				return speed(game.level.ghostTunnelSpeed);
 			}
 			switch (sanity.getState()) {
@@ -343,7 +343,7 @@ public class Ghost extends Creature<GhostState> {
 				throw new IllegalArgumentException("Illegal ghost sanity state: " + sanity.getState());
 			}
 		case FRIGHTENED:
-			return speed(maze.isTunnel(tile()) ? game.level.ghostTunnelSpeed : game.level.ghostFrightenedSpeed);
+			return speed(world.isTunnel(tile()) ? game.level.ghostTunnelSpeed : game.level.ghostFrightenedSpeed);
 		case DEAD:
 			return speed(2 * game.level.ghostSpeed);
 		default:
@@ -384,7 +384,7 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	public boolean isInsideHouse() {
-		return maze.insideGhostHouse(tile());
+		return world.insideGhostHouse(tile());
 	}
 
 	private void checkPacManCollision() {
