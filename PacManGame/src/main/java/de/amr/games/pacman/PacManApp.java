@@ -97,7 +97,7 @@ public class PacManApp extends Application {
 		controller = settings.simpleMode ? new GameController(theme) : new EnhancedGameController(theme);
 		setController(controller);
 		setIcon(theme.spr_ghostFrightened().frame(0));
-		onEntry(ApplicationState.CLOSED, state -> controller.saveScore());
+		onEntry(ApplicationState.CLOSING, state -> controller.saveScore());
 	}
 
 	@Override
