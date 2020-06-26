@@ -38,12 +38,12 @@ public final class Tile {
 	/**
 	 * Nicer constructor function.
 	 * 
-	 * @param col tile column index
-	 * @param row tile row index
-	 * @return new tile
+	 * @param x tile column index
+	 * @param y tile row index
+	 * @return tile at this location
 	 */
-	public static Tile at(int col, int row) {
-		return new Tile(col, row);
+	public static Tile xy(int x, int y) {
+		return new Tile(x, y);
 	}
 
 	/** Tile column index. Left to right, zero based. */

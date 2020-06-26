@@ -54,7 +54,7 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 		super(new Game(), new ArcadeTheme());
 		world = game.world;
 		ghost = game.blinky;
-		targets = Arrays.asList(world.cornerSE, Tile.at(15, 23), Tile.at(12, 23), world.cornerSW,
+		targets = Arrays.asList(world.cornerSE, Tile.xy(15, 23), Tile.xy(12, 23), world.cornerSW,
 				world.neighbor(world.portal.left, Direction.RIGHT), world.cornerNW, world.ghostSeats[0].tile, world.cornerNE,
 				world.neighbor(world.portal.right, Direction.LEFT), world.pacManSeat.tile);
 		showRoutes = true;

@@ -57,24 +57,24 @@ public class PacManWorld {
 			}
 		}
 		if (portalRow != -1) {
-			portal.left = Tile.at(-1, portalRow);
-			portal.right = Tile.at(map.numCols, portalRow);
+			portal.left = Tile.xy(-1, portalRow);
+			portal.right = Tile.xy(map.numCols, portalRow);
 		}
 
-		ghostHouseDoorLeft = Tile.at(13, 15);
-		ghostHouseDoorRight = Tile.at(14, 15);
+		ghostHouseDoorLeft = Tile.xy(13, 15);
+		ghostHouseDoorRight = Tile.xy(14, 15);
 
 		// (unreachable) scattering targets
-		horizonNW = Tile.at(2, 0);
-		horizonNE = Tile.at(25, 0);
-		horizonSW = Tile.at(0, 35);
-		horizonSE = Tile.at(27, 35);
+		horizonNW = Tile.xy(2, 0);
+		horizonNE = Tile.xy(25, 0);
+		horizonSW = Tile.xy(0, 35);
+		horizonSE = Tile.xy(27, 35);
 
 		// only used by algorithm to calculate routes to "safe" corner for fleeing ghosts
-		cornerNW = Tile.at(1, 4);
-		cornerNE = Tile.at(26, 4);
-		cornerSW = Tile.at(1, 32);
-		cornerSE = Tile.at(26, 32);
+		cornerNW = Tile.xy(1, 4);
+		cornerNE = Tile.xy(26, 4);
+		cornerSW = Tile.xy(1, 32);
+		cornerSE = Tile.xy(26, 32);
 
 		int foodCount = 0;
 		for (int row = mapTopRow; row <= mapBottomRow; ++row) {
@@ -100,7 +100,7 @@ public class PacManWorld {
 	 */
 	public Stream<Tile> mapTiles() {
 		return IntStream.range(mapTopRow * map.numCols, (mapBottomRow + 1) * map.numCols)
-				.mapToObj(i -> Tile.at(i % map.numCols, i / map.numCols));
+				.mapToObj(i -> Tile.xy(i % map.numCols, i / map.numCols));
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class PacManWorld {
 			return portal.left;
 		}
 		Vector2f v = dir.vector();
-		return Tile.at(tile.col + n * v.roundedX(), tile.row + n * v.roundedY());
+		return Tile.xy(tile.col + n * v.roundedX(), tile.row + n * v.roundedY());
 	}
 
 	/**

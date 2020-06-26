@@ -32,7 +32,7 @@ public class FollowMouseTestApp extends Application {
 
 class FollowMouseTestUI extends PlayView {
 
-	private Tile mousePosition = Tile.at(0, 0);
+	private Tile mousePosition = Tile.xy(0, 0);
 
 	public FollowMouseTestUI() {
 		super(new Game(), new ArcadeTheme());
@@ -55,7 +55,7 @@ class FollowMouseTestUI extends PlayView {
 	public void update() {
 		super.update();
 		if (Mouse.moved()) {
-			mousePosition = Tile.at(Mouse.getX() / Tile.SIZE, Mouse.getY() / Tile.SIZE);
+			mousePosition = Tile.xy(Mouse.getX() / Tile.SIZE, Mouse.getY() / Tile.SIZE);
 		}
 		game.blinky.update();
 	}
