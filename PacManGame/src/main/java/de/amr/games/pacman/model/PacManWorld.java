@@ -27,6 +27,9 @@ public class PacManWorld {
 		}
 	}
 
+	public static final int UNUSED_ROWS_TOP = 4;
+	public static final int UNUSED_ROWS_BOTTOM = 3;
+
 	public final int totalFoodCount;
 	public final Seat pacManSeat;
 	public final Seat ghostSeats[];
@@ -108,7 +111,7 @@ public class PacManWorld {
 	 * @return Tiles comprising the map only (omitting the areas above and below used for the scores)
 	 */
 	public Stream<Tile> mapTiles() {
-		return IntStream.range(4 * map.numCols, (4 + map.numRows + 1) * map.numCols)
+		return IntStream.range(UNUSED_ROWS_TOP * map.numCols, (map.numRows + 1 - UNUSED_ROWS_BOTTOM) * map.numCols)
 				.mapToObj(i -> Tile.xy(i % map.numCols, i / map.numCols));
 	}
 
