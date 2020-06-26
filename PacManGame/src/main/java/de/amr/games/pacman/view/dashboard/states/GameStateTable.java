@@ -8,7 +8,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ColumnInfo;
-import de.amr.games.pacman.view.dashboard.util.CellFormatter;
+import de.amr.games.pacman.view.dashboard.util.UniversalFormatter;
 import de.amr.games.pacman.view.dashboard.util.Formatting;
 
 /**
@@ -34,19 +34,18 @@ public class GameStateTable extends JTable {
 	}
 
 	private void configureRenderers() {
-		CellFormatter tileRenderer = new CellFormatter();
-		tileRenderer.fnHilightCondition = (row, col) -> record(row) != null && record(row).pacManCollision;
-		renderer(ColumnInfo.Tile, tileRenderer);
+		UniversalFormatter tileFormatter = new UniversalFormatter();
+		tileFormatter.fnHilightCondition = c -> record(c.row) != null && record(c.row).pacManCollision;
+		renderer(ColumnInfo.Tile, tileFormatter);
 
-		CellFormatter speedRenderer = new CellFormatter();
-		speedRenderer.fnHilightCondition = (row, col) -> row == ROW_BLINKY
-				&& record(ROW_PACMAN).speed <= record(ROW_BLINKY).speed;
-		renderer(ColumnInfo.Speed, speedRenderer);
+		UniversalFormatter speedFormatter = new UniversalFormatter();
+		speedFormatter.fnHilightCondition = c -> c.row == ROW_BLINKY && record(ROW_PACMAN).speed <= record(ROW_BLINKY).speed;
+		renderer(ColumnInfo.Speed, speedFormatter);
 
-		CellFormatter ticksRenderer = new CellFormatter();
-		ticksRenderer.fnTextFormat = value -> Formatting.ticksAndSeconds((int) value);
-		renderer(ColumnInfo.Remaining, ticksRenderer);
-		renderer(ColumnInfo.Duration, ticksRenderer);
+		UniversalFormatter ticksFormatter = new UniversalFormatter();
+		ticksFormatter.fnTextFormat = c -> Formatting.ticksAndSeconds((int) c.value);
+		renderer(ColumnInfo.Remaining, ticksFormatter);
+		renderer(ColumnInfo.Duration, ticksFormatter);
 	}
 
 	private void renderer(ColumnInfo columnInfo, TableCellRenderer renderer) {
