@@ -130,7 +130,7 @@ public class EnhancedGameController extends GameController {
 		if (getState() != PLAYING) {
 			return;
 		}
-		game.world.mapTiles().filter(game.world::containsSimplePellet).forEach(tile -> {
+		game.world.mazeTiles().filter(game.world::containsSimplePellet).forEach(tile -> {
 			game.eatFood(tile, false);
 			ghostHouse.onPacManFoundFood();
 			ghostHouse.update();

@@ -70,7 +70,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	Stream<Tile> foodTiles() {
-		return world.mapTiles().filter(world::containsFood);
+		return world.mazeTiles().filter(world::containsFood);
 	}
 
 	Optional<Tile> preferredFoodLocationFrom(Tile here) {

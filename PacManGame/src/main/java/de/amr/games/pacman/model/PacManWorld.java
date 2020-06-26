@@ -108,9 +108,9 @@ public class PacManWorld {
 	}
 
 	/**
-	 * @return Tiles comprising the map only (omitting the areas above and below used for the scores)
+	 * @return Tiles comprising the maze only (omitting the areas above and below used for the scores)
 	 */
-	public Stream<Tile> mapTiles() {
+	public Stream<Tile> mazeTiles() {
 		return IntStream.range(UNUSED_ROWS_TOP * map.numCols, (map.numRows + 1 - UNUSED_ROWS_BOTTOM) * map.numCols)
 				.mapToObj(i -> Tile.xy(i % map.numCols, i / map.numCols));
 	}
@@ -143,11 +143,11 @@ public class PacManWorld {
 	}
 
 	public void eatAllFood() {
-		mapTiles().forEach(this::eatFood);
+		mazeTiles().forEach(this::eatFood);
 	}
 
 	public void restoreAllFood() {
-		mapTiles().forEach(this::restoreFood);
+		mazeTiles().forEach(this::restoreFood);
 	}
 
 	public boolean insideMap(Tile tile) {
