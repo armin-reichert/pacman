@@ -145,7 +145,7 @@ public class PlayView extends SimplePlayView {
 		}
 		drawActors(g);
 		if (showGrid) {
-			drawActorAlignments(g);
+			drawActorOffTrack(g);
 		}
 		if (showStates) {
 			drawActorStates(g);
@@ -245,25 +245,26 @@ public class PlayView extends SimplePlayView {
 		}
 	}
 
-	private void drawActorAlignments(Graphics2D g) {
-		game.creaturesOnStage().forEach(actor -> drawActorAlignment(actor, g));
+	private void drawActorOffTrack(Graphics2D g) {
+		game.creaturesOnStage().forEach(actor -> drawActorOffTrack(actor, g));
 	}
 
-	private void drawActorAlignment(Creature<?> actor, Graphics2D g) {
+	private void drawActorOffTrack(Creature<?> actor, Graphics2D g) {
 		if (!actor.visible) {
 			return;
 		}
 		Stroke normal = g.getStroke();
 		Stroke fine = new BasicStroke(0.2f);
 		g.setStroke(fine);
-		g.setColor(Color.GREEN);
+		g.setColor(Color.RED);
 		g.translate(actor.tf.x, actor.tf.y);
 		int w = actor.tf.width, h = actor.tf.height;
-		if (round(actor.tf.y) % Tile.SIZE == 0) {
+		Direction moveDir = actor.moveDir();
+		if ((moveDir == Direction.LEFT || moveDir == Direction.RIGHT) && round(actor.tf.y) % Tile.SIZE != 0) {
 			g.drawLine(0, 0, w, 0);
 			g.drawLine(0, h, w, h);
 		}
-		if (round(actor.tf.x) % Tile.SIZE == 0) {
+		if ((moveDir == Direction.UP || moveDir == Direction.DOWN) && round(actor.tf.x) % Tile.SIZE != 0) {
 			g.drawLine(0, 0, 0, h);
 			g.drawLine(w, 0, w, h);
 		}
