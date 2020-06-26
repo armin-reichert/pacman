@@ -53,7 +53,6 @@ public class GameStateView extends JPanel implements Lifecycle {
 		table.setRowHeight(24);
 		table.setPreferredScrollableViewportSize(new Dimension(450, 350));
 		scrollPane.setViewportView(table);
-		table.setModel(new GameStateTableModel());
 
 		ghostHouseStateView = new GhostHouseStateView();
 		content.add(ghostHouseStateView, "cell 0 2,grow");

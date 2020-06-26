@@ -1,11 +1,18 @@
 package de.amr.games.pacman.view.dashboard.states;
 
+import static de.amr.easy.game.Application.app;
+import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
+import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
+import static de.amr.games.pacman.model.Game.sec;
+
 import javax.swing.table.AbstractTableModel;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostCommand;
+import de.amr.games.pacman.controller.actor.Bonus;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.Ghost.Sanity;
+import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
@@ -17,14 +24,14 @@ import de.amr.games.pacman.model.Tile;
  */
 class GameStateTableModel extends AbstractTableModel {
 
-	public static final int NUM_ROWS = 6;
-
 	public static final int ROW_BLINKY = 0;
 	public static final int ROW_PINKY = 1;
 	public static final int ROW_INKY = 2;
 	public static final int ROW_CLYDE = 3;
 	public static final int ROW_PACMAN = 4;
 	public static final int ROW_BONUS = 5;
+
+	public static final int NUM_ROWS = 6;
 
 	public enum ColumnInfo {
 		//@formatter:off
@@ -60,38 +67,39 @@ class GameStateTableModel extends AbstractTableModel {
 	private GameStateRecord[] records;
 
 	public GameStateTableModel() {
-		records = createRecords();
-		for (int i = 0; i < records.length; ++i) {
-			records[i] = new GameStateRecord();
-		}
+		createEmptyRecords();
 	}
 
 	public GameStateTableModel(GameController gameController) {
 		this.gameController = gameController;
-		records = createRecords();
-		addTableModelListener(e -> {
-			if (e.getColumn() == ColumnInfo.OnStage.ordinal()) {
-				int row = e.getFirstRow();
-				GameStateRecord r = records[row];
-				if (r.creature instanceof Ghost) {
-					gameController.game.takePart(r.creature, r.takesPart);
-				}
+		addTableModelListener(change -> {
+			if (change.getColumn() == ColumnInfo.OnStage.ordinal()) {
+				handleOnStageStatusChange(change.getFirstRow());
 			}
 		});
+		createEmptyRecords();
+		update();
 	}
 
-	private GameStateRecord[] createRecords() {
-		GameStateRecord[] records = new GameStateRecord[NUM_ROWS];
+	private void createEmptyRecords() {
+		records = new GameStateRecord[NUM_ROWS];
 		for (int i = 0; i < records.length; ++i) {
 			records[i] = new GameStateRecord();
 		}
+		// for window builder
 		records[ROW_BLINKY].name = "Blinky";
 		records[ROW_PINKY].name = "Pinky";
 		records[ROW_INKY].name = "Inky";
 		records[ROW_CLYDE].name = "Clyde";
 		records[ROW_PACMAN].name = "Pac-Man";
 		records[ROW_BONUS].name = "Bonus";
-		return records;
+	}
+
+	private void handleOnStageStatusChange(int row) {
+		GameStateRecord r = records[row];
+		if (r.creature instanceof Ghost) {
+			gameController.game.takePart(r.creature, r.takesPart);
+		}
 	}
 
 	public GameController getGameController() {
@@ -106,13 +114,58 @@ class GameStateTableModel extends AbstractTableModel {
 		if (gameController != null) {
 			Game game = gameController.game;
 			GhostCommand ghostCommand = gameController.ghostCommand;
-			records[ROW_BLINKY] = new GameStateRecord(game, ghostCommand, game.blinky);
-			records[ROW_PINKY] = new GameStateRecord(game, ghostCommand, game.pinky);
-			records[ROW_INKY] = new GameStateRecord(game, ghostCommand, game.inky);
-			records[ROW_CLYDE] = new GameStateRecord(game, ghostCommand, game.clyde);
-			records[ROW_PACMAN] = new GameStateRecord(game, game.pacMan);
-			records[ROW_BONUS] = new GameStateRecord(game, game.bonus);
+			fillGhostRecord(records[ROW_BLINKY], game, ghostCommand, game.blinky);
+			fillGhostRecord(records[ROW_PINKY], game, ghostCommand, game.pinky);
+			fillGhostRecord(records[ROW_INKY], game, ghostCommand, game.inky);
+			fillGhostRecord(records[ROW_CLYDE], game, ghostCommand, game.clyde);
+			fillPacManRecord(records[ROW_PACMAN], game, game.pacMan);
+			fillBonusRecord(records[ROW_BONUS], game, game.bonus);
 			fireTableDataChanged();
+		}
+	}
+
+	void fillPacManRecord(GameStateRecord r, Game game, PacMan pacMan) {
+		r.creature = pacMan;
+		r.takesPart = game.takesPart(pacMan);
+		r.name = "Pac-Man";
+		r.tile = pacMan.tile();
+		r.moveDir = pacMan.moveDir();
+		r.wishDir = pacMan.wishDir();
+		if (pacMan.getState() != null) {
+			r.speed = pacMan.currentSpeed(game) * app().clock().getTargetFramerate();
+			r.state = pacMan.power == 0 ? pacMan.getState().name() : "POWER";
+			r.ticksRemaining = pacMan.power == 0 ? pacMan.state().getTicksRemaining() : pacMan.power;
+			r.duration = pacMan.power == 0 ? pacMan.state().getDuration() : sec(game.level.pacManPowerSeconds);
+		}
+	}
+
+	void fillGhostRecord(GameStateRecord r, Game game, GhostCommand ghostCommand, Ghost ghost) {
+		r.creature = ghost;
+		r.takesPart = game.takesPart(ghost);
+		r.name = ghost.name;
+		r.tile = ghost.tile();
+		r.target = ghost.targetTile();
+		r.moveDir = ghost.moveDir();
+		r.wishDir = ghost.wishDir();
+		if (ghost.getState() != null) {
+			r.speed = ghost.currentSpeed(game) * app().clock().getTargetFramerate();
+			r.state = ghost.getState().name();
+			r.ticksRemaining = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getTicksRemaining()
+					: ghost.state().getTicksRemaining();
+			r.duration = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getDuration() : ghost.state().getDuration();
+		}
+		r.ghostSanity = ghost.sanity.getState();
+		r.pacManCollision = ghost.tile().equals(game.pacMan.tile());
+	}
+
+	void fillBonusRecord(GameStateRecord r, Game game, Bonus bonus) {
+		r.takesPart = bonus.visible;
+		r.name = bonus.symbol != null ? bonus.toString() : "Bonus";
+		r.tile = game.maze.bonusSeat.tile;
+		if (bonus.getState() != null) {
+			r.state = bonus.getState().name();
+			r.ticksRemaining = bonus.state().getTicksRemaining();
+			r.duration = bonus.state().getDuration();
 		}
 	}
 
