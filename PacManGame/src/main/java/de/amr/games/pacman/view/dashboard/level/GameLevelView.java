@@ -31,7 +31,6 @@ public class GameLevelView extends JPanel implements Lifecycle {
 
 	private GameController controller;
 	private JTable table;
-	public GameLevelTableModel tableModel;
 
 	public GameLevelView() {
 		setLayout(new BorderLayout(0, 0));
@@ -44,6 +43,7 @@ public class GameLevelView extends JPanel implements Lifecycle {
 		content.add(scrollPane, "cell 0 0,grow");
 
 		table = new JTable();
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 		table.setRowHeight(17);
 		table.setRowSelectionAllowed(false);
 		scrollPane.setViewportView(table);
@@ -57,20 +57,22 @@ public class GameLevelView extends JPanel implements Lifecycle {
 	@Override
 	public void init() {
 		if (controller.game != null) {
-			tableModel = new GameLevelTableModel(controller.game);
+			table.setModel(new GameLevelTableModel(controller.game));
 		} else {
-			tableModel = new GameLevelTableModel();
+			table.setModel(new GameLevelTableModel());
 		}
-		table.setModel(tableModel);
 		table.getColumnModel().getColumn(0).setCellRenderer(new VariableFieldRenderer());
 		table.getColumnModel().getColumn(1).setCellRenderer(new VariableFieldRenderer());
+		table.getColumnModel().getColumn(0).setPreferredWidth(120);
 	}
 
 	@Override
 	public void update() {
-		if (!tableModel.hasGame()) {
-			init();
-		} else {
+		if (controller.game != null) {
+			GameLevelTableModel tableModel = (GameLevelTableModel) table.getModel();
+			if (!tableModel.hasGame()) {
+				init();
+			}
 			tableModel.fireTableDataChanged();
 		}
 	}
