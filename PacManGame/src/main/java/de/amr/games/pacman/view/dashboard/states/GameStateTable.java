@@ -2,17 +2,14 @@ package de.amr.games.pacman.view.dashboard.states;
 
 import static de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ROW_BLINKY;
 import static de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ROW_PACMAN;
-import static de.amr.games.pacman.view.dashboard.util.Formatting.ticksAndSeconds;
-
-import java.awt.Component;
 
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ColumnInfo;
-import de.amr.games.pacman.view.dashboard.util.CellHilighted;
+import de.amr.games.pacman.view.dashboard.util.CellFormatter;
+import de.amr.games.pacman.view.dashboard.util.Formatting;
 
 /**
  * Displays detailed information about the actors in the game that is updated at every tick.
@@ -20,19 +17,6 @@ import de.amr.games.pacman.view.dashboard.util.CellHilighted;
  * @author Armin Reichert
  */
 public class GameStateTable extends JTable {
-
-	static class TicksCellRenderer extends DefaultTableCellRenderer {
-
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			if (value != null) {
-				setText(ticksAndSeconds((int) value));
-			}
-			return this;
-		}
-	}
 
 	public GameStateTable() {
 		super(new GameStateTableModel());
@@ -50,11 +34,19 @@ public class GameStateTable extends JTable {
 	}
 
 	private void configureRenderers() {
-		renderer(ColumnInfo.Tile, new CellHilighted((row, col) -> record(row) != null && record(row).pacManCollision));
-		renderer(ColumnInfo.Speed,
-				new CellHilighted((row, col) -> row == ROW_BLINKY && record(ROW_PACMAN).speed <= record(ROW_BLINKY).speed));
-		renderer(ColumnInfo.Remaining, new TicksCellRenderer());
-		renderer(ColumnInfo.Duration, new TicksCellRenderer());
+		CellFormatter tileRenderer = new CellFormatter();
+		tileRenderer.fnHilightCondition = (row, col) -> record(row) != null && record(row).pacManCollision;
+		renderer(ColumnInfo.Tile, tileRenderer);
+
+		CellFormatter speedRenderer = new CellFormatter();
+		speedRenderer.fnHilightCondition = (row, col) -> row == ROW_BLINKY
+				&& record(ROW_PACMAN).speed <= record(ROW_BLINKY).speed;
+		renderer(ColumnInfo.Speed, speedRenderer);
+
+		CellFormatter ticksRenderer = new CellFormatter();
+		ticksRenderer.fnTextFormat = value -> Formatting.ticksAndSeconds((int) value);
+		renderer(ColumnInfo.Remaining, ticksRenderer);
+		renderer(ColumnInfo.Duration, ticksRenderer);
 	}
 
 	private void renderer(ColumnInfo columnInfo, TableCellRenderer renderer) {
