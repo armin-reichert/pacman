@@ -46,7 +46,7 @@ public class GameLevelView extends JPanel implements Lifecycle {
 			table.setModel(new GameLevelTableModel());
 		}
 		UniversalFormatter fmt = new UniversalFormatter();
-		fmt.fnTextBold = c -> c.row < 4;
+		fmt.fnBoldCondition = c -> c.row < 4;
 		table.getColumnModel().getColumns().asIterator().forEachRemaining(column -> column.setCellRenderer(fmt));
 		table.getColumnModel().getColumn(0).setPreferredWidth(120);
 	}

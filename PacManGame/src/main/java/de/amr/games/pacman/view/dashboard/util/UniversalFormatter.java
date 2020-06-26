@@ -23,7 +23,7 @@ public class UniversalFormatter extends DefaultTableCellRenderer {
 	public Color hilightColor = new Color(255, 0, 0, 100);
 	public Function<Context, Boolean> fnHilightCondition = context -> false;
 	public Function<Context, String> fnTextFormat = context -> context.value == null ? "" : String.valueOf(context.value);
-	public Function<Context, Boolean> fnTextBold = context -> false;
+	public Function<Context, Boolean> fnBoldCondition = context -> false;
 
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
@@ -38,7 +38,7 @@ public class UniversalFormatter extends DefaultTableCellRenderer {
 		Color bg = isSelected ? table.getSelectionBackground() : table.getBackground();
 		setBackground(fnHilightCondition.apply(context) ? hilightColor : bg);
 		setText(fnTextFormat.apply(context));
-		if (fnTextBold.apply(context)) {
+		if (fnBoldCondition.apply(context)) {
 			setFont(new Font(getFont().getFamily(), Font.BOLD, getFont().getSize()));
 		}
 		return this;
