@@ -2,6 +2,7 @@ package de.amr.games.pacman.view.dashboard.util;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.util.function.Function;
 
 import javax.swing.JTable;
@@ -22,6 +23,7 @@ public class UniversalFormatter extends DefaultTableCellRenderer {
 	public Color hilightColor = new Color(255, 0, 0, 100);
 	public Function<Context, Boolean> fnHilightCondition = context -> false;
 	public Function<Context, String> fnTextFormat = context -> context.value == null ? "" : String.valueOf(context.value);
+	public Function<Context, Boolean> fnTextBold = context -> false;
 
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
@@ -36,6 +38,9 @@ public class UniversalFormatter extends DefaultTableCellRenderer {
 		Color bg = isSelected ? table.getSelectionBackground() : table.getBackground();
 		setBackground(fnHilightCondition.apply(context) ? hilightColor : bg);
 		setText(fnTextFormat.apply(context));
+		if (fnTextBold.apply(context)) {
+			setFont(new Font(getFont().getFamily(), Font.BOLD, getFont().getSize()));
+		}
 		return this;
 	}
 }
