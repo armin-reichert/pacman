@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.dashboard.states;
 
-import static de.amr.games.pacman.view.dashboard.Formatting.seconds;
+import static de.amr.games.pacman.view.dashboard.util.Formatting.seconds;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

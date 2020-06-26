@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.dashboard.states;
 
 import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
-import static de.amr.games.pacman.view.dashboard.Formatting.ticksAndSeconds;
+import static de.amr.games.pacman.view.dashboard.util.Formatting.ticksAndSeconds;
 
 import java.awt.Color;
 import java.awt.Font;

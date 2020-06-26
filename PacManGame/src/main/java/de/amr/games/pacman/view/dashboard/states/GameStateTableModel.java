@@ -28,34 +28,28 @@ class GameStateTableModel extends AbstractTableModel {
 
 	public enum ColumnInfo {
 		//@formatter:off
-		OnStage("", Boolean.class, true), 
+		OnStage(null, Boolean.class, true), 
 		Name("Actor", String.class, false), 
-		Tile(Tile.class, false), 
-		Target(Tile.class, false),
-		MoveDir(Direction.class, false),
-		WishDir(Direction.class, false),
-		Speed("Pixel/sec", Float.class, false),
-		State(Object.class, false),
-		GhostSanity(Sanity.class, false),
-		Remaining(Integer.class, false), 
-		Duration(Integer.class, false);
+		Tile(null, Tile.class, false), 
+		Target(null, Tile.class, false),
+		MoveDir(null, Direction.class, false),
+		WishDir(null, Direction.class, false),
+		Speed("px/s", Float.class, false),
+		State(null, Object.class, false),
+		Sanity(null, Sanity.class, false),
+		Remaining(null, Integer.class, false), 
+		Duration(null, Integer.class, false);
 		//@formatter:on
 
-		private ColumnInfo(Class<?> class_, boolean editable) {
-			this.name = name();
-			this.class_ = class_;
-			this.editable = editable;
-		}
-
 		private ColumnInfo(String name, Class<?> class_, boolean editable) {
-			this.name = name;
+			this.name = name != null ? name : name();
 			this.class_ = class_;
 			this.editable = editable;
 		}
 
-		public String name;
-		public Class<?> class_;
-		public boolean editable;
+		public final String name;
+		public final Class<?> class_;
+		public final boolean editable;
 
 		public static ColumnInfo at(int col) {
 			return ColumnInfo.values()[col];
@@ -103,7 +97,7 @@ class GameStateTableModel extends AbstractTableModel {
 	public GameController getGameController() {
 		return gameController;
 	}
-	
+
 	public boolean hasGame() {
 		return gameController != null && gameController.game != null;
 	}
@@ -146,7 +140,7 @@ class GameStateTableModel extends AbstractTableModel {
 			return r.ticksRemaining;
 		case Duration:
 			return r.duration;
-		case GhostSanity:
+		case Sanity:
 			return r.ghostSanity;
 		default:
 			return null;

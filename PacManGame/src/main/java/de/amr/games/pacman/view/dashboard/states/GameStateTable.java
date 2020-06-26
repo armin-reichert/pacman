@@ -1,13 +1,9 @@
 package de.amr.games.pacman.view.dashboard.states;
 
-import static de.amr.games.pacman.controller.actor.Ghost.Sanity.ELROY1;
-import static de.amr.games.pacman.controller.actor.Ghost.Sanity.ELROY2;
-import static de.amr.games.pacman.view.dashboard.Formatting.pixelsPerSec;
-import static de.amr.games.pacman.view.dashboard.Formatting.ticksAndSeconds;
 import static de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ROW_BLINKY;
 import static de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ROW_PACMAN;
+import static de.amr.games.pacman.view.dashboard.util.Formatting.ticksAndSeconds;
 
-import java.awt.Color;
 import java.awt.Component;
 
 import javax.swing.JTable;
@@ -15,8 +11,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
-import de.amr.games.pacman.controller.actor.Ghost.Sanity;
 import de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ColumnInfo;
+import de.amr.games.pacman.view.dashboard.util.CellHilighted;
 
 /**
  * Displays detailed information about the actors in the game that is updated at every tick.
@@ -24,21 +20,6 @@ import de.amr.games.pacman.view.dashboard.states.GameStateTableModel.ColumnInfo;
  * @author Armin Reichert
  */
 public class GameStateTable extends JTable {
-
-	static final Color HILIGHT_COLOR = new Color(255, 0, 0, 100);
-
-	static class TileCellRenderer extends DefaultTableCellRenderer {
-
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			GameStateTableModel gstm = (GameStateTableModel) table.getModel();
-			GameStateRecord r = gstm.record(row);
-			setBackground(r != null && r.pacManCollision ? HILIGHT_COLOR : table.getBackground());
-			return this;
-		}
-	}
 
 	static class TicksCellRenderer extends DefaultTableCellRenderer {
 
@@ -48,29 +29,6 @@ public class GameStateTable extends JTable {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			if (value != null) {
 				setText(ticksAndSeconds((int) value));
-			}
-			return this;
-		}
-	}
-
-	static class SpeedCellRenderer extends DefaultTableCellRenderer {
-
-		private boolean isBlinkyInsane(GameStateTableModel model) {
-			Sanity sanity = model.record(ROW_BLINKY).ghostSanity;
-			return sanity == ELROY1 || sanity == ELROY2;
-		}
-
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			if (value != null) {
-				float speed = (float) value;
-				setText(pixelsPerSec(speed));
-				GameStateTableModel gstm = (GameStateTableModel) table.getModel();
-				setBackground(
-						row == ROW_BLINKY && isBlinkyInsane(gstm) && speed >= gstm.record(ROW_PACMAN).speed ? HILIGHT_COLOR
-								: table.getBackground());
 			}
 			return this;
 		}
@@ -92,8 +50,9 @@ public class GameStateTable extends JTable {
 	}
 
 	private void configureRenderers() {
-		renderer(ColumnInfo.Tile, new TileCellRenderer());
-		renderer(ColumnInfo.Speed, new SpeedCellRenderer());
+		renderer(ColumnInfo.Tile, new CellHilighted((row, col) -> record(row) != null && record(row).pacManCollision));
+		renderer(ColumnInfo.Speed,
+				new CellHilighted((row, col) -> row == ROW_BLINKY && record(ROW_PACMAN).speed <= record(ROW_BLINKY).speed));
 		renderer(ColumnInfo.Remaining, new TicksCellRenderer());
 		renderer(ColumnInfo.Duration, new TicksCellRenderer());
 	}
@@ -104,5 +63,9 @@ public class GameStateTable extends JTable {
 
 	private GameStateTableModel getGameStateTableModel() {
 		return (GameStateTableModel) getModel();
+	}
+
+	private GameStateRecord record(int row) {
+		return getGameStateTableModel().record(row);
 	}
 }

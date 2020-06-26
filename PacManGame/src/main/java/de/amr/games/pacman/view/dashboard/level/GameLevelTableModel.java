@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.dashboard.level;
 
-import static de.amr.games.pacman.view.dashboard.Formatting.integer;
-import static de.amr.games.pacman.view.dashboard.Formatting.percent;
+import static de.amr.games.pacman.view.dashboard.util.Formatting.integer;
+import static de.amr.games.pacman.view.dashboard.util.Formatting.percent;
 
 import javax.swing.table.AbstractTableModel;
 

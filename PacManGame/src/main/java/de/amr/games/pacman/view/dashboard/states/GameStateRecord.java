@@ -1,5 +1,6 @@
 package de.amr.games.pacman.view.dashboard.states;
 
+import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Game.sec;
@@ -46,7 +47,7 @@ class GameStateRecord {
 		moveDir = pacMan.moveDir();
 		wishDir = pacMan.wishDir();
 		if (pacMan.getState() != null) {
-			speed = pacMan.currentSpeed(game);
+			speed = pacMan.currentSpeed(game) * app().clock().getTargetFramerate();
 			state = pacMan.power == 0 ? pacMan.getState().name() : "POWER";
 			ticksRemaining = pacMan.power == 0 ? pacMan.state().getTicksRemaining() : pacMan.power;
 			duration = pacMan.power == 0 ? pacMan.state().getDuration() : sec(game.level.pacManPowerSeconds);
@@ -62,7 +63,7 @@ class GameStateRecord {
 		moveDir = ghost.moveDir();
 		wishDir = ghost.wishDir();
 		if (ghost.getState() != null) {
-			speed = ghost.currentSpeed(game);
+			speed = ghost.currentSpeed(game) * app().clock().getTargetFramerate();
 			state = ghost.getState().name();
 			ticksRemaining = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getTicksRemaining()
 					: ghost.state().getTicksRemaining();
