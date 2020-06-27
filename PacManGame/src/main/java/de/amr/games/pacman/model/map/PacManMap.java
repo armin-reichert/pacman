@@ -11,8 +11,8 @@ public abstract class PacManMap extends ByteMap implements PacManWorldStructure 
 	public static final byte B_ENERGIZER    = 2;
 	public static final byte B_EATEN        = 3;
 	public static final byte B_INTERSECTION = 4;
-	public static final byte B_5 						= 5;
-	public static final byte B_TUNNEL       = 6;
+	public static final byte B_TUNNEL				= 5;
+	public static final byte B_6            = 6;
 	//@formatter:on
 
 	public PacManMap(byte[][] data) {
