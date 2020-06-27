@@ -222,7 +222,7 @@ public class Ghost extends Creature<GhostState> {
 					.condition(() -> subsequentState == CHASING)
 					
 				.when(DEAD).then(ENTERING_HOUSE)
-					.condition(() -> world.atGhostHouseDoor(tile()))
+					.condition(() -> world.atDoor(tile()))
 					
 		.endStateMachine();
 		/*@formatter:on*/
@@ -302,6 +302,8 @@ public class Ghost extends Creature<GhostState> {
 		if (world.isDoor(neighbor)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
+		
+		
 		Optional<OneWayTile> maybeOneWay = world.oneWayTiles().filter(oneWay -> oneWay.tile.equals(neighbor)).findFirst();
 		if (maybeOneWay.isPresent()) {
 			OneWayTile oneWay = maybeOneWay.get();
@@ -391,7 +393,7 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	public boolean isInsideHouse() {
-		return world.insideGhostHouse(tile());
+		return world.insideHouse(tile());
 	}
 
 	private void checkPacManCollision() {

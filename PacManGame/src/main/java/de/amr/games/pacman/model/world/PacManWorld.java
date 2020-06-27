@@ -49,12 +49,17 @@ public class PacManWorld implements PacManWorldStructure {
 
 	@Override
 	public int width() {
-		return map.numCols;
+		return map.width();
 	}
 
 	@Override
 	public int height() {
-		return ROWS_ABOVE_MAP + map.numRows + ROWS_BELOW_MAP;
+		return ROWS_ABOVE_MAP + map.height() + ROWS_BELOW_MAP;
+	}
+
+	@Override
+	public boolean insideMap(Tile tile) {
+		return map.contains(toMap(tile.row), tile.col);
 	}
 
 	@Override
@@ -126,19 +131,15 @@ public class PacManWorld implements PacManWorldStructure {
 		mapTiles().forEach(this::restoreFood);
 	}
 
-	public boolean insideMap(Tile tile) {
-		return map.contains(toMap(tile.row), tile.col);
-	}
-
 	public boolean isDoor(Tile tile) {
 		return houses().flatMap(House::doors).anyMatch(door -> door.contains(tile));
 	}
 
-	public boolean insideGhostHouse(Tile tile) {
+	public boolean insideHouse(Tile tile) {
 		return houses().map(House::room).anyMatch(room -> room.contains(tile) || isDoor(tile));
 	}
 
-	public boolean atGhostHouseDoor(Tile tile) {
+	public boolean atDoor(Tile tile) {
 		return isDoor(neighbor(tile, Direction.DOWN));
 	}
 
@@ -146,16 +147,11 @@ public class PacManWorld implements PacManWorldStructure {
 		if (insideMap(tile)) {
 			return map.is1(toMap(tile.row), tile.col, B_WALL);
 		}
-		boolean isPortal = portals().anyMatch(portal -> portal.contains(tile));
-		return !isPortal;
+		return !isPortal(tile);
 	}
 
 	public boolean isTunnel(Tile tile) {
 		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_TUNNEL);
-	}
-
-	public boolean isOneWayTile(Tile tile) {
-		return insideMap(tile) && map.oneWayTiles().anyMatch(oneWay -> oneWay.tile.equals(tile));
 	}
 
 	public boolean isIntersection(Tile tile) {
@@ -175,7 +171,7 @@ public class PacManWorld implements PacManWorldStructure {
 	}
 
 	public boolean containsSimplePellet(Tile tile) {
-		return insideMap(tile) && isFood(tile) && !isEnergizer(tile) && !isEatenFood(tile);
+		return isFood(tile) && !isEnergizer(tile) && !isEatenFood(tile);
 	}
 
 	public boolean containsEnergizer(Tile tile) {

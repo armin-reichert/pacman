@@ -12,6 +12,8 @@ public interface PacManWorldStructure {
 	int width();
 
 	int height();
+	
+	boolean insideMap(Tile tile);
 
 	Stream<House> houses();
 
@@ -21,5 +23,13 @@ public interface PacManWorldStructure {
 
 	Stream<Portal> portals();
 
+	default boolean isPortal(Tile tile) {
+		return portals().anyMatch(portal -> portal.contains(tile));
+	}
+
 	Stream<OneWayTile> oneWayTiles();
+
+	default boolean isOneWayTile(Tile tile) {
+		return oneWayTiles().anyMatch(oneWay -> oneWay.tile.equals(tile));
+	}
 }
