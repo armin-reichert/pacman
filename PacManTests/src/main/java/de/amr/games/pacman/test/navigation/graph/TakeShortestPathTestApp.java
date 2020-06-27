@@ -70,7 +70,7 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		world.eatAllFood();
+		world.eatFood();
 		targetIndex = 0;
 		theme.snd_ghost_chase().volume(0);
 		game.takePart(ghost);
@@ -85,7 +85,7 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 		if (++targetIndex == targets.size()) {
 			targetIndex = 0;
 			game.enterLevel(game.level.number + 1);
-			world.eatAllFood();
+			world.eatFood();
 		}
 	}
 

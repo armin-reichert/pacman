@@ -49,7 +49,7 @@ class LeaveGhostHouseTestUI extends PlayView {
 	@Override
 	public void init() {
 		super.init();
-		game.world.eatAllFood();
+		game.world.eatFood();
 		game.takePart(game.inky);
 		game.inky.subsequentState = SCATTERING;
 		showMessage("Press SPACE to unlock", Color.WHITE);

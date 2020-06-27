@@ -60,7 +60,7 @@ class FollowTargetTilesTestUI extends PlayView {
 	public void init() {
 		super.init();
 		current = 0;
-		world.eatAllFood();
+		world.eatFood();
 		theme.snd_ghost_chase().volume(0);
 		game.takePart(game.blinky);
 		game.blinky.placeAt(targets.get(0));
@@ -76,7 +76,7 @@ class FollowTargetTilesTestUI extends PlayView {
 			if (current == targets.size()) {
 				current = 0;
 				game.enterLevel(game.level.number + 1);
-				world.eatAllFood();
+				world.eatFood();
 			}
 		}
 		game.blinky.update();

@@ -48,7 +48,7 @@ class ScatteringTestUI extends PlayView {
 	@Override
 	public void init() {
 		super.init();
-		game.world.eatAllFood();
+		game.world.eatFood();
 		game.ghosts().forEach(ghost -> {
 			game.takePart(ghost);
 			ghost.subsequentState = SCATTERING;

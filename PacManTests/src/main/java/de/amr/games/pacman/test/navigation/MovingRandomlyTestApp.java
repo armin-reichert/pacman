@@ -49,7 +49,7 @@ class MovingRandomlyTestUI extends PlayView {
 	@Override
 	public void init() {
 		super.init();
-		game.world.eatAllFood();
+		game.world.eatFood();
 		game.ghosts().forEach(ghost -> {
 			game.takePart(ghost);
 			ghost.tf.setPosition(game.world.pacManSeat().position);

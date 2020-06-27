@@ -125,11 +125,11 @@ public class PacManWorld implements PacManWorldStructure {
 		return Direction.dirs().map(dir -> neighbor(tile, dir));
 	}
 
-	public void eatAllFood() {
+	public void eatFood() {
 		mapTiles().forEach(this::eatFood);
 	}
 
-	public void restoreAllFood() {
+	public void restoreFood() {
 		mapTiles().forEach(this::restoreFood);
 	}
 

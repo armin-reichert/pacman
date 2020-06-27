@@ -47,7 +47,7 @@ class EnterGhostHouseTestUI extends PlayView {
 	@Override
 	public void init() {
 		super.init();
-		game.world.eatAllFood();
+		game.world.eatFood();
 		game.takePart(game.inky);
 		showMessage("SPACE = Enter/leave house", Color.WHITE, 8);
 	}

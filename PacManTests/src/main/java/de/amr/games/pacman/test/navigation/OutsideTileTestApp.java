@@ -46,7 +46,7 @@ class OutsideTileTestUI extends PlayView {
 	@Override
 	public void init() {
 		super.init();
-		game.world.eatAllFood();
+		game.world.eatFood();
 		theme.snd_ghost_chase().volume(0);
 		game.takePart(game.blinky);
 		game.blinky.behavior(CHASING,
