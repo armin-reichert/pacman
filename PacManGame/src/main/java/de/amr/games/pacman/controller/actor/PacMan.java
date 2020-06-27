@@ -166,7 +166,7 @@ public class PacMan extends Creature<PacManState> {
 
 	private Optional<PacManGameEvent> findSomethingInteresting(Game game) {
 		Tile tile = tile();
-		if (tile.equals(world.bonusSeat.tile) && game.bonus.is(ACTIVE)) {
+		if (tile.equals(world.bonusTile()) && game.bonus.is(ACTIVE)) {
 			return Optional.of(new BonusFoundEvent(game.bonus.symbol, game.bonus.value));
 		}
 		if (world.containsFood(tile)) {

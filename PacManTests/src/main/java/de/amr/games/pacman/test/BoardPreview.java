@@ -11,6 +11,7 @@ import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.model.WorldGraph;
 import de.amr.games.pacman.model.map.GameMaps;
 import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.Portal;
 import de.amr.graph.grid.ui.rendering.ConfigurableGridRenderer;
 import de.amr.graph.grid.ui.rendering.GridCanvas;
 import de.amr.graph.grid.ui.rendering.GridRenderer;
@@ -88,10 +89,10 @@ public class BoardPreview extends JFrame {
 		if (tile.equals(world.ghostSeat(3).tile) || tile.equals(world.horizonSW)) {
 			return "C";
 		}
-		if (tile.equals(world.bonusSeat.tile)) {
+		if (tile.equals(world.bonusTile())) {
 			return "$";
 		}
-		if (tile.equals(world.pacManSeat.tile)) {
+		if (tile.equals(world.pacManSeat().tile)) {
 			return "O";
 		}
 		if (world.isInaccessible(tile)) {
@@ -103,8 +104,10 @@ public class BoardPreview extends JFrame {
 		if (world.containsEnergizer(tile)) {
 			return "Ö";
 		}
-		if (world.portal.contains(tile)) {
-			return "@";
+		for (Portal portal : world.portals()) {
+			if (portal.contains(tile)) {
+				return "@";
+			}
 		}
 		return "";
 	}

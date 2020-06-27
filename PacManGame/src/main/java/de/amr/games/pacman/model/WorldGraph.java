@@ -44,7 +44,7 @@ public class WorldGraph extends GridGraph<Tile, Void> {
 	}
 
 	public Tile tile(int vertex) {
-		return Tile.xy(col(vertex), row(vertex));
+		return Tile.col_row(col(vertex), row(vertex));
 	}
 
 	public List<Tile> shortestPath(Tile source, Tile target) {

@@ -40,25 +40,25 @@ class FollowTargetTilesTestUI extends PlayView {
 
 	private List<Tile> targets;
 	private int current;
-	private PacManWorld maze;
+	private PacManWorld world;
 
 	public FollowTargetTilesTestUI() {
 		super(new Game(), new ArcadeTheme());
-		maze = game.world;
+		world = game.world;
 		showRoutes = true;
 		showStates = false;
 		showScores = false;
 		showGrid = true;
 
-		targets = Arrays.asList(maze.cornerNW, maze.ghostSeat(0).tile, maze.cornerNE, maze.cornerSE,
-				maze.pacManSeat.tile, maze.cornerSW);
+		targets = Arrays.asList(world.cornerNW, world.ghostSeat(0).tile, world.cornerNE, world.cornerSE,
+				world.pacManSeat().tile, world.cornerSW);
 	}
 
 	@Override
 	public void init() {
 		super.init();
 		current = 0;
-		maze.eatAllFood();
+		world.eatAllFood();
 		theme.snd_ghost_chase().volume(0);
 		game.takePart(game.blinky);
 		game.blinky.placeAt(targets.get(0));
@@ -74,7 +74,7 @@ class FollowTargetTilesTestUI extends PlayView {
 			if (current == targets.size()) {
 				current = 0;
 				game.enterLevel(game.level.number + 1);
-				maze.eatAllFood();
+				world.eatAllFood();
 			}
 		}
 		game.blinky.update();

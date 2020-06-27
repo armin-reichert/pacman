@@ -213,7 +213,8 @@ public class SimplePlayView extends BaseView {
 			spriteFlashingMaze = theme.spr_flashingMaze();
 			energizersBlinking = new CyclicAnimation(2);
 			energizersBlinking.setFrameDuration(150);
-			game.bonus.tf.setPosition(game.world.bonusSeat.position);
+			game.bonus.tf.x = game.world.bonusTile().x();
+			game.bonus.tf.y = game.world.bonusTile().y();
 			//@formatter:off
 			beginStateMachine()
 				.description("[Maze View]")
@@ -255,7 +256,7 @@ public class SimplePlayView extends BaseView {
 			}
 			// draw door open when touched by ghost entering or leaving the house
 			game.ghostsOnStage().filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE)).forEach(ghost -> {
-				game.world.ghostHouseDoors.stream().filter(door -> door.contains(ghost.tile())).forEach(door -> {
+				game.world.ghostHouseDoors().stream().filter(door -> door.contains(ghost.tile())).forEach(door -> {
 					g.setColor(Color.BLACK);
 					door.tiles.forEach(tile -> {
 						g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);

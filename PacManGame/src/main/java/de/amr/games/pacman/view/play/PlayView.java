@@ -275,7 +275,7 @@ public class PlayView extends SimplePlayView {
 	private void drawUpwardsBlockedTileMarkers(Graphics2D g) {
 		for (int row = 0; row < game.world.height(); ++row) {
 			for (int col = 0; col < game.world.width(); ++col) {
-				Tile tile = Tile.xy(col, row);
+				Tile tile = Tile.col_row(col, row);
 				if (game.world.isOneWayDown(tile)) {
 					Tile above = game.world.neighbor(tile, Direction.UP);
 					drawDirectionIndicator(g, Color.WHITE, Direction.DOWN, above.centerX(), above.y() - 2);

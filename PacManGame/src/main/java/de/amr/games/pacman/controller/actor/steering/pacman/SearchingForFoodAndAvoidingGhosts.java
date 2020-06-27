@@ -78,8 +78,8 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	Optional<Tile> activeBonusAtMostAway(Tile here, int maxDistance) {
-		return game.bonus.is(BonusState.ACTIVE) && here.manhattanDistance(world.bonusSeat.tile) <= maxDistance
-				? Optional.of(world.bonusSeat.tile)
+		return game.bonus.is(BonusState.ACTIVE) && here.manhattanDistance(world.bonusTile()) <= maxDistance
+				? Optional.of(world.bonusTile())
 				: Optional.empty();
 	}
 

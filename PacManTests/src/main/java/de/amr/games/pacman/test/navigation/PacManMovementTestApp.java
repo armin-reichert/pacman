@@ -7,6 +7,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.input.Keyboard.Modifier;
+import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.PacManState;
@@ -19,6 +20,7 @@ import de.amr.games.pacman.view.theme.ArcadeTheme;
 public class PacManMovementTestApp extends Application {
 
 	public static void main(String[] args) {
+		PacManStateMachineLogging.setEnabled(true);
 		launch(PacManMovementTestApp.class, args);
 	}
 

@@ -6,6 +6,7 @@ import java.util.List;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.model.world.Door;
+import de.amr.games.pacman.model.world.Portal;
 import de.amr.games.pacman.model.world.Seat;
 
 class ArcadeMap extends GameMap {
@@ -54,11 +55,16 @@ class ArcadeMap extends GameMap {
 
 	static final Seat pacManSeat = new Seat(4, 13, 26, Direction.RIGHT);
 
-	static final Seat bonusSeat = new Seat(5, 13, 20, null);
+	static final Tile bonusTile = Tile.col_row(13, 20);
 
 	static final List<Door> ghostHouseDoors = Arrays.asList(
-			new Door(Direction.DOWN, Tile.xy(13, 15), Tile.xy(14, 15))
+			new Door(Direction.DOWN, Tile.col_row(13, 15), Tile.col_row(14, 15))
 	);
+	
+	static final List<Portal> portals = Arrays.asList(
+			new Portal(Tile.col_row(-1, 17), Tile.col_row(28, 17))
+	);
+	
 	//@formatter:on
 
 	public ArcadeMap() {
@@ -76,12 +82,17 @@ class ArcadeMap extends GameMap {
 	}
 
 	@Override
-	public Seat bonusSeat() {
-		return bonusSeat;
+	public Tile bonusTile() {
+		return bonusTile;
 	}
 
 	@Override
 	public List<Door> ghostHouseDoors() {
 		return ghostHouseDoors;
+	}
+
+	@Override
+	public List<Portal> portals() {
+		return portals;
 	}
 }

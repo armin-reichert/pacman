@@ -1,6 +1,7 @@
 package de.amr.games.pacman.model.world;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -39,11 +40,7 @@ public class PacManWorld {
 	//@formatter:on
 
 	public final int totalFoodCount;
-	public final Seat pacManSeat;
-	public final Seat bonusSeat;
-	public final Portal portal;
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
-	public final List<Door> ghostHouseDoors;
 	public final Tile cornerNW, cornerNE, cornerSW, cornerSE;
 
 	private final GameMap map;
@@ -51,30 +48,18 @@ public class PacManWorld {
 	public PacManWorld(GameMap map) {
 		this.map = map;
 		totalFoodCount = (int) mapTiles().filter(this::isFood).count();
-		pacManSeat = map.pacManSeat();
-		bonusSeat = map.bonusSeat();
-		ghostHouseDoors = map.ghostHouseDoors();
-
-		// scan for portal(s)
-		portal = new Portal();
-		for (int row = 0; row < map.numRows; ++row) {
-			if (map.is1(row, 0, B_TUNNEL) && map.is1(row, map.numCols - 1, B_TUNNEL)) {
-				portal.left = Tile.xy(-1, toWorld(row));
-				portal.right = Tile.xy(map.numCols, toWorld(row));
-			}
-		}
 
 		// (unreachable) scattering targets
-		horizonNW = Tile.xy(2, 0);
-		horizonNE = Tile.xy(width() - 3, 0);
-		horizonSW = Tile.xy(0, height() - 1);
-		horizonSE = Tile.xy(width() - 1, height() - 1);
+		horizonNW = Tile.col_row(2, 0);
+		horizonNE = Tile.col_row(width() - 3, 0);
+		horizonSW = Tile.col_row(0, height() - 1);
+		horizonSE = Tile.col_row(width() - 1, height() - 1);
 
 		// only used by algorithm to calculate routes to "safe" corner for fleeing ghosts
-		cornerNW = Tile.xy(1, 4);
-		cornerNE = Tile.xy(26, 4);
-		cornerSW = Tile.xy(1, 32);
-		cornerSE = Tile.xy(26, 32);
+		cornerNW = Tile.col_row(1, 4);
+		cornerNE = Tile.col_row(26, 4);
+		cornerSW = Tile.col_row(1, 32);
+		cornerSE = Tile.col_row(26, 32);
 	}
 
 	public int width() {
@@ -93,12 +78,28 @@ public class PacManWorld {
 		return map.ghostSeats().get(i);
 	}
 
+	public List<Door> ghostHouseDoors() {
+		return map.ghostHouseDoors();
+	}
+
+	public Seat pacManSeat() {
+		return map.pacManSeat();
+	}
+
+	public Tile bonusTile() {
+		return map.bonusTile();
+	}
+
+	public List<Portal> portals() {
+		return map.portals();
+	}
+
 	/**
 	 * @return the map tiles in world coordinates
 	 */
 	public Stream<Tile> mapTiles() {
 		return IntStream.range(toWorld(0) * map.numCols, toWorld(map.numRows + 1) * map.numCols)
-				.mapToObj(i -> Tile.xy(i % map.numCols, i / map.numCols));
+				.mapToObj(i -> Tile.col_row(i % map.numCols, i / map.numCols));
 	}
 
 	/**
@@ -109,14 +110,15 @@ public class PacManWorld {
 	 *         direction. This can be a tile outside of the world.
 	 */
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
-		if (tile.equals(portal.left) && dir == Direction.LEFT) {
-			return portal.right;
-		}
-		if (tile.equals(portal.right) && dir == Direction.RIGHT) {
-			return portal.left;
+		Optional<Portal> portalEntered = portals().stream().filter(portal -> portal.contains(tile)).findAny();
+		if (portalEntered.isPresent()) {
+			Tile exitTile = portalEntered.get().exitTile(tile, dir);
+			if (exitTile != null) {
+				return exitTile;
+			}
 		}
 		Vector2f v = dir.vector();
-		return Tile.xy(tile.col + n * v.roundedX(), tile.row + n * v.roundedY());
+		return Tile.col_row(tile.col + n * v.roundedX(), tile.row + n * v.roundedY());
 	}
 
 	/**
@@ -152,7 +154,8 @@ public class PacManWorld {
 		if (insideMap(tile)) {
 			return map.is1(toMap(tile.row), tile.col, B_WALL);
 		}
-		return !portal.contains(tile);
+		boolean isPortal = portals().stream().anyMatch(portal -> portal.contains(tile));
+		return !isPortal;
 	}
 
 	public boolean isTunnel(Tile tile) {
@@ -160,7 +163,7 @@ public class PacManWorld {
 	}
 
 	public boolean isDoor(Tile tile) {
-		return ghostHouseDoors.stream().anyMatch(door -> door.contains(tile));
+		return ghostHouseDoors().stream().anyMatch(door -> door.contains(tile));
 	}
 
 	public boolean isOneWayDown(Tile tile) {

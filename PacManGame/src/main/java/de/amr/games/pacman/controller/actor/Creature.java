@@ -25,6 +25,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.Portal;
 import de.amr.games.pacman.model.world.Seat;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.api.FsmContainer;
@@ -57,6 +58,7 @@ public abstract class Creature<STATE> extends Entity implements MazeMover, FsmCo
 	protected Direction wishDir;
 	protected Tile targetTile;
 	protected boolean enteredNewTile;
+	protected Portal portalEntered;
 
 	public Creature(Game game, String name, Map<STATE, Steering> steerings) {
 		this.game = game;
@@ -72,28 +74,38 @@ public abstract class Creature<STATE> extends Entity implements MazeMover, FsmCo
 				.initialState(MOVING_INSIDE_MAZE)
 				.states()
 					.state(MOVING_INSIDE_MAZE)
-						.onTick(() -> moveInsideMaze())
+						.onTick(() -> {
+							moveInsideMaze();
+							checkPortalEntered();
+						})
 					.state(TELEPORTING)
-						.onEntry(() -> visible = false)
-						.onExit(() -> visible = true)
 				.transitions()
-					.when(MOVING_INSIDE_MAZE).then(TELEPORTING)
-						.condition(() -> enteredLeftPortal() || enteredRightPortal())
-					.when(TELEPORTING).then(MOVING_INSIDE_MAZE)
-						.onTimeout()
-						.act(() -> placeAt(enteredRightPortal() ? world.portal.left : world.portal.right))
+					.when(MOVING_INSIDE_MAZE).then(TELEPORTING).condition(this::portalEntered)
+					.when(TELEPORTING).then(MOVING_INSIDE_MAZE).onTimeout().act(this::teleport)
 			.endStateMachine();
 		//@formatter:on
 		setTeleportingDuration(sec(0.5f));
 		movement.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 	}
 
-	private boolean enteredLeftPortal() {
-		return tf.getPosition().x < world.portal.left.x();
+	private boolean portalEntered() {
+		return portalEntered != null;
 	}
 
-	private boolean enteredRightPortal() {
-		return tf.getPosition().x > world.portal.right.x();
+	private void checkPortalEntered() {
+		for (Portal portal : world.portals()) {
+			if (portal.contains(tile())) {
+				portalEntered = portal;
+				visible = false;
+				break;
+			}
+		}
+	}
+
+	private void teleport() {
+		portalEntered.teleport(this, tile(), moveDir);
+		portalEntered = null;
+		visible = true;
 	}
 
 	/**
@@ -181,7 +193,7 @@ public abstract class Creature<STATE> extends Entity implements MazeMover, FsmCo
 		Vector2f center = tf.getCenter();
 		int col = (int) (center.x >= 0 ? center.x / Tile.SIZE : Math.floor(center.x / Tile.SIZE));
 		int row = (int) (center.y >= 0 ? center.y / Tile.SIZE : Math.floor(center.y / Tile.SIZE));
-		return Tile.xy(col, row);
+		return Tile.col_row(col, row);
 	}
 
 	@Override

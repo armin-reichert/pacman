@@ -187,7 +187,7 @@ public class Game {
 
 		// assign seats
 
-		pacMan.seat = world.pacManSeat;
+		pacMan.seat = world.pacManSeat();
 		blinky.seat = world.ghostSeat(0);
 		inky.seat = world.ghostSeat(1);
 		pinky.seat = world.ghostSeat(2);
@@ -223,7 +223,7 @@ public class Game {
 		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
 		inky.behavior(CHASING, inky.isHeadingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
-			return Tile.xy(2 * p.col - b.col, 2 * p.row - b.row);
+			return Tile.col_row(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
 		pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
 		clyde.behavior(CHASING, clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : world.horizonSW));
@@ -356,7 +356,7 @@ public class Game {
 		} else {
 			actorsTakingPart.remove(actor);
 			actor.visible = false;
-			actor.placeAt(Tile.xy(-1, -1));
+			actor.placeAt(Tile.col_row(-1, -1));
 			loginfo("%s left the game", actor.name);
 
 		}

@@ -19,7 +19,7 @@ public class Seat {
 
 	public Seat(int number, int col, int row, Direction dir) {
 		this.number = number;
-		tile = Tile.xy(col, row);
+		tile = Tile.col_row(col, row);
 		position = Vector2f.of(tile.centerX(), tile.y());
 		startDir = dir;
 	}
