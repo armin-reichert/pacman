@@ -24,6 +24,8 @@ import de.amr.games.pacman.controller.actor.Bonus;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.model.map.GameMap;
+import de.amr.games.pacman.model.map.GameMaps;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.
@@ -135,7 +137,7 @@ public class Game {
 	 * Creates a game starting with the first level.
 	 */
 	public Game() {
-		this(Maps.PACMAN_MAP, 1);
+		this(GameMaps.ARCADE_MAP, 1);
 	}
 
 	/**
@@ -185,10 +187,10 @@ public class Game {
 		// assign seats
 
 		pacMan.seat = world.pacManSeat;
-		blinky.seat = world.ghostSeats[0];
-		inky.seat = world.ghostSeats[1];
-		pinky.seat = world.ghostSeats[2];
-		clyde.seat = world.ghostSeats[3];
+		blinky.seat = world.ghostSeats.get(0);
+		inky.seat = world.ghostSeats.get(1);
+		pinky.seat = world.ghostSeats.get(2);
+		clyde.seat = world.ghostSeats.get(3);
 
 		// define behavior
 
@@ -206,7 +208,7 @@ public class Game {
 
 		// individual ghost behavior
 
-		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(world.ghostSeats[2]));
+		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(world.ghostSeats.get(2)));
 
 		// scattering
 

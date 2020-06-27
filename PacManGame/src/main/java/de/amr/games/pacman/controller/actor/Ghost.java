@@ -245,7 +245,7 @@ public class Ghost extends Creature<GhostState> {
 	 * lets a ghost leave the ghost house
 	 */
 	public void leavingGhostHouse() {
-		Tile exit = world.ghostSeats[0].tile;
+		Tile exit = world.ghostSeats.get(0).tile;
 		int targetX = exit.centerX(), targetY = exit.y();
 		if (tf.y <= targetY) {
 			tf.y = targetY;
@@ -260,7 +260,7 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	private boolean hasLeftGhostHouse() {
-		return tf.y == world.ghostSeats[0].tile.y();
+		return tf.y == world.ghostSeats.get(0).tile.y();
 	}
 
 	/**
@@ -278,7 +278,7 @@ public class Ghost extends Creature<GhostState> {
 	 * @return steering for bringing ghost back to ghost house entry
 	 */
 	public Steering isReturningToHouse() {
-		return isHeadingFor(world.ghostSeats[0].tile);
+		return isHeadingFor(world.ghostSeats.get(0).tile);
 	}
 
 	/**

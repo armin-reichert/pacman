@@ -1,11 +1,15 @@
-package de.amr.games.pacman.model;
+package de.amr.games.pacman.model.map;
+
+import java.util.List;
+
+import de.amr.games.pacman.model.Seat;
 
 /**
  * Map represented by a 2D byte array.
  * 
  * @author Armin Reichert
  */
-public class GameMap {
+public abstract class GameMap {
 
 	private byte[][] data;
 
@@ -17,6 +21,12 @@ public class GameMap {
 		numRows = data.length;
 		numCols = data[0].length;
 	}
+
+	public abstract List<Seat> ghostSeats();
+
+	public abstract Seat pacManSeat();
+
+	public abstract Seat bonusSeat();
 
 	public boolean is1(int row, int col, byte bit) {
 		return (data[row][col] & (1 << bit)) != 0;

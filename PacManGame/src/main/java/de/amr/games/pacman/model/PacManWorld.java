@@ -1,9 +1,11 @@
 package de.amr.games.pacman.model;
 
+import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
+import de.amr.games.pacman.model.map.GameMap;
 
 /**
  * The Pac-Man game world. Reserves 3 rows above and 2 rows below the map for displaying the scores
@@ -35,8 +37,8 @@ public class PacManWorld {
 	//@formatter:on
 
 	public final int totalFoodCount;
+	public final List<Seat> ghostSeats;
 	public final Seat pacManSeat;
-	public final Seat ghostSeats[];
 	public final Seat bonusSeat;
 	public final Portal portal;
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
@@ -47,15 +49,9 @@ public class PacManWorld {
 
 	public PacManWorld(GameMap map) {
 		this.map = map;
+		totalFoodCount = (int) mapTiles().filter(this::isFood).count();
 
-		//@formatter:off
-		ghostSeats = new Seat[] { 
-				new Seat(0, 13, 14, Direction.LEFT), 
-				new Seat(1, 11, 17, Direction.UP),
-				new Seat(2, 13, 17, Direction.DOWN),
-				new Seat(3, 15, 17, Direction.UP),
-				};
-		//@formatter:on
+		ghostSeats = map.ghostSeats();
 		pacManSeat = new Seat(4, 13, 26, Direction.RIGHT);
 		bonusSeat = new Seat(5, 13, 20, null);
 
@@ -82,8 +78,6 @@ public class PacManWorld {
 		cornerNE = Tile.xy(26, 4);
 		cornerSW = Tile.xy(1, 32);
 		cornerSE = Tile.xy(26, 32);
-
-		totalFoodCount = foodCount(map);
 	}
 
 	public int width() {
@@ -212,17 +206,4 @@ public class PacManWorld {
 			map.set0(toMap(tile.row), tile.col, B_EATEN);
 		}
 	}
-
-	private int foodCount(GameMap map) {
-		int cnt = 0;
-		for (int row = 0; row < map.numRows; ++row) {
-			for (int col = 0; col < map.numCols; ++col) {
-				if (map.is1(row, col, B_FOOD)) {
-					++cnt;
-				}
-			}
-		}
-		return cnt;
-	}
-
 }

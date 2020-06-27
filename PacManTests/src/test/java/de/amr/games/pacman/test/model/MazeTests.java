@@ -10,9 +10,9 @@ import org.junit.Test;
 
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Maps;
 import de.amr.games.pacman.model.PacManWorld;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.map.GameMaps;
 
 public class MazeTests {
 
@@ -20,16 +20,16 @@ public class MazeTests {
 
 	@Before
 	public void setup() {
-		world = new PacManWorld(Maps.PACMAN_MAP);
+		world = new PacManWorld(GameMaps.ARCADE_MAP);
 	}
 
 	@Test
 	public void testMazeStructure() {
 		assertNotNull(world.pacManSeat);
-		assertNotNull(world.ghostSeats[0]);
-		assertNotNull(world.ghostSeats[1]);
-		assertNotNull(world.ghostSeats[2]);
-		assertNotNull(world.ghostSeats[3]);
+		assertNotNull(world.ghostSeats.get(0));
+		assertNotNull(world.ghostSeats.get(1));
+		assertNotNull(world.ghostSeats.get(2));
+		assertNotNull(world.ghostSeats.get(3));
 		assertNotNull(world.bonusSeat);
 		assertNotNull(world.horizonNE);
 		assertNotNull(world.horizonNW);

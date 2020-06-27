@@ -7,10 +7,10 @@ import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import de.amr.games.pacman.model.Maps;
 import de.amr.games.pacman.model.MazeGraph;
 import de.amr.games.pacman.model.PacManWorld;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.map.GameMaps;
 import de.amr.graph.grid.ui.rendering.ConfigurableGridRenderer;
 import de.amr.graph.grid.ui.rendering.GridCanvas;
 import de.amr.graph.grid.ui.rendering.GridRenderer;
@@ -28,7 +28,7 @@ public class BoardPreview extends JFrame {
 	private MazeGraph graph;
 
 	public BoardPreview() {
-		world = new PacManWorld(Maps.PACMAN_MAP);
+		world = new PacManWorld(GameMaps.ARCADE_MAP);
 		graph = new MazeGraph(world);
 		setTitle("Pac-Man Maze Preview");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -76,16 +76,16 @@ public class BoardPreview extends JFrame {
 
 	private String text(int cell) {
 		Tile tile = graph.tile(cell);
-		if (tile.equals(world.ghostSeats[0].tile) || tile.equals(world.horizonNE)) {
+		if (tile.equals(world.ghostSeats.get(0).tile) || tile.equals(world.horizonNE)) {
 			return "B";
 		}
-		if (tile.equals(world.ghostSeats[1].tile) || tile.equals(world.horizonSE)) {
+		if (tile.equals(world.ghostSeats.get(1).tile) || tile.equals(world.horizonSE)) {
 			return "I";
 		}
-		if (tile.equals(world.ghostSeats[2].tile) || tile.equals(world.horizonNW)) {
+		if (tile.equals(world.ghostSeats.get(2).tile) || tile.equals(world.horizonNW)) {
 			return "P";
 		}
-		if (tile.equals(world.ghostSeats[3].tile) || tile.equals(world.horizonSW)) {
+		if (tile.equals(world.ghostSeats.get(3).tile) || tile.equals(world.horizonSW)) {
 			return "C";
 		}
 		if (tile.equals(world.bonusSeat.tile)) {
