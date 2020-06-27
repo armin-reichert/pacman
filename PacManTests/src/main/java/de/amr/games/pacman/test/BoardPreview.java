@@ -76,16 +76,16 @@ public class BoardPreview extends JFrame {
 
 	private String text(int cell) {
 		Tile tile = graph.tile(cell);
-		if (tile.equals(world.ghostSeats.get(0).tile) || tile.equals(world.horizonNE)) {
+		if (tile.equals(world.ghostSeat(0).tile) || tile.equals(world.horizonNE)) {
 			return "B";
 		}
-		if (tile.equals(world.ghostSeats.get(1).tile) || tile.equals(world.horizonSE)) {
+		if (tile.equals(world.ghostSeat(1).tile) || tile.equals(world.horizonSE)) {
 			return "I";
 		}
-		if (tile.equals(world.ghostSeats.get(2).tile) || tile.equals(world.horizonNW)) {
+		if (tile.equals(world.ghostSeat(2).tile) || tile.equals(world.horizonNW)) {
 			return "P";
 		}
-		if (tile.equals(world.ghostSeats.get(3).tile) || tile.equals(world.horizonSW)) {
+		if (tile.equals(world.ghostSeat(3).tile) || tile.equals(world.horizonSW)) {
 			return "C";
 		}
 		if (tile.equals(world.bonusSeat.tile)) {

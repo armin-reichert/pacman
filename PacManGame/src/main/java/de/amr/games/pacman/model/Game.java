@@ -188,10 +188,10 @@ public class Game {
 		// assign seats
 
 		pacMan.seat = world.pacManSeat;
-		blinky.seat = world.ghostSeats.get(0);
-		inky.seat = world.ghostSeats.get(1);
-		pinky.seat = world.ghostSeats.get(2);
-		clyde.seat = world.ghostSeats.get(3);
+		blinky.seat = world.ghostSeat(0);
+		inky.seat = world.ghostSeat(1);
+		pinky.seat = world.ghostSeat(2);
+		clyde.seat = world.ghostSeat(3);
 
 		// define behavior
 
@@ -209,7 +209,7 @@ public class Game {
 
 		// individual ghost behavior
 
-		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(world.ghostSeats.get(2)));
+		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(world.ghostSeat(2)));
 
 		// scattering
 

@@ -39,7 +39,6 @@ public class PacManWorld {
 	//@formatter:on
 
 	public final int totalFoodCount;
-	public final List<Seat> ghostSeats;
 	public final Seat pacManSeat;
 	public final Seat bonusSeat;
 	public final Portal portal;
@@ -52,11 +51,8 @@ public class PacManWorld {
 	public PacManWorld(GameMap map) {
 		this.map = map;
 		totalFoodCount = (int) mapTiles().filter(this::isFood).count();
-
-		ghostSeats = map.ghostSeats();
-		pacManSeat = new Seat(4, 13, 26, Direction.RIGHT);
-		bonusSeat = new Seat(5, 13, 20, null);
-
+		pacManSeat = map.pacManSeat();
+		bonusSeat = map.bonusSeat();
 		ghostHouseDoors = map.ghostHouseDoors();
 
 		// scan for portal(s)
@@ -87,6 +83,14 @@ public class PacManWorld {
 
 	public int height() {
 		return ROWS_ABOVE_MAP + map.numRows + ROWS_BELOW_MAP;
+	}
+
+	public List<Seat> ghostSeats() {
+		return map.ghostSeats();
+	}
+
+	public Seat ghostSeat(int i) {
+		return map.ghostSeats().get(i);
 	}
 
 	/**
