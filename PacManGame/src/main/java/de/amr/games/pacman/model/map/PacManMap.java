@@ -1,6 +1,8 @@
 package de.amr.games.pacman.model.map;
 
-public abstract class PacManMap extends GameMap implements PacManWorldStructure {
+import de.amr.easy.game.model.ByteMap;
+
+public abstract class PacManMap extends ByteMap implements PacManWorldStructure {
 
 	public PacManMap(byte[][] data) {
 		super(data);
