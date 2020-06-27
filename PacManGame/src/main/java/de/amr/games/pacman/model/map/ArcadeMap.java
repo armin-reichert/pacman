@@ -1,8 +1,9 @@
 package de.amr.games.pacman.model.map;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.Door;
@@ -62,7 +63,7 @@ class ArcadeMap extends PacManMap {
 
 		// ghost house
 		int left = 11, right = 16, top = 16, bottom = 18;
-		List<Tile> room = new ArrayList<>();
+		Set<Tile> room = new HashSet<>();
 		for (int row = top; row <= bottom; ++row) {
 			for (int col = left; col <= right; ++col) {
 				room.add(Tile.col_row(col, row));

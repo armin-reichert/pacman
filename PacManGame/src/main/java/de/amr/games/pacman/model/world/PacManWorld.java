@@ -142,7 +142,7 @@ public class PacManWorld implements PacManWorldStructure {
 	}
 
 	public boolean isDoor(Tile tile) {
-		return ghostHouse().doors().stream().anyMatch(door -> door.contains(tile));
+		return ghostHouse().doors().anyMatch(door -> door.contains(tile));
 	}
 
 	public boolean insideGhostHouse(Tile tile) {
