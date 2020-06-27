@@ -24,8 +24,8 @@ import de.amr.games.pacman.controller.actor.Bonus;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.model.map.GameMap;
-import de.amr.games.pacman.model.map.GameMaps;
+import de.amr.games.pacman.model.map.PacManMap;
+import de.amr.games.pacman.model.map.PacManMaps;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Symbol;
 import de.amr.games.pacman.model.world.Tile;
@@ -126,7 +126,7 @@ public class Game {
 	 * 
 	 * @param startLevel start level number (1-...)
 	 */
-	public Game(GameMap map, int startLevel) {
+	public Game(PacManMap map, int startLevel) {
 		lives = 3;
 		score = 0;
 		levelCounter = new ArrayList<>();
@@ -140,7 +140,7 @@ public class Game {
 	 * Creates a game starting with the first level.
 	 */
 	public Game() {
-		this(GameMaps.ARCADE_MAP, 1);
+		this(PacManMaps.ARCADE_MAP, 1);
 	}
 
 	/**

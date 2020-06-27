@@ -7,7 +7,7 @@ import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import de.amr.games.pacman.model.map.GameMaps;
+import de.amr.games.pacman.model.map.PacManMaps;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Portal;
 import de.amr.games.pacman.model.world.Tile;
@@ -29,7 +29,7 @@ public class BoardPreview extends JFrame {
 	private WorldGraph graph;
 
 	public BoardPreview() {
-		world = new PacManWorld(GameMaps.ARCADE_MAP);
+		world = new PacManWorld(PacManMaps.ARCADE_MAP);
 		graph = new WorldGraph(world);
 		setTitle("Pac-Man Maze Preview");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);

@@ -1,12 +1,5 @@
 package de.amr.games.pacman.model.map;
 
-import java.util.List;
-
-import de.amr.games.pacman.model.world.GhostHouse;
-import de.amr.games.pacman.model.world.Portal;
-import de.amr.games.pacman.model.world.Seat;
-import de.amr.games.pacman.model.world.Tile;
-
 /**
  * Map represented by a 2D byte array.
  * 
@@ -24,14 +17,6 @@ public abstract class GameMap {
 		numRows = data.length;
 		numCols = data[0].length;
 	}
-
-	public abstract Seat pacManSeat();
-
-	public abstract Tile bonusTile();
-
-	public abstract List<Portal> portals();
-
-	public abstract GhostHouse ghostHouse();
 
 	public boolean contains(int row, int col) {
 		return 0 <= row && row < numRows && 0 <= col && col < numCols;

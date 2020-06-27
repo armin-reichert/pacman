@@ -7,7 +7,8 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.map.GameMap;
+import de.amr.games.pacman.model.map.PacManMap;
+import de.amr.games.pacman.model.map.PacManWorldStructure;
 
 /**
  * The Pac-Man game world. Reserves 3 rows above and 2 rows below the map for displaying the scores
@@ -15,7 +16,7 @@ import de.amr.games.pacman.model.map.GameMap;
  * 
  * @author Armin Reichert
  */
-public class PacManWorld {
+public class PacManWorld implements PacManWorldStructure {
 
 	static final int ROWS_ABOVE_MAP = 3;
 	static final int ROWS_BELOW_MAP = 2;
@@ -42,9 +43,9 @@ public class PacManWorld {
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile cornerNW, cornerNE, cornerSW, cornerSE;
 
-	private final GameMap map;
+	private final PacManMap map;
 
-	public PacManWorld(GameMap map) {
+	public PacManWorld(PacManMap map) {
 		this.map = map;
 		totalFoodCount = (int) mapTiles().filter(this::isFood).count();
 
@@ -61,26 +62,32 @@ public class PacManWorld {
 		cornerSE = Tile.col_row(26, 32);
 	}
 
+	@Override
 	public int width() {
 		return map.numCols;
 	}
 
+	@Override
 	public int height() {
 		return ROWS_ABOVE_MAP + map.numRows + ROWS_BELOW_MAP;
 	}
 
+	@Override
 	public GhostHouse ghostHouse() {
 		return map.ghostHouse();
 	}
 
+	@Override
 	public Seat pacManSeat() {
 		return map.pacManSeat();
 	}
 
+	@Override
 	public Tile bonusTile() {
 		return map.bonusTile();
 	}
 
+	@Override
 	public List<Portal> portals() {
 		return map.portals();
 	}

@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.map.GameMaps;
+import de.amr.games.pacman.model.map.PacManMaps;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
 
@@ -20,7 +20,7 @@ public class MazeTests {
 
 	@Before
 	public void setup() {
-		world = new PacManWorld(GameMaps.ARCADE_MAP);
+		world = new PacManWorld(PacManMaps.ARCADE_MAP);
 	}
 
 	@Test

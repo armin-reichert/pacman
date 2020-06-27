@@ -11,7 +11,7 @@ import de.amr.games.pacman.model.world.Portal;
 import de.amr.games.pacman.model.world.Seat;
 import de.amr.games.pacman.model.world.Tile;
 
-class ArcadeMap extends GameMap {
+class ArcadeMap extends PacManMap {
 
 	//@formatter:off
 	static final byte[][] data = {
@@ -84,6 +84,16 @@ class ArcadeMap extends GameMap {
 
 	public ArcadeMap() {
 		super(data);
+	}
+
+	@Override
+	public int width() {
+		return numCols;
+	}
+
+	@Override
+	public int height() {
+		return numRows;
 	}
 
 	@Override
