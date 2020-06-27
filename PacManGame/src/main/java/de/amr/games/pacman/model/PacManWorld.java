@@ -13,12 +13,15 @@ import de.amr.easy.game.math.Vector2f;
  */
 public class PacManWorld {
 
+	static final int ROWS_ABOVE_MAP = 3;
+	static final int ROWS_BELOW_MAP = 2;
+
 	static int toWorld(int row) {
-		return row + 3;
+		return row + ROWS_ABOVE_MAP;
 	}
 
 	static int toMap(int row) {
-		return row - 3;
+		return row - ROWS_ABOVE_MAP;
 	}
 
 	//@formatter:off
@@ -70,9 +73,9 @@ public class PacManWorld {
 
 		// (unreachable) scattering targets
 		horizonNW = Tile.xy(2, 0);
-		horizonNE = Tile.xy(25, 0);
-		horizonSW = Tile.xy(0, 35);
-		horizonSE = Tile.xy(27, 35);
+		horizonNE = Tile.xy(width() - 3, 0);
+		horizonSW = Tile.xy(0, height() - 1);
+		horizonSE = Tile.xy(width() - 1, height() - 1);
 
 		// only used by algorithm to calculate routes to "safe" corner for fleeing ghosts
 		cornerNW = Tile.xy(1, 4);
@@ -83,20 +86,20 @@ public class PacManWorld {
 		totalFoodCount = foodCount(map);
 	}
 
-	public int mapWidth() {
+	public int width() {
 		return map.numCols;
 	}
 
-	public int mapHeight() {
-		return map.numRows;
+	public int height() {
+		return ROWS_ABOVE_MAP + map.numRows + ROWS_BELOW_MAP;
 	}
 
 	/**
 	 * @return the map tiles in world coordinates
 	 */
 	public Stream<Tile> mapTiles() {
-		return IntStream.range(toWorld(0) * mapWidth(), toWorld(map.numRows + 1) * mapWidth())
-				.mapToObj(i -> Tile.xy(i % mapWidth(), i / mapWidth()));
+		return IntStream.range(toWorld(0) * map.numCols, toWorld(map.numRows + 1) * map.numCols)
+				.mapToObj(i -> Tile.xy(i % map.numCols, i / map.numCols));
 	}
 
 	/**

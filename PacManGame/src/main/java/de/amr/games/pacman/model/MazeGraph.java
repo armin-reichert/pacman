@@ -31,7 +31,7 @@ public class MazeGraph {
 
 	public MazeGraph(PacManWorld world) {
 		this.world = world;
-		grid = new GridGraph<>(world.mapWidth(), world.mapHeight(), Grid4Topology.get(), this::tile, (u, v) -> null,
+		grid = new GridGraph<>(world.width(), world.height(), Grid4Topology.get(), this::tile, (u, v) -> null,
 				UndirectedEdge::new);
 		grid.fill();
 		//@formatter:off

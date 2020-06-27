@@ -116,7 +116,7 @@ public class PlayView extends SimplePlayView {
 		frameRateDisplay = new FramerateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
-		gridImage = createGridPatternImage(game.world.mapWidth(), game.world.mapHeight());
+		gridImage = createGridPatternImage(game.world.width(), game.world.height());
 		inkyImage = (BufferedImage) theme.spr_ghostColored(Theme.CYAN_GHOST, Direction.RIGHT).frame(0);
 		clydeImage = (BufferedImage) theme.spr_ghostColored(Theme.ORANGE_GHOST, Direction.RIGHT).frame(0);
 		pacManImage = (BufferedImage) theme.spr_pacManWalking(RIGHT).frame(0);
@@ -273,8 +273,8 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawUpwardsBlockedTileMarkers(Graphics2D g) {
-		for (int row = 0; row < game.world.mapHeight(); ++row) {
-			for (int col = 0; col < game.world.mapWidth(); ++col) {
+		for (int row = 0; row < game.world.height(); ++row) {
+			for (int col = 0; col < game.world.width(); ++col) {
 				Tile tile = Tile.xy(col, row);
 				if (game.world.isOneWayDown(tile)) {
 					Tile above = game.world.neighbor(tile, Direction.UP);

@@ -42,7 +42,7 @@ class ScatteringTestUI extends PlayView {
 		showRoutes = true;
 		showStates = false;
 		showScores = false;
-		showGrid = false;
+		showGrid = true;
 	}
 
 	@Override
