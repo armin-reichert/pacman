@@ -75,7 +75,7 @@ class ArcadeMap extends PacManMap {
 		//@formatter:off
 		List<Seat> seats = Arrays.asList(
 				new Seat(0, left + 2, top - 2, Direction.LEFT),
-				new Seat(1, left, top + 1, Direction.UP), 
+				new Seat(1, left,     top + 1, Direction.UP), 
 				new Seat(2, left + 2, top + 1, Direction.DOWN),
 				new Seat(3, left + 4, top + 1, Direction.UP));
 		//@formatter:on
