@@ -34,15 +34,12 @@ public class PacManWorld implements PacManWorldStructure {
 		return row - ROWS_ABOVE_MAP;
 	}
 
-	public final int totalFoodCount;
 	public final Tile cornerNW, cornerNE, cornerSW, cornerSE;
 
 	private final PacManMap map;
 
 	public PacManWorld(PacManMap map) {
 		this.map = map;
-		totalFoodCount = (int) mapTiles().filter(this::isFood).count();
-
 		// only used by algorithm to calculate routes to "safe" corner for fleeing ghosts
 		cornerNW = Tile.at(1, ROWS_ABOVE_MAP + 1);
 		cornerNE = Tile.at(width() - 2, ROWS_ABOVE_MAP + 1);

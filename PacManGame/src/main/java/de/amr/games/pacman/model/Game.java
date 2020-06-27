@@ -119,6 +119,7 @@ public class Game {
 	public GameLevel level;
 	public int lives;
 	public int score;
+	public int totalFoodCount;
 
 	private Set<Creature<?>> actorsTakingPart = new HashSet<>();
 
@@ -133,6 +134,7 @@ public class Game {
 		levelCounter = new ArrayList<>();
 		gameScore = new GameScore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
 		world = new PacManWorld(map);
+		totalFoodCount = (int) world.mapTiles().filter(world::containsFood).count();
 		createActors();
 		enterLevel(startLevel);
 	}
@@ -268,7 +270,7 @@ public class Game {
 	 * @return number of remaining pellets and energizers
 	 */
 	public int remainingFoodCount() {
-		return world.totalFoodCount - level.eatenFoodCount;
+		return totalFoodCount - level.eatenFoodCount;
 	}
 
 	/**
