@@ -21,14 +21,14 @@ import de.amr.games.pacman.model.map.PacManMap;
  */
 public class PacManWorld implements PacManWorldStructure {
 
-	static final int ROWS_ABOVE_MAP = 3;
-	static final int ROWS_BELOW_MAP = 2;
+	private static final int ROWS_ABOVE_MAP = 3;
+	private static final int ROWS_BELOW_MAP = 2;
 
-	static int toWorld(int row) {
+	private static int toWorld(int row) {
 		return row + ROWS_ABOVE_MAP;
 	}
 
-	static int toMap(int row) {
+	private static int toMap(int row) {
 		return row - ROWS_ABOVE_MAP;
 	}
 
@@ -38,7 +38,7 @@ public class PacManWorld implements PacManWorldStructure {
 
 	public PacManWorld(PacManMap map) {
 		this.map = map;
-		// only used by algorithm to calculate routes to "safe" corner for fleeing ghosts
+		// used by algorithm to calculate routes to "safe" corner for fleeing ghosts
 		cornerNW = Tile.at(1, ROWS_ABOVE_MAP + 1);
 		cornerNE = Tile.at(width() - 2, ROWS_ABOVE_MAP + 1);
 		cornerSW = Tile.at(1, toWorld(map.numRows - 2));
