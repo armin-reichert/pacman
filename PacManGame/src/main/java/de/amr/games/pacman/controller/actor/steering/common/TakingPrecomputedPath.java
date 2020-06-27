@@ -29,13 +29,13 @@ public abstract class TakingPrecomputedPath implements PathProvidingSteering {
 	}
 
 	protected final MazeMover actor;
-	protected final PacManWorld maze;
+	protected final PacManWorld world;
 	protected final Supplier<Tile> fnTargetTile;
 	protected List<Tile> targetPath;
 
 	public TakingPrecomputedPath(MazeMover actor, Supplier<Tile> fnTargetTile) {
 		this.actor = Objects.requireNonNull(actor);
-		this.maze = actor.world();
+		this.world = actor.world();
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 		this.targetPath = new ArrayList<>();
 	}

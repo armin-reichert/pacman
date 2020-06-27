@@ -28,7 +28,7 @@ public class FleeingToSafeCorner extends TakingPrecomputedPath {
 
 	public FleeingToSafeCorner(Ghost refugee, MazeMover attacker, Tile... corners) {
 		super(refugee, attacker::tile);
-		graph = new WorldGraph(maze);
+		graph = new WorldGraph(world);
 		this.corners = Arrays.copyOf(corners, corners.length);
 	}
 
@@ -52,15 +52,15 @@ public class FleeingToSafeCorner extends TakingPrecomputedPath {
 		//@formatter:off
 		return permute(Arrays.stream(corners))
 			.filter(corner -> !corner.equals(refugeeTile))
-			.sorted(byDist(maze,refugeeTile, chaserTile).reversed())
+			.sorted(byDist(world,refugeeTile, chaserTile).reversed())
 			.findFirst().get();
 		//@formatter:on
 	}
 
-	private Comparator<Tile> byDist(PacManWorld maze, Tile refugeeTile, Tile chaserTile) {
+	private Comparator<Tile> byDist(PacManWorld world, Tile refugeeTile, Tile chaserTile) {
 		return (corner1, corner2) -> {
-			double dist1 = minDistFromPath(maze, graph.shortestPath(refugeeTile, corner1), chaserTile);
-			double dist2 = minDistFromPath(maze, graph.shortestPath(refugeeTile, corner2), chaserTile);
+			double dist1 = minDistFromPath(world, graph.shortestPath(refugeeTile, corner1), chaserTile);
+			double dist2 = minDistFromPath(world, graph.shortestPath(refugeeTile, corner2), chaserTile);
 			return Double.compare(dist1, dist2);
 		};
 	}
@@ -71,7 +71,7 @@ public class FleeingToSafeCorner extends TakingPrecomputedPath {
 		return Math.abs(dx) + Math.abs(dy);
 	}
 
-	private int minDistFromPath(PacManWorld maze, List<Tile> path, Tile tile) {
+	private int minDistFromPath(PacManWorld world, List<Tile> path, Tile tile) {
 		int min = Integer.MAX_VALUE;
 		for (Tile t : path) {
 			int dist = manhattanDist(t, tile);

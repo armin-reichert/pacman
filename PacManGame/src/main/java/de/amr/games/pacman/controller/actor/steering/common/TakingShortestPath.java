@@ -19,7 +19,7 @@ public class TakingShortestPath extends TakingPrecomputedPath {
 
 	public TakingShortestPath(MazeMover actor, Supplier<Tile> fnTargetTile) {
 		super(actor, fnTargetTile);
-		graph = new WorldGraph(maze);
+		graph = new WorldGraph(world);
 	}
 
 	@Override
