@@ -2,6 +2,7 @@ package de.amr.games.pacman.view.play;
 
 import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
 import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.view.core.EntityRenderer.drawEntity;
 import static de.amr.games.pacman.view.play.SimplePlayView.MazeMode.CROWDED;
@@ -19,7 +20,6 @@ import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
-import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.Symbol;
 import de.amr.games.pacman.model.Tile;
@@ -253,11 +253,15 @@ public class SimplePlayView extends BaseView {
 					g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 				});
 			}
-			// draw door open when any ghost is entering or leaving the house
-			if (game.ghostsOnStage().anyMatch(ghost -> ghost.is(GhostState.ENTERING_HOUSE, GhostState.LEAVING_HOUSE))) {
-				g.setColor(Color.BLACK);
-				g.fillRect(game.world.ghostHouseDoorLeft.x(), game.world.ghostHouseDoorLeft.y(), 2 * Tile.SIZE, Tile.SIZE);
-			}
+			// draw door open when touched by ghost entering or leaving the house
+			game.ghostsOnStage().filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE)).forEach(ghost -> {
+				game.world.ghostHouseDoors.stream().filter(door -> door.contains(ghost.tile())).forEach(door -> {
+					g.setColor(Color.BLACK);
+					door.tiles.forEach(tile -> {
+						g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
+					});
+				});
+			});
 		}
 	}
 }

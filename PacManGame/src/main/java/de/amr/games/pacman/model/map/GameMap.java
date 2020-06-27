@@ -2,6 +2,7 @@ package de.amr.games.pacman.model.map;
 
 import java.util.List;
 
+import de.amr.games.pacman.model.Door;
 import de.amr.games.pacman.model.Seat;
 
 /**
@@ -27,6 +28,8 @@ public abstract class GameMap {
 	public abstract Seat pacManSeat();
 
 	public abstract Seat bonusSeat();
+	
+	public abstract List<Door> ghostHouseDoors();
 
 	public boolean is1(int row, int col, byte bit) {
 		return (data[row][col] & (1 << bit)) != 0;

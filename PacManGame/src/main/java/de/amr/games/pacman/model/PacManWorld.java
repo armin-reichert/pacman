@@ -42,7 +42,7 @@ public class PacManWorld {
 	public final Seat bonusSeat;
 	public final Portal portal;
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
-	public final Tile ghostHouseDoorLeft, ghostHouseDoorRight;
+	public final List<Door> ghostHouseDoors;
 	public final Tile cornerNW, cornerNE, cornerSW, cornerSE;
 
 	private final GameMap map;
@@ -55,7 +55,9 @@ public class PacManWorld {
 		pacManSeat = new Seat(4, 13, 26, Direction.RIGHT);
 		bonusSeat = new Seat(5, 13, 20, null);
 
-		// scan for portal
+		ghostHouseDoors = map.ghostHouseDoors();
+
+		// scan for portal(s)
 		portal = new Portal();
 		for (int row = 0; row < map.numRows; ++row) {
 			if (map.is1(row, 0, B_TUNNEL) && map.is1(row, map.numCols - 1, B_TUNNEL)) {
@@ -63,9 +65,6 @@ public class PacManWorld {
 				portal.right = Tile.xy(map.numCols, toWorld(row));
 			}
 		}
-
-		ghostHouseDoorLeft = Tile.xy(13, 15);
-		ghostHouseDoorRight = Tile.xy(14, 15);
 
 		// (unreachable) scattering targets
 		horizonNW = Tile.xy(2, 0);
@@ -155,7 +154,7 @@ public class PacManWorld {
 	}
 
 	public boolean isDoor(Tile tile) {
-		return tile.equals(ghostHouseDoorLeft) || tile.equals(ghostHouseDoorRight);
+		return ghostHouseDoors.stream().anyMatch(door -> door.contains(tile));
 	}
 
 	public boolean isOneWayDown(Tile tile) {

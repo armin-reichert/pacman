@@ -4,12 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.Door;
 import de.amr.games.pacman.model.Seat;
+import de.amr.games.pacman.model.Tile;
 
 class ArcadeMap extends GameMap {
 
+	//@formatter:off
 	static final byte[][] data = {
-		//@formatter:off
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 		{ 1, 2, 2, 2, 2, 2,18, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2,18, 2, 2, 2, 2, 2, 1 },
 		{ 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1 },
@@ -41,20 +43,23 @@ class ArcadeMap extends GameMap {
 		{ 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1 },
 		{ 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,18, 2, 2,18, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1 },
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-		//@formatter:on
 	};
 
-	//@formatter:off
 	static final Seat[] ghostSeats = new Seat[] { 
 			new Seat(0, 13, 14, Direction.LEFT), 
 			new Seat(1, 11, 17, Direction.UP),
 			new Seat(2, 13, 17, Direction.DOWN),
 			new Seat(3, 15, 17, Direction.UP),
 			};
-	//@formatter:on
 
 	static final Seat pacManSeat = new Seat(4, 13, 26, Direction.RIGHT);
+
 	static final Seat bonusSeat = new Seat(5, 13, 20, null);
+
+	static final List<Door> ghostHouseDoors = Arrays.asList(
+			new Door(Direction.DOWN, Tile.xy(13, 15), Tile.xy(14, 15))
+	);
+	//@formatter:on
 
 	public ArcadeMap() {
 		super(data);
@@ -73,5 +78,10 @@ class ArcadeMap extends GameMap {
 	@Override
 	public Seat bonusSeat() {
 		return bonusSeat;
+	}
+
+	@Override
+	public List<Door> ghostHouseDoors() {
+		return ghostHouseDoors;
 	}
 }
