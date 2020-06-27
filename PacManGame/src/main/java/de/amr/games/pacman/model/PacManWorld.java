@@ -1,12 +1,5 @@
 package de.amr.games.pacman.model;
 
-import static de.amr.games.pacman.model.GameMap.B_EATEN;
-import static de.amr.games.pacman.model.GameMap.B_ENERGIZER;
-import static de.amr.games.pacman.model.GameMap.B_FOOD;
-import static de.amr.games.pacman.model.GameMap.B_INTERSECTION;
-import static de.amr.games.pacman.model.GameMap.B_ONE_WAY_DOWN;
-import static de.amr.games.pacman.model.GameMap.B_TUNNEL;
-
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -26,6 +19,16 @@ public class PacManWorld {
 			return tile.equals(left) || tile.equals(right);
 		}
 	}
+
+	//@formatter:off
+	static final byte B_WALL         = 0;
+	static final byte B_FOOD         = 1;
+	static final byte B_ENERGIZER    = 2;
+	static final byte B_EATEN        = 3;
+	static final byte B_INTERSECTION = 4;
+	static final byte B_ONE_WAY_DOWN = 5;
+	static final byte B_TUNNEL       = 6;
+	//@formatter:on
 
 	public static final int UNUSED_ROWS_TOP = 4;
 	public static final int UNUSED_ROWS_BOTTOM = 3;
@@ -164,7 +167,7 @@ public class PacManWorld {
 
 	public boolean isInaccessible(Tile tile) {
 		if (insideMap(tile)) {
-			return map.is1(tile.row, tile.col, GameMap.B_WALL);
+			return map.is1(tile.row, tile.col, B_WALL);
 		}
 		return !portal.contains(tile);
 	}

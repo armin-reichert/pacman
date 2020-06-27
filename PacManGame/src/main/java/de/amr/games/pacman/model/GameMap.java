@@ -7,16 +7,6 @@ package de.amr.games.pacman.model;
  */
 public class GameMap {
 
-	//@formatter:off
-	static final byte B_WALL         = 1<<0;
-	static final byte B_FOOD         = 1<<1;
-	static final byte B_ENERGIZER    = 1<<2;
-	static final byte B_EATEN        = 1<<3;
-	static final byte B_INTERSECTION = 1<<4;
-	static final byte B_ONE_WAY_DOWN = 1<<5;
-	static final byte B_TUNNEL       = 1<<6;
-	//@formatter:on
-
 	private byte[][] data;
 
 	public final int numCols;
@@ -29,19 +19,19 @@ public class GameMap {
 	}
 
 	public boolean is1(int row, int col, byte bit) {
-		return (data[row][col] & bit) != 0;
+		return (data[row][col] & (1 << bit)) != 0;
 	}
 
 	public boolean is0(int row, int col, byte bit) {
-		return (data[row][col] & bit) == 0;
+		return (data[row][col] & (1 << bit)) == 0;
 	}
 
 	public void set0(int row, int col, byte bit) {
-		data[row][col] &= ~bit;
+		data[row][col] &= ~(1 << bit);
 	}
 
 	public void set1(int row, int col, byte bit) {
-		data[row][col] |= bit;
+		data[row][col] |= (1 << bit);
 	}
 
 	public boolean inRange(int row, int col) {
