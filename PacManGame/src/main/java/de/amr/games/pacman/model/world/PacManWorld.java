@@ -101,10 +101,15 @@ public class PacManWorld implements PacManWorldStructure {
 	 *         direction. This can be a tile outside of the world.
 	 */
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
-		Tile portalExit = portals().filter(portal -> portal.contains(tile)).findAny()
-				.map(portal -> portal.exitTile(tile, dir)).orElse(null);
-		return portalExit != null ? portalExit
-				: Tile.at(tile.col + n * dir.vector().roundedX(), tile.row + n * dir.vector().roundedY());
+		//@formatter:off
+		return portals()
+				.filter(portal -> portal.contains(tile))
+				.findAny()
+				.map(portal -> portal.exitTile(tile, dir))
+				.orElse(
+						Tile.at(tile.col + n * dir.vector().roundedX(), tile.row + n * dir.vector().roundedY())
+				);
+		//@formatter:on
 	}
 
 	/**
