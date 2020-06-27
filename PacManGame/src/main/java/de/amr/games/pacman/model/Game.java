@@ -190,8 +190,6 @@ public class Game {
 		clyde = new Ghost(this, "Clyde");
 		bonus = new Bonus(this);
 
-		int w = world.width(), h = world.height();
-
 		// assign seats
 
 		pacMan.seat = world.pacManSeat();
@@ -222,6 +220,7 @@ public class Game {
 
 		// scattering
 
+		int w = world.width(), h = world.height();
 		blinky.behavior(SCATTERING, blinky.isHeadingFor(Tile.at(w - 3, 0)));
 		inky.behavior(SCATTERING, inky.isHeadingFor(Tile.at(w - 1, h - 1)));
 		pinky.behavior(SCATTERING, pinky.isHeadingFor(Tile.at(2, 0)));
