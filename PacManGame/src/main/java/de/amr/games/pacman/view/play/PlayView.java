@@ -275,7 +275,7 @@ public class PlayView extends SimplePlayView {
 	private void drawOneWayTiles(Graphics2D g) {
 		for (int row = 0; row < game.world.height(); ++row) {
 			for (int col = 0; col < game.world.width(); ++col) {
-				Tile tile = Tile.col_row(col, row);
+				Tile tile = Tile.at(col, row);
 				if (game.world.isOneWayTile(tile)) {
 					drawDirectionIndicator(g, Color.WHITE, Direction.DOWN, tile.centerX(), tile.y());
 				}

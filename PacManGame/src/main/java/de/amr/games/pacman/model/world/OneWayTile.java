@@ -13,7 +13,7 @@ public class OneWayTile {
 	public final Direction dir;
 
 	public OneWayTile(int col, int row, Direction dir) {
-		this.tile = Tile.col_row(col, row);
+		this.tile = Tile.at(col, row);
 		this.dir = dir;
 	}
 }

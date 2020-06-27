@@ -35,7 +35,6 @@ public class PacManWorld implements PacManWorldStructure {
 	}
 
 	public final int totalFoodCount;
-	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
 	public final Tile cornerNW, cornerNE, cornerSW, cornerSE;
 
 	private final PacManMap map;
@@ -44,17 +43,11 @@ public class PacManWorld implements PacManWorldStructure {
 		this.map = map;
 		totalFoodCount = (int) mapTiles().filter(this::isFood).count();
 
-		// (unreachable) scattering targets
-		horizonNW = Tile.col_row(2, 0);
-		horizonNE = Tile.col_row(width() - 3, 0);
-		horizonSW = Tile.col_row(0, height() - 1);
-		horizonSE = Tile.col_row(width() - 1, height() - 1);
-
 		// only used by algorithm to calculate routes to "safe" corner for fleeing ghosts
-		cornerNW = Tile.col_row(1, ROWS_ABOVE_MAP + 1);
-		cornerNE = Tile.col_row(width() - 2, ROWS_ABOVE_MAP + 1);
-		cornerSW = Tile.col_row(1, toWorld(map.numRows - 2));
-		cornerSE = Tile.col_row(width() - 2, toWorld(map.numRows - 2));
+		cornerNW = Tile.at(1, ROWS_ABOVE_MAP + 1);
+		cornerNE = Tile.at(width() - 2, ROWS_ABOVE_MAP + 1);
+		cornerSW = Tile.at(1, toWorld(map.numRows - 2));
+		cornerSE = Tile.at(width() - 2, toWorld(map.numRows - 2));
 	}
 
 	@Override
@@ -97,7 +90,7 @@ public class PacManWorld implements PacManWorldStructure {
 	 */
 	public Stream<Tile> mapTiles() {
 		return IntStream.range(toWorld(0) * map.numCols, toWorld(map.numRows + 1) * map.numCols)
-				.mapToObj(i -> Tile.col_row(i % map.numCols, i / map.numCols));
+				.mapToObj(i -> Tile.at(i % map.numCols, i / map.numCols));
 	}
 
 	/**
@@ -116,7 +109,7 @@ public class PacManWorld implements PacManWorldStructure {
 			}
 		}
 		Vector2f v = dir.vector();
-		return Tile.col_row(tile.col + n * v.roundedX(), tile.row + n * v.roundedY());
+		return Tile.at(tile.col + n * v.roundedX(), tile.row + n * v.roundedY());
 	}
 
 	/**

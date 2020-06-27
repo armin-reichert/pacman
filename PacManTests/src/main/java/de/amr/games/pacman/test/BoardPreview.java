@@ -78,18 +78,6 @@ public class BoardPreview extends JFrame {
 	private String text(int cell) {
 		Tile tile = graph.tile(cell);
 		House theHouse = world.houses().findFirst().get();
-		if (tile.equals(theHouse.seat(0).tile) || tile.equals(world.horizonNE)) {
-			return "B";
-		}
-		if (tile.equals(theHouse.seat(1).tile) || tile.equals(world.horizonSE)) {
-			return "I";
-		}
-		if (tile.equals(theHouse.seat(2).tile) || tile.equals(world.horizonNW)) {
-			return "P";
-		}
-		if (tile.equals(theHouse.seat(3).tile) || tile.equals(world.horizonSW)) {
-			return "C";
-		}
 		if (tile.equals(world.bonusTile())) {
 			return "$";
 		}

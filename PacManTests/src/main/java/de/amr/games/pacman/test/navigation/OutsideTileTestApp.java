@@ -50,7 +50,7 @@ class OutsideTileTestUI extends PlayView {
 		theme.snd_ghost_chase().volume(0);
 		game.takePart(game.blinky);
 		game.blinky.behavior(CHASING,
-				game.blinky.isHeadingFor(() -> Tile.col_row(100, game.world.portals().findFirst().get().right.row)));
+				game.blinky.isHeadingFor(() -> Tile.at(100, game.world.portals().findFirst().get().right.row)));
 		game.blinky.setState(CHASING);
 	}
 

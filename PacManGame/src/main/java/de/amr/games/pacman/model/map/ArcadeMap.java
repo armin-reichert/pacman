@@ -67,10 +67,10 @@ class ArcadeMap extends PacManMap {
 		Set<Tile> room = new HashSet<>();
 		for (int row = top; row <= bottom; ++row) {
 			for (int col = left; col <= right; ++col) {
-				room.add(Tile.col_row(col, row));
+				room.add(Tile.at(col, row));
 			}
 		}
-		Door door = new Door(Direction.DOWN, Tile.col_row(left + 2, top - 1), Tile.col_row(left + 3, top - 1));
+		Door door = new Door(Direction.DOWN, Tile.at(left + 2, top - 1), Tile.at(left + 3, top - 1));
 
 		//@formatter:off
 		List<Seat> seats = Arrays.asList(
@@ -83,11 +83,11 @@ class ArcadeMap extends PacManMap {
 		ghostHouse = new House(room, Arrays.asList(door), seats);
 
 		pacManSeat = new Seat(4, 13, 26, Direction.RIGHT);
-		bonusTile = Tile.col_row(13, 20);
+		bonusTile = Tile.at(13, 20);
 
 		//@formatter:off
 		portals = Arrays.asList(
-				new Portal(Tile.col_row(-1, 17), Tile.col_row(28, 17))
+				new Portal(Tile.at(-1, 17), Tile.at(28, 17))
 		);
 		//@formatter:on
 

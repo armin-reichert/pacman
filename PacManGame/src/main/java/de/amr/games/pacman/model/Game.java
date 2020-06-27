@@ -188,11 +188,13 @@ public class Game {
 		clyde = new Ghost(this, "Clyde");
 		bonus = new Bonus(this);
 
-		// assign seats in the house
+		int w = world.width(), h = world.height();
 
-		House theHouse = world.houses().findFirst().get();
+		// assign seats
 
 		pacMan.seat = world.pacManSeat();
+
+		House theHouse = world.houses().findFirst().get();
 		blinky.seat = theHouse.seat(0);
 		inky.seat = theHouse.seat(1);
 		pinky.seat = theHouse.seat(2);
@@ -218,20 +220,20 @@ public class Game {
 
 		// scattering
 
-		blinky.behavior(SCATTERING, blinky.isHeadingFor(world.horizonNE));
-		inky.behavior(SCATTERING, inky.isHeadingFor(world.horizonSE));
-		pinky.behavior(SCATTERING, pinky.isHeadingFor(world.horizonNW));
-		clyde.behavior(SCATTERING, clyde.isHeadingFor(world.horizonSW));
+		blinky.behavior(SCATTERING, blinky.isHeadingFor(Tile.at(w - 3, 0)));
+		inky.behavior(SCATTERING, inky.isHeadingFor(Tile.at(w - 1, h - 1)));
+		pinky.behavior(SCATTERING, pinky.isHeadingFor(Tile.at(2, 0)));
+		clyde.behavior(SCATTERING, clyde.isHeadingFor(Tile.at(0, h - 1)));
 
 		// chasing
 
 		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
 		inky.behavior(CHASING, inky.isHeadingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
-			return Tile.col_row(2 * p.col - b.col, 2 * p.row - b.row);
+			return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
 		pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
-		clyde.behavior(CHASING, clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : world.horizonSW));
+		clyde.behavior(CHASING, clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : Tile.at(0, h - 1)));
 	}
 
 	/**
@@ -361,7 +363,7 @@ public class Game {
 		} else {
 			actorsTakingPart.remove(actor);
 			actor.visible = false;
-			actor.placeAt(Tile.col_row(-1, -1));
+			actor.placeAt(Tile.at(-1, -1));
 			loginfo("%s left the game", actor.name);
 
 		}

@@ -43,7 +43,7 @@ public final class Tile {
 	 * @param row row
 	 * @return tile at this location
 	 */
-	public static Tile col_row(int col, int row) {
+	public static Tile at(int col, int row) {
 		return new Tile(col, row);
 	}
 
