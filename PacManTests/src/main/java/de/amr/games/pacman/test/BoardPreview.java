@@ -61,7 +61,7 @@ public class BoardPreview extends JFrame {
 			if (world.insideGhostHouse(tile)) {
 				return Color.CYAN;
 			}
-			if (world.isOneWayDown(tile)) {
+			if (world.isOneWayTile(tile)) {
 				return Color.YELLOW;
 			}
 			if (world.isIntersection(tile)) {

@@ -134,7 +134,7 @@ public class PlayView extends SimplePlayView {
 		drawPlayMode(g);
 		drawMessage(g);
 		if (showGrid) {
-			drawUpwardsBlockedTileMarkers(g);
+			drawOneWayTiles(g);
 			drawGhostSeats(g);
 		}
 		if (showScores) {
@@ -272,13 +272,12 @@ public class PlayView extends SimplePlayView {
 		g.setStroke(normal);
 	}
 
-	private void drawUpwardsBlockedTileMarkers(Graphics2D g) {
+	private void drawOneWayTiles(Graphics2D g) {
 		for (int row = 0; row < game.world.height(); ++row) {
 			for (int col = 0; col < game.world.width(); ++col) {
 				Tile tile = Tile.col_row(col, row);
-				if (game.world.isOneWayDown(tile)) {
-					Tile above = game.world.neighbor(tile, Direction.UP);
-					drawDirectionIndicator(g, Color.WHITE, Direction.DOWN, above.centerX(), above.y() - 2);
+				if (game.world.isOneWayTile(tile)) {
+					drawDirectionIndicator(g, Color.WHITE, Direction.DOWN, tile.centerX(), tile.y());
 				}
 			}
 		}

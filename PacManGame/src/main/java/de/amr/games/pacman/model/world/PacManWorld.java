@@ -1,5 +1,12 @@
 package de.amr.games.pacman.model.world;
 
+import static de.amr.games.pacman.model.map.PacManMap.B_EATEN;
+import static de.amr.games.pacman.model.map.PacManMap.B_ENERGIZER;
+import static de.amr.games.pacman.model.map.PacManMap.B_FOOD;
+import static de.amr.games.pacman.model.map.PacManMap.B_INTERSECTION;
+import static de.amr.games.pacman.model.map.PacManMap.B_TUNNEL;
+import static de.amr.games.pacman.model.map.PacManMap.B_WALL;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -8,7 +15,6 @@ import java.util.stream.Stream;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.map.PacManMap;
-import de.amr.games.pacman.model.map.PacManWorldStructure;
 
 /**
  * The Pac-Man game world. Reserves 3 rows above and 2 rows below the map for displaying the scores
@@ -28,16 +34,6 @@ public class PacManWorld implements PacManWorldStructure {
 	static int toMap(int row) {
 		return row - ROWS_ABOVE_MAP;
 	}
-
-	//@formatter:off
-	static final byte B_WALL         = 0;
-	static final byte B_FOOD         = 1;
-	static final byte B_ENERGIZER    = 2;
-	static final byte B_EATEN        = 3;
-	static final byte B_INTERSECTION = 4;
-	static final byte B_ONE_WAY_DOWN = 5;
-	static final byte B_TUNNEL       = 6;
-	//@formatter:on
 
 	public final int totalFoodCount;
 	public final Tile horizonNE, horizonNW, horizonSE, horizonSW;
@@ -60,6 +56,8 @@ public class PacManWorld implements PacManWorldStructure {
 		cornerNE = Tile.col_row(26, 4);
 		cornerSW = Tile.col_row(1, 32);
 		cornerSE = Tile.col_row(26, 32);
+
+		mapTiles().filter(this::isOneWayTile).forEach(System.out::println);
 	}
 
 	@Override
@@ -90,6 +88,11 @@ public class PacManWorld implements PacManWorldStructure {
 	@Override
 	public List<Portal> portals() {
 		return map.portals();
+	}
+
+	@Override
+	public List<OneWayTile> oneWayTiles() {
+		return map.oneWayTiles();
 	}
 
 	/**
@@ -164,8 +167,8 @@ public class PacManWorld implements PacManWorldStructure {
 		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_TUNNEL);
 	}
 
-	public boolean isOneWayDown(Tile tile) {
-		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_ONE_WAY_DOWN);
+	public boolean isOneWayTile(Tile tile) {
+		return insideMap(tile) && map.oneWayTiles().stream().anyMatch(oneWay -> oneWay.tile.equals(tile));
 	}
 
 	public boolean isIntersection(Tile tile) {

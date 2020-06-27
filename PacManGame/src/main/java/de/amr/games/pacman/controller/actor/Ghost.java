@@ -20,6 +20,7 @@ import static de.amr.games.pacman.model.Game.speed;
 import static de.amr.statemachine.core.StateMachine.beginStateMachine;
 
 import java.util.EnumMap;
+import java.util.Optional;
 
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
@@ -33,6 +34,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.OneWayTile;
 import de.amr.games.pacman.model.world.Seat;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.theme.Theme;
@@ -300,8 +302,14 @@ public class Ghost extends Creature<GhostState> {
 		if (world.isDoor(neighbor)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
-		if (world.isOneWayDown(tile) && neighbor.equals(world.neighbor(tile, UP))) {
-			return !is(CHASING, SCATTERING);
+		Optional<OneWayTile> maybeOneWay = world.oneWayTiles().stream().filter(oneWay -> oneWay.tile.equals(neighbor))
+				.findFirst();
+		if (maybeOneWay.isPresent()) {
+			OneWayTile oneWay = maybeOneWay.get();
+			Direction toNeighbor = tile.dirTo(neighbor).get();
+			if (toNeighbor.equals(oneWay.dir.opposite()) && is(CHASING, SCATTERING)) {
+				return false;
+			}
 		}
 		return super.canMoveBetween(tile, neighbor);
 	}
