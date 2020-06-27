@@ -8,7 +8,6 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import de.amr.games.pacman.model.map.PacManMaps;
-import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.model.world.WorldGraph;
@@ -77,7 +76,6 @@ public class BoardPreview extends JFrame {
 
 	private String text(int cell) {
 		Tile tile = graph.tile(cell);
-		House theHouse = world.houses().findFirst().get();
 		if (tile.equals(world.bonusTile())) {
 			return "$";
 		}
