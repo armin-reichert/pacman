@@ -7,11 +7,9 @@ import static de.amr.games.pacman.model.map.PacManMap.B_INTERSECTION;
 import static de.amr.games.pacman.model.map.PacManMap.B_TUNNEL;
 import static de.amr.games.pacman.model.map.PacManMap.B_WALL;
 
-import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.map.PacManMap;
 
@@ -103,15 +101,10 @@ public class PacManWorld implements PacManWorldStructure {
 	 *         direction. This can be a tile outside of the world.
 	 */
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
-		Optional<Portal> maybePortal = portals().filter(portal -> portal.contains(tile)).findAny();
-		if (maybePortal.isPresent()) {
-			Tile exitTile = maybePortal.get().exitTile(tile, dir);
-			if (exitTile != null) {
-				return exitTile;
-			}
-		}
-		Vector2f v = dir.vector();
-		return Tile.at(tile.col + n * v.roundedX(), tile.row + n * v.roundedY());
+		Tile portalExit = portals().filter(portal -> portal.contains(tile)).findAny()
+				.map(portal -> portal.exitTile(tile, dir)).orElse(null);
+		return portalExit != null ? portalExit
+				: Tile.at(tile.col + n * dir.vector().roundedX(), tile.row + n * dir.vector().roundedY());
 	}
 
 	/**
