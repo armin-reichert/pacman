@@ -50,7 +50,7 @@ class FollowTargetTilesTestUI extends PlayView {
 		showScores = false;
 		showGrid = true;
 
-		targets = Arrays.asList(world.cornerNW, world.ghostSeat(0).tile, world.cornerNE, world.cornerSE,
+		targets = Arrays.asList(world.cornerNW, world.ghostHouse().seat(0).tile, world.cornerNE, world.cornerSE,
 				world.pacManSeat().tile, world.cornerSW);
 	}
 

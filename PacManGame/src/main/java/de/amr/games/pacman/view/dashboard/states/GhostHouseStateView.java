@@ -18,7 +18,7 @@ import javax.swing.border.TitledBorder;
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.controller.GhostHouse;
+import de.amr.games.pacman.controller.GhostHouseAccess;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
@@ -135,7 +135,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 	@Override
 	public void update() {
 		Game game = gameController.game;
-		GhostHouse house = gameController.ghostHouse;
+		GhostHouseAccess house = gameController.ghostHouse;
 		if (game == null || house == null) {
 			return;
 		}
@@ -173,7 +173,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		return new ImageIcon(sprite.frame(0).getScaledInstance(size, size, Image.SCALE_SMOOTH));
 	}
 
-	private Color trafficLightColor(GhostHouse house, Ghost ghost) {
+	private Color trafficLightColor(GhostHouseAccess house, Ghost ghost) {
 		if (!ghost.isInsideHouse()) {
 			return null;
 		}
@@ -184,7 +184,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		return ghost == next ? Color.YELLOW : Color.RED;
 	}
 
-	private void updateTrafficLight(TrafficLightsWidget trafficLight, GhostHouse house, Ghost ghost) {
+	private void updateTrafficLight(TrafficLightsWidget trafficLight, GhostHouseAccess house, Ghost ghost) {
 		Color color = trafficLightColor(house, ghost);
 		if (color != null) {
 			trafficLight.setVisible(true);
@@ -196,7 +196,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		}
 	}
 
-	private String formatDots(GhostHouse house, Ghost ghost) {
+	private String formatDots(GhostHouseAccess house, Ghost ghost) {
 		return String.format("%d p:%d g:%d", house.ghostDotCount(ghost), house.personalDotLimit(ghost),
 				house.globalDotLimit(ghost));
 	}

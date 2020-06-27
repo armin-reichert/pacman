@@ -69,16 +69,8 @@ public class PacManWorld {
 		return ROWS_ABOVE_MAP + map.numRows + ROWS_BELOW_MAP;
 	}
 
-	public List<Seat> ghostSeats() {
-		return map.ghostSeats();
-	}
-
-	public Seat ghostSeat(int i) {
-		return map.ghostSeats().get(i);
-	}
-
-	public List<Door> ghostHouseDoors() {
-		return map.ghostHouseDoors();
+	public GhostHouse ghostHouse() {
+		return map.ghostHouse();
 	}
 
 	public Seat pacManSeat() {
@@ -141,8 +133,12 @@ public class PacManWorld {
 		return map.contains(toMap(tile.row), tile.col);
 	}
 
+	public boolean isDoor(Tile tile) {
+		return ghostHouse().doors().stream().anyMatch(door -> door.contains(tile));
+	}
+
 	public boolean insideGhostHouse(Tile tile) {
-		return isDoor(tile) || tile.inColumnRange(11, 16) && tile.inRowRange(16, 18);
+		return ghostHouse().room().contains(tile) || isDoor(tile);
 	}
 
 	public boolean atGhostHouseDoor(Tile tile) {
@@ -159,10 +155,6 @@ public class PacManWorld {
 
 	public boolean isTunnel(Tile tile) {
 		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_TUNNEL);
-	}
-
-	public boolean isDoor(Tile tile) {
-		return ghostHouseDoors().stream().anyMatch(door -> door.contains(tile));
 	}
 
 	public boolean isOneWayDown(Tile tile) {

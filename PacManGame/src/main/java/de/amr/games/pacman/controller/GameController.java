@@ -75,7 +75,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected GameLevelView gameLevelView;
 
 	public GhostCommand ghostCommand;
-	public GhostHouse ghostHouse;
+	public GhostHouseAccess ghostHouse;
 
 	public GameController(Theme theme) {
 		super(PacManGameState.class);
@@ -104,7 +104,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void createPlayEnvironment() {
 		game = new Game(GameMaps.ARCADE_MAP, settings.startLevel);
 		ghostCommand = new GhostCommand(game);
-		ghostHouse = new GhostHouse(game);
+		ghostHouse = new GhostHouseAccess(game);
 
 		playView = new PlayView(game, theme);
 		playView.ghostCommand = ghostCommand;
@@ -332,7 +332,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onEntry(() -> {
 						game.ghostsOnStage().forEach(ghost -> {
 							ghost.init();
-							ghost.placeAt(game.world.ghostSeat(0).tile);
+							ghost.placeAt(game.world.ghostHouse().seat(0).tile);
 							ghost.setWishDir(new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT);
 							ghost.setState(new Random().nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});

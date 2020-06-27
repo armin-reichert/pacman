@@ -26,10 +26,10 @@ public class MazeTests {
 	@Test
 	public void testMazeStructure() {
 		assertNotNull(world.pacManSeat());
-		assertNotNull(world.ghostSeat(0));
-		assertNotNull(world.ghostSeat(1));
-		assertNotNull(world.ghostSeat(2));
-		assertNotNull(world.ghostSeat(3));
+		assertNotNull(world.ghostHouse().seat(0));
+		assertNotNull(world.ghostHouse().seat(1));
+		assertNotNull(world.ghostHouse().seat(2));
+		assertNotNull(world.ghostHouse().seat(3));
 		assertNotNull(world.bonusTile());
 		assertNotNull(world.horizonNE);
 		assertNotNull(world.horizonNW);

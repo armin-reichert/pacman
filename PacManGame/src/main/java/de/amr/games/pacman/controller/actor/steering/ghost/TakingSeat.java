@@ -4,7 +4,6 @@ import static de.amr.games.pacman.controller.actor.steering.ghost.TakingSeat.Sta
 import static de.amr.games.pacman.controller.actor.steering.ghost.TakingSeat.State.MOVING_LEFT;
 import static de.amr.games.pacman.controller.actor.steering.ghost.TakingSeat.State.MOVING_RIGHT;
 import static de.amr.games.pacman.controller.actor.steering.ghost.TakingSeat.State.TARGET_REACHED;
-import static de.amr.games.pacman.model.Direction.DOWN;
 
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.Ghost;
@@ -38,8 +37,8 @@ public class TakingSeat extends StateMachine<State, Void> implements Steering {
 				.state(FALLING)
 					.onEntry(() -> {
 						// place the ghost exactly at the ghost house entry and start falling down
-						ghost.tf.setPosition(ghost.world.ghostSeat(0).position);
-						ghost.setWishDir(DOWN);					
+						ghost.tf.setPosition(ghost.world.ghostHouse().seat(0).position);
+						ghost.setWishDir(Direction.DOWN);					
 					})
 					
 			.transitions()

@@ -256,7 +256,7 @@ public class SimplePlayView extends BaseView {
 			}
 			// draw door open when touched by ghost entering or leaving the house
 			game.ghostsOnStage().filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE)).forEach(ghost -> {
-				game.world.ghostHouseDoors().stream().filter(door -> door.contains(ghost.tile())).forEach(door -> {
+				game.world.ghostHouse().doors().stream().filter(door -> door.contains(ghost.tile())).forEach(door -> {
 					g.setColor(Color.BLACK);
 					door.tiles.forEach(tile -> {
 						g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);

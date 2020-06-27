@@ -29,7 +29,7 @@ import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.widgets.FramerateWidget;
 import de.amr.easy.game.view.Pen;
-import de.amr.games.pacman.controller.GhostHouse;
+import de.amr.games.pacman.controller.GhostHouseAccess;
 import de.amr.games.pacman.controller.actor.Bonus;
 import de.amr.games.pacman.controller.actor.BonusState;
 import de.amr.games.pacman.controller.actor.Creature;
@@ -106,7 +106,7 @@ public class PlayView extends SimplePlayView {
 	public boolean showStates = false;
 
 	public Fsm<GhostState, ?> ghostCommand; // (optional)
-	public GhostHouse house; // (optional)
+	public GhostHouseAccess house; // (optional)
 
 	private FramerateWidget frameRateDisplay;
 	private final BufferedImage gridImage, inkyImage, clydeImage, pacManImage;

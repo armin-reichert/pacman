@@ -22,14 +22,14 @@ import de.amr.games.pacman.model.Game;
  * @see <a href=
  *      "https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Gamasutra</a>
  */
-public class GhostHouse {
+public class GhostHouseAccess {
 
 	private final Game game;
 	private final DotCounter globalCounter;
 	private final int[] ghostDotCount;
 	private int pacManStarvingTicks;
 
-	public GhostHouse(Game game) {
+	public GhostHouseAccess(Game game) {
 		this.game = game;
 		globalCounter = new DotCounter();
 		ghostDotCount = new int[4];
