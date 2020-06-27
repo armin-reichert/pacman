@@ -322,13 +322,14 @@ The only difference in ghost behavior are the target tiles in the "CHASING" and 
 
 ### Scattering
 
-In *scattering* state, each ghost tries to reach his individual "scattering target". Because ghosts cannot reverse their move direction this results in a cyclic movement around the walls in the corresponding corner of the maze. These target tiles are unreachable tiles ("at the horizon") outside of the playing area:
+In *scattering* state, each ghost tries to reach his individual "scattering target". Because ghosts cannot reverse their move direction this results in a cyclic movement around the walls in the corresponding corner of the maze. These target tiles are unreachable tiles outside of the playing area:
 
 ```java
-blinky.behavior(SCATTERING, blinky.isHeadingFor(maze.horizonNE));
-inky.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSE));
-pinky.behavior(SCATTERING, pinky.isHeadingFor(maze.horizonNW));
-clyde.behavior(SCATTERING, inky.isHeadingFor(maze.horizonSW));
+int w = world.width(), h = world.height();
+blinky.behavior(SCATTERING, blinky.isHeadingFor(Tile.at(w - 3, 0)));
+inky.behavior(SCATTERING, inky.isHeadingFor(Tile.at(w - 1, h - 1)));
+pinky.behavior(SCATTERING, pinky.isHeadingFor(Tile.at(2, 0)));
+clyde.behavior(SCATTERING, clyde.isHeadingFor(Tile.at(0, h - 1)));
 ```
 
 <img src="PacManDoc/scattering.png"/>
