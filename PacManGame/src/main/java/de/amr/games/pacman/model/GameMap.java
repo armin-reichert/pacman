@@ -34,7 +34,7 @@ public class GameMap {
 		data[row][col] |= (1 << bit);
 	}
 
-	public boolean inRange(int row, int col) {
-		return 0 <= col && col < numCols && 0 <= row && row < numRows;
+	public boolean contains(int row, int col) {
+		return 0 <= row && row < numRows && 0 <= col && col < numCols;
 	}
 }

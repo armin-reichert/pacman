@@ -6,18 +6,19 @@ import java.util.stream.Stream;
 import de.amr.easy.game.math.Vector2f;
 
 /**
- * The Pac-Man game world.
+ * The Pac-Man game world. Reserves 3 rows above and 2 rows below the map for displaying the scores
+ * and counters.
  * 
  * @author Armin Reichert
  */
 public class PacManWorld {
 
-	public static class Portal {
-		public Tile left, right;
+	static int toWorld(int row) {
+		return row + 3;
+	}
 
-		public boolean contains(Tile tile) {
-			return tile.equals(left) || tile.equals(right);
-		}
+	static int toMap(int row) {
+		return row - 3;
 	}
 
 	//@formatter:off
@@ -29,9 +30,6 @@ public class PacManWorld {
 	static final byte B_ONE_WAY_DOWN = 5;
 	static final byte B_TUNNEL       = 6;
 	//@formatter:on
-
-	public static final int UNUSED_ROWS_TOP = 4;
-	public static final int UNUSED_ROWS_BOTTOM = 3;
 
 	public final int totalFoodCount;
 	public final Seat pacManSeat;
@@ -60,16 +58,11 @@ public class PacManWorld {
 
 		// scan for portal
 		portal = new Portal();
-		int portalRow = -1;
 		for (int row = 0; row < map.numRows; ++row) {
-			if (map.is1(row, 0, B_TUNNEL)) {
-				portalRow = row;
-				break;
+			if (map.is1(row, 0, B_TUNNEL) && map.is1(row, map.numCols - 1, B_TUNNEL)) {
+				portal.left = Tile.xy(-1, toWorld(row));
+				portal.right = Tile.xy(map.numCols, toWorld(row));
 			}
-		}
-		if (portalRow != -1) {
-			portal.left = Tile.xy(-1, portalRow);
-			portal.right = Tile.xy(map.numCols, portalRow);
 		}
 
 		ghostHouseDoorLeft = Tile.xy(13, 15);
@@ -87,19 +80,7 @@ public class PacManWorld {
 		cornerSW = Tile.xy(1, 32);
 		cornerSE = Tile.xy(26, 32);
 
-		totalFoodCount = countFood(map);
-	}
-
-	private int countFood(GameMap map) {
-		int n = 0;
-		for (int row = 0; row < map.numRows; ++row) {
-			for (int col = 0; col < map.numCols; ++col) {
-				if (map.is1(row, col, B_FOOD)) {
-					++n;
-				}
-			}
-		}
-		return n;
+		totalFoodCount = foodCount(map);
 	}
 
 	public int mapWidth() {
@@ -111,11 +92,11 @@ public class PacManWorld {
 	}
 
 	/**
-	 * @return Tiles comprising the maze only (omitting the areas above and below used for the scores)
+	 * @return the map tiles in world coordinates
 	 */
-	public Stream<Tile> mazeTiles() {
-		return IntStream.range(UNUSED_ROWS_TOP * map.numCols, (map.numRows + 1 - UNUSED_ROWS_BOTTOM) * map.numCols)
-				.mapToObj(i -> Tile.xy(i % map.numCols, i / map.numCols));
+	public Stream<Tile> mapTiles() {
+		return IntStream.range(toWorld(0) * mapWidth(), toWorld(map.numRows + 1) * mapWidth())
+				.mapToObj(i -> Tile.xy(i % mapWidth(), i / mapWidth()));
 	}
 
 	/**
@@ -123,7 +104,7 @@ public class PacManWorld {
 	 * @param dir  some direction
 	 * @param n    number of tiles
 	 * @return The tile located <code>n</code> tiles away from the reference tile towards the given
-	 *         direction. This can be a tile outside of the map.
+	 *         direction. This can be a tile outside of the world.
 	 */
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
 		if (tile.equals(portal.left) && dir == Direction.LEFT) {
@@ -146,15 +127,15 @@ public class PacManWorld {
 	}
 
 	public void eatAllFood() {
-		mazeTiles().forEach(this::eatFood);
+		mapTiles().forEach(this::eatFood);
 	}
 
 	public void restoreAllFood() {
-		mazeTiles().forEach(this::restoreFood);
+		mapTiles().forEach(this::restoreFood);
 	}
 
 	public boolean insideMap(Tile tile) {
-		return map.inRange(tile.row, tile.col);
+		return map.contains(toMap(tile.row), tile.col);
 	}
 
 	public boolean insideGhostHouse(Tile tile) {
@@ -167,13 +148,13 @@ public class PacManWorld {
 
 	public boolean isInaccessible(Tile tile) {
 		if (insideMap(tile)) {
-			return map.is1(tile.row, tile.col, B_WALL);
+			return map.is1(toMap(tile.row), tile.col, B_WALL);
 		}
 		return !portal.contains(tile);
 	}
 
 	public boolean isTunnel(Tile tile) {
-		return insideMap(tile) && map.is1(tile.row, tile.col, B_TUNNEL);
+		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_TUNNEL);
 	}
 
 	public boolean isDoor(Tile tile) {
@@ -181,23 +162,23 @@ public class PacManWorld {
 	}
 
 	public boolean isOneWayDown(Tile tile) {
-		return insideMap(tile) && map.is1(tile.row, tile.col, B_ONE_WAY_DOWN);
+		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_ONE_WAY_DOWN);
 	}
 
 	public boolean isIntersection(Tile tile) {
-		return insideMap(tile) && map.is1(tile.row, tile.col, B_INTERSECTION);
+		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_INTERSECTION);
 	}
 
 	public boolean isFood(Tile tile) {
-		return insideMap(tile) && map.is1(tile.row, tile.col, B_FOOD);
+		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_FOOD);
 	}
 
 	public boolean isEatenFood(Tile tile) {
-		return insideMap(tile) && map.is1(tile.row, tile.col, B_EATEN);
+		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_EATEN);
 	}
 
 	public boolean isEnergizer(Tile tile) {
-		return insideMap(tile) && map.is1(tile.row, tile.col, B_ENERGIZER);
+		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_ENERGIZER);
 	}
 
 	public boolean containsSimplePellet(Tile tile) {
@@ -205,26 +186,40 @@ public class PacManWorld {
 	}
 
 	public boolean containsEnergizer(Tile tile) {
-		return insideMap(tile) && map.is1(tile.row, tile.col, B_ENERGIZER) && map.is0(tile.row, tile.col, B_EATEN);
+		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_ENERGIZER)
+				&& map.is0(toMap(tile.row), tile.col, B_EATEN);
 	}
 
 	public boolean containsFood(Tile tile) {
-		return insideMap(tile) && map.is0(tile.row, tile.col, B_EATEN) && map.is1(tile.row, tile.col, B_FOOD);
+		return insideMap(tile) && map.is0(toMap(tile.row), tile.col, B_EATEN) && map.is1(toMap(tile.row), tile.col, B_FOOD);
 	}
 
 	public boolean containsEatenFood(Tile tile) {
-		return insideMap(tile) && map.is1(tile.row, tile.col, B_EATEN) && map.is1(tile.row, tile.col, B_FOOD);
+		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_EATEN) && map.is1(toMap(tile.row), tile.col, B_FOOD);
 	}
 
 	public void eatFood(Tile tile) {
 		if (insideMap(tile)) {
-			map.set1(tile.row, tile.col, B_EATEN);
+			map.set1(toMap(tile.row), tile.col, B_EATEN);
 		}
 	}
 
 	public void restoreFood(Tile tile) {
 		if (insideMap(tile)) {
-			map.set0(tile.row, tile.col, B_EATEN);
+			map.set0(toMap(tile.row), tile.col, B_EATEN);
 		}
 	}
+
+	private int foodCount(GameMap map) {
+		int cnt = 0;
+		for (int row = 0; row < map.numRows; ++row) {
+			for (int col = 0; col < map.numCols; ++col) {
+				if (map.is1(row, col, B_FOOD)) {
+					++cnt;
+				}
+			}
+		}
+		return cnt;
+	}
+
 }

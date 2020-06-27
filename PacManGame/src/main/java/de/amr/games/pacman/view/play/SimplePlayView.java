@@ -242,13 +242,13 @@ public class SimplePlayView extends BaseView {
 		private void drawCrowdedMaze(Graphics2D g) {
 			spriteFullMaze.draw(g, 0, 3 * Tile.SIZE);
 			// hide eaten food
-			game.world.mazeTiles().filter(game.world::containsEatenFood).forEach(tile -> {
+			game.world.mapTiles().filter(game.world::containsEatenFood).forEach(tile -> {
 				g.setColor(tileColor(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
 			// hide active energizers when blinking animation is in dark phase
 			if (energizersBlinking.currentFrame() == 1) {
-				game.world.mazeTiles().filter(game.world::containsEnergizer).forEach(tile -> {
+				game.world.mapTiles().filter(game.world::containsEnergizer).forEach(tile -> {
 					g.setColor(tileColor(tile));
 					g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 				});

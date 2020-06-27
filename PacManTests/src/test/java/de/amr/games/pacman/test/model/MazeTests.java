@@ -43,8 +43,8 @@ public class MazeTests {
 
 	@Test
 	public void testMazeContent() {
-		assertEquals(4, world.mazeTiles().filter(world::containsEnergizer).count());
-		assertEquals(world.totalFoodCount - 4, world.mazeTiles().filter(world::containsSimplePellet).count());
+		assertEquals(4, world.mapTiles().filter(world::containsEnergizer).count());
+		assertEquals(world.totalFoodCount - 4, world.mapTiles().filter(world::containsSimplePellet).count());
 		assertTrue(world.containsSimplePellet(Tile.xy(1, 4)));
 		assertTrue(world.containsEnergizer(Tile.xy(1, 6)));
 	}
