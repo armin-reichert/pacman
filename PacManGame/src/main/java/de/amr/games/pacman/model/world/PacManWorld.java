@@ -109,9 +109,9 @@ public class PacManWorld implements PacManWorldStructure {
 	 *         direction. This can be a tile outside of the world.
 	 */
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
-		Optional<Portal> portalEntered = portals().stream().filter(portal -> portal.contains(tile)).findAny();
-		if (portalEntered.isPresent()) {
-			Tile exitTile = portalEntered.get().exitTile(tile, dir);
+		Optional<Portal> maybePortal = portals().stream().filter(portal -> portal.contains(tile)).findAny();
+		if (maybePortal.isPresent()) {
+			Tile exitTile = maybePortal.get().exitTile(tile, dir);
 			if (exitTile != null) {
 				return exitTile;
 			}
