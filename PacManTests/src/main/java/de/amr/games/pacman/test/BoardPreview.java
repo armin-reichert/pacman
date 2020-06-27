@@ -7,10 +7,10 @@ import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import de.amr.games.pacman.model.MazeGraph;
-import de.amr.games.pacman.model.PacManWorld;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.WorldGraph;
 import de.amr.games.pacman.model.map.GameMaps;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.graph.grid.ui.rendering.ConfigurableGridRenderer;
 import de.amr.graph.grid.ui.rendering.GridCanvas;
 import de.amr.graph.grid.ui.rendering.GridRenderer;
@@ -25,14 +25,14 @@ public class BoardPreview extends JFrame {
 	}
 
 	private PacManWorld world;
-	private MazeGraph graph;
+	private WorldGraph graph;
 
 	public BoardPreview() {
 		world = new PacManWorld(GameMaps.ARCADE_MAP);
-		graph = new MazeGraph(world);
+		graph = new WorldGraph(world);
 		setTitle("Pac-Man Maze Preview");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		GridCanvas canvas = new GridCanvas(graph.grid, TS);
+		GridCanvas canvas = new GridCanvas(graph, TS);
 		canvas.pushRenderer(createRenderer());
 		add(canvas, BorderLayout.CENTER);
 		canvas.drawGrid();

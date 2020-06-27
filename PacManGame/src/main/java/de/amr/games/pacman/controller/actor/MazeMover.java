@@ -1,8 +1,8 @@
 package de.amr.games.pacman.controller.actor;
 
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.PacManWorld;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.world.PacManWorld;
 
 /**
  * Implemented by entities that can move through a maze.

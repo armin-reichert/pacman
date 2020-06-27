@@ -1,4 +1,6 @@
-package de.amr.games.pacman.model;
+package de.amr.games.pacman.model.world;
+
+import de.amr.games.pacman.model.Tile;
 
 public class Portal {
 	public Tile left, right;

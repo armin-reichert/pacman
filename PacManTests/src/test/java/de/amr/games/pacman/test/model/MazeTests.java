@@ -10,9 +10,9 @@ import org.junit.Test;
 
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.PacManWorld;
 import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.model.map.GameMaps;
+import de.amr.games.pacman.model.world.PacManWorld;
 
 public class MazeTests {
 

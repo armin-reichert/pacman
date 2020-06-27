@@ -210,7 +210,7 @@ public class PlayView extends SimplePlayView {
 		int duration = ghost.state().getDuration();
 		int remaining = ghost.state().getTicksRemaining();
 		// chasing or scattering time
-		if (ghost.is(SCATTERING, CHASING)) {
+		if (ghostCommand != null && ghost.is(SCATTERING, CHASING)) {
 			if (ghostCommand.state() != null) {
 				duration = ghostCommand.state().getDuration();
 				remaining = ghostCommand.state().getTicksRemaining();

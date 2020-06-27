@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import de.amr.games.pacman.PacManApp;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.graph.core.api.UndirectedEdge;
 import de.amr.graph.grid.api.GridGraph2D;
 import de.amr.graph.grid.impl.Grid4Topology;
@@ -18,35 +19,37 @@ import de.amr.graph.pathfinder.impl.BestFirstSearch;
 import de.amr.graph.pathfinder.impl.BreadthFirstSearch;
 
 /**
- * Adds a grid graph structure to the maze such that graph path finder algorithms can be run on the
- * maze.
+ * Adds a grid graph structure to the world such that graph path finder algorithms can be used.
  * 
  * @author Armin Reichert
  */
-public class MazeGraph {
+public class WorldGraph extends GridGraph<Tile, Void> {
 
-	public final PacManWorld world;
-	public final GridGraph2D<Tile, Void> grid;
+	static Tile tile(GridGraph2D<Tile, Void> graph, int vertex) {
+		return Tile.xy(graph.col(vertex), graph.row(vertex));
+	}
+
+	private final PacManWorld world;
 	private int pathFinderCalls;
 
-	public MazeGraph(PacManWorld world) {
+	public WorldGraph(PacManWorld world) {
+		super(world.width(), world.height(), Grid4Topology.get(), v -> null, (u, v) -> null, UndirectedEdge::new);
+		setDefaultVertexLabel(this::tile);
 		this.world = world;
-		grid = new GridGraph<>(world.width(), world.height(), Grid4Topology.get(), this::tile, (u, v) -> null,
-				UndirectedEdge::new);
-		grid.fill();
+		fill();
 		//@formatter:off
-		grid.edges()
+		edges()
 			.filter(edge -> world.isInaccessible(tile(edge.either())) || world.isInaccessible(tile(edge.other())))
-			.forEach(grid::removeEdge);
+			.forEach(this::removeEdge);
 		/*@formatter:on*/
 	}
 
 	public int vertex(Tile tile) {
-		return grid.cell(tile.col, tile.row);
+		return cell(tile.col, tile.row);
 	}
 
 	public Tile tile(int vertex) {
-		return Tile.xy(grid.col(vertex), grid.row(vertex));
+		return Tile.xy(col(vertex), row(vertex));
 	}
 
 	public List<Tile> shortestPath(Tile source, Tile target) {
@@ -63,13 +66,13 @@ public class MazeGraph {
 	private GraphSearch createPathFinder(Tile target) {
 		switch (PacManApp.settings.pathFinder) {
 		case "astar":
-			return new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
+			return new AStarSearch(this, (u, v) -> 1, this::manhattan);
 		case "bfs":
-			return new BreadthFirstSearch(grid);
+			return new BreadthFirstSearch(this);
 		case "bestfs":
-			return new BestFirstSearch(grid, v -> grid.manhattan(v, vertex(target)));
+			return new BestFirstSearch(this, v -> manhattan(v, vertex(target)));
 		default:
-			return new AStarSearch(grid, (u, v) -> 1, grid::manhattan);
+			return new AStarSearch(this, (u, v) -> 1, this::manhattan);
 		}
 	}
 }

@@ -9,9 +9,9 @@ import java.util.List;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.MazeMover;
 import de.amr.games.pacman.controller.actor.steering.common.TakingPrecomputedPath;
-import de.amr.games.pacman.model.PacManWorld;
-import de.amr.games.pacman.model.MazeGraph;
+import de.amr.games.pacman.model.WorldGraph;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.world.PacManWorld;
 
 /**
  * Lets a ghost escape to the "safest" maze corner depending on Pac-Man's
@@ -23,12 +23,12 @@ import de.amr.games.pacman.model.Tile;
  */
 public class FleeingToSafeCorner extends TakingPrecomputedPath {
 
-	final MazeGraph graph;
+	final WorldGraph graph;
 	final Tile[] corners;
 
 	public FleeingToSafeCorner(Ghost refugee, MazeMover attacker, Tile... corners) {
 		super(refugee, attacker::tile);
-		graph = new MazeGraph(maze);
+		graph = new WorldGraph(maze);
 		this.corners = Arrays.copyOf(corners, corners.length);
 	}
 

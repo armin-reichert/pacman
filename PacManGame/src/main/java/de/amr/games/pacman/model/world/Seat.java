@@ -1,6 +1,8 @@
-package de.amr.games.pacman.model;
+package de.amr.games.pacman.model.world;
 
 import de.amr.easy.game.math.Vector2f;
+import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.Tile;
 
 /**
  * A seat is a maze position with a start direction which is the initial move direction of the

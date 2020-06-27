@@ -11,8 +11,8 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.PacManWorld;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 

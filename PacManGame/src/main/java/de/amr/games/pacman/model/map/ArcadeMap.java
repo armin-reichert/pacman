@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Door;
-import de.amr.games.pacman.model.Seat;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.world.Door;
+import de.amr.games.pacman.model.world.Seat;
 
 class ArcadeMap extends GameMap {
 

@@ -17,8 +17,8 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.controller.actor.MazeMover;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.PacManWorld;
 import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.world.PacManWorld;
 
 /**
  * Steers an actor towards a target tile.

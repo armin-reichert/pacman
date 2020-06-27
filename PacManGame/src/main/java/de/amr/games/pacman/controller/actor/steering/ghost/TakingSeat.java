@@ -11,7 +11,7 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.controller.actor.steering.ghost.TakingSeat.State;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Seat;
+import de.amr.games.pacman.model.world.Seat;
 import de.amr.statemachine.core.StateMachine;
 
 /**
