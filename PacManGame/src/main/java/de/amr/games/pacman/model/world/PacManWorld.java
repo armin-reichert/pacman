@@ -121,6 +121,10 @@ public class PacManWorld implements PacManWorldStructure {
 		return tileToDir(tile, dir, 1);
 	}
 
+	public Stream<Tile> neighbors(Tile tile) {
+		return Direction.dirs().map(dir -> neighbor(tile, dir));
+	}
+
 	public void eatAllFood() {
 		mapTiles().forEach(this::eatFood);
 	}
@@ -137,8 +141,15 @@ public class PacManWorld implements PacManWorldStructure {
 		return houses().map(House::room).anyMatch(room -> room.contains(tile) || isDoor(tile));
 	}
 
-	public boolean atDoor(Tile tile) {
-		return isDoor(neighbor(tile, Direction.DOWN));
+	public boolean outsideOfDoor(Tile tile) {
+		for (Direction dir : Direction.values()) {
+			Tile neighbor = neighbor(tile, dir);
+			if (isDoor(neighbor)) {
+				Door door = houses().flatMap(House::doors).filter(d -> d.contains(neighbor)).findFirst().get();
+				return door.intoHouse == dir;
+			}
+		}
+		return false;
 	}
 
 	public boolean isInaccessible(Tile tile) {
