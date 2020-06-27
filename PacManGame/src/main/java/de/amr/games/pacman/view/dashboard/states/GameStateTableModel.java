@@ -15,7 +15,7 @@ import de.amr.games.pacman.controller.actor.Ghost.Sanity;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.world.Tile;
 
 /**
  * Data model of the table displaying actor data.

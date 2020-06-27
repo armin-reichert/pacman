@@ -27,6 +27,8 @@ import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.map.GameMap;
 import de.amr.games.pacman.model.map.GameMaps;
 import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.Symbol;
+import de.amr.games.pacman.model.world.Tile;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.

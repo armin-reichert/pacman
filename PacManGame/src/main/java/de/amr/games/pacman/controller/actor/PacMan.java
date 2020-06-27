@@ -26,7 +26,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 

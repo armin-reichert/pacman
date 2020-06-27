@@ -11,7 +11,7 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 

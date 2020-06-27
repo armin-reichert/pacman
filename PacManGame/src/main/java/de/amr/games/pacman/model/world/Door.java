@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Tile;
 
 public class Door {
 

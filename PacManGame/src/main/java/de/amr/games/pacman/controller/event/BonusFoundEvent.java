@@ -1,6 +1,6 @@
 package de.amr.games.pacman.controller.event;
 
-import de.amr.games.pacman.model.Symbol;
+import de.amr.games.pacman.model.world.Symbol;
 
 public class BonusFoundEvent extends PacManGameEvent {
 

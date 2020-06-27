@@ -6,7 +6,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Mouse;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 

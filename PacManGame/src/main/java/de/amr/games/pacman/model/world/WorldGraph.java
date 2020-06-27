@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model;
+package de.amr.games.pacman.model.world;
 
 import static de.amr.easy.game.Application.loginfo;
 
@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import de.amr.games.pacman.PacManApp;
-import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.graph.core.api.UndirectedEdge;
 import de.amr.graph.grid.impl.Grid4Topology;
 import de.amr.graph.grid.impl.GridGraph;

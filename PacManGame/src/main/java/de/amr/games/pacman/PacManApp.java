@@ -11,7 +11,7 @@ import de.amr.easy.game.ui.f2dialog.F2DialogAPI;
 import de.amr.games.pacman.controller.EnhancedGameController;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;

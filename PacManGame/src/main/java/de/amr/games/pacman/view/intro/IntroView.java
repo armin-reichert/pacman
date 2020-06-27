@@ -20,7 +20,7 @@ import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.core.BaseView;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
 import de.amr.games.pacman.view.theme.Theme;

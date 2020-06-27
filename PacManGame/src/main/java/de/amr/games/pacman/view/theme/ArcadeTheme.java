@@ -20,7 +20,7 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.SoundClip;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Symbol;
+import de.amr.games.pacman.model.world.Symbol;
 
 /**
  * Theme based on original(?) sprites.

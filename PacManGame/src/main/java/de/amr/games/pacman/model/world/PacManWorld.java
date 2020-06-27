@@ -7,7 +7,6 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.model.map.GameMap;
 
 /**

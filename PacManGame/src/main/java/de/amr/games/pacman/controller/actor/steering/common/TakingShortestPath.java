@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.controller.actor.MazeMover;
-import de.amr.games.pacman.model.WorldGraph;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.WorldGraph;
 
 /**
  * Lets an actor follow the shortest path (using graph path finding) to the

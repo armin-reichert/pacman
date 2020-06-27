@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.amr.games.pacman.controller.actor.MazeMover;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.world.Tile;
 
 /**
  * Lets an actor follow a fixed path.

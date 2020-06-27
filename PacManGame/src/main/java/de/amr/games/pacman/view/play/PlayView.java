@@ -39,7 +39,7 @@ import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.State;

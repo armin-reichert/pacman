@@ -12,7 +12,7 @@ import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.core.BaseView;
 import de.amr.games.pacman.view.theme.Theme;
 

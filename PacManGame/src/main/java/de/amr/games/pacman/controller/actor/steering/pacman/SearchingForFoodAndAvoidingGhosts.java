@@ -1,6 +1,6 @@
 package de.amr.games.pacman.controller.actor.steering.pacman;
 
-import static de.amr.games.pacman.model.Tile.manhattanDistance;
+import static de.amr.games.pacman.model.world.Tile.manhattanDistance;
 import static java.util.Comparator.comparingInt;
 
 import java.util.Arrays;
@@ -14,8 +14,8 @@ import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.Tile;
 
 /**
  * Steering used by PacMan in demo mode.

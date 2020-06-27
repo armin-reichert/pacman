@@ -2,7 +2,7 @@ package de.amr.games.pacman.controller.actor.steering;
 
 import java.util.List;
 
-import de.amr.games.pacman.model.Tile;
+import de.amr.games.pacman.model.world.Tile;
 
 /**
  * Implemented by steerings that can compute the complete path to the target tile.

@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import de.amr.games.pacman.model.world.Symbol;
+
 /**
  * Data structure storing the level-specific values.
  * 

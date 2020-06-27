@@ -2,10 +2,10 @@ package de.amr.games.pacman.model.map;
 
 import java.util.List;
 
-import de.amr.games.pacman.model.Tile;
 import de.amr.games.pacman.model.world.Door;
 import de.amr.games.pacman.model.world.Portal;
 import de.amr.games.pacman.model.world.Seat;
+import de.amr.games.pacman.model.world.Tile;
 
 /**
  * Map represented by a 2D byte array.

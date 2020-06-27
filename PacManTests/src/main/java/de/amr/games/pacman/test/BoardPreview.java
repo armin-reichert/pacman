@@ -7,11 +7,11 @@ import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import de.amr.games.pacman.model.Tile;
-import de.amr.games.pacman.model.WorldGraph;
 import de.amr.games.pacman.model.map.GameMaps;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Portal;
+import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.WorldGraph;
 import de.amr.graph.grid.ui.rendering.ConfigurableGridRenderer;
 import de.amr.graph.grid.ui.rendering.GridCanvas;
 import de.amr.graph.grid.ui.rendering.GridRenderer;
