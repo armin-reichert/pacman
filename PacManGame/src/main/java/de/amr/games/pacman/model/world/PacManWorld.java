@@ -56,8 +56,6 @@ public class PacManWorld implements PacManWorldStructure {
 		cornerNE = Tile.col_row(26, 4);
 		cornerSW = Tile.col_row(1, 32);
 		cornerSE = Tile.col_row(26, 32);
-
-		mapTiles().filter(this::isOneWayTile).forEach(System.out::println);
 	}
 
 	@Override
