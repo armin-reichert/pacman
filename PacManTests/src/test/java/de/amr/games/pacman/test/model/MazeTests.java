@@ -26,17 +26,17 @@ public class MazeTests {
 	@Test
 	public void testMazeStructure() {
 		assertNotNull(world.pacManSeat());
-		assertNotNull(world.ghostHouse().seat(0));
-		assertNotNull(world.ghostHouse().seat(1));
-		assertNotNull(world.ghostHouse().seat(2));
-		assertNotNull(world.ghostHouse().seat(3));
+		assertNotNull(world.houses().findFirst().get().seat(0));
+		assertNotNull(world.houses().findFirst().get().seat(1));
+		assertNotNull(world.houses().findFirst().get().seat(2));
+		assertNotNull(world.houses().findFirst().get().seat(3));
 		assertNotNull(world.bonusTile());
 		assertNotNull(world.horizonNE);
 		assertNotNull(world.horizonNW);
 		assertNotNull(world.horizonSW);
 		assertNotNull(world.horizonSE);
-		assertTrue(world.portals().get(0).left.equals(Tile.col_row(-1, 17)));
-		assertTrue(world.portals().get(0).right.equals(Tile.col_row(28, 17)));
+		assertTrue(world.portals().findFirst().get().left.equals(Tile.col_row(-1, 17)));
+		assertTrue(world.portals().findFirst().get().right.equals(Tile.col_row(28, 17)));
 		assertTrue(world.isInaccessible(Tile.col_row(0, 3)));
 		assertTrue(world.isDoor(Tile.col_row(13, 15)));
 	}

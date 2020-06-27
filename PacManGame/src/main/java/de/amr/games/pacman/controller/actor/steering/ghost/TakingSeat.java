@@ -10,6 +10,7 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.controller.actor.steering.ghost.TakingSeat.State;
 import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.Seat;
 import de.amr.statemachine.core.StateMachine;
 
@@ -26,6 +27,7 @@ public class TakingSeat extends StateMachine<State, Void> implements Steering {
 
 	public TakingSeat(Ghost ghost, Seat seat) {
 		super(State.class);
+		House theHouse = ghost.world().houses().findAny().get();
 		int offsetY = 3;
 		/*@formatter:off*/
 		beginStateMachine()
@@ -37,7 +39,7 @@ public class TakingSeat extends StateMachine<State, Void> implements Steering {
 				.state(FALLING)
 					.onEntry(() -> {
 						// place the ghost exactly at the ghost house entry and start falling down
-						ghost.tf.setPosition(ghost.world.ghostHouse().seat(0).position);
+						ghost.tf.setPosition(theHouse.seat(0).position);
 						ghost.setWishDir(Direction.DOWN);					
 					})
 					

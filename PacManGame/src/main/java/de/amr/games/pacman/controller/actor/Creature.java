@@ -93,13 +93,10 @@ public abstract class Creature<STATE> extends Entity implements MazeMover, FsmCo
 	}
 
 	private void checkPortalEntered() {
-		for (Portal portal : world.portals()) {
-			if (portal.contains(tile())) {
-				portalEntered = portal;
-				visible = false;
-				break;
-			}
-		}
+		world.portals().filter(portal -> portal.contains(tile())).findAny().ifPresent(portal -> {
+			portalEntered = portal;
+			visible = false;
+		});
 	}
 
 	private void teleport() {

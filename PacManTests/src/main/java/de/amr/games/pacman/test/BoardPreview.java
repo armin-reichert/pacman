@@ -8,8 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import de.amr.games.pacman.model.map.PacManMaps;
+import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.PacManWorld;
-import de.amr.games.pacman.model.world.Portal;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.model.world.WorldGraph;
 import de.amr.graph.grid.ui.rendering.ConfigurableGridRenderer;
@@ -77,16 +77,17 @@ public class BoardPreview extends JFrame {
 
 	private String text(int cell) {
 		Tile tile = graph.tile(cell);
-		if (tile.equals(world.ghostHouse().seat(0).tile) || tile.equals(world.horizonNE)) {
+		House theHouse = world.houses().findFirst().get();
+		if (tile.equals(theHouse.seat(0).tile) || tile.equals(world.horizonNE)) {
 			return "B";
 		}
-		if (tile.equals(world.ghostHouse().seat(1).tile) || tile.equals(world.horizonSE)) {
+		if (tile.equals(theHouse.seat(1).tile) || tile.equals(world.horizonSE)) {
 			return "I";
 		}
-		if (tile.equals(world.ghostHouse().seat(2).tile) || tile.equals(world.horizonNW)) {
+		if (tile.equals(theHouse.seat(2).tile) || tile.equals(world.horizonNW)) {
 			return "P";
 		}
-		if (tile.equals(world.ghostHouse().seat(3).tile) || tile.equals(world.horizonSW)) {
+		if (tile.equals(theHouse.seat(3).tile) || tile.equals(world.horizonSW)) {
 			return "C";
 		}
 		if (tile.equals(world.bonusTile())) {
@@ -104,10 +105,8 @@ public class BoardPreview extends JFrame {
 		if (world.containsEnergizer(tile)) {
 			return "Ö";
 		}
-		for (Portal portal : world.portals()) {
-			if (portal.contains(tile)) {
-				return "@";
-			}
+		if (world.portals().anyMatch(portal -> portal.contains(tile))) {
+			return "@";
 		}
 		return "";
 	}

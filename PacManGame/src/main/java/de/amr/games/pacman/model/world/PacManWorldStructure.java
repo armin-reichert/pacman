@@ -1,20 +1,25 @@
 package de.amr.games.pacman.model.world;
 
-import java.util.List;
+import java.util.stream.Stream;
 
+/**
+ * Defines the structure of the Pac-man game world.
+ * 
+ * @author Armin Reichert
+ */
 public interface PacManWorldStructure {
 
 	int width();
 
 	int height();
 
-	GhostHouse ghostHouse();
+	Stream<House> houses();
 
 	Seat pacManSeat();
 
 	Tile bonusTile();
 
-	List<Portal> portals();
-	
-	List<OneWayTile> oneWayTiles();
+	Stream<Portal> portals();
+
+	Stream<OneWayTile> oneWayTiles();
 }

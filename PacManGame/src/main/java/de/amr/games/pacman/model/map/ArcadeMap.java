@@ -4,10 +4,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.Door;
-import de.amr.games.pacman.model.world.GhostHouse;
+import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.OneWayTile;
 import de.amr.games.pacman.model.world.Portal;
 import de.amr.games.pacman.model.world.Seat;
@@ -50,7 +51,7 @@ class ArcadeMap extends PacManMap {
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 	};
 
-	 private final GhostHouse ghostHouse;
+	 private final House ghostHouse;
 	 private final Seat pacManSeat;
 	 private final Tile bonusTile;
 	 private final List<Portal> portals;
@@ -79,7 +80,7 @@ class ArcadeMap extends PacManMap {
 				new Seat(3, left + 4, top + 1, Direction.UP));
 		//@formatter:on
 
-		ghostHouse = new GhostHouse(room, Arrays.asList(door), seats);
+		ghostHouse = new House(room, Arrays.asList(door), seats);
 
 		pacManSeat = new Seat(4, 13, 26, Direction.RIGHT);
 		bonusTile = Tile.col_row(13, 20);
@@ -111,8 +112,8 @@ class ArcadeMap extends PacManMap {
 	}
 
 	@Override
-	public GhostHouse ghostHouse() {
-		return ghostHouse;
+	public Stream<House> houses() {
+		return Stream.of(ghostHouse);
 	}
 
 	@Override
@@ -126,12 +127,12 @@ class ArcadeMap extends PacManMap {
 	}
 
 	@Override
-	public List<Portal> portals() {
-		return portals;
+	public Stream<Portal> portals() {
+		return portals.stream();
 	}
 
 	@Override
-	public List<OneWayTile> oneWayTiles() {
-		return oneWayTiles;
+	public Stream<OneWayTile> oneWayTiles() {
+		return oneWayTiles.stream();
 	}
 }

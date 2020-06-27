@@ -11,6 +11,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.play.PlayView;
@@ -50,7 +51,8 @@ class FollowTargetTilesTestUI extends PlayView {
 		showScores = false;
 		showGrid = true;
 
-		targets = Arrays.asList(world.cornerNW, world.ghostHouse().seat(0).tile, world.cornerNE, world.cornerSE,
+		House theHouse = world.houses().findFirst().get();
+		targets = Arrays.asList(world.cornerNW, theHouse.seat(0).tile, world.cornerNE, world.cornerSE,
 				world.pacManSeat().tile, world.cornerSW);
 	}
 

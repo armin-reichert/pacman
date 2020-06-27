@@ -7,7 +7,6 @@ import static de.amr.games.pacman.model.map.PacManMap.B_INTERSECTION;
 import static de.amr.games.pacman.model.map.PacManMap.B_TUNNEL;
 import static de.amr.games.pacman.model.map.PacManMap.B_WALL;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -69,8 +68,8 @@ public class PacManWorld implements PacManWorldStructure {
 	}
 
 	@Override
-	public GhostHouse ghostHouse() {
-		return map.ghostHouse();
+	public Stream<House> houses() {
+		return map.houses();
 	}
 
 	@Override
@@ -84,12 +83,12 @@ public class PacManWorld implements PacManWorldStructure {
 	}
 
 	@Override
-	public List<Portal> portals() {
+	public Stream<Portal> portals() {
 		return map.portals();
 	}
 
 	@Override
-	public List<OneWayTile> oneWayTiles() {
+	public Stream<OneWayTile> oneWayTiles() {
 		return map.oneWayTiles();
 	}
 
@@ -109,7 +108,7 @@ public class PacManWorld implements PacManWorldStructure {
 	 *         direction. This can be a tile outside of the world.
 	 */
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
-		Optional<Portal> maybePortal = portals().stream().filter(portal -> portal.contains(tile)).findAny();
+		Optional<Portal> maybePortal = portals().filter(portal -> portal.contains(tile)).findAny();
 		if (maybePortal.isPresent()) {
 			Tile exitTile = maybePortal.get().exitTile(tile, dir);
 			if (exitTile != null) {
@@ -142,11 +141,11 @@ public class PacManWorld implements PacManWorldStructure {
 	}
 
 	public boolean isDoor(Tile tile) {
-		return ghostHouse().doors().anyMatch(door -> door.contains(tile));
+		return houses().flatMap(House::doors).anyMatch(door -> door.contains(tile));
 	}
 
 	public boolean insideGhostHouse(Tile tile) {
-		return ghostHouse().room().contains(tile) || isDoor(tile);
+		return houses().map(House::room).anyMatch(room -> room.contains(tile) || isDoor(tile));
 	}
 
 	public boolean atGhostHouseDoor(Tile tile) {
@@ -157,7 +156,7 @@ public class PacManWorld implements PacManWorldStructure {
 		if (insideMap(tile)) {
 			return map.is1(toMap(tile.row), tile.col, B_WALL);
 		}
-		boolean isPortal = portals().stream().anyMatch(portal -> portal.contains(tile));
+		boolean isPortal = portals().anyMatch(portal -> portal.contains(tile));
 		return !isPortal;
 	}
 
@@ -166,7 +165,7 @@ public class PacManWorld implements PacManWorldStructure {
 	}
 
 	public boolean isOneWayTile(Tile tile) {
-		return insideMap(tile) && map.oneWayTiles().stream().anyMatch(oneWay -> oneWay.tile.equals(tile));
+		return insideMap(tile) && map.oneWayTiles().anyMatch(oneWay -> oneWay.tile.equals(tile));
 	}
 
 	public boolean isIntersection(Tile tile) {

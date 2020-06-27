@@ -18,7 +18,9 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.Portal;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
@@ -54,9 +56,11 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 		super(new Game(), new ArcadeTheme());
 		world = game.world;
 		ghost = game.blinky;
+		Portal thePortal = world.portals().findAny().get();
+		House theHouse = world.houses().findAny().get();
 		targets = Arrays.asList(world.cornerSE, Tile.col_row(15, 23), Tile.col_row(12, 23), world.cornerSW,
-				world.neighbor(world.portals().get(0).left, Direction.RIGHT), world.cornerNW, world.ghostHouse().seat(0).tile,
-				world.cornerNE, world.neighbor(world.portals().get(0).right, Direction.LEFT), world.pacManSeat().tile);
+				world.neighbor(thePortal.left, Direction.RIGHT), world.cornerNW, theHouse.seat(0).tile, world.cornerNE,
+				world.neighbor(thePortal.right, Direction.LEFT), world.pacManSeat().tile);
 		showRoutes = true;
 		showStates = true;
 		showScores = false;

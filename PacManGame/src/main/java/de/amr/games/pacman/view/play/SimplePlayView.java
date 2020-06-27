@@ -21,6 +21,7 @@ import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.Symbol;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.core.BaseView;
@@ -254,9 +255,10 @@ public class SimplePlayView extends BaseView {
 					g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 				});
 			}
+			House theHouse = game.world.houses().findFirst().get();
 			// draw door open when touched by ghost entering or leaving the house
 			game.ghostsOnStage().filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE)).forEach(ghost -> {
-				game.world.ghostHouse().doors().filter(door -> door.contains(ghost.tile())).forEach(door -> {
+				theHouse.doors().filter(door -> door.contains(ghost.tile())).forEach(door -> {
 					g.setColor(Color.BLACK);
 					door.tiles.forEach(tile -> {
 						g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);

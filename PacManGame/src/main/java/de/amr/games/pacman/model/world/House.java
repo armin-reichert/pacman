@@ -4,13 +4,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public class GhostHouse {
+/**
+ * A house.
+ * 
+ * @author Armin Reichert
+ */
+public class House {
 
 	private final List<Door> doors;
 	private final Set<Tile> room;
 	private final List<Seat> seats;
 
-	public GhostHouse(Set<Tile> room, List<Door> doors, List<Seat> seats) {
+	public House(Set<Tile> room, List<Door> doors, List<Seat> seats) {
 		this.room = room;
 		this.doors = doors;
 		this.seats = seats;

@@ -26,6 +26,7 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.map.PacManMap;
 import de.amr.games.pacman.model.map.PacManMaps;
+import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Symbol;
 import de.amr.games.pacman.model.world.Tile;
@@ -187,13 +188,15 @@ public class Game {
 		clyde = new Ghost(this, "Clyde");
 		bonus = new Bonus(this);
 
-		// assign seats
+		// assign seats in the house
+
+		House theHouse = world.houses().findFirst().get();
 
 		pacMan.seat = world.pacManSeat();
-		blinky.seat = world.ghostHouse().seat(0);
-		inky.seat = world.ghostHouse().seat(1);
-		pinky.seat = world.ghostHouse().seat(2);
-		clyde.seat = world.ghostHouse().seat(3);
+		blinky.seat = theHouse.seat(0);
+		inky.seat = theHouse.seat(1);
+		pinky.seat = theHouse.seat(2);
+		clyde.seat = theHouse.seat(3);
 
 		// define behavior
 
@@ -211,7 +214,7 @@ public class Game {
 
 		// individual ghost behavior
 
-		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(world.ghostHouse().seat(2)));
+		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(theHouse.seat(2)));
 
 		// scattering
 
