@@ -52,10 +52,10 @@ public class PacManWorld implements PacManWorldStructure {
 		horizonSE = Tile.col_row(width() - 1, height() - 1);
 
 		// only used by algorithm to calculate routes to "safe" corner for fleeing ghosts
-		cornerNW = Tile.col_row(1, 4);
-		cornerNE = Tile.col_row(26, 4);
-		cornerSW = Tile.col_row(1, 32);
-		cornerSE = Tile.col_row(26, 32);
+		cornerNW = Tile.col_row(1, ROWS_ABOVE_MAP + 1);
+		cornerNE = Tile.col_row(width() - 2, ROWS_ABOVE_MAP + 1);
+		cornerSW = Tile.col_row(1, toWorld(map.numRows - 2));
+		cornerSE = Tile.col_row(width() - 2, toWorld(map.numRows - 2));
 	}
 
 	@Override
