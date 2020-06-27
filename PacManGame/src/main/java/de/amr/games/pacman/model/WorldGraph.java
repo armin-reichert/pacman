@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.graph.core.api.UndirectedEdge;
-import de.amr.graph.grid.api.GridGraph2D;
 import de.amr.graph.grid.impl.Grid4Topology;
 import de.amr.graph.grid.impl.GridGraph;
 import de.amr.graph.pathfinder.api.GraphSearch;
@@ -24,10 +23,6 @@ import de.amr.graph.pathfinder.impl.BreadthFirstSearch;
  * @author Armin Reichert
  */
 public class WorldGraph extends GridGraph<Tile, Void> {
-
-	static Tile tile(GridGraph2D<Tile, Void> graph, int vertex) {
-		return Tile.xy(graph.col(vertex), graph.row(vertex));
-	}
 
 	private final PacManWorld world;
 	private int pathFinderCalls;
