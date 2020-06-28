@@ -1,10 +1,13 @@
 package de.amr.games.pacman.model.map;
 
-import de.amr.easy.game.model.ByteMap;
 import de.amr.games.pacman.model.world.PacManWorldStructure;
-import de.amr.games.pacman.model.world.Tile;
 
-public abstract class PacManMap extends ByteMap implements PacManWorldStructure {
+/**
+ * Base class for maps representing the Pac-Man world.
+ * 
+ * @author Armin Reichert
+ */
+public abstract class PacManMap implements PacManWorldStructure {
 
 	//@formatter:off
 	public static final byte B_WALL         = 0;
@@ -15,22 +18,31 @@ public abstract class PacManMap extends ByteMap implements PacManWorldStructure 
 	public static final byte B_TUNNEL       = 5;
 	//@formatter:on
 
-	public PacManMap(byte[][] data) {
-		super(data);
-	}
+	private final byte[][] data;
 
-	@Override
-	public boolean insideMap(Tile tile) {
-		return contains(tile.row, tile.col);
+	public PacManMap(byte[][] data) {
+		this.data = data;
 	}
 
 	@Override
 	public int width() {
-		return numCols;
+		return data[0].length;
 	}
 
 	@Override
 	public int height() {
-		return numRows;
+		return data.length;
+	}
+	
+	public boolean is(int row, int col, byte bit) {
+		return (data[row][col] & (1 << bit)) != 0;
+	}
+
+	public void set0(int row, int col, byte bit) {
+		data[row][col] &= ~(1 << bit);
+	}
+
+	public void set1(int row, int col, byte bit) {
+		data[row][col] |= (1 << bit);
 	}
 }

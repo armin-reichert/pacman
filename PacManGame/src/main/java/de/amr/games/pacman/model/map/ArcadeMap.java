@@ -16,8 +16,8 @@ import de.amr.games.pacman.model.world.Tile;
 
 class ArcadeMap extends PacManMap {
 
-	//@formatter:off
 	static final byte[][] DATA = {
+		//@formatter:off
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 		{ 1, 2, 2, 2, 2, 2,18, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2,18, 2, 2, 2, 2, 2, 1 },
 		{ 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1 },
@@ -49,29 +49,27 @@ class ArcadeMap extends PacManMap {
 		{ 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1 },
 		{ 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,18, 2, 2,18, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1 },
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+		//@formatter:on
 	};
 
-	 private final House ghostHouse;
-	 private final Seat pacManSeat;
-	 private final Tile bonusTile;
-	 private final List<Portal> portals;
-	 private final List<OneWayTile> oneWayTiles;
-	
-	//@formatter:on
+	private final House ghostHouse;
+	private final Seat pacManSeat;
+	private final Tile bonusTile;
+	private final Portal portal;
+	private final List<OneWayTile> oneWayTiles;
 
 	public ArcadeMap() {
 		super(DATA);
 
 		// ghost house
-		int left = 11, right = 16, top = 16, bottom = 18;
 		Set<Tile> room = new HashSet<>();
+		int left = 11, right = 16, top = 16, bottom = 18;
 		for (int row = top; row <= bottom; ++row) {
 			for (int col = left; col <= right; ++col) {
 				room.add(Tile.at(col, row));
 			}
 		}
 		Door door = new Door(Direction.DOWN, Tile.at(left + 2, top - 1), Tile.at(left + 3, top - 1));
-
 		//@formatter:off
 		List<Seat> seats = Arrays.asList(
 				new Seat(0, left + 2, top - 2, Direction.LEFT),
@@ -79,17 +77,11 @@ class ArcadeMap extends PacManMap {
 				new Seat(2, left + 2, top + 1, Direction.DOWN),
 				new Seat(3, left + 4, top + 1, Direction.UP));
 		//@formatter:on
-
 		ghostHouse = new House(room, Arrays.asList(door), seats);
 
 		pacManSeat = new Seat(4, 13, 26, Direction.RIGHT);
 		bonusTile = Tile.at(13, 20);
-
-		//@formatter:off
-		portals = Arrays.asList(
-				new Portal(Tile.at(-1, 17), Tile.at(28, 17))
-		);
-		//@formatter:on
+		portal = new Portal(Tile.at(-1, 17), Tile.at(28, 17));
 
 		//@formatter:off
 		oneWayTiles = Arrays.asList(
@@ -99,16 +91,6 @@ class ArcadeMap extends PacManMap {
 				new OneWayTile(15, 25, Direction.DOWN)
 		);
 		//@formatter:on
-	}
-
-	@Override
-	public int width() {
-		return numCols;
-	}
-
-	@Override
-	public int height() {
-		return numRows;
 	}
 
 	@Override
@@ -128,7 +110,7 @@ class ArcadeMap extends PacManMap {
 
 	@Override
 	public Stream<Portal> portals() {
-		return portals.stream();
+		return Stream.of(portal);
 	}
 
 	@Override

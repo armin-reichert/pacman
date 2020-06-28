@@ -12,8 +12,6 @@ public interface PacManWorldStructure {
 	int width();
 
 	int height();
-	
-	boolean insideMap(Tile tile);
 
 	Stream<House> houses();
 

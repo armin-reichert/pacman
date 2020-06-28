@@ -14,8 +14,8 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.map.PacManMap;
 
 /**
- * The Pac-Man game world. Reserves 3 rows above and 2 rows below the map for displaying the scores
- * and counters.
+ * The Pac-Man game world. Adds 3 rows above and 2 rows below the map for displaying the scores and
+ * counters.
  * 
  * @author Armin Reichert
  */
@@ -23,10 +23,6 @@ public class PacManWorld implements PacManWorldStructure {
 
 	private static final int ROWS_ABOVE_MAP = 3;
 	private static final int ROWS_BELOW_MAP = 2;
-
-	private static int toWorld(int row) {
-		return row + ROWS_ABOVE_MAP;
-	}
 
 	private static int toMap(int row) {
 		return row - ROWS_ABOVE_MAP;
@@ -38,11 +34,12 @@ public class PacManWorld implements PacManWorldStructure {
 
 	public PacManWorld(PacManMap map) {
 		this.map = map;
-		// used by algorithm to calculate routes to "safe" corner for fleeing ghosts
-		cornerNW = Tile.at(1, ROWS_ABOVE_MAP + 1);
-		cornerNE = Tile.at(width() - 2, ROWS_ABOVE_MAP + 1);
-		cornerSW = Tile.at(1, toWorld(map.numRows - 2));
-		cornerSE = Tile.at(width() - 2, toWorld(map.numRows - 2));
+		// inside corners, assume wall layer ot thickness 1 around maze
+		int left = 1, right = map.width() - 2, top = ROWS_ABOVE_MAP + 1, bottom = ROWS_ABOVE_MAP + map.height() - 2;
+		cornerNW = Tile.at(left, top);
+		cornerNE = Tile.at(right, top);
+		cornerSW = Tile.at(left, bottom);
+		cornerSE = Tile.at(right, bottom);
 	}
 
 	@Override
@@ -55,9 +52,9 @@ public class PacManWorld implements PacManWorldStructure {
 		return ROWS_ABOVE_MAP + map.height() + ROWS_BELOW_MAP;
 	}
 
-	@Override
 	public boolean insideMap(Tile tile) {
-		return map.contains(toMap(tile.row), tile.col);
+		int mapRow = toMap(tile.row), mapCol = tile.col;
+		return 0 <= mapRow && mapRow < map.height() && 0 <= mapCol && mapCol < map.width();
 	}
 
 	@Override
@@ -89,8 +86,8 @@ public class PacManWorld implements PacManWorldStructure {
 	 * @return the map tiles in world coordinates
 	 */
 	public Stream<Tile> mapTiles() {
-		return IntStream.range(toWorld(0) * map.numCols, toWorld(map.numRows + 1) * map.numCols)
-				.mapToObj(i -> Tile.at(i % map.numCols, i / map.numCols));
+		return IntStream.range(ROWS_ABOVE_MAP * map.width(), (ROWS_ABOVE_MAP + map.height() + 1) * map.width())
+				.mapToObj(i -> Tile.at(i % map.width(), i / map.width()));
 	}
 
 	/**
