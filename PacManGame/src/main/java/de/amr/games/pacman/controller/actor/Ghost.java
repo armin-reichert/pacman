@@ -272,8 +272,8 @@ public class Ghost extends Creature<GhostState> {
 	 * @return steering where actor flees to a "safe" maze corner
 	 */
 	public Steering isFleeingToSafeCorner(MazeMover attacker) {
-		return new FleeingToSafeCorner(this, attacker, game.world.cornerNW, game.world.cornerNE, game.world.cornerSW,
-				game.world.cornerSE);
+		return new FleeingToSafeCorner(this, attacker, world.cornerNW(), world.cornerNE(), world.cornerSW(),
+				world.cornerSE());
 	}
 
 	/**
@@ -302,8 +302,7 @@ public class Ghost extends Creature<GhostState> {
 		if (world.isDoor(neighbor)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
-		
-		
+
 		Optional<OneWayTile> maybeOneWay = world.oneWayTiles().filter(oneWay -> oneWay.tile.equals(neighbor)).findFirst();
 		if (maybeOneWay.isPresent()) {
 			OneWayTile oneWay = maybeOneWay.get();

@@ -20,7 +20,23 @@ public interface PacManWorldStructure {
 	 * @return world height in number of tiles
 	 */
 	int height();
-	
+
+	default Tile cornerNW() {
+		return Tile.at(1, 4);
+	}
+
+	default Tile cornerNE() {
+		return Tile.at(width() - 2, 4);
+	}
+
+	default Tile cornerSW() {
+		return Tile.at(1, height() - 4);
+	}
+
+	default Tile cornerSE() {
+		return Tile.at(width() - 2, height() - 4);
+	}
+
 	/**
 	 * @return houses in world
 	 */

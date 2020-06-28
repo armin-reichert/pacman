@@ -20,18 +20,10 @@ import de.amr.games.pacman.model.world.map.PacManMap;
  */
 public class PacManWorld implements PacManWorldStructure {
 
-	public final Tile cornerNW, cornerNE, cornerSW, cornerSE;
-
-	private final PacManMap map;
+	private PacManMap map;
 
 	public PacManWorld(PacManMap map) {
 		this.map = map;
-		// inside corners, assume wall layer ot thickness 1 around maze
-		int left = 1, right = width() - 2, top = 4, bottom = height() - 4;
-		cornerNW = Tile.at(left, top);
-		cornerNE = Tile.at(right, top);
-		cornerSW = Tile.at(left, bottom);
-		cornerSE = Tile.at(right, bottom);
 	}
 
 	@Override
