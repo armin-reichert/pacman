@@ -6,7 +6,7 @@ import static java.util.Collections.shuffle;
 import java.util.Arrays;
 import java.util.Objects;
 
-import de.amr.games.pacman.controller.actor.MazeMover;
+import de.amr.games.pacman.controller.actor.WorldMover;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 
@@ -17,10 +17,10 @@ import de.amr.games.pacman.model.Direction;
  */
 public class MovingRandomlyWithoutTurningBack implements Steering {
 
-	private MazeMover actor;
+	private WorldMover actor;
 	private boolean forced;
 
-	public MovingRandomlyWithoutTurningBack(MazeMover actor) {
+	public MovingRandomlyWithoutTurningBack(WorldMover actor) {
 		this.actor = Objects.requireNonNull(actor);
 	}
 

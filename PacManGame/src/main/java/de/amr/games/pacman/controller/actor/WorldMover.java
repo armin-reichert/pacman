@@ -5,11 +5,11 @@ import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
 
 /**
- * Implemented by entities that can move through a maze.
+ * Implemented by entities that can move through the world.
  * 
  * @author Armin Reichert
  */
-public interface MazeMover {
+public interface WorldMover {
 
 	/**
 	 * @return tile position
@@ -22,12 +22,12 @@ public interface MazeMover {
 	 * @param other other entity
 	 * @return Euclidean distance measured in tiles
 	 */
-	default double distance(MazeMover other) {
+	default double distance(WorldMover other) {
 		return tile().distance(other.tile());
 	}
 
 	/**
-	 * @return the maze where this mover is located
+	 * @return the world where this entity is moving in.
 	 */
 	PacManWorld world();
 

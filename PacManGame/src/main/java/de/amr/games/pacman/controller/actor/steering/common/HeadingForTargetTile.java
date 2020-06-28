@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.controller.actor.MazeMover;
+import de.amr.games.pacman.controller.actor.WorldMover;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.PacManWorld;
@@ -46,7 +46,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	 * @param tile    current tile
 	 * @param target  target tile
 	 */
-	private static Direction bestDir(MazeMover mover, Direction moveDir, Tile tile, Tile target) {
+	private static Direction bestDir(WorldMover mover, Direction moveDir, Tile tile, Tile target) {
 		Function<Direction, Double> fnNeighborDistToTarget = dir -> mover.world().neighbor(tile, dir).distance(target);
 		/*@formatter:off*/
 		return Direction.dirs()
@@ -58,13 +58,13 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 		/*@formatter:on*/
 	}
 
-	private final MazeMover mover;
+	private final WorldMover mover;
 	private final Supplier<Tile> fnTargetTile;
 	private final LinkedHashSet<Tile> path = new LinkedHashSet<>();
 	private boolean forced;
 	private boolean pathComputed;
 
-	public HeadingForTargetTile(MazeMover mover, Supplier<Tile> fnTargetTile) {
+	public HeadingForTargetTile(WorldMover mover, Supplier<Tile> fnTargetTile) {
 		this.mover = Objects.requireNonNull(mover);
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 	}

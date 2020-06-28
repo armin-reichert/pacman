@@ -33,14 +33,14 @@ import de.amr.statemachine.api.FsmContainer;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * A creature (ghost, Pac-Man) is an entity that can move through the maze and uses finite-state
+ * A creature (ghost, Pac-Man) is an entity that can move through the world and has a finite-state
  * machine to control its behavior.
  * 
  * @param <STATE> state (identifier) type
  * 
  * @author Armin Reichert
  */
-public abstract class Creature<STATE> extends Entity implements MazeMover, FsmContainer<STATE, PacManGameEvent> {
+public abstract class Creature<STATE> extends Entity implements WorldMover, FsmContainer<STATE, PacManGameEvent> {
 
 	enum Movement {
 		MOVING_INSIDE_MAZE, TELEPORTING;
