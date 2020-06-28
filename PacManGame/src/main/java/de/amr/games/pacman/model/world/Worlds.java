@@ -1,7 +1,7 @@
 package de.amr.games.pacman.model.world;
 
-import de.amr.games.pacman.model.map.ArcadeMap;
-import de.amr.games.pacman.model.map.CustomMap;
+import de.amr.games.pacman.model.world.map.ArcadeMap;
+import de.amr.games.pacman.model.world.map.CustomMap;
 
 public class Worlds {
 

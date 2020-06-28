@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model.map;
+package de.amr.games.pacman.model.world.map;
 
 import de.amr.games.pacman.model.world.Tile;
 

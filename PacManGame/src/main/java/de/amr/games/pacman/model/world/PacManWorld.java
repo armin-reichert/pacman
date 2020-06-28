@@ -1,17 +1,17 @@
 package de.amr.games.pacman.model.world;
 
-import static de.amr.games.pacman.model.map.PacManMap.B_EATEN;
-import static de.amr.games.pacman.model.map.PacManMap.B_ENERGIZER;
-import static de.amr.games.pacman.model.map.PacManMap.B_FOOD;
-import static de.amr.games.pacman.model.map.PacManMap.B_INTERSECTION;
-import static de.amr.games.pacman.model.map.PacManMap.B_TUNNEL;
-import static de.amr.games.pacman.model.map.PacManMap.B_WALL;
+import static de.amr.games.pacman.model.world.map.PacManMap.B_EATEN;
+import static de.amr.games.pacman.model.world.map.PacManMap.B_ENERGIZER;
+import static de.amr.games.pacman.model.world.map.PacManMap.B_FOOD;
+import static de.amr.games.pacman.model.world.map.PacManMap.B_INTERSECTION;
+import static de.amr.games.pacman.model.world.map.PacManMap.B_TUNNEL;
+import static de.amr.games.pacman.model.world.map.PacManMap.B_WALL;
 
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.map.PacManMap;
+import de.amr.games.pacman.model.world.map.PacManMap;
 
 /**
  * The Pac-Man game world.
