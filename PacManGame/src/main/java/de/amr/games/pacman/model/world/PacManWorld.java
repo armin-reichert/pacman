@@ -152,8 +152,8 @@ public class PacManWorld implements PacManWorldStructure {
 		return false;
 	}
 
-	private boolean is1(Tile tile, byte bit) {
-		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, bit);
+	private boolean is(Tile tile, byte bit) {
+		return insideMap(tile) && map.is(toMap(tile.row), tile.col, bit);
 	}
 
 	private void set(Tile tile, byte bit) {
@@ -170,29 +170,29 @@ public class PacManWorld implements PacManWorldStructure {
 
 	public boolean isInaccessible(Tile tile) {
 		if (insideMap(tile)) {
-			return is1(tile, B_WALL);
+			return is(tile, B_WALL);
 		}
 		return !isPortal(tile);
 	}
 
 	public boolean isTunnel(Tile tile) {
-		return is1(tile, B_TUNNEL);
+		return is(tile, B_TUNNEL);
 	}
 
 	public boolean isIntersection(Tile tile) {
-		return is1(tile, B_INTERSECTION);
+		return is(tile, B_INTERSECTION);
 	}
 
 	public boolean isFood(Tile tile) {
-		return is1(tile, B_FOOD);
+		return is(tile, B_FOOD);
 	}
 
 	public boolean isFoodEaten(Tile tile) {
-		return is1(tile, B_EATEN);
+		return is(tile, B_EATEN);
 	}
 
 	public boolean isEnergizer(Tile tile) {
-		return is1(tile, B_ENERGIZER);
+		return is(tile, B_ENERGIZER);
 	}
 
 	public boolean containsSimplePellet(Tile tile) {
