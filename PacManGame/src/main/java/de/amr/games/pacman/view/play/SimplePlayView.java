@@ -22,6 +22,7 @@ import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.House;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Symbol;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.core.BaseView;
@@ -40,6 +41,7 @@ public class SimplePlayView extends BaseView {
 	}
 
 	public final Game game;
+	public final PacManWorld world;
 	public final MazeView mazeView;
 
 	private String messageText = "";
@@ -50,6 +52,7 @@ public class SimplePlayView extends BaseView {
 	public SimplePlayView(Game game, Theme theme) {
 		super(theme);
 		this.game = game;
+		world = game.world;
 		mazeView = new MazeView();
 		game.pacMan.takeClothes(theme);
 		game.blinky.takeClothes(theme, Theme.RED_GHOST);
@@ -214,8 +217,8 @@ public class SimplePlayView extends BaseView {
 			spriteFlashingMaze = theme.spr_flashingMaze();
 			energizersBlinking = new CyclicAnimation(2);
 			energizersBlinking.setFrameDuration(150);
-			game.bonus.tf.x = game.world.bonusTile().x();
-			game.bonus.tf.y = game.world.bonusTile().y();
+			game.bonus.tf.x = world.bonusTile().x();
+			game.bonus.tf.y = world.bonusTile().y();
 			//@formatter:off
 			beginStateMachine()
 				.description("[Maze View]")
@@ -244,18 +247,18 @@ public class SimplePlayView extends BaseView {
 		private void drawCrowdedMaze(Graphics2D g) {
 			spriteFullMaze.draw(g, 0, 3 * Tile.SIZE);
 			// hide eaten food
-			game.world.mapTiles().filter(game.world::isFoodEaten).forEach(tile -> {
+			world.mapTiles().filter(world::containsEatenFood).forEach(tile -> {
 				g.setColor(tileColor(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
 			// hide active energizers when blinking animation is in dark phase
 			if (energizersBlinking.currentFrame() == 1) {
-				game.world.mapTiles().filter(game.world::containsEnergizer).forEach(tile -> {
+				world.mapTiles().filter(world::containsEnergizer).forEach(tile -> {
 					g.setColor(tileColor(tile));
 					g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 				});
 			}
-			House theHouse = game.world.houses().findFirst().get();
+			House theHouse = world.houses().findFirst().get();
 			// draw door open when touched by ghost entering or leaving the house
 			game.ghostsOnStage().filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE)).forEach(ghost -> {
 				theHouse.doors().filter(door -> door.contains(ghost.tile())).forEach(door -> {

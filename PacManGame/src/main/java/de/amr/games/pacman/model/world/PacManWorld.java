@@ -181,12 +181,12 @@ public class PacManWorld implements PacManWorldStructure {
 		return is(tile, B_INTERSECTION);
 	}
 
-	public boolean isFood(Tile tile) {
-		return is(tile, B_FOOD);
+	public boolean containsFood(Tile tile) {
+		return is(tile, B_FOOD) && !is(tile, B_EATEN);
 	}
 
-	public boolean isFoodEaten(Tile tile) {
-		return is(tile, B_EATEN);
+	public boolean containsEatenFood(Tile tile) {
+		return is(tile, B_FOOD) && is(tile, B_EATEN);
 	}
 
 	public boolean isEnergizer(Tile tile) {
@@ -194,25 +194,21 @@ public class PacManWorld implements PacManWorldStructure {
 	}
 
 	public boolean containsSimplePellet(Tile tile) {
-		return isFood(tile) && !isEnergizer(tile) && !isFoodEaten(tile);
+		return containsFood(tile) && !isEnergizer(tile);
 	}
 
 	public boolean containsEnergizer(Tile tile) {
-		return isEnergizer(tile) && !isFoodEaten(tile);
-	}
-
-	public boolean containsFood(Tile tile) {
-		return isFood(tile) && !isFoodEaten(tile);
+		return containsFood(tile) && isEnergizer(tile);
 	}
 
 	public void eatFood(Tile tile) {
-		if (isFood(tile)) {
+		if (is(tile, B_FOOD)) {
 			set(tile, B_EATEN);
 		}
 	}
 
 	public void restoreFood(Tile tile) {
-		if (isFood(tile)) {
+		if (is(tile, B_FOOD)) {
 			clear(tile, B_EATEN);
 		}
 	}

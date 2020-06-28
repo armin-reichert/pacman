@@ -116,7 +116,7 @@ public class PlayView extends SimplePlayView {
 		frameRateDisplay = new FramerateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
-		gridImage = createGridPatternImage(game.world.width(), game.world.height());
+		gridImage = createGridPatternImage(world.width(), world.height());
 		inkyImage = (BufferedImage) theme.spr_ghostColored(Theme.CYAN_GHOST, Direction.RIGHT).frame(0);
 		clydeImage = (BufferedImage) theme.spr_ghostColored(Theme.ORANGE_GHOST, Direction.RIGHT).frame(0);
 		pacManImage = (BufferedImage) theme.spr_pacManWalking(RIGHT).frame(0);
@@ -273,10 +273,10 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawOneWayTiles(Graphics2D g) {
-		for (int row = 0; row < game.world.height(); ++row) {
-			for (int col = 0; col < game.world.width(); ++col) {
+		for (int row = 0; row < world.height(); ++row) {
+			for (int col = 0; col < world.width(); ++col) {
 				Tile tile = Tile.at(col, row);
-				if (game.world.isOneWayTile(tile)) {
+				if (world.isOneWayTile(tile)) {
 					drawDirectionIndicator(g, Color.WHITE, Direction.DOWN, tile.centerX(), tile.y());
 				}
 			}
@@ -397,8 +397,8 @@ public class PlayView extends SimplePlayView {
 		int s = Tile.SIZE / 2; // size of target square
 		g.setColor(Color.GRAY);
 		if (!settings.fixOverflowBug && pacManDir == Direction.UP) {
-			Tile twoAhead = game.world.tileToDir(pacManTile, pacManDir, 2);
-			Tile twoLeft = game.world.tileToDir(twoAhead, Direction.LEFT, 2);
+			Tile twoAhead = world.tileToDir(pacManTile, pacManDir, 2);
+			Tile twoLeft = world.tileToDir(twoAhead, Direction.LEFT, 2);
 			x1 = pacManTile.centerX();
 			y1 = pacManTile.centerY();
 			x2 = twoAhead.centerX();
