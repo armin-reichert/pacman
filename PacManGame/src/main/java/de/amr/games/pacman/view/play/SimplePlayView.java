@@ -252,7 +252,7 @@ public class SimplePlayView extends BaseView {
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
 			// hide active energizers when blinking animation is in dark phase
-			if (energizersBlinking.currentFrame() == 1) {
+			if (energizersBlinking.currentFrameIndex() == 1) {
 				world.mapTiles().filter(world::containsEnergizer).forEach(tile -> {
 					g.setColor(tileColor(tile));
 					g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
