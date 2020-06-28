@@ -169,10 +169,8 @@ public class PacManWorld implements PacManWorldStructure {
 	}
 
 	public boolean isInaccessible(Tile tile) {
-		if (insideMap(tile)) {
-			return is(tile, B_WALL);
-		}
-		return !isPortal(tile);
+		boolean inside = insideMap(tile);
+		return inside && is(tile, B_WALL) || !inside && !isPortal(tile);
 	}
 
 	public boolean isTunnel(Tile tile) {
@@ -208,10 +206,14 @@ public class PacManWorld implements PacManWorldStructure {
 	}
 
 	public void eatFood(Tile tile) {
-		set(tile, B_EATEN);
+		if (isFood(tile)) {
+			set(tile, B_EATEN);
+		}
 	}
 
 	public void restoreFood(Tile tile) {
-		clear(tile, B_EATEN);
+		if (isFood(tile)) {
+			clear(tile, B_EATEN);
+		}
 	}
 }
