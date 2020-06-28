@@ -137,11 +137,11 @@ public class PacManWorld implements PacManWorldStructure {
 		return houses().flatMap(House::doors).anyMatch(door -> door.contains(tile));
 	}
 
-	public boolean insideHouse(Tile tile) {
-		return houses().map(House::room).anyMatch(room -> room.contains(tile) || isDoor(tile));
+	public boolean insideHouseOrDoor(Tile tile) {
+		return isDoor(tile) || houses().map(House::room).anyMatch(room -> room.contains(tile));
 	}
 
-	public boolean outsideOfDoor(Tile tile) {
+	public boolean outsideAtDoor(Tile tile) {
 		for (Direction dir : Direction.values()) {
 			Tile neighbor = neighbor(tile, dir);
 			if (isDoor(neighbor)) {

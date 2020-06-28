@@ -57,7 +57,7 @@ public class BoardPreview extends JFrame {
 			if (world.isDoor(tile)) {
 				return Color.PINK;
 			}
-			if (world.insideHouse(tile)) {
+			if (world.insideHouseOrDoor(tile)) {
 				return Color.CYAN;
 			}
 			if (world.isOneWayTile(tile)) {
