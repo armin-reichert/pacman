@@ -24,12 +24,11 @@ import de.amr.games.pacman.controller.actor.Bonus;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.model.map.PacManMap;
-import de.amr.games.pacman.model.map.PacManMaps;
 import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Symbol;
 import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.Worlds;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.
@@ -128,22 +127,22 @@ public class Game {
 	 * 
 	 * @param startLevel start level number (1-...)
 	 */
-	public Game(PacManMap map, int startLevel) {
+	public Game(PacManWorld world, int startLevel) {
+		this.world = world;
 		lives = 3;
 		score = 0;
 		levelCounter = new ArrayList<>();
 		gameScore = new GameScore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
-		world = new PacManWorld(map);
 		totalFoodCount = (int) world.mapTiles().filter(world::containsFood).count();
 		createActors();
 		enterLevel(startLevel);
 	}
 
 	/**
-	 * Creates a game starting with the first level.
+	 * Creates a game using the Arcade world and starting with the first level.
 	 */
 	public Game() {
-		this(PacManMaps.ARCADE_MAP, 1);
+		this(Worlds.ARCADE, 1);
 	}
 
 	/**

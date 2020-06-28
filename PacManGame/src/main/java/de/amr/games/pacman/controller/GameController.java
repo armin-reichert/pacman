@@ -42,7 +42,7 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.map.PacManMaps;
+import de.amr.games.pacman.model.world.Worlds;
 import de.amr.games.pacman.view.core.BaseView;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
@@ -102,7 +102,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	private void createPlayEnvironment() {
-		game = new Game(PacManMaps.ARCADE_MAP, settings.startLevel);
+		game = new Game(Worlds.ARCADE, settings.startLevel);
 		ghostCommand = new GhostCommand(game);
 		ghostHouse = new GhostHouseAccess(game);
 

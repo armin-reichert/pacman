@@ -14,7 +14,7 @@ import de.amr.games.pacman.model.world.Portal;
 import de.amr.games.pacman.model.world.Seat;
 import de.amr.games.pacman.model.world.Tile;
 
-class ArcadeMap extends PacManMap {
+public class ArcadeMap extends PacManMap {
 
 	static final byte[][] DATA = {
 		//@formatter:off

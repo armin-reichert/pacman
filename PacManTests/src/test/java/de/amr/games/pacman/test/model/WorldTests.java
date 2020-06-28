@@ -10,21 +10,21 @@ import org.junit.Test;
 
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.map.PacManMaps;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.Worlds;
 
-public class MazeTests {
+public class WorldTests {
 
 	private PacManWorld world;
 
 	@Before
 	public void setup() {
-		world = new PacManWorld(PacManMaps.ARCADE_MAP);
+		world = Worlds.ARCADE;
 	}
 
 	@Test
-	public void testMazeStructure() {
+	public void testStructure() {
 		assertNotNull(world.pacManSeat());
 		assertNotNull(world.houses().findFirst().get().seat(0));
 		assertNotNull(world.houses().findFirst().get().seat(1));
