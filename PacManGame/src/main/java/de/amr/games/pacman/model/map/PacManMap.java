@@ -1,14 +1,22 @@
 package de.amr.games.pacman.model.map;
 
-import de.amr.games.pacman.model.world.PacManWorld;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
+import de.amr.games.pacman.model.world.House;
+import de.amr.games.pacman.model.world.OneWayTile;
 import de.amr.games.pacman.model.world.PacManWorldStructure;
+import de.amr.games.pacman.model.world.Portal;
+import de.amr.games.pacman.model.world.Seat;
+import de.amr.games.pacman.model.world.Tile;
 
 /**
  * Base class for maps representing the Pac-Man world.
  * 
  * @author Armin Reichert
  */
-public abstract class PacManMap implements PacManWorldStructure {
+public class PacManMap implements PacManWorldStructure {
 
 	//@formatter:off
 	public static final byte B_WALL         = 0;
@@ -19,15 +27,10 @@ public abstract class PacManMap implements PacManWorldStructure {
 	public static final byte B_TUNNEL       = 5;
 	//@formatter:on
 
-	protected PacManWorld world;
 	private final byte[][] data;
 
 	public PacManMap(byte[][] data) {
 		this.data = data;
-	}
-
-	public void setWorld(PacManWorld world) {
-		this.world = world;
 	}
 
 	@Override
@@ -50,5 +53,36 @@ public abstract class PacManMap implements PacManWorldStructure {
 
 	public void set1(int row, int col, byte bit) {
 		data[row][col] |= (1 << bit);
+	}
+
+	protected List<House> houses = new ArrayList<>();
+	protected Seat pacManSeat;
+	protected Tile bonusTile;
+	protected List<Portal> portals = new ArrayList<>();
+	protected List<OneWayTile> oneWayTiles = new ArrayList<>();
+
+	@Override
+	public Stream<House> houses() {
+		return houses.stream();
+	}
+
+	@Override
+	public Seat pacManSeat() {
+		return pacManSeat;
+	}
+
+	@Override
+	public Tile bonusTile() {
+		return bonusTile;
+	}
+
+	@Override
+	public Stream<Portal> portals() {
+		return portals.stream();
+	}
+
+	@Override
+	public Stream<OneWayTile> oneWayTiles() {
+		return oneWayTiles.stream();
 	}
 }

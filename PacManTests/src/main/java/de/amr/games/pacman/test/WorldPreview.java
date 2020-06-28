@@ -17,19 +17,19 @@ import de.amr.graph.grid.ui.rendering.GridCanvas;
 import de.amr.graph.grid.ui.rendering.GridRenderer;
 import de.amr.graph.grid.ui.rendering.WallPassageGridRenderer;
 
-public class BoardPreview extends JFrame {
+public class WorldPreview extends JFrame {
 
 	static int TS = 16;
 
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(BoardPreview::new);
+		SwingUtilities.invokeLater(WorldPreview::new);
 	}
 
 	private PacManWorld world;
 	private WorldGraph graph;
 
-	public BoardPreview() {
-		world = Worlds.ARCADE;
+	public WorldPreview() {
+		world = Worlds.CUSTOM;
 		graph = new WorldGraph(world);
 		setTitle("Pac-Man Maze Preview");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
