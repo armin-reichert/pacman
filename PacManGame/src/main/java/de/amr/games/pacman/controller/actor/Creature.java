@@ -202,52 +202,6 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	}
 
 	/**
-	 * Computes how many pixels this creature can move towards the given direction at its current speed
-	 * before entering an inaccessible neighbor tile.
-	 * 
-	 * @param tile tile from where to move
-	 * @param dir  move direction
-	 */
-	private float maxMoveDistance(Tile tile, Direction dir) {
-		float speed = currentSpeed(game);
-		if (canCrossBorderTo(dir)) {
-			return speed;
-		}
-		float offsetX = tf.x - tile.x(), offsetY = tf.y - tile.y();
-		switch (dir) {
-		case UP:
-			return Math.min(offsetY, speed);
-		case DOWN:
-			return Math.min(-offsetY, speed);
-		case LEFT:
-			return Math.min(offsetX, speed);
-		case RIGHT:
-			return Math.min(-offsetX, speed);
-		default:
-			throw new IllegalArgumentException("Illegal move direction: " + dir);
-		}
-	}
-
-	public void moveInsideMaze() {
-		Tile tile = tile();
-		float speed = maxMoveDistance(tile, moveDir);
-		if (wishDir != null && wishDir != moveDir) {
-			float wishDirSpeed = maxMoveDistance(tile, wishDir);
-			if (wishDirSpeed > 0) {
-				boolean corner = (wishDir == moveDir.left() || wishDir == moveDir.right());
-				if (corner && steering().requiresGridAlignment()) {
-					placeAt(tile);
-				}
-				moveDir = wishDir;
-				speed = wishDirSpeed;
-			}
-		}
-		tf.setVelocity(Vector2f.smul(speed, moveDir.vector()));
-		tf.move();
-		enteredNewTile = !tile.equals(tile());
-	}
-
-	/**
 	 * @param up    key for moving up
 	 * @param right key for moving right
 	 * @param down  key for moving down
