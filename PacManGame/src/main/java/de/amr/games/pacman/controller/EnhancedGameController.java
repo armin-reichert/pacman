@@ -13,6 +13,7 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**
@@ -22,8 +23,8 @@ import de.amr.games.pacman.view.theme.Theme;
  */
 public class EnhancedGameController extends GameController {
 
-	public EnhancedGameController(Theme theme) {
-		super(theme);
+	public EnhancedGameController(PacManWorld world, Theme theme) {
+		super(world, theme);
 	}
 
 	@Override

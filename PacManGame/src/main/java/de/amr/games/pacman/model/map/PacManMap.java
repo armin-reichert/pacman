@@ -68,6 +68,12 @@ public class PacManMap implements PacManWorldStructure {
 		set1(right.row, right.col, B_TUNNEL);
 		portals.add(new Portal(Tile.at(left.col - 1, left.row), Tile.at(right.col + 1, right.row)));
 	}
+	
+	protected void setEnergizer(Tile tile) {
+		set0(tile.row, tile.col, B_WALL);
+		set1(tile.row, tile.col, B_FOOD);
+		set1(tile.row, tile.col, B_ENERGIZER);
+	}
 
 	@Override
 	public Stream<House> houses() {

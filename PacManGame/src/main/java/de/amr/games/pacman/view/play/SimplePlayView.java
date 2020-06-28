@@ -262,6 +262,11 @@ public class SimplePlayView extends BaseView {
 					g.setColor(tileColor(tile));
 					g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 				});
+			} else {
+				world.mapTiles().filter(world::containsEnergizer).forEach(tile -> {
+					g.setColor(Color.PINK);
+					g.fillOval(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
+				});
 			}
 			House theHouse = world.theHouse();
 			// draw door open when touched by ghost entering or leaving the house

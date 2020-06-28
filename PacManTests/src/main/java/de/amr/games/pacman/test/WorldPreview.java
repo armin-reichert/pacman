@@ -87,7 +87,7 @@ public class WorldPreview extends JFrame {
 			return "#";
 		}
 		if (world.containsSimplePellet(tile)) {
-			return "o";
+			return ".";
 		}
 		if (world.containsEnergizer(tile)) {
 			return "Ö";
