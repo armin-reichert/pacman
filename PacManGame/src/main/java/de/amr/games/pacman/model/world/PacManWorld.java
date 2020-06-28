@@ -152,59 +152,66 @@ public class PacManWorld implements PacManWorldStructure {
 		return false;
 	}
 
+	private boolean is1(Tile tile, byte bit) {
+		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, bit);
+	}
+
+	private void set(Tile tile, byte bit) {
+		if (insideMap(tile)) {
+			map.set1(toMap(tile.row), tile.col, bit);
+		}
+	}
+
+	private void clear(Tile tile, byte bit) {
+		if (insideMap(tile)) {
+			map.set0(toMap(tile.row), tile.col, bit);
+		}
+	}
+
 	public boolean isInaccessible(Tile tile) {
 		if (insideMap(tile)) {
-			return map.is1(toMap(tile.row), tile.col, B_WALL);
+			return is1(tile, B_WALL);
 		}
 		return !isPortal(tile);
 	}
 
 	public boolean isTunnel(Tile tile) {
-		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_TUNNEL);
+		return is1(tile, B_TUNNEL);
 	}
 
 	public boolean isIntersection(Tile tile) {
-		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_INTERSECTION);
+		return is1(tile, B_INTERSECTION);
 	}
 
 	public boolean isFood(Tile tile) {
-		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_FOOD);
+		return is1(tile, B_FOOD);
 	}
 
-	public boolean isEatenFood(Tile tile) {
-		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_EATEN);
+	public boolean isFoodEaten(Tile tile) {
+		return is1(tile, B_EATEN);
 	}
 
 	public boolean isEnergizer(Tile tile) {
-		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_ENERGIZER);
+		return is1(tile, B_ENERGIZER);
 	}
 
 	public boolean containsSimplePellet(Tile tile) {
-		return isFood(tile) && !isEnergizer(tile) && !isEatenFood(tile);
+		return isFood(tile) && !isEnergizer(tile) && !isFoodEaten(tile);
 	}
 
 	public boolean containsEnergizer(Tile tile) {
-		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_ENERGIZER)
-				&& map.is0(toMap(tile.row), tile.col, B_EATEN);
+		return isEnergizer(tile) && !isFoodEaten(tile);
 	}
 
 	public boolean containsFood(Tile tile) {
-		return insideMap(tile) && map.is0(toMap(tile.row), tile.col, B_EATEN) && map.is1(toMap(tile.row), tile.col, B_FOOD);
-	}
-
-	public boolean containsEatenFood(Tile tile) {
-		return insideMap(tile) && map.is1(toMap(tile.row), tile.col, B_EATEN) && map.is1(toMap(tile.row), tile.col, B_FOOD);
+		return isFood(tile) && !isFoodEaten(tile);
 	}
 
 	public void eatFood(Tile tile) {
-		if (insideMap(tile)) {
-			map.set1(toMap(tile.row), tile.col, B_EATEN);
-		}
+		set(tile, B_EATEN);
 	}
 
 	public void restoreFood(Tile tile) {
-		if (insideMap(tile)) {
-			map.set0(toMap(tile.row), tile.col, B_EATEN);
-		}
+		clear(tile, B_EATEN);
 	}
 }

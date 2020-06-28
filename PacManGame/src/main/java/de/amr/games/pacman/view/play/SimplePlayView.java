@@ -244,7 +244,7 @@ public class SimplePlayView extends BaseView {
 		private void drawCrowdedMaze(Graphics2D g) {
 			spriteFullMaze.draw(g, 0, 3 * Tile.SIZE);
 			// hide eaten food
-			game.world.mapTiles().filter(game.world::containsEatenFood).forEach(tile -> {
+			game.world.mapTiles().filter(game.world::isFoodEaten).forEach(tile -> {
 				g.setColor(tileColor(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
