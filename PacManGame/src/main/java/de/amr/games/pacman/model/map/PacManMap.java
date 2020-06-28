@@ -61,6 +61,14 @@ public class PacManMap implements PacManWorldStructure {
 	protected List<Portal> portals = new ArrayList<>();
 	protected List<OneWayTile> oneWayTiles = new ArrayList<>();
 
+	protected void addPortal(Tile left, Tile right) {
+		set0(left.row, left.col, B_WALL);
+		set1(left.row, left.col, B_TUNNEL);
+		set0(right.row, right.col, B_WALL);
+		set1(right.row, right.col, B_TUNNEL);
+		portals.add(new Portal(Tile.at(left.col - 1, left.row), Tile.at(right.col + 1, right.row)));
+	}
+
 	@Override
 	public Stream<House> houses() {
 		return houses.stream();
