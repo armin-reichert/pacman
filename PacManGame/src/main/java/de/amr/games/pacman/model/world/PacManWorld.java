@@ -27,7 +27,7 @@ public class PacManWorld implements PacManWorldStructure {
 	public PacManWorld(PacManMap map) {
 		this.map = map;
 		// inside corners, assume wall layer ot thickness 1 around maze
-		int left = 1, right = width() - 2, top = 1, bottom = height() - 2;
+		int left = 1, right = width() - 2, top = 4, bottom = height() - 4;
 		cornerNW = Tile.at(left, top);
 		cornerNE = Tile.at(right, top);
 		cornerSW = Tile.at(left, bottom);

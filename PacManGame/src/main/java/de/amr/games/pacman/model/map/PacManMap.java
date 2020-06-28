@@ -1,6 +1,7 @@
 package de.amr.games.pacman.model.map;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -29,8 +30,11 @@ public class PacManMap implements PacManWorldStructure {
 
 	private final byte[][] data;
 
-	public PacManMap(byte[][] data) {
-		this.data = data;
+	public PacManMap(byte[][] bytes) {
+		data = new byte[bytes.length][];
+		for (int i = 0; i < bytes.length; ++i) {
+			data[i] = Arrays.copyOf(bytes[i], bytes[0].length);
+		}
 	}
 
 	@Override
@@ -68,7 +72,7 @@ public class PacManMap implements PacManWorldStructure {
 		set1(right.row, right.col, B_TUNNEL);
 		portals.add(new Portal(Tile.at(left.col - 1, left.row), Tile.at(right.col + 1, right.row)));
 	}
-	
+
 	protected void setEnergizer(Tile tile) {
 		set0(tile.row, tile.col, B_WALL);
 		set1(tile.row, tile.col, B_FOOD);
