@@ -80,12 +80,12 @@ public class ArcadeMap extends PacManMap {
 		portals.add(new Portal(Tile.at(-1, 17), Tile.at(28, 17)));
 
 		//@formatter:off
-		oneWayTiles = Arrays.asList(
+		oneWayTiles.addAll(Arrays.asList(
 				new OneWayTile(12, 13, Direction.DOWN), 
 				new OneWayTile(15, 13, Direction.DOWN),
 				new OneWayTile(12, 25, Direction.DOWN), 
 				new OneWayTile(15, 25, Direction.DOWN)
-		);
+		));
 		//@formatter:on
 	}
 }

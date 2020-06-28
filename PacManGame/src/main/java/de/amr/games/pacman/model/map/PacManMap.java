@@ -55,11 +55,11 @@ public class PacManMap implements PacManWorldStructure {
 		data[row][col] |= (1 << bit);
 	}
 
-	protected List<House> houses = new ArrayList<>();
 	protected Seat pacManSeat;
 	protected Tile bonusTile;
-	protected List<Portal> portals = new ArrayList<>();
-	protected List<OneWayTile> oneWayTiles = new ArrayList<>();
+	protected final List<House> houses = new ArrayList<>();
+	protected final List<Portal> portals = new ArrayList<>();
+	protected final List<OneWayTile> oneWayTiles = new ArrayList<>();
 
 	protected void addPortal(Tile left, Tile right) {
 		set0(left.row, left.col, B_WALL);
