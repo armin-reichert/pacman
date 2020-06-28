@@ -1,8 +1,5 @@
 package de.amr.games.pacman.controller.actor;
 
-import static de.amr.easy.game.Application.loginfo;
-import static de.amr.games.pacman.controller.actor.Creature.Movement.MOVING_INSIDE_MAZE;
-import static de.amr.games.pacman.controller.actor.Creature.Movement.TELEPORTING;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.model.Game.sec;
 
@@ -14,7 +11,6 @@ import java.util.function.Supplier;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.SpriteMap;
-import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.controller.actor.steering.common.FollowingKeys;
 import de.amr.games.pacman.controller.actor.steering.common.HeadingForTargetTile;
@@ -25,12 +21,10 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.PacManWorld;
-import de.amr.games.pacman.model.world.Portal;
 import de.amr.games.pacman.model.world.Seat;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.api.FsmContainer;
-import de.amr.statemachine.core.StateMachine;
 
 /**
  * A creature (ghost, Pac-Man) is an entity that can move through the world and has a finite-state
@@ -42,70 +36,30 @@ import de.amr.statemachine.core.StateMachine;
  */
 public abstract class Creature<STATE> extends Entity implements WorldMover, FsmContainer<STATE, PacManGameEvent> {
 
-	enum Movement {
-		MOVING_INSIDE_MAZE, TELEPORTING;
-	}
-
 	public final Game game;
 	public final PacManWorld world;
 	public final String name;
-	public final SpriteMap sprites = new SpriteMap();
 	public Seat seat;
 
 	protected Fsm<STATE, PacManGameEvent> brain;
 	protected Map<STATE, Steering> steerings;
-	protected StateMachine<Movement, Void> movement;
+	protected MovementControl movement;
 	protected Direction moveDir;
 	protected Direction wishDir;
 	protected Tile targetTile;
 	protected boolean enteredNewTile;
-	protected Portal portalEntered;
+
+	public final SpriteMap sprites = new SpriteMap();
 
 	public Creature(Game game, String name, Map<STATE, Steering> steerings) {
 		this.game = game;
 		this.world = game.world;
 		this.name = name;
+		this.movement = new MovementControl(this);
 		this.steerings = steerings;
 		tf.width = Tile.SIZE;
 		tf.height = Tile.SIZE;
-		movement = StateMachine
-		//@formatter:off
-			.beginStateMachine(Movement.class, Void.class)
-				.description(String.format("[%s movement]", name))
-				.initialState(MOVING_INSIDE_MAZE)
-				.states()
-					.state(MOVING_INSIDE_MAZE)
-						.onTick(() -> {
-							moveInsideMaze();
-							checkPortalEntered();
-						})
-					.state(TELEPORTING)
-				.transitions()
-					.when(MOVING_INSIDE_MAZE).then(TELEPORTING).condition(this::portalEntered)
-					.when(TELEPORTING).then(MOVING_INSIDE_MAZE).onTimeout().act(this::teleport)
-			.endStateMachine();
-		//@formatter:on
 		setTeleportingDuration(sec(0.5f));
-		movement.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
-	}
-
-	private boolean portalEntered() {
-		return portalEntered != null;
-	}
-
-	private void checkPortalEntered() {
-		Tile currentTile = tile();
-		world.portals().filter(portal -> portal.contains(currentTile)).findAny().ifPresent(portal -> {
-			portalEntered = portal;
-			loginfo("Entered portal at %s", currentTile);
-			visible = false;
-		});
-	}
-
-	private void teleport() {
-		portalEntered.teleport(this, tile(), moveDir);
-		portalEntered = null;
-		visible = true;
 	}
 
 	/**
@@ -181,11 +135,11 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	}
 
 	public boolean isTeleporting() {
-		return movement.is(TELEPORTING);
+		return movement.isTeleporting();
 	}
 
 	public void setTeleportingDuration(int ticks) {
-		movement.state(TELEPORTING).setTimer(ticks);
+		movement.setTeleportingDuration(ticks);
 	}
 
 	@Override
@@ -274,7 +228,7 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 		}
 	}
 
-	private void moveInsideMaze() {
+	public void moveInsideMaze() {
 		Tile tile = tile();
 		float speed = maxMoveDistance(tile, moveDir);
 		if (wishDir != null && wishDir != moveDir) {
