@@ -31,7 +31,7 @@ public class JumpingTestApp extends Application {
 class JumpingTestUI extends PlayView {
 
 	public JumpingTestUI() {
-		super(new Game(), new ArcadeTheme());
+		super(Game.defaultGame(), new ArcadeTheme());
 		showRoutes = false;
 		showStates = true;
 		showScores = false;

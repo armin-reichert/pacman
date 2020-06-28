@@ -31,7 +31,7 @@ public class LoadingView extends BaseView {
 
 	public LoadingView(Theme theme) {
 		super(theme);
-		game = new Game();
+		game = Game.defaultGame();
 		game.pacMan.takeClothes(theme);
 	}
 

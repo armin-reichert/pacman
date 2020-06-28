@@ -37,7 +37,7 @@ public class EnterGhostHouseTestApp extends Application {
 class EnterGhostHouseTestUI extends PlayView {
 
 	public EnterGhostHouseTestUI() {
-		super(new Game(), new ArcadeTheme());
+		super(Game.defaultGame(), new ArcadeTheme());
 		showRoutes = true;
 		showStates = true;
 		showScores = false;

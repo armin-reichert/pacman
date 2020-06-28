@@ -38,7 +38,7 @@ public class EscapeIntoCornerTestApp extends Application {
 class EscapeIntoCornerTestUI extends PlayView implements VisualController {
 
 	public EscapeIntoCornerTestUI() {
-		super(new Game(), new ArcadeTheme());
+		super(Game.defaultGame(), new ArcadeTheme());
 		showRoutes = true;
 		showStates = true;
 		showScores = false;

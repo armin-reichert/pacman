@@ -141,8 +141,8 @@ public class Game {
 	/**
 	 * Creates a game using the Arcade world and starting with the first level.
 	 */
-	public Game() {
-		this(Worlds.arcade(), 1);
+	public static Game defaultGame() {
+		return new Game(Worlds.arcade(), 1);
 	}
 
 	/**

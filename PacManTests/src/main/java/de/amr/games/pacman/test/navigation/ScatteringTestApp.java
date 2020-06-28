@@ -38,7 +38,7 @@ public class ScatteringTestApp extends Application {
 class ScatteringTestUI extends PlayView {
 
 	public ScatteringTestUI() {
-		super(new Game(), new ArcadeTheme());
+		super(Game.defaultGame(), new ArcadeTheme());
 		showRoutes = true;
 		showStates = false;
 		showScores = false;

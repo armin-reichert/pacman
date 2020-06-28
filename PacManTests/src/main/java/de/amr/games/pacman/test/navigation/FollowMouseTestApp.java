@@ -35,7 +35,7 @@ class FollowMouseTestUI extends PlayView {
 	private Tile mousePosition = Tile.at(0, 0);
 
 	public FollowMouseTestUI() {
-		super(new Game(), new ArcadeTheme());
+		super(Game.defaultGame(), new ArcadeTheme());
 		showRoutes = true;
 		showStates = false;
 		showScores = false;

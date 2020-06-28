@@ -39,7 +39,7 @@ public class LeaveGhostHouseTestApp extends Application {
 class LeaveGhostHouseTestUI extends PlayView {
 
 	public LeaveGhostHouseTestUI() {
-		super(new Game(), new ArcadeTheme());
+		super(Game.defaultGame(), new ArcadeTheme());
 		showRoutes = true;
 		showStates = true;
 		showScores = false;

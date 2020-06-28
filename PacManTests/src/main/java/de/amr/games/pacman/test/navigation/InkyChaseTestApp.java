@@ -40,7 +40,7 @@ public class InkyChaseTestApp extends Application {
 class InkyChaseTestUI extends PlayView {
 
 	public InkyChaseTestUI() {
-		super(new Game(), new ArcadeTheme());
+		super(Game.defaultGame(), new ArcadeTheme());
 		showRoutes = true;
 		showStates = false;
 		showScores = false;

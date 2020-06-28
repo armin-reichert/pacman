@@ -39,7 +39,7 @@ class MovingRandomlyTestUI extends PlayView {
 	boolean started;
 
 	public MovingRandomlyTestUI() {
-		super(new Game(), new ArcadeTheme());
+		super(Game.defaultGame(), new ArcadeTheme());
 		showRoutes = true;
 		showStates = true;
 		showScores = false;

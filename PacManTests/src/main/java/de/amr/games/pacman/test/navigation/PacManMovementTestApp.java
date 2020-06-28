@@ -43,7 +43,7 @@ class PacManMovementTestUI extends PlayView {
 	private PacMan pacMan;
 
 	public PacManMovementTestUI() {
-		super(new Game(), new ArcadeTheme());
+		super(Game.defaultGame(), new ArcadeTheme());
 		pacMan = game.pacMan;
 		showRoutes = false;
 		showStates = false;

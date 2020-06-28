@@ -53,7 +53,7 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 	PacManWorld world;
 
 	public TakeShortestPathTestUI() {
-		super(new Game(), new ArcadeTheme());
+		super(Game.defaultGame(), new ArcadeTheme());
 		world = game.world;
 		ghost = game.blinky;
 		Portal thePortal = world.portals().findAny().get();

@@ -11,16 +11,15 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 
-public class FollowTargetTilesTestApp extends Application {
+public class VisitCornersTestApp extends Application {
 
 	public static void main(String[] args) {
-		launch(FollowTargetTilesTestApp.class, args);
+		launch(VisitCornersTestApp.class, args);
 	}
 
 	@Override
@@ -28,7 +27,7 @@ public class FollowTargetTilesTestApp extends Application {
 		settings.width = 28 * Tile.SIZE;
 		settings.height = 36 * Tile.SIZE;
 		settings.scale = 2;
-		settings.title = "Follow Target Tiles";
+		settings.title = "Visit Corners";
 	}
 
 	@Override
@@ -44,16 +43,14 @@ class FollowTargetTilesTestUI extends PlayView {
 	private PacManWorld world;
 
 	public FollowTargetTilesTestUI() {
-		super(new Game(), new ArcadeTheme());
+		super(Game.defaultGame(), new ArcadeTheme());
 		world = game.world;
 		showRoutes = true;
 		showStates = false;
 		showScores = false;
 		showGrid = true;
-
-		House theHouse = world.theHouse();
-		targets = Arrays.asList(world.cornerNW(), theHouse.seat(0).tile, world.cornerNE(), world.cornerSE(),
-				world.pacManSeat().tile, world.cornerSW());
+		targets = Arrays.asList(world.cornerNW(), world.cornerNE(), world.cornerSE(), world.pacManSeat().tile,
+				world.cornerSW());
 	}
 
 	@Override
