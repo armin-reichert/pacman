@@ -21,7 +21,7 @@ public class WorldTests {
 
 	@Before
 	public void setup() {
-		world = Worlds.ARCADE;
+		world = Worlds.arcade();
 	}
 
 	@Test

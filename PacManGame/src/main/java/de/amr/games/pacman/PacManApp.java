@@ -95,7 +95,7 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
-		PacManWorld world = Worlds.ARCADE;
+		PacManWorld world = Worlds.arcade();
 		Theme theme = new ArcadeTheme();
 		controller = settings.simpleMode ? new GameController(world, theme) : new EnhancedGameController(world, theme);
 		setController(controller);

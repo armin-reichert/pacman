@@ -97,7 +97,7 @@ public abstract class Creature<STATE> extends Entity implements MazeMover, FsmCo
 		Tile currentTile = tile();
 		world.portals().filter(portal -> portal.contains(currentTile)).findAny().ifPresent(portal -> {
 			portalEntered = portal;
-			loginfo("Entered portal at %s", portalEntered);
+			loginfo("Entered portal at %s", currentTile);
 			visible = false;
 		});
 	}

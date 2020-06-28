@@ -142,7 +142,7 @@ public class Game {
 	 * Creates a game using the Arcade world and starting with the first level.
 	 */
 	public Game() {
-		this(Worlds.ARCADE, 1);
+		this(Worlds.arcade(), 1);
 	}
 
 	/**

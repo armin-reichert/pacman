@@ -29,7 +29,7 @@ public class WorldPreview extends JFrame {
 	private WorldGraph graph;
 
 	public WorldPreview() {
-		world = Worlds.CUSTOM;
+		world = Worlds.arcade();
 		graph = new WorldGraph(world);
 		setTitle("Pac-Man Maze Preview");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
