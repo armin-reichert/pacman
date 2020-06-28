@@ -7,6 +7,7 @@ import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.model.world.WorldGraph;
@@ -60,7 +61,7 @@ public class BoardPreview extends JFrame {
 			if (world.insideHouseOrDoor(tile)) {
 				return Color.CYAN;
 			}
-			if (world.isOneWayTile(tile)) {
+			if (world.isOneWayTile(tile, Direction.DOWN)) {
 				return Color.YELLOW;
 			}
 			if (world.isIntersection(tile)) {

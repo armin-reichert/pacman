@@ -332,7 +332,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onEntry(() -> {
 						game.ghostsOnStage().forEach(ghost -> {
 							ghost.init();
-							ghost.placeAt(game.world.houses().findFirst().get().seat(0).tile);
+							ghost.placeAt(game.world.theHouse().seat(0).tile);
 							ghost.setWishDir(new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT);
 							ghost.setState(new Random().nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});

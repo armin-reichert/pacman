@@ -273,14 +273,9 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawOneWayTiles(Graphics2D g) {
-		for (int row = 0; row < world.height(); ++row) {
-			for (int col = 0; col < world.width(); ++col) {
-				Tile tile = Tile.at(col, row);
-				if (world.isOneWayTile(tile)) {
-					drawDirectionIndicator(g, Color.WHITE, Direction.DOWN, tile.centerX(), tile.y());
-				}
-			}
-		}
+		world.oneWayTiles().forEach(oneWay -> {
+			drawDirectionIndicator(g, Color.WHITE, oneWay.dir, oneWay.tile.centerX(), oneWay.tile.y());
+		});
 	}
 
 	private void drawGhostSeats(Graphics2D g) {

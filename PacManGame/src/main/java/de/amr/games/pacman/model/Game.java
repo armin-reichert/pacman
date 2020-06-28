@@ -193,7 +193,7 @@ public class Game {
 
 		pacMan.seat = world.pacManSeat();
 
-		House theHouse = world.houses().findFirst().get();
+		House theHouse = world.theHouse();
 		blinky.seat = theHouse.seat(0);
 		inky.seat = theHouse.seat(1);
 		pinky.seat = theHouse.seat(2);
