@@ -1,5 +1,6 @@
 package de.amr.games.pacman.model.world;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -11,8 +12,8 @@ import java.util.stream.Stream;
  */
 public class House {
 
-	private final List<Door> doors;
 	private final Set<Tile> room;
+	private final List<Door> doors;
 	private final List<Seat> seats;
 
 	public House(Set<Tile> room, List<Door> doors, List<Seat> seats) {
@@ -26,7 +27,7 @@ public class House {
 	}
 
 	public Set<Tile> room() {
-		return room;
+		return Collections.unmodifiableSet(room);
 	}
 
 	public Stream<Seat> seats() {

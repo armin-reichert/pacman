@@ -19,6 +19,9 @@ public class ArcadeMap extends PacManMap {
 	static final byte[][] DATA = {
 		//@formatter:off
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 		{ 1, 2, 2, 2, 2, 2,18, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2,18, 2, 2, 2, 2, 2, 1 },
 		{ 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1 },
 		{ 1, 6, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 6, 1 },
@@ -49,23 +52,28 @@ public class ArcadeMap extends PacManMap {
 		{ 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1 },
 		{ 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,18, 2, 2,18, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1 },
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 		//@formatter:on
 	};
 
-	private final House ghostHouse;
-	private final Seat pacManSeat;
-	private final Tile bonusTile;
-	private final Portal portal;
-	private final List<OneWayTile> oneWayTiles;
+	protected final House ghostHouse;
+	protected final Seat pacManSeat;
+	protected final Tile bonusTile;
+	protected final Portal portal;
+	protected final List<OneWayTile> oneWayTiles;
 
 	public ArcadeMap() {
-		super(DATA);
+		this(DATA);
+	}
 
+	protected ArcadeMap(byte[][] data) {
+		super(data);
 		// ghost house
+		int top = 16, left = 11, w = 6, h = 4;
 		Set<Tile> room = new HashSet<>();
-		int left = 11, right = 16, top = 16, bottom = 18;
-		for (int row = top; row <= bottom; ++row) {
-			for (int col = left; col <= right; ++col) {
+		for (int row = top; row < top + h; ++row) {
+			for (int col = left; col < left + w; ++col) {
 				room.add(Tile.at(col, row));
 			}
 		}

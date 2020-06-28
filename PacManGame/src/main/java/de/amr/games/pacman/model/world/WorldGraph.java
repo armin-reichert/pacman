@@ -33,7 +33,7 @@ public class WorldGraph extends GridGraph<Tile, Void> {
 		fill();
 		//@formatter:off
 		edges()
-			.filter(edge -> world.isInaccessible(tile(edge.either())) || world.isInaccessible(tile(edge.other())))
+			.filter(edge -> !world.isAccessible(tile(edge.either())) || !world.isAccessible(tile(edge.other())))
 			.forEach(this::removeEdge);
 		/*@formatter:on*/
 	}

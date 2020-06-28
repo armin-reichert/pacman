@@ -1,9 +1,8 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
-
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
+import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.play.PlayView;
@@ -49,9 +48,9 @@ class OutsideTileTestUI extends PlayView {
 		game.world.eatFood();
 		theme.snd_ghost_chase().volume(0);
 		game.takePart(game.blinky);
-		game.blinky.behavior(CHASING,
-				game.blinky.isHeadingFor(() -> Tile.at(100, game.world.thePortal().right.row)));
-		game.blinky.setState(CHASING);
+		int row = world.portals().findFirst().map(portal -> portal.right.row).orElse((short) 100);
+		game.blinky.behavior(GhostState.CHASING, game.blinky.isHeadingFor(() -> Tile.at(100, row)));
+		game.blinky.setState(GhostState.CHASING);
 	}
 
 	@Override

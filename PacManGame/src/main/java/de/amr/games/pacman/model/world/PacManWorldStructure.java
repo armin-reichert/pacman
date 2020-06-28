@@ -20,7 +20,7 @@ public interface PacManWorldStructure {
 	 * @return world height in number of tiles
 	 */
 	int height();
-
+	
 	/**
 	 * @return houses in world
 	 */
@@ -49,17 +49,10 @@ public interface PacManWorldStructure {
 	Stream<Portal> portals();
 
 	/**
-	 * @return the single portal in the world
-	 */
-	default Portal thePortal() {
-		return portals().findFirst().get();
-	}
-
-	/**
 	 * @param tile some tile
 	 * @return {@code true} if this tile is located inside a portal
 	 */
-	default boolean isPortal(Tile tile) {
+	default boolean anyPortalContains(Tile tile) {
 		return portals().anyMatch(portal -> portal.contains(tile));
 	}
 

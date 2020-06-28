@@ -14,19 +14,11 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.map.PacManMap;
 
 /**
- * The Pac-Man game world. Adds 3 rows above and 2 rows below the map for displaying the scores and
- * counters.
+ * The Pac-Man game world.
  * 
  * @author Armin Reichert
  */
 public class PacManWorld implements PacManWorldStructure {
-
-	private static final int ROWS_ABOVE_MAP = 3;
-	private static final int ROWS_BELOW_MAP = 2;
-
-	private static int toMap(int row) {
-		return row - ROWS_ABOVE_MAP;
-	}
 
 	public final Tile cornerNW, cornerNE, cornerSW, cornerSE;
 
@@ -35,7 +27,7 @@ public class PacManWorld implements PacManWorldStructure {
 	public PacManWorld(PacManMap map) {
 		this.map = map;
 		// inside corners, assume wall layer ot thickness 1 around maze
-		int left = 1, right = map.width() - 2, top = ROWS_ABOVE_MAP + 1, bottom = ROWS_ABOVE_MAP + map.height() - 2;
+		int left = 1, right = width() - 2, top = 1, bottom = height() - 2;
 		cornerNW = Tile.at(left, top);
 		cornerNE = Tile.at(right, top);
 		cornerSW = Tile.at(left, bottom);
@@ -49,12 +41,11 @@ public class PacManWorld implements PacManWorldStructure {
 
 	@Override
 	public int height() {
-		return ROWS_ABOVE_MAP + map.height() + ROWS_BELOW_MAP;
+		return map.height();
 	}
 
 	public boolean insideMap(Tile tile) {
-		int mapRow = toMap(tile.row), mapCol = tile.col;
-		return 0 <= mapRow && mapRow < map.height() && 0 <= mapCol && mapCol < map.width();
+		return 0 <= tile.row && tile.row < height() && 0 <= tile.col && tile.col < width();
 	}
 
 	@Override
@@ -86,8 +77,7 @@ public class PacManWorld implements PacManWorldStructure {
 	 * @return the map tiles in world coordinates
 	 */
 	public Stream<Tile> mapTiles() {
-		return IntStream.range(ROWS_ABOVE_MAP * map.width(), (ROWS_ABOVE_MAP + map.height() + 1) * map.width())
-				.mapToObj(i -> Tile.at(i % map.width(), i / map.width()));
+		return IntStream.range(3 * width(), (height() + 4) * width()).mapToObj(i -> Tile.at(i % width(), i / width()));
 	}
 
 	/**
@@ -100,12 +90,10 @@ public class PacManWorld implements PacManWorldStructure {
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
 		//@formatter:off
 		return portals()
-				.filter(portal -> portal.contains(tile))
-				.findAny()
-				.map(portal -> portal.exitTile(tile, dir))
-				.orElse(
-						Tile.at(tile.col + n * dir.vector().roundedX(), tile.row + n * dir.vector().roundedY())
-				);
+			.filter(portal -> portal.contains(tile))
+			.findAny()
+			.map(portal -> portal.exitTile(tile, dir))
+			.orElse(Tile.at(tile.col + n * dir.vector().roundedX(), tile.row + n * dir.vector().roundedY()));
 		//@formatter:on
 	}
 
@@ -150,28 +138,32 @@ public class PacManWorld implements PacManWorldStructure {
 	}
 
 	private boolean is(Tile tile, byte bit) {
-		return insideMap(tile) && map.is(toMap(tile.row), tile.col, bit);
+		return insideMap(tile) && map.is(tile.row, tile.col, bit);
 	}
 
 	private void set(Tile tile, byte bit) {
 		if (insideMap(tile)) {
-			map.set1(toMap(tile.row), tile.col, bit);
+			map.set1(tile.row, tile.col, bit);
 		}
 	}
 
 	private void clear(Tile tile, byte bit) {
 		if (insideMap(tile)) {
-			map.set0(toMap(tile.row), tile.col, bit);
+			map.set0(tile.row, tile.col, bit);
 		}
 	}
 
-	public boolean isInaccessible(Tile tile) {
+	public boolean isAccessible(Tile tile) {
 		boolean inside = insideMap(tile);
-		return inside && is(tile, B_WALL) || !inside && !isPortal(tile);
+		return inside && !is(tile, B_WALL) || !inside && anyPortalContains(tile);
 	}
 
 	public boolean isTunnel(Tile tile) {
 		return is(tile, B_TUNNEL);
+	}
+
+	public boolean insidePortal(Tile tile) {
+		return map.anyPortalContains(tile);
 	}
 
 	public boolean isIntersection(Tile tile) {

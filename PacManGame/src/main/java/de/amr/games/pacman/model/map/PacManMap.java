@@ -1,5 +1,6 @@
 package de.amr.games.pacman.model.map;
 
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.PacManWorldStructure;
 
 /**
@@ -18,10 +19,15 @@ public abstract class PacManMap implements PacManWorldStructure {
 	public static final byte B_TUNNEL       = 5;
 	//@formatter:on
 
+	protected PacManWorld world;
 	private final byte[][] data;
 
 	public PacManMap(byte[][] data) {
 		this.data = data;
+	}
+
+	public void setWorld(PacManWorld world) {
+		this.world = world;
 	}
 
 	@Override
@@ -33,7 +39,7 @@ public abstract class PacManMap implements PacManWorldStructure {
 	public int height() {
 		return data.length;
 	}
-	
+
 	public boolean is(int row, int col, byte bit) {
 		return (data[row][col] & (1 << bit)) != 0;
 	}

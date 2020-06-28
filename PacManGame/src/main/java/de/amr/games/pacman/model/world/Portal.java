@@ -5,12 +5,12 @@ import de.amr.games.pacman.model.Direction;
 
 public class Portal {
 
+	public final Tile left, right;
+
 	public Portal(Tile left, Tile right) {
 		this.left = left;
 		this.right = right;
 	}
-
-	public final Tile left, right;
 
 	public boolean contains(Tile tile) {
 		return tile.equals(left) || tile.equals(right);

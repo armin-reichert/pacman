@@ -49,7 +49,7 @@ public class BoardPreview extends JFrame {
 		r.fnPassageColor = (cell, dir) -> Color.WHITE;
 		r.fnCellBgColor = cell -> {
 			Tile tile = graph.tile(cell);
-			if (world.isInaccessible(tile)) {
+			if (!world.isAccessible(tile)) {
 				return Color.LIGHT_GRAY;
 			}
 			if (world.isTunnel(tile)) {
@@ -83,8 +83,8 @@ public class BoardPreview extends JFrame {
 		if (tile.equals(world.pacManSeat().tile)) {
 			return "O";
 		}
-		if (world.isInaccessible(tile)) {
-			return "";
+		if (!world.isAccessible(tile)) {
+			return "#";
 		}
 		if (world.containsSimplePellet(tile)) {
 			return "o";
@@ -92,7 +92,7 @@ public class BoardPreview extends JFrame {
 		if (world.containsEnergizer(tile)) {
 			return "Ö";
 		}
-		if (world.portals().anyMatch(portal -> portal.contains(tile))) {
+		if (world.insidePortal(tile)) {
 			return "@";
 		}
 		return "";

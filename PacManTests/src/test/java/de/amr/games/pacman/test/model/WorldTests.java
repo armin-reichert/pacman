@@ -1,6 +1,7 @@
 package de.amr.games.pacman.test.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -31,9 +32,9 @@ public class WorldTests {
 		assertNotNull(world.theHouse().seat(2));
 		assertNotNull(world.theHouse().seat(3));
 		assertNotNull(world.bonusTile());
-		assertTrue(world.thePortal().left.equals(Tile.at(-1, 17)));
-		assertTrue(world.thePortal().right.equals(Tile.at(28, 17)));
-		assertTrue(world.isInaccessible(Tile.at(0, 3)));
+		assertTrue(world.portals().findFirst().get().left.equals(Tile.at(-1, 17)));
+		assertTrue(world.portals().findFirst().get().right.equals(Tile.at(28, 17)));
+		assertFalse(world.isAccessible(Tile.at(0, 3)));
 		assertTrue(world.isDoor(Tile.at(13, 15)));
 	}
 

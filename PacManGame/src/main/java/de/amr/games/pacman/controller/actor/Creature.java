@@ -1,5 +1,6 @@
 package de.amr.games.pacman.controller.actor;
 
+import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.controller.actor.Creature.Movement.MOVING_INSIDE_MAZE;
 import static de.amr.games.pacman.controller.actor.Creature.Movement.TELEPORTING;
 import static de.amr.games.pacman.model.Direction.RIGHT;
@@ -93,8 +94,10 @@ public abstract class Creature<STATE> extends Entity implements MazeMover, FsmCo
 	}
 
 	private void checkPortalEntered() {
-		world.portals().filter(portal -> portal.contains(tile())).findAny().ifPresent(portal -> {
+		Tile currentTile = tile();
+		world.portals().filter(portal -> portal.contains(currentTile)).findAny().ifPresent(portal -> {
 			portalEntered = portal;
+			loginfo("Entered portal at %s", portalEntered);
 			visible = false;
 		});
 	}
@@ -235,7 +238,7 @@ public abstract class Creature<STATE> extends Entity implements MazeMover, FsmCo
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		return !world.isInaccessible(neighbor);
+		return world.isAccessible(neighbor);
 	}
 
 	@Override
