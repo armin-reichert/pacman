@@ -55,7 +55,6 @@ public class PacManWorld implements PacManWorldStructure {
 		bonus = new Bonus();
 
 		pacMan = new PacMan(this);
-		pacMan.seat = pacManSeat();
 
 		House theHouse = theHouse();
 		blinky.seat = theHouse.seat(0);

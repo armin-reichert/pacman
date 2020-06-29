@@ -48,6 +48,7 @@ public class PacMan extends Creature<PacManState> {
 
 	public PacMan(PacManWorld world) {
 		super(world, "Pac-Man", new EnumMap<>(PacManState.class));
+		seat = world.pacManSeat();
 		/*@formatter:off*/
 		brain = beginStateMachine(PacManState.class, PacManGameEvent.class)
 
