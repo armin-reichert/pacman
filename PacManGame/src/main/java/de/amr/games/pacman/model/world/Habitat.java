@@ -18,8 +18,6 @@ public interface Habitat extends FoodContainer {
 
 	PacMan pacMan();
 
-	Bed pacManHome();
-
 	Ghost blinky();
 
 	Ghost inky();

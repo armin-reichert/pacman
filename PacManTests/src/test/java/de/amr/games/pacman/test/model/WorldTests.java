@@ -25,7 +25,7 @@ public class WorldTests {
 
 	@Test
 	public void testStructure() {
-		assertNotNull(world.pacManHome());
+		assertNotNull(world.pacManBed());
 		assertNotNull(world.theHouse().bed(0));
 		assertNotNull(world.theHouse().bed(1));
 		assertNotNull(world.theHouse().bed(2));

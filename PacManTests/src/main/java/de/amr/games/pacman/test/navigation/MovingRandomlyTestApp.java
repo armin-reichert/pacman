@@ -48,7 +48,7 @@ class MovingRandomlyTestUI extends TestUI {
 		world.removeFood();
 		world.ghosts().forEach(ghost -> {
 			world.putOnStage(ghost, true);
-			ghost.tf.setPosition(world.pacManHome().position);
+			ghost.tf.setPosition(world.pacManBed().position);
 			ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
 			ghost.state(FRIGHTENED).removeTimer();
 			ghost.setState(FRIGHTENED);

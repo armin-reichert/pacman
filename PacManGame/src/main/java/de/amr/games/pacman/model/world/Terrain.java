@@ -15,9 +15,8 @@ public interface Terrain {
 	 * @return height in number of tiles
 	 */
 	int height();
-	
-	public boolean contains(Tile tile);
 
+	public boolean contains(Tile tile);
 
 	default Tile cornerNW() {
 		return Tile.at(1, 4);
@@ -34,7 +33,7 @@ public interface Terrain {
 	default Tile cornerSE() {
 		return Tile.at(width() - 2, height() - 4);
 	}
-	
+
 	Tile tileToDir(Tile tile, Direction dir, int n);
 
 	Tile neighbor(Tile tile, Direction dir);
@@ -54,6 +53,8 @@ public interface Terrain {
 	default House theHouse() {
 		return houses().findFirst().get();
 	}
+
+	Bed pacManBed();
 
 	boolean isDoor(Tile tile);
 

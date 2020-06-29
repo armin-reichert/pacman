@@ -75,7 +75,7 @@ public class ArcadeWorldMap extends PacManWorldMap {
 				new Bed(3, left + 4, top + 1, Direction.UP));
 		//@formatter:on
 		houses.add(new House(room, Arrays.asList(door), seats));
-		pacManSeat = new Bed(4, 13, 26, Direction.RIGHT);
+		pacManBed = new Bed(4, 13, 26, Direction.RIGHT);
 		bonusTile = Tile.at(13, 20);
 		portals.add(new Portal(Tile.at(-1, 17), Tile.at(28, 17)));
 

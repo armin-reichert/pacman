@@ -59,7 +59,7 @@ public class PacMan extends Creature<PacManState> {
 					.onEntry(() -> {
 						power = digestion = 0;
 						visible = true;
-						moveDir = wishDir = world().pacManHome().startDir;
+						moveDir = wishDir = world().pacManBed().startDir;
 						tf.setPosition(bed().position);
 						sprites.forEach(Sprite::resetAnimation);
 						showFull();

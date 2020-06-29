@@ -32,7 +32,7 @@ public abstract class PacManWorldMap implements Terrain, FoodContainer {
 	//@formatter:on
 
 	private final byte[][] data;
-	protected Bed pacManSeat;
+	protected Bed pacManBed;
 	protected Tile bonusTile;
 	protected final List<House> houses = new ArrayList<>();
 	protected final List<Portal> portals = new ArrayList<>();
@@ -117,8 +117,9 @@ public abstract class PacManWorldMap implements Terrain, FoodContainer {
 		return houses.stream();
 	}
 
-	public Bed pacManSeat() {
-		return pacManSeat;
+	@Override
+	public Bed pacManBed() {
+		return pacManBed;
 	}
 
 	@Override

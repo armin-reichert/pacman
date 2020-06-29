@@ -54,7 +54,7 @@ class PacManWorldUsingMap implements PacManWorld {
 		creatures().forEach(creature -> creature.putIntoWorld(this));
 
 		// assign beds
-		pacMan.assignBed(pacManHome());
+		pacMan.assignBed(pacManBed());
 		House theHouse = theHouse();
 		blinky.assignBed(theHouse.bed(0));
 		inky.assignBed(theHouse.bed(1));
@@ -66,7 +66,7 @@ class PacManWorldUsingMap implements PacManWorld {
 
 		// common ghost behavior
 		ghosts().forEach(ghost -> {
-			ghost.behavior(LOCKED, ghost::bouncingOnSeat);
+			ghost.behavior(LOCKED, ghost::bouncingOnBed);
 			ghost.behavior(ENTERING_HOUSE, ghost.isGoingToBed(ghost.bed()));
 			ghost.behavior(LEAVING_HOUSE, ghost::leavingGhostHouse);
 			ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
@@ -109,8 +109,8 @@ class PacManWorldUsingMap implements PacManWorld {
 	}
 
 	@Override
-	public Bed pacManHome() {
-		return worldMap.pacManSeat();
+	public Bed pacManBed() {
+		return worldMap.pacManBed();
 	}
 
 	@Override

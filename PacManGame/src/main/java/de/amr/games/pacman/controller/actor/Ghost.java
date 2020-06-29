@@ -236,7 +236,7 @@ public class Ghost extends Creature<GhostState> {
 	/**
 	 * Lets the ghost jump up and down on its bed.
 	 */
-	public void bouncingOnSeat() {
+	public void bouncingOnBed() {
 		float dy = tf.y - bed().position.y;
 		if (dy < -4) {
 			setWishDir(DOWN);
