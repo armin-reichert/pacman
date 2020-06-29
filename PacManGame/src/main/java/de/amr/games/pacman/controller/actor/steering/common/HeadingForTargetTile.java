@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.controller.actor.WorldMover;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.world.PacManWorldImpl;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
 
 /**
@@ -90,7 +90,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	 * or the path would leave the map.
 	 */
 	private void computePath() {
-		PacManWorldImpl world = mover.world();
+		PacManWorld world = mover.world();
 		Tile currentTile = mover.tile(), targetTile = mover.targetTile();
 		Direction currentDir = mover.moveDir();
 		path.clear();
@@ -98,7 +98,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 		while (!currentTile.equals(targetTile)) {
 			Direction dir = bestDir(mover, currentDir, currentTile, targetTile);
 			Tile nextTile = world.neighbor(currentTile, dir);
-			if (!world.insideMap(nextTile) || path.contains(nextTile)) {
+			if (!world.contains(nextTile) || path.contains(nextTile)) {
 				return;
 			}
 			path.add(nextTile);

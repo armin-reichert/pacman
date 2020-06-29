@@ -224,7 +224,7 @@ public class Ghost extends Creature<GhostState> {
 					.condition(() -> subsequentState == CHASING)
 					
 				.when(DEAD).then(ENTERING_HOUSE)
-					.condition(() -> world().outsideAtDoor(tile()))
+					.condition(() -> world().isJustBeforeDoor(tile()))
 					
 		.endStateMachine();
 		/*@formatter:on*/

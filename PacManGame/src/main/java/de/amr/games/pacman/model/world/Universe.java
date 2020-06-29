@@ -3,13 +3,18 @@ package de.amr.games.pacman.model.world;
 import de.amr.games.pacman.model.world.map.ArcadeMap;
 import de.amr.games.pacman.model.world.map.CustomMap;
 
-public class Worlds {
+/**
+ * The universe.
+ * 
+ * @author Armin Reichert
+ */
+public interface Universe {
 
-	public static PacManWorldImpl arcade() {
+	public static PacManWorld arcadeWorld() {
 		return new PacManWorldImpl(new ArcadeMap());
 	}
 
-	public static FoodContainer custom() {
+	public static PacManWorld customWorld() {
 		return new PacManWorldImpl(new CustomMap());
 	}
 }

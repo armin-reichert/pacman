@@ -45,7 +45,7 @@ public class GhostHouseAccess {
 	}
 
 	public void update() {
-		if (world.isOnState(world.blinky()) && world.blinky().is(LOCKED)) {
+		if (world.isOnStage(world.blinky()) && world.blinky().is(LOCKED)) {
 			unlock(world.blinky());
 		}
 		Ghost nextToLeave = preferredLockedGhost().orElse(null);
@@ -106,7 +106,7 @@ public class GhostHouseAccess {
 	}
 
 	public Optional<Ghost> preferredLockedGhost() {
-		return Stream.of(world.pinky(), world.inky(), world.clyde()).filter(world::isOnState)
+		return Stream.of(world.pinky(), world.inky(), world.clyde()).filter(world::isOnStage)
 				.filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 

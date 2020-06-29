@@ -31,10 +31,14 @@ public interface Terrain {
 	default Tile cornerSE() {
 		return Tile.at(width() - 2, height() - 4);
 	}
-
+	
 	Tile tileToDir(Tile tile, Direction dir, int n);
 
 	Tile neighbor(Tile tile, Direction dir);
+
+	boolean isIntersection(Tile tile);
+
+	boolean isAccessible(Tile tile);
 
 	/**
 	 * @return houses in world
@@ -47,6 +51,12 @@ public interface Terrain {
 	default House theHouse() {
 		return houses().findFirst().get();
 	}
+
+	boolean isDoor(Tile tile);
+
+	boolean insideHouseOrDoor(Tile tile);
+
+	boolean isJustBeforeDoor(Tile tile);
 
 	/**
 	 * @return the portals in the world

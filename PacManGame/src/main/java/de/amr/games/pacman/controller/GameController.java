@@ -43,7 +43,7 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.PacManWorld;
-import de.amr.games.pacman.model.world.Worlds;
+import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.view.core.BaseView;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
@@ -83,7 +83,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		super(PacManGameState.class);
 		this.world = world;
 		this.theme = theme;
-		loadingView = new LoadingView(Worlds.arcade(), theme);
+		loadingView = new LoadingView(Universe.arcadeWorld(), theme);
 		introView = new IntroView(theme);
 		sound = new PacManSounds(world, theme);
 		buildStateMachine();

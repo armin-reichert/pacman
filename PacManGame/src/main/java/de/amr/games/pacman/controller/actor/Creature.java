@@ -20,7 +20,7 @@ import de.amr.games.pacman.controller.actor.steering.common.TakingFixedPath;
 import de.amr.games.pacman.controller.actor.steering.common.TakingShortestPath;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.world.PacManWorldImpl;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Seat;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.statemachine.api.Fsm;
@@ -37,7 +37,7 @@ import de.amr.statemachine.api.FsmContainer;
 public abstract class Creature<STATE> extends Entity implements WorldMover, FsmContainer<STATE, PacManGameEvent> {
 
 	public final String name;
-	private PacManWorldImpl world;
+	private PacManWorld world;
 	private Seat seat;
 	protected Fsm<STATE, PacManGameEvent> brain;
 	protected Map<STATE, Steering> steerings;
@@ -59,7 +59,7 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 		setTeleportingDuration(sec(0.5f));
 	}
 
-	public void setWorld(PacManWorldImpl world, Seat seat) {
+	public void setWorld(PacManWorld world, Seat seat) {
 		this.world = world;
 		this.seat = seat;
 	}
@@ -108,7 +108,7 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	}
 
 	@Override
-	public PacManWorldImpl world() {
+	public PacManWorld world() {
 		return world;
 	}
 

@@ -23,10 +23,10 @@ import de.amr.graph.pathfinder.impl.BreadthFirstSearch;
  */
 public class WorldGraph extends GridGraph<Tile, Void> {
 
-	private final PacManWorldImpl world;
+	private final PacManWorld world;
 	private int pathFinderCalls;
 
-	public WorldGraph(PacManWorldImpl world) {
+	public WorldGraph(PacManWorld world) {
 		super(world.width(), world.height(), Grid4Topology.get(), v -> null, (u, v) -> null, UndirectedEdge::new);
 		setDefaultVertexLabel(this::tile);
 		this.world = world;
@@ -47,7 +47,7 @@ public class WorldGraph extends GridGraph<Tile, Void> {
 	}
 
 	public List<Tile> shortestPath(Tile source, Tile target) {
-		if (world.insideMap(source) && world.insideMap(target)) {
+		if (world.contains(source) && world.contains(target)) {
 			GraphSearch pathfinder = createPathFinder(target);
 			Path path = pathfinder.findPath(vertex(source), vertex(target));
 			pathFinderCalls += 1;

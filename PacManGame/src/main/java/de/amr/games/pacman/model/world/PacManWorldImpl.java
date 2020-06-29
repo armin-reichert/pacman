@@ -36,7 +36,7 @@ import de.amr.games.pacman.model.world.map.PacManMap;
  * 
  * @author Armin Reichert
  */
-public class PacManWorldImpl implements PacManWorld {
+ class PacManWorldImpl implements PacManWorld {
 
 	private final PacMan pacMan;
 	private final Ghost blinky, pinky, inky, clyde;
@@ -102,24 +102,14 @@ public class PacManWorldImpl implements PacManWorld {
 		clyde.behavior(CHASING, clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : Tile.at(0, h - 1)));
 	}
 
-	@Override
-	public Ghost blinky() {
-		return blinky;
-	}
+	// habitat
 
+	/**
+	 * @return the habitat tiles
+	 */
 	@Override
-	public Ghost clyde() {
-		return clyde;
-	}
-
-	@Override
-	public Ghost inky() {
-		return inky;
-	}
-
-	@Override
-	public Ghost pinky() {
-		return pinky;
+	public Stream<Tile> habitatTiles() {
+		return IntStream.range(3 * width(), (height() + 4) * width()).mapToObj(i -> Tile.at(i % width(), i / width()));
 	}
 
 	@Override
@@ -128,8 +118,28 @@ public class PacManWorldImpl implements PacManWorld {
 	}
 
 	@Override
-	public int totalFoodCount() {
-		return totalFoodCount;
+	public Seat pacManSeat() {
+		return map.pacManSeat();
+	}
+
+	@Override
+	public Ghost blinky() {
+		return blinky;
+	}
+
+	@Override
+	public Ghost pinky() {
+		return pinky;
+	}
+
+	@Override
+	public Ghost inky() {
+		return inky;
+	}
+
+	@Override
+	public Ghost clyde() {
+		return clyde;
 	}
 
 	/**
@@ -164,17 +174,12 @@ public class PacManWorldImpl implements PacManWorld {
 		return creatures().filter(stage::contains);
 	}
 
-	@Override
-	public Bonus bonus() {
-		return bonus;
-	}
-
 	/**
 	 * @param actor a ghost or Pac-Man
 	 * @return {@code true} if the actor is currently on stage
 	 */
 	@Override
-	public boolean isOnState(Creature<?> actor) {
+	public boolean isOnStage(Creature<?> actor) {
 		return stage.contains(actor);
 	}
 
@@ -200,83 +205,11 @@ public class PacManWorldImpl implements PacManWorld {
 		}
 	}
 
-	@Override
-	public int width() {
-		return map.width();
-	}
+	// food container
 
 	@Override
-	public int height() {
-		return map.height();
-	}
-
-	public boolean insideMap(Tile tile) {
-		return 0 <= tile.row && tile.row < height() && 0 <= tile.col && tile.col < width();
-	}
-
-	@Override
-	public Stream<House> houses() {
-		return map.houses();
-	}
-
-	@Override
-	public Seat pacManSeat() {
-		return map.pacManSeat();
-	}
-
-	@Override
-	public Tile bonusTile() {
-		return map.bonusTile();
-	}
-
-	@Override
-	public Stream<Portal> portals() {
-		return map.portals();
-	}
-
-	@Override
-	public Stream<OneWayTile> oneWayTiles() {
-		return map.oneWayTiles();
-	}
-
-	/**
-	 * @return the habitat tiles
-	 */
-	@Override
-	public Stream<Tile> habitatTiles() {
-		return IntStream.range(3 * width(), (height() + 4) * width()).mapToObj(i -> Tile.at(i % width(), i / width()));
-	}
-
-	/**
-	 * @param tile reference tile
-	 * @param dir  some direction
-	 * @param n    number of tiles
-	 * @return The tile located <code>n</code> tiles away from the reference tile towards the given
-	 *         direction. This can be a tile outside of the world.
-	 */
-	@Override
-	public Tile tileToDir(Tile tile, Direction dir, int n) {
-		//@formatter:off
-		return portals()
-			.filter(portal -> portal.contains(tile))
-			.findAny()
-			.map(portal -> portal.exitTile(tile, dir))
-			.orElse(Tile.at(tile.col + n * dir.vector().roundedX(), tile.row + n * dir.vector().roundedY()));
-		//@formatter:on
-	}
-
-	/**
-	 * @param tile reference tile
-	 * @param dir  some direction
-	 * @return Neighbor towards the given direction. This can be a tile outside of the map.
-	 */
-	@Override
-	public Tile neighbor(Tile tile, Direction dir) {
-		return tileToDir(tile, dir, 1);
-	}
-
-	public Stream<Tile> neighbors(Tile tile) {
-		return Direction.dirs().map(dir -> neighbor(tile, dir));
+	public int totalFoodCount() {
+		return totalFoodCount;
 	}
 
 	@Override
@@ -287,55 +220,6 @@ public class PacManWorldImpl implements PacManWorld {
 	@Override
 	public void createFood() {
 		habitatTiles().forEach(this::restoreFood);
-	}
-
-	public boolean isDoor(Tile tile) {
-		return houses().flatMap(House::doors).anyMatch(door -> door.contains(tile));
-	}
-
-	public boolean insideHouseOrDoor(Tile tile) {
-		return isDoor(tile) || houses().map(House::room).anyMatch(room -> room.contains(tile));
-	}
-
-	public boolean outsideAtDoor(Tile tile) {
-		for (Direction dir : Direction.values()) {
-			Tile neighbor = neighbor(tile, dir);
-			if (isDoor(neighbor)) {
-				Door door = houses().flatMap(House::doors).filter(d -> d.contains(neighbor)).findFirst().get();
-				return door.intoHouse == dir;
-			}
-		}
-		return false;
-	}
-
-	private boolean is(Tile tile, byte bit) {
-		return insideMap(tile) && map.is(tile.row, tile.col, bit);
-	}
-
-	private void set(Tile tile, byte bit) {
-		if (insideMap(tile)) {
-			map.set1(tile.row, tile.col, bit);
-		}
-	}
-
-	private void clear(Tile tile, byte bit) {
-		if (insideMap(tile)) {
-			map.set0(tile.row, tile.col, bit);
-		}
-	}
-
-	public boolean isAccessible(Tile tile) {
-		boolean inside = insideMap(tile);
-		return inside && !is(tile, B_WALL) || !inside && anyPortalContains(tile);
-	}
-
-	@Override
-	public boolean isTunnel(Tile tile) {
-		return is(tile, B_TUNNEL);
-	}
-
-	public boolean isIntersection(Tile tile) {
-		return is(tile, B_INTERSECTION);
 	}
 
 	@Override
@@ -369,6 +253,130 @@ public class PacManWorldImpl implements PacManWorld {
 	public void restoreFood(Tile tile) {
 		if (is(tile, B_FOOD)) {
 			clear(tile, B_EATEN);
+		}
+	}
+
+	@Override
+	public Bonus bonus() {
+		return bonus;
+	}
+
+	// terrain
+
+	@Override
+	public int width() {
+		return map.width();
+	}
+
+	@Override
+	public int height() {
+		return map.height();
+	}
+
+	/**
+	 * @param tile reference tile
+	 * @param dir  some direction
+	 * @param n    number of tiles
+	 * @return The tile located <code>n</code> tiles away from the reference tile towards the given
+	 *         direction. This can be a tile outside of the world.
+	 */
+	@Override
+	public Tile tileToDir(Tile tile, Direction dir, int n) {
+		//@formatter:off
+		return portals()
+			.filter(portal -> portal.contains(tile))
+			.findAny()
+			.map(portal -> portal.exitTile(tile, dir))
+			.orElse(Tile.at(tile.col + n * dir.vector().roundedX(), tile.row + n * dir.vector().roundedY()));
+		//@formatter:on
+	}
+
+	/**
+	 * @param tile reference tile
+	 * @param dir  some direction
+	 * @return Neighbor towards the given direction. This can be a tile outside of the map.
+	 */
+	@Override
+	public Tile neighbor(Tile tile, Direction dir) {
+		return tileToDir(tile, dir, 1);
+	}
+
+	@Override
+	public boolean isAccessible(Tile tile) {
+		boolean inside = contains(tile);
+		return inside && !is(tile, B_WALL) || !inside && anyPortalContains(tile);
+	}
+
+	@Override
+	public boolean isIntersection(Tile tile) {
+		return is(tile, B_INTERSECTION);
+	}
+
+	@Override
+	public Stream<House> houses() {
+		return map.houses();
+	}
+
+	@Override
+	public Stream<Portal> portals() {
+		return map.portals();
+	}
+
+	@Override
+	public Stream<OneWayTile> oneWayTiles() {
+		return map.oneWayTiles();
+	}
+
+	@Override
+	public boolean isTunnel(Tile tile) {
+		return is(tile, B_TUNNEL);
+	}
+
+	@Override
+	public Tile bonusTile() {
+		return map.bonusTile();
+	}
+
+	@Override
+	public boolean isDoor(Tile tile) {
+		return houses().flatMap(House::doors).anyMatch(door -> door.contains(tile));
+	}
+
+	@Override
+	public boolean insideHouseOrDoor(Tile tile) {
+		return isDoor(tile) || houses().map(House::room).anyMatch(room -> room.contains(tile));
+	}
+
+	@Override
+	public boolean isJustBeforeDoor(Tile tile) {
+		for (Direction dir : Direction.values()) {
+			Tile neighbor = neighbor(tile, dir);
+			if (isDoor(neighbor)) {
+				Door door = houses().flatMap(House::doors).filter(d -> d.contains(neighbor)).findFirst().get();
+				return door.intoHouse == dir;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean contains(Tile tile) {
+		return 0 <= tile.row && tile.row < height() && 0 <= tile.col && tile.col < width();
+	}
+
+	private boolean is(Tile tile, byte bit) {
+		return contains(tile) && map.is(tile.row, tile.col, bit);
+	}
+
+	private void set(Tile tile, byte bit) {
+		if (contains(tile)) {
+			map.set1(tile.row, tile.col, bit);
+		}
+	}
+
+	private void clear(Tile tile, byte bit) {
+		if (contains(tile)) {
+			map.set0(tile.row, tile.col, bit);
 		}
 	}
 }

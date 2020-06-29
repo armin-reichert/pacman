@@ -35,7 +35,7 @@ public interface Habitat extends FoodContainer {
 
 	Stream<Creature<?>> creaturesOnStage();
 
-	boolean isOnState(Creature<?> creature);
+	boolean isOnStage(Creature<?> creature);
 
 	void putOnStage(Creature<?> creature, boolean onStage);
 }

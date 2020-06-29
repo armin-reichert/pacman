@@ -13,7 +13,7 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
-import de.amr.games.pacman.model.world.PacManWorldImpl;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**
@@ -23,7 +23,7 @@ import de.amr.games.pacman.view.theme.Theme;
  */
 public class EnhancedGameController extends GameController {
 
-	public EnhancedGameController(PacManWorldImpl world, Theme theme) {
+	public EnhancedGameController(PacManWorld world, Theme theme) {
 		super(world, theme);
 	}
 
@@ -81,7 +81,7 @@ public class EnhancedGameController extends GameController {
 	}
 
 	private void toggleGhostOnStage(Ghost ghost) {
-		world.putOnStage(ghost, !world.isOnState(ghost));
+		world.putOnStage(ghost, !world.isOnStage(ghost));
 	}
 
 	private void togglePacManOverflowBug() {
