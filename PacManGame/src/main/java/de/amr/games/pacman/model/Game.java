@@ -135,6 +135,8 @@ public class Game {
 		gameScore = new GameScore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
 		totalFoodCount = (int) world.mapTiles().filter(world::containsFood).count();
 		createActors();
+		pacMan.game = this;
+		ghosts().forEach(ghost -> ghost.game = this);
 		enterLevel(startLevel);
 	}
 
@@ -182,12 +184,12 @@ public class Game {
 
 		// create actor instances
 
-		pacMan = new PacMan(this);
-		blinky = new Ghost(this, "Blinky");
-		inky = new Ghost(this, "Inky");
-		pinky = new Ghost(this, "Pinky");
-		clyde = new Ghost(this, "Clyde");
-		bonus = new Bonus(this);
+		pacMan = new PacMan(world);
+		blinky = new Ghost(world, "Blinky");
+		inky = new Ghost(world, "Inky");
+		pinky = new Ghost(world, "Pinky");
+		clyde = new Ghost(world, "Clyde");
+		bonus = new Bonus();
 
 		// assign seats
 

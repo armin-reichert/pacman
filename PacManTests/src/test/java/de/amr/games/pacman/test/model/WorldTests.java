@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.model.world.Worlds;
@@ -53,7 +52,7 @@ public class WorldTests {
 		assertEquals(4, Tile.at(0, 0).distance(Tile.at(0, 4)), 0);
 		assertEquals(4, Tile.at(0, 0).distance(Tile.at(4, 0)), 0);
 		assertEquals(Math.sqrt(32), Tile.at(0, 0).distance(Tile.at(4, 4)), 0);
-		PacMan pacMan = new PacMan(Game.defaultGame());
+		PacMan pacMan = new PacMan(world);
 		pacMan.placeAt(Tile.at(-10, 4));
 		assertEquals(-10, pacMan.tile().col);
 		assertEquals(4, pacMan.tile().row);

@@ -26,6 +26,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -37,14 +38,17 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class PacMan extends Creature<PacManState> {
 
+	/** The game I am taking part in. */
+	public Game game;
+
 	/** Number of ticks Pac-Man has power after eating an energizer. */
 	public int power;
 
 	/** Number of ticks Pac-Man is not moving after having eaten a pellet. */
 	public int digestion;
 
-	public PacMan(Game game) {
-		super(game, "Pac-Man", new EnumMap<>(PacManState.class));
+	public PacMan(PacManWorld world) {
+		super(world, "Pac-Man", new EnumMap<>(PacManState.class));
 		/*@formatter:off*/
 		brain = beginStateMachine(PacManState.class, PacManGameEvent.class)
 

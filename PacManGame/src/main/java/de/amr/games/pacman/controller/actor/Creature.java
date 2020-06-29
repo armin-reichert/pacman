@@ -20,7 +20,6 @@ import de.amr.games.pacman.controller.actor.steering.common.TakingFixedPath;
 import de.amr.games.pacman.controller.actor.steering.common.TakingShortestPath;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Seat;
 import de.amr.games.pacman.model.world.Tile;
@@ -37,7 +36,6 @@ import de.amr.statemachine.api.FsmContainer;
  */
 public abstract class Creature<STATE> extends Entity implements WorldMover, FsmContainer<STATE, PacManGameEvent> {
 
-	public final Game game;
 	public final PacManWorld world;
 	public final String name;
 	public Seat seat;
@@ -52,9 +50,8 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 
 	public final SpriteMap sprites = new SpriteMap();
 
-	public Creature(Game game, String name, Map<STATE, Steering> steerings) {
-		this.game = game;
-		this.world = game.world;
+	public Creature(PacManWorld world, String name, Map<STATE, Steering> steerings) {
+		this.world = world;
 		this.name = name;
 		this.movement = new MovementControl(this, this::speedLimit);
 		this.steerings = steerings;
@@ -64,8 +61,7 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	}
 
 	/**
-	 * @param game the game
-	 * @return how many pixels this creature can move at most in the current frame
+	 * @return how fast (px/s) this creature can move at most
 	 */
 	public abstract float speedLimit();
 

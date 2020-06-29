@@ -512,7 +512,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				return;
 			}
 			if (game.isBonusDue()) {
-				game.bonus.activate(theme);
+				game.bonus.activate(theme, game.level.bonusSymbol, game.level.bonusValue);
 				loginfo("Bonus %s activated, time: %.2f sec", game.bonus, game.bonus.state().getDuration() / 60f);
 			}
 			if (found.energizer && game.level.pacManPowerSeconds > 0) {

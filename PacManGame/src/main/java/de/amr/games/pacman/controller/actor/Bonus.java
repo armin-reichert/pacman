@@ -12,7 +12,6 @@ import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.Symbol;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.theme.Theme;
@@ -30,14 +29,12 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Bonus extends Entity implements FsmContainer<BonusState, PacManGameEvent> {
 
-	public final Game game;
 	public Symbol symbol;
 	public int value;
 	public final SpriteMap sprites = new SpriteMap();
 	private final Fsm<BonusState, PacManGameEvent> brain;
 
-	public Bonus(Game game) {
-		this.game = game;
+	public Bonus() {
 		tf.width = Tile.SIZE;
 		tf.height = Tile.SIZE;
 		brain = buildFsm();
@@ -77,10 +74,10 @@ public class Bonus extends Entity implements FsmContainer<BonusState, PacManGame
 		return brain;
 	}
 
-	public void activate(Theme theme) {
+	public void activate(Theme theme, Symbol symbol, int value) {
 		brain.setState(ACTIVE);
-		symbol = game.level.bonusSymbol;
-		value = game.level.bonusValue;
+		this.symbol = symbol;
+		this.value = value;
 		sprites.set("symbol", theme.spr_bonusSymbol(symbol));
 		sprites.set("value", theme.spr_number(value));
 	}

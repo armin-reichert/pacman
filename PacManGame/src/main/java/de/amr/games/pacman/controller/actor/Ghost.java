@@ -35,6 +35,7 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.OneWayTile;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Seat;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.theme.Theme;
@@ -56,6 +57,15 @@ public class Ghost extends Creature<GhostState> {
 		INFECTABLE, ELROY1, ELROY2, IMMUNE;
 	};
 
+	/** State to enter after frightening state ends. */
+	public GhostState subsequentState;
+
+	/** Keeps track of steering changes. */
+	public Steering previousSteering;
+
+	/** The game this ghost is taking part in. */
+	public Game game;
+
 	public StateMachine<Sanity, Void> sanity =
 	//@formatter:off
 		beginStateMachine(Sanity.class, Void.class)
@@ -76,14 +86,8 @@ public class Ghost extends Creature<GhostState> {
 		.endStateMachine();
 	//@formatter:on
 
-	/** State to enter after frightening state ends. */
-	public GhostState subsequentState;
-
-	/** Keeps track of steering changes. */
-	public Steering previousSteering;
-
-	public Ghost(Game game, String name) {
-		super(game, name, new EnumMap<>(GhostState.class));
+	public Ghost(PacManWorld world, String name) {
+		super(world, name, new EnumMap<>(GhostState.class));
 		/*@formatter:off*/
 		brain = beginStateMachine(GhostState.class, PacManGameEvent.class)
 			 
