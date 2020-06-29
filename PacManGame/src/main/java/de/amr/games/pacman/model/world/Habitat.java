@@ -2,6 +2,7 @@ package de.amr.games.pacman.model.world;
 
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.controller.actor.Bonus;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
@@ -38,4 +39,6 @@ public interface Habitat extends FoodContainer {
 	boolean isOnStage(Creature<?> creature);
 
 	void putOnStage(Creature<?> creature, boolean onStage);
+
+	Bonus bonus();
 }

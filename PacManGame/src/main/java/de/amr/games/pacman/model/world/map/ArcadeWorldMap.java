@@ -13,7 +13,7 @@ import de.amr.games.pacman.model.world.Portal;
 import de.amr.games.pacman.model.world.Bed;
 import de.amr.games.pacman.model.world.Tile;
 
-public class ArcadeTerrain extends PacManWorldMap {
+public class ArcadeWorldMap extends PacManWorldMap {
 
 	static final byte[][] DATA = {
 		//@formatter:off
@@ -56,7 +56,7 @@ public class ArcadeTerrain extends PacManWorldMap {
 		//@formatter:on
 	};
 
-	public ArcadeTerrain() {
+	public ArcadeWorldMap() {
 		super(DATA);
 		// ghost house
 		int top = 16, left = 11, w = 6, h = 4;

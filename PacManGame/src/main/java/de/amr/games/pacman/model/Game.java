@@ -147,7 +147,7 @@ public class Game {
 			loginfo("Tile %s does not contain food", tile);
 			return 0;
 		}
-		world.eatFood(tile);
+		world.removeFood(tile);
 		level.eatenFoodCount += 1;
 		if (energizer) {
 			level.ghostsKilledByEnergizer = 0;

@@ -8,9 +8,6 @@ import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.model.world.map.PacManWorldMap.B_EATEN;
-import static de.amr.games.pacman.model.world.map.PacManWorldMap.B_ENERGIZER;
-import static de.amr.games.pacman.model.world.map.PacManWorldMap.B_FOOD;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
@@ -29,7 +26,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.map.PacManWorldMap;
 
 /**
- * The Pac-Man game world implementation.
+ * Map-based Pac-Man game world implementation.
  * 
  * @author Armin Reichert
  */
@@ -40,12 +37,10 @@ class PacManWorldUsingMap implements PacManWorld {
 	private Bonus bonus;
 
 	private final Set<Creature<?>> stage = new HashSet<>();
-	private final int totalFoodCount;
 	private PacManWorldMap worldMap;
 
 	public PacManWorldUsingMap(PacManWorldMap worldMap) {
 		this.worldMap = worldMap;
-		totalFoodCount = (int) habitatTiles().filter(this::containsFood).count();
 
 		// birth
 		pacMan = new PacMan();
@@ -201,57 +196,6 @@ class PacManWorldUsingMap implements PacManWorld {
 		}
 	}
 
-	// food container
-
-	@Override
-	public int totalFoodCount() {
-		return totalFoodCount;
-	}
-
-	@Override
-	public void removeFood() {
-		habitatTiles().forEach(this::eatFood);
-	}
-
-	@Override
-	public void createFood() {
-		habitatTiles().forEach(this::restoreFood);
-	}
-
-	@Override
-	public boolean containsFood(Tile tile) {
-		return worldMap.is(tile, B_FOOD) && !worldMap.is(tile, B_EATEN);
-	}
-
-	@Override
-	public boolean containsEatenFood(Tile tile) {
-		return worldMap.is(tile, B_FOOD) && worldMap.is(tile, B_EATEN);
-	}
-
-	@Override
-	public boolean containsSimplePellet(Tile tile) {
-		return containsFood(tile) && !worldMap.is(tile, B_ENERGIZER);
-	}
-
-	@Override
-	public boolean containsEnergizer(Tile tile) {
-		return containsFood(tile) && worldMap.is(tile, B_ENERGIZER);
-	}
-
-	@Override
-	public void eatFood(Tile tile) {
-		if (worldMap.is(tile, B_FOOD)) {
-			worldMap.set(tile, B_EATEN);
-		}
-	}
-
-	@Override
-	public void restoreFood(Tile tile) {
-		if (worldMap.is(tile, B_FOOD)) {
-			worldMap.clear(tile, B_EATEN);
-		}
-	}
-
 	@Override
 	public Bonus bonus() {
 		return bonus;
@@ -332,5 +276,53 @@ class PacManWorldUsingMap implements PacManWorld {
 	@Override
 	public boolean isJustBeforeDoor(Tile tile) {
 		return worldMap.isJustBeforeDoor(tile);
+	}
+
+	// food container
+
+	@Override
+	public boolean containsEatenFood(Tile tile) {
+		return worldMap.containsEatenFood(tile);
+	}
+
+	@Override
+	public boolean containsEnergizer(Tile tile) {
+		return worldMap.containsEnergizer(tile);
+	}
+
+	@Override
+	public boolean containsFood(Tile tile) {
+		return worldMap.containsFood(tile);
+	}
+
+	@Override
+	public boolean containsSimplePellet(Tile tile) {
+		return worldMap.containsSimplePellet(tile);
+	}
+
+	@Override
+	public void createFood(Tile tile) {
+		worldMap.createFood(tile);
+	}
+
+	@Override
+	public void createFood() {
+		worldMap.createFood();
+	}
+
+	@Override
+	public void removeFood(Tile tile) {
+		worldMap.removeFood(tile);
+	}
+
+	@Override
+	public void removeFood() {
+		worldMap.removeFood();
+
+	}
+
+	@Override
+	public int totalFoodCount() {
+		return worldMap.totalFoodCount();
 	}
 }

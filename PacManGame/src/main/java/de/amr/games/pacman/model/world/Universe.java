@@ -1,6 +1,6 @@
 package de.amr.games.pacman.model.world;
 
-import de.amr.games.pacman.model.world.map.ArcadeTerrain;
+import de.amr.games.pacman.model.world.map.ArcadeWorldMap;
 import de.amr.games.pacman.model.world.map.CustomTerrain;
 
 /**
@@ -11,7 +11,7 @@ import de.amr.games.pacman.model.world.map.CustomTerrain;
 public interface Universe {
 
 	public static PacManWorld arcadeWorld() {
-		return new PacManWorldUsingMap(new ArcadeTerrain());
+		return new PacManWorldUsingMap(new ArcadeWorldMap());
 	}
 
 	public static PacManWorld customWorld() {

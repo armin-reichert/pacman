@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.Bed;
 import de.amr.games.pacman.model.world.Door;
+import de.amr.games.pacman.model.world.FoodContainer;
 import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.OneWayTile;
 import de.amr.games.pacman.model.world.Portal;
@@ -19,7 +20,7 @@ import de.amr.games.pacman.model.world.Tile;
  * 
  * @author Armin Reichert
  */
-public class PacManWorldMap implements Terrain {
+public abstract class PacManWorldMap implements Terrain, FoodContainer {
 
 	//@formatter:off
 	public static final byte B_WALL         = 0;
@@ -36,6 +37,7 @@ public class PacManWorldMap implements Terrain {
 	protected final List<House> houses = new ArrayList<>();
 	protected final List<Portal> portals = new ArrayList<>();
 	protected final List<OneWayTile> oneWayTiles = new ArrayList<>();
+	private final int totalFoodCount;
 
 	public boolean is(int row, int col, byte bit) {
 		return (data[row][col] & (1 << bit)) != 0;
@@ -70,6 +72,15 @@ public class PacManWorldMap implements Terrain {
 		for (int i = 0; i < bytes.length; ++i) {
 			data[i] = Arrays.copyOf(bytes[i], bytes[0].length);
 		}
+		int foodCount = 0;
+		for (int row = 0; row < height(); ++row) {
+			for (int col = 0; col < width(); ++col) {
+				if (is(row, col, B_FOOD) && !is(row, col, B_EATEN)) {
+					++foodCount;
+				}
+			}
+		}
+		totalFoodCount = foodCount;
 	}
 
 	@Override
@@ -177,5 +188,68 @@ public class PacManWorldMap implements Terrain {
 	@Override
 	public boolean isTunnel(Tile tile) {
 		return is(tile, B_TUNNEL);
+	}
+
+	// food container
+
+	@Override
+	public int totalFoodCount() {
+		return totalFoodCount;
+	}
+
+	@Override
+	public void removeFood() {
+		for (int row = 0; row < height(); ++row) {
+			for (int col = 0; col < width(); ++col) {
+				if (is(row, col, B_FOOD)) {
+					set1(row, col, B_EATEN);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void createFood() {
+		for (int row = 0; row < height(); ++row) {
+			for (int col = 0; col < width(); ++col) {
+				if (is(row, col, B_FOOD)) {
+					set0(row, col, B_EATEN);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void removeFood(Tile tile) {
+		if (is(tile, B_FOOD)) {
+			set(tile, B_EATEN);
+		}
+	}
+
+	@Override
+	public void createFood(Tile tile) {
+		if (is(tile, B_FOOD)) {
+			clear(tile, B_EATEN);
+		}
+	}
+
+	@Override
+	public boolean containsFood(Tile tile) {
+		return is(tile, B_FOOD) && !is(tile, B_EATEN);
+	}
+
+	@Override
+	public boolean containsEatenFood(Tile tile) {
+		return is(tile, B_FOOD) && is(tile, B_EATEN);
+	}
+
+	@Override
+	public boolean containsSimplePellet(Tile tile) {
+		return containsFood(tile) && !is(tile, B_ENERGIZER);
+	}
+
+	@Override
+	public boolean containsEnergizer(Tile tile) {
+		return containsFood(tile) && is(tile, B_ENERGIZER);
 	}
 }

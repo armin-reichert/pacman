@@ -50,7 +50,7 @@ class PacManMovementTestUI extends TestUI {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
 				theme.snd_eatPill().play();
-				world.eatFood(foodFound.tile);
+				world.removeFood(foodFound.tile);
 				game.level.eatenFoodCount++;
 				if (game.remainingFoodCount() == 0) {
 					world.createFood();

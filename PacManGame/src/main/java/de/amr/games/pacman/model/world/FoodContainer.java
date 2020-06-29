@@ -1,7 +1,5 @@
 package de.amr.games.pacman.model.world;
 
-import de.amr.games.pacman.controller.actor.Bonus;
-
 /**
  * Food-related functions.
  * 
@@ -23,9 +21,7 @@ public interface FoodContainer {
 
 	boolean containsEnergizer(Tile tile);
 
-	void eatFood(Tile tile);
+	void removeFood(Tile tile);
 
-	void restoreFood(Tile tile);
-
-	Bonus bonus();
+	void createFood(Tile tile);
 }
