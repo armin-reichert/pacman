@@ -12,7 +12,7 @@ import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.Habitat;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.core.BaseView;
 import de.amr.games.pacman.view.theme.Theme;
@@ -30,7 +30,7 @@ public class LoadingView extends BaseView {
 	private int ghostCount;
 	private int ghostInc;
 
-	public LoadingView(PacManWorld world, Theme theme) {
+	public LoadingView(Habitat world, Theme theme) {
 		super(theme);
 		pacMan = world.pacMan();
 		pacMan.takeClothes(theme);

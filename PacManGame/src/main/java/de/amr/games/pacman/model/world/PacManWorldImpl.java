@@ -36,19 +36,19 @@ import de.amr.games.pacman.model.world.map.PacManMap;
  * 
  * @author Armin Reichert
  */
-public class PacManWorldImpl implements PacManWorld {
+public class PacManWorldImpl implements PacManWorld, FoodContainer {
 
 	private final PacMan pacMan;
 	private final Ghost blinky, pinky, inky, clyde;
 	public final Bonus bonus;
-	private PacManMap map;
 	private Set<Creature<?>> actorsTakingPart = new HashSet<>();
 	private int totalFoodCount;
+	private PacManMap map;
 
 	public PacManWorldImpl(PacManMap map) {
 		this.map = map;
 
-		totalFoodCount = (int) mapTiles().filter(this::containsFood).count();
+		totalFoodCount = (int) habitatTiles().filter(this::containsFood).count();
 
 		pacMan = new PacMan();
 		blinky = new Ghost("Blinky");
@@ -241,10 +241,10 @@ public class PacManWorldImpl implements PacManWorld {
 	}
 
 	/**
-	 * @return the map tiles in world coordinates
+	 * @return the habitat tiles
 	 */
 	@Override
-	public Stream<Tile> mapTiles() {
+	public Stream<Tile> habitatTiles() {
 		return IntStream.range(3 * width(), (height() + 4) * width()).mapToObj(i -> Tile.at(i % width(), i / width()));
 	}
 
@@ -282,12 +282,12 @@ public class PacManWorldImpl implements PacManWorld {
 
 	@Override
 	public void eatFood() {
-		mapTiles().forEach(this::eatFood);
+		habitatTiles().forEach(this::eatFood);
 	}
 
 	@Override
 	public void restoreFood() {
-		mapTiles().forEach(this::restoreFood);
+		habitatTiles().forEach(this::restoreFood);
 	}
 
 	public boolean isDoor(Tile tile) {
@@ -349,6 +349,7 @@ public class PacManWorldImpl implements PacManWorld {
 		return is(tile, B_FOOD) && is(tile, B_EATEN);
 	}
 
+	@Override
 	public boolean isEnergizer(Tile tile) {
 		return is(tile, B_ENERGIZER);
 	}
@@ -370,6 +371,7 @@ public class PacManWorldImpl implements PacManWorld {
 		}
 	}
 
+	@Override
 	public void restoreFood(Tile tile) {
 		if (is(tile, B_FOOD)) {
 			clear(tile, B_EATEN);

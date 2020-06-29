@@ -4,7 +4,7 @@ import java.util.concurrent.CompletableFuture;
 
 import de.amr.easy.game.assets.SoundClip;
 import de.amr.games.pacman.controller.actor.GhostState;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.Habitat;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**
@@ -14,12 +14,12 @@ import de.amr.games.pacman.view.theme.Theme;
  */
 public class PacManSounds {
 
-	private final PacManWorld world;
+	private final Habitat world;
 	private final Theme theme;
 	private CompletableFuture<Void> musicLoading;
 	private long lastPelletEatenTimeMillis;
 
-	public PacManSounds(PacManWorld world, Theme theme) {
+	public PacManSounds(Habitat world, Theme theme) {
 		this.world = world;
 		this.theme = theme;
 	}

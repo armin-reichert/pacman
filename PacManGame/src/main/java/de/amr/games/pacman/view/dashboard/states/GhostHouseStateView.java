@@ -22,7 +22,7 @@ import de.amr.games.pacman.controller.GhostHouseAccess;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.Habitat;
 import de.amr.games.pacman.view.theme.Theme;
 import net.miginfocom.swing.MigLayout;
 
@@ -34,7 +34,7 @@ import net.miginfocom.swing.MigLayout;
 public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	private GameController gameController;
-	private PacManWorld world;
+	private Habitat world;
 
 	private JTextField tfPinkyDots;
 	private JTextField tfInkyDots;

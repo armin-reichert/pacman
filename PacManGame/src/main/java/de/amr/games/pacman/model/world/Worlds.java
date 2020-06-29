@@ -9,7 +9,7 @@ public class Worlds {
 		return new PacManWorldImpl(new ArcadeMap());
 	}
 
-	public static PacManWorldImpl custom() {
+	public static FoodContainer custom() {
 		return new PacManWorldImpl(new CustomMap());
 	}
 }

@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.Habitat;
 
 /**
  * This class controls when and in which order locked ghosts can leave the ghost house.
@@ -26,12 +26,12 @@ import de.amr.games.pacman.model.world.PacManWorld;
 public class GhostHouseAccess {
 
 	private final Game game;
-	private final PacManWorld world;
+	private final Habitat world;
 	private final DotCounter globalCounter;
 	private final int[] ghostDotCount;
 	private int pacManStarvingTicks;
 
-	public GhostHouseAccess(Game game, PacManWorld world) {
+	public GhostHouseAccess(Game game, Habitat world) {
 		this.game = game;
 		this.world = world;
 		globalCounter = new DotCounter();

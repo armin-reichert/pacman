@@ -9,7 +9,7 @@ import java.util.List;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.WorldMover;
 import de.amr.games.pacman.controller.actor.steering.common.TakingPrecomputedPath;
-import de.amr.games.pacman.model.world.PacManWorldImpl;
+import de.amr.games.pacman.model.world.FoodContainer;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.model.world.WorldGraph;
 
@@ -57,7 +57,7 @@ public class FleeingToSafeCorner extends TakingPrecomputedPath {
 		//@formatter:on
 	}
 
-	private Comparator<Tile> byDist(PacManWorldImpl world, Tile refugeeTile, Tile chaserTile) {
+	private Comparator<Tile> byDist(FoodContainer world, Tile refugeeTile, Tile chaserTile) {
 		return (corner1, corner2) -> {
 			double dist1 = minDistFromPath(world, graph.shortestPath(refugeeTile, corner1), chaserTile);
 			double dist2 = minDistFromPath(world, graph.shortestPath(refugeeTile, corner2), chaserTile);
@@ -71,7 +71,7 @@ public class FleeingToSafeCorner extends TakingPrecomputedPath {
 		return Math.abs(dx) + Math.abs(dy);
 	}
 
-	private int minDistFromPath(PacManWorldImpl world, List<Tile> path, Tile tile) {
+	private int minDistFromPath(FoodContainer world, List<Tile> path, Tile tile) {
 		int min = Integer.MAX_VALUE;
 		for (Tile t : path) {
 			int dist = manhattanDist(t, tile);
