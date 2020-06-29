@@ -109,11 +109,6 @@ class PacManWorldUsingMap implements PacManWorld {
 	}
 
 	@Override
-	public Bed pacManBed() {
-		return worldMap.pacManBed();
-	}
-
-	@Override
 	public Ghost blinky() {
 		return blinky;
 	}
@@ -241,6 +236,11 @@ class PacManWorldUsingMap implements PacManWorld {
 	@Override
 	public Stream<House> houses() {
 		return worldMap.houses();
+	}
+
+	@Override
+	public Bed pacManBed() {
+		return worldMap.pacManBed();
 	}
 
 	@Override
