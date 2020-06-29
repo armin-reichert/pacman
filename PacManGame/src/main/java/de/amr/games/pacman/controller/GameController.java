@@ -43,6 +43,7 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.view.core.BaseView;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
@@ -50,6 +51,7 @@ import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.play.SimplePlayView.MazeMode;
+import de.amr.games.pacman.view.theme.ArcadeTheme;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
@@ -61,10 +63,10 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class GameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
-	public Game game;
+	protected Game game;
 	protected PacManWorld world;
 
-	public Theme theme;
+	protected Theme theme;
 	protected PacManSounds sound;
 
 	protected LoadingView loadingView;
@@ -78,17 +80,17 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public GhostCommand ghostCommand;
 	public GhostHouseAccess ghostHouse;
 
-	public GameController(PacManWorld world, Theme theme) {
+	public GameController() {
 		super(PacManGameState.class);
-		this.world = world;
-		this.theme = theme;
+		this.world = Universe.arcadeWorld();
+		this.theme = new ArcadeTheme();
 		loadingView = new LoadingView(world, theme);
 		introView = new IntroView(theme);
-		sound = new PacManSounds(world, theme);
 		buildStateMachine();
-		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
-		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent && !((FoodFoundEvent) e).energizer);
+	}
+
+	public Optional<Game> game() {
+		return Optional.ofNullable(game);
 	}
 
 	@Override
@@ -156,6 +158,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		game.gameScore.save();
 	}
 
+	public Theme theme() {
+		return theme;
+	}
+
 	public PacManWorld world() {
 		return world;
 	}
@@ -208,6 +214,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	private void buildStateMachine() {
+		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
+		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent && !((FoodFoundEvent) e).energizer);
 		//@formatter:off
 		beginStateMachine()
 			
@@ -218,7 +227,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			
 				.state(LOADING_MUSIC)
 					.onEntry(() -> {
-						sound.loadMusic();
+						sound = new PacManSounds(world, theme);
 						showView(loadingView);
 					})
 					

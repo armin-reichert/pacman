@@ -90,10 +90,10 @@ public class GameStateView extends JPanel implements Lifecycle {
 	}
 
 	private void createTableModel() {
-		if (gameController.game != null) {
+		gameController.game().ifPresent(game -> {
 			GameStateTableModel model = new GameStateTableModel(gameController);
 			table.setModel(model);
-		}
+		});
 	}
 
 	@Override
@@ -103,14 +103,14 @@ public class GameStateView extends JPanel implements Lifecycle {
 			if (!tableModel.hasGame()) {
 				createTableModel();
 			}
-			if (gameController.game != null) {
+			gameController.game().ifPresent(game -> {
 				table.update();
 				ghostHouseStateView.update();
 				updateStateLabel();
 				cbShowRoutes.setSelected(gameController.isShowingActorRoutes());
 				cbShowGrid.setSelected(gameController.isShowingGrid());
 				cbShowStates.setSelected(gameController.isShowingStates());
-			}
+			});
 		}
 	}
 

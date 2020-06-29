@@ -40,8 +40,8 @@ public class GameLevelView extends JPanel implements Lifecycle {
 
 	@Override
 	public void init() {
-		if (controller.game != null) {
-			table.setModel(new GameLevelTableModel(controller.game));
+		if (controller.game().isPresent()) {
+			table.setModel(new GameLevelTableModel(controller.game().get()));
 		} else {
 			table.setModel(new GameLevelTableModel());
 		}
@@ -54,12 +54,12 @@ public class GameLevelView extends JPanel implements Lifecycle {
 
 	@Override
 	public void update() {
-		if (controller.game != null) {
+		controller.game().ifPresent(game -> {
 			GameLevelTableModel tableModel = (GameLevelTableModel) table.getModel();
 			if (!tableModel.hasGame()) {
 				init();
 			}
 			tableModel.fireTableDataChanged();
-		}
+		});
 	}
 }

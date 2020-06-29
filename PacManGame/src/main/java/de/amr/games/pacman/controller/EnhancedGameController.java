@@ -13,8 +13,6 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
-import de.amr.games.pacman.model.world.PacManWorld;
-import de.amr.games.pacman.view.theme.Theme;
 
 /**
  * Enhanced game controller with all the bells and whistles.
@@ -22,10 +20,6 @@ import de.amr.games.pacman.view.theme.Theme;
  * @author Armin Reichert
  */
 public class EnhancedGameController extends GameController {
-
-	public EnhancedGameController(PacManWorld world, Theme theme) {
-		super(world, theme);
-	}
 
 	@Override
 	public void update() {
@@ -97,8 +91,7 @@ public class EnhancedGameController extends GameController {
 	private void toggleGhostFrightenedBehavior() {
 		if (settings.ghostsSafeCorner) {
 			settings.ghostsSafeCorner = false;
-			world.ghosts()
-					.forEach(ghost -> ghost.behavior(GhostState.FRIGHTENED, ghost.movingRandomly()));
+			world.ghosts().forEach(ghost -> ghost.behavior(GhostState.FRIGHTENED, ghost.movingRandomly()));
 			loginfo("Ghost escape behavior is: Random movement");
 		} else {
 			settings.ghostsSafeCorner = true;

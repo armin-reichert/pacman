@@ -3,6 +3,8 @@ package de.amr.games.pacman;
 import java.awt.DisplayMode;
 import java.util.ResourceBundle;
 
+import javax.swing.ImageIcon;
+
 import com.beust.jcommander.Parameter;
 
 import de.amr.easy.game.Application;
@@ -11,13 +13,9 @@ import de.amr.easy.game.ui.f2dialog.F2DialogAPI;
 import de.amr.games.pacman.controller.EnhancedGameController;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
-import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
-import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
-import de.amr.games.pacman.view.theme.Theme;
 
 /**
  * The Pac-Man game application.
@@ -95,21 +93,19 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
-		PacManWorld world = Universe.arcadeWorld();
-		Theme theme = new ArcadeTheme();
-		controller = settings.simpleMode ? new GameController(world, theme) : new EnhancedGameController(world, theme);
+		setIcon(new ImageIcon(getClass().getResource("/images/pacman-icon.png")).getImage());
+		controller = settings.simpleMode ? new GameController() : new EnhancedGameController();
 		setController(controller);
-		setIcon(theme.spr_ghostFrightened().frame(0));
 		onEntry(ApplicationState.CLOSING, state -> controller.saveScore());
 	}
 
 	@Override
 	public void configureF2Dialog(F2DialogAPI dialog) {
 		GameStateView gameStateView = new GameStateView();
-		dialog.addCustomTab("Game State", gameStateView, () -> controller.game != null);
+		dialog.addCustomTab("Game State", gameStateView, () -> controller.game().isPresent());
 		gameStateView.attachTo(controller);
 		GameLevelView gameLevelView = new GameLevelView();
-		dialog.addCustomTab("Game Level", gameLevelView, () -> controller.game != null);
+		dialog.addCustomTab("Game Level", gameLevelView, () -> controller.game().isPresent());
 		gameLevelView.attachTo(controller);
 	}
 }
