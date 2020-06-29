@@ -9,6 +9,7 @@ import java.util.Random;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.PacManApp;
+import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.PacManWorld;
@@ -23,7 +24,7 @@ import de.amr.games.pacman.view.theme.Theme;
  */
 public class LoadingView extends BaseView {
 
-	private final PacManWorld world;
+	private final PacMan pacMan;
 	private int alpha;
 	private int alphaInc;
 	private int ghostCount;
@@ -31,31 +32,31 @@ public class LoadingView extends BaseView {
 
 	public LoadingView(PacManWorld world, Theme theme) {
 		super(theme);
-		this.world = world;
-		world.pacMan.takeClothes(theme);
+		pacMan = world.pacMan();
+		pacMan.takeClothes(theme);
 	}
 
 	@Override
 	public void init() {
-		world.pacMan.init();
-		world.pacMan.setState(PacManState.EATING);
+		pacMan.init();
+		pacMan.setState(PacManState.EATING);
 		ghostCount = 0;
 		ghostInc = 1;
 	}
 
 	@Override
 	public void update() {
-		float x = world.pacMan.tf.getCenter().x;
+		float x = pacMan.tf.getCenter().x;
 		if (x > 0.9f * width() || x < 0.1 * width()) {
-			world.pacMan.setMoveDir(world.pacMan.moveDir().opposite());
+			pacMan.setMoveDir(pacMan.moveDir().opposite());
 			ghostCount += ghostInc;
 			if (ghostCount == 10 || ghostCount == 0) {
 				ghostInc = -ghostInc;
 			}
 		}
-		world.pacMan.tf.setVelocity(Vector2f.smul(2.5f, world.pacMan.moveDir().vector()));
-		world.pacMan.tf.move();
-		world.pacMan.sprites.select("walking-" + world.pacMan.moveDir());
+		pacMan.tf.setVelocity(Vector2f.smul(2.5f, pacMan.moveDir().vector()));
+		pacMan.tf.move();
+		pacMan.sprites.select("walking-" + pacMan.moveDir());
 		alpha += alphaInc;
 		if (alpha >= 160) {
 			alphaInc = -2;
@@ -76,8 +77,8 @@ public class LoadingView extends BaseView {
 			pen.fontSize(10);
 			pen.hcenter(PacManApp.texts.getString("loading_music"), width(), 18, Tile.SIZE);
 		}
-		drawEntity(g, world.pacMan, world.pacMan.sprites);
-		float x = width() / 2 - (ghostCount / 2) * 20, y = world.pacMan.tf.y + 20;
+		drawEntity(g, pacMan, pacMan.sprites);
+		float x = width() / 2 - (ghostCount / 2) * 20, y = pacMan.tf.y + 20;
 		for (int i = 0; i < ghostCount; ++i) {
 			int color = new Random().nextInt(4);
 			Direction dir = Direction.values()[new Random().nextInt(4)];

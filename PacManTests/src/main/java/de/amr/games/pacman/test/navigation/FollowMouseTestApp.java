@@ -42,9 +42,9 @@ class FollowMouseTestUI extends TestUI {
 	public void init() {
 		super.init();
 		world.eatFood();
-		world.takePart(world.blinky);
-		world.blinky.behavior(CHASING, world.blinky.isHeadingFor(() -> mousePosition));
-		world.blinky.setState(CHASING);
+		world.takePart(world.blinky(), true);
+		world.blinky().behavior(CHASING, world.blinky().isHeadingFor(() -> mousePosition));
+		world.blinky().setState(CHASING);
 	}
 
 	@Override
@@ -53,6 +53,6 @@ class FollowMouseTestUI extends TestUI {
 		if (Mouse.moved()) {
 			mousePosition = Tile.at(Mouse.getX() / Tile.SIZE, Mouse.getY() / Tile.SIZE);
 		}
-		world.blinky.update();
+		world.blinky().update();
 	}
 }

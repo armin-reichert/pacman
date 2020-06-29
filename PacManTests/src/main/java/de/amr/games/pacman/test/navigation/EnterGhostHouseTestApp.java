@@ -44,7 +44,7 @@ class EnterGhostHouseTestUI extends TestUI {
 	public void init() {
 		super.init();
 		world.eatFood();
-		world.takePart(world.inky);
+		world.takePart(world.inky(), true);
 		showMessage("SPACE = Enter/leave house", Color.WHITE, 8);
 	}
 
@@ -52,8 +52,8 @@ class EnterGhostHouseTestUI extends TestUI {
 	public void update() {
 		super.update();
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			world.inky.setState(world.blinky.isInsideHouse() ? LEAVING_HOUSE : ENTERING_HOUSE);
+			world.inky().setState(world.blinky().isInsideHouse() ? LEAVING_HOUSE : ENTERING_HOUSE);
 		}
-		world.inky.update();
+		world.inky().update();
 	}
 }

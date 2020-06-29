@@ -48,7 +48,7 @@ class InkyChaseTestUI extends TestUI {
 		super.init();
 		world.eatFood();
 		theme.snd_ghost_chase().volume(0);
-		Stream.of(world.pacMan, world.inky, world.blinky).forEach(world::takePart);
+		Stream.of(world.pacMan(), world.inky(), world.blinky()).forEach(actor -> world.takePart(actor, true));
 		world.ghostsOnStage().forEach(ghost -> {
 			ghost.subsequentState = CHASING;
 		});
@@ -59,10 +59,10 @@ class InkyChaseTestUI extends TestUI {
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			world.ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
-			world.pacMan.setState(PacManState.EATING);
+			world.pacMan().setState(PacManState.EATING);
 			clearMessage();
 		}
-		world.pacMan.update();
+		world.pacMan().update();
 		world.ghostsOnStage().forEach(Ghost::update);
 		super.update();
 	}

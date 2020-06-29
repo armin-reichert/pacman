@@ -13,7 +13,7 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.PacManWorldImpl;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**
@@ -23,7 +23,7 @@ import de.amr.games.pacman.view.theme.Theme;
  */
 public class EnhancedGameController extends GameController {
 
-	public EnhancedGameController(PacManWorld world, Theme theme) {
+	public EnhancedGameController(PacManWorldImpl world, Theme theme) {
 		super(world, theme);
 	}
 
@@ -43,9 +43,9 @@ public class EnhancedGameController extends GameController {
 		}
 		if (currentView == playView) {
 			if (Keyboard.keyPressedOnce("b")) {
-				toggleGhostOnStage(world.blinky);
+				toggleGhostOnStage(world.blinky());
 			} else if (Keyboard.keyPressedOnce("c")) {
-				toggleGhostOnStage(world.clyde);
+				toggleGhostOnStage(world.clyde());
 			} else if (Keyboard.keyPressedOnce("d")) {
 				toggleDemoMode();
 			} else if (Keyboard.keyPressedOnce("e")) {
@@ -55,7 +55,7 @@ public class EnhancedGameController extends GameController {
 			} else if (Keyboard.keyPressedOnce("g")) {
 				playView.showGrid = !playView.showGrid;
 			} else if (Keyboard.keyPressedOnce("i")) {
-				toggleGhostOnStage(world.inky);
+				toggleGhostOnStage(world.inky());
 			} else if (Keyboard.keyPressedOnce("k")) {
 				killAllGhosts();
 			} else if (Keyboard.keyPressedOnce("l")) {
@@ -65,7 +65,7 @@ public class EnhancedGameController extends GameController {
 			} else if (Keyboard.keyPressedOnce("o")) {
 				togglePacManOverflowBug();
 			} else if (Keyboard.keyPressedOnce("p")) {
-				toggleGhostOnStage(world.pinky);
+				toggleGhostOnStage(world.pinky());
 			} else if (Keyboard.keyPressedOnce("s")) {
 				playView.showStates = !playView.showStates;
 			} else if (Keyboard.keyPressedOnce("t")) {
@@ -102,7 +102,7 @@ public class EnhancedGameController extends GameController {
 			loginfo("Ghost escape behavior is: Random movement");
 		} else {
 			settings.ghostsSafeCorner = true;
-			world.ghosts().forEach(ghost -> ghost.behavior(GhostState.FRIGHTENED, ghost.isFleeingToSafeCorner(world.pacMan)));
+			world.ghosts().forEach(ghost -> ghost.behavior(GhostState.FRIGHTENED, ghost.isFleeingToSafeCorner(world.pacMan())));
 			loginfo("Ghosts escape behavior is: Fleeing to safe corners");
 		}
 	}

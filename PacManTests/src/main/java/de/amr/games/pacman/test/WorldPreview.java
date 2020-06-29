@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.PacManWorldImpl;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.model.world.WorldGraph;
 import de.amr.games.pacman.model.world.Worlds;
@@ -25,7 +25,7 @@ public class WorldPreview extends JFrame {
 		SwingUtilities.invokeLater(WorldPreview::new);
 	}
 
-	private PacManWorld world;
+	private PacManWorldImpl world;
 	private WorldGraph graph;
 
 	public WorldPreview() {
@@ -92,7 +92,7 @@ public class WorldPreview extends JFrame {
 		if (world.containsEnergizer(tile)) {
 			return "Ö";
 		}
-		if (world.insidePortal(tile)) {
+		if (world.anyPortalContains(tile)) {
 			return "@";
 		}
 		return "";

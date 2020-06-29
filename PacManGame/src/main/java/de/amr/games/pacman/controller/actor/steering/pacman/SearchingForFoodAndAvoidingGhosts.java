@@ -31,7 +31,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	public SearchingForFoodAndAvoidingGhosts(PacManWorld world, Game game) {
 		this.world = world;
 		this.game = game;
-		this.pacMan = world.pacMan;
+		this.pacMan = world.pacMan();
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	Optional<Tile> activeBonusAtMostAway(Tile here, int maxDistance) {
-		return world.bonus.is(BonusState.ACTIVE) && here.manhattanDistance(world.bonusTile()) <= maxDistance
+		return world.bonus().is(BonusState.ACTIVE) && here.manhattanDistance(world.bonusTile()) <= maxDistance
 				? Optional.of(world.bonusTile())
 				: Optional.empty();
 	}

@@ -87,11 +87,10 @@ public class Game {
 	 */
 	public Game(PacManWorld world, int startLevel) {
 		this.world = world;
-		world.pacMan.game = this;
+		world.pacMan().game = this;
 		world.ghosts().forEach(ghost -> ghost.game = this);
 		levelCounter = new ArrayList<>();
 		gameScore = new GameScore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
-		totalFoodCount = (int) world.mapTiles().filter(world::containsFood).count();
 		lives = 3;
 		score = 0;
 		enterLevel(startLevel);
@@ -205,5 +204,4 @@ public class Game {
 	public int killedGhostPoints() {
 		return POINTS_GHOST[level.ghostsKilledByEnergizer - 1];
 	}
-
 }

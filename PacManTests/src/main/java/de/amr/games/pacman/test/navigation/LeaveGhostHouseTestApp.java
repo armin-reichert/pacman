@@ -46,18 +46,18 @@ class LeaveGhostHouseTestUI extends TestUI {
 	public void init() {
 		super.init();
 		world.eatFood();
-		world.takePart(world.inky);
-		world.inky.subsequentState = SCATTERING;
+		world.takePart(world.inky(), true);
+		world.inky().subsequentState = SCATTERING;
 		showMessage("Press SPACE to unlock", Color.WHITE);
 	}
 
 	@Override
 	public void update() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE) && world.inky.is(GhostState.LOCKED)) {
-			world.inky.process(new GhostUnlockedEvent());
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE) && world.inky().is(GhostState.LOCKED)) {
+			world.inky().process(new GhostUnlockedEvent());
 			clearMessage();
 		}
-		world.inky.update();
+		world.inky().update();
 		super.update();
 	}
 }

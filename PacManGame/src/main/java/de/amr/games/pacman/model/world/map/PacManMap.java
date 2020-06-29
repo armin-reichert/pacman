@@ -7,7 +7,6 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.OneWayTile;
-import de.amr.games.pacman.model.world.PacManWorldStructure;
 import de.amr.games.pacman.model.world.Portal;
 import de.amr.games.pacman.model.world.Seat;
 import de.amr.games.pacman.model.world.Tile;
@@ -17,7 +16,7 @@ import de.amr.games.pacman.model.world.Tile;
  * 
  * @author Armin Reichert
  */
-public class PacManMap implements PacManWorldStructure {
+public class PacManMap {
 
 	//@formatter:off
 	public static final byte B_WALL         = 0;
@@ -37,12 +36,10 @@ public class PacManMap implements PacManWorldStructure {
 		}
 	}
 
-	@Override
 	public int width() {
 		return data[0].length;
 	}
 
-	@Override
 	public int height() {
 		return data.length;
 	}
@@ -79,27 +76,22 @@ public class PacManMap implements PacManWorldStructure {
 		set1(tile.row, tile.col, B_ENERGIZER);
 	}
 
-	@Override
 	public Stream<House> houses() {
 		return houses.stream();
 	}
 
-	@Override
 	public Seat pacManSeat() {
 		return pacManSeat;
 	}
 
-	@Override
 	public Tile bonusTile() {
 		return bonusTile;
 	}
 
-	@Override
 	public Stream<Portal> portals() {
 		return portals.stream();
 	}
 
-	@Override
 	public Stream<OneWayTile> oneWayTiles() {
 		return oneWayTiles.stream();
 	}

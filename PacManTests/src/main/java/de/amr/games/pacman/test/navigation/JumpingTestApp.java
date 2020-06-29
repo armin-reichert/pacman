@@ -38,7 +38,7 @@ class JumpingTestUI extends TestUI {
 	public void init() {
 		super.init();
 		world.eatFood();
-		world.ghosts().forEach(world::takePart);
+		world.ghosts().forEach(ghost -> world.takePart(ghost, true));
 	}
 
 	@Override

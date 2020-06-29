@@ -43,15 +43,15 @@ class OutsideTileTestUI extends TestUI {
 		super.init();
 		world.eatFood();
 		theme.snd_ghost_chase().volume(0);
-		world.takePart(world.blinky);
+		world.takePart(world.blinky(), true);
 		int row = world.portals().findFirst().map(portal -> portal.right.row).orElse((short) 100);
-		world.blinky.behavior(GhostState.CHASING, world.blinky.isHeadingFor(() -> Tile.at(100, row)));
-		world.blinky.setState(GhostState.CHASING);
+		world.blinky().behavior(GhostState.CHASING, world.blinky().isHeadingFor(() -> Tile.at(100, row)));
+		world.blinky().setState(GhostState.CHASING);
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		world.blinky.update();
+		world.blinky().update();
 	}
 }

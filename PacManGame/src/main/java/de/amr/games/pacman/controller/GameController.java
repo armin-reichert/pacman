@@ -63,7 +63,7 @@ import de.amr.statemachine.core.StateMachine;
 public class GameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
 	public Game game;
-	public PacManWorld world;
+	protected PacManWorld world;
 
 	public Theme theme;
 	protected PacManSounds sound;
@@ -114,13 +114,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		playView.house = ghostHouse;
 
 		world.creatures().forEach(actor -> {
-			world.takePart(actor);
+			world.takePart(actor, true);
 			actor.addEventListener(this::process);
 		});
 		world.ghosts().forEach(ghost -> {
 			ghost.fnSpeedLimit = () -> SpeedLimits.ghostSpeedLimit(ghost, game);
 		});
-		world.pacMan.fnSpeedLimit = () -> SpeedLimits.pacManSpeedLimit(world.pacMan, game);
+		world.pacMan().fnSpeedLimit = () -> SpeedLimits.pacManSpeedLimit(world.pacMan(), game);
 
 		setDemoMode(settings.demoMode);
 		app().f2Dialog().ifPresent(f2 -> f2.selectCustomTab(0));
@@ -157,12 +157,16 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		game.gameScore.save();
 	}
 
+	public PacManWorld world() {
+		return world;
+	}
+
 	public void setDemoMode(boolean on) {
 		settings.pacManImmortable = on;
 		if (on) {
-			world.pacMan.behavior(new SearchingForFoodAndAvoidingGhosts(world, game));
+			world.pacMan().behavior(new SearchingForFoodAndAvoidingGhosts(world, game));
 		} else {
-			world.pacMan.behavior(world.pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
+			world.pacMan().behavior(world.pacMan().isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		}
 	}
 
@@ -251,7 +255,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(CHANGING_LEVEL)
 					.timeoutAfter(() -> sec(mazeFlashingSeconds() + 6))
 					.onEntry(() -> {
-						world.pacMan.showFull();
+						world.pacMan().showFull();
 						ghostHouse.onLevelChange();
 						sound.stopAllClips();
 						playView.enableGhostAnimations(false);
@@ -295,16 +299,16 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(GHOST_DYING)
 					.timeoutAfter(sec(1))
 					.onEntry(() -> {
-						world.pacMan.visible = false;
+						world.pacMan().visible = false;
 					})
 					.onTick(() -> {
-						world.bonus.update();
+						world.bonus().update();
 						world.ghostsOnStage()
 							.filter(ghost -> ghost.is(GhostState.DEAD, GhostState.ENTERING_HOUSE))
 							.forEach(Ghost::update);
 					})
 					.onExit(() -> {
-						world.pacMan.visible = true;
+						world.pacMan().visible = true;
 					})
 				
 				.state(PACMAN_DYING)
@@ -318,12 +322,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 								dyingStartTime = waitTime + sec(1.5f),
 								dyingEndTime = dyingStartTime + sec(3f);
 						if (t == waitTime) {
-							world.bonus.deactivate();
+							world.bonus().deactivate();
 							world.ghostsOnStage().forEach(ghost -> ghost.visible = false);
-							world.pacMan.showFull().enableAnimation(false);
+							world.pacMan().showFull().enableAnimation(false);
 						}
 						else if (t == dyingStartTime) {
-							world.pacMan.showDying().enableAnimation(true);
+							world.pacMan().showDying().enableAnimation(true);
 							sound.pacManDied();
 						}
 						else if (t == dyingEndTime && game.lives > 0) {
@@ -440,7 +444,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			ghostCommand.update();
 			ghostHouse.update();
 			world.creaturesOnStage().forEach(Creature::update);
-			world.bonus.update();
+			world.bonus().update();
 			sound.updatePlayingSounds();
 		}
 
@@ -453,8 +457,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			sound.resumePlayingMusic();
 			ghostCommand.init();
 			world.ghostsOnStage().forEach(ghost -> ghost.init());
-			world.pacMan.init();
-			world.pacMan.setState(PacManState.EATING);
+			world.pacMan().init();
+			world.pacMan().setState(PacManState.EATING);
 			playView.init();
 			playView.enableGhostAnimations(true);
 			playView.mazeView.energizersBlinking.setEnabled(true);
@@ -485,21 +489,21 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				ghostHouse.onLifeLost();
 				sound.stopAll();
 				playView.mazeView.energizersBlinking.setEnabled(false);
-				world.pacMan.process(new PacManKilledEvent(ghost));
+				world.pacMan().process(new PacManKilledEvent(ghost));
 				enqueue(new PacManKilledEvent(ghost));
 				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.tile());
 			}
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
-			loginfo("PacMan found %s and wins %d points", world.bonus.symbol, world.bonus.value);
+			loginfo("PacMan found %s and wins %d points", world.bonus().symbol, world.bonus().value);
 			int livesBefore = game.lives;
-			game.score(world.bonus.value);
+			game.score(world.bonus().value);
 			sound.bonusEaten();
 			if (game.lives > livesBefore) {
 				sound.extraLife();
 			}
-			world.bonus.process(event);
+			world.bonus().process(event);
 		}
 
 		private void onFoodFound(PacManGameEvent event) {
@@ -517,13 +521,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				return;
 			}
 			if (game.isBonusDue()) {
-				world.bonus.activate(theme, game.level.bonusSymbol, game.level.bonusValue);
-				loginfo("Bonus %s activated, time: %.2f sec", world.bonus, world.bonus.state().getDuration() / 60f);
+				world.bonus().activate(theme, game.level.bonusSymbol, game.level.bonusValue);
+				loginfo("Bonus %s activated, time: %.2f sec", world.bonus(), world.bonus().state().getDuration() / 60f);
 			}
 			if (found.energizer && game.level.pacManPowerSeconds > 0) {
 				sound.pacManGainsPower();
 				ghostCommand.suspend();
-				world.pacMan.power = sec(game.level.pacManPowerSeconds);
+				world.pacMan().power = sec(game.level.pacManPowerSeconds);
 				world.ghostsOnStage().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
 			}
 		}

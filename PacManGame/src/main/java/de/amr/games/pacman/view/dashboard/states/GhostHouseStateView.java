@@ -122,7 +122,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	public void attachTo(GameController gameController) {
 		this.gameController = gameController;
-		world = gameController.world;
+		world = gameController.world();
 		init();
 	}
 
@@ -143,17 +143,17 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 			return;
 		}
 
-		tfPinkyDots.setText(formatDots(house, world.pinky));
+		tfPinkyDots.setText(formatDots(house, world.pinky()));
 		tfPinkyDots.setEnabled(!house.isGlobalDotCounterEnabled());
-		updateTrafficLight(trafficPinky, house, world.pinky);
+		updateTrafficLight(trafficPinky, house, world.pinky());
 
-		tfInkyDots.setText(formatDots(house, world.inky));
+		tfInkyDots.setText(formatDots(house, world.inky()));
 		tfInkyDots.setEnabled(!house.isGlobalDotCounterEnabled());
-		updateTrafficLight(trafficInky, house, world.inky);
+		updateTrafficLight(trafficInky, house, world.inky());
 
-		tfClydeDots.setText(formatDots(house, world.clyde));
+		tfClydeDots.setText(formatDots(house, world.clyde()));
 		tfClydeDots.setEnabled(!house.isGlobalDotCounterEnabled());
-		updateTrafficLight(trafficClyde, house, world.clyde);
+		updateTrafficLight(trafficClyde, house, world.clyde());
 
 		tfGlobalDots.setText(String.format("%d", house.globalDotCount()));
 		tfGlobalDots.setEnabled(house.isGlobalDotCounterEnabled());

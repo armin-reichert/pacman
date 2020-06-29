@@ -46,7 +46,7 @@ class TakeShortestPathTestUI extends TestUI {
 	int targetIndex;
 
 	public TakeShortestPathTestUI() {
-		ghost = world.blinky;
+		ghost = world.blinky();
 		Portal thePortal = world.portals().findAny().get();
 		House theHouse = world.houses().findAny().get();
 		targets = Arrays.asList(world.cornerSE(), Tile.at(15, 23), Tile.at(12, 23), world.cornerSW(),
@@ -64,7 +64,7 @@ class TakeShortestPathTestUI extends TestUI {
 		world.eatFood();
 		targetIndex = 0;
 		theme.snd_ghost_chase().volume(0);
-		world.takePart(ghost);
+		world.takePart(ghost, true);
 		Steering steering = ghost.isTakingShortestPath(() -> targets.get(targetIndex));
 		ghost.behavior(CHASING, steering);
 		ghost.behavior(FRIGHTENED, steering);

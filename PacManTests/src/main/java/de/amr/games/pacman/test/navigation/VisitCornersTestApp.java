@@ -1,7 +1,5 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Arrays;
@@ -10,6 +8,8 @@ import java.util.List;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.view.Pen;
+import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.model.world.Tile;
 
 public class VisitCornersTestApp extends Application {
@@ -34,6 +34,7 @@ public class VisitCornersTestApp extends Application {
 
 class FollowTargetTilesTestUI extends TestUI {
 
+	private Ghost ghost;
 	private List<Tile> targets;
 	private int current;
 
@@ -52,16 +53,17 @@ class FollowTargetTilesTestUI extends TestUI {
 		current = 0;
 		world.eatFood();
 		theme.snd_ghost_chase().volume(0);
-		world.takePart(world.blinky);
-		world.blinky.placeAt(targets.get(0));
-		world.blinky.behavior(CHASING, world.blinky.isHeadingFor(() -> targets.get(current)));
-		world.blinky.setState(CHASING);
-		world.blinky.steering().force();
+		ghost = world.blinky();
+		world.takePart(ghost, true);
+		ghost.placeAt(targets.get(0));
+		ghost.behavior(GhostState.CHASING, ghost.isHeadingFor(() -> targets.get(current)));
+		ghost.setState(GhostState.CHASING);
+		ghost.steering().force();
 	}
 
 	@Override
 	public void update() {
-		if (world.blinky.tile().equals(targets.get(current))) {
+		if (ghost.tile().equals(targets.get(current))) {
 			current += 1;
 			if (current == targets.size()) {
 				current = 0;
@@ -69,7 +71,7 @@ class FollowTargetTilesTestUI extends TestUI {
 				world.eatFood();
 			}
 		}
-		world.blinky.update();
+		ghost.update();
 		super.update();
 	}
 

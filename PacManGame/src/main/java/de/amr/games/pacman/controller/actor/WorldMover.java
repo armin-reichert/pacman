@@ -1,7 +1,7 @@
 package de.amr.games.pacman.controller.actor;
 
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.PacManWorldImpl;
 import de.amr.games.pacman.model.world.Tile;
 
 /**
@@ -29,7 +29,7 @@ public interface WorldMover {
 	/**
 	 * @return the world where this entity is moving in.
 	 */
-	PacManWorld world();
+	PacManWorldImpl world();
 
 	/**
 	 * @return the current move direction

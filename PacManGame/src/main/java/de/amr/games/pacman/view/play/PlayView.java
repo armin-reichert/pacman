@@ -179,8 +179,8 @@ public class PlayView extends SimplePlayView {
 
 	private void drawActorStates(Graphics2D g) {
 		world.ghostsOnStage().forEach(ghost -> drawGhostState(g, ghost));
-		drawPacManState(g, world.pacMan);
-		drawBonusState(g, world.bonus);
+		drawPacManState(g, world.pacMan());
+		drawBonusState(g, world.bonus());
 	}
 
 	private void drawPacManState(Graphics2D g, PacMan pacMan) {
@@ -329,10 +329,10 @@ public class PlayView extends SimplePlayView {
 		if (ghost.targetTile() == null) {
 			return;
 		}
-		if (ghost == world.inky) {
-			drawInkyChasing(g, world.inky);
-		} else if (ghost == world.clyde) {
-			drawClydeChasingArea(g, world.clyde);
+		if (ghost == world.inky()) {
+			drawInkyChasing(g, world.inky());
+		} else if (ghost == world.clyde()) {
+			drawClydeChasingArea(g, world.clyde());
 		}
 	}
 
@@ -378,18 +378,18 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawInkyChasing(Graphics2D g, Ghost inky) {
-		if (!inky.is(CHASING) || !world.takesPart(world.blinky)) {
+		if (!inky.is(CHASING) || !world.takesPart(world.blinky())) {
 			return;
 		}
 		int x1, y1, x2, y2, x3, y3;
-		x1 = world.blinky.tile().centerX();
-		y1 = world.blinky.tile().centerY();
+		x1 = world.blinky().tile().centerX();
+		y1 = world.blinky().tile().centerY();
 		x2 = inky.targetTile().centerX();
 		y2 = inky.targetTile().centerY();
 		g.setColor(Color.GRAY);
 		g.drawLine(x1, y1, x2, y2);
-		Tile pacManTile = world.pacMan.tile();
-		Direction pacManDir = world.pacMan.moveDir();
+		Tile pacManTile = world.pacMan().tile();
+		Direction pacManDir = world.pacMan().moveDir();
 		int s = Tile.SIZE / 2; // size of target square
 		g.setColor(Color.GRAY);
 		if (!settings.fixOverflowBug && pacManDir == Direction.UP) {
@@ -405,7 +405,7 @@ public class PlayView extends SimplePlayView {
 			g.drawLine(x2, y2, x3, y3);
 			g.fillRect(x3 - s / 2, y3 - s / 2, s, s);
 		} else {
-			Tile twoTilesAhead = world.pacMan.tilesAhead(2);
+			Tile twoTilesAhead = world.pacMan().tilesAhead(2);
 			x1 = pacManTile.centerX();
 			y1 = pacManTile.centerY();
 			x2 = twoTilesAhead.centerX();
@@ -419,8 +419,8 @@ public class PlayView extends SimplePlayView {
 		if (!clyde.is(CHASING)) {
 			return;
 		}
-		Color ghostColor = ghostColor(world.clyde);
-		int cx = world.clyde.tile().centerX(), cy = world.clyde.tile().centerY();
+		Color ghostColor = ghostColor(world.clyde());
+		int cx = world.clyde().tile().centerX(), cy = world.clyde().tile().centerY();
 		int r = 8 * Tile.SIZE;
 		g.setColor(alpha(ghostColor, 100));
 		g.drawOval(cx - r, cy - r, 2 * r, 2 * r);
@@ -431,10 +431,10 @@ public class PlayView extends SimplePlayView {
 			return; // test scenes can have no ghost house
 		}
 		drawPacManStarvingTime(g);
-		drawDotCounter(g, clydeImage, house.ghostDotCount(world.clyde), 1, 20,
-				!house.isGlobalDotCounterEnabled() && house.isPreferredGhost(world.clyde));
-		drawDotCounter(g, inkyImage, house.ghostDotCount(world.inky), 24, 20,
-				!house.isGlobalDotCounterEnabled() && house.isPreferredGhost(world.inky));
+		drawDotCounter(g, clydeImage, house.ghostDotCount(world.clyde()), 1, 20,
+				!house.isGlobalDotCounterEnabled() && house.isPreferredGhost(world.clyde()));
+		drawDotCounter(g, inkyImage, house.ghostDotCount(world.inky()), 24, 20,
+				!house.isGlobalDotCounterEnabled() && house.isPreferredGhost(world.inky()));
 		drawDotCounter(g, null, house.globalDotCount(), 24, 14, house.isGlobalDotCounterEnabled());
 	}
 

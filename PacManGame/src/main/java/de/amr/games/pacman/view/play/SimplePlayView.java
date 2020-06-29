@@ -54,11 +54,11 @@ public class SimplePlayView extends BaseView {
 		this.game = game;
 		this.world = world;
 		mazeView = new MazeView();
-		world.pacMan.takeClothes(theme);
-		world.blinky.takeClothes(theme, Theme.RED_GHOST);
-		world.pinky.takeClothes(theme, Theme.PINK_GHOST);
-		world.inky.takeClothes(theme, Theme.CYAN_GHOST);
-		world.clyde.takeClothes(theme, Theme.ORANGE_GHOST);
+		world.pacMan().takeClothes(theme);
+		world.blinky().takeClothes(theme, Theme.RED_GHOST);
+		world.pinky().takeClothes(theme, Theme.PINK_GHOST);
+		world.inky().takeClothes(theme, Theme.CYAN_GHOST);
+		world.clyde().takeClothes(theme, Theme.ORANGE_GHOST);
 	}
 
 	@Override
@@ -120,8 +120,8 @@ public class SimplePlayView extends BaseView {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		drawEntity(g, world.bonus, world.bonus.sprites);
-		drawEntity(g, world.pacMan, world.pacMan.sprites);
+		drawEntity(g, world.bonus(), world.bonus().sprites);
+		drawEntity(g, world.pacMan(), world.pacMan().sprites);
 		// draw dead ghosts (as number or eyes) under living ghosts
 		world.ghostsOnStage().filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
 				.forEach(ghost -> drawEntity(g, ghost, ghost.sprites));
@@ -217,8 +217,8 @@ public class SimplePlayView extends BaseView {
 			spriteFlashingMaze = theme.spr_flashingMaze();
 			energizersBlinking = new CyclicAnimation(2);
 			energizersBlinking.setFrameDuration(150);
-			world.bonus.tf.x = world.bonusTile().x();
-			world.bonus.tf.y = world.bonusTile().y();
+			world.bonus().tf.x = world.bonusTile().x();
+			world.bonus().tf.y = world.bonusTile().y();
 			//@formatter:off
 			beginStateMachine()
 				.description("[Maze View]")
