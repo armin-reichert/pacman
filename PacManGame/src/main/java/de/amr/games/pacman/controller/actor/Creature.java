@@ -55,7 +55,7 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 		this.game = game;
 		this.world = game.world;
 		this.name = name;
-		this.movement = new MovementControl(this);
+		this.movement = new MovementControl(this, this::speedLimit);
 		this.steerings = steerings;
 		tf.width = Tile.SIZE;
 		tf.height = Tile.SIZE;
