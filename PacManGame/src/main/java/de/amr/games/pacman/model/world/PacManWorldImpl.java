@@ -36,18 +36,17 @@ import de.amr.games.pacman.model.world.map.PacManMap;
  * 
  * @author Armin Reichert
  */
-public class PacManWorldImpl implements PacManWorld, FoodContainer {
+public class PacManWorldImpl implements PacManWorld {
 
 	private final PacMan pacMan;
 	private final Ghost blinky, pinky, inky, clyde;
-	public final Bonus bonus;
-	private Set<Creature<?>> actorsTakingPart = new HashSet<>();
-	private int totalFoodCount;
+	private final Bonus bonus;
+	private final Set<Creature<?>> stage = new HashSet<>();
 	private PacManMap map;
+	private int totalFoodCount;
 
 	public PacManWorldImpl(PacManMap map) {
 		this.map = map;
-
 		totalFoodCount = (int) habitatTiles().filter(this::containsFood).count();
 
 		pacMan = new PacMan();
@@ -146,7 +145,7 @@ public class PacManWorldImpl implements PacManWorld, FoodContainer {
 	 */
 	@Override
 	public Stream<Ghost> ghostsOnStage() {
-		return ghosts().filter(actorsTakingPart::contains);
+		return ghosts().filter(stage::contains);
 	}
 
 	/**
@@ -162,7 +161,7 @@ public class PacManWorldImpl implements PacManWorld, FoodContainer {
 	 */
 	@Override
 	public Stream<Creature<?>> creaturesOnStage() {
-		return creatures().filter(actorsTakingPart::contains);
+		return creatures().filter(stage::contains);
 	}
 
 	@Override
@@ -176,7 +175,7 @@ public class PacManWorldImpl implements PacManWorld, FoodContainer {
 	 */
 	@Override
 	public boolean isOnState(Creature<?> actor) {
-		return actorsTakingPart.contains(actor);
+		return stage.contains(actor);
 	}
 
 	/**
@@ -188,12 +187,12 @@ public class PacManWorldImpl implements PacManWorld, FoodContainer {
 	@Override
 	public void putOnStage(Creature<?> actor, boolean takesPart) {
 		if (takesPart) {
-			actorsTakingPart.add(actor);
+			stage.add(actor);
 			actor.init();
 			actor.visible = true;
 			loginfo("%s entered the game", actor.name);
 		} else {
-			actorsTakingPart.remove(actor);
+			stage.remove(actor);
 			actor.visible = false;
 			actor.placeAt(Tile.at(-1, -1));
 			loginfo("%s left the game", actor.name);
