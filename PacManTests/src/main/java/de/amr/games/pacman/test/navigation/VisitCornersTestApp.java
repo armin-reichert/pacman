@@ -56,7 +56,7 @@ class FollowTargetTilesTestUI extends TestUI {
 		ghost = world.blinky();
 		world.putOnStage(ghost, true);
 		ghost.placeAt(targets.get(0));
-		ghost.behavior(GhostState.CHASING, ghost.isHeadingFor(() -> targets.get(current)));
+		ghost.behavior(GhostState.CHASING, ghost.headingFor(() -> targets.get(current)));
 		ghost.setState(GhostState.CHASING);
 		ghost.steering().force();
 	}

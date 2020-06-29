@@ -43,7 +43,6 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.PacManWorld;
-import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.view.core.BaseView;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
@@ -83,7 +82,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		super(PacManGameState.class);
 		this.world = world;
 		this.theme = theme;
-		loadingView = new LoadingView(Universe.arcadeWorld(), theme);
+		loadingView = new LoadingView(world, theme);
 		introView = new IntroView(theme);
 		sound = new PacManSounds(world, theme);
 		buildStateMachine();
@@ -166,7 +165,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		if (on) {
 			world.pacMan().behavior(new SearchingForFoodAndAvoidingGhosts(world, game));
 		} else {
-			world.pacMan().behavior(world.pacMan().isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
+			world.pacMan().behavior(world.pacMan().followingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		}
 	}
 

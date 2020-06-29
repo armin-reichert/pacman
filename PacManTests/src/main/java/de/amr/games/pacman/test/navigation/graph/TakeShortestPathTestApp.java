@@ -65,7 +65,7 @@ class TakeShortestPathTestUI extends TestUI {
 		targetIndex = 0;
 		theme.snd_ghost_chase().volume(0);
 		world.putOnStage(ghost, true);
-		Steering steering = ghost.isTakingShortestPath(() -> targets.get(targetIndex));
+		Steering steering = ghost.takingShortestPath(() -> targets.get(targetIndex));
 		ghost.behavior(CHASING, steering);
 		ghost.behavior(FRIGHTENED, steering);
 		ghost.setState(CHASING);

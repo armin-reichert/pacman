@@ -98,7 +98,7 @@ public class EnhancedGameController extends GameController {
 		if (settings.ghostsSafeCorner) {
 			settings.ghostsSafeCorner = false;
 			world.ghosts()
-					.forEach(ghost -> ghost.behavior(GhostState.FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack()));
+					.forEach(ghost -> ghost.behavior(GhostState.FRIGHTENED, ghost.movingRandomly()));
 			loginfo("Ghost escape behavior is: Random movement");
 		} else {
 			settings.ghostsSafeCorner = true;

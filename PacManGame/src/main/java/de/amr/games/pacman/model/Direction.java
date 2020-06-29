@@ -1,6 +1,8 @@
 package de.amr.games.pacman.model;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.math.Vector2f;
@@ -19,6 +21,12 @@ public enum Direction {
 
 	public static Stream<Direction> dirs() {
 		return Arrays.stream(values());
+	}
+
+	public static Stream<Direction> dirsShuffled() {
+		List<Direction> dirs = Arrays.asList(Direction.values());
+		Collections.shuffle(dirs);
+		return dirs.stream();
 	}
 
 	private final Vector2f vector;
@@ -42,4 +50,5 @@ public enum Direction {
 	public Direction right() {
 		return RIGHT_DIR[ordinal()];
 	}
+
 }

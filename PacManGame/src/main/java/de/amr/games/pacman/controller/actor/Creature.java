@@ -15,13 +15,13 @@ import de.amr.games.pacman.controller.actor.steering.MovementControl;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.controller.actor.steering.common.FollowingKeys;
 import de.amr.games.pacman.controller.actor.steering.common.HeadingForTargetTile;
-import de.amr.games.pacman.controller.actor.steering.common.MovingRandomlyWithoutTurningBack;
+import de.amr.games.pacman.controller.actor.steering.common.RandomMovement;
 import de.amr.games.pacman.controller.actor.steering.common.TakingFixedPath;
 import de.amr.games.pacman.controller.actor.steering.common.TakingShortestPath;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Bed;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.api.FsmContainer;
@@ -59,10 +59,10 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 		setTeleportingDuration(sec(0.5f));
 	}
 
-	public void putIntoWorld(PacManWorld world) {
+	public void setWorld(PacManWorld world) {
 		this.world = world;
 	}
-	
+
 	public void assignBed(Bed bed) {
 		this.bed = bed;
 	}
@@ -223,7 +223,7 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	 * 
 	 * @return steering using the given keys
 	 */
-	public Steering isFollowingKeys(int up, int right, int down, int left) {
+	public Steering followingKeys(int up, int right, int down, int left) {
 		return new FollowingKeys(this, up, right, down, left);
 	}
 
@@ -234,8 +234,8 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	 * 
 	 * @return random move behavior
 	 */
-	public Steering isMovingRandomlyWithoutTurningBack() {
-		return new MovingRandomlyWithoutTurningBack(this);
+	public Steering movingRandomly() {
+		return new RandomMovement(this);
 	}
 
 	/**
@@ -244,7 +244,7 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	 * 
 	 * @return behavior where actor heads for the target tile
 	 */
-	public Steering isHeadingFor(Supplier<Tile> fnTargetTile) {
+	public Steering headingFor(Supplier<Tile> fnTargetTile) {
 		return new HeadingForTargetTile(this, fnTargetTile);
 	}
 
@@ -254,8 +254,8 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	 * 
 	 * @return behavior where actor heads for the target tile
 	 */
-	public Steering isHeadingFor(Tile targetTile) {
-		return isHeadingFor(() -> targetTile);
+	public Steering headingFor(Tile targetTile) {
+		return headingFor(() -> targetTile);
 	}
 
 	/**
@@ -267,7 +267,7 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	 * @return behavior where an actor follows the shortest (using Manhattan distance) path to a target
 	 *         tile
 	 */
-	public Steering isTakingShortestPath(Supplier<Tile> fnTarget) {
+	public Steering takingShortestPath(Supplier<Tile> fnTarget) {
 		return new TakingShortestPath(this, fnTarget);
 	}
 
@@ -279,11 +279,10 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	 * 
 	 * @return behavior where actor follows the given path
 	 */
-	public Steering isTakingFixedPath(List<Tile> path) {
+	public Steering takingFixedPath(List<Tile> path) {
 		if (path.isEmpty()) {
 			throw new IllegalArgumentException("Path must not be empty");
 		}
 		return new TakingFixedPath(this, path);
 	}
-
 }

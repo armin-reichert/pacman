@@ -20,22 +20,23 @@ public interface Steering {
 	}
 
 	/**
-	 * Triggers the steering once even if the precondition is not fulfilled.
+	 * Triggers the steering once, even if its normal preconditions are not fulfilled.
 	 */
 	default void force() {
 	}
 
 	/**
-	 * Some steerings have an explicit final state.
+	 * Tells if the steering has competed. The default is {@code false}.
 	 * 
-	 * @return if steering reached its final state
+	 * @return if steering has completed.
 	 */
 	default boolean isComplete() {
 		return false;
 	}
 
 	/**
-	 * @return tells if the steering requires that moving always keeps the actor aligned with the grid
+	 * @return tells if the steering requires that moving always keeps the actor aligned with the grid.
+	 *         The default is {@code false}.
 	 */
 	default boolean requiresGridAlignment() {
 		return false;

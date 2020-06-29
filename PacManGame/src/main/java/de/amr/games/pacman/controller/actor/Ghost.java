@@ -282,7 +282,7 @@ public class Ghost extends Creature<GhostState> {
 	 * @return steering for bringing ghost back to ghost house entry
 	 */
 	public Steering isReturningToHouse() {
-		return isHeadingFor(world().theHouse().bed(0).tile);
+		return headingFor(() -> world().theHouse().bed(0).tile);
 	}
 
 	/**

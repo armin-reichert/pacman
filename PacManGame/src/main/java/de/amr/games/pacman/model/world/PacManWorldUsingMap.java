@@ -32,65 +32,63 @@ import de.amr.games.pacman.model.world.map.PacManWorldMap;
  */
 class PacManWorldUsingMap implements PacManWorld {
 
-	private PacMan pacMan;
-	private Ghost blinky, pinky, inky, clyde;
-	private Bonus bonus;
-
+	private final PacMan pacMan;
+	private final Ghost blinky, pinky, inky, clyde;
+	private final Bonus bonus;
 	private final Set<Creature<?>> stage = new HashSet<>();
 	private PacManWorldMap worldMap;
 
 	public PacManWorldUsingMap(PacManWorldMap worldMap) {
-		this.worldMap = worldMap;
+		this();
+		setWorldMap(worldMap);
+	}
 
-		// birth
+	public PacManWorldUsingMap() {
 		pacMan = new PacMan();
 		blinky = new Ghost("Blinky");
 		inky = new Ghost("Inky");
 		pinky = new Ghost("Pinky");
 		clyde = new Ghost("Clyde");
 		bonus = new Bonus();
+	}
 
-		// put the creatures into this world
-		creatures().forEach(creature -> creature.putIntoWorld(this));
+	public void setWorldMap(PacManWorldMap worldMap) {
+		this.worldMap = worldMap;
+		creatures().forEach(creature -> creature.setWorld(this));
+		assignBeds();
+		defineCreatureBehaviors();
+	}
 
-		// assign beds
+	private void assignBeds() {
 		pacMan.assignBed(pacManBed());
-		House theHouse = theHouse();
-		blinky.assignBed(theHouse.bed(0));
-		inky.assignBed(theHouse.bed(1));
-		pinky.assignBed(theHouse.bed(2));
-		clyde.assignBed(theHouse.bed(3));
+		blinky.assignBed(theHouse().bed(0));
+		inky.assignBed(theHouse().bed(1));
+		pinky.assignBed(theHouse().bed(2));
+		clyde.assignBed(theHouse().bed(3));
+	}
 
-		// define behavior
-		pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
-
-		// common ghost behavior
+	private void defineCreatureBehaviors() {
+		pacMan.behavior(pacMan.followingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		ghosts().forEach(ghost -> {
 			ghost.behavior(LOCKED, ghost::bouncingOnBed);
 			ghost.behavior(ENTERING_HOUSE, ghost.isGoingToBed(ghost.bed()));
 			ghost.behavior(LEAVING_HOUSE, ghost::leavingGhostHouse);
-			ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
+			ghost.behavior(FRIGHTENED, ghost.movingRandomly());
 			ghost.behavior(DEAD, ghost.isReturningToHouse());
 		});
-
-		// individual ghost behavior
-		blinky.behavior(ENTERING_HOUSE, blinky.isGoingToBed(theHouse.bed(2)));
-
-		// scattering behavior
+		blinky.behavior(ENTERING_HOUSE, blinky.isGoingToBed(theHouse().bed(2)));
 		int w = width(), h = height();
-		blinky.behavior(SCATTERING, blinky.isHeadingFor(Tile.at(w - 3, 0)));
-		inky.behavior(SCATTERING, inky.isHeadingFor(Tile.at(w - 1, h - 1)));
-		pinky.behavior(SCATTERING, pinky.isHeadingFor(Tile.at(2, 0)));
-		clyde.behavior(SCATTERING, clyde.isHeadingFor(Tile.at(0, h - 1)));
-
-		// chasing behavior
-		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
-		inky.behavior(CHASING, inky.isHeadingFor(() -> {
+		blinky.behavior(SCATTERING, blinky.headingFor(Tile.at(w - 3, 0)));
+		inky.behavior(SCATTERING, inky.headingFor(Tile.at(w - 1, h - 1)));
+		pinky.behavior(SCATTERING, pinky.headingFor(Tile.at(2, 0)));
+		clyde.behavior(SCATTERING, clyde.headingFor(Tile.at(0, h - 1)));
+		blinky.behavior(CHASING, blinky.headingFor(pacMan::tile));
+		inky.behavior(CHASING, inky.headingFor(() -> {
 			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 			return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
 		}));
-		pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
-		clyde.behavior(CHASING, clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : Tile.at(0, h - 1)));
+		pinky.behavior(CHASING, pinky.headingFor(() -> pacMan.tilesAhead(4)));
+		clyde.behavior(CHASING, clyde.headingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : Tile.at(0, h - 1)));
 	}
 
 	// habitat

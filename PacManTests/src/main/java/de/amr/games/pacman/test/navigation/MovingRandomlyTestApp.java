@@ -49,7 +49,7 @@ class MovingRandomlyTestUI extends TestUI {
 		world.ghosts().forEach(ghost -> {
 			world.putOnStage(ghost, true);
 			ghost.tf.setPosition(world.pacManBed().position);
-			ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
+			ghost.behavior(FRIGHTENED, ghost.movingRandomly());
 			ghost.state(FRIGHTENED).removeTimer();
 			ghost.setState(FRIGHTENED);
 		});
