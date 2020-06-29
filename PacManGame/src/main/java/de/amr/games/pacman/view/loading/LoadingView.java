@@ -8,12 +8,12 @@ import java.util.Random;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.view.Pen;
-import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.BaseView;
 import de.amr.games.pacman.view.theme.Theme;
 
@@ -75,7 +75,7 @@ public class LoadingView extends BaseView {
 			pen.color(new Color(255, 0, 0, alpha));
 			pen.font(theme.fnt_text());
 			pen.fontSize(10);
-			pen.hcenter(PacManApp.texts.getString("loading_music"), width(), 18, Tile.SIZE);
+			pen.hcenter(Localized.texts.getString("loading_music"), width(), 18, Tile.SIZE);
 		}
 		drawEntity(g, pacMan, pacMan.sprites);
 		float x = width() / 2 - (ghostCount / 2) * 20, y = pacMan.tf.y + 20;

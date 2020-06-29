@@ -23,6 +23,7 @@ import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.Random;
 
+import de.amr.easy.game.Application.ApplicationState;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
@@ -87,6 +88,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		loadingView = new LoadingView(world, theme);
 		introView = new IntroView(theme);
 		buildStateMachine();
+		app().onEntry(ApplicationState.CLOSING, state -> saveScore());
 	}
 
 	public Optional<Game> game() {

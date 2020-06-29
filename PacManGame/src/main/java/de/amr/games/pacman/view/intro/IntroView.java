@@ -1,7 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.PacManApp.texts;
 import static de.amr.games.pacman.model.Game.sec;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.READY_TO_PLAY;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.SCROLLING_LOGO;
@@ -21,6 +20,7 @@ import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.BaseView;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
 import de.amr.games.pacman.view.theme.Theme;
@@ -224,7 +224,7 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 		try (Pen pen = new Pen(g)) {
 			pen.font(theme.fnt_text());
 			pen.color(Color.WHITE);
-			pen.hcenter(texts.getString("press_space_to_start"), width(), row, Tile.SIZE);
+			pen.hcenter(Localized.texts.getString("press_space_to_start"), width(), row, Tile.SIZE);
 		}
 	}
 
@@ -233,17 +233,17 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 			pen.font(theme.fnt_text());
 			pen.color(orange);
 			if (app().inFullScreenMode()) {
-				pen.hcenter("F11 - " + texts.getString("window_mode"), width(), row, Tile.SIZE);
+				pen.hcenter("F11 - " + Localized.texts.getString("window_mode"), width(), row, Tile.SIZE);
 			} else {
-				pen.hcenter("F11 - " + texts.getString("fullscreen_mode"), width(), row, Tile.SIZE);
+				pen.hcenter("F11 - " + Localized.texts.getString("fullscreen_mode"), width(), row, Tile.SIZE);
 			}
 		}
 	}
 
 	private void drawSpeedSelection(Graphics2D g, int row) {
-		String t1 = "1 - " + texts.getString("normal");
-		String t2 = "2 - " + texts.getString("fast");
-		String t3 = "3 - " + texts.getString("insane");
+		String t1 = "1 - " + Localized.texts.getString("normal");
+		String t2 = "2 - " + Localized.texts.getString("fast");
+		String t3 = "3 - " + Localized.texts.getString("insane");
 		int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock().getTargetFramerate()) + 1;
 		try (Pen pen = new Pen(g)) {
 			pen.font(theme.fnt_text());

@@ -1,7 +1,6 @@
 package de.amr.games.pacman;
 
 import java.awt.DisplayMode;
-import java.util.ResourceBundle;
 
 import com.beust.jcommander.Parameter;
 
@@ -12,6 +11,7 @@ import de.amr.games.pacman.controller.EnhancedGameController;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
 
@@ -23,6 +23,10 @@ import de.amr.games.pacman.view.dashboard.states.GameStateView;
  * @author Armin Reichert
  */
 public class PacManApp extends Application {
+
+	public static void main(String[] args) {
+		launch(PacManApp.class, settings, args);
+	}
 
 	public static class Settings extends AppSettings {
 
@@ -54,15 +58,7 @@ public class PacManApp extends Application {
 		public int startLevel = 1;
 	}
 
-	public static final ResourceBundle texts = ResourceBundle.getBundle("texts");
-
 	public static final Settings settings = new Settings();
-
-	public static void main(String[] args) {
-		launch(PacManApp.class, settings, args);
-	}
-
-	private GameController controller;
 
 	@Override
 	protected void configure(AppSettings settings) {
@@ -70,7 +66,7 @@ public class PacManApp extends Application {
 		settings.width = 400;
 		settings.height = 36 * Tile.SIZE;
 		settings.scale = 2;
-		settings.title = texts.getString("app.title");
+		settings.title = Localized.texts.getString("app.title");
 		settings.fullScreenMode = new DisplayMode(400, 300, 32, 50);
 		PacManStateMachineLogging.setEnabled(false);
 	}
@@ -87,24 +83,23 @@ public class PacManApp extends Application {
 		settings.printValue("Simple Mode", "%s", settings.simpleMode);
 		settings.printValue("Skip Intro", "%s", settings.skipIntro);
 		settings.printValue("Startlevel", "%d", settings.startLevel);
-		settings.printValue("User Language", "%s", texts.getLocale().getDisplayLanguage());
+		settings.printValue("User Language", "%s", Localized.texts.getLocale().getDisplayLanguage());
 	}
 
 	@Override
 	public void init() {
 		setIcon("/images/pacman-icon.png");
-		controller = settings.simpleMode ? new GameController() : new EnhancedGameController();
-		setController(controller);
-		onEntry(ApplicationState.CLOSING, state -> controller.saveScore());
+		setController(settings.simpleMode ? new GameController() : new EnhancedGameController());
 	}
 
 	@Override
 	public void configureF2Dialog(F2DialogAPI dialog) {
 		GameStateView gameStateView = new GameStateView();
-		dialog.addCustomTab("Game State", gameStateView, () -> controller.game().isPresent());
-		gameStateView.attachTo(controller);
 		GameLevelView gameLevelView = new GameLevelView();
-		dialog.addCustomTab("Game Level", gameLevelView, () -> controller.game().isPresent());
-		gameLevelView.attachTo(controller);
+		GameController gameController = (GameController) getController();
+		gameStateView.attachTo(gameController);
+		gameLevelView.attachTo(gameController);
+		dialog.addCustomTab("Game State", gameStateView, () -> gameController.game().isPresent());
+		dialog.addCustomTab("Game Level", gameLevelView, () -> gameController.game().isPresent());
 	}
 }
