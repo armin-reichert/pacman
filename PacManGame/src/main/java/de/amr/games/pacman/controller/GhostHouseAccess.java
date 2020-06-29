@@ -106,8 +106,8 @@ public class GhostHouseAccess {
 	}
 
 	public Optional<Ghost> preferredLockedGhost() {
-		return Stream.of(world.pinky(), world.inky(), world.clyde()).filter(world::takesPart).filter(ghost -> ghost.is(LOCKED))
-				.findFirst();
+		return Stream.of(world.pinky(), world.inky(), world.clyde()).filter(world::takesPart)
+				.filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
 	private void unlock(Ghost ghost) {

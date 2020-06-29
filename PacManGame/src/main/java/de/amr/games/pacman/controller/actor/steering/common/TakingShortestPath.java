@@ -8,8 +8,7 @@ import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.model.world.WorldGraph;
 
 /**
- * Lets an actor follow the shortest path (using graph path finding) to the
- * target tile.
+ * Lets an actor follow the shortest path (using graph path finding) to the target tile.
  *
  * @author Armin Reichert
  */

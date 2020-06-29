@@ -6,7 +6,7 @@ import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 
-public interface Habitat extends  FoodContainer {
+public interface Habitat extends FoodContainer {
 
 	Stream<Tile> habitatTiles();
 

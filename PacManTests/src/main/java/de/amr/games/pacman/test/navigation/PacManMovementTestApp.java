@@ -77,8 +77,8 @@ class PacManMovementTestUI extends TestUI {
 					world.pacMan().isFollowingKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
 			showMessage("Cursor keys", Color.WHITE);
 		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_N)) {
-			world.pacMan().behavior(world.pacMan().isFollowingKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2,
-					KeyEvent.VK_NUMPAD4));
+			world.pacMan().behavior(world.pacMan().isFollowingKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6,
+					KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
 			showMessage("Numpad keys", Color.WHITE);
 		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_R)) {
 			world.pacMan().behavior(world.pacMan().isMovingRandomlyWithoutTurningBack());
