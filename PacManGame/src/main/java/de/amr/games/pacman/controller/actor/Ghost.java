@@ -326,7 +326,7 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	@Override
-	public float currentSpeed(Game game) {
+	public float speedLimit() {
 		switch (getState()) {
 		case LOCKED:
 			return speed(isInsideHouse() ? game.level.ghostSpeed / 2 : 0);

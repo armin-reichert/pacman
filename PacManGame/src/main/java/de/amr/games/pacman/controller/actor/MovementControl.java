@@ -34,12 +34,19 @@ public class MovementControl extends StateMachine<MovementControl.MovementType, 
 			.states()
 				.state(WALKING)
 					.onTick(() -> {
-						move(creature);
+						move(creature, creature.speedLimit());
 						checkIfPortalEntered(creature);
 					})
 			.transitions()
-				.when(WALKING).then(TELEPORTING).condition(() -> hasEnteredPortal())
-				.when(TELEPORTING).then(WALKING).onTimeout().act(() -> teleport(creature))
+				.when(WALKING).then(TELEPORTING)
+					.condition(() -> hasEnteredPortal())
+					.act(() -> creature.visible = false)
+				.when(TELEPORTING).then(WALKING)
+					.onTimeout()
+					.act(() -> {
+						teleport(creature);
+						creature.visible = true;
+					})
 		.endStateMachine();
 		//@formatter:on
 	}
@@ -61,29 +68,26 @@ public class MovementControl extends StateMachine<MovementControl.MovementType, 
 		creature.world.portals().filter(portal -> portal.contains(currentTile)).findAny().ifPresent(portal -> {
 			portalEntered = portal;
 			loginfo("Entered portal at %s", currentTile);
-			creature.visible = false;
 		});
 	}
 
 	private void teleport(Creature<?> creature) {
 		portalEntered.teleport(creature, creature.tile(), creature.moveDir);
 		portalEntered = null;
-		creature.visible = true;
 	}
 
-	private void move(Creature<?> creature) {
-		Tile tile = creature.tile();
-		float maxSpeed = creature.currentSpeed(creature.game);
-		float speed = maxSpeedToDir(creature, creature.moveDir, maxSpeed);
+	private void move(Creature<?> creature, float speedLimit) {
+		final Tile tile = creature.tile();
+		float speed = maxSpeedToDir(creature, creature.moveDir, speedLimit);
 		if (creature.wishDir != null && creature.wishDir != creature.moveDir) {
-			float wishDirSpeed = maxSpeedToDir(creature, creature.wishDir, maxSpeed);
+			float wishDirSpeed = maxSpeedToDir(creature, creature.wishDir, speedLimit);
 			if (wishDirSpeed > 0) {
-				boolean corner = (creature.wishDir == creature.moveDir.left() || creature.wishDir == creature.moveDir.right());
-				if (corner && creature.steering().requiresGridAlignment()) {
+				speed = wishDirSpeed;
+				boolean curve = (creature.wishDir == creature.moveDir.left() || creature.wishDir == creature.moveDir.right());
+				if (curve && creature.steering().requiresGridAlignment()) {
 					creature.placeAt(tile);
 				}
 				creature.moveDir = creature.wishDir;
-				speed = wishDirSpeed;
 			}
 		}
 		creature.tf.setVelocity(Vector2f.smul(speed, creature.moveDir.vector()));
@@ -92,18 +96,18 @@ public class MovementControl extends StateMachine<MovementControl.MovementType, 
 	}
 
 	/**
-	 * Computes how many pixels this creature can move towards the given direction at its current speed
-	 * before entering an inaccessible neighbor tile.
+	 * Computes how many pixels this creature can move towards the given direction.
 	 * 
 	 * @param creature the moving creature
-	 * @param dir      move direction
+	 * @param dir      a direction
 	 * @param speed    the creature's current speed
 	 */
 	private float maxSpeedToDir(Creature<?> creature, Direction dir, float speed) {
 		if (creature.canCrossBorderTo(dir)) {
 			return speed;
 		}
-		float offsetX = creature.tf.x - creature.tile().x(), offsetY = creature.tf.y - creature.tile().y();
+		float offsetX = creature.tf.x - creature.tile().x();
+		float offsetY = creature.tf.y - creature.tile().y();
 		switch (dir) {
 		case UP:
 			return Math.min(offsetY, speed);

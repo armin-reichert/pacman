@@ -105,7 +105,7 @@ public class PacMan extends Creature<PacManState> {
 	}
 
 	@Override
-	public float currentSpeed(Game game) {
+	public float speedLimit() {
 		return is(EATING) ? speed(power > 0 ? game.level.pacManPowerSpeed : game.level.pacManSpeed) : 0;
 	}
 

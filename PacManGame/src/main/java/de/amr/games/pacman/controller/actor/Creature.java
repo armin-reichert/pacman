@@ -66,7 +66,7 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	 * @param game the game
 	 * @return how many pixels this creature can move at most in the current frame
 	 */
-	public abstract float currentSpeed(Game game);
+	public abstract float speedLimit();
 
 	/**
 	 * @return the current steering for this actor.

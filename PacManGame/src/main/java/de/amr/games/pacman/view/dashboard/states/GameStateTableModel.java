@@ -132,7 +132,7 @@ class GameStateTableModel extends AbstractTableModel {
 		r.moveDir = pacMan.moveDir();
 		r.wishDir = pacMan.wishDir();
 		if (pacMan.getState() != null) {
-			r.speed = pacMan.currentSpeed(game) * app().clock().getTargetFramerate();
+			r.speed = pacMan.speedLimit() * app().clock().getTargetFramerate();
 			r.state = pacMan.power == 0 ? pacMan.getState().name() : "POWER";
 			r.ticksRemaining = pacMan.power == 0 ? pacMan.state().getTicksRemaining() : pacMan.power;
 			r.duration = pacMan.power == 0 ? pacMan.state().getDuration() : sec(game.level.pacManPowerSeconds);
@@ -148,7 +148,7 @@ class GameStateTableModel extends AbstractTableModel {
 		r.moveDir = ghost.moveDir();
 		r.wishDir = ghost.wishDir();
 		if (ghost.getState() != null) {
-			r.speed = ghost.currentSpeed(game) * app().clock().getTargetFramerate();
+			r.speed = ghost.speedLimit() * app().clock().getTargetFramerate();
 			r.state = ghost.getState().name();
 			r.ticksRemaining = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getTicksRemaining()
 					: ghost.state().getTicksRemaining();
