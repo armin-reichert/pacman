@@ -1,14 +1,5 @@
 package de.amr.games.pacman.model;
 
-import static java.util.stream.Collectors.toList;
-
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-
 import de.amr.games.pacman.model.world.Symbol;
 
 /**
@@ -39,37 +30,36 @@ public class GameLevel {
 	public int ghostsKilledByEnergizer;
 	public int ghostsKilled;
 
-	public static GameLevel parse(String levelSpec) throws ParseException {
+	public static GameLevel read(Object[] row) {
 		GameLevel level = new GameLevel();
-		List<String> fields = Arrays.stream(levelSpec.trim().split(",")).map(String::strip).collect(toList());
-		if (fields.size() != 15) {
+		if (row.length != 15) {
 			throw new IllegalArgumentException(
-					String.format("Level specification must contain 15 fields but has %d!", fields.size()));
+					String.format("Level specification must contain 15 fields but has %d!", row.length));
 		}
-		Iterator<String> f = fields.iterator();
-		level.bonusSymbol = Symbol.valueOf(f.next());
-		level.bonusValue = integer(f.next());
-		level.pacManSpeed = percent(f.next());
-		level.pacManDotsSpeed = percent(f.next());
-		level.ghostSpeed = percent(f.next());
-		level.ghostTunnelSpeed = percent(f.next());
-		level.elroy1DotsLeft = integer(f.next());
-		level.elroy1Speed = percent(f.next());
-		level.elroy2DotsLeft = integer(f.next());
-		level.elroy2Speed = percent(f.next());
-		level.pacManPowerSpeed = percent(f.next());
-		level.pacManPowerDotsSpeed = percent(f.next());
-		level.ghostFrightenedSpeed = percent(f.next());
-		level.pacManPowerSeconds = integer(f.next());
-		level.numFlashes = integer(f.next());
+		int i = 0;
+		level.bonusSymbol = Symbol.valueOf((String) row[i++]);
+		level.bonusValue = integer(row[i++]);
+		level.pacManSpeed = percentage(row[i++]);
+		level.pacManDotsSpeed = percentage(row[i++]);
+		level.ghostSpeed = percentage(row[i++]);
+		level.ghostTunnelSpeed = percentage(row[i++]);
+		level.elroy1DotsLeft = integer(row[i++]);
+		level.elroy1Speed = percentage(row[i++]);
+		level.elroy2DotsLeft = integer(row[i++]);
+		level.elroy2Speed = percentage(row[i++]);
+		level.pacManPowerSpeed = percentage(row[i++]);
+		level.pacManPowerDotsSpeed = percentage(row[i++]);
+		level.ghostFrightenedSpeed = percentage(row[i++]);
+		level.pacManPowerSeconds = integer(row[i++]);
+		level.numFlashes = integer(row[i++]);
 		return level;
 	}
 
-	static int integer(String s) throws ParseException {
-		return DecimalFormat.getNumberInstance(Locale.ENGLISH).parse(s).intValue();
+	private static float percentage(Object value) {
+		return ((int) value) / 100f;
 	}
 
-	static float percent(String s) throws ParseException {
-		return DecimalFormat.getPercentInstance(Locale.ENGLISH).parse(s).floatValue();
+	private static int integer(Object value) {
+		return (int) value;
 	}
 }
