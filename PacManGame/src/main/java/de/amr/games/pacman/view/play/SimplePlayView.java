@@ -109,12 +109,13 @@ public class SimplePlayView extends BaseView {
 	}
 
 	protected void drawMessage(Graphics2D g) {
+		int width = world.width() * Tile.SIZE;
 		if (messageText != null && messageText.trim().length() > 0) {
 			try (Pen pen = new Pen(g)) {
 				pen.font(theme.fnt_text());
 				pen.fontSize(messageFontSize);
 				pen.color(messageColor);
-				pen.hcenter(messageText, width(), messageRow, Tile.SIZE);
+				pen.hcenter(messageText, width, messageRow, Tile.SIZE);
 			}
 		}
 	}
@@ -184,10 +185,11 @@ public class SimplePlayView extends BaseView {
 	}
 
 	protected void drawLives(Graphics2D g) {
+		int height = world.height() * Tile.SIZE;
 		int sz = 2 * Tile.SIZE;
 		Image pacManLookingLeft = theme.spr_pacManWalking(LEFT).frame(1);
 		for (int i = 0, x = sz; i < game.lives; ++i, x += sz) {
-			g.drawImage(pacManLookingLeft, x, height() - sz, null);
+			g.drawImage(pacManLookingLeft, x, height - sz, null);
 		}
 	}
 
@@ -196,9 +198,11 @@ public class SimplePlayView extends BaseView {
 		int first = Math.max(0, game.levelCounter.size() - max);
 		int n = Math.min(max, game.levelCounter.size());
 		int sz = 2 * Tile.SIZE; // image size
-		for (int i = 0, x = width() - 2 * sz; i < n; ++i, x -= sz) {
+		int width = world.width() * Tile.SIZE;
+		int height = world.height() * Tile.SIZE;
+		for (int i = 0, x = width - 2 * sz; i < n; ++i, x -= sz) {
 			Symbol symbol = game.levelCounter.get(first + i);
-			g.drawImage(theme.spr_bonusSymbol(symbol).frame(0), x, height() - sz, sz, sz, null);
+			g.drawImage(theme.spr_bonusSymbol(symbol).frame(0), x, height - sz, sz, sz, null);
 		}
 	}
 

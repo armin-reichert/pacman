@@ -137,25 +137,24 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 	@Override
 	public void update() {
 		gameController.game().ifPresent(game -> {
-			GhostHouseAccess house = gameController.ghostHouse;
-			if (house != null) {
-				tfPinkyDots.setText(formatDots(house, world.pinky()));
-				tfPinkyDots.setEnabled(!house.isGlobalDotCounterEnabled());
-				updateTrafficLight(trafficPinky, house, world.pinky());
+			gameController.ghostHouseAccess().ifPresent(ghostHouseAccess -> {
+				tfPinkyDots.setText(formatDots(ghostHouseAccess, world.pinky()));
+				tfPinkyDots.setEnabled(!ghostHouseAccess.isGlobalDotCounterEnabled());
+				updateTrafficLight(trafficPinky, ghostHouseAccess, world.pinky());
 
-				tfInkyDots.setText(formatDots(house, world.inky()));
-				tfInkyDots.setEnabled(!house.isGlobalDotCounterEnabled());
-				updateTrafficLight(trafficInky, house, world.inky());
+				tfInkyDots.setText(formatDots(ghostHouseAccess, world.inky()));
+				tfInkyDots.setEnabled(!ghostHouseAccess.isGlobalDotCounterEnabled());
+				updateTrafficLight(trafficInky, ghostHouseAccess, world.inky());
 
-				tfClydeDots.setText(formatDots(house, world.clyde()));
-				tfClydeDots.setEnabled(!house.isGlobalDotCounterEnabled());
-				updateTrafficLight(trafficClyde, house, world.clyde());
+				tfClydeDots.setText(formatDots(ghostHouseAccess, world.clyde()));
+				tfClydeDots.setEnabled(!ghostHouseAccess.isGlobalDotCounterEnabled());
+				updateTrafficLight(trafficClyde, ghostHouseAccess, world.clyde());
 
-				tfGlobalDots.setText(String.format("%d", house.globalDotCount()));
-				tfGlobalDots.setEnabled(house.isGlobalDotCounterEnabled());
+				tfGlobalDots.setText(String.format("%d", ghostHouseAccess.globalDotCount()));
+				tfGlobalDots.setEnabled(ghostHouseAccess.isGlobalDotCounterEnabled());
 
-				tfPacManStarvingTime.setText(ticksAndSeconds(house.pacManStarvingTicks()));
-			}
+				tfPacManStarvingTime.setText(ticksAndSeconds(ghostHouseAccess.pacManStarvingTicks()));
+			});
 		});
 	}
 

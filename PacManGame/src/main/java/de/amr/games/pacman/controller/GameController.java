@@ -77,8 +77,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected GameStateView gameStateView;
 	protected GameLevelView gameLevelView;
 
-	public GhostCommand ghostCommand;
-	public GhostHouseAccess ghostHouse;
+	protected GhostCommand ghostCommand;
+	protected GhostHouseAccess ghostHouseAccess;
 
 	public GameController() {
 		super(PacManGameState.class);
@@ -91,6 +91,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	public Optional<Game> game() {
 		return Optional.ofNullable(game);
+	}
+
+	public Optional<GhostCommand> ghostCommand() {
+		return Optional.ofNullable(ghostCommand);
+	}
+
+	public Optional<GhostHouseAccess> ghostHouseAccess() {
+		return Optional.of(ghostHouseAccess);
 	}
 
 	@Override
@@ -108,11 +116,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void createPlayEnvironment() {
 		game = new Game(world, settings.startLevel);
 		ghostCommand = new GhostCommand(game, world.ghosts());
-		ghostHouse = new GhostHouseAccess(game, world);
+		ghostHouseAccess = new GhostHouseAccess(game, world);
 
 		playView = new PlayView(world, game, theme);
 		playView.ghostCommand = ghostCommand;
-		playView.house = ghostHouse;
+		playView.house = ghostHouseAccess;
 
 		world.creatures().forEach(actor -> {
 			world.putOnStage(actor, true);
@@ -264,7 +272,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.timeoutAfter(() -> sec(mazeFlashingSeconds() + 6))
 					.onEntry(() -> {
 						world.pacMan().showFull();
-						ghostHouse.onLevelChange();
+						ghostHouseAccess.onLevelChange();
 						sound.stopAllClips();
 						playView.enableGhostAnimations(false);
 						playView.mazeView.energizersBlinking.setEnabled(false);
@@ -450,7 +458,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		@Override
 		public void onTick() {
 			ghostCommand.update();
-			ghostHouse.update();
+			ghostHouseAccess.update();
 			world.creaturesOnStage().forEach(Creature::update);
 			world.bonus().update();
 			sound.updatePlayingSounds();
@@ -494,7 +502,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 
 			if (!settings.ghostsHarmless) {
-				ghostHouse.onLifeLost();
+				ghostHouseAccess.onLifeLost();
 				sound.stopAll();
 				playView.mazeView.energizersBlinking.setEnabled(false);
 				world.pacMan().process(new PacManKilledEvent(ghost));
@@ -516,7 +524,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent found = (FoodFoundEvent) event;
-			ghostHouse.onPacManFoundFood();
+			ghostHouseAccess.onPacManFoundFood();
 			int points = game.eatFood(found.tile, found.energizer);
 			int livesBefore = game.lives;
 			game.score(points);

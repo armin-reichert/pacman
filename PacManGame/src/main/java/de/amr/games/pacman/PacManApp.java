@@ -66,7 +66,8 @@ public class PacManApp extends Application {
 
 	@Override
 	protected void configure(AppSettings settings) {
-		settings.width = 28 * Tile.SIZE;
+//		settings.width = 28 * Tile.SIZE;
+		settings.width = 400;
 		settings.height = 36 * Tile.SIZE;
 		settings.scale = 2;
 		settings.title = texts.getString("app.title");

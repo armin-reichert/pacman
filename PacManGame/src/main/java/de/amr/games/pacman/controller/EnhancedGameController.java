@@ -128,8 +128,10 @@ public class EnhancedGameController extends GameController {
 		}
 		world.habitatTiles().filter(world::containsSimplePellet).forEach(tile -> {
 			game.eatFood(tile, false);
-			ghostHouse.onPacManFoundFood();
-			ghostHouse.update();
+			ghostHouseAccess().ifPresent(houseAccess -> {
+				houseAccess.onPacManFoundFood();
+				houseAccess.update();
+			});
 		});
 		loginfo("All simple pellets eaten");
 	}
