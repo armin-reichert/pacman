@@ -28,10 +28,10 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	final Game game;
 	final PacManWorld world;
 
-	public SearchingForFoodAndAvoidingGhosts(Game game) {
+	public SearchingForFoodAndAvoidingGhosts(PacManWorld world, Game game) {
+		this.world = world;
 		this.game = game;
-		this.world = game.world;
-		this.pacMan = game.pacMan;
+		this.pacMan = world.pacMan;
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 				continue;
 			}
 			if (pacMan.canCrossBorderTo(dir)) {
-				Tile neighbor = game.world.neighbor(pacMan.tile(), dir);
+				Tile neighbor = world.neighbor(pacMan.tile(), dir);
 				Optional<Tile> foodLocation = preferredFoodLocationFrom(neighbor);
 				if (foodLocation.isPresent()) {
 					int d = neighbor.manhattanDistance(foodLocation.get());
@@ -78,7 +78,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	Optional<Tile> activeBonusAtMostAway(Tile here, int maxDistance) {
-		return game.bonus.is(BonusState.ACTIVE) && here.manhattanDistance(world.bonusTile()) <= maxDistance
+		return world.bonus.is(BonusState.ACTIVE) && here.manhattanDistance(world.bonusTile()) <= maxDistance
 				? Optional.of(world.bonusTile())
 				: Optional.empty();
 	}
@@ -101,7 +101,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		Tile ahead1 = world.neighbor(pacManLocation, pacMan.moveDir());
 		Tile ahead2 = world.tileToDir(pacManLocation, pacMan.moveDir(), 2);
 		//@formatter:off
-		return game.ghostsOnStage().anyMatch(
+		return world.ghostsOnStage().anyMatch(
 				ghost -> !ghost.is(GhostState.FRIGHTENED) 
 				&& (ghost.tile().equals(ahead1) || ghost.tile().equals(ahead2))
 				&& ghost.moveDir() == pacMan.moveDir().opposite());

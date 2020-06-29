@@ -11,7 +11,9 @@ import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.Worlds;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 
@@ -31,14 +33,14 @@ public class EscapeIntoCornerTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new EscapeIntoCornerTestUI());
+		setController(new EscapeIntoCornerTestUI(Worlds.arcade()));
 	}
 }
 
 class EscapeIntoCornerTestUI extends PlayView implements VisualController {
 
-	public EscapeIntoCornerTestUI() {
-		super(Game.defaultGame(), new ArcadeTheme());
+	public EscapeIntoCornerTestUI(PacManWorld world) {
+		super(world, new Game(world, 1), new ArcadeTheme());
 		showRoutes = true;
 		showStates = true;
 		showScores = false;
@@ -47,18 +49,18 @@ class EscapeIntoCornerTestUI extends PlayView implements VisualController {
 	@Override
 	public void init() {
 		super.init();
-		game.world.eatFood();
-		game.takePart(game.pacMan);
-		game.pacMan.setState(EATING);
-		game.takePart(game.blinky);
-		game.blinky.behavior(FRIGHTENED, game.blinky.isFleeingToSafeCorner(game.pacMan));
-		game.blinky.setState(FRIGHTENED);
+		world.eatFood();
+		world.takePart(world.pacMan);
+		world.pacMan.setState(EATING);
+		world.takePart(world.blinky);
+		world.blinky.behavior(FRIGHTENED, world.blinky.isFleeingToSafeCorner(world.pacMan));
+		world.blinky.setState(FRIGHTENED);
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		game.creaturesOnStage().forEach(Creature::update);
+		world.creaturesOnStage().forEach(Creature::update);
 	}
 
 	@Override

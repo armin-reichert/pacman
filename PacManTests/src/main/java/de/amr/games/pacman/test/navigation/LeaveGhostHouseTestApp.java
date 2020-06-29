@@ -11,7 +11,9 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.Worlds;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 
@@ -32,14 +34,14 @@ public class LeaveGhostHouseTestApp extends Application {
 	@Override
 	public void init() {
 		clock().setTargetFrameRate(10);
-		setController(new LeaveGhostHouseTestUI());
+		setController(new LeaveGhostHouseTestUI(Worlds.arcade()));
 	}
 }
 
 class LeaveGhostHouseTestUI extends PlayView {
 
-	public LeaveGhostHouseTestUI() {
-		super(Game.defaultGame(), new ArcadeTheme());
+	public LeaveGhostHouseTestUI(PacManWorld world) {
+		super(world, new Game(world, 1), new ArcadeTheme());
 		showRoutes = true;
 		showStates = true;
 		showScores = false;
@@ -49,19 +51,19 @@ class LeaveGhostHouseTestUI extends PlayView {
 	@Override
 	public void init() {
 		super.init();
-		game.world.eatFood();
-		game.takePart(game.inky);
-		game.inky.subsequentState = SCATTERING;
+		world.eatFood();
+		world.takePart(world.inky);
+		world.inky.subsequentState = SCATTERING;
 		showMessage("Press SPACE to unlock", Color.WHITE);
 	}
 
 	@Override
 	public void update() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE) && game.inky.is(GhostState.LOCKED)) {
-			game.inky.process(new GhostUnlockedEvent());
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE) && world.inky.is(GhostState.LOCKED)) {
+			world.inky.process(new GhostUnlockedEvent());
 			clearMessage();
 		}
-		game.inky.update();
+		world.inky.update();
 		super.update();
 	}
 }

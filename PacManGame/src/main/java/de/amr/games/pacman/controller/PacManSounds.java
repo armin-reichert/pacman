@@ -4,7 +4,7 @@ import java.util.concurrent.CompletableFuture;
 
 import de.amr.easy.game.assets.SoundClip;
 import de.amr.games.pacman.controller.actor.GhostState;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**
@@ -14,26 +14,28 @@ import de.amr.games.pacman.view.theme.Theme;
  */
 public class PacManSounds {
 
-	private Theme theme;
+	private final PacManWorld world;
+	private final Theme theme;
 	private CompletableFuture<Void> musicLoading;
 	private long lastPelletEatenTimeMillis;
 
-	public PacManSounds(Theme theme) {
+	public PacManSounds(PacManWorld world, Theme theme) {
+		this.world = world;
 		this.theme = theme;
 	}
 
-	public void updatePlayingSounds(Game game) {
+	public void updatePlayingSounds() {
 		if (theme.snd_eatPill().isRunning() && System.currentTimeMillis() - lastPelletEatenTimeMillis > 250) {
 			theme.snd_eatPill().stop();
 		}
-		if (game.ghostsOnStage().anyMatch(ghost -> ghost.is(GhostState.CHASING))) {
+		if (world.ghostsOnStage().anyMatch(ghost -> ghost.is(GhostState.CHASING))) {
 			if (!theme.snd_ghost_chase().isRunning()) {
 				theme.snd_ghost_chase().loop();
 			}
 		} else {
 			theme.snd_ghost_chase().stop();
 		}
-		if (game.ghostsOnStage().anyMatch(ghost -> ghost.is(GhostState.DEAD))) {
+		if (world.ghostsOnStage().anyMatch(ghost -> ghost.is(GhostState.DEAD))) {
 			if (!theme.snd_ghost_dead().isRunning()) {
 				theme.snd_ghost_dead().loop();
 			}

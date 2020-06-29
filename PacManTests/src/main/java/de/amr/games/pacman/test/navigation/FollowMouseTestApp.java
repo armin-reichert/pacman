@@ -6,7 +6,9 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Mouse;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.Worlds;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 
@@ -26,7 +28,7 @@ public class FollowMouseTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new FollowMouseTestUI());
+		setController(new FollowMouseTestUI(Worlds.arcade()));
 	}
 }
 
@@ -34,8 +36,8 @@ class FollowMouseTestUI extends PlayView {
 
 	private Tile mousePosition = Tile.at(0, 0);
 
-	public FollowMouseTestUI() {
-		super(Game.defaultGame(), new ArcadeTheme());
+	public FollowMouseTestUI(PacManWorld world) {
+		super(world, new Game(world, 1), new ArcadeTheme());
 		showRoutes = true;
 		showStates = false;
 		showScores = false;
@@ -45,10 +47,10 @@ class FollowMouseTestUI extends PlayView {
 	@Override
 	public void init() {
 		super.init();
-		game.world.eatFood();
-		game.takePart(game.blinky);
-		game.blinky.behavior(CHASING, game.blinky.isHeadingFor(() -> mousePosition));
-		game.blinky.setState(CHASING);
+		world.eatFood();
+		world.takePart(world.blinky);
+		world.blinky.behavior(CHASING, world.blinky.isHeadingFor(() -> mousePosition));
+		world.blinky.setState(CHASING);
 	}
 
 	@Override
@@ -57,6 +59,6 @@ class FollowMouseTestUI extends PlayView {
 		if (Mouse.moved()) {
 			mousePosition = Tile.at(Mouse.getX() / Tile.SIZE, Mouse.getY() / Tile.SIZE);
 		}
-		game.blinky.update();
+		world.blinky.update();
 	}
 }

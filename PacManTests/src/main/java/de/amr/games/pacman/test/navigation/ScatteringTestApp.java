@@ -1,7 +1,5 @@
 package de.amr.games.pacman.test.navigation;
 
-import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
-
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
@@ -9,9 +7,12 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.Worlds;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 
@@ -31,14 +32,14 @@ public class ScatteringTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new ScatteringTestUI());
+		setController(new ScatteringTestUI(Worlds.arcade()));
 	}
 }
 
 class ScatteringTestUI extends PlayView {
 
-	public ScatteringTestUI() {
-		super(Game.defaultGame(), new ArcadeTheme());
+	public ScatteringTestUI(PacManWorld world) {
+		super(world, new Game(world, 1), new ArcadeTheme());
 		showRoutes = true;
 		showStates = false;
 		showScores = false;
@@ -48,10 +49,10 @@ class ScatteringTestUI extends PlayView {
 	@Override
 	public void init() {
 		super.init();
-		game.world.eatFood();
-		game.ghosts().forEach(ghost -> {
-			game.takePart(ghost);
-			ghost.subsequentState = SCATTERING;
+		world.eatFood();
+		world.ghosts().forEach(ghost -> {
+			world.takePart(ghost);
+			ghost.subsequentState = GhostState.SCATTERING;
 		});
 		showMessage("Press SPACE to start", Color.WHITE);
 	}
@@ -59,10 +60,10 @@ class ScatteringTestUI extends PlayView {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			game.ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
+			world.ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
 			clearMessage();
 		}
-		game.ghostsOnStage().forEach(Ghost::update);
+		world.ghostsOnStage().forEach(Ghost::update);
 		super.update();
 	}
 }

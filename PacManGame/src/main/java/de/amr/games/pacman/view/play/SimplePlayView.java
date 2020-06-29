@@ -49,16 +49,16 @@ public class SimplePlayView extends BaseView {
 	private int messageFontSize = 8;
 	private int messageRow = 21;
 
-	public SimplePlayView(Game game, Theme theme) {
+	public SimplePlayView(PacManWorld world, Game game, Theme theme) {
 		super(theme);
 		this.game = game;
-		world = game.world;
+		this.world = world;
 		mazeView = new MazeView();
-		game.pacMan.takeClothes(theme);
-		game.blinky.takeClothes(theme, Theme.RED_GHOST);
-		game.pinky.takeClothes(theme, Theme.PINK_GHOST);
-		game.inky.takeClothes(theme, Theme.CYAN_GHOST);
-		game.clyde.takeClothes(theme, Theme.ORANGE_GHOST);
+		world.pacMan.takeClothes(theme);
+		world.blinky.takeClothes(theme, Theme.RED_GHOST);
+		world.pinky.takeClothes(theme, Theme.PINK_GHOST);
+		world.inky.takeClothes(theme, Theme.CYAN_GHOST);
+		world.clyde.takeClothes(theme, Theme.ORANGE_GHOST);
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class SimplePlayView extends BaseView {
 	}
 
 	public void enableGhostAnimations(boolean enabled) {
-		game.ghosts().flatMap(ghost -> ghost.sprites.values()).forEach(sprite -> sprite.enableAnimation(enabled));
+		world.ghosts().flatMap(ghost -> ghost.sprites.values()).forEach(sprite -> sprite.enableAnimation(enabled));
 	}
 
 	protected Color tileColor(Tile tile) {
@@ -120,12 +120,12 @@ public class SimplePlayView extends BaseView {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		drawEntity(g, game.bonus, game.bonus.sprites);
-		drawEntity(g, game.pacMan, game.pacMan.sprites);
+		drawEntity(g, world.bonus, world.bonus.sprites);
+		drawEntity(g, world.pacMan, world.pacMan.sprites);
 		// draw dead ghosts (as number or eyes) under living ghosts
-		game.ghostsOnStage().filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
+		world.ghostsOnStage().filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
 				.forEach(ghost -> drawEntity(g, ghost, ghost.sprites));
-		game.ghostsOnStage().filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
+		world.ghostsOnStage().filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
 				.forEach(ghost -> drawEntity(g, ghost, ghost.sprites));
 	}
 
@@ -217,8 +217,8 @@ public class SimplePlayView extends BaseView {
 			spriteFlashingMaze = theme.spr_flashingMaze();
 			energizersBlinking = new CyclicAnimation(2);
 			energizersBlinking.setFrameDuration(150);
-			game.bonus.tf.x = world.bonusTile().x();
-			game.bonus.tf.y = world.bonusTile().y();
+			world.bonus.tf.x = world.bonusTile().x();
+			world.bonus.tf.y = world.bonusTile().y();
 			//@formatter:off
 			beginStateMachine()
 				.description("[Maze View]")
@@ -270,7 +270,7 @@ public class SimplePlayView extends BaseView {
 			}
 			House theHouse = world.theHouse();
 			// draw door open when touched by ghost entering or leaving the house
-			game.ghostsOnStage().filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE)).forEach(ghost -> {
+			world.ghostsOnStage().filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE)).forEach(ghost -> {
 				theHouse.doors().filter(door -> door.contains(ghost.tile())).forEach(door -> {
 					g.setColor(Color.BLACK);
 					door.tiles.forEach(tile -> {

@@ -10,7 +10,9 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.Worlds;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 
@@ -30,14 +32,14 @@ public class EnterGhostHouseTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new EnterGhostHouseTestUI());
+		setController(new EnterGhostHouseTestUI(Worlds.arcade()));
 	}
 }
 
 class EnterGhostHouseTestUI extends PlayView {
 
-	public EnterGhostHouseTestUI() {
-		super(Game.defaultGame(), new ArcadeTheme());
+	public EnterGhostHouseTestUI(PacManWorld world) {
+		super(world, new Game(world, 1), new ArcadeTheme());
 		showRoutes = true;
 		showStates = true;
 		showScores = false;
@@ -47,8 +49,8 @@ class EnterGhostHouseTestUI extends PlayView {
 	@Override
 	public void init() {
 		super.init();
-		game.world.eatFood();
-		game.takePart(game.inky);
+		world.eatFood();
+		world.takePart(world.inky);
 		showMessage("SPACE = Enter/leave house", Color.WHITE, 8);
 	}
 
@@ -56,8 +58,8 @@ class EnterGhostHouseTestUI extends PlayView {
 	public void update() {
 		super.update();
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			game.inky.setState(game.blinky.isInsideHouse() ? LEAVING_HOUSE : ENTERING_HOUSE);
+			world.inky.setState(world.blinky.isInsideHouse() ? LEAVING_HOUSE : ENTERING_HOUSE);
 		}
-		game.inky.update();
+		world.inky.update();
 	}
 }

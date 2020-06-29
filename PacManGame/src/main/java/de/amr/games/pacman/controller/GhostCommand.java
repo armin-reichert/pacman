@@ -5,6 +5,11 @@ import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Game.sec;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.model.Game;
 import de.amr.statemachine.core.StateMachine;
@@ -32,12 +37,14 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 	/*@formatter:on*/
 
 	private final Game game;
+	private final List<Ghost> ghosts;
 	private int round; // starts with 1
 	private boolean suspended;
 
-	public GhostCommand(Game game) {
+	public GhostCommand(Game game, Stream<Ghost> ghosts) {
 		super(GhostState.class);
 		this.game = game;
+		this.ghosts = ghosts.collect(Collectors.toList());
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("[GhostCommand]")
@@ -80,7 +87,7 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 	public void update() {
 		if (!suspended) {
 			super.update();
-			game.ghosts().forEach(ghost -> ghost.subsequentState = getState());
+			ghosts.forEach(ghost -> ghost.subsequentState = getState());
 		}
 	}
 

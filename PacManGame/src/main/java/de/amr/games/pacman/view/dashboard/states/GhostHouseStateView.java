@@ -22,6 +22,7 @@ import de.amr.games.pacman.controller.GhostHouseAccess;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.view.theme.Theme;
 import net.miginfocom.swing.MigLayout;
 
@@ -33,6 +34,7 @@ import net.miginfocom.swing.MigLayout;
 public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	private GameController gameController;
+	private PacManWorld world;
 
 	private JTextField tfPinkyDots;
 	private JTextField tfInkyDots;
@@ -120,6 +122,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	public void attachTo(GameController gameController) {
 		this.gameController = gameController;
+		world = gameController.world;
 		init();
 	}
 
@@ -140,17 +143,17 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 			return;
 		}
 
-		tfPinkyDots.setText(formatDots(house, game.pinky));
+		tfPinkyDots.setText(formatDots(house, world.pinky));
 		tfPinkyDots.setEnabled(!house.isGlobalDotCounterEnabled());
-		updateTrafficLight(trafficPinky, house, game.pinky);
+		updateTrafficLight(trafficPinky, house, world.pinky);
 
-		tfInkyDots.setText(formatDots(house, game.inky));
+		tfInkyDots.setText(formatDots(house, world.inky));
 		tfInkyDots.setEnabled(!house.isGlobalDotCounterEnabled());
-		updateTrafficLight(trafficInky, house, game.inky);
+		updateTrafficLight(trafficInky, house, world.inky);
 
-		tfClydeDots.setText(formatDots(house, game.clyde));
+		tfClydeDots.setText(formatDots(house, world.clyde));
 		tfClydeDots.setEnabled(!house.isGlobalDotCounterEnabled());
-		updateTrafficLight(trafficClyde, house, game.clyde);
+		updateTrafficLight(trafficClyde, house, world.clyde);
 
 		tfGlobalDots.setText(String.format("%d", house.globalDotCount()));
 		tfGlobalDots.setEnabled(house.isGlobalDotCounterEnabled());

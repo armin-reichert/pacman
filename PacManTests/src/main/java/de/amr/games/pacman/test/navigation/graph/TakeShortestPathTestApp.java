@@ -22,6 +22,7 @@ import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Portal;
 import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.Worlds;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 
@@ -41,7 +42,7 @@ public class TakeShortestPathTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new TakeShortestPathTestUI());
+		setController(new TakeShortestPathTestUI(Worlds.arcade()));
 	}
 }
 
@@ -52,10 +53,9 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 	int targetIndex;
 	PacManWorld world;
 
-	public TakeShortestPathTestUI() {
-		super(Game.defaultGame(), new ArcadeTheme());
-		world = game.world;
-		ghost = game.blinky;
+	public TakeShortestPathTestUI(PacManWorld world) {
+		super(world, new Game(world, 1), new ArcadeTheme());
+		ghost = world.blinky;
 		Portal thePortal = world.portals().findAny().get();
 		House theHouse = world.houses().findAny().get();
 		targets = Arrays.asList(world.cornerSE(), Tile.at(15, 23), Tile.at(12, 23), world.cornerSW(),
@@ -73,7 +73,7 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 		world.eatFood();
 		targetIndex = 0;
 		theme.snd_ghost_chase().volume(0);
-		game.takePart(ghost);
+		world.takePart(ghost);
 		Steering steering = ghost.isTakingShortestPath(() -> targets.get(targetIndex));
 		ghost.behavior(CHASING, steering);
 		ghost.behavior(FRIGHTENED, steering);

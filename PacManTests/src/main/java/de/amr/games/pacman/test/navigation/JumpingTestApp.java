@@ -4,7 +4,9 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.Worlds;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 
@@ -24,14 +26,14 @@ public class JumpingTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new JumpingTestUI());
+		setController(new JumpingTestUI(Worlds.arcade()));
 	}
 }
 
 class JumpingTestUI extends PlayView {
 
-	public JumpingTestUI() {
-		super(Game.defaultGame(), new ArcadeTheme());
+	public JumpingTestUI(PacManWorld world) {
+		super(world, new Game(world, 1), new ArcadeTheme());
 		showRoutes = false;
 		showStates = true;
 		showScores = false;
@@ -41,13 +43,13 @@ class JumpingTestUI extends PlayView {
 	@Override
 	public void init() {
 		super.init();
-		game.world.eatFood();
-		game.ghosts().forEach(game::takePart);
+		world.eatFood();
+		world.ghosts().forEach(world::takePart);
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		game.ghostsOnStage().forEach(Ghost::update);
+		world.ghostsOnStage().forEach(Ghost::update);
 	}
 }

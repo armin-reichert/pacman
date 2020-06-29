@@ -10,7 +10,9 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.Worlds;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 
@@ -30,7 +32,7 @@ public class MovingRandomlyTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new MovingRandomlyTestUI());
+		setController(new MovingRandomlyTestUI(Worlds.arcade()));
 	}
 }
 
@@ -38,8 +40,8 @@ class MovingRandomlyTestUI extends PlayView {
 
 	boolean started;
 
-	public MovingRandomlyTestUI() {
-		super(Game.defaultGame(), new ArcadeTheme());
+	public MovingRandomlyTestUI(PacManWorld world) {
+		super(world, new Game(world, 1), new ArcadeTheme());
 		showRoutes = true;
 		showStates = true;
 		showScores = false;
@@ -49,10 +51,10 @@ class MovingRandomlyTestUI extends PlayView {
 	@Override
 	public void init() {
 		super.init();
-		game.world.eatFood();
-		game.ghosts().forEach(ghost -> {
-			game.takePart(ghost);
-			ghost.tf.setPosition(game.world.pacManSeat().position);
+		world.eatFood();
+		world.ghosts().forEach(ghost -> {
+			world.takePart(ghost);
+			ghost.tf.setPosition(world.pacManSeat().position);
 			ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
 			ghost.state(FRIGHTENED).removeTimer();
 			ghost.setState(FRIGHTENED);
@@ -68,7 +70,7 @@ class MovingRandomlyTestUI extends PlayView {
 			clearMessage();
 		}
 		if (started) {
-			game.ghostsOnStage().forEach(Ghost::update);
+			world.ghostsOnStage().forEach(Ghost::update);
 		}
 	}
 }

@@ -43,9 +43,9 @@ public class EnhancedGameController extends GameController {
 		}
 		if (currentView == playView) {
 			if (Keyboard.keyPressedOnce("b")) {
-				toggleGhostOnStage(game.blinky);
+				toggleGhostOnStage(world.blinky);
 			} else if (Keyboard.keyPressedOnce("c")) {
-				toggleGhostOnStage(game.clyde);
+				toggleGhostOnStage(world.clyde);
 			} else if (Keyboard.keyPressedOnce("d")) {
 				toggleDemoMode();
 			} else if (Keyboard.keyPressedOnce("e")) {
@@ -55,7 +55,7 @@ public class EnhancedGameController extends GameController {
 			} else if (Keyboard.keyPressedOnce("g")) {
 				playView.showGrid = !playView.showGrid;
 			} else if (Keyboard.keyPressedOnce("i")) {
-				toggleGhostOnStage(game.inky);
+				toggleGhostOnStage(world.inky);
 			} else if (Keyboard.keyPressedOnce("k")) {
 				killAllGhosts();
 			} else if (Keyboard.keyPressedOnce("l")) {
@@ -65,7 +65,7 @@ public class EnhancedGameController extends GameController {
 			} else if (Keyboard.keyPressedOnce("o")) {
 				togglePacManOverflowBug();
 			} else if (Keyboard.keyPressedOnce("p")) {
-				toggleGhostOnStage(game.pinky);
+				toggleGhostOnStage(world.pinky);
 			} else if (Keyboard.keyPressedOnce("s")) {
 				playView.showStates = !playView.showStates;
 			} else if (Keyboard.keyPressedOnce("t")) {
@@ -81,7 +81,7 @@ public class EnhancedGameController extends GameController {
 	}
 
 	private void toggleGhostOnStage(Ghost ghost) {
-		game.takePart(ghost, !game.takesPart(ghost));
+		world.takePart(ghost, !world.takesPart(ghost));
 	}
 
 	private void togglePacManOverflowBug() {
@@ -97,11 +97,12 @@ public class EnhancedGameController extends GameController {
 	private void toggleGhostFrightenedBehavior() {
 		if (settings.ghostsSafeCorner) {
 			settings.ghostsSafeCorner = false;
-			game.ghosts().forEach(ghost -> ghost.behavior(GhostState.FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack()));
+			world.ghosts()
+					.forEach(ghost -> ghost.behavior(GhostState.FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack()));
 			loginfo("Ghost escape behavior is: Random movement");
 		} else {
 			settings.ghostsSafeCorner = true;
-			game.ghosts().forEach(ghost -> ghost.behavior(GhostState.FRIGHTENED, ghost.isFleeingToSafeCorner(game.pacMan)));
+			world.ghosts().forEach(ghost -> ghost.behavior(GhostState.FRIGHTENED, ghost.isFleeingToSafeCorner(world.pacMan)));
 			loginfo("Ghosts escape behavior is: Fleeing to safe corners");
 		}
 	}
@@ -131,7 +132,7 @@ public class EnhancedGameController extends GameController {
 		if (getState() != PLAYING) {
 			return;
 		}
-		game.world.mapTiles().filter(game.world::containsSimplePellet).forEach(tile -> {
+		world.mapTiles().filter(world::containsSimplePellet).forEach(tile -> {
 			game.eatFood(tile, false);
 			ghostHouse.onPacManFoundFood();
 			ghostHouse.update();
@@ -144,9 +145,9 @@ public class EnhancedGameController extends GameController {
 			return;
 		}
 		game.level.ghostsKilledByEnergizer = 0;
-		game.ghostsOnStage().filter(ghost -> ghost.is(GhostState.CHASING, GhostState.SCATTERING, GhostState.FRIGHTENED))
+		world.ghostsOnStage().filter(ghost -> ghost.is(GhostState.CHASING, GhostState.SCATTERING, GhostState.FRIGHTENED))
 				.forEach(ghost -> {
-					game.scoreGhostKilled(ghost);
+					game.scoreGhostKilled(ghost.name);
 					ghost.process(new GhostKilledEvent(ghost));
 				});
 		loginfo("All ghosts killed");

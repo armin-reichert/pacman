@@ -110,7 +110,7 @@ public class Ghost extends Creature<GhostState> {
 					.onTick(() -> {
 						move();
 						// not sure if ghost locked inside house should look frightened
-						if (game.pacMan.power > 0) {
+						if (world.pacMan.power > 0) {
 							showFrightened();
 						} else {
 							showColored();
@@ -400,8 +400,8 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	private void checkPacManCollision() {
-		if (tile().equals(game.pacMan.tile()) && !isTeleporting() && !game.pacMan.isTeleporting()
-				&& !game.pacMan.is(PacManState.DEAD)) {
+		if (tile().equals(world.pacMan.tile()) && !isTeleporting() && !world.pacMan.isTeleporting()
+				&& !world.pacMan.is(PacManState.DEAD)) {
 			publish(new PacManGhostCollisionEvent(this));
 		}
 	}

@@ -1,34 +1,14 @@
 package de.amr.games.pacman.model;
 
 import static de.amr.easy.game.Application.loginfo;
-import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
-import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
-import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
-import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
-import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
-import static java.awt.event.KeyEvent.VK_DOWN;
-import static java.awt.event.KeyEvent.VK_LEFT;
-import static java.awt.event.KeyEvent.VK_RIGHT;
-import static java.awt.event.KeyEvent.VK_UP;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.actor.Bonus;
-import de.amr.games.pacman.controller.actor.Creature;
-import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Symbol;
 import de.amr.games.pacman.model.world.Tile;
-import de.amr.games.pacman.model.world.Worlds;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.
@@ -109,18 +89,13 @@ public class Game {
 		return Math.round(60 * seconds);
 	}
 
-	public PacMan pacMan;
-	public Ghost blinky, pinky, inky, clyde;
-	public Bonus bonus;
-	public PacManWorld world;
-	public List<Symbol> levelCounter;
-	public GameScore gameScore;
+	private final PacManWorld world;
+	public final List<Symbol> levelCounter;
+	public final GameScore gameScore;
 	public GameLevel level;
 	public int lives;
 	public int score;
 	public int totalFoodCount;
-
-	private Set<Creature<?>> actorsTakingPart = new HashSet<>();
 
 	/**
 	 * Creates a game starting with the given level.
@@ -129,22 +104,14 @@ public class Game {
 	 */
 	public Game(PacManWorld world, int startLevel) {
 		this.world = world;
-		lives = 3;
-		score = 0;
+		world.pacMan.game = this;
+		world.ghosts().forEach(ghost -> ghost.game = this);
 		levelCounter = new ArrayList<>();
 		gameScore = new GameScore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
 		totalFoodCount = (int) world.mapTiles().filter(world::containsFood).count();
-		createActors();
-		pacMan.game = this;
-		ghosts().forEach(ghost -> ghost.game = this);
+		lives = 3;
+		score = 0;
 		enterLevel(startLevel);
-	}
-
-	/**
-	 * Creates a game using the Arcade world and starting with the first level.
-	 */
-	public static Game defaultGame() {
-		return new Game(Worlds.arcade(), 1);
 	}
 
 	/**
@@ -178,92 +145,6 @@ public class Game {
 			System.exit(0);
 			return null;
 		}
-	}
-
-	private void createActors() {
-
-		// create actor instances
-
-		pacMan = new PacMan(world);
-		blinky = new Ghost(world, "Blinky");
-		inky = new Ghost(world, "Inky");
-		pinky = new Ghost(world, "Pinky");
-		clyde = new Ghost(world, "Clyde");
-		bonus = new Bonus();
-
-		// assign seats
-
-		pacMan.seat = world.pacManSeat();
-
-		House theHouse = world.theHouse();
-		blinky.seat = theHouse.seat(0);
-		inky.seat = theHouse.seat(1);
-		pinky.seat = theHouse.seat(2);
-		clyde.seat = theHouse.seat(3);
-
-		// define behavior
-
-		pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
-
-		// common ghost behavior
-
-		ghosts().forEach(ghost -> {
-			ghost.behavior(LOCKED, ghost::bouncingOnSeat);
-			ghost.behavior(ENTERING_HOUSE, ghost.isTakingSeat());
-			ghost.behavior(LEAVING_HOUSE, ghost::leavingGhostHouse);
-			ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
-			ghost.behavior(DEAD, ghost.isReturningToHouse());
-		});
-
-		// individual ghost behavior
-
-		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(theHouse.seat(2)));
-
-		// scattering
-
-		int w = world.width(), h = world.height();
-		blinky.behavior(SCATTERING, blinky.isHeadingFor(Tile.at(w - 3, 0)));
-		inky.behavior(SCATTERING, inky.isHeadingFor(Tile.at(w - 1, h - 1)));
-		pinky.behavior(SCATTERING, pinky.isHeadingFor(Tile.at(2, 0)));
-		clyde.behavior(SCATTERING, clyde.isHeadingFor(Tile.at(0, h - 1)));
-
-		// chasing
-
-		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
-		inky.behavior(CHASING, inky.isHeadingFor(() -> {
-			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
-			return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
-		}));
-		pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
-		clyde.behavior(CHASING, clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : Tile.at(0, h - 1)));
-	}
-
-	/**
-	 * @return stream of all ghosts
-	 */
-	public Stream<Ghost> ghosts() {
-		return Stream.of(blinky, pinky, inky, clyde);
-	}
-
-	/**
-	 * @return stream of ghosts currently on stage
-	 */
-	public Stream<Ghost> ghostsOnStage() {
-		return ghosts().filter(actorsTakingPart::contains);
-	}
-
-	/**
-	 * @return stream of all creatures (ghosts and Pac-Man)
-	 */
-	public Stream<Creature<?>> creatures() {
-		return Stream.of(pacMan, blinky, pinky, inky, clyde);
-	}
-
-	/**
-	 * @return stream of creatures currently on stage (ghosts and Pac-Man)
-	 */
-	public Stream<Creature<?>> creaturesOnStage() {
-		return creatures().filter(actorsTakingPart::contains);
 	}
 
 	/**
@@ -320,9 +201,9 @@ public class Game {
 	 * Scores for killing a ghost. Value of a killed ghost doubles if killed in series using the same
 	 * energizer.
 	 * 
-	 * @param ghost killed ghost
+	 * @param ghostName killed ghost's name
 	 */
-	public void scoreGhostKilled(Ghost ghost) {
+	public void scoreGhostKilled(String ghostName) {
 		level.ghostsKilledByEnergizer += 1;
 		level.ghostsKilled += 1;
 		if (level.ghostsKilled == 16) {
@@ -330,7 +211,7 @@ public class Game {
 		}
 		int points = killedGhostPoints();
 		score(points);
-		loginfo("Scored %d points for killing %s (%s ghost in sequence)", points, ghost.name,
+		loginfo("Scored %d points for killing %s (%s ghost in sequence)", points, ghostName,
 				new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]);
 	}
 
@@ -340,38 +221,5 @@ public class Game {
 	 */
 	public int killedGhostPoints() {
 		return POINTS_GHOST[level.ghostsKilledByEnergizer - 1];
-	}
-
-	/**
-	 * @param actor a ghost or Pac-Man
-	 * @return {@code true} if the actor is currently on stage
-	 */
-	public boolean takesPart(Creature<?> actor) {
-		return actorsTakingPart.contains(actor);
-	}
-
-	/**
-	 * Lets the actor take part at the game.
-	 * 
-	 * @param actor     a ghost or Pac-Man
-	 * @param takesPart if the actors takes part
-	 */
-	public void takePart(Creature<?> actor, boolean takesPart) {
-		if (takesPart) {
-			actorsTakingPart.add(actor);
-			actor.init();
-			actor.visible = true;
-			loginfo("%s entered the game", actor.name);
-		} else {
-			actorsTakingPart.remove(actor);
-			actor.visible = false;
-			actor.placeAt(Tile.at(-1, -1));
-			loginfo("%s left the game", actor.name);
-
-		}
-	}
-
-	public void takePart(Creature<?> actor) {
-		takePart(actor, true);
 	}
 }

@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.PacManWorld;
 
 /**
  * This class controls when and in which order locked ghosts can leave the ghost house.
@@ -25,12 +26,14 @@ import de.amr.games.pacman.model.Game;
 public class GhostHouseAccess {
 
 	private final Game game;
+	private final PacManWorld world;
 	private final DotCounter globalCounter;
 	private final int[] ghostDotCount;
 	private int pacManStarvingTicks;
 
-	public GhostHouseAccess(Game game) {
+	public GhostHouseAccess(Game game, PacManWorld world) {
 		this.game = game;
+		this.world = world;
 		globalCounter = new DotCounter();
 		ghostDotCount = new int[4];
 	}
@@ -42,8 +45,8 @@ public class GhostHouseAccess {
 	}
 
 	public void update() {
-		if (game.takesPart(game.blinky) && game.blinky.is(LOCKED)) {
-			unlock(game.blinky);
+		if (world.takesPart(world.blinky) && world.blinky.is(LOCKED)) {
+			unlock(world.blinky);
 		}
 		Ghost nextToLeave = preferredLockedGhost().orElse(null);
 		if (nextToLeave != null) {
@@ -60,7 +63,7 @@ public class GhostHouseAccess {
 		pacManStarvingTicks = 0;
 		if (globalCounter.enabled) {
 			globalCounter.dots++;
-			if (globalCounter.dots == 32 && game.clyde.is(LOCKED)) {
+			if (globalCounter.dots == 32 && world.clyde.is(LOCKED)) {
 				globalCounter.dots = 0;
 				globalCounter.enabled = false;
 				loginfo("Global dot counter reset and disabled (Clyde was locked when counter reached 32)");
@@ -103,7 +106,7 @@ public class GhostHouseAccess {
 	}
 
 	public Optional<Ghost> preferredLockedGhost() {
-		return Stream.of(game.pinky, game.inky, game.clyde).filter(game::takesPart).filter(ghost -> ghost.is(LOCKED))
+		return Stream.of(world.pinky, world.inky, world.clyde).filter(world::takesPart).filter(ghost -> ghost.is(LOCKED))
 				.findFirst();
 	}
 
@@ -157,26 +160,26 @@ public class GhostHouseAccess {
 	}
 
 	public int personalDotLimit(Ghost ghost) {
-		if (ghost == game.pinky) {
+		if (ghost == world.pinky) {
 			return 0;
 		}
-		if (ghost == game.inky) {
+		if (ghost == world.inky) {
 			return game.level.number == 1 ? 30 : 0;
 		}
-		if (ghost == game.clyde) {
+		if (ghost == world.clyde) {
 			return game.level.number == 1 ? 60 : game.level.number == 2 ? 50 : 0;
 		}
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");
 	}
 
 	public int globalDotLimit(Ghost ghost) {
-		if (ghost == game.pinky) {
+		if (ghost == world.pinky) {
 			return 7;
 		}
-		if (ghost == game.inky) {
+		if (ghost == world.inky) {
 			return 17;
 		}
-		if (ghost == game.clyde) {
+		if (ghost == world.clyde) {
 			return 32;
 		}
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");

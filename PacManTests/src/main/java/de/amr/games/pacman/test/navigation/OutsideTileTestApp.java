@@ -4,7 +4,9 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.Worlds;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 
@@ -28,14 +30,14 @@ public class OutsideTileTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new OutsideTileTestUI());
+		setController(new OutsideTileTestUI(Worlds.arcade()));
 	}
 }
 
 class OutsideTileTestUI extends PlayView {
 
-	public OutsideTileTestUI() {
-		super(Game.defaultGame(), new ArcadeTheme());
+	public OutsideTileTestUI(PacManWorld world) {
+		super(world, new Game(world, 1), new ArcadeTheme());
 		showRoutes = true;
 		showStates = false;
 		showScores = false;
@@ -45,17 +47,17 @@ class OutsideTileTestUI extends PlayView {
 	@Override
 	public void init() {
 		super.init();
-		game.world.eatFood();
+		world.eatFood();
 		theme.snd_ghost_chase().volume(0);
-		game.takePart(game.blinky);
+		world.takePart(world.blinky);
 		int row = world.portals().findFirst().map(portal -> portal.right.row).orElse((short) 100);
-		game.blinky.behavior(GhostState.CHASING, game.blinky.isHeadingFor(() -> Tile.at(100, row)));
-		game.blinky.setState(GhostState.CHASING);
+		world.blinky.behavior(GhostState.CHASING, world.blinky.isHeadingFor(() -> Tile.at(100, row)));
+		world.blinky.setState(GhostState.CHASING);
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		game.blinky.update();
+		world.blinky.update();
 	}
 }

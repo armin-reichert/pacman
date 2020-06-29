@@ -1,15 +1,33 @@
 package de.amr.games.pacman.model.world;
 
+import static de.amr.easy.game.Application.loginfo;
+import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
+import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
+import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
+import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.world.map.PacManMap.B_EATEN;
 import static de.amr.games.pacman.model.world.map.PacManMap.B_ENERGIZER;
 import static de.amr.games.pacman.model.world.map.PacManMap.B_FOOD;
 import static de.amr.games.pacman.model.world.map.PacManMap.B_INTERSECTION;
 import static de.amr.games.pacman.model.world.map.PacManMap.B_TUNNEL;
 import static de.amr.games.pacman.model.world.map.PacManMap.B_WALL;
+import static java.awt.event.KeyEvent.VK_DOWN;
+import static java.awt.event.KeyEvent.VK_LEFT;
+import static java.awt.event.KeyEvent.VK_RIGHT;
+import static java.awt.event.KeyEvent.VK_UP;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.controller.actor.Bonus;
+import de.amr.games.pacman.controller.actor.Creature;
+import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.map.PacManMap;
 
@@ -20,10 +38,127 @@ import de.amr.games.pacman.model.world.map.PacManMap;
  */
 public class PacManWorld implements PacManWorldStructure {
 
+	public final PacMan pacMan;
+	public final Ghost blinky, pinky, inky, clyde;
+	public final Bonus bonus;
+
 	private PacManMap map;
+	private Set<Creature<?>> actorsTakingPart = new HashSet<>();
 
 	public PacManWorld(PacManMap map) {
 		this.map = map;
+
+		blinky = new Ghost(this, "Blinky");
+		inky = new Ghost(this, "Inky");
+		pinky = new Ghost(this, "Pinky");
+		clyde = new Ghost(this, "Clyde");
+		bonus = new Bonus();
+
+		pacMan = new PacMan(this);
+		pacMan.seat = pacManSeat();
+
+		House theHouse = theHouse();
+		blinky.seat = theHouse.seat(0);
+		inky.seat = theHouse.seat(1);
+		pinky.seat = theHouse.seat(2);
+		clyde.seat = theHouse.seat(3);
+
+		// define behavior
+
+		pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
+
+		// common ghost behavior
+
+		ghosts().forEach(ghost -> {
+			ghost.behavior(LOCKED, ghost::bouncingOnSeat);
+			ghost.behavior(ENTERING_HOUSE, ghost.isTakingSeat());
+			ghost.behavior(LEAVING_HOUSE, ghost::leavingGhostHouse);
+			ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
+			ghost.behavior(DEAD, ghost.isReturningToHouse());
+		});
+
+		// individual ghost behavior
+
+		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(theHouse.seat(2)));
+
+		// scattering
+
+		int w = width(), h = height();
+		blinky.behavior(SCATTERING, blinky.isHeadingFor(Tile.at(w - 3, 0)));
+		inky.behavior(SCATTERING, inky.isHeadingFor(Tile.at(w - 1, h - 1)));
+		pinky.behavior(SCATTERING, pinky.isHeadingFor(Tile.at(2, 0)));
+		clyde.behavior(SCATTERING, clyde.isHeadingFor(Tile.at(0, h - 1)));
+
+		// chasing
+
+		blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
+		inky.behavior(CHASING, inky.isHeadingFor(() -> {
+			Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
+			return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
+		}));
+		pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
+		clyde.behavior(CHASING, clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : Tile.at(0, h - 1)));
+	}
+
+	/**
+	 * @return stream of all ghosts
+	 */
+	public Stream<Ghost> ghosts() {
+		return Stream.of(blinky, pinky, inky, clyde);
+	}
+
+	/**
+	 * @return stream of ghosts currently on stage
+	 */
+	public Stream<Ghost> ghostsOnStage() {
+		return ghosts().filter(actorsTakingPart::contains);
+	}
+
+	/**
+	 * @return stream of all creatures (ghosts and Pac-Man)
+	 */
+	public Stream<Creature<?>> creatures() {
+		return Stream.of(pacMan, blinky, pinky, inky, clyde);
+	}
+
+	/**
+	 * @return stream of creatures currently on stage (ghosts and Pac-Man)
+	 */
+	public Stream<Creature<?>> creaturesOnStage() {
+		return creatures().filter(actorsTakingPart::contains);
+	}
+
+	/**
+	 * @param actor a ghost or Pac-Man
+	 * @return {@code true} if the actor is currently on stage
+	 */
+	public boolean takesPart(Creature<?> actor) {
+		return actorsTakingPart.contains(actor);
+	}
+
+	/**
+	 * Lets the actor take part at the game.
+	 * 
+	 * @param actor     a ghost or Pac-Man
+	 * @param takesPart if the actors takes part
+	 */
+	public void takePart(Creature<?> actor, boolean takesPart) {
+		if (takesPart) {
+			actorsTakingPart.add(actor);
+			actor.init();
+			actor.visible = true;
+			loginfo("%s entered the game", actor.name);
+		} else {
+			actorsTakingPart.remove(actor);
+			actor.visible = false;
+			actor.placeAt(Tile.at(-1, -1));
+			loginfo("%s left the game", actor.name);
+
+		}
+	}
+
+	public void takePart(Creature<?> actor) {
+		takePart(actor, true);
 	}
 
 	@Override

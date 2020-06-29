@@ -13,6 +13,7 @@ import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.Worlds;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 
@@ -32,7 +33,7 @@ public class VisitCornersTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new FollowTargetTilesTestUI());
+		setController(new FollowTargetTilesTestUI(Worlds.arcade()));
 	}
 }
 
@@ -40,11 +41,9 @@ class FollowTargetTilesTestUI extends PlayView {
 
 	private List<Tile> targets;
 	private int current;
-	private PacManWorld world;
 
-	public FollowTargetTilesTestUI() {
-		super(Game.defaultGame(), new ArcadeTheme());
-		world = game.world;
+	public FollowTargetTilesTestUI(PacManWorld world) {
+		super(world, new Game(world, 1), new ArcadeTheme());
 		showRoutes = true;
 		showStates = false;
 		showScores = false;
@@ -59,16 +58,16 @@ class FollowTargetTilesTestUI extends PlayView {
 		current = 0;
 		world.eatFood();
 		theme.snd_ghost_chase().volume(0);
-		game.takePart(game.blinky);
-		game.blinky.placeAt(targets.get(0));
-		game.blinky.behavior(CHASING, game.blinky.isHeadingFor(() -> targets.get(current)));
-		game.blinky.setState(CHASING);
-		game.blinky.steering().force();
+		world.takePart(world.blinky);
+		world.blinky.placeAt(targets.get(0));
+		world.blinky.behavior(CHASING, world.blinky.isHeadingFor(() -> targets.get(current)));
+		world.blinky.setState(CHASING);
+		world.blinky.steering().force();
 	}
 
 	@Override
 	public void update() {
-		if (game.blinky.tile().equals(targets.get(current))) {
+		if (world.blinky.tile().equals(targets.get(current))) {
 			current += 1;
 			if (current == targets.size()) {
 				current = 0;
@@ -76,7 +75,7 @@ class FollowTargetTilesTestUI extends PlayView {
 				world.eatFood();
 			}
 		}
-		game.blinky.update();
+		world.blinky.update();
 		super.update();
 	}
 

@@ -87,7 +87,7 @@ public class PacMan extends Creature<PacManState> {
 						movement.update();
 						showWalking();
 						if (!isTeleporting()) {
-							findSomethingInteresting(game).ifPresent(this::publish);
+							findSomethingInteresting().ifPresent(this::publish);
 						}
 					})
 
@@ -168,10 +168,10 @@ public class PacMan extends Creature<PacManState> {
 		return tileAhead;
 	}
 
-	private Optional<PacManGameEvent> findSomethingInteresting(Game game) {
+	private Optional<PacManGameEvent> findSomethingInteresting() {
 		Tile tile = tile();
-		if (tile.equals(world.bonusTile()) && game.bonus.is(ACTIVE)) {
-			return Optional.of(new BonusFoundEvent(game.bonus.symbol, game.bonus.value));
+		if (tile.equals(world.bonusTile()) && world.bonus.is(ACTIVE)) {
+			return Optional.of(new BonusFoundEvent(world.bonus.symbol, world.bonus.value));
 		}
 		if (world.containsFood(tile)) {
 			boolean energizer = world.containsEnergizer(tile);

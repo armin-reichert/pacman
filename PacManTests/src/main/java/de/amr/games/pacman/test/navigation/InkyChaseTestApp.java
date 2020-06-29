@@ -13,7 +13,9 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.Worlds;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 
@@ -33,14 +35,14 @@ public class InkyChaseTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new InkyChaseTestUI());
+		setController(new InkyChaseTestUI(Worlds.arcade()));
 	}
 }
 
 class InkyChaseTestUI extends PlayView {
 
-	public InkyChaseTestUI() {
-		super(Game.defaultGame(), new ArcadeTheme());
+	public InkyChaseTestUI(PacManWorld world) {
+		super(world, new Game(world, 1), new ArcadeTheme());
 		showRoutes = true;
 		showStates = false;
 		showScores = false;
@@ -50,10 +52,10 @@ class InkyChaseTestUI extends PlayView {
 	@Override
 	public void init() {
 		super.init();
-		game.world.eatFood();
+		world.eatFood();
 		theme.snd_ghost_chase().volume(0);
-		Stream.of(game.pacMan, game.inky, game.blinky).forEach(game::takePart);
-		game.ghostsOnStage().forEach(ghost -> {
+		Stream.of(world.pacMan, world.inky, world.blinky).forEach(world::takePart);
+		world.ghostsOnStage().forEach(ghost -> {
 			ghost.subsequentState = CHASING;
 		});
 		showMessage("Press SPACE to start", Color.WHITE);
@@ -62,12 +64,12 @@ class InkyChaseTestUI extends PlayView {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			game.ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
-			game.pacMan.setState(PacManState.EATING);
+			world.ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
+			world.pacMan.setState(PacManState.EATING);
 			clearMessage();
 		}
-		game.pacMan.update();
-		game.ghostsOnStage().forEach(Ghost::update);
+		world.pacMan.update();
+		world.ghostsOnStage().forEach(Ghost::update);
 		super.update();
 	}
 }
