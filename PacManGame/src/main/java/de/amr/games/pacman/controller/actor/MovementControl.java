@@ -34,7 +34,7 @@ public class MovementControl extends StateMachine<MovementControl.MovementType, 
 			.states()
 				.state(WALKING)
 					.onTick(() -> {
-						moveInsideMaze(creature);
+						move(creature);
 						checkIfPortalEntered(creature);
 					})
 			.transitions()
@@ -71,11 +71,12 @@ public class MovementControl extends StateMachine<MovementControl.MovementType, 
 		creature.visible = true;
 	}
 
-	private void moveInsideMaze(Creature<?> creature) {
+	private void move(Creature<?> creature) {
 		Tile tile = creature.tile();
-		float speed = maxMoveDistance(creature, tile, creature.moveDir);
+		float maxSpeed = creature.currentSpeed(creature.game);
+		float speed = maxSpeedToDir(creature, creature.moveDir, maxSpeed);
 		if (creature.wishDir != null && creature.wishDir != creature.moveDir) {
-			float wishDirSpeed = maxMoveDistance(creature, tile, creature.wishDir);
+			float wishDirSpeed = maxSpeedToDir(creature, creature.wishDir, maxSpeed);
 			if (wishDirSpeed > 0) {
 				boolean corner = (creature.wishDir == creature.moveDir.left() || creature.wishDir == creature.moveDir.right());
 				if (corner && creature.steering().requiresGridAlignment()) {
@@ -94,15 +95,15 @@ public class MovementControl extends StateMachine<MovementControl.MovementType, 
 	 * Computes how many pixels this creature can move towards the given direction at its current speed
 	 * before entering an inaccessible neighbor tile.
 	 * 
-	 * @param tile tile from where to move
-	 * @param dir  move direction
+	 * @param creature the moving creature
+	 * @param dir      move direction
+	 * @param speed    the creature's current speed
 	 */
-	private float maxMoveDistance(Creature<?> creature, Tile tile, Direction dir) {
-		float speed = creature.currentSpeed(creature.game);
+	private float maxSpeedToDir(Creature<?> creature, Direction dir, float speed) {
 		if (creature.canCrossBorderTo(dir)) {
 			return speed;
 		}
-		float offsetX = creature.tf.x - tile.x(), offsetY = creature.tf.y - tile.y();
+		float offsetX = creature.tf.x - creature.tile().x(), offsetY = creature.tf.y - creature.tile().y();
 		switch (dir) {
 		case UP:
 			return Math.min(offsetY, speed);
