@@ -7,5 +7,4 @@ package de.amr.games.pacman.model.world;
  */
 public interface PacManWorld extends Terrain, Habitat {
 
-	public boolean contains(Tile tile);
 }

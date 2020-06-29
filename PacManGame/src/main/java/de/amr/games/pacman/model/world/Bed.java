@@ -9,14 +9,14 @@ import de.amr.games.pacman.model.Direction;
  * 
  * @author Armin Reichert
  */
-public class Seat {
+public class Bed {
 
 	public int number;
 	public final Tile tile;
 	public final Vector2f position;
 	public final Direction startDir;
 
-	public Seat(int number, int col, int row, Direction dir) {
+	public Bed(int number, int col, int row, Direction dir) {
 		this.number = number;
 		tile = Tile.at(col, row);
 		position = Vector2f.of(tile.centerX(), tile.y());

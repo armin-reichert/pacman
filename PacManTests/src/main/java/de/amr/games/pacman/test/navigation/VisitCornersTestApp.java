@@ -43,7 +43,7 @@ class FollowTargetTilesTestUI extends TestUI {
 		showStates = false;
 		showScores = false;
 		showGrid = true;
-		targets = Arrays.asList(world.cornerNW(), world.cornerNE(), world.cornerSE(), world.pacManSeat().tile,
+		targets = Arrays.asList(world.cornerNW(), world.cornerNE(), world.cornerSE(), world.pacManHome().tile,
 				world.cornerSW());
 	}
 

@@ -10,10 +10,10 @@ import de.amr.games.pacman.model.world.Door;
 import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.OneWayTile;
 import de.amr.games.pacman.model.world.Portal;
-import de.amr.games.pacman.model.world.Seat;
+import de.amr.games.pacman.model.world.Bed;
 import de.amr.games.pacman.model.world.Tile;
 
-public class ArcadeMap extends PacManMap {
+public class ArcadeTerrain extends PacManWorldMap {
 
 	static final byte[][] DATA = {
 		//@formatter:off
@@ -56,7 +56,7 @@ public class ArcadeMap extends PacManMap {
 		//@formatter:on
 	};
 
-	public ArcadeMap() {
+	public ArcadeTerrain() {
 		super(DATA);
 		// ghost house
 		int top = 16, left = 11, w = 6, h = 4;
@@ -68,14 +68,14 @@ public class ArcadeMap extends PacManMap {
 		}
 		Door door = new Door(Direction.DOWN, Tile.at(left + 2, top - 1), Tile.at(left + 3, top - 1));
 		//@formatter:off
-		List<Seat> seats = Arrays.asList(
-				new Seat(0, left + 2, top - 2, Direction.LEFT),
-				new Seat(1, left,     top + 1, Direction.UP), 
-				new Seat(2, left + 2, top + 1, Direction.DOWN),
-				new Seat(3, left + 4, top + 1, Direction.UP));
+		List<Bed> seats = Arrays.asList(
+				new Bed(0, left + 2, top - 2, Direction.LEFT),
+				new Bed(1, left,     top + 1, Direction.UP), 
+				new Bed(2, left + 2, top + 1, Direction.DOWN),
+				new Bed(3, left + 4, top + 1, Direction.UP));
 		//@formatter:on
 		houses.add(new House(room, Arrays.asList(door), seats));
-		pacManSeat = new Seat(4, 13, 26, Direction.RIGHT);
+		pacManSeat = new Bed(4, 13, 26, Direction.RIGHT);
 		bonusTile = Tile.at(13, 20);
 		portals.add(new Portal(Tile.at(-1, 17), Tile.at(28, 17)));
 

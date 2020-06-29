@@ -15,6 +15,9 @@ public interface Terrain {
 	 * @return height in number of tiles
 	 */
 	int height();
+	
+	public boolean contains(Tile tile);
+
 
 	default Tile cornerNW() {
 		return Tile.at(1, 4);

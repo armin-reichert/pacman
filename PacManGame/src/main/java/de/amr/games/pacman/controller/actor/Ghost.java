@@ -34,7 +34,7 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.OneWayTile;
-import de.amr.games.pacman.model.world.Seat;
+import de.amr.games.pacman.model.world.Bed;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine;
@@ -98,8 +98,8 @@ public class Ghost extends Creature<GhostState> {
 					.onEntry(() -> {
 						subsequentState = LOCKED;
 						visible = true;
-						moveDir = wishDir = seat().startDir;
-						tf.setPosition(seat().position);
+						moveDir = wishDir = home().startDir;
+						tf.setPosition(home().position);
 						enteredNewTile();
 						sanity.init();
 						sprites.forEach(Sprite::resetAnimation);
@@ -237,7 +237,7 @@ public class Ghost extends Creature<GhostState> {
 	 * Lets the ghost jump up and down in its seat.
 	 */
 	public void bouncingOnSeat() {
-		float dy = tf.y - seat().position.y;
+		float dy = tf.y - home().position.y;
 		if (dy < -4) {
 			setWishDir(DOWN);
 		} else if (dy > 3) {
@@ -289,13 +289,13 @@ public class Ghost extends Creature<GhostState> {
 	 * @return steering which lets ghost enter the house and taking its seat
 	 */
 	public Steering isTakingSeat() {
-		return isTakingSeat(seat());
+		return isTakingSeat(home());
 	}
 
 	/**
 	 * @return steering which lets ghost enter the house and taking the specified seat
 	 */
-	public Steering isTakingSeat(Seat seat) {
+	public Steering isTakingSeat(Bed seat) {
 		return new TakingSeat(this, seat);
 	}
 

@@ -21,7 +21,7 @@ import de.amr.games.pacman.controller.actor.steering.common.TakingShortestPath;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.PacManWorld;
-import de.amr.games.pacman.model.world.Seat;
+import de.amr.games.pacman.model.world.Bed;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.api.FsmContainer;
@@ -38,7 +38,7 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 
 	public final String name;
 	private PacManWorld world;
-	private Seat seat;
+	private Bed bed;
 	protected Fsm<STATE, PacManGameEvent> brain;
 	protected Map<STATE, Steering> steerings;
 	protected MovementControl movement;
@@ -59,13 +59,16 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 		setTeleportingDuration(sec(0.5f));
 	}
 
-	public void setWorld(PacManWorld world, Seat seat) {
+	public void putIntoWorld(PacManWorld world) {
 		this.world = world;
-		this.seat = seat;
+	}
+	
+	public void assignBed(Bed bed) {
+		this.bed = bed;
 	}
 
-	public Seat seat() {
-		return seat;
+	public Bed home() {
+		return bed;
 	}
 
 	/**

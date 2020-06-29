@@ -14,9 +14,9 @@ public class House {
 
 	private final Set<Tile> room;
 	private final List<Door> doors;
-	private final List<Seat> seats;
+	private final List<Bed> seats;
 
-	public House(Set<Tile> room, List<Door> doors, List<Seat> seats) {
+	public House(Set<Tile> room, List<Door> doors, List<Bed> seats) {
 		this.room = room;
 		this.doors = doors;
 		this.seats = seats;
@@ -30,11 +30,11 @@ public class House {
 		return Collections.unmodifiableSet(room);
 	}
 
-	public Stream<Seat> seats() {
+	public Stream<Bed> seats() {
 		return seats.stream();
 	}
 
-	public Seat seat(int i) {
+	public Bed seat(int i) {
 		return seats.get(i);
 	}
 }

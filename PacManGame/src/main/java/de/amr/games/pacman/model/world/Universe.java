@@ -1,7 +1,7 @@
 package de.amr.games.pacman.model.world;
 
-import de.amr.games.pacman.model.world.map.ArcadeMap;
-import de.amr.games.pacman.model.world.map.CustomMap;
+import de.amr.games.pacman.model.world.map.ArcadeTerrain;
+import de.amr.games.pacman.model.world.map.CustomTerrain;
 
 /**
  * The universe.
@@ -11,10 +11,10 @@ import de.amr.games.pacman.model.world.map.CustomMap;
 public interface Universe {
 
 	public static PacManWorld arcadeWorld() {
-		return new PacManWorldImpl(new ArcadeMap());
+		return new PacManWorldUsingMap(new ArcadeTerrain());
 	}
 
 	public static PacManWorld customWorld() {
-		return new PacManWorldImpl(new CustomMap());
+		return new PacManWorldUsingMap(new CustomTerrain());
 	}
 }
