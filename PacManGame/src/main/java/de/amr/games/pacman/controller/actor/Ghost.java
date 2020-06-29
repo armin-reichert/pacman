@@ -34,7 +34,6 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.OneWayTile;
-import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Seat;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.theme.Theme;
@@ -85,8 +84,8 @@ public class Ghost extends Creature<GhostState> {
 		.endStateMachine();
 	//@formatter:on
 
-	public Ghost(PacManWorld world, String name) {
-		super(world, name, new EnumMap<>(GhostState.class));
+	public Ghost(String name) {
+		super(name, new EnumMap<>(GhostState.class));
 		/*@formatter:off*/
 		brain = beginStateMachine(GhostState.class, PacManGameEvent.class)
 			 
@@ -99,8 +98,8 @@ public class Ghost extends Creature<GhostState> {
 					.onEntry(() -> {
 						subsequentState = LOCKED;
 						visible = true;
-						moveDir = wishDir = seat.startDir;
-						tf.setPosition(seat.position);
+						moveDir = wishDir = seat().startDir;
+						tf.setPosition(seat().position);
 						enteredNewTile();
 						sanity.init();
 						sprites.forEach(Sprite::resetAnimation);
@@ -109,7 +108,7 @@ public class Ghost extends Creature<GhostState> {
 					.onTick(() -> {
 						move();
 						// not sure if ghost locked inside house should look frightened
-						if (world.pacMan.power > 0) {
+						if (world().pacMan.power > 0) {
 							showFrightened();
 						} else {
 							showColored();
@@ -225,7 +224,7 @@ public class Ghost extends Creature<GhostState> {
 					.condition(() -> subsequentState == CHASING)
 					
 				.when(DEAD).then(ENTERING_HOUSE)
-					.condition(() -> world.outsideAtDoor(tile()))
+					.condition(() -> world().outsideAtDoor(tile()))
 					
 		.endStateMachine();
 		/*@formatter:on*/
@@ -238,7 +237,7 @@ public class Ghost extends Creature<GhostState> {
 	 * Lets the ghost jump up and down in its seat.
 	 */
 	public void bouncingOnSeat() {
-		float dy = tf.y - seat.position.y;
+		float dy = tf.y - seat().position.y;
 		if (dy < -4) {
 			setWishDir(DOWN);
 		} else if (dy > 3) {
@@ -250,7 +249,7 @@ public class Ghost extends Creature<GhostState> {
 	 * lets a ghost leave the ghost house
 	 */
 	public void leavingGhostHouse() {
-		Tile exit = world.theHouse().seat(0).tile;
+		Tile exit = world().theHouse().seat(0).tile;
 		int targetX = exit.centerX(), targetY = exit.y();
 		if (tf.y <= targetY) {
 			tf.y = targetY;
@@ -265,7 +264,7 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	private boolean hasLeftGhostHouse() {
-		return tf.y == world.theHouse().seat(0).tile.y();
+		return tf.y == world().theHouse().seat(0).tile.y();
 	}
 
 	/**
@@ -275,22 +274,22 @@ public class Ghost extends Creature<GhostState> {
 	 * @return steering where actor flees to a "safe" maze corner
 	 */
 	public Steering isFleeingToSafeCorner(WorldMover attacker) {
-		return new FleeingToSafeCorner(this, attacker, world.cornerNW(), world.cornerNE(), world.cornerSW(),
-				world.cornerSE());
+		return new FleeingToSafeCorner(this, attacker, world().cornerNW(), world().cornerNE(), world().cornerSW(),
+				world().cornerSE());
 	}
 
 	/**
 	 * @return steering for bringing ghost back to ghost house entry
 	 */
 	public Steering isReturningToHouse() {
-		return isHeadingFor(world.theHouse().seat(0).tile);
+		return isHeadingFor(world().theHouse().seat(0).tile);
 	}
 
 	/**
 	 * @return steering which lets ghost enter the house and taking its seat
 	 */
 	public Steering isTakingSeat() {
-		return isTakingSeat(seat);
+		return isTakingSeat(seat());
 	}
 
 	/**
@@ -302,11 +301,11 @@ public class Ghost extends Creature<GhostState> {
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (world.isDoor(neighbor)) {
+		if (world().isDoor(neighbor)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 
-		Optional<OneWayTile> maybeOneWay = world.oneWayTiles().filter(oneWay -> oneWay.tile.equals(neighbor)).findFirst();
+		Optional<OneWayTile> maybeOneWay = world().oneWayTiles().filter(oneWay -> oneWay.tile.equals(neighbor)).findFirst();
 		if (maybeOneWay.isPresent()) {
 			OneWayTile oneWay = maybeOneWay.get();
 			Direction toNeighbor = tile.dirTo(neighbor).get();
@@ -361,12 +360,12 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	public boolean isInsideHouse() {
-		return world.insideHouseOrDoor(tile());
+		return world().insideHouseOrDoor(tile());
 	}
 
 	private void checkPacManCollision() {
-		if (tile().equals(world.pacMan.tile()) && !isTeleporting() && !world.pacMan.isTeleporting()
-				&& !world.pacMan.is(PacManState.DEAD)) {
+		if (tile().equals(world().pacMan.tile()) && !isTeleporting() && !world().pacMan.isTeleporting()
+				&& !world().pacMan.is(PacManState.DEAD)) {
 			publish(new PacManGhostCollisionEvent(this));
 		}
 	}

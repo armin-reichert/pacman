@@ -25,7 +25,6 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -46,9 +45,8 @@ public class PacMan extends Creature<PacManState> {
 	/** Number of ticks Pac-Man is not moving after having eaten a pellet. */
 	public int digestion;
 
-	public PacMan(PacManWorld world) {
-		super(world, "Pac-Man", new EnumMap<>(PacManState.class));
-		seat = world.pacManSeat();
+	public PacMan() {
+		super("Pac-Man", new EnumMap<>(PacManState.class));
 		/*@formatter:off*/
 		brain = beginStateMachine(PacManState.class, PacManGameEvent.class)
 
@@ -61,8 +59,8 @@ public class PacMan extends Creature<PacManState> {
 					.onEntry(() -> {
 						power = digestion = 0;
 						visible = true;
-						moveDir = wishDir = seat.startDir;
-						tf.setPosition(seat.position);
+						moveDir = wishDir = world().pacManSeat().startDir;
+						tf.setPosition(seat().position);
 						sprites.forEach(Sprite::resetAnimation);
 						showFull();
 					})
@@ -139,7 +137,7 @@ public class PacMan extends Creature<PacManState> {
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (world.isDoor(neighbor)) {
+		if (world().isDoor(neighbor)) {
 			return false;
 		}
 		return super.canMoveBetween(tile, neighbor);
@@ -156,20 +154,20 @@ public class PacMan extends Creature<PacManState> {
 	 *         direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
-		Tile tileAhead = world.tileToDir(tile(), moveDir, numTiles);
+		Tile tileAhead = world().tileToDir(tile(), moveDir, numTiles);
 		if (moveDir == UP && !settings.fixOverflowBug) {
-			return world.tileToDir(tileAhead, LEFT, numTiles);
+			return world().tileToDir(tileAhead, LEFT, numTiles);
 		}
 		return tileAhead;
 	}
 
 	private Optional<PacManGameEvent> findSomethingInteresting() {
 		Tile tile = tile();
-		if (tile.equals(world.bonusTile()) && world.bonus.is(ACTIVE)) {
-			return Optional.of(new BonusFoundEvent(world.bonus.symbol, world.bonus.value));
+		if (tile.equals(world().bonusTile()) && world().bonus.is(ACTIVE)) {
+			return Optional.of(new BonusFoundEvent(world().bonus.symbol, world().bonus.value));
 		}
-		if (world.containsFood(tile)) {
-			boolean energizer = world.containsEnergizer(tile);
+		if (world().containsFood(tile)) {
+			boolean energizer = world().containsEnergizer(tile);
 			digestion = energizer ? DIGEST_ENERGIZER_TICKS : DIGEST_PELLET_TICKS;
 			return Optional.of(new FoodFoundEvent(tile, energizer));
 		}

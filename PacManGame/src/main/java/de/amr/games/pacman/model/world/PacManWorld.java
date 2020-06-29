@@ -48,19 +48,21 @@ public class PacManWorld implements PacManWorldStructure {
 	public PacManWorld(PacManMap map) {
 		this.map = map;
 
-		blinky = new Ghost(this, "Blinky");
-		inky = new Ghost(this, "Inky");
-		pinky = new Ghost(this, "Pinky");
-		clyde = new Ghost(this, "Clyde");
+		pacMan = new PacMan();
+		blinky = new Ghost("Blinky");
+		inky = new Ghost("Inky");
+		pinky = new Ghost("Pinky");
+		clyde = new Ghost("Clyde");
 		bonus = new Bonus();
 
-		pacMan = new PacMan(this);
+		// define seats
 
+		pacMan.setWorld(this, pacManSeat());
 		House theHouse = theHouse();
-		blinky.seat = theHouse.seat(0);
-		inky.seat = theHouse.seat(1);
-		pinky.seat = theHouse.seat(2);
-		clyde.seat = theHouse.seat(3);
+		blinky.setWorld(this, theHouse.seat(0));
+		inky.setWorld(this, theHouse.seat(1));
+		pinky.setWorld(this, theHouse.seat(2));
+		clyde.setWorld(this, theHouse.seat(3));
 
 		// define behavior
 

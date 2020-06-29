@@ -36,9 +36,9 @@ import de.amr.statemachine.api.FsmContainer;
  */
 public abstract class Creature<STATE> extends Entity implements WorldMover, FsmContainer<STATE, PacManGameEvent> {
 
-	public final PacManWorld world;
 	public final String name;
-	public Seat seat;
+	private PacManWorld world;
+	private Seat seat;
 	protected Fsm<STATE, PacManGameEvent> brain;
 	protected Map<STATE, Steering> steerings;
 	protected MovementControl movement;
@@ -49,8 +49,7 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	protected boolean enteredNewTile;
 	public final SpriteMap sprites = new SpriteMap();
 
-	public Creature(PacManWorld world, String name, Map<STATE, Steering> steerings) {
-		this.world = world;
+	public Creature(String name, Map<STATE, Steering> steerings) {
 		this.name = name;
 		this.fnSpeedLimit = () -> 0f;
 		this.movement = new MovementControl(this);
@@ -58,6 +57,15 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 		tf.width = Tile.SIZE;
 		tf.height = Tile.SIZE;
 		setTeleportingDuration(sec(0.5f));
+	}
+
+	public void setWorld(PacManWorld world, Seat seat) {
+		this.world = world;
+		this.seat = seat;
+	}
+
+	public Seat seat() {
+		return seat;
 	}
 
 	/**
