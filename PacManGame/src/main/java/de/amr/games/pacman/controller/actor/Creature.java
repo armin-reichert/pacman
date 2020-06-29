@@ -67,7 +67,7 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 		this.bed = bed;
 	}
 
-	public Bed home() {
+	public Bed bed() {
 		return bed;
 	}
 

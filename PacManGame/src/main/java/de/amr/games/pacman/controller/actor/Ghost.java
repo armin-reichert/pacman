@@ -25,7 +25,7 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.controller.actor.steering.ghost.FleeingToSafeCorner;
-import de.amr.games.pacman.controller.actor.steering.ghost.TakingSeat;
+import de.amr.games.pacman.controller.actor.steering.ghost.GoingToBed;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -33,8 +33,8 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.OneWayTile;
 import de.amr.games.pacman.model.world.Bed;
+import de.amr.games.pacman.model.world.OneWayTile;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine;
@@ -98,8 +98,8 @@ public class Ghost extends Creature<GhostState> {
 					.onEntry(() -> {
 						subsequentState = LOCKED;
 						visible = true;
-						moveDir = wishDir = home().startDir;
-						tf.setPosition(home().position);
+						moveDir = wishDir = bed().startDir;
+						tf.setPosition(bed().position);
 						enteredNewTile();
 						sanity.init();
 						sprites.forEach(Sprite::resetAnimation);
@@ -234,10 +234,10 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	/**
-	 * Lets the ghost jump up and down in its seat.
+	 * Lets the ghost jump up and down on its bed.
 	 */
 	public void bouncingOnSeat() {
-		float dy = tf.y - home().position.y;
+		float dy = tf.y - bed().position.y;
 		if (dy < -4) {
 			setWishDir(DOWN);
 		} else if (dy > 3) {
@@ -249,7 +249,7 @@ public class Ghost extends Creature<GhostState> {
 	 * lets a ghost leave the ghost house
 	 */
 	public void leavingGhostHouse() {
-		Tile exit = world().theHouse().seat(0).tile;
+		Tile exit = world().theHouse().bed(0).tile;
 		int targetX = exit.centerX(), targetY = exit.y();
 		if (tf.y <= targetY) {
 			tf.y = targetY;
@@ -264,7 +264,7 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	private boolean hasLeftGhostHouse() {
-		return tf.y == world().theHouse().seat(0).tile.y();
+		return tf.y == world().theHouse().bed(0).tile.y();
 	}
 
 	/**
@@ -282,21 +282,14 @@ public class Ghost extends Creature<GhostState> {
 	 * @return steering for bringing ghost back to ghost house entry
 	 */
 	public Steering isReturningToHouse() {
-		return isHeadingFor(world().theHouse().seat(0).tile);
+		return isHeadingFor(world().theHouse().bed(0).tile);
 	}
 
 	/**
-	 * @return steering which lets ghost enter the house and taking its seat
+	 * @return steering which lets ghost enter the house going to bed
 	 */
-	public Steering isTakingSeat() {
-		return isTakingSeat(home());
-	}
-
-	/**
-	 * @return steering which lets ghost enter the house and taking the specified seat
-	 */
-	public Steering isTakingSeat(Bed seat) {
-		return new TakingSeat(this, seat);
+	public Steering isGoingToBed(Bed bed) {
+		return new GoingToBed(this, bed);
 	}
 
 	@Override

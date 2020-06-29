@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 /**
- * A house.
+ * A house has a room with beds and some doors.
  * 
  * @author Armin Reichert
  */
@@ -14,12 +14,12 @@ public class House {
 
 	private final Set<Tile> room;
 	private final List<Door> doors;
-	private final List<Bed> seats;
+	private final List<Bed> beds;
 
-	public House(Set<Tile> room, List<Door> doors, List<Bed> seats) {
+	public House(Set<Tile> room, List<Door> doors, List<Bed> beds) {
 		this.room = room;
 		this.doors = doors;
-		this.seats = seats;
+		this.beds = beds;
 	}
 
 	public Stream<Door> doors() {
@@ -31,10 +31,10 @@ public class House {
 	}
 
 	public Stream<Bed> seats() {
-		return seats.stream();
+		return beds.stream();
 	}
 
-	public Bed seat(int i) {
-		return seats.get(i);
+	public Bed bed(int i) {
+		return beds.get(i);
 	}
 }

@@ -40,8 +40,8 @@ class PacManWorldUsingMap implements PacManWorld {
 	private Bonus bonus;
 
 	private final Set<Creature<?>> stage = new HashSet<>();
+	private final int totalFoodCount;
 	private PacManWorldMap worldMap;
-	private int totalFoodCount;
 
 	public PacManWorldUsingMap(PacManWorldMap worldMap) {
 		this.worldMap = worldMap;
@@ -61,10 +61,10 @@ class PacManWorldUsingMap implements PacManWorld {
 		// assign beds
 		pacMan.assignBed(pacManHome());
 		House theHouse = theHouse();
-		blinky.assignBed(theHouse.seat(0));
-		inky.assignBed(theHouse.seat(1));
-		pinky.assignBed(theHouse.seat(2));
-		clyde.assignBed(theHouse.seat(3));
+		blinky.assignBed(theHouse.bed(0));
+		inky.assignBed(theHouse.bed(1));
+		pinky.assignBed(theHouse.bed(2));
+		clyde.assignBed(theHouse.bed(3));
 
 		// define behavior
 		pacMan.behavior(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
@@ -72,14 +72,14 @@ class PacManWorldUsingMap implements PacManWorld {
 		// common ghost behavior
 		ghosts().forEach(ghost -> {
 			ghost.behavior(LOCKED, ghost::bouncingOnSeat);
-			ghost.behavior(ENTERING_HOUSE, ghost.isTakingSeat());
+			ghost.behavior(ENTERING_HOUSE, ghost.isGoingToBed(ghost.bed()));
 			ghost.behavior(LEAVING_HOUSE, ghost::leavingGhostHouse);
 			ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
 			ghost.behavior(DEAD, ghost.isReturningToHouse());
 		});
 
 		// individual ghost behavior
-		blinky.behavior(ENTERING_HOUSE, blinky.isTakingSeat(theHouse.seat(2)));
+		blinky.behavior(ENTERING_HOUSE, blinky.isGoingToBed(theHouse.bed(2)));
 
 		// scattering behavior
 		int w = width(), h = height();

@@ -50,7 +50,7 @@ class TakeShortestPathTestUI extends TestUI {
 		Portal thePortal = world.portals().findAny().get();
 		House theHouse = world.houses().findAny().get();
 		targets = Arrays.asList(world.cornerSE(), Tile.at(15, 23), Tile.at(12, 23), world.cornerSW(),
-				world.neighbor(thePortal.left, Direction.RIGHT), world.cornerNW(), theHouse.seat(0).tile, world.cornerNE(),
+				world.neighbor(thePortal.left, Direction.RIGHT), world.cornerNW(), theHouse.bed(0).tile, world.cornerNE(),
 				world.neighbor(thePortal.right, Direction.LEFT), world.pacManHome().tile);
 		showRoutes = true;
 		showStates = true;

@@ -70,7 +70,7 @@ public class GhostHouseAccess {
 			}
 		} else {
 			preferredLockedGhost().ifPresent(ghost -> {
-				ghostDotCount[ghost.home().number] += 1;
+				ghostDotCount[ghost.bed().number] += 1;
 			});
 		}
 	}
@@ -98,7 +98,7 @@ public class GhostHouseAccess {
 	}
 
 	public int ghostDotCount(Ghost ghost) {
-		return ghostDotCount[ghost.home().number];
+		return ghostDotCount[ghost.bed().number];
 	}
 
 	public int pacManStarvingTicks() {
@@ -148,7 +148,7 @@ public class GhostHouseAccess {
 			}
 		} else {
 			int personalLimit = personalDotLimit(ghost);
-			if (ghostDotCount[ghost.home().number] >= personalLimit) {
+			if (ghostDotCount[ghost.bed().number] >= personalLimit) {
 				return confirmed("%s can leave house: ghost's dot limit (%d) reached", ghost.name, personalLimit);
 			}
 		}

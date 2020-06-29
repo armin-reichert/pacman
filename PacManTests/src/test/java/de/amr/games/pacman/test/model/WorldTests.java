@@ -26,10 +26,10 @@ public class WorldTests {
 	@Test
 	public void testStructure() {
 		assertNotNull(world.pacManHome());
-		assertNotNull(world.theHouse().seat(0));
-		assertNotNull(world.theHouse().seat(1));
-		assertNotNull(world.theHouse().seat(2));
-		assertNotNull(world.theHouse().seat(3));
+		assertNotNull(world.theHouse().bed(0));
+		assertNotNull(world.theHouse().bed(1));
+		assertNotNull(world.theHouse().bed(2));
+		assertNotNull(world.theHouse().bed(3));
 		assertNotNull(world.bonusTile());
 		assertTrue(world.portals().findFirst().get().left.equals(Tile.at(-1, 17)));
 		assertTrue(world.portals().findFirst().get().right.equals(Tile.at(28, 17)));

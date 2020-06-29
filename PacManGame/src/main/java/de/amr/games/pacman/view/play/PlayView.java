@@ -284,8 +284,8 @@ public class PlayView extends SimplePlayView {
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		world.ghosts().forEach(ghost -> {
 			g.setColor(ghostColor(ghost));
-			int x = ghost.home().position.roundedX(), y = ghost.home().position.roundedY();
-			String text = String.valueOf(ghost.home().number);
+			int x = ghost.bed().position.roundedX(), y = ghost.bed().position.roundedY();
+			String text = String.valueOf(ghost.bed().number);
 			g.drawRoundRect(x, y, Tile.SIZE, Tile.SIZE, 2, 2);
 			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 6));
 			FontMetrics fm = g.getFontMetrics();

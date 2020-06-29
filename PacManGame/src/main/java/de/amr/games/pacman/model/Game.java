@@ -78,7 +78,6 @@ public class Game {
 	public GameLevel level;
 	public int lives;
 	public int score;
-	public int totalFoodCount;
 
 	/**
 	 * Creates a game starting with the given level.
@@ -133,11 +132,11 @@ public class Game {
 	 * @return number of remaining pellets and energizers
 	 */
 	public int remainingFoodCount() {
-		return totalFoodCount - level.eatenFoodCount;
+		return world.totalFoodCount() - level.eatenFoodCount;
 	}
 
 	/**
-	 * Eats the pellet or eenrgizer on the given tile.
+	 * Eats the pellet or energizer on the given tile.
 	 * 
 	 * @param tile      tile containing food
 	 * @param energizer tells if the pellet is an energizer
