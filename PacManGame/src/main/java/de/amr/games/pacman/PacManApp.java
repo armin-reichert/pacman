@@ -3,8 +3,6 @@ package de.amr.games.pacman;
 import java.awt.DisplayMode;
 import java.util.ResourceBundle;
 
-import javax.swing.ImageIcon;
-
 import com.beust.jcommander.Parameter;
 
 import de.amr.easy.game.Application;
@@ -93,7 +91,7 @@ public class PacManApp extends Application {
 
 	@Override
 	public void init() {
-		setIcon(new ImageIcon(getClass().getResource("/images/pacman-icon.png")).getImage());
+		setIcon("/images/pacman-icon.png");
 		controller = settings.simpleMode ? new GameController() : new EnhancedGameController();
 		setController(controller);
 		onEntry(ApplicationState.CLOSING, state -> controller.saveScore());
