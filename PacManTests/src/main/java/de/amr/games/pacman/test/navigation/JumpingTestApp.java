@@ -37,8 +37,8 @@ class JumpingTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		world.eatFood();
-		world.ghosts().forEach(ghost -> world.takePart(ghost, true));
+		world.removeFood();
+		world.ghosts().forEach(ghost -> world.putOnStage(ghost, true));
 	}
 
 	@Override

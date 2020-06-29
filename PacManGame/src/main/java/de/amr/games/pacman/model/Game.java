@@ -105,7 +105,7 @@ public class Game {
 		loginfo("Enter level %d", n);
 		level = level(n);
 		levelCounter.add(level.bonusSymbol);
-		world.restoreFood();
+		world.createFood();
 		gameScore.load();
 	}
 

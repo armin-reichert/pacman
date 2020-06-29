@@ -40,9 +40,9 @@ class EscapeIntoCornerTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		world.eatFood();
+		world.removeFood();
 		world.pacMan().setState(EATING);
-		world.takePart(world.blinky(), true);
+		world.putOnStage(world.blinky(), true);
 		world.blinky().behavior(FRIGHTENED, world.blinky().isFleeingToSafeCorner(world.pacMan()));
 		world.blinky().setState(FRIGHTENED);
 	}

@@ -41,8 +41,8 @@ class FollowMouseTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		world.eatFood();
-		world.takePart(world.blinky(), true);
+		world.removeFood();
+		world.putOnStage(world.blinky(), true);
 		world.blinky().behavior(CHASING, world.blinky().isHeadingFor(() -> mousePosition));
 		world.blinky().setState(CHASING);
 	}

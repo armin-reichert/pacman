@@ -378,7 +378,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawInkyChasing(Graphics2D g, Ghost inky) {
-		if (!inky.is(CHASING) || !world.takesPart(world.blinky())) {
+		if (!inky.is(CHASING) || !world.isOnState(world.blinky())) {
 			return;
 		}
 		int x1, y1, x2, y2, x3, y3;

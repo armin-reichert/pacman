@@ -6,11 +6,18 @@ import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 
+/**
+ * Where the creatures live.
+ * 
+ * @author Armin Reichert
+ */
 public interface Habitat extends FoodContainer {
 
 	Stream<Tile> habitatTiles();
 
 	PacMan pacMan();
+
+	Seat pacManSeat();
 
 	Ghost blinky();
 
@@ -28,13 +35,7 @@ public interface Habitat extends FoodContainer {
 
 	Stream<Creature<?>> creaturesOnStage();
 
-	boolean takesPart(Creature<?> actor);
+	boolean isOnState(Creature<?> creature);
 
-	void takePart(Creature<?> actor, boolean takesPart);
-
-	/**
-	 * @return Pac-Man's seat
-	 */
-	Seat pacManSeat();
-
+	void putOnStage(Creature<?> creature, boolean onStage);
 }

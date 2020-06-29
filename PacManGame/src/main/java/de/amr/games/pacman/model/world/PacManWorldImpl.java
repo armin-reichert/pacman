@@ -175,7 +175,7 @@ public class PacManWorldImpl implements PacManWorld, FoodContainer {
 	 * @return {@code true} if the actor is currently on stage
 	 */
 	@Override
-	public boolean takesPart(Creature<?> actor) {
+	public boolean isOnState(Creature<?> actor) {
 		return actorsTakingPart.contains(actor);
 	}
 
@@ -186,7 +186,7 @@ public class PacManWorldImpl implements PacManWorld, FoodContainer {
 	 * @param takesPart if the actors takes part
 	 */
 	@Override
-	public void takePart(Creature<?> actor, boolean takesPart) {
+	public void putOnStage(Creature<?> actor, boolean takesPart) {
 		if (takesPart) {
 			actorsTakingPart.add(actor);
 			actor.init();
@@ -281,12 +281,12 @@ public class PacManWorldImpl implements PacManWorld, FoodContainer {
 	}
 
 	@Override
-	public void eatFood() {
+	public void removeFood() {
 		habitatTiles().forEach(this::eatFood);
 	}
 
 	@Override
-	public void restoreFood() {
+	public void createFood() {
 		habitatTiles().forEach(this::restoreFood);
 	}
 
@@ -350,18 +350,13 @@ public class PacManWorldImpl implements PacManWorld, FoodContainer {
 	}
 
 	@Override
-	public boolean isEnergizer(Tile tile) {
-		return is(tile, B_ENERGIZER);
-	}
-
-	@Override
 	public boolean containsSimplePellet(Tile tile) {
-		return containsFood(tile) && !isEnergizer(tile);
+		return containsFood(tile) && !is(tile, B_ENERGIZER);
 	}
 
 	@Override
 	public boolean containsEnergizer(Tile tile) {
-		return containsFood(tile) && isEnergizer(tile);
+		return containsFood(tile) && is(tile, B_ENERGIZER);
 	}
 
 	@Override

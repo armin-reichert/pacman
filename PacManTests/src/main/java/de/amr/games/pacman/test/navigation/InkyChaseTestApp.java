@@ -46,9 +46,9 @@ class InkyChaseTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		world.eatFood();
+		world.removeFood();
 		theme.snd_ghost_chase().volume(0);
-		Stream.of(world.pacMan(), world.inky(), world.blinky()).forEach(actor -> world.takePart(actor, true));
+		Stream.of(world.pacMan(), world.inky(), world.blinky()).forEach(actor -> world.putOnStage(actor, true));
 		world.ghostsOnStage().forEach(ghost -> {
 			ghost.subsequentState = CHASING;
 		});

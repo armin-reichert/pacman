@@ -51,10 +51,10 @@ class FollowTargetTilesTestUI extends TestUI {
 	public void init() {
 		super.init();
 		current = 0;
-		world.eatFood();
+		world.removeFood();
 		theme.snd_ghost_chase().volume(0);
 		ghost = world.blinky();
-		world.takePart(ghost, true);
+		world.putOnStage(ghost, true);
 		ghost.placeAt(targets.get(0));
 		ghost.behavior(GhostState.CHASING, ghost.isHeadingFor(() -> targets.get(current)));
 		ghost.setState(GhostState.CHASING);
@@ -68,7 +68,7 @@ class FollowTargetTilesTestUI extends TestUI {
 			if (current == targets.size()) {
 				current = 0;
 				game.enterLevel(game.level.number + 1);
-				world.eatFood();
+				world.removeFood();
 			}
 		}
 		ghost.update();

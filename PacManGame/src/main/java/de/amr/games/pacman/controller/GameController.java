@@ -114,7 +114,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		playView.house = ghostHouse;
 
 		world.creatures().forEach(actor -> {
-			world.takePart(actor, true);
+			world.putOnStage(actor, true);
 			actor.addEventListener(this::process);
 		});
 		world.ghosts().forEach(ghost -> {

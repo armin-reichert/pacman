@@ -43,9 +43,9 @@ class ScatteringTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		world.eatFood();
+		world.removeFood();
 		world.ghosts().forEach(ghost -> {
-			world.takePart(ghost, true);
+			world.putOnStage(ghost, true);
 			ghost.subsequentState = GhostState.SCATTERING;
 		});
 		showMessage("Press SPACE to start", Color.WHITE);

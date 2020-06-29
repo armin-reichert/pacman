@@ -45,8 +45,8 @@ class LeaveGhostHouseTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		world.eatFood();
-		world.takePart(world.inky(), true);
+		world.removeFood();
+		world.putOnStage(world.inky(), true);
 		world.inky().subsequentState = SCATTERING;
 		showMessage("Press SPACE to unlock", Color.WHITE);
 	}

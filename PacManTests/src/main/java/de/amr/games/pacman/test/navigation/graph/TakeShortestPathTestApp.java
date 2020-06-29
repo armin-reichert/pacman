@@ -61,10 +61,10 @@ class TakeShortestPathTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		world.eatFood();
+		world.removeFood();
 		targetIndex = 0;
 		theme.snd_ghost_chase().volume(0);
-		world.takePart(ghost, true);
+		world.putOnStage(ghost, true);
 		Steering steering = ghost.isTakingShortestPath(() -> targets.get(targetIndex));
 		ghost.behavior(CHASING, steering);
 		ghost.behavior(FRIGHTENED, steering);
@@ -76,7 +76,7 @@ class TakeShortestPathTestUI extends TestUI {
 		if (++targetIndex == targets.size()) {
 			targetIndex = 0;
 			game.enterLevel(game.level.number + 1);
-			world.eatFood();
+			world.removeFood();
 		}
 	}
 

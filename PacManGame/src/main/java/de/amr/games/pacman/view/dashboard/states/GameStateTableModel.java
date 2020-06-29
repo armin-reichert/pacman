@@ -101,7 +101,7 @@ class GameStateTableModel extends AbstractTableModel {
 	private void handleOnStageStatusChange(int row) {
 		GameStateRecord r = records[row];
 		if (r.creature instanceof Ghost) {
-			world.takePart(r.creature, r.takesPart);
+			world.putOnStage(r.creature, r.takesPart);
 		}
 	}
 
@@ -129,7 +129,7 @@ class GameStateTableModel extends AbstractTableModel {
 
 	void fillPacManRecord(GameStateRecord r, Game game, PacMan pacMan) {
 		r.creature = pacMan;
-		r.takesPart = world.takesPart(pacMan);
+		r.takesPart = world.isOnState(pacMan);
 		r.name = "Pac-Man";
 		r.tile = pacMan.tile();
 		r.moveDir = pacMan.moveDir();
@@ -144,7 +144,7 @@ class GameStateTableModel extends AbstractTableModel {
 
 	void fillGhostRecord(GameStateRecord r, Game game, GhostCommand ghostCommand, Ghost ghost) {
 		r.creature = ghost;
-		r.takesPart = world.takesPart(ghost);
+		r.takesPart = world.isOnState(ghost);
 		r.name = ghost.name;
 		r.tile = ghost.tile();
 		r.target = ghost.targetTile();

@@ -43,8 +43,8 @@ class EnterGhostHouseTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		world.eatFood();
-		world.takePart(world.inky(), true);
+		world.removeFood();
+		world.putOnStage(world.inky(), true);
 		showMessage("SPACE = Enter/leave house", Color.WHITE, 8);
 	}
 

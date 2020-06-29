@@ -53,12 +53,12 @@ class PacManMovementTestUI extends TestUI {
 				world.eatFood(foodFound.tile);
 				game.level.eatenFoodCount++;
 				if (game.remainingFoodCount() == 0) {
-					world.restoreFood();
+					world.createFood();
 					game.level.eatenFoodCount = 0;
 				}
 			}
 		});
-		world.takePart(world.pacMan(), true);
+		world.putOnStage(world.pacMan(), true);
 		world.pacMan().setState(PacManState.EATING);
 		showMessage("Cursor keys", Color.WHITE);
 		mazeView.energizersBlinking.setEnabled(true);

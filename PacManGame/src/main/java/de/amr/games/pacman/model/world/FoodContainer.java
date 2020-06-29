@@ -2,19 +2,22 @@ package de.amr.games.pacman.model.world;
 
 import de.amr.games.pacman.controller.actor.Bonus;
 
+/**
+ * Food-related functions.
+ * 
+ * @author Armin Reichert
+ */
 public interface FoodContainer {
 
 	int totalFoodCount();
 
-	void eatFood();
+	void removeFood();
 
-	void restoreFood();
+	void createFood();
 
 	boolean containsFood(Tile tile);
 
 	boolean containsEatenFood(Tile tile);
-
-	boolean isEnergizer(Tile tile);
 
 	boolean containsSimplePellet(Tile tile);
 

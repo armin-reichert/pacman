@@ -41,9 +41,9 @@ class OutsideTileTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		world.eatFood();
+		world.removeFood();
 		theme.snd_ghost_chase().volume(0);
-		world.takePart(world.blinky(), true);
+		world.putOnStage(world.blinky(), true);
 		int row = world.portals().findFirst().map(portal -> portal.right.row).orElse((short) 100);
 		world.blinky().behavior(GhostState.CHASING, world.blinky().isHeadingFor(() -> Tile.at(100, row)));
 		world.blinky().setState(GhostState.CHASING);
