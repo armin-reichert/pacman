@@ -11,12 +11,7 @@ import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
-import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
-import de.amr.games.pacman.model.world.Worlds;
-import de.amr.games.pacman.view.play.PlayView;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 public class PacManMovementTestApp extends Application {
 
@@ -35,14 +30,13 @@ public class PacManMovementTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new PacManMovementTestUI(Worlds.arcade()));
+		setController(new PacManMovementTestUI());
 	}
 }
 
-class PacManMovementTestUI extends PlayView {
+class PacManMovementTestUI extends TestUI {
 
-	public PacManMovementTestUI(PacManWorld world) {
-		super(world, new Game(world, 1), new ArcadeTheme());
+	public PacManMovementTestUI() {
 		showRoutes = false;
 		showStates = false;
 		showScores = false;
@@ -79,11 +73,12 @@ class PacManMovementTestUI extends PlayView {
 
 	private void handleSteeringChange() {
 		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_M)) {
-			world.pacMan.behavior(world.pacMan.isFollowingKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
+			world.pacMan.behavior(
+					world.pacMan.isFollowingKeys(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT));
 			showMessage("Cursor keys", Color.WHITE);
 		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_N)) {
-			world.pacMan.behavior(
-					world.pacMan.isFollowingKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2, KeyEvent.VK_NUMPAD4));
+			world.pacMan.behavior(world.pacMan.isFollowingKeys(KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD6, KeyEvent.VK_NUMPAD2,
+					KeyEvent.VK_NUMPAD4));
 			showMessage("Numpad keys", Color.WHITE);
 		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_R)) {
 			world.pacMan.behavior(world.pacMan.isMovingRandomlyWithoutTurningBack());

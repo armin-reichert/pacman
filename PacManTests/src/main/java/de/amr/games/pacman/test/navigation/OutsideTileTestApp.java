@@ -3,12 +3,7 @@ package de.amr.games.pacman.test.navigation;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.actor.GhostState;
-import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
-import de.amr.games.pacman.model.world.Worlds;
-import de.amr.games.pacman.view.play.PlayView;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 /**
  * Test for heading for a tile outside of the maze.
@@ -30,14 +25,13 @@ public class OutsideTileTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new OutsideTileTestUI(Worlds.arcade()));
+		setController(new OutsideTileTestUI());
 	}
 }
 
-class OutsideTileTestUI extends PlayView {
+class OutsideTileTestUI extends TestUI {
 
-	public OutsideTileTestUI(PacManWorld world) {
-		super(world, new Game(world, 1), new ArcadeTheme());
+	public OutsideTileTestUI() {
 		showRoutes = true;
 		showStates = false;
 		showScores = false;

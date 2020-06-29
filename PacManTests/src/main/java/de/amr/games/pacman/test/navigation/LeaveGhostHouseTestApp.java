@@ -10,12 +10,7 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
-import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
-import de.amr.games.pacman.model.world.Worlds;
-import de.amr.games.pacman.view.play.PlayView;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 public class LeaveGhostHouseTestApp extends Application {
 
@@ -34,14 +29,13 @@ public class LeaveGhostHouseTestApp extends Application {
 	@Override
 	public void init() {
 		clock().setTargetFrameRate(10);
-		setController(new LeaveGhostHouseTestUI(Worlds.arcade()));
+		setController(new LeaveGhostHouseTestUI());
 	}
 }
 
-class LeaveGhostHouseTestUI extends PlayView {
+class LeaveGhostHouseTestUI extends TestUI {
 
-	public LeaveGhostHouseTestUI(PacManWorld world) {
-		super(world, new Game(world, 1), new ArcadeTheme());
+	public LeaveGhostHouseTestUI() {
 		showRoutes = true;
 		showStates = true;
 		showScores = false;

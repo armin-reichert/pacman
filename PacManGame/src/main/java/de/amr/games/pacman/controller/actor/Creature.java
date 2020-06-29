@@ -39,21 +39,21 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	public final PacManWorld world;
 	public final String name;
 	public Seat seat;
-
 	protected Fsm<STATE, PacManGameEvent> brain;
 	protected Map<STATE, Steering> steerings;
 	protected MovementControl movement;
+	public Supplier<Float> fnSpeedLimit;
 	protected Direction moveDir;
 	protected Direction wishDir;
 	protected Tile targetTile;
 	protected boolean enteredNewTile;
-
 	public final SpriteMap sprites = new SpriteMap();
 
 	public Creature(PacManWorld world, String name, Map<STATE, Steering> steerings) {
 		this.world = world;
 		this.name = name;
-		this.movement = new MovementControl(this, this::speedLimit);
+		this.fnSpeedLimit = () -> 0f;
+		this.movement = new MovementControl(this);
 		this.steerings = steerings;
 		tf.width = Tile.SIZE;
 		tf.height = Tile.SIZE;
@@ -63,7 +63,9 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	/**
 	 * @return how fast (px/s) this creature can move at most
 	 */
-	public abstract float speedLimit();
+	public final float speedLimit() {
+		return fnSpeedLimit.get();
+	}
 
 	/**
 	 * @return the current steering for this actor.

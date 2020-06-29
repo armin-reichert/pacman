@@ -4,9 +4,6 @@ import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.controller.actor.steering.MovementType.TELEPORTING;
 import static de.amr.games.pacman.controller.actor.steering.MovementType.WALKING;
 
-import java.util.Objects;
-import java.util.function.Supplier;
-
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.Creature;
@@ -22,12 +19,10 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class MovementControl extends StateMachine<MovementType, Void> {
 
-	private Supplier<Float> fnSpeedLimit;
 	private Portal portalEntered;
 
-	public MovementControl(Creature<?> creature, Supplier<Float> fnSpeedLimit) {
+	public MovementControl(Creature<?> creature) {
 		super(MovementType.class);
-		this.fnSpeedLimit = Objects.requireNonNull(fnSpeedLimit);
 		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 		//@formatter:off
 		beginStateMachine()
@@ -80,7 +75,7 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 
 	private void move(Creature<?> creature) {
 		final Tile tile = creature.tile();
-		float speedLimit = fnSpeedLimit.get();
+		float speedLimit = creature.fnSpeedLimit.get();
 		float speed = maxSpeedToDir(creature, creature.moveDir(), speedLimit);
 		if (creature.wishDir() != null && creature.wishDir() != creature.moveDir()) {
 			float wishDirSpeed = maxSpeedToDir(creature, creature.wishDir(), speedLimit);

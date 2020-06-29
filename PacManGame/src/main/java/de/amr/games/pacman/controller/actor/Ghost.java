@@ -16,7 +16,6 @@ import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Game.sec;
-import static de.amr.games.pacman.model.Game.speed;
 import static de.amr.statemachine.core.StateMachine.beginStateMachine;
 
 import java.util.EnumMap;
@@ -327,40 +326,6 @@ public class Ghost extends Creature<GhostState> {
 		}
 		currentSteering.steer();
 		movement.update();
-	}
-
-	@Override
-	public float speedLimit() {
-		switch (getState()) {
-		case LOCKED:
-			return speed(isInsideHouse() ? game.level.ghostSpeed / 2 : 0);
-		case LEAVING_HOUSE:
-			return speed(game.level.ghostSpeed / 2);
-		case ENTERING_HOUSE:
-			return speed(game.level.ghostSpeed);
-		case CHASING:
-		case SCATTERING:
-			if (world.isTunnel(tile())) {
-				return speed(game.level.ghostTunnelSpeed);
-			}
-			switch (sanity.getState()) {
-			case ELROY1:
-				return speed(game.level.elroy1Speed);
-			case ELROY2:
-				return speed(game.level.elroy2Speed);
-			case INFECTABLE:
-			case IMMUNE:
-				return speed(game.level.ghostSpeed);
-			default:
-				throw new IllegalArgumentException("Illegal ghost sanity state: " + sanity.getState());
-			}
-		case FRIGHTENED:
-			return speed(world.isTunnel(tile()) ? game.level.ghostTunnelSpeed : game.level.ghostFrightenedSpeed);
-		case DEAD:
-			return speed(2 * game.level.ghostSpeed);
-		default:
-			throw new IllegalStateException(String.format("Illegal ghost state %s", getState()));
-		}
 	}
 
 	public void takeClothes(Theme theme, int color) {

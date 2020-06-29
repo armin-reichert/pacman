@@ -9,12 +9,7 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
-import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
-import de.amr.games.pacman.model.world.Worlds;
-import de.amr.games.pacman.view.play.PlayView;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 public class ScatteringTestApp extends Application {
 
@@ -32,14 +27,13 @@ public class ScatteringTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new ScatteringTestUI(Worlds.arcade()));
+		setController(new ScatteringTestUI());
 	}
 }
 
-class ScatteringTestUI extends PlayView {
+class ScatteringTestUI extends TestUI {
 
-	public ScatteringTestUI(PacManWorld world) {
-		super(world, new Game(world, 1), new ArcadeTheme());
+	public ScatteringTestUI() {
 		showRoutes = true;
 		showStates = false;
 		showScores = false;

@@ -12,12 +12,7 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
-import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
-import de.amr.games.pacman.model.world.Worlds;
-import de.amr.games.pacman.view.play.PlayView;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 public class InkyChaseTestApp extends Application {
 
@@ -35,14 +30,13 @@ public class InkyChaseTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new InkyChaseTestUI(Worlds.arcade()));
+		setController(new InkyChaseTestUI());
 	}
 }
 
-class InkyChaseTestUI extends PlayView {
+class InkyChaseTestUI extends TestUI {
 
-	public InkyChaseTestUI(PacManWorld world) {
-		super(world, new Game(world, 1), new ArcadeTheme());
+	public InkyChaseTestUI() {
 		showRoutes = true;
 		showStates = false;
 		showScores = false;

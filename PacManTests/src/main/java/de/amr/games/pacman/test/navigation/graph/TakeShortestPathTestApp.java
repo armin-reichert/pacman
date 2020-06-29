@@ -7,24 +7,17 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.easy.game.view.View;
-import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.House;
-import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Portal;
 import de.amr.games.pacman.model.world.Tile;
-import de.amr.games.pacman.model.world.Worlds;
-import de.amr.games.pacman.view.play.PlayView;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
+import de.amr.games.pacman.test.navigation.TestUI;
 
 public class TakeShortestPathTestApp extends Application {
 
@@ -42,19 +35,17 @@ public class TakeShortestPathTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new TakeShortestPathTestUI(Worlds.arcade()));
+		setController(new TakeShortestPathTestUI());
 	}
 }
 
-class TakeShortestPathTestUI extends PlayView implements VisualController {
+class TakeShortestPathTestUI extends TestUI {
 
 	final Ghost ghost;
 	final List<Tile> targets;
 	int targetIndex;
-	PacManWorld world;
 
-	public TakeShortestPathTestUI(PacManWorld world) {
-		super(world, new Game(world, 1), new ArcadeTheme());
+	public TakeShortestPathTestUI() {
 		ghost = world.blinky;
 		Portal thePortal = world.portals().findAny().get();
 		House theHouse = world.houses().findAny().get();
@@ -99,10 +90,5 @@ class TakeShortestPathTestUI extends PlayView implements VisualController {
 		if (ghost.tile().equals(targets.get(targetIndex))) {
 			nextTarget();
 		}
-	}
-
-	@Override
-	public Optional<View> currentView() {
-		return Optional.of(this);
 	}
 }

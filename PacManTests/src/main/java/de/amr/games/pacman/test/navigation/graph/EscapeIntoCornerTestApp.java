@@ -3,19 +3,11 @@ package de.amr.games.pacman.test.navigation.graph;
 import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.actor.PacManState.EATING;
 
-import java.util.Optional;
-
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
-import de.amr.easy.game.view.View;
-import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.controller.actor.Creature;
-import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
-import de.amr.games.pacman.model.world.Worlds;
-import de.amr.games.pacman.view.play.PlayView;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
+import de.amr.games.pacman.test.navigation.TestUI;
 
 public class EscapeIntoCornerTestApp extends Application {
 
@@ -33,14 +25,13 @@ public class EscapeIntoCornerTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new EscapeIntoCornerTestUI(Worlds.arcade()));
+		setController(new EscapeIntoCornerTestUI());
 	}
 }
 
-class EscapeIntoCornerTestUI extends PlayView implements VisualController {
+class EscapeIntoCornerTestUI extends TestUI {
 
-	public EscapeIntoCornerTestUI(PacManWorld world) {
-		super(world, new Game(world, 1), new ArcadeTheme());
+	public EscapeIntoCornerTestUI() {
 		showRoutes = true;
 		showStates = true;
 		showScores = false;
@@ -61,10 +52,5 @@ class EscapeIntoCornerTestUI extends PlayView implements VisualController {
 	public void update() {
 		super.update();
 		world.creaturesOnStage().forEach(Creature::update);
-	}
-
-	@Override
-	public Optional<View> currentView() {
-		return Optional.of(this);
 	}
 }

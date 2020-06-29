@@ -9,12 +9,7 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
-import de.amr.games.pacman.model.world.Worlds;
-import de.amr.games.pacman.view.play.PlayView;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 public class EnterGhostHouseTestApp extends Application {
 
@@ -32,14 +27,13 @@ public class EnterGhostHouseTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new EnterGhostHouseTestUI(Worlds.arcade()));
+		setController(new EnterGhostHouseTestUI());
 	}
 }
 
-class EnterGhostHouseTestUI extends PlayView {
+class EnterGhostHouseTestUI extends TestUI {
 
-	public EnterGhostHouseTestUI(PacManWorld world) {
-		super(world, new Game(world, 1), new ArcadeTheme());
+	public EnterGhostHouseTestUI() {
 		showRoutes = true;
 		showStates = true;
 		showScores = false;

@@ -10,7 +10,6 @@ import static de.amr.games.pacman.model.Direction.UP;
 import static de.amr.games.pacman.model.Direction.dirs;
 import static de.amr.games.pacman.model.Game.DIGEST_ENERGIZER_TICKS;
 import static de.amr.games.pacman.model.Game.DIGEST_PELLET_TICKS;
-import static de.amr.games.pacman.model.Game.speed;
 import static de.amr.statemachine.core.StateMachine.beginStateMachine;
 
 import java.util.EnumMap;
@@ -106,11 +105,6 @@ public class PacMan extends Creature<PacManState> {
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		brain.doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent && !((FoodFoundEvent) e).energizer);
 		brain.doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent && !((FoodFoundEvent) e).energizer);
-	}
-
-	@Override
-	public float speedLimit() {
-		return is(EATING) ? speed(power > 0 ? game.level.pacManPowerSpeed : game.level.pacManSpeed) : 0;
 	}
 
 	public void takeClothes(Theme theme) {

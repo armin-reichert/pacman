@@ -10,12 +10,7 @@ import java.util.List;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.view.Pen;
-import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
-import de.amr.games.pacman.model.world.Worlds;
-import de.amr.games.pacman.view.play.PlayView;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 public class VisitCornersTestApp extends Application {
 
@@ -33,17 +28,16 @@ public class VisitCornersTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new FollowTargetTilesTestUI(Worlds.arcade()));
+		setController(new FollowTargetTilesTestUI());
 	}
 }
 
-class FollowTargetTilesTestUI extends PlayView {
+class FollowTargetTilesTestUI extends TestUI {
 
 	private List<Tile> targets;
 	private int current;
 
-	public FollowTargetTilesTestUI(PacManWorld world) {
-		super(world, new Game(world, 1), new ArcadeTheme());
+	public FollowTargetTilesTestUI() {
 		showRoutes = true;
 		showStates = false;
 		showScores = false;

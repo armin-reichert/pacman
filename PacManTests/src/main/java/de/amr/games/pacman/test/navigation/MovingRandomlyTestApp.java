@@ -9,12 +9,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
-import de.amr.games.pacman.model.world.Worlds;
-import de.amr.games.pacman.view.play.PlayView;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 public class MovingRandomlyTestApp extends Application {
 
@@ -32,16 +27,15 @@ public class MovingRandomlyTestApp extends Application {
 
 	@Override
 	public void init() {
-		setController(new MovingRandomlyTestUI(Worlds.arcade()));
+		setController(new MovingRandomlyTestUI());
 	}
 }
 
-class MovingRandomlyTestUI extends PlayView {
+class MovingRandomlyTestUI extends TestUI {
 
 	boolean started;
 
-	public MovingRandomlyTestUI(PacManWorld world) {
-		super(world, new Game(world, 1), new ArcadeTheme());
+	public MovingRandomlyTestUI() {
 		showRoutes = true;
 		showStates = true;
 		showScores = false;
