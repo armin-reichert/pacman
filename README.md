@@ -252,28 +252,28 @@ beginStateMachine(BonusState.class, PacManGameEvent.class)
 When an actor leaves the board inside a tunnel it enters *teleporting* mode. In this implementation, the teleporting duration can be specified for each actor individually (no idea if this makes much sense) and the movement state of an actor is controlled by the following state machine:
 
 ```java
-movement = StateMachine
-//@formatter:off
-	.beginStateMachine(Movement.class, Void.class)
-		.description(String.format("[%s movement]", name))
-		.initialState(MOVING_INSIDE_MAZE)
-		.states()
-			.state(MOVING_INSIDE_MAZE)
-				.onTick(() -> makeStepInsideMaze())
-			.state(TELEPORTING)
-				.onEntry(() -> visible = false)
-				.onExit(() -> visible = true)
-		.transitions()
-			.when(MOVING_INSIDE_MAZE).then(TELEPORTING)
-				.condition(() -> enteredLeftPortal() || enteredRightPortal())
-			.when(TELEPORTING).then(MOVING_INSIDE_MAZE)
-				.onTimeout()
-				.act(() -> teleport())
-	.endStateMachine();
+beginStateMachine()
+	.description(String.format("[%s movement]", creature.name))
+	.initialState(WALKING)
+	.states()
+		.state(WALKING)
+			.onTick(() -> {
+				move(creature);
+				checkIfPortalEntered(creature);
+			})
+	.transitions()
+		.when(WALKING).then(TELEPORTING)
+			.condition(() -> hasEnteredPortal())
+			.act(() -> creature.visible = false)
+		.when(TELEPORTING).then(WALKING)
+			.onTimeout()
+			.act(() -> {
+				teleport(creature);
+				creature.visible = true;
+			})
+.endStateMachine();
 //@formatter:on
 ```
-
-Using an explicit state machine for such a simple control case may seem like shooting with cannons at sparrows but it serves to illustrate how seamlessly state machines can be integrated.
 
 ## Tracing
 
@@ -309,8 +309,8 @@ The common behavior of all ghosts is defined by the following code:
 
 ```java
 ghosts().forEach(ghost -> {
-	ghost.behavior(LOCKED, ghost::bouncingOnSeat);
-	ghost.behavior(ENTERING_HOUSE, ghost.isTakingSeat());
+	ghost.behavior(LOCKED, ghost::bouncingOnBed);
+	ghost.behavior(ENTERING_HOUSE, ghost.isGoingToBed(ghost.bed()));
 	ghost.behavior(LEAVING_HOUSE, ghost::leavingGhostHouse);
 	ghost.behavior(FRIGHTENED, ghost.isMovingRandomlyWithoutTurningBack());
 	ghost.behavior(DEAD, ghost.isReturningToHouse());
@@ -407,9 +407,11 @@ inky.behavior(CHASING, inky.isHeadingFor(() -> {
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
 
 ```java
-clyde.behavior(CHASING, clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : clyde.scatteringTarget));
+clyde.behavior(CHASING, clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : Tile.at(0, height() - 1)));
 ```
 <img src="PacManDoc/clyde.png"/>
+
+For details, see class [PacManWorldUsingMap](PacManGame/src/main/java/de/amr/games/pacman/model/world/PacManWorldUsingMap.java).
 
 ### Visualization of attack behavior
 
