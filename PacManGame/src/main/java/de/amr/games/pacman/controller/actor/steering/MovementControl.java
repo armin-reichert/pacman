@@ -1,14 +1,15 @@
-package de.amr.games.pacman.controller.actor;
+package de.amr.games.pacman.controller.actor.steering;
 
 import static de.amr.easy.game.Application.loginfo;
-import static de.amr.games.pacman.controller.actor.MovementControl.MovementType.TELEPORTING;
-import static de.amr.games.pacman.controller.actor.MovementControl.MovementType.WALKING;
+import static de.amr.games.pacman.controller.actor.steering.MovementType.TELEPORTING;
+import static de.amr.games.pacman.controller.actor.steering.MovementType.WALKING;
 
 import java.util.Objects;
 import java.util.function.Supplier;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
+import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.Portal;
 import de.amr.games.pacman.model.world.Tile;
@@ -19,17 +20,13 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class MovementControl extends StateMachine<MovementControl.MovementType, Void> {
-
-	public enum MovementType {
-		WALKING, TELEPORTING;
-	}
+public class MovementControl extends StateMachine<MovementType, Void> {
 
 	private Supplier<Float> fnSpeedLimit;
 	private Portal portalEntered;
 
 	public MovementControl(Creature<?> creature, Supplier<Float> fnSpeedLimit) {
-		super(MovementControl.MovementType.class);
+		super(MovementType.class);
 		this.fnSpeedLimit = Objects.requireNonNull(fnSpeedLimit);
 		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 		//@formatter:off
@@ -77,28 +74,29 @@ public class MovementControl extends StateMachine<MovementControl.MovementType, 
 	}
 
 	private void teleport(Creature<?> creature) {
-		portalEntered.teleport(creature, creature.tile(), creature.moveDir);
+		portalEntered.teleport(creature, creature.tile(), creature.moveDir());
 		portalEntered = null;
 	}
 
 	private void move(Creature<?> creature) {
 		final Tile tile = creature.tile();
 		float speedLimit = fnSpeedLimit.get();
-		float speed = maxSpeedToDir(creature, creature.moveDir, speedLimit);
-		if (creature.wishDir != null && creature.wishDir != creature.moveDir) {
-			float wishDirSpeed = maxSpeedToDir(creature, creature.wishDir, speedLimit);
+		float speed = maxSpeedToDir(creature, creature.moveDir(), speedLimit);
+		if (creature.wishDir() != null && creature.wishDir() != creature.moveDir()) {
+			float wishDirSpeed = maxSpeedToDir(creature, creature.wishDir(), speedLimit);
 			if (wishDirSpeed > 0) {
 				speed = wishDirSpeed;
-				boolean curve = (creature.wishDir == creature.moveDir.left() || creature.wishDir == creature.moveDir.right());
+				boolean curve = (creature.wishDir() == creature.moveDir().left()
+						|| creature.wishDir() == creature.moveDir().right());
 				if (curve && creature.steering().requiresGridAlignment()) {
 					creature.placeAt(tile);
 				}
-				creature.moveDir = creature.wishDir;
+				creature.setMoveDir(creature.wishDir());
 			}
 		}
-		creature.tf.setVelocity(Vector2f.smul(speed, creature.moveDir.vector()));
+		creature.tf.setVelocity(Vector2f.smul(speed, creature.moveDir().vector()));
 		creature.tf.move();
-		creature.enteredNewTile = !tile.equals(creature.tile());
+		creature.setEnteredNewTile(!tile.equals(creature.tile()));
 	}
 
 	/**

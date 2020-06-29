@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.SpriteMap;
+import de.amr.games.pacman.controller.actor.steering.MovementControl;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.controller.actor.steering.common.FollowingKeys;
 import de.amr.games.pacman.controller.actor.steering.common.HeadingForTargetTile;
@@ -153,6 +154,10 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	@Override
 	public boolean enteredNewTile() {
 		return enteredNewTile;
+	}
+
+	public void setEnteredNewTile(boolean enteredNewTile) {
+		this.enteredNewTile = enteredNewTile;
 	}
 
 	@Override
