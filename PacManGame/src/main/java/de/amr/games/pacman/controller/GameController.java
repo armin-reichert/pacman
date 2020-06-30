@@ -52,8 +52,6 @@ import de.amr.games.pacman.model.world.Population;
 import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.view.core.BaseView;
-import de.amr.games.pacman.view.dashboard.level.GameLevelView;
-import de.amr.games.pacman.view.dashboard.states.GameStateView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.PlayView;
@@ -80,9 +78,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected IntroView introView;
 	protected PlayView playView;
 	protected BaseView currentView;
-
-	protected GameStateView gameStateView;
-	protected GameLevelView gameLevelView;
 
 	protected GhostCommand ghostCommand;
 	protected GhostHouseAccess ghostHouseAccess;
