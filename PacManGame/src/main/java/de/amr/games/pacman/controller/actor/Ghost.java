@@ -73,13 +73,13 @@ public class Ghost extends Creature<GhostState> {
 			.transitions()
 			
 				.when(INFECTABLE).then(ELROY2)
-					.condition(() -> game.remainingFoodCount() <= game.level.elroy2DotsLeft)
+					.condition(() -> game.level.remainingFoodCount() <= game.level.elroy2DotsLeft)
 					
 				.when(INFECTABLE).then(ELROY1)
-					.condition(() -> game.remainingFoodCount() <= game.level.elroy1DotsLeft)
+					.condition(() -> game.level.remainingFoodCount() <= game.level.elroy1DotsLeft)
 				
 				.when(ELROY1).then(ELROY2)
-					.condition(() -> game.remainingFoodCount() <= game.level.elroy2DotsLeft)
+					.condition(() -> game.level.remainingFoodCount() <= game.level.elroy2DotsLeft)
 					
 		.endStateMachine();
 	//@formatter:on

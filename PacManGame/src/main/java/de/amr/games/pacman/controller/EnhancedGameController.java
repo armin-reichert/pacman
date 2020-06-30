@@ -135,7 +135,7 @@ public class EnhancedGameController extends GameController {
 			world.removeFood(tile);
 		});
 		loginfo("All simple pellets have been eaten");
-		if (game.remainingFoodCount() == 0) {
+		if (game.level.remainingFoodCount() == 0) {
 			enqueue(new LevelCompletedEvent());
 			return;
 		}

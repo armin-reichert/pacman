@@ -543,7 +543,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 			ghostHouseAccess.onPacManFoundFood();
 
-			if (game.remainingFoodCount() == 0) {
+			if (game.level.remainingFoodCount() == 0) {
 				enqueue(new LevelCompletedEvent());
 				return;
 			}

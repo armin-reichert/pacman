@@ -175,7 +175,7 @@ public class SimplePlayView extends BaseView {
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			g.translate(0, -(topMargin + lineOffset) + 2);
 			pen.color(Color.WHITE);
-			pen.drawAtGridPosition(String.format("%03d", game.remainingFoodCount()), col + 3, 1, Tile.SIZE);
+			pen.drawAtGridPosition(String.format("%03d", game.level.remainingFoodCount()), col + 3, 1, Tile.SIZE);
 			pen.up(lineOffset);
 		}
 		g.translate(0, -topMargin);

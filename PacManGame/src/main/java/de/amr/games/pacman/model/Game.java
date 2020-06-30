@@ -81,7 +81,8 @@ public class Game {
 	/**
 	 * Creates a game starting with the given level.
 	 * 
-	 * @param startLevel start level number (1-...)
+	 * @param startLevel     start level number (1-...)
+	 * @param totalFoodCount total number of food in each level
 	 */
 	public Game(int startLevel, int totalFoodCount) {
 		levelCounter = new ArrayList<>();
@@ -99,27 +100,15 @@ public class Game {
 	 */
 	public void enterLevel(int n) {
 		if (n < 1) {
-			loginfo("Start level must be at least 1, is %d", n);
+			loginfo("Specified start level is %d, using 1 instead", n);
 			n = 1;
 		}
 		loginfo("Enter level %d", n);
-		level = level(n);
+		level = new GameLevel(n, totalFoodCount, LEVELS[n <= LEVELS.length ? n - 1 : LEVELS.length - 1]);
+		level.number = n;
+		level.totalFoodCount = totalFoodCount;
 		levelCounter.add(level.bonusSymbol);
 		gameScore.load();
-	}
-
-	private GameLevel level(int n) {
-		int row = n <= LEVELS.length ? n - 1 : LEVELS.length - 1;
-		GameLevel level = GameLevel.of(LEVELS[row]);
-		level.number = n;
-		return level;
-	}
-
-	/**
-	 * @return number of remaining pellets and energizers
-	 */
-	public int remainingFoodCount() {
-		return totalFoodCount - level.eatenFoodCount;
 	}
 
 	/**

@@ -52,7 +52,7 @@ class PacManMovementTestUI extends TestUI {
 				theme.snd_eatPill().play();
 				world.removeFood(foodFound.tile);
 				game.level.eatenFoodCount++;
-				if (game.remainingFoodCount() == 0) {
+				if (game.level.remainingFoodCount() == 0) {
 					world.createFood();
 					game.level.eatenFoodCount = 0;
 				}
