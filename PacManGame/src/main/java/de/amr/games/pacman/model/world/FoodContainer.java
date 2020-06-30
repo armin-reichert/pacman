@@ -1,5 +1,7 @@
 package de.amr.games.pacman.model.world;
 
+import java.util.Optional;
+
 /**
  * Food-related functions.
  * 
@@ -24,4 +26,8 @@ public interface FoodContainer {
 	void removeFood(Tile tile);
 
 	void createFood(Tile tile);
+
+	void setBonus(Bonus bonus);
+
+	Optional<Bonus> getBonus();
 }

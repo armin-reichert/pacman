@@ -9,7 +9,6 @@ import javax.swing.table.AbstractTableModel;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostCommand;
-import de.amr.games.pacman.controller.actor.Bonus;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.Ghost.Sanity;
 import de.amr.games.pacman.controller.actor.PacMan;
@@ -122,7 +121,7 @@ class GameStateTableModel extends AbstractTableModel {
 					fillGhostRecord(records[ROW_INKY], game, ghostCommand, world.population().inky());
 					fillGhostRecord(records[ROW_CLYDE], game, ghostCommand, world.population().clyde());
 					fillPacManRecord(records[ROW_PACMAN], game, world.population().pacMan());
-					fillBonusRecord(records[ROW_BONUS], game, world.population().bonus());
+//					fillBonusRecord(records[ROW_BONUS], game, world.population().bonus());
 					fireTableDataChanged();
 				});
 			});
@@ -163,16 +162,16 @@ class GameStateTableModel extends AbstractTableModel {
 		r.pacManCollision = ghost.tile().equals(world.population().pacMan().tile());
 	}
 
-	void fillBonusRecord(GameStateRecord r, Game game, Bonus bonus) {
-		r.takesPart = bonus.visible;
-		r.name = bonus.symbol != null ? bonus.toString() : "Bonus";
-		r.tile = world.bonusTile();
-		if (bonus.getState() != null) {
-			r.state = bonus.getState().name();
-			r.ticksRemaining = bonus.state().getTicksRemaining();
-			r.duration = bonus.state().getDuration();
-		}
-	}
+//	void fillBonusRecord(GameStateRecord r, Game game, Bonus bonus) {
+//		r.takesPart = bonus.visible;
+//		r.name = bonus.symbol != null ? bonus.toString() : "Bonus";
+//		r.tile = world.bonusTile();
+//		if (bonus.getState() != null) {
+//			r.state = bonus.getState().name();
+//			r.ticksRemaining = bonus.state().getTicksRemaining();
+//			r.duration = bonus.state().getDuration();
+//		}
+//	}
 
 	@Override
 	public Object getValueAt(int row, int col) {

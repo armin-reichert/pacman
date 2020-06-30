@@ -3,6 +3,7 @@ package de.amr.games.pacman.controller.actor.steering;
 import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.controller.actor.steering.MovementType.TELEPORTING;
 import static de.amr.games.pacman.controller.actor.steering.MovementType.WALKING;
+import static de.amr.games.pacman.model.Game.sec;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
@@ -34,6 +35,8 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 						move(creature);
 						checkIfPortalEntered(creature);
 					})
+				.state(TELEPORTING)
+					.timeoutAfter(sec(0.5f))
 			.transitions()
 				.when(WALKING).then(TELEPORTING)
 					.condition(() -> hasEnteredPortal())
@@ -46,14 +49,6 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 					})
 		.endStateMachine();
 		//@formatter:on
-	}
-
-	public boolean isTeleporting() {
-		return is(TELEPORTING);
-	}
-
-	public void setTeleportingDuration(int ticks) {
-		state(TELEPORTING).setTimer(ticks);
 	}
 
 	public boolean hasEnteredPortal() {

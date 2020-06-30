@@ -26,7 +26,6 @@ public class DefaultPopulation implements Population {
 	private final Ghost pinky = new Ghost("Pinky");
 	private final Ghost inky = new Ghost("Inky");
 	private final Ghost clyde = new Ghost("Clyde");
-	private final Bonus bonus = new Bonus();
 
 	@Override
 	public void populate(PacManWorld world) {
@@ -97,10 +96,5 @@ public class DefaultPopulation implements Population {
 	@Override
 	public Stream<Creature<?>> creatures() {
 		return Stream.of(pacMan, blinky, inky, pinky, clyde);
-	}
-
-	@Override
-	public Bonus bonus() {
-		return bonus;
 	}
 }

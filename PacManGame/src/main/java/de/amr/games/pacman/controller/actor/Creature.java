@@ -1,7 +1,6 @@
 package de.amr.games.pacman.controller.actor;
 
 import static de.amr.games.pacman.model.Direction.RIGHT;
-import static de.amr.games.pacman.model.Game.sec;
 
 import java.util.List;
 import java.util.Map;
@@ -12,6 +11,7 @@ import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.actor.steering.MovementControl;
+import de.amr.games.pacman.controller.actor.steering.MovementType;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.controller.actor.steering.common.FollowingKeys;
 import de.amr.games.pacman.controller.actor.steering.common.HeadingForTargetTile;
@@ -37,19 +37,20 @@ import de.amr.statemachine.api.FsmContainer;
  */
 public abstract class Creature<STATE> extends Entity implements WorldMover, FsmContainer<STATE, PacManGameEvent> {
 
-	public Game game;
 	public final String name;
-	private PacManWorld world;
-	private Bed bed;
+	public final SpriteMap sprites = new SpriteMap();
+
+	protected Game game;
+	protected PacManWorld world;
+	protected Bed bed;
 	protected Fsm<STATE, PacManGameEvent> brain;
 	protected Map<STATE, Steering> steerings;
 	protected MovementControl movement;
-	private Supplier<Float> fnSpeedLimit;
+	protected Supplier<Float> fnSpeedLimit;
 	protected Direction moveDir;
 	protected Direction wishDir;
 	protected Tile targetTile;
 	protected boolean enteredNewTile;
-	public final SpriteMap sprites = new SpriteMap();
 
 	public Creature(String name, Map<STATE, Steering> steerings) {
 		this.name = name;
@@ -57,13 +58,12 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 		this.steerings = steerings;
 		tf.width = Tile.SIZE;
 		tf.height = Tile.SIZE;
-		setTeleportingDuration(sec(0.5f));
 	}
 
 	public void setWorld(PacManWorld world) {
 		this.world = world;
 	}
-	
+
 	public float getSpeedLimit() {
 		return fnSpeedLimit.get();
 	}
@@ -154,11 +154,7 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	}
 
 	public boolean isTeleporting() {
-		return movement.isTeleporting();
-	}
-
-	public void setTeleportingDuration(int ticks) {
-		movement.setTeleportingDuration(ticks);
+		return movement.is(MovementType.TELEPORTING);
 	}
 
 	@Override

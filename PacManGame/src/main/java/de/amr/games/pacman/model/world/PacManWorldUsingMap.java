@@ -3,6 +3,7 @@ package de.amr.games.pacman.model.world;
 import static de.amr.easy.game.Application.loginfo;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -21,6 +22,7 @@ class PacManWorldUsingMap implements PacManWorld {
 	private final Set<Creature<?>> stage = new HashSet<>();
 	private PacManWorldMap worldMap;
 	private Population population;
+	private Bonus bonus;
 
 	public PacManWorldUsingMap(PacManWorldMap worldMap) {
 		setWorldMap(worldMap);
@@ -210,5 +212,15 @@ class PacManWorldUsingMap implements PacManWorld {
 	@Override
 	public int totalFoodCount() {
 		return worldMap.totalFoodCount();
+	}
+
+	@Override
+	public Optional<Bonus> getBonus() {
+		return Optional.ofNullable(bonus);
+	}
+
+	@Override
+	public void setBonus(Bonus bonus) {
+		this.bonus = bonus;
 	}
 }

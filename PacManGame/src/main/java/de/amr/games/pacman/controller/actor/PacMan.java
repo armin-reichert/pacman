@@ -1,7 +1,6 @@
 package de.amr.games.pacman.controller.actor;
 
 import static de.amr.games.pacman.PacManApp.settings;
-import static de.amr.games.pacman.controller.actor.BonusState.ACTIVE;
 import static de.amr.games.pacman.controller.actor.PacManState.DEAD;
 import static de.amr.games.pacman.controller.actor.PacManState.EATING;
 import static de.amr.games.pacman.controller.actor.PacManState.SLEEPING;
@@ -24,6 +23,8 @@ import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
+import de.amr.games.pacman.model.world.Bonus;
+import de.amr.games.pacman.model.world.BonusState;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -55,7 +56,7 @@ public class PacMan extends Creature<PacManState> {
 					.onEntry(() -> {
 						power = digestion = 0;
 						visible = true;
-						moveDir = wishDir = world().pacManBed().startDir;
+						moveDir = wishDir = world.pacManBed().startDir;
 						tf.setPosition(bed().position);
 						sprites.forEach(Sprite::resetAnimation);
 						showFull();
@@ -133,7 +134,7 @@ public class PacMan extends Creature<PacManState> {
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (world().isDoor(neighbor)) {
+		if (world.isDoor(neighbor)) {
 			return false;
 		}
 		return super.canMoveBetween(tile, neighbor);
@@ -150,24 +151,29 @@ public class PacMan extends Creature<PacManState> {
 	 *         direction.
 	 */
 	public Tile tilesAhead(int numTiles) {
-		Tile tileAhead = world().tileToDir(tile(), moveDir, numTiles);
+		Tile tileAhead = world.tileToDir(tile(), moveDir, numTiles);
 		if (moveDir == UP && !settings.fixOverflowBug) {
-			return world().tileToDir(tileAhead, LEFT, numTiles);
+			return world.tileToDir(tileAhead, LEFT, numTiles);
 		}
 		return tileAhead;
 	}
 
 	private Optional<PacManGameEvent> findSomethingInteresting() {
 		Tile tile = tile();
-		Bonus bonus = world().population().bonus();
-		if (tile.equals(world().bonusTile()) && bonus.is(ACTIVE)) {
+
+		Optional<Bonus> activeBonus = world.getBonus().filter(bonus -> bonus.state == BonusState.ACTIVE)
+				.filter(bonus -> tile.equals(world.bonusTile()));
+		if (activeBonus.isPresent()) {
+			Bonus bonus = activeBonus.get();
 			return Optional.of(new BonusFoundEvent(bonus.symbol, bonus.value));
 		}
-		if (world().containsFood(tile)) {
-			boolean energizer = world().containsEnergizer(tile);
+
+		if (world.containsFood(tile)) {
+			boolean energizer = world.containsEnergizer(tile);
 			digestion = energizer ? DIGEST_ENERGIZER_TICKS : DIGEST_PELLET_TICKS;
 			return Optional.of(new FoodFoundEvent(tile, energizer));
 		}
+
 		return Optional.empty();
 	}
 }

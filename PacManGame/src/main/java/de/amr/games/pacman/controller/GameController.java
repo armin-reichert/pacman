@@ -29,11 +29,12 @@ import de.amr.easy.game.Application.ApplicationState;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
-import de.amr.games.pacman.controller.actor.Bonus;
+import de.amr.games.pacman.controller.actor.BonusControl;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.DefaultPopulation;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
+import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.controller.actor.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
@@ -85,6 +86,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	protected GhostCommand ghostCommand;
 	protected GhostHouseAccess ghostHouseAccess;
+	protected BonusControl bonusControl;
 
 	public GameController() {
 		super(PacManGameState.class);
@@ -126,6 +128,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		game = new Game(settings.startLevel, world.totalFoodCount());
 		ghostCommand = new GhostCommand(game, world.population().ghosts());
 		ghostHouseAccess = new GhostHouseAccess(game, world);
+		bonusControl = new BonusControl(world, game, theme);
 
 		playView = new PlayView(world, game, theme);
 		playView.ghostCommand = ghostCommand;
@@ -137,9 +140,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			world.putOnStage(ghost, true);
 		});
 
-		world.putOnStage(world.population().pacMan(), true);
-		world.population().pacMan().addEventListener(this::process);
-		world.population().pacMan().setSpeedLimit(() -> pacManSpeedLimit(world.population().pacMan(), game));
+		PacMan pacMan = world.population().pacMan();
+		world.putOnStage(pacMan, true);
+		pacMan.addEventListener(this::process);
+		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
 
 		world.population().play(game);
 
@@ -332,7 +336,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						world.population().pacMan().visible = false;
 					})
 					.onTick(() -> {
-						world.population().bonus().update();
+						bonusControl.update();
 						world.population().ghosts()
 							.filter(world::isOnStage)
 							.filter(ghost -> ghost.is(GhostState.DEAD, GhostState.ENTERING_HOUSE))
@@ -353,7 +357,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 								dyingStartTime = waitTime + sec(1.5f),
 								dyingEndTime = dyingStartTime + sec(3f);
 						if (t == waitTime) {
-							world.population().bonus().deactivate();
+							bonusControl.deactivateBonus();
 							world.population().ghosts().filter(world::isOnStage).forEach(ghost -> ghost.visible = false);
 							world.population().pacMan().showFull().enableAnimation(false);
 						}
@@ -476,7 +480,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			ghostCommand.update();
 			ghostHouseAccess.update();
 			world.population().creatures().filter(world::isOnStage).forEach(Creature::update);
-			world.population().bonus().update();
+			bonusControl.update();
 			sound.updatePlayingSounds();
 		}
 
@@ -528,15 +532,15 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
-			Bonus bonus = world.population().bonus();
-			loginfo("PacMan found %s and wins %d points", bonus.symbol, bonus.value);
+			BonusFoundEvent found = (BonusFoundEvent) event;
+			loginfo("PacMan found %s and wins %d points", found.symbol, found.value);
 			int livesBefore = game.lives;
-			game.score(bonus.value);
+			game.score(found.value);
 			sound.bonusEaten();
 			if (game.lives > livesBefore) {
 				sound.extraLife();
 			}
-			bonus.process(event);
+			bonusControl.process(event);
 		}
 
 		private void onFoodFound(PacManGameEvent event) {
@@ -560,9 +564,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 
 			if (game.isBonusDue()) {
-				world.population().bonus().activate(theme, game.level.bonusSymbol, game.level.bonusValue);
-				loginfo("Bonus %s activated, time: %.2f sec", world.population().bonus(),
-						world.population().bonus().state().getDuration() / 60f);
+				bonusControl.activateBonus();
+				loginfo("Bonus %s activated, time: %.2f sec", bonusControl, bonusControl.state().getDuration() / 60f);
 			}
 			if (found.energizer && game.level.pacManPowerSeconds > 0) {
 				sound.pacManGainsPower();

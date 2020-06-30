@@ -30,8 +30,6 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.widgets.FramerateWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.GhostHouseAccess;
-import de.amr.games.pacman.controller.actor.Bonus;
-import de.amr.games.pacman.controller.actor.BonusState;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
@@ -43,7 +41,6 @@ import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.api.Fsm;
-import de.amr.statemachine.core.State;
 
 /**
  * An extended play view that can visualize actor states, the ghost house pellet counters, ghost
@@ -138,8 +135,8 @@ public class PlayView extends SimplePlayView {
 			drawOneWayTiles(g);
 			drawGhostSeats(g);
 		}
-		if (showScores) {
-			drawScores(g);
+		if (showScores && game != null) {
+			drawScores(g, game);
 		}
 		if (showRoutes) {
 			drawGhostRoutes(g);
@@ -180,7 +177,7 @@ public class PlayView extends SimplePlayView {
 	private void drawActorStates(Graphics2D g) {
 		world.population().ghosts().filter(world::isOnStage).forEach(ghost -> drawGhostState(g, ghost));
 		drawPacManState(g, world.population().pacMan());
-		drawBonusState(g, world.population().bonus());
+		drawBonusState(g);
 	}
 
 	private void drawPacManState(Graphics2D g, PacMan pacMan) {
@@ -228,11 +225,14 @@ public class PlayView extends SimplePlayView {
 		drawEntityState(g, ghost, text.toString(), ghostColor(ghost));
 	}
 
-	private void drawBonusState(Graphics2D g, Bonus bonus) {
-		State<BonusState> state = bonus.state();
-		String text = bonus.is(BonusState.INACTIVE) ? "Bonus inactive"
-				: String.format("%s,%d|%d", bonus, state.getTicksRemaining(), state.getDuration());
-		drawEntityState(g, bonus, text, Color.YELLOW);
+	private void drawBonusState(Graphics2D g) {
+		// TODO
+//		world.getBonus().ifPresent(bonus -> {
+//			try (Pen pen = new Pen(g)) {
+//				pen.color(Color.YELLOW);
+//				pen.font(SMALL_FONT);
+//			}
+//		});
 	}
 
 	private void drawPacManStarvingTime(Graphics2D g) {

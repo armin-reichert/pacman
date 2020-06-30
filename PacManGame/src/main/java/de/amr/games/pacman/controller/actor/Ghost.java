@@ -105,7 +105,7 @@ public class Ghost extends Creature<GhostState> {
 					.onTick(() -> {
 						move();
 						// not sure if ghost locked inside house should look frightened
-						if (world().population().pacMan().power > 0) {
+						if (world.population().pacMan().power > 0) {
 							showFrightened();
 						} else {
 							showColored();
@@ -221,7 +221,7 @@ public class Ghost extends Creature<GhostState> {
 					.condition(() -> subsequentState == CHASING)
 					
 				.when(DEAD).then(ENTERING_HOUSE)
-					.condition(() -> world().isJustBeforeDoor(tile()))
+					.condition(() -> world.isJustBeforeDoor(tile()))
 					
 		.endStateMachine();
 		/*@formatter:on*/
@@ -246,7 +246,7 @@ public class Ghost extends Creature<GhostState> {
 	 * lets a ghost leave the ghost house
 	 */
 	public void leavingGhostHouse() {
-		Tile exit = world().theHouse().bed(0).tile;
+		Tile exit = world.theHouse().bed(0).tile;
 		int targetX = exit.centerX(), targetY = exit.y();
 		if (tf.y <= targetY) {
 			tf.y = targetY;
@@ -261,7 +261,7 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	private boolean hasLeftGhostHouse() {
-		return tf.y == world().theHouse().bed(0).tile.y();
+		return tf.y == world.theHouse().bed(0).tile.y();
 	}
 
 	/**
@@ -271,15 +271,15 @@ public class Ghost extends Creature<GhostState> {
 	 * @return steering where actor flees to a "safe" maze corner
 	 */
 	public Steering isFleeingToSafeCorner(WorldMover attacker) {
-		return new FleeingToSafeCorner(this, attacker, world().cornerNW(), world().cornerNE(), world().cornerSW(),
-				world().cornerSE());
+		return new FleeingToSafeCorner(this, attacker, world.cornerNW(), world.cornerNE(), world.cornerSW(),
+				world.cornerSE());
 	}
 
 	/**
 	 * @return steering for bringing ghost back to ghost house entry
 	 */
 	public Steering isReturningToHouse() {
-		return headingFor(() -> world().theHouse().bed(0).tile);
+		return headingFor(() -> world.theHouse().bed(0).tile);
 	}
 
 	/**
@@ -291,11 +291,11 @@ public class Ghost extends Creature<GhostState> {
 
 	@Override
 	public boolean canMoveBetween(Tile tile, Tile neighbor) {
-		if (world().isDoor(neighbor)) {
+		if (world.isDoor(neighbor)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 
-		Optional<OneWayTile> maybeOneWay = world().oneWayTiles().filter(oneWay -> oneWay.tile.equals(neighbor)).findFirst();
+		Optional<OneWayTile> maybeOneWay = world.oneWayTiles().filter(oneWay -> oneWay.tile.equals(neighbor)).findFirst();
 		if (maybeOneWay.isPresent()) {
 			OneWayTile oneWay = maybeOneWay.get();
 			Direction toNeighbor = tile.dirTo(neighbor).get();
@@ -350,11 +350,11 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	public boolean isInsideHouse() {
-		return world().insideHouseOrDoor(tile());
+		return world.insideHouseOrDoor(tile());
 	}
 
 	private void checkPacManCollision() {
-		PacMan pacMan = world().population().pacMan();
+		PacMan pacMan = world.population().pacMan();
 		if (tile().equals(pacMan.tile()) && !isTeleporting() && !pacMan.isTeleporting() && !pacMan.is(PacManState.DEAD)) {
 			publish(new PacManGhostCollisionEvent(this));
 		}

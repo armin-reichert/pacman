@@ -21,6 +21,7 @@ import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.BonusState;
 import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Population;
@@ -41,7 +42,7 @@ public class SimplePlayView extends BaseView {
 		EMPTY, CROWDED, FLASHING
 	}
 
-	public final Game game;
+	protected final Game game;
 	public final MazeView mazeView;
 
 	private String messageText = "";
@@ -63,7 +64,6 @@ public class SimplePlayView extends BaseView {
 		people.pinky().takeClothes(theme, Theme.PINK_GHOST);
 		people.inky().takeClothes(theme, Theme.CYAN_GHOST);
 		people.clyde().takeClothes(theme, Theme.ORANGE_GHOST);
-		people.play(game);
 		mazeView.init();
 		clearMessage();
 	}
@@ -75,7 +75,9 @@ public class SimplePlayView extends BaseView {
 
 	@Override
 	public void draw(Graphics2D g) {
-		drawScores(g);
+		if (game != null) {
+			drawScores(g, game);
+		}
 		drawMaze(g);
 		drawMessage(g);
 		drawActors(g);
@@ -123,7 +125,6 @@ public class SimplePlayView extends BaseView {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		drawEntity(g, world.population().bonus(), world.population().bonus().sprites);
 		drawEntity(g, world.population().pacMan(), world.population().pacMan().sprites);
 		// draw dead ghosts (as number or eyes) under living ghosts
 		world.population().ghosts().filter(world::isOnStage).filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
@@ -132,7 +133,7 @@ public class SimplePlayView extends BaseView {
 				.forEach(ghost -> drawEntity(g, ghost, ghost.sprites));
 	}
 
-	protected void drawScores(Graphics2D g) {
+	protected void drawScores(Graphics2D g, Game game) {
 		int topMargin = 3;
 		int lineOffset = 2;
 		Color hilight = Color.YELLOW;
@@ -182,11 +183,11 @@ public class SimplePlayView extends BaseView {
 		}
 		g.translate(0, -topMargin);
 
-		drawLives(g);
-		drawLevelCounter(g);
+		drawLives(g, game);
+		drawLevelCounter(g, game);
 	}
 
-	protected void drawLives(Graphics2D g) {
+	protected void drawLives(Graphics2D g, Game game) {
 		int height = world.height() * Tile.SIZE;
 		int sz = 2 * Tile.SIZE;
 		Image pacManLookingLeft = theme.spr_pacManWalking(LEFT).frame(1);
@@ -195,7 +196,7 @@ public class SimplePlayView extends BaseView {
 		}
 	}
 
-	protected void drawLevelCounter(Graphics2D g) {
+	protected void drawLevelCounter(Graphics2D g, Game game) {
 		int max = 7;
 		int first = Math.max(0, game.levelCounter.size() - max);
 		int n = Math.min(max, game.levelCounter.size());
@@ -238,13 +239,6 @@ public class SimplePlayView extends BaseView {
 		}
 
 		@Override
-		public void init() {
-			super.init();
-			world.population().bonus().tf.x = world.bonusTile().x();
-			world.population().bonus().tf.y = world.bonusTile().y();
-		}
-
-		@Override
 		public void draw(Graphics2D g) {
 			if (getState() == CROWDED) {
 				drawCrowdedMaze(g);
@@ -279,6 +273,13 @@ public class SimplePlayView extends BaseView {
 					g.fillOval(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 				});
 			}
+			// draw bonus if active or consumed
+			world.getBonus().ifPresent(bonus -> {
+				Image img = bonus.state == BonusState.CONSUMED ? theme.spr_number(bonus.value).frame(0)
+						: theme.spr_bonusSymbol(bonus.symbol).frame(0);
+				int x = world.bonusTile().x(), y = world.bonusTile().y() - Tile.SIZE / 2;
+				g.drawImage(img, x, y, null);
+			});
 			House theHouse = world.theHouse();
 			// draw door open when touched by ghost entering or leaving the house
 			world.population().ghosts().filter(world::isOnStage).filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE))

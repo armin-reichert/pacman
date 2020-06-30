@@ -3,10 +3,12 @@ package de.amr.games.pacman.model.world.map;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.Bed;
+import de.amr.games.pacman.model.world.Bonus;
 import de.amr.games.pacman.model.world.Door;
 import de.amr.games.pacman.model.world.FoodContainer;
 import de.amr.games.pacman.model.world.House;
@@ -252,5 +254,14 @@ public abstract class PacManWorldMap implements Terrain, FoodContainer {
 	@Override
 	public boolean containsEnergizer(Tile tile) {
 		return containsFood(tile) && is(tile, B_ENERGIZER);
+	}
+
+	@Override
+	public Optional<Bonus> getBonus() {
+		return Optional.empty();
+	}
+
+	@Override
+	public void setBonus(Bonus bonus) {
 	}
 }

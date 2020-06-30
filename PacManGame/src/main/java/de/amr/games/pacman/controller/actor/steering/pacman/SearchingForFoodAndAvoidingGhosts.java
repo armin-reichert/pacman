@@ -8,12 +8,12 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.actor.BonusState;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.BonusState;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
 
@@ -78,9 +78,8 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	Optional<Tile> activeBonusAtMostAway(Tile here, int maxDistance) {
-		return world.population().bonus().is(BonusState.ACTIVE) && here.manhattanDistance(world.bonusTile()) <= maxDistance
-				? Optional.of(world.bonusTile())
-				: Optional.empty();
+		return world.getBonus().isPresent() && world.getBonus().get().state == BonusState.ACTIVE
+				&& here.manhattanDistance(world.bonusTile()) <= maxDistance ? Optional.of(world.bonusTile()) : Optional.empty();
 	}
 
 	Optional<Tile> energizerAtMostAwayFrom(Tile here, int maxDistance) {
