@@ -23,6 +23,7 @@ import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.Population;
 import de.amr.games.pacman.model.world.Symbol;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.core.BaseView;
@@ -41,7 +42,6 @@ public class SimplePlayView extends BaseView {
 	}
 
 	public final Game game;
-	public final PacManWorld world;
 	public final MazeView mazeView;
 
 	private String messageText = "";
@@ -50,19 +50,20 @@ public class SimplePlayView extends BaseView {
 	private int messageRow = 21;
 
 	public SimplePlayView(PacManWorld world, Game game, Theme theme) {
-		super(theme);
+		super(world, theme);
 		this.game = game;
-		this.world = world;
 		mazeView = new MazeView();
-		world.pacMan().takeClothes(theme);
-		world.blinky().takeClothes(theme, Theme.RED_GHOST);
-		world.pinky().takeClothes(theme, Theme.PINK_GHOST);
-		world.inky().takeClothes(theme, Theme.CYAN_GHOST);
-		world.clyde().takeClothes(theme, Theme.ORANGE_GHOST);
 	}
 
 	@Override
 	public void init() {
+		Population people = world.population();
+		people.pacMan().takeClothes(theme);
+		people.blinky().takeClothes(theme, Theme.RED_GHOST);
+		people.pinky().takeClothes(theme, Theme.PINK_GHOST);
+		people.inky().takeClothes(theme, Theme.CYAN_GHOST);
+		people.clyde().takeClothes(theme, Theme.ORANGE_GHOST);
+		people.play(game);
 		mazeView.init();
 		clearMessage();
 	}
@@ -97,7 +98,8 @@ public class SimplePlayView extends BaseView {
 	}
 
 	public void enableGhostAnimations(boolean enabled) {
-		world.ghosts().flatMap(ghost -> ghost.sprites.values()).forEach(sprite -> sprite.enableAnimation(enabled));
+		world.population().ghosts().flatMap(ghost -> ghost.sprites.values())
+				.forEach(sprite -> sprite.enableAnimation(enabled));
 	}
 
 	protected Color tileColor(Tile tile) {
@@ -121,12 +123,12 @@ public class SimplePlayView extends BaseView {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		drawEntity(g, world.bonus(), world.bonus().sprites);
-		drawEntity(g, world.pacMan(), world.pacMan().sprites);
+		drawEntity(g, world.population().bonus(), world.population().bonus().sprites);
+		drawEntity(g, world.population().pacMan(), world.population().pacMan().sprites);
 		// draw dead ghosts (as number or eyes) under living ghosts
-		world.ghostsOnStage().filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
+		world.population().ghosts().filter(world::isOnStage).filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
 				.forEach(ghost -> drawEntity(g, ghost, ghost.sprites));
-		world.ghostsOnStage().filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
+		world.population().ghosts().filter(world::isOnStage).filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
 				.forEach(ghost -> drawEntity(g, ghost, ghost.sprites));
 	}
 
@@ -221,8 +223,6 @@ public class SimplePlayView extends BaseView {
 			spriteFlashingMaze = theme.spr_flashingMaze();
 			energizersBlinking = new CyclicAnimation(2);
 			energizersBlinking.setFrameDuration(150);
-			world.bonus().tf.x = world.bonusTile().x();
-			world.bonus().tf.y = world.bonusTile().y();
 			//@formatter:off
 			beginStateMachine()
 				.description("[Maze View]")
@@ -235,6 +235,13 @@ public class SimplePlayView extends BaseView {
 			.endStateMachine();
 			//@formatter:on
 			getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+		}
+
+		@Override
+		public void init() {
+			super.init();
+			world.population().bonus().tf.x = world.bonusTile().x();
+			world.population().bonus().tf.y = world.bonusTile().y();
 		}
 
 		@Override
@@ -274,14 +281,15 @@ public class SimplePlayView extends BaseView {
 			}
 			House theHouse = world.theHouse();
 			// draw door open when touched by ghost entering or leaving the house
-			world.ghostsOnStage().filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE)).forEach(ghost -> {
-				theHouse.doors().filter(door -> door.contains(ghost.tile())).forEach(door -> {
-					g.setColor(Color.BLACK);
-					door.tiles.forEach(tile -> {
-						g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
+			world.population().ghosts().filter(world::isOnStage).filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE))
+					.forEach(ghost -> {
+						theHouse.doors().filter(door -> door.contains(ghost.tile())).forEach(door -> {
+							g.setColor(Color.BLACK);
+							door.tiles.forEach(tile -> {
+								g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
+							});
+						});
 					});
-				});
-			});
 		}
 	}
 }

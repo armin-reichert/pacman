@@ -32,27 +32,23 @@ class FollowMouseTestUI extends TestUI {
 	private Tile mousePosition = Tile.at(0, 0);
 
 	public FollowMouseTestUI() {
-		showRoutes = true;
-		showStates = false;
-		showScores = false;
-		showGrid = true;
+		view.showRoutes = true;
+		view.showGrid = true;
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		world.removeFood();
-		world.putOnStage(world.blinky(), true);
-		world.blinky().behavior(CHASING, world.blinky().headingFor(() -> mousePosition));
-		world.blinky().setState(CHASING);
+		putOnStage(blinky);
+		blinky.behavior(CHASING, blinky.headingFor(() -> mousePosition));
+		blinky.setState(CHASING);
 	}
 
 	@Override
 	public void update() {
-		super.update();
 		if (Mouse.moved()) {
 			mousePosition = Tile.at(Mouse.getX() / Tile.SIZE, Mouse.getY() / Tile.SIZE);
 		}
-		world.blinky().update();
+		super.update();
 	}
 }

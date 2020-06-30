@@ -24,7 +24,6 @@ import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
-import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -35,9 +34,6 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * @author Armin Reichert
  */
 public class PacMan extends Creature<PacManState> {
-
-	/** The game I am taking part in. */
-	public Game game;
 
 	/** Number of ticks Pac-Man has power after eating an energizer. */
 	public int power;
@@ -163,8 +159,9 @@ public class PacMan extends Creature<PacManState> {
 
 	private Optional<PacManGameEvent> findSomethingInteresting() {
 		Tile tile = tile();
-		if (tile.equals(world().bonusTile()) && world().bonus().is(ACTIVE)) {
-			return Optional.of(new BonusFoundEvent(world().bonus().symbol, world().bonus().value));
+		Bonus bonus = world().population().bonus();
+		if (tile.equals(world().bonusTile()) && bonus.is(ACTIVE)) {
+			return Optional.of(new BonusFoundEvent(bonus.symbol, bonus.value));
 		}
 		if (world().containsFood(tile)) {
 			boolean energizer = world().containsEnergizer(tile);

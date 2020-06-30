@@ -24,20 +24,20 @@ import de.amr.games.pacman.view.theme.Theme;
  */
 public class LoadingView extends BaseView {
 
-	private final PacMan pacMan;
+	private PacMan pacMan;
 	private int alpha;
 	private int alphaInc;
 	private int ghostCount;
 	private int ghostInc;
 
 	public LoadingView(PacManWorld world, Theme theme) {
-		super(theme);
-		pacMan = world.pacMan();
-		pacMan.takeClothes(theme);
+		super(world, theme);
 	}
 
 	@Override
 	public void init() {
+		pacMan = world.population().pacMan();
+		pacMan.takeClothes(theme);
 		pacMan.init();
 		pacMan.setState(PacManState.EATING);
 		ghostCount = 0;

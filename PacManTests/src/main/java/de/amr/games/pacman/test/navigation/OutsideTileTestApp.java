@@ -32,26 +32,16 @@ public class OutsideTileTestApp extends Application {
 class OutsideTileTestUI extends TestUI {
 
 	public OutsideTileTestUI() {
-		showRoutes = true;
-		showStates = false;
-		showScores = false;
-		showGrid = false;
+		view.showRoutes = true;
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		world.removeFood();
 		theme.snd_ghost_chase().volume(0);
-		world.putOnStage(world.blinky(), true);
+		putOnStage(blinky);
 		int row = world.portals().findFirst().map(portal -> portal.right.row).orElse((short) 100);
-		world.blinky().behavior(GhostState.CHASING, world.blinky().headingFor(() -> Tile.at(100, row)));
-		world.blinky().setState(GhostState.CHASING);
-	}
-
-	@Override
-	public void update() {
-		super.update();
-		world.blinky().update();
+		blinky.behavior(GhostState.CHASING, blinky.headingFor(() -> Tile.at(100, row)));
+		blinky.setState(GhostState.CHASING);
 	}
 }

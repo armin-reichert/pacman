@@ -6,7 +6,6 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.world.Tile;
@@ -34,30 +33,26 @@ public class ScatteringTestApp extends Application {
 class ScatteringTestUI extends TestUI {
 
 	public ScatteringTestUI() {
-		showRoutes = true;
-		showStates = false;
-		showScores = false;
-		showGrid = true;
+		view.showRoutes = true;
+		view.showGrid = true;
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		world.removeFood();
-		world.ghosts().forEach(ghost -> {
+		world.population().ghosts().forEach(ghost -> {
 			world.putOnStage(ghost, true);
 			ghost.subsequentState = GhostState.SCATTERING;
 		});
-		showMessage("Press SPACE to start", Color.WHITE);
+		view.showMessage("Press SPACE to start", Color.WHITE);
 	}
 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			world.ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
-			clearMessage();
+			ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
+			view.clearMessage();
 		}
-		world.ghostsOnStage().forEach(Ghost::update);
 		super.update();
 	}
 }

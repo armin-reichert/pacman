@@ -31,7 +31,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	public SearchingForFoodAndAvoidingGhosts(PacManWorld world, Game game) {
 		this.world = world;
 		this.game = game;
-		this.pacMan = world.pacMan();
+		this.pacMan = world.population().pacMan();
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	}
 
 	Optional<Tile> activeBonusAtMostAway(Tile here, int maxDistance) {
-		return world.bonus().is(BonusState.ACTIVE) && here.manhattanDistance(world.bonusTile()) <= maxDistance
+		return world.population().bonus().is(BonusState.ACTIVE) && here.manhattanDistance(world.bonusTile()) <= maxDistance
 				? Optional.of(world.bonusTile())
 				: Optional.empty();
 	}
@@ -101,7 +101,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		Tile ahead1 = world.neighbor(pacManLocation, pacMan.moveDir());
 		Tile ahead2 = world.tileToDir(pacManLocation, pacMan.moveDir(), 2);
 		//@formatter:off
-		return world.ghostsOnStage().anyMatch(
+		return world.population().ghosts().filter(world::isOnStage).anyMatch(
 				ghost -> !ghost.is(GhostState.FRIGHTENED) 
 				&& (ghost.tile().equals(ahead1) || ghost.tile().equals(ahead2))
 				&& ghost.moveDir() == pacMan.moveDir().opposite());

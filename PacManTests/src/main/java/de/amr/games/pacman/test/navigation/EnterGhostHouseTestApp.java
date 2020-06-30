@@ -34,26 +34,23 @@ public class EnterGhostHouseTestApp extends Application {
 class EnterGhostHouseTestUI extends TestUI {
 
 	public EnterGhostHouseTestUI() {
-		showRoutes = true;
-		showStates = true;
-		showScores = false;
-		showGrid = true;
+		view.showRoutes = true;
+		view.showStates = true;
+		view.showGrid = true;
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		world.removeFood();
-		world.putOnStage(world.inky(), true);
-		showMessage("SPACE = Enter/leave house", Color.WHITE, 8);
+		putOnStage(inky);
+		view.showMessage("SPACE = Enter/leave house", Color.WHITE, 8);
 	}
 
 	@Override
 	public void update() {
-		super.update();
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			world.inky().setState(world.blinky().isInsideHouse() ? LEAVING_HOUSE : ENTERING_HOUSE);
+			inky.setState(blinky.isInsideHouse() ? LEAVING_HOUSE : ENTERING_HOUSE);
 		}
-		world.inky().update();
+		super.update();
 	}
 }

@@ -1,5 +1,6 @@
 package de.amr.games.pacman.test.navigation;
 
+import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
 
 import java.awt.Color;
@@ -8,7 +9,6 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.world.Tile;
 
@@ -28,7 +28,6 @@ public class LeaveGhostHouseTestApp extends Application {
 
 	@Override
 	public void init() {
-		clock().setTargetFrameRate(10);
 		setController(new LeaveGhostHouseTestUI());
 	}
 }
@@ -36,28 +35,25 @@ public class LeaveGhostHouseTestApp extends Application {
 class LeaveGhostHouseTestUI extends TestUI {
 
 	public LeaveGhostHouseTestUI() {
-		showRoutes = true;
-		showStates = true;
-		showScores = false;
-		showGrid = true;
+		view.showRoutes = true;
+		view.showStates = true;
+		view.showGrid = true;
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		world.removeFood();
-		world.putOnStage(world.inky(), true);
-		world.inky().subsequentState = SCATTERING;
-		showMessage("Press SPACE to unlock", Color.WHITE);
+		putOnStage(inky);
+		inky.subsequentState = SCATTERING;
+		view.showMessage("Press SPACE to unlock", Color.WHITE);
 	}
 
 	@Override
 	public void update() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE) && world.inky().is(GhostState.LOCKED)) {
-			world.inky().process(new GhostUnlockedEvent());
-			clearMessage();
+		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE) && inky.is(LOCKED)) {
+			inky.process(new GhostUnlockedEvent());
+			view.clearMessage();
 		}
-		world.inky().update();
 		super.update();
 	}
 }

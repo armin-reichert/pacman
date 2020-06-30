@@ -117,12 +117,12 @@ class GameStateTableModel extends AbstractTableModel {
 		if (gameController != null) {
 			gameController.game().ifPresent(game -> {
 				gameController.ghostCommand().ifPresent(ghostCommand -> {
-					fillGhostRecord(records[ROW_BLINKY], game, ghostCommand, world.blinky());
-					fillGhostRecord(records[ROW_PINKY], game, ghostCommand, world.pinky());
-					fillGhostRecord(records[ROW_INKY], game, ghostCommand, world.inky());
-					fillGhostRecord(records[ROW_CLYDE], game, ghostCommand, world.clyde());
-					fillPacManRecord(records[ROW_PACMAN], game, world.pacMan());
-					fillBonusRecord(records[ROW_BONUS], game, world.bonus());
+					fillGhostRecord(records[ROW_BLINKY], game, ghostCommand, world.population().blinky());
+					fillGhostRecord(records[ROW_PINKY], game, ghostCommand, world.population().pinky());
+					fillGhostRecord(records[ROW_INKY], game, ghostCommand, world.population().inky());
+					fillGhostRecord(records[ROW_CLYDE], game, ghostCommand, world.population().clyde());
+					fillPacManRecord(records[ROW_PACMAN], game, world.population().pacMan());
+					fillBonusRecord(records[ROW_BONUS], game, world.population().bonus());
 					fireTableDataChanged();
 				});
 			});
@@ -160,7 +160,7 @@ class GameStateTableModel extends AbstractTableModel {
 			r.duration = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getDuration() : ghost.state().getDuration();
 		}
 		r.ghostSanity = ghost.sanity.getState();
-		r.pacManCollision = ghost.tile().equals(world.pacMan().tile());
+		r.pacManCollision = ghost.tile().equals(world.population().pacMan().tile());
 	}
 
 	void fillBonusRecord(GameStateRecord r, Game game, Bonus bonus) {

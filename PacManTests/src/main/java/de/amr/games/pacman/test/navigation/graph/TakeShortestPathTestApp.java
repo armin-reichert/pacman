@@ -11,7 +11,6 @@ import java.util.List;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.House;
@@ -41,35 +40,31 @@ public class TakeShortestPathTestApp extends Application {
 
 class TakeShortestPathTestUI extends TestUI {
 
-	final Ghost ghost;
 	final List<Tile> targets;
 	int targetIndex;
 
 	public TakeShortestPathTestUI() {
-		ghost = world.blinky();
+		view.showRoutes = true;
+		view.showStates = true;
+		view.showGrid = true;
 		Portal thePortal = world.portals().findAny().get();
-		House theHouse = world.houses().findAny().get();
+		House theHouse = world.theHouse();
 		targets = Arrays.asList(world.cornerSE(), Tile.at(15, 23), Tile.at(12, 23), world.cornerSW(),
 				world.neighbor(thePortal.left, Direction.RIGHT), world.cornerNW(), theHouse.bed(0).tile, world.cornerNE(),
 				world.neighbor(thePortal.right, Direction.LEFT), world.pacManBed().tile);
-		showRoutes = true;
-		showStates = true;
-		showScores = false;
-		showGrid = true;
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		world.removeFood();
 		targetIndex = 0;
 		theme.snd_ghost_chase().volume(0);
-		world.putOnStage(ghost, true);
-		Steering steering = ghost.takingShortestPath(() -> targets.get(targetIndex));
-		ghost.behavior(CHASING, steering);
-		ghost.behavior(FRIGHTENED, steering);
-		ghost.setState(CHASING);
-		showMessage("SPACE toggles ghost state", Color.WHITE);
+		putOnStage(blinky);
+		Steering steering = blinky.takingShortestPath(() -> targets.get(targetIndex));
+		blinky.behavior(CHASING, steering);
+		blinky.behavior(FRIGHTENED, steering);
+		blinky.setState(CHASING);
+		view.showMessage("SPACE toggles ghost state", Color.WHITE);
 	}
 
 	private void nextTarget() {
@@ -81,13 +76,12 @@ class TakeShortestPathTestUI extends TestUI {
 
 	@Override
 	public void update() {
-		super.update();
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
-			ghost.setState(ghost.getState() == CHASING ? FRIGHTENED : CHASING);
+			blinky.setState(blinky.getState() == CHASING ? FRIGHTENED : CHASING);
 		}
-		ghost.update();
-		if (ghost.tile().equals(targets.get(targetIndex))) {
+		if (blinky.tile().equals(targets.get(targetIndex))) {
 			nextTarget();
 		}
+		super.update();
 	}
 }

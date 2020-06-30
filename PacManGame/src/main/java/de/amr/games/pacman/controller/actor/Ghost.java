@@ -61,9 +61,6 @@ public class Ghost extends Creature<GhostState> {
 	/** Keeps track of steering changes. */
 	public Steering previousSteering;
 
-	/** The game this ghost is taking part in. */
-	public Game game;
-
 	public StateMachine<Sanity, Void> sanity =
 	//@formatter:off
 		beginStateMachine(Sanity.class, Void.class)
@@ -108,7 +105,7 @@ public class Ghost extends Creature<GhostState> {
 					.onTick(() -> {
 						move();
 						// not sure if ghost locked inside house should look frightened
-						if (world().pacMan().power > 0) {
+						if (world().population().pacMan().power > 0) {
 							showFrightened();
 						} else {
 							showColored();
@@ -357,8 +354,8 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	private void checkPacManCollision() {
-		if (tile().equals(world().pacMan().tile()) && !isTeleporting() && !world().pacMan().isTeleporting()
-				&& !world().pacMan().is(PacManState.DEAD)) {
+		PacMan pacMan = world().population().pacMan();
+		if (tile().equals(pacMan.tile()) && !isTeleporting() && !pacMan.isTeleporting() && !pacMan.is(PacManState.DEAD)) {
 			publish(new PacManGhostCollisionEvent(this));
 		}
 	}

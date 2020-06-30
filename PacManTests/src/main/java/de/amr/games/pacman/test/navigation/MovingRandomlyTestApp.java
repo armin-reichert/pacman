@@ -8,7 +8,6 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.model.world.Tile;
 
 public class MovingRandomlyTestApp extends Application {
@@ -36,35 +35,32 @@ class MovingRandomlyTestUI extends TestUI {
 	boolean started;
 
 	public MovingRandomlyTestUI() {
-		showRoutes = true;
-		showStates = true;
-		showScores = false;
-		showGrid = true;
+		view.showRoutes = true;
+		view.showStates = true;
+		view.showGrid = true;
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		world.removeFood();
-		world.ghosts().forEach(ghost -> {
-			world.putOnStage(ghost, true);
-			ghost.tf.setPosition(world.pacManBed().position);
+		putOnStage(blinky, pinky, inky, clyde);
+		ghostsOnStage().forEach(ghost -> {
+			ghost.tf.setPosition(pacMan.bed().position);
 			ghost.behavior(FRIGHTENED, ghost.movingRandomly());
 			ghost.state(FRIGHTENED).removeTimer();
 			ghost.setState(FRIGHTENED);
 		});
-		showMessage("Press SPACE", Color.WHITE);
+		view.showMessage("Press SPACE", Color.WHITE);
 	}
 
 	@Override
 	public void update() {
-		super.update();
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			started = true;
-			clearMessage();
+			view.clearMessage();
 		}
 		if (started) {
-			world.ghostsOnStage().forEach(Ghost::update);
+			super.update();
 		}
 	}
 }

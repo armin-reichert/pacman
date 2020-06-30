@@ -5,7 +5,6 @@ import static de.amr.games.pacman.controller.actor.PacManState.EATING;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
-import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.test.navigation.TestUI;
 
@@ -32,24 +31,16 @@ public class EscapeIntoCornerTestApp extends Application {
 class EscapeIntoCornerTestUI extends TestUI {
 
 	public EscapeIntoCornerTestUI() {
-		showRoutes = true;
-		showStates = true;
-		showScores = false;
+		view.showRoutes = true;
+		view.showStates = true;
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		world.removeFood();
-		world.pacMan().setState(EATING);
-		world.putOnStage(world.blinky(), true);
-		world.blinky().behavior(FRIGHTENED, world.blinky().isFleeingToSafeCorner(world.pacMan()));
-		world.blinky().setState(FRIGHTENED);
-	}
-
-	@Override
-	public void update() {
-		super.update();
-		world.creaturesOnStage().forEach(Creature::update);
+		putOnStage(pacMan, blinky);
+		pacMan.setState(EATING);
+		blinky.behavior(FRIGHTENED, blinky.isFleeingToSafeCorner(pacMan));
+		blinky.setState(FRIGHTENED);
 	}
 }

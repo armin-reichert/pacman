@@ -20,6 +20,7 @@ import de.amr.games.pacman.controller.actor.steering.common.TakingFixedPath;
 import de.amr.games.pacman.controller.actor.steering.common.TakingShortestPath;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.Bed;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
@@ -36,13 +37,14 @@ import de.amr.statemachine.api.FsmContainer;
  */
 public abstract class Creature<STATE> extends Entity implements WorldMover, FsmContainer<STATE, PacManGameEvent> {
 
+	public Game game;
 	public final String name;
 	private PacManWorld world;
 	private Bed bed;
 	protected Fsm<STATE, PacManGameEvent> brain;
 	protected Map<STATE, Steering> steerings;
 	protected MovementControl movement;
-	public Supplier<Float> fnSpeedLimit;
+	private Supplier<Float> fnSpeedLimit;
 	protected Direction moveDir;
 	protected Direction wishDir;
 	protected Tile targetTile;
@@ -51,7 +53,6 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 
 	public Creature(String name, Map<STATE, Steering> steerings) {
 		this.name = name;
-		this.fnSpeedLimit = () -> 0f;
 		this.movement = new MovementControl(this);
 		this.steerings = steerings;
 		tf.width = Tile.SIZE;
@@ -61,6 +62,14 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 
 	public void setWorld(PacManWorld world) {
 		this.world = world;
+	}
+	
+	public float getSpeedLimit() {
+		return fnSpeedLimit.get();
+	}
+
+	public void setSpeedLimit(Supplier<Float> fnSpeedLimit) {
+		this.fnSpeedLimit = fnSpeedLimit;
 	}
 
 	public void assignBed(Bed bed) {

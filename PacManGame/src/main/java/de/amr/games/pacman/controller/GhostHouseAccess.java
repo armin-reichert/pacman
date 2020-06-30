@@ -45,8 +45,8 @@ public class GhostHouseAccess {
 	}
 
 	public void update() {
-		if (world.isOnStage(world.blinky()) && world.blinky().is(LOCKED)) {
-			unlock(world.blinky());
+		if (world.isOnStage(world.population().blinky()) && world.population().blinky().is(LOCKED)) {
+			unlock(world.population().blinky());
 		}
 		Ghost nextToLeave = preferredLockedGhost().orElse(null);
 		if (nextToLeave != null) {
@@ -63,7 +63,7 @@ public class GhostHouseAccess {
 		pacManStarvingTicks = 0;
 		if (globalCounter.enabled) {
 			globalCounter.dots++;
-			if (globalCounter.dots == 32 && world.clyde().is(LOCKED)) {
+			if (globalCounter.dots == 32 && world.population().clyde().is(LOCKED)) {
 				globalCounter.dots = 0;
 				globalCounter.enabled = false;
 				loginfo("Global dot counter reset and disabled (Clyde was locked when counter reached 32)");
@@ -106,8 +106,8 @@ public class GhostHouseAccess {
 	}
 
 	public Optional<Ghost> preferredLockedGhost() {
-		return Stream.of(world.pinky(), world.inky(), world.clyde()).filter(world::isOnStage)
-				.filter(ghost -> ghost.is(LOCKED)).findFirst();
+		return Stream.of(world.population().pinky(), world.population().inky(), world.population().clyde())
+				.filter(world::isOnStage).filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
 	private void unlock(Ghost ghost) {
@@ -160,26 +160,26 @@ public class GhostHouseAccess {
 	}
 
 	public int personalDotLimit(Ghost ghost) {
-		if (ghost == world.pinky()) {
+		if (ghost == world.population().pinky()) {
 			return 0;
 		}
-		if (ghost == world.inky()) {
+		if (ghost == world.population().inky()) {
 			return game.level.number == 1 ? 30 : 0;
 		}
-		if (ghost == world.clyde()) {
+		if (ghost == world.population().clyde()) {
 			return game.level.number == 1 ? 60 : game.level.number == 2 ? 50 : 0;
 		}
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");
 	}
 
 	public int globalDotLimit(Ghost ghost) {
-		if (ghost == world.pinky()) {
+		if (ghost == world.population().pinky()) {
 			return 7;
 		}
-		if (ghost == world.inky()) {
+		if (ghost == world.population().inky()) {
 			return 17;
 		}
-		if (ghost == world.clyde()) {
+		if (ghost == world.population().clyde()) {
 			return 32;
 		}
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");

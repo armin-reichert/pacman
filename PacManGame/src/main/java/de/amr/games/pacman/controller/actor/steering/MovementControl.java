@@ -75,7 +75,7 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 
 	private void move(Creature<?> creature) {
 		final Tile tile = creature.tile();
-		float speedLimit = creature.fnSpeedLimit.get();
+		float speedLimit = creature.getSpeedLimit();
 		float speed = maxSpeedToDir(creature, creature.moveDir(), speedLimit);
 		if (creature.wishDir() != null && creature.wishDir() != creature.moveDir()) {
 			float wishDirSpeed = maxSpeedToDir(creature, creature.wishDir(), speedLimit);
