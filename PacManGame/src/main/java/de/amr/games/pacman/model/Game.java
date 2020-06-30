@@ -59,7 +59,8 @@ public class Game {
 	public static final int POINTS_GHOST[] = { 200, 400, 800, 1600 };
 	public static final int DIGEST_PELLET_TICKS = 1;
 	public static final int DIGEST_ENERGIZER_TICKS = 3;
-	public static final int BONUS_ACTIVATION[] = { 70, 170 };
+	public static final int BONUS_ACTIVATION_1 = 70;
+	public static final int BONUS_ACTIVATION_2 = 170;
 
 	/**
 	 * Returns the number of ticks corresponding to the given time (in seconds) for a framerate of 60
@@ -101,6 +102,10 @@ public class Game {
 	 * @param n level number (1-...)
 	 */
 	public void enterLevel(int n) {
+		if (n < 1) {
+			loginfo("Start level must be at least 1, is %d", n);
+			n = 1;
+		}
 		loginfo("Enter level %d", n);
 		level = level(n);
 		levelCounter.add(level.bonusSymbol);
@@ -125,30 +130,31 @@ public class Game {
 	/**
 	 * Eats the pellet or energizer on the given tile.
 	 * 
-	 * @param tile      tile containing food
-	 * @param energizer tells if the pellet is an energizer
-	 * @return points scored
+	 * @param tile tile containing food
+	 * @return points scored for eating food
 	 */
-	public int eatFood(Tile tile, boolean energizer) {
-		if (!world.containsFood(tile)) {
-			loginfo("Tile %s does not contain food", tile);
-			return 0;
-		}
-		world.removeFood(tile);
-		level.eatenFoodCount += 1;
-		if (energizer) {
+	public int eatFood(Tile tile) {
+		int points = 0;
+		if (world.containsEnergizer(tile)) {
+			level.eatenFoodCount += 1;
 			level.ghostsKilledByEnergizer = 0;
-			return POINTS_ENERGIZER;
+			world.removeFood(tile);
+			points = POINTS_ENERGIZER;
+		} else if (world.containsSimplePellet(tile)) {
+			level.eatenFoodCount += 1;
+			world.removeFood(tile);
+			points = POINTS_PELLET;
 		} else {
-			return POINTS_PELLET;
+			loginfo("Tile %s does not contain food", tile);
 		}
+		return points;
 	}
 
 	/**
 	 * @return {@code true} if the number of eaten pellets causes the bonus to get active
 	 */
 	public boolean isBonusDue() {
-		return level.eatenFoodCount == BONUS_ACTIVATION[0] || level.eatenFoodCount == BONUS_ACTIVATION[1];
+		return level.eatenFoodCount == BONUS_ACTIVATION_1 || level.eatenFoodCount == BONUS_ACTIVATION_2;
 	}
 
 	/**

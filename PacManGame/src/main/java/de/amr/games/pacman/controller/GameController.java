@@ -527,7 +527,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent found = (FoodFoundEvent) event;
 			ghostHouseAccess.onPacManFoundFood();
-			int points = game.eatFood(found.tile, found.energizer);
+			int points = game.eatFood(found.tile);
 			int livesBefore = game.lives;
 			game.score(points);
 			sound.pelletEaten();
