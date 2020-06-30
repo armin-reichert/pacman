@@ -109,13 +109,8 @@ public class Game {
 	}
 
 	private GameLevel level(int n) {
-		if (n < 1) {
-			throw new IllegalArgumentException("Level numbering starts at 1");
-		}
-		if (n > LEVELS.length) {
-			n = LEVELS.length;
-		}
-		GameLevel level = GameLevel.read(LEVELS[n - 1]);
+		int row = n <= LEVELS.length ? n - 1 : LEVELS.length - 1;
+		GameLevel level = GameLevel.of(LEVELS[row]);
 		level.number = n;
 		return level;
 	}

@@ -30,7 +30,7 @@ public class GameLevel {
 	public int ghostsKilledByEnergizer;
 	public int ghostsKilled;
 
-	public static GameLevel read(Object[] row) {
+	public static GameLevel of(Object[] row) {
 		GameLevel level = new GameLevel();
 		if (row.length != 15) {
 			throw new IllegalArgumentException(
