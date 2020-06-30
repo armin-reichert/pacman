@@ -15,9 +15,9 @@ import static java.awt.event.KeyEvent.VK_UP;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.model.world.Population;
 import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.World;
 
 public class DefaultPopulation implements Population {
 
@@ -31,20 +31,20 @@ public class DefaultPopulation implements Population {
 	public void populate(World world) {
 		creatures().forEach(creature -> creature.setWorld(world));
 		world.accept(this);
-		pacMan.behavior(pacMan.followingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
-		defineGhostBehavior(world);
+		defineBehavior(world);
 	}
 
-	private void defineGhostBehavior(World world) {
+	private void defineBehavior(World world) {
+		int w = world.width(), h = world.height();
+		pacMan.behavior(pacMan.followingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		ghosts().forEach(ghost -> {
 			ghost.behavior(LOCKED, ghost::bouncingOnBed);
-			ghost.behavior(ENTERING_HOUSE, ghost.isGoingToBed(ghost.bed()));
+			ghost.behavior(ENTERING_HOUSE, ghost.goingToBed(ghost.bed()));
 			ghost.behavior(LEAVING_HOUSE, ghost::leavingGhostHouse);
 			ghost.behavior(FRIGHTENED, ghost.movingRandomly());
-			ghost.behavior(DEAD, ghost.isReturningToHouse());
+			ghost.behavior(DEAD, ghost.returningToHouse());
 		});
-		blinky.behavior(ENTERING_HOUSE, blinky.isGoingToBed(world.theHouse().bed(2)));
-		int w = world.width(), h = world.height();
+		blinky.behavior(ENTERING_HOUSE, blinky.goingToBed(world.theHouse().bed(2)));
 		blinky.behavior(SCATTERING, blinky.headingFor(Tile.at(w - 3, 0)));
 		inky.behavior(SCATTERING, inky.headingFor(Tile.at(w - 1, h - 1)));
 		pinky.behavior(SCATTERING, pinky.headingFor(Tile.at(2, 0)));

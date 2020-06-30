@@ -191,12 +191,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	public void setDemoMode(boolean on) {
+		PacMan pacMan = world.population().pacMan();
 		settings.pacManImmortable = on;
 		if (on) {
-			world.population().pacMan().behavior(new SearchingForFoodAndAvoidingGhosts(world, game));
+			pacMan.behavior(new SearchingForFoodAndAvoidingGhosts(world, game));
 		} else {
-			world.population().pacMan()
-					.behavior(world.population().pacMan().followingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
+			pacMan.behavior(pacMan.followingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		}
 	}
 
