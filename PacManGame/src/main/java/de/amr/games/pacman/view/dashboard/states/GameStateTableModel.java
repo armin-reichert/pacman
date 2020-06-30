@@ -14,6 +14,8 @@ import de.amr.games.pacman.controller.actor.Ghost.Sanity;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.Bonus;
+import de.amr.games.pacman.model.world.BonusState;
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Tile;
 
@@ -121,7 +123,7 @@ class GameStateTableModel extends AbstractTableModel {
 					fillGhostRecord(records[ROW_INKY], game, ghostCommand, world.population().inky());
 					fillGhostRecord(records[ROW_CLYDE], game, ghostCommand, world.population().clyde());
 					fillPacManRecord(records[ROW_PACMAN], game, world.population().pacMan());
-//					fillBonusRecord(records[ROW_BONUS], game, world.population().bonus());
+					fillBonusRecord(records[ROW_BONUS], gameController, world);
 					fireTableDataChanged();
 				});
 			});
@@ -162,16 +164,17 @@ class GameStateTableModel extends AbstractTableModel {
 		r.pacManCollision = ghost.tile().equals(world.population().pacMan().tile());
 	}
 
-//	void fillBonusRecord(GameStateRecord r, Game game, Bonus bonus) {
-//		r.takesPart = bonus.visible;
-//		r.name = bonus.symbol != null ? bonus.toString() : "Bonus";
-//		r.tile = world.bonusTile();
-//		if (bonus.getState() != null) {
-//			r.state = bonus.getState().name();
-//			r.ticksRemaining = bonus.state().getTicksRemaining();
-//			r.duration = bonus.state().getDuration();
-//		}
-//	}
+	void fillBonusRecord(GameStateRecord r, GameController gameController, PacManWorld world) {
+		gameController.bonusControl().ifPresent(bonusControl -> {
+			Bonus bonus = world.getBonus().orElse(null);
+			r.takesPart = bonus != null && bonus.state != BonusState.INACTIVE;
+			r.name = bonus != null ? bonus.symbol.name() : "Bonus";
+			r.tile = world.bonusTile();
+			r.state = bonusControl.getState().name();
+			r.ticksRemaining = bonusControl.state().getTicksRemaining();
+			r.duration = bonusControl.state().getDuration();
+		});
+	}
 
 	@Override
 	public Object getValueAt(int row, int col) {

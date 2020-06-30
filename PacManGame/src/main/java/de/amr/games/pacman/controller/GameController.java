@@ -111,6 +111,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public Optional<GhostHouseAccess> ghostHouseAccess() {
 		return Optional.of(ghostHouseAccess);
 	}
+	
+	public Optional<BonusControl> bonusControl() {
+		return Optional.of(bonusControl);
+	}
 
 	@Override
 	public Optional<View> currentView() {
