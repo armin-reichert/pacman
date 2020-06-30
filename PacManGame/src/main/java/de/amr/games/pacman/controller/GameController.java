@@ -116,7 +116,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	private void createPlayEnvironment() {
-		game = new Game(world, settings.startLevel);
+		game = new Game(settings.startLevel, world.totalFoodCount());
 		ghostCommand = new GhostCommand(game, world.ghosts());
 		ghostHouseAccess = new GhostHouseAccess(game, world);
 
@@ -124,13 +124,15 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		playView.ghostCommand = ghostCommand;
 		playView.house = ghostHouseAccess;
 
-		world.creatures().forEach(actor -> {
-			world.putOnStage(actor, true);
-			actor.addEventListener(this::process);
-		});
 		world.ghosts().forEach(ghost -> {
 			ghost.fnSpeedLimit = () -> SpeedLimits.ghostSpeedLimit(ghost, game);
+			ghost.game = game;
+			ghost.addEventListener(this::process);
+			world.putOnStage(ghost, true);
 		});
+		world.pacMan().game = game;
+		world.pacMan().addEventListener(this::process);
+		world.putOnStage(world.pacMan(), true);
 		world.pacMan().fnSpeedLimit = () -> SpeedLimits.pacManSpeedLimit(world.pacMan(), game);
 
 		setDemoMode(settings.demoMode);
@@ -299,6 +301,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						// After two more seconds, change level and show crowded maze.
 						if (t == sec(4 + flashingSeconds)) {
 							game.enterLevel(game.level.number + 1);
+							world.createFood();
 							world.creaturesOnStage().forEach(Creature::init);
 							playView.init();
 						}
@@ -379,6 +382,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						});
 					})
 					.onExit(() -> {
+						world.createFood();
 						world.ghostsOnStage().forEach(ghost -> {
 							ghost.init();
 						});

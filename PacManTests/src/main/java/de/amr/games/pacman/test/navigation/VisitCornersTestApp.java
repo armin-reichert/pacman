@@ -68,7 +68,6 @@ class FollowTargetTilesTestUI extends TestUI {
 			if (current == targets.size()) {
 				current = 0;
 				game.enterLevel(game.level.number + 1);
-				world.removeFood();
 			}
 		}
 		ghost.update();

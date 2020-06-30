@@ -6,7 +6,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Symbol;
 
 /**
@@ -72,9 +71,9 @@ public class Game {
 		return Math.round(60 * seconds);
 	}
 
-	private final PacManWorld world;
 	public final List<Symbol> levelCounter;
 	public final GameScore gameScore;
+	public final int totalFoodCount;
 	public GameLevel level;
 	public int lives;
 	public int score;
@@ -84,14 +83,12 @@ public class Game {
 	 * 
 	 * @param startLevel start level number (1-...)
 	 */
-	public Game(PacManWorld world, int startLevel) {
-		this.world = world;
-		world.pacMan().game = this;
-		world.ghosts().forEach(ghost -> ghost.game = this);
+	public Game(int startLevel, int totalFoodCount) {
 		levelCounter = new ArrayList<>();
 		gameScore = new GameScore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
 		lives = 3;
 		score = 0;
+		this.totalFoodCount = totalFoodCount;
 		enterLevel(startLevel);
 	}
 
@@ -108,7 +105,6 @@ public class Game {
 		loginfo("Enter level %d", n);
 		level = level(n);
 		levelCounter.add(level.bonusSymbol);
-		world.createFood();
 		gameScore.load();
 	}
 
@@ -123,7 +119,7 @@ public class Game {
 	 * @return number of remaining pellets and energizers
 	 */
 	public int remainingFoodCount() {
-		return world.totalFoodCount() - level.eatenFoodCount;
+		return totalFoodCount - level.eatenFoodCount;
 	}
 
 	/**

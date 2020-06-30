@@ -76,7 +76,6 @@ class TakeShortestPathTestUI extends TestUI {
 		if (++targetIndex == targets.size()) {
 			targetIndex = 0;
 			game.enterLevel(game.level.number + 1);
-			world.removeFood();
 		}
 	}
 
