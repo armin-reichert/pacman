@@ -22,7 +22,6 @@ public class PacManSounds {
 	public PacManSounds(Habitat world, Theme theme) {
 		this.world = world;
 		this.theme = theme;
-		loadMusic();
 	}
 
 	public void updatePlayingSounds() {

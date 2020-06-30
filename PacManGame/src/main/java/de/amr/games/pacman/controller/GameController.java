@@ -48,9 +48,9 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.model.world.Population;
 import de.amr.games.pacman.model.world.Universe;
+import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.view.core.BaseView;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
@@ -94,41 +94,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		Population people = new DefaultPopulation();
 		people.populate(world);
 		theme = new ArcadeTheme();
+		sound = new PacManSounds(world, theme);
 		loadingView = new LoadingView(world, theme);
 		introView = new IntroView(world, theme);
 		buildStateMachine();
 		app().onEntry(ApplicationState.CLOSING, state -> saveScore());
 	}
 
-	public Optional<Game> game() {
-		return Optional.ofNullable(game);
-	}
-
-	public Optional<GhostCommand> ghostCommand() {
-		return Optional.ofNullable(ghostCommand);
-	}
-
-	public Optional<GhostHouseAccess> ghostHouseAccess() {
-		return Optional.of(ghostHouseAccess);
-	}
-	
-	public Optional<BonusControl> bonusControl() {
-		return Optional.of(bonusControl);
-	}
-
-	@Override
-	public Optional<View> currentView() {
-		return Optional.ofNullable(currentView);
-	}
-
-	private void showView(BaseView view) {
-		if (currentView != view) {
-			currentView = view;
-			currentView.init();
-		}
-	}
-
-	private void createPlayEnvironment() {
+	private void createEnvironment() {
 		game = new Game(settings.startLevel, world.totalFoodCount());
 		ghostCommand = new GhostCommand(game, world.population().ghosts());
 		ghostHouseAccess = new GhostHouseAccess(game, world);
@@ -153,6 +126,34 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		setDemoMode(settings.demoMode);
 		app().f2Dialog().ifPresent(f2 -> f2.selectCustomTab(0));
+	}
+
+	public Optional<Game> game() {
+		return Optional.ofNullable(game);
+	}
+
+	public Optional<GhostCommand> ghostCommand() {
+		return Optional.ofNullable(ghostCommand);
+	}
+
+	public Optional<GhostHouseAccess> ghostHouseAccess() {
+		return Optional.of(ghostHouseAccess);
+	}
+
+	public Optional<BonusControl> bonusControl() {
+		return Optional.of(bonusControl);
+	}
+
+	@Override
+	public Optional<View> currentView() {
+		return Optional.ofNullable(currentView);
+	}
+
+	private void showView(BaseView view) {
+		if (currentView != view) {
+			currentView = view;
+			currentView.init();
+		}
 	}
 
 	public void setShowingActorRoutes(boolean selected) {
@@ -220,18 +221,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			changeClockFrequency(80);
 		}
-		if (eventQ.size() > 1) {
-			PacManStateMachineLogging.loginfo("%s: Event queue has more than one entry: %s", getDescription(), eventQ);
-		}
 		super.update();
-
 		currentView.update();
-		if (gameStateView != null) {
-			gameStateView.update();
-		}
-		if (gameLevelView != null) {
-			gameLevelView.update();
-		}
 	}
 
 	private float mazeFlashingSeconds() {
@@ -256,7 +247,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			
 				.state(LOADING_MUSIC)
 					.onEntry(() -> {
-						sound = new PacManSounds(world, theme);
+						sound.loadMusic();
 						showView(loadingView);
 					})
 					
@@ -271,7 +262,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(GETTING_READY)
 					.timeoutAfter(sec(7))
 					.onEntry(() -> {
-						createPlayEnvironment();
+						createEnvironment();
 						showView(playView);
 						sound.gameReady();
 					})
