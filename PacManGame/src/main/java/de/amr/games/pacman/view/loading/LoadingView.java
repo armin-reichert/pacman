@@ -11,7 +11,7 @@ import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.BaseView;
@@ -30,7 +30,7 @@ public class LoadingView extends BaseView {
 	private int ghostCount;
 	private int ghostInc;
 
-	public LoadingView(PacManWorld world, Theme theme) {
+	public LoadingView(World world, Theme theme) {
 		super(world, theme);
 	}
 

@@ -23,10 +23,10 @@ import de.amr.graph.pathfinder.impl.BreadthFirstSearch;
  */
 public class WorldGraph extends GridGraph<Tile, Void> {
 
-	private final PacManWorld world;
+	private final World world;
 	private int pathFinderCalls;
 
-	public WorldGraph(PacManWorld world) {
+	public WorldGraph(World world) {
 		super(world.width(), world.height(), Grid4Topology.get(), v -> null, (u, v) -> null, UndirectedEdge::new);
 		setDefaultVertexLabel(this::tile);
 		this.world = world;

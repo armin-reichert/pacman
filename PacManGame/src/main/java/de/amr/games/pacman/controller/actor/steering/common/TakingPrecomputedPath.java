@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.controller.actor.WorldMover;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.model.world.Tile;
 
 /**
@@ -29,7 +29,7 @@ public abstract class TakingPrecomputedPath implements PathProvidingSteering {
 	}
 
 	protected final WorldMover actor;
-	protected final PacManWorld world;
+	protected final World world;
 	protected final Supplier<Tile> fnTargetTile;
 	protected List<Tile> targetPath;
 

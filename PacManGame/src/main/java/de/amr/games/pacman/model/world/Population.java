@@ -9,7 +9,7 @@ import de.amr.games.pacman.model.Game;
 
 public interface Population {
 
-	void populate(PacManWorld world);
+	void populate(World world);
 
 	void play(Game game);
 

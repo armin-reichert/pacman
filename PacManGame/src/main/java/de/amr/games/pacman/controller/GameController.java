@@ -48,7 +48,7 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.model.world.Population;
 import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.view.core.BaseView;
@@ -71,7 +71,7 @@ import de.amr.statemachine.core.StateMachine;
 public class GameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
 	protected Game game;
-	protected PacManWorld world;
+	protected World world;
 
 	protected Theme theme;
 	protected PacManSounds sound;
@@ -190,7 +190,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return theme;
 	}
 
-	public PacManWorld world() {
+	public World world() {
 		return world;
 	}
 

@@ -37,7 +37,7 @@ import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.api.Fsm;
@@ -109,7 +109,7 @@ public class PlayView extends SimplePlayView {
 	private FramerateWidget frameRateDisplay;
 	private final BufferedImage gridImage, inkyImage, clydeImage, pacManImage;
 
-	public PlayView(PacManWorld world, Game game, Theme theme) {
+	public PlayView(World world, Game game, Theme theme) {
 		super(world, game, theme);
 		frameRateDisplay = new FramerateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);

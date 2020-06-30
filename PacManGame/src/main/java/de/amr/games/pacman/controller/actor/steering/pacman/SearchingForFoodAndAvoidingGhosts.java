@@ -14,7 +14,7 @@ import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.BonusState;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.model.world.Tile;
 
 /**
@@ -26,9 +26,9 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
 	final PacMan pacMan;
 	final Game game;
-	final PacManWorld world;
+	final World world;
 
-	public SearchingForFoodAndAvoidingGhosts(PacManWorld world, Game game) {
+	public SearchingForFoodAndAvoidingGhosts(World world, Game game) {
 		this.world = world;
 		this.game = game;
 		this.pacMan = world.population().pacMan();

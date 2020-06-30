@@ -5,7 +5,7 @@ package de.amr.games.pacman.model.world;
  * 
  * @author Armin Reichert
  */
-public interface PacManWorld extends Terrain, Habitat {
+public interface World extends Terrain, Habitat {
 
 	void accept(Population aliens);
 }

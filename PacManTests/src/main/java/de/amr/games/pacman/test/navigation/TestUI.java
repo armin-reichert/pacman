@@ -14,7 +14,7 @@ import de.amr.games.pacman.controller.actor.DefaultPopulation;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.model.world.Population;
 import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.view.play.PlayView;
@@ -23,7 +23,7 @@ import de.amr.games.pacman.view.theme.Theme;
 
 public class TestUI implements Lifecycle, VisualController {
 
-	protected final PacManWorld world;
+	protected final World world;
 	protected final Game game;
 	protected final Population aliens;
 	protected final PacMan pacMan;

@@ -15,7 +15,7 @@ import static java.awt.event.KeyEvent.VK_UP;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.model.world.Population;
 import de.amr.games.pacman.model.world.Tile;
 
@@ -28,14 +28,14 @@ public class DefaultPopulation implements Population {
 	private final Ghost clyde = new Ghost("Clyde");
 
 	@Override
-	public void populate(PacManWorld world) {
+	public void populate(World world) {
 		creatures().forEach(creature -> creature.setWorld(world));
 		world.accept(this);
 		pacMan.behavior(pacMan.followingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		defineGhostBehavior(world);
 	}
 
-	private void defineGhostBehavior(PacManWorld world) {
+	private void defineGhostBehavior(World world) {
 		ghosts().forEach(ghost -> {
 			ghost.behavior(LOCKED, ghost::bouncingOnBed);
 			ghost.behavior(ENTERING_HOUSE, ghost.isGoingToBed(ghost.bed()));

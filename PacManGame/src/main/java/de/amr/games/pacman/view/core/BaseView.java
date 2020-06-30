@@ -4,7 +4,7 @@ import static de.amr.easy.game.Application.app;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**
@@ -14,10 +14,10 @@ import de.amr.games.pacman.view.theme.Theme;
  */
 public abstract class BaseView implements Lifecycle, View {
 
-	public final PacManWorld world;
+	public final World world;
 	public final Theme theme;
 
-	public BaseView(PacManWorld world, Theme theme) {
+	public BaseView(World world, Theme theme) {
 		this.world = world;
 		this.theme = theme;
 	}

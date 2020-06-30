@@ -22,7 +22,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.Bed;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.api.FsmContainer;
@@ -41,7 +41,7 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	public final SpriteMap sprites = new SpriteMap();
 
 	protected Game game;
-	protected PacManWorld world;
+	protected World world;
 	protected Bed bed;
 	protected Fsm<STATE, PacManGameEvent> brain;
 	protected Map<STATE, Steering> steerings;
@@ -60,7 +60,7 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 		tf.height = Tile.SIZE;
 	}
 
-	public void setWorld(PacManWorld world) {
+	public void setWorld(World world) {
 		this.world = world;
 	}
 
@@ -120,7 +120,7 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	}
 
 	@Override
-	public PacManWorld world() {
+	public World world() {
 		return world;
 	}
 

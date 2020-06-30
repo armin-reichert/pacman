@@ -16,7 +16,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.Bonus;
 import de.amr.games.pacman.model.world.BonusState;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.model.world.Tile;
 
 /**
@@ -66,7 +66,7 @@ class GameStateTableModel extends AbstractTableModel {
 	};
 
 	private GameController gameController;
-	private PacManWorld world;
+	private World world;
 	private GameStateRecord[] records;
 
 	public GameStateTableModel() {
@@ -164,7 +164,7 @@ class GameStateTableModel extends AbstractTableModel {
 		r.pacManCollision = ghost.tile().equals(world.population().pacMan().tile());
 	}
 
-	void fillBonusRecord(GameStateRecord r, GameController gameController, PacManWorld world) {
+	void fillBonusRecord(GameStateRecord r, GameController gameController, World world) {
 		gameController.bonusControl().ifPresent(bonusControl -> {
 			Bonus bonus = world.getBonus().orElse(null);
 			r.takesPart = bonus != null && bonus.state != BonusState.INACTIVE;

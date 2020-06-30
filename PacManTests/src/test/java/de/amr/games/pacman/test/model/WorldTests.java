@@ -10,13 +10,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.model.world.Universe;
 
 public class WorldTests {
 
-	private PacManWorld world;
+	private World world;
 
 	@Before
 	public void setup() {

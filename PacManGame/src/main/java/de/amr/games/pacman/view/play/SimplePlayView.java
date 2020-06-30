@@ -23,7 +23,7 @@ import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.BonusState;
 import de.amr.games.pacman.model.world.House;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.model.world.Population;
 import de.amr.games.pacman.model.world.Symbol;
 import de.amr.games.pacman.model.world.Tile;
@@ -50,7 +50,7 @@ public class SimplePlayView extends BaseView {
 	private int messageFontSize = 8;
 	private int messageRow = 21;
 
-	public SimplePlayView(PacManWorld world, Game game, Theme theme) {
+	public SimplePlayView(World world, Game game, Theme theme) {
 		super(world, theme);
 		this.game = game;
 		mazeView = new MazeView();

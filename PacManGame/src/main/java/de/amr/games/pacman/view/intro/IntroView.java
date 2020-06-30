@@ -19,7 +19,7 @@ import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
-import de.amr.games.pacman.model.world.PacManWorld;
+import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.model.world.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.BaseView;
@@ -53,7 +53,7 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 	// private Color pink = new Color(248, 120, 88);
 	private Color red = new Color(171, 19, 0);
 
-	public IntroView(PacManWorld world, Theme theme) {
+	public IntroView(World world, Theme theme) {
 		super(world, theme);
 		this.name = "IntroView";
 		fsm = buildStateMachine();
