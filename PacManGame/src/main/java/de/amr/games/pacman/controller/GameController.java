@@ -526,18 +526,24 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent found = (FoodFoundEvent) event;
-			ghostHouseAccess.onPacManFoundFood();
-			int points = game.eatFood(found.tile);
-			int livesBefore = game.lives;
-			game.score(points);
+			int livesBeforeScoring = game.lives;
+			world.removeFood(found.tile);
+			if (found.energizer) {
+				game.scoreEnergizerFound();
+			} else {
+				game.scoreSimplePelletFound();
+			}
 			sound.pelletEaten();
-			if (game.lives > livesBefore) {
+			if (game.lives > livesBeforeScoring) {
 				sound.extraLife();
 			}
+			ghostHouseAccess.onPacManFoundFood();
+
 			if (game.remainingFoodCount() == 0) {
 				enqueue(new LevelCompletedEvent());
 				return;
 			}
+
 			if (game.isBonusDue()) {
 				world.bonus().activate(theme, game.level.bonusSymbol, game.level.bonusValue);
 				loginfo("Bonus %s activated, time: %.2f sec", world.bonus(), world.bonus().state().getDuration() / 60f);

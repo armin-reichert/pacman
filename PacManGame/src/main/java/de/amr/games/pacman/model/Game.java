@@ -8,7 +8,6 @@ import java.util.List;
 
 import de.amr.games.pacman.model.world.PacManWorld;
 import de.amr.games.pacman.model.world.Symbol;
-import de.amr.games.pacman.model.world.Tile;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.
@@ -51,7 +50,7 @@ public class Game {
 		/*@formatter:on*/
 	};
 
-	public static final int POINTS_PELLET = 10;
+	public static final int POINTS_SIMPLE_PELLET = 10;
 	public static final int POINTS_ENERGIZER = 50;
 	public static final int POINTS_EXTRA_LIFE = 10_000;
 	public static final int POINTS_KILLED_ALL_GHOSTS = 12_000;
@@ -128,29 +127,6 @@ public class Game {
 	}
 
 	/**
-	 * Eats the pellet or energizer on the given tile.
-	 * 
-	 * @param tile tile containing food
-	 * @return points scored for eating food
-	 */
-	public int eatFood(Tile tile) {
-		int points = 0;
-		if (world.containsEnergizer(tile)) {
-			level.eatenFoodCount += 1;
-			level.ghostsKilledByEnergizer = 0;
-			world.removeFood(tile);
-			points = POINTS_ENERGIZER;
-		} else if (world.containsSimplePellet(tile)) {
-			level.eatenFoodCount += 1;
-			world.removeFood(tile);
-			points = POINTS_PELLET;
-		} else {
-			loginfo("Tile %s does not contain food", tile);
-		}
-		return points;
-	}
-
-	/**
 	 * @return {@code true} if the number of eaten pellets causes the bonus to get active
 	 */
 	public boolean isBonusDue() {
@@ -160,15 +136,38 @@ public class Game {
 	/**
 	 * Score the given number of points and handles high score, extra life etc.
 	 * 
-	 * @param points scored points
+	 * @param points points to score
+	 * @return points scored
 	 */
-	public void score(int points) {
+	public int score(int points) {
 		int oldScore = score;
 		score += points;
 		gameScore.update(level, score);
 		if (oldScore < POINTS_EXTRA_LIFE && POINTS_EXTRA_LIFE <= score) {
 			lives += 1;
 		}
+		return points;
+	}
+
+	/**
+	 * Score points for finding an energizer.
+	 * 
+	 * @return points scored
+	 */
+	public int scoreEnergizerFound() {
+		level.eatenFoodCount += 1;
+		level.ghostsKilledByEnergizer = 0;
+		return score(POINTS_ENERGIZER);
+	}
+
+	/**
+	 * Score points for finding a simple pellet
+	 * 
+	 * @return points scored
+	 */
+	public int scoreSimplePelletFound() {
+		level.eatenFoodCount += 1;
+		return score(POINTS_SIMPLE_PELLET);
 	}
 
 	/**
@@ -177,16 +176,16 @@ public class Game {
 	 * 
 	 * @param ghostName killed ghost's name
 	 */
-	public void scoreGhostKilled(String ghostName) {
+	public int scoreGhostKilled(String ghostName) {
 		level.ghostsKilledByEnergizer += 1;
 		level.ghostsKilled += 1;
 		if (level.ghostsKilled == 16) {
 			score(POINTS_KILLED_ALL_GHOSTS);
 		}
 		int points = killedGhostPoints();
-		score(points);
 		loginfo("Scored %d points for killing %s (%s ghost in sequence)", points, ghostName,
 				new String[] { "", "first", "2nd", "3rd", "4th" }[level.ghostsKilledByEnergizer]);
+		return score(points);
 	}
 
 	/**

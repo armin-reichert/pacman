@@ -127,13 +127,18 @@ public class EnhancedGameController extends GameController {
 			return;
 		}
 		world.habitatTiles().filter(world::containsSimplePellet).forEach(tile -> {
-			game.eatFood(tile);
+			game.scoreSimplePelletFound();
 			ghostHouseAccess().ifPresent(houseAccess -> {
 				houseAccess.onPacManFoundFood();
 				houseAccess.update();
 			});
+			world.removeFood(tile);
 		});
-		loginfo("All simple pellets eaten");
+		loginfo("All simple pellets have been eaten");
+		if (game.remainingFoodCount() == 0) {
+			enqueue(new LevelCompletedEvent());
+			return;
+		}
 	}
 
 	private void killAllGhosts() {
