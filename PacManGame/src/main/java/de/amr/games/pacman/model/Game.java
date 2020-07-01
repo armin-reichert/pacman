@@ -178,6 +178,6 @@ public class Game {
 	 *         energizer.
 	 */
 	public int killedGhostPoints() {
-		return POINTS_GHOST[level.ghostsKilledByEnergizer - 1];
+		return POINTS_GHOST[level.ghostsKilledByEnergizer > 0 ? level.ghostsKilledByEnergizer - 1 : 0];
 	}
 }
