@@ -15,9 +15,9 @@ import static java.awt.event.KeyEvent.VK_UP;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.core.Population;
+import de.amr.games.pacman.model.world.api.Population;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.model.world.core.World;
 
 public class DefaultPopulation implements Population {
 

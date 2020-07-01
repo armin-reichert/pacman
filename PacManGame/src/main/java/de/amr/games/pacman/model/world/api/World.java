@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model.world.core;
+package de.amr.games.pacman.model.world.api;
 
 /**
  * The Pac-man game world is a terrain and a habitat for the creatures.

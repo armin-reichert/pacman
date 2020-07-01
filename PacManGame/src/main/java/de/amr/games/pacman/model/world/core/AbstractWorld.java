@@ -17,6 +17,8 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.api.Population;
+import de.amr.games.pacman.model.world.api.World;
 
 public abstract class AbstractWorld implements World {
 

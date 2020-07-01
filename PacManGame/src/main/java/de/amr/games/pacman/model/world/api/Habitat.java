@@ -1,8 +1,9 @@
-package de.amr.games.pacman.model.world.core;
+package de.amr.games.pacman.model.world.api;
 
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.actor.Creature;
+import de.amr.games.pacman.model.world.core.Tile;
 
 /**
  * Where the creatures live.

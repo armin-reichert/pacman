@@ -4,7 +4,7 @@ import static de.amr.easy.game.Application.app;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.model.world.core.World;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**

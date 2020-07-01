@@ -7,12 +7,12 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.core.AbstractWorld;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Door;
 import de.amr.games.pacman.model.world.core.House;
 import de.amr.games.pacman.model.world.core.OneWayTile;
-import de.amr.games.pacman.model.world.core.Population;
 import de.amr.games.pacman.model.world.core.Portal;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.model.world.core.WorldMap;

@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.core.Habitat;
+import de.amr.games.pacman.model.world.api.Habitat;
 
 /**
  * This class controls when and in which order locked ghosts can leave the ghost house.

@@ -21,9 +21,9 @@ import de.amr.games.pacman.controller.actor.steering.common.TakingShortestPath;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.model.world.core.World;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.api.FsmContainer;
 

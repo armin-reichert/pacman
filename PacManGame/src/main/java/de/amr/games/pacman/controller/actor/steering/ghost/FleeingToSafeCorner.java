@@ -9,7 +9,7 @@ import java.util.List;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.WorldMover;
 import de.amr.games.pacman.controller.actor.steering.common.TakingPrecomputedPath;
-import de.amr.games.pacman.model.world.core.FoodContainer;
+import de.amr.games.pacman.model.world.api.FoodContainer;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.model.world.core.WorldGraph;
 
