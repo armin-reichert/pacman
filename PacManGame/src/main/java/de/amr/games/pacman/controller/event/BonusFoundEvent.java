@@ -1,13 +1,11 @@
 package de.amr.games.pacman.controller.event;
 
-import de.amr.games.pacman.model.world.arcade.Symbol;
-
 public class BonusFoundEvent extends PacManGameEvent {
 
-	public final Symbol symbol;
+	public final String symbol;
 	public final int value;
 
-	public BonusFoundEvent(Symbol symbol, int value) {
+	public BonusFoundEvent(String symbol, int value) {
 		this.symbol = symbol;
 		this.value = value;
 	}

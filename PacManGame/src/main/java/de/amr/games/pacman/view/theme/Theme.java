@@ -7,7 +7,6 @@ import java.util.stream.Stream;
 import de.amr.easy.game.assets.SoundClip;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.world.arcade.Symbol;
 
 /**
  * Interface for accessing Pac-Man game specific UI resources.
@@ -26,7 +25,7 @@ public interface Theme {
 
 	Sprite spr_flashingMaze();
 
-	Sprite spr_bonusSymbol(Symbol symbol);
+	Sprite spr_bonusSymbol(String symbol);
 
 	Sprite spr_pacManFull();
 

@@ -1,12 +1,12 @@
-package de.amr.games.pacman.model.world.arcade;
+package de.amr.games.pacman.model.world.core;
 
 public class Bonus {
 
-	public final Symbol symbol;
+	public final String symbol;
 	public final int value;
 	public BonusState state;
 
-	public Bonus(Symbol symbol, int value) {
+	public Bonus(String symbol, int value) {
 		this.symbol = symbol;
 		this.value = value;
 	}

@@ -14,8 +14,8 @@ import de.amr.games.pacman.controller.actor.Ghost.Sanity;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.arcade.Bonus;
-import de.amr.games.pacman.model.world.arcade.BonusState;
+import de.amr.games.pacman.model.world.core.Bonus;
+import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.model.world.core.World;
 
@@ -168,7 +168,7 @@ class GameStateTableModel extends AbstractTableModel {
 		gameController.bonusControl().ifPresent(bonusControl -> {
 			Bonus bonus = world.getBonus().orElse(null);
 			r.takesPart = bonus != null && bonus.state != BonusState.INACTIVE;
-			r.name = bonus != null ? bonus.symbol.name() : "Bonus";
+			r.name = bonus != null ? bonus.symbol : "Bonus";
 			r.tile = world.bonusTile();
 			r.state = bonusControl.getState().name();
 			r.ticksRemaining = bonusControl.state().getTicksRemaining();

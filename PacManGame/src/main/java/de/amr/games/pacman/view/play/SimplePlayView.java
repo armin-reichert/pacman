@@ -21,8 +21,8 @@ import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.arcade.BonusState;
 import de.amr.games.pacman.model.world.arcade.Symbol;
+import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.House;
 import de.amr.games.pacman.model.world.core.Population;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -205,7 +205,7 @@ public class SimplePlayView extends BaseView {
 		int height = world.height() * Tile.SIZE;
 		for (int i = 0, x = width - 2 * sz; i < n; ++i, x -= sz) {
 			Symbol symbol = game.levelCounter.get(first + i);
-			g.drawImage(theme.spr_bonusSymbol(symbol).frame(0), x, height - sz, sz, sz, null);
+			g.drawImage(theme.spr_bonusSymbol(symbol.name()).frame(0), x, height - sz, sz, sz, null);
 		}
 	}
 

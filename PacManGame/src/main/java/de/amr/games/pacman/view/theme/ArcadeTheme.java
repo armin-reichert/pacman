@@ -11,7 +11,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -45,7 +45,7 @@ public class ArcadeTheme implements Theme {
 	private final BufferedImage ghostEyes[];
 	private final BufferedImage greenNumbers[];
 	private final BufferedImage pinkNumbers[];
-	private final Map<Symbol, BufferedImage> symbolMap = new EnumMap<>(Symbol.class);
+	private final Map<String, BufferedImage> symbolMap = new HashMap<>();
 
 	// in the spritesheet, the order of directions is: RIGHT, LEFT, UP, DOWN
 	int sheetOrder(Direction dir) {
@@ -103,7 +103,7 @@ public class ArcadeTheme implements Theme {
 		// Symbols
 		BufferedImage[] symbolImages = nHorTiles(8, 2, 3);
 		for (Symbol symbol : Symbol.values()) {
-			symbolMap.put(symbol, symbolImages[symbol.ordinal()]);
+			symbolMap.put(symbol.name(), symbolImages[symbol.ordinal()]);
 		}
 
 		// Pac-Man
@@ -174,7 +174,7 @@ public class ArcadeTheme implements Theme {
 	}
 
 	@Override
-	public Sprite spr_bonusSymbol(Symbol symbol) {
+	public Sprite spr_bonusSymbol(String symbol) {
 		return Sprite.of(symbolMap.get(symbol));
 	}
 
