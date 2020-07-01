@@ -445,15 +445,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		private void onBonusFound(PacManGameEvent event) {
-			BonusFoundEvent found = (BonusFoundEvent) event;
-			loginfo("PacMan found %s and wins %d points", found.symbol, found.value);
-			bonusControl.process(event);
+			loginfo("PacMan found %s and wins %d points", game.level.bonusSymbol, game.level.bonusValue);
 			int livesBefore = game.lives;
-			game.score(found.value);
+			game.score(game.level.bonusValue);
 			sound.bonusEaten();
 			if (game.lives > livesBefore) {
 				sound.extraLife();
 			}
+			bonusControl.process(event);
 		}
 
 		private void onFoodFound(PacManGameEvent event) {

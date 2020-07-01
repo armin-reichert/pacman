@@ -23,7 +23,6 @@ import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
-import de.amr.games.pacman.model.world.core.Bonus;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.Theme;
@@ -161,20 +160,15 @@ public class PacMan extends Creature<PacManState> {
 
 	private Optional<PacManGameEvent> findSomethingInteresting() {
 		Tile tile = tile();
-
-		Optional<Bonus> activeBonus = world.getBonus().filter(bonus -> bonus.state == BonusState.ACTIVE)
-				.filter(bonus -> tile.equals(world.bonusTile()));
-		if (activeBonus.isPresent()) {
-			Bonus bonus = activeBonus.get();
-			return Optional.of(new BonusFoundEvent(bonus.symbol, bonus.value));
+		if (tile.equals(world.bonusTile())
+				&& world.getBonus().filter(bonus -> bonus.state == BonusState.ACTIVE).isPresent()) {
+			return Optional.of(new BonusFoundEvent());
 		}
-
 		if (world.containsFood(tile)) {
 			boolean energizer = world.containsEnergizer(tile);
 			digestion = energizer ? DIGEST_ENERGIZER_TICKS : DIGEST_PELLET_TICKS;
 			return Optional.of(new FoodFoundEvent(tile, energizer));
 		}
-
 		return Optional.empty();
 	}
 }
