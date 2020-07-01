@@ -393,6 +393,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			ghostCommand.update();
 			ghostHouseAccess.update();
 			creaturesOnStage().forEach(Creature::update);
+			bonusControl.update();
 			sound.updatePlayingSounds();
 		}
 
