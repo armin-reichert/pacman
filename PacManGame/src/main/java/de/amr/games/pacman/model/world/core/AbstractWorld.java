@@ -54,13 +54,12 @@ public abstract class AbstractWorld implements World {
 			included.add(creature);
 			creature.init();
 			creature.visible = true;
-			loginfo("%s entered the game", creature.name);
+			loginfo("%s entered the world", creature.name);
 		} else {
 			included.remove(creature);
 			creature.visible = false;
 			creature.placeAt(Tile.at(-1, -1));
-			loginfo("%s left the game", creature.name);
-
+			loginfo("%s left the world", creature.name);
 		}
 	}
 
