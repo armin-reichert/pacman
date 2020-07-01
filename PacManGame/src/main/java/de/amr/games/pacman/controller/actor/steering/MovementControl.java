@@ -57,7 +57,7 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 
 	private void checkIfPortalEntered(Creature<?> creature) {
 		Tile currentTile = creature.tile();
-		creature.world().portals().filter(portal -> portal.contains(currentTile)).findAny().ifPresent(portal -> {
+		creature.world().portals().filter(portal -> portal.includes(currentTile)).findAny().ifPresent(portal -> {
 			portalEntered = portal;
 			loginfo("Entered portal at %s", currentTile);
 		});

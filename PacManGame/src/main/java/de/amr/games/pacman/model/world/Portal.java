@@ -12,7 +12,7 @@ public class Portal {
 		this.right = right;
 	}
 
-	public boolean contains(Tile tile) {
+	public boolean includes(Tile tile) {
 		return tile.equals(left) || tile.equals(right);
 	}
 

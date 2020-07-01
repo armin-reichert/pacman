@@ -14,13 +14,15 @@ public class Door {
 
 	public final Direction intoHouse;
 	public final List<Tile> tiles;
+	public boolean open;
 
 	public Door(Direction intoHouse, Tile... tiles) {
 		this.tiles = Arrays.asList(tiles);
 		this.intoHouse = intoHouse;
+		open = false;
 	}
 
-	public boolean contains(Tile tile) {
+	public boolean includes(Tile tile) {
 		return tiles.contains(tile);
 	}
 }

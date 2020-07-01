@@ -72,7 +72,7 @@ public interface Terrain {
 	 * @return {@code true} if this tile is located inside a portal
 	 */
 	default boolean anyPortalContains(Tile tile) {
-		return portals().anyMatch(portal -> portal.contains(tile));
+		return portals().anyMatch(portal -> portal.includes(tile));
 	}
 
 	/**

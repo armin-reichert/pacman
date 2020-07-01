@@ -149,7 +149,7 @@ public abstract class AbstractWorld implements World {
 	public Tile tileToDir(Tile tile, Direction dir, int n) {
 		//@formatter:off
 		return portals()
-			.filter(portal -> portal.contains(tile))
+			.filter(portal -> portal.includes(tile))
 			.findAny()
 			.map(portal -> portal.exitTile(tile, dir))
 			.orElse(Tile.at(tile.col + n * dir.vector().roundedX(), tile.row + n * dir.vector().roundedY()));
@@ -168,7 +168,7 @@ public abstract class AbstractWorld implements World {
 
 	@Override
 	public boolean isDoor(Tile tile) {
-		return houses().flatMap(House::doors).anyMatch(door -> door.contains(tile));
+		return houses().flatMap(House::doors).anyMatch(door -> door.includes(tile));
 	}
 
 	@Override
@@ -176,7 +176,7 @@ public abstract class AbstractWorld implements World {
 		for (Direction dir : Direction.values()) {
 			Tile neighbor = neighbor(tile, dir);
 			if (isDoor(neighbor)) {
-				Door door = houses().flatMap(House::doors).filter(d -> d.contains(neighbor)).findFirst().get();
+				Door door = houses().flatMap(House::doors).filter(d -> d.includes(neighbor)).findFirst().get();
 				return door.intoHouse == dir;
 			}
 		}
