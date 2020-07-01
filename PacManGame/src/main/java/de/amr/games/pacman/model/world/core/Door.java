@@ -4,13 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.api.Area;
 
 /**
  * A door into a house.
  * 
  * @author Armin Reichert
  */
-public class Door {
+public class Door implements Area {
 
 	public enum DoorState {
 		OPEN, CLOSED
@@ -26,6 +27,7 @@ public class Door {
 		state = DoorState.CLOSED;
 	}
 
+	@Override
 	public boolean includes(Tile tile) {
 		return tiles.contains(tile);
 	}

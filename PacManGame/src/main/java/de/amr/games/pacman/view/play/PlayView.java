@@ -133,7 +133,7 @@ public class PlayView extends SimplePlayView {
 		drawMessage(g);
 		if (showGrid) {
 			drawOneWayTiles(g);
-			drawGhostSeats(g);
+			drawGhostBeds(g);
 		}
 		if (showScores && game != null) {
 			drawScores(g, game);
@@ -279,13 +279,13 @@ public class PlayView extends SimplePlayView {
 		});
 	}
 
-	private void drawGhostSeats(Graphics2D g) {
+	private void drawGhostBeds(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		world.population().ghosts().forEach(ghost -> {
 			g.setColor(ghostColor(ghost));
-			int x = ghost.bed().position.roundedX(), y = ghost.bed().position.roundedY();
 			String text = String.valueOf(ghost.bed().number);
+			int x = ghost.bed().center.roundedX() - Tile.SIZE / 2, y = ghost.bed().center.roundedY() - Tile.SIZE / 2;
 			g.drawRoundRect(x, y, Tile.SIZE, Tile.SIZE, 2, 2);
 			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 6));
 			FontMetrics fm = g.getFontMetrics();

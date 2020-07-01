@@ -7,5 +7,5 @@ package de.amr.games.pacman.model.world.api;
  */
 public interface World extends Terrain, Habitat {
 
-	void accept(Population aliens);
+	void accept(Population colonists);
 }

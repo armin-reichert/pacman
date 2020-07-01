@@ -42,7 +42,7 @@ public abstract class AbstractWorld implements World {
 	/**
 	 * Lets the actor take part at the game.
 	 * 
-	 * @param creature     a ghost or Pac-Man
+	 * @param creature  a ghost or Pac-Man
 	 * @param takesPart if the actors takes part
 	 */
 	@Override
@@ -81,17 +81,17 @@ public abstract class AbstractWorld implements World {
 	}
 
 	protected boolean is(Tile tile, byte bit) {
-		return contains(tile) && worldMap.is(tile.row, tile.col, bit);
+		return includes(tile) && worldMap.is(tile.row, tile.col, bit);
 	}
 
 	protected void set(Tile tile, byte bit) {
-		if (contains(tile)) {
+		if (includes(tile)) {
 			worldMap.set1(tile.row, tile.col, bit);
 		}
 	}
 
 	protected void clear(Tile tile, byte bit) {
-		if (contains(tile)) {
+		if (includes(tile)) {
 			worldMap.set0(tile.row, tile.col, bit);
 		}
 	}
@@ -107,7 +107,17 @@ public abstract class AbstractWorld implements World {
 	}
 
 	@Override
-	public boolean contains(Tile tile) {
+	public int x() {
+		return 0;
+	}
+
+	@Override
+	public int y() {
+		return 0;
+	}
+
+	@Override
+	public boolean includes(Tile tile) {
 		return 0 <= tile.row && tile.row < height() && 0 <= tile.col && tile.col < width();
 	}
 
@@ -138,12 +148,12 @@ public abstract class AbstractWorld implements World {
 
 	@Override
 	public boolean insideHouseOrDoor(Tile tile) {
-		return isDoor(tile) || houses().map(House::room).anyMatch(room -> room.contains(tile));
+		return isDoor(tile) || houses().map(House::room).anyMatch(room -> room.includes(tile));
 	}
 
 	@Override
 	public boolean isAccessible(Tile tile) {
-		boolean inside = contains(tile);
+		boolean inside = includes(tile);
 		return inside && !is(tile, B_WALL) || !inside && anyPortalContains(tile);
 	}
 

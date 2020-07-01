@@ -27,6 +27,7 @@ public class JumpingTestApp extends Application {
 class JumpingTestUI extends TestUI {
 
 	public JumpingTestUI() {
+		view.showGrid = true;
 		view.showStates = true;
 	}
 

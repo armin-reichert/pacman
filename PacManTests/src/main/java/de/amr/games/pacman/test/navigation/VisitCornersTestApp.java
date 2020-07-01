@@ -36,8 +36,8 @@ class FollowTargetTilesTestUI extends TestUI {
 	public FollowTargetTilesTestUI() {
 		view.showRoutes = true;
 		view.showGrid = true;
-		targets = Arrays.asList(world.cornerNW(), world.cornerNE(), world.cornerSE(), world.pacManBed().tile,
-				world.cornerSW());
+		targets = Arrays.asList(world.capeNW(), world.capeNE(), world.capeSE(), world.pacManBed().tile,
+				world.capeSW());
 	}
 
 	@Override

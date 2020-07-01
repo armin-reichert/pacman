@@ -9,35 +9,36 @@ import de.amr.games.pacman.model.world.core.OneWayTile;
 import de.amr.games.pacman.model.world.core.Portal;
 import de.amr.games.pacman.model.world.core.Tile;
 
-public interface Terrain {
+public interface Terrain extends RectangularArea {
 
-	/**
-	 * @return width in number of tiles
-	 */
+	@Override
 	int width();
 
-	/**
-	 * @return height in number of tiles
-	 */
+	@Override
 	int height();
 
-	public boolean contains(Tile tile);
+	@Override
+	public boolean includes(Tile tile);
 
-	default Tile cornerNW() {
-		return Tile.at(1, 4);
-	}
+	/**
+	 * @return outmost accessible tile at north-west
+	 */
+	Tile capeNW();
 
-	default Tile cornerNE() {
-		return Tile.at(width() - 2, 4);
-	}
+	/**
+	 * @return outmost accessible tile at north-east
+	 */
+	Tile capeNE();
 
-	default Tile cornerSW() {
-		return Tile.at(1, height() - 4);
-	}
+	/**
+	 * @return outmost accessible tile at south-west
+	 */
+	Tile capeSW();
 
-	default Tile cornerSE() {
-		return Tile.at(width() - 2, height() - 4);
-	}
+	/**
+	 * @return outmost accessible tile at south-east
+	 */
+	Tile capeSE();
 
 	Tile tileToDir(Tile tile, Direction dir, int n);
 
@@ -47,14 +48,8 @@ public interface Terrain {
 
 	boolean isAccessible(Tile tile);
 
-	/**
-	 * @return houses in world
-	 */
 	Stream<House> houses();
 
-	/**
-	 * @return the single house
-	 */
 	default House theHouse() {
 		return houses().findFirst().get();
 	}
@@ -67,37 +62,19 @@ public interface Terrain {
 
 	boolean isJustBeforeDoor(Tile tile);
 
-	/**
-	 * @return the portals in the world
-	 */
 	Stream<Portal> portals();
 
-	/**
-	 * @param tile some tile
-	 * @return {@code true} if this tile is located inside a portal
-	 */
 	default boolean anyPortalContains(Tile tile) {
 		return portals().anyMatch(portal -> portal.includes(tile));
 	}
 
-	/**
-	 * @param tile some tile
-	 * @param dir  some direction
-	 * @return {@code true} if this tile is a one-way tile to the given direction
-	 */
 	default boolean isOneWayTile(Tile tile, Direction dir) {
 		return oneWayTiles().anyMatch(oneWay -> oneWay.tile.equals(tile) && oneWay.dir == dir);
 	}
 
-	/**
-	 * @return the one-way tiles in the world
-	 */
 	Stream<OneWayTile> oneWayTiles();
 
 	boolean isTunnel(Tile tile);
 
-	/**
-	 * @return bonus tile location
-	 */
 	Tile bonusTile();
 }

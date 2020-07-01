@@ -81,7 +81,12 @@ public class WorldPreview extends JFrame {
 			return "$";
 		}
 		if (tile.equals(world.pacManBed().tile)) {
-			return "O";
+			return "P";
+		}
+		for (int i = 0; i < 4; ++i) {
+			if (tile.equals(world.theHouse().bed(i).tile)) {
+				return "" + i;
+			}
 		}
 		if (!world.isAccessible(tile)) {
 			return "#";

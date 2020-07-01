@@ -5,12 +5,14 @@ import static de.amr.games.pacman.controller.actor.steering.ghost.GoingToBed.Sta
 import static de.amr.games.pacman.controller.actor.steering.ghost.GoingToBed.State.MOVING_RIGHT;
 import static de.amr.games.pacman.controller.actor.steering.ghost.GoingToBed.State.TARGET_REACHED;
 
+import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.controller.actor.steering.ghost.GoingToBed.State;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.core.Bed;
+import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -24,9 +26,16 @@ public class GoingToBed extends StateMachine<State, Void> implements Steering {
 		FALLING, MOVING_LEFT, MOVING_RIGHT, TARGET_REACHED
 	}
 
+	private float targetX(Bed bed) {
+		return bed.center.x - Tile.SIZE / 2;
+	}
+
+	private float targetY(Bed bed) {
+		return bed.center.y - Tile.SIZE / 2;
+	}
+
 	public GoingToBed(Ghost ghost, Bed bed) {
 		super(State.class);
-		int offsetY = 3;
 		/*@formatter:off*/
 		beginStateMachine()
 			.initialState(FALLING)
@@ -36,29 +45,30 @@ public class GoingToBed extends StateMachine<State, Void> implements Steering {
 			
 				.state(FALLING)
 					.onEntry(() -> {
-						// place the ghost exactly at the ghost house entry and start falling down
-						ghost.tf.setPosition(ghost.world().theHouse().bed(0).position);
+						// place the ghost centered over the ghost house entry and start falling
+						Vector2f houseEntry = ghost.world().theHouse().bed(0).center; 
+						ghost.tf.setPosition(houseEntry.x - Tile.SIZE / 2, houseEntry.y - Tile.SIZE / 2);
 						ghost.setWishDir(Direction.DOWN);					
 					})
 					
 			.transitions()
 	
 				.when(FALLING).then(MOVING_LEFT)
-					.condition(() -> ghost.tf.y >= bed.position.y + offsetY && ghost.tf.x > bed.position.x)
+					.condition(() -> ghost.tf.y >= targetY(bed) && ghost.tf.x > targetX(bed))
 					.act(() -> ghost.setWishDir(Direction.LEFT))
 				
 				.when(FALLING).then(MOVING_RIGHT)
-					.condition(() -> ghost.tf.y >= bed.position.y + offsetY && ghost.tf.x < bed.position.x)
+					.condition(() -> ghost.tf.y >= targetY(bed) && ghost.tf.x < targetX(bed))
 					.act(() -> ghost.setWishDir(Direction.RIGHT))
 	
 				.when(FALLING).then(TARGET_REACHED)
-					.condition(() -> ghost.tf.y >= bed.position.y + offsetY && ghost.tf.x == bed.position.x)
+					.condition(() -> ghost.tf.y >= targetY(bed) && ghost.tf.x == targetX(bed))
 				
 				.when(MOVING_LEFT).then(TARGET_REACHED)
-					.condition(() -> ghost.tf.x <= bed.position.x)
+					.condition(() -> ghost.tf.x <= targetX(bed))
 					
 				.when(MOVING_RIGHT).then(TARGET_REACHED)
-					.condition(() -> ghost.tf.x >= bed.position.x)
+					.condition(() -> ghost.tf.x >= targetX(bed))
 					
 		.endStateMachine();
 		/*@formatter:on*/

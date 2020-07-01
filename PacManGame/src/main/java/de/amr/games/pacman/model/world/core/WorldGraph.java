@@ -48,7 +48,7 @@ public class WorldGraph extends GridGraph<Tile, Void> {
 	}
 
 	public List<Tile> shortestPath(Tile source, Tile target) {
-		if (world.contains(source) && world.contains(target)) {
+		if (world.includes(source) && world.includes(target)) {
 			GraphSearch pathfinder = createPathFinder(target);
 			Path path = pathfinder.findPath(vertex(source), vertex(target));
 			pathFinderCalls += 1;

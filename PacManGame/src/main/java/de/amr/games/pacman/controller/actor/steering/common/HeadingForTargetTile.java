@@ -98,7 +98,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 		while (!currentTile.equals(targetTile)) {
 			Direction dir = bestDir(mover, currentDir, currentTile, targetTile);
 			Tile nextTile = world.neighbor(currentTile, dir);
-			if (!world.contains(nextTile) || path.contains(nextTile)) {
+			if (!world.includes(nextTile) || path.contains(nextTile)) {
 				return;
 			}
 			path.add(nextTile);

@@ -1,22 +1,22 @@
 package de.amr.games.pacman.model.world.core;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
+
+import de.amr.games.pacman.model.world.api.Area;
 
 /**
  * A house has a room with beds and some doors.
  * 
  * @author Armin Reichert
  */
-public class House {
+public class House implements Area {
 
-	private final Set<Tile> room;
+	private final Area room;
 	private final List<Door> doors;
 	private final List<Bed> beds;
 
-	public House(Set<Tile> room, List<Door> doors, List<Bed> beds) {
+	public House(Area room, List<Door> doors, List<Bed> beds) {
 		this.room = room;
 		this.doors = doors;
 		this.beds = beds;
@@ -26,8 +26,8 @@ public class House {
 		return doors.stream();
 	}
 
-	public Set<Tile> room() {
-		return Collections.unmodifiableSet(room);
+	public Area room() {
+		return room;
 	}
 
 	public Stream<Bed> seats() {
@@ -36,5 +36,10 @@ public class House {
 
 	public Bed bed(int i) {
 		return beds.get(i);
+	}
+
+	@Override
+	public boolean includes(Tile tile) {
+		return room.includes(tile);
 	}
 }

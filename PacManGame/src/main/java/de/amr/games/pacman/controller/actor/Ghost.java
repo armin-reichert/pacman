@@ -95,8 +95,8 @@ public class Ghost extends Creature<GhostState> {
 					.onEntry(() -> {
 						subsequentState = LOCKED;
 						visible = true;
-						moveDir = wishDir = bed().startDir;
-						tf.setPosition(bed().position);
+						moveDir = wishDir = bed().exitDir;
+						tf.setPosition(bed().center.x - Tile.SIZE / 2, bed.center.y - Tile.SIZE / 2);
 						enteredNewTile();
 						sanity.init();
 						sprites.forEach(Sprite::resetAnimation);
@@ -234,7 +234,7 @@ public class Ghost extends Creature<GhostState> {
 	 * Lets the ghost jump up and down on its bed.
 	 */
 	public void bouncingOnBed() {
-		float dy = tf.y - bed().position.y;
+		float dy = tf.y + Tile.SIZE / 2 - bed().center.y;
 		if (dy < -4) {
 			setWishDir(DOWN);
 		} else if (dy > 3) {
@@ -271,8 +271,7 @@ public class Ghost extends Creature<GhostState> {
 	 * @return steering where actor flees to a "safe" maze corner
 	 */
 	public Steering isFleeingToSafeCorner(WorldMover attacker) {
-		return new FleeingToSafeCorner(this, attacker, world.cornerNW(), world.cornerNE(), world.cornerSW(),
-				world.cornerSE());
+		return new FleeingToSafeCorner(this, attacker, world.capeNW(), world.capeNE(), world.capeSW(), world.capeSE());
 	}
 
 	/**
