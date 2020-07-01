@@ -128,7 +128,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void buildStateMachine() {
 		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
-		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent && !((FoodFoundEvent) e).energizer);
+		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
 		//@formatter:off
 		beginStateMachine()
 			
@@ -458,8 +458,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		private void onFoodFound(PacManGameEvent event) {
 			FoodFoundEvent found = (FoodFoundEvent) event;
 			int livesBeforeScoring = game.lives;
+			boolean energizer = world.containsEnergizer(found.tile);
 			world.removeFood(found.tile);
-			if (found.energizer) {
+			if (energizer) {
 				game.scoreEnergizerFound();
 			} else {
 				game.scoreSimplePelletFound();
@@ -478,7 +479,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (game.isBonusDue()) {
 				bonusControl.activateBonus();
 			}
-			if (found.energizer && game.level.pacManPowerSeconds > 0) {
+			if (energizer && game.level.pacManPowerSeconds > 0) {
 				sound.pacManGainsPower();
 				ghostCommand.suspend();
 				pacMan.power = sec(game.level.pacManPowerSeconds);

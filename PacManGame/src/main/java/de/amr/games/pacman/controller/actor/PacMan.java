@@ -98,8 +98,7 @@ public class PacMan extends Creature<PacManState> {
 		/* @formatter:on */
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		brain.doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent && !((FoodFoundEvent) e).energizer);
-		brain.doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent && !((FoodFoundEvent) e).energizer);
+		brain.doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
 	}
 
 	@Override
@@ -167,7 +166,7 @@ public class PacMan extends Creature<PacManState> {
 		if (world.containsFood(tile)) {
 			boolean energizer = world.containsEnergizer(tile);
 			digestion = energizer ? DIGEST_ENERGIZER_TICKS : DIGEST_PELLET_TICKS;
-			return Optional.of(new FoodFoundEvent(tile, energizer));
+			return Optional.of(new FoodFoundEvent(tile));
 		}
 		return Optional.empty();
 	}
