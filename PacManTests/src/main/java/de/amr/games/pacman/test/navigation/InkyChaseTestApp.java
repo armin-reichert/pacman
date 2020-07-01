@@ -34,16 +34,13 @@ public class InkyChaseTestApp extends Application {
 
 class InkyChaseTestUI extends TestUI {
 
-	public InkyChaseTestUI() {
-		view.showRoutes = true;
-	}
-
 	@Override
 	public void init() {
 		super.init();
 		theme.snd_ghost_chase().volume(0);
 		include(pacMan, inky, blinky);
 		ghostsOnStage().forEach(ghost -> ghost.subsequentState = CHASING);
+		view.showingRoutes = true;
 		view.showMessage("Press SPACE to start", Color.WHITE);
 	}
 

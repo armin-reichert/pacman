@@ -32,11 +32,6 @@ public class ScatteringTestApp extends Application {
 
 class ScatteringTestUI extends TestUI {
 
-	public ScatteringTestUI() {
-		view.showRoutes = true;
-		view.showGrid = true;
-	}
-
 	@Override
 	public void init() {
 		super.init();
@@ -44,6 +39,8 @@ class ScatteringTestUI extends TestUI {
 			world.include(ghost);
 			ghost.subsequentState = GhostState.SCATTERING;
 		});
+		view.showingRoutes = true;
+		view.showingGrid = true;
 		view.showMessage("Press SPACE to start", Color.WHITE);
 	}
 

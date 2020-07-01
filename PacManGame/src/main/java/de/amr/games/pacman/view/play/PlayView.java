@@ -29,9 +29,9 @@ import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.widgets.FramerateWidget;
 import de.amr.easy.game.view.Pen;
+import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
@@ -40,7 +40,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.Theme;
-import de.amr.statemachine.api.Fsm;
 
 /**
  * An extended play view that can visualize actor states, the ghost house pellet counters, ghost
@@ -97,14 +96,21 @@ public class PlayView extends SimplePlayView {
 		return img;
 	}
 
-	public boolean showFrameRate = false;
-	public boolean showGrid = false;
-	public boolean showRoutes = false;
-	public boolean showScores = true;
-	public boolean showStates = false;
+	public boolean showingFrameRate = false;
 
-	public Fsm<GhostState, ?> ghostCommand; // (optional)
-	public GhostHouseAccessControl house; // (optional)
+	public boolean showingGrid = false;
+
+	public boolean showingRoutes = false;
+
+	public boolean showingScores = true;
+
+	public boolean showingStates = false;
+
+	/** Optional ghost house control */
+	public GhostCommand optionalGhostCommand;
+
+	/** Optional ghost house reference */
+	public GhostHouseAccessControl optionalHouse;
 
 	private FramerateWidget frameRateDisplay;
 	private final BufferedImage gridImage, inkyImage, clydeImage, pacManImage;
@@ -122,30 +128,30 @@ public class PlayView extends SimplePlayView {
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (showGrid) {
+		if (showingGrid) {
 			g.drawImage(gridImage, 0, 0, null);
 		}
 		drawMaze(g);
-		if (showFrameRate) {
+		if (showingFrameRate) {
 			frameRateDisplay.draw(g);
 		}
 		drawPlayMode(g);
 		drawMessage(g);
-		if (showGrid) {
+		if (showingGrid) {
 			drawOneWayTiles(g);
 			drawGhostBeds(g);
 		}
-		if (showScores && game != null) {
+		if (showingScores && game != null) {
 			drawScores(g, game);
 		}
-		if (showRoutes) {
+		if (showingRoutes) {
 			drawGhostRoutes(g);
 		}
 		drawActors(g);
-		if (showGrid) {
+		if (showingGrid) {
 			drawActorOffTrack(g);
 		}
-		if (showStates) {
+		if (showingStates) {
 			drawActorStates(g);
 			drawGhostHouseState(g);
 		}
@@ -153,7 +159,7 @@ public class PlayView extends SimplePlayView {
 
 	@Override
 	protected Color tileColor(Tile tile) {
-		return showGrid ? GRID_PATTERN[patternIndex(tile.col, tile.row)] : super.tileColor(tile);
+		return showingGrid ? GRID_PATTERN[patternIndex(tile.col, tile.row)] : super.tileColor(tile);
 	}
 
 	private void drawEntityState(Graphics2D g, Entity entity, String text, Color color) {
@@ -208,10 +214,10 @@ public class PlayView extends SimplePlayView {
 		int duration = ghost.state().getDuration();
 		int remaining = ghost.state().getTicksRemaining();
 		// chasing or scattering time
-		if (ghostCommand != null && ghost.is(SCATTERING, CHASING)) {
-			if (ghostCommand.state() != null) {
-				duration = ghostCommand.state().getDuration();
-				remaining = ghostCommand.state().getTicksRemaining();
+		if (optionalGhostCommand != null && ghost.is(SCATTERING, CHASING)) {
+			if (optionalGhostCommand.state() != null) {
+				duration = optionalGhostCommand.state().getDuration();
+				remaining = optionalGhostCommand.state().getTicksRemaining();
 			}
 		}
 		if (duration != Integer.MAX_VALUE) {
@@ -237,7 +243,7 @@ public class PlayView extends SimplePlayView {
 
 	private void drawPacManStarvingTime(Graphics2D g) {
 		int col = 1, row = 14;
-		int time = house.pacManStarvingTicks();
+		int time = optionalHouse.pacManStarvingTicks();
 		g.drawImage(pacManImage, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);
 		try (Pen pen = new Pen(g)) {
 			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
@@ -429,15 +435,15 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawGhostHouseState(Graphics2D g) {
-		if (house == null) {
+		if (optionalHouse == null) {
 			return; // test scenes can have no ghost house
 		}
 		drawPacManStarvingTime(g);
-		drawDotCounter(g, clydeImage, house.ghostDotCount(world.population().clyde()), 1, 20,
-				!house.isGlobalDotCounterEnabled() && house.isPreferredGhost(world.population().clyde()));
-		drawDotCounter(g, inkyImage, house.ghostDotCount(world.population().inky()), 24, 20,
-				!house.isGlobalDotCounterEnabled() && house.isPreferredGhost(world.population().inky()));
-		drawDotCounter(g, null, house.globalDotCount(), 24, 14, house.isGlobalDotCounterEnabled());
+		drawDotCounter(g, clydeImage, optionalHouse.ghostDotCount(world.population().clyde()), 1, 20,
+				!optionalHouse.isGlobalDotCounterEnabled() && optionalHouse.isPreferredGhost(world.population().clyde()));
+		drawDotCounter(g, inkyImage, optionalHouse.ghostDotCount(world.population().inky()), 24, 20,
+				!optionalHouse.isGlobalDotCounterEnabled() && optionalHouse.isPreferredGhost(world.population().inky()));
+		drawDotCounter(g, null, optionalHouse.globalDotCount(), 24, 14, optionalHouse.isGlobalDotCounterEnabled());
 	}
 
 	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row, boolean emphasized) {

@@ -20,7 +20,6 @@ import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.core.BonusState;
@@ -57,12 +56,6 @@ public class SimplePlayView extends BaseView {
 
 	@Override
 	public void init() {
-		Population people = world.population();
-		people.pacMan().takeClothes(theme);
-		people.blinky().takeClothes(theme, Theme.RED_GHOST);
-		people.pinky().takeClothes(theme, Theme.PINK_GHOST);
-		people.inky().takeClothes(theme, Theme.CYAN_GHOST);
-		people.clyde().takeClothes(theme, Theme.ORANGE_GHOST);
 		mazeView.init();
 		clearMessage();
 	}
@@ -128,8 +121,7 @@ public class SimplePlayView extends BaseView {
 		// draw dead ghosts (as number or eyes) under living ghosts
 		world.population().ghosts().filter(world::included).filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
 				.forEach(ghost -> drawEntity(g, ghost, ghost.sprites));
-		world.population().ghosts().filter(
-				world::included).filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
+		world.population().ghosts().filter(world::included).filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
 				.forEach(ghost -> drawEntity(g, ghost, ghost.sprites));
 	}
 

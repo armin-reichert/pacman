@@ -24,6 +24,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.api.FsmContainer;
 
@@ -59,6 +60,8 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 		tf.width = Tile.SIZE;
 		tf.height = Tile.SIZE;
 	}
+
+	public abstract void applyTheme(Theme theme);
 
 	public void setWorld(World world) {
 		this.world = world;

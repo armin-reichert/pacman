@@ -25,11 +25,11 @@ public class TestUI implements Lifecycle, VisualController {
 
 	protected final World world;
 	protected final Game game;
-	protected final Population aliens;
+	protected final Population population;
 	protected final PacMan pacMan;
 	protected final Ghost blinky, pinky, inky, clyde;
-	protected final PlayView view;
 	protected final Theme theme;
+	protected PlayView view;
 
 	@Override
 	public Optional<View> currentView() {
@@ -45,29 +45,32 @@ public class TestUI implements Lifecycle, VisualController {
 	}
 
 	public TestUI() {
+
 		world = Universe.arcadeWorld();
 		world.clearFood();
+
+		theme = new ArcadeTheme();
+
+		population = new DefaultPopulation();
+		population.populate(world);
+		population.creatures().forEach(creature -> creature.applyTheme(theme));
+
+		pacMan = population.pacMan();
+		blinky = population.blinky();
+		pinky = population.pinky();
+		inky = population.inky();
+		clyde = population.clyde();
+
 		game = new Game(1, world.totalFoodCount());
-
-		aliens = new DefaultPopulation();
-		aliens.populate(world);
-
-		pacMan = aliens.pacMan();
-		blinky = aliens.blinky();
-		pinky = aliens.pinky();
-		inky = aliens.inky();
-		clyde = aliens.clyde();
 		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
 		world.population().ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> ghostSpeedLimit(ghost, game)));
 
-		aliens.play(game);
-
-		theme = new ArcadeTheme();
-		view = new PlayView(world, game, theme);
+		population.play(game);
 	}
 
 	@Override
 	public void init() {
+		view = new PlayView(world, game, theme);
 		view.init();
 	}
 

@@ -34,17 +34,14 @@ public class LeaveGhostHouseTestApp extends Application {
 
 class LeaveGhostHouseTestUI extends TestUI {
 
-	public LeaveGhostHouseTestUI() {
-		view.showRoutes = true;
-		view.showStates = true;
-		view.showGrid = true;
-	}
-
 	@Override
 	public void init() {
 		super.init();
 		include(inky);
 		inky.subsequentState = SCATTERING;
+		view.showingRoutes = true;
+		view.showingStates = true;
+		view.showingGrid = true;
 		view.showMessage("Press SPACE to unlock", Color.WHITE);
 	}
 

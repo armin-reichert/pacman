@@ -40,23 +40,20 @@ public class TakeShortestPathTestApp extends Application {
 
 class TakeShortestPathTestUI extends TestUI {
 
-	final List<Tile> targets;
-	int targetIndex;
+	private List<Tile> targets;
+	private int targetIndex;
 
-	public TakeShortestPathTestUI() {
-		view.showRoutes = true;
-		view.showStates = true;
-		view.showGrid = true;
+	@Override
+	public void init() {
+		super.init();
+		view.showingRoutes = true;
+		view.showingStates = true;
+		view.showingGrid = true;
 		Portal thePortal = world.portals().findAny().get();
 		House theHouse = world.theHouse();
 		targets = Arrays.asList(world.capeSE(), Tile.at(15, 23), Tile.at(12, 23), world.capeSW(),
 				world.neighbor(thePortal.left, Direction.RIGHT), world.capeNW(), theHouse.bed(0).tile, world.capeNE(),
 				world.neighbor(thePortal.right, Direction.LEFT), world.pacManBed().tile);
-	}
-
-	@Override
-	public void init() {
-		super.init();
 		targetIndex = 0;
 		theme.snd_ghost_chase().volume(0);
 		include(blinky);

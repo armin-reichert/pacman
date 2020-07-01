@@ -30,11 +30,6 @@ public class EscapeIntoCornerTestApp extends Application {
 
 class EscapeIntoCornerTestUI extends TestUI {
 
-	public EscapeIntoCornerTestUI() {
-		view.showRoutes = true;
-		view.showStates = true;
-	}
-
 	@Override
 	public void init() {
 		super.init();
@@ -42,5 +37,7 @@ class EscapeIntoCornerTestUI extends TestUI {
 		pacMan.setState(EATING);
 		blinky.behavior(FRIGHTENED, blinky.isFleeingToSafeCorner(pacMan));
 		blinky.setState(FRIGHTENED);
+		view.showingRoutes = true;
+		view.showingStates = true;
 	}
 }

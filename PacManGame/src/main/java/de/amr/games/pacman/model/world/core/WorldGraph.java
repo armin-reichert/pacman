@@ -52,7 +52,9 @@ public class WorldGraph extends GridGraph<Tile, Void> {
 			GraphSearch pathfinder = createPathFinder(target);
 			Path path = pathfinder.findPath(vertex(source), vertex(target));
 			pathFinderCalls += 1;
-			loginfo("%d'th pathfinding (%s) executed", pathFinderCalls, pathfinder.getClass().getSimpleName());
+			if (pathFinderCalls % 100 == 0) {
+				loginfo("%d'th pathfinding (%s) executed", pathFinderCalls, pathfinder.getClass().getSimpleName());
+			}
 			return path.vertexStream().map(this::tile).collect(Collectors.toList());
 		}
 		return Collections.emptyList();

@@ -54,7 +54,7 @@ public class EnhancedGameController extends GameController {
 		} else if (Keyboard.keyPressedOnce("f")) {
 			toggleGhostFrightenedBehavior();
 		} else if (Keyboard.keyPressedOnce("g")) {
-			playView.showGrid = !playView.showGrid;
+			playView.showingGrid = !playView.showingGrid;
 		} else if (Keyboard.keyPressedOnce("i")) {
 			toggleGhostOnStage(inky);
 		} else if (Keyboard.keyPressedOnce("k")) {
@@ -68,11 +68,11 @@ public class EnhancedGameController extends GameController {
 		} else if (Keyboard.keyPressedOnce("p")) {
 			toggleGhostOnStage(pinky);
 		} else if (Keyboard.keyPressedOnce("s")) {
-			playView.showStates = !playView.showStates;
+			playView.showingStates = !playView.showingStates;
 		} else if (Keyboard.keyPressedOnce("t")) {
-			playView.showFrameRate = !playView.showFrameRate;
+			playView.showingFrameRate = !playView.showingFrameRate;
 		} else if (Keyboard.keyPressedOnce("r")) {
-			playView.showRoutes = !playView.showRoutes;
+			playView.showingRoutes = !playView.showingRoutes;
 		} else if (Keyboard.keyPressedOnce("x")) {
 			toggleGhostsHarmless();
 		} else if (Keyboard.keyPressedOnce("+")) {

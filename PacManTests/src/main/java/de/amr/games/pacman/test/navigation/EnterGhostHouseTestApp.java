@@ -33,16 +33,13 @@ public class EnterGhostHouseTestApp extends Application {
 
 class EnterGhostHouseTestUI extends TestUI {
 
-	public EnterGhostHouseTestUI() {
-		view.showRoutes = true;
-		view.showStates = true;
-		view.showGrid = true;
-	}
-
 	@Override
 	public void init() {
 		super.init();
 		include(inky);
+		view.showingRoutes = true;
+		view.showingStates = true;
+		view.showingGrid = true;
 		view.showMessage("SPACE = Enter/leave house", Color.WHITE, 8);
 	}
 

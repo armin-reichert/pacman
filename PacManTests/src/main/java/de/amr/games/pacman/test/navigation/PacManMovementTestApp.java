@@ -36,10 +36,6 @@ class PacManMovementTestUI extends TestUI {
 
 	private int steeringIndex;
 
-	public PacManMovementTestUI() {
-		view.showGrid = true;
-	}
-
 	@Override
 	public void init() {
 		super.init();
@@ -57,8 +53,9 @@ class PacManMovementTestUI extends TestUI {
 			}
 		});
 		pacMan.setState(PacManState.EATING);
-		view.showMessage("SPACE changes steering", Color.WHITE);
+		view.showingGrid = true;
 		view.mazeView.energizersBlinking.setEnabled(true);
+		view.showMessage("SPACE changes steering", Color.WHITE);
 	}
 
 	@Override

@@ -103,7 +103,8 @@ public class PacMan extends Creature<PacManState> {
 		brain.doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent && !((FoodFoundEvent) e).energizer);
 	}
 
-	public void takeClothes(Theme theme) {
+	@Override
+	public void applyTheme(Theme theme) {
 		dirs().forEach(dir -> sprites.set("walking-" + dir, theme.spr_pacManWalking(dir)));
 		sprites.set("dying", theme.spr_pacManDying());
 		sprites.set("full", theme.spr_pacManFull());

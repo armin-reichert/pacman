@@ -31,17 +31,14 @@ class FollowMouseTestUI extends TestUI {
 
 	private Tile mousePosition = Tile.at(0, 0);
 
-	public FollowMouseTestUI() {
-		view.showRoutes = true;
-		view.showGrid = true;
-	}
-
 	@Override
 	public void init() {
 		super.init();
 		include(blinky);
 		blinky.behavior(CHASING, blinky.headingFor(() -> mousePosition));
 		blinky.setState(CHASING);
+		view.showingRoutes = true;
+		view.showingGrid = true;
 	}
 
 	@Override

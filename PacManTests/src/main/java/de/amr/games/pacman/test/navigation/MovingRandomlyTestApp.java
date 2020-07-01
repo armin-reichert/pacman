@@ -32,13 +32,7 @@ public class MovingRandomlyTestApp extends Application {
 
 class MovingRandomlyTestUI extends TestUI {
 
-	boolean started;
-
-	public MovingRandomlyTestUI() {
-		view.showRoutes = true;
-		view.showStates = true;
-		view.showGrid = true;
-	}
+	private boolean started;
 
 	@Override
 	public void init() {
@@ -50,6 +44,9 @@ class MovingRandomlyTestUI extends TestUI {
 			ghost.state(FRIGHTENED).removeTimer();
 			ghost.setState(FRIGHTENED);
 		});
+		view.showingRoutes = true;
+		view.showingStates = true;
+		view.showingGrid = true;
 		view.showMessage("Press SPACE", Color.WHITE);
 	}
 

@@ -31,10 +31,6 @@ public class OutsideTileTestApp extends Application {
 
 class OutsideTileTestUI extends TestUI {
 
-	public OutsideTileTestUI() {
-		view.showRoutes = true;
-	}
-
 	@Override
 	public void init() {
 		super.init();
@@ -43,5 +39,6 @@ class OutsideTileTestUI extends TestUI {
 		int row = world.portals().findFirst().map(portal -> portal.right.row).orElse((short) 100);
 		blinky.behavior(GhostState.CHASING, blinky.headingFor(() -> Tile.at(100, row)));
 		blinky.setState(GhostState.CHASING);
+		view.showingRoutes = true;
 	}
 }

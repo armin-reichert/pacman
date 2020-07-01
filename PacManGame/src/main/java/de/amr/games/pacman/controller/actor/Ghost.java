@@ -61,6 +61,9 @@ public class Ghost extends Creature<GhostState> {
 	/** Keeps track of steering changes. */
 	public Steering previousSteering;
 
+	/** Ghost color as defined in {@link Theme}. */
+	public int color;
+
 	public StateMachine<Sanity, Void> sanity =
 	//@formatter:off
 		beginStateMachine(Sanity.class, Void.class)
@@ -316,7 +319,8 @@ public class Ghost extends Creature<GhostState> {
 		movement.update();
 	}
 
-	public void takeClothes(Theme theme, int color) {
+	@Override
+	public void applyTheme(Theme theme) {
 		Direction.dirs().forEach(dir -> {
 			sprites.set("color-" + dir, theme.spr_ghostColored(color, dir));
 			sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir));

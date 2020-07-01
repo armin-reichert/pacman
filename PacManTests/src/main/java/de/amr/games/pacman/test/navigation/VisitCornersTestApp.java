@@ -33,16 +33,10 @@ class FollowTargetTilesTestUI extends TestUI {
 	private List<Tile> targets;
 	private int current;
 
-	public FollowTargetTilesTestUI() {
-		view.showRoutes = true;
-		view.showGrid = true;
-		targets = Arrays.asList(world.capeNW(), world.capeNE(), world.capeSE(), world.pacManBed().tile,
-				world.capeSW());
-	}
-
 	@Override
 	public void init() {
 		super.init();
+		targets = Arrays.asList(world.capeNW(), world.capeNE(), world.capeSE(), world.pacManBed().tile, world.capeSW());
 		current = 0;
 		theme.snd_ghost_chase().volume(0);
 		include(blinky);
@@ -50,6 +44,8 @@ class FollowTargetTilesTestUI extends TestUI {
 		blinky.behavior(GhostState.CHASING, blinky.headingFor(() -> targets.get(current)));
 		blinky.setState(GhostState.CHASING);
 		blinky.steering().force();
+		view.showingRoutes = true;
+		view.showingGrid = true;
 	}
 
 	@Override

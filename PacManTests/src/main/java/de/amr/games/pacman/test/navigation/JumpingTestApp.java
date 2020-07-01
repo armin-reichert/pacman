@@ -26,14 +26,11 @@ public class JumpingTestApp extends Application {
 
 class JumpingTestUI extends TestUI {
 
-	public JumpingTestUI() {
-		view.showGrid = true;
-		view.showStates = true;
-	}
-
 	@Override
 	public void init() {
 		super.init();
 		include(blinky, inky, pinky, clyde);
+		view.showingGrid = true;
+		view.showingStates = true;
 	}
 }

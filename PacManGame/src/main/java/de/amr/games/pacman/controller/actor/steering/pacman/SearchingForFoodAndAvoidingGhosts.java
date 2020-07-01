@@ -1,21 +1,21 @@
 package de.amr.games.pacman.controller.actor.steering.pacman;
 
-import static de.amr.games.pacman.model.world.core.Tile.manhattanDistance;
 import static java.util.Comparator.comparingInt;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.PacManApp;
+import de.amr.games.pacman.controller.actor.Creature;
+import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
-import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.actor.WorldMover;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.core.WorldGraph;
+import de.amr.graph.grid.api.GridGraph2D;
 
 /**
  * Steering used by PacMan in demo mode.
@@ -24,14 +24,16 @@ import de.amr.games.pacman.model.world.core.Tile;
  */
 public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
-	final PacMan pacMan;
-	final Game game;
-	final World world;
+	private final WorldMover me;
+	private WorldGraph graph;
+	private Ghost enemy;
+	private int distance;
+	private Direction newDir;
 
-	public SearchingForFoodAndAvoidingGhosts(World world, Game game) {
-		this.world = world;
-		this.game = game;
-		this.pacMan = world.population().pacMan();
+	public SearchingForFoodAndAvoidingGhosts(Creature<?> me) {
+		this.me = me;
+		graph = new WorldGraph(me.world());
+		PacManApp.settings.pathFinder = "bestfs";
 	}
 
 	@Override
@@ -41,69 +43,127 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 
 	@Override
 	public void steer() {
-		if (pacMan.canCrossBorderTo(pacMan.moveDir()) && !pacMan.enteredNewTile()) {
-			return; // no decision necessary, move on
-		}
-		if (isDangerousGhostApproaching()) {
-			pacMan.reverseDirection();
+		if (!me.enteredNewTile() && me.canCrossBorderTo(me.moveDir())) {
 			return;
 		}
-		Direction[] dirsShuffled = Direction.values();
-		Collections.shuffle(Arrays.asList(dirsShuffled));
-		int minDistance = Integer.MAX_VALUE;
-		for (Direction dir : dirsShuffled) {
-			if (dir == pacMan.moveDir().opposite()) {
-				continue;
-			}
-			if (pacMan.canCrossBorderTo(dir)) {
-				Tile neighbor = world.neighbor(pacMan.tile(), dir);
-				Optional<Tile> foodLocation = preferredFoodLocationFrom(neighbor);
-				if (foodLocation.isPresent()) {
-					int d = neighbor.manhattanDistance(foodLocation.get());
-					if (d < minDistance) {
-						pacMan.setWishDir(dir);
-						minDistance = d;
+
+		// is dangerous ghost just in front of me moving in the same direction?
+		enemy = dangerousGhostInRange(1).filter(ghost -> me.moveDir() == ghost.moveDir()).orElse(null);
+		if (enemy != null) {
+			me.reverseDirection();
+			return;
+		}
+
+		// is dangerous ghost coming directly towards me?
+		enemy = dangerousGhostInRange(4).filter(ghost -> me.moveDir() == ghost.moveDir().opposite()).orElse(null);
+		if (enemy != null) {
+			me.setWishDir(enemy.moveDir());
+			me.forceMoving(me.wishDir());
+			return;
+		}
+
+		// is dangerous ghost nearby?
+		enemy = dangerousGhostInRange(10).orElse(null);
+		if (enemy != null) {
+			distance = -1;
+			Direction.dirsShuffled().forEach(dir -> {
+				Tile neighbor = me.world().neighbor(me.tile(), dir);
+				if (me.world().isAccessible(neighbor)) {
+					int d = distance(neighbor, enemy.tile());
+					if (d > distance) {
+						d = distance;
+						newDir = dir;
 					}
 				}
+			});
+			if (newDir != me.moveDir().opposite()) {
+				me.setWishDir(newDir);
+				return;
 			}
+		}
+
+		// determine direction for finding food
+		distance = Integer.MAX_VALUE;
+		//@formatter:off
+		dirsInOrder()
+			.filter(me::canCrossBorderTo)
+			.forEach(dir -> {
+				Tile neighbor = me.world().neighbor(me.tile(), dir);
+				preferredFoodLocationFrom(neighbor).ifPresent(foodLocation -> {
+					int d = neighbor.manhattanDistance(foodLocation);
+					if (d < distance) {
+						newDir = dir;
+						distance = d;
+					}
+				});
+			});
+		//@formatter:off
+		if (newDir != me.moveDir().opposite()) {
+			me.setWishDir(newDir);
+			return;
 		}
 	}
 
-	Stream<Tile> foodTiles() {
-		return world.habitatTiles().filter(world::containsFood);
-	}
 
-	Optional<Tile> preferredFoodLocationFrom(Tile here) {
-		return activeBonusAtMostAway(here, 20).or(() -> energizerAtMostAwayFrom(here, 10)).or(() -> nearestFoodFrom(here));
-	}
-
-	Optional<Tile> activeBonusAtMostAway(Tile here, int maxDistance) {
-		return world.getBonus().isPresent() && world.getBonus().get().state == BonusState.ACTIVE
-				&& here.manhattanDistance(world.bonusTile()) <= maxDistance ? Optional.of(world.bonusTile()) : Optional.empty();
-	}
-
-	Optional<Tile> energizerAtMostAwayFrom(Tile here, int maxDistance) {
+	private Stream<Ghost> dangerousGhosts() {
 		//@formatter:off
-		return foodTiles()
-				.filter(world::containsEnergizer)
-				.filter(energizer -> here.manhattanDistance(energizer) <= maxDistance)
-				.findAny();
+		return me.world().population().ghosts()
+				.filter(me.world()::included)
+				.filter(ghost -> ghost.getState() == GhostState.CHASING || ghost.getState() == GhostState.SCATTERING);
 		//@formatter:on
 	}
 
-	Optional<Tile> nearestFoodFrom(Tile here) {
-		return foodTiles().sorted(comparingInt(food -> manhattanDistance(here, food))).findFirst();
+	private Optional<Ghost> dangerousGhostInRange(int dist) {
+		//@formatter:off
+		return dangerousGhosts()
+			.filter(ghost -> distance(ghost.tile(), me.tile()) <= dist)
+			.findAny();
+		//@formatter:on
+	}
+	
+	private Stream<Direction> dirsInOrder() {
+		return Stream.of(me.moveDir(), me.moveDir().right(), me.moveDir().left());
 	}
 
-	boolean isDangerousGhostApproaching() {
-		Tile pacManLocation = pacMan.tile();
-		Tile ahead1 = world.neighbor(pacManLocation, pacMan.moveDir());
-		Tile ahead2 = world.tileToDir(pacManLocation, pacMan.moveDir(), 2);
+	private int distance(Stream<Ghost> ghosts) {
+		return ghosts.mapToInt(ghost -> distance(me.tile(), ghost.tile())).min().orElse(Integer.MAX_VALUE);
+	}
+
+	private int distance(Tile from, Tile to) {
+		return graph.shortestPath(from, to).size();
+	}
+
+	private Stream<Tile> foodTiles() {
+		return me.world().habitatTiles().filter(me.world()::containsFood);
+	}
+
+	private Optional<Tile> preferredFoodLocationFrom(Tile here) {
+		return activeBonusAtMostAway(here, 40).or(() -> energizerAtMostAway(here, 20)).or(() -> nearestFoodFrom(here));
+	}
+
+	private Optional<Tile> activeBonusAtMostAway(Tile here, int maxDistance) {
 		//@formatter:off
-		return world.population().ghosts().filter(world::included).anyMatch(
-				ghost -> !ghost.is(GhostState.FRIGHTENED) 
-				&& (ghost.tile().equals(ahead1) || ghost.tile().equals(ahead2))
-				&& ghost.moveDir() == pacMan.moveDir().opposite());
+		return me.world().getBonus()
+				.filter(bonus -> bonus.state == BonusState.ACTIVE)
+				.filter(bonus -> here.manhattanDistance(me.world().bonusTile()) <= maxDistance)
+				.map(bonus -> me.world().bonusTile());
+		//@formatter:on
+	}
+
+	private Optional<Tile> energizerAtMostAway(Tile here, int distance) {
+		//@formatter:off
+		return foodTiles()
+				.filter(me.world()::containsEnergizer)
+				.filter(energizer -> here.manhattanDistance(energizer) <= distance)
+				.findFirst();
+		//@formatter:on
+	}
+
+	private Optional<Tile> nearestFoodFrom(Tile here) {
+		//@formatter:off
+		return foodTiles()
+				.sorted(comparingInt(food -> here.manhattanDistance(food)))
+				.findFirst();
 		//@formatter:on
 	}
 }

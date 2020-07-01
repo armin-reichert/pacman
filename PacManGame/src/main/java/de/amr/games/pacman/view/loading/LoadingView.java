@@ -37,7 +37,7 @@ public class LoadingView extends BaseView {
 	@Override
 	public void init() {
 		pacMan = world.population().pacMan();
-		pacMan.takeClothes(theme);
+		pacMan.applyTheme(theme);
 		pacMan.init();
 		pacMan.setState(PacManState.EATING);
 		ghostCount = 0;
