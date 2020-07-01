@@ -478,7 +478,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 			if (game.isBonusDue()) {
 				bonusControl.activateBonus();
-				loginfo("Bonus %s activated, time: %.2f sec", bonusControl, bonusControl.state().getDuration() / 60f);
 			}
 			if (found.energizer && game.level.pacManPowerSeconds > 0) {
 				sound.pacManGainsPower();

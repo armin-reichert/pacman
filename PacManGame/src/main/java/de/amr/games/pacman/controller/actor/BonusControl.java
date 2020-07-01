@@ -1,5 +1,6 @@
 package de.amr.games.pacman.controller.actor;
 
+import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.model.Game.sec;
 import static de.amr.games.pacman.model.world.core.BonusState.ACTIVE;
 import static de.amr.games.pacman.model.world.core.BonusState.CONSUMED;
@@ -62,6 +63,7 @@ public class BonusControl extends StateMachine<BonusState, PacManGameEvent> {
 
 	public void activateBonus() {
 		setState(ACTIVE);
+		loginfo("Bonus %s activated, time: %.2f sec", this, state().getDuration() / 60f);
 	}
 
 	public void deactivateBonus() {
