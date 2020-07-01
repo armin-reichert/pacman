@@ -46,6 +46,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
+import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.Universe;
@@ -80,7 +81,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected BaseView currentView;
 
 	protected GhostCommand ghostCommand;
-	protected GhostHouseAccess ghostHouseAccess;
+	protected GhostHouseAccessControl ghostHouseAccess;
 	protected BonusControl bonusControl;
 
 	public GameController() {
@@ -99,7 +100,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void createEnvironment() {
 		game = new Game(settings.startLevel, world.totalFoodCount());
 		ghostCommand = new GhostCommand(game, world.population().ghosts());
-		ghostHouseAccess = new GhostHouseAccess(game, world);
+		ghostHouseAccess = new GhostHouseAccessControl(game, world);
 		bonusControl = new BonusControl(world, game, theme);
 
 		playView = new PlayView(world, game, theme);
@@ -131,7 +132,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return Optional.ofNullable(ghostCommand);
 	}
 
-	public Optional<GhostHouseAccess> ghostHouseAccess() {
+	public Optional<GhostHouseAccessControl> ghostHouseAccess() {
 		return Optional.of(ghostHouseAccess);
 	}
 

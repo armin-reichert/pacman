@@ -12,14 +12,18 @@ import de.amr.games.pacman.model.Direction;
  */
 public class Door {
 
+	public enum DoorState {
+		OPEN, CLOSED
+	}
+
 	public final Direction intoHouse;
 	public final List<Tile> tiles;
-	public boolean open;
+	public DoorState state;
 
 	public Door(Direction intoHouse, Tile... tiles) {
 		this.tiles = Arrays.asList(tiles);
 		this.intoHouse = intoHouse;
-		open = false;
+		state = DoorState.CLOSED;
 	}
 
 	public boolean includes(Tile tile) {
