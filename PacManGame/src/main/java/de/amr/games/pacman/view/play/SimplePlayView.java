@@ -2,7 +2,6 @@ package de.amr.games.pacman.view.play;
 
 import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
 import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.view.core.EntityRenderer.drawEntity;
 import static de.amr.games.pacman.view.play.SimplePlayView.MazeMode.CROWDED;
@@ -25,7 +24,7 @@ import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.core.BonusState;
-import de.amr.games.pacman.model.world.core.House;
+import de.amr.games.pacman.model.world.core.Door.DoorState;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.core.BaseView;
 import de.amr.games.pacman.view.theme.Theme;
@@ -241,7 +240,7 @@ public class SimplePlayView extends BaseView {
 		@Override
 		public void draw(Graphics2D g) {
 			if (getState() == CROWDED) {
-				drawCrowdedMaze(g);
+				drawMaze(g);
 			} else if (getState() == EMPTY) {
 				spriteEmptyMaze.draw(g, 0, 3 * Tile.SIZE);
 			} else if (getState() == FLASHING) {
@@ -249,48 +248,31 @@ public class SimplePlayView extends BaseView {
 			}
 		}
 
-		private void drawCrowdedMaze(Graphics2D g) {
+		private void drawMaze(Graphics2D g) {
 			spriteFullMaze.draw(g, 0, 3 * Tile.SIZE);
-			// custom tunnels
-			world.habitatTiles().filter(world::isTunnel).forEach(tile -> {
-				g.setColor(tileColor(tile));
-				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
-			});
 			// hide eaten food
 			world.habitatTiles().filter(world::containsEatenFood).forEach(tile -> {
 				g.setColor(tileColor(tile));
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
-			// hide active energizers when blinking animation is in dark phase
+			// simulate energizer blinking animation
 			if (energizersBlinking.currentFrameIndex() == 1) {
 				world.habitatTiles().filter(world::containsEnergizer).forEach(tile -> {
 					g.setColor(tileColor(tile));
 					g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 				});
-			} else {
-				world.habitatTiles().filter(world::containsEnergizer).forEach(tile -> {
-					g.setColor(Color.PINK);
-					g.fillOval(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
-				});
 			}
-			// draw bonus if active or consumed
-			world.getBonus().ifPresent(bonus -> {
-				Image img = bonus.state == BonusState.CONSUMED ? theme.spr_number(bonus.value).frame(0)
-						: theme.spr_bonusSymbol(bonus.symbol).frame(0);
-				int x = world.bonusTile().x(), y = world.bonusTile().y() - Tile.SIZE / 2;
-				g.drawImage(img, x, y, null);
+			// draw bonus when active or consumed
+			world.getBonus().filter(bonus -> bonus.state != BonusState.INACTIVE).ifPresent(bonus -> {
+				Sprite sprite = bonus.state == BonusState.CONSUMED ? theme.spr_number(bonus.value)
+						: theme.spr_bonusSymbol(bonus.symbol);
+				g.drawImage(sprite.frame(0), world.bonusTile().x(), world.bonusTile().y() - Tile.SIZE / 2, null);
 			});
-			House theHouse = world.theHouse();
-			// draw door open when touched by ghost entering or leaving the house
-			world.population().ghosts().filter(world::isOnStage).filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE))
-					.forEach(ghost -> {
-						theHouse.doors().filter(door -> door.includes(ghost.tile())).forEach(door -> {
-							g.setColor(Color.BLACK);
-							door.tiles.forEach(tile -> {
-								g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
-							});
-						});
-					});
+			// draw doors depending on their state
+			world.theHouse().doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {
+				g.setColor(Color.BLACK);
+				door.tiles.forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
+			});
 		}
 	}
 }

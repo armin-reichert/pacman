@@ -66,6 +66,6 @@ public class BonusControl extends StateMachine<BonusState, PacManGameEvent> {
 	}
 
 	public void deactivateBonus() {
-		setState(INACTIVE);
+		init();
 	}
 }

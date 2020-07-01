@@ -110,7 +110,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		game = new Game(settings.startLevel, world.totalFoodCount());
 
 		ghostCommand = new GhostCommand(game, world.population().ghosts());
-		ghostHouseAccess = new GhostHouseAccessControl(game, world);
+		ghostHouseAccess = new GhostHouseAccessControl(game, world, world.theHouse());
 		bonusControl = new BonusControl(world, game, theme);
 
 		playView = new PlayView(world, game, theme);
@@ -494,6 +494,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		private void reset() {
+			bonusControl.deactivateBonus();
 			sound.resumePlayingMusic();
 			ghostCommand.init();
 			creaturesOnStage().forEach(ghost -> ghost.init());

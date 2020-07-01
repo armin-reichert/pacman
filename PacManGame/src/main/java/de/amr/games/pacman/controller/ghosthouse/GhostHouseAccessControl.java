@@ -1,6 +1,8 @@
 package de.amr.games.pacman.controller.ghosthouse;
 
 import static de.amr.easy.game.Application.loginfo;
+import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.ghosthouse.Decision.confirmed;
 import static de.amr.games.pacman.controller.ghosthouse.Decision.rejected;
@@ -15,6 +17,8 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.core.Door;
+import de.amr.games.pacman.model.world.core.House;
 
 /**
  * This class controls when and in which order locked ghosts can leave the ghost house.
@@ -28,6 +32,7 @@ public class GhostHouseAccessControl implements Lifecycle {
 
 	private final Game game;
 	private final World world;
+	private final House house;
 	private final Ghost blinky;
 	private final Ghost pinky;
 	private final Ghost inky;
@@ -36,9 +41,10 @@ public class GhostHouseAccessControl implements Lifecycle {
 	private final int[] ghostCounters;
 	private int pacManStarvingTicks;
 
-	public GhostHouseAccessControl(Game game, World world) {
+	public GhostHouseAccessControl(Game game, World world, House house) {
 		this.game = game;
 		this.world = world;
+		this.house = house;
 		blinky = world.population().blinky();
 		pinky = world.population().pinky();
 		inky = world.population().inky();
@@ -64,6 +70,8 @@ public class GhostHouseAccessControl implements Lifecycle {
 			}
 		});
 		pacManStarvingTicks += 1;
+		boolean traffic = Stream.of(blinky, pinky, inky, clyde).anyMatch(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE));
+		house.doors().forEach(door -> door.state = traffic ? Door.DoorState.OPEN : Door.DoorState.CLOSED);
 	}
 
 	/**
