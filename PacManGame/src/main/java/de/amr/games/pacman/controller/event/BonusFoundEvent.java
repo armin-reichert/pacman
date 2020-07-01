@@ -1,6 +1,6 @@
 package de.amr.games.pacman.controller.event;
 
-public class BonusFoundEvent extends PacManGameEvent {
+public class BonusFoundEvent implements PacManGameEvent {
 
 	@Override
 	public String toString() {

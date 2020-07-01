@@ -15,7 +15,6 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.model.world.core.WorldGraph;
-import de.amr.graph.grid.api.GridGraph2D;
 
 /**
  * Steering used by PacMan in demo mode.

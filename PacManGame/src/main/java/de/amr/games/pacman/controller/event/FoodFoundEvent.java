@@ -2,7 +2,7 @@ package de.amr.games.pacman.controller.event;
 
 import de.amr.games.pacman.model.world.core.Tile;
 
-public class FoodFoundEvent extends PacManGameEvent {
+public class FoodFoundEvent implements PacManGameEvent {
 
 	public final Tile tile;
 
