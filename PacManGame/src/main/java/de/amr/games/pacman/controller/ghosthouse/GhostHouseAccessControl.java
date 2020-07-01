@@ -70,8 +70,9 @@ public class GhostHouseAccessControl implements Lifecycle {
 			}
 		});
 		pacManStarvingTicks += 1;
-		boolean traffic = Stream.of(blinky, pinky, inky, clyde).anyMatch(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE));
-		house.doors().forEach(door -> door.state = traffic ? Door.DoorState.OPEN : Door.DoorState.CLOSED);
+		boolean open = world.population().ghosts().filter(world::included).count() > 0
+				&& world.population().ghosts().anyMatch(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE));
+		house.doors().forEach(door -> door.state = open ? Door.DoorState.OPEN : Door.DoorState.CLOSED);
 	}
 
 	/**
