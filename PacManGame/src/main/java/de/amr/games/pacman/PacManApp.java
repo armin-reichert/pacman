@@ -10,7 +10,6 @@ import de.amr.easy.game.ui.f2dialog.F2DialogAPI;
 import de.amr.games.pacman.controller.EnhancedGameController;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
-import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
@@ -62,8 +61,8 @@ public class PacManApp extends Application {
 
 	@Override
 	protected void configure(AppSettings settings) {
-		settings.width = 28 * Tile.SIZE;
-		settings.height = 36 * Tile.SIZE;
+		settings.width = 224;
+		settings.height = 288;
 		settings.scale = 2;
 		settings.title = Localized.texts.getString("app.title");
 		settings.fullScreenMode = new DisplayMode(400, 300, 32, 50);
@@ -92,13 +91,13 @@ public class PacManApp extends Application {
 	}
 
 	@Override
-	public void configureF2Dialog(F2DialogAPI dialog) {
+	public void configureF2Dialog(F2DialogAPI f2) {
 		GameStateView gameStateView = new GameStateView();
 		GameLevelView gameLevelView = new GameLevelView();
 		GameController gameController = (GameController) getController();
 		gameStateView.attachTo(gameController);
 		gameLevelView.attachTo(gameController);
-		dialog.addCustomTab("Game State", gameStateView, () -> gameController.game().isPresent());
-		dialog.addCustomTab("Game Level", gameLevelView, () -> gameController.game().isPresent());
+		f2.addCustomTab("Game State", gameStateView, () -> gameController.game().isPresent());
+		f2.addCustomTab("Game Level", gameLevelView, () -> gameController.game().isPresent());
 	}
 }
