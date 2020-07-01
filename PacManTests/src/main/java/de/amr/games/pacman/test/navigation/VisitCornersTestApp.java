@@ -6,7 +6,7 @@ import java.util.List;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.actor.GhostState;
-import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.core.Tile;
 
 public class VisitCornersTestApp extends Application {
 

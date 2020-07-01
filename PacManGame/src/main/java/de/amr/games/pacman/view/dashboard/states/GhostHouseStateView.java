@@ -21,7 +21,7 @@ import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostHouseAccess;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.world.Habitat;
+import de.amr.games.pacman.model.world.core.Habitat;
 import de.amr.games.pacman.view.theme.Theme;
 import net.miginfocom.swing.MigLayout;
 

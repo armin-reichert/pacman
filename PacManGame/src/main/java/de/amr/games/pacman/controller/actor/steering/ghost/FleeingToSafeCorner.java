@@ -9,9 +9,9 @@ import java.util.List;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.WorldMover;
 import de.amr.games.pacman.controller.actor.steering.common.TakingPrecomputedPath;
-import de.amr.games.pacman.model.world.FoodContainer;
-import de.amr.games.pacman.model.world.Tile;
-import de.amr.games.pacman.model.world.WorldGraph;
+import de.amr.games.pacman.model.world.core.FoodContainer;
+import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.core.WorldGraph;
 
 /**
  * Lets a ghost escape to the "safest" maze corner depending on Pac-Man's current position. The

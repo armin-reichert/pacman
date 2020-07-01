@@ -14,10 +14,10 @@ import de.amr.games.pacman.controller.actor.Ghost.Sanity;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.Bonus;
-import de.amr.games.pacman.model.world.BonusState;
-import de.amr.games.pacman.model.world.World;
-import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.arcade.Bonus;
+import de.amr.games.pacman.model.world.arcade.BonusState;
+import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.core.World;
 
 /**
  * Data model of the table displaying actor data.

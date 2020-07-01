@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model.world;
+package de.amr.games.pacman.model.world.arcade;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -7,13 +7,22 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.core.AbstractWorld;
+import de.amr.games.pacman.model.world.core.Bed;
+import de.amr.games.pacman.model.world.core.Door;
+import de.amr.games.pacman.model.world.core.House;
+import de.amr.games.pacman.model.world.core.OneWayTile;
+import de.amr.games.pacman.model.world.core.Population;
+import de.amr.games.pacman.model.world.core.Portal;
+import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.core.WorldMap;
 
 /**
  * Map-based Pac-Man game world implementation.
  * 
  * @author Armin Reichert
  */
-class ArcadeWorld extends AbstractWorld {
+public class ArcadeWorld extends AbstractWorld {
 
 	static final byte[][] DATA = {
 			//@formatter:off

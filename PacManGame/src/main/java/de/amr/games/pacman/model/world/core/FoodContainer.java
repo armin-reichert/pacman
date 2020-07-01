@@ -1,6 +1,8 @@
-package de.amr.games.pacman.model.world;
+package de.amr.games.pacman.model.world.core;
 
 import java.util.Optional;
+
+import de.amr.games.pacman.model.world.arcade.Bonus;
 
 /**
  * Food-related functions.

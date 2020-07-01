@@ -1,12 +1,12 @@
-package de.amr.games.pacman.model.world;
+package de.amr.games.pacman.model.world.core;
 
 import static de.amr.easy.game.Application.loginfo;
-import static de.amr.games.pacman.model.world.WorldMap.B_EATEN;
-import static de.amr.games.pacman.model.world.WorldMap.B_ENERGIZER;
-import static de.amr.games.pacman.model.world.WorldMap.B_FOOD;
-import static de.amr.games.pacman.model.world.WorldMap.B_INTERSECTION;
-import static de.amr.games.pacman.model.world.WorldMap.B_TUNNEL;
-import static de.amr.games.pacman.model.world.WorldMap.B_WALL;
+import static de.amr.games.pacman.model.world.core.WorldMap.B_EATEN;
+import static de.amr.games.pacman.model.world.core.WorldMap.B_ENERGIZER;
+import static de.amr.games.pacman.model.world.core.WorldMap.B_FOOD;
+import static de.amr.games.pacman.model.world.core.WorldMap.B_INTERSECTION;
+import static de.amr.games.pacman.model.world.core.WorldMap.B_TUNNEL;
+import static de.amr.games.pacman.model.world.core.WorldMap.B_WALL;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.arcade.Bonus;
 
 public abstract class AbstractWorld implements World {
 

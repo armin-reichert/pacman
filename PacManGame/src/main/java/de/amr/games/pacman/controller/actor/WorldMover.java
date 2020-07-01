@@ -1,8 +1,8 @@
 package de.amr.games.pacman.controller.actor;
 
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.world.World;
-import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.core.World;
 
 /**
  * Implemented by entities that can move through the world.

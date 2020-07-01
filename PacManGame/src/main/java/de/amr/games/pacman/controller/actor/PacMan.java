@@ -23,9 +23,9 @@ import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
-import de.amr.games.pacman.model.world.Bonus;
-import de.amr.games.pacman.model.world.BonusState;
-import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.arcade.Bonus;
+import de.amr.games.pacman.model.world.arcade.BonusState;
+import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 

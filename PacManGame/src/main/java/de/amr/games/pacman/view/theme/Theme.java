@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import de.amr.easy.game.assets.SoundClip;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.world.Symbol;
+import de.amr.games.pacman.model.world.arcade.Symbol;
 
 /**
  * Interface for accessing Pac-Man game specific UI resources.

@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model.world;
+package de.amr.games.pacman.model.world.core;
 
 import java.util.Objects;
 import java.util.Optional;

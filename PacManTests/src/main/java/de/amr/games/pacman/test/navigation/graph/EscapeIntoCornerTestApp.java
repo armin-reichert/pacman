@@ -5,7 +5,7 @@ import static de.amr.games.pacman.controller.actor.PacManState.EATING;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
-import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.test.navigation.TestUI;
 
 public class EscapeIntoCornerTestApp extends Application {

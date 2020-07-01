@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.amr.games.pacman.model.world.Symbol;
+import de.amr.games.pacman.model.world.arcade.Symbol;
 
 /**
  * The "model" (in MVC speak) of the Pac-Man game.

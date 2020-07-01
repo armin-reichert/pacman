@@ -4,7 +4,7 @@ import java.util.concurrent.CompletableFuture;
 
 import de.amr.easy.game.assets.SoundClip;
 import de.amr.games.pacman.controller.actor.GhostState;
-import de.amr.games.pacman.model.world.Habitat;
+import de.amr.games.pacman.model.world.core.Habitat;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**

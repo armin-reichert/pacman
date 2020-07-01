@@ -8,9 +8,9 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.world.World;
-import de.amr.games.pacman.model.world.Tile;
-import de.amr.games.pacman.model.world.WorldGraph;
+import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.model.world.core.World;
+import de.amr.games.pacman.model.world.core.WorldGraph;
 import de.amr.games.pacman.model.world.Universe;
 import de.amr.graph.grid.ui.rendering.ConfigurableGridRenderer;
 import de.amr.graph.grid.ui.rendering.GridCanvas;

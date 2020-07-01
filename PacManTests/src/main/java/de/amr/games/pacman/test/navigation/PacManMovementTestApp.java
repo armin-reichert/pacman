@@ -9,7 +9,7 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
-import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.core.Tile;
 
 public class PacManMovementTestApp extends Application {
 

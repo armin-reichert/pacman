@@ -9,8 +9,8 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.world.Portal;
-import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.core.Portal;
+import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.statemachine.core.StateMachine;
 
 /**

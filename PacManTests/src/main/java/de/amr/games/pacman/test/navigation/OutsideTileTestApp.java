@@ -3,7 +3,7 @@ package de.amr.games.pacman.test.navigation;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.controller.actor.GhostState;
-import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.core.Tile;
 
 /**
  * Test for heading for a tile outside of the maze.

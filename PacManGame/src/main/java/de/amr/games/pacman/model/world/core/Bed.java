@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model.world;
+package de.amr.games.pacman.model.world.core;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.Direction;

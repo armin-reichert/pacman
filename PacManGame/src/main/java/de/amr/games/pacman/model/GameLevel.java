@@ -1,6 +1,6 @@
 package de.amr.games.pacman.model;
 
-import de.amr.games.pacman.model.world.Symbol;
+import de.amr.games.pacman.model.world.arcade.Symbol;
 
 /**
  * Data structure storing the level-specific values.

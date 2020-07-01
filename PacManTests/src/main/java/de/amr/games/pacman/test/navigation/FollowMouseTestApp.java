@@ -5,7 +5,7 @@ import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Mouse;
-import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.core.Tile;
 
 public class FollowMouseTestApp extends Application {
 

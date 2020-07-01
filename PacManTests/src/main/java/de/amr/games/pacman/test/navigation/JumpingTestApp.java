@@ -2,7 +2,7 @@ package de.amr.games.pacman.test.navigation;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
-import de.amr.games.pacman.model.world.Tile;
+import de.amr.games.pacman.model.world.core.Tile;
 
 public class JumpingTestApp extends Application {
 
