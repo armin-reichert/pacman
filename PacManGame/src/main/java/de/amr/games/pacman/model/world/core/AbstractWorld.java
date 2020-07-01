@@ -208,7 +208,7 @@ public abstract class AbstractWorld implements World {
 	}
 
 	@Override
-	public void removeFood() {
+	public void clearFood() {
 		for (int row = 0; row < height(); ++row) {
 			for (int col = 0; col < width(); ++col) {
 				if (worldMap.is(row, col, B_FOOD)) {
@@ -219,7 +219,7 @@ public abstract class AbstractWorld implements World {
 	}
 
 	@Override
-	public void createFood() {
+	public void fillFood() {
 		for (int row = 0; row < height(); ++row) {
 			for (int col = 0; col < width(); ++col) {
 				if (worldMap.is(row, col, B_FOOD)) {

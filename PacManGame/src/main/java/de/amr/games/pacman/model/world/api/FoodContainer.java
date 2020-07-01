@@ -14,9 +14,9 @@ public interface FoodContainer {
 
 	int totalFoodCount();
 
-	void removeFood();
+	void clearFood();
 
-	void createFood();
+	void fillFood();
 
 	boolean containsFood(Tile tile);
 

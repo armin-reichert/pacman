@@ -321,7 +321,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						// After two more seconds, change level and show crowded maze.
 						if (t == sec(4 + flashingSeconds)) {
 							game.enterLevel(game.level.number + 1);
-							world.createFood();
+							world.fillFood();
 							creaturesOnStage().forEach(Creature::init);
 							playView.init();
 						}
@@ -402,7 +402,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						});
 					})
 					.onExit(() -> {
-						world.createFood();
+						world.fillFood();
 						ghostsOnStage().forEach(Ghost::init);
 						playView.clearMessage();
 						sound.stopAll();

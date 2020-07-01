@@ -51,7 +51,7 @@ class PacManMovementTestUI extends TestUI {
 				world.removeFood(foodFound.tile);
 				game.level.eatenFoodCount++;
 				if (game.level.remainingFoodCount() == 0) {
-					world.createFood();
+					world.fillFood();
 					game.level.eatenFoodCount = 0;
 				}
 			}

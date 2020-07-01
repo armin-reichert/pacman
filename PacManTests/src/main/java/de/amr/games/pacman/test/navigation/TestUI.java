@@ -46,7 +46,7 @@ public class TestUI implements Lifecycle, VisualController {
 
 	public TestUI() {
 		world = Universe.arcadeWorld();
-		world.removeFood();
+		world.clearFood();
 		game = new Game(1, world.totalFoodCount());
 
 		aliens = new DefaultPopulation();
