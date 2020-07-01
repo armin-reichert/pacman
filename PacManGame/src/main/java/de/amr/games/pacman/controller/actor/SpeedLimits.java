@@ -1,9 +1,7 @@
-package de.amr.games.pacman.controller;
+package de.amr.games.pacman.controller.actor;
 
 import static de.amr.games.pacman.controller.actor.PacManState.EATING;
 
-import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.GameLevel;
 

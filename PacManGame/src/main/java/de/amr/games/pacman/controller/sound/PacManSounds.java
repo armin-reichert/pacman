@@ -1,4 +1,4 @@
-package de.amr.games.pacman.controller;
+package de.amr.games.pacman.controller.sound;
 
 import java.util.concurrent.CompletableFuture;
 
