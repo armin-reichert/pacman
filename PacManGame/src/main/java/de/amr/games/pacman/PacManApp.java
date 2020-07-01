@@ -65,7 +65,7 @@ public class PacManApp extends Application {
 		settings.height = 288;
 		settings.scale = 2;
 		settings.title = Localized.texts.getString("app.title");
-		settings.fullScreenMode = new DisplayMode(400, 300, 32, 50);
+		settings.fullScreenMode = new DisplayMode(800, 600, 32, 50);
 		PacManStateMachineLogging.setEnabled(false);
 	}
 

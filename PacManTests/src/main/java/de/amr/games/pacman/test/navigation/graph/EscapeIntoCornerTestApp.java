@@ -1,7 +1,6 @@
 package de.amr.games.pacman.test.navigation.graph;
 
 import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.controller.actor.PacManState.EATING;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
@@ -34,10 +33,10 @@ class EscapeIntoCornerTestUI extends TestUI {
 	public void init() {
 		super.init();
 		include(pacMan, blinky);
-		pacMan.setState(EATING);
 		blinky.behavior(FRIGHTENED, blinky.isFleeingToSafeCorner(pacMan));
 		blinky.setState(FRIGHTENED);
 		view.showingRoutes = true;
 		view.showingStates = true;
+		pacMan.start();
 	}
 }

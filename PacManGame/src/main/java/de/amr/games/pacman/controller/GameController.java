@@ -36,7 +36,6 @@ import de.amr.games.pacman.controller.actor.DefaultPopulation;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.controller.actor.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -403,14 +402,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		private void reset() {
-			bonusControl.deactivateBonus();
-			sound.resumePlayingMusic();
+			bonusControl.init();
 			ghostCommand.init();
-			creaturesOnStage().forEach(ghost -> ghost.init());
-			pacMan.setState(PacManState.EATING);
+			creaturesOnStage().forEach(Creature::init);
 			playView.init();
 			playView.enableGhostAnimations(true);
 			playView.mazeView.energizersBlinking.setEnabled(true);
+			sound.resumePlayingMusic();
+			pacMan.start();
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {

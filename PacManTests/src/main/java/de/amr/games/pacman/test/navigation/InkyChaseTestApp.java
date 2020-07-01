@@ -8,7 +8,6 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.world.core.Tile;
 
@@ -48,7 +47,7 @@ class InkyChaseTestUI extends TestUI {
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
-			pacMan.setState(PacManState.EATING);
+			pacMan.start();
 			view.clearMessage();
 		}
 		super.update();

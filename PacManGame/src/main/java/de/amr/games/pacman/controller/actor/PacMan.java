@@ -2,7 +2,7 @@ package de.amr.games.pacman.controller.actor;
 
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.controller.actor.PacManState.DEAD;
-import static de.amr.games.pacman.controller.actor.PacManState.EATING;
+import static de.amr.games.pacman.controller.actor.PacManState.RUNNING;
 import static de.amr.games.pacman.controller.actor.PacManState.SLEEPING;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
@@ -61,7 +61,7 @@ public class PacMan extends Creature<PacManState> {
 						showFull();
 					})
 
-				.state(EATING)
+				.state(RUNNING)
 					.onEntry(() -> {
 						digestion = 0;
 					})
@@ -92,7 +92,7 @@ public class PacMan extends Creature<PacManState> {
 
 			.transitions()
 
-				.when(EATING).then(DEAD).on(PacManKilledEvent.class)
+				.when(RUNNING).then(DEAD).on(PacManKilledEvent.class)
 
 		.endStateMachine();
 		/* @formatter:on */
@@ -106,6 +106,10 @@ public class PacMan extends Creature<PacManState> {
 		dirs().forEach(dir -> sprites.set("walking-" + dir, theme.spr_pacManWalking(dir)));
 		sprites.set("dying", theme.spr_pacManDying());
 		sprites.set("full", theme.spr_pacManFull());
+	}
+	
+	public void start() {
+		setState(RUNNING);
 	}
 
 	public Sprite showWalking() {
@@ -123,12 +127,12 @@ public class PacMan extends Creature<PacManState> {
 	}
 
 	/**
-	 * Defines the steering used in the {@link PacManState#EATING} state.
+	 * Defines the steering used in the {@link PacManState#RUNNING} state.
 	 * 
 	 * @param steering steering to use in every state
 	 */
 	public void behavior(Steering steering) {
-		behavior(EATING, steering);
+		behavior(RUNNING, steering);
 	}
 
 	@Override

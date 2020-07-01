@@ -190,12 +190,9 @@ public class PlayView extends SimplePlayView {
 		if (!pacMan.visible) {
 			return;
 		}
-		if (pacMan.getState() == null) {
-			return; // may happen in test applications where Pac-Man is not used
-		}
 		String text = pacMan.power > 0 ? String.format("POWER(%d)", pacMan.power) : pacMan.getState().name();
 		if (settings.pacManImmortable) {
-			text += "immortable";
+			text += " immortable";
 		}
 		drawEntityState(g, pacMan, text, Color.YELLOW);
 	}

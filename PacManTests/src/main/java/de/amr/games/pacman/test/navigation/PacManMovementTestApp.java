@@ -7,7 +7,6 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
-import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.model.world.core.Tile;
 
@@ -52,23 +51,19 @@ class PacManMovementTestUI extends TestUI {
 				}
 			}
 		});
-		pacMan.setState(PacManState.EATING);
 		view.showingGrid = true;
 		view.mazeView.energizersBlinking.setEnabled(true);
 		view.showMessage("SPACE changes steering", Color.WHITE);
+		pacMan.start();
 	}
 
 	@Override
 	public void update() {
-		handleSteeringChange();
-		super.update();
-	}
-
-	private void handleSteeringChange() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			steeringIndex = (steeringIndex + 1) % 3;
 			changeSteering();
 		}
+		super.update();
 	}
 
 	private void changeSteering() {

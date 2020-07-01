@@ -1,6 +1,6 @@
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.controller.actor.PacManState.EATING;
+import static de.amr.games.pacman.controller.actor.PacManState.RUNNING;
 
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
@@ -61,6 +61,6 @@ public class SpeedLimits {
 
 	public static float pacManSpeedLimit(PacMan pacMan, Game game) {
 		GameLevel level = game.level;
-		return pacMan.is(EATING) ? speed(pacMan.power > 0 ? level.pacManPowerSpeed : level.pacManSpeed) : 0;
+		return pacMan.is(RUNNING) ? speed(pacMan.power > 0 ? level.pacManPowerSpeed : level.pacManSpeed) : 0;
 	}
 }

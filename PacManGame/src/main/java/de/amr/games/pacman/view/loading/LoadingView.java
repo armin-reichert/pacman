@@ -9,7 +9,6 @@ import java.util.Random;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -39,7 +38,7 @@ public class LoadingView extends BaseView {
 		pacMan = world.population().pacMan();
 		pacMan.applyTheme(theme);
 		pacMan.init();
-		pacMan.setState(PacManState.EATING);
+		pacMan.start();
 		ghostCount = 0;
 		ghostInc = 1;
 	}
