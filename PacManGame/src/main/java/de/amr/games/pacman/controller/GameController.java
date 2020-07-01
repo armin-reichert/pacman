@@ -111,7 +111,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		ghostCommand = new GhostCommand(game, world.population().ghosts());
 		ghostHouseAccess = new GhostHouseAccessControl(game, world, world.theHouse());
-		bonusControl = new BonusControl(world, game, theme);
+		bonusControl = new BonusControl(game, world);
 
 		playView = new PlayView(world, game, theme);
 		playView.ghostCommand = ghostCommand;

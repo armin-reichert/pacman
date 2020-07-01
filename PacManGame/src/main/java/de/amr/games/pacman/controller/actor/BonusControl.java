@@ -14,7 +14,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Bonus;
 import de.amr.games.pacman.model.world.core.BonusState;
-import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -26,7 +25,7 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class BonusControl extends StateMachine<BonusState, PacManGameEvent> {
 
-	public BonusControl(World world, Game game, Theme theme) {
+	public BonusControl(Game game, World world) {
 		super(BonusState.class);
 		/*@formatter:off*/
 		beginStateMachine()
