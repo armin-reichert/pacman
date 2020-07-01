@@ -106,7 +106,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		app().onEntry(ApplicationState.CLOSING, state -> saveScore());
 	}
 
-	private void createEnvironment() {
+	private void newGame() {
 		game = new Game(settings.startLevel, world.totalFoodCount());
 
 		ghostCommand = new GhostCommand(game, world.population().ghosts());
@@ -274,9 +274,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(GETTING_READY)
 					.timeoutAfter(sec(7))
 					.onEntry(() -> {
-						createEnvironment();
-						showView(playView);
 						sound.gameReady();
+						newGame();
+						showView(playView);
 					})
 					.onTick((state, t, remaining) -> {
 						if (t == sec(5)) {
