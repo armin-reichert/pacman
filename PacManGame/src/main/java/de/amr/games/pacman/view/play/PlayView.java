@@ -175,7 +175,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawActorStates(Graphics2D g) {
-		world.population().ghosts().filter(world::isOnStage).forEach(ghost -> drawGhostState(g, ghost));
+		world.population().ghosts().filter(world::included).forEach(ghost -> drawGhostState(g, ghost));
 		drawPacManState(g, world.population().pacMan());
 		drawBonusState(g);
 	}
@@ -247,7 +247,7 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawActorOffTrack(Graphics2D g) {
-		world.population().creatures().filter(world::isOnStage).forEach(actor -> drawActorOffTrack(actor, g));
+		world.population().creatures().filter(world::included).forEach(actor -> drawActorOffTrack(actor, g));
 	}
 
 	private void drawActorOffTrack(Creature<?> actor, Graphics2D g) {
@@ -308,7 +308,7 @@ public class PlayView extends SimplePlayView {
 
 	private void drawGhostRoutes(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		world.population().ghosts().filter(world::isOnStage).forEach(ghost -> drawGhostRoute(g, ghost));
+		world.population().ghosts().filter(world::included).forEach(ghost -> drawGhostRoute(g, ghost));
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 
@@ -380,7 +380,7 @@ public class PlayView extends SimplePlayView {
 	private void drawInkyChasing(Graphics2D g, Ghost inky) {
 		Ghost blinky = world.population().blinky();
 		PacMan pacMan = world.population().pacMan();
-		if (!inky.is(CHASING) || !world.isOnStage(blinky)) {
+		if (!inky.is(CHASING) || !world.included(blinky)) {
 			return;
 		}
 		int x1, y1, x2, y2, x3, y3;

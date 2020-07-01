@@ -43,7 +43,7 @@ class MovingRandomlyTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		putOnStage(blinky, pinky, inky, clyde);
+		include(blinky, pinky, inky, clyde);
 		ghostsOnStage().forEach(ghost -> {
 			ghost.tf.setPosition(pacMan.bed().center);
 			ghost.behavior(FRIGHTENED, ghost.movingRandomly());

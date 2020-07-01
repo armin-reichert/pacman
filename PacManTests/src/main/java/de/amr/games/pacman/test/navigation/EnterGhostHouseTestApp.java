@@ -42,7 +42,7 @@ class EnterGhostHouseTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		putOnStage(inky);
+		include(inky);
 		view.showMessage("SPACE = Enter/leave house", Color.WHITE, 8);
 	}
 

@@ -16,7 +16,9 @@ public interface Habitat extends FoodContainer {
 
 	Population population();
 
-	boolean isOnStage(Creature<?> creature);
+	boolean included(Creature<?> creature);
 
-	void putOnStage(Creature<?> creature, boolean onStage);
+	void include(Creature<?> creature);
+
+	void exclude(Creature<?> creature);
 }

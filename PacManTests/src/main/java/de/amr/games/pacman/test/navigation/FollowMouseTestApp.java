@@ -39,7 +39,7 @@ class FollowMouseTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		putOnStage(blinky);
+		include(blinky);
 		blinky.behavior(CHASING, blinky.headingFor(() -> mousePosition));
 		blinky.setState(CHASING);
 	}

@@ -41,7 +41,7 @@ class ScatteringTestUI extends TestUI {
 	public void init() {
 		super.init();
 		world.population().ghosts().forEach(ghost -> {
-			world.putOnStage(ghost, true);
+			world.include(ghost);
 			ghost.subsequentState = GhostState.SCATTERING;
 		});
 		view.showMessage("Press SPACE to start", Color.WHITE);

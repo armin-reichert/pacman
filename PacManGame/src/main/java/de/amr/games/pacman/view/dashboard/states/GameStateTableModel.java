@@ -102,7 +102,11 @@ class GameStateTableModel extends AbstractTableModel {
 	private void handleOnStageStatusChange(int row) {
 		GameStateRecord r = records[row];
 		if (r.creature instanceof Ghost) {
-			world.putOnStage(r.creature, r.takesPart);
+			if (r.included) {
+				world.include(r.creature);
+			} else {
+				world.exclude(r.creature);
+			}
 		}
 	}
 
@@ -132,7 +136,7 @@ class GameStateTableModel extends AbstractTableModel {
 
 	void fillPacManRecord(GameStateRecord r, Game game, PacMan pacMan) {
 		r.creature = pacMan;
-		r.takesPart = world.isOnStage(pacMan);
+		r.included = world.included(pacMan);
 		r.name = "Pac-Man";
 		r.tile = pacMan.tile();
 		r.moveDir = pacMan.moveDir();
@@ -147,7 +151,7 @@ class GameStateTableModel extends AbstractTableModel {
 
 	void fillGhostRecord(GameStateRecord r, Game game, GhostCommand ghostCommand, Ghost ghost) {
 		r.creature = ghost;
-		r.takesPart = world.isOnStage(ghost);
+		r.included = world.included(ghost);
 		r.name = ghost.name;
 		r.tile = ghost.tile();
 		r.target = ghost.targetTile();
@@ -167,7 +171,7 @@ class GameStateTableModel extends AbstractTableModel {
 	void fillBonusRecord(GameStateRecord r, GameController gameController, World world) {
 		gameController.bonusControl().ifPresent(bonusControl -> {
 			Bonus bonus = world.getBonus().orElse(null);
-			r.takesPart = bonus != null && bonus.state != BonusState.INACTIVE;
+			r.included = bonus != null && bonus.state != BonusState.INACTIVE;
 			r.name = bonus != null ? bonus.symbol : "Bonus";
 			r.tile = world.bonusTile();
 			r.state = bonusControl.getState().name();
@@ -181,7 +185,7 @@ class GameStateTableModel extends AbstractTableModel {
 		GameStateRecord r = records[row];
 		switch (ColumnInfo.at(col)) {
 		case OnStage:
-			return r.takesPart;
+			return r.included;
 		case Name:
 			return r.name;
 		case MoveDir:
@@ -211,7 +215,7 @@ class GameStateTableModel extends AbstractTableModel {
 	public void setValueAt(Object value, int row, int col) {
 		switch (ColumnInfo.at(col)) {
 		case OnStage:
-			records[row].takesPart = (boolean) value;
+			records[row].included = (boolean) value;
 			fireTableCellUpdated(row, col);
 			break;
 		default:

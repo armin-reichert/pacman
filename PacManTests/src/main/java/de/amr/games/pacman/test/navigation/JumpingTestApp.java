@@ -34,6 +34,6 @@ class JumpingTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		putOnStage(blinky, inky, pinky, clyde);
+		include(blinky, inky, pinky, clyde);
 	}
 }

@@ -12,7 +12,7 @@ import de.amr.games.pacman.model.world.core.Tile;
  */
 class GameStateRecord {
 	public Creature<?> creature;
-	public boolean takesPart;
+	public boolean included;
 	public String name;
 	public Tile tile;
 	public Tile target;

@@ -39,7 +39,7 @@ class OutsideTileTestUI extends TestUI {
 	public void init() {
 		super.init();
 		theme.snd_ghost_chase().volume(0);
-		putOnStage(blinky);
+		include(blinky);
 		int row = world.portals().findFirst().map(portal -> portal.right.row).orElse((short) 100);
 		blinky.behavior(GhostState.CHASING, blinky.headingFor(() -> Tile.at(100, row)));
 		blinky.setState(GhostState.CHASING);

@@ -43,7 +43,7 @@ class LeaveGhostHouseTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		putOnStage(inky);
+		include(inky);
 		inky.subsequentState = SCATTERING;
 		view.showMessage("Press SPACE to unlock", Color.WHITE);
 	}

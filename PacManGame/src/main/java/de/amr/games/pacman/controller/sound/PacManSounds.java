@@ -28,14 +28,14 @@ public class PacManSounds {
 		if (theme.snd_eatPill().isRunning() && System.currentTimeMillis() - lastPelletEatenTimeMillis > 250) {
 			theme.snd_eatPill().stop();
 		}
-		if (world.population().ghosts().filter(world::isOnStage).anyMatch(ghost -> ghost.is(GhostState.CHASING))) {
+		if (world.population().ghosts().filter(world::included).anyMatch(ghost -> ghost.is(GhostState.CHASING))) {
 			if (!theme.snd_ghost_chase().isRunning()) {
 				theme.snd_ghost_chase().loop();
 			}
 		} else {
 			theme.snd_ghost_chase().stop();
 		}
-		if (world.population().ghosts().filter(world::isOnStage).anyMatch(ghost -> ghost.is(GhostState.DEAD))) {
+		if (world.population().ghosts().filter(world::included).anyMatch(ghost -> ghost.is(GhostState.DEAD))) {
 			if (!theme.snd_ghost_dead().isRunning()) {
 				theme.snd_ghost_dead().loop();
 			}

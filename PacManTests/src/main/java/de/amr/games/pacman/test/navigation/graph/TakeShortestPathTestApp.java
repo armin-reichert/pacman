@@ -59,7 +59,7 @@ class TakeShortestPathTestUI extends TestUI {
 		super.init();
 		targetIndex = 0;
 		theme.snd_ghost_chase().volume(0);
-		putOnStage(blinky);
+		include(blinky);
 		Steering steering = blinky.takingShortestPath(() -> targets.get(targetIndex));
 		blinky.behavior(CHASING, steering);
 		blinky.behavior(FRIGHTENED, steering);

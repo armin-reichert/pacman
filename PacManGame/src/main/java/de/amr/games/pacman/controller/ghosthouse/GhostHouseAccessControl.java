@@ -155,7 +155,7 @@ public class GhostHouseAccessControl implements Lifecycle {
 	}
 
 	public Optional<Ghost> preferredLockedGhost() {
-		return Stream.of(blinky, pinky, inky, clyde).filter(world::isOnStage).filter(ghost -> ghost.is(LOCKED)).findFirst();
+		return Stream.of(blinky, pinky, inky, clyde).filter(world::included).filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
 	private void unlock(Ghost ghost) {

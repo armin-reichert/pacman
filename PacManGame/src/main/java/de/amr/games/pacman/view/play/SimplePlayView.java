@@ -126,9 +126,10 @@ public class SimplePlayView extends BaseView {
 	protected void drawActors(Graphics2D g) {
 		drawEntity(g, world.population().pacMan(), world.population().pacMan().sprites);
 		// draw dead ghosts (as number or eyes) under living ghosts
-		world.population().ghosts().filter(world::isOnStage).filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
+		world.population().ghosts().filter(world::included).filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
 				.forEach(ghost -> drawEntity(g, ghost, ghost.sprites));
-		world.population().ghosts().filter(world::isOnStage).filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
+		world.population().ghosts().filter(
+				world::included).filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
 				.forEach(ghost -> drawEntity(g, ghost, ghost.sprites));
 	}
 

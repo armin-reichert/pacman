@@ -100,7 +100,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		Tile ahead1 = world.neighbor(pacManLocation, pacMan.moveDir());
 		Tile ahead2 = world.tileToDir(pacManLocation, pacMan.moveDir(), 2);
 		//@formatter:off
-		return world.population().ghosts().filter(world::isOnStage).anyMatch(
+		return world.population().ghosts().filter(world::included).anyMatch(
 				ghost -> !ghost.is(GhostState.FRIGHTENED) 
 				&& (ghost.tile().equals(ahead1) || ghost.tile().equals(ahead2))
 				&& ghost.moveDir() == pacMan.moveDir().opposite());

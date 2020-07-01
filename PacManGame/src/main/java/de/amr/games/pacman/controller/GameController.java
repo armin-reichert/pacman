@@ -120,10 +120,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		world.population().ghosts().forEach(ghost -> {
 			ghost.setSpeedLimit(() -> ghostSpeedLimit(ghost, game));
 			ghost.addEventListener(this::process);
-			world.putOnStage(ghost, true);
+			world.include(ghost);
 		});
 
-		world.putOnStage(pacMan, true);
+		world.include(pacMan);
 		pacMan.addEventListener(this::process);
 		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
 
@@ -134,11 +134,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	protected Stream<Creature<?>> creaturesOnStage() {
-		return world.population().creatures().filter(world::isOnStage);
+		return world.population().creatures().filter(world::included);
 	}
 
 	protected Stream<Ghost> ghostsOnStage() {
-		return world.population().ghosts().filter(world::isOnStage);
+		return world.population().ghosts().filter(world::included);
 	}
 
 	public Optional<Game> game() {

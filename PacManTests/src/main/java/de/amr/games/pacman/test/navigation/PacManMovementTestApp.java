@@ -43,7 +43,7 @@ class PacManMovementTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		putOnStage(pacMan);
+		include(pacMan);
 		pacMan.addEventListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;

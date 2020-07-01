@@ -37,11 +37,11 @@ public class TestUI implements Lifecycle, VisualController {
 	}
 
 	protected Stream<Ghost> ghostsOnStage() {
-		return world.population().ghosts().filter(world::isOnStage);
+		return world.population().ghosts().filter(world::included);
 	}
 
-	protected void putOnStage(Creature<?>... creatures) {
-		Stream.of(creatures).forEach(creature -> world.putOnStage(creature, true));
+	protected void include(Creature<?>... creatures) {
+		Stream.of(creatures).forEach(world::include);
 	}
 
 	public TestUI() {
@@ -73,6 +73,6 @@ public class TestUI implements Lifecycle, VisualController {
 
 	@Override
 	public void update() {
-		world.population().creatures().filter(world::isOnStage).forEach(Creature::update);
+		world.population().creatures().filter(world::included).forEach(Creature::update);
 	}
 }

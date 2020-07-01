@@ -32,28 +32,31 @@ public abstract class AbstractWorld implements World {
 	protected WorldMap worldMap;
 	protected Population population;
 
-	private Set<Creature<?>> stage = new HashSet<>();
+	private Set<Creature<?>> included = new HashSet<>();
 
 	@Override
 	public Population population() {
 		return population;
 	}
 
-	/**
-	 * Lets the actor take part at the game.
-	 * 
-	 * @param creature  a ghost or Pac-Man
-	 * @param takesPart if the actors takes part
-	 */
 	@Override
-	public void putOnStage(Creature<?> creature, boolean takesPart) {
-		if (takesPart) {
-			stage.add(creature);
+	public void include(Creature<?> creature) {
+		includeCreature(creature, true);
+	}
+
+	@Override
+	public void exclude(Creature<?> creature) {
+		includeCreature(creature, false);
+	}
+
+	private void includeCreature(Creature<?> creature, boolean include) {
+		if (include) {
+			included.add(creature);
 			creature.init();
 			creature.visible = true;
 			loginfo("%s entered the game", creature.name);
 		} else {
-			stage.remove(creature);
+			included.remove(creature);
 			creature.visible = false;
 			creature.placeAt(Tile.at(-1, -1));
 			loginfo("%s left the game", creature.name);
@@ -62,8 +65,8 @@ public abstract class AbstractWorld implements World {
 	}
 
 	@Override
-	public boolean isOnStage(Creature<?> creature) {
-		return stage.contains(creature);
+	public boolean included(Creature<?> creature) {
+		return included.contains(creature);
 	}
 
 	protected void addPortal(Tile left, Tile right) {
