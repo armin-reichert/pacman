@@ -14,20 +14,19 @@ import static java.lang.Math.round;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.Transparency;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
-import de.amr.easy.game.ui.widgets.FramerateWidget;
+import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.Creature;
@@ -38,6 +37,7 @@ import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 
@@ -112,18 +112,20 @@ public class PlayView extends SimplePlayView {
 	/** Optional ghost house reference */
 	public GhostHouseAccessControl optionalHouseAccessControl;
 
-	private FramerateWidget frameRateDisplay;
-	private final BufferedImage gridImage, inkyImage, clydeImage, pacManImage;
+	private FrameRateWidget frameRateDisplay;
+
+	/** Used in dot counter visualization */
+	private final Image gridImage, inkyImage, clydeImage, pacManImage;
 
 	public PlayView(World world, Theme theme, Game game, int width, int height) {
 		super(world, theme, game, width, height);
-		frameRateDisplay = new FramerateWidget();
+		gridImage = createGridPatternImage(world.width(), world.height());
+		inkyImage = theme.spr_ghostColored(Theme.CYAN_GHOST, Direction.RIGHT).frame(0);
+		clydeImage = theme.spr_ghostColored(Theme.ORANGE_GHOST, Direction.RIGHT).frame(0);
+		pacManImage = theme.spr_pacManWalking(RIGHT).frame(0);
+		frameRateDisplay = new FrameRateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
-		gridImage = createGridPatternImage(world.width(), world.height());
-		inkyImage = (BufferedImage) theme.spr_ghostColored(Theme.CYAN_GHOST, Direction.RIGHT).frame(0);
-		clydeImage = (BufferedImage) theme.spr_ghostColored(Theme.ORANGE_GHOST, Direction.RIGHT).frame(0);
-		pacManImage = (BufferedImage) theme.spr_pacManWalking(RIGHT).frame(0);
 	}
 
 	@Override
@@ -183,7 +185,6 @@ public class PlayView extends SimplePlayView {
 	private void drawActorStates(Graphics2D g) {
 		world.population().ghosts().filter(world::included).forEach(ghost -> drawGhostState(g, ghost));
 		drawPacManState(g, world.population().pacMan());
-		drawBonusState(g);
 	}
 
 	private void drawPacManState(Graphics2D g, PacMan pacMan) {
@@ -226,16 +227,6 @@ public class PlayView extends SimplePlayView {
 			text.append(String.format("[->%s]", ghost.subsequentState));
 		}
 		drawEntityState(g, ghost, text.toString(), ghostColor(ghost));
-	}
-
-	private void drawBonusState(Graphics2D g) {
-		// TODO
-//		world.getBonus().ifPresent(bonus -> {
-//			try (Pen pen = new Pen(g)) {
-//				pen.color(Color.YELLOW);
-//				pen.font(SMALL_FONT);
-//			}
-//		});
 	}
 
 	private void drawPacManStarvingTime(Graphics2D g) {
@@ -282,30 +273,31 @@ public class PlayView extends SimplePlayView {
 		});
 	}
 
-	private void drawGhostBeds(Graphics2D g) {
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		world.population().ghosts().forEach(ghost -> {
-			g.setColor(ghostColor(ghost));
-			String text = String.valueOf(ghost.bed().number);
-			int x = ghost.bed().center.roundedX() - Tile.SIZE / 2, y = ghost.bed().center.roundedY() - Tile.SIZE / 2;
-			g.drawRoundRect(x, y, Tile.SIZE, Tile.SIZE, 2, 2);
-			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 6));
-			FontMetrics fm = g.getFontMetrics();
-			Rectangle2D r = fm.getStringBounds(text, g);
-			g.setColor(Color.WHITE);
-			g.drawString(text, x + (Tile.SIZE - Math.round(r.getWidth())) / 2, y + Tile.SIZE - 2);
-		});
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-	}
-
 	private void drawDirectionIndicator(Graphics2D g, Color color, Direction dir, int x, int y) {
 		g = (Graphics2D) g.create();
+		g.setStroke(new BasicStroke(0.1f));
 		g.translate(x, y);
 		g.rotate((dir.ordinal() - 2) * (PI / 2));
 		g.setColor(color);
-		g.fillPolygon(TRIANGLE);
+		g.drawPolygon(TRIANGLE);
+		g.dispose();
+	}
+
+	private void drawGhostBeds(Graphics2D g2) {
+		Graphics2D g = (Graphics2D) g2.create();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		world.population().ghosts().forEach(ghost -> {
+			Bed bed = ghost.bed();
+			int x = bed.center.roundedX() - Tile.SIZE, y = bed.center.roundedY() - Tile.SIZE / 2;
+			g.setColor(ghostColor(ghost));
+			g.drawRoundRect(x, y, 2 * Tile.SIZE, Tile.SIZE, 2, 2);
+			try (Pen pen = new Pen(g)) {
+				pen.color(Color.WHITE);
+				pen.font(new Font(Font.MONOSPACED, Font.BOLD, 6));
+				pen.drawCentered("" + bed.number, bed.center.roundedX(), bed.center.roundedY() + Tile.SIZE);
+			}
+		});
 		g.dispose();
 	}
 
@@ -333,9 +325,9 @@ public class PlayView extends SimplePlayView {
 			return;
 		}
 		if (ghost == world.population().inky()) {
-			drawInkyChasing(g, world.population().inky());
+			drawInkyChasing(g, ghost);
 		} else if (ghost == world.population().clyde()) {
-			drawClydeChasingArea(g, world.population().clyde());
+			drawClydeChasingArea(g, ghost);
 		}
 	}
 
@@ -433,7 +425,7 @@ public class PlayView extends SimplePlayView {
 
 	private void drawGhostHouseState(Graphics2D g) {
 		if (optionalHouseAccessControl == null) {
-			return; // test scenes can have no ghost house
+			return; // test scenes may have no ghost house
 		}
 		drawPacManStarvingTime(g);
 		drawDotCounter(g, clydeImage, optionalHouseAccessControl.ghostDotCount(world.population().clyde()), 1, 20,
@@ -446,7 +438,7 @@ public class PlayView extends SimplePlayView {
 				optionalHouseAccessControl.isGlobalDotCounterEnabled());
 	}
 
-	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row, boolean emphasized) {
+	private void drawDotCounter(Graphics2D g, Image image, int value, int col, int row, boolean emphasized) {
 		try (Pen pen = new Pen(g)) {
 			if (image != null) {
 				g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);
