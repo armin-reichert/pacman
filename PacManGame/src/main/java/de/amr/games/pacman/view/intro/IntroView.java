@@ -2,9 +2,9 @@ package de.amr.games.pacman.view.intro;
 
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.Game.sec;
+import static de.amr.games.pacman.view.intro.IntroView.IntroState.CHASING_ANIMATIONS;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.READY_TO_PLAY;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.SCROLLING_LOGO;
-import static de.amr.games.pacman.view.intro.IntroView.IntroState.SHOWING_ANIMATIONS;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.WAITING_FOR_INPUT;
 
 import java.awt.Color;
@@ -25,27 +25,23 @@ import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
 import de.amr.games.pacman.view.theme.Theme;
-import de.amr.statemachine.api.Fsm;
-import de.amr.statemachine.api.FsmContainer;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 
 /**
- * Intro screen with different animations.
+ * The intro screen displays different animations and waits for starting the game.
  * 
  * @author Armin Reichert
  */
-public class IntroView implements LivingView, FsmContainer<IntroState, Void> {
+public class IntroView extends StateMachine<IntroState, Void> implements LivingView {
 
 	public enum IntroState {
-		SCROLLING_LOGO, SHOWING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
+		SCROLLING_LOGO, CHASING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
 	};
 
-	private final String name;
 	private int width;
 	private int height;
 	private Theme theme;
-	private final Fsm<IntroState, Void> fsm;
 
 	private ImageWidget pacManLogo;
 	private LinkWidget gitHubLink;
@@ -58,31 +54,25 @@ public class IntroView implements LivingView, FsmContainer<IntroState, Void> {
 	private Color red = new Color(171, 19, 0);
 
 	public IntroView(Theme theme, int width, int height) {
+		super(IntroState.class);
 		this.theme = theme;
 		this.width = width;
 		this.height = height;
-		name = "IntroView";
-		fsm = buildStateMachine();
-		fsm.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+		buildStateMachine();
+		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 	}
 
-	@Override
-	public Fsm<IntroState, Void> fsm() {
-		return fsm;
-	}
-
-	private StateMachine<IntroState, Void> buildStateMachine() {
-		return StateMachine.
+	private void buildStateMachine() {
 		/*@formatter:off*/
-		beginStateMachine(IntroState.class, Void.class)
-			.description(String.format("[%s]", name))
+		beginStateMachine()
+			.description("[IntroView]")
 			.initialState(SCROLLING_LOGO)
 			.states()
 				
 				.state(SCROLLING_LOGO)
 					.customState(new ScrollingLogoAnimation())
 				
-				.state(SHOWING_ANIMATIONS)
+				.state(CHASING_ANIMATIONS)
 					.customState(new ChasingAnimation())
 				
 				.state(WAITING_FOR_INPUT)
@@ -93,13 +83,13 @@ public class IntroView implements LivingView, FsmContainer<IntroState, Void> {
 					
 			.transitions()
 			
-				.when(SCROLLING_LOGO).then(SHOWING_ANIMATIONS)
+				.when(SCROLLING_LOGO).then(CHASING_ANIMATIONS)
 					.condition(() -> pacManLogo.isComplete())
 				
-				.when(SHOWING_ANIMATIONS).then(WAITING_FOR_INPUT)
+				.when(CHASING_ANIMATIONS).then(WAITING_FOR_INPUT)
 					.condition(() -> chasePacMan.isComplete() && chaseGhosts.isComplete())
 				
-				.when(WAITING_FOR_INPUT).then(SHOWING_ANIMATIONS)
+				.when(WAITING_FOR_INPUT).then(CHASING_ANIMATIONS)
 					.onTimeout()
 				
 				.when(WAITING_FOR_INPUT).then(READY_TO_PLAY)
@@ -200,6 +190,16 @@ public class IntroView implements LivingView, FsmContainer<IntroState, Void> {
 			drawSpeedSelection(g, 22);
 			drawScreenModeText(g, 31);
 		}
+
+		private void drawPressSpaceToStart(Graphics2D g, int row) {
+			String text = Localized.texts.getString("press_space_to_start");
+			try (Pen pen = new Pen(g)) {
+				pen.font(theme.fnt_text());
+				pen.color(Color.WHITE);
+				pen.hcenter(text, width, row, Tile.SIZE);
+			}
+		}
+
 	}
 
 	@Override
@@ -209,11 +209,6 @@ public class IntroView implements LivingView, FsmContainer<IntroState, Void> {
 
 	@Override
 	public void init() {
-		createUIComponents();
-		fsm().init();
-	}
-
-	private void createUIComponents() {
 		pacManLogo = new ImageWidget(theme.img_logo());
 		pacManLogo.tf.centerX(width);
 		pacManLogo.tf.y = 20;
@@ -233,6 +228,7 @@ public class IntroView implements LivingView, FsmContainer<IntroState, Void> {
 		/*@formatter:on*/
 		gitHubLink.tf.y = (height - 16);
 		gitHubLink.tf.centerX(width);
+		super.init();
 	}
 
 	@Override
@@ -240,7 +236,7 @@ public class IntroView implements LivingView, FsmContainer<IntroState, Void> {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
 			setState(READY_TO_PLAY); // shortcut for skipping intro
 		}
-		fsm().update();
+		super.update();
 	}
 
 	@Override
@@ -249,15 +245,6 @@ public class IntroView implements LivingView, FsmContainer<IntroState, Void> {
 		g.fillRect(0, 0, width, height);
 		if (state() instanceof View) {
 			((View) state()).draw(g);
-		}
-	}
-
-	private void drawPressSpaceToStart(Graphics2D g, int row) {
-		String text = Localized.texts.getString("press_space_to_start");
-		try (Pen pen = new Pen(g)) {
-			pen.font(theme.fnt_text());
-			pen.color(Color.WHITE);
-			pen.hcenter(text, width, row, Tile.SIZE);
 		}
 	}
 
