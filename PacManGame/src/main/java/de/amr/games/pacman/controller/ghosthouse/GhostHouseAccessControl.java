@@ -17,8 +17,10 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.core.Door;
 import de.amr.games.pacman.model.world.core.Door.DoorState;
 import de.amr.games.pacman.model.world.core.House;
+import de.amr.games.pacman.model.world.core.Tile;
 
 /**
  * This class controls when and in which order locked ghosts can leave the ghost house.
@@ -72,12 +74,23 @@ public class GhostHouseAccessControl implements Lifecycle {
 		pacManStarvingTicks += 1;
 
 		house.doors().forEach(door -> door.state = DoorState.CLOSED);
-		house.doors().filter(door -> ghostsNeedingOpenDoor().anyMatch(ghost -> door.includes(ghost.tile())))
+		house.doors().filter(door -> ghostsNeedingOpenDoor(door).findAny().isPresent())
 				.forEach(door -> door.state = DoorState.OPEN);
 	}
 
-	private Stream<Ghost> ghostsNeedingOpenDoor() {
-		return world.population().ghosts().filter(world::included).filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE));
+	private Stream<Ghost> ghostsNeedingOpenDoor(Door door) {
+		//@formatter:off
+		return world.population().ghosts()
+				.filter(world::included)
+				.filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE))
+				.filter(ghost -> ghostNearDoor(door, ghost));
+		//@formatter:on
+	}
+
+	private boolean ghostNearDoor(Door door, Ghost ghost) {
+		Tile fromGhostIntoHouse = world.neighbor(ghost.tile(), door.intoHouse);
+		Tile fromGhostAwayFromHouse = world.neighbor(ghost.tile(), door.intoHouse.opposite());
+		return door.includes(ghost.tile()) || door.includes(fromGhostAwayFromHouse) || door.includes(fromGhostIntoHouse);
 	}
 
 	/**
