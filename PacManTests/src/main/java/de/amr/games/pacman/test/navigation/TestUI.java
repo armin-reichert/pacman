@@ -1,5 +1,6 @@
 package de.amr.games.pacman.test.navigation;
 
+import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.controller.SpeedLimits.ghostSpeedLimit;
 import static de.amr.games.pacman.controller.SpeedLimits.pacManSpeedLimit;
 
@@ -70,7 +71,7 @@ public class TestUI implements Lifecycle, VisualController {
 
 	@Override
 	public void init() {
-		view = new PlayView(world, game, theme);
+		view = new PlayView(world, theme, game, app().settings().width, app().settings().height);
 		view.init();
 	}
 

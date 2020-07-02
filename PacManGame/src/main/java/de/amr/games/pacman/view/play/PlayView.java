@@ -110,13 +110,13 @@ public class PlayView extends SimplePlayView {
 	public GhostCommand optionalGhostCommand;
 
 	/** Optional ghost house reference */
-	public GhostHouseAccessControl optionalHouse;
+	public GhostHouseAccessControl optionalHouseAccessControl;
 
 	private FramerateWidget frameRateDisplay;
 	private final BufferedImage gridImage, inkyImage, clydeImage, pacManImage;
 
-	public PlayView(World world, Game game, Theme theme) {
-		super(world, game, theme);
+	public PlayView(World world, Theme theme, Game game, int width, int height) {
+		super(world, theme, game, width, height);
 		frameRateDisplay = new FramerateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
@@ -240,7 +240,7 @@ public class PlayView extends SimplePlayView {
 
 	private void drawPacManStarvingTime(Graphics2D g) {
 		int col = 1, row = 14;
-		int time = optionalHouse.pacManStarvingTicks();
+		int time = optionalHouseAccessControl.pacManStarvingTicks();
 		g.drawImage(pacManImage, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);
 		try (Pen pen = new Pen(g)) {
 			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
@@ -432,15 +432,15 @@ public class PlayView extends SimplePlayView {
 	}
 
 	private void drawGhostHouseState(Graphics2D g) {
-		if (optionalHouse == null) {
+		if (optionalHouseAccessControl == null) {
 			return; // test scenes can have no ghost house
 		}
 		drawPacManStarvingTime(g);
-		drawDotCounter(g, clydeImage, optionalHouse.ghostDotCount(world.population().clyde()), 1, 20,
-				!optionalHouse.isGlobalDotCounterEnabled() && optionalHouse.isPreferredGhost(world.population().clyde()));
-		drawDotCounter(g, inkyImage, optionalHouse.ghostDotCount(world.population().inky()), 24, 20,
-				!optionalHouse.isGlobalDotCounterEnabled() && optionalHouse.isPreferredGhost(world.population().inky()));
-		drawDotCounter(g, null, optionalHouse.globalDotCount(), 24, 14, optionalHouse.isGlobalDotCounterEnabled());
+		drawDotCounter(g, clydeImage, optionalHouseAccessControl.ghostDotCount(world.population().clyde()), 1, 20,
+				!optionalHouseAccessControl.isGlobalDotCounterEnabled() && optionalHouseAccessControl.isPreferredGhost(world.population().clyde()));
+		drawDotCounter(g, inkyImage, optionalHouseAccessControl.ghostDotCount(world.population().inky()), 24, 20,
+				!optionalHouseAccessControl.isGlobalDotCounterEnabled() && optionalHouseAccessControl.isPreferredGhost(world.population().inky()));
+		drawDotCounter(g, null, optionalHouseAccessControl.globalDotCount(), 24, 14, optionalHouseAccessControl.isGlobalDotCounterEnabled());
 	}
 
 	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row, boolean emphasized) {

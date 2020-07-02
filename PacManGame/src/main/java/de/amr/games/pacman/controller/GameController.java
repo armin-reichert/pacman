@@ -27,6 +27,7 @@ import java.util.Random;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.Application.ApplicationState;
+import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
@@ -53,7 +54,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.view.core.BaseView;
+import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.PlayView;
@@ -78,13 +79,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected Theme theme;
 	protected PacManSounds sound;
 
+	protected LivingView currentView;
+
 	protected LoadingView loadingView;
 	protected IntroView introView;
 	protected PlayView playView;
-	protected BaseView currentView;
 
 	protected GhostCommand ghostCommand;
-	protected GhostHouseAccessControl ghostHouseAccess;
+	protected GhostHouseAccessControl ghostHouseAccessControl;
 	protected BonusControl bonusControl;
 
 	public GameController() {
@@ -92,6 +94,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		buildStateMachine();
 		loginfo("Initializing game controller");
 		theme = new ArcadeTheme();
+
 		world = Universe.arcadeWorld();
 		Population people = new DefaultPopulation();
 		people.populate(world);
@@ -106,8 +109,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		inky = people.inky();
 		clyde = people.clyde();
 		sound = new PacManSounds(world, theme);
-		loadingView = new LoadingView(world, theme);
-		introView = new IntroView(world, theme);
+
+		int width = settings.width, height = settings.height;
+		loadingView = new LoadingView(world, theme, width, height);
+		introView = new IntroView(theme, width, height);
+
 		app().onEntry(ApplicationState.CLOSING, state -> game().ifPresent(game -> game.hiscore.save()));
 	}
 
@@ -121,7 +127,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			changeClockFrequency(80);
 		}
 		super.update();
-		currentView.update();
+		if (currentView instanceof Lifecycle) {
+			((Lifecycle) currentView).update();
+		}
 	}
 
 	private void buildStateMachine() {
@@ -175,7 +183,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.timeoutAfter(() -> sec(mazeFlashingSeconds() + 6))
 					.onEntry(() -> {
 						pacMan.showFull();
-						ghostHouseAccess.onLevelChange();
+						ghostHouseAccessControl.onLevelChange();
 						sound.stopAllClips();
 						playView.enableGhostAnimations(false);
 						playView.mazeView.energizersBlinking.setEnabled(false);
@@ -357,12 +365,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		game = new Game(settings.startLevel, world.totalFoodCount());
 
 		ghostCommand = new GhostCommand(game, world.population().ghosts());
-		ghostHouseAccess = new GhostHouseAccessControl(game, world, world.theHouse());
+		ghostHouseAccessControl = new GhostHouseAccessControl(game, world, world.theHouse());
 		bonusControl = new BonusControl(game, world);
 
-		playView = new PlayView(world, game, theme);
+		playView = new PlayView(world, theme, game, settings.width, settings.height);
 		playView.optionalGhostCommand = ghostCommand;
-		playView.optionalHouse = ghostHouseAccess;
+		playView.optionalHouseAccessControl = ghostHouseAccessControl;
 
 		world.population().ghosts().forEach(ghost -> {
 			ghost.setSpeedLimit(() -> ghostSpeedLimit(ghost, game));
@@ -390,7 +398,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		@Override
 		public void onTick() {
 			ghostCommand.update();
-			ghostHouseAccess.update();
+			ghostHouseAccessControl.update();
 			creaturesOnStage().forEach(Creature::update);
 			bonusControl.update();
 			sound.updatePlayingSounds();
@@ -434,7 +442,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 
 			if (!settings.ghostsHarmless) {
-				ghostHouseAccess.onLifeLost();
+				ghostHouseAccessControl.onLifeLost();
 				sound.stopAll();
 				playView.mazeView.energizersBlinking.setEnabled(false);
 				pacMan.process(new PacManKilledEvent(ghost));
@@ -468,7 +476,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (game.lives > livesBeforeScoring) {
 				sound.extraLife();
 			}
-			ghostHouseAccess.onPacManFoundFood();
+			ghostHouseAccessControl.onPacManFoundFood();
 
 			if (game.level.remainingFoodCount() == 0) {
 				enqueue(new LevelCompletedEvent());
@@ -512,7 +520,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	public Optional<GhostHouseAccessControl> ghostHouseAccess() {
-		return Optional.of(ghostHouseAccess);
+		return Optional.of(ghostHouseAccessControl);
 	}
 
 	public Optional<BonusControl> bonusControl() {
@@ -557,7 +565,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	protected void showView(BaseView view) {
+	protected void showView(LivingView view) {
 		if (currentView != view) {
 			currentView = view;
 			currentView.init();

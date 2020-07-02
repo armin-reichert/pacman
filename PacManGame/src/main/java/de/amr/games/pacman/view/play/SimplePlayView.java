@@ -25,7 +25,7 @@ import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Door.DoorState;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.core.BaseView;
+import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine;
 
@@ -34,13 +34,18 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class SimplePlayView extends BaseView {
+public class SimplePlayView implements LivingView {
 
 	public enum MazeMode {
 		EMPTY, CROWDED, FLASHING
 	}
 
-	protected final Game game;
+	protected World world;
+	protected Theme theme;
+	protected Game game;
+	protected int width;
+	protected int height;
+
 	public final MazeView mazeView;
 
 	private String messageText = "";
@@ -48,9 +53,12 @@ public class SimplePlayView extends BaseView {
 	private int messageFontSize = 8;
 	private int messageRow = 21;
 
-	public SimplePlayView(World world, Game game, Theme theme) {
-		super(world, theme);
+	public SimplePlayView(World world, Theme theme, Game game, int width, int height) {
+		this.world = world;
+		this.theme = theme;
 		this.game = game;
+		this.width = width;
+		this.height = height;
 		mazeView = new MazeView();
 	}
 

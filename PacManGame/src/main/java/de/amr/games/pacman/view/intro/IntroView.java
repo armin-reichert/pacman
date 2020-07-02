@@ -20,10 +20,9 @@ import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
-import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
-import de.amr.games.pacman.view.core.BaseView;
+import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.api.Fsm;
@@ -36,13 +35,16 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class IntroView extends BaseView implements FsmContainer<IntroState, Void> {
+public class IntroView implements LivingView, FsmContainer<IntroState, Void> {
 
 	public enum IntroState {
 		SCROLLING_LOGO, SHOWING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
 	};
 
 	private final String name;
+	private int width;
+	private int height;
+	private Theme theme;
 	private final Fsm<IntroState, Void> fsm;
 
 	private ImageWidget pacManLogo;
@@ -55,9 +57,11 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 	// private Color pink = new Color(248, 120, 88);
 	private Color red = new Color(171, 19, 0);
 
-	public IntroView(World world, Theme theme) {
-		super(world, theme);
-		this.name = "IntroView";
+	public IntroView(Theme theme, int width, int height) {
+		this.theme = theme;
+		this.width = width;
+		this.height = height;
+		name = "IntroView";
 		fsm = buildStateMachine();
 		fsm.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 	}

@@ -13,7 +13,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
-import de.amr.games.pacman.view.core.BaseView;
+import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**
@@ -21,16 +21,23 @@ import de.amr.games.pacman.view.theme.Theme;
  * 
  * @author Armin Reichert
  */
-public class LoadingView extends BaseView {
+public class LoadingView implements LivingView {
 
+	private World world;
+	private Theme theme;
+	private int width;
+	private int height;
 	private PacMan pacMan;
 	private int alpha;
 	private int alphaInc;
 	private int ghostCount;
 	private int ghostInc;
 
-	public LoadingView(World world, Theme theme) {
-		super(world, theme);
+	public LoadingView(World world, Theme theme, int width, int height) {
+		this.world = world;
+		this.theme = theme;
+		this.width = width;
+		this.height = height;
 	}
 
 	@Override
