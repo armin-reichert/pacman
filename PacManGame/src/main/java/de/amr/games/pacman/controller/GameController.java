@@ -490,16 +490,16 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	public World world() {
-		return world;
-	}
-
 	protected Stream<Creature<?>> creaturesOnStage() {
 		return world.population().creatures().filter(world::included);
 	}
 
 	protected Stream<Ghost> ghostsOnStage() {
 		return world.population().ghosts().filter(world::included);
+	}
+
+	public World world() {
+		return world;
 	}
 
 	public Theme theme() {
