@@ -27,7 +27,6 @@ import java.util.Random;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.Application.ApplicationState;
-import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
@@ -71,23 +70,20 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class GameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
-	protected Game game;
-	protected World world;
-	protected PacMan pacMan;
-	protected Ghost blinky, pinky, inky, clyde;
-
-	protected Theme theme;
-	protected PacManSounds sound;
-
-	protected LivingView currentView;
-
-	protected LoadingView loadingView;
-	protected IntroView introView;
-	protected PlayView playView;
+	protected final World world;
+	protected final PacMan pacMan;
+	protected final Ghost blinky, pinky, inky, clyde;
+	protected final Theme theme;
+	protected final PacManSounds sound;
 
 	protected GhostCommand ghostCommand;
 	protected GhostHouseAccessControl ghostHouseAccessControl;
 	protected BonusControl bonusControl;
+
+	protected Game game;
+
+	protected LivingView currentView;
+	protected PlayView playView;
 
 	public GameController() {
 		super(PacManGameState.class);
@@ -95,40 +91,39 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		loginfo("Initializing game controller");
 		theme = new ArcadeTheme();
 
-		world = Universe.arcadeWorld();
 		Population people = new DefaultPopulation();
-		people.populate(world);
-		world.population().creatures().forEach(creature -> {
-			creature.addEventListener(this::process);
-			creature.applyTheme(theme);
-			world.include(creature);
-		});
 		pacMan = people.pacMan();
 		blinky = people.blinky();
 		pinky = people.pinky();
 		inky = people.inky();
 		clyde = people.clyde();
-		sound = new PacManSounds(world, theme);
 
-		int width = settings.width, height = settings.height;
-		loadingView = new LoadingView(world, theme, width, height);
-		introView = new IntroView(theme, width, height);
+		world = Universe.arcadeWorld();
+		people.populate(world);
+		people.creatures().forEach(creature -> {
+			creature.addEventListener(this::process);
+			creature.applyTheme(theme);
+			world.include(creature);
+		});
+		sound = new PacManSounds(world, theme);
 
 		app().onEntry(ApplicationState.CLOSING, state -> game().ifPresent(game -> game.hiscore.save()));
 	}
 
 	@Override
 	public void update() {
+		handleInput();
+		super.update();
+		currentView.update();
+	}
+
+	private void handleInput() {
 		if (Keyboard.keyPressedOnce("1") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD1)) {
 			changeClockFrequency(60);
 		} else if (Keyboard.keyPressedOnce("2") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD2)) {
 			changeClockFrequency(70);
 		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			changeClockFrequency(80);
-		}
-		super.update();
-		if (currentView instanceof Lifecycle) {
-			((Lifecycle) currentView).update();
 		}
 	}
 
@@ -147,12 +142,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(LOADING_MUSIC)
 					.onEntry(() -> {
 						sound.loadMusic();
-						showView(loadingView);
+						showView(new LoadingView(world, theme, settings.width, settings.height));
 					})
 					
 				.state(INTRO)
 					.onEntry(() -> {
-						showView(introView);
+						showView(new IntroView(theme, settings.width, settings.height));
 					})
 					.onExit(() -> {
 						sound.stopAll();
@@ -304,7 +299,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.condition(() -> sound.isMusicLoadingComplete())
 			
 				.when(INTRO).then(GETTING_READY)
-					.condition(() -> introView.isComplete())
+					.condition(() -> currentView.isComplete())
 					
 				.when(GETTING_READY).then(PLAYING)
 					.onTimeout()
