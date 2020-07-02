@@ -40,7 +40,7 @@ public class SimplePlayView implements LivingView {
 	private boolean mazeFlashing;
 	private final Sprite mazeEmptySprite, mazeFullSprite, mazeFlashingSprite;
 	private final SpriteAnimation energizerAnimation;
-	private int offsetY;
+	private int mazeOffsetY;
 
 	private String messageText = "";
 	private Color messageColor = Color.YELLOW;
@@ -56,10 +56,10 @@ public class SimplePlayView implements LivingView {
 		mazeFullSprite = theme.spr_fullMaze();
 		mazeEmptySprite = theme.spr_emptyMaze();
 		mazeFlashingSprite = theme.spr_flashingMaze();
+		mazeOffsetY = 3 * Tile.SIZE;
 		energizerAnimation = new CyclicAnimation(2);
 		energizerAnimation.setFrameDuration(150);
 		energizerAnimation.setEnabled(false);
-		offsetY = 3 * Tile.SIZE;
 	}
 
 	@Override
@@ -134,9 +134,9 @@ public class SimplePlayView implements LivingView {
 	}
 
 	public void drawNormalMaze(Graphics2D g) {
-		g.translate(0, offsetY);
+		g.translate(0, mazeOffsetY);
 		mazeFullSprite.draw(g);
-		g.translate(0, -offsetY);
+		g.translate(0, -mazeOffsetY);
 
 		// hide eaten food
 		world.habitatTiles().filter(world::containsEatenFood).forEach(tile -> {
@@ -164,19 +164,18 @@ public class SimplePlayView implements LivingView {
 	}
 
 	public void drawFlashingEmptyMaze(Graphics2D g) {
-		g.translate(0, offsetY);
+		g.translate(0, mazeOffsetY);
 		mazeFlashingSprite.draw(g);
-		g.translate(0, -offsetY);
+		g.translate(0, -mazeOffsetY);
 	}
 
 	public void drawEmptyMaze(Graphics2D g) {
-		g.translate(0, offsetY);
+		g.translate(0, mazeOffsetY);
 		mazeEmptySprite.draw(g);
-		g.translate(0, -offsetY);
+		g.translate(0, -mazeOffsetY);
 	}
 
 	protected void drawMessage(Graphics2D g) {
-		int width = world.width() * Tile.SIZE;
 		if (messageText != null && messageText.trim().length() > 0) {
 			try (Pen pen = new Pen(g)) {
 				pen.font(theme.fnt_text());
@@ -251,7 +250,6 @@ public class SimplePlayView implements LivingView {
 	}
 
 	protected void drawLives(Graphics2D g, Game game) {
-		int height = world.height() * Tile.SIZE;
 		int sz = 2 * Tile.SIZE;
 		Image pacManLookingLeft = theme.spr_pacManWalking(LEFT).frame(1);
 		for (int i = 0, x = sz; i < game.lives; ++i, x += sz) {
@@ -264,8 +262,6 @@ public class SimplePlayView implements LivingView {
 		int first = Math.max(0, game.levelCounter.size() - max);
 		int n = Math.min(max, game.levelCounter.size());
 		int sz = 2 * Tile.SIZE; // image size
-		int width = world.width() * Tile.SIZE;
-		int height = world.height() * Tile.SIZE;
 		for (int i = 0, x = width - 2 * sz; i < n; ++i, x -= sz) {
 			Symbol symbol = game.levelCounter.get(first + i);
 			g.drawImage(theme.spr_bonusSymbol(symbol.name()).frame(0), x, height - sz, sz, sz, null);
