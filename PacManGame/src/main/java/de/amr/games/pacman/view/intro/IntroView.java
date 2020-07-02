@@ -18,6 +18,7 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.Pen;
+import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -27,6 +28,7 @@ import de.amr.games.pacman.view.intro.IntroView.IntroState;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.api.FsmContainer;
+import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -60,6 +62,153 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 		fsm.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 	}
 
+	@Override
+	public Fsm<IntroState, Void> fsm() {
+		return fsm;
+	}
+
+	private StateMachine<IntroState, Void> buildStateMachine() {
+		return StateMachine.
+		/*@formatter:off*/
+		beginStateMachine(IntroState.class, Void.class)
+			.description(String.format("[%s]", name))
+			.initialState(SCROLLING_LOGO)
+			.states()
+				
+				.state(SCROLLING_LOGO)
+					.customState(new ScrollingLogoAnimation())
+				
+				.state(SHOWING_ANIMATIONS)
+					.customState(new ChasingAnimation())
+				
+				.state(WAITING_FOR_INPUT)
+					.customState(new WaitingForInput())
+					.timeoutAfter(sec(10))
+					
+				.state(READY_TO_PLAY)
+					
+			.transitions()
+			
+				.when(SCROLLING_LOGO).then(SHOWING_ANIMATIONS)
+					.condition(() -> pacManLogo.isComplete())
+				
+				.when(SHOWING_ANIMATIONS).then(WAITING_FOR_INPUT)
+					.condition(() -> chasePacMan.isComplete() && chaseGhosts.isComplete())
+				
+				.when(WAITING_FOR_INPUT).then(SHOWING_ANIMATIONS)
+					.onTimeout()
+				
+				.when(WAITING_FOR_INPUT).then(READY_TO_PLAY)
+					.condition(() -> Keyboard.keyPressedOnce(" "))
+	
+		.endStateMachine();
+	  /*@formatter:on*/
+	}
+
+	class ScrollingLogoAnimation extends State<IntroState> implements View {
+
+		@Override
+		public void onEntry() {
+			theme.snd_insertCoin().play();
+			pacManLogo.tf.y = height;
+			pacManLogo.tf.vy = -2f;
+			pacManLogo.setCompletion(() -> pacManLogo.tf.y <= 20);
+			pacManLogo.visible = true;
+			pacManLogo.start();
+		}
+
+		@Override
+		public void onTick() {
+			pacManLogo.update();
+		}
+
+		@Override
+		public void draw(Graphics2D g) {
+			pacManLogo.draw(g);
+		}
+	}
+
+	class ChasingAnimation extends State<IntroState> implements View {
+		@Override
+		public void onEntry() {
+			chasePacMan.setStartPosition(width, 100);
+			chasePacMan.setEndPosition(-chasePacMan.tf.width, 100);
+			chaseGhosts.setStartPosition(-chaseGhosts.tf.width, 200);
+			chaseGhosts.setEndPosition(width, 200);
+			chasePacMan.start();
+			chaseGhosts.start();
+		}
+
+		@Override
+		public void onTick() {
+			chasePacMan.update();
+			chaseGhosts.update();
+		}
+
+		@Override
+		public void onExit() {
+			chasePacMan.stop();
+			chaseGhosts.stop();
+			chasePacMan.tf.centerX(width);
+		}
+
+		@Override
+		public void draw(Graphics2D g) {
+			pacManLogo.draw(g);
+			chaseGhosts.draw(g);
+			chasePacMan.draw(g);
+			drawFullScreenMode(g, 31);
+		}
+	}
+
+	class WaitingForInput extends State<IntroState> implements View {
+
+		@Override
+		public void onEntry() {
+			ghostPointsAnimation.tf.y = (200);
+			ghostPointsAnimation.tf.centerX(width);
+			ghostPointsAnimation.start();
+			gitHubLink.visible = true;
+		}
+
+		@Override
+		public void onTick() {
+			ghostPointsAnimation.update();
+			gitHubLink.update();
+		}
+
+		@Override
+		public void onExit() {
+			ghostPointsAnimation.stop();
+			ghostPointsAnimation.visible = false;
+			gitHubLink.visible = false;
+		}
+
+		@Override
+		public void draw(Graphics2D g) {
+			pacManLogo.draw(g);
+			chasePacMan.draw(g);
+			ghostPointsAnimation.draw(g);
+			gitHubLink.draw(g);
+			if (app().clock().getTotalTicks() % sec(1) < sec(0.5f)) {
+				drawPressSpaceToStart(g, 18);
+			}
+			drawSpeedSelection(g, 22);
+			drawFullScreenMode(g, 31);
+		}
+	}
+
+	@Override
+	public boolean isComplete() {
+		return is(READY_TO_PLAY);
+	}
+
+	@Override
+	public void init() {
+		createUIComponents();
+		fsm().init();
+	}
+
 	private void createUIComponents() {
 		pacManLogo = new ImageWidget(theme.img_logo());
 		pacManLogo.tf.centerX(width);
@@ -83,101 +232,6 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 	}
 
 	@Override
-	public Fsm<IntroState, Void> fsm() {
-		return fsm;
-	}
-
-	private StateMachine<IntroState, Void> buildStateMachine() {
-		return StateMachine.
-		/*@formatter:off*/
-		beginStateMachine(IntroState.class, Void.class)
-			.description(String.format("[%s]", name))
-			.initialState(SCROLLING_LOGO)
-
-			.states()
-	
-				.state(SCROLLING_LOGO)
-					.onEntry(() -> {
-						theme.snd_insertCoin().play();
-						pacManLogo.tf.y = height;
-						pacManLogo.tf.vy = -2f;
-						pacManLogo.setCompletion(() -> pacManLogo.tf.y <= 20);
-						pacManLogo.visible = true; 
-						pacManLogo.start(); 
-					})
-					.onTick(() -> {
-						pacManLogo.update();
-					})
-	
-				.state(SHOWING_ANIMATIONS)
-					.onEntry(() -> {
-						chasePacMan.setStartPosition(width, 100);
-						chasePacMan.setEndPosition(-chasePacMan.tf.width, 100);
-						chaseGhosts.setStartPosition(-chaseGhosts.tf.width, 200);
-						chaseGhosts.setEndPosition(width, 200);
-						chasePacMan.start();
-						chaseGhosts.start();
-					})
-					.onTick(() -> {
-						chasePacMan.update();
-						chaseGhosts.update();
-					})
-					.onExit(() -> {
-						chasePacMan.stop();
-						chaseGhosts.stop();
-						chasePacMan.tf.centerX(width);
-					})
-					
-				.state(WAITING_FOR_INPUT)
-					.timeoutAfter(sec(10))
-					.onEntry(() -> {
-						ghostPointsAnimation.tf.y=(200);
-						ghostPointsAnimation.tf.centerX(width);
-						ghostPointsAnimation.start();
-						gitHubLink.visible = true;
-					})
-					.onTick(() -> {
-						ghostPointsAnimation.update();
-						gitHubLink.update();
-					})
-					.onExit(() -> {
-						ghostPointsAnimation.stop();
-						ghostPointsAnimation.visible = false;
-						gitHubLink.visible = false;
-					})
-					
-				.state(READY_TO_PLAY)
-					
-			.transitions()
-			
-				.when(SCROLLING_LOGO).then(SHOWING_ANIMATIONS)
-					.condition(() -> pacManLogo.isComplete())
-				
-				.when(SHOWING_ANIMATIONS).then(WAITING_FOR_INPUT)
-					.condition(() -> chasePacMan.isComplete() && chaseGhosts.isComplete())
-				
-				.when(WAITING_FOR_INPUT).then(SHOWING_ANIMATIONS)
-					.onTimeout()
-				
-				.when(WAITING_FOR_INPUT).then(READY_TO_PLAY)
-					.condition(() -> Keyboard.keyPressedOnce(" "))
-	
-		.endStateMachine();
-	  /*@formatter:on*/
-	}
-
-	@Override
-	public boolean isComplete() {
-		return is(READY_TO_PLAY);
-	}
-
-	@Override
-	public void init() {
-		createUIComponents();
-		fsm().init();
-	}
-
-	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_ENTER)) {
 			setState(READY_TO_PLAY); // shortcut for skipping intro
@@ -190,33 +244,8 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 		g = (Graphics2D) g.create();
 		g.setColor(new Color(0, 23, 61));
 		g.fillRect(0, 0, width, height);
-		try (Pen pen = new Pen(g)) {
-			switch (getState()) {
-			case SCROLLING_LOGO:
-				pacManLogo.draw(g);
-				break;
-			case SHOWING_ANIMATIONS:
-				pacManLogo.draw(g);
-				chaseGhosts.draw(g);
-				chasePacMan.draw(g);
-				drawFullScreenMode(g, 31);
-				break;
-			case WAITING_FOR_INPUT:
-				pacManLogo.draw(g);
-				chasePacMan.draw(g);
-				ghostPointsAnimation.draw(g);
-				gitHubLink.draw(g);
-				if (app().clock().getTotalTicks() % sec(1) < sec(0.5f)) {
-					drawPressSpaceToStart(g, 18);
-				}
-				drawSpeedSelection(g, 22);
-				drawFullScreenMode(g, 31);
-				break;
-			case READY_TO_PLAY:
-				break;
-			default:
-				throw new IllegalStateException();
-			}
+		if (state() instanceof View) {
+			((View) state()).draw(g);
 		}
 		g.dispose();
 	}
