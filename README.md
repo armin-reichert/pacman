@@ -118,73 +118,38 @@ Sounds well and nice, but how does that look in the real code?
 To give a first example, consider the **intro screen** ([IntroView](PacManGame/src/main/java/de/amr/games/pacman/view/intro/IntroView.java)) which shows different animations coordinated using timers and conditions. As this state machine only uses timers and no other events, *Void* is specified as event type. The states are identified by an enumeration type.
 
 ```java
-beginStateMachine(IntroState.class, Void.class)
-	.description(String.format("[%s]", name))
-	.initialState(SCROLLING_LOGO)
+public enum IntroState {
+	SCROLLING_LOGO, CHASING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
+};
 
+...
+
+beginStateMachine()
+	.description("[IntroView]")
+	.initialState(SCROLLING_LOGO)
 	.states()
 
 		.state(SCROLLING_LOGO)
-			.onEntry(() -> {
-				theme.snd_insertCoin().play();
-				pacManLogo.tf.y = height;
-				pacManLogo.tf.vy = -2f;
-				pacManLogo.setCompletion(() -> pacManLogo.tf.y <= 20);
-				pacManLogo.visible = true; 
-				pacManLogo.start(); 
-			})
-			.onTick(() -> {
-				pacManLogo.update();
-			})
+			.customState(new ScrollingLogoAnimation())
 
-		.state(SHOWING_ANIMATIONS)
-			.onEntry(() -> {
-				chasePacMan.setStartPosition(width, 100);
-				chasePacMan.setEndPosition(-chasePacMan.tf.width, 100);
-				chaseGhosts.setStartPosition(-chaseGhosts.tf.width, 200);
-				chaseGhosts.setEndPosition(width, 200);
-				chasePacMan.start();
-				chaseGhosts.start();
-			})
-			.onTick(() -> {
-				chasePacMan.update();
-				chaseGhosts.update();
-			})
-			.onExit(() -> {
-				chasePacMan.stop();
-				chaseGhosts.stop();
-				chasePacMan.tf.centerX(width);
-			})
+		.state(CHASING_ANIMATIONS)
+			.customState(new ChasingAnimation())
 
 		.state(WAITING_FOR_INPUT)
+			.customState(new WaitingForInput())
 			.timeoutAfter(sec(10))
-			.onEntry(() -> {
-				ghostPointsAnimation.tf.y=(200);
-				ghostPointsAnimation.tf.centerX(width);
-				ghostPointsAnimation.start();
-				gitHubLink.visible = true;
-			})
-			.onTick(() -> {
-				ghostPointsAnimation.update();
-				gitHubLink.update();
-			})
-			.onExit(() -> {
-				ghostPointsAnimation.stop();
-				ghostPointsAnimation.visible = false;
-				gitHubLink.visible = false;
-			})
 
 		.state(READY_TO_PLAY)
 
 	.transitions()
 
-		.when(SCROLLING_LOGO).then(SHOWING_ANIMATIONS)
+		.when(SCROLLING_LOGO).then(CHASING_ANIMATIONS)
 			.condition(() -> pacManLogo.isComplete())
 
-		.when(SHOWING_ANIMATIONS).then(WAITING_FOR_INPUT)
+		.when(CHASING_ANIMATIONS).then(WAITING_FOR_INPUT)
 			.condition(() -> chasePacMan.isComplete() && chaseGhosts.isComplete())
 
-		.when(WAITING_FOR_INPUT).then(SHOWING_ANIMATIONS)
+		.when(WAITING_FOR_INPUT).then(CHASING_ANIMATIONS)
 			.onTimeout()
 
 		.when(WAITING_FOR_INPUT).then(READY_TO_PLAY)
@@ -192,6 +157,8 @@ beginStateMachine(IntroState.class, Void.class)
 
 .endStateMachine();
 ```
+
+The states in this case are implemented as separate (inner) classes instead of inlined in the state machine builder expression. The reason is that each state has its own visualization which is implemented in its own draw method. Otherwise, the draw method of the intro view class would have to dispatch again depending on the current state.
 
 A more complex state machine is used for implementing the **global game controller** ([GameController](PacManGame/src/main/java/de/amr/games/pacman/controller/GameController.java)). It processes game events which
 are created during the game play, for example when Pac-Man finds food or meets ghosts. Also the different
