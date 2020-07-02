@@ -160,8 +160,9 @@ beginStateMachine()
 
 The states in this case are implemented as separate (inner) classes instead of inlined in the state machine builder expression. The reason is that each state has its own visualization which is implemented in its own draw method. Otherwise, the draw method of the intro view class would have to dispatch again depending on the current state.
 
-A more complex state machine is used for implementing the **global game controller** ([GameController](PacManGame/src/main/java/de/amr/games/pacman/controller/GameController.java)). It processes game events which
-are created during the game play, for example when Pac-Man finds food or meets ghosts. Also the different
+A more complex state machine is used for implementing the **global game controller** ([GameController](PacManGame/src/main/java/de/amr/games/pacman/controller/GameController.java)). 
+
+It processes game events which are created during the game play, for example when Pac-Man finds food or meets ghosts. Also the different
 game states like changing the level or the dying animations of Pac-Man and the ghosts are controlled by this
 state machine. Further, the more complex states are implemented as subclasses of the generic `State` class. This
 has the advantage that actions which are state-specific can be realized as methods of the state subclass.
@@ -185,30 +186,36 @@ beginStateMachine()
 .endStateMachine();
 ```
 
-The actors in this implementation are also controlled by finite-state machines:
+The actors are also controlled by finite-state machines:
 
-**Pac-Man** ([Pac-Man](PacManGame/src/main/java/de/amr/games/pacman/controller/actor/PacMan.java))
+- **Pac-Man** ([Pac-Man](PacManGame/src/main/java/de/amr/games/pacman/controller/actor/PacMan.java))
+- **Ghosts** ([Ghost](PacManGame/src/main/java/de/amr/games/pacman/controller/actor/Ghost.java)) 
 
-The **ghosts** ([Ghost](PacManGame/src/main/java/de/amr/games/pacman/controller/actor/Ghost.java))
-
-Even a simple entity like the **bonus symbol** ([Bonus](PacManGame/src/main/java/de/amr/games/pacman/controller/actor/Bonus.java)) which appears at certain scores uses a finite-state machine to implement its lifecycle:
+Also the lifetime of simple entities like the **bonus symbol** ([Bonus](PacManGame/src/main/java/de/amr/games/pacman/controller/actor/BonusControl.java)) which appears at certain scores is controlled by a finite-state machine:
 
 ```java
-beginStateMachine(BonusState.class, PacManGameEvent.class)
+beginStateMachine()
 	.description(String.format("[%s]", "Bonus"))
 	.initialState(INACTIVE)
 	.states()
 		.state(INACTIVE)
-			.onEntry(() -> visible = false)
+			.onEntry(() -> {
+				world.setBonus(null);
+			})
 		.state(ACTIVE)
 			.timeoutAfter(() -> sec(9 + new Random().nextFloat()))
 			.onEntry(() -> {
-				sprites.select("symbol");
-				visible = true;
+				Bonus bonus = new Bonus(game.level.bonusSymbol.name(), game.level.bonusValue);
+				bonus.state = ACTIVE;
+				world.setBonus(bonus);
 			})
 		.state(CONSUMED)
-			.timeoutAfter(sec(3))
-			.onEntry(() -> sprites.select("value"))
+			.timeoutAfter(() -> sec(3))
+			.onEntry(() -> {
+				world.getBonus().ifPresent(bonus -> {
+					bonus.state = CONSUMED;
+				});
+			})
 	.transitions()
 		.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
 		.when(ACTIVE).then(INACTIVE).onTimeout()
@@ -216,7 +223,7 @@ beginStateMachine(BonusState.class, PacManGameEvent.class)
 .endStateMachine();
 ```
 
-When an actor leaves the board inside a tunnel it enters *teleporting* mode. In this implementation, the teleporting duration can be specified for each actor individually (no idea if this makes much sense) and the movement state of an actor is controlled by the following state machine:
+When an actor leaves the board inside a tunnel it leaves its normal movement mode and enters *teleporting* mode. The movement of the actors is controlled by the following state machine (PacManGame/src/main/java/de/amr/games/pacman/controller/actor/steering/MovementControl):
 
 ```java
 beginStateMachine()
@@ -228,6 +235,8 @@ beginStateMachine()
 				move(creature);
 				checkIfPortalEntered(creature);
 			})
+		.state(TELEPORTING)
+			.timeoutAfter(sec(0.5f))
 	.transitions()
 		.when(WALKING).then(TELEPORTING)
 			.condition(() -> hasEnteredPortal())
@@ -239,7 +248,6 @@ beginStateMachine()
 				creature.visible = true;
 			})
 .endStateMachine();
-//@formatter:on
 ```
 
 ## Tracing
@@ -252,7 +260,10 @@ for any event that has no effect in the current state.
 
 ## Pac-Man steering
 
-Pac-Man is steered by holding a key indicating its **intended** direction. As soon as Pac-Man reaches a tile where it can move towards this direction it changes its move direction accordingly. ("Cornering" is not yet implemented). In the code, this is implemented by setting the steering function as shown below. This makes it very easy to replace the manual steering by some sort of automatic steering ("AI"):
+Pac-Man is steered by holding a key indicating its **intended** direction. As soon as Pac-Man reaches a tile 
+where it can move towards this direction it changes its move direction accordingly. ("Cornering" is not yet implemented). 
+In the code, this is implemented by setting the steering function as shown below. This makes it very easy 
+to replace the manual steering by some sort of automatic steering ("AI"):
 
 ```java
 pacMan.steering(pacMan.isFollowingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
