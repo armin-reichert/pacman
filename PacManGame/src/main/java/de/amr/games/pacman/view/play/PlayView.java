@@ -124,6 +124,7 @@ public class PlayView extends SimplePlayView {
 		inkyImage = (BufferedImage) theme.spr_ghostColored(Theme.CYAN_GHOST, Direction.RIGHT).frame(0);
 		clydeImage = (BufferedImage) theme.spr_ghostColored(Theme.ORANGE_GHOST, Direction.RIGHT).frame(0);
 		pacManImage = (BufferedImage) theme.spr_pacManWalking(RIGHT).frame(0);
+		mazeView.setTileColor(tile -> showingGrid ? GRID_PATTERN[patternIndex(tile.col, tile.row)] : Color.BLACK);
 	}
 
 	@Override
@@ -155,11 +156,6 @@ public class PlayView extends SimplePlayView {
 			drawActorStates(g);
 			drawGhostHouseState(g);
 		}
-	}
-
-	@Override
-	protected Color tileColor(Tile tile) {
-		return showingGrid ? GRID_PATTERN[patternIndex(tile.col, tile.row)] : super.tileColor(tile);
 	}
 
 	private void drawEntityState(Graphics2D g, Entity entity, String text, Color color) {
@@ -437,10 +433,13 @@ public class PlayView extends SimplePlayView {
 		}
 		drawPacManStarvingTime(g);
 		drawDotCounter(g, clydeImage, optionalHouseAccessControl.ghostDotCount(world.population().clyde()), 1, 20,
-				!optionalHouseAccessControl.isGlobalDotCounterEnabled() && optionalHouseAccessControl.isPreferredGhost(world.population().clyde()));
+				!optionalHouseAccessControl.isGlobalDotCounterEnabled()
+						&& optionalHouseAccessControl.isPreferredGhost(world.population().clyde()));
 		drawDotCounter(g, inkyImage, optionalHouseAccessControl.ghostDotCount(world.population().inky()), 24, 20,
-				!optionalHouseAccessControl.isGlobalDotCounterEnabled() && optionalHouseAccessControl.isPreferredGhost(world.population().inky()));
-		drawDotCounter(g, null, optionalHouseAccessControl.globalDotCount(), 24, 14, optionalHouseAccessControl.isGlobalDotCounterEnabled());
+				!optionalHouseAccessControl.isGlobalDotCounterEnabled()
+						&& optionalHouseAccessControl.isPreferredGhost(world.population().inky()));
+		drawDotCounter(g, null, optionalHouseAccessControl.globalDotCount(), 24, 14,
+				optionalHouseAccessControl.isGlobalDotCounterEnabled());
 	}
 
 	private void drawDotCounter(Graphics2D g, BufferedImage image, int value, int col, int row, boolean emphasized) {

@@ -4,30 +4,19 @@ import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
 import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.view.core.EntityRenderer.drawEntity;
-import static de.amr.games.pacman.view.play.SimplePlayView.MazeMode.CROWDED;
-import static de.amr.games.pacman.view.play.SimplePlayView.MazeMode.EMPTY;
-import static de.amr.games.pacman.view.play.SimplePlayView.MazeMode.FLASHING;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 
-import de.amr.easy.game.ui.sprites.CyclicAnimation;
-import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.easy.game.view.Pen;
-import de.amr.easy.game.view.View;
-import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Symbol;
-import de.amr.games.pacman.model.world.core.BonusState;
-import de.amr.games.pacman.model.world.core.Door.DoorState;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.theme.Theme;
-import de.amr.statemachine.core.StateMachine;
 
 /**
  * Simple play view providing the core functionality for playing.
@@ -59,7 +48,7 @@ public class SimplePlayView implements LivingView {
 		this.game = game;
 		this.width = width;
 		this.height = height;
-		mazeView = new MazeView();
+		mazeView = new MazeView(world, theme);
 	}
 
 	@Override
@@ -102,10 +91,6 @@ public class SimplePlayView implements LivingView {
 	public void enableGhostAnimations(boolean enabled) {
 		world.population().ghosts().flatMap(ghost -> ghost.sprites.values())
 				.forEach(sprite -> sprite.enableAnimation(enabled));
-	}
-
-	protected Color tileColor(Tile tile) {
-		return Color.BLACK;
 	}
 
 	protected void drawMaze(Graphics2D g) {
@@ -206,74 +191,6 @@ public class SimplePlayView implements LivingView {
 		for (int i = 0, x = width - 2 * sz; i < n; ++i, x -= sz) {
 			Symbol symbol = game.levelCounter.get(first + i);
 			g.drawImage(theme.spr_bonusSymbol(symbol.name()).frame(0), x, height - sz, sz, sz, null);
-		}
-	}
-
-	/**
-	 * Inner class realizing the maze view which can be in any of states EMPTY, CROWDED or FLASHING.
-	 */
-	public class MazeView extends StateMachine<MazeMode, Void> implements View {
-
-		public Sprite spriteEmptyMaze, spriteFullMaze, spriteFlashingMaze;
-		public SpriteAnimation energizersBlinking;
-
-		public MazeView() {
-			super(MazeMode.class);
-			spriteFullMaze = theme.spr_fullMaze();
-			spriteEmptyMaze = theme.spr_emptyMaze();
-			spriteFlashingMaze = theme.spr_flashingMaze();
-			energizersBlinking = new CyclicAnimation(2);
-			energizersBlinking.setFrameDuration(150);
-			//@formatter:off
-			beginStateMachine()
-				.description("[Maze View]")
-				.initialState(CROWDED)
-				.states()
-					.state(CROWDED)
-						.onEntry(() -> energizersBlinking.setEnabled(false))
-						.onTick(() -> energizersBlinking.update())
-				.transitions()
-			.endStateMachine();
-			//@formatter:on
-			getTracer().setLogger(PacManStateMachineLogging.LOGGER);
-		}
-
-		@Override
-		public void draw(Graphics2D g) {
-			if (getState() == CROWDED) {
-				drawMaze(g);
-			} else if (getState() == EMPTY) {
-				spriteEmptyMaze.draw(g, 0, 3 * Tile.SIZE);
-			} else if (getState() == FLASHING) {
-				spriteFlashingMaze.draw(g, 0, 3 * Tile.SIZE);
-			}
-		}
-
-		private void drawMaze(Graphics2D g) {
-			spriteFullMaze.draw(g, 0, 3 * Tile.SIZE);
-			// hide eaten food
-			world.habitatTiles().filter(world::containsEatenFood).forEach(tile -> {
-				g.setColor(tileColor(tile));
-				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
-			});
-			// simulate energizer blinking animation
-			if (energizersBlinking.currentFrameIndex() == 1) {
-				world.habitatTiles().filter(world::containsEnergizer).forEach(tile -> {
-					g.setColor(tileColor(tile));
-					g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
-				});
-			}
-			// draw bonus when active or consumed
-			world.getBonus().filter(bonus -> bonus.state != BonusState.INACTIVE).ifPresent(bonus -> {
-				Sprite sprite = bonus.state == BonusState.CONSUMED ? theme.spr_number(bonus.value)
-						: theme.spr_bonusSymbol(bonus.symbol);
-				g.drawImage(sprite.frame(0), world.bonusTile().x(), world.bonusTile().y() - Tile.SIZE / 2, null);
-			});
-			// draw doors depending on their state
-			world.theHouse().doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {
-				g.setColor(Color.BLACK);
-				door.tiles.forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
-			});
 		}
 	}
 }

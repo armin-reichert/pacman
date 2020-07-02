@@ -1,12 +1,12 @@
 package de.amr.games.pacman.model.world.core;
 
 import static de.amr.easy.game.Application.loginfo;
+import static de.amr.games.pacman.PacManApp.settings;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.graph.core.api.UndirectedEdge;
 import de.amr.graph.grid.impl.Grid4Topology;
@@ -18,13 +18,18 @@ import de.amr.graph.pathfinder.impl.BestFirstSearch;
 import de.amr.graph.pathfinder.impl.BreadthFirstSearch;
 
 /**
- * Adds a grid graph structure to the world such that graph path finder algorithms can be used.
+ * Adds a graph structure to the world such that path finder algorithms can be used.
  * 
  * @author Armin Reichert
  */
 public class WorldGraph extends GridGraph<Tile, Void> {
 
+	public enum PathFinder {
+		ASTAR, BEST_FIRST_SEARCH, BREADTH_FIRST_SEARCH
+	}
+
 	private final World world;
+	private PathFinder pathFinder;
 	private int pathFinderCalls;
 
 	public WorldGraph(World world) {
@@ -32,11 +37,37 @@ public class WorldGraph extends GridGraph<Tile, Void> {
 		setDefaultVertexLabel(this::tile);
 		this.world = world;
 		fill();
-		//@formatter:off
-		edges()
-			.filter(edge -> !world.isAccessible(tile(edge.either())) || !world.isAccessible(tile(edge.other())))
-			.forEach(this::removeEdge);
-		/*@formatter:on*/
+		edges().filter(edge -> !world.isAccessible(tile(edge.either())) || !world.isAccessible(tile(edge.other())))
+				.forEach(this::removeEdge);
+		pathFinder = getPathFinder(settings.pathFinder);
+	}
+
+	public void setPathFinder(PathFinder pathFinder) {
+		this.pathFinder = pathFinder;
+	}
+
+	private PathFinder getPathFinder(String spec) {
+		switch (spec) {
+		case "bfs":
+			return PathFinder.BREADTH_FIRST_SEARCH;
+		case "bestfs":
+			return PathFinder.BEST_FIRST_SEARCH;
+		case "astar":
+		default:
+			return PathFinder.ASTAR;
+		}
+	}
+
+	private GraphSearch createSearch(Tile target) {
+		switch (pathFinder) {
+		case BREADTH_FIRST_SEARCH:
+			return new BreadthFirstSearch(this);
+		case BEST_FIRST_SEARCH:
+			return new BestFirstSearch(this, v -> manhattan(v, vertex(target)));
+		case ASTAR:
+		default:
+			return new AStarSearch(this, (u, v) -> 1, this::manhattan);
+		}
 	}
 
 	public int vertex(Tile tile) {
@@ -49,27 +80,13 @@ public class WorldGraph extends GridGraph<Tile, Void> {
 
 	public List<Tile> shortestPath(Tile source, Tile target) {
 		if (world.includes(source) && world.includes(target)) {
-			GraphSearch pathfinder = createPathFinder(target);
-			Path path = pathfinder.findPath(vertex(source), vertex(target));
+			Path path = createSearch(target).findPath(vertex(source), vertex(target));
 			pathFinderCalls += 1;
 			if (pathFinderCalls % 100 == 0) {
-				loginfo("%d'th pathfinding (%s) executed", pathFinderCalls, pathfinder.getClass().getSimpleName());
+				loginfo("%d'th pathfinding (%s) executed", pathFinderCalls, pathFinder);
 			}
 			return path.vertexStream().map(this::tile).collect(Collectors.toList());
 		}
 		return Collections.emptyList();
-	}
-
-	private GraphSearch createPathFinder(Tile target) {
-		switch (PacManApp.settings.pathFinder) {
-		case "astar":
-			return new AStarSearch(this, (u, v) -> 1, this::manhattan);
-		case "bfs":
-			return new BreadthFirstSearch(this);
-		case "bestfs":
-			return new BestFirstSearch(this, v -> manhattan(v, vertex(target)));
-		default:
-			return new AStarSearch(this, (u, v) -> 1, this::manhattan);
-		}
 	}
 }
