@@ -2,7 +2,6 @@ package de.amr.games.pacman.model;
 
 import static de.amr.easy.game.Application.loginfo;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,8 +70,8 @@ public class Game {
 		return Math.round(60 * seconds);
 	}
 
-	public final List<Symbol> levelCounter;
-	public final GameScore gameScore;
+	public final List<Symbol> levelCounter = new ArrayList<>();
+	public final Hiscore hiscore = new Hiscore();
 	public final int totalFoodCount;
 	public GameLevel level;
 	public int lives;
@@ -85,11 +84,9 @@ public class Game {
 	 * @param totalFoodCount total number of food in each level
 	 */
 	public Game(int startLevel, int totalFoodCount) {
-		levelCounter = new ArrayList<>();
-		gameScore = new GameScore(new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml"));
+		this.totalFoodCount = totalFoodCount;
 		lives = 3;
 		score = 0;
-		this.totalFoodCount = totalFoodCount;
 		enterLevel(startLevel);
 	}
 
@@ -108,7 +105,7 @@ public class Game {
 		level.number = n;
 		level.totalFoodCount = totalFoodCount;
 		levelCounter.add(level.bonusSymbol);
-		gameScore.load();
+		hiscore.load();
 	}
 
 	/**
@@ -127,10 +124,10 @@ public class Game {
 	public int score(int points) {
 		int oldScore = score;
 		score += points;
-		gameScore.update(level, score);
 		if (oldScore < POINTS_EXTRA_LIFE && POINTS_EXTRA_LIFE <= score) {
 			lives += 1;
 		}
+		hiscore.checkNewHiscore(level, score);
 		return points;
 	}
 

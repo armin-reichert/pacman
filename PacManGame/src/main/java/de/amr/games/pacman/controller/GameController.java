@@ -108,7 +108,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		sound = new PacManSounds(world, theme);
 		loadingView = new LoadingView(world, theme);
 		introView = new IntroView(world, theme);
-		app().onEntry(ApplicationState.CLOSING, state -> saveScore());
+		app().onEntry(ApplicationState.CLOSING, state -> game().ifPresent(game -> {
+			game.hiscore.save();
+		}));
 	}
 
 	@Override
@@ -546,13 +548,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	public boolean isShowingStates() {
 		return playView.showingStates;
-	}
-
-	public void saveScore() {
-		if (game == null) {
-			return;
-		}
-		game.gameScore.save();
 	}
 
 	public void setDemoMode(boolean on) {
