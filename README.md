@@ -20,7 +20,7 @@ cd your/path/to/git/repository/pacman/PacManGame
 mvn clean install assembly:single
 ```
 
-[![Pac-Man](PacManDoc/app-and-f2dialog.png)](https://www.youtube.com/watch?v=JU3kmUC3T2k&t=210s)
+[![Pac-Man](https://github.com/armin-reichert/pacman/PacManDoc/app-and-f2dialog.png)](https://www.youtube.com/watch?v=JU3kmUC3T2k&t=210s)
 (Click image to play video)
 
 ## Features
