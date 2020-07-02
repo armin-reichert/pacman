@@ -108,9 +108,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		sound = new PacManSounds(world, theme);
 		loadingView = new LoadingView(world, theme);
 		introView = new IntroView(world, theme);
-		app().onEntry(ApplicationState.CLOSING, state -> game().ifPresent(game -> {
-			game.hiscore.save();
-		}));
+		app().onEntry(ApplicationState.CLOSING, state -> game().ifPresent(game -> game.hiscore.save()));
 	}
 
 	@Override
