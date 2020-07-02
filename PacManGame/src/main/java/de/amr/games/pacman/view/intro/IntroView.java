@@ -157,7 +157,7 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 			pacManLogo.draw(g);
 			chaseGhosts.draw(g);
 			chasePacMan.draw(g);
-			drawFullScreenMode(g, 31);
+			drawScreenModeText(g, 31);
 		}
 	}
 
@@ -194,7 +194,7 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 				drawPressSpaceToStart(g, 18);
 			}
 			drawSpeedSelection(g, 22);
-			drawFullScreenMode(g, 31);
+			drawScreenModeText(g, 31);
 		}
 	}
 
@@ -241,32 +241,28 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 
 	@Override
 	public void draw(Graphics2D g) {
-		g = (Graphics2D) g.create();
 		g.setColor(new Color(0, 23, 61));
 		g.fillRect(0, 0, width, height);
 		if (state() instanceof View) {
 			((View) state()).draw(g);
 		}
-		g.dispose();
 	}
 
 	private void drawPressSpaceToStart(Graphics2D g, int row) {
+		String text = Localized.texts.getString("press_space_to_start");
 		try (Pen pen = new Pen(g)) {
 			pen.font(theme.fnt_text());
 			pen.color(Color.WHITE);
-			pen.hcenter(Localized.texts.getString("press_space_to_start"), width, row, Tile.SIZE);
+			pen.hcenter(text, width, row, Tile.SIZE);
 		}
 	}
 
-	private void drawFullScreenMode(Graphics2D g, int row) {
+	private void drawScreenModeText(Graphics2D g, int row) {
+		String text = "F11 - " + Localized.texts.getString(app().inFullScreenMode() ? "window_mode" : "fullscreen_mode");
 		try (Pen pen = new Pen(g)) {
 			pen.font(theme.fnt_text());
 			pen.color(orange);
-			if (app().inFullScreenMode()) {
-				pen.hcenter("F11 - " + Localized.texts.getString("window_mode"), width, row, Tile.SIZE);
-			} else {
-				pen.hcenter("F11 - " + Localized.texts.getString("fullscreen_mode"), width, row, Tile.SIZE);
-			}
+			pen.hcenter(text, width, row, Tile.SIZE);
 		}
 	}
 
