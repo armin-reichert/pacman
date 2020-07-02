@@ -57,7 +57,6 @@ import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.PlayView;
-import de.amr.games.pacman.view.play.SimplePlayView.MazeMode;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.State;
@@ -163,13 +162,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onTick((state, t, remaining) -> {
 						if (t == sec(5)) {
 							playView.showMessage("Ready!", Color.YELLOW);
-							playView.mazeView.energizersBlinking.setEnabled(true);
+							playView.enableEnergizerAnimations(true);
 							theme.music_playing().play();
 						}
 						creaturesOnStage().forEach(Creature::update);
-					})
-					.onExit(() -> {
-						playView.clearMessage();
 					})
 				
 				.state(PLAYING).customState(new PlayingState())
@@ -181,7 +177,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						ghostHouseAccessControl.onLevelChange();
 						sound.stopAllClips();
 						playView.enableGhostAnimations(false);
-						playView.mazeView.energizersBlinking.setEnabled(false);
+						playView.enableEnergizerAnimations(false);
 						loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilled);
 					})
 					.onTick((state, t, remaining) -> {
@@ -191,13 +187,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						if (t == sec(2)) {
 							ghostsOnStage().forEach(ghost -> ghost.visible = false);
 							if (flashingSeconds > 0) {
-								playView.mazeView.setState(MazeMode.FLASHING);
+								playView.setEmptyMaze(true);
+								playView.setMazeFlashing(true);
 							}
 						}
 	
 						// After flashing, show empty maze.
 						if (t == sec(2 + flashingSeconds)) {
-							playView.mazeView.setState(MazeMode.EMPTY);
+							playView.setMazeFlashing(false);
 						}
 						
 						// After two more seconds, change level and show crowded maze.
@@ -303,7 +300,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					
 				.when(GETTING_READY).then(PLAYING)
 					.onTimeout()
-					.act(playingState()::reset)
+					.act(playingState()::prepare)
 				
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
@@ -332,7 +329,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					
 				.when(CHANGING_LEVEL).then(PLAYING)
 					.onTimeout()
-					.act(playingState()::reset)
+					.act(playingState()::prepare)
 					
 				.when(GHOST_DYING).then(PLAYING)
 					.onTimeout()
@@ -344,7 +341,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.when(PACMAN_DYING).then(PLAYING)
 					.onTimeout()
 					.condition(() -> game.lives > 0)
-					.act(playingState()::reset)
+					.act(playingState()::prepare)
 			
 				.when(GAME_OVER).then(GETTING_READY)
 					.condition(() -> Keyboard.keyPressedOnce("space"))
@@ -390,6 +387,18 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	 */
 	public class PlayingState extends State<PacManGameState> {
 
+		void prepare() {
+			playView.clearMessage();
+			bonusControl.init();
+			ghostCommand.init();
+			creaturesOnStage().forEach(Creature::init);
+			playView.init();
+			playView.enableGhostAnimations(true);
+			playView.enableEnergizerAnimations(true);
+			sound.resumePlayingMusic();
+			pacMan.start();
+		}
+
 		@Override
 		public void onTick() {
 			ghostCommand.update();
@@ -402,17 +411,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		@Override
 		public void onExit() {
 			sound.stopGhostSounds();
-		}
-
-		private void reset() {
-			bonusControl.init();
-			ghostCommand.init();
-			creaturesOnStage().forEach(Creature::init);
-			playView.init();
-			playView.enableGhostAnimations(true);
-			playView.mazeView.energizersBlinking.setEnabled(true);
-			sound.resumePlayingMusic();
-			pacMan.start();
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {
@@ -439,7 +437,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (!settings.ghostsHarmless) {
 				ghostHouseAccessControl.onLifeLost();
 				sound.stopAll();
-				playView.mazeView.energizersBlinking.setEnabled(false);
+				playView.enableEnergizerAnimations(false);
 				pacMan.process(new PacManKilledEvent(ghost));
 				enqueue(new PacManKilledEvent(ghost));
 				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.tile());

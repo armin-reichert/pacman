@@ -99,6 +99,7 @@ public class PacMan extends Creature<PacManState> {
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		brain.doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
+		brain.doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
 	}
 
 	@Override
@@ -107,7 +108,7 @@ public class PacMan extends Creature<PacManState> {
 		sprites.set("dying", theme.spr_pacManDying());
 		sprites.set("full", theme.spr_pacManFull());
 	}
-	
+
 	public void start() {
 		setState(RUNNING);
 	}

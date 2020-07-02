@@ -124,7 +124,11 @@ public class PlayView extends SimplePlayView {
 		inkyImage = (BufferedImage) theme.spr_ghostColored(Theme.CYAN_GHOST, Direction.RIGHT).frame(0);
 		clydeImage = (BufferedImage) theme.spr_ghostColored(Theme.ORANGE_GHOST, Direction.RIGHT).frame(0);
 		pacManImage = (BufferedImage) theme.spr_pacManWalking(RIGHT).frame(0);
-		mazeView.setTileColor(tile -> showingGrid ? GRID_PATTERN[patternIndex(tile.col, tile.row)] : Color.BLACK);
+	}
+
+	@Override
+	protected Color tileColor(Tile tile) {
+		return showingGrid ? GRID_PATTERN[patternIndex(tile.col, tile.row)] : Color.BLACK;
 	}
 
 	@Override

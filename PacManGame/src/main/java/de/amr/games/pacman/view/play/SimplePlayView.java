@@ -10,10 +10,15 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 
+import de.amr.easy.game.ui.sprites.CyclicAnimation;
+import de.amr.easy.game.ui.sprites.Sprite;
+import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Symbol;
+import de.amr.games.pacman.model.world.core.BonusState;
+import de.amr.games.pacman.model.world.core.Door.DoorState;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.theme.Theme;
@@ -25,17 +30,17 @@ import de.amr.games.pacman.view.theme.Theme;
  */
 public class SimplePlayView implements LivingView {
 
-	public enum MazeMode {
-		EMPTY, CROWDED, FLASHING
-	}
-
 	protected World world;
 	protected Theme theme;
 	protected Game game;
 	protected int width;
 	protected int height;
 
-	public final MazeView mazeView;
+	private boolean mazeEmpty;
+	private boolean mazeFlashing;
+	private final Sprite mazeEmptySprite, mazeFullSprite, mazeFlashingSprite;
+	private final SpriteAnimation energizerAnimation;
+	private int offsetY;
 
 	private String messageText = "";
 	private Color messageColor = Color.YELLOW;
@@ -48,18 +53,24 @@ public class SimplePlayView implements LivingView {
 		this.game = game;
 		this.width = width;
 		this.height = height;
-		mazeView = new MazeView(world, theme);
+		mazeFullSprite = theme.spr_fullMaze();
+		mazeEmptySprite = theme.spr_emptyMaze();
+		mazeFlashingSprite = theme.spr_flashingMaze();
+		energizerAnimation = new CyclicAnimation(2);
+		energizerAnimation.setFrameDuration(150);
+		energizerAnimation.setEnabled(false);
+		offsetY = 3 * Tile.SIZE;
 	}
 
 	@Override
 	public void init() {
-		mazeView.init();
 		clearMessage();
+		setEmptyMaze(false);
+		setMazeFlashing(false);
 	}
 
 	@Override
 	public void update() {
-		mazeView.update();
 	}
 
 	@Override
@@ -93,8 +104,75 @@ public class SimplePlayView implements LivingView {
 				.forEach(sprite -> sprite.enableAnimation(enabled));
 	}
 
+	public void enableEnergizerAnimations(boolean enabled) {
+		energizerAnimation.setEnabled(enabled);
+	}
+
+	protected Color tileColor(Tile tile) {
+		return Color.BLACK;
+	}
+
+	public void setMazeFlashing(boolean flashing) {
+		mazeFlashing = flashing;
+	}
+
+	public void setEmptyMaze(boolean empty) {
+		mazeEmpty = empty;
+	}
+
 	protected void drawMaze(Graphics2D g) {
-		mazeView.draw(g);
+		if (mazeEmpty) {
+			if (mazeFlashing) {
+				drawFlashingEmptyMaze(g);
+			} else {
+				drawEmptyMaze(g);
+			}
+		} else {
+			drawNormalMaze(g);
+			energizerAnimation.update();
+		}
+	}
+
+	public void drawNormalMaze(Graphics2D g) {
+		g.translate(0, offsetY);
+		mazeFullSprite.draw(g);
+		g.translate(0, -offsetY);
+
+		// hide eaten food
+		world.habitatTiles().filter(world::containsEatenFood).forEach(tile -> {
+			g.setColor(tileColor(tile));
+			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
+		});
+		// simulate energizer blinking animation
+		if (energizerAnimation.isEnabled() && energizerAnimation.currentFrameIndex() == 1) {
+			world.habitatTiles().filter(world::containsEnergizer).forEach(tile -> {
+				g.setColor(tileColor(tile));
+				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
+			});
+		}
+		// draw bonus when active or consumed
+		world.getBonus().filter(bonus -> bonus.state != BonusState.INACTIVE).ifPresent(bonus -> {
+			Sprite sprite = bonus.state == BonusState.CONSUMED ? theme.spr_number(bonus.value)
+					: theme.spr_bonusSymbol(bonus.symbol);
+			g.drawImage(sprite.frame(0), world.bonusTile().x(), world.bonusTile().y() - Tile.SIZE / 2, null);
+		});
+		// draw doors depending on their state
+		world.theHouse().doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {
+			g.setColor(Color.BLACK);
+			door.tiles.forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
+		});
+	}
+
+	public void drawFlashingEmptyMaze(Graphics2D g) {
+		g.translate(0, offsetY);
+		mazeFlashingSprite.draw(g);
+		g.translate(0, -offsetY);
+	}
+
+	public void drawEmptyMaze(Graphics2D g) {
+		g.translate(0, offsetY);
+		mazeEmptySprite.draw(g);
+		g.translate(0, -offsetY);
 	}
 
 	protected void drawMessage(Graphics2D g) {

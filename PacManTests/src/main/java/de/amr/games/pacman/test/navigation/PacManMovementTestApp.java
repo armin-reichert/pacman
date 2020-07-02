@@ -39,10 +39,10 @@ class PacManMovementTestUI extends TestUI {
 	public void init() {
 		super.init();
 		include(pacMan);
+		world.fillFood();
 		pacMan.addEventListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
-				theme.snd_eatPill().play();
 				world.removeFood(foodFound.tile);
 				game.level.eatenFoodCount++;
 				if (game.level.remainingFoodCount() == 0) {
@@ -52,7 +52,7 @@ class PacManMovementTestUI extends TestUI {
 			}
 		});
 		view.showingGrid = true;
-		view.mazeView.energizersBlinking.setEnabled(true);
+		view.enableEnergizerAnimations(true);
 		view.showMessage("SPACE changes steering", Color.WHITE);
 		pacMan.start();
 	}
