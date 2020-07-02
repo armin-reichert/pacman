@@ -17,7 +17,7 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.core.Door;
+import de.amr.games.pacman.model.world.core.Door.DoorState;
 import de.amr.games.pacman.model.world.core.House;
 
 /**
@@ -70,9 +70,14 @@ public class GhostHouseAccessControl implements Lifecycle {
 			}
 		});
 		pacManStarvingTicks += 1;
-		boolean open = world.population().ghosts().filter(world::included).count() > 0
-				&& world.population().ghosts().anyMatch(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE));
-		house.doors().forEach(door -> door.state = open ? Door.DoorState.OPEN : Door.DoorState.CLOSED);
+
+		house.doors().forEach(door -> door.state = DoorState.CLOSED);
+		house.doors().filter(door -> ghostsNeedingOpenDoor().anyMatch(ghost -> door.includes(ghost.tile())))
+				.forEach(door -> door.state = DoorState.OPEN);
+	}
+
+	private Stream<Ghost> ghostsNeedingOpenDoor() {
+		return world.population().ghosts().filter(world::included).filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE));
 	}
 
 	/**
