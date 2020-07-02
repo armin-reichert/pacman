@@ -347,7 +347,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.act(playingState()::reset)
 			
 				.when(GAME_OVER).then(GETTING_READY)
-					.condition(() -> Keyboard.keyPressedOnce(" "))
+					.condition(() -> Keyboard.keyPressedOnce("space"))
 					
 				.when(GAME_OVER).then(INTRO)
 					.condition(() -> !sound.isGameOverMusicRunning())

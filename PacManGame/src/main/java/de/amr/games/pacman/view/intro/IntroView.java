@@ -93,7 +93,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 					.onTimeout()
 				
 				.when(WAITING_FOR_INPUT).then(READY_TO_PLAY)
-					.condition(() -> Keyboard.keyPressedOnce(" "))
+					.condition(() -> Keyboard.keyPressedOnce("space"))
 	
 		.endStateMachine();
 	  /*@formatter:on*/
