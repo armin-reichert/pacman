@@ -16,17 +16,17 @@ public abstract class BaseView implements Lifecycle, View {
 
 	public final World world;
 	public final Theme theme;
+	public final int width;
+	public final int height;
 
 	public BaseView(World world, Theme theme) {
+		this(world, theme, app().settings().width, app().settings().height);
+	}
+
+	public BaseView(World world, Theme theme, int width, int height) {
 		this.world = world;
 		this.theme = theme;
-	}
-
-	public int width() {
-		return app().settings().width;
-	}
-
-	public int height() {
-		return app().settings().height;
+		this.width = width;
+		this.height = height;
 	}
 }

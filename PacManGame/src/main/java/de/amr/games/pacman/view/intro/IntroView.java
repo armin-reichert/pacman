@@ -62,13 +62,13 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 
 	private void createUIComponents() {
 		pacManLogo = new ImageWidget(theme.img_logo());
-		pacManLogo.tf.centerX(width());
+		pacManLogo.tf.centerX(width);
 		pacManLogo.tf.y = (20);
 		chasePacMan = new ChasePacManAnimation(theme);
-		chasePacMan.tf.centerX(width());
+		chasePacMan.tf.centerX(width);
 		chasePacMan.tf.y = (100);
 		chaseGhosts = new ChaseGhostsAnimation(theme);
-		chaseGhosts.tf.setPosition(width(), 200);
+		chaseGhosts.tf.setPosition(width, 200);
 		ghostPointsAnimation = new GhostPointsAnimation(theme);
 		gitHubLink = LinkWidget.create()
 		/*@formatter:off*/
@@ -78,8 +78,8 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 			.color(Color.LIGHT_GRAY)
 			.build();
 		/*@formatter:on*/
-		gitHubLink.tf.y = (height() - 16);
-		gitHubLink.tf.centerX(width());
+		gitHubLink.tf.y = (height - 16);
+		gitHubLink.tf.centerX(width);
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 				.state(SCROLLING_LOGO)
 					.onEntry(() -> {
 						theme.snd_insertCoin().play();
-						pacManLogo.tf.y = height();
+						pacManLogo.tf.y = height;
 						pacManLogo.tf.vy = -2f;
 						pacManLogo.setCompletion(() -> pacManLogo.tf.y <= 20);
 						pacManLogo.visible = true; 
@@ -111,10 +111,10 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 	
 				.state(SHOWING_ANIMATIONS)
 					.onEntry(() -> {
-						chasePacMan.setStartPosition(width(), 100);
+						chasePacMan.setStartPosition(width, 100);
 						chasePacMan.setEndPosition(-chasePacMan.tf.width, 100);
 						chaseGhosts.setStartPosition(-chaseGhosts.tf.width, 200);
-						chaseGhosts.setEndPosition(width(), 200);
+						chaseGhosts.setEndPosition(width, 200);
 						chasePacMan.start();
 						chaseGhosts.start();
 					})
@@ -125,14 +125,14 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 					.onExit(() -> {
 						chasePacMan.stop();
 						chaseGhosts.stop();
-						chasePacMan.tf.centerX(width());
+						chasePacMan.tf.centerX(width);
 					})
 					
 				.state(WAITING_FOR_INPUT)
 					.timeoutAfter(sec(10))
 					.onEntry(() -> {
 						ghostPointsAnimation.tf.y=(200);
-						ghostPointsAnimation.tf.centerX(width());
+						ghostPointsAnimation.tf.centerX(width);
 						ghostPointsAnimation.start();
 						gitHubLink.visible = true;
 					})
@@ -189,7 +189,7 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 	public void draw(Graphics2D g) {
 		g = (Graphics2D) g.create();
 		g.setColor(new Color(0, 23, 61));
-		g.fillRect(0, 0, width(), height());
+		g.fillRect(0, 0, width, height);
 		try (Pen pen = new Pen(g)) {
 			switch (getState()) {
 			case SCROLLING_LOGO:
@@ -225,7 +225,7 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 		try (Pen pen = new Pen(g)) {
 			pen.font(theme.fnt_text());
 			pen.color(Color.WHITE);
-			pen.hcenter(Localized.texts.getString("press_space_to_start"), width(), row, Tile.SIZE);
+			pen.hcenter(Localized.texts.getString("press_space_to_start"), width, row, Tile.SIZE);
 		}
 	}
 
@@ -234,9 +234,9 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 			pen.font(theme.fnt_text());
 			pen.color(orange);
 			if (app().inFullScreenMode()) {
-				pen.hcenter("F11 - " + Localized.texts.getString("window_mode"), width(), row, Tile.SIZE);
+				pen.hcenter("F11 - " + Localized.texts.getString("window_mode"), width, row, Tile.SIZE);
 			} else {
-				pen.hcenter("F11 - " + Localized.texts.getString("fullscreen_mode"), width(), row, Tile.SIZE);
+				pen.hcenter("F11 - " + Localized.texts.getString("fullscreen_mode"), width, row, Tile.SIZE);
 			}
 		}
 	}
@@ -251,7 +251,7 @@ public class IntroView extends BaseView implements FsmContainer<IntroState, Void
 			pen.fontSize(6);
 			FontMetrics fm = pen.getFontMetrics();
 			int w1 = fm.stringWidth(t1), w2 = fm.stringWidth(t2), w3 = fm.stringWidth(t3);
-			float s = (width() - (w1 + w2 + w3)) / 4f;
+			float s = (width - (w1 + w2 + w3)) / 4f;
 			float x1 = s, x2 = x1 + w1 + s, x3 = x2 + w2 + s;
 			int y = row * Tile.SIZE;
 			pen.color(selectedSpeed == 1 ? orange : red);
