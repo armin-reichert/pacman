@@ -6,7 +6,7 @@ import com.beust.jcommander.Parameter;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
-import de.amr.easy.game.ui.f2dialog.F2DialogAPI;
+import de.amr.easy.game.ui.f2dialog.F2Dialog;
 import de.amr.games.pacman.controller.EnhancedGameController;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.view.Localized;
@@ -89,7 +89,7 @@ public class PacManApp extends Application {
 	}
 
 	@Override
-	public void configureF2Dialog(F2DialogAPI f2) {
+	public void configureF2Dialog(F2Dialog f2) {
 		GameStateView gameStateView = new GameStateView();
 		GameLevelView gameLevelView = new GameLevelView();
 		GameController gameController = (GameController) getController();
