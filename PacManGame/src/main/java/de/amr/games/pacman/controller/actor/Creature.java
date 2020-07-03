@@ -9,7 +9,6 @@ import java.util.function.Supplier;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
-import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.controller.actor.steering.MovementControl;
 import de.amr.games.pacman.controller.actor.steering.MovementType;
 import de.amr.games.pacman.controller.actor.steering.Steering;
@@ -24,7 +23,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.api.FsmContainer;
 
@@ -39,8 +37,6 @@ import de.amr.statemachine.api.FsmContainer;
 public abstract class Creature<STATE> extends Entity implements WorldMover, FsmContainer<STATE, PacManGameEvent> {
 
 	public final String name;
-	public final SpriteMap sprites = new SpriteMap();
-
 	protected Game game;
 	protected World world;
 	protected Bed bed;
@@ -60,8 +56,6 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 		tf.width = Tile.SIZE;
 		tf.height = Tile.SIZE;
 	}
-
-	public abstract void applyTheme(Theme theme);
 
 	public void setWorld(World world) {
 		this.world = world;

@@ -5,7 +5,7 @@ import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.test.navigation.TestUI;
+import de.amr.games.pacman.test.TestUI;
 
 public class EscapeIntoCornerTestApp extends Application {
 

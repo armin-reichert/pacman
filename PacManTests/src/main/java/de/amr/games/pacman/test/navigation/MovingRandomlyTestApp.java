@@ -9,6 +9,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.test.TestUI;
 
 public class MovingRandomlyTestApp extends Application {
 

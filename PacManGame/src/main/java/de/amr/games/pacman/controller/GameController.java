@@ -56,6 +56,8 @@ import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.PlayView;
+import de.amr.games.pacman.view.render.GhostRenderer;
+import de.amr.games.pacman.view.render.PacManRenderer;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.State;
@@ -86,8 +88,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public GameController() {
 		super(PacManGameState.class);
 		buildStateMachine();
+
 		loginfo("Initializing game controller");
-		theme = new ArcadeTheme();
 
 		Population people = new DefaultPopulation();
 		pacMan = people.pacMan();
@@ -98,11 +100,16 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		world = Universe.arcadeWorld();
 		people.populate(world);
+
+		theme = new ArcadeTheme();
+		pacMan.setRenderer(new PacManRenderer(pacMan, theme));
+		people.ghosts().forEach(ghost -> ghost.setRenderer(new GhostRenderer(ghost, theme)));
+
 		people.creatures().forEach(creature -> {
 			creature.addEventListener(this::process);
-			creature.applyTheme(theme);
 			world.include(creature);
 		});
+
 		sound = new PacManSounds(world, theme);
 
 		app().onClose(() -> game().ifPresent(game -> game.hiscore.save()));
@@ -243,10 +250,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						if (t == waitTime) {
 							bonusControl.deactivateBonus();
 							ghostsOnStage().forEach(ghost -> ghost.visible = false);
-							pacMan.showFull().enableAnimation(false);
+							pacMan.getRenderer().selectSprite("full");
 						}
 						else if (t == dyingStartTime) {
-							pacMan.showDying().enableAnimation(true);
+							pacMan.getRenderer().selectSprite("dying");
+							pacMan.getRenderer().enableSpriteAnimation(true);
 							sound.pacManDied();
 						}
 						else if (t == dyingEndTime && game.lives > 0) {

@@ -3,7 +3,6 @@ package de.amr.games.pacman.view.play;
 import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
 import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.Direction.LEFT;
-import static de.amr.games.pacman.view.core.EntityRenderer.drawEntity;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -100,8 +99,8 @@ public class SimplePlayView implements LivingView {
 	}
 
 	public void enableGhostAnimations(boolean enabled) {
-		world.population().ghosts().flatMap(ghost -> ghost.sprites.values())
-				.forEach(sprite -> sprite.enableAnimation(enabled));
+		world.population().ghosts().map(ghost -> ghost.getRenderer())
+				.forEach(renderer -> renderer.enableSpriteAnimation(enabled));
 	}
 
 	public void enableEnergizerAnimations(boolean enabled) {
@@ -187,12 +186,12 @@ public class SimplePlayView implements LivingView {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		drawEntity(g, world.population().pacMan(), world.population().pacMan().sprites);
+		world.population().pacMan().getRenderer().drawPacMan(g);
 		// draw dead ghosts (as number or eyes) under living ghosts
 		world.population().ghosts().filter(world::included).filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
-				.forEach(ghost -> drawEntity(g, ghost, ghost.sprites));
+				.forEach(ghost -> ghost.getRenderer().drawGhost(g));
 		world.population().ghosts().filter(world::included).filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
-				.forEach(ghost -> drawEntity(g, ghost, ghost.sprites));
+				.forEach(ghost -> ghost.getRenderer().drawGhost(g));
 	}
 
 	protected void drawScores(Graphics2D g, Game game) {

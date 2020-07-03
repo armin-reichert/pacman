@@ -10,6 +10,7 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.test.TestUI;
 
 public class InkyChaseTestApp extends Application {
 

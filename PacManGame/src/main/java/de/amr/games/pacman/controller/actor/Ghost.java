@@ -21,7 +21,6 @@ import static de.amr.statemachine.core.StateMachine.beginStateMachine;
 import java.util.EnumMap;
 import java.util.Optional;
 
-import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.controller.actor.steering.ghost.FleeingToSafeCorner;
@@ -32,10 +31,10 @@ import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.OneWayTile;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.view.render.GhostRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -63,6 +62,8 @@ public class Ghost extends Creature<GhostState> {
 
 	/** Ghost color as defined in {@link Theme}. */
 	public int color;
+
+	private GhostRenderer renderer;
 
 	public StateMachine<Sanity, Void> sanity =
 	//@formatter:off
@@ -102,7 +103,7 @@ public class Ghost extends Creature<GhostState> {
 						tf.setPosition(bed().center.x - Tile.SIZE / 2, bed.center.y - Tile.SIZE / 2);
 						enteredNewTile();
 						sanity.init();
-						sprites.forEach(Sprite::resetAnimation);
+						renderer.resetAnimations();
 						showColored();
 					})
 					.onTick(() -> {
@@ -319,37 +320,32 @@ public class Ghost extends Creature<GhostState> {
 		movement.update();
 	}
 
-	@Override
-	public void applyTheme(Theme theme) {
-		Direction.dirs().forEach(dir -> {
-			sprites.set("color-" + dir, theme.spr_ghostColored(color, dir));
-			sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir));
-		});
-		sprites.set("frightened", theme.spr_ghostFrightened());
-		sprites.set("flashing", theme.spr_ghostFlashing());
-		for (int points : Game.POINTS_GHOST) {
-			sprites.set("points-" + points, theme.spr_number(points));
-		}
+	public GhostRenderer getRenderer() {
+		return renderer;
+	}
+
+	public void setRenderer(GhostRenderer renderer) {
+		this.renderer = renderer;
 	}
 
 	public void showColored() {
-		sprites.select("color-" + moveDir);
+		renderer.selectSprite("color-" + moveDir);
 	}
 
 	public void showFrightened() {
-		sprites.select("frightened");
+		renderer.selectSprite("frightened");
 	}
 
 	public void showEyes() {
-		sprites.select("eyes-" + moveDir);
+		renderer.selectSprite("eyes-" + moveDir);
 	}
 
 	public void showFlashing() {
-		sprites.select("flashing");
+		renderer.selectSprite("flashing");
 	}
 
 	public void showPoints(int points) {
-		sprites.select("points-" + points);
+		renderer.selectSprite("points-" + points);
 	}
 
 	public boolean isInsideHouse() {

@@ -16,7 +16,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.core.House;
 import de.amr.games.pacman.model.world.core.Portal;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.test.navigation.TestUI;
+import de.amr.games.pacman.test.TestUI;
 
 public class TakeShortestPathTestApp extends Application {
 

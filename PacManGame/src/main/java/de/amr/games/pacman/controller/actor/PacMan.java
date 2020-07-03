@@ -6,7 +6,6 @@ import static de.amr.games.pacman.controller.actor.PacManState.RUNNING;
 import static de.amr.games.pacman.controller.actor.PacManState.SLEEPING;
 import static de.amr.games.pacman.model.Direction.LEFT;
 import static de.amr.games.pacman.model.Direction.UP;
-import static de.amr.games.pacman.model.Direction.dirs;
 import static de.amr.games.pacman.model.Game.DIGEST_ENERGIZER_TICKS;
 import static de.amr.games.pacman.model.Game.DIGEST_PELLET_TICKS;
 import static de.amr.statemachine.core.StateMachine.beginStateMachine;
@@ -14,7 +13,6 @@ import static de.amr.statemachine.core.StateMachine.beginStateMachine;
 import java.util.EnumMap;
 import java.util.Optional;
 
-import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.steering.Steering;
@@ -25,7 +23,7 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.theme.Theme;
+import de.amr.games.pacman.view.render.PacManRenderer;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
@@ -34,6 +32,8 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * @author Armin Reichert
  */
 public class PacMan extends Creature<PacManState> {
+
+	private PacManRenderer renderer;
 
 	/** Number of ticks Pac-Man has power after eating an energizer. */
 	public int power;
@@ -57,7 +57,7 @@ public class PacMan extends Creature<PacManState> {
 						visible = true;
 						moveDir = wishDir = world.pacManBed().exitDir;
 						tf.setPosition(bed.center.x - Tile.SIZE / 2, bed.center.y - Tile.SIZE / 2);
-						sprites.forEach(Sprite::resetAnimation);
+						renderer.resetAnimations();
 						showFull();
 					})
 
@@ -102,29 +102,29 @@ public class PacMan extends Creature<PacManState> {
 		brain.doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
 	}
 
-	@Override
-	public void applyTheme(Theme theme) {
-		dirs().forEach(dir -> sprites.set("walking-" + dir, theme.spr_pacManWalking(dir)));
-		sprites.set("dying", theme.spr_pacManDying());
-		sprites.set("full", theme.spr_pacManFull());
+	public void setRenderer(PacManRenderer renderer) {
+		this.renderer = renderer;
+	}
+
+	public PacManRenderer getRenderer() {
+		return renderer;
 	}
 
 	public void start() {
 		setState(RUNNING);
 	}
 
-	public Sprite showWalking() {
-		Sprite sprite = sprites.select("walking-" + moveDir).get();
-		sprite.enableAnimation(tf.getVelocity().length() > 0);
-		return sprite;
+	public void showWalking() {
+		renderer.selectSprite("walking-" + moveDir);
+		renderer.enableSpriteAnimation(tf.getVelocity().length() > 0);
 	}
 
-	public Sprite showDying() {
-		return sprites.select("dying").get();
+	public void showDying() {
+		renderer.selectSprite("dying");
 	}
 
-	public Sprite showFull() {
-		return sprites.select("full").get();
+	public void showFull() {
+		renderer.selectSprite("full");
 	}
 
 	/**

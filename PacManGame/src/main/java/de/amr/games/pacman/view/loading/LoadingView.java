@@ -1,7 +1,5 @@
 package de.amr.games.pacman.view.loading;
 
-import static de.amr.games.pacman.view.core.EntityRenderer.drawEntity;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Random;
@@ -23,18 +21,17 @@ import de.amr.games.pacman.view.theme.Theme;
  */
 public class LoadingView implements LivingView {
 
-	private World world;
-	private Theme theme;
-	private int width;
-	private int height;
-	private PacMan pacMan;
+	private final PacMan pacMan;
+	private final Theme theme;
+	private final int width;
+	private final int height;
 	private int alpha;
 	private int alphaInc;
 	private int ghostCount;
 	private int ghostInc;
 
 	public LoadingView(World world, Theme theme, int width, int height) {
-		this.world = world;
+		pacMan = world.population().pacMan();
 		this.theme = theme;
 		this.width = width;
 		this.height = height;
@@ -42,8 +39,6 @@ public class LoadingView implements LivingView {
 
 	@Override
 	public void init() {
-		pacMan = world.population().pacMan();
-		pacMan.applyTheme(theme);
 		pacMan.init();
 		pacMan.start();
 		ghostCount = 0;
@@ -62,7 +57,7 @@ public class LoadingView implements LivingView {
 		}
 		pacMan.tf.setVelocity(Vector2f.smul(2.5f, pacMan.moveDir().vector()));
 		pacMan.tf.move();
-		pacMan.sprites.select("walking-" + pacMan.moveDir());
+		pacMan.getRenderer().selectSprite("walking-" + pacMan.moveDir());
 		alpha += alphaInc;
 		if (alpha >= 160) {
 			alphaInc = -2;
@@ -83,7 +78,7 @@ public class LoadingView implements LivingView {
 			pen.fontSize(10);
 			pen.hcenter(Localized.texts.getString("loading_music"), width, 18, Tile.SIZE);
 		}
-		drawEntity(g, pacMan, pacMan.sprites);
+		pacMan.getRenderer().drawPacMan(g);
 		float x = width / 2 - (ghostCount / 2) * 20, y = pacMan.tf.y + 20;
 		for (int i = 0; i < ghostCount; ++i) {
 			int color = new Random().nextInt(4);
