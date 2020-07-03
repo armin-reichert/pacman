@@ -107,8 +107,8 @@ public class PlayView extends SimplePlayView {
 			drawOneWayTiles(g);
 			drawGhostBeds(g);
 		}
-		if (showingScores && game != null) {
-			drawScores(g, game);
+		if (showingScores) {
+			drawScores(g);
 		}
 		if (showingRoutes) {
 			drawGhostRoutes(g);
