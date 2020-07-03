@@ -102,7 +102,7 @@ public class PlayView extends SimplePlayView {
 			frameRateDisplay.draw(g);
 		}
 		drawPlayMode(g);
-		drawMessage(g);
+		drawMessage(g, messageText);
 		if (showingGrid) {
 			drawOneWayTiles(g);
 			drawGhostBeds(g);
