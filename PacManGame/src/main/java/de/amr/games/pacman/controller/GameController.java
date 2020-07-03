@@ -168,7 +168,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onTick((state, t, remaining) -> {
 						if (t == sec(5)) {
 							playView.showMessage("Ready!", Color.YELLOW);
-							playView.enableEnergizerAnimations(true);
+							playView.letEnergizersBlink(true);
 							theme.music_playing().play();
 						}
 						creaturesOnStage().forEach(Creature::update);
@@ -183,7 +183,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						ghostHouseAccessControl.onLevelChange();
 						sound.stopAllClips();
 						playView.enableGhostAnimations(false);
-						playView.enableEnergizerAnimations(false);
+						playView.letEnergizersBlink(false);
 						loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilled);
 					})
 					.onTick((state, t, remaining) -> {
@@ -401,7 +401,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			creaturesOnStage().forEach(Creature::init);
 			playView.init();
 			playView.enableGhostAnimations(true);
-			playView.enableEnergizerAnimations(true);
+			playView.letEnergizersBlink(true);
 			sound.resumePlayingMusic();
 			pacMan.start();
 		}
@@ -444,7 +444,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (!settings.ghostsHarmless) {
 				ghostHouseAccessControl.onLifeLost();
 				sound.stopAll();
-				playView.enableEnergizerAnimations(false);
+				playView.letEnergizersBlink(false);
 				pacMan.process(new PacManKilledEvent(ghost));
 				enqueue(new PacManKilledEvent(ghost));
 				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.tile());

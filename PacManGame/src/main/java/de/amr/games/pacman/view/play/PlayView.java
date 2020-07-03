@@ -19,11 +19,8 @@ import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
-import java.awt.Transparency;
-import java.awt.image.BufferedImage;
 import java.util.List;
 
-import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
@@ -51,7 +48,6 @@ public class PlayView extends SimplePlayView {
 
 	private static final String INFTY = Character.toString('\u221E');
 	private static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
-	private static final Color[] GRID_PATTERN = { Color.BLACK, new Color(40, 40, 40) };
 	private static final Font SMALL_FONT = new Font("Arial Narrow", Font.PLAIN, 6);
 
 	private static Color alpha(Color color, int alpha) {
@@ -73,37 +69,9 @@ public class PlayView extends SimplePlayView {
 		}
 	}
 
-	private static int patternIndex(int col, int row) {
-		return (col + row) % GRID_PATTERN.length;
-	}
-
-	private static BufferedImage createGridPatternImage(int cols, int rows) {
-		int width = cols * Tile.SIZE, height = rows * Tile.SIZE + 1;
-		BufferedImage img = Assets.createBufferedImage(width, height, Transparency.TRANSLUCENT);
-		Graphics2D g = img.createGraphics();
-		g.setColor(GRID_PATTERN[0]);
-		g.fillRect(0, 0, width, height);
-		for (int row = 0; row < rows; ++row) {
-			for (int col = 0; col < cols; ++col) {
-				int i = patternIndex(col, row);
-				if (i != 0) {
-					g.setColor(GRID_PATTERN[i]);
-					g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
-				}
-			}
-		}
-		g.dispose();
-		return img;
-	}
-
 	public boolean showingFrameRate = false;
-
-	public boolean showingGrid = false;
-
 	public boolean showingRoutes = false;
-
 	public boolean showingScores = true;
-
 	public boolean showingStates = false;
 
 	/** Optional ghost house control */
@@ -115,11 +83,10 @@ public class PlayView extends SimplePlayView {
 	private FrameRateWidget frameRateDisplay;
 
 	/** Used in dot counter visualization */
-	private final Image gridImage, inkyImage, clydeImage, pacManImage;
+	private final Image inkyImage, clydeImage, pacManImage;
 
 	public PlayView(World world, Theme theme, Game game, int width, int height) {
 		super(world, theme, game, width, height);
-		gridImage = createGridPatternImage(world.width(), world.height());
 		inkyImage = theme.spr_ghostColored(Theme.CYAN_GHOST, Direction.RIGHT).frame(0);
 		clydeImage = theme.spr_ghostColored(Theme.ORANGE_GHOST, Direction.RIGHT).frame(0);
 		pacManImage = theme.spr_pacManWalking(RIGHT).frame(0);
@@ -129,16 +96,8 @@ public class PlayView extends SimplePlayView {
 	}
 
 	@Override
-	protected Color tileColor(Tile tile) {
-		return showingGrid ? GRID_PATTERN[patternIndex(tile.col, tile.row)] : Color.BLACK;
-	}
-
-	@Override
 	public void draw(Graphics2D g) {
-		if (showingGrid) {
-			g.drawImage(gridImage, 0, 0, null);
-		}
-		drawMaze(g);
+		drawWorld(g);
 		if (showingFrameRate) {
 			frameRateDisplay.draw(g);
 		}

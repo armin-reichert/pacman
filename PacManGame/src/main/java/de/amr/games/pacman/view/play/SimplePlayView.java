@@ -9,17 +9,13 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 
-import de.amr.easy.game.ui.sprites.CyclicAnimation;
-import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Symbol;
-import de.amr.games.pacman.model.world.core.BonusState;
-import de.amr.games.pacman.model.world.core.Door.DoorState;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.core.LivingView;
+import de.amr.games.pacman.view.render.WorldRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**
@@ -35,11 +31,12 @@ public class SimplePlayView implements LivingView {
 	protected int width;
 	protected int height;
 
+	public boolean showingGrid = false;
+	
 	private boolean mazeEmpty;
 	private boolean mazeFlashing;
-	private final Sprite mazeEmptySprite, mazeFullSprite, mazeFlashingSprite;
-	private final SpriteAnimation energizerAnimation;
-	private int mazeOffsetY;
+
+	private WorldRenderer worldRenderer;
 
 	private String messageText = "";
 	private Color messageColor = Color.YELLOW;
@@ -52,13 +49,7 @@ public class SimplePlayView implements LivingView {
 		this.game = game;
 		this.width = width;
 		this.height = height;
-		mazeFullSprite = theme.spr_fullMaze();
-		mazeEmptySprite = theme.spr_emptyMaze();
-		mazeFlashingSprite = theme.spr_flashingMaze();
-		mazeOffsetY = 3 * Tile.SIZE;
-		energizerAnimation = new CyclicAnimation(2);
-		energizerAnimation.setFrameDuration(150);
-		energizerAnimation.setEnabled(false);
+		worldRenderer = new WorldRenderer(world, theme);
 	}
 
 	@Override
@@ -77,7 +68,7 @@ public class SimplePlayView implements LivingView {
 		if (game != null) {
 			drawScores(g, game);
 		}
-		drawMaze(g);
+		drawWorld(g);
 		drawMessage(g);
 		drawActors(g);
 	}
@@ -103,8 +94,8 @@ public class SimplePlayView implements LivingView {
 				.forEach(renderer -> renderer.enableSpriteAnimation(enabled));
 	}
 
-	public void enableEnergizerAnimations(boolean enabled) {
-		energizerAnimation.setEnabled(enabled);
+	public void letEnergizersBlink(boolean enabled) {
+		worldRenderer.letEnergizersBlink(enabled);
 	}
 
 	protected Color tileColor(Tile tile) {
@@ -119,59 +110,16 @@ public class SimplePlayView implements LivingView {
 		mazeEmpty = empty;
 	}
 
-	protected void drawMaze(Graphics2D g) {
-		if (mazeEmpty) {
-			if (mazeFlashing) {
-				drawFlashingEmptyMaze(g);
-			} else {
-				drawEmptyMaze(g);
-			}
+	protected void drawWorld(Graphics2D g) {
+		worldRenderer.setShowingGrid(showingGrid);
+		if (!mazeEmpty) {
+			worldRenderer.selectSprite("maze-full");
+		} else if (mazeFlashing) {
+			worldRenderer.selectSprite("maze-flashing");
 		} else {
-			drawNormalMaze(g);
-			energizerAnimation.update();
+			worldRenderer.selectSprite("maze-empty");
 		}
-	}
-
-	public void drawNormalMaze(Graphics2D g) {
-		g.translate(0, mazeOffsetY);
-		mazeFullSprite.draw(g);
-		g.translate(0, -mazeOffsetY);
-
-		// hide eaten food
-		world.habitatTiles().filter(world::containsEatenFood).forEach(tile -> {
-			g.setColor(tileColor(tile));
-			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
-		});
-		// simulate energizer blinking animation
-		if (energizerAnimation.isEnabled() && energizerAnimation.currentFrameIndex() == 1) {
-			world.habitatTiles().filter(world::containsEnergizer).forEach(tile -> {
-				g.setColor(tileColor(tile));
-				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
-			});
-		}
-		// draw bonus when active or consumed
-		world.getBonus().filter(bonus -> bonus.state != BonusState.INACTIVE).ifPresent(bonus -> {
-			Sprite sprite = bonus.state == BonusState.CONSUMED ? theme.spr_number(bonus.value)
-					: theme.spr_bonusSymbol(bonus.symbol);
-			g.drawImage(sprite.frame(0), world.bonusTile().x(), world.bonusTile().y() - Tile.SIZE / 2, null);
-		});
-		// draw doors depending on their state
-		world.theHouse().doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {
-			g.setColor(Color.BLACK);
-			door.tiles.forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
-		});
-	}
-
-	public void drawFlashingEmptyMaze(Graphics2D g) {
-		g.translate(0, mazeOffsetY);
-		mazeFlashingSprite.draw(g);
-		g.translate(0, -mazeOffsetY);
-	}
-
-	public void drawEmptyMaze(Graphics2D g) {
-		g.translate(0, mazeOffsetY);
-		mazeEmptySprite.draw(g);
-		g.translate(0, -mazeOffsetY);
+		worldRenderer.draw(g);
 	}
 
 	protected void drawMessage(Graphics2D g) {
