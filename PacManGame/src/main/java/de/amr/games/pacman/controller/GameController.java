@@ -168,7 +168,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onTick((state, t, remaining) -> {
 						if (t == sec(5)) {
 							playView.showMessage("Ready!", Color.YELLOW);
-							playView.letEnergizersBlink(true);
+							playView.turnEnergizerBlinkingOn();
 							theme.music_playing().play();
 						}
 						creaturesOnStage().forEach(Creature::update);
@@ -183,7 +183,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						ghostHouseAccessControl.onLevelChange();
 						sound.stopAllClips();
 						playView.enableGhostAnimations(false);
-						playView.letEnergizersBlink(false);
+						playView.turnEnergizerBlinkingOff();
 						loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilled);
 					})
 					.onTick((state, t, remaining) -> {
@@ -193,13 +193,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						if (t == sec(2)) {
 							ghostsOnStage().forEach(ghost -> ghost.visible = false);
 							if (flashingSeconds > 0) {
-								playView.setFlashingOn();
+								playView.turnMazeFlashingOn();
 							}
 						}
 	
 						// After flashing, show empty maze.
 						if (t == sec(2 + flashingSeconds)) {
-							playView.setFlashingOff();
+							playView.turnMazeFlashingOff();
 						}
 						
 						// After two more seconds, change level and show crowded maze.
@@ -400,7 +400,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			creaturesOnStage().forEach(Creature::init);
 			playView.init();
 			playView.enableGhostAnimations(true);
-			playView.letEnergizersBlink(true);
+			playView.turnEnergizerBlinkingOn();
 			sound.resumePlayingMusic();
 			pacMan.start();
 		}
@@ -443,7 +443,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (!settings.ghostsHarmless) {
 				ghostHouseAccessControl.onLifeLost();
 				sound.stopAll();
-				playView.letEnergizersBlink(false);
+				playView.turnEnergizerBlinkingOff();
 				pacMan.process(new PacManKilledEvent(ghost));
 				enqueue(new PacManKilledEvent(ghost));
 				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.tile());

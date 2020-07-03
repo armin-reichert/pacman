@@ -49,7 +49,7 @@ public class SimplePlayView implements LivingView {
 	@Override
 	public void init() {
 		clearMessage();
-		setFullMaze();
+		turnFullMazeOn();
 	}
 
 	@Override
@@ -83,19 +83,23 @@ public class SimplePlayView implements LivingView {
 				.forEach(renderer -> renderer.enableSpriteAnimation(enabled));
 	}
 
-	public void letEnergizersBlink(boolean enabled) {
-		worldRenderer.letEnergizersBlink(enabled);
+	public void turnEnergizerBlinkingOn() {
+		worldRenderer.letEnergizersBlink(true);
+	}
+	
+	public void turnEnergizerBlinkingOff() {
+		worldRenderer.letEnergizersBlink(false);
 	}
 
-	public void setFlashingOn() {
+	public void turnMazeFlashingOn() {
 		worldRenderer.selectSprite("maze-flashing");
 	}
 
-	public void setFlashingOff() {
+	public void turnMazeFlashingOff() {
 		worldRenderer.selectSprite("maze-empty");
 	}
 
-	public void setFullMaze() {
+	public void turnFullMazeOn() {
 		worldRenderer.selectSprite("maze-full");
 	}
 
