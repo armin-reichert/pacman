@@ -269,17 +269,21 @@ public class PlayView extends SimplePlayView {
 
 	private void drawOneWayTiles(Graphics2D g) {
 		world.oneWayTiles().forEach(oneWay -> {
-			drawDirectionIndicator(g, Color.WHITE, oneWay.dir, oneWay.tile.centerX(), oneWay.tile.y());
+			drawDirectionIndicator(g, Color.WHITE, false, oneWay.dir, oneWay.tile.centerX(), oneWay.tile.y());
 		});
 	}
 
-	private void drawDirectionIndicator(Graphics2D g, Color color, Direction dir, int x, int y) {
+	private void drawDirectionIndicator(Graphics2D g, Color color, boolean fill, Direction dir, int x, int y) {
 		g = (Graphics2D) g.create();
 		g.setStroke(new BasicStroke(0.1f));
 		g.translate(x, y);
 		g.rotate((dir.ordinal() - 2) * (PI / 2));
 		g.setColor(color);
-		g.drawPolygon(TRIANGLE);
+		if (fill) {
+			g.fillPolygon(TRIANGLE);
+		} else {
+			g.drawPolygon(TRIANGLE);
+		}
 		g.dispose();
 	}
 
@@ -317,7 +321,7 @@ public class PlayView extends SimplePlayView {
 			drawTargetTilePath(g, steering.pathToTarget(), ghostColor(ghost));
 		} else if (ghost.wishDir() != null) {
 			Vector2f v = ghost.wishDir().vector();
-			drawDirectionIndicator(g, ghostColor(ghost), ghost.wishDir(),
+			drawDirectionIndicator(g, ghostColor(ghost), true, ghost.wishDir(),
 					ghost.tf.getCenter().roundedX() + v.roundedX() * Tile.SIZE,
 					ghost.tf.getCenter().roundedY() + v.roundedY() * Tile.SIZE);
 		}
@@ -342,7 +346,7 @@ public class PlayView extends SimplePlayView {
 			Tile from = path.get(i), to = path.get(i + 1);
 			g.drawLine(from.centerX(), from.centerY(), to.centerX(), to.centerY());
 			if (i == path.size() - 2) {
-				drawDirectionIndicator(g, ghostColor, from.dirTo(to).get(), to.centerX(), to.centerY());
+				drawDirectionIndicator(g, ghostColor, true, from.dirTo(to).get(), to.centerX(), to.centerY());
 			}
 		}
 		g.dispose();
