@@ -78,7 +78,7 @@ public class LoadingView implements LivingView {
 			pen.fontSize(10);
 			pen.hcenter(Localized.texts.getString("loading_music"), width, 18, Tile.SIZE);
 		}
-		pacMan.getRenderer().drawPacMan(g);
+		pacMan.getRenderer().draw(g);
 		float x = width / 2 - (ghostCount / 2) * 20, y = pacMan.tf.y + 20;
 		for (int i = 0; i < ghostCount; ++i) {
 			int color = new Random().nextInt(4);

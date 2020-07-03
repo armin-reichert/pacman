@@ -186,12 +186,12 @@ public class SimplePlayView implements LivingView {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		world.population().pacMan().getRenderer().drawPacMan(g);
+		world.population().pacMan().getRenderer().draw(g);
 		// draw dead ghosts (as number or eyes) under living ghosts
 		world.population().ghosts().filter(world::included).filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
-				.forEach(ghost -> ghost.getRenderer().drawGhost(g));
+				.forEach(ghost -> ghost.getRenderer().draw(g));
 		world.population().ghosts().filter(world::included).filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
-				.forEach(ghost -> ghost.getRenderer().drawGhost(g));
+				.forEach(ghost -> ghost.getRenderer().draw(g));
 	}
 
 	protected void drawScores(Graphics2D g, Game game) {
