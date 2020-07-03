@@ -1,8 +1,14 @@
 package de.amr.games.pacman.view.render;
 
+import static java.lang.Math.PI;
+
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Polygon;
+import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 
@@ -11,7 +17,11 @@ import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.easy.game.ui.sprites.SpriteMap;
+import de.amr.easy.game.view.Pen;
+import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Door.DoorState;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -20,6 +30,7 @@ import de.amr.games.pacman.view.theme.Theme;
 public class WorldRenderer {
 
 	private static final Color[] GRID_PATTERN = { Color.BLACK, new Color(40, 40, 40) };
+	private static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 
 	private final World world;
 	private final Theme theme;
@@ -44,6 +55,8 @@ public class WorldRenderer {
 	public void draw(Graphics2D g) {
 		if (showingGrid) {
 			g.drawImage(gridImage, 0, 0, null);
+			drawOneWayTiles(g);
+			drawGhostBeds(g);
 		}
 		mazeSprites.current().ifPresent(sprite -> {
 			sprite.draw(g, 0, 3 * Tile.SIZE);
@@ -97,7 +110,7 @@ public class WorldRenderer {
 			door.tiles.forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
 		});
 	}
-	
+
 	public void letEnergizersBlink(boolean enabled) {
 		energizerAnimation.setEnabled(enabled);
 	}
@@ -128,4 +141,58 @@ public class WorldRenderer {
 		g.dispose();
 		return img;
 	}
+
+	private void drawOneWayTiles(Graphics2D g) {
+		world.oneWayTiles().forEach(oneWay -> {
+			drawDirectionIndicator(g, Color.WHITE, false, oneWay.dir, oneWay.tile.centerX(), oneWay.tile.y());
+		});
+	}
+
+	public Color ghostColor(Ghost ghost) {
+		switch (ghost.name) {
+		case "Blinky":
+			return Color.RED;
+		case "Pinky":
+			return Color.PINK;
+		case "Inky":
+			return Color.CYAN;
+		case "Clyde":
+			return Color.ORANGE;
+		default:
+			throw new IllegalArgumentException("Ghost name unknown: " + ghost.name);
+		}
+	}
+
+	private void drawGhostBeds(Graphics2D g2) {
+		Graphics2D g = (Graphics2D) g2.create();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		world.population().ghosts().forEach(ghost -> {
+			Bed bed = ghost.bed();
+			int x = bed.center.roundedX() - Tile.SIZE, y = bed.center.roundedY() - Tile.SIZE / 2;
+			g.setColor(ghostColor(ghost));
+			g.drawRoundRect(x, y, 2 * Tile.SIZE, Tile.SIZE, 2, 2);
+			try (Pen pen = new Pen(g)) {
+				pen.color(Color.WHITE);
+				pen.font(new Font(Font.MONOSPACED, Font.BOLD, 6));
+				pen.drawCentered("" + bed.number, bed.center.roundedX(), bed.center.roundedY() + Tile.SIZE);
+			}
+		});
+		g.dispose();
+	}
+
+	public void drawDirectionIndicator(Graphics2D g, Color color, boolean fill, Direction dir, int x, int y) {
+		g = (Graphics2D) g.create();
+		g.setStroke(new BasicStroke(0.1f));
+		g.translate(x, y);
+		g.rotate((dir.ordinal() - 2) * (PI / 2));
+		g.setColor(color);
+		if (fill) {
+			g.fillPolygon(TRIANGLE);
+		} else {
+			g.drawPolygon(TRIANGLE);
+		}
+		g.dispose();
+	}
+
 }

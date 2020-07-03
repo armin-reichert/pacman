@@ -41,7 +41,7 @@ class ScatteringTestUI extends TestUI {
 			ghost.subsequentState = GhostState.SCATTERING;
 		});
 		view.showingRoutes = true;
-		view.showingGrid = true;
+		view.turnGridOn();
 		view.showMessage("Press SPACE to start", Color.WHITE);
 	}
 

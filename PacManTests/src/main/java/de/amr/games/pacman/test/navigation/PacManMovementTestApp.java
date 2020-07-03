@@ -52,7 +52,7 @@ class PacManMovementTestUI extends TestUI {
 				}
 			}
 		});
-		view.showingGrid = true;
+		view.turnGridOn();
 		view.turnEnergizerBlinkingOn();
 		view.showMessage("SPACE changes steering", Color.WHITE);
 		pacMan.start();

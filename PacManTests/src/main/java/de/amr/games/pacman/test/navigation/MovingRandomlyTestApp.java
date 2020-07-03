@@ -47,7 +47,7 @@ class MovingRandomlyTestUI extends TestUI {
 		});
 		view.showingRoutes = true;
 		view.showingStates = true;
-		view.showingGrid = true;
+		view.turnGridOn();
 		view.showMessage("Press SPACE", Color.WHITE);
 	}
 

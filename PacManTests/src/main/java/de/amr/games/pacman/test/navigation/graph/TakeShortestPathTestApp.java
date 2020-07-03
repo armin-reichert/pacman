@@ -48,7 +48,7 @@ class TakeShortestPathTestUI extends TestUI {
 		super.init();
 		view.showingRoutes = true;
 		view.showingStates = true;
-		view.showingGrid = true;
+		view.turnGridOn();
 		Portal thePortal = world.portals().findAny().get();
 		House theHouse = world.theHouse();
 		targets = Arrays.asList(world.capeSE(), Tile.at(15, 23), Tile.at(12, 23), world.capeSW(),

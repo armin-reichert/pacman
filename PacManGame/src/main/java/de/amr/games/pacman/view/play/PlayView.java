@@ -8,7 +8,6 @@ import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.model.Direction.RIGHT;
-import static java.lang.Math.PI;
 import static java.lang.Math.round;
 
 import java.awt.BasicStroke;
@@ -16,7 +15,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.util.List;
@@ -34,7 +32,6 @@ import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 
@@ -47,26 +44,10 @@ import de.amr.games.pacman.view.theme.Theme;
 public class PlayView extends SimplePlayView {
 
 	private static final String INFTY = Character.toString('\u221E');
-	private static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 	private static final Font SMALL_FONT = new Font("Arial Narrow", Font.PLAIN, 6);
 
 	private static Color alpha(Color color, int alpha) {
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
-	}
-
-	private static Color ghostColor(Ghost ghost) {
-		switch (ghost.name) {
-		case "Blinky":
-			return Color.RED;
-		case "Pinky":
-			return Color.PINK;
-		case "Inky":
-			return Color.CYAN;
-		case "Clyde":
-			return Color.ORANGE;
-		default:
-			throw new IllegalArgumentException("Ghost name unknown: " + ghost.name);
-		}
 	}
 
 	public boolean showingFrameRate = false;
@@ -103,10 +84,6 @@ public class PlayView extends SimplePlayView {
 		}
 		drawPlayMode(g);
 		drawMessage(g, messageText);
-		if (showingGrid) {
-			drawOneWayTiles(g);
-			drawGhostBeds(g);
-		}
 		if (showingScores) {
 			drawScores(g);
 		}
@@ -114,9 +91,9 @@ public class PlayView extends SimplePlayView {
 			drawGhostRoutes(g);
 		}
 		drawActors(g);
-		if (showingGrid) {
-			drawActorOffTrack(g);
-		}
+//		if (showingGrid) {
+//			drawActorOffTrack(g);
+//		}
 		if (showingStates) {
 			drawActorStates(g);
 			drawGhostHouseState(g);
@@ -185,7 +162,7 @@ public class PlayView extends SimplePlayView {
 		if (ghost.is(LEAVING_HOUSE)) {
 			text.append(String.format("[->%s]", ghost.subsequentState));
 		}
-		drawEntityState(g, ghost, text.toString(), ghostColor(ghost));
+		drawEntityState(g, ghost, text.toString(), worldRenderer.ghostColor(ghost));
 	}
 
 	private void drawPacManStarvingTime(Graphics2D g) {
@@ -226,44 +203,6 @@ public class PlayView extends SimplePlayView {
 		g.setStroke(normal);
 	}
 
-	private void drawOneWayTiles(Graphics2D g) {
-		world.oneWayTiles().forEach(oneWay -> {
-			drawDirectionIndicator(g, Color.WHITE, false, oneWay.dir, oneWay.tile.centerX(), oneWay.tile.y());
-		});
-	}
-
-	private void drawDirectionIndicator(Graphics2D g, Color color, boolean fill, Direction dir, int x, int y) {
-		g = (Graphics2D) g.create();
-		g.setStroke(new BasicStroke(0.1f));
-		g.translate(x, y);
-		g.rotate((dir.ordinal() - 2) * (PI / 2));
-		g.setColor(color);
-		if (fill) {
-			g.fillPolygon(TRIANGLE);
-		} else {
-			g.drawPolygon(TRIANGLE);
-		}
-		g.dispose();
-	}
-
-	private void drawGhostBeds(Graphics2D g2) {
-		Graphics2D g = (Graphics2D) g2.create();
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		world.population().ghosts().forEach(ghost -> {
-			Bed bed = ghost.bed();
-			int x = bed.center.roundedX() - Tile.SIZE, y = bed.center.roundedY() - Tile.SIZE / 2;
-			g.setColor(ghostColor(ghost));
-			g.drawRoundRect(x, y, 2 * Tile.SIZE, Tile.SIZE, 2, 2);
-			try (Pen pen = new Pen(g)) {
-				pen.color(Color.WHITE);
-				pen.font(new Font(Font.MONOSPACED, Font.BOLD, 6));
-				pen.drawCentered("" + bed.number, bed.center.roundedX(), bed.center.roundedY() + Tile.SIZE);
-			}
-		});
-		g.dispose();
-	}
-
 	private void drawGhostRoutes(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		world.population().ghosts().filter(world::included).forEach(ghost -> drawGhostRoute(g, ghost));
@@ -277,10 +216,10 @@ public class PlayView extends SimplePlayView {
 			if (!steering.isPathComputed()) {
 				steering.setPathComputed(true);
 			}
-			drawTargetTilePath(g, steering.pathToTarget(), ghostColor(ghost));
+			drawTargetTilePath(g, steering.pathToTarget(), worldRenderer.ghostColor(ghost));
 		} else if (ghost.wishDir() != null) {
 			Vector2f v = ghost.wishDir().vector();
-			drawDirectionIndicator(g, ghostColor(ghost), true, ghost.wishDir(),
+			worldRenderer.drawDirectionIndicator(g, worldRenderer.ghostColor(ghost), true, ghost.wishDir(),
 					ghost.tf.getCenter().roundedX() + v.roundedX() * Tile.SIZE,
 					ghost.tf.getCenter().roundedY() + v.roundedY() * Tile.SIZE);
 		}
@@ -305,7 +244,7 @@ public class PlayView extends SimplePlayView {
 			Tile from = path.get(i), to = path.get(i + 1);
 			g.drawLine(from.centerX(), from.centerY(), to.centerX(), to.centerY());
 			if (i == path.size() - 2) {
-				drawDirectionIndicator(g, ghostColor, true, from.dirTo(to).get(), to.centerX(), to.centerY());
+				worldRenderer.drawDirectionIndicator(g, ghostColor, true, from.dirTo(to).get(), to.centerX(), to.centerY());
 			}
 		}
 		g.dispose();
@@ -322,12 +261,12 @@ public class PlayView extends SimplePlayView {
 		int x1 = ghost.tf.getCenter().roundedX(), y1 = ghost.tf.getCenter().roundedY();
 		int x2 = targetTile.centerX(), y2 = targetTile.centerY();
 		g.setStroke(dashed);
-		g.setColor(alpha(ghostColor(ghost), 200));
+		g.setColor(alpha(worldRenderer.ghostColor(ghost), 200));
 		g.drawLine(x1, y1, x2, y2);
 
 		// draw solid rectangle indicating target tile
 		g.translate(targetTile.x(), targetTile.y());
-		g.setColor(ghostColor(ghost));
+		g.setColor(worldRenderer.ghostColor(ghost));
 		g.setStroke(new BasicStroke(0.5f));
 		g.fillRect(2, 2, 4, 4);
 		g.translate(-targetTile.x(), -targetTile.y());
@@ -379,7 +318,7 @@ public class PlayView extends SimplePlayView {
 		if (!clyde.is(CHASING)) {
 			return;
 		}
-		Color ghostColor = ghostColor(clyde);
+		Color ghostColor = worldRenderer.ghostColor(clyde);
 		int cx = clyde.tile().centerX(), cy = clyde.tile().centerY();
 		int r = 8 * Tile.SIZE;
 		g.setColor(alpha(ghostColor, 100));

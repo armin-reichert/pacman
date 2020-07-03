@@ -54,7 +54,7 @@ public class EnhancedGameController extends GameController {
 		} else if (Keyboard.keyPressedOnce("f")) {
 			toggleGhostFrightenedBehavior();
 		} else if (Keyboard.keyPressedOnce("g")) {
-			playView.showingGrid = !playView.showingGrid;
+			setShowingGrid(!isShowingGrid());
 		} else if (Keyboard.keyPressedOnce("i")) {
 			toggleGhostOnStage(inky);
 		} else if (Keyboard.keyPressedOnce("k")) {

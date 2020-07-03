@@ -27,8 +27,6 @@ public class SimplePlayView implements LivingView {
 	protected int width;
 	protected int height;
 
-	public boolean showingGrid = false;
-
 	protected String messageText;
 
 	protected WorldRenderer worldRenderer;
@@ -83,10 +81,18 @@ public class SimplePlayView implements LivingView {
 				.forEach(renderer -> renderer.enableSpriteAnimation(enabled));
 	}
 
+	public void turnGridOn() {
+		worldRenderer.setShowingGrid(true);
+	}
+
+	public void turnGridOff() {
+		worldRenderer.setShowingGrid(false);
+	}
+
 	public void turnEnergizerBlinkingOn() {
 		worldRenderer.letEnergizersBlink(true);
 	}
-	
+
 	public void turnEnergizerBlinkingOff() {
 		worldRenderer.letEnergizersBlink(false);
 	}
@@ -104,7 +110,6 @@ public class SimplePlayView implements LivingView {
 	}
 
 	protected void drawWorld(Graphics2D g) {
-		worldRenderer.setShowingGrid(showingGrid);
 		worldRenderer.draw(g);
 	}
 

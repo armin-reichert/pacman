@@ -85,6 +85,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected LivingView currentView;
 	protected PlayView playView;
 
+	private boolean showingGrid;
+
 	public GameController() {
 		super(PacManGameState.class);
 		buildStateMachine();
@@ -540,11 +542,16 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	public void setShowingGrid(boolean selected) {
-		playView.showingGrid = selected;
+		showingGrid = selected;
+		if (selected) {
+			playView.turnGridOn();
+		} else {
+			playView.turnGridOff();
+		}
 	}
 
 	public boolean isShowingGrid() {
-		return playView.showingGrid;
+		return showingGrid;
 	}
 
 	public void setShowingStates(boolean selected) {
