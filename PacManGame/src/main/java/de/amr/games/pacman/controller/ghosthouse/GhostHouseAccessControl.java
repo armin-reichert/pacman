@@ -73,24 +73,32 @@ public class GhostHouseAccessControl implements Lifecycle {
 		});
 		pacManStarvingTicks += 1;
 
-		house.doors().forEach(door -> door.state = DoorState.CLOSED);
-		house.doors().filter(door -> ghostsNeedingOpenDoor(door).findAny().isPresent())
-				.forEach(door -> door.state = DoorState.OPEN);
+		house.doors().forEach(this::closeDoor);
+		house.doors().filter(this::isOpeningRequested).forEach(this::openDoor);
 	}
 
-	private Stream<Ghost> ghostsNeedingOpenDoor(Door door) {
+	private void closeDoor(Door door) {
+		door.state = DoorState.CLOSED;
+	}
+
+	private void openDoor(Door door) {
+		door.state = DoorState.OPEN;
+	}
+
+	private boolean isOpeningRequested(Door door) {
 		//@formatter:off
-		return world.population().ghosts()
-				.filter(world::included)
+		return world.population().ghosts().filter(world::included)
 				.filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE))
-				.filter(ghost -> ghostNearDoor(door, ghost));
+				.filter(ghost -> isGhostNearDoor(ghost, door))
+				.findAny()
+				.isPresent();
 		//@formatter:on
 	}
 
-	private boolean ghostNearDoor(Door door, Ghost ghost) {
-		Tile fromGhostIntoHouse = world.neighbor(ghost.tile(), door.intoHouse);
+	private boolean isGhostNearDoor(Ghost ghost, Door door) {
+		Tile fromGhostTowardsHouse = world.neighbor(ghost.tile(), door.intoHouse);
 		Tile fromGhostAwayFromHouse = world.neighbor(ghost.tile(), door.intoHouse.opposite());
-		return door.includes(ghost.tile()) || door.includes(fromGhostAwayFromHouse) || door.includes(fromGhostIntoHouse);
+		return door.includes(ghost.tile()) || door.includes(fromGhostAwayFromHouse) || door.includes(fromGhostTowardsHouse);
 	}
 
 	/**
