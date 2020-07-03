@@ -403,6 +403,9 @@ There are two ways of getting information about the current game and actor state
 
 <img src="PacManDoc/game-state-view.png">
 
+The table shows the current state of all actors in the game and also their velocities and positions. The traffic lights show when ghosts locked inside the ghost house
+are allowed to leave (following the rules described in the references cited below).
+
 #### Game level tab
 
 <img src="PacManDoc/game-level-view.png">
