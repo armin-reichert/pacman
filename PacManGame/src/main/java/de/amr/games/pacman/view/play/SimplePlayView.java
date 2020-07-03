@@ -8,7 +8,6 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.render.MessageRenderer;
 import de.amr.games.pacman.view.render.ScoreRenderer;
@@ -29,9 +28,7 @@ public class SimplePlayView implements LivingView {
 	protected int height;
 
 	public boolean showingGrid = false;
-	
-	protected boolean mazeEmpty;
-	protected boolean mazeFlashing;
+
 	protected String messageText;
 
 	protected WorldRenderer worldRenderer;
@@ -52,8 +49,7 @@ public class SimplePlayView implements LivingView {
 	@Override
 	public void init() {
 		clearMessage();
-		setEmptyMaze(false);
-		setMazeFlashing(false);
+		setFullMaze();
 	}
 
 	@Override
@@ -91,27 +87,20 @@ public class SimplePlayView implements LivingView {
 		worldRenderer.letEnergizersBlink(enabled);
 	}
 
-	protected Color tileColor(Tile tile) {
-		return Color.BLACK;
+	public void setFlashingOn() {
+		worldRenderer.selectSprite("maze-flashing");
 	}
 
-	public void setMazeFlashing(boolean flashing) {
-		mazeFlashing = flashing;
+	public void setFlashingOff() {
+		worldRenderer.selectSprite("maze-empty");
 	}
 
-	public void setEmptyMaze(boolean empty) {
-		mazeEmpty = empty;
+	public void setFullMaze() {
+		worldRenderer.selectSprite("maze-full");
 	}
 
 	protected void drawWorld(Graphics2D g) {
 		worldRenderer.setShowingGrid(showingGrid);
-		if (!mazeEmpty) {
-			worldRenderer.selectSprite("maze-full");
-		} else if (mazeFlashing) {
-			worldRenderer.selectSprite("maze-flashing");
-		} else {
-			worldRenderer.selectSprite("maze-empty");
-		}
 		worldRenderer.draw(g);
 	}
 
@@ -133,5 +122,4 @@ public class SimplePlayView implements LivingView {
 	protected void drawMessage(Graphics2D g, String messageText) {
 		messageRenderer.draw(g, messageText);
 	}
-
 }

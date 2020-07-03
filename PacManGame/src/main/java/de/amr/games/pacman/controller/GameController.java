@@ -193,14 +193,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						if (t == sec(2)) {
 							ghostsOnStage().forEach(ghost -> ghost.visible = false);
 							if (flashingSeconds > 0) {
-								playView.setEmptyMaze(true);
-								playView.setMazeFlashing(true);
+								playView.setFlashingOn();
 							}
 						}
 	
 						// After flashing, show empty maze.
 						if (t == sec(2 + flashingSeconds)) {
-							playView.setMazeFlashing(false);
+							playView.setFlashingOff();
 						}
 						
 						// After two more seconds, change level and show crowded maze.
