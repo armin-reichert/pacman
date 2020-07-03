@@ -9,7 +9,6 @@ import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.ui.f2dialog.F2DialogAPI;
 import de.amr.games.pacman.controller.EnhancedGameController;
 import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
@@ -66,7 +65,6 @@ public class PacManApp extends Application {
 		settings.scale = 2;
 		settings.title = Localized.texts.getString("app.title");
 		settings.fullScreenMode = new DisplayMode(800, 600, 32, 50);
-		PacManStateMachineLogging.setEnabled(false);
 	}
 
 	@Override

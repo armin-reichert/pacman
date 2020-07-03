@@ -26,7 +26,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import de.amr.easy.game.Application.ApplicationState;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
@@ -106,7 +105,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		});
 		sound = new PacManSounds(world, theme);
 
-		app().onEntry(ApplicationState.CLOSING, state -> game().ifPresent(game -> game.hiscore.save()));
+		app().onClose(() -> game().ifPresent(game -> game.hiscore.save()));
 	}
 
 	@Override

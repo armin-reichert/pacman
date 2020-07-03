@@ -13,7 +13,7 @@ public class PacManStateMachineLogging {
 	public static final Logger LOGGER = Logger.getLogger(PacManStateMachineLogging.class.getSimpleName());
 
 	static {
-		setEnabled(false);
+		LOGGER.setLevel(Level.OFF);
 	}
 
 	public static void setEnabled(boolean enabled) {
@@ -21,7 +21,7 @@ public class PacManStateMachineLogging {
 	}
 
 	public static void toggle() {
-		setEnabled(LOGGER.getLevel() == Level.OFF);
+		LOGGER.setLevel(LOGGER.getLevel() == Level.OFF ? Level.INFO : Level.OFF);
 	}
 
 	public static void loginfo(String msg, Object... args) {
