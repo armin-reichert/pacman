@@ -72,7 +72,7 @@ public class EnhancedGameController extends GameController {
 		} else if (Keyboard.keyPressedOnce("t")) {
 			playView.showingFrameRate = !playView.showingFrameRate;
 		} else if (Keyboard.keyPressedOnce("r")) {
-			playView.showingRoutes = !playView.showingRoutes;
+			setShowingRoutes(!isShowingRoutes());
 		} else if (Keyboard.keyPressedOnce("x")) {
 			toggleGhostsHarmless();
 		} else if (Keyboard.keyPressedOnce("+")) {

@@ -43,7 +43,7 @@ class EnterGhostHouseTestUI extends TestUI {
 		include(inky);
 		inky.placeAt(world.theHouse().bed(0).tile);
 		inky.setState(GhostState.SCATTERING);
-		view.showingRoutes = true;
+		view.turnRoutesOn();
 		view.turnGridOn();
 	}
 

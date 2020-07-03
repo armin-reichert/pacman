@@ -86,6 +86,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected PlayView playView;
 
 	private boolean showingGrid;
+	private boolean showingRoutes;
 
 	public GameController() {
 		super(PacManGameState.class);
@@ -533,12 +534,17 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return Optional.ofNullable(currentView);
 	}
 
-	public void setShowingActorRoutes(boolean selected) {
-		playView.showingRoutes = selected;
+	public void setShowingRoutes(boolean selected) {
+		showingRoutes = selected;
+		if (selected) {
+			playView.turnRoutesOn();
+		} else {
+			playView.turnRoutesOff();
+		}
 	}
 
-	public boolean isShowingActorRoutes() {
-		return playView.showingRoutes;
+	public boolean isShowingRoutes() {
+		return showingRoutes;
 	}
 
 	public void setShowingGrid(boolean selected) {

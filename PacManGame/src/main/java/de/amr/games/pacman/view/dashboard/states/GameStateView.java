@@ -62,7 +62,7 @@ public class GameStateView extends JPanel implements Lifecycle {
 
 		cbShowRoutes = new JCheckBox("Show Routes");
 		checkBoxesPanel.add(cbShowRoutes);
-		cbShowRoutes.addActionListener(e -> gameController.setShowingActorRoutes(cbShowRoutes.isSelected()));
+		cbShowRoutes.addActionListener(e -> gameController.setShowingRoutes(cbShowRoutes.isSelected()));
 
 		cbShowGrid = new JCheckBox("Show Grid");
 		checkBoxesPanel.add(cbShowGrid);
@@ -107,7 +107,7 @@ public class GameStateView extends JPanel implements Lifecycle {
 				table.update();
 				ghostHouseStateView.update();
 				updateStateLabel();
-				cbShowRoutes.setSelected(gameController.isShowingActorRoutes());
+				cbShowRoutes.setSelected(gameController.isShowingRoutes());
 				cbShowGrid.setSelected(gameController.isShowingGrid());
 				cbShowStates.setSelected(gameController.isShowingStates());
 			});

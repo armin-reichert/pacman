@@ -89,6 +89,14 @@ public class SimplePlayView implements LivingView {
 		worldRenderer.setShowingGrid(false);
 	}
 
+	public void turnRoutesOn() {
+		worldRenderer.setShowingRoutes(true);
+	}
+
+	public void turnRoutesOff() {
+		worldRenderer.setShowingRoutes(false);
+	}
+	
 	public void turnEnergizerBlinkingOn() {
 		worldRenderer.letEnergizersBlink(true);
 	}

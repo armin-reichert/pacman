@@ -38,7 +38,7 @@ class FollowMouseTestUI extends TestUI {
 		include(blinky);
 		blinky.behavior(CHASING, blinky.headingFor(() -> mousePosition));
 		blinky.setState(CHASING);
-		view.showingRoutes = true;
+		view.turnRoutesOn();
 		view.turnGridOn();
 	}
 

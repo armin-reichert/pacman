@@ -40,7 +40,7 @@ class InkyChaseTestUI extends TestUI {
 		theme.snd_ghost_chase().volume(0);
 		include(pacMan, inky, blinky);
 		ghostsOnStage().forEach(ghost -> ghost.subsequentState = CHASING);
-		view.showingRoutes = true;
+		view.turnRoutesOn();
 		view.showMessage("Press SPACE to start", Color.WHITE);
 	}
 

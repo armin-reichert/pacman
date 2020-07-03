@@ -45,7 +45,7 @@ class FollowTargetTilesTestUI extends TestUI {
 		blinky.behavior(GhostState.CHASING, blinky.headingFor(() -> targets.get(current)));
 		blinky.setState(GhostState.CHASING);
 		blinky.steering().force();
-		view.showingRoutes = true;
+		view.turnRoutesOn();
 		view.turnGridOn();
 	}
 
