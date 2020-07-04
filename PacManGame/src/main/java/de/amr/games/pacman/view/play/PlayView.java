@@ -16,6 +16,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.view.render.ActorRoutesRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**
@@ -35,12 +36,17 @@ public class PlayView extends SimplePlayView {
 	public GhostHouseAccessControl optionalHouseAccessControl;
 
 	private FrameRateWidget frameRateDisplay;
+	
+	private boolean showingRoutes;
+	
+	private ActorRoutesRenderer actorRoutesRenderer;
 
 	public PlayView(World world, Theme theme, Game game, int width, int height) {
 		super(world, theme, game, width, height);
 		frameRateDisplay = new FrameRateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
+		actorRoutesRenderer = new ActorRoutesRenderer(world, theme);
 	}
 
 	@Override
@@ -53,6 +59,9 @@ public class PlayView extends SimplePlayView {
 		}
 		drawMessages(g);
 		drawActors(g);
+		if (showingRoutes) {
+			actorRoutesRenderer.draw(g);
+		}
 //		if (showingGrid) {
 //			drawActorOffTrack(g);
 //		}
@@ -68,11 +77,11 @@ public class PlayView extends SimplePlayView {
 	}
 
 	public void turnRoutesOn() {
-		worldRenderer.setShowingRoutes(true);
+		showingRoutes = true;
 	}
 
 	public void turnRoutesOff() {
-		worldRenderer.setShowingRoutes(false);
+		showingRoutes = false;
 	}
 
 	public void turnStatesOn() {
