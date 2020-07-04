@@ -12,6 +12,7 @@ import de.amr.games.pacman.model.Direction;
 
 public class Rendering {
 
+	public static final String INFTY = Character.toString('\u221E');
 	private static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 
 	public static Color alpha(Color color, int alpha) {

@@ -23,6 +23,7 @@ import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 
 public class ActorRoutesRenderer {
+	
 	private final World world;
 
 	public ActorRoutesRenderer(World world, Theme theme) {
@@ -154,5 +155,4 @@ public class ActorRoutesRenderer {
 		g.setColor(alpha(ghostColor, 100));
 		g.drawOval(cx - r, cy - r, 2 * r, 2 * r);
 	}
-
 }

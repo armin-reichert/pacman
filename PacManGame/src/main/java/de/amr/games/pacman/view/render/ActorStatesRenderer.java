@@ -7,7 +7,6 @@ import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.view.render.Rendering.ghostColor;
 import static java.lang.Math.round;
 
@@ -15,7 +14,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Stroke;
 
 import de.amr.easy.game.entity.Entity;
@@ -24,7 +22,6 @@ import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -32,23 +29,13 @@ import de.amr.games.pacman.view.theme.Theme;
 
 public class ActorStatesRenderer {
 
-	private static final String INFTY = Character.toString('\u221E');
 	private static final Font SMALL_FONT = new Font("Arial Narrow", Font.PLAIN, 6);
 
 	private final World world;
-	private final Image inkyImage, clydeImage, pacManImage;
 	private GhostCommand ghostCommand;
-	private GhostHouseAccessControl houseAccessControl;
 
 	public ActorStatesRenderer(World world, Theme theme) {
 		this.world = world;
-		inkyImage = theme.spr_ghostColored(Theme.CYAN_GHOST, Direction.RIGHT).frame(0);
-		clydeImage = theme.spr_ghostColored(Theme.ORANGE_GHOST, Direction.RIGHT).frame(0);
-		pacManImage = theme.spr_pacManWalking(RIGHT).frame(0);
-	}
-
-	public void setHouseAccessControl(GhostHouseAccessControl houseAccessControl) {
-		this.houseAccessControl = houseAccessControl;
 	}
 
 	public void setGhostCommand(GhostCommand ghostCommand) {
@@ -57,9 +44,6 @@ public class ActorStatesRenderer {
 
 	public void draw(Graphics2D g) {
 		drawActorStates(g);
-		if (ghostCommand != null) {
-			drawGhostHouseState(g, houseAccessControl);
-		}
 		drawActorsOffTrack(g);
 	}
 
@@ -110,7 +94,7 @@ public class ActorStatesRenderer {
 		if (duration != Integer.MAX_VALUE) {
 			text.append(String.format("(%s,%d|%d)", ghost.getState(), remaining, duration));
 		} else {
-			text.append(String.format("(%s,%s)", ghost.getState(), INFTY));
+			text.append(String.format("(%s,%s)", ghost.getState(), Rendering.INFTY));
 		}
 		if (ghost.is(LEAVING_HOUSE)) {
 			text.append(String.format("[->%s]", ghost.subsequentState));
@@ -144,42 +128,4 @@ public class ActorStatesRenderer {
 		g.translate(-actor.tf.x, -actor.tf.y);
 		g.setStroke(normal);
 	}
-
-	private void drawPacManStarvingTime(Graphics2D g, GhostHouseAccessControl houseAccessControl) {
-		int col = 1, row = 14;
-		int time = houseAccessControl.pacManStarvingTicks();
-		g.drawImage(pacManImage, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);
-		try (Pen pen = new Pen(g)) {
-			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
-			pen.color(Color.WHITE);
-			pen.smooth(() -> pen.drawAtGridPosition(time == -1 ? INFTY : String.format("%d", time), col + 2, row, Tile.SIZE));
-		}
-	}
-
-	private void drawGhostHouseState(Graphics2D g, GhostHouseAccessControl houseAccessControl) {
-		if (houseAccessControl == null) {
-			return; // test scenes may have no ghost house
-		}
-		drawPacManStarvingTime(g, houseAccessControl);
-		drawDotCounter(g, clydeImage, houseAccessControl.ghostDotCount(world.population().clyde()), 1, 20,
-				!houseAccessControl.isGlobalDotCounterEnabled()
-						&& houseAccessControl.isPreferredGhost(world.population().clyde()));
-		drawDotCounter(g, inkyImage, houseAccessControl.ghostDotCount(world.population().inky()), 24, 20,
-				!houseAccessControl.isGlobalDotCounterEnabled()
-						&& houseAccessControl.isPreferredGhost(world.population().inky()));
-		drawDotCounter(g, null, houseAccessControl.globalDotCount(), 24, 14,
-				houseAccessControl.isGlobalDotCounterEnabled());
-	}
-
-	private void drawDotCounter(Graphics2D g, Image image, int value, int col, int row, boolean emphasized) {
-		try (Pen pen = new Pen(g)) {
-			if (image != null) {
-				g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);
-			}
-			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
-			pen.color(emphasized ? Color.GREEN : Color.WHITE);
-			pen.smooth(() -> pen.drawAtGridPosition(String.format("%d", value), col + 2, row, Tile.SIZE));
-		}
-	}
-
 }

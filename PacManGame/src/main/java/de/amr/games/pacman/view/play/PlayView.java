@@ -1,23 +1,17 @@
 package de.amr.games.pacman.view.play;
 
-import static java.lang.Math.round;
-
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Stroke;
 
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.games.pacman.controller.GhostCommand;
-import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
-import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.render.ActorRoutesRenderer;
 import de.amr.games.pacman.view.render.ActorStatesRenderer;
+import de.amr.games.pacman.view.render.GhostHouseStateRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**
@@ -43,11 +37,13 @@ public class PlayView extends SimplePlayView {
 
 	private final ActorRoutesRenderer actorRoutesRenderer;
 	private final ActorStatesRenderer actorStatesRenderer;
+	private final GhostHouseStateRenderer ghostHouseStateRenderer;
 
 	public PlayView(World world, Theme theme, Game game, int width, int height) {
 		super(world, theme, game, width, height);
 		actorRoutesRenderer = new ActorRoutesRenderer(world, theme);
 		actorStatesRenderer = new ActorStatesRenderer(world, theme);
+		ghostHouseStateRenderer = new GhostHouseStateRenderer(world, theme);
 		frameRateDisplay = new FrameRateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
@@ -55,8 +51,6 @@ public class PlayView extends SimplePlayView {
 
 	@Override
 	public void draw(Graphics2D g) {
-		actorStatesRenderer.setGhostCommand(optionalGhostCommand);
-		actorStatesRenderer.setHouseAccessControl(optionalHouseAccessControl);
 		drawWorld(g);
 		if (showingFrameRate) {
 			frameRateDisplay.draw(g);
@@ -67,11 +61,15 @@ public class PlayView extends SimplePlayView {
 			actorRoutesRenderer.draw(g);
 		}
 		if (showingStates) {
-			actorStatesRenderer.draw(g);
+			if (optionalGhostCommand != null) {
+				actorStatesRenderer.setGhostCommand(optionalGhostCommand);
+				actorStatesRenderer.draw(g);
+			}
+			if (optionalHouseAccessControl != null) {
+				ghostHouseStateRenderer.setHouseAccessControl(optionalHouseAccessControl);
+				ghostHouseStateRenderer.draw(g);
+			}
 		}
-//		if (showingGrid) {
-//			drawActorOffTrack(g);
-//		}
 		drawScores(g);
 	}
 
