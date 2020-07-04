@@ -15,7 +15,7 @@ import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
-import de.amr.games.pacman.view.play.SimplePlayView.RenderingStyle;
+import de.amr.games.pacman.view.play.PlayView.RenderingStyle;
 
 /**
  * Enhanced game controller with all the bells and whistles.
@@ -71,7 +71,11 @@ public class EnhancedGameController extends GameController {
 		} else if (Keyboard.keyPressedOnce("s")) {
 			setShowingStates(!isShowingStates());
 		} else if (Keyboard.keyPressedOnce("t")) {
-			playView.showingFrameRate = !playView.showingFrameRate;
+			if (playView.isShowingFrameRate()) {
+				playView.turnFrameRateOff();
+			} else {
+				playView.turnFrameRateOn();
+			}
 		} else if (Keyboard.keyPressedOnce("r")) {
 			setShowingRoutes(!isShowingRoutes());
 		} else if (Keyboard.keyPressedOnce("x")) {

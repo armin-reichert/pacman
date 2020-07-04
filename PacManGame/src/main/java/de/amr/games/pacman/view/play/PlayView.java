@@ -1,126 +1,196 @@
 package de.amr.games.pacman.view.play;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
+import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
+import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
 
-import de.amr.easy.game.ui.widgets.FrameRateWidget;
-import de.amr.games.pacman.controller.GhostCommand;
-import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.util.HashMap;
+import java.util.Map;
+
+import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.render.sprite.ActorRoutesRenderer;
-import de.amr.games.pacman.view.render.sprite.ActorStatesRenderer;
-import de.amr.games.pacman.view.render.sprite.GhostHouseStateRenderer;
-import de.amr.games.pacman.view.render.sprite.GridRenderer;
-import de.amr.games.pacman.view.render.sprite.Rendering;
+import de.amr.games.pacman.view.core.LivingView;
+import de.amr.games.pacman.view.render.api.IRenderer;
+import de.amr.games.pacman.view.render.api.IScoreRenderer;
+import de.amr.games.pacman.view.render.api.IWorldRenderer;
+import de.amr.games.pacman.view.render.sprite.ScoreRenderer;
+import de.amr.games.pacman.view.render.sprite.TextRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**
- * An extended play view that can visualize actor states, the ghost house pellet counters, ghost
- * routes, the grid background, ghost seats and the current framerate.
+ * Simple play view providing the core functionality for playing.
  * 
  * @author Armin Reichert
  */
-public class PlayView extends SimplePlayView {
+public class PlayView implements LivingView {
 
-	public boolean showingFrameRate = false;
+	public enum RenderingStyle {
+		ARCADE, BLOCK
+	}
 
-	/** Optional ghost house control */
-	public GhostCommand optionalGhostCommand;
+	public static IWorldRenderer createWorldRenderer(RenderingStyle style, World world, Theme theme) {
+		if (style == RenderingStyle.ARCADE) {
+			return new de.amr.games.pacman.view.render.sprite.WorldRenderer(world, theme);
+		} else {
+			return new de.amr.games.pacman.view.render.block.WorldRenderer(world, theme);
+		}
+	}
+	
+	public static IScoreRenderer createScoreRenderer(RenderingStyle style, World world, Theme theme) {
+		if (style == RenderingStyle.ARCADE) {
+			return new de.amr.games.pacman.view.render.sprite.ScoreRenderer(world, theme);
+		} else {
+			return new de.amr.games.pacman.view.render.block.ScoreRenderer(world, theme);
+		}
+	}
 
-	/** Optional ghost house reference */
-	public GhostHouseAccessControl optionalHouseAccessControl;
+	public static IRenderer createPacManRenderer(RenderingStyle style, World world, PacMan pacMan, Theme theme) {
+		if (style == RenderingStyle.ARCADE) {
+			return new de.amr.games.pacman.view.render.sprite.PacManRenderer(world, pacMan, theme);
+		} else if (style == RenderingStyle.BLOCK) {
+			return new de.amr.games.pacman.view.render.block.PacManRenderer(world, pacMan, theme);
+		}
+		throw new IllegalArgumentException("Unknown style " + style);
+	}
 
-	private FrameRateWidget frameRateDisplay;
+	public static IRenderer createGhostRenderer(RenderingStyle style, Ghost ghost, Theme theme) {
+		if (style == RenderingStyle.ARCADE) {
+			return new de.amr.games.pacman.view.render.sprite.GhostRenderer(ghost, theme);
+		} else if (style == RenderingStyle.BLOCK) {
+			return new de.amr.games.pacman.view.render.block.GhostRenderer(ghost, theme);
+		}
+		throw new IllegalArgumentException("Unknown style " + style);
+	}
 
-	private boolean showingGrid;
-	private boolean showingRoutes;
-	private boolean showingStates;
+	protected World world;
+	protected Theme theme;
+	protected Game game;
+	protected int width;
+	protected int height;
 
-	private final GridRenderer gridRenderer;
-	private final ActorRoutesRenderer actorRoutesRenderer;
-	private final ActorStatesRenderer actorStatesRenderer;
-	private final GhostHouseStateRenderer ghostHouseStateRenderer;
+	protected String[] messageTexts = new String[2];
+	protected Color[] messageColors = new Color[2];
+
+	public RenderingStyle style;
+
+	protected IWorldRenderer worldRenderer;
+	protected IScoreRenderer scoreRenderer;
+	protected TextRenderer textRenderer;
+	protected IRenderer pacManRenderer;
+	protected Map<Ghost, IRenderer> ghostRenderer = new HashMap<>();
+
+	private boolean showingScores;
 
 	public PlayView(World world, Theme theme, Game game, int width, int height) {
-		super(world, theme, game, width, height);
-		gridRenderer = new GridRenderer(world, theme);
-		actorRoutesRenderer = new ActorRoutesRenderer(world, theme);
-		actorStatesRenderer = new ActorStatesRenderer(world, theme);
-		ghostHouseStateRenderer = new GhostHouseStateRenderer(world, theme);
-		frameRateDisplay = new FrameRateWidget();
-		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
-		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
+		this.world = world;
+		this.theme = theme;
+		this.game = game;
+		this.width = width;
+		this.height = height;
+		showingScores = true;
+		scoreRenderer = new ScoreRenderer(world, theme);
+		textRenderer = new TextRenderer(world, theme);
+		style = RenderingStyle.ARCADE;
+		updateRenderers(world, theme);
+	}
+
+	public void updateRenderers(World world, Theme theme) {
+		worldRenderer = createWorldRenderer(style, world, theme);
+		scoreRenderer = createScoreRenderer(style, world, theme);
+		pacManRenderer = createPacManRenderer(style, world, world.population().pacMan(), theme);
+		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, createGhostRenderer(style, ghost, theme)));
+	}
+
+	@Override
+	public void init() {
+		clearMessages();
+		world.setChangingLevel(false);
+	}
+
+	@Override
+	public void update() {
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (showingGrid) {
-			worldRenderer.setEatenFoodColor(Rendering::patternColor);
-			gridRenderer.draw(g);
-		} else {
-			worldRenderer.setEatenFoodColor(tile -> Color.BLACK);
-		}
+		drawScores(g);
 		drawWorld(g);
-		if (showingGrid) {
-			gridRenderer.drawOneWayTiles(g);
-		}
-		if (showingFrameRate) {
-			frameRateDisplay.draw(g);
-		}
 		drawMessages(g);
 		drawActors(g);
-		if (showingRoutes) {
-			actorRoutesRenderer.draw(g);
+	}
+
+	public void showGameReady() {
+		messageTexts[1] = "Ready!";
+		messageColors[1] = Color.YELLOW;
+	}
+
+	public void showGameOver() {
+		messageTexts[1] = "Game Over!";
+		messageColors[1] = Color.RED;
+	}
+
+	public void showMessage(int oneOrTwo, String text, Color color) {
+		messageTexts[oneOrTwo - 1] = text;
+		messageColors[oneOrTwo - 1] = color;
+	}
+
+	public void clearMessages() {
+		clearMessage(1);
+		clearMessage(2);
+	}
+
+	public void clearMessage(int oneOrTwo) {
+		messageTexts[oneOrTwo - 1] = null;
+	}
+
+	public void enableGhostAnimations(boolean enabled) {
+		world.population().ghosts().map(ghostRenderer::get).forEach(renderer -> renderer.enableAnimation(enabled));
+	}
+
+	public void turnScoresOn() {
+		this.showingScores = true;
+	}
+
+	public void turnScoresOff() {
+		this.showingScores = false;
+	}
+
+	public boolean isShowingScores() {
+		return showingScores;
+	}
+
+	protected void drawWorld(Graphics2D g) {
+		worldRenderer.draw(g);
+	}
+
+	protected void drawMessages(Graphics2D g) {
+		if (messageTexts[0] != null) {
+			textRenderer.setRow(15);
+			textRenderer.setTextColor(messageColors[0]);
+			textRenderer.draw(g, messageTexts[0]);
 		}
-		if (showingStates) {
-			if (optionalGhostCommand != null) {
-				actorStatesRenderer.setGhostCommand(optionalGhostCommand);
-				actorStatesRenderer.draw(g);
-			}
-			if (optionalHouseAccessControl != null) {
-				ghostHouseStateRenderer.setHouseAccessControl(optionalHouseAccessControl);
-				ghostHouseStateRenderer.draw(g);
-			}
+		if (messageTexts[1] != null) {
+			textRenderer.setRow(21);
+			textRenderer.setTextColor(messageColors[1]);
+			textRenderer.draw(g, messageTexts[1]);
 		}
-		drawScores(g);
 	}
 
-	public boolean isShowingGrid() {
-		return showingGrid;
+	protected void drawActors(Graphics2D g) {
+		pacManRenderer.draw(g);
+		// draw dead ghosts (as number or eyes) under living ghosts
+		world.population().ghosts().filter(world::included).filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
+				.forEach(ghost -> ghostRenderer.get(ghost).draw(g));
+		world.population().ghosts().filter(world::included).filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
+				.forEach(ghost -> ghostRenderer.get(ghost).draw(g));
 	}
 
-	public void turnGridOn() {
-		showingGrid = true;
-	}
-
-	public void turnGridOff() {
-		showingGrid = false;
-	}
-
-	public boolean isShowingRoutes() {
-		return showingRoutes;
-	}
-
-	public void turnRoutesOn() {
-		showingRoutes = true;
-	}
-
-	public void turnRoutesOff() {
-		showingRoutes = false;
-	}
-
-	public boolean isShowingStates() {
-		return showingStates;
-	}
-
-	public void turnStatesOn() {
-		showingStates = true;
-	}
-
-	public void turnStatesOff() {
-		showingStates = false;
+	protected void drawScores(Graphics2D g) {
+		if (game != null && showingScores) {
+			scoreRenderer.draw(g, game);
+		}
 	}
 }
