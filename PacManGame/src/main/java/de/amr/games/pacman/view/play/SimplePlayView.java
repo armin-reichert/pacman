@@ -45,6 +45,7 @@ public class SimplePlayView implements LivingView {
 		worldRenderer = new WorldRenderer(world, theme);
 		scoreRenderer = new ScoreRenderer(world, theme);
 		textRenderer = new TextRenderer(world, theme);
+		showingScores = true;
 	}
 
 	@Override
