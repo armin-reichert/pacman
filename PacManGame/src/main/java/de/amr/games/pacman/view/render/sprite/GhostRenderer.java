@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.render.arcade;
+package de.amr.games.pacman.view.render.sprite;
 
 import java.awt.Graphics2D;
 
@@ -28,7 +28,7 @@ public class GhostRenderer extends CreatureRenderer implements IGhostRenderer {
 
 	@Override
 	public void draw(Graphics2D g) {
-		drawCreature(g, ghost);
+		drawEntity(g, ghost);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class GhostRenderer extends CreatureRenderer implements IGhostRenderer {
 	public void showFlashing() {
 		selectSprite("flashing");
 	}
-	
+
 	@Override
 	public void showPoints(int points) {
 		selectSprite("points-" + points);

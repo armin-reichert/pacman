@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.render.arcade;
+package de.amr.games.pacman.view.render.sprite;
 
 import static de.amr.games.pacman.model.Direction.dirs;
 
@@ -22,7 +22,7 @@ public class PacManRenderer extends CreatureRenderer implements IPacManRenderer 
 
 	@Override
 	public void draw(Graphics2D g) {
-		drawCreature(g, pacMan);
+		drawEntity(g, pacMan);
 	}
 
 	@Override

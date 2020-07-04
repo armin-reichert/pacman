@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.render.arcade;
+package de.amr.games.pacman.view.render.sprite;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

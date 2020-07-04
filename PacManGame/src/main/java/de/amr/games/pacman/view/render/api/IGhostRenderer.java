@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.render.api;
 
-public interface IGhostRenderer extends ICreatureRenderer {
+public interface IGhostRenderer extends IRenderer {
 
 	void showColored();
 

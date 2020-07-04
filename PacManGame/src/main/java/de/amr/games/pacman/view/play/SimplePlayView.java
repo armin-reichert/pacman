@@ -6,14 +6,16 @@ import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.core.LivingView;
-import de.amr.games.pacman.view.render.arcade.GhostRenderer;
-import de.amr.games.pacman.view.render.arcade.PacManRenderer;
-import de.amr.games.pacman.view.render.arcade.ScoreRenderer;
-import de.amr.games.pacman.view.render.arcade.TextRenderer;
-import de.amr.games.pacman.view.render.arcade.WorldRenderer;
+import de.amr.games.pacman.view.render.api.IGhostRenderer;
+import de.amr.games.pacman.view.render.api.IPacManRenderer;
+import de.amr.games.pacman.view.render.sprite.ScoreRenderer;
+import de.amr.games.pacman.view.render.sprite.TextRenderer;
+import de.amr.games.pacman.view.render.sprite.WorldRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**
@@ -22,6 +24,30 @@ import de.amr.games.pacman.view.theme.Theme;
  * @author Armin Reichert
  */
 public class SimplePlayView implements LivingView {
+
+	public enum RenderingStyle {
+		ARCADE, BLOCK
+	}
+
+	public RenderingStyle style = RenderingStyle.ARCADE;
+
+	public static IPacManRenderer createPacManRenderer(RenderingStyle style, PacMan pacMan, Theme theme) {
+		if (style == RenderingStyle.ARCADE) {
+			return new de.amr.games.pacman.view.render.sprite.PacManRenderer(pacMan, theme);
+		} else if (style == RenderingStyle.BLOCK) {
+			return new de.amr.games.pacman.view.render.block.PacManRenderer(pacMan, theme);
+		}
+		throw new IllegalArgumentException("Unknown style " + style);
+	}
+
+	public static IGhostRenderer createGhostRenderer(RenderingStyle style, Ghost ghost, Theme theme) {
+		if (style == RenderingStyle.ARCADE) {
+			return new de.amr.games.pacman.view.render.sprite.GhostRenderer(ghost, theme);
+		} else if (style == RenderingStyle.BLOCK) {
+			return new de.amr.games.pacman.view.render.block.GhostRenderer(ghost, theme);
+		}
+		throw new IllegalArgumentException("Unknown style " + style);
+	}
 
 	protected World world;
 	protected Theme theme;
@@ -44,12 +70,16 @@ public class SimplePlayView implements LivingView {
 		this.game = game;
 		this.width = width;
 		this.height = height;
+		showingScores = true;
 		worldRenderer = new WorldRenderer(world, theme);
 		scoreRenderer = new ScoreRenderer(world, theme);
 		textRenderer = new TextRenderer(world, theme);
-		world.population().pacMan().setRenderer(new PacManRenderer(world.population().pacMan(), theme));
-		world.population().ghosts().forEach(ghost -> ghost.setRenderer(new GhostRenderer(ghost, theme)));
-		showingScores = true;
+		createCreatureRenderers(world, theme);
+	}
+
+	public void createCreatureRenderers(World world, Theme theme) {
+		world.population().pacMan().setRenderer(createPacManRenderer(style, world.population().pacMan(), theme));
+		world.population().ghosts().forEach(ghost -> ghost.setRenderer(createGhostRenderer(style, ghost, theme)));
 	}
 
 	@Override

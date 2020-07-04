@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.render.arcade;
+package de.amr.games.pacman.view.render.sprite;
 
 import static de.amr.games.pacman.model.Direction.LEFT;
 

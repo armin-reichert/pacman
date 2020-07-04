@@ -12,8 +12,8 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.LivingView;
-import de.amr.games.pacman.view.render.arcade.GhostRenderer;
-import de.amr.games.pacman.view.render.arcade.PacManRenderer;
+import de.amr.games.pacman.view.render.sprite.GhostRenderer;
+import de.amr.games.pacman.view.render.sprite.PacManRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**

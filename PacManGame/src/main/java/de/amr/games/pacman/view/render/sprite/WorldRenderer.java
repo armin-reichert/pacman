@@ -1,7 +1,7 @@
-package de.amr.games.pacman.view.render.arcade;
+package de.amr.games.pacman.view.render.sprite;
 
-import static de.amr.games.pacman.view.render.arcade.Rendering.drawDirectionIndicator;
-import static de.amr.games.pacman.view.render.arcade.Rendering.ghostColor;
+import static de.amr.games.pacman.view.render.sprite.Rendering.drawDirectionIndicator;
+import static de.amr.games.pacman.view.render.sprite.Rendering.ghostColor;
 
 import java.awt.Color;
 import java.awt.Font;
