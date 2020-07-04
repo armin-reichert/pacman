@@ -33,7 +33,6 @@ public class WorldRenderer {
 	private final SpriteMap mazeSprites;
 	private final SpriteAnimation energizerAnimation;
 	private boolean showingGrid;
-	private boolean showingScores;
 	private final Image gridImage;
 
 	public WorldRenderer(World world, Theme theme) {
@@ -82,14 +81,6 @@ public class WorldRenderer {
 
 	public boolean isShowingGrid() {
 		return showingGrid;
-	}
-
-	public void setShowingScores(boolean showingScores) {
-		this.showingScores = showingScores;
-	}
-
-	public boolean isShowingScores() {
-		return showingScores;
 	}
 
 	private void drawMazeContent(Graphics2D g) {

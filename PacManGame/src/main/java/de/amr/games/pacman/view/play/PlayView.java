@@ -96,13 +96,4 @@ public class PlayView extends SimplePlayView {
 	public void turnStatesOff() {
 		showingStates = false;
 	}
-
-	public void turnScoresOn() {
-		worldRenderer.setShowingScores(true);
-	}
-
-	public void turnScoresOff() {
-		worldRenderer.setShowingScores(false);
-	}
-
 }

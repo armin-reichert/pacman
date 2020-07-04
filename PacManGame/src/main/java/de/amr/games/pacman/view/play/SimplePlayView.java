@@ -34,6 +34,8 @@ public class SimplePlayView implements LivingView {
 	protected ScoreRenderer scoreRenderer;
 	protected TextRenderer textRenderer;
 
+	private boolean showingScores;
+	
 	public SimplePlayView(World world, Theme theme, Game game, int width, int height) {
 		this.world = world;
 		this.theme = theme;
@@ -92,6 +94,19 @@ public class SimplePlayView implements LivingView {
 				.forEach(renderer -> renderer.enableSpriteAnimation(enabled));
 	}
 
+	public void turnScoresOn() {
+		this.showingScores = true;
+	}
+
+	public void turnScoresOff() {
+		this.showingScores = false;
+	}
+	
+	public boolean isShowingScores() {
+		return showingScores;
+	}
+
+
 	public void turnEnergizerBlinkingOn() {
 		worldRenderer.letEnergizersBlink(true);
 	}
@@ -139,7 +154,7 @@ public class SimplePlayView implements LivingView {
 	}
 
 	protected void drawScores(Graphics2D g) {
-		if (game != null) {
+		if (game != null && showingScores) {
 			scoreRenderer.draw(g, game);
 		}
 	}
