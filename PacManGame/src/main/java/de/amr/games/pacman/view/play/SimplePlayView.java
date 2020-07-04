@@ -5,14 +5,15 @@ import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.core.LivingView;
-import de.amr.games.pacman.view.render.api.IGhostRenderer;
-import de.amr.games.pacman.view.render.api.IPacManRenderer;
+import de.amr.games.pacman.view.render.api.IRenderer;
 import de.amr.games.pacman.view.render.api.IWorldRenderer;
 import de.amr.games.pacman.view.render.sprite.ScoreRenderer;
 import de.amr.games.pacman.view.render.sprite.TextRenderer;
@@ -29,8 +30,6 @@ public class SimplePlayView implements LivingView {
 		ARCADE, BLOCK
 	}
 
-	public RenderingStyle style = RenderingStyle.ARCADE;
-
 	public static IWorldRenderer createWorldRenderer(RenderingStyle style, World world, Theme theme) {
 		if (style == RenderingStyle.ARCADE) {
 			return new de.amr.games.pacman.view.render.sprite.WorldRenderer(world, theme);
@@ -39,7 +38,7 @@ public class SimplePlayView implements LivingView {
 		}
 	}
 
-	public static IPacManRenderer createPacManRenderer(RenderingStyle style, PacMan pacMan, Theme theme) {
+	public static IRenderer createPacManRenderer(RenderingStyle style, PacMan pacMan, Theme theme) {
 		if (style == RenderingStyle.ARCADE) {
 			return new de.amr.games.pacman.view.render.sprite.PacManRenderer(pacMan, theme);
 		} else if (style == RenderingStyle.BLOCK) {
@@ -48,7 +47,7 @@ public class SimplePlayView implements LivingView {
 		throw new IllegalArgumentException("Unknown style " + style);
 	}
 
-	public static IGhostRenderer createGhostRenderer(RenderingStyle style, Ghost ghost, Theme theme) {
+	public static IRenderer createGhostRenderer(RenderingStyle style, Ghost ghost, Theme theme) {
 		if (style == RenderingStyle.ARCADE) {
 			return new de.amr.games.pacman.view.render.sprite.GhostRenderer(ghost, theme);
 		} else if (style == RenderingStyle.BLOCK) {
@@ -66,9 +65,13 @@ public class SimplePlayView implements LivingView {
 	protected String[] messageTexts = new String[2];
 	protected Color[] messageColors = new Color[2];
 
+	public RenderingStyle style;
+
 	protected IWorldRenderer worldRenderer;
 	protected ScoreRenderer scoreRenderer;
 	protected TextRenderer textRenderer;
+	protected IRenderer pacManRenderer;
+	protected Map<Ghost, IRenderer> ghostRenderer = new HashMap<>();
 
 	private boolean showingScores;
 
@@ -81,13 +84,14 @@ public class SimplePlayView implements LivingView {
 		showingScores = true;
 		scoreRenderer = new ScoreRenderer(world, theme);
 		textRenderer = new TextRenderer(world, theme);
+		style = RenderingStyle.ARCADE;
 		updateRenderers(world, theme);
 	}
 
 	public void updateRenderers(World world, Theme theme) {
 		worldRenderer = createWorldRenderer(style, world, theme);
-		world.population().pacMan().setRenderer(createPacManRenderer(style, world.population().pacMan(), theme));
-		world.population().ghosts().forEach(ghost -> ghost.setRenderer(createGhostRenderer(style, ghost, theme)));
+		pacManRenderer = createPacManRenderer(style, world.population().pacMan(), theme);
+		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, createGhostRenderer(style, ghost, theme)));
 	}
 
 	@Override
@@ -133,8 +137,7 @@ public class SimplePlayView implements LivingView {
 	}
 
 	public void enableGhostAnimations(boolean enabled) {
-		world.population().ghosts().map(ghost -> ghost.getRenderer())
-				.forEach(renderer -> renderer.enableAnimation(enabled));
+		world.population().ghosts().map(ghostRenderer::get).forEach(renderer -> renderer.enableAnimation(enabled));
 	}
 
 	public void turnScoresOn() {
@@ -187,12 +190,12 @@ public class SimplePlayView implements LivingView {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		world.population().pacMan().getRenderer().draw(g);
+		pacManRenderer.draw(g);
 		// draw dead ghosts (as number or eyes) under living ghosts
 		world.population().ghosts().filter(world::included).filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
-				.forEach(ghost -> ghost.getRenderer().draw(g));
+				.forEach(ghost -> ghostRenderer.get(ghost).draw(g));
 		world.population().ghosts().filter(world::included).filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
-				.forEach(ghost -> ghost.getRenderer().draw(g));
+				.forEach(ghost -> ghostRenderer.get(ghost).draw(g));
 	}
 
 	protected void drawScores(Graphics2D g) {

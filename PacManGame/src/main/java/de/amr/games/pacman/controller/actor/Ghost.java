@@ -34,7 +34,6 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.OneWayTile;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.render.api.IGhostRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -63,7 +62,10 @@ public class Ghost extends Creature<GhostState> {
 	/** Ghost color as defined in {@link Theme}. */
 	public int color;
 
-	private IGhostRenderer renderer;
+	/** Value when eaten */
+	public int points;
+
+	public boolean flashing;
 
 	public StateMachine<Sanity, Void> sanity =
 	//@formatter:off
@@ -99,28 +101,21 @@ public class Ghost extends Creature<GhostState> {
 					.onEntry(() -> {
 						subsequentState = LOCKED;
 						visible = true;
+						flashing = false;
+						points = 0;
 						moveDir = wishDir = bed().exitDir;
 						tf.setPosition(bed().center.x - Tile.SIZE / 2, bed.center.y - Tile.SIZE / 2);
 						enteredNewTile();
 						sanity.init();
-						renderer.resetAnimations();
-						renderer.showColored();
 					})
 					.onTick(() -> {
 						move();
-						// not sure if ghost locked inside house should look frightened
-						if (world.population().pacMan().power > 0) {
-							renderer.showFrightened();
-						} else {
-							renderer.showColored();
-						}
 					})
 					
 				.state(LEAVING_HOUSE)
 					.onEntry(() -> steering().init())
 					.onTick(() -> {
 						move();
-						renderer.showColored();
 					})
 					.onExit(() -> forceMoving(Direction.LEFT))
 				
@@ -128,14 +123,12 @@ public class Ghost extends Creature<GhostState> {
 					.onEntry(() -> steering().init())
 					.onTick(() -> {
 						move();
-						renderer.showEyes();
 					})
 				
 				.state(SCATTERING)
 					.onTick(() -> {
 						sanity.update();
 						move();
-						renderer.showColored();
 						checkPacManCollision();
 					})
 			
@@ -143,7 +136,6 @@ public class Ghost extends Creature<GhostState> {
 					.onTick(() -> {
 						sanity.update();
 						move();
-						renderer.showColored();
 						checkPacManCollision();
 					})
 				
@@ -153,23 +145,19 @@ public class Ghost extends Creature<GhostState> {
 						move();
 						// one flashing animation takes 0.5 sec
 						int flashTicks = sec(game.level.numFlashes * 0.5f);
-						if (remaining < flashTicks) {
-							renderer.showFlashing();
-						} else  {
-							renderer.showFrightened();
-						}
+						flashing = remaining < flashTicks;
 						checkPacManCollision();
 					})
 				
 				.state(DEAD)
 					.timeoutAfter(sec(1)) // time while ghost is drawn as number of scored points
 					.onEntry(() -> {
-						renderer.showPoints(game.killedGhostPoints());
+						points = game.killedGhostPoints();
 					})
 					.onTick((state, t, remaining) -> {
 						if (remaining == 0) { // show as eyes returning to ghost home
 							move();
-							renderer.showEyes();
+							points = 0;
 						}
 					})
 				
@@ -318,14 +306,6 @@ public class Ghost extends Creature<GhostState> {
 		}
 		currentSteering.steer();
 		movement.update();
-	}
-
-	public IGhostRenderer getRenderer() {
-		return renderer;
-	}
-
-	public void setRenderer(IGhostRenderer renderer) {
-		this.renderer = renderer;
 	}
 
 	public boolean isInsideHouse() {

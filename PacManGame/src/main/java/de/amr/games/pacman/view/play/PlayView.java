@@ -64,6 +64,9 @@ public class PlayView extends SimplePlayView {
 			worldRenderer.setEatenFoodColor(tile -> Color.BLACK);
 		}
 		drawWorld(g);
+		if (showingGrid) {
+			gridRenderer.drawOneWayTiles(g);
+		}
 		if (showingFrameRate) {
 			frameRateDisplay.draw(g);
 		}

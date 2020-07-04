@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
+import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.test.TestUI;
@@ -39,6 +40,8 @@ class InkyChaseTestUI extends TestUI {
 		super.init();
 		theme.snd_ghost_chase().volume(0);
 		include(pacMan, inky, blinky);
+		pacMan.init();
+		ghostsOnStage().forEach(Ghost::init);
 		ghostsOnStage().forEach(ghost -> ghost.subsequentState = CHASING);
 		view.turnRoutesOn();
 		view.showMessage(1, "Press SPACE to start", Color.WHITE);

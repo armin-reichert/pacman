@@ -2,33 +2,19 @@ package de.amr.games.pacman.view.render.block;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 
 import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.render.api.IPacManRenderer;
+import de.amr.games.pacman.view.render.api.IRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 
-public class PacManRenderer implements IPacManRenderer {
-
-	enum Mode {
-		WALKING, FULL, DYING
-	}
+public class PacManRenderer implements IRenderer {
 
 	private final PacMan pacMan;
-	private Mode mode;
 
 	public PacManRenderer(PacMan pacMan, Theme theme) {
 		this.pacMan = pacMan;
-		mode = Mode.FULL;
-	}
-
-	@Override
-	public void enableAnimation(boolean enabled) {
-	}
-
-	@Override
-	public void resetAnimations() {
 	}
 
 	@Override
@@ -36,30 +22,39 @@ public class PacManRenderer implements IPacManRenderer {
 		if (!pacMan.visible) {
 			return;
 		}
+		smoothOn(g);
+		PacManState state = pacMan.getState();
+		switch (state) {
+		case DEAD:
+			drawDead(g);
+		case RUNNING:
+			drawRunning(g);
+		case SLEEPING:
+			drawFull(g);
+		default:
+			break;
+		}
+		smoothOff(g);
+	}
+
+	private void drawFull(Graphics2D g) {
 		int w = pacMan.tf.width * 2, h = pacMan.tf.height * 2;
 		int x = (int) pacMan.tf.x - Tile.SIZE / 2, y = (int) pacMan.tf.y - Tile.SIZE / 2;
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setColor(Color.YELLOW);
-		if (mode == Mode.DYING) {
-			g.drawOval(x, y, w, h);
-		} else {
-			g.fillOval(x, y, w, h);
-		}
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		g.fillOval(x, y, w, h);
 	}
 
-	@Override
-	public void showDying() {
-		mode = Mode.DYING;
+	private void drawRunning(Graphics2D g) {
+		int w = pacMan.tf.width * 2, h = pacMan.tf.height * 2;
+		int x = (int) pacMan.tf.x - Tile.SIZE / 2, y = (int) pacMan.tf.y - Tile.SIZE / 2;
+		g.setColor(Color.YELLOW);
+		g.fillOval(x, y, w, h);
 	}
 
-	@Override
-	public void showFull() {
-		mode = Mode.FULL;
-	}
-
-	@Override
-	public void showWalking() {
-		mode = Mode.WALKING;
+	private void drawDead(Graphics2D g) {
+		int w = pacMan.tf.width * 2, h = pacMan.tf.height * 2;
+		int x = (int) pacMan.tf.x - Tile.SIZE / 2, y = (int) pacMan.tf.y - Tile.SIZE / 2;
+		g.setColor(Color.YELLOW);
+		g.drawOval(x, y, w, h);
 	}
 }

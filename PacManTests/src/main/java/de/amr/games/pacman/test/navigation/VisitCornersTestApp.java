@@ -41,6 +41,7 @@ class FollowTargetTilesTestUI extends TestUI {
 		current = 0;
 		theme.snd_ghost_chase().volume(0);
 		include(blinky);
+		blinky.init();
 		blinky.placeAt(targets.get(0));
 		blinky.behavior(GhostState.CHASING, blinky.headingFor(() -> targets.get(current)));
 		blinky.setState(GhostState.CHASING);

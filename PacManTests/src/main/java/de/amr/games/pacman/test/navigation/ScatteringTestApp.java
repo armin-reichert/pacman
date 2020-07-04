@@ -38,6 +38,7 @@ class ScatteringTestUI extends TestUI {
 		super.init();
 		world.population().ghosts().forEach(ghost -> {
 			world.include(ghost);
+			ghost.init();
 			ghost.subsequentState = GhostState.SCATTERING;
 		});
 		view.turnRoutesOn();

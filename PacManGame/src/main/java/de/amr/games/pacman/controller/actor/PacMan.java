@@ -23,7 +23,6 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.render.api.IPacManRenderer;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
@@ -33,13 +32,13 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class PacMan extends Creature<PacManState> {
 
-	private IPacManRenderer renderer;
-
 	/** Number of ticks Pac-Man has power after eating an energizer. */
 	public int power;
 
 	/** Number of ticks Pac-Man is not moving after having eaten a pellet. */
 	public int digestion;
+	
+	public boolean collapsing;
 
 	public PacMan() {
 		super("Pac-Man", new EnumMap<>(PacManState.class));
@@ -57,8 +56,6 @@ public class PacMan extends Creature<PacManState> {
 						visible = true;
 						moveDir = wishDir = world.pacManBed().exitDir;
 						tf.setPosition(bed.center.x - Tile.SIZE / 2, bed.center.y - Tile.SIZE / 2);
-						renderer.resetAnimations();
-						renderer.showFull();
 					})
 
 				.state(RUNNING)
@@ -79,7 +76,6 @@ public class PacMan extends Creature<PacManState> {
 						}
 						steering().steer();
 						movement.update();
-						renderer.showWalking();
 						if (!isTeleporting()) {
 							findSomethingInteresting().ifPresent(this::publish);
 						}
@@ -100,14 +96,6 @@ public class PacMan extends Creature<PacManState> {
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		brain.doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
 		brain.doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
-	}
-
-	public void setRenderer(IPacManRenderer renderer) {
-		this.renderer = renderer;
-	}
-
-	public IPacManRenderer getRenderer() {
-		return renderer;
 	}
 
 	public void start() {

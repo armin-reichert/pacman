@@ -19,8 +19,7 @@ import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.play.PlayView;
-import de.amr.games.pacman.view.render.sprite.GhostRenderer;
-import de.amr.games.pacman.view.render.sprite.PacManRenderer;
+import de.amr.games.pacman.view.play.SimplePlayView.RenderingStyle;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 import de.amr.games.pacman.view.theme.Theme;
 
@@ -48,33 +47,34 @@ public class TestUI implements Lifecycle, VisualController {
 	}
 
 	public TestUI() {
-
 		world = Universe.arcadeWorld();
 		world.clearFood();
-
-
 		people = new DefaultPopulation();
+		people.populate(world);
+
 		pacMan = people.pacMan();
 		blinky = people.blinky();
 		pinky = people.pinky();
 		inky = people.inky();
 		clyde = people.clyde();
-		people.populate(world);
-
-		theme = new ArcadeTheme();
-		pacMan.setRenderer(new PacManRenderer(pacMan, theme));
-		people.ghosts().forEach(ghost -> ghost.setRenderer(new GhostRenderer(ghost, theme)));
 		
+		theme = new ArcadeTheme();
 		game = new Game(1, world.totalFoodCount());
+		people.play(game);
+
 		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
 		world.population().ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> ghostSpeedLimit(ghost, game)));
-		people.play(game);
-	}
 
+		view = new PlayView(world, theme, game, app().settings().width, app().settings().height);
+		view.style = RenderingStyle.ARCADE;
+		view.updateRenderers(world, theme);
+		view.init();
+	}
+	
 	@Override
 	public void init() {
-		view = new PlayView(world, theme, game, app().settings().width, app().settings().height);
-		view.init();
+		world.population().creatures().forEach(Creature::init);
+		world.population().creatures().forEach(creature -> world.exclude(creature));
 	}
 
 	@Override

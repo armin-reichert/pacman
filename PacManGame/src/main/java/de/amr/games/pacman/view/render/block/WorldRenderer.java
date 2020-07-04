@@ -18,13 +18,11 @@ public class WorldRenderer implements IWorldRenderer {
 	}
 
 	private final World world;
-	private final Theme theme;
 	private Mode mode;
 	private boolean energizersBlink;
 
 	public WorldRenderer(World world, Theme theme) {
 		this.world = world;
-		this.theme = theme;
 		mode = Mode.FULL;
 	}
 

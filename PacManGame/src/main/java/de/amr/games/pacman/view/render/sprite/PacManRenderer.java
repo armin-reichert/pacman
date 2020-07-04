@@ -5,10 +5,10 @@ import static de.amr.games.pacman.model.Direction.dirs;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.view.render.api.IPacManRenderer;
+import de.amr.games.pacman.view.render.api.IRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 
-public class PacManRenderer extends CreatureRenderer implements IPacManRenderer {
+public class PacManRenderer extends CreatureRenderer implements IRenderer {
 
 	private final PacMan pacMan;
 
@@ -22,22 +22,26 @@ public class PacManRenderer extends CreatureRenderer implements IPacManRenderer 
 
 	@Override
 	public void draw(Graphics2D g) {
-		drawEntity(g, pacMan);
-	}
-
-	@Override
-	public void showWalking() {
-		selectSprite("walking-" + pacMan.moveDir());
-		enableAnimation(pacMan.tf.getVelocity().length() > 0);
-	}
-
-	@Override
-	public void showDying() {
-		selectSprite("dying");
-	}
-
-	@Override
-	public void showFull() {
-		selectSprite("full");
+		switch (pacMan.getState()) {
+		case DEAD:
+			if (pacMan.collapsing) {
+				selectSprite("dying");
+			} else if (!sprites.selectedKey().equals("full")) {
+				selectSprite("full");
+				sprites.get("dying").resetAnimation();
+			}
+			drawEntity(g, pacMan);
+			break;
+		case RUNNING:
+			selectSprite("walking-" + pacMan.moveDir());
+			enableAnimation(pacMan.tf.getVelocity().length() > 0);
+			drawEntity(g, pacMan);
+			break;
+		case SLEEPING:
+			selectSprite("full");
+			drawEntity(g, pacMan);
+		default:
+			break;
+		}
 	}
 }

@@ -35,6 +35,7 @@ import de.amr.games.pacman.controller.actor.DefaultPopulation;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.controller.actor.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -180,7 +181,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(CHANGING_LEVEL)
 					.timeoutAfter(() -> sec(mazeFlashingSeconds() + 6))
 					.onEntry(() -> {
-						pacMan.getRenderer().showFull();
+						pacMan.tf.setVelocity(0, 0);
 						ghostHouseAccessControl.onLevelChange();
 						sound.stopAllClips();
 						playView.enableGhostAnimations(false);
@@ -250,14 +251,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						if (t == waitTime) {
 							bonusControl.deactivateBonus();
 							ghostsOnStage().forEach(ghost -> ghost.visible = false);
-							pacMan.getRenderer().showFull();
 						}
 						else if (t == dyingStartTime) {
-							pacMan.getRenderer().showDying();
-							pacMan.getRenderer().enableAnimation(true);
+							pacMan.collapsing = true;
 							sound.pacManDied();
 						}
 						else if (t == dyingEndTime && game.lives > 0) {
+							pacMan.collapsing = false;
 							creaturesOnStage().forEach(Creature::init);
 							playView.init();
 						}
@@ -280,11 +280,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onTick(() -> {
 						ghostsOnStage().forEach(ghost -> {
 							ghost.move();
-							if (ghost.getState() == GhostState.FRIGHTENED) {
-								ghost.getRenderer().showFrightened();
-							} else {
-								ghost.getRenderer().showColored();
-							}
 						});
 					})
 					.onExit(() -> {

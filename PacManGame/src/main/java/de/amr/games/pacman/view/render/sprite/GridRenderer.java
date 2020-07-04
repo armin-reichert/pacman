@@ -33,7 +33,6 @@ public class GridRenderer implements IRenderer {
 	public void draw(Graphics2D g) {
 		g.drawImage(gridImage, 0, 0, null);
 		drawGhostBeds(g);
-		drawOneWayTiles(g);
 	}
 
 	private BufferedImage createGridPatternImage(int cols, int rows) {

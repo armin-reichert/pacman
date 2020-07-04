@@ -40,6 +40,7 @@ class PacManMovementTestUI extends TestUI {
 	public void init() {
 		super.init();
 		include(pacMan);
+		pacMan.init();
 		world.fillFood();
 		pacMan.addEventListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
