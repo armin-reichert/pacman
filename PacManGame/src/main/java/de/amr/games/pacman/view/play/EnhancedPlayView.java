@@ -23,9 +23,7 @@ import de.amr.games.pacman.view.theme.Theme;
  * 
  * @author Armin Reichert
  */
-public class PlayView extends SimplePlayView {
-
-	public boolean showingFrameRate = false;
+public class EnhancedPlayView extends PlayView {
 
 	/** Optional ghost house control */
 	public GhostCommand optionalGhostCommand;
@@ -35,6 +33,7 @@ public class PlayView extends SimplePlayView {
 
 	private FrameRateWidget frameRateDisplay;
 
+	private boolean showingFrameRate = false;
 	private boolean showingGrid;
 	private boolean showingRoutes;
 	private boolean showingStates;
@@ -44,7 +43,7 @@ public class PlayView extends SimplePlayView {
 	private final ActorStatesRenderer actorStatesRenderer;
 	private final GhostHouseStateRenderer ghostHouseStateRenderer;
 
-	public PlayView(World world, Theme theme, Game game, int width, int height) {
+	public EnhancedPlayView(World world, Theme theme, Game game, int width, int height) {
 		super(world, theme, game, width, height);
 		gridRenderer = new GridRenderer(world, theme);
 		actorRoutesRenderer = new ActorRoutesRenderer(world, theme);
@@ -86,6 +85,18 @@ public class PlayView extends SimplePlayView {
 			}
 		}
 		drawScores(g);
+	}
+
+	public boolean isShowingFrameRate() {
+		return showingFrameRate;
+	}
+
+	public void turnFrameRateOn() {
+		showingFrameRate = true;
+	}
+
+	public void turnFrameRateOff() {
+		showingFrameRate = false;
 	}
 
 	public boolean isShowingGrid() {

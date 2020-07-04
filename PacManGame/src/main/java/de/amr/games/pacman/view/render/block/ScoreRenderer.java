@@ -1,10 +1,7 @@
-package de.amr.games.pacman.view.render.sprite;
-
-import static de.amr.games.pacman.model.Direction.LEFT;
+package de.amr.games.pacman.view.render.block;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 
 import de.amr.easy.game.view.Pen;
@@ -84,21 +81,26 @@ public class ScoreRenderer implements IScoreRenderer {
 	}
 
 	protected void drawLives(Graphics2D g, Game game) {
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		int sz = 2 * Tile.SIZE;
-		Image pacManLookingLeft = theme.spr_pacManWalking(LEFT).frame(1);
 		for (int i = 0, x = sz; i < game.lives; ++i, x += sz) {
-			g.drawImage(pacManLookingLeft, x, world.height() * Tile.SIZE - sz, null);
+			g.setColor(Color.YELLOW);
+			g.fillOval(x, world.height() * Tile.SIZE - sz, Tile.SIZE, Tile.SIZE);
 		}
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 
 	protected void drawLevelCounter(Graphics2D g, Game game) {
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		int max = 7;
-		int first = Math.max(0, game.levelCounter.size() - max);
+//		int first = Math.max(0, game.levelCounter.size() - max);
 		int n = Math.min(max, game.levelCounter.size());
-		int sz = 2 * Tile.SIZE; // image size
-		for (int i = 0, x = world.width() * Tile.SIZE - 2 * sz; i < n; ++i, x -= sz) {
-			Symbol symbol = game.levelCounter.get(first + i);
-			g.drawImage(theme.spr_bonusSymbol(symbol.name()).frame(0), x, world.height() * Tile.SIZE - sz, sz, sz, null);
+		int y = (world.height() - 2) * Tile.SIZE;
+		for (int i = 0, x = (world.width() - 3) * Tile.SIZE; i < n; ++i, x -= 2 * Tile.SIZE) {
+//			Symbol symbol = game.levelCounter.get(first + i);
+			g.setColor(Color.GREEN);
+			g.drawOval(x, y, Tile.SIZE, Tile.SIZE);
 		}
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 }

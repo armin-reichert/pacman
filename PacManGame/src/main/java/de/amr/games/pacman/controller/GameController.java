@@ -55,7 +55,7 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
-import de.amr.games.pacman.view.play.PlayView;
+import de.amr.games.pacman.view.play.EnhancedPlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.State;
@@ -81,7 +81,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected Game game;
 
 	protected LivingView currentView;
-	protected PlayView playView;
+	protected EnhancedPlayView playView;
 
 	private boolean showingGrid;
 	private boolean showingRoutes;
@@ -371,7 +371,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
 		world.population().play(game);
 
-		playView = new PlayView(world, theme, game, settings.width, settings.height);
+		playView = new EnhancedPlayView(world, theme, game, settings.width, settings.height);
 		playView.optionalGhostCommand = ghostCommand;
 		playView.optionalHouseAccessControl = ghostHouseAccessControl;
 
