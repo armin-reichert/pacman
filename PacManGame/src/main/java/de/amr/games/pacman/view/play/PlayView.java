@@ -17,6 +17,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.render.ActorRoutesRenderer;
+import de.amr.games.pacman.view.render.ActorStatesRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**
@@ -36,23 +37,26 @@ public class PlayView extends SimplePlayView {
 	public GhostHouseAccessControl optionalHouseAccessControl;
 
 	private FrameRateWidget frameRateDisplay;
-	
+
 	private boolean showingRoutes;
-	
-	private ActorRoutesRenderer actorRoutesRenderer;
+	private boolean showingStates;
+
+	private final ActorRoutesRenderer actorRoutesRenderer;
+	private final ActorStatesRenderer actorStatesRenderer;
 
 	public PlayView(World world, Theme theme, Game game, int width, int height) {
 		super(world, theme, game, width, height);
+		actorRoutesRenderer = new ActorRoutesRenderer(world, theme);
+		actorStatesRenderer = new ActorStatesRenderer(world, theme);
 		frameRateDisplay = new FrameRateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
-		actorRoutesRenderer = new ActorRoutesRenderer(world, theme);
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		worldRenderer.setGhostCommand(optionalGhostCommand);
-		worldRenderer.setHouseAccessControl(optionalHouseAccessControl);
+		actorStatesRenderer.setGhostCommand(optionalGhostCommand);
+		actorStatesRenderer.setHouseAccessControl(optionalHouseAccessControl);
 		drawWorld(g);
 		if (showingFrameRate) {
 			frameRateDisplay.draw(g);
@@ -61,6 +65,9 @@ public class PlayView extends SimplePlayView {
 		drawActors(g);
 		if (showingRoutes) {
 			actorRoutesRenderer.draw(g);
+		}
+		if (showingStates) {
+			actorStatesRenderer.draw(g);
 		}
 //		if (showingGrid) {
 //			drawActorOffTrack(g);
@@ -85,11 +92,11 @@ public class PlayView extends SimplePlayView {
 	}
 
 	public void turnStatesOn() {
-		worldRenderer.setShowingStates(true);
+		showingStates = true;
 	}
 
 	public void turnStatesOff() {
-		worldRenderer.setShowingStates(false);
+		showingStates = false;
 	}
 
 	public void turnScoresOn() {
@@ -100,31 +107,4 @@ public class PlayView extends SimplePlayView {
 		worldRenderer.setShowingScores(false);
 	}
 
-
-	private void drawActorsOffTrack(Graphics2D g) {
-		world.population().creatures().filter(world::included).forEach(actor -> drawActorOffTrack(actor, g));
-	}
-
-	private void drawActorOffTrack(Creature<?> actor, Graphics2D g) {
-		if (!actor.visible) {
-			return;
-		}
-		Stroke normal = g.getStroke();
-		Stroke fine = new BasicStroke(0.2f);
-		g.setStroke(fine);
-		g.setColor(Color.RED);
-		g.translate(actor.tf.x, actor.tf.y);
-		int w = actor.tf.width, h = actor.tf.height;
-		Direction moveDir = actor.moveDir();
-		if ((moveDir == Direction.LEFT || moveDir == Direction.RIGHT) && round(actor.tf.y) % Tile.SIZE != 0) {
-			g.drawLine(0, 0, w, 0);
-			g.drawLine(0, h, w, h);
-		}
-		if ((moveDir == Direction.UP || moveDir == Direction.DOWN) && round(actor.tf.x) % Tile.SIZE != 0) {
-			g.drawLine(0, 0, 0, h);
-			g.drawLine(w, 0, w, h);
-		}
-		g.translate(-actor.tf.x, -actor.tf.y);
-		g.setStroke(normal);
-	}
 }

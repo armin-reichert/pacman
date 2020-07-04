@@ -1,13 +1,5 @@
 package de.amr.games.pacman.view.render;
 
-import static de.amr.games.pacman.PacManApp.settings;
-import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
-import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
-import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
-import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.model.Direction.RIGHT;
 import static de.amr.games.pacman.view.render.Rendering.drawDirectionIndicator;
 import static de.amr.games.pacman.view.render.Rendering.ghostColor;
 
@@ -20,17 +12,11 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 
 import de.amr.easy.game.assets.Assets;
-import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.easy.game.view.Pen;
-import de.amr.games.pacman.controller.GhostCommand;
-import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
-import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.BonusState;
@@ -41,20 +27,14 @@ import de.amr.games.pacman.view.theme.Theme;
 public class WorldRenderer {
 
 	private static final Color[] GRID_PATTERN = { Color.BLACK, new Color(40, 40, 40) };
-	private static final String INFTY = Character.toString('\u221E');
-	private static final Font SMALL_FONT = new Font("Arial Narrow", Font.PLAIN, 6);
 
 	private final World world;
 	private final Theme theme;
 	private final SpriteMap mazeSprites;
 	private final SpriteAnimation energizerAnimation;
 	private boolean showingGrid;
-	private boolean showingStates;
 	private boolean showingScores;
 	private final Image gridImage;
-	private final Image inkyImage, clydeImage, pacManImage;
-	private GhostCommand ghostCommand;
-	private GhostHouseAccessControl houseAccessControl;
 
 	public WorldRenderer(World world, Theme theme) {
 		this.world = world;
@@ -67,9 +47,6 @@ public class WorldRenderer {
 		energizerAnimation.setFrameDuration(150);
 		energizerAnimation.setEnabled(false);
 		gridImage = createGridPatternImage(world.width(), world.height());
-		inkyImage = theme.spr_ghostColored(Theme.CYAN_GHOST, Direction.RIGHT).frame(0);
-		clydeImage = theme.spr_ghostColored(Theme.ORANGE_GHOST, Direction.RIGHT).frame(0);
-		pacManImage = theme.spr_pacManWalking(RIGHT).frame(0);
 	}
 
 	public void draw(Graphics2D g) {
@@ -86,21 +63,7 @@ public class WorldRenderer {
 		if (showingGrid) {
 			drawOneWayTiles(g);
 		}
-		if (showingStates) {
-			drawActorStates(g);
-			if (ghostCommand != null) {
-				drawGhostHouseState(g, houseAccessControl);
-			}
-		}
 		energizerAnimation.update();
-	}
-
-	public void setHouseAccessControl(GhostHouseAccessControl houseAccessControl) {
-		this.houseAccessControl = houseAccessControl;
-	}
-
-	public void setGhostCommand(GhostCommand ghostCommand) {
-		this.ghostCommand = ghostCommand;
 	}
 
 	public void selectSprite(String spriteKey) {
@@ -119,14 +82,6 @@ public class WorldRenderer {
 
 	public boolean isShowingGrid() {
 		return showingGrid;
-	}
-
-	public void setShowingStates(boolean showingStates) {
-		this.showingStates = showingStates;
-	}
-
-	public boolean isShowingStates() {
-		return showingStates;
 	}
 
 	public void setShowingScores(boolean showingScores) {
@@ -217,97 +172,4 @@ public class WorldRenderer {
 		});
 		g.dispose();
 	}
-
-	private void drawActorStates(Graphics2D g) {
-		world.population().ghosts().filter(world::included).forEach(ghost -> drawGhostState(g, ghost, ghostCommand));
-		drawPacManState(g, world.population().pacMan());
-	}
-
-	private void drawPacManState(Graphics2D g, PacMan pacMan) {
-		if (!pacMan.visible || pacMan.getState() == null) {
-			return;
-		}
-		String text = pacMan.power > 0 ? String.format("POWER(%d)", pacMan.power) : pacMan.getState().name();
-		if (settings.pacManImmortable) {
-			text += " immortable";
-		}
-		drawEntityState(g, pacMan, text, Color.YELLOW);
-	}
-
-	private void drawEntityState(Graphics2D g, Entity entity, String text, Color color) {
-		try (Pen pen = new Pen(g)) {
-			pen.color(color);
-			pen.font(SMALL_FONT);
-			pen.drawCentered(text, entity.tf.getCenter().x, entity.tf.getCenter().y - 2);
-		}
-	}
-
-	private void drawGhostState(Graphics2D g, Ghost ghost, GhostCommand ghostCommand) {
-		if (!ghost.visible) {
-			return;
-		}
-		if (ghost.getState() == null) {
-			return; // may happen in test applications where not all ghosts are used
-		}
-		StringBuilder text = new StringBuilder();
-		// show ghost name if not obvious
-		text.append(ghost.is(DEAD, FRIGHTENED, ENTERING_HOUSE) ? ghost.name : "");
-		// timer values
-		int duration = ghost.state().getDuration();
-		int remaining = ghost.state().getTicksRemaining();
-		// chasing or scattering time
-		if (ghostCommand != null && ghost.is(SCATTERING, CHASING)) {
-			if (ghostCommand.state() != null) {
-				duration = ghostCommand.state().getDuration();
-				remaining = ghostCommand.state().getTicksRemaining();
-			}
-		}
-		if (duration != Integer.MAX_VALUE) {
-			text.append(String.format("(%s,%d|%d)", ghost.getState(), remaining, duration));
-		} else {
-			text.append(String.format("(%s,%s)", ghost.getState(), INFTY));
-		}
-		if (ghost.is(LEAVING_HOUSE)) {
-			text.append(String.format("[->%s]", ghost.subsequentState));
-		}
-		drawEntityState(g, ghost, text.toString(), ghostColor(ghost));
-	}
-
-	private void drawPacManStarvingTime(Graphics2D g, GhostHouseAccessControl houseAccessControl) {
-		int col = 1, row = 14;
-		int time = houseAccessControl.pacManStarvingTicks();
-		g.drawImage(pacManImage, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);
-		try (Pen pen = new Pen(g)) {
-			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
-			pen.color(Color.WHITE);
-			pen.smooth(() -> pen.drawAtGridPosition(time == -1 ? INFTY : String.format("%d", time), col + 2, row, Tile.SIZE));
-		}
-	}
-
-	private void drawGhostHouseState(Graphics2D g, GhostHouseAccessControl houseAccessControl) {
-		if (houseAccessControl == null) {
-			return; // test scenes may have no ghost house
-		}
-		drawPacManStarvingTime(g, houseAccessControl);
-		drawDotCounter(g, clydeImage, houseAccessControl.ghostDotCount(world.population().clyde()), 1, 20,
-				!houseAccessControl.isGlobalDotCounterEnabled()
-						&& houseAccessControl.isPreferredGhost(world.population().clyde()));
-		drawDotCounter(g, inkyImage, houseAccessControl.ghostDotCount(world.population().inky()), 24, 20,
-				!houseAccessControl.isGlobalDotCounterEnabled()
-						&& houseAccessControl.isPreferredGhost(world.population().inky()));
-		drawDotCounter(g, null, houseAccessControl.globalDotCount(), 24, 14,
-				houseAccessControl.isGlobalDotCounterEnabled());
-	}
-
-	private void drawDotCounter(Graphics2D g, Image image, int value, int col, int row, boolean emphasized) {
-		try (Pen pen = new Pen(g)) {
-			if (image != null) {
-				g.drawImage(image, col * Tile.SIZE, row * Tile.SIZE, 10, 10, null);
-			}
-			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
-			pen.color(emphasized ? Color.GREEN : Color.WHITE);
-			pen.smooth(() -> pen.drawAtGridPosition(String.format("%d", value), col + 2, row, Tile.SIZE));
-		}
-	}
-
 }
