@@ -13,17 +13,11 @@ import de.amr.games.pacman.view.theme.Theme;
 
 public class WorldRenderer implements IWorldRenderer {
 
-	enum Mode {
-		EMPTY, EMPTY_FLASHING, FULL
-	}
-
 	private final World world;
-	private Mode mode;
 	private boolean energizersBlink;
 
 	public WorldRenderer(World world, Theme theme) {
 		this.world = world;
-		mode = Mode.FULL;
 	}
 
 	@Override
@@ -33,7 +27,7 @@ public class WorldRenderer implements IWorldRenderer {
 	@Override
 	public void draw(Graphics2D g) {
 		drawEmptyMaze(g);
-		if (mode == Mode.FULL) {
+		if (!world.isChangingLevel()) {
 			drawMazeContent(g);
 		}
 	}
@@ -92,20 +86,5 @@ public class WorldRenderer implements IWorldRenderer {
 	@Override
 	public void letEnergizersBlink(boolean blink) {
 		energizersBlink = blink;
-	}
-
-	@Override
-	public void turnMazeFlashingOn() {
-		mode = Mode.EMPTY_FLASHING;
-	}
-
-	@Override
-	public void turnMazeFlashingOff() {
-		mode = Mode.EMPTY;
-	}
-
-	@Override
-	public void turnFullMazeOn() {
-		mode = Mode.FULL;
 	}
 }

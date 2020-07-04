@@ -9,11 +9,5 @@ public interface IWorldRenderer extends IRenderer {
 
 	void letEnergizersBlink(boolean b);
 
-	void turnMazeFlashingOn();
-
-	void turnMazeFlashingOff();
-
-	void turnFullMazeOn();
-
 	void setEatenFoodColor(Function<Tile, Color> fnEatenFoodColor);
 }

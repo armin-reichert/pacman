@@ -28,11 +28,22 @@ public abstract class AbstractWorld implements World {
 	protected List<Portal> portals = new ArrayList<>();
 	protected List<OneWayTile> oneWayTiles = new ArrayList<>();
 	protected Bonus bonus;
+	protected boolean changingLevel;
 
 	protected WorldMap worldMap;
 	protected Population population;
 
 	private Set<Creature<?>> included = new HashSet<>();
+	
+	@Override
+	public boolean isChangingLevel() {
+		return changingLevel;
+	}
+	
+	@Override
+	public void setChangingLevel(boolean b) {
+		changingLevel = b;
+	}
 
 	@Override
 	public Population population() {

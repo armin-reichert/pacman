@@ -29,8 +29,7 @@ public class WorldRenderer implements IWorldRenderer {
 		fnEatenFoodColor = tile -> Color.BLACK;
 		mazeSprites = new SpriteMap();
 		mazeSprites.set("maze-full", theme.spr_fullMaze());
-		mazeSprites.set("maze-empty", theme.spr_emptyMaze());
-		mazeSprites.set("maze-empty-flashing", theme.spr_flashingMaze());
+		mazeSprites.set("maze-flashing", theme.spr_flashingMaze());
 		energizerAnimation = new CyclicAnimation(2);
 		energizerAnimation.setFrameDuration(150);
 		energizerAnimation.setEnabled(false);
@@ -43,28 +42,15 @@ public class WorldRenderer implements IWorldRenderer {
 
 	@Override
 	public void draw(Graphics2D g) {
-		mazeSprites.current().ifPresent(sprite -> {
-			sprite.draw(g, 0, 3 * Tile.SIZE);
-		});
-		if ("maze-full".equals(mazeSprites.selectedKey())) {
+		if (world.isChangingLevel()) {
+			mazeSprites.select("maze-flashing");
+			mazeSprites.current().get().draw(g, 0, 3 * Tile.SIZE);
+		} else {
+			mazeSprites.select("maze-full");
+			mazeSprites.current().get().draw(g, 0, 3 * Tile.SIZE);
 			drawMazeContent(g);
 		}
 		energizerAnimation.update();
-	}
-
-	@Override
-	public void turnFullMazeOn() {
-		mazeSprites.select("maze-full");
-	}
-
-	@Override
-	public void turnMazeFlashingOff() {
-		mazeSprites.select("maze-empty");
-	}
-
-	@Override
-	public void turnMazeFlashingOn() {
-		mazeSprites.select("maze-empty-flashing");
 	}
 
 	@Override

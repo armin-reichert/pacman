@@ -97,7 +97,7 @@ public class SimplePlayView implements LivingView {
 	@Override
 	public void init() {
 		clearMessages();
-		turnFullMazeOn();
+		world.setChangingLevel(false);
 	}
 
 	@Override
@@ -158,18 +158,6 @@ public class SimplePlayView implements LivingView {
 
 	public void turnEnergizerBlinkingOff() {
 		worldRenderer.letEnergizersBlink(false);
-	}
-
-	public void turnMazeFlashingOn() {
-		worldRenderer.turnMazeFlashingOn();
-	}
-
-	public void turnMazeFlashingOff() {
-		worldRenderer.turnMazeFlashingOff();
-	}
-
-	public void turnFullMazeOn() {
-		worldRenderer.turnFullMazeOn();
 	}
 
 	protected void drawWorld(Graphics2D g) {

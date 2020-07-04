@@ -35,7 +35,6 @@ import de.amr.games.pacman.controller.actor.DefaultPopulation;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.controller.actor.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
@@ -195,13 +194,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						if (t == sec(2)) {
 							ghostsOnStage().forEach(ghost -> ghost.visible = false);
 							if (flashingSeconds > 0) {
-								playView.turnMazeFlashingOn();
+								world.setChangingLevel(true);
 							}
 						}
 	
 						// After flashing, show empty maze.
 						if (t == sec(2 + flashingSeconds)) {
-							playView.turnMazeFlashingOff();
+							world.setChangingLevel(false);
 						}
 						
 						// After two more seconds, change level and show crowded maze.
