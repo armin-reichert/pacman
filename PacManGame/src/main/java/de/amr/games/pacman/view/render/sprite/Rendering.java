@@ -9,10 +9,13 @@ import java.awt.Polygon;
 
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.core.Tile;
 
 public class Rendering {
 
 	public static final String INFTY = Character.toString('\u221E');
+	public static final Color[] GRID_PATTERN = { Color.BLACK, new Color(40, 40, 40) };
+
 	private static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 
 	public static Color alpha(Color color, int alpha) {
@@ -32,6 +35,14 @@ public class Rendering {
 		default:
 			throw new IllegalArgumentException("Ghost name unknown: " + ghost.name);
 		}
+	}
+
+	public static int patternIndex(int col, int row) {
+		return (col + row) % GRID_PATTERN.length;
+	}
+
+	public static Color patternColor(Tile tile) {
+		return GRID_PATTERN[patternIndex(tile.col, tile.row)];
 	}
 
 	public static void drawDirectionIndicator(Graphics2D g, Color color, boolean fill, Direction dir, int x, int y) {

@@ -151,15 +151,15 @@ public class SimplePlayView implements LivingView {
 	}
 
 	public void turnMazeFlashingOn() {
-		worldRenderer.selectSprite("maze-flashing");
+		worldRenderer.turnMazeFlashingOn();
 	}
 
 	public void turnMazeFlashingOff() {
-		worldRenderer.selectSprite("maze-empty");
+		worldRenderer.turnMazeFlashingOff();
 	}
 
 	public void turnFullMazeOn() {
-		worldRenderer.selectSprite("maze-full");
+		worldRenderer.turnFullMazeOn();
 	}
 
 	protected void drawWorld(Graphics2D g) {

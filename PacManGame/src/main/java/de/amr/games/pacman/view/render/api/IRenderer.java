@@ -5,9 +5,13 @@ import java.awt.Graphics2D;
 public interface IRenderer {
 
 	void draw(Graphics2D g);
-	
-	void resetAnimations();
-	
-	void enableAnimation(boolean enabled);
+
+	default void resetAnimations() {
+
+	}
+
+	default void enableAnimation(boolean enabled) {
+
+	}
 
 }
