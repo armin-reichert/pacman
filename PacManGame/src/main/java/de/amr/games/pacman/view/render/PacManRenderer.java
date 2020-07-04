@@ -16,6 +16,20 @@ public class PacManRenderer extends CreatureRenderer {
 		dirs().forEach(dir -> sprites.set("walking-" + dir, theme.spr_pacManWalking(dir)));
 		sprites.set("dying", theme.spr_pacManDying());
 		sprites.set("full", theme.spr_pacManFull());
+		sprites.select("full");
+	}
+
+	public void showWalking() {
+		selectSprite("walking-" + pacMan.moveDir());
+		enableSpriteAnimation(pacMan.tf.getVelocity().length() > 0);
+	}
+
+	public void showDying() {
+		selectSprite("dying");
+	}
+
+	public void showFull() {
+		selectSprite("full");
 	}
 
 	@Override

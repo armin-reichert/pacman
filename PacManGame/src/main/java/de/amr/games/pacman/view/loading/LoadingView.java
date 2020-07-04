@@ -12,6 +12,8 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.LivingView;
+import de.amr.games.pacman.view.render.GhostRenderer;
+import de.amr.games.pacman.view.render.PacManRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**
@@ -35,6 +37,8 @@ public class LoadingView implements LivingView {
 		this.theme = theme;
 		this.width = width;
 		this.height = height;
+		world.population().pacMan().setRenderer(new PacManRenderer(world.population().pacMan(), theme));
+		world.population().ghosts().forEach(ghost -> ghost.setRenderer(new GhostRenderer(ghost, theme)));
 	}
 
 	@Override

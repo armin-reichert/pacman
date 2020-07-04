@@ -56,8 +56,6 @@ import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.PlayView;
-import de.amr.games.pacman.view.render.GhostRenderer;
-import de.amr.games.pacman.view.render.PacManRenderer;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.State;
@@ -107,8 +105,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		people.populate(world);
 
 		theme = new ArcadeTheme();
-		pacMan.setRenderer(new PacManRenderer(pacMan, theme));
-		people.ghosts().forEach(ghost -> ghost.setRenderer(new GhostRenderer(ghost, theme)));
 
 		people.creatures().forEach(creature -> {
 			creature.addEventListener(this::process);
@@ -184,7 +180,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(CHANGING_LEVEL)
 					.timeoutAfter(() -> sec(mazeFlashingSeconds() + 6))
 					.onEntry(() -> {
-						pacMan.showFull();
+						pacMan.getRenderer().showFull();
 						ghostHouseAccessControl.onLevelChange();
 						sound.stopAllClips();
 						playView.enableGhostAnimations(false);
@@ -311,7 +307,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					
 				.when(GETTING_READY).then(PLAYING)
 					.onTimeout()
-					.act(playingState()::prepare)
+					.act(playingState()::preparePlaying)
 				
 				.stay(PLAYING)
 					.on(FoodFoundEvent.class)
@@ -340,7 +336,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					
 				.when(CHANGING_LEVEL).then(PLAYING)
 					.onTimeout()
-					.act(playingState()::prepare)
+					.act(playingState()::preparePlaying)
 					
 				.when(GHOST_DYING).then(PLAYING)
 					.onTimeout()
@@ -352,7 +348,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.when(PACMAN_DYING).then(PLAYING)
 					.onTimeout()
 					.condition(() -> game.lives > 0)
-					.act(playingState()::prepare)
+					.act(playingState()::preparePlaying)
 			
 				.when(GAME_OVER).then(GETTING_READY)
 					.condition(() -> Keyboard.keyPressedOnce("space"))
@@ -371,21 +367,16 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		ghostHouseAccessControl = new GhostHouseAccessControl(game, world, world.theHouse());
 		bonusControl = new BonusControl(game, world);
 
+		world.population().creatures().forEach(world::include);
+		world.population().creatures().forEach(Creature::init);
+		world.population().ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> ghostSpeedLimit(ghost, game)));
+		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
+		world.population().play(game);
+
 		playView = new PlayView(world, theme, game, settings.width, settings.height);
 		playView.optionalGhostCommand = ghostCommand;
 		playView.optionalHouseAccessControl = ghostHouseAccessControl;
 
-		world.population().ghosts().forEach(ghost -> {
-			ghost.setSpeedLimit(() -> ghostSpeedLimit(ghost, game));
-			world.include(ghost);
-		});
-
-		world.include(pacMan);
-		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
-
-		world.population().play(game);
-
-		setDemoMode(settings.demoMode);
 		app().f2Dialog().ifPresent(f2 -> f2.selectCustomTab(0));
 	}
 
@@ -398,16 +389,15 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	 */
 	public class PlayingState extends State<PacManGameState> {
 
-		void prepare() {
-			playView.clearMessages();
+		private void preparePlaying() {
 			bonusControl.init();
 			ghostCommand.init();
 			creaturesOnStage().forEach(Creature::init);
+			pacMan.start();
 			playView.init();
 			playView.enableGhostAnimations(true);
 			playView.turnEnergizerBlinkingOn();
 			sound.resumePlayingMusic();
-			pacMan.start();
 		}
 
 		@Override

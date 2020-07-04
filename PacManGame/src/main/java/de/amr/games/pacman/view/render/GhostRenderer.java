@@ -22,6 +22,7 @@ public class GhostRenderer extends CreatureRenderer {
 		for (int points : Game.POINTS_GHOST) {
 			sprites.set("points-" + points, theme.spr_number(points));
 		}
+		showColored();
 	}
 
 	public void showColored() {

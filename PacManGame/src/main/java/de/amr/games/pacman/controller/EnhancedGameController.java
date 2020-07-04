@@ -85,6 +85,7 @@ public class EnhancedGameController extends GameController {
 			world.exclude(ghost);
 		} else {
 			world.include(ghost);
+			ghost.init();
 		}
 	}
 

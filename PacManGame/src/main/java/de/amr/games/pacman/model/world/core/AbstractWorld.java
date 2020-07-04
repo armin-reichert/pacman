@@ -52,7 +52,6 @@ public abstract class AbstractWorld implements World {
 	private void includeCreature(Creature<?> creature, boolean include) {
 		if (include) {
 			included.add(creature);
-			creature.init();
 			creature.visible = true;
 			loginfo("%s entered the world", creature.name);
 		} else {

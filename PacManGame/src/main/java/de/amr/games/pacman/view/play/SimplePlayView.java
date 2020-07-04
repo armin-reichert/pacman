@@ -9,6 +9,8 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.core.LivingView;
+import de.amr.games.pacman.view.render.GhostRenderer;
+import de.amr.games.pacman.view.render.PacManRenderer;
 import de.amr.games.pacman.view.render.ScoreRenderer;
 import de.amr.games.pacman.view.render.TextRenderer;
 import de.amr.games.pacman.view.render.WorldRenderer;
@@ -35,7 +37,7 @@ public class SimplePlayView implements LivingView {
 	protected TextRenderer textRenderer;
 
 	private boolean showingScores;
-	
+
 	public SimplePlayView(World world, Theme theme, Game game, int width, int height) {
 		this.world = world;
 		this.theme = theme;
@@ -45,6 +47,8 @@ public class SimplePlayView implements LivingView {
 		worldRenderer = new WorldRenderer(world, theme);
 		scoreRenderer = new ScoreRenderer(world, theme);
 		textRenderer = new TextRenderer(world, theme);
+		world.population().pacMan().setRenderer(new PacManRenderer(world.population().pacMan(), theme));
+		world.population().ghosts().forEach(ghost -> ghost.setRenderer(new GhostRenderer(ghost, theme)));
 		showingScores = true;
 	}
 
@@ -52,6 +56,7 @@ public class SimplePlayView implements LivingView {
 	public void init() {
 		clearMessages();
 		turnFullMazeOn();
+
 	}
 
 	@Override
@@ -102,11 +107,10 @@ public class SimplePlayView implements LivingView {
 	public void turnScoresOff() {
 		this.showingScores = false;
 	}
-	
+
 	public boolean isShowingScores() {
 		return showingScores;
 	}
-
 
 	public void turnEnergizerBlinkingOn() {
 		worldRenderer.letEnergizersBlink(true);
