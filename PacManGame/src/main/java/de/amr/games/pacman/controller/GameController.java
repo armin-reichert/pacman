@@ -20,7 +20,6 @@ import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.awt.event.KeyEvent.VK_UP;
 
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.Random;
@@ -87,6 +86,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private boolean showingGrid;
 	private boolean showingRoutes;
+	private boolean showingStates;
+	private boolean showingScores = true;
 
 	public GameController() {
 		super(PacManGameState.class);
@@ -170,7 +171,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 					.onTick((state, t, remaining) -> {
 						if (t == sec(5)) {
-							playView.showMessage("Ready!", Color.YELLOW);
+							playView.showGameReady();
 							playView.turnEnergizerBlinkingOn();
 							theme.music_playing().play();
 						}
@@ -276,7 +277,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							ghost.setWishDir(new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT);
 							ghost.setState(new Random().nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});
-						playView.showMessage("Game Over!", Color.RED);
+						playView.showGameOver();
 						sound.gameOver();
 					})
 					.onTick(() -> {
@@ -292,7 +293,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onExit(() -> {
 						world.fillFood();
 						ghostsOnStage().forEach(Ghost::init);
-						playView.clearMessage();
+						playView.clearMessages();
 						sound.stopAll();
 					})
 	
@@ -397,7 +398,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public class PlayingState extends State<PacManGameState> {
 
 		void prepare() {
-			playView.clearMessage();
+			playView.clearMessages();
 			bonusControl.init();
 			ghostCommand.init();
 			creaturesOnStage().forEach(Creature::init);
@@ -561,11 +562,29 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	public void setShowingStates(boolean selected) {
-		playView.showingStates = selected;
+		showingStates = selected;
+		if (selected) {
+			playView.turnStatesOn();
+		} else {
+			playView.turnStatesOff();
+		}
+	}
+
+	public boolean isShowingScores() {
+		return showingScores;
+	}
+
+	public void setShowingScores(boolean selected) {
+		showingScores = selected;
+		if (selected) {
+			playView.turnScoresOn();
+		} else {
+			playView.turnScoresOff();
+		}
 	}
 
 	public boolean isShowingStates() {
-		return playView.showingStates;
+		return showingStates;
 	}
 
 	public void setDemoMode(boolean on) {

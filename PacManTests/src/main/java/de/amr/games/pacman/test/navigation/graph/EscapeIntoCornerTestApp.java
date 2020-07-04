@@ -36,7 +36,7 @@ class EscapeIntoCornerTestUI extends TestUI {
 		blinky.behavior(FRIGHTENED, blinky.isFleeingToSafeCorner(pacMan));
 		blinky.setState(FRIGHTENED);
 		view.turnRoutesOn();
-		view.showingStates = true;
+		view.turnStatesOn();
 		pacMan.start();
 	}
 }

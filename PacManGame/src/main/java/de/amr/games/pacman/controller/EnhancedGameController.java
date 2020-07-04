@@ -68,7 +68,7 @@ public class EnhancedGameController extends GameController {
 		} else if (Keyboard.keyPressedOnce("p")) {
 			toggleGhostOnStage(pinky);
 		} else if (Keyboard.keyPressedOnce("s")) {
-			playView.showingStates = !playView.showingStates;
+			setShowingStates(!isShowingStates());
 		} else if (Keyboard.keyPressedOnce("t")) {
 			playView.showingFrameRate = !playView.showingFrameRate;
 		} else if (Keyboard.keyPressedOnce("r")) {

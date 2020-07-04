@@ -41,7 +41,7 @@ class InkyChaseTestUI extends TestUI {
 		include(pacMan, inky, blinky);
 		ghostsOnStage().forEach(ghost -> ghost.subsequentState = CHASING);
 		view.turnRoutesOn();
-		view.showMessage("Press SPACE to start", Color.WHITE);
+		view.showMessage(1, "Press SPACE to start", Color.WHITE);
 	}
 
 	@Override
@@ -49,7 +49,7 @@ class InkyChaseTestUI extends TestUI {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
 			pacMan.start();
-			view.clearMessage();
+			view.clearMessage(1);
 		}
 		super.update();
 	}

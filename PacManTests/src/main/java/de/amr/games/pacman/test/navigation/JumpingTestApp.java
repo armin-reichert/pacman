@@ -32,6 +32,6 @@ class JumpingTestUI extends TestUI {
 		super.init();
 		include(blinky, inky, pinky, clyde);
 		view.turnGridOn();
-		view.showingStates = true;
+		view.turnStatesOn();
 	}
 }

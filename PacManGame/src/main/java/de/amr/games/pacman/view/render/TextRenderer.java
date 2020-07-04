@@ -8,7 +8,7 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.Theme;
 
-public class MessageRenderer {
+public class TextRenderer {
 
 	private final World world;
 	private final Theme theme;
@@ -17,7 +17,7 @@ public class MessageRenderer {
 	private int fontSize;
 	private int row;
 
-	public MessageRenderer(World world, Theme theme) {
+	public TextRenderer(World world, Theme theme) {
 		this.world = world;
 		this.theme = theme;
 		textColor = Color.YELLOW;

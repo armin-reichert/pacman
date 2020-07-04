@@ -9,8 +9,8 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.core.LivingView;
-import de.amr.games.pacman.view.render.MessageRenderer;
 import de.amr.games.pacman.view.render.ScoreRenderer;
+import de.amr.games.pacman.view.render.TextRenderer;
 import de.amr.games.pacman.view.render.WorldRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 
@@ -27,11 +27,12 @@ public class SimplePlayView implements LivingView {
 	protected int width;
 	protected int height;
 
-	protected String messageText;
+	protected String[] messageTexts = new String[2];
+	protected Color[] messageColors = new Color[2];
 
 	protected WorldRenderer worldRenderer;
 	protected ScoreRenderer scoreRenderer;
-	protected MessageRenderer messageRenderer;
+	protected TextRenderer textRenderer;
 
 	public SimplePlayView(World world, Theme theme, Game game, int width, int height) {
 		this.world = world;
@@ -41,12 +42,12 @@ public class SimplePlayView implements LivingView {
 		this.height = height;
 		worldRenderer = new WorldRenderer(world, theme);
 		scoreRenderer = new ScoreRenderer(world, theme);
-		messageRenderer = new MessageRenderer(world, theme);
+		textRenderer = new TextRenderer(world, theme);
 	}
 
 	@Override
 	public void init() {
-		clearMessage();
+		clearMessages();
 		turnFullMazeOn();
 	}
 
@@ -58,22 +59,32 @@ public class SimplePlayView implements LivingView {
 	public void draw(Graphics2D g) {
 		drawScores(g);
 		drawWorld(g);
-		drawMessage(g, messageText);
+		drawMessages(g);
 		drawActors(g);
 	}
 
-	public void showMessage(String text, Color color, int fontSize) {
-		messageText = text;
-		messageRenderer.setTextColor(color);
-		messageRenderer.setFontSize(fontSize);
+	public void showGameReady() {
+		messageTexts[1] = "Ready!";
+		messageColors[1] = Color.YELLOW;
 	}
 
-	public void showMessage(String text, Color color) {
-		showMessage(text, color, 8);
+	public void showGameOver() {
+		messageTexts[1] = "Game Over!";
+		messageColors[1] = Color.RED;
 	}
 
-	public void clearMessage() {
-		messageText = "";
+	public void showMessage(int oneOrTwo, String text, Color color) {
+		messageTexts[oneOrTwo - 1] = text;
+		messageColors[oneOrTwo - 1] = color;
+	}
+
+	public void clearMessages() {
+		clearMessage(1);
+		clearMessage(2);
+	}
+
+	public void clearMessage(int oneOrTwo) {
+		messageTexts[oneOrTwo - 1] = null;
 	}
 
 	public void enableGhostAnimations(boolean enabled) {
@@ -81,22 +92,6 @@ public class SimplePlayView implements LivingView {
 				.forEach(renderer -> renderer.enableSpriteAnimation(enabled));
 	}
 
-	public void turnGridOn() {
-		worldRenderer.setShowingGrid(true);
-	}
-
-	public void turnGridOff() {
-		worldRenderer.setShowingGrid(false);
-	}
-
-	public void turnRoutesOn() {
-		worldRenderer.setShowingRoutes(true);
-	}
-
-	public void turnRoutesOff() {
-		worldRenderer.setShowingRoutes(false);
-	}
-	
 	public void turnEnergizerBlinkingOn() {
 		worldRenderer.letEnergizersBlink(true);
 	}
@@ -121,6 +116,19 @@ public class SimplePlayView implements LivingView {
 		worldRenderer.draw(g);
 	}
 
+	protected void drawMessages(Graphics2D g) {
+		if (messageTexts[0] != null) {
+			textRenderer.setRow(15);
+			textRenderer.setTextColor(messageColors[0]);
+			textRenderer.draw(g, messageTexts[0]);
+		}
+		if (messageTexts[1] != null) {
+			textRenderer.setRow(21);
+			textRenderer.setTextColor(messageColors[1]);
+			textRenderer.draw(g, messageTexts[1]);
+		}
+	}
+
 	protected void drawActors(Graphics2D g) {
 		world.population().pacMan().getRenderer().draw(g);
 		// draw dead ghosts (as number or eyes) under living ghosts
@@ -134,9 +142,5 @@ public class SimplePlayView implements LivingView {
 		if (game != null) {
 			scoreRenderer.draw(g, game);
 		}
-	}
-
-	protected void drawMessage(Graphics2D g, String messageText) {
-		messageRenderer.draw(g, messageText);
 	}
 }

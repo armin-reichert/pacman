@@ -47,7 +47,7 @@ class TakeShortestPathTestUI extends TestUI {
 	public void init() {
 		super.init();
 		view.turnRoutesOn();
-		view.showingStates = true;
+		view.turnStatesOn();
 		view.turnGridOn();
 		Portal thePortal = world.portals().findAny().get();
 		House theHouse = world.theHouse();
@@ -61,7 +61,7 @@ class TakeShortestPathTestUI extends TestUI {
 		blinky.behavior(CHASING, steering);
 		blinky.behavior(FRIGHTENED, steering);
 		blinky.setState(CHASING);
-		view.showMessage("SPACE toggles ghost state", Color.WHITE);
+		view.showMessage(2, "SPACE toggles ghost state", Color.WHITE);
 	}
 
 	private void nextTarget() {

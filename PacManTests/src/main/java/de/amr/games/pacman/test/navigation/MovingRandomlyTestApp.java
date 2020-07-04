@@ -40,22 +40,23 @@ class MovingRandomlyTestUI extends TestUI {
 		super.init();
 		include(blinky, pinky, inky, clyde);
 		ghostsOnStage().forEach(ghost -> {
-			ghost.tf.setPosition(pacMan.bed().center);
+			ghost.tf.setPosition(pacMan.bed().tile.x(), pacMan.bed().tile.y());
 			ghost.behavior(FRIGHTENED, ghost.movingRandomly());
 			ghost.state(FRIGHTENED).removeTimer();
 			ghost.setState(FRIGHTENED);
 		});
 		view.turnRoutesOn();
-		view.showingStates = true;
+		view.turnStatesOn();
 		view.turnGridOn();
-		view.showMessage("Press SPACE", Color.WHITE);
+		view.showMessage(1, "Press SPACE", Color.WHITE);
+		started = false;
 	}
 
 	@Override
 	public void update() {
-		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
+		if (!started && Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			started = true;
-			view.clearMessage();
+			view.clearMessage(1);
 		}
 		if (started) {
 			super.update();
