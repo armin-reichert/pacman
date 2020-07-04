@@ -285,9 +285,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						ghostsOnStage().forEach(ghost -> {
 							ghost.move();
 							if (ghost.getState() == GhostState.FRIGHTENED) {
-								ghost.showFrightened();
+								ghost.getRenderer().showFrightened();
 							} else {
-								ghost.showColored();
+								ghost.getRenderer().showColored();
 							}
 						});
 					})

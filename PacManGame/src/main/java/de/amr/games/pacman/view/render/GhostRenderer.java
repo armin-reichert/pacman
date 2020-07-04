@@ -24,6 +24,22 @@ public class GhostRenderer extends CreatureRenderer {
 		}
 	}
 
+	public void showColored() {
+		selectSprite("color-" + ghost.moveDir());
+	}
+
+	public void showFrightened() {
+		selectSprite("frightened");
+	}
+
+	public void showEyes() {
+		selectSprite("eyes-" + ghost.moveDir());
+	}
+
+	public void showFlashing() {
+		selectSprite("flashing");
+	}
+
 	@Override
 	public void draw(Graphics2D g) {
 		drawCreature(g, ghost);

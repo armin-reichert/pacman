@@ -104,15 +104,15 @@ public class Ghost extends Creature<GhostState> {
 						enteredNewTile();
 						sanity.init();
 						renderer.resetAnimations();
-						showColored();
+						renderer.showColored();
 					})
 					.onTick(() -> {
 						move();
 						// not sure if ghost locked inside house should look frightened
 						if (world.population().pacMan().power > 0) {
-							showFrightened();
+							renderer.showFrightened();
 						} else {
-							showColored();
+							renderer.showColored();
 						}
 					})
 					
@@ -120,7 +120,7 @@ public class Ghost extends Creature<GhostState> {
 					.onEntry(() -> steering().init())
 					.onTick(() -> {
 						move();
-						showColored();
+						renderer.showColored();
 					})
 					.onExit(() -> forceMoving(Direction.LEFT))
 				
@@ -128,14 +128,14 @@ public class Ghost extends Creature<GhostState> {
 					.onEntry(() -> steering().init())
 					.onTick(() -> {
 						move();
-						showEyes();
+						renderer.showEyes();
 					})
 				
 				.state(SCATTERING)
 					.onTick(() -> {
 						sanity.update();
 						move();
-						showColored();
+						renderer.showColored();
 						checkPacManCollision();
 					})
 			
@@ -143,7 +143,7 @@ public class Ghost extends Creature<GhostState> {
 					.onTick(() -> {
 						sanity.update();
 						move();
-						showColored();
+						renderer.showColored();
 						checkPacManCollision();
 					})
 				
@@ -154,9 +154,9 @@ public class Ghost extends Creature<GhostState> {
 						// one flashing animation takes 0.5 sec
 						int flashTicks = sec(game.level.numFlashes * 0.5f);
 						if (remaining < flashTicks) {
-							showFlashing();
+							renderer.showFlashing();
 						} else  {
-							showFrightened();
+							renderer.showFrightened();
 						}
 						checkPacManCollision();
 					})
@@ -169,7 +169,7 @@ public class Ghost extends Creature<GhostState> {
 					.onTick((state, t, remaining) -> {
 						if (remaining == 0) { // show as eyes returning to ghost home
 							move();
-							showEyes();
+							renderer.showEyes();
 						}
 					})
 				
@@ -326,22 +326,6 @@ public class Ghost extends Creature<GhostState> {
 
 	public void setRenderer(GhostRenderer renderer) {
 		this.renderer = renderer;
-	}
-
-	public void showColored() {
-		renderer.selectSprite("color-" + moveDir);
-	}
-
-	public void showFrightened() {
-		renderer.selectSprite("frightened");
-	}
-
-	public void showEyes() {
-		renderer.selectSprite("eyes-" + moveDir);
-	}
-
-	public void showFlashing() {
-		renderer.selectSprite("flashing");
 	}
 
 	public void showPoints(int points) {
