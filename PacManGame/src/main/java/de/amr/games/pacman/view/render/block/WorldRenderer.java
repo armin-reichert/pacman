@@ -14,7 +14,6 @@ import de.amr.games.pacman.view.theme.Theme;
 public class WorldRenderer implements IWorldRenderer {
 
 	private final World world;
-	private boolean energizersBlink;
 
 	public WorldRenderer(World world, Theme theme) {
 		this.world = world;
@@ -52,12 +51,12 @@ public class WorldRenderer implements IWorldRenderer {
 	}
 
 	private void drawEnergizer(Graphics2D g, int row, int col) {
-		if (energizersBlink && app().clock().getTotalTicks() % 20 < 10) {
+		if (!world.isFrozen() && app().clock().getTotalTicks() % 30 < 15) {
 			g.setColor(Color.BLACK);
 			g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 		} else {
 			g.setColor(Color.PINK);
-			g.fillOval(col * Tile.SIZE, row * Tile.SIZE, 8, 8);
+			g.fillOval(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 		}
 	}
 
@@ -81,10 +80,5 @@ public class WorldRenderer implements IWorldRenderer {
 	private void drawWall(Graphics2D g, int row, int col) {
 		g.setColor(new Color(139, 69, 19));
 		g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
-	}
-
-	@Override
-	public void letEnergizersBlink(boolean blink) {
-		energizersBlink = blink;
 	}
 }

@@ -12,4 +12,8 @@ public interface World extends Terrain, Habitat {
 	void setChangingLevel(boolean b);
 	
 	boolean isChangingLevel();
+	
+	void setFrozen(boolean b);
+	
+	boolean isFrozen();
 }

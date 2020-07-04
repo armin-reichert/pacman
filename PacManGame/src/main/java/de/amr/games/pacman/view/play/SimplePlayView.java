@@ -38,11 +38,11 @@ public class SimplePlayView implements LivingView {
 		}
 	}
 
-	public static IRenderer createPacManRenderer(RenderingStyle style, PacMan pacMan, Theme theme) {
+	public static IRenderer createPacManRenderer(RenderingStyle style, World world, PacMan pacMan, Theme theme) {
 		if (style == RenderingStyle.ARCADE) {
-			return new de.amr.games.pacman.view.render.sprite.PacManRenderer(pacMan, theme);
+			return new de.amr.games.pacman.view.render.sprite.PacManRenderer(world, pacMan, theme);
 		} else if (style == RenderingStyle.BLOCK) {
-			return new de.amr.games.pacman.view.render.block.PacManRenderer(pacMan, theme);
+			return new de.amr.games.pacman.view.render.block.PacManRenderer(world, pacMan, theme);
 		}
 		throw new IllegalArgumentException("Unknown style " + style);
 	}
@@ -90,7 +90,7 @@ public class SimplePlayView implements LivingView {
 
 	public void updateRenderers(World world, Theme theme) {
 		worldRenderer = createWorldRenderer(style, world, theme);
-		pacManRenderer = createPacManRenderer(style, world.population().pacMan(), theme);
+		pacManRenderer = createPacManRenderer(style, world, world.population().pacMan(), theme);
 		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, createGhostRenderer(style, ghost, theme)));
 	}
 
@@ -150,14 +150,6 @@ public class SimplePlayView implements LivingView {
 
 	public boolean isShowingScores() {
 		return showingScores;
-	}
-
-	public void turnEnergizerBlinkingOn() {
-		worldRenderer.letEnergizersBlink(true);
-	}
-
-	public void turnEnergizerBlinkingOff() {
-		worldRenderer.letEnergizersBlink(false);
 	}
 
 	protected void drawWorld(Graphics2D g) {

@@ -50,6 +50,7 @@ public class WorldRenderer implements IWorldRenderer {
 			mazeSprites.current().get().draw(g, 0, 3 * Tile.SIZE);
 			drawMazeContent(g);
 		}
+		energizerAnimation.setEnabled(!world.isFrozen());
 		energizerAnimation.update();
 	}
 
@@ -84,10 +85,5 @@ public class WorldRenderer implements IWorldRenderer {
 			g.setColor(Color.BLACK);
 			door.tiles.forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
 		});
-	}
-
-	@Override
-	public void letEnergizersBlink(boolean enabled) {
-		energizerAnimation.setEnabled(enabled);
 	}
 }

@@ -169,7 +169,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onTick((state, t, remaining) -> {
 						if (t == sec(5)) {
 							playView.showGameReady();
-							playView.turnEnergizerBlinkingOn();
+							world.setFrozen(false);
 							theme.music_playing().play();
 						}
 						creaturesOnStage().forEach(Creature::update);
@@ -184,7 +184,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						ghostHouseAccessControl.onLevelChange();
 						sound.stopAllClips();
 						playView.enableGhostAnimations(false);
-						playView.turnEnergizerBlinkingOff();
 						loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilled);
 					})
 					.onTick((state, t, remaining) -> {
@@ -242,6 +241,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onEntry(() -> {
 						game.lives -= settings.pacManImmortable ? 0 : 1;
 						sound.stopAllClips();
+						world.setFrozen(true);
 					})
 					.onTick((state, t, remaining) -> {
 						int waitTime = sec(1f), 
@@ -263,6 +263,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						else if (t > dyingEndTime) {
 							ghostsOnStage().forEach(Ghost::update);
 						}
+					})
+					.onExit(() -> {
+						world.setFrozen(false);
 					})
 				
 				.state(GAME_OVER)
@@ -361,6 +364,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		ghostHouseAccessControl = new GhostHouseAccessControl(game, world, world.theHouse());
 		bonusControl = new BonusControl(game, world);
 
+		world.setFrozen(true);
 		world.population().creatures().forEach(world::include);
 		world.population().creatures().forEach(Creature::init);
 		world.population().ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> ghostSpeedLimit(ghost, game)));
@@ -384,13 +388,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public class PlayingState extends State<PacManGameState> {
 
 		private void preparePlaying() {
+			world.setFrozen(false);
 			bonusControl.init();
 			ghostCommand.init();
 			creaturesOnStage().forEach(Creature::init);
 			pacMan.start();
 			playView.init();
 			playView.enableGhostAnimations(true);
-			playView.turnEnergizerBlinkingOn();
 			sound.resumePlayingMusic();
 		}
 
@@ -432,7 +436,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (!settings.ghostsHarmless) {
 				ghostHouseAccessControl.onLifeLost();
 				sound.stopAll();
-				playView.turnEnergizerBlinkingOff();
 				pacMan.process(new PacManKilledEvent(ghost));
 				enqueue(new PacManKilledEvent(ghost));
 				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.tile());
