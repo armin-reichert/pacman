@@ -43,7 +43,6 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	protected Fsm<STATE, PacManGameEvent> brain;
 	protected Map<STATE, Steering> steerings;
 	protected MovementControl movement;
-	protected Supplier<Float> fnSpeedLimit;
 	protected Direction moveDir;
 	protected Direction wishDir;
 	protected Tile targetTile;
@@ -61,14 +60,6 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 		this.world = world;
 	}
 
-	public float getSpeedLimit() {
-		return fnSpeedLimit.get();
-	}
-
-	public void setSpeedLimit(Supplier<Float> fnSpeedLimit) {
-		this.fnSpeedLimit = fnSpeedLimit;
-	}
-
 	public void assignBed(Bed bed) {
 		this.bed = bed;
 	}
@@ -80,8 +71,12 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	/**
 	 * @return how fast (px/s) this creature can move at most
 	 */
-	public final float speedLimit() {
-		return fnSpeedLimit.get();
+	public float speedLimit() {
+		return movement.getSpeedLimit();
+	}
+
+	public void setSpeedLimit(Supplier<Float> fnSpeedLimit) {
+		movement.setSpeedLimit(fnSpeedLimit);
 	}
 
 	/**
