@@ -49,6 +49,11 @@ public class WorldRenderer implements IWorldRenderer {
 			mazeSprites.select("maze-full");
 			mazeSprites.current().get().draw(g, 0, 3 * Tile.SIZE);
 			drawMazeContent(g);
+			// draw doors depending on their state
+			world.theHouse().doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {
+				g.setColor(Color.BLACK);
+				door.tiles.forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
+			});
 		}
 		energizerAnimation.setEnabled(!world.isFrozen());
 		energizerAnimation.update();
@@ -79,11 +84,6 @@ public class WorldRenderer implements IWorldRenderer {
 			Sprite sprite = bonus.state == BonusState.CONSUMED ? theme.spr_number(bonus.value)
 					: theme.spr_bonusSymbol(bonus.symbol);
 			g.drawImage(sprite.frame(0), world.bonusTile().x(), world.bonusTile().y() - Tile.SIZE / 2, null);
-		});
-		// draw doors depending on their state
-		world.theHouse().doors().filter(door -> door.state == DoorState.OPEN).forEach(door -> {
-			g.setColor(Color.BLACK);
-			door.tiles.forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE));
 		});
 	}
 }

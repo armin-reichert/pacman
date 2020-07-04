@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.util.function.Function;
 
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.core.Door.DoorState;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.render.api.IWorldRenderer;
 import de.amr.games.pacman.view.theme.Theme;
@@ -29,6 +30,11 @@ public class WorldRenderer implements IWorldRenderer {
 		if (!world.isChangingLevel()) {
 			drawMazeContent(g);
 		}
+		// draw doors depending on their state
+		world.theHouse().doors().forEach(door -> {
+			g.setColor(door.state == DoorState.CLOSED ? Color.PINK : Color.BLACK);
+			door.tiles.forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE/2));
+		});
 	}
 
 	private void drawMazeContent(Graphics2D g) {
