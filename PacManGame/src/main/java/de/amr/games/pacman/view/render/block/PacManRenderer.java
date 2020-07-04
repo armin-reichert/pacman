@@ -27,10 +27,13 @@ public class PacManRenderer implements IRenderer {
 		switch (state) {
 		case DEAD:
 			drawDead(g);
+			break;
 		case RUNNING:
 			drawRunning(g);
+			break;
 		case SLEEPING:
 			drawFull(g);
+			break;
 		default:
 			break;
 		}
