@@ -88,6 +88,10 @@ public class PlayView extends SimplePlayView {
 		drawScores(g);
 	}
 
+	public boolean isShowingGrid() {
+		return showingGrid;
+	}
+
 	public void turnGridOn() {
 		showingGrid = true;
 	}
@@ -96,12 +100,20 @@ public class PlayView extends SimplePlayView {
 		showingGrid = false;
 	}
 
+	public boolean isShowingRoutes() {
+		return showingRoutes;
+	}
+
 	public void turnRoutesOn() {
 		showingRoutes = true;
 	}
 
 	public void turnRoutesOff() {
 		showingRoutes = false;
+	}
+
+	public boolean isShowingStates() {
+		return showingStates;
 	}
 
 	public void turnStatesOn() {

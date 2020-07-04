@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.controller.Lifecycle;
+import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.controller.actor.Creature;
@@ -68,6 +69,7 @@ public class TestUI implements Lifecycle, VisualController {
 		view = new PlayView(world, theme, game, app().settings().width, app().settings().height);
 		view.style = RenderingStyle.ARCADE;
 		view.updateRenderers(world, theme);
+		view.turnScoresOff();
 		view.init();
 	}
 	
@@ -79,6 +81,24 @@ public class TestUI implements Lifecycle, VisualController {
 
 	@Override
 	public void update() {
+		if (Keyboard.keyPressedOnce("z")) {
+			view.style = view.style == RenderingStyle.ARCADE ? RenderingStyle.BLOCK : RenderingStyle.ARCADE;
+			view.updateRenderers(world, theme);
+		}
+		if (Keyboard.keyPressedOnce("g")) {
+			if (view.isShowingGrid()) {
+				view.turnGridOff();
+			} else {
+				view.turnGridOn();
+			}
+		}
+		if (Keyboard.keyPressedOnce("r")) {
+			if (view.isShowingRoutes()) {
+				view.turnRoutesOff();
+			} else {
+				view.turnRoutesOn();
+			}
+		}
 		world.population().creatures().filter(world::included).forEach(Creature::update);
 	}
 }
