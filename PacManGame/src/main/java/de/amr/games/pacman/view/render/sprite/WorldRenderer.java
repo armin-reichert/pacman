@@ -1,7 +1,5 @@
 package de.amr.games.pacman.view.render.sprite;
 
-import static de.amr.games.pacman.view.render.sprite.Rendering.patternColor;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.function.Function;
@@ -38,6 +36,7 @@ public class WorldRenderer implements IWorldRenderer {
 		energizerAnimation.setEnabled(false);
 	}
 
+	@Override
 	public void setEatenFoodColor(Function<Tile, Color> fnEatenFoodColor) {
 		this.fnEatenFoodColor = fnEatenFoodColor;
 	}

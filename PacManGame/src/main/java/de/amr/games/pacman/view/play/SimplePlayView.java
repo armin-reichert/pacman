@@ -13,9 +13,9 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.render.api.IGhostRenderer;
 import de.amr.games.pacman.view.render.api.IPacManRenderer;
+import de.amr.games.pacman.view.render.api.IWorldRenderer;
 import de.amr.games.pacman.view.render.sprite.ScoreRenderer;
 import de.amr.games.pacman.view.render.sprite.TextRenderer;
-import de.amr.games.pacman.view.render.sprite.WorldRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**
@@ -30,6 +30,14 @@ public class SimplePlayView implements LivingView {
 	}
 
 	public RenderingStyle style = RenderingStyle.ARCADE;
+
+	public static IWorldRenderer createWorldRenderer(RenderingStyle style, World world, Theme theme) {
+		if (style == RenderingStyle.ARCADE) {
+			return new de.amr.games.pacman.view.render.sprite.WorldRenderer(world, theme);
+		} else {
+			return new de.amr.games.pacman.view.render.block.WorldRenderer(world, theme);
+		}
+	}
 
 	public static IPacManRenderer createPacManRenderer(RenderingStyle style, PacMan pacMan, Theme theme) {
 		if (style == RenderingStyle.ARCADE) {
@@ -58,7 +66,7 @@ public class SimplePlayView implements LivingView {
 	protected String[] messageTexts = new String[2];
 	protected Color[] messageColors = new Color[2];
 
-	protected WorldRenderer worldRenderer;
+	protected IWorldRenderer worldRenderer;
 	protected ScoreRenderer scoreRenderer;
 	protected TextRenderer textRenderer;
 
@@ -71,13 +79,13 @@ public class SimplePlayView implements LivingView {
 		this.width = width;
 		this.height = height;
 		showingScores = true;
-		worldRenderer = new WorldRenderer(world, theme);
 		scoreRenderer = new ScoreRenderer(world, theme);
 		textRenderer = new TextRenderer(world, theme);
-		createCreatureRenderers(world, theme);
+		updateRenderers(world, theme);
 	}
 
-	public void createCreatureRenderers(World world, Theme theme) {
+	public void updateRenderers(World world, Theme theme) {
+		worldRenderer = createWorldRenderer(style, world, theme);
 		world.population().pacMan().setRenderer(createPacManRenderer(style, world.population().pacMan(), theme));
 		world.population().ghosts().forEach(ghost -> ghost.setRenderer(createGhostRenderer(style, ghost, theme)));
 	}
@@ -86,7 +94,6 @@ public class SimplePlayView implements LivingView {
 	public void init() {
 		clearMessages();
 		turnFullMazeOn();
-
 	}
 
 	@Override

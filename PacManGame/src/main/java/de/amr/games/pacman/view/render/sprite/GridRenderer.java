@@ -22,14 +22,11 @@ import de.amr.games.pacman.view.theme.Theme;
 public class GridRenderer implements IRenderer {
 
 	private final World world;
-	private final Theme theme;
 	private final Image gridImage;
 
 	public GridRenderer(World world, Theme theme) {
 		this.world = world;
-		this.theme = theme;
 		gridImage = createGridPatternImage(world.width(), world.height());
-
 	}
 
 	@Override

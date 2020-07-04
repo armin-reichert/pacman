@@ -4,7 +4,6 @@ import static de.amr.easy.game.Application.app;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -13,18 +12,18 @@ import de.amr.games.pacman.view.theme.Theme;
 
 public class GhostRenderer implements IGhostRenderer {
 
-	enum Mode {
+	enum GhostMode {
 		COLORED, FRIGHTENED, BLINKING, EYES, POINTS;
 
 		int points;
 	}
 
 	private final Ghost ghost;
-	private Mode mode;
+	private GhostMode mode;
 
 	public GhostRenderer(Ghost ghost, Theme theme) {
 		this.ghost = ghost;
-		mode = Mode.COLORED;
+		mode = GhostMode.COLORED;
 	}
 
 	@Override
@@ -32,18 +31,18 @@ public class GhostRenderer implements IGhostRenderer {
 		if (!ghost.visible) {
 			return;
 		}
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		smoothOn(g);
 		int w = ghost.tf.width * 2, h = ghost.tf.height * 2;
 		int x = (int) ghost.tf.x - Tile.SIZE / 2, y = (int) ghost.tf.y - Tile.SIZE / 2;
 		Color color = blockBackground(mode);
 		if (color != null) {
 			g.setColor(color);
-			if (mode != Mode.EYES) {
+			if (mode != GhostMode.EYES) {
 				g.fillRect(x, y, w, h);
 			} else {
 				g.drawRect(x, y, w, h);
 			}
-			if (mode == Mode.FRIGHTENED || mode == Mode.BLINKING || mode == Mode.EYES) {
+			if (mode == GhostMode.FRIGHTENED || mode == GhostMode.BLINKING || mode == GhostMode.EYES) {
 				g.setColor(ghostColor());
 				g.fillOval(x + Tile.SIZE / 2, y + Tile.SIZE / 2, Tile.SIZE, Tile.SIZE);
 			}
@@ -53,7 +52,7 @@ public class GhostRenderer implements IGhostRenderer {
 			g.setColor(Color.GREEN);
 			g.drawString(text, (int) ghost.tf.x, (int) ghost.tf.y);
 		}
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		smoothOff(g);
 	}
 
 	private Color ghostColor() {
@@ -72,7 +71,7 @@ public class GhostRenderer implements IGhostRenderer {
 		return null;
 	}
 
-	private Color blockBackground(Mode mode) {
+	private Color blockBackground(GhostMode mode) {
 		switch (mode) {
 		case COLORED:
 			return ghostColor();
@@ -88,7 +87,7 @@ public class GhostRenderer implements IGhostRenderer {
 		}
 	}
 
-	private String text(Mode mode) {
+	private String text(GhostMode mode) {
 		switch (mode) {
 		case COLORED:
 		case FRIGHTENED:
@@ -112,27 +111,27 @@ public class GhostRenderer implements IGhostRenderer {
 
 	@Override
 	public void showColored() {
-		mode = Mode.COLORED;
+		mode = GhostMode.COLORED;
 	}
 
 	@Override
 	public void showFrightened() {
-		mode = Mode.FRIGHTENED;
+		mode = GhostMode.FRIGHTENED;
 	}
 
 	@Override
 	public void showEyes() {
-		mode = Mode.EYES;
+		mode = GhostMode.EYES;
 	}
 
 	@Override
 	public void showFlashing() {
-		mode = Mode.BLINKING;
+		mode = GhostMode.BLINKING;
 	}
 
 	@Override
 	public void showPoints(int points) {
-		mode = Mode.POINTS;
+		mode = GhostMode.POINTS;
 		mode.points = points;
 	}
 }

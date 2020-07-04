@@ -78,7 +78,7 @@ public class EnhancedGameController extends GameController {
 			toggleGhostsHarmless();
 		} else if (Keyboard.keyPressedOnce("z")) {
 			playView.style = playView.style == RenderingStyle.ARCADE ? RenderingStyle.BLOCK : RenderingStyle.ARCADE;
-			playView.createCreatureRenderers(world, theme);
+			playView.updateRenderers(world, theme);
 		} else if (Keyboard.keyPressedOnce("+")) {
 			switchToNextLevel();
 		}
