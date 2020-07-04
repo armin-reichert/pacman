@@ -26,6 +26,6 @@ public class GhostRenderer extends CreatureRenderer {
 
 	@Override
 	public void draw(Graphics2D g) {
-		draw(g, ghost);
+		drawCreature(g, ghost);
 	}
 }

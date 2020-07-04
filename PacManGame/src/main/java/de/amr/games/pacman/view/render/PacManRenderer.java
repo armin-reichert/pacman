@@ -20,6 +20,6 @@ public class PacManRenderer extends CreatureRenderer {
 
 	@Override
 	public void draw(Graphics2D g) {
-		draw(g, pacMan);
+		drawCreature(g, pacMan);
 	}
 }
