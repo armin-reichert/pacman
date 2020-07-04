@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.render;
+package de.amr.games.pacman.view.render.arcade;
 
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
@@ -7,7 +7,7 @@ import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.view.render.Rendering.ghostColor;
+import static de.amr.games.pacman.view.render.arcade.Rendering.ghostColor;
 import static java.lang.Math.round;
 
 import java.awt.BasicStroke;

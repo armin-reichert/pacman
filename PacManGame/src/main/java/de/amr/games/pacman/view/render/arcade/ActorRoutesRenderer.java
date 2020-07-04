@@ -1,10 +1,10 @@
-package de.amr.games.pacman.view.render;
+package de.amr.games.pacman.view.render.arcade;
 
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
-import static de.amr.games.pacman.view.render.Rendering.alpha;
-import static de.amr.games.pacman.view.render.Rendering.drawDirectionIndicator;
-import static de.amr.games.pacman.view.render.Rendering.ghostColor;
+import static de.amr.games.pacman.view.render.arcade.Rendering.alpha;
+import static de.amr.games.pacman.view.render.arcade.Rendering.drawDirectionIndicator;
+import static de.amr.games.pacman.view.render.arcade.Rendering.ghostColor;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

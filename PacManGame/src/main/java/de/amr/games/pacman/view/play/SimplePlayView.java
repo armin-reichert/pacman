@@ -9,11 +9,11 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.core.LivingView;
-import de.amr.games.pacman.view.render.GhostRenderer;
-import de.amr.games.pacman.view.render.PacManRenderer;
-import de.amr.games.pacman.view.render.ScoreRenderer;
-import de.amr.games.pacman.view.render.TextRenderer;
-import de.amr.games.pacman.view.render.WorldRenderer;
+import de.amr.games.pacman.view.render.arcade.GhostRenderer;
+import de.amr.games.pacman.view.render.arcade.PacManRenderer;
+import de.amr.games.pacman.view.render.arcade.ScoreRenderer;
+import de.amr.games.pacman.view.render.arcade.TextRenderer;
+import de.amr.games.pacman.view.render.arcade.WorldRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**
@@ -97,7 +97,7 @@ public class SimplePlayView implements LivingView {
 
 	public void enableGhostAnimations(boolean enabled) {
 		world.population().ghosts().map(ghost -> ghost.getRenderer())
-				.forEach(renderer -> renderer.enableSpriteAnimation(enabled));
+				.forEach(renderer -> renderer.enableAnimation(enabled));
 	}
 
 	public void turnScoresOn() {

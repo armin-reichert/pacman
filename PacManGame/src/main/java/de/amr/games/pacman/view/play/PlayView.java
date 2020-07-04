@@ -9,9 +9,9 @@ import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.render.ActorRoutesRenderer;
-import de.amr.games.pacman.view.render.ActorStatesRenderer;
-import de.amr.games.pacman.view.render.GhostHouseStateRenderer;
+import de.amr.games.pacman.view.render.arcade.ActorRoutesRenderer;
+import de.amr.games.pacman.view.render.arcade.ActorStatesRenderer;
+import de.amr.games.pacman.view.render.arcade.GhostHouseStateRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**

@@ -34,7 +34,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.OneWayTile;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.render.GhostRenderer;
+import de.amr.games.pacman.view.render.api.IGhostRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -63,7 +63,7 @@ public class Ghost extends Creature<GhostState> {
 	/** Ghost color as defined in {@link Theme}. */
 	public int color;
 
-	private GhostRenderer renderer;
+	private IGhostRenderer renderer;
 
 	public StateMachine<Sanity, Void> sanity =
 	//@formatter:off
@@ -164,7 +164,7 @@ public class Ghost extends Creature<GhostState> {
 				.state(DEAD)
 					.timeoutAfter(sec(1)) // time while ghost is drawn as number of scored points
 					.onEntry(() -> {
-						showPoints(game.killedGhostPoints());
+						renderer.showPoints(game.killedGhostPoints());
 					})
 					.onTick((state, t, remaining) -> {
 						if (remaining == 0) { // show as eyes returning to ghost home
@@ -320,16 +320,12 @@ public class Ghost extends Creature<GhostState> {
 		movement.update();
 	}
 
-	public GhostRenderer getRenderer() {
+	public IGhostRenderer getRenderer() {
 		return renderer;
 	}
 
-	public void setRenderer(GhostRenderer renderer) {
+	public void setRenderer(IGhostRenderer renderer) {
 		this.renderer = renderer;
-	}
-
-	public void showPoints(int points) {
-		renderer.selectSprite("points-" + points);
 	}
 
 	public boolean isInsideHouse() {

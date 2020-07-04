@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.render;
+package de.amr.games.pacman.view.render.arcade;
 
 import static java.lang.Math.PI;
 

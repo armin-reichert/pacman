@@ -12,8 +12,8 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.LivingView;
-import de.amr.games.pacman.view.render.GhostRenderer;
-import de.amr.games.pacman.view.render.PacManRenderer;
+import de.amr.games.pacman.view.render.arcade.GhostRenderer;
+import de.amr.games.pacman.view.render.arcade.PacManRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 
 /**
@@ -61,7 +61,7 @@ public class LoadingView implements LivingView {
 		}
 		pacMan.tf.setVelocity(Vector2f.smul(2.5f, pacMan.moveDir().vector()));
 		pacMan.tf.move();
-		pacMan.getRenderer().selectSprite("walking-" + pacMan.moveDir());
+		pacMan.getRenderer().showWalking();
 		alpha += alphaInc;
 		if (alpha >= 160) {
 			alphaInc = -2;

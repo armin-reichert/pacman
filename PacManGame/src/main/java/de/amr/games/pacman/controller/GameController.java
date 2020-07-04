@@ -250,11 +250,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						if (t == waitTime) {
 							bonusControl.deactivateBonus();
 							ghostsOnStage().forEach(ghost -> ghost.visible = false);
-							pacMan.getRenderer().selectSprite("full");
+							pacMan.getRenderer().showFull();
 						}
 						else if (t == dyingStartTime) {
-							pacMan.getRenderer().selectSprite("dying");
-							pacMan.getRenderer().enableSpriteAnimation(true);
+							pacMan.getRenderer().showDying();
+							pacMan.getRenderer().enableAnimation(true);
 							sound.pacManDied();
 						}
 						else if (t == dyingEndTime && game.lives > 0) {

@@ -23,7 +23,7 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.render.PacManRenderer;
+import de.amr.games.pacman.view.render.api.IPacManRenderer;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
@@ -33,7 +33,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class PacMan extends Creature<PacManState> {
 
-	private PacManRenderer renderer;
+	private IPacManRenderer renderer;
 
 	/** Number of ticks Pac-Man has power after eating an energizer. */
 	public int power;
@@ -102,11 +102,11 @@ public class PacMan extends Creature<PacManState> {
 		brain.doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
 	}
 
-	public void setRenderer(PacManRenderer renderer) {
+	public void setRenderer(IPacManRenderer renderer) {
 		this.renderer = renderer;
 	}
 
-	public PacManRenderer getRenderer() {
+	public IPacManRenderer getRenderer() {
 		return renderer;
 	}
 
