@@ -20,6 +20,7 @@ import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.awt.event.KeyEvent.VK_UP;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 import java.util.Random;
@@ -594,6 +595,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		} else {
 			pacMan.behavior(pacMan.followingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		}
+		playView.showMessage(1, on ? "Demo Mode" : "", Color.LIGHT_GRAY);
 	}
 
 	protected void showView(LivingView view) {
