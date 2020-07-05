@@ -7,27 +7,19 @@ import java.awt.RenderingHints;
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.render.IRenderer;
 
 public class ScoreRenderer implements IRenderer {
 
-	private final World world;
 	private final Game game;
 
-	public ScoreRenderer(World world, Game game) {
-		this.world = world;
+	public ScoreRenderer(Game game) {
 		this.game = game;
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		drawScores(g, game);
-		drawLevelCounter(g, game);
-	}
-
-	protected void drawScores(Graphics2D g, Game game) {
 		int topMargin = 3;
 		int lineOffset = 2;
 		Color hilight = Color.YELLOW;
@@ -76,19 +68,5 @@ public class ScoreRenderer implements IRenderer {
 			pen.up(lineOffset);
 		}
 		g.translate(0, -topMargin);
-	}
-
-	protected void drawLevelCounter(Graphics2D g, Game game) {
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		int max = 7;
-//		int first = Math.max(0, game.levelCounter.size() - max);
-		int n = Math.min(max, game.levelCounter.size());
-		int y = (world.height() - 2) * Tile.SIZE;
-		for (int i = 0, x = (world.width() - 3) * Tile.SIZE; i < n; ++i, x -= 2 * Tile.SIZE) {
-//			Symbol symbol = game.levelCounter.get(first + i);
-			g.setColor(Color.GREEN);
-			g.drawOval(x, y, Tile.SIZE, Tile.SIZE);
-		}
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 }

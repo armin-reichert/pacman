@@ -12,6 +12,7 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.render.IRenderer;
 import de.amr.games.pacman.view.render.IWorldRenderer;
@@ -39,9 +40,9 @@ public class PlayView implements LivingView {
 
 	public static IRenderer createScoreRenderer(RenderingStyle style, World world, Game game) {
 		if (style == RenderingStyle.ARCADE) {
-			return new de.amr.games.pacman.view.render.sprite.ScoreRenderer(world, game);
+			return new de.amr.games.pacman.view.render.sprite.ScoreRenderer(game);
 		} else {
-			return new de.amr.games.pacman.view.render.block.ScoreRenderer(world, game);
+			return new de.amr.games.pacman.view.render.block.ScoreRenderer(game);
 		}
 	}
 
@@ -52,7 +53,15 @@ public class PlayView implements LivingView {
 			return new de.amr.games.pacman.view.render.block.LiveCounterRenderer(world, game);
 		}
 	}
-	
+
+	public static IRenderer createLevelCounterRenderer(RenderingStyle style, World world, Game game) {
+		if (style == RenderingStyle.ARCADE) {
+			return new de.amr.games.pacman.view.render.sprite.LevelCounterRenderer(game);
+		} else {
+			return new de.amr.games.pacman.view.render.block.LevelCounterRenderer(game);
+		}
+	}
+
 	public static IRenderer createPacManRenderer(RenderingStyle style, World world, PacMan pacMan) {
 		if (style == RenderingStyle.ARCADE) {
 			return new de.amr.games.pacman.view.render.sprite.PacManRenderer(world, pacMan);
@@ -84,6 +93,7 @@ public class PlayView implements LivingView {
 	protected IWorldRenderer worldRenderer;
 	protected IRenderer scoreRenderer;
 	protected IRenderer liveCounterRenderer;
+	protected IRenderer levelCounterRenderer;
 	protected MessagesRenderer messagesRenderer;
 	protected IRenderer pacManRenderer;
 	protected Map<Ghost, IRenderer> ghostRenderer = new HashMap<>();
@@ -96,7 +106,7 @@ public class PlayView implements LivingView {
 		this.width = width;
 		this.height = height;
 		showingScores = true;
-		scoreRenderer = new ScoreRenderer(world, game);
+		scoreRenderer = new ScoreRenderer(game);
 		messagesRenderer = new MessagesRenderer();
 		style = RenderingStyle.ARCADE;
 		updateRenderers(world);
@@ -105,6 +115,7 @@ public class PlayView implements LivingView {
 	public void updateRenderers(World world) {
 		worldRenderer = createWorldRenderer(style, world);
 		liveCounterRenderer = createLiveCounterRenderer(style, world, game);
+		levelCounterRenderer = createLevelCounterRenderer(style, world, game);
 		scoreRenderer = createScoreRenderer(style, world, game);
 		pacManRenderer = createPacManRenderer(style, world, world.population().pacMan());
 		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, createGhostRenderer(style, ghost)));
@@ -124,6 +135,7 @@ public class PlayView implements LivingView {
 	public void draw(Graphics2D g) {
 		drawScores(g);
 		drawLiveCounter(g);
+		drawLevelCounter(g);
 		drawWorld(g);
 		drawMessages(g);
 		drawActors(g);
@@ -200,8 +212,14 @@ public class PlayView implements LivingView {
 			scoreRenderer.draw(g);
 		}
 	}
-	
+
 	protected void drawLiveCounter(Graphics2D g) {
 		liveCounterRenderer.draw(g);
+	}
+
+	protected void drawLevelCounter(Graphics2D g) {
+		g.translate((world.width()) * Tile.SIZE, (world.height()) * Tile.SIZE);
+		levelCounterRenderer.draw(g);
+		g.translate(-(world.width()) * Tile.SIZE, -(world.height()) * Tile.SIZE);
 	}
 }
