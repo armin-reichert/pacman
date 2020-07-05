@@ -55,7 +55,7 @@ class TakeShortestPathTestUI extends TestUI {
 				world.neighbor(thePortal.left, Direction.RIGHT), world.capeNW(), theHouse.bed(0).tile, world.capeNE(),
 				world.neighbor(thePortal.right, Direction.LEFT), world.pacManBed().tile);
 		targetIndex = 0;
-		theme.snd_ghost_chase().volume(0);
+		soundManager.snd_ghost_chase().volume(0);
 		include(blinky);
 		Steering steering = blinky.takingShortestPath(() -> targets.get(targetIndex));
 		blinky.behavior(CHASING, steering);

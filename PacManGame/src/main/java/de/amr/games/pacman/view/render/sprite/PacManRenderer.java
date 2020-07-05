@@ -7,14 +7,14 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.render.api.IRenderer;
-import de.amr.games.pacman.view.theme.Theme;
+import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 public class PacManRenderer extends CreatureRenderer implements IRenderer {
 
 	private final World world;
 	private final PacMan pacMan;
 
-	public PacManRenderer(World world, PacMan pacMan, Theme theme) {
+	public PacManRenderer(World world, PacMan pacMan, ArcadeTheme theme) {
 		this.world = world;
 		this.pacMan = pacMan;
 		dirs().forEach(dir -> sprites.set("walking-" + dir, theme.spr_pacManWalking(dir)));

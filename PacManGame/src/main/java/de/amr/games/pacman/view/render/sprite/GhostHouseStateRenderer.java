@@ -10,9 +10,10 @@ import java.awt.Image;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
 import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.theme.Theme;
+import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 public class GhostHouseStateRenderer {
 
@@ -20,10 +21,10 @@ public class GhostHouseStateRenderer {
 	private final Image inkyImage, clydeImage, pacManImage;
 	private GhostHouseAccessControl houseAccessControl;
 
-	public GhostHouseStateRenderer(World world, Theme theme) {
+	public GhostHouseStateRenderer(World world, ArcadeTheme theme) {
 		this.world = world;
-		inkyImage = theme.spr_ghostColored(Theme.CYAN_GHOST, Direction.RIGHT).frame(0);
-		clydeImage = theme.spr_ghostColored(Theme.ORANGE_GHOST, Direction.RIGHT).frame(0);
+		inkyImage = theme.spr_ghostColored(Population.CYAN_GHOST, Direction.RIGHT).frame(0);
+		clydeImage = theme.spr_ghostColored(Population.ORANGE_GHOST, Direction.RIGHT).frame(0);
 		pacManImage = theme.spr_pacManWalking(RIGHT).frame(0);
 	}
 

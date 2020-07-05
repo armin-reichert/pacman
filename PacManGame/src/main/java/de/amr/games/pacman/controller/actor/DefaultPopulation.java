@@ -18,7 +18,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class DefaultPopulation implements Population {
 
@@ -33,10 +32,10 @@ public class DefaultPopulation implements Population {
 		creatures().forEach(creature -> creature.setWorld(world));
 		world.accept(this);
 		defineBehavior(world);
-		blinky.color = Theme.RED_GHOST;
-		pinky.color = Theme.PINK_GHOST;
-		inky.color = Theme.CYAN_GHOST;
-		clyde.color = Theme.ORANGE_GHOST;
+		blinky.color = RED_GHOST;
+		pinky.color = PINK_GHOST;
+		inky.color = CYAN_GHOST;
+		clyde.color = ORANGE_GHOST;
 	}
 
 	private void defineBehavior(World world) {

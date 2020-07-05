@@ -7,7 +7,6 @@ import java.awt.RenderingHints;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.render.api.IScoreRenderer;
 import de.amr.games.pacman.view.theme.Theme;

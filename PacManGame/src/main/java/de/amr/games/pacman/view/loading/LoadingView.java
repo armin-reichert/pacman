@@ -18,7 +18,7 @@ import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.render.api.IRenderer;
 import de.amr.games.pacman.view.render.sprite.GhostRenderer;
 import de.amr.games.pacman.view.render.sprite.PacManRenderer;
-import de.amr.games.pacman.view.theme.Theme;
+import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 /**
  * View displayed while the music files are loaded.
@@ -28,18 +28,18 @@ import de.amr.games.pacman.view.theme.Theme;
 public class LoadingView implements LivingView {
 
 	private final PacMan pacMan;
-	private final Theme theme;
+	private final ArcadeTheme theme;
 	private final int width;
 	private final int height;
 	private int alpha;
 	private int alphaInc;
 	private int ghostCount;
 	private int ghostInc;
-	
+
 	private IRenderer pacManRenderer;
 	private Map<Ghost, IRenderer> ghostRenderer = new HashMap<>();
 
-	public LoadingView(World world, Theme theme, int width, int height) {
+	public LoadingView(World world, ArcadeTheme theme, int width, int height) {
 		pacMan = world.population().pacMan();
 		this.theme = theme;
 		this.width = width;

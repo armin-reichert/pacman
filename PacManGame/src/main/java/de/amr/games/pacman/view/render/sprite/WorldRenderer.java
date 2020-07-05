@@ -13,17 +13,17 @@ import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Door.DoorState;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.render.api.IWorldRenderer;
-import de.amr.games.pacman.view.theme.Theme;
+import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 public class WorldRenderer implements IWorldRenderer {
 
 	private final World world;
-	private final Theme theme;
+	private final ArcadeTheme theme;
 	private final SpriteMap mazeSprites;
 	private final SpriteAnimation energizerAnimation;
 	private Function<Tile, Color> fnEatenFoodColor;
 
-	public WorldRenderer(World world, Theme theme) {
+	public WorldRenderer(World world, ArcadeTheme theme) {
 		this.world = world;
 		this.theme = theme;
 		fnEatenFoodColor = tile -> Color.BLACK;

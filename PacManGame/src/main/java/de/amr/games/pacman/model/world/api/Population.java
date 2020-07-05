@@ -9,6 +9,8 @@ import de.amr.games.pacman.model.Game;
 
 public interface Population {
 
+	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
+
 	void populate(World world);
 
 	void play(Game game);

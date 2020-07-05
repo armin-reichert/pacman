@@ -13,14 +13,14 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.render.api.IScoreRenderer;
-import de.amr.games.pacman.view.theme.Theme;
+import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 public class ScoreRenderer implements IScoreRenderer {
 
 	private final World world;
-	private final Theme theme;
+	private final ArcadeTheme theme;
 
-	public ScoreRenderer(World world, Theme theme) {
+	public ScoreRenderer(World world, ArcadeTheme theme) {
 		this.world = world;
 		this.theme = theme;
 	}

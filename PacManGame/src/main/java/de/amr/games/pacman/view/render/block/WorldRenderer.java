@@ -57,7 +57,7 @@ public class WorldRenderer implements IWorldRenderer {
 	}
 
 	private void drawEnergizer(Graphics2D g, int row, int col) {
-		if (!world.isFrozen() && app().clock().getTotalTicks() % 30 < 15) {
+		if (!world.isFrozen() && app().clock().getTotalTicks() % 60 < 30) {
 			g.setColor(Color.BLACK);
 			g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 		} else {

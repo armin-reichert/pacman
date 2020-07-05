@@ -22,7 +22,7 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.Habitat;
-import de.amr.games.pacman.view.theme.Theme;
+import de.amr.games.pacman.model.world.api.Population;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -128,9 +128,9 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 	@Override
 	public void init() {
 		int size = 30;
-		setIconOnly(lblPinkyDots, ghost(Theme.PINK_GHOST, size));
-		setIconOnly(lblInkyDots, ghost(Theme.CYAN_GHOST, size));
-		setIconOnly(lblClydeDots, ghost(Theme.ORANGE_GHOST, size));
+		setIconOnly(lblPinkyDots, ghost(Population.PINK_GHOST, size));
+		setIconOnly(lblInkyDots, ghost(Population.CYAN_GHOST, size));
+		setIconOnly(lblClydeDots, ghost(Population.ORANGE_GHOST, size));
 		setIconOnly(lblPacManStarving, pacMan(size));
 	}
 

@@ -10,11 +10,13 @@ import java.awt.Graphics2D;
 import de.amr.easy.game.entity.GameObject;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.view.theme.Theme;
+import de.amr.games.pacman.controller.sound.PacManSoundManager;
+import de.amr.games.pacman.model.world.api.Population;
+import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 public class ChasePacManAnimation extends GameObject {
 
-	private final Theme theme;
+	private final PacManSoundManager soundManager;
 	private final Sprite pacMan;
 	private final Sprite ghosts[] = new Sprite[4];
 	private int pillTimer;
@@ -22,13 +24,13 @@ public class ChasePacManAnimation extends GameObject {
 	private Vector2f endPosition;
 	private boolean pill;
 
-	public ChasePacManAnimation(Theme theme) {
-		this.theme = theme;
+	public ChasePacManAnimation(ArcadeTheme theme, PacManSoundManager soundManager) {
+		this.soundManager = soundManager;
 		pacMan = theme.spr_pacManWalking(LEFT);
-		ghosts[0] = theme.spr_ghostColored(Theme.RED_GHOST, LEFT);
-		ghosts[1] = theme.spr_ghostColored(Theme.PINK_GHOST, LEFT);
-		ghosts[2] = theme.spr_ghostColored(Theme.CYAN_GHOST, LEFT);
-		ghosts[3] = theme.spr_ghostColored(Theme.ORANGE_GHOST, LEFT);
+		ghosts[0] = theme.spr_ghostColored(Population.RED_GHOST, LEFT);
+		ghosts[1] = theme.spr_ghostColored(Population.PINK_GHOST, LEFT);
+		ghosts[2] = theme.spr_ghostColored(Population.CYAN_GHOST, LEFT);
+		ghosts[3] = theme.spr_ghostColored(Population.ORANGE_GHOST, LEFT);
 		pill = true;
 		tf.width = (88);
 		tf.height = (16);
@@ -64,13 +66,13 @@ public class ChasePacManAnimation extends GameObject {
 	public void start() {
 		init();
 		tf.vx = -0.8f;
-		theme.snd_ghost_chase().loop();
+		soundManager.snd_ghost_chase().loop();
 	}
 
 	@Override
 	public void stop() {
 		tf.vx = 0;
-		theme.snd_ghost_chase().stop();
+		soundManager.snd_ghost_chase().stop();
 	}
 
 	@Override

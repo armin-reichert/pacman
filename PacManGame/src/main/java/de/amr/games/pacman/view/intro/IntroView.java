@@ -20,11 +20,12 @@ import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
+import de.amr.games.pacman.controller.sound.PacManSoundManager;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
-import de.amr.games.pacman.view.theme.Theme;
+import de.amr.games.pacman.view.theme.ArcadeTheme;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 
@@ -41,7 +42,8 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 
 	private int width;
 	private int height;
-	private Theme theme;
+	private ArcadeTheme theme;
+	private PacManSoundManager soundManager;
 
 	private ImageWidget pacManLogo;
 	private LinkWidget gitHubLink;
@@ -53,9 +55,10 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 	// private Color pink = new Color(248, 120, 88);
 	private Color red = new Color(171, 19, 0);
 
-	public IntroView(Theme theme, int width, int height) {
+	public IntroView(ArcadeTheme theme, PacManSoundManager soundManager, int width, int height) {
 		super(IntroState.class);
 		this.theme = theme;
+		this.soundManager = soundManager;
 		this.width = width;
 		this.height = height;
 		buildStateMachine();
@@ -103,7 +106,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 
 		@Override
 		public void onEntry() {
-			theme.snd_insertCoin().play();
+			soundManager.snd_insertCoin().play();
 			pacManLogo.tf.y = height;
 			pacManLogo.tf.vy = -2f;
 			pacManLogo.setCompletion(() -> pacManLogo.tf.y <= 20);
@@ -212,12 +215,12 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 		pacManLogo = new ImageWidget(theme.img_logo());
 		pacManLogo.tf.centerX(width);
 		pacManLogo.tf.y = 20;
-		chasePacMan = new ChasePacManAnimation(theme);
+		chasePacMan = new ChasePacManAnimation(theme, soundManager);
 		chasePacMan.tf.centerX(width);
 		chasePacMan.tf.y = 100;
-		chaseGhosts = new ChaseGhostsAnimation(theme);
+		chaseGhosts = new ChaseGhostsAnimation(theme, soundManager);
 		chaseGhosts.tf.setPosition(width, 200);
-		ghostPointsAnimation = new GhostPointsAnimation(theme);
+		ghostPointsAnimation = new GhostPointsAnimation(theme, soundManager);
 		gitHubLink = LinkWidget.create()
 		/*@formatter:off*/
 			.text("https://github.com/armin-reichert/pacman")

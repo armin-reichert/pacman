@@ -46,7 +46,7 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
-import de.amr.games.pacman.controller.sound.PacManSounds;
+import de.amr.games.pacman.controller.sound.PacManSoundManager;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.Universe;
@@ -57,7 +57,6 @@ import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.EnhancedPlayView;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
-import de.amr.games.pacman.view.theme.Theme;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 
@@ -71,8 +70,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected final World world;
 	protected final PacMan pacMan;
 	protected final Ghost blinky, pinky, inky, clyde;
-	protected final Theme theme;
-	protected final PacManSounds sound;
+	protected final ArcadeTheme theme;
+	protected final PacManSoundManager soundManager;
 
 	protected GhostCommand ghostCommand;
 	protected GhostHouseAccessControl ghostHouseAccessControl;
@@ -111,7 +110,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			world.include(creature);
 		});
 
-		sound = new PacManSounds(world, theme);
+		soundManager = new PacManSoundManager(world);
 
 		app().onClose(() -> game().ifPresent(game -> game.hiscore.save()));
 	}
@@ -147,22 +146,22 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			
 				.state(LOADING_MUSIC)
 					.onEntry(() -> {
-						sound.loadMusic();
+						soundManager.loadMusic();
 						showView(new LoadingView(world, theme, settings.width, settings.height));
 					})
 					
 				.state(INTRO)
 					.onEntry(() -> {
-						showView(new IntroView(theme, settings.width, settings.height));
+						showView(new IntroView(theme, soundManager, settings.width, settings.height));
 					})
 					.onExit(() -> {
-						sound.stopAll();
+						soundManager.stopAll();
 					})
 				
 				.state(GETTING_READY)
 					.timeoutAfter(sec(7))
 					.onEntry(() -> {
-						sound.gameReady();
+						soundManager.gameReady();
 						newGame();
 						showView(playView);
 					})
@@ -170,7 +169,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						if (t == sec(5)) {
 							playView.showGameReady();
 							world.setFrozen(false);
-							theme.music_playing().play();
+							soundManager.music_playing().play();
 						}
 						creaturesOnStage().forEach(Creature::update);
 					})
@@ -182,7 +181,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onEntry(() -> {
 						pacMan.tf.setVelocity(0, 0);
 						ghostHouseAccessControl.onLevelChange();
-						sound.stopAllClips();
+						soundManager.stopAllClips();
 						playView.enableGhostAnimations(false);
 						loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilled);
 					})
@@ -240,7 +239,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.timeoutAfter(() -> game.lives > 1 ? sec(7) : sec(5))
 					.onEntry(() -> {
 						game.lives -= settings.pacManImmortable ? 0 : 1;
-						sound.stopAllClips();
+						soundManager.stopAllClips();
 						world.setFrozen(true);
 					})
 					.onTick((state, t, remaining) -> {
@@ -253,7 +252,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						}
 						else if (t == dyingStartTime) {
 							pacMan.collapsing = true;
-							sound.pacManDied();
+							soundManager.pacManDied();
 						}
 						else if (t == dyingEndTime && game.lives > 0) {
 							pacMan.collapsing = false;
@@ -277,7 +276,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							ghost.setState(new Random().nextBoolean() ? GhostState.SCATTERING : GhostState.FRIGHTENED);
 						});
 						playView.showGameOver();
-						sound.gameOver();
+						soundManager.gameOver();
 					})
 					.onTick(() -> {
 						ghostsOnStage().forEach(ghost -> {
@@ -288,16 +287,16 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						world.fillFood();
 						ghostsOnStage().forEach(Ghost::init);
 						playView.clearMessages();
-						sound.stopAll();
+						soundManager.stopAll();
 					})
 	
 			.transitions()
 			
 				.when(LOADING_MUSIC).then(GETTING_READY)
-					.condition(() -> sound.isMusicLoadingComplete()	&& settings.skipIntro)
+					.condition(() -> soundManager.isMusicLoadingComplete()	&& settings.skipIntro)
 	
 				.when(LOADING_MUSIC).then(INTRO)
-					.condition(() -> sound.isMusicLoadingComplete())
+					.condition(() -> soundManager.isMusicLoadingComplete())
 			
 				.when(INTRO).then(GETTING_READY)
 					.condition(() -> currentView.isComplete())
@@ -351,7 +350,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.condition(() -> Keyboard.keyPressedOnce("space"))
 					
 				.when(GAME_OVER).then(INTRO)
-					.condition(() -> !sound.isGameOverMusicRunning())
+					.condition(() -> !soundManager.isGameOverMusicRunning())
 							
 		.endStateMachine();
 		//@formatter:on
@@ -395,7 +394,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			pacMan.start();
 			playView.init();
 			playView.enableGhostAnimations(true);
-			sound.resumePlayingMusic();
+			soundManager.resumePlayingMusic();
 		}
 
 		@Override
@@ -404,16 +403,16 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			ghostHouseAccessControl.update();
 			creaturesOnStage().forEach(Creature::update);
 			bonusControl.update();
-			sound.updatePlayingSounds();
+			soundManager.updatePlayingSounds();
 		}
 
 		@Override
 		public void onExit() {
-			sound.stopGhostSounds();
+			soundManager.stopGhostSounds();
 		}
 
 		private void onPacManLostPower(PacManGameEvent event) {
-			sound.pacManLostPower();
+			soundManager.pacManLostPower();
 			ghostCommand.resume();
 		}
 
@@ -424,9 +423,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				int livesBefore = game.lives;
 				game.scoreGhostKilled(ghost.name);
 				if (game.lives > livesBefore) {
-					sound.extraLife();
+					soundManager.extraLife();
 				}
-				sound.ghostEaten();
+				soundManager.ghostEaten();
 				ghost.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
 				loginfo("%s got killed at %s", ghost.name, ghost.tile());
@@ -435,7 +434,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 			if (!settings.ghostsHarmless) {
 				ghostHouseAccessControl.onLifeLost();
-				sound.stopAll();
+				soundManager.stopAll();
 				pacMan.process(new PacManKilledEvent(ghost));
 				enqueue(new PacManKilledEvent(ghost));
 				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.tile());
@@ -446,9 +445,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			loginfo("PacMan found %s and wins %d points", game.level.bonusSymbol, game.level.bonusValue);
 			int livesBefore = game.lives;
 			game.score(game.level.bonusValue);
-			sound.bonusEaten();
+			soundManager.bonusEaten();
 			if (game.lives > livesBefore) {
-				sound.extraLife();
+				soundManager.extraLife();
 			}
 			bonusControl.process(event);
 		}
@@ -463,9 +462,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			} else {
 				game.scoreSimplePelletFound();
 			}
-			sound.pelletEaten();
+			soundManager.pelletEaten();
 			if (game.lives > livesBeforeScoring) {
-				sound.extraLife();
+				soundManager.extraLife();
 			}
 			ghostHouseAccessControl.onPacManFoundFood();
 
@@ -478,7 +477,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				bonusControl.activateBonus();
 			}
 			if (energizer && game.level.pacManPowerSeconds > 0) {
-				sound.pacManGainsPower();
+				soundManager.pacManGainsPower();
 				ghostCommand.suspend();
 				pacMan.power = sec(game.level.pacManPowerSeconds);
 				ghostsOnStage().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
@@ -498,7 +497,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return world;
 	}
 
-	public Theme theme() {
+	public ArcadeTheme theme() {
 		return theme;
 	}
 

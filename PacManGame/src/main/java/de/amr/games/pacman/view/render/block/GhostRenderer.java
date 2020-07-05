@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
+import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.render.api.IRenderer;
 import de.amr.games.pacman.view.theme.Theme;
@@ -80,16 +81,16 @@ public class GhostRenderer implements IRenderer {
 	}
 
 	private Color ghostColor() {
-		if (ghost.color == Theme.RED_GHOST) {
+		if (ghost.color == Population.RED_GHOST) {
 			return Color.RED;
 		}
-		if (ghost.color == Theme.PINK_GHOST) {
+		if (ghost.color == Population.PINK_GHOST) {
 			return Color.PINK;
 		}
-		if (ghost.color == Theme.CYAN_GHOST) {
+		if (ghost.color == Population.CYAN_GHOST) {
 			return Color.CYAN;
 		}
-		if (ghost.color == Theme.ORANGE_GHOST) {
+		if (ghost.color == Population.ORANGE_GHOST) {
 			return Color.ORANGE;
 		}
 		return null;

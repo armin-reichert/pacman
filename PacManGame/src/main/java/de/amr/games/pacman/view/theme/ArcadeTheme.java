@@ -14,10 +14,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.Assets;
-import de.amr.easy.game.assets.SoundClip;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.arcade.Symbol;
@@ -73,10 +71,6 @@ public class ArcadeTheme implements Theme {
 
 	BufferedImage[] nHorTiles(int n, int col, int row) {
 		return IntStream.range(0, n).mapToObj(i -> t(col + i, row)).toArray(BufferedImage[]::new);
-	}
-
-	SoundClip mp3(String name) {
-		return Assets.sound("sfx/" + name + ".mp3");
 	}
 
 	BufferedImage exchangeColor(BufferedImage img, int oldColorRGB, int newColorRGB) {
@@ -144,7 +138,6 @@ public class ArcadeTheme implements Theme {
 		loginfo("Theme '%s' created.", getClass().getName());
 	}
 
-	@Override
 	public Sprite spr_number(int number) {
 		int index = Arrays.asList(200, 400, 800, 1600, 100, 300, 500, 700, 1000, 2000, 3000, 5000).indexOf(number);
 		if (index == -1) {
@@ -158,58 +151,47 @@ public class ArcadeTheme implements Theme {
 		return logo;
 	}
 
-	@Override
 	public Sprite spr_emptyMaze() {
 		return Sprite.of(mazeEmpty);
 	}
 
-	@Override
 	public Sprite spr_fullMaze() {
 		return Sprite.of(mazeFull);
 	}
 
-	@Override
 	public Sprite spr_flashingMaze() {
 		return Sprite.of(mazeEmptyWhite, mazeEmpty).animate(BACK_AND_FORTH, 200);
 	}
 
-	@Override
 	public Sprite spr_bonusSymbol(String symbol) {
 		return Sprite.of(symbolMap.get(symbol));
 	}
 
-	@Override
 	public Sprite spr_pacManFull() {
 		return Sprite.of(pacManFull);
 	}
 
-	@Override
 	public Sprite spr_pacManWalking(Direction dir) {
 		return Sprite.of(pacManWalking[sheetOrder(dir)]).animate(BACK_AND_FORTH, 20);
 	}
 
-	@Override
 	public Sprite spr_pacManDying() {
 		return Sprite.of(pacManDying).animate(LINEAR, 100);
 	}
 
-	@Override
 	public Sprite spr_ghostColored(int color, Direction dir) {
 		BufferedImage[] frames = Arrays.copyOfRange(ghostColored[color], 2 * sheetOrder(dir), 2 * (sheetOrder(dir) + 1));
 		return Sprite.of(frames).animate(BACK_AND_FORTH, 300);
 	}
 
-	@Override
 	public Sprite spr_ghostFrightened() {
 		return Sprite.of(ghostFrightened).animate(CYCLIC, 300);
 	}
 
-	@Override
 	public Sprite spr_ghostFlashing() {
 		return Sprite.of(ghostFlashing).animate(CYCLIC, 125); // 4 frames take 0.5 sec
 	}
 
-	@Override
 	public Sprite spr_ghostEyes(Direction dir) {
 		return Sprite.of(ghostEyes[sheetOrder(dir)]);
 	}
@@ -219,69 +201,4 @@ public class ArcadeTheme implements Theme {
 		return Assets.font("font.hud");
 	}
 
-	@Override
-	public Stream<SoundClip> clips_all() {
-		return Stream.of(snd_die(), snd_eatFruit(), snd_eatGhost(), snd_eatPill(), snd_extraLife(), snd_insertCoin(),
-				snd_ready(), snd_ghost_chase(), snd_ghost_dead(), snd_waza());
-	}
-
-	@Override
-	public SoundClip music_playing() {
-		return mp3("bgmusic");
-	}
-
-	@Override
-	public SoundClip music_gameover() {
-		return mp3("ending");
-	}
-
-	@Override
-	public SoundClip snd_die() {
-		return mp3("die");
-	}
-
-	@Override
-	public SoundClip snd_eatFruit() {
-		return mp3("eat-fruit");
-	}
-
-	@Override
-	public SoundClip snd_eatGhost() {
-		return mp3("eat-ghost");
-	}
-
-	@Override
-	public SoundClip snd_eatPill() {
-		return mp3("eating");
-	}
-
-	@Override
-	public SoundClip snd_extraLife() {
-		return mp3("extra-life");
-	}
-
-	@Override
-	public SoundClip snd_insertCoin() {
-		return mp3("insert-coin");
-	}
-
-	@Override
-	public SoundClip snd_ready() {
-		return mp3("ready");
-	}
-
-	@Override
-	public SoundClip snd_ghost_dead() {
-		return mp3("ghost-dead");
-	}
-
-	@Override
-	public SoundClip snd_ghost_chase() {
-		return mp3("ghost-chase");
-	}
-
-	@Override
-	public SoundClip snd_waza() {
-		return mp3("waza");
-	}
 }

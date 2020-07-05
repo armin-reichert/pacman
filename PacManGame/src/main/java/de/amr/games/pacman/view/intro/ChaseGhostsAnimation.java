@@ -7,7 +7,8 @@ import java.awt.Graphics2D;
 import de.amr.easy.game.entity.GameObject;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.view.theme.Theme;
+import de.amr.games.pacman.controller.sound.PacManSoundManager;
+import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 /**
  * An animation showing Pac-Man chasing the ghosts and scoring points for each killed ghost.
@@ -16,7 +17,7 @@ import de.amr.games.pacman.view.theme.Theme;
  */
 public class ChaseGhostsAnimation extends GameObject {
 
-	private final Theme theme;
+	private final PacManSoundManager soundManager;
 	private final Sprite pacMan;
 	private final Sprite ghost;
 	private final Sprite[] points = new Sprite[4];
@@ -26,8 +27,8 @@ public class ChaseGhostsAnimation extends GameObject {
 	private float pacManX;
 	private int ghostsKilled;
 
-	public ChaseGhostsAnimation(Theme theme) {
-		this.theme = theme;
+	public ChaseGhostsAnimation(ArcadeTheme theme, PacManSoundManager soundManager) {
+		this.soundManager = soundManager;
 		pacMan = theme.spr_pacManWalking(RIGHT);
 		ghost = theme.spr_ghostFrightened();
 		int i = 0;
@@ -60,13 +61,13 @@ public class ChaseGhostsAnimation extends GameObject {
 	public void start() {
 		init();
 		tf.vx = .8f;
-		theme.snd_eatPill().loop();
+		soundManager.snd_eatPill().loop();
 	}
 
 	@Override
 	public void stop() {
 		tf.vx = 0;
-		theme.snd_eatPill().stop();
+		soundManager.snd_eatPill().stop();
 	}
 
 	@Override

@@ -39,7 +39,7 @@ class FollowTargetTilesTestUI extends TestUI {
 		super.init();
 		targets = Arrays.asList(world.capeNW(), world.capeNE(), world.capeSE(), world.pacManBed().tile, world.capeSW());
 		current = 0;
-		theme.snd_ghost_chase().volume(0);
+		soundManager.snd_ghost_chase().volume(0);
 		include(blinky);
 		blinky.init();
 		blinky.placeAt(targets.get(0));

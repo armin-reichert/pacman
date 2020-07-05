@@ -15,6 +15,7 @@ import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.DefaultPopulation;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.sound.PacManSoundManager;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.Population;
@@ -22,7 +23,6 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.play.EnhancedPlayView;
 import de.amr.games.pacman.view.play.PlayView.RenderingStyle;
 import de.amr.games.pacman.view.theme.ArcadeTheme;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class TestUI implements Lifecycle, VisualController {
 
@@ -31,7 +31,8 @@ public class TestUI implements Lifecycle, VisualController {
 	protected final Population people;
 	protected final PacMan pacMan;
 	protected final Ghost blinky, pinky, inky, clyde;
-	protected final Theme theme;
+	protected final ArcadeTheme theme;
+	protected final PacManSoundManager soundManager;
 	protected EnhancedPlayView view;
 
 	@Override
@@ -58,8 +59,10 @@ public class TestUI implements Lifecycle, VisualController {
 		pinky = people.pinky();
 		inky = people.inky();
 		clyde = people.clyde();
-		
+
 		theme = new ArcadeTheme();
+		soundManager = new PacManSoundManager(world);
+
 		game = new Game(1, world.totalFoodCount());
 		people.play(game);
 
@@ -72,7 +75,7 @@ public class TestUI implements Lifecycle, VisualController {
 		view.turnScoresOff();
 		view.init();
 	}
-	
+
 	@Override
 	public void init() {
 		world.population().creatures().forEach(Creature::init);
