@@ -9,18 +9,20 @@ import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.render.IScoreRenderer;
+import de.amr.games.pacman.view.render.IRenderer;
 
-public class ScoreRenderer implements IScoreRenderer {
+public class ScoreRenderer implements IRenderer {
 
 	private final World world;
+	private final Game game;
 
-	public ScoreRenderer(World world) {
+	public ScoreRenderer(World world, Game game) {
 		this.world = world;
+		this.game = game;
 	}
 
 	@Override
-	public void draw(Graphics2D g, Game game) {
+	public void draw(Graphics2D g) {
 		drawScores(g, game);
 		drawLives(g, game);
 		drawLevelCounter(g, game);

@@ -14,7 +14,6 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.render.IRenderer;
-import de.amr.games.pacman.view.render.IScoreRenderer;
 import de.amr.games.pacman.view.render.IWorldRenderer;
 import de.amr.games.pacman.view.render.sprite.ScoreRenderer;
 import de.amr.games.pacman.view.render.sprite.TextRenderer;
@@ -38,11 +37,11 @@ public class PlayView implements LivingView {
 		}
 	}
 
-	public static IScoreRenderer createScoreRenderer(RenderingStyle style, World world) {
+	public static IRenderer createScoreRenderer(RenderingStyle style, World world, Game game) {
 		if (style == RenderingStyle.ARCADE) {
-			return new de.amr.games.pacman.view.render.sprite.ScoreRenderer(world);
+			return new de.amr.games.pacman.view.render.sprite.ScoreRenderer(world, game);
 		} else {
-			return new de.amr.games.pacman.view.render.block.ScoreRenderer(world);
+			return new de.amr.games.pacman.view.render.block.ScoreRenderer(world, game);
 		}
 	}
 
@@ -75,7 +74,7 @@ public class PlayView implements LivingView {
 	public RenderingStyle style;
 
 	protected IWorldRenderer worldRenderer;
-	protected IScoreRenderer scoreRenderer;
+	protected IRenderer scoreRenderer;
 	protected TextRenderer textRenderer;
 	protected IRenderer pacManRenderer;
 	protected Map<Ghost, IRenderer> ghostRenderer = new HashMap<>();
@@ -88,7 +87,7 @@ public class PlayView implements LivingView {
 		this.width = width;
 		this.height = height;
 		showingScores = true;
-		scoreRenderer = new ScoreRenderer(world);
+		scoreRenderer = new ScoreRenderer(world, game);
 		textRenderer = new TextRenderer();
 		style = RenderingStyle.ARCADE;
 		updateRenderers(world);
@@ -96,7 +95,7 @@ public class PlayView implements LivingView {
 
 	public void updateRenderers(World world) {
 		worldRenderer = createWorldRenderer(style, world);
-		scoreRenderer = createScoreRenderer(style, world);
+		scoreRenderer = createScoreRenderer(style, world, game);
 		pacManRenderer = createPacManRenderer(style, world, world.population().pacMan());
 		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, createGhostRenderer(style, ghost)));
 	}
@@ -186,8 +185,8 @@ public class PlayView implements LivingView {
 	}
 
 	protected void drawScores(Graphics2D g) {
-		if (game != null && showingScores) {
-			scoreRenderer.draw(g, game);
+		if (showingScores) {
+			scoreRenderer.draw(g);
 		}
 	}
 }

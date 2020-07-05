@@ -15,16 +15,18 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.render.IScoreRenderer;
+import de.amr.games.pacman.view.render.IRenderer;
 
-public class ScoreRenderer implements IScoreRenderer {
+public class ScoreRenderer implements IRenderer {
 
 	private final World world;
+	private final Game game;
 	private final Image pacManLookingLeft;
 	private final Map<Symbol, Image> bonusImages = new HashMap<Symbol, Image>();
 
-	public ScoreRenderer(World world) {
+	public ScoreRenderer(World world, Game game) {
 		this.world = world;
+		this.game = game;
 		pacManLookingLeft = ArcadeSprites.BUNDLE.spr_pacManWalking(LEFT).frame(1);
 		for (Symbol symbol : Symbol.values()) {
 			bonusImages.put(symbol, ArcadeSprites.BUNDLE.spr_bonusSymbol(symbol.name()).frame(0));
@@ -32,7 +34,7 @@ public class ScoreRenderer implements IScoreRenderer {
 	}
 
 	@Override
-	public void draw(Graphics2D g, Game game) {
+	public void draw(Graphics2D g) {
 		drawScores(g, game);
 		drawLives(g, game);
 		drawLevelCounter(g, game);
