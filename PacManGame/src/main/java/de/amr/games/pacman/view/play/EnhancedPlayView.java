@@ -10,11 +10,11 @@ import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.theme.arcade.ActorRoutesRenderer;
+import de.amr.games.pacman.view.theme.IRenderer;
 import de.amr.games.pacman.view.theme.arcade.ActorStatesRenderer;
 import de.amr.games.pacman.view.theme.arcade.GhostHouseStateRenderer;
 import de.amr.games.pacman.view.theme.arcade.GridRenderer;
-import de.amr.games.pacman.view.theme.arcade.Rendering;
+import de.amr.games.pacman.view.theme.common.Rendering;
 
 /**
  * An extended play view that can visualize actor states, the ghost house pellet counters, ghost
@@ -38,14 +38,14 @@ public class EnhancedPlayView extends PlayView {
 	private boolean showingStates;
 
 	private final GridRenderer gridRenderer;
-	private final ActorRoutesRenderer actorRoutesRenderer;
+	private final IRenderer actorRoutesRenderer;
 	private final ActorStatesRenderer actorStatesRenderer;
 	private final GhostHouseStateRenderer ghostHouseStateRenderer;
 
 	public EnhancedPlayView(World world, Game game, int width, int height) {
 		super(world, game, width, height);
 		gridRenderer = new GridRenderer(world);
-		actorRoutesRenderer = new ActorRoutesRenderer(world);
+		actorRoutesRenderer = theme.createActorRoutesRenderer(world);
 		actorStatesRenderer = new ActorStatesRenderer(world);
 		ghostHouseStateRenderer = new GhostHouseStateRenderer(world);
 		frameRateDisplay = new FrameRateWidget();

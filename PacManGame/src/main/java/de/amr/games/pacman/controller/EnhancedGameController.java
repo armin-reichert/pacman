@@ -81,8 +81,11 @@ public class EnhancedGameController extends GameController {
 		} else if (Keyboard.keyPressedOnce("x")) {
 			toggleGhostsHarmless();
 		} else if (Keyboard.keyPressedOnce("z")) {
-			playView.themeName = playView.themeName == ThemeName.ARCADE ? ThemeName.BLOCKS : ThemeName.ARCADE;
-			playView.updateTheme();
+			if (playView.getTheme().name() == ThemeName.ARCADE) {
+				playView.setTheme(ThemeName.BLOCKS);
+			} else {
+				playView.setTheme(ThemeName.ARCADE);
+			}
 		} else if (Keyboard.keyPressedOnce("+")) {
 			switchToNextLevel();
 		}

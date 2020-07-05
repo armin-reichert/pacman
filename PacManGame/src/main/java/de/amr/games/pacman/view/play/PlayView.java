@@ -36,7 +36,7 @@ public class PlayView implements LivingView {
 	protected String[] messageTexts = new String[2];
 	protected Color[] messageColors = new Color[2];
 
-	public ThemeName themeName;
+	protected Theme theme;
 
 	protected IWorldRenderer worldRenderer;
 	protected IRenderer scoreRenderer;
@@ -56,12 +56,15 @@ public class PlayView implements LivingView {
 		showingScores = true;
 		scoreRenderer = new ScoreRenderer(game);
 		messagesRenderer = new MessagesRenderer();
-		themeName = ThemeName.ARCADE;
-		updateTheme();
+		setTheme(ThemeName.ARCADE);
 	}
 
-	public void updateTheme() {
-		Theme theme = Theming.getTheme(themeName);
+	public Theme getTheme() {
+		return theme;
+	}
+
+	public void setTheme(ThemeName themeName) {
+		theme = Theming.getTheme(themeName);
 		worldRenderer = theme.createWorldRenderer(world);
 		liveCounterRenderer = theme.createLiveCounterRenderer(game);
 		levelCounterRenderer = theme.createLevelCounterRenderer(game);

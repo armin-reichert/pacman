@@ -7,7 +7,7 @@ import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.view.theme.arcade.Rendering.ghostColor;
+import static de.amr.games.pacman.view.theme.common.Rendering.ghostColor;
 import static java.lang.Math.round;
 
 import java.awt.BasicStroke;
@@ -25,6 +25,7 @@ import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.view.theme.common.Rendering;
 
 public class ActorStatesRenderer {
 

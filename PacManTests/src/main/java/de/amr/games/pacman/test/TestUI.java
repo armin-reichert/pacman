@@ -67,8 +67,7 @@ public class TestUI implements Lifecycle, VisualController {
 		world.population().ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> ghostSpeedLimit(ghost, game)));
 
 		view = new EnhancedPlayView(world, game, app().settings().width, app().settings().height);
-		view.themeName = ThemeName.ARCADE;
-		view.updateTheme();
+		view.setTheme(ThemeName.ARCADE);
 		view.turnScoresOff();
 		view.init();
 	}
@@ -82,8 +81,11 @@ public class TestUI implements Lifecycle, VisualController {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce("z")) {
-			view.themeName = view.themeName == ThemeName.ARCADE ? ThemeName.BLOCKS : ThemeName.ARCADE;
-			view.updateTheme();
+			if (view.getTheme().name() == ThemeName.ARCADE) {
+				view.setTheme(ThemeName.BLOCKS);
+			} else {
+				view.setTheme(ThemeName.ARCADE);
+			}
 		}
 		if (Keyboard.keyPressedOnce("g")) {
 			if (view.isShowingGrid()) {

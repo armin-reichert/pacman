@@ -10,13 +10,25 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.IRenderer;
 import de.amr.games.pacman.view.theme.IWorldRenderer;
 import de.amr.games.pacman.view.theme.Theme;
+import de.amr.games.pacman.view.theme.Theming.ThemeName;
+import de.amr.games.pacman.view.theme.common.ActorRoutesRenderer;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
 public class ArcadeTheme implements Theme {
+	
+	@Override
+	public ThemeName name() {
+		return ThemeName.ARCADE;
+	}
 
 	@Override
 	public IWorldRenderer createWorldRenderer(World world) {
 		return new de.amr.games.pacman.view.theme.arcade.WorldRenderer(world);
+	}
+	
+	@Override
+	public IRenderer createActorRoutesRenderer(World world) {
+		return new ActorRoutesRenderer(world);
 	}
 
 	@Override

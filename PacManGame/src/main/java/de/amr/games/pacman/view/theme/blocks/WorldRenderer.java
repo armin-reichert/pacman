@@ -11,7 +11,7 @@ import de.amr.games.pacman.model.world.core.Door.DoorState;
 import de.amr.games.pacman.view.theme.IWorldRenderer;
 import de.amr.games.pacman.model.world.core.Tile;
 
-public class WorldRenderer implements IWorldRenderer {
+class WorldRenderer implements IWorldRenderer {
 
 	private final World world;
 

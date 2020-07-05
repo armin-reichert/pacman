@@ -8,7 +8,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.IRenderer;
 
-public class LiveCounterRenderer implements IRenderer {
+class LiveCounterRenderer implements IRenderer {
 
 	private final Game game;
 

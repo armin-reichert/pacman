@@ -13,6 +13,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.view.theme.common.Rendering;
 
 public class GhostHouseStateRenderer {
 

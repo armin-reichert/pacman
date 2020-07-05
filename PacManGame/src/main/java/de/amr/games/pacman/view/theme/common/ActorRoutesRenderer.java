@@ -1,10 +1,10 @@
-package de.amr.games.pacman.view.theme.arcade;
+package de.amr.games.pacman.view.theme.common;
 
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
-import static de.amr.games.pacman.view.theme.arcade.Rendering.alpha;
-import static de.amr.games.pacman.view.theme.arcade.Rendering.drawDirectionIndicator;
-import static de.amr.games.pacman.view.theme.arcade.Rendering.ghostColor;
+import static de.amr.games.pacman.view.theme.common.Rendering.alpha;
+import static de.amr.games.pacman.view.theme.common.Rendering.drawDirectionIndicator;
+import static de.amr.games.pacman.view.theme.common.Rendering.ghostColor;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -20,8 +20,9 @@ import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.view.theme.IRenderer;
 
-public class ActorRoutesRenderer {
+public class ActorRoutesRenderer implements IRenderer {
 
 	private final World world;
 
@@ -29,6 +30,7 @@ public class ActorRoutesRenderer {
 		this.world = world;
 	}
 
+	@Override
 	public void draw(Graphics2D g) {
 		drawGhostRoutes(g);
 	}
