@@ -46,15 +46,15 @@ public class PlayView implements LivingView {
 		}
 	}
 
-	public static IRenderer createLiveCounterRenderer(RenderingStyle style, World world, Game game) {
+	public static IRenderer createLiveCounterRenderer(RenderingStyle style, Game game) {
 		if (style == RenderingStyle.ARCADE) {
-			return new de.amr.games.pacman.view.render.sprite.LiveCounterRenderer(world, game);
+			return new de.amr.games.pacman.view.render.sprite.LiveCounterRenderer(game);
 		} else {
-			return new de.amr.games.pacman.view.render.block.LiveCounterRenderer(world, game);
+			return new de.amr.games.pacman.view.render.block.LiveCounterRenderer(game);
 		}
 	}
 
-	public static IRenderer createLevelCounterRenderer(RenderingStyle style, World world, Game game) {
+	public static IRenderer createLevelCounterRenderer(RenderingStyle style, Game game) {
 		if (style == RenderingStyle.ARCADE) {
 			return new de.amr.games.pacman.view.render.sprite.LevelCounterRenderer(game);
 		} else {
@@ -114,8 +114,8 @@ public class PlayView implements LivingView {
 
 	public void updateRenderers(World world) {
 		worldRenderer = createWorldRenderer(style, world);
-		liveCounterRenderer = createLiveCounterRenderer(style, world, game);
-		levelCounterRenderer = createLevelCounterRenderer(style, world, game);
+		liveCounterRenderer = createLiveCounterRenderer(style, game);
+		levelCounterRenderer = createLevelCounterRenderer(style, game);
 		scoreRenderer = createScoreRenderer(style, world, game);
 		pacManRenderer = createPacManRenderer(style, world, world.population().pacMan());
 		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, createGhostRenderer(style, ghost)));
@@ -214,12 +214,14 @@ public class PlayView implements LivingView {
 	}
 
 	protected void drawLiveCounter(Graphics2D g) {
+		g.translate(0, world.height() * Tile.SIZE);
 		liveCounterRenderer.draw(g);
+		g.translate(0, -world.height() * Tile.SIZE);
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
-		g.translate((world.width()) * Tile.SIZE, (world.height()) * Tile.SIZE);
+		g.translate(world.width() * Tile.SIZE, world.height() * Tile.SIZE);
 		levelCounterRenderer.draw(g);
-		g.translate(-(world.width()) * Tile.SIZE, -(world.height()) * Tile.SIZE);
+		g.translate(-world.width() * Tile.SIZE, -world.height() * Tile.SIZE);
 	}
 }
