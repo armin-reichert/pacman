@@ -43,14 +43,14 @@ class ScatteringTestUI extends TestUI {
 		});
 		view.turnRoutesOn();
 		view.turnGridOn();
-		view.showMessage(1, "Press SPACE to start", Color.WHITE);
+		view.showMessage(2, "Press SPACE to start", Color.WHITE);
 	}
 
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce(KeyEvent.VK_SPACE)) {
 			ghostsOnStage().forEach(ghost -> ghost.process(new GhostUnlockedEvent()));
-			view.clearMessage(1);
+			view.clearMessage(2);
 		}
 		super.update();
 	}
