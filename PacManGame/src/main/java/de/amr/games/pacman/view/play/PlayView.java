@@ -4,10 +4,12 @@ import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
 import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.amr.easy.game.assets.Assets;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
@@ -39,7 +41,10 @@ public class PlayView implements LivingView {
 	}
 
 	public static IRenderer createScoreRenderer(RenderingStyle style, Game game) {
-		return new de.amr.games.pacman.view.render.common.ScoreRenderer(game);
+		ScoreRenderer renderer = new de.amr.games.pacman.view.render.common.ScoreRenderer(game);
+		Font font = style == RenderingStyle.ARCADE ? Assets.font("font.hud") : new Font(Font.MONOSPACED, Font.BOLD, 8);
+		renderer.setFont(font);
+		return renderer;
 	}
 
 	public static IRenderer createLiveCounterRenderer(RenderingStyle style, Game game) {

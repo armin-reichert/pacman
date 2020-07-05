@@ -1,6 +1,7 @@
 package de.amr.games.pacman.view.render.common;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
@@ -13,9 +14,15 @@ import de.amr.games.pacman.view.render.IRenderer;
 public class ScoreRenderer implements IRenderer {
 
 	private final Game game;
+	private Font font;
 
 	public ScoreRenderer(Game game) {
 		this.game = game;
+		font = Assets.font("font.hud");
+	}
+
+	public void setFont(Font font) {
+		this.font = font;
 	}
 
 	@Override
@@ -26,7 +33,7 @@ public class ScoreRenderer implements IRenderer {
 		int col;
 		g.translate(0, topMargin); // margin between score and upper window border
 		try (Pen pen = new Pen(g)) {
-			pen.font(Assets.font("font.hud"));
+			pen.font(font);
 
 			// Game score
 			col = 1;
