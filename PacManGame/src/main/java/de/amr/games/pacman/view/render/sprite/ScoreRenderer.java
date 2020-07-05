@@ -1,7 +1,5 @@
 package de.amr.games.pacman.view.render.sprite;
 
-import static de.amr.games.pacman.model.Direction.LEFT;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -21,13 +19,11 @@ public class ScoreRenderer implements IRenderer {
 
 	private final World world;
 	private final Game game;
-	private final Image pacManLookingLeft;
 	private final Map<Symbol, Image> bonusImages = new HashMap<Symbol, Image>();
 
 	public ScoreRenderer(World world, Game game) {
 		this.world = world;
 		this.game = game;
-		pacManLookingLeft = ArcadeSprites.BUNDLE.spr_pacManWalking(LEFT).frame(1);
 		for (Symbol symbol : Symbol.values()) {
 			bonusImages.put(symbol, ArcadeSprites.BUNDLE.spr_bonusSymbol(symbol.name()).frame(0));
 		}
@@ -36,7 +32,6 @@ public class ScoreRenderer implements IRenderer {
 	@Override
 	public void draw(Graphics2D g) {
 		drawScores(g, game);
-		drawLives(g, game);
 		drawLevelCounter(g, game);
 	}
 
@@ -89,13 +84,6 @@ public class ScoreRenderer implements IRenderer {
 			pen.up(lineOffset);
 		}
 		g.translate(0, -topMargin);
-	}
-
-	protected void drawLives(Graphics2D g, Game game) {
-		int sz = 2 * Tile.SIZE;
-		for (int i = 0, x = sz; i < game.lives; ++i, x += sz) {
-			g.drawImage(pacManLookingLeft, x, world.height() * Tile.SIZE - sz, null);
-		}
 	}
 
 	protected void drawLevelCounter(Graphics2D g, Game game) {

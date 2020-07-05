@@ -84,6 +84,7 @@ public class EnhancedPlayView extends PlayView {
 			}
 		}
 		drawScores(g);
+		drawLiveCounter(g);
 	}
 
 	public boolean isShowingFrameRate() {

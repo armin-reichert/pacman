@@ -24,7 +24,6 @@ public class ScoreRenderer implements IRenderer {
 	@Override
 	public void draw(Graphics2D g) {
 		drawScores(g, game);
-		drawLives(g, game);
 		drawLevelCounter(g, game);
 	}
 
@@ -77,16 +76,6 @@ public class ScoreRenderer implements IRenderer {
 			pen.up(lineOffset);
 		}
 		g.translate(0, -topMargin);
-	}
-
-	protected void drawLives(Graphics2D g, Game game) {
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		int sz = 2 * Tile.SIZE;
-		for (int i = 0, x = sz; i < game.lives; ++i, x += sz) {
-			g.setColor(Color.YELLOW);
-			g.fillOval(x, world.height() * Tile.SIZE - sz, Tile.SIZE, Tile.SIZE);
-		}
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 
 	protected void drawLevelCounter(Graphics2D g, Game game) {

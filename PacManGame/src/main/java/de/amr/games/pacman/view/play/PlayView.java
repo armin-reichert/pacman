@@ -15,8 +15,8 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.render.IRenderer;
 import de.amr.games.pacman.view.render.IWorldRenderer;
+import de.amr.games.pacman.view.render.common.MessagesRenderer;
 import de.amr.games.pacman.view.render.sprite.ScoreRenderer;
-import de.amr.games.pacman.view.render.sprite.MessagesRenderer;
 
 /**
  * Simple play view providing the core functionality for playing.
@@ -45,6 +45,14 @@ public class PlayView implements LivingView {
 		}
 	}
 
+	public static IRenderer createLiveCounterRenderer(RenderingStyle style, World world, Game game) {
+		if (style == RenderingStyle.ARCADE) {
+			return new de.amr.games.pacman.view.render.sprite.LiveCounterRenderer(world, game);
+		} else {
+			return new de.amr.games.pacman.view.render.block.LiveCounterRenderer(world, game);
+		}
+	}
+	
 	public static IRenderer createPacManRenderer(RenderingStyle style, World world, PacMan pacMan) {
 		if (style == RenderingStyle.ARCADE) {
 			return new de.amr.games.pacman.view.render.sprite.PacManRenderer(world, pacMan);
@@ -75,6 +83,7 @@ public class PlayView implements LivingView {
 
 	protected IWorldRenderer worldRenderer;
 	protected IRenderer scoreRenderer;
+	protected IRenderer liveCounterRenderer;
 	protected MessagesRenderer messagesRenderer;
 	protected IRenderer pacManRenderer;
 	protected Map<Ghost, IRenderer> ghostRenderer = new HashMap<>();
@@ -95,6 +104,7 @@ public class PlayView implements LivingView {
 
 	public void updateRenderers(World world) {
 		worldRenderer = createWorldRenderer(style, world);
+		liveCounterRenderer = createLiveCounterRenderer(style, world, game);
 		scoreRenderer = createScoreRenderer(style, world, game);
 		pacManRenderer = createPacManRenderer(style, world, world.population().pacMan());
 		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, createGhostRenderer(style, ghost)));
@@ -113,6 +123,7 @@ public class PlayView implements LivingView {
 	@Override
 	public void draw(Graphics2D g) {
 		drawScores(g);
+		drawLiveCounter(g);
 		drawWorld(g);
 		drawMessages(g);
 		drawActors(g);
@@ -188,5 +199,9 @@ public class PlayView implements LivingView {
 		if (showingScores) {
 			scoreRenderer.draw(g);
 		}
+	}
+	
+	protected void drawLiveCounter(Graphics2D g) {
+		liveCounterRenderer.draw(g);
 	}
 }

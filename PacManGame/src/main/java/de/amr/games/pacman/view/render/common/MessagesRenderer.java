@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.render.sprite;
+package de.amr.games.pacman.view.render.common;
 
 import java.awt.Color;
 import java.awt.Font;
