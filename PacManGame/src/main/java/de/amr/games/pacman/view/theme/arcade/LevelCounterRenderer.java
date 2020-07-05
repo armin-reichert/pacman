@@ -18,7 +18,7 @@ public class LevelCounterRenderer implements IRenderer {
 	public LevelCounterRenderer(Game game) {
 		this.game = game;
 		for (Symbol symbol : Symbol.values()) {
-			bonusImages.put(symbol, ArcadeSprites.BUNDLE.spr_bonusSymbol(symbol.name()).frame(0));
+			bonusImages.put(symbol, ArcadeThemeResources.BUNDLE.spr_bonusSymbol(symbol.name()).frame(0));
 		}
 	}
 

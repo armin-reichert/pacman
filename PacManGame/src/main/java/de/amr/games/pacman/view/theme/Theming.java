@@ -5,18 +5,21 @@ import de.amr.games.pacman.view.theme.blocks.BlocksTheme;
 
 public class Theming {
 
+	private static final Theme ARCADE_THEME = new ArcadeTheme();
+	private static final Theme BLOCKS_THEME = new BlocksTheme();
+
 	public enum ThemeName {
-		ARCADE, BLOCKS
+		ARCADE, BLOCKS;
 	}
 
-	public static Theme getTheme(ThemeName themeName) {
-		switch (themeName) {
+	public static Theme getTheme(ThemeName name) {
+		switch (name) {
 		case ARCADE:
-			return new ArcadeTheme();
+			return ARCADE_THEME;
 		case BLOCKS:
-			return new BlocksTheme();
+			return BLOCKS_THEME;
 		default:
-			throw new IllegalArgumentException("Unknown theme: " + themeName);
+			throw new IllegalArgumentException("Unknown theme: " + name);
 		}
 	}
 }

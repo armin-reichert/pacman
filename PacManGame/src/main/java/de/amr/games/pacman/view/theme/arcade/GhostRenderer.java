@@ -14,7 +14,7 @@ public class GhostRenderer extends SpriteEntityRenderer implements IRenderer {
 
 	public GhostRenderer(Ghost ghost) {
 		this.ghost = ghost;
-		ArcadeSprites arcadeSprites = ArcadeSprites.BUNDLE;
+		ArcadeThemeResources arcadeSprites = ArcadeThemeResources.BUNDLE;
 		Direction.dirs().forEach(dir -> {
 			sprites.set("color-" + dir, arcadeSprites.spr_ghostColored(ghost.color, dir));
 			sprites.set("eyes-" + dir, arcadeSprites.spr_ghostEyes(dir));

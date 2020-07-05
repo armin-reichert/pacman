@@ -26,7 +26,7 @@ import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
-import de.amr.games.pacman.view.theme.arcade.ArcadeSprites;
+import de.amr.games.pacman.view.theme.arcade.ArcadeThemeResources;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 
@@ -43,7 +43,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 
 	private int width;
 	private int height;
-	private ArcadeSprites theme;
+	private ArcadeThemeResources theme;
 	private PacManSoundManager soundManager;
 
 	private ImageWidget pacManLogo;

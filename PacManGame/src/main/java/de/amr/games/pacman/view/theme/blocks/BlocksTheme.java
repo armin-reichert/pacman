@@ -6,12 +6,12 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.IRenderer;
 import de.amr.games.pacman.view.theme.IWorldRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.games.pacman.view.theme.Theming.ThemeName;
-import de.amr.games.pacman.view.theme.common.ActorRoutesRenderer;
-import de.amr.games.pacman.view.theme.common.NullRenderer;
+import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
 public class BlocksTheme implements Theme {
@@ -24,16 +24,6 @@ public class BlocksTheme implements Theme {
 	@Override
 	public IWorldRenderer createWorldRenderer(World world) {
 		return new WorldRenderer(world);
-	}
-
-	@Override
-	public IRenderer createActorRoutesRenderer(World world) {
-		return new ActorRoutesRenderer(world);
-	}
-
-	@Override
-	public IRenderer createActorStatesRenderer(World world) {
-		return new NullRenderer();
 	}
 
 	@Override
@@ -63,4 +53,12 @@ public class BlocksTheme implements Theme {
 	public IRenderer createGhostRenderer(Ghost ghost) {
 		return new GhostRenderer(ghost);
 	}
+	
+	@Override
+	public MessagesRenderer createMessagesRenderer() {
+		MessagesRenderer renderer = new MessagesRenderer();
+		renderer.setFont(new Font(Font.MONOSPACED, Font.BOLD, Tile.SIZE));
+		return renderer;
+	}
+
 }

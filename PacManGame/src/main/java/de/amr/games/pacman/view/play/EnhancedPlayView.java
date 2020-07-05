@@ -6,12 +6,11 @@ import java.awt.Graphics2D;
 
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.games.pacman.controller.GhostCommand;
-import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
+import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.IRenderer;
-import de.amr.games.pacman.view.theme.arcade.ActorStatesRenderer;
 import de.amr.games.pacman.view.theme.arcade.GhostHouseStateRenderer;
 import de.amr.games.pacman.view.theme.arcade.GridRenderer;
 import de.amr.games.pacman.view.theme.common.Rendering;
@@ -25,10 +24,10 @@ import de.amr.games.pacman.view.theme.common.Rendering;
 public class EnhancedPlayView extends PlayView {
 
 	/** Optional ghost house control */
-	public GhostCommand optionalGhostCommand;
+	public GhostCommand ghostCommand;
 
 	/** Optional ghost house reference */
-	public GhostHouseAccessControl optionalHouseAccessControl;
+	public GhostHouseDoorMan doorMan;
 
 	private FrameRateWidget frameRateDisplay;
 
@@ -39,15 +38,16 @@ public class EnhancedPlayView extends PlayView {
 
 	private final GridRenderer gridRenderer;
 	private final IRenderer actorRoutesRenderer;
-	private final ActorStatesRenderer actorStatesRenderer;
+	private final IRenderer actorStatesRenderer;
 	private final GhostHouseStateRenderer ghostHouseStateRenderer;
 
-	public EnhancedPlayView(World world, Game game, int width, int height) {
+	public EnhancedPlayView(World world, Game game, GhostCommand ghostCommand,
+			GhostHouseDoorMan ghostHouseAccessControl, int width, int height) {
 		super(world, game, width, height);
 		gridRenderer = new GridRenderer(world);
-		actorRoutesRenderer = theme.createActorRoutesRenderer(world);
-		actorStatesRenderer = new ActorStatesRenderer(world);
-		ghostHouseStateRenderer = new GhostHouseStateRenderer(world);
+		actorRoutesRenderer = new ActorRoutesRenderer(world);
+		actorStatesRenderer = new ActorStatesRenderer(world, ghostCommand);
+		ghostHouseStateRenderer = new GhostHouseStateRenderer(world, ghostHouseAccessControl);
 		frameRateDisplay = new FrameRateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
@@ -74,14 +74,8 @@ public class EnhancedPlayView extends PlayView {
 			actorRoutesRenderer.draw(g);
 		}
 		if (showingStates) {
-			if (optionalGhostCommand != null) {
-				actorStatesRenderer.setGhostCommand(optionalGhostCommand);
-				actorStatesRenderer.draw(g);
-			}
-			if (optionalHouseAccessControl != null) {
-				ghostHouseStateRenderer.setHouseAccessControl(optionalHouseAccessControl);
-				ghostHouseStateRenderer.draw(g);
-			}
+			actorStatesRenderer.draw(g);
+			ghostHouseStateRenderer.draw(g);
 		}
 		drawScores(g);
 		drawLiveCounter(g);

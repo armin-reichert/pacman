@@ -34,6 +34,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.OneWayTile;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.view.theme.Theming;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 

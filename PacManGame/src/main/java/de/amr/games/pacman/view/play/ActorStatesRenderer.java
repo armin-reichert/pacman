@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme.arcade;
+package de.amr.games.pacman.view.play;
 
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
@@ -35,12 +35,8 @@ public class ActorStatesRenderer implements IRenderer {
 	private final World world;
 	private GhostCommand ghostCommand;
 
-	public ActorStatesRenderer(World world) {
+	public ActorStatesRenderer(World world, GhostCommand ghostCommand) {
 		this.world = world;
-	}
-
-	public void setGhostCommand(GhostCommand ghostCommand) {
-		this.ghostCommand = ghostCommand;
 	}
 
 	@Override

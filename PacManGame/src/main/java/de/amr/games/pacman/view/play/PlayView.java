@@ -19,7 +19,6 @@ import de.amr.games.pacman.view.theme.Theme;
 import de.amr.games.pacman.view.theme.Theming;
 import de.amr.games.pacman.view.theme.Theming.ThemeName;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
-import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
 /**
  * Simple play view providing the core functionality for playing.
@@ -53,14 +52,8 @@ public class PlayView implements LivingView {
 		this.game = game;
 		this.width = width;
 		this.height = height;
-		showingScores = true;
-		scoreRenderer = new ScoreRenderer(game);
-		messagesRenderer = new MessagesRenderer();
+		this.showingScores = true;
 		setTheme(ThemeName.ARCADE);
-	}
-
-	public Theme getTheme() {
-		return theme;
 	}
 
 	public void setTheme(ThemeName themeName) {
@@ -71,6 +64,12 @@ public class PlayView implements LivingView {
 		scoreRenderer = theme.createScoreRenderer(game);
 		pacManRenderer = theme.createPacManRenderer(world, world.population().pacMan());
 		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, theme.createGhostRenderer(ghost)));
+		scoreRenderer = theme.createScoreRenderer(game);
+		messagesRenderer = theme.createMessagesRenderer();
+	}
+
+	public Theme getTheme() {
+		return theme;
 	}
 
 	@Override

@@ -45,7 +45,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
-import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
+import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
 import de.amr.games.pacman.controller.sound.PacManSoundManager;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
@@ -72,7 +72,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected final PacManSoundManager soundManager;
 
 	protected GhostCommand ghostCommand;
-	protected GhostHouseAccessControl ghostHouseAccessControl;
+	protected GhostHouseDoorMan doorMan;
 	protected BonusControl bonusControl;
 
 	protected Game game;
@@ -176,7 +176,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.timeoutAfter(() -> sec(mazeFlashingSeconds() + 6))
 					.onEntry(() -> {
 						pacMan.tf.setVelocity(0, 0);
-						ghostHouseAccessControl.onLevelChange();
+						doorMan.onLevelChange();
 						soundManager.stopAllClips();
 						playView.enableGhostAnimations(false);
 						loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilled);
@@ -356,7 +356,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		game = new Game(settings.startLevel, world.totalFoodCount());
 
 		ghostCommand = new GhostCommand(game, world.population().ghosts());
-		ghostHouseAccessControl = new GhostHouseAccessControl(game, world, world.theHouse());
+		doorMan = new GhostHouseDoorMan(game, world, world.theHouse());
 		bonusControl = new BonusControl(game, world);
 
 		world.setFrozen(true);
@@ -366,9 +366,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
 		world.population().play(game);
 
-		playView = new EnhancedPlayView(world, game, settings.width, settings.height);
-		playView.optionalGhostCommand = ghostCommand;
-		playView.optionalHouseAccessControl = ghostHouseAccessControl;
+		playView = new EnhancedPlayView(world, game, ghostCommand, doorMan, settings.width, settings.height);
+		playView.ghostCommand = ghostCommand;
+		playView.doorMan = doorMan;
 
 		app().f2Dialog().ifPresent(f2 -> f2.selectCustomTab(0));
 	}
@@ -396,7 +396,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		@Override
 		public void onTick() {
 			ghostCommand.update();
-			ghostHouseAccessControl.update();
+			doorMan.update();
 			creaturesOnStage().forEach(Creature::update);
 			bonusControl.update();
 			soundManager.updatePlayingSounds();
@@ -429,7 +429,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			}
 
 			if (!settings.ghostsHarmless) {
-				ghostHouseAccessControl.onLifeLost();
+				doorMan.onLifeLost();
 				soundManager.stopAll();
 				pacMan.process(new PacManKilledEvent(ghost));
 				enqueue(new PacManKilledEvent(ghost));
@@ -462,7 +462,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (game.lives > livesBeforeScoring) {
 				soundManager.extraLife();
 			}
-			ghostHouseAccessControl.onPacManFoundFood();
+			doorMan.onPacManFoundFood();
 
 			if (game.level.remainingFoodCount() == 0) {
 				enqueue(new LevelCompletedEvent());
@@ -501,8 +501,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return Optional.ofNullable(ghostCommand);
 	}
 
-	public Optional<GhostHouseAccessControl> ghostHouseAccess() {
-		return Optional.of(ghostHouseAccessControl);
+	public Optional<GhostHouseDoorMan> ghostHouseAccess() {
+		return Optional.of(doorMan);
 	}
 
 	public Optional<BonusControl> bonusControl() {

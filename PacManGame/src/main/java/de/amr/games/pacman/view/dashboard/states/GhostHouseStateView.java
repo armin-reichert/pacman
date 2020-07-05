@@ -22,9 +22,9 @@ import javax.swing.border.TitledBorder;
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
+import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
 import de.amr.games.pacman.model.world.api.Habitat;
-import de.amr.games.pacman.view.theme.arcade.ArcadeSprites;
+import de.amr.games.pacman.view.theme.arcade.ArcadeThemeResources;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -129,10 +129,10 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	@Override
 	public void init() {
-		Image pinkyImage = ArcadeSprites.BUNDLE.spr_ghostColored(PINK_GHOST, RIGHT).frame(0);
-		Image inkyImage = ArcadeSprites.BUNDLE.spr_ghostColored(CYAN_GHOST, RIGHT).frame(0);
-		Image clydeImage = ArcadeSprites.BUNDLE.spr_ghostColored(ORANGE_GHOST, RIGHT).frame(0);
-		Image pacManImage = ArcadeSprites.BUNDLE.spr_pacManWalking(RIGHT).frame(0);
+		Image pinkyImage = ArcadeThemeResources.BUNDLE.spr_ghostColored(PINK_GHOST, RIGHT).frame(0);
+		Image inkyImage = ArcadeThemeResources.BUNDLE.spr_ghostColored(CYAN_GHOST, RIGHT).frame(0);
+		Image clydeImage = ArcadeThemeResources.BUNDLE.spr_ghostColored(ORANGE_GHOST, RIGHT).frame(0);
+		Image pacManImage = ArcadeThemeResources.BUNDLE.spr_pacManWalking(RIGHT).frame(0);
 		setLabelIconOnly(lblPinkyDots, scaledIcon(pinkyImage, 30));
 		setLabelIconOnly(lblInkyDots, scaledIcon(inkyImage, 30));
 		setLabelIconOnly(lblClydeDots, scaledIcon(clydeImage, 30));
@@ -172,7 +172,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		label.setIcon(icon);
 	}
 
-	private Color trafficLightColor(GhostHouseAccessControl house, Ghost ghost) {
+	private Color trafficLightColor(GhostHouseDoorMan house, Ghost ghost) {
 		if (!ghost.isInsideHouse()) {
 			return null;
 		}
@@ -183,7 +183,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		return ghost == next ? Color.YELLOW : Color.RED;
 	}
 
-	private void updateTrafficLight(TrafficLightsWidget trafficLight, GhostHouseAccessControl house, Ghost ghost) {
+	private void updateTrafficLight(TrafficLightsWidget trafficLight, GhostHouseDoorMan house, Ghost ghost) {
 		Color color = trafficLightColor(house, ghost);
 		if (color != null) {
 			trafficLight.setVisible(true);
@@ -195,7 +195,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		}
 	}
 
-	private String formatDots(GhostHouseAccessControl house, Ghost ghost) {
+	private String formatDots(GhostHouseDoorMan house, Ghost ghost) {
 		return String.format("%d p:%d g:%d", house.ghostDotCount(ghost), house.personalDotLimit(ghost),
 				house.globalDotLimit(ghost));
 	}

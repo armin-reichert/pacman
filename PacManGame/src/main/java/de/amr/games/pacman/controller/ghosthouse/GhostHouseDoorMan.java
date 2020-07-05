@@ -30,7 +30,7 @@ import de.amr.games.pacman.model.world.core.Tile;
  * @see <a href=
  *      "https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Gamasutra</a>
  */
-public class GhostHouseAccessControl implements Lifecycle {
+public class GhostHouseDoorMan implements Lifecycle {
 
 	private final Game game;
 	private final World world;
@@ -43,7 +43,7 @@ public class GhostHouseAccessControl implements Lifecycle {
 	private final int[] ghostCounters;
 	private int pacManStarvingTicks;
 
-	public GhostHouseAccessControl(Game game, World world, House house) {
+	public GhostHouseDoorMan(Game game, World world, House house) {
 		this.game = game;
 		this.world = world;
 		this.house = house;

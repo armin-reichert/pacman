@@ -5,9 +5,10 @@ import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.Theming.ThemeName;
+import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 
 public interface Theme {
-	
+
 	ThemeName name();
 
 	IRenderer createGhostRenderer(Ghost ghost);
@@ -22,8 +23,5 @@ public interface Theme {
 
 	IWorldRenderer createWorldRenderer(World world);
 
-	IRenderer createActorRoutesRenderer(World world);
-	
-	IRenderer createActorStatesRenderer(World world);
-
+	MessagesRenderer createMessagesRenderer();
 }

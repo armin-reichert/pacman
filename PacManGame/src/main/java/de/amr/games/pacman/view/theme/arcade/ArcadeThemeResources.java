@@ -21,13 +21,13 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 
 /**
- * Theme based on original(?) sprites.
+ * Resources for Arcade theme.
  * 
  * @author Armin Reichert
  */
-public class ArcadeSprites {
+public class ArcadeThemeResources {
 
-	public static final ArcadeSprites BUNDLE = new ArcadeSprites();
+	public static final ArcadeThemeResources BUNDLE = new ArcadeThemeResources();
 
 	private final int tileSize = 16;
 
@@ -90,7 +90,7 @@ public class ArcadeSprites {
 		return copy;
 	}
 
-	private ArcadeSprites() {
+	private ArcadeThemeResources() {
 		storeTrueTypeFont("font.hud", "PressStart2P-Regular.ttf", Font.PLAIN, 8);
 
 		// debugger told me RGB value of blue color in maze image

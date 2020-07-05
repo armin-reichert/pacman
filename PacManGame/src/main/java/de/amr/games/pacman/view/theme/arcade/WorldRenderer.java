@@ -16,8 +16,8 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Door.DoorState;
-import de.amr.games.pacman.view.theme.IWorldRenderer;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.view.theme.IWorldRenderer;
 
 public class WorldRenderer implements IWorldRenderer {
 
@@ -32,15 +32,15 @@ public class WorldRenderer implements IWorldRenderer {
 		this.world = world;
 		fnEatenFoodColor = tile -> Color.BLACK;
 		for (Symbol symbol : Symbol.values()) {
-			symbolImages.put(symbol.name(), ArcadeSprites.BUNDLE.spr_bonusSymbol(symbol.name()).frame(0));
+			symbolImages.put(symbol.name(), ArcadeThemeResources.BUNDLE.spr_bonusSymbol(symbol.name()).frame(0));
 		}
 		for (int points : Game.POINTS_BONUS) {
-			pointsImages.put(points, ArcadeSprites.BUNDLE.spr_number(points).frame(0));
+			pointsImages.put(points, ArcadeThemeResources.BUNDLE.spr_number(points).frame(0));
 
 		}
 		mazeSprites = new SpriteMap();
-		mazeSprites.set("maze-full", ArcadeSprites.BUNDLE.spr_fullMaze());
-		mazeSprites.set("maze-flashing", ArcadeSprites.BUNDLE.spr_flashingMaze());
+		mazeSprites.set("maze-full", ArcadeThemeResources.BUNDLE.spr_fullMaze());
+		mazeSprites.set("maze-flashing", ArcadeThemeResources.BUNDLE.spr_flashingMaze());
 		energizerAnimation = new CyclicAnimation(2);
 		energizerAnimation.setFrameDuration(150);
 		energizerAnimation.setEnabled(false);
