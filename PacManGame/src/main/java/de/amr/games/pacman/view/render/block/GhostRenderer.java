@@ -9,13 +9,12 @@ import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.render.api.IRenderer;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class GhostRenderer implements IRenderer {
 
 	private final Ghost ghost;
 
-	public GhostRenderer(Ghost ghost, Theme theme) {
+	public GhostRenderer(Ghost ghost) {
 		this.ghost = ghost;
 	}
 

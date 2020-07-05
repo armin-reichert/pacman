@@ -12,10 +12,10 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.render.sprite.ActorRoutesRenderer;
 import de.amr.games.pacman.view.render.sprite.ActorStatesRenderer;
+import de.amr.games.pacman.view.render.sprite.ArcadeSprites;
 import de.amr.games.pacman.view.render.sprite.GhostHouseStateRenderer;
 import de.amr.games.pacman.view.render.sprite.GridRenderer;
 import de.amr.games.pacman.view.render.sprite.Rendering;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 /**
  * An extended play view that can visualize actor states, the ghost house pellet counters, ghost
@@ -43,7 +43,7 @@ public class EnhancedPlayView extends PlayView {
 	private final ActorStatesRenderer actorStatesRenderer;
 	private final GhostHouseStateRenderer ghostHouseStateRenderer;
 
-	public EnhancedPlayView(World world, ArcadeTheme theme, Game game, int width, int height) {
+	public EnhancedPlayView(World world, ArcadeSprites theme, Game game, int width, int height) {
 		super(world, theme, game, width, height);
 		gridRenderer = new GridRenderer(world, theme);
 		actorRoutesRenderer = new ActorRoutesRenderer(world, theme);

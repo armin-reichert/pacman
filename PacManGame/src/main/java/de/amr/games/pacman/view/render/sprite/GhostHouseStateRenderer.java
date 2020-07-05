@@ -13,7 +13,6 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 public class GhostHouseStateRenderer {
 
@@ -21,7 +20,7 @@ public class GhostHouseStateRenderer {
 	private final Image inkyImage, clydeImage, pacManImage;
 	private GhostHouseAccessControl houseAccessControl;
 
-	public GhostHouseStateRenderer(World world, ArcadeTheme theme) {
+	public GhostHouseStateRenderer(World world, ArcadeSprites theme) {
 		this.world = world;
 		inkyImage = theme.spr_ghostColored(Population.CYAN_GHOST, Direction.RIGHT).frame(0);
 		clydeImage = theme.spr_ghostColored(Population.ORANGE_GHOST, Direction.RIGHT).frame(0);

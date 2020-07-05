@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme;
+package de.amr.games.pacman.view.render.sprite;
 
 import static de.amr.easy.game.Application.loginfo;
 import static de.amr.easy.game.assets.Assets.storeTrueTypeFont;
@@ -25,7 +25,7 @@ import de.amr.games.pacman.model.world.arcade.Symbol;
  * 
  * @author Armin Reichert
  */
-public class ArcadeTheme implements Theme {
+public class ArcadeSprites {
 
 	private final int tileSize = 16;
 
@@ -88,7 +88,7 @@ public class ArcadeTheme implements Theme {
 		return copy;
 	}
 
-	public ArcadeTheme() {
+	public ArcadeSprites() {
 		storeTrueTypeFont("font.hud", "PressStart2P-Regular.ttf", Font.PLAIN, 8);
 
 		// debugger told me RGB value of blue color in maze image
@@ -146,7 +146,6 @@ public class ArcadeTheme implements Theme {
 		return Sprite.of(index < 4 ? greenNumbers[index] : pinkNumbers[index - 4]);
 	}
 
-	@Override
 	public BufferedImage img_logo() {
 		return logo;
 	}
@@ -195,10 +194,4 @@ public class ArcadeTheme implements Theme {
 	public Sprite spr_ghostEyes(Direction dir) {
 		return Sprite.of(ghostEyes[sheetOrder(dir)]);
 	}
-
-	@Override
-	public Font fnt_text() {
-		return Assets.font("font.hud");
-	}
-
 }

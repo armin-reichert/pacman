@@ -20,13 +20,12 @@ import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class ActorRoutesRenderer {
 	
 	private final World world;
 
-	public ActorRoutesRenderer(World world, Theme theme) {
+	public ActorRoutesRenderer(World world, ArcadeSprites sprites) {
 		this.world = world;
 	}
 

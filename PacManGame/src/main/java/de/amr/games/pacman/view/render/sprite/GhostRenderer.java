@@ -7,13 +7,12 @@ import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.view.render.api.IRenderer;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 public class GhostRenderer extends CreatureRenderer implements IRenderer {
 
 	private final Ghost ghost;
 
-	public GhostRenderer(Ghost ghost, ArcadeTheme theme) {
+	public GhostRenderer(Ghost ghost, ArcadeSprites theme) {
 		this.ghost = ghost;
 		Direction.dirs().forEach(dir -> {
 			sprites.set("color-" + dir, theme.spr_ghostColored(ghost.color, dir));

@@ -25,7 +25,6 @@ import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class ActorStatesRenderer {
 
@@ -34,7 +33,7 @@ public class ActorStatesRenderer {
 	private final World world;
 	private GhostCommand ghostCommand;
 
-	public ActorStatesRenderer(World world, Theme theme) {
+	public ActorStatesRenderer(World world, ArcadeSprites theme) {
 		this.world = world;
 	}
 

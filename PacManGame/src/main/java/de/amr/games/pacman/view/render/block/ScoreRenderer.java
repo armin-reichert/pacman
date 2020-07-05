@@ -4,21 +4,19 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
+import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.render.api.IScoreRenderer;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class ScoreRenderer implements IScoreRenderer {
 
 	private final World world;
-	private final Theme theme;
 
-	public ScoreRenderer(World world, Theme theme) {
+	public ScoreRenderer(World world) {
 		this.world = world;
-		this.theme = theme;
 	}
 
 	@Override
@@ -35,7 +33,7 @@ public class ScoreRenderer implements IScoreRenderer {
 		int col;
 		g.translate(0, topMargin); // margin between score and upper window border
 		try (Pen pen = new Pen(g)) {
-			pen.font(theme.fnt_text());
+			pen.font(Assets.font("font.hud"));
 
 			// Game score
 			col = 1;

@@ -10,13 +10,12 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Door.DoorState;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.render.api.IWorldRenderer;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class WorldRenderer implements IWorldRenderer {
 
 	private final World world;
 
-	public WorldRenderer(World world, Theme theme) {
+	public WorldRenderer(World world) {
 		this.world = world;
 	}
 

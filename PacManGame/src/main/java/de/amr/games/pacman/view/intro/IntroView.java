@@ -14,6 +14,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 
+import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.ui.widgets.ImageWidget;
 import de.amr.easy.game.ui.widgets.LinkWidget;
@@ -25,7 +26,7 @@ import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
+import de.amr.games.pacman.view.render.sprite.ArcadeSprites;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 
@@ -42,7 +43,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 
 	private int width;
 	private int height;
-	private ArcadeTheme theme;
+	private ArcadeSprites theme;
 	private PacManSoundManager soundManager;
 
 	private ImageWidget pacManLogo;
@@ -55,7 +56,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 	// private Color pink = new Color(248, 120, 88);
 	private Color red = new Color(171, 19, 0);
 
-	public IntroView(ArcadeTheme theme, PacManSoundManager soundManager, int width, int height) {
+	public IntroView(ArcadeSprites theme, PacManSoundManager soundManager, int width, int height) {
 		super(IntroState.class);
 		this.theme = theme;
 		this.soundManager = soundManager;
@@ -197,12 +198,11 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 		private void drawPressSpaceToStart(Graphics2D g, int row) {
 			String text = Localized.texts.getString("press_space_to_start");
 			try (Pen pen = new Pen(g)) {
-				pen.font(theme.fnt_text());
+				pen.font(Assets.font("font.hud"));
 				pen.color(Color.WHITE);
 				pen.hcenter(text, width, row, Tile.SIZE);
 			}
 		}
-
 	}
 
 	@Override
@@ -254,7 +254,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 	private void drawScreenModeText(Graphics2D g, int row) {
 		String text = "F11 - " + Localized.texts.getString(app().inFullScreenMode() ? "window_mode" : "fullscreen_mode");
 		try (Pen pen = new Pen(g)) {
-			pen.font(theme.fnt_text());
+			pen.font(Assets.font("font.hud"));
 			pen.color(orange);
 			pen.hcenter(text, width, row, Tile.SIZE);
 		}
@@ -266,7 +266,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 		String t3 = "3 - " + Localized.texts.getString("insane");
 		int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock().getTargetFramerate()) + 1;
 		try (Pen pen = new Pen(g)) {
-			pen.font(theme.fnt_text());
+			pen.font(Assets.font("font.hud"));
 			pen.fontSize(6);
 			FontMetrics fm = pen.getFontMetrics();
 			int w1 = fm.stringWidth(t1), w2 = fm.stringWidth(t2), w3 = fm.stringWidth(t3);

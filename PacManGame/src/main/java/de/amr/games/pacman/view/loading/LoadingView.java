@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.actor.Ghost;
@@ -16,9 +17,9 @@ import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.render.api.IRenderer;
+import de.amr.games.pacman.view.render.sprite.ArcadeSprites;
 import de.amr.games.pacman.view.render.sprite.GhostRenderer;
 import de.amr.games.pacman.view.render.sprite.PacManRenderer;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
 
 /**
  * View displayed while the music files are loaded.
@@ -28,7 +29,7 @@ import de.amr.games.pacman.view.theme.ArcadeTheme;
 public class LoadingView implements LivingView {
 
 	private final PacMan pacMan;
-	private final ArcadeTheme theme;
+	private final ArcadeSprites theme;
 	private final int width;
 	private final int height;
 	private int alpha;
@@ -39,7 +40,7 @@ public class LoadingView implements LivingView {
 	private IRenderer pacManRenderer;
 	private Map<Ghost, IRenderer> ghostRenderer = new HashMap<>();
 
-	public LoadingView(World world, ArcadeTheme theme, int width, int height) {
+	public LoadingView(World world, ArcadeSprites theme, int width, int height) {
 		pacMan = world.population().pacMan();
 		this.theme = theme;
 		this.width = width;
@@ -84,7 +85,7 @@ public class LoadingView implements LivingView {
 		g.fillRect(0, 0, width, height);
 		try (Pen pen = new Pen(g)) {
 			pen.color(new Color(255, 0, 0, alpha));
-			pen.font(theme.fnt_text());
+			pen.font(Assets.font("font.hud"));
 			pen.fontSize(10);
 			pen.hcenter(Localized.texts.getString("loading_music"), width, 18, Tile.SIZE);
 		}

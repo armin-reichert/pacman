@@ -22,7 +22,7 @@ import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.play.EnhancedPlayView;
 import de.amr.games.pacman.view.play.PlayView.RenderingStyle;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
+import de.amr.games.pacman.view.render.sprite.ArcadeSprites;
 
 public class TestUI implements Lifecycle, VisualController {
 
@@ -31,7 +31,7 @@ public class TestUI implements Lifecycle, VisualController {
 	protected final Population people;
 	protected final PacMan pacMan;
 	protected final Ghost blinky, pinky, inky, clyde;
-	protected final ArcadeTheme theme;
+	protected final ArcadeSprites theme;
 	protected final PacManSoundManager soundManager;
 	protected EnhancedPlayView view;
 
@@ -60,7 +60,7 @@ public class TestUI implements Lifecycle, VisualController {
 		inky = people.inky();
 		clyde = people.clyde();
 
-		theme = new ArcadeTheme();
+		theme = new ArcadeSprites();
 		soundManager = new PacManSoundManager(world);
 
 		game = new Game(1, world.totalFoodCount());

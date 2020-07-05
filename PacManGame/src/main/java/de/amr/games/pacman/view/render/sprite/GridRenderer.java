@@ -17,14 +17,13 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.render.api.IRenderer;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class GridRenderer implements IRenderer {
 
 	private final World world;
 	private final Image gridImage;
 
-	public GridRenderer(World world, Theme theme) {
+	public GridRenderer(World world, ArcadeSprites theme) {
 		this.world = world;
 		gridImage = createGridPatternImage(world.width(), world.height());
 	}

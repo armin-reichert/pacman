@@ -12,7 +12,7 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.sound.PacManSoundManager;
 import de.amr.games.pacman.model.world.api.Population;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
+import de.amr.games.pacman.view.render.sprite.ArcadeSprites;
 
 public class ChasePacManAnimation extends GameObject {
 
@@ -24,7 +24,7 @@ public class ChasePacManAnimation extends GameObject {
 	private Vector2f endPosition;
 	private boolean pill;
 
-	public ChasePacManAnimation(ArcadeTheme theme, PacManSoundManager soundManager) {
+	public ChasePacManAnimation(ArcadeSprites theme, PacManSoundManager soundManager) {
 		this.soundManager = soundManager;
 		pacMan = theme.spr_pacManWalking(LEFT);
 		ghosts[0] = theme.spr_ghostColored(Population.RED_GHOST, LEFT);

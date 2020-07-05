@@ -56,7 +56,7 @@ import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.EnhancedPlayView;
-import de.amr.games.pacman.view.theme.ArcadeTheme;
+import de.amr.games.pacman.view.render.sprite.ArcadeSprites;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 
@@ -70,7 +70,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected final World world;
 	protected final PacMan pacMan;
 	protected final Ghost blinky, pinky, inky, clyde;
-	protected final ArcadeTheme theme;
+	protected final ArcadeSprites theme;
 	protected final PacManSoundManager soundManager;
 
 	protected GhostCommand ghostCommand;
@@ -103,7 +103,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		world = Universe.arcadeWorld();
 		people.populate(world);
 
-		theme = new ArcadeTheme();
+		theme = new ArcadeSprites();
 
 		people.creatures().forEach(creature -> {
 			creature.addEventListener(this::process);
@@ -497,7 +497,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return world;
 	}
 
-	public ArcadeTheme theme() {
+	public ArcadeSprites theme() {
 		return theme;
 	}
 

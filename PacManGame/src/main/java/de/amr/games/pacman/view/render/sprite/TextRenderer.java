@@ -1,37 +1,34 @@
 package de.amr.games.pacman.view.render.sprite;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 
+import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.Pen;
-import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.theme.Theme;
 
 public class TextRenderer {
 
-	private final World world;
-	private final Theme theme;
-
 	private Color textColor;
+	private Font font;
 	private int fontSize;
 	private int row;
 
-	public TextRenderer(World world, Theme theme) {
-		this.world = world;
-		this.theme = theme;
+	public TextRenderer() {
+		font = Assets.font("font.hud");
 		textColor = Color.YELLOW;
 		fontSize = 8;
 		row = 21;
 	}
 
-	public void draw(Graphics2D g, String messageText) {
-		if (messageText != null && messageText.trim().length() > 0) {
+	public void drawCentered(Graphics2D g, String text, int widthInTiles) {
+		if (text != null) {
 			try (Pen pen = new Pen(g)) {
-				pen.font(theme.fnt_text());
+				pen.font(font);
 				pen.fontSize(fontSize);
 				pen.color(textColor);
-				pen.hcenter(messageText, world.width() * Tile.SIZE, row, Tile.SIZE);
+				pen.hcenter(text, widthInTiles * Tile.SIZE, row, Tile.SIZE);
 			}
 		}
 	}
