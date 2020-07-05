@@ -1,15 +1,22 @@
 package de.amr.games.pacman.view.theme.blocks;
 
 import static de.amr.easy.game.Application.app;
+import static de.amr.games.pacman.view.theme.common.Rendering.drawCircleWithText;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.util.function.Function;
 
+import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.core.Bonus;
+import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Door.DoorState;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.IWorldRenderer;
+import de.amr.games.pacman.view.theme.common.Rendering;
 
 class WorldRenderer implements IWorldRenderer {
 
@@ -47,7 +54,31 @@ class WorldRenderer implements IWorldRenderer {
 				}
 			}
 		}
+		// draw bonus as image when active or as number when consumed
+		world.getBonus().ifPresent(bonus -> {
+			Vector2f center = Vector2f.of(world.bonusTile().x() + Tile.SIZE, world.bonusTile().y() + Tile.SIZE / 2);
+			if (bonus.state == BonusState.ACTIVE) {
+				drawActiveBonus(g, center, bonus);
+			} else if (bonus.state == BonusState.CONSUMED) {
+				drawConsumedBonus(g, center, bonus);
+			}
+		});
 		smoothOff(g);
+	}
+
+	private void drawActiveBonus(Graphics2D g, Vector2f center, Bonus bonus) {
+		g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, Tile.SIZE));
+		drawCircleWithText(g, center, (int) (1.5 * Tile.SIZE), Color.GREEN, bonus.symbol);
+	}
+
+	private void drawConsumedBonus(Graphics2D g, Vector2f center, Bonus bonus) {
+		String text = String.valueOf(bonus.value);
+		g.translate(center.x, center.y);
+		g.setColor(Color.RED);
+		FontMetrics fm = g.getFontMetrics();
+		int width = fm.stringWidth(text);
+		g.drawString(text, -width / 2, 0);
+		g.translate(-center.x, -center.y);
 	}
 
 	private void drawSimplePellet(Graphics2D g, int row, int col) {
