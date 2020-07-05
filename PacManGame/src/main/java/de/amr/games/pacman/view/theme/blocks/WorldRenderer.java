@@ -9,6 +9,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.util.function.Function;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Bonus;
@@ -16,7 +17,6 @@ import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Door.DoorState;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.IWorldRenderer;
-import de.amr.games.pacman.view.theme.common.Rendering;
 
 class WorldRenderer implements IWorldRenderer {
 
@@ -68,7 +68,10 @@ class WorldRenderer implements IWorldRenderer {
 
 	private void drawActiveBonus(Graphics2D g, Vector2f center, Bonus bonus) {
 		g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, Tile.SIZE));
-		drawCircleWithText(g, center, (int) (1.5 * Tile.SIZE), Color.GREEN, bonus.symbol);
+		long time = Application.app().clock().getTotalTicks();
+		if (time % 60 < 30) {
+			drawCircleWithText(g, center, (int) (1.5 * Tile.SIZE), Color.GREEN, bonus.symbol);
+		}
 	}
 
 	private void drawConsumedBonus(Graphics2D g, Vector2f center, Bonus bonus) {
