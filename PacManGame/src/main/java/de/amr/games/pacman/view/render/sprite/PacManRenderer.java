@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.view.render.api.IRenderer;
+import de.amr.games.pacman.view.render.IRenderer;
 
 public class PacManRenderer extends CreatureRenderer implements IRenderer {
 

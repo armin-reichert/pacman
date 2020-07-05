@@ -13,9 +13,9 @@ import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.core.LivingView;
-import de.amr.games.pacman.view.render.api.IRenderer;
-import de.amr.games.pacman.view.render.api.IScoreRenderer;
-import de.amr.games.pacman.view.render.api.IWorldRenderer;
+import de.amr.games.pacman.view.render.IRenderer;
+import de.amr.games.pacman.view.render.IScoreRenderer;
+import de.amr.games.pacman.view.render.IWorldRenderer;
 import de.amr.games.pacman.view.render.sprite.ScoreRenderer;
 import de.amr.games.pacman.view.render.sprite.TextRenderer;
 

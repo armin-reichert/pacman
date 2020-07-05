@@ -8,7 +8,7 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.render.api.IRenderer;
+import de.amr.games.pacman.view.render.IRenderer;
 
 public class GhostRenderer implements IRenderer {
 

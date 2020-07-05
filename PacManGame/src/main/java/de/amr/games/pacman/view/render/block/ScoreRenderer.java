@@ -9,7 +9,7 @@ import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.render.api.IScoreRenderer;
+import de.amr.games.pacman.view.render.IScoreRenderer;
 
 public class ScoreRenderer implements IScoreRenderer {
 

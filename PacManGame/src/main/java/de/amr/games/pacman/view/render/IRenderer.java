@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.render.api;
+package de.amr.games.pacman.view.render;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
