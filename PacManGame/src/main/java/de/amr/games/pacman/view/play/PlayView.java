@@ -17,7 +17,7 @@ import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.render.IRenderer;
 import de.amr.games.pacman.view.render.IWorldRenderer;
 import de.amr.games.pacman.view.render.common.MessagesRenderer;
-import de.amr.games.pacman.view.render.sprite.ScoreRenderer;
+import de.amr.games.pacman.view.render.common.ScoreRenderer;
 
 /**
  * Simple play view providing the core functionality for playing.
@@ -39,11 +39,7 @@ public class PlayView implements LivingView {
 	}
 
 	public static IRenderer createScoreRenderer(RenderingStyle style, Game game) {
-		if (style == RenderingStyle.ARCADE) {
-			return new de.amr.games.pacman.view.render.sprite.ScoreRenderer(game);
-		} else {
-			return new de.amr.games.pacman.view.render.block.ScoreRenderer(game);
-		}
+		return new de.amr.games.pacman.view.render.common.ScoreRenderer(game);
 	}
 
 	public static IRenderer createLiveCounterRenderer(RenderingStyle style, Game game) {
