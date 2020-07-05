@@ -24,7 +24,7 @@ import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
 import de.amr.games.pacman.model.world.api.Habitat;
-import de.amr.games.pacman.view.theme.arcade.ArcadeThemeResources;
+import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -129,10 +129,10 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	@Override
 	public void init() {
-		Image pinkyImage = ArcadeThemeResources.BUNDLE.spr_ghostColored(PINK_GHOST, RIGHT).frame(0);
-		Image inkyImage = ArcadeThemeResources.BUNDLE.spr_ghostColored(CYAN_GHOST, RIGHT).frame(0);
-		Image clydeImage = ArcadeThemeResources.BUNDLE.spr_ghostColored(ORANGE_GHOST, RIGHT).frame(0);
-		Image pacManImage = ArcadeThemeResources.BUNDLE.spr_pacManWalking(RIGHT).frame(0);
+		Image pinkyImage = ArcadeTheme.ASSETS.makeSprite_ghostColored(PINK_GHOST, RIGHT).frame(0);
+		Image inkyImage = ArcadeTheme.ASSETS.makeSprite_ghostColored(CYAN_GHOST, RIGHT).frame(0);
+		Image clydeImage = ArcadeTheme.ASSETS.makeSprite_ghostColored(ORANGE_GHOST, RIGHT).frame(0);
+		Image pacManImage = ArcadeTheme.ASSETS.makeSprite_pacManWalking(RIGHT).frame(0);
 		setLabelIconOnly(lblPinkyDots, scaledIcon(pinkyImage, 30));
 		setLabelIconOnly(lblInkyDots, scaledIcon(inkyImage, 30));
 		setLabelIconOnly(lblClydeDots, scaledIcon(clydeImage, 30));

@@ -10,10 +10,10 @@ public interface World extends Terrain, Habitat {
 	void accept(Population population);
 
 	void setChangingLevel(boolean b);
-	
+
 	boolean isChangingLevel();
-	
+
 	void setFrozen(boolean b);
-	
+
 	boolean isFrozen();
 }

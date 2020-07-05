@@ -15,10 +15,10 @@ public class PacManRenderer extends SpriteEntityRenderer implements IRenderer {
 	public PacManRenderer(World world, PacMan pacMan) {
 		this.world = world;
 		this.pacMan = pacMan;
-		ArcadeThemeResources arcadeSprites = ArcadeThemeResources.BUNDLE;
-		Direction.dirs().forEach(dir -> sprites.set("walking-" + dir, arcadeSprites.spr_pacManWalking(dir)));
-		sprites.set("dying", arcadeSprites.spr_pacManDying());
-		sprites.set("full", arcadeSprites.spr_pacManFull());
+		ArcadeThemeAssets assets = ArcadeTheme.ASSETS;
+		Direction.dirs().forEach(dir -> sprites.set("walking-" + dir, assets.makeSprite_pacManWalking(dir)));
+		sprites.set("dying", assets.makeSprite_pacManDying());
+		sprites.set("full", assets.makeSprite_pacManFull());
 		sprites.select("full");
 	}
 

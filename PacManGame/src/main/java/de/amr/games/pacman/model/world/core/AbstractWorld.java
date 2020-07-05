@@ -35,22 +35,22 @@ public abstract class AbstractWorld implements World {
 	protected Population population;
 
 	private Set<Creature<?>> included = new HashSet<>();
-	
+
 	@Override
 	public boolean isFrozen() {
 		return frozen;
 	}
-	
+
 	@Override
 	public void setFrozen(boolean frozen) {
 		this.frozen = frozen;
 	}
-	
+
 	@Override
 	public boolean isChangingLevel() {
 		return changingLevel;
 	}
-	
+
 	@Override
 	public void setChangingLevel(boolean b) {
 		changingLevel = b;

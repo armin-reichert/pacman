@@ -8,7 +8,7 @@ import de.amr.easy.game.entity.GameObject;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.sound.PacManSoundManager;
-import de.amr.games.pacman.view.theme.arcade.ArcadeThemeResources;
+import de.amr.games.pacman.view.theme.arcade.ArcadeThemeAssets;
 
 /**
  * An animation showing Pac-Man chasing the ghosts and scoring points for each killed ghost.
@@ -27,13 +27,13 @@ public class ChaseGhostsAnimation extends GameObject {
 	private float pacManX;
 	private int ghostsKilled;
 
-	public ChaseGhostsAnimation(ArcadeThemeResources theme, PacManSoundManager soundManager) {
+	public ChaseGhostsAnimation(ArcadeThemeAssets theme, PacManSoundManager soundManager) {
 		this.soundManager = soundManager;
-		pacMan = theme.spr_pacManWalking(RIGHT);
-		ghost = theme.spr_ghostFrightened();
+		pacMan = theme.makeSprite_pacManWalking(RIGHT);
+		ghost = theme.makeSprite_ghostFrightened();
 		int i = 0;
 		for (int number : new int[] { 200, 400, 800, 1600 }) {
-			points[i++] = theme.spr_number(number);
+			points[i++] = theme.makeSprite_number(number);
 		}
 		tf.width = (5 * 18);
 		tf.height = (18);

@@ -17,7 +17,7 @@ import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.theme.IRenderer;
-import de.amr.games.pacman.view.theme.arcade.ArcadeThemeResources;
+import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
 import de.amr.games.pacman.view.theme.arcade.GhostRenderer;
 import de.amr.games.pacman.view.theme.arcade.PacManRenderer;
 
@@ -92,7 +92,7 @@ public class LoadingView implements LivingView {
 		for (int i = 0; i < ghostCount; ++i) {
 			int color = new Random().nextInt(4);
 			Direction dir = Direction.values()[new Random().nextInt(4)];
-			ArcadeThemeResources.BUNDLE.spr_ghostColored(color, dir).draw(g, x, y);
+			ArcadeTheme.ASSETS.makeSprite_ghostColored(color, dir).draw(g, x, y);
 			x += 20;
 		}
 	}

@@ -26,7 +26,7 @@ import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
-import de.amr.games.pacman.view.theme.arcade.ArcadeThemeResources;
+import de.amr.games.pacman.view.theme.arcade.ArcadeThemeAssets;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 
@@ -43,7 +43,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 
 	private int width;
 	private int height;
-	private ArcadeThemeResources theme;
+	private ArcadeThemeAssets theme;
 	private PacManSoundManager soundManager;
 
 	private ImageWidget pacManLogo;
@@ -211,7 +211,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 
 	@Override
 	public void init() {
-		pacManLogo = new ImageWidget(theme.img_logo());
+		pacManLogo = new ImageWidget(theme.image_logo());
 		pacManLogo.tf.centerX(width);
 		pacManLogo.tf.y = 20;
 		chasePacMan = new ChasePacManAnimation(theme, soundManager);

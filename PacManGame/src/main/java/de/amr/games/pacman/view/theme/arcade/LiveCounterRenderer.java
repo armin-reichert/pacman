@@ -16,7 +16,7 @@ public class LiveCounterRenderer implements IRenderer {
 
 	public LiveCounterRenderer(Game game) {
 		this.game = game;
-		pacManLookingLeft = ArcadeThemeResources.BUNDLE.spr_pacManWalking(LEFT).frame(1);
+		pacManLookingLeft = ArcadeTheme.ASSETS.makeSprite_pacManWalking(LEFT).frame(1);
 	}
 
 	@Override

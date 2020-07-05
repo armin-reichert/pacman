@@ -16,6 +16,8 @@ import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
 public class ArcadeTheme implements Theme {
 
+	public static final ArcadeThemeAssets ASSETS = new ArcadeThemeAssets();
+
 	@Override
 	public ThemeName name() {
 		return ThemeName.ARCADE;
@@ -53,7 +55,7 @@ public class ArcadeTheme implements Theme {
 	public IRenderer createGhostRenderer(Ghost ghost) {
 		return new GhostRenderer(ghost);
 	}
-	
+
 	@Override
 	public MessagesRenderer createMessagesRenderer() {
 		MessagesRenderer renderer = new MessagesRenderer();

@@ -119,7 +119,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 			.findAny();
 		//@formatter:on
 	}
-	
+
 	private Stream<Direction> dirsInOrder() {
 		return Stream.of(me.moveDir(), me.moveDir().right(), me.moveDir().left());
 	}

@@ -37,7 +37,7 @@ public class PacMan extends Creature<PacManState> {
 
 	/** Number of ticks Pac-Man is not moving after having eaten a pellet. */
 	public int digestion;
-	
+
 	public boolean collapsing;
 
 	public PacMan() {

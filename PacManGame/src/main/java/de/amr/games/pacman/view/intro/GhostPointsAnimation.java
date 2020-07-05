@@ -11,7 +11,7 @@ import java.util.BitSet;
 import de.amr.easy.game.entity.GameObject;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.sound.PacManSoundManager;
-import de.amr.games.pacman.view.theme.arcade.ArcadeThemeResources;
+import de.amr.games.pacman.view.theme.arcade.ArcadeThemeAssets;
 
 /**
  * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the
@@ -31,13 +31,13 @@ public class GhostPointsAnimation extends GameObject {
 	private int energizerTimer;
 	private boolean energizer;
 
-	public GhostPointsAnimation(ArcadeThemeResources theme, PacManSoundManager soundManager) {
+	public GhostPointsAnimation(ArcadeThemeAssets theme, PacManSoundManager soundManager) {
 		this.soundManager = soundManager;
-		pacMan = theme.spr_pacManWalking(RIGHT);
-		ghost = theme.spr_ghostFrightened();
+		pacMan = theme.makeSprite_pacManWalking(RIGHT);
+		ghost = theme.makeSprite_ghostFrightened();
 		int i = 0;
 		for (int number : new int[] { 200, 400, 800, 1600 }) {
-			points[i++] = theme.spr_number(number);
+			points[i++] = theme.makeSprite_number(number);
 		}
 		ghostTimer = -1;
 		tf.width = (90);

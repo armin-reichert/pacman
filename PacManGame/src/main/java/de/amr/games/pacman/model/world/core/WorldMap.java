@@ -33,7 +33,6 @@ public class WorldMap {
 		data[row][col] |= (1 << bit);
 	}
 
-
 	public WorldMap(byte[][] byteArray) {
 		data = new byte[byteArray.length][];
 		for (int i = 0; i < byteArray.length; ++i) {

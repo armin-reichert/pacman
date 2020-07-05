@@ -53,7 +53,7 @@ public class BlocksTheme implements Theme {
 	public IRenderer createGhostRenderer(Ghost ghost) {
 		return new GhostRenderer(ghost);
 	}
-	
+
 	@Override
 	public MessagesRenderer createMessagesRenderer() {
 		MessagesRenderer renderer = new MessagesRenderer();

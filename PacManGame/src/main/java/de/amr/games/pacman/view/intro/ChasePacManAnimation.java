@@ -12,7 +12,7 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.sound.PacManSoundManager;
 import de.amr.games.pacman.model.world.api.Population;
-import de.amr.games.pacman.view.theme.arcade.ArcadeThemeResources;
+import de.amr.games.pacman.view.theme.arcade.ArcadeThemeAssets;
 
 public class ChasePacManAnimation extends GameObject {
 
@@ -24,13 +24,13 @@ public class ChasePacManAnimation extends GameObject {
 	private Vector2f endPosition;
 	private boolean pill;
 
-	public ChasePacManAnimation(ArcadeThemeResources theme, PacManSoundManager soundManager) {
+	public ChasePacManAnimation(ArcadeThemeAssets theme, PacManSoundManager soundManager) {
 		this.soundManager = soundManager;
-		pacMan = theme.spr_pacManWalking(LEFT);
-		ghosts[0] = theme.spr_ghostColored(Population.RED_GHOST, LEFT);
-		ghosts[1] = theme.spr_ghostColored(Population.PINK_GHOST, LEFT);
-		ghosts[2] = theme.spr_ghostColored(Population.CYAN_GHOST, LEFT);
-		ghosts[3] = theme.spr_ghostColored(Population.ORANGE_GHOST, LEFT);
+		pacMan = theme.makeSprite_pacManWalking(LEFT);
+		ghosts[0] = theme.makeSprite_ghostColored(Population.RED_GHOST, LEFT);
+		ghosts[1] = theme.makeSprite_ghostColored(Population.PINK_GHOST, LEFT);
+		ghosts[2] = theme.makeSprite_ghostColored(Population.CYAN_GHOST, LEFT);
+		ghosts[3] = theme.makeSprite_ghostColored(Population.ORANGE_GHOST, LEFT);
 		pill = true;
 		tf.width = (88);
 		tf.height = (16);

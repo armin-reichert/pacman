@@ -25,9 +25,9 @@ public class GhostHouseStateRenderer implements IRenderer {
 	public GhostHouseStateRenderer(World world, GhostHouseDoorMan doorMan) {
 		this.world = world;
 		this.doorMan = doorMan;
-		inkyImage = ArcadeThemeResources.BUNDLE.spr_ghostColored(CYAN_GHOST, RIGHT).frame(0);
-		clydeImage = ArcadeThemeResources.BUNDLE.spr_ghostColored(ORANGE_GHOST, RIGHT).frame(0);
-		pacManImage = ArcadeThemeResources.BUNDLE.spr_pacManWalking(RIGHT).frame(0);
+		inkyImage = ArcadeTheme.ASSETS.makeSprite_ghostColored(CYAN_GHOST, RIGHT).frame(0);
+		clydeImage = ArcadeTheme.ASSETS.makeSprite_ghostColored(ORANGE_GHOST, RIGHT).frame(0);
+		pacManImage = ArcadeTheme.ASSETS.makeSprite_pacManWalking(RIGHT).frame(0);
 	}
 
 	@Override

@@ -68,8 +68,7 @@ public class PlayView implements LivingView {
 	private final IRenderer actorStatesRenderer;
 	private final IRenderer ghostHouseStateRenderer;
 
-	public PlayView(World world, Game game, GhostCommand ghostCommand, GhostHouseDoorMan doorMan,
-			int width, int height) {
+	public PlayView(World world, Game game, GhostCommand ghostCommand, GhostHouseDoorMan doorMan, int width, int height) {
 		this.world = world;
 		this.game = game;
 		this.width = width;

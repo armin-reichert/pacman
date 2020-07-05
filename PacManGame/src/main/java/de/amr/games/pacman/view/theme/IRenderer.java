@@ -12,11 +12,11 @@ public interface IRenderer {
 
 	default void enableAnimation(boolean enabled) {
 	}
-	
+
 	default void smoothOn(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	}
-	
+
 	default void smoothOff(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
