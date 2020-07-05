@@ -33,7 +33,7 @@ public class ActorStatesRenderer {
 	private final World world;
 	private GhostCommand ghostCommand;
 
-	public ActorStatesRenderer(World world, ArcadeSprites theme) {
+	public ActorStatesRenderer(World world) {
 		this.world = world;
 	}
 

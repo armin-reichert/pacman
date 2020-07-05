@@ -56,9 +56,8 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 	// private Color pink = new Color(248, 120, 88);
 	private Color red = new Color(171, 19, 0);
 
-	public IntroView(ArcadeSprites theme, PacManSoundManager soundManager, int width, int height) {
+	public IntroView(PacManSoundManager soundManager, int width, int height) {
 		super(IntroState.class);
-		this.theme = theme;
 		this.soundManager = soundManager;
 		this.width = width;
 		this.height = height;

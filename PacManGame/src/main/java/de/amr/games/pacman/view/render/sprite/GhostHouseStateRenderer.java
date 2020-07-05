@@ -20,11 +20,11 @@ public class GhostHouseStateRenderer {
 	private final Image inkyImage, clydeImage, pacManImage;
 	private GhostHouseAccessControl houseAccessControl;
 
-	public GhostHouseStateRenderer(World world, ArcadeSprites theme) {
+	public GhostHouseStateRenderer(World world) {
 		this.world = world;
-		inkyImage = theme.spr_ghostColored(Population.CYAN_GHOST, Direction.RIGHT).frame(0);
-		clydeImage = theme.spr_ghostColored(Population.ORANGE_GHOST, Direction.RIGHT).frame(0);
-		pacManImage = theme.spr_pacManWalking(RIGHT).frame(0);
+		inkyImage = ArcadeSprites.BUNDLE.spr_ghostColored(Population.CYAN_GHOST, Direction.RIGHT).frame(0);
+		clydeImage = ArcadeSprites.BUNDLE.spr_ghostColored(Population.ORANGE_GHOST, Direction.RIGHT).frame(0);
+		pacManImage = ArcadeSprites.BUNDLE.spr_pacManWalking(RIGHT).frame(0);
 	}
 
 	public void setHouseAccessControl(GhostHouseAccessControl houseAccessControl) {

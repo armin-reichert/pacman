@@ -12,7 +12,6 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.render.sprite.ActorRoutesRenderer;
 import de.amr.games.pacman.view.render.sprite.ActorStatesRenderer;
-import de.amr.games.pacman.view.render.sprite.ArcadeSprites;
 import de.amr.games.pacman.view.render.sprite.GhostHouseStateRenderer;
 import de.amr.games.pacman.view.render.sprite.GridRenderer;
 import de.amr.games.pacman.view.render.sprite.Rendering;
@@ -43,12 +42,12 @@ public class EnhancedPlayView extends PlayView {
 	private final ActorStatesRenderer actorStatesRenderer;
 	private final GhostHouseStateRenderer ghostHouseStateRenderer;
 
-	public EnhancedPlayView(World world, ArcadeSprites theme, Game game, int width, int height) {
-		super(world, theme, game, width, height);
-		gridRenderer = new GridRenderer(world, theme);
-		actorRoutesRenderer = new ActorRoutesRenderer(world, theme);
-		actorStatesRenderer = new ActorStatesRenderer(world, theme);
-		ghostHouseStateRenderer = new GhostHouseStateRenderer(world, theme);
+	public EnhancedPlayView(World world, Game game, int width, int height) {
+		super(world, game, width, height);
+		gridRenderer = new GridRenderer(world);
+		actorRoutesRenderer = new ActorRoutesRenderer(world);
+		actorStatesRenderer = new ActorStatesRenderer(world);
+		ghostHouseStateRenderer = new GhostHouseStateRenderer(world);
 		frameRateDisplay = new FrameRateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);

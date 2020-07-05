@@ -22,7 +22,6 @@ import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.play.EnhancedPlayView;
 import de.amr.games.pacman.view.play.PlayView.RenderingStyle;
-import de.amr.games.pacman.view.render.sprite.ArcadeSprites;
 
 public class TestUI implements Lifecycle, VisualController {
 
@@ -31,7 +30,6 @@ public class TestUI implements Lifecycle, VisualController {
 	protected final Population people;
 	protected final PacMan pacMan;
 	protected final Ghost blinky, pinky, inky, clyde;
-	protected final ArcadeSprites theme;
 	protected final PacManSoundManager soundManager;
 	protected EnhancedPlayView view;
 
@@ -60,7 +58,6 @@ public class TestUI implements Lifecycle, VisualController {
 		inky = people.inky();
 		clyde = people.clyde();
 
-		theme = new ArcadeSprites();
 		soundManager = new PacManSoundManager(world);
 
 		game = new Game(1, world.totalFoodCount());
@@ -69,9 +66,9 @@ public class TestUI implements Lifecycle, VisualController {
 		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
 		world.population().ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> ghostSpeedLimit(ghost, game)));
 
-		view = new EnhancedPlayView(world, theme, game, app().settings().width, app().settings().height);
+		view = new EnhancedPlayView(world, game, app().settings().width, app().settings().height);
 		view.style = RenderingStyle.ARCADE;
-		view.updateRenderers(world, theme);
+		view.updateRenderers(world);
 		view.turnScoresOff();
 		view.init();
 	}
@@ -86,7 +83,7 @@ public class TestUI implements Lifecycle, VisualController {
 	public void update() {
 		if (Keyboard.keyPressedOnce("z")) {
 			view.style = view.style == RenderingStyle.ARCADE ? RenderingStyle.BLOCK : RenderingStyle.ARCADE;
-			view.updateRenderers(world, theme);
+			view.updateRenderers(world);
 		}
 		if (Keyboard.keyPressedOnce("g")) {
 			if (view.isShowingGrid()) {

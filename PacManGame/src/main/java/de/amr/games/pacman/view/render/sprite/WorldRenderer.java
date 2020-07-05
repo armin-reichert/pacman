@@ -2,13 +2,18 @@ package de.amr.games.pacman.view.render.sprite;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
+import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
-import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.easy.game.ui.sprites.SpriteMap;
+import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Door.DoorState;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -17,18 +22,25 @@ import de.amr.games.pacman.view.render.api.IWorldRenderer;
 public class WorldRenderer implements IWorldRenderer {
 
 	private final World world;
-	private final ArcadeSprites theme;
+	private final Map<String, Image> symbolImages = new HashMap<>();
+	private final Map<Integer, Image> pointsImages = new HashMap<>();
 	private final SpriteMap mazeSprites;
 	private final SpriteAnimation energizerAnimation;
 	private Function<Tile, Color> fnEatenFoodColor;
 
-	public WorldRenderer(World world, ArcadeSprites theme) {
+	public WorldRenderer(World world) {
 		this.world = world;
-		this.theme = theme;
 		fnEatenFoodColor = tile -> Color.BLACK;
+		for (Symbol symbol : Symbol.values()) {
+			symbolImages.put(symbol.name(), ArcadeSprites.BUNDLE.spr_bonusSymbol(symbol.name()).frame(0));
+		}
+		for (int points : Game.POINTS_BONUS) {
+			pointsImages.put(points, ArcadeSprites.BUNDLE.spr_number(points).frame(0));
+
+		}
 		mazeSprites = new SpriteMap();
-		mazeSprites.set("maze-full", theme.spr_fullMaze());
-		mazeSprites.set("maze-flashing", theme.spr_flashingMaze());
+		mazeSprites.set("maze-full", ArcadeSprites.BUNDLE.spr_fullMaze());
+		mazeSprites.set("maze-flashing", ArcadeSprites.BUNDLE.spr_flashingMaze());
 		energizerAnimation = new CyclicAnimation(2);
 		energizerAnimation.setFrameDuration(150);
 		energizerAnimation.setEnabled(false);
@@ -78,11 +90,14 @@ public class WorldRenderer implements IWorldRenderer {
 				g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 			});
 		}
-		// draw bonus when active or consumed
-		world.getBonus().filter(bonus -> bonus.state != BonusState.INACTIVE).ifPresent(bonus -> {
-			Sprite sprite = bonus.state == BonusState.CONSUMED ? theme.spr_number(bonus.value)
-					: theme.spr_bonusSymbol(bonus.symbol);
-			g.drawImage(sprite.frame(0), world.bonusTile().x(), world.bonusTile().y() - Tile.SIZE / 2, null);
+		// draw bonus as image when active or as number when consumed
+		world.getBonus().ifPresent(bonus -> {
+			Vector2f position = Vector2f.of(world.bonusTile().x(), world.bonusTile().y() - Tile.SIZE / 2);
+			if (bonus.state == BonusState.ACTIVE) {
+				g.drawImage(symbolImages.get(bonus.symbol), position.roundedX(), position.roundedY(), null);
+			} else if (bonus.state == BonusState.CONSUMED) {
+				g.drawImage(pointsImages.get(bonus.value), position.roundedX(), position.roundedY(), null);
+			}
 		});
 	}
 }

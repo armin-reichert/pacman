@@ -22,10 +22,10 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 
 public class ActorRoutesRenderer {
-	
+
 	private final World world;
 
-	public ActorRoutesRenderer(World world, ArcadeSprites sprites) {
+	public ActorRoutesRenderer(World world) {
 		this.world = world;
 	}
 

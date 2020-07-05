@@ -16,7 +16,6 @@ import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.render.api.IRenderer;
 import de.amr.games.pacman.view.render.api.IScoreRenderer;
 import de.amr.games.pacman.view.render.api.IWorldRenderer;
-import de.amr.games.pacman.view.render.sprite.ArcadeSprites;
 import de.amr.games.pacman.view.render.sprite.ScoreRenderer;
 import de.amr.games.pacman.view.render.sprite.TextRenderer;
 
@@ -31,34 +30,34 @@ public class PlayView implements LivingView {
 		ARCADE, BLOCK
 	}
 
-	public static IWorldRenderer createWorldRenderer(RenderingStyle style, World world, ArcadeSprites sprites) {
+	public static IWorldRenderer createWorldRenderer(RenderingStyle style, World world) {
 		if (style == RenderingStyle.ARCADE) {
-			return new de.amr.games.pacman.view.render.sprite.WorldRenderer(world, sprites);
+			return new de.amr.games.pacman.view.render.sprite.WorldRenderer(world);
 		} else {
 			return new de.amr.games.pacman.view.render.block.WorldRenderer(world);
 		}
 	}
 
-	public static IScoreRenderer createScoreRenderer(RenderingStyle style, World world, ArcadeSprites sprites) {
+	public static IScoreRenderer createScoreRenderer(RenderingStyle style, World world) {
 		if (style == RenderingStyle.ARCADE) {
-			return new de.amr.games.pacman.view.render.sprite.ScoreRenderer(world, sprites);
+			return new de.amr.games.pacman.view.render.sprite.ScoreRenderer(world);
 		} else {
 			return new de.amr.games.pacman.view.render.block.ScoreRenderer(world);
 		}
 	}
 
-	public static IRenderer createPacManRenderer(RenderingStyle style, World world, PacMan pacMan, ArcadeSprites sprites) {
+	public static IRenderer createPacManRenderer(RenderingStyle style, World world, PacMan pacMan) {
 		if (style == RenderingStyle.ARCADE) {
-			return new de.amr.games.pacman.view.render.sprite.PacManRenderer(world, pacMan, sprites);
+			return new de.amr.games.pacman.view.render.sprite.PacManRenderer(world, pacMan);
 		} else if (style == RenderingStyle.BLOCK) {
 			return new de.amr.games.pacman.view.render.block.PacManRenderer(world, pacMan);
 		}
 		throw new IllegalArgumentException("Unknown style " + style);
 	}
 
-	public static IRenderer createGhostRenderer(RenderingStyle style, Ghost ghost, ArcadeSprites sprites) {
+	public static IRenderer createGhostRenderer(RenderingStyle style, Ghost ghost) {
 		if (style == RenderingStyle.ARCADE) {
-			return new de.amr.games.pacman.view.render.sprite.GhostRenderer(ghost, sprites);
+			return new de.amr.games.pacman.view.render.sprite.GhostRenderer(ghost);
 		} else if (style == RenderingStyle.BLOCK) {
 			return new de.amr.games.pacman.view.render.block.GhostRenderer(ghost);
 		}
@@ -83,23 +82,23 @@ public class PlayView implements LivingView {
 
 	private boolean showingScores;
 
-	public PlayView(World world, ArcadeSprites sprites, Game game, int width, int height) {
+	public PlayView(World world, Game game, int width, int height) {
 		this.world = world;
 		this.game = game;
 		this.width = width;
 		this.height = height;
 		showingScores = true;
-		scoreRenderer = new ScoreRenderer(world, sprites);
+		scoreRenderer = new ScoreRenderer(world);
 		textRenderer = new TextRenderer();
 		style = RenderingStyle.ARCADE;
-		updateRenderers(world, sprites);
+		updateRenderers(world);
 	}
 
-	public void updateRenderers(World world, ArcadeSprites theme) {
-		worldRenderer = createWorldRenderer(style, world, theme);
-		scoreRenderer = createScoreRenderer(style, world, theme);
-		pacManRenderer = createPacManRenderer(style, world, world.population().pacMan(), theme);
-		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, createGhostRenderer(style, ghost, theme)));
+	public void updateRenderers(World world) {
+		worldRenderer = createWorldRenderer(style, world);
+		scoreRenderer = createScoreRenderer(style, world);
+		pacManRenderer = createPacManRenderer(style, world, world.population().pacMan());
+		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, createGhostRenderer(style, ghost)));
 	}
 
 	@Override

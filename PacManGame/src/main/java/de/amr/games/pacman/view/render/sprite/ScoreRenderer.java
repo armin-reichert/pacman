@@ -6,6 +6,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.Pen;
@@ -18,11 +20,15 @@ import de.amr.games.pacman.view.render.api.IScoreRenderer;
 public class ScoreRenderer implements IScoreRenderer {
 
 	private final World world;
-	private final ArcadeSprites theme;
+	private final Image pacManLookingLeft;
+	private final Map<Symbol, Image> bonusImages = new HashMap<Symbol, Image>();
 
-	public ScoreRenderer(World world, ArcadeSprites theme) {
+	public ScoreRenderer(World world) {
 		this.world = world;
-		this.theme = theme;
+		pacManLookingLeft = ArcadeSprites.BUNDLE.spr_pacManWalking(LEFT).frame(1);
+		for (Symbol symbol : Symbol.values()) {
+			bonusImages.put(symbol, ArcadeSprites.BUNDLE.spr_bonusSymbol(symbol.name()).frame(0));
+		}
 	}
 
 	@Override
@@ -85,7 +91,6 @@ public class ScoreRenderer implements IScoreRenderer {
 
 	protected void drawLives(Graphics2D g, Game game) {
 		int sz = 2 * Tile.SIZE;
-		Image pacManLookingLeft = theme.spr_pacManWalking(LEFT).frame(1);
 		for (int i = 0, x = sz; i < game.lives; ++i, x += sz) {
 			g.drawImage(pacManLookingLeft, x, world.height() * Tile.SIZE - sz, null);
 		}
@@ -98,7 +103,7 @@ public class ScoreRenderer implements IScoreRenderer {
 		int sz = 2 * Tile.SIZE; // image size
 		for (int i = 0, x = world.width() * Tile.SIZE - 2 * sz; i < n; ++i, x -= sz) {
 			Symbol symbol = game.levelCounter.get(first + i);
-			g.drawImage(theme.spr_bonusSymbol(symbol.name()).frame(0), x, world.height() * Tile.SIZE - sz, sz, sz, null);
+			g.drawImage(bonusImages.get(symbol), x, world.height() * Tile.SIZE - sz, sz, sz, null);
 		}
 	}
 }

@@ -23,7 +23,7 @@ public class GridRenderer implements IRenderer {
 	private final World world;
 	private final Image gridImage;
 
-	public GridRenderer(World world, ArcadeSprites theme) {
+	public GridRenderer(World world) {
 		this.world = world;
 		gridImage = createGridPatternImage(world.width(), world.height());
 	}

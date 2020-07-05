@@ -1,6 +1,10 @@
 package de.amr.games.pacman.view.dashboard.states;
 
 import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
+import static de.amr.games.pacman.model.Direction.RIGHT;
+import static de.amr.games.pacman.model.world.api.Population.CYAN_GHOST;
+import static de.amr.games.pacman.model.world.api.Population.ORANGE_GHOST;
+import static de.amr.games.pacman.model.world.api.Population.PINK_GHOST;
 import static de.amr.games.pacman.view.dashboard.util.Formatting.ticksAndSeconds;
 
 import java.awt.Color;
@@ -16,13 +20,11 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 import de.amr.easy.game.controller.Lifecycle;
-import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
-import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.Habitat;
-import de.amr.games.pacman.model.world.api.Population;
+import de.amr.games.pacman.view.render.sprite.ArcadeSprites;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -127,11 +129,18 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	@Override
 	public void init() {
-		int size = 30;
-		setIconOnly(lblPinkyDots, ghost(Population.PINK_GHOST, size));
-		setIconOnly(lblInkyDots, ghost(Population.CYAN_GHOST, size));
-		setIconOnly(lblClydeDots, ghost(Population.ORANGE_GHOST, size));
-		setIconOnly(lblPacManStarving, pacMan(size));
+		Image pinkyImage = ArcadeSprites.BUNDLE.spr_ghostColored(PINK_GHOST, RIGHT).frame(0);
+		Image inkyImage = ArcadeSprites.BUNDLE.spr_ghostColored(CYAN_GHOST, RIGHT).frame(0);
+		Image clydeImage = ArcadeSprites.BUNDLE.spr_ghostColored(ORANGE_GHOST, RIGHT).frame(0);
+		Image pacManImage = ArcadeSprites.BUNDLE.spr_pacManWalking(RIGHT).frame(0);
+		setLabelIconOnly(lblPinkyDots, scaledIcon(pinkyImage, 30));
+		setLabelIconOnly(lblInkyDots, scaledIcon(inkyImage, 30));
+		setLabelIconOnly(lblClydeDots, scaledIcon(clydeImage, 30));
+		setLabelIconOnly(lblPacManStarving, scaledIcon(pacManImage, 30));
+	}
+
+	private Icon scaledIcon(Image image, int size) {
+		return new ImageIcon(image.getScaledInstance(size, size, Image.SCALE_SMOOTH));
 	}
 
 	@Override
@@ -158,19 +167,9 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		});
 	}
 
-	private void setIconOnly(JLabel label, Icon icon) {
+	private void setLabelIconOnly(JLabel label, Icon icon) {
 		label.setText("");
 		label.setIcon(icon);
-	}
-
-	private ImageIcon ghost(int color, int size) {
-		Sprite sprite = gameController.theme().spr_ghostColored(color, Direction.RIGHT);
-		return new ImageIcon(sprite.frame(0).getScaledInstance(size, size, Image.SCALE_SMOOTH));
-	}
-
-	private ImageIcon pacMan(int size) {
-		Sprite sprite = gameController.theme().spr_pacManWalking(Direction.RIGHT);
-		return new ImageIcon(sprite.frame(0).getScaledInstance(size, size, Image.SCALE_SMOOTH));
 	}
 
 	private Color trafficLightColor(GhostHouseAccessControl house, Ghost ghost) {

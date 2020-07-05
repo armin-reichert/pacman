@@ -12,16 +12,17 @@ public class GhostRenderer extends CreatureRenderer implements IRenderer {
 
 	private final Ghost ghost;
 
-	public GhostRenderer(Ghost ghost, ArcadeSprites theme) {
+	public GhostRenderer(Ghost ghost) {
 		this.ghost = ghost;
+		ArcadeSprites arcadeSprites = ArcadeSprites.BUNDLE;
 		Direction.dirs().forEach(dir -> {
-			sprites.set("color-" + dir, theme.spr_ghostColored(ghost.color, dir));
-			sprites.set("eyes-" + dir, theme.spr_ghostEyes(dir));
+			sprites.set("color-" + dir, arcadeSprites.spr_ghostColored(ghost.color, dir));
+			sprites.set("eyes-" + dir, arcadeSprites.spr_ghostEyes(dir));
 		});
-		sprites.set("frightened", theme.spr_ghostFrightened());
-		sprites.set("flashing", theme.spr_ghostFlashing());
+		sprites.set("frightened", arcadeSprites.spr_ghostFrightened());
+		sprites.set("flashing", arcadeSprites.spr_ghostFlashing());
 		for (int points : Game.POINTS_GHOST) {
-			sprites.set("points-" + points, theme.spr_number(points));
+			sprites.set("points-" + points, arcadeSprites.spr_number(points));
 		}
 	}
 

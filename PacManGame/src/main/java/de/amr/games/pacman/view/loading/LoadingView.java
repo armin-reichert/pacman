@@ -29,7 +29,6 @@ import de.amr.games.pacman.view.render.sprite.PacManRenderer;
 public class LoadingView implements LivingView {
 
 	private final PacMan pacMan;
-	private final ArcadeSprites theme;
 	private final int width;
 	private final int height;
 	private int alpha;
@@ -40,13 +39,12 @@ public class LoadingView implements LivingView {
 	private IRenderer pacManRenderer;
 	private Map<Ghost, IRenderer> ghostRenderer = new HashMap<>();
 
-	public LoadingView(World world, ArcadeSprites theme, int width, int height) {
+	public LoadingView(World world, int width, int height) {
 		pacMan = world.population().pacMan();
-		this.theme = theme;
 		this.width = width;
 		this.height = height;
-		pacManRenderer = new PacManRenderer(world, pacMan, theme);
-		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, new GhostRenderer(ghost, theme)));
+		pacManRenderer = new PacManRenderer(world, pacMan);
+		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, new GhostRenderer(ghost)));
 	}
 
 	@Override
@@ -94,7 +92,7 @@ public class LoadingView implements LivingView {
 		for (int i = 0; i < ghostCount; ++i) {
 			int color = new Random().nextInt(4);
 			Direction dir = Direction.values()[new Random().nextInt(4)];
-			theme.spr_ghostColored(color, dir).draw(g, x, y);
+			ArcadeSprites.BUNDLE.spr_ghostColored(color, dir).draw(g, x, y);
 			x += 20;
 		}
 	}

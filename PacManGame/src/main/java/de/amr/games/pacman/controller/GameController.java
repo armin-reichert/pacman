@@ -56,7 +56,6 @@ import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.EnhancedPlayView;
-import de.amr.games.pacman.view.render.sprite.ArcadeSprites;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 
@@ -70,7 +69,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected final World world;
 	protected final PacMan pacMan;
 	protected final Ghost blinky, pinky, inky, clyde;
-	protected final ArcadeSprites theme;
 	protected final PacManSoundManager soundManager;
 
 	protected GhostCommand ghostCommand;
@@ -102,8 +100,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		world = Universe.arcadeWorld();
 		people.populate(world);
-
-		theme = new ArcadeSprites();
 
 		people.creatures().forEach(creature -> {
 			creature.addEventListener(this::process);
@@ -147,12 +143,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(LOADING_MUSIC)
 					.onEntry(() -> {
 						soundManager.loadMusic();
-						showView(new LoadingView(world, theme, settings.width, settings.height));
+						showView(new LoadingView(world, settings.width, settings.height));
 					})
 					
 				.state(INTRO)
 					.onEntry(() -> {
-						showView(new IntroView(theme, soundManager, settings.width, settings.height));
+						showView(new IntroView(soundManager, settings.width, settings.height));
 					})
 					.onExit(() -> {
 						soundManager.stopAll();
@@ -370,7 +366,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
 		world.population().play(game);
 
-		playView = new EnhancedPlayView(world, theme, game, settings.width, settings.height);
+		playView = new EnhancedPlayView(world, game, settings.width, settings.height);
 		playView.optionalGhostCommand = ghostCommand;
 		playView.optionalHouseAccessControl = ghostHouseAccessControl;
 
@@ -495,10 +491,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	public World world() {
 		return world;
-	}
-
-	public ArcadeSprites theme() {
-		return theme;
 	}
 
 	public Optional<Game> game() {

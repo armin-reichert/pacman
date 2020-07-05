@@ -27,6 +27,8 @@ import de.amr.games.pacman.model.world.arcade.Symbol;
  */
 public class ArcadeSprites {
 
+	public static final ArcadeSprites BUNDLE = new ArcadeSprites();
+
 	private final int tileSize = 16;
 
 	private final BufferedImage sheet = Assets.readImage("images/arcade/sprites.png");
@@ -88,7 +90,7 @@ public class ArcadeSprites {
 		return copy;
 	}
 
-	public ArcadeSprites() {
+	private ArcadeSprites() {
 		storeTrueTypeFont("font.hud", "PressStart2P-Regular.ttf", Font.PLAIN, 8);
 
 		// debugger told me RGB value of blue color in maze image
