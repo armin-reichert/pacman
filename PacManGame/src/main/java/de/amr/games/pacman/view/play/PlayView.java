@@ -38,7 +38,7 @@ public class PlayView implements LivingView {
 		}
 	}
 
-	public static IRenderer createScoreRenderer(RenderingStyle style, World world, Game game) {
+	public static IRenderer createScoreRenderer(RenderingStyle style, Game game) {
 		if (style == RenderingStyle.ARCADE) {
 			return new de.amr.games.pacman.view.render.sprite.ScoreRenderer(game);
 		} else {
@@ -116,7 +116,7 @@ public class PlayView implements LivingView {
 		worldRenderer = createWorldRenderer(style, world);
 		liveCounterRenderer = createLiveCounterRenderer(style, game);
 		levelCounterRenderer = createLevelCounterRenderer(style, game);
-		scoreRenderer = createScoreRenderer(style, world, game);
+		scoreRenderer = createScoreRenderer(style, game);
 		pacManRenderer = createPacManRenderer(style, world, world.population().pacMan());
 		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, createGhostRenderer(style, ghost)));
 	}
