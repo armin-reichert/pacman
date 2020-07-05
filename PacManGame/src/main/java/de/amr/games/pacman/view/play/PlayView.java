@@ -28,7 +28,7 @@ import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.Rendering;
 
 /**
- * Simple play view providing the core functionality for playing.
+ * View where the action is.
  * 
  * @author Armin Reichert
  */
