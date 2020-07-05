@@ -4,21 +4,22 @@ import java.awt.Graphics2D;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.SpriteMap;
-import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.IRenderer;
 
-public abstract class CreatureRenderer implements IRenderer {
+public abstract class SpriteEntityRenderer implements IRenderer {
 
 	protected final SpriteMap sprites;
 
-	public CreatureRenderer() {
+	public SpriteEntityRenderer() {
 		sprites = new SpriteMap();
 	}
-	
-	protected void drawEntity(Graphics2D g, Entity creature) {
-		if (creature.visible) {
+
+	protected void drawEntity(Graphics2D g, Entity entity) {
+		if (entity.visible) {
 			sprites.current().ifPresent(sprite -> {
-				float x = creature.tf.x - Tile.SIZE / 2, y = creature.tf.y - Tile.SIZE / 2;
+				int sw = sprite.getWidth(), sh = sprite.getHeight();
+				int w = entity.tf.width, h = entity.tf.height;
+				float x = entity.tf.x - (sw - w) / 2, y = entity.tf.y - (sh - h) / 2;
 				sprite.draw(g, x, y);
 			});
 		}

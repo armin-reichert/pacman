@@ -23,5 +23,7 @@ public interface Theme {
 	IWorldRenderer createWorldRenderer(World world);
 
 	IRenderer createActorRoutesRenderer(World world);
+	
+	IRenderer createActorStatesRenderer(World world);
 
 }

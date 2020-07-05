@@ -8,7 +8,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.view.theme.IRenderer;
 
-public class GhostRenderer extends CreatureRenderer implements IRenderer {
+public class GhostRenderer extends SpriteEntityRenderer implements IRenderer {
 
 	private final Ghost ghost;
 

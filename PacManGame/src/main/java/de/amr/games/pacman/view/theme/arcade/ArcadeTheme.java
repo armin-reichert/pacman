@@ -30,6 +30,11 @@ public class ArcadeTheme implements Theme {
 	public IRenderer createActorRoutesRenderer(World world) {
 		return new ActorRoutesRenderer(world);
 	}
+	
+	@Override
+	public IRenderer createActorStatesRenderer(World world) {
+		return new ActorStatesRenderer(world);
+	}
 
 	@Override
 	public IRenderer createScoreRenderer(Game game) {

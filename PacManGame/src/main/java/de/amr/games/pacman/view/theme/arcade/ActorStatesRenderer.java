@@ -25,9 +25,10 @@ import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.view.theme.IRenderer;
 import de.amr.games.pacman.view.theme.common.Rendering;
 
-public class ActorStatesRenderer {
+public class ActorStatesRenderer implements IRenderer {
 
 	private static final Font SMALL_FONT = new Font("Arial Narrow", Font.PLAIN, 6);
 
@@ -42,6 +43,7 @@ public class ActorStatesRenderer {
 		this.ghostCommand = ghostCommand;
 	}
 
+	@Override
 	public void draw(Graphics2D g) {
 		drawActorStates(g);
 		drawActorsOffTrack(g);

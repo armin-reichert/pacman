@@ -11,6 +11,7 @@ import de.amr.games.pacman.view.theme.IWorldRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.games.pacman.view.theme.Theming.ThemeName;
 import de.amr.games.pacman.view.theme.common.ActorRoutesRenderer;
+import de.amr.games.pacman.view.theme.common.NullRenderer;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
 public class BlocksTheme implements Theme {
@@ -28,6 +29,11 @@ public class BlocksTheme implements Theme {
 	@Override
 	public IRenderer createActorRoutesRenderer(World world) {
 		return new ActorRoutesRenderer(world);
+	}
+
+	@Override
+	public IRenderer createActorStatesRenderer(World world) {
+		return new NullRenderer();
 	}
 
 	@Override

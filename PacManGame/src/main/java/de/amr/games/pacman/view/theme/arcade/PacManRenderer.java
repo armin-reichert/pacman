@@ -7,7 +7,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.IRenderer;
 
-public class PacManRenderer extends CreatureRenderer implements IRenderer {
+public class PacManRenderer extends SpriteEntityRenderer implements IRenderer {
 
 	private final World world;
 	private final PacMan pacMan;
