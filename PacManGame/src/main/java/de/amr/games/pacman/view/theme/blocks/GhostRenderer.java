@@ -10,7 +10,7 @@ import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.IRenderer;
 
-public class GhostRenderer implements IRenderer {
+class GhostRenderer implements IRenderer {
 
 	private final Ghost ghost;
 

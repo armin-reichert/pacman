@@ -21,7 +21,7 @@ import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.play.EnhancedPlayView;
-import de.amr.games.pacman.view.theme.Theming.Theme;
+import de.amr.games.pacman.view.theme.Theming.ThemeName;
 
 public class TestUI implements Lifecycle, VisualController {
 
@@ -67,8 +67,8 @@ public class TestUI implements Lifecycle, VisualController {
 		world.population().ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> ghostSpeedLimit(ghost, game)));
 
 		view = new EnhancedPlayView(world, game, app().settings().width, app().settings().height);
-		view.theme = Theme.ARCADE;
-		view.updateRenderers(world);
+		view.themeName = ThemeName.ARCADE;
+		view.updateTheme();
 		view.turnScoresOff();
 		view.init();
 	}
@@ -82,8 +82,8 @@ public class TestUI implements Lifecycle, VisualController {
 	@Override
 	public void update() {
 		if (Keyboard.keyPressedOnce("z")) {
-			view.theme = view.theme == Theme.ARCADE ? Theme.BLOCKS : Theme.ARCADE;
-			view.updateRenderers(world);
+			view.themeName = view.themeName == ThemeName.ARCADE ? ThemeName.BLOCKS : ThemeName.ARCADE;
+			view.updateTheme();
 		}
 		if (Keyboard.keyPressedOnce("g")) {
 			if (view.isShowingGrid()) {

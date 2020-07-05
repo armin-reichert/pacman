@@ -15,8 +15,9 @@ import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.theme.IRenderer;
 import de.amr.games.pacman.view.theme.IWorldRenderer;
+import de.amr.games.pacman.view.theme.Theme;
 import de.amr.games.pacman.view.theme.Theming;
-import de.amr.games.pacman.view.theme.Theming.Theme;
+import de.amr.games.pacman.view.theme.Theming.ThemeName;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
@@ -35,7 +36,7 @@ public class PlayView implements LivingView {
 	protected String[] messageTexts = new String[2];
 	protected Color[] messageColors = new Color[2];
 
-	public Theme theme;
+	public ThemeName themeName;
 
 	protected IWorldRenderer worldRenderer;
 	protected IRenderer scoreRenderer;
@@ -55,17 +56,18 @@ public class PlayView implements LivingView {
 		showingScores = true;
 		scoreRenderer = new ScoreRenderer(game);
 		messagesRenderer = new MessagesRenderer();
-		theme = Theme.ARCADE;
-		updateRenderers(world);
+		themeName = ThemeName.ARCADE;
+		updateTheme();
 	}
 
-	public void updateRenderers(World world) {
-		worldRenderer = Theming.createWorldRenderer(theme, world);
-		liveCounterRenderer = Theming.createLiveCounterRenderer(theme, game);
-		levelCounterRenderer = Theming.createLevelCounterRenderer(theme, game);
-		scoreRenderer = Theming.createScoreRenderer(theme, game);
-		pacManRenderer = Theming.createPacManRenderer(theme, world, world.population().pacMan());
-		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, Theming.createGhostRenderer(theme, ghost)));
+	public void updateTheme() {
+		Theme theme = Theming.getTheme(themeName);
+		worldRenderer = theme.createWorldRenderer(world);
+		liveCounterRenderer = theme.createLiveCounterRenderer(game);
+		levelCounterRenderer = theme.createLevelCounterRenderer(game);
+		scoreRenderer = theme.createScoreRenderer(game);
+		pacManRenderer = theme.createPacManRenderer(world, world.population().pacMan());
+		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, theme.createGhostRenderer(ghost)));
 	}
 
 	@Override
