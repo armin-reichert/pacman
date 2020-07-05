@@ -13,9 +13,10 @@ import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.view.theme.IRenderer;
 import de.amr.games.pacman.view.theme.common.Rendering;
 
-public class GhostHouseStateRenderer {
+public class GhostHouseStateRenderer implements IRenderer {
 
 	private final World world;
 	private final Image inkyImage, clydeImage, pacManImage;
@@ -29,6 +30,7 @@ public class GhostHouseStateRenderer {
 		pacManImage = ArcadeThemeResources.BUNDLE.spr_pacManWalking(RIGHT).frame(0);
 	}
 
+	@Override
 	public void draw(Graphics2D g) {
 		if (doorMan == null) {
 			return; // test scenes may have no ghost house

@@ -69,7 +69,7 @@ public class PlayView implements LivingView {
 	private final GridRenderer gridRenderer;
 	private final IRenderer actorRoutesRenderer;
 	private final IRenderer actorStatesRenderer;
-	private final GhostHouseStateRenderer ghostHouseStateRenderer;
+	private final IRenderer ghostHouseStateRenderer;
 
 	public PlayView(World world, Game game, GhostCommand ghostCommand, GhostHouseDoorMan ghostHouseAccessControl,
 			int width, int height) {
@@ -148,13 +148,11 @@ public class PlayView implements LivingView {
 	}
 
 	public void showGameReady() {
-		messageTexts[1] = "Ready!";
-		messageColors[1] = Color.YELLOW;
+		showMessage(1, "Ready!", Color.YELLOW);
 	}
 
 	public void showGameOver() {
-		messageTexts[1] = "Game Over!";
-		messageColors[1] = Color.RED;
+		showMessage(1, "Game Over!", Color.RED);
 	}
 
 	public void showMessage(int oneOrTwo, String text, Color color) {
