@@ -90,13 +90,18 @@ class WorldRenderer implements IWorldRenderer {
 	}
 
 	private void drawEnergizer(Graphics2D g, int row, int col) {
+		int size = Tile.SIZE;
+		int x = col * Tile.SIZE + (Tile.SIZE - size) / 2;
+		int y = row * Tile.SIZE + (Tile.SIZE - size) / 2;
+		g.translate(x, y);
 		if (!world.isFrozen() && app().clock().getTotalTicks() % 60 < 30) {
 			g.setColor(Color.BLACK);
-			g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
+			g.fillRect(0, 0, size, size);
 		} else {
 			g.setColor(Color.PINK);
-			g.fillOval(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
+			g.fillOval(0, 0, size, size);
 		}
+		g.translate(-x, -y);
 	}
 
 	private void drawEmptyMaze(Graphics2D g) {

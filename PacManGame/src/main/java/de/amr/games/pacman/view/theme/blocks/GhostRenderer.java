@@ -53,9 +53,16 @@ class GhostRenderer implements IRenderer {
 		smoothOff(g);
 	}
 
+	private int tiles(double amount) {
+		return (int) (amount * Tile.SIZE);
+	}
+
 	private void drawEyes(Graphics2D g) {
+		int size = tiles(1.5);
+		int x = (int) ghost.tf.x + (ghost.tf.width - size) / 2;
+		int y = (int) ghost.tf.y + (ghost.tf.width - size) / 2;
 		g.setColor(ghostColor());
-		g.drawRect((int) ghost.tf.x, (int) ghost.tf.y, Tile.SIZE, Tile.SIZE);
+		g.drawRect(x, y, size, size);
 	}
 
 	private void drawPoints(Graphics2D g) {
@@ -64,19 +71,28 @@ class GhostRenderer implements IRenderer {
 	}
 
 	private void drawFrightened(Graphics2D g) {
+		int size = tiles(1.5);
+		int x = (int) ghost.tf.x + (ghost.tf.width - size) / 2;
+		int y = (int) ghost.tf.y + (ghost.tf.width - size) / 2;
 		g.setColor(Color.BLUE);
-		g.fillRect((int) ghost.tf.x, (int) ghost.tf.y, Tile.SIZE, Tile.SIZE);
+		g.fillRect(x, y, size, size);
 	}
 
 	private void drawFlashing(Graphics2D g) {
 		boolean flash = Application.app().clock().getTotalTicks() % 30 < 15;
+		int size = tiles(1.5);
+		int x = (int) ghost.tf.x + (ghost.tf.width - size) / 2;
+		int y = (int) ghost.tf.y + (ghost.tf.width - size) / 2;
 		g.setColor(flash ? Color.WHITE : Color.BLUE);
-		g.fillRect((int) ghost.tf.x, (int) ghost.tf.y, Tile.SIZE, Tile.SIZE);
+		g.fillRect(x, y, size, size);
 	}
 
 	private void drawColored(Graphics2D g) {
+		int size = tiles(1.5);
+		int x = (int) ghost.tf.x + (ghost.tf.width - size) / 2;
+		int y = (int) ghost.tf.y + (ghost.tf.width - size) / 2;
 		g.setColor(ghostColor());
-		g.fillRect((int) ghost.tf.x, (int) ghost.tf.y, Tile.SIZE, Tile.SIZE);
+		g.fillRect(x, y, size, size);
 	}
 
 	private Color ghostColor() {

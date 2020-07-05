@@ -29,7 +29,7 @@ public class BlocksTheme implements Theme {
 	@Override
 	public IRenderer createScoreRenderer(Game game) {
 		ScoreRenderer renderer = new ScoreRenderer(game);
-		Font font = new Font(Font.MONOSPACED, Font.BOLD, 8);
+		Font font = new Font(Font.MONOSPACED, Font.BOLD, 10);
 		renderer.setFont(font);
 		return renderer;
 	}
