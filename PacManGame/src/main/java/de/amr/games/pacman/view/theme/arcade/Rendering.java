@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.render.sprite;
+package de.amr.games.pacman.view.theme.arcade;
 
 import static java.lang.Math.PI;
 

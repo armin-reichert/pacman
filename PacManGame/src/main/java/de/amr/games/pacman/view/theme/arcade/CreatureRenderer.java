@@ -1,11 +1,11 @@
-package de.amr.games.pacman.view.render.sprite;
+package de.amr.games.pacman.view.theme.arcade;
 
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.render.IRenderer;
+import de.amr.games.pacman.view.theme.IRenderer;
 
 public abstract class CreatureRenderer implements IRenderer {
 

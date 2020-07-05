@@ -24,7 +24,7 @@ import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
 import de.amr.games.pacman.model.world.api.Habitat;
-import de.amr.games.pacman.view.render.sprite.ArcadeSprites;
+import de.amr.games.pacman.view.theme.arcade.ArcadeSprites;
 import net.miginfocom.swing.MigLayout;
 
 /**

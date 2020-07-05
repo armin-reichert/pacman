@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.render.sprite;
+package de.amr.games.pacman.view.theme.arcade;
 
 import static de.amr.easy.game.Application.loginfo;
 import static de.amr.easy.game.assets.Assets.storeTrueTypeFont;

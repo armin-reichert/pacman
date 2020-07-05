@@ -16,10 +16,10 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.LivingView;
-import de.amr.games.pacman.view.render.IRenderer;
-import de.amr.games.pacman.view.render.sprite.ArcadeSprites;
-import de.amr.games.pacman.view.render.sprite.GhostRenderer;
-import de.amr.games.pacman.view.render.sprite.PacManRenderer;
+import de.amr.games.pacman.view.theme.IRenderer;
+import de.amr.games.pacman.view.theme.arcade.ArcadeSprites;
+import de.amr.games.pacman.view.theme.arcade.GhostRenderer;
+import de.amr.games.pacman.view.theme.arcade.PacManRenderer;
 
 /**
  * View displayed while the music files are loaded.

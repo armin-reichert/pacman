@@ -12,13 +12,13 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.Theming;
-import de.amr.games.pacman.view.Theming.Theme;
 import de.amr.games.pacman.view.core.LivingView;
-import de.amr.games.pacman.view.render.IRenderer;
-import de.amr.games.pacman.view.render.IWorldRenderer;
-import de.amr.games.pacman.view.render.common.MessagesRenderer;
-import de.amr.games.pacman.view.render.common.ScoreRenderer;
+import de.amr.games.pacman.view.theme.IRenderer;
+import de.amr.games.pacman.view.theme.IWorldRenderer;
+import de.amr.games.pacman.view.theme.Theming;
+import de.amr.games.pacman.view.theme.Theming.Theme;
+import de.amr.games.pacman.view.theme.common.MessagesRenderer;
+import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
 /**
  * Simple play view providing the core functionality for playing.

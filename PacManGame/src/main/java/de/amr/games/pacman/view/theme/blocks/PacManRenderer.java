@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.render.block;
+package de.amr.games.pacman.view.theme.blocks;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -7,7 +7,7 @@ import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.render.IRenderer;
+import de.amr.games.pacman.view.theme.IRenderer;
 
 public class PacManRenderer implements IRenderer {
 

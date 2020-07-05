@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.render.common;
+package de.amr.games.pacman.view.theme.common;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -9,7 +9,7 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.render.IRenderer;
+import de.amr.games.pacman.view.theme.IRenderer;
 
 public class ScoreRenderer implements IRenderer {
 

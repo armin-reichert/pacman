@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.render.sprite;
+package de.amr.games.pacman.view.theme.arcade;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -16,7 +16,7 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Door.DoorState;
-import de.amr.games.pacman.view.render.IWorldRenderer;
+import de.amr.games.pacman.view.theme.IWorldRenderer;
 import de.amr.games.pacman.model.world.core.Tile;
 
 public class WorldRenderer implements IWorldRenderer {

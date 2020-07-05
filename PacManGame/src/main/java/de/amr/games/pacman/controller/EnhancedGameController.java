@@ -15,7 +15,7 @@ import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
-import de.amr.games.pacman.view.Theming.Theme;
+import de.amr.games.pacman.view.theme.Theming.Theme;
 
 /**
  * Enhanced game controller with all the bells and whistles.

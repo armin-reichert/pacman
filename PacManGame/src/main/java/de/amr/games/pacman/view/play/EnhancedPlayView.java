@@ -10,11 +10,11 @@ import de.amr.games.pacman.controller.ghosthouse.GhostHouseAccessControl;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.render.sprite.ActorRoutesRenderer;
-import de.amr.games.pacman.view.render.sprite.ActorStatesRenderer;
-import de.amr.games.pacman.view.render.sprite.GhostHouseStateRenderer;
-import de.amr.games.pacman.view.render.sprite.GridRenderer;
-import de.amr.games.pacman.view.render.sprite.Rendering;
+import de.amr.games.pacman.view.theme.arcade.ActorRoutesRenderer;
+import de.amr.games.pacman.view.theme.arcade.ActorStatesRenderer;
+import de.amr.games.pacman.view.theme.arcade.GhostHouseStateRenderer;
+import de.amr.games.pacman.view.theme.arcade.GridRenderer;
+import de.amr.games.pacman.view.theme.arcade.Rendering;
 
 /**
  * An extended play view that can visualize actor states, the ghost house pellet counters, ghost

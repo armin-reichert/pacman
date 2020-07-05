@@ -12,7 +12,7 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.sound.PacManSoundManager;
 import de.amr.games.pacman.model.world.api.Population;
-import de.amr.games.pacman.view.render.sprite.ArcadeSprites;
+import de.amr.games.pacman.view.theme.arcade.ArcadeSprites;
 
 public class ChasePacManAnimation extends GameObject {
 

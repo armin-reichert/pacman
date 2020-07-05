@@ -1,7 +1,7 @@
-package de.amr.games.pacman.view.render.sprite;
+package de.amr.games.pacman.view.theme.arcade;
 
-import static de.amr.games.pacman.view.render.sprite.Rendering.drawDirectionIndicator;
-import static de.amr.games.pacman.view.render.sprite.Rendering.ghostColor;
+import static de.amr.games.pacman.view.theme.arcade.Rendering.drawDirectionIndicator;
+import static de.amr.games.pacman.view.theme.arcade.Rendering.ghostColor;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -16,7 +16,7 @@ import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.render.IRenderer;
+import de.amr.games.pacman.view.theme.IRenderer;
 
 public class GridRenderer implements IRenderer {
 

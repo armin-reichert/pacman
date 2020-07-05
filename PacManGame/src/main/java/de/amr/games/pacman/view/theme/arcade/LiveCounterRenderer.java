@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.render.sprite;
+package de.amr.games.pacman.view.theme.arcade;
 
 import static de.amr.games.pacman.model.Direction.LEFT;
 
@@ -7,7 +7,7 @@ import java.awt.Image;
 
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.render.IRenderer;
+import de.amr.games.pacman.view.theme.IRenderer;
 
 public class LiveCounterRenderer implements IRenderer {
 

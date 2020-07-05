@@ -8,7 +8,7 @@ import de.amr.easy.game.entity.GameObject;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.games.pacman.controller.sound.PacManSoundManager;
-import de.amr.games.pacman.view.render.sprite.ArcadeSprites;
+import de.amr.games.pacman.view.theme.arcade.ArcadeSprites;
 
 /**
  * An animation showing Pac-Man chasing the ghosts and scoring points for each killed ghost.

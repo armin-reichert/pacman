@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.render.block;
+package de.amr.games.pacman.view.theme.blocks;
 
 import static de.amr.easy.game.Application.app;
 
@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Door.DoorState;
-import de.amr.games.pacman.view.render.IWorldRenderer;
+import de.amr.games.pacman.view.theme.IWorldRenderer;
 import de.amr.games.pacman.model.world.core.Tile;
 
 public class WorldRenderer implements IWorldRenderer {

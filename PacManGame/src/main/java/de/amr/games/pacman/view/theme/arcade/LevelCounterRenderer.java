@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.render.sprite;
+package de.amr.games.pacman.view.theme.arcade;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -8,7 +8,7 @@ import java.util.Map;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.render.IRenderer;
+import de.amr.games.pacman.view.theme.IRenderer;
 
 public class LevelCounterRenderer implements IRenderer {
 
