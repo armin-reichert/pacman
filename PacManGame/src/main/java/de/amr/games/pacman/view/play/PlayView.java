@@ -68,7 +68,7 @@ public class PlayView implements LivingView {
 	private final IRenderer actorStatesRenderer;
 	private final IRenderer ghostHouseStateRenderer;
 
-	public PlayView(World world, Game game, GhostCommand ghostCommand, GhostHouseDoorMan ghostHouseAccessControl,
+	public PlayView(World world, Game game, GhostCommand ghostCommand, GhostHouseDoorMan doorMan,
 			int width, int height) {
 		this.world = world;
 		this.game = game;
@@ -82,7 +82,7 @@ public class PlayView implements LivingView {
 		gridRenderer = new GridRenderer(world);
 		actorRoutesRenderer = new ActorRoutesRenderer(world);
 		actorStatesRenderer = new ActorStatesRenderer(world, ghostCommand);
-		ghostHouseStateRenderer = new GhostHouseStateRenderer(world, ghostHouseAccessControl);
+		ghostHouseStateRenderer = new GhostHouseStateRenderer(world, doorMan);
 		frameRateDisplay = new FrameRateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);

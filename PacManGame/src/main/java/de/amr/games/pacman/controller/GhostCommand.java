@@ -16,9 +16,8 @@ import de.amr.statemachine.core.StateMachine;
 
 /**
  * Controller for the timing of the ghost attack waves. Ghosts change between chasing and scattering
- * mode during each level in several rounds. The duration of these rounds depends on the level and
- * round. When a ghost becomes frightened, the timer is stopped and the ghost resumes later in that
- * state.
+ * mode during each level in several rounds of different durations. When a ghost becomes frightened,
+ * the timer is stopped and the ghost resumes later at this point in time of the round.
  * 
  * @author Armin Reichert
  * 
@@ -28,11 +27,11 @@ import de.amr.statemachine.core.StateMachine;
 public class GhostCommand extends StateMachine<GhostState, Void> {
 
 	/*@formatter:off*/
-	private static final int[][] TIMES = {
-		// round 1            round 2            round 3              round 4
+	private static final int[][] DURATION_TABLE = {
+//     round 1            round 2            round 3              round 4
 		{  sec(7), sec(20),   sec(7), sec(20),   sec(5), sec(  20),   sec(5), Integer.MAX_VALUE },	// Level 1
-		{  sec(7), sec(20),   sec(7), sec(20),   sec(5), sec(1033),        1, Integer.MAX_VALUE },	// Levels 2-4
-		{  sec(5), sec(20),   sec(5), sec(20),   sec(5), sec(1037),        1, Integer.MAX_VALUE },	// Levels 5+
+		{  sec(7), sec(20),   sec(7), sec(20),   sec(5), sec(1033),        1, Integer.MAX_VALUE },	// Level 2-4
+		{  sec(5), sec(20),   sec(5), sec(20),   sec(5), sec(1037),        1, Integer.MAX_VALUE },	// Level >=5
 	};
 	/*@formatter:on*/
 
@@ -51,29 +50,33 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 			.initialState(SCATTERING)
 		.states()
 			.state(SCATTERING)
-				.timeoutAfter(this::scatterDuration)
+				.timeoutAfter(this::currentRoundScatterDuration)
 			.state(CHASING)
-				.timeoutAfter(this::chaseDuration)
+				.timeoutAfter(this::currentRoundChaseDuration)
 		.transitions()
 			.when(SCATTERING).then(CHASING).onTimeout()
-			.when(CHASING).then(SCATTERING).onTimeout().act(() -> ++round)
+			.when(CHASING).then(SCATTERING).onTimeout().act(this::nextRound)
 		.endStateMachine();
 		/*@formatter:on*/
 		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 	}
 
-	private int entry(int col) {
+	private int tableEntry(int col) {
 		int level = game.level.number;
 		int row = level == 1 ? 0 : level <= 4 ? 1 : 2;
-		return TIMES[row][col];
+		return DURATION_TABLE[row][col];
 	}
 
-	private int scatterDuration() {
-		return entry(2 * round - 2);
+	private int currentRoundScatterDuration() {
+		return tableEntry(2 * round - 2);
 	}
 
-	private int chaseDuration() {
-		return entry(2 * round - 1);
+	private int currentRoundChaseDuration() {
+		return tableEntry(2 * round - 1);
+	}
+
+	private void nextRound() {
+		++round;
 	}
 
 	@Override
