@@ -4,17 +4,16 @@ import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
 import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.amr.easy.game.assets.Assets;
 import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.view.Theming;
+import de.amr.games.pacman.view.Theming.Theme;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.render.IRenderer;
 import de.amr.games.pacman.view.render.IWorldRenderer;
@@ -28,59 +27,6 @@ import de.amr.games.pacman.view.render.common.ScoreRenderer;
  */
 public class PlayView implements LivingView {
 
-	public enum RenderingStyle {
-		ARCADE, BLOCK
-	}
-
-	public static IWorldRenderer createWorldRenderer(RenderingStyle style, World world) {
-		if (style == RenderingStyle.ARCADE) {
-			return new de.amr.games.pacman.view.render.sprite.WorldRenderer(world);
-		} else {
-			return new de.amr.games.pacman.view.render.block.WorldRenderer(world);
-		}
-	}
-
-	public static IRenderer createScoreRenderer(RenderingStyle style, Game game) {
-		ScoreRenderer renderer = new de.amr.games.pacman.view.render.common.ScoreRenderer(game);
-		Font font = style == RenderingStyle.ARCADE ? Assets.font("font.hud") : new Font(Font.MONOSPACED, Font.BOLD, 8);
-		renderer.setFont(font);
-		return renderer;
-	}
-
-	public static IRenderer createLiveCounterRenderer(RenderingStyle style, Game game) {
-		if (style == RenderingStyle.ARCADE) {
-			return new de.amr.games.pacman.view.render.sprite.LiveCounterRenderer(game);
-		} else {
-			return new de.amr.games.pacman.view.render.block.LiveCounterRenderer(game);
-		}
-	}
-
-	public static IRenderer createLevelCounterRenderer(RenderingStyle style, Game game) {
-		if (style == RenderingStyle.ARCADE) {
-			return new de.amr.games.pacman.view.render.sprite.LevelCounterRenderer(game);
-		} else {
-			return new de.amr.games.pacman.view.render.block.LevelCounterRenderer(game);
-		}
-	}
-
-	public static IRenderer createPacManRenderer(RenderingStyle style, World world, PacMan pacMan) {
-		if (style == RenderingStyle.ARCADE) {
-			return new de.amr.games.pacman.view.render.sprite.PacManRenderer(world, pacMan);
-		} else if (style == RenderingStyle.BLOCK) {
-			return new de.amr.games.pacman.view.render.block.PacManRenderer(world, pacMan);
-		}
-		throw new IllegalArgumentException("Unknown style " + style);
-	}
-
-	public static IRenderer createGhostRenderer(RenderingStyle style, Ghost ghost) {
-		if (style == RenderingStyle.ARCADE) {
-			return new de.amr.games.pacman.view.render.sprite.GhostRenderer(ghost);
-		} else if (style == RenderingStyle.BLOCK) {
-			return new de.amr.games.pacman.view.render.block.GhostRenderer(ghost);
-		}
-		throw new IllegalArgumentException("Unknown style " + style);
-	}
-
 	protected World world;
 	protected Game game;
 	protected int width;
@@ -89,7 +35,7 @@ public class PlayView implements LivingView {
 	protected String[] messageTexts = new String[2];
 	protected Color[] messageColors = new Color[2];
 
-	public RenderingStyle style;
+	public Theme theme;
 
 	protected IWorldRenderer worldRenderer;
 	protected IRenderer scoreRenderer;
@@ -109,17 +55,17 @@ public class PlayView implements LivingView {
 		showingScores = true;
 		scoreRenderer = new ScoreRenderer(game);
 		messagesRenderer = new MessagesRenderer();
-		style = RenderingStyle.ARCADE;
+		theme = Theme.ARCADE;
 		updateRenderers(world);
 	}
 
 	public void updateRenderers(World world) {
-		worldRenderer = createWorldRenderer(style, world);
-		liveCounterRenderer = createLiveCounterRenderer(style, game);
-		levelCounterRenderer = createLevelCounterRenderer(style, game);
-		scoreRenderer = createScoreRenderer(style, game);
-		pacManRenderer = createPacManRenderer(style, world, world.population().pacMan());
-		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, createGhostRenderer(style, ghost)));
+		worldRenderer = Theming.createWorldRenderer(theme, world);
+		liveCounterRenderer = Theming.createLiveCounterRenderer(theme, game);
+		levelCounterRenderer = Theming.createLevelCounterRenderer(theme, game);
+		scoreRenderer = Theming.createScoreRenderer(theme, game);
+		pacManRenderer = Theming.createPacManRenderer(theme, world, world.population().pacMan());
+		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, Theming.createGhostRenderer(theme, ghost)));
 	}
 
 	@Override

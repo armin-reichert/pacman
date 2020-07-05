@@ -58,7 +58,7 @@ public class Ghost extends Creature<GhostState> {
 	/** Keeps track of steering changes. */
 	public Steering previousSteering;
 
-	/** Ghost color as defined in {@link Theme}. */
+	/** Ghost color as defined in {@link Theming}. */
 	public int color;
 
 	/** Value when eaten */

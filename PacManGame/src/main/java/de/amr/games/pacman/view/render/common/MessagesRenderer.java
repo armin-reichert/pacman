@@ -10,35 +10,32 @@ import de.amr.games.pacman.model.world.core.Tile;
 
 public class MessagesRenderer {
 
+	private int row;
 	private Color textColor;
 	private Font font;
-	private int fontSize;
-	private int row;
 
 	public MessagesRenderer() {
-		font = Assets.font("font.hud");
-		textColor = Color.YELLOW;
-		fontSize = 8;
 		row = 21;
+		textColor = Color.YELLOW;
+		setFont(Assets.font("font.hud").deriveFont((float) Tile.SIZE));
 	}
 
 	public void drawCentered(Graphics2D g, String text, int widthInTiles) {
 		if (text != null) {
 			try (Pen pen = new Pen(g)) {
 				pen.font(font);
-				pen.fontSize(fontSize);
 				pen.color(textColor);
 				pen.hcenter(text, widthInTiles * Tile.SIZE, row, Tile.SIZE);
 			}
 		}
 	}
 
-	public void setTextColor(Color textColor) {
-		this.textColor = textColor;
+	public void setFont(Font font) {
+		this.font = font;
 	}
 
-	public void setFontSize(int fontSize) {
-		this.fontSize = fontSize;
+	public void setTextColor(Color color) {
+		this.textColor = color;
 	}
 
 	public void setRow(int row) {

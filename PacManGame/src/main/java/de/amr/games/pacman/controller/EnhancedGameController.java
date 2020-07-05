@@ -15,7 +15,7 @@ import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
-import de.amr.games.pacman.view.play.PlayView.RenderingStyle;
+import de.amr.games.pacman.view.Theming.Theme;
 
 /**
  * Enhanced game controller with all the bells and whistles.
@@ -81,7 +81,7 @@ public class EnhancedGameController extends GameController {
 		} else if (Keyboard.keyPressedOnce("x")) {
 			toggleGhostsHarmless();
 		} else if (Keyboard.keyPressedOnce("z")) {
-			playView.style = playView.style == RenderingStyle.ARCADE ? RenderingStyle.BLOCK : RenderingStyle.ARCADE;
+			playView.theme = playView.theme == Theme.ARCADE ? Theme.BLOCKS : Theme.ARCADE;
 			playView.updateRenderers(world);
 		} else if (Keyboard.keyPressedOnce("+")) {
 			switchToNextLevel();
