@@ -355,8 +355,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void newGame() {
 		game = new Game(settings.startLevel, world.totalFoodCount());
 
-		ghostCommand = new GhostCommand(game, world.population().ghosts());
-		doorMan = new GhostHouseDoorMan(game, world, world.theHouse());
+		ghostCommand = new GhostCommand(game, world);
+		doorMan = new GhostHouseDoorMan(game, world);
 		bonusControl = new BonusControl(game, world);
 
 		world.setFrozen(true);
@@ -367,8 +367,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		world.population().play(game);
 
 		playView = new PlayView(world, game, ghostCommand, doorMan, settings.width, settings.height);
-		playView.ghostCommand = ghostCommand;
-		playView.doorMan = doorMan;
 
 		app().f2Dialog().ifPresent(f2 -> f2.selectCustomTab(0));
 	}

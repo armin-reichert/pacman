@@ -52,11 +52,8 @@ public class PlayView implements LivingView {
 	protected IRenderer pacManRenderer;
 	protected Map<Ghost, IRenderer> ghostRenderer = new HashMap<>();
 
-	/** Optional ghost house control */
-	public GhostCommand ghostCommand;
-
-	/** Optional ghost house reference */
-	public GhostHouseDoorMan doorMan;
+	protected GhostCommand ghostCommand;
+	protected GhostHouseDoorMan doorMan;
 
 	private FrameRateWidget frameRateDisplay;
 

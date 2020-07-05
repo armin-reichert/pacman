@@ -43,10 +43,10 @@ public class GhostHouseDoorMan implements Lifecycle {
 	private final int[] ghostCounters;
 	private int pacManStarvingTicks;
 
-	public GhostHouseDoorMan(Game game, World world, House house) {
+	public GhostHouseDoorMan(Game game, World world) {
 		this.game = game;
 		this.world = world;
-		this.house = house;
+		this.house = world.theHouse();
 		blinky = world.population().blinky();
 		pinky = world.population().pinky();
 		inky = world.population().inky();
@@ -65,7 +65,7 @@ public class GhostHouseDoorMan implements Lifecycle {
 	@Override
 	public void update() {
 		preferredLockedGhost().ifPresent(ghost -> {
-			Decision decision = decisionAboutRelease(ghost);
+			Decision decision = makeDecisionAboutReleasing(ghost);
 			if (decision.confirmed) {
 				loginfo(decision.reason);
 				unlock(ghost);
@@ -75,64 +75,6 @@ public class GhostHouseDoorMan implements Lifecycle {
 
 		house.doors().forEach(this::closeDoor);
 		house.doors().filter(this::isOpeningRequested).forEach(this::openDoor);
-	}
-
-	private void closeDoor(Door door) {
-		door.state = DoorState.CLOSED;
-	}
-
-	private void openDoor(Door door) {
-		door.state = DoorState.OPEN;
-	}
-
-	private boolean isOpeningRequested(Door door) {
-		//@formatter:off
-		return world.population().ghosts().filter(world::included)
-				.filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE))
-				.filter(ghost -> isGhostNearDoor(ghost, door))
-				.findAny()
-				.isPresent();
-		//@formatter:on
-	}
-
-	private boolean isGhostNearDoor(Ghost ghost, Door door) {
-		Tile fromGhostTowardsHouse = world.neighbor(ghost.tile(), door.intoHouse);
-		Tile fromGhostAwayFromHouse = world.neighbor(ghost.tile(), door.intoHouse.opposite());
-		return door.includes(ghost.tile()) || door.includes(fromGhostAwayFromHouse) || door.includes(fromGhostTowardsHouse);
-	}
-
-	/**
-	 * @param ghost a ghost
-	 * @return decision why ghost can leave
-	 * 
-	 * @see <a href=
-	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
-	 *      Dossier</a>
-	 */
-	private Decision decisionAboutRelease(Ghost ghost) {
-		if (!ghost.is(LOCKED)) {
-			return confirmed("Ghost is not locked");
-		}
-		if (ghost == blinky) {
-			return confirmed("%s can always leave", ghost.name);
-		}
-		if (pacManStarvingTicks >= pacManStarvingTimeLimit()) {
-			pacManStarvingTicks = 0;
-			return confirmed("%s can leave house: Pac-Man's starving time limit (%d ticks) reached", ghost.name,
-					pacManStarvingTimeLimit());
-		}
-		if (globalCounter.enabled) {
-			int globalLimit = globalDotLimit(ghost);
-			if (globalCounter.dots >= globalLimit) {
-				return confirmed("%s can leave house: global dot limit (%d) reached", ghost.name, globalLimit);
-			}
-		} else {
-			int personalLimit = personalDotLimit(ghost);
-			if (ghostCounters[ghost.bed().number] >= personalLimit) {
-				return confirmed("%s can leave house: ghost's dot limit (%d) reached", ghost.name, personalLimit);
-			}
-		}
-		return rejected("");
 	}
 
 	public void onPacManFoundFood() {
@@ -151,18 +93,28 @@ public class GhostHouseDoorMan implements Lifecycle {
 		}
 	}
 
-	public void onLevelChange() {
-		resetGhostDotCounters();
-	}
-
 	public void onLifeLost() {
 		globalCounter.enabled = true;
 		globalCounter.dots = 0;
 		loginfo("Global dot counter enabled and set to zero");
 	}
 
+	public void onLevelChange() {
+		resetGhostDotCounters();
+	}
+
 	public boolean isPreferredGhost(Ghost ghost) {
 		return preferredLockedGhost().orElse(null) == ghost;
+	}
+
+	/**
+	 * Determines if the given ghost can leave the ghost house.
+	 * 
+	 * @param ghost a ghost
+	 * @return if the ghost can leave
+	 */
+	public boolean canLeave(Ghost ghost) {
+		return makeDecisionAboutReleasing(ghost).confirmed;
 	}
 
 	public int globalDotCount() {
@@ -175,32 +127,6 @@ public class GhostHouseDoorMan implements Lifecycle {
 
 	public int ghostDotCount(Ghost ghost) {
 		return ghostCounters[ghost.bed().number];
-	}
-
-	public int pacManStarvingTicks() {
-		return pacManStarvingTicks;
-	}
-
-	public Optional<Ghost> preferredLockedGhost() {
-		return Stream.of(blinky, pinky, inky, clyde).filter(world::included).filter(ghost -> ghost.is(LOCKED)).findFirst();
-	}
-
-	private void unlock(Ghost ghost) {
-		ghost.process(new GhostUnlockedEvent());
-	}
-
-	/**
-	 * Determines if the given ghost can leave the ghost house.
-	 * 
-	 * @param ghost a ghost
-	 * @return if the ghost can leave
-	 */
-	public boolean canLeave(Ghost ghost) {
-		return decisionAboutRelease(ghost).confirmed;
-	}
-
-	private int pacManStarvingTimeLimit() {
-		return game.level.number < 5 ? sec(4) : sec(3);
 	}
 
 	public int personalDotLimit(Ghost ghost) {
@@ -229,8 +155,82 @@ public class GhostHouseDoorMan implements Lifecycle {
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");
 	}
 
+	public int pacManStarvingTicks() {
+		return pacManStarvingTicks;
+	}
+
+	public Optional<Ghost> preferredLockedGhost() {
+		return Stream.of(blinky, pinky, inky, clyde).filter(world::included).filter(ghost -> ghost.is(LOCKED)).findFirst();
+	}
+
+	private void closeDoor(Door door) {
+		door.state = DoorState.CLOSED;
+	}
+
+	private void openDoor(Door door) {
+		door.state = DoorState.OPEN;
+	}
+
+	private void unlock(Ghost ghost) {
+		ghost.process(new GhostUnlockedEvent());
+	}
+
+	private boolean isOpeningRequested(Door door) {
+		//@formatter:off
+		return world.population().ghosts().filter(world::included)
+				.filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE))
+				.filter(ghost -> isGhostNearDoor(ghost, door))
+				.findAny()
+				.isPresent();
+		//@formatter:on
+	}
+
+	private boolean isGhostNearDoor(Ghost ghost, Door door) {
+		Tile fromGhostTowardsHouse = world.neighbor(ghost.tile(), door.intoHouse);
+		Tile fromGhostAwayFromHouse = world.neighbor(ghost.tile(), door.intoHouse.opposite());
+		return door.includes(ghost.tile()) || door.includes(fromGhostAwayFromHouse) || door.includes(fromGhostTowardsHouse);
+	}
+
+	private int pacManStarvingTimeLimit() {
+		return game.level.number < 5 ? sec(4) : sec(3);
+	}
+
+	/**
+	 * @param ghost a ghost
+	 * @return decision why ghost can leave
+	 * 
+	 * @see <a href=
+	 *      "http://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Pac-Man
+	 *      Dossier</a>
+	 */
+	private Decision makeDecisionAboutReleasing(Ghost ghost) {
+		if (!ghost.is(LOCKED)) {
+			return confirmed("Ghost is not locked");
+		}
+		if (ghost == blinky) {
+			return confirmed("%s can always leave", ghost.name);
+		}
+		if (pacManStarvingTicks >= pacManStarvingTimeLimit()) {
+			pacManStarvingTicks = 0;
+			return confirmed("%s can leave house: Pac-Man's starving time limit (%d ticks) reached", ghost.name,
+					pacManStarvingTimeLimit());
+		}
+		if (globalCounter.enabled) {
+			int globalLimit = globalDotLimit(ghost);
+			if (globalCounter.dots >= globalLimit) {
+				return confirmed("%s can leave house: global dot limit (%d) reached", ghost.name, globalLimit);
+			}
+		} else {
+			int personalLimit = personalDotLimit(ghost);
+			if (ghostCounters[ghost.bed().number] >= personalLimit) {
+				return confirmed("%s can leave house: ghost's dot limit (%d) reached", ghost.name, personalLimit);
+			}
+		}
+		return rejected("");
+	}
+
 	private void resetGhostDotCounters() {
 		Arrays.fill(ghostCounters, 0);
-		loginfo("Ghost dot counters reset to zero");
+		loginfo("Ghost dot counters have been reset to zero");
 	}
 }

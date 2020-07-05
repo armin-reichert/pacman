@@ -7,11 +7,11 @@ import static de.amr.games.pacman.model.Game.sec;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.statemachine.core.StateMachine;
 
 /**
@@ -41,10 +41,10 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 	private int round; // starts with 1
 	private boolean suspended;
 
-	public GhostCommand(Game game, Stream<Ghost> ghosts) {
+	public GhostCommand(Game game, World world) {
 		super(GhostState.class);
 		this.game = game;
-		this.ghosts = ghosts.collect(Collectors.toList());
+		this.ghosts = world.population().ghosts().collect(Collectors.toList());
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("[GhostCommand]")
