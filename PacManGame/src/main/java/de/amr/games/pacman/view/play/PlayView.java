@@ -4,11 +4,15 @@ import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
 import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.amr.easy.game.ui.widgets.FrameRateWidget;
+import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -18,7 +22,10 @@ import de.amr.games.pacman.view.theme.IWorldRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.games.pacman.view.theme.Theming;
 import de.amr.games.pacman.view.theme.Theming.ThemeName;
+import de.amr.games.pacman.view.theme.arcade.GhostHouseStateRenderer;
+import de.amr.games.pacman.view.theme.arcade.GridRenderer;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
+import de.amr.games.pacman.view.theme.common.Rendering;
 
 /**
  * Simple play view providing the core functionality for playing.
@@ -46,13 +53,38 @@ public class PlayView implements LivingView {
 	protected Map<Ghost, IRenderer> ghostRenderer = new HashMap<>();
 
 	private boolean showingScores;
+	/** Optional ghost house control */
+	public GhostCommand ghostCommand;
 
-	public PlayView(World world, Game game, int width, int height) {
+	/** Optional ghost house reference */
+	public GhostHouseDoorMan doorMan;
+
+	private FrameRateWidget frameRateDisplay;
+
+	private boolean showingFrameRate = false;
+	private boolean showingGrid;
+	private boolean showingRoutes;
+	private boolean showingStates;
+
+	private final GridRenderer gridRenderer;
+	private final IRenderer actorRoutesRenderer;
+	private final IRenderer actorStatesRenderer;
+	private final GhostHouseStateRenderer ghostHouseStateRenderer;
+
+	public PlayView(World world, Game game, GhostCommand ghostCommand, GhostHouseDoorMan ghostHouseAccessControl,
+			int width, int height) {
 		this.world = world;
 		this.game = game;
 		this.width = width;
 		this.height = height;
 		this.showingScores = true;
+		gridRenderer = new GridRenderer(world);
+		actorRoutesRenderer = new ActorRoutesRenderer(world);
+		actorStatesRenderer = new ActorStatesRenderer(world, ghostCommand);
+		ghostHouseStateRenderer = new GhostHouseStateRenderer(world, ghostHouseAccessControl);
+		frameRateDisplay = new FrameRateWidget();
+		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
+		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
 		setTheme(ThemeName.ARCADE);
 	}
 
@@ -84,12 +116,31 @@ public class PlayView implements LivingView {
 
 	@Override
 	public void draw(Graphics2D g) {
+		if (showingGrid) {
+			worldRenderer.setEatenFoodColor(Rendering::patternColor);
+			gridRenderer.draw(g);
+		} else {
+			worldRenderer.setEatenFoodColor(tile -> Color.BLACK);
+		}
+		drawWorld(g);
+		if (showingGrid) {
+			gridRenderer.drawOneWayTiles(g);
+		}
+		if (showingFrameRate) {
+			frameRateDisplay.draw(g);
+		}
+		drawMessages(g);
+		drawActors(g);
+		if (showingRoutes) {
+			actorRoutesRenderer.draw(g);
+		}
+		if (showingStates) {
+			actorStatesRenderer.draw(g);
+			ghostHouseStateRenderer.draw(g);
+		}
 		drawScores(g);
 		drawLiveCounter(g);
 		drawLevelCounter(g);
-		drawWorld(g);
-		drawMessages(g);
-		drawActors(g);
 	}
 
 	public void showGameReady() {
@@ -130,6 +181,54 @@ public class PlayView implements LivingView {
 
 	public boolean isShowingScores() {
 		return showingScores;
+	}
+
+	public boolean isShowingFrameRate() {
+		return showingFrameRate;
+	}
+
+	public void turnFrameRateOn() {
+		showingFrameRate = true;
+	}
+
+	public void turnFrameRateOff() {
+		showingFrameRate = false;
+	}
+
+	public boolean isShowingGrid() {
+		return showingGrid;
+	}
+
+	public void turnGridOn() {
+		showingGrid = true;
+	}
+
+	public void turnGridOff() {
+		showingGrid = false;
+	}
+
+	public boolean isShowingRoutes() {
+		return showingRoutes;
+	}
+
+	public void turnRoutesOn() {
+		showingRoutes = true;
+	}
+
+	public void turnRoutesOff() {
+		showingRoutes = false;
+	}
+
+	public boolean isShowingStates() {
+		return showingStates;
+	}
+
+	public void turnStatesOn() {
+		showingStates = true;
+	}
+
+	public void turnStatesOff() {
+		showingStates = false;
 	}
 
 	protected void drawWorld(Graphics2D g) {

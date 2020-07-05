@@ -20,7 +20,7 @@ import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.view.play.EnhancedPlayView;
+import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.Theming.ThemeName;
 
 public class TestUI implements Lifecycle, VisualController {
@@ -31,7 +31,7 @@ public class TestUI implements Lifecycle, VisualController {
 	protected final PacMan pacMan;
 	protected final Ghost blinky, pinky, inky, clyde;
 	protected final PacManSoundManager soundManager;
-	protected EnhancedPlayView view;
+	protected PlayView view;
 
 	@Override
 	public Optional<View> currentView() {
@@ -66,7 +66,7 @@ public class TestUI implements Lifecycle, VisualController {
 		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
 		world.population().ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> ghostSpeedLimit(ghost, game)));
 
-		view = new EnhancedPlayView(world, game, null, null, app().settings().width, app().settings().height);
+		view = new PlayView(world, game, null, null, app().settings().width, app().settings().height);
 		view.setTheme(ThemeName.ARCADE);
 		view.turnScoresOff();
 		view.init();
