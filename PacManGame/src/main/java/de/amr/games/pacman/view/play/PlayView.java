@@ -52,7 +52,6 @@ public class PlayView implements LivingView {
 	protected IRenderer pacManRenderer;
 	protected Map<Ghost, IRenderer> ghostRenderer = new HashMap<>();
 
-	private boolean showingScores;
 	/** Optional ghost house control */
 	public GhostCommand ghostCommand;
 
@@ -61,7 +60,8 @@ public class PlayView implements LivingView {
 
 	private FrameRateWidget frameRateDisplay;
 
-	private boolean showingFrameRate = false;
+	private boolean showingScores;
+	private boolean showingFrameRate;
 	private boolean showingGrid;
 	private boolean showingRoutes;
 	private boolean showingStates;
@@ -77,7 +77,11 @@ public class PlayView implements LivingView {
 		this.game = game;
 		this.width = width;
 		this.height = height;
-		this.showingScores = true;
+		showingScores = true;
+		showingFrameRate = false;
+		showingGrid = false;
+		showingRoutes = false;
+		showingStates = false;
 		gridRenderer = new GridRenderer(world);
 		actorRoutesRenderer = new ActorRoutesRenderer(world);
 		actorStatesRenderer = new ActorStatesRenderer(world, ghostCommand);
