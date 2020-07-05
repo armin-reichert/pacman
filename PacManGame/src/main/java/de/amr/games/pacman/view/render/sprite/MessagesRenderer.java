@@ -8,14 +8,14 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.world.core.Tile;
 
-public class TextRenderer {
+public class MessagesRenderer {
 
 	private Color textColor;
 	private Font font;
 	private int fontSize;
 	private int row;
 
-	public TextRenderer() {
+	public MessagesRenderer() {
 		font = Assets.font("font.hud");
 		textColor = Color.YELLOW;
 		fontSize = 8;

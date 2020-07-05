@@ -16,7 +16,7 @@ import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.render.IRenderer;
 import de.amr.games.pacman.view.render.IWorldRenderer;
 import de.amr.games.pacman.view.render.sprite.ScoreRenderer;
-import de.amr.games.pacman.view.render.sprite.TextRenderer;
+import de.amr.games.pacman.view.render.sprite.MessagesRenderer;
 
 /**
  * Simple play view providing the core functionality for playing.
@@ -75,7 +75,7 @@ public class PlayView implements LivingView {
 
 	protected IWorldRenderer worldRenderer;
 	protected IRenderer scoreRenderer;
-	protected TextRenderer textRenderer;
+	protected MessagesRenderer messagesRenderer;
 	protected IRenderer pacManRenderer;
 	protected Map<Ghost, IRenderer> ghostRenderer = new HashMap<>();
 
@@ -88,7 +88,7 @@ public class PlayView implements LivingView {
 		this.height = height;
 		showingScores = true;
 		scoreRenderer = new ScoreRenderer(world, game);
-		textRenderer = new TextRenderer();
+		messagesRenderer = new MessagesRenderer();
 		style = RenderingStyle.ARCADE;
 		updateRenderers(world);
 	}
@@ -164,14 +164,14 @@ public class PlayView implements LivingView {
 
 	protected void drawMessages(Graphics2D g) {
 		if (messageTexts[0] != null) {
-			textRenderer.setRow(15);
-			textRenderer.setTextColor(messageColors[0]);
-			textRenderer.drawCentered(g, messageTexts[0], world.width());
+			messagesRenderer.setRow(15);
+			messagesRenderer.setTextColor(messageColors[0]);
+			messagesRenderer.drawCentered(g, messageTexts[0], world.width());
 		}
 		if (messageTexts[1] != null) {
-			textRenderer.setRow(21);
-			textRenderer.setTextColor(messageColors[1]);
-			textRenderer.drawCentered(g, messageTexts[1], world.width());
+			messagesRenderer.setRow(21);
+			messagesRenderer.setTextColor(messageColors[1]);
+			messagesRenderer.drawCentered(g, messageTexts[1], world.width());
 		}
 	}
 
