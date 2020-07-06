@@ -130,7 +130,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			changeClockFrequency(80);
 		}
-		if (Keyboard.keyPressedOnce("z")) {
+		if (playView != null &&Keyboard.keyPressedOnce("z")) {
 			currentThemeIndex = (currentThemeIndex + 1) % themes.length;
 			playView.setTheme(themes[currentThemeIndex]);
 		}

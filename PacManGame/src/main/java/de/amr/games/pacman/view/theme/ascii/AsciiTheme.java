@@ -158,6 +158,8 @@ public class AsciiTheme implements Theme {
 
 	@Override
 	public MessagesRenderer createMessagesRenderer() {
-		return new MessagesRenderer();
+		MessagesRenderer renderer = new MessagesRenderer();
+		renderer.setFont(font);
+		return renderer;
 	}
 }
