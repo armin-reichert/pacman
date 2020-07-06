@@ -2,7 +2,6 @@ package de.amr.games.pacman.view.theme.arcade;
 
 import java.awt.Font;
 
-import de.amr.easy.game.assets.Assets;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
@@ -30,7 +29,7 @@ public class ArcadeTheme implements Theme {
 	@Override
 	public IRenderer createScoreRenderer(Game game) {
 		ScoreRenderer renderer = new ScoreRenderer(game);
-		Font font = Assets.font("font.hud");
+		Font font = ASSETS.messageFont;
 		renderer.setFont(font);
 		return renderer;
 	}
@@ -58,7 +57,7 @@ public class ArcadeTheme implements Theme {
 	@Override
 	public MessagesRenderer createMessagesRenderer() {
 		MessagesRenderer renderer = new MessagesRenderer();
-		renderer.setFont(Assets.font("font.hud"));
+		renderer.setFont(ASSETS.messageFont);
 		return renderer;
 	}
 }

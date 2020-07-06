@@ -27,6 +27,8 @@ import de.amr.games.pacman.model.world.arcade.Symbol;
  */
 public class ArcadeThemeAssets {
 
+	public final Font messageFont;
+
 	private static final int TILE_SIZE = 16;
 
 	private final BufferedImage spriteSheet = Assets.readImage("images/arcade/sprites.png");
@@ -89,7 +91,8 @@ public class ArcadeThemeAssets {
 	}
 
 	ArcadeThemeAssets() {
-		storeTrueTypeFont("font.hud", "PressStart2P-Regular.ttf", Font.PLAIN, 8);
+
+		messageFont = storeTrueTypeFont("font.hud", "PressStart2P-Regular.ttf", Font.PLAIN, 8);
 
 		// debugger told me RGB value of blue color in maze image
 		imageMazeEmptyWhite = exchangeColor(imageMazeEmpty, -14605825, Color.WHITE.getRGB());

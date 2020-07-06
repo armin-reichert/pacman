@@ -1,12 +1,12 @@
 package de.amr.games.pacman.view.loading;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.view.Pen;
@@ -89,9 +89,10 @@ public class LoadingView implements LivingView {
 	public void draw(Graphics2D g) {
 		g.setColor(new Color(0, 23, 61));
 		g.fillRect(0, 0, width, height);
+		Font font = ArcadeTheme.ASSETS.messageFont;
 		try (Pen pen = new Pen(g)) {
 			pen.color(new Color(255, 0, 0, alpha));
-			pen.font(Assets.font("font.hud"));
+			pen.font(font);
 			pen.fontSize(10);
 			pen.hcenter(Localized.texts.getString("loading_music"), width, 18, Tile.SIZE);
 		}
