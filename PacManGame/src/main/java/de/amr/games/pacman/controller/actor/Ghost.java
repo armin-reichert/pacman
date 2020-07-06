@@ -34,7 +34,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.OneWayTile;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.theme.Theming;
+import de.amr.games.pacman.view.theme.Themes;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
@@ -59,7 +59,7 @@ public class Ghost extends Creature<GhostState> {
 	/** Keeps track of steering changes. */
 	public Steering previousSteering;
 
-	/** Ghost color as defined in {@link Theming}. */
+	/** Ghost color as defined in {@link Themes}. */
 	public int color;
 
 	/** Value when eaten */

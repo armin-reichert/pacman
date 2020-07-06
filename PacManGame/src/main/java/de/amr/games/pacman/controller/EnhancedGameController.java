@@ -15,7 +15,7 @@ import de.amr.easy.game.input.Keyboard.Modifier;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.LevelCompletedEvent;
-import de.amr.games.pacman.view.theme.Theming.ThemeName;
+import de.amr.games.pacman.view.theme.Themes;
 
 /**
  * Enhanced game controller with all the bells and whistles.
@@ -34,10 +34,13 @@ public class EnhancedGameController extends GameController {
 		if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_LEFT)) {
 			int oldFreq = app().clock().getTargetFramerate();
 			changeClockFrequency(oldFreq <= 10 ? Math.max(1, oldFreq - 1) : oldFreq - 5);
-		} else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
+		}
+
+		else if (Keyboard.keyPressedOnce(Modifier.CONTROL, KeyEvent.VK_RIGHT)) {
 			int oldFreq = app().clock().getTargetFramerate();
 			changeClockFrequency(oldFreq < 10 ? oldFreq + 1 : oldFreq + 5);
 		}
+
 		if (currentView == playView) {
 			handlePlayViewInput();
 		}
@@ -46,49 +49,84 @@ public class EnhancedGameController extends GameController {
 	private void handlePlayViewInput() {
 		if (Keyboard.keyPressedOnce("b")) {
 			toggleGhostOnStage(blinky);
-		} else if (Keyboard.keyPressedOnce("c")) {
+		}
+
+		else if (Keyboard.keyPressedOnce("c")) {
 			toggleGhostOnStage(clyde);
-		} else if (Keyboard.keyPressedOnce("d")) {
+		}
+
+		else if (Keyboard.keyPressedOnce("d")) {
 			toggleDemoMode();
-		} else if (Keyboard.keyPressedOnce("e")) {
+		}
+
+		else if (Keyboard.keyPressedOnce("e")) {
 			eatAllSimplePellets();
-		} else if (Keyboard.keyPressedOnce("f")) {
+		}
+
+		else if (Keyboard.keyPressedOnce("f")) {
 			toggleGhostFrightenedBehavior();
-		} else if (Keyboard.keyPressedOnce("g")) {
+		}
+
+		else if (Keyboard.keyPressedOnce("g")) {
 			setShowingGrid(!isShowingGrid());
-		} else if (Keyboard.keyPressedOnce("i")) {
+		}
+
+		else if (Keyboard.keyPressedOnce("i")) {
 			toggleGhostOnStage(inky);
-		} else if (Keyboard.keyPressedOnce("k")) {
+		}
+
+		else if (Keyboard.keyPressedOnce("k")) {
 			killAllGhosts();
-		} else if (Keyboard.keyPressedOnce("l")) {
+		}
+
+		else if (Keyboard.keyPressedOnce("l")) {
 			toggleStateMachineLogging();
-		} else if (Keyboard.keyPressedOnce("m")) {
+		}
+
+		else if (Keyboard.keyPressedOnce("m")) {
 			toggleMakePacManImmortable();
-		} else if (Keyboard.keyPressedOnce("o")) {
+		}
+
+		else if (Keyboard.keyPressedOnce("o")) {
 			togglePacManOverflowBug();
-		} else if (Keyboard.keyPressedOnce("p")) {
+		}
+
+		else if (Keyboard.keyPressedOnce("p")) {
 			toggleGhostOnStage(pinky);
-		} else if (Keyboard.keyPressedOnce("s")) {
+		}
+
+		else if (Keyboard.keyPressedOnce("s")) {
 			setShowingStates(!isShowingStates());
-		} else if (Keyboard.keyPressedOnce("t")) {
+		}
+
+		else if (Keyboard.keyPressedOnce("t")) {
 			if (playView.isShowingFrameRate()) {
 				playView.turnFrameRateOff();
 			} else {
 				playView.turnFrameRateOn();
 			}
-		} else if (Keyboard.keyPressedOnce("r")) {
+		}
+
+		else if (Keyboard.keyPressedOnce("r")) {
 			setShowingRoutes(!isShowingRoutes());
-		} else if (Keyboard.keyPressedOnce("x")) {
+		}
+
+		else if (Keyboard.keyPressedOnce("x")) {
 			toggleGhostsHarmless();
-		} else if (Keyboard.keyPressedOnce("z")) {
-			if (playView.getTheme().name() == ThemeName.ARCADE) {
-				playView.setTheme(ThemeName.BLOCKS);
+		}
+
+		else if (Keyboard.keyPressedOnce("z")) {
+			if (playView.getTheme() == Themes.ARCADE_THEME) {
+				playView.setTheme(Themes.BLOCKS_THEME);
 			} else {
-				playView.setTheme(ThemeName.ARCADE);
+				playView.setTheme(Themes.ARCADE_THEME);
 			}
-		} else if (Keyboard.keyPressedOnce("+")) {
+		}
+
+		else if (Keyboard.keyPressedOnce("+")) {
 			switchToNextLevel();
 		}
+
 	}
 
 	private void toggleGhostOnStage(Ghost ghost) {

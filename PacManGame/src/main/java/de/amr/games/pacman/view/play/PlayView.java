@@ -21,8 +21,7 @@ import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.theme.IRenderer;
 import de.amr.games.pacman.view.theme.IWorldRenderer;
 import de.amr.games.pacman.view.theme.Theme;
-import de.amr.games.pacman.view.theme.Theming;
-import de.amr.games.pacman.view.theme.Theming.ThemeName;
+import de.amr.games.pacman.view.theme.Themes;
 import de.amr.games.pacman.view.theme.arcade.GhostHouseStateRenderer;
 import de.amr.games.pacman.view.theme.arcade.GridRenderer;
 import de.amr.games.pacman.view.theme.common.ActorStatesRenderer;
@@ -88,11 +87,11 @@ public class PlayView implements LivingView {
 		frameRateDisplay = new FrameRateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
-		setTheme(ThemeName.ARCADE);
+		setTheme(Themes.ARCADE_THEME);
 	}
 
-	public void setTheme(ThemeName themeName) {
-		theme = Theming.getTheme(themeName);
+	public void setTheme(Theme theme) {
+		this.theme = theme;
 		worldRenderer = theme.createWorldRenderer(world);
 		liveCounterRenderer = theme.createLiveCounterRenderer(game);
 		levelCounterRenderer = theme.createLevelCounterRenderer(game);

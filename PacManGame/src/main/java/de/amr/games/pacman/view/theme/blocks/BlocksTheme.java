@@ -9,15 +9,14 @@ import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.IRenderer;
 import de.amr.games.pacman.view.theme.IWorldRenderer;
 import de.amr.games.pacman.view.theme.Theme;
-import de.amr.games.pacman.view.theme.Theming.ThemeName;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
 public class BlocksTheme implements Theme {
 
 	@Override
-	public ThemeName name() {
-		return ThemeName.BLOCKS;
+	public String name() {
+		return "BLOCKS";
 	}
 
 	@Override

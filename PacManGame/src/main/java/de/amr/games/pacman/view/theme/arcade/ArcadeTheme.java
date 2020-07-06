@@ -8,7 +8,6 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.IRenderer;
 import de.amr.games.pacman.view.theme.IWorldRenderer;
 import de.amr.games.pacman.view.theme.Theme;
-import de.amr.games.pacman.view.theme.Theming.ThemeName;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
@@ -17,8 +16,8 @@ public class ArcadeTheme implements Theme {
 	public static final ArcadeThemeAssets ASSETS = new ArcadeThemeAssets();
 
 	@Override
-	public ThemeName name() {
-		return ThemeName.ARCADE;
+	public String name() {
+		return "ARCADE";
 	}
 
 	@Override
