@@ -8,6 +8,7 @@ import java.util.Random;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
@@ -38,6 +39,7 @@ public class LoadingView implements LivingView {
 
 	private IRenderer pacManRenderer;
 	private Map<Ghost, IRenderer> ghostRenderer = new HashMap<>();
+	private Sprite[][] ghostSprites = new Sprite[4][4];
 
 	public LoadingView(World world, int width, int height) {
 		pacMan = world.population().pacMan();
@@ -45,6 +47,11 @@ public class LoadingView implements LivingView {
 		this.height = height;
 		pacManRenderer = new PacManRenderer(world);
 		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, new GhostRenderer(ghost)));
+		for (int color = 0; color < 4; ++color) {
+			for (Direction dir : Direction.values()) {
+				ghostSprites[color][dir.ordinal()] = ArcadeTheme.ASSETS.makeSprite_ghostColored(color, dir);
+			}
+		}
 	}
 
 	@Override
@@ -89,10 +96,9 @@ public class LoadingView implements LivingView {
 		}
 		pacManRenderer.render(g);
 		float x = width / 2 - (ghostCount / 2) * 20, y = pacMan.tf.y + 20;
+		Random rnd = new Random();
 		for (int i = 0; i < ghostCount; ++i) {
-			int color = new Random().nextInt(4);
-			Direction dir = Direction.values()[new Random().nextInt(4)];
-			ArcadeTheme.ASSETS.makeSprite_ghostColored(color, dir).draw(g, x, y);
+			ghostSprites[rnd.nextInt(4)][rnd.nextInt(4)].draw(g, x, y);
 			x += 20;
 		}
 	}
