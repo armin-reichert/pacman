@@ -36,6 +36,7 @@ public class LoadingView implements LivingView {
 	private int alphaInc;
 	private int ghostCount;
 	private int ghostInc;
+	private Random rnd = new Random();
 
 	private IRenderer pacManRenderer;
 	private Map<Ghost, IRenderer> ghostRenderer = new HashMap<>();
@@ -96,7 +97,6 @@ public class LoadingView implements LivingView {
 		}
 		pacManRenderer.render(g);
 		float x = width / 2 - (ghostCount / 2) * 20, y = pacMan.tf.y + 20;
-		Random rnd = new Random();
 		for (int i = 0; i < ghostCount; ++i) {
 			ghostSprites[rnd.nextInt(4)][rnd.nextInt(4)].draw(g, x, y);
 			x += 20;
