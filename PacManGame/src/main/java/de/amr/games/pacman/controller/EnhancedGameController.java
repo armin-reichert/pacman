@@ -179,7 +179,7 @@ public class EnhancedGameController extends GameController {
 		world.habitatTiles().filter(world::containsSimplePellet).forEach(tile -> {
 			world.removeFood(tile);
 			game.scoreSimplePelletFound();
-			ghostHouseAccess().ifPresent(houseAccess -> {
+			doorMan().ifPresent(houseAccess -> {
 				houseAccess.onPacManFoundFood();
 				houseAccess.update();
 			});

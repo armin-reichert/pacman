@@ -209,11 +209,11 @@ public class PlayView implements LivingView {
 		return showingRoutes;
 	}
 
-	public void turnShowingRoutesOn() {
+	public void turnRoutesOn() {
 		showingRoutes = true;
 	}
 
-	public void turnShowingRoutesOff() {
+	public void turnRoutesOff() {
 		showingRoutes = false;
 	}
 

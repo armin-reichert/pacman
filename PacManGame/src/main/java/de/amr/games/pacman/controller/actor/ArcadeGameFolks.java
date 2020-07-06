@@ -19,7 +19,7 @@ import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 
-public class DefaultPopulation implements Population {
+public class ArcadeGameFolks implements Population {
 
 	private final PacMan pacMan = new PacMan();
 	private final Ghost blinky = new Ghost("Blinky");

@@ -46,7 +46,7 @@ class TakeShortestPathTestUI extends TestUI {
 	@Override
 	public void init() {
 		super.init();
-		view.turnShowingRoutesOn();
+		view.turnRoutesOn();
 		view.turnStatesOn();
 		view.turnGridOn();
 		Portal thePortal = world.portals().findAny().get();

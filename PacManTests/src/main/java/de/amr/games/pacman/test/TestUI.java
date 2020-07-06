@@ -11,7 +11,7 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.controller.actor.Creature;
-import de.amr.games.pacman.controller.actor.DefaultPopulation;
+import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.sound.PacManSoundManager;
@@ -51,7 +51,7 @@ public class TestUI implements Lifecycle, VisualController {
 	public TestUI() {
 		world = Universe.arcadeWorld();
 		world.clearFood();
-		people = new DefaultPopulation();
+		people = new ArcadeGameFolks();
 		people.populate(world);
 
 		pacMan = people.pacMan();
@@ -95,9 +95,9 @@ public class TestUI implements Lifecycle, VisualController {
 		}
 		if (Keyboard.keyPressedOnce("r")) {
 			if (view.isShowingRoutes()) {
-				view.turnShowingRoutesOff();
+				view.turnRoutesOff();
 			} else {
-				view.turnShowingRoutesOn();
+				view.turnRoutesOn();
 			}
 		}
 		world.population().creatures().filter(world::included).forEach(Creature::update);

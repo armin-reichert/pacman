@@ -29,9 +29,9 @@ import java.util.stream.Stream;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
+import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
 import de.amr.games.pacman.controller.actor.BonusControl;
 import de.amr.games.pacman.controller.actor.Creature;
-import de.amr.games.pacman.controller.actor.DefaultPopulation;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacMan;
@@ -96,19 +96,18 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 		loginfo("Initializing game controller");
 
-		Population people = new DefaultPopulation();
-		pacMan = people.pacMan();
-		blinky = people.blinky();
-		pinky = people.pinky();
-		inky = people.inky();
-		clyde = people.clyde();
+		Population folks = new ArcadeGameFolks();
+		pacMan = folks.pacMan();
+		blinky = folks.blinky();
+		pinky = folks.pinky();
+		inky = folks.inky();
+		clyde = folks.clyde();
 
 		world = Universe.arcadeWorld();
-		people.populate(world);
-
-		people.creatures().forEach(creature -> {
-			creature.addEventListener(this::process);
+		folks.populate(world);
+		folks.creatures().forEach(creature -> {
 			world.include(creature);
+			creature.addEventListener(this::process);
 		});
 
 		soundManager = new PacManSoundManager(world);
@@ -168,6 +167,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onEntry(() -> {
 						soundManager.gameReady();
 						newGame();
+						world.setFrozen(true);
 						showView(playView);
 					})
 					.onTick((state, t, remaining) -> {
@@ -363,21 +363,16 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void newGame() {
 		game = new Game(settings.startLevel, world.totalFoodCount());
-
 		ghostCommand = new GhostCommand(game, world);
 		doorMan = new GhostHouseDoorMan(game, world);
 		bonusControl = new BonusControl(game, world);
-
-		world.setFrozen(true);
-		world.population().creatures().forEach(world::include);
-		world.population().creatures().forEach(Creature::init);
 		world.population().ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> ghostSpeedLimit(ghost, game)));
 		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
+		world.population().creatures().forEach(world::include);
+		world.population().creatures().forEach(Creature::init);
 		world.population().play(game);
-
 		playView = new PlayView(world, game, ghostCommand, doorMan);
 		playView.setTheme(themes[currentThemeIndex]);
-
 		app().f2Dialog().ifPresent(f2 -> f2.selectCustomTab(0));
 	}
 
@@ -405,8 +400,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		public void onTick() {
 			ghostCommand.update();
 			doorMan.update();
-			creaturesOnStage().forEach(Creature::update);
 			bonusControl.update();
+			creaturesOnStage().forEach(Creature::update);
 			soundManager.updatePlayingSounds();
 		}
 
@@ -509,7 +504,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return Optional.ofNullable(ghostCommand);
 	}
 
-	public Optional<GhostHouseDoorMan> ghostHouseAccess() {
+	public Optional<GhostHouseDoorMan> doorMan() {
 		return Optional.of(doorMan);
 	}
 
@@ -525,9 +520,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public void setShowingRoutes(boolean selected) {
 		showingRoutes = selected;
 		if (selected) {
-			playView.turnShowingRoutesOn();
+			playView.turnRoutesOn();
 		} else {
-			playView.turnShowingRoutesOff();
+			playView.turnRoutesOff();
 		}
 	}
 
@@ -546,6 +541,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	public boolean isShowingGrid() {
 		return showingGrid;
+	}
+
+	public boolean isShowingStates() {
+		return showingStates;
 	}
 
 	public void setShowingStates(boolean selected) {
@@ -570,18 +569,16 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	public boolean isShowingStates() {
-		return showingStates;
-	}
-
-	public void setDemoMode(boolean on) {
-		settings.pacManImmortable = on;
-		if (on) {
+	public void setDemoMode(boolean demoMode) {
+		if (demoMode) {
+			settings.pacManImmortable = true;
+			playView.showMessage(1, "Demo Mode", Color.LIGHT_GRAY);
 			pacMan.behavior(new SearchingForFoodAndAvoidingGhosts(pacMan));
 		} else {
+			settings.pacManImmortable = false;
+			playView.clearMessage(1);
 			pacMan.behavior(pacMan.followingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		}
-		playView.showMessage(1, on ? "Demo Mode" : "", Color.LIGHT_GRAY);
 	}
 
 	protected void showView(LivingView view) {

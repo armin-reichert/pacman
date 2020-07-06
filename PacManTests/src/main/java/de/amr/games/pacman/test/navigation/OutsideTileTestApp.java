@@ -41,6 +41,6 @@ class OutsideTileTestUI extends TestUI {
 		int row = world.portals().findFirst().map(portal -> portal.right.row).orElse((short) 100);
 		blinky.behavior(GhostState.CHASING, blinky.headingFor(() -> Tile.at(100, row)));
 		blinky.setState(GhostState.CHASING);
-		view.turnShowingRoutesOn();
+		view.turnRoutesOn();
 	}
 }

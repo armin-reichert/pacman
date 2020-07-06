@@ -146,7 +146,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 	@Override
 	public void update() {
 		gameController.game().ifPresent(game -> {
-			gameController.ghostHouseAccess().ifPresent(ghostHouseAccess -> {
+			gameController.doorMan().ifPresent(ghostHouseAccess -> {
 				tfPinkyDots.setText(formatDots(ghostHouseAccess, world.population().pinky()));
 				tfPinkyDots.setEnabled(!ghostHouseAccess.isGlobalDotCounterEnabled());
 				updateTrafficLight(trafficPinky, ghostHouseAccess, world.population().pinky());
