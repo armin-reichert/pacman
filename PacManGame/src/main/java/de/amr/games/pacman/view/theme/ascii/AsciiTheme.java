@@ -83,7 +83,7 @@ public class AsciiTheme implements Theme {
 	}
 
 	@Override
-	public IRenderer createLevelCounterRenderer(Game game) {
+	public IRenderer createLevelCounterRenderer(World world, Game game) {
 		return g -> {
 			g.translate(0, offsetY);
 			g.setColor(Color.YELLOW);
@@ -94,7 +94,7 @@ public class AsciiTheme implements Theme {
 	}
 
 	@Override
-	public IRenderer createLiveCounterRenderer(Game game) {
+	public IRenderer createLiveCounterRenderer(World world, Game game) {
 		return g -> {
 			g.translate(0, offsetY);
 			g.setColor(Color.YELLOW);
@@ -105,7 +105,7 @@ public class AsciiTheme implements Theme {
 	}
 
 	@Override
-	public IRenderer createScoreRenderer(Game game) {
+	public IRenderer createScoreRenderer(World world, Game game) {
 		return g -> {
 			g.translate(0, offsetY);
 			g.setColor(Color.YELLOW);

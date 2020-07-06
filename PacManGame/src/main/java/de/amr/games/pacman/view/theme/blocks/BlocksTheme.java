@@ -25,7 +25,7 @@ public class BlocksTheme implements Theme {
 	}
 
 	@Override
-	public IRenderer createScoreRenderer(Game game) {
+	public IRenderer createScoreRenderer(World world, Game game) {
 		ScoreRenderer renderer = new ScoreRenderer(game);
 		Font font = new Font(Font.MONOSPACED, Font.BOLD, 10);
 		renderer.setFont(font);
@@ -33,12 +33,12 @@ public class BlocksTheme implements Theme {
 	}
 
 	@Override
-	public IRenderer createLiveCounterRenderer(Game game) {
+	public IRenderer createLiveCounterRenderer(World world, Game game) {
 		return new LiveCounterRenderer(game);
 	}
 
 	@Override
-	public IRenderer createLevelCounterRenderer(Game game) {
+	public IRenderer createLevelCounterRenderer(World world, Game game) {
 		return new LevelCounterRenderer(game);
 	}
 
@@ -58,5 +58,4 @@ public class BlocksTheme implements Theme {
 		renderer.setFont(new Font(Font.MONOSPACED, Font.BOLD, Tile.SIZE));
 		return renderer;
 	}
-
 }

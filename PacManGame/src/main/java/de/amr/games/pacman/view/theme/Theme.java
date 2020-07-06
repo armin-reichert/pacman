@@ -13,11 +13,11 @@ public interface Theme {
 
 	IRenderer createPacManRenderer(World world);
 
-	IRenderer createLevelCounterRenderer(Game game);
+	IRenderer createLevelCounterRenderer(World world, Game game);
 
-	IRenderer createLiveCounterRenderer(Game game);
+	IRenderer createLiveCounterRenderer(World world, Game game);
 
-	IRenderer createScoreRenderer(Game game);
+	IRenderer createScoreRenderer(World world, Game game);
 
 	IWorldRenderer createWorldRenderer(World world);
 
