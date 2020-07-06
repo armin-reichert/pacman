@@ -56,6 +56,7 @@ import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.PlayView;
+import de.amr.games.pacman.view.theme.Themes;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 
@@ -367,6 +368,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		world.population().play(game);
 
 		playView = new PlayView(world, game, ghostCommand, doorMan, settings.width, settings.height);
+		playView.setTheme(Themes.ASCII_THEME);
 
 		app().f2Dialog().ifPresent(f2 -> f2.selectCustomTab(0));
 	}
