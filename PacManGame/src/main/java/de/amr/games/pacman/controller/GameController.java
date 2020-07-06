@@ -56,6 +56,7 @@ import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
 import de.amr.games.pacman.view.play.PlayView;
+import de.amr.games.pacman.view.theme.Theme;
 import de.amr.games.pacman.view.theme.Themes;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
@@ -77,6 +78,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected BonusControl bonusControl;
 
 	protected Game game;
+
+	protected Theme[] themes = { Themes.ARCADE_THEME, Themes.BLOCKS_THEME, Themes.ASCII_THEME };
+	protected int currentThemeIndex = 0;
 
 	protected LivingView currentView;
 	protected PlayView playView;
@@ -126,6 +130,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			changeClockFrequency(70);
 		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			changeClockFrequency(80);
+		}
+		if (Keyboard.keyPressedOnce("z")) {
+			currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+			playView.setTheme(themes[currentThemeIndex]);
 		}
 	}
 
@@ -368,7 +376,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		world.population().play(game);
 
 		playView = new PlayView(world, game, ghostCommand, doorMan, settings.width, settings.height);
-		playView.setTheme(Themes.ASCII_THEME);
+		playView.setTheme(themes[currentThemeIndex]);
 
 		app().f2Dialog().ifPresent(f2 -> f2.selectCustomTab(0));
 	}
