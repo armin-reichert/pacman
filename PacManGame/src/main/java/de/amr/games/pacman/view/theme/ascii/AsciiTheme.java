@@ -17,7 +17,8 @@ import de.amr.games.pacman.view.theme.common.Rendering;
 
 public class AsciiTheme implements Theme {
 
-	static final Font font = new Font("Courier New", Font.PLAIN, Tile.SIZE);
+	static final Font font = new Font(Font.MONOSPACED, Font.BOLD, Tile.SIZE);
+	static final int offsetY = Tile.SIZE - 1;
 
 	@Override
 	public String name() {
@@ -30,6 +31,7 @@ public class AsciiTheme implements Theme {
 			if (!ghost.visible) {
 				return;
 			}
+			g.translate(0, offsetY);
 			g.setFont(font);
 			Color color = Color.GREEN;
 			switch (ghost.name) {
@@ -61,6 +63,7 @@ public class AsciiTheme implements Theme {
 			}
 			g.setColor(color);
 			g.drawString(ghostChar, ghost.tf.x, ghost.tf.y);
+			g.translate(0, -offsetY);
 		};
 	}
 
@@ -71,36 +74,53 @@ public class AsciiTheme implements Theme {
 			if (!pacMan.visible) {
 				return;
 			}
+			g.translate(0, offsetY);
 			g.setFont(font);
 			g.setColor(Color.YELLOW);
 			g.drawString("O", pacMan.tf.x, pacMan.tf.y);
+			g.translate(0, -offsetY);
 		};
 	}
 
 	@Override
 	public IRenderer createLevelCounterRenderer(Game game) {
 		return g -> {
-
+			g.translate(0, offsetY);
+			g.setColor(Color.YELLOW);
+			g.setFont(font);
+			g.drawString(String.format("Level: %d", game.level.number), -8 * Tile.SIZE, -Tile.SIZE);
+			g.translate(0, -offsetY);
 		};
 	}
 
 	@Override
 	public IRenderer createLiveCounterRenderer(Game game) {
 		return g -> {
-
+			g.translate(0, offsetY);
+			g.setColor(Color.YELLOW);
+			g.setFont(font);
+			g.drawString(String.format("Lives: %d", game.lives), Tile.SIZE, -Tile.SIZE);
+			g.translate(0, -offsetY);
 		};
 	}
 
 	@Override
 	public IRenderer createScoreRenderer(Game game) {
 		return g -> {
-
+			g.translate(0, offsetY);
+			g.setColor(Color.YELLOW);
+			g.setFont(font);
+			g.drawString(" Score          Highscore        Pellets", 0, 0);
+			g.drawString(String.format(" %08d       %08d         %03d", game.score, game.hiscore.points,
+					game.level.remainingFoodCount()), 0, Tile.SIZE);
+			g.translate(0, -offsetY);
 		};
 	}
 
 	@Override
 	public IWorldRenderer createWorldRenderer(World world) {
 		return g -> {
+			g.translate(0, offsetY);
 			g.setFont(font);
 			for (int row = 0; row < world.height(); ++row) {
 				for (int col = 0; col < world.width(); ++col) {
@@ -115,11 +135,14 @@ public class AsciiTheme implements Theme {
 							g.drawString(".", col * Tile.SIZE, row * Tile.SIZE - 2);
 						}
 					} else {
-						g.setColor(Color.GREEN);
-						g.drawString("#", col * Tile.SIZE, row * Tile.SIZE);
+						if (row >= 3 && row <= 33) {
+							g.setColor(Color.GREEN);
+							g.drawString("#", col * Tile.SIZE, row * Tile.SIZE);
+						}
 					}
 				}
 			}
+			g.translate(0, -offsetY);
 		};
 	}
 
