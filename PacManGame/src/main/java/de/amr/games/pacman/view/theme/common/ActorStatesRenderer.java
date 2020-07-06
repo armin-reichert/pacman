@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.play;
+package de.amr.games.pacman.view.theme.common;
 
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
@@ -26,7 +26,6 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.IRenderer;
-import de.amr.games.pacman.view.theme.common.Rendering;
 
 public class ActorStatesRenderer implements IRenderer {
 

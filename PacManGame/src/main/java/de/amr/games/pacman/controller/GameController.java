@@ -515,9 +515,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public void setShowingRoutes(boolean selected) {
 		showingRoutes = selected;
 		if (selected) {
-			playView.turnRoutesOn();
+			playView.turnShowingRoutesOn();
 		} else {
-			playView.turnRoutesOff();
+			playView.turnShowingRoutesOff();
 		}
 	}
 

@@ -96,9 +96,9 @@ public class TestUI implements Lifecycle, VisualController {
 		}
 		if (Keyboard.keyPressedOnce("r")) {
 			if (view.isShowingRoutes()) {
-				view.turnRoutesOff();
+				view.turnShowingRoutesOff();
 			} else {
-				view.turnRoutesOn();
+				view.turnShowingRoutesOn();
 			}
 		}
 		world.population().creatures().filter(world::included).forEach(Creature::update);

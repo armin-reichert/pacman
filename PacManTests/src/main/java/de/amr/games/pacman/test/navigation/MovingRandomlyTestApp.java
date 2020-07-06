@@ -46,7 +46,7 @@ class MovingRandomlyTestUI extends TestUI {
 			ghost.state(FRIGHTENED).removeTimer();
 			ghost.setState(FRIGHTENED);
 		});
-		view.turnRoutesOn();
+		view.turnShowingRoutesOn();
 		view.turnStatesOn();
 		view.turnGridOn();
 		view.showMessage(1, "Press SPACE", Color.WHITE);

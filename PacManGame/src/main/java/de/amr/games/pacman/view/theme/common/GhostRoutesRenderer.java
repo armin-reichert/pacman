@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.play;
+package de.amr.games.pacman.view.theme.common;
 
 import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
@@ -9,7 +9,6 @@ import static de.amr.games.pacman.view.theme.common.Rendering.ghostColor;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.util.List;
 
@@ -21,34 +20,26 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.IRenderer;
-import de.amr.games.pacman.view.theme.common.Rendering;
 
-public class ActorRoutesRenderer implements IRenderer {
+public class GhostRoutesRenderer implements IRenderer {
 
 	private final World world;
 
-	public ActorRoutesRenderer(World world) {
+	public GhostRoutesRenderer(World world) {
 		this.world = world;
 	}
 
 	@Override
 	public void render(Graphics2D g) {
-		drawGhostRoutes(g);
-	}
-
-	private void drawGhostRoutes(Graphics2D g) {
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		smoothDrawingOn(g);
 		world.population().ghosts().filter(world::included).forEach(ghost -> drawGhostRoute(g, ghost));
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		smoothDrawingOff(g);
 	}
 
 	private void drawGhostRoute(Graphics2D g, Ghost ghost) {
 		if (ghost.steering() instanceof PathProvidingSteering && ghost.targetTile() != null) {
 			drawTargetTileRubberband(g, ghost, ghost.targetTile());
 			PathProvidingSteering steering = (PathProvidingSteering) ghost.steering();
-			if (!steering.isPathComputed()) {
-				steering.setPathComputed(true);
-			}
 			drawTargetTilePath(g, steering.pathToTarget(), Rendering.ghostColor(ghost));
 		} else if (ghost.wishDir() != null) {
 			Vector2f v = ghost.wishDir().vector();

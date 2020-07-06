@@ -12,6 +12,7 @@ import java.util.Map;
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
@@ -24,6 +25,8 @@ import de.amr.games.pacman.view.theme.Theming;
 import de.amr.games.pacman.view.theme.Theming.ThemeName;
 import de.amr.games.pacman.view.theme.arcade.GhostHouseStateRenderer;
 import de.amr.games.pacman.view.theme.arcade.GridRenderer;
+import de.amr.games.pacman.view.theme.common.ActorStatesRenderer;
+import de.amr.games.pacman.view.theme.common.GhostRoutesRenderer;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.Rendering;
 
@@ -79,7 +82,7 @@ public class PlayView implements LivingView {
 		showingRoutes = false;
 		showingStates = false;
 		gridRenderer = new GridRenderer(world);
-		actorRoutesRenderer = new ActorRoutesRenderer(world);
+		actorRoutesRenderer = new GhostRoutesRenderer(world);
 		actorStatesRenderer = new ActorStatesRenderer(world, ghostCommand);
 		ghostHouseStateRenderer = new GhostHouseStateRenderer(world, doorMan);
 		frameRateDisplay = new FrameRateWidget();
@@ -112,6 +115,12 @@ public class PlayView implements LivingView {
 
 	@Override
 	public void update() {
+		world.population().ghosts().forEach(ghost -> {
+			if (ghost.steering() instanceof PathProvidingSteering) {
+				PathProvidingSteering pathProvider = (PathProvidingSteering) ghost.steering();
+				pathProvider.setPathComputed(showingRoutes);
+			}
+		});
 	}
 
 	@Override
@@ -209,11 +218,11 @@ public class PlayView implements LivingView {
 		return showingRoutes;
 	}
 
-	public void turnRoutesOn() {
+	public void turnShowingRoutesOn() {
 		showingRoutes = true;
 	}
 
-	public void turnRoutesOff() {
+	public void turnShowingRoutesOff() {
 		showingRoutes = false;
 	}
 
