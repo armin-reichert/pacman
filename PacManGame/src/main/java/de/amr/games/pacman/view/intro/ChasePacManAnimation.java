@@ -24,13 +24,13 @@ public class ChasePacManAnimation extends GameObject {
 	private Vector2f endPosition;
 	private boolean pill;
 
-	public ChasePacManAnimation(ArcadeThemeAssets theme, PacManSoundManager soundManager) {
+	public ChasePacManAnimation(ArcadeThemeAssets assets, PacManSoundManager soundManager) {
 		this.soundManager = soundManager;
-		pacMan = theme.makeSprite_pacManWalking(LEFT);
-		ghosts[0] = theme.makeSprite_ghostColored(Population.RED_GHOST, LEFT);
-		ghosts[1] = theme.makeSprite_ghostColored(Population.PINK_GHOST, LEFT);
-		ghosts[2] = theme.makeSprite_ghostColored(Population.CYAN_GHOST, LEFT);
-		ghosts[3] = theme.makeSprite_ghostColored(Population.ORANGE_GHOST, LEFT);
+		pacMan = assets.makeSprite_pacManWalking(LEFT);
+		ghosts[0] = assets.makeSprite_ghostColored(Population.RED_GHOST, LEFT);
+		ghosts[1] = assets.makeSprite_ghostColored(Population.PINK_GHOST, LEFT);
+		ghosts[2] = assets.makeSprite_ghostColored(Population.CYAN_GHOST, LEFT);
+		ghosts[3] = assets.makeSprite_ghostColored(Population.ORANGE_GHOST, LEFT);
 		pill = true;
 		tf.width = (88);
 		tf.height = (16);

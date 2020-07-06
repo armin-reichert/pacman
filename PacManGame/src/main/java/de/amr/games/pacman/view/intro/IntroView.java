@@ -4,7 +4,7 @@ import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.model.Game.sec;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.CHASING_ANIMATIONS;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.READY_TO_PLAY;
-import static de.amr.games.pacman.view.intro.IntroView.IntroState.SCROLLING_LOGO;
+import static de.amr.games.pacman.view.intro.IntroView.IntroState.SCROLLING_LOGO_ANIMATION;
 import static de.amr.games.pacman.view.intro.IntroView.IntroState.WAITING_FOR_INPUT;
 
 import java.awt.Color;
@@ -26,6 +26,7 @@ import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
+import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
 import de.amr.games.pacman.view.theme.arcade.ArcadeThemeAssets;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
@@ -38,13 +39,16 @@ import de.amr.statemachine.core.StateMachine;
 public class IntroView extends StateMachine<IntroState, Void> implements LivingView {
 
 	public enum IntroState {
-		SCROLLING_LOGO, CHASING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
+		SCROLLING_LOGO_ANIMATION, CHASING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
 	};
 
-	private int width;
-	private int height;
-	private ArcadeThemeAssets theme;
-	private PacManSoundManager soundManager;
+	private static final Color ORANGE = new Color(255, 163, 71);
+	private static final Color RED = new Color(171, 19, 0);
+//	PINK = (248, 120, 88);
+
+	private final PacManSoundManager soundManager;
+	private final int width;
+	private final int height;
 
 	private ImageWidget pacManLogo;
 	private LinkWidget gitHubLink;
@@ -52,27 +56,19 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 	private ChaseGhostsAnimation chaseGhosts;
 	private GhostPointsAnimation ghostPointsAnimation;
 
-	private Color orange = new Color(255, 163, 71);
-	// private Color pink = new Color(248, 120, 88);
-	private Color red = new Color(171, 19, 0);
-
 	public IntroView(PacManSoundManager soundManager, int width, int height) {
 		super(IntroState.class);
 		this.soundManager = soundManager;
 		this.width = width;
 		this.height = height;
-		buildStateMachine();
 		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
-	}
-
-	private void buildStateMachine() {
 		/*@formatter:off*/
 		beginStateMachine()
 			.description("[IntroView]")
-			.initialState(SCROLLING_LOGO)
+			.initialState(SCROLLING_LOGO_ANIMATION)
 			.states()
 				
-				.state(SCROLLING_LOGO)
+				.state(SCROLLING_LOGO_ANIMATION)
 					.customState(new ScrollingLogoAnimation())
 				
 				.state(CHASING_ANIMATIONS)
@@ -86,7 +82,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 					
 			.transitions()
 			
-				.when(SCROLLING_LOGO).then(CHASING_ANIMATIONS)
+				.when(SCROLLING_LOGO_ANIMATION).then(CHASING_ANIMATIONS)
 					.condition(() -> pacManLogo.isComplete())
 				
 				.when(CHASING_ANIMATIONS).then(WAITING_FOR_INPUT)
@@ -102,7 +98,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 	  /*@formatter:on*/
 	}
 
-	class ScrollingLogoAnimation extends State<IntroState> implements View {
+	private class ScrollingLogoAnimation extends State<IntroState> implements View {
 
 		@Override
 		public void onEntry() {
@@ -125,7 +121,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 		}
 	}
 
-	class ChasingAnimation extends State<IntroState> implements View {
+	private class ChasingAnimation extends State<IntroState> implements View {
 		@Override
 		public void onEntry() {
 			chasePacMan.setStartPosition(width, 100);
@@ -158,7 +154,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 		}
 	}
 
-	class WaitingForInput extends State<IntroState> implements View {
+	private class WaitingForInput extends State<IntroState> implements View {
 
 		@Override
 		public void onEntry() {
@@ -211,15 +207,16 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 
 	@Override
 	public void init() {
-		pacManLogo = new ImageWidget(theme.image_logo());
+		ArcadeThemeAssets assets = ArcadeTheme.ASSETS;
+		pacManLogo = new ImageWidget(assets.image_logo());
 		pacManLogo.tf.centerX(width);
 		pacManLogo.tf.y = 20;
-		chasePacMan = new ChasePacManAnimation(theme, soundManager);
+		chasePacMan = new ChasePacManAnimation(assets, soundManager);
 		chasePacMan.tf.centerX(width);
 		chasePacMan.tf.y = 100;
-		chaseGhosts = new ChaseGhostsAnimation(theme, soundManager);
+		chaseGhosts = new ChaseGhostsAnimation(assets, soundManager);
 		chaseGhosts.tf.setPosition(width, 200);
-		ghostPointsAnimation = new GhostPointsAnimation(theme, soundManager);
+		ghostPointsAnimation = new GhostPointsAnimation(assets, soundManager);
 		gitHubLink = LinkWidget.create()
 		/*@formatter:off*/
 			.text("https://github.com/armin-reichert/pacman")
@@ -254,7 +251,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 		String text = "F11 - " + Localized.texts.getString(app().inFullScreenMode() ? "window_mode" : "fullscreen_mode");
 		try (Pen pen = new Pen(g)) {
 			pen.font(Assets.font("font.hud"));
-			pen.color(orange);
+			pen.color(ORANGE);
 			pen.hcenter(text, width, row, Tile.SIZE);
 		}
 	}
@@ -272,11 +269,11 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 			float s = (width - (w1 + w2 + w3)) / 4f;
 			float x1 = s, x2 = x1 + w1 + s, x3 = x2 + w2 + s;
 			int y = row * Tile.SIZE;
-			pen.color(selectedSpeed == 1 ? orange : red);
+			pen.color(selectedSpeed == 1 ? ORANGE : RED);
 			pen.draw(t1, x1, y);
-			pen.color(selectedSpeed == 2 ? orange : red);
+			pen.color(selectedSpeed == 2 ? ORANGE : RED);
 			pen.draw(t2, x2, y);
-			pen.color(selectedSpeed == 3 ? orange : red);
+			pen.color(selectedSpeed == 3 ? ORANGE : RED);
 			pen.draw(t3, x3, y);
 		}
 	}

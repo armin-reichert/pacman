@@ -31,13 +31,13 @@ public class GhostPointsAnimation extends GameObject {
 	private int energizerTimer;
 	private boolean energizer;
 
-	public GhostPointsAnimation(ArcadeThemeAssets theme, PacManSoundManager soundManager) {
+	public GhostPointsAnimation(ArcadeThemeAssets assets, PacManSoundManager soundManager) {
 		this.soundManager = soundManager;
-		pacMan = theme.makeSprite_pacManWalking(RIGHT);
-		ghost = theme.makeSprite_ghostFrightened();
+		pacMan = assets.makeSprite_pacManWalking(RIGHT);
+		ghost = assets.makeSprite_ghostFrightened();
 		int i = 0;
 		for (int number : new int[] { 200, 400, 800, 1600 }) {
-			points[i++] = theme.makeSprite_number(number);
+			points[i++] = assets.makeSprite_number(number);
 		}
 		ghostTimer = -1;
 		tf.width = (90);
