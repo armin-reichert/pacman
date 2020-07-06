@@ -8,6 +8,8 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.core.Door.DoorState;
+import de.amr.games.pacman.model.world.core.House;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.IRenderer;
 import de.amr.games.pacman.view.theme.IWorldRenderer;
@@ -136,12 +138,20 @@ public class AsciiTheme implements Theme {
 						}
 					} else {
 						if (row >= 3 && row <= 33) {
-							g.setColor(Color.GREEN);
+							g.setColor(Rendering.alpha(Color.GREEN, 80));
 							g.drawString("#", col * Tile.SIZE, row * Tile.SIZE);
 						}
 					}
 				}
 			}
+			world.houses().flatMap(House::doors).forEach(door -> {
+				if (door.state == DoorState.CLOSED) {
+					g.setColor(Color.PINK);
+					door.tiles.forEach(tile -> {
+						g.fillRect(tile.x(), tile.y() - Tile.SIZE + 3, Tile.SIZE - 1, 2);
+					});
+				}
+			});
 			g.translate(0, -offsetY);
 		};
 	}

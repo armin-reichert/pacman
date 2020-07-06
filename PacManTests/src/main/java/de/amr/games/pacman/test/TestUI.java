@@ -21,6 +21,7 @@ import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.play.PlayView;
+import de.amr.games.pacman.view.theme.Theme;
 import de.amr.games.pacman.view.theme.Themes;
 
 public class TestUI implements Lifecycle, VisualController {
@@ -32,6 +33,8 @@ public class TestUI implements Lifecycle, VisualController {
 	protected final Ghost blinky, pinky, inky, clyde;
 	protected final PacManSoundManager soundManager;
 	protected PlayView view;
+	protected Theme[] themes = { Themes.ARCADE_THEME, Themes.BLOCKS_THEME, Themes.ASCII_THEME };
+	protected int currentThemeIndex = 0;
 
 	@Override
 	public Optional<View> currentView() {
@@ -67,7 +70,7 @@ public class TestUI implements Lifecycle, VisualController {
 		world.population().ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> ghostSpeedLimit(ghost, game)));
 
 		view = new PlayView(world, game, null, null, app().settings().width, app().settings().height);
-		view.setTheme(Themes.ARCADE_THEME);
+		view.setTheme(themes[currentThemeIndex]);
 		view.turnScoresOff();
 		view.init();
 	}
@@ -80,12 +83,9 @@ public class TestUI implements Lifecycle, VisualController {
 
 	@Override
 	public void update() {
-		if (Keyboard.keyPressedOnce("t") && Keyboard.isControlDown()) {
-			if (view.getTheme() == Themes.ARCADE_THEME) {
-				view.setTheme(Themes.BLOCKS_THEME);
-			} else {
-				view.setTheme(Themes.ARCADE_THEME);
-			}
+		if (Keyboard.keyPressedOnce("z")) {
+			currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+			view.setTheme(themes[currentThemeIndex]);
 		}
 		if (Keyboard.keyPressedOnce("g")) {
 			if (view.isShowingGrid()) {
