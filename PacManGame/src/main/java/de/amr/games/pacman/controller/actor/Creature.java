@@ -1,6 +1,6 @@
 package de.amr.games.pacman.controller.actor;
 
-import static de.amr.games.pacman.model.Direction.RIGHT;
+import static de.amr.games.pacman.model.world.Direction.RIGHT;
 
 import java.util.List;
 import java.util.Map;
@@ -18,8 +18,8 @@ import de.amr.games.pacman.controller.actor.steering.common.RandomMovement;
 import de.amr.games.pacman.controller.actor.steering.common.TakingFixedPath;
 import de.amr.games.pacman.controller.actor.steering.common.TakingShortestPath;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Tile;

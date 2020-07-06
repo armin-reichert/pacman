@@ -6,7 +6,7 @@ import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.controller.ghosthouse.Decision.confirmed;
 import static de.amr.games.pacman.controller.ghosthouse.Decision.rejected;
-import static de.amr.games.pacman.model.Game.sec;
+import static de.amr.games.pacman.model.game.Game.sec;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Door;
 import de.amr.games.pacman.model.world.core.Door.DoorState;

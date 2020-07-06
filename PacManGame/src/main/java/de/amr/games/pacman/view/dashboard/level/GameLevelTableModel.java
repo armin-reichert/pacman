@@ -5,8 +5,8 @@ import static de.amr.games.pacman.view.dashboard.util.Formatting.percent;
 
 import javax.swing.table.AbstractTableModel;
 
-import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.GameLevel;
+import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.game.GameLevel;
 
 /**
  * Model of the table displaying all level-dependent parameters.

@@ -11,7 +11,7 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.ui.sprites.CyclicAnimation;
 import de.amr.easy.game.ui.sprites.SpriteAnimation;
 import de.amr.easy.game.ui.sprites.SpriteMap;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.core.BonusState;

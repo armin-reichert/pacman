@@ -12,7 +12,7 @@ import de.amr.easy.game.ui.sprites.Sprite;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;

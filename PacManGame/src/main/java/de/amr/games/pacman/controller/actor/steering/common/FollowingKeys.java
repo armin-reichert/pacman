@@ -1,6 +1,6 @@
 package de.amr.games.pacman.controller.actor.steering.common;
 
-import static de.amr.games.pacman.model.Direction.dirs;
+import static de.amr.games.pacman.model.world.Direction.dirs;
 
 import java.util.EnumMap;
 import java.util.Objects;
@@ -8,7 +8,7 @@ import java.util.Objects;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.actor.WorldMover;
 import de.amr.games.pacman.controller.actor.steering.Steering;
-import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.Direction;
 
 /**
  * Steering controlled by keyboard keys for UP, RIGHT, DOWN, LEFT direction.

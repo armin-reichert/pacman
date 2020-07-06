@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.game.Game;
 
 public interface Population {
 

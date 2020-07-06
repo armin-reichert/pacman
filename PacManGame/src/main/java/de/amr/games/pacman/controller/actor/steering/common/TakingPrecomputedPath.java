@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 import de.amr.games.pacman.controller.actor.WorldMover;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
-import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 

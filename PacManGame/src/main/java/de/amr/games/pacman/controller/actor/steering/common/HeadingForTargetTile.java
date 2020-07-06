@@ -1,9 +1,9 @@
 package de.amr.games.pacman.controller.actor.steering.common;
 
-import static de.amr.games.pacman.model.Direction.DOWN;
-import static de.amr.games.pacman.model.Direction.LEFT;
-import static de.amr.games.pacman.model.Direction.RIGHT;
-import static de.amr.games.pacman.model.Direction.UP;
+import static de.amr.games.pacman.model.world.Direction.DOWN;
+import static de.amr.games.pacman.model.world.Direction.LEFT;
+import static de.amr.games.pacman.model.world.Direction.RIGHT;
+import static de.amr.games.pacman.model.world.Direction.UP;
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
 
@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 
 import de.amr.games.pacman.controller.actor.WorldMover;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
-import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 

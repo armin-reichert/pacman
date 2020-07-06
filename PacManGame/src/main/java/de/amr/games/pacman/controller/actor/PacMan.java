@@ -4,10 +4,10 @@ import static de.amr.games.pacman.PacManApp.settings;
 import static de.amr.games.pacman.controller.actor.PacManState.DEAD;
 import static de.amr.games.pacman.controller.actor.PacManState.RUNNING;
 import static de.amr.games.pacman.controller.actor.PacManState.SLEEPING;
-import static de.amr.games.pacman.model.Direction.LEFT;
-import static de.amr.games.pacman.model.Direction.UP;
-import static de.amr.games.pacman.model.Game.DIGEST_ENERGIZER_TICKS;
-import static de.amr.games.pacman.model.Game.DIGEST_PELLET_TICKS;
+import static de.amr.games.pacman.model.game.Game.DIGEST_ENERGIZER_TICKS;
+import static de.amr.games.pacman.model.game.Game.DIGEST_PELLET_TICKS;
+import static de.amr.games.pacman.model.world.Direction.LEFT;
+import static de.amr.games.pacman.model.world.Direction.UP;
 import static de.amr.statemachine.core.StateMachine.beginStateMachine;
 
 import java.util.EnumMap;

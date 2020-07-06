@@ -3,7 +3,7 @@ package de.amr.games.pacman.view.dashboard.states;
 import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
-import static de.amr.games.pacman.model.Game.sec;
+import static de.amr.games.pacman.model.game.Game.sec;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -12,8 +12,8 @@ import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.Ghost.Sanity;
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Bonus;
 import de.amr.games.pacman.model.world.core.BonusState;

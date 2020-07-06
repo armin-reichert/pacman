@@ -12,7 +12,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.actor.steering.Steering;
-import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.core.House;
 import de.amr.games.pacman.model.world.core.Portal;
 import de.amr.games.pacman.model.world.core.Tile;

@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model;
+package de.amr.games.pacman.model.world;
 
 import java.util.Arrays;
 import java.util.Collections;

@@ -3,7 +3,7 @@ package de.amr.games.pacman.model.world.core;
 import java.util.Arrays;
 import java.util.List;
 
-import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.Area;
 
 /**

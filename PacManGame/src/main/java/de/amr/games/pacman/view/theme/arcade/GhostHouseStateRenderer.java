@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.theme.arcade;
 
-import static de.amr.games.pacman.model.Direction.RIGHT;
+import static de.amr.games.pacman.model.world.Direction.RIGHT;
 import static de.amr.games.pacman.model.world.api.Population.CYAN_GHOST;
 import static de.amr.games.pacman.model.world.api.Population.ORANGE_GHOST;
 

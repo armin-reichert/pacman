@@ -2,7 +2,7 @@ package de.amr.games.pacman.view.dashboard.states;
 
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost.Sanity;
-import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.core.Tile;
 
 /**

@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.theme;
 
 import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 

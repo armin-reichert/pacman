@@ -4,8 +4,8 @@ import static de.amr.games.pacman.controller.actor.PacManState.RUNNING;
 
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.model.Game;
-import de.amr.games.pacman.model.GameLevel;
+import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.game.GameLevel;
 
 public class SpeedLimits {
 	/**

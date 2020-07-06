@@ -3,14 +3,14 @@ package de.amr.games.pacman.controller.actor.steering;
 import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.controller.actor.steering.MovementType.TELEPORTING;
 import static de.amr.games.pacman.controller.actor.steering.MovementType.WALKING;
-import static de.amr.games.pacman.model.Game.sec;
+import static de.amr.games.pacman.model.game.Game.sec;
 
 import java.util.function.Supplier;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.Creature;
-import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.core.Portal;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.statemachine.core.StateMachine;

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.Area;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.core.AbstractWorld;

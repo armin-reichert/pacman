@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
-import static de.amr.games.pacman.model.Direction.RIGHT;
+import static de.amr.games.pacman.model.world.Direction.RIGHT;
 
 import java.awt.Graphics2D;
 

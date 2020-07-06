@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.actor.Creature;
-import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 

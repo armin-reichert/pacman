@@ -4,8 +4,8 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
-import de.amr.games.pacman.model.Direction;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.view.theme.IRenderer;
 
 public class GhostRenderer extends SpriteRenderer implements IRenderer {

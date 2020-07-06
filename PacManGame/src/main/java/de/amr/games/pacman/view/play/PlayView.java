@@ -14,7 +14,7 @@ import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
-import de.amr.games.pacman.model.Game;
+import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.core.LivingView;

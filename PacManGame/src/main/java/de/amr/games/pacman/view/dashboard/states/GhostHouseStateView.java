@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.dashboard.states;
 
 import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
-import static de.amr.games.pacman.model.Direction.RIGHT;
+import static de.amr.games.pacman.model.world.Direction.RIGHT;
 import static de.amr.games.pacman.model.world.api.Population.CYAN_GHOST;
 import static de.amr.games.pacman.model.world.api.Population.ORANGE_GHOST;
 import static de.amr.games.pacman.model.world.api.Population.PINK_GHOST;

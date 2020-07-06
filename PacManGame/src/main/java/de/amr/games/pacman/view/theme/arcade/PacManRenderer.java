@@ -3,7 +3,7 @@ package de.amr.games.pacman.view.theme.arcade;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.IRenderer;
 

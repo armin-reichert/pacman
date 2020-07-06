@@ -2,7 +2,7 @@ package de.amr.games.pacman.model.world.api;
 
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.House;
 import de.amr.games.pacman.model.world.core.OneWayTile;

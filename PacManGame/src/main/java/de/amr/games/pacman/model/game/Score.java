@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model;
+package de.amr.games.pacman.model.game;
 
 import java.time.ZonedDateTime;
 

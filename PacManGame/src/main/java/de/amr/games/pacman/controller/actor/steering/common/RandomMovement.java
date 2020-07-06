@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import de.amr.games.pacman.controller.actor.WorldMover;
 import de.amr.games.pacman.controller.actor.steering.Steering;
-import de.amr.games.pacman.model.Direction;
+import de.amr.games.pacman.model.world.Direction;
 
 /**
  * Lets a creature move randomly but never reverse its direction.

@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.intro;
 
-import static de.amr.games.pacman.model.Direction.RIGHT;
-import static de.amr.games.pacman.model.Game.sec;
+import static de.amr.games.pacman.model.game.Game.sec;
+import static de.amr.games.pacman.model.world.Direction.RIGHT;
 
 import java.awt.Color;
 import java.awt.Font;
