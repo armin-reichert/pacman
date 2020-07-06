@@ -375,7 +375,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
 		world.population().play(game);
 
-		playView = new PlayView(world, game, ghostCommand, doorMan, settings.width, settings.height);
+		playView = new PlayView(world, game, ghostCommand, doorMan);
 		playView.setTheme(themes[currentThemeIndex]);
 
 		app().f2Dialog().ifPresent(f2 -> f2.selectCustomTab(0));

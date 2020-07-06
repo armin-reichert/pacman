@@ -36,27 +36,21 @@ import de.amr.games.pacman.view.theme.common.Rendering;
  */
 public class PlayView implements LivingView {
 
-	protected World world;
-	protected Game game;
-	protected int width;
-	protected int height;
+	private World world;
+	private Game game;
 
-	protected String[] messageTexts = new String[2];
-	protected Color[] messageColors = new Color[2];
+	private String[] messageTexts = new String[2];
+	private Color[] messageColors = new Color[2];
 
-	protected Theme theme;
+	private Theme theme;
 
-	protected IWorldRenderer worldRenderer;
-	protected IRenderer scoreRenderer;
-	protected IRenderer liveCounterRenderer;
-	protected IRenderer levelCounterRenderer;
-	protected MessagesRenderer messagesRenderer;
-	protected IRenderer pacManRenderer;
-	protected Map<Ghost, IRenderer> ghostRenderer = new HashMap<>();
-
-	protected GhostCommand ghostCommand;
-	protected GhostHouseDoorMan doorMan;
-
+	private IWorldRenderer worldRenderer;
+	private IRenderer scoreRenderer;
+	private IRenderer liveCounterRenderer;
+	private IRenderer levelCounterRenderer;
+	private MessagesRenderer messagesRenderer;
+	private IRenderer pacManRenderer;
+	private Map<Ghost, IRenderer> ghostRenderer = new HashMap<>();
 	private FrameRateWidget frameRateDisplay;
 
 	private boolean showingScores;
@@ -70,11 +64,9 @@ public class PlayView implements LivingView {
 	private final IRenderer actorStatesRenderer;
 	private final IRenderer ghostHouseStateRenderer;
 
-	public PlayView(World world, Game game, GhostCommand ghostCommand, GhostHouseDoorMan doorMan, int width, int height) {
+	public PlayView(World world, Game game, GhostCommand ghostCommand, GhostHouseDoorMan doorMan) {
 		this.world = world;
 		this.game = game;
-		this.width = width;
-		this.height = height;
 		showingScores = true;
 		showingFrameRate = false;
 		showingGrid = false;
@@ -237,11 +229,11 @@ public class PlayView implements LivingView {
 		showingStates = false;
 	}
 
-	protected void drawWorld(Graphics2D g) {
+	private void drawWorld(Graphics2D g) {
 		worldRenderer.render(g);
 	}
 
-	protected void drawMessages(Graphics2D g) {
+	private void drawMessages(Graphics2D g) {
 		if (messageTexts[0] != null) {
 			messagesRenderer.setRow(15);
 			messagesRenderer.setTextColor(messageColors[0]);
@@ -254,7 +246,7 @@ public class PlayView implements LivingView {
 		}
 	}
 
-	protected void drawActors(Graphics2D g) {
+	private void drawActors(Graphics2D g) {
 		pacManRenderer.render(g);
 		// draw dead ghosts (as number or eyes) under living ghosts
 		world.population().ghosts().filter(world::included).filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
@@ -263,19 +255,19 @@ public class PlayView implements LivingView {
 				.forEach(ghost -> ghostRenderer.get(ghost).render(g));
 	}
 
-	protected void drawScores(Graphics2D g) {
+	private void drawScores(Graphics2D g) {
 		if (showingScores) {
 			scoreRenderer.render(g);
 		}
 	}
 
-	protected void drawLiveCounter(Graphics2D g) {
+	private void drawLiveCounter(Graphics2D g) {
 		g.translate(0, world.height() * Tile.SIZE);
 		liveCounterRenderer.render(g);
 		g.translate(0, -world.height() * Tile.SIZE);
 	}
 
-	protected void drawLevelCounter(Graphics2D g) {
+	private void drawLevelCounter(Graphics2D g) {
 		g.translate(world.width() * Tile.SIZE, world.height() * Tile.SIZE);
 		levelCounterRenderer.render(g);
 		g.translate(-world.width() * Tile.SIZE, -world.height() * Tile.SIZE);

@@ -1,6 +1,5 @@
 package de.amr.games.pacman.test;
 
-import static de.amr.easy.game.Application.app;
 import static de.amr.games.pacman.controller.SpeedLimits.ghostSpeedLimit;
 import static de.amr.games.pacman.controller.SpeedLimits.pacManSpeedLimit;
 
@@ -69,7 +68,7 @@ public class TestUI implements Lifecycle, VisualController {
 		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
 		world.population().ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> ghostSpeedLimit(ghost, game)));
 
-		view = new PlayView(world, game, null, null, app().settings().width, app().settings().height);
+		view = new PlayView(world, game, null, null);
 		view.setTheme(themes[currentThemeIndex]);
 		view.turnScoresOff();
 		view.init();
