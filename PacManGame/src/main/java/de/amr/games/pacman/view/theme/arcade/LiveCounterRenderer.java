@@ -20,7 +20,7 @@ public class LiveCounterRenderer implements IRenderer {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void render(Graphics2D g) {
 		int sz = 2 * Tile.SIZE;
 		for (int i = 0, x = sz; i < game.lives; ++i, x += sz) {
 			g.drawImage(pacManLookingLeft, x, -sz, null);

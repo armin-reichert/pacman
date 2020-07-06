@@ -3,7 +3,6 @@ package de.amr.games.pacman.view.theme.blocks;
 import java.awt.Font;
 
 import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -45,8 +44,8 @@ public class BlocksTheme implements Theme {
 	}
 
 	@Override
-	public IRenderer createPacManRenderer(World world, PacMan pacMan) {
-		return new PacManRenderer(world, pacMan);
+	public IRenderer createPacManRenderer(World world) {
+		return new PacManRenderer(world);
 	}
 
 	@Override

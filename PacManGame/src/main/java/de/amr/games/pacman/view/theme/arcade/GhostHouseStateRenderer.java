@@ -31,7 +31,7 @@ public class GhostHouseStateRenderer implements IRenderer {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void render(Graphics2D g) {
 		if (doorMan == null) {
 			return; // test scenes may have no ghost house
 		}

@@ -94,7 +94,7 @@ public class PlayView implements LivingView {
 		liveCounterRenderer = theme.createLiveCounterRenderer(game);
 		levelCounterRenderer = theme.createLevelCounterRenderer(game);
 		scoreRenderer = theme.createScoreRenderer(game);
-		pacManRenderer = theme.createPacManRenderer(world, world.population().pacMan());
+		pacManRenderer = theme.createPacManRenderer(world);
 		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, theme.createGhostRenderer(ghost)));
 		scoreRenderer = theme.createScoreRenderer(game);
 		messagesRenderer = theme.createMessagesRenderer();
@@ -118,7 +118,7 @@ public class PlayView implements LivingView {
 	public void draw(Graphics2D g) {
 		if (showingGrid) {
 			worldRenderer.setEatenFoodColor(Rendering::patternColor);
-			gridRenderer.draw(g);
+			gridRenderer.render(g);
 		} else {
 			worldRenderer.setEatenFoodColor(tile -> Color.BLACK);
 		}
@@ -132,11 +132,11 @@ public class PlayView implements LivingView {
 		drawMessages(g);
 		drawActors(g);
 		if (showingRoutes) {
-			actorRoutesRenderer.draw(g);
+			actorRoutesRenderer.render(g);
 		}
 		if (showingStates) {
-			actorStatesRenderer.draw(g);
-			ghostHouseStateRenderer.draw(g);
+			actorStatesRenderer.render(g);
+			ghostHouseStateRenderer.render(g);
 		}
 		drawScores(g);
 		drawLiveCounter(g);
@@ -144,11 +144,11 @@ public class PlayView implements LivingView {
 	}
 
 	public void showGameReady() {
-		showMessage(1, "Ready!", Color.YELLOW);
+		showMessage(2, "Ready!", Color.YELLOW);
 	}
 
 	public void showGameOver() {
-		showMessage(1, "Game Over!", Color.RED);
+		showMessage(2, "Game Over!", Color.RED);
 	}
 
 	public void showMessage(int oneOrTwo, String text, Color color) {
@@ -230,7 +230,7 @@ public class PlayView implements LivingView {
 	}
 
 	protected void drawWorld(Graphics2D g) {
-		worldRenderer.draw(g);
+		worldRenderer.render(g);
 	}
 
 	protected void drawMessages(Graphics2D g) {
@@ -247,29 +247,29 @@ public class PlayView implements LivingView {
 	}
 
 	protected void drawActors(Graphics2D g) {
-		pacManRenderer.draw(g);
+		pacManRenderer.render(g);
 		// draw dead ghosts (as number or eyes) under living ghosts
 		world.population().ghosts().filter(world::included).filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
-				.forEach(ghost -> ghostRenderer.get(ghost).draw(g));
+				.forEach(ghost -> ghostRenderer.get(ghost).render(g));
 		world.population().ghosts().filter(world::included).filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
-				.forEach(ghost -> ghostRenderer.get(ghost).draw(g));
+				.forEach(ghost -> ghostRenderer.get(ghost).render(g));
 	}
 
 	protected void drawScores(Graphics2D g) {
 		if (showingScores) {
-			scoreRenderer.draw(g);
+			scoreRenderer.render(g);
 		}
 	}
 
 	protected void drawLiveCounter(Graphics2D g) {
 		g.translate(0, world.height() * Tile.SIZE);
-		liveCounterRenderer.draw(g);
+		liveCounterRenderer.render(g);
 		g.translate(0, -world.height() * Tile.SIZE);
 	}
 
 	protected void drawLevelCounter(Graphics2D g) {
 		g.translate(world.width() * Tile.SIZE, world.height() * Tile.SIZE);
-		levelCounterRenderer.draw(g);
+		levelCounterRenderer.render(g);
 		g.translate(-world.width() * Tile.SIZE, -world.height() * Tile.SIZE);
 	}
 }

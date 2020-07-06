@@ -17,7 +17,7 @@ class LevelCounterRenderer implements IRenderer {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void render(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		int max = 7;
 		int n = Math.min(max, game.levelCounter.size());

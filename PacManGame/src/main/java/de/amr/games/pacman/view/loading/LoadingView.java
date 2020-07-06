@@ -43,16 +43,16 @@ public class LoadingView implements LivingView {
 		pacMan = world.population().pacMan();
 		this.width = width;
 		this.height = height;
-		pacManRenderer = new PacManRenderer(world, pacMan);
+		pacManRenderer = new PacManRenderer(world);
 		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, new GhostRenderer(ghost)));
 	}
 
 	@Override
 	public void init() {
-		pacMan.init();
-		pacMan.start();
 		ghostCount = 0;
 		ghostInc = 1;
+		pacMan.init();
+		pacMan.start();
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class LoadingView implements LivingView {
 			pen.fontSize(10);
 			pen.hcenter(Localized.texts.getString("loading_music"), width, 18, Tile.SIZE);
 		}
-		pacManRenderer.draw(g);
+		pacManRenderer.render(g);
 		float x = width / 2 - (ghostCount / 2) * 20, y = pacMan.tf.y + 20;
 		for (int i = 0; i < ghostCount; ++i) {
 			int color = new Random().nextInt(4);

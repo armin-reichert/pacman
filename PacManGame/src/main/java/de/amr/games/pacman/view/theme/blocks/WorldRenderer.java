@@ -31,7 +31,7 @@ class WorldRenderer implements IWorldRenderer {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void render(Graphics2D g) {
 		drawEmptyMaze(g);
 		if (!world.isChangingLevel()) {
 			drawMazeContent(g);
@@ -44,7 +44,7 @@ class WorldRenderer implements IWorldRenderer {
 	}
 
 	private void drawMazeContent(Graphics2D g) {
-		smoothOn(g);
+		smoothDrawingOn(g);
 		for (int row = 0; row < world.height(); ++row) {
 			for (int col = 0; col < world.width(); ++col) {
 				if (world.containsEnergizer(Tile.at(col, row))) {
@@ -63,7 +63,7 @@ class WorldRenderer implements IWorldRenderer {
 				drawConsumedBonus(g, center, bonus);
 			}
 		});
-		smoothOff(g);
+		smoothDrawingOff(g);
 	}
 
 	private void drawActiveBonus(Graphics2D g, Vector2f center, Bonus bonus) {

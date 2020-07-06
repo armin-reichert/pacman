@@ -8,7 +8,7 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.Game;
 import de.amr.games.pacman.view.theme.IRenderer;
 
-public class GhostRenderer extends SpriteEntityRenderer implements IRenderer {
+public class GhostRenderer extends SpriteRenderer implements IRenderer {
 
 	private final Ghost ghost;
 
@@ -27,7 +27,7 @@ public class GhostRenderer extends SpriteEntityRenderer implements IRenderer {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void render(Graphics2D g) {
 		GhostState state = ghost.getState();
 		switch (state) {
 		case CHASING:

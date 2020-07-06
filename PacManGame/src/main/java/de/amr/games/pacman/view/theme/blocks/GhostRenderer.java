@@ -19,11 +19,11 @@ class GhostRenderer implements IRenderer {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void render(Graphics2D g) {
 		if (!ghost.visible) {
 			return;
 		}
-		smoothOn(g);
+		smoothDrawingOn(g);
 		GhostState state = ghost.getState();
 		switch (state) {
 		case CHASING:
@@ -50,7 +50,7 @@ class GhostRenderer implements IRenderer {
 		default:
 			break;
 		}
-		smoothOff(g);
+		smoothDrawingOff(g);
 	}
 
 	private int tiles(double amount) {

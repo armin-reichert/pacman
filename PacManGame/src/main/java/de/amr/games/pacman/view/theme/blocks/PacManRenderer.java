@@ -13,16 +13,16 @@ class PacManRenderer implements IRenderer {
 
 	private final PacMan pacMan;
 
-	public PacManRenderer(World world, PacMan pacMan) {
-		this.pacMan = pacMan;
+	public PacManRenderer(World world) {
+		this.pacMan = world.population().pacMan();
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void render(Graphics2D g) {
 		if (!pacMan.visible) {
 			return;
 		}
-		smoothOn(g);
+		smoothDrawingOn(g);
 		PacManState state = pacMan.getState();
 		switch (state) {
 		case DEAD:
@@ -37,7 +37,7 @@ class PacManRenderer implements IRenderer {
 		default:
 			break;
 		}
-		smoothOff(g);
+		smoothDrawingOff(g);
 	}
 
 	private int tiles(double amount) {

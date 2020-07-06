@@ -32,7 +32,7 @@ public class ActorRoutesRenderer implements IRenderer {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void render(Graphics2D g) {
 		drawGhostRoutes(g);
 	}
 

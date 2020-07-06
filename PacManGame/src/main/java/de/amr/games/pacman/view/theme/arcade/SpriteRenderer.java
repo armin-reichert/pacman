@@ -6,11 +6,11 @@ import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.SpriteMap;
 import de.amr.games.pacman.view.theme.IRenderer;
 
-public abstract class SpriteEntityRenderer implements IRenderer {
+public abstract class SpriteRenderer implements IRenderer {
 
 	protected final SpriteMap sprites;
 
-	public SpriteEntityRenderer() {
+	public SpriteRenderer() {
 		sprites = new SpriteMap();
 	}
 

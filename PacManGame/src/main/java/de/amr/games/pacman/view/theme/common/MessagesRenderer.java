@@ -21,7 +21,7 @@ public class MessagesRenderer implements IRenderer {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void render(Graphics2D g) {
 	}
 
 	public void drawCentered(Graphics2D g, String text, int widthInTiles) {

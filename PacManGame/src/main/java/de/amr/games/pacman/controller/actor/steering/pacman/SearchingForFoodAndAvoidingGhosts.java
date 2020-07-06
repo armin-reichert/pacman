@@ -26,7 +26,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 	private final WorldMover me;
 	private WorldGraph graph;
 	private Ghost enemy;
-	private int distance;
+	private double distance;
 	private Direction newDir;
 
 	public SearchingForFoodAndAvoidingGhosts(Creature<?> me) {
@@ -62,24 +62,24 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		}
 
 		// is dangerous ghost nearby?
-		enemy = dangerousGhostInRange(10).orElse(null);
-		if (enemy != null) {
-			distance = -1;
-			Direction.dirsShuffled().forEach(dir -> {
-				Tile neighbor = me.world().neighbor(me.tile(), dir);
-				if (me.world().isAccessible(neighbor)) {
-					int d = distance(neighbor, enemy.tile());
-					if (d > distance) {
-						d = distance;
-						newDir = dir;
-					}
-				}
-			});
-			if (newDir != me.moveDir().opposite()) {
-				me.setWishDir(newDir);
-				return;
-			}
-		}
+//		enemy = dangerousGhostInRange(10).orElse(null);
+//		if (enemy != null) {
+//			distance = -1;
+//			Direction.dirsShuffled().forEach(dir -> {
+//				Tile neighbor = me.world().neighbor(me.tile(), dir);
+//				if (me.world().isAccessible(neighbor)) {
+//					int d = distance(neighbor, enemy.tile());
+//					if (d > distance) {
+//						d = distance;
+//						newDir = dir;
+//					}
+//				}
+//			});
+//			if (newDir != me.moveDir().opposite()) {
+//				me.setWishDir(newDir);
+//				return;
+//			}
+//		}
 
 		// determine direction for finding food
 		distance = Integer.MAX_VALUE;
@@ -89,7 +89,7 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 			.forEach(dir -> {
 				Tile neighbor = me.world().neighbor(me.tile(), dir);
 				preferredFoodLocationFrom(neighbor).ifPresent(foodLocation -> {
-					int d = neighbor.manhattanDistance(foodLocation);
+					double d = neighbor.distance(foodLocation);
 					if (d < distance) {
 						newDir = dir;
 						distance = d;

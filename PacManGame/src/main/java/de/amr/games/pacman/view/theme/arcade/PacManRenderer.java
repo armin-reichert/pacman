@@ -7,38 +7,38 @@ import de.amr.games.pacman.model.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.IRenderer;
 
-public class PacManRenderer extends SpriteEntityRenderer implements IRenderer {
+public class PacManRenderer extends SpriteRenderer implements IRenderer {
 
 	private final World world;
 	private final PacMan pacMan;
 
-	public PacManRenderer(World world, PacMan pacMan) {
+	public PacManRenderer(World world) {
 		this.world = world;
-		this.pacMan = pacMan;
+		this.pacMan = world.population().pacMan();
 		ArcadeThemeAssets assets = ArcadeTheme.ASSETS;
 		Direction.dirs().forEach(dir -> sprites.set("walking-" + dir, assets.makeSprite_pacManWalking(dir)));
-		sprites.set("dying", assets.makeSprite_pacManDying());
+		sprites.set("collapsing", assets.makeSprite_pacManDying());
 		sprites.set("full", assets.makeSprite_pacManFull());
 		sprites.select("full");
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void render(Graphics2D g) {
 		if (world.isChangingLevel()) {
 			selectSprite("full");
 		} else {
 			switch (pacMan.getState()) {
 			case DEAD:
+				selectSprite("full");
 				if (pacMan.collapsing) {
-					selectSprite("dying");
-				} else if (!sprites.selectedKey().equals("full")) {
-					selectSprite("full");
-					sprites.get("dying").resetAnimation();
+					selectSprite("collapsing");
+				} else {
+					sprites.get("collapsing").resetAnimation();
 				}
 				break;
 			case RUNNING:
 				selectSprite("walking-" + pacMan.moveDir());
-				enableAnimation(pacMan.tf.getVelocity().length() > 0);
+				enableAnimation(pacMan.tf.vx != 0 || pacMan.tf.vy != 0);
 				break;
 			case SLEEPING:
 				selectSprite("full");

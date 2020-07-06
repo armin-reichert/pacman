@@ -25,7 +25,7 @@ public class ScoreRenderer implements IRenderer {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void render(Graphics2D g) {
 		int topMargin = 3;
 		int lineOffset = 2;
 		Color hilight = Color.YELLOW;
