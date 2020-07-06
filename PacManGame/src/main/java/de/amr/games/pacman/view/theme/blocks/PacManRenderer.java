@@ -56,7 +56,7 @@ class PacManRenderer implements IRenderer {
 		int size = pacMan.power > 0 ? tiles(2.5) : tiles(2);
 		int x = (int) pacMan.tf.x + (pacMan.tf.width - size) / 2;
 		int y = (int) pacMan.tf.y + (pacMan.tf.width - size) / 2;
-		g.setColor(pacMan.power == 0 ? Color.YELLOW : Color.RED);
+		g.setColor(Color.YELLOW);
 		g.fillOval(x, y, size, size);
 	}
 
@@ -65,6 +65,6 @@ class PacManRenderer implements IRenderer {
 		int x = (int) pacMan.tf.x + (pacMan.tf.width - size) / 2;
 		int y = (int) pacMan.tf.y + (pacMan.tf.width - size) / 2;
 		g.setColor(Color.YELLOW);
-		g.drawOval(x, y, size, size);
+		g.drawOval(x, y, size / 2, size / 2);
 	}
 }

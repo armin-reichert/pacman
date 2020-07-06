@@ -20,6 +20,8 @@ import de.amr.games.pacman.view.theme.IWorldRenderer;
 
 class WorldRenderer implements IWorldRenderer {
 
+	static final Font font = new Font(Font.SANS_SERIF, Font.BOLD, 10);
+
 	private final World world;
 
 	public WorldRenderer(World world) {
@@ -39,7 +41,7 @@ class WorldRenderer implements IWorldRenderer {
 		// draw doors depending on their state
 		world.theHouse().doors().forEach(door -> {
 			g.setColor(door.state == DoorState.CLOSED ? Color.PINK : Color.BLACK);
-			door.tiles.forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE / 2));
+			door.tiles.forEach(tile -> g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE / 4));
 		});
 	}
 
@@ -67,10 +69,11 @@ class WorldRenderer implements IWorldRenderer {
 	}
 
 	private void drawActiveBonus(Graphics2D g, Vector2f center, Bonus bonus) {
-		g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, Tile.SIZE));
 		long time = Application.app().clock().getTotalTicks();
 		if (time % 60 < 30) {
-			drawCircleWithText(g, center, (int) (1.5 * Tile.SIZE), Color.GREEN, bonus.symbol);
+			g.setFont(font);
+			String text = bonus.symbol.substring(0, 1) + bonus.symbol.substring(1).toLowerCase();
+			drawCircleWithText(g, center, (int) (1.5 * Tile.SIZE), Color.GREEN, text);
 		}
 	}
 
@@ -78,6 +81,7 @@ class WorldRenderer implements IWorldRenderer {
 		String text = String.valueOf(bonus.value);
 		g.translate(center.x, center.y);
 		g.setColor(Color.RED);
+		g.setFont(font);
 		FontMetrics fm = g.getFontMetrics();
 		int width = fm.stringWidth(text);
 		g.drawString(text, -width / 2, 0);

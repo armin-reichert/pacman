@@ -1,6 +1,7 @@
 package de.amr.games.pacman.view.theme.blocks;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.Application;
@@ -11,6 +12,8 @@ import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.IRenderer;
 
 class GhostRenderer implements IRenderer {
+	
+	static final Font font = new Font(Font.SANS_SERIF, Font.BOLD, 10);
 
 	private final Ghost ghost;
 
@@ -58,7 +61,7 @@ class GhostRenderer implements IRenderer {
 	}
 
 	private void drawEyes(Graphics2D g) {
-		int size = tiles(1.5);
+		int size = tiles(1);
 		int x = (int) ghost.tf.x + (ghost.tf.width - size) / 2;
 		int y = (int) ghost.tf.y + (ghost.tf.width - size) / 2;
 		g.setColor(ghostColor());
@@ -67,6 +70,7 @@ class GhostRenderer implements IRenderer {
 
 	private void drawPoints(Graphics2D g) {
 		g.setColor(Color.GREEN);
+		g.setFont(font);
 		g.drawString(ghost.points + "", (int) ghost.tf.x, (int) ghost.tf.y);
 	}
 
@@ -76,6 +80,7 @@ class GhostRenderer implements IRenderer {
 		int y = (int) ghost.tf.y + (ghost.tf.width - size) / 2;
 		g.setColor(Color.BLUE);
 		g.fillRect(x, y, size, size);
+		g.fillArc(x, y - Tile.SIZE / 2, size, size, 0, 180);
 	}
 
 	private void drawFlashing(Graphics2D g) {
@@ -85,6 +90,7 @@ class GhostRenderer implements IRenderer {
 		int y = (int) ghost.tf.y + (ghost.tf.width - size) / 2;
 		g.setColor(flash ? Color.WHITE : Color.BLUE);
 		g.fillRect(x, y, size, size);
+		g.fillArc(x, y - Tile.SIZE / 2, size, size, 0, 180);
 	}
 
 	private void drawColored(Graphics2D g) {
@@ -93,6 +99,7 @@ class GhostRenderer implements IRenderer {
 		int y = (int) ghost.tf.y + (ghost.tf.width - size) / 2;
 		g.setColor(ghostColor());
 		g.fillRect(x, y, size, size);
+		g.fillArc(x, y - Tile.SIZE / 2, size, size, 0, 180);
 	}
 
 	private Color ghostColor() {
