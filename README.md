@@ -431,7 +431,7 @@ The view layer supports theming. The currently implemented themes are
 
 <img src="PacManDoc/theme-arcade.png">
 
-- BLOCKS: a theme sing simple geometric shapes
+- BLOCKS: a theme using simple geometric shapes
 
 <img src="PacManDoc/theme-blocks.png">
 
