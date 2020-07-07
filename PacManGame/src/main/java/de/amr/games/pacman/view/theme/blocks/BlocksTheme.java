@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.stream.Stream;
 
+import de.amr.easy.game.assets.Assets;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
@@ -15,8 +16,14 @@ import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
 public class BlocksTheme implements Theme {
+	
+	static {
+		Assets.storeTrueTypeFont("ConcertOne", "ConcertOne-Regular.ttf", Font.PLAIN, 10);
+	}
 
-	public static final Font font = new Font(Font.SANS_SERIF, Font.BOLD, 10);
+	public static final Font font = Assets.font("ConcertOne");
+	
+//	= new Font(Font.SANS_SERIF, Font.BOLD, 10);
 
 	public static Color symbolColor(String symbolName) {
 		Symbol symbol = Stream.of(Symbol.values()).filter(s -> s.name().equals(symbolName)).findFirst().get();
