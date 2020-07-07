@@ -8,7 +8,6 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Symbol;
-import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.IRenderer;
 import de.amr.games.pacman.view.theme.IWorldRenderer;
 import de.amr.games.pacman.view.theme.Theme;
@@ -16,6 +15,8 @@ import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
 public class BlocksTheme implements Theme {
+
+	public static final Font font = new Font(Font.SANS_SERIF, Font.BOLD, 10);
 
 	public static Color symbolColor(String symbolName) {
 		Symbol symbol = Stream.of(Symbol.values()).filter(s -> s.name().equals(symbolName)).findFirst().get();
@@ -54,8 +55,8 @@ public class BlocksTheme implements Theme {
 	@Override
 	public IRenderer createScoreRenderer(World world, Game game) {
 		ScoreRenderer renderer = new ScoreRenderer(game);
-		Font font = new Font(Font.MONOSPACED, Font.BOLD, 10);
 		renderer.setFont(font);
+		renderer.setSmoothText(true);
 		return renderer;
 	}
 
@@ -82,7 +83,8 @@ public class BlocksTheme implements Theme {
 	@Override
 	public MessagesRenderer createMessagesRenderer() {
 		MessagesRenderer renderer = new MessagesRenderer();
-		renderer.setFont(new Font(Font.MONOSPACED, Font.BOLD, Tile.SIZE));
+		renderer.setFont(font);
+		renderer.setSmoothText(true);
 		return renderer;
 	}
 }

@@ -50,7 +50,7 @@ public class GhostHouseStateRenderer implements IRenderer {
 			}
 			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
 			pen.color(emphasized ? Color.GREEN : Color.WHITE);
-			pen.smooth(() -> pen.drawAtGridPosition(String.format("%d", value), col + 2, row, Tile.SIZE));
+			pen.smooth(() -> pen.drawAtGridPosition(String.format("%d", value), col + 2, row));
 		}
 	}
 
@@ -61,8 +61,7 @@ public class GhostHouseStateRenderer implements IRenderer {
 		try (Pen pen = new Pen(g)) {
 			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 8));
 			pen.color(Color.WHITE);
-			pen.smooth(() -> pen.drawAtGridPosition(time == -1 ? Rendering.INFTY : String.format("%d", time), col + 2, row,
-					Tile.SIZE));
+			pen.smooth(() -> pen.drawAtGridPosition(time == -1 ? Rendering.INFTY : String.format("%d", time), col + 2, row));
 		}
 	}
 }

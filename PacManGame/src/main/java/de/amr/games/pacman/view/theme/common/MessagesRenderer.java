@@ -13,11 +13,13 @@ public class MessagesRenderer implements IRenderer {
 	private int row;
 	private Color textColor;
 	private Font font;
+	private boolean smoothText;
 
 	public MessagesRenderer() {
 		row = 21;
 		textColor = Color.YELLOW;
 		font = new Font(Font.MONOSPACED, Font.PLAIN, Tile.SIZE);
+		smoothText = false;
 	}
 
 	@Override
@@ -27,15 +29,22 @@ public class MessagesRenderer implements IRenderer {
 	public void drawCentered(Graphics2D g, String text, int widthInTiles) {
 		if (text != null) {
 			try (Pen pen = new Pen(g)) {
+				if (smoothText) {
+					pen.turnSmoothRenderingOn();
+				}
 				pen.font(font);
 				pen.color(textColor);
-				pen.hcenter(text, widthInTiles * Tile.SIZE, row, Tile.SIZE);
+				pen.hcenter(text, widthInTiles * Tile.SIZE, row);
 			}
 		}
 	}
 
 	public void setFont(Font font) {
 		this.font = font;
+	}
+
+	public void setSmoothText(boolean smoothText) {
+		this.smoothText = smoothText;
 	}
 
 	public void setTextColor(Color color) {

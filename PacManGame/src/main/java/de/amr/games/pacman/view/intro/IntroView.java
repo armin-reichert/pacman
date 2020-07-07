@@ -195,7 +195,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 			try (Pen pen = new Pen(g)) {
 				pen.font(font);
 				pen.color(Color.WHITE);
-				pen.hcenter(text, width, row, Tile.SIZE);
+				pen.hcenter(text, width, row);
 			}
 		}
 	}
@@ -253,7 +253,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 		try (Pen pen = new Pen(g)) {
 			pen.font(font);
 			pen.color(ORANGE);
-			pen.hcenter(text, width, row, Tile.SIZE);
+			pen.hcenter(text, width, row);
 		}
 	}
 

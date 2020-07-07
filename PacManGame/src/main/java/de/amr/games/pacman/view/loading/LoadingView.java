@@ -14,7 +14,6 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.theme.IRenderer;
@@ -94,7 +93,7 @@ public class LoadingView implements LivingView {
 			pen.color(new Color(255, 0, 0, alpha));
 			pen.font(font);
 			pen.fontSize(10);
-			pen.hcenter(Localized.texts.getString("loading_music"), width, 18, Tile.SIZE);
+			pen.hcenter(Localized.texts.getString("loading_music"), width, 18);
 		}
 		pacManRenderer.render(g);
 		float x = width / 2 - (ghostCount / 2) * 20, y = pacMan.tf.y + 20;
