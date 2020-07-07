@@ -83,15 +83,17 @@ public class PlayView implements LivingView {
 	}
 
 	public void setTheme(Theme theme) {
-		this.theme = theme;
-		worldRenderer = theme.createWorldRenderer(world);
-		liveCounterRenderer = theme.createLiveCounterRenderer(world, game);
-		levelCounterRenderer = theme.createLevelCounterRenderer(world, game);
-		scoreRenderer = theme.createScoreRenderer(world, game);
-		pacManRenderer = theme.createPacManRenderer(world);
-		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, theme.createGhostRenderer(ghost)));
-		scoreRenderer = theme.createScoreRenderer(world, game);
-		messagesRenderer = theme.createMessagesRenderer();
+		if (this.theme != theme) {
+			this.theme = theme;
+			worldRenderer = theme.createWorldRenderer(world);
+			liveCounterRenderer = theme.createLiveCounterRenderer(world, game);
+			levelCounterRenderer = theme.createLevelCounterRenderer(world, game);
+			scoreRenderer = theme.createScoreRenderer(world, game);
+			pacManRenderer = theme.createPacManRenderer(world);
+			world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, theme.createGhostRenderer(ghost)));
+			scoreRenderer = theme.createScoreRenderer(world, game);
+			messagesRenderer = theme.createMessagesRenderer();
+		}
 	}
 
 	public Theme getTheme() {

@@ -1,5 +1,6 @@
 package de.amr.games.pacman.view.dashboard.theme;
 
+import java.awt.event.ItemEvent;
 import java.util.Optional;
 
 import javax.swing.DefaultComboBoxModel;
@@ -33,11 +34,13 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 		comboSelectTheme = new JComboBox<>();
 		comboSelectTheme.setModel(new DefaultComboBoxModel<String>(new String[] { "ARCADE", "ASCII", "BLOCKS" }));
 		add(comboSelectTheme, "cell 1 0,alignx left");
-		comboSelectTheme.addActionListener(e -> {
-			String themeName = comboSelectTheme.getModel().getElementAt(comboSelectTheme.getSelectedIndex());
-			playView().ifPresent(view -> {
-				Themes.byName(themeName).ifPresent(theme -> ((PlayView) view).setTheme(theme));
-			});
+		comboSelectTheme.addItemListener(e -> {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				String themeName = comboSelectTheme.getModel().getElementAt(comboSelectTheme.getSelectedIndex());
+				playView().ifPresent(view -> {
+					Themes.getThemeNamed(themeName).ifPresent(theme -> ((PlayView) view).setTheme(theme));
+				});
+			}
 		});
 	}
 

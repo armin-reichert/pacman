@@ -13,8 +13,11 @@ public class Themes {
 	public static final Theme BLOCKS_THEME = new BlocksTheme();
 	public static final Theme ASCII_THEME = new AsciiTheme();
 
-	public static Optional<Theme> byName(String name) {
-		return Stream.of(ARCADE_THEME, BLOCKS_THEME, ASCII_THEME).filter(theme -> theme.name().equalsIgnoreCase(name))
-				.findFirst();
+	public static Stream<Theme> all() {
+		return Stream.of(ARCADE_THEME, BLOCKS_THEME, ASCII_THEME);
+	}
+
+	public static Optional<Theme> getThemeNamed(String name) {
+		return all().filter(theme -> theme.name().equalsIgnoreCase(name)).findFirst();
 	}
 }

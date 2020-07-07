@@ -79,7 +79,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	protected Game game;
 
-	protected Theme[] themes = { Themes.ARCADE_THEME, Themes.BLOCKS_THEME, Themes.ASCII_THEME };
+	protected final Theme[] themes;
 	protected int currentThemeIndex = 0;
 
 	protected LivingView currentView;
@@ -110,7 +110,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			creature.addEventListener(this::process);
 		});
 
+		themes = Themes.all().toArray(Theme[]::new);
 		selectTheme(settings.theme);
+
 		soundManager = new PacManSoundManager(world);
 
 		app().onClose(() -> game().ifPresent(game -> game.hiscore.save()));
@@ -396,7 +398,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			playView.setTheme(themes[currentThemeIndex]);
 		}
 	}
-	
+
 	private PlayingState playingState() {
 		return state(PLAYING);
 	}
@@ -482,11 +484,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			} else {
 				game.scoreSimplePelletFound();
 			}
-			soundManager.pelletEaten();
 			if (game.lives > livesBeforeScoring) {
 				soundManager.extraLife();
 			}
 			doorMan.onPacManFoundFood();
+			soundManager.pelletEaten();
 
 			if (game.level.remainingFoodCount() == 0) {
 				enqueue(new LevelCompletedEvent());
