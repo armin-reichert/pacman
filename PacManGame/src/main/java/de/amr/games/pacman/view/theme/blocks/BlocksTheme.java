@@ -1,10 +1,13 @@
 package de.amr.games.pacman.view.theme.blocks;
 
+import java.awt.Color;
 import java.awt.Font;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.IRenderer;
 import de.amr.games.pacman.view.theme.IWorldRenderer;
@@ -13,6 +16,30 @@ import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
 public class BlocksTheme implements Theme {
+
+	public static Color symbolColor(String symbolName) {
+		Symbol symbol = Stream.of(Symbol.values()).filter(s -> s.name().equals(symbolName)).findFirst().get();
+		switch (symbol) {
+		case APPLE:
+			return Color.RED;
+		case BELL:
+			return Color.YELLOW;
+		case CHERRIES:
+			return Color.RED;
+		case GALAXIAN:
+			return Color.BLUE;
+		case GRAPES:
+			return Color.GREEN;
+		case KEY:
+			return Color.BLUE;
+		case PEACH:
+			return Color.ORANGE;
+		case STRAWBERRY:
+			return Color.RED;
+		default:
+			return Color.GREEN;
+		}
+	}
 
 	@Override
 	public String name() {
