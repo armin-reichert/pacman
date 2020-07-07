@@ -12,6 +12,7 @@ import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.dashboard.level.GameLevelView;
 import de.amr.games.pacman.view.dashboard.states.GameStateView;
+import de.amr.games.pacman.view.dashboard.theme.ThemeSelectionView;
 
 /**
  * The Pac-Man game application.
@@ -94,11 +95,14 @@ public class PacManApp extends Application {
 
 	@Override
 	public void configureF2Dialog(F2Dialog f2) {
+		ThemeSelectionView themeSelectionView = new ThemeSelectionView();
 		GameStateView gameStateView = new GameStateView();
 		GameLevelView gameLevelView = new GameLevelView();
 		GameController gameController = (GameController) getController();
 		gameStateView.attachTo(gameController);
 		gameLevelView.attachTo(gameController);
+		themeSelectionView.attachTo(gameController);
+		f2.addCustomTab("Theme", themeSelectionView, () -> gameController.game().isPresent());
 		f2.addCustomTab("Game State", gameStateView, () -> gameController.game().isPresent());
 		f2.addCustomTab("Game Level", gameLevelView, () -> gameController.game().isPresent());
 	}
