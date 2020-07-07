@@ -69,7 +69,7 @@ In enhanced mode, the following additional functions are available:
   - 's' toggles the display of actor states and timers
   - 't' toggles display of timing information (target vs. actual framerate)
   - 'x' toggles if ghost collisions may kill Pac-Man
-	- 'z' switches to the next available theme
+  - 'z' switches to the next available theme
   - '+' switches to the next level
 
 ## These were the times
