@@ -110,6 +110,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			creature.addEventListener(this::process);
 		});
 
+		selectInitialTheme();
 		soundManager = new PacManSoundManager(world);
 
 		app().onClose(() -> game().ifPresent(game -> game.hiscore.save()));
@@ -372,7 +373,12 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		world.population().creatures().forEach(Creature::init);
 		world.population().play(game);
 		playView = new PlayView(world, game, ghostCommand, doorMan);
-		switch (settings.theme.toLowerCase()) {  
+		playView.setTheme(themes[currentThemeIndex]);
+		app().f2Dialog().ifPresent(f2 -> f2.selectCustomTab(0));
+	}
+
+	private void selectInitialTheme() {
+		switch (settings.theme.toLowerCase()) {
 		case "arcade":
 			currentThemeIndex = 0;
 			break;
@@ -386,8 +392,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			currentThemeIndex = 0;
 			break;
 		}
-		playView.setTheme(themes[currentThemeIndex]);
-		app().f2Dialog().ifPresent(f2 -> f2.selectCustomTab(0));
 	}
 
 	private PlayingState playingState() {
