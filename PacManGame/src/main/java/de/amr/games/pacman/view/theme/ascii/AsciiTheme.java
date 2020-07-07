@@ -124,7 +124,7 @@ public class AsciiTheme implements Theme {
 		return g -> {
 			g.translate(0, offsetY);
 			g.setFont(font);
-			for (int row = 0; row < world.height(); ++row) {
+			for (int row = 3; row < world.height() - 2; ++row) {
 				for (int col = 0; col < world.width(); ++col) {
 					Tile tile = Tile.at(col, row);
 					if (world.isAccessible(tile)) {
@@ -137,10 +137,8 @@ public class AsciiTheme implements Theme {
 							g.drawString(".", col * Tile.SIZE, row * Tile.SIZE - 2);
 						}
 					} else {
-						if (row >= 3 && row <= 33) {
-							g.setColor(Rendering.alpha(Color.GREEN, 80));
-							g.drawString("#", col * Tile.SIZE, row * Tile.SIZE);
-						}
+						g.setColor(Rendering.alpha(Color.GREEN, 80));
+						g.drawString("#", col * Tile.SIZE, row * Tile.SIZE);
 					}
 				}
 			}
