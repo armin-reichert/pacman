@@ -29,8 +29,8 @@ public class ArcadeGameFolks implements Population {
 
 	@Override
 	public void populate(World world) {
-		creatures().forEach(creature -> creature.setWorld(world));
-		world.accept(this);
+		all().forEach(creature -> creature.setWorld(world));
+		world.checkIfAcceptable(this);
 		defineBehavior(world);
 		blinky.color = RED_GHOST;
 		pinky.color = PINK_GHOST;
@@ -63,8 +63,8 @@ public class ArcadeGameFolks implements Population {
 	}
 
 	@Override
-	public void play(Game game) {
-		creatures().forEach(creature -> creature.game = game);
+	public void takePartIn(Game game) {
+		all().forEach(creature -> creature.game = game);
 	}
 
 	@Override
@@ -72,22 +72,18 @@ public class ArcadeGameFolks implements Population {
 		return pacMan;
 	}
 
-	@Override
 	public Ghost blinky() {
 		return blinky;
 	}
 
-	@Override
 	public Ghost inky() {
 		return inky;
 	}
 
-	@Override
 	public Ghost pinky() {
 		return pinky;
 	}
 
-	@Override
 	public Ghost clyde() {
 		return clyde;
 	}
@@ -98,7 +94,7 @@ public class ArcadeGameFolks implements Population {
 	}
 
 	@Override
-	public Stream<Creature<?>> creatures() {
+	public Stream<Creature<?>> all() {
 		return Stream.of(pacMan, blinky, inky, pinky, clyde);
 	}
 }

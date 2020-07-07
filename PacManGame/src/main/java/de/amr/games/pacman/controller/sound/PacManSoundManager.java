@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.assets.SoundClip;
+import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.model.world.api.World;
 
@@ -16,11 +17,13 @@ import de.amr.games.pacman.model.world.api.World;
 public class PacManSoundManager {
 
 	private final World world;
+	private final ArcadeGameFolks folks;
 	private CompletableFuture<Void> musicLoading;
 	private long lastPelletEatenTimeMillis;
 
-	public PacManSoundManager(World world) {
+	public PacManSoundManager(World world, ArcadeGameFolks folks) {
 		this.world = world;
+		this.folks = folks;
 	}
 
 	private SoundClip mp3(String name) {
@@ -31,14 +34,14 @@ public class PacManSoundManager {
 		if (snd_eatPill().isRunning() && System.currentTimeMillis() - lastPelletEatenTimeMillis > 250) {
 			snd_eatPill().stop();
 		}
-		if (world.population().ghosts().filter(world::included).anyMatch(ghost -> ghost.is(GhostState.CHASING))) {
+		if (folks.ghosts().filter(world::included).anyMatch(ghost -> ghost.is(GhostState.CHASING))) {
 			if (!snd_ghost_chase().isRunning()) {
 				snd_ghost_chase().loop();
 			}
 		} else {
 			snd_ghost_chase().stop();
 		}
-		if (world.population().ghosts().filter(world::included).anyMatch(ghost -> ghost.is(GhostState.DEAD))) {
+		if (folks.ghosts().filter(world::included).anyMatch(ghost -> ghost.is(GhostState.DEAD))) {
 			if (!snd_ghost_dead().isRunning()) {
 				snd_ghost_dead().loop();
 			}

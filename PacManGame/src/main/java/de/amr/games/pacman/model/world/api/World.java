@@ -7,7 +7,7 @@ package de.amr.games.pacman.model.world.api;
  */
 public interface World extends Terrain, Habitat {
 
-	void accept(Population population);
+	void checkIfAcceptable(Population population);
 
 	void setChangingLevel(boolean b);
 

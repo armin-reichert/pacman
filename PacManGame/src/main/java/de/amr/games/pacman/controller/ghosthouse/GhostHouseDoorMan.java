@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.controller.Lifecycle;
+import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.game.Game;
@@ -32,25 +33,19 @@ import de.amr.games.pacman.model.world.core.Tile;
  */
 public class GhostHouseDoorMan implements Lifecycle {
 
-	private final Game game;
 	private final World world;
 	private final House house;
-	private final Ghost blinky;
-	private final Ghost pinky;
-	private final Ghost inky;
-	private final Ghost clyde;
+	private final ArcadeGameFolks folks;
+	private final Game game;
 	private final DotCounter globalCounter;
 	private final int[] ghostCounters;
 	private int pacManStarvingTicks;
 
-	public GhostHouseDoorMan(Game game, World world) {
-		this.game = game;
+	public GhostHouseDoorMan(World world, House house, Game game, ArcadeGameFolks folks) {
 		this.world = world;
-		this.house = world.theHouse();
-		blinky = world.population().blinky();
-		pinky = world.population().pinky();
-		inky = world.population().inky();
-		clyde = world.population().clyde();
+		this.house = house;
+		this.folks = folks;
+		this.game = game;
 		globalCounter = new DotCounter();
 		ghostCounters = new int[4];
 	}
@@ -81,7 +76,7 @@ public class GhostHouseDoorMan implements Lifecycle {
 		pacManStarvingTicks = 0;
 		if (globalCounter.enabled) {
 			globalCounter.dots++;
-			if (globalCounter.dots == 32 && clyde.is(LOCKED)) {
+			if (globalCounter.dots == 32 && folks.clyde().is(LOCKED)) {
 				globalCounter.dots = 0;
 				globalCounter.enabled = false;
 				loginfo("Global dot counter reset and disabled (Clyde was locked when counter reached 32)");
@@ -130,26 +125,26 @@ public class GhostHouseDoorMan implements Lifecycle {
 	}
 
 	public int personalDotLimit(Ghost ghost) {
-		if (ghost == pinky) {
+		if (ghost == folks.pinky()) {
 			return 0;
 		}
-		if (ghost == inky) {
+		if (ghost == folks.inky()) {
 			return game.level.number == 1 ? 30 : 0;
 		}
-		if (ghost == clyde) {
+		if (ghost == folks.clyde()) {
 			return game.level.number == 1 ? 60 : game.level.number == 2 ? 50 : 0;
 		}
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");
 	}
 
 	public int globalDotLimit(Ghost ghost) {
-		if (ghost == pinky) {
+		if (ghost == folks.pinky()) {
 			return 7;
 		}
-		if (ghost == inky) {
+		if (ghost == folks.inky()) {
 			return 17;
 		}
-		if (ghost == clyde) {
+		if (ghost == folks.clyde()) {
 			return 32;
 		}
 		throw new IllegalArgumentException("Ghost must be either Pinky, Inky or Clyde");
@@ -160,7 +155,8 @@ public class GhostHouseDoorMan implements Lifecycle {
 	}
 
 	public Optional<Ghost> preferredLockedGhost() {
-		return Stream.of(blinky, pinky, inky, clyde).filter(world::included).filter(ghost -> ghost.is(LOCKED)).findFirst();
+		return Stream.of(folks.blinky(), folks.pinky(), folks.inky(), folks.clyde()).filter(world::included)
+				.filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
 	private void closeDoor(Door door) {
@@ -207,7 +203,7 @@ public class GhostHouseDoorMan implements Lifecycle {
 		if (!ghost.is(LOCKED)) {
 			return confirmed("Ghost is not locked");
 		}
-		if (ghost == blinky) {
+		if (ghost == folks.blinky()) {
 			return confirmed("%s can always leave", ghost.name);
 		}
 		if (pacManStarvingTicks >= pacManStarvingTimeLimit()) {

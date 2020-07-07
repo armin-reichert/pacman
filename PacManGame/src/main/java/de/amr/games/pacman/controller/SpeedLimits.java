@@ -8,6 +8,7 @@ import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.game.GameLevel;
 
 public class SpeedLimits {
+
 	/**
 	 * In Shaun William's <a href="https://github.com/masonicGIT/pacman">Pac-Man remake</a> there is a
 	 * speed table giving the number of steps (=pixels?) which Pac-Man is moving in 16 frames. In level
@@ -25,7 +26,7 @@ public class SpeedLimits {
 		return fraction * BASE_SPEED;
 	}
 
-	public static float ghostSpeedLimit(Ghost ghost, Game game) {
+	public static float speedLimit(Ghost ghost, Game game) {
 		GameLevel level = game.level;
 		switch (ghost.getState()) {
 		case LOCKED:

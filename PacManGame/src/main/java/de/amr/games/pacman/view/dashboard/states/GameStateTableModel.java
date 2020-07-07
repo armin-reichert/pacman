@@ -9,6 +9,7 @@ import javax.swing.table.AbstractTableModel;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostCommand;
+import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.Ghost.Sanity;
 import de.amr.games.pacman.controller.actor.PacMan;
@@ -119,14 +120,15 @@ class GameStateTableModel extends AbstractTableModel {
 	}
 
 	public void update() {
-		if (gameController != null) {
+		if (gameController != null && gameController.world().population() instanceof ArcadeGameFolks) {
 			gameController.game().ifPresent(game -> {
 				gameController.ghostCommand().ifPresent(ghostCommand -> {
-					fillGhostRecord(records[ROW_BLINKY], game, ghostCommand, world.population().blinky());
-					fillGhostRecord(records[ROW_PINKY], game, ghostCommand, world.population().pinky());
-					fillGhostRecord(records[ROW_INKY], game, ghostCommand, world.population().inky());
-					fillGhostRecord(records[ROW_CLYDE], game, ghostCommand, world.population().clyde());
-					fillPacManRecord(records[ROW_PACMAN], game, world.population().pacMan());
+					ArcadeGameFolks folks = (ArcadeGameFolks) gameController.world().population();
+					fillGhostRecord(records[ROW_BLINKY], game, ghostCommand, folks.blinky());
+					fillGhostRecord(records[ROW_PINKY], game, ghostCommand, folks.pinky());
+					fillGhostRecord(records[ROW_INKY], game, ghostCommand, folks.inky());
+					fillGhostRecord(records[ROW_CLYDE], game, ghostCommand, folks.clyde());
+					fillPacManRecord(records[ROW_PACMAN], game, folks.pacMan());
 					fillBonusRecord(records[ROW_BONUS], gameController, world);
 					fireTableDataChanged();
 				});

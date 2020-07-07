@@ -100,7 +100,7 @@ public class ActorStatesRenderer implements IRenderer {
 	}
 
 	private void drawActorsOffTrack(Graphics2D g) {
-		world.population().creatures().filter(world::included).forEach(actor -> drawActorOffTrack(actor, g));
+		world.population().all().filter(world::included).forEach(actor -> drawActorOffTrack(actor, g));
 	}
 
 	private void drawActorOffTrack(Creature<?> actor, Graphics2D g) {

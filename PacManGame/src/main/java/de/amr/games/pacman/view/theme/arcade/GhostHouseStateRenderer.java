@@ -3,6 +3,7 @@ package de.amr.games.pacman.view.theme.arcade;
 import static de.amr.games.pacman.model.world.Direction.RIGHT;
 import static de.amr.games.pacman.model.world.api.Population.CYAN_GHOST;
 import static de.amr.games.pacman.model.world.api.Population.ORANGE_GHOST;
+import static de.amr.games.pacman.view.theme.arcade.ArcadeTheme.ASSETS;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -10,24 +11,24 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 
 import de.amr.easy.game.view.Pen;
+import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
-import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.IRenderer;
 import de.amr.games.pacman.view.theme.common.Rendering;
 
 public class GhostHouseStateRenderer implements IRenderer {
 
-	private final World world;
+	private final ArcadeGameFolks folks;
 	private final Image inkyImage, clydeImage, pacManImage;
 	private final GhostHouseDoorMan doorMan;
 
-	public GhostHouseStateRenderer(World world, GhostHouseDoorMan doorMan) {
-		this.world = world;
+	public GhostHouseStateRenderer(ArcadeGameFolks folks, GhostHouseDoorMan doorMan) {
+		this.folks = folks;
 		this.doorMan = doorMan;
-		inkyImage = ArcadeTheme.ASSETS.makeSprite_ghostColored(CYAN_GHOST, RIGHT).frame(0);
-		clydeImage = ArcadeTheme.ASSETS.makeSprite_ghostColored(ORANGE_GHOST, RIGHT).frame(0);
-		pacManImage = ArcadeTheme.ASSETS.makeSprite_pacManWalking(RIGHT).frame(0);
+		inkyImage = ASSETS.makeSprite_ghostColored(CYAN_GHOST, RIGHT).frame(0);
+		clydeImage = ASSETS.makeSprite_ghostColored(ORANGE_GHOST, RIGHT).frame(0);
+		pacManImage = ASSETS.makeSprite_pacManWalking(RIGHT).frame(0);
 	}
 
 	@Override
@@ -36,10 +37,10 @@ public class GhostHouseStateRenderer implements IRenderer {
 			return; // test scenes may have no ghost house
 		}
 		drawPacManStarvingTime(g);
-		drawDotCounter(g, clydeImage, doorMan.ghostDotCount(world.population().clyde()), 1, 20,
-				!doorMan.isGlobalDotCounterEnabled() && doorMan.isPreferredGhost(world.population().clyde()));
-		drawDotCounter(g, inkyImage, doorMan.ghostDotCount(world.population().inky()), 24, 20,
-				!doorMan.isGlobalDotCounterEnabled() && doorMan.isPreferredGhost(world.population().inky()));
+		drawDotCounter(g, clydeImage, doorMan.ghostDotCount(folks.clyde()), 1, 20,
+				!doorMan.isGlobalDotCounterEnabled() && doorMan.isPreferredGhost(folks.clyde()));
+		drawDotCounter(g, inkyImage, doorMan.ghostDotCount(folks.inky()), 24, 20,
+				!doorMan.isGlobalDotCounterEnabled() && doorMan.isPreferredGhost(folks.inky()));
 		drawDotCounter(g, null, doorMan.globalDotCount(), 24, 14, doorMan.isGlobalDotCounterEnabled());
 	}
 

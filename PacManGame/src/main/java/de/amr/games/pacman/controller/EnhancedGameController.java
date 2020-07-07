@@ -47,11 +47,11 @@ public class EnhancedGameController extends GameController {
 
 	private void handlePlayViewInput() {
 		if (Keyboard.keyPressedOnce("b")) {
-			toggleGhostOnStage(blinky);
+			toggleGhostOnStage(folks.blinky());
 		}
 
 		else if (Keyboard.keyPressedOnce("c")) {
-			toggleGhostOnStage(clyde);
+			toggleGhostOnStage(folks.clyde());
 		}
 
 		else if (Keyboard.keyPressedOnce("d")) {
@@ -71,7 +71,7 @@ public class EnhancedGameController extends GameController {
 		}
 
 		else if (Keyboard.keyPressedOnce("i")) {
-			toggleGhostOnStage(inky);
+			toggleGhostOnStage(folks.inky());
 		}
 
 		else if (Keyboard.keyPressedOnce("k")) {
@@ -91,7 +91,7 @@ public class EnhancedGameController extends GameController {
 		}
 
 		else if (Keyboard.keyPressedOnce("p")) {
-			toggleGhostOnStage(pinky);
+			toggleGhostOnStage(folks.pinky());
 		}
 
 		else if (Keyboard.keyPressedOnce("s")) {
@@ -142,11 +142,11 @@ public class EnhancedGameController extends GameController {
 	private void toggleGhostFrightenedBehavior() {
 		if (settings.ghostsSafeCorner) {
 			settings.ghostsSafeCorner = false;
-			world.population().ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.movingRandomly()));
+			folks.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.movingRandomly()));
 			loginfo("Ghost escape behavior is: Random movement");
 		} else {
 			settings.ghostsSafeCorner = true;
-			world.population().ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.isFleeingToSafeCorner(pacMan)));
+			folks.ghosts().forEach(ghost -> ghost.behavior(FRIGHTENED, ghost.fleeingToSafeCorner(folks.pacMan())));
 			loginfo("Ghosts escape behavior is: Fleeing to safe corners");
 		}
 	}
@@ -196,7 +196,7 @@ public class EnhancedGameController extends GameController {
 			return;
 		}
 		game.level.ghostsKilledByEnergizer = 0;
-		ghostsOnStage().filter(ghost -> ghost.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
+		ghostsInWorld().filter(ghost -> ghost.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
 			game.scoreGhostKilled(ghost.name);
 			ghost.process(new GhostKilledEvent(ghost));
 		});

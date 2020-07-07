@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.Area;
 import de.amr.games.pacman.model.world.api.Population;
@@ -97,13 +98,16 @@ public class ArcadeWorld extends AbstractWorld {
 	}
 
 	@Override
-	public void accept(Population population) {
-		this.population = population;
-		population.pacMan().assignBed(pacManBed());
-		population.blinky().assignBed(theHouse().bed(0));
-		population.inky().assignBed(theHouse().bed(1));
-		population.pinky().assignBed(theHouse().bed(2));
-		population.clyde().assignBed(theHouse().bed(3));
+	public void checkIfAcceptable(Population population) {
+		if (population instanceof ArcadeGameFolks) {
+			ArcadeGameFolks folks = (ArcadeGameFolks) population;
+			this.population = folks;
+			folks.pacMan().assignBed(pacManBed());
+			folks.blinky().assignBed(theHouse().bed(0));
+			folks.inky().assignBed(theHouse().bed(1));
+			folks.pinky().assignBed(theHouse().bed(2));
+			folks.clyde().assignBed(theHouse().bed(3));
+		}
 	}
 
 	/**

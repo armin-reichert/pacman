@@ -11,6 +11,7 @@ import java.util.Map;
 
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.games.pacman.controller.GhostCommand;
+import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
@@ -72,10 +73,11 @@ public class PlayView implements LivingView {
 		showingGrid = false;
 		showingRoutes = false;
 		showingStates = false;
+		ArcadeGameFolks folks = (ArcadeGameFolks) world.population();
 		gridRenderer = new GridRenderer(world);
 		actorRoutesRenderer = new GhostRoutesRenderer(world);
 		actorStatesRenderer = new ActorStatesRenderer(world, ghostCommand);
-		ghostHouseStateRenderer = new GhostHouseStateRenderer(world, doorMan);
+		ghostHouseStateRenderer = new GhostHouseStateRenderer(folks, doorMan);
 		frameRateDisplay = new FrameRateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);

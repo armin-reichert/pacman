@@ -6,6 +6,7 @@ import static de.amr.games.pacman.model.world.api.Population.CYAN_GHOST;
 import static de.amr.games.pacman.model.world.api.Population.ORANGE_GHOST;
 import static de.amr.games.pacman.model.world.api.Population.PINK_GHOST;
 import static de.amr.games.pacman.view.dashboard.util.Formatting.ticksAndSeconds;
+import static de.amr.games.pacman.view.theme.arcade.ArcadeTheme.ASSETS;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -21,9 +22,9 @@ import javax.swing.border.TitledBorder;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.GameController;
+import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
-import de.amr.games.pacman.model.world.api.Habitat;
 import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
 import net.miginfocom.swing.MigLayout;
 
@@ -35,7 +36,7 @@ import net.miginfocom.swing.MigLayout;
 public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	private GameController gameController;
-	private Habitat world;
+	private ArcadeGameFolks folks;
 
 	private JTextField tfPinkyDots;
 	private JTextField tfInkyDots;
@@ -123,16 +124,16 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	public void attachTo(GameController gameController) {
 		this.gameController = gameController;
-		world = gameController.world();
+		folks = (ArcadeGameFolks) gameController.world().population();
 		init();
 	}
 
 	@Override
 	public void init() {
-		Image pinkyImage = ArcadeTheme.ASSETS.makeSprite_ghostColored(PINK_GHOST, RIGHT).frame(0);
-		Image inkyImage = ArcadeTheme.ASSETS.makeSprite_ghostColored(CYAN_GHOST, RIGHT).frame(0);
-		Image clydeImage = ArcadeTheme.ASSETS.makeSprite_ghostColored(ORANGE_GHOST, RIGHT).frame(0);
-		Image pacManImage = ArcadeTheme.ASSETS.makeSprite_pacManWalking(RIGHT).frame(0);
+		Image pinkyImage = ASSETS.makeSprite_ghostColored(PINK_GHOST, RIGHT).frame(0);
+		Image inkyImage = ASSETS.makeSprite_ghostColored(CYAN_GHOST, RIGHT).frame(0);
+		Image clydeImage = ASSETS.makeSprite_ghostColored(ORANGE_GHOST, RIGHT).frame(0);
+		Image pacManImage = ASSETS.makeSprite_pacManWalking(RIGHT).frame(0);
 		setLabelIconOnly(lblPinkyDots, scaledIcon(pinkyImage, 30));
 		setLabelIconOnly(lblInkyDots, scaledIcon(inkyImage, 30));
 		setLabelIconOnly(lblClydeDots, scaledIcon(clydeImage, 30));
@@ -147,17 +148,17 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 	public void update() {
 		gameController.game().ifPresent(game -> {
 			gameController.doorMan().ifPresent(ghostHouseAccess -> {
-				tfPinkyDots.setText(formatDots(ghostHouseAccess, world.population().pinky()));
+				tfPinkyDots.setText(formatDots(ghostHouseAccess, folks.pinky()));
 				tfPinkyDots.setEnabled(!ghostHouseAccess.isGlobalDotCounterEnabled());
-				updateTrafficLight(trafficPinky, ghostHouseAccess, world.population().pinky());
+				updateTrafficLight(trafficPinky, ghostHouseAccess, folks.pinky());
 
-				tfInkyDots.setText(formatDots(ghostHouseAccess, world.population().inky()));
+				tfInkyDots.setText(formatDots(ghostHouseAccess, folks.inky()));
 				tfInkyDots.setEnabled(!ghostHouseAccess.isGlobalDotCounterEnabled());
-				updateTrafficLight(trafficInky, ghostHouseAccess, world.population().inky());
+				updateTrafficLight(trafficInky, ghostHouseAccess, folks.inky());
 
-				tfClydeDots.setText(formatDots(ghostHouseAccess, world.population().clyde()));
+				tfClydeDots.setText(formatDots(ghostHouseAccess, folks.clyde()));
 				tfClydeDots.setEnabled(!ghostHouseAccess.isGlobalDotCounterEnabled());
-				updateTrafficLight(trafficClyde, ghostHouseAccess, world.population().clyde());
+				updateTrafficLight(trafficClyde, ghostHouseAccess, folks.clyde());
 
 				tfGlobalDots.setText(String.format("%d", ghostHouseAccess.globalDotCount()));
 				tfGlobalDots.setEnabled(ghostHouseAccess.isGlobalDotCounterEnabled());

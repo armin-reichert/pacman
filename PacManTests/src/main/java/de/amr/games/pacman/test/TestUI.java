@@ -1,7 +1,7 @@
 package de.amr.games.pacman.test;
 
-import static de.amr.games.pacman.controller.SpeedLimits.ghostSpeedLimit;
 import static de.amr.games.pacman.controller.SpeedLimits.pacManSpeedLimit;
+import static de.amr.games.pacman.controller.SpeedLimits.speedLimit;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -10,14 +10,13 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
-import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
+import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.sound.PacManSoundManager;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Universe;
-import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.Theme;
@@ -27,7 +26,7 @@ public class TestUI implements Lifecycle, VisualController {
 
 	protected final World world;
 	protected final Game game;
-	protected final Population people;
+	protected final ArcadeGameFolks folks;
 	protected final PacMan pacMan;
 	protected final Ghost blinky, pinky, inky, clyde;
 	protected final PacManSoundManager soundManager;
@@ -51,22 +50,22 @@ public class TestUI implements Lifecycle, VisualController {
 	public TestUI() {
 		world = Universe.arcadeWorld();
 		world.clearFood();
-		people = new ArcadeGameFolks();
-		people.populate(world);
+		folks = new ArcadeGameFolks();
+		folks.populate(world);
 
-		pacMan = people.pacMan();
-		blinky = people.blinky();
-		pinky = people.pinky();
-		inky = people.inky();
-		clyde = people.clyde();
+		pacMan = folks.pacMan();
+		blinky = folks.blinky();
+		pinky = folks.pinky();
+		inky = folks.inky();
+		clyde = folks.clyde();
 
-		soundManager = new PacManSoundManager(world);
+		soundManager = new PacManSoundManager(world, folks);
 
 		game = new Game(1, world.totalFoodCount());
-		people.play(game);
+		folks.takePartIn(game);
 
 		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
-		world.population().ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> ghostSpeedLimit(ghost, game)));
+		world.population().ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> speedLimit(ghost, game)));
 
 		view = new PlayView(world, game, null, null);
 		view.setTheme(themes[currentThemeIndex]);
@@ -76,8 +75,8 @@ public class TestUI implements Lifecycle, VisualController {
 
 	@Override
 	public void init() {
-		world.population().creatures().forEach(Creature::init);
-		world.population().creatures().forEach(creature -> world.exclude(creature));
+		world.population().all().forEach(Creature::init);
+		world.population().all().forEach(creature -> world.exclude(creature));
 	}
 
 	@Override
@@ -100,6 +99,6 @@ public class TestUI implements Lifecycle, VisualController {
 				view.turnRoutesOn();
 			}
 		}
-		world.population().creatures().filter(world::included).forEach(Creature::update);
+		world.population().all().filter(world::included).forEach(Creature::update);
 	}
 }

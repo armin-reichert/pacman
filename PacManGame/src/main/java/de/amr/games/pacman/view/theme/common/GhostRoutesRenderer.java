@@ -50,9 +50,9 @@ public class GhostRoutesRenderer implements IRenderer {
 		if (ghost.targetTile() == null) {
 			return;
 		}
-		if (ghost == world.population().inky()) {
+		if (ghost.name.equals("Inky")) {
 			drawInkyChasing(g, ghost);
-		} else if (ghost == world.population().clyde()) {
+		} else if (ghost.name.equals("Clyde")) {
 			drawClydeChasingArea(g, ghost);
 		}
 	}
@@ -99,8 +99,8 @@ public class GhostRoutesRenderer implements IRenderer {
 	}
 
 	private void drawInkyChasing(Graphics2D g, Ghost inky) {
-		Ghost blinky = world.population().blinky();
 		PacMan pacMan = world.population().pacMan();
+		Ghost blinky = world.population().ghosts().filter(ghost -> ghost.name.equals("Blinky")).findFirst().get();
 		if (!inky.is(CHASING) || !world.included(blinky)) {
 			return;
 		}

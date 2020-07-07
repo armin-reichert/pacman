@@ -262,7 +262,7 @@ public class Ghost extends Creature<GhostState> {
 	 * @param attacker the attacking actor
 	 * @return steering where actor flees to a "safe" maze corner
 	 */
-	public Steering isFleeingToSafeCorner(WorldMover attacker) {
+	public Steering fleeingToSafeCorner(WorldMover attacker) {
 		return new FleeingToSafeCorner(this, attacker, world.capeNW(), world.capeNE(), world.capeSW(), world.capeSE());
 	}
 
