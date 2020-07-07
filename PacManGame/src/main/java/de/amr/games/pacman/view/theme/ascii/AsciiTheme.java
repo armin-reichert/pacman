@@ -87,7 +87,8 @@ public class AsciiTheme implements Theme {
 		return g -> {
 			g.setColor(Color.YELLOW);
 			g.setFont(FONT);
-			g.drawString(String.format("Level: %d", game.level.number), -8 * Tile.SIZE, -Tile.SIZE + OFFSET_BASELINE);
+			g.drawString(String.format("Level %d: (%s)", game.level.number, game.level.bonusSymbol.name()), -15 * Tile.SIZE,
+					-Tile.SIZE + OFFSET_BASELINE);
 		};
 	}
 
