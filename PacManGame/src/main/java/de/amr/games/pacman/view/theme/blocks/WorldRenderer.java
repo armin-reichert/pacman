@@ -116,24 +116,23 @@ class WorldRenderer implements IWorldRenderer {
 	}
 
 	private void drawEmptyMaze(Graphics2D g) {
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, world.width() * Tile.SIZE, world.height() * Tile.SIZE);
 		for (int row = 0; row < world.height(); ++row) {
 			for (int col = 0; col < world.width(); ++col) {
 				if (!world.isAccessible(Tile.at(col, row))) {
 					drawWall(g, row, col);
-				} else {
-					drawPassage(g, row, col);
 				}
 			}
 		}
 	}
 
-	private void drawPassage(Graphics2D g, int row, int col) {
-		g.setColor(Color.BLACK);
-		g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
-	}
-
 	private void drawWall(Graphics2D g, int row, int col) {
-		g.setColor(new Color(139, 69, 19));
+		if (world.isChangingLevel() && app().clock().getTotalTicks() % 30 < 15) {
+			g.setColor(Color.WHITE);
+		} else {
+			g.setColor(new Color(139, 69, 19));
+		}
 		g.fillRect(col * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE);
 	}
 }
