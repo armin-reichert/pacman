@@ -16,14 +16,8 @@ import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
 public class BlocksTheme implements Theme {
-	
-	static {
-		Assets.storeTrueTypeFont("ConcertOne", "ConcertOne-Regular.ttf", Font.PLAIN, 10);
-	}
 
-	public static final Font font = Assets.font("ConcertOne");
-	
-//	= new Font(Font.SANS_SERIF, Font.BOLD, 10);
+	public static final Font font = Assets.storeTrueTypeFont("ConcertOne", "ConcertOne-Regular.ttf", Font.PLAIN, 10);
 
 	public static Color symbolColor(String symbolName) {
 		Symbol symbol = Stream.of(Symbol.values()).filter(s -> s.name().equals(symbolName)).findFirst().get();
