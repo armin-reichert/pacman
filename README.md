@@ -39,15 +39,16 @@ General command-line arguments:
 
 Game-specific command-line arguments:
   - `-help`, `-usage`: list all available command-line parameters
-  - `-demoMode`: Pac-Man moves automatically and is immortable
+  - `-demoMode` (default: false): Pac-Man moves automatically and is immortable
   - `-simpleMode` (default: false): in simple mode only the basic playing functionality is enabled
   - `-ghostsHarmless` (default: false): deadly ghost collisions are detected 
   - `-ghostsSafeCorner` (default: false): ghosts flee to safe corners and not randomly as in the original game
   - `-pacManImmortable` (default: false): Pac-Man keeps live after being killed
   - `-fixOverflowBug` (default: false): fix overflow bug from Arcade version
-  - `-pathFinder`(default: astar): the path finder algorithm (astar, bfs, bestfs) used for computing the safe paths
+  - `-pathFinder` (default: astar): the path finder algorithm (astar, bfs, bestfs) used for computing the safe paths
   - `-skipIntro` (default: false): intro screen is skipped
-  - `-startLevel`(default: 1): starts the game in the specified level
+  - `-startLevel` (default: 1): starts the game in the specified level
+	- `-theme`: (default: arcade): used theme (arcade, blocks, ascii) 
 
 In enhanced mode, the following additional functions are available:
   - The overall speed can be changed during the game; 
