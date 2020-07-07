@@ -1,16 +1,15 @@
 package de.amr.games.pacman.view.theme.blocks;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.view.theme.common.Rendering.drawCircleWithText;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.util.function.Function;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Bonus;
 import de.amr.games.pacman.model.world.core.BonusState;
@@ -69,23 +68,27 @@ class WorldRenderer implements IWorldRenderer {
 	}
 
 	private void drawActiveBonus(Graphics2D g, Vector2f center, Bonus bonus) {
-		long time = Application.app().clock().getTotalTicks();
-		if (time % 60 < 30) {
-			g.setFont(font);
+		if (Application.app().clock().getTotalTicks() % 60 < 30) {
+			return; // blink effect
+		}
+		int radius = 4;
+		g.setColor(Color.GREEN);
+		g.fillOval(center.roundedX() - radius, center.roundedY() - radius, 2 * radius, 2 * radius);
+		try (Pen pen = new Pen(g)) {
+			pen.color(Color.GREEN);
+			pen.font(font);
 			String text = bonus.symbol.substring(0, 1) + bonus.symbol.substring(1).toLowerCase();
-			drawCircleWithText(g, center, (int) (1.5 * Tile.SIZE), Color.GREEN, text);
+			pen.drawCentered(text, center.x, center.y + radius);
 		}
 	}
 
 	private void drawConsumedBonus(Graphics2D g, Vector2f center, Bonus bonus) {
-		String text = String.valueOf(bonus.value);
-		g.translate(center.x, center.y);
-		g.setColor(Color.RED);
-		g.setFont(font);
-		FontMetrics fm = g.getFontMetrics();
-		int width = fm.stringWidth(text);
-		g.drawString(text, -width / 2, 0);
-		g.translate(-center.x, -center.y);
+		try (Pen pen = new Pen(g)) {
+			pen.color(Color.GREEN);
+			pen.font(font);
+			String text = String.valueOf(bonus.value);
+			pen.drawCentered(text, center.x, center.y + 4);
+		}
 	}
 
 	private void drawSimplePellet(Graphics2D g, int row, int col) {
