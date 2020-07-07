@@ -130,7 +130,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			changeClockFrequency(80);
 		}
-		if (playView != null &&Keyboard.keyPressedOnce("z")) {
+		if (playView != null && Keyboard.keyPressedOnce("z")) {
 			currentThemeIndex = (currentThemeIndex + 1) % themes.length;
 			playView.setTheme(themes[currentThemeIndex]);
 		}
@@ -372,6 +372,20 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		world.population().creatures().forEach(Creature::init);
 		world.population().play(game);
 		playView = new PlayView(world, game, ghostCommand, doorMan);
+		switch (settings.theme.toLowerCase()) {  
+		case "arcade":
+			currentThemeIndex = 0;
+			break;
+		case "blocks":
+			currentThemeIndex = 1;
+			break;
+		case "ascii":
+			currentThemeIndex = 2;
+			break;
+		default:
+			currentThemeIndex = 0;
+			break;
+		}
 		playView.setTheme(themes[currentThemeIndex]);
 		app().f2Dialog().ifPresent(f2 -> f2.selectCustomTab(0));
 	}

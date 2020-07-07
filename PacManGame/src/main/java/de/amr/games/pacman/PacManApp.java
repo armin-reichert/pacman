@@ -54,6 +54,9 @@ public class PacManApp extends Application {
 
 		@Parameter(names = { "-startLevel" }, description = "Game starts in specified level")
 		public int startLevel = 1;
+
+		@Parameter(names = { "-theme" }, description = "Used Theme (arcade, blocks, ascii)")
+		public String theme = "arcade";
 	}
 
 	public static final Settings settings = new Settings();
@@ -79,6 +82,7 @@ public class PacManApp extends Application {
 		settings.printValue("Simple Mode", "%s", settings.simpleMode);
 		settings.printValue("Skip Intro", "%s", settings.skipIntro);
 		settings.printValue("Startlevel", "%d", settings.startLevel);
+		settings.printValue("Theme", "%s", settings.theme.toUpperCase());
 		settings.printValue("User Language", "%s", Localized.texts.getLocale().getDisplayLanguage());
 	}
 
