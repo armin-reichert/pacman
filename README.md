@@ -30,7 +30,6 @@ mvn clean install assembly:single
 - F11 toggles between window and full-screen exclusive mode
 - The settings dialog contains two custom tabs displaying the game and actor state and the values used by the current level.
 
-  
 General command-line arguments:
   - Scaling: e.g. `-scale 2.5`
   - Full-screen mode on start: `-fullScreenOnStart`
@@ -48,7 +47,7 @@ Game-specific command-line arguments:
   - `-pathFinder` (default: astar): the path finder algorithm (astar, bfs, bestfs) used for computing the safe paths
   - `-skipIntro` (default: false): intro screen is skipped
   - `-startLevel` (default: 1): starts the game in the specified level
-	- `-theme`: (default: arcade): used theme (arcade, blocks, ascii) 
+  - `-theme`: (default: arcade): used theme (arcade, blocks, ascii) 
 
 In enhanced mode, the following additional functions are available:
   - The overall speed can be changed during the game; 
@@ -70,6 +69,7 @@ In enhanced mode, the following additional functions are available:
   - 's' toggles the display of actor states and timers
   - 't' toggles display of timing information (target vs. actual framerate)
   - 'x' toggles if ghost collisions may kill Pac-Man
+	- 'z' switches to the next available theme
   - '+' switches to the next level
 
 ## These were the times
@@ -431,15 +431,15 @@ The view layer supports theming. The currently implemented themes are
 
 <img src="PacManDoc/theme-arcade.png">
 
-- BLOCKS: design based in simple geometric shapes
+- BLOCKS: a theme sing simple geometric shapes
 
 <img src="PacManDoc/theme-blocks.png">
 
-- ASCII: a design using ASCII characters only
+- ASCII: a theme using ASCII characters only
 
 <img src="PacManDoc/theme-ascii.png">
 
-Theme can be switched during the game by pressing the "Z" key.
+Themes can be switched during the game by pressing the "z" key.
 
 ## References
 
