@@ -122,15 +122,15 @@ public class AsciiTheme implements Theme {
 					if (world.isAccessible(tile)) {
 						if (world.containsEnergizer(tile) && Application.app().clock().getTotalTicks() % 60 < 30) {
 							g.setColor(Color.PINK);
-							g.drawString("Ö", col * Tile.SIZE, row * Tile.SIZE + OFFSET_BASELINE);
+							g.drawString("Ö", col * Tile.SIZE + 2, row * Tile.SIZE + OFFSET_BASELINE);
 						}
 						if (world.containsSimplePellet(tile)) {
 							g.setColor(Color.PINK);
-							g.drawString(".", col * Tile.SIZE, row * Tile.SIZE - 2 + OFFSET_BASELINE);
+							g.drawString(".", col * Tile.SIZE + 1, row * Tile.SIZE - 3 + OFFSET_BASELINE);
 						}
 					} else {
 						g.setColor(Rendering.alpha(Color.GREEN, 80));
-						g.drawString("#", col * Tile.SIZE, row * Tile.SIZE + OFFSET_BASELINE);
+						g.drawString("#", col * Tile.SIZE + 1, row * Tile.SIZE + OFFSET_BASELINE - 1);
 					}
 				}
 			}
@@ -138,7 +138,7 @@ public class AsciiTheme implements Theme {
 				if (door.state == DoorState.CLOSED) {
 					g.setColor(Color.PINK);
 					door.tiles.forEach(tile -> {
-						g.drawString("_", tile.x(), tile.y());
+						g.drawString("_", tile.x() + 1, tile.y());
 					});
 				}
 			});
