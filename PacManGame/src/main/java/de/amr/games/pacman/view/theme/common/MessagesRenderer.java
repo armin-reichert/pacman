@@ -34,7 +34,8 @@ public class MessagesRenderer implements IRenderer {
 				}
 				pen.font(font);
 				pen.color(textColor);
-				pen.hcenter(text, widthInTiles * Tile.SIZE, row);
+				pen.move(0, row * Tile.SIZE);
+				pen.hcenter(text, widthInTiles * Tile.SIZE);
 			}
 		}
 	}

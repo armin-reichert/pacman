@@ -11,7 +11,6 @@ import java.util.Map;
 
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.games.pacman.controller.GhostCommand;
-import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
@@ -23,7 +22,6 @@ import de.amr.games.pacman.view.theme.IRenderer;
 import de.amr.games.pacman.view.theme.IWorldRenderer;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.games.pacman.view.theme.Themes;
-import de.amr.games.pacman.view.theme.arcade.GhostHouseStateRenderer;
 import de.amr.games.pacman.view.theme.arcade.GridRenderer;
 import de.amr.games.pacman.view.theme.common.ActorStatesRenderer;
 import de.amr.games.pacman.view.theme.common.GhostRoutesRenderer;
@@ -63,7 +61,6 @@ public class PlayView implements LivingView {
 	private final GridRenderer gridRenderer;
 	private final IRenderer actorRoutesRenderer;
 	private final IRenderer actorStatesRenderer;
-	private final IRenderer ghostHouseStateRenderer;
 
 	public PlayView(World world, Game game, GhostCommand ghostCommand, GhostHouseDoorMan doorMan) {
 		this.world = world;
@@ -73,11 +70,9 @@ public class PlayView implements LivingView {
 		showingGrid = false;
 		showingRoutes = false;
 		showingStates = false;
-		ArcadeGameFolks folks = (ArcadeGameFolks) world.population();
 		gridRenderer = new GridRenderer(world);
 		actorRoutesRenderer = new GhostRoutesRenderer(world);
 		actorStatesRenderer = new ActorStatesRenderer(world, ghostCommand);
-		ghostHouseStateRenderer = new GhostHouseStateRenderer(folks, doorMan);
 		frameRateDisplay = new FrameRateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
@@ -140,7 +135,6 @@ public class PlayView implements LivingView {
 		}
 		if (showingStates) {
 			actorStatesRenderer.render(g);
-			ghostHouseStateRenderer.render(g);
 		}
 		drawScores(g);
 		drawLiveCounter(g);
