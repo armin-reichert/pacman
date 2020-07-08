@@ -47,7 +47,6 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 	private static final Color RED = new Color(171, 19, 0);
 //	PINK = (248, 120, 88);
 
-	private final World world;
 	private final PacManSoundManager soundManager;
 	private final int width;
 	private final int height;
@@ -61,7 +60,6 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 
 	public IntroView(World world, Theme theme, PacManSoundManager soundManager, int width, int height) {
 		super(IntroState.class);
-		this.world = world;
 		this.theme = theme;
 		this.soundManager = soundManager;
 		this.width = width;
@@ -131,8 +129,6 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 		public void onEntry() {
 			chasePacMan.setStartPosition(width, 100);
 			chasePacMan.setEndPosition(-chasePacMan.tf.width, 100);
-//			chaseGhosts.setStartPosition(-chaseGhosts.tf.width, 200);
-//			chaseGhosts.setEndPosition(width, 200);
 			chaseGhosts.tf.y = 200;
 			chaseGhosts.init();
 			chasePacMan.start();
