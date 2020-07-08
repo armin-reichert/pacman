@@ -91,7 +91,7 @@ public class AsciiTheme implements Theme {
 			String text = String.format("Level: %d (%s)", game.level.number, game.level.bonusSymbol);
 			g.setColor(Color.YELLOW);
 			g.setFont(FONT);
-			g.drawString(text, -15 * Tile.SIZE, -2 * Tile.SIZE + OFFSET_BASELINE);
+			g.drawString(text, -15 * Tile.SIZE, Tile.SIZE + OFFSET_BASELINE);
 		};
 	}
 
@@ -100,7 +100,7 @@ public class AsciiTheme implements Theme {
 		return g -> {
 			g.setColor(Color.YELLOW);
 			g.setFont(FONT);
-			g.drawString(String.format("Lives: %d", game.lives), 0, OFFSET_BASELINE);
+			g.drawString(String.format("Lives: %d", game.lives), 0, Tile.SIZE + OFFSET_BASELINE);
 		};
 	}
 

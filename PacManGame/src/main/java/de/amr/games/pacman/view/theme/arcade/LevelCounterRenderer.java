@@ -27,10 +27,10 @@ public class LevelCounterRenderer implements IRenderer {
 		int max = 7;
 		int first = Math.max(0, game.levelCounter.size() - max);
 		int n = Math.min(max, game.levelCounter.size());
-		int sz = 2 * Tile.SIZE; // image size
-		for (int i = 0, x = -2 * sz; i < n; ++i, x -= sz) {
+		int size = 2 * Tile.SIZE; // image size
+		for (int i = 0, x = -2 * size; i < n; ++i, x -= size) {
 			Symbol symbol = game.levelCounter.get(first + i);
-			g.drawImage(bonusImages.get(symbol), x, -sz, sz, sz, null);
+			g.drawImage(bonusImages.get(symbol), x, 0, size, size, null);
 		}
 	}
 }
