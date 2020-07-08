@@ -107,7 +107,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					
 				.state(INTRO)
 					.onEntry(() -> {
-						showView(new IntroView(soundManager, settings.width, settings.height));
+						showView(new IntroView(world, theme(), soundManager, settings.width, settings.height));
 					})
 					.onExit(() -> {
 						soundManager.stopAll();

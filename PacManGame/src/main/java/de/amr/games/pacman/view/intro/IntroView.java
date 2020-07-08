@@ -21,10 +21,12 @@ import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.sound.PacManSoundManager;
+import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
+import de.amr.games.pacman.view.theme.Theme;
 import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
 import de.amr.games.pacman.view.theme.arcade.ArcadeThemeAssets;
 import de.amr.statemachine.core.State;
@@ -45,18 +47,22 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 	private static final Color RED = new Color(171, 19, 0);
 //	PINK = (248, 120, 88);
 
+	private final World world;
 	private final PacManSoundManager soundManager;
 	private final int width;
 	private final int height;
 
+	private Theme theme;
 	private ImageWidget pacManLogo;
 	private LinkWidget gitHubLink;
 	private ChasePacManAnimation chasePacMan;
 	private ChaseGhostsAnimation chaseGhosts;
 	private GhostPointsAnimation ghostPointsAnimation;
 
-	public IntroView(PacManSoundManager soundManager, int width, int height) {
+	public IntroView(World world, Theme theme, PacManSoundManager soundManager, int width, int height) {
 		super(IntroState.class);
+		this.world = world;
+		this.theme = theme;
 		this.soundManager = soundManager;
 		this.width = width;
 		this.height = height;
@@ -125,8 +131,10 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 		public void onEntry() {
 			chasePacMan.setStartPosition(width, 100);
 			chasePacMan.setEndPosition(-chasePacMan.tf.width, 100);
-			chaseGhosts.setStartPosition(-chaseGhosts.tf.width, 200);
-			chaseGhosts.setEndPosition(width, 200);
+//			chaseGhosts.setStartPosition(-chaseGhosts.tf.width, 200);
+//			chaseGhosts.setEndPosition(width, 200);
+			chaseGhosts.tf.y = 200;
+			chaseGhosts.init();
 			chasePacMan.start();
 			chaseGhosts.start();
 		}
@@ -215,8 +223,8 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 		chasePacMan = new ChasePacManAnimation(assets, soundManager);
 		chasePacMan.tf.centerX(width);
 		chasePacMan.tf.y = 100;
-		chaseGhosts = new ChaseGhostsAnimation(assets, soundManager);
-		chaseGhosts.tf.setPosition(width, 200);
+		chaseGhosts = new ChaseGhostsAnimation(theme, soundManager);
+//		chaseGhosts.tf.setPosition(width, 200);
 		ghostPointsAnimation = new GhostPointsAnimation(assets, soundManager);
 		gitHubLink = LinkWidget.create()
 		/*@formatter:off*/

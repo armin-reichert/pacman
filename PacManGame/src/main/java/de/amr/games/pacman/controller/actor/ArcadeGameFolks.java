@@ -30,7 +30,7 @@ public class ArcadeGameFolks implements Population {
 	@Override
 	public void populate(World world) {
 		all().forEach(creature -> creature.setWorld(world));
-		world.checkIfAcceptable(this);
+		world.welcome(this);
 		defineBehavior(world);
 		blinky.color = RED_GHOST;
 		pinky.color = PINK_GHOST;

@@ -98,7 +98,7 @@ public class ArcadeWorld extends AbstractWorld {
 	}
 
 	@Override
-	public void checkIfAcceptable(Population population) {
+	public void welcome(Population population) {
 		if (population instanceof ArcadeGameFolks) {
 			ArcadeGameFolks folks = (ArcadeGameFolks) population;
 			this.population = folks;
@@ -107,6 +107,8 @@ public class ArcadeWorld extends AbstractWorld {
 			folks.inky().assignBed(theHouse().bed(1));
 			folks.pinky().assignBed(theHouse().bed(2));
 			folks.clyde().assignBed(theHouse().bed(3));
+		} else {
+			throw new RuntimeException("This population is not welcome");
 		}
 	}
 
