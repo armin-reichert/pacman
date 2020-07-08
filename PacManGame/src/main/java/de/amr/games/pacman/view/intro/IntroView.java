@@ -29,6 +29,7 @@ import de.amr.games.pacman.view.intro.IntroView.IntroState;
 import de.amr.games.pacman.view.theme.Theme;
 import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
 import de.amr.games.pacman.view.theme.arcade.ArcadeThemeAssets;
+import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 
@@ -47,6 +48,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 	private static final Color RED = new Color(171, 19, 0);
 //	PINK = (248, 120, 88);
 
+	private final World world;
 	private final PacManSoundManager soundManager;
 	private final int width;
 	private final int height;
@@ -58,9 +60,13 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 	private ChaseGhostsAnimation chaseGhosts;
 	private GhostPointsAnimation ghostPointsAnimation;
 
+	private MessagesRenderer messagesRenderer;
+
 	public IntroView(World world, Theme theme, PacManSoundManager soundManager, int width, int height) {
 		super(IntroState.class);
+		this.world = world;
 		this.theme = theme;
+		this.messagesRenderer = theme.createMessagesRenderer();
 		this.soundManager = soundManager;
 		this.width = width;
 		this.height = height;
@@ -187,21 +193,12 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 			ghostPointsAnimation.draw(g);
 			gitHubLink.draw(g);
 			if (app().clock().getTotalTicks() % sec(1) < sec(0.5f)) {
-				drawPressSpaceToStart(g, 18);
+				messagesRenderer.setRow(18);
+				messagesRenderer.setTextColor(Color.WHITE);
+				messagesRenderer.drawCentered(g, Localized.texts.getString("press_space_to_start"), world.width());
 			}
 			drawSpeedSelection(g, 22);
 			drawScreenModeText(g, 31);
-		}
-
-		private void drawPressSpaceToStart(Graphics2D g, int row) {
-			String text = Localized.texts.getString("press_space_to_start");
-			Font font = ArcadeTheme.ASSETS.messageFont;
-			try (Pen pen = new Pen(g)) {
-				pen.font(font);
-				pen.color(Color.WHITE);
-				pen.move(0, row * Tile.SIZE);
-				pen.hcenter(text, width);
-			}
 		}
 	}
 
@@ -254,13 +251,9 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 
 	private void drawScreenModeText(Graphics2D g, int row) {
 		String text = "F11 - " + Localized.texts.getString(app().inFullScreenMode() ? "window_mode" : "fullscreen_mode");
-		Font font = ArcadeTheme.ASSETS.messageFont;
-		try (Pen pen = new Pen(g)) {
-			pen.font(font);
-			pen.color(ORANGE);
-			pen.move(0, row * Tile.SIZE);
-			pen.hcenter(text, width);
-		}
+		messagesRenderer.setRow(row);
+		messagesRenderer.setTextColor(Color.ORANGE);
+		messagesRenderer.drawCentered(g, text, world.width());
 	}
 
 	private void drawSpeedSelection(Graphics2D g, int row) {
