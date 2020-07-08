@@ -28,31 +28,38 @@ public class GhostRenderer extends SpriteRenderer implements IRenderer {
 
 	@Override
 	public void render(Graphics2D g) {
-		GhostState state = ghost.getState();
-		switch (state) {
-		case CHASING:
-		case SCATTERING:
-		case LEAVING_HOUSE:
-			selectSprite("color-" + ghost.moveDir());
-			break;
-		case LOCKED:
-			if (ghost.world().population().pacMan().power > 0) {
-				selectSprite("frightened");
-			} else {
-				selectSprite("color-" + ghost.moveDir());
-			}
-			break;
-		case FRIGHTENED:
-			selectSprite(ghost.flashing ? "flashing" : "frightened");
-			break;
-		case DEAD:
-			selectSprite(ghost.points == 0 ? "eyes-" + ghost.moveDir() : "points-" + ghost.points);
-			break;
-		case ENTERING_HOUSE:
-			selectSprite("eyes-" + ghost.moveDir());
-			break;
-		default:
-		}
+		selectSprite(ghost.getState());
 		drawEntity(g, ghost);
+	}
+
+	public void selectSprite(GhostState state) {
+		if (state == null) {
+			selectSprite("color-" + ghost.moveDir());
+		} else {
+			switch (state) {
+			case CHASING:
+			case SCATTERING:
+			case LEAVING_HOUSE:
+				selectSprite("color-" + ghost.moveDir());
+				break;
+			case LOCKED:
+				if (ghost.world().population().pacMan().power > 0) {
+					selectSprite("frightened");
+				} else {
+					selectSprite("color-" + ghost.moveDir());
+				}
+				break;
+			case FRIGHTENED:
+				selectSprite(ghost.flashing ? "flashing" : "frightened");
+				break;
+			case DEAD:
+				selectSprite(ghost.points == 0 ? "eyes-" + ghost.moveDir() : "points-" + ghost.points);
+				break;
+			case ENTERING_HOUSE:
+				selectSprite("eyes-" + ghost.moveDir());
+				break;
+			default:
+			}
+		}
 	}
 }

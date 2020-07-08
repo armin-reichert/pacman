@@ -12,7 +12,7 @@ import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.IRenderer;
 
 class GhostRenderer implements IRenderer {
-	
+
 	static final Font font = new Font(Font.SANS_SERIF, Font.BOLD, 10);
 
 	private final Ghost ghost;
@@ -26,8 +26,14 @@ class GhostRenderer implements IRenderer {
 		if (!ghost.visible) {
 			return;
 		}
-		smoothDrawingOn(g);
 		GhostState state = ghost.getState();
+		if (state == null) {
+			smoothDrawingOn(g);
+			drawColored(g);
+			smoothDrawingOff(g);
+			return;
+		}
+		smoothDrawingOn(g);
 		switch (state) {
 		case CHASING:
 		case SCATTERING:

@@ -102,7 +102,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(LOADING_MUSIC)
 					.onEntry(() -> {
 						soundManager.loadMusic();
-						showView(new LoadingView(world, settings.width, settings.height));
+						showView(new LoadingView(theme(), world, settings.width, settings.height));
 					})
 					
 				.state(INTRO)
@@ -499,6 +499,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		if (playView != null) {
 			playView.setTheme(themes[currentThemeIndex]);
 		}
+	}
+
+	public Theme theme() {
+		return themes[currentThemeIndex];
 	}
 
 	public World world() {

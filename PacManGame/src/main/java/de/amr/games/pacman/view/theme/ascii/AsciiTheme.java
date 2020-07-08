@@ -43,6 +43,9 @@ public class AsciiTheme implements Theme {
 	}
 
 	public static String ghostLetter(Ghost ghost) {
+		if (ghost.getState() == null) {
+			return ghost.name.substring(0, 1);
+		}
 		switch (ghost.getState()) {
 		case FRIGHTENED:
 			return ghost.name.substring(0, 1).toLowerCase();

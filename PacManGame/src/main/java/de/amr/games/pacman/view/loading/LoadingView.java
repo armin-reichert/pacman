@@ -1,25 +1,24 @@
 package de.amr.games.pacman.view.loading;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import de.amr.easy.game.math.Vector2f;
-import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.LivingView;
 import de.amr.games.pacman.view.theme.IRenderer;
-import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
-import de.amr.games.pacman.view.theme.arcade.GhostRenderer;
-import de.amr.games.pacman.view.theme.arcade.PacManRenderer;
+import de.amr.games.pacman.view.theme.Theme;
+import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 
 /**
  * View displayed while the music files are loaded.
@@ -28,9 +27,12 @@ import de.amr.games.pacman.view.theme.arcade.PacManRenderer;
  */
 public class LoadingView implements LivingView {
 
+	private final World world;
 	private final PacMan pacMan;
+	private final List<Ghost> ghosts;
 	private final int width;
 	private final int height;
+
 	private int alpha;
 	private int alphaInc;
 	private int ghostCount;
@@ -39,25 +41,26 @@ public class LoadingView implements LivingView {
 
 	private IRenderer pacManRenderer;
 	private Map<Ghost, IRenderer> ghostRenderer = new HashMap<>();
-	private Sprite[][] ghostSprites = new Sprite[4][4];
+	private MessagesRenderer messagesRenderer;
 
-	public LoadingView(World world, int width, int height) {
-		pacMan = world.population().pacMan();
+	public LoadingView(Theme theme, World world, int width, int height) {
 		this.width = width;
 		this.height = height;
-		pacManRenderer = new PacManRenderer(world);
-		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, new GhostRenderer(ghost)));
-		for (int color = 0; color < 4; ++color) {
-			for (Direction dir : Direction.values()) {
-				ghostSprites[color][dir.ordinal()] = ArcadeTheme.ASSETS.makeSprite_ghostColored(color, dir);
-			}
-		}
+		this.world = world;
+		pacMan = world.population().pacMan();
+		ghosts = world.population().ghosts().collect(Collectors.toList());
+		pacManRenderer = theme.createPacManRenderer(world);
+		world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, theme.createGhostRenderer(ghost)));
+		messagesRenderer = theme.createMessagesRenderer();
 	}
 
 	@Override
 	public void init() {
 		ghostCount = 0;
 		ghostInc = 1;
+		ghosts.forEach(ghost -> {
+			ghost.setMoveDir(Direction.values()[rnd.nextInt(4)]);
+		});
 		pacMan.init();
 		pacMan.start();
 	}
@@ -68,12 +71,13 @@ public class LoadingView implements LivingView {
 		if (x > 0.9f * width || x < 0.1 * width) {
 			pacMan.setMoveDir(pacMan.moveDir().opposite());
 			ghostCount += ghostInc;
-			if (ghostCount == 10 || ghostCount == 0) {
+			if (ghostCount == 9 || ghostCount == 0) {
 				ghostInc = -ghostInc;
 			}
 		}
 		pacMan.tf.setVelocity(Vector2f.smul(2.5f, pacMan.moveDir().vector()));
 		pacMan.tf.move();
+
 		alpha += alphaInc;
 		if (alpha >= 160) {
 			alphaInc = -2;
@@ -88,17 +92,16 @@ public class LoadingView implements LivingView {
 	public void draw(Graphics2D g) {
 		g.setColor(new Color(0, 23, 61));
 		g.fillRect(0, 0, width, height);
-		Font font = ArcadeTheme.ASSETS.messageFont;
-		try (Pen pen = new Pen(g)) {
-			pen.color(new Color(255, 0, 0, alpha));
-			pen.font(font);
-			pen.fontSize(10);
-			pen.hcenter(Localized.texts.getString("loading_music"), width, 18);
-		}
+		messagesRenderer.setRow(18);
+		messagesRenderer.setTextColor(new Color(255, 0, 0, alpha));
+		messagesRenderer.drawCentered(g, Localized.texts.getString("loading_music"), world.width());
 		pacManRenderer.render(g);
-		float x = width / 2 - (ghostCount / 2) * 20, y = pacMan.tf.y + 20;
+		float x = width / 2 - (ghostCount / 2) * 20 - Tile.SIZE / 2, y = pacMan.tf.y + 20;
 		for (int i = 0; i < ghostCount; ++i) {
-			ghostSprites[rnd.nextInt(4)][rnd.nextInt(4)].draw(g, x, y);
+			Ghost ghost = ghosts.get(rnd.nextInt(4));
+			ghost.tf.x = x;
+			ghost.tf.y = y;
+			ghostRenderer.get(ghost).render(g);
 			x += 20;
 		}
 	}
