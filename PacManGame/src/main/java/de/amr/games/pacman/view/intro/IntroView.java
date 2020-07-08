@@ -133,8 +133,8 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 	private class ChasingAnimation extends State<IntroState> implements View {
 		@Override
 		public void onEntry() {
-			chasePacMan.setStartPosition(width, 100);
-			chasePacMan.setEndPosition(-chasePacMan.tf.width, 100);
+			chasePacMan.tf.width = 88;
+			chasePacMan.tf.height = 16;
 			chaseGhosts.tf.y = 200;
 			chaseGhosts.init();
 			chasePacMan.start();
@@ -167,15 +167,19 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 
 		@Override
 		public void onEntry() {
-			ghostPointsAnimation.tf.y = (200);
+			ghostPointsAnimation.tf.y = 200;
 			ghostPointsAnimation.tf.centerX(width);
 			ghostPointsAnimation.start();
+			chasePacMan.tf.centerX(width);
+			chasePacMan.initPositions(width / 2 + 5 * Tile.SIZE);
+			chasePacMan.folks().all().forEach(c -> c.tf.vx = 0);
 			gitHubLink.visible = true;
 		}
 
 		@Override
 		public void onTick() {
 			ghostPointsAnimation.update();
+			chasePacMan.update();
 			gitHubLink.update();
 		}
 
@@ -213,11 +217,10 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 		pacManLogo = new ImageWidget(assets.image_logo());
 		pacManLogo.tf.centerX(width);
 		pacManLogo.tf.y = 20;
-		chasePacMan = new ChasePacManAnimation(assets, soundManager);
+		chasePacMan = new ChasePacManAnimation(theme, soundManager);
 		chasePacMan.tf.centerX(width);
 		chasePacMan.tf.y = 100;
 		chaseGhosts = new ChaseGhostsAnimation(theme, soundManager);
-//		chaseGhosts.tf.setPosition(width, 200);
 		ghostPointsAnimation = new GhostPointsAnimation(assets, soundManager);
 		gitHubLink = LinkWidget.create()
 		/*@formatter:off*/

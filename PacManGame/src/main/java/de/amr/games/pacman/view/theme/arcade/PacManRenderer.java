@@ -11,6 +11,7 @@ public class PacManRenderer extends SpriteRenderer implements IRenderer {
 
 	private final World world;
 	private final PacMan pacMan;
+	private boolean animationStoppedWhenStanding = true;
 
 	public PacManRenderer(World world) {
 		this.world = world;
@@ -38,7 +39,11 @@ public class PacManRenderer extends SpriteRenderer implements IRenderer {
 				break;
 			case RUNNING:
 				selectSprite("walking-" + pacMan.moveDir());
-				enableAnimation(pacMan.tf.vx != 0 || pacMan.tf.vy != 0);
+				if (animationStoppedWhenStanding) {
+					enableAnimation(pacMan.tf.vx != 0 || pacMan.tf.vy != 0);
+				} else {
+					enableAnimation(true);
+				}
 				break;
 			case SLEEPING:
 				selectSprite("full");
@@ -47,5 +52,9 @@ public class PacManRenderer extends SpriteRenderer implements IRenderer {
 			}
 		}
 		drawEntity(g, pacMan);
+	}
+
+	public void setAnimationStoppedWhenStanding(boolean animationStoppedWhenStanding) {
+		this.animationStoppedWhenStanding = animationStoppedWhenStanding;
 	}
 }
