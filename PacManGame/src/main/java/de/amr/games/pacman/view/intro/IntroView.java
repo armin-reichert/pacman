@@ -85,7 +85,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 				
 				.state(WAITING_FOR_INPUT)
 					.customState(new WaitingForInput())
-					.timeoutAfter(sec(10))
+					.timeoutAfter(sec(15))
 					
 				.state(READY_TO_PLAY)
 					
@@ -260,14 +260,14 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 	}
 
 	private void drawSpeedSelection(Graphics2D g, int row) {
-		String t1 = "1 - " + Localized.texts.getString("normal");
-		String t2 = "2 - " + Localized.texts.getString("fast");
-		String t3 = "3 - " + Localized.texts.getString("insane");
+		String t1 = "1-" + Localized.texts.getString("normal");
+		String t2 = "2-" + Localized.texts.getString("fast");
+		String t3 = "3-" + Localized.texts.getString("insane");
 		int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock().getTargetFramerate()) + 1;
-		Font font = ArcadeTheme.ASSETS.messageFont;
+		Font font = messagesRenderer.getFont();
 		try (Pen pen = new Pen(g)) {
 			pen.font(font);
-			pen.fontSize(6);
+			pen.fontSize(8);
 			FontMetrics fm = pen.getFontMetrics();
 			int w1 = fm.stringWidth(t1), w2 = fm.stringWidth(t2), w3 = fm.stringWidth(t3);
 			float s = (width - (w1 + w2 + w3)) / 4f;

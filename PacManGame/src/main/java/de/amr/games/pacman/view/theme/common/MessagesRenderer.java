@@ -39,6 +39,10 @@ public class MessagesRenderer implements IRenderer {
 			}
 		}
 	}
+	
+	public Font getFont() {
+		return font;
+	}
 
 	public void setFont(Font font) {
 		this.font = font;
