@@ -62,7 +62,7 @@ public class LoadingView implements LivingView {
 			ghost.setMoveDir(Direction.values()[rnd.nextInt(4)]);
 		});
 		pacMan.init();
-		pacMan.start();
+		pacMan.startRunning();
 	}
 
 	@Override

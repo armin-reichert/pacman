@@ -241,7 +241,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					})
 					.onExit(() -> {
 						world.fillFood();
-						ghostsInWorld().forEach(Ghost::init);
+						ghostsInWorld().forEach(ghost -> {
+							ghost.init();
+						});
 						playView.clearMessages();
 						soundManager.stopAll();
 					})
@@ -322,7 +324,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			bonusControl.init();
 			ghostCommand.init();
 			folksInWorld().forEach(Creature::init);
-			folks.pacMan().start();
+			folks.pacMan().startRunning();
 			playView.init();
 			playView.enableGhostAnimations(true);
 			soundManager.resumePlayingMusic();

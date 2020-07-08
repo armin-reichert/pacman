@@ -103,8 +103,7 @@ public class Ghost extends Creature<GhostState> {
 						visible = true;
 						flashing = false;
 						points = 0;
-						moveDir = wishDir = bed().exitDir;
-						tf.setPosition(bed().center.x - Tile.SIZE / 2, bed.center.y - Tile.SIZE / 2);
+						world.putIntoBed(this);
 						enteredNewTile();
 						sanity.init();
 					})
@@ -225,8 +224,8 @@ public class Ghost extends Creature<GhostState> {
 	/**
 	 * Lets the ghost jump up and down on its bed.
 	 */
-	public void bouncingOnBed() {
-		float dy = tf.y + Tile.SIZE / 2 - bed().center.y;
+	public void bouncingOnBed(Bed bed) {
+		float dy = tf.y + Tile.SIZE / 2 - bed.center.y;
 		if (dy < -4) {
 			setWishDir(DOWN);
 		} else if (dy > 3) {

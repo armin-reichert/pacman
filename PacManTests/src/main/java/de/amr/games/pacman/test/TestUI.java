@@ -100,5 +100,6 @@ public class TestUI implements Lifecycle, VisualController {
 			}
 		}
 		world.population().all().filter(world::included).forEach(Creature::update);
+		view.update();
 	}
 }

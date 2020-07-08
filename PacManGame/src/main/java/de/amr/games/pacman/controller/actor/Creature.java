@@ -21,7 +21,6 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.api.FsmContainer;
@@ -39,7 +38,6 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	public final String name;
 	protected Game game;
 	protected World world;
-	protected Bed bed;
 	protected Fsm<STATE, PacManGameEvent> brain;
 	protected Map<STATE, Steering> steerings;
 	protected MovementControl movement;
@@ -58,14 +56,6 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 
 	public void setWorld(World world) {
 		this.world = world;
-	}
-
-	public void assignBed(Bed bed) {
-		this.bed = bed;
-	}
-
-	public Bed bed() {
-		return bed;
 	}
 
 	/**

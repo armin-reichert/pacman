@@ -41,7 +41,7 @@ class MovingRandomlyTestUI extends TestUI {
 		include(blinky, pinky, inky, clyde);
 		ghostsOnStage().forEach(ghost -> {
 			ghost.init();
-			ghost.tf.setPosition(pacMan.bed().tile.x(), pacMan.bed().tile.y());
+			ghost.placeAt(world.pacManBed().tile);
 			ghost.behavior(FRIGHTENED, ghost.movingRandomly());
 			ghost.state(FRIGHTENED).removeTimer();
 			ghost.setState(FRIGHTENED);

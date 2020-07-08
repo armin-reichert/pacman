@@ -1,7 +1,6 @@
 package de.amr.games.pacman.view.theme.arcade;
 
 import static de.amr.games.pacman.view.theme.common.Rendering.drawDirectionIndicator;
-import static de.amr.games.pacman.view.theme.common.Rendering.ghostColor;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -32,7 +31,7 @@ public class GridRenderer implements IRenderer {
 	@Override
 	public void render(Graphics2D g) {
 		g.drawImage(gridImage, 0, 0, null);
-		drawGhostBeds(g);
+		drawBeds(g);
 	}
 
 	private BufferedImage createGridPatternImage(int cols, int rows) {
@@ -60,21 +59,25 @@ public class GridRenderer implements IRenderer {
 		});
 	}
 
-	public void drawGhostBeds(Graphics2D g2) {
-		Graphics2D g = (Graphics2D) g2.create();
+	public void drawBeds(Graphics2D g) {
+		Color[] colors = { Color.RED, Color.CYAN, Color.PINK, Color.ORANGE };
+		for (int i = 0; i < 4; ++i) {
+			drawBed(g, world.theHouse().bed(i), colors[i]);
+		}
+		drawBed(g, world.pacManBed(), Color.YELLOW);
+	}
+
+	private void drawBed(Graphics2D g, Bed bed, Color color) {
+		int x = bed.center.roundedX() - Tile.SIZE, y = bed.center.roundedY() - Tile.SIZE / 2;
+		g.setColor(color);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		world.population().ghosts().forEach(ghost -> {
-			Bed bed = ghost.bed();
-			int x = bed.center.roundedX() - Tile.SIZE, y = bed.center.roundedY() - Tile.SIZE / 2;
-			g.setColor(ghostColor(ghost));
-			g.drawRoundRect(x, y, 2 * Tile.SIZE, Tile.SIZE, 2, 2);
-			try (Pen pen = new Pen(g)) {
-				pen.color(Color.WHITE);
-				pen.font(new Font(Font.MONOSPACED, Font.BOLD, 6));
-				pen.drawCentered("" + bed.number, bed.center.roundedX(), bed.center.roundedY() + Tile.SIZE);
-			}
-		});
-		g.dispose();
+		g.drawRoundRect(x, y, 2 * Tile.SIZE - 1, Tile.SIZE, 2, 2);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		try (Pen pen = new Pen(g)) {
+			pen.turnSmoothRenderingOn();
+			pen.color(Color.WHITE);
+			pen.font(new Font(Font.MONOSPACED, Font.BOLD, 7));
+			pen.drawCentered("" + bed.number, bed.center.roundedX(), bed.center.roundedY() + Tile.SIZE + 1);
+		}
 	}
 }

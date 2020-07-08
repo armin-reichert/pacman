@@ -6,6 +6,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
+import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.Area;
 import de.amr.games.pacman.model.world.api.Population;
@@ -98,18 +99,36 @@ public class ArcadeWorld extends AbstractWorld {
 	}
 
 	@Override
-	public void welcome(Population population) {
+	public void setPopulation(Population population) {
 		if (population instanceof ArcadeGameFolks) {
-			ArcadeGameFolks folks = (ArcadeGameFolks) population;
-			this.population = folks;
-			folks.pacMan().assignBed(pacManBed());
-			folks.blinky().assignBed(theHouse().bed(0));
-			folks.inky().assignBed(theHouse().bed(1));
-			folks.pinky().assignBed(theHouse().bed(2));
-			folks.clyde().assignBed(theHouse().bed(3));
+			this.population = population;
 		} else {
-			throw new RuntimeException("This population is not welcome");
+			throw new IllegalArgumentException();
 		}
+	}
+
+	@Override
+	public void putIntoBed(Creature<?> creature) {
+		if (population != null) {
+			ArcadeGameFolks folks = (ArcadeGameFolks) population;
+			if (creature == folks.pacMan()) {
+				putIntoBed(creature, pacManBed());
+			} else if (creature == folks.blinky()) {
+				putIntoBed(creature, theHouse().bed(0));
+			} else if (creature == folks.inky()) {
+				putIntoBed(creature, theHouse().bed(1));
+			} else if (creature == folks.pinky()) {
+				putIntoBed(creature, theHouse().bed(2));
+			} else if (creature == folks.clyde()) {
+				putIntoBed(creature, theHouse().bed(3));
+			}
+		}
+	}
+
+	private void putIntoBed(Creature<?> creature, Bed bed) {
+		creature.placeAt(bed.tile, Tile.SIZE / 2, 0);
+		creature.setMoveDir(bed.exitDir);
+		creature.setWishDir(bed.exitDir);
 	}
 
 	/**

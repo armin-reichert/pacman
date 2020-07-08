@@ -1,5 +1,7 @@
 package de.amr.games.pacman.model.world.api;
 
+import de.amr.games.pacman.controller.actor.Creature;
+
 /**
  * The Pac-man game world is a terrain and a habitat for the creatures.
  * 
@@ -7,7 +9,9 @@ package de.amr.games.pacman.model.world.api;
  */
 public interface World extends Terrain, Habitat {
 
-	void welcome(Population population);
+	void setPopulation(Population population);
+	
+	void putIntoBed(Creature<?> creature);
 
 	void setChangingLevel(boolean b);
 

@@ -83,7 +83,7 @@ public class GhostHouseDoorMan implements Lifecycle {
 			}
 		} else {
 			preferredLockedGhost().ifPresent(ghost -> {
-				ghostCounters[ghost.bed().number] += 1;
+				ghostCounters[number(ghost)] += 1;
 			});
 		}
 	}
@@ -121,7 +121,7 @@ public class GhostHouseDoorMan implements Lifecycle {
 	}
 
 	public int ghostDotCount(Ghost ghost) {
-		return ghostCounters[ghost.bed().number];
+		return ghostCounters[number(ghost)];
 	}
 
 	public int personalDotLimit(Ghost ghost) {
@@ -218,7 +218,7 @@ public class GhostHouseDoorMan implements Lifecycle {
 			}
 		} else {
 			int personalLimit = personalDotLimit(ghost);
-			if (ghostCounters[ghost.bed().number] >= personalLimit) {
+			if (ghostCounters[number(ghost)] >= personalLimit) {
 				return confirmed("%s can leave house: ghost's dot limit (%d) reached", ghost.name, personalLimit);
 			}
 		}
@@ -228,5 +228,21 @@ public class GhostHouseDoorMan implements Lifecycle {
 	private void resetGhostDotCounters() {
 		Arrays.fill(ghostCounters, 0);
 		loginfo("Ghost dot counters have been reset to zero");
+	}
+
+	private int number(Ghost ghost) {
+		if (ghost == folks.blinky()) {
+			return 0;
+		}
+		if (ghost == folks.inky()) {
+			return 1;
+		}
+		if (ghost == folks.pinky()) {
+			return 2;
+		}
+		if (ghost == folks.clyde()) {
+			return 2;
+		}
+		throw new IllegalArgumentException();
 	}
 }

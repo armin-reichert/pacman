@@ -38,6 +38,7 @@ public class PacMan extends Creature<PacManState> {
 	/** Number of ticks Pac-Man is not moving after having eaten a pellet. */
 	public int digestion;
 
+	/** If Pac-Man is dying and collapsing. */
 	public boolean collapsing;
 
 	public PacMan() {
@@ -54,8 +55,7 @@ public class PacMan extends Creature<PacManState> {
 					.onEntry(() -> {
 						power = digestion = 0;
 						visible = true;
-						moveDir = wishDir = world.pacManBed().exitDir;
-						tf.setPosition(bed.center.x - Tile.SIZE / 2, bed.center.y - Tile.SIZE / 2);
+						world.putIntoBed(this);
 					})
 
 				.state(RUNNING)
@@ -98,7 +98,7 @@ public class PacMan extends Creature<PacManState> {
 		brain.doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
 	}
 
-	public void start() {
+	public void startRunning() {
 		setState(RUNNING);
 	}
 
