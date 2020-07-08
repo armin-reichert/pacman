@@ -11,7 +11,7 @@ public interface Theme {
 
 	IRenderer createGhostRenderer(Ghost ghost);
 
-	IRenderer createPacManRenderer(World world);
+	IPacManRenderer createPacManRenderer(World world);
 
 	IRenderer createLevelCounterRenderer(World world, Game game);
 

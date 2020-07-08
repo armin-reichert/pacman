@@ -7,9 +7,9 @@ import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.theme.IRenderer;
+import de.amr.games.pacman.view.theme.IPacManRenderer;
 
-class PacManRenderer implements IRenderer {
+class PacManRenderer implements IPacManRenderer {
 
 	private final PacMan pacMan;
 

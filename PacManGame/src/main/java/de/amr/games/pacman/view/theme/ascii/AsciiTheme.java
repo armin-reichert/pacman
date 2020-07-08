@@ -11,6 +11,7 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Door.DoorState;
 import de.amr.games.pacman.model.world.core.House;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.view.theme.IPacManRenderer;
 import de.amr.games.pacman.view.theme.IRenderer;
 import de.amr.games.pacman.view.theme.IWorldRenderer;
 import de.amr.games.pacman.view.theme.Theme;
@@ -74,7 +75,7 @@ public class AsciiTheme implements Theme {
 	}
 
 	@Override
-	public IRenderer createPacManRenderer(World world) {
+	public IPacManRenderer createPacManRenderer(World world) {
 		return g -> {
 			PacMan pacMan = world.population().pacMan();
 			if (pacMan.visible) {

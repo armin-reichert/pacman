@@ -5,13 +5,12 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.view.theme.IRenderer;
+import de.amr.games.pacman.view.theme.IPacManRenderer;
 
-public class PacManRenderer extends SpriteRenderer implements IRenderer {
+public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 
 	private final World world;
 	private final PacMan pacMan;
-	private boolean animationStoppedWhenStanding = true;
 
 	public PacManRenderer(World world) {
 		this.world = world;
@@ -39,11 +38,8 @@ public class PacManRenderer extends SpriteRenderer implements IRenderer {
 				break;
 			case RUNNING:
 				selectSprite("walking-" + pacMan.moveDir());
-				if (animationStoppedWhenStanding) {
-					enableAnimation(pacMan.tf.vx != 0 || pacMan.tf.vy != 0);
-				} else {
-					enableAnimation(true);
-				}
+				boolean standing = pacMan.tf.vx == 0 && pacMan.tf.vy == 0; 
+				enableAnimation(!(standing && isAnimationStoppedWhenStanding()));
 				break;
 			case SLEEPING:
 				selectSprite("full");
@@ -52,9 +48,5 @@ public class PacManRenderer extends SpriteRenderer implements IRenderer {
 			}
 		}
 		drawEntity(g, pacMan);
-	}
-
-	public void setAnimationStoppedWhenStanding(boolean animationStoppedWhenStanding) {
-		this.animationStoppedWhenStanding = animationStoppedWhenStanding;
 	}
 }

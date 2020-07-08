@@ -3,6 +3,7 @@ package de.amr.games.pacman.view.intro;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -18,9 +19,9 @@ import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.view.theme.IPacManRenderer;
 import de.amr.games.pacman.view.theme.IRenderer;
 import de.amr.games.pacman.view.theme.Theme;
-import de.amr.games.pacman.view.theme.arcade.PacManRenderer;
 
 public class ChasePacManAnimation extends GameObject {
 
@@ -41,7 +42,7 @@ public class ChasePacManAnimation extends GameObject {
 		folks.ghosts().forEach(ghost -> renderers.put(ghost, theme.createGhostRenderer(ghost)));
 		renderers.put(folks.pacMan(), theme.createPacManRenderer(world));
 	}
-	
+
 	public ArcadeGameFolks folks() {
 		return folks;
 	}
@@ -60,9 +61,9 @@ public class ChasePacManAnimation extends GameObject {
 		folks.pacMan().setMoveDir(Direction.LEFT);
 		folks.pacMan().setSpeedLimit(() -> 3f);
 		folks.pacMan().setState(PacManState.RUNNING);
-		PacManRenderer r = (PacManRenderer) renderers.get(folks.pacMan());
+		IPacManRenderer r = (IPacManRenderer) renderers.get(folks.pacMan());
 		r.setAnimationStoppedWhenStanding(false);
-		
+
 		folks.ghosts().forEach(ghost -> {
 			ghost.tf.setVelocity(-0.55f, 0);
 			ghost.setSpeedLimit(() -> 2f);
@@ -121,7 +122,7 @@ public class ChasePacManAnimation extends GameObject {
 	@Override
 	public void draw(Graphics2D g) {
 		renderers.forEach((c, r) -> r.render(g));
-
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		int x = (int) folks.pacMan().tf.x - Tile.SIZE;
 		int y = (int) folks.pacMan().tf.y;
 		switch (pelletDisplay) {
@@ -145,5 +146,6 @@ public class ChasePacManAnimation extends GameObject {
 			break;
 		default:
 		}
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 }

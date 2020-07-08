@@ -84,9 +84,11 @@ class GhostRenderer implements IRenderer {
 		int size = tiles(1.5);
 		int x = (int) ghost.tf.x + (ghost.tf.width - size) / 2;
 		int y = (int) ghost.tf.y + (ghost.tf.width - size) / 2;
+		g.translate(0, 2);
 		g.setColor(Color.BLUE);
 		g.fillRect(x, y, size, size);
 		g.fillArc(x, y - Tile.SIZE / 2, size, size, 0, 180);
+		g.translate(0, -2);
 	}
 
 	private void drawFlashing(Graphics2D g) {
@@ -94,18 +96,22 @@ class GhostRenderer implements IRenderer {
 		int size = tiles(1.5);
 		int x = (int) ghost.tf.x + (ghost.tf.width - size) / 2;
 		int y = (int) ghost.tf.y + (ghost.tf.width - size) / 2;
+		g.translate(0, 2);
 		g.setColor(flash ? Color.WHITE : Color.BLUE);
 		g.fillRect(x, y, size, size);
 		g.fillArc(x, y - Tile.SIZE / 2, size, size, 0, 180);
+		g.translate(0, -2);
 	}
 
 	private void drawColored(Graphics2D g) {
 		int size = tiles(1.5);
 		int x = (int) ghost.tf.x + (ghost.tf.width - size) / 2;
 		int y = (int) ghost.tf.y + (ghost.tf.width - size) / 2;
+		g.translate(0, 2);
 		g.setColor(ghostColor());
 		g.fillRect(x, y, size, size);
 		g.fillArc(x, y - Tile.SIZE / 2, size, size, 0, 180);
+		g.translate(0, -2);
 	}
 
 	private Color ghostColor() {
