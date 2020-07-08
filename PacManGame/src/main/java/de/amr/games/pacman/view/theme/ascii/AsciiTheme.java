@@ -88,10 +88,10 @@ public class AsciiTheme implements Theme {
 	@Override
 	public IRenderer createLevelCounterRenderer(World world, Game game) {
 		return g -> {
+			String text = String.format("Level: %d (%s)", game.level.number, game.level.bonusSymbol);
 			g.setColor(Color.YELLOW);
 			g.setFont(FONT);
-			g.drawString(String.format("Level %d: (%s)", game.level.number, game.level.bonusSymbol.name()), -15 * Tile.SIZE,
-					-Tile.SIZE + OFFSET_BASELINE);
+			g.drawString(text, -15 * Tile.SIZE, -2 * Tile.SIZE + OFFSET_BASELINE);
 		};
 	}
 
@@ -100,7 +100,7 @@ public class AsciiTheme implements Theme {
 		return g -> {
 			g.setColor(Color.YELLOW);
 			g.setFont(FONT);
-			g.drawString(String.format("Lives: %d", game.lives), Tile.SIZE, -Tile.SIZE + OFFSET_BASELINE);
+			g.drawString(String.format("Lives: %d", game.lives), 0, OFFSET_BASELINE);
 		};
 	}
 

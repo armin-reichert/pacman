@@ -260,9 +260,9 @@ public class PlayView implements LivingView {
 	}
 
 	private void drawLiveCounter(Graphics2D g) {
-		g.translate(0, world.height() * Tile.SIZE);
+		g.translate(Tile.SIZE, (world.height() - 2) * Tile.SIZE);
 		liveCounterRenderer.render(g);
-		g.translate(0, -world.height() * Tile.SIZE);
+		g.translate(-Tile.SIZE, -(world.height() - 2) * Tile.SIZE);
 	}
 
 	private void drawLevelCounter(Graphics2D g) {
