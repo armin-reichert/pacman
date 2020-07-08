@@ -201,7 +201,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 				messagesRenderer.setTextColor(Color.WHITE);
 				messagesRenderer.drawCentered(g, Localized.texts.getString("press_space_to_start"), world.width());
 			}
-			drawSpeedSelection(g, 22);
+			drawSpeedSelectionTexts(g, 22);
 			drawScreenModeText(g, 31);
 		}
 	}
@@ -259,26 +259,25 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 		messagesRenderer.drawCentered(g, text, world.width());
 	}
 
-	private void drawSpeedSelection(Graphics2D g, int row) {
-		String t1 = "1-" + Localized.texts.getString("normal");
-		String t2 = "2-" + Localized.texts.getString("fast");
-		String t3 = "3-" + Localized.texts.getString("insane");
-		int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock().getTargetFramerate()) + 1;
-		Font font = messagesRenderer.getFont();
+	private void drawSpeedSelectionTexts(Graphics2D g, int row) {
+		String[] texts = {
+			//@formatter:off
+			"1-" + Localized.texts.getString("normal"),
+			"2-" + Localized.texts.getString("fast"),
+			"3-" + Localized.texts.getString("insane")
+			//@formatter:on
+		};
 		try (Pen pen = new Pen(g)) {
-			pen.font(font);
-			pen.fontSize(8);
+			pen.font(messagesRenderer.getFont());
 			FontMetrics fm = pen.getFontMetrics();
-			int w1 = fm.stringWidth(t1), w2 = fm.stringWidth(t2), w3 = fm.stringWidth(t3);
-			float s = (width - (w1 + w2 + w3)) / 4f;
-			float x1 = s, x2 = x1 + w1 + s, x3 = x2 + w2 + s;
-			int y = row * Tile.SIZE;
-			pen.color(selectedSpeed == 1 ? ORANGE : RED);
-			pen.draw(t1, x1, y);
-			pen.color(selectedSpeed == 2 ? ORANGE : RED);
-			pen.draw(t2, x2, y);
-			pen.color(selectedSpeed == 3 ? ORANGE : RED);
-			pen.draw(t3, x3, y);
+			int[] w = { fm.stringWidth(texts[0]), fm.stringWidth(texts[1]), fm.stringWidth(texts[2]) };
+			float s = (width - (w[0] + w[1] + w[2])) / 4f;
+			float[] x = { s, 2 * s + w[0], 3 * s + w[1] + w[2] };
+			int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock().getTargetFramerate());
+			for (int i = 0; i < 3; ++i) {
+				pen.color(selectedSpeed == i ? ORANGE : RED);
+				pen.draw(texts[i], x[i], row * Tile.SIZE);
+			}
 		}
 	}
 }
