@@ -32,7 +32,6 @@ import de.amr.games.pacman.model.world.core.OneWayTile;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.core.IRenderer;
 import de.amr.games.pacman.view.core.Theme;
-import de.amr.games.pacman.view.theme.Themes;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
@@ -47,22 +46,12 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends Creature<GhostState> {
 
-	private GhostSanityControl sanityControl;
-
-	/** State to enter after frightening state ends. */
 	public GhostState subsequentState;
-
-	/** Keeps track of steering changes. */
-	public Steering previousSteering;
-
-	/** Ghost color as defined in {@link Themes}. */
-	public int color;
-
-	/** Value when killed by Pac-Man. */
+	private Steering previousSteering;
+	private int color;
 	private int bounty;
-
+	private GhostSanityControl sanityControl;
 	private boolean flashing;
-
 	private IRenderer renderer;
 
 	public Ghost(String name) {
@@ -226,6 +215,14 @@ public class Ghost extends Creature<GhostState> {
 		if (sanityControl != null) {
 			sanityControl.update();
 		}
+	}
+
+	public int getColor() {
+		return color;
+	}
+
+	public void setColor(int color) {
+		this.color = color;
 	}
 
 	public int getBounty() {

@@ -32,10 +32,10 @@ public class ArcadeGameFolks implements Population {
 		all().forEach(creature -> creature.setWorld(world));
 		world.setPopulation(this);
 		defineBehavior(world);
-		blinky.color = RED_GHOST;
-		pinky.color = PINK_GHOST;
-		inky.color = CYAN_GHOST;
-		clyde.color = ORANGE_GHOST;
+		blinky.setColor(RED_GHOST);
+		pinky.setColor(PINK_GHOST);
+		inky.setColor(CYAN_GHOST);
+		clyde.setColor(ORANGE_GHOST);
 	}
 
 	private void defineBehavior(World world) {

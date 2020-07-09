@@ -1,19 +1,17 @@
 package de.amr.games.pacman.view.theme.blocks;
 
+import static de.amr.games.pacman.view.theme.blocks.BlocksTheme.ghostColor;
+
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
-import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.core.IRenderer;
 
 class GhostRenderer implements IRenderer {
-
-	static final Font font = new Font(Font.SANS_SERIF, Font.BOLD, 10);
 
 	private final Ghost ghost;
 
@@ -70,13 +68,13 @@ class GhostRenderer implements IRenderer {
 		int size = tiles(1);
 		int x = (int) ghost.tf.x + (ghost.tf.width - size) / 2;
 		int y = (int) ghost.tf.y + (ghost.tf.width - size) / 2;
-		g.setColor(ghostColor());
+		g.setColor(ghostColor(ghost));
 		g.drawRect(x, y, size, size);
 	}
 
 	private void drawPoints(Graphics2D g) {
 		g.setColor(Color.GREEN);
-		g.setFont(font);
+		g.setFont(BlocksTheme.FONT);
 		g.drawString(ghost.getBounty() + "", (int) ghost.tf.x, (int) ghost.tf.y);
 	}
 
@@ -108,26 +106,10 @@ class GhostRenderer implements IRenderer {
 		int x = (int) ghost.tf.x + (ghost.tf.width - size) / 2;
 		int y = (int) ghost.tf.y + (ghost.tf.width - size) / 2;
 		g.translate(0, 2);
-		g.setColor(ghostColor());
+		g.setColor(ghostColor(ghost));
 		g.fillRect(x, y, size, size);
 		g.fillArc(x, y - Tile.SIZE / 2, size, size, 0, 180);
 		g.translate(0, -2);
-	}
-
-	private Color ghostColor() {
-		if (ghost.color == Population.RED_GHOST) {
-			return Color.RED;
-		}
-		if (ghost.color == Population.PINK_GHOST) {
-			return Color.PINK;
-		}
-		if (ghost.color == Population.CYAN_GHOST) {
-			return Color.CYAN;
-		}
-		if (ghost.color == Population.ORANGE_GHOST) {
-			return Color.ORANGE;
-		}
-		return null;
 	}
 
 	@Override

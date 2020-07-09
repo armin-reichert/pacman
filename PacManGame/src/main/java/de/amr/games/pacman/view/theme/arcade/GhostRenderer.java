@@ -16,12 +16,12 @@ public class GhostRenderer extends SpriteRenderer implements IRenderer {
 		this.ghost = ghost;
 		ArcadeThemeAssets assets = ArcadeTheme.ASSETS;
 		Direction.dirs().forEach(dir -> {
-			sprites.set("color-" + dir, assets.makeSprite_ghostColored(ghost.color, dir));
+			sprites.set("color-" + dir, assets.makeSprite_ghostColored(ghost.getColor(), dir));
 			sprites.set("eyes-" + dir, assets.makeSprite_ghostEyes(dir));
 		});
 		sprites.set("frightened", assets.makeSprite_ghostFrightened());
 		sprites.set("flashing", assets.makeSprite_ghostFlashing());
-		for (int points : Game.POINTS_GHOST) {
+		for (int points : Game.GHOST_BOUNTIES) {
 			sprites.set("points-" + points, assets.makeSprite_number(points));
 		}
 	}

@@ -8,6 +8,7 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.view.core.IPacManRenderer;
@@ -19,7 +20,20 @@ import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
 public class BlocksTheme implements Theme {
 
-	public static final Font font = Assets.storeTrueTypeFont("ConcertOne", "ConcertOne-Regular.ttf", Font.PLAIN, 10);
+	public static final Font FONT = Assets.storeTrueTypeFont("ConcertOne", "ConcertOne-Regular.ttf", Font.PLAIN, 10);
+
+	public static final Color GHOST_COLORS[] = new Color[4];
+
+	static {
+		GHOST_COLORS[Population.RED_GHOST] = Color.RED;
+		GHOST_COLORS[Population.PINK_GHOST] = Color.PINK;
+		GHOST_COLORS[Population.CYAN_GHOST] = Color.CYAN;
+		GHOST_COLORS[Population.ORANGE_GHOST] = Color.ORANGE;
+	}
+
+	public static Color ghostColor(Ghost ghost) {
+		return GHOST_COLORS[ghost.getColor()];
+	}
 
 	public static Color symbolColor(String symbolName) {
 		Symbol symbol = Stream.of(Symbol.values()).filter(s -> s.name().equals(symbolName)).findFirst().get();
@@ -58,7 +72,7 @@ public class BlocksTheme implements Theme {
 	@Override
 	public IRenderer createScoreRenderer(World world, Game game) {
 		ScoreRenderer renderer = new ScoreRenderer(game);
-		renderer.setFont(font);
+		renderer.setFont(FONT);
 		renderer.setSmoothText(true);
 		return renderer;
 	}
@@ -86,7 +100,7 @@ public class BlocksTheme implements Theme {
 	@Override
 	public MessagesRenderer createMessagesRenderer() {
 		MessagesRenderer renderer = new MessagesRenderer();
-		renderer.setFont(font);
+		renderer.setFont(FONT);
 		renderer.setSmoothText(true);
 		return renderer;
 	}
