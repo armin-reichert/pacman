@@ -13,6 +13,7 @@ import static de.amr.statemachine.core.StateMachine.beginStateMachine;
 import java.util.EnumMap;
 import java.util.Optional;
 
+import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.PacManApp;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.steering.Steering;
@@ -106,6 +107,12 @@ public class PacMan extends Creature<PacManState> {
 
 	public void startRunning() {
 		setState(RUNNING);
+	}
+
+	public void fallAsleep() {
+		Vector2f position = tf.getPosition();
+		setState(PacManState.SLEEPING);
+		tf.setPosition(position);
 	}
 
 	/**

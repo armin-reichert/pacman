@@ -86,7 +86,7 @@ public class PlayView implements LivingView {
 			liveCounterRenderer = theme.createLiveCounterRenderer(world, game);
 			levelCounterRenderer = theme.createLevelCounterRenderer(world, game);
 			scoreRenderer = theme.createScoreRenderer(world, game);
-			pacManRenderer = theme.createPacManRenderer(world);
+			pacManRenderer = theme.createPacManRenderer(world.population().pacMan());
 			world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, theme.createGhostRenderer(ghost)));
 			scoreRenderer = theme.createScoreRenderer(world, game);
 			messagesRenderer = theme.createMessagesRenderer();

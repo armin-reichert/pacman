@@ -3,6 +3,7 @@ package de.amr.games.pacman.view.theme.arcade;
 import java.awt.Font;
 
 import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.IPacManRenderer;
@@ -45,8 +46,8 @@ public class ArcadeTheme implements Theme {
 	}
 
 	@Override
-	public IPacManRenderer createPacManRenderer(World world) {
-		return new PacManRenderer(world);
+	public IPacManRenderer createPacManRenderer(PacMan pacMan) {
+		return new PacManRenderer(pacMan);
 	}
 
 	@Override

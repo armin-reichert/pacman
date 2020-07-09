@@ -124,15 +124,8 @@ public class Ghost extends Creature<GhostState> {
 					})
 				
 				.state(DEAD)
-					.timeoutAfter(sec(1)) // time while ghost is drawn as number of scored points
-					.onEntry(() -> {
-						points = game.killedGhostPoints();
-					})
-					.onTick((state, t, remaining) -> {
-						if (remaining == 0) { // show as eyes returning to ghost home
+					.onTick(() -> {
 							move();
-							points = 0;
-						}
 					})
 				
 			.transitions()
@@ -198,7 +191,22 @@ public class Ghost extends Creature<GhostState> {
 	@Override
 	public void takePartIn(Game game) {
 		this.game = game;
+
+		// frightened time is defined by the game level
 		state(FRIGHTENED).setTimer(() -> sec(game.level.pacManPowerSeconds));
+
+		// when dead, the ghost first appears as a number (its value) for one second, then it
+		// appears as eyes returning to the ghost house
+		state(DEAD).setTimer(sec(1));
+		state(DEAD).setOnEntry(() -> points = game.killedGhostPoints());
+		state(DEAD).setOnTick((s, consumed, remaining) -> {
+			if (remaining == 0) {
+				points = 0;
+				move();
+			}
+		});
+
+		// Blinky can get insane ("cruise elroy")
 		if (name.equals("Blinky")) {
 			sanityControl = new GhostSanityControl(game, "Blinky", GhostSanity.INFECTABLE);
 			sanityControl.getTracer().setLogger(PacManStateMachineLogging.LOGGER);

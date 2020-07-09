@@ -1,6 +1,7 @@
 package de.amr.games.pacman.view.theme;
 
 import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
@@ -11,7 +12,7 @@ public interface Theme {
 
 	IRenderer createGhostRenderer(Ghost ghost);
 
-	IPacManRenderer createPacManRenderer(World world);
+	IPacManRenderer createPacManRenderer(PacMan pacMan);
 
 	IRenderer createLevelCounterRenderer(World world, Game game);
 

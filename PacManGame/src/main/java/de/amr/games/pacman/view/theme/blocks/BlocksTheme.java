@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Symbol;
@@ -73,8 +74,8 @@ public class BlocksTheme implements Theme {
 	}
 
 	@Override
-	public IPacManRenderer createPacManRenderer(World world) {
-		return new PacManRenderer(world);
+	public IPacManRenderer createPacManRenderer(PacMan pacMan) {
+		return new PacManRenderer(pacMan);
 	}
 
 	@Override

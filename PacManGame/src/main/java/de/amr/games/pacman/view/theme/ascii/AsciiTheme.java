@@ -75,9 +75,8 @@ public class AsciiTheme implements Theme {
 	}
 
 	@Override
-	public IPacManRenderer createPacManRenderer(World world) {
+	public IPacManRenderer createPacManRenderer(PacMan pacMan) {
 		return g -> {
-			PacMan pacMan = world.population().pacMan();
 			if (pacMan.visible) {
 				g.setFont(FONT);
 				g.setColor(Color.YELLOW);

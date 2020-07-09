@@ -144,6 +144,9 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					.onTick((state, t, remaining) -> {
 						float flashingSeconds = mazeFlashingSeconds();
 	
+						// let Pac-Man sleep at the current position
+						folks.pacMan().fallAsleep();
+						
 						// During first two seconds, do nothing. At second 2, hide ghosts and start flashing.
 						if (t == sec(2)) {
 							ghostsInWorld().forEach(ghost -> ghost.visible = false);

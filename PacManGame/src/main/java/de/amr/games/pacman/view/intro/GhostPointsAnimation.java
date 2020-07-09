@@ -51,7 +51,7 @@ public class GhostPointsAnimation extends GameObject {
 	public GhostPointsAnimation(Theme theme, PacManSounds sounds) {
 		this.sounds = sounds;
 		folks.populate(world);
-		renderers.put(folks.pacMan(), theme.createPacManRenderer(world));
+		renderers.put(folks.pacMan(), theme.createPacManRenderer(folks.pacMan()));
 		folks.ghosts().forEach(ghost -> renderers.put(ghost, theme.createGhostRenderer(ghost)));
 		tf.width = 90;
 		tf.height = 18;

@@ -4,18 +4,15 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.world.Direction;
-import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.IPacManRenderer;
 
 public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 
-	private final World world;
 	private final PacMan pacMan;
 	private boolean stopAnimationWhenStanding;
 
-	public PacManRenderer(World world) {
-		this.world = world;
-		this.pacMan = world.population().pacMan();
+	public PacManRenderer(PacMan pacMan) {
+		this.pacMan = pacMan;
 		ArcadeThemeAssets assets = ArcadeTheme.ASSETS;
 		Direction.dirs().forEach(dir -> sprites.set("walking-" + dir, assets.makeSprite_pacManWalking(dir)));
 		sprites.set("collapsing", assets.makeSprite_pacManDying());
@@ -36,28 +33,24 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 
 	@Override
 	public void render(Graphics2D g) {
-		if (world.isChangingLevel()) {
+		switch (pacMan.getState()) {
+		case DEAD:
 			selectSprite("full");
-		} else {
-			switch (pacMan.getState()) {
-			case DEAD:
-				selectSprite("full");
-				if (pacMan.collapsing) {
-					selectSprite("collapsing");
-				} else {
-					sprites.get("collapsing").resetAnimation();
-				}
-				break;
-			case RUNNING:
-				selectSprite("walking-" + pacMan.moveDir());
-				boolean running = pacMan.tf.vx != 0 || pacMan.tf.vy != 0;
-				enableAnimation(running || !running && !isAnimationStoppedWhenStanding());
-				break;
-			case SLEEPING:
-				selectSprite("full");
-			default:
-				break;
+			if (pacMan.collapsing) {
+				selectSprite("collapsing");
+			} else {
+				sprites.get("collapsing").resetAnimation();
 			}
+			break;
+		case RUNNING:
+			selectSprite("walking-" + pacMan.moveDir());
+			boolean running = pacMan.tf.vx != 0 || pacMan.tf.vy != 0;
+			enableAnimation(running || !running && !isAnimationStoppedWhenStanding());
+			break;
+		case SLEEPING:
+			selectSprite("full");
+		default:
+			break;
 		}
 		drawEntity(g, pacMan);
 	}
