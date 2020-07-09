@@ -5,6 +5,7 @@ import static de.amr.games.pacman.model.world.Direction.RIGHT;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import de.amr.easy.game.entity.Entity;
@@ -36,8 +37,8 @@ import de.amr.statemachine.api.FsmContainer;
 public abstract class Creature<STATE> extends Entity implements WorldMover, FsmContainer<STATE, PacManGameEvent> {
 
 	public final String name;
-	protected Game game;
 	protected World world;
+	protected Game game;
 	protected Fsm<STATE, PacManGameEvent> brain;
 	protected Map<STATE, Steering> steerings;
 	protected MovementControl movement;
@@ -56,6 +57,12 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 
 	public void setWorld(World world) {
 		this.world = world;
+	}
+
+	public abstract void takePartIn(Game game);
+
+	public Optional<Game> game() {
+		return Optional.ofNullable(game);
 	}
 
 	/**

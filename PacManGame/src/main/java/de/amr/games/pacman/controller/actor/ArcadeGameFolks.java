@@ -73,7 +73,7 @@ public class ArcadeGameFolks implements Population {
 
 	@Override
 	public void takePartIn(Game game) {
-		all().forEach(creature -> creature.game = game);
+		all().forEach(creature -> creature.takePartIn(game));
 	}
 
 	@Override

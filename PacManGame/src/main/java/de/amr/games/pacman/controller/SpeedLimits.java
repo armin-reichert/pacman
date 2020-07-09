@@ -40,7 +40,7 @@ public class SpeedLimits {
 			if (ghost.world().isTunnel(ghost.tile())) {
 				return speed(level.ghostTunnelSpeed);
 			}
-			switch (ghost.sanity.getState()) {
+			switch (ghost.getSanity()) {
 			case ELROY1:
 				return speed(level.elroy1Speed);
 			case ELROY2:
@@ -49,7 +49,7 @@ public class SpeedLimits {
 			case IMMUNE:
 				return speed(level.ghostSpeed);
 			default:
-				throw new IllegalArgumentException("Illegal ghost sanity state: " + ghost.sanity.getState());
+				throw new IllegalArgumentException("Illegal ghost sanity state: " + ghost.getSanity());
 			}
 		case FRIGHTENED:
 			return speed(ghost.world().isTunnel(ghost.tile()) ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed);

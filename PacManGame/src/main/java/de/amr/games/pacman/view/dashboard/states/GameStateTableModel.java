@@ -11,8 +11,8 @@ import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.Ghost.Sanity;
 import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.actor.GhostSanity;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.World;
@@ -46,7 +46,7 @@ class GameStateTableModel extends AbstractTableModel {
 		WishDir("Wants", Direction.class, false),
 		Speed("px/s", Float.class, false),
 		State(null, Object.class, false),
-		Sanity(null, Sanity.class, false),
+		Sanity(null, GhostSanity.class, false),
 		Remaining(null, Integer.class, false), 
 		Duration(null, Integer.class, false);
 		//@formatter:on
@@ -166,7 +166,7 @@ class GameStateTableModel extends AbstractTableModel {
 					: ghost.state().getTicksRemaining();
 			r.duration = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getDuration() : ghost.state().getDuration();
 		}
-		r.ghostSanity = ghost.sanity.getState();
+		r.ghostSanity = ghost.getSanity();
 		r.pacManCollision = ghost.tile().equals(world.population().pacMan().tile());
 	}
 

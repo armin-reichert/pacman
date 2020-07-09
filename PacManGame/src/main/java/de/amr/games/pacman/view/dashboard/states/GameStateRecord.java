@@ -1,7 +1,7 @@
 package de.amr.games.pacman.view.dashboard.states;
 
 import de.amr.games.pacman.controller.actor.Creature;
-import de.amr.games.pacman.controller.actor.Ghost.Sanity;
+import de.amr.games.pacman.controller.actor.GhostSanity;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.core.Tile;
 
@@ -20,7 +20,7 @@ class GameStateRecord {
 	public Direction wishDir;
 	public float speed;
 	public String state;
-	public Sanity ghostSanity;
+	public GhostSanity ghostSanity;
 	public int ticksRemaining;
 	public int duration;
 	public boolean pacManCollision;

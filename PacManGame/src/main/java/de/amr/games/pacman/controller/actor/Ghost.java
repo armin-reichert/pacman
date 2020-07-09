@@ -1,9 +1,5 @@
 package de.amr.games.pacman.controller.actor;
 
-import static de.amr.games.pacman.controller.actor.Ghost.Sanity.ELROY1;
-import static de.amr.games.pacman.controller.actor.Ghost.Sanity.ELROY2;
-import static de.amr.games.pacman.controller.actor.Ghost.Sanity.IMMUNE;
-import static de.amr.games.pacman.controller.actor.Ghost.Sanity.INFECTABLE;
 import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
 import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
 import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
@@ -16,7 +12,6 @@ import static de.amr.games.pacman.model.world.Direction.DOWN;
 import static de.amr.games.pacman.model.world.Direction.LEFT;
 import static de.amr.games.pacman.model.world.Direction.RIGHT;
 import static de.amr.games.pacman.model.world.Direction.UP;
-import static de.amr.statemachine.core.StateMachine.beginStateMachine;
 
 import java.util.EnumMap;
 import java.util.Optional;
@@ -30,6 +25,7 @@ import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
+import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.OneWayTile;
@@ -49,9 +45,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends Creature<GhostState> {
 
-	public enum Sanity {
-		INFECTABLE, ELROY1, ELROY2, IMMUNE;
-	};
+	private GhostSanityControl sanityControl;
 
 	/** State to enter after frightening state ends. */
 	public GhostState subsequentState;
@@ -67,30 +61,10 @@ public class Ghost extends Creature<GhostState> {
 
 	public boolean flashing;
 
-	public StateMachine<Sanity, Void> sanity =
-	//@formatter:off
-		beginStateMachine(Sanity.class, Void.class)
-			.initialState(name.equals("Blinky") ? INFECTABLE : IMMUNE)
-			.description(() -> String.format("[%s sanity]", name))
-			.states()
-			.transitions()
-			
-				.when(INFECTABLE).then(ELROY2)
-					.condition(() -> game.level.remainingFoodCount() <= game.level.elroy2DotsLeft)
-					
-				.when(INFECTABLE).then(ELROY1)
-					.condition(() -> game.level.remainingFoodCount() <= game.level.elroy1DotsLeft)
-				
-				.when(ELROY1).then(ELROY2)
-					.condition(() -> game.level.remainingFoodCount() <= game.level.elroy2DotsLeft)
-					
-		.endStateMachine();
-	//@formatter:on
-
 	public Ghost(String name) {
 		super(name, new EnumMap<>(GhostState.class));
 		/*@formatter:off*/
-		brain = beginStateMachine(GhostState.class, PacManGameEvent.class)
+		brain = StateMachine.beginStateMachine(GhostState.class, PacManGameEvent.class)
 			 
 			.description(this::toString)
 			.initialState(LOCKED)
@@ -105,7 +79,9 @@ public class Ghost extends Creature<GhostState> {
 						points = 0;
 						world.putIntoBed(this);
 						enteredNewTile();
-						sanity.init();
+						if (sanityControl != null) {
+							sanityControl.init();
+						}
 					})
 					.onTick(() -> {
 						move();
@@ -126,20 +102,19 @@ public class Ghost extends Creature<GhostState> {
 				
 				.state(SCATTERING)
 					.onTick(() -> {
-						sanity.update();
+						updateSanity();
 						move();
 						checkPacManCollision();
 					})
 			
 				.state(CHASING)
 					.onTick(() -> {
-						sanity.update();
+						updateSanity();
 						move();
 						checkPacManCollision();
 					})
 				
 				.state(FRIGHTENED)
-					.timeoutAfter(() -> sec(game.level.pacManPowerSeconds))
 					.onTick((state, t, remaining) -> {
 						move();
 						// one flashing animation takes 0.5 sec
@@ -218,7 +193,26 @@ public class Ghost extends Creature<GhostState> {
 		/*@formatter:on*/
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
-		sanity.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+	}
+
+	@Override
+	public void takePartIn(Game game) {
+		this.game = game;
+		state(FRIGHTENED).setTimer(() -> sec(game.level.pacManPowerSeconds));
+		if (name.equals("Blinky")) {
+			sanityControl = new GhostSanityControl(game, "Blinky", GhostSanity.INFECTABLE);
+			sanityControl.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+		}
+	}
+
+	public GhostSanity getSanity() {
+		return sanityControl != null ? sanityControl.getState() : GhostSanity.IMMUNE;
+	}
+
+	private void updateSanity() {
+		if (sanityControl != null) {
+			sanityControl.update();
+		}
 	}
 
 	/**
