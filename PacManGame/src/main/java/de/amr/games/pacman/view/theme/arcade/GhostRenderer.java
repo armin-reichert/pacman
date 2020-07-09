@@ -50,10 +50,10 @@ public class GhostRenderer extends SpriteRenderer implements IRenderer {
 				}
 				break;
 			case FRIGHTENED:
-				selectSprite(ghost.flashing ? "flashing" : "frightened");
+				selectSprite(ghost.isFlashing() ? "flashing" : "frightened");
 				break;
 			case DEAD:
-				selectSprite(ghost.points == 0 ? "eyes-" + ghost.moveDir() : "points-" + ghost.points);
+				selectSprite(ghost.getBounty() == 0 ? "eyes-" + ghost.moveDir() : "points-" + ghost.getBounty());
 				break;
 			case ENTERING_HOUSE:
 				selectSprite("eyes-" + ghost.moveDir());

@@ -58,10 +58,10 @@ public class Ghost extends Creature<GhostState> {
 	/** Ghost color as defined in {@link Themes}. */
 	public int color;
 
-	/** Value when eaten */
-	public int points;
+	/** Value when killed by Pac-Man. */
+	private int bounty;
 
-	public boolean flashing;
+	private boolean flashing;
 
 	private IRenderer renderer;
 
@@ -80,7 +80,7 @@ public class Ghost extends Creature<GhostState> {
 						subsequentState = LOCKED;
 						visible = true;
 						flashing = false;
-						points = 0;
+						bounty = 0;
 						world.putIntoBed(this);
 						enteredNewTile();
 						if (sanityControl != null) {
@@ -203,10 +203,10 @@ public class Ghost extends Creature<GhostState> {
 		// when dead, the ghost first appears as a number (its value) for one second, then it
 		// appears as eyes returning to the ghost house
 		state(DEAD).setTimer(sec(1));
-		state(DEAD).setOnEntry(() -> points = game.killedGhostPoints());
+		state(DEAD).setOnEntry(() -> bounty = game.killedGhostPoints());
 		state(DEAD).setOnTick((s, consumed, remaining) -> {
 			if (remaining == 0) {
-				points = 0;
+				bounty = 0;
 				move();
 			}
 		});
@@ -226,6 +226,18 @@ public class Ghost extends Creature<GhostState> {
 		if (sanityControl != null) {
 			sanityControl.update();
 		}
+	}
+
+	public int getBounty() {
+		return bounty;
+	}
+
+	public void setBounty(int bounty) {
+		this.bounty = bounty;
+	}
+
+	public boolean isFlashing() {
+		return flashing;
 	}
 
 	/**

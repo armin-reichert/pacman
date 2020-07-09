@@ -42,7 +42,7 @@ class GhostRenderer implements IRenderer {
 			drawColored(g);
 			break;
 		case FRIGHTENED:
-			if (ghost.flashing) {
+			if (ghost.isFlashing()) {
 				drawFlashing(g);
 			} else {
 				drawFrightened(g);
@@ -50,7 +50,7 @@ class GhostRenderer implements IRenderer {
 			break;
 		case DEAD:
 		case ENTERING_HOUSE:
-			if (ghost.points > 0) {
+			if (ghost.getBounty() > 0) {
 				drawPoints(g);
 			} else {
 				drawEyes(g);
@@ -77,7 +77,7 @@ class GhostRenderer implements IRenderer {
 	private void drawPoints(Graphics2D g) {
 		g.setColor(Color.GREEN);
 		g.setFont(font);
-		g.drawString(ghost.points + "", (int) ghost.tf.x, (int) ghost.tf.y);
+		g.drawString(ghost.getBounty() + "", (int) ghost.tf.x, (int) ghost.tf.y);
 	}
 
 	private void drawFrightened(Graphics2D g) {

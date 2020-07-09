@@ -147,7 +147,7 @@ public class GhostPointsAnimation extends GameObject {
 				} else {
 					sounds.snd_eatGhost().play();
 					ghosts[ghostToKill].setState(GhostState.DEAD);
-					ghosts[ghostToKill].points = POINTS_GHOST[ghostToKill];
+					ghosts[ghostToKill].setBounty(POINTS_GHOST[ghostToKill]);
 					killed.set(ghostToKill);
 					ghostToKill = ghostToKill + 1;
 					resetGhostTimer();
