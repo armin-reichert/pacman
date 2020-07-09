@@ -8,8 +8,6 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
 
 import de.amr.easy.game.entity.GameObject;
 import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
@@ -23,8 +21,6 @@ import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.core.IPacManRenderer;
-import de.amr.games.pacman.view.core.IRenderer;
 import de.amr.games.pacman.view.core.Theme;
 
 /**
@@ -39,9 +35,6 @@ public class GhostPointsAnimation extends GameObject {
 	private final ArcadeGameFolks folks = new ArcadeGameFolks();
 	private final Ghost[] ghosts = folks.ghosts().toArray(Ghost[]::new);
 	private final PacManSounds sounds;
-
-	private Map<Creature<?>, IRenderer> renderers = new HashMap<>();
-
 	private final BitSet killed = new BitSet(5);
 	private int ghostToKill;
 	private int ghostTimer;
@@ -51,15 +44,16 @@ public class GhostPointsAnimation extends GameObject {
 	public GhostPointsAnimation(Theme theme, PacManSounds sounds) {
 		this.sounds = sounds;
 		folks.populate(world);
-		renderers.put(folks.pacMan(), theme.createPacManRenderer(folks.pacMan()));
-		folks.ghosts().forEach(ghost -> renderers.put(ghost, theme.createGhostRenderer(ghost)));
+		folks.pacMan().setRenderer(theme.createPacManRenderer(folks.pacMan()));
+		folks.ghosts().forEach(ghost -> ghost.setRenderer(theme.createGhostRenderer(ghost)));
 		tf.width = 90;
 		tf.height = 18;
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		renderers.values().forEach(r -> r.render(g));
+		folks.pacMan().getRenderer().render(g);
+		folks.ghosts().map(Ghost::getRenderer).forEach(r -> r.render(g));
 		int dx = 2 * Tile.SIZE + 2;
 		g.translate(tf.x + dx, tf.y);
 		renderPellet(g);
@@ -96,8 +90,7 @@ public class GhostPointsAnimation extends GameObject {
 		folks.pacMan().setMoveDir(Direction.RIGHT);
 		folks.pacMan().setState(PacManState.RUNNING);
 		folks.pacMan().setSpeedLimit(() -> 0f);
-		IPacManRenderer r = (IPacManRenderer) renderers.get(folks.pacMan());
-		r.stopAnimationWhenStanding(false);
+		folks.pacMan().getRenderer().stopAnimationWhenStanding(false);
 
 		folks.ghosts().forEach(ghost -> {
 			ghost.setSpeedLimit(() -> 0f);

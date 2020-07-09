@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import de.amr.easy.game.entity.GameObject;
 import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
@@ -19,8 +17,6 @@ import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.core.IPacManRenderer;
-import de.amr.games.pacman.view.core.IRenderer;
 import de.amr.games.pacman.view.core.Theme;
 
 public class ChasePacManAnimation extends GameObject {
@@ -31,16 +27,15 @@ public class ChasePacManAnimation extends GameObject {
 
 	private World world = Universe.arcadeWorld();
 	private ArcadeGameFolks folks = new ArcadeGameFolks();
-	private PacManSounds pacManSounds;
-	private Map<Creature<?>, IRenderer> renderers = new LinkedHashMap<>();
+	private PacManSounds sounds;
 	private long pelletTimer;
 	private PelletDisplay pelletDisplay;
 
-	public ChasePacManAnimation(Theme theme, PacManSounds pacManSounds) {
-		this.pacManSounds = pacManSounds;
+	public ChasePacManAnimation(Theme theme, PacManSounds sounds) {
+		this.sounds = sounds;
 		folks.populate(world);
-		folks.ghosts().forEach(ghost -> renderers.put(ghost, theme.createGhostRenderer(ghost)));
-		renderers.put(folks.pacMan(), theme.createPacManRenderer(folks.pacMan()));
+		folks.ghosts().forEach(ghost -> ghost.setRenderer(theme.createGhostRenderer(ghost)));
+		folks.pacMan().setRenderer(theme.createPacManRenderer(folks.pacMan()));
 	}
 
 	public ArcadeGameFolks folks() {
@@ -61,8 +56,7 @@ public class ChasePacManAnimation extends GameObject {
 		folks.pacMan().setMoveDir(Direction.LEFT);
 		folks.pacMan().setSpeedLimit(() -> 3f);
 		folks.pacMan().setState(PacManState.RUNNING);
-		IPacManRenderer r = (IPacManRenderer) renderers.get(folks.pacMan());
-		r.stopAnimationWhenStanding(false);
+		folks.pacMan().getRenderer().stopAnimationWhenStanding(false);
 
 		folks.ghosts().forEach(ghost -> {
 			ghost.tf.setVelocity(-0.55f, 0);
@@ -105,12 +99,12 @@ public class ChasePacManAnimation extends GameObject {
 	@Override
 	public void start() {
 		init();
-		pacManSounds.snd_ghost_chase().loop();
+		sounds.snd_ghost_chase().loop();
 	}
 
 	@Override
 	public void stop() {
-		pacManSounds.snd_ghost_chase().stop();
+		sounds.snd_ghost_chase().stop();
 		folks.all().forEach(c -> c.tf.vx = 0);
 	}
 
@@ -121,7 +115,8 @@ public class ChasePacManAnimation extends GameObject {
 
 	@Override
 	public void draw(Graphics2D g) {
-		renderers.forEach((c, r) -> r.render(g));
+		folks.pacMan().getRenderer().render(g);
+		folks.ghosts().map(Ghost::getRenderer).forEach(r -> r.render(g));
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		int x = (int) folks.pacMan().tf.x - Tile.SIZE;
 		int y = (int) folks.pacMan().tf.y;

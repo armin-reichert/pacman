@@ -1,8 +1,6 @@
 package de.amr.games.pacman.view.intro;
 
 import java.awt.Graphics2D;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import de.amr.easy.game.entity.GameObject;
 import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
@@ -16,7 +14,6 @@ import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.core.IRenderer;
 import de.amr.games.pacman.view.core.Theme;
 
 public class ChaseGhostsAnimation extends GameObject {
@@ -24,13 +21,12 @@ public class ChaseGhostsAnimation extends GameObject {
 	private World world = Universe.arcadeWorld();
 	private ArcadeGameFolks folks = new ArcadeGameFolks();
 	private PacManSounds pacManSounds;
-	private Map<Creature<?>, IRenderer> renderers = new LinkedHashMap<>();
 	private int points;
 
 	public ChaseGhostsAnimation(Theme theme, PacManSounds pacManSounds) {
 		folks.populate(world);
-		folks.ghosts().forEach(ghost -> renderers.put(ghost, theme.createGhostRenderer(ghost)));
-		renderers.put(folks.pacMan(), theme.createPacManRenderer(folks.pacMan()));
+		folks.ghosts().forEach(ghost -> ghost.setRenderer(theme.createGhostRenderer(ghost)));
+		folks.pacMan().setRenderer(theme.createPacManRenderer(folks.pacMan()));
 		this.pacManSounds = pacManSounds;
 	}
 
@@ -50,12 +46,12 @@ public class ChaseGhostsAnimation extends GameObject {
 		Game game = new Game(1, 244);
 		folks.takePartIn(game);
 		folks.all().forEach(Creature::init);
-		
+
 		folks.pacMan().setSpeedLimit(() -> 3f);
 		folks.pacMan().setMoveDir(Direction.RIGHT);
 		folks.pacMan().tf.vx = 0.8f;
 		folks.pacMan().setState(PacManState.RUNNING);
-		
+
 		folks.ghosts().forEach(ghost -> {
 			ghost.setMoveDir(Direction.RIGHT);
 			ghost.tf.setVelocity(0.55f, 0);
@@ -91,6 +87,7 @@ public class ChaseGhostsAnimation extends GameObject {
 
 	@Override
 	public void draw(Graphics2D g) {
-		renderers.forEach((c, r) -> r.render(g));
+		folks.ghosts().map(Ghost::getRenderer).forEach(r -> r.render(g));
+		folks.pacMan().getRenderer().render(g);
 	}
 }
