@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.theme.IPacManRenderer;
+import de.amr.games.pacman.view.core.IPacManRenderer;
 
 class PacManRenderer implements IPacManRenderer {
 

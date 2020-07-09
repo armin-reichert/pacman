@@ -8,7 +8,7 @@ import java.awt.RenderingHints;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.theme.IRenderer;
+import de.amr.games.pacman.view.core.IRenderer;
 
 public class ScoreRenderer implements IRenderer {
 

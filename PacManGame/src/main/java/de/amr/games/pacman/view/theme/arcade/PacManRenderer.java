@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.world.Direction;
-import de.amr.games.pacman.view.theme.IPacManRenderer;
+import de.amr.games.pacman.view.core.IPacManRenderer;
 
 public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 

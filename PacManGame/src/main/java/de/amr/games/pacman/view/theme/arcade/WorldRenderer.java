@@ -16,8 +16,8 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Door.DoorState;
+import de.amr.games.pacman.view.core.IWorldRenderer;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.theme.IWorldRenderer;
 
 public class WorldRenderer implements IWorldRenderer {
 

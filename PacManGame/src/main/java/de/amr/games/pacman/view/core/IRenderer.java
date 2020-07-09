@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.theme;
+package de.amr.games.pacman.view.core;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
