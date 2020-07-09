@@ -30,6 +30,7 @@ import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.OneWayTile;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.view.core.IRenderer;
 import de.amr.games.pacman.view.theme.Themes;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -60,6 +61,8 @@ public class Ghost extends Creature<GhostState> {
 	public int points;
 
 	public boolean flashing;
+
+	private IRenderer renderer;
 
 	public Ghost(String name) {
 		super(name, new EnumMap<>(GhostState.class));
@@ -186,6 +189,14 @@ public class Ghost extends Creature<GhostState> {
 		/*@formatter:on*/
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+	}
+
+	public void setRenderer(IRenderer renderer) {
+		this.renderer = renderer;
+	}
+
+	public IRenderer getRenderer() {
+		return renderer;
 	}
 
 	@Override

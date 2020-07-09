@@ -25,6 +25,7 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.view.core.IPacManRenderer;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
@@ -42,6 +43,8 @@ public class PacMan extends Creature<PacManState> {
 
 	/** If Pac-Man is dying and collapsing. */
 	public boolean collapsing;
+
+	private IPacManRenderer renderer;
 
 	public PacMan() {
 		super("Pac-Man", new EnumMap<>(PacManState.class));
@@ -98,6 +101,14 @@ public class PacMan extends Creature<PacManState> {
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		brain.doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
 		brain.doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
+	}
+
+	public IPacManRenderer getRenderer() {
+		return renderer;
+	}
+
+	public void setRenderer(IPacManRenderer renderer) {
+		this.renderer = renderer;
 	}
 
 	@Override

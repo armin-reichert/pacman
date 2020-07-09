@@ -6,8 +6,6 @@ import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.util.HashMap;
-import java.util.Map;
 
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.games.pacman.controller.GhostCommand;
@@ -48,8 +46,6 @@ public class PlayView implements LivingView {
 	private IRenderer liveCounterRenderer;
 	private IRenderer levelCounterRenderer;
 	private MessagesRenderer messagesRenderer;
-	private IRenderer pacManRenderer;
-	private Map<Ghost, IRenderer> ghostRenderer = new HashMap<>();
 	private FrameRateWidget frameRateDisplay;
 
 	private boolean showingScores;
@@ -86,8 +82,8 @@ public class PlayView implements LivingView {
 			liveCounterRenderer = theme.createLiveCounterRenderer(world, game);
 			levelCounterRenderer = theme.createLevelCounterRenderer(world, game);
 			scoreRenderer = theme.createScoreRenderer(world, game);
-			pacManRenderer = theme.createPacManRenderer(world.population().pacMan());
-			world.population().ghosts().forEach(ghost -> ghostRenderer.put(ghost, theme.createGhostRenderer(ghost)));
+			world.population().pacMan().setRenderer(theme.createPacManRenderer(world.population().pacMan()));
+			world.population().ghosts().forEach(ghost -> ghost.setRenderer(theme.createGhostRenderer(ghost)));
 			scoreRenderer = theme.createScoreRenderer(world, game);
 			messagesRenderer = theme.createMessagesRenderer();
 		}
@@ -164,7 +160,7 @@ public class PlayView implements LivingView {
 	}
 
 	public void enableGhostAnimations(boolean enabled) {
-		world.population().ghosts().map(ghostRenderer::get).forEach(renderer -> renderer.enableAnimation(enabled));
+		world.population().ghosts().map(Ghost::getRenderer).forEach(r -> r.enableAnimation(enabled));
 	}
 
 	public void turnScoresOn() {
@@ -245,12 +241,11 @@ public class PlayView implements LivingView {
 	}
 
 	private void drawActors(Graphics2D g) {
-		pacManRenderer.render(g);
-		// draw dead ghosts (as number or eyes) under living ghosts
+		world.population().pacMan().getRenderer().render(g);
 		world.population().ghosts().filter(world::included).filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
-				.forEach(ghost -> ghostRenderer.get(ghost).render(g));
+				.map(Ghost::getRenderer).forEach(r -> r.render(g));
 		world.population().ghosts().filter(world::included).filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
-				.forEach(ghost -> ghostRenderer.get(ghost).render(g));
+				.map(Ghost::getRenderer).forEach(r -> r.render(g));
 	}
 
 	private void drawScores(Graphics2D g) {
