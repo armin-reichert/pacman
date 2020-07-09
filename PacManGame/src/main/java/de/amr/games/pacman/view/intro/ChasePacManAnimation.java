@@ -13,7 +13,7 @@ import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacManState;
-import de.amr.games.pacman.controller.sound.PacManSoundManager;
+import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.Universe;
@@ -31,12 +31,12 @@ public class ChasePacManAnimation extends GameObject {
 
 	private World world = Universe.arcadeWorld();
 	private ArcadeGameFolks folks = new ArcadeGameFolks();
-	private PacManSoundManager pacManSounds;
+	private PacManSounds pacManSounds;
 	private Map<Creature<?>, IRenderer> renderers = new LinkedHashMap<>();
 	private long pelletTimer;
 	private PelletDisplay pelletDisplay;
 
-	public ChasePacManAnimation(Theme theme, PacManSoundManager pacManSounds) {
+	public ChasePacManAnimation(Theme theme, PacManSounds pacManSounds) {
 		this.pacManSounds = pacManSounds;
 		folks.populate(world);
 		folks.ghosts().forEach(ghost -> renderers.put(ghost, theme.createGhostRenderer(ghost)));
@@ -62,7 +62,7 @@ public class ChasePacManAnimation extends GameObject {
 		folks.pacMan().setSpeedLimit(() -> 3f);
 		folks.pacMan().setState(PacManState.RUNNING);
 		IPacManRenderer r = (IPacManRenderer) renderers.get(folks.pacMan());
-		r.setAnimationStoppedWhenStanding(false);
+		r.stopAnimationWhenStanding(false);
 
 		folks.ghosts().forEach(ghost -> {
 			ghost.tf.setVelocity(-0.55f, 0);

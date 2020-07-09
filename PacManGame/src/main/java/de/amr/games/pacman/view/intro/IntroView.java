@@ -20,7 +20,7 @@ import de.amr.easy.game.ui.widgets.LinkWidget;
 import de.amr.easy.game.view.Pen;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
-import de.amr.games.pacman.controller.sound.PacManSoundManager;
+import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
@@ -49,7 +49,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 //	PINK = (248, 120, 88);
 
 	private final World world;
-	private final PacManSoundManager soundManager;
+	private final PacManSounds sounds;
 	private final int width;
 	private final int height;
 
@@ -62,12 +62,12 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 
 	private MessagesRenderer messagesRenderer;
 
-	public IntroView(World world, Theme theme, PacManSoundManager soundManager, int width, int height) {
+	public IntroView(World world, Theme theme, PacManSounds soundManager, int width, int height) {
 		super(IntroState.class);
 		this.world = world;
 		this.theme = theme;
 		this.messagesRenderer = theme.createMessagesRenderer();
-		this.soundManager = soundManager;
+		this.sounds = soundManager;
 		this.width = width;
 		this.height = height;
 		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
@@ -111,7 +111,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 
 		@Override
 		public void onEntry() {
-			soundManager.snd_insertCoin().play();
+			sounds.snd_insertCoin().play();
 			pacManLogo.tf.y = height;
 			pacManLogo.tf.vy = -2f;
 			pacManLogo.setCompletion(() -> pacManLogo.tf.y <= 20);
@@ -217,11 +217,11 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 		pacManLogo = new ImageWidget(assets.image_logo());
 		pacManLogo.tf.centerX(width);
 		pacManLogo.tf.y = 20;
-		chasePacMan = new ChasePacManAnimation(theme, soundManager);
+		chasePacMan = new ChasePacManAnimation(theme, sounds);
 		chasePacMan.tf.centerX(width);
 		chasePacMan.tf.y = 100;
-		chaseGhosts = new ChaseGhostsAnimation(theme, soundManager);
-		ghostPointsAnimation = new GhostPointsAnimation(assets, soundManager);
+		chaseGhosts = new ChaseGhostsAnimation(theme, sounds);
+		ghostPointsAnimation = new GhostPointsAnimation(theme, sounds);
 		gitHubLink = LinkWidget.create()
 		/*@formatter:off*/
 			.text("https://github.com/armin-reichert/pacman")
@@ -253,7 +253,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 	}
 
 	private void drawScreenModeText(Graphics2D g, int row) {
-		String text = "F11 - " + Localized.texts.getString(app().inFullScreenMode() ? "window_mode" : "fullscreen_mode");
+		String text = "F11-" + Localized.texts.getString(app().inFullScreenMode() ? "window_mode" : "fullscreen_mode");
 		messagesRenderer.setRow(row);
 		messagesRenderer.setTextColor(Color.ORANGE);
 		messagesRenderer.drawCentered(g, text, world.width());
@@ -272,7 +272,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 			FontMetrics fm = pen.getFontMetrics();
 			int[] w = { fm.stringWidth(texts[0]), fm.stringWidth(texts[1]), fm.stringWidth(texts[2]) };
 			float s = (width - (w[0] + w[1] + w[2])) / 4f;
-			float[] x = { s, 2 * s + w[0], 3 * s + w[1] + w[2] };
+			float[] x = { s, s + w[0] + s, s + w[0] + s + w[1] + s };
 			int selectedSpeed = Arrays.asList(60, 70, 80).indexOf(app().clock().getTargetFramerate());
 			for (int i = 0; i < 3; ++i) {
 				pen.color(selectedSpeed == i ? ORANGE : RED);

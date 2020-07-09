@@ -10,7 +10,7 @@ import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacManState;
-import de.amr.games.pacman.controller.sound.PacManSoundManager;
+import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.Universe;
@@ -23,11 +23,11 @@ public class ChaseGhostsAnimation extends GameObject {
 
 	private World world = Universe.arcadeWorld();
 	private ArcadeGameFolks folks = new ArcadeGameFolks();
-	private PacManSoundManager pacManSounds;
+	private PacManSounds pacManSounds;
 	private Map<Creature<?>, IRenderer> renderers = new LinkedHashMap<>();
 	private int points;
 
-	public ChaseGhostsAnimation(Theme theme, PacManSoundManager pacManSounds) {
+	public ChaseGhostsAnimation(Theme theme, PacManSounds pacManSounds) {
 		folks.populate(world);
 		folks.ghosts().forEach(ghost -> renderers.put(ghost, theme.createGhostRenderer(ghost)));
 		renderers.put(folks.pacMan(), theme.createPacManRenderer(world));

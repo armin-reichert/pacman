@@ -14,7 +14,7 @@ import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.controller.sound.PacManSoundManager;
+import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.World;
@@ -29,7 +29,7 @@ public class TestUI implements Lifecycle, VisualController {
 	protected final ArcadeGameFolks folks;
 	protected final PacMan pacMan;
 	protected final Ghost blinky, pinky, inky, clyde;
-	protected final PacManSoundManager soundManager;
+	protected final PacManSounds soundManager;
 	protected PlayView view;
 	protected Theme[] themes = { Themes.ARCADE_THEME, Themes.BLOCKS_THEME, Themes.ASCII_THEME };
 	protected int currentThemeIndex = 0;
@@ -59,7 +59,7 @@ public class TestUI implements Lifecycle, VisualController {
 		inky = folks.inky();
 		clyde = folks.clyde();
 
-		soundManager = new PacManSoundManager(world, folks);
+		soundManager = new PacManSounds(world, folks);
 
 		game = new Game(1, world.totalFoodCount());
 		folks.takePartIn(game);

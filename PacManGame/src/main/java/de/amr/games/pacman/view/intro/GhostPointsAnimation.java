@@ -1,17 +1,31 @@
 package de.amr.games.pacman.view.intro;
 
+import static de.amr.games.pacman.model.game.Game.POINTS_GHOST;
 import static de.amr.games.pacman.model.game.Game.sec;
-import static de.amr.games.pacman.model.world.Direction.RIGHT;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.amr.easy.game.entity.GameObject;
-import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.controller.sound.PacManSoundManager;
-import de.amr.games.pacman.view.theme.arcade.ArcadeThemeAssets;
+import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
+import de.amr.games.pacman.controller.actor.Creature;
+import de.amr.games.pacman.controller.actor.Ghost;
+import de.amr.games.pacman.controller.actor.GhostState;
+import de.amr.games.pacman.controller.actor.PacManState;
+import de.amr.games.pacman.controller.sound.PacManSounds;
+import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.Universe;
+import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.view.theme.IPacManRenderer;
+import de.amr.games.pacman.view.theme.IRenderer;
+import de.amr.games.pacman.view.theme.Theme;
 
 /**
  * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the
@@ -21,27 +35,88 @@ import de.amr.games.pacman.view.theme.arcade.ArcadeThemeAssets;
  */
 public class GhostPointsAnimation extends GameObject {
 
-	private final PacManSoundManager soundManager;
-	private final Sprite pacMan;
-	private final Sprite ghost;
-	private final Sprite[] points = new Sprite[4];
+	private final World world = Universe.arcadeWorld();
+	private final ArcadeGameFolks folks = new ArcadeGameFolks();
+	private final Ghost[] ghosts = folks.ghosts().toArray(Ghost[]::new);
+	private final PacManSounds sounds;
+
+	private Map<Creature<?>, IRenderer> renderers = new HashMap<>();
+
 	private final BitSet killed = new BitSet(5);
-	private int killNext = 0;
+	private int ghostToKill;
 	private int ghostTimer;
 	private int energizerTimer;
 	private boolean energizer;
 
-	public GhostPointsAnimation(ArcadeThemeAssets assets, PacManSoundManager soundManager) {
-		this.soundManager = soundManager;
-		pacMan = assets.makeSprite_pacManWalking(RIGHT);
-		ghost = assets.makeSprite_ghostFrightened();
-		int i = 0;
-		for (int number : new int[] { 200, 400, 800, 1600 }) {
-			points[i++] = assets.makeSprite_number(number);
+	public GhostPointsAnimation(Theme theme, PacManSounds sounds) {
+		this.sounds = sounds;
+		folks.populate(world);
+		renderers.put(folks.pacMan(), theme.createPacManRenderer(world));
+		folks.ghosts().forEach(ghost -> renderers.put(ghost, theme.createGhostRenderer(ghost)));
+		tf.width = 90;
+		tf.height = 18;
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		renderers.values().forEach(r -> r.render(g));
+		int dx = 2 * Tile.SIZE + 2;
+		g.translate(tf.x + dx, tf.y);
+		renderPellet(g);
+		g.translate(-(tf.x + dx), -tf.y);
+	}
+
+	public void renderPellet(Graphics2D g) {
+		if (energizer) {
+			g.setColor(Color.PINK);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.fillOval(0, 0, 8, 8);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		} else {
+			g.setColor(Color.PINK);
+			g.setFont(new Font("Arial", Font.BOLD, 8));
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			g.drawString("50", 0, 7);
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 		}
+	}
+
+	@Override
+	public void init() {
 		ghostTimer = -1;
-		tf.width = (90);
-		tf.height = (18);
+		killed.clear();
+		ghostToKill = 0;
+		energizer = true;
+
+		// TODO game should not be needed
+		Game game = new Game(1, 244);
+		folks.takePartIn(game);
+		folks.all().forEach(Creature::init);
+
+		folks.pacMan().setMoveDir(Direction.RIGHT);
+		folks.pacMan().setState(PacManState.RUNNING);
+		folks.pacMan().setSpeedLimit(() -> 0f);
+		IPacManRenderer r = (IPacManRenderer) renderers.get(folks.pacMan());
+		r.stopAnimationWhenStanding(false);
+
+		folks.ghosts().forEach(ghost -> {
+			ghost.setSpeedLimit(() -> 0f);
+			ghost.setState(GhostState.FRIGHTENED);
+			ghost.state().removeTimer();
+		});
+
+		initPositions();
+	}
+
+	private void initPositions() {
+		int dx = 2 * Tile.SIZE + 2;
+		float x = tf.x;
+		folks.pacMan().tf.setPosition(x, tf.y);
+		x += 2 * dx; // space for drawing pellet
+		for (int i = 0; i < ghosts.length; ++i) {
+			ghosts[i].tf.setPosition(x, tf.y);
+			x += dx;
+		}
 	}
 
 	private void resetGhostTimer() {
@@ -50,13 +125,6 @@ public class GhostPointsAnimation extends GameObject {
 
 	private void resetEnergizerTimer() {
 		energizerTimer = sec(0.5f);
-	}
-
-	@Override
-	public void init() {
-		killed.clear();
-		killNext = 0;
-		energizer = true;
 	}
 
 	@Override
@@ -80,15 +148,17 @@ public class GhostPointsAnimation extends GameObject {
 	public void update() {
 		if (ghostTimer > 0) {
 			ghostTimer -= 1;
-		}
-		if (ghostTimer == 0) {
-			killed.set(killNext);
-			killNext = killNext + 1;
-			if (killed.cardinality() == 5) {
-				stop();
-			} else {
-				soundManager.snd_eatGhost().play();
-				resetGhostTimer();
+			if (ghostTimer == 0) {
+				if (ghostToKill == 4) {
+					stop();
+				} else {
+					sounds.snd_eatGhost().play();
+					ghosts[ghostToKill].setState(GhostState.DEAD);
+					ghosts[ghostToKill].points = POINTS_GHOST[ghostToKill];
+					killed.set(ghostToKill);
+					ghostToKill = ghostToKill + 1;
+					resetGhostTimer();
+				}
 			}
 		}
 		if (energizerTimer > 0) {
@@ -98,36 +168,5 @@ public class GhostPointsAnimation extends GameObject {
 			energizer = !energizer;
 			resetEnergizerTimer();
 		}
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
-		g = (Graphics2D) g.create();
-		g.translate(tf.x, tf.y);
-		int x = 0;
-		pacMan.draw(g);
-		x += 12;
-		g.translate(x, 0);
-		if (energizer) {
-			g.setColor(Color.PINK);
-			g.fillOval(4, 4, 8, 8);
-		} else {
-			g.setColor(Color.PINK);
-			g.setFont(new Font("Arial", Font.BOLD, 8));
-			g.drawString("50", 4, 12);
-		}
-		g.translate(-x, 0);
-		for (int i = 0; i < 4; ++i) {
-			x += 18;
-			g.translate(x, 0);
-			if (killed.get(i)) {
-				points[i].draw(g);
-			} else {
-				ghost.draw(g);
-			}
-			g.translate(-x, 0);
-		}
-		g.translate(-tf.x, -tf.y);
-		g.dispose();
 	}
 }

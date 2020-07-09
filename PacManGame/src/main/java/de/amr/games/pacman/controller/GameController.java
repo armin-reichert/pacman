@@ -43,7 +43,7 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
-import de.amr.games.pacman.controller.sound.PacManSoundManager;
+import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.Universe;
@@ -66,7 +66,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	protected World world;
 	protected ArcadeGameFolks folks;
-	protected PacManSoundManager soundManager;
+	protected PacManSounds soundManager;
 
 	protected GhostCommand ghostCommand;
 	protected GhostHouseDoorMan doorMan;
@@ -423,7 +423,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		loginfo("Initializing game controller");
 		selectTheme(settings.theme);
 		createWorldAndPopulation();
-		soundManager = new PacManSoundManager(world, folks);
+		soundManager = new PacManSounds(world, folks);
 		folks.all().forEach(creature -> creature.addEventListener(this::process));
 		super.init();
 	}

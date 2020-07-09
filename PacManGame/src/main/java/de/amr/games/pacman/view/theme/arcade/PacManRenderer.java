@@ -11,6 +11,7 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 
 	private final World world;
 	private final PacMan pacMan;
+	private boolean stopAnimationWhenStanding;
 
 	public PacManRenderer(World world) {
 		this.world = world;
@@ -20,6 +21,17 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 		sprites.set("collapsing", assets.makeSprite_pacManDying());
 		sprites.set("full", assets.makeSprite_pacManFull());
 		sprites.select("full");
+		stopAnimationWhenStanding = true;
+	}
+
+	@Override
+	public void stopAnimationWhenStanding(boolean b) {
+		stopAnimationWhenStanding = b;
+	}
+
+	@Override
+	public boolean isAnimationStoppedWhenStanding() {
+		return stopAnimationWhenStanding;
 	}
 
 	@Override
@@ -38,8 +50,8 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 				break;
 			case RUNNING:
 				selectSprite("walking-" + pacMan.moveDir());
-				boolean standing = pacMan.tf.vx == 0 && pacMan.tf.vy == 0; 
-				enableAnimation(!(standing && isAnimationStoppedWhenStanding()));
+				boolean running = pacMan.tf.vx != 0 || pacMan.tf.vy != 0;
+				enableAnimation(running || !running && !isAnimationStoppedWhenStanding());
 				break;
 			case SLEEPING:
 				selectSprite("full");

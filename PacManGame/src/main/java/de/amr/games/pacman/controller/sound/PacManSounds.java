@@ -14,14 +14,14 @@ import de.amr.games.pacman.model.world.api.World;
  * 
  * @author Armin Reichert
  */
-public class PacManSoundManager {
+public class PacManSounds {
 
 	private final World world;
 	private final ArcadeGameFolks folks;
 	private CompletableFuture<Void> musicLoading;
 	private long lastPelletEatenTimeMillis;
 
-	public PacManSoundManager(World world, ArcadeGameFolks folks) {
+	public PacManSounds(World world, ArcadeGameFolks folks) {
 		this.world = world;
 		this.folks = folks;
 	}

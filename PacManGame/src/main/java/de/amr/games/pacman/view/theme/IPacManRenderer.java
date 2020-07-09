@@ -6,6 +6,6 @@ public interface IPacManRenderer extends IRenderer {
 		return true;
 	}
 
-	default void setAnimationStoppedWhenStanding(boolean b) {
+	default void stopAnimationWhenStanding(boolean b) {
 	}
 }
