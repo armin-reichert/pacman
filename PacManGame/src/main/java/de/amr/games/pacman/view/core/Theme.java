@@ -1,12 +1,9 @@
-package de.amr.games.pacman.view.theme;
+package de.amr.games.pacman.view.core;
 
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.view.core.IPacManRenderer;
-import de.amr.games.pacman.view.core.IRenderer;
-import de.amr.games.pacman.view.core.IWorldRenderer;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 
 public interface Theme {

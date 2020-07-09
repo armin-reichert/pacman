@@ -3,6 +3,7 @@ package de.amr.games.pacman.view.theme;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.view.core.Theme;
 import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
 import de.amr.games.pacman.view.theme.ascii.AsciiTheme;
 import de.amr.games.pacman.view.theme.blocks.BlocksTheme;

@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.GameController;
+import de.amr.games.pacman.view.core.Theme;
 import de.amr.games.pacman.view.play.PlayView;
-import de.amr.games.pacman.view.theme.Theme;
 import de.amr.games.pacman.view.theme.Themes;
 import net.miginfocom.swing.MigLayout;
 

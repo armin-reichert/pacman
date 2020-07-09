@@ -25,7 +25,7 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.core.IPacManRenderer;
 import de.amr.games.pacman.view.core.IRenderer;
-import de.amr.games.pacman.view.theme.Theme;
+import de.amr.games.pacman.view.core.Theme;
 
 /**
  * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the

@@ -17,7 +17,7 @@ import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.core.IRenderer;
-import de.amr.games.pacman.view.theme.Theme;
+import de.amr.games.pacman.view.core.Theme;
 
 public class ChaseGhostsAnimation extends GameObject {
 

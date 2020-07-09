@@ -17,7 +17,7 @@ import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.core.IRenderer;
 import de.amr.games.pacman.view.core.LivingView;
-import de.amr.games.pacman.view.theme.Theme;
+import de.amr.games.pacman.view.core.Theme;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 
 /**
