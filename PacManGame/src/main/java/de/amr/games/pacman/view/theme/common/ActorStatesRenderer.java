@@ -94,7 +94,7 @@ public class ActorStatesRenderer implements IRenderer {
 			text.append(String.format("(%s,%s)", ghost.getState(), Rendering.INFTY));
 		}
 		if (ghost.is(LEAVING_HOUSE)) {
-			text.append(String.format("[->%s]", ghost.subsequentState));
+			text.append(String.format("[->%s]", ghost.getNextStateToEnter()));
 		}
 		drawEntityState(g, ghost, text.toString(), ghostColor(ghost));
 	}

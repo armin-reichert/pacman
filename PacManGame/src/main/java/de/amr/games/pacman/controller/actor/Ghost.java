@@ -15,6 +15,7 @@ import static de.amr.games.pacman.model.world.Direction.UP;
 
 import java.util.EnumMap;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.steering.Steering;
@@ -46,11 +47,11 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends Creature<GhostState> {
 
-	public GhostState subsequentState;
+	private Supplier<GhostState> fnSubsequentState;
+	private GhostSanityControl sanityControl;
 	private Steering previousSteering;
 	private int color;
 	private int bounty;
-	private GhostSanityControl sanityControl;
 	private boolean flashing;
 	private IRenderer renderer;
 
@@ -66,7 +67,7 @@ public class Ghost extends Creature<GhostState> {
 	
 				.state(LOCKED)
 					.onEntry(() -> {
-						subsequentState = LOCKED;
+						fnSubsequentState = () -> LOCKED;
 						visible = true;
 						flashing = false;
 						bounty = 0;
@@ -118,10 +119,10 @@ public class Ghost extends Creature<GhostState> {
 					.on(GhostUnlockedEvent.class)
 			
 				.when(LEAVING_HOUSE).then(SCATTERING)
-					.condition(() -> hasLeftGhostHouse() && subsequentState == SCATTERING)
+					.condition(() -> hasLeftGhostHouse() && fnSubsequentState.get() == SCATTERING)
 				
 				.when(LEAVING_HOUSE).then(CHASING)
-					.condition(() -> hasLeftGhostHouse() && subsequentState == CHASING)
+					.condition(() -> hasLeftGhostHouse() && fnSubsequentState.get() == CHASING)
 				
 				.when(ENTERING_HOUSE).then(LEAVING_HOUSE)
 					.condition(() -> steering().isComplete())
@@ -134,7 +135,7 @@ public class Ghost extends Creature<GhostState> {
 					.on(GhostKilledEvent.class)
 				
 				.when(CHASING).then(SCATTERING)
-					.condition(() -> subsequentState == SCATTERING)
+					.condition(() -> fnSubsequentState.get() == SCATTERING)
 					.act(() -> reverseDirection())
 					
 				.when(SCATTERING).then(FRIGHTENED)
@@ -145,7 +146,7 @@ public class Ghost extends Creature<GhostState> {
 					.on(GhostKilledEvent.class)
 				
 				.when(SCATTERING).then(CHASING)
-					.condition(() -> subsequentState == CHASING)
+					.condition(() -> fnSubsequentState.get() == CHASING)
 					.act(() -> reverseDirection())
 					
 				.stay(FRIGHTENED)
@@ -157,11 +158,11 @@ public class Ghost extends Creature<GhostState> {
 				
 				.when(FRIGHTENED).then(SCATTERING)
 					.onTimeout()
-					.condition(() -> subsequentState == SCATTERING)
+					.condition(() -> fnSubsequentState.get() == SCATTERING)
 					
 				.when(FRIGHTENED).then(CHASING)
 					.onTimeout()
-					.condition(() -> subsequentState == CHASING)
+					.condition(() -> fnSubsequentState.get() == CHASING)
 					
 				.when(DEAD).then(ENTERING_HOUSE)
 					.condition(() -> world.isJustBeforeDoor(tile()))
@@ -205,6 +206,14 @@ public class Ghost extends Creature<GhostState> {
 			sanityControl = new GhostSanityControl(game, "Blinky", GhostSanity.INFECTABLE);
 			sanityControl.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 		}
+	}
+
+	public void nextStateToEnter(Supplier<GhostState> fnSubsequentState) {
+		this.fnSubsequentState = fnSubsequentState;
+	}
+
+	public GhostState getNextStateToEnter() {
+		return fnSubsequentState.get();
 	}
 
 	public GhostSanity getSanity() {

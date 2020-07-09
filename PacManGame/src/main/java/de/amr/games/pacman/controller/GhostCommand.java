@@ -90,7 +90,7 @@ public class GhostCommand extends StateMachine<GhostState, Void> {
 	public void update() {
 		if (!suspended) {
 			super.update();
-			ghosts.forEach(ghost -> ghost.subsequentState = getState());
+			ghosts.forEach(ghost -> ghost.nextStateToEnter(this::getState));
 		}
 	}
 

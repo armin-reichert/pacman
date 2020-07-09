@@ -1,12 +1,13 @@
 package de.amr.games.pacman.test.navigation;
 
+import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
+
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import de.amr.easy.game.Application;
 import de.amr.easy.game.config.AppSettings;
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.test.TestUI;
@@ -39,7 +40,7 @@ class ScatteringTestUI extends TestUI {
 		world.population().ghosts().forEach(ghost -> {
 			world.include(ghost);
 			ghost.init();
-			ghost.subsequentState = GhostState.SCATTERING;
+			ghost.nextStateToEnter(() -> SCATTERING);
 		});
 		view.turnRoutesOn();
 		view.turnGridOn();
