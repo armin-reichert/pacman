@@ -44,8 +44,8 @@ public class LoadingView implements LivingView {
 		this.world = world;
 		pacMan = world.population().pacMan();
 		ghosts = world.population().ghosts().collect(Collectors.toList());
-		pacMan.setRenderer(theme.createPacManRenderer(pacMan));
-		world.population().ghosts().forEach(ghost -> ghost.setRenderer(theme.createGhostRenderer(ghost)));
+		pacMan.setTheme(theme);
+		world.population().ghosts().forEach(ghost -> ghost.setTheme(theme));
 		messagesRenderer = theme.createMessagesRenderer();
 	}
 

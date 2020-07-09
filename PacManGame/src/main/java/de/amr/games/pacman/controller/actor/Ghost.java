@@ -31,6 +31,7 @@ import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.OneWayTile;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.core.IRenderer;
+import de.amr.games.pacman.view.core.Theme;
 import de.amr.games.pacman.view.theme.Themes;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
@@ -191,8 +192,10 @@ public class Ghost extends Creature<GhostState> {
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 	}
 
-	public void setRenderer(IRenderer renderer) {
-		this.renderer = renderer;
+	@Override
+	public void setTheme(Theme theme) {
+		this.theme = theme;
+		renderer = theme.createGhostRenderer(this);
 	}
 
 	public IRenderer getRenderer() {

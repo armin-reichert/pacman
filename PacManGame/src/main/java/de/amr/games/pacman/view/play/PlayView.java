@@ -40,7 +40,6 @@ public class PlayView implements LivingView {
 	private Color[] messageColors = new Color[2];
 
 	private Theme theme;
-
 	private IWorldRenderer worldRenderer;
 	private IRenderer scoreRenderer;
 	private IRenderer liveCounterRenderer;
@@ -82,8 +81,8 @@ public class PlayView implements LivingView {
 			liveCounterRenderer = theme.createLiveCounterRenderer(world, game);
 			levelCounterRenderer = theme.createLevelCounterRenderer(world, game);
 			scoreRenderer = theme.createScoreRenderer(world, game);
-			world.population().pacMan().setRenderer(theme.createPacManRenderer(world.population().pacMan()));
-			world.population().ghosts().forEach(ghost -> ghost.setRenderer(theme.createGhostRenderer(ghost)));
+			world.population().pacMan().setTheme(theme);
+			world.population().ghosts().forEach(ghost -> ghost.setTheme(theme));
 			scoreRenderer = theme.createScoreRenderer(world, game);
 			messagesRenderer = theme.createMessagesRenderer();
 		}

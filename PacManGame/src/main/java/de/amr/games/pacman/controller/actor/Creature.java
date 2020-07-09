@@ -23,6 +23,7 @@ import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.view.core.Theme;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.api.FsmContainer;
 
@@ -46,6 +47,7 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 	protected Direction wishDir;
 	protected Tile targetTile;
 	protected boolean enteredNewTile;
+	protected Theme theme;
 
 	public Creature(String name, Map<STATE, Steering> steerings) {
 		this.name = name;
@@ -53,6 +55,14 @@ public abstract class Creature<STATE> extends Entity implements WorldMover, FsmC
 		this.steerings = steerings;
 		tf.width = Tile.SIZE;
 		tf.height = Tile.SIZE;
+	}
+
+	public Theme getTheme() {
+		return theme;
+	}
+
+	public void setTheme(Theme theme) {
+		this.theme = theme;
 	}
 
 	public void setWorld(World world) {

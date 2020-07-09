@@ -26,6 +26,7 @@ import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.core.IPacManRenderer;
+import de.amr.games.pacman.view.core.Theme;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
@@ -107,8 +108,10 @@ public class PacMan extends Creature<PacManState> {
 		return renderer;
 	}
 
-	public void setRenderer(IPacManRenderer renderer) {
-		this.renderer = renderer;
+	@Override
+	public void setTheme(Theme theme) {
+		this.theme = theme;
+		renderer = theme.createPacManRenderer(this);
 	}
 
 	@Override

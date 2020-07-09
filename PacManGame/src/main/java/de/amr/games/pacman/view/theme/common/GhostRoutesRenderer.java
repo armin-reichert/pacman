@@ -10,7 +10,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
-import java.util.List;
+import java.util.Collection;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.actor.Ghost;
@@ -81,19 +81,23 @@ public class GhostRoutesRenderer implements IRenderer {
 		g.dispose();
 	}
 
-	private void drawTargetTilePath(Graphics2D g, List<Tile> path, Color ghostColor) {
+	private void drawTargetTilePath(Graphics2D g, Collection<Tile> path, Color ghostColor) {
 		if (path.size() <= 1) {
 			return;
 		}
 		g = (Graphics2D) g.create();
 		g.setStroke(new BasicStroke(0.5f));
 		g.setColor(alpha(ghostColor, 200));
-		for (int i = 0; i < path.size() - 1; ++i) {
-			Tile from = path.get(i), to = path.get(i + 1);
-			g.drawLine(from.centerX(), from.centerY(), to.centerX(), to.centerY());
-			if (i == path.size() - 2) {
-				drawDirectionIndicator(g, ghostColor, true, from.dirTo(to).get(), to.centerX(), to.centerY());
+		Tile[] tiles = path.toArray(Tile[]::new);
+		int from = 0, to = 1;
+		while (to < tiles.length) {
+			g.drawLine(tiles[from].centerX(), tiles[from].centerY(), tiles[to].centerX(), tiles[to].centerY());
+			if (to == tiles.length - 1) {
+				drawDirectionIndicator(g, ghostColor, true, tiles[from].dirTo(tiles[to]).get(), tiles[to].centerX(),
+						tiles[to].centerY());
 			}
+			++from;
+			++to;
 		}
 		g.dispose();
 	}
