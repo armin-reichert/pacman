@@ -25,7 +25,6 @@ import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
-import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
 import net.miginfocom.swing.MigLayout;
 
 /**

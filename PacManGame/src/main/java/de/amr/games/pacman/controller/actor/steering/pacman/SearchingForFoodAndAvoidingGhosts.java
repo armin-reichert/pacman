@@ -124,9 +124,9 @@ public class SearchingForFoodAndAvoidingGhosts implements Steering {
 		return Stream.of(me.moveDir(), me.moveDir().right(), me.moveDir().left());
 	}
 
-	private int distance(Stream<Ghost> ghosts) {
-		return ghosts.mapToInt(ghost -> distance(me.tile(), ghost.tile())).min().orElse(Integer.MAX_VALUE);
-	}
+//	private int distance(Stream<Ghost> ghosts) {
+//		return ghosts.mapToInt(ghost -> distance(me.tile(), ghost.tile())).min().orElse(Integer.MAX_VALUE);
+//	}
 
 	private int distance(Tile from, Tile to) {
 		return graph.shortestPath(from, to).size();
