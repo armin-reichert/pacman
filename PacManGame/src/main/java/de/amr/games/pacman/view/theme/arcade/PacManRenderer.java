@@ -36,7 +36,7 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 		switch (pacMan.getState()) {
 		case DEAD:
 			selectSprite("full");
-			if (pacMan.collapsing) {
+			if (pacMan.isCollapsing()) {
 				selectSprite("collapsing");
 			} else {
 				sprites.get("collapsing").resetAnimation();

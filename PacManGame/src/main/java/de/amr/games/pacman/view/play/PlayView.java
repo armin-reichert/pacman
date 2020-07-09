@@ -13,6 +13,7 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
 import de.amr.games.pacman.model.game.Game;
+import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.core.IRenderer;
@@ -33,7 +34,8 @@ import de.amr.games.pacman.view.theme.common.Rendering;
  */
 public class PlayView implements LivingView {
 
-	private World world;
+	private final World world;
+	private final Population folks;
 	private Game game;
 
 	private String[] messageTexts = new String[2];
@@ -57,8 +59,9 @@ public class PlayView implements LivingView {
 	private final IRenderer actorRoutesRenderer;
 	private final IRenderer actorStatesRenderer;
 
-	public PlayView(World world, Game game, GhostCommand ghostCommand, GhostHouseDoorMan doorMan) {
+	public PlayView(World world, Population folks, Game game, GhostCommand ghostCommand, GhostHouseDoorMan doorMan) {
 		this.world = world;
+		this.folks = folks;
 		this.game = game;
 		showingScores = true;
 		showingFrameRate = false;
@@ -81,8 +84,8 @@ public class PlayView implements LivingView {
 			liveCounterRenderer = theme.createLiveCounterRenderer(world, game);
 			levelCounterRenderer = theme.createLevelCounterRenderer(world, game);
 			scoreRenderer = theme.createScoreRenderer(world, game);
-			world.population().pacMan().setTheme(theme);
-			world.population().ghosts().forEach(ghost -> ghost.setTheme(theme));
+			folks.pacMan().setTheme(theme);
+			folks.ghosts().forEach(ghost -> ghost.setTheme(theme));
 			scoreRenderer = theme.createScoreRenderer(world, game);
 			messagesRenderer = theme.createMessagesRenderer();
 		}
@@ -100,7 +103,7 @@ public class PlayView implements LivingView {
 
 	@Override
 	public void update() {
-		world.population().ghosts().forEach(ghost -> {
+		folks.ghosts().forEach(ghost -> {
 			if (ghost.steering() instanceof PathProvidingSteering) {
 				PathProvidingSteering pathProvider = (PathProvidingSteering) ghost.steering();
 				pathProvider.setPathComputed(showingRoutes);
@@ -159,7 +162,7 @@ public class PlayView implements LivingView {
 	}
 
 	public void enableGhostAnimations(boolean enabled) {
-		world.population().ghosts().map(Ghost::getRenderer).forEach(r -> r.enableAnimation(enabled));
+		folks.ghosts().map(Ghost::getRenderer).forEach(r -> r.enableAnimation(enabled));
 	}
 
 	public void turnScoresOn() {
@@ -240,11 +243,11 @@ public class PlayView implements LivingView {
 	}
 
 	private void drawActors(Graphics2D g) {
-		world.population().pacMan().getRenderer().render(g);
-		world.population().ghosts().filter(world::included).filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
-				.map(Ghost::getRenderer).forEach(r -> r.render(g));
-		world.population().ghosts().filter(world::included).filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
-				.map(Ghost::getRenderer).forEach(r -> r.render(g));
+		folks.pacMan().draw(g);
+		folks.ghosts().filter(world::included).filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
+				.forEach(ghost -> ghost.draw(g));
+		folks.ghosts().filter(world::included).filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
+				.forEach(ghost -> ghost.draw(g));
 	}
 
 	private void drawScores(Graphics2D g) {

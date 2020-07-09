@@ -52,8 +52,7 @@ public class GhostPointsAnimation extends GameObject {
 
 	@Override
 	public void draw(Graphics2D g) {
-		folks.pacMan().getRenderer().render(g);
-		folks.ghosts().map(Ghost::getRenderer).forEach(r -> r.render(g));
+		folks.all().forEach(c -> c.draw(g));
 		int dx = 2 * Tile.SIZE + 2;
 		g.translate(tf.x + dx, tf.y);
 		renderPellet(g);

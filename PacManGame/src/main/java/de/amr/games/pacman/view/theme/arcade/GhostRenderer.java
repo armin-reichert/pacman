@@ -43,7 +43,7 @@ public class GhostRenderer extends SpriteRenderer implements IRenderer {
 				selectSprite("color-" + ghost.moveDir());
 				break;
 			case LOCKED:
-				if (ghost.world().population().pacMan().power > 0) {
+				if (ghost.world().population().pacMan().getPower() > 0) {
 					selectSprite("frightened");
 				} else {
 					selectSprite("color-" + ghost.moveDir());

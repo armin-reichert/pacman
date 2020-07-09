@@ -52,7 +52,7 @@ class PacManRenderer implements IPacManRenderer {
 	}
 
 	private void drawRunning(Graphics2D g) {
-		int size = pacMan.power > 0 ? tiles(2.5) : tiles(2);
+		int size = pacMan.getPower() > 0 ? tiles(2.5) : tiles(2);
 		int x = (int) pacMan.tf.x + (pacMan.tf.width - size) / 2;
 		int y = (int) pacMan.tf.y + (pacMan.tf.width - size) / 2;
 		g.setColor(Color.YELLOW);

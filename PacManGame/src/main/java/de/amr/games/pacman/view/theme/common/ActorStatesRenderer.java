@@ -53,7 +53,7 @@ public class ActorStatesRenderer implements IRenderer {
 		if (!pacMan.visible || pacMan.getState() == null) {
 			return;
 		}
-		String text = pacMan.power > 0 ? String.format("POWER(%d)", pacMan.power) : pacMan.getState().name();
+		String text = pacMan.getPower() > 0 ? String.format("POWER(%d)", pacMan.getPower()) : pacMan.getState().name();
 		if (settings.pacManImmortable) {
 			text += " immortable";
 		}

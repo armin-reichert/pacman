@@ -68,7 +68,7 @@ public class GameStateView extends JPanel implements Lifecycle {
 		checkBoxesPanel.add(cbShowGrid);
 		cbShowGrid.addActionListener(e -> gameController.setShowingGrid(cbShowGrid.isSelected()));
 
-		cbShowStates = new JCheckBox("Show States and Counters");
+		cbShowStates = new JCheckBox("Show States and Timers");
 		checkBoxesPanel.add(cbShowStates);
 		cbShowStates.addActionListener(e -> gameController.setShowingStates(cbShowStates.isSelected()));
 	}

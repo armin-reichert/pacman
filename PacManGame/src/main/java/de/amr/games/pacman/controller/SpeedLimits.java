@@ -62,6 +62,6 @@ public class SpeedLimits {
 
 	public static float pacManSpeedLimit(PacMan pacMan, Game game) {
 		GameLevel level = game.level;
-		return pacMan.is(RUNNING) ? speed(pacMan.power > 0 ? level.pacManPowerSpeed : level.pacManSpeed) : 0;
+		return pacMan.is(RUNNING) ? speed(pacMan.getPower() > 0 ? level.pacManPowerSpeed : level.pacManSpeed) : 0;
 	}
 }

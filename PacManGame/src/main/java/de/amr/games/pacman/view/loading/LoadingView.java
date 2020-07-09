@@ -90,13 +90,13 @@ public class LoadingView implements LivingView {
 		messagesRenderer.setRow(18);
 		messagesRenderer.setTextColor(new Color(255, 0, 0, alpha));
 		messagesRenderer.drawCentered(g, Localized.texts.getString("loading_music"), world.width());
-		pacMan.getRenderer().render(g);
+		pacMan.draw(g);
 		float x = width / 2 - (ghostCount / 2) * 20 - Tile.SIZE / 2, y = pacMan.tf.y + 20;
 		for (int i = 0; i < ghostCount; ++i) {
 			Ghost ghost = ghosts.get(rnd.nextInt(4));
 			ghost.tf.x = x;
 			ghost.tf.y = y;
-			ghost.getRenderer().render(g);
+			ghost.draw(g);
 			x += 20;
 		}
 	}

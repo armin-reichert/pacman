@@ -10,6 +10,7 @@ import static de.amr.games.pacman.model.world.Direction.LEFT;
 import static de.amr.games.pacman.model.world.Direction.UP;
 import static de.amr.statemachine.core.StateMachine.beginStateMachine;
 
+import java.awt.Graphics2D;
 import java.util.EnumMap;
 import java.util.Optional;
 
@@ -36,15 +37,9 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class PacMan extends Creature<PacManState> {
 
-	/** Number of ticks Pac-Man has power after eating an energizer. */
-	public int power;
-
-	/** Number of ticks Pac-Man is not moving after having eaten a pellet. */
-	public int digestion;
-
-	/** If Pac-Man is dying and collapsing. */
-	public boolean collapsing;
-
+	private int power;
+	private int digestion;
+	private boolean collapsing;
 	private IPacManRenderer renderer;
 
 	public PacMan() {
@@ -104,14 +99,35 @@ public class PacMan extends Creature<PacManState> {
 		brain.doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
 	}
 
-	public IPacManRenderer getRenderer() {
-		return renderer;
+	public void setCollapsing(boolean collapsing) {
+		this.collapsing = collapsing;
+	}
+
+	public boolean isCollapsing() {
+		return collapsing;
+	}
+
+	public int getPower() {
+		return power;
+	}
+
+	public void setPower(int power) {
+		this.power = power;
 	}
 
 	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
 		renderer = theme.createPacManRenderer(this);
+	}
+
+	public IPacManRenderer getRenderer() {
+		return renderer;
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		renderer.render(g);
 	}
 
 	@Override

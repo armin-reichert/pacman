@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.math.Vector2f;
+import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.actor.steering.MovementControl;
 import de.amr.games.pacman.controller.actor.steering.MovementType;
 import de.amr.games.pacman.controller.actor.steering.Steering;
@@ -35,7 +36,7 @@ import de.amr.statemachine.api.FsmContainer;
  * 
  * @author Armin Reichert
  */
-public abstract class Creature<STATE> extends Entity implements WorldMover, FsmContainer<STATE, PacManGameEvent> {
+public abstract class Creature<STATE> extends Entity implements View, WorldMover, FsmContainer<STATE, PacManGameEvent> {
 
 	public final String name;
 	protected World world;

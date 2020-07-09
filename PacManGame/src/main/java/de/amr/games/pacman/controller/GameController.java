@@ -210,11 +210,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							ghostsInWorld().forEach(ghost -> ghost.visible = false);
 						}
 						else if (t == dyingStartTime) {
-							folks.pacMan().collapsing = true;
+							folks.pacMan().setCollapsing(true);
 							soundManager.pacManDied();
 						}
 						else if (t == dyingEndTime && game.lives > 0) {
-							folks.pacMan().collapsing = false;
+							folks.pacMan().setCollapsing(false);
 							folksInWorld().forEach(Creature::init);
 							playView.init();
 						}
@@ -415,7 +415,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			if (energizer && game.level.pacManPowerSeconds > 0) {
 				soundManager.pacManGainsPower();
 				ghostCommand.suspend();
-				folks.pacMan().power = sec(game.level.pacManPowerSeconds);
+				folks.pacMan().setPower(sec(game.level.pacManPowerSeconds));
 				ghostsInWorld().forEach(ghost -> ghost.process(new PacManGainsPowerEvent()));
 			}
 		}
@@ -469,7 +469,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		folks.all().forEach(world::include);
 		folks.all().forEach(Creature::init);
 		folks.takePartIn(game);
-		playView = new PlayView(world, game, ghostCommand, doorMan);
+		playView = new PlayView(world, folks, game, ghostCommand, doorMan);
 		playView.setTheme(themes[currentThemeIndex]);
 		app().f2Dialog().ifPresent(f2 -> f2.selectCustomTab(0));
 	}

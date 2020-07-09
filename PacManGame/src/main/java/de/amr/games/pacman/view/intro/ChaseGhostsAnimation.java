@@ -87,7 +87,6 @@ public class ChaseGhostsAnimation extends GameObject {
 
 	@Override
 	public void draw(Graphics2D g) {
-		folks.ghosts().map(Ghost::getRenderer).forEach(r -> r.render(g));
-		folks.pacMan().getRenderer().render(g);
+		folks.all().forEach(c -> c.draw(g));
 	}
 }

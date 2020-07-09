@@ -13,6 +13,7 @@ import static de.amr.games.pacman.model.world.Direction.LEFT;
 import static de.amr.games.pacman.model.world.Direction.RIGHT;
 import static de.amr.games.pacman.model.world.Direction.UP;
 
+import java.awt.Graphics2D;
 import java.util.EnumMap;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -171,6 +172,11 @@ public class Ghost extends Creature<GhostState> {
 		/*@formatter:on*/
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		renderer.render(g);
 	}
 
 	@Override
