@@ -100,7 +100,7 @@ public class BlocksTheme implements Theme {
 	@Override
 	public MessagesRenderer createMessagesRenderer() {
 		MessagesRenderer renderer = new MessagesRenderer();
-		renderer.setFont(FONT);
+		renderer.setFont(FONT.deriveFont(14f));
 		renderer.setSmoothText(true);
 		return renderer;
 	}

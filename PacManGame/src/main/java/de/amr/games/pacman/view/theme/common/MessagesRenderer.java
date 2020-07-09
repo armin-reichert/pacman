@@ -13,6 +13,7 @@ public class MessagesRenderer implements IRenderer {
 	private int row;
 	private Color textColor;
 	private Font font;
+	private int fontSize;
 	private boolean smoothText;
 
 	public MessagesRenderer() {
@@ -39,13 +40,22 @@ public class MessagesRenderer implements IRenderer {
 			}
 		}
 	}
-	
+
 	public Font getFont() {
 		return font;
 	}
 
 	public void setFont(Font font) {
 		this.font = font;
+	}
+
+	public int getFontSize() {
+		return fontSize;
+	}
+
+	public void setFontSize(int fontSize) {
+		this.fontSize = fontSize;
+		font = font.deriveFont((float) fontSize);
 	}
 
 	public void setSmoothText(boolean smoothText) {
