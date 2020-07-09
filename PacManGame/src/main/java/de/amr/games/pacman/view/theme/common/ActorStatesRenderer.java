@@ -5,7 +5,6 @@ import static de.amr.games.pacman.controller.actor.GhostState.CHASING;
 import static de.amr.games.pacman.controller.actor.GhostState.DEAD;
 import static de.amr.games.pacman.controller.actor.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.controller.actor.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.controller.actor.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.controller.actor.GhostState.SCATTERING;
 import static de.amr.games.pacman.view.theme.common.Rendering.ghostColor;
 import static java.lang.Math.round;
@@ -29,13 +28,14 @@ import de.amr.games.pacman.view.core.IRenderer;
 
 public class ActorStatesRenderer implements IRenderer {
 
-	private static final Font SMALL_FONT = new Font("Arial Narrow", Font.PLAIN, 6);
+	private static final Font SMALL_FONT = new Font("Arial", Font.PLAIN, 6);
 
 	private final World world;
 	private GhostCommand ghostCommand;
 
 	public ActorStatesRenderer(World world, GhostCommand ghostCommand) {
 		this.world = world;
+		this.ghostCommand = ghostCommand;
 	}
 
 	@Override
@@ -92,9 +92,6 @@ public class ActorStatesRenderer implements IRenderer {
 			text.append(String.format("(%s,%d|%d)", ghost.getState(), remaining, duration));
 		} else {
 			text.append(String.format("(%s,%s)", ghost.getState(), Rendering.INFTY));
-		}
-		if (ghost.is(LEAVING_HOUSE)) {
-			text.append(String.format("[->%s]", ghost.getNextStateToEnter()));
 		}
 		drawEntityState(g, ghost, text.toString(), ghostColor(ghost));
 	}
