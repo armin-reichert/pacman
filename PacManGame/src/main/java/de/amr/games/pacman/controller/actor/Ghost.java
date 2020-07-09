@@ -87,50 +87,41 @@ public class Ghost extends Creature<GhostState> {
 							sanityControl.init();
 						}
 					})
-					.onTick(() -> {
-						move();
-					})
+					.onTick(this::move)
 					
 				.state(LEAVING_HOUSE)
-					.onEntry(() -> steering().init())
-					.onTick(() -> {
-						move();
-					})
+					.onTick(this::move)
 					.onExit(() -> forceMoving(Direction.LEFT))
 				
 				.state(ENTERING_HOUSE)
-					.onEntry(() -> steering().init())
-					.onTick(() -> {
-						move();
-					})
+					.onEntry(() -> steering().init()) //TODO should not be necessary
+					.onTick(this::move)
 				
 				.state(SCATTERING)
 					.onTick(() -> {
 						updateSanity();
-						move();
 						checkPacManCollision();
+						move();
 					})
 			
 				.state(CHASING)
 					.onTick(() -> {
 						updateSanity();
-						move();
 						checkPacManCollision();
+						move();
 					})
 				
 				.state(FRIGHTENED)
 					.onTick((state, t, remaining) -> {
+						checkPacManCollision();
 						move();
 						// one flashing animation takes 0.5 sec
 						int flashTicks = sec(game.level.numFlashes * 0.5f);
 						flashing = remaining < flashTicks;
-						checkPacManCollision();
 					})
 				
 				.state(DEAD)
-					.onTick(() -> {
-							move();
-					})
+					.onTick(this::move)
 				
 			.transitions()
 			
