@@ -32,8 +32,16 @@ public class GhostRoutesRenderer implements IRenderer {
 	@Override
 	public void render(Graphics2D g) {
 		smoothDrawingOn(g);
+		drawPacManRoute(g, world.population().pacMan());
 		world.population().ghosts().filter(world::included).forEach(ghost -> drawGhostRoute(g, ghost));
 		smoothDrawingOff(g);
+	}
+
+	private void drawPacManRoute(Graphics2D g, PacMan pacMan) {
+		if (pacMan.steering() instanceof PathProvidingSteering) {
+			PathProvidingSteering steering = (PathProvidingSteering) pacMan.steering();
+			drawTargetTilePath(g, steering.pathToTarget(), Color.YELLOW);
+		}
 	}
 
 	private void drawGhostRoute(Graphics2D g, Ghost ghost) {
@@ -82,7 +90,7 @@ public class GhostRoutesRenderer implements IRenderer {
 	}
 
 	private void drawTargetTilePath(Graphics2D g, Collection<Tile> path, Color ghostColor) {
-		if (path.size() <= 1) {
+		if (path == null || path.size() <= 1) {
 			return;
 		}
 		g = (Graphics2D) g.create();
