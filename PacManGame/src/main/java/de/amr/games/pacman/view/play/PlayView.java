@@ -23,7 +23,7 @@ import de.amr.games.pacman.view.core.Theme;
 import de.amr.games.pacman.view.theme.Themes;
 import de.amr.games.pacman.view.theme.arcade.GridRenderer;
 import de.amr.games.pacman.view.theme.common.ActorStatesRenderer;
-import de.amr.games.pacman.view.theme.common.GhostRoutesRenderer;
+import de.amr.games.pacman.view.theme.common.CreatureRoutesRenderer;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.Rendering;
 
@@ -69,7 +69,7 @@ public class PlayView implements LivingView {
 		showingRoutes = false;
 		showingStates = false;
 		gridRenderer = new GridRenderer(world);
-		actorRoutesRenderer = new GhostRoutesRenderer(world);
+		actorRoutesRenderer = new CreatureRoutesRenderer(world);
 		actorStatesRenderer = new ActorStatesRenderer(world, ghostCommand);
 		frameRateDisplay = new FrameRateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);

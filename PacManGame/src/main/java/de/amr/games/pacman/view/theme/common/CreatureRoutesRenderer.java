@@ -13,6 +13,7 @@ import java.awt.Stroke;
 import java.util.List;
 
 import de.amr.easy.game.math.Vector2f;
+import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
@@ -21,30 +22,42 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.core.IRenderer;
 
-public class GhostRoutesRenderer implements IRenderer {
+/**
+ * Renderes the routes of the creatures towards their current target tiles.
+ * 
+ * @author Armin Reichert
+ */
+public class CreatureRoutesRenderer implements IRenderer {
 
 	private final World world;
 
-	public GhostRoutesRenderer(World world) {
+	public CreatureRoutesRenderer(World world) {
 		this.world = world;
 	}
 
 	@Override
 	public void render(Graphics2D g) {
-		smoothDrawingOn(g);
 		drawPacManRoute(g, world.population().pacMan());
 		world.population().ghosts().filter(world::included).forEach(ghost -> drawGhostRoute(g, ghost));
-		smoothDrawingOff(g);
+		if (world.population() instanceof ArcadeGameFolks) {
+			ArcadeGameFolks folks = (ArcadeGameFolks) world.population();
+			if (world.included(folks.inky())) {
+				drawInkyChasing(g, folks.inky());
+			}
+			if (world.included(folks.clyde())) {
+				drawClydeChasingArea(g, folks.clyde());
+			}
+		}
 	}
 
-	private void drawPacManRoute(Graphics2D g, PacMan pacMan) {
+	public void drawPacManRoute(Graphics2D g, PacMan pacMan) {
 		if (pacMan.steering() instanceof PathProvidingSteering) {
 			PathProvidingSteering steering = (PathProvidingSteering) pacMan.steering();
 			drawTargetTilePath(g, steering.pathToTarget(), Color.YELLOW);
 		}
 	}
 
-	private void drawGhostRoute(Graphics2D g, Ghost ghost) {
+	public void drawGhostRoute(Graphics2D g, Ghost ghost) {
 		if (ghost.steering() instanceof PathProvidingSteering && ghost.targetTile() != null) {
 			drawTargetTileRubberband(g, ghost, ghost.targetTile());
 			PathProvidingSteering steering = (PathProvidingSteering) ghost.steering();
@@ -55,14 +68,6 @@ public class GhostRoutesRenderer implements IRenderer {
 					ghost.tf.getCenter().roundedX() + v.roundedX() * Tile.SIZE,
 					ghost.tf.getCenter().roundedY() + v.roundedY() * Tile.SIZE);
 		}
-		if (ghost.targetTile() == null) {
-			return;
-		}
-		if (ghost.name.equals("Inky")) {
-			drawInkyChasing(g, ghost);
-		} else if (ghost.name.equals("Clyde")) {
-			drawClydeChasingArea(g, ghost);
-		}
 	}
 
 	private void drawTargetTileRubberband(Graphics2D g, Ghost ghost, Tile targetTile) {
@@ -70,6 +75,7 @@ public class GhostRoutesRenderer implements IRenderer {
 			return;
 		}
 		g = (Graphics2D) g.create();
+		smoothDrawingOn(g);
 
 		// draw dashed line from ghost position to target tile
 		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
@@ -94,6 +100,7 @@ public class GhostRoutesRenderer implements IRenderer {
 			return;
 		}
 		g = (Graphics2D) g.create();
+		smoothDrawingOn(g);
 		g.setStroke(new BasicStroke(0.5f));
 		g.setColor(alpha(ghostColor, 200));
 		Tile[] tiles = path.toArray(Tile[]::new);

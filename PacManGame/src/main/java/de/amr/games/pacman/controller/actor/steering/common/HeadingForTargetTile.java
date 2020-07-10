@@ -8,7 +8,6 @@ import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -61,7 +60,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 
 	private final WorldMover mover;
 	private final Supplier<Tile> fnTargetTile;
-	private final LinkedHashSet<Tile> path = new LinkedHashSet<>();
+	private final ConcurrentLinkedDeque<Tile> path = new ConcurrentLinkedDeque<>();
 	private boolean forced;
 	private boolean pathComputed;
 
@@ -133,6 +132,6 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 
 	@Override
 	public List<Tile> pathToTarget() {
-		return new ArrayList<>(new ConcurrentLinkedDeque<>(path));
+		return new ArrayList<>(path);
 	}
 }
