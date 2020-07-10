@@ -45,7 +45,10 @@ public class BonusControl extends StateMachine<BonusState, PacManGameEvent> {
 					})
 				.state(CONSUMED)
 					.timeoutAfter(() -> sec(3))
-					.onEntry(() -> world.getBonus().get().state = CONSUMED)
+					.onEntry(() -> {
+						world.getBonus().get().state = CONSUMED;
+						loginfo("Bonus %s consumed after %.2f sec", world.getBonus().get().symbol, state().getTicksConsumed() / 60f);
+					})
 			.transitions()
 				.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
 				.when(ACTIVE).then(INACTIVE).onTimeout()
