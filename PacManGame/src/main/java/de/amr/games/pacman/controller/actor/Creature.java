@@ -149,8 +149,9 @@ public abstract class Creature<STATE> extends Entity implements View, WorldMover
 	}
 
 	public void placeAt(Tile tile, float xOffset, float yOffset) {
+		Tile oldTile = tile();
 		tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
-		enteredNewTile = !tile.equals(tile());
+		enteredNewTile = !tile().equals(oldTile);
 	}
 
 	public boolean isTeleporting() {
