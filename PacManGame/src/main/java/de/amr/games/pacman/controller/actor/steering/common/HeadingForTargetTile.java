@@ -8,8 +8,8 @@ import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.function.Function;
@@ -132,7 +132,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	}
 
 	@Override
-	public Collection<Tile> pathToTarget() {
+	public List<Tile> pathToTarget() {
 		return new ArrayList<>(new ConcurrentLinkedDeque<>(path));
 	}
 }

@@ -10,7 +10,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
-import java.util.Collection;
+import java.util.List;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.actor.Ghost;
@@ -89,7 +89,7 @@ public class GhostRoutesRenderer implements IRenderer {
 		g.dispose();
 	}
 
-	private void drawTargetTilePath(Graphics2D g, Collection<Tile> path, Color ghostColor) {
+	private void drawTargetTilePath(Graphics2D g, List<Tile> path, Color ghostColor) {
 		if (path == null || path.size() <= 1) {
 			return;
 		}

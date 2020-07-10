@@ -1,6 +1,6 @@
 package de.amr.games.pacman.controller.actor.steering;
 
-import java.util.Collection;
+import java.util.List;
 
 import de.amr.games.pacman.model.world.core.Tile;
 
@@ -14,7 +14,7 @@ public interface PathProvidingSteering extends Steering {
 	/**
 	 * @return the path from the current position of the actor to its current target tile
 	 */
-	Collection<Tile> pathToTarget();
+	List<Tile> pathToTarget();
 
 	/**
 	 * @param enabled if {@code true} the steering computes the complete path to the target
