@@ -99,7 +99,7 @@ public class ArcadeWorld extends AbstractWorld {
 	}
 
 	@Override
-	public void populate(Population population) {
+	public void setPopulation(Population population) {
 		if (population instanceof ArcadeWorldFolks) {
 			this.population = population;
 		} else {

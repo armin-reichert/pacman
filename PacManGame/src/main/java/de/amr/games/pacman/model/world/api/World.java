@@ -12,7 +12,7 @@ import de.amr.games.pacman.model.world.core.Tile;
  */
 public interface World extends Terrain, FoodContainer {
 
-	void populate(Population population);
+	void setPopulation(Population population);
 
 	Population population();
 

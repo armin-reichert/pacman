@@ -30,6 +30,7 @@ import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.core.Bed;
+import de.amr.games.pacman.model.world.core.House;
 import de.amr.games.pacman.model.world.core.OneWayTile;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.core.IRenderer;
@@ -264,10 +265,10 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	/**
-	 * lets a ghost leave the ghost house
+	 * lets a ghost leave the given house
 	 */
-	public void leavingGhostHouse() {
-		Tile exit = world.theHouse().bed(0).tile;
+	public void leavingHouse(House house) {
+		Tile exit = house.bed(0).tile;
 		int targetX = exit.centerX(), targetY = exit.y();
 		if (tf.y <= targetY) {
 			tf.y = targetY;
@@ -298,8 +299,8 @@ public class Ghost extends Creature<GhostState> {
 	/**
 	 * @return steering for bringing ghost back to ghost house entry
 	 */
-	public Steering returningToHouse() {
-		return headingFor(() -> world.theHouse().bed(0).tile);
+	public Steering returningToHouse(House house) {
+		return headingFor(() -> house.bed(0).tile);
 	}
 
 	/**
