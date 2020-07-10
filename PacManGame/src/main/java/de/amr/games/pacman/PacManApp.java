@@ -56,7 +56,7 @@ public class PacManApp extends Application {
 		@Parameter(names = { "-startLevel" }, description = "Game starts in specified level")
 		public int startLevel = 1;
 
-		@Parameter(names = { "-theme" }, description = "Used Theme (arcade, blocks, ascii)")
+		@Parameter(names = { "-theme" }, description = "Used Theme (arcade, blocks, letters)")
 		public String theme = "arcade";
 	}
 

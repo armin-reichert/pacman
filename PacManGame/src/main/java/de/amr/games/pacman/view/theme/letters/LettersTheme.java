@@ -1,4 +1,6 @@
-package de.amr.games.pacman.view.theme.ascii;
+package de.amr.games.pacman.view.theme.letters;
+
+import static de.amr.games.pacman.controller.actor.PacManState.DEAD;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -19,11 +21,11 @@ import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.Rendering;
 
 /**
- * Theme using ASCII characters only (almost).
+ * Theme using letters only.
  * 
  * @author Armin Reichert
  */
-public class AsciiTheme implements Theme {
+public class LettersTheme implements Theme {
 
 	public static final Font FONT = new Font(Font.MONOSPACED, Font.BOLD, Tile.SIZE);
 	public static final int OFFSET_BASELINE = Tile.SIZE - 1;
@@ -60,7 +62,7 @@ public class AsciiTheme implements Theme {
 
 	@Override
 	public String name() {
-		return "ASCII";
+		return "LETTERS";
 	}
 
 	@Override
@@ -80,7 +82,8 @@ public class AsciiTheme implements Theme {
 			if (pacMan.visible) {
 				g.setFont(FONT);
 				g.setColor(Color.YELLOW);
-				g.drawString("O", pacMan.tf.x, pacMan.tf.y + OFFSET_BASELINE);
+				String letter = pacMan.is(DEAD) ? "\u2668" : "O";
+				g.drawString(letter, pacMan.tf.x, pacMan.tf.y + OFFSET_BASELINE);
 			}
 		};
 	}

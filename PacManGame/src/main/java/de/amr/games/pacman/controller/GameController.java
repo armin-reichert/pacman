@@ -487,14 +487,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	}
 
 	public void selectTheme(String themeName) {
-		switch (themeName.toLowerCase()) {
-		case "arcade":
+		switch (themeName.toUpperCase()) {
+		case "ARCADE":
 			currentThemeIndex = 0;
 			break;
-		case "blocks":
+		case "BLOCKS":
 			currentThemeIndex = 1;
 			break;
-		case "ascii":
+		case "LETTERS":
 			currentThemeIndex = 2;
 			break;
 		default:

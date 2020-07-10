@@ -1,7 +1,9 @@
 package de.amr.games.pacman.view.theme.blocks;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.PacManState;
@@ -60,10 +62,16 @@ class PacManRenderer implements IPacManRenderer {
 	}
 
 	private void drawCollapsing(Graphics2D g) {
-		int size = tiles(2);
-		int x = (int) pacMan.tf.x + (pacMan.tf.width - size) / 2;
-		int y = (int) pacMan.tf.y + (pacMan.tf.width - size) / 2;
+		Stroke stroke = g.getStroke();
+		float thickness = 1f;
 		g.setColor(Color.YELLOW);
-		g.drawOval(x, y, size / 2, size / 2);
+		for (int d = tiles(2); d > tiles(0.25f); d = d / 2) {
+			int x = (int) pacMan.tf.x + (pacMan.tf.width - d) / 2;
+			int y = (int) pacMan.tf.y + (pacMan.tf.width - d) / 2;
+			g.setStroke(new BasicStroke(thickness));
+			g.drawOval(x, y, d, d);
+			thickness = thickness * 0.5f;
+		}
+		g.setStroke(stroke);
 	}
 }

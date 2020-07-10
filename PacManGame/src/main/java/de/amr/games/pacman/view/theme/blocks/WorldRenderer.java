@@ -3,7 +3,6 @@ package de.amr.games.pacman.view.theme.blocks;
 import static de.amr.easy.game.Application.app;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.function.Function;
 
@@ -14,12 +13,10 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Bonus;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Door.DoorState;
-import de.amr.games.pacman.view.core.IWorldRenderer;
 import de.amr.games.pacman.model.world.core.Tile;
+import de.amr.games.pacman.view.core.IWorldRenderer;
 
 class WorldRenderer implements IWorldRenderer {
-
-	static final Font font = new Font(Font.SANS_SERIF, Font.BOLD, 10);
 
 	private final World world;
 
@@ -74,7 +71,7 @@ class WorldRenderer implements IWorldRenderer {
 		drawBonusShape(g, center, bonus);
 		try (Pen pen = new Pen(g)) {
 			pen.color(Color.GREEN);
-			pen.font(font);
+			pen.font(BlocksTheme.FONT);
 			String text = bonus.symbol.substring(0, 1) + bonus.symbol.substring(1).toLowerCase();
 			pen.drawCentered(text, center.x, center.y + Tile.SIZE / 2);
 		}
@@ -89,7 +86,7 @@ class WorldRenderer implements IWorldRenderer {
 	private void drawConsumedBonus(Graphics2D g, Vector2f center, Bonus bonus) {
 		try (Pen pen = new Pen(g)) {
 			pen.color(Color.GREEN);
-			pen.font(font);
+			pen.font(BlocksTheme.FONT);
 			String text = String.valueOf(bonus.value);
 			pen.drawCentered(text, center.x, center.y + 4);
 		}

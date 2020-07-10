@@ -35,11 +35,13 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 	public void render(Graphics2D g) {
 		switch (pacMan.getState()) {
 		case DEAD:
-			selectSprite("full");
 			if (pacMan.isCollapsing()) {
-				selectSprite("collapsing");
+				if (!"collapsing".equals(sprites.selectedKey())) {
+					selectSprite("collapsing");
+					sprites.get("collapsing").resetAnimation();
+				}
 			} else {
-				sprites.get("collapsing").resetAnimation();
+				selectSprite("full");
 			}
 			break;
 		case RUNNING:
