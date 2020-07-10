@@ -9,7 +9,7 @@ import javax.swing.table.AbstractTableModel;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostCommand;
-import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
+import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.GhostSanity;
@@ -120,10 +120,10 @@ class GameStateTableModel extends AbstractTableModel {
 	}
 
 	public void update() {
-		if (gameController != null && gameController.world().population() instanceof ArcadeGameFolks) {
+		if (gameController != null && gameController.world().population() instanceof ArcadeWorldFolks) {
 			gameController.game().ifPresent(game -> {
 				gameController.ghostCommand().ifPresent(ghostCommand -> {
-					ArcadeGameFolks folks = (ArcadeGameFolks) gameController.world().population();
+					ArcadeWorldFolks folks = (ArcadeWorldFolks) gameController.world().population();
 					fillGhostRecord(records[ROW_BLINKY], game, ghostCommand, folks.blinky());
 					fillGhostRecord(records[ROW_PINKY], game, ghostCommand, folks.pinky());
 					fillGhostRecord(records[ROW_INKY], game, ghostCommand, folks.inky());

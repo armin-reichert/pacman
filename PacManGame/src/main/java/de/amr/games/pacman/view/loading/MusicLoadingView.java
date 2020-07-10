@@ -7,7 +7,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
+import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.world.Direction;
@@ -24,10 +24,10 @@ import de.amr.games.pacman.view.theme.common.MessagesRenderer;
  * 
  * @author Armin Reichert
  */
-public class LoadingView implements PacManGameView {
+public class MusicLoadingView implements PacManGameView {
 
 	private final World world = new ArcadeWorld();
-	private final ArcadeGameFolks folks = new ArcadeGameFolks();
+	private final ArcadeWorldFolks folks = new ArcadeWorldFolks(world);
 	private final PacMan pacMan = folks.pacMan();
 	private final List<Ghost> ghosts = folks.ghosts().collect(Collectors.toList());
 	private MessagesRenderer messagesRenderer;
@@ -40,11 +40,10 @@ public class LoadingView implements PacManGameView {
 	private int ghostInc;
 	private Random rnd = new Random();
 
-	public LoadingView(Theme theme, int width, int height) {
+	public MusicLoadingView(Theme theme, int width, int height) {
 		this.width = width;
 		this.height = height;
 		setTheme(theme);
-		folks.populate(world);
 	}
 
 	@Override

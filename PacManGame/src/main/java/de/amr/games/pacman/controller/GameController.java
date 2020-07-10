@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
-import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
+import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.BonusControl;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
@@ -51,7 +51,7 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.core.PacManGameView;
 import de.amr.games.pacman.view.core.Theme;
 import de.amr.games.pacman.view.intro.IntroView;
-import de.amr.games.pacman.view.loading.LoadingView;
+import de.amr.games.pacman.view.loading.MusicLoadingView;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.Themes;
 import de.amr.statemachine.core.State;
@@ -65,7 +65,7 @@ import de.amr.statemachine.core.StateMachine;
 public class GameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
 	protected World world;
-	protected ArcadeGameFolks folks;
+	protected ArcadeWorldFolks folks;
 	protected PacManSounds soundManager;
 
 	protected GhostCommand ghostCommand;
@@ -103,7 +103,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(LOADING_MUSIC)
 					.onEntry(() -> {
 						soundManager.loadMusic();
-						showView(new LoadingView(theme(), settings.width, settings.height));
+						showView(new MusicLoadingView(theme(), settings.width, settings.height));
 					})
 					
 				.state(INTRO)
@@ -456,8 +456,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	private void createWorldAndPopulation() {
 		world = Universe.arcadeWorld();
-		folks = new ArcadeGameFolks();
-		folks.populate(world);
+		folks = new ArcadeWorldFolks(world);
 		folks.all().forEach(world::include);
 	}
 

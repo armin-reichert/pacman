@@ -10,7 +10,7 @@ import java.awt.RenderingHints;
 import java.util.BitSet;
 
 import de.amr.easy.game.entity.GameObject;
-import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
+import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
@@ -31,7 +31,7 @@ import de.amr.games.pacman.view.core.Theme;
 public class GhostPointsAnimation extends GameObject {
 
 	private final World world = Universe.arcadeWorld();
-	private final ArcadeGameFolks folks = new ArcadeGameFolks();
+	private final ArcadeWorldFolks folks = new ArcadeWorldFolks(world);
 	private final Ghost[] ghosts = folks.ghosts().toArray(Ghost[]::new);
 	private final PacManSounds sounds;
 	private final BitSet killed = new BitSet(5);
@@ -43,7 +43,6 @@ public class GhostPointsAnimation extends GameObject {
 
 	public GhostPointsAnimation(Theme theme, PacManSounds sounds) {
 		this.sounds = sounds;
-		folks.populate(world);
 		setTheme(theme);
 		tf.width = 6 * dx;
 		tf.height = 2 * Tile.SIZE;

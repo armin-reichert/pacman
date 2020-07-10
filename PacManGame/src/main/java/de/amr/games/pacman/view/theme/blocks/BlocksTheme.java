@@ -8,7 +8,6 @@ import de.amr.easy.game.assets.Assets;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.view.core.IPacManRenderer;
@@ -25,10 +24,10 @@ public class BlocksTheme implements Theme {
 	public static final Color GHOST_COLORS[] = new Color[4];
 
 	static {
-		GHOST_COLORS[Population.RED_GHOST] = Color.RED;
-		GHOST_COLORS[Population.PINK_GHOST] = Color.PINK;
-		GHOST_COLORS[Population.CYAN_GHOST] = Color.CYAN;
-		GHOST_COLORS[Population.ORANGE_GHOST] = Color.ORANGE;
+		GHOST_COLORS[Ghost.RED_GHOST] = Color.RED;
+		GHOST_COLORS[Ghost.PINK_GHOST] = Color.PINK;
+		GHOST_COLORS[Ghost.CYAN_GHOST] = Color.CYAN;
+		GHOST_COLORS[Ghost.ORANGE_GHOST] = Color.ORANGE;
 	}
 
 	public static Color ghostColor(Ghost ghost) {

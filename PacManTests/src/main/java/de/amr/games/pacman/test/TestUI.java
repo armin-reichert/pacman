@@ -10,7 +10,7 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
-import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
+import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
@@ -26,7 +26,7 @@ public class TestUI implements Lifecycle, VisualController {
 
 	protected final World world;
 	protected final Game game;
-	protected final ArcadeGameFolks folks;
+	protected final ArcadeWorldFolks folks;
 	protected final PacMan pacMan;
 	protected final Ghost blinky, pinky, inky, clyde;
 	protected final PacManSounds soundManager;
@@ -50,8 +50,7 @@ public class TestUI implements Lifecycle, VisualController {
 	public TestUI() {
 		world = Universe.arcadeWorld();
 		world.clearFood();
-		folks = new ArcadeGameFolks();
-		folks.populate(world);
+		folks = new ArcadeWorldFolks(world);
 
 		pacMan = folks.pacMan();
 		blinky = folks.blinky();

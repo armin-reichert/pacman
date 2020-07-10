@@ -48,16 +48,19 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class Ghost extends Creature<GhostState> {
 
+	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
+
+	private final int color;
 	private Supplier<GhostState> fnSubsequentState;
 	private GhostSanityControl sanityControl;
 	private Steering previousSteering;
-	private int color;
 	private int bounty;
 	private boolean flashing;
 	private IRenderer renderer;
 
-	public Ghost(String name) {
+	public Ghost(String name, int color) {
 		super(name, new EnumMap<>(GhostState.class));
+		this.color = color;
 		/*@formatter:off*/
 		brain = StateMachine.beginStateMachine(GhostState.class, PacManGameEvent.class)
 			 
@@ -234,10 +237,6 @@ public class Ghost extends Creature<GhostState> {
 
 	public int getColor() {
 		return color;
-	}
-
-	public void setColor(int color) {
-		this.color = color;
 	}
 
 	public int getBounty() {

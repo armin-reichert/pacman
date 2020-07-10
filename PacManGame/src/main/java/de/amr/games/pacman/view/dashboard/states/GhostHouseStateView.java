@@ -2,9 +2,6 @@ package de.amr.games.pacman.view.dashboard.states;
 
 import static de.amr.games.pacman.controller.actor.GhostState.LOCKED;
 import static de.amr.games.pacman.model.world.Direction.RIGHT;
-import static de.amr.games.pacman.model.world.api.Population.CYAN_GHOST;
-import static de.amr.games.pacman.model.world.api.Population.ORANGE_GHOST;
-import static de.amr.games.pacman.model.world.api.Population.PINK_GHOST;
 import static de.amr.games.pacman.view.dashboard.util.Formatting.ticksAndSeconds;
 import static de.amr.games.pacman.view.theme.arcade.ArcadeTheme.ASSETS;
 
@@ -22,7 +19,7 @@ import javax.swing.border.TitledBorder;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
+import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
 import net.miginfocom.swing.MigLayout;
@@ -35,7 +32,7 @@ import net.miginfocom.swing.MigLayout;
 public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	private GameController gameController;
-	private ArcadeGameFolks folks;
+	private ArcadeWorldFolks folks;
 
 	private JTextField tfPinkyDots;
 	private JTextField tfInkyDots;
@@ -123,15 +120,15 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	public void attachTo(GameController gameController) {
 		this.gameController = gameController;
-		folks = (ArcadeGameFolks) gameController.world().population();
+		folks = (ArcadeWorldFolks) gameController.world().population();
 		init();
 	}
 
 	@Override
 	public void init() {
-		Image pinkyImage = ASSETS.makeSprite_ghostColored(PINK_GHOST, RIGHT).frame(0);
-		Image inkyImage = ASSETS.makeSprite_ghostColored(CYAN_GHOST, RIGHT).frame(0);
-		Image clydeImage = ASSETS.makeSprite_ghostColored(ORANGE_GHOST, RIGHT).frame(0);
+		Image pinkyImage = ASSETS.makeSprite_ghostColored(Ghost.PINK_GHOST, RIGHT).frame(0);
+		Image inkyImage = ASSETS.makeSprite_ghostColored(Ghost.CYAN_GHOST, RIGHT).frame(0);
+		Image clydeImage = ASSETS.makeSprite_ghostColored(Ghost.ORANGE_GHOST, RIGHT).frame(0);
 		Image pacManImage = ASSETS.makeSprite_pacManWalking(RIGHT).frame(0);
 		setLabelIconOnly(lblPinkyDots, scaledIcon(pinkyImage, 30));
 		setLabelIconOnly(lblInkyDots, scaledIcon(inkyImage, 30));

@@ -19,26 +19,22 @@ import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 
-public class ArcadeGameFolks implements Population {
+public class ArcadeWorldFolks implements Population {
 
-	private final PacMan pacMan = new PacMan();
-	private final Ghost blinky = new Ghost("Blinky");
-	private final Ghost pinky = new Ghost("Pinky");
-	private final Ghost inky = new Ghost("Inky");
-	private final Ghost clyde = new Ghost("Clyde");
+	private final World world;
+	private final PacMan pacMan;
+	private final Ghost blinky, pinky, inky, clyde;
 
-	@Override
-	public void populate(World world) {
+	public ArcadeWorldFolks(World world) {
+		this.world = world;
+		pacMan = new PacMan();
+		blinky = new Ghost("Blinky", Ghost.RED_GHOST);
+		inky = new Ghost("Inky", Ghost.CYAN_GHOST);
+		pinky = new Ghost("Pinky", Ghost.PINK_GHOST);
+		clyde = new Ghost("Clyde", Ghost.ORANGE_GHOST);
+
 		all().forEach(creature -> creature.setWorld(world));
-		world.setPopulation(this);
-		defineBehavior(world);
-		blinky.setColor(RED_GHOST);
-		pinky.setColor(PINK_GHOST);
-		inky.setColor(CYAN_GHOST);
-		clyde.setColor(ORANGE_GHOST);
-	}
-
-	private void defineBehavior(World world) {
+		world.populate(this);
 		int w = world.width(), h = world.height();
 		pacMan.behavior(pacMan.followingKeys(VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT));
 		ghosts().forEach(ghost -> {
@@ -69,6 +65,11 @@ public class ArcadeGameFolks implements Population {
 		clyde.behavior(ENTERING_HOUSE, clyde.goingToBed(world.theHouse().bed(3)));
 		clyde.behavior(SCATTERING, clyde.headingFor(Tile.at(0, h - 1)));
 		clyde.behavior(CHASING, clyde.headingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : Tile.at(0, h - 1)));
+	}
+
+	@Override
+	public World world() {
+		return world;
 	}
 
 	@Override

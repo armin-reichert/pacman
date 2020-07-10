@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.easy.game.controller.Lifecycle;
-import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
+import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.model.game.Game;
@@ -35,13 +35,13 @@ public class GhostHouseDoorMan implements Lifecycle {
 
 	private final World world;
 	private final House house;
-	private final ArcadeGameFolks folks;
+	private final ArcadeWorldFolks folks;
 	private final Game game;
 	private final DotCounter globalCounter;
 	private final int[] ghostCounters;
 	private int pacManStarvingTicks;
 
-	public GhostHouseDoorMan(World world, House house, Game game, ArcadeGameFolks folks) {
+	public GhostHouseDoorMan(World world, House house, Game game, ArcadeWorldFolks folks) {
 		this.world = world;
 		this.house = house;
 		this.folks = folks;

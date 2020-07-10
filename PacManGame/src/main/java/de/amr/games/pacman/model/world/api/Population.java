@@ -14,14 +14,10 @@ import de.amr.games.pacman.model.game.Game;
  */
 public interface Population {
 
-	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
-
 	/**
-	 * Lets the population populate the given world that hopefully accepts them.
-	 * 
-	 * @param world the world where this population wants to live in
+	 * @return the world where this population lives.
 	 */
-	void populate(World world);
+	World world();
 
 	/**
 	 * Lets the population take part in the given game.

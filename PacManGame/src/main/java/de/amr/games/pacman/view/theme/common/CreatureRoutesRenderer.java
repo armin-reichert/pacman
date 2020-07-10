@@ -13,7 +13,7 @@ import java.awt.Stroke;
 import java.util.List;
 
 import de.amr.easy.game.math.Vector2f;
-import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
+import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
@@ -39,8 +39,8 @@ public class CreatureRoutesRenderer implements IRenderer {
 	public void render(Graphics2D g) {
 		drawPacManRoute(g, world.population().pacMan());
 		world.population().ghosts().filter(world::included).forEach(ghost -> drawGhostRoute(g, ghost));
-		if (world.population() instanceof ArcadeGameFolks) {
-			ArcadeGameFolks folks = (ArcadeGameFolks) world.population();
+		if (world.population() instanceof ArcadeWorldFolks) {
+			ArcadeWorldFolks folks = (ArcadeWorldFolks) world.population();
 			if (world.included(folks.inky())) {
 				drawInkyChasing(g, folks.inky());
 			}

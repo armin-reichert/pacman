@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
 import de.amr.easy.game.entity.GameObject;
-import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
+import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
@@ -26,14 +26,13 @@ public class ChasePacManAnimation extends GameObject {
 	}
 
 	private World world = Universe.arcadeWorld();
-	private ArcadeGameFolks folks = new ArcadeGameFolks();
+	private ArcadeWorldFolks folks = new ArcadeWorldFolks(world);
 	private PacManSounds sounds;
 	private long pelletTimer;
 	private PelletDisplay pelletDisplay;
 
 	public ChasePacManAnimation(Theme theme, PacManSounds sounds) {
 		this.sounds = sounds;
-		folks.populate(world);
 		setTheme(theme);
 	}
 
@@ -41,7 +40,7 @@ public class ChasePacManAnimation extends GameObject {
 		folks.all().forEach(c -> c.setTheme(theme));
 	}
 
-	public ArcadeGameFolks folks() {
+	public ArcadeWorldFolks folks() {
 		return folks;
 	}
 

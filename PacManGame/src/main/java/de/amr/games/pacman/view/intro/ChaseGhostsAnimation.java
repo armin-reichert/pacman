@@ -3,7 +3,7 @@ package de.amr.games.pacman.view.intro;
 import java.awt.Graphics2D;
 
 import de.amr.easy.game.entity.GameObject;
-import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
+import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
@@ -18,14 +18,13 @@ import de.amr.games.pacman.view.core.Theme;
 public class ChaseGhostsAnimation extends GameObject {
 
 	private World world = Universe.arcadeWorld();
-	private ArcadeGameFolks folks = new ArcadeGameFolks();
+	private ArcadeWorldFolks folks = new ArcadeWorldFolks(world);
 	private PacManSounds pacManSounds;
 	private int points;
 
 	public ChaseGhostsAnimation(Theme theme, PacManSounds pacManSounds) {
 		this.pacManSounds = pacManSounds;
 		setTheme(theme);
-		folks.populate(world);
 	}
 
 	public void setTheme(Theme theme) {
