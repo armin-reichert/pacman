@@ -48,7 +48,7 @@ public abstract class TakingPrecomputedPath implements PathProvidingSteering {
 			targetPath = Collections.emptyList();
 			return;
 		}
-		for (int i = 0; i < targetPath.indexOf(actor.tile()); ++i) {
+		for (int i = 0; i < targetPath.indexOf(actor.location()); ++i) {
 			targetPath.remove(0);
 		}
 		if (isPathInvalid(actor)) {
@@ -80,7 +80,7 @@ public abstract class TakingPrecomputedPath implements PathProvidingSteering {
 	protected abstract List<Tile> pathToTarget(WorldMover actor, Tile targetTile);
 
 	protected boolean isPathInvalid(WorldMover actor) {
-		return actor.wishDir() == null || targetPath.size() == 0 || !first(targetPath).equals(actor.tile())
+		return actor.wishDir() == null || targetPath.size() == 0 || !first(targetPath).equals(actor.location())
 				|| !last(targetPath).equals(actor.targetTile());
 	}
 

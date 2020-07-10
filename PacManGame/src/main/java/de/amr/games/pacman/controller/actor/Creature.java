@@ -126,7 +126,7 @@ public abstract class Creature<STATE> extends Entity implements View, WorldMover
 
 	@Override
 	public String toString() {
-		Tile tile = tile();
+		Tile tile = location();
 		return String.format("(%s, col:%d, row:%d, %s)", name, tile.col, tile.row, getState());
 	}
 
@@ -149,9 +149,9 @@ public abstract class Creature<STATE> extends Entity implements View, WorldMover
 	}
 
 	public void placeAt(Tile tile, float xOffset, float yOffset) {
-		Tile oldTile = tile();
+		Tile oldTile = location();
 		tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
-		enteredNewTile = !tile().equals(oldTile);
+		enteredNewTile = !location().equals(oldTile);
 	}
 
 	public boolean isTeleporting() {
@@ -159,7 +159,7 @@ public abstract class Creature<STATE> extends Entity implements View, WorldMover
 	}
 
 	@Override
-	public Tile tile() {
+	public Tile location() {
 		Vector2f center = tf.getCenter();
 		int col = (int) (center.x >= 0 ? center.x / Tile.SIZE : Math.floor(center.x / Tile.SIZE));
 		int row = (int) (center.y >= 0 ? center.y / Tile.SIZE : Math.floor(center.y / Tile.SIZE));
@@ -206,7 +206,7 @@ public abstract class Creature<STATE> extends Entity implements View, WorldMover
 
 	@Override
 	public boolean canCrossBorderTo(Direction dir) {
-		Tile currentTile = tile(), neighbor = world.neighbor(currentTile, dir);
+		Tile currentTile = location(), neighbor = world.neighbor(currentTile, dir);
 		return canMoveBetween(currentTile, neighbor);
 	}
 

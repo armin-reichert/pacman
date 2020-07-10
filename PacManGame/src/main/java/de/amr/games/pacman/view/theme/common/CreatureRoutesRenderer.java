@@ -124,13 +124,13 @@ public class CreatureRoutesRenderer implements IRenderer {
 			return;
 		}
 		int x1, y1, x2, y2, x3, y3;
-		x1 = blinky.tile().centerX();
-		y1 = blinky.tile().centerY();
+		x1 = blinky.location().centerX();
+		y1 = blinky.location().centerY();
 		x2 = inky.targetTile().centerX();
 		y2 = inky.targetTile().centerY();
 		g.setColor(Color.GRAY);
 		g.drawLine(x1, y1, x2, y2);
-		Tile pacManTile = pacMan.tile();
+		Tile pacManTile = pacMan.location();
 		Direction pacManDir = pacMan.moveDir();
 		int s = Tile.SIZE / 2; // size of target square
 		g.setColor(Color.GRAY);
@@ -162,7 +162,7 @@ public class CreatureRoutesRenderer implements IRenderer {
 			return;
 		}
 		Color ghostColor = ghostColor(clyde);
-		int cx = clyde.tile().centerX(), cy = clyde.tile().centerY();
+		int cx = clyde.location().centerX(), cy = clyde.location().centerY();
 		int r = 8 * Tile.SIZE;
 		g.setColor(alpha(ghostColor, 100));
 		g.drawOval(cx - r, cy - r, 2 * r, 2 * r);

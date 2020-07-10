@@ -366,7 +366,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				soundManager.ghostEaten();
 				ghost.process(new GhostKilledEvent(ghost));
 				enqueue(new GhostKilledEvent(ghost));
-				loginfo("%s got killed at %s", ghost.name, ghost.tile());
+				loginfo("%s got killed at %s", ghost.name, ghost.location());
 				return;
 			}
 
@@ -375,7 +375,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				soundManager.stopAll();
 				folks.pacMan().process(new PacManKilledEvent(ghost));
 				enqueue(new PacManKilledEvent(ghost));
-				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.tile());
+				loginfo("Pac-Man killed by %s at %s", ghost.name, ghost.location());
 			}
 		}
 

@@ -68,7 +68,7 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 	}
 
 	private void checkIfPortalEntered(Creature<?> creature) {
-		Tile currentTile = creature.tile();
+		Tile currentTile = creature.location();
 		creature.world().portals().filter(portal -> portal.includes(currentTile)).findAny().ifPresent(portal -> {
 			portalEntered = portal;
 			loginfo("Entered portal at %s", currentTile);
@@ -76,12 +76,12 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 	}
 
 	private void teleport(Creature<?> creature) {
-		portalEntered.teleport(creature, creature.tile(), creature.moveDir());
+		portalEntered.teleport(creature, creature.location(), creature.moveDir());
 		portalEntered = null;
 	}
 
 	private void move(Creature<?> creature) {
-		final Tile tile = creature.tile();
+		final Tile tile = creature.location();
 		float speedLimit = fnSpeedLimit.get();
 		float speed = maxSpeedToDir(creature, creature.moveDir(), speedLimit);
 		if (creature.wishDir() != null && creature.wishDir() != creature.moveDir()) {
@@ -98,7 +98,7 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 		}
 		creature.tf.setVelocity(Vector2f.smul(speed, creature.moveDir().vector()));
 		creature.tf.move();
-		creature.setEnteredNewTile(!tile.equals(creature.tile()));
+		creature.setEnteredNewTile(!tile.equals(creature.location()));
 	}
 
 	/**
@@ -112,8 +112,8 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 		if (creature.canCrossBorderTo(dir)) {
 			return speed;
 		}
-		float offsetX = creature.tf.x - creature.tile().x();
-		float offsetY = creature.tf.y - creature.tile().y();
+		float offsetX = creature.tf.x - creature.location().x();
+		float offsetY = creature.tf.y - creature.location().y();
 		switch (dir) {
 		case UP:
 			return Math.min(offsetY, speed);

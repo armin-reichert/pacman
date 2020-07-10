@@ -53,7 +53,7 @@ class EnterGhostHouseTestUI extends TestUI {
 		if (inky.getState() == GhostState.LEAVING_HOUSE && !inky.isInsideHouse()) {
 			inky.setState(GhostState.SCATTERING);
 			inky.behavior(GhostState.SCATTERING, inky.headingFor(randomCape()));
-		} else if (inky.getState() == GhostState.SCATTERING && Arrays.asList(capes).contains(inky.tile())) {
+		} else if (inky.getState() == GhostState.SCATTERING && Arrays.asList(capes).contains(inky.location())) {
 			inky.setState(GhostState.DEAD);
 		}
 		super.update();

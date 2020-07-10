@@ -23,6 +23,6 @@ public class TakingShortestPath extends TakingPrecomputedPath {
 
 	@Override
 	protected List<Tile> pathToTarget(WorldMover actor, Tile targetTile) {
-		return graph.shortestPath(actor.tile(), targetTile);
+		return graph.shortestPath(actor.location(), targetTile);
 	}
 }

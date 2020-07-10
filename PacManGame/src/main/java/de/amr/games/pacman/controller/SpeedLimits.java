@@ -37,7 +37,7 @@ public class SpeedLimits {
 			return speed(level.ghostSpeed);
 		case CHASING:
 		case SCATTERING:
-			if (ghost.world().isTunnel(ghost.tile())) {
+			if (ghost.world().isTunnel(ghost.location())) {
 				return speed(level.ghostTunnelSpeed);
 			}
 			switch (ghost.getSanity()) {
@@ -52,7 +52,7 @@ public class SpeedLimits {
 				throw new IllegalArgumentException("Illegal ghost sanity state: " + ghost.getSanity());
 			}
 		case FRIGHTENED:
-			return speed(ghost.world().isTunnel(ghost.tile()) ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed);
+			return speed(ghost.world().isTunnel(ghost.location()) ? level.ghostTunnelSpeed : level.ghostFrightenedSpeed);
 		case DEAD:
 			return speed(2 * level.ghostSpeed);
 		default:

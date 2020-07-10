@@ -170,7 +170,7 @@ public class Ghost extends Creature<GhostState> {
 					.condition(() -> fnSubsequentState.get() == CHASING)
 					
 				.when(DEAD).then(ENTERING_HOUSE)
-					.condition(() -> world.isJustBeforeDoor(tile()))
+					.condition(() -> world.isJustBeforeDoor(location()))
 					
 		.endStateMachine();
 		/*@formatter:on*/
@@ -339,12 +339,12 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	public boolean isInsideHouse() {
-		return world.insideHouseOrDoor(tile());
+		return world.insideHouseOrDoor(location());
 	}
 
 	private void checkPacManCollision() {
 		PacMan pacMan = world.population().pacMan();
-		if (tile().equals(pacMan.tile()) && !isTeleporting() && !pacMan.isTeleporting() && !pacMan.is(PacManState.DEAD)) {
+		if (location().equals(pacMan.location()) && !isTeleporting() && !pacMan.isTeleporting() && !pacMan.is(PacManState.DEAD)) {
 			publish(new PacManGhostCollisionEvent(this));
 		}
 	}

@@ -12,9 +12,9 @@ import de.amr.games.pacman.model.world.core.Tile;
 public interface WorldMover {
 
 	/**
-	 * @return tile position
+	 * @return tile location
 	 */
-	Tile tile();
+	Tile location();
 
 	/**
 	 * Euclidean distance (in tiles) between this and the other entity.
@@ -23,7 +23,7 @@ public interface WorldMover {
 	 * @return Euclidean distance measured in tiles
 	 */
 	default double distance(WorldMover other) {
-		return tile().distance(other.tile());
+		return location().distance(other.location());
 	}
 
 	/**

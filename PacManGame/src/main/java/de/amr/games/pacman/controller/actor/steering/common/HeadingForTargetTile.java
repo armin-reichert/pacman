@@ -75,7 +75,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 			forced = false;
 			mover.setTargetTile(fnTargetTile.get());
 			if (mover.targetTile() != null) {
-				mover.setWishDir(bestDir(mover, mover.moveDir(), mover.tile(), mover.targetTile()));
+				mover.setWishDir(bestDir(mover, mover.moveDir(), mover.location(), mover.targetTile()));
 				if (pathComputed) {
 					computePath();
 				}
@@ -91,7 +91,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	 */
 	private void computePath() {
 		World world = mover.world();
-		Tile currentTile = mover.tile(), targetTile = mover.targetTile();
+		Tile currentTile = mover.location(), targetTile = mover.targetTile();
 		Direction currentDir = mover.moveDir();
 		path.clear();
 		path.add(currentTile);

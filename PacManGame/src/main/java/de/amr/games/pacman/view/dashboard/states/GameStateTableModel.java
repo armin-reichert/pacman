@@ -140,7 +140,7 @@ class GameStateTableModel extends AbstractTableModel {
 		r.creature = pacMan;
 		r.included = world.included(pacMan);
 		r.name = "Pac-Man";
-		r.tile = pacMan.tile();
+		r.tile = pacMan.location();
 		r.moveDir = pacMan.moveDir();
 		r.wishDir = pacMan.wishDir();
 		if (pacMan.getState() != null) {
@@ -155,7 +155,7 @@ class GameStateTableModel extends AbstractTableModel {
 		r.creature = ghost;
 		r.included = world.included(ghost);
 		r.name = ghost.name;
-		r.tile = ghost.tile();
+		r.tile = ghost.location();
 		r.target = ghost.targetTile();
 		r.moveDir = ghost.moveDir();
 		r.wishDir = ghost.wishDir();
@@ -167,7 +167,7 @@ class GameStateTableModel extends AbstractTableModel {
 			r.duration = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getDuration() : ghost.state().getDuration();
 		}
 		r.ghostSanity = ghost.getSanity();
-		r.pacManCollision = ghost.tile().equals(world.population().pacMan().tile());
+		r.pacManCollision = ghost.location().equals(world.population().pacMan().location());
 	}
 
 	void fillBonusRecord(GameStateRecord r, GameController gameController, World world) {

@@ -55,7 +55,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 
 	@Override
 	public void steer() {
-		if (!me.enteredNewTile() && me.canCrossBorderTo(me.moveDir()) || me.world().anyPortalContains(me.tile())) {
+		if (!me.enteredNewTile() && me.canCrossBorderTo(me.moveDir()) || me.world().anyPortalContains(me.location())) {
 			return;
 		}
 
@@ -100,7 +100,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 		aheadThenRightThenLeft()
 			.filter(me::canCrossBorderTo)
 			.forEach(dir -> {
-				Tile neighbor = me.world().neighbor(me.tile(), dir);
+				Tile neighbor = me.world().neighbor(me.location(), dir);
 				preferredFoodLocationFrom(neighbor).ifPresent(foodLocation -> {
 					double d = neighbor.distance(foodLocation);
 					if (d < distance) {
@@ -119,7 +119,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 
 	@Override
 	public List<Tile> pathToTarget() {
-		return (target != null) ? graph.shortestPath(me.tile(), target) : Collections.emptyList();
+		return (target != null) ? graph.shortestPath(me.location(), target) : Collections.emptyList();
 	}
 
 	private Stream<Ghost> dangerousGhosts() {
@@ -134,7 +134,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 	private Optional<Ghost> dangerousGhostInRange(int dist) {
 		//@formatter:off
 		return dangerousGhosts()
-			.filter(ghost -> shortestPathLength(ghost.tile(), me.tile()) <= dist)
+			.filter(ghost -> shortestPathLength(ghost.location(), me.location()) <= dist)
 			.findAny();
 		//@formatter:on
 	}
@@ -170,7 +170,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 	}
 
 	private double nearestDistanceToDangerousGhost(Tile here) {
-		return dangerousGhosts().map(ghost -> here.distance(ghost.tile())).min(Double::compareTo).orElse(Double.MAX_VALUE);
+		return dangerousGhosts().map(ghost -> here.distance(ghost.location())).min(Double::compareTo).orElse(Double.MAX_VALUE);
 	}
 
 	private Optional<Tile> activeBonusAtMostAway(Tile here, int maxDistance) {
