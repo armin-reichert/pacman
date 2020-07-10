@@ -16,7 +16,6 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.controller.sound.PacManSounds;
-import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.World;
@@ -81,9 +80,6 @@ public class GhostPointsAnimation extends GameObject {
 		ghostToKill = 0;
 		energizer = true;
 
-		// TODO game should not be needed
-		Game game = new Game(1, 244);
-		folks.takePartIn(game);
 		folks.all().forEach(Creature::init);
 
 		folks.pacMan().setMoveDir(Direction.RIGHT);

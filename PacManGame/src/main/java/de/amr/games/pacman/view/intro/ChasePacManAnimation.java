@@ -47,9 +47,6 @@ public class ChasePacManAnimation extends GameObject {
 		pelletTimer = Game.sec(6 * 0.5f);
 		pelletDisplay = PelletDisplay.SIMPLE;
 
-		// TODO game should not be needed
-		Game game = new Game(1, 244);
-		folks.takePartIn(game);
 		folks.all().forEach(Creature::init);
 
 		folks.pacMan().tf.vx = -0.55f;
