@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
+import de.amr.games.pacman.controller.SpeedLimits;
 import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.core.Portal;
@@ -22,7 +23,7 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class MovementControl extends StateMachine<MovementType, Void> {
 
-	protected Supplier<Float> fnSpeedLimit;
+	protected Supplier<Float> fnSpeedLimit = () -> SpeedLimits.BASE_SPEED;
 	private Portal portalEntered;
 
 	public MovementControl(Creature<?> creature) {

@@ -46,7 +46,6 @@ public class ChaseGhostsAnimation extends GameObject {
 		points = 200;
 		folks.all().forEach(Creature::init);
 
-		folks.pacMan().setSpeedLimit(() -> 3f);
 		folks.pacMan().setMoveDir(Direction.RIGHT);
 		folks.pacMan().tf.vx = 0.8f;
 		folks.pacMan().setState(PacManState.RUNNING);
@@ -54,7 +53,6 @@ public class ChaseGhostsAnimation extends GameObject {
 		folks.ghosts().forEach(ghost -> {
 			ghost.setMoveDir(Direction.RIGHT);
 			ghost.tf.setVelocity(0.55f, 0);
-			ghost.setSpeedLimit(() -> 2f);
 			ghost.setState(GhostState.FRIGHTENED);
 			ghost.state(GhostState.FRIGHTENED).removeTimer();
 		});

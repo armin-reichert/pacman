@@ -53,13 +53,11 @@ public class ChasePacManAnimation extends GameObject {
 
 		folks.pacMan().tf.vx = -0.55f;
 		folks.pacMan().setMoveDir(Direction.LEFT);
-		folks.pacMan().setSpeedLimit(() -> 3f);
 		folks.pacMan().setState(PacManState.RUNNING);
 		folks.pacMan().getRenderer().stopAnimationWhenStanding(false);
 
 		folks.ghosts().forEach(ghost -> {
 			ghost.tf.setVelocity(-0.55f, 0);
-			ghost.setSpeedLimit(() -> 2f);
 			ghost.setState(GhostState.CHASING);
 			ghost.state(GhostState.CHASING).removeTimer();
 			ghost.setMoveDir(Direction.LEFT);
