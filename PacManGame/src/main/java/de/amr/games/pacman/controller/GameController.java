@@ -48,7 +48,7 @@ import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.view.core.LivingView;
+import de.amr.games.pacman.view.core.PacManGameView;
 import de.amr.games.pacman.view.core.Theme;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.LoadingView;
@@ -77,7 +77,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected final Theme[] themes = Themes.all().toArray(Theme[]::new);
 	protected int currentThemeIndex = 0;
 
-	protected LivingView currentView;
+	protected PacManGameView currentView;
 	protected IntroView introView;
 	protected PlayView playView;
 
@@ -103,7 +103,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(LOADING_MUSIC)
 					.onEntry(() -> {
 						soundManager.loadMusic();
-						showView(new LoadingView(theme(), world, settings.width, settings.height));
+						showView(new LoadingView(theme(), settings.width, settings.height));
 					})
 					
 				.state(INTRO)
@@ -450,12 +450,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 		if (Keyboard.keyPressedOnce("z")) {
 			currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-			if (introView != null) {
-				introView.setTheme(theme());
-			}
-			if (playView != null) {
-				playView.setTheme(theme());
-			}
+			currentView.setTheme(theme());
 		}
 	}
 
@@ -606,7 +601,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 	}
 
-	protected void showView(LivingView view) {
+	protected void showView(PacManGameView view) {
 		if (currentView != view) {
 			currentView = view;
 			currentView.init();

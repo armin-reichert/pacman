@@ -24,7 +24,7 @@ import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
-import de.amr.games.pacman.view.core.LivingView;
+import de.amr.games.pacman.view.core.PacManGameView;
 import de.amr.games.pacman.view.core.Theme;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
 import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
@@ -38,7 +38,7 @@ import de.amr.statemachine.core.StateMachine;
  * 
  * @author Armin Reichert
  */
-public class IntroView extends StateMachine<IntroState, Void> implements LivingView {
+public class IntroView extends StateMachine<IntroState, Void> implements PacManGameView {
 
 	public enum IntroState {
 		SCROLLING_LOGO_ANIMATION, CHASING_ANIMATIONS, WAITING_FOR_INPUT, READY_TO_PLAY
@@ -106,7 +106,8 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 		.endStateMachine();
 	  /*@formatter:on*/
 	}
-	
+
+	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
 		chaseGhosts.setTheme(theme);

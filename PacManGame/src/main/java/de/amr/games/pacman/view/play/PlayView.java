@@ -18,7 +18,7 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.core.IRenderer;
 import de.amr.games.pacman.view.core.IWorldRenderer;
-import de.amr.games.pacman.view.core.LivingView;
+import de.amr.games.pacman.view.core.PacManGameView;
 import de.amr.games.pacman.view.core.Theme;
 import de.amr.games.pacman.view.theme.Themes;
 import de.amr.games.pacman.view.theme.arcade.GridRenderer;
@@ -32,7 +32,7 @@ import de.amr.games.pacman.view.theme.common.Rendering;
  * 
  * @author Armin Reichert
  */
-public class PlayView implements LivingView {
+public class PlayView implements PacManGameView {
 
 	private final World world;
 	private final Population folks;

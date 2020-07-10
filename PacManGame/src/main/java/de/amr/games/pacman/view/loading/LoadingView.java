@@ -7,13 +7,15 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import de.amr.easy.game.math.Vector2f;
+import de.amr.games.pacman.controller.actor.ArcadeGameFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
-import de.amr.games.pacman.view.core.LivingView;
+import de.amr.games.pacman.view.core.PacManGameView;
 import de.amr.games.pacman.view.core.Theme;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 
@@ -22,30 +24,32 @@ import de.amr.games.pacman.view.theme.common.MessagesRenderer;
  * 
  * @author Armin Reichert
  */
-public class LoadingView implements LivingView {
+public class LoadingView implements PacManGameView {
 
-	private final World world;
-	private final PacMan pacMan;
-	private final List<Ghost> ghosts;
+	private final World world = new ArcadeWorld();
+	private final ArcadeGameFolks folks = new ArcadeGameFolks();
+	private final PacMan pacMan = folks.pacMan();
+	private final List<Ghost> ghosts = folks.ghosts().collect(Collectors.toList());
+	private MessagesRenderer messagesRenderer;
+
 	private final int width;
 	private final int height;
-
 	private int alpha;
 	private int alphaInc;
 	private int ghostCount;
 	private int ghostInc;
 	private Random rnd = new Random();
 
-	private MessagesRenderer messagesRenderer;
-
-	public LoadingView(Theme theme, World world, int width, int height) {
+	public LoadingView(Theme theme, int width, int height) {
 		this.width = width;
 		this.height = height;
-		this.world = world;
-		pacMan = world.population().pacMan();
-		ghosts = world.population().ghosts().collect(Collectors.toList());
-		pacMan.setTheme(theme);
-		world.population().ghosts().forEach(ghost -> ghost.setTheme(theme));
+		setTheme(theme);
+		folks.populate(world);
+	}
+
+	@Override
+	public void setTheme(Theme theme) {
+		folks.all().forEach(c -> c.setTheme(theme));
 		messagesRenderer = theme.createMessagesRenderer();
 	}
 
@@ -89,7 +93,7 @@ public class LoadingView implements LivingView {
 		g.fillRect(0, 0, width, height);
 		messagesRenderer.setRow(18);
 		messagesRenderer.setTextColor(new Color(255, 0, 0, alpha));
-		messagesRenderer.drawCentered(g, Localized.texts.getString("loading_music"), world.width());
+		messagesRenderer.drawCentered(g, Localized.texts.getString("loading_music"), width);
 		pacMan.draw(g);
 		float x = width / 2 - (ghostCount / 2) * 20 - Tile.SIZE / 2, y = pacMan.tf.y + 20;
 		for (int i = 0; i < ghostCount; ++i) {
