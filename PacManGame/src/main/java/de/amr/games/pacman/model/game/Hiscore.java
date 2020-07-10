@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -21,7 +20,7 @@ import java.util.Properties;
 public class Hiscore extends Score {
 
 	private File file = new File(new File(System.getProperty("user.home")), "pacman.hiscore.xml");
-	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z").withZone(ZoneId.of("Z" ));
+	private DateTimeFormatter formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
 	private boolean needsUpdate;
 
 	public void load() {
