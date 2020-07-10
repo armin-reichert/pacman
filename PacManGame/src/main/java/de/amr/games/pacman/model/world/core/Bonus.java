@@ -6,8 +6,9 @@ public class Bonus {
 	public final int value;
 	public BonusState state;
 
-	public Bonus(String symbol, int value) {
+	public Bonus(String symbol, int value, BonusState state) {
 		this.symbol = symbol;
 		this.value = value;
+		this.state = state;
 	}
 }

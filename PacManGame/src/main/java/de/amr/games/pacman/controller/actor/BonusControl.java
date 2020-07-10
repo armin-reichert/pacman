@@ -28,45 +28,38 @@ public class BonusControl extends StateMachine<BonusState, PacManGameEvent> {
 
 	public BonusControl(Game game, World world) {
 		super(BonusState.class);
+		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 		/*@formatter:off*/
 		beginStateMachine()
-			.description(String.format("[%s]", "Bonus"))
+			.description("[BonusControl]")
 			.initialState(INACTIVE)
 			.states()
 				.state(INACTIVE)
-					.onEntry(() -> {
-						world.setBonus(null);
-					})
+					.onEntry(() -> world.setBonus(null))
 				.state(ACTIVE)
 					.timeoutAfter(() -> sec(9 + new Random().nextFloat()))
 					.onEntry(() -> {
-						Bonus bonus = new Bonus(game.level.bonusSymbol.name(), game.level.bonusValue);
-						bonus.state = ACTIVE;
+						Bonus bonus = new Bonus(game.level.bonusSymbol.name(), game.level.bonusValue, ACTIVE);
 						world.setBonus(bonus);
+						loginfo("Bonus %s activated, time: %.2f sec", world.getBonus().get().symbol, state().getDuration() / 60f);
 					})
 				.state(CONSUMED)
 					.timeoutAfter(() -> sec(3))
-					.onEntry(() -> {
-						world.getBonus().ifPresent(bonus -> {
-							bonus.state = CONSUMED;
-						});
-					})
+					.onEntry(() -> world.getBonus().get().state = CONSUMED)
 			.transitions()
 				.when(ACTIVE).then(CONSUMED).on(BonusFoundEvent.class)
 				.when(ACTIVE).then(INACTIVE).onTimeout()
 				.when(CONSUMED).then(INACTIVE).onTimeout()
 		.endStateMachine();
 		/*@formatter:on*/
-		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 		init();
 	}
 
 	public void activateBonus() {
 		setState(ACTIVE);
-		loginfo("Bonus %s activated, time: %.2f sec", this, state().getDuration() / 60f);
 	}
 
 	public void deactivateBonus() {
-		init();
+		setState(INACTIVE);
 	}
 }
