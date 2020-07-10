@@ -351,7 +351,7 @@ enum Sanity {
 Blinky's chasing behavior is to directly attack Pac-Man:
 
 ```java
-blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
+blinky.behavior(CHASING, blinky.headingFor(pacMan::tile));
 ```
 <img src="PacManDoc/blinky.png"/>
 
@@ -360,7 +360,7 @@ blinky.behavior(CHASING, blinky.isHeadingFor(pacMan::tile));
 Pinky, the *ambusher*, heads for the position 4 tiles ahead of Pac-Man's current position. In the original game there is an overflow error leading to a different behavior: when Pac-Man looks upwards, the tile ahead of Pac-Man is falsely computed with an additional number of steps to the west. This behavior is active by default and can be toggled using the 'o'-key.
 
 ```java
-pinky.behavior(CHASING, pinky.isHeadingFor(() -> pacMan.tilesAhead(4)));
+pinky.behavior(CHASING, pinky.headingFor(() -> pacMan.tilesAhead(4)));
 ```
 
 <img src="PacManDoc/pinky.png"/>
@@ -373,7 +373,7 @@ Consider the vector `V` from Blinky's position `B` to the position `P` two tiles
 Add the doubled vector to Blinky's position: `B + 2 * (P - B) = 2 * P - B` to get Inky's target:
 
 ```java
-inky.behavior(CHASING, inky.isHeadingFor(() -> {
+inky.behavior(CHASING, inky.headingFor(() -> {
 	Tile b = blinky.tile(), p = pacMan.tilesAhead(2);
 	return Tile.at(2 * p.col - b.col, 2 * p.row - b.row);
 }));
@@ -386,7 +386,7 @@ inky.behavior(CHASING, inky.isHeadingFor(() -> {
 Clyde attacks Pac-Man directly (like Blinky) if his straight line distance from Pac-Man is more than 8 tiles. If closer, he behaves like in scattering mode.
 
 ```java
-clyde.behavior(CHASING, clyde.isHeadingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : Tile.at(0, height() - 1)));
+clyde.behavior(CHASING,	clyde.headingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.tile() : Tile.at(0, worldHeight - 1)));
 ```
 <img src="PacManDoc/clyde.png"/>
 
