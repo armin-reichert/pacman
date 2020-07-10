@@ -78,6 +78,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected int currentThemeIndex = 0;
 
 	protected LivingView currentView;
+	protected IntroView introView;
 	protected PlayView playView;
 
 	private boolean showingGrid;
@@ -107,7 +108,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 					
 				.state(INTRO)
 					.onEntry(() -> {
-						showView(new IntroView(world, theme(), soundManager, settings.width, settings.height));
+						introView = new IntroView(world, theme(), soundManager, settings.width, settings.height);
+						showView(introView);
 					})
 					.onExit(() -> {
 						soundManager.stopAll();
@@ -446,9 +448,14 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			changeClockFrequency(80);
 		}
-		if (playView != null && Keyboard.keyPressedOnce("z")) {
+		if (Keyboard.keyPressedOnce("z")) {
 			currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-			playView.setTheme(themes[currentThemeIndex]);
+			if (introView != null) {
+				introView.setTheme(theme());
+			}
+			if (playView != null) {
+				playView.setTheme(theme());
+			}
 		}
 	}
 

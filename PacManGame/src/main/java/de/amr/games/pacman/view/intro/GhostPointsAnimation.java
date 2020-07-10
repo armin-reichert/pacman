@@ -39,20 +39,23 @@ public class GhostPointsAnimation extends GameObject {
 	private int ghostTimer;
 	private int energizerTimer;
 	private boolean energizer;
+	private int dx = 2 * Tile.SIZE + 2;
 
 	public GhostPointsAnimation(Theme theme, PacManSounds sounds) {
 		this.sounds = sounds;
 		folks.populate(world);
-		folks.pacMan().setTheme(theme);
-		folks.ghosts().forEach(ghost -> ghost.setTheme(theme));
-		tf.width = 90;
-		tf.height = 18;
+		setTheme(theme);
+		tf.width = 6 * dx;
+		tf.height = 2 * Tile.SIZE;
+	}
+
+	public void setTheme(Theme theme) {
+		folks.all().forEach(c -> c.setTheme(theme));
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
 		folks.all().forEach(c -> c.draw(g));
-		int dx = 2 * Tile.SIZE + 2;
 		g.translate(tf.x + dx, tf.y);
 		renderPellet(g);
 		g.translate(-(tf.x + dx), -tf.y);
@@ -97,7 +100,6 @@ public class GhostPointsAnimation extends GameObject {
 	}
 
 	private void initPositions() {
-		int dx = 2 * Tile.SIZE + 2;
 		float x = tf.x;
 		folks.pacMan().tf.setPosition(x, tf.y);
 		x += 2 * dx; // space for drawing pellet

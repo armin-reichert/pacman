@@ -106,6 +106,14 @@ public class IntroView extends StateMachine<IntroState, Void> implements LivingV
 		.endStateMachine();
 	  /*@formatter:on*/
 	}
+	
+	public void setTheme(Theme theme) {
+		this.theme = theme;
+		chaseGhosts.setTheme(theme);
+		chasePacMan.setTheme(theme);
+		ghostPointsAnimation.setTheme(theme);
+		messagesRenderer = theme.createMessagesRenderer();
+	}
 
 	private class ScrollingLogoAnimation extends State<IntroState> implements View {
 

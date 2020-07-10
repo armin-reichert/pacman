@@ -34,8 +34,11 @@ public class ChasePacManAnimation extends GameObject {
 	public ChasePacManAnimation(Theme theme, PacManSounds sounds) {
 		this.sounds = sounds;
 		folks.populate(world);
-		folks.ghosts().forEach(ghost -> ghost.setTheme(theme));
-		folks.pacMan().setTheme(theme);
+		setTheme(theme);
+	}
+
+	public void setTheme(Theme theme) {
+		folks.all().forEach(c -> c.setTheme(theme));
 	}
 
 	public ArcadeGameFolks folks() {

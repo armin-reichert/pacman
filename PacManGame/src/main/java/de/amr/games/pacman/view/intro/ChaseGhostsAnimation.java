@@ -23,10 +23,13 @@ public class ChaseGhostsAnimation extends GameObject {
 	private int points;
 
 	public ChaseGhostsAnimation(Theme theme, PacManSounds pacManSounds) {
-		folks.populate(world);
-		folks.ghosts().forEach(ghost -> ghost.setTheme(theme));
-		folks.pacMan().setTheme(theme);
 		this.pacManSounds = pacManSounds;
+		setTheme(theme);
+		folks.populate(world);
+	}
+
+	public void setTheme(Theme theme) {
+		folks.all().forEach(c -> c.setTheme(theme));
 	}
 
 	@Override
