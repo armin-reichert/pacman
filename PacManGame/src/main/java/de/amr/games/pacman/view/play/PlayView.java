@@ -77,6 +77,7 @@ public class PlayView implements PacManGameView {
 		setTheme(Themes.ARCADE_THEME);
 	}
 
+	@Override
 	public void setTheme(Theme theme) {
 		if (this.theme != theme) {
 			this.theme = theme;
