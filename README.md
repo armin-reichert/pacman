@@ -435,7 +435,7 @@ The view layer supports theming. The currently implemented themes are
 
 <img src="PacManDoc/theme-blocks.png">
 
-- ASCII: a theme using ASCII characters only
+- LETTERS: a theme using letters
 
 <img src="PacManDoc/theme-ascii.png">
 
