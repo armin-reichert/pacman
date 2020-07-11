@@ -12,6 +12,7 @@ import static de.amr.statemachine.core.StateMachine.beginStateMachine;
 
 import java.awt.Graphics2D;
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.Optional;
 
 import de.amr.easy.game.math.Vector2f;
@@ -27,6 +28,8 @@ import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.Theme;
+import de.amr.statemachine.api.Fsm;
+import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
@@ -36,13 +39,15 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class PacMan extends Animal<PacManState> {
 
+	private final StateMachine<PacManState, PacManGameEvent> brain;
+	private final Map<PacManState, Steering> steerings = new EnumMap<>(PacManState.class);
 	private int power;
 	private int digestion;
 	private boolean collapsing;
 	private IPacManRenderer renderer;
 
 	public PacMan() {
-		super("Pac-Man", new EnumMap<>(PacManState.class));
+		super("Pac-Man");
 		/*@formatter:off*/
 		brain = beginStateMachine(PacManState.class, PacManGameEvent.class)
 
@@ -96,6 +101,16 @@ public class PacMan extends Animal<PacManState> {
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		brain.doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
 		brain.doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
+	}
+
+	@Override
+	public Fsm<PacManState, PacManGameEvent> fsm() {
+		return brain;
+	}
+
+	@Override
+	public Map<PacManState, Steering> steerings() {
+		return steerings;
 	}
 
 	public void setCollapsing(boolean collapsing) {

@@ -18,29 +18,27 @@ import de.amr.games.pacman.controller.actor.steering.common.HeadingForTargetTile
 import de.amr.games.pacman.controller.actor.steering.common.RandomMovement;
 import de.amr.games.pacman.controller.actor.steering.common.TakingFixedPath;
 import de.amr.games.pacman.controller.actor.steering.common.TakingShortestPath;
-import de.amr.games.pacman.controller.api.Brain;
 import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.api.Theme;
-import de.amr.statemachine.api.Fsm;
+import de.amr.statemachine.api.FsmContainer;
 
 /**
  * An entity with a visual appearance that can move through the world and has a brain controlling
- * its behavior. The appearance is exchangeable via theming.
+ * its behavior. The appearance is exchangeable via theming. The physical size is one tile by
+ * default. The visual size however is normally larger.
  * 
  * @param <STATE> state (identifier) type
  * 
  * @author Armin Reichert
  */
-public abstract class Animal<STATE> extends Entity implements MobileCreature, Brain<STATE> {
+public abstract class Animal<STATE> extends Entity implements MobileCreature, FsmContainer<STATE, PacManGameEvent> {
 
 	protected final String name;
-	protected final Map<STATE, Steering> steerings;
 	protected World world;
-	protected Fsm<STATE, PacManGameEvent> brain;
 	protected MovementControl movement;
 	protected Direction moveDir;
 	protected Direction wishDir;
@@ -48,17 +46,16 @@ public abstract class Animal<STATE> extends Entity implements MobileCreature, Br
 	protected boolean enteredNewTile;
 	protected Theme theme;
 
-	public Animal(String name, Map<STATE, Steering> steerings) {
+	public Animal(String name) {
 		this.name = name;
-		this.movement = new MovementControl(this);
-		this.steerings = steerings;
 		tf.width = Tile.SIZE;
 		tf.height = Tile.SIZE;
+		movement = new MovementControl(this);
 	}
 
 	@Override
 	public void update() {
-		Brain.super.update();
+		FsmContainer.super.update();
 	}
 
 	@Override
@@ -105,11 +102,13 @@ public abstract class Animal<STATE> extends Entity implements MobileCreature, Br
 		movement.setSpeedLimit(fnSpeedLimit);
 	}
 
+	protected abstract Map<STATE, Steering> steerings();
+
 	/**
 	 * @return the current steering for this actor.
 	 */
 	public Steering steering() {
-		return steerings.getOrDefault(getState(), () -> {
+		return steerings().getOrDefault(getState(), () -> {
 			// do nothing
 		});
 	}
@@ -121,8 +120,8 @@ public abstract class Animal<STATE> extends Entity implements MobileCreature, Br
 	 * @return steering defined for this state
 	 */
 	public Steering steering(STATE state) {
-		if (steerings.containsKey(state)) {
-			return steerings.get(state);
+		if (steerings().containsKey(state)) {
+			return steerings().get(state);
 		}
 		throw new IllegalArgumentException(String.format("%s: No steering found for state %s", this, state));
 	}
@@ -134,7 +133,7 @@ public abstract class Animal<STATE> extends Entity implements MobileCreature, Br
 	 * @param steering steering defined for this state
 	 */
 	public void behavior(STATE state, Steering steering) {
-		steerings.put(state, steering);
+		steerings().put(state, steering);
 	}
 
 	@Override
@@ -149,16 +148,11 @@ public abstract class Animal<STATE> extends Entity implements MobileCreature, Br
 	}
 
 	@Override
-	public Fsm<STATE, PacManGameEvent> fsm() {
-		return brain;
-	}
-
-	@Override
 	public void init() {
 		moveDir = wishDir = RIGHT;
 		targetTile = null;
 		enteredNewTile = true;
-		brain.init();
+		fsm().init();
 		movement.init();
 	}
 

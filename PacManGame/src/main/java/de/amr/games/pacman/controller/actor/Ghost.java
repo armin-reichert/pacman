@@ -15,6 +15,7 @@ import static de.amr.games.pacman.model.world.api.Direction.UP;
 
 import java.awt.Graphics2D;
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
@@ -37,6 +38,7 @@ import de.amr.games.pacman.model.world.core.OneWayTile;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.api.IRenderer;
 import de.amr.games.pacman.view.api.Theme;
+import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
@@ -53,6 +55,8 @@ public class Ghost extends Animal<GhostState> {
 
 	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 
+	private final StateMachine<GhostState, PacManGameEvent> brain;
+	private final Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
 	private final ArcadeWorldFolks folks;
 	private final int color;
 	private Supplier<GhostState> fnSubsequentState;
@@ -64,7 +68,7 @@ public class Ghost extends Animal<GhostState> {
 	private IRenderer renderer;
 
 	public Ghost(ArcadeWorldFolks folks, String name, int color) {
-		super(name, new EnumMap<>(GhostState.class));
+		super(name);
 		this.folks = folks;
 		this.color = color;
 		/*@formatter:off*/
@@ -180,6 +184,16 @@ public class Ghost extends Animal<GhostState> {
 		/*@formatter:on*/
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+	}
+
+	@Override
+	public Fsm<GhostState, PacManGameEvent> fsm() {
+		return brain;
+	}
+
+	@Override
+	protected Map<GhostState, Steering> steerings() {
+		return steerings;
 	}
 
 	public ArcadeWorldFolks folks() {
