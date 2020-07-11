@@ -28,7 +28,6 @@ import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
 import de.amr.games.pacman.controller.event.GhostUnlockedEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
-import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
@@ -38,9 +37,6 @@ import de.amr.games.pacman.model.world.core.OneWayTile;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.api.IRenderer;
 import de.amr.games.pacman.view.api.Theme;
-import de.amr.statemachine.api.Fsm;
-import de.amr.statemachine.core.StateMachine;
-import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
  * A ghost.
@@ -55,7 +51,6 @@ public class Ghost extends Animal<GhostState> {
 
 	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 
-	private final StateMachine<GhostState, PacManGameEvent> brain;
 	private final Map<GhostState, Steering> steerings = new EnumMap<>(GhostState.class);
 	private final ArcadeWorldFolks folks;
 	private final int color;
@@ -68,11 +63,11 @@ public class Ghost extends Animal<GhostState> {
 	private IRenderer renderer;
 
 	public Ghost(ArcadeWorldFolks folks, String name, int color) {
-		super(name);
+		super(GhostState.class, name);
 		this.folks = folks;
 		this.color = color;
 		/*@formatter:off*/
-		brain = StateMachine.beginStateMachine(GhostState.class, PacManGameEvent.class)
+		beginStateMachine()
 			 
 			.description(this::toString)
 			.initialState(LOCKED)
@@ -82,7 +77,7 @@ public class Ghost extends Animal<GhostState> {
 				.state(LOCKED)
 					.onEntry(() -> {
 						fnSubsequentState = () -> LOCKED;
-						visible = true;
+						entity.visible = true;
 						flashing = false;
 						bounty = 0;
 						world.putIntoBed(this);
@@ -182,13 +177,8 @@ public class Ghost extends Animal<GhostState> {
 					
 		.endStateMachine();
 		/*@formatter:on*/
-		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		brain.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
-	}
-
-	@Override
-	public Fsm<GhostState, PacManGameEvent> fsm() {
-		return brain;
+		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
+		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 	}
 
 	@Override
@@ -277,7 +267,7 @@ public class Ghost extends Animal<GhostState> {
 	 * Lets the ghost jump up and down on its bed.
 	 */
 	public void bouncingOnBed(Bed bed) {
-		float dy = tf.y + Tile.SIZE / 2 - bed.center.y;
+		float dy = entity.tf.y + Tile.SIZE / 2 - bed.center.y;
 		if (dy < -4) {
 			setWishDir(DOWN);
 		} else if (dy > 3) {
@@ -291,20 +281,20 @@ public class Ghost extends Animal<GhostState> {
 	public void leavingHouse(House house) {
 		Tile exit = house.bed(0).tile;
 		int targetX = exit.centerX(), targetY = exit.y();
-		if (tf.y <= targetY) {
-			tf.y = targetY;
-		} else if (Math.round(tf.x) == targetX) {
-			tf.x = targetX;
+		if (entity.tf.y <= targetY) {
+			entity.tf.y = targetY;
+		} else if (Math.round(entity.tf.x) == targetX) {
+			entity.tf.x = targetX;
 			setWishDir(UP);
-		} else if (tf.x < targetX) {
+		} else if (entity.tf.x < targetX) {
 			setWishDir(RIGHT);
-		} else if (tf.x > targetX) {
+		} else if (entity.tf.x > targetX) {
 			setWishDir(LEFT);
 		}
 	}
 
 	private boolean hasLeftGhostHouse() {
-		return tf.y == world.theHouse().bed(0).tile.y();
+		return entity.tf.y == world.theHouse().bed(0).tile.y();
 	}
 
 	/**

@@ -68,10 +68,10 @@ public class LettersTheme implements Theme {
 	@Override
 	public IRenderer createGhostRenderer(Ghost ghost) {
 		return g -> {
-			if (ghost.visible) {
+			if (ghost.isVisible()) {
 				g.setFont(FONT);
 				g.setColor(ghostColor(ghost));
-				g.drawString(ghostLetter(ghost), ghost.tf.x, ghost.tf.y + OFFSET_BASELINE);
+				g.drawString(ghostLetter(ghost), ghost.entity.tf.x, ghost.entity.tf.y + OFFSET_BASELINE);
 			}
 		};
 	}
@@ -79,11 +79,11 @@ public class LettersTheme implements Theme {
 	@Override
 	public IPacManRenderer createPacManRenderer(PacMan pacMan) {
 		return g -> {
-			if (pacMan.visible) {
+			if (pacMan.isVisible()) {
 				g.setFont(FONT);
 				g.setColor(Color.YELLOW);
 				String letter = pacMan.is(DEAD) ? "\u2668" : "O";
-				g.drawString(letter, pacMan.tf.x, pacMan.tf.y + OFFSET_BASELINE);
+				g.drawString(letter, pacMan.entity.tf.x, pacMan.entity.tf.y + OFFSET_BASELINE);
 			}
 		};
 	}

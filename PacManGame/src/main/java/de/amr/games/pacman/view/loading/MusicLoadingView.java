@@ -64,7 +64,7 @@ public class MusicLoadingView implements PacManGameView {
 
 	@Override
 	public void update() {
-		float x = pacMan.tf.getCenter().x;
+		float x = pacMan.entity.tf.getCenter().x;
 		if (x > 0.9f * width || x < 0.1 * width) {
 			pacMan.setMoveDir(pacMan.moveDir().opposite());
 			ghostCount += ghostInc;
@@ -72,8 +72,8 @@ public class MusicLoadingView implements PacManGameView {
 				ghostInc = -ghostInc;
 			}
 		}
-		pacMan.tf.setVelocity(Vector2f.smul(2.5f, pacMan.moveDir().vector()));
-		pacMan.tf.move();
+		pacMan.entity.tf.setVelocity(Vector2f.smul(2.5f, pacMan.moveDir().vector()));
+		pacMan.entity.tf.move();
 
 		alpha += alphaInc;
 		if (alpha >= 160) {
@@ -93,11 +93,11 @@ public class MusicLoadingView implements PacManGameView {
 		messagesRenderer.setTextColor(new Color(255, 0, 0, alpha));
 		messagesRenderer.drawCentered(g, Localized.texts.getString("loading_music"), width);
 		pacMan.draw(g);
-		float x = width / 2 - (ghostCount / 2) * 20 - Tile.SIZE / 2, y = pacMan.tf.y + 20;
+		float x = width / 2 - (ghostCount / 2) * 20 - Tile.SIZE / 2, y = pacMan.entity.tf.y + 20;
 		for (int i = 0; i < ghostCount; ++i) {
 			Ghost ghost = ghosts.get(rnd.nextInt(4));
-			ghost.tf.x = x;
-			ghost.tf.y = y;
+			ghost.entity.tf.x = x;
+			ghost.entity.tf.y = y;
 			ghost.draw(g);
 			x += 20;
 		}

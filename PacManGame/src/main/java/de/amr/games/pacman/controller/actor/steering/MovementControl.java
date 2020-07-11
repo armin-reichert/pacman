@@ -44,12 +44,12 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 			.transitions()
 				.when(WALKING).then(TELEPORTING)
 					.condition(() -> hasEnteredPortal())
-					.act(() -> creature.visible = false)
+					.act(() -> creature.entity.visible = false)
 				.when(TELEPORTING).then(WALKING)
 					.onTimeout()
 					.act(() -> {
 						teleport(creature);
-						creature.visible = true;
+						creature.entity.visible = true;
 					})
 		.endStateMachine();
 		//@formatter:on
@@ -76,7 +76,7 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 	}
 
 	private void teleport(Animal<?> creature) {
-		portalEntered.teleport(creature, creature.location(), creature.moveDir());
+		portalEntered.teleport(creature.entity, creature.location(), creature.moveDir());
 		portalEntered = null;
 	}
 
@@ -96,8 +96,8 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 				creature.setMoveDir(creature.wishDir());
 			}
 		}
-		creature.tf.setVelocity(Vector2f.smul(speed, creature.moveDir().vector()));
-		creature.tf.move();
+		creature.entity.tf.setVelocity(Vector2f.smul(speed, creature.moveDir().vector()));
+		creature.entity.tf.move();
 		creature.setEnteredNewTile(!tile.equals(creature.location()));
 	}
 
@@ -112,8 +112,8 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 		if (creature.canCrossBorderTo(dir)) {
 			return speed;
 		}
-		float offsetX = creature.tf.x - creature.location().x();
-		float offsetY = creature.tf.y - creature.location().y();
+		float offsetX = creature.entity.tf.x - creature.location().x();
+		float offsetY = creature.entity.tf.y - creature.location().y();
 		switch (dir) {
 		case UP:
 			return Math.min(offsetY, speed);

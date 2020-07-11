@@ -46,12 +46,12 @@ public class ChaseGhostsAnimation extends GameObject {
 		folks.all().forEach(Creature::init);
 
 		folks.pacMan().setMoveDir(Direction.RIGHT);
-		folks.pacMan().tf.vx = 0.8f;
+		folks.pacMan().entity.tf.vx = 0.8f;
 		folks.pacMan().setState(PacManState.RUNNING);
 
 		folks.ghosts().forEach(ghost -> {
 			ghost.setMoveDir(Direction.RIGHT);
-			ghost.tf.setVelocity(0.55f, 0);
+			ghost.entity.tf.setVelocity(0.55f, 0);
 			ghost.setState(GhostState.FRIGHTENED);
 			ghost.state(GhostState.FRIGHTENED).removeTimer();
 		});
@@ -59,10 +59,10 @@ public class ChaseGhostsAnimation extends GameObject {
 	}
 
 	private void initPositions() {
-		folks.pacMan().tf.setPosition(tf.x, tf.y);
+		folks.pacMan().entity.tf.setPosition(tf.x, tf.y);
 		Ghost[] ghosts = folks.ghosts().toArray(Ghost[]::new);
 		for (int i = 0; i < ghosts.length; ++i) {
-			ghosts[i].tf.setPosition(tf.x + 20 * i, tf.y);
+			ghosts[i].entity.tf.setPosition(tf.x + 20 * i, tf.y);
 		}
 	}
 

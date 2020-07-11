@@ -50,14 +50,14 @@ public class ActorStatesRenderer implements IRenderer {
 	}
 
 	private void drawPacManState(Graphics2D g, PacMan pacMan) {
-		if (!pacMan.visible || pacMan.getState() == null) {
+		if (!pacMan.isVisible() || pacMan.getState() == null) {
 			return;
 		}
 		String text = pacMan.getPower() > 0 ? String.format("POWER(%d)", pacMan.getPower()) : pacMan.getState().name();
 		if (settings.pacManImmortable) {
 			text += " immortable";
 		}
-		drawEntityState(g, pacMan, text, Color.YELLOW);
+		drawEntityState(g, pacMan.entity, text, Color.YELLOW);
 	}
 
 	private void drawEntityState(Graphics2D g, Entity entity, String text, Color color) {
@@ -69,7 +69,7 @@ public class ActorStatesRenderer implements IRenderer {
 	}
 
 	private void drawGhostState(Graphics2D g, Ghost ghost, GhostCommand ghostCommand) {
-		if (!ghost.visible) {
+		if (!ghost.isVisible()) {
 			return;
 		}
 		if (ghost.getState() == null) {
@@ -93,7 +93,7 @@ public class ActorStatesRenderer implements IRenderer {
 		} else {
 			text.append(String.format("(%s,%s)", ghost.getState(), Rendering.INFTY));
 		}
-		drawEntityState(g, ghost, text.toString(), ghostColor(ghost));
+		drawEntityState(g, ghost.entity, text.toString(), ghostColor(ghost));
 	}
 
 	private void drawActorsOffTrack(Graphics2D g) {

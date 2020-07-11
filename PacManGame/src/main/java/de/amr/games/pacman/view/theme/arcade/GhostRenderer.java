@@ -29,7 +29,7 @@ public class GhostRenderer extends SpriteRenderer implements IRenderer {
 	@Override
 	public void render(Graphics2D g) {
 		selectSprite(ghost.getState());
-		drawEntity(g, ghost);
+		drawEntity(g, ghost.entity);
 	}
 
 	public void selectSprite(GhostState state) {

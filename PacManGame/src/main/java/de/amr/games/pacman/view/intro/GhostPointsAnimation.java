@@ -99,10 +99,10 @@ public class GhostPointsAnimation extends GameObject {
 
 	private void initPositions() {
 		float x = tf.x;
-		folks.pacMan().tf.setPosition(x, tf.y);
+		folks.pacMan().entity.tf.setPosition(x, tf.y);
 		x += 2 * dx; // space for drawing pellet
 		for (int i = 0; i < ghosts.length; ++i) {
-			ghosts[i].tf.setPosition(x, tf.y);
+			ghosts[i].entity.tf.setPosition(x, tf.y);
 			x += dx;
 		}
 	}

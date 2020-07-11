@@ -61,8 +61,8 @@ public class CreatureRoutesRenderer implements IRenderer {
 		} else if (ghost.wishDir() != null) {
 			Vector2f v = ghost.wishDir().vector();
 			Rendering.drawDirectionIndicator(g, Rendering.ghostColor(ghost), true, ghost.wishDir(),
-					ghost.tf.getCenter().roundedX() + v.roundedX() * Tile.SIZE,
-					ghost.tf.getCenter().roundedY() + v.roundedY() * Tile.SIZE);
+					ghost.entity.tf.getCenter().roundedX() + v.roundedX() * Tile.SIZE,
+					ghost.entity.tf.getCenter().roundedY() + v.roundedY() * Tile.SIZE);
 		}
 	}
 
@@ -75,7 +75,7 @@ public class CreatureRoutesRenderer implements IRenderer {
 
 		// draw dashed line from ghost position to target tile
 		Stroke dashed = new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
-		int x1 = ghost.tf.getCenter().roundedX(), y1 = ghost.tf.getCenter().roundedY();
+		int x1 = ghost.entity.tf.getCenter().roundedX(), y1 = ghost.entity.tf.getCenter().roundedY();
 		int x2 = targetTile.centerX(), y2 = targetTile.centerY();
 		g.setStroke(dashed);
 		g.setColor(alpha(ghostColor(ghost), 200));

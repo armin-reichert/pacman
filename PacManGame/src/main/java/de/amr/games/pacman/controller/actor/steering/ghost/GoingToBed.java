@@ -47,28 +47,28 @@ public class GoingToBed extends StateMachine<State, Void> implements Steering {
 					.onEntry(() -> {
 						// place the ghost centered over the ghost house entry and start falling
 						Vector2f houseEntry = ghost.world().theHouse().bed(0).center; 
-						ghost.tf.setPosition(houseEntry.x - Tile.SIZE / 2, houseEntry.y - Tile.SIZE / 2);
+						ghost.entity.tf.setPosition(houseEntry.x - Tile.SIZE / 2, houseEntry.y - Tile.SIZE / 2);
 						ghost.setWishDir(Direction.DOWN);					
 					})
 					
 			.transitions()
 	
 				.when(FALLING).then(MOVING_LEFT)
-					.condition(() -> ghost.tf.y >= targetY(bed) && ghost.tf.x > targetX(bed))
+					.condition(() -> ghost.entity.tf.y >= targetY(bed) && ghost.entity.tf.x > targetX(bed))
 					.act(() -> ghost.setWishDir(Direction.LEFT))
 				
 				.when(FALLING).then(MOVING_RIGHT)
-					.condition(() -> ghost.tf.y >= targetY(bed) && ghost.tf.x < targetX(bed))
+					.condition(() -> ghost.entity.tf.y >= targetY(bed) && ghost.entity.tf.x < targetX(bed))
 					.act(() -> ghost.setWishDir(Direction.RIGHT))
 	
 				.when(FALLING).then(TARGET_REACHED)
-					.condition(() -> ghost.tf.y >= targetY(bed) && ghost.tf.x == targetX(bed))
+					.condition(() -> ghost.entity.tf.y >= targetY(bed) && ghost.entity.tf.x == targetX(bed))
 				
 				.when(MOVING_LEFT).then(TARGET_REACHED)
-					.condition(() -> ghost.tf.x <= targetX(bed))
+					.condition(() -> ghost.entity.tf.x <= targetX(bed))
 					
 				.when(MOVING_RIGHT).then(TARGET_REACHED)
-					.condition(() -> ghost.tf.x >= targetX(bed))
+					.condition(() -> ghost.entity.tf.x >= targetX(bed))
 					
 		.endStateMachine();
 		/*@formatter:on*/

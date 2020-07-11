@@ -21,7 +21,7 @@ class GhostRenderer implements IRenderer {
 
 	@Override
 	public void render(Graphics2D g) {
-		if (!ghost.visible) {
+		if (!ghost.isVisible()) {
 			return;
 		}
 		GhostState state = ghost.getState();
@@ -66,8 +66,8 @@ class GhostRenderer implements IRenderer {
 
 	private void drawEyes(Graphics2D g) {
 		int size = tiles(1);
-		int x = (int) ghost.tf.x + (ghost.tf.width - size) / 2;
-		int y = (int) ghost.tf.y + (ghost.tf.width - size) / 2;
+		int x = (int) ghost.entity.tf.x + (ghost.entity.tf.width - size) / 2;
+		int y = (int) ghost.entity.tf.y + (ghost.entity.tf.width - size) / 2;
 		g.setColor(ghostColor(ghost));
 		g.drawRect(x, y, size, size);
 	}
@@ -75,13 +75,13 @@ class GhostRenderer implements IRenderer {
 	private void drawPoints(Graphics2D g) {
 		g.setColor(Color.GREEN);
 		g.setFont(BlocksTheme.FONT);
-		g.drawString(ghost.getBounty() + "", (int) ghost.tf.x, (int) ghost.tf.y);
+		g.drawString(ghost.getBounty() + "", (int) ghost.entity.tf.x, (int) ghost.entity.tf.y);
 	}
 
 	private void drawFrightened(Graphics2D g) {
 		int size = tiles(1.5);
-		int x = (int) ghost.tf.x + (ghost.tf.width - size) / 2;
-		int y = (int) ghost.tf.y + (ghost.tf.width - size) / 2;
+		int x = (int) ghost.entity.tf.x + (ghost.entity.tf.width - size) / 2;
+		int y = (int) ghost.entity.tf.y + (ghost.entity.tf.width - size) / 2;
 		g.translate(0, 2);
 		g.setColor(Color.BLUE);
 		g.fillRect(x, y, size, size);
@@ -92,8 +92,8 @@ class GhostRenderer implements IRenderer {
 	private void drawFlashing(Graphics2D g) {
 		boolean flash = Application.app().clock().getTotalTicks() % 30 < 15;
 		int size = tiles(1.5);
-		int x = (int) ghost.tf.x + (ghost.tf.width - size) / 2;
-		int y = (int) ghost.tf.y + (ghost.tf.width - size) / 2;
+		int x = (int) ghost.entity.tf.x + (ghost.entity.tf.width - size) / 2;
+		int y = (int) ghost.entity.tf.y + (ghost.entity.tf.width - size) / 2;
 		g.translate(0, 2);
 		g.setColor(flash ? Color.WHITE : Color.BLUE);
 		g.fillRect(x, y, size, size);
@@ -103,8 +103,8 @@ class GhostRenderer implements IRenderer {
 
 	private void drawColored(Graphics2D g) {
 		int size = tiles(1.5);
-		int x = (int) ghost.tf.x + (ghost.tf.width - size) / 2;
-		int y = (int) ghost.tf.y + (ghost.tf.width - size) / 2;
+		int x = (int) ghost.entity.tf.x + (ghost.entity.tf.width - size) / 2;
+		int y = (int) ghost.entity.tf.y + (ghost.entity.tf.width - size) / 2;
 		g.translate(0, 2);
 		g.setColor(ghostColor(ghost));
 		g.fillRect(x, y, size, size);

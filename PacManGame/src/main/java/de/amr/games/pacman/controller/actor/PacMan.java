@@ -8,7 +8,6 @@ import static de.amr.games.pacman.model.game.Game.DIGEST_ENERGIZER_TICKS;
 import static de.amr.games.pacman.model.game.Game.DIGEST_PELLET_TICKS;
 import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 import static de.amr.games.pacman.model.world.api.Direction.UP;
-import static de.amr.statemachine.core.StateMachine.beginStateMachine;
 
 import java.awt.Graphics2D;
 import java.util.EnumMap;
@@ -28,9 +27,6 @@ import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.api.IPacManRenderer;
 import de.amr.games.pacman.view.api.Theme;
-import de.amr.statemachine.api.Fsm;
-import de.amr.statemachine.core.StateMachine;
-import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
  * The one and only.
@@ -39,7 +35,6 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  */
 public class PacMan extends Animal<PacManState> {
 
-	private final StateMachine<PacManState, PacManGameEvent> brain;
 	private final Map<PacManState, Steering> steerings = new EnumMap<>(PacManState.class);
 	private int power;
 	private int digestion;
@@ -47,9 +42,9 @@ public class PacMan extends Animal<PacManState> {
 	private IPacManRenderer renderer;
 
 	public PacMan() {
-		super("Pac-Man");
+		super(PacManState.class, "Pac-Man");
 		/*@formatter:off*/
-		brain = beginStateMachine(PacManState.class, PacManGameEvent.class)
+		beginStateMachine()
 
 			.description(this::toString)
 			.initialState(SLEEPING)
@@ -59,7 +54,7 @@ public class PacMan extends Animal<PacManState> {
 				.state(SLEEPING)
 					.onEntry(() -> {
 						power = digestion = 0;
-						visible = true;
+						entity.visible = true;
 						world.putIntoBed(this);
 					})
 
@@ -97,15 +92,10 @@ public class PacMan extends Animal<PacManState> {
 
 		.endStateMachine();
 		/* @formatter:on */
-		brain.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
-		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
-		brain.doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
-		brain.doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
-	}
-
-	@Override
-	public Fsm<PacManState, PacManGameEvent> fsm() {
-		return brain;
+		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+		setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
+		doNotLogEventProcessingIf(e -> e instanceof FoodFoundEvent);
+		doNotLogEventPublishingIf(e -> e instanceof FoodFoundEvent);
 	}
 
 	@Override
@@ -150,9 +140,9 @@ public class PacMan extends Animal<PacManState> {
 	}
 
 	public void fallAsleep() {
-		Vector2f position = tf.getPosition();
+		Vector2f position = entity.tf.getPosition();
 		setState(PacManState.SLEEPING);
-		tf.setPosition(position);
+		entity.tf.setPosition(position);
 	}
 
 	/**

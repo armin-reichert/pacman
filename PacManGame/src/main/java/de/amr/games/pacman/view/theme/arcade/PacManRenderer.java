@@ -46,7 +46,7 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 			break;
 		case RUNNING:
 			selectSprite("walking-" + pacMan.moveDir());
-			boolean running = pacMan.tf.vx != 0 || pacMan.tf.vy != 0;
+			boolean running = pacMan.entity.tf.vx != 0 || pacMan.entity.tf.vy != 0;
 			enableAnimation(running || !running && !isAnimationStoppedWhenStanding());
 			break;
 		case SLEEPING:
@@ -54,6 +54,6 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 		default:
 			break;
 		}
-		drawEntity(g, pacMan);
+		drawEntity(g, pacMan.entity);
 	}
 }

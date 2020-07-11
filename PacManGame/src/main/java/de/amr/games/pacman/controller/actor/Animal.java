@@ -24,19 +24,20 @@ import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.api.Theme;
-import de.amr.statemachine.api.FsmContainer;
+import de.amr.statemachine.core.StateMachine;
 
 /**
- * An entity with a visual appearance that can move through the world and has a brain controlling
- * its behavior. The appearance is exchangeable via theming. The physical size is one tile by
- * default. The visual size however is normally larger.
+ * An entity with a visual appearance that can move through the world and with a behavior defined by
+ * a finite-state machine. The appearance is exchangeable via theming. The physical size is one tile
+ * by default. The visual size however is normally larger.
  * 
  * @param <STATE> state (identifier) type
  * 
  * @author Armin Reichert
  */
-public abstract class Animal<STATE> extends Entity implements MobileCreature, FsmContainer<STATE, PacManGameEvent> {
+public abstract class Animal<STATE> extends StateMachine<STATE, PacManGameEvent> implements MobileCreature {
 
+	public final Entity entity = new Entity();
 	protected final String name;
 	protected World world;
 	protected MovementControl movement;
@@ -46,16 +47,12 @@ public abstract class Animal<STATE> extends Entity implements MobileCreature, Fs
 	protected boolean enteredNewTile;
 	protected Theme theme;
 
-	public Animal(String name) {
+	public Animal(Class<STATE> stateClass, String name) {
+		super(stateClass);
 		this.name = name;
-		tf.width = Tile.SIZE;
-		tf.height = Tile.SIZE;
+		entity.tf.width = Tile.SIZE;
+		entity.tf.height = Tile.SIZE;
 		movement = new MovementControl(this);
-	}
-
-	@Override
-	public void update() {
-		FsmContainer.super.update();
 	}
 
 	@Override
@@ -65,17 +62,17 @@ public abstract class Animal<STATE> extends Entity implements MobileCreature, Fs
 
 	@Override
 	public Transform tf() {
-		return tf;
+		return entity.tf;
 	}
 
 	@Override
 	public boolean isVisible() {
-		return visible;
+		return entity.visible;
 	}
 
 	@Override
 	public void setVisible(boolean visible) {
-		this.visible = visible;
+		entity.visible = visible;
 	}
 
 	public Theme getTheme() {
@@ -152,14 +149,14 @@ public abstract class Animal<STATE> extends Entity implements MobileCreature, Fs
 		moveDir = wishDir = RIGHT;
 		targetTile = null;
 		enteredNewTile = true;
-		fsm().init();
 		movement.init();
+		super.init();
 	}
 
 	@Override
 	public void placeAt(Tile tile, float xOffset, float yOffset) {
 		Tile oldTile = location();
-		tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
+		entity.tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
 		enteredNewTile = !location().equals(oldTile);
 	}
 
@@ -169,7 +166,7 @@ public abstract class Animal<STATE> extends Entity implements MobileCreature, Fs
 
 	@Override
 	public Tile location() {
-		Vector2f center = tf.getCenter();
+		Vector2f center = entity.tf.getCenter();
 		int col = (int) (center.x >= 0 ? center.x / Tile.SIZE : Math.floor(center.x / Tile.SIZE));
 		int row = (int) (center.y >= 0 ? center.y / Tile.SIZE : Math.floor(center.y / Tile.SIZE));
 		return Tile.at(col, row);

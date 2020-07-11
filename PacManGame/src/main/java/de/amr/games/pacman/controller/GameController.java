@@ -138,7 +138,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(CHANGING_LEVEL)
 					.timeoutAfter(() -> sec(mazeFlashingSeconds() + 6))
 					.onEntry(() -> {
-						folks.pacMan().tf.setVelocity(0, 0);
+						folks.pacMan().entity.tf.setVelocity(0, 0);
 						doorMan.onLevelChange();
 						soundManager.stopAllClips();
 						playView.enableGhostAnimations(false);
@@ -152,7 +152,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						
 						// During first two seconds, do nothing. At second 2, hide ghosts and start flashing.
 						if (t == sec(2)) {
-							folks.ghostsInsideWorld().forEach(ghost -> ghost.visible = false);
+							folks.ghostsInsideWorld().forEach(ghost -> ghost.entity.visible = false);
 							if (flashingSeconds > 0) {
 								world.setChangingLevel(true);
 							}
@@ -185,7 +185,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(GHOST_DYING)
 					.timeoutAfter(sec(1))
 					.onEntry(() -> {
-						folks.pacMan().visible = false;
+						folks.pacMan().entity.visible = false;
 					})
 					.onTick(() -> {
 						bonusControl.update();
@@ -194,7 +194,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 							.forEach(Ghost::update);
 					})
 					.onExit(() -> {
-						folks.pacMan().visible = true;
+						folks.pacMan().entity.visible = true;
 					})
 				
 				.state(PACMAN_DYING)
@@ -210,7 +210,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 								dyingEndTime = dyingStartTime + sec(3f);
 						if (t == waitTime) {
 							bonusControl.deactivateBonus();
-							folks.ghostsInsideWorld().forEach(ghost -> ghost.visible = false);
+							folks.ghostsInsideWorld().forEach(ghost -> ghost.entity.visible = false);
 						}
 						else if (t == dyingStartTime) {
 							folks.pacMan().setCollapsing(true);
