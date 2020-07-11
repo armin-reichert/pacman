@@ -102,7 +102,7 @@ public class PacManApp extends Application {
 		gameStateView.attachTo(gameController, gameController.folks());
 		gameLevelView.attachTo(gameController);
 		themeSelectionView.attachTo(gameController);
-		f2.addCustomTab("Theme", themeSelectionView, () -> gameController.game().isPresent());
+		f2.addCustomTab("Theme", themeSelectionView, () -> true);
 		f2.addCustomTab("Game State", gameStateView, () -> gameController.game().isPresent());
 		f2.addCustomTab("Game Level", gameLevelView, () -> gameController.game().isPresent());
 	}

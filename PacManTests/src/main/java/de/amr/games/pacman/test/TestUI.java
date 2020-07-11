@@ -65,8 +65,7 @@ public class TestUI implements Lifecycle, VisualController {
 		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
 		folks.ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> speedLimit(ghost, game)));
 
-		view = new PlayView(world, folks, game, null, null);
-		view.setTheme(themes[currentThemeIndex]);
+		view = new PlayView(world, themes[currentThemeIndex], folks, game, null, null);
 		view.turnScoresOff();
 		view.init();
 	}

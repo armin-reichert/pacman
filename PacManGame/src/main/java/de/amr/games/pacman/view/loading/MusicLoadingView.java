@@ -29,6 +29,7 @@ public class MusicLoadingView implements PacManGameView {
 	private final ArcadeWorldFolks folks = new ArcadeWorldFolks(world);
 	private final PacMan pacMan = folks.pacMan();
 	private final List<Ghost> ghosts = folks.ghosts().collect(Collectors.toList());
+	private Theme theme;
 	private MessagesRenderer messagesRenderer;
 
 	private final int width;
@@ -46,7 +47,13 @@ public class MusicLoadingView implements PacManGameView {
 	}
 
 	@Override
+	public Theme getTheme() {
+		return theme;
+	}
+
+	@Override
 	public void setTheme(Theme theme) {
+		this.theme = theme;
 		folks.all().forEach(c -> c.setTheme(theme));
 		messagesRenderer = theme.createMessagesRenderer();
 	}

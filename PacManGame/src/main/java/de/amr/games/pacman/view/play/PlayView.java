@@ -20,7 +20,6 @@ import de.amr.games.pacman.view.api.IRenderer;
 import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.api.Theme;
-import de.amr.games.pacman.view.theme.Themes;
 import de.amr.games.pacman.view.theme.arcade.GridRenderer;
 import de.amr.games.pacman.view.theme.common.ActorStatesRenderer;
 import de.amr.games.pacman.view.theme.common.CreatureRoutesRenderer;
@@ -59,7 +58,8 @@ public class PlayView implements PacManGameView {
 	private final IRenderer actorRoutesRenderer;
 	private final IRenderer actorStatesRenderer;
 
-	public PlayView(World world, ArcadeWorldFolks folks, Game game, GhostCommand ghostCommand, DoorMan doorMan) {
+	public PlayView(World world, Theme theme, ArcadeWorldFolks folks, Game game, GhostCommand ghostCommand,
+			DoorMan doorMan) {
 		this.world = world;
 		this.folks = folks;
 		this.game = game;
@@ -74,7 +74,7 @@ public class PlayView implements PacManGameView {
 		frameRateDisplay = new FrameRateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
-		setTheme(Themes.ARCADE_THEME);
+		setTheme(theme);
 	}
 
 	@Override
@@ -92,6 +92,7 @@ public class PlayView implements PacManGameView {
 		}
 	}
 
+	@Override
 	public Theme getTheme() {
 		return theme;
 	}

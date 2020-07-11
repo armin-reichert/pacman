@@ -467,9 +467,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		folks.pacMan().setSpeedLimit(() -> SpeedLimits.pacManSpeedLimit(folks.pacMan(), game));
 		folks.all().forEach(world::bringIn);
 		folks.all().forEach(Creature::init);
-		playView = new PlayView(world, folks, game, ghostCommand, doorMan);
-		playView.setTheme(theme());
-		app().f2Dialog().ifPresent(f2 -> f2.selectCustomTab(0));
+		playView = new PlayView(world, theme(), folks, game, ghostCommand, doorMan);
 	}
 
 	private PlayingState playingState() {
@@ -499,8 +497,8 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			currentThemeIndex = 0;
 			break;
 		}
-		if (playView != null) {
-			playView.setTheme(theme());
+		if (currentView != null) {
+			currentView.setTheme(theme());
 		}
 	}
 

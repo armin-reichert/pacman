@@ -115,8 +115,8 @@ public class CreatureRoutesRenderer implements IRenderer {
 
 	private void drawInkyChasing(Graphics2D g, Ghost inky) {
 		PacMan pacMan = folks.pacMan();
-		Ghost blinky = folks.ghosts().filter(ghost -> ghost.name().equals("Blinky")).findFirst().get();
-		if (!inky.is(CHASING) || !folks.world().contains(blinky)) {
+		Ghost blinky = folks.blinky();
+		if (!inky.is(CHASING) || inky.targetTile() == null || !folks.world().contains(blinky)) {
 			return;
 		}
 		int x1, y1, x2, y2, x3, y3;

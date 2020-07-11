@@ -11,9 +11,7 @@ import javax.swing.JPanel;
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.view.api.Theme;
-import de.amr.games.pacman.view.play.PlayView;
-import de.amr.games.pacman.view.theme.Themes;
+import de.amr.games.pacman.view.api.PacManGameView;
 import net.miginfocom.swing.MigLayout;
 
 public class ThemeSelectionView extends JPanel implements Lifecycle {
@@ -32,28 +30,24 @@ public class ThemeSelectionView extends JPanel implements Lifecycle {
 		add(lblSelectTheme, "cell 0 0,alignx trailing");
 
 		comboSelectTheme = new JComboBox<>();
-		comboSelectTheme.setModel(new DefaultComboBoxModel<String>(new String[] { "ARCADE", "ASCII", "BLOCKS" }));
+		comboSelectTheme.setModel(new DefaultComboBoxModel<String>(new String[] { "ARCADE", "LETTERS", "BLOCKS" }));
 		add(comboSelectTheme, "cell 1 0,alignx left");
 		comboSelectTheme.addItemListener(e -> {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				String themeName = comboSelectTheme.getModel().getElementAt(comboSelectTheme.getSelectedIndex());
-				playView().ifPresent(view -> {
-					Themes.getThemeNamed(themeName).ifPresent(theme -> ((PlayView) view).setTheme(theme));
-				});
+				gameController.selectTheme(themeName);
 			}
 		});
 	}
 
-	private Optional<View> playView() {
-		return Optional.ofNullable(gameController).flatMap(GameController::currentView)
-				.filter(view -> view instanceof PlayView);
+	private Optional<View> currentView() {
+		return Optional.ofNullable(gameController).flatMap(GameController::currentView);
 	}
 
 	private void updateSelectionFromTheme() {
-		playView().ifPresent(view -> {
-			PlayView playView = (PlayView) view;
-			Theme theme = playView.getTheme();
-			comboSelectTheme.setSelectedItem(theme.name().toUpperCase());
+		currentView().ifPresent(view -> {
+			PacManGameView gameView = (PacManGameView) view;
+			comboSelectTheme.setSelectedItem(gameView.getTheme().name().toUpperCase());
 		});
 	}
 

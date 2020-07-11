@@ -108,6 +108,11 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 	}
 
 	@Override
+	public Theme getTheme() {
+		return theme;
+	}
+
+	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
 		chaseGhosts.setTheme(theme);

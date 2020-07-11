@@ -6,4 +6,6 @@ import de.amr.easy.game.view.View;
 public interface PacManGameView extends View, Lifecycle {
 
 	void setTheme(Theme theme);
+
+	Theme getTheme();
 }
