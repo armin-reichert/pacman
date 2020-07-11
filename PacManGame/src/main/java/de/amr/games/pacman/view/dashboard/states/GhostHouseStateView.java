@@ -21,7 +21,7 @@ import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
+import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -169,7 +169,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		label.setIcon(icon);
 	}
 
-	private Color trafficLightColor(GhostHouseDoorMan house, Ghost ghost) {
+	private Color trafficLightColor(DoorMan house, Ghost ghost) {
 		if (!ghost.isInsideHouse()) {
 			return null;
 		}
@@ -180,7 +180,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		return ghost == next ? Color.YELLOW : Color.RED;
 	}
 
-	private void updateTrafficLight(TrafficLightsWidget trafficLight, GhostHouseDoorMan house, Ghost ghost) {
+	private void updateTrafficLight(TrafficLightsWidget trafficLight, DoorMan house, Ghost ghost) {
 		Color color = trafficLightColor(house, ghost);
 		if (color != null) {
 			trafficLight.setVisible(true);
@@ -192,7 +192,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		}
 	}
 
-	private String formatDots(GhostHouseDoorMan house, Ghost ghost) {
+	private String formatDots(DoorMan house, Ghost ghost) {
 		return String.format("%d p:%d g:%d", house.ghostDotCount(ghost), house.personalDotLimit(ghost),
 				house.globalDotLimit(ghost));
 	}

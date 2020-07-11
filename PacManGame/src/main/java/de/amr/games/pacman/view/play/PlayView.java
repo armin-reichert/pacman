@@ -11,7 +11,7 @@ import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
-import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
+import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
@@ -59,7 +59,7 @@ public class PlayView implements PacManGameView {
 	private final IRenderer actorRoutesRenderer;
 	private final IRenderer actorStatesRenderer;
 
-	public PlayView(World world, Population folks, Game game, GhostCommand ghostCommand, GhostHouseDoorMan doorMan) {
+	public PlayView(World world, Population folks, Game game, GhostCommand ghostCommand, DoorMan doorMan) {
 		this.world = world;
 		this.folks = folks;
 		this.game = game;

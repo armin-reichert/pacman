@@ -31,21 +31,21 @@ import de.amr.games.pacman.model.world.core.Tile;
  * @see <a href=
  *      "https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php?page=4">Gamasutra</a>
  */
-public class GhostHouseDoorMan implements Lifecycle {
+public class DoorMan implements Lifecycle {
 
-	private final World world;
 	private final House house;
 	private final ArcadeWorldFolks folks;
 	private final Game game;
+	private final World world;
 	private final DotCounter globalCounter;
 	private final int[] ghostCounters;
 	private int pacManStarvingTicks;
 
-	public GhostHouseDoorMan(World world, House house, Game game, ArcadeWorldFolks folks) {
-		this.world = world;
+	public DoorMan(House house, Game game, ArcadeWorldFolks folks) {
 		this.house = house;
 		this.folks = folks;
 		this.game = game;
+		world = folks.world();
 		globalCounter = new DotCounter();
 		ghostCounters = new int[4];
 	}
@@ -173,7 +173,7 @@ public class GhostHouseDoorMan implements Lifecycle {
 
 	private boolean isOpeningRequested(Door door) {
 		//@formatter:off
-		return world.population().ghosts().filter(world::included)
+		return folks.ghosts().filter(world::included)
 				.filter(ghost -> ghost.is(ENTERING_HOUSE, LEAVING_HOUSE))
 				.filter(ghost -> isGhostNearDoor(ghost, door))
 				.findAny()
@@ -184,7 +184,8 @@ public class GhostHouseDoorMan implements Lifecycle {
 	private boolean isGhostNearDoor(Ghost ghost, Door door) {
 		Tile fromGhostTowardsHouse = world.neighbor(ghost.location(), door.intoHouse);
 		Tile fromGhostAwayFromHouse = world.neighbor(ghost.location(), door.intoHouse.opposite());
-		return door.includes(ghost.location()) || door.includes(fromGhostAwayFromHouse) || door.includes(fromGhostTowardsHouse);
+		return door.includes(ghost.location()) || door.includes(fromGhostAwayFromHouse)
+				|| door.includes(fromGhostTowardsHouse);
 	}
 
 	private int pacManStarvingTimeLimit() {

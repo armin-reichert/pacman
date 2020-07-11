@@ -42,7 +42,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
-import de.amr.games.pacman.controller.ghosthouse.GhostHouseDoorMan;
+import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Direction;
@@ -69,7 +69,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	protected PacManSounds soundManager;
 
 	protected GhostCommand ghostCommand;
-	protected GhostHouseDoorMan doorMan;
+	protected DoorMan doorMan;
 	protected BonusControl bonusControl;
 
 	protected Game game;
@@ -463,7 +463,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	private void newGame() {
 		game = new Game(settings.startLevel, world.totalFoodCount());
 		ghostCommand = new GhostCommand(game, world);
-		doorMan = new GhostHouseDoorMan(world, world.theHouse(), game, folks);
+		doorMan = new DoorMan(world.theHouse(), game, folks);
 		bonusControl = new BonusControl(game, world);
 		folks.ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> SpeedLimits.speedLimit(ghost, game)));
 		folks.pacMan().setSpeedLimit(() -> SpeedLimits.pacManSpeedLimit(folks.pacMan(), game));
@@ -523,7 +523,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return Optional.ofNullable(ghostCommand);
 	}
 
-	public Optional<GhostHouseDoorMan> doorMan() {
+	public Optional<DoorMan> doorMan() {
 		return Optional.of(doorMan);
 	}
 
