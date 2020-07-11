@@ -64,6 +64,8 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class GameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
+	protected final Theme[] themes = { Themes.ARCADE_THEME, Themes.BLOCKS_THEME, Themes.LETTERS_THEME };
+
 	protected World world;
 	protected ArcadeWorldFolks folks;
 	protected PacManSounds soundManager;
@@ -74,7 +76,6 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	protected Game game;
 
-	protected final Theme[] themes = Themes.all().toArray(Theme[]::new);
 	protected int currentThemeIndex = 0;
 
 	protected PacManGameView currentView;
@@ -427,9 +428,11 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public void init() {
 		loginfo("Initializing game controller");
 		selectTheme(settings.theme);
-		createWorldAndPopulation();
-		soundManager = new PacManSounds(world, folks);
+		world = Universe.arcadeWorld();
+		folks = new ArcadeWorldFolks(world);
+		folks.all().forEach(world::include);
 		folks.all().forEach(creature -> creature.addEventListener(this::process));
+		soundManager = new PacManSounds(world, folks);
 		super.init();
 	}
 
@@ -447,17 +450,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			changeClockFrequency(70);
 		} else if (Keyboard.keyPressedOnce("3") || Keyboard.keyPressedOnce(KeyEvent.VK_NUMPAD3)) {
 			changeClockFrequency(80);
-		}
-		if (Keyboard.keyPressedOnce("z")) {
+		} else if (Keyboard.keyPressedOnce("z")) {
 			currentThemeIndex = (currentThemeIndex + 1) % themes.length;
 			currentView.setTheme(theme());
 		}
-	}
-
-	private void createWorldAndPopulation() {
-		world = Universe.arcadeWorld();
-		folks = new ArcadeWorldFolks(world);
-		folks.all().forEach(world::include);
 	}
 
 	private void newGame() {
@@ -465,13 +461,13 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		ghostCommand = new GhostCommand(game, world);
 		doorMan = new DoorMan(world.theHouse(), game, folks);
 		bonusControl = new BonusControl(game, world);
+		folks.takePartIn(game);
 		folks.ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> SpeedLimits.speedLimit(ghost, game)));
 		folks.pacMan().setSpeedLimit(() -> SpeedLimits.pacManSpeedLimit(folks.pacMan(), game));
 		folks.all().forEach(world::include);
 		folks.all().forEach(Creature::init);
-		folks.takePartIn(game);
 		playView = new PlayView(world, folks, game, ghostCommand, doorMan);
-		playView.setTheme(themes[currentThemeIndex]);
+		playView.setTheme(theme());
 		app().f2Dialog().ifPresent(f2 -> f2.selectCustomTab(0));
 	}
 
@@ -503,7 +499,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			break;
 		}
 		if (playView != null) {
-			playView.setTheme(themes[currentThemeIndex]);
+			playView.setTheme(theme());
 		}
 	}
 
