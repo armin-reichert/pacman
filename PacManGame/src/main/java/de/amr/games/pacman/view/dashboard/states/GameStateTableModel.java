@@ -13,6 +13,7 @@ import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostSanity;
 import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
@@ -67,7 +68,7 @@ class GameStateTableModel extends AbstractTableModel {
 	};
 
 	private GameController gameController;
-	private World world;
+	private ArcadeWorld world;
 	private GameStateRecord[] records;
 
 	public GameStateTableModel() {
@@ -120,10 +121,10 @@ class GameStateTableModel extends AbstractTableModel {
 	}
 
 	public void update() {
-		if (gameController != null && gameController.world().population() instanceof ArcadeWorldFolks) {
+		if (gameController != null) {
 			gameController.game().ifPresent(game -> {
 				gameController.ghostCommand().ifPresent(ghostCommand -> {
-					ArcadeWorldFolks folks = (ArcadeWorldFolks) gameController.world().population();
+					ArcadeWorldFolks folks = gameController.folks();
 					fillGhostRecord(records[ROW_BLINKY], game, ghostCommand, folks.blinky(), folks.pacMan());
 					fillGhostRecord(records[ROW_PINKY], game, ghostCommand, folks.pinky(), folks.pacMan());
 					fillGhostRecord(records[ROW_INKY], game, ghostCommand, folks.inky(), folks.pacMan());

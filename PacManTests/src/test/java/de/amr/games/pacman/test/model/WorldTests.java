@@ -10,8 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.core.Tile;
 
 public class WorldTests {

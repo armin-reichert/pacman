@@ -118,9 +118,9 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 		tfPacManStarvingTime.setColumns(8);
 	}
 
-	public void attachTo(GameController gameController) {
+	public void attachTo(GameController gameController, ArcadeWorldFolks folks) {
 		this.gameController = gameController;
-		folks = (ArcadeWorldFolks) gameController.world().population();
+		this.folks = folks;
 		init();
 	}
 

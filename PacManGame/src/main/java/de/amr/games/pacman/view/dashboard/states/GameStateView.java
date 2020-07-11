@@ -14,6 +14,7 @@ import javax.swing.JScrollPane;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.games.pacman.controller.GameController;
+import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.statemachine.core.State;
 import net.miginfocom.swing.MigLayout;
 
@@ -78,9 +79,9 @@ public class GameStateView extends JPanel implements Lifecycle {
 	 * 
 	 * @param gameController the game controller
 	 */
-	public void attachTo(GameController gameController) {
+	public void attachTo(GameController gameController, ArcadeWorldFolks folks) {
 		this.gameController = gameController;
-		ghostHouseStateView.attachTo(gameController);
+		ghostHouseStateView.attachTo(gameController, folks);
 		init();
 	}
 

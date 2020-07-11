@@ -15,7 +15,7 @@ import static java.awt.event.KeyEvent.VK_UP;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.api.MobileCreature;
-import de.amr.games.pacman.model.world.api.Population;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.House;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -25,22 +25,23 @@ import de.amr.games.pacman.model.world.core.Tile;
  * 
  * @author Armin Reichert
  */
-public class ArcadeWorldFolks implements Population {
+public class ArcadeWorldFolks {
 
 	private final World world;
 	private final PacMan pacMan;
 	private final Ghost blinky, pinky, inky, clyde;
 
-	public ArcadeWorldFolks(World world) {
+	public ArcadeWorldFolks(ArcadeWorld world) {
 		this.world = world;
+		world.setFolks(this);
+
 		pacMan = new PacMan();
-		blinky = new Ghost("Blinky", Ghost.RED_GHOST);
-		inky = new Ghost("Inky", Ghost.CYAN_GHOST);
-		pinky = new Ghost("Pinky", Ghost.PINK_GHOST);
-		clyde = new Ghost("Clyde", Ghost.ORANGE_GHOST);
+		blinky = new Ghost(this, "Blinky", Ghost.RED_GHOST);
+		inky = new Ghost(this, "Inky", Ghost.CYAN_GHOST);
+		pinky = new Ghost(this, "Pinky", Ghost.PINK_GHOST);
+		clyde = new Ghost(this, "Clyde", Ghost.ORANGE_GHOST);
 
 		all().forEach(creature -> creature.setWorld(world));
-		world.setPopulation(this);
 
 		int worldWidth = world.width(), worldHeight = world.height();
 		House house = world.theHouse();
@@ -77,8 +78,7 @@ public class ArcadeWorldFolks implements Population {
 		clyde.behavior(CHASING,
 				clyde.headingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.location() : Tile.at(0, worldHeight - 1)));
 	}
-
-	@Override
+	
 	public World world() {
 		return world;
 	}
@@ -112,6 +112,6 @@ public class ArcadeWorldFolks implements Population {
 	}
 
 	public Stream<Ghost> ghostsInsideWorld() {
-		return ghosts().filter(world()::contains);
+		return ghosts().filter(world::contains);
 	}
 }

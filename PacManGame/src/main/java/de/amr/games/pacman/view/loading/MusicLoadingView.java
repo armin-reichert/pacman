@@ -10,9 +10,8 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
 import de.amr.games.pacman.view.api.PacManGameView;
@@ -26,7 +25,7 @@ import de.amr.games.pacman.view.theme.common.MessagesRenderer;
  */
 public class MusicLoadingView implements PacManGameView {
 
-	private final World world = new ArcadeWorld();
+	private final ArcadeWorld world = new ArcadeWorld();
 	private final ArcadeWorldFolks folks = new ArcadeWorldFolks(world);
 	private final PacMan pacMan = folks.pacMan();
 	private final List<Ghost> ghosts = folks.ghosts().collect(Collectors.toList());

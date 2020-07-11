@@ -15,17 +15,15 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.api.Creature;
 import de.amr.games.pacman.controller.sound.PacManSounds;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.Themes;
 
 public class TestUI implements Lifecycle, VisualController {
 
-	protected final World world;
-	protected final Game game;
+	protected final ArcadeWorld world;
 	protected final ArcadeWorldFolks folks;
 	protected final PacMan pacMan;
 	protected final Ghost blinky, pinky, inky, clyde;
@@ -33,6 +31,7 @@ public class TestUI implements Lifecycle, VisualController {
 	protected PlayView view;
 	protected Theme[] themes = { Themes.ARCADE_THEME, Themes.BLOCKS_THEME, Themes.LETTERS_THEME };
 	protected int currentThemeIndex = 0;
+	protected final Game game;
 
 	@Override
 	public Optional<View> currentView() {

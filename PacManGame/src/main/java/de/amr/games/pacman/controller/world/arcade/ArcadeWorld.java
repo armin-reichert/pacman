@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model.world.arcade;
+package de.amr.games.pacman.controller.world.arcade;
 
 import static de.amr.easy.game.Application.loginfo;
 
@@ -13,7 +13,6 @@ import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.model.world.api.Area;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Lifeform;
-import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.core.AbstractWorld;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Block;
@@ -72,6 +71,8 @@ public class ArcadeWorld extends AbstractWorld {
 			//@formatter:on
 	};
 
+	private ArcadeWorldFolks folks;
+
 	public ArcadeWorld() {
 		worldMap = new WorldMap(DATA);
 		pacManBed = new Bed(4, 13, 26, Direction.RIGHT);
@@ -86,6 +87,14 @@ public class ArcadeWorld extends AbstractWorld {
 			new OneWayTile(15, 25, Direction.DOWN)
 		//@formatter:on
 		));
+	}
+
+	public void setFolks(ArcadeWorldFolks folks) {
+		this.folks = folks;
+	}
+
+	public ArcadeWorldFolks getFolks() {
+		return folks;
 	}
 
 	private House ghostHouse(int x, int y, int w, int h) {
@@ -103,33 +112,22 @@ public class ArcadeWorld extends AbstractWorld {
 	}
 
 	@Override
-	public void setPopulation(Population population) {
-		if (population instanceof ArcadeWorldFolks) {
-			this.population = population;
-		} else {
-			throw new IllegalArgumentException();
-		}
-	}
-
-	@Override
 	public void putIntoBed(Lifeform creature) {
-		if (population != null) {
-			if (creature == folks().pacMan()) {
-				placeInBed(folks().pacMan(), pacManBed());
-			} else if (creature == folks().blinky()) {
-				placeInBed(folks().blinky(), theHouse().bed(0));
-			} else if (creature == folks().inky()) {
-				placeInBed(folks().inky(), theHouse().bed(1));
-			} else if (creature == folks().pinky()) {
-				placeInBed(folks().pinky(), theHouse().bed(2));
-			} else if (creature == folks().clyde()) {
-				placeInBed(folks().clyde(), theHouse().bed(3));
-			}
+		if (creature == folks().pacMan()) {
+			placeInBed(folks().pacMan(), pacManBed());
+		} else if (creature == folks().blinky()) {
+			placeInBed(folks().blinky(), theHouse().bed(0));
+		} else if (creature == folks().inky()) {
+			placeInBed(folks().inky(), theHouse().bed(1));
+		} else if (creature == folks().pinky()) {
+			placeInBed(folks().pinky(), theHouse().bed(2));
+		} else if (creature == folks().clyde()) {
+			placeInBed(folks().clyde(), theHouse().bed(3));
 		}
 	}
 
 	private ArcadeWorldFolks folks() {
-		return (ArcadeWorldFolks) population;
+		return folks;
 	}
 
 	private void placeInBed(MobileCreature creature, Bed bed) {

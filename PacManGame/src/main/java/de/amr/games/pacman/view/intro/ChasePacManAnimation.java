@@ -12,10 +12,9 @@ import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.controller.api.Creature;
 import de.amr.games.pacman.controller.sound.PacManSounds;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.api.Theme;
 
@@ -25,7 +24,7 @@ public class ChasePacManAnimation extends GameObject {
 		SIMPLE, TEN, ENERGIZER, FIFTY
 	}
 
-	private World world = new ArcadeWorld();
+	private ArcadeWorld world = new ArcadeWorld();
 	private ArcadeWorldFolks folks = new ArcadeWorldFolks(world);
 	private PacManSounds sounds;
 	private long pelletTimer;

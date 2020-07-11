@@ -53,6 +53,7 @@ public class Ghost extends Animal<GhostState> {
 
 	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 
+	private final ArcadeWorldFolks folks;
 	private final int color;
 	private Supplier<GhostState> fnSubsequentState;
 	private GhostSanityControl sanityControl;
@@ -62,8 +63,9 @@ public class Ghost extends Animal<GhostState> {
 	private IntSupplier fnNumFlashes = () -> 0;
 	private IRenderer renderer;
 
-	public Ghost(String name, int color) {
+	public Ghost(ArcadeWorldFolks folks, String name, int color) {
 		super(name, new EnumMap<>(GhostState.class));
+		this.folks = folks;
 		this.color = color;
 		/*@formatter:off*/
 		brain = StateMachine.beginStateMachine(GhostState.class, PacManGameEvent.class)
@@ -178,6 +180,10 @@ public class Ghost extends Animal<GhostState> {
 		/*@formatter:on*/
 		brain.setMissingTransitionBehavior(MissingTransitionBehavior.LOG);
 		brain.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
+	}
+
+	public ArcadeWorldFolks folks() {
+		return folks;
 	}
 
 	@Override
@@ -344,7 +350,6 @@ public class Ghost extends Animal<GhostState> {
 	}
 
 	private void checkPacManCollision() {
-		ArcadeWorldFolks folks = (ArcadeWorldFolks) world.population();
 		PacMan pacMan = folks.pacMan();
 		if (location().equals(pacMan.location()) && !isTeleporting() && !pacMan.isTeleporting()
 				&& !pacMan.is(PacManState.DEAD)) {

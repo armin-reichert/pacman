@@ -16,7 +16,6 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.Lifeform;
-import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 
 public abstract class AbstractWorld implements World {
@@ -31,7 +30,6 @@ public abstract class AbstractWorld implements World {
 	protected boolean frozen;
 
 	protected WorldMap worldMap;
-	protected Population population;
 
 	private Set<Lifeform> outsiders = new HashSet<>();
 
@@ -53,11 +51,6 @@ public abstract class AbstractWorld implements World {
 	@Override
 	public void setChangingLevel(boolean b) {
 		changingLevel = b;
-	}
-
-	@Override
-	public Population population() {
-		return population;
 	}
 
 	@Override

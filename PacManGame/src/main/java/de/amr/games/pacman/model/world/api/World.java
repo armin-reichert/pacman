@@ -11,10 +11,6 @@ import de.amr.games.pacman.model.world.core.Tile;
  */
 public interface World extends Territory, FoodContainer {
 
-	void setPopulation(Population population);
-
-	Population population();
-
 	Stream<Tile> habitatTiles();
 
 	boolean contains(Lifeform creature);

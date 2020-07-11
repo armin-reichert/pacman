@@ -45,10 +45,9 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.controller.sound.PacManSounds;
+import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.intro.IntroView;
@@ -67,7 +66,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 
 	protected final Theme[] themes = { Themes.ARCADE_THEME, Themes.BLOCKS_THEME, Themes.LETTERS_THEME };
 
-	protected World world;
+	protected ArcadeWorld world;
 	protected ArcadeWorldFolks folks;
 	protected PacManSounds soundManager;
 
@@ -477,6 +476,10 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return state(PLAYING);
 	}
 
+	public ArcadeWorldFolks folks() {
+		return folks;
+	}
+
 	public Stream<MobileCreature> folksInsideWorld() {
 		return folks.all().filter(world::contains);
 	}
@@ -505,7 +508,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return themes[currentThemeIndex];
 	}
 
-	public World world() {
+	public ArcadeWorld world() {
 		return world;
 	}
 
