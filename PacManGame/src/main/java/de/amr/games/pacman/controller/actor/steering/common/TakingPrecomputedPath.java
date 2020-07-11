@@ -8,8 +8,8 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
+import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.MobileCreature;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 

@@ -6,7 +6,7 @@ import de.amr.games.pacman.model.world.core.Bonus;
 import de.amr.games.pacman.model.world.core.Tile;
 
 /**
- * Food-related functions.
+ * Provides food-related functionality.
  * 
  * @author Armin Reichert
  */
@@ -18,17 +18,17 @@ public interface FoodContainer {
 
 	void fillFood();
 
-	boolean containsFood(Tile tile);
+	void clearFood(Tile tile);
 
-	boolean containsEatenFood(Tile tile);
+	void fillFood(Tile tile);
+
+	boolean containsFood(Tile tile);
 
 	boolean containsSimplePellet(Tile tile);
 
 	boolean containsEnergizer(Tile tile);
 
-	void removeFood(Tile tile);
-
-	void createFood(Tile tile);
+	boolean didContainFood(Tile tile);
 
 	void setBonus(Bonus bonus);
 

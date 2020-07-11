@@ -34,7 +34,7 @@ public abstract class AbstractWorld implements World {
 	protected WorldMap worldMap;
 	protected Population population;
 
-	private Set<Creature> outside = new HashSet<>();
+	private Set<Creature> outsiders = new HashSet<>();
 
 	@Override
 	public boolean isFrozen() {
@@ -73,11 +73,11 @@ public abstract class AbstractWorld implements World {
 
 	private void takeOut(Creature creature, boolean out) {
 		if (out) {
-			outside.add(creature);
+			outsiders.add(creature);
 			creature.setVisible(false);
 			loginfo("%s take out of world", creature.name());
 		} else {
-			outside.remove(creature);
+			outsiders.remove(creature);
 			creature.setVisible(true);
 			loginfo("%s put into world", creature.name());
 		}
@@ -85,7 +85,7 @@ public abstract class AbstractWorld implements World {
 
 	@Override
 	public boolean contains(Creature creature) {
-		return !outside.contains(creature);
+		return !outsiders.contains(creature);
 	}
 
 	protected void addPortal(Tile left, Tile right) {
@@ -191,11 +191,6 @@ public abstract class AbstractWorld implements World {
 	}
 
 	@Override
-	public Tile neighbor(Tile tile, Direction dir) {
-		return tileToDir(tile, dir, 1);
-	}
-
-	@Override
 	public boolean isIntersection(Tile tile) {
 		return is(tile, B_INTERSECTION);
 	}
@@ -252,14 +247,14 @@ public abstract class AbstractWorld implements World {
 	}
 
 	@Override
-	public void removeFood(Tile tile) {
+	public void clearFood(Tile tile) {
 		if (is(tile, B_FOOD)) {
 			set(tile, B_EATEN);
 		}
 	}
 
 	@Override
-	public void createFood(Tile tile) {
+	public void fillFood(Tile tile) {
 		if (is(tile, B_FOOD)) {
 			clear(tile, B_EATEN);
 		}
@@ -271,7 +266,7 @@ public abstract class AbstractWorld implements World {
 	}
 
 	@Override
-	public boolean containsEatenFood(Tile tile) {
+	public boolean didContainFood(Tile tile) {
 		return is(tile, B_FOOD) && is(tile, B_EATEN);
 	}
 

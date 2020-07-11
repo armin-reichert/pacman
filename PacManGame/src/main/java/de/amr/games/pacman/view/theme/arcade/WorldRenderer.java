@@ -79,7 +79,7 @@ public class WorldRenderer implements IWorldRenderer {
 
 	private void drawMazeContent(Graphics2D g) {
 		// hide eaten food
-		world.habitatTiles().filter(world::containsEatenFood).forEach(tile -> {
+		world.habitatTiles().filter(world::didContainFood).forEach(tile -> {
 			g.setColor(fnEatenFoodColor.apply(tile));
 			g.fillRect(tile.x(), tile.y(), Tile.SIZE, Tile.SIZE);
 		});

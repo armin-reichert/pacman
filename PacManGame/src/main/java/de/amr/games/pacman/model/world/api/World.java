@@ -3,6 +3,7 @@ package de.amr.games.pacman.model.world.api;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.api.Creature;
+import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.model.world.core.Tile;
 
 /**
@@ -10,7 +11,7 @@ import de.amr.games.pacman.model.world.core.Tile;
  * 
  * @author Armin Reichert
  */
-public interface World extends Terrain, FoodContainer {
+public interface World extends Territory, FoodContainer {
 
 	void setPopulation(Population population);
 

@@ -21,8 +21,8 @@ import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.MobileCreature;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.api.IRenderer;
 

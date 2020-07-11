@@ -33,6 +33,7 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.controller.api.Creature;
+import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -395,7 +396,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 			FoodFoundEvent found = (FoodFoundEvent) event;
 			int livesBeforeScoring = game.lives;
 			boolean energizer = world.containsEnergizer(found.tile);
-			world.removeFood(found.tile);
+			world.clearFood(found.tile);
 			if (energizer) {
 				game.scoreEnergizerFound();
 			} else {
@@ -476,7 +477,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return state(PLAYING);
 	}
 
-	public Stream<Creature> folksInsideWorld() {
+	public Stream<MobileCreature> folksInsideWorld() {
 		return folks.all().filter(world::contains);
 	}
 

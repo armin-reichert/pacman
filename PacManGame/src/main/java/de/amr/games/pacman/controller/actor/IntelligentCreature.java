@@ -20,10 +20,10 @@ import de.amr.games.pacman.controller.actor.steering.common.HeadingForTargetTile
 import de.amr.games.pacman.controller.actor.steering.common.RandomMovement;
 import de.amr.games.pacman.controller.actor.steering.common.TakingFixedPath;
 import de.amr.games.pacman.controller.actor.steering.common.TakingShortestPath;
+import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.MobileCreature;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.api.Theme;

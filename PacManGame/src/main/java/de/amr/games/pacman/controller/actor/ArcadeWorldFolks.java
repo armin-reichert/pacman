@@ -14,7 +14,7 @@ import static java.awt.event.KeyEvent.VK_UP;
 
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.api.Creature;
+import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
@@ -113,11 +113,10 @@ public class ArcadeWorldFolks implements Population {
 		return Stream.of(blinky, pinky, inky, clyde);
 	}
 
-	@Override
-	public Stream<Creature> all() {
+	public Stream<MobileCreature> all() {
 		return Stream.of(pacMan, blinky, inky, pinky, clyde);
 	}
-	
+
 	public Stream<Ghost> ghostsInsideWorld() {
 		return ghosts().filter(world()::contains);
 	}

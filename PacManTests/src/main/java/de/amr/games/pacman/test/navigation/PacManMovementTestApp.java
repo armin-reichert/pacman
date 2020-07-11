@@ -45,7 +45,7 @@ class PacManMovementTestUI extends TestUI {
 		pacMan.addEventListener(event -> {
 			if (event.getClass() == FoodFoundEvent.class) {
 				FoodFoundEvent foodFound = (FoodFoundEvent) event;
-				world.removeFood(foodFound.tile);
+				world.clearFood(foodFound.tile);
 				game.level.eatenFoodCount++;
 				if (game.level.remainingFoodCount() == 0) {
 					world.fillFood();

@@ -1,6 +1,6 @@
-package de.amr.games.pacman.model.world.api;
+package de.amr.games.pacman.controller.api;
 
-import de.amr.games.pacman.controller.api.Creature;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.core.Tile;
 
 /**

@@ -7,8 +7,8 @@ import java.util.Objects;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.actor.steering.Steering;
+import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.model.world.api.MobileCreature;
 
 /**
  * Steering controlled by keyboard keys for UP, RIGHT, DOWN, LEFT direction.
