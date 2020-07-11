@@ -35,7 +35,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends IntelligentCreature<PacManState> {
+public class PacMan extends Animal<PacManState> {
 
 	private int power;
 	private int digestion;

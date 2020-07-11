@@ -1,14 +1,18 @@
 package de.amr.games.pacman.model.world.arcade;
 
+import static de.amr.easy.game.Application.loginfo;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
+import de.amr.games.pacman.controller.api.Creature;
 import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.model.world.api.Area;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.Lifeform;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.core.AbstractWorld;
 import de.amr.games.pacman.model.world.core.Bed;
@@ -108,27 +112,43 @@ public class ArcadeWorld extends AbstractWorld {
 	}
 
 	@Override
-	public void putIntoBed(MobileCreature creature) {
+	public void putIntoBed(Lifeform creature) {
 		if (population != null) {
-			ArcadeWorldFolks folks = (ArcadeWorldFolks) population;
-			if (creature == folks.pacMan()) {
-				putIntoBed(folks.pacMan(), pacManBed());
-			} else if (creature == folks.blinky()) {
-				putIntoBed(folks.blinky(), theHouse().bed(0));
-			} else if (creature == folks.inky()) {
-				putIntoBed(folks.inky(), theHouse().bed(1));
-			} else if (creature == folks.pinky()) {
-				putIntoBed(folks.pinky(), theHouse().bed(2));
-			} else if (creature == folks.clyde()) {
-				putIntoBed(folks.clyde(), theHouse().bed(3));
+			if (creature == folks().pacMan()) {
+				placeInBed(folks().pacMan(), pacManBed());
+			} else if (creature == folks().blinky()) {
+				placeInBed(folks().blinky(), theHouse().bed(0));
+			} else if (creature == folks().inky()) {
+				placeInBed(folks().inky(), theHouse().bed(1));
+			} else if (creature == folks().pinky()) {
+				placeInBed(folks().pinky(), theHouse().bed(2));
+			} else if (creature == folks().clyde()) {
+				placeInBed(folks().clyde(), theHouse().bed(3));
 			}
 		}
 	}
 
-	private void putIntoBed(MobileCreature creature, Bed bed) {
+	private ArcadeWorldFolks folks() {
+		return (ArcadeWorldFolks) population;
+	}
+
+	private void placeInBed(MobileCreature creature, Bed bed) {
 		creature.placeAt(bed.tile, Tile.SIZE / 2, 0);
 		creature.setMoveDir(bed.exitDir);
 		creature.setWishDir(bed.exitDir);
+	}
+
+	@Override
+	protected void takeOut(Lifeform creature, boolean out) {
+		super.takeOut(creature, out);
+		Creature mc = (Creature) creature;
+		if (out) {
+			mc.setVisible(false);
+			loginfo("%s take out of world", mc.name());
+		} else {
+			mc.setVisible(true);
+			loginfo("%s put into world", mc.name());
+		}
 	}
 
 	/**

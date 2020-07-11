@@ -2,8 +2,6 @@ package de.amr.games.pacman.model.world.api;
 
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.api.Creature;
-import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.model.world.core.Tile;
 
 /**
@@ -19,13 +17,13 @@ public interface World extends Territory, FoodContainer {
 
 	Stream<Tile> habitatTiles();
 
-	boolean contains(Creature creature);
+	boolean contains(Lifeform creature);
 
-	void bringIn(Creature creature);
+	void bringIn(Lifeform creature);
 
-	void takeOut(Creature creature);
+	void takeOut(Lifeform creature);
 
-	void putIntoBed(MobileCreature creature);
+	void putIntoBed(Lifeform creature);
 
 	void setChangingLevel(boolean b);
 

@@ -48,7 +48,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends IntelligentCreature<GhostState> {
+public class Ghost extends Animal<GhostState> {
 
 	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 

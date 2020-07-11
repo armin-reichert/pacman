@@ -11,21 +11,6 @@ import de.amr.games.pacman.model.world.core.Tile;
 public interface MobileCreature extends Creature {
 
 	/**
-	 * @return tile location
-	 */
-	Tile location();
-
-	/**
-	 * Euclidean distance (in tiles) between this and the other entity.
-	 * 
-	 * @param other other entity
-	 * @return Euclidean distance measured in tiles
-	 */
-	default double distance(MobileCreature other) {
-		return location().distance(other.location());
-	}
-
-	/**
 	 * @return the current move direction
 	 */
 	Direction moveDir();

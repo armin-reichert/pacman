@@ -1,6 +1,5 @@
 package de.amr.games.pacman.model.world.core;
 
-import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.model.world.core.WorldMap.B_EATEN;
 import static de.amr.games.pacman.model.world.core.WorldMap.B_ENERGIZER;
 import static de.amr.games.pacman.model.world.core.WorldMap.B_FOOD;
@@ -15,8 +14,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.api.Creature;
 import de.amr.games.pacman.model.world.api.Direction;
+import de.amr.games.pacman.model.world.api.Lifeform;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 
@@ -34,7 +33,7 @@ public abstract class AbstractWorld implements World {
 	protected WorldMap worldMap;
 	protected Population population;
 
-	private Set<Creature> outsiders = new HashSet<>();
+	private Set<Lifeform> outsiders = new HashSet<>();
 
 	@Override
 	public boolean isFrozen() {
@@ -62,29 +61,25 @@ public abstract class AbstractWorld implements World {
 	}
 
 	@Override
-	public void bringIn(Creature creature) {
+	public void bringIn(Lifeform creature) {
 		takeOut(creature, false);
 	}
 
 	@Override
-	public void takeOut(Creature creature) {
+	public void takeOut(Lifeform creature) {
 		takeOut(creature, true);
 	}
 
-	private void takeOut(Creature creature, boolean out) {
+	protected void takeOut(Lifeform creature, boolean out) {
 		if (out) {
 			outsiders.add(creature);
-			creature.setVisible(false);
-			loginfo("%s take out of world", creature.name());
 		} else {
 			outsiders.remove(creature);
-			creature.setVisible(true);
-			loginfo("%s put into world", creature.name());
 		}
 	}
 
 	@Override
-	public boolean contains(Creature creature) {
+	public boolean contains(Lifeform creature) {
 		return !outsiders.contains(creature);
 	}
 

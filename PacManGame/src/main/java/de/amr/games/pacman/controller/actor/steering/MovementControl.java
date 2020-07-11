@@ -10,7 +10,7 @@ import de.amr.easy.game.Application;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.SpeedLimits;
-import de.amr.games.pacman.controller.actor.IntelligentCreature;
+import de.amr.games.pacman.controller.actor.Animal;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.core.Portal;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -26,7 +26,7 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 	protected Supplier<Float> fnSpeedLimit = () -> SpeedLimits.BASE_SPEED;
 	private Portal portalEntered;
 
-	public MovementControl(IntelligentCreature<?> creature) {
+	public MovementControl(Animal<?> creature) {
 		super(MovementType.class);
 		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 		//@formatter:off
@@ -67,7 +67,7 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 		return portalEntered != null;
 	}
 
-	private void checkIfPortalEntered(IntelligentCreature<?> creature) {
+	private void checkIfPortalEntered(Animal<?> creature) {
 		Tile currentTile = creature.location();
 		creature.world().portals().filter(portal -> portal.includes(currentTile)).findAny().ifPresent(portal -> {
 			portalEntered = portal;
@@ -75,12 +75,12 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 		});
 	}
 
-	private void teleport(IntelligentCreature<?> creature) {
+	private void teleport(Animal<?> creature) {
 		portalEntered.teleport(creature, creature.location(), creature.moveDir());
 		portalEntered = null;
 	}
 
-	private void move(IntelligentCreature<?> creature) {
+	private void move(Animal<?> creature) {
 		final Tile tile = creature.location();
 		float speedLimit = fnSpeedLimit.get();
 		float speed = maxSpeedToDir(creature, creature.moveDir(), speedLimit);
@@ -108,7 +108,7 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 	 * @param dir      a direction
 	 * @param speed    the creature's current speed
 	 */
-	private float maxSpeedToDir(IntelligentCreature<?> creature, Direction dir, float speed) {
+	private float maxSpeedToDir(Animal<?> creature, Direction dir, float speed) {
 		if (creature.canCrossBorderTo(dir)) {
 			return speed;
 		}

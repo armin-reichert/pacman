@@ -11,7 +11,6 @@ import java.util.function.Supplier;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.math.Vector2f;
-import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.actor.steering.MovementControl;
 import de.amr.games.pacman.controller.actor.steering.MovementType;
 import de.amr.games.pacman.controller.actor.steering.Steering;
@@ -20,6 +19,7 @@ import de.amr.games.pacman.controller.actor.steering.common.HeadingForTargetTile
 import de.amr.games.pacman.controller.actor.steering.common.RandomMovement;
 import de.amr.games.pacman.controller.actor.steering.common.TakingFixedPath;
 import de.amr.games.pacman.controller.actor.steering.common.TakingShortestPath;
+import de.amr.games.pacman.controller.api.Brain;
 import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.game.Game;
@@ -28,18 +28,16 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.statemachine.api.Fsm;
-import de.amr.statemachine.api.FsmContainer;
 
 /**
- * A creature (ghost, Pac-Man) is an entity that can move through the world and has a finite-state
- * machine to control its behavior.
+ * An entity that can move through the world and has a brain controlling its behavior. Can take part
+ * in a game and has a visual appearance. The appearance is exchangeable.
  * 
  * @param <STATE> state (identifier) type
  * 
  * @author Armin Reichert
  */
-public abstract class IntelligentCreature<STATE> extends Entity
-		implements MobileCreature, View, FsmContainer<STATE, PacManGameEvent> {
+public abstract class Animal<STATE> extends Entity implements MobileCreature, Brain<STATE> {
 
 	private final String name;
 	protected World world;
@@ -53,12 +51,17 @@ public abstract class IntelligentCreature<STATE> extends Entity
 	protected boolean enteredNewTile;
 	protected Theme theme;
 
-	public IntelligentCreature(String name, Map<STATE, Steering> steerings) {
+	public Animal(String name, Map<STATE, Steering> steerings) {
 		this.name = name;
 		this.movement = new MovementControl(this);
 		this.steerings = steerings;
 		tf.width = Tile.SIZE;
 		tf.height = Tile.SIZE;
+	}
+
+	@Override
+	public void update() {
+		Brain.super.update();
 	}
 
 	@Override
@@ -94,7 +97,7 @@ public abstract class IntelligentCreature<STATE> extends Entity
 	public void setWorld(World world) {
 		this.world = world;
 	}
-	
+
 	@Override
 	public abstract void takePartIn(Game game);
 
@@ -314,10 +317,5 @@ public abstract class IntelligentCreature<STATE> extends Entity
 			throw new IllegalArgumentException("Path must not be empty");
 		}
 		return new TakingFixedPath(this, path);
-	}
-
-	@Override
-	public void update() {
-		FsmContainer.super.update();
 	}
 }

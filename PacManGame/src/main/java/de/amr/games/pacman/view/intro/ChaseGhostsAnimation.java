@@ -17,7 +17,7 @@ import de.amr.games.pacman.view.api.Theme;
 
 public class ChaseGhostsAnimation extends GameObject {
 
-	private World world = world = new ArcadeWorld();
+	private World world = new ArcadeWorld();
 	private ArcadeWorldFolks folks = new ArcadeWorldFolks(world);
 	private PacManSounds pacManSounds;
 	private int points;
