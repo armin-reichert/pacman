@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import de.amr.easy.game.entity.Entity;
+import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.easy.game.view.View;
 import de.amr.games.pacman.controller.actor.steering.MovementControl;
@@ -22,9 +23,10 @@ import de.amr.games.pacman.controller.actor.steering.common.TakingShortestPath;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.api.MobileCreature;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.core.Theme;
+import de.amr.games.pacman.view.api.Theme;
 import de.amr.statemachine.api.Fsm;
 import de.amr.statemachine.api.FsmContainer;
 
@@ -36,9 +38,10 @@ import de.amr.statemachine.api.FsmContainer;
  * 
  * @author Armin Reichert
  */
-public abstract class Creature<STATE> extends Entity implements View, WorldMover, FsmContainer<STATE, PacManGameEvent> {
+public abstract class IntelligentCreature<STATE> extends Entity
+		implements MobileCreature, View, FsmContainer<STATE, PacManGameEvent> {
 
-	public final String name;
+	private final String name;
 	protected World world;
 	protected Game game;
 	protected Fsm<STATE, PacManGameEvent> brain;
@@ -50,7 +53,7 @@ public abstract class Creature<STATE> extends Entity implements View, WorldMover
 	protected boolean enteredNewTile;
 	protected Theme theme;
 
-	public Creature(String name, Map<STATE, Steering> steerings) {
+	public IntelligentCreature(String name, Map<STATE, Steering> steerings) {
 		this.name = name;
 		this.movement = new MovementControl(this);
 		this.steerings = steerings;
@@ -58,18 +61,41 @@ public abstract class Creature<STATE> extends Entity implements View, WorldMover
 		tf.height = Tile.SIZE;
 	}
 
+	@Override
+	public String name() {
+		return name;
+	}
+
+	@Override
+	public Transform tf() {
+		return tf;
+	}
+
+	@Override
+	public boolean isVisible() {
+		return visible;
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
 	public Theme getTheme() {
 		return theme;
 	}
 
+	@Override
 	public void setTheme(Theme theme) {
 		this.theme = theme;
 	}
 
+	@Override
 	public void setWorld(World world) {
 		this.world = world;
 	}
-
+	
+	@Override
 	public abstract void takePartIn(Game game);
 
 	public Optional<Game> game() {
@@ -144,10 +170,7 @@ public abstract class Creature<STATE> extends Entity implements View, WorldMover
 		movement.init();
 	}
 
-	public void placeAt(Tile tile) {
-		placeAt(tile, 0, 0);
-	}
-
+	@Override
 	public void placeAt(Tile tile, float xOffset, float yOffset) {
 		Tile oldTile = location();
 		tf.setPosition(tile.x() + xOffset, tile.y() + yOffset);
@@ -180,6 +203,7 @@ public abstract class Creature<STATE> extends Entity implements View, WorldMover
 		return moveDir;
 	}
 
+	@Override
 	public void setMoveDir(Direction dir) {
 		moveDir = Objects.requireNonNull(dir);
 	}
@@ -290,5 +314,10 @@ public abstract class Creature<STATE> extends Entity implements View, WorldMover
 			throw new IllegalArgumentException("Path must not be empty");
 		}
 		return new TakingFixedPath(this, path);
+	}
+
+	@Override
+	public void update() {
+		FsmContainer.super.update();
 	}
 }

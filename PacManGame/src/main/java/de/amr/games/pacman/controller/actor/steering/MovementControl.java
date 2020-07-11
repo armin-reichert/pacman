@@ -1,16 +1,16 @@
 package de.amr.games.pacman.controller.actor.steering;
 
-import static de.amr.easy.game.Application.loginfo;
 import static de.amr.games.pacman.controller.actor.steering.MovementType.TELEPORTING;
 import static de.amr.games.pacman.controller.actor.steering.MovementType.WALKING;
 import static de.amr.games.pacman.model.game.Game.sec;
 
 import java.util.function.Supplier;
 
+import de.amr.easy.game.Application;
 import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.SpeedLimits;
-import de.amr.games.pacman.controller.actor.Creature;
+import de.amr.games.pacman.controller.actor.IntelligentCreature;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.core.Portal;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -26,12 +26,12 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 	protected Supplier<Float> fnSpeedLimit = () -> SpeedLimits.BASE_SPEED;
 	private Portal portalEntered;
 
-	public MovementControl(Creature<?> creature) {
+	public MovementControl(IntelligentCreature<?> creature) {
 		super(MovementType.class);
 		getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 		//@formatter:off
 		beginStateMachine()
-			.description(String.format("[%s movement]", creature.name))
+			.description(String.format("[%s movement]", creature.name()))
 			.initialState(WALKING)
 			.states()
 				.state(WALKING)
@@ -67,20 +67,20 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 		return portalEntered != null;
 	}
 
-	private void checkIfPortalEntered(Creature<?> creature) {
+	private void checkIfPortalEntered(IntelligentCreature<?> creature) {
 		Tile currentTile = creature.location();
 		creature.world().portals().filter(portal -> portal.includes(currentTile)).findAny().ifPresent(portal -> {
 			portalEntered = portal;
-			loginfo("Entered portal at %s", currentTile);
+			Application.loginfo("Entered portal at %s", currentTile);
 		});
 	}
 
-	private void teleport(Creature<?> creature) {
+	private void teleport(IntelligentCreature<?> creature) {
 		portalEntered.teleport(creature, creature.location(), creature.moveDir());
 		portalEntered = null;
 	}
 
-	private void move(Creature<?> creature) {
+	private void move(IntelligentCreature<?> creature) {
 		final Tile tile = creature.location();
 		float speedLimit = fnSpeedLimit.get();
 		float speed = maxSpeedToDir(creature, creature.moveDir(), speedLimit);
@@ -108,7 +108,7 @@ public class MovementControl extends StateMachine<MovementType, Void> {
 	 * @param dir      a direction
 	 * @param speed    the creature's current speed
 	 */
-	private float maxSpeedToDir(Creature<?> creature, Direction dir, float speed) {
+	private float maxSpeedToDir(IntelligentCreature<?> creature, Direction dir, float speed) {
 		if (creature.canCrossBorderTo(dir)) {
 			return speed;
 		}

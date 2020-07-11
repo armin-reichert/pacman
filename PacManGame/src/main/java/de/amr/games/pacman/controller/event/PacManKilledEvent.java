@@ -12,6 +12,6 @@ public class PacManKilledEvent implements PacManGameEvent {
 
 	@Override
 	public String toString() {
-		return String.format("PacManKilledEvent(%s)", killer.name);
+		return String.format("PacManKilledEvent(%s)", killer.name());
 	}
 }

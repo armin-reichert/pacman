@@ -13,10 +13,10 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Door.DoorState;
 import de.amr.games.pacman.model.world.core.House;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.core.IPacManRenderer;
-import de.amr.games.pacman.view.core.IRenderer;
-import de.amr.games.pacman.view.core.IWorldRenderer;
-import de.amr.games.pacman.view.core.Theme;
+import de.amr.games.pacman.view.api.IPacManRenderer;
+import de.amr.games.pacman.view.api.IRenderer;
+import de.amr.games.pacman.view.api.IWorldRenderer;
+import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.Rendering;
 
@@ -31,7 +31,7 @@ public class LettersTheme implements Theme {
 	public static final int OFFSET_BASELINE = Tile.SIZE - 1;
 
 	public static Color ghostColor(Ghost ghost) {
-		switch (ghost.name) {
+		switch (ghost.name()) {
 		case "Blinky":
 			return Color.RED;
 		case "Pinky":
@@ -47,16 +47,16 @@ public class LettersTheme implements Theme {
 
 	public static String ghostLetter(Ghost ghost) {
 		if (ghost.getState() == null) {
-			return ghost.name.substring(0, 1);
+			return ghost.name().substring(0, 1);
 		}
 		switch (ghost.getState()) {
 		case FRIGHTENED:
-			return ghost.name.substring(0, 1).toLowerCase();
+			return ghost.name().substring(0, 1).toLowerCase();
 		case DEAD:
 		case ENTERING_HOUSE:
 			return Rendering.INFTY;
 		default:
-			return ghost.name.substring(0, 1);
+			return ghost.name().substring(0, 1);
 		}
 	}
 

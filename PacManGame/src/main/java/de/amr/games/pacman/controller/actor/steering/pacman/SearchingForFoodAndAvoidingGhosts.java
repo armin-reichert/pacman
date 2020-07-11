@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.actor.Creature;
+import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.WorldMover;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.api.MobileCreature;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.model.world.core.WorldGraph;
@@ -26,15 +26,17 @@ import de.amr.games.pacman.model.world.core.WorldGraph.PathFinder;
  */
 public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering {
 
-	private final WorldMover me;
+	private final MobileCreature me;
+	private final ArcadeWorldFolks folks;
 	private WorldGraph graph;
 	private Ghost enemy;
 	private double distance;
 	private Direction newDir;
 	private Tile target;
 
-	public SearchingForFoodAndAvoidingGhosts(Creature<?> me) {
+	public SearchingForFoodAndAvoidingGhosts(MobileCreature me, ArcadeWorldFolks folks) {
 		this.me = me;
+		this.folks = folks;
 		graph = new WorldGraph(me.world());
 		graph.setPathFinder(PathFinder.ASTAR);
 	}
@@ -127,7 +129,7 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 	}
 
 	private Stream<Ghost> ghostsInWorld() {
-		return me.world().population().ghosts().filter(me.world()::included);
+		return folks.ghosts().filter(me.world()::contains);
 
 	}
 
@@ -170,7 +172,8 @@ public class SearchingForFoodAndAvoidingGhosts implements PathProvidingSteering 
 	}
 
 	private double nearestDistanceToDangerousGhost(Tile here) {
-		return dangerousGhosts().map(ghost -> here.distance(ghost.location())).min(Double::compareTo).orElse(Double.MAX_VALUE);
+		return dangerousGhosts().map(ghost -> here.distance(ghost.location())).min(Double::compareTo)
+				.orElse(Double.MAX_VALUE);
 	}
 
 	private Optional<Tile> activeBonusAtMostAway(Tile here, int maxDistance) {

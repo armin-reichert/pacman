@@ -11,16 +11,16 @@ import java.util.BitSet;
 
 import de.amr.easy.game.entity.GameObject;
 import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
-import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacManState;
+import de.amr.games.pacman.controller.api.Creature;
 import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.core.Theme;
+import de.amr.games.pacman.view.api.Theme;
 
 /**
  * An animation showing Pac-Man and the four ghosts frightened and showing the points scored for the
@@ -54,7 +54,7 @@ public class GhostPointsAnimation extends GameObject {
 
 	@Override
 	public void draw(Graphics2D g) {
-		folks.all().forEach(c -> c.draw(g));
+		folks.all().map(Creature::renderer).forEach(r -> r.render(g));
 		g.translate(tf.x + dx, tf.y);
 		renderPellet(g);
 		g.translate(-(tf.x + dx), -tf.y);
@@ -87,7 +87,7 @@ public class GhostPointsAnimation extends GameObject {
 		folks.pacMan().setMoveDir(Direction.RIGHT);
 		folks.pacMan().setState(PacManState.RUNNING);
 		folks.pacMan().setSpeedLimit(() -> 0f);
-		folks.pacMan().getRenderer().stopAnimationWhenStanding(false);
+		folks.pacMan().renderer().stopAnimationWhenStanding(false);
 
 		folks.ghosts().forEach(ghost -> {
 			ghost.setSpeedLimit(() -> 0f);

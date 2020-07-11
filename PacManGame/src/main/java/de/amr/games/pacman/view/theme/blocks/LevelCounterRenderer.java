@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.core.IRenderer;
+import de.amr.games.pacman.view.api.IRenderer;
 
 class LevelCounterRenderer implements IRenderer {
 

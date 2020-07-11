@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.core;
+package de.amr.games.pacman.view.api;
 
 import java.awt.Color;
 import java.util.function.Function;

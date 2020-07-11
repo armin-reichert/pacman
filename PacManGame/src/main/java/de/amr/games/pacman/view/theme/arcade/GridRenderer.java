@@ -15,7 +15,7 @@ import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.core.IRenderer;
+import de.amr.games.pacman.view.api.IRenderer;
 import de.amr.games.pacman.view.theme.common.Rendering;
 
 public class GridRenderer implements IRenderer {

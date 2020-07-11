@@ -24,8 +24,8 @@ import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.Localized;
-import de.amr.games.pacman.view.core.PacManGameView;
-import de.amr.games.pacman.view.core.Theme;
+import de.amr.games.pacman.view.api.PacManGameView;
+import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.intro.IntroView.IntroState;
 import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
 import de.amr.games.pacman.view.theme.arcade.ArcadeThemeAssets;
@@ -181,7 +181,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 			ghostPointsAnimation.start();
 			chasePacMan.tf.centerX(width);
 			chasePacMan.initPositions(width / 2 + 5 * Tile.SIZE);
-			chasePacMan.folks().all().forEach(c -> c.tf.vx = 0);
+			chasePacMan.folks().all().forEach(c -> c.tf().vx = 0);
 			gitHubLink.visible = true;
 		}
 

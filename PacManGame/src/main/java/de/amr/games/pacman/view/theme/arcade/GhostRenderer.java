@@ -2,11 +2,12 @@ package de.amr.games.pacman.view.theme.arcade;
 
 import java.awt.Graphics2D;
 
+import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Direction;
-import de.amr.games.pacman.view.core.IRenderer;
+import de.amr.games.pacman.view.api.IRenderer;
 
 public class GhostRenderer extends SpriteRenderer implements IRenderer {
 
@@ -43,7 +44,8 @@ public class GhostRenderer extends SpriteRenderer implements IRenderer {
 				selectSprite("color-" + ghost.moveDir());
 				break;
 			case LOCKED:
-				if (ghost.world().population().pacMan().getPower() > 0) {
+				ArcadeWorldFolks folks = (ArcadeWorldFolks) ghost.world().population();
+				if (folks.pacMan().getPower() > 0) {
 					selectSprite("frightened");
 				} else {
 					selectSprite("color-" + ghost.moveDir());

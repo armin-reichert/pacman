@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.core;
+package de.amr.games.pacman.view.api;
 
 import de.amr.easy.game.controller.Lifecycle;
 import de.amr.easy.game.view.View;

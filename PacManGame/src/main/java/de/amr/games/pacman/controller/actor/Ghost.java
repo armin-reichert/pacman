@@ -29,12 +29,13 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGhostCollisionEvent;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.api.MobileCreature;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.House;
 import de.amr.games.pacman.model.world.core.OneWayTile;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.core.IRenderer;
-import de.amr.games.pacman.view.core.Theme;
+import de.amr.games.pacman.view.api.IRenderer;
+import de.amr.games.pacman.view.api.Theme;
 import de.amr.statemachine.core.StateMachine;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
@@ -47,7 +48,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Creature<GhostState> {
+public class Ghost extends IntelligentCreature<GhostState> {
 
 	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 
@@ -189,7 +190,8 @@ public class Ghost extends Creature<GhostState> {
 		renderer = theme.createGhostRenderer(this);
 	}
 
-	public IRenderer getRenderer() {
+	@Override
+	public IRenderer renderer() {
 		return renderer;
 	}
 
@@ -212,7 +214,7 @@ public class Ghost extends Creature<GhostState> {
 		});
 
 		// Blinky can get insane ("cruise elroy")
-		if (name.equals("Blinky")) {
+		if (name().equals("Blinky")) {
 			sanityControl = new GhostSanityControl(game, "Blinky", GhostSanity.INFECTABLE);
 			sanityControl.getTracer().setLogger(PacManStateMachineLogging.LOGGER);
 		}
@@ -292,7 +294,7 @@ public class Ghost extends Creature<GhostState> {
 	 * @param attacker the attacking actor
 	 * @return steering where actor flees to a "safe" maze corner
 	 */
-	public Steering fleeingToSafeCorner(WorldMover attacker) {
+	public Steering fleeingToSafeCorner(MobileCreature attacker) {
 		return new FleeingToSafeCorner(this, attacker, world.capeNW(), world.capeNE(), world.capeSW(), world.capeSE());
 	}
 
@@ -343,8 +345,10 @@ public class Ghost extends Creature<GhostState> {
 	}
 
 	private void checkPacManCollision() {
-		PacMan pacMan = world.population().pacMan();
-		if (location().equals(pacMan.location()) && !isTeleporting() && !pacMan.isTeleporting() && !pacMan.is(PacManState.DEAD)) {
+		ArcadeWorldFolks folks = (ArcadeWorldFolks) world.population();
+		PacMan pacMan = folks.pacMan();
+		if (location().equals(pacMan.location()) && !isTeleporting() && !pacMan.isTeleporting()
+				&& !pacMan.is(PacManState.DEAD)) {
 			publish(new PacManGhostCollisionEvent(this));
 		}
 	}

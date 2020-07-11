@@ -7,17 +7,17 @@ import java.awt.RenderingHints;
 
 import de.amr.easy.game.entity.GameObject;
 import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
-import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacManState;
+import de.amr.games.pacman.controller.api.Creature;
 import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.core.Theme;
+import de.amr.games.pacman.view.api.Theme;
 
 public class ChasePacManAnimation extends GameObject {
 
@@ -54,7 +54,7 @@ public class ChasePacManAnimation extends GameObject {
 		folks.pacMan().tf.vx = -0.55f;
 		folks.pacMan().setMoveDir(Direction.LEFT);
 		folks.pacMan().setState(PacManState.RUNNING);
-		folks.pacMan().getRenderer().stopAnimationWhenStanding(false);
+		folks.pacMan().renderer().stopAnimationWhenStanding(false);
 
 		folks.ghosts().forEach(ghost -> {
 			ghost.tf.setVelocity(-0.55f, 0);
@@ -79,7 +79,7 @@ public class ChasePacManAnimation extends GameObject {
 
 	@Override
 	public void update() {
-		folks.all().forEach(creature -> creature.tf.move());
+		folks.all().forEach(c -> c.tf().move());
 		if (pelletTimer > 0) {
 			if (pelletTimer % Game.sec(0.5f) == 0)
 				if (pelletDisplay == PelletDisplay.FIFTY) {
@@ -102,17 +102,17 @@ public class ChasePacManAnimation extends GameObject {
 	@Override
 	public void stop() {
 		sounds.snd_ghost_chase().stop();
-		folks.all().forEach(c -> c.tf.vx = 0);
+		folks.all().forEach(c -> c.tf().vx = 0);
 	}
 
 	@Override
 	public boolean isComplete() {
-		return folks.all().map(c -> c.tf.x / Tile.SIZE).allMatch(x -> x > world.width() || x < -2);
+		return folks.all().map(c -> c.tf().x / Tile.SIZE).allMatch(x -> x > world.width() || x < -2);
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		folks.all().forEach(c -> c.draw(g));
+		folks.all().map(Creature::renderer).forEach(r -> r.render(g));
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		int x = (int) folks.pacMan().tf.x - Tile.SIZE;
 		int y = (int) folks.pacMan().tf.y;

@@ -35,7 +35,7 @@ public class Rendering {
 	}
 
 	public static Color ghostColor(Ghost ghost) {
-		switch (ghost.name) {
+		switch (ghost.name()) {
 		case "Blinky":
 			return Color.RED;
 		case "Pinky":
@@ -45,7 +45,7 @@ public class Rendering {
 		case "Clyde":
 			return Color.ORANGE;
 		default:
-			throw new IllegalArgumentException("Ghost name unknown: " + ghost.name);
+			throw new IllegalArgumentException("Ghost name unknown: " + ghost.name());
 		}
 	}
 

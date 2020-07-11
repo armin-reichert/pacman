@@ -4,16 +4,16 @@ import java.awt.Graphics2D;
 
 import de.amr.easy.game.entity.GameObject;
 import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
-import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.PacManState;
+import de.amr.games.pacman.controller.api.Creature;
 import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.core.Theme;
+import de.amr.games.pacman.view.api.Theme;
 
 public class ChaseGhostsAnimation extends GameObject {
 
@@ -38,7 +38,7 @@ public class ChaseGhostsAnimation extends GameObject {
 
 	@Override
 	public boolean isComplete() {
-		return folks.all().allMatch(creature -> creature.tf.x > world.width() * Tile.SIZE);
+		return folks.all().allMatch(creature -> creature.tf().x > world.width() * Tile.SIZE);
 	}
 
 	@Override
@@ -79,11 +79,11 @@ public class ChaseGhostsAnimation extends GameObject {
 				points *= 2;
 			});
 		//@formatter:on
-		folks.all().forEach(creature -> creature.tf.move());
+		folks.all().forEach(creature -> creature.tf().move());
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		folks.all().forEach(c -> c.draw(g));
+		folks.all().map(Creature::renderer).forEach(r -> r.render(g));
 	}
 }

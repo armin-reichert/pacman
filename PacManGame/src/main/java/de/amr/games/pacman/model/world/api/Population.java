@@ -2,9 +2,7 @@ package de.amr.games.pacman.model.world.api;
 
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.actor.Creature;
-import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.api.Creature;
 import de.amr.games.pacman.model.game.Game;
 
 /**
@@ -29,15 +27,5 @@ public interface Population {
 	/**
 	 * @return all members of this population.
 	 */
-	Stream<Creature<?>> all();
-
-	/**
-	 * @return all ghosts in this population
-	 */
-	Stream<Ghost> ghosts();
-
-	/**
-	 * @return the single Pac-Man of this population
-	 */
-	PacMan pacMan();
+	Stream<Creature> all();
 }

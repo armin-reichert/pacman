@@ -3,7 +3,7 @@ package de.amr.games.pacman.controller.actor.steering.common;
 import java.util.List;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.controller.actor.WorldMover;
+import de.amr.games.pacman.model.world.api.MobileCreature;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.model.world.core.WorldGraph;
 
@@ -16,13 +16,13 @@ public class TakingShortestPath extends TakingPrecomputedPath {
 
 	protected WorldGraph graph;
 
-	public TakingShortestPath(WorldMover actor, Supplier<Tile> fnTargetTile) {
+	public TakingShortestPath(MobileCreature actor, Supplier<Tile> fnTargetTile) {
 		super(actor, fnTargetTile);
 		graph = new WorldGraph(world);
 	}
 
 	@Override
-	protected List<Tile> pathToTarget(WorldMover actor, Tile targetTile) {
+	protected List<Tile> pathToTarget(MobileCreature actor, Tile targetTile) {
 		return graph.shortestPath(actor.location(), targetTile);
 	}
 }

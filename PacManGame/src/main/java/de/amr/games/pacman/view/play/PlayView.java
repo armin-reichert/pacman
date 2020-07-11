@@ -9,17 +9,17 @@ import java.awt.Graphics2D;
 
 import de.amr.easy.game.ui.widgets.FrameRateWidget;
 import de.amr.games.pacman.controller.GhostCommand;
+import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.core.IRenderer;
-import de.amr.games.pacman.view.core.IWorldRenderer;
-import de.amr.games.pacman.view.core.PacManGameView;
-import de.amr.games.pacman.view.core.Theme;
+import de.amr.games.pacman.view.api.IRenderer;
+import de.amr.games.pacman.view.api.IWorldRenderer;
+import de.amr.games.pacman.view.api.PacManGameView;
+import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.theme.Themes;
 import de.amr.games.pacman.view.theme.arcade.GridRenderer;
 import de.amr.games.pacman.view.theme.common.ActorStatesRenderer;
@@ -35,7 +35,7 @@ import de.amr.games.pacman.view.theme.common.Rendering;
 public class PlayView implements PacManGameView {
 
 	private final World world;
-	private final Population folks;
+	private final ArcadeWorldFolks folks;
 	private Game game;
 
 	private String[] messageTexts = new String[2];
@@ -59,7 +59,7 @@ public class PlayView implements PacManGameView {
 	private final IRenderer actorRoutesRenderer;
 	private final IRenderer actorStatesRenderer;
 
-	public PlayView(World world, Population folks, Game game, GhostCommand ghostCommand, DoorMan doorMan) {
+	public PlayView(World world, ArcadeWorldFolks folks, Game game, GhostCommand ghostCommand, DoorMan doorMan) {
 		this.world = world;
 		this.folks = folks;
 		this.game = game;
@@ -69,8 +69,8 @@ public class PlayView implements PacManGameView {
 		showingRoutes = false;
 		showingStates = false;
 		gridRenderer = new GridRenderer(world);
-		actorRoutesRenderer = new CreatureRoutesRenderer(world);
-		actorStatesRenderer = new ActorStatesRenderer(world, ghostCommand);
+		actorRoutesRenderer = new CreatureRoutesRenderer(folks);
+		actorStatesRenderer = new ActorStatesRenderer(folks, ghostCommand);
 		frameRateDisplay = new FrameRateWidget();
 		frameRateDisplay.tf.setPosition(0, 18 * Tile.SIZE);
 		frameRateDisplay.font = new Font(Font.MONOSPACED, Font.BOLD, 8);
@@ -163,7 +163,7 @@ public class PlayView implements PacManGameView {
 	}
 
 	public void enableGhostAnimations(boolean enabled) {
-		folks.ghosts().map(Ghost::getRenderer).forEach(r -> r.enableAnimation(enabled));
+		folks.ghosts().map(Ghost::renderer).forEach(r -> r.enableAnimation(enabled));
 	}
 
 	public void turnScoresOn() {
@@ -245,10 +245,8 @@ public class PlayView implements PacManGameView {
 
 	private void drawActors(Graphics2D g) {
 		folks.pacMan().draw(g);
-		folks.ghosts().filter(world::included).filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE))
-				.forEach(ghost -> ghost.draw(g));
-		folks.ghosts().filter(world::included).filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE))
-				.forEach(ghost -> ghost.draw(g));
+		folks.ghostsInsideWorld().filter(ghost -> ghost.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> ghost.draw(g));
+		folks.ghostsInsideWorld().filter(ghost -> !ghost.is(DEAD, ENTERING_HOUSE)).forEach(ghost -> ghost.draw(g));
 	}
 
 	private void drawScores(Graphics2D g) {

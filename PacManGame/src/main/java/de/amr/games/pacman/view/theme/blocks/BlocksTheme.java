@@ -10,10 +10,10 @@ import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.Symbol;
-import de.amr.games.pacman.view.core.IPacManRenderer;
-import de.amr.games.pacman.view.core.IRenderer;
-import de.amr.games.pacman.view.core.IWorldRenderer;
-import de.amr.games.pacman.view.core.Theme;
+import de.amr.games.pacman.view.api.IPacManRenderer;
+import de.amr.games.pacman.view.api.IRenderer;
+import de.amr.games.pacman.view.api.IWorldRenderer;
+import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 

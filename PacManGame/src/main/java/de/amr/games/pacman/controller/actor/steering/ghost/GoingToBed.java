@@ -39,7 +39,7 @@ public class GoingToBed extends StateMachine<State, Void> implements Steering {
 		/*@formatter:off*/
 		beginStateMachine()
 			.initialState(FALLING)
-			.description(String.format("[%s entering house]", ghost.name))
+			.description(String.format("[%s entering house]", ghost.name()))
 
 			.states()
 			

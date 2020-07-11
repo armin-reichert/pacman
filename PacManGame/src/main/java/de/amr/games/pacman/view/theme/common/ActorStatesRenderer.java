@@ -18,23 +18,23 @@ import java.awt.Stroke;
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.view.Pen;
 import de.amr.games.pacman.controller.GhostCommand;
-import de.amr.games.pacman.controller.actor.Creature;
+import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.world.Direction;
-import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.api.MobileCreature;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.core.IRenderer;
+import de.amr.games.pacman.view.api.IRenderer;
 
 public class ActorStatesRenderer implements IRenderer {
 
 	private static final Font SMALL_FONT = new Font("Arial", Font.PLAIN, 6);
 
-	private final World world;
-	private GhostCommand ghostCommand;
+	private final ArcadeWorldFolks folks;
+	private final GhostCommand ghostCommand;
 
-	public ActorStatesRenderer(World world, GhostCommand ghostCommand) {
-		this.world = world;
+	public ActorStatesRenderer(ArcadeWorldFolks folks, GhostCommand ghostCommand) {
+		this.folks = folks;
 		this.ghostCommand = ghostCommand;
 	}
 
@@ -45,8 +45,8 @@ public class ActorStatesRenderer implements IRenderer {
 	}
 
 	private void drawActorStates(Graphics2D g) {
-		world.population().ghosts().filter(world::included).forEach(ghost -> drawGhostState(g, ghost, ghostCommand));
-		drawPacManState(g, world.population().pacMan());
+		folks.ghostsInsideWorld().forEach(ghost -> drawGhostState(g, ghost, ghostCommand));
+		drawPacManState(g, folks.pacMan());
 	}
 
 	private void drawPacManState(Graphics2D g, PacMan pacMan) {
@@ -77,7 +77,7 @@ public class ActorStatesRenderer implements IRenderer {
 		}
 		StringBuilder text = new StringBuilder();
 		// show ghost name if not obvious
-		text.append(ghost.is(DEAD, FRIGHTENED, ENTERING_HOUSE) ? ghost.name : "");
+		text.append(ghost.is(DEAD, FRIGHTENED, ENTERING_HOUSE) ? ghost.name() : "");
 		// timer values
 		int duration = ghost.state().getDuration();
 		int remaining = ghost.state().getTicksRemaining();
@@ -97,29 +97,30 @@ public class ActorStatesRenderer implements IRenderer {
 	}
 
 	private void drawActorsOffTrack(Graphics2D g) {
-		world.population().all().filter(world::included).forEach(actor -> drawActorOffTrack(actor, g));
+		drawActorOffTrack(g, folks.pacMan());
+		folks.ghosts().forEach(ghost -> drawActorOffTrack(g, ghost));
 	}
 
-	private void drawActorOffTrack(Creature<?> actor, Graphics2D g) {
-		if (!actor.visible) {
+	private void drawActorOffTrack(Graphics2D g, MobileCreature actor) {
+		if (!actor.isVisible()) {
 			return;
 		}
 		Stroke normal = g.getStroke();
 		Stroke fine = new BasicStroke(0.2f);
 		g.setStroke(fine);
 		g.setColor(Color.RED);
-		g.translate(actor.tf.x, actor.tf.y);
-		int w = actor.tf.width, h = actor.tf.height;
+		g.translate(actor.tf().x, actor.tf().y);
+		int w = actor.tf().width, h = actor.tf().height;
 		Direction moveDir = actor.moveDir();
-		if ((moveDir == Direction.LEFT || moveDir == Direction.RIGHT) && round(actor.tf.y) % Tile.SIZE != 0) {
+		if ((moveDir == Direction.LEFT || moveDir == Direction.RIGHT) && round(actor.tf().y) % Tile.SIZE != 0) {
 			g.drawLine(0, 0, w, 0);
 			g.drawLine(0, h, w, h);
 		}
-		if ((moveDir == Direction.UP || moveDir == Direction.DOWN) && round(actor.tf.x) % Tile.SIZE != 0) {
+		if ((moveDir == Direction.UP || moveDir == Direction.DOWN) && round(actor.tf().x) % Tile.SIZE != 0) {
 			g.drawLine(0, 0, 0, h);
 			g.drawLine(w, 0, w, h);
 		}
-		g.translate(-actor.tf.x, -actor.tf.y);
+		g.translate(-actor.tf().x, -actor.tf().y);
 		g.setStroke(normal);
 	}
 }

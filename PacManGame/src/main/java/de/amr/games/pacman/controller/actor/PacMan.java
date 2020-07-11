@@ -26,8 +26,8 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.core.IPacManRenderer;
-import de.amr.games.pacman.view.core.Theme;
+import de.amr.games.pacman.view.api.IPacManRenderer;
+import de.amr.games.pacman.view.api.Theme;
 import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
 
 /**
@@ -35,7 +35,7 @@ import de.amr.statemachine.core.StateMachine.MissingTransitionBehavior;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends Creature<PacManState> {
+public class PacMan extends IntelligentCreature<PacManState> {
 
 	private int power;
 	private int digestion;
@@ -121,7 +121,8 @@ public class PacMan extends Creature<PacManState> {
 		renderer = theme.createPacManRenderer(this);
 	}
 
-	public IPacManRenderer getRenderer() {
+	@Override
+	public IPacManRenderer renderer() {
 		return renderer;
 	}
 

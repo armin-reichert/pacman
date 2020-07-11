@@ -11,14 +11,14 @@ import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
 import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
-import de.amr.games.pacman.controller.actor.Creature;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
+import de.amr.games.pacman.controller.api.Creature;
 import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.World;
-import de.amr.games.pacman.view.core.Theme;
+import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.Themes;
 
@@ -40,11 +40,11 @@ public class TestUI implements Lifecycle, VisualController {
 	}
 
 	protected Stream<Ghost> ghostsOnStage() {
-		return world.population().ghosts().filter(world::included);
+		return folks.ghosts().filter(world::contains);
 	}
 
-	protected void include(Creature<?>... creatures) {
-		Stream.of(creatures).forEach(world::include);
+	protected void include(Creature... creatures) {
+		Stream.of(creatures).forEach(world::bringIn);
 	}
 
 	public TestUI() {
@@ -64,7 +64,7 @@ public class TestUI implements Lifecycle, VisualController {
 		folks.takePartIn(game);
 
 		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
-		world.population().ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> speedLimit(ghost, game)));
+		folks.ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> speedLimit(ghost, game)));
 
 		view = new PlayView(world, folks, game, null, null);
 		view.setTheme(themes[currentThemeIndex]);
@@ -74,8 +74,8 @@ public class TestUI implements Lifecycle, VisualController {
 
 	@Override
 	public void init() {
-		world.population().all().forEach(Creature::init);
-		world.population().all().forEach(creature -> world.exclude(creature));
+		folks.all().forEach(Creature::init);
+		folks.all().forEach(creature -> world.takeOut(creature));
 	}
 
 	@Override
@@ -98,7 +98,14 @@ public class TestUI implements Lifecycle, VisualController {
 				view.turnRoutesOn();
 			}
 		}
-		world.population().all().filter(world::included).forEach(Creature::update);
+		if (Keyboard.keyPressedOnce("s")) {
+			if (view.isShowingStates()) {
+				view.turnStatesOff();
+			} else {
+				view.turnStatesOn();
+			}
+		}
+		folks.all().filter(world::contains).forEach(Creature::update);
 		view.update();
 	}
 }

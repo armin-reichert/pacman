@@ -1,15 +1,15 @@
-package de.amr.games.pacman.controller.actor;
+package de.amr.games.pacman.model.world.api;
 
+import de.amr.games.pacman.controller.api.Creature;
 import de.amr.games.pacman.model.world.Direction;
-import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 
 /**
- * Implemented by entities that can move through the world.
+ * Implemented by creatures that can move through the world.
  * 
  * @author Armin Reichert
  */
-public interface WorldMover {
+public interface MobileCreature extends Creature {
 
 	/**
 	 * @return tile location
@@ -22,19 +22,21 @@ public interface WorldMover {
 	 * @param other other entity
 	 * @return Euclidean distance measured in tiles
 	 */
-	default double distance(WorldMover other) {
+	default double distance(MobileCreature other) {
 		return location().distance(other.location());
 	}
-
-	/**
-	 * @return the world where this entity is moving in.
-	 */
-	World world();
 
 	/**
 	 * @return the current move direction
 	 */
 	Direction moveDir();
+
+	/**
+	 * Sets the move direction.
+	 * 
+	 * @param dir the wanted move direction
+	 */
+	void setMoveDir(Direction dir);
 
 	/**
 	 * @return the wanted move direction

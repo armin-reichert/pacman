@@ -12,6 +12,6 @@ public class PacManGhostCollisionEvent implements PacManGameEvent {
 
 	@Override
 	public String toString() {
-		return String.format("PacManGhostCollision(%s, col: %d row: %d)", ghost.name, ghost.location().col, ghost.location().row);
+		return String.format("PacManGhostCollision(%s, col: %d row: %d)", ghost.name(), ghost.location().col, ghost.location().row);
 	}
 }

@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.actor.Creature;
+import de.amr.games.pacman.controller.api.Creature;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
@@ -34,7 +34,7 @@ public abstract class AbstractWorld implements World {
 	protected WorldMap worldMap;
 	protected Population population;
 
-	private Set<Creature<?>> included = new HashSet<>();
+	private Set<Creature> outside = new HashSet<>();
 
 	@Override
 	public boolean isFrozen() {
@@ -62,31 +62,30 @@ public abstract class AbstractWorld implements World {
 	}
 
 	@Override
-	public void include(Creature<?> creature) {
-		includeCreature(creature, true);
+	public void bringIn(Creature creature) {
+		takeOut(creature, false);
 	}
 
 	@Override
-	public void exclude(Creature<?> creature) {
-		includeCreature(creature, false);
+	public void takeOut(Creature creature) {
+		takeOut(creature, true);
 	}
 
-	private void includeCreature(Creature<?> creature, boolean include) {
-		if (include) {
-			included.add(creature);
-			creature.visible = true;
-			loginfo("%s entered the world", creature.name);
+	private void takeOut(Creature creature, boolean out) {
+		if (out) {
+			outside.add(creature);
+			creature.setVisible(false);
+			loginfo("%s take out of world", creature.name());
 		} else {
-			included.remove(creature);
-			creature.visible = false;
-			creature.placeAt(Tile.at(-1, -1));
-			loginfo("%s left the world", creature.name);
+			outside.remove(creature);
+			creature.setVisible(true);
+			loginfo("%s put into world", creature.name());
 		}
 	}
 
 	@Override
-	public boolean included(Creature<?> creature) {
-		return included.contains(creature);
+	public boolean contains(Creature creature) {
+		return !outside.contains(creature);
 	}
 
 	protected void addPortal(Tile left, Tile right) {

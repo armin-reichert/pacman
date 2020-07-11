@@ -34,14 +34,14 @@ public class PacManSounds {
 		if (snd_eatPill().isRunning() && System.currentTimeMillis() - lastPelletEatenTimeMillis > 250) {
 			snd_eatPill().stop();
 		}
-		if (folks.ghosts().filter(world::included).anyMatch(ghost -> ghost.is(GhostState.CHASING))) {
+		if (folks.ghosts().filter(world::contains).anyMatch(ghost -> ghost.is(GhostState.CHASING))) {
 			if (!snd_ghost_chase().isRunning()) {
 				snd_ghost_chase().loop();
 			}
 		} else {
 			snd_ghost_chase().stop();
 		}
-		if (folks.ghosts().filter(world::included).anyMatch(ghost -> ghost.is(GhostState.DEAD))) {
+		if (folks.ghosts().filter(world::contains).anyMatch(ghost -> ghost.is(GhostState.DEAD))) {
 			if (!snd_ghost_dead().isRunning()) {
 				snd_ghost_dead().loop();
 			}

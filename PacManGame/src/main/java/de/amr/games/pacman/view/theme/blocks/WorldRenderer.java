@@ -13,8 +13,8 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Bonus;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Door.DoorState;
+import de.amr.games.pacman.view.api.IWorldRenderer;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.core.IWorldRenderer;
 
 class WorldRenderer implements IWorldRenderer {
 

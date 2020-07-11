@@ -6,9 +6,9 @@ import java.util.EnumMap;
 import java.util.Objects;
 
 import de.amr.easy.game.input.Keyboard;
-import de.amr.games.pacman.controller.actor.WorldMover;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.api.MobileCreature;
 
 /**
  * Steering controlled by keyboard keys for UP, RIGHT, DOWN, LEFT direction.
@@ -17,10 +17,10 @@ import de.amr.games.pacman.model.world.Direction;
  */
 public class FollowingKeys implements Steering {
 
-	private WorldMover actor;
+	private MobileCreature actor;
 	private EnumMap<Direction, Integer> keys = new EnumMap<>(Direction.class);
 
-	public FollowingKeys(WorldMover actor, int upKey, int rightKey, int downKey, int leftKey) {
+	public FollowingKeys(MobileCreature actor, int upKey, int rightKey, int downKey, int leftKey) {
 		this.actor = Objects.requireNonNull(actor);
 		keys.put(Direction.UP, upKey);
 		keys.put(Direction.RIGHT, rightKey);

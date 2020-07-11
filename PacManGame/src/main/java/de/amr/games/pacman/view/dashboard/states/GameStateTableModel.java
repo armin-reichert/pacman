@@ -11,8 +11,8 @@ import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.GhostCommand;
 import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
-import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.GhostSanity;
+import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.World;
@@ -104,9 +104,9 @@ class GameStateTableModel extends AbstractTableModel {
 		GameStateRecord r = records[row];
 		if (r.creature instanceof Ghost) {
 			if (r.included) {
-				world.include(r.creature);
+				world.bringIn(r.creature);
 			} else {
-				world.exclude(r.creature);
+				world.takeOut(r.creature);
 			}
 		}
 	}
@@ -124,10 +124,10 @@ class GameStateTableModel extends AbstractTableModel {
 			gameController.game().ifPresent(game -> {
 				gameController.ghostCommand().ifPresent(ghostCommand -> {
 					ArcadeWorldFolks folks = (ArcadeWorldFolks) gameController.world().population();
-					fillGhostRecord(records[ROW_BLINKY], game, ghostCommand, folks.blinky());
-					fillGhostRecord(records[ROW_PINKY], game, ghostCommand, folks.pinky());
-					fillGhostRecord(records[ROW_INKY], game, ghostCommand, folks.inky());
-					fillGhostRecord(records[ROW_CLYDE], game, ghostCommand, folks.clyde());
+					fillGhostRecord(records[ROW_BLINKY], game, ghostCommand, folks.blinky(), folks.pacMan());
+					fillGhostRecord(records[ROW_PINKY], game, ghostCommand, folks.pinky(), folks.pacMan());
+					fillGhostRecord(records[ROW_INKY], game, ghostCommand, folks.inky(), folks.pacMan());
+					fillGhostRecord(records[ROW_CLYDE], game, ghostCommand, folks.clyde(), folks.pacMan());
 					fillPacManRecord(records[ROW_PACMAN], game, folks.pacMan());
 					fillBonusRecord(records[ROW_BONUS], gameController, world);
 					fireTableDataChanged();
@@ -138,7 +138,7 @@ class GameStateTableModel extends AbstractTableModel {
 
 	void fillPacManRecord(GameStateRecord r, Game game, PacMan pacMan) {
 		r.creature = pacMan;
-		r.included = world.included(pacMan);
+		r.included = world.contains(pacMan);
 		r.name = "Pac-Man";
 		r.tile = pacMan.location();
 		r.moveDir = pacMan.moveDir();
@@ -151,10 +151,10 @@ class GameStateTableModel extends AbstractTableModel {
 		}
 	}
 
-	void fillGhostRecord(GameStateRecord r, Game game, GhostCommand ghostCommand, Ghost ghost) {
+	void fillGhostRecord(GameStateRecord r, Game game, GhostCommand ghostCommand, Ghost ghost, PacMan pacMan) {
 		r.creature = ghost;
-		r.included = world.included(ghost);
-		r.name = ghost.name;
+		r.included = world.contains(ghost);
+		r.name = ghost.name();
 		r.tile = ghost.location();
 		r.target = ghost.targetTile();
 		r.moveDir = ghost.moveDir();
@@ -167,7 +167,7 @@ class GameStateTableModel extends AbstractTableModel {
 			r.duration = ghost.is(CHASING, SCATTERING) ? ghostCommand.state().getDuration() : ghost.state().getDuration();
 		}
 		r.ghostSanity = ghost.getSanity();
-		r.pacManCollision = ghost.location().equals(world.population().pacMan().location());
+		r.pacManCollision = ghost.location().equals(pacMan.location());
 	}
 
 	void fillBonusRecord(GameStateRecord r, GameController gameController, World world) {

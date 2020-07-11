@@ -18,9 +18,8 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.model.world.Direction;
-import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.core.IRenderer;
+import de.amr.games.pacman.view.api.IRenderer;
 
 /**
  * Renderes the routes of the creatures towards their current target tiles.
@@ -29,24 +28,21 @@ import de.amr.games.pacman.view.core.IRenderer;
  */
 public class CreatureRoutesRenderer implements IRenderer {
 
-	private final World world;
+	private final ArcadeWorldFolks folks;
 
-	public CreatureRoutesRenderer(World world) {
-		this.world = world;
+	public CreatureRoutesRenderer(ArcadeWorldFolks folks) {
+		this.folks = folks;
 	}
 
 	@Override
 	public void render(Graphics2D g) {
-		drawPacManRoute(g, world.population().pacMan());
-		world.population().ghosts().filter(world::included).forEach(ghost -> drawGhostRoute(g, ghost));
-		if (world.population() instanceof ArcadeWorldFolks) {
-			ArcadeWorldFolks folks = (ArcadeWorldFolks) world.population();
-			if (world.included(folks.inky())) {
-				drawInkyChasing(g, folks.inky());
-			}
-			if (world.included(folks.clyde())) {
-				drawClydeChasingArea(g, folks.clyde());
-			}
+		drawPacManRoute(g, folks.pacMan());
+		folks.ghostsInsideWorld().forEach(ghost -> drawGhostRoute(g, ghost));
+		if (folks.inky().isInsideWorld()) {
+			drawInkyChasing(g, folks.inky());
+		}
+		if (folks.clyde().isInsideWorld()) {
+			drawClydeChasingArea(g, folks.clyde());
 		}
 	}
 
@@ -118,9 +114,9 @@ public class CreatureRoutesRenderer implements IRenderer {
 	}
 
 	private void drawInkyChasing(Graphics2D g, Ghost inky) {
-		PacMan pacMan = world.population().pacMan();
-		Ghost blinky = world.population().ghosts().filter(ghost -> ghost.name.equals("Blinky")).findFirst().get();
-		if (!inky.is(CHASING) || !world.included(blinky)) {
+		PacMan pacMan = folks.pacMan();
+		Ghost blinky = folks.ghosts().filter(ghost -> ghost.name().equals("Blinky")).findFirst().get();
+		if (!inky.is(CHASING) || !folks.world().contains(blinky)) {
 			return;
 		}
 		int x1, y1, x2, y2, x3, y3;
@@ -135,8 +131,8 @@ public class CreatureRoutesRenderer implements IRenderer {
 		int s = Tile.SIZE / 2; // size of target square
 		g.setColor(Color.GRAY);
 		if (!settings.fixOverflowBug && pacManDir == Direction.UP) {
-			Tile twoAhead = world.tileToDir(pacManTile, pacManDir, 2);
-			Tile twoLeft = world.tileToDir(twoAhead, Direction.LEFT, 2);
+			Tile twoAhead = folks.world().tileToDir(pacManTile, pacManDir, 2);
+			Tile twoLeft = folks.world().tileToDir(twoAhead, Direction.LEFT, 2);
 			x1 = pacManTile.centerX();
 			y1 = pacManTile.centerY();
 			x2 = twoAhead.centerX();

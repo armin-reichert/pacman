@@ -14,9 +14,9 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.controller.actor.WorldMover;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.api.MobileCreature;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
 
@@ -46,7 +46,7 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 	 * @param tile    current tile
 	 * @param target  target tile
 	 */
-	private static Direction bestDir(WorldMover mover, Direction moveDir, Tile tile, Tile target) {
+	private static Direction bestDir(MobileCreature mover, Direction moveDir, Tile tile, Tile target) {
 		Function<Direction, Double> fnNeighborDistToTarget = dir -> mover.world().neighbor(tile, dir).distance(target);
 		/*@formatter:off*/
 		return Direction.dirs()
@@ -58,13 +58,13 @@ public class HeadingForTargetTile implements PathProvidingSteering {
 		/*@formatter:on*/
 	}
 
-	private final WorldMover mover;
+	private final MobileCreature mover;
 	private final Supplier<Tile> fnTargetTile;
 	private final ConcurrentLinkedDeque<Tile> path = new ConcurrentLinkedDeque<>();
 	private boolean forced;
 	private boolean pathComputed;
 
-	public HeadingForTargetTile(WorldMover mover, Supplier<Tile> fnTargetTile) {
+	public HeadingForTargetTile(MobileCreature mover, Supplier<Tile> fnTargetTile) {
 		this.mover = Objects.requireNonNull(mover);
 		this.fnTargetTile = Objects.requireNonNull(fnTargetTile);
 	}

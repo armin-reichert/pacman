@@ -121,10 +121,10 @@ public class EnhancedGameController extends GameController {
 	}
 
 	private void toggleGhostOnStage(Ghost ghost) {
-		if (world.included(ghost)) {
-			world.exclude(ghost);
+		if (world.contains(ghost)) {
+			world.takeOut(ghost);
 		} else {
-			world.include(ghost);
+			world.bringIn(ghost);
 			ghost.init();
 		}
 	}
@@ -196,8 +196,8 @@ public class EnhancedGameController extends GameController {
 			return;
 		}
 		game.level.ghostsKilledByEnergizer = 0;
-		ghostsInWorld().filter(ghost -> ghost.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
-			game.scoreGhostKilled(ghost.name);
+		folks.ghostsInsideWorld().filter(ghost -> ghost.is(CHASING, SCATTERING, FRIGHTENED)).forEach(ghost -> {
+			game.scoreGhostKilled(ghost.name());
 			ghost.process(new GhostKilledEvent(ghost));
 		});
 		loginfo("All ghosts have been killed");

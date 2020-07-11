@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 
 import de.amr.easy.game.entity.Entity;
 import de.amr.easy.game.ui.sprites.SpriteMap;
-import de.amr.games.pacman.view.core.IRenderer;
+import de.amr.games.pacman.view.api.IRenderer;
 
 public abstract class SpriteRenderer implements IRenderer {
 

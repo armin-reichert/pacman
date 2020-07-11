@@ -2,9 +2,9 @@ package de.amr.games.pacman.controller.actor.steering.common;
 
 import java.util.Objects;
 
-import de.amr.games.pacman.controller.actor.WorldMover;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.api.MobileCreature;
 
 /**
  * Lets a creature move randomly but never reverse its direction.
@@ -13,10 +13,10 @@ import de.amr.games.pacman.model.world.Direction;
  */
 public class RandomMovement implements Steering {
 
-	private WorldMover creature;
+	private MobileCreature creature;
 	private boolean forced;
 
-	public RandomMovement(WorldMover creature) {
+	public RandomMovement(MobileCreature creature) {
 		this.creature = Objects.requireNonNull(creature);
 	}
 

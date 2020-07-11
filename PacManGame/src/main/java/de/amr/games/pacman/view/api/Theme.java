@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.core;
+package de.amr.games.pacman.view.api;
 
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
