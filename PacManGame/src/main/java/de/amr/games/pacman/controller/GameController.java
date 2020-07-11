@@ -46,8 +46,8 @@ import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.Direction;
-import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.api.PacManGameView;
 import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.intro.IntroView;
@@ -428,7 +428,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 	public void init() {
 		loginfo("Initializing game controller");
 		selectTheme(settings.theme);
-		world = Universe.arcadeWorld();
+		world = new ArcadeWorld();
 		folks = new ArcadeWorldFolks(world);
 		folks.all().forEach(world::bringIn);
 		folks.pacMan().addEventListener(this::process);

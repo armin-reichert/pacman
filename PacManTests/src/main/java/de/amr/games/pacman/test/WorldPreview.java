@@ -8,8 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import de.amr.games.pacman.model.world.Direction;
-import de.amr.games.pacman.model.world.Universe;
 import de.amr.games.pacman.model.world.api.World;
+import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.model.world.core.WorldGraph;
 import de.amr.graph.grid.ui.rendering.ConfigurableGridRenderer;
@@ -29,7 +29,7 @@ public class WorldPreview extends JFrame {
 	private WorldGraph graph;
 
 	public WorldPreview() {
-		world = Universe.arcadeWorld();
+		world = new ArcadeWorld();
 		graph = new WorldGraph(world);
 		setTitle("Pac-Man Maze Preview");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
