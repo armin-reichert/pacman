@@ -90,7 +90,6 @@ public abstract class Animal<STATE> extends Entity implements MobileCreature, Br
 		this.theme = theme;
 	}
 
-	@Override
 	public void setWorld(World world) {
 		this.world = world;
 	}

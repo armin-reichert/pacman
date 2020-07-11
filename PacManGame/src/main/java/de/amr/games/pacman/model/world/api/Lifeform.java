@@ -4,8 +4,6 @@ import de.amr.easy.game.controller.Lifecycle;
 
 public interface Lifeform extends Lifecycle {
 
-	void setWorld(World world);
-
 	World world();
 
 	default boolean isInsideWorld() {

@@ -27,13 +27,13 @@ import java.util.stream.Stream;
 import de.amr.easy.game.input.Keyboard;
 import de.amr.easy.game.view.View;
 import de.amr.easy.game.view.VisualController;
+import de.amr.games.pacman.controller.actor.Animal;
 import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.BonusControl;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.controller.actor.steering.pacman.SearchingForFoodAndAvoidingGhosts;
 import de.amr.games.pacman.controller.api.Creature;
-import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.event.BonusFoundEvent;
 import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.GhostKilledEvent;
@@ -480,7 +480,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		return folks;
 	}
 
-	public Stream<MobileCreature> folksInsideWorld() {
+	public Stream<Animal<?>> folksInsideWorld() {
 		return folks.all().filter(world::contains);
 	}
 

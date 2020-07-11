@@ -14,7 +14,6 @@ import static java.awt.event.KeyEvent.VK_UP;
 
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.House;
@@ -78,7 +77,7 @@ public class ArcadeWorldFolks {
 		clyde.behavior(CHASING,
 				clyde.headingFor(() -> clyde.distance(pacMan) > 8 ? pacMan.location() : Tile.at(0, worldHeight - 1)));
 	}
-	
+
 	public World world() {
 		return world;
 	}
@@ -107,7 +106,7 @@ public class ArcadeWorldFolks {
 		return Stream.of(blinky, pinky, inky, clyde);
 	}
 
-	public Stream<MobileCreature> all() {
+	public Stream<Animal<?>> all() {
 		return Stream.of(pacMan, blinky, inky, pinky, clyde);
 	}
 
