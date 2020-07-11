@@ -1,6 +1,6 @@
 package de.amr.games.pacman.view.theme.arcade;
 
-import static de.amr.games.pacman.model.world.Direction.LEFT;
+import static de.amr.games.pacman.model.world.api.Direction.LEFT;
 
 import java.awt.Graphics2D;
 import java.awt.Image;

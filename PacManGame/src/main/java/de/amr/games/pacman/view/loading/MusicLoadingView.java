@@ -10,7 +10,7 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.PacMan;
-import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.core.Tile;

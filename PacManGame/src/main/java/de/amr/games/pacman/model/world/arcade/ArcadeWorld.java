@@ -6,8 +6,8 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
-import de.amr.games.pacman.model.world.Direction;
 import de.amr.games.pacman.model.world.api.Area;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileCreature;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.core.AbstractWorld;

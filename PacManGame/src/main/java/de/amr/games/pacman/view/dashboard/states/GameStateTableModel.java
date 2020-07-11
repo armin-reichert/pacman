@@ -14,7 +14,7 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostSanity;
 import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Bonus;
 import de.amr.games.pacman.model.world.core.BonusState;

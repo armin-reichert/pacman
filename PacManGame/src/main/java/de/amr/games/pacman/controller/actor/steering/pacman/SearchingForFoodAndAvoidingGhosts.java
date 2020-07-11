@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.actor.ArcadeWorldFolks;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
-import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileCreature;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Tile;

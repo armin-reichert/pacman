@@ -10,7 +10,7 @@ import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.steering.Steering;
 import de.amr.games.pacman.controller.actor.steering.ghost.GoingToBed.State;
-import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.statemachine.core.StateMachine;

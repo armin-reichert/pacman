@@ -1,7 +1,7 @@
 package de.amr.games.pacman.model.world.core;
 
 import de.amr.easy.game.entity.Entity;
-import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.api.Direction;
 
 public class Portal {
 

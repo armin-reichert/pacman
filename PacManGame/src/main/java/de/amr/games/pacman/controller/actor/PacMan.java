@@ -6,8 +6,8 @@ import static de.amr.games.pacman.controller.actor.PacManState.RUNNING;
 import static de.amr.games.pacman.controller.actor.PacManState.SLEEPING;
 import static de.amr.games.pacman.model.game.Game.DIGEST_ENERGIZER_TICKS;
 import static de.amr.games.pacman.model.game.Game.DIGEST_PELLET_TICKS;
-import static de.amr.games.pacman.model.world.Direction.LEFT;
-import static de.amr.games.pacman.model.world.Direction.UP;
+import static de.amr.games.pacman.model.world.api.Direction.LEFT;
+import static de.amr.games.pacman.model.world.api.Direction.UP;
 import static de.amr.statemachine.core.StateMachine.beginStateMachine;
 
 import java.awt.Graphics2D;

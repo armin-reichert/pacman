@@ -3,7 +3,7 @@ package de.amr.games.pacman.controller.actor.steering.common;
 import java.util.Objects;
 
 import de.amr.games.pacman.controller.actor.steering.Steering;
-import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileCreature;
 
 /**

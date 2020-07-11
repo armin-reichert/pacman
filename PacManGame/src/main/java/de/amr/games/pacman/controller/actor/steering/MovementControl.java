@@ -11,7 +11,7 @@ import de.amr.easy.game.math.Vector2f;
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
 import de.amr.games.pacman.controller.SpeedLimits;
 import de.amr.games.pacman.controller.actor.IntelligentCreature;
-import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.core.Portal;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.statemachine.core.StateMachine;

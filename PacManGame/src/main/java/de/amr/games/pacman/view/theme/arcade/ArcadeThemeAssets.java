@@ -17,7 +17,7 @@ import java.util.stream.IntStream;
 
 import de.amr.easy.game.assets.Assets;
 import de.amr.easy.game.ui.sprites.Sprite;
-import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.arcade.Symbol;
 
 /**

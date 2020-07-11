@@ -45,7 +45,7 @@ import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.view.api.PacManGameView;

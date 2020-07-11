@@ -13,7 +13,7 @@ import de.amr.games.pacman.controller.actor.PacManState;
 import de.amr.games.pacman.controller.api.Creature;
 import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.core.Tile;

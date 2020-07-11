@@ -1,13 +1,13 @@
 package de.amr.games.pacman.controller.actor.steering.common;
 
-import static de.amr.games.pacman.model.world.Direction.dirs;
+import static de.amr.games.pacman.model.world.api.Direction.dirs;
 
 import java.util.EnumMap;
 import java.util.Objects;
 
 import de.amr.easy.game.input.Keyboard;
 import de.amr.games.pacman.controller.actor.steering.Steering;
-import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.MobileCreature;
 
 /**

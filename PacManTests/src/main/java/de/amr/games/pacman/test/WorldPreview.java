@@ -7,7 +7,7 @@ import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import de.amr.games.pacman.model.world.Direction;
+import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.core.Tile;
