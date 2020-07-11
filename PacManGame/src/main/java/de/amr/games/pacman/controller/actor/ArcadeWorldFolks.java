@@ -15,7 +15,6 @@ import static java.awt.event.KeyEvent.VK_UP;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.api.MobileCreature;
-import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Population;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.House;
@@ -82,11 +81,6 @@ public class ArcadeWorldFolks implements Population {
 	@Override
 	public World world() {
 		return world;
-	}
-
-	@Override
-	public void takePartIn(Game game) {
-		all().forEach(creature -> creature.takePartIn(game));
 	}
 
 	public PacMan pacMan() {

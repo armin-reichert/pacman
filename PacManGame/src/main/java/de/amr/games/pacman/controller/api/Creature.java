@@ -2,7 +2,6 @@ package de.amr.games.pacman.controller.api;
 
 import de.amr.easy.game.entity.Transform;
 import de.amr.easy.game.view.View;
-import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Lifeform;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.api.IRenderer;
@@ -13,8 +12,6 @@ public interface Creature extends Lifeform, View {
 	String name();
 
 	Transform tf();
-
-	void takePartIn(Game game);
 
 	Tile location();
 

@@ -16,6 +16,7 @@ import static de.amr.games.pacman.model.world.api.Direction.UP;
 import java.awt.Graphics2D;
 import java.util.EnumMap;
 import java.util.Optional;
+import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.controller.PacManStateMachineLogging;
@@ -58,6 +59,7 @@ public class Ghost extends Animal<GhostState> {
 	private Steering previousSteering;
 	private int bounty;
 	private boolean flashing;
+	private IntSupplier fnNumFlashes = () -> 0;
 	private IRenderer renderer;
 
 	public Ghost(String name, int color) {
@@ -112,8 +114,7 @@ public class Ghost extends Animal<GhostState> {
 						checkPacManCollision();
 						move();
 						// one flashing animation takes 0.5 sec
-						int flashTicks = sec(game.level.numFlashes * 0.5f);
-						flashing = remaining < flashTicks;
+						flashing = remaining < fnNumFlashes.getAsInt() *0.5f;
 					})
 				
 				.state(DEAD)
@@ -195,12 +196,10 @@ public class Ghost extends Animal<GhostState> {
 		return renderer;
 	}
 
-	@Override
-	public void takePartIn(Game game) {
-		this.game = game;
-
+	public void getReadyToRumble(Game game) {
 		// frightened time is defined by the game level
 		state(FRIGHTENED).setTimer(() -> sec(game.level.pacManPowerSeconds));
+		this.fnNumFlashes = () -> sec(game.level.numFlashes * 0.5f);
 
 		// when dead, the ghost first appears as a number (its value) for one second, then it
 		// appears as eyes returning to the ghost house

@@ -23,7 +23,6 @@ import de.amr.games.pacman.controller.event.FoodFoundEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
-import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.api.IPacManRenderer;
@@ -129,11 +128,6 @@ public class PacMan extends Animal<PacManState> {
 	@Override
 	public void draw(Graphics2D g) {
 		renderer.render(g);
-	}
-
-	@Override
-	public void takePartIn(Game game) {
-		this.game = game;
 	}
 
 	public void startRunning() {

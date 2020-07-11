@@ -5,7 +5,6 @@ import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import de.amr.easy.game.entity.Entity;
@@ -22,7 +21,6 @@ import de.amr.games.pacman.controller.actor.steering.common.TakingShortestPath;
 import de.amr.games.pacman.controller.api.Brain;
 import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.model.world.core.Tile;
@@ -30,8 +28,8 @@ import de.amr.games.pacman.view.api.Theme;
 import de.amr.statemachine.api.Fsm;
 
 /**
- * An entity that can move through the world and has a brain controlling its behavior. Can take part
- * in a game and has a visual appearance. The appearance is exchangeable.
+ * An entity with a visual appearance that can move through the world and has a brain controlling
+ * its behavior. The appearance is exchangeable via theming.
  * 
  * @param <STATE> state (identifier) type
  * 
@@ -39,11 +37,10 @@ import de.amr.statemachine.api.Fsm;
  */
 public abstract class Animal<STATE> extends Entity implements MobileCreature, Brain<STATE> {
 
-	private final String name;
+	protected final String name;
+	protected final Map<STATE, Steering> steerings;
 	protected World world;
-	protected Game game;
 	protected Fsm<STATE, PacManGameEvent> brain;
-	protected Map<STATE, Steering> steerings;
 	protected MovementControl movement;
 	protected Direction moveDir;
 	protected Direction wishDir;
@@ -96,13 +93,6 @@ public abstract class Animal<STATE> extends Entity implements MobileCreature, Br
 	@Override
 	public void setWorld(World world) {
 		this.world = world;
-	}
-
-	@Override
-	public abstract void takePartIn(Game game);
-
-	public Optional<Game> game() {
-		return Optional.ofNullable(game);
 	}
 
 	/**

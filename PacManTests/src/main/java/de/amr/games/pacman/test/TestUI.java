@@ -61,7 +61,7 @@ public class TestUI implements Lifecycle, VisualController {
 		soundManager = new PacManSounds(world, folks);
 
 		game = new Game(1, world.totalFoodCount());
-		folks.takePartIn(game);
+		folks.ghosts().forEach(ghost -> ghost.getReadyToRumble(game));
 
 		pacMan.setSpeedLimit(() -> pacManSpeedLimit(pacMan, game));
 		folks.ghosts().forEach(ghost -> ghost.setSpeedLimit(() -> speedLimit(ghost, game)));
