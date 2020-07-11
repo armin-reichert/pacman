@@ -129,7 +129,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		}
 
 		@Override
-		public void onTick() {
+		public void onTick(State<?> state, int consumed, int remaining) {
 			pacManLogo.update();
 		}
 
@@ -151,7 +151,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		}
 
 		@Override
-		public void onTick() {
+		public void onTick(State<?> state, int consumed, int remaining) {
 			chasePacMan.update();
 			chaseGhosts.update();
 		}
@@ -186,7 +186,7 @@ public class IntroView extends StateMachine<IntroState, Void> implements PacManG
 		}
 
 		@Override
-		public void onTick() {
+		public void onTick(State<?> state, int consumed, int remaining) {
 			ghostPointsAnimation.update();
 			chasePacMan.update();
 			gitHubLink.update();

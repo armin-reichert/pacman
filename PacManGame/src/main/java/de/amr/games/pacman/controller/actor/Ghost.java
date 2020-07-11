@@ -214,13 +214,13 @@ public class Ghost extends Animal<GhostState> {
 		// when dead, the ghost first appears as a number (its value) for one second, then it
 		// appears as eyes returning to the ghost house
 		state(DEAD).setTimer(sec(1));
-		state(DEAD).setOnEntry(() -> bounty = game.killedGhostPoints());
-		state(DEAD).setOnTick((s, consumed, remaining) -> {
+		state(DEAD).entryAction = () -> bounty = game.killedGhostPoints();
+		state(DEAD).tickAction = (s, consumed, remaining) -> {
 			if (remaining == 0) {
 				bounty = 0;
 				move();
 			}
-		});
+		};
 
 		// Blinky can get insane ("cruise elroy")
 		if (name().equals("Blinky")) {

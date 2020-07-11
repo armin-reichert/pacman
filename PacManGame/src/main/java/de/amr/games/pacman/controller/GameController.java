@@ -337,7 +337,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 		}
 
 		@Override
-		public void onTick() {
+		public void onTick(State<?> state, int consumed, int remaining) {
 			ghostCommand.update();
 			doorMan.update();
 			bonusControl.update();
