@@ -3,7 +3,6 @@ package de.amr.games.pacman.view.dashboard.states;
 import static de.amr.games.pacman.controller.creatures.ghost.GhostState.LOCKED;
 import static de.amr.games.pacman.model.world.api.Direction.RIGHT;
 import static de.amr.games.pacman.view.dashboard.util.Formatting.ticksAndSeconds;
-import static de.amr.games.pacman.view.theme.arcade.ArcadeTheme.ASSETS;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -22,6 +21,8 @@ import de.amr.games.pacman.controller.creatures.ghost.Ghost;
 import de.amr.games.pacman.controller.game.GameController;
 import de.amr.games.pacman.controller.ghosthouse.DoorMan;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorldFolks;
+import de.amr.games.pacman.view.theme.arcade.ArcadeTheme;
+import de.amr.games.pacman.view.theme.arcade.ArcadeThemeSprites;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -126,10 +127,11 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	@Override
 	public void init() {
-		Image pinkyImage = ASSETS.makeSprite_ghostColored(Ghost.PINK_GHOST, RIGHT).frame(0);
-		Image inkyImage = ASSETS.makeSprite_ghostColored(Ghost.CYAN_GHOST, RIGHT).frame(0);
-		Image clydeImage = ASSETS.makeSprite_ghostColored(Ghost.ORANGE_GHOST, RIGHT).frame(0);
-		Image pacManImage = ASSETS.makeSprite_pacManWalking(RIGHT).frame(0);
+		ArcadeThemeSprites arcadeSprites = ArcadeTheme.env.$value("sprites");
+		Image pinkyImage = arcadeSprites.makeSprite_ghostColored(Ghost.PINK_GHOST, RIGHT).frame(0);
+		Image inkyImage = arcadeSprites.makeSprite_ghostColored(Ghost.CYAN_GHOST, RIGHT).frame(0);
+		Image clydeImage = arcadeSprites.makeSprite_ghostColored(Ghost.ORANGE_GHOST, RIGHT).frame(0);
+		Image pacManImage = arcadeSprites.makeSprite_pacManWalking(RIGHT).frame(0);
 		setLabelIconOnly(lblPinkyDots, scaledIcon(pinkyImage, 30));
 		setLabelIconOnly(lblInkyDots, scaledIcon(inkyImage, 30));
 		setLabelIconOnly(lblClydeDots, scaledIcon(clydeImage, 30));

@@ -14,10 +14,10 @@ public class PacManRenderer extends SpriteRenderer implements IPacManRenderer {
 
 	public PacManRenderer(PacMan pacMan) {
 		this.pacMan = pacMan;
-		ArcadeThemeSprites assets = ArcadeTheme.ASSETS;
-		Direction.dirs().forEach(dir -> sprites.set("walking-" + dir, assets.makeSprite_pacManWalking(dir)));
-		sprites.set("collapsing", assets.makeSprite_pacManDying());
-		sprites.set("full", assets.makeSprite_pacManFull());
+		ArcadeThemeSprites arcadeSprites = ArcadeTheme.env.$value("sprites");
+		Direction.dirs().forEach(dir -> sprites.set("walking-" + dir, arcadeSprites.makeSprite_pacManWalking(dir)));
+		sprites.set("collapsing", arcadeSprites.makeSprite_pacManDying());
+		sprites.set("full", arcadeSprites.makeSprite_pacManFull());
 		sprites.select("full");
 		stopAnimationWhenStanding = true;
 	}

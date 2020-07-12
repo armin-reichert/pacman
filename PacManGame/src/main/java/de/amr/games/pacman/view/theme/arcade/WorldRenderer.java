@@ -31,16 +31,17 @@ public class WorldRenderer implements IWorldRenderer {
 	public WorldRenderer(World world) {
 		this.world = world;
 		fnEatenFoodColor = tile -> Color.BLACK;
+		ArcadeThemeSprites arcadeSprites = ArcadeTheme.env.$value("sprites");
 		for (Symbol symbol : Symbol.values()) {
-			symbolImages.put(symbol.name(), ArcadeTheme.ASSETS.makeSprite_bonusSymbol(symbol.name()).frame(0));
+			symbolImages.put(symbol.name(), arcadeSprites.makeSprite_bonusSymbol(symbol.name()).frame(0));
 		}
 		for (int points : Game.POINTS_BONUS) {
-			pointsImages.put(points, ArcadeTheme.ASSETS.makeSprite_number(points).frame(0));
+			pointsImages.put(points, arcadeSprites.makeSprite_number(points).frame(0));
 
 		}
 		mazeSprites = new SpriteMap();
-		mazeSprites.set("maze-full", ArcadeTheme.ASSETS.makeSprite_fullMaze());
-		mazeSprites.set("maze-flashing", ArcadeTheme.ASSETS.makeSprite_flashingMaze());
+		mazeSprites.set("maze-full", arcadeSprites.makeSprite_fullMaze());
+		mazeSprites.set("maze-flashing", arcadeSprites.makeSprite_flashingMaze());
 		energizerAnimation = new CyclicAnimation(2);
 		energizerAnimation.setFrameDuration(150);
 		energizerAnimation.setEnabled(false);

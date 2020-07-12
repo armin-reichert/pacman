@@ -22,9 +22,8 @@ public class ArcadeTheme implements Theme {
 	{
 		env.put("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
 		env.put("maze-flash-sec", 0.4f);
+		env.put("sprites", new ArcadeThemeSprites());
 	}
-
-	public static final ArcadeThemeSprites ASSETS = new ArcadeThemeSprites();
 
 	@Override
 	public ThemeParameters env() {
