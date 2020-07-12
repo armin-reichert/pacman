@@ -6,11 +6,9 @@ import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
 
-public interface Theme {
+public interface Theme extends ThemeParameters {
 
 	String name();
-
-	ThemeParameters env();
 
 	IRenderer createGhostRenderer(Ghost ghost);
 

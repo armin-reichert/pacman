@@ -12,10 +12,8 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
-import de.amr.games.pacman.view.theme.api.Theme;
-import de.amr.games.pacman.view.theme.api.ThemeParameters;
+import de.amr.games.pacman.view.theme.common.AbstractTheme;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
-import de.amr.games.pacman.view.theme.common.ParameterMap;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
 /**
@@ -24,15 +22,16 @@ import de.amr.games.pacman.view.theme.common.ScoreRenderer;
  * @author Armin Reichert
  *
  */
-public class BlocksTheme implements Theme {
+public class BlocksTheme extends AbstractTheme {
 
-	public static final ParameterMap env = new ParameterMap();
+	public static final BlocksTheme IT = new BlocksTheme();
 
-	{
-		env.put("font", Assets.storeTrueTypeFont("ConcertOne", "themes/blocks/ConcertOne-Regular.ttf", Font.PLAIN, 10));
-		env.put("maze-flash-sec", 0.5f);
+	private BlocksTheme() {
+		super("BLOCKS");
+		put("font", Assets.storeTrueTypeFont("ConcertOne", "themes/blocks/ConcertOne-Regular.ttf", Font.PLAIN, 10));
+		put("maze-flash-sec", 0.5f);
 
-		env.put("ghost-colors", Map.of(
+		put("ghost-colors", Map.of(
 		//@formatter:off
 		Ghost.RED_GHOST,    Color.RED,
 		Ghost.PINK_GHOST,   Color.PINK,
@@ -41,7 +40,7 @@ public class BlocksTheme implements Theme {
 		//@formatter:on
 		));
 
-		env.put("symbol-colors", Map.of(
+		put("symbol-colors", Map.of(
 		//@formatter:off
 		"APPLE",      Color.RED,		
 		"BELL",       Color.YELLOW,
@@ -55,24 +54,14 @@ public class BlocksTheme implements Theme {
 		));
 	}
 
-	public static Color ghostColor(Ghost ghost) {
-		Map<Integer, Color> colors = env.$value("ghost-colors");
+	public Color ghostColor(Ghost ghost) {
+		Map<Integer, Color> colors = IT.$value("ghost-colors");
 		return colors.getOrDefault(ghost.getColor(), Color.WHITE);
 	}
 
-	public static Color symbolColor(String symbolName) {
-		Map<String, Color> colors = env.$value("symbol-colors");
+	public Color symbolColor(String symbolName) {
+		Map<String, Color> colors = IT.$value("symbol-colors");
 		return colors.getOrDefault(symbolName, Color.GREEN);
-	}
-
-	@Override
-	public ThemeParameters env() {
-		return env;
-	}
-
-	@Override
-	public String name() {
-		return "BLOCKS";
 	}
 
 	@Override
@@ -83,7 +72,7 @@ public class BlocksTheme implements Theme {
 	@Override
 	public IRenderer createScoreRenderer(World world, Game game) {
 		ScoreRenderer renderer = new ScoreRenderer(game);
-		renderer.setFont(env.$font("font"));
+		renderer.setFont(BlocksTheme.IT.$font("font"));
 		renderer.setSmoothText(true);
 		return renderer;
 	}
@@ -111,7 +100,7 @@ public class BlocksTheme implements Theme {
 	@Override
 	public MessagesRenderer createMessagesRenderer() {
 		MessagesRenderer renderer = new MessagesRenderer();
-		renderer.setFont(env.$font("font").deriveFont(14f));
+		renderer.setFont(BlocksTheme.IT.$font("font").deriveFont(14f));
 		renderer.setSmoothText(true);
 		return renderer;
 	}

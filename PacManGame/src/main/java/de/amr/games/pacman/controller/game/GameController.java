@@ -65,7 +65,7 @@ import de.amr.statemachine.core.StateMachine;
  */
 public class GameController extends StateMachine<PacManGameState, PacManGameEvent> implements VisualController {
 
-	protected final Theme[] themes = { Themes.ARCADE_THEME, Themes.BLOCKS_THEME, Themes.LETTERS_THEME };
+	protected final Theme[] themes = Themes.all().toArray(Theme[]::new);
 
 	protected ArcadeWorld world;
 	protected ArcadeWorldFolks folks;
@@ -137,7 +137,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 				.state(PLAYING).customState(new PlayingState())
 				
 				.state(CHANGING_LEVEL)
-					.timeoutAfter(() -> sec(6 + game.level.numFlashes * theme().env().$float("maze-flash-sec")))
+					.timeoutAfter(() -> sec(6 + game.level.numFlashes * theme().$float("maze-flash-sec")))
 					.onEntry(() -> {
 						folks.pacMan().fallAsleep();
 						doorMan.onLevelChange();
@@ -146,7 +146,7 @@ public class GameController extends StateMachine<PacManGameState, PacManGameEven
 						loginfo("Ghosts killed in level %d: %d", game.level.number, game.level.ghostsKilled);
 					})
 					.onTick((state, passed, remaining) -> {
-						float flashingSeconds = game.level.numFlashes * theme().env().$float("maze-flash-sec");
+						float flashingSeconds = game.level.numFlashes * theme().$float("maze-flash-sec");
 						
 						// During first two seconds, do nothing. At second 2, hide ghosts and start flashing.
 						if (passed == sec(2)) {

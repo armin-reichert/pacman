@@ -1,8 +1,5 @@
 package de.amr.games.pacman.view.theme.blocks;
 
-import static de.amr.games.pacman.view.theme.blocks.BlocksTheme.env;
-import static de.amr.games.pacman.view.theme.blocks.BlocksTheme.ghostColor;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 
@@ -69,13 +66,13 @@ class GhostRenderer implements IRenderer {
 		int size = tiles(1);
 		int x = (int) ghost.entity.tf.x + (ghost.entity.tf.width - size) / 2;
 		int y = (int) ghost.entity.tf.y + (ghost.entity.tf.width - size) / 2;
-		g.setColor(ghostColor(ghost));
+		g.setColor(BlocksTheme.IT.ghostColor(ghost));
 		g.drawRect(x, y, size, size);
 	}
 
 	private void drawPoints(Graphics2D g) {
 		g.setColor(Color.GREEN);
-		g.setFont(env.$font("font"));
+		g.setFont(BlocksTheme.IT.$font("font"));
 		g.drawString(ghost.getBounty() + "", (int) ghost.entity.tf.x, (int) ghost.entity.tf.y);
 	}
 
@@ -107,7 +104,7 @@ class GhostRenderer implements IRenderer {
 		int x = (int) ghost.entity.tf.x + (ghost.entity.tf.width - size) / 2;
 		int y = (int) ghost.entity.tf.y + (ghost.entity.tf.width - size) / 2;
 		g.translate(0, 2);
-		g.setColor(ghostColor(ghost));
+		g.setColor(BlocksTheme.IT.ghostColor(ghost));
 		g.fillRect(x, y, size, size);
 		g.fillArc(x, y - Tile.SIZE / 2, size, size, 0, 180);
 		g.translate(0, -2);

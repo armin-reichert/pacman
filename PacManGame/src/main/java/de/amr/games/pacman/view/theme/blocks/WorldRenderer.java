@@ -1,7 +1,6 @@
 package de.amr.games.pacman.view.theme.blocks;
 
 import static de.amr.easy.game.Application.app;
-import static de.amr.games.pacman.view.theme.blocks.BlocksTheme.env;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -72,7 +71,7 @@ class WorldRenderer implements IWorldRenderer {
 		drawBonusShape(g, center, bonus);
 		try (Pen pen = new Pen(g)) {
 			pen.color(Color.GREEN);
-			pen.font(env.$font("font"));
+			pen.font(BlocksTheme.IT.$font("font"));
 			String text = bonus.symbol.substring(0, 1) + bonus.symbol.substring(1).toLowerCase();
 			pen.drawCentered(text, center.x, center.y + Tile.SIZE / 2);
 		}
@@ -80,14 +79,14 @@ class WorldRenderer implements IWorldRenderer {
 
 	private void drawBonusShape(Graphics2D g, Vector2f center, Bonus bonus) {
 		int radius = 4;
-		g.setColor(BlocksTheme.symbolColor(bonus.symbol));
+		g.setColor(BlocksTheme.IT.symbolColor(bonus.symbol));
 		g.fillOval(center.roundedX() - radius, center.roundedY() - radius, 2 * radius, 2 * radius);
 	}
 
 	private void drawConsumedBonus(Graphics2D g, Vector2f center, Bonus bonus) {
 		try (Pen pen = new Pen(g)) {
 			pen.color(Color.GREEN);
-			pen.font(env.$font("font"));
+			pen.font(BlocksTheme.IT.$font("font"));
 			String text = String.valueOf(bonus.value);
 			pen.drawCentered(text, center.x, center.y + 4);
 		}

@@ -127,7 +127,7 @@ public class GhostHouseStateView extends JPanel implements Lifecycle {
 
 	@Override
 	public void init() {
-		ArcadeThemeSprites arcadeSprites = ArcadeTheme.env.$value("sprites");
+		ArcadeThemeSprites arcadeSprites = ArcadeTheme.IT.$value("sprites");
 		Image pinkyImage = arcadeSprites.makeSprite_ghostColored(Ghost.PINK_GHOST, RIGHT).frame(0);
 		Image inkyImage = arcadeSprites.makeSprite_ghostColored(Ghost.CYAN_GHOST, RIGHT).frame(0);
 		Image clydeImage = arcadeSprites.makeSprite_ghostColored(Ghost.ORANGE_GHOST, RIGHT).frame(0);

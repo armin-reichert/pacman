@@ -10,29 +10,20 @@ import de.amr.games.pacman.model.world.api.World;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
-import de.amr.games.pacman.view.theme.api.Theme;
-import de.amr.games.pacman.view.theme.api.ThemeParameters;
+import de.amr.games.pacman.view.theme.common.AbstractTheme;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
-import de.amr.games.pacman.view.theme.common.ParameterMap;
 import de.amr.games.pacman.view.theme.common.ScoreRenderer;
 
-public class ArcadeTheme implements Theme {
+public class ArcadeTheme extends AbstractTheme {
 
-	public static final ParameterMap env = new ParameterMap();
-	{
-		env.put("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
-		env.put("maze-flash-sec", 0.4f);
-		env.put("sprites", new ArcadeThemeSprites());
-	}
+	public static final ArcadeTheme IT = new ArcadeTheme();
 
-	@Override
-	public ThemeParameters env() {
-		return env;
-	}
+	private ArcadeTheme() {
+		super("ARCADE");
+		put("font", Assets.storeTrueTypeFont("PressStart2P", "themes/arcade/PressStart2P-Regular.ttf", Font.PLAIN, 8));
+		put("maze-flash-sec", 0.4f);
+		put("sprites", new ArcadeThemeSprites());
 
-	@Override
-	public String name() {
-		return "ARCADE";
 	}
 
 	@Override
@@ -43,7 +34,7 @@ public class ArcadeTheme implements Theme {
 	@Override
 	public IRenderer createScoreRenderer(World world, Game game) {
 		ScoreRenderer renderer = new ScoreRenderer(game);
-		Font font = env.$font("font");
+		Font font = $font("font");
 		renderer.setFont(font);
 		return renderer;
 	}
@@ -71,7 +62,7 @@ public class ArcadeTheme implements Theme {
 	@Override
 	public MessagesRenderer createMessagesRenderer() {
 		MessagesRenderer renderer = new MessagesRenderer();
-		renderer.setFont(env.$font("font"));
+		renderer.setFont($font("font"));
 		return renderer;
 	}
 }

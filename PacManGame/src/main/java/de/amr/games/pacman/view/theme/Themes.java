@@ -10,12 +10,8 @@ import de.amr.games.pacman.view.theme.letters.LettersTheme;
 
 public class Themes {
 
-	public static final Theme ARCADE_THEME = new ArcadeTheme();
-	public static final Theme BLOCKS_THEME = new BlocksTheme();
-	public static final Theme LETTERS_THEME = new LettersTheme();
-
 	public static Stream<Theme> all() {
-		return Stream.of(ARCADE_THEME, BLOCKS_THEME, LETTERS_THEME);
+		return Stream.of(ArcadeTheme.IT, BlocksTheme.IT, LettersTheme.IT);
 	}
 
 	public static Optional<Theme> getThemeNamed(String name) {

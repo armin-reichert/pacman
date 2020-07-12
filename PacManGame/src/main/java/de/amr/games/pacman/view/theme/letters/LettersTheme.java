@@ -4,6 +4,7 @@ import static de.amr.games.pacman.controller.creatures.pacman.PacManState.DEAD;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.Map;
 
 import de.amr.easy.game.Application;
 import de.amr.games.pacman.controller.creatures.ghost.Ghost;
@@ -16,10 +17,8 @@ import de.amr.games.pacman.model.world.core.Tile;
 import de.amr.games.pacman.view.theme.api.IPacManRenderer;
 import de.amr.games.pacman.view.theme.api.IRenderer;
 import de.amr.games.pacman.view.theme.api.IWorldRenderer;
-import de.amr.games.pacman.view.theme.api.Theme;
-import de.amr.games.pacman.view.theme.api.ThemeParameters;
+import de.amr.games.pacman.view.theme.common.AbstractTheme;
 import de.amr.games.pacman.view.theme.common.MessagesRenderer;
-import de.amr.games.pacman.view.theme.common.ParameterMap;
 import de.amr.games.pacman.view.theme.common.Rendering;
 
 /**
@@ -27,31 +26,30 @@ import de.amr.games.pacman.view.theme.common.Rendering;
  * 
  * @author Armin Reichert
  */
-public class LettersTheme implements Theme {
+public class LettersTheme extends AbstractTheme {
 
-	public static final ParameterMap env = new ParameterMap();
+	public static final LettersTheme IT = new LettersTheme();
 
-	static {
-		env.put("font", new Font(Font.MONOSPACED, Font.BOLD, Tile.SIZE));
-		env.put("offset-baseline", Tile.SIZE - 1);
+	private LettersTheme() {
+		super("LETTERS");
+		put("font", new Font(Font.MONOSPACED, Font.BOLD, Tile.SIZE));
+		put("offset-baseline", Tile.SIZE - 1);
+		put("ghost-colors", Map.of(
+		//@formatter:off
+		Ghost.RED_GHOST,    Color.RED,
+		Ghost.PINK_GHOST,   Color.PINK,
+		Ghost.CYAN_GHOST,   Color.CYAN,
+		Ghost.ORANGE_GHOST, Color.ORANGE
+		//@formatter:on
+		));
 	}
 
-	public static Color ghostColor(Ghost ghost) {
-		switch (ghost.name()) {
-		case "Blinky":
-			return Color.RED;
-		case "Pinky":
-			return Color.PINK;
-		case "Inky":
-			return Color.CYAN;
-		case "Clyde":
-			return Color.ORANGE;
-		default:
-			return Color.WHITE;
-		}
+	private Color ghostColor(Ghost ghost) {
+		Map<Integer, Color> colors = IT.$value("ghost-colors");
+		return colors.getOrDefault(ghost.getColor(), Color.WHITE);
 	}
 
-	public static String ghostLetter(Ghost ghost) {
+	private String ghostLetter(Ghost ghost) {
 		if (ghost.getState() == null) {
 			return ghost.name().substring(0, 1);
 		}
@@ -67,21 +65,11 @@ public class LettersTheme implements Theme {
 	}
 
 	@Override
-	public ThemeParameters env() {
-		return env;
-	}
-
-	@Override
-	public String name() {
-		return "LETTERS";
-	}
-
-	@Override
 	public IRenderer createGhostRenderer(Ghost ghost) {
 		return g -> {
 			if (ghost.isVisible()) {
-				Font font = env().$font("font");
-				int offset_baseline = env().$int("offset-baseline");
+				Font font = $font("font");
+				int offset_baseline = $int("offset-baseline");
 				g.setFont(font);
 				g.setColor(ghostColor(ghost));
 				g.drawString(ghostLetter(ghost), ghost.entity.tf.x, ghost.entity.tf.y + offset_baseline);
@@ -93,8 +81,8 @@ public class LettersTheme implements Theme {
 	public IPacManRenderer createPacManRenderer(PacMan pacMan) {
 		return g -> {
 			if (pacMan.isVisible()) {
-				Font font = env().$font("font");
-				int offset_baseline = env().$int("offset-baseline");
+				Font font = $font("font");
+				int offset_baseline = $int("offset-baseline");
 				g.setFont(font);
 				g.setColor(Color.YELLOW);
 				String letter = pacMan.is(DEAD) ? "\u2668" : "O";
@@ -106,8 +94,8 @@ public class LettersTheme implements Theme {
 	@Override
 	public IRenderer createLevelCounterRenderer(World world, Game game) {
 		return g -> {
-			Font font = env().$font("font");
-			int offset_baseline = env().$int("offset-baseline");
+			Font font = $font("font");
+			int offset_baseline = $int("offset-baseline");
 			String text = String.format("Level: %d (%s)", game.level.number, game.level.bonusSymbol);
 			g.setColor(Color.YELLOW);
 			g.setFont(font);
@@ -118,8 +106,8 @@ public class LettersTheme implements Theme {
 	@Override
 	public IRenderer createLiveCounterRenderer(World world, Game game) {
 		return g -> {
-			Font font = env().$font("font");
-			int offset_baseline = env().$int("offset-baseline");
+			Font font = $font("font");
+			int offset_baseline = $int("offset-baseline");
 			g.setColor(Color.YELLOW);
 			g.setFont(font);
 			g.drawString(String.format("Lives: %d", game.lives), 0, Tile.SIZE + offset_baseline);
@@ -129,8 +117,8 @@ public class LettersTheme implements Theme {
 	@Override
 	public IRenderer createScoreRenderer(World world, Game game) {
 		return g -> {
-			Font font = env().$font("font");
-			int offset_baseline = env().$int("offset-baseline");
+			Font font = $font("font");
+			int offset_baseline = $int("offset-baseline");
 			g.setColor(Color.YELLOW);
 			g.setFont(font);
 			g.drawString(" Score          Highscore        Pellets", 0, offset_baseline);
@@ -142,8 +130,8 @@ public class LettersTheme implements Theme {
 	@Override
 	public IWorldRenderer createWorldRenderer(World world) {
 		return g -> {
-			Font font = env().$font("font");
-			int offset_baseline = env().$int("offset-baseline");
+			Font font = $font("font");
+			int offset_baseline = $int("offset-baseline");
 			g.setFont(font);
 			for (int row = 3; row < world.height() - 2; ++row) {
 				for (int col = 0; col < world.width(); ++col) {
@@ -177,7 +165,7 @@ public class LettersTheme implements Theme {
 	@Override
 	public MessagesRenderer createMessagesRenderer() {
 		MessagesRenderer renderer = new MessagesRenderer();
-		Font font = env().$font("font");
+		Font font = $font("font");
 		renderer.setFont(font);
 		return renderer;
 	}

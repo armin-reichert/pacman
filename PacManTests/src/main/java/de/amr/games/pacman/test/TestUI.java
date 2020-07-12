@@ -29,7 +29,7 @@ public class TestUI implements Lifecycle, VisualController {
 	protected final Ghost blinky, pinky, inky, clyde;
 	protected final PacManSounds soundManager;
 	protected PlayView view;
-	protected Theme[] themes = { Themes.ARCADE_THEME, Themes.BLOCKS_THEME, Themes.LETTERS_THEME };
+	protected Theme[] themes = Themes.all().toArray(Theme[]::new);
 	protected int currentThemeIndex = 0;
 	protected final Game game;
 
