@@ -1,4 +1,4 @@
-package de.amr.games.pacman.view.api;
+package de.amr.games.pacman.view.theme.api;
 
 public interface IPacManRenderer extends IRenderer {
 

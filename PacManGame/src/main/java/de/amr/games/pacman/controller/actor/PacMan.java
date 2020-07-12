@@ -25,8 +25,8 @@ import de.amr.games.pacman.controller.event.PacManKilledEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.model.world.core.BonusState;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.api.IPacManRenderer;
-import de.amr.games.pacman.view.api.Theme;
+import de.amr.games.pacman.view.theme.api.IPacManRenderer;
+import de.amr.games.pacman.view.theme.api.Theme;
 
 /**
  * The one and only.

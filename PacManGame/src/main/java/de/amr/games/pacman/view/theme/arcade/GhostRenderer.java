@@ -6,7 +6,7 @@ import de.amr.games.pacman.controller.actor.Ghost;
 import de.amr.games.pacman.controller.actor.GhostState;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
-import de.amr.games.pacman.view.api.IRenderer;
+import de.amr.games.pacman.view.theme.api.IRenderer;
 
 public class GhostRenderer extends SpriteRenderer implements IRenderer {
 

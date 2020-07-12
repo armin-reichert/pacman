@@ -35,8 +35,8 @@ import de.amr.games.pacman.model.world.core.Bed;
 import de.amr.games.pacman.model.world.core.House;
 import de.amr.games.pacman.model.world.core.OneWayTile;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.api.IRenderer;
-import de.amr.games.pacman.view.api.Theme;
+import de.amr.games.pacman.view.theme.api.IRenderer;
+import de.amr.games.pacman.view.theme.api.Theme;
 
 /**
  * A ghost.

@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.HashMap;
 
-import de.amr.games.pacman.view.api.ThemeParameters;
+import de.amr.games.pacman.view.theme.api.ThemeParameters;
 
 public class ParameterMap extends HashMap<String, Object> implements ThemeParameters {
 

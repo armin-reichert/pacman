@@ -12,7 +12,7 @@ import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.api.Theme;
+import de.amr.games.pacman.view.theme.api.Theme;
 
 public class ChaseGhostsAnimation extends GameObject {
 

@@ -49,11 +49,11 @@ import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.game.Game;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.view.api.PacManGameView;
-import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.intro.IntroView;
 import de.amr.games.pacman.view.loading.MusicLoadingView;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.Themes;
+import de.amr.games.pacman.view.theme.api.Theme;
 import de.amr.statemachine.core.State;
 import de.amr.statemachine.core.StateMachine;
 

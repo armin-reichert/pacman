@@ -17,9 +17,9 @@ import de.amr.games.pacman.controller.api.Creature;
 import de.amr.games.pacman.controller.sound.PacManSounds;
 import de.amr.games.pacman.controller.world.arcade.ArcadeWorld;
 import de.amr.games.pacman.model.game.Game;
-import de.amr.games.pacman.view.api.Theme;
 import de.amr.games.pacman.view.play.PlayView;
 import de.amr.games.pacman.view.theme.Themes;
+import de.amr.games.pacman.view.theme.api.Theme;
 
 public class TestUI implements Lifecycle, VisualController {
 

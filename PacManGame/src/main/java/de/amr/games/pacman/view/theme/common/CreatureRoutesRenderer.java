@@ -19,7 +19,7 @@ import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.actor.steering.PathProvidingSteering;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.api.IRenderer;
+import de.amr.games.pacman.view.theme.api.IRenderer;
 
 /**
  * Renderes the routes of the creatures towards their current target tiles.

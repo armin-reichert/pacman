@@ -24,7 +24,7 @@ import de.amr.games.pacman.controller.actor.PacMan;
 import de.amr.games.pacman.controller.api.MobileCreature;
 import de.amr.games.pacman.model.world.api.Direction;
 import de.amr.games.pacman.model.world.core.Tile;
-import de.amr.games.pacman.view.api.IRenderer;
+import de.amr.games.pacman.view.theme.api.IRenderer;
 
 public class ActorStatesRenderer implements IRenderer {
 
